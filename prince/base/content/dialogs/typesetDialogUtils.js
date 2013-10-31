@@ -1,5 +1,5 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
-
+Components.utils.import("resource://app/modules/os.jsm");
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
@@ -208,8 +208,14 @@ function getEnvObject()
     // theFile.append("MSITeX.bash");
 
     // var path = theFile.path;
+    var extension;
+    if (getOS(window) == "win") {
+      extension = "cmd";
+    } else {
+      extension = "bash";
+    }
     var myXMLHTTPRequest = new XMLHttpRequest();
-    myXMLHTTPRequest.open("GET", "resource://app/MSITeX.bash", false);
+    myXMLHTTPRequest.open("GET", "resource://app/MSITeX."+extension, false);
     myXMLHTTPRequest.send(null);
     var text = myXMLHTTPRequest.responseText;
     var lines = text.split("\n");
