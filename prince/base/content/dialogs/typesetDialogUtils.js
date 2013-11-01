@@ -209,7 +209,8 @@ function getEnvObject()
 
     // var path = theFile.path;
     var extension;
-    if (getOS(window) == "win") {
+    var os = getOS(window);
+    if (os == "win") {
       extension = "cmd";
     } else {
       extension = "bash";
@@ -223,11 +224,23 @@ function getEnvObject()
     var envitem;
     var env = {};
     var i;
-    for (i = 0; i < lines.length; i++)
-    {
-      line = lines[i];
-      envitem = line.split(' ')[1].split("=");
-      env[envitem[0]] = envitem[1];
+    if (os == "win") {
+      for (i = 0; i < lines.length; i++)
+      {
+        line = lines[i];
+        envitem = line.split(' ');
+        if (envitem[0] != '@echo') {
+          env[envitem[1]] = envitem[2];
+        }
+      }
+    }
+    else {
+      for (i = 0; i < lines.length; i++)
+      {
+        line = lines[i];
+        envitem = line.split(' ')[1].split("=");
+        env[envitem[0]] = envitem[1];
+      }
     }
   }
   catch(e) {
