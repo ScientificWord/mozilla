@@ -228,7 +228,7 @@ function getEnvObject()
       for (i = 0; i < lines.length; i++)
       {
         line = lines[i];
-        envitem = line.split(/\s/);
+        envitem = line.split(/\s+/);
         if (envitem[0] != '@echo') {
           env[envitem[1]] = envitem[2];
         }
@@ -238,7 +238,7 @@ function getEnvObject()
       for (i = 0; i < lines.length; i++)
       {
         line = lines[i];
-        envitem = line.split(/\s/)[1].split("=");
+        envitem = line.split(/\s+/)[1].split("=");
         env[envitem[0]] = envitem[1];
       }
     }
