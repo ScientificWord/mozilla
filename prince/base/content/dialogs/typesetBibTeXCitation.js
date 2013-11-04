@@ -23,7 +23,7 @@ function Startup()
   if ("reviseData" in data)
     setDataFromReviseData(data.reviseData);
 
-  setDlgDatabaseFile(data.databaseFile);
+//  setDlgDatabaseFile(data.databaseFile);
   gDialog.bibTeXDir = null; //nsiLocalFile
   gDialog.key = data.key;  //a string
   gDialog.remark = data.remark;  //this should become arbitrary markup - a Document Fragment perhaps?
@@ -48,8 +48,13 @@ function InitDialog()
 //  var theStringSource = "<span style='font-weight: bold;'>" + gDialog.remark + "</span>";
   var editorControl = document.getElementById("remarkEditControl");
   msiInitializeEditorForElement(editorControl, gDialog.remark);
-
-  fillDatabaseFileListbox();
+  var prefBranch = GetPrefs();
+  var fileDir = 
+    prefBranch.getComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile);
+  if (fileDir != null)
+    gDialog.userBibTeXDir = fileDir;
+  else gDialog.userBibTeXDir = nulll;
+  fillDatabaseFileListbox(fileDir);
   checkDisableControls();
 
 //  checkInaccessibleAcceleratorKeys(document.documentElement);
@@ -111,15 +116,16 @@ function onAccept()
     data.databaseFile = null;
   data.bBibEntryOnly = document.getElementById("bibEntryOnlyCheckbox").checked;
 
-  if (gDialog.bibTeXDir && gDialog.bibTeXDir.exists())
+  if (gDialog.userBibTeXDir && gDialog.userBibTeXDir.exists())
   {
     var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
     try
     {
-      prefs.setComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile, gDialog.bibTeXDir);
+      prefs.setComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile, gDialog.userBibTeXDir);
     }
     catch(exception) {}
   }   
+//  else prefs.setComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile, null);
 
   var parentEditorElement = msiGetParentEditorElementForDialog(window);
 //  var parentEditor = msiGetEditor(parentEditorElement);
@@ -160,7 +166,7 @@ function selectDatabaseFile(selectedListboxItem)
   var filePath = "";
   if (selectedListboxItem)
     filePath = selectedListboxItem.value;
-  setDlgDatabaseFile(filePath)
+  setDlgDatabaseFile(filePath);
   checkDisableControls();
 }
 
@@ -198,7 +204,7 @@ function getBibTeXDirectories()
   return gDialog.bibTeXDirs;
 }
 
-function fillDatabaseFileListbox()
+function fillDatabaseFileListbox( theDirectory)
 {
   try {
   var theListbox = document.getElementById("databaseFileListbox");
@@ -206,10 +212,14 @@ function fillDatabaseFileListbox()
   var rowCount = theListbox.getRowCount();
   var i;
   var j;
-  for (var i = rowCount - 1; i >= 0; --i)
-    theListbox.removeItemAt(i);
   var bibDir;
-  var bibDirs = getBibTeXDirectories();  //returns an nsILocalFile
+  var bibDirs = [];
+  for (i = rowCount - 1; i >= 0; --i)
+    theListbox.removeItemAt(i);
+  if (theDirectory) {
+    bibDirs[0] = theDirectory;
+  }
+  else bibDirs = getBibTeXDirectories();  //returns an nsILocalFile
   for (i = bibDirs.length - 1; i >=0; i--)
   {
     bibDir = bibDirs[i];
@@ -222,7 +232,7 @@ function fillDatabaseFileListbox()
       var ourFileName = gDialog.databaseFile ? gDialog.databaseFile.leafName : "";
       if (ourFileName.length)
         ourFileName = ourFileName.substring(0, ourFileName.lastIndexOf("."));
-      for (var j = 0; j < sortedDirList.length; ++j)
+      for (j = 0; j < sortedDirList.length; ++j)
       {
         if (ourFileName == sortedDirList[j].fileName)
           selItem = theListbox.appendItem(sortedDirList[j].fileName, sortedDirList[j].filePath);
@@ -250,8 +260,8 @@ function doSelectBibTeXDirectory()
   var res = dirPicker.show();
   if (res == Components.interfaces.nsIFilePicker.returnOK)
   {
-    gDialog.bibTeXDirs[1] = dirPicker.file;
-    fillDatabaseFileListbox();
+    gDialog.userBibTeXDir = dirPicker.file;
+    fillDatabaseFileListbox(dirPicker.file);
   }
 }
 
