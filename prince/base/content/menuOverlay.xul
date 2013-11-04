@@ -335,7 +335,7 @@
     </menupopup>
   </menu>
   
-  <menu id="viewMenu" label="&viewMenu.label;" accesskey="&viewMenu.accesskey;" >
+  <menu id="viewMenu" label="&viewMenu.label;" accesskey="&viewMenu.accesskey;" onpopupshowing="msiEditorInitViewMenu();">
     <menupopup id="viewMenuPopup">
       <menuitem id="viewNormalMode"   
                 type="radio" 
@@ -363,14 +363,18 @@
                   label="&PreviewMode.label;"/>
       <menuseparator/>
 #ifndef PROD_SNB
-      <menuitem id="viewTeXLog"  
-                accesskey="&viewTeXLog.accesskey;"    
-                observes="cmd_showTeXLog" 
-                label="&viewTeXLog.label;"/>
       <menuitem id="viewTeXFile"  
                 accesskey="&viewTeXFile.accesskey;"    
                 observes="cmd_showTeXFile" 
                 label="&viewTeXFile.label;"/>
+      <menuitem id="viewTeXLog"  
+                accesskey="&viewTeXLog.accesskey;"    
+                observes="cmd_showTeXLog" 
+                label="&viewTeXLog.label;"/>
+      <menuitem id="viewBibTeXLog"  
+                accesskey="&viewBibTeXLog.accesskey;"    
+                observes="cmd_showBibTeXLog" 
+                label="&viewBibTeXLog.label;"/>
       <menuseparator/>
 #endif
       <menu id="sidebar-menu" label="&viewSidebars.label;" accesskey="&viewsidebars.accesskey;" >
@@ -479,7 +483,7 @@
     </menupopup>
   </menu>
   
-  <!-- commands updated when the editor gets created -->
+  <!-- commands updatgd when the editor gets created -->
   <commandset id="commonEditorMenuItems"
           commandupdater="true"
           events="create"
@@ -820,6 +824,7 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
       oncommand="callOTFontDialog();"/>
     <command id="cmd_tagkeyassignments" oncommand="callFunctionKeyDialog();"/>
   </commandset>
+
 
     
 #ifdef DEBUG

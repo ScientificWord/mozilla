@@ -145,6 +145,8 @@
 <!ENTITY viewShowHideMenu.accesskey "S" >
 <!ENTITY viewTeXLog.accesskey "L" >
 <!ENTITY viewTeXLog.label "TeX Log" >
+<!ENTITY viewBibTeXLog.accesskey "B" >
+<!ENTITY viewBibTeXLog.label "BibTeX Log" >
 <!ENTITY viewTeXFile.accesskey "F" >
 <!ENTITY viewTeXFile.label "TeX File" >
 <!ENTITY viewSidebars.label "Sidebars">
