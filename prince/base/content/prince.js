@@ -482,7 +482,13 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
     isDefaultLocation = true;
 		outTeXdir = workingDir.clone();
     outTeXdir.append("tex");
-    outTeXdir.remove(true);
+    try {
+      outTeXdir.remove(true);
+    }
+    catch(e) {
+      AlertWithTitle("Error", "Unable to delete working TeX directory.\nClose any applications that may have the tex or pdf files open.");
+      return false;
+    }
     if (!outTeXdir.exists()) outTeXdir.create(1, 0755);
     outTeXfile = outTeXdir;
     // delete current contents of the tex directory
@@ -684,40 +690,40 @@ compileTeXFile:
 
 function setBibTeXRunArgs(passData)
 {
-  var bibTeXExePath = GetLocalFilePref("swp.bibtex.appPath");
+//  var bibTeXExePath = GetLocalFilePref("swp.bibtex.appPath");
   var bibTeXDBaseDir = GetLocalFilePref("swp.bibtex.dir");
-  var bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
+//  var bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
 
-  var bibtexData = ["-d", passData.args[0] ];
-  var dbaseDirStr, styleDirStr;
-  if (bibTeXExePath && bibTeXExePath.path.length)
-  {
-    bibtexData.push("-x");
-    bibtexData.push(bibTeXExePath.parent.path);
-  }
-  if (bibTeXDBaseDir && bibTeXDBaseDir.path.length)
-  {
-    bibtexData.push("-b");
-    dbaseDirStr = bibTeXDBaseDir.path;
-#ifdef XP_WIN32
-    dbaseDirStr += "\\\\";
-#else
-    dbaseDirStr += "//";
-#endif
-    bibtexData.push(dbaseDirStr);
-  }
-  if (bibTeXStyleDir && bibTeXStyleDir.path.length)
-  {
-    bibtexData.push("-s");
-    styleDirStr = bibTeXStyleDir.path;
-#ifdef XP_WIN32
-    styleDirStr += "\\\\";
-#else
-    styleDirStr += "//";
-#endif
-    bibtexData.push(styleDirStr);
-  }
-  bibtexData.push(passData.args[2]);  //put the target file leafname last in the args list
+  var bibtexData = [passData.args[0],"-d", bibTeXDBaseDir.path ];
+//   var dbaseDirStr, styleDirStr;
+//   if (bibTeXExePath && bibTeXExePath.path.length)
+//   {
+//     bibtexData.push("-x");
+//     bibtexData.push(bibTeXExePath.parent.path);
+//   }
+//   if (bibTeXDBaseDir && bibTeXDBaseDir.path.length)
+//   {
+//     bibtexData.push("-b");
+//     dbaseDirStr = bibTeXDBaseDir.path;
+// #ifdef XP_WIN32
+//     dbaseDirStr += "\\\\";
+// #else
+//     dbaseDirStr += "//";
+// #endif
+//     bibtexData.push(dbaseDirStr);
+//   }
+//   if (bibTeXStyleDir && bibTeXStyleDir.path.length)
+//   {
+//     bibtexData.push("-s");
+//     styleDirStr = bibTeXStyleDir.path;
+// #ifdef XP_WIN32
+//     styleDirStr += "\\\\";
+// #else
+//     styleDirStr += "//";
+// #endif
+//     bibtexData.push(styleDirStr);
+//  }
+//  bibtexData.push(passData.args[2]);  //put the target file leafname last in the args list
   return bibtexData;
 }
 
