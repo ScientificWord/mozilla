@@ -521,6 +521,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
     <command id="cmd_viewSymbolToolbar"  oncommand="goToggleToolbar('SymbolToolbar','cmd_viewSymbolToolbar');"   checked="true"/>
     <command id="cmd_compactSymbolPanels"  oncommand="setCompact('menuCompactSymbolPanels','cmd_compactSymbolPanels');"   checked="false"/>
     <command id="cmd_showTeXLog" oncommand="msiGoDoCommand('cmd_showTeXLog');" />
+    <command id="cmd_showBibTeXLog" oncommand="msiGoDoCommand('cmd_showBibTeXLog');" />
     <command id="cmd_showTeXFile" oncommand="msiGoDoCommand('cmd_showTeXFile');" />
     <!--command id="cmd_showXSLTLog" oncommand="msiGoDoCommand('cmd_showXSLTLog');" / -->
     <command id="cmd_textBold" oncommand="msiDoStatefulCommand('cmd_texttag','bold');" />
