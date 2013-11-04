@@ -5175,6 +5175,18 @@ function msiInitPasteAsMenu(editorElement)
   // TODO: Do enabling based on what is in the clipboard
 }
 
+function msiEditorInitViewMenu()
+{
+  var i;
+  var logcommands = ['cmd_showTeXLog', msiShowTeXLogCommand,'cmd_showBibTeXLog', msiShowBibTeXLogCommand,'cmd_showTeXFile',msiShowTeXFileCommand];
+  for (i = 0; i < logcommands.length; i+=2) {
+    if (logcommands[i+1].isCommandEnabled(null, null)) {
+      document.getElementById(logcommands[i]).removeAttribute('disabled');
+    }
+    else
+      document.getElementById(logcommands[i]).setAttribute('disabled', 'true');
+  }
+}
 
 function msiEditorInitFormatMenu(event, theMenu)
 {

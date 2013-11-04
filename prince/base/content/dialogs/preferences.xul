@@ -1709,30 +1709,30 @@
               <groupbox>
                 <caption label="&miscellaneousOptions.label;" />
                 <checkbox id="warnNonPortableFilenamesCheckbox" preference="warnNonPortableFilename" label="&warnNonPortableFilenamesCheckbox.label;" accesskey="&warnNonPortableFilenamesCheckbox.accesskey;"/>
-                <checkbox id="useOldAuxFilesCheckbox" preference="useExistingAuxFiles" label="&useOldAuxFilesCheckbox.label;" accesskey="&useOldAuxFilesCheckbox.accesskey;"/>
-                <checkbox id="passThroughUnicodeMacro" preference="passThroughUniMacro" label="&passThroughUnicodeMacro.label;" accesskey="&passThroughUnicodeMacro.accesskey;" />
+<!--                 <checkbox id="useOldAuxFilesCheckbox" preference="useExistingAuxFiles" label="&useOldAuxFilesCheckbox.label;" accesskey="&useOldAuxFilesCheckbox.accesskey;"/>
+ -->            <checkbox id="passThroughUnicodeMacro" preference="passThroughUniMacro" label="&passThroughUnicodeMacro.label;" accesskey="&passThroughUnicodeMacro.accesskey;" />
                 <checkbox id="convertTeXLinksToPDF" preference="convertLinksToPDF" label="&convertTeXLinksToPDF.label;" accesskey="&convertTeXLinksToPDF.accesskey;" />
               </groupbox>
               <spacer class="spacer" flex="0"/>
               <groupbox>
                 <caption label="&bibTexOptions.label;" />
-                <label value="&bibTeXExecutable.label;" accesskey="&bibTeXExecutable.accesskey;" control="bibTeXExecutableTextbox"/>
+                <!-- <label value="&bibTeXExecutable.label;" accesskey="&bibTeXExecutable.accesskey;" control="bibTeXExecutableTextbox"/>
                 <hbox align="center">
                   <textbox id="bibTeXExecutableTextbox" style="width: 18em" />
   			          <msibutton id="browseBibTeXExecutable" label="&browseBibTeXExecutable.label;" accesskey="&browseBibTeXExecutable.accesskey;" oncommand="onBrowseBibTeXExecutable();"/>
                 </hbox>
-                <spacer class="spacer" flex="0"/>
+                <spacer class="spacer" flex="0"/> -->
                 <label value="&bibTeXDatabaseDir.label;" accesskey="&bibTeXDatabaseDir.accesskey;" control="bibTeXDatabaseDirTextbox"/>
                 <hbox align="center">
                   <textbox id="bibTeXDatabaseDirTextbox" style="width: 18em" />
   			          <msibutton id="browseBibTeXDatabaseDir" label="&browseBibTeXDatabaseDir.label;" accesskey="&browseBibTeXDatabaseDir.accesskey;" oncommand="onBrowseBibTeXDatabaseDir();"/>
                 </hbox>
-                <spacer class="spacer" flex="0"/>
+                <!-- <spacer class="spacer" flex="0"/>
                 <label value="&bibTeXStyleDir.label;" accesskey="&bibTeXStyleDir.accesskey;" control="bibTeXStyleDirTextbox"/>
                 <hbox align="center">
                   <textbox id="bibTeXStyleDirTextbox" style="width: 18em" />
   			          <msibutton id="browseBibTeXStyleDir" label="&browseBibTeXStyleDir.label;" accesskey="&browseBibTeXStyleDir.accesskey;" oncommand="onBrowseBibTeXStyleDir();"/>
-                </hbox>
+                </hbox> -->
               </groupbox>
             </vbox>
           </hbox>

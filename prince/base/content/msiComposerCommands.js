@@ -151,6 +151,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_citation", msiCitationCommand);
   commandTable.registerCommand("cmd_reviseCitation", msiReviseCitationCommand);
   commandTable.registerCommand("cmd_showTeXLog", msiShowTeXLogCommand);
+  commandTable.registerCommand("cmd_showBibTeXLog", msiShowBibTeXLogCommand);
   commandTable.registerCommand("cmd_showTeXFile", msiShowTeXFileCommand);
   commandTable.registerCommand("cmd_showXSLTLog", msiShowXSLTLogCommand);
   commandTable.registerCommand("cmd_gotoparagraph", msiGoToParagraphCommand);
@@ -10261,11 +10262,11 @@ function callColorDialog()
 //  theWindow.msiRequirePackage(editorElement, "xcolor", null);
 }
 
-var msiShowTeXLogCommand =
+var msiShowBibTeXLogCommand = 
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    result = false;
+    var result = false;
     var editorElement = msiGetActiveEditorElement();
     if (!msiIsTopLevelEditor(editorElement))
       return result;
@@ -10278,11 +10279,10 @@ var msiShowTeXLogCommand =
       var match = re.exec(url);
       if (match)
       {
-        var resurl = match[1]+"/"+match[2]+"_files/tex/"+"SWP.log";
-        var thefile = Components.classes["@mozilla.org/file/local;1"].
-        createInstance(Components.interfaces.nsILocalFile);
-        thefile.initWithPath(resurl);
-        result = thefile.exists();
+        var resurl = match[1]+"/tex/main.blg";
+        var thefile = msiFileFromFileURL(msiURIFromString(resurl));
+        result = thefile && 
+          thefile.exists();
       }
     }
     return result;
@@ -10293,6 +10293,69 @@ var msiShowTeXLogCommand =
 
   doCommand: function(aCommand)
   {
+    try
+    {
+      var result = true;
+      var editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return result;
+
+      var editor = msiGetEditor(editorElement);
+      if (editor)
+      {
+        var url = msiGetEditorURL(editorElement);
+  //      var re = /\/([a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+$/i;
+        var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+        var match = re.exec(url);
+        if (match)
+        {
+          var resurl = match[1]+"/tex/main.blg";
+          openDialog("chrome://global/content/viewSource.xul",
+                 "_blank",
+                 "all,dialog=no",
+                 resurl, null, null);
+        }
+      }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('showbibtexlog'), e.message);
+    }
+    return result;
+  }
+}
+
+var msiShowTeXLogCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var result = false;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return result;
+
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      var url = msiGetEditorURL(editorElement);
+      var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+      var match = re.exec(url);
+      if (match)
+      {
+        var resurl = match[1]+"/tex/main.log";
+        var thefile = msiFileFromFileURL(msiURIFromString(resurl));
+        result = thefile && 
+        thefile.exists();
+      }
+    }
+    return result;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var result;
     try
     {
       result = true;
@@ -10309,7 +10372,7 @@ var msiShowTeXLogCommand =
         var match = re.exec(url);
         if (match)
         {
-          var resurl = match[1]+"/tex/SWP.log";
+          var resurl = match[1]+"/tex/main.log";
           openDialog("chrome://global/content/viewSource.xul",
                  "_blank",
                  "all,dialog=no",
@@ -10323,11 +10386,13 @@ var msiShowTeXLogCommand =
     return result;
   }
 }
+
+
 var msiShowTeXFileCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    result = false;
+    var result = false;
     var editorElement = msiGetActiveEditorElement();
     if (!msiIsTopLevelEditor(editorElement))
       return result;
@@ -10340,11 +10405,10 @@ var msiShowTeXFileCommand =
       var match = re.exec(url);
       if (match)
       {
-        var resurl = match[1]+"/"+match[2]+"_files/tex/"+"main.tex";
-        var thefile = Components.classes["@mozilla.org/file/local;1"].
-        createInstance(Components.interfaces.nsILocalFile);
-        thefile.initWithPath(resurl);
-        result = thefile.exists();
+        var resurl = match[1]+"/tex/main.tex";
+        var thefile = msiFileFromFileURL(msiURIFromString(resurl));
+        result = thefile && 
+        thefile.exists();
       }
     }
     return result;
@@ -10355,6 +10419,7 @@ var msiShowTeXFileCommand =
 
   doCommand: function(aCommand)
   {
+    var result;
     try
     {
       result = true;
