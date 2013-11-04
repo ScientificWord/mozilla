@@ -229,7 +229,7 @@ function getEnvObject()
       {
         line = lines[i];
         envitem = line.split(/\s+/);
-        if (envitem[0] != '@echo') {
+        if (envitem[0] == 'setx') {
           env[envitem[1]] = envitem[2];
         }
       }
