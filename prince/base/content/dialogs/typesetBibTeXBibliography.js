@@ -39,7 +39,13 @@ function Startup()
 
 function InitDialog()
 {
-  fillDatabaseFileListbox();
+  var prefBranch = GetPrefs();
+  var fileDir = 
+    prefBranch.getComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile);
+  if (fileDir != null)
+    gDialog.userBibTeXDir = fileDir;
+  else gDialog.userBibTeXDir = nulll;
+  fillDatabaseFileListbox(fileDir);
   fillStyleFileListbox();
 //  checkDisableControls();
 
@@ -166,15 +172,19 @@ function getBibTeXStyleDirectories()
 }
 
 
-function fillDatabaseFileListbox()
+function fillDatabaseFileListbox(fileDir)
 {
 //  var theListbox = document.getElementById("databaseFileListbox");
   //Clear the listbox
   var rowCount = gDialog.dbFileListbox.getRowCount();
+  var bibDirs;
   for (var i = rowCount - 1; i >= 0; --i)
     gDialog.dbFileListbox.removeItemAt(i);
   
-  var bibDirs= getBibTeXDirectories();  //returns an array of 2 nsILocalFiles
+  if (fileDir) {
+    bibDirs = [fileDir];
+  }
+  else bibDirs= getBibTeXDirectories();  //returns an array of 2 nsILocalFiles
   var sortedDirList;
   var bibDir;
   var j;

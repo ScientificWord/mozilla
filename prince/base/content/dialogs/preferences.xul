@@ -1670,18 +1670,20 @@
 #ifndef PROD_SNB
   <prefpane id="prefTypesetting" label="&TypesettingTab.label;">
     <preferences>
-      <preference id="bibTeXExecutable"
+<!--       <preference id="bibTeXExecutable"
                   name="swp.bibtex.appPath"
                   onchange="setTextboxValue(this);" 
                   type="file"/>
+ -->  
       <preference id="bibTeXDatabaseDir"
                   name="swp.bibtex.dir"
                   onchange="setTextboxValue(this);" 
                   type="file"/>
-      <preference id="bibTeXStyleDir"
+<!--       <preference id="bibTeXStyleDir"
                   name="swp.bibtex.styledir"
                   onchange="setTextboxValue(this);" 
                   type="file"/>
+ -->  
       <preference id="warnNonPortableFilename"
                   name="swp.typeset.warnNonPortableFilename"
                   type="bool"/>

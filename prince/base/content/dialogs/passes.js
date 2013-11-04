@@ -26,7 +26,7 @@ var timerCallback =
          sentinel.remove(false);
          if (passData.runBibTeX)
          {
-           theBibTeXProcess.run(false, passData.args, passData.args.length);
+           theBibTeXProcess.run(false, passData.bibtexArgs, passData.bibtexArgs.length);
            passData.runBibTeX = false;
          }
          else if (passData.runMakeIndex)
