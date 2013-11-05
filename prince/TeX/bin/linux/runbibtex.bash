@@ -14,7 +14,7 @@ done
 
 export PATH=$MSITEXBIN
 export BIBINPUTS=$BIBINPDIR:$BIBINPUTS
-echo BIBINPUTS=$BIBINPUTS > ~/log
+# echo BIBINPUTS=$BIBINPUTS > ~/log
 bibtex main 
 echo done > sentinel
 exit 0
