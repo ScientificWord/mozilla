@@ -39,13 +39,13 @@
 </xsl:template>
 
 <xsl:template match="html:sectiontitle/html:*">
-  <xsl:value-of select="normalize-space(.)"/>
+  <xsl:value-of select="normalize-space(.) "/>
 </xsl:template>
 
 <xsl:template match="html:sectiontitle/html:shortTitle"/>
 
-<xsl:template match="html:sectiontitle">
-	<xsl:value-of select="normalize-space(text())"/>
+<xsl:template match="html:sectiontitle/text()">
+	<xsl:value-of select="normalize-space(.) "/>
 </xsl:template>
 
 <xsl:template match="##sectiontags##">
