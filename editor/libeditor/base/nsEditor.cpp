@@ -1692,7 +1692,7 @@ NS_IMETHODIMP nsEditor::ReplaceNode(nsIDOMNode * aNewChild,
 NS_IMETHODIMP nsEditor::SaveSelection(nsISelection * selection)
 {
 
-//ljh TODO -- do we need this listner stuff???
+//ljh TODO -- do we need this listener stuff???
 //  PRInt32 i;
 //  nsIEditActionListener *listener;
 //  nsAutoRules beginRulesSniffing(this, kOpReplaceNode, nsIEditor::eNone); //ljh i think eNone is correct???
