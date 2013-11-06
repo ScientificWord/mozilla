@@ -54,7 +54,7 @@
 
 <xsl:template match="html:head">
   <xsl:call-template name="metadata"/>
-\documentclass<xsl:if test="//html:documentclass/@options">[<xsl:value-of select="//html:documentclass/@options"/>]</xsl:if>
+\documentclass
 <xsl:if test="//html:colist/@*">[<xsl:for-each select="//html:colist/@*"
     ><xsl:if test="name()!='enabled'"><xsl:value-of select="."/><xsl:if test="(position()>1) and (position()!=last())">, </xsl:if></xsl:if></xsl:for-each>]</xsl:if>{<xsl:value-of select="//html:documentclass/@class"/>}
   <xsl:apply-templates/>
@@ -294,14 +294,25 @@ should not be done under some conditions -->
 \title{<xsl:apply-templates />}<xsl:text/>
 </xsl:template>
 
-<xsl:template match="html:author">
+<xsl:template match="html:author[1]">
  \author{<xsl:apply-templates mode="frontmatter"/>
-   <xsl:if test="../html:address">~\\</xsl:if>
-   <xsl:apply-templates select="../html:address" mode="frontmatter" />
+  <xsl:if test="name(following-sibling::*[1])='address'">~\\
+    <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
+  </xsl:if>
+  <xsl:apply-templates select="following-sibling::html:author" mode="building-author" />
  }</xsl:template>  
  <!-- for the sake of the above template, -->
  <xsl:template match="html:msibr" mode="frontmatter">~\\
 </xsl:template>
+
+<xsl:template match="html:author" mode="building-author">
+ \and <xsl:apply-templates mode="frontmatter"/>
+  <xsl:if test="name(following-sibling::*[1])='address'">~\\
+    <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
+  </xsl:if>
+</xsl:template>  
+ 
+
 
 <!-- Special handling for footnotes in front matter tags          
  -->
