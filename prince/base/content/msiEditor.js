@@ -697,6 +697,49 @@ function ShutdownAllEditors()
   return !keepgoing;
 }
 
+function coalesceDocumentOptions(editor)
+{
+  var doc = editor.document;
+  var optionliststring;
+  var optionlist;
+  var colistElements;
+  var colist;
+  var option = [];
+  var optionval;
+
+  var docClassElements = doc.getElementsByTagName("documentclass");
+  if (docClassElements.length !== 1) {
+    AlertWithTitle("Error", "Wrong number of documentclass elements("+docClassElements.length+")");
+    return;
+  }
+  var docclass = docClassElements[0];
+  if (docclass.hasAttribute("options"))
+  {
+    optionliststring = docclass.getAttribute("options");
+    docclass.removeAttribute("options");
+    if (optionliststring && optionliststring.length > 0) {
+      optionlist = optionliststring.split(/\s+/);
+    }
+    colistElements = doc.getElementsByTagName("colist");
+    if (colistElements.length > 0) colist = colistElements[0];
+    else {
+      colist = doc.createElement("colist");
+      var preambles = doc.getElementsByTagName('preamble');
+      if (preambles.length > 0) {
+        editor.insertNode(colist, preambles[0], 0);
+      }
+    }
+    for (i=0; i < optionlist.length; i++) {
+      option = optionlist[i].split(/\s*=\s*/);
+      if (option[1] && option[1].length > 0) 
+        optionval = option[1];
+      else optionval = "";
+      colist.addAttribute(option,optionval);
+    }
+  }
+}
+
+
 // implements nsIObserver
 //var gEditorDocumentObserver =
 function msiEditorDocumentObserver(editorElement)
@@ -794,6 +837,7 @@ function msiEditorDocumentObserver(editorElement)
           window.InsertCharWindow = null;
         if (msiIsHTMLEditor(this.mEditorElement))
         {
+          coalesceDocumentOptions(editor);
           var match;
           var dirs;
           var file;
