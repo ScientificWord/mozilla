@@ -13098,14 +13098,14 @@ function setMathTextToggle(editorElement, ismath)
   inlineMathState = document.getElementById("inlineMathState");
   noInlineMathState = document.getElementById("noInlineMathState");
   if (ismath) {
-    inMathBroadcaster.setAttribute("disabled", "true");
-    noInlineMathState.removeAttribute("hidden");
-    inlineMathState.setAttribute("hidden", "true");
+    inMathBroadcaster && inMathBroadcaster.setAttribute("disabled", "true");
+    noInlineMathState && noInlineMathState.removeAttribute("hidden");
+    inlineMathState && inlineMathState.setAttribute("hidden", "true");
     document.getElementById("cmd_MSImathtext").setAttribute("isMath","true");
   } else {
-    inMathBroadcaster.removeAttribute("disabled");
-    inlineMathState.removeAttribute("hidden");
-    noInlineMathState.setAttribute("hidden", "true");
+    inMathBroadcaster && inMathBroadcaster.removeAttribute("disabled");
+    inlineMathState && inlineMathState.removeAttribute("hidden");
+    noInlineMathState && noInlineMathState.setAttribute("hidden", "true");
     document.getElementById("cmd_MSImathtext").setAttribute("isMath","false");
   }
 }
