@@ -8785,19 +8785,49 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
   nsCOMPtr<nsIDOMElement> destElement;
   nsCOMPtr<nsIDOMElement> tempElement;
   nsCOMPtr<nsIDOMNode> curNode;
+  nsCOMPtr<nsIDOMNode> outNode;
   nsCOMPtr<nsIDOMNode> destNode;
+  nsCOMPtr<nsIDOMNodeList> nodeList;
   nsAutoString tagName;
   PRBool done = PR_FALSE;
   PRBool isStruct;
+  PRBool isEmpty;
   PRUint16 nodeType;
   PRInt32 offset;
+  PRUint32 length;
   nsCOMPtr<nsIAtom> atomNS;
+  nsCOMPtr<nsISelection> selection;
 
   NS_NAMED_LITERAL_STRING(strPara, "paratag");
   NS_NAMED_LITERAL_STRING(strStruct, "structtag");
   res = GetStructNodeFromNode( node, getter_AddRefs(structElement), notThisTag);
   if (structElement != nsnull)
   {
+    mHTMLEditor->GetSelection(getter_AddRefs(selection));
+    nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
+    res = structElement->GetChildNodes( getter_AddRefs(nodeList));
+    if (nodeList) {
+      res = nodeList->GetLength(&length);
+      if (length > 0) {
+        for (PRUint32 i = 0; i < length; i++ ) {
+          res = nodeList->Item(i, getter_AddRefs(curNode));
+          if (curNode) {
+            res = curNode->GetLocalName(tagName);
+            if (tagName.EqualsLiteral("sectiontitle")) {
+              // replace it with a paragraph
+              // maybe delete it if it is empty
+              res = mHTMLEditor->IsEmptyNode(curNode, &isEmpty, PR_TRUE);
+              if (isEmpty) {
+                res = mHTMLEditor->DeleteNode(curNode);
+              }
+              else {
+                res = mHTMLEditor->ReplaceContainer(curNode, &outNode, NS_LITERAL_STRING("bodyText"), mtagListManager, nsnull, nsnull, PR_FALSE);
+              }
+            }
+          }
+        }
+      }
+    }
     curNode = structElement;
     while (curNode && !done) //get previous element
     {
@@ -8841,7 +8871,7 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
       MoveContents(structElement, destElement, &offset);
     }
     mHTMLEditor->DeleteNode(structElement);
-
+    res = nsEditorUtils::JiggleCursor(mHTMLEditor, selection, PR_FALSE);
   }
   return NS_OK;
 }
