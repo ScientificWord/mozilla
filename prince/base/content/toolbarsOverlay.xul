@@ -98,7 +98,8 @@
       <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" label="&indexentryButton.label;" observes="cmd_MSIinsertIndexEntryCmd"/>
       <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" label="&xrefButton.label;" observes="cmd_MSIinsertCrossReferenceCmd"/>
       <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;" label="&texfieldButton.label;" observes="cmd_MSIinsertTeXFieldCmd"/>
-      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" label="&bibliographyButton.label;" observes="cmd_unimp"/>
+      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" label="&bibliographyButton.label;" 
+            observes="cmd_MSIinsertBibliographyCmd"/>
       <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" label="&citationButton.label;" observes="cmd_citation"/>
 #endif
       <toolbarbutton id="hspaceButton" tooltiptext="&hspaceButton.tooltip;" label="&hspaceButton.label;" observes="cmd_insertHorizontalSpaces" />
