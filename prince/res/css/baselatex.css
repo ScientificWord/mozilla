@@ -338,7 +338,7 @@ drop {
 }
 
 marker {
-  background-color: gray;
+  background-color: rgb(240,240,240);
 }
 
 marker:before {
@@ -412,6 +412,10 @@ mml|menclose[notation~="circle"] {
 }
 
 *[hidemarkers] a[key] {
+  display: none !important;
+}
+
+*[hidemarkers] marker {
   display: none !important;
 }
 
