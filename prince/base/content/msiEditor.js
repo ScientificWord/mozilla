@@ -709,7 +709,6 @@ function coalesceDocumentOptions(editor)
 
   var docClassElements = doc.getElementsByTagName("documentclass");
   if (docClassElements.length !== 1) {
-    AlertWithTitle("Error", "Wrong number of documentclass elements("+docClassElements.length+")");
     return;
   }
   var docclass = docClassElements[0];
