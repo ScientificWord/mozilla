@@ -680,6 +680,9 @@
     <command id="cmd_paste" 
              oncommand="msiGoDoCommand('cmd_paste')"
              acceltext="&pasteCmd.acceltext;"/>
+    <command id="cmd_define" 
+             oncommand="defineSelection()"
+             accesskey="&define.accesskey;"/>
     <command id="cmd_pasteNoFormatting" oncommand="msiGoDoCommand('cmd_pasteNoFormatting')"
                label="&pasteNoFormattingCmd.label;" accesskey="&pasteNoFormattingCmd.accesskey;"/>
     <command id="cmd_delete"
