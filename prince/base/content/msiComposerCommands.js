@@ -10945,3 +10945,12 @@ function msiInsertTag(tagname){
     editor.setCaretAfterElement(insertedNode);
   }
 }
+
+function defineSelection()
+{
+  const kOutputSelectionOnly = Components.interfaces.nsIDocumentEncoder.OutputSelectionOnly;
+  var selectionString;
+  var editor = msiGetCurrentEditor();
+  selectionString = editor.outputToString("text/plain", kOutputSelectionOnly);
+  window.location.href = "dict:///" + selectionString;
+}
