@@ -71,8 +71,8 @@
 <!ENTITY fileprint.keybinding "p">
 <!ENTITY closeCmd.label "Close">
 <!ENTITY fileclose.accesskey "c">
-#ifdef XP_MACOSX
 <!ENTITY fileclose.keybinding "w">
+#ifdef XP_MACOSX
 <!ENTITY define.label "Define">
 <!ENTITY define.accesskey "d">
 #else
