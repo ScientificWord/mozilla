@@ -717,7 +717,7 @@ function coalesceDocumentOptions(editor)
     optionliststring = docclass.getAttribute("options");
     docclass.removeAttribute("options");
     if (optionliststring && optionliststring.length > 0) {
-      optionlist = optionliststring.split(/\s+/);
+      optionlist = optionliststring.split(/\s*\,\s*/);
     }
     colistElements = doc.getElementsByTagName("colist");
     if (colistElements.length > 0) colist = colistElements[0];
@@ -732,8 +732,8 @@ function coalesceDocumentOptions(editor)
       option = optionlist[i].split(/\s*=\s*/);
       if (option[1] && option[1].length > 0) 
         optionval = option[1];
-      else optionval = "";
-      colist.addAttribute(option,optionval);
+      else optionval = option[0];
+      colist.setAttribute(option[0],optionval);
     }
   }
 }
