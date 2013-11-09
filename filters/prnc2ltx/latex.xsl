@@ -291,10 +291,6 @@ should not be done under some conditions -->
 </xsl:text>
 </xsl:template>
 
-<xsl:template match="html:title">
-\title{<xsl:apply-templates />}<xsl:text/>
-</xsl:template>
-
 <xsl:template match="html:author[1]">
  \author{<xsl:apply-templates mode="frontmatter"/>
   <xsl:if test="name(following-sibling::*[1])='address'">~\\
@@ -451,9 +447,15 @@ should not be done under some conditions -->
 </xsl:if>
 </xsl:template>
 
+<xsl:template match="html:title">
+  \title<xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
+</xsl:template>
+
 
 <xsl:template match="html:sectiontitle/html:shortTitle"></xsl:template>
 <xsl:template match="html:sectiontitle//text()" mode="shortTitle"></xsl:template>
+<xsl:template match="html:title/html:shortTitle"></xsl:template>
+<xsl:template match="html:title//text()" mode="shortTitle"></xsl:template>
 <xsl:template match="html:shortTitle" mode="shortTitle">[<xsl:apply-templates/>]</xsl:template>
 
 
