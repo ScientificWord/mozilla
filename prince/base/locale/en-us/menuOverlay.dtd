@@ -35,7 +35,7 @@
 <!ENTITY filesavecopyas.accesskey "y">
 <!ENTITY filesavecopyas.keybinding "y">
 <!ENTITY docInfo.label "Document Info...">
-<!ENTITY docInfo.accesskey "I">
+<!ENTITY docInfo.accesskey "D">
 <!ENTITY docStyle.label "Style...">
 <!ENTITY docStyle.accesskey "T">
 <!ENTITY importTeXCmd.label  "Import TeX...">
@@ -69,12 +69,12 @@
 <!ENTITY printButtonCmd.label "Print...">
 <!ENTITY fileprint.accesskey "p">
 <!ENTITY fileprint.keybinding "p">
-<!ENTITY closeCmd.label "Close">
-<!ENTITY fileclose.accesskey "c">
-<!ENTITY fileclose.keybinding "w">
-#ifdef XP_MACOSX
 <!ENTITY define.label "Define">
 <!ENTITY define.accesskey "d">
+<!ENTITY closeCmd.label "Close">
+<!ENTITY fileclose.accesskey "c">
+#ifdef XP_MACOSX
+<!ENTITY fileclose.keybinding "w">
 #else
 <!ENTITY fileclose.acceltext						"Ctrl+F4">  
 
