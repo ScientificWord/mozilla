@@ -237,12 +237,10 @@
 
 \def\@titlea[#1]#2{%
   \msiopentag{title}{<title>}%
-    \msiopentag{short}{<short>}%
+    \msiopentag{short}{<shortTitle>}%
       #1%
-    \msiclosetag{short}{</short>}%
-    \msiopentag{long}{<long>}%
+    \msiclosetag{short}{</shortTitle>}%
       #2%
-    \msiclosetag{long}{</long>}%
   \msiclosetag{title}{</title>}%
 }
 
