@@ -836,6 +836,7 @@ function msiEditorDocumentObserver(editorElement)
           window.InsertCharWindow = null;
         if (msiIsHTMLEditor(this.mEditorElement))
         {
+          dump("=======" + this.mEditorElement + "========");
           coalesceDocumentOptions(editor);
           var match;
           var dirs;
