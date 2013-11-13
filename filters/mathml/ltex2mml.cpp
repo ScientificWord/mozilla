@@ -2013,10 +2013,10 @@ void LaTeX2MMLTree::GetNumberStr( TNODE* TeX_num_node,
 
   advance =  0;
 
-  U8 zvar_value[256];		// storage for <mn>'s chdata
+  U8 zvar_value[5000];		// storage for <mn>'s chdata
   zvar_value[0] =  0;
 
-  U8 zvar_value2[256];
+  U8 zvar_value2[5000];
   zvar_value2[0] =  0;
 
   U16 objclass,subclass,id;
