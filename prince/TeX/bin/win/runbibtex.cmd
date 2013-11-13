@@ -1,17 +1,18 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
+cd %1
+shift
 :checkParams
 if "%1"=="-d" goto setInputDir
 goto doIt
 :setInputDir
 shift
-set BIBINPDIR=%1
+setx BIBINPUTS=%1:%BIBINPUTS%
 shift
 goto checkParams
 :doIt
 
 set path="%MSITEXBIN%"
-set BINPUTS=%BIBINPDIR%:%BINPUTS%
 bibtex main
 echo done > sentinel
 endlocal
