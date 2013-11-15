@@ -1684,6 +1684,9 @@
                   onchange="setTextboxValue(this);" 
                   type="file"/>
  -->  
+      <preference id="bibchoice"
+                  name="swp.bibchoice"
+                  type="string" />
       <preference id="warnNonPortableFilename"
                   name="swp.typeset.warnNonPortableFilename"
                   type="bool"/>
@@ -1722,6 +1725,13 @@
   			          <msibutton id="browseBibTeXExecutable" label="&browseBibTeXExecutable.label;" accesskey="&browseBibTeXExecutable.accesskey;" oncommand="onBrowseBibTeXExecutable();"/>
                 </hbox>
                 <spacer class="spacer" flex="0"/> -->
+                <label>Default bibliography choice</label>
+                <hbox>
+                  <radiogroup id="bibRadioGroup" orient="horizontal" preference="bibchoice"     oncommand="">
+                    <radio name="bibRadioGroup" id="manual" label="Manual" value="manual"  preference="bibchoice"/>
+                    <radio name="bibRadioGroup" id="BibTeX" label="BibTeX" value="bibtex"  preference="bibchoice"/>
+                  </radiogroup>
+                </hbox>
                 <label value="&bibTeXDatabaseDir.label;" accesskey="&bibTeXDatabaseDir.accesskey;" control="bibTeXDatabaseDirTextbox"/>
                 <hbox align="center">
                   <textbox id="bibTeXDatabaseDirTextbox" style="width: 18em" />
