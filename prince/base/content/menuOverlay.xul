@@ -55,10 +55,12 @@
       <menuseparator/>
       <menuitem id="printSetupMenuItem" observes="cmd_printSetup" label="&printSetupCmd.label;"
             accesskey="&fileprintsetup.accesskey;"/>
-      <menuitem id="printPreviewPDF" key="msiTypesetPrintKey"
+      <menuitem id="printPreviewPDF" observes="cmd_previewPdf" key="msiTypesetPrintKey"
             label="&printPreviewPDF.label;"/>
-      <menuitem id="directPrintPreview" label="&printPreviewCmd.label;"/>
-      <menuitem id="msiDirectPrintMenuItem" label="&directPrint.label;"
+      #ifndef XP_MACOSX
+      <menuitem id="directPrintPreview" observes="cmd_previewDirect" label="&printPreviewCmd.label;"/>
+      #endif
+      <menuitem id="msiDirectPrintMenuItem" observes="cmd_printDirect" label="&directPrint.label;"
             accesskey="&fileprint.accesskey;" 
             key="msiDirectPrintKey" />
       <menuseparator/>
