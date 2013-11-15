@@ -169,7 +169,11 @@ pref("swp.plot.AnimMin", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mr
 pref("swp.plot.AnimVar", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>t</mi></mrow></math>");
 pref("swp.plot.TubeRadialPts", 9);
 pref("swp.prefDocumentDir","SWPDocs");
+#ifdef XP_MACOSX
+pref("swp.prefPDFPath","launch");
+#else
 pref("swp.prefPDFPath","default");
+#endif
 pref("swp.saveintervalseconds",10);
 pref("swp.sci.compression", 0);
 pref("swp.sourceview.indentincrement",       2);
@@ -181,6 +185,7 @@ pref("swp.viewPDF","default");
 pref("swp.webzip.compression", 9);
 pref("swp.zoom_factor",            "1.0");
 pref("swp.defaultTableUnits", "in");
+pref("swp.bibchoice", "bibtex");
 
 pref("toolkit.defaultChromeURI", "chrome://prince/content/prince.xul");
 pref("toolkit.scrollbar.clickToScroll.scrollDelay", 100);
