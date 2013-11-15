@@ -75,9 +75,6 @@ pref("security.xpconnect.plugin.unrestricted", true);
 pref("spellchecker.enablerealtimespell",      true);
 pref("spellchecker.realtimespell.warning_color", "red");
 pref("swp.messagelogger","dump");
-pref("swp.tex.bindir", "@@TeX_Bindir@@");
-pref("swp.bibtex.dir", "@@BibTeX_Dir@@");
-pref("swp.texmf.local", "@@TeXmf_Local@@");
 pref("swp.ctrl.m","math"); // other value is 'toggle'
 pref("swp.ctrl.t","text"); // other value is'toggle'
 pref("swp.defaultDialogShell", "chrome://prince/content/StdDialogShell.xhtml");
