@@ -28,6 +28,10 @@ function initializeFontFamilyList(force, window)
   {
     if (outfile.exists()) return;
   }
+  var listfile = dir.clone();
+  listfile.append("bigfontlist.txt");
+  if (listfile.exists()) listfile.remove(false);
+
   // Mac and Linux don't need the bigfontlist.txt intermediate file
   if ( platform != "win")
   {
@@ -55,9 +59,6 @@ function initializeFontFamilyList(force, window)
   else {
 
 //    dump("BuildFontFamilyList on Windows\n");
-    var listfile = dir.clone();
-    listfile.append("bigfontlist.txt");
-    if (listfile.exists()) listfile.remove(false);
     var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
     var useBash = false;
     exefile.append("BuildFontFamilyList.cmd");
