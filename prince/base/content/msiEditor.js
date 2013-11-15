@@ -1854,6 +1854,15 @@ function msiDocumentHasBeenSaved(editorElement)
   return true;
 }
 
+
+function doRevert(aContinueEditing, editorElement, del)
+{
+  var urlstring = msiGetEditorURL(editorElement);
+  var url = msiURIFromString(urlstring);
+  var documentfile = msiFileFromFileURL(url);
+  msiRevertFile( aContinueEditing, documentfile, del );
+}
+
 function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
 {
   var document;
@@ -1981,13 +1990,6 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
 }
 
 
-function doRevert(aContinueEditing, editorElement, del)
-{
-  var urlstring = msiGetEditorURL(editorElement);
-  var url = msiURIFromString(urlstring);
-  var documentfile = msiFileFromFileURL(url);
-  msiRevertFile( aContinueEditing, documentfile, del );
-}
 // --------------------------- File menu ---------------------------
 //The File menu items should only be accessible by the main editor window, really. Commented out here, available in msiMainEditor.js.
 
