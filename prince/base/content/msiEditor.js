@@ -10898,7 +10898,10 @@ function getBibliographyScheme(editorElement)
     if ( ("bibliographyscheme" in docInfo.generalSettings) && ("contents" in docInfo.generalSettings.bibliographyscheme) )
       return docInfo.generalSettings.bibliographyscheme.contents;
   }
-  return "manual";
+  var prefs = GetPrefs();
+  var bibchoice = prefs.getCharPref("swp.bibchoice");
+
+  return bibchoice;
 }
 
 function setBibliographyScheme(editorElement, whichScheme)
