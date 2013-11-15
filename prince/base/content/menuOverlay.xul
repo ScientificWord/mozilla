@@ -57,9 +57,9 @@
             accesskey="&fileprintsetup.accesskey;"/>
       <menuitem id="printPreviewPDF" observes="cmd_previewPdf" key="msiTypesetPrintKey"
             label="&printPreviewPDF.label;"/>
-      #ifndef XP_MACOSX
+#ifndef XP_MACOSX
       <menuitem id="directPrintPreview" observes="cmd_previewDirect" label="&printPreviewCmd.label;"/>
-      #endif
+#endif
       <menuitem id="msiDirectPrintMenuItem" observes="cmd_printDirect" label="&directPrint.label;"
             accesskey="&fileprint.accesskey;" 
             key="msiDirectPrintKey" />
