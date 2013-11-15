@@ -557,14 +557,14 @@ function doBibChoiceDlg(editorElement)
   var bibChoiceData = new Object();
   bibChoiceData.bBibTeX = false;
   var theBibChoice = getBibliographyScheme(editorElement);
-  if (theBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
+  if (theBibChoice == "bibtex")  //a kludge - must get hooked up to editor to really work
     bibChoiceData.bBibTeX = true;
   window.openDialog("chrome://prince/content/typesetBibChoice.xul", "bibchoice", "chrome,close,titlebar,modal,resizable", bibChoiceData);
   if (!bibChoiceData.Cancel)
   {
     var choiceStr = "manual";
     if (bibChoiceData.bBibTeX)
-      choiceStr = "BibTeX";
+      choiceStr = "bibtex";
     else
       choiceStr = "manual";
     setBibliographyScheme(editorElement, choiceStr);
