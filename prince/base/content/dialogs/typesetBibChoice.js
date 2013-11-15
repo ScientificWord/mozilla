@@ -30,12 +30,14 @@ function Startup()
 //    document.getElementById("BibTeXButton").focus();
     msiSetInitialDialogFocus(document.getElementById("BibTeXButton"));
     document.getElementById("BibTeXButton").setAttribute("selected", "true");
+    document.getElementById("manualBibButton").removeAttribute("selected");
   }
   else
   {
 //    document.getElementById("manualBibButton").focus();
     msiSetInitialDialogFocus(document.getElementById("manualBibButton"));
     document.getElementById("manualBibButton").setAttribute("selected", "true");
+    document.getElementById("BibTeXButton").removeAttribute("selected");
   }
 
   SetWindowLocation();
