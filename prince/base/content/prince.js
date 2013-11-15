@@ -482,16 +482,15 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
     isDefaultLocation = true;
 		outTeXdir = workingDir.clone();
     outTeXdir.append("tex");
-    try {
-      outTeXdir.remove(true);
-    }
-    catch(e) {
-      AlertWithTitle("Error", "Unable to delete working TeX directory.\nClose any applications that may have the tex or pdf files open.");
-      return false;
-    }
+    // try {
+    //   outTeXdir.remove(true);
+    // }
+    // catch(e) {
+    //   AlertWithTitle("Error", "Unable to delete working TeX directory.\nClose any applications that may have the tex or pdf files open.");
+    //   return false;
+    // }
     if (!outTeXdir.exists()) outTeXdir.create(1, 0755);
     outTeXfile = outTeXdir;
-    // delete current contents of the tex directory
     outTeXfile.append(bareleaf.replace(/\.xhtml$/,"") + ".tex");
   }
   var outfileTeXPath = outTeXfile.path;
@@ -503,9 +502,9 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   compileInfo.runBibTeX = /\\bibliography/.test(str);
   compileInfo.passCount = 1;
   var runcount = 1;
-  if (RegExp("\\\\tableofcontents|\\\\listoffigures|\\\\listoftables|\\\\includemovie").test(str)) runcount = 3;
+  if (RegExp(/\\tableofcontents|\\listoffigures|\\listoftables|\\includemovie/).test(str)) runcount = 3;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
-  if (RegExp("\\\\ref|\\\\xref|\\\\pageref|\\\\vxref|\\\\vref|\\\\vpageref|\\\\cite").test(str)) runcount = 2;
+  if (RegExp(/\\ref|\\xref|\\pageref|\\vxref|\\vref|\\vpageref|\\cite/).test(str)) runcount = 2;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
   var minpasses = 1;
@@ -727,6 +726,25 @@ function setBibTeXRunArgs(passData)
   return bibtexData;
 }
 
+function removeOldPDFFiles(outputDir)
+{
+  var thedir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  thedir.initWithPath( outputDir );  
+  var items = thedir.directoryEntries;
+  while (items.hasMoreElements()) {
+    var item = items.getNext().QueryInterface(Components.interfaces.nsIFile);
+    if (item.isFile() && item.leafName.indexOf("SWP") === 0)
+    {
+      try {
+        item.remove(false);
+      }
+      catch (e) {
+        // do nothing
+      }
+    }
+  }
+}
+
 function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInfo )
 {
   // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex 
@@ -740,11 +758,10 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   // Unfortunately, the Acrobat plugin keeps a lock on the file it is displaying in the preview pane, so
   // compiling to main.pdf will frequently fail.
   //
-  // The strategy: always compile to SWP.pdf, and then try renaming it to main.pdf, or main0.pdf, or main1.pdf, or ...
+  // The strategy: always compile to main.pdf, and then try renaming it to SWP.pdf, or SWP0.pdf, or SWP1.pdf, or ...
   // The final leafname is returned in compileInfo, for use of the routines that display the pdf file and stored in the global
   // currPDFfileLeaf, where it is used to display the pdf when changes have not been made to the document.
   //
-  var compiledFileLeaf = "SWP";
   passData = new Object;
   var os = getOS(window);
   if (os == "win") extension = "cmd";
@@ -752,11 +769,12 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   exefile.append(compiler+"."+extension);
   indexexe.append("makeindex."+extension);
   bibtexexe.append("runbibtex." + extension);
+  removeOldPDFFiles(outputDir);
   passData.file = exefile;
   passData.indexexe = indexexe;
   passData.bibtexexe = bibtexexe;
   passData.outputDir = outputDir;
-  passData.args = [outputDir, infileLeaf, compiledFileLeaf, "x"];
+  passData.args = [outputDir, infileLeaf, "x", "x"];
   passData.passCount = compileInfo.passCount;
   passData.runMakeIndex = compileInfo.runMakeIndex;
   passData.runBibTeX = compileInfo.runBibTeX;
@@ -771,11 +789,28 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
 
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   outputfile.initWithPath( passData.outputDir );
-  var leaf = "main.pdf";
-  outputfile.append(leaf); // outputfile is now main.pdf. If this file exists, it is because Acrobat wouldn't let it go.
-  compileInfo.finalPDFleaf = leaf;
-  currPDFfileLeaf = leaf;
-  return true;
+  var tempOutputfile;
+  tempOutputfile = outputfile.clone();
+  var leaf = "SWP.pdf";
+  outputfile.append("main.pdf"); // outputfile is now main.pdf. This is the result of the compilation.
+  tempOutputfile.append(leaf); // this is SWP.pdf which is the new name of main.pdf if there is no collision.
+  var n = 0;
+  dump("Leaf is "+leaf+"\n");
+  while (tempOutputfile.exists())
+  {
+    leaf = "SWP"+(n++)+".pdf";
+    tempOutputfile = tempOutputfile.parent;
+    tempOutputfile.append(leaf);
+  }
+  // now tempOutputfile's leaf is SWP[n].pdf, and doesn't exist.
+  if (outputfile.exists())
+  {
+    outputfile.moveTo(null, leaf);     // rename main.pdf to SWP[i].pdf
+    compileInfo.finalPDFleaf = leaf;
+    currPDFfileLeaf = leaf;
+    return true;
+  }
+  else return false;
 }
 
 
