@@ -689,40 +689,13 @@ compileTeXFile:
 
 function setBibTeXRunArgs(passData)
 {
-//  var bibTeXExePath = GetLocalFilePref("swp.bibtex.appPath");
   var bibTeXDBaseDir = GetLocalFilePref("swp.bibtex.dir");
-//  var bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
-
-  var bibtexData = [passData.args[0],"-d", bibTeXDBaseDir.path ];
-//   var dbaseDirStr, styleDirStr;
-//   if (bibTeXExePath && bibTeXExePath.path.length)
-//   {
-//     bibtexData.push("-x");
-//     bibtexData.push(bibTeXExePath.parent.path);
-//   }
-//   if (bibTeXDBaseDir && bibTeXDBaseDir.path.length)
-//   {
-//     bibtexData.push("-b");
-//     dbaseDirStr = bibTeXDBaseDir.path;
-// #ifdef XP_WIN32
-//     dbaseDirStr += "\\\\";
-// #else
-//     dbaseDirStr += "//";
-// #endif
-//     bibtexData.push(dbaseDirStr);
-//   }
-//   if (bibTeXStyleDir && bibTeXStyleDir.path.length)
-//   {
-//     bibtexData.push("-s");
-//     styleDirStr = bibTeXStyleDir.path;
-// #ifdef XP_WIN32
-//     styleDirStr += "\\\\";
-// #else
-//     styleDirStr += "//";
-// #endif
-//     bibtexData.push(styleDirStr);
-//  }
-//  bibtexData.push(passData.args[2]);  //put the target file leafname last in the args list
+  var bibTeXDPath;
+  var bibtexData;
+  if (bibTeXDBaseDir) 
+    bibtexData = [passData.args[0],"-d", bibTeXDBaseDir.path ];
+  else
+    bibtexData = [passData.args[0]];
   return bibtexData;
 }
 
@@ -905,7 +878,7 @@ function compileDocument()
     // remove and create the tex directory to clean it out
     try {
       if (outputfile.exists()) outputfile.remove(true);
-      if (outputfile.exists()) AlertWithTitle("Locked file","the tex directory was not deleted");
+//      if (outputfile.exists()) AlertWithTitle("Locked file","the tex directory was not deleted");
       outputfile.create(1, 0755);
     }
     catch(e) {}; // 
