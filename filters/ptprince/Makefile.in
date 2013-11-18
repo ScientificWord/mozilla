@@ -122,8 +122,7 @@ $(CPPSRCS):$(FWSRCS)
 
 # why doesn't this work?
 LOCAL_INCLUDES	= -I$(srcdir)
-#CXXFLAGS	+= -GX -GR -DMOZILLA_VERSION=\"$(MOZILLA_VERSION)\"
-CXXFLAGS =
+CXXFLAGS	+= -fexceptions -frtti -std=gnu++98 -GX -GR -DMOZILLA_VERSION=\"$(MOZILLA_VERSION)\"
 ifdef MOZ_DEBUG
 CXXFLAGS	+= $(DBGFLAGS)
 endif
