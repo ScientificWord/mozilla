@@ -1561,22 +1561,9 @@ Make list of figures here
 		</xbl:resources>
 
 		<xbl:content>
-			<html:button type="transparentbutton" class="frontmatter" xbl:inherits="xbl:text=bibitemkey" command="cmd_reviseManualBibItemCmd"></html:button>
-			<xbl:children/>
-		</xbl:content>
-	</xbl:binding>
-
-	<xbl:binding id="bibitemwithlabel">
-		<xbl:resources>
-			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-		</xbl:resources>
-
-		<xbl:content>
-			<html:button class="bibitemlabel" anonid="theButton" command="cmd_reviseManualBibItemCmd">
-				<xbl:children includes="biblabel"/>
-				<html:span style="white-space: pre"> (<html:span xbl:inherits="xbl:text=bibitemkey"/>)</html:span>
-			</html:button>
-			<xbl:children/>
+			<xbl:children includes="bibkey"/>
+			<xbl:children includes="biblabel"/>
+            <xbl:children/>
 		</xbl:content>
 	</xbl:binding>
 
