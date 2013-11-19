@@ -950,9 +950,13 @@ function doReviseBibTeXBibliography(editorElement, reviseData, dlgData)
 
 function doReviseManualBibItem(editorElement, bibitemNode, dlgData)
 {
+  var ix;
   var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
-  msiEditorEnsureElementAttribute(bibitemNode, "bibitemkey", dlgData.key, editor);
+  var bibkey = getChildByTagName(bibitemNode, "bibkey");
+  if (!bibkey) bibkey = editor.createNode("bibkey", bibitemNode, 0);
+  bibkey.textContent = dlgData.key;
+
   if (dlgData.bBibLabelChanged)
   {
     var currLabelNode = null;

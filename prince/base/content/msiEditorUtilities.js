@@ -13119,3 +13119,10 @@ function xmlFragToTeX(intermediateString)
   retStr = editor.filterCharsForLaTeX(retStr);
   return retStr;
 }
+
+function getChildByTagName(anElement, tagName)
+{
+  var elements = anElement.getElementsByTagName(tagName);
+  if (elements && elements.length > 0) return elements[0];
+  return null;
+}
