@@ -2,9 +2,9 @@
 
 <!ENTITY windowTitle.label "Bibliography Item">
 
-<!ENTITY keyCaption.label "Key:">
+<!ENTITY keyCaption.label "Key">
 <!ENTITY keyCaption.accesskey "K">
-<!ENTITY labelCaption.label "Label:">
+<!ENTITY labelCaption.label "Label">
 <!ENTITY labelCaption.accesskey "L">
 
 <!-- <!ENTITY .tooltip "">  -->
