@@ -7368,6 +7368,10 @@ nsHTMLEditor::CreateDefaultParagraph(nsIDOMNode *inParent, PRInt32 inOffset, PRB
   CreateNode(defPara, inParent, inOffset, getter_AddRefs(para));
   paraElem =do_QueryInterface(para);
   if (!markCursor) {
+
+    if (paraElem == nsnull) 
+      return NS_ERROR_NULL_POINTER;
+
     paraElem->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
     if (nodeList)
     {
