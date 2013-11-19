@@ -1,19 +1,13 @@
-// Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved.
-
-
-//const mmlns    = "http://www.w3.org/1998/Math/MathML";
-//const xhtmlns  = "http://www.w3.org/1999/xhtml";
+// Copyright (c) 2010-13 MacKichan Software, Inc.  All Rights Reserved.
 
 var data;
 
-// dialog initialization code
 function Startup()
 {
-//  var editor = GetCurrentEditor();
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   if (!editor) {
-    AlertWithTitle("Error", "No editor found in typesetBibItem Startup! Closing dialog window...");
+ //   AlertWithTitle("Error", "No editor found in typesetBibItem Startup! Closing dialog window...");
     window.close();
     return;
   }
@@ -21,12 +15,15 @@ function Startup()
   doSetOKCancel(onAccept, onCancel);
   data = window.arguments[0];
   data.Cancel = false;
-  gDialog.key = "";  //a string
-  gDialog.bibLabel = "";  //this should become arbitrary markup - a Document Fragment perhaps?
-  if ("reviseData" in data)
-  {
-    setDataFromReviseData(data.reviseData)
-    //set window title too!
+  gDialog.key = "";  
+  gDialog.bibLabel = ""; 
+
+  data.node = getSelectionParentByTag(editor, "bibitem");
+  if (data.node) {
+    var node = getChildByTagName(data.node, "bibkey");
+    if (node) gDialog.key = node.textContent;
+    node = getChildByTagName(data.node,"biblabel");
+    if (node) gDialog.bibLabel = node.innerHTML;
   }
 
   InitDialog();
@@ -66,29 +63,13 @@ function InitDialog()
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
-function setDataFromReviseData(reviseData)
-{
-  var bibItemNode = reviseData.getReferenceNode();
-  gDialog.key = bibItemNode.getAttribute("bibitemkey");
-  gDialog.bibLabel = "";
-  var labels = msiNavigationUtils.getSignificantContents(bibItemNode);
-  for (ix = 0; ix < labels.length; ++ix)
-  {
-    if (msiGetBaseNodeName(labels[ix]) == "biblabel")
-    {
-      var serializer = new XMLSerializer();
-      var labelKids = msiNavigationUtils.getSignificantContents(labels[ix]);
-      for (var jx = 0; jx < labelKids.length; ++jx)
-        gDialog.bibLabel += serializer.serializeToString(labelKids[jx]);
-      break;
-    }
-  }
-}
 
 function onAccept()
 {
+  var editorElement = msiGetParentEditorElementForDialog(window);
   var keyList = document.getElementById("keysAutoCompleteBox");
   gDialog.key = document.getElementById("keysAutoCompleteBox").value;
+  data.key = gDialog.key;
 //  if (findInArray(keyList, gDialog.key) < 0)
 //    keyList.push(gDialog.key);
 
@@ -100,7 +81,6 @@ function onAccept()
 //  gDialog.remark = serializer.serializeToString(editorControl.contentDocument.documentElement);
 ////  gDialog.remark = document.getElementById("remarkTextbox").value;
 
-  data.key = gDialog.key;
   if (data.bibLabel != gDialog.bibLabel)
   {
     data.bBibLabelChanged = true;
@@ -112,13 +92,20 @@ function onAccept()
 
   var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
-  if ("reviseData" in data)
+  if (data.node)
   {
-    var bibitemNode = data.reviseData.getReferenceNode();
-    if (!theWindow || !("doReviseManualBibItem" in theWindow))
-      theWindow = msiGetTopLevelWindow();
-    if (theWindow && ("doReviseManualBibItem" in theWindow))
-      theWindow.doReviseManualBibItem(editorElement, bibitemNode, data);
+    var node = getChildByTagName(data.node, "bibkey");
+    if (node) node.textContent = gDialog.key;
+    else {
+      node = editor.createElement("bibkey", data.node, 0);
+      node.textContent = gDialog.key;
+    }
+    node = getChildByTagName(data.node, "biblabel");
+    if (node) node.innerHTML = gDialog.bibLabel;
+    else {
+      node = editor.createElement("biblabel", data.node, 0);
+      node.innerHTML = gDialog.bibLabel;
+    }
   }
   else if ("paragraphNode" in data)
   {
