@@ -37,7 +37,8 @@ verbatim bodyText {
 }
 numberedListItem, 
 bulletListItem,
-descriptionListItem {
+descriptionListItem.
+bibitem {
        margin-left: 2em;
        padding-left: 1em;
        display: list-item;}
@@ -207,8 +208,14 @@ otfont {
   display: inline;
 }
 
-descriptionLabel {
+descriptionLabel,
+biblabel,
+bibkey {
+  margin-right: 1em;
+  min-width: .5em;
   display: inline;
+  border: thin solid #BBBB77;
+  border-radius: 3px;
   background-color: #FFFFBB;
 }
 
@@ -467,20 +474,20 @@ bibliography {
 }
 
 bibliography:before {
-  content: References;
+  content: "References"; 
   font-size: 150%;
 }
 
 bibitem {
   counter-increment: bibliographylist;
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitem");
-}
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitem");
+*/}
 
 bibitem[hasLabel="true"] {
   display:  block;
   counter-increment: none;
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitemwithlabel");
-}
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitemwithlabel");
+*/}
 
 bibitem > biblabel+bodyText {
   display: inline;

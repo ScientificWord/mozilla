@@ -304,7 +304,7 @@
           <initialcontents>
             <descriptionListItem>
               <bodyText>
-                <descriptionLabel><cursor/>:</descriptionLabel>
+                <descriptionLabel><cursor/></descriptionLabel>
                 <br/>
               </bodyText>
             </descriptionListItem>
@@ -316,7 +316,8 @@
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <bibitem bibitemkey="key" hasLabel="true">
-              <biblabel class="bibitemlabel">(Label)</biblabel>
+              <bibkey>_</bibkey>
+              <biblabel class="bibitemlabel">_</biblabel>
               <bodyText>
                 <cursor/>
                 <br/>
@@ -324,6 +325,7 @@
             </bibitem>
           </initialcontents>
           <contains>biblabel</contains>
+          <contains>bibkey</contains>
         </tag>
 	  </tags>
 		</tagclass>
