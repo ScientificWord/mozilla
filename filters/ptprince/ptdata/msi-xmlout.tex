@@ -63,7 +63,7 @@
   \msihmode
   \msiopentag{texb}{<texb enc="1" name="newcounter">}
        \msitag{<![CDATA[\newcounter{#1}]]>}%
-  \msiclosetag{texb}{</texb>}}
+  \msiclosetag{texb}{</texb>}%
 }
 
 \def\setcounter#1#2{%
@@ -356,7 +356,7 @@
   %\msitag{^^0a<newtheorem }
   %\if@newtheoremstar\msitag{star="1" }\fi% 
   %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
-  \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}[#3]}}
+  \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}[#3]}%
   \@ifundefined{msi@begin@#1}%
     {\@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%

@@ -951,8 +951,15 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:bibitem">
-\bibitem<xsl:if test="@hasLabel='true'">[<xsl:apply-templates select="html:biblabel"/>]</xsl:if
->{<xsl:value-of select="@bibitemkey"/>} <xsl:apply-templates select="*[local-name()!='biblabel']"/>
+\bibitem <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:bibkey">
+  [<xsl:value-of select="."/>]
+</xsl:template>
+
+<xsl:template match="html:biblabel">
+  {<xsl:apply-templates/>}
 </xsl:template>
 
 <xsl:template match="html:msidisplay">
