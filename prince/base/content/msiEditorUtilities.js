@@ -8608,22 +8608,37 @@ function msiGetKeyListForDocument(aDocument, editor)
   if (editor)
     ignoreIdsList = editor.tagListManager.getTagsInClass("structtag","--", false);
   ignoreIdsList = "--" + ignoreIdsList + "--";
-  var xsltSheetForKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' xmlns:mathml='http://www.w3.org/1998/Math/MathML' ><xsl:output method='text' encoding='UTF-8'/><xsl:variable name='hyphen'>--</xsl:variable>";
-  xsltSheetForKeyAttrib += "<xsl:variable name='ignoreIDs'>" + ignoreIdsList + "</xsl:variable><xsl:variable name='xrefName'>xref</xsl:variable>";
-  xsltSheetForKeyAttrib += "<xsl:template match='/'>  <xsl:apply-templates select='//*[@key][not(local-name()=$xrefName)]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]'/></xsl:template>\
-                               <xsl:template match='//*[@key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]'>\
-                                 <xsl:choose><xsl:when test='@key and not(local-name()=$xrefName)'><xsl:value-of select='@key'/><xsl:text>\n</xsl:text></xsl:when>\
-                                             <xsl:when test='@marker and not(@key and @key=@marker)'><xsl:value-of select='@marker'/><xsl:text>\n</xsl:text></xsl:when>\
-                                             <xsl:when test='@id and not(contains($ignoreIDs,concat($hyphen,local-name(),$hyphen))) and not(@key and @key=@id) and not(@marker and @marker=@id)'><xsl:value-of select='@id'/><xsl:text>\n</xsl:text></xsl:when>\
-                                             <xsl:when test='@customLabel and not(@key and @key=@customLabel) and not(@marker and @marker=@customLabel) and not (@id and @id=@customLabel)'><xsl:value-of select='@customLabel'/><xsl:text>\n</xsl:text></xsl:when>\
-                               </xsl:choose></xsl:template> </xsl:stylesheet>";
+  var xsltSheetForKeyAttrib;
+  var x = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' xmlns:mathml='http://www.w3.org/1998/Math/MathML' ><xsl:output method='text' encoding='UTF-8'/><xsl:variable name='hyphen'>--</xsl:variable>";
+  x += "<xsl:variable name='ignoreIDs'>" + ignoreIdsList + "</xsl:variable><xsl:variable name='xrefName'>xref</xsl:variable><xsl:variable name='bibkey'>bibkey</xsl:variable>";
+  x += "<xsl:template match='*|/'><xsl:apply-templates/></xsl:template> <xsl:template match='text()'></xsl:template>";
+  x += "<xsl:template match='/'>  <xsl:apply-templates select='//*[@key][not(local-name()=$xrefName)]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]|//html:bibkey'/></xsl:template>";
+  x += "<xsl:template match='//*[@key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]|//html:bibkey'>";
+  x += "<xsl:choose><xsl:when test='@key and not(local-name()=$xrefName)'><xsl:value-of select='@key'/><xsl:text>\n</xsl:text></xsl:when>";
+  x += "<xsl:when test='@marker and not(@key and @key=@marker)'><xsl:value-of select='@marker'/><xsl:text>\n</xsl:text></xsl:when>";
+  x += "<xsl:when test='@id and not(contains($ignoreIDs,concat($hyphen,local-name(),$hyphen))) and not(@key and @key=@id) and not(@marker and @marker=@id)'><xsl:value-of select='@id'/><xsl:text>\n</xsl:text></xsl:when>";
+  x += "<xsl:when test='@customLabel and not(@key and @key=@customLabel) and not(@marker and @marker=@customLabel) and not (@id and @id=@customLabel)'><xsl:value-of select='@customLabel'/><xsl:text>\n</xsl:text></xsl:when>";
+  x += "<xsl:when test='local-name()=$bibkey'><xsl:value-of select='.'/><xsl:text>\n</xsl:text></xsl:when>";
+  x += "</xsl:choose>";
+  x += "</xsl:template> </xsl:stylesheet>";
+  xsltSheetForKeyAttrib = x;
   var sepRE = /\n+/;
   return msiGetItemListForDocumentFromXSLTemplate(aDocument, xsltSheetForKeyAttrib, sepRE, true);
 }
 
 function msiGetBibItemKeyListForDocument(aDocument)
 {
-  var xsltSheetForBibItemKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@bibitemkey]'/></xsl:template><xsl:template match='//*[@bibitemkey]'>   <xsl:value-of select='@bibitemkey'/><xsl:text>\n</xsl:text></xsl:template> </xsl:stylesheet>";
+  var xsltSheetForBibItemKeyAttrib = "<?xml version='1.0'?>" +
+    "<xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' >" +
+      "<xsl:output method='text' encoding='UTF-8'/>" +
+      "<xsl:template match='/'>" +
+        "<xsl:apply-templates select='//html:bibkey'/>" +
+        "</xsl:template>" +
+        "<xsl:template match='//html:bibkey'>" +
+          "<xsl:value-of select='.'/>" +
+        "<xsl:text>\n</xsl:text>" +
+      "</xsl:template>" +
+    "</xsl:stylesheet>";
   var sepRE = /\n+/;
   return msiGetItemListForDocumentFromXSLTemplate(aDocument, xsltSheetForBibItemKeyAttrib, sepRE, true);
 }
@@ -8637,7 +8652,7 @@ function msiGetItemListForDocumentFromXSLTemplate(aDocument, aTemplate, separato
   processor.importStylesheet(dom.documentElement);
   var newDoc;
   if (aDocument)
-    newDoc = processor.transformToDocument(aDocument, document);
+    newDoc = processor.transformToDocument(aDocument);
   dump(newDoc.documentElement.localName+"\n");
   var keyString = newDoc.documentElement.textContent;
   var items = keyString.split(separatorRegExpr);
