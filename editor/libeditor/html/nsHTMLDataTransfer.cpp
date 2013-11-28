@@ -1879,7 +1879,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       }
     }
       // if rightNode is empty, put in the default content.
-    res = IsEmptyNode( rightNode, &isEmpty, PR_TRUE, PR_FALSE, PR_TRUE);
+    res = IsEmptyNode( rightNode, &isEmpty, PR_TRUE, PR_TRUE, PR_TRUE);
     if (isEmpty)
     {
       res = rightNode->GetOwnerDocument(getter_AddRefs(doc));
