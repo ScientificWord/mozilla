@@ -1210,6 +1210,8 @@ nsHTMLEditor::InsertReturnImpl( PRBool fFancy )
     return res;
 
   res = InsertReturnAt(splitpointNode, splitpointOffset, fFancy);
+  res = nsEditorUtils::JiggleCursor(this, selection, PR_FALSE);
+
   return res;
 }
 
