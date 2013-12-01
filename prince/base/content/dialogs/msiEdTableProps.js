@@ -1716,13 +1716,16 @@ function SetAnAttribute(destElement, theAttr, theAttrValue)
       gActiveEditor.removeAttribute(destElement, theAttr);
     else
 //      gActiveEditor.setAttribute(destElement, theAttr, theAttrValue);
-      gActiveEditor.setAttributeOrEquivalent(destElement, attr, attrValue, false);
+      gActiveEditor.setAttributeOrEquivalent(destElement, theAttr, theAttrValue, false);
     var logStr = "In msiEdTableProps.js, SetAnAttribute(); set attribute [" + theAttr + "] on [" + destElement.nodeName + "] element to [";
     if (theAttrValue && theAttrValue.length)
       logStr += theAttrValue;
     logStr += "]\n";
     msiKludgeLogString(logStr, ["tableEdit"]);
-  } catch(e) {}
+  } catch(e)
+  {
+    msidump(e.message);
+  }
 }
 
 
@@ -1987,18 +1990,18 @@ function ApplyTableAttributes()
     doSetStyleAttr("border-collapse", gBorderCollapse);
     var pos = gDialog.tableLocationList.value;
     var float = gDialog.floatLocationList.value;  
-    setAnAttribute(gTableElement,"req","tabulary");
+    SetAnAttribute(gTableElement,"req","tabulary");
     if (gDialog.autoWidthCheckbox.checked)
       gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
     else
-      setAnAttribute(gTableElement,"width",gDialog.tableWidthInput.value + unit);
+      SetAnAttribute(gTableElement,"width",gDialog.tableWidthInput.value + unit);
     if (pos && pos.length > 0) {
       if (pos == "inline" || pos == "display") float = "";
       if (float !== "") {
-        setAnAttribute(gTableElement,"pos","float");
+        SetAnAttribute(gTableElement,"pos","float");
         msiRequirePackage(gActiveEditorElement, "wrapfig", "");
-        setAnAttribute(gTableElement,"placement",placementCodeFrom(pos));
-        setAnAttribute(gTableElement,"placeLocation", float);
+        SetAnAttribute(gTableElement,"placement",placementCodeFrom(pos));
+        SetAnAttribute(gTableElement,"placeLocation", float);
         doSetStyleAttr("float", (pos=="left"||pos=="inside")?"left":"right");
       }
       else 
@@ -2014,7 +2017,7 @@ function ApplyTableAttributes()
     if (!bEmptyStyle)
       theStyleString = globalTableElement.getAttribute("style");
     if (theStyleString && theStyleString.length)
-      setAnAttribute(gTableElement, "style", theStyleString);
+      SetAnAttribute(gTableElement, "style", theStyleString);
     else
       gActiveEditor.removeAttributeOrEquivalent(gTableElement, "style", false);
   }
