@@ -69,5 +69,10 @@
 
 \input amsmath.tex
 
+\msi@extrapi{%
+  %\msitag{<?sw-tagdefs href="resource://app/res/tagdefs/revtex4-1defs.xml" type="text/xml" ?>^^0a}
+  \msitag{<?sw-xslt href="amscls.xsl" type="text/xml" ?>^^0a}
+}
+
 \def\classcss{@import url("resource://app/res/css/amsart.css");}
 \makeatother
