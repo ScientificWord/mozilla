@@ -1909,16 +1909,16 @@ function ApplyTableAttributes()
         theStyleString += styleProp + ": " + styleValStr + ";";
     }
     else if ((styleValStr!=null) && styleValStr.length)
-      globalTableElement.style.setProperty(styleProp, styleValStr, "");
+      gTableElement.style.setProperty(styleProp, styleValStr, "");
     else
-      globalTableElement.style.removeProperty(styleProp);
+      gTableElement.style.removeProperty(styleProp);
   }
 
   try {
     var unit = unitHandler.getCurrentUnit();
 
-    if (unit && globalTableElement) 
-      SetAnAttribute(globalTableElement,"unit", unit);
+    if (unit && gTableElement) 
+      SetAnAttribute(gTableElement,"unit", unit);
     var newAlign = gTableCaptionPlacement;
     if (!newAlign)
       newAlign = "";
@@ -1981,7 +1981,7 @@ function ApplyTableAttributes()
     }
 
     logStr = "";
-    var bEmptyStyle = true; //(!globalTableElement.style);
+    var bEmptyStyle = true; //(!gTableElement.style);
     var theStyleString = "";
 
     doSetStyleAttr("vertical-align", gDialog.baselineList.value);
@@ -1993,8 +1993,10 @@ function ApplyTableAttributes()
     SetAnAttribute(gTableElement,"req","tabulary");
     if (gDialog.autoWidthCheckbox.checked)
       gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
-    else
-      SetAnAttribute(gTableElement,"width",gDialog.tableWidthInput.value + unit);
+    else {
+      SetAnAttribute(gTableElement,"width",gDialog.tableWidthInput.value );
+      doSetStyleAttr("width", gDialog.tableWidthInput.value + unit);
+    }
     if (pos && pos.length > 0) {
       if (pos == "inline" || pos == "display") float = "";
       if (float !== "") {
@@ -2015,7 +2017,7 @@ function ApplyTableAttributes()
     }
     else doSetStyleAttr("display", "inline-table");
     if (!bEmptyStyle)
-      theStyleString = globalTableElement.getAttribute("style");
+      theStyleString = gTableElement.getAttribute("style");
     if (theStyleString && theStyleString.length)
       SetAnAttribute(gTableElement, "style", theStyleString);
     else
