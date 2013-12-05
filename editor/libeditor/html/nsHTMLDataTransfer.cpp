@@ -1210,6 +1210,8 @@ nsHTMLEditor::InsertReturnImpl( PRBool fFancy )
     return res;
 
   res = InsertReturnAt(splitpointNode, splitpointOffset, fFancy);
+  res = nsEditorUtils::JiggleCursor(this, selection, PR_FALSE);
+
   return res;
 }
 
@@ -1879,7 +1881,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       }
     }
       // if rightNode is empty, put in the default content.
-    res = IsEmptyNode( rightNode, &isEmpty, PR_TRUE, PR_FALSE, PR_TRUE);
+    res = IsEmptyNode( rightNode, &isEmpty, PR_TRUE, PR_TRUE, PR_TRUE);
     if (isEmpty)
     {
       res = rightNode->GetOwnerDocument(getter_AddRefs(doc));
