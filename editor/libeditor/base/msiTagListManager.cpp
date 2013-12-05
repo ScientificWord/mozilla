@@ -1231,7 +1231,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("nexttag"), str);
   PRBool isEmpty = PR_FALSE;
   nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
-  if (editor) editor->IsEmptyNode( *secondNode, &isEmpty, PR_TRUE);
+  if (editor) editor->IsEmptyNode( *secondNode, &isEmpty, PR_TRUE, PR_TRUE);
 	if (isEmpty) isEmpty = HasNoSignificantTags( *secondNode, this);
   if (str.EqualsLiteral("none") && isEmpty)
   {
@@ -1249,7 +1249,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
     // Gecko does not display empty paragraphs, so we need to put in a BR, maybe with an attribute
     nsCOMPtr<nsISelection>selection;
     rv = meditor->GetSelection(getter_AddRefs(selection));
-    editor->IsEmptyNode( firstNode, &isEmpty, PR_FALSE);
+    editor->IsEmptyNode( firstNode, &isEmpty, PR_FALSE, PR_TRUE);
     // check that there aren't significant tags in it, such as empty tables, etc.
 		if (isEmpty) isEmpty = HasNoSignificantTags(firstNode, this);
 		
