@@ -22,50 +22,95 @@
     #2%
   \msiclosetag{author}{</author>}}
 
-\def\@authorb#1{\@authora[]{#1}}
+\def\@authorb#1{%
+  \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}}
 
 \def\address{\@ifnextchar[{\@addressa}{\@addressb}}
 
 \def\@addressa[#1]#2{%
   \msitag{^^0a}%
   \msiopentag{address}{<address>}%
-     \msiopentag{authorid}{<authorid>}%
-     #1
-     \msiclosetag{authorid}{</authorid>}%
-  #2
+     \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+  #2%
   \msiclosetag{address}{</address>}%
 }
 
-\def\@addressb#1{\@addressa[]{#1}}
-
+\def\@addressb#1{
+  \msiopentag{address}{<address>}#1\msiclosetag{address}{</address>}}
 
 \def\curraddr{\@ifnextchar[{\@curraddra}{\@curraddrb}}
 
 \def\@curraddra[#1]#2{%
-  \msitag{<curraddr><authorid>#1</authorid>}#2\msitag{</curraddr>}%
+  \msitag{^^0a}%
+  \msiopentag{curraddr}{<curraddr>}%
+     \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+  #2%
+  \msiclosetag{curraddr}{</curraddr>}%
 }
 
-\def\@curraddrb#1{\@curraddra[]{#1}}
+\def\@curraddrb#1{
+  \msiopentag{curraddr}{<curraddr>}#1\msiclosetag{curraddr}{</curraddr>}}
 
+\def\contrib{\@ifnextchar[{\@contriba}{\@contribb}}
+
+\def\@contriba[#1]#2{%
+  \msiopentag{contrib}{<contrib>}
+    \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+    #2%
+  \msiclosetag{contrib}{</contrib>}}
+
+\def\@contribb#1{%
+  \msiopentag{contrib}{<contrib>}#1\msiclosetag{contrib}{</contrib>}}
 
 \def\email{\@ifnextchar[{\@emaila}{\@emailb}}
 
 \def\@emaila[#1]#2{%
-  \msitag{<email><authorid>#1</authorid>}#2\msitag{</email>}%
+  \msitag{^^0a}%
+  \msiopentag{email}{<email>}%
+     \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+  #2%
+  \msiclosetag{email}{</email>}%
 }
 
-\def\@emailb#1{\@emaila[]{#1}}
-
-
+\def\@emailb#1{
+  \msiopentag{email}{<email>}#1\msiclosetag{email}{</email>}}
 
 \def\urladdr{\@ifnextchar[{\@urladdra}{\@urladdrb}}
 
 \def\@urladdra[#1]#2{%
-  \msitag{<urladdr><authorid>#1</authorid>}#2\msitag{</urladdr>}%
+  \msitag{^^0a}%
+  \msiopentag{urladdr}{<urladdr>}%
+     \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+  #2%
+  \msiclosetag{urladdr}{</urladdr>}%
 }
 
-\def\@urladdrb#1{\@urladdra[]{#1}}
+\def\@urladdrb#1{
+  \msiopentag{urladdr}{<urladdr>}#1\msiclosetag{urladdr}{</urladdr>}}
 
+%% \date and \thanks handled by default LaTeX.
+
+\def\dedicatory#1{
+  \msiopentag{dedicatory}{<dedicatory>}#1\msiclosetag{dedicatory}{</dedicatory>}}
+
+\def\translator#1{
+  \msiopentag{translator}{<translator>}#1\msiclosetag{translator}{</translator>}}
+
+\def\keywords#1{
+  \msiopentag{keywords}{<keywords>}#1\msiclosetag{keywords}{</keywords>}}
+
+\def\subjclass{\@ifnextchar[{\@subjclassa}{\@subjclassb}}
+
+\def\@subjclassa[#1]#2{%
+  \msitag{^^0a}%
+  \msiopentag{subjclass}{<subjclass>}%
+     \msiopentag{subjclassyear}{<subjclassyear>}#1\msiclosetag{subjclassyear}{</subjclassyear>}%
+  #2%
+  \msiclosetag{subjclass}{</subjclass>}%
+}
+
+\def\@subjclassb#1{
+  \msiopentag{subjclass}{<subjclass>}#1\msiclosetag{subjclass}{</subjclass>}}
 
 \input amsmath.tex
 
