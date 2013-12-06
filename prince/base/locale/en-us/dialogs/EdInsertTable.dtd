@@ -28,7 +28,7 @@
 <!ENTITY numRowsEditField.accesskey "R">
 <!ENTITY numColumnsEditField.label "Columns">
 <!ENTITY numColumnsEditField.accesskey "C">
-<!ENTITY widthEditField.label "Table width">
+<!ENTITY widthEditField.label "Max table width">
 <!ENTITY widthEditField.accesskey "W">
 <!ENTITY autoWidth.label "Automatic, or">
 <!ENTITY autoWidth.accesskey "A">
