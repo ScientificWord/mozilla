@@ -208,12 +208,14 @@
    <menuseparator/>
    <menuitem id="structRefreshTag" label="Refresh"
                                    oncommand="StructRefreshTag()"/>
+#ifdef DEBUG
    <menuitem id="structRemoveTag"  label="&structRemoveTag.label;"
                                    accesskey="&structRemoveTag.accesskey;"
                                    oncommand="StructRemoveTag()"/>
    <menuitem id="structChangeTag"  label="&structChangeTag.label;"
                                    accesskey="&structChangeTag.accesskey;"
                                    oncommand="StructChangeTag()"/>
+#endif
    <menuseparator/>
    <menuitem id="advancedPropsTag" label="&advancedPropertiesCmd.label;"
                                    accesskey="&advancedproperties.accesskey;"
