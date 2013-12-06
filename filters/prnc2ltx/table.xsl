@@ -50,7 +50,7 @@
     <xsl:choose>
     <xsl:when test="@width &gt; 0">
       <xsl:call-template name="convertSizeSpecsToMM">
-        <xsl:with-param name="theSpec" select="@width" />
+        <xsl:with-param name="theSpec" select="concat(@width,@unit)" />
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>0</xsl:otherwise>
@@ -673,7 +673,7 @@
         <xsl:choose>
           <xsl:when test="$theTable/@width">
             <xsl:call-template name="convertSizeSpecsToMM">
-              <xsl:with-param name="theSpec" select="$theTable/@width" />
+              <xsl:with-param name="theSpec" select="concat($theTable/@width,$theTable/@unit)" />
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>0</xsl:otherwise>
@@ -774,7 +774,7 @@
               <xsl:sort select="number(@width)" data-type="number" order="descending" />
               <xsl:if test="position()=1">
                 <xsl:call-template name="convertSizeSpecsToMM">
-                  <xsl:with-param name="theSpec" select="number(@width) + 2" />
+                  <xsl:with-param name="theSpec" select="concat(@width,@unit)" />
                 </xsl:call-template>
               </xsl:if>
             </xsl:for-each>
