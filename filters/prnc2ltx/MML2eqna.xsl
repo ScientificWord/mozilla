@@ -106,7 +106,7 @@
   <xsl:variable name="binrelsstr">
     <xsl:text>=&lt;&gt;&#x2264;&#x227A;&#x2AAF;&#x226A;&#x2282;&#x2286;&#x228F;&#x2291;&#x2208;&#x22A2;&#x2323;&#x2322;</xsl:text>
     <xsl:text>&#x2261;&#x223C;&#x2243;&#x224D;&#x2248;&#x2265;&#x227B;&#x2AB0;&#x226B;&#x2283;&#x2287;&#x2290;&#x2292;</xsl:text>
-    <xsl:text>&#x220B;&#x22A3;&#x2223;&#x2225;&#x22A5;&#x2245;&#x22C8;&#x221D;&#x22A7;&#x2250;&#x2A1D;&#x22A9;&#x22AA;</xsl:text>
+    <xsl:text>&#x220A;&#x220B;&#x22A3;&#x2223;&#x2225;&#x22A5;&#x2245;&#x22C8;&#x221D;&#x22A7;&#x2250;&#x2A1D;&#x22A9;&#x22AA;</xsl:text>
     <xsl:text>&#x22A8;&#x2257;&#x227F;&#x2273;&#x2A86;&#x2234;&#x2235;&#x2251;&#x225C;&#x227E;&#x2272;&#x2A85;&#x2A95;</xsl:text>
     <xsl:text>&#x2A96;&#x22DE;&#x22DF;&#x227C;&#x2266;&#x2A7D;&#x2276;&#x2253;&#x2252;&#x227D;&#x2267;&#x2A7E;&#x2277;</xsl:text>
     <xsl:text>&#x22B3;&#x22B2;&#x22B5;&#x22B4;&#x226C;&#x25B8;&#x25C2;&#x2256;&#x22DA;&#x22DB;&#x2A8B;&#x2A8C;&#x221D;</xsl:text>
