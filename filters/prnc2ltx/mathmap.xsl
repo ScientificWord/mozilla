@@ -1305,6 +1305,9 @@
           <xsl:when test="$first-char='&#x2209;'">
             <xsl:text xml:space="preserve">\notin </xsl:text>
           </xsl:when>
+          <xsl:when test="$first-char='&#x220A;'">
+            <xsl:text xml:space="preserve">\in </xsl:text>
+          </xsl:when>
           <xsl:when test="$first-char='&#x220B;'">
             <xsl:text xml:space="preserve">\ni </xsl:text>
           </xsl:when>
