@@ -418,7 +418,7 @@ function openTeX()
     dump("\ninfile=\""+fp.file.path);
     dump("\ndataDir=\""+dataDir.path);
     dump("\nmmldir=\""+mmldir.path+"\n");
-	dump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
+	  dump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
 
     // run pretex.exe
     
@@ -437,9 +437,11 @@ function openTeX()
          dump(ex+"\n");
     }      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
-    
-    msiEditPage("file:///" + outfile.path.replace(/\\/g,"/"), window, false, false);
-  }                       
+    if ((outfile) && (outfile.path.length > 0))
+    {      
+      msiEditPage(msiFileURLFromFile(outfile), window, false, false);
+    }
+  }                  
 }
 
 #define INTERNAL_XSLT
