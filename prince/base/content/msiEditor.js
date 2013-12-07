@@ -837,7 +837,7 @@ function msiEditorDocumentObserver(editorElement)
         if (msiIsHTMLEditor(this.mEditorElement))
         {
           dump("=======" + this.mEditorElement + "========");
-          coalesceDocumentOptions(editor);
+          try {coalesceDocumentOptions(editor);} catch(e){}
           var match;
           var dirs;
           var file;
@@ -4973,6 +4973,30 @@ function removeFootnoteOverrides(root)
     elem = notelist[i];
     if (elem.getAttribute("type") == "footnote") elem.removeAttribute("hide");
   }
+}
+
+function msiEditorGetShowInvisibles(editorElement)  // returns viewSettings
+// Gets view settings from body element attributes
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var viewSettings = {};
+  var theBody = msiGetRealBodyElement(editor.document);
+  theBody.getAttribute("showinvis") === "true"
+  
+  viewSettings.showInvisibles = theBody.getAttribute("showinvis")==="true";
+  viewSettings.showSectionExpanders = theBody.getAttribute("showexpanders") ==="true";
+  viewSettings.showShortTitles = theBody.getAttribute("showshort") === "true";
+  viewSettings.showFMButtons = theBody.getAttribute("showfmbuttons") === "true";
+  viewSettings.showHelperLines = theBody.getAttribute("hideHelperLines") !== "true";
+  viewSettings.showInputBoxes = theBody.getAttribute("hideInputBoxes") !== "true";
+  viewSettings.showIndexEntries = theBody.getAttribute("hideindexentries") !== "true";
+  viewSettings.showMarkers = theBody.getAttribute("hidemarkers") !== "true";
+  viewSettings.showFootnotes = theBody.getAttribute("hideFootnotes") !== "true";
+  viewSettings.showOtherNotes = theBody.getAttribute("hideOtherNotes") !== "true";
+  theBody.setAttribute("-moz_dirty","true");
+  return viewSettings;
 }
 
 function msiEditorDoShowInvisibles(editorElement, viewSettings)

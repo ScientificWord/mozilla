@@ -945,22 +945,39 @@ function updateViewMenuFromEditor(editorElement)
                       ["viewHelperLines","showHelperLines"],
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"]];
-  var docList = msiGetUpdatableItemContainers(command, editorElement);
+
+  // I don't know what Ron intended here, but this can't work because command is not set.                      
+
+  // var docList = msiGetUpdatableItemContainers(command, editorElement);
+  // var menuItem;
+  // for (var i = 0; i < docList.length; ++i)
+  // {
+  //   for (var ix = 0; ix < invisChoices.length; ++ix)
+  //   {
+  //     menuItem = docList[i].getElementById(invisChoices[ix][0]);
+  //     if (menuItem != null)
+  //     {
+  //       if (editorElement.viewSettings[invisChoices[ix][1]])
+  //         menuItem.setAttribute("checked", "true");
+  //       else
+  //         menuItem.setAttribute("checked", "false");
+  //     }
+  //   }
+  // }
+
+  var document = editorElement.ownerDocument;
   var menuItem;
-  for (var i = 0; i < docList.length; ++i)
+  for (var ix = 0; ix < invisChoices.length; ++ix)
   {
-    for (var ix = 0; ix < invisChoices.length; ++ix)
+    menuItem = document.getElementById(invisChoices[ix][0]);
+    if (menuItem != null)
     {
-      menuItem = docList[i].getElementById(invisChoices[ix][0]);
-      if (menuItem != null)
-      {
-        if (editorElement.viewSettings[invisChoices[ix][1]])
-          menuItem.setAttribute("checked", "true");
-        else
-          menuItem.setAttribute("checked", "false");
-      }
+      if (editorElement.viewSettings[invisChoices[ix][1]])
+        menuItem.setAttribute("checked", "true");
+      else
+        menuItem.setAttribute("checked", "false");
     }
-  }
+  }  
 }
 
 ////-----------------------------------------------------------------------------------
