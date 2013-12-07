@@ -322,6 +322,9 @@ fontcolor {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fontcolor");
 }
 
+sectiontitle {
+  line-height: 1.2em;
+}
 
 /* paragraph indenting rule -- indent all paragraphs except as in the next rules */
 bodyText,
