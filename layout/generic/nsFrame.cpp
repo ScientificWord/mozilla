@@ -113,6 +113,8 @@
 #include "nsINameSpaceManager.h"
 #include "nsIPercentHeightObserver.h"
 #include "msiITagListManager.h"
+#include "../../editor/libeditor/base/nsEditor.h"
+#include "../../editor/libeditor/base/nsEditorUtils.h"
 
 #ifdef IBMBIDI
 #include "nsBidiPresUtils.h"
@@ -216,6 +218,11 @@ static PRLogModuleInfo* gLogModule;
 static PRLogModuleInfo* gFrameVerifyTreeLogModuleInfo;
 
 static PRBool gFrameVerifyTreeEnable = PRBool(0x55);
+
+
+nsresult
+GetEditor( nsFrame* frame, nsIHTMLEditor ** htmlEditor);
+
 
 PRBool
 nsIFrameDebug::GetVerifyTreeEnable()
@@ -2037,6 +2044,20 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
     // Therefore, disable selection extension during mouse moves.
     // XXX This is a bit hacky; shouldn't editor be able to deal with this?
     fc->SetMouseDownState(PR_FALSE);
+  }
+
+  if (isEditor) {
+    nsCOMPtr<nsIHTMLEditor> htmlEditor;
+    nsCOMPtr<nsIEditor>editor;
+    rv = GetEditor(this, getter_AddRefs(htmlEditor));
+    if (htmlEditor) {
+      editor = do_QueryInterface(htmlEditor);
+      nsCOMPtr<nsISelection> sel;
+      editor->GetSelection(getter_AddRefs(sel));
+      if (sel) {
+         nsEditorUtils::JiggleCursor(editor, sel, PR_FALSE);
+      }
+    }
   }
 
   return rv;
@@ -8057,27 +8078,40 @@ NS_IMETHODIMP nsFrame::MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index)
 
 }
 
-NS_IMETHODIMP
-nsFrame::MoveLeftAtDocStart(nsISelection * sel)
+nsresult
+GetEditor( nsFrame* frame, nsIHTMLEditor ** htmlEditor)
 {
-  nsresult res;
-  nsPresContext* presContext = PresContext();
+  nsresult res = NS_OK;
+  nsPresContext* presContext = frame->PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
   nsCOMPtr<nsISupports> container = presContext->GetContainer();
   nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
   PRBool isEditable;
-  PRBool fTakesText = PR_FALSE;
   if (!editorDocShell ||
       NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
     return NS_ERROR_FAILURE;
 
   nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEd;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  htmlEd = do_QueryInterface(editor);
+  *htmlEditor =htmlEd;
+  NS_IF_ADDREF(*htmlEditor);
+  return res;
+}
+
+NS_IMETHODIMP
+nsFrame::MoveLeftAtDocStart(nsISelection * sel)
+{
+  nsresult res;
   nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  res = GetEditor(this, getter_AddRefs(htmlEditor));
+  nsPresContext* presContext = PresContext();
+  nsIPresShell *shell = presContext->GetPresShell();
+  PRBool fTakesText = PR_FALSE;
   nsCOMPtr<msiITagListManager> tlm;
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
   nsCOMPtr<nsIDOMTreeWalker> tw;
-  editorDocShell->GetEditor(getter_AddRefs(editor));
-  htmlEditor = do_QueryInterface(editor);
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   nsIDocument *doc = shell->GetDocument();
   nsIAtom * namespaceatom;
