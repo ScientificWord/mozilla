@@ -57,7 +57,9 @@ REQUIRES	= xpcom \
 		  gfx \
 		  widget \
 		  locale \
-      editor \
+          editor \
+		  txmgr \
+		  txtsvc \
 		  view \
 		  necko \
 		  js \
