@@ -338,9 +338,9 @@ nsEditorUtils::JiggleCursor(nsIEditor *aEditor, nsISelection * sel, PRBool isFor
           return PR_TRUE;
         }
         if (isForward)
-          tw->NextNode(getter_AddRefs(currentNode));
+          tw->NextSibling(getter_AddRefs(currentNode));
         else
-          tw->PreviousNode(getter_AddRefs(currentNode));
+          tw->PreviousSibling(getter_AddRefs(currentNode));
       }
     }
   }  
