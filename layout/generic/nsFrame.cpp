@@ -220,27 +220,6 @@ static PRLogModuleInfo* gFrameVerifyTreeLogModuleInfo;
 static PRBool gFrameVerifyTreeEnable = PRBool(0x55);
 
 
-nsresult
-GetEditor( nsFrame* frame, nsIHTMLEditor ** htmlEditor)
-{
-  nsresult res = NS_OK;
-  nsPresContext* presContext = frame->PresContext();
-  nsIPresShell *shell = presContext->GetPresShell();
-  nsCOMPtr<nsISupports> container = presContext->GetContainer();
-  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
-  PRBool isEditable;
-  if (!editorDocShell ||
-      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIEditor> editor;
-  nsCOMPtr<nsIHTMLEditor> htmlEd;
-  editorDocShell->GetEditor(getter_AddRefs(editor));
-  htmlEd = do_QueryInterface(editor);
-  *htmlEditor =htmlEd;
-  NS_IF_ADDREF(*htmlEditor);
-  return res;
-}
 
 
 PRBool
@@ -354,6 +333,28 @@ nsFrame::operator new(size_t sz, nsIPresShell* aPresShell) CPP_THROW_NEW
   }
 
   return result;
+}
+
+nsresult
+GetEditor( nsFrame* frame, nsIHTMLEditor ** htmlEditor)
+{
+  nsresult res = NS_OK;
+  nsPresContext* presContext = frame->PresContext();
+  nsIPresShell *shell = presContext->GetPresShell();
+  nsCOMPtr<nsISupports> container = presContext->GetContainer();
+  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  PRBool isEditable;
+  if (!editorDocShell ||
+      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEd;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  htmlEd = do_QueryInterface(editor);
+  *htmlEditor =htmlEd;
+  NS_IF_ADDREF(*htmlEditor);
+  return res;
 }
 
 // Overridden to prevent the global delete from being called, since the memory
