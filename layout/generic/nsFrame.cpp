@@ -221,7 +221,26 @@ static PRBool gFrameVerifyTreeEnable = PRBool(0x55);
 
 
 nsresult
-GetEditor( nsFrame* frame, nsIHTMLEditor ** htmlEditor);
+GetEditor( nsFrame* frame, nsIHTMLEditor ** htmlEditor)
+{
+  nsresult res = NS_OK;
+  nsPresContext* presContext = frame->PresContext();
+  nsIPresShell *shell = presContext->GetPresShell();
+  nsCOMPtr<nsISupports> container = presContext->GetContainer();
+  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  PRBool isEditable;
+  if (!editorDocShell ||
+      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEd;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  htmlEd = do_QueryInterface(editor);
+  *htmlEditor =htmlEd;
+  NS_IF_ADDREF(*htmlEditor);
+  return res;
+}
 
 
 PRBool
@@ -2002,6 +2021,20 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
           delete details;
           fc->SetMouseDownState(PR_FALSE);
           fc->SetDelayedCaretData(me);
+          if (isEditor) {
+            nsCOMPtr<nsIHTMLEditor> htmlEditor;
+            nsCOMPtr<nsIEditor>editor;
+            rv = GetEditor(this, getter_AddRefs(htmlEditor));
+            if (htmlEditor) {
+              editor = do_QueryInterface(htmlEditor);
+              nsCOMPtr<nsISelection> sel;
+              editor->GetSelection(getter_AddRefs(sel));
+              if (sel) {
+                 nsEditorUtils::JiggleCursor(editor, sel, PR_FALSE);
+              }
+            }
+          }
+
           return NS_OK;
         }
 
@@ -8078,27 +8111,6 @@ NS_IMETHODIMP nsFrame::MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index)
 
 }
 
-nsresult
-GetEditor( nsFrame* frame, nsIHTMLEditor ** htmlEditor)
-{
-  nsresult res = NS_OK;
-  nsPresContext* presContext = frame->PresContext();
-  nsIPresShell *shell = presContext->GetPresShell();
-  nsCOMPtr<nsISupports> container = presContext->GetContainer();
-  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
-  PRBool isEditable;
-  if (!editorDocShell ||
-      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIEditor> editor;
-  nsCOMPtr<nsIHTMLEditor> htmlEd;
-  editorDocShell->GetEditor(getter_AddRefs(editor));
-  htmlEd = do_QueryInterface(editor);
-  *htmlEditor =htmlEd;
-  NS_IF_ADDREF(*htmlEditor);
-  return res;
-}
 
 NS_IMETHODIMP
 nsFrame::MoveLeftAtDocStart(nsISelection * sel)
