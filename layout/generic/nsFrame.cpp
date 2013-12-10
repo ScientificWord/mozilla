@@ -2021,7 +2021,7 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
           delete details;
           fc->SetMouseDownState(PR_FALSE);
           fc->SetDelayedCaretData(me);
-          if (isEditor) {
+          if (isEditor && (me->clickCount == 1)) {
             nsCOMPtr<nsIHTMLEditor> htmlEditor;
             nsCOMPtr<nsIEditor>editor;
             rv = GetEditor(this, getter_AddRefs(htmlEditor));
@@ -2079,7 +2079,7 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
     fc->SetMouseDownState(PR_FALSE);
   }
 
-  if (isEditor) {
+  if (isEditor && me->clickCount==1) {
     nsCOMPtr<nsIHTMLEditor> htmlEditor;
     nsCOMPtr<nsIEditor>editor;
     rv = GetEditor(this, getter_AddRefs(htmlEditor));
