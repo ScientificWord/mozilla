@@ -1883,6 +1883,7 @@ function GetCurrentEngine() {
       compengine = 2;
       initComputeLogger(compsample);
       initEnginePrefs(compsample);
+
     } catch (e) {
       var msg_key;
       if (e.result == Components.results.NS_ERROR_NOT_AVAILABLE) msg_key = "Error.notavailable";
@@ -1900,6 +1901,7 @@ function GetCurrentEngine() {
 
 function initEnginePrefs(currEngine)
 {
+  initializePrefMappersIfNeeded();
   var prefs = GetPrefs();
   var delimstyle = prefs.getCharPref("swp.user.matrix_delim");
   var val;
@@ -1908,10 +1910,15 @@ function initEnginePrefs(currEngine)
     else if (delimstyle === "matrix_braces") val = 3;
     else val = 0;
   var eng = GetCurrentEngine();
-  dump("HERE" + eng);
-  eng.setUserPref("Default_matrix_delims", val); 
+  var mappedPref = invPrefMapper["Default_matrix_delims"];
+  eng.setUserPrefByName(mappedPref, val);
   // Do we need to set all the other engine settings. This is the only one that I
   // know of that needs translation from strings to integers. BBM
+
+  // imagi
+  var imagi = prefs.getCharPref("swp.user.output_imagi");
+  eng.setUserPrefByName("Output_imaginaryi", imagi);
+  dump("jcs HERE: " + imagi);
 }
 
 
