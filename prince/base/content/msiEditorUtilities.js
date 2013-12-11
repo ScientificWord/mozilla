@@ -11,6 +11,63 @@ var gPrefsService;
 var gPrefsBranch;
 var gOS = "";
 
+var prefMapper;
+var invPrefMapper;
+var prefEngineMapper;
+var prefLogMapper;
+
+function initializePrefMappersIfNeeded()
+{ // map between pref names used by the engine and those used in SWP
+  if (prefMapper == null)
+  {  
+    prefMapper = new Object();
+    prefMapper.mfencedpref = "use_mfenced";
+    prefMapper.digitsRenderedpref = "Sig_digits_rendered";
+    prefMapper.lowerthresholdpref = "SciNote_lower_thresh";
+    prefMapper.upperthresholdpref = "SciNote_upper_thresh";
+    prefMapper.trigargspref = "Parens_on_trigargs";
+    prefMapper.imagipref = "Output_imaginaryi";
+    prefMapper.diffDpref = "Output_diffD_uppercase";
+    prefMapper.diffdpref = "Output_diffd_lowercase";
+    prefMapper.expepref = "Output_Euler_e";
+    prefMapper.matrix_delimpref = "Default_matrix_delims";
+    prefMapper.usearcpref    = "Output_InvTrigFuncs_1";
+    prefMapper.mixednumpref = "Output_Mixed_Numbers";
+    prefMapper.derivformatpref = "Default_derivative_format";
+    prefMapper.primesasnpref = "Primes_as_n_thresh";
+    prefMapper.primederivpref = "Prime_means_derivative";
+
+    prefMapper.logepref = "log_is_base_e";
+    prefMapper.dotderivativepref = "Dot_derivative";
+    prefMapper.barconjpref = "Overbar_conjugate";
+    prefMapper.i_imaginarypref = "Input_i_Imaginary";
+    prefMapper.j_imaginarypref = "Input_j_Imaginary";
+    prefMapper.e_exppref = "Input_e_Euler";
+  }
+  if (invPrefMapper == null) 
+  {
+    invPrefMapper = new Array;
+    invPrefMapper["Default_matrix_delims"] = prefMapper.matrix_delimpref;
+  }
+  if (prefEngineMapper == null)
+  {  
+    prefEngineMapper = new Object();
+    prefEngineMapper.digitsusedpref  = "Digits";
+    prefEngineMapper.degreepref      = "MaxDegree";
+    prefEngineMapper.principalpref   = "PvalOnly";
+    prefEngineMapper.specialpref     = "IgnoreSCases";
+  }
+  if (prefLogMapper == null)
+  {
+    prefLogMapper = new Object();
+    prefLogMapper.logSentpref     = "LogMMLSent";
+    prefLogMapper.logReceivedpref = "LogMMLReceived";
+    prefLogMapper.engSentpref     = "LogEngSent";
+    prefLogMapper.engReceivedpref = "LogEngReceived";
+  } 
+}
+
+
 ///************* Message dialogs ***************/
 //
 

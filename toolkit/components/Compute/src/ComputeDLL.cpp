@@ -502,6 +502,8 @@ int ComputeDLL::SetUserPref(U32 client_ID, U32 pref_ID, const char *ascii_str)
   return workshop->SetClientPref(client_ID, pref_ID, ascii_str);
 }
 
+
+
 int ComputeDLL::SetWideUserPref(U32 client_ID, U32 pref_ID, const U16 * wide_str)
 {
   return workshop->SetClientPrefWide(client_ID, pref_ID, wide_str);
