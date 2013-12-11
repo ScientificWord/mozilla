@@ -202,6 +202,7 @@ pref("swp.user.engSent", true);
 pref("swp.user.e_exp", true);
 pref("swp.user.i_imaginary", true);
 pref("swp.user.j_imaginary", false);
+pref("swp.user.output_imagi", "imagi"); 
 pref("swp.user.loge", true);
 pref("swp.user.logReceived", false);
 pref("swp.user.logSent", false);
