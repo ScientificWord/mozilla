@@ -829,6 +829,8 @@ NS_IMETHODIMP msiSimpleComputeEngine2::SetUserPrefByName(char const* prefName, P
     rv = SetUserPref(CLPF_Default_matrix_delims, value);
   } else if (0 == strcmp("Output_imaginaryi", prefName)){
     rv = SetUserPref(CLPF_Output_imaginaryi, value);
+  } else if (0 == strcmp("Output_Euler_e", prefName)){
+    rv = SetUserPref(CLPF_Output_Euler_e, value);
   }
 
   return rv;
