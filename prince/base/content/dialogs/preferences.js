@@ -333,6 +333,13 @@ function onComputeSettingChange(pref, force)
           else if (val === "imagi_j") val = 1;
           else (val = 2); 
         }
+        if (mappedPref === "Output_Euler_e") {
+          if (val === "expe_d") 
+            val = 0;
+          else 
+            val = 1;
+        }
+
         currEngine.setUserPref(currEngine[mappedPref], val); 
       }
       else if (mappedPref = prefEngineMapper[prefId])
