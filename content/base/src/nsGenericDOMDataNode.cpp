@@ -957,8 +957,15 @@ nsGenericDOMDataNode::TextIsOnlyWhitespace()
 {
   if (mText.Is2b()) {
     // The fragment contains non-8bit characters and such characters
-    // are never considered whitespace.
-    return PR_FALSE;
+    // are never considered whitespace. BBM except unicode zero width space
+    const PRUnichar * up = mText.Get2b();
+    const PRUnichar * uend = up + (mText.GetLength());
+    while (up < uend) {
+      PRUnichar u = *up;
+      if (u != 8203) return PR_FALSE;
+      ++up;
+    }
+    return PR_TRUE;
   }
 
   const char* cp = mText.Get1b();
@@ -968,7 +975,7 @@ nsGenericDOMDataNode::TextIsOnlyWhitespace()
     char ch = *cp;
 
     if (!XP_IS_SPACE(ch)) {
-      return PR_FALSE;
+      return PR_FALSE;   
     }
 
     ++cp;
