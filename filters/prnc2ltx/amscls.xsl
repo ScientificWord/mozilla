@@ -76,18 +76,6 @@
 
 <!-- Originally copied from revtex4-1.xsl.  Deleted REVTeX specific items -->
 
-<xsl:template match="html:email">
-\email<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
-</xsl:template>
-
-<xsl:template match="html:homepage">
-\homepage<xsl:if test="@alt and string-length(@alt)">[<xsl:value-of select="@alt"/>]</xsl:if>{<xsl:apply-templates/>}<xsl:text/>
-</xsl:template>
-
-<xsl:template match="html:pacs">
-\pacs{<xsl:apply-templates/>}<xsl:text/>
-</xsl:template>
-
 <xsl:template match="html:keywords">
 \keywords{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
