@@ -3463,26 +3463,35 @@ GetEngine() {
 }
 
 
-PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty)
+PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty, PRUint32& nodecount)
 {
   PRBool retval = PR_FALSE;
+  if (!node) return retval;
   PRBool isMath = nsHTMLEditUtils::IsMath(node);
   nsAutoString name;
   nsAutoString form;
   nsCOMPtr<nsIDOMElement> parentEl;
   nsCOMPtr<nsIDOMNode> parent;
+  nodecount = 0;
 
   if (isMath) {
     node->GetTagName(name);
     if (name.EqualsLiteral("msup") ||
       name.EqualsLiteral("msub") ||
-      name.EqualsLiteral("msubsup") ||
       name.EqualsLiteral("mfrac") ||
-      name.EqualsLiteral("mroot") ||
       (name.EqualsLiteral("msqrt") && isEmpty) ||
       name.EqualsLiteral("mover") ||
-      name.EqualsLiteral("munder")) 
+      name.EqualsLiteral("munder"))
     {
+      nodecount = 2;
+      retval = PR_TRUE;
+    }
+    else if (
+      name.EqualsLiteral("mroot") ||
+      name.EqualsLiteral("msubsup") ||
+      name.EqualsLiteral("moverunder"))
+    {
+      nodecount = 3;
       retval = PR_TRUE;
     } 
     else {
@@ -3521,11 +3530,13 @@ void DeleteMatchingFence(nsHTMLEditor * ed, nsIDOMElement * elt)
 }
 
 
-PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * siblingElement)
+PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * siblingElement, PRBool deletingInputbox)
 {
   // A subnode has been deleted. If elt is an msub or msup, remove that tag. If elt is an msubsup,
   // replace it with an msub or msup, depending on whether siblingNode is null or not.
   PRBool retval = PR_FALSE;
+  if (!deletingInputbox)  
+    return retval;
   nsresult res;
   nsAutoString name;
   nsAutoString form;
@@ -3573,6 +3584,36 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
   return retval;
 }
 
+PRBool cleanUpTempInput(nsHTMLEditor * ed, nsCOMPtr<nsIDOMNode>& startNode, PRInt32 & startOffset)
+{
+  PRUint16 nodeType;
+  nsCOMPtr<nsIDOMNode> node = startNode;
+  nsCOMPtr<nsIDOMElement> elt;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsAutoString name;
+  nsAutoString tempinput;
+  nsresult res;
+  PRInt32 offset;
+  PRBool attResult;
+  node->GetNodeType(&nodeType);
+  if (nodeType == nsIDOMNode::TEXT_NODE) 
+    res = node->GetParentNode(getter_AddRefs(node));
+  elt = do_QueryInterface(node);
+  elt->GetNodeName(name);
+  if (name.EqualsLiteral("mi")) {
+    res = ed->GetAttributeValue(elt, NS_LITERAL_STRING("tempinput"), tempinput, &attResult);
+    if (tempinput.EqualsLiteral("true")) {
+      // we have a temp input box
+      ed->GetNodeLocation(node, address_of(parentNode), &offset);
+      ed->DeleteNode(node);
+      startNode = parentNode;
+      startOffset = offset;
+      return PR_TRUE;
+    }
+  }
+  return PR_FALSE;
+}
+
 
 void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsIDOMNode> & startNode,
@@ -3586,7 +3627,6 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   PRBool done =  PR_FALSE;
   PRBool isEmpty = PR_FALSE;
   PRBool fSeenBR = PR_FALSE;
-  nsCOMPtr<nsIDOMNode> node = startNode;
   nsCOMPtr<nsIDOMElement> elt;
   nsCOMPtr<nsIDOMNode> parentNode;
   nsCOMPtr<nsIDOMNode> nextSiblingNode;
@@ -3595,9 +3635,48 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   PRUint32 dummy = 0;
   nsAutoString name;
   nsCOMPtr<nsIEditor> editor = do_QueryInterface((nsIHTMLEditor *)ed);
-  PRInt32 selOffset;
+  PRInt32 selOffset = startOffset;
+  PRUint32 nodecount  = 0;
+  PRBool deletingInputbox = cleanUpTempInput( ed, startNode, startOffset );
+  nsCOMPtr<nsIDOMNode> node = startNode;
+// A special case is a temp input box. If we delete a math object so that the constraints
+// for math objects like fractions, superscripts, etc. are no longer valid, we replace it with
+// an input box. However, if we are deleting an input box, we want to restructure the math,
+// including changing the type of the tag we are in. To tell the difference, we need to find out
+// early whether startNode is, or is in, a temp input mi.
+
   while (!done) {
     res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
+    elt = do_QueryInterface(node);
+    if (node && IsSpecialMath(elt, isEmpty, nodecount)) {
+      if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox))
+      {
+        done = PR_TRUE;
+        // Insert an input box at node, offset
+        res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_FALSE, PR_TRUE, dummy, inputbox);
+        if (NS_FAILED(res) || !inputbox) return;
+        res = ed->InsertNode(inputbox, elt, selOffset);
+        // Put the cursor in the input box BBM: is there a method for this?
+        res = inputbox->GetNextSibling(getter_AddRefs(nextSiblingNode));
+        if (nextSiblingNode) {
+          res = ed->IsEmptyNode(nextSiblingNode, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
+          if (isEmpty) {
+            ed->DeleteNode(nextSiblingNode);
+          }
+        }
+        res = inputbox->GetFirstChild(getter_AddRefs(node));
+        startNode = node;
+        startOffset = 1;
+        res = inputbox->GetNextSibling(getter_AddRefs(nextSiblingNode));
+        if (nextSiblingNode) {
+          res = ed->IsEmptyNode(nextSiblingNode, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
+          if (isEmpty) {
+            ed->DeleteNode(nextSiblingNode);
+          }
+        }
+      }
+      return;    
+    }
     done = !(isEmpty && node);
     if (node && isEmpty) {
       // res = node->GetParentNode(getter_AddRefs(parentNode));
@@ -3635,12 +3714,12 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
       done = !isEmpty;
       elt = do_QueryInterface(node);
-      if (elt && IsSpecialMath(elt, isEmpty)) {
+      if (elt && IsSpecialMath(elt, isEmpty, nodecount)) {
         // we have deleted a child of node. If node is one of the
         // math nodes that has a fixed number of children, we must replace the
         // child with an input box. If elt is an msup, msub, msubsup (mroot?), we neeed
         // to remove the tag (msup and msub) or convert msubsup to msub or msup.
-        if (!HandledScripts(ed, elt, nextSiblingNode))
+        if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox))
         {
           done = PR_TRUE;
           // Insert an input box at node, offset
@@ -3648,6 +3727,13 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           if (NS_FAILED(res) || !inputbox) return;
           res = ed->InsertNode(inputbox, elt, selOffset);
           // Put the cursor in the input box BBM: is there a method for this?
+          res = inputbox->GetNextSibling(getter_AddRefs(nextSiblingNode));
+          if (nextSiblingNode) {
+            res = ed->IsEmptyNode(nextSiblingNode, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
+            if (isEmpty) {
+              ed->DeleteNode(nextSiblingNode);
+            }
+          }
           res = inputbox->GetFirstChild(getter_AddRefs(node));
           startNode = node;
           startOffset = 1;
