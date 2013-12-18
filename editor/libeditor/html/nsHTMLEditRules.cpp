@@ -6227,6 +6227,7 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
       element = do_QueryInterface(parent);
       element ->GetLocalName(name);
       if (name.EqualsLiteral("mfrac") || name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("msubsup") ||
+        name.EqualsLiteral("munder") || name.EqualsLiteral("mover") || name.EqualsLiteral("munderover") || 
         name.EqualsLiteral("mtable") || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtd") || name.EqualsLiteral("mroot") || name.EqualsLiteral("msqrt") ||
         name.EqualsLiteral("msubsup"))
       {
