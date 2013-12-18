@@ -328,6 +328,9 @@ interface msiISimpleComputeEngine : nsISupports
    * Set the user pref.  Some prefs need string values, but we don't use those yet.
   */
   void setUserPref(in unsigned long attrID, in long value);
+  void setUserPrefByName(in string attrID, in long value);
+
+
   /**
    * Get the user pref.
   */

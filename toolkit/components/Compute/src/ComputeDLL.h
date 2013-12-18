@@ -56,6 +56,7 @@ public:
 
   static int  SetUserPref(U32 client_ID, U32 pref_ID,
                           const char *ascii_str);
+
   static int  SetWideUserPref(U32 client_ID, U32 pref_ID,
                               const U16 * wide_str);
   static const char * GetUserPref(U32 client_ID, U32 pref_ID,
