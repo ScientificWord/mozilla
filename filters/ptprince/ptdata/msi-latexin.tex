@@ -3438,8 +3438,6 @@
 
 \def\*{\discretionary{\thinspace\the\textfont2\char2}{}{}}
 \let\:=\>
-\def\active@math@prime{^\bgroup\prim@s}
-{\catcode`\'=\active \global\let'\active@math@prime}
 \def\prim@s{%
   \prime\futurelet\@let@token\pr@m@s}
 
@@ -5408,11 +5406,11 @@
 
 \begingroup
 \obeylines\obeyspaces%
-\catcode`\'\active%
+%\catcode`\'\active%
 \gdef\@resetactivechars{%
 \def^^M{\@activechar@info{EOL}\space}%
 \def {\@activechar@info{space}\space}%
-\let'\active@math@prime}%
+}%
 \endgroup
 
 \def\@outputpage{%
@@ -6626,7 +6624,7 @@
   \catcode`\"=\active
   \catcode`\;=\active
   \catcode`\:=\active
-  \catcode`\'=\active
+%  \catcode`\'=\active
   \catcode`\~=\active
 }
 
@@ -6636,7 +6634,7 @@
       \def"{\string"}%
       \def;{\string;}%
       \def:{\string:}%
-      \def'{\string'}%
+%      \def'{\string'}%
       \def~{\string~}%
       %\bbl@deactivate{"}%
       %\bbl@deactivate{;}%
