@@ -327,7 +327,7 @@
   \catcode`\"=\active
   \catcode`\;=\active
   \catcode`\:=\active
-  \catcode`\'=\active
+%  \catcode`\'=\active
   \catcode`\~=\active
 }
 \bgroup
@@ -336,7 +336,7 @@
       \def"{\string"}%
       \def;{\string;}%
       \def:{\string:}%
-      \def'{\string'}%
+%      \def'{\string'}%
       \def~{\string~}%
       %\bbl@deactivate{"}%
       %\bbl@deactivate{;}%
@@ -356,7 +356,7 @@
    \msitag{/>}
 }
 
-\def\FRAME{\msihmode\begingroup
+\def\FRAME{\begingroup
              \catcode`\&=13
              \catcode`\~=11\relax\@FRAME}
 
@@ -367,12 +367,24 @@
       \begingroup
         %% #8 will be a special with a vcam file
         \let\special\@vcamspecial
-        #8
+        \ifmmode
+          \string\msipassthru\char`\{
+          #8
+          \char`\}
+        \else 
+          #8
+        \fi
       \endgroup
    \else
       \begingroup
         %% #8 will be a special with a graphic file
-        #8
+        \ifmmode
+          \string\msipassthru\char`\{
+          #8
+          \char`\}
+        \else 
+          #8
+        \fi
       \endgroup
    \fi
    \endgroup
