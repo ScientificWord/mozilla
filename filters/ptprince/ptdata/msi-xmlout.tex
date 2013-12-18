@@ -712,14 +712,14 @@
 
 \everymath{%
    %\catcode`\&=13 %
-   \catcode`\'=\active
+   %\catcode`\'=\active
    \aftergroup\endmath
 }
 \def\endmath{}
 
 \everydisplay{%
   %\catcode`\&=13 %
-  \catcode`\'=\active
+  %\catcode`\'=\active
   \aftergroup\enddisplay
 }
 \def\enddisplay{}
@@ -1659,8 +1659,8 @@
 \def\@TCItag#1{\msitag{\TCItag{#1}}}
 \def\@TCItagstar*#1{\msitag{\TCItag{#1}}}
 
-{\catcode`\'=\active
- \gdef'{^{\prime}}}
+%{\catcode`\'=\active
+% \gdef'{^{\prime}}}
 
 
 %\def\@TCItag#1{%
