@@ -14,6 +14,7 @@
 #include "xpcom-config.h"
 #include "nsString.h"
 
+//#include "nsIPrefService.h"
 // start with a utility function with nsILocalFile
 
 void AppendSubpath( nsILocalFile * file, const char * asciiPath )
@@ -49,6 +50,19 @@ MathWorkShop::MathWorkShop()
 
   mml_entities = NULL;
   uprefs_store = new PrefsStore();
+
+//  nsXPIDLCString prefString;
+//  nsAutoString setPrefString;
+//
+//  nsresult rv;
+//  nsCOMPtr<nsIPrefBranch> sysPrefService = do_GetService("@mozilla.org/system-preference-service;1", &rv);
+//  if (NS_SUCCEEDED(rv) && sysPrefService) {
+//      sysPrefService->GetCharPref("swp.user.imagi", getter_copies(prefString));
+//      if (NS_SUCCEEDED(res))
+//        CopyASCIItoUTF16(prefString, setPrefString);
+//      
+//  }
+//  
 
   wide_pref = NULL;
 }
