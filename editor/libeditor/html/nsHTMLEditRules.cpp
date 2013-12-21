@@ -3576,7 +3576,7 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
     ed->ReplaceContainer((nsIDOMNode*)elt, address_of(newNode), tagName, tlm, nsnull, nsnull, PR_TRUE);
   }
   else if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") ||
-           name.EqualsLiteral("mover") || name.EqualsLiteral("mfrac") || name.EqualsLiteral("mroot"))
+           name.EqualsLiteral("mover")) // || name.EqualsLiteral("mfrac")  || name.EqualsLiteral("mroot"))
   {
     retval = PR_TRUE;
     ed->RemoveContainer(elt);
@@ -3614,6 +3614,29 @@ PRBool cleanUpTempInput(nsHTMLEditor * ed, nsCOMPtr<nsIDOMNode>& startNode, PRIn
   return PR_FALSE;
 }
 
+PRUint32 elementCount( nsIDOMElement * elt)
+{
+  nsresult result;
+  PRUint32 i;
+  PRUint32 length;
+  PRUint32 count = 0;
+  PRUint16 type;
+  nsCOMPtr<nsIDOMNodeList> list;
+  nsCOMPtr<nsIDOMNode> node;
+  result = elt->GetChildNodes(getter_AddRefs(list));
+  if ((NS_SUCCEEDED(result)) && (list))
+  {
+    list->GetLength(&length);
+    for (i = 0; i <  length; i++)
+    {
+      result = list->Item(i, getter_AddRefs(node));
+      result = node->GetNodeType(&type);
+      if (type == nsIDOMNode::ELEMENT_NODE) count++;
+    }
+  }
+  return count;
+}
+
 
 void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsIDOMNode> & startNode,
@@ -3637,6 +3660,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsIEditor> editor = do_QueryInterface((nsIHTMLEditor *)ed);
   PRInt32 selOffset = startOffset;
   PRUint32 nodecount  = 0;
+  nsCOMPtr<nsIDOMNode> tempnode;
   PRBool deletingInputbox = cleanUpTempInput( ed, startNode, startOffset );
   nsCOMPtr<nsIDOMNode> node = startNode;
 // A special case is a temp input box. If we delete a math object so that the constraints
@@ -3657,22 +3681,19 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
         if (NS_FAILED(res) || !inputbox) return;
         res = ed->InsertNode(inputbox, elt, selOffset);
         // Put the cursor in the input box BBM: is there a method for this?
-        res = inputbox->GetNextSibling(getter_AddRefs(nextSiblingNode));
-        if (nextSiblingNode) {
-          res = ed->IsEmptyNode(nextSiblingNode, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
-          if (isEmpty) {
-            ed->DeleteNode(nextSiblingNode);
-          }
-        }
         res = inputbox->GetFirstChild(getter_AddRefs(node));
         startNode = node;
         startOffset = 1;
-        res = inputbox->GetNextSibling(getter_AddRefs(nextSiblingNode));
-        if (nextSiblingNode) {
-          res = ed->IsEmptyNode(nextSiblingNode, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
-          if (isEmpty) {
-            ed->DeleteNode(nextSiblingNode);
+        tempnode = inputbox;
+        while (tempnode && (elementCount(elt) > nodecount)) {
+          res = tempnode->GetNextSibling(getter_AddRefs(nextSiblingNode));
+          if (nextSiblingNode) {
+            res = ed->IsEmptyNode(nextSiblingNode, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
+            if (isEmpty) {
+              ed->DeleteNode(nextSiblingNode);
+            }
           }
+          tempnode = nextSiblingNode;
         }
       }
       return;    
@@ -3708,6 +3729,8 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
         elt = do_QueryInterface(parentNode);
         DeleteMatchingFence(ed, elt);
       }
+      
+        
       res = node->GetNextSibling(getter_AddRefs(nextSiblingNode));
       ed->DeleteNode(node);
       node = parentNode;
