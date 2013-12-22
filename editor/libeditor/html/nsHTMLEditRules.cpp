@@ -3663,6 +3663,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsIDOMNode> tempnode;
   PRBool deletingInputbox = cleanUpTempInput( ed, startNode, startOffset );
   nsCOMPtr<nsIDOMNode> node = startNode;
+  selOffset = startOffset;
 // A special case is a temp input box. If we delete a math object so that the constraints
 // for math objects like fractions, superscripts, etc. are no longer valid, we replace it with
 // an input box. However, if we are deleting an input box, we want to restructure the math,
