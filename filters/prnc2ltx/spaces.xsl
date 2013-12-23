@@ -46,11 +46,11 @@
 </xsl:template>
 
 <xsl:template match="html:msirule">
-  <xsl:if test="@color"> \textcolor[HTML]{<xsl:value-of select="substring(./@color,2,8)"/>}{</xsl:if>
-\rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}
-<xsl:if test="@color">}</xsl:if>
+  <xsl:choose>
+    <xsl:when test="@color = '#000000'">\rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}</xsl:when>
+	<xsl:otherwise>\textcolor[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"/>}{\rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}}</xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
-
 
 <xsl:template match="html:msibreak">
   <xsl:choose>
