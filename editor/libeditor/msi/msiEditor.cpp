@@ -2965,6 +2965,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     textNode = do_QueryInterface(nodeIn);
     textNode->GetTextContent(theText);
     if (offset > theText.Length()) offset = theText.Length();
+    if (offset > 0) prevChar = theText[--offset]; 
     while ((PRInt32)(--offset) >= 0)
     {
 //      while (prevChar == ' ' && theText[offset] == ' ') --offset;
