@@ -3476,7 +3476,12 @@ PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty, PRUint32& nodecount)
 
   if (isMath) {
     node->GetTagName(name);
-    if (name.EqualsLiteral("msup") ||
+    if (name.EqualsLiteral("math") && isEmpty) 
+    {
+      nodecount = 0; // not used
+      retval = PR_TRUE;
+    }
+    else if (name.EqualsLiteral("msup") ||
       name.EqualsLiteral("msub") ||
       name.EqualsLiteral("mfrac") ||
       (name.EqualsLiteral("msqrt") && isEmpty) ||
@@ -9920,9 +9925,13 @@ nsHTMLEditRules::AdjustSelection(nsISelection *aSelection, nsIEditor::EDirection
 
   // get the (collapsed) selection location
   nsCOMPtr<nsIDOMNode> selNode, temp;
+
   PRInt32 selOffset;
   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
+  PRBool isMath = nsHTMLEditUtils::IsMath(selNode);
+  if (isMath) return NS_OK;
+
   temp = selNode;
 
   // are we in an editable node?
