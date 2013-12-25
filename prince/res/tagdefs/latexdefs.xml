@@ -174,8 +174,8 @@
           <initialcontents>
             <sectiontitle>
               <cursor/>
-              <br/>
-            </sectiontitle>
+<!--               <br/> Not needed as long there are section numbers
+ -->            </sectiontitle>
           </initialcontents>
 				</tag>
 				<tag nm="shortQuote">
