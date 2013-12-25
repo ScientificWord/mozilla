@@ -2965,7 +2965,6 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     textNode = do_QueryInterface(nodeIn);
     textNode->GetTextContent(theText);
     if (offset > theText.Length()) offset = theText.Length();
-    if (offset > 0) prevChar = theText[--offset]; 
     while ((PRInt32)(--offset) >= 0)
     {
 //      while (prevChar == ' ' && theText[offset] == ' ') --offset;
@@ -3002,10 +3001,10 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       }
       // check for double spaces in text mode; possible to convert to math
       pnode = nsnull;
-			if (!inMath && (prevChar == ' ') && ((theText[offset] == 160) || (theText[offset] == 32)))
-			{
-				if (TwoSpacesSwitchesToMath())
-				{		
+      if (TwoSpacesSwitchesToMath())
+      {
+  			if (!inMath && (prevChar == ' ') && ((theText[offset] == 160) || (theText[offset] == 32)))
+  			{
 					*nodeOut = nodeIn;
 					offsetOut = offset;
 					_result = msiIAutosub::STATE_SPECIAL; 
