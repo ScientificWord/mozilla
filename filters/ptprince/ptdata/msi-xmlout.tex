@@ -751,14 +751,14 @@
 %  }
 
 
-\def\linebreak{\msitag{<msibreak type="lineBreak" invisDisplay="&##x21b5;"><br/></msibreak>}}
+\def\linebreak{\msitag{<msibr type="lineBreak" invisDisplay="&##x21b5;"><br/></msibr>}}
 
 \def\newline{%
   \@ifnextchar[{\newlinea}{\newlineb}}
 
-\def\newlinea[#1]{\msitag{<msibreak type="newLine" invisDisplay="&##x21b5;"><br/></msibreak>}}
+\def\newlinea[#1]{\msitag{<msibr type="newLine" invisDisplay="&##x21b5;"><br/></msibr>}}
 
-\def\newlineb{\msitag{<msibreak type="newLine" invisDisplay="&##x21b5;"><br/></msibreak>}}
+\def\newlineb{\msitag{<msibr type="newLine" invisDisplay="&##x21b5;"><br/></msibr>}}
 
 \newtoks\temptoksa
 
@@ -1317,8 +1317,8 @@
 
 
 
-\def\pagebreak{\msitag{<msibreak type="pageBreak"><newPageRule/></msibreak>}}
-\def\newpage{\msitag{<msibreak type="newPage"><newPageRule/></msibreak>}}
+\def\pagebreak{\msitag{<msibr type="pageBreak"><newPageRule/></msibr>}}
+\def\newpage{\msitag{<msibr type="newPage"><newPageRule/></msibr>}}
 
 \def\hfil{<hspace type="customSpace" class="stretchySpace"flex="1" atEnd="true"/>}
 \def\hfill{<hspace type="customSpace" class="stretchySpace" flex="2" atEnd="true"/>}
