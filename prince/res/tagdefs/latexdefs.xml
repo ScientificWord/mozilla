@@ -114,7 +114,7 @@
         <contains>note</contains>
         <contains>notewrapper</contains>
         <contains>msiframe</contains>
-        <contains>msibreak</contains>
+        <contains>msibr</contains>
         <contains>texb</contains>
         <contains>maketitle</contains>
         <contains>maketoc</contains>
@@ -1264,7 +1264,7 @@
           <contains>note</contains>
           <contains>notewrapper</contains>
           <contains>msiframe</contains>
-          <contains>msibreak</contains>
+          <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
         <tag nm="indexentry">
@@ -1284,7 +1284,7 @@
 			    <contains>object</contains>
           <contains>a</contains>
           <contains>msiframe</contains>
-          <contains>msibreak</contains>
+          <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
         <tag nm="secspec">
@@ -1298,7 +1298,7 @@
 			    <contains>object</contains>
           <contains>a</contains>
           <contains>msiframe</contains>
-          <contains>msibreak</contains>
+          <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
         <tag nm="terspec">
@@ -1312,7 +1312,7 @@
 			    <contains>object</contains>
           <contains>a</contains>
           <contains>msiframe</contains>
-          <contains>msibreak</contains>
+          <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
 <!-- most math editing is done outside this framework, but a few math tags are needed here -->

@@ -5482,7 +5482,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         commandStr = "cmd_msiReviseRules";
       break;
 
-      case 'msibreak':
+      case 'msibr':
         objStr = GetString("GenBreak");
         commandStr = "cmd_msiReviseBreaks";
       break;
@@ -6681,7 +6681,7 @@ msiCharPropertiesObjectData.prototype =
             this.commandStr = "cmd_reviseVerticalSpaces";
           break;
 
-          case 'msibreak':
+          case 'msibr':
 //            objStr = GetString("GenBreak");
             objStr = "GenBreak";
             this.commandStr = "cmd_msiReviseBreaks";

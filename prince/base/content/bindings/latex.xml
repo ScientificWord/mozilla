@@ -1089,7 +1089,7 @@ Make list of figures here
 
 	</xbl:binding>
 
-	<xbl:binding id="msibreak">
+	<xbl:binding id="msibr">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
@@ -1148,7 +1148,7 @@ Make list of figures here
 		</xbl:implementation>
 	</xbl:binding>
 
-	<xbl:binding id="mathmsibreak">
+	<xbl:binding id="mathmsibr">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
