@@ -52,7 +52,7 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="html:msibreak">
+<xsl:template match="html:msibr">
   <xsl:choose>
     <xsl:when test="@type='allowBreak'">\allowbreak </xsl:when>
     <xsl:when test="@type='pageBreak'">\pagebreak </xsl:when>
@@ -62,7 +62,8 @@
     <xsl:when test="@type='noBreak'">\nolinebreak </xsl:when>
     <xsl:when test="@type='newLine'">\newline </xsl:when>
 	<xsl:when test="@type='customNewLine'">~\\[<xsl:value-of	select="@dim"/>] </xsl:when>
-	<xsl:otherwise/>										
+	<xsl:otherwise>\\
+	</xsl:otherwise>
  </xsl:choose>
 </xsl:template>
 

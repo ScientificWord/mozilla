@@ -6355,7 +6355,7 @@ function msiInsertBreaks(dialogData, editorElement)
 
   var contentStr;
 	editor.beginTransaction();
-  var node = editor.document.createElement('msibreak',true);
+  var node = editor.document.createElement('msibr',true);
   editor.insertElementAtSelection(node,true);
   switch(dialogData.breakType) {
     case "lineBreak":
@@ -8263,7 +8263,7 @@ var msiObjectPropertiesCommand =
               msiGoDoCommandParams("cmd_msiReviseRules", cmdParams, editorElement);
             break;
 
-            case 'msibreak':
+            case 'msibr':
               msiGoDoCommandParams("cmd_msiReviseBreaks", cmdParams, editorElement);
             break;
 
