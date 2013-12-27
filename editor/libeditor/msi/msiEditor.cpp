@@ -2948,11 +2948,13 @@ nsresult
 msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar, 
  PRInt32 & _result)
 {
+  if (!nodeIn) return NS_ERROR_NULL_POINTER;
   nsCOMPtr<nsIDOM3Node> textNode;
   nsCOMPtr<nsIDOMNode> node2;
   nsCOMPtr<nsIDOMNode> node3;
   nsCOMPtr<nsIDOMNode> pnode;
-  PRUint32 offset, length, offset2;
+  PRUint32 offset, offset2;
+  PRUint32 length = 0;
   PRBool fCanEndHere = PR_TRUE;
   PRBool fValidChar;
   nsAutoString theText;
@@ -2965,7 +2967,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     textNode = do_QueryInterface(nodeIn);
     textNode->GetTextContent(theText);
     if (offset > theText.Length()) offset = theText.Length();
-    while ((PRInt32)(--offset) >= 0)
+    while ((offset > 0) && (PRInt32)(--offset) >= 0)
     {
 //      while (prevChar == ' ' && theText[offset] == ' ') --offset;
       nodeIn->GetParentNode(getter_AddRefs(pnode));
@@ -3003,10 +3005,10 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       pnode = nsnull;
       if (TwoSpacesSwitchesToMath())
       {
-  			if (!inMath && (prevChar == ' ') && ((theText[offset] == 160) || (theText[offset] == 32)))
+  			if (!inMath && (theText[offset] == ' ') && (theText[offset - 1] == 160))
   			{
 					*nodeOut = nodeIn;
-					offsetOut = offset;
+					offsetOut = offset - 1;
 					_result = msiIAutosub::STATE_SPECIAL; 
 					return NS_OK;
 				}
@@ -3040,6 +3042,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   }
   // nodeIn is not a text node, or we have already gone through it
   PRBool fHasChildren;
+  if (!nodeIn) return NS_OK;
   nodeIn->HasChildNodes(&fHasChildren);
   nsCOMPtr<nsIDOMNodeList> nodeList;
   if (fHasChildren)  // in particular *pNode is not a text node
