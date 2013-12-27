@@ -903,7 +903,8 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
                                        const nsAString & isAccent,                                 
                                        nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsISelection> sel;
   nsCOMPtr<nsIDOMElement> underOrOver;
   nsCOMPtr<nsIDOMNode> theBase, theScript, tmpScript;
   tmpScript = nsnull;
@@ -975,6 +976,11 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
       res = underOrOver->AppendChild(theBase, getter_AddRefs(dontcare));
       if (NS_SUCCEEDED(res)) 
         res = underOrOver->AppendChild(theScript, getter_AddRefs(dontcare1));
+      if (NS_SUCCEEDED(res)) {
+        res = editor->GetSelection(getter_AddRefs(sel));
+        if (NS_SUCCEEDED(res))
+          res = sel->Collapse(theScript, 0);
+      }
       if (NS_SUCCEEDED(res))
         mathmlElement = underOrOver; 
     }  
