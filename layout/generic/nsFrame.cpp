@@ -5017,6 +5017,7 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
   	  {
   	    aPos->mResultFrame = current;
   	    aPos->mResultContent = current?current->GetContent():nsnull;
+        if (!(aPos->mResultContent)) return NS_ERROR_FAILURE;
   			if (!current) printf("Got null node for the cursor, nsFrame:4844\n");
   	    aPos->mContentOffset = offset;
         // now check for the very special case of an input box.
@@ -8114,10 +8115,11 @@ NS_IMETHODIMP nsFrame::MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index)
 
 
 NS_IMETHODIMP
-nsFrame::MoveLeftAtDocStart(nsISelection * sel)
+nsFrame::MoveLeftAtDocStart(nsISelection * selection)
 {
   nsresult res;
   nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<nsISelection> sel(selection);
   res = GetEditor(this, getter_AddRefs(htmlEditor));
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
@@ -8126,6 +8128,10 @@ nsFrame::MoveLeftAtDocStart(nsISelection * sel)
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
   nsCOMPtr<nsIDOMTreeWalker> tw;
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
+  if (!sel) {
+    nsCOMPtr<nsIEditor> editor = do_QueryInterface(htmlEditor);
+    editor->GetSelection(getter_AddRefs(sel));
+  }
   nsIDocument *doc = shell->GetDocument();
   nsIAtom * namespaceatom;
   namespaceatom = nsnull;
@@ -8185,9 +8191,10 @@ nsFrame::MoveLeftAtDocStart(nsISelection * sel)
 
 
 NS_IMETHODIMP
-nsFrame::MoveRightAtDocEnd(nsISelection * sel)
+nsFrame::MoveRightAtDocEnd(nsISelection * selection)
 {
   nsresult res;
+  nsCOMPtr<nsISelection> sel(selection);
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
   nsCOMPtr<nsISupports> container = presContext->GetContainer();
@@ -8205,6 +8212,10 @@ nsFrame::MoveRightAtDocEnd(nsISelection * sel)
   nsCOMPtr<nsIDOMTreeWalker> tw;
   editorDocShell->GetEditor(getter_AddRefs(editor));
   htmlEditor = do_QueryInterface(editor);
+  if (!sel) {
+    nsCOMPtr<nsIEditor> editor = do_QueryInterface(htmlEditor);
+    editor->GetSelection(getter_AddRefs(sel));
+  }
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   nsIDocument *doc = shell->GetDocument();
   nsIAtom * namespaceatom;

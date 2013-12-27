@@ -677,6 +677,8 @@ nsresult msiUtils::CreateMSubOrMSup(nsIEditor * editor,
       PRBool locMarkCaret(markCaret);
       if (locMarkCaret && script == nsnull)
         locMarkCaret = PR_FALSE;  // mark script inputbox instead
+      // BBM
+      locMarkCaret = PR_TRUE;
       res = CreateInputbox(editor, PR_FALSE, locMarkCaret, flags, inputbox);
       if (NS_SUCCEEDED(res) && inputbox) 
         theBase = do_QueryInterface(inputbox);
@@ -2111,6 +2113,9 @@ nsresult msiUtils::MarkCaretPosition(nsIEditor * editor,
                          pos == msiIMathMLEditingBC::TO_RIGHT)) 
   {
     res = NS_OK;
+    nsCOMPtr<nsISelection> sel;
+    res = editor->GetSelection(getter_AddRefs(sel));
+    sel->Collapse(node, pos);
     PRBool caretMarked = (flags & msiIMathMLInsertion::FLAGS_CARET_MARKED) ? PR_TRUE : PR_FALSE;
     if (caretMarked && overwrite)
     {
