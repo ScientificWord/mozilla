@@ -3016,7 +3016,9 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   }
 
   var prefs = GetPrefs();
-  prefs.setCharPref("swp.lastfilesaved", destLocalFile.path+".sci");
+  var path = destLocalFile.path;
+  if (!(/\.sci$/.test(path))) path += ".sci";
+  prefs.setCharPref("swp.lastfilesaved", path);
   if (!aSaveCopy)
   {
     pdfModCount = -1;
