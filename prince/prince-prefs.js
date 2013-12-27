@@ -220,5 +220,4 @@ pref("swp.savetoweb.mathjaxsrc", "https://c328740.ssl.cf1.rackcdn.com/mathjax/la
 pref("swp.savetoweb.cssurl", "http://www.mackichan.com/supportfiles/6.0/css/");
 pref("swp.openlastfile", true);
 pref("swp.lastfilesaved", "");
-pref("swp.openlastfile", false);
 pref("font.mathfont-family", "MathJax_Main, Asana Math, XITS Math, Symbol, DejaVu Sans, Cambria Math");
