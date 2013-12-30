@@ -1683,10 +1683,10 @@ nsresult msiEditor::GetNSSelectionData(nsCOMPtr<nsISelection> &selection,
   nsresult res = GetSelection(getter_AddRefs(selection));
   if (NS_SUCCEEDED(res)) 
   {
-    res = GetStartNodeAndOffset(selection, address_of(startNode), &startOffset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(startNode), &startOffset);
     if (NS_SUCCEEDED(res))
     {
-      res = GetEndNodeAndOffset(selection, address_of(endNode), &endOffset);
+      res = GetEndNodeAndOffset(selection, getter_AddRefs(endNode), &endOffset);
        if (NS_SUCCEEDED(res))
 
      res = selection->GetIsCollapsed(&bCollapsed);
@@ -3342,7 +3342,13 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
 //  for (i = 0; i < rangeCount; i++)
  // {
     sel->GetRangeAt(/*i*/0, getter_AddRefs(range));
+  // the code here was causing crashes, possibly because Larry's added info wasn't being sent on to the original
+  // ranges in the selection. This is an attempt to build a correct modrange.
     range->CloneRange(getter_AddRefs(modrange));
+    GetStartNodeAndOffset(sel, getter_AddRefs(nodeContainerStart), &offsetStart);
+    GetEndNodeAndOffset(sel, getter_AddRefs(nodeContainerEnd), &offsetEnd);
+    modrange->SetStart(nodeContainerStart, offsetStart);
+    modrange->SetEnd(nodeContainerEnd, offsetEnd);
     AdjustRange(modrange, isForDeletion, direction);
     modrange->GetStartContainer(getter_AddRefs(nodeContainerStart));
     modrange->GetStartOffset(&offsetStart);
