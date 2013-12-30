@@ -4504,13 +4504,15 @@ nsEditor::GetStartNodeAndOffset(nsISelection *aSelection,
 
   //nsISelection* selection = static_cast<Selection*>(aSelection);
   result = aSelection->GetRangeCount(&rangeCount);
+  NS_ENSURE_SUCCESS(result, result);
 
   nsCOMPtr<nsIDOMRange> range;
   result = aSelection->GetRangeAt(0, getter_AddRefs(range));
-
+  NS_ENSURE_SUCCESS(result, result);
   result = range->GetStartContainer(outStartNode);
-
+  NS_ENSURE_SUCCESS(result, result);
   result = range->GetStartOffset(outStartOffset);
+  NS_ENSURE_SUCCESS(result, result);
 
   return result;
 }
