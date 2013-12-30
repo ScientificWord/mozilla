@@ -3171,7 +3171,7 @@ function newbox(editor)
 {
   var box = editor.document.createElementNS(mmlns,"mi");
 ////  box.appendChild(editor.document.createTextNode("\u25A1"));
-  box.appendChild(editor.document.createTextNode("\u200B"));
+  box.appendChild(editor.document.createTextNode("\u200A"));
   box.setAttribute("tempinput","true");
   return box;
 }
@@ -3292,7 +3292,7 @@ function insertafter(loc,node) {
 function inputboxselected(node)
 {
   if (node.nodeType == Node.TEXT_NODE
-   && node.data == "\u200B"
+   && node.data == "\u200A"
    && node.parentNode.localName == "mi")
     return true;
   else if (node.localName == "mi")
