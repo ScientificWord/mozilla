@@ -2046,9 +2046,9 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       if (*aHandled) {
         // there's nothing before startNode. We can't delete it, but if it is empty
         // and not a default paragraph, we can replace it with a default paragraph.
-        PRBool *fEmpty;
-        res = CheckForEmptyBlock(startNode, rootNode, aSelection, fEmpty);
-        if (*fEmpty) {
+        PRBool fEmpty = PR_TRUE;
+        res = CheckForEmptyBlock(startNode, rootNode, aSelection, &fEmpty);
+        if (fEmpty) {
           nsCOMPtr<nsIDOMNode> para;
           res = mHTMLEditor->CreateDefaultParagraph(rootNode, startOffset, PR_FALSE, getter_AddRefs(para));
           res = mHTMLEditor->DeleteNode(startNode);
