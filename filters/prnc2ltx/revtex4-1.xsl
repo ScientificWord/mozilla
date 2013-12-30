@@ -7,16 +7,18 @@
     xmlns:msi="http://www.sciword.com/namespaces/sciword"
     xmlns:exsl="http://exslt.org/common">
 
+<xsl:include href="latex.xsl"/>
+
 <xsl:template match="html:author">
  \author{<xsl:apply-templates mode="frontmatter"/>
    <xsl:if test="../html:address">~\\</xsl:if>
-   <xsl:apply-templates select="../html:address" mode="frontmatter" />
- }</xsl:template>  
+   <xsl:apply-templates select="../html:address" mode="frontmatter" />}</xsl:template>  
  <!-- for the sake of the above template, -->
  <xsl:template match="html:msibr" mode="frontmatter">~\\
 </xsl:template>
 
-<xsl:include href="latex.xsl"/>
+<xsl:template match="html:author" mode="building-author">
+</xsl:template>  
 
 <xsl:template match="html:preprint">
 \preprint{<xsl:apply-templates/>}<xsl:text/>
