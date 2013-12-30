@@ -81,7 +81,7 @@ nsComposerCmdLineHandler.prototype = {
 
   /* nsICommandLineHandler */
   handle : function (cmdLine) {
-    dump("clh: Prince command line handler\n");
+    //dump("clh: Prince command line handler\n");
     var args = Components.classes["@mozilla.org/supports-string;1"]
                          .createInstance(nsISupportsString);
     var features = "chrome,all,dialog=no";
@@ -97,25 +97,17 @@ nsComposerCmdLineHandler.prototype = {
         features += ",height=" + height;
     } catch (e) {
     }
-    dump("clh: Features is '"+features+"'\n");
+//        dump("clh: Features is '"+features+"'\n");
     try {
       var uristr = cmdLine.handleFlagWithParam("edit", false);
-      dump("1. UriStr is '"+uristr+"'\n");
       if (uristr == null) {
         // Try the editor flag (used for general.startup.* prefs)
         uristr = cmdLine.handleFlagWithParam("editor", false);
       }
-      dump("2. UriStr is '"+uristr+"'\n");
 
-      if ((uristr==null) && !cmdLine.preventDefault &&cmdLine.length > 1) {
-        // dump("clh: param 0 is " + cmdLine.getArgument(0));
-        // dump("clh: param 1 is " + cmdLine.getArgument(1));
-        // dump("clh: param 2 is " + cmdLine.getArgument(2));
-        // dump("clh: param 3 is " + cmdLine.getArgument(3));
-
-        uristr = cmdLine.getArgument(1);
+      if ((uristr==null) && !cmdLine.preventDefault &&cmdLine.length > 0) {
+        uristr = cmdLine.getArgument(0);
         if (uristr && uristr.length > 0){
-          dump("3. UriStr is '"+uristr+"'\n");
           if (!(/^-/).test(uristr)) {
             try {
               args.data = cmdLine.resolveURI(uristr).spec;
@@ -128,7 +120,6 @@ nsComposerCmdLineHandler.prototype = {
       }
     }
     catch(e) {
-      args.data = "";
     }
     var wwatch = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
                                .getService(nsIWindowWatcher);
