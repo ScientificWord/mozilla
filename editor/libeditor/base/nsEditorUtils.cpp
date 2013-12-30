@@ -272,7 +272,7 @@ nsEditorUtils::JiggleCursor(nsIEditor *aEditor, nsISelection * sel, PRBool isFor
   nsCOMPtr<nsIDOMHTMLDocument> htmlDoc = do_QueryInterface(doc);
   if (!htmlDoc) return PR_FALSE;
   nsAutoString name;
-  ed->GetStartNodeAndOffset(sel, address_of(startNode), &startOffset); 
+  ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset); 
   htmlDoc->GetBody(getter_AddRefs(bodyElement));
   if (htmlEditor) {
     htmlEditor -> GetTagListManager(getter_AddRefs(tlm));
