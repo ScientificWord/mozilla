@@ -536,7 +536,7 @@ NS_IMETHODIMP nsPlaintextEditor::InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode)
   }
   nsCOMPtr<nsIDOMNode> selNode;
   PRInt32 selOffset;
-  res = GetStartNodeAndOffset(selection, address_of(selNode), &selOffset);
+  res = GetStartNodeAndOffset(selection, getter_AddRefs(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
   
   res = CreateBR(selNode, selOffset, outBRNode);

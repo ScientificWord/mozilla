@@ -118,6 +118,8 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 
   
   nsCOMPtr<nsIDOMNode> startNode, endNode;
+  nsIDOMNode * sn;
+  nsIDOMNode * en;
   nsCOMPtr<nsIDOMNode> theNode;
   nsCOMPtr<nsIDOMNodeList> kids;
   nsCOMPtr<msiITagListManager> tlmgr;
@@ -134,8 +136,13 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   
   // If the selection consists of a single node which is a front matter node, and
   // if the node is not empty, change the selection to the contents of that node.
-  mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
-  mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
+  mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
+  sn = startNode;
+  NS_ADDREF(sn);
+
+  mHTMLEditor->GetEndNodeAndOffset(aSelection, getter_AddRefs(endNode), &endOffset);
+  en = endNode;
+  NS_ADDREF(en);
   if ((startNode == endNode) && ((startOffset+1) == endOffset))
   {
     msiUtils::GetChildNode(endNode, startOffset, theNode);
@@ -180,8 +187,8 @@ void DebDisplaySelection(const char* str, nsISelection *aSelection, msiEditor* e
 
   PRInt32 startOffset, endOffset;
   
-  editor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
-  editor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
+  editor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
+  editor->GetEndNodeAndOffset(aSelection, getter_AddRefs(endNode), &endOffset);
   startNode->GetParentNode(getter_AddRefs(startParent));
   endNode->GetParentNode(getter_AddRefs(endParent));
 
@@ -225,11 +232,11 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   PRInt32 startOffset, endOffset;
   PRBool bDeleteEntireMath = false;
   
-  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
 
-  res = mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
+  res = mHTMLEditor->GetEndNodeAndOffset(aSelection, getter_AddRefs(endNode), &endOffset);
   if (NS_FAILED(res)) return res;
   if (!endNode) return NS_ERROR_FAILURE;
 
@@ -366,11 +373,11 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
    
   mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 
-  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
   
-  res = mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
+  res = mHTMLEditor->GetEndNodeAndOffset(aSelection, getter_AddRefs(endNode), &endOffset);
   if (NS_FAILED(res)) return res;
   if (!endNode) return NS_ERROR_FAILURE;
 
@@ -404,7 +411,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   nsCOMPtr<nsIDOMNode> newMath;
   PRInt32 mathOffset;
 
-  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(parentOfMath), &mathOffset);
+  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(parentOfMath), &mathOffset);
   
   //mMSIEditor -> InsertHTML(nsString(result, resString.Length()));
   mMSIEditor -> InsertHTML(resString);
