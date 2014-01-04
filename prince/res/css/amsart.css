@@ -119,24 +119,6 @@ bodyMath {
   color: rgb(0,128,64);
 }
 
-author {
-  text-align: center;
-  font-weight: normal;
-  display: block;
-  padding-top: 10pt;
-}
-
-date {
-  text-align: center;
-  font-weight: normal;
-  display: block;
-  padding-top: 2pt;
-}
-
-address {
-  display: block;
-}
-
 title {
   font-size: x-large;
   display: block;
@@ -147,6 +129,118 @@ title {
 title > short {
    display: inline;
    padding: 0 0 0 20pt;}
+
+author {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  padding-top: 10pt;
+}
+
+authorid {
+  display: none;
+}
+
+body[showshort='true'] authorid {
+  display: inline;
+  color: green;
+}
+
+body[showshort='true'] authorid:before {
+  content: '[';
+  display: inline;
+  color: green;
+}
+
+body[showshort='true'] authorid:after {
+  content: '] ';
+  display: inline;
+  color: green;
+}
+
+address {
+  display: block;
+}
+
+curraddr {
+  text-align: center;
+  display: block;
+}
+
+email {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+}
+
+urladdr {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+}
+
+thanks {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+}
+
+date {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+}
+
+subjclass {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+}
+
+subjclassyear {
+  display: none;
+}
+
+body[showshort='true'] subjclassyear {
+  display: inline;
+  color: green;
+}
+
+body[showshort='true'] subjclassyear:before {
+  content: '[';
+  display: inline;
+  color: green;
+}
+
+body[showshort='true'] subjclassyear:after {
+  content: '] ';
+  display: inline;
+  color: green;
+}
+
+keywords {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+}
+
+dedicatory {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+}
+
+abstract {
+  text-align: center;
+  display: block;
+  margin-bottom: .5in;
+}
 
 /* Not in article.css (gp)
 pre, verbatim {
