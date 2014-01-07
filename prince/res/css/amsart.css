@@ -194,6 +194,13 @@ date {
   padding-top: 2pt;
 }
 
+translator {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+}
+
 subjclass {
   text-align: center;
   font-weight: normal;
