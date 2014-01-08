@@ -239,6 +239,7 @@ prince.jar:
   content/bindings/structurebar.xml  (bindings/structurebar.xml)
   content/bindings/tabeditor.xml   (bindings/tabeditor.xml)
   content/bindings/latex.xml        (bindings/latex.xml)
+  content/bindings/amscls.xml        (bindings/amscls.xml)
   content/bindings/revtex.xml        (bindings/revtex.xml)
 * content/communicator/contentAreaUtils.js    (/toolkit/content/contentAreaUtils.js)
 * content/communicator/contentAreaDD.js       (/xpfe/communicator/resources/content/contentAreaDD.js)
