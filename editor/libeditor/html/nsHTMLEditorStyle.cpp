@@ -971,10 +971,13 @@ nsresult nsHTMLEditor::RemoveStyleInside(nsIDOMNode *aNode,
 
   // then process the node itself
   if ( !aChildrenOnly && 
-        (aProperty && NodeIsType(aNode, aProperty) || // node is prop we asked for
-        (aProperty == nsEditProperty::href && nsHTMLEditUtils::IsLink(aNode, mtagListManager)) || // but check for link (<a href=...)
-        (aProperty == nsEditProperty::name && nsHTMLEditUtils::IsNamedAnchor(aNode, mtagListManager))) || // and for named anchors
-        (!aProperty && NodeIsProperty(aNode)))  // or node is any prop and we asked for that
+        (
+          (!aProperty && NodeIsProperty(aNode)) ||  // we are deleting all text tag properties
+          (aProperty && NodeIsType(aNode, aProperty)) || // node is prop we asked for
+          (aProperty == nsEditProperty::href && nsHTMLEditUtils::IsLink(aNode, mtagListManager)) || // but check for link (<a href=...)
+          (aProperty == nsEditProperty::name && nsHTMLEditUtils::IsNamedAnchor(aNode, mtagListManager)) // and for named anchors
+        )
+      )  // or node is any prop and we asked for that
   {
     // if we weren't passed an attribute, then we want to 
     // remove any matching inlinestyles entirely
@@ -1647,7 +1650,7 @@ nsresult nsHTMLEditor::RemoveInlinePropertyImpl(nsIAtom *aProperty, const nsAStr
         res = PromoteRangeIfStartsOrEndsInNamedAnchor(range);
       }
       else {
-        // adjust range to include any ancestors who's children are entirely selected
+        // adjust range to include any ancestors whose children are entirely selected
         res = PromoteInlineRange(range);
       }
       if (NS_FAILED(res)) return res;
