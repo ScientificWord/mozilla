@@ -8121,8 +8121,12 @@ nsFrame::MoveLeftAtDocStart(nsISelection * selection)
   nsCOMPtr<nsIHTMLEditor> htmlEditor;
   nsCOMPtr<nsISelection> sel(selection);
   res = GetEditor(this, getter_AddRefs(htmlEditor));
+  NS_ENSURE_SUCCESS(res, res);
+  // NS_ENSURE_TRUE(htmlEditor, NS_ERROR_FAILURE);
   nsPresContext* presContext = PresContext();
+  NS_ENSURE_TRUE(presContext, NS_ERROR_FAILURE);
   nsIPresShell *shell = presContext->GetPresShell();
+  NS_ENSURE_TRUE(shell, NS_ERROR_FAILURE);
   PRBool fTakesText = PR_FALSE;
   nsCOMPtr<msiITagListManager> tlm;
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
@@ -8147,13 +8151,14 @@ nsFrame::MoveLeftAtDocStart(nsISelection * selection)
 
     doctrav = do_QueryInterface(htmlDoc);
     res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
-    if (!(NS_SUCCEEDED(res) && tw)) return NS_ERROR_FAILURE;
+    NS_ENSURE_SUCCESS(res, NS_ERROR_FAILURE);
 
     nsCOMPtr<nsIDOMNode> currentNode;
     tw->GetCurrentNode(getter_AddRefs(currentNode));
     while (currentNode)
     {
       res = tlm->NodeCanContainTag( currentNode, strText, namespaceatom, &fTakesText);
+      NS_ENSURE_SUCCESS(res, NS_ERROR_FAILURE);
       if (fTakesText) // this is where we want the cursor to go
       {
         sel->Collapse(currentNode, 0);
