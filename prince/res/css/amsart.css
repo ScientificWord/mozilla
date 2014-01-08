@@ -165,6 +165,8 @@ address {
 curraddr {
   text-align: center;
   display: block;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-curraddr");
+  -moz-user-select: text;
 }
 
 email {
@@ -172,6 +174,8 @@ email {
   font-weight: normal;
   display: block;
   padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-email");
+  -moz-user-select: text;
 }
 
 urladdr {
@@ -179,12 +183,16 @@ urladdr {
   font-weight: normal;
   display: block;
   padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-urladdr");
+  -moz-user-select: text;
 }
 
 thanks {
   text-align: center;
   font-weight: normal;
   display: block;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-thanks");
+  -moz-user-select: text;
 }
 
 date {
@@ -199,6 +207,8 @@ translator {
   font-weight: normal;
   display: block;
   padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-translator");
+  -moz-user-select: text;
 }
 
 subjclass {
@@ -206,6 +216,8 @@ subjclass {
   font-weight: normal;
   display: block;
   padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-subjclass");
+  -moz-user-select: text;
 }
 
 subjclassyear {
@@ -234,6 +246,8 @@ keywords {
   font-weight: normal;
   display: block;
   padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-keywords");
+  -moz-user-select: text;
 }
 
 dedicatory {
@@ -241,6 +255,8 @@ dedicatory {
   font-weight: normal;
   display: block;
   padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-dedicatory");
+  -moz-user-select: text;
 }
 
 abstract {
