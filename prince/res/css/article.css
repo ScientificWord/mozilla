@@ -250,10 +250,12 @@ date {
 abstract {
   display: block;
   margin-top: 30pt;
-  margin-left: 50pt;
-  margin-right: 50pt;
+  margin-left: 0pt;
+  margin-right: 0pt;
   padding-left: 15pt;
   padding-right: 15pt;
+  padding-top: 15pt;
+  padding-bottom: 15pt;
   font-size: small;
   border: thin solid black;
   background-color: #E1EEFD;

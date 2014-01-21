@@ -619,7 +619,7 @@ piecewise<uID15.0>piecewise(%dr_list%)
 mixednumber<uID16.0>(%whole%+%frac%)
 differentiate<uID17.0>tcidiff(%expr%,%var%)
 ;; substitution<uID18.0>evalAt(%expr%,%subst_list%)
-substitution<uID18.0>subs(%expr%,%subst_list%)
+substitution<uID18.0>evalAt(%expr%,%subst_list%)
 doublesubstitution<uID19.0>evalAt(%expr%,%usubst_list%)-evalAt(%expr%,%subst_list%)
 ODE Exact<uID20.0>{%exp_list%},{%sfor_func%}
 ODE Laplace<uID21.0>{%exp_list%},{%sfor_func%},method=laplace
