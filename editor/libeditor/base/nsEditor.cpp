@@ -345,7 +345,7 @@ PRBool nsEditor::NodeIsTypeString(nsIDOMNode *aNode, const nsAString &aTag, msiI
     nsAutoString strNodeName;
     nsAutoString strClassName;
     nodeAtom->ToString(strNodeName);
-    manager->GetRealClassOfTag(aTag, nsnull, strClassName);
+    manager->GetRealClassOfTag(strNodeName, nsnull, strClassName);
     fIsInTagClass = aTag.Equals(strClassName);
 //    manager->GetTagInClass(aTag, strNodeName, nsnull, &fIsInTagClass);
     if (fIsInTagClass) return PR_TRUE;
