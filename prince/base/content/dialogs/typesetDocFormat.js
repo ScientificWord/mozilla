@@ -1170,8 +1170,8 @@ function updateComputedMargins()
   var tbfootersep = Number(document.getElementById("tbfootersep").value);
   var tbfooter = Number(document.getElementById("tbfooter").value);
   var htotal = tbtopmargin + tbhedd + tbheddsep + tbbody + tbfooter + tbfootersep;
-  document.getElementById("tbcomputedrmargin").value = unitRound(pagewidth - wtotal);                
-  document.getElementById("tbcomputedbmargin").value = unitRound(pageheight - htotal);
+  document.getElementById("tbcomputedrmargin").value = ' ' + unitRound(pagewidth - wtotal);                
+  document.getElementById("tbcomputedbmargin").value = ' ' +unitRound(pageheight - htotal);
   // now check for overflow conditions
   // overflow occurs if an element goes beyond the edge of the finishpage.
   var vcenter = document.getElementById("vcenter").checked;
@@ -1318,31 +1318,29 @@ function cropmarkRequest(checkbox)
 function handleBodyMouseClick(event)
 {
   var element = event.target;
-  if (event.clientY - element.boxObject.y < element.boxObject.height/2)
-    document.getElementById("tbbodywidth").focus();
-  else
-    document.getElementById("tbbodyheight").focus();
+  // if (event.clientY - element.boxObject.y < element.boxObject.height/2)
+  document.getElementById("tbbodyheight").focus();
+  // else
+  //   document.getElementById("tbbodyheight").focus();
 }
 
 // since the onkeypress event gets called *before* the value of a text box is updated,
 // we handle the updating here. This function takes a textbox element and an event and returns sets
 // the value of the text box
-function updateTextNumber(textelement, event)
+function updateTextNumber(textelement, keycode, charcode)
 {
   var val = textelement.value;
   var selStart = textelement.selectionStart;
   var selEnd = textelement.selectionEnd;
-  var keycode = event.keyCode;
-  var charcode = event.charCode;
-  
-  if (keycode == event.DOM_VK_BACK_SPACE) {
+   
+  if (keycode == KeyEvent.DOM_VK_BACK_SPACE) {
     if (selStart > 0) {
       selStart--;
       val = val.slice(0,selStart)+val.slice(selEnd);
     }
   }
   else 
-  if (keycode == event.DOM_VK_DELETE) {
+  if (keycode == KeyEvent.DOM_VK_DELETE) {
     selEnd++;
     val = val.slice(0,selStart)+val.slice(selEnd);
   }
@@ -1360,7 +1358,7 @@ function updateTextNumber(textelement, event)
     {
       textelement.value = val;
       textelement.setSelectionRange(selStart, selStart)
-      event.preventDefault();
+      KeyEvent.preventDefault();
     }
   }
   catch(e)
@@ -1369,21 +1367,42 @@ function updateTextNumber(textelement, event)
   }
 }           
  
-function handleChar(event, id, tbid)
+function handleChar(keyCode, charCode, id, tbid)
 {
-  var element = event.originalTarget;
-  if (event.keyCode == event.DOM_VK_UP)
+  var element = document.getElementById(tbid);
+  if (keyCode == KeyEvent.DOM_VK_UP)
     goUp(tbid);
-  else if (event.keyCode == event.DOM_VK_DOWN)
+  else if (keyCode == KeyEvent.DOM_VK_DOWN)
     goDown(tbid);
   else
-    updateTextNumber(element,event);
+    updateTextNumber(element, keyCode, charCode);
 }
 
 function geomHandleChar(event, id, tbid)
 {
-  handleChar(event, id, tbid);
-  geomInputChar(event, id, tbid);
+  // We want vertical arrows when id is 'bodyWidth' to switch focus to bodyHeight, and vice versa.
+  var kc = event.keyCode;
+  var vertArrow = kc == event.DOM_VK_UP || kc == event.DOM_VK_DOWN;
+  var horArrow = kc == event.DOM_VK_LEFT || kc == event.DOM_VK_RIGHT;
+  //geomHandleChar(event,'bodywidth', 'tbbodywidth')  
+  var thetbid = tbid;
+  var theid = id;
+  var charCode = event.charCode;
+
+  if (tbid == 'tbbodywidth' && vertArrow)
+  {
+    thetbid = 'tbbodyheight';
+    theid = 'bodyheight';
+  }
+  else if (tbid == 'tbbodyheight' && horArrow) 
+  {
+    thetbid = 'tbbodywidth';
+    theid = 'bodywidth';
+  }
+  if (kc == event.DOM_VK_LEFT) kc = event.DOM_VK_DOWN;
+  else if (kc == event.DOM_VK_RIGHT) kc = event.DOM_VK_UP;    
+  handleChar(kc, charCode, theid, thetbid);
+  geomInputChar(event, theid, thetbid);
 }
 
 function sectHandleChar(event)
@@ -1395,7 +1414,7 @@ function sectHandleChar(event)
   else if (tbid == "tbsectrightheadingmargin")
     id = "sectrightheadingmargin";
   else return;  
-  handleChar(event, id, tbid);
+  handleChar(event.keyCode, event.charCode, id, tbid);
   sectInputChar(event, id, tbid);
 }
 
