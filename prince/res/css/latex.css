@@ -732,7 +732,7 @@ body {
 
 bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epigraph, title, line,
   dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
-  abstract, address, author, date, title {
+  abstract, address, author, date, title, maketitle {
   -moz-user-select: text;
 }
 
