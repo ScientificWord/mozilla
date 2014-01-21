@@ -47,6 +47,10 @@ private:
                        int & local_nodes_done);
   void AnalyzeCONSTANT(MNODE * eng_node, SEMANTICS_NODE * rv,
                        int & local_nodes_done);
+
+  void AnalyzeSUBSTITUTION(MNODE * eng_node, SEMANTICS_NODE * rv,
+                       int & local_nodes_done);
+
   void AnalyzeBOOLEAN(MNODE * eng_node, SEMANTICS_NODE * rv,
                       int & local_nodes_done);
   void AnalyzeFRACTION(MNODE * eng_node, SEMANTICS_NODE * rv,
