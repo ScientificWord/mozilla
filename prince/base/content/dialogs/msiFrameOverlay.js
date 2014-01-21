@@ -756,6 +756,11 @@ function setConstrainDimensions(width, height)
 
 function setWidthAndHeight(width, height, event)
 {
+  if (!gFrameModeImage)
+  {
+    if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
+//    if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
+  }
   if (Number(width) > 0)
   {
     Dg.widthInput.value = width;
@@ -774,11 +779,6 @@ function setWidthAndHeight(width, height, event)
     constrainProportions( "frameWidthInput", "frameHeightInput", event );
   else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
     constrainProportions( "frameHeightInput", "frameWidthInput", event );
-  if (!gFrameModeImage)
-  {
-    if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
-    if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
-  }
 }
 
 function setContentSize(width, height)  
@@ -1218,9 +1218,6 @@ function constrainProportions( srcID, destID, event )
   var destElement = document.getElementById(destID);
   if (!destElement)
     return;
-
-  // always force an integer (whether we are constraining or not)
-//  forceInteger(srcID);
 
   if (gFrameModeImage)
   {
