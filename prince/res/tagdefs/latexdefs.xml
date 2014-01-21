@@ -1062,6 +1062,28 @@
           </initialcontents>
 	  		  <!--inclusion>true</inclusion-->
         </tag>
+        <tag nm="imagecaption">
+          <description>Image caption</description>
+          <contains>#text</contains>
+          <contains>texttag</contains>
+          <contains>table</contains>
+          <contains>listparenttag</contains>
+          <contains>listtag</contains>
+          <contains>shortQuote</contains>
+          <contains>othertag</contains>
+          <contains>mml:math</contains>
+          <contains>br</contains>
+          <contains>cursor</contains>
+          <contains>defaulttitletag</contains>
+          <contains>img</contains>
+          <contains>object</contains>
+          <contains>a</contains>
+          <contains>note</contains>
+          <contains>notewrapper</contains>
+          <contains>msiframe</contains>
+          <contains>msibr</contains>
+          <contains>texb</contains>
+        </tag>
 				<tag nm="##lang1##" hidden="1" babel="3">
           <level>*</level>
           <description>First language environment</description>
@@ -1244,28 +1266,6 @@
           <contains>note</contains>
           <contains>object</contains>
           <contains>notewrapper</contains>
-        </tag>
-			  <tag nm="imagecaption">
-          <description>Image caption</description>
-          <contains>#text</contains>
-			    <contains>texttag</contains>
-          <contains>table</contains>
-			    <contains>listparenttag</contains>
-			    <contains>listtag</contains>
-			    <contains>shortQuote</contains>
-			    <contains>othertag</contains>
-			    <contains>mml:math</contains>
-			    <contains>br</contains>
-			    <contains>cursor</contains>
-			    <contains>defaulttitletag</contains>
-			    <contains>img</contains>
-			    <contains>object</contains>
-          <contains>a</contains>
-          <contains>note</contains>
-          <contains>notewrapper</contains>
-          <contains>msiframe</contains>
-          <contains>msibr</contains>
-          <contains>texb</contains>
         </tag>
         <tag nm="indexentry">
           <description>Index entry</description>
