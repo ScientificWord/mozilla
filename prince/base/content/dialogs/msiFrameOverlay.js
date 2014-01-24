@@ -1192,7 +1192,7 @@ function checkAutoDimens(checkBox, textboxId)
   if (checkBox.checked && !Dg.constrainCheckbox.checked){
     Dg.constrainCheckbox.checked = true;
   }
-  Dg.frameWidthInput.value = "0";
+  Dg.widthInput.value = "0";
   setDisabled(this, textboxId);
 }
 

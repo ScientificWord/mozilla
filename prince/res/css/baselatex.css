@@ -37,7 +37,7 @@ verbatim bodyText {
 }
 numberedListItem, 
 bulletListItem,
-descriptionListItem.
+descriptionListItem,
 bibitem {
        margin-left: 2em;
        padding-left: 1em;
@@ -215,8 +215,8 @@ bibkey {
   min-width: .5em;
   display: inline;
   border: thin solid #BBBB77;
-  border-radius: 3px;
-  background-color: #FFFFBB;
+/*  border-radius: 3px;
+*/  background-color: #FFFFBB;
 }
 
 numberedLabel {
