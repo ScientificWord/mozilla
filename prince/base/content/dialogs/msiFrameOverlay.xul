@@ -273,7 +273,7 @@
   <vbox id = "msiFrameSize">
     <groupbox>
       <caption label="&sizeTab.label;"/>
-      <!-- vbox observes="hasNaturalSize" -->
+      <!-- hbox observes="hasNaturalSize" -->
         <radiogroup id="sizeRadio">
           <hbox flex="1" observes="hasNaturalSize" hidden="true">
             <vbox>
@@ -282,24 +282,28 @@
             <vbox>
               <radio id="custom" value="custom" label="&sizeTab.custom;" oncommand="doDimensionEnabling();" radioGroup="sizeRadio"/>
             </vbox>
+            <vbox>
+              <checkbox observes="hasNaturalSize" id="constrainCheckbox"    oncommand ="ToggleConstrain();"
+                  checked="false" persist = "checked" label="Preserve aspect ratio"/>
+            </vbox>
           </hbox>
         </radiogroup>
         <hbox>
           <grid>
             <columns>
-              <column flex="1" width=".75in"/>
-              <column width="12px"/>
-              <column flex="1" width=".75in"/>
-              <column flex="1"/>
-              <column observes="hasNaturalSize" width = "12px" />
+              <column/>
+              <column/>
+              <column width="16px"/>
+              <column/>
+              <column/>
             </columns>
             <rows>
               <row>
                 <label value="&width;" id="frameWidthLabel"/>
                 <label id="autoWidthLabel" value="&sizeTab.auto;" control="autoWidth"/>
+                <spacer/>
                 <label value="&height;" id="frameHeightLabel"/>
                 <label value="&sizeTab.auto;" control="autoHeight"/>
-                <label observes="hasNaturalSize" value="constrainCheckbox" control="constrainCheck"/>
               </row>
               <row>
                 <textbox
@@ -309,8 +313,10 @@
                   onchange  = "frameWidthChanged(this, event);"
                   onload    = "frameWidthChanged(this, event);"
                   value     = "72"
+                  style     = "width: 1.0in;"
                   persist   = "value"/>
                 <checkbox id="autoWidth" checked="true" persist = "checked" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
+                <spacer/>
                 <textbox
                   id        = "frameHeightInput"
                   type      = "number"
@@ -318,10 +324,9 @@
                   onchange  = "frameHeightChanged(this, event);"
                   onload    = "frameHeightChanged(this, event);"
                   value     = "36"
+                  style     = "width: 1.0in;"                  
                   persist   =  "value"/>
                 <checkbox id="autoHeight" checked="true" persist = "checked" oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
-                <checkbox observes="hasNaturalSize" id="constrainCheckbox" oncommand ="ToggleConstrain();"
-                  checked="false" persist = "checked"/>
               </row>
             </rows>
           </grid>
