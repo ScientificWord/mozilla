@@ -305,7 +305,7 @@
                 <label value="&height;" id="frameHeightLabel"/>
                 <label value="&sizeTab.auto;" control="autoHeight"/>
               </row>
-              <row>
+              <row observes="customSize">
                 <textbox
                   id        = "frameWidthInput"
                   type      = "number"
@@ -315,7 +315,7 @@
                   value     = "72"
                   style     = "width: 1.0in;"
                   persist   = "value"/>
-                <checkbox id="autoWidth" checked="true" persist = "checked" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
+                <checkbox id="autoWidth" checked="true" observes = "customSize" persist = "checked" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
                 <spacer/>
                 <textbox
                   id        = "frameHeightInput"
@@ -324,9 +324,11 @@
                   onchange  = "frameHeightChanged(this, event);"
                   onload    = "frameHeightChanged(this, event);"
                   value     = "36"
-                  style     = "width: 1.0in;"                  
+                  style     = "width: 1.0in;"   
                   persist   =  "value"/>
-                <checkbox id="autoHeight" checked="true" persist = "checked" oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
+                <checkbox id="autoHeight" checked="true" 
+                  observes  = "customSize"               
+                  persist = "checked" oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
               </row>
             </rows>
           </grid>
@@ -394,6 +396,7 @@
       <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>
       <broadcaster id="hasNaturalSize" hidden=""/>  
       <broadcaster id="role-image" hidden="false"/>      
+      <broadcaster id="customSize" disabled="true"/>      
     </broadcasterset>
   </vbox>
 
