@@ -1255,6 +1255,11 @@ function doDimensionEnabling()
 {
   // Enabled only if "Custom" is selected
   var enable = (document.getElementById("custom").selected);
+  if (enable) {
+    document.getElementById("customSize").removeAttribute("disabled");
+  }
+  else
+    document.getElementById("customSize").setAttribute("disabled", "true");
 
   // BUG 74145: After input field is disabled,
   //   setting it enabled causes blinking caret to appear
