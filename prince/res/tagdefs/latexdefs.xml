@@ -1062,7 +1062,7 @@
           </initialcontents>
 	  		  <!--inclusion>true</inclusion-->
         </tag>
-        <tag nm="imagecaption">
+        <tag nm="imagecaption" hidden="1">
           <description>Image caption</description>
           <contains>#text</contains>
           <contains>texttag</contains>
