@@ -1765,10 +1765,16 @@
 
 %\MSIMathQuote{\\} %% may need to hard-code this one:
 
-\def\\{\@ifnextchar[{\@linebrk}{\@linebrk[0pt]}}
+\def\\{\@ifnextchar*{\@linebrk}{\@linebrk+}}
 
 
-\def\@linebrk[#1]{\ifmmode\string\\\else\msitag{<br/>}\fi}
+\def\@linebrk#1{%
+   \@ifnextchar[{\@linebrkA{#1}}{\@linebrkB{#1}}}
+
+\def\@linebrkA#1[#2]{%
+  \ifmmode\string\\\else\msitag{<msibr type="customNewLine" dim="#2" style="vertical-align: -#2" depth="#2"/>}\fi}
+
+\def\@linebrkB#1{\ifmmode\string\\\else\msitag{<msibr type="newLine" invisDisplay="&##x21b5;"/>}\fi}
 
 %% Temporary until prince can read xml
 
