@@ -255,11 +255,10 @@ otfont {
 }
 
 /* show footnotes by default*/
-note[type="footnote"], node[type="footnote"][hide="false"] {
+note[type="footnote"], note[type="footnote"][hide="false"] {
   display: block;
-  float: left;
-  width: 100%;
-  clear: right;
+  float: none;
+  width: 90%;
 }
 
 /* never show footnotes marked 'hide'*/
