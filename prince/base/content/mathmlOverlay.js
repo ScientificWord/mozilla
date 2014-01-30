@@ -2965,7 +2965,7 @@ function applyMathStyleToObject(styleVals, objType, targ, editor)
   var bAddStyleNode = false;
   if (styleNode == null)
   {
-    styleNode = targ.ownerDocument.createElement("mstyle");
+    styleNode = targ.ownerDocument.createElementNS("http://www.w3.org/1998/Math/MathML","mstyle");
     bAddStyleNode = true;
   }
 
