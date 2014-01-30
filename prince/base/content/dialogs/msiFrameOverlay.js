@@ -2,7 +2,6 @@ Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 var frameUnitHandler;
 var sides;
-var gFrameTab;
 var scale;
 var scaledWidthDefault; 
 var scaledHeightDefault;
@@ -23,12 +22,14 @@ var gActualWidth = 0;
 var gActualHeight = 0;
 var gDefaultPlacement = "";
 var gDefaultInlineOffset = "";
+var hasNaturalSize;
 
 
 function setHasNaturalSize(istrue)
 // images frequently have a natural size
 {
   var bcaster = document.getElementById("hasNaturalSize"); 
+  hasNaturalSize = istrue;
   if (istrue) 
   {
     bcaster.removeAttribute("hidden");
@@ -99,6 +100,7 @@ function rescaleMetrics(width, height) // width and height in current unit.
   }
   if (toPixels(totalWidth) <50 && toPixels(totalHeight) < 32)
     scale = Math.min (scale*(100/toPixels(totalWidth)), scale*(64/toPixels(totalHeight)));
+  if (scale > .25) scale = .25;
   if (oldScale != scale) {
     scaledWidth = toPixels(Dg.truewidth.value);
     scaledHeight = toPixels(Dg.trueheight.value);
@@ -121,16 +123,19 @@ function initFrameTab(dg, element, newElement, contentsElement)
   }
   frameUnitHandler = new UnitHandler();
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
-  gFrameTab={};
+//  Dg={};
   scale = 0.25;
   scaledWidthDefault = 50; 
   scaledHeightDefault = 60;
   scaledHeight = scaledHeightDefault;
-  if (!gConstrainHeight)
-    gConstrainHeight = scaledHeightDefault;
   scaledWidth = scaledWidthDefault; 
-  if (!gConstrainWidth)
-    gConstrainWidth = scaledWidthDefault;
+
+  if (gFrameModeImage) {
+    if (!gConstrainHeight)
+      gConstrainHeight = scaledHeightDefault;
+    if (!gConstrainWidth)
+      gConstrainWidth = scaledWidthDefault;
+  }
   position = 0;  // left = 1, right = 2, neither = 0
   //var unit;
 
@@ -205,35 +210,39 @@ function initFrameTab(dg, element, newElement, contentsElement)
   {   // we need to initialize the dg from the frame element
     if (!contentsElement)
       contentsElement = element;
+    if (element.getAttribute("naturalWidth") && element.getAttribute("naturalHeight")) {
+      gConstrainWidth = element.getAttribute("naturalWidth");
+      gConstrainHeight = element.getAttribute("naturalHeight"); 
+      setHasNaturalSize(true);
+    }
+    else  setHasNaturalSize(false);
 
     frameUnitHandler.setCurrentUnit(contentsElement.getAttribute("units"));
     
     var width = 0;
-    var widthStr = "";
-    if (contentsElement.hasAttribute(widthAtt))
+    var widthStr = "0";
+    if (contentsElement.hasAttribute(widthAtt)) {
       width = frameUnitHandler.getValueFromString( contentsElement.getAttribute(widthAtt) );
-    else
-    {
-      widthStr = msiGetHTMLOrCSSStyleValue(dg.editorElement, contentsElement, widthAtt, "width");
-      if (widthStr)
-        width = frameUnitHandler.getValueFromString( widthStr, "px" );
-      else
-        width = frameUnitHandler("100", "px");
     }
     var height = 0;
-    var heightStr = "";
-    if (contentsElement.hasAttribute(heightAtt))
+    var heightStr = "0";
+    if (contentsElement.hasAttribute(heightAtt)) {
       height = frameUnitHandler.getValueFromString( contentsElement.getAttribute(heightAtt) );
-    else
-    {
-      heightStr = msiGetHTMLOrCSSStyleValue(dg.editorElement, contentsElement, heightAtt, "height");
-      if (heightStr)
-        height = frameUnitHandler.getValueFromString( heightStr, "px" );
-      else height = frameUnitHandler.getValueFromString( "50", "px");
     }
-    if (!gConstrainWidth || !gConstrainHeight)
+    if (gConstrainWidth || gConstrainHeight)
       setConstrainDimensions(frameUnitHandler.getValueAs(width, "px"), frameUnitHandler.getValueAs(height,"px"));
     setWidthAndHeight(width, height, null);
+    if (width === 0) {
+      dg.autoWidthCheck.checked = true;
+      dg.widthInput.setAttribute('disabled', 'true');
+    }
+    else dg.widthInput.removeAttribute('disabled');
+
+    if (height === 0) {
+      dg.autoHeightCheck.checked = true;
+      dg.heightInput.setAttribute('disabled', 'true');
+    } 
+    else dg.heightInput.removeAttribute('disabled');
 
     try
     {
@@ -383,10 +392,11 @@ function initFrameTab(dg, element, newElement, contentsElement)
   var placementLetter = document.getElementById("herePlacementRadioGroup").value;
   if (/l|i/i.test(placementLetter)) placement=1;
   else if (/r|o/i.test(placementLetter)) placement = 2;
-  gFrameTab = dg;
+  Dg = dg;
   setAlignment(placement);
   enableHere(dg.herePlacementRadioGroup);
   enableFloating();
+  doDimensionEnabling();
   updateDiagram(marginAtt);
   updateDiagram(borderAtt);
   updateDiagram(paddingAtt);
@@ -490,7 +500,7 @@ function getColorAndUpdate(id)
 
   window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
 
-  // User canceled the gFrameTab
+  // User canceled the Dg
   if (colorObj.Cancel)
     return;
 
@@ -756,25 +766,8 @@ function setConstrainDimensions(width, height)
 
 function setWidthAndHeight(width, height, event)
 {
-  if (!gFrameModeImage)
-  {
-    if (Dg.autoHeightCheck.checked) Dg.heightInput.value = 0;
-//    if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked) Dg.widthInput.value = 0;
-  }
-  if (Number(width) > 0)
-  {
-    Dg.widthInput.value = width;
-    Dg.autoWidthCheck.checked = false;
-  }
-  else
-    Dg.autoWidthCheck.checked = true;
-  if (Number(height) > 0)
-  {
-    Dg.heightInput.value = height;
-    Dg.autoHeightCheck.checked = false;
-  }
-  else
-    Dg.autoHeightCheck.checked = true;
+  Dg.widthInput.value = width;
+  Dg.heightInput.value = height;
   if (Dg.autoHeightCheck.checked && !Dg.autoWidthCheck.checked)
     constrainProportions( "frameWidthInput", "frameHeightInput", event );
   else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
@@ -809,15 +802,15 @@ function setAlignment(alignment )
   position = alignment;
   if (position ==1|| position ==2)
   {
-    gFrameTab.marginInput.left.removeAttribute("disabled");
-    gFrameTab.marginInput.right.removeAttribute("disabled");
+    Dg.marginInput.left.removeAttribute("disabled");
+    Dg.marginInput.right.removeAttribute("disabled");
   }
   else
   {
-    gFrameTab.marginInput.left.setAttribute("disabled", "true");
-    gFrameTab.marginInput.left.setAttribute("value", "0.00");
-    gFrameTab.marginInput.right.setAttribute("disabled", "true");
-    gFrameTab.marginInput.right.setAttribute("value", "0.00");
+    Dg.marginInput.left.setAttribute("disabled", "true");
+    Dg.marginInput.left.setAttribute("value", "0.00");
+    Dg.marginInput.right.setAttribute("disabled", "true");
+    Dg.marginInput.right.setAttribute("value", "0.00");
   }
 }
 
@@ -845,11 +838,11 @@ function setTextValueAttributes()
 
 function isValid()
 {
-  if (!(gFrameTab.widthInput.value > 0))
-  {
-    AlertWithTitle("Layout error", "Width must be positive");
-    return false;
-  }
+  // if (!(Dg.widthInput.value > 0))
+  // {
+  //   AlertWithTitle("Layout error", "Width must be positive");
+  //   return false;
+  // }
   return true;
 }
 
@@ -878,7 +871,7 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
   }
 
   msiEditorEnsureElementAttribute(contentsNode, "msi_resize","true", editor);
-  rot = gFrameTab.rotationList.value;
+  rot = Dg.rotationList.value;
   if (rot ==="rot0")
   {
     msiEditorEnsureElementAttribute(contentsNode, "rotation", null, editor);  //this will remove the "rotation" attribute
@@ -888,7 +881,7 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     msiEditorEnsureElementAttribute(contentsNode, "rotation", rot, editor);
   }
   //frameNode.setAttribute("req", "ragged2e");
-  msiRequirePackage(gFrameTab.editorElement, "ragged2e", null);
+  msiRequirePackage(Dg.editorElement, "ragged2e", null);
 
   var inlineOffsetNum = getInlineOffset("px");  //returns 0 unless inline position is chosen!
   // if (gFrameModeImage) {
@@ -958,7 +951,7 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
   else{
     msiEditorEnsureElementAttribute(contentsNode, "padding", getCompositeMeasurement("padding",metrics.unit, false), editor);
   }
-  if (gFrameTab.autoHeightCheck.checked)
+  if (Dg.autoHeightCheck.checked)
   {
     if (gFrameModeImage){
       msiEditorEnsureElementAttribute(contentsNode, heightAtt, null, editor);
@@ -968,9 +961,9 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     }
   }
   else{
-    msiEditorEnsureElementAttribute(contentsNode, heightAtt, gFrameTab.heightInput.value, editor);
+    msiEditorEnsureElementAttribute(contentsNode, heightAtt, Dg.heightInput.value, editor);
   }
-  if ((gFrameTab.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && gFrameTab.autoWidthCheck.checked)
+  if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked)
   {
     if (gFrameModeImage){
       msiEditorEnsureElementAttribute(contentsNode, widthAtt, null, editor);
@@ -981,25 +974,25 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     }
   }
   else{
-    msiEditorEnsureElementAttribute(contentsNode, widthAtt, gFrameTab.widthInput.value, editor);
-    contentsNode.setAttribute(widthAtt,gFrameTab.widthInput.value);
+    msiEditorEnsureElementAttribute(contentsNode, widthAtt, Dg.widthInput.value, editor);
+    contentsNode.setAttribute(widthAtt,Dg.widthInput.value);
   }
   var pos = document.getElementById("placementRadioGroup").selectedItem;
   var posid = (pos && pos.getAttribute("id")) || "";
   msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
-  var bgcolor = gFrameTab.colorWell.getAttribute("style");
+  var bgcolor = Dg.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   var theColor = (arr && arr.length > 1) ? arr[1] : "";
   setStyleAttributeOnNode(frameNode, "border-color", theColor, editor);
   msiEditorEnsureElementAttribute(frameNode, "border-color", hexcolor(theColor), editor);
-  bgcolor = gFrameTab.bgcolorWell.getAttribute("style");
+  bgcolor = Dg.bgcolorWell.getAttribute("style");
   arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   theColor = (arr && arr.length > 1) ? arr[1] : "";
   setStyleAttributeOnNode(frameNode, "background-color", theColor, editor);
   msiEditorEnsureElementAttribute(frameNode, "background-color", hexcolor(theColor), editor);
-  msiRequirePackage(gFrameTab.editorElement, "xcolor", "");
-  msiEditorEnsureElementAttribute(frameNode, "textalignment", gFrameTab.textAlignment.value, editor);
-  setStyleAttributeOnNode(frameNode, "text-align", gFrameTab.textAlignment.value, editor)
+  msiRequirePackage(Dg.editorElement, "xcolor", "");
+  msiEditorEnsureElementAttribute(frameNode, "textalignment", Dg.textAlignment.value, editor);
+  setStyleAttributeOnNode(frameNode, "text-align", Dg.textAlignment.value, editor)
 //RWA - The display attribute should be set by a CSS rule rather than on the individual item's style. (So that, for instance,
 //      the override for graphics with captions will take effect. See baselatex.css.)
 //  if (document.getElementById("inline").selected)
@@ -1007,13 +1000,13 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
 //  else setStyleAttributeOnNode(frameNode, "display", "block");
   // some experimentation here.
   if (posid !=='inline') {
-     msiRequirePackage(gFrameTab.editorElement, "boxedminipage", "");
+     msiRequirePackage(Dg.editorElement, "boxedminipage", "");
   }
   else
   {
     if (inlineOffsetNum != 0)
     {
-      inlineOffset = Number(gFrameTab.inlineOffsetInput.value);
+      inlineOffset = Number(Dg.inlineOffsetInput.value);
       var inlineOffsetStr = String(inlineOffset);
       msiEditorEnsureElementAttribute(frameNode, "inlineOffset", inlineOffsetStr, editor);
       inlineOffsetStr = String(-inlineOffset) + frameUnitHandler.currentUnit;
@@ -1032,17 +1025,17 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     var placeLocation="";
     var isHere = false;
     var needsWrapfig = false;
-    if (gFrameTab.placeForceHereCheck.checked) {
+    if (Dg.placeForceHereCheck.checked) {
       placeLocation += "H";
       isHere = true;
-    } else if (gFrameTab.placeHereCheck.checked) {
+    } else if (Dg.placeHereCheck.checked) {
       placeLocation += "h";
       isHere = true;
-    } else if (gFrameTab.placeFloatsCheck.checked) {
+    } else if (Dg.placeFloatsCheck.checked) {
       placeLocation += "p";
-    } else if (gFrameTab.placeTopCheck.checked) { 
+    } else if (Dg.placeTopCheck.checked) { 
       placeLocation += "t";
-    } else if (gFrameTab.placeBottomCheck.checked) {
+    } else if (Dg.placeBottomCheck.checked) {
       placeLocation += "b";
     }
     msiEditorEnsureElementAttribute(frameNode, "placeLocation", placeLocation, editor);
@@ -1050,10 +1043,10 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     {
       var floatparam = document.getElementById("herePlacementRadioGroup").selectedItem.value;
       if (floatparam != "full") {
-        msiRequirePackage(gFrameTab.editorElement, "wrapfig","");
+        msiRequirePackage(Dg.editorElement, "wrapfig","");
       }
       if (placeLocation.indexOf("H") >= 0) {
-        msiRequirePackage(gFrameTab.editorElement,"float","");
+        msiRequirePackage(Dg.editorElement,"float","");
       }
       var floatshort = floatparam.slice(0,1);
       msiEditorEnsureElementAttribute(frameNode, "placement",floatshort, editor);
@@ -1189,18 +1182,17 @@ function setDisabled(checkbox,id)
 
 function checkAutoDimens(checkBox, textboxId)
 {
-  if (checkBox.checked && !Dg.constrainCheckbox.checked){
+  if (checkBox.checked && Dg.constrainCheckbox && !Dg.constrainCheckbox.checked){
     Dg.constrainCheckbox.checked = true;
   }
-  Dg.widthInput.value = "0";
-  setDisabled(this, textboxId);
+  setDisabled(checkBox, textboxId);
 }
 
 function ToggleConstrain()
 {
   // If just turned on, save the current width and height as basis for constrain ratio
   // Thus clicking on/off lets user say "Use these values as aspect ration"
-  if (!gFrameModeImage && Dg.constrainCheckbox.checked && !Dg.constrainCheckbox.disabled)
+  if (!gFrameModeImage && Dg.constrainCheckbox && Dg.constrainCheckbox.checked && !Dg.constrainCheckbox.disabled)
 //     && (gDialog.widthUnitsMenulist.selectedIndex == 0)
 //     && (gDialog.heightUnitsMenulist.selectedIndex == 0))
   {
@@ -1239,7 +1231,8 @@ function constrainProportions( srcID, destID, event )
         destElement.value = unitRound( srcElement.value * gActualWidth / gActualHeight );
     }
   }
-  else  //not a graphic - use the other strategy, as there's no natural width
+  else  if (gConstrainWidth>0 && gConstrainHeight>0)
+    //not a graphic - use the other strategy, as there's no natural width
   {
     // With this strategy, the width and height ratio
     //   can be reset to whatever the user entered.
@@ -1253,8 +1246,8 @@ function constrainProportions( srcID, destID, event )
 
 function doDimensionEnabling()
 {
-  // Enabled only if "Custom" is selected
-  var enable = (document.getElementById("custom").selected);
+  // Enabled only if "Custom" is selected, or actualsize is not enabled
+  var enable = (document.getElementById("custom").selected) || !hasNaturalSize;
   if (enable) {
     document.getElementById("customSize").removeAttribute("disabled");
   }
