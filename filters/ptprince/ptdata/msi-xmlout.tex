@@ -277,7 +277,7 @@
    \def\and{\msiclosetag{address}{</address>}%
             \msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
    \msitag{^^0a}%
-   \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}\msiclosetag{address}{</address>}%
+   \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}%
   \endgroup
 }
 
@@ -1342,6 +1342,7 @@
 
 \def\frac#1#2{\string\frac\@brace{#1}\@brace{#2}}
 \def\dfrac#1#2{\string\dfrac\@brace{#1}\@brace{#2}}
+\def\tfrac#1#2{\string\tfrac\@brace{#1}\@brace{#2}}
 
 \def\unit#1{\string\unit\@brace{#1}}
 
