@@ -315,7 +315,7 @@
                   value     = "72"
                   style     = "width: 1.0in;"
                   persist   = "value"/>
-                <checkbox id="autoWidth" checked="true" observes = "customSize" persist = "checked" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
+                <checkbox id="autoWidth" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
                 <spacer/>
                 <textbox
                   id        = "frameHeightInput"
@@ -326,9 +326,9 @@
                   value     = "36"
                   style     = "width: 1.0in;"   
                   persist   =  "value"/>
-                <checkbox id="autoHeight" checked="true" 
+                <checkbox id="autoHeight"  
                   observes  = "customSize"               
-                  persist = "checked" oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
+                  oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
               </row>
             </rows>
           </grid>
