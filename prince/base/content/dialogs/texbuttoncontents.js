@@ -1,6 +1,6 @@
 // Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved.
 
-//const xhtmlns  = "http://www.w3.org/1999/xhtml";
+var xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 var texnode;
 var editor;
@@ -49,7 +49,7 @@ function Startup()
     if (childnode) 
       gTeX.value = childnode.textContent;
   }
-  else texnode = editor.document.createElement("texb");
+  else texnode = editor.document.createElementNS(xhtmlns, "texb");
 
 // TeX buttons looks like:
 // <texb enc="0/1" name=" " req = " " opt = " ">,<![CDATA[[texbutton contents]]></texb>  
