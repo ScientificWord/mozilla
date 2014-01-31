@@ -35,8 +35,8 @@
 
 \msi@dollar=`\$
 
-\def\msi@pass#1{\def#1{\msitag{<texb>#1</texb>}}}
-\def\msi@pass@newline#1{\def#1{\msi@br\msihmode\msitag{<texb>#1</texb>}}}
+\def\msi@pass#1{\def#1{\msitag{<texb xmlns="http://www.w3.org/1999/xhtml">#1</texb>}}}
+\def\msi@pass@newline#1{\def#1{\msi@br\msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml">#1</texb>}}}
 
 \msi@pass@newline{\@settodim}
 \msi@pass@newline{\settoheight}
@@ -61,7 +61,7 @@
 
 \def\newcounter#1{%
   \msihmode
-  \msiopentag{texb}{<texb enc="1" name="newcounter">}
+  \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="newcounter">}
        \msitag{<![CDATA[\newcounter{#1}]]>}%
   \msiclosetag{texb}{</texb>}%
 }
@@ -69,14 +69,14 @@
 \def\setcounter#1#2{%
     \expandafter\global\csname c@#1\endcsname#2\relax
     \msihmode
-    \msiopentag{texb}{<texb enc="1" name="setcounter">}
+    \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="setcounter">}
        \msitag{<![CDATA[\setcounter{#1}{#2}]]>}%
     \msiclosetag{texb}{</texb>}}
 
 \def\addtocounter#1#2{%
     \expandafter\global\advance\csname c@#1\endcsname #2\relax
     \msihmode
-    \msiopentag{texb}{<texb enc="1" name="addtocounter">}
+    \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="addtocounter">}
        \msitag{<![CDATA[\addtocounter{#1}{#2}]]>}%
     \msiclosetag{texb}{</texb>}}
 
@@ -1600,7 +1600,7 @@
        \else
           \msihmode 
        \fi
-       \msitag{<texb enc="1" name="}#1\msitag{">}%
+       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{">}%
                 <![CDATA[\expandafter\string\csname#1\endcsname]]>%
        \msitag{</texb>}%
        \ifmmode
@@ -1618,7 +1618,7 @@
        \else
          \msihmode
        \fi
-       \msitag{<texb enc="1" name="}#1\msitag{">}%
+       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{">}%
            <![CDATA[\expandafter\string\csname#1\endcsname
            \ifmmode{\else\{\fi\the\@temptokena\ifmmode}\else\}\fi]]>%
        \msitag{</texb>}%
@@ -1631,7 +1631,7 @@
        \@temptokena={\msitag{##1}}%
        \@temptokenb={\msitag{##2}}%
        \msihmode
-       \msitag{<texb enc="1" name="#1">}%
+       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
           <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}\{\the\@temptokenb\}]]>%
        \msitag{</texb>}}}
 
@@ -1699,7 +1699,7 @@
                  |csname scan@#1|endcsname)
 
           |expandafter|gdef|csname scan@#1|endcsname##1\end{#1}%
-             (|msitag(<texb enc="1" name="#1">%
+             (|msitag(<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">%
                         <![CDATA[\begin{#1}##1\end{#1}]]>%
                       </texb>)%
               |egroup)
@@ -1799,14 +1799,14 @@
 
    \def\makeatother{%
        \msihmode
-       \msitag{<texb enc="1" name="makeatother">}%
+       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatother">}%
            <![CDATA[\string\makeatother]]>%
        \msitag{</texb>}%
        \catcode`\@=12}
 
    \def\makeatletter{%
        \msihmode
-       \msitag{<texb enc="1" name="makeatletter">}%
+       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatletter">}%
            <![CDATA[\string\makeatletter]]>%
        \msitag{</texb>}%
        \catcode`\@=11}
@@ -1882,7 +1882,7 @@
     %\string#1%
     \msitag{\msipassthru}%
     \char`\{
-    \msiopentag{texb}{<texb enc="1" name="#1">}%
+    \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
        \msitag{<![CDATA[#1}
     %\def\@next{\relax}%
     \let\@next\@gobbleargs
@@ -1898,14 +1898,14 @@
 \def\msidefaultb#1{%
     \msihmode
     \ifnum\msi@inpreamble=1
-      \temptoksa={<texb enc="1" name="#1">}%
+      \temptoksa={<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
       \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
       \msiopentag{texb}{}%
       \msitopreambleextra{<![CDATA[}
       \expandafter\temptoksa\expandafter{\csname#1\endcsname}
       \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
     \else
-      \msiopentag{texb}{<texb enc="1" name="#1">}%
+      \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
          \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname
     \fi
     \@gobbleargs}
