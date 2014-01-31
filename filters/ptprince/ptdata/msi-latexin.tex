@@ -37,7 +37,7 @@
 \def\msi@close@element</#1>{\msiclosetag{#1}{</#1>}}
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
-\def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
+\def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml">#1</texb>}}}
 
 %% \documentclass
 
@@ -6149,11 +6149,13 @@
     \@makeother\/%
     \@makeother\&%
     \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
-\def\@pass@ptions#1#2#3{%
-  \expandafter\xdef\csname opt@#3.#1\endcsname{%
-    \@ifundefined{opt@#3.#1}\@empty
-      {\csname opt@#3.#1\endcsname,}%
-    \zap@space#2 \@empty}}
+
+\def\@pass@ptions#1#2#3{\relax}
+%\def\@pass@ptions#1#2#3{%
+%  \expandafter\xdef\csname opt@#3.#1\endcsname{%
+%    \@ifundefined{opt@#3.#1}\@empty
+%      {\csname opt@#3.#1\endcsname,}%
+%    \zap@space#2 \@empty}}
 \@onlypreamble\@pass@ptions
 \def\PassOptionsToPackage{\@pass@ptions\@pkgextension}
 \def\PassOptionsToClass{\@pass@ptions\@clsextension}
