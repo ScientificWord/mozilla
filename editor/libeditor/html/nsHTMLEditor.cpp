@@ -5240,24 +5240,26 @@ nsHTMLEditor::ContentInserted(nsIDocument *aDocument, nsIContent* aContainer,
       aGraph->SetAttribute(NS_LITERAL_STRING("needPreInit"), NS_LITERAL_STRING("true"));
     }
     nsCOMPtr<nsIDOMNode> childNode = do_QueryInterface(aChild);
-    if (!IsTextNode(childNode))
+    if (childNode && !IsTextNode(childNode))
     {
       nsCOMPtr<nsIDOMElement> childElem = do_QueryInterface(aChild);
-      PRUint32 length = 0;
-      nsCOMPtr<nsIDOMNodeList> graphList;
-      nsresult res = childElem->GetElementsByTagName(NS_LITERAL_STRING("graph"), getter_AddRefs(graphList));
-      if (NS_SUCCEEDED(res))
-        graphList->GetLength(&length);
-      if (length > 0)
-      {
-        mHaveNewPlots = PR_TRUE;
-        for (PRUint32 i = 0; i < length; ++i)
+      if (childElem) {
+        PRUint32 length = 0;
+        nsCOMPtr<nsIDOMNodeList> graphList;
+        nsresult res = childElem->GetElementsByTagName(NS_LITERAL_STRING("graph"), getter_AddRefs(graphList));
+        if (NS_SUCCEEDED(res))
+          graphList->GetLength(&length);
+        if (length > 0)
         {
-          res = graphList->Item(0, getter_AddRefs(childNode));
-          aGraph = do_QueryInterface(childNode);
-          aGraph->SetAttribute(NS_LITERAL_STRING("needPreInit"), NS_LITERAL_STRING("true"));
+          mHaveNewPlots = PR_TRUE;
+          for (PRUint32 i = 0; i < length; ++i)
+          {
+            res = graphList->Item(0, getter_AddRefs(childNode));
+            aGraph = do_QueryInterface(childNode);
+            aGraph->SetAttribute(NS_LITERAL_STRING("needPreInit"), NS_LITERAL_STRING("true"));
+          }
         }
-      }
+      } 
     }
   }
 }
