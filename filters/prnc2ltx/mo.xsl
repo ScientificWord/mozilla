@@ -328,7 +328,7 @@
 <!--       invisible brace match -->
       <xsl:when test="normalize-space(string())='&#x250A;'">
         <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select=""/>
+          <xsl:with-param name="LaTeX-fence-token" select="'&#x002E;'"/>
         </xsl:call-template>
       </xsl:when>
 
