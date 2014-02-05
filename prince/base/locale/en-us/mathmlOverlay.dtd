@@ -14,6 +14,8 @@
 <!ENTITY LTPmakeTitle.accesskey "M" >
 <!ENTITY LTPmainMatter.label "Main Matter" >
 <!ENTITY LTPmainMatter.accesskey "N" >
+<!ENTITY LTPfrontMatter.label "Front Matter" >
+<!ENTITY LTPfrontMatter.accesskey "F" >
 <!ENTITY LTPbackMatter.label "Back Matter" >
 <!ENTITY LTPbackMatter.accesskey "B" >
 <!ENTITY LTPprintIndex.label "Print Index" >
