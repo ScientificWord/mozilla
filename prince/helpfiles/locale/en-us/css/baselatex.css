@@ -164,6 +164,18 @@ printindex {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#printindex");
 }
 
+mainmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#mainmatter");
+}
+
+backmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#backmatter");
+}
+
+frontmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#frontmatter");
+}
+
 indexitem {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#indexitem");
 }

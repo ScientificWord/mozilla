@@ -171,6 +171,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_appendix", msiAppendixCommand);
   commandTable.registerCommand("cmd_mainmatter", msiMainMatterCommand);
   commandTable.registerCommand("cmd_backmatter", msiBackMatterCommand);
+  commandTable.registerCommand("cmd_frontmatter", msiFrontMatterCommand);
   commandTable.registerCommand("cmd_printindex", msiPrintIndexCommand);
 
 }
@@ -10815,7 +10816,7 @@ var msiMakeTitleCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('maketitle');
+      msiInsertLaTeXmarker('maketitle');
     }
     catch (e) {
       finalThrow(cmdFailString('maketitle'), e.message);
@@ -10833,7 +10834,7 @@ var msiMakeTOCCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('maketoc');
+      msiInsertLaTeXmarker('maketoc');
     }
     catch (e) {
       finalThrow(cmdFailString('maketoc'), e.message);
@@ -10851,7 +10852,7 @@ var msiMakeLOTCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('makelot');
+      msiInsertLaTeXmarker('makelot');
     }
     catch (e) {
       finalThrow(cmdFailString('makelot'), e.message);
@@ -10869,7 +10870,7 @@ var msiMakeLOFCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('makelof');
+      msiInsertLaTeXmarker('makelof');
     }
     catch (e) {
       finalThrow(cmdFailString('makelof'), e.message);
@@ -10887,7 +10888,7 @@ var msiAppendixCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('appendix');
+      msiInsertLaTeXmarker('appendix');
     }
     catch (e) {
       finalThrow(cmdFailString('appendix'), e.message);
@@ -10905,7 +10906,7 @@ var msiMainMatterCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('mainmatter');
+      msiInsertLaTeXmarker('mainmatter');
     }
     catch (e) {
       finalThrow(cmdFailString('mainmatter'), e.message);
@@ -10923,10 +10924,28 @@ var msiBackMatterCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('backmatter');
+      msiInsertLaTeXmarker('backmatter');
     }
     catch (e) {
       finalThrow(cmdFailString('backmatter'), e.message);
+    }
+  }
+}
+
+var msiFrontMatterCommand = {
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    try {
+      msiInsertLaTeXmarker('frontmatter');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('frontmatter'), e.message);
     }
   }
 }
@@ -10941,7 +10960,7 @@ var msiPrintIndexCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('printindex');
+      msiInsertLaTeXmarker('printindex');
     }
     catch (e) {
       finalThrow(cmdFailString('printindex'), e.message);
@@ -10963,6 +10982,19 @@ function msiInsertTag(tagname){
   {
     editor.setCaretAfterElement(insertedNode);
   }
+}
+
+function msiInsertLaTeXmarker(tagname) {
+  return msiInsertTag(tagname);
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  focusOnEditor();
+  var dataString="&lt;"+tagname+"/&gt;";
+  var contextString = "";
+  var infoString="(0,0)";
+  editor.insertHTMLWithContext(dataString,
+                              contextString, infoString, "text/html",
+                              null,null,0,true);
 }
 
 function defineSelection()
