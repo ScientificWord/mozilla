@@ -120,6 +120,11 @@
         <contains>maketoc</contains>
         <contains>makelot</contains>
         <contains>makelof</contains>
+        <contains>frontmatter</contains>
+        <contains>backmatter</contains>
+        <contains>mainmatter</contains>
+        <contains>printindex</contains>
+        <contains>appendix</contains>
       </classcontains>
 			<tags>
 				<tag id="defaultparagraph" nm="bodyText">
@@ -479,7 +484,7 @@
           </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
 				</tag>
-				<tag nm="frontmatter">
+<!-- 				<tag nm="frontmatter">
           <contains>frontmtag</contains>
           <level>*</level>
 					<nexttag/>
@@ -496,7 +501,7 @@
             </frontmatter>
           </initialcontents>
         </tag>
-				<tag nm="dedication">
+ -->				<tag nm="dedication">
           <level>*</level>
           <description>Dedication</description>
 					<nexttag/>
