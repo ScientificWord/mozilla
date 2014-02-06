@@ -200,7 +200,7 @@ separators are specified in attributes.  Defaults are ( and ) and ,
       <xsl:when test="$mml-delim-str='&#x2195;'">
         <xsl:text xml:space="preserve">\updownarrow </xsl:text>
       </xsl:when>
-      <xsl:when test="$mml-delim-str=''">
+      <xsl:when test="$mml-delim-str='&#x250A;'">
         <xsl:text>.</xsl:text>
       </xsl:when>
       <xsl:when test="$mml-delim-str='&#x21D5;'">
