@@ -517,7 +517,7 @@
 <!ENTITY numsp "&#x2007;">
 <!ENTITY puncsp "&#x2008;">
 <!ENTITY thinsp "&#x2009;"><!ENTITY ThinSpace "&#x2009;">
-<!ENTITY ThickSpace "&#x2009;&#x200A;&#x200A;">
+<!ENTITY ThickSpace "&#x2004;">
 <!ENTITY hairsp "&#x200A;"><!ENTITY VeryThinSpace "&#x200A;">
 <!ENTITY ZeroWidthSpace "&#x200B;"><!ENTITY NegativeMediumSpace "&#x200B;"><!ENTITY NegativeThickSpace "&#x200B;"><!ENTITY NegativeThinSpace "&#x200B;"><!ENTITY NegativeVeryThinSpace "&#x200B;">
 <!ENTITY zwnj "&#x200C;">
