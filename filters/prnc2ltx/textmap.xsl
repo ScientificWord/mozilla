@@ -978,6 +978,10 @@
         <xsl:text xml:space="preserve">\quad </xsl:text>
       </xsl:when>
 <!-- !ENTITY emsp13 "&#x2004;" -->
+      <xsl:when test="$first-char='&#x2004;'">
+        <xsl:text>\ </xsl:text>
+      </xsl:when>
+
 <!-- !ENTITY emsp14 "&#x2005;" -->
 <!-- !ENTITY numsp "&#x2007;" -->
 <!-- !ENTITY puncsp "&#x2008;" -->
