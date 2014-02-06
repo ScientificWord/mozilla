@@ -185,7 +185,7 @@
     <xsl:if test="not(@largeop='true')">
     <xsl:choose>
 <!-- Start of fencing <mo>'s -->
-      <xsl:when test="normalize-space(string())=''">
+      <xsl:when test="normalize-space(string())='&#x250A;'">
         <xsl:call-template name="translate-fencing-mo">
           <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
         </xsl:call-template>
@@ -326,11 +326,11 @@
         </xsl:call-template>
       </xsl:when>
 <!--       invisible brace match -->
-      <xsl:when test="normalize-space(string())='&#x250A;'">
+<!--       <xsl:when test="normalize-space(string())='&#x250A;'">
         <xsl:call-template name="translate-fencing-mo">
           <xsl:with-param name="LaTeX-fence-token" select="'&#x002E;'"/>
         </xsl:call-template>
-      </xsl:when>
+      </xsl:when> -->
 
 <!-- !ENTITY dd or DifferentialD "d" 
   At load time, &dd; may be mapped to "d"normalize-space(string())
