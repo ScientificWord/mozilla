@@ -541,6 +541,7 @@
     <command id="cmd_appendix"  oncommand="msiGoDoCommand('cmd_appendix')" />
     <command id="cmd_mainmatter" oncommand="msiGoDoCommand('cmd_mainmatter')" />
     <command id="cmd_backmatter"  oncommand="msiGoDoCommand('cmd_backmatter')" />
+    <command id="cmd_frontmatter"  oncommand="msiGoDoCommand('cmd_frontmatter')" />
     <command id="cmd_printindex" oncommand="msiGoDoCommand('cmd_printindex')" />
 
 

@@ -170,6 +170,7 @@
           <menuitem id="LTPappendix" label="&LTPappendix.label;" accesskey="&LTPappendix.accesskey;" command="cmd_appendix" />
           <menuitem id="LTPmainMatter" label="&LTPmainMatter.label;" accesskey="&LTPmainMatter.accesskey;" command="cmd_mainmatter" />
           <menuitem id="LTPbackMatter" label="&LTPbackMatter.label;" accesskey="&LTPbackMatter.accesskey;" command="cmd_backmatter" />
+          <menuitem id="LTPfrontMatter" label="&LTPfrontMatter.label;" accesskey="&LTPfrontMatter.accesskey;" command="cmd_frontmatter" />
           <menuitem id="LTPmakeIndex" label="&LTPprintIndex.label;" accesskey="&LTPprintIndex.accesskey;" command="cmd_printindex" />
         </menupopup>
       </menu>  

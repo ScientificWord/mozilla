@@ -10,6 +10,9 @@
 <!ENTITY  appendix      "Start appendices here">
 <!ENTITY  index         "Index: ">
 <!ENTITY  printindex    "Print index here">
+<!ENTITY  frontmatter	"Front matter">
+<!ENTITY  mainmatter	"Main matter">
+<!ENTITY  backmatter	"Back matter">
 <!ENTITY  marker        "Marker: ">
 <!ENTITY  xref          "Cross ref: ">
 <!ENTITY  index         "Index: ">
