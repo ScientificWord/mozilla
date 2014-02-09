@@ -101,7 +101,7 @@
 		<hbox>
 			<description value='&labelCaption.label;' accesskey='&labelCaption.accesskey;'/>
 			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
-      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="labelEditControl" flex="1" height="350" width="450"/>
+      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="labelEditControl" flex="1" height="100" width="450"/>
 		</hbox>
 		<spacer flex='1'/>
 	</vbox>
