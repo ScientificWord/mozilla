@@ -546,7 +546,7 @@
 \def\MSIListEnvironment#1#2#3{%
    \expandafter\def\csname msi@begin@#2\endcsname{%
       \def\itemprefix{#3}%
-      \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
+      \msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
 
    \expandafter\def\csname msi@end@#2\endcsname{%
       \msi@br\msiclosetag{#1}{</#1>}}
