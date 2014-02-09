@@ -463,7 +463,12 @@ var msiReviseManualBibItemCmd =
     editorElement.focus();
   },
 
-  doCommand: function(aCommand) {}
+  doCommand: function(aCommand) {
+    var editorElement = msiGetActiveEditorElement();
+    var bibItemData = {key : "", bibLabel : "", reviseData : null};
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                           editorElement, "cmd_reviseManualBibItemCmd", this, bibItemData);
+  }
 };
 
 var msiInsertTeXField =

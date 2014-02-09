@@ -3612,6 +3612,7 @@ PRBool cleanUpTempInput(nsHTMLEditor * ed, nsCOMPtr<nsIDOMNode>& startNode, PRIn
   if (nodeType == nsIDOMNode::TEXT_NODE) 
     res = node->GetParentNode(getter_AddRefs(node));
   elt = do_QueryInterface(node);
+  if (elt == nsnull) return PR_FALSE;
   elt->GetNodeName(name);
   if (name.EqualsLiteral("mi")) {
     res = ed->GetAttributeValue(elt, NS_LITERAL_STRING("tempinput"), tempinput, &attResult);
