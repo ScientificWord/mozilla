@@ -319,10 +319,11 @@
           <description>Bibliography entry</description>
           <htmllistparent>bibliography</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
+          <inclusion>true</inclusion>
           <initialcontents>
-            <bibitem bibitemkey="key" hasLabel="true">
-              <bibkey>_</bibkey>
-              <biblabel class="bibitemlabel">_</biblabel>
+            <bibitem>
+              <bibkey> </bibkey>
+              <biblabel> </biblabel>
               <bodyText>
                 <cursor/>
                 <br/>
@@ -1236,15 +1237,19 @@
         <tag nm="biblabel">
           <description>Bibliography label</description>
             <contains>#text</contains>
-			      <contains>texttag</contains>
-			      <contains>othertag</contains>
+            <contains>texttag</contains>
+            <contains>othertag</contains>
             <contains>table</contains>
-			      <contains>mml:math</contains>
-			      <contains>img</contains>
+            <contains>mml:math</contains>
+            <contains>img</contains>
             <contains>a</contains>
             <contains>note</contains>
             <contains>object</contains>
             <contains>notewrapper</contains>
+        </tag>
+        <tag nm="bibkey">
+          <description>Bibliography key</description>
+            <contains>#text</contains>
         </tag>
         <tag nm="shortTitle">
           <description>Short section title</description>

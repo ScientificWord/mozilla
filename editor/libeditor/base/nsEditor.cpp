@@ -1588,7 +1588,7 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   {
     // If the current parent is a root (body or table element)
     // then go no further - we can't insert. See if interposing a default paragraph helps.
-    if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm))
+    if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm) || nsHTMLEditUtils::IsListItem(ptr, tlm))
     {
       nsCOMPtr<nsIDOMNode> para;
       htmlEditor->CreateDefaultParagraph(parent, aPosition, PR_FALSE, getter_AddRefs(para));
