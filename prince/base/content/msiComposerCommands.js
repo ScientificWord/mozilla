@@ -7988,7 +7988,7 @@ var msiCitationCommand =
     {
         var editorElement = msiGetActiveEditorElement();
         var bibChoice = getBibliographyScheme(editorElement);
-        if (bibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
+        if (bibChoice == "bibtex")  //a kludge - must get hooked up to editor to really work
         {
           var bibCiteData = {databaseFile : "", key : "", remark : "", bBibEntryOnly : false};
           var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "resizable=yes, chrome,close,titlebar,dependent",
