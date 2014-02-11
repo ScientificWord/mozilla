@@ -313,6 +313,9 @@ function TrimString(string)
 
 function IsWhitespace(string)
 {
+  // BBM: WARNING: this tests only for an initial white space character
+  // To test for all white space, use /^\s*$/.test()
+  // I haven't changed this since I don't know yet how Ron used it.
   return /^\s/.test(string);
 }
 
