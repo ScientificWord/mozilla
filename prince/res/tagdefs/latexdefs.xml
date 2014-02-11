@@ -322,10 +322,9 @@
           <inclusion>true</inclusion>
           <initialcontents>
             <bibitem>
-              <bibkey> </bibkey>
-              <biblabel> </biblabel>
+              <biblabel></biblabel>
+              <bibkey></bibkey>
               <bodyText>
-                <cursor/>
                 <br/>
               </bodyText>
             </bibitem>
