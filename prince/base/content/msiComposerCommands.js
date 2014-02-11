@@ -717,8 +717,8 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
       case 'frontmtag' : commandID = 'cmd_frontmtag'; break;
 		}
 	}
-  if (msiDeferStatefulCommand(commandID, newState, editorElement))
-    return;
+  // if (msiDeferStatefulCommand(commandID, newState, editorElement))
+  //   return;
 
   var docList = msiGetUpdatableItemContainers(commandID, editorElement);
   for (var i = 0; i < docList.length; ++i)
@@ -778,6 +778,10 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
         msiPokeMultiStateUI(commandID, cmdParams);
     }
     msiResetStructToolbar(editorElement);
+    if (newState === 'bibitem') 
+    {
+      msiGoDoCommand("cmd_reviseManualBibItemCmd");
+    }
   } catch(e) {
     dump("error thrown in msiDoStatefulCommand: "+e+"\n");
   }
@@ -791,8 +795,8 @@ function msiDoTagBibItem(dlgData, paraContainer, editorElement)
   try
   {
     editorElement.contentWindow.focus();   // needed for command dispatch to work
-    if (paraContainer)
-      editor.selection.collapse(paraContainer, 0);
+    // if (paraContainer)
+    //   editor.selection.collapse(paraContainer, 0);
     var cmdParams = newCommandParams();
     if (!cmdParams) return;
 
