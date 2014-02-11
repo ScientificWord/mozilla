@@ -1869,6 +1869,8 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     if (rightName.EqualsLiteral("bibitem")) {
 
       nsCOMPtr<nsIDOMDocument> ownerDoc;
+      nsCOMPtr<nsIDOMNode> parent;
+      PRInt32 offset = 0;
       outRightNode->GetOwnerDocument(getter_AddRefs(ownerDoc));
       NS_ENSURE_STATE(ownerDoc);
     
@@ -1887,7 +1889,14 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       nsCOMPtr<nsIController> controller;
       const char * command = "cmd_reviseManualBibItemCmd";
       res = controllers->GetControllerForCommand(command, getter_AddRefs(controller));
+      nsCOMPtr<nsISelection>selection;
+      nsresult res = GetSelection(getter_AddRefs(selection));
+      if (NS_FAILED(res)) return res;
+      res = nsEditor::GetNodeLocation(outRightNode, address_of(parent), &offset);
+      if (NS_FAILED(res)) return res;
+      selection->Collapse(parent, offset);
       nsEditor::DeleteNode(outRightNode);
+
       controller->DoCommand(command);
       return res;
     }
