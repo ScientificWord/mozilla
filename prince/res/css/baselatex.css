@@ -480,22 +480,12 @@ bibitem {
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitem");
 */}
 
-bibitem:before {
-  content: '->';
-}
 
 biblabel {
   display: inline;
+  font-weight: bold;
   background-color: rgb(255,255,230);
   min-width: 1em;
-}
-
-biblabel:before {
-  content: '[';
-}
-
-biblabel:after {
-  content: ']';
 }
 
 bibkey {
@@ -505,7 +495,7 @@ bibkey {
 }
 
 bibkey:before {
-  content: '(';
+  content: ' (';
 }
 
 bibkey:after {
@@ -519,7 +509,7 @@ bibkey:after {
 }
 */
 
-bibitem > biblabel+bodyText {
+bibitem > bibkey+bodyText {
   display: inline;
 }
 
