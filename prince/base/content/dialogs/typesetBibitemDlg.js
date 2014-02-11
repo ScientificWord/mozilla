@@ -19,6 +19,7 @@ function Startup()
   gDialog.bibLabel = ""; 
 
   data.node = getSelectionParentByTag(editor, "bibitem");
+  if (!data.node) data.node = editor.createNode("bibitem", data.paragraphNode, data.offset);
   if (data.node) {
     var node = getChildByTagName(data.node, "bibkey");
     if (node) gDialog.key = node.textContent;
@@ -67,19 +68,14 @@ function InitDialog()
 function onAccept()
 {
   var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   var keyList = document.getElementById("keysAutoCompleteBox");
   gDialog.key = document.getElementById("keysAutoCompleteBox").value;
   data.key = gDialog.key;
-//  if (findInArray(keyList, gDialog.key) < 0)
-//    keyList.push(gDialog.key);
 
   var labelControl = document.getElementById("labelEditControl");
   var labelContentFilter = new msiDialogEditorContentFilter(labelControl);
   gDialog.bibLabel = labelContentFilter.getDocumentFragmentString();
-
-//  var serializer = new XMLSerializer();
-//  gDialog.remark = serializer.serializeToString(editorControl.contentDocument.documentElement);
-////  gDialog.remark = document.getElementById("remarkTextbox").value;
 
   if (data.bibLabel != gDialog.bibLabel)
   {
@@ -90,11 +86,18 @@ function onAccept()
 //  var listBox = document.getElementById('keysListbox');
 //  listBox.addEventListener('ValueChange', checkDisableControls, false);
 
-  var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
   if (data.node)
   {
-    var node = getChildByTagName(data.node, "bibkey");
+    var node;
+    node = getChildByTagName(data.node, "bodyText");
+    if (!node) 
+    {
+      node = editor.createElement("bodyText", data.node, -1);
+    }
+    editor.selection.collapse(node,0);
+
+    node = getChildByTagName(data.node, "bibkey");
     if (node) node.textContent = gDialog.key;
     else {
       node = editor.createElement("bibkey", data.node, 0);
@@ -109,10 +112,14 @@ function onAccept()
   }
   else if ("paragraphNode" in data)
   {
-    if (!theWindow || !("msiDoTagBibItem" in theWindow))
-      theWindow = msiGetTopLevelWindow();
-    if (theWindow && ("msiDoTagBibItem" in theWindow))
-      theWindow.msiDoTagBibItem(data, data.paragraphNode, editorElement);
+    if (editor.tagListManager.getClassOfTag(data.paragraphNode.tagName, null) !== "listparenttag")
+    {
+      if (!theWindow || !("msiDoTagBibItem" in theWindow))
+        theWindow = msiGetTopLevelWindow();
+      if (theWindow && ("msiDoTagBibItem" in theWindow))
+        theWindow.msiDoTagBibItem(data, data.paragraphNode, editorElement);
+    }
+
   }
 
   SaveWindowLocation();
