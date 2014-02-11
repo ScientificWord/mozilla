@@ -956,11 +956,11 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:bibkey">
-  [<xsl:value-of select="."/>]
+  {<xsl:value-of select="."/>}
 </xsl:template>
 
 <xsl:template match="html:biblabel">
-  {<xsl:apply-templates/>}
+  [<xsl:apply-templates/>]
 </xsl:template>
 
 <xsl:template match="html:msidisplay">
