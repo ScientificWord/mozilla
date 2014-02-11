@@ -10372,25 +10372,6 @@ function msiGoSetCommandEnabled(command, enabled, editorElement) { msiCommandUpd
 function msiGoSetMenuValue(command, labelAttribute, editorElement) { msiCommandUpdater.setMenuValue(command, labelAttribute, editorElement); }
 function msiGoSetAccessKey(command, valueAttribute, editorElement) { msiCommandUpdater.setAccessKey(command, valueAttribute, editorElement); }
 function msiGoOnEvent(node, event) { msiCommandUpdater.onEvent(node, event); }
-//function msiGoDoReviseCommand(command, editorElement) { msiCommandUpdate.doReviseCommand(command, editorElement); }
-
-
-
-//// this function is used to inform all the controllers attached to a node that an event has occurred
-//// (e.g. the tree controllers need to be informed of blur events so that they can change some of the
-//// menu items back to their default values)
-//function goOnEvent(node, event)
-//{
-//  var numControllers = node.controllers.getControllerCount();
-//  var controller;
-//
-//  for ( var controllerIndex = 0; controllerIndex < numControllers; controllerIndex++ )
-//  {
-//    controller = node.controllers.getControllerAt(controllerIndex);
-//    if ( controller )
-//      controller.onEvent(event);
-//  }
-//}
 
 var msiDialogEditorContentFilterBase = 
 {

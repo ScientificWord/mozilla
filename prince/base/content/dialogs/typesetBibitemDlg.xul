@@ -97,7 +97,7 @@
         tooltiptext="&EnterKeyNameBigItem.tooltip;"
         onchange="keyTextboxChanged();" />
 		</hbox>
-		<spacer flex='1'/>
+		<spacer height="20px" flex='1'/>
 		<hbox>
 			<description value='&labelCaption.label;' accesskey='&labelCaption.accesskey;'/>
 			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
