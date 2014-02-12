@@ -3583,7 +3583,8 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
     ed->ReplaceContainer((nsIDOMNode*)elt, address_of(newNode), tagName, tlm, nsnull, nsnull, PR_TRUE);
   }
   else if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") ||
-           name.EqualsLiteral("mover")) // || name.EqualsLiteral("mfrac")  || name.EqualsLiteral("mroot"))
+           name.EqualsLiteral("mover") || name.EqualsLiteral("mfrac")  || name.EqualsLiteral("mroot") || name.EqualsLiteral("msqrt")
+           )
   {
     retval = PR_TRUE;
     ed->RemoveContainer(elt);
