@@ -1608,9 +1608,14 @@
        \else
           \msihmode 
        \fi
-       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{">}%
+
+       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml"}
+         \ifnum\msi@inpreamble=1
+           pre="1"
+         \fi 
+         enc="1" name="}#1\msitag{">}%
                 <![CDATA[\expandafter\string\csname#1\endcsname]]>%
-       \msitag{</texb>}%
+        \msitag{</texb>}%
        \ifmmode
          \char`\}%}
        \fi
