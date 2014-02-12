@@ -229,6 +229,14 @@
 \def\out@usepackageB#1{%
    \msi@br\msitag{<usepackage req="#1"/>}}
 
+%% \RequirePackage
+\def\out@reqpackageA[#1]#2{%
+   \msi@br\msitag{<usepackage requirepackage="true" req="#2" options="#1"/>}}
+
+\def\out@reqpackageB#1{%
+   \msi@br\msitag{<usepackage requirepackage="true"  req="#1"/>}}
+
+
 
 %% Frontmatter
 
