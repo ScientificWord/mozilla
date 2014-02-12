@@ -960,7 +960,9 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:biblabel">
+  <xsl:if test = "string-length(normalize-space(.)) > 0">
   [<xsl:apply-templates/>]
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:msidisplay">
