@@ -10138,9 +10138,11 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
 
   dump("In msiReviseNote, data.type is " + data.type + "\n");
   var editor = msiGetEditor(editorElement);
+  var node;
   editor.beginTransaction();
   if (currNode)  // currnode is a note node
   {
+    node = currNode;
     if (data.type == 'footnote')
       currNode.parentNode.setAttribute("type","footnote");
     else
@@ -10158,7 +10160,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
         currNode.parentNode.setAttribute("footnoteNumber", String(data.footnoteNumber));
       else
         currNode.parentNode.removeAttribute("footnoteNumber");
-      if (data.markOrText && (data.markOrText != "markAndText"))
+      if ((data.markOrText != null) && (data.markOrText != "markAndText"))
         currNode.parentNode.setAttribute("markOrText", data.markOrText);
       else
         currNode.parentNode.removeAttribute("markOrText");
@@ -10172,7 +10174,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
       var wrapperNode = editor.document.createElement('notewrapper');
       if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
-      var node = editor.tagListManager.getNewInstanceOfNode("note", null, editor.document);
+      node = editor.tagListManager.getNewInstanceOfNode("note", null, editor.document);
       node.setAttribute('type',data.type);
       node.setAttribute('hide','false');
       if (data.type != 'footnote')
@@ -10200,7 +10202,8 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       dump("msiNote: exception = '"+e.message+"'\n");
     }
   }
-  editor.setCursorInNewHTML(node);
+  var cursors = msiNavigationUtils.getChildrenByTagName(node, "cursor");
+  if (cursors) editor.setCursorInNewHTML(node);
   editor.endTransaction();
 }
 
