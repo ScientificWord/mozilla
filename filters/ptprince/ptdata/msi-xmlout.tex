@@ -524,8 +524,9 @@
      \msiclosetag{bodyText}{</bodyText>}%
      \msiclosetag{bibitem}{</bibitem>}%
    \fi
-   \msi@br\msihmode\msiopentag{bibitem}{}<bibitem bibtemkey="#2" hasLabel="true">%
+   \msi@br\msihmode\msiopentag{bibitem}{}<bibitem hasLabel="true">%
    \msitag{<biblabel class="bibitemlabel">}#1\msitag{</biblabel>}%
+   \msitag{<bibkey>}#2\msitag{</bibkey>}%
    \msi@br\msiopentag{bodyText}{<bodyText>}%
    \endgroup
 }
@@ -537,7 +538,8 @@
      \msiclosetag{bodyText}{</bodyText>}%
      \msiclosetag{bibitem}{</bibitem>}%
    \fi
-   \msi@br\msiopentag{bibitem}{<bibitem bibitemkey="}#1\msitag{" hasLabel="false">}%
+   \msi@br\msiopentag{bibitem}{<bibitem hasLabel="false">}%
+   \msitag{<bibkey>}#1\msitag{</bibkey>}%
    \msi@br\msiopentag{bodyText}{<bodyText>}
    \endgroup%
 }
