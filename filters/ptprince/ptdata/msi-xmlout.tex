@@ -188,7 +188,7 @@
 
 \def\out@preamble@tex#1{%
    \advance\preambleid by 1
-   \msitag{<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1]]></preambleTeX>}%
+   \msitag{<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1}\msipreambleextra\msitag{]]></preambleTeX>}%
    \preambleToks={}}
 
 
@@ -209,7 +209,7 @@
    \msi@br\msitag{</head>}
    \msi@br\msiopentag{body}{<body>}
    %%\msihmode\msi@br\msiopentag{docbody}{<docbody>}%
-   \msipreambleextra
+   
    \@paragraphs
    \msivmode
 }
@@ -1613,7 +1613,7 @@
          \ifnum\msi@inpreamble=1
            pre="1"
          \fi 
-         enc="1" name="}#1\msitag{">}%
+         \msitag{enc="1" name="}#1\msitag{">}%
                 <![CDATA[\expandafter\string\csname#1\endcsname]]>%
         \msitag{</texb>}%
        \ifmmode
