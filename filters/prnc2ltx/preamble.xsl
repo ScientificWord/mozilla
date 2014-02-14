@@ -209,7 +209,7 @@
     <!-- </xsl:if>
     -->
     <!-- jcs - the following line seems to only generate bad \usepackage{}s -->
-    <!-- xsl:apply-templates-->
+    <xsl:apply-templates/>
     <xsl:for-each select="$preambletexbuttons/*">
       <xsl:if test="@pre='1'">
         <xsl:text>
