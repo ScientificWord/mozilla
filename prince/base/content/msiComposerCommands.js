@@ -908,7 +908,7 @@ function getViewSettingsFromViewMenu()
   var invisChoices = [["viewInvisibles","showInvisibles"],
                       ["viewSectionExpanders","showSectionExpanders"],
                       ["viewShortTitles","showShortTitles"],
-                      ["viewFMButtons","showFMButtons"],
+                      // ["viewFMButtons","showFMButtons"],
                       ["viewHelperLines","showHelperLines"],
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"],       ["viewFootnotes", "showFootnotes"],
@@ -946,7 +946,7 @@ function updateViewMenuFromEditor(editorElement)
   var invisChoices = [["viewInvisibles","showInvisibles"],
                       ["viewSectionExpanders","showSectionExpanders"],
                       ["viewShortTitles","showShortTitles"],
-                      ["viewFMButtons","showFMButtons"],
+                      // ["viewFMButtons","showFMButtons"],
                       ["viewHelperLines","showHelperLines"],
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"]];
