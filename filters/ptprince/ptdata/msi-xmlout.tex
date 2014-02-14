@@ -1801,16 +1801,13 @@
    \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/latexdefs.xml" type="text/xml" ?>^^0a}
    \the\msi@extrapi
    \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}\msi@br
-
    \msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
              xmlns:mml="http://www.w3.org/1998/Math/MathML"
              xmlns:sw="http://www.sciword.com/namespaces/sciword">}
-
    \msi@br\msitag{<head>}
    \msi@br\msiopentag{preamble}{<preamble>}
-   \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
+   %\expandafter\out@preamble@tex\expandafter{\the\preambleToks}
    \msi@inpreamble=1
-
    \def\makeatother{%
        \msihmode
        \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatother">}%
