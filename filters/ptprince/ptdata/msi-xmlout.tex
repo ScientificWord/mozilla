@@ -1330,7 +1330,7 @@
 \def\pagebreak{\msitag{<msibr type="pageBreak"><newPageRule/></msibr>}}
 \def\newpage{\msitag{<msibr type="newPage"><newPageRule/></msibr>}}
 
-\def\hfil{<hspace type="customSpace" class="stretchySpace"flex="1" atEnd="true"/>}
+\def\hfil{<hspace type="customSpace" class="stretchySpace" flex="1" atEnd="true"/>}
 \def\hfill{<hspace type="customSpace" class="stretchySpace" flex="2" atEnd="true"/>}
 
 %\msi@rfi{\msi@hook@hfil}{\hfil}
@@ -1610,8 +1610,7 @@
        \else
           \msihmode 
        \fi
-
-       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml"}
+       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" }
          \ifnum\msi@inpreamble=1
            pre="1"
          \fi 
