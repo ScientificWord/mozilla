@@ -88,8 +88,8 @@
 <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:usepackage">
-\usepackage{<xsl:value-of select="@package"/>}</xsl:template>
+<!-- Usepackage is handled specially by the preamble code. So ignore it here -->
+<xsl:template match="html:usepackage"></xsl:template>
 
 <xsl:variable name="theoremenvList">
   <xsl:for-each select="//html:newtheorem">
