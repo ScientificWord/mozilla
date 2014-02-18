@@ -4988,7 +4988,7 @@ function msiEditorGetShowInvisibles(editorElement)  // returns viewSettings
   viewSettings.showInvisibles = theBody.getAttribute("showinvis")==="true";
   viewSettings.showSectionExpanders = theBody.getAttribute("showexpanders") ==="true";
   viewSettings.showShortTitles = theBody.getAttribute("showshort") === "true";
-  viewSettings.showFMButtons = theBody.getAttribute("showfmbuttons") === "true";
+  // viewSettings.showFMButtons = theBody.getAttribute("showfmbuttons") === "true";
   viewSettings.showHelperLines = theBody.getAttribute("hideHelperLines") !== "true";
   viewSettings.showInputBoxes = theBody.getAttribute("hideInputBoxes") !== "true";
   viewSettings.showIndexEntries = theBody.getAttribute("hideindexentries") !== "true";
@@ -5035,10 +5035,10 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
     theBody.setAttribute("showshort", "true");
   else
     theBody.removeAttribute("showshort");
-  if (viewSettings.showFMButtons)
-    theBody.setAttribute("showfmbuttons", "true");
-  else
-    theBody.removeAttribute("showfmbuttons");
+  // if (viewSettings.showFMButtons)
+  //   theBody.setAttribute("showfmbuttons", "true");
+  // else
+  //   theBody.removeAttribute("showfmbuttons");
   if (!viewSettings.showHelperLines)
     theBody.setAttribute("hideHelperLines", "true");
   else
