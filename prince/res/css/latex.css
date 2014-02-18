@@ -695,7 +695,7 @@ button[class="frontmattertag"] {
   -moz-user-focus: none;
 }
 
-*[showfmbuttons="true"] button[class="frontmattertag"] {
+/**[showfmbuttons="true"] */button[class="frontmattertag"] {
   position: absolute;
   left: 5px;
   font-family: sans-serif;
