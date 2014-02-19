@@ -3005,7 +3005,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       pnode = nsnull;
       if (TwoSpacesSwitchesToMath())
       {
-  			if (!inMath && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == 160 || theText[offset - 1] == ' '))
+  			if (!inMath && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == 160))
   			{
 					*nodeOut = nodeIn;
 					offsetOut = offset - 1;
@@ -3050,7 +3050,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     nodeIn->GetChildNodes( getter_AddRefs(nodeList));
     nodeList->GetLength(&length);
     offset2 = (PRUint32)(-1);
-    while (--length >= 0)
+    while (length > 0 && --length >= 0)
     {
       nodeList->Item(length, getter_AddRefs(node2));
       GetNextCharacter(node2, offset2, nodeOut, offsetOut, inMath, prevChar,  _result);
