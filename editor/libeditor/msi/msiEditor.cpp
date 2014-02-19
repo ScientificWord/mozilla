@@ -3005,7 +3005,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       pnode = nsnull;
       if (TwoSpacesSwitchesToMath())
       {
-  			if (!inMath && (theText[offset] == ' ') && (theText[offset - 1] == 160))
+  			if (!inMath && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == 160 || theText[offset - 1] == ' '))
   			{
 					*nodeOut = nodeIn;
 					offsetOut = offset - 1;
