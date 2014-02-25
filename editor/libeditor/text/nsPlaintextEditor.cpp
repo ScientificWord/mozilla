@@ -1105,7 +1105,7 @@ nsPlaintextEditor::Undo(PRUint32 aCount)
   {
     result = nsEditor::Undo(aCount);
     result = mRules->DidDoAction(selection, &ruleInfo, result);
-    nsEditorUtils::JiggleCursor(this, selection, PR_FALSE);
+    nsEditorUtils::JiggleCursor(this, selection, nsIEditor::eNext);
   } 
    
   return result;
@@ -1130,7 +1130,7 @@ nsPlaintextEditor::Redo(PRUint32 aCount)
   {
     result = nsEditor::Redo(aCount);
     result = mRules->DidDoAction(selection, &ruleInfo, result);
-    nsEditorUtils::JiggleCursor(this, selection, PR_FALSE);
+    nsEditorUtils::JiggleCursor(this, selection, nsIEditor::eNext);
   } 
    
   return result;

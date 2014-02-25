@@ -2031,7 +2031,7 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
               nsCOMPtr<nsISelection> sel;
               editor->GetSelection(getter_AddRefs(sel));
               if (sel) {
-                 nsEditorUtils::JiggleCursor(editor, sel, PR_FALSE);
+                 nsEditorUtils::JiggleCursor(editor, sel, nsIEditor::ePrevious);
               }
             }
           }
@@ -2089,7 +2089,7 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
       nsCOMPtr<nsISelection> sel;
       editor->GetSelection(getter_AddRefs(sel));
       if (sel) {
-         nsEditorUtils::JiggleCursor(editor, sel, PR_FALSE);
+         nsEditorUtils::JiggleCursor(editor, sel, nsIEditor::ePrevious);
       }
     }
   }
