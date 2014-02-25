@@ -3054,14 +3054,16 @@ function doComputeSolveODENumeric(math, labelID, titleID, vars, editorElement, c
       o.mParentWin = this;
       o.theMath = math;
       o.theLabelID = labelID;
-      o.theFunc = func;
+      //o.theFunc = func;
       o.theTitleID = titleID;
       o.vars = vars;
+      o.theEditorElement = editorElement;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
       o.afterDialog = function(editorElement) {
         if (this.Cancel) return;
-        this.mParentWin.doComputeSolveODE(this.theMath, this.theLabelID, this.theFunc, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+        this.mParentWin.doComputeSolveODENumeric(this.theMath, this.theLabelID, 
+                   this.theTitleID, this.vars, this.theEditorElement, this.theCommand, this.theCommandHandler);
       };
       try {
         var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
