@@ -46,6 +46,7 @@
 #include "nsIDOMNodeFilter.h"
 #include "nsIDOMTreeWalker.h"
 #include "nsIDOMNodeList.h"
+#include "nsIDOM3Node.h"
 #include "nsISelection.h"// hooks
 #include "nsIClipboardDragDropHooks.h"
 #include "nsIClipboardDragDropHookList.h"
@@ -58,6 +59,7 @@
 #include "nsIHTMLEditor.h"
 #include "nsEditor.h"
 #include "nsIAtom.h"
+
 
 
 
@@ -245,106 +247,192 @@ nsEditorUtils::IsLeafNode(nsIDOMNode *aNode)
   return !hasChildren;
 }
 
-PRBool
-nsEditorUtils::JiggleCursor(nsIEditor *aEditor, nsISelection * sel, PRBool isForward)
+
+PRBool Acceptable(nsEditor * ed, msiITagListManager * tlm, nsIDOMNode * node)
+// We are looking for a node that can accept text. Mostly these are text nodes and texttag nodes.
+// Mathematics is acceptable; junk whitespace is not.
 {
-  nsCOMPtr<msiITagListManager> tlm;
-  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
-  nsCOMPtr<nsIDOMDocument> doc;
-  nsCOMPtr<nsIDOMTreeWalker> tw;
-  nsCOMPtr<nsIDOMNode> currentNode;
-  nsCOMPtr<nsIDOMNode> parentNode;
-  nsCOMPtr<nsIDOMNode> startSearchNode;
-  nsCOMPtr<nsIDOMNode> startNode;
-  nsEditor * ed = static_cast<nsEditor*>(aEditor);
-  PRInt32 startOffset;
-  nsresult res;
-  nsCOMPtr<nsIDOMNodeList> childList;    
-  res = aEditor->GetDocument(getter_AddRefs(doc));
-  if (doc) doctrav = do_QueryInterface(doc);
-  else return PR_FALSE;
-  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
-  if (!htmlEditor) return PR_FALSE;
-  PRBool canTakeText = PR_FALSE;
+  nsCOMPtr<nsIDOMNode> parent;
+  PRBool canContainText;
   nsIAtom * nsatom = nsnull;
   nsString text = NS_LITERAL_STRING("#text");
-  nsCOMPtr<nsIDOMHTMLElement> bodyElement;
-  nsCOMPtr<nsIDOMHTMLDocument> htmlDoc = do_QueryInterface(doc);
-  if (!htmlDoc) return PR_FALSE;
-  nsAutoString name;
-  ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset); 
-  htmlDoc->GetBody(getter_AddRefs(bodyElement));
-  if (htmlEditor) {
-    htmlEditor -> GetTagListManager(getter_AddRefs(tlm));
-    if (ed->IsTextNode(startNode))
-      startNode->GetParentNode(getter_AddRefs(parentNode));
-    else
-      parentNode = startNode;
-
-    tlm -> NodeCanContainTag(parentNode, text, nsatom, &canTakeText);
-    if (!canTakeText) {
-      // we must move the cursor to a place that can accept text.
-      res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
-      // find where to start the search
-      if (ed->IsTextNode(startNode)) startSearchNode = startNode;
-      else {
-        res = startNode->GetChildNodes(getter_AddRefs(childList)); 
-        childList->Item(startOffset  + (isForward? 0 : -1), getter_AddRefs(startSearchNode));  
-      }
-      tw->SetCurrentNode(startSearchNode);
-      currentNode = startSearchNode;
-      while (currentNode)
-      {
-//          nsAutoString tagname;
-//          res = currentNode->GetNodeName(tagname);
-        if (ed->IsTextNode(currentNode)) {
-          res = currentNode->GetParentNode(getter_AddRefs(parentNode));
-          res = tlm->NodeCanContainTag( parentNode, text, nsatom, &canTakeText);
-        }
-        else
-          res = tlm->NodeCanContainTag( currentNode, text, nsatom, &canTakeText);
-        if (canTakeText) // this is where we want the cursor to go
-        {
-          if (ed->IsTextNode(currentNode)) {
-            if (isForward) {
-              sel->Collapse(currentNode, 0);
-            } else {
-              nsAutoString nodeText;
-              currentNode->GetNodeValue(nodeText);
-              sel->Collapse(currentNode, nodeText.Length());
-            }
-            return PR_TRUE;
-          }
-          if (isForward) {
-            startOffset = 0;
-          }
-          else {
-            PRUint32 len;
-            currentNode->GetChildNodes(getter_AddRefs(childList));   
-            //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
-            //  as a direct DOM child, we'll answer PR_FALSE.
-            childList->GetLength(&len);
-            startOffset = len;
-            nsCOMPtr<nsIDOMNode> maybeBreak;
-            childList->Item(startOffset-1, getter_AddRefs(maybeBreak));
-            if (maybeBreak) {
-              maybeBreak->GetNodeName(name);
-              if (name.EqualsLiteral("br")) {
-                startOffset -= 1;
-              }
-            }
-          }
-          sel->Collapse(currentNode, startOffset);
-          return PR_TRUE;
-        }
-        if (isForward)
-          tw->NextSibling(getter_AddRefs(currentNode));
-        else
-          tw->PreviousSibling(getter_AddRefs(currentNode));
-      }
-    }
-  }  
+  if (ed->IsTextNode(node))
+  {
+    node->GetParentNode(getter_AddRefs(parent));
+    return Acceptable(ed, tlm, parent);
+  }
+  else
+  {
+    parent = node;
+  }
+  tlm -> NodeCanContainTag(parent, text, nsatom, &canContainText);
+  return canContainText;
 }
+
+PRBool LookForward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel, nsIDOMNode * nodeIn, nsIDOMNode ** nodeOut, PRInt32& offset)
+{
+  // do one step of a depth first forward traversal of the dom, looking for a node which accepts text. This includes paragraph tags, text tags, 
+  // math tags, and text nodes provided their parent accepts text.
+  // Then recurse.
+  nsCOMPtr<nsIDOMNode> newNode;
+  PRInt32 newOffset;
+  // Precondition: Acceptable(ed, tlm, node) is false.
+  if (Acceptable(ed, tlm, nodeIn)) {
+    sel->Collapse(nodeIn, offset);
+    return PR_TRUE;
+  }
+
+  if (offset == 0) // a common case
+  {
+    nodeIn->GetFirstChild(getter_AddRefs(newNode));
+  }
+  else {
+    nsCOMPtr<nsIDOMNodeList> nl;
+    nodeIn->GetChildNodes(getter_AddRefs(nl));
+    nl->Item(offset, getter_AddRefs(newNode));
+  }
+
+  if (!newNode) {
+    // we have run off the parent node
+    return PR_FALSE;
+  }
+
+  // We have just gone to a new node, and we are going forward, so the offset is now 0.
+
+  newOffset = 0;
+
+  while (newNode && ed->IsTextNode(newNode) && nodeIsWhiteSpace(newNode, 0, (PRInt32)(PRUint32)(-1))) {
+    newNode->GetNextSibling(getter_AddRefs(newNode));
+  }
+
+  if (!newNode) { // went off the end of *node. Go back up the dom tree.
+    offset = offset + 1;
+    return LookForward(ed, tlm, sel, nodeIn, nodeOut, offset);
+  }
+  
+  return LookForward(ed, tlm, sel, newNode, nodeOut, newOffset);
+}
+
+
+PRBool LookBackward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel, nsIDOMNode * nodeIn, nsIDOMNode ** node, PRInt32 offset)
+{
+
+  // do one step of a depth first forward traversal of the dom, looking for a node which accepts text. This includes paragraph tags, text tags, 
+  // math tags, and text nodes provided their parent accepts text.
+  // Then recurse.
+  nsCOMPtr<nsIDOMNode> newNode;
+  PRInt32 newOffset;
+
+  if (nodeIn == nsnull) return PR_FALSE;
+  // Precondition: Acceptable(ed, tlm, node) is false.
+  if (Acceptable(ed, tlm, nodeIn)) {
+    sel->Collapse(nodeIn, offset);
+    return PR_TRUE;
+  }
+
+  nsCOMPtr<nsIDOMNodeList> nl;
+  nodeIn->GetChildNodes(getter_AddRefs(nl));
+  nl->Item(offset, getter_AddRefs(newNode));
+
+
+  if (!newNode) {
+    // we have run off the parent node
+    return PR_FALSE;
+  }
+
+  while (newNode && ed->IsTextNode(newNode) && nodeIsWhiteSpace(newNode, 0, (PRInt32)(PRUint32)(-1))) {
+    newNode->GetPreviousSibling(getter_AddRefs(newNode));
+  }
+
+  // We have just gone to a new node, and we are going backward, so the offset now points to the last child.
+  if (ed->IsTextNode(newNode))
+  {
+    nsAutoString content;
+    nsCOMPtr<nsIDOM3Node> domNode3 = do_QueryInterface(newNode);
+    domNode3->GetTextContent(content);
+    newOffset = content.Length() - 1;
+  }
+  else {
+    newNode->GetChildNodes(getter_AddRefs(nl));
+    PRUint32 offs;
+    nl->GetLength(&offs);
+    newOffset = offs - 1;
+  }
+
+  if (!newNode) { // went off the end of *node. Go back up the dom tree.
+    offset = offset - 1;
+    return LookBackward(ed, tlm, sel, nodeIn, node, offset);
+  }
+  
+  return LookBackward(ed, tlm, sel, newNode, node, newOffset);
+}
+
+
+
+PRBool
+nsEditorUtils::JiggleCursor(nsIEditor *aEditor, nsISelection * sel, nsIEditor::EDirection dir)
+{
+  PRBool forward;
+  PRBool success = PR_FALSE;
+  PRInt32 startOffset;
+  PRInt32 offset;
+  nsCOMPtr<nsIDOMNode> startNode;
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMNode> nodeOut;
+  nsCOMPtr<msiITagListManager> tlm;
+  nsEditor * ed;
+  nsresult res;
+
+
+
+
+  switch (dir) {
+    case nsIEditor::ePrevious:
+    case nsIEditor::ePreviousWord:
+    case nsIEditor::eToBeginningOfLine:
+      forward = PR_FALSE;
+      break;
+    default:
+      forward = PR_TRUE;
+  }
+
+
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor) return PR_FALSE;
+  htmlEditor -> GetTagListManager(getter_AddRefs(tlm));
+  if (!tlm) return PR_FALSE;
+  ed = static_cast<nsEditor*>(aEditor);
+
+  ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset); 
+  if (Acceptable(ed, tlm, startNode))
+  {
+    return PR_TRUE;  // current position is OK. Do nothing.
+  }
+  node = startNode;
+  offset = startOffset;
+
+  if (!success && forward) {
+    success = LookForward(ed, tlm, sel, node, getter_AddRefs(nodeOut), offset);
+    if (success) return PR_TRUE;  // LookForward has set the selection
+  }
+
+  if (!success) {  // either forward is false, or LookForward failed. Now look backward.
+//    success = LookBackward(ed, tlm, sel, node, getter_AddRefs(nodeOut), offset);
+    success = LookBackward(ed, tlm, sel, node, getter_AddRefs(nodeOut), offset);
+    if (success) return PR_TRUE; 
+  }
+
+  if (!success && !forward)  // Looking backward failed, and we haven't tried looking forward yet
+  {
+    success = LookForward(ed, tlm, sel, node, getter_AddRefs(nodeOut), offset);
+    if (success) return PR_TRUE;
+  }
+
+  //If we get here, we haven't found anything. What to do?  TODO: BBM
+
+  return PR_FALSE;
+}
+
 
 
 /******************************************************************************
