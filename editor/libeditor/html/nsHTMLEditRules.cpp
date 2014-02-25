@@ -8997,7 +8997,7 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
       MoveContents(structElement, destElement, &offset);
     }
     mHTMLEditor->DeleteNode(structElement);
-    res = nsEditorUtils::JiggleCursor(mHTMLEditor, selection, PR_FALSE);
+    res = nsEditorUtils::JiggleCursor(mHTMLEditor, selection, nsIEditor::eNext);
   }
   return NS_OK;
 }
