@@ -243,7 +243,7 @@ function setVariablesForControls()
   gDialog.hAlignChoices = document.getElementById("hAlignChoices");
   gDialog.vAlignChoices = document.getElementById("vAlignChoices");
 
-  gDialog.TextWrapCheckbox = document.getElementById("TextWrapCheckbox");
+  gDialog.textwrapchoice = document.getElementById("textwrapchoice");
   // gDialog.cellBackgroundCW = document.getElementById("cellBackgroundCW");
 
   // Lines Panel
@@ -287,7 +287,7 @@ function setUpCollatedCellData(collatedCellData, initialCellData)
 
 function setDataFromReviseData(reviseData, commandStr)
 {
-  gSelectionTypeStr = reviseData.getSelectionType(commandStr);  //Do we even want to call this?
+//  gSelectionTypeStr = reviseData.getSelectionType(commandStr);  //Do we even want to call this?
 //  gSelectedCellsType = translateSelectionTypeString(gSelectionTypeStr);
   gTableElement = reviseData.getReferenceNode();
   gIsMatrix = reviseData.isMatrix();
@@ -879,7 +879,7 @@ function initCellsPanel()
   gDialog.CellHeightInput.value = 0;
   gDialog.CellHeightUnits = unitHandler.getCurrentUnit();
   gDialog.CellWidthInput.value = 0;
-  gDialog.TextWrapCheckbox.checked = true;
+  gDialog.textwrapchoice.value = true;
   
 }
 
@@ -945,7 +945,7 @@ function initCellsPanel()
 //      gDialog.TextWrapList.value = "nowrap";
 //    else
 //      gDialog.TextWrapList.value = "wrap";
-//    gDialog.TextWrapCheckbox.checked = gAdvancedEditUsed && previousIndex != gDialog.TextWrapList.selectedIndex;
+//    gDialog.textwrapchoice.checked = gAdvancedEditUsed && previousIndex != gDialog.TextWrapList.selectedIndex;
 //
 //    previousValue = gCellColor;
 //    gCellColor = GetHTMLOrCSSStyleValue(globalCellElement, bgcolor, cssBackgroundColorStr);
@@ -1488,7 +1488,7 @@ function SwitchToValidatePanel()
 //rwa     SetAlign("CellVAlignList", "", globalCellElement, "valign");
 //rwa   }
 //rwa 
-//rwa //  if (gDialog.TextWrapCheckbox.checked)
+//rwa //  if (gDialog.textwrapchoice.checked)
 //rwa //  {
 //rwa //    if (gDialog.TextWrapList.value == "nowrap")
 //rwa //      try {
@@ -1571,9 +1571,9 @@ function ValidateData()
 //      if (gCollatedCellData.size.bHeightSet)
 //        gCollatedCellData.size.height = gHeightUnitsController.getValue(gDialog.CellHeightInput, gCellHeightUnit);
 //    break;
-//    case "TextWrapCheckbox":
+//    case "textwrapchoice":
 //      gCellChangeData.wrap = true;
-//      gCollatedCellData.wrap = (gDialog.TextWrapCheckbox.checked ? "wrap" : "nowrap");
+//      gCollatedCellData.wrap = (gDialog.textwrapchoice.checked ? "wrap" : "nowrap");
 //    break;
 //  }
 //}
@@ -2887,6 +2887,34 @@ function Apply()
 
     ApplyTableAttributes();
 
+    // handle caption
+    var captionloc = gDialog.captionLocation.value;
+    var captiontext;
+    var cap;
+    var i;
+    var caps = gTableElement.getElementsByTagName('caption');
+
+    if (captionloc !== '') {
+      if (caps.length > 0) {
+        cap = caps[0];
+      }
+      else {  //create new caption node
+        gActiveEditor.createElementWithDefaults('caption');
+        gTableElement.appendChild(cap);
+        var namespace = { value: null };
+        var tlm = gActiveEditor.tagListManager;
+        captiontext = tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, cap.ownerDocument);
+        cap.appendChild(captiontext);
+
+      }
+      cap.setAttribute('style', 'caption-side: '+ captionloc +';');
+    }
+    else if (caps.length > 0) { // remove caption(s)
+      for (i = caps.length -1; i >= 0; i--) {
+        gActiveEditor.deleteNode(caps[i]);
+      }
+    }
+
 //    ApplyColAndRowAttributes();
 
     // We may have just a table, so check for cell element
@@ -2912,7 +2940,7 @@ function onAcceptNewTable()
 
     try 
     {
-      var wrapping = document.getElementById.textwrapchoice.value;  // values are '','true','false'
+      var wrapping = (gDialog.textwrapchoice.value == "true");  // values are '','true','false'
       if (wrapping.length > 0) {
         gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
       }
@@ -2942,6 +2970,18 @@ function onAcceptNewTable()
     ApplyTableAttributes();
     if (tableBody)
     {
+      // check here for caption
+      var captionloc = gDialog.captionLocation.value;
+      var captiontext;
+      if (captionloc !== '') {
+        var cap = gActiveEditor.createElementWithDefaults('caption');
+        var namespace = { value: null };
+        var tlm = gActiveEditor.tagListManager;
+        gTableElement.appendChild(cap);
+        cap.setAttribute('style', 'caption-side: '+ captionloc +';');
+        captiontext = tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, cap.ownerDocument);
+        cap.appendChild(captiontext);
+      }
       gTableElement.appendChild(tableBody);
       color = document.getElementById('backgroundCW').getAttribute("color");
 
