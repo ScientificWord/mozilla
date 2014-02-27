@@ -269,6 +269,20 @@ PRBool Acceptable(nsEditor * ed, msiITagListManager * tlm, nsIDOMNode * node)
   return canContainText;
 }
 
+PRBool skipThisTextNode( nsEditor * ed, msiITagListManager * tlm, nsIDOMNode * node) {
+  if (!node || !(ed->IsTextNode(node))) return PR_FALSE;
+  if (nodeIsWhiteSpace(node, 0, (PRInt32)(PRUint32)(-1))) {
+    return PR_TRUE;
+  }
+  nsCOMPtr<nsIDOMNode> parent;
+  node->GetParentNode(getter_AddRefs(parent));
+  if (parent) {
+    return !(Acceptable(ed, tlm, parent));
+  }
+  return PR_TRUE;
+}
+
+
 PRBool LookForward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel, nsIDOMNode * nodeIn, nsIDOMNode ** nodeOut, PRInt32& offset)
 {
   // do one step of a depth first forward traversal of the dom, looking for a node which accepts text. This includes paragraph tags, text tags, 
@@ -301,7 +315,7 @@ PRBool LookForward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel, 
 
   newOffset = 0;
 
-  while (newNode && ed->IsTextNode(newNode) && nodeIsWhiteSpace(newNode, 0, (PRInt32)(PRUint32)(-1))) {
+  while (newNode && skipThisTextNode(ed, tlm, newNode)) {
     newNode->GetNextSibling(getter_AddRefs(newNode));
   }
 
@@ -312,7 +326,6 @@ PRBool LookForward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel, 
   
   return LookForward(ed, tlm, sel, newNode, nodeOut, newOffset);
 }
-
 
 PRBool LookBackward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel, nsIDOMNode * nodeIn, nsIDOMNode ** node, PRInt32 offset)
 {
@@ -332,16 +345,17 @@ PRBool LookBackward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel,
 
   nsCOMPtr<nsIDOMNodeList> nl;
   nodeIn->GetChildNodes(getter_AddRefs(nl));
-  nl->Item(offset, getter_AddRefs(newNode));
+  nl->Item(offset-1, getter_AddRefs(newNode));
 
+
+  while (newNode && skipThisTextNode(ed, tlm, newNode))
+  {
+    newNode->GetPreviousSibling(getter_AddRefs(newNode));
+  }
 
   if (!newNode) {
     // we have run off the parent node
     return PR_FALSE;
-  }
-
-  while (newNode && ed->IsTextNode(newNode) && nodeIsWhiteSpace(newNode, 0, (PRInt32)(PRUint32)(-1))) {
-    newNode->GetPreviousSibling(getter_AddRefs(newNode));
   }
 
   // We have just gone to a new node, and we are going backward, so the offset now points to the last child.
@@ -350,17 +364,16 @@ PRBool LookBackward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel,
     nsAutoString content;
     nsCOMPtr<nsIDOM3Node> domNode3 = do_QueryInterface(newNode);
     domNode3->GetTextContent(content);
-    newOffset = content.Length() - 1;
+    newOffset = content.Length();
   }
   else {
     newNode->GetChildNodes(getter_AddRefs(nl));
     PRUint32 offs;
     nl->GetLength(&offs);
-    newOffset = offs - 1;
+    newOffset = offs;
   }
 
   if (!newNode) { // went off the end of *node. Go back up the dom tree.
-    offset = offset - 1;
     return LookBackward(ed, tlm, sel, nodeIn, node, offset);
   }
   
