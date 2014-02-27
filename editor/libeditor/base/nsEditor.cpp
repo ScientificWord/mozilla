@@ -1252,6 +1252,8 @@ NS_IMETHODIMP nsEditor::BeginningOfDocument()
     // just the root node, set selection to inside the root
     result = selection->Collapse(rootElement, 0);
   }
+  nsEditorUtils::JiggleCursor(this, selection, eNext);
+
   return result;
 }
 
@@ -1272,13 +1274,15 @@ nsEditor::EndOfDocument()
   if (!rootElement)
     return NS_ERROR_NULL_POINTER;
 
-  // get the length of the rot element
+  // get the length of the root element
   PRUint32 len;
   res = GetLengthOfDOMNode(rootElement, len);
   if (NS_FAILED(res)) return res;
 
   // set the selection to after the last child of the root element
-  return selection->Collapse(rootElement, (PRInt32)len);
+  res = selection->Collapse(rootElement, (PRInt32)len);
+  nsEditorUtils::JiggleCursor(this, selection, ePrevious);
+  return res;
 }
 
 NS_IMETHODIMP
