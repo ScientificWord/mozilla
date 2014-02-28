@@ -92,7 +92,6 @@ case CMD_ASSIGN_DIM:{
       StringBuilder::Discard(str);
       s_preambleExtra += strTemp;
       //Typesetter::AppendTag(strTemp.c_str());
-     
    }
    LOG("\n----Set " << defining << " = "
                     << n << "  ((" << *pList << "))");
