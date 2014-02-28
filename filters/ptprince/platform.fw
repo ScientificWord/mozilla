@@ -1103,7 +1103,7 @@ bool FileExists(const char* file)
        buf[i] = SEP;
      } else {
        buf[i] = file[i];
-     }     
+     }
    }
    buf[strlen(file)] = 0;
 
@@ -1177,11 +1177,11 @@ void SearchEnv(const char *file, const char *env, bool isEnvVar, char *buf)
       strcat(curPath, s_docdir);
       strcat(curPath, SEP_STR);
       memcpy(curPath + strlen(s_docdir) + 1, penv, n);
-      n = n + strlen(s_docdir); 
+      n = n + strlen(s_docdir);
     } else {
       memcpy(curPath, penv, n);
     }
-    
+
     if (curPath[n - 1] != '/' && curPath[n - 1] != '\\')
     {
       #ifdef _WINDOWS

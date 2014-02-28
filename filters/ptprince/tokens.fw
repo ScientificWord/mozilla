@@ -611,7 +611,7 @@ inline bool bActive(const TeXToken* tt)
 @$@<Clean Stack@>@M==@{@-
 while (!(s_stack -> empty())) {
  TokenSource* ts = s_stack->back();
- if (ts == NULL || ts->bEmpty()){ 
+ if (ts == NULL || ts->bEmpty()){
      s_stack -> pop_back();
      delete ts;
  } else {
