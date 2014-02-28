@@ -278,7 +278,6 @@ void Typesetter::AdjustAttributes(std::string str, std::string newstr)
       }
       ++it;
     }
-    
   }
 }
 @}
