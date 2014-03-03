@@ -35,6 +35,38 @@ extern const char* s_docdir;
 extern std::string s_preambleExtra;
 @}
 
+@$@<A string function that should go elsewhere@>==@{@-
+void find_and_replace(std::string& str, const char* srch, const char*repl)
+{
+   int p = str.find(srch);
+   while (p != -1){
+     str.replace(p, strlen(srch), repl);
+     p = str.find(srch);
+   }
+}
+
+void strip_quotes(std::string& str){
+  if (str[0] == '\"' || str[0] == '\''){
+     str = str.substr(1,str.size()-2);
+  }
+}
+
+std::string simple_math_to_mathml(std::string str){
+      std::string mml;
+      SetupMathML();
+      std::string s_mathml;
+      std::string s_anom;
+      std::string tex = "$";
+      tex += str;
+      tex += "$";
+      ProcessMathML(tex.c_str(), s_mathml, s_anom);
+      mml = s_mathml;
+      s_mathml = "";
+      TakeDownMathML();
+      return mml;
+}
+@}
+
 
 
 @$@<Functions for inserting primitive hooks@>+=@{
@@ -422,10 +454,18 @@ case CMD_MSISPECIAL: {
       value = strTemp.substr(valueBegin, valueEnd - valueBegin);
     } else {
       // A \TEXUX{$..$}; value
-      valueBegin = strTemp.find_first_of("$", valueBegin);
-      valueEnd = strTemp.find_first_of("$", valueBegin+1);
-      value = strTemp.substr(valueBegin, valueEnd - valueBegin + 1);
-      valueEnd = strTemp.find_first_of(";", valueEnd);
+      
+      if (strTemp[valueBegin+7] == '$'){
+         valueBegin = strTemp.find_first_of("$", valueBegin);
+         valueEnd = strTemp.find_first_of("$", valueBegin+1);
+         value = strTemp.substr(valueBegin, valueEnd - valueBegin + 1);
+         valueEnd = strTemp.find_first_of(";", valueEnd);
+      } else {
+         valueBegin = 1 + strTemp.find_first_of("{", valueBegin);
+         valueEnd  = -1 + strTemp.find_first_of("}", valueBegin+1);
+         value = strTemp.substr(valueBegin, valueEnd - valueBegin + 1);
+         valueEnd = strTemp.find_first_of(";", valueEnd);
+      }
       SetupMathML();
       std::string s_mathml;
       std::string s_anom;
@@ -438,60 +478,60 @@ case CMD_MSISPECIAL: {
     i = valueEnd+1;
   }
   std::string result =
-  "<graph><graphspec \
-         ImageFile=\"plots/plot1393432432731.xvc\" \
-         XAxisLabel=\"x\" YAxisLabel=\"y\" ZAxisLabel=\"z\" \
-         Width=\"3\" Height=\"4.5\" Units=\"cm\" XTickCount=\"0\" \
-         YTickCount=\"0\" ZTickCount=\"0\" BGColor=\"#FFFFFF\" \
-         Dimension=\"2\" AxisFontFamily=\"sans-serif\" \
-         AxisFontSize=\"10\" AxisFontColor=\"#000000\" \
-         AxisFontItalic=\"false\" \
-         AxisFontBold=\"false\" \
-         TicksFontFamily=\"sans-serif\" \
-         TicksFontSize=\"8\" \
-         TicksFontColor=\"#000000\" \
-         TicksFontItalic=\"false\" \
-         TicksFontBold=\"false\" \
-         errStr=\"\" \
-         ViewingBoxXMin=\"-6.000000001e0\" \
-         ViewingBoxXMax=\"6.000000001e0\" \
-         ViewingBoxYMin=\"-9.998181315e-1\" \
-         ViewingBoxYMax=\"9.998181315e-1\"><plot \
-xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\" \
-             PlotType=\"rectangular\" \
-             LineStyle=\"Solid\" \
-             PointStyle=\"Dot\"  \
-             LineThickness=\"thin\" \
-             LineColor=\"#000000ff\" \
-             DiscAdjust=\"true\" \
-             BaseColor=\"#ff0000ff\" \
-             SecondaryColor=\"#0000ffff\" \
-             PointSymbol=\"FilledCircles\" \
-             Animate=\"false\" \
-             PlotStatus=\"undefined\"><Expression>\
-             <math xmlns=\"http://www.w3.org/1998/Math/MathML\">";
-  result += kvmap["function"];
-  result +=  "</math></Expression>\
-        </plot>\
-     </graphspec>\
-     <msiframe pos=\"display,,I\" sidemargin=\"0.3\" topmargin=\"0.15\" \
-           placeLocation=\"h\" \
-           textalignment=\"\" width=\"3.46\" height=\"4.96\" units=\"cm\" \
-           style=\"margin: 5.66929px \
-           11.3386px; width: 130.772px; height: 187.465px;\">\
-        <plotwrapper borderw=\"0.03\" padding=\"0.2\" \
-             background-color=\"#ffffff\" \
-             border-color=\"#000000\" width=\"3\" height=\"4.5\" units=\"cm\"\
-             msi_resize=\"true\" style=\"border: 1.13386px solid rgb(0, 0, 0);\
-             padding: 7.55906px; width: 113.386px; height: 170.079px;\">\
-           <object data=\"file:///C:/blech.xvc\" \
-              type=\"application/x-mupad-graphics+xml\" \
-              alt=\"Generated Plot\" \
-              msigraph=\"true\" \
-              style=\"width: 113.386px; height: 170.079px;\"/>\
-        </plotwrapper>\
-     </msiframe>\
-   </graph>";
+"<graph>\
+   <graphSpec ImageFile=\"plots/plot1393432432731.xvc\" \
+   XAxisLabel=\"x\"\ YAxisLabel=\"y\" ZAxisLabel=\"z\" Width=\"3\" \
+   Height=\"4.5\" Units=\"cm\" XTickCount=\"0\" YTickCount=\"0\" \
+   ZTickCount=\"0\" BGColor=\"#FFFFFF\" Dimension=\"2\" \
+   AxisFontFamily=\"sans-serif\" AxisFontSize=\"10\" \
+   AxisFontColor=\"#000000\"  AxisFontItalic=\"false\" \
+   AxisFontBold=\"false\" TicksFontFamily=\"sans-serif\" \
+   TicksFontSize=\"8\" TicksFontColor=\"#000000\" TicksFontItalic=\"false\"\
+   TicksFontBold=\"false\" errStr=\"\" ViewingBoxXMin=\"-6.000000001e0\"\
+   ViewingBoxXMax=\"6.000000001e0\" ViewingBoxYMin=\"-9.998181315e-1\"\
+   ViewingBoxYMax=\"9.998181315e-1\">\
+   <plot \
+   xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\" \
+   PlotType=\"rectangular\" LineStyle=\"Solid\" PointStyle=\"Dot\" \
+   LineThickness=\"thin\" LineColor=\"#000000ff\" DiscAdjust=\"true\"\
+   BaseColor=\"#ff0000ff\" SecondaryColor=\"#0000ffff\" \
+   PointSymbol=\"FilledCircles\" Animate=\"false\" PlotStatus=\"undefined\">\
+   <Expression><math xmlns=%mathmlns%>%function%</math></Expression>\
+   <XMax><math xmlns=%mathmlns%>%xmax%</math></XMax>\
+   <XMin><math xmlns=%mathmlns%>%xmin%</math></XMin>\
+   <XVar><math xmlns=%mathmlns%>%xvar%</math></XVar>\
+   <XPts><math xmlns=%mathmlns%>\
+   <mn>30</mn></math></XPts></plot></graphSpec>\
+   <msiframe pos=\"display,,I\" sidemargin=\"0.3\" topmargin=\"0.15\"\
+   placeLocation=\"h\" textalignment=\"\" width=\"3.46\" height=\"4.96\"\
+   units=\"cm\" style=\"margin: 5.66929px 11.3386px; width: 130.772px; \
+   height: 187.465px;\"><plotwrapper borderw=\"0.03\" padding=\"0.2\"\
+   background-color=\"#ffffff\" border-color=\"#000000\" width=\"3\"\
+   height=\"4.5\" units=\"cm\" msi_resize=\"true\" \
+   style=\"border: 1.13386px solid rgb(0, 0, 0); padding: 7.55906px;\
+   width: 113.386px; height: 170.079px;\">\
+   <object data=\"file:///C:/Documents%20and%20Settings\
+/Jon.KORURANGI/My%20Documents/SWPDocs/sinx_work/plots/plot1393432432731.xvc\"\
+  type=\"application/x-mupad-graphics+xml\" alt=\"Generated Plot\" \
+  msigraph=\"true\" style=\"width: 113.386px; height: 170.079px;\"/>\
+  </plotwrapper></msiframe></graph>";
+
+   // search and replace
+   find_and_replace(result, "%mathmlns%", 
+                            "\"http://www.w3.org/1998/Math/MathML\""); 
+
+   find_and_replace(result, "%function%", kvmap["function"].c_str());
+
+   strip_quotes(kvmap["xmin"]);
+   std::string xmin = simple_math_to_mathml(kvmap["xmin"]);
+   find_and_replace(result, "%xmin%", xmin.c_str());
+
+   strip_quotes(kvmap["xmax"]);
+   std::string xmax = simple_math_to_mathml(kvmap["xmax"]);
+   find_and_replace(result, "%xmax%", xmax.c_str());
+
+   find_and_replace(result, "%xvar%", kvmap["var1name"].c_str());
+
    Typesetter::AppendTag(result.c_str()) ;
 
   break;
@@ -2103,6 +2143,7 @@ SymbolData* frozen_relax = new Primitive(CMD_RELAX);
 @<TagStack@>
 @<Interpreter forward declarations@>
 @<Functions for inserting primitive hooks@>
+@<A string function that should go elsewhere@>
 @<Some box scanning@>
 @<ScanMath@>
 @<Alignment implementation@>
