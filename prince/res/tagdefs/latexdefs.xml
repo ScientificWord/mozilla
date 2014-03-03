@@ -37,8 +37,10 @@
 			<tags>
 				<tag nm="(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
 				<tag nm="alt"><description>Stylistic alternate</description></tag>
-				<tag nm="bold"><description>Bold</description>
+        <tag nm="bold"><description>Bold</description>
           <mathvar>bold</mathvar></tag>
+				<tag nm="boldsymbol"><description>Bold symbol</description>
+          <mathonly>bold</mathonly></tag>
 				<tag nm="blackboardBold"><description>Blackboard Bold</description>
           <mathonly/><mathvar>double-struck</mathvar></tag>
 				<tag nm="calligraphic"><description>Calligraphic</description>

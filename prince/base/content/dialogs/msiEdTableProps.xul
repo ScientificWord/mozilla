@@ -99,7 +99,7 @@
                       <menuitem label="&inline.label;"  value=""/>
                       <menuitem label="&left.label;" value="left"/>
                       <menuitem label="&inside.label;" value="inside"/>
-                      <menuitem label="&center.label;" value="center"/>
+                      <menuitem label="&center.label;" value="display"/>
                       <menuitem label="&right.label;" value="right"/>
                       <menuitem label="&outside.label;" value="outside"/>
                     </menupopup>

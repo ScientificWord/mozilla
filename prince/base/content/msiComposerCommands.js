@@ -9141,11 +9141,23 @@ var msiSelectTableCommand =
     try
     {
       var editorElement = msiGetActiveEditorElement();
-      msiGetTableEditor(editorElement).selectTable();
-      if (editorElement)
+      var editor = msiGetEditor(editorElement);
+      var element = editor.selection.anchorNode;
+      var tableNode;
+      if (element)
+      {
+        tableNode = GetParentTable(element);
+        if (tableNode) {
+          editor.selectElement(tableNode);
+          editor.markNodeDirty(tableNode);
+        }
+      }
+      if (editorElement) {
         editorElement.contentWindow.focus();
-      else
+      }
+      else {
         window.content.focus();
+      }
     }
     catch (e) {
       finalThrow(cmdFailString('selecttable'), e.message);
