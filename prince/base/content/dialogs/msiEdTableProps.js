@@ -2000,7 +2000,6 @@ function ApplyTableAttributes()
     if (pos && pos.length > 0) {
       if (pos == "inline" || pos == "display") float = "";
       if (float !== "") {
-        SetAnAttribute(gTableElement,"pos","float");
         msiRequirePackage(gActiveEditorElement, "wrapfig", "");
         SetAnAttribute(gTableElement,"placement",placementCodeFrom(pos));
         SetAnAttribute(gTableElement,"placeLocation", float);
@@ -2012,8 +2011,13 @@ function ApplyTableAttributes()
         else 
         {
           doSetStyleAttr("display", "block");
+          if (pos == "display") {
+            doSetStyleAttr("margin-left: auto");
+            doSetStyleAttr("margin-right: auto");
+          }
         }
       }
+      SetAnAttribute(gTableElement, "pos", pos);
     }
     else doSetStyleAttr("display", "inline-table");
     if (!bEmptyStyle)

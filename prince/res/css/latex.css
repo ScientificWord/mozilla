@@ -1540,6 +1540,11 @@ bold {
   font-weight: 700
 }
 
+boldsymbol {
+  font-weight: 700;
+  font-style: italic;
+}
+
 blackboardBold {
   font-weight: 700
 }

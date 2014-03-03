@@ -635,6 +635,7 @@ NS_IMETHODIMP nsHTMLEditor::TranslatePropertyToMath( const nsAString& textProper
   _retval = empty;
   if (textProperty.EqualsLiteral("bold")) _retval = NS_LITERAL_STRING("bold");
   else if (textProperty.EqualsLiteral("italic")) _retval = NS_LITERAL_STRING("italic");
+  else if (textProperty.EqualsLiteral("boldsymbol")) _retval = NS_LITERAL_STRING("bold-italic");
   else if (textProperty.EqualsLiteral("blackboardBold")) _retval = NS_LITERAL_STRING("double-struck");
   else if (textProperty.EqualsLiteral("fraktur")) _retval = NS_LITERAL_STRING("fraktur");
   else if (textProperty.EqualsLiteral("sansSerif")) _retval = NS_LITERAL_STRING("sans-serif");
