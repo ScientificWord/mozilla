@@ -36,6 +36,10 @@ table {
   display: inline-table;
 }
 
+table[display="true"] {
+  display: table;
+}
+
 table:focus {
   border-collapse: separate;
 }
