@@ -791,9 +791,9 @@ function initTablePanel()
   else if (placement=="R") longPlacement = "right";
   else if (placement=="I") longPlacement = "inside";
   else if (placement=="O") longPlacement = "outside"; 
-  else if (pos == "center") longPlacement="center";
   else longPlacement = null;
-  // need to check for center and inline
+  if (pos == "center") longPlacement="center";  // trumps
+  else if (pos == "inline") longPlacement = null;
 
 
   var placeLocation = gTableElement.getAttribute("placeLocation");  
@@ -1921,66 +1921,66 @@ function ApplyTableAttributes()
 
     if (unit && gTableElement) 
       SetAnAttribute(gTableElement,"unit", unit);
-    var newAlign = gTableCaptionPlacement;
-    if (!newAlign)
-      newAlign = "";
+    // var newAlign = gTableCaptionPlacement;
+    // if (!newAlign)
+    //   newAlign = "";
     var logStr;
 
-    if (gTableCaptionElement)
-    {
-      // Get current alignment
-      var align = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side").toLowerCase();
-      // This is the default
-      if (!align) align = "top";
+  //   if (gTableCaptionElement)
+  //   {
+  //     // Get current alignment
+  //     var align = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side").toLowerCase();
+  //     // This is the default
+  //     if (!align) align = "top";
 
-      if (newAlign === "")
-      {
-        // Remove existing caption
-        try {
-          gActiveEditor.deleteNode(gTableCaptionElement);
-        } catch(e) {}
-        gTableCaptionElement = null;
-      }
-      else if(newAlign != align)
-      {
-        try {
-          logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [";
-          if (newAlign == "top") // This is default, so don't explicitly set it
-            gActiveEditor.removeAttributeOrEquivalent(gTableCaptionElement, "align", false);
-          else
-          {
-            gActiveEditor.setAttributeOrEquivalent(gTableCaptionElement, "align", newAlign, false);
-            logStr += newAlign;
-          }
-          logStr += "].\n";
-          msiKludgeLogString(logStr, ["tableEdit"]);
+  //     if (newAlign === "")
+  //     {
+  //       // Remove existing caption
+  //       try {
+  //         gActiveEditor.deleteNode(gTableCaptionElement);
+  //       } catch(e) {}
+  //       gTableCaptionElement = null;
+  //     }
+  //     else if(newAlign != align)
+  //     {
+  //       try {
+  //         logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [";
+  //         if (newAlign == "top") // This is default, so don't explicitly set it
+  //           gActiveEditor.removeAttributeOrEquivalent(gTableCaptionElement, "align", false);
+  //         else
+  //         {
+  //           gActiveEditor.setAttributeOrEquivalent(gTableCaptionElement, "align", newAlign, false);
+  //           logStr += newAlign;
+  //         }
+  //         logStr += "].\n";
+  //         msiKludgeLogString(logStr, ["tableEdit"]);
 
-        } catch(e) {}
-      }
-    }
-    else if (newAlign !== "")
-    {
-      // Create and insert a caption:
-      try {
-        gTableCaptionElement = gActiveEditor.createElementWithDefaults("caption");
-      } catch (e) {}
-      if (gTableCaptionElement)
-      {
-        if (newAlign != "top")
-        {
-          SetAnAttribute(gTableCaptionElement,"align", newAlign);
-          logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [" + newAlign + "].\n";
-          msiKludgeLogString(logStr, ["tableEdit"]);
-        }
-        // Insert it into the table - caption is always inserted as first child
-        try {
-          gActiveEditor.insertNode(gTableCaptionElement, gTableElement, 0);
-        } catch(e) {}
+  //       } catch(e) {}
+  //     }
+  //   }
+  //   else if (newAlign !== "")
+  //   {
+  //     // Create and insert a caption:
+  //     try {
+  //       gTableCaptionElement = gActiveEditor.createElementWithDefaults("caption");
+  //     } catch (e) {}
+  //     if (gTableCaptionElement)
+  //     {
+  //       if (newAlign != "top")
+  //       {
+  //         SetAnAttribute(gTableCaptionElement,"align", newAlign);
+  //         logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [" + newAlign + "].\n";
+  //         msiKludgeLogString(logStr, ["tableEdit"]);
+  //       }
+  //       // Insert it into the table - caption is always inserted as first child
+  //       try {
+  //         gActiveEditor.insertNode(gTableCaptionElement, gTableElement, 0);
+  //       } catch(e) {}
 
-        // Put selecton back where it was
-  //      ChangeSelection(RESET_SELECTION);
-      }
-    }
+  //       // Put selecton back where it was
+  // //      ChangeSelection(RESET_SELECTION);
+  //     }
+  //   }
 
     logStr = "";
     var bEmptyStyle = true; //(!gTableElement.style);
@@ -2914,6 +2914,7 @@ function Apply()
 
       }
       cap.setAttribute('style', 'caption-side: '+ captionloc +';');
+      cap.setAttribute('align', captionloc);
     }
     else if (caps.length > 0) { // remove caption(s)
       for (i = caps.length -1; i >= 0; i--) {
@@ -2985,6 +2986,7 @@ function onAcceptNewTable()
         var tlm = gActiveEditor.tagListManager;
         gTableElement.appendChild(cap);
         cap.setAttribute('style', 'caption-side: '+ captionloc +';');
+        cap.setAttribute('align', captionloc);
         captiontext = tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, cap.ownerDocument);
         cap.appendChild(captiontext);
       }
@@ -3072,9 +3074,7 @@ function onAccept()
     return onAcceptNewTable();
   }
   // Do same as Apply and close window if ValidateData succeeded
-  gActiveEditor.beginTransaction();
   var retVal = Apply();
-  gActiveEditor.endTransaction();
 //  if (gActiveEditor) {
 //    gActiveEditor.deleteNode(gTableElement);
 //    gActiveEditor.undo(1);
