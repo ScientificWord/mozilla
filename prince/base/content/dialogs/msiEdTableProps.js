@@ -791,14 +791,16 @@ function initTablePanel()
   else if (placement=="R") longPlacement = "right";
   else if (placement=="I") longPlacement = "inside";
   else if (placement=="O") longPlacement = "outside"; 
-  else longPlacement="";
+  else if (pos == "center") longPlacement="center";
+  else longPlacement = null;
   // need to check for center and inline
 
+
   var placeLocation = gTableElement.getAttribute("placeLocation");  
-  if (placement) {
+  if (longPlacement) {
 //    if (placement == "I" || placement == "display") placeLocation = "";
+    gDialog.tableLocationList.value = longPlacement;
     if (placeLocation) {
-      gDialog.tableLocationList.value = longPlacement;
       gDialog.floatLocationList.value = placeLocation;
     }
     else 
@@ -1966,7 +1968,7 @@ function ApplyTableAttributes()
       {
         if (newAlign != "top")
         {
-          setAnAttribute(gTableCaptionElement,"align", newAlign);
+          SetAnAttribute(gTableCaptionElement,"align", newAlign);
           logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [" + newAlign + "].\n";
           msiKludgeLogString(logStr, ["tableEdit"]);
         }
@@ -1998,7 +2000,7 @@ function ApplyTableAttributes()
       doSetStyleAttr("width", gDialog.tableWidthInput.value + unit);
     }
     if (pos && pos.length > 0) {
-      if (pos == "inline" || pos == "display") float = "";
+      if (pos == "inline" || pos == "center") float = "";
       if (float !== "") {
         msiRequirePackage(gActiveEditorElement, "wrapfig", "");
         SetAnAttribute(gTableElement,"placement",placementCodeFrom(pos));
@@ -2010,10 +2012,10 @@ function ApplyTableAttributes()
         if (pos == "inline") doSetStyleAttr("display", "inline-table");
         else 
         {
-          doSetStyleAttr("display", "block");
-          if (pos == "display") {
-            doSetStyleAttr("margin-left: auto");
-            doSetStyleAttr("margin-right: auto");
+          doSetStyleAttr("display", "table");
+          if (pos == "center") {
+            doSetStyleAttr("margin-left", "auto");
+            doSetStyleAttr("margin-right", "auto");
           }
         }
       }
