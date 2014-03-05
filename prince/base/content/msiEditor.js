@@ -488,6 +488,9 @@ var msiResizeListener =
       case "plotwrapper":
         this.resizePlot(anElement, oldWidth, oldHeight, newWidth, newHeight);
         break;
+      case "msiframe":
+        this.resizeFrame(anElement, oldWidth, oldHeight, newWidth, newHeight);
+        break;
       default:
         break;
     }
@@ -556,6 +559,31 @@ var msiResizeListener =
 //        obj = obj[0];
 //        makeSnapshot(obj, graph, editorElement);
 //      }
+    }
+    catch(e) {
+      msidump( e.message );
+    }
+  },
+
+  resizeFrame : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
+  {
+    // dimensions are given in pixels.
+    if (oldWidth === newWidth && oldHeight === newHeight) {
+      return;
+    }
+    try {
+      var unithandler = new UnitHandler();
+      var units;
+// skip preserving aspect ratio for now.
+      var editorElement = msiGetActiveEditorElement();
+      units = anElement.getAttribute("units");
+      unithandler.initCurrentUnit(units);
+      var newWidthInUnits = unithandler.getValueOf(newWidth, "px");
+      var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
+      anElement.setAttribute("width", String(newWidthInUnits));
+      if (anElement.hasAttribute("height")) {
+        anElement.setAttribute("height", String(newHeightInUnits));
+      }
     }
     catch(e) {
       msidump( e.message );
