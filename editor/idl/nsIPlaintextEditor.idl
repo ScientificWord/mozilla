@@ -74,6 +74,7 @@ interface nsIPlaintextEditor : nsISupports
     * XXX change this type to 'unsigned long'
     */
   readonly attribute long textLength;
+  attribute boolean inComplexTransaction;  // when this is set, do not call rules after deletions
 
   /**
     * The maximum number of characters allowed.
