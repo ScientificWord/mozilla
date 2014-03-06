@@ -24,143 +24,6 @@ void Interpretter::InitializeSymbolTable()
 }
 @}
 
-@$@<A string function that should go elsewhere@>==@{@-
-void find_and_replace(std::string& str, const char* srch, const char*repl)
-{
-   int p = str.find(srch);
-   while (p != -1){
-     str.replace(p, strlen(srch), repl);
-     p = str.find(srch);
-   }
-}
-
-void strip_quotes(std::string& str){
-  if (str[0] == '\"' || str[0] == '\''){
-     str = str.substr(1,str.size()-2);
-  }
-}
-
-std::string simple_math_to_mathml(std::string str){
-      std::string mml;
-      SetupMathML();
-      std::string s_mathml;
-      std::string s_anom;
-      std::string tex = "$";
-      tex += str;
-      tex += "$";
-      ProcessMathML(tex.c_str(), s_mathml, s_anom);
-      mml = s_mathml;
-      s_mathml = "";
-      TakeDownMathML();
-      return mml;
-}
-@}
-
-@$@<A graphic file utility@>==@{
-std::string MaybeCopyGraphicFile(const char* fullname)
-{
-   // 1. Get the search paths
-   StringUtils::AppendToks(Global::msigraphicspath);
-   String str = StringBuilder::Create();
-   std::string paths;
-   int i = 0;
-   while (i < str.Size()){
-       paths += (char) str[i];
-       ++i;
-   }
-
-   StringBuilder::Discard(str);
-     
-     Filename fn(fullname, true);
-     std::string graphic;
-     std::string extn = fn.GetExtString();
-     if (extn != "") {
-          // assume everything relative for now
-          // relative path?
-          graphic = s_docdir;
-          graphic += SEP;
-          graphic += fullname;
-     } else {
-          // No extension.
-          const char* exts[] = {".png", ".jpg", ".pdf", NULL};
-          int i = 0;
-
-          while (exts[i] != NULL){
-            std::string name = fullname;
-            name += exts[i];
-
-            char buf[_MAX_PATH];
-
-            SearchEnv(name.c_str(), paths.c_str(), false, buf);
-            if (strlen(buf) != 0) {
-               // found it
-               graphic = buf;
-               break;
-            }
-            ++i;
-          }
-
-      }
-
-      // Copy the graphic to <docdir>/graphics
-      LOG("\n---- Copy " << graphic.c_str());
-
-      std::string targetdir;
-      if (s_outputdir != 0)
-        targetdir = s_outputdir;
-
-      if (extn == "xvz") {
-         targetdir += SEP;
-         targetdir += "plots";
-         targetdir += SEP;
-      } else {
-         targetdir += SEP;
-         targetdir += "graphics";
-         targetdir += SEP;
-      }
-
-      std::string target = targetdir;
-      target += fn.GetNameString();
-      target += ".";
-      target += fn.GetExtString();
-
-      LOG("\n---- To " << target.c_str());
-
-      // Copy the file
-
-      FILE* graphfile = fopen(graphic.c_str(), "rb");
-      FILE* targetfile = fopen(target.c_str(), "wb");
-
-      if (graphfile && targetfile){
-          LOG("\n---- Files Open");
-          int ch = fgetc(graphfile);
-          while (ch != EOF){
-             fputc(ch, targetfile);
-             ch = fgetc(graphfile);
-          }
-      }
-
-      if (graphfile) fclose(graphfile);
-      if (targetfile) fclose(targetfile);
-
-
-      std::string reltarget;
-      if (extn == "xvz") {
-         reltarget += "plots";
-         reltarget += SEP;
-      } else {
-         reltarget += "graphics";
-         reltarget += SEP;
-      }
-
-      reltarget += fn.GetNameString();
-      reltarget += ".";
-      reltarget += fn.GetExtString();
-
-      return reltarget;
-  }
-@}
-
 
 
 Here are some variables global to the interpreter
@@ -673,43 +536,6 @@ case CMD_MSISPECIAL: {
 
   break;
 }
-
-      // A \TEXUX {$..$}; value
-      if (strTemp[valueBegin+8] == '$'){
-   <graphSpec ImageFile=\"%ImageFile%\" \
-   XAxisLabel=%xaxislabel%\
-   YAxisLabel=%yaxislabel%\
-   ZAxisLabel=\"z\"\
-   Width=\"3\" \
-   Height=\"4.5\"\
-   Units=\"cm\" XTickCount=\"0\" YTickCount=\"0\" \
-   <plot xmlns=%mozns% \
-   <XPts><math xmlns=%mathmlns%><mn>30</mn></math></XPts>\
-   </plot></graphSpec>\
-   <object data=\"file://%ImageFileFull%\"\
-        "\"http://www.w3.org/1998/Math/MathML\""); 
-   find_and_replace(result, "%mozns%",
-        "\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\"");
-
-   std::string name = kvmap["VCamFile"];
-   strip_quotes(name);
-   std::string newname = MaybeCopyGraphicFile(name.c_str());
-   find_and_replace(result, "%ImageFile%", newname.c_str());
-
-   std::string fullname = newname;
-   find_and_replace(result, "%ImageFileFull%", fullname.c_str());
-
-   if (kvmap.find("x-label") != kvmap.end()){
-      find_and_replace(result, "%xaxislabel%", kvmap["x-label"].c_str());
-   } else {
-      find_and_replace(result, "%xaxislabel%", "\"x\"");
-   } 
-   if (kvmap.find("y-label") != kvmap.end()){
-      find_and_replace(result, "%yaxislabel%", kvmap["y-label"].c_str());
-   } else {
-      find_and_replace(result, "%yaxislabel%", "\"y\"");
-   } 
-
 
 @}
 
@@ -2326,7 +2152,6 @@ SymbolData* frozen_relax = new Primitive(CMD_RELAX);
 @<Declare MakeGlueParam@>
 @<Declare MakeToksParameter@>
 @<Declare interpreter global variables@>
-@<A graphic file utility@>
 @<InitializeSymbolTable@>
 
 @<DoAssignments@>
