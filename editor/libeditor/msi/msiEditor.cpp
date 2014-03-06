@@ -3161,6 +3161,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, inmath, ch, lookupResult);
   if (node)  // there was success somewhere
   {
+    SetInComplexTransaction(PR_TRUE);
     if (lookupResult == msiIAutosub::STATE_SPECIAL)
 		{
 			ctx =	msiIAutosub::CONTEXT_TEXTONLY; 
@@ -3202,6 +3203,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
         }
       }
     }
+    SetInComplexTransaction(PR_FALSE);
   }
   return res;
 }
