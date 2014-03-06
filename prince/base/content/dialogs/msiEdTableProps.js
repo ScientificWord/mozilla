@@ -2905,7 +2905,7 @@ function Apply()
         cap = caps[0];
       }
       else {  //create new caption node
-        gActiveEditor.createElementWithDefaults('caption');
+        cap = gActiveEditor.createElementWithDefaults('caption');
         gTableElement.appendChild(cap);
         var namespace = { value: null };
         var tlm = gActiveEditor.tagListManager;
