@@ -1683,10 +1683,10 @@ nsresult msiEditor::GetNSSelectionData(nsCOMPtr<nsISelection> &selection,
   nsresult res = GetSelection(getter_AddRefs(selection));
   if (NS_SUCCEEDED(res)) 
   {
-    res = GetStartNodeAndOffset(selection, address_of(startNode), &startOffset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(startNode), &startOffset);
     if (NS_SUCCEEDED(res))
     {
-      res = GetEndNodeAndOffset(selection, address_of(endNode), &endOffset);
+      res = GetEndNodeAndOffset(selection, getter_AddRefs(endNode), &endOffset);
        if (NS_SUCCEEDED(res))
 
      res = selection->GetIsCollapsed(&bCollapsed);
@@ -2948,11 +2948,13 @@ nsresult
 msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar, 
  PRInt32 & _result)
 {
+  if (!nodeIn) return NS_ERROR_NULL_POINTER;
   nsCOMPtr<nsIDOM3Node> textNode;
   nsCOMPtr<nsIDOMNode> node2;
   nsCOMPtr<nsIDOMNode> node3;
   nsCOMPtr<nsIDOMNode> pnode;
-  PRUint32 offset, length, offset2;
+  PRUint32 offset, offset2;
+  PRUint32 length = 0;
   PRBool fCanEndHere = PR_TRUE;
   PRBool fValidChar;
   nsAutoString theText;
@@ -2965,7 +2967,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     textNode = do_QueryInterface(nodeIn);
     textNode->GetTextContent(theText);
     if (offset > theText.Length()) offset = theText.Length();
-    while ((PRInt32)(--offset) >= 0)
+    while ((offset > 0) && (PRInt32)(--offset) >= 0)
     {
 //      while (prevChar == ' ' && theText[offset] == ' ') --offset;
       nodeIn->GetParentNode(getter_AddRefs(pnode));
@@ -3001,12 +3003,12 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       }
       // check for double spaces in text mode; possible to convert to math
       pnode = nsnull;
-			if (!inMath && (prevChar == ' ') && ((theText[offset] == 160) || (theText[offset] == 32)))
-			{
-				if (TwoSpacesSwitchesToMath())
-				{		
+      if (TwoSpacesSwitchesToMath())
+      {
+  			if (!inMath && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == 160))
+  			{
 					*nodeOut = nodeIn;
-					offsetOut = offset;
+					offsetOut = offset - 1;
 					_result = msiIAutosub::STATE_SPECIAL; 
 					return NS_OK;
 				}
@@ -3040,6 +3042,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   }
   // nodeIn is not a text node, or we have already gone through it
   PRBool fHasChildren;
+  if (!nodeIn) return NS_OK;
   nodeIn->HasChildNodes(&fHasChildren);
   nsCOMPtr<nsIDOMNodeList> nodeList;
   if (fHasChildren)  // in particular *pNode is not a text node
@@ -3047,7 +3050,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     nodeIn->GetChildNodes( getter_AddRefs(nodeList));
     nodeList->GetLength(&length);
     offset2 = (PRUint32)(-1);
-    while (--length >= 0)
+    while (length > 0 && --length >= 0)
     {
       nodeList->Item(length, getter_AddRefs(node2));
       GetNextCharacter(node2, offset2, nodeOut, offsetOut, inMath, prevChar,  _result);
@@ -3158,7 +3161,6 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, inmath, ch, lookupResult);
   if (node)  // there was success somewhere
   {
-    SetInComplexTransaction(PR_TRUE);
     if (lookupResult == msiIAutosub::STATE_SPECIAL)
 		{
 			ctx =	msiIAutosub::CONTEXT_TEXTONLY; 
@@ -3200,7 +3202,6 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
         }
       }
     }
-    SetInComplexTransaction(PR_FALSE);
   }
   return res;
 }
@@ -3341,7 +3342,13 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
 //  for (i = 0; i < rangeCount; i++)
  // {
     sel->GetRangeAt(/*i*/0, getter_AddRefs(range));
+  // the code here was causing crashes, possibly because Larry's added info wasn't being sent on to the original
+  // ranges in the selection. This is an attempt to build a correct modrange.
     range->CloneRange(getter_AddRefs(modrange));
+    GetStartNodeAndOffset(sel, getter_AddRefs(nodeContainerStart), &offsetStart);
+    GetEndNodeAndOffset(sel, getter_AddRefs(nodeContainerEnd), &offsetEnd);
+    modrange->SetStart(nodeContainerStart, offsetStart);
+    modrange->SetEnd(nodeContainerEnd, offsetEnd);
     AdjustRange(modrange, isForDeletion, direction);
     modrange->GetStartContainer(getter_AddRefs(nodeContainerStart));
     modrange->GetStartOffset(&offsetStart);

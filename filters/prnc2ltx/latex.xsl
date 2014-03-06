@@ -88,8 +88,8 @@
 <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:usepackage">
-\usepackage{<xsl:value-of select="@package"/>}</xsl:template>
+<!-- Usepackage is handled specially by the preamble code. So ignore it here -->
+<xsl:template match="html:usepackage"></xsl:template>
 
 <xsl:variable name="theoremenvList">
   <xsl:for-each select="//html:newtheorem">
@@ -279,9 +279,10 @@ should not be done under some conditions -->
 <xsl:template match="html:br[@hard='1']">~\\
 </xsl:template>
 
+<!-- use version in spaces.xsl
 <xsl:template match="html:msibr">~\\
 </xsl:template>
-
+-->
 
 <xsl:template match="html:br"
 ></xsl:template>
@@ -955,11 +956,13 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:bibkey">
-  [<xsl:value-of select="."/>]
+  {<xsl:value-of select="."/>}
 </xsl:template>
 
 <xsl:template match="html:biblabel">
-  {<xsl:apply-templates/>}
+  <xsl:if test = "string-length(normalize-space(.)) > 0">
+  [<xsl:apply-templates/>]
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:msidisplay">

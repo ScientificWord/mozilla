@@ -171,6 +171,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_appendix", msiAppendixCommand);
   commandTable.registerCommand("cmd_mainmatter", msiMainMatterCommand);
   commandTable.registerCommand("cmd_backmatter", msiBackMatterCommand);
+  commandTable.registerCommand("cmd_frontmatter", msiFrontMatterCommand);
   commandTable.registerCommand("cmd_printindex", msiPrintIndexCommand);
 
 }
@@ -716,8 +717,8 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
       case 'frontmtag' : commandID = 'cmd_frontmtag'; break;
 		}
 	}
-  if (msiDeferStatefulCommand(commandID, newState, editorElement))
-    return;
+  // if (msiDeferStatefulCommand(commandID, newState, editorElement))
+  //   return;
 
   var docList = msiGetUpdatableItemContainers(commandID, editorElement);
   for (var i = 0; i < docList.length; ++i)
@@ -777,6 +778,10 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
         msiPokeMultiStateUI(commandID, cmdParams);
     }
     msiResetStructToolbar(editorElement);
+    if (newState === 'bibitem') 
+    {
+      msiGoDoCommand("cmd_reviseManualBibItemCmd");
+    }
   } catch(e) {
     dump("error thrown in msiDoStatefulCommand: "+e+"\n");
   }
@@ -790,8 +795,8 @@ function msiDoTagBibItem(dlgData, paraContainer, editorElement)
   try
   {
     editorElement.contentWindow.focus();   // needed for command dispatch to work
-    if (paraContainer)
-      editor.selection.collapse(paraContainer, 0);
+    // if (paraContainer)
+    //   editor.selection.collapse(paraContainer, 0);
     var cmdParams = newCommandParams();
     if (!cmdParams) return;
 
@@ -903,7 +908,7 @@ function getViewSettingsFromViewMenu()
   var invisChoices = [["viewInvisibles","showInvisibles"],
                       ["viewSectionExpanders","showSectionExpanders"],
                       ["viewShortTitles","showShortTitles"],
-                      ["viewFMButtons","showFMButtons"],
+                      // ["viewFMButtons","showFMButtons"],
                       ["viewHelperLines","showHelperLines"],
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"],       ["viewFootnotes", "showFootnotes"],
@@ -941,7 +946,7 @@ function updateViewMenuFromEditor(editorElement)
   var invisChoices = [["viewInvisibles","showInvisibles"],
                       ["viewSectionExpanders","showSectionExpanders"],
                       ["viewShortTitles","showShortTitles"],
-                      ["viewFMButtons","showFMButtons"],
+                      // ["viewFMButtons","showFMButtons"],
                       ["viewHelperLines","showHelperLines"],
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"]];
@@ -3016,7 +3021,9 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   }
 
   var prefs = GetPrefs();
-  prefs.setCharPref("swp.lastfilesaved", destLocalFile.path+".sci");
+  var path = destLocalFile.path;
+  if (!(/\.sci$/.test(path))) path += ".sci";
+  prefs.setCharPref("swp.lastfilesaved", path);
   if (!aSaveCopy)
   {
     pdfModCount = -1;
@@ -6355,7 +6362,7 @@ function msiInsertBreaks(dialogData, editorElement)
 
   var contentStr;
 	editor.beginTransaction();
-  var node = editor.document.createElement('msibreak',true);
+  var node = editor.document.createElement('msibr',true);
   editor.insertElementAtSelection(node,true);
   switch(dialogData.breakType) {
     case "lineBreak":
@@ -7985,7 +7992,7 @@ var msiCitationCommand =
     {
         var editorElement = msiGetActiveEditorElement();
         var bibChoice = getBibliographyScheme(editorElement);
-        if (bibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
+        if (bibChoice == "bibtex")  //a kludge - must get hooked up to editor to really work
         {
           var bibCiteData = {databaseFile : "", key : "", remark : "", bBibEntryOnly : false};
           var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "resizable=yes, chrome,close,titlebar,dependent",
@@ -8263,7 +8270,7 @@ var msiObjectPropertiesCommand =
               msiGoDoCommandParams("cmd_msiReviseRules", cmdParams, editorElement);
             break;
 
-            case 'msibreak':
+            case 'msibr':
               msiGoDoCommandParams("cmd_msiReviseBreaks", cmdParams, editorElement);
             break;
 
@@ -9134,11 +9141,23 @@ var msiSelectTableCommand =
     try
     {
       var editorElement = msiGetActiveEditorElement();
-      msiGetTableEditor(editorElement).selectTable();
-      if (editorElement)
+      var editor = msiGetEditor(editorElement);
+      var element = editor.selection.anchorNode;
+      var tableNode;
+      if (element)
+      {
+        tableNode = GetParentTable(element);
+        if (tableNode) {
+          editor.selectElement(tableNode);
+          editor.markNodeDirty(tableNode);
+        }
+      }
+      if (editorElement) {
         editorElement.contentWindow.focus();
-      else
+      }
+      else {
         window.content.focus();
+      }
     }
     catch (e) {
       finalThrow(cmdFailString('selecttable'), e.message);
@@ -10131,9 +10150,11 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
 
   dump("In msiReviseNote, data.type is " + data.type + "\n");
   var editor = msiGetEditor(editorElement);
+  var node;
   editor.beginTransaction();
   if (currNode)  // currnode is a note node
   {
+    node = currNode;
     if (data.type == 'footnote')
       currNode.parentNode.setAttribute("type","footnote");
     else
@@ -10151,7 +10172,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
         currNode.parentNode.setAttribute("footnoteNumber", String(data.footnoteNumber));
       else
         currNode.parentNode.removeAttribute("footnoteNumber");
-      if (data.markOrText && (data.markOrText != "markAndText"))
+      if ((data.markOrText != null) && (data.markOrText != "markAndText"))
         currNode.parentNode.setAttribute("markOrText", data.markOrText);
       else
         currNode.parentNode.removeAttribute("markOrText");
@@ -10165,7 +10186,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
       var wrapperNode = editor.document.createElement('notewrapper');
       if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
-      var node = editor.tagListManager.getNewInstanceOfNode("note", null, editor.document);
+      node = editor.tagListManager.getNewInstanceOfNode("note", null, editor.document);
       node.setAttribute('type',data.type);
       node.setAttribute('hide','false');
       if (data.type != 'footnote')
@@ -10193,7 +10214,8 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       dump("msiNote: exception = '"+e.message+"'\n");
     }
   }
-  editor.setCursorInNewHTML(node);
+  var cursors = msiNavigationUtils.getChildrenByTagName(node, "cursor");
+  if (cursors) editor.setCursorInNewHTML(node);
   editor.endTransaction();
 }
 
@@ -10813,7 +10835,7 @@ var msiMakeTitleCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('maketitle');
+      msiInsertLaTeXmarker('maketitle');
     }
     catch (e) {
       finalThrow(cmdFailString('maketitle'), e.message);
@@ -10831,7 +10853,7 @@ var msiMakeTOCCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('maketoc');
+      msiInsertLaTeXmarker('maketoc');
     }
     catch (e) {
       finalThrow(cmdFailString('maketoc'), e.message);
@@ -10849,7 +10871,7 @@ var msiMakeLOTCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('makelot');
+      msiInsertLaTeXmarker('makelot');
     }
     catch (e) {
       finalThrow(cmdFailString('makelot'), e.message);
@@ -10867,7 +10889,7 @@ var msiMakeLOFCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('makelof');
+      msiInsertLaTeXmarker('makelof');
     }
     catch (e) {
       finalThrow(cmdFailString('makelof'), e.message);
@@ -10885,7 +10907,7 @@ var msiAppendixCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('appendix');
+      msiInsertLaTeXmarker('appendix');
     }
     catch (e) {
       finalThrow(cmdFailString('appendix'), e.message);
@@ -10903,7 +10925,7 @@ var msiMainMatterCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('mainmatter');
+      msiInsertLaTeXmarker('mainmatter');
     }
     catch (e) {
       finalThrow(cmdFailString('mainmatter'), e.message);
@@ -10921,10 +10943,28 @@ var msiBackMatterCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('backmatter');
+      msiInsertLaTeXmarker('backmatter');
     }
     catch (e) {
       finalThrow(cmdFailString('backmatter'), e.message);
+    }
+  }
+}
+
+var msiFrontMatterCommand = {
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    try {
+      msiInsertLaTeXmarker('frontmatter');
+    }
+    catch (e) {
+      finalThrow(cmdFailString('frontmatter'), e.message);
     }
   }
 }
@@ -10939,7 +10979,7 @@ var msiPrintIndexCommand = {
 
   doCommand: function(aCommand) {
     try {
-      msiInsertTag('printindex');
+      msiInsertLaTeXmarker('printindex');
     }
     catch (e) {
       finalThrow(cmdFailString('printindex'), e.message);
@@ -10961,6 +11001,19 @@ function msiInsertTag(tagname){
   {
     editor.setCaretAfterElement(insertedNode);
   }
+}
+
+function msiInsertLaTeXmarker(tagname) {
+  return msiInsertTag(tagname);
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  focusOnEditor();
+  var dataString="&lt;"+tagname+"/&gt;";
+  var contextString = "";
+  var infoString="(0,0)";
+  editor.insertHTMLWithContext(dataString,
+                              contextString, infoString, "text/html",
+                              null,null,0,true);
 }
 
 function defineSelection()

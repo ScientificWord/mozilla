@@ -616,7 +616,7 @@ nsresult msiUtils::CreateInputbox(nsIEditor *editor,
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> inputbox;
   PRUint32 dummyFlags(msiIMathMLInsertion::FLAGS_NONE);
-  nsAutoString text(PRUnichar(0x200B)); // zero width space
+  nsAutoString text(PRUnichar(0x200A)); // hair width space, so cursor shows
   res = CreateMathMLLeafElement(editor, text, msiIMathMLEditingBC::MATHML_MI, -1, dummyFlags, inputbox);
   if (NS_SUCCEEDED(res) && inputbox)
   {
@@ -677,6 +677,8 @@ nsresult msiUtils::CreateMSubOrMSup(nsIEditor * editor,
       PRBool locMarkCaret(markCaret);
       if (locMarkCaret && script == nsnull)
         locMarkCaret = PR_FALSE;  // mark script inputbox instead
+      // BBM
+      locMarkCaret = PR_TRUE;
       res = CreateInputbox(editor, PR_FALSE, locMarkCaret, flags, inputbox);
       if (NS_SUCCEEDED(res) && inputbox) 
         theBase = do_QueryInterface(inputbox);
@@ -901,7 +903,8 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
                                        const nsAString & isAccent,                                 
                                        nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsISelection> sel;
   nsCOMPtr<nsIDOMElement> underOrOver;
   nsCOMPtr<nsIDOMNode> theBase, theScript, tmpScript;
   tmpScript = nsnull;
@@ -973,6 +976,11 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
       res = underOrOver->AppendChild(theBase, getter_AddRefs(dontcare));
       if (NS_SUCCEEDED(res)) 
         res = underOrOver->AppendChild(theScript, getter_AddRefs(dontcare1));
+      if (NS_SUCCEEDED(res)) {
+        res = editor->GetSelection(getter_AddRefs(sel));
+        if (NS_SUCCEEDED(res))
+          res = sel->Collapse(theScript, 0);
+      }
       if (NS_SUCCEEDED(res))
         mathmlElement = underOrOver; 
     }  
@@ -2111,6 +2119,9 @@ nsresult msiUtils::MarkCaretPosition(nsIEditor * editor,
                          pos == msiIMathMLEditingBC::TO_RIGHT)) 
   {
     res = NS_OK;
+    nsCOMPtr<nsISelection> sel;
+    res = editor->GetSelection(getter_AddRefs(sel));
+    sel->Collapse(node, pos);
     PRBool caretMarked = (flags & msiIMathMLInsertion::FLAGS_CARET_MARKED) ? PR_TRUE : PR_FALSE;
     if (caretMarked && overwrite)
     {
