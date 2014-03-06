@@ -3714,8 +3714,10 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       }
       return;    
     }
-    done = !(isEmpty && node);
-    if (node && isEmpty) {
+    PRBool isInComplexTransaction;
+    ed->GetInComplexTransaction(&isInComplexTransaction);
+    done = !(isEmpty && node && !isInComplexTransaction);
+    if (node && isEmpty && !isInComplexTransaction) {
       // res = node->GetParentNode(getter_AddRefs(parentNode));
       nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
       if (parentNode) {
@@ -3886,6 +3888,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
 
   nsresult res;
   nsAutoString chars;
+  PRBool isInComplexTransaction;
   nsIEditor * ed = static_cast<nsIEditor*>(mHTMLEditor);
 
   nsCOMPtr<nsISelection> curSelection;
@@ -3906,8 +3909,9 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   nsCOMPtr<nsIDOMNode> node;
   res = msiUtils::GetMathParent(startNode, mathNode);
   if (NS_FAILED(res)) return res;
+  mHTMLEditor->GetInComplexTransaction(&isInComplexTransaction);
 
-  if (mathNode) {
+  if (mathNode && !isInComplexTransaction) {
      bool b = false;
      nsCOMArray<nsIDOMNode> array;
      BuildAncestorArray( startNode, mathNode, array);
@@ -3937,7 +3941,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
      printf("\nBack from cleanup: %ls\n", result);
 
      nsString resString(result);
-     nsCOMPtr<nsIDOMElement> mathElement;
+          nsCOMPtr<nsIDOMElement> mathElement;
      mathElement = do_QueryInterface(mathNode);
      mHTMLEditor->DeleteNode(mathElement);
 
