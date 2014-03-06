@@ -463,7 +463,13 @@ var msiReviseManualBibItemCmd =
     editorElement.focus();
   },
 
-  doCommand: function(aCommand) {}
+  doCommand: function(aCommand) {
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    var bibItemData = {key : "", bibLabel : "", paragraphNode : editor.selection.focusNode, offset : editor.selection.focusOffset};
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                           editorElement, "cmd_reviseManualBibItemCmd", this, bibItemData);
+  }
 };
 
 var msiInsertTeXField =
@@ -953,6 +959,9 @@ function doReviseManualBibItem(editorElement, bibitemNode, dlgData)
   var ix;
   var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
+  var bodytext = getChildByTagName(bibitemNode, "bodyText");
+  if (!bodytext) bodytext = editor.createNode("bodytext", bibitemNode, 0);
+
   var bibkey = getChildByTagName(bibitemNode, "bibkey");
   if (!bibkey) bibkey = editor.createNode("bibkey", bibitemNode, 0);
   bibkey.textContent = dlgData.key;

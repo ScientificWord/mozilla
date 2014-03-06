@@ -2031,7 +2031,7 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
               nsCOMPtr<nsISelection> sel;
               editor->GetSelection(getter_AddRefs(sel));
               if (sel) {
-                 nsEditorUtils::JiggleCursor(editor, sel, PR_FALSE);
+                 nsEditorUtils::JiggleCursor(editor, sel, nsIEditor::ePrevious);
               }
             }
           }
@@ -2089,7 +2089,7 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
       nsCOMPtr<nsISelection> sel;
       editor->GetSelection(getter_AddRefs(sel));
       if (sel) {
-         nsEditorUtils::JiggleCursor(editor, sel, PR_FALSE);
+         nsEditorUtils::JiggleCursor(editor, sel, nsIEditor::ePrevious);
       }
     }
   }
@@ -5017,6 +5017,7 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
   	  {
   	    aPos->mResultFrame = current;
   	    aPos->mResultContent = current?current->GetContent():nsnull;
+        if (!(aPos->mResultContent)) return NS_ERROR_FAILURE;
   			if (!current) printf("Got null node for the cursor, nsFrame:4844\n");
   	    aPos->mContentOffset = offset;
         // now check for the very special case of an input box.
@@ -8114,18 +8115,27 @@ NS_IMETHODIMP nsFrame::MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index)
 
 
 NS_IMETHODIMP
-nsFrame::MoveLeftAtDocStart(nsISelection * sel)
+nsFrame::MoveLeftAtDocStart(nsISelection * selection)
 {
   nsresult res;
   nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<nsISelection> sel(selection);
   res = GetEditor(this, getter_AddRefs(htmlEditor));
+  NS_ENSURE_SUCCESS(res, res);
+  // NS_ENSURE_TRUE(htmlEditor, NS_ERROR_FAILURE);
   nsPresContext* presContext = PresContext();
+  NS_ENSURE_TRUE(presContext, NS_ERROR_FAILURE);
   nsIPresShell *shell = presContext->GetPresShell();
+  NS_ENSURE_TRUE(shell, NS_ERROR_FAILURE);
   PRBool fTakesText = PR_FALSE;
   nsCOMPtr<msiITagListManager> tlm;
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
   nsCOMPtr<nsIDOMTreeWalker> tw;
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
+  if (!sel) {
+    nsCOMPtr<nsIEditor> editor = do_QueryInterface(htmlEditor);
+    editor->GetSelection(getter_AddRefs(sel));
+  }
   nsIDocument *doc = shell->GetDocument();
   nsIAtom * namespaceatom;
   namespaceatom = nsnull;
@@ -8141,13 +8151,14 @@ nsFrame::MoveLeftAtDocStart(nsISelection * sel)
 
     doctrav = do_QueryInterface(htmlDoc);
     res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
-    if (!(NS_SUCCEEDED(res) && tw)) return NS_ERROR_FAILURE;
+    NS_ENSURE_SUCCESS(res, NS_ERROR_FAILURE);
 
     nsCOMPtr<nsIDOMNode> currentNode;
     tw->GetCurrentNode(getter_AddRefs(currentNode));
     while (currentNode)
     {
       res = tlm->NodeCanContainTag( currentNode, strText, namespaceatom, &fTakesText);
+      NS_ENSURE_SUCCESS(res, NS_ERROR_FAILURE);
       if (fTakesText) // this is where we want the cursor to go
       {
         sel->Collapse(currentNode, 0);
@@ -8185,9 +8196,10 @@ nsFrame::MoveLeftAtDocStart(nsISelection * sel)
 
 
 NS_IMETHODIMP
-nsFrame::MoveRightAtDocEnd(nsISelection * sel)
+nsFrame::MoveRightAtDocEnd(nsISelection * selection)
 {
   nsresult res;
+  nsCOMPtr<nsISelection> sel(selection);
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
   nsCOMPtr<nsISupports> container = presContext->GetContainer();
@@ -8205,6 +8217,10 @@ nsFrame::MoveRightAtDocEnd(nsISelection * sel)
   nsCOMPtr<nsIDOMTreeWalker> tw;
   editorDocShell->GetEditor(getter_AddRefs(editor));
   htmlEditor = do_QueryInterface(editor);
+  if (!sel) {
+    nsCOMPtr<nsIEditor> editor = do_QueryInterface(htmlEditor);
+    editor->GetSelection(getter_AddRefs(sel));
+  }
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   nsIDocument *doc = shell->GetDocument();
   nsIAtom * namespaceatom;

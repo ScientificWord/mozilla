@@ -16,7 +16,7 @@
 
 %\def~{\nobreakspace{}}
 
-\def\@makeother#1{\catcode`#112\relax}
+\def\@makeother#1{\catcode #1=12\relax}
 
 \catcode`\%=12
 \def\@percentchar{%}
@@ -37,7 +37,7 @@
 \def\msi@close@element</#1>{\msiclosetag{#1}{</#1>}}
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
-\def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
+\def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml">#1</texb>}}}
 
 %% \documentclass
 
@@ -87,7 +87,25 @@
    \advance\msi@output by -1\relax
 }
 \def\@@usepackage{\@fileswithoptions\@pkgextension}
-\def\RequirePackage{\@fileswithoptions\@pkgextension}
+
+
+\def\RequirePackage{%
+  \@ifnextchar[{\@reqpackagea}{\@reqpackageb}}
+
+\def\@reqpackagea[#1]#2{%
+   \out@reqpackageA[#1]{#2}%
+   \advance\msi@output by 1\relax
+   \@@reqpackage[#1]{#2}%
+   \advance\msi@output by -1\relax
+}
+
+\def\@reqpackageb#1{%
+   \out@reqpackageB{#1}%
+   \advance\msi@output by 1\relax
+   \@@reqpackage{#1}%
+   \advance\msi@output by -1\relax
+}
+\def\@@reqpackage{\@fileswithoptions\@pkgextension}
 
 
 
@@ -3438,8 +3456,6 @@
 
 \def\*{\discretionary{\thinspace\the\textfont2\char2}{}{}}
 \let\:=\>
-\def\active@math@prime{^\bgroup\prim@s}
-{\catcode`\'=\active \global\let'\active@math@prime}
 \def\prim@s{%
   \prime\futurelet\@let@token\pr@m@s}
 
@@ -5408,11 +5424,11 @@
 
 \begingroup
 \obeylines\obeyspaces%
-\catcode`\'\active%
+%\catcode`\'\active%
 \gdef\@resetactivechars{%
 \def^^M{\@activechar@info{EOL}\space}%
 \def {\@activechar@info{space}\space}%
-\let'\active@math@prime}%
+}%
 \endgroup
 
 \def\@outputpage{%
@@ -6151,11 +6167,13 @@
     \@makeother\/%
     \@makeother\&%
     \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
-\def\@pass@ptions#1#2#3{%
-  \expandafter\xdef\csname opt@#3.#1\endcsname{%
-    \@ifundefined{opt@#3.#1}\@empty
-      {\csname opt@#3.#1\endcsname,}%
-    \zap@space#2 \@empty}}
+
+\def\@pass@ptions#1#2#3{\relax}
+%\def\@pass@ptions#1#2#3{%
+%  \expandafter\xdef\csname opt@#3.#1\endcsname{%
+%    \@ifundefined{opt@#3.#1}\@empty
+%      {\csname opt@#3.#1\endcsname,}%
+%    \zap@space#2 \@empty}}
 \@onlypreamble\@pass@ptions
 \def\PassOptionsToPackage{\@pass@ptions\@pkgextension}
 \def\PassOptionsToClass{\@pass@ptions\@clsextension}
@@ -6626,7 +6644,7 @@
   \catcode`\"=\active
   \catcode`\;=\active
   \catcode`\:=\active
-  \catcode`\'=\active
+%  \catcode`\'=\active
   \catcode`\~=\active
 }
 
@@ -6636,7 +6654,7 @@
       \def"{\string"}%
       \def;{\string;}%
       \def:{\string:}%
-      \def'{\string'}%
+%      \def'{\string'}%
       \def~{\string~}%
       %\bbl@deactivate{"}%
       %\bbl@deactivate{;}%

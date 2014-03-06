@@ -7,6 +7,11 @@
 #include "nsIDOMNodeList.h"
 #include "nsGkAtoms.h"
 #include "nsFrame.h"
+#include "msiITagListManager.h"
+#include "nsIEditor.h"
+#include "../../editor/libeditor/base/nsEditor.h"
+#include "../../editor/libeditor/base/nsEditorUtils.h"
+
 
 PRBool IsMathFrame( nsIFrame * aFrame );
 nsIFrame * GetLastChild(nsIFrame * pFrame);
@@ -118,7 +123,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
       if (*aOutFrame == nsnull)
       {
         count = 0;
-        pFrame->MoveRightAtDocEndFrame( aOutFrame, *aOutOffset);
+        pFrame->MoveRightAtDocEnd( nsnull );
       }
 //	    pParent = GetSignificantParent(pFrame);
 //	    *aOutFrame = pParent;
@@ -192,7 +197,9 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
       else
       {
         count = 0;
-        return pFrame->MoveLeftAtDocStartFrame( aOutFrame, *aOutOffset);
+
+          
+          return pFrame->MoveLeftAtDocStart( nsnull);
       }
     }
   }

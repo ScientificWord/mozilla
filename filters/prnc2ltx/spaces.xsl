@@ -46,13 +46,13 @@
 </xsl:template>
 
 <xsl:template match="html:msirule">
-  <xsl:if test="@color"> \textcolor[HTML]{<xsl:value-of select="substring(./@color,2,8)"/>}{</xsl:if>
-\rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}
-<xsl:if test="@color">}</xsl:if>
+  <xsl:choose>
+    <xsl:when test="@color = '#000000'">\rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}</xsl:when>
+	<xsl:otherwise>\textcolor[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"/>}{\rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}}</xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
-
-<xsl:template match="html:msibreak">
+<xsl:template match="html:msibr">
   <xsl:choose>
     <xsl:when test="@type='allowBreak'">\allowbreak </xsl:when>
     <xsl:when test="@type='pageBreak'">\pagebreak </xsl:when>
@@ -62,7 +62,8 @@
     <xsl:when test="@type='noBreak'">\nolinebreak </xsl:when>
     <xsl:when test="@type='newLine'">\newline </xsl:when>
 	<xsl:when test="@type='customNewLine'">~\\[<xsl:value-of	select="@dim"/>] </xsl:when>
-	<xsl:otherwise/>										
+	<xsl:otherwise>\\
+	</xsl:otherwise>
  </xsl:choose>
 </xsl:template>
 
