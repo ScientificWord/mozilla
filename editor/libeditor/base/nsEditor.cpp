@@ -345,7 +345,7 @@ PRBool nsEditor::NodeIsTypeString(nsIDOMNode *aNode, const nsAString &aTag, msiI
     nsAutoString strNodeName;
     nsAutoString strClassName;
     nodeAtom->ToString(strNodeName);
-    manager->GetRealClassOfTag(aTag, nsnull, strClassName);
+    manager->GetRealClassOfTag(strNodeName, nsnull, strClassName);
     fIsInTagClass = aTag.Equals(strClassName);
 //    manager->GetTagInClass(aTag, strNodeName, nsnull, &fIsInTagClass);
     if (fIsInTagClass) return PR_TRUE;
@@ -1252,6 +1252,8 @@ NS_IMETHODIMP nsEditor::BeginningOfDocument()
     // just the root node, set selection to inside the root
     result = selection->Collapse(rootElement, 0);
   }
+  nsEditorUtils::JiggleCursor(this, selection, eNext);
+
   return result;
 }
 
@@ -1272,13 +1274,15 @@ nsEditor::EndOfDocument()
   if (!rootElement)
     return NS_ERROR_NULL_POINTER;
 
-  // get the length of the rot element
+  // get the length of the root element
   PRUint32 len;
   res = GetLengthOfDOMNode(rootElement, len);
   if (NS_FAILED(res)) return res;
 
   // set the selection to after the last child of the root element
-  return selection->Collapse(rootElement, (PRInt32)len);
+  res = selection->Collapse(rootElement, (PRInt32)len);
+  nsEditorUtils::JiggleCursor(this, selection, ePrevious);
+  return res;
 }
 
 NS_IMETHODIMP
@@ -1588,7 +1592,7 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   {
     // If the current parent is a root (body or table element)
     // then go no further - we can't insert. See if interposing a default paragraph helps.
-    if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm))
+    if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm) || nsHTMLEditUtils::IsListItem(ptr, tlm))
     {
       nsCOMPtr<nsIDOMNode> para;
       htmlEditor->CreateDefaultParagraph(parent, aPosition, PR_FALSE, getter_AddRefs(para));
@@ -3372,9 +3376,9 @@ nsEditor::SplitNodeImpl(nsIDOMNode * aExistingRightNode,
     // remember some selection points
     nsCOMPtr<nsIDOMNode> selStartNode, selEndNode;
     PRInt32 selStartOffset, selEndOffset;
-    result = GetStartNodeAndOffset(selection, address_of(selStartNode), &selStartOffset);
+    result = GetStartNodeAndOffset(selection, getter_AddRefs(selStartNode), &selStartOffset);
     if (NS_FAILED(result)) selStartNode = nsnull;  // if selection is cleared, remember that
-    result = GetEndNodeAndOffset(selection, address_of(selEndNode), &selEndOffset);
+    result = GetEndNodeAndOffset(selection, getter_AddRefs(selEndNode), &selEndOffset);
     if (NS_FAILED(result)) selStartNode = nsnull;  // if selection is cleared, remember that
 
     nsCOMPtr<nsIDOMNode> resultNode;
@@ -3489,9 +3493,9 @@ nsEditor::JoinNodesImpl(nsIDOMNode * aNodeToKeep,
     // remember some selection points
     nsCOMPtr<nsIDOMNode> selStartNode, selEndNode;
     PRInt32 selStartOffset, selEndOffset, joinOffset, keepOffset;
-    result = GetStartNodeAndOffset(selection, address_of(selStartNode), &selStartOffset);
+    result = GetStartNodeAndOffset(selection, getter_AddRefs(selStartNode), &selStartOffset);
     if (NS_FAILED(result)) selStartNode = nsnull;
-    result = GetEndNodeAndOffset(selection, address_of(selEndNode), &selEndOffset);
+    result = GetEndNodeAndOffset(selection, getter_AddRefs(selEndNode), &selEndOffset);
     // Joe or Kin should comment here on why the following line is not a copy/paste error
     if (NS_FAILED(result)) selStartNode = nsnull;
 
@@ -4487,78 +4491,62 @@ nsEditor::GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset)
 }
 
 
-
 ///////////////////////////////////////////////////////////////////////////
-// GetStartNodeAndOffset: returns whatever the start parent & offset is of
+// GetStartNodeAndOffset: returns whatever the start parent & offset is of 
 //                        the first range in the selection.
-nsresult
+nsresult 
 nsEditor::GetStartNodeAndOffset(nsISelection *aSelection,
-                                       nsCOMPtr<nsIDOMNode> *outStartNode,
+                                       nsIDOMNode **outStartNode,
                                        PRInt32 *outStartOffset)
 {
-  if (!outStartNode || !outStartOffset || !aSelection)
-    return NS_ERROR_NULL_POINTER;
+  NS_ENSURE_TRUE(outStartNode && outStartOffset && aSelection, NS_ERROR_NULL_POINTER);
 
-  // brade:  set outStartNode to null or ?
+  *outStartNode = nsnull;
+  *outStartOffset = 0;
+  PRInt32 rangeCount;
+  nsresult result = NS_ERROR_UNEXPECTED;
 
-  nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(aSelection));
-  nsCOMPtr<nsIEnumerator> enumerator;
-  nsresult result = selPrivate->GetEnumerator(getter_AddRefs(enumerator));
-  if (NS_FAILED(result) || !enumerator)
-    return NS_ERROR_FAILURE;
+  //nsISelection* selection = static_cast<Selection*>(aSelection);
+  result = aSelection->GetRangeCount(&rangeCount);
+  NS_ENSURE_SUCCESS(result, result);
 
-  enumerator->First();
-  nsCOMPtr<nsISupports> currentItem;
-  if (NS_FAILED(enumerator->CurrentItem(getter_AddRefs(currentItem))))
-    return NS_ERROR_FAILURE;
+  nsCOMPtr<nsIDOMRange> range;
+  result = aSelection->GetRangeAt(0, getter_AddRefs(range));
+  NS_ENSURE_SUCCESS(result, result);
+  result = range->GetStartContainer(outStartNode);
+  NS_ENSURE_SUCCESS(result, result);
+  result = range->GetStartOffset(outStartOffset);
+  NS_ENSURE_SUCCESS(result, result);
 
-  nsCOMPtr<nsIDOMRange> range( do_QueryInterface(currentItem) );
-  if (!range)
-    return NS_ERROR_FAILURE;
-
-  if (NS_FAILED(range->GetStartContainer(getter_AddRefs(*outStartNode))))
-    return NS_ERROR_FAILURE;
-
-  if (NS_FAILED(range->GetStartOffset(outStartOffset)))
-    return NS_ERROR_FAILURE;
-
-  return NS_OK;
+  return result;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////
-// GetEndNodeAndOffset: returns whatever the end parent & offset is of
+// GetEndNodeAndOffset: returns whatever the end parent & offset is of 
 //                        the first range in the selection.
-nsresult
+nsresult 
 nsEditor::GetEndNodeAndOffset(nsISelection *aSelection,
-                                       nsCOMPtr<nsIDOMNode> *outEndNode,
+                                       nsIDOMNode **outEndNode,
                                        PRInt32 *outEndOffset)
 {
-  if (!outEndNode || !outEndOffset)
-    return NS_ERROR_NULL_POINTER;
+  NS_ENSURE_TRUE(outEndNode && outEndOffset && aSelection, NS_ERROR_NULL_POINTER);
 
-  nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(aSelection));
-  nsCOMPtr<nsIEnumerator> enumerator;
-  nsresult result = selPrivate->GetEnumerator(getter_AddRefs(enumerator));
-  if (NS_FAILED(result) || !enumerator)
-    return NS_ERROR_FAILURE;
+  *outEndNode = nsnull;
+  *outEndOffset = 0;
+  PRInt32 rangeCount;
+  nsresult result = NS_ERROR_UNEXPECTED;
 
-  enumerator->First();
-  nsCOMPtr<nsISupports> currentItem;
-  if (NS_FAILED(enumerator->CurrentItem(getter_AddRefs(currentItem))))
-    return NS_ERROR_FAILURE;
+  //nsISelection* selection = static_cast<Selection*>(aSelection);
+  result = aSelection->GetRangeCount(&rangeCount);
 
-  nsCOMPtr<nsIDOMRange> range( do_QueryInterface(currentItem) );
-  if (!range)
-    return NS_ERROR_FAILURE;
+  nsCOMPtr<nsIDOMRange> range;
+  result = aSelection->GetRangeAt(0, getter_AddRefs(range));
+  result  = range->GetEndContainer(outEndNode);
 
-  if (NS_FAILED(range->GetEndContainer(getter_AddRefs(*outEndNode))))
-    return NS_ERROR_FAILURE;
+  result = range->GetEndOffset(outEndOffset);
 
-  if (NS_FAILED(range->GetEndOffset(outEndOffset)))
-    return NS_ERROR_FAILURE;
-
-  return NS_OK;
+  return result;
 }
 
 

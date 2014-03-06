@@ -68,6 +68,8 @@ REQUIRES	= xpcom \
 		  js \
 		  layout \
       editor \
+      txmgr \
+      txtsvc \
 		  $(NULL)
 
 LOCAL_INCLUDES = \

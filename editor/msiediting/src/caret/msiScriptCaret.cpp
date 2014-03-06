@@ -436,7 +436,7 @@ msiScriptCaret::Split(nsIEditor *editor,
       nsCOMPtr<nsIDOMElement> inputbox;
       PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
 //      res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputbox);
-      res = msiUtils::CreateMathMLLeafElement(editor,0x200B,msiIMathMLEditingBC::MATHML_MI,0,flags,inputbox);
+      res = msiUtils::CreateMathMLLeafElement(editor,0x200A,msiIMathMLEditingBC::MATHML_MI,0,flags,inputbox);
       nsCOMPtr<nsIDOMNode> inputboxNode(do_QueryInterface(inputbox));
       if (NS_SUCCEEDED(res) && inputboxNode) 
       {
@@ -463,7 +463,7 @@ msiScriptCaret::Split(nsIEditor *editor,
     nsCOMPtr<nsIDOMElement> inputbox;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
 //    res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputbox);
-      res = msiUtils::CreateMathMLLeafElement(editor,0x200B,msiIMathMLEditingBC::MATHML_MI,0,flags,inputbox);
+      res = msiUtils::CreateMathMLLeafElement(editor,0x200A,msiIMathMLEditingBC::MATHML_MI,0,flags,inputbox);
     nsCOMPtr<nsIDOMNode> inputboxNode(do_QueryInterface(inputbox));
     if (NS_SUCCEEDED(res) && inputboxNode) 
     {
@@ -507,7 +507,7 @@ msiScriptCaret::SetDeletionTransaction(nsIEditor * editor,
       nsCOMPtr<nsIDOMNode> dummyChild;
       PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
 //      res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
-      res = msiUtils::CreateMathMLLeafElement(editor,0x200B,msiIMathMLEditingBC::MATHML_MI,0,flags,inputboxElement);
+      res = msiUtils::CreateMathMLLeafElement(editor,0x200A,msiIMathMLEditingBC::MATHML_MI,0,flags,inputboxElement);
       if (NS_SUCCEEDED(res) && inputboxElement)
         dummyChild = do_QueryInterface(inputboxElement);
       if (!dummyChild)
@@ -529,7 +529,7 @@ msiScriptCaret::SetDeletionTransaction(nsIEditor * editor,
       nsCOMPtr<nsIDOMNode> newKid;
       PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
 //      res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
-      res = msiUtils::CreateMathMLLeafElement(editor,0x200B,msiIMathMLEditingBC::MATHML_MI,0,flags,inputboxElement);
+      res = msiUtils::CreateMathMLLeafElement(editor,0x200A,msiIMathMLEditingBC::MATHML_MI,0,flags,inputboxElement);
       if (NS_SUCCEEDED(res) && inputboxElement)
         newKid = do_QueryInterface(inputboxElement);
       if (!newKid)
@@ -605,7 +605,7 @@ msiScriptCaret::SetupDeletionTransactions(nsIEditor * editor,
     nsCOMPtr<nsIDOMNode> newKid;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
 //    res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
-      res = msiUtils::CreateMathMLLeafElement(editor,0x200B,msiIMathMLEditingBC::MATHML_MI,0,flags,inputboxElement);
+      res = msiUtils::CreateMathMLLeafElement(editor,0x200A,msiIMathMLEditingBC::MATHML_MI,0,flags,inputboxElement);
     if (NS_SUCCEEDED(res) && inputboxElement)
       newKid = do_QueryInterface(inputboxElement);
     if (!newKid)

@@ -6,6 +6,7 @@ function Startup()
 {
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
+  var node;
   if (!editor) {
  //   AlertWithTitle("Error", "No editor found in typesetBibItem Startup! Closing dialog window...");
     window.close();
@@ -19,8 +20,9 @@ function Startup()
   gDialog.bibLabel = ""; 
 
   data.node = getSelectionParentByTag(editor, "bibitem");
+  if (!data.node) data.node = editor.createNode("bibitem", data.paragraphNode, data.offset);
   if (data.node) {
-    var node = getChildByTagName(data.node, "bibkey");
+    node = getChildByTagName(data.node, "bibkey");
     if (node) gDialog.key = node.textContent;
     node = getChildByTagName(data.node,"biblabel");
     if (node) gDialog.bibLabel = node.innerHTML;
@@ -63,23 +65,51 @@ function InitDialog()
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
+function handleEmptyBibItem(editor, node)
+{
+  if (!node) return false;
+  var pnode = node.parentNode;
+  var bibparent;
+  var offset;
+  if (!(pnode) || pnode.tagName !== "bibliography") return false;
+  var bibitems = msiNavigationUtils.getChildrenByTagName(pnode, "bibitem");
+  if (!bibitems) return false;
+  if (bibitems.length <= 1) {
+    bibparent = pnode.parentNode;
+    offset = msiNavigationUtils.offsetInParent(pnode);
+    editor.deleteNode(pnode);
+    editor.selection.collapse(bibparent, offset);
+    // BBM: maybe should check that bibparent is a paragraph type.
+  }
+  else if (bibitems[bibitems.length - 1] == node) {
+    bibparent = pnode.parentNode;
+    offset = msiNavigationUtils.offsetInParent(pnode);
+    offset = offset + 1;
+    editor.deleteNode(node);
+    editor.selection.collapse(bibparent, offset);
+  }
+  SaveWindowLocation();
+  return true;
+}
+
 
 function onAccept()
 {
   var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   var keyList = document.getElementById("keysAutoCompleteBox");
   gDialog.key = document.getElementById("keysAutoCompleteBox").value;
   data.key = gDialog.key;
-//  if (findInArray(keyList, gDialog.key) < 0)
-//    keyList.push(gDialog.key);
+  if (/^\s*$/.test(data.key)) {
+    // User has entered an empty (by our definition) bib entry.
+    // If it is the last one, we delete it and move the cursor past the <bibliography>
+    // If it is the only one, we remove the <bibliography>
+    if (handleEmptyBibItem(editor, data.node)) return true;
+  }
 
   var labelControl = document.getElementById("labelEditControl");
   var labelContentFilter = new msiDialogEditorContentFilter(labelControl);
   gDialog.bibLabel = labelContentFilter.getDocumentFragmentString();
-
-//  var serializer = new XMLSerializer();
-//  gDialog.remark = serializer.serializeToString(editorControl.contentDocument.documentElement);
-////  gDialog.remark = document.getElementById("remarkTextbox").value;
 
   if (data.bibLabel != gDialog.bibLabel)
   {
@@ -90,29 +120,40 @@ function onAccept()
 //  var listBox = document.getElementById('keysListbox');
 //  listBox.addEventListener('ValueChange', checkDisableControls, false);
 
-  var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
   if (data.node)
   {
-    var node = getChildByTagName(data.node, "bibkey");
+    var node;
+    node = getChildByTagName(data.node, "bodyText");
+    if (!node) 
+    {
+      node = editor.createNode("bodyText", data.node, -1);
+    }
+    editor.selection.collapse(node,0);
+
+    node = getChildByTagName(data.node, "bibkey");
     if (node) node.textContent = gDialog.key;
     else {
-      node = editor.createElement("bibkey", data.node, 0);
+      node = editor.createNode("bibkey", data.node, 0);
       node.textContent = gDialog.key;
     }
     node = getChildByTagName(data.node, "biblabel");
     if (node) node.innerHTML = gDialog.bibLabel;
     else {
-      node = editor.createElement("biblabel", data.node, 0);
+      node = editor.createNode("biblabel", data.node, 0);
       node.innerHTML = gDialog.bibLabel;
     }
   }
   else if ("paragraphNode" in data)
   {
-    if (!theWindow || !("msiDoTagBibItem" in theWindow))
-      theWindow = msiGetTopLevelWindow();
-    if (theWindow && ("msiDoTagBibItem" in theWindow))
-      theWindow.msiDoTagBibItem(data, data.paragraphNode, editorElement);
+    if (editor.tagListManager.getClassOfTag(data.paragraphNode.tagName, null) !== "listparenttag")
+    {
+      if (!theWindow || !("msiDoTagBibItem" in theWindow))
+        theWindow = msiGetTopLevelWindow();
+      if (theWindow && ("msiDoTagBibItem" in theWindow))
+        theWindow.msiDoTagBibItem(data, data.paragraphNode, editorElement);
+    }
+
   }
 
   SaveWindowLocation();
@@ -120,7 +161,18 @@ function onAccept()
 }
 
 function onCancel()
-{
+{  
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+  gDialog.key = document.getElementById("keysAutoCompleteBox").value;
+  data.key = gDialog.key;
+  if (/^\s*$/.test(data.key)) {
+    // User has entered an empty (by our definition) bib entry.
+    // If it is the last one, we delete it and move the cursor past the <bibliography>
+    // If it is the only one, we remove the <bibliography>
+    if (handleEmptyBibItem(editor, data.node)) return true;
+  }
+
   data.Cancel = true;
 }
 

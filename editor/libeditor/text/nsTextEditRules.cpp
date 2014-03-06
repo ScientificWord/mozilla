@@ -473,7 +473,7 @@ nsTextEditRules::DidInsertBreak(nsISelection *aSelection, nsresult aResult)
   PRInt32 selOffset;
   nsCOMPtr<nsIDOMNode> selNode;
   nsresult res;
-  res = mEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
+  res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
   // confirm we are at end of document
   if (selOffset == 0) return NS_OK;  // can't be after a br if we are at offset 0
@@ -659,7 +659,7 @@ nsTextEditRules::WillInsertText(PRInt32          aAction,
   // get the (collapsed) selection location
   nsCOMPtr<nsIDOMNode> selNode;
   PRInt32 selOffset;
-  res = mEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
+  res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
 
   // don't put text in places that can't have it
@@ -917,7 +917,7 @@ nsTextEditRules::WillDeleteSelection(nsISelection *aSelection,
   {
     nsCOMPtr<nsIDOMNode> startNode;
     PRInt32 startOffset;
-    res = mEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+    res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
     if (NS_FAILED(res)) return res;
     if (!startNode) return NS_ERROR_FAILURE;
     
@@ -1037,7 +1037,7 @@ nsTextEditRules::DidDeleteSelection(nsISelection *aSelection,
 {
   nsCOMPtr<nsIDOMNode> startNode;
   PRInt32 startOffset;
-  nsresult res = mEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+  nsresult res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
   
@@ -1062,11 +1062,11 @@ nsTextEditRules::DidDeleteSelection(nsISelection *aSelection,
   // Check that the cursor is in a place that can accept text.
   nsCOMPtr<nsIEditor> editor = static_cast<nsEditor*>(mEditor);
   PRBool retval;
-  retval = nsEditorUtils::JiggleCursor(editor, aSelection, (aCollapsedAction == 1));
+  retval = nsEditorUtils::JiggleCursor(editor, aSelection, aCollapsedAction);
   if (retval) res = NS_OK;
 
 /*  
-  res = mEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);  
+  res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);  
   nsCOMPtr<msiITagListManager> tlm;
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
   nsCOMPtr<nsIDOMDocument> doc;
