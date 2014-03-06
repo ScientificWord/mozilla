@@ -501,7 +501,8 @@ nsMathMLmoverFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame
 nsresult
 nsMathMLmoverFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
-{                
+{    
+  count = 0;            
   printf("mover MoveOutToLeft, count = %d\n", count);
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild = GetFirstChild(nsnull);

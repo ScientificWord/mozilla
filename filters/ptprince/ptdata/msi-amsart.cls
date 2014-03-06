@@ -115,7 +115,7 @@
 \input amsmath.tex
 
 \msi@extrapi{%
-  %\msitag{<?sw-tagdefs href="resource://app/res/tagdefs/revtex4-1defs.xml" type="text/xml" ?>^^0a}
+  \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/amsclsdefs.xml" type="text/xml" ?>^^0a}
   \msitag{<?sw-xslt href="amscls.xsl" type="text/xml" ?>^^0a}
 }
 

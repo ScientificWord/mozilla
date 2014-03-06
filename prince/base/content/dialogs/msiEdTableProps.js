@@ -243,7 +243,7 @@ function setVariablesForControls()
   gDialog.hAlignChoices = document.getElementById("hAlignChoices");
   gDialog.vAlignChoices = document.getElementById("vAlignChoices");
 
-  gDialog.TextWrapCheckbox = document.getElementById("TextWrapCheckbox");
+  gDialog.textwrapchoice = document.getElementById("textwrapchoice");
   // gDialog.cellBackgroundCW = document.getElementById("cellBackgroundCW");
 
   // Lines Panel
@@ -287,7 +287,7 @@ function setUpCollatedCellData(collatedCellData, initialCellData)
 
 function setDataFromReviseData(reviseData, commandStr)
 {
-  gSelectionTypeStr = reviseData.getSelectionType(commandStr);  //Do we even want to call this?
+//  gSelectionTypeStr = reviseData.getSelectionType(commandStr);  //Do we even want to call this?
 //  gSelectedCellsType = translateSelectionTypeString(gSelectionTypeStr);
   gTableElement = reviseData.getReferenceNode();
   gIsMatrix = reviseData.isMatrix();
@@ -791,14 +791,16 @@ function initTablePanel()
   else if (placement=="R") longPlacement = "right";
   else if (placement=="I") longPlacement = "inside";
   else if (placement=="O") longPlacement = "outside"; 
-  else longPlacement="";
-  // need to check for center and inline
+  else longPlacement = null;
+  if (pos == "center") longPlacement="center";  // trumps
+  else if (pos == "inline") longPlacement = null;
+
 
   var placeLocation = gTableElement.getAttribute("placeLocation");  
-  if (placement) {
+  if (longPlacement) {
 //    if (placement == "I" || placement == "display") placeLocation = "";
+    gDialog.tableLocationList.value = longPlacement;
     if (placeLocation) {
-      gDialog.tableLocationList.value = longPlacement;
       gDialog.floatLocationList.value = placeLocation;
     }
     else 
@@ -879,7 +881,7 @@ function initCellsPanel()
   gDialog.CellHeightInput.value = 0;
   gDialog.CellHeightUnits = unitHandler.getCurrentUnit();
   gDialog.CellWidthInput.value = 0;
-  gDialog.TextWrapCheckbox.checked = true;
+  gDialog.textwrapchoice.value = true;
   
 }
 
@@ -945,7 +947,7 @@ function initCellsPanel()
 //      gDialog.TextWrapList.value = "nowrap";
 //    else
 //      gDialog.TextWrapList.value = "wrap";
-//    gDialog.TextWrapCheckbox.checked = gAdvancedEditUsed && previousIndex != gDialog.TextWrapList.selectedIndex;
+//    gDialog.textwrapchoice.checked = gAdvancedEditUsed && previousIndex != gDialog.TextWrapList.selectedIndex;
 //
 //    previousValue = gCellColor;
 //    gCellColor = GetHTMLOrCSSStyleValue(globalCellElement, bgcolor, cssBackgroundColorStr);
@@ -1488,7 +1490,7 @@ function SwitchToValidatePanel()
 //rwa     SetAlign("CellVAlignList", "", globalCellElement, "valign");
 //rwa   }
 //rwa 
-//rwa //  if (gDialog.TextWrapCheckbox.checked)
+//rwa //  if (gDialog.textwrapchoice.checked)
 //rwa //  {
 //rwa //    if (gDialog.TextWrapList.value == "nowrap")
 //rwa //      try {
@@ -1571,9 +1573,9 @@ function ValidateData()
 //      if (gCollatedCellData.size.bHeightSet)
 //        gCollatedCellData.size.height = gHeightUnitsController.getValue(gDialog.CellHeightInput, gCellHeightUnit);
 //    break;
-//    case "TextWrapCheckbox":
+//    case "textwrapchoice":
 //      gCellChangeData.wrap = true;
-//      gCollatedCellData.wrap = (gDialog.TextWrapCheckbox.checked ? "wrap" : "nowrap");
+//      gCollatedCellData.wrap = (gDialog.textwrapchoice.checked ? "wrap" : "nowrap");
 //    break;
 //  }
 //}
@@ -1919,66 +1921,66 @@ function ApplyTableAttributes()
 
     if (unit && gTableElement) 
       SetAnAttribute(gTableElement,"unit", unit);
-    var newAlign = gTableCaptionPlacement;
-    if (!newAlign)
-      newAlign = "";
+    // var newAlign = gTableCaptionPlacement;
+    // if (!newAlign)
+    //   newAlign = "";
     var logStr;
 
-    if (gTableCaptionElement)
-    {
-      // Get current alignment
-      var align = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side").toLowerCase();
-      // This is the default
-      if (!align) align = "top";
+  //   if (gTableCaptionElement)
+  //   {
+  //     // Get current alignment
+  //     var align = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side").toLowerCase();
+  //     // This is the default
+  //     if (!align) align = "top";
 
-      if (newAlign === "")
-      {
-        // Remove existing caption
-        try {
-          gActiveEditor.deleteNode(gTableCaptionElement);
-        } catch(e) {}
-        gTableCaptionElement = null;
-      }
-      else if(newAlign != align)
-      {
-        try {
-          logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [";
-          if (newAlign == "top") // This is default, so don't explicitly set it
-            gActiveEditor.removeAttributeOrEquivalent(gTableCaptionElement, "align", false);
-          else
-          {
-            gActiveEditor.setAttributeOrEquivalent(gTableCaptionElement, "align", newAlign, false);
-            logStr += newAlign;
-          }
-          logStr += "].\n";
-          msiKludgeLogString(logStr, ["tableEdit"]);
+  //     if (newAlign === "")
+  //     {
+  //       // Remove existing caption
+  //       try {
+  //         gActiveEditor.deleteNode(gTableCaptionElement);
+  //       } catch(e) {}
+  //       gTableCaptionElement = null;
+  //     }
+  //     else if(newAlign != align)
+  //     {
+  //       try {
+  //         logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [";
+  //         if (newAlign == "top") // This is default, so don't explicitly set it
+  //           gActiveEditor.removeAttributeOrEquivalent(gTableCaptionElement, "align", false);
+  //         else
+  //         {
+  //           gActiveEditor.setAttributeOrEquivalent(gTableCaptionElement, "align", newAlign, false);
+  //           logStr += newAlign;
+  //         }
+  //         logStr += "].\n";
+  //         msiKludgeLogString(logStr, ["tableEdit"]);
 
-        } catch(e) {}
-      }
-    }
-    else if (newAlign !== "")
-    {
-      // Create and insert a caption:
-      try {
-        gTableCaptionElement = gActiveEditor.createElementWithDefaults("caption");
-      } catch (e) {}
-      if (gTableCaptionElement)
-      {
-        if (newAlign != "top")
-        {
-          setAnAttribute(gTableCaptionElement,"align", newAlign);
-          logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [" + newAlign + "].\n";
-          msiKludgeLogString(logStr, ["tableEdit"]);
-        }
-        // Insert it into the table - caption is always inserted as first child
-        try {
-          gActiveEditor.insertNode(gTableCaptionElement, gTableElement, 0);
-        } catch(e) {}
+  //       } catch(e) {}
+  //     }
+  //   }
+  //   else if (newAlign !== "")
+  //   {
+  //     // Create and insert a caption:
+  //     try {
+  //       gTableCaptionElement = gActiveEditor.createElementWithDefaults("caption");
+  //     } catch (e) {}
+  //     if (gTableCaptionElement)
+  //     {
+  //       if (newAlign != "top")
+  //       {
+  //         SetAnAttribute(gTableCaptionElement,"align", newAlign);
+  //         logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [align] on table caption element to [" + newAlign + "].\n";
+  //         msiKludgeLogString(logStr, ["tableEdit"]);
+  //       }
+  //       // Insert it into the table - caption is always inserted as first child
+  //       try {
+  //         gActiveEditor.insertNode(gTableCaptionElement, gTableElement, 0);
+  //       } catch(e) {}
 
-        // Put selecton back where it was
-  //      ChangeSelection(RESET_SELECTION);
-      }
-    }
+  //       // Put selecton back where it was
+  // //      ChangeSelection(RESET_SELECTION);
+  //     }
+  //   }
 
     logStr = "";
     var bEmptyStyle = true; //(!gTableElement.style);
@@ -1998,9 +2000,8 @@ function ApplyTableAttributes()
       doSetStyleAttr("width", gDialog.tableWidthInput.value + unit);
     }
     if (pos && pos.length > 0) {
-      if (pos == "inline" || pos == "display") float = "";
+      if (pos == "inline" || pos == "center") float = "";
       if (float !== "") {
-        SetAnAttribute(gTableElement,"pos","float");
         msiRequirePackage(gActiveEditorElement, "wrapfig", "");
         SetAnAttribute(gTableElement,"placement",placementCodeFrom(pos));
         SetAnAttribute(gTableElement,"placeLocation", float);
@@ -2011,9 +2012,14 @@ function ApplyTableAttributes()
         if (pos == "inline") doSetStyleAttr("display", "inline-table");
         else 
         {
-          doSetStyleAttr("display", "block");
+          doSetStyleAttr("display", "table");
+          if (pos == "center") {
+            doSetStyleAttr("margin-left", "auto");
+            doSetStyleAttr("margin-right", "auto");
+          }
         }
       }
+      SetAnAttribute(gTableElement, "pos", pos);
     }
     else doSetStyleAttr("display", "inline-table");
     if (!bEmptyStyle)
@@ -2887,6 +2893,35 @@ function Apply()
 
     ApplyTableAttributes();
 
+    // handle caption
+    var captionloc = gDialog.captionLocation.value;
+    var captiontext;
+    var cap;
+    var i;
+    var caps = gTableElement.getElementsByTagName('caption');
+
+    if (captionloc !== '') {
+      if (caps.length > 0) {
+        cap = caps[0];
+      }
+      else {  //create new caption node
+        gActiveEditor.createElementWithDefaults('caption');
+        gTableElement.appendChild(cap);
+        var namespace = { value: null };
+        var tlm = gActiveEditor.tagListManager;
+        captiontext = tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, cap.ownerDocument);
+        cap.appendChild(captiontext);
+
+      }
+      cap.setAttribute('style', 'caption-side: '+ captionloc +';');
+      cap.setAttribute('align', captionloc);
+    }
+    else if (caps.length > 0) { // remove caption(s)
+      for (i = caps.length -1; i >= 0; i--) {
+        gActiveEditor.deleteNode(caps[i]);
+      }
+    }
+
 //    ApplyColAndRowAttributes();
 
     // We may have just a table, so check for cell element
@@ -2912,7 +2947,7 @@ function onAcceptNewTable()
 
     try 
     {
-      var wrapping = document.getElementById.textwrapchoice.value;  // values are '','true','false'
+      var wrapping = (gDialog.textwrapchoice.value == "true");  // values are '','true','false'
       if (wrapping.length > 0) {
         gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
       }
@@ -2942,6 +2977,19 @@ function onAcceptNewTable()
     ApplyTableAttributes();
     if (tableBody)
     {
+      // check here for caption
+      var captionloc = gDialog.captionLocation.value;
+      var captiontext;
+      if (captionloc !== '') {
+        var cap = gActiveEditor.createElementWithDefaults('caption');
+        var namespace = { value: null };
+        var tlm = gActiveEditor.tagListManager;
+        gTableElement.appendChild(cap);
+        cap.setAttribute('style', 'caption-side: '+ captionloc +';');
+        cap.setAttribute('align', captionloc);
+        captiontext = tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, cap.ownerDocument);
+        cap.appendChild(captiontext);
+      }
       gTableElement.appendChild(tableBody);
       color = document.getElementById('backgroundCW').getAttribute("color");
 
@@ -3026,9 +3074,7 @@ function onAccept()
     return onAcceptNewTable();
   }
   // Do same as Apply and close window if ValidateData succeeded
-  gActiveEditor.beginTransaction();
   var retVal = Apply();
-  gActiveEditor.endTransaction();
 //  if (gActiveEditor) {
 //    gActiveEditor.deleteNode(gTableElement);
 //    gActiveEditor.undo(1);

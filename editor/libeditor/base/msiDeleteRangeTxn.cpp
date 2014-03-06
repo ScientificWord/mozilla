@@ -303,7 +303,8 @@ NS_IMETHODIMP msiDeleteRangeTxn::DoTransaction(void)
   // only set selection to deletion point if editor gives permission
   PRBool bAdjustSelection;
   m_editor->ShouldTxnSetSelection(&bAdjustSelection);
-  if (bAdjustSelection && okToCollapseAfterDelete) //TODO -- ok to collapse is temp
+  bAdjustSelection = PR_FALSE; // BBM: testing
+  if (bAdjustSelection) // && okToCollapseAfterDelete) //TODO -- ok to collapse is temp
   {
     nsCOMPtr<nsISelection> selection;
     res = m_editor->GetSelection(getter_AddRefs(selection));

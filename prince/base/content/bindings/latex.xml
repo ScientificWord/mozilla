@@ -729,6 +729,48 @@ Make list of figures here
 		</xbl:content>
 	</xbl:binding>
 
+	<xbl:binding id="mainmatter">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&mainmatter;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="backmatter">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&backmatter;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="frontmatter">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&frontmatter;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
+
 	<xbl:binding id="indexitem">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
@@ -1089,7 +1131,7 @@ Make list of figures here
 
 	</xbl:binding>
 
-	<xbl:binding id="msibreak">
+	<xbl:binding id="msibr">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
@@ -1148,7 +1190,7 @@ Make list of figures here
 		</xbl:implementation>
 	</xbl:binding>
 
-	<xbl:binding id="mathmsibreak">
+	<xbl:binding id="mathmsibr">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
@@ -1555,7 +1597,7 @@ Make list of figures here
 		</xbl:content>
 	</xbl:binding>
 
-	<xbl:binding id="bibitem">
+<!-- 	<xbl:binding id="bibitem">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
@@ -1565,7 +1607,7 @@ Make list of figures here
 			<xbl:children includes="biblabel"/>
             <xbl:children/>
 		</xbl:content>
-	</xbl:binding>
+	</xbl:binding> -->
 
 	<xbl:binding id="theoremWithCustomLeadin">
 		<xbl:resources>

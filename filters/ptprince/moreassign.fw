@@ -165,9 +165,8 @@ case CMD_LET:{
       StringBuilder::Discard(str);
       s_preambleExtra += strTemp;
       //Typesetter::AppendTag(strTemp.c_str());
-     
    }
- 
+
    SymbolData* pDef;
    if (CurTok().Type() == TT_SYMBOL){
       LOG("\n----Set " << defining

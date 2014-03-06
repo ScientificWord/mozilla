@@ -22,6 +22,7 @@
   <xsl:variable name="topCaption">
     <xsl:choose>
       <xsl:when test="html:caption[not(@align)]">1</xsl:when>
+      <xsl:when test="html:caption[@align='top']">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -154,12 +155,27 @@
 
 <xsl:template match="html:table">
   <xsl:choose>
-    <xsl:when test="@pos='display'">
-      \begin{center}
+    <xsl:when test="@pos='center'">
+      <xsl:choose>
+        <xsl:when test="html:caption">
+      \begin{table}[h]
+        </xsl:when>
+        <xsl:otherwise>
+          {
+        </xsl:otherwise>
+      </xsl:choose>
+      \centering
       <xsl:call-template name="buildtable"/>
-      \end{center}
+      <xsl:choose>
+        <xsl:when test="html:caption">
+      \end{table}
+        </xsl:when>
+        <xsl:otherwise>
+          }
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:when>
-    <xsl:when test="@pos='float' or html:caption"> 
+    <xsl:when test="@pos='float' or ./html:caption"> 
       \begin{wraptable}{
       <xsl:choose>
         <xsl:when test="not(substring(@placement,1,1))">O</xsl:when>

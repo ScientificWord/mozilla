@@ -85,7 +85,7 @@ span.msirule {
   overflow: hidden;
 }
 
-msibreak {
+msibr {
   display: inline;
   white-space: pre;
 }

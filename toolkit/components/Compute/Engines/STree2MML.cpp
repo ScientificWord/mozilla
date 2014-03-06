@@ -138,9 +138,9 @@ char *MML1templates[] = {
   "<mtd>\n%body%</mtd>\n",
   "<mrow>\n%mo_left%%body%%mo_right%</mrow>\n",
   "<mfenced open=\"%open%\" close=\"%close%\">\n%body%</mfenced>\n",
-  "<mo%color_attr% form=\"prefix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">(</mo>\n%interior%<mo%color_attr2% form=\"postfix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">)</mo>\n",
-  "<mo%color_attr% form=\"prefix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">[</mo>\n%interior%<mo%color_attr2% form=\"postfix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">]</mo>\n",
-  "<mo%color_attr% form=\"prefix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">{</mo>\n%interior%<mo%color_attr2% form=\"postfix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">}</mo>\n",
+  "<mrow><mo%color_attr% form=\"prefix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">(</mo>\n%interior%<mo%color_attr2% form=\"postfix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">)</mo>\n</mrow>\n",
+  "<mrow><mo%color_attr% form=\"prefix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">[</mo>\n%interior%<mo%color_attr2% form=\"postfix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">]</mo>\n</mrow>\n",
+  "<mrow><mo%color_attr% form=\"prefix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">{</mo>\n%interior%<mo%color_attr2% form=\"postfix\" stretchy=\"true\" fence=\"true\" symmetric=\"true\" lspace=\"true\" rspace=\"rspace\" maxsize=\"maxsize\" minsize=\"minsize\">}</mo>\n</mrow>\n",
   "<msup>\n%expr%<mo%color_attr%>&#x2217;</mo>\n</msup>\n",
   "<mover>\n%body%<mo%color_attr% stretchy=\"true\" accent=\"true\">&#xaf;</mo>\n</mover>\n",
   "<mfenced class=\"msiEigenVectorSet\" open=\"{\" close=\"}\">\n%eigen_vector_list%</mfenced>\n",
@@ -245,7 +245,6 @@ char *STree2MML::BackTranslate(SEMANTICS_NODE* semantic_tree,
   SetUserPrefs(ds);
 
 #ifdef DEBUG
-  printf("\n========= BackTranslating this: ========\n");
   JBM::DumpSList(semantic_tree);
 #endif
 
@@ -1927,15 +1926,23 @@ void STree2MML::SemanticSUBS2MML(SEMANTICS_NODE * sem_set_node,
     }
   }
   //   "<msubsup>\n%FenceBody%\n%lower%\n%upper%\n</msubsup>\n",
-  if (z_body && z_sub && z_sup) {
+  if (z_body && (z_sub || z_sup)) {
     char *tmpl = GetTmplPtr(TMPL_SUBSTITUTION);
     size_t zln =
-      strlen(tmpl) + strlen(z_body) + strlen(z_sub) + strlen(z_sup);
+      strlen(tmpl) + strlen(z_body) + (z_sub?strlen(z_sub):0) + (z_sup?strlen(z_sup):0);
     rv = new char[zln + 1];
     strcpy(rv, tmpl);
+    if (!z_sup){
+      StrReplace(rv, zln, "msubsup", "msub");
+      StrReplace(rv, zln, "/msubsup", "/msub");
+    } else if (!z_sup) {
+      StrReplace(rv, zln, "msubsup", "msup");
+      StrReplace(rv, zln, "/msubsup", "/msup");
+    }
+
     StrReplace(rv, zln, "%FenceBody%", z_body);
-    StrReplace(rv, zln, "%lower%", z_sub);
-    StrReplace(rv, zln, "%upper%", z_sup);
+    StrReplace(rv, zln, "%lower%", z_sub?z_sub:"");
+    StrReplace(rv, zln, "%upper%", z_sup?z_sup:"");
 
     delete[] z_body;
     delete[] z_sub;
