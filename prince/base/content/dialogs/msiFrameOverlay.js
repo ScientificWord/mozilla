@@ -228,6 +228,9 @@ function initFrameTab(dg, element, newElement, contentsElement)
     var heightStr = "0";
     if (contentsElement.hasAttribute(heightAtt)) {
       height = frameUnitHandler.getValueFromString( contentsElement.getAttribute(heightAtt) );
+    } else
+    {
+      dg.autoHeightCheck.checked = true;
     }
     if (gConstrainWidth || gConstrainHeight)
       setConstrainDimensions(frameUnitHandler.getValueAs(width, "px"), frameUnitHandler.getValueAs(height,"px"));
@@ -1103,7 +1106,8 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
   else {
     removeStyleAttributeFamilyOnNode(contentsNode, "height", editor);
   }
-  if (frameNode.hasAttribute(heightAtt) && Number(frameNode.getAttribute(heightAtt))!= 0 ) {
+  // if (frameNode.hasAttribute(heightAtt) && Number(frameNode.getAttribute(heightAtt))!= 0 ) {
+  if ( !(document.getElementById("autoHeight").checked) && Number(frameNode.getAttribute(heightAtt))!= 0 ) {
     setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(frameNode.getAttribute(heightAtt),"px") + "px", editor);
   }
   else {
@@ -1185,6 +1189,7 @@ function checkAutoDimens(checkBox, textboxId)
   if (checkBox.checked && Dg.constrainCheckbox && !Dg.constrainCheckbox.checked){
     Dg.constrainCheckbox.checked = true;
   }
+  document.getElementById(textboxId).value = "0";
   setDisabled(checkBox, textboxId);
 }
 
@@ -1236,10 +1241,10 @@ function constrainProportions( srcID, destID, event )
   {
     // With this strategy, the width and height ratio
     //   can be reset to whatever the user entered.
-    if (srcID == "frameWidthInput")
-      destElement.value = unitRound( srcElement.value * gConstrainHeight / gConstrainWidth );
-    else
-      destElement.value = unitRound( srcElement.value * gConstrainWidth / gConstrainHeight );
+    // if (srcID == "frameWidthInput")
+    //   destElement.value = unitRound( srcElement.value * gConstrainHeight / gConstrainWidth );
+    // else
+    //   destElement.value = unitRound( srcElement.value * gConstrainWidth / gConstrainHeight );
   }
   setContentSize(frameUnitHandler.getValueAs(Dg.widthInput.value,"px"), frameUnitHandler.getValueAs(Dg.heightInput.value,"px"));
 }
