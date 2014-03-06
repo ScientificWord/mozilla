@@ -37,8 +37,10 @@
 			<tags>
 				<tag nm="(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
 				<tag nm="alt"><description>Stylistic alternate</description></tag>
-				<tag nm="bold"><description>Bold</description>
+        <tag nm="bold"><description>Bold</description>
           <mathvar>bold</mathvar></tag>
+				<tag nm="boldsymbol"><description>Bold symbol</description>
+          <mathonly>bold</mathonly></tag>
 				<tag nm="blackboardBold"><description>Blackboard Bold</description>
           <mathonly/><mathvar>double-struck</mathvar></tag>
 				<tag nm="calligraphic"><description>Calligraphic</description>
@@ -114,12 +116,17 @@
         <contains>note</contains>
         <contains>notewrapper</contains>
         <contains>msiframe</contains>
-        <contains>msibreak</contains>
+        <contains>msibr</contains>
         <contains>texb</contains>
         <contains>maketitle</contains>
         <contains>maketoc</contains>
         <contains>makelot</contains>
         <contains>makelof</contains>
+        <contains>frontmatter</contains>
+        <contains>backmatter</contains>
+        <contains>mainmatter</contains>
+        <contains>printindex</contains>
+        <contains>appendix</contains>
       </classcontains>
 			<tags>
 				<tag id="defaultparagraph" nm="bodyText">
@@ -160,7 +167,7 @@
             <bodyMath>
               <mml:math>
                 <mml:mi tempinput='true'>
-                  <cursor/>&#x200B;
+                  <cursor/>&#x200A;
                 </mml:mi>
               </mml:math>
               <br/>
@@ -174,8 +181,8 @@
           <initialcontents>
             <sectiontitle>
               <cursor/>
-              <br/>
-            </sectiontitle>
+<!--               <br/> Not needed as long there are section numbers
+ -->            </sectiontitle>
           </initialcontents>
 				</tag>
 				<tag nm="shortQuote">
@@ -314,12 +321,12 @@
           <description>Bibliography entry</description>
           <htmllistparent>bibliography</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
+          <inclusion>true</inclusion>
           <initialcontents>
-            <bibitem bibitemkey="key" hasLabel="true">
-              <bibkey>_</bibkey>
-              <biblabel class="bibitemlabel">_</biblabel>
+            <bibitem>
+              <biblabel></biblabel>
+              <bibkey></bibkey>
               <bodyText>
-                <cursor/>
                 <br/>
               </bodyText>
             </bibitem>
@@ -479,7 +486,7 @@
           </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
 				</tag>
-				<tag nm="frontmatter">
+<!-- 				<tag nm="frontmatter">
           <contains>frontmtag</contains>
           <level>*</level>
 					<nexttag/>
@@ -496,7 +503,7 @@
             </frontmatter>
           </initialcontents>
         </tag>
-				<tag nm="dedication">
+ -->				<tag nm="dedication">
           <level>*</level>
           <description>Dedication</description>
 					<nexttag/>
@@ -1062,6 +1069,28 @@
           </initialcontents>
 	  		  <!--inclusion>true</inclusion-->
         </tag>
+        <tag nm="imagecaption" hidden="1">
+          <description>Image caption</description>
+          <contains>#text</contains>
+          <contains>texttag</contains>
+          <contains>table</contains>
+          <contains>listparenttag</contains>
+          <contains>listtag</contains>
+          <contains>shortQuote</contains>
+          <contains>othertag</contains>
+          <contains>mml:math</contains>
+          <contains>br</contains>
+          <contains>cursor</contains>
+          <contains>defaulttitletag</contains>
+          <contains>img</contains>
+          <contains>object</contains>
+          <contains>a</contains>
+          <contains>note</contains>
+          <contains>notewrapper</contains>
+          <contains>msiframe</contains>
+          <contains>msibr</contains>
+          <contains>texb</contains>
+        </tag>
 				<tag nm="##lang1##" hidden="1" babel="3">
           <level>*</level>
           <description>First language environment</description>
@@ -1209,15 +1238,19 @@
         <tag nm="biblabel">
           <description>Bibliography label</description>
             <contains>#text</contains>
-			      <contains>texttag</contains>
-			      <contains>othertag</contains>
+            <contains>texttag</contains>
+            <contains>othertag</contains>
             <contains>table</contains>
-			      <contains>mml:math</contains>
-			      <contains>img</contains>
+            <contains>mml:math</contains>
+            <contains>img</contains>
             <contains>a</contains>
             <contains>note</contains>
             <contains>object</contains>
             <contains>notewrapper</contains>
+        </tag>
+        <tag nm="bibkey">
+          <description>Bibliography key</description>
+            <contains>#text</contains>
         </tag>
         <tag nm="shortTitle">
           <description>Short section title</description>
@@ -1245,28 +1278,6 @@
           <contains>object</contains>
           <contains>notewrapper</contains>
         </tag>
-			  <tag nm="imagecaption">
-          <description>Image caption</description>
-          <contains>#text</contains>
-			    <contains>texttag</contains>
-          <contains>table</contains>
-			    <contains>listparenttag</contains>
-			    <contains>listtag</contains>
-			    <contains>shortQuote</contains>
-			    <contains>othertag</contains>
-			    <contains>mml:math</contains>
-			    <contains>br</contains>
-			    <contains>cursor</contains>
-			    <contains>defaulttitletag</contains>
-			    <contains>img</contains>
-			    <contains>object</contains>
-          <contains>a</contains>
-          <contains>note</contains>
-          <contains>notewrapper</contains>
-          <contains>msiframe</contains>
-          <contains>msibreak</contains>
-          <contains>texb</contains>
-        </tag>
         <tag nm="indexentry">
           <description>Index entry</description>
           <contains>prispec</contains>
@@ -1284,7 +1295,7 @@
 			    <contains>object</contains>
           <contains>a</contains>
           <contains>msiframe</contains>
-          <contains>msibreak</contains>
+          <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
         <tag nm="secspec">
@@ -1298,7 +1309,7 @@
 			    <contains>object</contains>
           <contains>a</contains>
           <contains>msiframe</contains>
-          <contains>msibreak</contains>
+          <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
         <tag nm="terspec">
@@ -1312,7 +1323,7 @@
 			    <contains>object</contains>
           <contains>a</contains>
           <contains>msiframe</contains>
-          <contains>msibreak</contains>
+          <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
 <!-- most math editing is done outside this framework, but a few math tags are needed here -->

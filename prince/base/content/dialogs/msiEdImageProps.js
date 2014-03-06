@@ -744,7 +744,7 @@ function  SetSizeWidgets(width, height)
 
 // These mode variables control the msiFrameOverlay code
 //var gFrameModeImage = true;
-//var gFrameModeTextFrame = false;
+// var gFrameModeTextFrame = false;
 
 //var gInsertNewImage;
 

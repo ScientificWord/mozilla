@@ -66,11 +66,15 @@
 #include "nsISelectionController.h"
 #include "nsIFileChannel.h"
 #include "nsIFileURL.h"
-
+#include "nsIController.h"
+#include "nsIControllers.h"
+#include "nsIDOMXULCommandDispatcher.h"
+#include "nsIDOMXULElement.h" 
 #include "nsICSSLoader.h"
 #include "nsICSSStyleSheet.h"
 #include "nsIDocumentObserver.h"
 #include "nsIDocumentStateListener.h"
+#include "nsIDOMWindowInternal.h"
 
 #include "nsIEnumerator.h"
 #include "nsIContent.h"
@@ -130,7 +134,9 @@
 #include "nsIDOMHTMLTableElement.h"
 #include "nsIDOMHTMLBodyElement.h"
 #include "nsIDOM3Node.h"
-
+#include "nsIDOMWindow.h"
+#include "nsIDOMDocumentView.h"
+#include "nsIDOMAbstractView.h"
 // Misc
 #include "TextEditorTest.h"
 #include "nsEditorUtils.h"
@@ -472,7 +478,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   {
     // if caller didn't provide the destination/target node,
     // fetch the paste insertion point from our selection
-    res = GetStartNodeAndOffset(selection, address_of(targetNode), &targetOffset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(targetNode), &targetOffset);
     if (!targetNode) res = NS_ERROR_FAILURE;
     if (NS_FAILED(res)) return res;
   }
@@ -700,7 +706,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   {
     // The rules code (WillDoAction above) might have changed the selection.
     // refresh our memory...
-    res = GetStartNodeAndOffset(selection, address_of(parentNode), &offsetOfNewNode);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(parentNode), &offsetOfNewNode);
     if (!parentNode) res = NS_ERROR_FAILURE;
     if (NS_FAILED(res)) return res;
 
@@ -1202,7 +1208,7 @@ nsHTMLEditor::InsertReturnImpl( PRBool fFancy )
   PRInt32 splitpointOffset;
   nsCOMPtr<nsISelection>selection;
   res = GetSelection(getter_AddRefs(selection));
-  res = GetStartNodeAndOffset(selection, address_of(splitpointNode), &splitpointOffset);
+  res = GetStartNodeAndOffset(selection, getter_AddRefs(splitpointNode), &splitpointOffset);
   PRBool bHandled = PR_FALSE;
   res = InsertReturnInMath(splitpointNode, splitpointOffset, &bHandled);
   if (NS_FAILED(res)) return res;
@@ -1210,7 +1216,7 @@ nsHTMLEditor::InsertReturnImpl( PRBool fFancy )
     return res;
 
   res = InsertReturnAt(splitpointNode, splitpointOffset, fFancy);
-  res = nsEditorUtils::JiggleCursor(this, selection, PR_FALSE);
+  res = nsEditorUtils::JiggleCursor(this, selection, nsIEditor::eNext);
 
   return res;
 }
@@ -1860,6 +1866,40 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
 
     res = GetTagString(outLeftNode, leftName);
     res = GetTagString(outRightNode, rightName);
+    if (rightName.EqualsLiteral("bibitem")) {
+
+      nsCOMPtr<nsIDOMDocument> ownerDoc;
+      nsCOMPtr<nsIDOMNode> parent;
+      PRInt32 offset = 0;
+      outRightNode->GetOwnerDocument(getter_AddRefs(ownerDoc));
+      NS_ENSURE_STATE(ownerDoc);
+    
+      nsCOMPtr<nsIDOMDocumentView> docView = do_QueryInterface(ownerDoc);
+      NS_ENSURE_STATE(docView);
+    
+      nsCOMPtr<nsIDOMAbstractView> absView;
+      docView->GetDefaultView(getter_AddRefs(absView));
+      NS_ENSURE_STATE(absView);
+    
+      nsCOMPtr<nsIDOMWindowInternal> win = do_QueryInterface(absView);
+
+
+      nsCOMPtr<nsIControllers> controllers;
+      res = win->GetControllers(getter_AddRefs(controllers));
+      nsCOMPtr<nsIController> controller;
+      const char * command = "cmd_reviseManualBibItemCmd";
+      res = controllers->GetControllerForCommand(command, getter_AddRefs(controller));
+      nsCOMPtr<nsISelection>selection;
+      nsresult res = GetSelection(getter_AddRefs(selection));
+      if (NS_FAILED(res)) return res;
+      res = nsEditor::GetNodeLocation(outRightNode, address_of(parent), &offset);
+      if (NS_FAILED(res)) return res;
+      selection->Collapse(parent, offset);
+      nsEditor::DeleteNode(outRightNode);
+
+      controller->DoCommand(command);
+      return res;
+    }
     if (!(leftName.Equals(rightName))) {
       // strip attributes off of the right node
       nsCOMPtr<nsIDOMNamedNodeMap> attributemap;

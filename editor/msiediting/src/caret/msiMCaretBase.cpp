@@ -23,7 +23,6 @@
 #include "nsIMutableArray.h"
 #include "nsComponentManagerUtils.h"
 #include "jcsDumpNode.h"
-#include "msiEditingAtoms.h"
 
 msiMCaretBase::msiMCaretBase(nsIDOMNode* mathmlNode, 
                              PRUint32 offset,
@@ -1200,8 +1199,7 @@ msiMCaretBase::FracRootSetupDelTxns(nsIEditor * editor,
     nsCOMPtr<nsIDOMElement> inputboxElement;
     nsCOMPtr<nsIDOMNode> newKid;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateMathMLElement(editor, msiEditingAtoms::mi, inputboxElement);
-//    res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
+    res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
     if (NS_SUCCEEDED(res) && inputboxElement)
       newKid = do_QueryInterface(inputboxElement);
     if (!newKid)

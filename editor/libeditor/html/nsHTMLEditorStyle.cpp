@@ -635,6 +635,7 @@ NS_IMETHODIMP nsHTMLEditor::TranslatePropertyToMath( const nsAString& textProper
   _retval = empty;
   if (textProperty.EqualsLiteral("bold")) _retval = NS_LITERAL_STRING("bold");
   else if (textProperty.EqualsLiteral("italic")) _retval = NS_LITERAL_STRING("italic");
+  else if (textProperty.EqualsLiteral("boldsymbol")) _retval = NS_LITERAL_STRING("bold-italic");
   else if (textProperty.EqualsLiteral("blackboardBold")) _retval = NS_LITERAL_STRING("double-struck");
   else if (textProperty.EqualsLiteral("fraktur")) _retval = NS_LITERAL_STRING("fraktur");
   else if (textProperty.EqualsLiteral("sansSerif")) _retval = NS_LITERAL_STRING("sans-serif");
@@ -971,10 +972,13 @@ nsresult nsHTMLEditor::RemoveStyleInside(nsIDOMNode *aNode,
 
   // then process the node itself
   if ( !aChildrenOnly && 
-        (aProperty && NodeIsType(aNode, aProperty) || // node is prop we asked for
-        (aProperty == nsEditProperty::href && nsHTMLEditUtils::IsLink(aNode, mtagListManager)) || // but check for link (<a href=...)
-        (aProperty == nsEditProperty::name && nsHTMLEditUtils::IsNamedAnchor(aNode, mtagListManager))) || // and for named anchors
-        (!aProperty && NodeIsProperty(aNode)))  // or node is any prop and we asked for that
+        (
+          (!aProperty && NodeIsProperty(aNode)) ||  // we are deleting all text tag properties
+          (aProperty && NodeIsType(aNode, aProperty)) || // node is prop we asked for
+          (aProperty == nsEditProperty::href && nsHTMLEditUtils::IsLink(aNode, mtagListManager)) || // but check for link (<a href=...)
+          (aProperty == nsEditProperty::name && nsHTMLEditUtils::IsNamedAnchor(aNode, mtagListManager)) // and for named anchors
+        )
+      )  // or node is any prop and we asked for that
   {
     // if we weren't passed an attribute, then we want to 
     // remove any matching inlinestyles entirely
@@ -1647,7 +1651,7 @@ nsresult nsHTMLEditor::RemoveInlinePropertyImpl(nsIAtom *aProperty, const nsAStr
         res = PromoteRangeIfStartsOrEndsInNamedAnchor(range);
       }
       else {
-        // adjust range to include any ancestors who's children are entirely selected
+        // adjust range to include any ancestors whose children are entirely selected
         res = PromoteInlineRange(range);
       }
       if (NS_FAILED(res)) return res;
@@ -1804,7 +1808,7 @@ nsHTMLEditor::RelativeFontChange( PRInt32 aSizeChange)
     // Let's see in what kind of element the selection is
     PRInt32 offset;
     nsCOMPtr<nsIDOMNode> selectedNode;
-    res = GetStartNodeAndOffset(selection, address_of(selectedNode), &offset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(selectedNode), &offset);
     if (IsTextNode(selectedNode)) {
       nsCOMPtr<nsIDOMNode> parent;
       res = selectedNode->GetParentNode(getter_AddRefs(parent));

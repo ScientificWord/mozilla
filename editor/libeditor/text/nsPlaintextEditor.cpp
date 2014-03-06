@@ -184,19 +184,6 @@ nsPlaintextEditor::EndEditorInit()
   return res;
 }
 
-/* attribute boolean inComplexTransaction; */
-NS_IMETHODIMP nsPlaintextEditor::GetInComplexTransaction(PRBool *aInComplexTransaction)
-{
-    *aInComplexTransaction = isInComplexTransaction;
-    return NS_OK;
-}
-
-NS_IMETHODIMP nsPlaintextEditor::SetInComplexTransaction(PRBool aInComplexTransaction)
-{
-    isInComplexTransaction = aInComplexTransaction;
-    return NS_OK;
-}
-
 NS_IMETHODIMP 
 nsPlaintextEditor::SetDocumentCharacterSet(const nsACString & characterSet) 
 { 
@@ -549,7 +536,7 @@ NS_IMETHODIMP nsPlaintextEditor::InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode)
   }
   nsCOMPtr<nsIDOMNode> selNode;
   PRInt32 selOffset;
-  res = GetStartNodeAndOffset(selection, address_of(selNode), &selOffset);
+  res = GetStartNodeAndOffset(selection, getter_AddRefs(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
   
   res = CreateBR(selNode, selOffset, outBRNode);
@@ -688,7 +675,7 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   // This needs to happen inside selection batching,
   // otherwise the deleted text is autocopied to the clipboard.
   if (aAction == eNextWord || aAction == ePreviousWord
-      //|| (aAction == eNext && bCollapsed)
+      || (aAction == eNext && bCollapsed)
       || aAction == eToBeginningOfLine || aAction == eToEndOfLine)
   {
     nsCOMPtr<nsISelectionController> selCont (do_QueryReferent(mSelConWeak));
@@ -738,7 +725,6 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   {
     result = DeleteSelectionImpl(aAction);
   }
-    
   if (!cancel)
   {
     // post-process 
@@ -1119,6 +1105,7 @@ nsPlaintextEditor::Undo(PRUint32 aCount)
   {
     result = nsEditor::Undo(aCount);
     result = mRules->DidDoAction(selection, &ruleInfo, result);
+    nsEditorUtils::JiggleCursor(this, selection, nsIEditor::eNext);
   } 
    
   return result;
@@ -1143,6 +1130,7 @@ nsPlaintextEditor::Redo(PRUint32 aCount)
   {
     result = nsEditor::Redo(aCount);
     result = mRules->DidDoAction(selection, &ruleInfo, result);
+    nsEditorUtils::JiggleCursor(this, selection, nsIEditor::eNext);
   } 
    
   return result;

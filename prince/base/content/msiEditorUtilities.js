@@ -313,6 +313,9 @@ function TrimString(string)
 
 function IsWhitespace(string)
 {
+  // BBM: WARNING: this tests only for an initial white space character
+  // To test for all white space, use /^\s*$/.test()
+  // I haven't changed this since I don't know yet how Ron used it.
   return /^\s/.test(string);
 }
 
@@ -10850,7 +10853,7 @@ var msiNavigationUtils =
       case "invis":
       case "hspace":
       case "vspace":
-      case "msibreak":
+      case "msibr":
       case "msirule":
         retVal = true;
       break;
@@ -11350,7 +11353,7 @@ var msiSpaceUtils =
   spaceInfoFromChars : function(charStr)
   {
     var retData = null;
-    var spaceTypes = ["hspace", "vspace", "msibreak"];
+    var spaceTypes = ["hspace", "vspace", "msibr"];
     var spaceInfoTypes = ["hSpaceInfo", "vSpaceInfo", "breaksInfo"];
     if (charStr === " ")
       retData = {theType: "hspace", theSpace: "normalSpace"};
@@ -11373,7 +11376,7 @@ var msiSpaceUtils =
   getSpaceInfoFromNode : function(aNode)
   {
     var retData = null;
-    var spaceTypes = ["hspace", "vspace", "msibreak"];
+    var spaceTypes = ["hspace", "vspace", "msibr"];
     var spaceInfoTypes = ["hSpaceInfo", "vSpaceInfo", "breaksInfo"];
     var nodeName = msiGetBaseNodeName(aNode);
     var nodeType = aNode.getAttribute("type");
@@ -11382,7 +11385,7 @@ var msiSpaceUtils =
     {
       case "hspace":
       case 'vspace':
-//      case 'msibreak':
+//      case 'msibr':
         retData = {theType : nodeName, theSpace : nodeType};
         if ((nodeType === "customSpace") || (nodeType === "stretchySpace"))  //second shouldn't be necessary, but heretofore was apparently what we produced
         {
@@ -11407,7 +11410,7 @@ var msiSpaceUtils =
             retData.atEnd = valStr;
         }
       break;
-      case 'msibreak':
+      case 'msibr':
         retData = {theType : nodeName, theSpace : nodeType};
         if (nodeType === "customNewLine")
         {

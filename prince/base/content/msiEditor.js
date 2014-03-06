@@ -488,9 +488,6 @@ var msiResizeListener =
       case "plotwrapper":
         this.resizePlot(anElement, oldWidth, oldHeight, newWidth, newHeight);
         break;
-      case "msiframe":
-        this.resizeFrame(anElement, oldWidth, oldHeight, newWidth, newHeight);
-        break;
       default:
         break;
     }
@@ -559,31 +556,6 @@ var msiResizeListener =
 //        obj = obj[0];
 //        makeSnapshot(obj, graph, editorElement);
 //      }
-    }
-    catch(e) {
-      msidump( e.message );
-    }
-  },
-
-  resizeFrame : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
-  {
-    // dimensions are given in pixels.
-    if (oldWidth === newWidth && oldHeight === newHeight) {
-      return;
-    }
-    try {
-      var unithandler = new UnitHandler();
-      var units;
-// skip preserving aspect ratio for now.
-      var editorElement = msiGetActiveEditorElement();
-      units = anElement.getAttribute("units");
-      unithandler.initCurrentUnit(units);
-      var newWidthInUnits = unithandler.getValueOf(newWidth, "px");
-      var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
-      anElement.setAttribute("width", String(newWidthInUnits));
-      if (anElement.hasAttribute("height")) {
-        anElement.setAttribute("height", String(newHeightInUnits));
-      }
     }
     catch(e) {
       msidump( e.message );
@@ -5016,7 +4988,7 @@ function msiEditorGetShowInvisibles(editorElement)  // returns viewSettings
   viewSettings.showInvisibles = theBody.getAttribute("showinvis")==="true";
   viewSettings.showSectionExpanders = theBody.getAttribute("showexpanders") ==="true";
   viewSettings.showShortTitles = theBody.getAttribute("showshort") === "true";
-  viewSettings.showFMButtons = theBody.getAttribute("showfmbuttons") === "true";
+  // viewSettings.showFMButtons = theBody.getAttribute("showfmbuttons") === "true";
   viewSettings.showHelperLines = theBody.getAttribute("hideHelperLines") !== "true";
   viewSettings.showInputBoxes = theBody.getAttribute("hideInputBoxes") !== "true";
   viewSettings.showIndexEntries = theBody.getAttribute("hideindexentries") !== "true";
@@ -5063,10 +5035,10 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
     theBody.setAttribute("showshort", "true");
   else
     theBody.removeAttribute("showshort");
-  if (viewSettings.showFMButtons)
-    theBody.setAttribute("showfmbuttons", "true");
-  else
-    theBody.removeAttribute("showfmbuttons");
+  // if (viewSettings.showFMButtons)
+  //   theBody.setAttribute("showfmbuttons", "true");
+  // else
+  //   theBody.removeAttribute("showfmbuttons");
   if (!viewSettings.showHelperLines)
     theBody.setAttribute("hideHelperLines", "true");
   else
@@ -5510,7 +5482,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         commandStr = "cmd_msiReviseRules";
       break;
 
-      case 'msibreak':
+      case 'msibr':
         objStr = GetString("GenBreak");
         commandStr = "cmd_msiReviseBreaks";
       break;
@@ -6709,7 +6681,7 @@ msiCharPropertiesObjectData.prototype =
             this.commandStr = "cmd_reviseVerticalSpaces";
           break;
 
-          case 'msibreak':
+          case 'msibr':
 //            objStr = GetString("GenBreak");
             objStr = "GenBreak";
             this.commandStr = "cmd_msiReviseBreaks";
@@ -10400,25 +10372,6 @@ function msiGoSetCommandEnabled(command, enabled, editorElement) { msiCommandUpd
 function msiGoSetMenuValue(command, labelAttribute, editorElement) { msiCommandUpdater.setMenuValue(command, labelAttribute, editorElement); }
 function msiGoSetAccessKey(command, valueAttribute, editorElement) { msiCommandUpdater.setAccessKey(command, valueAttribute, editorElement); }
 function msiGoOnEvent(node, event) { msiCommandUpdater.onEvent(node, event); }
-//function msiGoDoReviseCommand(command, editorElement) { msiCommandUpdate.doReviseCommand(command, editorElement); }
-
-
-
-//// this function is used to inform all the controllers attached to a node that an event has occurred
-//// (e.g. the tree controllers need to be informed of blur events so that they can change some of the
-//// menu items back to their default values)
-//function goOnEvent(node, event)
-//{
-//  var numControllers = node.controllers.getControllerCount();
-//  var controller;
-//
-//  for ( var controllerIndex = 0; controllerIndex < numControllers; controllerIndex++ )
-//  {
-//    controller = node.controllers.getControllerAt(controllerIndex);
-//    if ( controller )
-//      controller.onEvent(event);
-//  }
-//}
 
 var msiDialogEditorContentFilterBase = 
 {

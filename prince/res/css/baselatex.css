@@ -37,7 +37,7 @@ verbatim bodyText {
 }
 numberedListItem, 
 bulletListItem,
-descriptionListItem.
+descriptionListItem,
 bibitem {
        margin-left: 2em;
        padding-left: 1em;
@@ -208,15 +208,13 @@ otfont {
   display: inline;
 }
 
-descriptionLabel,
-biblabel,
-bibkey {
+descriptionLabel {
   margin-right: 1em;
   min-width: .5em;
   display: inline;
   border: thin solid #BBBB77;
-  border-radius: 3px;
-  background-color: #FFFFBB;
+/*  border-radius: 3px;
+*/  background-color: #FFFFBB;
 }
 
 numberedLabel {
@@ -230,11 +228,10 @@ bulletLabel {
 }
 
 /* show footnotes by default*/
-note[type="footnote"], node[type="footnote"][hide="false"] {
+note[type="footnote"], note[type="footnote"][hide="false"] {
   display: block;
-  float: left;
-  width: 100%;
-  clear: right;
+  float: none;
+  width: 90%;
   font-size: small;
 }
 
@@ -378,7 +375,8 @@ button[class="msi"]::-moz-selection, button[class="msi"][selected="true"] {
   background-color: blue;
 }
 
-texb, makelof, makelot, maketitle, maketoc, appendix {
+texb, makelof, makelot, maketitle, maketoc, appendix,
+printindex, frontmatter, mainmatter, backmatter {
   font-family: sans-serif;
   font-style: normal;
   -moz-user-select: all;
@@ -469,7 +467,6 @@ bibtexbibliography {
 bibliography {
   list-style-type: none;
   list-style-position: outside;
-
   counter-reset: bibliographylist;
 }
 
@@ -483,13 +480,36 @@ bibitem {
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitem");
 */}
 
-bibitem[hasLabel="true"] {
+
+biblabel {
+  display: inline;
+  font-weight: bold;
+  background-color: rgb(255,255,230);
+  min-width: 1em;
+}
+
+bibkey {
+  display: inline;
+  background-color: rgb(255,230,255);
+  min-width: 1em;
+}
+
+bibkey:before {
+  content: ' (';
+}
+
+bibkey:after {
+  content: ')';
+}
+
+/*bibitem[hasLabel="true"] {
   display:  block;
   counter-increment: none;
-/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitemwithlabel");
-*/}
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitemwithlabel");
+}
+*/
 
-bibitem > biblabel+bodyText {
+bibitem > bibkey+bodyText {
   display: inline;
 }
 
@@ -516,6 +536,7 @@ body[showshort='true'] shortTitle:after {
 
 msiframe {
   display: block;
+  overflow: hidden;
   text-indent: 0;
 }
 

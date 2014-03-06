@@ -36,8 +36,18 @@ table {
   display: inline-table;
 }
 
+table[display="true"] {
+  display: table;
+}
+
 table:focus {
   border-collapse: separate;
+}
+
+caption bodyText {
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
 }
 
 /*table {
@@ -246,27 +256,27 @@ msirule {
   display: inline-block;
 }
 
-msibreak[type="customNewLine"]
+msibr[type="customNewLine"]
 {
 	display: block;
 	width: 2px;
 }
 
-msibreak[type="customNewLine"]:after {
+msibr[type="customNewLine"]:after {
   white-space: pre;
   content: "\A";
   -moz-user-select: -moz-none;
 }
 
-*[showinvis="true"] msibreak {
+*[showinvis="true"] msibr {
 	width: 2px;
 }
 
-*[showinvis="true"] msibreak[type="customNewLine"] {
+*[showinvis="true"] msibr[type="customNewLine"] {
 	background-color: green;
 }
 
-msibreak[type="newPage"]:after {
+msibr[type="newPage"]:after {
   white-space: pre;
   content: "\A";
   -moz-user-select: -moz-none;
@@ -658,17 +668,6 @@ paragraph[nonum="true"]>sectiontitle:before {
   -moz-user-select: -moz-none;
 }
 
-
-frontmatter, mainmatter, backmatter {
-  display: block;
-  position: relative;
-  margin-left: 100px;
-  padding: 10px 0px;
-  border: thin solid black;
-  background-color: #EEE8E0;
-  -moz-border-radius: 10px;
-}
-
 preface {
   display: block;
   margin-top: 30pt;
@@ -706,7 +705,7 @@ button[class="frontmattertag"] {
   -moz-user-focus: none;
 }
 
-*[showfmbuttons="true"] button[class="frontmattertag"] {
+/**[showfmbuttons="true"] */button[class="frontmattertag"] {
   position: absolute;
   left: 5px;
   font-family: sans-serif;
@@ -732,7 +731,7 @@ body {
 
 bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epigraph, title, line,
   dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
-  abstract, address, author, date, title {
+  abstract, address, author, date, title, maketitle {
   -moz-user-select: text;
 }
 
@@ -957,6 +956,22 @@ makelot {
 
 appendix {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#appendix");
+}
+
+printindex {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#printindex");
+}
+
+mainmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#mainmatter");
+}
+
+backmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#backmatter");
+}
+
+frontmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#frontmatter");
 }
 
 line {
@@ -1527,6 +1542,11 @@ alt {
 
 bold {
   font-weight: 700
+}
+
+boldsymbol {
+  font-weight: 700;
+  font-style: italic;
 }
 
 blackboardBold {
