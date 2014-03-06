@@ -161,17 +161,16 @@
       \begin{table}[h]
         </xsl:when>
         <xsl:otherwise>
-          {
+          \begin{center}
         </xsl:otherwise>
       </xsl:choose>
-      \centering
       <xsl:call-template name="buildtable"/>
       <xsl:choose>
         <xsl:when test="html:caption">
       \end{table}
         </xsl:when>
         <xsl:otherwise>
-          }
+          \end{center}
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
