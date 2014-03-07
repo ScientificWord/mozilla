@@ -295,14 +295,14 @@ nsHTMLEditor::SetAllResizersPosition()
   PRInt32 rh =  (PRInt32)((resizerHeight+ 1) / 2);
 
   SetAnonymousElementPosition(x-rw,     y-rh, mTopLeftHandle);
-  SetAnonymousElementPosition(x+w/2-rw, y-rh, mTopHandle);
+  SetAnonymousElementPosition(x+w/2-rw-1, y-rh, mTopHandle);
   SetAnonymousElementPosition(x+w-rw-1, y-rh, mTopRightHandle);
 
   SetAnonymousElementPosition(x-rw,     y+h/2-rh, mLeftHandle);
   SetAnonymousElementPosition(x+w-rw-1, y+h/2-rh, mRightHandle);
 
   SetAnonymousElementPosition(x-rw,     y+h-rh-1, mBottomLeftHandle);
-  SetAnonymousElementPosition(x+w/2-rw, y+h-rh-1, mBottomHandle);
+  SetAnonymousElementPosition(x+w/2-rw-1, y+h-rh-1, mBottomHandle);
   SetAnonymousElementPosition(x+w-rw-1, y+h-rh-1, mBottomRightHandle);
 
   return NS_OK;

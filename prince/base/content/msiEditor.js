@@ -491,7 +491,11 @@ var msiResizeListener =
       case "msiframe":
         this.resizeFrame(anElement, oldWidth, oldHeight, newWidth, newHeight);
         break;
+      case "table":
+        this.resizeFrame(anElement, oldWidth, oldHeight, newWidth, newHeight);
+        break;
       default:
+        msidump("Got resizing request for " + anElement.tagName);
         break;
     }
   },
