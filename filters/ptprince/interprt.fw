@@ -586,11 +586,12 @@ case CMD_MSISPECIAL: {
  <graphSpec ImageFile=\"%ImageFile%\" \
  XAxisLabel=%xaxislabel%\
  YAxisLabel=%yaxislabel%\
- ZAxisLabel=\"z\"\
- Width=\"3\" \
- Height=\"4.5\"\
- Units=\"cm\" XTickCount=\"0\" YTickCount=\"0\" \
- ZTickCount=\"0\" BGColor=\"#FFFFFF\" Dimension=\"2\" \
+ ZAxisLabel=%zaxislabel%\
+ Width=\"%width%\" \
+ Height=\"%height%\"\
+ Units=\"%unit%\" \
+ XTickCount=\"0\" YTickCount=\"0\" ZTickCount=\"0\"\
+ BGColor=\"#FFFFFF\" Dimension=\"2\" \
  AxisFontFamily=\"sans-serif\" AxisFontSize=\"10\" \
  AxisFontColor=\"#000000\"  AxisFontItalic=\"false\" \
  AxisFontBold=\"false\" TicksFontFamily=\"sans-serif\" \
@@ -599,7 +600,10 @@ case CMD_MSISPECIAL: {
  TicksFontBold=\"false\" errStr=\"\" \
  ViewingBoxXMin=\"-6.000000001e0\"\
  ViewingBoxXMax=\"6.000000001e0\" ViewingBoxYMin=\"-9.998181315e-1\"\
- ViewingBoxYMax=\"9.998181315e-1\">\
+ ViewingBoxYMax=\"9.998181315e-1\"\
+ CaptionPlace=\"labelabove\" \
+ EqualScaling=\"false\" AxesTips=\"false\" GridLines=\"false\" \
+ OrthogonalProjection=\"false\" KeepUp=\"false\">\
  <plot xmlns=%mozns% \
  PlotType=\"rectangular\" LineStyle=\"Solid\" PointStyle=\"Dot\" \
  LineThickness=\"thin\" LineColor=\"#000000ff\" DiscAdjust=\"true\"\
@@ -661,6 +665,33 @@ case CMD_MSISPECIAL: {
    } else {
       find_and_replace(result, "%yaxislabel%", "\"y\"");
    } 
+   if (kvmap.find("z-label") != kvmap.end()){
+      find_and_replace(result, "%zaxislabel%", kvmap["z-label"].c_str());
+   } else {
+      find_and_replace(result, "%zaxislabel%", "\"z\"");
+   }
+   std::string unit = "in";
+   if (kvmap.find("width") != kvmap.end()){
+      std::string dim = kvmap["width"];
+      int unitPos = dim.find_first_not_of("0123456789.");
+      unit = dim.substr(unitPos);
+      std::string width = dim.substr(0,unitPos);
+      find_and_replace(result, "%unit%", unit.c_str());
+      find_and_replace(result, "%width%", width.c_str());
+   } else {
+      find_and_replace(result, "%width%", "3");
+   }
+
+   if (kvmap.find("height") != kvmap.end()){
+      std::string dim = kvmap["height"];
+      int unitPos = dim.find_first_not_of("0123456789.");
+      unit = dim.substr(unitPos);
+      std::string height = dim.substr(0,unitPos);
+      find_and_replace(result, "%unit%", unit.c_str());
+      find_and_replace(result, "%height%", height.c_str());
+   } else {
+      find_and_replace(result, "%height%", "3");
+   }
    
 
    Typesetter::AppendTag(result.c_str()) ;
