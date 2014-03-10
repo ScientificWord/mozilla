@@ -23,10 +23,135 @@
 \def\msimakecss{
    \def\css{2}	  % the css output file
    \openout\css={css/my.css} %% the CSS style file for this document
+   \write\css{@import url("resource://app/res/css/latex_internal.css");}
    \write\css{@import url("resource://app/res/css/baselatex.css");}
    \write\css{@import url("resource://app/res/css/latex.css");}
-   \write\css{\classcss}
+   \ifx\classcss\@empty
+     \write\css{@import url("resource://app/res/css/article.css");}
+   \else
+     \write\css{\classcss}
+   \fi
    \write\css{\newtheorems}
+   \write\css{body{}}
+
+   \write\css{sectiontitle{}}
+   \write\css{part>sectiontitle{}}
+   \write\css{part>sectiontitle:before{}}
+   \write\css{chapter>sectiontitle{}}
+   \write\css{chapter>sectiontitle:before{}}
+   \write\css{section>sectiontitle{}}  
+   \write\css{section>sectiontitle:before{}}
+   \write\css{subsection>sectiontitle{}}
+   \write\css{subsection>sectiontitle:before{}}
+   \write\css{subsubsection>sectiontitle{}}
+   \write\css{subsubsection>sectiontitle:before{}}
+   \write\css{paragraph>sectiontitle{}}
+   \write\css{paragraph>sectiontitle:before{}}
+   \write\css{bodyMath{}}
+   \write\css{bodyText{}}
+   \write\css{caption{}}
+   \write\css{epigraph{}}
+   \write\css{flushleft{}}
+   \write\css{flushright{}}
+   \write\css{frontmatter{}}
+   \write\css{longQuotation{}}
+   \write\css{plotcaption{}}
+   \write\css{preface{}}
+   \write\css{rtlBodyText{}}
+   \write\css{shortQuote{}}
+   \write\css{table{}}
+   \write\css{verbatim{}}
+   \write\css{blackboardBold{}}
+   \write\css{bold{}}
+   \write\css{calligraphic{}}
+   \write\css{emphasized{}}
+   \write\css{footnotesize{}}
+   \write\css{fraktur{}}
+   \write\css{Huge{}}
+   \write\css{huge{}}
+   \write\css{italics{}}
+   \write\css{LARGE{}}
+   \write\css{Large{}}
+   \write\css{large{}}
+   \write\css{phantom{}}
+   \write\css{pre{}}
+   \write\css{roman{}}
+   \write\css{rtl{}}
+   \write\css{sansSerif{}}
+   \write\css{scriptsize{}}
+   \write\css{slanted{}}
+   \write\css{smallCaps{}}
+   \write\css{small{}}
+   \write\css{tiny{}}
+   \write\css{typewriter{}}
+   \write\css{bulletlist bulletlistItem{}}
+   \write\css{bulletlist bulletlist bulletlistItem{}}
+   \write\css{bulletlist bulletlist bulletlist bulletlistItem{}}
+   \write\css{bulletlist bulletlist bulletlist bulletlist bulletlistItem{}}
+   \write\css{numberedlist numberedlistItem{}}
+   \write\css{numberedlist numberedlist numberedlistItem{}}
+   \write\css{numberedlist numberedlist numberedlist numberedlistItem{}}
+   \write\css{numberedlist numberedlist numberedlist numberedlist bulletlistItem{}}
+   \write\css{numberedlist numberedlistItem:before{}}
+   \write\css{numberedlist numberedlist numberedlistItem:before{}}
+   \write\css{numberedlist numberedlist numberedlist numberedlistItem:before{}}
+   \write\css{numberedlist numberedlist numberedlist numberedlist numberedlistItem:before{}}
+   \write\css{address{}}
+   \write\css{author{}}
+   \write\css{date{}}
+   \write\css{title{}}
+   \write\css{acknowledgement{}}  
+   \write\css{algorithm{}}
+   \write\css{assertion{}}
+   \write\css{assumption{}}
+   \write\css{axiom{}}
+   \write\css{case{}}
+   \write\css{claim{}}
+   \write\css{conclusion{}}
+   \write\css{condition{}}
+   \write\css{conjecture{}}
+   \write\css{corollary{}}
+   \write\css{criterion{}}
+   \write\css{definition{}}
+   \write\css{example{}}
+   \write\css{exercise{}}
+   \write\css{hypothesis{}}
+   \write\css{lemma{}}
+   \write\css{notation{}}
+   \write\css{problem{}}
+   \write\css{proof{}}
+   \write\css{property{}}
+   \write\css{proposition{}}
+   \write\css{question{}}
+   \write\css{remark{}}
+   \write\css{summary{}}
+   \write\css{theorem{}}
+   \write\css{acknowledgement>*:first-child:before{}}  
+   \write\css{algorithm>*:first-child:before{}}
+   \write\css{assertion>*:first-child:before{}}
+   \write\css{assumption>*:first-child:before{}}
+   \write\css{axiom>*:first-child:before{}}
+   \write\css{case>*:first-child:before{}}
+   \write\css{claim>*:first-child:before{}}
+   \write\css{conclusion>*:first-child:before{}}
+   \write\css{condition>*:first-child:before{}}
+   \write\css{conjecture>*:first-child:before{}}
+   \write\css{corollary>*:first-child:before{}}
+   \write\css{criterion>*:first-child:before{}}
+   \write\css{definition>*:first-child:before{}}
+   \write\css{example>*:first-child:before{}}
+   \write\css{exercise>*:first-child:before{}}
+   \write\css{hypothesis>*:first-child:before{}}
+   \write\css{lemma>*:first-child:before{}}
+   \write\css{notation>*:first-child:before{}}
+   \write\css{problem>*:first-child:before{}}
+   \write\css{proof>*:first-child:before{}}
+   \write\css{property>*:first-child:before{}}
+   \write\css{proposition>*:first-child:before{}}
+   \write\css{question>*:first-child:before{}}
+   \write\css{remark>*:first-child:before{}}
+   \write\css{summary>*:first-child:before{}}
+   \write\css{theorem>*:first-child:before{}}
    \closeout\css
 }
 
