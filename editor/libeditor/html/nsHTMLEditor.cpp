@@ -7263,6 +7263,10 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
       _retval.Append(*(charMap->StringAt((int)(*cur) - 160)));
       }
     else switch ((int)(*cur)) {
+      case 0x01CD : 
+         _retval.Append(NS_LITERAL_STRING("\\v{A}")); break;
+      case 0x0226 :
+         _retval.Append(NS_LITERAL_STRING("\\.{A}")); break;
       case 0x03BC :
         _retval.Append(NS_LITERAL_STRING("$\\mu$")); break;
       case 0x03A9 :
