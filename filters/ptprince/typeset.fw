@@ -733,7 +733,7 @@ void Typesetter::EndDisplay()
          std::string str;
          str += "<msidisplay";
          if (!s_equation){
-           str += " numbering=\"none\" ";
+           str += " numbering=\"eqns\" ";
          }
          if (customLabel != ""){
            str += " customLabel=\"";
