@@ -217,6 +217,7 @@ nsEditorUtils::IsDescendantOf(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 *a
   
   do
   {
+    if (!node) return PR_FALSE; // jcs
     res = node->GetParentNode(getter_AddRefs(parent));
     if (NS_FAILED(res)) return PR_FALSE;
     if (parent == aParent) 
