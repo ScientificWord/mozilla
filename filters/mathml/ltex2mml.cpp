@@ -2560,7 +2560,8 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       case 87  :        // 
       case 88  :        // \pmb
       case 89  :
-      case 91  :        // \boldsymbol{}
+      case 91  :
+      case 96  :        // \boldsymbol{}
       case 459 : {      // \emph{}
         U8 zuID[16];
 	    U16 uID =  ( subclass == 459 ) ? 2 : 1;
@@ -9214,6 +9215,7 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
         TCI_ASSERT(0);
       break;
       case 91 :
+      case 96 :
         in_mml_grammar  =  TRUE;
         mathvariant =  (U8*)"bold-italic";
 	  break;
