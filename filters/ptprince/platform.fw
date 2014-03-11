@@ -813,7 +813,7 @@ void SplitFilename(FilenameData* pfd){
    if (!pfd -> m_bSplit) {
       const std::string& str = pfd -> m_strFullName;
       int len = str.length();
-      ASSERT(len > 0);
+      //ASSERT(len > 0);
       int name_pos;
       int name_len;
 
