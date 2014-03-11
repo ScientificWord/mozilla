@@ -1274,7 +1274,7 @@ acknowledgment, case, claim, conclusion, notation, remark, summary {
   counter-increment: theorem;
 }
 
-acknowledgment > sectiontitle:first-child::before {
+ acknowledgment > sectiontitle:first-child::before {
   content: 'Acknowledgment ' counter(section) "." counter(theorem) ' ';
   -moz-user-modify: read-only;
 }
@@ -1490,6 +1490,72 @@ texnote[leadInType="custom"], solution[leadInType="custom"] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
 }
 */
+
+/* Additional theorem-like environments that are used in shells */
+acknowledgement, convention, observation
+{
+  display: block;
+  font-style: normal;
+  counter-increment: theorem;
+}
+
+acknowledgement > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
+acknowledgement > sectiontitle:first-child::before {
+  content: 'Acknowledgement ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+acknowledgement[numbering="none"] > sectiontitle:first-child::before {
+  content: 'Acknowledgement ';
+  -moz-user-modify: read-only;
+}
+
+convention > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
+convention > sectiontitle:first-child::before {
+  content: 'Convention ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+convention[numbering="none"] > sectiontitle:first-child::before {
+  content: 'Convention ';
+  -moz-user-modify: read-only;
+}
+
+observation > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
+observation > sectiontitle:first-child::before {
+  content: 'Observation ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+observation[numbering="none"] > sectiontitle:first-child::before {
+  content: 'Observation ';
+  -moz-user-modify: read-only;
+}
+
+acknowledgement[leadInType="custom"],
+convention[leadInType="custom"],
+observation[leadInType="custom"]
+{
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
+}
+
+acknowledgement > envLeadIn,
+convention > envLeadIn,
+observation > envLeadIn
+{
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremLeadin");
+}
+
+acknowledgement[numbering="none"],
+convention[numbering="none"],
+observation[numbering="none"] {
+  counter-increment: none;
+}
+
+acknowledgement > envLeadIn+bodyText,
+convention > envLeadIn+bodyText,
+observation > envLeadIn+bodyText {
+  display: inline;
+}
+
+
 
 rawTeX {
  color: #6600cc;
