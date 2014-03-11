@@ -2359,6 +2359,124 @@ nsresult msiUtils::GetNumberofChildren(nsIDOMNode * node,
   return res;
 }  
 
+
+nsresult
+MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
+  nsresult res = NS_OK;
+  nsCOMPtr<nsIDOMNodeList> childNodes;
+  nsAutoString tagName;
+  PRBool isTemp;
+  res = left->GetChildNodes(getter_AddRefs(childNodes));
+  PRUint32 offset;
+  PRInt32 selStartOffset;
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  nsCOMPtr<nsIDOMNode> ignored;
+  nsCOMPtr<nsIDOMElement> el;
+  PRInt32 selEndOffset;
+  nsCOMPtr<nsIDOMNode> selEndNode;
+  childNodes->GetLength(&offset);
+  nsEditor * realEditor = static_cast<nsEditor*>(editor);
+  if (!realEditor) return NS_ERROR_FAILURE;
+  nsCOMPtr<nsISelection> sel;
+  res = realEditor->GetSelection(getter_AddRefs(sel));
+
+  nsCOMPtr<nsIDOMNode> child;
+  right->GetFirstChild(getter_AddRefs(child));
+  while (child)
+  {
+    child->GetLocalName(tagName);
+    if (tagName.EqualsLiteral("mi")) {
+      el = do_QueryInterface(child);
+      res = el->HasAttribute(NS_LITERAL_STRING("tempinput"), &isTemp);
+      if (!isTemp) {
+        res = realEditor->MoveNode(child, left, offset);
+        offset++;
+      } else
+      {
+        // throw away temp input box
+        res = msiUtils::RemoveChildNode(right, 0, ignored);
+        sel->Collapse(left, offset);
+      }
+    }
+    else {
+      res = realEditor->MoveNode(child, left, offset);
+      offset++;
+    }
+
+    if (NS_FAILED(res)) return res;
+    right->GetFirstChild(getter_AddRefs(child));
+  }
+  // The selection needs updating only if one of the nodes is *right 
+  res = realEditor->GetStartNodeAndOffset(sel, getter_AddRefs(selStartNode), &selStartOffset);
+  if (selStartNode == right) {
+    sel->Collapse(left, selStartOffset + offset);
+  }
+  res = realEditor->GetEndNodeAndOffset(sel, getter_AddRefs(selEndNode), &selEndOffset);
+  if (selEndNode == right) {
+    sel->Extend(left, selEndOffset + offset);
+  }
+  realEditor->DeleteNode(right);
+  return NS_OK;
+}
+
+nsresult
+msiUtils::MergeMathTags(nsIDOMNode * node, PRBool pLookLeft, PRBool pLookRight, nsIEditor * editor)  // If the node is within mathematics, go up to the math
+// node and check to see if it is adjacent to (except for white-space text nodes) another math node. If so,
+// merge the nodes. Also if the selection is in text but between two math nodes which are adjacent except 
+// for white-space text nodes, merge those math nodes also.
+{
+  nsCOMPtr<nsIDOMNode> mathParent;
+  nsCOMPtr<nsIDOMNode> siblingNode;
+  PRUint16 nodetype;
+  nsAutoString nodeName;
+
+  nsresult res;
+  res = GetMathParent(node, mathParent);
+  if (mathParent && pLookLeft) {
+    // check to the left
+    res = mathParent->GetPreviousSibling(getter_AddRefs(siblingNode));
+    while (siblingNode != nsnull) {
+      res = siblingNode->GetNodeType(&nodetype);
+      if (nodetype == nsIDOMNode::TEXT_NODE)
+      {
+        if (!IsWhitespace(siblingNode)) {
+          return NS_OK;
+        }
+      }
+      else if (nodetype = nsIDOMNode::ELEMENT_NODE) {
+        res = siblingNode->GetLocalName(nodeName);
+        if (nodeName.EqualsLiteral("math")) {
+          res = MergeMath(siblingNode, mathParent, editor);
+          return NS_OK;
+        }
+        return NS_OK;
+      }
+      // The only possibility for looping again is that siblingNode is a white-space text node
+      res = siblingNode->GetPreviousSibling(getter_AddRefs(siblingNode));
+    }
+  }
+  if (mathParent && pLookRight) {
+    res = mathParent->GetNextSibling(getter_AddRefs(siblingNode));
+    while (siblingNode != nsnull) {
+      res = siblingNode->GetNodeType(&nodetype);
+      if (nodetype == nsIDOMNode::TEXT_NODE)
+      {
+        if (!IsWhitespace(siblingNode)) return NS_OK;
+      }
+      else if (nodetype = nsIDOMNode::ELEMENT_NODE) {
+        res = siblingNode->GetLocalName(nodeName);
+        if (nodeName.EqualsLiteral("math")) {
+          MergeMath(mathParent, siblingNode, editor);
+          return NS_OK;
+        }
+        return NS_OK;
+      }
+      res = siblingNode->GetNextSibling(getter_AddRefs(siblingNode));
+    }
+  }
+}
+
+
 nsresult msiUtils::GetRightMostCaretPosition(nsIEditor* editor,
                                              nsIDOMNode * node,
                                              PRUint32  & number)

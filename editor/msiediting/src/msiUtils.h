@@ -368,6 +368,8 @@ public:
   static nsresult GetMathParent(nsIDOMNode * node,
                                 nsCOMPtr<nsIDOMNode> & mathParent);
 
+  static nsresult MergeMathTags(nsIDOMNode * node, PRBool pLookLeft, PRBool pLookRight, nsIEditor * editor);
+
   static nsresult GetTableCell(nsIEditor* editor,
                                nsIDOMNode * node,
                                nsCOMPtr<nsIDOMNode> & mtdCell);
