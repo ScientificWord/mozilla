@@ -845,7 +845,7 @@ _MINIBUCKET_BUCKET(5.492.4,TEXT,,,\end{minipage},)
 \mathbf<uID5.82.0>!\mathbf!REQPARAM(5.82.1,MATH)
 ;; \boldsymbol is NOT the same as \mathbf - quick and dirty imp here
 ;; really it is MATH only
-\boldsymbol<uID5.82.0>!\boldsymbol!REQPARAM(5.82.1,MATH)
+\boldsymbol<uID5.96.0>!\boldsymbol!REQPARAM(5.96.1,MATH)
 \mathsf<uID5.83.0>!\mathsf!REQPARAM(5.83.1,MATH)
 \mathtt<uID5.84.0>!\mathtt!REQPARAM(5.84.1,MATH)
 \mathnormal<uID5.85.0>!\mathnormal!REQPARAM(5.85.1,MATH)
