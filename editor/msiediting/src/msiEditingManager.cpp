@@ -731,6 +731,14 @@ msiEditingManager::InsertMath(nsIEditor * editor,
             offset++;
             res = htmlEditor->InsertNodeAtPoint(right,(nsIDOMNode **)address_of(parent), (PRInt32*)&offset, true);
           }
+          if (editor) {
+            mathNode = do_QueryInterface(mathElement);
+            if (mathNode) {
+              msiUtils::MergeMathTags(mathNode, PR_TRUE, PR_FALSE, editor);
+              msiUtils::MergeMathTags(mathNode, PR_FALSE, PR_TRUE, editor);
+            }
+          }
+
           if (NS_SUCCEEDED(res))
             msiUtils::doSetCaretPosition(editor, selection, mathNode);
         }
