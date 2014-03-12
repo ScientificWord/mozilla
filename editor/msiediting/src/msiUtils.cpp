@@ -25,6 +25,7 @@
 
 
 #include "msiUtils.h"
+#include "nsEditor.h"
 #include "msiIMMLEditDefines.h"
 #include "msiIMathMLInsertion.h"
 #include "msiIMathMLEditingBC.h"
