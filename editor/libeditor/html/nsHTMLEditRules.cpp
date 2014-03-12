@@ -3902,6 +3902,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   hackSelectionCorrection(mHTMLEditor, startNode, startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
+  msiUtils::MergeMathTags(startNode, PR_TRUE, PR_TRUE, ed);
 
   // See if we're in math
 
