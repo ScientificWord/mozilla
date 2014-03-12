@@ -41,6 +41,9 @@
 #define OPF_infix       2
 #define OPF_postfix     3
 
+
+char* uIDToString(U16 usub);
+
 const char *zop_forms[] = {
 "multiform",
 "prefix",
@@ -5024,6 +5027,7 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 // _LISTOFROWS_LIST(5.35.9,_MTROW_,5.35.10,,/mtable,)
 
   mml_rv  =  CreateElemWithBucketAndContents( 5,35,0,9,NULL );
+  SetNodeAttrib( mml_rv, (U8*)"type", (U8*)uIDToString(usubtype));
   if ( found_spacer )
     SetNodeAttrib( mml_rv,(U8*)"rowspacing",row_spacing_vals );
 
@@ -17084,7 +17088,29 @@ TNODE* LaTeX2MMLTree::AddNumberToEquation( TNODE* mml_equation ) {
   return mml_rv;
 }
 
-
+char* uIDToString(U16 usub){
+  switch (usub) {
+     case TENV_eqnarray  : return "eqnarray";
+	   case 123            : return "align";
+	   case 125            : return "alignat";
+	   case 127            : return "xalignat";
+	   case 131            : return "gather";
+	   case 133            : return "multline";
+	   case 124            : return "align*";
+	   case 126            : return "alignat*";
+	   case 128            : return "xalignat*";
+	   case 130            : return "xxalignat*";
+	   case 132            : return "gather*";
+	   case 134            : return "multline*";
+	   case TENV_eqnarraystar  :  return "eqnarray*";
+	   case 129            : return "xxalignat";
+	   case TENV_split     : return "split";
+	   case TENV_gathered  : return "gathered";
+     case TENV_aligned   : return "alinged";
+     case TENV_alignedat : return "alignedat";
+   }
+   return "unknown";
+}
 // Does an environment for markup of a multiline MATH display
 //  automatically call for numbering of its lines using "theequation"?
 // Generally, lines in first level, un-starred eqnarrays are
