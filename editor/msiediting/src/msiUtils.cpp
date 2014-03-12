@@ -2376,11 +2376,14 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
   PRInt32 selEndOffset;
   nsCOMPtr<nsIDOMNode> selEndNode;
   childNodes->GetLength(&offset);
+  offset--;
   nsEditor * realEditor = static_cast<nsEditor*>(editor);
   if (!realEditor) return NS_ERROR_FAILURE;
   nsCOMPtr<nsISelection> sel;
   res = realEditor->GetSelection(getter_AddRefs(sel));
-
+  PRBool shouldSetSelection;
+  res = realEditor->ShouldTxnSetSelection(&shouldSetSelection);
+  res = realEditor->SetShouldTxnSetSelection(PR_FALSE);
   nsCOMPtr<nsIDOMNode> child;
   right->GetFirstChild(getter_AddRefs(child));
   while (child)
@@ -2390,8 +2393,8 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
       el = do_QueryInterface(child);
       res = el->HasAttribute(NS_LITERAL_STRING("tempinput"), &isTemp);
       if (!isTemp) {
-        res = realEditor->MoveNode(child, left, offset);
         offset++;
+        res = realEditor->MoveNode(child, left, offset);
       } else
       {
         // throw away temp input box
@@ -2400,13 +2403,15 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
       }
     }
     else {
-      res = realEditor->MoveNode(child, left, offset);
       offset++;
+      res = realEditor->MoveNode(child, left, offset);
     }
 
     if (NS_FAILED(res)) return res;
     right->GetFirstChild(getter_AddRefs(child));
   }
+  res = realEditor->SetShouldTxnSetSelection(shouldSetSelection);
+
   // The selection needs updating only if one of the nodes is *right 
   res = realEditor->GetStartNodeAndOffset(sel, getter_AddRefs(selStartNode), &selStartOffset);
   if (selStartNode == right) {
@@ -2421,19 +2426,50 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
 }
 
 nsresult
-msiUtils::MergeMathTags(nsIDOMNode * node, PRBool pLookLeft, PRBool pLookRight, nsIEditor * editor)  // If the node is within mathematics, go up to the math
+msiUtils::MergeMathTags(nsIDOMNode * node, PRBool lookLeft, PRBool lookRight, nsIEditor * editor)  // If the node is within mathematics, go up to the math
 // node and check to see if it is adjacent to (except for white-space text nodes) another math node. If so,
 // merge the nodes. Also if the selection is in text but between two math nodes which are adjacent except 
 // for white-space text nodes, merge those math nodes also.
 {
   nsCOMPtr<nsIDOMNode> mathParent;
   nsCOMPtr<nsIDOMNode> siblingNode;
+  nsCOMPtr<nsISelection> sel;
   PRUint16 nodetype;
   nsAutoString nodeName;
+  PRBool done;
 
   nsresult res;
   res = GetMathParent(node, mathParent);
-  if (mathParent && pLookLeft) {
+  if (!mathParent) {
+    done = PR_FALSE;
+    // possibly the cursor is between two math modes, as is the case after a deletion.
+    // Check to see if there is math to the right
+    res = node->GetNextSibling(getter_AddRefs(siblingNode));
+    while (siblingNode != nsnull && !done) {
+      res = siblingNode->GetNodeType(&nodetype);
+      if (nodetype == nsIDOMNode::TEXT_NODE)
+      {
+        if (!IsWhitespace(siblingNode)) {
+          return NS_OK;
+        }
+      }
+      else if (nodetype = nsIDOMNode::ELEMENT_NODE) {
+        res = siblingNode->GetLocalName(nodeName);
+        if (nodeName.EqualsLiteral("math")) {
+          done = PR_TRUE;
+          mathParent = siblingNode;
+          lookLeft = PR_TRUE;
+          lookRight = PR_FALSE;
+          res = editor->GetSelection(getter_AddRefs(sel));
+          sel->Collapse(mathParent, 0);
+        }
+        else return NS_OK;
+      }
+      // The only possibility for looping again is that siblingNode is a white-space text node
+      if (!done) res = siblingNode->GetNextSibling(getter_AddRefs(siblingNode));
+    }
+  }
+  if (mathParent && lookLeft) {
     // check to the left
     res = mathParent->GetPreviousSibling(getter_AddRefs(siblingNode));
     while (siblingNode != nsnull) {
@@ -2456,7 +2492,7 @@ msiUtils::MergeMathTags(nsIDOMNode * node, PRBool pLookLeft, PRBool pLookRight, 
       res = siblingNode->GetPreviousSibling(getter_AddRefs(siblingNode));
     }
   }
-  if (mathParent && pLookRight) {
+  if (mathParent && lookRight) {
     res = mathParent->GetNextSibling(getter_AddRefs(siblingNode));
     while (siblingNode != nsnull) {
       res = siblingNode->GetNodeType(&nodetype);
