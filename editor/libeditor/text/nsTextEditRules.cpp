@@ -40,6 +40,7 @@
 #include "nsEditor.h"
 #include "nsTextEditUtils.h"
 #include "nsCRT.h"
+#include "msiUtils.h"
 
 #include "nsCOMPtr.h"
 #include "nsIServiceManager.h"
@@ -1060,8 +1061,8 @@ nsTextEditRules::DidDeleteSelection(nsISelection *aSelection,
     if (selPriv) res = selPriv->SetInterlinePosition(PR_TRUE);
   }
   // Check that the cursor is in a place that can accept text.
-  nsCOMPtr<nsIEditor> editor = static_cast<nsEditor*>(mEditor);
   PRBool retval;
+  nsCOMPtr<nsIEditor> editor = static_cast<nsEditor*>(mEditor);
   retval = nsEditorUtils::JiggleCursor(editor, aSelection, aCollapsedAction);
   if (retval) res = NS_OK;
 
