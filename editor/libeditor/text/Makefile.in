@@ -82,5 +82,7 @@ FORCE_STATIC_LIB = 1
 
 include $(topsrcdir)/config/rules.mk
 
-INCLUDES        += -I$(topsrcdir)/editor/libeditor/base
+INCLUDES        += -I$(topsrcdir)/editor/libeditor/base \
+					-I$(topsrcdir)/editor/msiediting/src \
+					$(NULL)
 
