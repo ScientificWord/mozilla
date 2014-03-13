@@ -829,6 +829,11 @@ msidisplay[numbering="eqns"] mtable[type="eqnarray"]>mtr {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrownumbered");
 }
 
+msidisplay[numbering="eqns"] mtable[type="align"]>mtr {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrownumbered");
+}
+
+
 msidisplay mtable[type="eqnarray"]>mtr[numbering="none"] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowbase");
 }
