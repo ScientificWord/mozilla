@@ -5017,7 +5017,7 @@
 \def\glossary{\@bsphack\begingroup\@sanitize\@index}
 
 
-\def\bibitem{\@ifnextchar[{\@lbibitem}{\begingroup\attrib@text\@bibitem}}
+\def\bibitem{\@ifnextchar[{\begingroup\attrib@text\@lbibitem}{\begingroup\attrib@text\@bibitem}}
 
 \def\@lbibitem[#1]#2{%
    \toks200{#1}%

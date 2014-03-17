@@ -2041,10 +2041,10 @@
 \def\msidefaultb#1{%
     \msihmode
     \ifnum\msi@inpreamble=1
-      \temptoksa={<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
-      \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
-      \msiopentag{texb}{}%
-      \msitopreambleextra{<![CDATA[}
+      %%% \temptoksa={<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
+      %%% \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
+      %%% \msiopentag{texb}{}%
+      %%% \msitopreambleextra{<![CDATA[}
       \expandafter\temptoksa\expandafter{\csname#1\endcsname}
       \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
     \else
@@ -2055,8 +2055,8 @@
 
 \def\@endtexb{% 
     \ifnum\msi@inpreamble=1
-       \msitopreambleextra{]]></texb>}
-       \msiclosetag{texb}{}
+       %%% \msitopreambleextra{]]></texb>}
+       %%% \msiclosetag{texb}{}
     \else
          \msitag{]]>}%
          \msiclosetag{texb}{</texb>}%
