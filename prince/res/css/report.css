@@ -443,3 +443,181 @@ img {
 }
 
 
+/*****************************/
+/* Theorem-like environments */
+/*****************************/
+
+theorem > *:first-child:before {
+  content: 'Theorem ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+acknowledgement > *:first-child:before {
+  content: 'Acknowledgement ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+acknowledgment > *:first-child:before {
+  content: 'Acknowledgment ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+algorithm > *:first-child:before {
+  content: 'Algorithm ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+assertion > *:first-child:before {
+  content: 'Assertion ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+assumption > *:first-child:before {
+  content: 'Assumption ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+axiom > *:first-child:before {
+  content: 'Axiom ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+case > *:first-child:before {
+  content: 'Case ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+claim > *:first-child:before {
+  content: 'Claim ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+conclusion > *:first-child:before {
+  content: 'Conclusion ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+condition > *:first-child:before {
+  content: 'Condition ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+conjecture > *:first-child:before {
+  content: 'Conjecture ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+convention > *:first-child:before {
+  content: 'Convention ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+corollary > *:first-child:before {
+  content: 'Corollary ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+criterion > *:first-child:before {
+  content: 'Criterion ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+definition > *:first-child:before {
+  content: 'Definition ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+example > *:first-child:before {
+  content: 'Example ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+exercise > *:first-child:before {
+  content: 'Exercise ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+hypothesis > *:first-child:before {
+  content: 'Hypothesis ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+lemma > *:first-child:before {
+  content: 'Lemma ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+notation > *:first-child:before {
+  content: 'Notation ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+observation > *:first-child:before {
+  content: 'Observation ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+problem > *:first-child:before {
+  content: 'Problem ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+property > *:first-child:before {
+  content: 'Property ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+proposition > *:first-child:before {
+  content: 'Proposition ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+question > *:first-child:before {
+  content: 'Question ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+remark > *:first-child:before {
+  content: 'Remark ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+solution > *:first-child:before {
+  content: 'Solution ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+summary > *:first-child:before {
+  content: 'Summary ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
