@@ -153,7 +153,7 @@
         <LaTeX-env>
           <xsl:choose>
             <xsl:when test="@type!=''>
-              <xsl:value-of select="@type">
+              <xsl:value-of select="@type"/>
             </xsl:when>
             <xsl:when test="$theAlignment='alignCentered'">
               <xsl:text>gather</xsl:text>
