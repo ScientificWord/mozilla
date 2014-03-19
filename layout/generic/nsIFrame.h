@@ -606,6 +606,7 @@ public:
   NS_IMETHOD MoveLeftAtDocStart(nsISelection * sel) = 0;
   NS_IMETHOD MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index) = 0;
   NS_IMETHOD MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index) = 0;
+  NS_IMETHOD FrameJiggleCursor(PRBool fForward) = 0;
   /**
    * Get the style context associated with this frame.
    *
