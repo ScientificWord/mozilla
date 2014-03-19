@@ -110,32 +110,24 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
         }
       } 
     }
-//    else if (IsDisplayFrame(pParent, count))
-//    {
-//      *aOutFrame = GetSignificantParent(pParent);
-//      pContent = (*aOutFrame)->GetContent();
-//      *aOutOffset = 1+pContent->IndexOf(pParent->GetContent());
-//    }
     else
-    {
-      *aOutFrame = GetFirstTextFramePastFrame(pFrame);
-      *aOutOffset = count;
-      if (*aOutFrame == nsnull)
-      {
-        count = 0;
-        pFrame->MoveRightAtDocEnd( nsnull );
+    { 
+      count = 0;
+
+      pSiblingFrame = pFrame->GetNextSibling();
+      if (pSiblingFrame) {
+        *aOutFrame = pSiblingFrame;
+        *aOutOffset = 0;
       }
-//	    pParent = GetSignificantParent(pFrame);
-//	    *aOutFrame = pParent;
-//			(*aOutOffset) = 1;
-//			pChild = pParent->GetFirstChild(nsnull);
-//			while (pChild && pChild != pFrame)
-//			{
-//				pChild = pChild->GetNextSibling();
-//				(*aOutOffset)++;
-//			}
+      else
+      {
+        *aOutFrame = GetFirstTextFramePastFrame(pFrame);
+        *aOutOffset = count;
+        if (*aOutFrame == nsnull) {
+          pFrame->MoveRightAtDocEnd( nsnull );
+        }
+      }
     }
-//    (*paPos)->mMath = PR_TRUE;
   }
   return PR_TRUE;
 }
@@ -144,6 +136,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
 {
   nsIFrame * pChild;
   nsIFrame * pParent;
+  nsIFrame * pSiblingFrame;
   nsCOMPtr<nsIContent> pContent;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
 
@@ -173,34 +166,26 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   }
   else // don't put the cursor inside the tag
   {
-    pParent = GetSignificantParent(pFrame);
-    pContent = pParent->GetContent();
-    if (count == 0)
-    {
-      pParent = GetSignificantParent(pFrame);
-      pContent = pParent->GetContent();
-      *aOutOffset = pContent->IndexOf(pFrame->GetContent());
-      *aOutFrame = pParent;
+    count = 0;
+
+    pSiblingFrame = pFrame->GetPrevSibling();
+    if (pSiblingFrame) {
+      *aOutFrame = pSiblingFrame;
+      *aOutOffset = 0;
     }
     else
     {
       pChild = GetLastTextFrameBeforeFrame(pFrame);
-      *aOutFrame = pChild;
       if (pChild)
       {
-       nsIAtom*  frameType = pChild->GetType();
-       if (nsGkAtoms::textFrame == frameType)
-         *aOutOffset = (pChild->GetContent())->TextLength() - count;
-       else
-         *aOutOffset = 0;
+        nsIAtom*  frameType = pChild->GetType();
+        if (nsGkAtoms::textFrame == frameType)
+          *aOutOffset = (pChild->GetContent())->TextLength() - count;
+        else
+          *aOutOffset = 0;
       }
       else
-      {
-        count = 0;
-
-          
-          return pFrame->MoveLeftAtDocStart( nsnull);
-      }
+        pFrame->MoveLeftAtDocStart( nsnull);
     }
   }
   return PR_TRUE;
