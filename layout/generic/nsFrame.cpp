@@ -4909,8 +4909,8 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
       if (pMathCM) pMathCM->EnterFromLeft(nsnull, current, offset, count, fBailing, &count);
       return (count == 0);
     }
-    else {
-      pMathCM =  do_QueryInterface(pBefore);
+    else { // ran off the end. Leave the parent node (*current)
+      pMathCM =  do_QueryInterface(*current); 
       if (pMathCM) pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
       return (count == 0);
     }
@@ -4947,8 +4947,8 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
   if (aPos->mMath){
       offset = aPos->mStartOffset; // we do it differently for math -- BBM
       math = PR_TRUE;
-    }
-    else
+  }
+  else
   {
     // Translate content offset to be relative to frame
     offset = aPos->mStartOffset - range.start;
@@ -5000,7 +5000,7 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
                                            &current, &offset, &jumpedLine, &math, &fBailing);
           if (fBailing)
             done = PR_TRUE;
-
+//
           if (NS_FAILED(result))
             return result;
 
@@ -8295,4 +8295,24 @@ nsFrame::MoveRightAtDocEnd(nsISelection * selection)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsFrame::FrameJiggleCursor(PRBool fForward)
+{
+  nsresult res;
+  nsCOMPtr<nsISelection> sel;
+  nsPresContext* presContext = PresContext();
+  nsIPresShell *shell = presContext->GetPresShell();
+  nsCOMPtr<nsISupports> container = presContext->GetContainer();
+  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  PRBool isEditable;
+  PRBool fTakesText = PR_FALSE;
+  if (!editorDocShell ||
+      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
+    return NS_ERROR_FAILURE;
 
+  nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  editor->GetSelection(getter_AddRefs(sel));
+  return nsEditorUtils::JiggleCursor(editor, sel, fForward? nsIEditor::eNext: nsIEditor::ePrevious);
+}
