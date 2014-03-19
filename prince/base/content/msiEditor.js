@@ -1357,7 +1357,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
         docurlstring = prefs.getCharPref("swp.defaultShell");
         // docurlstring is *relative* to the shells directory.
         if (docurlstring.length == 0)
-          docurlstring = "Articles/Standard_LaTeX_Article.sci";
+          docurlstring = "-Standard_LaTeX/Standard_LaTeX_Article.sci";
         var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
         var doc = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
         doc.append("shells");
