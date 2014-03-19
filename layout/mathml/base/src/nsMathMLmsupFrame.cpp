@@ -331,12 +331,13 @@ nsMathMLmsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
 	  // leavingFrame is the superscript. We are leaving the structure.
 		nsIFrame * pTempFrame;
 		pTempFrame = GetParent();
-		count = 0;
+    count = 0;
+    PlaceCursorAfter( this, PR_FALSE, aOutFrame, aOutOffset, count);
     *_retval = 0;
-	  pMCM = do_QueryInterface(pTempFrame);
-	  if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-		// there is no "else" because this frame has to be inside a math node.
-		else NS_ASSERTION(PR_FALSE,"msubsup must be inside a math node!");
+	 //  pMCM = do_QueryInterface(pTempFrame);
+	 //  if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+		// // there is no "else" because this frame has to be inside a math node.
+		// else NS_ASSERTION(PR_FALSE,"msubsup must be inside a math node!");
  }
   else
   {
