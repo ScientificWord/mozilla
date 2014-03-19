@@ -128,10 +128,16 @@
 
 \def\begin#1{%
    \begingroup
-   \msitag{^^0a}\csname msi@begin@#1\endcsname}
+   \msitag{^^0a}%
+   \@ifundefined{msi@begin@#1}%
+     {\msiopentag{environment}{<environment type="#1">}}%
+     {\csname msi@begin@#1\endcsname}}
+
 
 \def\end#1{%
-   \csname msi@end@#1\endcsname
+   \@ifundefined{msi@begin@#1}%
+     {\msiclosetag{environment}{</environment>}}
+     {\csname msi@end@#1\endcsname}
    \msitag{^^0a}%
    \endgroup}
 
