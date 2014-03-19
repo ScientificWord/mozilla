@@ -406,7 +406,11 @@
    \def\\{\msitag{^^0a}%
           \msiclosetag{author}{</author>}
           \msitag{^^0a}%
-          \msiopentag{address}{<address>}\ignorespaces}%
+          \msiopentag{address}{<address>}
+          \msiopentag{bodyText}{<bodyText>}
+          \def\\{\par}
+          \ignorespaces}
+          
    \def\and{\msiclosetag{address}{</address>}%
             \msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
    \msitag{^^0a}%
