@@ -191,12 +191,18 @@
   \msiclosetag{texb}{</texb>}%
 }
 
-\def\setcounter#1#2{%
-    \expandafter\global\csname c@#1\endcsname#2\relax
-    \msihmode
-    \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="setcounter">}
-       \msitag{<![CDATA[\setcounter{#1}{#2}]]>}%
-    \msiclosetag{texb}{</texb>}}
+\let\setcounter\msidefaultb
+
+%% \def\setcounter#1#2{%
+%%     \ifnum\msi@inpreamble
+%%        
+%%     \else
+%%        \expandafter\global\csname c@#1\endcsname#2\relax
+%%        \msihmode
+%%        \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="setcounter">}
+%%           \msitag{<![CDATA[\setcounter{#1}{#2}]]>}%
+%%        \msiclosetag{texb}{</texb>}%
+%%     \fi}
 
 \def\addtocounter#1#2{%
     \expandafter\global\advance\csname c@#1\endcsname #2\relax
@@ -592,14 +598,14 @@
   \ifmmode
     \msitag{\msipassthru{<xref key="#1" href="#1" reftype="obj"/>}}%
   \else
-    \msitag{<xref key="#1" href="#1" reftype="obj"/>}
+    \msihmode\msitag{<xref key="#1" href="#1" reftype="obj"/>}
   \fi}
 
 \def\pageref#1{%
   \ifmmode
     \msitag{\msipassthru{<xref key="#1" href="#1" reftype="page"/>}}%
   \else
-    \msitag{<xref key="#1" href="#1" reftype="page"/>}
+    \msihmode\msitag{<xref key="#1" href="#1" reftype="page"/>}
   \fi}
 
 
