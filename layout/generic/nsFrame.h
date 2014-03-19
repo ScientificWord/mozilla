@@ -177,6 +177,7 @@ public:
   NS_IMETHOD MoveLeftAtDocStart(nsISelection * sel);
   NS_IMETHOD MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index);
   NS_IMETHOD MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index);
+  NS_IMETHOD FrameJiggleCursor(PRBool fForward);
   virtual void Destroy();
   virtual nsStyleContext* GetAdditionalStyleContext(PRInt32 aIndex) const;
   virtual void SetAdditionalStyleContext(PRInt32 aIndex,
