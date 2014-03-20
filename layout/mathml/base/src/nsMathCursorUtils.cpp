@@ -325,10 +325,10 @@ nsIFrame * GetTopFrameForContent(nsIFrame * pFrame)
   nsCOMPtr<nsIContent> pContent = pFrame->GetContent();
   nsIFrame * rval = pFrame;
   nsIFrame * pParent;
-  pParent = rval->GetParent();
+  pParent = pFrame->GetParent();
   while (pParent->GetContent() == pContent) {
   	rval = pParent;
-    pParent = rval->GetParent();
+    pParent = pParent->GetParent();
   }
   return rval;
 }
