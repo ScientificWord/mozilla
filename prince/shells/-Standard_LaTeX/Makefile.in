@@ -1,0 +1,23 @@
+
+DEPTH		= ../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+
+include $(DEPTH)/config/autoconf.mk
+include $(topsrcdir)/config/rules.mk
+
+SHELL_RESOURCES := $(wildcard  $(srcdir)/*.sci) \
+	$(NULL)
+
+
+libs:: $(SHELL_RESOURCES)	
+	- mkdir -p $(FINAL_TARGET)/shells/Articles
+	- cp $(SHELL_RESOURCES) $(FINAL_TARGET)/shells/-Standard_LaTeX
+
+
+
+
+
+	
