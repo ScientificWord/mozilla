@@ -61,22 +61,23 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
     // Try the grandparent?
     pTempFrame = pTempFrame->GetParent();
     pMCM = do_QueryInterface(pTempFrame);
-    if (pMCM)
+    if (pMCM) {
        pMCM->MoveOutToRight(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-
+       count = *_retval;
+    }
     else {  // we have gone out of math.  Put the cursor at the end of the math if count == 0
             // and after the math if count == 1
 
-       if (count == 0)
-       {
-         PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-       }
-       else  //bail out so that the default Mozilla code takes over
-       {
-         //count = 0;
-         PlaceCursorAfter(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
+//       if (count == 0)
+//       {
+//         PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+//       }
+//       else  //bail out so that the default Mozilla code takes over
+//       {
+       count = 0;
+       PlaceCursorAfter(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
          //*fBailingOut = PR_TRUE;
-       }
+//       }
        *_retval = 0;
     }
   }
