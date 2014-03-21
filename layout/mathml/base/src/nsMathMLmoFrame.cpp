@@ -1212,7 +1212,7 @@ nsMathMLmoFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRI
     {
       count = 0;
       *_retval = 0;
-      MoveOutToRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
     }
   }
   return NS_OK;
