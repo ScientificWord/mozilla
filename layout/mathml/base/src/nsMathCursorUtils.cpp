@@ -190,16 +190,17 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
     {
       count = 0;
 
-      pSiblingFrame = pFrame->GetPrevSibling();
-      if (pSiblingFrame) {
-        *aOutFrame = pSiblingFrame;
-        *aOutOffset = 0;
-      }
-      else
-      {
+      // pSiblingFrame = pFrame->GetPrevSibling();
+      // if (pSiblingFrame) {
+      //   *aOutFrame = pSiblingFrame;
+      //   *aOutOffset = 0;
+      // }
+      // else
+      // {
         pChild = GetLastTextFrameBeforeFrame(pFrame);
         if (pChild)
         {
+          *aOutFrame = pChild;
           nsIAtom*  frameType = pChild->GetType();
           if (nsGkAtoms::textFrame == frameType)
             *aOutOffset = (pChild->GetContent())->TextLength() - count;
@@ -208,7 +209,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
         }
         else
           pFrame->MoveLeftAtDocStart( nsnull);
-      }
+      // }
     }
   }
   return PR_TRUE;

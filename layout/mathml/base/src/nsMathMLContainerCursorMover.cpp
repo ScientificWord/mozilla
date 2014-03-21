@@ -146,7 +146,7 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
     }
     else  //bail out so that the default Mozilla code takes over
     {
-      //count = 0;
+      count = 0;
       PlaceCursorBefore(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
 //      *fBailingOut = PR_TRUE;
     }
