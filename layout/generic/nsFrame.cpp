@@ -4922,7 +4922,12 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
       return (count == 0);
     }
     else {
-      pMathCM =  do_QueryInterface(pAfter);
+      if (*offset == 0) {
+        pMathCM =  do_QueryInterface(*current); 
+      }
+      else {
+        pMathCM =  do_QueryInterface(pAfter); 
+      }
       if (pMathCM) pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &count);
       return (count == 0);
     }
