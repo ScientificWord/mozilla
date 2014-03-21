@@ -1976,6 +1976,13 @@ case CMD_EXTENSION: {
          reltarget += ".";
          reltarget += fn.GetExtString();
 
+         for (int k = 0; k < reltarget.size(); ++k){
+           if (reltarget[k] == '\\'){
+             reltarget[k]='/';
+           }
+         }
+         
+
          if (extn != "") {
             Typesetter::AppendTag(reltarget.c_str());
          }
