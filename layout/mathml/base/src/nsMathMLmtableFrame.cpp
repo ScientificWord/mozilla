@@ -700,7 +700,7 @@ nsMathMLmtableFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
     pNode = do_QueryInterface(pContent);
     pNode->GetNodeName(tagName);
     if (tagName.Equals(mtrName)) break;
-    pFrame = pFrame->GetNextSibling();
+    pFrame = pFrame->GetFirstChild(nsnull);
   }
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
