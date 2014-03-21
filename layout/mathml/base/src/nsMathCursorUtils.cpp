@@ -137,6 +137,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   nsIFrame * pChild;
   nsIFrame * pParent;
   nsIFrame * pSiblingFrame;
+  pParent = GetSignificantParent(pFrame);
   nsCOMPtr<nsIContent> pContent;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
 
@@ -166,26 +167,48 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   }
   else // don't put the cursor inside the tag
   {
-    count = 0;
-
-    pSiblingFrame = pFrame->GetPrevSibling();
-    if (pSiblingFrame) {
-      *aOutFrame = pSiblingFrame;
-      *aOutOffset = 0;
+    if (IsMathFrame(pParent))
+    {
+      pContent = pParent->GetContent();
+      *aOutOffset = pContent->IndexOf(pFrame->GetContent());
+      *aOutFrame = pParent;
+      //check to see if previous frame is a temp input
+      pSiblingFrame = pFrame->GetPrevSibling();
+      if (pSiblingFrame) {
+        pContent = pSiblingFrame->GetContent();
+        nsCOMPtr<nsIDOMElement> pElem = do_QueryInterface(pContent);
+        nsAutoString attrVal;
+        pElem ->GetAttribute(NS_LITERAL_STRING("tempinput"), attrVal);
+        if (attrVal.EqualsLiteral("true"))
+        {
+          *aOutFrame = pSiblingFrame;
+          *aOutOffset = 0;
+        }
+      } 
     }
     else
     {
-      pChild = GetLastTextFrameBeforeFrame(pFrame);
-      if (pChild)
-      {
-        nsIAtom*  frameType = pChild->GetType();
-        if (nsGkAtoms::textFrame == frameType)
-          *aOutOffset = (pChild->GetContent())->TextLength() - count;
-        else
-          *aOutOffset = 0;
+      count = 0;
+
+      pSiblingFrame = pFrame->GetPrevSibling();
+      if (pSiblingFrame) {
+        *aOutFrame = pSiblingFrame;
+        *aOutOffset = 0;
       }
       else
-        pFrame->MoveLeftAtDocStart( nsnull);
+      {
+        pChild = GetLastTextFrameBeforeFrame(pFrame);
+        if (pChild)
+        {
+          nsIAtom*  frameType = pChild->GetType();
+          if (nsGkAtoms::textFrame == frameType)
+            *aOutOffset = (pChild->GetContent())->TextLength() - count;
+          else
+            *aOutOffset = 0;
+        }
+        else
+          pFrame->MoveLeftAtDocStart( nsnull);
+      }
     }
   }
   return PR_TRUE;
