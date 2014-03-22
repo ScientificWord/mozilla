@@ -13,7 +13,7 @@ SHELL_RESOURCES := $(wildcard  $(srcdir)/*.sci) \
 
 
 libs:: $(SHELL_RESOURCES)	
-	- mkdir -p $(FINAL_TARGET)/shells/Articles
+	- mkdir -p $(FINAL_TARGET)/shells/-Standard_LaTeX
 	- cp $(SHELL_RESOURCES) $(FINAL_TARGET)/shells/-Standard_LaTeX
 
 
