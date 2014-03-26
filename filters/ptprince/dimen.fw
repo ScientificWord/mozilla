@@ -81,17 +81,18 @@ case CMD_ASSIGN_DIM:{
       StringUtils::AppendToks(*pList);
       String str = StringBuilder::Create();
       std::string strTemp;
-      strTemp = "\n<texb pre=\"1\" enc=\"1\" name=\"TeX assignment\">";
-      strTemp +="<![CDATA[";
+      //strTemp = "\n<texb pre=\"1\" enc=\"1\" name=\"TeX assignment\">";
+      //strTemp +="<![CDATA[";
       int i = 0;
       while (i < str.Size()){
           strTemp += (char) str[i];
           ++i;
       }
-      strTemp += "]]></texb>";
+      //strTemp += "]]></texb>";
       StringBuilder::Discard(str);
+      s_preambleExtra+= "\n";
       s_preambleExtra += strTemp;
-      //Typesetter::AppendTag(strTemp.c_str());
+      ////Typesetter::AppendTag(strTemp.c_str());
    }
    LOG("\n----Set " << defining << " = "
                     << n << "  ((" << *pList << "))");
