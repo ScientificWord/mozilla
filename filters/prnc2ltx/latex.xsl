@@ -530,6 +530,12 @@ should not be done under some conditions -->
 \end{<xsl:value-of select="$tagnameToUse"/>}
 </xsl:template>
 
+<xsl:template match="html:environment">
+\begin{<xsl:value-of select="@type"/>}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>\end{<xsl:value-of select="@type"/>}\par
+</xsl:template>
+
+
 <xsl:template match="html:proof">
 \begin{proof}<xsl:apply-templates mode="envleadin"/>
 <xsl:apply-templates/>\end{proof}\par
