@@ -296,6 +296,15 @@ deleted {
   text-decoration: line-through;
 }
 
+environment {
+  display: block;
+  font-style: italic;
+}
+
+environment:before {
+  content:  attr(type)  ;
+  -moz-user-select: -moz-none;
+}
 
 centeredEnv, centered {
   text-align: center;
