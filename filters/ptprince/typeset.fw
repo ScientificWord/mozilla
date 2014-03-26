@@ -750,7 +750,11 @@ void Typesetter::EndDisplay()
          str += ">";
          str +=  "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" \
             display=\"block\">";
-         str +=  s_mathml;
+         if (s_mathml.size() == 0){
+           str+= "<mi></mi>"; //"&ZeroWidthSpace;";
+         } else {
+           str +=  s_mathml;
+         }
          str +=  "</math>";
          str += "</msidisplay>";
          AppendTag(str.c_str());
