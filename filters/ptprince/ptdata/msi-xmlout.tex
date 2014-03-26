@@ -540,8 +540,9 @@
  \def\@newcommandA#1#2[#3]{\@ifnextchar[{\@newcommandB{#1}{#2}[#3]}{\@newcommandB{#1}{#2}[#3][]}}
 
  \def\@newcommandB#1#2[#3][#4]#5{%
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand#1{#2}[#3][#4]{#5}}%
-   \MSILocalDef{#2}}
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand#1{#2}[#3][#4]{#5}}}%
+
+%   \MSILocalDef{#2}}
 
 
 
@@ -1835,7 +1836,7 @@
 
 \def\msi@cdr#1#2xxxx{#2}
 
-\def\MSILocalDef#1{\def#1{\string #1}}
+%\def\MSILocalDef#1{\def#1{\string #1}}
 
 
 
