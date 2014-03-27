@@ -597,13 +597,12 @@ should not be done under some conditions -->
 <xsl:template match="html:citation">
 <xsl:choose>
   <xsl:when test="@nocite='true'">\nocite</xsl:when>
-  <xsl:otherwise>\cite</xsl:otherwise>
-</xsl:choose>
-<xsl:if test="@hasRemark='true'">[<xsl:apply-templates select="html:biblabel"/>]</xsl:if
->{<xsl:value-of select="@citekey"/>}
-</xsl:template>
+  <xsl:otherwise>\cite</xsl:otherwise></xsl:choose>
+<xsl:if test="@hasRemark='true'"><xsl:apply-templates select="html:biblabel"/></xsl:if>{<xsl:value-of select="@citekey"/>}</xsl:template>
 
+<!-- biblabe defined below
 <xsl:template match="html:biblabel"><xsl:apply-templates/></xsl:template>
+-->
 
 <xsl:template match="html:bibtexbibliography">\bibliographystyle{<xsl:value-of select="@styleFile"/>}
 \bibliography{<xsl:value-of select="@databaseFile"/>}
@@ -966,10 +965,7 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:biblabel">
-  <xsl:if test = "string-length(normalize-space(.)) > 0">
-  [<xsl:apply-templates/>]
-  </xsl:if>
-</xsl:template>
+  <xsl:if test = "string-length(normalize-space(.)) > 0">[<xsl:apply-templates/>]</xsl:if></xsl:template>
 
 <xsl:template match="html:msidisplay">
   <xsl:variable name="subEquationsInScope">
