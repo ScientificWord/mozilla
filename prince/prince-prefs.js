@@ -182,7 +182,7 @@ pref("swp.viewPDF","default");
 pref("swp.webzip.compression", 9);
 pref("swp.zoom_factor",            "1.0");
 pref("swp.defaultTableUnits", "in");
-pref("swp.bibchoice", "bibtex");
+pref("swp.bibchoice", "manual");
 
 pref("toolkit.defaultChromeURI", "chrome://prince/content/prince.xul");
 pref("toolkit.scrollbar.clickToScroll.scrollDelay", 100);
