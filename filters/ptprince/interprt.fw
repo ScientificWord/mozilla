@@ -1450,9 +1450,9 @@ case CMD_CLOSETAG : {
           break;
         } else {
           LOG("\n----IMPLICIT CLOSING " << s_tagStack.back().c_str());
-          std::string closetag ="\n</";
+          std::string closetag ="</";
           closetag += s_tagStack.back();
-          closetag += ">\n";
+          closetag += ">";
           Typesetter::AppendTag(closetag.c_str());
           s_tagStack.pop_back();
         }
