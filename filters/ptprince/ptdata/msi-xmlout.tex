@@ -337,10 +337,8 @@
    \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
    \msiclosetag{preamble}{</preamble>}%
    \msi@inpreamble = 0
-   \msi@br\msitag{</head>}
-   \msi@br\msiopentag{body}{<body showexpanders="true" showshort="true">}
-   %%\msihmode\msi@br\msiopentag{docbody}{<docbody>}%
-   
+   \msitag{</head>}\msitag{^^0a}%
+   \msiopentag{body}{<body showexpanders="true" showshort="true">}
    \@paragraphs
    \msivmode
 }
@@ -355,23 +353,24 @@
 
 %% \usepackage
 \def\out@usepackageA[#1]#2{%
-   \msi@br\msitag{<usepackage req="#2" opt="#1"/>}}
+   \msitag{<usepackage req="#2" opt="#1"/>}}
 
 \def\out@usepackageB#1{%
-   \msi@br\msitag{<usepackage req="#1"/>}}
+   \msitag{^^0a}\msitag{<usepackage req="#1"/>}}
 
 %% \RequirePackage
 \def\out@reqpackageA[#1]#2{%
-   \msi@br\msitag{<usepackage requirepackage="true" req="#2" opt="#1"/>}}
+   \msitag{^^0a}\msitag{<usepackage requirepackage="true" req="#2" opt="#1"/>}}
 
 \def\out@reqpackageB#1{%
-   \msi@br\msitag{<usepackage requirepackage="true"  req="#1"/>}}
+   \msitag{^^0a}\msitag{<usepackage requirepackage="true"  req="#1"/>}}
 
 
 
 %% Frontmatter
 
 \def\title{%
+  \msitag{^^0a}%
   \@ifnextchar[{\@titlea}{\@titleb}}
 
 \def\@titlea[#1]#2{%
@@ -409,8 +408,7 @@
 
 \def\out@author#1{%
   \begingroup
-   \def\\{\msitag{^^0a}%
-          \msiclosetag{author}{</author>}
+   \def\\{\msiclosetag{author}{</author>}
           \msitag{^^0a}%
           \msiopentag{address}{<address>}
           \msiopentag{bodyText}{<bodyText>}
@@ -771,6 +769,7 @@
       \fi
       ##2%
       \msiclosetag{sectiontitle}{</sectiontitle>}%
+      \msitag{^^0a}%
      }%
      \par
   }%
