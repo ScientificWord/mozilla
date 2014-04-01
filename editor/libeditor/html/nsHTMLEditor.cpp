@@ -114,6 +114,7 @@
 #include "nsTextFragment.h"
 #include "nsTextFormatter.h"
 
+
 // netwerk
 #include "nsIURI.h"
 #include "nsNetUtil.h"
@@ -7331,12 +7332,16 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
             _retval.Append(NS_LITERAL_STRING("\\jmath")); break;
           default:
             tf->ssprintf(str, fmt.get(), *cur);
-            _retval.Append(str); break;
+            str.Cut(str.Length()-1,1);
+            _retval.Append(str); 
+            break;
         }
         break;
       default :
         tf->ssprintf(str, fmt.get(), *cur);
-        _retval.Append(str); break;
+        str.Cut(str.Length()-1,1);
+        _retval.Append(str); 
+        break;
     }
   }
   return res;
