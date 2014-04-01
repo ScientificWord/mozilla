@@ -1,67 +1,86 @@
-/* amsbook.css */
+ /* amsbook.css */
 
 /************************/
 /* Division header tags */
 /************************/
 
+part, chapter, section, subsection, subsubsection, paragraph, subparagraph {
+  -moz-user-select: text;
+}
+
 part {
   display: block;
+  text-align: center;
   counter-increment: part;
 }
 
-part sectiontitle {
+part>sectiontitle {
   display: block;
   font-size: x-large;
   font-weight: bold;
+  color: rgb(9, 62, 125);
+  text-align: center;
 }
 
 part>sectiontitle:before {
-  content: "Part " counter(part,upper-roman);
+  content: "Part " counter(part);
   display: block;
   font-size: large;
   font-weight: bold;
+  color: rgb(9, 62, 125);
+  text-align: center;
+  -moz-user-select: -moz-none;
 }
 
 chapter {
   display: block;
-/*  counter-increment: chapter;
-  counter-reset: subchapter;
-  counter-reset: theorem; */
+  counter-increment: chapter;
+  counter-reset: section;
+  counter-reset: theorem;
 }
 
 chapter sectiontitle {
   display: block;
-  margin: 10pt 10pt 0 0;
-  margin-left: 10pt;
-  font-size: 14pt;
+  margin: 10pt 0 0 0;
+  font-size: 20pt;
   font-weight: bold;
+  text-align: center;
+  color: rgb(9, 62, 125);
+}
+
+chapter>sectiontitle:before {
+  display: block;
+  font-size: large;
+  color: rgb(9, 62, 125);
+  text-align: center;
+  content: "CHAPTER " counter(chapter);
 }
 
 section {
   display: block;
-/*    counter-increment: section;
+  counter-increment: section;
   counter-reset: subsection;
-  counter-reset: theorem; */
+  /*counter-reset: theorem; */
 }
 
 section sectiontitle {
   display: block;
-  margin: 10pt 10pt 0 0;
-  margin-left: 10pt;
+  margin: 0;
+  margin-left: 0;
   font-size: large;
   font-weight: bold;
+  color: rgb(9, 62, 125);
 }
 
-/*
 section>sectiontitle:before {
   content: counter(section) ".  ";
 }
-*/
 
 subsection{
   display: block;
-/*    counter-increment: subsection;
-    counter-reset: subsubsection; */
+  text-align: left;
+  counter-increment: subsection;
+/*  counter-reset: subsubsection; */
 }
 
 subsection sectiontitle {
@@ -69,18 +88,18 @@ subsection sectiontitle {
   margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
+  color: rgb(9, 62, 125);
 }
 
-/*
 subsection>sectiontitle:before {
   content: counter(section) "." counter(subsection) ".  ";
 }
-*/
 
 subsubsection {
   display:block;
-/*    counter-increment: subsubsection;
-    counter-reset: paragraph; */
+  text-align: left;
+    counter-increment: subsubsection;
+/*    counter-reset: paragraph; */
 }
 
 subsubsection sectiontitle {
@@ -89,16 +108,16 @@ subsubsection sectiontitle {
   margin-left: 10pt;
   font-size: medium;
   font-weight: bold;
+  color: rgb(9, 62, 125);
 }
 
-/*
 subsubsection>sectiontitle:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
 }
-*/
 
 paragraph {
   display:block;
+  text-align: left;
 /*    counter-increment: paragraph;  */
 }
 
@@ -106,6 +125,7 @@ paragraph sectiontitle {
   font-size: medium;
   font-weight: normal;
   font-style: italic;
+  color: rgb(9, 62, 125);
 }
 
 /*
@@ -113,6 +133,13 @@ paragraph>sectiontitle:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
 }
 */
+
+subparagraph {
+  display:block;
+  margin-left: 0pt;
+  text-align: left;
+/*    counter-increment: paragraph;  */
+}
 
 section defaulttitletag:after {
   content: "Replace this section title";
@@ -146,32 +173,198 @@ subparagraph defaulttitletag:after {
 title {
   font-size: x-large;
   display: block;
+  color: rgb(9, 62, 125);
   margin-top: 12pt;
   text-align: center;
 }
 
 title > short {
    display: inline;
-   padding: 0 0 0 20pt;}
+   padding: 0 0 0 20pt;
+   color: #E1EEFD;
+}
+
+body[showshort='true'] shortTitle {
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] shortTitle:before {
+  content: '[';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] shortTitle:after {
+  content: '] ';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
 
 author {
   text-align: center;
   font-weight: normal;
+  color: rgb(9, 62, 125);
   display: block;
   padding-top: 10pt;
+}
+
+authorid {
+  display: none;
+}
+
+body[showshort='true'] authorid {
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] authorid:before {
+  content: '[';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] authorid:after {
+  content: '] ';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+address {
+  display: block;
+  color: rgb(9, 62, 125);
+}
+
+curraddr {
+  text-align: center;
+  display: block;
+  color: rgb(9, 62, 125);
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-curraddr");
+  -moz-user-select: text;
+}
+
+email {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-email");
+  -moz-user-select: text;
+}
+
+urladdr {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-urladdr");
+  -moz-user-select: text;
+}
+
+thanks {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-thanks");
+  -moz-user-select: text;
 }
 
 date {
   text-align: center;
   font-weight: normal;
   display: block;
+  color: rgb(9, 62, 125);
   padding-top: 2pt;
 }
 
-address {
+translator {
+  text-align: center;
+  font-weight: normal;
   display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-translator");
+  -moz-user-select: text;
 }
 
+subjclass {
+  text-align: center;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  display: block;
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-subjclass");
+  -moz-user-select: text;
+}
+
+subjclassyear {
+  display: none;
+}
+
+body[showshort='true'] subjclassyear {
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] subjclassyear:before {
+  content: '[';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] subjclassyear:after {
+  content: '] ';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+keywords {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-keywords");
+  -moz-user-select: text;
+}
+
+dedicatory {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-dedicatory");
+  -moz-user-select: text;
+}
+
+abstract {
+  display: block;
+  margin-top: 10pt;
+  margin-left: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 10pt;
+  padding-left: 15pt;
+  padding-right: 15pt;
+  padding-top: 15pt;
+  padding-bottom: 15pt;
+  font-size: small;
+  border: thin solid black;
+  background-color: #E1EEFD;
+  -moz-border-radius: 5px;
+}
+
+abstract:before {
+  content: "Abstract";
+  display: block;
+  text-align: center;
+  font-size: 100%; font-weight: bold;
+  color: rgb(9, 62, 125);
+  -moz-user-select: -moz-none;
+}
 
 /**********************/
 /* Main text elements */
@@ -180,6 +373,11 @@ address {
 p {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
+}
+
+bodyText {
+  display: block;
+  margin: 10pt 0 5pt 0;
 }
 
 bodyMath {
