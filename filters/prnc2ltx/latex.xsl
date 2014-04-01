@@ -15,6 +15,16 @@
     xmlns:msi="http://www.sciword.com/namespaces/sciword"
     xmlns:exsl="http://exslt.org/common">
 
+<xsl:variable name="newline">
+   <xsl:text>&#xA;</xsl:text>
+</xsl:variable>
+
+<xsl:variable name="blankline">
+   <xsl:value-of select="$newline"/>
+   <xsl:value-of select="$newline"/>
+</xsl:variable>
+
+
 <xsl:param name="endnotes" select="count(//html:endnotes[@val='end'])"/>
 <xsl:param name="footnotecount" select="count(//html:note[@type='footnote'])"/>
 <xsl:param name="indexitems" select="count(//html:indexitem)"/>
@@ -54,9 +64,23 @@
 
 <xsl:template match="html:head">
   <xsl:call-template name="metadata"/>
-\documentclass<xsl:if test="//html:colist/@*">[<xsl:for-each select="//html:colist/@*"
-    ><xsl:if test="name()!='enabled'"><xsl:value-of select="."/><xsl:if 
-    test="(position()!=last()) and (string-length(normalize-space(.)) > 0)">, </xsl:if></xsl:if></xsl:for-each>]</xsl:if>{<xsl:value-of select="//html:documentclass/@class"/>}
+  <xsl:value-of select="$blankline"/>
+  <xsl:text>\documentclass</xsl:text>
+    <xsl:if test="//html:colist/@*">
+       <xsl:text>[</xsl:text>
+       <xsl:for-each select="//html:colist/@*">
+          <xsl:if test="name()!='enabled'">
+             <xsl:value-of select="."/>
+             <xsl:if test="(position()!=last()) and (string-length(normalize-space(.)) > 0)">
+               <xsl:text>, </xsl:text>
+             </xsl:if>
+          </xsl:if>
+       </xsl:for-each>
+       <xsl:text>]</xsl:text>
+     </xsl:if>
+     <xsl:text>{</xsl:text>
+     <xsl:value-of select="//html:documentclass/@class"/>
+     <xsl:text>}</xsl:text>
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -448,9 +472,13 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:title">
-  \title<xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\title</xsl:text>
+  <xsl:apply-templates mode="shortTitle"/>
+  <xsl:text>{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
-
 
 <xsl:template match="html:sectiontitle/html:shortTitle"></xsl:template>
 <xsl:template match="html:sectiontitle//text()" mode="shortTitle"></xsl:template>
@@ -571,11 +599,33 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:numberedListItem">
-\item <xsl:apply-templates/>
+   <xsl:value-of select="$blankline"/>
+   <xsl:text>\item </xsl:text>
+   <xsl:apply-templates/>
 </xsl:template>
 
+<!-- If we have an optional argument that contains a ] then we add {...} to make sure that
+     we don't accidently close the opening [ of the optional argument -->
+
 <xsl:template match="html:numberedLabel">
-  [<xsl:apply-templates/>]
+  <xsl:variable name="theLabel">
+    <xsl:apply-templates/>
+  </xsl:variable>
+  <xsl:variable name="theText">
+    <xsl:value-of select="$theLabel"/>
+  </xsl:variable>
+  <xsl:text>[</xsl:text>
+  <xsl:choose>
+     <xsl:when test="contains($theText, ']')" >
+        <xsl:text>{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+     </xsl:when>
+     <xsl:otherwise>
+        <xsl:apply-templates/>
+     </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text>]</xsl:text>     
 </xsl:template>
 
 <xsl:template match="html:bulletListItem">
