@@ -51,8 +51,10 @@
 </xsl:param>
 
 <xsl:output method="text" encoding="UTF-8"/>
+<!-- BBM for bug 3095
 <xsl:strip-space elements="*"/>
-<xsl:preserve-space elements="pre"/>
+ -->
+ <xsl:preserve-space elements="pre"/>
 
 <xsl:include href="table.xsl"/>
 <xsl:include href="graphics.xsl"/>
