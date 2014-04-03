@@ -47,24 +47,37 @@
 
 <xsl:template match="html:msirule">
   <xsl:choose>
-    <xsl:when test="@color = '#000000'">\rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}</xsl:when>
-	<xsl:otherwise>\textcolor[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"/>}{\rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}}</xsl:otherwise>
+    <xsl:when test="@color = '#000000'
+              or not(@color)">\rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}</xsl:when>
+	<xsl:otherwise>
+	   <xsl:text>\textcolor[HTML]{</xsl:text>
+	   <xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"/>
+	   <xsl:text>}{</xsl:text>
+	   <xsl:text>\rule[</xsl:text>
+	   <xsl:value-of select="@lift"/>
+	   <xsl:text>]{</xsl:text>
+	   <xsl:value-of select="@width"/>
+	   <xsl:text>}{</xsl:text>
+	   <xsl:value-of select="@height"/>
+	   <xsl:text>}}</xsl:text>
+	 </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
 <xsl:template match="html:msibr">
   <xsl:choose>
     <xsl:when test="@type='allowBreak'">\allowbreak </xsl:when>
-    <xsl:when test="@type='pageBreak'">\pagebreak </xsl:when>
+    <xsl:when test="@type='pageBreak'">\pagebreak\relax </xsl:when>
     <xsl:when test="@type='newPage'">\newpage </xsl:when>
     <xsl:when test="@type='discretionaryHyphen'">\-</xsl:when>
-    <xsl:when test="@type='lineBreak'">\linebreak </xsl:when>
-    <xsl:when test="@type='noBreak'">\nolinebreak </xsl:when>
+    <xsl:when test="@type='lineBreak'">\linebreak\relax </xsl:when>
+    <xsl:when test="@type='noBreak'">\nolinebreak\relax </xsl:when>
     <xsl:when test="@type='newLine'">\newline </xsl:when>
 	<xsl:when test="@type='customNewLine'">~\\[<xsl:value-of	select="@dim"/>] </xsl:when>
 	<xsl:otherwise>\\
 	</xsl:otherwise>
  </xsl:choose>
 </xsl:template>
+
 
 </xsl:stylesheet>
