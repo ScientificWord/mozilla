@@ -288,11 +288,10 @@
           <xsl:with-param name="LaTeX-fence-token" select="'\updownarrow '"/>
         </xsl:call-template>
       </xsl:when>
-<!-- \leftnormalize-space(string())             \rightnormalize-space(string())  -->
-      <xsl:when test="normalize-space(string())=''
-      and            @fence='true'">
+<!-- \left.             \right.  -->
+      <xsl:when test="normalize-space(string())='.' and  @fence='true'">
         <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'normalize-space(string())'"/>
+          <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
         </xsl:call-template>
       </xsl:when>
 <!-- \left\Updownarrow  \right\Updownarrow -->
@@ -463,7 +462,7 @@
   
   <xsl:template match="mml:mo" mode="in-text">
       <xsl:text>$</xsl:text>
-    <xsl:apply-templates select="normalize-space(string())"/>
+    <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
   </xsl:template>
 
