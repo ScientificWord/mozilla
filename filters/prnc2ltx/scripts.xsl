@@ -55,7 +55,9 @@
       <xsl:when test="$is-big-op!='false'">
 <!-- the base element is a big operator -->
         <xsl:call-template name="do-embellished-bigop">
-          <xsl:with-param name="limits-flag" select="'\nolimits '"/>
+<!--  BBM for bug 3094
+         <xsl:with-param name="limits-flag" select="'\nolimits '"/>
+ -->
           <xsl:with-param name="j1"          select="'_{'"/>
           <xsl:with-param name="j2"          select="''"/>
         </xsl:call-template>
@@ -88,8 +90,8 @@
     <xsl:choose>
       <xsl:when test="$is-big-op!='false'">
         <xsl:call-template name="do-embellished-bigop">
-          <xsl:with-param name="limits-flag" select="'\nolimits '"/>
-          <xsl:with-param name="j1"          select="'^{'"/>
+<!--           <xsl:with-param name="limits-flag" select="'\nolimits '"/>
+ -->          <xsl:with-param name="j1"          select="'^{'"/>
           <xsl:with-param name="j2"          select="''"/>
         </xsl:call-template>
 	  </xsl:when>
@@ -121,8 +123,8 @@
     <xsl:choose>
       <xsl:when test="$is-big-op!='false'">
         <xsl:call-template name="do-embellished-bigop">
-          <xsl:with-param name="limits-flag" select="'\nolimits '"/>
-          <xsl:with-param name="j1"          select="'_{'"/>
+<!--           <xsl:with-param name="limits-flag" select="'\nolimits '"/>
+ -->          <xsl:with-param name="j1"          select="'_{'"/>
           <xsl:with-param name="j2"          select="'}^{'"/>
         </xsl:call-template>
 	  </xsl:when>
