@@ -25,6 +25,18 @@
 </xsl:variable>
 
 
+
+<xsl:variable name="char-info.tr">
+    <char-table>
+       <char unicode="&#x03B1;" latex="\alpha"/>
+       <char unicode="&#x03B2;" latex="\beta"/>
+    </char-table>
+</xsl:variable>
+
+<xsl:variable name="char-info" select="exsl:node-set($char-info.tr)"/>
+
+
+
 <xsl:param name="endnotes" select="count(//html:endnotes[@val='end'])"/>
 <xsl:param name="footnotecount" select="count(//html:note[@type='footnote'])"/>
 <xsl:param name="indexitems" select="count(//html:indexitem)"/>
@@ -55,8 +67,26 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="*">%<!-- Matches everything but the root -->
+<xsl:template match="*">
+  <xsl:text>%[[[What??]]]</xsl:text>
+  <xsl:value-of select="$newline"/>
+  <!-- Matches all elements. Make it visible for now 
+       so we can better catch lost cases. -->
 </xsl:template>
+
+<!-- documentclass and usepackage are handled specially by the
+     preamble code. So ignore if you see in the clear -->
+
+<xsl:template match="html:documentclass"/>
+<xsl:template match="html:usepackage"/>
+<xsl:template match="html:address"/> <!-- Gobbled by <author> -->
+<xsl:template match="html:plot"/>
+
+
+
+
+
+
 
 <xsl:template match="html:html">
     <xsl:apply-templates/>
@@ -986,17 +1016,24 @@ should not be done under some conditions -->
 <xsl:template match="html:texb">
   <xsl:if test="not(@pre) or (@pre='0')" >
     <xsl:if test="@enc='1'">
-%TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates mode="texcomment"/>}}%
-<!-- %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>} -->
-%BeginExpansion
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%TCIMACRO{\TeXButton{</xsl:text>
+      <xsl:value-of select="@name"/>
+      <xsl:text>}{</xsl:text>
+      <xsl:apply-templates mode="texcomment"/>
+      <xsl:text>}}%</xsl:text>
+      <!-- %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>} -->
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%BeginExpansion</xsl:text>
+      <xsl:value-of select="$newline"/>
     </xsl:if>
     <xsl:apply-templates mode="tex"/>
     <xsl:if test="@enc='1'">
-      <xsl:text>
-%EndExpansion
-      </xsl:text>
-</xsl:if>
-</xsl:if>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%EndExpansion</xsl:text>
+      <xsl:value-of select="$newline"/>
+    </xsl:if>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:bibliography">

@@ -604,7 +604,7 @@ case CMD_MSISPECIAL: {
  CaptionPlace=\"labelabove\" \
  EqualScaling=\"false\" AxesTips=\"false\" GridLines=\"false\" \
  OrthogonalProjection=\"false\" KeepUp=\"false\">\
- <plot xmlns=%mozns% \
+ <plot xmlns=%mathmlns% \
  PlotType=\"rectangular\" LineStyle=\"Solid\" PointStyle=\"Dot\" \
  LineThickness=\"thin\" LineColor=\"#000000ff\" DiscAdjust=\"true\"\
  BaseColor=\"#ff0000ff\" SecondaryColor=\"#0000ffff\" \

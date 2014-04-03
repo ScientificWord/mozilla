@@ -351,26 +351,43 @@
       <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>} </xsl:if>
-    <xsl:if test="@border-color or @background-color"> \fcolorbox
+    <xsl:if test="@border-color or @background-color">
+      <xsl:text>\fcolorbox</xsl:text>
       <xsl:if test="@border-color">
         <xsl:choose>
-          <xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}
+          <xsl:when test="substring(./@border-color,1,1)='#'">
+             <xsl:text>[HTML]</xsl:text>
+             <xsl:text>{</xsl:text>
+             <xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>
+             <xsl:text>}</xsl:text>
           </xsl:when>
-          <xsl:otherwise>{<xsl:value-of select="./@border-color"/>}
+          <xsl:otherwise>
+             <xsl:text>{</xsl:text>
+             <xsl:value-of select="./@border-color"/>
+             <xsl:text>}</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
-      <xsl:if test="not(@border-color)">{white}</xsl:if>
+      <xsl:if test="not(@border-color)">
+         <xsl:text>{white}</xsl:text>
+      </xsl:if>
       <xsl:if test="@background-color">
         <xsl:choose>
-          <xsl:when test="substring(./@background-color,1,1)='#'">{<xsl:value-of select="translate(substring(./@background-color,2,8),'abcdef','ABCDEF')"/>}
+          <xsl:when test="substring(./@background-color,1,1)='#'">
+             <xsl:text>{</xsl:text>
+             <xsl:value-of select="translate(substring(./@background-color,2,8),'abcdef','ABCDEF')"/>
+             <xsl:text>}</xsl:text>
           </xsl:when>
           <xsl:otherwise>{<xsl:value-of select="./@background-color"/>}</xsl:otherwise>
         </xsl:choose>
       </xsl:if>
-      <xsl:if test="not(@background-color)">{white}</xsl:if>
-      {<xsl:apply-templates/>}
-    </xsl:if>
+      <xsl:if test="not(@background-color)">
+         <xsl:text>{white}</xsl:text>
+      </xsl:if>
+      <xsl:text>{</xsl:text>
+      <xsl:apply-templates/>
+      <xsl:text>}</xsl:text>
+    </xsl:if>    
     <xsl:if test="not (@border-color or @background-color)">
       <xsl:apply-templates/>
     </xsl:if>

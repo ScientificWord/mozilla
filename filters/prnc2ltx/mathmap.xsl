@@ -28,7 +28,24 @@
   <xsl:template name="chars-to-LaTeX-Math">
       <xsl:param name="unicode-cdata"/>
       <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
+
+      <xsl:variable name="char-info-lookup"
+		    select="$char-info/char-table/char[@unicode=$first-char][1]/@latex"/>
+
       <xsl:choose>
+         <xsl:when
+	          test="contains('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+		                       $first-char)">
+            <xsl:value-of select="$first-char"/>
+         </xsl:when>
+
+         
+          <xsl:when test="$char-info-lookup != ''">
+           <xsl:call-template name="protect"/>
+           <xsl:value-of select="$char-info-lookup"/>
+           <xsl:text> </xsl:text>
+          </xsl:when>
+
       <xsl:when test="$first-char = '0'
       or              $first-char = '1'
       or              $first-char = '2'
@@ -2716,9 +2733,12 @@
 
           <xsl:otherwise>
 <!-- BBM: we want to let unidentified unicodes through, since XeLaTeX can handle them, and for PDFLaTeX we post-process
--->
+-->          <!-- jcs - this may need a \mathop{} --> 
+             <xsl:text>\mathop{</xsl:text>
              <xsl:value-of select="$first-char"/>
+             <xsl:text>}</xsl:text>
           </xsl:otherwise>
+ 
         </xsl:choose>
     
 <!--  The End
