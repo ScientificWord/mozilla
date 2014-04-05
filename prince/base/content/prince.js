@@ -1289,17 +1289,17 @@ function documentToTeXString(document, xslPath)
     xsltProcessor.importStylesheet(doc);
     var newDoc = xsltProcessor.transformToDocument(document);
     strResult = newDoc.documentElement.textContent || "";
-    while (strResult.search(/\n[ \t]+/) >= 0)
-		  strResult = strResult.replace(/\n[ \t]+/,"\n","g");
-    while (strResult.search(/\n\n/) >= 0)
-      strResult = strResult.replace(/\n\n/,"\n","g");
-	  while (strResult.search(/\\par[ \t]*\n/) >= 0)
-		  strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
-
-    while (strResult.search(/\\par[ \t\n]+/) >= 0)
-		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
-    while (strResult.search(/\\msipar[ \t\n]+/) >= 0)
-		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");  
+//     while (strResult.search(/\n[ \t]+/) >= 0)
+// 		  strResult = strResult.replace(/\n[ \t]+/,"\n","g");
+//     while (strResult.search(/\n\n/) >= 0)
+//       strResult = strResult.replace(/\n\n/,"\n","g");
+// 	  while (strResult.search(/\\par[ \t]*\n/) >= 0)
+// 		  strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
+// 
+//     while (strResult.search(/\\par[ \t\n]+/) >= 0)
+// 		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
+//     while (strResult.search(/\\msipar[ \t\n]+/) >= 0)
+// 		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");  
 		//while (strResult.search(/\\par/) >= 0)
 		//  strResult = strResult.replace(/\\par/,"\n\n", "g");
     if (compiler === "pdflatex")  //convert utf-8 characters to tex strings
