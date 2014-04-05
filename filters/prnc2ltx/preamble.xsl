@@ -171,54 +171,75 @@
   <xsl:variable name="lang2" select="//html:babel/@lang2"/>
 
   <xsl:template match="html:preamble">
-    <xsl:text>
-%% preamble
-\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl, rotating} % ,revsymb4-1}
-    </xsl:text>
+    <xsl:value-of select="$blankline"/>
+    <xsl:text>%% preamble</xsl:text>
+    <xsl:value-of select="$blankline"/>
+    <xsl:text>\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl, rotating} % ,revsymb4-1}</xsl:text>
+
     <xsl:if test="$compiler='xelatex'">
-\usepackage{xltxtra,xkeyval}
-\TeXXeTstate=1
-\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\usepackage{xltxtra,xkeyval}</xsl:text>
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\TeXXeTstate=1</xsl:text>
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}</xsl:text>
     </xsl:if>
     <xsl:if test="not($compiler='xelatex')">
-\usepackage[T1]{fontenc}
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\usepackage[T1]{fontenc}</xsl:text>
     </xsl:if>
 
 
-    <xsl:if test="$compiler!='xelatex'">\usepackage{textcomp}</xsl:if>
+    <xsl:if test="$compiler!='xelatex'">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\usepackage{textcomp}</xsl:text>
+    </xsl:if>
 
-    <xsl:if test="count(//html:indexitem) &gt; 0">\usepackage{makeidx}</xsl:if>
+    <xsl:if test="count(//html:indexitem) &gt; 0">
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\usepackage{makeidx}</xsl:text>
+    </xsl:if>
 
-    <xsl:for-each select="$packagelist/*"
-  >
+    <xsl:for-each select="$packagelist/*">
+
       <xsl:sort select="@pri" data-type="number"/>
-      \usepackage<xsl:if test="@options"
-    >[<xsl:value-of select="@options"/>]</xsl:if
-    >{<xsl:value-of select="@package"/>}  %%  <xsl:value-of select="@pri"/>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\usepackage</xsl:text>
+      <xsl:if test="@options">
+         <xsl:text>[</xsl:text>
+         <xsl:value-of select="@options"/>
+        <xsl:text>]</xsl:text>
+      </xsl:if>
+      <xsl:text>{</xsl:text>
+      <xsl:value-of select="@package"/>
+      <xsl:text>}  %% </xsl:text>
+      <xsl:value-of select="@pri"/>
     </xsl:for-each>
-    <!--xsl:apply-templates/ -->
+
 
     <!-- back to template match="html:preamble"-->
     <!-- xsl:call-template name="generateMissingNewTheorems" / -->
-<!--     <xsl:call-template name="writeNewTheoremList" />
- -->
+    <!--     <xsl:call-template name="writeNewTheoremList" /> -->
+
     <!--put this in only if graphicx is used, which, now, it always is-->
-    <!-- <xsl:if test="$packagelist//*[@package='graphicx']">
-    -->
-  \graphicspath{{../tcache/}{../gcache/}{../graphics/}}
-    <!-- </xsl:if>
-    -->
-    <!-- jcs - the following line seems to only generate bad \usepackage{}s -->
+    <!-- <xsl:if test="$packagelist//*[@package='graphicx']">  -->
+    <xsl:value-of select="$newline"/>
+
+    <xsl:text>\graphicspath{{../tcache/}{../gcache/}{../graphics/}}</xsl:text>
+
+
+
     <xsl:apply-templates/>
     <xsl:for-each select="$preambletexbuttons/*">
       <xsl:if test="@pre='1'">
-        <xsl:text>
-        </xsl:text>
+
+
         <xsl:apply-templates mode="tex"/>
       </xsl:if>
     </xsl:for-each>
 
   </xsl:template>
+
 
   <xsl:template match="html:preambleTeX">
     <xsl:value-of select="."/>

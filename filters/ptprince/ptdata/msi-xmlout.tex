@@ -319,7 +319,7 @@
 
 \def\out@preamble@tex#1{%
    \advance\preambleid by 1
-   \msitag{<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1}\msipreambleextra\msitag{]]></preambleTeX>}%
+   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1}\msipreambleextra\msitag{]]></preambleTeX>}%
    \preambleToks={}}
 
 
@@ -408,11 +408,11 @@
 
 \def\out@author#1{%
   \begingroup
-   \def\\{\msiclosetag{author}{</author>}
+   \def\\{\msiclosetag{author}{</author>}%
           \msitag{^^0a}%
-          \msiopentag{address}{<address>}
-          \msiopentag{bodyText}{<bodyText>}
-          \def\\{\par}
+          \msiopentag{address}{<address>}%
+          \msiopentag{bodyText}{<bodyText>}%
+          \def\\{\par}%
           \ignorespaces}
           
    \def\and{\msiclosetag{address}{</address>}%
@@ -437,13 +437,17 @@
 \def\MSIEmptyElement{%
   \@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
 
-\def\msi@empty@elmA[#1]#2{%
+\def\msi@empty@elmA[#1]#2#3{%
      \expandafter\def\csname #2\endcsname{%
         \ifmmode
            %\msitag{\msipassthru{<#1/>}}%
            \expandafter\msitag\expandafter{\csname#2\endcsname}%
         \else
-           \msihmode\msi@br\msitag{<#1/>}%
+           \if#3T\relax%
+             ^^0a%
+           \else              
+           \fi           
+           \msitag{<#1/>}%
         \fi}}
 
 \def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
@@ -453,7 +457,7 @@
   \@ifnextchar[{\msi@simple@envA}{\msi@simple@envB}}
 
 \def\msi@simple@envA[#1]#2{%
-  \expandafter\def\csname msi@begin@#2\endcsname{\msiopentag{#1}{<#1>}\msihmode}%
+  \expandafter\def\csname msi@begin@#2\endcsname{\msiopentag{#1}{<#1>}\msihmode\ignorespaces}%
   \expandafter\def\csname msi@end@#2\endcsname{\msiclosetag{#1}{</#1>}}}
 
 \def\msi@simple@envB#1{\msi@simple@envA[#1]{#1}}
@@ -597,14 +601,14 @@
   \ifmmode
     \msitag{\msipassthru{<xref key="#1" href="#1" reftype="obj"/>}}%
   \else
-    \msihmode\msitag{<xref key="#1" href="#1" reftype="obj"/>}
+    \msihmode\msitag{<xref key="#1" href="#1" reftype="obj"/>}%
   \fi}
 
 \def\pageref#1{%
   \ifmmode
     \msitag{\msipassthru{<xref key="#1" href="#1" reftype="page"/>}}%
   \else
-    \msihmode\msitag{<xref key="#1" href="#1" reftype="page"/>}
+    \msihmode\msitag{<xref key="#1" href="#1" reftype="page"/>}%
   \fi}
 
 
@@ -675,7 +679,7 @@
    \fi
    \msi@br\msiopentag{bibitem}{<bibitem hasLabel="false">}%
    \msitag{<bibkey>}#1\msitag{</bibkey>}%
-   \msi@br\msiopentag{bodyText}{<bodyText>}
+   \msi@br\msiopentag{bodyText}{<bodyText>}%
    \endgroup%
 }
 
@@ -852,7 +856,7 @@
 \def\@paragraphs{%
   \let\@par\par
   \def\par{\msiclosetag{bodyText}{</bodyText>}\@par}%
-  \everypar{\msihmode\msi@br\msiopentag{bodyText}{<bodyText>}}%
+  \everypar{^^0a\msihmode\msiopentag{bodyText}{<bodyText>}}%
 }
 
 

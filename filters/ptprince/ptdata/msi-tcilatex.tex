@@ -1,3 +1,4 @@
+\expandafter\advance\csname msi@output\endcsname by 1\relax
 \makeatletter
 
 
@@ -667,5 +668,6 @@
 }
 
 \makeatother
-\msi@output=0
+\expandafter\advance\csname msi@output\endcsname by -1\relax
+
 \endinput
