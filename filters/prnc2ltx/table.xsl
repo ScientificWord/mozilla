@@ -139,9 +139,9 @@
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text xml:space="preserve"> \\
-</xsl:text>
-        <xsl:call-template name="getHLineString">
+        <xsl:text> \\</xsl:text>
+        <xsl:value-of select="$newline"/>
+         <xsl:call-template name="getHLineString">
           <xsl:with-param name="theRowData" select="." />
           <xsl:with-param name="whichLine" select="'bottom'" />
         </xsl:call-template>
@@ -153,7 +153,7 @@
 <xsl:if test="$embedded">}</xsl:if>
 </xsl:template>    
 
-<xsl:template match="html:table">
+<xsl:template match="html:table|mml:table">
   <xsl:choose>
     <xsl:when test="@pos='center'">
       <xsl:choose>
@@ -222,11 +222,19 @@
 </xsl:template>
 
 <xsl:template match="html:td|html:th" mode="doOutput">
-  <xsl:if test="@ccolor">\cellcolor <xsl:choose
-      ><xsl:when test="substring(./@ccolor,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@ccolor,2,8),'abcdef','ABCDEF')"/>
+  <xsl:if test="@ccolor">
+    <xsl:text>\cellcolor</xsl:text> 
+    <xsl:choose>
+      <xsl:when test="substring(./@ccolor,1,1)='#'">
+	<xsl:text>[HTML]{</xsl:text>
+	<xsl:value-of select="translate(substring(./@ccolor,2,8),'abcdef','ABCDEF')"/>
       </xsl:when>
-      <xsl:otherwise>{<xsl:value-of select="./@ccolor"/></xsl:otherwise>
-    </xsl:choose>}
+      <xsl:otherwise> 
+	<xsl:text>{</xsl:text>
+	<xsl:value-of select="./@ccolor"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>}</xsl:text>
   </xsl:if>
   <xsl:apply-templates/>
 </xsl:template>

@@ -35,6 +35,23 @@
 
 <xsl:variable name="char-info" select="exsl:node-set($char-info.tr)"/>
 
+<!-- if the context is something you want stuffed between [...] call
+     this -->
+
+<xsl:template name="optional">
+
+   <xsl:variable name="content">
+     <xsl:value-of select="."/>
+   </xsl:variable>
+
+   <xsl:if test="string-length($content)!='0'">
+     <xsl:text>[</xsl:text>
+     <xsl:value-of select="."/>
+     <xsl:text>]</xsl:text>
+   </xsl:if>
+</xsl:template>
+
+
 
 
 <xsl:param name="endnotes" select="count(//html:endnotes[@val='end'])"/>
@@ -51,10 +68,10 @@
 </xsl:param>
 
 <xsl:output method="text" encoding="UTF-8"/>
-<!-- BBM for bug 3095
+
 <xsl:strip-space elements="*"/>
- -->
- <xsl:preserve-space elements="pre"/>
+
+<xsl:preserve-space elements="pre html:bodyText"/>
 
 <xsl:include href="table.xsl"/>
 <xsl:include href="graphics.xsl"/>
@@ -70,7 +87,9 @@
 </xsl:template>
 
 <xsl:template match="*">
-  <xsl:text>%[[[What??]]]</xsl:text>
+  <xsl:text>%[[[What?? </xsl:text>
+  <xsl:value-of select="name()"/>
+  <xsl:text>]]]</xsl:text>
   <xsl:value-of select="$newline"/>
   <!-- Matches all elements. Make it visible for now 
        so we can better catch lost cases. -->
@@ -353,9 +372,12 @@ should not be done under some conditions -->
     <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
   </xsl:if>
   <xsl:apply-templates select="following-sibling::html:author" mode="building-author" />
- }</xsl:template>  
- <!-- for the sake of the above template, -->
- <xsl:template match="html:msibr" mode="frontmatter">~\\
+  <xsl:text>}</xsl:text>
+</xsl:template> 
+ 
+<!-- for the sake of the above template, -->
+<xsl:template match="html:msibr" mode="frontmatter">
+  <xsl:text>~\\</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:author" mode="building-author">
@@ -441,24 +463,29 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:section">
-<xsl:apply-templates/>
-<xsl:call-template name="checkEndSubEquationsScope"/>
+  <xsl:value-of select="$blankline"/>
+  <xsl:apply-templates/>
+  <xsl:call-template name="checkEndSubEquationsScope"/>
 </xsl:template>
 
 <xsl:template match="html:subsection">
-<xsl:apply-templates/>
+  <xsl:value-of select="$blankline"/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:subsubsection">
-<xsl:apply-templates/>
+  <xsl:value-of select="$blankline"/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:paragraph">
-<xsl:apply-templates/>
+  <xsl:value-of select="$blankline"/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:subparagraph">
-<xsl:apply-templates/>
+  <xsl:value-of select="$blankline"/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 
@@ -610,30 +637,43 @@ should not be done under some conditions -->
 </xsl:template>
 
 
-<xsl:template match="html:numberedlist"><xsl:if test="*">
-\begin{enumerate}
-<xsl:apply-templates/>
-\end{enumerate}</xsl:if>
+<xsl:template match="html:numberedlist">
+  <xsl:if test="*">
+    <xsl:text>\begin{enumerate}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:apply-templates/>
+    <xsl:text>\end{enumerate}</xsl:text>
+    <xsl:value-of select="$newline"/>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:bulletlist">
-<xsl:if test="*">
-\begin{itemize}
-<xsl:apply-templates/>
-\end{itemize}
-</xsl:if>
+  <xsl:if test="*">
+    <xsl:text>\begin{itemize}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:apply-templates/>
+    <xsl:text>\end{itemize}</xsl:text>
+    <xsl:value-of select="$newline"/>
+  </xsl:if>
 </xsl:template>
 
-<xsl:template match="html:descriptionlist"><xsl:if test="*">
-\begin{description}
-<xsl:apply-templates/>
-\end{description}</xsl:if>
+<xsl:template match="html:descriptionlist">
+   <xsl:if test="*">
+     <xsl:text>\begin{description}</xsl:text>
+     <xsl:value-of select="$newline"/>
+     <xsl:apply-templates/>
+     <xsl:text>\end{description}</xsl:text>
+   </xsl:if>
 </xsl:template>
+
 
 <xsl:template match="html:numberedListItem">
-   <xsl:value-of select="$blankline"/>
+
    <xsl:text>\item </xsl:text>
    <xsl:apply-templates/>
+   <xsl:if test="position() != last()">
+     <xsl:value-of select="$blankline"/>
+   </xsl:if>
 </xsl:template>
 
 <!-- If we have an optional argument that contains a ] then we add {...} to make sure that
@@ -661,19 +701,28 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:bulletListItem">
-\item <xsl:apply-templates/>
+  <xsl:text>\item </xsl:text>
+   <xsl:apply-templates/>
+   <xsl:if test="position() != last()">
+     <xsl:value-of select="$blankline"/>
+   </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:bulletLabel">
-  [<xsl:apply-templates/>]
+  <xsl:call-template name="optional"/>
 </xsl:template>
 
 <xsl:template match="html:descriptionListItem">
-\item <xsl:apply-templates/>
+  <xsl:text>\item </xsl:text>
+   <xsl:apply-templates/>
+   <xsl:if test="position() != last()">
+     <xsl:value-of select="$blankline"/>
+   </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:descriptionLabel">
-  [<xsl:apply-templates/>]
+  <xsl:call-template name="optional"/>
+  <!-- [<xsl:apply-templates/>] -->
 </xsl:template>
 
 <xsl:template match="html:citation">
@@ -745,8 +794,10 @@ should not be done under some conditions -->
 </xsl:if>
 </xsl:template>
 
-<xsl:template match="html:note">\marginpar{<xsl:apply-templates/>}
-  
+<xsl:template match="html:note">
+   <xsl:text>\marginpar{</xsl:text>
+   <xsl:apply-templates/>
+   <xsl:text>}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:note//html:bodyText[position()=last()]">
@@ -957,7 +1008,9 @@ should not be done under some conditions -->
 %EndExpansion
 </xsl:template>
 
-<xsl:template match="html:explicit-item">[<xsl:apply-templates/>]  
+<xsl:template match="html:explicit-item">
+  <xsl:call-template name="optional"/>
+ <!--  [<xsl:apply-templates/>]  -->
 </xsl:template>
 
 <xsl:template match="html:a">\href{<xsl:value-of select="@href"/>}
@@ -1046,15 +1099,24 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:bibitem">
-\bibitem <xsl:apply-templates/>
+   <xsl:text>\bibitem </xsl:text>
+   <xsl:apply-templates/>
+   <xsl:if test="position() != last()">
+     <xsl:value-of select="$blankline"/>
+   </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:bibkey">
-  {<xsl:value-of select="."/>}
+  <xsl:text>{</xsl:text>
+  <xsl:value-of select="."/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:biblabel">
-  <xsl:if test = "string-length(normalize-space(.)) > 0">[<xsl:apply-templates/>]</xsl:if></xsl:template>
+  <xsl:if test = "string-length(normalize-space(.)) > 0">
+    <xsl:call-template name="optional"/>
+  </xsl:if>
+</xsl:template>
 
 <xsl:template match="html:msidisplay">
   <xsl:variable name="subEquationsInScope">
@@ -1114,8 +1176,9 @@ should not be done under some conditions -->
     </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>  <!-- Single-line display - either \equation or \equation* -->
-      <xsl:text xml:space="preserve">
-\begin{equation</xsl:text>
+      <!-- the msidisplay has been preceeded by a newline. One is not
+           needed here --> 
+      <xsl:text>\begin{equation</xsl:text>
       <xsl:if test="@numbering='none'">
         <xsl:text>*</xsl:text>
       </xsl:if>
@@ -1139,13 +1202,12 @@ should not be done under some conditions -->
           <xsl:text>}</xsl:text>
         </xsl:when>
       </xsl:choose>
-      <xsl:text xml:space="preserve">
-\end{equation</xsl:text>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\end{equation</xsl:text>
       <xsl:if test="@numbering='none'">
         <xsl:text>*</xsl:text>
       </xsl:if>
-      <xsl:text xml:space="preserve">}
-</xsl:text>
+      <xsl:text>}</xsl:text>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
