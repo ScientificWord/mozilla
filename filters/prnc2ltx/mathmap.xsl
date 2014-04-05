@@ -34,7 +34,7 @@
 
       <xsl:choose>
          <xsl:when
-	          test="contains('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+	          test="contains('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
 		                       $first-char)">
             <xsl:value-of select="$first-char"/>
          </xsl:when>
