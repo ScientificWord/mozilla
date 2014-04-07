@@ -3922,7 +3922,7 @@ var preInitializeVCamCallbackObjectBase =
     var editor = msiGetEditor(this.mEditorElement);
     var domGraph = editor.getElementOrParentByTagName("graph", this.mObj);
     var plotWrapper = this.mObj.parentNode;
-    if (this.mObj.addEvent && (this.mObj.readyState === 2)) {
+    //if (this.mObj.addEvent && (this.mObj.readyState === 2)) {
       this.mObj.addEvent('leftMouseDown', onVCamMouseDown);
       this.mObj.addEvent('leftMouseUp', onVCamMouseUp);
       this.mObj.addEvent('leftMouseDoubleClick', onVCamDblClick);
@@ -3947,7 +3947,7 @@ var preInitializeVCamCallbackObjectBase =
       this.mObj.vcamStatus = "initialized";  //add a property so we know we've successfully initialized the VCam object
       msidump("Leaving a successful attempt in preInitializeVCam\n");
       return true;
-    }
+    //}
     msidump("Leaving an unsuccessful attempt in preInitializeVCam; readyState reports [" + this.mObj.readyState + "]\n");
     return false;
   },
