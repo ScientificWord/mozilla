@@ -3905,14 +3905,34 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   msiUtils::MergeMathTags(startNode, PR_TRUE, PR_TRUE, ed);
 
   // See if we're in math
-
+  mHTMLEditor->GetInComplexTransaction(&isInComplexTransaction);
   nsCOMPtr<nsIDOMNode> mathNode;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsCOMPtr<nsIDOMElement> parentElement;
   nsCOMPtr<nsIDOMNode> node;
   res = msiUtils::GetMathParent(startNode, mathNode);
   if (NS_FAILED(res)) return res;
-  mHTMLEditor->GetInComplexTransaction(&isInComplexTransaction);
-
   if (mathNode && !isInComplexTransaction) {
+    // PRBool emptyMath;
+    // PRBool emptyParent = PR_FALSE;
+    // res = mHTMLEditor->IsEmptyNode(mathNode, &emptyMath, PR_TRUE, PR_TRUE, PR_TRUE);
+    // if (emptyMath) {
+    //   mathNode -> GetParentNode(getter_AddRefs(parentNode));
+    //   mHTMLEditor->DeleteNode(mathNode);
+    //   nsAutoString sTag;
+    //   if (parentNode) {
+    //     parentElement = do_QueryInterface(parentNode);
+    //     parentElement->GetTagName(sTag);
+    //     if (sTag.EqualsLiteral("msidisplay")) {
+    //       mHTMLEditor->IsEmptyNode(parentNode, &emptyParent, PR_TRUE, PR_TRUE, PR_TRUE);
+    //       // delete the node and leave
+    //       if (emptyParent) {
+    //         mHTMLEditor->DeleteNode(parentNode); // take the math node with it.
+    //       } 
+    //       return NS_OK;
+    //     }
+    //   }
+    // }
      bool b = false;
      nsCOMArray<nsIDOMNode> array;
      BuildAncestorArray( startNode, mathNode, array);
