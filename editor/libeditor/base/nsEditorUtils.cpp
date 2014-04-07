@@ -249,7 +249,7 @@ nsEditorUtils::IsLeafNode(nsIDOMNode *aNode)
 }
 
 
-PRBool Acceptable(nsEditor * ed, msiITagListManager * tlm, nsIDOMNode * node)
+PRBool nsEditorUtils::Acceptable(nsEditor * ed, msiITagListManager * tlm, nsIDOMNode * node)
 // We are looking for a node that can accept text. Mostly these are text nodes and texttag nodes.
 // Mathematics is acceptable; junk whitespace is not.
 {
@@ -260,7 +260,7 @@ PRBool Acceptable(nsEditor * ed, msiITagListManager * tlm, nsIDOMNode * node)
   if (ed->IsTextNode(node))
   {
     node->GetParentNode(getter_AddRefs(parent));
-    return Acceptable(ed, tlm, parent);
+    return nsEditorUtils::Acceptable(ed, tlm, parent);
   }
   else
   {
@@ -278,7 +278,7 @@ PRBool skipThisTextNode( nsEditor * ed, msiITagListManager * tlm, nsIDOMNode * n
   nsCOMPtr<nsIDOMNode> parent;
   node->GetParentNode(getter_AddRefs(parent));
   if (parent) {
-    return !(Acceptable(ed, tlm, parent));
+    return !(nsEditorUtils::Acceptable(ed, tlm, parent));
   }
   return PR_TRUE;
 }
@@ -292,7 +292,7 @@ PRBool LookForward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel, 
   nsCOMPtr<nsIDOMNode> newNode;
   PRInt32 newOffset;
   // Precondition: Acceptable(ed, tlm, node) is false.
-  if (Acceptable(ed, tlm, nodeIn)) {
+  if (nsEditorUtils::Acceptable(ed, tlm, nodeIn)) {
     sel->Collapse(nodeIn, offset);
     return PR_TRUE;
   }
@@ -339,7 +339,7 @@ PRBool LookBackward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel,
 
   if (nodeIn == nsnull) return PR_FALSE;
   // Precondition: Acceptable(ed, tlm, node) is false.
-  if (Acceptable(ed, tlm, nodeIn)) {
+  if (nsEditorUtils::Acceptable(ed, tlm, nodeIn)) {
     sel->Collapse(nodeIn, offset);
     return PR_TRUE;
   }
@@ -418,7 +418,7 @@ nsEditorUtils::JiggleCursor(nsIEditor *aEditor, nsISelection * sel, nsIEditor::E
   ed = static_cast<nsEditor*>(aEditor);
 
   ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset); 
-  if (Acceptable(ed, tlm, startNode))
+  if (nsEditorUtils::Acceptable(ed, tlm, startNode))
   {
     return PR_TRUE;  // current position is OK. Do nothing.
   }

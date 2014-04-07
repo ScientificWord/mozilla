@@ -890,6 +890,7 @@ button[class="eqnnum"]{
   font-style: normal;
   color: red;
   -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="subeqnnum"]{
@@ -900,6 +901,7 @@ button[class="subeqnnum"]{
   font-style: normal;
   color: blue;
   -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="eqnmarker"]{
@@ -908,31 +910,42 @@ button[class="eqnmarker"]{
   font-style: normal;
   color: red;
   -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 mtr button[class="eqnnum"], mtr button[class="subeqnnum"], mtr button[class="eqnmarker"] {
   display: inline;
   right: 0px;
+  -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="eqnnum"]:after{
   content: "  (" counter(section) "." counter(eqnnumber) ")";
   -moz-user-modify: read-only ! important;
+  -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="eqnnum"][customLabel]:after{
   content: "  " attr(customLabel);
   -moz-user-modify: read-only ! important;
+  -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="subeqnnum"]:after{
   content: "  (" counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin) ")";
   -moz-user-modify: read-only ! important;
+  -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="subeqnnum"][customLabel]:after{
   content: "  " attr(customLabel);
   -moz-user-modify: read-only ! important;
+  -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 
