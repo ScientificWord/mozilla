@@ -42,6 +42,7 @@ static char* s_processor;
 
 static const bool s_bMathml = true;
 extern bool s_equation;
+extern bool s_nonumbering;
 
 @<Node declarations@>
 @<Semantic nest@>
@@ -732,8 +733,10 @@ void Typesetter::EndDisplay()
 
          std::string str;
          str += "<msidisplay";
-         if (!s_equation){
+         if (!s_equation && !s_nonumbering){
            str += " numbering=\"eqns\" ";
+         } else {
+           str += " numbering=\"none\" ";
          }
          if (customLabel != ""){
            str += " customLabel=\"";
