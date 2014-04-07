@@ -35,6 +35,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   nsIFrame * pChild;
   nsIFrame * pSiblingFrame;
   nsCOMPtr<nsIContent> pContent;
+  nsCOMPtr<nsIContent> pDisplayParentContent;
   pParent = GetSignificantParent(pFrame);
 
   // BBM provisional code
@@ -113,6 +114,17 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
     else
     { 
       count = 0;
+      // special case. We are leaving math, so we need to see if  we are in a math display.
+      // If so, leave that too.
+      pContent = pParent->GetContent();
+      nsCOMPtr<nsIDOMElement> pElem = do_QueryInterface(pContent);
+      if (pElem) {
+        nsAutoString tag;
+        pElem->GetTagName(tag);
+        if (tag.EqualsLiteral("msidisplay")) {
+          pFrame = pParent;
+        }
+      }
 
       pSiblingFrame = pFrame->GetNextSibling();
       if (pSiblingFrame) {
@@ -190,13 +202,30 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
     {
       count = 0;
 
-      // pSiblingFrame = pFrame->GetPrevSibling();
-      // if (pSiblingFrame) {
-      //   *aOutFrame = pSiblingFrame;
-      //   *aOutOffset = 0;
-      // }
-      // else
-      // {
+      // special case. We are leaving math, so we need to see if  we are in a math display.
+      // If so, leave that too.
+      pContent = pParent->GetContent();
+      nsCOMPtr<nsIDOMElement> pElem = do_QueryInterface(pContent);
+      if (pElem) {
+        nsAutoString tag;
+        pElem->GetTagName(tag);
+        if (tag.EqualsLiteral("msidisplay")) {
+          pFrame = pParent;
+        }
+      }
+      pSiblingFrame = pFrame->GetPrevSibling();
+      if (pSiblingFrame) {
+        PRUint32 textlength;
+        *aOutFrame = pSiblingFrame;
+        nsIAtom * frameType = (pSiblingFrame)->GetType();
+        if (nsGkAtoms::textFrame == frameType) {
+          textlength = (pSiblingFrame)->GetContent()->TextLength();
+          *aOutOffset = textlength;
+        } else
+          *aOutOffset = (PRUint32(-1));
+      }
+      else
+      {
         pChild = GetLastTextFrameBeforeFrame(pFrame);
         if (pChild)
         {
@@ -209,7 +238,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
         }
         else
           pFrame->MoveLeftAtDocStart( nsnull);
-      // }
+      }
     }
   }
   return PR_TRUE;
