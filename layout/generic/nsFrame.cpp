@@ -4935,6 +4935,31 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
   }
 }
 
+PRBool
+NonMathInMsiDisplay( nsIFrame * pFrame ) {
+  nsIFrame * pTemp = pFrame;
+  nsAutoString sTag;
+  nsCOMPtr<nsIContent>  pContent;
+  nsCOMPtr<nsIDOMElement> pElem;
+  nsIAtom * frameType = (pTemp)->GetType();
+  if (nsGkAtoms::textFrame == frameType) {
+    pTemp = pTemp->GetParent();
+  }
+  while (pTemp) {
+    if (IsMathFrame(pTemp)) return PR_FALSE;
+    pContent = pTemp->GetContent();
+    if (pContent) {
+      pElem = do_QueryInterface(pContent);
+      if (pElem) {
+        pElem->GetTagName(sTag);
+        if (sTag.EqualsLiteral("msidisplay"))
+          return PR_TRUE;
+      }
+    }
+    pTemp = pTemp->GetParent();
+  }
+  return PR_FALSE;
+}
 
 NS_IMETHODIMP
 nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
@@ -4974,7 +4999,11 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
           nsIFrame * pNext;
           nsIFrame * pPrevious;
           nsIFrame * f;
-          done = current->PeekOffsetNoAmount(movingInFrameDirection, &offset);
+          // We have to avoid non-math material in an msidisplay tag.
+          if (NonMathInMsiDisplay(current))
+            done = PR_FALSE;
+          else
+            done = current->PeekOffsetNoAmount(movingInFrameDirection, &offset);
           // PeekOffsetNoAmount returns true if there is a character for the cursor to sit beside. We also want to return 
           // true when the next frame is math
           if (!done) {
