@@ -2859,3 +2859,4 @@ nsresult msiUtils::GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
   point = nsPoint(screenX, screenY);
   return NS_OK;
 }
+ 
