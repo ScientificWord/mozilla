@@ -47,6 +47,15 @@ typedef struct tagANOMALY_REC {	// Struct to
   U32 off2;
 } ANOMALY_REC;
 
+#define ANOMALY_HYPERREF (1000) // a \hyperref in math
+#define ANOMALY_NOTE     (1001) // eg \footnote in math
+#define ANOMALY_FRAME    (1002) // a \frame in math
+#define ANOMALY_VSPACE   (1003) // \vspace, \medskip, ...
+#define ANOMALY_TAG      (1004) // tag, notag, tag*
+#define ANOMALY_LEFTOVER (1005)
+#define ANOMALY_AUTONUMBERING (1010)
+#define ANOMALY_NONUMBERING (1011)
+
 
 
 typedef struct tagATTRIB_REC {	// Struct to define an attribute node.

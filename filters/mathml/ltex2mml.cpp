@@ -2761,7 +2761,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       break;
 
       case 409  : 			// \FRAME in MATH
-        RecordAnomaly( 1000,NULL,obj_node->src_offset1,
+        RecordAnomaly( 1002,NULL,obj_node->src_offset1,
         						            obj_node->src_offset2 );
         tex_nodes_done  =  1;
       break;
@@ -2908,7 +2908,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       case 701  : 		// \tag
       case 702  : 		// \tag*
       case 703  : {     // \notag
-      RecordAnomaly( 1001,NULL,obj_node->src_offset1,
+      RecordAnomaly( 1004,NULL,obj_node->src_offset1,
      						            obj_node->src_offset2 );
         tex_nodes_done  =  1;
       } 
@@ -5067,6 +5067,9 @@ TNODE* LaTeX2MMLTree::TranslateTeXDisplay( TNODE* tex_display_node,
       // These are auto-numbered, which has to be handled outside in pretex
       RecordAnomaly(1010, NULL, 0, 0);
     }
+    if ( id == 21 ) {   // \begin{equation*}
+      RecordAnomaly(ANOMALY_NONUMBERING, NULL, 0, 0);
+    }
 
     TNODE* mml_cont =  NULL;
     TNODE* tex_cont =  tex_display_node->parts->contents;
@@ -6812,7 +6815,7 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
 	        node_to_insert->src_linenum =  rover->src_linenum;
 
 	      } else if ( stype == 409 && uID == 0 ) {	// \FRAME<uID5.409.0>!
-            RecordAnomaly( 1000,NULL,rover->src_offset1,
+            RecordAnomaly( 1002,NULL,rover->src_offset1,
           					          rover->src_offset2 );
 
           } else if ( stype >= 420 && stype <= 426 ) {	// notes

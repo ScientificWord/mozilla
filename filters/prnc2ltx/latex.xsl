@@ -1137,8 +1137,11 @@ should not be done under some conditions -->
 </xsl:text>
   </xsl:if>
   <xsl:choose>
-    <xsl:when test=".//mml:mtable[@type='eqnarray']">
-    <xsl:for-each select=".//mml:mtable[@type='eqnarray'][1]">
+    <xsl:when test=".//mml:mtable[@type='eqnarray']
+                 or .//mml:mtable[@type='eqnarray*']">
+
+    <xsl:for-each select=".//mml:mtable[@type='eqnarray'][1] 
+                        | .//mml:mtable[@type='eqnarray*'][1]">
       <xsl:call-template name="eqnarray">
         <xsl:with-param name="n-rows" select="count(./mml:mtr)" />
         <xsl:with-param name="n-labeledrows">
