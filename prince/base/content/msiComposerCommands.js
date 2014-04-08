@@ -9130,7 +9130,10 @@ var msiSelectTableCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return msiIsInTable();
+    if (aCommand == "cmd_selectTable")
+      return msiIsInTable();
+    if (aCommand == "cmd_SelectMatrix")
+      return true;
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -9142,6 +9145,7 @@ var msiSelectTableCommand =
     {
       var editorElement = msiGetActiveEditorElement();
       var editor = msiGetEditor(editorElement);
+//      msiGetTableEditor(editorElement).selectAllTableCells();
       var element = editor.selection.anchorNode;
       var tableNode;
       if (element)
@@ -9152,6 +9156,7 @@ var msiSelectTableCommand =
           editor.markNodeDirty(tableNode);
         }
       }
+    
       if (editorElement) {
         editorElement.contentWindow.focus();
       }
