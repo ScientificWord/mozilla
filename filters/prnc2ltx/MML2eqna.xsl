@@ -279,9 +279,9 @@
 -->
         <xsl:for-each select="*">
           <xsl:choose>
-            <xsl:when test="position()=1
+            <!-- xsl:when test="position()=1
             and             name()='mml:maligngroup'">
-            </xsl:when>
+            </xsl:when -->
             <xsl:when test="name()='mml:maligngroup'">
               <xsl:text xml:space="preserve"> &amp; </xsl:text>
             </xsl:when>
