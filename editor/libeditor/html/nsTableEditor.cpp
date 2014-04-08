@@ -1850,6 +1850,9 @@ nsHTMLEditor::SelectAllTableCells()
 {
   nsCOMPtr<nsIDOMElement> cell;
   nsresult res = GetElementOrParentByTagName(NS_LITERAL_STRING("td"), nsnull, getter_AddRefs(cell));
+  if (!cell) {
+    res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtd"), nsnull, getter_AddRefs(cell));
+  }
   if (NS_FAILED(res)) return res;
   
   // Don't fail if we didn't find a cell
@@ -1860,6 +1863,9 @@ nsHTMLEditor::SelectAllTableCells()
   // Get parent table
   nsCOMPtr<nsIDOMElement> table;
   res = GetElementOrParentByTagName(NS_LITERAL_STRING("table"), cell, getter_AddRefs(table));
+  if (!table) {
+    res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), cell, getter_AddRefs(table));
+  }
   if (NS_FAILED(res)) return res;
   if(!table) return NS_ERROR_NULL_POINTER;
 
