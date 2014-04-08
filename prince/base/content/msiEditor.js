@@ -2895,7 +2895,7 @@ function GetParentTable(element)
   var node = element;
   while (node)
   {
-    if (node.nodeName.toLowerCase() == "table")
+    if ((node.nodeName.toLowerCase() == "table") || (node.nodeName.toLowerCase() == "mtable"))
       return node;
 
     node = node.parentNode;
@@ -2906,15 +2906,18 @@ function GetParentTable(element)
 function GetParentTableCell(element)
 {
   var node = element;
+  var name;
   while (node)
   {
-    if (node.nodeName.toLowerCase() == "td" || node.nodeName.toLowerCase() == "th")
+    name = node.nodeName.toLowerCase();
+    if (name == "td" || name == "th" || name == "mtd")
       return node;
 
     node = node.parentNode;
   }
   return node;
 }
+
 
 function EditorDblClick(event)
 {
