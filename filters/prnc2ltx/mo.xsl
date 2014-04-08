@@ -294,6 +294,11 @@
           <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
         </xsl:call-template>
       </xsl:when>
+      <xsl:when test="normalize-space(string())='' and  @fence='true'">
+        <xsl:call-template name="translate-fencing-mo">
+          <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
+        </xsl:call-template>
+      </xsl:when>
 <!-- \left\Updownarrow  \right\Updownarrow -->
       <xsl:when test="normalize-space(string())='&#x21D5;'">
         <xsl:call-template name="translate-fencing-mo">
