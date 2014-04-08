@@ -566,13 +566,18 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
 	  case 133  :		// TENV_multline       133
 	  case 134  : 	// TENV_multlinestar   134
     //JBMLine("\nTranslateMathObject A");
+    if ( usubtype == TENV_eqnarraystar )
+    {
+      RecordAnomaly( ANOMALY_NONUMBERING, NULL, 0, 0 );
+
+    }
 		if ( uID == 0 ) {
           script_level  =  0;
 		      in_display  =  TRUE;
           mml_rv  =  TranslateTeXEqnArray( math_container_obj,
    							                &out_of_flow_list,usubtype );
           mml_rv  =  AddEQNAttribs( mml_rv,usubtype );
-		  in_display  =  FALSE;
+		      in_display  =  FALSE;
           script_level  =  0;
 		}
     
@@ -664,14 +669,14 @@ TNODE* LaTeX2MMLTree::TranslateMathList(
 
       case 3  :   // LaTeX Symbol
         if ( usubtype==17 && uID==106 ) {	// &
-// maligngroup<uID9.20.0>
-// mmltiler has special handling for <uID9.d.d> objects
-  		  curr_mml_node =  MakeTNode( 0L,0L,0L,(U8*)"9.20.0" );
-// mark this node as pure whitespace
+          // maligngroup<uID9.20.0>
+          // mmltiler has special handling for <uID9.d.d> objects
+  		    curr_mml_node =  MakeTNode( 0L,0L,0L,(U8*)"9.20.0" );
+          // mark this node as pure whitespace
           SetDetailNum( curr_mml_node,DETAILS_space_width,0 );
-        } else
-          curr_mml_node =  MathSymbolToMML( rover,LaTeX_list,
-							            &oof_list,local_nodes_done );
+        } else {
+          curr_mml_node =  MathSymbolToMML( rover,LaTeX_list, &oof_list,local_nodes_done );
+        }
       break;
 
       case 4  :   // Accent - math OR a bold node
@@ -4847,17 +4852,17 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
 
 // mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd,)!/mtd!
 // maligngroup<uID9.20.0>
+// <maligngroup>s have already been put in by TranslateMathList.
+// jcs This seems to add and extra one for no reason.
+// 	  TNODE* alignmark  =  MakeTNode( 0,0,0,(U8*)"9.20.0" );
+//     // mark node as pure whitespace
+//     SetDetailNum( alignmark,DETAILS_space_width,0 );
+//     alignmark->next =  mtd_cont_head;
+//     if ( mtd_cont_head )
+//       mtd_cont_head->prev =  alignmark;
+// 
 
-	  TNODE* alignmark  =  MakeTNode( 0,0,0,(U8*)"9.20.0" );
-// mark node as pure whitespace
-    SetDetailNum( alignmark,DETAILS_space_width,0 );
-    alignmark->next =  mtd_cont_head;
-    if ( mtd_cont_head )
-      mtd_cont_head->prev =  alignmark;
-
-
-    TNODE* mml_cell =  CreateElemWithBucketAndContents( 5,35,14,
-                                                    8,alignmark );
+    TNODE* mml_cell =  CreateElemWithBucketAndContents( 5, 35, 14, 8, mtd_cont_head );
     if ( column_align_vals[0] ) {
       if ( ( usubtype == 133 || usubtype == 134 ) // multline
       &&   dest_line_counter == 0 ) {
@@ -5027,7 +5032,8 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 // _LISTOFROWS_LIST(5.35.9,_MTROW_,5.35.10,,/mtable,)
 
   mml_rv  =  CreateElemWithBucketAndContents( 5,35,0,9,NULL );
-  SetNodeAttrib( mml_rv, (U8*)"type", (U8*)uIDToString(usubtype));
+  SetNodeAttrib( mml_rv, (U8*)"type", (U8*)"eqnarray");
+  SetNodeAttrib( mml_rv, (U8*)"subtype", (U8*)uIDToString(usubtype));
   if ( found_spacer )
     SetNodeAttrib( mml_rv,(U8*)"rowspacing",row_spacing_vals );
 
@@ -17709,16 +17715,20 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
 // mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd,)!/mtd!
 // maligngroup<uID9.20.0>
 
-	TNODE* alignmark  =  MakeTNode( 0,0,0,(U8*)"9.20.0" );
-// mark node as pure whitespace
-    SetDetailNum( alignmark,DETAILS_space_width,0 );
-    alignmark->next =  mtd_cont_head;
-    if ( mtd_cont_head )
-      mtd_cont_head->prev =  alignmark;
 
-
-    TNODE* mml_cell =  CreateElemWithBucketAndContents( 5,35,14,
-                                                    8,alignmark );
+// <maligngroup>s have already been put in by TranslateMathList.
+// jcs This seems to add and extra one for no reason.
+// 	TNODE* alignmark  =  MakeTNode( 0,0,0,(U8*)"9.20.0" );
+//   // mark node as pure whitespace
+//     SetDetailNum( alignmark,DETAILS_space_width,0 );
+//     alignmark->next =  mtd_cont_head;
+//     if ( mtd_cont_head )
+//       mtd_cont_head->prev =  alignmark;
+// 
+// 
+//     TNODE* mml_cell =  CreateElemWithBucketAndContents( 5,35,14,
+//                                                     8,alignmark );
+    TNODE* mml_cell =  CreateElemWithBucketAndContents( 5,35,14,8, mtd_cont_head );
     if ( column_align_vals[0] ) {
       if ( ( usubtype == 133 || usubtype == 134 ) // multline
       &&   dest_line_counter == 0 ) {
