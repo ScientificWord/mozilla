@@ -1137,16 +1137,14 @@ should not be done under some conditions -->
 </xsl:text>
   </xsl:if>
   <xsl:choose>
-    <xsl:when test=".//mml:mtable[@type='eqnarray']
-                 or .//mml:mtable[@type='eqnarray*']">
+    <xsl:when test=".//mml:mtable[@type='eqnarray']">
 
-    <xsl:for-each select=".//mml:mtable[@type='eqnarray'][1] 
-                        | .//mml:mtable[@type='eqnarray*'][1]">
+    <xsl:for-each select=".//mml:mtable[@type='eqnarray'][1]"> 
       <xsl:call-template name="eqnarray">
         <xsl:with-param name="n-rows" select="count(./mml:mtr)" />
         <xsl:with-param name="n-labeledrows">
           <xsl:choose>
-            <xsl:when test="@numbering='none'">
+            <xsl:when test="@numbering='none' or ancestor::html:msidisplay[@numbering='none']">
               <xsl:text>0</xsl:text>
             </xsl:when>
             <xsl:when test="@alignment='alignSingleEqn'">
@@ -1165,14 +1163,18 @@ should not be done under some conditions -->
           </xsl:choose>
         </xsl:with-param>
         <xsl:with-param name="n-aligns">
-          <xsl:choose>
-            <xsl:when test="(@alignment='alignCentered') or (@alignment='alignSingleEqn')">
-              <xsl:text>0</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>1</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
+        <!-- jcs I don't understand this. It seems we want to count the number of alignments.
+             <xsl:choose>
+               <xsl:when test="(@alignment='alignCentered') or (@alignment='alignSingleEqn')">
+                 <xsl:text>0</xsl:text>
+               </xsl:when>
+               <xsl:otherwise>
+                 <xsl:text>1</xsl:text>
+               </xsl:otherwise>
+             </xsl:choose>
+          -->
+          <xsl:value-of select="count(./mml:mtr[1]/mml:mtd/mml:maligngroup)"/>
+       
         </xsl:with-param>
         <xsl:with-param name="theAlignment" select="@alignment"/>
       </xsl:call-template>
