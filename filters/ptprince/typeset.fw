@@ -738,6 +738,10 @@ void Typesetter::EndDisplay()
          } else {
            str += " numbering=\"none\" ";
          }
+         if (Global::msiinsubequations == 1){
+           str+= " subEquationNumbers='true' "; 
+         }
+
          if (customLabel != ""){
            str += " customLabel=\"";
            str += customLabel;

@@ -3,6 +3,7 @@
 \newcounter{MaxMatrixCols}
 
 \msi@inpreamble = 0
+\msi@insubequations=0
 
 
 %%\def\msiToPreamble#1{\expandafter\preambleToks\expandafter{\the\preambleToks #1}}
@@ -933,19 +934,6 @@
      \msiclosetag[mml][</mml:math>]
   ]
 
-  %\gdef\@scan@equation@star#1\end{equation*}[%
-  %   \egroup
-  %   \@make@braces@normal
-  %   \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
-  %   \msiextproc[jbm][\begin{equation*}#1\end{equation*}]%
-  %   \msiclosetag[mml][</mml:math>]
-  %]
-  %\gdef\@scan@array#1\end{array}[%
-  %   \egroup
-  %   \@make@braces@normal
-  %   \msitag[\begin{array}#1\end{array}]
-  %]
-  %\def\endarray[\cr\egroup\string\end`\{array\char`\}]
   \gdef\@scan@bmatrix#1\end{bmatrix}[%
      \egroup
      \@make@braces@normal
@@ -1006,6 +994,8 @@
 \def\msi@begin@math{\bgroup\msi@dollar=0\relax$\string\begin{math}}
 \def\msi@end@math{\string\end{math}$\egroup}
 
+\def\msi@begin@subequations{\msi@insubequations=1}
+\def\msi@end@subequations{\msi@insubequations=0}
 
 \def\msi@begin@equation{\bgroup\msi@dollar=0\relax$$\string\begin{equation}}
 \def\msi@end@equation{\string\end{equation}$$\egroup}
