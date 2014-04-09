@@ -2060,6 +2060,7 @@
       %%% \msiopentag{texb}{}%
       %%% \msitopreambleextra{<![CDATA[}
       \expandafter\temptoksa\expandafter{\csname#1\endcsname}
+      \msitopreambleextra{^^0a}%
       \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
     \else
       \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
