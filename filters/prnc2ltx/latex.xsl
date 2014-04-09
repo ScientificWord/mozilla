@@ -136,13 +136,6 @@
 </xsl:template>
 
 
-<!-- JCS
-<xsl:template match="html:body">
-<xsl:apply-templates/>
-</xsl:template>
--->
-
-
 
 
 <xsl:template match="html:texlogo"><xsl:choose
@@ -332,19 +325,27 @@
 </xsl:template>
 
 <xsl:template match="html:body">
-<!--\input tcilatex.tex  
-should not be done under some conditions -->
-<xsl:if test="count(//html:indexitem) &gt; 0"
-  >\makeindex</xsl:if>
-\begin{document}
-<xsl:apply-templates/>
-<xsl:if test="($endnotes &gt; 0) and ($footnotecount &gt; 0)">
-\theendnotes
-</xsl:if>
-<xsl:if test="$indexitems &gt; 0"
-><xsl:if test="count(//html:printindex) = 0"
->\printindex</xsl:if></xsl:if>
-\end{document}
+   <!--\input tcilatex.tex  should not be done under some conditions -->
+   <xsl:if test="count(//html:indexitem) &gt; 0">
+     <xsl:value-of select="$newline"/>
+     <xsl:text>\makeindex</xsl:text>
+   </xsl:if>
+   <xsl:value-of select="$newline"/>
+   <xsl:text>\begin{document}</xsl:text>
+   <xsl:apply-templates/>
+   <xsl:if test="($endnotes &gt; 0) and ($footnotecount &gt; 0)">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\theendnotes </xsl:text>
+   </xsl:if>
+   <xsl:if test="$indexitems &gt; 0">
+     <xsl:if test="count(//html:printindex) = 0">
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\printindex </xsl:text>
+     </xsl:if>
+   </xsl:if>
+   <xsl:call-template name="checkEndSubEquationsScope"/>
+   <xsl:value-of select="$newline"/>
+   <xsl:text>\end{document}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:printindex">
