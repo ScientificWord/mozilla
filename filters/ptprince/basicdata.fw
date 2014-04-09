@@ -85,6 +85,7 @@ static int msidollar;
 static int msioutput;
 static int msitraceall;
 static int msiinpreamble;
+static int msiinsubequations;
 @}
 
 
@@ -156,6 +157,7 @@ int Global::msidollar;
 int Global::msioutput;
 int Global::msitraceall;
 int Global::msiinpreamble;
+int Global::msiinsubequations;
 @}
 
 
