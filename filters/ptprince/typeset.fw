@@ -733,11 +733,19 @@ void Typesetter::EndDisplay()
 
          std::string str;
          str += "<msidisplay";
-         if (!s_equation && !s_nonumbering){
+         if (s_equation){
+           if (s_nonumbering){
+             str += " numbering=\"none\" ";
+           }
+         } else if (!s_nonumbering) {
            str += " numbering=\"eqns\" ";
          } else {
            str += " numbering=\"none\" ";
          }
+         if (Global::msiinsubequations == 1){
+           str+= " subEquationNumbers='true' "; 
+         }
+
          if (customLabel != ""){
            str += " customLabel=\"";
            str += customLabel;
