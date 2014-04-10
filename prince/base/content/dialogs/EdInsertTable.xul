@@ -241,6 +241,10 @@
                       <spacer id="tableBackgroundCW" class="color-well"/>
                     </msibutton><spacer flex="2"/></hbox> -->
                   </row>
+                  <row align="center">
+                    <label value="&LabelText.label;" control="labelText"/>
+                    <textbox id="labelText" oncommand="" />
+                  </row>
                 </rows>
               </grid> 
             </groupbox>

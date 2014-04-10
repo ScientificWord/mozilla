@@ -33,5 +33,6 @@ glob:myports\.txt
 glob:*.xcscheme
 glob:*/xcschememanagement.plist
 glob:*.hmap
+glob:*.glue
 
 
