@@ -118,6 +118,7 @@
 <!ENTITY tableCaptionNone.label           "None">
 <!ENTITY backgroundInheritColor.label     "(Let page color show through)">
 
+<!ENTITY LabelText.label                  "Label for cross-references">
 <!-- !ENTITY cellPercent.label                "percent of table" -->
 
 <!ENTITY borderWidthUnspec.label    "-- unspecified --">
