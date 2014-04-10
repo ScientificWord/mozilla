@@ -8,9 +8,9 @@
 
 %% Frontmatter commands
 
-\MSIEmptyElement{frontmatter}
-\MSIEmptyElement{tableofcontents}
-\MSIEmptyElement{maketitle}
+\MSIEmptyElement{frontmatter}{T}
+\MSIEmptyElement{tableofcontents}{T}
+\MSIEmptyElement{maketitle}{T}
 
 % Use default \title 
 
