@@ -87,6 +87,7 @@ MakeIntegerParameter("msi@@dollar",       &Global::msidollar);
 MakeIntegerParameter("msi@@output",       &Global::msioutput);
 MakeIntegerParameter("msi@@traceall",     &Global::msitraceall);
 MakeIntegerParameter("msi@@inpreamble",   &Global::msiinpreamble);
+MakeIntegerParameter("msi@@insubequations",   &Global::msiinsubequations);
 @}
 
 @$@<Basic assignment commands@>+=@{@-
