@@ -56,8 +56,21 @@ function insertTag( name, delSelection )
   var editor = msiGetEditor(editorElement);
   var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
   if (delSelection) deleteSelection();
-  var node = editor.document.createElement(name);
-  editor.insertElementAtSelection(node,true);
+  var tagclass = editor.tagListManager.getRealClassOfTag(name, null);
+  var cmd = "";
+  switch (tagclass) {
+    case "texttag"  : cmd = "cmd_texttag";
+      break;
+    case "paratag"  :
+    case "listtag"  : cmd = "cmd_paratag";
+      break;
+    case "structtag":
+    case "envtag"   : cmd = "cmd_structtag";
+      break;
+    default: 
+  }
+  if (cmd !== "")
+    msiDoStatefulCommand(cmd,name);
 }
   
 
