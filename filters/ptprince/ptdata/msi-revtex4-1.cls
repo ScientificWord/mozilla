@@ -41,7 +41,7 @@
    \msitag{^^0a}\msiopentag{collaboration}{<collaboration>}#1\msiclosetag{collaboration}{</collaboration>}}
 
 %\noaffiliation
-\MSIEmptyElement{noaffiliation}
+\MSIEmptyElement{noaffiliation}{}
 
 %\email[optional text]{Second.Author@institution.edu}
 \def\email{%
