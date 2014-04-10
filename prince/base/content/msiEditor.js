@@ -765,7 +765,7 @@ function coalesceDocumentOptions(editor)
       if (option[1] && option[1].length > 0) 
         optionval = option[1];
       else optionval = option[0];
-      colist.setAttribute(option[0],optionval);
+      colist.setAttribute("co_" + option[0], optionval);
     }
   }
 }
