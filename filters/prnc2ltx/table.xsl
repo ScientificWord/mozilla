@@ -19,6 +19,7 @@
 
 <xsl:template name="buildtable">
   <xsl:variable name="theTable" select="." />
+
   <xsl:variable name="topCaption">
     <xsl:choose>
       <xsl:when test="html:caption[not(@align)]">1</xsl:when>
@@ -26,16 +27,20 @@
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:variable name="bottomCaption">
     <xsl:choose>
       <xsl:when test="html:caption[@align='bottom']">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:variable name="caption" select="html:caption"/>
  
 
-  <xsl:variable name="embedded" select="count(ancestor::html:table)"/>
+  <xsl:variable name="embedded" 
+    select="count(ancestor::html:table)"/>
+
   <xsl:variable name="tabularType">
     <xsl:choose>
       <xsl:when test="@width &gt; 0">
@@ -47,6 +52,7 @@
       <xsl:otherwise>tabular</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:variable name="mmWidth">
     <xsl:choose>
     <xsl:when test="@width &gt; 0">
@@ -57,14 +63,25 @@
     <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:variable name="cellData.tf">
     <xsl:call-template name="collectCellData" />
   </xsl:variable>
-  <xsl:variable name="cellData" select="exsl:node-set($cellData.tf)"/>
-  <xsl:text xml:space="preserve">
-</xsl:text><xsl:if test="$embedded!=0">{</xsl:if>
-<xsl:if test="$topCaption='1'"><xsl:apply-templates select="$caption"/></xsl:if>
-\begin{<xsl:value-of select="$tabularType"/>}<xsl:choose>
+
+  <xsl:variable name="cellData" 
+    select="exsl:node-set($cellData.tf)"/>
+
+  <xsl:value-of select="$newline"/>
+  <xsl:if test="$embedded!=0">
+    <xsl:text>{</xsl:text>
+  </xsl:if>
+  <xsl:if test="$topCaption='1'">
+    <xsl:apply-templates select="$caption"/>
+  </xsl:if>
+  <xsl:text>\begin{</xsl:text>
+  <xsl:value-of select="$tabularType"/>
+  <xsl:text>}</xsl:text>
+  <xsl:choose>
     <xsl:when test="@width &gt; 0">{<xsl:value-of select="$mmWidth" />mm}</xsl:when>
     <xsl:otherwise></xsl:otherwise>
   </xsl:choose>
@@ -73,6 +90,7 @@
     <xsl:when test="@valign = 'top'"><xsl:text>[t]</xsl:text></xsl:when>
     <xsl:otherwise><xsl:text>[c]</xsl:text></xsl:otherwise>
   </xsl:choose>
+
   <xsl:variable name="lastCol">
     <xsl:for-each select="$cellData//cellData">
       <xsl:sort select="number(@col)" data-type="number" order="descending" />
@@ -81,6 +99,7 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:variable>
+
   <xsl:variable name="preambleData.tf">
     <xsl:call-template name="getTablePreambleData">
       <xsl:with-param name="theCellData" select="$cellData" />
@@ -88,6 +107,7 @@
       <xsl:with-param name="lastCol" select="$lastCol" />
     </xsl:call-template>
   </xsl:variable>
+
   <xsl:variable name="preambleData" select="exsl:node-set($preambleData.tf)" />
 
   <xsl:text>{</xsl:text>
@@ -100,14 +120,14 @@
   </xsl:for-each>
   <xsl:text>}</xsl:text>
 
-  <xsl:text xml:space="preserve">
-</xsl:text>
+  <xsl:value-of select="$newline"/>
   <xsl:call-template name="getHLineString">
     <xsl:with-param name="theRowData" select="$cellData/rowData[1]" />
     <xsl:with-param name="whichLine" select="'top'" />
   </xsl:call-template>
-  <xsl:text xml:space="preserve">
-</xsl:text>
+
+  <xsl:value-of select="$newline"/>
+
   <xsl:for-each select="$cellData/rowData">
     <xsl:for-each select="./cellData[(@cellID and string-length(normalize-space(@cellID))) or (@continuation='row')]">
       <xsl:call-template name="outputCell">
@@ -129,12 +149,12 @@
         </xsl:variable>
         <xsl:choose>
           <xsl:when test="string-length(normalize-space($lastHLine))">
-            <xsl:text xml:space="preserve"> \\
-</xsl:text><xsl:value-of select="$lastHLine" />
+            <xsl:text> \\</xsl:text>
+            <xsl:value-of select="$newline"/>
+            <xsl:value-of select="$lastHLine" />
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text xml:space="preserve">
-</xsl:text>
+            <xsl:value-of select="$newline"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -148,9 +168,15 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
-\end{<xsl:value-of select="$tabularType"/>}
-<xsl:if test="$bottomCaption='1'"><xsl:apply-templates select="$caption"/></xsl:if>
-<xsl:if test="$embedded">}</xsl:if>
+  <xsl:text>\end{</xsl:text>
+  <xsl:value-of select="$tabularType"/>
+  <xsl:text>}</xsl:text>
+  <xsl:if test="$bottomCaption='1'">
+     <xsl:apply-templates select="$caption"/>
+  </xsl:if>
+  <xsl:if test="$embedded">
+    <xsl:text>}</xsl:text>
+  </xsl:if>
 </xsl:template>    
 
 <xsl:template match="html:table|mml:table">
@@ -212,7 +238,9 @@
 <xsl:variable name="dblBackslash"><xsl:text xml:space="preserve">\\ </xsl:text></xsl:variable>
 
 <xsl:template match="html:td|html:th" mode="parbox">
-  <xsl:variable name="normalOutput"><xsl:apply-templates/></xsl:variable>
+  <xsl:variable name="normalOutput">
+     <xsl:apply-templates/>
+  </xsl:variable>
   <xsl:call-template name="doReplaceMacro">
     <xsl:with-param name="targStr" select="$normalOutput"/>
     <xsl:with-param name="findStr" select="$msipar"/>
@@ -221,7 +249,7 @@
   </xsl:call-template>
 </xsl:template>
 
-<xsl:template match="html:td|html:th" mode="doOutput">
+<xsl:template match="html:td|html:th|mml:td" mode="doOutput">
   <xsl:if test="@ccolor">
     <xsl:text>\cellcolor</xsl:text> 
     <xsl:choose>
@@ -554,9 +582,11 @@
   <xsl:param name="colData" />
   <xsl:param name="positionInRow" select="1" />
   <xsl:param name="tabularType" select="$tabularType"/>
+
   <xsl:if test="$positionInRow &gt; 1">
     <xsl:text xml:space="preserve"> &amp; </xsl:text>
   </xsl:if>
+
   <xsl:if test="$theCell">
     <xsl:variable name="columnspan">
       <xsl:choose>
@@ -564,12 +594,14 @@
         <xsl:otherwise>1</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <xsl:variable name="needMultiRow">
       <xsl:choose>
         <xsl:when test="$theCell/@rowspan and (number($theCell/@rowspan) &gt; 1)" >1</xsl:when>
         <xsl:otherwise>0</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <xsl:variable name="needMultiCol">
       <xsl:choose>
         <xsl:when test="$columnspan &gt; 1" >1</xsl:when>
@@ -586,6 +618,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <xsl:variable name="needParbox">
       <xsl:choose>
         <xsl:when test="number($needMultiRow) or number($needMultiCol)">
@@ -596,6 +629,7 @@
         <xsl:otherwise>0</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <xsl:choose>
       <xsl:when test="number($needMultiCol)">
         <xsl:text>\multicolumn{</xsl:text><xsl:number value="$columnspan" /><xsl:text>}{</xsl:text>
@@ -616,6 +650,7 @@
         <xsl:if test="string-length($theCellData/@width)">
           <xsl:text>{</xsl:text><xsl:value-of select="$theCellData/@width" /><xsl:text>mm}</xsl:text>
         </xsl:if>
+
         <xsl:variable name="rightBorder">
           <xsl:choose>
             <xsl:when test="$columnspan &gt; 1">
@@ -624,6 +659,7 @@
             <xsl:otherwise><xsl:value-of select="$theCellData/@borderRight" /></xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
+
         <xsl:if test="($rightBorder = 'double') or ($rightBorder = 'single')">
             <xsl:text>|</xsl:text>
           <xsl:if test="$rightBorder = 'double'">
@@ -651,8 +687,10 @@
           <xsl:with-param name="theCell" select="$theCell"/>
           <xsl:with-param name="colData" select="$colData"/>
           <xsl:with-param name="whichCol" select="number($theCellData/@col)" />
-        </xsl:call-template><xsl:text>mm}{</xsl:text>
-        <xsl:apply-templates select="$theCell" mode="parbox" /><xsl:text>}</xsl:text>
+        </xsl:call-template>
+        <xsl:text>mm}{</xsl:text>
+        <xsl:apply-templates select="$theCell" mode="parbox" />
+        <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="$theCell" mode="doOutput" />
