@@ -68,6 +68,7 @@ msiEditor::msiEditor()
     m_filter = new msiContentFilter(this);
   }
   AddInsertionListener(m_filter);
+  SetInComplexTransaction(PR_FALSE);
   m_msiEditingMan = do_CreateInstance(MSI_EDITING_MANAGER_CONTRACTID, &res);
   if (!m_rangeUtils)
     m_rangeUtils = do_GetService("@mozilla.org/content/range-utils;1");
@@ -972,6 +973,8 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
   if (! aKeyEvent)  
     return NS_ERROR_NULL_POINTER;
   nsresult res(NS_OK);
+  SetInComplexTransaction(PR_FALSE);
+
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
     PRUint32 keyCode(0), symbol(0);
