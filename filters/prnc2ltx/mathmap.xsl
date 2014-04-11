@@ -24,6 +24,11 @@
 <!ENTITY supsetneq "&#x228B;"> <!ENTITY supsetneqq "&#x228B;">
 
 -->
+  <xsl:template match="textcurrency">
+    <xsl:text>\textcurrency </xsl:text>
+  </xsl:template>
+
+  <xsl:text xml:space="preserve">\textcurrency </xsl:text>
 
   <xsl:template name="chars-to-LaTeX-Math">
       <xsl:param name="unicode-cdata"/>
