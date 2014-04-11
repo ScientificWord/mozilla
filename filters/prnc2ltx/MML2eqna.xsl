@@ -74,9 +74,9 @@
     <xsl:param name="last-row"/>
   
     <xsl:if test="$current-row &lt; $last-row">
-      <xsl:text xml:space="preserve"> \\</xsl:text>
+      <xsl:text> \\</xsl:text>
+      <xsl:value-of select="$newline"/>
     </xsl:if>
-    <!--jcs <xsl:text xml:space="preserve">\LBe</xsl:text> -->
   </xsl:template>
 
 
