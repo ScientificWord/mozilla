@@ -85,11 +85,15 @@
       <xsl:when test="@notation='box'">
         <xsl:choose>
           <xsl:when test="@type='fbox'">
-            \fbox{<xsl:apply-templates/>}
+            <xsl:text>\fbox{</xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text>}</xsl:text>
           </xsl:when>
           <xsl:when test="@type='frame'">
-            \frame{<xsl:apply-templates/>}
-          </xsl:when>
+            <xsl:text>\frame{</xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text>}</xsl:text>
+           </xsl:when>
         </xsl:choose>
       </xsl:when>
       <xsl:when test="@notation='roundedbox'">
