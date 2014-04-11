@@ -290,11 +290,7 @@
       </xsl:choose>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="html:caption">
-     <xsl:text>\caption{</xsl:text>
-     <xsl:apply-templates/>
-     <xsl:text>}</xsl:text>
-  </xsl:template>
+  <xsl:template match="html:caption">\caption{<xsl:apply-templates/>}</xsl:template>
   <xsl:template match="html:imagecaption" mode="caption">
     <xsl:apply-templates/>
   </xsl:template>
