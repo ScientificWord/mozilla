@@ -1031,14 +1031,18 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     if (Dg.placeForceHereCheck.checked) {
       placeLocation += "H";
       isHere = true;
-    } else if (Dg.placeHereCheck.checked) {
+    } 
+    if (Dg.placeHereCheck.checked) {
       placeLocation += "h";
       isHere = true;
-    } else if (Dg.placeFloatsCheck.checked) {
+    }
+    if (Dg.placeFloatsCheck.checked) {
       placeLocation += "p";
-    } else if (Dg.placeTopCheck.checked) { 
+    }
+    if (Dg.placeTopCheck.checked) { 
       placeLocation += "t";
-    } else if (Dg.placeBottomCheck.checked) {
+    } 
+    if (Dg.placeBottomCheck.checked) {
       placeLocation += "b";
     }
     msiEditorEnsureElementAttribute(frameNode, "placeLocation", placeLocation, editor);
