@@ -772,23 +772,7 @@ no indent - disregarded completely
       </mml:maction>
 -->
     <xsl:choose>
-
-      <xsl:when test="$output-mode='SW-LaTeX'">
-        <xsl:choose>
-          <xsl:when test="@actiontype='toggle'">
-            <xsl:text>\FORMULA{</xsl:text>
-            <xsl:apply-templates select="./*[1]"/>
-            <xsl:text>}{</xsl:text>
-            <xsl:apply-templates select="./*[2]"/>
-            <xsl:text>}{evaluate}</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <!--xsl:text xml:space="preserve"> unexpected maction </xsl:text -->
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-
-      <xsl:when test="output-mode='Portable-LaTeX'">
+            <xsl:when test="output-mode='Portable-LaTeX'">
         <xsl:choose>
           <xsl:when test="@actiontype='toggle'">
             <xsl:choose>
@@ -808,15 +792,35 @@ no indent - disregarded completely
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
-
       <xsl:otherwise>
+      <!-- xsl:when test="$output-mode='SW-LaTeX'" -->
+        <xsl:choose>
+          <xsl:when test="@actiontype='toggle'">
+            <xsl:text>%\FORMULA{</xsl:text>
+            <xsl:apply-templates select="./*[1]"/>
+            <xsl:text>}{</xsl:text>
+            <xsl:apply-templates select="./*[2]"/>
+            <xsl:text>}{evaluate}</xsl:text>
+            <xsl:value-of select="$newline"/>
+            <xsl:text>%BeginExpansion</xsl:text>
+            <xsl:value-of select="$newline"/>
+            <xsl:apply-templates select="./*[2]"/>
+            <xsl:value-of select="$newline"/>
+            <xsl:text>%EndExpansion</xsl:text>
+            <xsl:value-of select="$newline"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <!--xsl:text xml:space="preserve"> unexpected maction </xsl:text -->
+          </xsl:otherwise>
+        </xsl:choose>
+      <!-- /xsl:when -->
       </xsl:otherwise>
     </xsl:choose>
 
   </xsl:template>
 
   <xsl:template match="mml:maction" mode="in-text">
-      <xsl:text>$</xsl:text>
+    <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
   </xsl:template>
