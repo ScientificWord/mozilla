@@ -360,16 +360,21 @@
 </xsl:template>
 -->
 
-<xsl:template match="html:br"
-></xsl:template>
+<xsl:template match="html:br|mml:br">
+  <xsl:value-of select="$newline"/>
+</xsl:template>
 
 <xsl:template match="html:verbatim/html:br"><xsl:text>
 </xsl:text>
 </xsl:template>
 
 <xsl:template match="html:author[1]">
- \author{<xsl:apply-templates mode="frontmatter"/>
-  <xsl:if test="name(following-sibling::*[1])='address'">~\\
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\author{</xsl:text>
+  <xsl:apply-templates mode="frontmatter"/>
+  <xsl:if test="name(following-sibling::*[1])='address'">
+    <xsl:text>~\\</xsl:text>
+    <xsl:value-of select="$newline"/>
     <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
   </xsl:if>
   <xsl:apply-templates select="following-sibling::html:author" mode="building-author" />
@@ -379,6 +384,7 @@
 <!-- for the sake of the above template, -->
 <xsl:template match="html:msibr" mode="frontmatter">
   <xsl:text>~\\</xsl:text>
+  <xsl:value-of select="$newline"/>
 </xsl:template>
 
 <xsl:template match="html:author" mode="building-author">
@@ -414,15 +420,18 @@
 </xsl:template>
 
 <xsl:template match="html:maketoc">
-\tableofcontents <xsl:text/>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\tableofcontents</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:makelof">
-\listoffigures <xsl:text/>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\listoffigures</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:makelot">
-\listoftables <xsl:text/>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\listoftables</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:date">
@@ -490,13 +499,27 @@
 </xsl:template>
 
 
-<xsl:template match="html:bodyText">
+<xsl:template match="html:bodyText|mml:bodyText">
   <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
     <xsl:call-template name="maketables" />
   </xsl:if>
-<xsl:apply-templates/>
-<xsl:if test="position()!=last()">\par </xsl:if>
+  <xsl:apply-templates/>
+  <xsl:if test="position()!=last()">
+     <xsl:value-of select="$blankline"/>
+  </xsl:if>
 </xsl:template>
+
+<xsl:template match="html:bodyText" mode="inner">
+  <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
+    <xsl:call-template name="maketables" />
+  </xsl:if>
+  <xsl:apply-templates/>
+  <xsl:if test="position()!=last()">
+     <xsl:text>\par </xsl:text>
+   </xsl:if>
+</xsl:template>
+
+
 <xsl:template match="html:bodyMath">
   <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
     <xsl:call-template name="maketables" />
@@ -773,26 +796,37 @@
 </xsl:template>
   
 
-<xsl:template match="html:notewrapper"><xsl:apply-templates/></xsl:template>
+<xsl:template match="html:notewrapper">
+  <xsl:apply-templates/>
+</xsl:template>
   
 
 <xsl:template match="html:note[@type='footnote']">
   
-<xsl:variable name="markOrText" select="parent::html:notewrapper/@markOrText" />
-<xsl:variable name="overrideNumber" select="parent::html:notewrapper/@footnoteNumber" />
-<xsl:choose>
-  <xsl:when test="$endnotes &gt; 0">\protect\endnote</xsl:when>
-  <xsl:when test="$markOrText='textOnly'">\protect\footnotetext</xsl:when>
-  <xsl:when test="$markOrText='markOnly'">\protect\footnotemark</xsl:when>
-  <xsl:otherwise>\protect\footnote</xsl:otherwise>
-</xsl:choose>
-<xsl:if test="$overrideNumber"><xsl:text>[</xsl:text><xsl:value-of select="$overrideNumber"/><xsl:text>]</xsl:text></xsl:if>
-<xsl:if test="not($markOrText='markOnly')">
-<xsl:text>{</xsl:text>
-<xsl:apply-templates/>
-<xsl:text xml:space="preserve">}
-</xsl:text>
-</xsl:if>
+  <xsl:variable name="markOrText" select="parent::html:notewrapper/@markOrText" />
+
+  <xsl:variable name="overrideNumber" select="parent::html:notewrapper/@footnoteNumber" />
+
+  <xsl:choose>
+    <xsl:when test="$endnotes &gt; 0">\protect\endnote</xsl:when>
+    <xsl:when test="$markOrText='textOnly'">\protect\footnotetext</xsl:when>
+    <xsl:when test="$markOrText='markOnly'">\protect\footnotemark</xsl:when>
+    <xsl:otherwise>
+      <xsl:text>\protect\footnote</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+
+  <xsl:if test="$overrideNumber">
+    <xsl:text>[</xsl:text>
+    <xsl:value-of select="$overrideNumber"/>
+    <xsl:text>]</xsl:text>
+  </xsl:if>
+
+  <xsl:if test="not($markOrText='markOnly')">
+    <xsl:text>{</xsl:text>
+    <xsl:apply-templates mode="inner"/>
+    <xsl:text >}</xsl:text>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:note">
@@ -810,10 +844,10 @@
 </xsl:template>
 
 <xsl:template match="html:verbatim">
-  
-\begin{verbatim}
-<xsl:apply-templates/>
-\end{verbatim}
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\begin{verbatim}</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>\end{verbatim}</xsl:text>  
 </xsl:template>
 
 <xsl:template match="html:shortQuote"> 
