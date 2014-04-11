@@ -1654,10 +1654,10 @@
 \def\&{\char`\&amp;}
 \def\|{\Vert}
 
-
+\def\textcurrency{\msitag{<textcurrency req="textcomp"/>}}
 
 \def\out@hyperref#1#2#3#4{%
-   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}\ignorespaces}
+   \msiopentag{a}{<a href="#4" req="hyperref">}#1\msiclosetag{a}{</a>}\ignorespaces}
 
 \newif\if@in@texttag
 \@in@texttagfalse
@@ -2076,11 +2076,11 @@
 
 
 \def\msi@begin@figureA[#1]{%
-   \msiopentag{msiframe}{<msiframe kind="figure" opt="#1" >}%
+   \msiopentag{msiframe}{<msiframe frametype="figure" pos="float" placeLocation="#1" >}%
 }
 
 \def\msi@begin@figureB{%
-   \msiopentag{msiframe}{<msiframe kind="figure">}%
+   \msiopentag{msiframe}{<msiframe framtype="figure" pos="float">}%
 }
 
 \def\msi@end@figure{%
@@ -2094,11 +2094,11 @@
 
 
 \def\msi@begin@tableA[#1]{%
-   \msiopentag{msiframe}{<msiframe kind="table" opt="#1">}%
+   \msiopentag{msiframe}{<msiframe frametype="table" pos="float" placeLocation="#1">}%
 }
 
 \def\msi@begin@tableB{%
-   \msiopentag{msiframe}{<msiframe kind="table">}%
+   \msiopentag{msiframe}{<msiframe frametype="table" pos="float">}%
 }
 
 \def\msi@end@table{%
@@ -2110,9 +2110,7 @@
 
 \def\msi@caption#1{%
   \msiopentag{caption}{<caption align="bottom">}%
-  \msiopentag{bodyText}{<bodyText>}
   #1%
-  \msiclosetag{bodyText}{</bodyText>}
   \msiclosetag{caption}{</caption>}%
 }
 
