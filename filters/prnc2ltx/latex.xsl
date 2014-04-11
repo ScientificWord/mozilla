@@ -314,12 +314,16 @@
 </xsl:variable>
 
 <xsl:template name="checkEndSubEquationsScope">
+  
+  <xsl:variable name="n-msidisplays">
+    <xsl:value-of select="count(.//html:msidisplay)" />
+  </xsl:variable>
+  
   <xsl:if test="contains($equationNumberingContainers, concat('-',local-name(.),'-'))">
-    <xsl:if test=".//html:msidisplay[last()][@subEquationNumbers='true'] 
+    <xsl:if test=".//html:msidisplay[$n-msidisplays - 1][@subEquationNumbers='true'] 
         and (.//html:msidisplay[last()]/ancestor::*[contains($equationNumberingContainers, concat('-',local-name(.),'-'))]=current())">
-      <xsl:text xml:space="preserve">
-\end{subequations}
-</xsl:text>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\end{subequations}</xsl:text>
     </xsl:if>
   </xsl:if>
 </xsl:template>
