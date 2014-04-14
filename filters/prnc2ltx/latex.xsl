@@ -99,6 +99,7 @@
      preamble code. So ignore if you see in the clear -->
 
 <xsl:template match="html:documentclass"/>
+<xsl:template match="html:sw-meta"/>
 <xsl:template match="html:usepackage"/>
 <xsl:template match="html:address"/> <!-- Gobbled by <author> -->
 <xsl:template match="html:plot"/>
@@ -408,19 +409,28 @@
  </xsl:template>
 
  <xsl:template match="html:abstract">
-\begin{abstract}
-<xsl:apply-templates/>
-\end{abstract}
+    <xsl:value-of select="$newline"/>
+    <xsl:text>\begin{abstract}</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>\end{abstract}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:maketitle">
-\maketitle
+   <xsl:value-of select="$newline"/>
+   <xsl:text>\maketitle</xsl:text>
 </xsl:template>
 
 <xsl:template name="maketables">
 <!--  \tableofcontents <xsl:text/>
-  <xsl:if test="//html:lof">\listoffigures</xsl:if>
-  <xsl:if test="//html:lot">\listoftables</xsl:if> -->
+   <xsl:if test="//html:lof">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\listoffigures</xsl:text>
+   </xsl:if>
+   <xsl:if test="//html:lot">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\listoftables</xsl:text>
+   </xsl:if> -->
 </xsl:template>
 
 <xsl:template match="html:maketoc">
@@ -477,28 +487,23 @@
 </xsl:template>
 
 <xsl:template match="html:section">
-  <xsl:value-of select="$blankline"/>
   <xsl:apply-templates/>
   <xsl:call-template name="checkEndSubEquationsScope"/>
 </xsl:template>
 
 <xsl:template match="html:subsection">
-  <xsl:value-of select="$blankline"/>
   <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:subsubsection">
-  <xsl:value-of select="$blankline"/>
   <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:paragraph">
-  <xsl:value-of select="$blankline"/>
   <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:subparagraph">
-  <xsl:value-of select="$blankline"/>
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -535,27 +540,45 @@
 
 
 <xsl:template match="html:sectiontitle">
-<xsl:if test="name(..)='part'">
-\part<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='chapter'">
-\chapter<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='section'">
-\section<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='subsection'">
-\subsection<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='subsubsection'">
-\subsubsection<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='paragraph'">
-\paragraph<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='subparagraph'">
-\subparagraph<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
+   <xsl:value-of select="$blankline"/>
+   <xsl:choose>
+      <xsl:when test="name(..)='part'">
+         <xsl:text>\part</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='chapter'">
+         <xsl:text>\chapter</xsl:text>
+      </xsl:when>
+         
+      <xsl:when test="name(..)='section'">
+         <xsl:text>\section</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='subsection'">
+         <xsl:text>\subsection</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='subsubsection'">
+         <xsl:text>\subsubsection</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='paragraph'">
+         <xsl:text>\paragraph</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='subparagraph'">
+         <xsl:text>\subparagraph</xsl:text>
+      </xsl:when>
+
+    </xsl:choose>
+    <xsl:if test="../@nonum='true'">
+       <xsl:text>*</xsl:text>
+    </xsl:if>
+    <xsl:apply-templates mode="shortTitle"/>
+    <xsl:text>{</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
 </xsl:template>
 
 <xsl:template match="html:title">
