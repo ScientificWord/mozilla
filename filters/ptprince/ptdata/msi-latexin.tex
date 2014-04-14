@@ -16,6 +16,8 @@
 
 %\def~{\nobreakspace{}}
 
+\def\msi@newline{^^0a\ignorespaces}
+
 \def\@makeother#1{\catcode #1=12\relax}
 
 \catcode`\%=12
@@ -138,9 +140,8 @@
    \@ifundefined{msi@begin@#1}%
      {\msiclosetag{environment}{</environment>}}
      {\csname msi@end@#1\endcsname}
-   \msitag{^^0a}%
-   \endgroup}
-
+   \endgroup
+   \msi@newline}
 
 
 %%%%%%%%%%%%%%%%
