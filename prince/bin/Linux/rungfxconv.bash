@@ -68,7 +68,7 @@ case $inputFormat in
 #         echo pdf
 #         ;;
 #       disp)
-#         $wmf2eps/wmf2eps $inputPath.$2 "$outputPath.eps" >"$outputPath.svg.log" 2>&1
+#         $wmf2eps/wmf2epsc $inputPath.$2 "$outputPath.eps" >"$outputPath.svg.log" 2>&1
 #         $Uniconvertor/uniconvertor $"outputPath.eps" "$outputPath.svg" >>"$outputPath.svg.log" 2>&1
 #         echo Need to put in wmf2eps here
 #         if [ ! -f "$outputPath.svg" ]
@@ -77,7 +77,7 @@ case $inputFormat in
 #         fi
 #         ;;
 #       tex)
-#         $wmf2eps/wmf2eps $inputPath.$2 "$outputPath.eps" >"$outputPath.eps.log" 2>&1
+#         $wmf2eps/wmf2epsc $inputPath.$2 "$outputPath.eps" >"$outputPath.eps.log" 2>&1
 #         echo Need to put in wmf2eps here
 #         if [ ! -f "$outputPath.eps" ]
 #           then

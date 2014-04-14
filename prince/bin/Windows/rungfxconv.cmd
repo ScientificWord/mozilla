@@ -45,7 +45,7 @@ if %mode%x==outtexx set outputFormat=eps
 if %mode%x==outx goto echoIt
 if %mode%x==outtexx goto echoIt
 copy /Y %inputPath%.%inputFormat% %outputPath%.%inputFormat%
-%wmf2epsDir%\wmf2eps %outputPath%.%inputFormat% >%outputPath%.%outputFormat%.log 2>&1
+%wmf2epsDir%\wmf2epsc %outputPath%.%inputFormat% >%outputPath%.%outputFormat%.log 2>&1
 call %Uniconvertor%/uniconvertor "%~3.eps" %~3.%outputFormat%" >>%outputPath%.%outputFormat%.log 2>&1
 goto finish
 :echoIt
