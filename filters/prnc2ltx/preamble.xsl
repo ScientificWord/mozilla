@@ -705,16 +705,20 @@
 
 <xsl:template name="metadata">
   <xsl:if test="html:sw-meta/@product">
-      %% Produced by <xsl:value-of select="html:sw-meta/@product"/>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%% Produced by </xsl:text><xsl:value-of select="html:sw-meta/@product"/>
   </xsl:if>
   <xsl:if test="html:sw-meta/@version">
-      %% Version <xsl:value-of select="html:sw-meta/@version"/>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%% Version </xsl:text><xsl:value-of select="html:sw-meta/@version"/>
   </xsl:if>
   <xsl:if test="html:sw-meta/@created">
-      %% Created <xsl:value-of select="html:sw-meta/@created"/>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%% Created </xsl:text><xsl:value-of select="html:sw-meta/@created"/>
   </xsl:if>
   <xsl:if test="html:sw-meta/@lastrevised">
-      %% Last revised <xsl:value-of select="html:sw-meta/@lastrevised"/>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%% Last revised </xsl:text><xsl:value-of select="html:sw-meta/@lastrevised"/>
   </xsl:if>
 </xsl:template>
 
