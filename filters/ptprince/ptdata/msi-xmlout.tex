@@ -6,6 +6,8 @@
 \msi@insubequations=0
 
 
+
+
 %%\def\msiToPreamble#1{\expandafter\preambleToks\expandafter{\the\preambleToks #1}}
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
@@ -1886,7 +1888,7 @@
     \aftergroup\@footnotec
 }
 
-\def\@footnotec{
+\def\@footnotec{%
     \msiclosetag{bodyText}{</bodyText>}%
     \msiclosetag{note}{</note>}%
     \@end@notewrapper}
