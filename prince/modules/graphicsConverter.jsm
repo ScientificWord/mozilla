@@ -19,7 +19,7 @@ var graphicsConverter =
       utilsDir.append("utilities");
       this.uniconvertorDir = this.imageMagickDir = utilsDir;
       this.wmf2epsDir = utilsDir.clone();
-      this.wmf2epsDir.append("wmf2eps");
+      this.wmf2epsDir.append("wmf2epsc");
       if (!this.wmf2epsDir.exists())
         this.wmf2epsDir = null;
 //      dump("Path to UniConvertor and ImageMagick is " + utilsDir.path + "\n");
