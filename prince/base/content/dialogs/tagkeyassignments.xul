@@ -21,7 +21,8 @@
     buttonlabelcancel="Done" 
     screenX="40"
     screenY="40"
-    persist="screenX screenY height width" >
+    persist="screenX screenY height width"
+    default="" >
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
@@ -47,6 +48,8 @@
             completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag listtag structtag envtag frontmtag" 
 	          tooltiptext="&alltaglist.tooltip;"
  	          label="&alltaglist.label;"   
+            onblur="assignTag(this);"
+            onkeypress="handleTagListCharacter(event, this);"
             ontextentered="assignTag(this);" />
             <!--onfocus="this.select();"  onmousedown="doTagListMouseDown(event);" -->
         </hbox>
@@ -58,8 +61,9 @@
         <hbox>
           <radio id="reserveOS" group="keyresult" tabindex="60" label="&reserveForOS.label;" accesskey="&reserveForOS.accesskey;" tooltip="&reserveForOS.tooltip;" selected="false" persist="selected" value="reservedforOS" oncommand="radioswitched(event, this);"/>
         </hbox>
-        <msibutton id="assignkey" label="&assignKey.label;" accesskey="&assignKey.accesskey;" disabled="true" tabindex="70" oncommand="assignKey();"/>
-      </vbox>
+<!--         <msibutton id="assignkey" label="&assignKey.label;" accesskey="&assignKey.accesskey;" disabled="true" tabindex="70" oncommand="assignKey();"/>
+ -->
+        </vbox>
     </hbox>
   </groupbox>
   <groupbox align="vertical" >
