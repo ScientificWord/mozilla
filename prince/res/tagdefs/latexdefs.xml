@@ -133,10 +133,7 @@
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <bodyText>
-              <cursor/>
-              <br/>
-            </bodyText>
+            <bodyText><cursor/><br/></bodyText>
           </initialcontents>
 				</tag>
 				<tag nm="rtlBodyText">

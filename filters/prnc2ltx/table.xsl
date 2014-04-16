@@ -120,7 +120,6 @@
   </xsl:for-each>
   <xsl:text>}</xsl:text>
 
-  <xsl:value-of select="$newline"/>
   <xsl:call-template name="getHLineString">
     <xsl:with-param name="theRowData" select="$cellData/rowData[1]" />
     <xsl:with-param name="whichLine" select="'top'" />
@@ -216,21 +215,23 @@
   </xsl:choose>
 </xsl:template>
 		  
-<xsl:template match="html:td//html:br"><xsl:text xml:space="preserve">\msipar </xsl:text></xsl:template> <!-- don't allow \\ in table data-->
+<xsl:template match="html:td//html:br">
+   <xsl:text xml:space="preserve">\par </xsl:text>
+</xsl:template> <!-- don't allow \\ in table data-->
 
 <xsl:template match="html:td//*[self::html:br and position()=last()]" />
 
 <xsl:template match="html:td//html:bodyText">
   <xsl:apply-templates/>
   <xsl:if test="following-sibling::*">
-    <xsl:text xml:space="preserve">\msipar </xsl:text>
+    <xsl:text xml:space="preserve">\par </xsl:text>
   </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:td//html:bodyMath">
   <xsl:apply-templates/>
   <xsl:if test="following-sibling::*">
-    <xsl:text xml:space="preserve">\msipar </xsl:text>
+    <xsl:text xml:space="preserve">\par </xsl:text>
   </xsl:if>
 </xsl:template>
 
@@ -435,7 +436,9 @@
     </xsl:choose>
   </xsl:if>
   <xsl:if test="string-length($columnData/@width)">
-    <xsl:text>{</xsl:text><xsl:value-of select="$columnData/@width" /><xsl:text>mm}</xsl:text>
+    <xsl:text>{</xsl:text>
+    <xsl:value-of select="$columnData/@width" />
+    <xsl:text>mm}</xsl:text>
   </xsl:if>
   <xsl:if test="(normalize-space($columnData/@lineSpec) = 'single') or (normalize-space($columnData/@lineSpec) = 'double')">
     <xsl:text>|</xsl:text>
