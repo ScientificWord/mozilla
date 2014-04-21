@@ -436,7 +436,7 @@
     </xsl:choose>
   </xsl:if>
   <xsl:if test="string-length($columnData/@width)">
-    <xsl:text>{</xsl:text>
+    <xsl:text>p{</xsl:text>
     <xsl:value-of select="$columnData/@width" />
     <xsl:text>mm}</xsl:text>
   </xsl:if>
