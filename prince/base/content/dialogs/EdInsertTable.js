@@ -217,6 +217,7 @@ function EnableDisableControls()
 //    }
   }
   checkEnableWidthControls();
+  checkEnableFloatControl();
 }
 
 // dialog initialization code
@@ -372,6 +373,7 @@ function InitDialog(hAlign, vAlign, wrapping)
   gDialog.vAlignChoices.value  = vAlign || "";
   gDialog.wrapping.checked = wrapping;
   checkEnableWidthControls();
+  checkEnableFloatControl();
 }
 
 function onChangeTableUnits()
@@ -436,6 +438,13 @@ function checkEnableWidthControls()
 {
   var bIsAuto = gDialog.autoCheckbox.checked;
   enableControlsByID(["widthInput","widthPixelOrPercentMenulist"], !bIsAuto);
+}
+
+function checkEnableFloatControl()
+{
+  var A = gDialog.tableLocationList.value;
+  var B = gDialog.tableLocationList.selectedItem.value;
+  return (B == "unspecified");
 }
 
 // Get and validate data from widgets.
