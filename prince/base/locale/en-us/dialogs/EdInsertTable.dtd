@@ -260,4 +260,4 @@
 <!ENTITY rowheightRule "A row's height will be the height of its tallest cell" >
 <!ENTITY colwidthRule "A column's width will be the width of its widest cell" >
 <!ENTITY cellsizeInstructions "Use cell dimension of 0.0 to leave current dimensions unchanged" >
-<!ENTITY unspecified "--unspec">
+<!ENTITY unspecified "--unspecified --">
