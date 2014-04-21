@@ -192,10 +192,10 @@
                 <rows>
                   <row align="center">
                     <label value="&location.label;" control="tableLocationList" />
-                    <menulist id="tableLocationList" oncommand="">
+                    <menulist id="tableLocationList" oncommand="locationPropertyChanged();">
                       <menupopup>
-                        <menuitem label="&unspecified;"  selected="true" value=""/>
-                        <menuitem label="&inline.label;"  value=""/>
+                        <menuitem label="&unspecified;"   value="unspecified"/>
+                        <menuitem label="&inline.label;"  value="inline"/>
                         <menuitem label="&left.label;" value="left"/>
                         <menuitem label="&inside.label;" value="inside"/>
                         <menuitem label="&center.label;" value="center"/>
@@ -206,7 +206,7 @@
                   </row>
                   <row align="center">
                     <label value="&floatLocation.label;" control="floatLocationList"/>
-                    <menulist id="floatLocationList" oncommand="">
+                    <menulist id="floatLocationList" oncommand="floatPropertyChanged();">
                       <menupopup>
                         <menuitem label="&none.label;"  value=""/>
                         <menuitem label="&here.label;" value="h"/>

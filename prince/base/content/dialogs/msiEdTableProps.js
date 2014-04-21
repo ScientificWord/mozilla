@@ -784,19 +784,23 @@ function initTablePanel()
       gTableCaptionPlacement = "bottom";
     gDialog.captionLocation.value = gTableCaptionPlacement;
   }
+
   var pos = gTableElement.getAttribute("pos");
   var placement = gTableElement.getAttribute("placement");
+
   var longPlacement;
   if (placement=="L") longPlacement = "left";
   else if (placement=="R") longPlacement = "right";
   else if (placement=="I") longPlacement = "inside";
   else if (placement=="O") longPlacement = "outside"; 
   else longPlacement = null;
+
   if (pos == "center") longPlacement="center";  // trumps
   else if (pos == "inline") longPlacement = null;
 
 
   var placeLocation = gTableElement.getAttribute("placeLocation");  
+  
   if (longPlacement) {
 //    if (placement == "I" || placement == "display") placeLocation = "";
     gDialog.tableLocationList.value = longPlacement;
@@ -808,7 +812,11 @@ function initTablePanel()
       gDialog.floatLocationList.value = "";
     }
   }
-  else gDialog.tableLocationList.value = "inline";
+  else gDialog.tableLocationList.value = "unspecified";
+
+  checkEnableFloatControl();
+  checkEnableLocationControl();
+  
 }
 
 function initLinesPanel()
@@ -1647,6 +1655,34 @@ function checkEnableWidthControls()
   enableControlsByID(["tableWidthInput"], !bDisabled);
 }
 
+function checkEnableFloatControl()
+{
+  var sel = gDialog.tableLocationList.selectedItem.value;
+  var bEnableFloat = (sel ===  "unspecified");
+  enableControlsByID(["floatLocationList"], bEnableFloat);
+}
+
+function locationPropertyChanged()
+{
+  checkEnableFloatControl();
+}
+
+
+function checkEnableLocationControl()
+{
+  var sel = gDialog.floatLocationList.selectedItem.value;
+  var bEnableLocation = (sel ===  "");
+  enableControlsByID(["tableLocationList"], bEnableLocation);
+}
+
+function floatPropertyChanged()
+{
+  checkEnableLocationControl();
+}
+
+
+
+
 function EnableDisableControls()
 {
   var bIsWholeCols = false;
@@ -1692,6 +1728,8 @@ function EnableDisableControls()
 //    }
   }
   checkEnableWidthControls();
+  checkEnableFloatControl();
+  checkEnableLocationControl();
 }
 
 //function CloneAttribute(destElement, srcElement, attr)
