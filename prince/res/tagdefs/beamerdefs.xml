@@ -11,9 +11,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
                         <beamerframe>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
+                            <bodyText><cursor/><br/>
                             </bodyText>
                         </beamerframe>
                     </initialcontents>
@@ -31,9 +29,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <initialcontents>
-                        <frametitle>
-                            <cursor/>
-                            <br/>
+                        <frametitle><cursor/><br/>
                         </frametitle>
                     </initialcontents>
                 </tag>
@@ -43,9 +39,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <initialcontents>
-                        <framesubtitle>
-                            <cursor/>
-                            <br/>
+                        <framesubtitle><cursor/><br/>
                         </framesubtitle>
                     </initialcontents>
                 </tag>
@@ -55,9 +49,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <initialcontents>
-                        <institute>
-                            <cursor/>
-                            <br/>
+                        <institute><cursor/><br/>
                         </institute>
                     </initialcontents>
                 </tag>
@@ -105,9 +97,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
                         <stepbulletListItem>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
+                            <bodyText><cursor/><br/>
                             </bodyText>
                         </stepbulletListItem>
                     </initialcontents>
@@ -120,9 +110,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents> 
                          <stepnumberedListItem>
-                             <bodyText>
-                                 <cursor/>
-                                 <br/>
+                             <bodyText><cursor/><br/>
                              </bodyText>
                          </stepnumberedListItem>
                     </initialcontents>
@@ -135,9 +123,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents> 
                         <alertstepbulletListItem>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
+                            <bodyText><cursor/><br/>
                             </bodyText>
                         </alertstepbulletListItem>
                     </initialcontents>
@@ -150,9 +136,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents> 
                         <alertstepnumberedlistItem>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
+                            <bodyText><cursor/><br/>
                             </bodyText>
                         </alertstepnumberedlistItem>
                     </initialcontents>
