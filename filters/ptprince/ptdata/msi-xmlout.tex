@@ -2041,12 +2041,10 @@
 
 \def\msidefault#1{%
   \ifmmode
-    %\string#1%
     \msitag{\msipassthru}%
     \char`\{
     \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
        \msitag{<![CDATA[#1}
-    %\def\@next{\relax}%
     \let\@next\@gobbleargs
   \else
     \def\@next{\expandafter\msidefaulta\expandafter{\string #1}}%

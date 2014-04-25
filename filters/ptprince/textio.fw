@@ -422,7 +422,7 @@ TeXChar Latin_1_in::Get()
    ASSERT(!bEOS());
    Byte b = m_pInputByteStream -> Get();
    // We'll ignore 0D characters
-   if (b == 0x0d){
+   while (b == 0x0d){
      b = m_pInputByteStream -> Get();
    }
    return b;
@@ -794,12 +794,15 @@ bool LineSource::ScanALine(LineOfText* pLine)
       if (ch == LINE_END){
          pLine -> Append('\x0d');
          break;
-      } else
+      } else if (ch != 0x0d) {
          pLine -> Append(ch);
+      } else {
+        int k = 12;
+        // ignore
+      }
 
       if (m_pCharStream -> bEOS())
          break;
-
    }
    // I think a line should be able to have
    // a line end character or not, so I'll
