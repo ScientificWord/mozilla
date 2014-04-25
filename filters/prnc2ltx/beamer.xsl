@@ -24,43 +24,47 @@
 </xsl:template>
 
 <xsl:template match="html:stepnumberedlist">
-\begin{enumerate}[&lt;+-&gt;]
+\begin{stepenumerate}
 <xsl:apply-templates/>
-\end{enumerate}
+\end{stepenumerate}
 </xsl:template>
 
 <xsl:template match="html:stepbulletlist">
-\begin{itemize}[&lt;+-&gt;]
+\begin{stepitemize}
 <xsl:apply-templates/>
-\end{itemize}
+\end{stepitemize}
 </xsl:template>
 
 <xsl:template match="html:alertstepnumberedlist">
-\begin{enumerate}[&lt;+-| alert@+&gt;]
+\begin{stepenumeratewithalert}[&lt;+-| alert@+&gt;]
 <xsl:apply-templates/>
 \end{enumerate}
 </xsl:template>
 
 <xsl:template match="html:alertstepbulletlist">
-\begin{itemize}[&lt;+-| alert@+&gt;]
+\begin{stepitemizewithalert}
 <xsl:apply-templates/>
-\end{itemize}
+\end{stepitemizewithalert}
 </xsl:template>
 
 <xsl:template match="html:stepnumberedListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>
+
 </xsl:template>
 
 <xsl:template match="html:stepbulletListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>
+
 </xsl:template>
 
 <xsl:template match="html:alertstepnumberedListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>
+
 </xsl:template>
 
 <xsl:template match="html:alertstepbulletListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>
+
 </xsl:template>
 
 

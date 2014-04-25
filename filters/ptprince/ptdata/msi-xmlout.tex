@@ -538,8 +538,10 @@
     \fi
     \expandafter\preambleToks\expandafter{\the\preambleToks{#5}{#6}}
     \@ifundefined{msi@begin@#2}%
-      {\@namedef{msi@begin@#2}{\msi@open@element<#2>}}%
-      {\@namedef{msi@end@#2}{\msi@close@element</#2>}}}%
+      {\@namedef{msi@begin@#2}{\msi@open@element<#2>}%
+       \@namedef{msi@end@#2}{\msi@close@element</#2>}}
+      {}%
+}
 
 
 %%\def\numberwithin#1#2{\msitag{\numberwithin{#1}{#2}}}
