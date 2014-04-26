@@ -1021,11 +1021,6 @@ function makeImagePathRelative(filePath)
 
 function chooseFile()
 {
-//  if (gTimerID)
-//    clearTimeout(gTimerID);
-
-  // Get a local file, converted into URL format
-//  var fileName = GetLocalFileURL(["img"]); // return a URLString
   var fileFilterStr = "";
   var filterTitleStr = "";
   var fileTypeStr = "";
@@ -1047,19 +1042,16 @@ function chooseFile()
   var fileName = msiGetLocalFileURLSpecial(filterArray, fileTypeStr);
   if (fileName)
   {
-    importTimerHandler.reset();
+    // importTimerHandler.reset();
     gDialog.importRadioGroup.disabled = false;  //Reset in case it was previously disabled
     var url = msiURIFromString(fileName);
     gOriginalSrcUrl = decodeURI(url.spec);
     gPreviewImageNeeded = true;
-
-//    if (gDialog.import) // copy the file into the graphics directory
-//    {
     var importName;
-    try
-    { importName = getLoadableGraphicFile(url); }
-    catch(exc)
-    { dump("Exception in getLoadableGraphicFile loading " + url.spec + ": " + exc + "\n"); importName = null; }
+    var graphicDir = getDocumentGraphicsDir();
+    graphicsConverter.init(window, graphicDir.parent);
+    importName = graphicsConverter.copyAndConvert(msiFileFromFileURL(url));
+
     if (!importName || !importName.length)
     {
       displayImportErrorMessage(fileName)
@@ -1067,26 +1059,13 @@ function chooseFile()
     }
     else
       fileName = importName;
-//    }
-//    else
-//    {
-  // Try to relativize local file URLs if appropriate
-    if (gHaveDocumentUrl && (gDialog.isImport || gDialog.relativeURL))
-      fileName = makeImagePathRelative(fileName);
-//      fileName = msiMakeRelativeUrl(fileName, gEditorElement);
-//    }
 
     gDialog.srcInput.value = fileName;
 
     msiSetRelativeCheckbox();
     doOverallEnabling();
   }
-  if (!importTimerHandler.isLoading("import"))
-  {
-//  if (!gfxImportProcess || !gfxImportProcess.isRunning)
-    dump("Calling LoadPreviewImage after importTimerHandler.isLoading returned false.\n");
     LoadPreviewImage();
-  }
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
 }
@@ -1098,6 +1077,7 @@ function getLoadableGraphicFile(inputURL)
   var typesetFiles = [];
   var fileName = "";
   var file = msiFileFromFileURL(inputURL);
+  getGraphicsImportTargets(file, "import");
   var filedir = file.parent;
   var extension = getExtension(file.leafName);
   var dir = getDocumentGraphicsDir();
@@ -1697,7 +1677,7 @@ function launchConvertingDialog(importData)
 
 //  inputFile - an nsIFile, the graphic file being converted
 //  mode - a string, either "tex" or "import" (defaults to "import")
-//  Returns nsIFile representing the graphic file being created.
+//  Returns path representing the graphic file being created relative to the working directory
 function getGraphicsImportTargets(inputFile, mode)
 {
   if (!mode || !mode.length)
@@ -1705,7 +1685,9 @@ function getGraphicsImportTargets(inputFile, mode)
   var graphicDir = getDocumentGraphicsDir(mode);
   if (!graphicDir.exists())
     graphicDir.create(1, 0755);
-  return graphicsConverter.getTargetFilesForImport(inputFile, graphicDir, mode, window);
+  graphicsConverter.init(window, graphicDir.parent);
+  return graphicsConverter.copyAndConvert(inputFile);
+//  return graphicsConverter.getTargetFilesForImport(inputFile, graphicDir, mode, window);
 }
 
 //  inputFile - an nsIFile, the graphic file being converted
