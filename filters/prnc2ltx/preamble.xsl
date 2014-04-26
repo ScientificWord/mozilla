@@ -184,11 +184,11 @@
        <xsl:value-of select="$newline"/>
        <xsl:text>\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}</xsl:text>
     </xsl:if>
-    <xsl:if test="not($compiler='xelatex')">
+<!--     <xsl:if test="not($compiler='xelatex')">
       <xsl:value-of select="$newline"/>
       <xsl:text>\usepackage[T1]{fontenc}</xsl:text>
     </xsl:if>
-
+ -->
 
     <xsl:if test="$compiler!='xelatex'">
       <xsl:value-of select="$newline"/>
@@ -226,6 +226,7 @@
     <xsl:value-of select="$newline"/>
 
     <xsl:text>\graphicspath{{../tcache/}{../gcache/}{../graphics/}}</xsl:text>
+    <xsl:text>\DeclareGraphicsExtensions{.pdf,.svg,.eps,.ps,.png,.jpg,.jpeg}</xsl:text>
 
 
 

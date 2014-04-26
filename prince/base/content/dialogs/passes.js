@@ -4,6 +4,7 @@ var theIndexProcess;
 var theBibTeXProcess;
 var passData;
 var sentinel;
+var blocking = false; // set whether blocking or not.
 var timer = Components.classes["@mozilla.org/timer;1"]
                     .createInstance(Components.interfaces.nsITimer);
 
@@ -26,18 +27,18 @@ var timerCallback =
          sentinel.remove(false);
          if (passData.runBibTeX)
          {
-           theBibTeXProcess.run(false, passData.bibtexArgs, passData.bibtexArgs.length);
+           theBibTeXProcess.run(blocking, passData.bibtexArgs, passData.bibtexArgs.length);
            passData.runBibTeX = false;
          }
          else if (passData.runMakeIndex)
          {
-           theIndexProcess.run(false, passData.args, passData.args.length);
+           theIndexProcess.run(blocking, passData.args, passData.args.length);
            passData.runMakeIndex = false;
          }
          else
          {
            passData.passCounter++;
-           theProcess.run(false, passData.args, passData.args.length);
+           theProcess.run(blocking, passData.args, passData.args.length);
          }
        }
        else{
@@ -86,7 +87,7 @@ function Init()
   dlg.getButton("cancel").disabled = false;
   // set up the first pass
   setProgressStatement(false);
-  theProcess.run(false, passData.args, passData.args.length);
+  theProcess.run(blocking, passData.args, passData.args.length);
   timer.initWithCallback( timerCallback, 250, 1);
 }
 

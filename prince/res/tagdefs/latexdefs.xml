@@ -83,6 +83,7 @@
 				<tag nm="descriptionLabel" ><description>Description label</description></tag>
 				<tag nm="text##lang1##" hidden="1" babel="1"><description>##lang## language</description></tag>
 				<tag nm="text##lang2##" hidden="1" babel="2"><description>##lang## language</description></tag>
+        <tag nm="drop"><description>Drop letter</description></tag>
         <!-- <tag nm="deleted"><description>Deleted text</description></tag>
         <tag nm="inserted"><description>Inserted text></description></tag> -->
 		<!-- comment out the ulem tags

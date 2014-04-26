@@ -187,6 +187,14 @@
           <xsl:if test="$fullPath = 1"><xsl:text>../graphics/</xsl:text></xsl:if>
           <xsl:value-of select="substring-after($correctedName, 'graphics/')"/>
         </xsl:when>
+        <xsl:when test="starts-with($correctedName, 'gcache/')">
+          <xsl:if test="$fullPath = 1"><xsl:text>../gcache/</xsl:text></xsl:if>
+          <xsl:value-of select="substring-after($correctedName, 'gcache/')"/>
+        </xsl:when>
+        <xsl:when test="starts-with($correctedName, 'tcache/')">
+          <xsl:if test="$fullPath = 1"><xsl:text>../tcache/</xsl:text></xsl:if>
+          <xsl:value-of select="substring-after($correctedName, 'tcache/')"/>
+        </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$correctedName"/>
         </xsl:otherwise>
