@@ -53,7 +53,7 @@ math {
   unicode-bidi: embed;
   display: inline;
   font-style: normal;
-  font-family: MathJax_Main, Asana Math, XITS math, Symbol, DejaVu Sans, Cambria Math, serif;
+  font-family: MathJax_Main, XITS math, Symbol, DejaVu Sans, Cambria Math, serif;
   text-rendering: optimizeLegibility;
   -moz-float-edge: margin-box;
 }
