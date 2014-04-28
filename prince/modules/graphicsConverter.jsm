@@ -36,7 +36,7 @@ var graphicsConverter = {
     this.iniParser = createINIParser(iniFile);
     this.converterDir.append("utilities");
     // This next line will probably need to be removed when the utilities directory is reorganized.
-    this.converterDir.append("bin");
+    // this.converterDir.append("bin");
   },
 
   copyAndConvert: function(graphicsFile, width, height) {
