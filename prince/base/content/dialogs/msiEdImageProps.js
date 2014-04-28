@@ -59,6 +59,7 @@ var gOriginalSrcUrl = "";
 
 var gPreviewImageWidth = 80;
 var gPreviewImageHeight = 50;
+var gPreviewSrc;
 
 // These mode variables control the msiFrameOverlay code
 var gFrameModeImage = true;
@@ -548,8 +549,8 @@ function InitImage()
     setWidthAndHeight(unitRound(frameUnitHandler.getValueOf(gDefaultWidth,"pt")),
                       unitRound(frameUnitHandler.getValueOf(gDefaultHeight,"pt")), null);
 
-  // Force loading of image from its source and show preview image
-  LoadPreviewImage();
+//Needs work here
+  LoadPreviewImage(null);
 
 //  if (globalElement.hasAttribute("title"))
 //    gDialog.titleInput.value = globalElement.getAttribute("title");
@@ -1048,7 +1049,12 @@ function chooseFile()
     gOriginalSrcUrl = decodeURI(url.spec);
     gPreviewImageNeeded = true;
     var importName;
+    var internalFile;
+    var internalName;
     var graphicDir = getDocumentGraphicsDir();
+    internalFile = graphicDir.clone(false);
+    internalFile.append(msiFileFromFileURL(url).leafName);
+    internalName = graphicDir.leafName + "/" + internalFile.leafName;
     graphicsConverter.init(window, graphicDir.parent);
     importName = graphicsConverter.copyAndConvert(msiFileFromFileURL(url));
 
@@ -1057,15 +1063,24 @@ function chooseFile()
       displayImportErrorMessage(fileName)
       fileName = "";
     }
-    else
-      fileName = importName;
+    // else
+    //   fileName = importName;
 
-    gDialog.srcInput.value = fileName;
+    if (gDialog.isImport) {
+      gDialog.srcInput.value = internalName;
+      gPreviewSrc = importName;
+    }
+    else {  
+      // Need to fix this up for references.
+      gDialog.srcInput.value = fileName;
+      gPreviewSrc = importName;
+    }
+
 
     msiSetRelativeCheckbox();
     doOverallEnabling();
+    LoadPreviewImage(importName);
   }
-    LoadPreviewImage();
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
 }
@@ -1977,16 +1992,13 @@ function isVideoSource(srcFile)
   return false;
 }
 
-function LoadPreviewImage()
+function LoadPreviewImage(importName)
 {
+  if (!importName) return;
   if (!gPreviewImageNeeded || gIsGoingAway)
     return;
 
   gDialog.PreviewSize.collapsed = true;
-
-  var imageSrc = TrimString(gDialog.srcInput.value);
-  if (!imageSrc)
-    return;
 
   try {
     // Remove the image URL from image cache so it loads fresh
@@ -1997,7 +2009,7 @@ function LoadPreviewImage()
     if (IOService)
     {
       // We must have an absolute URL to preview it or remove it from the cache
-      imageSrc = msiMakeAbsoluteUrl(imageSrc);
+      imageSrc = msiMakeAbsoluteUrl(importName);
 
       if (GetScheme(imageSrc))
       {
@@ -2429,8 +2441,8 @@ function ValidateImage()
   //TODO: WE NEED TO DO SOME URL VALIDATION HERE, E.G.:
   // We must convert to "file:///" or "http://" format else image doesn't load!
 //  dump("2\n");
-  var src = TrimString(gDialog.srcInput.value);
-  src = checkSourceAndImportSetting(src, gDialog.isImport);
+  var src = TrimString(gPreviewSrc);
+//  src = checkSourceAndImportSetting(src, gDialog.isImport);
 
   imageElement.setAttribute("src", src);
   imageElement.setAttribute("data", src);
