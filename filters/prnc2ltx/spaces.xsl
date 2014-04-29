@@ -6,9 +6,9 @@
     xmlns:exsl="http://exslt.org/common"
 >
 
-<xsl:template match="html:hspace"
-  ><xsl:choose
-    ><xsl:when test="@type='normal'"> </xsl:when>
+<xsl:template match="html:hspace">
+  <xsl:choose>
+    <xsl:when test="@type='normal'"> </xsl:when>
 	  <xsl:when test="@type='requiredSpace'">\ </xsl:when>
 	  <xsl:when test="@type='emSpace'">\quad </xsl:when>
 	  <xsl:when test="@type='twoEmSpace'">\qquad </xsl:when>
@@ -31,6 +31,30 @@
 	</xsl:choose>
 </xsl:template>
 		  
+<xsl:template match="mml:hspace">
+  <xsl:choose>
+    <xsl:when test="@type='normal'"> </xsl:when>
+	  <xsl:when test="@type='requiredSpace'">&#x2001;</xsl:when>
+	  <xsl:when test="@type='emSpace'">\quad </xsl:when>
+	  <xsl:when test="@type='twoEmSpace'">\qquad </xsl:when>
+	  <xsl:when test="@type='nonBreakingSpace'">~</xsl:when>
+	  <xsl:when test="@type='thickSpace'">\thickspace </xsl:when>
+	  <xsl:when test="@type='thinSpace'">\thinspace </xsl:when>
+	  <xsl:when test="@type='italicCorrectionSpace'">\/</xsl:when>
+	  <xsl:when test="@type='negativeThinSpace'">\negthinspace </xsl:when>
+	  <xsl:when test="@type='zeroSpace'">{}</xsl:when>
+	  <xsl:when test="@type='noIndent'">\noindent </xsl:when>
+	  <xsl:when test="@class='stretchySpace'">
+		  <xsl:choose>
+		  	<xsl:when test="@fillWith='dots'">\dotfill </xsl:when>
+				<xsl:when test="@fillWith='line'">\hrulefill </xsl:when>
+				<xsl:when test="@flex">\hspace<xsl:if test="@atEnd='true'">*</xsl:if>{\stretch{<xsl:value-of select="@flex"/>}}</xsl:when>
+			</xsl:choose>
+		</xsl:when>
+		<xsl:when test="@type='customSpace'">\hspace<xsl:if test="@atEnd='true'">*</xsl:if>{<xsl:value-of select="@dim"/>}</xsl:when>
+		<xsl:otherwise/>
+	</xsl:choose>
+</xsl:template>
 
 		 
 <xsl:template match="html:vspace">
