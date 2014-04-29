@@ -183,15 +183,22 @@
       <xsl:when test="./*[2][normalize-space(string())='&#x02DC;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='~']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x02D9;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x02D8;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#x02DD;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x0302;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
+      
       <xsl:when test="./*[2][normalize-space(string())='&#x20D7;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
@@ -286,6 +293,11 @@
               <xsl:with-param name="LaTeX-acc" select="'\tilde'"/>
             </xsl:call-template>
           </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='~']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\tilde'"/>
+            </xsl:call-template>
+          </xsl:when>
           <xsl:when test="./*[2][normalize-space(string())='&#x00B4;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\acute'"/>
@@ -311,6 +323,7 @@
               <xsl:with-param name="LaTeX-acc" select="'\breve'"/>
             </xsl:call-template>
           </xsl:when>
+          
           <xsl:when test="./*[2][normalize-space(string())='&#x00AF;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\bar'"/>
@@ -400,6 +413,11 @@
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\widetilde'"/>
             </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='~']">
+             <xsl:call-template name="math-accent">
+               <xsl:with-param name="LaTeX-acc" select="'\widetilde'"/>
+             </xsl:call-template>
           </xsl:when>
 
 		  <xsl:otherwise>
