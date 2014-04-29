@@ -30,6 +30,9 @@
     <char-table>
        <char unicode="&#x03B1;" latex="\alpha"/>
        <char unicode="&#x03B2;" latex="\beta"/>
+
+       <char unicode="&#x2A04;" latex="\tbiguplus"/>
+       <char unicode="&#x22C3;" latex="\tbigcup"/>
     </char-table>
 </xsl:variable>
 
@@ -1243,14 +1246,12 @@
     </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>  <!-- Single-line display - either \equation or \equation* -->
-      <!-- the msidisplay has been preceeded by a newline. One is not
-           needed here --> 
+      <xsl:value-of select="$newline"/> 
       <xsl:text>\begin{equation</xsl:text>
       <xsl:if test="@numbering='none'">
         <xsl:text>*</xsl:text>
       </xsl:if>
-      <xsl:text xml:space="preserve">}
-</xsl:text>
+      <xsl:text>}</xsl:text>
       <xsl:apply-templates select="mml:math/*" />
       <xsl:if test="@customLabel and string-length(@customLabel)">
         <xsl:text xml:space="preserve"> \tag{</xsl:text>

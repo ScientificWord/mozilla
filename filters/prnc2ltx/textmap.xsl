@@ -17,8 +17,8 @@
 
   <xsl:template name="do-chars-in-TEXT">
     <xsl:param name="unicode-cdata"/>
-      <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
 
+    <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
     <xsl:choose>
       <xsl:when test="$first-char = ' '">
         <xsl:text xml:space="preserve">&#x20;</xsl:text>
@@ -26,6 +26,9 @@
       <xsl:when test="$first-char = '&#x0A;'
       or              $first-char = '&#x0D;'">
         <xsl:text xml:space="preserve">&#x20;</xsl:text>
+      </xsl:when>
+      <xsl:when test="$first-char = '&#x2001;'">
+        <xsl:text xml:space="preserve">\ </xsl:text>
       </xsl:when>
       <xsl:when test="$first-char = '!'
                    or $first-char = '&#x22;'

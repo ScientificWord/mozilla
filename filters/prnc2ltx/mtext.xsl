@@ -40,12 +40,24 @@ mathsize (fontsize) - inheriting
 fontweight  - inheriting
 fontstyle   - inheriting
 -->
-
   <xsl:template match="mml:mtext">
-  
+    <xsl:variable name="content.tr">
+       <xsl:apply-templates/>
+    </xsl:variable>
+    <xsl:variable name="content">
+      <xsl:value-of select="$content.tr"/>
+    </xsl:variable>
+    <xsl:call-template name="mtext-a">
+     <xsl:with-param name="content" select="$content"/>
+    </xsl:call-template>        
+  </xsl:template>
+
+  <xsl:template name="mtext-a">
+    <xsl:param name="content"/>
+
     <xsl:variable name="LaTeX-contents">
       <xsl:call-template name="do-chars-in-TEXT">
-        <xsl:with-param name="unicode-cdata" select="normalize-space(string())"/>
+        <xsl:with-param name="unicode-cdata" select="$content"/>
       </xsl:call-template>
     </xsl:variable>
 
@@ -125,7 +137,7 @@ fontstyle   - inheriting
       </xsl:if>
 
       <xsl:choose>
-        <xsl:when test="string-length($LaTeX-tagging-cmd)">
+        <xsl:when test="string-length($LaTeX-tagging-cmd)&gt;0">
           <xsl:value-of select="$LaTeX-tagging-cmd"/>
           <xsl:call-template name="remove-dollar-dollar">
             <xsl:with-param name="LaTeX-zstr" select="$LaTeX-contents"/>

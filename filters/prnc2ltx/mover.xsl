@@ -262,64 +262,7 @@
 
     <xsl:choose>
 
-<!-- the base element is a big operator -->
-
-      <xsl:when test="$mover-structure/big-op-char!='false'">
-        <xsl:call-template name="do-embellished-bigop">
-          <xsl:with-param name="limits-flag" select="$limits"/>
-          <xsl:with-param name="j1"          select="'^{'"/>
-          <xsl:with-param name="j2"          select="''"/>
-        </xsl:call-template>
-      </xsl:when>
-
-
-<!-- the top element is a stretchy operator - decoration -->
-
-      <xsl:when test="$mover-structure/is-decoration='true'">
-        <xsl:choose>
-          <xsl:when test="./*[2][normalize-space(string())='&#x00AF;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\overline'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x2190;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\overleftarrow'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x2192;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\overrightarrow'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x2194;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\overleftrightarrow'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x23DE;']
-          or              ./*[2][normalize-space(string())='&#xFE37;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\overbrace'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x0302;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\widehat'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x02DC;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\widetilde'"/>
-            </xsl:call-template>
-          </xsl:when>
-
-		  <xsl:otherwise>
-		  </xsl:otherwise>
-        </xsl:choose>
-	  </xsl:when>
-
-<!-- the top element is an accent operator -->
+      <!-- the top element is an accent operator -->
 
       <xsl:when test="$mover-structure/is-accent='true'">
         <xsl:choose>
@@ -398,6 +341,64 @@
           or              ./*[2][normalize-space(string())='&#xFE37;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\overbrace'"/>
+            </xsl:call-template>
+          </xsl:when>
+
+		  <xsl:otherwise>
+		  </xsl:otherwise>
+        </xsl:choose>
+	  </xsl:when>
+
+
+<!-- the base element is a big operator -->
+
+      <xsl:when test="$mover-structure/big-op-char!='false'">
+        <xsl:call-template name="do-embellished-bigop">
+          <xsl:with-param name="limits-flag" select="$limits"/>
+          <xsl:with-param name="j1"          select="'^{'"/>
+          <xsl:with-param name="j2"          select="''"/>
+        </xsl:call-template>
+      </xsl:when>
+
+
+<!-- the top element is a stretchy operator - decoration -->
+
+      <xsl:when test="$mover-structure/is-decoration='true'">
+        <xsl:choose>
+          <xsl:when test="./*[2][normalize-space(string())='&#x00AF;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overline'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x2190;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overleftarrow'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x2192;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overrightarrow'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x2194;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overleftrightarrow'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x23DE;']
+          or              ./*[2][normalize-space(string())='&#xFE37;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overbrace'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x0302;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\widehat'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x02DC;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\widetilde'"/>
             </xsl:call-template>
           </xsl:when>
 
