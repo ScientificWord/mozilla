@@ -323,7 +323,14 @@
               <xsl:with-param name="LaTeX-acc" select="'\breve'"/>
             </xsl:call-template>
           </xsl:when>
-          
+          <xsl:when test="./*[2][normalize-space(string())='&#x02DD;']">
+            <xsl:text>\text{</xsl:text>
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\H'"/>
+            </xsl:call-template>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+         
           <xsl:when test="./*[2][normalize-space(string())='&#x00AF;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\bar'"/>
