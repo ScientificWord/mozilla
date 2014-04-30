@@ -79,7 +79,7 @@
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:variable name="needminipage" select="1"/>
+  <xsl:variable name="needminipage" select="0"/>
   <xsl:if test="$inlineOffset and string-length($inlineOffset)">\raisebox{<xsl:value-of select="$inlineOffset"/>}{</xsl:if>
 	<xsl:if test="$limitframemetrics=1"><!-- <xsl:if test="not($inlineOffset) or not(string-length($inlineOffset))">{</xsl:if> -->
     <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/>
@@ -123,11 +123,25 @@
       </xsl:choose>}
     </xsl:when>
   <!-- <xsl:when test="@pos='float' and ((@placement='full') or (@frametype='image') or ((@placeLocation !='h') and (@placeLocation !='H')))">\begin{figure}[<xsl:value-of select="@placeLocation"></xsl:value-of>]<xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\begin{center}</xsl:if></xsl:when> -->
-    <xsl:when test="$floatcenter=1">\begin{figure}[<xsl:value-of select="@placeLocation"/>]</xsl:when>
-    <xsl:when test="$isdisplay=1">\begin{center}</xsl:when>
+      <xsl:when test="$floatcenter=1">
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\begin{figure}</xsl:text>
+       <xsl:if test="@placeLocation">
+          <xsl:text>[</xsl:text>
+          <xsl:value-of select="@placeLocation"/>
+          <xsl:text>]</xsl:text>
+       </xsl:if>
+    </xsl:when>
+    <xsl:when test="$isdisplay=1">
+      <xsl:text>\begin{center}</xsl:text>
+    </xsl:when>
     <xsl:when test="(@pos='inline') and (@frametype='image')">
-    {\parbox[b]{<xsl:value-of select="$width"/><xsl:value-of select="$units"/>}{ %
-\begin{center}
+       <xsl:text>{\parbox[b]{</xsl:text>
+       <xsl:value-of select="$width"/>
+       <xsl:value-of select="$units"/>
+       <xsl:text>}{ %</xsl:text>
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\begin{center}</xsl:text>
     </xsl:when>
   </xsl:choose>
   <xsl:if test="$captionloc=1">
