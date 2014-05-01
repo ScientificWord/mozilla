@@ -244,9 +244,9 @@ char *STree2MML::BackTranslate(SEMANTICS_NODE* semantic_tree,
 
   SetUserPrefs(ds);
 
-#ifdef DEBUG
-  JBM::DumpSList(semantic_tree);
-#endif
+// #ifdef DEBUG
+//   JBM::DumpSList(semantic_tree);
+// #endif
 
   int error_code = 0;
   int nodes_made, terms_made;
@@ -2085,11 +2085,11 @@ void STree2MML::SemanticFRACTION2MML(SEMANTICS_NODE * s_fraction,
                                 nodes_made, terms_made,
                                 is_signed, num_factors, den_factors);
     if (z_num) {
-      #ifdef DEBUG
-      char msg[1000];
-      sprintf( msg, "\n\nNumerator = %s", z_num);
-      JBM::JBMLine(msg);
-      #endif
+      // #ifdef DEBUG
+      // char msg[1000];
+      // sprintf( msg, "\n\nNumerator = %s", z_num);
+      // JBM::JBMLine(msg);
+      // #endif
 
       FACTOR_REC *new_fr = CreateFactor();
       new_fr->zh_fstr = z_num;
@@ -2109,11 +2109,11 @@ void STree2MML::SemanticFRACTION2MML(SEMANTICS_NODE * s_fraction,
                                 nodes_made, terms_made,
                                 is_signed, den_factors, num_factors);
     if (z_den) {
-      #ifdef DEBUG
-      char msg[1000];
-      sprintf( msg, "\n\nDenominator = %s", z_den);
-      JBM::JBMLine(msg);
-      #endif
+      // #ifdef DEBUG
+      // char msg[1000];
+      // sprintf( msg, "\n\nDenominator = %s", z_den);
+      // JBM::JBMLine(msg);
+      // #endif
       FACTOR_REC *new_fr = CreateFactor();
       new_fr->zh_fstr = z_den;
       new_fr->n_terms = terms_made;
