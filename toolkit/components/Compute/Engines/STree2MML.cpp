@@ -2011,7 +2011,7 @@ void STree2MML::SemanticPGROUP2MML(SEMANTICS_NODE * s_group,
                                         is_signed, NULL, NULL);
       if (!err_code && zh_rv) {
         error_code = 0;
-        if ((nest_in_parens && terms_made > 1) || force_parens) {
+        if ((nest_in_parens && nodes_made > 1) || force_parens) {
           int rv_nodes_made;
           zh_rv = NestzMMLInMROW(zh_rv);
           zh_rv = NestzMMLInPARENS(zh_rv, rv_nodes_made);
