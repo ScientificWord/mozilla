@@ -523,7 +523,7 @@ bool MuPADEngine::Exec(TCIString & cmd)
       eng_outstr += cmd;
     }
     const MUP_Char *p = static_cast<const MUP_Char*>(eng_outstr);
-    printf("\n\n  jcs MuPADEngine result: %s\n", p);
+    //printf("\n\n  jcs MuPADEngine result: %s\n", p);
     rv = true;
   }
 
