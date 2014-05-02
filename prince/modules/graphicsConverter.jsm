@@ -24,6 +24,8 @@ var graphicsConverter = {
   iniParser: null,
   codeDir: null,
   OS: "",
+  handler: new UnitHandler(),
+
 
   init: function(aWindow, baseDirIn) {
     this.OS = getOS(aWindow);
@@ -35,11 +37,12 @@ var graphicsConverter = {
     iniFile.append("graphicsConversions.ini");
     this.iniParser = createINIParser(iniFile);
     this.converterDir.append("utilities");
+    this.handler.initCurrentUnit('bp');
     // This next line will probably need to be removed when the utilities directory is reorganized.
     // this.converterDir.append("bin");
   },
 
-  copyAndConvert: function(graphicsFile, width, height) {
+  copyAndConvert: function(graphicsFile,  copyToGraphics, width, height) {
     var baseName;
     var extension;
     var leaf = graphicsFile.leafName;
@@ -58,14 +61,16 @@ var graphicsConverter = {
       command = null;
     }
     if (command != null) {
-      this.assureSubdir("graphics");
-      destDir = this.baseDir.clone();
-      destDir.append("graphics");
-      destFile = destDir.clone();
-      destFile.append(leaf);
-      returnPath = "graphics/" + leaf;
-      if (destFile.exists()) destFile.remove(false);
-      graphicsFile.copyTo(destDir, leaf);
+      if (copyToGraphics) {
+        this.assureSubdir("graphics");
+        destDir = this.baseDir.clone();
+        destDir.append("graphics");
+        destFile = destDir.clone();
+        destFile.append(leaf);
+        returnPath = "graphics/" + leaf;
+        if (destFile.exists()) destFile.remove(false);
+        graphicsFile.copyTo(destDir, leaf);
+      }
       if (command != "") {
         returnPath = this.execCommands(graphicsFile, command, width, height);
       }
@@ -86,6 +91,7 @@ var graphicsConverter = {
     var progname;
     var commandparts;
     var toolsDir;
+    var paramOffset = 0;
     toolsDir = this.converterDir.clone();
     var regex = /\//;  // look for slash
     var dollar1;
@@ -95,14 +101,19 @@ var graphicsConverter = {
     var extension;
     var paramArray;
     var param;
-    var bRunSynchronously;
+    var bRunSynchronously = true;
+    var resolutionParameter = null;
     var returnPath; // the path of the file to display, relative to baseDir
     var pathParts = graphicsFile.path.split('.');
     if (regex.test(pathParts[pathParts.length - 1])) { // there is a '/' past the last '.', so there is no useful extension -- shouldn't happen
       return; 
     }
-    if (pathParts.length > 1) pathParts.length = pathParts.length - 1; //delete the extension
-      dollar1 = pathParts.join('.');
+    if (pathParts.length > 1) 
+    {
+      extension = pathParts[pathParts.length-1];
+      pathParts.length = pathParts.length - 1; //delete the extension
+    }
+    dollar1 = pathParts.join('.');
     dollar2 = graphicsFile.leafName;
     var leafParts = dollar2.split('.');
     if (leafParts.length > 1) leafParts.length = leafParts.length - 1;
@@ -115,12 +126,22 @@ var graphicsConverter = {
       progname = commandparts[0];
       if (this.OS === "win") progname += ".exe";
       theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-      utilityFile = toolsDir.clone();
-      utilityFile.append(progname);
+      // use progname unchanged if it contains a '/', otherwise assume it is in the utilties dir.
+      if (regex.test(progname)) {
+        utilityFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        utilityFile.initWithPath(progname);
+      }
+      else {
+        utilityFile = toolsDir.clone();
+        utilityFile.append(progname);
+      }
       theProcess.init(utilityFile);
       // build parameters
-      bRunSynchronously = (i+1) < commandlist.length;  // run all commands but the last synchronously
+      // bRunSynchronously = (i+1) < commandlist.length;  // run all commands but the last synchronously
       paramArray = [];
+      if (width && height) {
+        resolutionParameter = this.setResolutionParameters(graphicsFile, width, height );
+      }
       for (j = 1; j < commandparts.length; j++) {
         param = commandparts[j];
         param = param.replace("$1", dollar1);
@@ -131,15 +152,176 @@ var graphicsConverter = {
           if (/gcache/.test(param)) this.assureSubdir('gcache');
           if (/graphics/.test(param)) this.assureSubdir('graphics');
           param = "\"" + this.baseDir.path + '/' + param.slice(1);  // we are assuming the first character is '"'
-          param = param.replace(/\"/g,'')
+          param = param.replace(/\"/g,'');
         }
-        param = param.replace(/\"/g,'')
-        paramArray.push(param);
+        param = param.replace(/\"/g,'');
+        param = param.replace(/\s*/, '');
+        if (param.length > 0) paramArray.push(param);
+      }
+      if (resolutionParameter) {
+        paramArray.unshift(resolutionParameter);
       }
       theProcess.run(bRunSynchronously, paramArray, paramArray.length);
     }
     return returnPath;
   },
+
+  // A function to call when an existing graphics object changes dimensions, requiring
+  // a new preview file optimized for those dimensions.
+  setResolutionParameters: function(graphicsFile, newWidth, newHeight) {
+    // should we be saving the old dimensions in the node attributes, to skip this 
+    // function when possible?
+    // newWidth and newHeight are in pixels?
+    var originalUrl = graphicsFile.path;
+    var pathParts = originalUrl.split('.');
+    var extension = pathParts[pathParts.length-1];
+    if (!extension || extension.length === 0) extension = pathParts[pathParts.length-2];
+    if (!extension || extension.length === 0) return;
+    var origDimension = null;
+    var resolutionParameter;
+    var intermediate;
+    var w, h; 
+    var pixelsPerInch;
+
+    switch (extension) {
+      case "eps": origDimension = this.readSizeFromEPSFile(graphicsFile);
+        break;
+      case "pdf": origDimension = this.readSizeFromPDFFile(graphicsFile);
+        break;
+      default:
+        return null;
+        break;
+    }
+    if (origDimension && origDimension.width > 0) {
+      // origDimension is in big points, 'bp'
+      this.handler.setCurrentUnit('px');
+      w = this.handler.getValueOf(origDimension.width, 'bp');
+      h = this.handler.getValueOf(origDimension.height, 'bp');
+      pixelsPerInch = this.handler.getValueOf(1, 'in');
+      resolutionParameter = "-r"+Math.round((pixelsPerInch*newWidth)/w)+"x"+
+        Math.round((pixelsPerInch*newHeight)/h);
+      return resolutionParameter;
+    }
+    return null;
+  },
+
+
+  readSizeFromEPSFile: function(epsFile)
+  {
+    var theText = this.getFileAsString(epsFile);
+    var dimensions = {width: 0, height: 0};
+    var regex = /%%BoundingBox: (\d+) (\d+) (\d+) (\d+)/;
+    var match = regex.exec(theText);
+    dimensions.width = match[3] - match[1];
+    dimensions.height = match[4] - match[2];
+    return dimensions;
+
+  },
+
+  readSizeFromPDFFile: function(pdfFile)
+  {
+    var theText = this.getFileAsString(pdfFile);
+    var dimensions = {width: 0, height: 0};
+
+  //  var wdthRE = /(\/Width)\s+([0-9]+)/i;
+  //  var htRE = /(\/Height\s+([0-9]+)/i;
+    var BBRE = /\/BBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
+    var mediaBoxRE = /\/MediaBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
+
+    function checkBoundingBox( objString )
+    {
+      var res = null;
+      var bbArray = BBRE.exec(objString);
+      if (bbArray && bbArray[1] && bbArray[2])
+      {
+        if (bbArray[3] && bbArray[4])
+        {
+          res = {wdth : Math.round(9.6 * (Number(bbArray[3]) - Number(bbArray[1]))),
+                 ht : Math.round(9.6 * (Number(bbArray[4]) - Number(bbArray[2]))) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
+        }
+        else  //this shouldn't happen, though
+        {
+          res = {wdth : Math.round(9.6 * Number(bbArray[1])),
+                 ht : Math.round(9.6 * Number(bbArray[2])) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
+        }
+      }
+      return res;
+    }
+
+    function checkMediaBox( objString )
+    {
+      var res = null;
+      var dimsArray = mediaBoxRE.exec(objString);
+      if (dimsArray && dimsArray[1] && dimsArray[2])
+      {
+        if (dimsArray[3] && dimsArray[4])
+        {
+          res = { wdth : Math.round(Number(dimsArray[3]) - Number(dimsArray[1])),
+                  ht : Math.round(Number(dimsArray[4]) - Number(dimsArray[2])) };
+        }
+        else  //this shouldn't happen, though
+        {
+          res = { wdth : Math.round(Number(dimsArray[1])),
+                  ht : Math.round(Number(dimsArray[2])) };
+        }
+      }
+      return res;
+    }
+
+    var htWdth = null;
+    var pdfStart = theText.indexOf("%PDF");
+    if (pdfStart < 0)
+      return;
+    var xObj = theText.indexOf("/XObject", pdfStart);
+    var objEnd = pdfStart;
+    while (!htWdth && (xObj > 0))  //look for /XObject spec first
+    {
+      objEnd = theText.indexOf("endobj", xObj);
+      htWdth = checkBoundingBox( theText.substring(xObj, objEnd) );
+      if (!htWdth)
+        xObj = theText.indexOf("/XObject", objEnd);
+    }
+    if (!htWdth)
+    {
+      var pageDesc = theText.indexOf("/Page", pdfStart);
+      objEnd = pdfStart;
+      while (!htWdth && (pageDesc > 0))  //look for /XObject spec first
+      {
+        objEnd = theText.indexOf("endobj", pageDesc);
+        htWdth = checkMediaBox( theText.substring(pageDesc, objEnd) );
+        if (!htWdth)
+          pageDesc = theText.indexOf("/Page", objEnd);
+      }
+    }
+
+    if (htWdth)
+    {
+      var bReset = false;
+      // htWdth fields are in Adobe Big Points
+      dimensions.width  = htWdth.wdth; 
+      dimensions.height = htWdth.ht;
+      dimensions.unit = 'bp';
+      // bReset = true;
+      // if (frameTabDlg.actual.selected || bReset)
+      //   setActualOrDefaultSize();
+
+      // SetSizeWidgets( Math.round(this.handler.getValueAs(frameTabDlg.widthInput.value,"px")), 
+      //                 Math.round(this.handler.getValueAs(frameTabDlg.heightInput.value,"px")) );
+    }
+    return dimensions;
+  },
+
+  // getFileAsString: function(fileUrl) {
+  //   var req = new XMLHttpRequest();
+  //   req.overrideMimeType("text/plain");
+  //   req.open('GET', fileUrl, false);
+  //   req.send(null);
+  //   if (req.status === 0)
+  //     return req.responseText;
+  //   else
+  //     return null;
+  // },
+
 
   getGraphicsFilterDirPath: function(filterName) {
     if (!this.imageMagickDir || !this.uniconvertorDir || !this.wmf2epsDir) {
@@ -463,18 +645,17 @@ var graphicsConverter = {
     var theHeight = objElement.getAttribute("imageHeight") || objElement.getAttribute("height") || objElement.getAttribute("naturalHeight");
     if (!theWidth || !theHeight) {
       var pixWidth, pixHeight;
-      var handler = new UnitHandler();
       try {
         if (!theWidth) {
           pixWidth = objElement.offsetWidth;
-          handler.initCurrentUnit(theUnits);
-          var attrValStr = String(handler.getValueOf(pixWidth, "px"));
+          this.handler.initCurrentUnit(theUnits);
+          var attrValStr = String(this.handler.getValueOf(pixWidth, "px"));
           objElement.setAttribute("imageWidth", attrValStr);
           objElement.setAttribute("naturalWidth", attrValStr);
         }
         if (!theHeight) {
           pixHeight = objElement.offsetHeight;
-          attrValStr = String(handler.getValueOf(pixHeight, "px"));
+          attrValStr = String(this.handler.getValueOf(pixHeight, "px"));
           objElement.setAttribute("imageHeight", attrValStr);
           objElement.setAttribute("naturalHeight", attrValStr);
         }
