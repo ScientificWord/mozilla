@@ -1056,7 +1056,7 @@ function chooseFile()
     internalFile.append(msiFileFromFileURL(url).leafName);
     internalName = graphicDir.leafName + "/" + internalFile.leafName;
     graphicsConverter.init(window, graphicDir.parent);
-    importName = graphicsConverter.copyAndConvert(msiFileFromFileURL(url));
+    importName = graphicsConverter.copyAndConvert(msiFileFromFileURL(url), true);
 
     if (!importName || !importName.length)
     {
@@ -1079,7 +1079,7 @@ function chooseFile()
 
     msiSetRelativeCheckbox();
     doOverallEnabling();
-    LoadPreviewImage(importName);
+    LoadPreviewImage(gPreviewSrc, fileName);
   }
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
@@ -1905,16 +1905,16 @@ function PreviewImageLoaded()
       dump("PreviewImageLoaded reached for video file!\n");
     // Image loading has completed -- we can get actual width
     var bReset = false;
-    if (gDialog.PreviewImage.offsetWidth && (gActualWidth != gDialog.PreviewImage.offsetWidth))
-    {
-      gConstrainWidth = gActualWidth  = gDialog.PreviewImage.offsetWidth;
-      bReset = true;
-    }
-    if (gDialog.PreviewImage.offsetHeight && (gActualHeight != gDialog.PreviewImage.offsetHeight))
-    {
-      gConstrainHeight = gActualHeight = gDialog.PreviewImage.offsetHeight;
-      bReset = true;
-    }
+    // if (gDialog.PreviewImage.offsetWidth && (gActualWidth != gDialog.PreviewImage.offsetWidth))
+    // {
+    //   gConstrainWidth = gActualWidth  = gDialog.PreviewImage.offsetWidth;
+    //   bReset = true;
+    // }
+    // if (gDialog.PreviewImage.offsetHeight && (gActualHeight != gDialog.PreviewImage.offsetHeight))
+    // {
+    //   gConstrainHeight = gActualHeight = gDialog.PreviewImage.offsetHeight;
+    //   bReset = true;
+    // }
 
     if (gActualWidth && gActualHeight)
     {
@@ -1934,8 +1934,8 @@ function PreviewImageLoaded()
       gDialog.PreviewImage.width = width;
       gDialog.PreviewImage.height = height;
 
-      gDialog.PreviewWidth.setAttribute("value", gActualWidth+" pixels");
-      gDialog.PreviewHeight.setAttribute("value", gActualHeight+" pixels");
+      gDialog.PreviewWidth.setAttribute("value", Math.round(gActualWidth)+" pixels");
+      gDialog.PreviewHeight.setAttribute("value", Math.round(gActualHeight)+" pixels");
 
       gDialog.PreviewSize.collapsed = false;
       gDialog.ImageHolder.collapsed = false;
@@ -1992,9 +1992,11 @@ function isVideoSource(srcFile)
   return false;
 }
 
-function LoadPreviewImage(importName)
+function LoadPreviewImage(importName, srcName)
 {
-  if (!importName) return;
+  if (!importName || !srcName) return;
+  var imageSrc;
+  var importSrc;
   if (!gPreviewImageNeeded || gIsGoingAway)
     return;
 
@@ -2048,9 +2050,17 @@ function LoadPreviewImage(importName)
       gDialog.PreviewImage.src = imageSrc;
     else
       gDialog.PreviewImage.data = imageSrc;
-    var extension = getExtension(imageSrc);
-    if (extension == "pdf")
-      readSizeFromPDFFile(imageSrc);
+    var extension = getExtension(srcName);
+    var dimensions;
+    var intermediate;
+    if (extension == "pdf") {
+      dimensions = graphicsConverter.readSizeFromPDFFile(msiFileFromFileURL(msiURIFromString(srcName)));
+      // convert bp to px
+      intermediate = frameUnitHandler.getValueOf(dimensions.width, 'bp');
+      gConstrainWidth = gActualWidth = frameUnitHandler.getValueAs(intermediate, 'px');
+      intermediate = frameUnitHandler.getValueOf(dimensions.height, 'bp');
+      gConstrainHeight = gActualHeight = frameUnitHandler.getValueAs(intermediate, 'px');
+    }
     adjustObjectForFileType(gDialog.PreviewImage, extension);
     if (gVideo)
     {
@@ -2070,16 +2080,6 @@ var pdfSetupStr = "#toolbar=0&statusbar=0&navpanes=0";
 function adjustObjectForFileType(imageNode, extension)
 {
   var ext = extension.toLowerCase();
-  switch(ext)
-  {
-    case "pdf":
-      var theSrc = getSourceLocationFromElement(imageNode);
-      if (theSrc.indexOf(pdfSetupStr) < 0)
-        imageNode.setAttribute("data", theSrc + pdfSetupStr);
-    break;
-    default:
-    break;
-  }
   if (gVideo)
   {
     msiEditorEnsureAttributeOrParam(imageNode, "scale", "aspect", null);
@@ -2090,102 +2090,6 @@ function adjustObjectForFileType(imageNode, extension)
   }
 }
 
-function readSizeFromPDFFile(pdfSrc)
-{
-  var pdfSrcUrl = msiMakeAbsoluteUrl(pdfSrc);
-  var theText = getFileAsString(pdfSrcUrl);
-
-//  var wdthRE = /(\/Width)\s+([0-9]+)/i;
-//  var htRE = /(\/Height\s+([0-9]+)/i;
-  var BBRE = /\/BBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
-  var mediaBoxRE = /\/MediaBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
-
-  function checkBoundingBox( objString )
-  {
-    var res = null;
-    var bbArray = BBRE.exec(objString);
-    if (bbArray && bbArray[1] && bbArray[2])
-    {
-      if (bbArray[3] && bbArray[4])
-      {
-        res = {wdth : Math.round(9.6 * (Number(bbArray[3]) - Number(bbArray[1]))),
-               ht : Math.round(9.6 * (Number(bbArray[4]) - Number(bbArray[2]))) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
-      }
-      else  //this shouldn't happen, though
-      {
-        res = {wdth : Math.round(9.6 * Number(bbArray[1])),
-               ht : Math.round(9.6 * Number(bbArray[2])) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
-      }
-    }
-    return res;
-  }
-
-  function checkMediaBox( objString )
-  {
-    var res = null;
-    var dimsArray = mediaBoxRE.exec(objString);
-    if (dimsArray && dimsArray[1] && dimsArray[2])
-    {
-      if (dimsArray[3] && dimsArray[4])
-      {
-        res = { wdth : Math.round(Number(dimsArray[3]) - Number(dimsArray[1])),
-                ht : Math.round(Number(dimsArray[4]) - Number(dimsArray[2])) };
-      }
-      else  //this shouldn't happen, though
-      {
-        res = { wdth : Math.round(Number(dimsArray[1])),
-                ht : Math.round(Number(dimsArray[2])) };
-      }
-    }
-    return res;
-  }
-
-  var htWdth = null;
-  var pdfStart = theText.indexOf("%PDF");
-  if (pdfStart < 0)
-    return;
-  var xObj = theText.indexOf("/XObject", pdfStart);
-  var objEnd = pdfStart;
-  while (!htWdth && (xObj > 0))  //look for /XObject spec first
-  {
-    objEnd = theText.indexOf("endobj", xObj);
-    htWdth = checkBoundingBox( theText.substring(xObj, objEnd) );
-    if (!htWdth)
-      xObj = theText.indexOf("/XObject", objEnd);
-  }
-  if (!htWdth)
-  {
-    var pageDesc = theText.indexOf("/Page", pdfStart);
-    objEnd = pdfStart;
-    while (!htWdth && (pageDesc > 0))  //look for /XObject spec first
-    {
-      objEnd = theText.indexOf("endobj", pageDesc);
-      htWdth = checkMediaBox( theText.substring(pageDesc, objEnd) );
-      if (!htWdth)
-        pageDesc = theText.indexOf("/Page", objEnd);
-    }
-  }
-
-  if (htWdth)
-  {
-    var bReset = false;
-    if (gActualWidth != htWdth.wdth)
-    {
-      gConstrainWidth = gActualWidth  = htWdth.wdth;
-      bReset = true;
-    }
-    if (gActualHeight != htWdth.ht)
-    {
-      gConstrainHeight = gActualHeight = htWdth.ht;
-      bReset = true;
-    }
-    if (frameTabDlg.actual.selected || bReset)
-      setActualOrDefaultSize();
-
-    SetSizeWidgets( Math.round(frameUnitHandler.getValueAs(frameTabDlg.widthInput.value,"px")), 
-                    Math.round(frameUnitHandler.getValueAs(frameTabDlg.heightInput.value,"px")) );
-  }
-}
 
 function setActualOrDefaultSize()
 {
@@ -2613,6 +2517,17 @@ function onAccept()
   {
     var editorElement = msiGetParentEditorElementForDialog(window);
     var editor = msiGetEditor(gEditorElement);
+    graphicsConverter.init(window, getDocumentGraphicsDir('').parent);
+    var unit = document.getElementById("unitList").value;
+    var width, height;
+    width = document.getElementById("frameWidthInput").value;
+    height = document.getElementById("frameHeightInput").value;
+    // probably redundant
+    frameUnitHandler.setCurrentUnit(unit);
+    width = frameUnitHandler.getValueAs(width, 'px');
+    height = frameUnitHandler.getValueAs(height, 'px');
+    graphicsConverter.copyAndConvert(msiFileFromFileURL(msiURIFromString(gOriginalSrcUrl)), false, width, height);
+
 
     editor.beginTransaction();
     try
