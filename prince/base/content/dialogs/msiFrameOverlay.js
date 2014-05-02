@@ -1284,6 +1284,7 @@ function doDimensionEnabling()
 
 function setActualSize()
 {
+  var width, height;
   if (gActualWidth && gActualHeight)
   {
     width = frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gActualWidth,"px");
