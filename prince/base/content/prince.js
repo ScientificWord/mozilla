@@ -883,10 +883,13 @@ function compileDocument()
 //      if (outputfile.exists()) AlertWithTitle("Locked file","the tex directory was not deleted");
       outputfile.create(1, 0755);
     }
-    catch(e) {}; // 
+    catch(e) {} // 
     var pdffile = outputfile.clone();
     outputfile.append("main.tex");
-    if (outputfile.exists()) outputfile.remove(false);
+    try  {    
+      if (outputfile.exists()) outputfile.remove(false);
+    }
+    catch(e){}
     
     dump("TeX file="+outputfile.path + "\n");
 //    dump("PDF file is " + pdffile.path + "\n"); 
@@ -929,7 +932,7 @@ function printTeX(preview )
     var pdffile = compileDocument();
     if (pdffile)
     {
-      if (preview)
+      if (pFreview)
       {
       // get prefs for viewing pdf files
         var prefs = GetPrefs();
