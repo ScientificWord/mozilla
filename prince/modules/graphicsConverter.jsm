@@ -51,11 +51,12 @@ var graphicsConverter = {
     var destDir;
     var destFile;
     var returnPath;
+    var copiedFile;
     extension = chunks[chunks.length - 1];
     chunks.length = chunks.length - 1;
     baseName = chunks.join('.');
     try {
-      command = this.iniParser.getString("ConvertersBrowser", extension);
+      command = this.iniParser.getString("Converters", extension);
     }
     catch(e) {
       command = null;
@@ -71,8 +72,12 @@ var graphicsConverter = {
         if (destFile.exists()) destFile.remove(false);
         graphicsFile.copyTo(destDir, leaf);
       }
+      copiedFile = this.baseDir.clone();
+      copiedFile.append("graphics");
+      copiedFile.append(leaf);
+
       if (command != "") {
-        returnPath = this.execCommands(graphicsFile, command, width, height);
+        returnPath = this.execCommands(copiedFile, command, width, height);
       }
     }
     return returnPath;
@@ -82,7 +87,7 @@ var graphicsConverter = {
     var theDir = this.baseDir.clone();
     theDir.append(leafname);
     if (!theDir.exists()) {
-      theDir.create(1, 0755);
+      theDir.create(1, 0777);
     }
   },
 
@@ -93,19 +98,22 @@ var graphicsConverter = {
     var toolsDir;
     var paramOffset = 0;
     toolsDir = this.converterDir.clone();
-    var regex = /\//;  // look for slash
+    var regex0 = /\\/;  // look for slash or backslash
+    var regex1 = /\//;
     var dollar1;
     var dollar2; // these correspond to $1 and $2 in graphicsConversions.ini
     var theProcess;
     var utilityFile;
     var extension;
     var paramArray;
+    var paramArray1 = [];
+    var paramArray2 = [];
     var param;
     var bRunSynchronously = true;
     var resolutionParameter = null;
     var returnPath; // the path of the file to display, relative to baseDir
     var pathParts = graphicsFile.path.split('.');
-    if (regex.test(pathParts[pathParts.length - 1])) { // there is a '/' past the last '.', so there is no useful extension -- shouldn't happen
+    if (regex0.test(pathParts[pathParts.length - 1]) || regex1.test(pathParts[pathParts.length - 1])) { // there is a '/' past the last '.', so there is no useful extension -- shouldn't happen
       return; 
     }
     if (pathParts.length > 1) 
@@ -113,57 +121,76 @@ var graphicsConverter = {
       extension = pathParts[pathParts.length-1];
       pathParts.length = pathParts.length - 1; //delete the extension
     }
-    dollar1 = pathParts.join('.');
-    dollar2 = graphicsFile.leafName;
-    var leafParts = dollar2.split('.');
-    if (leafParts.length > 1) leafParts.length = leafParts.length - 1;
-    dollar2 = leafParts.join('.');
-    var i;
-    var j;
-    var regex2=/\$2/;
-    for (i = 0; i < commandlist.length; i++) {
-      commandparts = commandlist[i].split(' ');
-      progname = commandparts[0];
-      if (this.OS === "win") progname += ".exe";
-      theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-      // use progname unchanged if it contains a '/', otherwise assume it is in the utilties dir.
-      if (regex.test(progname)) {
-        utilityFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-        utilityFile.initWithPath(progname);
-      }
-      else {
-        utilityFile = toolsDir.clone();
-        utilityFile.append(progname);
-      }
-      theProcess.init(utilityFile);
-      // build parameters
-      // bRunSynchronously = (i+1) < commandlist.length;  // run all commands but the last synchronously
-      paramArray = [];
-      if (width && height) {
-        resolutionParameter = this.setResolutionParameters(graphicsFile, width, height );
-      }
-      for (j = 1; j < commandparts.length; j++) {
-        param = commandparts[j];
-        param = param.replace("$1", dollar1);
-        if (regex2.test(param)) {
-          param = param.replace("$2", dollar2);
-          returnPath = param.replace(/\"/g, '');
-          if (/tcache/.test(param)) this.assureSubdir('tcache');
-          if (/gcache/.test(param)) this.assureSubdir('gcache');
-          if (/graphics/.test(param)) this.assureSubdir('graphics');
-          param = "\"" + this.baseDir.path + '/' + param.slice(1);  // we are assuming the first character is '"'
-          param = param.replace(/\"/g,'');
+    try {
+      dollar1 = pathParts.join('.');
+      dollar2 = graphicsFile.leafName;
+      var leafParts = dollar2.split('.');
+      if (leafParts.length > 1) leafParts.length = leafParts.length - 1;
+      dollar2 = leafParts.join('.');
+      var i;
+      var j;
+      var ithCommand;
+      var regex2=/\$2/;
+      for (i = 0; i < commandlist.length; i++) {
+        if (i === 0) paramArray=paramArray1;
+        else paramArray=paramArray2;
+        ithCommand = commandlist[i];
+        ithCommand = ithCommand.replace(/^\s*/,'');  // aka 'trim'
+        ithCommand = ithCommand.replace(/\s*$/,'');
+        commandparts = commandlist[i].split(',');
+        progname = commandparts[0];
+        if (this.OS === "win") progname += ".exe";
+        theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+        // use progname unchanged if it contains a '/', otherwise assume it is in the utilties dir.
+        if (regex0.test(progname) || regex1.test(progname)) {
+          utilityFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+          utilityFile.initWithPath(progname);
         }
-        param = param.replace(/\"/g,'');
-        param = param.replace(/\s*/, '');
-        if (param.length > 0) paramArray.push(param);
+        else {
+          utilityFile = toolsDir.clone();
+          utilityFile.append(progname);
+        }
+        theProcess.init(utilityFile);
+        // build parameters
+        // bRunSynchronously = (i+1) < commandlist.length;  // run all commands but the last synchronously
+        if (width && height) {
+          resolutionParameter = this.setResolutionParameters(graphicsFile, width, height );
+        }
+        for (j = 1; j < commandparts.length; j++) {
+          param = commandparts[j];
+          param = param.replace("$1", dollar1);
+          if (regex2.test(param)) {
+            param = param.replace("$2", dollar2);
+            param = param.replace(/^\s*/,'');  // aka 'trim'
+            param = param.replace(/\s*$/,'');
+
+            returnPath = param.replace(/\"/g, '');
+            if (/tcache/.test(param)) this.assureSubdir('tcache');
+            if (/gcache/.test(param)) this.assureSubdir('gcache');
+            if (/graphics/.test(param)) this.assureSubdir('graphics');
+            if (this.OS === "win") {
+              param = this.baseDir.path + '\\' + param;  
+            } 
+            else {
+              param = this.baseDir.path + '/' + param;                
+            }
+            param = param.replace(/\"/g,'');
+          }
+          param = param.replace(/\"/g,'');
+          // if (param.length > 0) {
+            paramArray.push(param);
+          // }
+        }
+        if (resolutionParameter) {
+          paramArray.unshift(resolutionParameter);
+        }
+        theProcess.run(bRunSynchronously, paramArray, paramArray.length);
       }
-      if (resolutionParameter) {
-        paramArray.unshift(resolutionParameter);
-      }
-      theProcess.run(bRunSynchronously, paramArray, paramArray.length);
     }
-    return returnPath;
+    catch(e) {
+      AlertWithTitle("Dump", e.message, null);
+    }
+    return "../"+returnPath.replace("\\","/", 'g');
   },
 
   // A function to call when an existing graphics object changes dimensions, requiring
@@ -198,7 +225,7 @@ var graphicsConverter = {
       w = this.handler.getValueOf(origDimension.width, 'bp');
       h = this.handler.getValueOf(origDimension.height, 'bp');
       pixelsPerInch = this.handler.getValueOf(1, 'in');
-      resolutionParameter = "-r"+Math.round((pixelsPerInch*newWidth)/w)+"x"+
+      resolutionParameter = "l:gs=-r"+Math.round((pixelsPerInch*newWidth)/w)+"x"+
         Math.round((pixelsPerInch*newHeight)/h);
       return resolutionParameter;
     }
