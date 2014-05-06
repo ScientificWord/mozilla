@@ -22,7 +22,11 @@
 Set curDir=%~dp0
 
 PATH=%curDir%;%curDir%DLLs;%PATH%
-set PYTHONPATH=
+set PYTHONPATH
+
+
+
+
 
 if "%~3"=="" (
    pyVM -c "from uniconvertor import uniconv_run; uniconv_run();" "%~1" "%~2"
