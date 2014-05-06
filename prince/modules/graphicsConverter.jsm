@@ -190,7 +190,7 @@ var graphicsConverter = {
     catch(e) {
       AlertWithTitle("Dump", e.message, null);
     }
-    return "../"+returnPath.replace("\\","/", 'g');
+    return returnPath.replace("\\","/", 'g');
   },
 
   // A function to call when an existing graphics object changes dimensions, requiring
