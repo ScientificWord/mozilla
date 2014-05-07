@@ -196,6 +196,20 @@ hspace[type="nonBreakingSpace"] {
   white-space: nowrap;
 }
 
+mml|maligngroup:before {
+  visibility: none;
+}
+
+body[showinvis="true"] mml|maligngroup:before {
+  content: ".";
+  visibility: visible;
+  color: green;
+}
+
+/*mml|mtd > mml|maligngroup:first-child:before {
+  visibility: none;
+}
+*/
 /*
 hspace[type="negativeThinSpace"] {
   min-width: 0.0em;
