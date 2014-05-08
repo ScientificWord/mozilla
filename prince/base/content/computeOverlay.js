@@ -2144,9 +2144,7 @@ function appendLabeledResult(result, label, math, editorElement) {
 
   editor.setCaretAfterElement(math);
   if (res2Loc == -1 && res1Loc == -1) {
-    editor.insertHTML(preStr);
-    editor.insertHTML(result);
-    editor.insertHTML(postStr);
+    editor.insertHTML(preStr + result + postStr);  
   }
   else {
     resPre = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow>";
