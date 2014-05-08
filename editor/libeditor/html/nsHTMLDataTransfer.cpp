@@ -150,6 +150,7 @@
 #include "../../../content/base/src/nsAttrName.h"
 #include "../../msiediting/src/msiEditingAtoms.h"
 #include "msiIMathMLEditor.h"
+#include "jcsDumpNode.h"
 
 
 #define DEBUG_barry 1
@@ -457,8 +458,11 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   nsresult res;
   nsCOMPtr<nsISelection>selection;
   res = GetSelection(getter_AddRefs(selection));
-  if (NS_FAILED(res)) return res;
+  //printf("\n\nStarting selection\n");
+  //DumpSelection(selection);
 
+  if (NS_FAILED(res)) return res;
+  
   // create a dom document fragment that represents the structure to paste
   nsCOMPtr<nsIDOMNode> fragmentAsNode, streamStartParent, streamEndParent;
   PRInt32 streamStartOffset = 0, streamEndOffset = 0;
@@ -1159,6 +1163,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   }
 
   res = mRules->DidDoAction(selection, &ruleInfo, res);
+
   return res;
 }
 
