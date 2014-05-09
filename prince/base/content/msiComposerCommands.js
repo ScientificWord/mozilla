@@ -760,8 +760,8 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
       var contextString = "";
       var infoString="(0,0)";
       editor.insertHTMLWithContext(dataString,
--                                   contextString, infoString, "text/html",
--                                   null,null,0,true);
+                                   contextString, infoString, "text/html",
+                                   null,null,0,true);
     }
     else msiGoDoCommandParams(commandID, cmdParams, editorElement);
     // BBM: temporary hack!
