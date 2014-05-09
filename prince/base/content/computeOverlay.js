@@ -2153,11 +2153,13 @@ function appendLabeledResult(result, label, math, editorElement) {
     temp = temp.replace(resPost,"");
     resultArray = temp.split("<mo>,</mo>");
     if (resultArray && resultArray.length > 1) {
-      editor.insertHTML(preStr + space);
-      editor.insertHTML(resPre + resultArray[0] + resPost + space);
-      editor.insertHTML(midStr + space);
-      editor.insertHTML(resPre + resultArray[1] + resPost + space);
-      editor.insertHTML(postStr + space);
+      var answer = preStr + space + 
+                   resPre + resultArray[0] + resPost + space + 
+                   midStr + space + 
+                   resPre + resultArray[1] + 
+                   resPost + space + 
+                   postStr + space;
+      editor.insertHTML(answer);
     }
   }
   editor.endTransaction();
@@ -3916,7 +3918,7 @@ var preInitializeVCamCallbackObjectBase =
   },
   doPreInitVCam : function()
   {
-    msidump("Entering an attempt in preInitializeVCam\n");
+    //msidump("Entering an attempt in preInitializeVCam\n");
     var editor = msiGetEditor(this.mEditorElement);
     var domGraph = editor.getElementOrParentByTagName("graph", this.mObj);
     var plotWrapper = this.mObj.parentNode;
@@ -3946,7 +3948,7 @@ var preInitializeVCamCallbackObjectBase =
       msidump("Leaving a successful attempt in preInitializeVCam\n");
       return true;
     //}
-    msidump("Leaving an unsuccessful attempt in preInitializeVCam; readyState reports [" + this.mObj.readyState + "]\n");
+    //msidump("Leaving an unsuccessful attempt in preInitializeVCam; readyState reports [" + this.mObj.readyState + "]\n");
     return false;
   },
   notify : function(aTimer)
@@ -4013,17 +4015,17 @@ function preInitializeVCam( objElement, theGraph, editorElement, bHandleFail, bH
 {
   if (!useInterval)
     useInterval = 200;
+  
   if (!useIterations)
     useIterations = 10;
-//  if (!delayStart)
-//    delayStart = 0;
+  
   if (theGraph && theGraph.plotFailed())
   {
     dump("Plot failed; not initializing VCam.\n");
     return;
   }
   var initializer = new preInitializeVCamCallbackObject(theGraph, objElement, editorElement, bHandleFail, bHandleExceptions);
-  initializer.start(useInterval, useIterations/*, delayStart*/);
+  initializer.start(useInterval, useIterations);
 }
 
 //Warning! This function may replace the <object> node for the plot, so you should use getElementsByTagName()
