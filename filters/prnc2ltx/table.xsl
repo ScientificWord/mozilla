@@ -183,31 +183,47 @@
     <xsl:when test="@pos='center'">
       <xsl:choose>
         <xsl:when test="html:caption">
-      \begin{table}[h]
+          <xsl:value-of select="$newline"/>
+          <xsl:text>\begin{table}[h]</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          \begin{center}
+          <xsl:value-of select="$newline"/>
+          <xsl:text>\begin{center}</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:call-template name="buildtable"/>
       <xsl:choose>
         <xsl:when test="html:caption">
-      \end{table}
+          <xsl:text>\end{table}</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          \end{center}
+          <xsl:text>\end{center}</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
-    <xsl:when test="@pos='float' or ./html:caption"> 
-      \begin{wraptable}{
+    <xsl:when test="@pos='float' or @pos='inside' or @pos='outside' or ./html:caption">
+      <xsl:value-of select="$newline"/> 
+      <xsl:text>\begin{wraptable}{</xsl:text>
       <xsl:choose>
-        <xsl:when test="not(substring(@placement,1,1))">O</xsl:when>
-        <xsl:otherwise><xsl:value-of select="substring(@placement,1,1)"/></xsl:otherwise>
-      </xsl:choose>}
-      {<xsl:choose><xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when><xsl:otherwise>0pt</xsl:otherwise></xsl:choose>}
+        <xsl:when test="not(substring(@placement,1,1))">
+          <xsl:text>r</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="substring(@placement,1,1)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>}{</xsl:text>
+      <xsl:choose>
+        <xsl:when test="@width">
+          <xsl:value-of select="@width"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>0pt</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>}</xsl:text>
       <xsl:call-template name="buildtable"/>
-      \end{wraptable}
+      <xsl:text>\end{wraptable}</xsl:text>
     </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="buildtable"/>
