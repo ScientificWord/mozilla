@@ -1997,7 +1997,7 @@
      \expandafter\msitopreambleextra\expandafter{\msi@rbrace}%
    \else
      \@temptokena={\msitag{#1}}%
-     \{\the\@temptokena\}
+     \msi@lbrace\the\@temptokena\msi@rbrace
    \fi
    \@gobbleargs}
 
