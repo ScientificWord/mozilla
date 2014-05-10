@@ -399,6 +399,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
   setAlignment(placement);
   enableHere(dg.herePlacementRadioGroup);
   enableFloating();
+  placementChanged();
   doDimensionEnabling();
   updateDiagram(marginAtt);
   updateDiagram(borderAtt);
@@ -678,12 +679,47 @@ function setStyleAttributeByID( id, att, value)
   setStyleAttributeOnNode(document.getElementById(id), att, value);
 }
 
+// called when one of these is clicked: inline, display, float
+
+function placementChanged()
+{
+  var broadcaster = document.getElementById("floatingPlacement");
+  var bEnableInlineOffset = false;
+  var bEnableWrapfig = true;
+  var bEnableFloats = false;
+
+  if (document.getElementById('float').selected)
+  {
+    theValue = "false";
+    broadcaster.setAttribute("disabled",theValue);
+    bEnableWrapfig = false;
+    bEnableFloats = true;
+    enableHere();
+  }
+  else if (document.getElementById('display').selected)
+  {
+    setAlignment(0);
+    updateDiagram("margin");
+  } 
+  else if (document.getElementById('inline').selected)
+  {
+    updateDiagram("margin");
+    bEnableInlineOffset = true;
+  }
+  showDisableControlsByID(["frameInlineOffsetLabel","frameInlineOffsetInput"], bEnableInlineOffset);
+  showDisableControlsByID(["hereLeftRadio","hereRightRadio", "hereInsideRadio", "hereOutsideRadio", "hereFullWidthRadio"], bEnableWrapfig);
+  showDisableControlsByID(["placeForceHereCheck","placeHereCheck", "placeFloatsCheck", 
+                           "placeFloatsCheck", "placeTopCheck", "placeBottomCheck"], bEnableFloats);
+}
+
 function enableHere(radiogroup )
 {
   var broadcaster = document.getElementById("herePlacement");
   var theValue = "true";
   var position;
-  if (!radiogroup) radiogroup = document.getElementById("herePlacementRadioGroup");
+  if (!radiogroup) 
+    radiogroup = document.getElementById("herePlacementRadioGroup");
+
   if (document.getElementById('placeHereCheck').checked)
   {
     theValue = "false";
@@ -708,8 +744,6 @@ function enableFloating( )
   {
     theValue = "false";
     broadcaster.setAttribute("disabled",theValue);
-  //  if (theValue=="true") document.getElementById("herePlacement").setAttribute("disabled","true");
-  //  else 
     enableHere();
   }
   else if (document.getElementById('display').selected)
