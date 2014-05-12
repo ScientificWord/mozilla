@@ -3,8 +3,7 @@
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
-    xmlns:exsl="http://exslt.org/common"
->
+    xmlns:exsl="http://exslt.org/common">
 
 <!-- xsl:variable name="tagsList" select="document('latexdefs.xml')//*[local-name()='tagproperties']/*[local-name()='tagclasses']"/ -->
 
@@ -216,9 +215,10 @@
       <xsl:choose>
         <xsl:when test="@width">
           <xsl:value-of select="@width"/>
+          <xsl:value-of select="@unit"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>0pt</xsl:text>
+          <xsl:text xml:space="preserve">\linewidth </xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text>}</xsl:text>
