@@ -54,8 +54,8 @@
   oncancel="return onCancel();"
   title="&printSetup.title;"
   persist="screenX screenY width height"
-  width="340px"
-  height="430px"
+  width="500px"
+  height="600px"
   screenX="24" screenY="24">
 
   <script type="application/javascript" src="chrome://global/content/printPageSetup.js"/>
