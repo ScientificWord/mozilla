@@ -3086,7 +3086,9 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
   editor->DumpNode(node, 2*level, true);
 
   int count = 0;
-
+  if (node == NULL){
+     return NS_OK;
+  }
   if (editor->IsTextNode(node)) {
     nsCOMPtr<nsIDOM3Node> m;
     m = do_QueryInterface(node);
