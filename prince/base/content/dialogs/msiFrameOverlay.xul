@@ -350,7 +350,7 @@
   <vbox id="msiPlacement">
     <groupbox >
       <caption label="&Placementtab.label;"/>
-      <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);" persist="value">
+      <radiogroup id="placementRadioGroup" oncommand="placementChanged(this);" persist="value">
       <hbox flex="1">
         <vbox>
           <radio id="inline" value="inline" class="medwidth" label="&inline;" radioGroup="placementRadioGroup" persist="selected"/>
