@@ -31,7 +31,11 @@
        <char unicode="&#x03B1;" latex="\alpha"/>
        <char unicode="&#x03B2;" latex="\beta"/>
 
+       <char unicode="&#x2A00;" latex="\bigodot" />
+       <char unicode="&#x2A02;" latex="\bigotimes" />
        <char unicode="&#x2A04;" latex="\tbiguplus"/>
+       <char unicode="&#x2A06;" latex="\bigsqcup"/>
+       <char unicode="&#x2A0C;" latex="\iiiint" />
        <char unicode="&#x22C3;" latex="\tbigcup"/>
     </char-table>
 </xsl:variable>

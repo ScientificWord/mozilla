@@ -4919,6 +4919,7 @@
 
 \def\index#1{%
   \@inspecfalse
+  \@idxlev=0
   \gdef\@idxentA{}%
   \gdef\@idxspecA{}%
   \gdef\@idxentB{}%
@@ -4955,8 +4956,9 @@
          \fi
        \fi
      \fi
-     \edef\@tempa{\the\temptoksa}
-     \ifx\@tempa\@emptytoks
+     %\edef\@tempa{\the\temptoksa}
+     %\ifx\@tempa\@emptytoks
+     \ifx\temptoksa\@emptytoks
      \else    
        \msitag{ specAppearance="}\the\temptoksa\msitag{"}%
      \fi
