@@ -190,7 +190,7 @@ var graphicsConverter = {
     catch(e) {
       AlertWithTitle("Dump", e.message, null);
     }
-    return "../"+returnPath.replace("\\","/", 'g');
+    return returnPath.replace("\\","/", 'g');
   },
 
   // A function to call when an existing graphics object changes dimensions, requiring
@@ -225,7 +225,7 @@ var graphicsConverter = {
       w = this.handler.getValueOf(origDimension.width, 'bp');
       h = this.handler.getValueOf(origDimension.height, 'bp');
       pixelsPerInch = this.handler.getValueOf(1, 'in');
-      resolutionParameter = "l:gs=-r"+Math.round((pixelsPerInch*newWidth)/w)+"x"+
+      resolutionParameter = "-l:gs=-r"+Math.round((pixelsPerInch*newWidth)/w)+"x"+
         Math.round((pixelsPerInch*newHeight)/h);
       return resolutionParameter;
     }
