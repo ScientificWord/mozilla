@@ -50,6 +50,11 @@ function getBrowser()
   alert("Get Browser!");
 }
 
+function getPPBrowser()
+{
+  return document.getElementById("preview-browser");
+}
+
 
 function GetCurrentEditor() {
   var editor;

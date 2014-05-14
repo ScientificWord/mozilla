@@ -596,6 +596,7 @@ function InitImage()
 }    
 
 
+
 //This function assumes "width" and "height" are in pixels
 function  SetSizeWidgets(width, height)
 {
@@ -630,6 +631,29 @@ function initImageUnitList(unitPopUp)
   }
 }
   
+
+function ChangeLinkLocation()
+{
+//  SetRelativeCheckbox(gDialog.makeRelativeLink);
+//  gDialog.showLinkBorder.disabled = !TrimString(gDialog.hrefInput.value);
+}
+
+function ToggleShowLinkBorder()
+{
+//  if (gDialog.showLinkBorder.checked)
+//  {
+//    var border = TrimString(gDialog.border.value);
+//    if (!border || border == "0")
+//      gDialog.border.value = "2";
+//  }
+//  else
+//  {
+//    gDialog.border.value = "0";
+//  }
+}
+
+
+
 function getCaptionEditContents()
 {
   if (!gCaptionData.contentFilter)
@@ -721,6 +745,7 @@ function ValidateData()
 {
   return ValidateImage();
 }
+
 
 function getDocumentGraphicsDir(mode)
 {
@@ -1466,6 +1491,7 @@ function setContentSize(width, height)  // width and height are the size of the 
   updateDiagram("margin");
 }
 
+
 function doOverallEnabling()
 {
   var enabled = TrimString(gDialog.srcInput.value) != "";
@@ -1504,6 +1530,7 @@ function displayImportErrorMessage(fileName)
   gErrorMessageShown = true;
   AlertWithTitle(titleStr, msgString);
 }
+
 
 // Get data from widgets, validate, and set for the global element
 //   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
@@ -1577,6 +1604,7 @@ function ValidateImage()
     editor.removeAttributeOrEquivalent(imageElement, "height", true);
   return true;
 }
+
 
 function imageLoaded(event)
 {
