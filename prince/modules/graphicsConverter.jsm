@@ -69,8 +69,10 @@ var graphicsConverter = {
         destFile = destDir.clone();
         destFile.append(leaf);
         returnPath = "graphics/" + leaf;
-        if (destFile.exists()) destFile.remove(false);
-        graphicsFile.copyTo(destDir, leaf);
+        if (graphicsFile.path !== destFile.path) {
+          if (destFile.exists()) destFile.remove(false);
+          graphicsFile.copyTo(destDir, leaf);
+        }
       }
       copiedFile = this.baseDir.clone();
       copiedFile.append("graphics");
@@ -225,7 +227,7 @@ var graphicsConverter = {
       w = this.handler.getValueOf(origDimension.width, 'bp');
       h = this.handler.getValueOf(origDimension.height, 'bp');
       pixelsPerInch = this.handler.getValueOf(1, 'in');
-      resolutionParameter = "l:gs=-r"+Math.round((pixelsPerInch*newWidth)/w)+"x"+
+      resolutionParameter = "-l:gs=-r"+Math.round((pixelsPerInch*newWidth)/w)+"x"+
         Math.round((pixelsPerInch*newHeight)/h);
       return resolutionParameter;
     }

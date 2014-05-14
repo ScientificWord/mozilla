@@ -127,10 +127,7 @@
     </tabs>
     <tabpanels>
       <vbox id="imagePicture">
-          <!-- 12/10/2010 commented out by JLF per BBM
-          <button oncommand="onAccept();"/>
-          -->
-        <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
+<!--         <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
           <radio id = "importRadio"
             label   = "&importButton.label;"
             accesskey = "&importButton.accesskey;"
@@ -140,20 +137,22 @@
             accesskey = "&referenceButton.accesskey;"
             oncommand = "SetImport(false);"/>
         </radiogroup>
+ -->        
         <label control = "srcInput"
           value = "&locationEditField.label;"
           accesskey="&locationEditField.accesskey;"
           tooltiptext="&locationEditField.tooltip;"
           />
-        <textbox id="srcInput" oninput="ChangeImageSrc();" tabindex="1" class="uri-element"/>
+          <textbox id="srcInput" oninput="chooseImgFile(false);" tabindex="1" class="uri-element"/>
         <hbox>
-          <checkbox
+<!--           <checkbox
             id  = "makeRelativeCheckbox"
             for = "srcInput"
             label = "&MakeRelativeCheckbox.label;"
             tabindex="2"/>
+ -->          
           <!-- from EdDialogOverlay.xul -->
-          <msibutton id="ChooseFile"  tabindex="3"/>
+          <msibutton label = "&chooseButton.label;" accesskey = "&chooseFile.accesskey;" id="ChooseImgFile"  oncommand="chooseImgFile(true);" tabindex="3"/>
         </hbox>
         <vbox id="msiFrameSize"/>
         <spacer flex="1"/>
