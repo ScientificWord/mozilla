@@ -61,7 +61,8 @@
 
 <!ENTITY previewBox.label "Image Preview">
 <!ENTITY MoreFewerButton.tooltip "Display more or fewer properties to edit">
-
+<!ENTITY chooseButton.label "Choose File...">
+<!ENTITY chooseFile.accesskey "F">
 <!-- These controls are in the Dimensions tab panel -->
 <!-- actualSize.label should be same as actualSizeRadio.label + ":" -->
 <!ENTITY actualSize.label "Actual Size:">
