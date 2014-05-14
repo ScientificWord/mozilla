@@ -11,3 +11,29 @@
 %% can these be handled by default?
 %%  frametitle
 %%  framesubtitle
+
+%% Beamer has optional parameter for author
+\def\author{\@ifnextchar[{\@authora}{\@authorb}}
+
+\def\@authora[#1]#2{%
+  \msiopentag{author}{<author>}
+    \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+    #2%
+  \msiclosetag{author}{</author>}}
+
+\def\@authorb#1{%
+  \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}}
+
+\def\address{\@ifnextchar[{\@addressa}{\@addressb}}
+
+\def\@addressa[#1]#2{%
+  \msitag{^^0a}%
+  \msiopentag{address}{<address>}%
+     \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+  #2%
+  \msiclosetag{address}{</address>}%
+}
+
+\def\@addressb#1{
+  \msiopentag{address}{<address>}#1\msiclosetag{address}{</address>}}
+
