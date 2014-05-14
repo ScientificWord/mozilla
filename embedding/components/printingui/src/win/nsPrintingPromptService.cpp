@@ -332,7 +332,7 @@ nsPrintingPromptService::DoDialog(nsIDOMWindow *aParent,
 
     nsCOMPtr<nsIDOMWindow> dialog;
     rv = mWatcher->OpenWindow(aParent, aChromeURL, "_blank",
-                              "centerscreen,chrome,modal,titlebar", arguments,
+                              "centerscreen,chrome,resizable,titlebar", arguments,
                               getter_AddRefs(dialog));
 
     return rv;

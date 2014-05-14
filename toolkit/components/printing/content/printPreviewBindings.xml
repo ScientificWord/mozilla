@@ -54,7 +54,6 @@
            extends="chrome://global/content/bindings/toolbar.xml#toolbar">
     <resources>
       <stylesheet src="chrome://global/skin/printPreview.css"/>
-      <stylesheet src="chrome://prince/skin/toolbarsOverlay.css"/>
       <stylesheet src="chrome://global/skin/toolbar.css"/>
       <stylesheet src="chrome://global/skin/menulist.css"/>
       <stylesheet src="chrome://prince/skin/toolbarsOverlay.css"/>
@@ -70,9 +69,9 @@
       <xul:vbox align="center" pack="center">
         <xul:label value="&page.label;" accesskey="&page.accesskey;" control="pageNumber"/>
       </xul:vbox>
-      <xul:toolbarbutton class="home-arrow tabbable" chromedir="&locale.dir;"
+      <xul:msibutton class="home-arrow tabbable" chromedir="&locale.dir;"
         oncommand="parentNode.navigate(0, 0, 'home');" tooltiptext="&homearrow.tooltip;"/>
-      <xul:toolbarbutton class="left-arrow tabbable" chromedir="&locale.dir;"
+      <xul:msibutton class="left-arrow tabbable" chromedir="&locale.dir;"
         oncommand="parentNode.navigate(-1, 0, 0);" tooltiptext="&leftarrow.tooltip;"/>
       <xul:hbox align="center" pack="center">
         <xul:textbox id="pageNumber" size="3" value="1" lastvalid="1"
@@ -80,9 +79,9 @@
         <xul:label value="&of.label;"/>
         <xul:label value="1"/>
       </xul:hbox>
-      <xul:toolbarbutton class="right-arrow tabbable" chromedir="&locale.dir;"
+      <xul:msibutton class="right-arrow tabbable" chromedir="&locale.dir;"
         oncommand="parentNode.navigate(1, 0, 0);" tooltiptext="&rightarrow.tooltip;"/>
-      <xul:toolbarbutton class="end-arrow tabbable" chromedir="&locale.dir;"
+      <xul:msibutton class="end-arrow tabbable" chromedir="&locale.dir;"
         oncommand="parentNode.navigate(0, 0, 'end');" tooltiptext="&endarrow.tooltip;"/>
 
       <xul:toolbarseparator class="toolbarseparator-primary"/>
@@ -116,11 +115,11 @@
 
       <xul:toolbarseparator class="toolbarseparator-primary"/>
       <xul:hbox align="center" pack="center">
-        <xul:toolbarbutton label="&portrait.label;" checked="true"
+        <xul:msibutton label="&portrait.label;" checked="true"
           accesskey="&portrait.accesskey;"
           type="radio" group="orient" class="toolbar-portrait-page tabbable"
           oncommand="parentNode.parentNode.orient('portrait');"/>
-        <xul:toolbarbutton label="&landscape.label;" 
+        <xul:msibutton label="&landscape.label;" 
           accesskey="&landscape.accesskey;"
           type="radio" group="orient" class="toolbar-landscape-page tabbable"
           oncommand="parentNode.parentNode.orient('landscape');"/>
