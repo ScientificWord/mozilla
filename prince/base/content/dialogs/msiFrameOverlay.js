@@ -296,26 +296,6 @@ function initFrameTab(dg, element, newElement, contentsElement)
       if (padding == null) padding = 0;
       dg.paddingInput.left.value = padding;
     }  
-    // else
-    // {
-   //    values = [0,0,0,0];
-   //    if (element.hasAttribute(marginAtt))
-   //      { values = parseLengths(element.getAttribute(marginAtt));}
-  //     if (inlineOffset > 0)
-  //       values[2] -= inlineOffset;  //NOTE! InlineOffset is added into the bottom margin property of an inline frame if it's positive. rwa
-   //    for (i = 0; i<4; i++)
-   //      { dg.marginInput[sides[i].toLowerCase()].value = values[i];}
-   //    values = [0,0,0,0];
-   //    if (contentsElement.hasAttribute("borderw"))
-   //      { values = parseLengths(contentsElement.getAttribute("borderw"));}
-   //    for (i = 0; i<4; i++)
-   //      { dg.borderInput[sides[i].toLowerCase()].value = values[i];}
-   //    values = [0,0,0,0];
-   //    if (contentsElement.hasAttribute(paddingAtt))
-   //      { values = parseLengths(contentsElement.getAttribute(paddingAtt));}
-   //    for (i = 0; i<4; i++)
-   //      { dg.paddingInput[sides[i].toLowerCase()].value = values[i];}
-  //   }
     placeLocation = element.getAttribute("placeLocation");
     if (!placeLocation)
       placeLocation = "";
@@ -358,7 +338,8 @@ function initFrameTab(dg, element, newElement, contentsElement)
   if (!newElement || gDefaultPlacement.length)
   {
     try
-    {  dg.placeForceHereCheck.checked = (placeLocation.search("H") != -1);
+    {  
+      dg.placeForceHereCheck.checked = (placeLocation.search("H") != -1);
       dg.placeHereCheck.checked = (placeLocation.search("h") != -1);
       dg.placeFloatsCheck.checked = (placeLocation.search("p") != -1);
       dg.placeTopCheck.checked = (placeLocation.search("t") != -1);
@@ -397,7 +378,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
   else if (/r|o/i.test(placementLetter)) placement = 2;
   Dg = dg;
   setAlignment(placement);
-  enableHere(dg.herePlacementRadioGroup);
+  enableFloatOptions(dg.herePlacementRadioGroup);
   enableFloating();
   placementChanged();
   doDimensionEnabling();
@@ -694,7 +675,7 @@ function placementChanged()
     broadcaster.setAttribute("disabled",theValue);
     bEnableWrapfig = false;
     bEnableFloats = true;
-    enableHere();
+    enableFloatOptions();
   }
   else if (document.getElementById('display').selected)
   {
@@ -712,7 +693,7 @@ function placementChanged()
                            "placeFloatsCheck", "placeTopCheck", "placeBottomCheck"], bEnableFloats);
 }
 
-function enableHere(radiogroup )
+function enableFloatOptions(radiogroup)
 {
   var broadcaster = document.getElementById("herePlacement");
   var theValue = "true";
@@ -744,7 +725,7 @@ function enableFloating( )
   {
     theValue = "false";
     broadcaster.setAttribute("disabled",theValue);
-    enableHere();
+    enableFloatOptions();
   }
   else if (document.getElementById('display').selected)
   {
