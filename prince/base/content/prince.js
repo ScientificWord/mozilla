@@ -937,7 +937,7 @@ function printTeX(preview )
     var pdffile = compileDocument();
     if (pdffile)
     {
-      if (pFreview)
+      if (preview)
       {
       // get prefs for viewing pdf files
         var prefs = GetPrefs();
