@@ -362,7 +362,7 @@
         </vbox>
 #ifndef PROD_SNB
         <vbox>
-          <radio id="float" value="float" label="&floating;" radioGroup="placementRadioGroup" oncommand="enableHere(this);"
+          <radio id="float" value="float" label="&floating;" radioGroup="placementRadioGroup" oncommand="enableFloatOptions(this);"
              persist="selected"/>
           <vbox>
             <checkbox id="placeForceHereCheck" label="&placement.forceHere;" observes="floatingPlacement" persist="checked"/>
@@ -373,7 +373,7 @@
           </vbox>
         </vbox>
         <vbox>
-          <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableHere(this);" persist="selectedIndex value">
+          <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableFloatOptions(this);" persist="selectedIndex value">
             <radio id="hereLeftRadio" label="&Minipage.descLeft;" value="L" observes="herePlacement" />
             <radio id="hereRightRadio" label="&Minipage.descRight;" value="R" observes="herePlacement"/>
             <radio id="hereInsideRadio" label="&placement.hereInside;" value="I" observes="herePlacement" />
