@@ -129,63 +129,6 @@
         <vbox id="msiPlacement"/>
       </vbox>
       <vbox id="msiFrame"/>
-      <!-- <tabpanel id="Layout" orient="vertical">
-        <groupbox>
-          <caption label="&defaultsizenewplot.label;"/>
-          <grid>
-            <columns>
-              <column flex="0"/>
-              <column flex="0"/>
-              <column flex="0"/>
-              <column flex="0"/>
-            </columns>
-            <rows>
-              <row>
-                <label value="&Width.label;"/> 
-                <textbox id="Width" type="number" style="width: 5em;" preference="swp.graph.HSize"/>
-                <label value="&Pixels.label;"/>
-              </row>
-              <row>
-                <label value="&Height.label;"/> 
-                <textbox id="Height" type="number" style="width: 5em;" preference="swp.graph.VSize"/>
-                <label value="&Pixels.label;"/>
-              </row>
-            </rows>
-          </grid>
-        </groupbox>
-        <groupbox>
-          <caption label="&defaultplacementnewplot.label;"/>
-          <radiogroup id="graphPlacement" preference="swp.graph.Placement">
-          <hbox flex="1">
-            <vbox>
-              <radio id="inline" value="inlne" label="&Inline.label;" name="Placement" oncommand="checkEnableFloating();"/>
-            </vbox>
-            <vbox>
-              <radio id="display" value="display" label="&Displayed.label;" name="Placement" oncommand="checkEnableFloating();"/>
-            </vbox>
-            <vbox>
-              <radio id="float" value="float" label="&Floating.label;" name="Placement" oncommand="checkEnableFloating();"/>
-              <vbox>
-                <checkbox id="placeForceHereCheck" label="&ForceHere.label;" />
-                <checkbox id="placeHereCheck" label="&Here.label;" />
-                <checkbox id="placeFloatsCheck" label="&OnPageOfFloats.label;"/>
-                <checkbox id="placeTopCheck" label="&TopOfPage.label;" />
-                <checkbox id="placeBottomCheck" label="&BottomOfPage.label;" />
-              </vbox>
-            </vbox>
-            <vbox>
-              <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
-                <radio id="hereLeftRadio" label="&Left.label;" value="left" observes="herePlacement" />
-                <radio id="hereRightRadio" label="&Right.label;" value="right" observes="herePlacement"/>
-                <radio id="hereInsideRadio" label="&Inside.label;" value="inside" observes="herePlacement" />
-                <radio id="hereOutsideRadio" label="&Outside.label;" value="outside" observes="herePlacement" />
-                <radio id="hereFullWidthRadio" label="&FullWidth.label;" value="full" observes="herePlacement" />
-              </radiogroup>
-            </vbox>
-          </hbox>
-          </radiogroup>
-        </groupbox>
-      </tabpanel>       -->
 
       <vbox id="Labelling">
         <vbox>

@@ -35,18 +35,11 @@ var gLastColIndex;
 var gNewRowCount;
 var unitHandler;
 var newTable;
-//var gNewColCount;
-//var gCurRowIndex;
-//var gCurColIndex;
-//var gCurColSpan;
 var gSelectedCellsType = 1;
 const SELECT_CELL = 1;
 const SELECT_ROW = 2;
 const SELECT_COLUMN = 3;
 const RESET_SELECTION = 0;
-//var gCellData = { value:null, startRowIndex:0, startColIndex:0, rowSpan:0, colSpan:0,
-//                 actualRowSpan:0, actualColSpan:0, isSelected:false
-//               };
 var gAdvancedEditUsed;
 var gAlignWasChar = false;
 var gIsMatrix = false;
@@ -213,6 +206,7 @@ function setVariablesForControls()
   // Get dialog widgets - Table Panel
   gDialog.TabBox =  document.getElementById("TabBox");
   gDialog.TableTab =  document.getElementById("TableTab");
+  gDialog.PlacementTab = document.getElementById( "msiPlacementTab" );
   gDialog.CellsTab =  document.getElementById("CellsTab");
   gDialog.LinesTab =  document.getElementById("LinesTab");
   gDialog.sizeLabel = document.getElementById("sizeLabel");
