@@ -4838,8 +4838,6 @@ var msiImageCommand =
     var imageData = {isVideo : false, mNode : null};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome, resizable, close,titlebar,dependent,resizable",
                                                                                                      editorElement, "cmd_image", this, imageData);
-//    window.openDialog("chrome://editor/content/EdImageProps.xul","imageprops", "chrome,close,titlebar,modal");
-//    editorElement.focus();
   },
   msiGetReviseObject: function(editorElement)
   {

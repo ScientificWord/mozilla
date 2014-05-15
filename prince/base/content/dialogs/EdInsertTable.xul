@@ -27,7 +27,8 @@
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EdInsertTable.css" type="text/css"?>
 
-<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/EdInsertTable.dtd">
 
@@ -49,6 +50,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdTableProps.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
@@ -58,6 +60,7 @@
     <tabs id="tabpanel-tabs">
       <tab id="QuicklyTab" label="&quicklyTab.label;"/>
       <tab id="TableTab" label="&tableTab.label;"/>
+      <tab id="msiPlacementTab"/>
       <tab id="CellsTab" label="&cellsTab.label;"/>
       <tab id="LinesTab" label="&linesTab.label;"/>
     </tabs>
@@ -251,6 +254,7 @@
           </hbox>
         </vbox>
       </tabpanel>
+      <tabpanel id="msiPlacement"/>
       <!-- Cells PANEL -->
       <tabpanel id ="tableprops">
         <vbox><hbox>
