@@ -261,3 +261,18 @@
 <!ENTITY colwidthRule "A column's width will be the width of its widest cell" >
 <!ENTITY cellsizeInstructions "Use cell dimension of 0.0 to leave current dimensions unchanged" >
 <!ENTITY unspecified "--unspecified --">
+
+<!ENTITY tableLabelingTab.label "Labeling" >
+<!ENTITY tableKey.label "Key">
+<!ENTITY captionPlacement.label "Caption Placement">
+<!ENTITY EnterNewName.tooltip "Enter a new key name">
+<!ENTITY Above.label  "Above">
+<!ENTITY Below.label  "Below">
+<!ENTITY CaptionText.label  "Caption Text">
+<!ENTITY AltText.label  "Alt Text">
+<!ENTITY NewKeyOrDocName.tooltip  "Enter a new key name or a document name">
+<!ENTITY MakeRelativeCheckbox.label  "Make reference relative">
+<!ENTITY EnterDocOrMarker.label "Enter a document location, a local document, or select a marker or heading from the popup list:">
+
+
+
