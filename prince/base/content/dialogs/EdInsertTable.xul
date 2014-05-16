@@ -61,6 +61,7 @@
       <tab id="QuicklyTab" label="&quicklyTab.label;"/>
       <tab id="TableTab" label="&tableTab.label;"/>
       <tab id="msiPlacementTab"/>
+      <tab id="tableLabelingTab" label="&tableLabelingTab.label;"/>
       <tab id="CellsTab" label="&cellsTab.label;"/>
       <tab id="LinesTab" label="&linesTab.label;"/>
     </tabs>
@@ -255,6 +256,27 @@
         </vbox>
       </tabpanel>
       <tabpanel id="msiPlacement"/>
+      <vbox id="tabelLabelingTab">
+<!--         <spacer flex="1"/>
+ -->    <hbox>
+          <label value="&tableKey.label;"/>
+          <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+            completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
+            tooltiptext="&EnterNewName.tooltip;" />
+            <!-- ontextentered="" / -->
+        </hbox>
+        <groupbox>
+          <caption id="captionPlacementLabel" label="&captionPlacement.label;"/>
+          <radiogroup id="captionPlacementRadioGroup" orient="horizontal">
+            <radio id="captionAboveRadio" label="&Above.label;" value="above"/>
+            <radio id="captionBelowRadio" label="&Below.label;" value="below"/>
+          </radiogroup>
+        </groupbox>
+        <label value="&CaptionText.label;"/>
+        <editor id="captionTextInput" editortype="html" type="content" context="msiEditorContentContext" height="2in" flex="1"/>
+        <label value="&AltText.label;"/>
+        <textbox id="altTextInput"/>
+      </vbox>
       <!-- Cells PANEL -->
       <tabpanel id ="tableprops">
         <vbox><hbox>
