@@ -39,10 +39,11 @@ var gColElementArray;
 var gRowElementArray;
 
 var gTableColor;
+var gTableCaptionElement;
 var gTableCaptionPlacement;
 var gTableBaseline = "baseline";
 var gBorderCollapse = "collapse";  //This should be the default???
-var gTableCaptionElement;
+
 
 var gCollatedCellData;
 var gCellChangeData;
