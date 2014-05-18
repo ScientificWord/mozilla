@@ -10,6 +10,8 @@ Components.utils.import("resource://app/modules/unitHandler.jsm");
 var gTableElement;
 //var gCellElement;
 var gTableCaptionElement;
+var gTableCaptionPlacement;
+
 var globalCellElement;
 var globalTableElement;
 var gValidateTab;
@@ -66,7 +68,6 @@ var gColElementArray;
 var gRowElementArray;
 
 var gTableColor;
-var gTableCaptionPlacement;
 var gTableBaseline = "baseline";
 var gBorderCollapse = "collapse";  //This should be the default???
 
@@ -225,7 +226,10 @@ function setVariablesForControls()
   gDialog.tableLocationList =  document.getElementById("tableLocationList");
   gDialog.floatLocationList =  document.getElementById("floatLocationList");
   gDialog.baselineList =  document.getElementById("baselineList");
+  gDialog.captionPlacementGroup = document.getElementById("captionPlacementRadioGroup");
   gDialog.captionLocation =  document.getElementById("captionLocation");
+  //gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
+
   // gDialog.tableBackgroundCW =  document.getElementById("tableBackgroundCW");
   
   // Cells Panel
@@ -553,6 +557,7 @@ function Startup()
 function InitDialog()
 {
   initTablePanel();
+  initLabelingPanel();
   initCellsPanel();
   initLinesPanel();
 }
@@ -652,15 +657,7 @@ function initTablePanel()
 // if (heightVal && heightVal.number) gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
   gDialog.baselineList.value = gTableBaseline;
 
-  // Be sure to get caption from table in doc, not the copied "globalTableElement"
-  gTableCaptionElement = gTableElement.caption;
-  if (gTableCaptionElement)
-  {
-    gTableCaptionPlacement = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side");
-    if (gTableCaptionPlacement != "top")
-      gTableCaptionPlacement = "bottom";
-    gDialog.captionLocation.value = gTableCaptionPlacement;
-  }
+
 
   var pos = gTableElement.getAttribute("pos");
   var placement = gTableElement.getAttribute("placement");
@@ -697,6 +694,19 @@ function initTablePanel()
   checkEnableFloatControl();
   checkEnableLocationControl();
   
+}
+
+function initLabelingPanel()
+{
+  // Be sure to get caption from table in doc, not the copied "globalTableElement"
+  gTableCaptionElement = gTableElement.caption;
+  if (gTableCaptionElement)
+  {
+    gTableCaptionPlacement = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side");
+    if (gTableCaptionPlacement != "top")
+      gTableCaptionPlacement = "bottom";
+    gDialog.captionLocation.value = gTableCaptionPlacement;
+  }
 }
 
 function initLinesPanel()
