@@ -266,6 +266,7 @@
 <!ENTITY tableKey.label "Key">
 <!ENTITY captionPlacement.label "Caption Placement">
 <!ENTITY EnterNewName.tooltip "Enter a new key name">
+<!ENTITY None.label  "None">
 <!ENTITY Above.label  "Above">
 <!ENTITY Below.label  "Below">
 <!ENTITY CaptionText.label  "Caption Text">
