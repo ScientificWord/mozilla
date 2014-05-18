@@ -44,6 +44,7 @@
 
 var gDialog;
 var gEditorElement;
+var gEditor;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 var frameTabDlg = new Object();
@@ -94,9 +95,11 @@ wrapperElement: if imageElement is passed, and has an <msiframe> parent, the par
 
 function Startup()
 {
+  //gActiveEditorElement = msiGetParentEditorElementForDialog(window);
+  //gActiveEditor = msiGetTableEditor(gActiveEditorElement);
   gEditorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(gEditorElement);
-  if (!editor)
+  gEditor = msiGetEditor(gEditorElement);
+  if (!gEditor)
   {
     window.close();
     return;
@@ -119,15 +122,17 @@ function Startup()
   gDialog.PreviewHeight     = document.getElementById( "PreviewHeight" );
   gDialog.PreviewSize       = document.getElementById( "PreviewSize" );
   gDialog.PreviewImage      = null;
-  gDialog.captionEdit       = document.getElementById( "captionTextInput" );
+  //gDialog.captionEdit       = document.getElementById( "captionTextInput" );
   gDialog.captionPlacementGroup = document.getElementById("captionPlacementRadioGroup");
   gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
   gDialog.OkButton          = document.documentElement.getButton("accept");
   gDialog.keyInput          = document.getElementById("keyInput");
+  gDialog.captionLocation   =  document.getElementById("captionLocation");
   
   // Get a single selected image element
   imageElement = null;
   wrapperElement = null;
+
   if (window.arguments && window.arguments.length > 0)
   {
     gVideo = window.arguments[0].isVideo;
@@ -139,6 +144,7 @@ function Startup()
       forceIsImport(false);  //Set import/reference to be reference by default for video files
     }
   }
+
   var tagName = gVideo ? "embed" : "object";
   if (imageElement)  // if the image already exists, search for a frame.
   {
@@ -174,10 +180,10 @@ function Startup()
   if (!gVideo && !imageElement)
   {
     try {
-      imageElement = getSelectionParentByTag(editor,"input");
+      imageElement = getSelectionParentByTag(gEditor,"input");
       if (!imageElement || imageElement.getAttribute("type") != "image") {
         // Get a single selected image element
-        imageElement = getSelectionParentByTag(editor,tagName);
+        imageElement = getSelectionParentByTag(gEditor,tagName);
       }
     } catch (e) {}
   }
@@ -212,7 +218,7 @@ function Startup()
 
   // if inserting a new image, create elements now.
   if (imageElement == null) {
-    imageElement = editor.createElementWithDefaults(tagName);
+    imageElement = gEditor.createElementWithDefaults(tagName);
     // Don't create a wrapper element until needed
   }
 
@@ -531,6 +537,7 @@ function InitImage()
   var position = "below";
   var element = wrapperElement || imageElement;
   var capData = findCaptionNodes(element);
+
   if (capData.belowCaption)
   {
     gCaptionData.m_captionStr = getNodeChildrenAsString(capData.belowCaption);
@@ -542,8 +549,8 @@ function InitImage()
     position = "above";
   }
   gCaptionData.m_position = position;
-  msiInitializeEditorForElement(gDialog.captionEdit, gCaptionData.m_captionStr);
-  gDialog.captionPlacementGroup.value = gCaptionData.m_position;
+  //msiInitializeEditorForElement(gDialog.captionEdit, gCaptionData.m_captionStr);
+  gDialog.captionPlacementGroup.value = GetCurrentCaptionLoc(element);
   
   var imageKey = "";
   if (imageElement.hasAttribute("key"))
@@ -654,11 +661,24 @@ function ToggleShowLinkBorder()
 
 
 
-function getCaptionEditContents()
+// function getCaptionEditContents()
+// {
+//   if (!gCaptionData.contentFilter)
+//     gCaptionData.contentFilter = new msiDialogEditorContentFilter(gDialog.captionEdit);
+//   return gCaptionData.contentFilter.getDocumentFragmentString();
+// }
+
+function GetCurrentCaption(parentNode)
 {
-  if (!gCaptionData.contentFilter)
-    gCaptionData.contentFilter = new msiDialogEditorContentFilter(gDialog.captionEdit);
-  return gCaptionData.contentFilter.getDocumentFragmentString();
+  
+}
+
+function GetCurrentCaptionLoc(parentNode)
+{
+  if (parentNode.hasAttribute("captionloc"))
+    return parentNode.getAttribute("captionloc");
+  else
+    return "none";
 }
 
 function findCaptionNodes(parentNode)
@@ -1654,8 +1674,8 @@ function onAccept()
   gDoAltTextError = true;
   if (ValidateData())
   {
-    var editorElement = msiGetParentEditorElementForDialog(window);
-    var editor = msiGetEditor(gEditorElement);
+    //var editorElement = msiGetParentEditorElementForDialog(window);
+    //var editor = msiGetEditor(gEditorElement);
     graphicsConverter.init(window, getDocumentGraphicsDir('').parent);
     var unit = document.getElementById("unitList").value;
     var width, height;
@@ -1670,18 +1690,43 @@ function onAccept()
     var srcurl = graphicsConverter.copyAndConvert(msiFileFromFileURL(msiURIFromString(gOriginalSrcUrl)), false, width, height);
 
 
-    editor.beginTransaction();
+    gEditor.beginTransaction();
     try
     {
-      var tagname = gVideo ? "embed" : "object";
-      gCaptionData.m_captionStr = getCaptionEditContents();
-      var bHasCaption = (gCaptionData.m_captionStr && (gCaptionData.m_captionStr.length>0));
+    var tagname = gVideo ? "embed" : "object";
+    var bHasCaption = (captionloc !== 'none');
+          // handle caption
+    var captionloc = gDialog.captionPlacementGroup.value;
+    var captiontext;
+    var cap;
+    var i;
+    var caps = imageElement.getElementsByTagName('caption');
+
+    if (captionloc !== 'none') {
+      if (caps.length > 0) {
+        cap = caps[0];
+      } else {  //create new caption node
+        cap = gEditor.createElementWithDefaults('caption');
+        var namespace = { value: null };
+        var tlm = gEditor.tagListManager;
+        captiontext = tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, cap.ownerDocument);
+        cap.appendChild(captiontext);
+
+      }
+      cap.setAttribute('style', 'caption-side: '+ captionloc +';');
+      cap.setAttribute('align', captionloc);
+    }
+    else if (caps.length > 0) { // remove caption(s)
+      for (i = caps.length -1; i >= 0; i--) {
+        gEditor.deleteNode(caps[i]);
+      }
+    }
       var posInParent;
 
       imgExists = !gInsertNewImage;
       if (!imgExists)
       {      
-        if (imageElement == null) imageElement = editor.createElementWithDefaults(tagname);
+        if (imageElement == null) imageElement = gEditor.createElementWithDefaults(tagname);
         imageElement.addEventListener("load", imageLoaded, true);
       }
         var src = gSrcUrl;
@@ -1693,8 +1738,14 @@ function onAccept()
 
       if (bHasCaption)
       {
-        if (wrapperElement == null) wrapperElement = editor.createElementWithDefaults("msiframe");
+        if (wrapperElement == null) 
+          wrapperElement = gEditor.createElementWithDefaults("msiframe");
         wrapperElement.setAttribute("frametype", "image");
+        if (gDialog.captionPlacementGroup.value == "above")
+          wrapperElement.appendChild(cap);
+        if (gDialog.captionPlacementGroup.value !== "none"){           
+           msiEditorEnsureElementAttribute(wrapperElement, "captionloc", gDialog.captionPlacementGroup.value, null);
+        }
         if (gInsertNewImage)
           wrapperElement.appendChild(imageElement);
         else
@@ -1704,7 +1755,7 @@ function onAccept()
           var imageParent = imageElement.parentNode;
           var style;
           if (imageParent.tagName !== "msiframe") {
-            editor.deleteNode(imageElement);
+            gEditor.deleteNode(imageElement);
             wrapperElement.appendChild(imageElement);
             style = imageElement.getAttribute("style");
             style = style.replace(/margin[^;]+;/,'');
@@ -1712,29 +1763,26 @@ function onAccept()
             style = style.replace(/background[^;]+;/,'');
             style = style.replace(/padding[^;]+;/,'');
             imageElement.setAttribute("style", style);
-            editor.insertNode(wrapperElement, imageParent, posInParent);
+            gEditor.insertNode(wrapperElement, imageParent, posInParent);
           }
         }
+        if (gDialog.captionPlacementGroup.value == "below")
+          wrapperElement.appendChild(cap);
       }
       else if (wrapperElement && wrapperElement.parentNode && wrapperElement != imageElement)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
       {
         posInParent = msiNavigationUtils.offsetInParent(wrapperElement);
-        editor.insertNode(imageElement, wrapperElement.parentNode, posInParent);
-        editor.deleteNode(wrapperElement);
+        gEditor.insertNode(imageElement, wrapperElement.parentNode, posInParent);
+        gEditor.deleteNode(wrapperElement);
         wrapperElement = imageElement;
       }
 
-      if (bHasCaption) {
-        var capData = findCaptionNodes(wrapperElement);
-        var capPosition = gDialog.captionPlacementGroup.value;
-        if (!capPosition || !capPosition.length)
-          capPosition = "below";
-      }
       if (gInsertNewImage) {
-        if (!bHasCaption) wrapperElement = imageElement;
-        editor.insertElementAtSelection(wrapperElement, true);
+        if (!bHasCaption) 
+          wrapperElement = imageElement;
+        gEditor.insertElementAtSelection(wrapperElement, true);
       }
-      syncCaptionAndExisting(gCaptionData.m_captionStr, editor, wrapperElement || imageElement, capPosition);
+
       var extension = getExtension(gDialog.srcInput.value).toLowerCase();
       adjustObjectForFileType(imageElement, extension);
 
@@ -1781,7 +1829,7 @@ function onAccept()
       dump(e);
     }
 
-    editor.endTransaction();
+    gEditor.endTransaction();
 
     SaveWindowLocation();
     return true;
