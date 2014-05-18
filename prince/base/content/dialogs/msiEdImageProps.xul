@@ -171,6 +171,7 @@
         <groupbox>
           <caption id="captionPlacementLabel" label="&captionPlacement.label;"/>
           <radiogroup id="captionPlacementRadioGroup" orient="horizontal">
+            <radio id="captionNoneRadio" label="&None.label;" value="none"/>
             <radio id="captionAboveRadio" label="&Above.label;" value="above"/>
             <radio id="captionBelowRadio" label="&Below.label;" value="below"/>
           </radiogroup>
