@@ -323,7 +323,7 @@
 
 
   <xsl:template match="html:caption">\caption{<xsl:apply-templates/>}</xsl:template>
-  <xsl:template match="html:imagecaption" mode="caption">
+  <xsl:template match="html:caption" mode="caption">
     <xsl:apply-templates/>
   </xsl:template>
   <xsl:template name="getImageWidth">
