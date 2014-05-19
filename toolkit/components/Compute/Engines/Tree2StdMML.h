@@ -41,7 +41,7 @@ protected:
                           INPUT_NOTATION_REC * in_notation);
   void AddOperatorInfo(MNODE * dMML_list);
   void AddDDOperatorInfo(MNODE* dMML_list);
-
+  void FixColonEqual(MNODE* dMML_tree);
   void FixDotDotMN(MNODE* dMML_tree);
 
   MNODE* BindMixedNumbers(MNODE* dMML_list);
