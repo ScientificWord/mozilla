@@ -1343,7 +1343,7 @@ function doMakeSnapshot(obj, graph, editorElement, graphicsMultiCallback) {
       //          abspath = abspath.replace("/","\\","g");
       //          abspath = abspath.replace("%20", " ", "g");
       //        }
-      plotWrapper.wrappedObj.makeSnapshot(abspath, res);
+      obj.makeSnapshot(abspath, res);
       if (getOS(window) == "win") {
         var file = Components.classes["@mozilla.org/file/local;1"].
         createInstance(Components.interfaces.nsILocalFile);

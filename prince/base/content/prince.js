@@ -602,7 +602,6 @@ function exportTeX()
   if (!editor) return;
   uri = editor.document.documentURI;
   checkPackageDependenciesForEditor(editor);
-  var graphicsTimers = graphicsConverter.ensureTypesetGraphicsForDocument(editor.document, window);
   var file = msiFileFromFileURL(msiURIFromString(uri));
   var fileName = file.parent.leafName.replace(/_work$/i, ".tex");
   fileName = fileName.replace(" ", "_");
@@ -614,35 +613,35 @@ function exportTeX()
   var compileInfo = new Object();
   var dialogResult = fp.show();
 
-  if (graphicsTimers)
-  {
-    var checkGraphicsCallback = (function(callbackObj) {
-      return function() {
-        return callbackObj.isFinished();
-      };
-    })(graphicsTimers);
+//   if (graphicsTimers)
+//   {
+//     var checkGraphicsCallback = (function(callbackObj) {
+//       return function() {
+//         return callbackObj.isFinished();
+//       };
+//     })(graphicsTimers);
 
-    var numConversions = graphicsTimers.getActiveCount();
-    tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
-    //A time waster loop?
-    var ticks = 0;
-    var timerCount = 0;
-    var currLoading = 0;
-    while (!graphicsTimers.isFinished())
-    {
-      if (++ticks == 1000)
-      {
+//     var numConversions = graphicsTimers.getActiveCount();
+//     tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
+//     //A time waster loop?
+//     var ticks = 0;
+//     var timerCount = 0;
+//     var currLoading = 0;
+//     while (!graphicsTimers.isFinished())
+//     {
+//       if (++ticks == 1000)
+//       {
 
-        currLoading = graphicsTimers.getActiveCount();
-          ++timerCount;
-//        dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
-        ticks = 0;
-        if (timerCount == 500 + (200 * numConversions))
-          break;
+//         currLoading = graphicsTimers.getActiveCount();
+//           ++timerCount;
+// //        dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
+//         ticks = 0;
+//         if (timerCount == 500 + (200 * numConversions))
+//           break;
 
-      }
-    }
-  }  
+//       }
+//     }
+//   }  
 
   if (dialogResult != msIFilePicker.returnCancel)
     if (!documentAsTeXFile(editor, editor.document, fp.file, compileInfo ))
@@ -821,7 +820,6 @@ function compileDocument()
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor) return null;
-  var graphicsTimers = graphicsConverter.ensureTypesetGraphicsForDocument(editor.document, window);
   var compiler = "pdflatex";
   // Determine which compiler to use
   var texprogNode;
@@ -837,35 +835,35 @@ function compileDocument()
     pdfViewer.loadURI("about:blank");   // this releases the currently displayed pdf preview.
   dump("pdfModCount = "+editorElement.pdfModCount+", modCount is ");
   
-  if (graphicsTimers)
-  {
-    var checkGraphicsCallback = (function(callbackObj) {
-      return function() {
-        return callbackObj.isFinished();
-      };
-    })(graphicsTimers);
+//   if (graphicsTimers)
+//   {
+//     var checkGraphicsCallback = (function(callbackObj) {
+//       return function() {
+//         return callbackObj.isFinished();
+//       };
+//     })(graphicsTimers);
 
-    var numConversions = graphicsTimers.getActiveCount();
-    tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
-    //A time waster loop?
-    var ticks = 0;
-    var timerCount = 0;
-    var currLoading = 0;
-    while (!graphicsTimers.isFinished())
-    {
-      if (++ticks == 1000)
-      {
+//     var numConversions = graphicsTimers.getActiveCount();
+//     tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
+//     //A time waster loop?
+//     var ticks = 0;
+//     var timerCount = 0;
+//     var currLoading = 0;
+//     while (!graphicsTimers.isFinished())
+//     {
+//       if (++ticks == 1000)
+//       {
 
-        currLoading = graphicsTimers.getActiveCount();
-          ++timerCount;
-//        dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
-        ticks = 0;
-        if (timerCount == 500 + (200 * numConversions))
-          break;
+//         currLoading = graphicsTimers.getActiveCount();
+//           ++timerCount;
+// //        dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
+//         ticks = 0;
+//         if (timerCount == 500 + (200 * numConversions))
+//           break;
 
-      }
-    }
-  }  
+//       }
+//     }
+//   }  
 
   editorElement.pdfModCount = editor.getModificationCount();
   dump(editorElement.pdfModCount+"\n");
@@ -1011,7 +1009,6 @@ function compileTeX(compiler)
     var editor = msiGetEditor(editorElement);
     if (!editor) return;
 
-    var graphicsTimers = graphicsConverter.ensureTypesetGraphicsForDocument(editor.document, window);
     document.getElementById("preview-frame").loadURI("about:blank");
   // now save this TeX string and run TeX on it.  
     checkPackageDependenciesForEditor(editor);
@@ -1054,35 +1051,35 @@ function compileTeX(compiler)
       return;
     }
   
-    if (graphicsTimers)
-    {
-      var checkGraphicsCallback = (function(callbackObj) {
-        return function() {
-          return callbackObj.isFinished();
-        };
-      })(graphicsTimers);
+//     if (graphicsTimers)
+//     {
+//       var checkGraphicsCallback = (function(callbackObj) {
+//         return function() {
+//           return callbackObj.isFinished();
+//         };
+//       })(graphicsTimers);
 
-      var numConversions = graphicsTimers.getActiveCount();
-      tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
-      //A time waster loop?
-      var ticks = 0;
-      var timerCount = 0;
-      var currLoading = 0;
-      while (!graphicsTimers.isFinished())
-      {
-        if (++ticks == 1000)
-        {
+//       var numConversions = graphicsTimers.getActiveCount();
+//       tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
+//       //A time waster loop?
+//       var ticks = 0;
+//       var timerCount = 0;
+//       var currLoading = 0;
+//       while (!graphicsTimers.isFinished())
+//       {
+//         if (++ticks == 1000)
+//         {
 
-          currLoading = graphicsTimers.getActiveCount();
-          ++timerCount;
-//          dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
-          ticks = 0;
-          if (timerCount == 500 + (200 * numConversions))
-            break;
+//           currLoading = graphicsTimers.getActiveCount();
+//           ++timerCount;
+// //          dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
+//           ticks = 0;
+//           if (timerCount == 500 + (200 * numConversions))
+//             break;
 
-        }
-      }
-    }
+//         }
+//       }
+//     }
 //    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
 //    fos.init(outputfile, -1, -1, false);
 //    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
