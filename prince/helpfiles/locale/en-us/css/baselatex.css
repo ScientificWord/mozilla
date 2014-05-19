@@ -543,12 +543,12 @@ msiframe[captionloc] > object {
   display: table-row;
 }
 
-msiframe[captionloc="above"] > imagecaption {
+msiframe[captionloc="above"] > caption {
   display: table-caption;
   caption-side: top;
 }
 
-msiframe[captionloc="below"] > imagecaption {
+msiframe[captionloc="below"] > caption {
   display: table-caption;
   caption-side: bottom;
 }
