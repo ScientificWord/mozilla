@@ -1297,7 +1297,7 @@ function buildSnapshotFile(obj, abspath, res) {
   func(abspath, res);
 }
 
-function doMakeSnapshot(obj, graph, editorElement, graphicsMultiCallback) {
+function doMakeSnapshot(obj, graph, editorElement) {
   //  tryUntilSuccessful(200,10, function(){
   //  var intervalId;
   //  var count = 0;
@@ -1310,6 +1310,7 @@ function doMakeSnapshot(obj, graph, editorElement, graphicsMultiCallback) {
     try {
       var path = makeSnapshotPath(obj);
       var abspath;
+      var abspath2;
       var prefs;
       var res;
       var plotWrapper = obj.parentNode;
@@ -1344,22 +1345,22 @@ function doMakeSnapshot(obj, graph, editorElement, graphicsMultiCallback) {
       //          abspath = abspath.replace("%20", " ", "g");
       //        }
       obj.makeSnapshot(abspath, res);
-      if (getOS(window) == "win") {
-        var file = Components.classes["@mozilla.org/file/local;1"].
-        createInstance(Components.interfaces.nsILocalFile);
-        file.initWithPath(abspath);
-        var graphicsPath = file.clone();
-        graphicsPath = graphicsPath.parent;
-        //          graphicsPath.append("graphics");
-        var timerHandler = null;
-        if (graphicsMultiCallback) timerHandler = graphicsMultiCallback.addNewTimerHandler(10000); //set time limit of 10 seconds for conversion to finish?
-        var targFile = graphicsConverter.doGraphicsImport(file, graphicsPath, "import", window, timerHandler);
-        //          doGraphicsImport(file, {inFileType:"bmp",exepath:"%ImageMagick%",output:"png",commandLine:"convert %inputFile% %outputFile%" }, "import");
-        path = targFile.path;
-        //          path.replace("plots","graphics");
-        //          path.replace(".bmp", ".png");
+      if (obj.dimension === 2) {
+        abspath2 = abspath.replace(/png$/, "pdf");
+        obj.makeSnapshot(abspath2, res);
       }
-      insertSnapshot(obj, path);
+//       if (getOS(window) == "win") {
+//         var file = Components.classes["@mozilla.org/file/local;1"].
+//         createInstance(Components.interfaces.nsILocalFile);
+//         file.initWithPath(abspath);
+//         var graphicsPath = file.clone();
+//         graphicsPath = graphicsPath.parent;
+//         //          graphicsPath.append("graphics");
+//         var timerHandler = null;
+// ?        //          path.replace("plots","graphics");
+//         //          path.replace(".bmp", ".png");
+//       }
+      insertSnapshot(obj, abspath);
     } catch (e) {
       msidump(e.message);
     }
@@ -1371,32 +1372,13 @@ function doMakeSnapshot(obj, graph, editorElement, graphicsMultiCallback) {
 function rebuildSnapshots(doc) {
   var wrapperlist, objlist, length, objlength, i, regexp, match, name1, name2;
   var editorElement = msiGetActiveEditorElement();
-  var graphicsCallbackObj = new graphicsMultipleTimerHandler();
   wrapperlist = doc.documentElement.getElementsByTagName("plotwrapper");
   length = wrapperlist.length;
   for (i = 0; i < length; i++) {
     objlist = wrapperlist[i].getElementsByTagName("object");
-    objlength = objlist.length;
-    if (objlength === 1) {
-      doMakeSnapshot(objlist[0], null, editorElement, graphicsCallbackObj);
-    } else if (objlength > 1) {
-      regexp = /plot\d+/;
-      match = regexp.exec(objlist[0].data);
-      name1 = match[0];
-      match = regexp.exec(objlist[1].data);
-      name2 = match[0];
-      if (name1 !== name2) {
-        doMakeSnapshot(objlist[0], null, editorElement, graphicsCallbackObj);
-      }
-    }
+    doMakeSnapshot(objlist[0], null, editorElement);
   }
-  var checkGraphicsCallback = (function(callbackObj) {
-    return function() {
-      return callbackObj.isFinished();
-    };
-  })(graphicsCallbackObj);
-
-  tryUntilSuccessful(200, 200, checkGraphicsCallback);
+//  tryUntilSuccessful(200, 200, checkGraphicsCallback);
 }
 
 function doVCamCommandOnObject(obj, cmd, editorElement) {
