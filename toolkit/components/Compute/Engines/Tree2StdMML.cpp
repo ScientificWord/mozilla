@@ -67,6 +67,30 @@ Tree2StdMML::~Tree2StdMML()
   TCI_ASSERT(lt_stack == NULL);
 }
 
+void Tree2StdMML::FixColonEqual(MNODE* dMML_tree)
+{
+  if (dMML_tree == NULL)
+    return;
+
+  MNODE* rover = dMML_tree;
+  while (rover) {
+    MNODE* curr = rover;
+    rover = rover -> next;
+    if (ElementNameIs(curr, "mo") && ContentIs(curr, ":") &&
+        rover && ElementNameIs(rover, "mo") && ContentIs(rover, "=")) {
+       SetContent(curr, ":=");
+       curr->next = rover->next;
+       if (curr->next)
+         curr->next->prev = curr;
+       
+       DisposeTNode(rover);
+       rover = curr->next;
+    } else {
+       FixColonEqual(curr -> first_kid);
+    }
+  }
+
+}
 
 void Tree2StdMML::FixDotDotMN(MNODE* dMML_tree)
 {
@@ -187,6 +211,7 @@ MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
 MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
 {
   MNODE* rv = dMML_tree;
+  FixColonEqual(rv);
   FixDotDotMN(rv);
   RemoveMSTYLEs(rv);
   RemoveHSPACEs(rv);
