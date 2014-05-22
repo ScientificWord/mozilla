@@ -1046,7 +1046,8 @@ function msiEditorDocumentObserver(editorElement)
           catch(e) {
             dump(e+"\n");
           }
-          doVCamPreinitForPlotsInDocument(editorElement, true);
+          initializeAllVCamObjects(this.mEditorElement.document);
+          // doVCamPreinitForPlotsInDocument(editorElement, true);
         }
 
 //        if (this.mDumpMessage)
