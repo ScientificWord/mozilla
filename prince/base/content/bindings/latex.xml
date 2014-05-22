@@ -1347,7 +1347,7 @@ Make list of figures here
 		</xbl:implementation>
 	</xbl:binding>
 
-	<xbl:binding id="graph">
+<!-- 	<xbl:binding id="graph">
 		<xbl:resources>
 			<xbl:stylesheet  src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
@@ -1359,7 +1359,7 @@ Make list of figures here
 				<xbl:children includes="plotcaption"/>
 		</xbl:content>
 		<xbl:implementation>
-			<xbl:field name="plotplugin" >
+ --><!-- 			<xbl:field name="plotplugin" >
 				this.getElementsByTagName('object')[0];
 			</xbl:field> 
 			<xbl:field name="document" >
@@ -1368,7 +1368,7 @@ Make list of figures here
 			<xbl:field name="camera">
 				this.plotplugin.camera;
 			</xbl:field>
-		<!-- read-only properties -->
+		read-only properties ++>
 			<xbl:property name="dimension" readonly="true" onget="return this.plotplugin.dimension;" />
 			<xbl:property name="readyState" readonly="true" onget="return this.plotplugin.readyState;" />
 			<xbl:property name="useGdiplus" readonly="true" onget="return this.plotplugin.useGdiplus;" />
@@ -1377,7 +1377,7 @@ Make list of figures here
 			<xbl:property name="beginTime" readonly="true" 
 				onget="return this.plotplugin.beginTime;" />
 			<xbl:property name="endTime" readonly="true" onget="return this.plotplugin.endTime;" />
-		<!-- read-write properties -->
+		<!-- read-write properties ++>
 			<xbl:property name="currentTime" onget="return this.plotplugin.currentTime;"
 				onset="this.plotplugin.currentTime = val; return val;"  />
 			<xbl:property name="cursorTool" onget="return this.plotplugin.cursorTool;"
@@ -1394,7 +1394,7 @@ Make list of figures here
 				onset="this.plotplugin.zoomAction = val; return val;"  />
 			<xbl:property name="actionSpeed" onget="return this.plotplugin.actionSpeed;" 
 				onset="this.plotplugin.actionSpeed = val; return val;"  />
-		<!-- methods -->
+		<!-- methods ++>
 			<xbl:method name="startAnimation">
 				<xbl:body>
 					this.plotplugin.startAnimation();
@@ -1452,9 +1452,10 @@ Make list of figures here
 					this.plotplugin.makeSnapshot(abspath,res);
 				</xbl:body>
 			</xbl:method>
-		</xbl:implementation>
-	</xbl:binding>
-
+ -->	
+<!--   		</xbl:implementation>
+	</xbl:binding .>
+ -->
 	<xbl:binding id="collapsible">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
@@ -1607,7 +1608,7 @@ Make list of figures here
 			<xbl:children includes="biblabel"/>
             <xbl:children/>
 		</xbl:content>
-	</xbl:binding> -->
+	</xbl:binding>
 
 	<xbl:binding id="theoremWithCustomLeadin">
 		<xbl:resources>
