@@ -1146,11 +1146,9 @@ var isRunning = false;
 var callVCamMethod = function (doc, objid, method, id, args) {
   try {
     // the object that contains the exposed Flex functions
-    var funcObj = null;
-    var isBCC = false;
     var obj = doc.getElementById(objid);
-    if (obj.wrappedJSObject) {
-        obj = obj.wrappedJSObject;
+    // if (obj.wrappedJSObject) {
+    //     obj = obj.wrappedJSObject;
     } 
     // find object holding functions
     var alternative = true;
@@ -1158,44 +1156,32 @@ var callVCamMethod = function (doc, objid, method, id, args) {
       obj[method].call(obj, id, args[0]);
       return;
     }
-    // var input = doc.getElementById('msi_bridge');
-    // if (input == null)
-    // {
-    //     input = doc.createElement('input');
-    //     input.setAttribute('id', 'msi_bridge');
-    //     input.setAttribute('type', 'hidden');
-    //     doc.body.appendChild(input); 
-    // }
-    // input.value = 'novalue';
-    // var attVal = 'document.getElementById("msi_bridge").value = ' +
-    //              'document.getElementById(\'' + objid + '\')' +
-    //              '[\'' + method + '\']';
-    // if (id == '' || typeof(id) == 'undefined')  {
-    //     attVal += '()';
-    // }
-    // else {
-    //     attVal += '(\'' + id + '\'';
-    //     // Some functions have more parameters than just 'args'
-    //     for (i=4; i<arguments.length; i++) {
-    //         if (typeof(arguments[i]) == 'undefined') {
-    //             break;
-    //         }
-    //         attVal += ',\'' + arguments[i] + '\'';
-    //     }
-    //     attVal += ')';
-    // }
-    // input.setAttribute('onClick', attVal);
-    // var e =  doc.createEvent('HTMLEvents');
-    // e.initEvent('click', true, false);
-    // input.dispatchEvent(e);
-    // alert(input.value);
-    // return input.value;
-
   } 
   catch(err) {
     alert(err.message);
   }
   alert ('Unexpected way of execution');
+}
+
+function getObjectReadyState(doc, objid)
+{
+  var input = doc.getElementById('msi_bridge');
+  if (input == null)
+  {
+    input = doc.createElement('input');
+    input.setAttribute('id', 'msi_bridge');
+//    input.setAttribute('type', 'hidden');
+    doc.body.appendChild(input); 
+  }
+  input.value = 'novalue';
+  var attVal = 'document.getElementById("msi_bridge").value = ' +
+               'document.getElementById(\'' + objid + '\')' +
+               '[\'readyState\']';
+  input.setAttribute('onClick', attVal);
+  var e =  doc.createEvent('HTMLEvents');
+  e.initEvent('click', true, false);
+  input.dispatchEvent(e);
+  return input.value;
 }
 
 
@@ -1323,6 +1309,7 @@ function insertSnapshot(object, snapshotpath) {
     gslist = gslist[0];
   }
   ssobj = object.cloneNode(true); // copies useful attributes
+  ssobj.id = "ss" + ssobj.id;
   ssobj.removeAttribute("msigraph");
   ssobj.setAttribute("data", snapshotRelUrl);
   ssobj.setAttribute("msisnap", "true");
@@ -1363,18 +1350,22 @@ function doSnapshot(objid)
 }
 
 function objectLoaded(obj) {
+  var thisobj = obj;
+  var retval = "start";
   try {
-    return (obj && obj["readyState"]>1);
+    (function() {
+      retval = thisobj.readyState;
+    }());  
+    return retval;
   }
   catch (e) {
-    alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", e.message");
+    alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", " + e.message);
   }
 };
 
 function doMakeSnapshot(doc, obj, graph, editorElement) {
-
-//  tryUntilSuccessful(100,10, this.objectLoaded);
-  if (objectLoaded(obj)) {
+  var val = obj.ReadyState();
+  if (val > 1) {
     try {
       var path = makeSnapshotPath(obj);
       var abspath;
@@ -1421,10 +1412,10 @@ function doMakeSnapshot(doc, obj, graph, editorElement) {
       }
       insertSnapshot(obj, abspath);
     } catch (e) {
-      msidump(e.message);
+      alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", " + e.message);
     }
   } else {
-    alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", e.message");
+    alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", " + e.message);
   }
 }
 
@@ -1447,14 +1438,13 @@ function initializeAllVCamObjects() {
   length = wrapperlist.length;
   for (i = 0; i < length; i++) {
     objlist = wrapperlist[i].getElementsByTagName("object");
-    doVCamPreInitialize(objlist[0]);
+    doVCamPreInitialize(objlist[0].id);
   }
 }
 
 function doVCamCommandOnObject(obj, cmd, editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var doc = editorElement.contentDocument;
-  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
   try {
     switch (cmd) {
     case "cmd_vcSelObj":
@@ -1653,7 +1643,7 @@ function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
                       ViewingBoxXMin : "-5", ViewingBoxXMax : "5",
                       ViewingBoxYMin : "-5", ViewingBoxYMax : "5"};
   var camera, vcamDoc, kidNode, coordSysNode, sceneNode
-  var dim = obj.dimension;
+  var dim = obj["dimension"];
   var sceneNodeName = "Scene" + dim + "d";
   var coordSysNodeName = "CoordinateSystem" + dim + "d";
   var aProp;
@@ -1722,42 +1712,46 @@ function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
     
 }
 
-function doVCamPreInitialize(obj) {
+function doVCamPreInitialize(objid) {
+  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
   tryUntilSuccessful(200, 10, function() {
     var editorElement = msiGetActiveEditorElement();
+    var doc = editorElement.contentDocument;
+    var obj = doc.getElementById(objid);
     var editor = msiGetEditor(editorElement);
     var domGraph = editor.getElementOrParentByTagName("graph", obj);
     var graph = new Graph();
     graph.extractGraphAttributes(domGraph);
     var plotWrapper = obj.parentNode;
     try {
-      if (obj.addEvent && (obj.readyState === 2)) {
-        obj.addEvent('leftMouseDown', onVCamMouseDown);
-        obj.addEvent('leftMouseUp', onVCamMouseUp);
-        obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
-        obj.addEvent('dragMove', onVCamDragMove);
-        obj.addEvent('dragLeave', (function() {}));
+//      if (obj.addEvent && (obj.readyState === 2)) {
+        callVCamMethod( doc, objid, "addEvent", "leftMouseDown", [onVCamMouseDown]);
+        callVCamMethod( doc, objid, "addEvent", "leftMouseUp", [onVCamMouseUp]);
+        callVCamMethod( doc, objid, "addEvent", "leftMouseDoubleClick", [onVCamDblClick]);
+        callVCamMethod( doc, objid, "addEvent", "dragMove", [onVCamDragMove]);
+        callVCamMethod( doc, objid, "addEvent", "dragLeave", [(function() {})]);
         if (graph) {
-          obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
-          obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
+          callVCamMethod( doc, objid, "addEvent", "dragEnter", [graph.provideDragEnterHandler(editorElement, domGraph)]);
+          callVCamMethod( doc, objid, "addEvent", "drop", [graph.provideDropHandler(editorElement, domGraph)]);
         }
         queryVCamValues(obj, graph, domGraph);
-        // add a method for writing a snapshot
-        // var fn = function() {
-        //     return doMakeSnapshot(obj, graph, editorElement);
-        //   };
         plotWrapper.wrappedObj = obj;
-        // doMakeSnapshot(editorElement.contentDocument, obj, graph, editorElement);
-        obj.vcamStatus = "initialized";  //add a property so we know we've successfully initialized the VCam object
+        var callback;
+
+        callback = (function(_this) {
+          return function() {
+            return obj.readyState;
+          };
+        })(this);
+        obj["ReadyState"] = callback;
+
+        obj["vcamStatus"] = "initialized";  //add a property so we know we've successfully initialized the VCam object
         return true;
       }
-    } catch (e) {
-      if (e.message == ff)
-      {
-        obj.vcamStatus = "needRecreate";
-        return true;  //just to stop the repetition - this isn't going to succeed
-      }
+    catch (e) {
       msidump(e.message);
+      obj.vcamStatus = "needRecreate";
+      return true;  //just to stop the repetition - this isn't going to succeed
     }
     return false;
   });
@@ -2401,15 +2395,15 @@ function doFixupComputation(math, op, joiner, remark, editorElement) {
   RestoreCursor(editorElement);
 }
 
-function postDialogTimerCallback(editorElement, obj) {
-  dump("Hit postDialogTimerCallback!\n");
-  if (obj == null) {
-    dump("No object passed in to postDialogTimerCallback!\n");
-    return;
-  }
-  clearTimeout(obj.mDialogTimer);
-  if (("afterDialog" in obj) && obj.afterDialog != null) obj.afterDialog(editorElement);
-}
+// function postDialogTimerCallback(editorElement, obj) {
+//   dump("Hit postDialogTimerCallback!\n");
+//   if (obj == null) {
+//     dump("No object passed in to postDialogTimerCallback!\n");
+//     return;
+//   }
+//   clearTimeout(obj.mDialogTimer);
+//   if (("afterDialog" in obj) && obj.afterDialog != null) obj.afterDialog(editorElement);
+// }
 
 // like above, but asks user for variable(s) first
 
@@ -3868,58 +3862,58 @@ function doEditPlot() {
   graphObjectClickEvent();
 }
 
-function checkVCamStatusForPlot(objElement, graph, editorElement)
-{
-  var graphPath, objPath;
-  if (!objElement.vcamStatus)
-    objElement.vcamStatus = "uninitialized";
-  else if (objElement.vcamStatus == "initialized")
-  {
-    if (!objElement.addEvent)
-      objElement.vcamStatus = "needRecreate";  //it was initialized but has become disconnected
-  }
-  if (!(objElement.vcamStatus == "needRecreate"))
-  {
-    graphPath = graph.getGraphAttribute("ImageFile");
-    objPath = objElement.getAttribute("data");
-    if (graphPath && objPath && isDifferentPlotFile(objPath, graphPath, editorElement))
-    {
-      if (objElement.load)
-        objElement.vcamStatus = "needReload";
-      else
-        objElement.vcamStatus = "needRecreate";
-        //the VCam scripting interface doesn't survive calling setAttribute("data") to change source file;
-        //if we can't call the VCam load function, we should regenerate the object node
-    }
-  }
-  return objElement.vcamStatus;
-}
+// function checkVCamStatusForPlot(objElement, graph, editorElement)
+// {
+//   var graphPath, objPath;
+//   if (!objElement.vcamStatus)
+//     objElement.vcamStatus = "uninitialized";
+//   else if (objElement.vcamStatus == "initialized")
+//   {
+//     if (!objElement.addEvent)
+//       objElement.vcamStatus = "needRecreate";  //it was initialized but has become disconnected
+//   }
+//   if (!(objElement.vcamStatus == "needRecreate"))
+//   {
+//     graphPath = graph.getGraphAttribute("ImageFile");
+//     objPath = objElement.getAttribute("data");
+//     if (graphPath && objPath && isDifferentPlotFile(objPath, graphPath, editorElement))
+//     {
+//       if (objElement.load)
+//         objElement.vcamStatus = "needReload";
+//       else
+//         objElement.vcamStatus = "needRecreate";
+//         //the VCam scripting interface doesn't survive calling setAttribute("data") to change source file;
+//         //if we can't call the VCam load function, we should regenerate the object node
+//     }
+//   }
+//   return objElement.vcamStatus;
+// }
 
-function regeneratePlotObject(objElement, graph, editorElement)
-{
-//  try
-//  {
-//    doVCamInitialize(objElement);
-//    doVCamCommand("cmd_refresh");
-//  }
-//  catch(ex) {dump("Exception in regeneratePlotObject: " + ex + "\n");}
-//  return objElement;
+// function regeneratePlotObject(objElement, graph, editorElement)
+// {
+// //  try
+// //  {
+// //    doVCamInitialize(objElement);
+// //    doVCamCommand("cmd_refresh");
+// //  }
+// //  catch(ex) {dump("Exception in regeneratePlotObject: " + ex + "\n");}
+// //  return objElement;
 
-  var parent = objElement.parentNode;
-//  var newObj = objElement.ownerDocument.createElementNS(xhtmlns, "object");
-  var newObj = document.createElementNS(xhtmlns, "object");
-//Intentionally not passing in an editorElement - don't want to use editor methods here
-//In particular, this function shouldn't be used to do anything that should be undo-able;
-//  we're just replacing a vcam <object> that has become disfunctional
-  msiCopyElementAttributesExcluding(newObj, objElement, null, ["data","src","type"]);
-  newObj.vcamStatus = "uninitialized";
-  parent.replaceChild(newObj, objElement);
-//NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
-//  the scriptable vcam interface to work!
-  newObj.setAttribute("data", msiMakeAbsoluteUrl(graph.getGraphAttribute("ImageFile"),editorElement));
-  newObj.setAttribute("type", objElement.getAttribute("type"));
-  return newObj;
-}
+//   var parent = objElement.parentNode;
+// //  var newObj = objElement.ownerDocument.createElementNS(xhtmlns, "object");
+//   var newObj = document.createElementNS(xhtmlns, "object");
+// //Intentionally not passing in an editorElement - don't want to use editor methods here
+// //In particular, this function shouldn't be used to do anything that should be undo-able;
+// //  we're just replacing a vcam <object> that has become disfunctional
+//   msiCopyElementAttributesExcluding(newObj, objElement, null, ["data","src","type"]);
+//   newObj.vcamStatus = "uninitialized";
+//   parent.replaceChild(newObj, objElement);
+// //NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
+// //  the scriptable vcam interface to work!
+//   newObj.setAttribute("data", msiMakeAbsoluteUrl(graph.getGraphAttribute("ImageFile"),editorElement));
+//   newObj.setAttribute("type", objElement.getAttribute("type"));
+//   return newObj;
+// }
 
 // var preInitializeVCamCallbackObjectBase = 
 // {
@@ -4176,3 +4170,6 @@ function findmathparent(node) {
   return findtagparent(node, "math");
   // really, should check namespace, too
 }
+
+
+
