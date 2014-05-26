@@ -3,6 +3,7 @@
 Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
+Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 
 #include productname.inc
 const msiEditorJS_duplicateTest = "Bad";
@@ -528,6 +529,27 @@ var msiResizeListener =
     if (bSetHeight)
       msiEditorEnsureElementAttribute(anElement, "imageHeight", msiCSSUnitsList.convertUnits(newHeight, "pt", theUnits), this.mEditor);
     msiSetGraphicFrameAttrsFromGraphic(anElement, null);
+    // recompute the cached bitmap if doing so will improve things; i.e., if the src is a vector graphic.
+    var copiedSrcUrl = anElement.getAttribute('copiedSrcUrl');
+    if (copiedSrcUrl) {
+      var ext = /\....$/.exec(copiedSrcUrl) [0];
+      if (ext == '.eps' || ext == '.pdf' || ext == '.ps') { // recompute bit map image
+        var editorElement = msiGetActiveEditorElement();
+        var docUrlString = msiGetEditorURL(editorElement);
+        var url = msiURIFromString(docUrlString);
+        var baseDir = msiFileFromFileURL(url);
+        baseDir = baseDir.parent; // and now it points to the working directory
+        graphicsConverter.init(window, baseDir);
+        var decomposedRelativePath = copiedSrcUrl.split('/');
+        var graphicsDir = baseDir.clone(false);
+        while (decomposedRelativePath[0] && decomposedRelativePath[0].length > 0) {
+          graphicsDir.append(decomposedRelativePath.shift());
+        }
+        graphicsConverter.copyAndConvert(graphicsDir, false, msiCSSUnitsList.convertUnits(newWidth, "px", theUnits),
+          msiCSSUnitsList.convertUnits(newHeight, "px", theUnits) );
+      }
+    }
+
   },
 
   resizePlot : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
