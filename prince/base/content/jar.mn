@@ -124,7 +124,6 @@ prince.jar:
 * content/Operators.xul     (dialogs/Operators.xul)
   content/plugins.html       (plugins.html)
   content/EdInsertTable.xul         (dialogs/EdInsertTable.xul)
-  content/EdInsertTable.js          (dialogs/EdInsertTable.js)
 * content/texbuttoncontents.js      (dialogs/texbuttoncontents.js)
 * content/saveforweb.js             (dialogs/saveforweb.js)
 * content/texbuttoncontents.xul     (dialogs/texbuttoncontents.xul)
