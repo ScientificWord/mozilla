@@ -80,212 +80,11 @@ function SetupMSIComputeMenuCommands() {
   doSetupMSIComputeMenuCommands(commandTable);
 }
 
-//var msiPlotInsertionTimerBase = 
-//{
-//  mGraphNode : null,
-////  mIncrement : 300,
-////  totalTime : 600,
-//  mTimer : null,
-////  mMSecsUsed : 0,
-//  ourWindow : null,
-//  notify : function(aTimer)
-//  { 
-//    if (aTimer)
-//      this.mTimer = aTimer;
-////    mMSecsUsed += this.increment;
-////    if (mmSecsUsed >= this.totalTime)
-////    {
-//      if (this.mTimer)
-//        this.mTimer.cancel();
-//      if (this.mGraphNode && this.ourWindow)
-//        this.ourWindow.ensureVCamPreinitForPlot(this.mGraphNode, this.mEditorElement);
-////    }
-//  }
-//};
-//
-//function msiPlotInsertionTimer(graphNode, editorElement, hostWindow, nmSecs, incr)
-//{
-//  this.mEditorElement = editorElement;
-//  this.totalTime = nmSecs;
-//  this.increment = incr;
-//  this.mGraphNode = graphNode;
-//  this.ourWindow = hostWindow;
-//}
-//
-//msiPlotInsertionTimer.prototype = msiPlotInsertionTimerBase;
-//
-////This is an nsIContentFilter - we're only interested for now in identifying <graph> objects.
-//var msiEditorInsertionListenerBase = 
-//{
-//  timersToAdd : [],
-//  dataSize : {textChars : 0, nodes : 0},
-//  hostWindow : null,
-//  notifyOfInsertion : function(mimeType, contentSourceURL, sourceDocument, willDeleteSelection,
-//                                    docFragment, contentStartNode, contentStartOffset,
-//                                    contentEndNode, contentEndOffset, insertionPointNode,
-//                                    insertionPointOffset, continueWithInsertion)
-//  {
-//    var currNode;
-//    currNode = contentStartNode.value;
-//    var currOffset = contentStartOffset.value;
-//    var startOffsets = [currOffset];
-//    var endOffsets = [contentEndOffset.value];
-////    var startNodes = [{node : contentStartNode, offset : contentStartOffset}];
-////    var endNodes = [{node : contentEndNode, offset : contentEndOffset}];
-//    while (currNode && currNode != docFragment.value)
-//    {
-//      currOffset = msiNavigationUtils.offsetInParent(currNode);
-//      currNode = currNode.parentNode;
-//      startOffsets.push( currOffset );
-////      startNodes.push( {node : parent, offset : currOffset} );
-//    }
-//    currNode = contentEndNode.value;
-//    while (currNode && currNode != docFragment.value)
-//    {
-//      currOffset = msiNavigationUtils.offsetInParent(currNode);
-//      currNode = currNode.parentNode;
-//      endOffsets.push( currOffset );
-////      startNodes.push( {node : parent, offset : currOffset} );
-//    }
-//    this.checkForPlots(docFragment.value, startOffsets, endOffsets);
-//    continueWithInsertion.value = true;
-//  },
-//
-//  checkForPlots : function(aNode, startOffsets, endOffsets)
-//  {
-//    var aStart = startOffsets.length ? startOffsets.pop() : 0;
-//    var anEnd = endOffsets.length ? endOffsets.pop() : -1;
-//    if (msiNavigationUtils.isTextNode(aNode))
-//    {
-//      if (anEnd < 0)
-//        anEnd = aNode.data.length;
-//      this.dataSize.textChars += anEnd - aStart;
-//      return;
-//    }
-//    ++this.dataSize.nodes;
-//    if (anEnd < 0)
-//      anEnd = aNode.childNodes.length - 1;
-//    else if (!endOffsets.length)  //this is the last one - the endOffset handed in - it will be one too many in this case
-//      --anEnd;
-//    if (msiGetBaseNodeName(aNode) == "graph")
-//    {
-//      this.timersToAdd.push(aNode);
-//    }
-//    var ourStarts = [];
-//    var ourEnds = [];
-//    for (var jj = aStart; jj <= anEnd; ++jj)
-//    {
-//      if (jj == aStart)
-//        ourStarts = startOffsets;
-//      else
-//        ourStarts = [];
-//      if (jj == anEnd)
-//        ourEnds = endOffsets;
-//      else
-//        ourEnds = [];
-//      this.checkForPlots(aNode.childNodes[jj], ourStarts, ourEnds);
-//    }
-//  },
-//  addPlotInsertionTimers : function()
-//  {
-//    var nmSecs = 200;
-//    nmSecs += this.dataSize.nodes * 10;
-//    nmSecs += this.dataSize.textChars/2;
-//    var plotInsertTimer, theTimer;
-//    for (var ix = 0; ix < this.timersToAdd.length; ++ix)
-//    {
-//      plotInsertionTimer = new msiPlotInsertionTimer(this.timersToAdd[ix], this.editorElement, this.hostWindow);
-//      theTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-//      theTimer.initWithCallback( plotInsertionTimer, nmSecs, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-//    }
-//  }
-//};
-//
-//function msiEditorInsertionListener(editorElement, aWindow)
-//{
-//  this.editorElement = editorElement;
-//  this.editor = msiGetEditor(editorElement);
-//  this.hostWindow = aWindow;
-//}
-//
-//msiEditorInsertionListener.prototype = msiEditorInsertionListenerBase;
-//
-//var msiEditorInsertionCommandControllerBase = 
-//{
-//  defaultController : {},
-//  srcWindow : null,
-//  cmdNames : ["cmd_paste", "cmd_undo", "cmd_redo"],
-//  supportsCommand : function(cmd)
-//  {
-//    return ( this.cmdNames.indexOf(cmd) >= 0 );
-//  },
-//  isCommandEnabled : function(cmd)
-//  {
-//    if (this.defaultController[cmd])
-//      return this.defaultController[cmd].isCommandEnabled(cmd);
-//    var bCanDo = {value : false};
-//    var bDummy = {value : false};
-//    if (this.mEditor)
-//    {
-//      switch(cmd)
-//      {
-//        case "cmd_paste":
-//          this.mEditor.canPaste(bCanDo);
-//          return bCanDo.value;
-//        break;
-//        case "cmd_undo":   
-//          this.mEditor.canUndo(bCanDo, bDummy);
-//          return bCanDo.value;
-//        break;
-//        case "cmd_redo":
-//          this.mEditor.canRedo(bCanDo, bDummy);
-//          return bCanDo.value;
-//        break;
-//      }
-//    }
-//  },
-//  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-//  doCommandParams: function(aCommand, aParams, aRefCon) {},
-//  doCommand : function(cmd)
-//  {
-//    if (!this.mEditor)
-//      this.mEditor = msiGetEditor(this.mEditorElement);
-//    this.insertionListener = new msiEditorInsertionListener(this.mEditorElement, this.srcWindow);
-//    if (this.mEditor && this.insertionListener)
-//      this.mEditor.addInsertionListener(this.insertionListener);
-//    if (this.defaultController[cmd])
-//      this.defaultController[cmd].doCommand(cmd);
-//    if (this.mEditor && this.insertionListener)
-//    {
-//      this.mEditor.removeInsertionListener(this.insertionListener);
-//      this.insertionListener.addPlotInsertionTimers();
-//    }
-//  }
-//};
-//
-//function msiEditorInsertionCommandController(editorElement, srcWindow)
-//{
-//  this.mEditorElement = editorElement;
-//  this.mEditor = msiGetEditor(editorElement);
-//  this.srcWindow = srcWindow;
-//  var controllers = editorElement.contentWindow.controllers;
-//  for (var ix = 0; ix < this.cmdNames.length; ++ix)
-//  {
-//    this.defaultController[this.cmdNames[ix]] = controllers.getControllerForCommand(this.cmdNames[ix]);
-//  }
-//}
-//
-//msiEditorInsertionCommandController.prototype = msiEditorInsertionCommandControllerBase;
 
 function msiSetupMSIComputeMenuCommands(editorElement) {
   var commandTable = msiGetComposerCommandTable(editorElement);
   //dump("Registering msi compute menu commands\n");
   doSetupMSIComputeMenuCommands(commandTable);
-  
-//  var ourEditorInsertionController = new msiEditorInsertionCommandController(editorElement, window);
-//  commandTable.registerCommand("cmd_paste", ourEditorInsertionController);
-//  commandTable.registerCommand("cmd_undo", ourEditorInsertionController);
-//  commandTable.registerCommand("cmd_redo", ourEditorInsertionController);
 }
 
 function doSetupMSIComputeMenuCommands(commandTable) {
@@ -1119,16 +918,6 @@ function doGlobalComputeCommand(cmd, editorElement) {
   case "cmd_compute_MapMuPADName":
     doComputeMapMuPADName(editorElement);
     break;
-
-    //   case "cmd_compute_UserSettings":
-    //     doComputeUserSettings();
-    //     break;
-    //   case "cmd_compute_Settings":
-    //     doComputeSettings();
-    //     break;
-    //   case "cmd_compute_SwitchEngines":
-    //     doComputeSwitchEngines();
-    //     break;
   case "cmd_compute_Passthru":
     doComputePassthru(editorElement);
     break;
@@ -1149,10 +938,10 @@ var callVCamMethod = function (doc, objid, method, id, args) {
     var obj = doc.getElementById(objid);
     // if (obj.wrappedJSObject) {
     //     obj = obj.wrappedJSObject;
-    } 
+    // } 
     // find object holding functions
     var alternative = true;
-    if (alternative) {
+    if (alternative && obj[method]) {
       obj[method].call(obj, id, args[0]);
       return;
     }
@@ -1160,30 +949,8 @@ var callVCamMethod = function (doc, objid, method, id, args) {
   catch(err) {
     alert(err.message);
   }
-  alert ('Unexpected way of execution');
+  // alert ('Unexpected way of execution');
 }
-
-function getObjectReadyState(doc, objid)
-{
-  var input = doc.getElementById('msi_bridge');
-  if (input == null)
-  {
-    input = doc.createElement('input');
-    input.setAttribute('id', 'msi_bridge');
-//    input.setAttribute('type', 'hidden');
-    doc.body.appendChild(input); 
-  }
-  input.value = 'novalue';
-  var attVal = 'document.getElementById("msi_bridge").value = ' +
-               'document.getElementById(\'' + objid + '\')' +
-               '[\'readyState\']';
-  input.setAttribute('onClick', attVal);
-  var e =  doc.createEvent('HTMLEvents');
-  e.initEvent('click', true, false);
-  input.dispatchEvent(e);
-  return input.value;
-}
-
 
 
 function vcamToolbarFromPlugin(obj) {
@@ -1237,27 +1004,11 @@ function vcamToolbarFromPlugin(obj) {
 
 function makeSnapshotPath(object) {
   var extension;
-  //  var graph, gslist, animated, dimension;
-  //  if (extension == null) {
-  //    graph = msiFindParentOfType( object, "graph");
-  //    gslist = graph.getElementsByTagName("graphSpec");
-  //    if (gslist.length > 0) {
-  //      gslist = gslist[0];
-  //    }
-  //    extension = "png";
-  //    if (gslist) {
-  //      dimension = gslist.getAttribute("Dimension");
-  //      animated = gslist.getAttribute("Animate");
-  //      if (animated == "true") {
-  //        extension = "avi";
-  //      } else if (dimension == 3) {
-  //        extension = "png";
-  //      } else if (dimension == 2) {
-  //        extension = "svg";
-  //      }
-  //    }
-  //  }
-  extension = "png";
+  if ( getOS(window) == "win")  {
+    extension = "bmp";
+  } else {
+    extension = "png;"
+  }
   var path;
   try {
     var srcPath = msiGetIOService().newURI(object.data, null, null);
@@ -1266,8 +1017,6 @@ function makeSnapshotPath(object) {
     fileName = fileName.replace(/xv[cz]$/, extension);
     //    path = object.data;
     path = "graphics/" + fileName;
-    //    path = path.replace(/(file:\/\/.*)(\/plots\/)([^\/]+)/,'graphics/$3');
-    //    path = path.replace(/xv[cz]$/,extension);
   } catch (e) {
     msidump(e.message);
   }
@@ -1399,12 +1148,6 @@ function doMakeSnapshot(doc, obj, graph, editorElement) {
       snapshotDir.initWithPath(abspath);
       snapshotDir = snapshotDir.parent;
       if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
-      //        if ( getOS(window) == "win") {
-      //        // in this case path is a complete file url string
-      //          abspath = path.slice(8);
-      //          abspath = abspath.replace("/","\\","g");
-      //          abspath = abspath.replace("%20", " ", "g");
-      //        }
       callVCamMethod(doc, obj.id, "makeSnapshot", abspath, [res]);
       if (obj.dimension === 2) {
         abspath2 = abspath.replace(/png$/, "pdf");
@@ -1434,11 +1177,17 @@ function initializeAllVCamObjects() {
   var wrapperlist, objlist, length, objlength, i;
   var editorElement = msiGetActiveEditorElement();
   var doc = editorElement.contentDocument;
+  var obj;
   wrapperlist = doc.documentElement.getElementsByTagName("plotwrapper");
   length = wrapperlist.length;
   for (i = 0; i < length; i++) {
     objlist = wrapperlist[i].getElementsByTagName("object");
-    doVCamPreInitialize(objlist[0].id);
+    obj = objlist[0];
+    if (!obj.id) {
+      obj.id = findUnusedId("plot");
+      obj.setAttributeValue("id", obj.id); // BBM: unnecessary??
+    }
+    doVCamPreInitialize(obj.id);
   }
 }
 
@@ -1567,9 +1316,6 @@ var gProgressbar;
 function onVCamMouseDown(screenX, screenY) {
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  //  var evt = editor.document.createEvent("MouseEvents");
-  //  evt.initMouseEvent("mousedown", true, true, editor.document.defaultView,null,
-  //    screenX, screenY, null, null, 0, 0, 0, 0, null, null);
   editor.selection.collapse(this.parentNode, 0);
   editor.checkSelectionStateForAnonymousButtons(editor.selection);
   doVCamInitialize(this);
@@ -1577,10 +1323,6 @@ function onVCamMouseDown(screenX, screenY) {
 
 function onVCamDblClick(screenX, screenY) {
   var editorElement = msiGetActiveEditorElement();
-  //  var editor = msiGetEditor(editorElement);
-  //  var evt = editor.document.createEvent("MouseEvents");
-  //  evt.initMouseEvent("dblclick", true, true, editor.document.defaultView,null,
-  //    screenX, screenY, null, null, 0, 0, 0, 0, null, null);
   goDoPrinceCommand("cmd_objectProperties", this, editorElement);
 }
 
@@ -1595,10 +1337,6 @@ function onVCamRightMouseDown(screenX, screenY)
     contextMenu.showPopup(graphNode, screenX, screenY, "none", "none");
 	contextMenu.focus();
   }
-//  var evt = editor.document.createEvent("MouseEvents");
-//  evt.initMouseEvent("mousedown", true, true, editor.document.defaultView, 1,
-//    screenX, screenY, null, null, 0, 0, 0, 0, 2, null);
-//  this.parentNode.dispatchEvent(evt);
 }
 
 function onVCamRightMouseUp(screenX, screenY)
@@ -1712,6 +1450,16 @@ function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
     
 }
 
+function findUnusedId( prefix ) {
+  var n = 1;
+  var theId = prefix + n.toString();
+  while (document.getElementById(theId)) {
+    theId = prefix + Math.round(Math.random()*1000);
+  }
+  return theId;
+}
+
+
 function doVCamPreInitialize(objid) {
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
   tryUntilSuccessful(200, 10, function() {
@@ -1757,37 +1505,6 @@ function doVCamPreInitialize(objid) {
   });
 }
 
-//function preInitializeVCam(obj, graph, editorElement, successHandler, failHandler, exceptionHandler) {
-//  tryUntilSuccessfulWithHandlers(200, 10, function() {
-//    msidump("Entering an attempt in preInitializeVCam\n");
-//    var editor = msiGetEditor(editorElement);
-//    var domGraph = editor.getElementOrParentByTagName("graph", obj);
-//    var plotWrapper = obj.parentNode;
-//    if (obj.addEvent && (obj.readyState === 2)) {
-//      obj.addEvent('leftMouseDown', onVCamMouseDown);
-//      obj.addEvent('leftMouseUp', onVCamMouseUp);
-//      obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
-//      obj.addEvent('dragMove', onVCamDragMove);
-//      obj.addEvent('dragLeave', (function() {}));
-//      if (graph) {
-//        obj.addEvent('dragEnter', graph.provideDragEnterHandler(editorElement, domGraph));
-//        obj.addEvent('drop', graph.provideDropHandler(editorElement, domGraph));
-//      }
-//      queryVCamValues(obj, graph, domGraph);
-//      // add a method for writing a snapshot
-//      var snapFn = function() {
-//        return doMakeSnapshot(obj, graph, editorElement);
-//      };
-//      plotWrapper.wrappedObj = obj;
-//      doMakeSnapshot(obj, graph, editorElement);
-//      obj.vcamStatus = "initialized";  //add a property so we know we've successfully initialized the VCam object
-//      msidump("Leaving a successful attempt in preInitializeVCam\n");
-//      return true;
-//    }
-//    msidump("Leaving an unsuccessful attempt in preInitializeVCam\n");
-//    return false;
-//  }, successHandler, failHandler, exceptionHandler);
-//}
 
 function onVCamMouseUp() {
   //  alert("Mouse up in plugin!");
@@ -2098,17 +1815,6 @@ function GetASide(mathElement, editorElement) {
 function insertLabeledXML(editor, text, node, offset) {
   editor.setCaretAfterElement(node);
   editor.insertHTML("<span>" + text + "</span>");
-
-  //   var parser = new DOMParser();
-  //   var wrapped = "<span>" + text + "</span>";
-  //   var doc = parser.parseFromString(wrapped,"application/xhtml+xml");
-  //   var nodeList = doc.documentElement.childNodes;
-  //   var nodeListLength = nodeList.length;
-  //   var i;
-  //   for (i = nodeListLength-1; i >= 0; --i)
-  //   {
-  //     editor.insertNode( nodeList[i], node, offset );
-  //   }
 }
 
 function appendResult(result, sep, math, editorElement) {
@@ -2146,10 +1852,6 @@ function appendLabel(label, math, editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   insertXML(editor, label, math, math.childNodes.length);
-  //  msiGetEditor(editorElement).insertHTMLWithContext(
-  //      label,
-  //      "", "", "", null,
-  //      math, math.childNodes.length, false );
 }
 
 // "label" is a format string like ", Solution: %result%"
@@ -2395,16 +2097,6 @@ function doFixupComputation(math, op, joiner, remark, editorElement) {
   RestoreCursor(editorElement);
 }
 
-// function postDialogTimerCallback(editorElement, obj) {
-//   dump("Hit postDialogTimerCallback!\n");
-//   if (obj == null) {
-//     dump("No object passed in to postDialogTimerCallback!\n");
-//     return;
-//   }
-//   clearTimeout(obj.mDialogTimer);
-//   if (("afterDialog" in obj) && obj.afterDialog != null) obj.afterDialog(editorElement);
-// }
-
 // like above, but asks user for variable(s) first
 
 
@@ -2475,7 +2167,6 @@ function doVarsEvalComputation(math, func, joiner, title, label, editorElement, 
     AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsEvalComputation: [" + e + "]");
     return;
   }
-  //  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
 }
 
 function finishVarsEvalComputation(editorElement, o) {
@@ -2690,12 +2381,6 @@ function doComputePartialFractions(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePartialFractions: [" + e + "]");
         return;
       }
-
-      //        var parentWin = msiGetParentWindowForNewDialog(editorElement);
-      //        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
-      //        if (o.Cancel)
-      //          return;
-      //        vars = runFixup(o.vars);
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -2708,8 +2393,6 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler) {
   var mathstr = GetFixedMath(math);
 
   if (!vars) vars = "";
-  //  var done = false;
-  //  while (!done) {
   msiComputeLogger.Sent4("divide", mathstr, "specifying", vars);
   try {
     ComputeCursor(editorElement);
@@ -2745,7 +2428,6 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler) {
       msiComputeLogger.Exception(ex);
     }
   }
-  //  }
 }
 
 function doComputeRoots(math, vars, editorElement, cmd, cmdHandler) {
@@ -2820,14 +2502,6 @@ function doComputeSort(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSort: [" + e + "]");
         return;
       }
-
-      //      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-      //      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
-      //        if (o.Cancel)
-      //          return;
-      //        vars = runFixup(o.vars);
-      //      } else {
-      //        msiComputeLogger.Exception(ex);
     }
   }
 }
@@ -2866,12 +2540,6 @@ function doComputeCompanionMatrix(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeCompanionMatrix: [" + e + "]");
         return;
       }
-
-      //        var parentWin = msiGetParentWindowForNewDialog(editorElement);
-      //        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
-      //        if (o.Cancel)
-      //          return;
-      //        vars = runFixup(o.vars);
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -2928,8 +2596,6 @@ function doComputeIterate(editorElement, cmdHandler) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeIterate: [" + e + "]");
     return;
   }
-  //  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "mathmlarg",
-  //                    "chrome,close,titlebar,modal", o);
 }
 
 function finishComputeIterate(editorElement, o) {
@@ -3258,12 +2924,6 @@ function doComputeWronskian(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeWronskian: [" + e + "]");
         return;
       }
-
-      //      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-      //      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevars", "chrome,close,titlebar,modal", o);
-      //      if (o.Cancel)
-      //        return;
-      //      vars = runFixup(o.vars);
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -3305,11 +2965,6 @@ function doComputeCharPoly(math, vars, editorElement, cmd, cmdHandler) {
         return;
       }
 
-      //      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-      //      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevars", "chrome,close,titlebar,modal", o);
-      //      if (o.Cancel)
-      //        return;
-      //      vars = runFixup(o.vars);
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -3326,22 +2981,6 @@ function doComputeFillMatrix(editorElement, cmdHandler) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeFillMatrix: [" + e + "]");
     return;
   }
-  //  parentWin.openDialog("chrome://prince/content/ComputeFillMatrix.xul", "fillmatrix", "chrome,close,titlebar,modal", o);
-  //  if (o.Cancel)
-  //    return;
-  //  ComputeCursor(editorElement);
-  //  var mRows = GetNumAsMathML(o.rows);
-  //  var mCols = GetNumAsMathML(o.cols);
-  //  var mExpr  = o.expr;
-  //  msiComputeLogger.Sent4("Fill matrix",mRows+" by "+mCols, mExpr,o.type);
-  //  try {
-  //    var out = GetCurrentEngine().matrixFill(o.type,mRows,mCols,mExpr);
-  //    msiComputeLogger.Received(out);
-  //    addResult(out, editorElement);
-  //  } catch (e) {
-  //    msiComputeLogger.Exception(e);
-  //  }
-  //  RestoreCursor(editorElement);
 }
 
 function doComputeMap(math, editorElement, cmd, cmdHandler) {
@@ -3362,8 +3001,6 @@ function doComputeMap(math, editorElement, cmd, cmdHandler) {
     return;
   }
 
-  //  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  //  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computervars", "chrome,close,titlebar,modal", o);
 }
 
 function finishComputeMap(editorElement, o) {
@@ -3414,12 +3051,6 @@ function doComputeMinPoly(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMinPoly: [" + e + "]");
         return;
       }
-
-      //      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-      //      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevars", "chrome,close,titlebar,modal", o);
-      //      if (o.Cancel)
-      //        return;
-      //      vars = runFixup(o.vars);
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -3554,8 +3185,6 @@ function doComputeMoment(math, editorElement, cmdHandler) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMoment: [" + e + "]");
     return;
   }
-
-  //  parentWin.openDialog("chrome://prince/content/ComputeMoment.xul", "moment", "chrome,close,titlebar,modal", o);
 }
 
 function finishComputeMoment(editorElement, o) {
@@ -3595,9 +3224,6 @@ function doComputeQuantile(math, editorElement, cmd, cmdHandler) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeQuantile: [" + e + "]");
     return;
   }
-
-  //  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  //  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevars", "chrome,close,titlebar,modal", o);
 }
 
 function finishComputeQuantile(editorElement, o) {
@@ -3729,36 +3355,12 @@ function doComputeSetBasisVars(editorElement, cmd) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMinPoly: [" + e + "]");
     return;
   }
-
-  //  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  //  parentWin.openDialog("chrome://prince/content/ComputeVarList.xul", "varlist", "chrome,close,titlebar,modal", o);
-  //  if (o.Cancel) {
-  //    return;
-  //  }
 }
 
 function finishComputeSetBasisVars(vars, compsample) {
   compsample.setVectorBasis(vars);
   msiComputeLogger.Sent("new vector basis", vars);
 }
-//
-// function doComputeSwitchEngines()
-// {
-//   var compsample = GetCurrentEngine();
-//
-//   var o = {};
-//   o.engine      = compengine;
-//   window.openDialog("chrome://prince/content/ComputeSwitchEngines.xul", "switchengines", "chrome,close,titlebar,modal", o);
-//   if (o.Cancel)
-//     return;
-//
-//   compengine = o.engine;
-//   if (compengine == 1)
-//     compsample.startup("mplInstall.gmr");
-//   else
-//     compsample.startup("mupInstall.gmr");
-//   msiComputeLogger.Sent("Switching engine to",compengine);
-// }
 
 function doComputePassthru(editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
@@ -3776,19 +3378,6 @@ function doComputePassthru(editorElement) {
       dump("no selection!\n");
       return;
     }
-
-    //element = findtagparent(selection.focusNode,"code");
-    //if (!element) {
-    //  dump("not in code tag!\n");
-    //  return;
-    //}
-    //var text = element.firstChild;
-    //if (text.nodeType != Node.TEXT_NODE) {
-    //  dump("bad node structure.\n");
-    //  return;
-    //}
-    //str = WrapInMtext(text.nodeValue);
-    // Anchor and Focus the same?
     anchor = selection.anchorNode;
     focus = selection.focusNode;
     if (anchor != focus) {
@@ -3823,22 +3412,7 @@ function doComputePassthru(editorElement) {
     msiComputeLogger.Exception(e);
   }
 
-  //var child = element;
-  //var node = child.parentNode;
-  //while (node) {
-  //  if (node.localName == "body")
-  //    break;
-  //  else {
-  //    child = node;
-  //    node = child.parentNode;
-  //  }
-  //}
   if (out) {
-    //var idx;
-    //for (idx = 0; idx < node.childNodes.length; idx++) {
-    //  if (child == node.childNodes[idx])
-    //    break;
-    //}
     appendTaggedResult(out, GetComputeString("Passthru.fmt"), anchor, last, editorElement);
   }
   RestoreCursor(editorElement);
@@ -3862,254 +3436,7 @@ function doEditPlot() {
   graphObjectClickEvent();
 }
 
-// function checkVCamStatusForPlot(objElement, graph, editorElement)
-// {
-//   var graphPath, objPath;
-//   if (!objElement.vcamStatus)
-//     objElement.vcamStatus = "uninitialized";
-//   else if (objElement.vcamStatus == "initialized")
-//   {
-//     if (!objElement.addEvent)
-//       objElement.vcamStatus = "needRecreate";  //it was initialized but has become disconnected
-//   }
-//   if (!(objElement.vcamStatus == "needRecreate"))
-//   {
-//     graphPath = graph.getGraphAttribute("ImageFile");
-//     objPath = objElement.getAttribute("data");
-//     if (graphPath && objPath && isDifferentPlotFile(objPath, graphPath, editorElement))
-//     {
-//       if (objElement.load)
-//         objElement.vcamStatus = "needReload";
-//       else
-//         objElement.vcamStatus = "needRecreate";
-//         //the VCam scripting interface doesn't survive calling setAttribute("data") to change source file;
-//         //if we can't call the VCam load function, we should regenerate the object node
-//     }
-//   }
-//   return objElement.vcamStatus;
-// }
 
-// function regeneratePlotObject(objElement, graph, editorElement)
-// {
-// //  try
-// //  {
-// //    doVCamInitialize(objElement);
-// //    doVCamCommand("cmd_refresh");
-// //  }
-// //  catch(ex) {dump("Exception in regeneratePlotObject: " + ex + "\n");}
-// //  return objElement;
-
-//   var parent = objElement.parentNode;
-// //  var newObj = objElement.ownerDocument.createElementNS(xhtmlns, "object");
-//   var newObj = document.createElementNS(xhtmlns, "object");
-// //Intentionally not passing in an editorElement - don't want to use editor methods here
-// //In particular, this function shouldn't be used to do anything that should be undo-able;
-// //  we're just replacing a vcam <object> that has become disfunctional
-//   msiCopyElementAttributesExcluding(newObj, objElement, null, ["data","src","type"]);
-//   newObj.vcamStatus = "uninitialized";
-//   parent.replaceChild(newObj, objElement);
-// //NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
-// //  the scriptable vcam interface to work!
-//   newObj.setAttribute("data", msiMakeAbsoluteUrl(graph.getGraphAttribute("ImageFile"),editorElement));
-//   newObj.setAttribute("type", objElement.getAttribute("type"));
-//   return newObj;
-// }
-
-// var preInitializeVCamCallbackObjectBase = 
-// {
-//   mCount : 0,
-//   mInterval : 200,
-//   mAttempts : 10,
-// //  mStart : 0,
-
-//   start : function(interval, nAttempts/*, startAt*/ )
-//   {
-//     if (interval)
-//       this.mInterval = interval;
-//     if (nAttempts)
-//       this.mAttempts = nAttempts;
-// //    if (startAt)
-// //    {
-// //      this.mStart = startAt;
-// //      this.mAttempts += startAt;
-// //    }
-//     if (!this.mObj || !this.mGraph)
-//       throw("Calling preInitializeVCam with null object node or graph object");
-//     if (!this.mEditorElement)
-//       this.mEditorElement = msiGetActiveEditorElement();
-// //    if ((this.mStart > 0) || !this.tryOne())
-//     if (!this.tryOne())
-//     {
-//       //start the timer
-//       this.mTimer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
-//       this.mTimer.initWithCallback( this, this.mInterval, Components.interfaces.nsITimer.TYPE_REPEATING_SLACK);
-//     }
-//   },
-//   tryOne : function()
-//   {
-//     if ("checkVCamStatusForPlot" in window)
-//       window.checkVCamStatusForPlot(this.mObj, this.mGraph, this.mEditorElement);
-//     if (this.mObj.vcamStatus == "initialized")
-//       return true;
-//     var bDone = false;
-//     try
-//     {
-//       bDone = this.doPreInitVCam();
-//     }
-//     catch(ex)
-//     {
-//       if (this.mbHandleException)
-//         this.handleException(ex);
-//       else
-//         msidump("Exception in preInitializeVCam: " + ex.message + " - continuing to try.\n");
-//     }
-//     return bDone;
-//   },
-//   doPreInitVCam : function()
-//   {
-//     //msidump("Entering an attempt in preInitializeVCam\n");
-//     var editor = msiGetEditor(this.mEditorElement);
-//     var domGraph = editor.getElementOrParentByTagName("graph", this.mObj);
-//     var plotWrapper = this.mObj.parentNode;
-//     //if (this.mObj.addEvent && (this.mObj.readyState === 2)) {
-//       this.mObj.addEvent('leftMouseDown', onVCamMouseDown);
-//       this.mObj.addEvent('leftMouseUp', onVCamMouseUp);
-//       this.mObj.addEvent('leftMouseDoubleClick', onVCamDblClick);
-//       this.mObj.addEvent('dragMove', onVCamDragMove);
-//       this.mObj.addEvent('dragLeave', (function() {}));
-//       if (domGraph) {
-//         this.mObj.addEvent('dragEnter', this.mGraph.provideDragEnterHandler(this.mEditorElement, domGraph));
-//         this.mObj.addEvent('drop', this.mGraph.provideDropHandler(this.mEditorElement, domGraph));
-//       }
-//       this.mObj.addEvent("rightMouseDown", onVCamRightMouseDown);
-//       this.mObj.addEvent("rightMouseUp", onVCamRightMouseUp);
-//       this.mObj.addEvent("keyDown", onVCamKeyDown);
-//       this.mObj.addEvent("keyUp", onVCamKeyUp);
-// //      this.mObj.addEvent('treeChange', onVCamTreeChange);
-//       queryVCamValues(this.mObj, this.mGraph, domGraph);
-//       plotWrapper.wrappedObj = this.mObj;
-//       doMakeSnapshot(this.mEditorElement.contentDocument, this.mObj, this.mGraph, this.mEditorElement);
-//       this.mObj.vcamStatus = "initialized";  //add a property so we know we've successfully initialized the VCam object
-//       msidump("Leaving a successful attempt in preInitializeVCam\n");
-//       return true;
-//     //}
-//     //msidump("Leaving an unsuccessful attempt in preInitializeVCam; readyState reports [" + this.mObj.readyState + "]\n");
-//     return false;
-//   },
-//   notify : function(aTimer)
-//   { 
-//     if (aTimer)
-//       this.mTimer = aTimer;
-//     ++this.mCount;
-// //    if ((this.mCount > this.mStart) && this.tryOne())
-//     if (this.tryOne())
-//     {
-//       this.mTimer.cancel();
-//       if (this.onSuccess)
-//         this.onSuccess(this);
-//     }
-//     else if (this.mCount >= this.mAttempts)
-//     {
-//       this.mTimer.cancel();
-//       if (this.mbHandleFail)
-//         this.handleFail();
-//     }
-//   },
-//   handleFail : function()
-//   {
-//     var objPath = this.mObj.getAttribute("data");
-//     var objFile = Components.classes["@mozilla.org/file/local;1"].
-//                      createInstance(Components.interfaces.nsILocalFile);
-//     objFile.initWithPath( makeFilePathAbsolute(objPath, this.mEditorElement));
-//     if (objFile.exists())
-//     {
-//       msidump("preInitializeVCam failed but file " + objPath + " exists. Regenerating object.\n");
-//       var newObj = regeneratePlotObject(this.mObj, this.mGraph, this.mEditorElement);
-//       preInitializeVCam( newObj, this.mGraph, this.mEditorElement, false, false, 200, 20/*, 5*/ );  //don't want to spawn any more attempts, so pass null handlers
-//     }
-//     else
-//       msidump("preInitializeVCam failed; file " + objPath + " doesn't exist.\n");
-//   },
-//   handleException : function(exc)
-//   {
-//     if (exc.message == "NPMethod called on non-NPObject wrapped JSObject!")
-//     {
-//       msidump("preInitializeVCam exception: NPMethod called on non-NPObject wrapped JSObject!\n");
-//       var parent = this.mObj.parentNode;
-//       var newObj = regeneratePlotObject(this.mObj, this.mGraph, this.mEditorElement);
-//       preInitializeVCam( newObj, this.mGraph, false, false );  //don't want to spawn any more attempts, so pass null handlers
-//       return true;  //to stop the current timer
-//     }
-//     msidump("Exception in preInitializeVCam: " + exc.message + " - continuing to try.\n");
-//     return false;
-//   }
-// };
-
-// function preInitializeVCamCallbackObject(graph, objElement, editorElement, bHandleFail, bHandleException)
-// {
-//   this.mGraph = graph;
-//   this.mObj = objElement;
-//   this.mEditorElement = editorElement;
-//   this.mbHandleFail = bHandleFail;
-//   this.mbHandleException = bHandleException;
-// }
-
-// preInitializeVCamCallbackObject.prototype = preInitializeVCamCallbackObjectBase;
-
-// function preInitializeVCam( objElement, theGraph, editorElement, bHandleFail, bHandleExceptions, useInterval, useIterations/*, delayStart*/ )
-// {
-//   if (!useInterval)
-//     useInterval = 200;
-  
-//   if (!useIterations)
-//     useIterations = 10;
-  
-//   if (theGraph && theGraph.plotFailed())
-//   {
-//     dump("Plot failed; not initializing VCam.\n");
-//     return;
-//   }
-//   var initializer = new preInitializeVCamCallbackObject(theGraph, objElement, editorElement, bHandleFail, bHandleExceptions);
-//   initializer.start(useInterval, useIterations);
-// }
-
-// //Warning! This function may replace the <object> node for the plot, so you should use getElementsByTagName()
-// //again afterwards before referencing it. Furthermore, it calls tryUntilSuccessful() and so is asynchronous.
-// //It's meant to set a plot which has been created (perhaps via a paste or document load) or modified into a
-// //reliable state.
-// function ensureVCamPreinitForPlot(graphNode, editorElement)
-// {
-//   return;
-//   var editor = msiGetEditor(editorElement);
-//   var objElement = graphNode.getElementsByTagName("object");
-//   var theGraph;
-//   if (objElement && objElement.length)
-//     objElement = objElement[0];
-//   var parent, newObj;
-//   if (objElement)
-//   {
-//     theGraph = new Graph();
-//     theGraph.extractGraphAttributes(graphNode);
-//     checkVCamStatusForPlot(objElement, theGraph, editorElement);
-//     if (objElement.vcamStatus === "initialized")
-//       return;
-//     if ( (objElement.vcamStatus === "needRecreate") || (objElement.vcamStatus === "needReload") )
-//     {
-// //      doVCamInitialize(objElement);
-//       objElement = regeneratePlotObject(objElement, theGraph, editorElement);
-// //    }
-// //    else if (objElement.vcamStatus === "needReload")
-// //    {
-// //      var vcamUri = msiMakeAbsoluteUrl(theGraph.getGraphAttribute("ImageFile"),editorElement);
-// ////      var vcamPath = msiPathFromFileURL(msiURIFromString(vcamUri));
-// //      msidump("In ensureVCamPreinitForPlot, calling vcam load [" + vcamUri + "]\n");
-// //      objElement.load(vcamUri);
-// //      objElement.setAttribute("data", vcamUri);
-// //      objElement.vcamStatus = "uninitialized";
-//     }
-//     preInitializeVCam( objElement, theGraph, editorElement, true, true);
-//   }
-// }
 
 // form a single run of math but don't put caret on end
 
