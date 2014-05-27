@@ -1734,6 +1734,25 @@ PRBool StructureHasStructureAncestor( nsIDOMNode * node, msiITagListManager * pT
   return fIsStruct; 
 }
 
+PRBool
+nsHTMLEditor::InEmptyCell( nsIDOMNode * node) {
+  nsresult res = NS_OK;
+  nsCOMPtr<nsIDOMNode> parent;
+  PRInt32 offset;
+  nsAutoString tagName;
+  node->GetNodeName(tagName);
+  while (node && !(tagName.EqualsLiteral("td") || tagName.EqualsLiteral("mtd"))) {
+    res = GetNodeLocation(node, &parent, &offset); 
+    node = parent;
+    node->GetNodeName(tagName);
+  }
+  if (!node) return false;
+  nsCOMPtr<nsIDOMElement> el;
+  el = do_QueryInterface(node);
+  if (!el) return false;
+  return IsEmptyCell(el);
+}
+
 // InsertReturnAt -- usually splits a paragraph; may call itself recursively
 nsresult
 nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy)
@@ -1800,6 +1819,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     // The booleans are: aSingleBRDoesntCount, aListOrCellNotEmpty, and aSafeToAskFrames.
     // Check that there aren't significant tags in it, such as empty tables, etc.
     if (isEmpty) isEmpty = HasNoSignificantTags(splitNode, mtagListManager);
+    if (InEmptyCell(splitNode)) return NS_OK;
     fDiscardNode = PR_FALSE;
     if (isEmpty) mtagListManager->GetDiscardEmptyBlockNode(splitNode, &fDiscardNode);
     // fDiscardNode tells if the this node should be discarded in this case. We don't want to delete it yet;
