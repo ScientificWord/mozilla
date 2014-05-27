@@ -504,6 +504,7 @@ var msiResizeListener =
   resizeGraphic : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
   {
     var theUnits = anElement.getAttribute("units");
+    // var style = "";
     var elemWidth = anElement.getAttribute("imageWidth");
     var elemHeight = anElement.getAttribute("imageHeight");
     var bSetWidth = elemWidth && (Number(elemWidth) != 0);
@@ -524,10 +525,15 @@ var msiResizeListener =
       else
         bSetWidth = (Math.abs(ratio * newHeight - newWidth) > 2.0);
     }
-    if (bSetWidth)
+    if (bSetWidth) {
       msiEditorEnsureElementAttribute(anElement, "imageWidth", msiCSSUnitsList.convertUnits(newWidth, "pt", theUnits), this.mEditor);
-    if (bSetHeight)
+      // style += "width: "+msiCSSUnitsList.convertUnits(newWidth, "px", theUnits) + "; ";
+    }
+    if (bSetHeight) {
       msiEditorEnsureElementAttribute(anElement, "imageHeight", msiCSSUnitsList.convertUnits(newHeight, "pt", theUnits), this.mEditor);
+      // style += "height: "+msiCSSUnitsList.convertUnits(newHeight, "px", theUnits) + "; ";
+    }
+    // anElement.setAttribute('style', style);
     msiSetGraphicFrameAttrsFromGraphic(anElement, null);
     // recompute the cached bitmap if doing so will improve things; i.e., if the src is a vector graphic.
     var copiedSrcUrl = anElement.getAttribute('copiedSrcUrl');
@@ -545,8 +551,10 @@ var msiResizeListener =
         while (decomposedRelativePath[0] && decomposedRelativePath[0].length > 0) {
           graphicsDir.append(decomposedRelativePath.shift());
         }
+        
         graphicsConverter.copyAndConvert(graphicsDir, false, msiCSSUnitsList.convertUnits(newWidth, "px", theUnits),
           msiCSSUnitsList.convertUnits(newHeight, "px", theUnits) );
+
       }
     }
 
