@@ -275,5 +275,32 @@
 <!ENTITY MakeRelativeCheckbox.label  "Make reference relative">
 <!ENTITY EnterDocOrMarker.label "Enter a document location, a local document, or select a marker or heading from the popup list:">
 
+<!ENTITY  Placementtab.label "Placement">
+<!ENTITY  inner						"Inner margin">
+<!ENTITY  inline					"In line">
+<!ENTITY  inlineOffset    "Offset to Bottom of Minipage">
+<!ENTITY  display					"Displayed">
+<!ENTITY  floating				"Floating">
+<!ENTITY  outer						"Outer margin">
+<!ENTITY  alignment.label	"Text alignment">
+<!ENTITY  innerAlign			"Inner side">
+<!ENTITY  centerAlign			"Center">
+<!ENTITY  justAlign				"Justified">
+<!ENTITY  outerAlign			"Outer side">
+<!ENTITY placement.forceHere "Force here">
+<!ENTITY placement.here "Here">
+<!ENTITY placement.pageOfFloats "On a page of floats">
+<!ENTITY placement.topPage "Top of page">
+<!ENTITY placement.bottomPage "Bottom of page">
+<!ENTITY placement.hereInside "Inside">
+<!ENTITY placement.hereOutside "Outside">
+<!ENTITY placement.hereFull "Full width">
+
+<!ENTITY Minipage.descLeft "Left">
+<!ENTITY Minipage.descToText "To text">
+<!ENTITY Minipage.descRight "Right">
+<!ENTITY Minipage.descTop "Top">
+<!ENTITY Minipage.descTopBottom "Top/Bottom">
+<!ENTITY Minipage.descBottom "Bottom">
 
 
