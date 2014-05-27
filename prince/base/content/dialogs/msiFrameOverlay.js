@@ -182,7 +182,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
   dg.placeFloatsCheck     = document.getElementById("placeFloatsCheck");
   dg.placeTopCheck        = document.getElementById("placeTopCheck");
   dg.placeBottomCheck     = document.getElementById("placeBottomCheck");
-  dg.herePlacementRadioGroup  = document.getElementById("herePlacementRadioGroup");
+  dg.wrapOptionRadioGroup  = document.getElementById("wrapOptionRadioGroup");
   dg.OkButton             = document.documentElement.getButton("accept");
   dg.truewidth            = document.getElementById( "truewidth" );
   dg.trueheight           = document.getElementById( "trueheight" );
@@ -345,19 +345,19 @@ function initFrameTab(dg, element, newElement, contentsElement)
       dg.placeTopCheck.checked = (placeLocation.search("t") != -1);
       dg.placeBottomCheck.checked = (placeLocation.search("b") != -1);
 
-      dg.herePlacementRadioGroup.value = placementStr;
-      if (!dg.herePlacementRadioGroup.value || !dg.herePlacementRadioGroup.value.length)
-        dg.herePlacementRadioGroupValue = "full";  //as in the default below
-      switch (dg.herePlacementRadioGroup.value) {
-        case "L": dg.herePlacementRadioGroup.selectedIndex = 0;
+      dg.wrapOptionRadioGroup.value = placementStr;
+      if (!dg.wrapOptionRadioGroup.value || !dg.wrapOptionRadioGroup.value.length)
+        dg.wrapOptionRadioGroupValue = "full";  //as in the default below
+      switch (dg.wrapOptionRadioGroup.value) {
+        case "L": dg.wrapOptionRadioGroup.selectedIndex = 0;
                   break;
-        case "R": dg.herePlacementRadioGroup.selectedIndex = 1;
+        case "R": dg.wrapOptionRadioGroup.selectedIndex = 1;
                   break;
-        case "I": dg.herePlacementRadioGroup.selectedIndex = 2;
+        case "I": dg.wrapOptionRadioGroup.selectedIndex = 2;
                   break;
-        case "O": dg.herePlacementRadioGroup.selectedIndex = 3;
+        case "O": dg.wrapOptionRadioGroup.selectedIndex = 3;
                   break;
-        default:  dg.herePlacementRadioGroup.selectedIndex = 4;
+        default:  dg.wrapOptionRadioGroup.selectedIndex = 4;
       }
       
       dg.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
@@ -373,12 +373,12 @@ function initFrameTab(dg, element, newElement, contentsElement)
   }
 
   var placement = 0;
-  var placementLetter = document.getElementById("herePlacementRadioGroup").value;
+  var placementLetter = document.getElementById("wrapOptionRadioGroup").value;
   if (/l|i/i.test(placementLetter)) placement=1;
   else if (/r|o/i.test(placementLetter)) placement = 2;
   Dg = dg;
   setAlignment(placement);
-  enableFloatOptions(dg.herePlacementRadioGroup);
+  enableFloatOptions(dg.wrapOptionRadioGroup);
   enableFloating();
   placementChanged();
   doDimensionEnabling();
@@ -695,11 +695,11 @@ function placementChanged()
 
 function enableFloatOptions(radiogroup)
 {
-  var broadcaster = document.getElementById("herePlacement");
+  var broadcaster = document.getElementById("wrapOption");
   var theValue = "true";
   var position;
   if (!radiogroup) 
-    radiogroup = document.getElementById("herePlacementRadioGroup");
+    radiogroup = document.getElementById("wrapOptionRadioGroup");
 
   if (document.getElementById('placeHereCheck').checked)
   {
@@ -712,7 +712,6 @@ function enableFloatOptions(radiogroup)
     setAlignment(0);
   }
   broadcaster.setAttribute("disabled",theValue);
-//  document.getElementById('herePlacementRadioGroup').value;
   updateDiagram("margin");
 }
 
@@ -1010,7 +1009,11 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
   msiEditorEnsureElementAttribute(frameNode, "background-color", hexcolor(theColor), editor);
   msiRequirePackage(Dg.editorElement, "xcolor", "");
   msiEditorEnsureElementAttribute(frameNode, "textalignment", Dg.textAlignment.value, editor);
-  setStyleAttributeOnNode(frameNode, "text-align", Dg.textAlignment.value, editor)
+  setStyleAttributeOnNode(frameNode, "text-align", Dg.textAlignment.value, editor);
+  if (posid === "display"){
+    msiEditorEnsureElementAttribute(frameNode, "wrapOption", Dg.wrapOptionRadioGroup.value, editor);
+  }
+
 //RWA - The display attribute should be set by a CSS rule rather than on the individual item's style. (So that, for instance,
 //      the override for graphics with captions will take effect. See baselatex.css.)
 //  if (document.getElementById("inline").selected)
@@ -1063,7 +1066,7 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     msiEditorEnsureElementAttribute(frameNode, "placeLocation", placeLocation, editor);
     if (isHere)
     {
-      var floatparam = document.getElementById("herePlacementRadioGroup").selectedItem.value;
+      var floatparam = document.getElementById("wrapOptionRadioGroup").selectedItem.value;
       if (floatparam != "full") {
         msiRequirePackage(Dg.editorElement, "wrapfig","");
       }
@@ -1097,7 +1100,7 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
   else 
   {
     removeStyleAttributeFamilyOnNode(frameNode, "float", editor);
-    var fp = document.getElementById("herePlacementRadioGroup").value;
+    var fp = document.getElementById("wrapOptionRadioGroup").value;
     if (posid == "display" || (posid == "float" && (float==null || float=="full")))
     {
       setStyleAttributeOnNode(frameNode, "margin-left","auto", editor);

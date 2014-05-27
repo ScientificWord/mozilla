@@ -141,10 +141,7 @@
 					<description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <rtlBodyText>
-              <cursor/>
-              <br/>
-            </rtlBodyText>
+            <rtlBodyText><cursor/><br/></rtlBodyText>
           </initialcontents>
 				</tag>
 				<tag nm="p">
@@ -177,20 +174,14 @@
 					<description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <sectiontitle>
-              <cursor/>
-<!--               <br/> Not needed as long there are section numbers
- -->            </sectiontitle>
+            <sectiontitle><cursor/></sectiontitle>
           </initialcontents>
 				</tag>
 				<tag nm="shortQuote">
 					<nexttag>shortQuote</nexttag>
 					<description>Quote</description>
           <initialcontents>
-            <shortQuote>
-              <cursor/>
-              <br/>
-            </shortQuote>
+            <shortQuote><cursor/><br/></shortQuote>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -199,10 +190,7 @@
 					<nexttag>centered</nexttag>
 					<description>Centered paragraph</description>
           <initialcontents>
-            <centered>
-              <cursor/>
-              <br/>
-            </centered>
+            <centered><cursor/><br/></centered>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -211,10 +199,7 @@
 					<nexttag>bodyText</nexttag>
 					<description>Hidden dialog base</description>
           <initialcontents>
-            <dialogbase>
-              <cursor/>
-              <br/>
-            </dialogbase>
+            <dialogbase><cursor/><br/></dialogbase>
           </initialcontents>
 				</tag>
         <tag nm="verbatim">
@@ -282,10 +267,7 @@
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <bulletListItem>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </bulletListItem>
           </initialcontents>
         </tag>
@@ -295,10 +277,7 @@
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <numberedListItem>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </numberedListItem>
           </initialcontents>
         </tag>
@@ -372,10 +351,7 @@
           <discardemptyblock>false</discardemptyblock>
           <initialcontents>
             <chapter>
-              <sectiontitle>
-                <cursor/>
-                <br/>
-              </sectiontitle>
+              <sectiontitle><cursor/><br/></sectiontitle>
             </chapter>
           </initialcontents>
           <prefsub>section</prefsub>
@@ -387,10 +363,7 @@
           <titletag>sectiontitle</titletag>
           <initialcontents>
              <section>
-               <sectiontitle>
-                 <cursor/>
-                 <br/>
-               </sectiontitle>
+               <sectiontitle><cursor/><br/></sectiontitle>
              </section>
            </initialcontents>
           <nextafteremptyblock></nextafteremptyblock>
@@ -403,10 +376,7 @@
           <titletag>sectiontitle</titletag>
           <initialcontents>
              <subsection>
-               <sectiontitle>
-                 <cursor/>
-                 <br/>
-               </sectiontitle>
+               <sectiontitle><cursor/><br/></sectiontitle>
              </subsection>
            </initialcontents>
           <nextafteremptyblock>section</nextafteremptyblock>
@@ -419,10 +389,7 @@
           <titletag>sectiontitle</titletag>
           <initialcontents>
              <subsubsection>
-               <sectiontitle>
-                 <cursor/>
-                 <br/>
-               </sectiontitle>
+               <sectiontitle><cursor/><br/></sectiontitle>
              </subsubsection>
            </initialcontents>
           <nextafteremptyblock>subsection</nextafteremptyblock>
@@ -435,10 +402,7 @@
           <titletag>sectiontitle</titletag>
           <initialcontents>
             <paragraph>
-              <sectiontitle>
-                <cursor/>
-                <br/>
-              </sectiontitle>
+              <sectiontitle><cursor/><br/></sectiontitle>
             </paragraph>
           </initialcontents>
           <nextafteremptyblock>subsubsection</nextafteremptyblock>
@@ -451,10 +415,7 @@
           <titletag>sectiontitle</titletag>
           <initialcontents>
             <subparagraph>
-              <sectiontitle>
-                <cursor/>
-                <br/>
-              </sectiontitle>
+              <sectiontitle><cursor/><br/></sectiontitle>
             </subparagraph>
           </initialcontents>
           <nextafteremptyblock>paragraph</nextafteremptyblock>
@@ -476,10 +437,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <longQuotation>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </longQuotation>
           </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -510,10 +468,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <dedication>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </dedication>
           </initialcontents>
         </tag>
@@ -526,10 +481,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <centeredEnv>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </centeredEnv>
           </initialcontents>
         </tag>
@@ -540,10 +492,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <preface>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </preface>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
@@ -555,10 +504,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <glossary>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </glossary>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
@@ -570,10 +516,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <note style="padding: 10px;">
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </note>
           </initialcontents>
           <inclusion>true</inclusion>
@@ -588,10 +531,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <assertion>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </assertion>
           </initialcontents>
         </tag>
@@ -606,10 +546,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <theorem>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </theorem>
            </initialcontents>
         </tag>
@@ -622,10 +559,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <algorithm>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </algorithm>
            </initialcontents>
           <inclusion>true</inclusion>
@@ -639,10 +573,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <axiom>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </axiom>
            </initialcontents>
           <inclusion>true</inclusion>
@@ -656,10 +587,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <case>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </case>
            </initialcontents>
           <inclusion>true</inclusion>
@@ -674,10 +602,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <claim>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </claim>
            </initialcontents>
         </tag>
@@ -691,10 +616,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <conclusion>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </conclusion>
            </initialcontents>
         </tag>
@@ -708,10 +630,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <condition>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </condition>
            </initialcontents>
         </tag>
@@ -725,10 +644,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <conjecture>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </conjecture>
           </initialcontents>
         </tag>
@@ -742,10 +658,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <corollary>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </corollary>
            </initialcontents>
         </tag>
@@ -759,10 +672,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <criterion>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </criterion>
            </initialcontents>
         </tag>
@@ -776,10 +686,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <definition>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </definition>
            </initialcontents>
         </tag>
@@ -793,10 +700,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <example>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </example>
            </initialcontents>
         </tag>
@@ -810,10 +714,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <exercise>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </exercise>
            </initialcontents>
         </tag>
@@ -827,10 +728,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <lemma>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </lemma>
            </initialcontents>
         </tag>
@@ -844,10 +742,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <notation>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </notation>
           </initialcontents>
         </tag>
@@ -861,10 +756,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <problem>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </problem>
            </initialcontents>
         </tag>
@@ -878,10 +770,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <proposition>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </proposition>
            </initialcontents>
         </tag>
@@ -895,10 +784,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <remark>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </remark>
           </initialcontents>
         </tag>
@@ -912,10 +798,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <solution>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </solution>
           </initialcontents>
         </tag>
@@ -929,10 +812,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <summary>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </summary>
           </initialcontents>
         </tag>
@@ -946,10 +826,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <proof>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </proof>
           </initialcontents>
         </tag>
@@ -964,10 +841,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <assumption>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </assumption>
            </initialcontents>
         </tag>
@@ -981,10 +855,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <hypothesis>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </hypothesis>
            </initialcontents>
         </tag>
@@ -998,10 +869,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <property>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </property>
            </initialcontents>
         </tag>
@@ -1015,10 +883,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
              <question>
-               <bodyText>
-                 <cursor/>
-                 <br/>
-               </bodyText>
+               <bodyText><cursor/><br/></bodyText>
              </question>
            </initialcontents>
         </tag>
@@ -1033,10 +898,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <acknowledgment>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </acknowledgment>
           </initialcontents>
         </tag>
@@ -1059,10 +921,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <msiframe style="border: thin solid black; padding: 10px;">
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </msiframe>
           </initialcontents>
 	  		  <!--inclusion>true</inclusion-->
@@ -1130,10 +989,7 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <abstract>
-              <bodyText>
-                <cursor/>
-                <br type="_moz"/>
-              </bodyText>
+              <bodyText><cursor/><br type="_moz"/></bodyText>
             </abstract>
           </initialcontents>
         </tag>
@@ -1144,10 +1000,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-            <address>
-              <cursor/>
-              <br type="_moz"/>
-            </address>
+            <address><cursor/><br type="_moz"/></address>
           </initialcontents>
         </tag>
         <tag nm="author"><description>Author</description>
@@ -1157,10 +1010,7 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <author>
-              <cursor/>
-              <br type="_moz"/>
-            </author>
+            <author><cursor/><br type="_moz"/></author>
           </initialcontents>
         </tag>
         <tag nm="date"><description>Date</description>
@@ -1168,10 +1018,7 @@
 					<nexttag>bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <date>
-              <cursor/>
-              <br type="_moz"/>
-            </date>
+            <date><cursor/><br type="_moz"/></date>
           </initialcontents>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
@@ -1191,10 +1038,7 @@
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <title type="ours">
-              <cursor/>
-              <br type="_moz"/>
-            </title>
+            <title type="ours"><cursor/><br type="_moz"/></title>
           </initialcontents>
         </tag>
 			</tags>
