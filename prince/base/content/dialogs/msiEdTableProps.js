@@ -223,12 +223,13 @@ function setVariablesForControls()
   gDialog.unitMenulist = document.getElementById("unitMenulist");
   gDialog.autoWidthCheckbox = document.getElementById("autoWidthCheckbox");
 
-  gDialog.tableLocationList =  document.getElementById("tableLocationList");
+  gDialog.placementRadioGroup  = document.getElementById("placementRadioGroup");
+
   gDialog.floatLocationList =  document.getElementById("floatLocationList");
   gDialog.baselineList =  document.getElementById("baselineList");
   gDialog.captionPlacementGroup = document.getElementById("captionPlacementRadioGroup");
   gDialog.captionLocation =  document.getElementById("captionLocation");
-  //gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
+  gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
 
   // gDialog.tableBackgroundCW =  document.getElementById("tableBackgroundCW");
   
@@ -560,6 +561,7 @@ function InitDialog()
   initLabelingPanel();
   initCellsPanel();
   initLinesPanel();
+  placementChanged();
 }
 
 
@@ -649,15 +651,10 @@ function initTablePanel()
   gLastRowIndex = gRowCount-1;
   gColCount = colCountObj.value;
   gLastColIndex = gColCount-1;
-//  gDialog.tableRowCount.value = gRowCount;
-//  gDialog.tableColumnCount.value = gColCount; 
   gDialog.rowsInput.value = " " + gRowCount;
   gDialog.columnsInput.value = " " + gColCount;
   if (widthVal && widthVal.number) gDialog.tableWidthInput.value = widthVal.number;
-// if (heightVal && heightVal.number) gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
   gDialog.baselineList.value = gTableBaseline;
-
-
 
   var pos = gTableElement.getAttribute("pos");
   var placement = gTableElement.getAttribute("placement");
@@ -676,23 +673,26 @@ function initTablePanel()
   
   if (longPlacement) {
 //    if (placement == "I" || placement == "display") placeLocation = "";
-    gDialog.tableLocationList.value = longPlacement;
+    gDialog.placementRadioGroup.value = longPlacement;
     if (placeLocation) {
-      gDialog.floatLocationList.value = placeLocation;
+      gDialog.placementRadioGroup.value = placeLocation;
     }
     else 
     {
       gDialog.floatLocationList.value = "";
     }
   }
-  else gDialog.tableLocationList.value = "unspecified";
+  //else gDialog.tableLocationList.value = "unspecified";
 
   var xrefLabel = gTableElement.getAttribute("xrefLabel");
-  gDialog.labelText.value = xrefLabel;
+  if (xrefLabel)
+    gDialog.labelText.value = xrefLabel;
+  else
+    gDialog.labelText = "";
   
 
-  checkEnableFloatControl();
-  checkEnableLocationControl();
+  //checkEnableFloatControl();
+  //checkEnableLocationControl();
   
 }
 
@@ -717,18 +717,6 @@ function initLinesPanel()
   gDialog.BorderSideSelectionList.value = currSide; //will trigger setCurrSide()?
   setCurrSide(currSide);
 
-//  gTableColor = msiGetHTMLOrCSSStyleValue(globalTableElement, bgcolor, cssBackgroundColorStr);
-//  var backColor = gInitialCellData.background;
-//  if (!backColor || (backColor == "transparent"))
-//  {
-//    backColor = gTableColor;
-//    gDialog.BackgroundSelectionRadioGroup.value = "table";
-//  }
-//  else
-//    gDialog.BackgroundSelectionRadioGroup.value = "selection";
-//  doInitialPreviewSetup();
-//  setColorWell("BackgroundCW", backColor);
-//  SetColor("BackgroundCW", backColor);
 }
 
 function onChangeTableUnits()
@@ -860,6 +848,45 @@ function ValidateData()
   return true;
 }
 
+// called when one of these is clicked: inline, display, float
+
+function placementChanged()
+{
+  //var broadcaster = document.getElementById("floatingPlacement");
+  var bEnableInlineOffset = false;
+  var bEnableWrapfig = false;
+  var bEnableFloats = false;
+
+  if (document.getElementById('float').selected)
+  {
+    //theValue = "false";
+    //broadcaster.setAttribute("disabled",theValue);
+    bEnableWrapfig = false;
+    bEnableFloats = true;
+    //enableFloatOptions();
+  }
+  else if (document.getElementById('display').selected)
+  {
+    //setAlignment(0);
+    //updateDiagram("margin");
+    bEnableWrapfig = true;
+    bEnableFloats = false;
+    
+  } 
+  else if (document.getElementById('inline').selected)
+  {
+    //updateDiagram("margin");
+    bEnableInlineOffset = true;
+    bEnableWrapfig = false;
+    bEnableFloats = false;
+  }
+  //showDisableControlsByID(["frameInlineOffsetLabel","frameInlineOffsetInput"], bEnableInlineOffset);
+  showDisableControlsByID(["hereLeftRadio","hereRightRadio", "hereInsideRadio", "hereOutsideRadio", "hereFullWidthRadio"], bEnableWrapfig);
+  showDisableControlsByID(["placeForceHereCheck","placeHereCheck", "placeFloatsCheck", 
+                           "placeFloatsCheck", "placeTopCheck", "placeBottomCheck"], bEnableFloats);
+}
+
+
 
 function ChangeCellSize(textID)
 {
@@ -929,31 +956,6 @@ function checkEnableWidthControls()
   enableControlsByID(["tableWidthInput"], !bDisabled);
 }
 
-function checkEnableFloatControl()
-{
-  var sel = gDialog.tableLocationList.selectedItem.value;
-  var bEnableFloat = (sel ===  "unspecified");
-  enableControlsByID(["floatLocationList"], bEnableFloat);
-}
-
-function locationPropertyChanged()
-{
-  checkEnableFloatControl();
-}
-
-
-function checkEnableLocationControl()
-{
-  var sel = gDialog.floatLocationList.selectedItem.value;
-  var bEnableLocation = (sel ===  "");
-  enableControlsByID(["tableLocationList"], bEnableLocation);
-}
-
-function floatPropertyChanged()
-{
-  checkEnableLocationControl();
-}
-
 
 
 
@@ -985,25 +987,10 @@ function EnableDisableControls()
     }
 
     enableControlsByID(rowHeightControlIDs, false);
-//    if (!bIsWholeCols)
-//    {
-//      DisableRadioGroup(gDialog.ColAlignRadioGroup);
-//      gDialog.CellWidthInput.disabled = true;
-//      gDialog.CellWidthUnits.disabled = true;
-//      gDialog.CellWidthCheckbox.disabled = true;
-//    }
-//
-//    if (!bIsWholeRows)
-//    {
-//      DisableRadioGroup(gDialog.RowAlignRadioGroup);
-//      gDialog.CellHeightInput.disabled = true;
-//      gDialog.CellHeightUnits.disabled = true;
-//      gDialog.CellHeightCheckbox.disabled = true;
-//    }
   }
   checkEnableWidthControls();
-  checkEnableFloatControl();
-  checkEnableLocationControl();
+  //checkEnableFloatControl();
+  //checkEnableLocationControl();
 }
 
 
@@ -1206,8 +1193,7 @@ function ApplyTableAttributes()
     SetAnAttribute(gTableElement, "valign", gDialog.baselineList.value);
 
     doSetStyleAttr("border-collapse", gBorderCollapse);
-    var pos = gDialog.tableLocationList.value;
-    var float = gDialog.floatLocationList.value;  
+      
     SetAnAttribute(gTableElement,"req","tabulary");
     if (gDialog.autoWidthCheckbox.checked)
       gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
@@ -1215,29 +1201,32 @@ function ApplyTableAttributes()
       SetAnAttribute(gTableElement,"width",gDialog.tableWidthInput.value );
       doSetStyleAttr("width", gDialog.tableWidthInput.value + unit);
     }
+
+    var pos = gDialog.placementRadioGroup.value;
+
     if (pos && pos.length > 0) {
-      if (pos == "inline" || pos == "center") float = "";
-      if (float !== "") {
-        msiRequirePackage(gActiveEditorElement, "wrapfig", "");
-        SetAnAttribute(gTableElement,"placement",placementCodeFrom(pos));
-        SetAnAttribute(gTableElement,"placeLocation", float);
-        doSetStyleAttr("float", (pos=="left"||pos=="inside")?"left":"right");
-      }
-      else 
-      {
-        if (pos == "inline") doSetStyleAttr("display", "inline-table");
-        else 
-        {
-          doSetStyleAttr("display", "table");
-          if (pos == "center") {
-            doSetStyleAttr("margin-left", "auto");
-            doSetStyleAttr("margin-right", "auto");
-          }
+
+      if (pos === "float") {
+
+      } else if (pos == "inline") 
+        doSetStyleAttr("display", "inline-table");
+      else { // pos == display
+        var wrapFigOpt = gDialog.herePlacementRadioGroup.value;
+        if (wrapFigOpt === "full") { // a plain centered displayed table
+           doSetStyleAttr("display", "table");
+           doSetStyleAttr("margin-left", "auto");
+           doSetStyleAttr("margin-right", "auto");          
+        } else {
+           msiRequirePackage(gActiveEditorElement, "wrapfig", "");
+           SetAnAttribute(gTableElement,"placement",placementCodeFrom(wrapFigOpt));
+           //SetAnAttribute(gTableElement,"placeLocation", float);
+           doSetStyleAttr("float", (pos=="left"||pos=="inside")?"left":"right");
+
+        
         }
       }
       SetAnAttribute(gTableElement, "pos", pos);
     }
-    else doSetStyleAttr("display", "inline-table");
     if (!bEmptyStyle)
       theStyleString = gTableElement.getAttribute("style");
     if (theStyleString && theStyleString.length)
@@ -2040,7 +2029,7 @@ function Apply()
     ApplyTableAttributes();
 
     // handle caption
-    var captionloc = gDialog.captionLocation.value;
+    var captionloc = gDialog.captionPlacementGroup.value;
     var captiontext;
     var cap;
     var i;
@@ -2087,8 +2076,6 @@ function doHelpButton()
 }
 function onAcceptNewTable()
 {
-//  if (ValidateData())
-//  {
     var color;
 
     try 
@@ -2112,8 +2099,6 @@ function onAcceptNewTable()
       dump(e);
     }
 
-//    try {
-//      if (globalElement) gActiveEditor.cloneAttributes(gTableElement, globalElement);
 
 // This is code for creating a new table, not for revising
 
@@ -2124,9 +2109,9 @@ function onAcceptNewTable()
     if (tableBody)
     {
       // check here for caption
-      var captionloc = gDialog.captionLocation.value;
+      var captionloc = gDialog.captionPlacementGroup.value;
       var captiontext;
-      if (captionloc !== '') {
+      if (captionloc !== 'none') {
         var cap = gActiveEditor.createElementWithDefaults('caption');
         var namespace = { value: null };
         var tlm = gActiveEditor.tagListManager;
@@ -2140,6 +2125,11 @@ function onAcceptNewTable()
       color = document.getElementById('backgroundCW').getAttribute("color");
 
       // Create necessary rows and cells for the table
+      if (!gRows || gRows === 0)
+        gRows = 1;
+      if (!gColumns || gColumns === 0)
+        gColumns = 1;
+
       for (var i = 0; i < gRows; i++)
       {
         var newRow = gActiveEditor.createElementWithDefaults("tr");
@@ -2206,11 +2196,6 @@ function onAcceptNewTable()
     gActiveEditor.insertElementAtSelection(gTableElement, true);
     gTableElement.normalize();
 
-//      if (deletePlaceholder && gTableElement && gTableElement.nextSibling)
-//      {
-//        // Delete the placeholder <br>
-//        gActiveEditor.deleteNode(gTableElement.nextSibling);
-//      }
   return true;
 }
 
