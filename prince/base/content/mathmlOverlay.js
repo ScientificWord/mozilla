@@ -553,7 +553,7 @@ var msiParen =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    if (makeMathIfNeeded(editorElement))
+    if (isInMath(editorElement))
       insertfence("(", ")", editorElement);
   }
 };
