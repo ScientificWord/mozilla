@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
+#include ../productname.inc
+
 
 <!--
    - The contents of this file are subject to the Netscape Public
@@ -28,7 +30,6 @@
 <?xml-stylesheet href="chrome://prince/skin/EdInsertTable.css" type="text/css"?>
 
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/EdInsertTable.dtd">
 
@@ -50,7 +51,6 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdTableProps.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
@@ -60,7 +60,7 @@
     <tabs id="tabpanel-tabs">
       <tab id="QuicklyTab" label="&quicklyTab.label;"/>
       <tab id="TableTab" label="&tableTab.label;"/>
-      <tab id="msiPlacementTab"/>
+      <tab id="msiPlacementTab" label="&Placementtab.label;" />
       <tab id="tableLabelingTab" label="&tableLabelingTab.label;"/>
       <tab id="CellsTab" label="&cellsTab.label;"/>
       <tab id="LinesTab" label="&linesTab.label;"/>
@@ -195,32 +195,6 @@
                 </columns>
                 <rows>
                   <row align="center">
-                    <label value="&location.label;" control="tableLocationList" />
-                    <menulist id="tableLocationList" oncommand="locationPropertyChanged();">
-                      <menupopup>
-                        <menuitem label="&unspecified;"   value="unspecified"/>
-                        <menuitem label="&inline.label;"  value="inline"/>
-                        <menuitem label="&left.label;" value="left"/>
-                        <menuitem label="&inside.label;" value="inside"/>
-                        <menuitem label="&center.label;" value="center"/>
-                        <menuitem label="&right.label;" value="right"/>
-                        <menuitem label="&outside.label;" value="outside"/>
-                      </menupopup>
-                    </menulist> 
-                  </row>
-                  <row align="center">
-                    <label value="&floatLocation.label;" control="floatLocationList"/>
-                    <menulist id="floatLocationList" oncommand="floatPropertyChanged();">
-                      <menupopup>
-                        <menuitem label="&none.label;"  value=""/>
-                        <menuitem label="&here.label;" value="h"/>
-                        <menuitem label="&onpageoffloats.label;" value="p"/>
-                        <menuitem label="&topofpage.label;" value="t"/>
-                        <menuitem label="&bottomofpage.label;" value="b"/>
-                      </menupopup>
-                    </menulist> 
-                  </row>
-                  <row align="center">
                     <label value="&Tablebaseline.label;" control="baselineList"/>
                     <menulist id="baselineList" oncommand="TablePropertyChanged('TableBaselineRadioGroup');">
                       <menupopup>
@@ -230,32 +204,54 @@
                         <menuitem label="&sameasbottomrow.label;" value="bottom"/>
                       </menupopup>
                     </menulist>
-                  </row>
-                  <row align="center">
-                    <label value="&Caption.label;" control="captionLocation"/>
-                    <menulist id="captionLocation" oncommand="TablePropertyChanged('TableCaptionList');">
-                      <menupopup>
-                        <menuitem label="&none.label;"  value=""/>
-                        <menuitem label="&abovetable.label;" value="top"/>
-                        <menuitem label="&belowtable.label;" value="bottom"/>
-                      </menupopup>
-                    </menulist>
-                    <!-- <label id="BackgroundColorLabel" value="&Basecolor.label;"/>
-                    <hbox><msibutton class="color-button" oncommand="GetColorAndUpdate('tableBackgroundCW');">
-                      <spacer id="tableBackgroundCW" class="color-well"/>
-                    </msibutton><spacer flex="2"/></hbox> -->
-                  </row>
-                  <row align="center">
-                    <label value="&LabelText.label;" control="labelText"/>
-                    <textbox id="labelText" oncommand="" />
-                  </row>
+                  </row>                  
                 </rows>
               </grid> 
             </groupbox>
           </hbox>
         </vbox>
       </tabpanel>
-      <tabpanel id="msiPlacement"/>
+      <tabpanel id="msiPlacementTab">
+        <groupbox>
+          <caption label="&Placementtab.label;"/>
+          <radiogroup id="placementRadioGroup" oncommand="placementChanged(this);" persist="value">
+          <hbox flex="1">
+            <vbox>
+              <radio id="inline" value="inline" class="medwidth" label="&inline;" radioGroup="placementRadioGroup" persist="selected"/>
+              <description value="&inlineOffset;" id="frameInlineOffsetLabel" class="medwidth"/>
+              <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" value = "0" min="-Infinity" persist = "value"/>
+            </vbox>
+            <vbox>
+            <radio id="display" selected="true" value="display" label="&display;" radioGroup="placementRadioGroup" persist="selected"/>
+          </vbox>
+#ifndef PROD_SNB
+          <vbox>
+            <radio id="float" value="float" label="&floating;" radioGroup="placementRadioGroup" oncommand="enableFloatOptions(this);"
+               persist="selected"/>
+            <vbox>
+              <checkbox id="placeForceHereCheck" label="&placement.forceHere;" observes="floatingPlacement" persist="checked"/>
+              <checkbox id="placeHereCheck" label="&placement.here;" observes="floatingPlacement" persist="checked"/>
+              <checkbox id="placeFloatsCheck" label="&placement.pageOfFloats;" observes="floatingPlacement" persist="checked"/>
+              <checkbox id="placeTopCheck" label="&placement.topPage;" observes="floatingPlacement" persist="checked"/>
+              <checkbox id="placeBottomCheck" label="&placement.bottomPage;" observes="floatingPlacement" persist="checked"/>
+            </vbox>
+          </vbox>
+          <vbox>
+            <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableFloatOptions(this);" persist="selectedIndex value">
+              <radio id="hereLeftRadio" label="&Minipage.descLeft;" value="L" observes="herePlacement" />
+              <radio id="hereRightRadio" label="&Minipage.descRight;" value="R" observes="herePlacement"/>
+              <radio id="hereInsideRadio" label="&placement.hereInside;" value="I" observes="herePlacement" />
+              <radio id="hereOutsideRadio" label="&placement.hereOutside;" value="O" observes="herePlacement" />
+              <radio id="hereFullWidthRadio" label="&placement.hereFull;" value="full" observes="herePlacement" />
+            </radiogroup>
+          </vbox>
+#endif
+        </hbox>
+      </radiogroup>
+      </groupbox>
+  </tabpanel>
+
+      
       <vbox id="tabelLabelingTab">
 <!--         <spacer flex="1"/>
  -->    <hbox>
@@ -273,8 +269,6 @@
             <radio id="captionBelowRadio" label="&Below.label;" value="below"/>
           </radiogroup>
         </groupbox>
-        <label value="&CaptionText.label;"/>
-        <editor id="captionTextInput" editortype="html" type="content" context="msiEditorContentContext" height="2in" flex="1"/>
         <label value="&AltText.label;"/>
         <textbox id="altTextInput"/>
       </vbox>

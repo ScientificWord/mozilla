@@ -719,7 +719,7 @@ var msiReviseMatrixCmd =
 //    var theMatrixData = msiGetReviseObjectFromCommandParams(aParams);
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseMatrixCmd, trying to revise matrix, dialog unimplemented.");
     var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
-    var dlgWindow = window.openDialog("chrome://prince/content/EdInsertTable.xul", "_blank", "modal, chrome,resizable,close,titlebar,dependent",
+    var dlgWindow = window.openDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "modal, chrome,resizable,close,titlebar,dependent",
                                                      editorElement, aCommand, this, theData);
   },
 
@@ -731,7 +731,7 @@ var msiReviseMatrixCmd =
     theMatrixData.initFromSelection(editor.selection, editorElement);
 //    var theMatrixData = msiGetPropertiesObjectFromSelection(editorElement);
     var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
-    var dlgWindow = window.openDialog("chrome://prince/content/EdInsertTable.xul", "_blank", 
+    var dlgWindow = window.openDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", 
       "modal,chrome,resizable,close,titlebar,dependent", editorElement, aCommand, this, theData);
   }
 };
