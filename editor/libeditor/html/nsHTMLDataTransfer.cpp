@@ -1897,10 +1897,10 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       nsCOMPtr<nsISelection>selection;
       nsresult res = GetSelection(getter_AddRefs(selection));
       if (NS_FAILED(res)) return res;
-      res = nsEditor::GetNodeLocation(outRightNode, address_of(parent), &offset);
-      if (NS_FAILED(res)) return res;
-      selection->Collapse(parent, offset);
-      nsEditor::DeleteNode(outRightNode);
+//      res = nsEditor::GetNodeLocation(outRightNode, address_of(parent), &offset);
+//      if (NS_FAILED(res)) return res;
+      selection->Collapse(outRightNode, offset);
+//      nsEditor::DeleteNode(outRightNode);
 
       controller->DoCommand(command);
       return res;
