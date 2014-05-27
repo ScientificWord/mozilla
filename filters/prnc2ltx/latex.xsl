@@ -110,6 +110,7 @@
 <xsl:template match="html:usepackage"/>
 <xsl:template match="html:address"/> <!-- Gobbled by <author> -->
 <xsl:template match="html:plot"/>
+<xsl:template match="html:cursor"/>
 
 
 

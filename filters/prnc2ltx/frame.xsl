@@ -145,11 +145,17 @@
     </xsl:when>
   </xsl:choose>
   <xsl:if test="$captionloc=1">
-    <xsl:if test="@pos='float'">\caption{</xsl:if>
+    <xsl:if test="@pos='float'">
+      <xsl:text>\caption{</xsl:text>
+    </xsl:if>
     <xsl:apply-templates select="html:caption[1]" mode="caption"/>
     <xsl:choose>
-      <xsl:when test="@pos='float'">}</xsl:when>
-      <xsl:otherwise>\\</xsl:otherwise>
+      <xsl:when test="@pos='float'">
+        <xsl:text>}</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>\\ </xsl:text>
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
   <xsl:choose>
@@ -226,13 +232,21 @@
   <xsl:if test="@rotation='rot90' or @rotation='rot270'">\end{turn}</xsl:if>
   <xsl:if test="$captionloc=2">
     <xsl:choose>
-      <xsl:when test="@pos='float'">\caption{</xsl:when>
-      <xsl:otherwise>\\ </xsl:otherwise>
+      <xsl:when test="@pos='float'">
+        <xsl:text>\caption{</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>\\ </xsl:text>
+      </xsl:otherwise>
     </xsl:choose>
     <xsl:apply-templates select="html:caption[1]" mode="caption"/>
     <xsl:choose>
-      <xsl:when test="@pos='float'">}</xsl:when>
-      <xsl:otherwise>\\</xsl:otherwise>
+      <xsl:when test="@pos='float'">
+        <xsl:text>}</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>\\ </xsl:text>
+      </xsl:otherwise>
     </xsl:choose>
   </xsl:if>
 
