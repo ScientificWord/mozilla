@@ -124,7 +124,7 @@ function Startup()
   gDialog.PreviewImage      = null;
   //gDialog.captionEdit       = document.getElementById( "captionTextInput" );
   gDialog.captionPlacementGroup = document.getElementById("captionPlacementRadioGroup");
-  gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
+  gDialog.wrapOptionRadioGroup   = document.getElementById("wrapOptionRadioGroup");
   gDialog.OkButton          = document.documentElement.getButton("accept");
   gDialog.keyInput          = document.getElementById("keyInput");
   gDialog.captionLocation   =  document.getElementById("captionLocation");
@@ -230,7 +230,7 @@ function Startup()
   InitDialog();
 
   // Save initial source URL
-  gInitialSrc = document.getElementById("copiedSrcUrl").value;
+  gInitialSrc = document.getElementById("srcInput").value;
   gCopiedSrcUrl = gInitialSrc;
 
   // By default turn constrain on, but both width and height must be in pixels
@@ -439,7 +439,7 @@ function InitImage()
   if (!gInsertNewImage)
   {
     // We found an element and don't need to insert one
-  //trim off units at end
+    //trim off units at end
     var re = /[a-z]*/gi;
     var widthStr = "";
     var heightStr = "";
@@ -492,7 +492,7 @@ function InitImage()
         gActualHeight = gConstrainHeight = imageElement.offsetHeight - Math.round(readTotalExtraHeight("px"));
     }
   }
-  else
+  else  // existing image
   {
     var defaultUnitStr, defaultWidthStr, defaultHeightStr;
     try
@@ -572,12 +572,12 @@ function InitImage()
     constrainProportions( "frameHeightInput", "frameWidthInput", null );
   else if (!Number(frameTabDlg.heightInput.value))
     constrainProportions( "frameWidthInput", "frameHeightInput", null );
+
   // set spacing editfields
-  var herePlacement;
   var element = wrapperElement || imageElement
-  var placement = element.getAttribute("placement");
-  if (placement == "here");
-    gDialog.herePlacementRadioGroup.value=element.getAttribute("herePlacement");
+  var pos = element.getAttribute("pos");
+  if (pos == "display");
+    gDialog.wrapOptionRadioGroup.value=element.getAttribute("wrapOption");
 
   // dialog.border.value       = globalElement.getAttribute("border");
   var bordervalues;

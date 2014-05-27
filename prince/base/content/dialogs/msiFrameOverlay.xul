@@ -373,12 +373,12 @@
           </vbox>
         </vbox>
         <vbox>
-          <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableFloatOptions(this);" persist="selectedIndex value">
-            <radio id="hereLeftRadio" label="&Minipage.descLeft;" value="L" observes="herePlacement" />
-            <radio id="hereRightRadio" label="&Minipage.descRight;" value="R" observes="herePlacement"/>
-            <radio id="hereInsideRadio" label="&placement.hereInside;" value="I" observes="herePlacement" />
-            <radio id="hereOutsideRadio" label="&placement.hereOutside;" value="O" observes="herePlacement" />
-            <radio id="hereFullWidthRadio" label="&placement.hereFull;" value="full" observes="herePlacement" />
+          <radiogroup id="wrapOptionRadioGroup" align="vertical" value="L" oncommand="enableFloatOptions(this);" persist="selectedIndex value">
+            <radio id="hereLeftRadio" label="&Minipage.descLeft;" value="L" observes="wrapOption" />
+            <radio id="hereRightRadio" label="&Minipage.descRight;" value="R" observes="wrapOption"/>
+            <radio id="hereInsideRadio" label="&placement.hereInside;" value="I" observes="wrapOption" />
+            <radio id="hereOutsideRadio" label="&placement.hereOutside;" value="O" observes="wrapOption" />
+            <radio id="hereFullWidthRadio" label="&placement.hereFull;" value="full" observes="wrapOption" />
           </radiogroup>
         </vbox>
 #endif
@@ -387,7 +387,7 @@
     </groupbox>
     <broadcasterset>
       <broadcaster id="floatingPlacement" disabled="true"/>
-      <broadcaster id="herePlacement" disabled="true"/>
+      <broadcaster id="wrapOption" disabled="true"/>
       <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notedata.width - sidemargin -->
       <broadcaster id="noteheight" height="40"/>
       <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->        
