@@ -257,8 +257,7 @@
 		<tagclass>
 			<tagclassname>listtag</tagclassname>
       <classcontains>
-  			<contains>paratag</contains>
-  			<contains>br</contains>
+  			<contains>bodyText</contains>
       </classcontains>
 			<tags>
 				<tag nm="bulletListItem">
