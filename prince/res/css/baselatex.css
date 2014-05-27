@@ -486,20 +486,35 @@ biblabel {
   font-weight: bold;
   background-color: rgb(255,255,230);
   min-width: 1em;
+  -moz-user-input: enabled;
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
 }
 
 bibkey {
   display: inline;
   background-color: rgb(255,230,255);
   min-width: 1em;
+  margin-right: 1em;
+  -moz-user-input: enabled;
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
 }
 
 bibkey:before {
-  content: ' (';
+  content: '(';
 }
 
 bibkey:after {
   content: ')';
+}
+
+biblabel:before {
+  content: '[';
+}
+
+biblabel:after {
+  content: ']';
 }
 
 /*bibitem[hasLabel="true"] {
