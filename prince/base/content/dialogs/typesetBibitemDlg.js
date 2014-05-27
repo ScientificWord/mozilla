@@ -124,6 +124,7 @@ function onAccept()
   if (data.node)
   {
     var node;
+    var node2;
     node = getChildByTagName(data.node, "bodyText");
     if (!node) 
     {
@@ -131,17 +132,17 @@ function onAccept()
     }
     editor.selection.collapse(node,0);
 
-    node = getChildByTagName(data.node, "bibkey");
-    if (node) node.textContent = gDialog.key;
+    node2 = getChildByTagName(data.node, "bibkey");
+    if (node2) node2.textContent = gDialog.key;
     else {
-      node = editor.createNode("bibkey", data.node, 0);
-      node.textContent = gDialog.key;
+      node2 = editor.createNode("bibkey", data.node, 0);
+      node2.textContent = gDialog.key;
     }
-    node = getChildByTagName(data.node, "biblabel");
-    if (node) node.innerHTML = gDialog.bibLabel;
+    node2 = getChildByTagName(data.node, "biblabel");
+    if (node2) node2.innerHTML = gDialog.bibLabel;
     else {
-      node = editor.createNode("biblabel", data.node, 0);
-      node.innerHTML = gDialog.bibLabel;
+      node2 = editor.createNode("biblabel", data.node, 0);
+      node2.innerHTML = gDialog.bibLabel;
     }
   }
   else if ("paragraphNode" in data)
@@ -155,7 +156,8 @@ function onAccept()
     }
 
   }
-
+  editor.selection.collapse(node,0);
+  msiUpdateStructToolbar(editorElement);
   SaveWindowLocation();
   return true;
 }
