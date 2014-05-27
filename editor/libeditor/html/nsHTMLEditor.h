@@ -486,6 +486,7 @@ protected:
   // Return TRUE if aElement is a table-related elemet and caret was set
   PRBool SetCaretInTableCell(nsIDOMElement* aElement);
   PRBool IsElementInBody(nsIDOMElement* aElement);
+  PRBool InEmptyCell(nsIDOMNode * aNode);
 
   // inline style caching
   void ClearInlineStylesCache();
