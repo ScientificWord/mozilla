@@ -25,10 +25,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <curraddr>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </curraddr>
+                        <curraddr><cursor/><br type="_moz"/></curraddr>
                     </initialcontents>
                 </tag>
                 <tag nm="email">
@@ -39,10 +36,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <email>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </email>
+                        <email><cursor/><br type="_moz"/></email>
                     </initialcontents>
                 </tag>
                 <tag nm="urladdr">
@@ -53,10 +47,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <urladdr>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </urladdr>
+                        <urladdr><cursor/><br type="_moz"/></urladdr>
                     </initialcontents>
                 </tag>
                 <tag nm="thanks">
@@ -67,10 +58,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <thanks>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </thanks>
+                      <thanks><cursor/><br type="_moz"/></thanks>
                     </initialcontents>
                 </tag>
                 <tag nm="translator">
@@ -81,10 +69,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <translator>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </translator>
+                        <translator><cursor/><br type="_moz"/></translator>
                     </initialcontents>
                 </tag>
                 <tag nm="subjclass">
@@ -95,10 +80,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <subjclass>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </subjclass>
+                        <subjclass><cursor/><br type="_moz"/></subjclass>
                     </initialcontents>
                 </tag>
                 <tag nm="keywords">
@@ -109,10 +91,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <keywords>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </keywords>
+                        <keywords><cursor/><br type="_moz"/></keywords>
                     </initialcontents>
                 </tag>
                 <tag nm="dedicatory">
@@ -123,10 +102,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <dedicatory>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </dedicatory>
+                        <dedicatory><cursor/><br type="_moz"/></dedicatory>
                     </initialcontents>
                 </tag>
             </tags>

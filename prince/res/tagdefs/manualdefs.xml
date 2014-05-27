@@ -11,10 +11,7 @@
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <epigraph>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+              <bodyText><cursor/><br/></bodyText>
             </epigraph>
           </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
