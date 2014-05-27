@@ -824,24 +824,24 @@ function msiDoTagBibItem(dlgData, paraContainer, editorElement)
 }
 
 //In the case of tagging a paragraph as a "bibitem", this function launches the ManualBibItem dialog
-function msiDeferStatefulCommand(commandID, newState, editorElement)
-{
-  var retVal = false;
-  var editor = msiGetEditor(editorElement);
-  switch(newState)
-  {
-    case "bibitem":
-    {
-      var paraNode = msiNavigationUtils.getTopParagraphParent(editor.selection.focusNode, editor);
-      var bibData = {key : "", bibLabel : "", paragraphNode : paraNode};
-      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
-                                                           editorElement, commandID, this, bibData);
-      retVal = true;
-    }
-    break;
-  }
-  return retVal;
-}
+// function msiDeferStatefulCommand(commandID, newState, editorElement)
+// {
+//   var retVal = false;
+//   var editor = msiGetEditor(editorElement);
+//   switch(newState)
+//   {
+//     case "bibitem":
+//     {
+//       var paraNode = msiNavigationUtils.getTopParagraphParent(editor.selection.focusNode, editor);
+//       var bibData = {key : "", bibLabel : "", paragraphNode : paraNode};
+//       var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+//                                                            editorElement, commandID, this, bibData);
+//       retVal = true;
+//     }
+//     break;
+//   }
+//   return retVal;
+// }
 
 function getNextTagWindow(commandID)
 {
