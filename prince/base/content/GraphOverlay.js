@@ -2238,10 +2238,14 @@ function insertGraph(siblingElement, graph, editorElement) {
   var gDomElement = graph.createGraphDOMElement(false);
 
   addGraphElementToDocument(gDomElement, siblingElement, editorElement);
-//  var obj = gDomElement.getElementsByTagName("object")[0];
+  var obj = gDomElement.getElementsByTagName("object")[0];
   var parentWindow = editorElement.ownerDocument.defaultView;
   parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
-//  doVCamPreInitialize(obj, graph);
+  if (!obj.id) {
+    obj.id = findUnusedId("plot");
+    obj.setAttributeValue("id", obj.id); // BBM: unnecessary??
+  }
+  doVCamPreInitialize(obj.id);
   editorElement.focus();
 }
 function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElement, selection) {
