@@ -4898,8 +4898,11 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
   // otherwise current is an element and offset points between children
   // Find the nodes before and after offset.
   pAfter = (*current)->GetFirstChild(nsnull);
-  while (ctr < *offset) {
-    if (ctr == *offset - 1) pBefore = pAfter;
+  if (pAfter && pAfter->GetType() == nsGkAtoms::textFrame) {
+    pBefore = pAfter;
+  }
+  else while (ctr < *offset && pAfter) {
+    pBefore = pAfter;
     pAfter = pAfter->GetNextSibling();
     (ctr)++;
   }
