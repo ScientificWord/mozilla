@@ -1744,7 +1744,7 @@ nsHTMLEditor::InEmptyCell( nsIDOMNode * node) {
   while (node && !(tagName.EqualsLiteral("td") || tagName.EqualsLiteral("mtd"))) {
     res = GetNodeLocation(node, &parent, &offset); 
     node = parent;
-    node->GetNodeName(tagName);
+    if (node) node->GetNodeName(tagName);
   }
   if (!node) return false;
   nsCOMPtr<nsIDOMElement> el;
