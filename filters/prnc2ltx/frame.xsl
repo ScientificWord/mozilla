@@ -7,6 +7,18 @@
 >
 <xsl:template match="html:graph"><xsl:apply-templates /></xsl:template>
 <xsl:template match="html:msiframe">
+  <xsl:variable name="framePosType">
+    <xsl:choose>
+      <xsl:when test="@pos='inline'">ft-inline</xsl:when>
+      <xsl:when test="@pos='display'">
+        <xsl:choose>
+          <xsl:when test="@wrapOption='full'">ft-centered</xsl:when>
+          <xsl:otherwise>ft-wrapped</xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:when test="@pos='float'">ft-floating</xsl:when>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:variable name="width">
     <xsl:choose>
       <xsl:when test="@frametype='image'">
@@ -40,30 +52,12 @@
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:variable name="isdisplay">
-    <xsl:choose>
-      <xsl:when test="@pos='display'">1</xsl:when>
-      <xsl:otherwise>0</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
   <xsl:variable name="inlineOffset">
     <xsl:choose>
       <xsl:when test="(@pos='inline') and (@inlineOffset) and (number(@inlineOffset)!=0)">
         <xsl:value-of select="-number(@inlineOffset)"/><xsl:value-of select="$units"/>
       </xsl:when>
       <xsl:otherwise></xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <xsl:variable name="floatsonside">
-    <xsl:choose>
-      <xsl:when test="@pos='float' and (@placeLocation='h' or @placeLocation='H') and (@placement='L' or @placement='R' or @placement='I' or @placement='O')">1</xsl:when>
-      <xsl:otherwise>0</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <xsl:variable name="floatcenter">
-    <xsl:choose>
-      <xsl:when test="@pos='float' and ((@placement='full') or (@placement='f') or ((@placeLocation !='h') and (@placeLocation !='H')))">1</xsl:when>
-      <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="captionloc">
@@ -96,23 +90,29 @@
 
 
   <xsl:choose>
-    <xsl:when test="$floatsonside=1">\begin{wrapfigure}
+    <xsl:when test="$framePosType='ft-wrapped'">
+      <xsl:text>\begin{wrapfigure}</xsl:text>
       <xsl:if test="@nlines">[<xsl:value-of select="@nlines"/>]</xsl:if>
       <xsl:choose>
-        <xsl:when test="@placement='I'">{i}</xsl:when>
-        <xsl:when test="@placement='O'">{o}</xsl:when>
-        <xsl:when test="@placement='L'">{l}</xsl:when>
-        <xsl:when test="@placement='R'">{r}</xsl:when>
-        <xsl:when test="@placement='i'">{I}</xsl:when>
-        <xsl:when test="@placement='o'">{o}</xsl:when>
-        <xsl:when test="@placement='l'">{L}</xsl:when>
-        <xsl:when test="@placement='r'">{R}</xsl:when>
-       <xsl:otherwise>{r}</xsl:otherwise>
+        <xsl:when test="@wrapOption='I'">{i}</xsl:when>
+        <xsl:when test="@wrapOption='O'">{o}</xsl:when>
+        <xsl:when test="@wrapOption='L'">{l}</xsl:when>
+        <xsl:when test="@wrapOption='R'">{r}</xsl:when>
+        <xsl:when test="@wrapOption='i'">{I}</xsl:when>
+        <xsl:when test="@wrapOption='o'">{o}</xsl:when>
+        <xsl:when test="@wrapOption='l'">{L}</xsl:when>
+        <xsl:when test="@wrapOption='r'">{R}</xsl:when>
+        <xsl:otherwise>{r}</xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="@overhang">[<xsl:value-of select="@overhang"/><xsl:value-of select="$units"/>]</xsl:if>
-      {<xsl:choose>
+      <xsl:if test="@overhang">
+        <xsl:text>[</xsl:text>
+        <xsl:value-of select="@overhang"/><xsl:value-of select="$units"/>
+        <xsl:text>]</xsl:text>
+      </xsl:if>
+      <xsl:text>{</xsl:text>
+      <xsl:choose>
         <xsl:when test="not(@rotation) or (@rotation='rot0')">
-          \dimexpr <xsl:value-of select="$width"/><xsl:value-of select="$units"/> +2\fboxsep +2\fboxrule + .1in
+          <xsl:text>\dimexpr </xsl:text><xsl:value-of select="$width"/><xsl:value-of select="$units"/> +2\fboxsep +2\fboxrule + .1in
         </xsl:when>
         <xsl:otherwise>
           <xsl:choose>
@@ -123,7 +123,7 @@
       </xsl:choose>}
     </xsl:when>
   <!-- <xsl:when test="@pos='float' and ((@placement='full') or (@frametype='image') or ((@placeLocation !='h') and (@placeLocation !='H')))">\begin{figure}[<xsl:value-of select="@placeLocation"></xsl:value-of>]<xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\begin{center}</xsl:if></xsl:when> -->
-      <xsl:when test="$floatcenter=1">
+   <xsl:when test="$framePosType='ft-floating'">
        <xsl:value-of select="$newline"/>
        <xsl:text>\begin{figure}</xsl:text>
        <xsl:if test="@placeLocation">
@@ -132,11 +132,11 @@
           <xsl:text>]</xsl:text>
        </xsl:if>
     </xsl:when>
-    <xsl:when test="$isdisplay=1">
+    <xsl:when test="$framePosType='ft-centered'">
       <xsl:text>\begin{center}</xsl:text>
     </xsl:when>
-    <xsl:when test="(@pos='inline') and (@frametype='image')">
-       <xsl:text>{\parbox[b]{</xsl:text>
+    <xsl:when test="($framePosType='ft-inline') and (@frametype='image')">
+       <xsl:text>\parbox[b]{</xsl:text>
        <xsl:value-of select="$width"/>
        <xsl:value-of select="$units"/>
        <xsl:text>}{ %</xsl:text>
@@ -145,12 +145,12 @@
     </xsl:when>
   </xsl:choose>
   <xsl:if test="$captionloc=1">
-    <xsl:if test="@pos='float'">
+    <xsl:if test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
       <xsl:text>\caption{</xsl:text>
     </xsl:if>
     <xsl:apply-templates select="html:caption[1]" mode="caption"/>
     <xsl:choose>
-      <xsl:when test="@pos='float'">
+      <xsl:when test="$framePosType='ft-floating' or ($framePosType='ft-wrapped')">
         <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -208,11 +208,6 @@
   </xsl:if>
 
   <xsl:choose>
-    <xsl:when test="@textalignment='center'">\centering </xsl:when>
-    <xsl:when test="@textalignment='left'">\begin{FlushLeft}</xsl:when>
-    <xsl:when test="@textalignment='right'">\begin{FlushRight}</xsl:when>
-  </xsl:choose>
-  <xsl:choose>
     <xsl:when test="@frametype='image'">
       <xsl:apply-templates mode="contents" select="(html:object|html:embed)[1]"/>
     </xsl:when>
@@ -221,10 +216,6 @@
     </xsl:otherwise>
   </xsl:choose>
   <!-- Now back out putting in \end{environment} or } as necessary -->
-  <xsl:choose>
-    <xsl:when test="@textalignment='left'">\end{FlushLeft}</xsl:when>
-    <xsl:when test="@textalignment='right'">\end{FlushRight}</xsl:when>
-  </xsl:choose>
   <xsl:if test="$needminipage=1">
   \end{<xsl:if test="@kind='table'">table</xsl:if><xsl:if test="not(@kind='table')">minipage</xsl:if>}
   </xsl:if>  
@@ -232,7 +223,7 @@
   <xsl:if test="@rotation='rot90' or @rotation='rot270'">\end{turn}</xsl:if>
   <xsl:if test="$captionloc=2">
     <xsl:choose>
-      <xsl:when test="@pos='float'">
+      <xsl:when test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
         <xsl:text>\caption{</xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -241,7 +232,7 @@
     </xsl:choose>
     <xsl:apply-templates select="html:caption[1]" mode="caption"/>
     <xsl:choose>
-      <xsl:when test="@pos='float'">
+      <xsl:when test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
         <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -251,12 +242,11 @@
   </xsl:if>
 
   <xsl:choose>
-    <xsl:when test="(@pos='inline') and (@frametype='image')">\end{center}}}</xsl:when>
-    <xsl:when test="$isdisplay=1">\end{center}</xsl:when>
-    <xsl:when test="$floatcenter=1">\end{figure}</xsl:when>
-    <xsl:when test="$floatsonside=1">\end{wrapfigure} </xsl:when>   
+    <xsl:when test="$framePosType='ft-inline'"><xsl:text>\end{center}}</xsl:text></xsl:when>
+    <xsl:when test="$framePosType='ft-centered'">\end{center}</xsl:when>
+    <xsl:when test="$framePosType='ft-floating'">\end{figure}</xsl:when>
+    <xsl:when test="$framePosType='ft-wrapped'">\end{wrapfigure}</xsl:when>   
   </xsl:choose>
     <!-- <xsl:if test="($limitframemetrics=1) or ($inlineOffset and string-length($inlineOffset))">}</xsl:if>  -->
 </xsl:template>
-		  
 </xsl:stylesheet>
