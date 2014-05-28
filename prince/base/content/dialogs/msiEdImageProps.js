@@ -576,7 +576,7 @@ function InitImage()
   // set spacing editfields
   var element = wrapperElement || imageElement
   var pos = element.getAttribute("pos");
-  if (pos == "display");
+  if (pos == "display")
     gDialog.wrapOptionRadioGroup.value=element.getAttribute("wrapOption");
 
   // dialog.border.value       = globalElement.getAttribute("border");
@@ -1745,6 +1745,9 @@ function onAccept()
           wrapperElement.appendChild(cap);
         if (gDialog.captionPlacementGroup.value !== "none"){           
            msiEditorEnsureElementAttribute(wrapperElement, "captionloc", gDialog.captionPlacementGroup.value, null);
+        }
+        if (gDialog.wrapOptionRadioGroup.value != "full"){
+          msiEnsureElementPackage(wrapperElement,"wrapfig",null);
         }
         if (gInsertNewImage)
           wrapperElement.appendChild(imageElement);
