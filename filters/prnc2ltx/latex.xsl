@@ -412,11 +412,9 @@
 <!-- Special handling for footnotes in front matter tags          
  -->
 
- <xsl:template match="html:note[@type='footnote']" mode="frontmatter">
-  \thanks{<xsl:apply-templates/>}
- </xsl:template>
+<xsl:template match="html:note[@type='footnote']" mode="frontmatter">\thanks{<xsl:apply-templates/>}</xsl:template>
 
- <xsl:template match="html:abstract">
+<xsl:template match="html:abstract">
     <xsl:value-of select="$newline"/>
     <xsl:text>\begin{abstract}</xsl:text>
     <xsl:apply-templates/>
