@@ -170,7 +170,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 	  *aHandled = PR_TRUE;
 	  return res;
 	}
-	mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+	// mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 	res = nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
   return res;
 }

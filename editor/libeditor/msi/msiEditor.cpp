@@ -2058,6 +2058,9 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
                                  PRBool selecting, PRBool & preventDefault)
 {
 //BBM ToDo Check for other non-text, non-structure, non-para tags.
+  nsCOMPtr<nsIDOMNode> oldFocusNode;
+  PRUint32 oldFocusOffset(msiIMathMLEditingBC::INVALID);
+
  if (!focusNode || focusOffset > msiIMathMLEditingBC::LAST_VALID)
     return NS_ERROR_FAILURE;
   nsCOMPtr<msiISelection> msiSelection;
@@ -2093,49 +2096,92 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
        collapse = PR_TRUE;
     else if (NS_SUCCEEDED(res) && commonAncestor)
     {
-       nsCOMPtr<nsIDOMNode> oldFocusNode;
-       PRUint32 oldFocusOffset(msiIMathMLEditingBC::INVALID);
+      msiSelection->GetMsiFocusNode(getter_AddRefs(oldFocusNode));
+      msiSelection->GetMsiFocusOffset(&oldFocusOffset);
+      ComparePoints(oldFocusNode, oldFocusOffset, focusNode, focusOffset, &compareOldFocusFocus);
+      // BBM: We don't want to hightlight all of an msub when the selection crosses its boundary (for
+      // consistency with version 5.5), and the same for msup, msubsup, mover, munder, moverunder, mrow.
 
-       msiSelection->GetMsiFocusNode(getter_AddRefs(oldFocusNode));
-       msiSelection->GetMsiFocusOffset(&oldFocusOffset);
-       ComparePoints(oldFocusNode, oldFocusOffset, focusNode, focusOffset, &compareOldFocusFocus);
+      NS_NAMED_LITERAL_STRING( specialTags, " msub msup msubsup mover munder moverunder mrow ");
+      NS_NAMED_LITERAL_STRING( space, " ");
+      NS_NAMED_LITERAL_STRING( text, "#text");
+      nsAString::const_iterator start, end;
 
-       nsCOMPtr<msiIMathMLCaret> mathCaret;
-       res = GetMathMLCaretInterface(commonAncestor, 0, getter_AddRefs(mathCaret));
-       if (NS_SUCCEEDED(res) && mathCaret)
-       { 
-         if (compareFocusAnchor < 0 ) //focus before anchor
-           res = mathCaret->GetSelectableMathFragment(this, 
-                                                      focusNode, focusOffset,
-                                                      anchorNode, anchorOffset, 
-                                                      getter_AddRefs(startNode), &startOffset,
-                                                      getter_AddRefs(endNode), &endOffset);
-         else // focus after anchor
-           res = mathCaret->GetSelectableMathFragment(this, 
-                                                      anchorNode, anchorOffset,
-                                                      focusNode, focusOffset,
-                                                      getter_AddRefs(startNode), &startOffset,
-                                                      getter_AddRefs(endNode), &endOffset);
-         if (NS_SUCCEEDED(res) && startNode && startOffset <= msiIMathMLEditingBC::LAST_VALID &&
-             endNode && endOffset <= msiIMathMLEditingBC::LAST_VALID)
-           doSet = PR_TRUE;                                                              
-       }  
-       else  // focus and/or anchor may be in math.
-       {
-         mathCaret = nsnull;  
-         PRBool endSet(PR_FALSE), startSet(PR_FALSE);  
-         nsCOMPtr<nsIDOMNode> dummyNode;
-         PRUint32 dummyOffset(msiIMathMLEditingBC::INVALID);
-         res = GetMathMLCaretInterface(focusNode, 0, getter_AddRefs(mathCaret));
-         if (NS_SUCCEEDED(res) && mathCaret) //focusNode in math
-         {
-           mathCaret = nsnull;
-           nsCOMPtr<nsIDOMNode>mathParent;
-           res = GetMathParent(focusNode, mathParent);
-           if (NS_SUCCEEDED(res) && mathParent)
-             res = GetMathMLCaretInterface(mathParent, 0, getter_AddRefs(mathCaret));
-           if (NS_SUCCEEDED(res) && mathCaret)
-           {
+      specialTags.BeginReading(start);
+      specialTags.EndReading(end);
+
+      PRBool fSkipChanges = PR_FALSE;
+      nsAutoString tagName;
+      nsAutoString fatTagName;
+      nsCOMPtr<nsIDOMNode> node;
+      nsCOMPtr<nsIDOMElement> elt;
+      node = focusNode;
+      if (!node) return NS_ERROR_FAILURE;
+      while (!fSkipChanges && node != commonAncestor) {
+        elt = do_QueryInterface(node);
+        if (elt) 
+        {
+          elt->GetTagName(tagName);
+          fatTagName = space + tagName + space;
+          specialTags.BeginReading(start);
+          specialTags.EndReading(end);
+          fSkipChanges = FindInReadable(fatTagName, start, end);
+        }
+        node->GetParentNode(getter_AddRefs(node));
+      }
+      if (!fSkipChanges)
+      {
+        node = anchorNode;
+        if (!node) return NS_ERROR_FAILURE;
+        while (!fSkipChanges && node != commonAncestor) {
+          elt = do_QueryInterface(node);
+          if (elt) {
+            elt->GetTagName(tagName);
+            fatTagName = space + tagName + space;
+            specialTags.BeginReading(start);
+            specialTags.EndReading(end);
+            fSkipChanges = FindInReadable(fatTagName, start, end);
+          }
+          node->GetParentNode(getter_AddRefs(node));
+        }
+      }
+      if (fSkipChanges) return NS_OK;
+      nsCOMPtr<msiIMathMLCaret> mathCaret;
+      res = GetMathMLCaretInterface(commonAncestor, 0, getter_AddRefs(mathCaret));
+      if (NS_SUCCEEDED(res) && mathCaret && !fSkipChanges)
+      { 
+      if (compareFocusAnchor < 0 ) //focus before anchor
+      res = mathCaret->GetSelectableMathFragment(this, 
+                                                focusNode, focusOffset,
+                                                anchorNode, anchorOffset, 
+                                                getter_AddRefs(startNode), &startOffset,
+                                                getter_AddRefs(endNode), &endOffset);
+      else // focus after anchor
+      res = mathCaret->GetSelectableMathFragment(this, 
+                                                anchorNode, anchorOffset,
+                                                focusNode, focusOffset,
+                                                getter_AddRefs(startNode), &startOffset,
+                                                getter_AddRefs(endNode), &endOffset);
+      if (NS_SUCCEEDED(res) && startNode && startOffset <= msiIMathMLEditingBC::LAST_VALID &&
+       endNode && endOffset <= msiIMathMLEditingBC::LAST_VALID)
+      doSet = PR_TRUE;                                                              
+      }  
+      else  // focus and/or anchor may be in math.
+      {
+      mathCaret = nsnull;  
+      PRBool endSet(PR_FALSE), startSet(PR_FALSE);  
+      nsCOMPtr<nsIDOMNode> dummyNode;
+      PRUint32 dummyOffset(msiIMathMLEditingBC::INVALID);
+      res = GetMathMLCaretInterface(focusNode, 0, getter_AddRefs(mathCaret));
+      if (NS_SUCCEEDED(res) && mathCaret) //focusNode in math
+      {
+      mathCaret = nsnull;
+      nsCOMPtr<nsIDOMNode>mathParent;
+      res = GetMathParent(focusNode, mathParent);
+      if (NS_SUCCEEDED(res) && mathParent)
+       res = GetMathMLCaretInterface(mathParent, 0, getter_AddRefs(mathCaret));
+      if (NS_SUCCEEDED(res) && mathCaret)
+      {
 //             nsCOMPtr<nsIDOMNode> oldFocusNode;
 //             PRUint32 oldFocusOffset(msiIMathMLEditingBC::INVALID);
 //    
@@ -3360,7 +3406,7 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
     modrange->GetEndContainer(getter_AddRefs(nodeContainerEnd));
     modrange->GetEndOffset(&offsetEnd);
     sel->Collapse(nodeContainerStart, offsetStart);
-    sel->Extend(nodeContainerEnd, offsetEnd);
+//    sel->Extend(nodeContainerEnd, offsetEnd);
  // }
   return res;
 }
