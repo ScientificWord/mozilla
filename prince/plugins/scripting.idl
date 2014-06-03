@@ -21,6 +21,8 @@ interface Function;
  *
  * \nosubgrouping
  */
+
+[scriptable, uuid(E3C5CA14-838A-4567-874D-7142592C80B0)] 
 interface Camera
 {
     /// Viewing angle in radian.
@@ -75,6 +77,7 @@ interface Camera
 
 /** The node base class of the DOM tree.
  */
+[scriptable, uuid(9CFF02A4-A85C-47CB-A88B-6C5F3DD2D56D)]  
 interface Node
 {
     /** Nodes type, one of 1=ELEMENT_NODE, 3=TEXT_NODE or
@@ -127,6 +130,7 @@ interface Node
  *
  * \nosubgrouping
  */
+[scriptable, uuid(0A5AD4C7-D4FC-4EED-B8F2-683C573B8A92)]  
 interface Document : Node
 {
     /// The root element of the DOM tree.
@@ -219,6 +223,9 @@ interface Document : Node
  *   - alignment: optional text alignement ('Left' | 'Center' | 'Right').
  *   .
  */
+
+[scriptable, uuid(1B61045E-464D-40B1-92E3-33D1DBCA8E9D)]  
+
 interface Element : Node
 {
     /// Elements tag name.
@@ -228,10 +235,10 @@ interface Element : Node
     boolean hasProperty(in string name);
 
     /// Get value of named property.
-    any getProperty(in string name);
+    string getProperty(in string name);
 
     /// Set value of named property.
-    void setProperty(in string name, in any value);
+    void setProperty(in string name, in string value);
 
     /** Get child element with given tag name.
      * @param tagName tag name of the element searched for
@@ -247,6 +254,8 @@ interface Element : Node
 
 /** A text node of the DOM tree.
  */
+
+[scriptable, uuid(B8CB3DE2-5BF4-441F-859A-E89E8A12E666)]
 interface Text : Node
 {
     /// The text content of the text node.
@@ -259,6 +268,7 @@ interface Text : Node
  *
  * \nosubgrouping
  */
+[scriptable, uuid(E1681772-15BD-4F19-881F-DBE249E61DFB)]
 interface Plugin
 {
     /** Load graphics from URL.
@@ -469,6 +479,8 @@ interface Plugin
 </tr>
 </table>
  */
+
+[scriptable, uuid(916E7EFD-8B00-4BAE-87AA-7A7B5D95B98C)] 
 interface TreeEvent
 {
     /// Type of event.
