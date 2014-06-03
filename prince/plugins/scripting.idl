@@ -1,0 +1,482 @@
+
+/** @file scripting.idl 
+ * Documents the JavaScript interface of the plugin.
+ */
+
+typedef unsigned long uint;
+
+// forward decl.
+interface Node;
+interface Element;
+interface Document;
+interface Text;
+
+/// A JavaScript Function object.
+interface Function;
+
+/** The camera object of a graphics plugin.
+ *
+ * The camera object controls the camera parameters for 3D graphics.
+ * It can be accessed via the Plugin::camera property.
+ *
+ * \nosubgrouping
+ */
+interface Camera
+{
+    /// Viewing angle in radian.
+    attribute double viewingAngle;
+
+    /// Flags if orthogonal projection must be used.
+    attribute boolean orthogonalProjection;
+
+    /** @name Camera position. */
+    //{@
+    
+    /// The x coordinate of the camera position.
+    attribute double positionX;
+    
+    /// The y coordinate of the camera position.
+    attribute double positionY;
+    
+    /// The z coordinate of the camera position.
+    attribute double positionZ;
+    //}@
+
+    /** @name Focal point. */
+    //{@
+    
+    /// The x coordinate of the focal point.
+    attribute double focalPointX;
+    
+    /// The y coordinate of the focal point.
+    attribute double focalPointY;
+    
+    /// The z coordinate of the focal point.
+    attribute double focalPointZ;
+    //}@
+
+    /** @name Upwards vector. */
+    //{@
+    
+    /// The x coordinate of the up vector.
+    attribute double upVectorX;
+    
+    /// The y coordinate of the up vector.
+    attribute double upVectorY;
+    
+    /// The z coordinate of the up vector.
+    attribute double upVectorZ;
+    
+    /** Flags if the upwards vector should be held constant
+     * during manual rotation by the user. */
+    attribute boolean keepUpVector;
+    //}@
+};
+
+/** The node base class of the DOM tree.
+ */
+interface Node
+{
+    /** Nodes type, one of 1=ELEMENT_NODE, 3=TEXT_NODE or
+     * 9=DOCUMENT_NODE. */
+    readonly attribute uint nodeType;
+
+    /// Nodes name. Same as tagName for element nodes.
+    readonly attribute string nodeName;
+
+    /// Parent node.
+    readonly attribute Node parentNode;
+
+    /// First child node or null.
+    readonly attribute Node firstChild;
+
+    /// Last child node or null.
+    readonly attribute Node lastChild;
+
+    /// Previous sibling node or null.
+    readonly attribute Node previousSibling;
+
+    /// Next sibling node or null.
+    readonly attribute Node nextSibling;
+
+    /// Document holding this node.
+    readonly attribute Document ownerDocument;
+
+    /// Test if node has children.
+    boolean hasChildNodes();
+
+    /** Insert child \a newChild before \a refChild.
+     * Append \a newChild if \a refChild is null. 
+     * @return the node inserted */
+    Node insertBefore(in Node newChild, in Node refChild);
+
+    /** Replace child \a oldChild by \a newChild.
+     * @return the node replaced */
+    Node replaceChild(in Node newChild, in Node oldChild);
+
+    /** Remove child \a oldChild.
+     * @return the node removed */
+    Node removeChild(in Node oldChild);
+
+    /** Append child \a newChild.
+     * @return the node added */
+    Node appendChild(in Node newChild);
+};
+
+/** The document node of the DOM tree.
+ *
+ * \nosubgrouping
+ */
+interface Document : Node
+{
+    /// The root element of the DOM tree.
+    readonly attribute Element documentElement;
+
+    /// Create element node for this document.
+    Element createElement(in string tagName);
+
+    /// Create text node for this document.
+    Text createTextNode(in string data);
+
+    /// The currently selected element of the DOM tree, may be null.
+    attribute Element selectedElement;
+
+    /** Get \c ObjType element for object elements with given type name.
+     *
+     * The \c ObjType element describes the properties of the \c Obj2d or
+     * \c Obj3d elements with the given \c Type attribute. It may be 
+     * regarded as a 'meta-element'.
+     *
+     * \b Note: The \c ObjType elements for certain standard object types
+     * are \em not stored in the document tree of this document, but in a 
+     * different built-in document. The tree of this built-in document must
+     * \em not be modified!
+     *
+     * @param typeName type name of the object elements where to get the 
+     *   \c ObjType for. This is the \c Type attribute of the \c Obj2d or
+     *   \c Obj3d elements for which the type description is wanted.
+     *
+     * @return \c ObjType element describing the object elements with given
+     *   tag name or null if no matching \c ObjType element was found. */
+    Element getObjType(in string typeName);
+
+    /** \name Undo and redo of operations.
+     *
+     * Each operation which is changing the DOM tree is undoable. The 
+     * operations are stored in an undo stack of the document.
+     *
+     * The undo stack groups operations belonging to a logical users command
+     * into groups called \em tasks. Thus each task is a row of operations which 
+     * perform a users command. Operations are undone and redone on a task by 
+     * task basis.
+     */
+    //@{
+    /** Specify the maximum number of tasks which are stored and can be undone.
+     * Undo is disabled if this value is set to 0. 
+     * \b Note: Changing this value clears the undo stack. */
+    attribute uint maxUndoTasks;
+
+    /// Remove all tasks from undo stack.
+    void clearUndoStack();
+
+    /// Tests if there is a task to be undone.
+    boolean canUndo();
+
+    /// Tests if there is a tasks to be redone.
+    boolean canRedo();
+
+    /// Undo current task by undoing all its operations.
+    void undo();
+
+    /// Redo current task by redoing all its operations.
+    void redo();
+
+    /** Start new task, ending the former one.
+     * May be called several times in a row without creating empty
+     * tasks. */
+    void newUndoTask();
+    //@}
+};
+
+/** An element node of the DOM tree.
+ *
+ * Property types may be booleans, numbers or strings. Please refer to the
+ * MuPlotML DTD for the types of the different properties.
+ * Colors, fonts, 2D- and 3D-points are mapped to strings as follows:
+ * - 2D-points are given as 2 space-separated numbers.
+ * - 3D-points are given as 3 space-separated numbers.
+ * - Colors are given in a HTML-like sytax '\#RRGGBB' or '\#RRGGBBAA' where
+ *   RR, GG, BB and AA represent 2-digit hex numbers in the range 0-255.
+ *   RR is the red, GG the green, BB the blue and AA the alpha value of the 
+ *   color.
+ * - Fonts are given in a CSS-like syntax consisting of 2-6 space-separated 
+ *   items:
+ *   - family:    font family name (must be enclosed in " if name contains spaces),
+ *   - size:      font size in pts (positive integer),
+ *   - style:     optional font style 'Italic',
+ *   - weight:    optional font weight 'Bold',
+ *   - color:     optional font color (format as above),
+ *   - alignment: optional text alignement ('Left' | 'Center' | 'Right').
+ *   .
+ */
+interface Element : Node
+{
+    /// Elements tag name.
+    readonly attribute string tagName;
+
+    /// Test if element has named property.
+    boolean hasProperty(in string name);
+
+    /// Get value of named property.
+    any getProperty(in string name);
+
+    /// Set value of named property.
+    void setProperty(in string name, in any value);
+
+    /** Get child element with given tag name.
+     * @param tagName tag name of the element searched for
+     * @return the first matching child, null if no child was found */
+    Element getChildByTagName(in string tagName);
+
+    /** Get child element with given tag name and \c Opt attribute value.
+     * @param tagName tag name of the element searched for
+     * @param optVal \c Opt attribute value of the element searched for
+     * @return the first matching child, null if no child was found */
+    Element getChildByTagNameAndOpt(in string tagName, in string optVal);
+};
+
+/** A text node of the DOM tree.
+ */
+interface Text : Node
+{
+    /// The text content of the text node.
+    attribute string nodeValue;
+};
+
+/** The MuPAD Graphics plugin object.
+ *
+ * \b Note: Names of cursor tools and events are case sensitive.
+ *
+ * \nosubgrouping
+ */
+interface Plugin
+{
+    /** Load graphics from URL.
+     * Starts loading the graphics data with the given URL into the plugin.
+     * The data must be in xvz or xvc format. The data is loaded 
+     * asynchronously. */
+    void load(in string url);
+
+    /** The state of the plugin.
+     * Possible states are 0=Uninitialized, 1=Loading, 2=Loaded.
+     * A loaded plugin is interactive. If loading fails the plugin
+     * falls back into state 0=Uninitialized. */
+    readonly attribute uint readyState;
+    
+    /** The dimension of the graphics.
+     * May be 2, 3 or 0. (0 if no graphics is loaded or
+     * the graphics is not valid.) */
+    readonly attribute uint dimension;
+
+    /// The document node of the DOM tree.
+    readonly attribute Document document;
+    
+    /// Returns the 3D camera control object for the graphics.
+    readonly attribute Camera camera;
+
+    /** The current cursor tool.
+     * Possible tools are:
+     *
+     * - 'select' for object selection in 3D,
+     * - 'rotate' for rotating the scene in 3D,
+     * - 'move' for moving the scene in 2D and 3D,
+     * - 'query' for querying coordinates in 2D and 3D,
+     * - 'zoom' for zooming in 2D and 3D,
+     * - 'zoomIn' for zooming in via clicking in 2D,
+     * - 'zoomOut' for zooming out via clicking in 2D.
+     * 
+     * If the tool is 'query' events are fired when the user drags
+     * the mouse over the view, see the queryPositionChange() and
+     * queryNoHit() events.
+     *
+     * The cursor tool is reset implicitly when a new graphics
+     * is loaded.
+     */
+    attribute string cursorTool;
+
+    /** Control rendering quality of 2D plots under Windows.
+     * This attribute controls if 2D plots are rendered with standard
+     * GDI or with GDI+ under Windows. GDI+ allows for transparent colors
+     * and smoothing (anti-aliasing), these features are not available
+     * with standard GDI. On the downside GDI+ is slower than GDI and
+     * the anti-aliasing of nearly vertical lines is of quite low quality. */
+    attribute boolean useGdiplus;
+
+    /// Reset viewpoint of graphics to original value.
+    void resetViewpoint();
+
+    /// Fit contents of 3D scene into view.
+    void fitContents();
+    
+    /** Creates a bitmap file of the current scene
+     * @param path platform dependend file path including filename and extension.
+     * @param resolution the resolution of the bitmap.
+     *
+     * An existing file will be overwritten without any warning.
+     *
+     * Returns false if the bitmap or file creation fails.
+     *
+     * Supported formats: 
+     * BMP (.bmp) on MS Windows.
+     * PNG (.png) on MacOS X and Linux
+     *  */
+    boolean makeSnapshot(in string path, in long resolution);
+
+    /** @name Animation */
+    //@{
+
+    /// Flags if an animated graphics is loaded.
+    readonly attribute boolean isAnimated;
+
+    /** The starting time of an animated graphics.
+     * NaN if the graphics is not animated. */
+    readonly attribute double beginTime;
+
+    /** The ending time of an animated graphics.
+     * NaN if the graphics is not animated. */
+    readonly attribute double endTime;
+
+    /** The current time of an animated graphics.
+     * NaN if the graphics is not animated. */
+    attribute double currentTime;
+
+    /** The current looping mode of the animation.
+     * 0=no looping, 1=restart from begin, 2=run back and forth. */
+    attribute uint animationLoopingMode;
+
+    /** The speed factor for playing an animation.
+     * Time durations are multiplied with this factor when playing
+     * an animation. Must be positive. */
+    attribute double animationSpeed;
+
+    /// Start running the animation of the graphics.
+    void startAnimation();
+
+    /// Stop running the animation of the graphics.
+    void stopAnimation();
+
+    /// Step to next animation frame.
+    void stepAnimationForwards();
+
+    /// Step to previous animation frame.
+    void stepAnimationBackwards();
+    //@}
+
+    /** @name Actions
+     * Actions are automatic animations available for 3D graphics only. */
+    //@{
+
+    /** State of vertical automatic rotation.
+     * 0=no vertical rotation, 1=rotate scene to the right, 
+     * 2=rotate scene to the left. */
+    attribute uint rotateVerticalAction;
+
+    /** State of horizontal automatic rotation.
+     * 0=no horizontal rotation, 1=rotate scene upwards, 
+     * 2=rotate scene downwards. */
+    attribute uint rotateHorizontalAction;
+
+    /** State of automatic zooming.
+     * 0=no zoomin, 1=zooming into the scene, 2=zooming out. */
+    attribute uint zoomAction;
+
+    /** The speed factor for playing an automatic animation.
+     * Time durations are multiplied with this factor when playing
+     * an automatic animation. Must be positive. */
+    attribute double actionSpeed;
+    //@}
+
+    /** @name Event Handling */
+    //@{
+
+    /** Add an event handler for the plugin.
+     * Several handlers may be added for one type of event.
+     *
+     * scripting_events.h documents the list of available events.</a>
+     *
+     * @param name name of the event type to handle
+     * @param handler function to handle the event */
+    void addEvent(in string name, in Function handler);
+
+    /** Remove an event handler from the plugin.
+     * @param name name of the event type for which the handler has been added
+     * @param handler function which was added to handle the event */
+    void removeEvent(in string name, in Function handler);
+    //@}
+};
+
+/** Event object holding information about a DOM tree mutation event.
+ *
+ * TreeEvent objects are created as arguments for a treeChange() event handler,
+ * see scripting_events.h.
+ *
+ * The following types of events exits:
+ *
+<table border="1" cellspacing="0" cellpadding="5">
+<tr valign="top"><th>type</th><th>target</th><th>details</th></tr>
+<tr valign="top">
+  <td>BeforeDeselect</td><td>selected element</td>
+  <td>Called before the selection is cleared.</td>
+</tr>
+<tr valign="top">
+  <td>BeforeSelectionChange</td><td>selected element</td>
+  <td>Called before the selection changes.</td>
+</tr>
+<tr valign="top">
+  <td>AfterSelectionChange</td><td>selected element</td>
+  <td>Called after the selection has changed, but \em not if the selection
+    has been cleared.</td>
+</tr>
+<tr valign="top">
+  <td>BeforeBatchChanges</td><td>document node</td>
+  <td>Called before DOM tree is changed drastically.
+    During massive model changes, for example when a model is
+    read from file, it does not make sense for an observer to
+    get informed about all changes. Thus during batch changes 
+    the observers are \em not informed about any changes.
+    Before batch changes take place observers \em must release any
+    references to model nodes.</td>
+</tr>
+<tr valign="top">
+  <td>AfterBatchChanges</td><td>document node</td>
+  <td>Called after DOM tree has changed drastically.</td>
+</tr>
+<tr valign="top">
+  <td>PropertyChange</td><td>element node</td>
+  <td>Called after a tree elements property has changed.</td>
+</tr>
+<tr valign="top">
+  <td>TextChange</td><td>text node</td>
+  <td>Called after a tree text nodes content has changed.</td>
+</tr>
+<tr valign="top">
+  <td>BeforeReplaceChildren</td><td>parent node</td>
+  <td>Called before the list of children of a tree node changes.</td>
+</tr>
+<tr valign="top">
+  <td>AfterReplaceChildren</td><td>parent node</td>
+  <td>Called after the list of children of a tree node has changed.</td>
+</tr>
+</table>
+ */
+interface TreeEvent
+{
+    /// Type of event.
+    readonly attribute string type;
+
+    /// Target node of the event.
+    readonly attribute Node target;
+
+    /// Name of property changed.
+    readonly attribute string property;
+};
