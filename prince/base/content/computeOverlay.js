@@ -1007,7 +1007,7 @@ function makeSnapshotPath(object) {
   if ( getOS(window) == "win")  {
     extension = "bmp";
   } else {
-    extension = "png;"
+    extension = "png";
   }
   var path;
   try {
@@ -1033,20 +1033,20 @@ function insertSnapshot(object, snapshotpath) {
     element = objectlist[i];
     if (element.hasAttribute("msisnap")) {
       // remove the snapshot file as well as the object node
-      oldpath = element.data;
-      if (oldpath && oldpath.length > 7) {
-        oldpath = oldpath.slice(7);
-      }
-      file = Components.classes["@mozilla.org/file/local;1"].
-      createInstance(Components.interfaces.nsILocalFile);
-      file.initWithPath(oldpath);
-      if (file.exists()) {
-        try {
-          file.remove(false);
-        } catch (e) {
-          msidump(e.message);
-        }
-      }
+      // oldpath = element.data;
+      // if (oldpath && oldpath.length > 7) {
+      //   oldpath = oldpath.slice(7);
+      // }
+      // file = Components.classes["@mozilla.org/file/local;1"].
+      // createInstance(Components.interfaces.nsILocalFile);
+      // file.initWithPath(oldpath);
+      // if (file.exists()) {
+      //   try {
+      //     file.remove(false);
+      //   } catch (e) {
+      //     msidump(e.message);
+      //   }
+      // }
       parent.removeChild(element);
     } else {
       i++;
@@ -1113,7 +1113,8 @@ function objectLoaded(obj) {
 };
 
 function doMakeSnapshot(doc, obj, graph, editorElement) {
-  var val = obj.ReadyState();
+  var val = obj.readyState;
+  val = 2; // hack!!
   if (val > 1) {
     try {
       var path = makeSnapshotPath(obj);
@@ -1149,10 +1150,6 @@ function doMakeSnapshot(doc, obj, graph, editorElement) {
       snapshotDir = snapshotDir.parent;
       if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
       callVCamMethod(doc, obj.id, "makeSnapshot", abspath, [res]);
-      if (obj.dimension === 2) {
-        abspath2 = abspath.replace(/png$/, "pdf");
-        callVCamMethod(doc, obj.id, "makeSnapshot", abspath2, [res]);
-      }
       insertSnapshot(obj, abspath);
     } catch (e) {
       alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", " + e.message);
