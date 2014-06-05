@@ -55,7 +55,7 @@
           </template>
       </tree>
     </vbox> 
-    <vbox style="width:2in" >
+    <vbox style="width:3.5in" >
       <label value="Shell Files:"/>
       <listbox flex = "1" id="dircontents" oncommand="return onAccept();" ondblclick="acceptDialog();" persist="selectedIndex" value=""/>
     </vbox>
