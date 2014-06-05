@@ -273,7 +273,23 @@ function onAccept()
   else
     msiEditorEnsureElementAttribute(node, "specAppearance", null, activeEditor);
 
-  
+  var enc;
+  var loc = locator.selectedIndex; // 0 = page num, 1 = xref
+  var fmt = format.selectedIndex;
+  if (loc === 1) {
+     enc = "see{" + xreftext.value + "}";
+  } else {
+     if (fmt === 0)
+       enc = "";
+     else if (fmt === 1)
+       enc = "textbf";
+     else
+       enc = "textit";
+  }
+  if (enc === "" && node.hasAttribute("enc"))
+    node.removeAttribute("enc");
+  else
+    msiEditorEnsureElementAttribute(node, "enc", enc, activeEditor);
 
   activeEditor.endTransaction();
 }
