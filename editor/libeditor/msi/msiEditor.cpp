@@ -53,7 +53,7 @@
 #include "nsIURL.h"
 #include "msiIUtil.h"
 #include "nsNetUtil.h"
-//#include "msiEditingManager.h"
+// #include "msiEditingManager.h"
 
 static PRInt32 instanceCounter = 0;
 nsCOMPtr<nsIRangeUtils> msiEditor::m_rangeUtils = nsnull;
@@ -2054,6 +2054,63 @@ PRBool msiEditor::PositionIsAtEnd(nsCOMPtr<nsIDOMNode> & parentNode, PRInt32 off
   return PR_FALSE;
 }
 
+void nodeAncestorsOfType(const nsAString& specialTags,
+  nsIDOMNode * node, nsAString& foundTags) {
+  NS_NAMED_LITERAL_STRING(space, " ");
+  NS_NAMED_LITERAL_STRING(text, "#text");
+  nsAString::const_iterator start, end;
+
+  foundTags = EmptyString();
+  nsAutoString tagName;
+  nsAutoString fatTagName;
+  nsCOMPtr<nsIDOMNode> nodevar;
+  nsCOMPtr<nsIDOMElement> elt;
+  nodevar = node;
+  if (!nodevar) return;
+  while (nodevar) {
+    elt = do_QueryInterface(nodevar);
+    if (elt) {
+      elt->GetTagName(tagName);
+      fatTagName = space + tagName + space;
+      specialTags.BeginReading(start);
+      specialTags.EndReading(end);
+      if (FindInReadable(fatTagName, start, end)) {
+        foundTags += fatTagName;
+      }
+    }
+    nodevar->GetParentNode(getter_AddRefs(nodevar));
+  }
+}
+
+NS_IMETHODIMP 
+msiEditor::RemoveDisplay( nsIDOMNode * focusNode, nsIDOMNode * anchorNode) {
+  nsCOMPtr<nsIDOMElement> displayNode;
+  nsresult rv;
+  PRUint32 i;
+  GetElementOrParentByTagName(NS_LITERAL_STRING("msidisplay"), focusNode, getter_AddRefs(displayNode));
+  if (!displayNode) {
+    GetElementOrParentByTagName(NS_LITERAL_STRING("msidisplay"), anchorNode, getter_AddRefs(displayNode));
+  }
+  if (displayNode) {
+    BeginTransaction();
+    nsCOMPtr<nsIDOMNodeList> nodeList;
+    displayNode->GetElementsByTagName(NS_LITERAL_STRING("math"), getter_AddRefs(nodeList));
+    PRUint32 listCount = 0;
+    nodeList->GetLength(&listCount);
+
+    for (i = 0; i < listCount; i++) {
+      nsCOMPtr<nsIDOMNode> mathNode;
+      nodeList->Item(i, getter_AddRefs(mathNode));
+      nsCOMPtr<nsIDOMElement> item(do_QueryInterface(mathNode));
+      if (item) {
+        RemoveAttribute(item, NS_LITERAL_STRING("display"));
+      } 
+    }
+    RemoveContainer(displayNode);
+    EndTransaction();    
+  }
+}
+
 nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset, 
                                  PRBool selecting, PRBool & preventDefault)
 {
@@ -2102,50 +2159,25 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
       // BBM: We don't want to hightlight all of an msub when the selection crosses its boundary (for
       // consistency with version 5.5), and the same for msup, msubsup, mover, munder, moverunder, mrow.
 
-      NS_NAMED_LITERAL_STRING( specialTags, " msub msup msubsup mover munder moverunder mrow ");
-      NS_NAMED_LITERAL_STRING( space, " ");
-      NS_NAMED_LITERAL_STRING( text, "#text");
-      nsAString::const_iterator start, end;
-
-      specialTags.BeginReading(start);
-      specialTags.EndReading(end);
-
-      PRBool fSkipChanges = PR_FALSE;
-      nsAutoString tagName;
-      nsAutoString fatTagName;
-      nsCOMPtr<nsIDOMNode> node;
-      nsCOMPtr<nsIDOMElement> elt;
-      node = focusNode;
-      if (!node) return NS_ERROR_FAILURE;
-      while (!fSkipChanges && node != commonAncestor) {
-        elt = do_QueryInterface(node);
-        if (elt) 
-        {
-          elt->GetTagName(tagName);
-          fatTagName = space + tagName + space;
-          specialTags.BeginReading(start);
-          specialTags.EndReading(end);
-          fSkipChanges = FindInReadable(fatTagName, start, end);
-        }
-        node->GetParentNode(getter_AddRefs(node));
-      }
-      if (!fSkipChanges)
-      {
-        node = anchorNode;
-        if (!node) return NS_ERROR_FAILURE;
-        while (!fSkipChanges && node != commonAncestor) {
-          elt = do_QueryInterface(node);
-          if (elt) {
-            elt->GetTagName(tagName);
-            fatTagName = space + tagName + space;
-            specialTags.BeginReading(start);
-            specialTags.EndReading(end);
-            fSkipChanges = FindInReadable(fatTagName, start, end);
-          }
-          node->GetParentNode(getter_AddRefs(node));
-        }
-      }
+      NS_NAMED_LITERAL_STRING(specialTags,
+        " msub msup msubsup mover munder moverunder mrow ");
+      nsString foundTags;
+      nsString foundTags2;
+      PRBool fSkipChanges;
+      nodeAncestorsOfType(specialTags, focusNode, foundTags);
+      nodeAncestorsOfType(specialTags, anchorNode, foundTags2);
+      if (!foundTags.Equals(foundTags2)) fSkipChanges = PR_TRUE;
       if (fSkipChanges) return NS_OK;
+      // BBM: Now check to see if we have crossed the boundary of an msiDisplay
+      // foundTags = EmptyString();
+      // foundTags2 = EmptyString();
+      // NS_NAMED_LITERAL_STRING(displayTag, " msidisplay ");
+      // nodeAncestorsOfType(displayTag, focusNode, foundTags);
+      // nodeAncestorsOfType(displayTag, anchorNode, foundTags2);
+      // if (!foundTags.Equals(foundTags2)) {
+        RemoveDisplay(focusNode, anchorNode);
+      //   return NS_OK;
+      // }
       nsCOMPtr<msiIMathMLCaret> mathCaret;
       res = GetMathMLCaretInterface(commonAncestor, 0, getter_AddRefs(mathCaret));
       if (NS_SUCCEEDED(res) && mathCaret && !fSkipChanges)
