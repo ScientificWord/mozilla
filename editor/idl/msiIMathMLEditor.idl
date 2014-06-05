@@ -139,6 +139,8 @@ interface msiIMathMLEditor : nsISupports
   nsIDOMNode getMatrixCellAt(in nsIDOMNode aMatrix,
                        in PRInt32 whichRow,
                        in PRInt32 whichCol);
+
+  void removeDisplay(in nsIDOMNode firstNode, in nsIDOMNode secondNode);                      
                         
   
   [noscript] void CreateReplaceTransaction(in nsIDOMNode newKid,
