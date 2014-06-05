@@ -1814,8 +1814,10 @@ function onAccept()
       var theKey = gDialog.keyInput.value;
       if (!theKey.length)
         theKey = null;
+      msiEditorEnsureElementAttribute(wrapperElement, "key", theKey, null);
       msiEditorEnsureElementAttribute(imageElement, "key", theKey, null);
       msiEditorEnsureElementAttribute(imageElement, "id", theKey, null);
+
       msiSetGraphicFrameAttrsFromGraphic(imageElement, null);  //unless we first end the transaction, this seems to have trouble!
 
       if (gVideo)
