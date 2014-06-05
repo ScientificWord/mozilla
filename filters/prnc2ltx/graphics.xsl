@@ -21,17 +21,41 @@
         <xsl:with-param name="objNode" select="."/>
       </xsl:call-template>
     </xsl:variable>
-\includegraphics[<xsl:if test="@rotation">angle=<xsl:if test="@rotation='rot90'">
-  -90</xsl:if><xsl:if test="@rotation='rot270'">90</xsl:if>,</xsl:if>
-  <xsl:if test="number($imageWidth) != 0"> width=<xsl:value-of select="$imageWidth"/>
-<xsl:value-of select="$theUnit"/>,</xsl:if>
-  <xsl:if test="@imageHeight and (number(@imageHeight) != 0)"> totalheight=<xsl:value-of select="@imageHeight"/>
-<xsl:value-of select="$theUnit"/>,</xsl:if>
-  <xsl:if test="@naturalWidth and @naturalHeight and (number(@naturalWidth) != 0) and (number(@naturalHeight) != 0)"> natwidth=<xsl:value-of select="@naturalWidth"/>
-<xsl:value-of select="$theUnit"/>, natheight=<xsl:value-of select="@naturalHeight"/>
-<xsl:value-of select="$theUnit"/>
-</xsl:if>]{<xsl:call-template name="getSourceName"/>}
-<xsl:if test="@key"> \label{<xsl:value-of select="@key"/>}</xsl:if>
+
+    <xsl:text>\includegraphics[</xsl:text>
+    <xsl:if test="@rotation">
+      <xsl:text> angle=</xsl:text>
+      <xsl:if test="@rotation='rot90'">
+        <xsl:text>-90</xsl:text>
+      </xsl:if>
+      <xsl:if test="@rotation='rot270'">
+        <xsl:text>90</xsl:text>
+      </xsl:if>
+      <xsl:text>,</xsl:text>
+    </xsl:if>
+    <xsl:if test="number($imageWidth) != 0">
+      <xsl:text> width=</xsl:text>
+      <xsl:value-of select="$imageWidth"/>
+      <xsl:value-of select="$theUnit"/>
+      <xsl:text>,</xsl:text>
+    </xsl:if>
+    <xsl:if test="@imageHeight and (number(@imageHeight) != 0)">
+      <xsl:text> totalheight=</xsl:text>
+      <xsl:value-of select="@imageHeight"/>
+      <xsl:value-of select="$theUnit"/>
+      <xsl:text>,</xsl:text>
+    </xsl:if>
+    <xsl:if test="@naturalWidth and @naturalHeight and (number(@naturalWidth) != 0) and (number(@naturalHeight) != 0)">
+      <xsl:text> natwidth=</xsl:text>
+      <xsl:value-of select="@naturalWidth"/>
+      <xsl:value-of select="$theUnit"/>
+      <xsl:text>, natheight=</xsl:text>
+      <xsl:value-of select="@naturalHeight"/>
+      <xsl:value-of select="$theUnit"/>
+    </xsl:if>
+    <xsl:text>]{</xsl:text>
+    <xsl:call-template name="getSourceName"/>
+    <xsl:text>}</xsl:text>
 </xsl:template>
 
 <xsl:template name="convertHourMinSecThirtiethTimeToSeconds">
