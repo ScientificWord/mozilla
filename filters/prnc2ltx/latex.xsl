@@ -819,15 +819,28 @@
 <xsl:template match="html:terspec">@<xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:indexitem">
-\index<xsl:if test="@pri"
-  >{<xsl:value-of select="@pri"/><xsl:apply-templates select="html:prispec"/></xsl:if
-  ><xsl:if test="@sec">!<xsl:value-of select="@sec"/><xsl:apply-templates select="html:secspec"/></xsl:if
-  ><xsl:if test="@ter">!<xsl:value-of select="@ter"/><xsl:apply-templates select="html:terspec"/></xsl:if
-  ><xsl:if test="@xreftext">|see {<xsl:value-of select="@reftext"/>}</xsl:if
-  ><xsl:if test="@pnformat='bold'">|textbf</xsl:if
-  ><xsl:if test="@pnformat='italics'">|textit</xsl:if>}
-</xsl:template>
-  
+  <xsl:text>\index</xsl:text>
+  <xsl:text>{</xsl:text>
+  <xsl:if test="@pri">
+    <xsl:value-of select="@pri"/>
+    <xsl:apply-templates select="html:prispec"/>
+  </xsl:if>
+  <xsl:if test="@sec">
+    <xsl:text>!</xsl:text>
+    <xsl:value-of select="@sec"/>
+    <xsl:apply-templates select="html:secspec"/>
+  </xsl:if>
+  <xsl:if test="@ter">
+    <xsl:text>!</xsl:text>
+    <xsl:value-of select="@ter"/>
+    <xsl:apply-templates select="html:terspec"/>
+  </xsl:if>
+  <xsl:if test="@enc">
+    <xsl:text>|</xsl:text>
+    <xsl:value-of select="@enc"/>
+  </xsl:if>
+  <xsl:text>}</xsl:text>
+</xsl:template>  
 
 <xsl:template match="html:notewrapper">
   <xsl:apply-templates/>
