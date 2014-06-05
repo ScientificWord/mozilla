@@ -41,6 +41,7 @@
 #include "nsHTMLEditRules.h"
 
 #include "nsEditor.h"
+#include "msiIMathMLEditor.h"
 #include "nsTextEditUtils.h"
 #include "nsHTMLEditUtils.h"
 #include "nsHTMLCSSUtils.h"
@@ -2341,7 +2342,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
       // else we are joining content to block
 
-      // find the relavent blocks
+      // find the relevent blocks
       if (IsBlockNode(leftNode))
         leftParent = leftNode;
       else
@@ -2350,6 +2351,12 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         rightParent = rightNode;
       else
         rightParent = mHTMLEditor->GetBlockNodeParent(rightNode);
+
+      // Check for deletion crossing the boundary of a math display
+      nsCOMPtr<msiIMathMLEditor> mathmlEd(do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor)));
+      if (mathmlEd) {
+        mathmlEd->RemoveDisplay(leftParent, rightParent);
+      }
 
       // sanity checks
       if (!leftParent || !rightParent)
