@@ -1377,7 +1377,7 @@ Make list of figures here
 			<xbl:property name="beginTime" readonly="true" 
 				onget="return this.plotplugin.beginTime;" />
 			<xbl:property name="endTime" readonly="true" onget="return this.plotplugin.endTime;" />
-		<!-- read-write properties ++>
+		    read-write properties ++>
 			<xbl:property name="currentTime" onget="return this.plotplugin.currentTime;"
 				onset="this.plotplugin.currentTime = val; return val;"  />
 			<xbl:property name="cursorTool" onget="return this.plotplugin.cursorTool;"
