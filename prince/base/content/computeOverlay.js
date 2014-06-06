@@ -1098,19 +1098,19 @@ function doSnapshot(objid)
   }
 }
 
-function objectLoaded(obj) {
-  var thisobj = obj;
-  var retval = "start";
-  try {
-    (function() {
-      retval = thisobj.readyState;
-    }());  
-    return retval;
-  }
-  catch (e) {
-    alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", " + e.message);
-  }
-};
+// function objectLoaded(obj) {
+//   var thisobj = obj;
+//   var retval = "start";
+//   try {
+//     (function() {
+//       retval = thisobj.readyState;
+//     }());  
+//     return retval;
+//   }
+//   catch (e) {
+//     alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", " + e.message);
+//   }
+// };
 
 function doMakeSnapshot(doc, obj, graph, editorElement) {
   var val = obj.readyState;
@@ -1146,10 +1146,14 @@ function doMakeSnapshot(doc, obj, graph, editorElement) {
       abspath = makeRelPathAbsolute(path, editorElement);
       var snapshotDir = Components.classes["@mozilla.org/file/local;1"].
       createInstance(Components.interfaces.nsILocalFile);
+      var oldsnapshot;
       snapshotDir.initWithPath(abspath);
+      oldsnapshot = snapshotDir.clone();
+      if (oldsnapshot.exists()) oldsnapshot.remove(true);
       snapshotDir = snapshotDir.parent;
       if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
       callVCamMethod(doc, obj.id, "makeSnapshot", abspath, [res]);
+      tryUntilSuccessful(100, 20, function() { return oldsnapshot.exists(); });
       insertSnapshot(obj, abspath);
     } catch (e) {
       alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", " + e.message);
