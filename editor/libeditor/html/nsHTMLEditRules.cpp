@@ -1976,7 +1976,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 {
 
   if (!aSelection || !aCancel || !aHandled) { return NS_ERROR_NULL_POINTER; }
-
+  nsCOMPtr<msiIMathMLEditor> mathmlEd;
   printf("In nsHTMLEditRules::WillDeleteSelection\n");
   //DumpSelection(aSelection);
 
@@ -2353,7 +2353,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         rightParent = mHTMLEditor->GetBlockNodeParent(rightNode);
 
       // Check for deletion crossing the boundary of a math display
-      nsCOMPtr<msiIMathMLEditor> mathmlEd(do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor)));
+      mathmlEd = do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor));
       if (mathmlEd) {
         mathmlEd->RemoveDisplay(leftParent, rightParent);
       }
@@ -2433,6 +2433,10 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         return NS_ERROR_NULL_POINTER;
       if (leftParent == rightParent)
         return NS_ERROR_UNEXPECTED;
+      nsCOMPtr<msiIMathMLEditor> mathmlEd(do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor)));
+      if (mathmlEd) {
+       mathmlEd->RemoveDisplay(leftParent, rightParent);
+      }
 
       // now join them
       nsCOMPtr<nsIDOMNode> selPointNode = startNode;
@@ -2537,6 +2541,11 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         nsCOMPtr<nsIDOMNode> rightBlockParent;
         leftParent->GetParentNode(getter_AddRefs(leftBlockParent));
         rightParent->GetParentNode(getter_AddRefs(rightBlockParent));
+        // Check for deletion crossing the boundary of a math display
+        mathmlEd = do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor));
+        if (mathmlEd) {
+          mathmlEd->RemoveDisplay(leftParent, rightParent);
+        }
 
         // MOOSE: this could conceivably screw up a table.. fix me.
         if (   (leftBlockParent == rightBlockParent)
