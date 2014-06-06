@@ -4847,6 +4847,7 @@
 
 \newcount\@idxlev
 \newtoks\@msi@toks
+\newtoks\temptoksc
 
 \def\appendtoks#1{\expandafter\expandafter\expandafter
    \@msi@toks\expandafter{\the\@msi@toks #1}}%
@@ -4884,6 +4885,11 @@
      \fi\fi\fi
 }
 
+
+\def\@process@idx@enc#1\@msi@end{%
+  \gdef\@idx@enc{#1}%
+}
+
 \def\@start@spec{%
      \@inspectrue
      \ifnum\@idxlev=0\relax       
@@ -4901,14 +4907,18 @@
 
 
 \def\@idx@#1{%
+   \let\next\relax
    \ifx#1!
      \@process@idx@ent
      \@inspecfalse
-   \else\ifx#1@
-     \@start@spec
-   \else 
-     \appendtoks{#1}%
-   \fi\fi}
+   \else
+     \ifx#1@
+       \@start@spec
+     \else
+       \appendtoks{#1}%
+     \fi
+   \fi
+   \next}
 
 
 \def\@split#1@#2\@msi@end{{#1}{#2}}
@@ -4916,6 +4926,8 @@
 \@emptytoks={}
 
 \def\@stripat#1@{#1}
+
+\def\insert@enc#1{\msitag{ enc="#1"}}
 
 \def\index#1{%
   \@inspecfalse
@@ -4926,6 +4938,7 @@
   \gdef\@idxspecB{}%
   \gdef\@idxentC{}%
   \gdef\@idxspecC{}%
+  \gdef\@idx@enc{}%
   \msihmode
   \msi@maptoks{#1}{\@idx@}%
   \ifx\@msi@toks\@empty
@@ -4956,11 +4969,14 @@
          \fi
        \fi
      \fi
-     %\edef\@tempa{\the\temptoksa}
-     %\ifx\@tempa\@emptytoks
-     \ifx\temptoksa\@emptytoks
+     \edef\@tempa{\the\temptoksa}
+     \ifx\@tempa\@empty
      \else    
        \msitag{ specAppearance="}\the\temptoksa\msitag{"}%
+     \fi
+     \ifx\@idx@enc\@empty
+     \else
+       \expandafter\insert@enc\expandafter{\@idx@enc}%
      \fi
      \msitag{>}%
      \ifx\@idxspecA\@empty
@@ -4984,22 +5000,42 @@
 \def\@first#1#2{#1}
 \def\@second#1#2{#2}
 
+\def\process#1{%
+  \ifx#1##
+    \expandafter\temptoksa\expandafter{\the\temptoksa\@msi@end}
+    \let\next\relax
+  \else
+    \expandafter\temptoksa\expandafter{\the\temptoksa #1}
+    \let\next\stringA
+  \fi
+  \next
+}
+
+\def\stringA{\expandafter\process\string}
+
+\def\tostrings{%
+   \temptoksa{}%
+   \expandafter\stringA\the\temptoksb##}
+
+
 
 \def\msi@maptoks#1#2{%
   \def\msi@mapmacro{#2}%
-  \temptoksa{#1\@msi@end@}%
+  \temptoksa{#1\@msi@end}%
   \expandafter\msi@@map\the\temptoksa% 
 }
 
 \def\msi@@map#1{%
   \def\@tokstrA{#1}%
-  \def\@tokstrB{\@msi@end@}%
+  \def\@tokstrB{\@msi@end}%
   \ifx\@tokstrA\@tokstrB
     \let\map@next=\relax
+  \else\ifx#1|
+    \let\map@next\@process@idx@enc
   \else
     \msi@mapmacro{#1}%
     \let\map@next=\msi@@map
-  \fi
+  \fi\fi
   \map@next
 }
 

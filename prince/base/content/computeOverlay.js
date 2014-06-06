@@ -1,7 +1,7 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
-# include productname.inc
-# ifndef PROD_SW
+#include productname.inc
+#ifndef PROD_SW
 Components.utils.import("resource://app/modules/computelogger.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
@@ -3501,3 +3501,4 @@ function findmathparent(node) {
 
 
 
+#endif

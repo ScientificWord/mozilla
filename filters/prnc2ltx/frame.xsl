@@ -152,6 +152,11 @@
     <xsl:choose>
       <xsl:when test="$framePosType='ft-floating' or ($framePosType='ft-wrapped')">
         <xsl:text>}</xsl:text>
+        <xsl:if test="./*[@key]">
+          <xsl:text>\label{</xsl:text>
+          <xsl:value-of select="./*[@key]/@key[1]"/>
+          <xsl:text>}</xsl:text>
+        </xsl:if>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>\\ </xsl:text>
@@ -234,6 +239,11 @@
     <xsl:choose>
       <xsl:when test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
         <xsl:text>}</xsl:text>
+        <xsl:if test="./*[@key]">
+          <xsl:text>\label{</xsl:text>
+          <xsl:value-of select="./*[@key]/@key[1]"/>
+          <xsl:text>}</xsl:text>
+        </xsl:if>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>\\ </xsl:text>
