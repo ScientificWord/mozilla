@@ -105,21 +105,24 @@ function startup()
         terspec.checked = true;
       } else terspec.checked = false;
     }
-    if (node.hasAttribute("xreftext") ){
-      locator.selectedIndex = 1;
-      thedeck.selectedIndex = 1;
-      xreftext.value = node.getAttribute("xreftext");
+    if (node.hasAttribute("enc") ){
+       var enc=node.getAttribute("enc");
+       var seepat=/see\{(.*)\}/;
+       var result=seepat.exec(enc);
+       if (result) {
+          xreftext.value = result[1];
+          locator.selectedIndex = 1;
+          thedeck.selectedIndex = 1;
+       } else {
+          if (enc === "textbf") 
+            format.selectedIndex = 1;
+          else if (enc === "textit")
+            format.selectedIndex =2;
+          else 
+            format.selectedIndex =0;
+       }
     }
-    else {
-      locator.selectedIndex = 0;
-      thedeck.selectedIndex = 0;
-      if (node.hasAttribute("pnstyle")) {
-        var st = node.getAttribute("pnstyle");
-        if (st == "bold") format.selectedIndex = 1;
-        else if (st="italics") format.selectedIndex =2;
-        else format.selectedIndex = 0;
-      }
-    }
+
   }
   else {
     isNewnode = true;
@@ -197,23 +200,13 @@ function stop()
 function onAccept()
 {
   activeEditor.beginTransaction();
-//  node.setAttribute("req","varioref");
   msiEditorEnsureElementAttribute(node, "req", "varioref", activeEditor);
   var v = primary.value;
-//  if (v && v.length > 0)
-//    node.setAttribute("pri",v);
-//  else node.removeAttribute("pri");
   msiEditorEnsureElementAttribute(node, "pri", v, activeEditor);
 
   v = secondary.value;
-//  if (v && v.length > 0)
-//    node.setAttribute("sec",v);
-//  else node.removeAttribute("sec");
   msiEditorEnsureElementAttribute(node, "sec", v, activeEditor);
   v = tertiary.value;
-//  if (v && v.length > 0)
-//    node.setAttribute("ter",v);
-//  else node.removeAttribute("ter");
   msiEditorEnsureElementAttribute(node, "ter", v, activeEditor);
 
   if (node.parentNode) dump(node.parentNode.innerHTML+"\n");
@@ -279,6 +272,24 @@ function onAccept()
     msiEditorEnsureElementAttribute(node, "specAppearance", hasPriSpec, activeEditor);
   else
     msiEditorEnsureElementAttribute(node, "specAppearance", null, activeEditor);
+
+  var enc;
+  var loc = locator.selectedIndex; // 0 = page num, 1 = xref
+  var fmt = format.selectedIndex;
+  if (loc === 1) {
+     enc = "see{" + xreftext.value + "}";
+  } else {
+     if (fmt === 0)
+       enc = "";
+     else if (fmt === 1)
+       enc = "textbf";
+     else
+       enc = "textit";
+  }
+  if (enc === "" && node.hasAttribute("enc"))
+    node.removeAttribute("enc");
+  else
+    msiEditorEnsureElementAttribute(node, "enc", enc, activeEditor);
 
   activeEditor.endTransaction();
 }
