@@ -1359,7 +1359,7 @@ Make list of figures here
 				<xbl:children includes="plotcaption"/>
 		</xbl:content>
 		<xbl:implementation>
- --><!-- 			<xbl:field name="plotplugin" >
+ 			<xbl:field name="plotplugin" >
 				this.getElementsByTagName('object')[0];
 			</xbl:field> 
 			<xbl:field name="document" >
@@ -1394,7 +1394,7 @@ Make list of figures here
 				onset="this.plotplugin.zoomAction = val; return val;"  />
 			<xbl:property name="actionSpeed" onget="return this.plotplugin.actionSpeed;" 
 				onset="this.plotplugin.actionSpeed = val; return val;"  />
-		<!-- methods ++>
+		<!++ methods ++>
 			<xbl:method name="startAnimation">
 				<xbl:body>
 					this.plotplugin.startAnimation();
@@ -1452,9 +1452,9 @@ Make list of figures here
 					this.plotplugin.makeSnapshot(abspath,res);
 				</xbl:body>
 			</xbl:method>
- -->	
-<!--   		</xbl:implementation>
-	</xbl:binding .>
+	
+   		</xbl:implementation>
+	</xbl:binding>
  -->
 	<xbl:binding id="collapsible">
 		<xbl:resources>
@@ -1598,7 +1598,7 @@ Make list of figures here
 		</xbl:content>
 	</xbl:binding>
 
-<!-- 	<xbl:binding id="bibitem">
+	<xbl:binding id="bibitem">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
