@@ -322,7 +322,8 @@ function onAccept()
       theWindow = msiGetTopLevelWindow();
     }
 //    theWindow.insertfence(data.leftBracket, data.rightBracket, data.separator, editorElement);
-    theWindow.insertfence(data.leftBracket, data.rightBracket, editorElement);
+    if (isInMath(editorElement))
+      theWindow.insertfence(data.leftBracket, data.rightBracket, editorElement);
   }
 
   SaveWindowLocation();
