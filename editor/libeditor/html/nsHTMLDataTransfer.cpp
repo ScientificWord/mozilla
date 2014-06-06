@@ -785,34 +785,35 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
       NS_ENSURE_SUCCESS(res, res);
     }
 // Now do the same for math as we did for tables and list items
-//    nsCOMPtr<nsIDOMNode> endNode = nodeList[0];
-//    nsCOMPtr<nsIDOMNode> mathNode;
-//    MathParent( endNode, getter_AddRefs(mathNode));
-//    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
-//    // now do the other end.
-//    PRUint32 length = nodeList.Count();
-//    if (length > 1) {
-//    endNode = nodeList[length-1];
-//    MathParent( endNode, getter_AddRefs(mathNode));
-//    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
-//    }
+    nsCOMPtr<nsIDOMNode> endNode = nodeList[0];
+    nsCOMPtr<nsIDOMNode> mathNode;
+    MathParent( endNode, getter_AddRefs(mathNode));
+    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+    // now do the other end.
+    PRUint32 length = nodeList.Count();
+    if (length > 1) {
+      endNode = nodeList[length-1];
+      MathParent( endNode, getter_AddRefs(mathNode));
+      if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+    }
 //// Now fix up fragments internal to the math node
-//    endNode = nodeList[0];
+    endNode = nodeList[0];
 //// #if DEBUG_barry || DEBUG_Barry
 ////   printf("\nendNode before FixMath\n");
 ////   DumpNode(endNode, 0, true);
 //// #endif
-//    FixMathematics(endNode, length > 1, PR_FALSE);
+     
+    FixMathematics(endNode, length > 1, PR_FALSE);
 //// #if DEBUG_barry || DEBUG_Barry
 ////   printf("\nendNode after FixMath\n");
 ////   DumpNode(endNode, 0, true);
 //// #endif
 //
-//    if (length > 1)
-//    {
-//      endNode = nodeList[length-1];
-//      FixMathematics(endNode, PR_FALSE, PR_TRUE);
-//    }
+    if (length > 1)
+    {
+      endNode = nodeList[length-1];
+      FixMathematics(endNode, PR_FALSE, PR_TRUE);
+    }
     listCount = nodeList.Count();
     // Loop over the node list and paste the nodes:
     PRBool bDidInsert = PR_FALSE;
