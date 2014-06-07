@@ -2162,7 +2162,7 @@ function doVarsEvalComputation(math, func, joiner, title, label, editorElement, 
   };
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   try {
-    theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
+    var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
 
   } catch (e) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsEvalComputation: [" + e + "]");
@@ -2248,7 +2248,7 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler) {
         this.mParentWin.doComputeSolveExact(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
       try {
-        theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
+        var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
       } catch (e) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveExact: [" + e + "]");
         return;
