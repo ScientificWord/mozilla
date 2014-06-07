@@ -2085,7 +2085,7 @@ void nodeAncestorsOfType(const nsAString& specialTags,
 NS_IMETHODIMP 
 msiEditor::RemoveDisplay( nsIDOMNode * focusNode, nsIDOMNode * anchorNode) {
   nsCOMPtr<nsIDOMElement> displayNode;
-  nsresult rv;
+  nsresult rv(NS_OK);
   PRUint32 i;
   GetElementOrParentByTagName(NS_LITERAL_STRING("msidisplay"), focusNode, getter_AddRefs(displayNode));
   if (!displayNode) {
@@ -2109,6 +2109,7 @@ msiEditor::RemoveDisplay( nsIDOMNode * focusNode, nsIDOMNode * anchorNode) {
     RemoveContainer(displayNode);
     EndTransaction();    
   }
+  return rv;
 }
 
 nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset, 
@@ -4141,7 +4142,7 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
   nsIDOMNode * anode,
   PRUint32 count)
 {
-  nsresult res;
+  nsresult res(NS_OK);
   nsAutoString dataPath;
   nsAutoString absPath;
   nsAutoString leafname;
@@ -4321,6 +4322,7 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
       m_timerlist.AppendObject(timer); 
       
   }
+  return NS_OK;
 }
 
 void msiContentFilter::SetDataFromTimer(nsITimer *aTimer, void *closure)
@@ -4391,7 +4393,7 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
   PRInt32 *insertionPointOffset, 
   PRBool *continueWithInsertion)
 {
-  nsresult res;
+  nsresult res(NS_OK);
   nsCOMPtr<nsIDOMDocument> domDoc;
   ClearTimerList();
   m_editor->GetDocument(getter_AddRefs(domDoc));
@@ -4449,6 +4451,7 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
       }
     }
   }
+  return NS_OK;
 }
 
 
