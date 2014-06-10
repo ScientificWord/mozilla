@@ -2431,6 +2431,16 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler) {
   }
 }
 
+function postDialogTimerCallback(editorElement, obj) {
+  dump("Hit postDialogTimerCallback!\n");
+  if (obj == null) {
+    dump("No object passed in to postDialogTimerCallback!\n");
+    return;
+  }
+  clearTimeout(obj.mDialogTimer);
+  if (("afterDialog" in obj) && obj.afterDialog != null) obj.afterDialog(editorElement);
+}
+
 function doComputeRoots(math, vars, editorElement, cmd, cmdHandler) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
 
