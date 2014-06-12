@@ -1,7 +1,11 @@
+
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+
 #include productname.inc
+
 #ifndef PROD_SW
+
 Components.utils.import("resource://app/modules/computelogger.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
@@ -2429,16 +2433,6 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler) {
       msiComputeLogger.Exception(ex);
     }
   }
-}
-
-function postDialogTimerCallback(editorElement, obj) {
-  dump("Hit postDialogTimerCallback!\n");
-  if (obj == null) {
-    dump("No object passed in to postDialogTimerCallback!\n");
-    return;
-  }
-  clearTimeout(obj.mDialogTimer);
-  if (("afterDialog" in obj) && obj.afterDialog != null) obj.afterDialog(editorElement);
 }
 
 function doComputeRoots(math, vars, editorElement, cmd, cmdHandler) {
