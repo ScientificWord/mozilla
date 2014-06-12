@@ -1598,7 +1598,7 @@ Make list of figures here
 		</xbl:content>
 	</xbl:binding>
 
-	<xbl:binding id="bibitem">
+<!-- 	<xbl:binding id="bibitem">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
@@ -1656,6 +1656,6 @@ Make list of figures here
 				<html:p><html:object xbl-inherits="src,data,title,alt,width,height" /></html:p>
 			</html:div>
 		</xbl:content>
-	</xbl:binding>
+	</xbl:binding> -->
 
 </xbl:bindings>
