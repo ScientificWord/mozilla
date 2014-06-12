@@ -233,13 +233,15 @@ function OK() {
   }
   catch (e) {}
   var parentWindow = window.opener;
-//  parentWindow.ensureVCamPreinitForPlot(graphnode, editorElement);
+  parentWindow.ensureVCamPreinitForPlot(graphnode, editorElement);
   var obj = graphnode.getElementsByTagName("object");
   if (obj && obj.length)
   {
     obj = obj[0];
-    if (obj)
+    if (obj) {
+      obj.setAttribute('data', graphnode.getElementsByTagName('graphSpec')[0].getAttribute('ImageFile'));
       parentWindow.doVCamInitialize(obj);
+    }
   }
 
   return true;
