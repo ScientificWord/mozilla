@@ -381,6 +381,7 @@ Graph.prototype = {
   },
   extractGraphAttributes: function (DOMGraph) {
     var key, value, i, plot, plotno, plotLabel, DOMGs, DOMPlots, DOMFrame, DOMPw, DOMPlotLabels;
+    if (!DOMGraph) return;
     DOMGs = DOMGraph.getElementsByTagName("graphSpec");
     if (DOMGs.length > 0) {
       DOMGs = DOMGs[0];
@@ -2069,13 +2070,11 @@ function newPlotFromText(currentNode, expression, editorElement, selection) {
     graph.addPlot(plot);
     plot.element["Expression"] = fixedExpr;
 //    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
-    var obj = graph.getElementsByTagName('obj')[0];
     graph.computeQuery(plot);
     graph.recomputeVCamImage(editorElement);
     graph.reviseGraphDOMElement(currentNode, false, editorElement);
-    if (obj) doVCamPreInitialize(obj);
-//    ensureVCamPreinitForPlot(currentNode, editorElement);
-//    nonmodalRecreateGraph(graph, currentNode, editorElement);
+    ensureVCamPreinitForPlot(currentNode, editorElement);
+    nonmodalRecreateGraph(graph, currentNode, editorElement);
     //    editor.replaceNode(domGraph, currentNode, currentNode.parentNode);
   }
   catch (e) {
@@ -2243,7 +2242,7 @@ function insertGraph(siblingElement, graph, editorElement) {
   addGraphElementToDocument(gDomElement, siblingElement, editorElement);
   var obj = gDomElement.getElementsByTagName("object")[0];
   var parentWindow = editorElement.ownerDocument.defaultView;
-//  parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
+  parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
   if (!obj.id) {
     obj.id = findUnusedId("plot");
     obj.setAttribute("id", obj.id); // BBM: unnecessary??
