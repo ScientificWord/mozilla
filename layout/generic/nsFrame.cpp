@@ -2088,9 +2088,9 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
       editor = do_QueryInterface(htmlEditor);
       nsCOMPtr<nsISelection> sel;
       editor->GetSelection(getter_AddRefs(sel));
-      if (sel) {
-         nsEditorUtils::JiggleCursor(editor, sel, nsIEditor::ePrevious);
-      }
+      // if (sel) {
+      //    nsEditorUtils::JiggleCursor(editor, sel, nsIEditor::ePrevious);
+      // }
     }
   }
 

@@ -3442,6 +3442,42 @@ function doEditPlot() {
 }
 
 
+//Warning! This function may replace the <object> node for the plot, so you should use getElementsByTagName()
+//again afterwards before referencing it. Furthermore, it calls tryUntilSuccessful() and so is asynchronous.
+//It's meant to set a plot which has been created (perhaps via a paste or document load) or modified into a
+//reliable state.
+function ensureVCamPreinitForPlot(graphNode, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  var objElement = graphNode.getElementsByTagName("object");
+  var theGraph;
+  if (objElement && objElement.length)
+    objElement = objElement[0];
+  var parent, newObj;
+  if (objElement)
+  {
+    theGraph = new Graph();
+    theGraph.extractGraphAttributes(graphNode);
+    checkVCamStatusForPlot(objElement, theGraph, editorElement);
+    if (objElement.vcamStatus === "initialized")
+      return;
+    if ( (objElement.vcamStatus === "needRecreate") || (objElement.vcamStatus === "needReload") )
+    {
+//      doVCamInitialize(objElement);
+      objElement = regeneratePlotObject(objElement, theGraph, editorElement);
+//    }
+//    else if (objElement.vcamStatus === "needReload")
+//    {
+//      var vcamUri = msiMakeAbsoluteUrl(theGraph.getGraphAttribute("ImageFile"),editorElement);
+////      var vcamPath = msiPathFromFileURL(msiURIFromString(vcamUri));
+//      msidump("In ensureVCamPreinitForPlot, calling vcam load [" + vcamUri + "]\n");
+//      objElement.load(vcamUri);
+//      objElement.setAttribute("data", vcamUri);
+//      objElement.vcamStatus = "uninitialized";
+    }
+    preInitializeVCam( objElement, theGraph, editorElement, true, true);
+  }
+}
 
 // form a single run of math but don't put caret on end
 
