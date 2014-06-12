@@ -5,7 +5,7 @@ srcdir		= @srcdir@
 VPATH		= @srcdir@
 
 
-DIRS		= -Standard_LaTeX Articles Books Theses Other Presentations
+DIRS		= -Standard_LaTeX Articles Books Other Presentations Reports Theses
 
 
 include $(DEPTH)/config/autoconf.mk
