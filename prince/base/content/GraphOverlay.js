@@ -1827,6 +1827,7 @@ Frame.prototype = {
       }
     }
   },
+  
   reviseFrameDOMElement: function (DOMFrame, DOMPw, forComp, editorElement) {
     var editor = msiGetEditor(editorElement);
     var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, pos, placeLocation, floattts, fltatt, ch, captionlocation, x;
@@ -2068,10 +2069,12 @@ function newPlotFromText(currentNode, expression, editorElement, selection) {
     graph.addPlot(plot);
     plot.element["Expression"] = fixedExpr;
 //    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
+    var obj = graph.getElementsByTagName('obj')[0];
     graph.computeQuery(plot);
     graph.recomputeVCamImage(editorElement);
     graph.reviseGraphDOMElement(currentNode, false, editorElement);
-    ensureVCamPreinitForPlot(currentNode, editorElement);
+    if (obj) doVCamPreInitialize(obj);
+//    ensureVCamPreinitForPlot(currentNode, editorElement);
 //    nonmodalRecreateGraph(graph, currentNode, editorElement);
     //    editor.replaceNode(domGraph, currentNode, currentNode.parentNode);
   }
@@ -2240,10 +2243,10 @@ function insertGraph(siblingElement, graph, editorElement) {
   addGraphElementToDocument(gDomElement, siblingElement, editorElement);
   var obj = gDomElement.getElementsByTagName("object")[0];
   var parentWindow = editorElement.ownerDocument.defaultView;
-  parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
+//  parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
   if (!obj.id) {
     obj.id = findUnusedId("plot");
-    obj.setAttributeValue("id", obj.id); // BBM: unnecessary??
+    obj.setAttribute("id", obj.id); // BBM: unnecessary??
   }
   doVCamPreInitialize(obj.id);
   editorElement.focus();

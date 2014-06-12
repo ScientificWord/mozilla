@@ -335,7 +335,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
       inlineOffset = frameUnitHandler.getValueFromString( gDefaultInlineOffset );
   }
 
-  if (!newElement || gDefaultPlacement.length)
+  if ((!newElement || gDefaultPlacement.length) && dg.placeForceHereCheck)
   {
     try
     {  
@@ -345,21 +345,22 @@ function initFrameTab(dg, element, newElement, contentsElement)
       dg.placeTopCheck.checked = (placeLocation.search("t") != -1);
       dg.placeBottomCheck.checked = (placeLocation.search("b") != -1);
 
-      dg.wrapOptionRadioGroup.value = placementStr;
-      if (!dg.wrapOptionRadioGroup.value || !dg.wrapOptionRadioGroup.value.length)
-        dg.wrapOptionRadioGroupValue = "full";  //as in the default below
-      switch (dg.wrapOptionRadioGroup.value) {
-        case "L": dg.wrapOptionRadioGroup.selectedIndex = 0;
-                  break;
-        case "R": dg.wrapOptionRadioGroup.selectedIndex = 1;
-                  break;
-        case "I": dg.wrapOptionRadioGroup.selectedIndex = 2;
-                  break;
-        case "O": dg.wrapOptionRadioGroup.selectedIndex = 3;
-                  break;
-        default:  dg.wrapOptionRadioGroup.selectedIndex = 4;
-      }
-      
+      if (dg.wrapOptionRadioGroup) {
+        dg.wrapOptionRadioGroup.value = placementStr;
+        if (!dg.wrapOptionRadioGroup.value || !dg.wrapOptionRadioGroup.value.length)
+          dg.wrapOptionRadioGroupValue = "full";  //as in the default below
+        switch (dg.wrapOptionRadioGroup.value) {
+          case "L": dg.wrapOptionRadioGroup.selectedIndex = 0;
+                    break;
+          case "R": dg.wrapOptionRadioGroup.selectedIndex = 1;
+                    break;
+          case "I": dg.wrapOptionRadioGroup.selectedIndex = 2;
+                    break;
+          case "O": dg.wrapOptionRadioGroup.selectedIndex = 3;
+                    break;
+          default:  dg.wrapOptionRadioGroup.selectedIndex = 4;
+        }
+      }      
       dg.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
       if (pos == "inline")
       {
@@ -372,13 +373,15 @@ function initFrameTab(dg, element, newElement, contentsElement)
     }
   }
 
-  var placement = 0;
-  var placementLetter = document.getElementById("wrapOptionRadioGroup").value;
-  if (/l|i/i.test(placementLetter)) placement=1;
-  else if (/r|o/i.test(placementLetter)) placement = 2;
+  if (dg.wrapOptionRadioGroup) {
+    var placement = 0;
+    var placementLetter = document.getElementById("wrapOptionRadioGroup").value;
+    if (/l|i/i.test(placementLetter)) placement=1;
+    else if (/r|o/i.test(placementLetter)) placement = 2;    
+    enableFloatOptions(dg.wrapOptionRadioGroup);
+  }
   Dg = dg;
   setAlignment(placement);
-  enableFloatOptions(dg.wrapOptionRadioGroup);
   enableFloating();
   placementChanged();
   doDimensionEnabling();
@@ -669,7 +672,7 @@ function placementChanged()
   var bEnableWrapfig = true;
   var bEnableFloats = false;
 
-  if (document.getElementById('float').selected)
+  if (document.getElementById('float') && document.getElementById('float').selected)
   {
     theValue = "false";
     broadcaster.setAttribute("disabled",theValue);
@@ -701,7 +704,7 @@ function enableFloatOptions(radiogroup)
   if (!radiogroup) 
     radiogroup = document.getElementById("wrapOptionRadioGroup");
 
-  if (document.getElementById('placeHereCheck').checked)
+  if (document.getElementById('placeHereCheck').checked && radiogroup)
   {
     theValue = "false";
     position = radiogroup.selectedItem.value;
@@ -720,7 +723,7 @@ function enableFloating( )
   var broadcaster = document.getElementById("floatingPlacement");
   var theValue = "true";
   var bEnableInlineOffset = false;
-  if (document.getElementById('float').selected)
+  if (document.getElementById('float') && document.getElementById('float').selected)
   {
     theValue = "false";
     broadcaster.setAttribute("disabled",theValue);
@@ -994,7 +997,8 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     msiEditorEnsureElementAttribute(contentsNode, widthAtt, Dg.widthInput.value, editor);
     contentsNode.setAttribute(widthAtt,Dg.widthInput.value);
   }
-  var pos = document.getElementById("placementRadioGroup").selectedItem;
+  var pos;
+  if (document.getElementById("placementRadioGroup")) pos = document.getElementById("placementRadioGroup").selectedItem;
   var posid = (pos && pos.getAttribute("id")) || "";
   msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
   var bgcolor = Dg.colorWell.getAttribute("style");
@@ -1010,7 +1014,7 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
   msiRequirePackage(Dg.editorElement, "xcolor", "");
   msiEditorEnsureElementAttribute(frameNode, "textalignment", Dg.textAlignment.value, editor);
   setStyleAttributeOnNode(frameNode, "text-align", Dg.textAlignment.value, editor);
-  if (posid === "display"){
+  if (posid === "display" && Dg.wrapOptionRadioGroup){
     msiEditorEnsureElementAttribute(frameNode, "wrapOption", Dg.wrapOptionRadioGroup.value, editor);
   }
 
@@ -1046,25 +1050,25 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     var placeLocation="";
     var isHere = false;
     var needsWrapfig = false;
-    if (Dg.placeForceHereCheck.checked) {
+    if (Dg.placeForceHereCheck && Dg.placeForceHereCheck.checked) {
       placeLocation += "H";
       isHere = true;
     } 
-    if (Dg.placeHereCheck.checked) {
+    if (Dg.placeHereCheck && Dg.placeHereCheck.checked) {
       placeLocation += "h";
       isHere = true;
     }
-    if (Dg.placeFloatsCheck.checked) {
+    if (Dg.placeFloatsCheck && Dg.placeFloatsCheck.checked) {
       placeLocation += "p";
     }
-    if (Dg.placeTopCheck.checked) { 
+    if (Dg.placeTopCheck &&  Dg.placeTopCheck.checked) { 
       placeLocation += "t";
     } 
-    if (Dg.placeBottomCheck.checked) {
+    if (Dg.placeBottomCheck && Dg.placeBottomCheck.checked) {
       placeLocation += "b";
     }
     msiEditorEnsureElementAttribute(frameNode, "placeLocation", placeLocation, editor);
-    if (isHere)
+    if (isHere && Dg.wrapOptionRadioGroup)
     {
       var floatparam = document.getElementById("wrapOptionRadioGroup").selectedItem.value;
       if (floatparam != "full") {
@@ -1100,7 +1104,8 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
   else 
   {
     removeStyleAttributeFamilyOnNode(frameNode, "float", editor);
-    var fp = document.getElementById("wrapOptionRadioGroup").value;
+    var fp;
+    if (document.getElementById("wrapOptionRadioGroup")) fp = document.getElementById("wrapOptionRadioGroup").value;
     if (posid == "display" || (posid == "float" && (float==null || float=="full")))
     {
       setStyleAttributeOnNode(frameNode, "margin-left","auto", editor);
