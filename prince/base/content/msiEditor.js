@@ -586,7 +586,7 @@ var msiResizeListener =
       graph.setGraphAttribute("Height", String(newHeightInUnits));
 //      graph.recomputeVCamImage( editorElement);
       graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
-//      ensureVCamPreinitForPlot(DOMGraph, editorElement);
+      ensureVCamPreinitForPlot(DOMGraph, editorElement);
 //      var obj = anElement.getElementsByTagName("object");
 //      if (obj.length > 0 && obj[0].hasAttribute("msigraph"))
 //      {
