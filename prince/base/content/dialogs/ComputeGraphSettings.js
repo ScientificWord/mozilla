@@ -92,11 +92,11 @@ function Startup(){
     document.getElementById("defaultCameraCheckbox").checked = !graph.cameraValuesUserSet();
     document.getElementById("defaultviewintervals").checked = !graph.viewRangesUserSet();
     placeLocation = graph.frame.getFrameAttribute("placeLocation");
-    document.getElementById("placeForceHereCheck").checked = (placeLocation.search("H") != -1);
-    document.getElementById("placeHereCheck").checked = (placeLocation.search("h") != -1);
-    document.getElementById("placeFloatsCheck").checked = (placeLocation.search("p") != -1);
-    document.getElementById("placeTopCheck").checked = (placeLocation.search("t") != -1);
-    document.getElementById("placeBottomCheck").checked = (placeLocation.search("b") != -1);
+    if (document.getElementById("placeForceHereCheck")) document.getElementById("placeForceHereCheck").checked = (placeLocation.search("H") != -1);
+    if (document.getElementById("placeHereCheck")) document.getElementById("placeHereCheck").checked = (placeLocation.search("h") != -1);
+    if (document.getElementById("placeFloatsCheck")) document.getElementById("placeFloatsCheck").checked = (placeLocation.search("p") != -1);
+    if (document.getElementById("placeTopCheck")) document.getElementById("placeTopCheck").checked = (placeLocation.search("t") != -1);
+    if (document.getElementById("placeBottomCheck")) document.getElementById("placeBottomCheck").checked = (placeLocation.search("b") != -1);
     
     initKeyList();
   
@@ -233,7 +233,7 @@ function OK() {
   }
   catch (e) {}
   var parentWindow = window.opener;
-  parentWindow.ensureVCamPreinitForPlot(graphnode, editorElement);
+//  parentWindow.ensureVCamPreinitForPlot(graphnode, editorElement);
   var obj = graphnode.getElementsByTagName("object");
   if (obj && obj.length)
   {
