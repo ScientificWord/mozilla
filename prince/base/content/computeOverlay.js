@@ -1669,6 +1669,18 @@ function GetCurrentEngine() {
 }
 
 
+function postDialogTimerCallback(editorElement, obj) {
+  dump("Hit postDialogTimerCallback!\n");
+  if (obj == null) {
+    dump("No object passed in to postDialogTimerCallback!\n");
+    return;
+  }
+  clearTimeout(obj.mDialogTimer);
+  if (("afterDialog" in obj) && obj.afterDialog != null) obj.afterDialog(editorElement);
+}
+
+
+
 
 function initEnginePrefs(currEngine)
 {
