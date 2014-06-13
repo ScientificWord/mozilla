@@ -530,8 +530,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
       doVarsEvalComputation(element, eng.Calculus_Integrate_by_Parts, "<mo>=</mo>", GetComputeString("ByParts.title"), GetComputeString("ByParts.remark"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_FindExtrema":
-      doEvalComputation(element, eng.Calculus_Find_Extrema, "<mo>=</mo>", "find extrema", editorElement, inPlace, inPlace);
-      //doVarsEvalComputation(element,eng.Calculus_Find_Extrema,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
+      doComputeFindExtrema(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ChangeVariable":
       doVarsEvalComputation(element, eng.Calculus_Change_Variable, "<mo>=</mo>", GetComputeString("ChangeVar.title"), GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
@@ -2234,6 +2233,46 @@ function doComputeCheckEquality(math, editorElement) {
 
   //var out = GetCurrentEngine().checkEquality(mathstr,vars);
   //doLabeledComputation(math, eng.Check_Equality, "CheckEquality.fmt", editorElement);
+}
+
+function doComputeFindExtrema(math, vars, editorElement, cmd, cmdHandler) {
+  var mathstr = GetFixedMath(math);
+  if (!vars) vars = "";
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
+  msiComputeLogger.Sent4("find extrema", mathstr, "specifying", vars);
+  try {
+    ComputeCursor(editorElement);
+    var out = GetCurrentEngine().findExtrema(mathstr, vars);
+    msiComputeLogger.Received(out);
+    appendLabeledResult(out, GetComputeString("Solution.fmt"), math, editorElement);
+    RestoreCursor(editorElement);
+  } catch (ex) {
+    RestoreCursor(editorElement);
+    if (ex.result == compsample.nosol) {
+      appendLabel(GetComputeString("NoSolution"), math, editorElement);
+      done = true;
+    } else if (ex.result == compsample.needvars) {
+      var o = {};
+      o.mParentWin = this;
+      o.theMath = math;
+      o.vars = vars;
+      o.theCommand = cmd;
+      o.theCommandHandler = cmdHandler;
+      o.afterDialog = function(editorElement) {
+        if (this.Cancel) return;
+        this.mParentWin.doComputeFindExtrema(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+      };
+      try {
+        var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
+      } catch (e) {
+        AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeFindExtrema: [" + e + "]");
+        return;
+      }
+      if (!o.Cancel) msiGetEditor(editorElement).incrementModificationCount(1);
+    } else {
+      msiComputeLogger.Exception(ex);
+    }
+  }
 }
 
 function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler) {
