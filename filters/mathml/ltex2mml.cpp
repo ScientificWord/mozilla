@@ -3885,8 +3885,8 @@ _SECONDLIM_IF(MATH,?^?,5.51.1)elseIF(?\Sp?,5.31.0)elseIF(?_?,5.50.1)elseIF(?\Sb?
 */
 
 TNODE* LaTeX2MMLTree::BigOp2MML( TNODE* tex_bigop_node,
-						   			U16& tex_nodes_done,
-						   			TNODE** out_of_flow_list ) {
+						   			             U16& tex_nodes_done,
+						   			             TNODE** out_of_flow_list ) {
 
   TNODE* rv =  NULL;
 
@@ -3962,14 +3962,13 @@ TNODE* LaTeX2MMLTree::BigOp2MML( TNODE* tex_bigop_node,
       U16 tex_nodes_done,loc_error;
       TNODE* local_oof_list =  NULL;
       mml_ll =  TranslateMathList( tex_ll_cont,do_bindings,NULL,
-						tex_nodes_done,loc_error,&local_oof_list );
+						        tex_nodes_done,loc_error,&local_oof_list );
       if ( !mml_ll )
         mml_ll  =  MakeSmallmspace();
       else if ( mml_ll->next )
         mml_ll  =  MMLlistToMRow( mml_ll );
-      mml_ll  =  HandleOutOfFlowObjects( mml_ll,
-					    &local_oof_list,out_of_flow_list,3 );
-	}
+      mml_ll  =  HandleOutOfFlowObjects( mml_ll, &local_oof_list,out_of_flow_list,3 );
+	  }
 
   } else {  // We may have a multiline lower limit
     TNODE* tex_sb =  FindObject( op_parts,(U8*)"5.30.0",
@@ -4020,40 +4019,38 @@ TNODE* LaTeX2MMLTree::BigOp2MML( TNODE* tex_bigop_node,
 // We look up the mml operator entity that matches our TeX bigop
   } else {
 */
-    base_op  =  MakeTNode( 0L,0L,tex_bigop_node->src_linenum,
-                                  		(U8*)"3.203.1" );	// <mo>
+    base_op  =  MakeTNode( 0L,0L,tex_bigop_node->src_linenum, (U8*)"3.203.1" );	// <mo>
     precedence  =  SetMMLBigOpEntity( tex_bigop_node,base_op );
     SetNodeAttrib( base_op,(U8*)"form",(U8*)zop_forms[OPF_prefix] );
 
-	if ( mml_ll || mml_ul ) {
-	  if ( !use_subsup ) {
-	    U8* attr_nom  =  (U8*)"movablelimits";
-	    //U8* attr_nom  =  (U8*)"moveablelimits";
-	    U8* attr_val  =  NULL;
-        if      ( tex_autolimits ) {
+	  if ( mml_ll || mml_ul ) {
+	    if ( !use_subsup ) {
+	      U8* attr_nom  =  (U8*)"movablelimits";
+	      U8* attr_val  =  NULL;
+        if ( tex_autolimits ) {
           if ( renderer_implements_displays ) {
-   		    attr_val  =  (U8*)"true";
+   		      attr_val  =  (U8*)"true";
           } else {
             if ( in_display )
-   		      attr_val  =  (U8*)"false";
+   		        attr_val  =  (U8*)"false";
             else
-   		      attr_val  =  (U8*)"true";
+   		        attr_val  =  (U8*)"true";
           }
-
         } else if ( tex_limits )
    		    attr_val  =  (U8*)"false";
-	    if ( attr_val )
-          SetNodeAttrib( base_op,attr_nom,attr_val );
-	  }
-	}
 
-    base_op =  SetBigOpSize( base_op,tex_size_attr );
+	    if (attr_val)
+          SetNodeAttrib( base_op, attr_nom,attr_val );
+	    } else {
+         SetNodeAttrib( base_op, (U8*)"msiLimitPlacement" ,(U8*)"msiLimitsAtRight" );
+      }
+         
+	 }
 
-    SetDetailNum( base_op,DETAILS_form,1 );
-    SetDetailNum( base_op,DETAILS_precedence,precedence );
-/*
-  }
-*/
+   base_op =  SetBigOpSize( base_op, tex_size_attr );
+
+   SetDetailNum( base_op,DETAILS_form,1 );
+   SetDetailNum( base_op,DETAILS_precedence,precedence );
 
 /*
 msub<uID5.50.2>!msub!_SUBBASE_reqELEMENT(5.50.3)_SUBSCRIPT_reqELEMENT(5.50.4)
@@ -4083,11 +4080,11 @@ _UOSUPER_reqELEMENT(5.55.5)
       } else if ( mml_ll ) {
         mml_selem_type  =  50;	// <msub>
         mml_ll_uID  =  4;
-	  } else {
+	    } else {
         mml_selem_type  =  51;	// <msup>
         mml_ul_uID  =  5;
-	  }
-	} else {					// sub and/or super
+	    }
+	 } else {					// sub and/or super
       if        ( mml_ll && mml_ul ) {
         mml_selem_type  =  55;	// <munderover>
         mml_ll_uID  =  4;
@@ -4095,41 +4092,41 @@ _UOSUPER_reqELEMENT(5.55.5)
       } else if ( mml_ll ) {
         mml_selem_type  =  53;	// <munder>
         mml_ll_uID  =  4;
-	  } else {
+	    } else {
         mml_selem_type  =  54;	// <mover>
         mml_ul_uID  =  5;
-	  }
-	}
+	    }
+	 }
+   if (tex_size_attr == 'l'){
+     // <mstyle displaystyle="true">
+     base_op =  CreateElemWithBucketAndContents( 5,600,0,2,base_op );
+     SetNodeAttrib( base_op, (U8*)"displaystyle", (U8*)"true" );
+   }
 
 // construct mml_big_op - structured element
 
-    mml_big_op  =  CreateElemWithBucketAndContents(
-			  					5,mml_selem_type,2,3,base_op );
-	TNODE* parts_tail =  mml_big_op->parts;
+   mml_big_op  =  CreateElemWithBucketAndContents( 5,mml_selem_type,2,3,base_op );
+	 TNODE* parts_tail =  mml_big_op->parts;
 
   // construct lower limit bucket
-	if ( mml_ll ) {
-      TNODE* next_part  =  CreateBucketWithContents(
-							5,mml_selem_type,mml_ll_uID,mml_ll );
+	 if ( mml_ll ) {
+      TNODE* next_part  =  CreateBucketWithContents( 5,mml_selem_type,mml_ll_uID,mml_ll );
       parts_tail->next  =  next_part;
       next_part->prev   =  parts_tail;
-	  parts_tail  =  next_part;
-	}
+	    parts_tail  =  next_part;
+	 }
 
-  // construct upper limit bucket
-	if ( mml_ul ) {
-      TNODE* next_part  =  CreateBucketWithContents(
-							5,mml_selem_type,mml_ul_uID,mml_ul );
-      parts_tail->next  =  next_part;
-      next_part->prev   =  parts_tail;
-	}
+   // construct upper limit bucket
+	 if ( mml_ul ) {
+       TNODE* next_part  =  CreateBucketWithContents( 5,mml_selem_type,mml_ul_uID,mml_ul );
+       parts_tail->next  =  next_part;
+       next_part->prev   =  parts_tail;
+	 }
 
   } else		// there are no limits
-	mml_big_op  =  base_op;
-
+	    mml_big_op  =  base_op;
 
   rv  =  mml_big_op;
-
 
   I16 form  =  1;
   if ( rv ) {		// a TeX BigOp, \int, \sum
@@ -4137,7 +4134,7 @@ _UOSUPER_reqELEMENT(5.55.5)
     SetDetailNum( rv,DETAILS_precedence,precedence );
     SetDetailNum( rv,DETAILS_bigop_status,1 );
     SetDetailNum( rv,DETAILS_TeX_atom_ilk,TeX_ATOM_OP );
-	if ( n_integrals )
+	  if ( n_integrals )
       SetDetailNum( rv,DETAILS_integral_num,n_integrals );
   }
 

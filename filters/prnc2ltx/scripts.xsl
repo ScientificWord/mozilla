@@ -117,7 +117,8 @@
   
     <xsl:variable name="is-big-op">
 <!-- msubsup may contain an embellished BigOp, \int, \iint, etc. -->
-      <xsl:call-template name="is-LaTeX-bigop"/>
+      <!-- xsl:call-template name="is-LaTeX-bigop"/ -->
+      <xsl:value-of select="*[1]//@largeop='true'"/>
     </xsl:variable>
 
     <xsl:choose>
