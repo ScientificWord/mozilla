@@ -3394,7 +3394,7 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
 {
 	var newNode = {};
   var newSelection = {};
-	if (node.nodeType === Node.TEXT_NODE || node.nodeName ==="texb")
+	if ( (node.nodeType === Node.TEXT_NODE) || (node.nodeName ==="texb") )
 	{
 		if (startOffset >0)
 		{
