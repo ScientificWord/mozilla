@@ -28,10 +28,10 @@
 
     <xsl:variable name="size">
       <xsl:choose>
-        <xsl:when test="parent::mml:mstyle[@displaystyle='true'][count(./*)=1]">
+        <xsl:when test="./*[1][@displaystyle='true']">
           <xsl:value-of select="'d'"/>
 		</xsl:when>
-        <xsl:when test="parent::mml:mstyle[@displaystyle='false'][count(./*)=1]">
+        <xsl:when test="./*[1][@displaystyle='false']">
           <xsl:value-of select="'t'"/>
         </xsl:when>
         <xsl:otherwise>

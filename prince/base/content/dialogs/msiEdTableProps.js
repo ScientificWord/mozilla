@@ -8,6 +8,7 @@ Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 //Cancel() is in msiEdDialogCommon.js
 var gTableElement;
+var gWrapperElement;
 //var gCellElement;
 var gTableCaptionElement;
 var gTableCaptionPlacement;
@@ -481,6 +482,7 @@ function Startup()
       gTableElement = gActiveEditor.createElementWithDefaults("table");
       gTableElement.removeAttribute("border");
       gTableElement.setAttribute("req","tabulary");
+      gWrapperElement = null;
     } 
     catch (e) {
 
@@ -489,6 +491,16 @@ function Startup()
   else {
     newTable = false;
     gTableElement = data.reviseData.mTableElement;
+    gWrapperElement = null;
+    if (gTableElement)  {
+      if (gTableElement.nodeName !== "msiframe") {
+        if (gTableElement.parentNode.nodeName === "msiframe") {
+          wrapperElement = gTableElement.parentNode;
+        }
+      } else
+        gWrapperElement = gTableElement;
+    } 
+      
     // We disable resetting row and column count -- the user has more direct ways of doing that.
     document.getElementById("QuicklyTab").setAttribute("collapsed", true);
     document.getElementById("tablegrid").setAttribute("collapsed", true);
@@ -1179,13 +1191,8 @@ function ApplyTableAttributes()
 
     if (unit && gTableElement) 
       SetAnAttribute(gTableElement,"unit", unit);
-    // var newAlign = gTableCaptionPlacement;
-    // if (!newAlign)
-    //   newAlign = "";
-    var logStr;
 
-
-    logStr = "";
+    var logStr = "";
     var bEmptyStyle = true; //(!gTableElement.style);
     var theStyleString = "";
 
@@ -1207,7 +1214,20 @@ function ApplyTableAttributes()
     if (pos && pos.length > 0) {
 
       if (pos === "float") {
-
+        if (!gWrapperElement)
+          gWrapperElement = gEditor.createElementWithDefaults("msiframe");
+        gWrapperElement.setAttribute("frametype", "table");
+        if (gDialog.captionPlacementGroup.value == "above")
+          gWrapperElement.appendChild(cap);
+        if (gDialog.captionPlacementGroup.value !== "none"){           
+           msiEditorEnsureElementAttribute(gWrapperElement, "captionloc", gDialog.captionPlacementGroup.value, null);
+        }
+        if (gDialog.wrapOptionRadioGroup.value != "full"){
+          msiEnsureElementPackage(gWrapperElement,"wrapfig",null);
+        }
+        if (gTableElement.parentNode !== gWrapperElement){
+          gWrapperElement.appendChild(gTableElement);
+        }
       } else if (pos == "inline") 
         doSetStyleAttr("display", "inline-table");
       else { // pos == display
@@ -1220,9 +1240,7 @@ function ApplyTableAttributes()
            msiRequirePackage(gActiveEditorElement, "wrapfig", "");
            SetAnAttribute(gTableElement,"placement",placementCodeFrom(wrapFigOpt));
            //SetAnAttribute(gTableElement,"placeLocation", float);
-           doSetStyleAttr("float", (pos=="left"||pos=="inside")?"left":"right");
-
-        
+           doSetStyleAttr("float", (pos=="left"||pos=="inside")?"left":"right");        
         }
       }
       SetAnAttribute(gTableElement, "pos", pos);
@@ -2034,7 +2052,7 @@ function Apply()
     var cap;
     var i;
     var caps = gTableElement.getElementsByTagName('caption');
-
+        
     if (captionloc !== '') {
       if (caps.length > 0) {
         cap = caps[0];
@@ -2074,6 +2092,7 @@ function doHelpButton()
 {
   openHelp("table_properties");
 }
+
 function onAcceptNewTable()
 {
     var color;
@@ -2102,7 +2121,7 @@ function onAcceptNewTable()
 
 // This is code for creating a new table, not for revising
 
-      // Create necessary rows and cells for the table
+    // Create necessary rows and cells for the table
     var tableBody = gActiveEditor.createElementWithDefaults("tbody");
     var style;
     ApplyTableAttributes();
@@ -2190,10 +2209,9 @@ function onAcceptNewTable()
         }
       }
     }
-
-    // true means delete selection when inserting
+    
     gActiveEditor.markNodeDirty(gTableElement);
-    gActiveEditor.insertElementAtSelection(gTableElement, true);
+    gActiveEditor.insertElementAtSelection(gWrapperElement, true); // true means delete selection when inserting
     gTableElement.normalize();
 
   return true;
