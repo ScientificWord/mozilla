@@ -333,6 +333,7 @@
             </rows>
           </grid>
         </hbox>
+#ifndef PROD_SNB
         <hbox id="rotate" align="center">
           <label value="&sizeTab.rotateContents;"/>
           <menulist id = "rotationList" value="rot0" persist="value">
@@ -343,6 +344,7 @@
             </menupopup>
           </menulist>
         </hbox>
+#endif
       <!-- /vbox -->
     </groupbox>
   </vbox>
@@ -353,7 +355,7 @@
       <radiogroup id="placementRadioGroup" oncommand="placementChanged(this);" persist="value">
       <hbox flex="1">
         <vbox>
-          <radio id="inline" value="inline" class="medwidth" label="&inline;" radioGroup="placementRadioGroup" persist="selected"/>
+          <radio id="inline" value="inline" class="medwidth" label="&inline;" radioGroup="placementRadioGroup" persist="selected" style="height: 40px"/>
           <description value="&inlineOffset;" id="frameInlineOffsetLabel" class="medwidth"/>
           <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" value = "0" min="-Infinity" persist = "value"/>
         </vbox>
@@ -362,8 +364,8 @@
         </vbox>
 #ifndef PROD_SNB
         <vbox>
-          <radio id="float" value="float" label="&floating;" radioGroup="placementRadioGroup" oncommand="enableFloatOptions(this);"
-             persist="selected"/>
+          
+          
           <vbox>
             <checkbox id="placeForceHereCheck" label="&placement.forceHere;" observes="floatingPlacement" persist="checked"/>
             <checkbox id="placeHereCheck" label="&placement.here;" observes="floatingPlacement" persist="checked"/>
@@ -372,21 +374,26 @@
             <checkbox id="placeBottomCheck" label="&placement.bottomPage;" observes="floatingPlacement" persist="checked"/>
           </vbox>
         </vbox>
+#endif
         <vbox>
           <radiogroup id="wrapOptionRadioGroup" align="vertical" value="L" oncommand="enableFloatOptions(this);" persist="selectedIndex value">
             <radio id="hereLeftRadio" label="&Minipage.descLeft;" value="L" observes="wrapOption" />
             <radio id="hereRightRadio" label="&Minipage.descRight;" value="R" observes="wrapOption"/>
+#ifndef PROD_SNB
             <radio id="hereInsideRadio" label="&placement.hereInside;" value="I" observes="wrapOption" />
             <radio id="hereOutsideRadio" label="&placement.hereOutside;" value="O" observes="wrapOption" />
+#endif
             <radio id="hereFullWidthRadio" label="&placement.hereFull;" value="full" observes="wrapOption" />
           </radiogroup>
         </vbox>
-#endif
       </hbox>
       </radiogroup>
     </groupbox>
     <broadcasterset>
       <broadcaster id="floatingPlacement" disabled="true"/>
+#ifdef PROD_SNB
+      <broadcaster id="wrapOption" disabled="false"/>
+#endif
       <broadcaster id="wrapOption" disabled="true"/>
       <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notedata.width - sidemargin -->
       <broadcaster id="noteheight" height="40"/>

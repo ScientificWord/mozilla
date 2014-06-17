@@ -357,6 +357,8 @@
                 accesskey="&SourceMode.accesskey;" 
                 observes="cmd_HTMLSourceMode"
                 label="&SourceMode.label;"/>
+#ifndef PROD_SNB
+<!--   later we could have this bring up the direct print preview in SNB  -->
       <menuitem id="viewPreviewMode"  
                 type="radio" 
                 group="mode" 
@@ -364,7 +366,6 @@
                 observes="cmd_PreviewMode"
                   label="&PreviewMode.label;"/>
       <menuseparator/>
-#ifndef PROD_SNB
       <menuitem id="viewTeXFile"  
                 accesskey="&viewTeXFile.accesskey;"    
                 observes="cmd_showTeXFile" 
