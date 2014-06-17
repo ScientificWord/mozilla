@@ -1,3 +1,4 @@
+#include ../productname.inc
 Components.utils.import("resource://app/modules/fontlist.jsm"); 
 //Components.utils.import("resource://app/modules/pathutils.jsm"); 
 Components.utils.import("resource://app/modules/unitHandler.jsm");
@@ -109,7 +110,10 @@ function onAccept()
 	var leading = unitHandler.getValueAs(getLeading(), "pt");
 	var color = getColorFromColorPicker();
 	var fontsize = unitHandler.getValueAs(getFontSize(), "pt");
-	var rawtex = getRawTeX();
+	var rawtex = null;
+#ifndef PROD_SNB
+  rawtex = getRawTeX();
+#endif
 	
   var theWindow = window.opener;
   if (!theWindow || !("msiEditorSetTextProperty" in theWindow))

@@ -691,7 +691,7 @@ function placementChanged()
     bEnableInlineOffset = true;
   }
   showDisableControlsByID(["frameInlineOffsetLabel","frameInlineOffsetInput"], bEnableInlineOffset);
-  showDisableControlsByID(["hereLeftRadio","hereRightRadio", "hereInsideRadio", "hereOutsideRadio", "hereFullWidthRadio"], bEnableWrapfig);
+  showDisableControlsByID(["hereLeftRadio","hereRightRadio", "hereInsideRadio", "hereOutsideRadio", "hereFullWidthRadio"], !bEnableInlineOffset);
   showDisableControlsByID(["placeForceHereCheck","placeHereCheck", "placeFloatsCheck", 
                            "placeFloatsCheck", "placeTopCheck", "placeBottomCheck"], bEnableFloats);
 }
@@ -704,7 +704,7 @@ function enableFloatOptions(radiogroup)
   if (!radiogroup) 
     radiogroup = document.getElementById("wrapOptionRadioGroup");
 
-  if (document.getElementById('placeHereCheck').checked && radiogroup)
+  if (document.getElementById("placeHereCheck") && document.getElementById('placeHereCheck').checked && radiogroup)
   {
     theValue = "false";
     position = radiogroup.selectedItem.value;
@@ -891,14 +891,16 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
   }
 
   msiEditorEnsureElementAttribute(contentsNode, "msi_resize","true", editor);
-  rot = Dg.rotationList.value;
-  if (rot ==="rot0")
-  {
-    msiEditorEnsureElementAttribute(contentsNode, "rotation", null, editor);  //this will remove the "rotation" attribute
-  }
-  else
-  {
-    msiEditorEnsureElementAttribute(contentsNode, "rotation", rot, editor);
+  if (Dg.rotationList) {
+    rot = Dg.rotationList.value;
+    if (rot ==="rot0")
+    {
+      msiEditorEnsureElementAttribute(contentsNode, "rotation", null, editor);  //this will remove the "rotation" attribute
+    }
+    else
+    {
+      msiEditorEnsureElementAttribute(contentsNode, "rotation", rot, editor);
+    }
   }
   //frameNode.setAttribute("req", "ragged2e");
   msiRequirePackage(Dg.editorElement, "ragged2e", null);
