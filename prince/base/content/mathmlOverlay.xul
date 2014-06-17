@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--<?xml version="1.0" encoding="UTF-8"?> -->
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+#include productname.inc
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xul-stylesheet href="chrome://prince/skin/MathmlOverlay.css" type="text/css"?>
@@ -129,10 +130,13 @@
       </menu>
       <menuitem id="insertmenuMarker" label="&insertmenuMarker.label;"
         accesskey="&insertmenuMarker.accesskey;" observes="cmd_marker" />
+#ifndef PROD_SNB
       <menuitem id="insertmenuFootnote" label="&insertmenuFootnote.label;"
         accesskey="&insertmenuFootnote.accesskey;" observes="cmd_footnote" />
+#endif
       <menuitem id="insertmenuNote" label="&insertmenuNote.label;"
         accesskey="&insertmenuNote.accesskey;" observes="cmd_note" />
+#ifndef PROD_SNB
       <menu id="insertmenuTypesetObject" label="&insertmenuTSO.label;" accesskey="&insertmenuTSO.accesskey;" >
 				<menupopup>
           <menuitem id="MSIinsertIndexEntry"
@@ -174,7 +178,7 @@
           <menuitem id="LTPmakeIndex" label="&LTPprintIndex.label;" accesskey="&LTPprintIndex.accesskey;" command="cmd_printindex" />
         </menupopup>
       </menu>  
-
+#endif
       <menuitem id="insertmenuHyperlink" label="&insertmenuHyperlink.label;"
         accesskey="&insertmenuHyperlink.accesskey;" command="cmd_link" />
       <menuitem id="insertmenuHTMLField" label="&insertmenuHTMLField.label;"

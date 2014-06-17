@@ -1,5 +1,4 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
-
 function msiShowHideToolbarSeparators(toolbar) {
   dump("===> msiShowHideToolbarSeparators\n");
 
@@ -230,7 +229,7 @@ function msiEditorOnLoad()
 //    commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);
 //
     msiSetupMSIMathMenuCommands(editorElement);
-    msiSetupMSIComputeMenuCommands(editorElement);
+    if (msiSetupMSIComputeMenuCommands) msiSetupMSIComputeMenuCommands(editorElement);
     msiSetupMSITypesetMenuCommands(editorElement);
     msiSetupMSITypesetInsertMenuCommands(editorElement);
   } catch (e)
