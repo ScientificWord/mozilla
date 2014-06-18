@@ -154,26 +154,36 @@ subparagraph defaulttitletag:after {
 /*************************/
 
 title {
-  font-size: x-large;
+  font-size: 200%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
   display: block;
   margin-top: 12pt;
   text-align: center;
 }
 
 author {
+  font-size: 100%;
   font-weight: normal;
+  color: rgb(9, 62, 125);
   display: block;
   padding-top: 10pt;
   text-align: center;
 }
 
 address {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
   display: block;
   text-align: center;
 }
 
 date {
+  font-size: 100%;
   font-weight: normal;
+  color: rgb(9, 62, 125);
   display: block;
   padding-top: 2pt;
   text-align: center;
@@ -182,21 +192,24 @@ date {
 abstract {
   display: block;
   margin-top: 30pt;
-  margin-left: 50pt;
-  margin-right: 50pt;
+  margin-left: 0pt;
+  margin-right: 0pt;
   padding-left: 15pt;
   padding-right: 15pt;
+  padding-top: 15pt;
+  padding-bottom: 15pt;
   font-size: small;
   border: thin solid black; 
-  background-color: #DDBC9B;
-  -moz-border-radius: 20px;
+  background-color: #E1EEFD;
+  -moz-border-radius: 5px;
 }
 
 abstract:before {
   content: "Abstract";
   display: block;
   text-align: center;
-  font-size: medium; font-weight: bold;
+  font-size: 100%; font-weight: bold;
+  color: rgb(9, 62, 125);
   -moz-user-select: -moz-none;
 }
 
@@ -209,15 +222,31 @@ p {
   margin: 10pt 10pt 5pt 5pt;
 }
 
+math {
+  direction: ltr;
+}
+
 bodyText {
   display: block;
   margin: 10pt 0 5pt 0;
 }
+
+rtlBodyText {
+  display: block;
+  direction: rtl;
+  unicode-bidi: bidi-override;
+  margin: 10pt 10pt 5pt 5pt;
+}
+
 bodyMath {
   display: block;
   margin: 0 10pt 0 5pt;
   color: rgb(0,128,64);
 }
+
+/****************/
+/* Environments */
+/****************/
 
 shortQuote {
   display: block; 
