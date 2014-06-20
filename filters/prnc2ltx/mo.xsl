@@ -179,6 +179,31 @@
           <xsl:with-param name="LaTeX-nom" select="'biguplus'"/>
         </xsl:call-template>
       </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2A00;'">
+        <xsl:call-template name="bigop">
+          <xsl:with-param name="LaTeX-nom" select="'bigodot'"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="normalize-space(string())='&#x2A01;'">
+        <xsl:call-template name="bigop">
+          <xsl:with-param name="LaTeX-nom" select="'bigoplus'"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="normalize-space(string())='&#x2A02;'">
+        <xsl:call-template name="bigop">
+          <xsl:with-param name="LaTeX-nom" select="'bigotimes'"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="normalize-space(string())='&#x2A04;'">
+        <xsl:call-template name="bigop">
+          <xsl:with-param name="LaTeX-nom" select="'biguplus'"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="normalize-space(string())='&#x2A06;'">
+        <xsl:call-template name="bigop">
+          <xsl:with-param name="LaTeX-nom" select="'bigsqcup'"/>
+        </xsl:call-template>
+      </xsl:when>
     </xsl:choose>
     </xsl:if>
 

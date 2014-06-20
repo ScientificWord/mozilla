@@ -45,11 +45,13 @@
 
 
   <xsl:template match="mml:msub">
-  
+
     <xsl:variable name="is-big-op">
-<!-- msub may contain an embellished BigOp, \int, \iint, etc. -->
-        <xsl:call-template name="is-LaTeX-bigop"/>
+        <!-- msub may contain an embellished BigOp, \int, \iint, etc. -->
+        <xsl:value-of select="*[1]//@largeop='true'"/>
+        <!-- xsl:call-template name="is-LaTeX-bigop"/ -->
     </xsl:variable>
+  
 
     <xsl:choose>
       <xsl:when test="$is-big-op!='false'">
@@ -83,8 +85,9 @@
   <xsl:template match="mml:msup">
   
     <xsl:variable name="is-big-op">
-<!-- msup may contain an embellished BigOp, \int, \iint, etc. -->
-        <xsl:call-template name="is-LaTeX-bigop"/>
+        <!-- msup may contain an embellished BigOp, \int, \iint, etc. -->
+        <xsl:value-of select="*[1]//@largeop='true'"/>
+        <!-- xsl:call-template name="is-LaTeX-bigop"/ -->
     </xsl:variable>
   
     <xsl:choose>
