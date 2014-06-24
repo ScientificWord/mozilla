@@ -1,3 +1,6 @@
+#include productname.inc
+
+
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 function msiShowHideToolbarSeparators(toolbar) {
   dump("===> msiShowHideToolbarSeparators\n");
@@ -229,7 +232,9 @@ function msiEditorOnLoad()
 //    commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);
 //
     msiSetupMSIMathMenuCommands(editorElement);
+#ifndef PROD_SW
     if (msiSetupMSIComputeMenuCommands) msiSetupMSIComputeMenuCommands(editorElement);
+#endif
     msiSetupMSITypesetMenuCommands(editorElement);
     msiSetupMSITypesetInsertMenuCommands(editorElement);
   } catch (e)
