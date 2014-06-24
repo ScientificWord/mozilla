@@ -3509,8 +3509,8 @@ function ensureVCamPreinitForPlot(graphNode, editorElement)
   {
     theGraph = new Graph();
     theGraph.extractGraphAttributes(graphNode);
-    checkVCamStatusForPlot(objElement, theGraph, editorElement);
-    if (objElement.vcamStatus === "initialized")
+    //checkVCamStatusForPlot(objElement, theGraph, editorElement);
+    if (true) //objElement.vcamStatus === "initialized")
       return;
     if ( (objElement.vcamStatus === "needRecreate") || (objElement.vcamStatus === "needReload") )
     {
