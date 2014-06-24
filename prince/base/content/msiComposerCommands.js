@@ -1,5 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/unitHandler.jsm");
+#include productname.inc
 
 
 /* Implementations of nsIControllerCommand for composer commands */
@@ -173,7 +174,6 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_backmatter", msiBackMatterCommand);
   commandTable.registerCommand("cmd_frontmatter", msiFrontMatterCommand);
   commandTable.registerCommand("cmd_printindex", msiPrintIndexCommand);
-
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -1441,7 +1441,9 @@ var msiPrintDirectCommand =
     try {
       var editorElement = msiGetActiveEditorElement();
       var doc = editorElement.contentDocument;
+#ifndef PROD_SW
       rebuildSnapshots(doc);
+#endif
       PrintUtils.print();
     }
     catch (e) {
@@ -1487,7 +1489,9 @@ var msiPreviewDirectCommand =
     try {
       var editorElement = msiGetActiveEditorElement();
       var doc = editorElement.contentDocument;
+#ifndef PROD_SW
       rebuildSnapshots(doc);
+#endif
       PrintUtils.printPreview(onEnterPP, onExitPP);
     }
     catch (e) {
@@ -3860,7 +3864,9 @@ var msiDirectPrintCommand =
     {
       var editorElement = msiGetActiveEditorElement();
       var doc = editorElement.contentDocument;
+#ifndef PROD_SW
       rebuildSnapshots(doc);
+#endif
       msiFinishHTMLSource();
       PrintUtils.print();
     }
