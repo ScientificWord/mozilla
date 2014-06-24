@@ -274,24 +274,32 @@
 
   <!-- use docformat information to call the crop package -->
   <xsl:template match="html:crop">
-    <xsl:if test="$pagelayoutok"
-  ><xsl:variable name="unit">
+    <xsl:if test="$pagelayoutok">
+      <xsl:variable name="unit">
         <xsl:value-of select="@unit"/>
-      </xsl:variable
-  >\usepackage[<xsl:value-of select="@type"/><xsl:text>,</xsl:text
-  ><xsl:choose
-    ><xsl:when test="@paper='other'"
-      >width =<xsl:value-of select="@width"/><xsl:value-of select="$unit"/><xsl:text>,</xsl:text
-      >
-          height =<xsl:value-of select="@height"/><xsl:value-of select="$unit"/><xsl:text>,</xsl:text
-    ></xsl:when>
-        <xsl:otherwise
-      ><xsl:value-of select="@paper"/><xsl:text>,</xsl:text></xsl:otherwise>
-        <!-- you can add any crop options you want here, separated with commas --> </xsl:choose
-  >
-      center]{crop}
-    </xsl:if
->
+      </xsl:variable>
+      <xsl:text>\usepackage[</xsl:text>
+      <xsl:value-of select="@type"/>
+      <xsl:text>,</xsl:text>
+      <xsl:choose>
+        <xsl:when test="@paper='other'">
+          <xsl:text>width =</xsl:text>
+          <xsl:value-of select="@width"/>
+          <xsl:value-of select="$unit"/>
+          <xsl:text>,</xsl:text>
+          <xsl:text>height =</xsl:text>
+          <xsl:value-of select="@height"/>
+          <xsl:value-of select="$unit"/>
+          <xsl:text>,</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@paper"/>
+          <xsl:text>,</xsl:text>
+        </xsl:otherwise>
+        <!-- you can add any crop options you want here, separated with commas --> 
+      </xsl:choose>
+      <xsl:text>center]{crop}</xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <!-- use docformat information to call the geometry package -->

@@ -3511,7 +3511,8 @@ function ensureVCamPreinitForPlot(graphNode, editorElement)
     theGraph.extractGraphAttributes(graphNode);
     //checkVCamStatusForPlot(objElement, theGraph, editorElement);
     if (true) //objElement.vcamStatus === "initialized")
-      return;
+    //checkVCamStatusForPlot(objElement, theGraph, editorElement);
+      return;  // skip the rest of this function for now
     if ( (objElement.vcamStatus === "needRecreate") || (objElement.vcamStatus === "needReload") )
     {
 //      doVCamInitialize(objElement);
@@ -3526,7 +3527,7 @@ function ensureVCamPreinitForPlot(graphNode, editorElement)
 //      objElement.setAttribute("data", vcamUri);
 //      objElement.vcamStatus = "uninitialized";
     }
-    preInitializeVCam( objElement, theGraph, editorElement, true, true);
+    //preInitializeVCam( objElement, theGraph, editorElement, true, true);
   }
 }
 

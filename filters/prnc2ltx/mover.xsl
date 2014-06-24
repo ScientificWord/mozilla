@@ -22,6 +22,8 @@
      \substack{ m=2 \\ n=0}
      }
 -->
+    <!-- Show unicode hex value [<xsl:value-of select="./*[1]"/>] -->
+    
     <xsl:variable name="LaTeX-BigOp">
       <xsl:apply-templates select="./*[1]"/>
     </xsl:variable>
