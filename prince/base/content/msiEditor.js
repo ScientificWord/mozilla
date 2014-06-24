@@ -319,7 +319,9 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
     commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);
 
     msiSetupMSIMathMenuCommands(editorElement);
-    msiSetupMSIComputeMenuCommands(editorElement);
+#ifndef PROD_SW
+    if (msiSetupMSIComputeMenuCommands) msiSetupMSIComputeMenuCommands(editorElement);
+#endif
     if ("msiSetupMSITypesetMenuCommands" in window)
     {
       msiSetupMSITypesetMenuCommands(editorElement);
@@ -1076,7 +1078,9 @@ function msiEditorDocumentObserver(editorElement)
           catch(e) {
             dump(e+"\n");
           }
+#ifndef PROD_SW
           initializeAllVCamObjects(this.mEditorElement.document);
+#endif
           // doVCamPreinitForPlotsInDocument(editorElement, true);
         }
 
