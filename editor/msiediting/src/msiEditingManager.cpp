@@ -1380,7 +1380,7 @@ msiEditingManager::InsertMathmlElement(nsIEditor * editor,
                                        nsIDOMElement* mathmlElement)
 {
   nsresult res(NS_ERROR_FAILURE);
-  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathmlElement");
   if (editor && selection && node && mathmlElement)
   {
     PRBool transacting(PR_FALSE);
