@@ -2211,7 +2211,12 @@ function onAcceptNewTable()
     }
     
     gActiveEditor.markNodeDirty(gTableElement);
-    gActiveEditor.insertElementAtSelection(gWrapperElement, true); // true means delete selection when inserting
+    if (gWrapperElement) {
+      gActiveEditor.insertElementAtSelection(gWrapperElement, true); // true means delete selection when inserting
+    }
+    else {
+      gActiveEditor.insertElementAtSelection(gTableElement, true);
+    }
     gTableElement.normalize();
 
   return true;
