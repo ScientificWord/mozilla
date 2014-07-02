@@ -1,5 +1,5 @@
 Components.utils.import("resource://app/modules/os.jsm");
-
+#include productname.inc
 
 const NS_IPCSERVICE_CONTRACTID  = "@mozilla.org/process/ipc-service;1";
 const NS_IPCBUFFER_CONTRACTID   = "@mozilla.org/process/ipc-buffer;1";
