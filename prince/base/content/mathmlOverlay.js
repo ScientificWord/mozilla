@@ -3396,39 +3396,52 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
   var newSelection = {};
 	if ( (node.nodeType === Node.TEXT_NODE) || (node.nodeName ==="texb") )
 	{
-		if (startOffset >0)
-		{
-		  editor.splitNode(node, startOffset, newNode);
-		}
-		if (endOffset >= 0)
-		{
-			editor.splitNode(node, endOffset - startOffset, newNode);
-			node = newNode.value;
-		}
-  	var parent = node.parentNode;
-  	var offset = offsetOfChild(parent, node);
-  	var text = node.textContent;
-    var o, p;
-  	for (var i = 0; i < text.length; i++)
-  	{
-  		editor.selection.collapse(parent, offset+i);
-      insertsymbol(text[i]);
-      // if (firstnode && i===0) {  // put the selection start in the new symbol node; it would sure help if insertsymbol returned the inserted node!
-      //   o = 0;
-      //   p = parent.firstChild;
-      //   while (o++ < offset + i) p = p.nextSibling;
-      //   newSelection.startNode = p;
-      //   newSelection.startOffset = 0;
-      // } 
-      // if (lastnode && i===text.length-1) {
-      //   o = 0;
-      //   p = parent.firstChild;
-      //   while (o++ < offset + i && p && p.nextSibling) p = p.nextSibling;
-      //   newSelection.endNode = p;
-      //   newSelection.endOffset = p.childNodes.length;
-      // }
-  	}
-  	editor.deleteNode(node);
+    try {
+  		if (startOffset >0)
+  		{
+  		  editor.splitNode(node, startOffset, newNode);
+  		}
+  		if (endOffset >= 0)
+  		{
+  			editor.splitNode(node, endOffset - startOffset, newNode);
+  			node = newNode.value;
+  		}
+    	var parent = node.parentNode;
+    	var offset = offsetOfChild(parent, node);
+      if (node.nodeName === 'texb') {
+        editor.selection.collapse(parent, ++offset);
+        editor.InsertMathNodeAtSelection(node);
+      }
+      else {
+
+      	var text = node.textContent;
+        var o, p;
+      	for (var i = 0; i < text.length; i++)
+      	{
+      		editor.selection.collapse(parent, offset+i);
+          insertsymbol(text[i]);
+          // if (firstnode && i===0) {  // put the selection start in the new symbol node; it would sure help if insertsymbol returned the inserted node!
+          //   o = 0;
+          //   p = parent.firstChild;
+          //   while (o++ < offset + i) p = p.nextSibling;
+          //   newSelection.startNode = p;
+          //   newSelection.startOffset = 0;
+          // } 
+          // if (lastnode && i===text.length-1) {
+          //   o = 0;
+          //   p = parent.firstChild;
+          //   while (o++ < offset + i && p && p.nextSibling) p = p.nextSibling;
+          //   newSelection.endNode = p;
+          //   newSelection.endOffset = p.childNodes.length;
+          // }
+      	}
+      }
+    }
+    catch(e) {
+      //
+    }
+
+  	if (node.tagName !== 'texb') editor.deleteNode(node);
   	var mathnode = coalescemath(null, true);
     editor.selection.collapse(mathnode,0);
     editor.selection.extend(mathnode, mathnode.childNodes.length);
@@ -3511,8 +3524,7 @@ function textToMath(editor)
       while (enumerator.hasMoreElements())
       {
         node = enumerator.getNext();
-        nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1); //,
-          // node===startNode, node===endNode, newSelection);
+        nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1); 
       }
     }
 	}
