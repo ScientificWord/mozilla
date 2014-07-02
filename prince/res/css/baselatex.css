@@ -29,7 +29,7 @@ mml|mtext { color: black; }
 mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
 
 
-pre, verbatim { font-family: Courier; white-space: pre }
+pre, verbatim, verb { font-family: Courier; white-space: pre }
 
 verbatim bodyText {
   margin: 0;
