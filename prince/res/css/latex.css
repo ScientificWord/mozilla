@@ -210,9 +210,9 @@ body[showinvis="true"] mml|maligngroup:before {
   visibility: none;
 }
 */
-/*
+
 hspace[type="negativeThinSpace"] {
-  min-width: 0.0em;
+  min-width: 0.17em;
 }
 
 hspace[type="zeroSpace"] {
@@ -221,7 +221,7 @@ hspace[type="zeroSpace"] {
 
 hspace[type="noIndent"] {
   min-width: 0.0em;
-} */
+} 
 
 vspace {
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#vspace"); */
