@@ -11325,7 +11325,7 @@ var msiSpaceUtils =
     thickSpace :            {dimensions: "0.5em", charContent: "&#x2002;"},   //"EN SPACE" in Unicode?
     italicCorrectionSpace : {dimensions: "0.083en", charContent: "&#x200a;"},   //the "HAIR SPACE" in Unicode?
     negativeThinSpace :     {dimensions: "0.0em"},
-    zeroSpace :             {dimensions: "0.0em", charContent: "&#x200b;"},
+    zeroSpace :             {dimensions: "0.1em", charContent: "&#x200b;"},
     noIndent :              {dimensions: "0.0em", showInvisibleChars: "&#x2190;"}
   },
 
