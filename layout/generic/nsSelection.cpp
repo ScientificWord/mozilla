@@ -1377,7 +1377,24 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
         if (tempFrame && tempFrame->GetParent()) {
    
           nsIContent* pContent = tempFrame -> GetParent() -> GetContent();
-          if (pContent ->Tag() == nsGkAtoms::mi_)
+          nsIAtom * tag = pContent->Tag();
+          if (tag == nsGkAtoms::mo_) {
+            nsIFrame* outFrame;
+            PRInt32  outOffset;
+            if (aAmount == eSelectCharacter) {
+              if (offsetused == 0) {
+                nsCOMPtr<nsINode> node;
+                node = do_QueryInterface(pContent);
+                nsAutoString textcontent;
+                nsContentUtils::GetNodeTextContent(node, PR_TRUE, textcontent);
+                outOffset = textcontent.Length();
+                outFrame = frame;
+                TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
+                return NS_OK;
+              }
+            }
+          }
+          if (tag == nsGkAtoms::mi_)
           {
             nsCOMPtr<nsIDOMElement> mielt(do_QueryInterface(pContent));
             if (mielt) {
@@ -1416,7 +1433,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
 
                    return NS_OK;
 
-                } else if (pMathCM && (aKeycode == nsIDOMKeyEvent::DOM_VK_RIGHT)){
+                } else if (pMathCM && (aKeycode == nsIDOMKeyEvent::DOM_VK_RIGHT)) {
                    
                    pMathCM->MoveOutToRight(leavingFrame, &outFrame, &outOffset, count, &fBailing, &count);
                    if (outFrame)

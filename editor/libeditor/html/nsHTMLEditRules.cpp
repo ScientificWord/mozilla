@@ -2454,8 +2454,9 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
   // else we have a non collapsed selection
   // first adjust the selection
-  res = ExpandSelectionForDeletion(aSelection);
-  if (NS_FAILED(res)) return res;
+  // BBM: I think this call is redundant
+  // res = ExpandSelectionForDeletion(aSelection);
+  // if (NS_FAILED(res)) return res;
 
   // remember that we did a ranged delete for the benefit of AfterEditInner().
   mDidRangedDelete = PR_TRUE;
@@ -2489,7 +2490,16 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
     if (endNode == startNode)
     {
-      res = mHTMLEditor->DeleteSelectionImpl(aAction);
+      PRUint16 type;
+      res = startNode->GetNodeType(&type);
+      if (type == nsIDOMNode::TEXT_NODE) {
+        nsCOMPtr<nsIDOMCharacterData> text = do_QueryInterface(startNode);
+        if (text) {
+          res = mHTMLEditor->DeleteText(text, startOffset, endOffset - startOffset);
+        }
+      }
+      else
+        res = mHTMLEditor->DeleteSelectionImpl(aAction);
       if (NS_FAILED(res)) return res;
     }
     else
@@ -3734,6 +3744,25 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
     }
     PRBool isInComplexTransaction;
     ed->GetInComplexTransaction(&isInComplexTransaction);
+      // Some special handling when node is in math, and the next character in the math is in an <mo>.
+      // The cursor isn't really where we'd like it because of problems with cursor display in mo's.
+    // if (nsHTMLEditUtils::IsMath(node)) {
+    //     PRUint16 NodeType;
+    //     node->GetNodeType(&NodeType);
+    //     while (node && ((NodeType != nsIDOMNode::TEXT_NODE) || nodeIsWhiteSpace(node, 0, (PRInt32)(PRUint32)(-1)))) {
+    //       if (NodeType == nsIDOMNode::TEXT_NODE) {
+    //           node->GetNextSibling(getter_AddRefs(node));
+    //       } else {
+    //           node->GetFirstChild(getter_AddRefs(node));
+    //       }
+    //       node->GetNodeType(&NodeType);         
+    //     }
+    //     if (node) {
+    //       nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
+    //       isEmpty = PR_FALSE;
+    //     }
+    // }
+
     done = !(isEmpty && node && !isInComplexTransaction);
     if (node && isEmpty && !isInComplexTransaction) {
       // res = node->GetParentNode(getter_AddRefs(parentNode));
@@ -3744,7 +3773,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
         PRBool isFrontMatterTag;
         nsCOMPtr<msiITagListManager> mtagListManager;
         ed->GetTagListManager(getter_AddRefs(mtagListManager));
-        res = parentNode->GetNodeName(name);
+         res = parentNode->GetNodeName(name);
         if (name.EqualsLiteral("html")) return;
         if (!name.EqualsLiteral("body")){
           mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
