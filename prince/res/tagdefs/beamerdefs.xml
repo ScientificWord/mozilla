@@ -43,16 +43,6 @@
                         </framesubtitle>
                     </initialcontents>
                 </tag>
-                <tag nm="institute">
-                    <nexttag>bodyText</nexttag>
-                    <description>Beamer institute</description>
-                    <discardemptyblock>true</discardemptyblock>
-                    <nextafteremptyblock>bodyText</nextafteremptyblock>
-                    <initialcontents>
-                        <institute><cursor/><br/>
-                        </institute>
-                    </initialcontents>
-                </tag>
             </tags>
         </tagclass>
         <tagclass>
@@ -145,5 +135,21 @@
                 </tag>
             </tags>
         </tagclass>
+		<tagclass>
+			<tagclassname>frontmtag</tagclassname>
+			<tags>
+                <tag nm="institute">
+                    <description>Beamer institute</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <institute><cursor/><br/></institute>
+                    </initialcontents>
+                </tag>
+			</tags>
+		</tagclass>
     </tagclasses>
 </tagproperties>
