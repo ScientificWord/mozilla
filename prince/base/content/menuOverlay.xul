@@ -164,6 +164,12 @@
                 observes="cmd_countwords" 
                 disabled="false"
                 label="&countWords.label;"/>
+      <menuseparator id="sep_setalignment" />
+      <menuitem id="menu_setalignment"
+                accesskey="&setalignment.accesskey;"
+                key="setalignmentkb"   
+                observes="cmd_MSIsetAlignmentCommand" 
+                label="&setalignment.label;"/>
     </menupopup>
   </menu>
 
@@ -724,6 +730,7 @@
     <command id="cmd_checkLinks"    oncommand="msiGoDoCommand('cmd_checkLinks')"/>
     <command id="cmd_pasteQuote"    oncommand="msiGoDoCommand('cmd_pasteQuote')" label="&pasteAsQuotationCmd.label;"/>
     <command id="cmd_publishSettings" label="&publishSettings.label;" accesskey="&publishSettings.accesskey;" oncommand="msiGoDoCommand('cmd_publishSettings')"/>
+    <command id="cmd_MSIsetAlignmentCommand"    oncommand="msiGoDoCommand('cmd_MSIsetAlignmentCommand')"/>
   </commandset>
 
   <!-- style related commands that update on creation, and on selection change -->
