@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<xbl:bindings id="beamerbindings"
+	xmlns:xbl="http://www.mozilla.org/xbl" 
+  xmlns:sw="http://www.sciword.com/namespaces/sciword"
+  xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:html="http://www.w3.org/1999/xhtml" 
+  xmlns:mml="http://www.w3.org/1998/Math/MathML" >
+
+  <xbl:binding id="fmtag-institute"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Institute</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+</xbl:bindings>
