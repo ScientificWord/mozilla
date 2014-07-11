@@ -488,6 +488,8 @@
 <!ENTITY listdefinition.accesskey "d">
 <!ENTITY listProps.label "List Properties...">
 <!ENTITY listprops.accesskey "l">
+<!ENTITY setalignment.accesskey "t">
+<!ENTITY setalignment.label "Set alignment">
 
 <!ENTITY ParagraphSelect.tooltip "Choose a Paragraph Format">
 <!-- Shared in Paragraph, and Toolbar menulist -->
