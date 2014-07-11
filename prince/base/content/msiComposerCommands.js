@@ -146,6 +146,8 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_reviseVerticalSpaces", msiReviseVerticalSpacesCommand);
   commandTable.registerCommand("cmd_msiReviseRules",   msiReviseRulesCommand);
   commandTable.registerCommand("cmd_msiReviseBreaks",  msiReviseBreaksCommand);
+  commandTable.registerCommand("cmd_MSIsetAlignmentCommand",  msiSetAlignmentCommand);
+
   commandTable.registerCommand("cmd_note", msiNoteCommand);
   commandTable.registerCommand("cmd_footnote", msiFootnoteCommand);
   commandTable.registerCommand("cmd_frame", msiFrameCommand);
@@ -6505,6 +6507,92 @@ function msiReviseBreaks(reviseData, dialogData, editorElement)
 
   editor.endTransaction();
 }
+
+function setAlignmentOK(editorElement) {
+  var editor = msiGetEditor(editorElement); 
+  var selection = editor.selection;
+  var isMath;
+  var selNode;
+  if (selection.isCollapsed) {
+    selNode = selection.anchorNode;
+    ismath = msiNavigationUtils.isMathNode(selNode);
+    if (!ismath) selNode = selNode.parentNode;
+    ismath = msiNavigationUtils.isMathNode(selNode);
+    while (selNode && ismath && selNode.tagName != 'mtd') {
+      if (selNode.tagName != 'mrow' &&
+        selNode.tagName != 'mi' &&
+        selNode.tagName != 'mo' &&
+        selNode.tagName != 'mstyle' &&
+        selNode.tagName != 'mphantom') {
+        return false;
+      }
+      selNode = selNode.parentNode;
+      ismath = msiNavigationUtils.isMathNode(selNode);
+    }
+    if (selNode.tagName == 'mtd') return true;
+  }
+  return false;
+}
+
+function positionInParent(aNode)
+{
+  if (aNode.parentNode !== null)
+  {
+    for (var ix = 0; ix < aNode.parentNode.childNodes.length; ++ix)
+    {
+      if (aNode.parentNode.childNodes[ix] === aNode)
+        return ix;
+    }
+  }
+  return -1;
+}
+
+function insertAlignment(alignmentNode, editor) {
+  var node = editor.selection.anchorNode;
+  var offset = editor.selection.anchorOffset;
+  var tempOffset;
+  var nodeObj = {value: null};
+  var offsetObj = {value: null};
+  while (node.nodeType == Node.TEXT_NODE || node.tagName == 'mi' || node.tagName == 'mo') {
+    // these can't accept a node, so we go up to the left or the right.
+    tempOffset = positionInParent(node);
+    node = node.parentNode;
+    if (offset > 0) {
+      offset = tempOffset+ 1; // point past the node
+    } else {
+      offset = tempOffset;
+    }
+  } 
+  editor.insertNode(alignmentNode, node, offset);
+}
+
+var msiSetAlignmentCommand =
+{
+    isCommandEnabled: function(aCommand, dummy)
+    {
+      var editorElement = msiGetActiveEditorElement();
+      return setAlignmentOK(editorElement);
+    },
+
+    getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+    doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+    doCommand: function(aCommand, dummy)
+    {
+      try{
+        var editorElement = msiGetActiveEditorElement();
+        var editor = msiGetEditor(editorElement);
+        var alignmentNode;
+        if (setAlignmentOK(editorElement)) {
+          alignmentNode = editor.document.createElementNS(mmlns, "maligngroup");
+          insertAlignment(alignmentNode, editor);  
+        }
+      }
+      catch (e) {
+        finalThrow(cmdFailString('set alignment'), e.message);
+      }
+    }
+};
 
 //----------------------------------------------------
 var msiMarkerCommand =
