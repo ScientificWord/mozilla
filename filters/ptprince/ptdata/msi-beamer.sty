@@ -24,16 +24,49 @@
 \def\@authorb#1{%
   \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}}
 
-\def\address{\@ifnextchar[{\@addressa}{\@addressb}}
+%% Beamer has optional parameter for author
+\def\author{\@ifnextchar[{\@authora}{\@authorb}}
 
-\def\@addressa[#1]#2{%
-  \msitag{^^0a}%
-  \msiopentag{address}{<address>}%
-     \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
-  #2%
-  \msiclosetag{address}{</address>}%
-}
+\def\@authora[#1]#2{%
+  \msiopentag{author}{<author>}
+    \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+    #2%
+  \msiclosetag{author}{</author>}}
 
-\def\@addressb#1{
-  \msiopentag{address}{<address>}#1\msiclosetag{address}{</address>}}
+\def\@authorb#1{%
+  \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}}
+
+%% Beamer has optional parameter for institute
+\def\institute{\@ifnextchar[{\@institutea}{\@instituteb}}
+
+\def\@institutea[#1]#2{%
+  \msiopentag{institute}{<institute>}
+    \msiopentag{instituteid}{<instituteid>}#1\msiclosetag{instituteid}{</instituteid>}%
+    #2%
+  \msiclosetag{institute}{</institute>}}
+
+\def\@instituteb#1{%
+  \msiopentag{institute}{<institute>}#1\msiclosetag{institute}{</institute>}}
+
+%% Beamer has optional parameter for subtitle
+\def\subtitle{\@ifnextchar[{\@subtitlea}{\@subtitleb}}
+
+\def\@subtitlea[#1]#2{%
+  \msiopentag{subtitle}{<subtitle>}
+    \msiopentag{subtitleid}{<subtitleid>}#1\msiclosetag{subtitleid}{</subtitleid>}%
+    #2%
+  \msiclosetag{subtitle}{</subtitle>}}
+
+\def\@subtitleb#1{%
+  \msiopentag{subtitle}{<subtitle>}#1\msiclosetag{subtitle}{</subtitle>}}
+
+%\subject{text}
+\def\subject#1{\out@subject{#1}}
+\def\out@subject#1{%
+   \msitag{^^0a}\msiopentag{subject}{<subject>}#1\msiclosetag{subject}{</subject>}}
+
+%\keywords{text}
+\def\keywords#1{\out@keywords{#1}}
+\def\out@keywords#1{%
+   \msitag{^^0a}\msiopentag{keywords}{<keywords>}#1\msiclosetag{keywords}{</keywords>}}
 
