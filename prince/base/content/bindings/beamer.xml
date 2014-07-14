@@ -17,4 +17,34 @@
     </xbl:content>
   </xbl:binding>
 
+  <xbl:binding id="fmtag-subtitle"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Subtitle</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-subject"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Subject</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-keywords"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Keywords</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
 </xbl:bindings>
