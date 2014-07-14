@@ -151,5 +151,53 @@
                 </tag>
 			</tags>
 		</tagclass>
+		<tagclass>
+			<tagclassname>frontmtag</tagclassname>
+			<tags>
+                <tag nm="subtitle">
+                    <description>Beamer subtitle</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <subtitle><cursor/><br/></subtitle>
+                    </initialcontents>
+                </tag>
+			</tags>
+		</tagclass>
+		<tagclass>
+			<tagclassname>frontmtag</tagclassname>
+			<tags>
+                <tag nm="subject">
+                    <description>Beamer subject</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <subject><cursor/><br/></subject>
+                    </initialcontents>
+                </tag>
+			</tags>
+		</tagclass>
+		<tagclass>
+			<tagclassname>frontmtag</tagclassname>
+			<tags>
+                <tag nm="keywords">
+                    <description>Beamer keywords</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <keywords><cursor/><br/></keywords>
+                    </initialcontents>
+                </tag>
+			</tags>
+		</tagclass>
     </tagclasses>
 </tagproperties>

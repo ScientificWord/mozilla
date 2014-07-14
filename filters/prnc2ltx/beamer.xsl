@@ -9,6 +9,30 @@
 
 <xsl:include href="latex.xsl"/>
 
+<xsl:template match="html:date">
+\date<xsl:apply-templates mode="option"/>{<xsl:apply-templates/>}
+</xsl:template>
+<xsl:template match="html:date/html:option"></xsl:template>
+<xsl:template match="html:date//text()" mode="option"></xsl:template>
+<xsl:template match="html:option" mode="option">[<xsl:apply-templates/>]</xsl:template>
+
+<xsl:template match="html:subtitle">
+\subtitle<xsl:apply-templates mode="subtitleid"/>{<xsl:apply-templates/>}
+</xsl:template>
+<xsl:template match="html:subtitle/html:subtitleid"></xsl:template>
+<xsl:template match="html:subtitle//text()" mode="subtitleid"></xsl:template>
+<xsl:template match="html:subtitleid" mode="subtitleid">[<xsl:apply-templates/>]</xsl:template>
+
+<xsl:template match="html:institute">
+\institute<xsl:apply-templates mode="instituteid"/>{<xsl:apply-templates/>}
+</xsl:template>
+<xsl:template match="html:institute/html:instituteid"></xsl:template>
+<xsl:template match="html:institute//text()" mode="instituteid"></xsl:template>
+<xsl:template match="html:instituteid" mode="instituteid">[<xsl:apply-templates/>]</xsl:template>
+
+<xsl:template match="html:subject">\subject{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:keywords">\keywords{<xsl:apply-templates/>}</xsl:template>
+
 <xsl:template match="html:beamerframe">
 \begin{frame}
 <xsl:apply-templates/>
