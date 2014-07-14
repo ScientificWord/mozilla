@@ -6553,6 +6553,18 @@ function insertAlignment(alignmentNode, editor) {
   var tempOffset;
   var nodeObj = {value: null};
   var offsetObj = {value: null};
+  var currentAlignNodes;
+  var currentAlignNode;
+  var posInParent;
+  var i;
+  // find existing alignment marks. Remove them for 5.5 behavior
+  var mtdNode = editor.getElementOrParentByTagName("mtd", node);
+  if (mtdNode ) {
+    currentAlignNodes = mtdNode.getElementsByTagName('maligngroup');
+    if (currentAlignNodes.length > 0) {
+      currentAlignNode = currentAlignNodes[0];
+    }
+  }
   while (node.nodeType == Node.TEXT_NODE || node.tagName == 'mi' || node.tagName == 'mo') {
     // these can't accept a node, so we go up to the left or the right.
     tempOffset = positionInParent(node);
@@ -6563,7 +6575,13 @@ function insertAlignment(alignmentNode, editor) {
       offset = tempOffset;
     }
   } 
+  editor.beginTransaction();
   editor.insertNode(alignmentNode, node, offset);
+  if (currentAlignNode) {
+    editor.deleteNode(currentAlignNode);
+  }
+  editor.selection.collapse(node, offset+1);
+  editor.endTransaction();
 }
 
 var msiSetAlignmentCommand =
