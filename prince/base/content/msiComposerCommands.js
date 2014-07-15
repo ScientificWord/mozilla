@@ -1,5 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/unitHandler.jsm");
+Components.utils.import("resource://app/modules/os.jsm");
 #include productname.inc
 
 
@@ -48,6 +49,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_objectProperties",   msiObjectPropertiesCommand);
   commandTable.registerCommand("cmd_removeNamedAnchors", msiRemoveNamedAnchorsCommand);
   commandTable.registerCommand("cmd_editLink",        msiEditLinkCommand);
+  commandTable.registerCommand("cmd_followLink",        msiFollowLinkCommand);
 
   commandTable.registerCommand("cmd_form",          msiFormCommand);
   commandTable.registerCommand("cmd_inputtag",      msiInputTagCommand);
@@ -8792,6 +8794,64 @@ var msiEditLinkCommand =
     editorElement.contentWindow.focus();
   }
 };
+
+////-----------------------------------------------------------------------------------
+var msiFollowLinkCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    // Not really used -- this command is only in context menu, and we do enabling there
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    try
+    {
+      var element = msiGetEditor(editorElement).getSelectedElement("href");
+      if (element)
+        msiFollowLink(element);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('editlink'), e.message);
+    }
+    editorElement.contentWindow.focus();
+  }
+};
+
+function msiFollowLink( element ) {
+  var href = element.getAttribute("href");
+  var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var extension;
+  var exefile;
+  var arr = new Array();
+  if (href) {
+    if (href.indexOf(".sci") > 0) {
+      // do something
+    }
+    else {
+      var os = getOS(window);
+      if (os == "win")
+      {
+        extension = "cmd";
+      }
+      else 
+      {
+        extension = "bash";
+      }
+      exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+      exefile.append("shell."+ extension);
+      theProcess.init(exefile);
+      arr = [href];
+      theProcess.run(false, arr, arr.length);
+    }
+  }
+}
 
 
 ////-----------------------------------------------------------------------------------

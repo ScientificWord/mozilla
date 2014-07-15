@@ -330,8 +330,10 @@
 <!-- Used just in context popup. -->
 <!ENTITY createLinkCmd.label "Create Link...">
 <!ENTITY createlink.accesskey "k">
-<!ENTITY editLinkCmd.label "Edit Link in New Prince">
+<!ENTITY editLinkCmd.label "Edit Link">
 <!ENTITY editlink.accesskey "i">
+<!ENTITY followLinkCmd.label "Follow Link">
+<!ENTITY followlink.accesskey "f">
 <!-- (Toplevel Edit menu uses utilityOverlay) -->
 <!ENTITY undoCmd.label "Undo">
 <!ENTITY undo.accesskey "u">
