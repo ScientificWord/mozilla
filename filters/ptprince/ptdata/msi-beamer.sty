@@ -60,6 +60,18 @@
 \def\@subtitleb#1{%
   \msiopentag{subtitle}{<subtitle>}#1\msiclosetag{subtitle}{</subtitle>}}
 
+%% Beamer has optional parameter for date
+\def\date{\@ifnextchar[{\@datea}{\@dateb}}
+
+\def\@datea[#1]#2{%
+  \msiopentag{date}{<date>}
+    \msiopentag{option}{<option>}#1\msiclosetag{option}{</option>}%
+    #2%
+  \msiclosetag{date}{</date>}}
+
+\def\@dateb#1{%
+  \msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
+
 %\subject{text}
 \def\subject#1{\out@subject{#1}}
 \def\out@subject#1{%
