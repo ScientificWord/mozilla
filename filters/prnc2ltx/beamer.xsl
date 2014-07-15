@@ -9,6 +9,13 @@
 
 <xsl:include href="latex.xsl"/>
 
+<xsl:template match="html:author">
+\author<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
+</xsl:template>
+<xsl:template match="html:author/html:authorid"></xsl:template>
+<xsl:template match="html:author//text()" mode="authorid"></xsl:template>
+<xsl:template match="html:authorid" mode="authorid">[<xsl:apply-templates/>]</xsl:template>
+
 <xsl:template match="html:date">
 \date<xsl:apply-templates mode="option"/>{<xsl:apply-templates/>}
 </xsl:template>
@@ -93,3 +100,5 @@
 
 
 </xsl:stylesheet>
+
+
