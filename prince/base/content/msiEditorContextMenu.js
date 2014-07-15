@@ -11,18 +11,19 @@ function msiEditorFillContextMenu(event, contextMenuNode)
     return;
   // Setup object property menuitem
   var editorElement = msiGetCurrentEditorElementForWindow(window);
+  var editor = msiGetEditor(editorElement);
   var dumpStr = "Curr context editor element is [";
   if (editorElement)
     dumpStr += editorElement.id;
   dump(dumpStr + "]\n");
   var objectName = msiInitObjectPropertiesMenuitem(editorElement, "propertiesMenu_cm");
-  var isInLink = objectName == "href";
+  var isInLink = !!editor.getSelectedElement("href");
   // Special case of an image inside a link
   if (objectName == "img")
   try {
     var objData = msiGetObjectDataForProperties(editorElement);
-    if (objData != null && objData.getNode() != null)
-      isInLink = msiGetEditor(editorElement).getElementOrParentByTagName("href", objData.theNode());
+    // if (objData != null && objData.getNode() != null)
+      // isInLink = msiGetEditor(editorElement).getElementOrParentByTagName("href", objData.theNode());
   } catch (e) {}
 
   msiInitRemoveStylesMenuitems(editorElement, "removeStylesMenuitem_cm", "removeLinksMenuitem_cm", "removeNamedAnchorsMenuitem_cm");
@@ -55,6 +56,8 @@ function msiEditorFillContextMenu(event, contextMenuNode)
 
   // Hide "Edit link in new Composer" unless in a link
   msiShowMenuItem("editLink_cm", isInLink);
+
+  msiShowMenuItem("followLink_cm", isInLink);
 
   // Remove separators if all items in immediate group above are hidden
   // A bit complicated to account if multiple groups are completely hidden!
