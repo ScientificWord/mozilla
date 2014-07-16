@@ -11002,8 +11002,8 @@ function msiClickLink(event, theURI, targWinStr, editorElement)
   if (flags & nsIPlaintextEditor.eEditorReadonlyMask)
     doFollowLink = true;
   else {
-    if (os === 'mac') {
-      if (event.metaKey) {
+    if (os === 'osx') {
+      if (event.altKey) {
         doFollowLink = true;
       }
     }
@@ -11032,6 +11032,10 @@ function msiClickLink(event, theURI, targWinStr, editorElement)
     targMarker = theURI.substr(sharpPos+1);
     targURIStr = theURI.substr(0, sharpPos);
   }
+  // msiMakeAbsoluteUrl uses foo_work as the base. We want to use the parent directory (SWPDOCS) instead, so
+  // BBM should be checking that these strings are relative
+  targURIStr = '../'+targURIStr;
+  theURI = '../'+theURI;
   var targURI = msiCreateURI(msiMakeAbsoluteUrl(targURIStr, editorElement));
   var fullTargURI = msiCreateURI(msiMakeAbsoluteUrl(theURI, editorElement));
 

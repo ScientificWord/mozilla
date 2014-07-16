@@ -609,7 +609,8 @@
     <command id="cmd_viewStatusBar"    oncommand="setStatusBarVisibility();" />
 
     <!-- only used in context popup menu -->
-    <command id="cmd_editLink"                 oncommand="msiGoDoCommand('cmd_editLink')"/>
+<!--     <command id="cmd_editLink"                 oncommand="msiGoDoCommand('cmd_editLink')"/>
+ -->
     <command id="cmd_followLink"                 oncommand="msiGoDoCommand('cmd_followLink')"/>
     <command id="cmd_msiReviseHyperlink"       oncommand="msiGoDoCommand('cmd_msiReviseHyperlink')"/>
     <command id="cmd_reviseAnchor"             oncommand="msiGoDoCommand('cmd_reviseAnchor')"/>
