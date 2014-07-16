@@ -103,7 +103,8 @@
     </menu>
 
 
-    <menuitem id="editLink_cm" label="&editLinkCmd.label;" accesskey="&editlink.accesskey;" command="cmd_editLink"/>
+<!--     <menuitem id="editLink_cm" label="&editLinkCmd.label;" accesskey="&editlink.accesskey;" command="cmd_editLink"/>
+ -->
     <menuitem id="followLink_cm" label="&followLinkCmd.label;" accesskey="&followlink.accesskey;" command="cmd_followLink"/>
     <menuseparator id="property-separator"/>
 
