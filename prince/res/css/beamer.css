@@ -2,7 +2,7 @@
 @namespace sw url("http://www.sciword.com/namespaces/sciword");
 
 beamerframe, stepnumberedListItem, stepbulletListItem, alertstepnumberedListItem, alertstepbulletListItem,
-frametitle, framesubtitle, institute {
+frametitle, framesubtitle, subtitle, institute, subject, keywords {
   -moz-user-select: text;
 }
 
