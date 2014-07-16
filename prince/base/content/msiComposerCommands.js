@@ -8829,6 +8829,7 @@ function msiFollowLink( element ) {
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var extension;
   var exefile;
+  var arg;
   var arr = new Array();
   if (href) {
     if (href.indexOf(".sci") > 0) {
@@ -8839,6 +8840,7 @@ function msiFollowLink( element ) {
       if (os == "win")
       {
         extension = "cmd";
+        arg = "start /max \"" + href + "\"";
       }
       else 
       {
@@ -8847,7 +8849,7 @@ function msiFollowLink( element ) {
       exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
       exefile.append("shell."+ extension);
       theProcess.init(exefile);
-      arr = [href];
+      arr = [arg];
       theProcess.run(false, arr, arr.length);
     }
   }
