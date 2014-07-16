@@ -10991,6 +10991,7 @@ function setBibliographyScheme(editorElement, whichScheme)
 function msiClickLink(event, theURI, targWinStr, editorElement)
 {
   var doFollowLink = false;
+  var os = getOS(window);
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var theWindow = window;
@@ -11000,10 +11001,24 @@ function msiClickLink(event, theURI, targWinStr, editorElement)
   var flags = editor.flags;
   if (flags & nsIPlaintextEditor.eEditorReadonlyMask)
     doFollowLink = true;
-  else if (event.ctrlKey)
-    doFollowLink = true;
+  else {
+    if (os === 'mac') {
+      if (event.metaKey) {
+        doFollowLink = true;
+      }
+    }
+    else {
+      if (event.ctrlKey) {
+        doFollowLink = true;
+      }
+    }
+  }
   if (!doFollowLink)
     return;
+  if (theURI.indexOf('.sci') === -1 ) {
+    msiFollowLink(event.target);
+    return;
+  }
 
   var objName = msiGetBaseNodeName(event.target);
   var preferMarker = (objName == "xref");
