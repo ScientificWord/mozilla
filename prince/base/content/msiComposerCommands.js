@@ -8840,16 +8840,16 @@ function msiFollowLink( element ) {
       if (os == "win")
       {
         extension = "cmd";
-        arg = "start /max \"" + href + "\"";
+        arr = ['start', '/max', href];
       }
       else 
       {
         extension = "bash";
+        arr = [href];
       }
       exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
       exefile.append("shell."+ extension);
       theProcess.init(exefile);
-      arr = [arg];
       theProcess.run(false, arr, arr.length);
     }
   }
