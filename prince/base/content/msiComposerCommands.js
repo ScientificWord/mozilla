@@ -48,7 +48,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_advancedProperties", msiAdvancedPropertiesCommand);
   commandTable.registerCommand("cmd_objectProperties",   msiObjectPropertiesCommand);
   commandTable.registerCommand("cmd_removeNamedAnchors", msiRemoveNamedAnchorsCommand);
-  commandTable.registerCommand("cmd_editLink",        msiEditLinkCommand);
+//  commandTable.registerCommand("cmd_editLink",        msiEditLinkCommand);
   commandTable.registerCommand("cmd_followLink",        msiFollowLinkCommand);
 
   commandTable.registerCommand("cmd_form",          msiFormCommand);
@@ -8768,32 +8768,32 @@ var msiRemoveNamedAnchorsCommand =
 
 
 ////-----------------------------------------------------------------------------------
-var msiEditLinkCommand =
-{
-  isCommandEnabled: function(aCommand, dummy)
-  {
-    // Not really used -- this command is only in context menu, and we do enabling there
-    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
-  },
+// var msiEditLinkCommand =
+// {
+//   isCommandEnabled: function(aCommand, dummy)
+//   {
+//     // Not really used -- this command is only in context menu, and we do enabling there
+//     return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+//   },
 
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
+//   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+//   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
-  doCommand: function(aCommand)
-  {
-    var editorElement = msiGetActiveEditorElement();
-    try
-    {
-      var element = msiGetEditor(editorElement).getSelectedElement("href");
-      if (element)
-        msiEditPage(msiURIFromString(element.href), window, false, false);
-    }
-    catch (e) {
-      finalThrow(cmdFailString('editlink'), e.message);
-    }
-    editorElement.contentWindow.focus();
-  }
-};
+//   doCommand: function(aCommand)
+//   {
+//     var editorElement = msiGetActiveEditorElement();
+//     try
+//     {
+//       var element = msiGetEditor(editorElement).getSelectedElement("href");
+//       if (element)
+//         msiEditPage(msiURIFromString(element.href), window, false, false);
+//     }
+//     catch (e) {
+//       finalThrow(cmdFailString('editlink'), e.message);
+//     }
+//     editorElement.contentWindow.focus();
+//   }
+// };
 
 ////-----------------------------------------------------------------------------------
 var msiFollowLinkCommand =
@@ -8817,7 +8817,7 @@ var msiFollowLinkCommand =
         msiFollowLink(element);
     }
     catch (e) {
-      finalThrow(cmdFailString('editlink'), e.message);
+      finalThrow(cmdFailString('followLink'), e.message);
     }
     editorElement.contentWindow.focus();
   }

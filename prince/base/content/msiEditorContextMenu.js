@@ -55,7 +55,7 @@ function msiEditorFillContextMenu(event, contextMenuNode)
   msiShowMenuItem("createLink_cm", !isInLink);
 
   // Hide "Edit link in new Composer" unless in a link
-  msiShowMenuItem("editLink_cm", isInLink);
+//  msiShowMenuItem("editLink_cm", isInLink);
 
   msiShowMenuItem("followLink_cm", isInLink);
 
@@ -109,7 +109,11 @@ function msiEditorFillContextMenu(event, contextMenuNode)
 
 function msiIsItemOrCommandEnabled( item )
 {
-  var command = item.getAttribute("command");
+  var command;
+  if (item.getAttribute)
+    command = item.getAttribute("command");
+  else
+    return;
   if (command) {
     // If possible, query the command controller directly
     var controller = document.commandDispatcher.getControllerForCommand(command);
