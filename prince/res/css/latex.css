@@ -216,7 +216,7 @@ hspace[type="negativeThinSpace"] {
 }
 
 hspace[type="zeroSpace"] {
-  min-width: 0.0em;
+  min-width: 0.17em;
 }
 
 hspace[type="noIndent"] {
