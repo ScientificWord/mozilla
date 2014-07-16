@@ -381,7 +381,7 @@
 </xsl:text>
 </xsl:template>
 
-<xsl:template match="html:author[1]">
+<xsl:template match="html:author">
   <xsl:value-of select="$newline"/>
   <xsl:text>\author{</xsl:text>
   <xsl:apply-templates mode="frontmatter"/>
