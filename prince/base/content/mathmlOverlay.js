@@ -3408,9 +3408,13 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
   		}
     	var parent = node.parentNode;
     	var offset = offsetOfChild(parent, node);
+      var mathnode;
       if (node.nodeName === 'texb') {
-        editor.selection.collapse(parent, ++offset);
-        editor.InsertMathNodeAtSelection(node);
+        mathnode = editor.document.createElementNS(mmlns, "math");
+        editor.insertNode(mathnode, parent, offset, false);
+        editor.deleteNode(node);
+        editor.insertNode(node, mathnode, 0, false);
+        editor.selection.collapse(mathnode, 1);
       }
       else {
 
@@ -3438,13 +3442,16 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
       }
     }
     catch(e) {
+      msidump(e.message);
       //
     }
 
   	if (node.tagName !== 'texb') editor.deleteNode(node);
   	var mathnode = coalescemath(null, true);
-    editor.selection.collapse(mathnode,0);
-    editor.selection.extend(mathnode, mathnode.childNodes.length);
+    if (mathnode) {
+      editor.selection.collapse(mathnode,0);
+      editor.selection.extend(mathnode, mathnode.childNodes.length);
+    }
   }
 }
 
