@@ -1552,7 +1552,7 @@ msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *at
     tw->NextNode(getter_AddRefs(currentNode));
   }
   // since we passed all the tests ...
-	*_retval = PR_TRUE;
+//	*_retval = done;
   
   return NS_OK;
 }

@@ -10119,6 +10119,7 @@ var msiNavigationUtils =
 
   isMathNode : function(aNode)
   {
+    if (!aNode) return false;
     var mathNS = this.mAtomService.getAtom(mmlns);
     var nodeNS = null;
     if (aNode.namespaceURI && aNode.namespaceURI.length)
