@@ -2337,7 +2337,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         res = GetGoodSelPointForNode(leafNode, aAction, address_of(newSelNode), &newSelOffset);
         if (NS_FAILED(res)) return res;
         aSelection->Collapse(newSelNode, newSelOffset);
-        return res;
+// BBM 2014-07-23        return res;
       }
 
       // else we are joining content to block
