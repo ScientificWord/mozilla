@@ -937,7 +937,7 @@ var isRunning = false;
 
 var callVCamMethod = function (doc, objid, method, id, args) {
   try {
-    // the object that contains the exposed Flex functions
+    // the object that contains the exposed VCam functions
     var obj = doc.getElementById(objid);
     // if (obj.wrappedJSObject) {
     //     obj = obj.wrappedJSObject;
@@ -1116,7 +1116,7 @@ function doSnapshot(objid)
 // };
 
 function doMakeSnapshot(doc, obj, graph, editorElement) {
-  var val = obj.readyState;
+  var val = obj['readyState'];
   val = 2; // hack!!
   if (val > 1) {
     try {
@@ -1187,11 +1187,14 @@ function initializeAllVCamObjects() {
   for (i = 0; i < length; i++) {
     objlist = wrapperlist[i].getElementsByTagName("object");
     obj = objlist[0];
-    if (!obj.id) {
-      obj.id = findUnusedId("plot");
-      obj.setAttributeValue("id", obj.id); // BBM: unnecessary??
+    if (obj) {
+      obj.ctx = window;
+      if (!obj.id) {
+        obj.id = findUnusedId("plot");
+        obj.setAttributeValue("id", obj.id); // BBM: unnecessary??
+      }
+      doVCamPreInitialize(obj.id);
     }
-    doVCamPreInitialize(obj.id);
   }
 }
 
