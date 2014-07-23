@@ -6531,7 +6531,7 @@ function setAlignmentOK(editorElement) {
       selNode = selNode.parentNode;
       ismath = msiNavigationUtils.isMathNode(selNode);
     }
-    if (selNode.tagName == 'mtd') return true;
+    if (selNode && selNode.tagName == 'mtd') return true;
   }
   return false;
 }
