@@ -3492,7 +3492,7 @@ GetEngine() {
 }
 
 
-PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty, PRUint32& nodecount)
+PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty, PRUint32& nodecount, nsIEditor * ed)
 {
   PRBool retval = PR_FALSE;
   if (!node) return retval;
@@ -3501,10 +3501,20 @@ PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty, PRUint32& nodecount)
   nsAutoString form;
   nsCOMPtr<nsIDOMElement> parentEl;
   nsCOMPtr<nsIDOMNode> parent;
+  PRInt32 offset;
+  nsCOMPtr<nsIDOMElement> node2;
   nodecount = 0;
+  nsEditor * editor = static_cast<nsEditor*>(ed);
 
   if (isMath) {
     node->GetTagName(name);
+    while (name == NS_LITERAL_STRING("mi") || name == NS_LITERAL_STRING("mo") || name == NS_LITERAL_STRING("mrow")
+     || name == NS_LITERAL_STRING("mstyle")) {
+      editor->GetNodeLocation(node, &parent, &offset);
+      node2 = do_QueryInterface(parent);
+      node = node2;
+      node->GetTagName(name);
+    }
     if (name.EqualsLiteral("math") && isEmpty) 
     {
       nodecount = 0; // not used
@@ -3523,7 +3533,7 @@ PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty, PRUint32& nodecount)
     else if (
       name.EqualsLiteral("mroot") ||
       name.EqualsLiteral("msubsup") ||
-      name.EqualsLiteral("moverunder"))
+      name.EqualsLiteral("munderover"))
     {
       nodecount = 3;
       retval = PR_TRUE;
@@ -3564,8 +3574,7 @@ void DeleteMatchingFence(nsHTMLEditor * ed, nsIDOMElement * elt)
 }
 
 
-PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * siblingElement, PRBool deletingInputbox,
-  nsCOMPtr<nsIDOMNode> & startnode, PRInt32 & offset)
+PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * siblingElement, PRBool deletingInputbox, nsCOMPtr<nsIDOMNode> & startnode, PRInt32 & offset)
 {
   // A subnode has been deleted. If elt is an msub or msup, remove that tag. If elt is an msubsup,
   // replace it with an msub or msup, depending on whether siblingNode is null or not.
@@ -3716,7 +3725,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   while (!done) {
     res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
     elt = do_QueryInterface(node);
-    if (node && IsSpecialMath(elt, isEmpty, nodecount)) {
+    if (node && IsSpecialMath(elt, isEmpty, nodecount, ed)) {
       if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
       {
         done = PR_TRUE;
@@ -3802,7 +3811,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
       done = !isEmpty;
       elt = do_QueryInterface(node);
-      if (elt && IsSpecialMath(elt, isEmpty, nodecount)) {
+      if (elt && IsSpecialMath(elt, isEmpty, nodecount, ed)) {
         // we have deleted a child of node. If node is one of the
         // math nodes that has a fixed number of children, we must replace the
         // child with an input box. If elt is an msup, msub, msubsup (mroot?), we neeed
@@ -3946,6 +3955,14 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   PRInt32 startOffset;
 
   res = mEditor->GetStartNodeAndOffset(curSelection, getter_AddRefs(startNode), &startOffset);
+  PRUint16 nodeType;
+  res = startNode->GetNodeType(&nodeType);
+  if (nodeType == nsIDOMNode::TEXT_NODE) {
+    nsCOMPtr<nsIDOMNode> parent;
+    nsEditor * editor = static_cast<nsEditor*>(mHTMLEditor);
+    editor->GetNodeLocation(startNode, &parent, &startOffset);
+    startNode = parent;
+  }
   hackSelectionCorrection(mHTMLEditor, startNode, startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
