@@ -844,7 +844,7 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
   if (editor && (!above.IsEmpty() || !below.IsEmpty() || !aroundNotation.IsEmpty() || !aroundType.IsEmpty()))
   {
     res = NS_OK;
-    PRBool isOverUnder = !above.IsEmpty() && !below.IsEmpty();
+    PRBool isUnderOver = !above.IsEmpty() && !below.IsEmpty();
     PRBool isOver = !above.IsEmpty() && below.IsEmpty();
     PRBool isOverOrUnder = !above.IsEmpty() || !below.IsEmpty();
     PRUint32 dummyFlags(0);
@@ -868,7 +868,7 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
       if (NS_SUCCEEDED(res) && under)
         underNode = do_QueryInterface(under);
     }
-    if (NS_SUCCEEDED(res) && isOverUnder)
+    if (NS_SUCCEEDED(res) && isUnderOver)
       res = CreateMunderover(editor, base, underNode, overNode, PR_FALSE, PR_FALSE,
                              createInputBox, PR_TRUE, flags, emptyString, emptyString, enclosed);
     else if (NS_SUCCEEDED(res) && isOverOrUnder)
