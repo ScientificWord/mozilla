@@ -2158,10 +2158,10 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
       msiSelection->GetMsiFocusOffset(&oldFocusOffset);
       ComparePoints(oldFocusNode, oldFocusOffset, focusNode, focusOffset, &compareOldFocusFocus);
       // BBM: We don't want to hightlight all of an msub when the selection crosses its boundary (for
-      // consistency with version 5.5), and the same for msup, msubsup, mover, munder, moverunder, mrow.
+      // consistency with version 5.5), and the same for msup, msubsup, mover, munder, munderover, mrow.
 
       NS_NAMED_LITERAL_STRING(specialTags,
-        " msub msup msubsup mover munder moverunder mrow ");
+        " msub msup msubsup mover munder munderover mrow ");
       nsString foundTags;
       nsString foundTags2;
       PRBool fSkipChanges;
@@ -3560,7 +3560,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       }
       toLeftRight = 0;
     }
-    else if ( tagName.EqualsLiteral("mover") || tagName.EqualsLiteral("mfrac") || tagName.EqualsLiteral("moverunder") 
+    else if ( tagName.EqualsLiteral("mover") || tagName.EqualsLiteral("mfrac") || tagName.EqualsLiteral("munderover") 
          || tagName.EqualsLiteral("munder") || tagName.EqualsLiteral("maction") || tagName.EqualsLiteral("menclose") || tagName.EqualsLiteral("mphantom") 
          || tagName.EqualsLiteral("mroot") || tagName.EqualsLiteral("msub") || tagName.EqualsLiteral("msup") || tagName.EqualsLiteral("msubsup") || tagName.EqualsLiteral("mmultiscripts") )
     { 
