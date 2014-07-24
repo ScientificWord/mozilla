@@ -940,7 +940,7 @@ function extractDataFromDecoration(decorationNode, decorData)
   var baseDecorNode = decorationNode;
   var underDecorChild, overDecorChild;
 
-  function extractDecorationTextFromOverUnder(aChild, bOver)
+  function extractDecorationTextFromUnderOver(aChild, bOver)
   {
     var theText = "";
     switch( msiGetBaseNodeName(aChild))
@@ -987,23 +987,23 @@ function extractDataFromDecoration(decorationNode, decorData)
 
     case "mover":
       overDecorChild = msiNavigationUtils.getIndexedSignificantChild(decorationNode, 1);  //2nd child - expects 0-based index
-      decorData.aboveStr = String(extractDecorationTextFromOverUnder(overDecorChild, true));
+      decorData.aboveStr = String(extractDecorationTextFromUnderOver(overDecorChild, true));
 //      belowStr = null;
 //      aroundStr = null;
     break;
 
     case "munder":
       underDecorChild = msiNavigationUtils.getIndexedSignificantChild(decorationNode, 1);  //2nd child - expects 0-based index
-      decorData.belowStr = String(extractDecorationTextFromOverUnder(underDecorChild, false));
+      decorData.belowStr = String(extractDecorationTextFromUnderOver(underDecorChild, false));
 //      aboveStr = null;
 //      aroundStr = null;
     break;
 
     case "munderover":
       overDecorChild = msiNavigationUtils.getIndexedSignificantChild(decorationNode, 2);  //3rd child - expects 0-based index
-      decorData.aboveStr = String(extractDecorationTextFromOverUnder(overDecorChild, true));
+      decorData.aboveStr = String(extractDecorationTextFromUnderOver(overDecorChild, true));
       underDecorChild = msiNavigationUtils.getIndexedSignificantChild(decorationNode, 1);  //2nd child - expects 0-based index
-      decorData.belowStr = String(extractDecorationTextFromOverUnder(underDecorChild, false));
+      decorData.belowStr = String(extractDecorationTextFromUnderOver(underDecorChild, false));
 //      aroundStr = null;
     break;
 
