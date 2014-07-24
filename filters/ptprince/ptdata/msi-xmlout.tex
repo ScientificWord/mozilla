@@ -553,17 +553,34 @@
 %% %% Newcommand and renewcommand
  
  \def\newcommand{\@ifnextchar*{\@newcommand}{\@newcommand{}}}
- \let\renewcommand\newcommand
+ \def\renewcommand{\@ifnextchar*{\@renewcommand}{\@renewcommand{}}}
  \let\providecommand\newcommand
  
  
  %%% #1 = optional star, #2 = command name
- \def\@newcommand#1#2{\@ifnextchar[{\@newcommandA{#1}{#2}}{\@newcommandA{#1}{#2}[1]}}
+ \def\@newcommand#1#2{\@ifnextchar[{\@newcommandA{#1}{#2}}{\@newcommandA{#1}{#2}[]}}
  
  \def\@newcommandA#1#2[#3]{\@ifnextchar[{\@newcommandB{#1}{#2}[#3]}{\@newcommandB{#1}{#2}[#3][]}}
 
  \def\@newcommandB#1#2[#3][#4]#5{%
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand#1{#2}[#3][#4]{#5}}}%
+
+ %%% #1 = optional star, #2 = command name
+ \def\@renewcommand#1#2{\@ifnextchar[{\@renewcommandA{#1}{#2}}{\@renewcommandA{#1}{#2}[]}}
+ 
+ \def\@renewcommandA#1#2[#3]{\@ifnextchar[{\@renewcommandB{#1}{#2}[#3]}{\@renewcommandB{#1}{#2}[#3][]}}
+
+ \def\@renewcommandB#1#2[#3][#4]#5{%
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\renewcommand#1{#2}}
+   \if x#3x
+   \else
+     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a[#3]}%
+   \fi
+   \if x#4x
+   \else
+     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a[#4]}\fi
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a{#5}}}%
+ 
 
 %   \MSILocalDef{#2}}
 
