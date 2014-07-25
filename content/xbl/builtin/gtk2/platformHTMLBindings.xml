@@ -14,7 +14,6 @@
     <handler event="keypress" key="z" modifiers="accel" command="cmd_undo"/>
     <handler event="keypress" keycode="v" modifiers="accel" command="cmd_paste" />
     <handler event="keypress" keycode="c" modifiers="accel" command="cmd_copy" />
-    <handler event="keypress" keycode="v" modifiers="accel" command="cmd_paste" />
     </handlers>
   </binding>
 
