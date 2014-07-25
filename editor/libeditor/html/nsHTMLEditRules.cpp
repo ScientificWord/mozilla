@@ -3492,7 +3492,7 @@ GetEngine() {
 }
 
 
-PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty, PRUint32& nodecount, nsIEditor * ed)
+PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& nodecount, PRInt32& offset, nsIEditor * ed)
 {
   PRBool retval = PR_FALSE;
   if (!node) return retval;
@@ -3501,7 +3501,6 @@ PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty, PRUint32& nodecount, 
   nsAutoString form;
   nsCOMPtr<nsIDOMElement> parentEl;
   nsCOMPtr<nsIDOMNode> parent;
-  PRInt32 offset;
   nsCOMPtr<nsIDOMElement> node2;
   nodecount = 0;
   nsEditor * editor = static_cast<nsEditor*>(ed);
@@ -3512,6 +3511,7 @@ PRBool IsSpecialMath(nsIDOMElement * node, PRBool isEmpty, PRUint32& nodecount, 
      || name == NS_LITERAL_STRING("mstyle")) {
       editor->GetNodeLocation(node, &parent, &offset);
       node2 = do_QueryInterface(parent);
+      editor->DeleteNode(node);
       node = node2;
       node->GetTagName(name);
     }
@@ -3710,12 +3710,11 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   PRUint32 dummy = 0;
   nsAutoString name;
   nsCOMPtr<nsIEditor> editor = do_QueryInterface((nsIHTMLEditor *)ed);
-  PRInt32 selOffset = startOffset;
+  PRInt32 selOffset ;
   PRUint32 nodecount  = 0;
   nsCOMPtr<nsIDOMNode> tempnode;
   PRBool deletingInputbox = cleanUpTempInput( ed, startNode, startOffset );
   nsCOMPtr<nsIDOMNode> node = startNode;
-  selOffset = startOffset;
 // A special case is a temp input box. If we delete a math object so that the constraints
 // for math objects like fractions, superscripts, etc. are no longer valid, we replace it with
 // an input box. However, if we are deleting an input box, we want to restructure the math,
@@ -3725,14 +3724,14 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   while (!done) {
     res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
     elt = do_QueryInterface(node);
-    if (node && IsSpecialMath(elt, isEmpty, nodecount, ed)) {
+    if (node && IsSpecialMath(elt, isEmpty, nodecount, startOffset, ed)) {
       if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
       {
         done = PR_TRUE;
         // Insert an input box at node, offset
         res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_FALSE, PR_TRUE, dummy, inputbox);
         if (NS_FAILED(res) || !inputbox) return;
-        res = ed->InsertNode(inputbox, elt, selOffset);
+        res = ed->InsertNode(inputbox, elt, startOffset);
         // Put the cursor in the input box BBM: is there a method for this?
         res = inputbox->GetFirstChild(getter_AddRefs(node));
         startNode = node;
@@ -3811,7 +3810,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
       done = !isEmpty;
       elt = do_QueryInterface(node);
-      if (elt && IsSpecialMath(elt, isEmpty, nodecount, ed)) {
+      if (elt && IsSpecialMath(elt, isEmpty, nodecount, startOffset, ed)) {
         // we have deleted a child of node. If node is one of the
         // math nodes that has a fixed number of children, we must replace the
         // child with an input box. If elt is an msup, msub, msubsup (mroot?), we neeed
