@@ -1,4 +1,4 @@
- /* ***** BEGIN LICENSE BLOCK *****
+/* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -69,7 +69,10 @@ var gFrameModeTextFrame = false;
 var gPreviewImageNeeded = false;
 var gIsGoingAway = false;
 var gInsertNewImage = true;
-var gCaptionData;
+var gCaptionLoc = 'none';  // none, top, or bottom
+var gCaptionNode = null;
+/* We save the caption node, since we might rewrite its ancestor nodes, but we won't change its contents. If it doesn't exist, we might create a new empty caption, or we might delete the current one, depending on the user's choice. */
+
 var gVideo = false;
 var isSVGFile = false;
 var gErrorMessageShown = false;
@@ -87,9 +90,8 @@ var bNeedTypeset = true;
 // dialog initialization code
 
 /* An essay on the files in this module;
-An image can be inserted as an <object> or as an <object> wrapped in a frame <msiframe>. The frame is necessary for placing captions correctly on the screen. When this dialog is created, it may be passed an <object> (when an image is being revised) or not (when a new image is inserted).
-Ron's code uses two temporary elements (an <object> and a <msiframe>) to collect the attributes for the final objects, although it really doesn't seem necessary, as the attributes are all applied inside the onAccept function, and take place inside a transaction.
-imageElement: this is passed as a parameter in the revision case; in the new image case, it is null until it is assigned in onAccept.
+An image can be inserted as an <object> or as an <object> wrapped in a frame <msiframe>. The frame is necessary for placing captions correctly on the screen. When this dialog is created, it may be passed an <object> (when an image is being revised) or not (when a new image is inserted). Ron's code uses two temporary elements (an <object> and a <msiframe>) to collect the attributes for the final objects, although it really doesn't seem necessary, as the attributes are all applied inside the onAccept function, and take place inside a transaction. 
+imageElement: this is passed as a parameter in the revision case; in the new image case, it is null until it is assigned in onAccept. 
 wrapperElement: if imageElement is passed, and has an <msiframe> parent, the parent is assigned to wrapperElement. Otherwise it is null until it is assigned in onAccept.
 */
 
@@ -122,12 +124,10 @@ function Startup()
   gDialog.PreviewHeight     = document.getElementById( "PreviewHeight" );
   gDialog.PreviewSize       = document.getElementById( "PreviewSize" );
   gDialog.PreviewImage      = null;
-  //gDialog.captionEdit       = document.getElementById( "captionTextInput" );
   gDialog.captionPlacementGroup = document.getElementById("captionPlacementRadioGroup");
   gDialog.wrapOptionRadioGroup   = document.getElementById("wrapOptionRadioGroup");
   gDialog.OkButton          = document.documentElement.getButton("accept");
   gDialog.keyInput          = document.getElementById("keyInput");
-  gDialog.captionLocation   =  document.getElementById("captionLocation");
   
   // Get a single selected image element
   imageElement = null;
@@ -153,6 +153,8 @@ function Startup()
       if (imageElement.parentNode.nodeName === "msiframe")
       {
         wrapperElement = imageElement.parentNode;
+        gCaptionNode = GetCaptionNode(wrapperElement);
+        gCaptionLoc = GetCaptionLoc(wrapperElement);
       }
       else 
         wrapperElement = null;  // no frame
@@ -531,26 +533,7 @@ function InitImage()
                       unitRound(frameUnitHandler.getValueOf(gDefaultHeight,"pt")), null);
 
   LoadPreviewImage(null);
-
-  if (!gCaptionData)
-    gCaptionData = {m_position : "below", m_captionStr : ""};
-  var position = "below";
-  var element = wrapperElement || imageElement;
-  var capData = findCaptionNodes(element);
-
-  if (capData.belowCaption)
-  {
-    gCaptionData.m_captionStr = getNodeChildrenAsString(capData.belowCaption);
-    position = "below";
-  }
-  else if (capData.aboveCaption)
-  {
-    gCaptionData.m_captionStr = getNodeChildrenAsString(capData.aboveCaption);
-    position = "above";
-  }
-  gCaptionData.m_position = position;
-  //msiInitializeEditorForElement(gDialog.captionEdit, gCaptionData.m_captionStr);
-  gDialog.captionPlacementGroup.value = GetCurrentCaptionLoc(element);
+  gDialog.captionPlacementGroup.value = gCaptionLoc;
   
   var imageKey = "";
   if (imageElement.hasAttribute("key"))
@@ -659,52 +642,50 @@ function ToggleShowLinkBorder()
 //  }
 }
 
-
-
-// function getCaptionEditContents()
-// {
-//   if (!gCaptionData.contentFilter)
-//     gCaptionData.contentFilter = new msiDialogEditorContentFilter(gDialog.captionEdit);
-//   return gCaptionData.contentFilter.getDocumentFragmentString();
-// }
-
-function GetCurrentCaption(parentNode)
+function GetCaptionNode(parentNode)
 {
-  
+  var nodes;
+  if (parentNode) {
+    nodes = parentNode.getElementsByTagName('caption');
+    if (nodes.length >= 1) {
+      return nodes[0];
+    }
+  }
+  return null;
 }
 
-function GetCurrentCaptionLoc(parentNode)
+function GetCaptionLoc(parentNode)
 {
-  if (parentNode.hasAttribute("captionloc"))
+  if (parentNode && parentNode.hasAttribute("captionloc"))
     return parentNode.getAttribute("captionloc");
   else
     return "none";
 }
 
-function findCaptionNodes(parentNode)
-{
-  var retData = {belowCaption : null, aboveCaption : null};
-  var theChildren = msiNavigationUtils.getSignificantContents(parentNode);
-  var position;
-  var parentPos = "below";
-  if (parentNode.hasAttribute("captionloc"))
-    parentPos = parentNode.getAttribute("captionloc");
-  for (var ii = 0; ii < theChildren.length; ++ii)
-  {
-    if (msiGetBaseNodeName(theChildren[ii]) == "imagecaption")
-    {
-      if (theChildren[ii].hasAttribute("position"))
-        position = theChildren[ii].getAttribute("position");
-      else
-        position = parentPos;
-      if (!position || (position != "above"))
-        position = parentPos;
-      position += "Caption";
-      retData[position] = theChildren[ii];
-    }
-  }
-  return retData;
-}
+// function findCaptionNodes(parentNode)
+// {
+//   var retData = {belowCaption : null, aboveCaption : null};
+//   var theChildren = msiNavigationUtils.getSignificantContents(parentNode);
+//   var position;
+//   var parentPos = "below";
+//   if (parentNode.hasAttribute("captionloc"))
+//     parentPos = parentNode.getAttribute("captionloc");
+//   for (var ii = 0; ii < theChildren.length; ++ii)
+//   {
+//     if (msiGetBaseNodeName(theChildren[ii]) == "imagecaption")
+//     {
+//       if (theChildren[ii].hasAttribute("position"))
+//         position = theChildren[ii].getAttribute("position");
+//       else
+//         position = parentPos;
+//       if (!position || (position != "above"))
+//         position = parentPos;
+//       position += "Caption";
+//       retData[position] = theChildren[ii];
+//     }
+//   }
+//   return retData;
+// }
 
 function getNodeChildrenAsString(aNode)
 {
@@ -716,48 +697,48 @@ function getNodeChildrenAsString(aNode)
   return retStr;
 }
 
-function syncCaptionAndExisting(dlgCaptionStr, editor, imageObj, positionStr)
-{
-  var bChange = false;
-  var existingStr = "";
-  var currCaptionNode;
-  var currLoc = imageObj.getAttribute("captionloc");
-  if (!currLoc || !currLoc.length)
-    currLoc = "below";
-  var captionNodes = imageObj.getElementsByTagName("imagecaption");
-   if (captionNodes && captionNodes.length)
-    currCaptionNode = captionNodes[0];
-  if (currCaptionNode)
-    existingStr = getNodeChildrenAsString(currCaptionNode);
-  if (dlgCaptionStr.length)
-    msiEditorEnsureElementAttribute(imageObj, "captionloc", positionStr, editor);
-  else
-    msiEditorEnsureElementAttribute(imageObj, "captionloc", null, editor);  //This will remove the captionLoc attribute
+// function syncCaptionAndExisting(dlgCaptionStr, editor, imageObj, positionStr)
+// {
+//   var bChange = false;
+//   var existingStr = "";
+//   var currCaptionNode;
+//   var currLoc = imageObj.getAttribute("captionloc");
+//   if (!currLoc || !currLoc.length)
+//     currLoc = "below";
+//   var captionNodes = imageObj.getElementsByTagName("imagecaption");
+//    if (captionNodes && captionNodes.length)
+//     currCaptionNode = captionNodes[0];
+//   if (currCaptionNode)
+//     existingStr = getNodeChildrenAsString(currCaptionNode);
+//   if (dlgCaptionStr.length)
+//     msiEditorEnsureElementAttribute(imageObj, "captionloc", positionStr, editor);
+//   else
+//     msiEditorEnsureElementAttribute(imageObj, "captionloc", null, editor);  //This will remove the captionLoc attribute
 
-  bChange = (existingStr != dlgCaptionStr);
-  if (!bChange)
-  {
-    return;
-  }
-  if (dlgCaptionStr.length)
-  {
-    if (!currCaptionNode)
-    {
-      currCaptionNode = editor.document.createElementNS(xhtmlns, "imagecaption");
-//      currCaptionNode.setAttribute("position", positionStr);
-      editor.insertNode(currCaptionNode, imageObj, imageObj.childNodes.length);
-    }
-    else if (existingStr.length)
-    {
-      for (var jx = currCaptionNode.childNodes.length - 1; jx >= 0; --jx)
-        editor.deleteNode(currCaptionNode.childNodes[jx]);
-    }
-    editor.insertHTMLWithContext(dlgCaptionStr, "", "", "", null, currCaptionNode, 0, false);
-    msiEditorEnsureElementAttribute(imageObj, "captionloc", positionStr, editor);
-  }
-  else if (currCaptionNode)
-    editor.deleteNode(currCaptionNode);
-}
+//   bChange = (existingStr != dlgCaptionStr);
+//   if (!bChange)
+//   {
+//     return;
+//   }
+//   if (dlgCaptionStr.length)
+//   {
+//     if (!currCaptionNode)
+//     {
+//       currCaptionNode = editor.document.createElementNS(xhtmlns, "imagecaption");
+// //      currCaptionNode.setAttribute("position", positionStr);
+//       editor.insertNode(currCaptionNode, imageObj, imageObj.childNodes.length);
+//     }
+//     else if (existingStr.length)
+//     {
+//       for (var jx = currCaptionNode.childNodes.length - 1; jx >= 0; --jx)
+//         editor.deleteNode(currCaptionNode.childNodes[jx]);
+//     }
+//     editor.insertHTMLWithContext(dlgCaptionStr, "", "", "", null, currCaptionNode, 0, false);
+//     msiEditorEnsureElementAttribute(imageObj, "captionloc", positionStr, editor);
+//   }
+//   else if (currCaptionNode)
+//     editor.deleteNode(currCaptionNode);
+// }
 
 // Get data from widgets, validate, and set for the global element
 //   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
@@ -1693,34 +1674,25 @@ function onAccept()
     gEditor.beginTransaction();
     try
     {
-    var tagname = gVideo ? "embed" : "object";
-    var bHasCaption = (captionloc !== 'none');
-          // handle caption
-    var captionloc = gDialog.captionPlacementGroup.value;
-    var captiontext;
-    var cap;
-    var i;
-    var caps = imageElement.getElementsByTagName('caption');
+      var tagname = gVideo ? "embed" : "object";
+            // handle caption
+      var captionloc = gDialog.captionPlacementGroup.value;
+      var bHasCaption = (captionloc && captionloc !== 'none');
+      var tlm = gEditor.tagListManager;
 
-    if (captionloc !== 'none') {
-      if (caps.length > 0) {
-        cap = caps[0];
-      } else {  //create new caption node
-        cap = gEditor.createElementWithDefaults('caption');
+      var i;
+
+      // caption dance: If there was a caption and the user specifies none, delete the caption
+      if (gCaptionNode && captionloc === 'none') {
+        gCaptionNode = null;
+      } 
+      else if (!gCaptionNode && captionloc !== 'none') {
+        gCaptionNode = gEditor.createElementWithDefaults('caption');
         var namespace = { value: null };
-        var tlm = gEditor.tagListManager;
-        captiontext = tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, cap.ownerDocument);
-        cap.appendChild(captiontext);
-
+        gCaptionNode.appendChild(tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, gCaptionNode.ownerDocument));
       }
-      cap.setAttribute('style', 'caption-side: '+ captionloc +';');
-      cap.setAttribute('align', captionloc);
-    }
-    else if (caps.length > 0) { // remove caption(s)
-      for (i = caps.length -1; i >= 0; i--) {
-        gEditor.deleteNode(caps[i]);
-      }
-    }
+//      cap.setAttribute('style', 'caption-side: '+ captionloc +';');
+//      cap.setAttribute('align', captionloc);
       var posInParent;
 
       imgExists = !gInsertNewImage;
@@ -1729,23 +1701,18 @@ function onAccept()
         if (imageElement == null) imageElement = gEditor.createElementWithDefaults(tagname);
         imageElement.addEventListener("load", imageLoaded, true);
       }
-        var src = gSrcUrl;
+      var src = gSrcUrl;
       //  src = checkSourceAndImportSetting(src, gDialog.isImport);
 
-        imageElement.setAttribute("src", src);
-        imageElement.setAttribute("data", src);
-
-
-      if (bHasCaption)
+      imageElement.setAttribute("src", src);
+      imageElement.setAttribute("data", src);
+      if (bHasCaption)  // we need to set up the wrapper element
       {
         if (wrapperElement == null) 
           wrapperElement = gEditor.createElementWithDefaults("msiframe");
-        wrapperElement.setAttribute("frametype", "image");
-        if (gDialog.captionPlacementGroup.value == "above")
-          wrapperElement.appendChild(cap);
-        if (gDialog.captionPlacementGroup.value !== "none"){           
-           msiEditorEnsureElementAttribute(wrapperElement, "captionloc", gDialog.captionPlacementGroup.value, null);
-        }
+        wrapperElement.setAttribute("frametype", "image");       
+        wrapperElement.appendChild(gCaptionNode);
+        msiEditorEnsureElementAttribute(wrapperElement, "captionloc", gDialog.captionPlacementGroup.value, null);
         if (gDialog.wrapOptionRadioGroup.value != "full"){
           msiEnsureElementPackage(wrapperElement,"wrapfig",null);
         }
@@ -1765,14 +1732,15 @@ function onAccept()
             style = style.replace(/border[^;]+;/,'');
             style = style.replace(/background[^;]+;/,'');
             style = style.replace(/padding[^;]+;/,'');
+            style = style.replace(/caption-side[^;]+;/,'');
+            if (captionloc != 'none') 
+              style = style + 'caption-side: ' + captionloc + ';';
             imageElement.setAttribute("style", style);
             gEditor.insertNode(wrapperElement, imageParent, posInParent);
           }
         }
-        if (gDialog.captionPlacementGroup.value == "below")
-          wrapperElement.appendChild(cap);
       }
-      else if (wrapperElement && wrapperElement.parentNode && wrapperElement != imageElement)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
+      if (wrapperElement && wrapperElement.parentNode && wrapperElement != imageElement && !bHasCaption)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
       {
         posInParent = msiNavigationUtils.offsetInParent(wrapperElement);
         gEditor.insertNode(imageElement, wrapperElement.parentNode, posInParent);
@@ -1809,7 +1777,11 @@ function onAccept()
       // if (!gDialog.isImport)
       //   msiEditorEnsureElementAttribute(imageElement, "byReference", "true", null);
           
-      setFrameAttributes(wrapperElement||imageElement, imageElement, null, bHasCaption); // if there is no frame, globalElement == globalImage
+      setFrameAttributes(wrapperElement||imageElement, imageElement, null, bHasCaption);
+      if (bHasCaption) {
+        if (captionloc && captionloc !== 'none') setStyleAttributeOnNode(wrapperElement||imageElement, "caption-side", captionloc, gEditor);
+       // if there is no frame, globalElement == globalImage
+      }
 
       var theKey = gDialog.keyInput.value;
       if (!theKey.length)
