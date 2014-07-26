@@ -172,12 +172,10 @@
           <caption id="captionPlacementLabel" label="&captionPlacement.label;"/>
           <radiogroup id="captionPlacementRadioGroup" orient="horizontal">
             <radio id="captionNoneRadio" label="&None.label;" value="none"/>
-            <radio id="captionAboveRadio" label="&Above.label;" value="above"/>
-            <radio id="captionBelowRadio" label="&Below.label;" value="below"/>
+            <radio id="captionAboveRadio" label="&Above.label;" value="top"/>
+            <radio id="captionBelowRadio" label="&Below.label;" value="bottom"/>
           </radiogroup>
         </groupbox>
-        <label value="&CaptionText.label;"/>
-        <editor id="captionTextInput" editortype="html" type="content" context="msiEditorContentContext" height="2in" flex="1"/>
         <label value="&AltText.label;"/>
         <textbox id="altTextInput"/>
       </vbox>

@@ -130,9 +130,8 @@
 <!ENTITY placement.label "Placement">
 <!ENTITY EnterNewName.tooltip "Enter a new key name">
 <!ENTITY None.label  "None">
-<!ENTITY Above.label  "Above">
-<!ENTITY Below.label  "Below">
-<!ENTITY CaptionText.label  "Caption Text">
+<!ENTITY Above.label  "Top">
+<!ENTITY Below.label  "Bottom">
 <!ENTITY AltText.label  "Alt Text">
 <!ENTITY NewKeyOrDocName.tooltip  "Enter a new key name or a document name">
 <!ENTITY MakeRelativeCheckbox.label  "Make reference relative">
