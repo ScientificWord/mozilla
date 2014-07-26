@@ -62,8 +62,8 @@
   </xsl:variable>
   <xsl:variable name="captionloc">
     <xsl:choose>
-      <xsl:when test="(html:caption[1]) and (@captionloc='above')">1</xsl:when>
-      <xsl:when test="(html:caption[1]) and (@captionloc='below')">2</xsl:when>
+      <xsl:when test="(html:caption[1]) and (@captionloc='top')">1</xsl:when>
+      <xsl:when test="(html:caption[1]) and (@captionloc='bottom')">2</xsl:when>
       <!-- <xsl:otherwise></xsl:otherwise> -->
     </xsl:choose>
   </xsl:variable>
