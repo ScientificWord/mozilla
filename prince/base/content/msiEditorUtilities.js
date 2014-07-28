@@ -1125,7 +1125,7 @@ function GetEditorElementForDocument(innerDocument, theWindow)
     var editorList = theWindow.document.getElementsByTagName("editor");
     for (var i = 0; i < editorList.length; ++i)
     {
-      if (editorList.item(i) && editorList.item(i).contentDocument === innerDocument)
+      if (editorList.item(i) && (editorList.item(i).contentDocument == innerDocument))
         return editorList.item(i);
     }
 //    if (tmpWindow.frameElement && tmpWindow !== tmpWindow.frameElement.ownerDocument.defaultView)

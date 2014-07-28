@@ -387,7 +387,6 @@ function msiGoUpdateCommandState(command, editorElement)
       case "cmd_fontColor":
       case "cmd_fontFace":
       case "cmd_fontSize":
-      case "cmd_absPos":
         msiPokeMultiStateUI(command, params);
         break;
       case "cmd_viewInvisibles":
@@ -624,12 +623,19 @@ function msiPokeMultiStateUI(uiID, cmdParams)
   try
   {
 
-     var isMixed = cmdParams.getBooleanValue("state_mixed");
-     var desiredAttrib;
-     if (isMixed)
-       desiredAttrib = "mixed";
-     else
-          desiredAttrib = cmdParams.getStringValue("state_attribute");
+    var isMixed = cmdParams.getBooleanValue("state_mixed");
+    var desiredAttrib;
+    if (isMixed)
+      desiredAttrib = "mixed";
+    else
+      try {
+        desiredAttrib = cmdParams.getStringValue("state_attribute");
+      } 
+      catch( e ) {
+        return;
+      }
+
+
 
 
     var docList = msiGetUpdatableItemContainers(uiID, msiGetActiveEditorElement());

@@ -102,10 +102,9 @@
 <!ENTITY labelingname.label         "Name">
 <!ENTITY labelingcaption.label      "Caption">
 
-<!ENTITY labelingnone.label         "None">
-<!ENTITY labelingabove.label        "Above">
-<!ENTITY labelingbelow.label        "Below">
-<!ENTITY labelingcaptiontext.label  "Caption Text">
+<!ENTITY none.label         "None">
+<!ENTITY above.label        "Top">
+<!ENTITY below.label        "Bottom">
 
 <!ENTITY axisxlabel.label           "X Axis">
 <!ENTITY axisylabel.label           "Y Axis">
