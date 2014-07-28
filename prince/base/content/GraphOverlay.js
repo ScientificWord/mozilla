@@ -6,6 +6,21 @@ Components.utils.import("resource://app/modules/os.jsm");
 //----------------------------------------------------------------------------------
 // ************ Graph section ******
 
+function removeStylePropFromNode(node, property, editor)
+{
+  var style="";
+  if (node.hasAttribute("style")) style = node.getAttribute("style");
+  var re = new RegExp(property + ":[^;]*;","g");
+  if (re.test(style))
+  {
+    style = style.replace(re, "");
+    if (editor)
+      msiEditorEnsureElementAttribute(node, "style", style, editor);
+    else
+      node.setAttribute("style",style);
+  }
+}
+
 function Graph() {
   // these arrays enumerate the data for a graph. PLOTELEMENTS are in mathml
   // When adding to this list, you must also add to the MathServiceRequest in the compute engine
@@ -277,6 +292,7 @@ Graph.prototype = {
     this.reviseGraphDOMElement(DOMGraph, forComp, editorElement, optplot);
     return DOMGraph;
   },
+
   reviseGraphDOMElement: function (DOMgraph, forComp, editorElement, optplot) {
     var htmlns = "http://www.w3.org/1999/xhtml";
     var editor = msiGetEditor(editorElement);
@@ -358,10 +374,28 @@ Graph.prototype = {
       DOMGs.appendChild(this.plotLabels[i].createPlotLabelDOMElement(document, forComp));
 
     captionloc = this.getGraphAttribute("CaptionPlace");
-    switch (captionloc) {
-      case "labelabove": DOMFrame.setAttribute("captionloc","above"); break;
-      case "labelbelow": DOMFrame.setAttribute("captionloc","below"); break;
-      default: DOMFrame.removeAttribute("captionloc"); break;
+    var captionNodes = DOMFrame.getElementsByTagName('caption');
+    var captionNode = null;
+    if (captionNodes.length > 0) {
+      captionNode = captionNodes[0];
+    }
+    if (captionloc && captionloc != "none") {
+      var tlm;
+      tlm = editor.tagListManager;
+      DOMFrame.setAttribute("captionloc", captionloc);
+      setStyleAttributeOnNode(DOMFrame, "caption-side", captionloc, editor);
+      // if there is no caption node, create an empty one.
+      if (!captionNode) {
+         captionNode = editor.createElementWithDefaults('caption');
+         var namespace = { value: null };
+         captionNode.appendChild(tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, captionNode.ownerDocument));
+         DOMFrame.appendChild(captionNode);
+      }
+    } else
+    {
+      DOMFrame.removeAttribute("captionloc");
+      removeStylePropFromNode( DOMFrame, 'caption-side', editor);
+      if (captionNode) editor.deleteNode(captionNode);
     }
     caption = this.getGraphAttribute("Caption");
     if (caption && caption.length > 0) {
@@ -376,9 +410,9 @@ Graph.prototype = {
       }
       caption="<wrapper>"+caption+"</wrapper>";
       insertXML(editor, caption, DOMCaption, 0);
-//      editor.insertHTMLWithContext(caption, "", "", "", null, DOMCaption, 0, false);
     }
   },
+
   extractGraphAttributes: function (DOMGraph) {
     var key, value, i, plot, plotno, plotLabel, DOMGs, DOMPlots, DOMFrame, DOMPw, DOMPlotLabels;
     if (!DOMGraph) return;
@@ -1787,10 +1821,10 @@ Frame.prototype = {
             break;
           case "captionloc":
             if (DOMFrame.hasAttribute("captionloc")) {
-              graph.setGraphAttribute("CaptionPlace", "label"+DOMFrame.getAttribute("captionloc"));
+              graph.setGraphAttribute("CaptionPlace", DOMFrame.getAttribute("captionloc"));
             }
             else {
-              graph.setGraphAttribute("CaptionPlace", "labelnone");
+              graph.setGraphAttribute("CaptionPlace", "none");
             }
             break;
           default: break;
