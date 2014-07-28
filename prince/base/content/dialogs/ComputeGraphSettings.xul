@@ -151,17 +151,12 @@
           </groupbox>
           <groupbox>
             <caption label="&labelingcaption.label;"/>
-            <radiogroup id="captionplacement" orient="horizontal">
-              <radio label="&labelingnone.label;" value="labelnone" selected="false" />
-              <radio label="&labelingabove.label;"    value="labelabove" selected="false"/>
-              <radio label="&labelingbelow.label;"    value="labelbelow" selected="true"/>
+            <radiogroup id="CaptionPlace" orient="horizontal">
+              <radio id="captionNoneRadio" label="&none.label;" value="none"/>
+              <radio id="captionAboveRadio" label="&above.label;" value="top"/>
+              <radio id="captionBelowRadio" label="&below.label;" value="bottom"/>
             </radiogroup>
           </groupbox>
-          <groupbox style="height: 2.5in;">
-            <caption value="Caption"/>
-            <editor id="captionText" editortype="html" type="content" height="2in"
-              context="msiEditorContentContext" width="5in" flex="1"/>   
-          </groupbox>       
        </vbox>
       </vbox>   
          

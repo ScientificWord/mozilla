@@ -345,13 +345,13 @@
     </xsl:if>
   </xsl:template>
 
-
+<!-- BBM: I'm commenting this out since \caption is inserted in frame.xsl, and we are seeing double captions.
   <xsl:template match="html:caption">
     <xsl:text>\caption{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>
   </xsl:template>
-
+ -->
   <xsl:template match="html:caption" mode="caption">
     <xsl:apply-templates/>
   </xsl:template>

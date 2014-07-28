@@ -29,7 +29,7 @@ function getFirstElementByTagName(node, name) {
 function Startup(){ 
   var plotwrapper, units, alist, id, i, plotNumControl, numPlots, firstActivePlot, 
     plot, theStringSource, oldval, captionnode, placeLocation, obj, frame, topWindow;
-  var graphEditorControl, capEditorControl, radiusEditorControl;
+  var graphEditorControl, radiusEditorControl;
   try {
     var gd = {};
     graphnode = window.arguments[2];
@@ -110,22 +110,8 @@ function Startup(){
     var editorInitializer = new msiEditorArrayInitializer();
     editorInitializer.addEditorInfo(graphEditorControl, theStringSource, true);
     
-    capEditorControl = document.getElementById("captionText");
-    capEditorControl.mbSinglePara = true;
-//    capEditorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
-    captionnode = getFirstElementByTagName(graphnode,"imagecaption");
-    if (captionnode) {
-      theStringSource = "";
-      for (i = 0; i < captionnode.childNodes.length; ++i)
-        theStringSource += graph.ser.serializeToString(captionnode.childNodes[i]);
-//      theStringSource = graph.ser.serializeToString(captionnode);
-      if (!theStringSource || theStringSource.length === 0) {
-        theStringSource = "<br temp='1'/>";
-      }
-    } else (theStringSource = "<br temp='1'/>")
-//    msiInitializeEditorForElement(editorControl, theStringSource, true);
-    editorInitializer.addEditorInfo(capEditorControl, theStringSource, true);
-
+    captionnode = getFirstElementByTagName(graphnode,"caption");
+ 
     radiusEditorControl = document.getElementById("plotDlg-tube-radius");
     radiusEditorControl.mbSinglePara = true;
     radiusEditorControl.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
@@ -147,8 +133,7 @@ function Startup(){
 
     testUseSignificantDigits();
     // Caption placement
-    oldval = graph["CaptionPlace"];  
-    radioGroupSetCurrent ("captionplacement", oldval);
+    document.getElementById("CaptionPlace").value = graph["CaptionPlace"];
   //  checkEnableFloating();
   }
   catch(e) {
@@ -304,7 +289,7 @@ function GetValuesFromDialog(){
   }
   var f = tempFrame.cloneNode(true);
   var p = tempPw.cloneNode(true);
-  setFrameAttributes(f, p, editor);  // trick to reuse code in msiFrameOverlay.
+  setFrameAttributes(f, p, editor);  // treuse code in msiFrameOverlay.
   frame.extractFrameAttributes(f, p);
   var oldpt = plot.attributes["PlotType"];                        
   var newpt;
@@ -426,32 +411,10 @@ function GetValuesFromDialog(){
     }                                                               
   }
   // Labelling Tab
-  // Captionplacement
-  if (document.getElementById("captionplacement")) {                            
-    var newval = document.getElementById("captionplacement").selectedItem.value;
-    var oldval = graph.getValue ("CaptionPlace"); 
-    if (newval != oldval) {                                        
-      graph.setGraphAttribute ("CaptionPlace", newval);
-    }                                                               
-  }
-  // Caption
-  if (document.getElementById("captionText")) {     
-    var editorControl = document.getElementById("captionText");
-    var captionContentFilter = new msiDialogEditorContentFilter(editorControl);
-    newval = captionContentFilter.getDocumentFragmentString();
-//    var doc = editorControl.contentDocument;
-//    var aNode = doc.documentElement;
-//    if (aNode.nodeName !== 'dialogbase') {
-//      aNode = aNode.getElementsByTagName("dialogbase");
-//      if (aNode.length > 0) {
-//        aNode = aNode[0];
-//      } else return;
-//    }     
-//    var newval = getNodeChildrenAsString(aNode)                  
-    var oldval = graph.getValue ("Caption"); 
-    if (newval != oldval) {                                        
-      graph.setGraphAttribute ("Caption", newval);
-    }                                                               
+  // Captionplace
+  if (document.getElementById("CaptionPlace")) {                            
+    newval = document.getElementById("CaptionPlace").value;
+    graph.setGraphAttribute ("CaptionPlace", newval);
   }
   // View Tab
   // Orientation
@@ -867,9 +830,8 @@ function populateDialog (plotno) {
     radioGroupSetCurrent ("placement", oldval);
 
     // Labelling Tab
-    // Captionplacement
-    var oldval = graph.getValue ("CaptionPlace");  
-    radioGroupSetCurrent ("captionplacement", oldval);
+    // Captionplace
+    document.getElementById("CaptionPlace").value = graph.getValue ("CaptionPlace");
 
 //**rwa - these should already have been taken carae of, during the loop through the graph's attributes***//
 //    // View tab
