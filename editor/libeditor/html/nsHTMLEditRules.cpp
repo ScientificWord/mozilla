@@ -3492,7 +3492,7 @@ GetEngine() {
 }
 
 
-PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& nodecount, PRInt32& offset, nsIEditor * ed)
+PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& nodecount, PRInt32& offset, nsHTMLEditor * ed)
 {
   PRBool retval = PR_FALSE;
   if (!node) return retval;
@@ -3503,19 +3503,20 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
   nsCOMPtr<nsIDOMNode> parent;
   nsCOMPtr<nsIDOMElement> node2;
   nodecount = 0;
+  PRBool empty = isEmpty;
   nsEditor * editor = static_cast<nsEditor*>(ed);
 
   if (isMath) {
     node->GetTagName(name);
-    while (name == NS_LITERAL_STRING("mi") || name == NS_LITERAL_STRING("mo") || name == NS_LITERAL_STRING("mrow")
-     || name == NS_LITERAL_STRING("mstyle")) {
+    while (name.EqualsLiteral("mi") || name.EqualsLiteral("mo") || (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle")) && empty) {
       editor->GetNodeLocation(node, &parent, &offset);
       node2 = do_QueryInterface(parent);
       editor->DeleteNode(node);
       node = node2;
       node->GetTagName(name);
+      ed->IsEmptyNode(node, &empty, PR_TRUE, PR_FALSE, PR_FALSE);
     }
-    if (name.EqualsLiteral("math") && isEmpty) 
+    if (name.EqualsLiteral("math") && empty) 
     {
       nodecount = 0; // not used
       retval = PR_TRUE;
@@ -3523,7 +3524,7 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
     else if (name.EqualsLiteral("msup") ||
       name.EqualsLiteral("msub") ||
       name.EqualsLiteral("mfrac") ||
-      (name.EqualsLiteral("msqrt") && isEmpty) ||
+      (name.EqualsLiteral("msqrt") && empty) ||
       name.EqualsLiteral("mover") ||
       name.EqualsLiteral("munder"))
     {
@@ -3539,7 +3540,7 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
       retval = PR_TRUE;
     } 
     else {
-      if ((name.EqualsLiteral("mtd") && isEmpty) || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
+      if ((name.EqualsLiteral("mtd") && empty) || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
         // Search up and see if the enclosing table has the attribute 'type="eqnarray"'. If so,
         // don't try to preserve the table cells.
         parentEl = node;
