@@ -95,6 +95,93 @@ imageElement: this is passed as a parameter in the revision case; in the new ima
 wrapperElement: if imageElement is passed, and has an <msiframe> parent, the parent is assigned to wrapperElement. Otherwise it is null until it is assigned in onAccept.
 */
 
+/* Finding the initial graphics size and other properties can be rather complex.
+The input, in order of increasing usefulness, is:
+
+1. Base defaults built into the program. These are used only if no other information is available. It makes sense for this to be null -- there is nothing in any of the fields.
+
+2. The preferences allow the user to set default width and/or default height, and a boolean for each of these to determine if the default is to be used.
+
+3. Once an image has been chosen, we can find the width, height, and aspect ratio.
+
+4. If we are revising an <img> or <object>, then we an read the width and/or height if they have been set, and if we should preserve the aspect ratio. Also, frame characteristics are then known.
+
+For finding the custom width and height and auto- checkboxes and the preserve-aspect-ratio checkbox, proceed as follows.
+
+Case I. New image.
+  1. Set all of these to blank. This step is skipped in the drag-drop case.
+  2. Once an image is chosen and its size is known
+    a. Set size to 'Custom'. If the preferences height and width are both given and enabled, then set those, turn off Auto for each, and set Preserve aspect ratio to false.
+    b, One of height or width is given and enabled, then fill that field and set the other to Auto, and set Preserve aspect ratio to true. Compute the missing height or width using the actual image's aspect ratio and the given width or height.
+    c. If neither height nor width is given and enabled, then set Actual size to true.
+
+    The user can now change any of these settings.
+Case II. Revising an image.
+  1. In this case current settings for the object trump the defaults.
+  2. If only one of the width or height is given as an attribute, follow step 2 above.
+  3. If both are given, set the size to 'Custom' and fill in the width and height and set auto to false for both. The preserve aspect ration should be set if there is an attribute for it.
+
+For the frame properties, the values should come from the defaults in the preferences, unless we are revising, in which case they come from the object being revised.
+*/
+
+
+function setImageSizeFields(imageWidth, imageHeight, imageUnits) 
+{
+  var prefWidth, prefHeight, prefWidthEnabled, prefHeightEnabled;
+  var aspectRatio, prefUnits;
+  var autoWidth = true;
+  var autoHeight = true;
+  var prefBranch = GetPrefs();
+  var customValue = false;
+  var w = null;
+  var h = null;
+  var dialogUnits = "px"; // The most likely image units. Use imageUnits if we have themm
+  // Otherwise use pref units.
+  var unitHandler = new  UnitHandler();
+  unitHandler.initCurrentUnit(prefUnits);
+
+  prefUnits = prefBranch.getCharPref("swp.defaultGraphicsSizeUnits");
+  if (prefUnits) dialogUnits = prefUnits;
+  if (imageUnits) dialogUnits = imageUnits;
+  prefWidth = prefBranch.getCharPref("swp.defaultGraphicsHSize");
+  prefWidthEnabled = prefBranch.getBoolPref("swp.graphicsUseDefaultWidth");
+  if (!prefWidthEnabled) prefWidth = null;
+  prefHeight = prefBranch.getCharPref("swp.defaultGraphicsVSize");
+  prefHeightEnabled = prefBranch.getBoolPref("swp.graphicsUseDefaultHeight");
+  if (!prefHeightEnabled) prefHeight = null;
+  if (prefHeight && prefWidth) aspectRatio = prefHeight/prefWidth;
+  document.getElementById("unitList").value = prefUnits;
+//    customValue = true;
+  if (prefWidth) {
+    autoWidth = false;
+    w = unitHandler.getValueAs(prefWidth, dialogUnits);
+  }
+  document.getElementById("frameWidthInput").value = w;
+  document.getElementById("autoWidth").checked = autoWidth;
+  if (prefHeight) {
+    autoHeight = false;
+    h = unitHandler.getValueAs(prefHeight, dialogUnits);
+  }
+  document.getElementById("frameHeightInput").value = h;
+  if (imageWidth && imageHeight) {
+    aspectRatio = imageHeight/imageWidth;
+    if (!prefWidth) {
+      if (prefHeight) {
+        // set using aspectRatio
+        document.getElementById("frameWidthInput").value = h/aspectRatio;
+      }
+    }
+    if (!prefHeight) {
+      if (prefWidth) {
+        // set using aspectRatio
+        document.getElementById("frameHeightInput").value = w*aspectRatio;
+      }
+    }
+  }
+  document.getElementById("autoHeight").checked = autoHeight;
+  document.getElementById("autoWidth").checked = autoWidth;
+}
+
 function Startup()
 {
   //gActiveEditorElement = msiGetParentEditorElementForDialog(window);
@@ -105,10 +192,6 @@ function Startup()
   {
     window.close();
     return;
-  }
-  if (!frameUnitHandler) {
-    frameUnitHandler = new UnitHandler();
-    frameUnitHandler.initCurrentUnit('px');
   }
   gDialog = new Object();
   gDialog.isImport          = true;
@@ -215,7 +298,7 @@ function Startup()
   {
     gInsertNewImage = true;
   }
-
+  initFrameTab(frameTabDlg, wrapperElement||imageElement, gInsertNewImage, imageElement);
   initKeyList();
 
   // if inserting a new image, create elements now.
@@ -228,9 +311,8 @@ function Startup()
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
-  initFrameTab(frameTabDlg, wrapperElement||imageElement, gInsertNewImage, imageElement);
   InitDialog();
-
+  setImageSizeFields(null,null, 'px');
   // Save initial source URL
   gInitialSrc = document.getElementById("srcInput").value;
   gCopiedSrcUrl = gInitialSrc;
