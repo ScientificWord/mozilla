@@ -123,7 +123,6 @@ function initFrameTab(dg, element, newElement, contentsElement)
   }
   frameUnitHandler = new UnitHandler();
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
-//  Dg={};
   scale = 0.25;
   scaledWidthDefault = 50; 
   scaledHeightDefault = 60;
@@ -137,7 +136,6 @@ function initFrameTab(dg, element, newElement, contentsElement)
       gConstrainWidth = scaledWidthDefault;
   }
   position = 0;  // left = 1, right = 2, neither = 0
-  //var unit;
 
   dg.editorElement = msiGetParentEditorElementForDialog(window);
   dg.editor = msiGetEditor(dg.editorElement);
@@ -156,7 +154,6 @@ function initFrameTab(dg, element, newElement, contentsElement)
   dg.unitList             = document.getElementById("unitList");
   dg.sizeRadioGroup       = document.getElementById("sizeRadio");
   dg.actual               = document.getElementById( "actual" );
-  dg.iconic               = document.getElementById( "iconic" );
   dg.custom               = document.getElementById( "custom" );
   dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
   dg.marginInput          = {left:   document.getElementById("marginLeftInput"),
@@ -202,8 +199,33 @@ function initFrameTab(dg, element, newElement, contentsElement)
   fieldList.push(dg.trueheight);
   frameUnitHandler.setEditFieldList(fieldList);
   frameUnitHandler.initCurrentUnit(dg.frameUnitMenulist.value);
-// The defaults for the document are set by the XUL document, modified by persist attributes. If there is
-// no pre-existing frame object, the dg is set to go.
+// The defaults for the document are set by the XUL document, modified by persist attributes.
+// These are then overwritten by preference settings, if they exist
+  var prefBranch = GetPrefs();
+// pref("swp.defaultGraphicsInlineOffset", "0.0");
+// pref("swp.defaultGraphicsSizeUnits", "in");
+
+  dg.placementRadioGroup.value = prefBranch.getCharPref("swp.defaultGraphicsPlacement");
+  dg.placeForceHereCheck.checked = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.forceHere");
+  dg.placeHereCheck.checked = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.here");
+  dg.placeFloatsCheck.checked = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.pageFloats");
+  dg.placeTopCheck.checked = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.topPage");
+  dg.placeBottomCheck.checked = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.bottomPage");
+  dg.wrapOptionRadioGroup = prefBranch.getCharPref("swp.defaultGraphicsFloatPlacement");
+  dg.borderInput.left = dg.borderInput.right = dg.borderInput.top = dg.borderInput.bottom
+     = prefBranch.getCharPref("swp.graphics.border");
+  dg.marginInput.left = dg.marginInput.right = prefBranch.getCharPref("swp.graphics.HMargin");
+  dg.marginInput.top = dg.marginInput.bottom = prefBranch.getCharPref("swp.graphics.VMargin");
+  dg.paddingInput.left = dg.paddingInput.right = dg.paddingInput.top = dg.paddingInput.bottom
+   = prefBranch.getCharPref("swp.graphics.padding");
+try {
+  dg.bgcolorWell.setAttribute('style',"background-color: " + prefBranch.getCharPref("swp.graphics.BGColor") + ";");
+  dg.colorWell.setAttribute('style',"background-color: " + prefBranch.getCharPref("swp.graphics.borderColor") +";");
+}
+catch(e) {
+  msidump(e.message);
+}
+
   var placeLocation, placementStr, pos;
   var inlineOffset = 0;
   if (!newElement)
@@ -345,6 +367,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
       dg.placeTopCheck.checked = (placeLocation.search("t") != -1);
       dg.placeBottomCheck.checked = (placeLocation.search("b") != -1);
 
+
       if (dg.wrapOptionRadioGroup) {
         dg.wrapOptionRadioGroup.value = placementStr;
         if (!dg.wrapOptionRadioGroup.value || !dg.wrapOptionRadioGroup.value.length)
@@ -382,6 +405,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
   }
   Dg = dg;
   setAlignment(placement);
+  enableFloatOptions(dg.wrapOptionRadioGroup);
   enableFloating();
   placementChanged();
   doDimensionEnabling();
@@ -632,6 +656,9 @@ function redrawDiagram()
 function setStyleAttributeOnNode( node, att, value, editor)
 {
   var style="";
+  if (!node) {
+    return;
+  }
   removeStyleAttributeFamilyOnNode( node, att, editor);
   if (node.hasAttribute("style")) style = node.getAttribute("style");
   style.replace("null","");
@@ -644,6 +671,9 @@ function setStyleAttributeOnNode( node, att, value, editor)
 
 function removeStyleAttributeFamilyOnNode( node, att, editor)
 {
+  if (!node) {
+    return;
+  }
   var style="";
   if (node.hasAttribute("style")) style = node.getAttribute("style");
   style.replace("null","");
