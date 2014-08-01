@@ -115,6 +115,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
   var len2;
   var values;
   var width = 0;
+  var prefUnit;
   Dg = dg;
   if (gFrameModeImage)
   {
@@ -205,29 +206,37 @@ function initFrameTab(dg, element, newElement, contentsElement)
 // pref("swp.defaultGraphicsInlineOffset", "0.0");
 // pref("swp.defaultGraphicsSizeUnits", "in");
 
-  dg.placementRadioGroup.value = prefBranch.getCharPref("swp.defaultGraphicsPlacement");
-  dg.placeForceHereCheck.checked = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.forceHere");
-  dg.placeHereCheck.checked = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.here");
-  dg.placeFloatsCheck.checked = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.pageFloats");
-  dg.placeTopCheck.checked = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.topPage");
-  dg.placeBottomCheck.checked = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.bottomPage");
-  dg.wrapOptionRadioGroup = prefBranch.getCharPref("swp.defaultGraphicsFloatPlacement");
-  dg.borderInput.left = dg.borderInput.right = dg.borderInput.top = dg.borderInput.bottom
-     = prefBranch.getCharPref("swp.graphics.border");
-  dg.marginInput.left = dg.marginInput.right = prefBranch.getCharPref("swp.graphics.HMargin");
-  dg.marginInput.top = dg.marginInput.bottom = prefBranch.getCharPref("swp.graphics.VMargin");
-  dg.paddingInput.left = dg.paddingInput.right = dg.paddingInput.top = dg.paddingInput.bottom
-   = prefBranch.getCharPref("swp.graphics.padding");
-try {
-  dg.bgcolorWell.setAttribute('style',"background-color: " + prefBranch.getCharPref("swp.graphics.BGColor") + ";");
-  dg.colorWell.setAttribute('style',"background-color: " + prefBranch.getCharPref("swp.graphics.borderColor") +";");
-}
-catch(e) {
-  msidump(e.message);
-}
+  prefUnit = prefBranch.getCharPref("swp.defaultGraphicsSizeUnits");
+  v = prefBranch.getCharPref("swp.defaultGraphicsPlacement");
+  if (v != null) dg.placementRadioGroup.value = frameUnitHandler.getValueOf(v, prefUnit);
+  v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.forceHere");
+  if (v != null) dg.placeForceHereCheck.checked = v;
+  v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.here");
+  if (v != null) dg.placeHereCheck.checked = v;
+  v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.pageFloats");
+  if (v != null) dg.placeFloatsCheck.checked = v;
+  v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.topPage");
+  if (v != null) dg.placeTopCheck.checked = v;
+  v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.bottomPage");
+  if (v != null) dg.placeBottomCheck.checked = v;
+  v = prefBranch.getCharPref("swp.defaultGraphicsFloatPlacement");
+  if (v != null) dg.wrapOptionRadioGroup.value = frameUnitHandler.getValueOf(v, prefUnit)
+  v = prefBranch.getCharPref("swp.graphics.border");
+  if (v != null) dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.top.value = dg.borderInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit)
+  v = prefBranch.getCharPref("swp.graphics.HMargin");
+  if (v != null) dg.marginInput.left.value = dg.marginInput.right.value = frameUnitHandler.getValueOf(v, prefUnit)
+  v = prefBranch.getCharPref("swp.graphics.VMargin");
+  if (v != null) dg.marginInput.top.value = dg.marginInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit)
+  v = prefBranch.getCharPref("swp.graphics.padding");
+  if (v != null) dg.paddingInput.left.value = dg.paddingInput.right.value = dg.paddingInput.top.value = dg.paddingInput.bottom .value= frameUnitHandler.getValueOf(v, prefUnit)
+  v = prefBranch.getCharPref("swp.graphics.BGColor");
+  if (v != null) dg.bgcolorWell.setAttribute('style',"background-color: " + v + ";");
+  v = prefBranch.getCharPref("swp.graphics.borderColor");
+  if (v != null) dg.colorWell.setAttribute('style',"background-color: " + v + ";");
 
   var placeLocation, placementStr, pos;
   var inlineOffset = 0;
+try {
   if (!newElement)
   {   // we need to initialize the dg from the frame element
     if (!contentsElement)
@@ -356,7 +365,12 @@ catch(e) {
     if (gDefaultInlineOffset.length)
       inlineOffset = frameUnitHandler.getValueFromString( gDefaultInlineOffset );
   }
+}
+catch(e) {
+  msidump(e.message);
+}
 
+try {
   if ((!newElement || gDefaultPlacement.length) && dg.placeForceHereCheck)
   {
     try
@@ -419,7 +433,11 @@ catch(e) {
   else role = "image";
   updateMetrics();
   return dg;
-  
+}
+catch(e) {
+  msidump(e.message);
+}
+
 }
 
 function setNewUnit(element)
