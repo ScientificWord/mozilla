@@ -125,7 +125,7 @@ For the frame properties, the values should come from the defaults in the prefer
 */
 
 
-function setImageSizeFields(imageWidth, imageHeight, imageUnits) 
+function setImageSizeFields(imageWidth, imageHeight, dialogUnits) 
 {
   var prefWidth, prefHeight, prefWidthEnabled, prefHeightEnabled;
   var aspectRatio, prefUnits;
@@ -135,14 +135,11 @@ function setImageSizeFields(imageWidth, imageHeight, imageUnits)
   var customValue = false;
   var w = null;
   var h = null;
-  var dialogUnits = "px"; // The most likely image units. Use imageUnits if we have themm
-  // Otherwise use pref units.
   var unitHandler = new  UnitHandler();
-  unitHandler.initCurrentUnit(prefUnits);
 
   prefUnits = prefBranch.getCharPref("swp.defaultGraphicsSizeUnits");
-  if (prefUnits) dialogUnits = prefUnits;
-  if (imageUnits) dialogUnits = imageUnits;
+  unitHandler.initCurrentUnit(dialogUnits);
+
   prefWidth = prefBranch.getCharPref("swp.defaultGraphicsHSize");
   prefWidthEnabled = prefBranch.getBoolPref("swp.graphicsUseDefaultWidth");
   if (!prefWidthEnabled) prefWidth = null;
@@ -154,13 +151,13 @@ function setImageSizeFields(imageWidth, imageHeight, imageUnits)
 //    customValue = true;
   if (prefWidth) {
     autoWidth = false;
-    w = unitHandler.getValueAs(prefWidth, dialogUnits);
+    w = unitHandler.getValueOf(prefWidth, prefUnits);
   }
   document.getElementById("frameWidthInput").value = w;
   document.getElementById("autoWidth").checked = autoWidth;
   if (prefHeight) {
     autoHeight = false;
-    h = unitHandler.getValueAs(prefHeight, dialogUnits);
+    h = unitHandler.getValueOf(prefHeight, prefUnits);
   }
   document.getElementById("frameHeightInput").value = h;
   if (imageWidth && imageHeight) {
@@ -312,7 +309,7 @@ function Startup()
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
   InitDialog();
-  setImageSizeFields(null,null, 'px');
+  setImageSizeFields(null,null, frameUnitHandler.currentUnit);
   // Save initial source URL
   gInitialSrc = document.getElementById("srcInput").value;
   gCopiedSrcUrl = gInitialSrc;
@@ -1277,6 +1274,10 @@ function PreviewImageLoaded()
 {
   if (gDialog.PreviewImage)
   {
+    // Image loading has completed -- we can get actual width
+    gActualWidth  = gDialog.PreviewImage.offsetWidth;
+    gActualHeight = gDialog.PreviewImage.offsetHeight;
+    setImageSizeFields(gActualWidth, gActualHeight, frameUnitHandler.currentUnit);
     if (gVideo)
       dump("PreviewImageLoaded reached for video file!\n");
     var bReset = false;
