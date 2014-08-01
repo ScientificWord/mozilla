@@ -425,6 +425,8 @@ function onBrowseBibTeXStyleDir()
 
 function setTextboxValue(aPref)
 {
+  if (!aPref)
+    return;
   var theTextbox;
   switch(aPref.id)
   {
@@ -497,8 +499,10 @@ function initUnitsControl(unitBox, pref, controlArray)
 
 function onChangeUnits(unitBox)
 {
-  if (unitBox.unitsHandler)
+  if (unitBox.unitsHandler) {
     unitBox.unitsHandler.setCurrentUnit(unitBox.value);
+    writeGraphicLayoutPreferences("graphics")
+  }
 }
 
 
