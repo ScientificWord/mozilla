@@ -1739,13 +1739,21 @@
 \def\MSITextElement{%
   \@ifnextchar[{\msi@text@elmA}{\msi@text@elmB}}
 
+
 \def\msi@text@elmA[#1]#2{%
-  \expandafter\def\csname #2\endcsname##1{%
+  \expandafter\def\csname #2\endcsname{%
+     \let\@next\relax
      \ifmmode
-       \expandafter\string\csname #2\endcsname{##1}%
+       \expandafter\string\csname #2\endcsname%
      \else
-       \msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%
-     \fi}}
+       \msihmode\msiopentag{#1}{<#1>}%
+       \def\endelem{\msiclosetag{#1}{</#1>}}
+       \bgroup
+          \aftergroup\endelem
+          \let\@next\@gobbleit
+     \fi
+     \@next}}
+
 
 \def\msi@text@elmB#1{\msi@text@elmA[#1]{#1}}
 
@@ -2180,6 +2188,14 @@
 %    \msitag{\U{2026}}%
 %  \else
 %    }
+
+
+
+\input latex-default.tex
+\input tcilatex.tex
+\catcode`\<=\active
+%\catcode`\&=12
+
 
 \input latex-default.tex
 \input tcilatex.tex
