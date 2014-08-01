@@ -3108,7 +3108,13 @@
               \mathversion{normal}}
 \def\math@version{normal}
 \def\newfont#1#2{\@ifdefinable#1{\font#1=#2\relax}}
-\def\symbol#1{\char #1\relax}
+\def\symbol#1{%
+   \ifmmode
+     \string\symbol{#1}%
+   \else
+     \char #1\relax
+   \fi}
+
 \def\@setfontsize#1#2#3{\@nomath#1%
     \ifx\protect\@typeset@protect
       \let\@currsize#1%
