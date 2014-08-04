@@ -130,7 +130,7 @@
       </vbox>
       <vbox id="msiFrame"/>
 
-      <vbox id="Labelling">
+      <vbox id="Labeling">
         <vbox>
           <groupbox>        
             <label value="&labelingkey.label;"/>

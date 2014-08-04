@@ -275,14 +275,14 @@
       <caption label="&sizeTab.label;"/>
       <!-- hbox observes="hasNaturalSize" -->
         <radiogroup id="sizeRadio">
-          <hbox flex="1" observes="hasNaturalSize" hidden="true">
-            <vbox>
-              <radio id="actual" value="actual" label="&sizeTab.actualSize;" oncommand="setActualSize();" radioGroup="sizeRadio"/>
+          <hbox flex="1" visibility = "hidden">
+            <vbox >
+              <radio id="actual" value="actual" observes="hasNaturalSize" label="&sizeTab.actualSize;" oncommand="setActualSize();" radioGroup="sizeRadio"/>
             </vbox>
-            <vbox>
-              <radio id="custom" value="custom" label="&sizeTab.custom;" oncommand="doDimensionEnabling();" radioGroup="sizeRadio"/>
+            <vbox >
+              <radio id="custom" value="custom" observes="hasNaturalSize" label="&sizeTab.custom;" oncommand="doDimensionEnabling();" radioGroup="sizeRadio"/>
             </vbox>
-            <vbox>
+            <vbox >
               <checkbox observes="hasNaturalSize" id="constrainCheckbox"    oncommand ="ToggleConstrain();"
                   checked="false" persist = "checked" label="Preserve aspect ratio"/>
             </vbox>
@@ -300,10 +300,12 @@
             <rows>
               <row>
                 <label value="&width;" id="frameWidthLabel"/>
-                <label id="autoWidthLabel" value="&sizeTab.auto;" control="autoWidth"/>
+                <hbox>
+                <label id="autoWidthLabel" observes="hasNaturalSize" value="&sizeTab.auto;" control="autoWidth"/></hbox>
                 <spacer/>
                 <label value="&height;" id="frameHeightLabel"/>
-                <label value="&sizeTab.auto;" control="autoHeight"/>
+                <hbox>
+                <label observes="hasNaturalSize" value="&sizeTab.auto;" control="autoHeight"/></hbox>
               </row>
               <row observes="customSize">
                 <textbox
@@ -315,7 +317,8 @@
                   value     = ""
                   style     = "width: 1.0in;"
                   persist   = "value"/>
-                <checkbox id="autoWidth" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
+                  <hbox>
+                <checkbox id="autoWidth" observes="hasNaturalSize" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/></hbox>
                 <spacer/>
                 <textbox
                   id        = "frameHeightInput"
@@ -326,9 +329,10 @@
                   value     = ""
                   style     = "width: 1.0in;"   
                   persist   =  "value"/>
+                  <hbox>
                 <checkbox id="autoHeight"  
-                  observes  = "customSize"               
-                  oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
+                  observes="hasNaturalSize"            
+                  oncommand="checkAutoDimens(this, 'frameHeightInput');"/></hbox>
               </row>
             </rows>
           </grid>
@@ -401,7 +405,7 @@
       <broadcaster id="sidemargin" width="8"/>         
       <broadcaster id="topmargin" height="8"/>
       <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>
-      <broadcaster id="hasNaturalSize" hidden=""/>  
+      <broadcaster id="hasNaturalSize"/>  
       <broadcaster id="role-image" hidden="false"/>      
       <broadcaster id="customSize" disabled="true"/>      
     </broadcasterset>
