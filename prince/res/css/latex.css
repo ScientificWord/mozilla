@@ -197,7 +197,7 @@ hspace[type="nonBreakingSpace"] {
 }
 
 mml|maligngroup:before {
-  visibility: none;
+  visibility: hidden;
 }
 
 body[showinvis="true"] mml|maligngroup:before {

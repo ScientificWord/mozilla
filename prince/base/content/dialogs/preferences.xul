@@ -216,6 +216,10 @@
       <preference id="DefaultFileType"
                   name="swp.graph.DefaultFileType"
                   type= "string"/>
+      <preference id = "plotcaptionpref"  
+                   name="swp.graph.captionplacement"     
+                   type = "string" />          
+
       <!-- preference id="enablerealtimespell"
                   name="swp.spellchecker.enablerealtimespell"
                   type="bool"/ --> <!-- Commented out as it's duplicated below - rwa 050613 -->
@@ -338,7 +342,7 @@
                   type="string"/>                  
       <preference id ="ctrlMpref"
                   name="swp.ctrl.m"
-                  type="string"/>                  
+                  type="string"/> 
     </preferences>
 
     <tabbox id="generalTabbox" persist="selectedIndex" selectedIndex="0">
@@ -1598,9 +1602,10 @@
         <vbox>
           <groupbox>
             <caption label="&labelingcaption.label;"/>
-            <radiogroup id="captionplacement" orient="horizontal">
-              <radio label="&labelingabove.label;"    value="labelabove" selected="false"/>
-              <radio label="&labelingbelow.label;"    value="labelbelow" selected="true"/>
+            <radiogroup id="captionplacement" preference= "swp.graph.captionplacement" orient="horizontal">
+              <radio id="captionNoneRadio" label="&None.label;" value="none"/>
+              <radio id="captionAboveRadio" label="&labelingabove.label;" value="top"/>
+              <radio id="captionBelowRadio" label="&labelingbelow.label;" value="bottom"/>
             </radiogroup>
           </groupbox>
        </vbox>

@@ -2289,16 +2289,46 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   // Create the <graph> element and insert into the document following this math element
   // primary entry point
   if (!editorElement) editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   var checkedExpr = preParsePlotExpression(math, plottype, selection, editorElement);
   var expr = runFixup(GetFixedMath(checkedExpr));
   var graph = new Graph();
   var width = GetStringPref("swp.graph.HSize");
   var height = GetStringPref("swp.graph.VSize");
   var unit = GetStringPref("swp.graph.defaultUnits");
+  var XTickCount = GetStringPref("swp.graph.XTickCount");
+  var YTickCount = GetStringPref("swp.graph.YTickCount");
+  var ZTickCount = GetStringPref("swp.graph.ZTickCount");
+  var XAxisLabel = GetStringPref("swp.graph.XAxisLabel");
+  var YAxisLabel = GetStringPref("swp.graph.YAxisLabel");
+  var ZAxisLabel = GetStringPref("swp.graph.ZAxisLabel");
+  var plotcaptionpref = GetStringPref("swp.graph.captionplacement");
+  var frmBorder = GetStringPref("swp.graph.border");
+  var frmHMargin = GetStringPref("swp.graph.HMargin");
+  var frmVMargin  = GetStringPref("swp.graph.VMargin");
+  var frmPadding = GetStringPref("swp.graph.padding");
+  var frmBGColor = GetStringPref("swp.graph.BGColor");
+  var frmBorderColor = GetStringPref("swp.graph..borderColor");
+  var frmPlacement = GetStringPref("swp.graph.placement");
+  var frmFloatLocation_forceHere = GetBoolPref("swp.graph.floatLocation.forceHere");
+  var frmFloatLocation_here = GetBoolPref("swp.graph.floatLocation.here");
+  var frmFloatLocation_pageFloats = GetBoolPref("swp.graph.floatLocation.pageFloats");
+  var frmFloatLocation_topPage = GetBoolPref("swp.graph.floatLocation.topPage");
+  var frmFloatLocation_bottomPage = GetBoolPref("swp.graph.floatLocation.bottomPage");
+  var frmFloatPlacement = GetStringPref("swp.graph.floatPlacement");
+
+
   graph.setGraphAttribute("Width", width);
   graph.setGraphAttribute("Height", height);
   graph.setGraphAttribute("Units", unit);
   graph["Dimension"] = dimension;
+  if (XTickCount) graph.setGraphAttribute("XTickCount", XTickCount);
+  if (YTickCount) graph.setGraphAttribute("YTickCount", YTickCount);
+  if (ZTickCount) graph.setGraphAttribute("ZTickCount", ZTickCount);
+  if (XAxisLabel) graph.setGraphAttribute("XAxisLabel", XAxisLabel);
+  if (YAxisLabel) graph.setGraphAttribute("YAxisLabel", YAxisLabel);
+  if (ZAxisLabel) graph.setGraphAttribute("ZAxisLabel", ZAxisLabel);
+  if (plotcaptionpref) graph.setGraphAttribute("CaptionPlace", plotcaptionpref);
 
   var plot = new Plot(dimension, plottype);
   var plotnum = graph.addPlot(plot);
@@ -2310,6 +2340,63 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   }
   plot.computeQuery();
   insertGraph(math, graph, editorElement);
+  var frame = math.nextSibling.getElementsByTagName("msiframe")[0];
+  if (frame) {
+    if (frmBorder) frame.setAttribute("border", frmBorder);
+    if (frmHMargin) frame.setAttribute("sidemargin", frmHMargin);
+    if (frmVMargin) frame.setAttribute("topmargin", frmVMargin);
+    if (frmPadding) frame.setAttribute("padding", frmPadding);
+    if (frmBGColor) frame.setAttribute("background-color", frmBGColor);
+    if (frmBorderColor) frame.setAttribute("border-color", frmBorderColor);
+    if (frmPlacement) frame.setAttribute("placement", frmPlacement);
+    if (frmFloatLocation_forceHere != null && frmFloatLocation_forceHere) frame.setAttribute("placeLocation", frmFloatLocation_forceHere);
+    if (frmFloatLocation_here != null && frmFloatLocation_here) frame.setAttribute("placeLocation", frmFloatLocation_here);
+    if (frmFloatLocation_pageFloats != null && frmFloatLocation_pageFloats) frame.setAttribute("placeLocation", frmFloatLocation_pageFloats);
+    if (frmFloatLocation_topPage != null && frmFloatLocation_topPage) frame.setAttribute("placeLocation", frmFloatLocation_topPage);
+    if (frmFloatLocation_bottomPage != null && frmFloatLocation_bottomPage) frame.setAttribute("placeLocation", frmFloatLocation_bottomPage);
+    if (frmFloatPlacement) frame.setAttribute("placement", frmFloatPlacement);
+    if (plotcaptionpref && plotcaptionpref !== "none") {
+      frame.setAttribute("captionloc", plotcaptionpref);
+      // set caption-side in style
+    }
+    // BBM: need to set up style as well
+    var style = frame.getAttribute("style");
+    style = style.replace(/margin[^;]+;/,'');
+    style = style.replace(/border[^;]+;/,'');
+    style = style.replace(/background[^;]+;/,'');
+    style = style.replace(/padding[^;]+;/,'');
+    style = style.replace(/caption-side[^;]+;/,'');
+    if ((frmHMargin != null) || (frmVMargin != null)) {
+      style += ("margin: " + (frmVMargin || "") + (frmHMargin || "") + ";");
+    }
+    if (frmBorder) style +=( "border:" + frmBorder + ";");
+    if (frmBGColor) style += ("background-color: " + frmBGColor + ";");
+    if (frmPadding) style += ("padding: " + frmPadding + ";");
+    frame.setAttribute("style", style);
+    // Handle the caption node
+    var captionNodes = frame.getElementsByTagName('caption');
+    var captionNode = null;
+    if (captionNodes.length > 0) {
+      captionNode = captionNodes[0];
+    }
+    if (plotcaptionpref && (plotcaptionpref != "none")) {
+      var tlm;
+      tlm = editor.tagListManager;
+      setStyleAttributeOnNode(frame, "caption-side", plotcaptionpref, editor);
+      // if there is no caption node, create an empty one.
+      if (!captionNode) {
+         captionNode = editor.createElementWithDefaults('caption');
+         var namespace = { value: null };
+         captionNode.appendChild(tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, captionNode.ownerDocument));
+         frame.appendChild(captionNode);
+      }
+    } else
+    {
+      frame.removeAttribute("captionloc");
+      removeStylePropFromNode( frame, 'caption-side', editor);
+      if (captionNode) editor.deleteNode(captionNode);
+    }
+  }
 }
 
 function preParsePlotExpression(math, plotType, selection, editorElement)
