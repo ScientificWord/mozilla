@@ -53,6 +53,44 @@ function setCanRotate(istrue)
   }
 }
 
+function setFrameSizeFromExisting(dg, node)
+{
+  var height;
+  var width;
+  var aspectRatio;
+  if (!node) return;
+  width = node.getAttribute("width");
+  height= node.getAttribute("height");
+  if (height == null && width == null) return;
+  dg.frameWidthInput           = document.getElementById("frameWidthInput");
+  dg.frameHeightInput          = document.getElementById("frameHeightInput");
+  dg.autoHeightCheck      = document.getElementById("autoHeight");
+  dg.autoWidthCheck       = document.getElementById("autoWidth");
+  dg.frameUnitMenulist    = document.getElementById("frameUnitMenulist"); // ??
+  dg.unitList             = document.getElementById("unitList");          // ??
+  dg.sizeRadioGroup       = document.getElementById("sizeRadio");
+  dg.actual               = document.getElementById( "actual" );
+  dg.custom               = document.getElementById( "custom" );
+  dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
+  if (width != null) {
+    dg.frameWidthInput.value = width;
+    dg.frameWidthInput.removeAttribute("disabled");
+    dg.autoWidthCheck.checked = false;
+  } else {
+    dg.autoWidthCheck.checked = true;
+    dg.frameWidthInput.setAttribute("disabled", true);
+  }
+  if (height != null) {
+    dg.frameHeightInput.value = height;
+    dg.frameHeightInput.removeAttribute("disabled");
+    dg.autoHeightCheck.checked = false;
+  } else {
+    dg.autoHeightCheck.checked = true;
+    dg.frameHeightInput.setAttribute("disabled", true);
+  }
+  dg.constrainCheckbox.checked = (width == null || height == null);
+}
+
 function updateMetrics()
 {
   // this function takes care of the mapping in the cases where there are constraints on margins, padding, etc.
@@ -109,7 +147,7 @@ function rescaleMetrics(width, height) // width and height in current unit.
 
 function initFrameTab(dg, element, newElement, contentsElement)
 {
-  var i;
+  var i, v;
   var len;
   var j;
   var len2;
@@ -117,11 +155,11 @@ function initFrameTab(dg, element, newElement, contentsElement)
   var width = 0;
   var prefUnit;
   Dg = dg;
-  if (gFrameModeImage)
-  {
-    widthAtt = "imageWidth";
-    heightAtt = "imageHeight";
-  }
+  // if (gFrameModeImage)
+  // {
+  //   widthAtt = "imageWidth";
+  //   heightAtt = "imageHeight";
+  // }
   frameUnitHandler = new UnitHandler();
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
   scale = 0.25;
@@ -146,17 +184,6 @@ function initFrameTab(dg, element, newElement, contentsElement)
   }
   // For convenience, map dialog elements to an object
 //  currentFrame = element;
-  dg.widthInput           = document.getElementById("frameWidthInput");
-  dg.heightInput          = document.getElementById("frameHeightInput");
-  dg.autoHeightCheck      = document.getElementById("autoHeight");
-  dg.autoWidthCheck       = document.getElementById("autoWidth");
-  dg.autoWidthLabel       = document.getElementById("autoWidthLabel");
-  dg.frameUnitMenulist    = document.getElementById("frameUnitMenulist");
-  dg.unitList             = document.getElementById("unitList");
-  dg.sizeRadioGroup       = document.getElementById("sizeRadio");
-  dg.actual               = document.getElementById( "actual" );
-  dg.custom               = document.getElementById( "custom" );
-  dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
   dg.marginInput          = {left:   document.getElementById("marginLeftInput"),
                              right: document.getElementById("marginRightInput"),
                              top:   document.getElementById("marginTopInput"),
@@ -184,8 +211,13 @@ function initFrameTab(dg, element, newElement, contentsElement)
   dg.OkButton             = document.documentElement.getButton("accept");
   dg.truewidth            = document.getElementById( "truewidth" );
   dg.trueheight           = document.getElementById( "trueheight" );
+  dg.frameHeightInput     = document.getElementById("frameHeightInput");
+  dg.frameWidthInput      = document.getElementById("frameWidthInput");
+  dg.autoHeightCheck      = document.getElementById("autoHeight");
+  dg.autoWidthCheck       = document.getElementById("autoWidth");
   var fieldList = [];
   var attrs = ["margin","border","padding"];
+try {
   for (i=0, len = sides.length; i<len; i++)
   {
     for (j = 0, len2 = attrs.length; j < len2; j++)
@@ -193,13 +225,16 @@ function initFrameTab(dg, element, newElement, contentsElement)
       fieldList.push(dg[attrs[j]+"Input"][sides[i].toLowerCase()]);
     }
   }
-  fieldList.push(dg.heightInput);
-  fieldList.push(dg.widthInput);
+} 
+catch(e) {
+  msidump(e.message);
+}
+  fieldList.push(dg.frameHeightInput);
+  fieldList.push(dg.frameWidthInput);
   fieldList.push(dg.inlineOffsetInput);
   fieldList.push(dg.truewidth);
   fieldList.push(dg.trueheight);
   frameUnitHandler.setEditFieldList(fieldList);
-  frameUnitHandler.initCurrentUnit(dg.frameUnitMenulist.value);
 // The defaults for the document are set by the XUL document, modified by persist attributes.
 // These are then overwritten by preference settings, if they exist
   var prefBranch = GetPrefs();
@@ -207,6 +242,7 @@ function initFrameTab(dg, element, newElement, contentsElement)
 // pref("swp.defaultGraphicsSizeUnits", "in");
 
   prefUnit = prefBranch.getCharPref("swp.defaultGraphicsSizeUnits");
+  frameUnitHandler.initCurrentUnit(prefUnit);
   v = prefBranch.getCharPref("swp.defaultGraphicsPlacement");
   if (v != null) dg.placementRadioGroup.value = frameUnitHandler.getValueOf(v, prefUnit);
   v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.forceHere");
@@ -247,36 +283,37 @@ try {
       setHasNaturalSize(true);
     }
     else  setHasNaturalSize(false);
+    setFrameSizeFromExisting(dg, contentsElement);
 
     frameUnitHandler.setCurrentUnit(contentsElement.getAttribute("units"));
     
-    var width = 0;
-    var widthStr = "0";
-    if (contentsElement.hasAttribute(widthAtt)) {
-      width = frameUnitHandler.getValueFromString( contentsElement.getAttribute(widthAtt) );
-    }
-    var height = 0;
-    var heightStr = "0";
-    if (contentsElement.hasAttribute(heightAtt)) {
-      height = frameUnitHandler.getValueFromString( contentsElement.getAttribute(heightAtt) );
-    } else
-    {
-      dg.autoHeightCheck.checked = true;
-    }
-    if (gConstrainWidth || gConstrainHeight)
-      setConstrainDimensions(frameUnitHandler.getValueAs(width, "px"), frameUnitHandler.getValueAs(height,"px"));
-    setWidthAndHeight(width, height, null);
-    if (width === 0) {
-      dg.autoWidthCheck.checked = true;
-      dg.widthInput.setAttribute('disabled', 'true');
-    }
-    else dg.widthInput.removeAttribute('disabled');
+    // var width = 0;
+    // var widthStr = "0";
+    // if (contentsElement.hasAttribute(widthAtt)) {
+    //   width = frameUnitHandler.getValueFromString( contentsElement.getAttribute(widthAtt) );
+    // }
+    // var height = 0;
+    // var heightStr = "0";
+    // if (contentsElement.hasAttribute(heightAtt)) {
+    //   height = frameUnitHandler.getValueFromString( contentsElement.getAttribute(heightAtt) );
+    // } else
+    // {
+    //   dg.autoHeightCheck.checked = true;
+    // }
+    // if (gConstrainWidth || gConstrainHeight)
+    //   setConstrainDimensions(frameUnitHandler.getValueAs(width, "px"), frameUnitHandler.getValueAs(height,"px"));
+    // setWidthAndHeight(width, height, null);
+    // if (width === 0) {
+    //   dg.autoWidthCheck.checked = true;
+    //   dg.widthInput.setAttribute('disabled', 'true');
+    // }
+    // else dg.widthInput.removeAttribute('disabled');
 
-    if (height === 0) {
-      dg.autoHeightCheck.checked = true;
-      dg.heightInput.setAttribute('disabled', 'true');
-    } 
-    else dg.heightInput.removeAttribute('disabled');
+    // if (height === 0) {
+    //   dg.autoHeightCheck.checked = true;
+    //   dg.frameHeightInput.setAttribute('disabled', 'true');
+    // } 
+    // else dg.frameHeightInput.removeAttribute('disabled');
 
     try
     {
@@ -834,8 +871,8 @@ function setConstrainDimensions(width, height)
 
 function setWidthAndHeight(width, height, event)
 {
-  Dg.widthInput.value = width;
-  Dg.heightInput.value = height;
+  Dg.frameWidthInput.value = width;
+  Dg.frameHeightInput.value = height;
   if (Dg.autoHeightCheck.checked && !Dg.autoWidthCheck.checked)
     constrainProportions( "frameWidthInput", "frameHeightInput", event );
   else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
@@ -906,7 +943,7 @@ function setTextValueAttributes()
 
 function isValid()
 {
-  // if (!(Dg.widthInput.value > 0))
+  // if (!(Dg.frameWidthInput.value > 0))
   // {
   //   AlertWithTitle("Layout error", "Width must be positive");
   //   return false;
@@ -1031,7 +1068,7 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     }
   }
   else{
-    msiEditorEnsureElementAttribute(contentsNode, heightAtt, Dg.heightInput.value, editor);
+    msiEditorEnsureElementAttribute(contentsNode, heightAtt, Dg.frameHeightInput.value, editor);
   }
   if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked)
   {
@@ -1044,8 +1081,8 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     }
   }
   else{
-    msiEditorEnsureElementAttribute(contentsNode, widthAtt, Dg.widthInput.value, editor);
-    contentsNode.setAttribute(widthAtt,Dg.widthInput.value);
+    msiEditorEnsureElementAttribute(contentsNode, widthAtt, Dg.frameWidthInput.value, editor);
+    contentsNode.setAttribute(widthAtt,Dg.frameWidthInput.value);
   }
   var pos;
   if (document.getElementById("placementRadioGroup")) pos = document.getElementById("placementRadioGroup").selectedItem;
@@ -1278,8 +1315,8 @@ function ToggleConstrain()
 //     && (gDialog.widthUnitsMenulist.selectedIndex == 0)
 //     && (gDialog.heightUnitsMenulist.selectedIndex == 0))
   {
-    gConstrainWidth = frameUnitHandler.getValueAs(Number(TrimString(Dg.widthInput.value)), "px");
-    gConstrainHeight = frameUnitHandler.getValueAs(Number(TrimString(Dg.heightInput.value)), "px");
+    gConstrainWidth = frameUnitHandler.getValueAs(Number(TrimString(Dg.frameWidthInput.value)), "px");
+    gConstrainHeight = frameUnitHandler.getValueAs(Number(TrimString(Dg.frameHeightInput.value)), "px");
   }
 }
 
@@ -1296,7 +1333,7 @@ function constrainProportions( srcID, destID, event )
   if (gFrameModeImage)
   {
     if (gActualWidth && gActualHeight &&
-        (Dg.constrainCheckbox.checked && !Dg.constrainCheckbox.disabled))
+        ((Dg.constrainCheckbox.checked && !Dg.constrainCheckbox.disabled) || destElement.hasAttribute("disabled")))
     {
   //  // double-check that neither width nor height is in percent mode; bail if so!
   //  if ( (gDialog.widthUnitsMenulist.selectedIndex != 0)
@@ -1323,7 +1360,7 @@ function constrainProportions( srcID, destID, event )
     // else
     //   destElement.value = unitRound( srcElement.value * gConstrainWidth / gConstrainHeight );
   }
-  setContentSize(frameUnitHandler.getValueAs(Dg.widthInput.value,"px"), frameUnitHandler.getValueAs(Dg.heightInput.value,"px"));
+  setContentSize(frameUnitHandler.getValueAs(Dg.frameWidthInput.value,"px"), frameUnitHandler.getValueAs(Dg.frameHeightInput.value,"px"));
 }
 
 function doDimensionEnabling()
@@ -1339,11 +1376,11 @@ function doDimensionEnabling()
   // BUG 74145: After input field is disabled,
   //   setting it enabled causes blinking caret to appear
   //   even though focus isn't set to it.
-  SetElementEnabledById( "frameHeightInput", enable );
-  SetElementEnabledById( "frameHeightLabel", enable );
+  // SetElementEnabledById( "frameHeightInput", enable );
+  // SetElementEnabledById( "frameHeightLabel", enable );
 
-  SetElementEnabledById( "frameWidthInput", enable );
-  SetElementEnabledById( "frameWidthLabel", enable);
+  // SetElementEnabledById( "frameWidthInput", enable );
+  // SetElementEnabledById( "frameWidthLabel", enable);
 
   SetElementEnabledById( "unitList", enable );
 
@@ -1360,14 +1397,14 @@ function setActualSize()
   var width, height;
   if (gActualWidth && gActualHeight)
   {
-    width = frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gActualWidth,"px");
-    height = frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
+    width = Dg.frameWidthInput.value = frameUnitHandler.getValueOf(gActualWidth,"px");
+    height = Dg.frameHeightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
   }
   else if (gConstrainWidth && gConstrainHeight)
   {
-    width = frameTabDlg.widthInput.value = frameUnitHandler.getValueOf(gConstrainWidth,"px");
-    height = frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gConstrainHeight,"px");
+    width = Dg.frameWidthInput.value = frameUnitHandler.getValueOf(gConstrainWidth,"px");
+    height = Dg.frameHeightInput.value = frameUnitHandler.getValueOf(gConstrainHeight,"px");
   }
-//  frameTabDlg.unitList.selectedIndex = 0;
+//  Dg.unitList.selectedIndex = 0;
   doDimensionEnabling();
 }
