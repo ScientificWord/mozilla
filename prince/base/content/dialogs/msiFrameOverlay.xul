@@ -312,7 +312,7 @@
                   onkeypress= ""
                   onchange  = "frameWidthChanged(this, event);"
                   onload    = "frameWidthChanged(this, event);"
-                  value     = "72"
+                  value     = ""
                   style     = "width: 1.0in;"
                   persist   = "value"/>
                 <checkbox id="autoWidth" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
@@ -323,7 +323,7 @@
                   onkeypress= ""
                   onchange  = "frameHeightChanged(this, event);"
                   onload    = "frameHeightChanged(this, event);"
-                  value     = "36"
+                  value     = ""
                   style     = "width: 1.0in;"   
                   persist   =  "value"/>
                 <checkbox id="autoHeight"  
