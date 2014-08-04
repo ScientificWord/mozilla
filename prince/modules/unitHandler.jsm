@@ -77,7 +77,9 @@ function UnitHandler()
     }
     var factor = this.units[this.currentUnit].size/this.units[unit].size;
     var limAttr;
-    for (var i = 0, len = this.editFieldList.length; i < len; i++)
+    var i;
+    var len = this.editFieldList.length;
+    for ( i = 0; i < len; i++)
     {
       this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
       this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places);
@@ -95,8 +97,10 @@ function UnitHandler()
    
   this.initCurrentUnit = function(unit) // this is for setting the initial value -- no conversions
   {
+    var len = this.editFieldList.length;
+    var i;
     if (!unit) return;
-    for (var i = 0, len = this.editFieldList.length; i < len; i++)
+    for (i = 0;  i < len; i++)
     {
       this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
       this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places); 
@@ -113,7 +117,9 @@ function UnitHandler()
   this.convertAll = function(newUnit, valueArray )
   {
     var factor = this.units[this.currentUnit].size/this.units[newUnit].size;
-    for (var i = 0, len = valueArray.length; i < len; i++)
+    var i;
+    var len = valueArray.length;
+    for (i = 0; i < len; i++)
       { valueArray[i] *= factor; }
   };
 
