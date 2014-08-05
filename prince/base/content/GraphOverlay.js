@@ -6,6 +6,39 @@ Components.utils.import("resource://app/modules/os.jsm");
 //----------------------------------------------------------------------------------
 // ************ Graph section ******
 
+function setStyleAttributeOnNode( node, att, value, editor)  // this is a candidate for msiEditorUtilities.js
+{
+  var style="";
+  if (!node) {
+    return;
+  }
+  removeStyleAttributeFamilyOnNode( node, att, editor);
+  if (node.hasAttribute("style")) style = node.getAttribute("style");
+  style.replace("null","");
+  style = style + " " + att +": " + value + "; ";
+  if (editor)
+    msiEditorEnsureElementAttribute(node, "style", style, editor);
+  else
+    node.setAttribute("style",style);
+}
+
+function removeStyleAttributeFamilyOnNode( node, att, editor)  // this is a candidate for msiEditorUtilities.js
+{
+  var style="";
+  if (node.hasAttribute("style")) style = node.getAttribute("style");
+  style.replace("null","");
+  var re = new RegExp("^|[^-]"+att + "[-a-zA-Z]*:[^;]*;","g");
+  if (re.test(style))
+  {
+    style = style.replace(re, "");
+    if (editor)
+      msiEditorEnsureElementAttribute(node, "style", style, editor);
+    else
+      node.setAttribute("style",style);
+  }
+}
+
+
 function removeStylePropFromNode(node, property, editor)
 {
   var style="";
