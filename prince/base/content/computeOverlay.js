@@ -361,7 +361,7 @@ function isSelectionMath(selection) {
     if (selection.focusNode.nodeName === "math") {
       return selection.focusNode;
     } else if (selection.focusOffset === selection.anchorOffset + 1) {
-      if (selection.anchorNode.childNodes[selection.anchorOffset].nodeName === "math") {
+      if ((selection.anchorNode.childNodes.length > selection.anchorOffset) && (selection.anchorNode.childNodes[selection.anchorOffset].nodeName === "math")) {
         return selection.anchorNode.childNodes[selection.anchorOffset];
       }
     } else if (selection.anchorOffset === selection.focusOffset + 1) {
