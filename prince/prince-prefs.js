@@ -122,6 +122,7 @@ pref("swp.graph.VMargin", "0.15");
 pref("swp.graph.padding", "0.2");
 pref("swp.graph.BGColor", "#FFFFFF");
 pref("swp.graph.borderColor", "#000000");
+pref("swp.graph.captionplacement", "none");
 pref("swp.GraphicsSnapshotRes", 600);
 pref("swp.matrix.cols", 3);
 pref("swp.matrix.rows", 3);

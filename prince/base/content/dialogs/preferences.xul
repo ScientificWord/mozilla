@@ -216,7 +216,7 @@
       <preference id="DefaultFileType"
                   name="swp.graph.DefaultFileType"
                   type= "string"/>
-      <preference id = "plotcaptionpref"  
+      <preference id = "captionplacement"  
                    name="swp.graph.captionplacement"     
                    type = "string" />          
 
@@ -1602,7 +1602,7 @@
         <vbox>
           <groupbox>
             <caption label="&labelingcaption.label;"/>
-            <radiogroup id="captionplacement" preference= "swp.graph.captionplacement" orient="horizontal">
+            <radiogroup id="captionplacementRadio" preference= "captionplacement" orient="horizontal">
               <radio id="captionNoneRadio" label="&None.label;" value="none"/>
               <radio id="captionAboveRadio" label="&labelingabove.label;" value="top"/>
               <radio id="captionBelowRadio" label="&labelingbelow.label;" value="bottom"/>
