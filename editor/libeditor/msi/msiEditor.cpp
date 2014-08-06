@@ -3057,6 +3057,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   PRBool fValidChar;
   nsAutoString theText;
   nsAutoString tag;
+  nsAutoString parentTag;
   nsIAtom * atomNS;
   nsresult rv;
   offset = offsetIn;
@@ -3077,11 +3078,11 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(pnode);
         nsAutoString val;
         if (nodeElement) {
-          rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
-          if (val.EqualsLiteral("true")) 
-          {
-            fValidChar = PR_FALSE;
-          }
+          // rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
+          // if (val.EqualsLiteral("true")) 
+          // {
+          //   fValidChar = PR_FALSE;
+          // }
           if (fValidChar) {
             rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msiunit"), val);
             if (val.EqualsLiteral("true")) {
@@ -3165,11 +3166,13 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   }
   node2 = nsnull;
   nsCOMPtr<nsIDOMNode> tempnode;
+  nsCOMPtr<nsIDOMNode> parentNode;
   tempnode = nodeIn;
   PRBool validNode = PR_TRUE;
   while (node2 == nsnull)
   {
     tempnode->GetPreviousSibling(getter_AddRefs(node2));
+
     // if no previous sibling under this node, go up one level and try again
     if (!node2)
     {
@@ -3186,15 +3189,22 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       }
       else
       {
+        // there are cases where we can't use the previous sibling, such as when the nodes are children of elements where
+        // the children correspond to visually distinct entities, as in fractions, subscripts, superscripts, etc.
+        node2->GetParentNode(getter_AddRefs(parentNode));
+        rv = mtagListManager->GetTagOfNode(parentNode, &atomNS, parentTag);
         rv = mtagListManager->GetTagOfNode(node2, &atomNS, tag);
         if (tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) {
-          nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(node2);
-          nsAutoString val;
-          rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
-          if (val.EqualsLiteral("true")) 
-          {
+          if (!(parentTag.EqualsLiteral("mrow") || parentTag.EqualsLiteral("math"))) {
             validNode = PR_FALSE;
           }
+          nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(node2);
+          nsAutoString val;
+          // rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
+          // if (val.EqualsLiteral("true")) 
+          // {
+          //   validNode = PR_FALSE;
+          // }
           if (validNode) {
             rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msiunit"), val);
             if (val.EqualsLiteral("true")) {

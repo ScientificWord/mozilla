@@ -1072,6 +1072,9 @@ msiEditingManager::InsertMathunit(nsIEditor* editor,
                                   const nsAString & mathunit)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMNode> parent;
+  PRInt32 parentOffset;
+  nsEditor * ed = static_cast<nsEditor *>(editor);  
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathname");
   if (editor && selection && node)
   {
@@ -1080,7 +1083,9 @@ msiEditingManager::InsertMathunit(nsIEditor* editor,
     res = msiUtils::CreateMathname(editor, mathunit, flags, PR_TRUE, mathmlElement);
     if (NS_SUCCEEDED(res) && mathmlElement){
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
-    }
+      res = ed->GetNodeLocation(mathmlElement, address_of(parent), &parentOffset);
+      res = selection->Collapse(parent, parentOffset+1);
+   }
   }
   return res;
 }                                                 
