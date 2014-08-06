@@ -535,6 +535,19 @@ msiEditor::InsertMathname(const nsAString & mathname)
 
     if (NS_SUCCEEDED(res)) 
     {
+      // PRInt32 comparison;
+      // PRInt32 offset;
+      // PRUint16 nodeType;
+      // nsCOMPtr<nsIDOMNode> firstNode;
+      // nsCOMPtr<nsIDOMNode> parent;
+      // ComparePoints(startNode, startOffset, endNode, endOffset, &comparison);
+      // if (comparison > 0) firstNode = endNode;
+      // else firstNode = startNode;
+      // firstNode->GetNodeType(&nodeType);
+      // if (nodeType == nsIDOMNode::TEXT_NODE) {
+      //   firstNode->GetParentNode(getter_AddRefs(firstNode));
+      // }
+      // res = GetNodeLocation(firstNode, address_of(parent), &offset);
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
       if (!bCollapsed)
@@ -546,11 +559,14 @@ msiEditor::InsertMathname(const nsAString & mathname)
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
+      res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+                             endOffset, bCollapsed);
       theNode = startNode;
       theOffset = startOffset;
+      selection->Collapse(theNode, theOffset);
       
       if (NS_SUCCEEDED(res))
-        res = InsertMathnameEx(selection, theNode, theOffset, mathname);
+        res = InsertMathnameEx(selection, theNode, theOffset, mathname); // BBM: Why does Larry pass post selection and (node,offset)?
     }
   }
   else if (mathname.Length() == 0)
@@ -3243,7 +3259,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, inmath, ch, lookupResult);
   if (node)  // there was success somewhere
   {
-    SetInComplexTransaction(PR_TRUE);
+//    SetInComplexTransaction(PR_TRUE);
     if (lookupResult == msiIAutosub::STATE_SPECIAL)
 		{
 			ctx =	msiIAutosub::CONTEXT_TEXTONLY; 
@@ -3257,19 +3273,8 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
     if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath || 
       inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
     {
-      //printf("\njcs -- node:\n");
-      //DumpNode(node, 0, true);
       selection->Collapse(node, offset);
-     
-      //printf("\njcs -- originalNode:\n");
-      //DumpNode(originalNode, 0, true);
-
-      selection->Extend(originalNode,originalOffset);
-
-
-      //printf("\njcs Extended selection:\n");
-      //DumpSelection(selection);
-
+//      selection->Extend(originalNode,originalOffset);
       if (action == msiIAutosub::ACTION_SUBSTITUTE)
         InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
       else if (action == msiIAutosub::ACTION_EXECUTE)
@@ -3284,8 +3289,11 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
 #endif
         }
       }
+      // selection->Collapse(node, offset);
+      selection->Extend(originalNode, originalOffset);
+      res = DeleteSelection(nsIEditor::eNone);
     }
-    SetInComplexTransaction(PR_FALSE);
+//    SetInComplexTransaction(PR_FALSE);
   }
   return res;
 }
