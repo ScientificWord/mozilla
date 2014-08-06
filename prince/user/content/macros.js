@@ -8,8 +8,8 @@
 
 function deleteSelection()
 {
-  dump("\ndeleteSelection();\n");
-  msiGoDoCommand('cmd_delete');
+  // dump("\ndeleteSelection();\n");
+  // msiGoDoCommand('cmd_delete');
 }
 
 function getCurrentEditorElement()
