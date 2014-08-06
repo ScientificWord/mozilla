@@ -1031,6 +1031,9 @@
     <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>	
 	</xsl:choose>
 </xsl:template>
+<xsl:template match="mml:mi[@msiunit='true']">
+  \ensuremath{\operatorname{<xsl:apply-templates/>}}
+</xsl:template>
 <xsl:template match="html:large">{\large <xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:Large">{\Large <xsl:apply-templates
