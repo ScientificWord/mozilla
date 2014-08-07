@@ -2106,7 +2106,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     if (NS_FAILED(res)) return res;
 
     printf("In nsHTMLEditRules::WillDeleteSelection. VisNode = \n");
-    DumpNode(visNode, 0, true);
+ //   DumpNode(visNode, 0, true);
 
 
   //BBM: is this where we can intercept for math objects?
@@ -2116,6 +2116,47 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       *aCancel = PR_TRUE;
       return res;
     }
+
+    nsCOMPtr<nsIDOMElement> anchorAncestor;
+    nsCOMPtr<nsIDOMElement> focusAncestor;
+    nsEditor * ed = static_cast<nsEditor *>(mHTMLEditor);
+    NS_NAMED_LITERAL_STRING(menclose, "menclose");
+    res = mHTMLEditor->GetElementOrParentByTagName(menclose, startNode, getter_AddRefs(anchorAncestor));
+    res = mHTMLEditor->GetElementOrParentByTagName(menclose, visNode, getter_AddRefs(focusAncestor));
+    if (focusAncestor && !anchorAncestor) { // we have entered an menclose object; delete it instead of text
+      res = mHTMLEditor->RemoveContainer(focusAncestor);
+      aSelection->Collapse(visNode, visOffset);
+      *aHandled = PR_TRUE;
+      return res;
+    }
+    NS_NAMED_LITERAL_STRING(munder, "munder");
+    res = mHTMLEditor->GetElementOrParentByTagName(munder, startNode, getter_AddRefs(anchorAncestor));
+    res = mHTMLEditor->GetElementOrParentByTagName(munder, visNode, getter_AddRefs(focusAncestor));
+    if (focusAncestor && !anchorAncestor) { 
+    // we have entered an munder object; delete it but let the code go and delete the under character.
+      res = mHTMLEditor->RemoveContainer(focusAncestor);
+      aSelection->Collapse(visNode, visOffset);
+      return res;
+    }
+   NS_NAMED_LITERAL_STRING(mover, "mover");
+    res = mHTMLEditor->GetElementOrParentByTagName(mover, startNode, getter_AddRefs(anchorAncestor));
+    res = mHTMLEditor->GetElementOrParentByTagName(mover, visNode, getter_AddRefs(focusAncestor));
+    if (focusAncestor && !anchorAncestor) { 
+      // we have entered an mover object; delete it but let the code go and delete the over character.
+      res = mHTMLEditor->RemoveContainer(focusAncestor);
+      aSelection->Collapse(visNode, visOffset);
+      return res;
+    }
+   NS_NAMED_LITERAL_STRING(munderover, "munderover");
+    res = mHTMLEditor->GetElementOrParentByTagName(munderover, startNode, getter_AddRefs(anchorAncestor));
+    res = mHTMLEditor->GetElementOrParentByTagName(munderover, visNode, getter_AddRefs(focusAncestor));
+    if (focusAncestor && !anchorAncestor) { // we have entered an munderover object; delete it instead of text
+      res = mHTMLEditor->RemoveContainer(focusAncestor);
+      *aHandled = PR_TRUE;
+      aSelection->Collapse(visNode, visOffset);
+      return res;
+    }
+
 
     if (wsType==nsWSRunObject::eNormalWS)
     {
@@ -3511,7 +3552,7 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
     while (name.EqualsLiteral("mi") || name.EqualsLiteral("mo") || (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle")) && empty) {
       editor->GetNodeLocation(node, &parent, &offset);
       node2 = do_QueryInterface(parent);
-      editor->DeleteNode(node);
+      if (empty) editor->DeleteNode(node);
       node = node2;
       node->GetTagName(name);
       ed->IsEmptyNode(node, &empty, PR_TRUE, PR_FALSE, PR_FALSE);
@@ -3953,15 +3994,18 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   // find where we are
   nsCOMPtr<nsIDOMNode> startNode;
   PRInt32 startOffset;
+  PRInt32 deltaOffset = 0;
 
   res = mEditor->GetStartNodeAndOffset(curSelection, getter_AddRefs(startNode), &startOffset);
   PRUint16 nodeType;
   res = startNode->GetNodeType(&nodeType);
   if (nodeType == nsIDOMNode::TEXT_NODE) {
     nsCOMPtr<nsIDOMNode> parent;
+    if (startOffset > 0) deltaOffset = 1;
     nsEditor * editor = static_cast<nsEditor*>(mHTMLEditor);
     editor->GetNodeLocation(startNode, &parent, &startOffset);
     startNode = parent;
+    startOffset += deltaOffset;
   }
   hackSelectionCorrection(mHTMLEditor, startNode, startOffset);
   if (NS_FAILED(res)) return res;
