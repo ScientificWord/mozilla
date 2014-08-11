@@ -7320,6 +7320,8 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
         _retval.Append(NS_LITERAL_STRING("\\texttrademark")); break;
       case 0x22F1 :
         _retval.Append(NS_LITERAL_STRING("$\\ddots$")); break;
+      case 0x23DF :
+        _retval.Append(NS_LITERAL_STRING("$\\underbar$")); break;
       case 0xE2D4 :
         _retval.Append(NS_LITERAL_STRING("\\j")); break;
       case 0xE897 :
