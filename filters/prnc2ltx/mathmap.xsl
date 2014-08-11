@@ -2683,11 +2683,6 @@
             <xsl:text xml:space="preserve">\longmapsto </xsl:text>
           </xsl:when>
 
-<!-- !ENTITY underbrace "&#xFE38;" -->
-          <xsl:when test="$first-char='&#xFE38;'">
-            <!-- <xsl:text xml:space="preserve"></xsl:text> -->
-          </xsl:when>
-
 <!-- !ENTITY underbrace "&#x23DF;" -->
           <xsl:when test="$first-char='&#x23DF;'">
             <!-- <xsl:text xml:space="preserve"></xsl:text> -->

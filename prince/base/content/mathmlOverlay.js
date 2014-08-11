@@ -905,7 +905,7 @@ var standardDecorAboveStrings =
 
 var standardDecorBelowStrings =
   [ String.fromCharCode(0x0332), String.fromCharCode(0x2190), String.fromCharCode(0x2192),
-    String.fromCharCode(0x2194), String.fromCharCode(0xFE38) ];
+    String.fromCharCode(0x2194), String.fromCharCode(0x23DF) ];
 
 var standardAroundDecorNotationStrings =
   { frame : {mNotation: "box", mType: "frame"},
