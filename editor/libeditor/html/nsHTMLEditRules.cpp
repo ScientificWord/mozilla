@@ -89,6 +89,7 @@
 #include "msiEditingManager.h"
 #include "jcsDumpNode.h"
 #include "../base/nsEditorUtils.h"
+#include "../../../content/base/src/nsContentList.h"
 
 
 
@@ -1967,6 +1968,59 @@ nsHTMLEditRules::SplitMailCites(nsISelection *aSelection, PRBool aPlaintext, PRB
   return NS_OK;
 }
 
+nsresult
+nsHTMLEditRules::FindMatchForFenceInSelection(nsISelection * selection, nsIDOMNodeList** aReturn)
+{
+  // Check to see if there is a fence character inside the selection with a matching character outside
+  // the selection. Return  the result in an nsIDOMNodeList.
+  nsCOMPtr<nsIDOMElement> elem;
+  nsCOMPtr<nsIDOMElement> other;
+  NS_NAMED_LITERAL_STRING(mo, "mo");
+  NS_NAMED_LITERAL_STRING(fence, "fence");
+  NS_NAMED_LITERAL_STRING(istrue, "true");
+
+  nsAutoString name;
+  nsAutoString fenceattr;
+  PRBool inSelection;
+  nsCOMPtr<nsBaseContentList> bcl;
+
+  nsCOMPtr<nsIContentIterator> iter =
+                  do_CreateInstance("@mozilla.org/content/post-content-iterator;1");
+  if (!iter) return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMRange> range;
+  selection->GetRangeAt(0, getter_AddRefs(range));
+  nsresult res = iter->Init(range);
+  if (NS_FAILED(res)) return res;
+  bcl = new nsBaseContentList();
+  iter->Next();
+  while (!iter->IsDone())
+  {
+    elem = do_QueryInterface(iter->GetCurrentNode());
+    if (elem) {
+      elem->GetTagName(name);
+      if (name.Equals(mo)) {
+        elem->GetAttribute(fence, fenceattr);
+        if (fenceattr.Equals(istrue)) {
+          selection->ContainsNode(elem, PR_FALSE, &inSelection);
+          if (inSelection) {
+            nsHTMLEditUtils::MatchingFence(elem, getter_AddRefs(other));
+            if (other) {
+              selection->ContainsNode(other, PR_FALSE, &inSelection);
+              if (!inSelection) {
+                nsCOMPtr<nsIContent> content = do_QueryInterface(other);
+                bcl->AppendElement(content);
+              }
+            }
+          }
+        }
+      }
+    }
+    iter->Next();
+  }
+  *aReturn = bcl;
+  NS_ADDREF(*aReturn);
+  return NS_OK;
+}
 
 nsresult
 nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
@@ -2507,6 +2561,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
   nsCOMPtr<nsIDOMNode> endNode;
+  nsCOMPtr<nsIDOMNode> fenceNode;
   PRInt32 endOffset;
   res = mHTMLEditor->GetEndNodeAndOffset(aSelection, getter_AddRefs(endNode), &endOffset);
   if (NS_FAILED(res)) return res;
@@ -2528,6 +2583,10 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     nsAutoTrackDOMPoint tracker(mHTMLEditor->mRangeUpdater, address_of(endNode), &endOffset);
     // we are handling all ranged deletions directly now.
     *aHandled = PR_TRUE;
+      
+    // if there is an unmatched fence character in the selection, save its mate for deletion during cleanup.
+    nsCOMPtr<nsIDOMNodeList> fenceNodes;
+    FindMatchForFenceInSelection(aSelection, getter_AddRefs(fenceNodes));
 
     if (endNode == startNode)
     {
@@ -2695,6 +2754,14 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
             if (NS_FAILED(res)) return res;
           }
         }
+      }
+    }
+    if (fenceNodes) {
+      PRUint32 len;
+      res = fenceNodes->GetLength(&len);
+      for ( PRUint32 i = 0; i < len; i++){
+        res = fenceNodes->Item(i, getter_AddRefs(fenceNode));
+        mHTMLEditor->DeleteNode(fenceNode);
       }
     }
   }
@@ -3757,6 +3824,13 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsIDOMNode> tempnode;
   PRBool deletingInputbox = cleanUpTempInput( ed, startNode, startOffset );
   nsCOMPtr<nsIDOMNode> node = startNode;
+  node->GetNodeName(name);
+  if (name.EqualsLiteral("mo")) {
+    elt = do_QueryInterface(node);
+    DeleteMatchingFence(ed, elt);
+  }
+  
+
 // A special case is a temp input box. If we delete a math object so that the constraints
 // for math objects like fractions, superscripts, etc. are no longer valid, we replace it with
 // an input box. However, if we are deleting an input box, we want to restructure the math,
@@ -3817,6 +3891,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
     if (node && isEmpty && !isInComplexTransaction) {
       // res = node->GetParentNode(getter_AddRefs(parentNode));
       nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
+      res = node->GetNodeName(name);
       if (parentNode) {
         PRBool isParagraph;
         PRBool isTextTag;
@@ -3840,12 +3915,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           break;
         }
       }
-      if (name.EqualsLiteral("mo")) {
-        elt = do_QueryInterface(parentNode);
-        DeleteMatchingFence(ed, elt);
-      }
-      
-        
+
       res = node->GetNextSibling(getter_AddRefs(nextSiblingNode));
       ed->DeleteNode(node);
       node = parentNode;
