@@ -1205,51 +1205,51 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     return NS_ERROR_FAILURE;
 }
 
-nsresult 
-msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
-{
-  nsCOMPtr<nsISelection>selection;
-  nsresult res = GetSelection(getter_AddRefs(selection));
-  if (NS_FAILED(res)) 
-    return res;
-  msiSelectionManager msiSelMan(selection, this);
-  mRangeUpdater.RegisterSelectionState(msiSelMan);
-  EditAggregateTxn *txn;
-  res = CreateTxnForDeleteSelection(aAction, msiSelMan, &txn);
-  if (NS_FAILED(res)) 
-  {
-    mRangeUpdater.DropSelectionState(msiSelMan);
-    return res;
-  }
-  nsAutoRules beginRulesSniffing(this, kOpDeleteSelection, aAction);
+// nsresult 
+// msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
+// {
+//   nsCOMPtr<nsISelection>selection;
+//   nsresult res = GetSelection(getter_AddRefs(selection));
+//   if (NS_FAILED(res)) 
+//     return res;
+//   msiSelectionManager msiSelMan(selection, this);
+//   mRangeUpdater.RegisterSelectionState(msiSelMan);
+//   EditAggregateTxn *txn;
+//   res = CreateTxnForDeleteSelection(aAction, msiSelMan, &txn);
+//   if (NS_FAILED(res)) 
+//   {
+//     mRangeUpdater.DropSelectionState(msiSelMan);
+//     return res;
+//   }
+//   nsAutoRules beginRulesSniffing(this, kOpDeleteSelection, aAction);
 
-  PRInt32 i;
-  nsIEditActionListener *listener;
-  if (NS_SUCCEEDED(res))  
-  {
-    for (i = 0; i < mActionListeners.Count(); i++)
-    {
-      listener = (nsIEditActionListener *)mActionListeners[i];
-      if (listener)
-        listener->WillDeleteSelection(selection);
-    }
+//   PRInt32 i;
+//   nsIEditActionListener *listener;
+//   if (NS_SUCCEEDED(res))  
+//   {
+//     for (i = 0; i < mActionListeners.Count(); i++)
+//     {
+//       listener = (nsIEditActionListener *)mActionListeners[i];
+//       if (listener)
+//         listener->WillDeleteSelection(selection);
+//     }
 
-    res = DoTransaction(txn);  
+//     res = DoTransaction(txn);  
 
-    for (i = 0; i < mActionListeners.Count(); i++)
-    {
-      listener = (nsIEditActionListener *)mActionListeners[i];
-      if (listener)
-        listener->DidDeleteSelection(selection);
-    }
-  }
-  mRangeUpdater.DropSelectionState(msiSelMan);
+//     for (i = 0; i < mActionListeners.Count(); i++)
+//     {
+//       listener = (nsIEditActionListener *)mActionListeners[i];
+//       if (listener)
+//         listener->DidDeleteSelection(selection);
+//     }
+//   }
+//   mRangeUpdater.DropSelectionState(msiSelMan);
 
-  // The transaction system (if any) has taken ownership of txn
-  NS_IF_RELEASE(txn);
+//   // The transaction system (if any) has taken ownership of txn
+//   NS_IF_RELEASE(txn);
 
-  return res;
-}
+//   return res;
+// }
 
 nsresult
 msiEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,

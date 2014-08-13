@@ -88,7 +88,7 @@ D<uID3.2.4>prefix,55,U00044
 ;&rarr;<uID3.25.10>postfix,70,U02192
 ;DiacriticalLeftRightArrow<uID3.25.11>postfix,70,
 &harr;<uID3.25.11>postfix,70,U02194
-&UnderBrace;<uID3.25.12>postfix,70,U0FE38
+&UnderBrace;<uID3.25.12>postfix,70,U023DF
 
 
 ;Greek letters
