@@ -264,7 +264,7 @@
           </mml:math>
         </description>
       </msibutton>
-      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#xFE38;" tooltiptext="&VerticalRightCurlyBracket.tooltip;">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x23DF;" tooltiptext="&VerticalRightCurlyBracket.tooltip;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -274,7 +274,7 @@
                     <mml:mi>abcX</mml:mi>
                   </mml:mphantom>
                 </mml:mrow>
-                <mml:mo stretchy="true">&#xFE38;</mml:mo>
+                <mml:mo stretchy="true">&#x23DF;</mml:mo>
               </mml:munder>
             </mml:mrow>
           </mml:math>
