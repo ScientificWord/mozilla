@@ -392,7 +392,12 @@
   </xsl:if>
   <xsl:apply-templates select="following-sibling::html:author" mode="building-author" />
   <xsl:text>}</xsl:text>
-</xsl:template> 
+</xsl:template>
+
+<xsl:template match="html:address" mode="frontmatter">
+   <xsl:apply-templates  mode="frontmatter"/>
+</xsl:template>
+ 
  
 <!-- for the sake of the above template, -->
 <xsl:template match="html:msibr" mode="frontmatter">
@@ -532,6 +537,14 @@
   <xsl:if test="position()!=last()">
      <xsl:text>\par </xsl:text>
    </xsl:if>
+</xsl:template>
+
+<xsl:template match="html:bodyText" mode="frontmatter">
+  <xsl:apply-templates/>
+  <xsl:if test="position()!=last()">
+     <xsl:text>\\</xsl:text>
+     <xsl:value-of select="$newline"/>
+  </xsl:if>
 </xsl:template>
 
 
