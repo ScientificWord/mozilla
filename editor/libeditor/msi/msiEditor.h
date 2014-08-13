@@ -45,7 +45,7 @@ public:
   // End of nsIEditor overrides
   
   // nsEditor method
-  NS_IMETHOD DeleteSelectionImpl(EDirection aAction);
+//  NS_IMETHOD DeleteSelectionImpl(EDirection aAction);
 
 
 protected:
