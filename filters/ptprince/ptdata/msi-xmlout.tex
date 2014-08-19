@@ -1053,12 +1053,12 @@
 
 \def\MSIEqnarrayLikeEnvironment#1{%
   \@namedef{msi@begin@#1}{%
-     \bgroup
+     \begingroup
         \def\\{\char`\\\char`\\}%
 %        \let\label\@label
         \catcode`\&=12\msi@dollar=0\relax$$%
         \string\begin{#1}}%
-  \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}}
+  \@namedef{msi@end@#1}{\string\end{#1}$$\endgroup}}
 
 
 
