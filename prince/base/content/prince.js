@@ -440,14 +440,54 @@ function openTeX()
 		     dump("\nexe  = "  + exefile);
          dump("\narg paths = " + dataDir.path + "\n   " + fp.file.path + "\n    " + outfile.path + "\n     " + outdir.path);
          dump(ex+"\n");
-    }      
+    }
+      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
     if ((outfile) && (outfile.path.length > 0))
-    {      
-      msiEditPage(msiFileURLFromFile(outfile), window, false, false);
+    { 
+      var xsltProcessor = setupInputXSLTproc();
+      var parser = new DOMParser();
+      var xmlDoc = document.implementation.createDocument("", "", null);
+      xmlDoc.async = false;
+      var url = msiFileURLFromFile(outfile);
+      var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
+      request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+      request.open("GET", url.spec, false);
+      request.send(null);
+      var res = request.responseXML;
+      var newDoc = xsltProcessor.transformToDocument(res);
+      
+      var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+      var fileMode = 0x22;  //MODE_WRONLY|MODE_TRUNCATE - rewrite the file
+      var permissions = 0x777; //all permissions for everybody?
+      outputStream.init(outfile, fileMode, permissions, 0);
+      var serializer = new XMLSerializer();
+      serializer.serializeToStream(newDoc, outputStream, "utf-8");
+      outputStream.close(); 
+      
+      msiEditPage(url, window, false, false);
     }
   }                  
 }
+
+function setupInputXSLTproc()
+{
+  var xslFileURL = "chrome://ptprince/content/ptprince.xsl";
+  var xsltStr = getXSLAsString(xslFileURL);
+  var xsltProcessor = new XSLTProcessor();
+
+  try
+  {
+    var parser = new DOMParser();
+    var xslDoc = parser.parseFromString(xsltStr, "text/xml");
+    xsltProcessor.importStylesheet(xslDoc);
+  }
+  catch(e)
+  { dump("error: " + e + "\n"); }
+
+  return xsltProcessor;
+}
+
 
 #define INTERNAL_XSLT
 

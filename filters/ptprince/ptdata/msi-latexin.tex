@@ -742,14 +742,12 @@
 \set@typeset@protect
 
 \def\@ifundefined#1{%
-  \begingroup
-  \msi@output=1
+  {\msi@output=1
    \expandafter\ifx\csname#1\endcsname\relax
      \global\let\reserved@@a\@firstoftwo
   \else
      \global\let\reserved@@a\@secondoftwo
-  \fi
-  \endgroup
+  \fi}
   \reserved@@a}
 
 \edef\@qend{\expandafter\@cdr\string\end\@nil}
@@ -762,7 +760,7 @@
   \endgroup%
   \futurelet\@let@token\@ifnch}
 \def\@ifnch{%
- \begingroup\msi@output=1
+ {\msi@output=1
   \ifx\@let@token\@sptoken
     \global\let\reserved@c\@xifnch
   \else
@@ -771,7 +769,7 @@
     \else
       \global\let\reserved@c\reserved@b
     \fi
-  \fi\endgroup
+  \fi}%
   \reserved@c}
 \def\:{\let\@sptoken= } \:  % this makes \@sptoken a space token
 \def\:{\@xifnch} \expandafter\def\: {\futurelet\@let@token\@ifnch}
