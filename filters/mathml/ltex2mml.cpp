@@ -4033,18 +4033,20 @@ TNODE* LaTeX2MMLTree::BigOp2MML( TNODE* tex_bigop_node,
           } else {
             if ( in_display )
    		        attr_val  =  (U8*)"false";
-            else
+            else {
    		        attr_val  =  (U8*)"true";
+            }                                                            
           }
-        } else if ( tex_limits )
+        } else if ( tex_limits ) {
    		    attr_val  =  (U8*)"false";
+          SetNodeAttrib( base_op, (U8*)"msiLimitPlacement" ,(U8*)"msiLimitsAboveBelow" );
+        }
 
-	    if (attr_val)
+	      if (attr_val)
           SetNodeAttrib( base_op, attr_nom,attr_val );
-	    } else {
+	      } else {
          SetNodeAttrib( base_op, (U8*)"msiLimitPlacement" ,(U8*)"msiLimitsAtRight" );
-      }
-         
+        }         
 	 }
 
    base_op =  SetBigOpSize( base_op, tex_size_attr );
