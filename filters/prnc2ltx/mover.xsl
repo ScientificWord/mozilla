@@ -52,7 +52,6 @@
           <xsl:otherwise>
             <xsl:text>{\displaystyle</xsl:text>
             <xsl:value-of select="$LaTeX-BigOp"/>
-            <xsl:text>}</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -65,7 +64,6 @@
           <xsl:otherwise>
             <xsl:text>{\textstyle</xsl:text>
             <xsl:value-of select="$LaTeX-BigOp"/>
-            <xsl:text>}</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -91,6 +89,13 @@
     </xsl:call-template>
 
     <xsl:text>}</xsl:text>
+
+    <xsl:choose>
+      <xsl:when test="$output-mode='SW-LaTeX'">
+      </xsl:when>
+      <xsl:otherwise>}</xsl:otherwise>
+    </xsl:choose>
+ 
   </xsl:template>
 
 

@@ -11,16 +11,33 @@
      mover, or munderover corresponds to a LaTeX big operator.
      The caller assigns the output to an xsl:variable -->
 
-  <xsl:template name="is-LaTeX-bigop">
-      <xsl:choose>
-      <xsl:when test="*[1][self::mml:mo][normalize-space(string())='&#x222B;' or  normalize-space(string())='&#x222C;' or  normalize-space(string())='&#x222D;' or  normalize-space(string())='&#xE378;' or  normalize-space(string())='&#x222B;&#x22EF;&#x222B;' or  normalize-space(string())='&#x222E;' or  normalize-space(string())='&#x2211;' or  normalize-space(string())='&#x220F;' or  normalize-space(string())='&#x22C2;' or  normalize-space(string())='&#x22C0;' or  normalize-space(string())='&#x2295;' or  normalize-space(string())='&#x2299;' or  normalize-space(string())='&#x2294;' or  normalize-space(string())='&#x2210;' or  normalize-space(string())='&#x22C3;' or  normalize-space(string())='&#x22C1;' or  normalize-space(string())='&#x2297;' or  normalize-space(string())='&#x228E;'  ]">
+  <xsl:template name="is-LaTeX-bigop">      
+    <xsl:choose>
+      <xsl:when test="normalize-space(string())='&#x222B;' 
+         or  normalize-space(string())='&#x222C;' 
+         or  normalize-space(string())='&#x222D;' 
+         or  normalize-space(string())='&#xE378;' 
+         or  normalize-space(string())='&#x222B;&#x22EF;&#x222B;' 
+         or  normalize-space(string())='&#x222E;' 
+         or  normalize-space(string())='&#x2211;' 
+         or  normalize-space(string())='&#x220F;' 
+         or  normalize-space(string())='&#x22C2;' 
+         or  normalize-space(string())='&#x22C0;' 
+         or  normalize-space(string())='&#x2295;' 
+         or  normalize-space(string())='&#x2299;' 
+         or  normalize-space(string())='&#x2294;' 
+         or  normalize-space(string())='&#x2210;' 
+         or  normalize-space(string())='&#x22C3;' 
+         or  normalize-space(string())='&#x22C1;' 
+         or  normalize-space(string())='&#x2297;' 
+         or  normalize-space(string())='&#x228E;'">
         <xsl:value-of select="*[1]"/>
       </xsl:when>
-	  <xsl:otherwise>
+	    <xsl:otherwise>
         <xsl:text>false</xsl:text>
-	  </xsl:otherwise>
+	    </xsl:otherwise>
     </xsl:choose>
-    </xsl:template>
+  </xsl:template>
 
 
 
