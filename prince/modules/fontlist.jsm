@@ -23,7 +23,10 @@ function initializeFontFamilyList(force, window)
   outfile.append("fontfamilies.txt");
   dump("==== Outfile: "+outfile.path+"\n");
   try { texbindir= prefs.getCharPref("swp.tex.bindir"); }
-  catch(exc) {dump("texbindir not set in preferences\n");}
+  catch(exc) {
+    dump("texbindir not set in preferences\n");
+    texbindir = '/usr/texbin';
+  }
   if (!force)
   {
     if (outfile.exists()) return;
