@@ -184,9 +184,11 @@
             <groupbox flex="1"><caption label="&widthEditField.label;"/>
               <checkbox id="autoWidthCheckbox" label="&autoWidth.label;" accesskey="&autoWidth.accesskey;" checked="true" persist="checked" oncommand="checkEnableWidthControls();"/>
               <textbox value="100" class="narrow" id="tableWidthInput" oninput="MakePersistsValue(this);" persist="value"/>
+<!--              
               <menulist id="unitMenulist" persist="value" oncommand=" onChangeTableUnits();"/>
               <spacer flex="1"/>
               <hbox><label>&currentUnits;&#x00a0;</label><label observes="currentunits"/></hbox>        
+ -->            
             </groupbox>
             <groupbox orient="vertical" align="start">
               <vbox id="placementGroup"/>
