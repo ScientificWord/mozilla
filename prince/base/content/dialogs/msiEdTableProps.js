@@ -36,7 +36,7 @@ var gColCount = 1;
 var gLastRowIndex;
 var gLastColIndex;
 var gNewRowCount;
-var unitHandler;
+var frameUnitHandler;
 var newTable;
 var gSelectedCellsType = 1;
 const SELECT_CELL = 1;
@@ -48,6 +48,7 @@ var gAlignWasChar = false;
 var gIsMatrix = false;
 var gColumns;
 var gRows;
+var gFrameModeImage = false;
 
 /*
 From C++:
@@ -218,19 +219,11 @@ function setVariablesForControls()
   gDialog.rowsInput = document.getElementById("rowsInput");
   gDialog.columnsInput = document.getElementById("columnsInput");
   gDialog.widthInput     = document.getElementById("widthInput");
+  gDialog.keyInput = document.getElementById("keyInput");
 
   gDialog.tableRowHeight =  document.getElementById("tableRowHeight");
   gDialog.tableWidthInput =  document.getElementById("tableWidthInput");
-  gDialog.unitMenulist = document.getElementById("unitMenulist");
   gDialog.autoWidthCheckbox = document.getElementById("autoWidthCheckbox");
-
-  gDialog.placementRadioGroup  = document.getElementById("placementRadioGroup");
-
-  gDialog.floatLocationList =  document.getElementById("floatLocationList");
-  gDialog.baselineList =  document.getElementById("baselineList");
-  gDialog.captionPlacementGroup = document.getElementById("captionPlacementRadioGroup");
-  gDialog.captionLocation =  document.getElementById("captionLocation");
-  gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
 
   // gDialog.tableBackgroundCW =  document.getElementById("tableBackgroundCW");
   
@@ -254,6 +247,8 @@ function setVariablesForControls()
   gDialog.borderCW = document.getElementById("borderCW");
 
   gDialog.labelText = document.getElementById("labelText");
+  gDialog.baselineList = document.getElementById("baselineList");
+  gDialog.captionLocation  = document.getElementById("captionLocation");
 }
 
 function getValueForAllSides(aData, defaultVal)
@@ -473,7 +468,7 @@ function Startup()
   }
 
   setVariablesForControls();
-  initUnitHandler(null);
+//  initframeUnitHandler(null);
   
   data = window.arguments[3];
   if (!data) {
@@ -502,10 +497,10 @@ function Startup()
     } 
       
     // We disable resetting row and column count -- the user has more direct ways of doing that.
-    document.getElementById("QuicklyTab").setAttribute("collapsed", true);
-    document.getElementById("tablegrid").setAttribute("collapsed", true);
-    document.getElementById("rowsInput").disabled = true;
-    document.getElementById("columnsInput").disabled = true;
+    // document.getElementById("QuicklyTab").setAttribute("collapsed", true);
+    // document.getElementById("tablegrid").setAttribute("collapsed", true);
+    // document.getElementById("rowsInput").disabled = true;
+    // document.getElementById("columnsInput").disabled = true;
     document.getElementById("mainTabBox").selectedTab = document.getElementById("TableTab");
   }
 
@@ -566,9 +561,16 @@ function Startup()
   SetWindowLocation();
 }
 
+function initKeyList()
+{
+  gDialog.markerList = new msiKeyMarkerList(window);
+  gDialog.markerList.setUpTextBoxControl(gDialog.keyInput);
+}
 
 function InitDialog()
 {
+  initFrameTab(gDialog, gTableElement, newTable, gTableElement);
+  initKeyList();
   initTablePanel();
   initLabelingPanel();
   initCellsPanel();
@@ -577,22 +579,23 @@ function InitDialog()
 }
 
 
-function initUnitHandler(unit)
+function initframeUnitHandler(unit)
 {
-  unitHandler = new UnitHandler();
+  return;
+  frameUnitHandler = new frameUnitHandler();
   var fieldList = [];
   var initUnit = unit;
   fieldList.push(gDialog.CellHeightInput);
   fieldList.push(gDialog.CellWidthInput);
   fieldList.push(gDialog.tableWidthInput);
-  unitHandler.setEditFieldList(fieldList);
+  frameUnitHandler.setEditFieldList(fieldList);
   if (!unit && gPrefs)
     initUnit = gPrefs.getCharPref("swp.defaultTableUnits");
-  gDialog.unitMenulist.setAttribute("value", initUnit);
+//  gDialog.frameUnitMenulist.setAttribute("value", initUnit);
   try {
-    unitHandler.buildUnitMenu(gDialog.unitMenulist, initUnit);
-    unitHandler.initCurrentUnit(initUnit);
-  document.getElementById("currentunits").setAttribute("value", unitHandler.getDisplayString(initUnit));  }
+    frameUnitHandler.buildUnitMenu(gDialog.unitMenulist, initUnit);
+    frameUnitHandler.initCurrentUnit(initUnit);
+  document.getElementById("currentunits").setAttribute("value", frameUnitHandler.getDisplayString(initUnit));  }
   catch(e) {
     dump(e.message);
   }  
@@ -611,36 +614,36 @@ function initTablePanel()
   var match;
   var currUnit = gTableElement.getAttribute("unit");
   currUnit = currUnit || "pt";
-  initUnitHandler(currUnit);
+  initframeUnitHandler(currUnit);
   var tableStyle = gTableElement.getAttribute("style");
   // The next 30 lines seem superfluous, but maybe harmless. Leave them for now.
   if (gTableElement.hasAttribute("width"))
   {
     widthStr = gTableElement.getAttribute("width");
-    widthVal = unitHandler.getNumberAndUnitFromString(widthStr);
+    widthVal = frameframeUnitHandler.getNumberAndUnitFromString(widthStr);
     if (!widthVal)
-      widthVal = unitHandler.getNumberAndUnitFromString(widthStr + currUnit);
+      widthVal = frameframeUnitHandler.getNumberAndUnitFromString(widthStr + currUnit);
   }
   else if (gTableElement.hasAttribute("style"))
   {
     re = /width:\s*(\d*[^;]*)(;|$)/;
 //    match = re.exec(gTableElement.getAttribute("style"));
     match = re.exec(tableStyle);
-    if (match && match.length > 1) widthVal = unitHandler.getNumberAndUnitFromString(match[1]);
+    if (match && match.length > 1) widthVal = frameUnitHandler.getNumberAndUnitFromString(match[1]);
   }
   if (gTableElement.hasAttribute("height"))
   {
     heightStr = gTableElement.getAttribute("height");
-    heightVal = unitHandler.getNumberAndUnitFromString(heightStr);
+    heightVal = frameUnitHandler.getNumberAndUnitFromString(heightStr);
     if (!heightVal)
-      heightVal = unitHandler.getNumberAndUnitFromString(heightStr + "pt");
+      heightVal = frameUnitHandler.getNumberAndUnitFromString(heightStr + "pt");
   }
   else if (gTableElement.hasAttribute("style"))
   {
     re = /height:\s*(\d*[^;]*)(;|$)/;
 //    match = re.exec(gTableElement.getAttribute("style"));
     match = re.exec(tableStyle);
-    if (match && match.length > 1) heightVal = unitHandler.getNumberAndUnitFromString(match[1]);
+    if (match && match.length > 1) heightVal = frameUnitHandler.getNumberAndUnitFromString(match[1]);
   }
 
 //  unitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
@@ -651,8 +654,8 @@ function initTablePanel()
   }
   else
     gDialog.autoWidthCheckbox.checked = true;
-  // unitHandler.initCurrentUnit(currUnit);
-  // unitHandler.buildUnitMenu(gDialog.unitMenulist, currUnit);
+  // frameUnitHandler.initCurrentUnit(currUnit);
+  // frameUnitHandler.buildUnitMenu(gDialog.unitMenulist, currUnit);
   checkEnableWidthControls();
 
   try {
@@ -734,8 +737,8 @@ function initLinesPanel()
 function onChangeTableUnits()
 {
   var val = gDialog.unitMenulist.value
-  unitHandler.setCurrentUnit(val);
-  document.getElementById("currentunits").setAttribute("value", unitHandler.getDisplayString(val));
+  frameUnitHandler.setCurrentUnit(val);
+  document.getElementById("currentunits").setAttribute("value", frameUnitHandler.getDisplayString(val));
 }
 
 
@@ -764,7 +767,7 @@ var cellUnitsHandler;
 function initCellsPanel()
 {
 //  var previousValue = gDialog.CellWidthInput.value;
-  cellUnitsHandler = unitHandler;
+  cellUnitsHandler = frameUnitHandler;
 //  cellUnitsHandler.setEditFieldList([gDialog.CellWidthInput,gDialog.CellHeightInput]);
 //  cellUnitsHandler.initCurrentUnit(gCellWidthUnit);
 //  cellUnitsHandler.buildUnitMenu(gDialog.cellUnitsList, gCellWidthUnit);
@@ -777,7 +780,7 @@ function initCellsPanel()
   // var heightStr = String(gCollatedCellData.size.height) + gCellHeightUnit;
 
   gDialog.CellHeightInput.value = 0;
-  gDialog.CellHeightUnits = unitHandler.getCurrentUnit();
+  gDialog.CellHeightUnits = frameUnitHandler.getCurrentUnit();
   gDialog.CellWidthInput.value = 0;
   gDialog.textwrapchoice.value = true;
   
@@ -906,13 +909,13 @@ function ChangeCellSize(textID)
   {
     case "CellWidthInput":
       gCellChangeData.size.width = true;
-      gCellWidthUnit = unitHandler.getCurrentUnit();
-      gCollatedCellData.size.width = unitHandler.getValueOf(gDialog.CellWidthInput.value, gCellWidthUnit);
+      gCellWidthUnit = frameUnitHandler.getCurrentUnit();
+      gCollatedCellData.size.width = frameUnitHandler.getValueOf(gDialog.CellWidthInput.value, gCellWidthUnit);
     break;
     case "CellHeightInput":
       gCellChangeData.size.height = true;
-      gCellHeightUnit = unitHandler.getCurrentUnit();
-      gCollatedCellData.size.height = unitHandler.getValueOf(gDialog.CellHeightInput.value, gCellHeightUnit);
+      gCellHeightUnit = frameUnitHandler.getCurrentUnit();
+      gCollatedCellData.size.height = frameUnitHandler.getValueOf(gDialog.CellHeightInput.value, gCellHeightUnit);
     break;
   }
 }
@@ -1168,112 +1171,26 @@ function DoStyleChangesForACell(destCell)
 
 }
 
+function doSetStyleAttr(styleProp, styleVal)
+{
+  var styleValStr;
+  if (styleVal != null)
+    styleValStr = String(styleVal);
+  if (bEmptyStyle)
+  {
+    if ( (styleValStr != null) && styleValStr.length )
+      theStyleString += styleProp + ": " + styleValStr + ";";
+  }
+  else if ((styleValStr!=null) && styleValStr.length)
+    gTableElement.style.setProperty(styleProp, styleValStr, "");
+  else
+    gTableElement.style.removeProperty(styleProp);
+}
+
 function ApplyTableAttributes()
-{
-  function doSetStyleAttr(styleProp, styleVal)
-  {
-    var styleValStr;
-    if (styleVal != null)
-      styleValStr = String(styleVal);
-    if (bEmptyStyle)
-    {
-      if ( (styleValStr != null) && styleValStr.length )
-        theStyleString += styleProp + ": " + styleValStr + ";";
-    }
-    else if ((styleValStr!=null) && styleValStr.length)
-      gTableElement.style.setProperty(styleProp, styleValStr, "");
-    else
-      gTableElement.style.removeProperty(styleProp);
-  }
-
-  try {
-    var unit = unitHandler.getCurrentUnit();
-
-    if (unit && gTableElement) 
-      SetAnAttribute(gTableElement,"unit", unit);
-
-    var logStr = "";
-    var bEmptyStyle = true; //(!gTableElement.style);
-    var theStyleString = "";
-
-    doSetStyleAttr("vertical-align", gDialog.baselineList.value);
-    SetAnAttribute(gTableElement, "valign", gDialog.baselineList.value);
-
-    doSetStyleAttr("border-collapse", gBorderCollapse);
-      
-    SetAnAttribute(gTableElement,"req","tabulary");
-    if (gDialog.autoWidthCheckbox.checked)
-      gActiveEditor.removeAttributeOrEquivalent(gTableElement, "width", false);
-    else {
-      SetAnAttribute(gTableElement,"width",gDialog.tableWidthInput.value );
-      doSetStyleAttr("width", gDialog.tableWidthInput.value + unit);
-    }
-
-    var pos = gDialog.placementRadioGroup.value;
-
-    if (pos && pos.length > 0) {
-
-      if (pos === "float") {
-        if (!gWrapperElement)
-          gWrapperElement = gEditor.createElementWithDefaults("msiframe");
-        gWrapperElement.setAttribute("frametype", "table");
-        if (gDialog.captionPlacementGroup.value == "above")
-          gWrapperElement.appendChild(cap);
-        if (gDialog.captionPlacementGroup.value !== "none"){           
-           msiEditorEnsureElementAttribute(gWrapperElement, "captionloc", gDialog.captionPlacementGroup.value, null);
-        }
-        if (gDialog.wrapOptionRadioGroup.value != "full"){
-          msiEnsureElementPackage(gWrapperElement,"wrapfig",null);
-        }
-        if (gTableElement.parentNode !== gWrapperElement){
-          gWrapperElement.appendChild(gTableElement);
-        }
-      } else if (pos == "inline") 
-        doSetStyleAttr("display", "inline-table");
-      else { // pos == display
-        var wrapFigOpt = gDialog.herePlacementRadioGroup.value;
-        if (wrapFigOpt === "full") { // a plain centered displayed table
-           doSetStyleAttr("display", "table");
-           doSetStyleAttr("margin-left", "auto");
-           doSetStyleAttr("margin-right", "auto");          
-        } else {
-           msiRequirePackage(gActiveEditorElement, "wrapfig", "");
-           SetAnAttribute(gTableElement,"placement",placementCodeFrom(wrapFigOpt));
-           //SetAnAttribute(gTableElement,"placeLocation", float);
-           doSetStyleAttr("float", (pos=="left"||pos=="inside")?"left":"right");        
-        }
-      }
-      SetAnAttribute(gTableElement, "pos", pos);
-    }
-    if (!bEmptyStyle)
-      theStyleString = gTableElement.getAttribute("style");
-    if (theStyleString && theStyleString.length)
-      SetAnAttribute(gTableElement, "style", theStyleString);
-    else
-      gActiveEditor.removeAttributeOrEquivalent(gTableElement, "style", false);
-
-    SetAnAttribute(gTableElement, "xrefLabel", gDialog.labelText.value);
-  }
-  catch(e){
-    msidump(e.message);
-  }
+{  
+  setFrameAttributes(gTableElement, gTableElement, gActiveEditor, false);
 }
-
-function placementCodeFrom(pos)
-{
-  switch( pos )
-  {
-    case "left":
-      return "L";
-    case "right":
-      return "R";
-    case "inside":
-      return "I";
-    case "outside":
-      return "O";
-  }
-}
-
 
 
 function getColElements()
@@ -1505,7 +1422,7 @@ function ApplyColAndRowAttributes()
     var currSelectedCol = -1;
 //    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;  we should be using something more like this...
     if (gCollatedCellData.size.bWidthSet)
-      theWidth = unitHandler.getValueAs(gDialog.CellWidthInput.value, "px");
+      theWidth = frameUnitHandler.getValueAs(gDialog.CellWidthInput.value, "px");
 
 
     var insertPos = 0;
@@ -1583,7 +1500,7 @@ function ApplyColAndRowAttributes()
   {
     var theHeight = "";
     if (gCollatedCellData.size.bHeightSet)
-      theHeight = unitHandler.getValueOf(gDialog.CellHeightInput, "px");
+      theHeight = frameUnitHandler.getValueOf(gDialog.CellHeightInput, "px");
     var theRowNode, newNode;
 
     for (ix = 0; ix < rowsInSelection.length; ++ix)
@@ -1639,7 +1556,7 @@ function ApplyMatrixColAndRowAttributes()
   var colsInSelection = data.reviseData.getColsInSelection(gSelectionTypeStr);
   var theWidth = "auto";
   if (gCollatedCellData.size.bWidthSet)
-    theWidth = unitHandler.getValueAs(gDialog.CellWidthInput.value, "px");
+    theWidth = frameUnitHandler.getValueAs(gDialog.CellWidthInput.value, "px");
 //    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;
   for (var ix = 0; ix < colsInSelection.length; ++ix)
     colWidths[colsInSelection[ix]] = theWidth;
@@ -1989,14 +1906,14 @@ function ApplyAttributesToOneCell(destElement, newLineObject)
   }
   if (Number(gDialog.CellHeightInput.value) !== 0)
   {
-    aVal = unitHandler.getValueString(gDialog.CellHeightInput.value);
+    aVal = frameUnitHandler.getValueString(gDialog.CellHeightInput.value);
     SetAnAttribute(destElement, "cellheight", aVal);
   }
   else gActiveEditor.removeAttribute(destElement,"cellheight");
 
   if (Number(gDialog.CellWidthInput.value) !== 0)
   {
-    aVal = unitHandler.getValueString(gDialog.CellWidthInput.value);
+    aVal = frameUnitHandler.getValueString(gDialog.CellWidthInput.value);
     SetAnAttribute(destElement, "cellwidth", aVal);
   }
   else gActiveEditor.removeAttribute(destElement,"cellwidth");
@@ -2047,7 +1964,7 @@ function Apply()
     ApplyTableAttributes();
 
     // handle caption
-    var captionloc = gDialog.captionPlacementGroup.value;
+    var captionloc = gDialog.captionLocation.value;
     var captiontext;
     var cap;
     var i;
@@ -2100,9 +2017,9 @@ function onAcceptNewTable()
     try 
     {
       var wrapping = (gDialog.textwrapchoice.value == "true");  // values are '','true','false'
-      if (wrapping.length > 0) {
-        gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
-      }
+      // if (wrapping.length > 0) {
+      //   gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
+      // }
 
       var align = gDialog.hAlignChoices.value;
       if (align.length > 0) {
@@ -2128,7 +2045,7 @@ function onAcceptNewTable()
     if (tableBody)
     {
       // check here for caption
-      var captionloc = gDialog.captionPlacementGroup.value;
+      var captionloc = gDialog.captionLocation.value;
       var captiontext;
       if (captionloc !== 'none') {
         var cap = gActiveEditor.createElementWithDefaults('caption');

@@ -38,11 +38,98 @@
 
   <tabbox id="TabBox">
     <tabs>
+      <tab id="QuicklyTab" label="&quicklyTab.label;"/>
       <tab id="TableTab" label="&tableTab.label;"/>
       <tab id="CellsTab" label="&cellsTab.label;"/>
       <tab id="LinesTab" label="&linesTab.label;"/>
     </tabs>
     <tabpanels>
+      <tabpanel id="tablegrid" flex="1">
+        <spacer class="spacer" flex="1"/>
+        <grid class="sizeSelector">
+          <columns><column flex="1"/><column/><column flex="1"/></columns>
+          <rows>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea('c1')" onclick="SelectSize(this)" value=" " id="c1" class="selected"/>
+                <label onmouseover="SelectArea('c2')" onclick="SelectSize(this)" value=" " id="c2" class="selected"/>
+                <label onmouseover="SelectArea('c3')" onclick="SelectSize(this)" value=" " id="c3"/>
+                <label onmouseover="SelectArea('c4')" onclick="SelectSize(this)" value=" " id="c4"/>
+                <label onmouseover="SelectArea('c5')" onclick="SelectSize(this)" value=" " id="c5"/>
+                <label onmouseover="SelectArea('c6')" onclick="SelectSize(this)" value=" " id="c6"/>
+              </hbox>
+              <spacer/>
+            </row>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea('c11')" onclick="SelectSize(this)" value=" " id="c11" class="selected"/>
+                <label onmouseover="SelectArea('c12')" onclick="SelectSize(this)" value=" " id="c12" class="selected"/>
+                <label onmouseover="SelectArea('c13')" onclick="SelectSize(this)" value=" " id="c13"/>
+                <label onmouseover="SelectArea('c14')" onclick="SelectSize(this)" value=" " id="c14"/>
+                <label onmouseover="SelectArea('c15')" onclick="SelectSize(this)" value=" " id="c15"/>
+                <label onmouseover="SelectArea('c16')" onclick="SelectSize(this)" value=" " id="c16"/>
+              </hbox>
+              <spacer/>
+            </row>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea('c21')" onclick="SelectSize(this)" value=" " id="c21"/>
+                <label onmouseover="SelectArea('c22')" onclick="SelectSize(this)" value=" " id="c22"/>
+                <label onmouseover="SelectArea('c23')" onclick="SelectSize(this)" value=" " id="c23"/>
+                <label onmouseover="SelectArea('c24')" onclick="SelectSize(this)" value=" " id="c24"/>
+                <label onmouseover="SelectArea('c25')" onclick="SelectSize(this)" value=" " id="c25"/>
+                <label onmouseover="SelectArea('c26')" onclick="SelectSize(this)" value=" " id="c26"/>
+              </hbox>
+              <spacer/>
+            </row>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea('c31')" onclick="SelectSize(this)" value=" " id="c31"/>
+                <label onmouseover="SelectArea('c32')" onclick="SelectSize(this)" value=" " id="c32"/>
+                <label onmouseover="SelectArea('c33')" onclick="SelectSize(this)" value=" " id="c33"/>
+                <label onmouseover="SelectArea('c34')" onclick="SelectSize(this)" value=" " id="c34"/>
+                <label onmouseover="SelectArea('c35')" onclick="SelectSize(this)" value=" " id="c35"/>
+                <label onmouseover="SelectArea('c36')" onclick="SelectSize(this)" value=" " id="c36"/>
+              </hbox>
+              <spacer/>
+            </row>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea('c41')" onclick="SelectSize(this)" value=" " id="c41"/>
+                <label onmouseover="SelectArea('c42')" onclick="SelectSize(this)" value=" " id="c42"/>
+                <label onmouseover="SelectArea('c43')" onclick="SelectSize(this)" value=" " id="c43"/>
+                <label onmouseover="SelectArea('c44')" onclick="SelectSize(this)" value=" " id="c44"/>
+                <label onmouseover="SelectArea('c45')" onclick="SelectSize(this)" value=" " id="c45"/>
+                <label onmouseover="SelectArea('c46')" onclick="SelectSize(this)" value=" " id="c46"/>
+              </hbox>
+              <spacer/>
+            </row>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea('c51')" onclick="SelectSize(this)" value=" " id="c51"/>
+                <label onmouseover="SelectArea('c52')" onclick="SelectSize(this)" value=" " id="c52"/>
+                <label onmouseover="SelectArea('c53')" onclick="SelectSize(this)" value=" " id="c53"/>
+                <label onmouseover="SelectArea('c54')" onclick="SelectSize(this)" value=" " id="c54"/>
+                <label onmouseover="SelectArea('c55')" onclick="SelectSize(this)" value=" " id="c55"/>
+                <label onmouseover="SelectArea('c56')" onclick="SelectSize(this)" value=" " id="c56"/>
+              </hbox>
+              <spacer/>
+            </row>
+          </rows>
+        </grid>
+        <hbox id="gridcoordinates" align="center">
+          <spacer class="spacer" flex="1"/>
+          <label id="sizeLabel" value="2 x 2"/>
+          <spacer class="spacer" flex="1"/>
+        </hbox>
+        <spacer class="spacer" flex="1"/>
+      </tabpanel>
       <!-- ALIGNMENT PANEL -->
       <tabpanel>
         <!-- Table -->

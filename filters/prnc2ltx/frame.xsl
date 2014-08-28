@@ -10,13 +10,9 @@
   <xsl:variable name="framePosType">
     <xsl:choose>
       <xsl:when test="@pos='inline'">ft-inline</xsl:when>
-      <xsl:when test="@pos='display'">
-        <xsl:choose>
-          <xsl:when test="@wrapOption='full'">ft-centered</xsl:when>
-          <xsl:otherwise>ft-wrapped</xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:when test="@pos='float'">ft-floating</xsl:when>
+      <xsl:when test="@pos='center'">ft-centered</xsl:when>
+      <xsl:when test="@ltxfloat">ft-floating</xsl:when>
+      <xsl:otherwise>ft-wrapped</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="width">
@@ -26,7 +22,7 @@
           <xsl:with-param name="objNode" select="(./html:object|./html:embed)[1]"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="@imageWidth"><xsl:value-of select="@imageWidth"/></xsl:when>
+      <xsl:when test="@ltx_width"><xsl:value-of select="@ltx_width"/></xsl:when>
       <xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when>
       <xsl:otherwise><xsl:text>0</xsl:text></xsl:otherwise>
     </xsl:choose>
@@ -88,20 +84,19 @@
     </xsl:if>
   </xsl:if>
 
-
   <xsl:choose>
     <xsl:when test="$framePosType='ft-wrapped'">
       <xsl:text>\begin{wrapfigure}</xsl:text>
       <xsl:if test="@nlines">[<xsl:value-of select="@nlines"/>]</xsl:if>
       <xsl:choose>
-        <xsl:when test="@wrapOption='I'">{i}</xsl:when>
-        <xsl:when test="@wrapOption='O'">{o}</xsl:when>
-        <xsl:when test="@wrapOption='L'">{l}</xsl:when>
-        <xsl:when test="@wrapOption='R'">{r}</xsl:when>
-        <xsl:when test="@wrapOption='i'">{I}</xsl:when>
-        <xsl:when test="@wrapOption='o'">{o}</xsl:when>
-        <xsl:when test="@wrapOption='l'">{L}</xsl:when>
-        <xsl:when test="@wrapOption='r'">{R}</xsl:when>
+        <xsl:when test="@pos='I'">{i}</xsl:when>
+        <xsl:when test="@pos='O'">{o}</xsl:when>
+        <xsl:when test="@pos='L'">{l}</xsl:when>
+        <xsl:when test="@pos='R'">{r}</xsl:when>
+        <xsl:when test="@pos='i'">{I}</xsl:when>
+        <xsl:when test="@pos='o'">{o}</xsl:when>
+        <xsl:when test="@pos='l'">{L}</xsl:when>
+        <xsl:when test="@pos='r'">{R}</xsl:when>
         <xsl:otherwise>{r}</xsl:otherwise>
       </xsl:choose>
       <xsl:if test="@overhang">
@@ -126,10 +121,10 @@
    <xsl:when test="$framePosType='ft-floating'">
        <xsl:value-of select="$newline"/>
        <xsl:text>\begin{figure}</xsl:text>
-       <xsl:if test="@placeLocation">
+       <xsl:if test="@ltxfloat">
           <xsl:text>[</xsl:text>
-          <xsl:value-of select="@placeLocation"/>
-          <xsl:text>]</xsl:text>
+          <xsl:value-of select="@ltxfloat"/>
+          <xsl:text>]\begin{center}</xsl:text>
        </xsl:if>
     </xsl:when>
     <xsl:when test="$framePosType='ft-centered'">
@@ -254,7 +249,7 @@
   <xsl:choose>
     <xsl:when test="$framePosType='ft-inline'"><xsl:text>\end{center}}</xsl:text></xsl:when>
     <xsl:when test="$framePosType='ft-centered'">\end{center}</xsl:when>
-    <xsl:when test="$framePosType='ft-floating'">\end{figure}</xsl:when>
+    <xsl:when test="$framePosType='ft-floating'">\end{center}\end{figure}</xsl:when>
     <xsl:when test="$framePosType='ft-wrapped'">\end{wrapfigure}</xsl:when>   
   </xsl:choose>
     <!-- <xsl:if test="($limitframemetrics=1) or ($inlineOffset and string-length($inlineOffset))">}</xsl:if>  -->
