@@ -28,8 +28,8 @@
     <xsl:text>\textcurrency </xsl:text>
   </xsl:template>
 
-  <xsl:text xml:space="preserve">\textcurrency </xsl:text>
-
+<!--   <xsl:text xml:space="preserve">\textcurrency </xsl:text>
+ -->
   <xsl:template name="chars-to-LaTeX-Math">
       <xsl:param name="unicode-cdata"/>
       <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>

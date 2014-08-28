@@ -46,7 +46,7 @@
 <!ENTITY leftHAlignment.label "Left">
 <!ENTITY centerHAlignment.label "Center">
 <!ENTITY rightHAlignment.label "Right">
-
+<!ENTITY unspecified "--unspecified">
 <!ENTITY vertAlignment.label "Vert. alignment">
 <!ENTITY unspecifiedVAlignment.label "Unspecified">
 <!ENTITY topVAlignment.label "Top">
@@ -230,12 +230,6 @@
 <!ENTITY vAlignCenter.label "Center">
 <!ENTITY vAlignBottom.label "Bottom">
 
-<!ENTITY inline.label "Inline">
-<!ENTITY left.label "Left">
-<!ENTITY inside.label "Inside">
-<!ENTITY center.label "Center">
-<!ENTITY right.label  "Right">
-<!ENTITY outside.label  "Outside">
 <!ENTITY none.label "None">
 <!ENTITY here.label "Here">
 <!ENTITY onpageoffloats.label "On page of floats">
@@ -260,7 +254,6 @@
 <!ENTITY rowheightRule "A row's height will be the height of its tallest cell" >
 <!ENTITY colwidthRule "A column's width will be the width of its widest cell" >
 <!ENTITY cellsizeInstructions "Use cell dimension of 0.0 to leave current dimensions unchanged" >
-<!ENTITY unspecified "--unspecified --">
 
 <!ENTITY tableLabelingTab.label "Labeling" >
 <!ENTITY tableKey.label "Key">

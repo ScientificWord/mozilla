@@ -12,8 +12,8 @@ var position;
 var marginAtt = "margin";
 var paddingAtt = "padding";
 var borderAtt = "border";
-var widthAtt = "width";
-var heightAtt = "height";
+var widthAtt = "ltx_width";
+var heightAtt = "ltx_height";
 var metrics = {margin:{}, border: {}, padding: {}};
 var role;
 var gConstrainWidth = 0;
@@ -23,6 +23,7 @@ var gActualHeight = 0;
 var gDefaultPlacement = "";
 var gDefaultInlineOffset = "";
 var hasNaturalSize;
+var gCaptionLoc;
 
 
 function setHasNaturalSize(istrue)
@@ -53,15 +54,15 @@ function setCanRotate(istrue)
   }
 }
 
-function setFrameSizeFromExisting(dg, node)
+function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
 {
   var height;
   var width;
   var aspectRatio;
-  if (!node) return;
-  width = node.getAttribute("width");
-  height= node.getAttribute("height");
-  if (height == null && width == null) return;
+  if (!wrapperNode) return;
+  width = contentsNode.getAttribute(widthAtt);
+  height= contentsNode.getAttribute(heightAtt);
+  // if (height == null && width == null) return;
   dg.frameWidthInput           = document.getElementById("frameWidthInput");
   dg.frameHeightInput          = document.getElementById("frameHeightInput");
   dg.autoHeightCheck      = document.getElementById("autoHeight");
@@ -72,21 +73,22 @@ function setFrameSizeFromExisting(dg, node)
   dg.actual               = document.getElementById( "actual" );
   dg.custom               = document.getElementById( "custom" );
   dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
+  dg.captionLocation      = document.getElementById( "captionLocation");
   if (width != null) {
-    dg.frameWidthInput.value = width;
-    dg.frameWidthInput.removeAttribute("disabled");
-    dg.autoWidthCheck.checked = false;
+    if (dg.frameWidthInput) dg.frameWidthInput.removeAttribute("disabled");
+    if (dg.autoWidthCheck) dg.autoWidthCheck.checked = false;
+    if (dg.frameWidthInput) dg.frameWidthInput.value = width;
   } else {
-    dg.autoWidthCheck.checked = true;
-    dg.frameWidthInput.setAttribute("disabled", true);
+    if (dg.autoWidthCheck) dg.autoWidthCheck.checked = true;
+    if (dg.frameWidthInput) dg.frameWidthInput.setAttribute("disabled", true);
   }
   if (height != null) {
-    dg.frameHeightInput.value = height;
-    dg.frameHeightInput.removeAttribute("disabled");
-    dg.autoHeightCheck.checked = false;
+    if (dg.frameHeightInput) dg.frameHeightInput.removeAttribute("disabled");
+    if (dg.autoHeightCheck) dg.autoHeightCheck.checked = false;
+    if (dg.frameHeightInput) dg.frameHeightInput.value = height;
   } else {
-    dg.autoHeightCheck.checked = true;
-    dg.frameHeightInput.setAttribute("disabled", true);
+    if (dg.autoHeightCheck) dg.autoHeightCheck.checked = true;
+    if (dg.frameHeightInput) dg.frameHeightInput.setAttribute("disabled", true);
   }
   dg.constrainCheckbox.checked = (width == null || height == null);
 }
@@ -145,7 +147,15 @@ function rescaleMetrics(width, height) // width and height in current unit.
   }
 }
 
-function initFrameTab(dg, element, newElement, contentsElement)
+function checkMenuItem( item, checkit ) {
+  if (item == null) return;
+  if (checkit) {
+    item.setAttribute("checked", true);
+  }
+  else item.removeAttribute("checked");
+}
+
+function initFrameTab(dg, element, newElement,  contentsElement)
 {
   var i, v;
   var len;
@@ -155,11 +165,6 @@ function initFrameTab(dg, element, newElement, contentsElement)
   var width = 0;
   var prefUnit;
   Dg = dg;
-  // if (gFrameModeImage)
-  // {
-  //   widthAtt = "imageWidth";
-  //   heightAtt = "imageHeight";
-  // }
   frameUnitHandler = new UnitHandler();
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
   scale = 0.25;
@@ -196,18 +201,14 @@ function initFrameTab(dg, element, newElement, contentsElement)
                              right: document.getElementById("paddingRightInput"),
                              top:   document.getElementById("paddingTopInput"),
                              bottom: document.getElementById("paddingBottomInput")};
+  dg.frameUnitMenulist    = document.getElementById("frameUnitMenulist"); // ??
   dg.colorWell            = document.getElementById("colorWell");
   dg.bgcolorWell          = document.getElementById("bgcolorWell");
   dg.textAlignment        = document.getElementById("textAlignment");
   dg.rotationList         = document.getElementById("rotationList");
-  dg.placementRadioGroup  = document.getElementById("placementRadioGroup");
-  dg.inlineOffsetInput    = document.getElementById("frameInlineOffsetInput");
-  dg.placeForceHereCheck  = document.getElementById("placeForceHereCheck");
-  dg.placeHereCheck       = document.getElementById("placeHereCheck");
-  dg.placeFloatsCheck     = document.getElementById("placeFloatsCheck");
-  dg.placeTopCheck        = document.getElementById("placeTopCheck");
-  dg.placeBottomCheck     = document.getElementById("placeBottomCheck");
-  dg.wrapOptionRadioGroup  = document.getElementById("wrapOptionRadioGroup");
+  dg.locationList         = document.getElementById("locationList");
+  dg.frameInlineOffsetInput    = document.getElementById("frameInlineOffsetInput");
+  dg.floatList            = document.getElementById("floatList");
   dg.OkButton             = document.documentElement.getButton("accept");
   dg.truewidth            = document.getElementById( "truewidth" );
   dg.trueheight           = document.getElementById( "trueheight" );
@@ -215,87 +216,117 @@ function initFrameTab(dg, element, newElement, contentsElement)
   dg.frameWidthInput      = document.getElementById("frameWidthInput");
   dg.autoHeightCheck      = document.getElementById("autoHeight");
   dg.autoWidthCheck       = document.getElementById("autoWidth");
+  dg.captionLocation      = document.getElementById( "captionLocation");
+  dg.floatlistNone        = document.getElementById("floatlistNone");
+  dg.ltxfloat_forceHere   = document.getElementById("ltxfloat_forceHere");
+  dg.ltxfloat_here        = document.getElementById("ltxfloat_here");
+  dg.ltxfloat_pageOfFloats= document.getElementById("ltxfloat_pageOfFloats");
+  dg.ltxfloat_topPage     = document.getElementById("ltxfloat_topPage");
+  dg.ltxfloat_bottomPage  = document.getElementById("ltxfloat_bottomPage");
   var fieldList = [];
   var attrs = ["margin","border","padding"];
-try {
-  for (i=0, len = sides.length; i<len; i++)
-  {
-    for (j = 0, len2 = attrs.length; j < len2; j++)
+  var name;
+  var side;
+  try {
+    for (i=0, len = sides.length; i<len; i++)
     {
-      fieldList.push(dg[attrs[j]+"Input"][sides[i].toLowerCase()]);
+      side = sides[i].toLowerCase();
+      for (j = 0, len2 = attrs.length; j < len2; j++)
+      {
+        name = attrs[j]+"Input";
+        if (dg[name] && dg[name][side])
+          fieldList.push(dg[name][side]);
+      }
     }
+  } 
+  catch(e) {
+    msidump(e.message);
   }
-} 
-catch(e) {
-  msidump(e.message);
-}
-  fieldList.push(dg.frameHeightInput);
-  fieldList.push(dg.frameWidthInput);
-  fieldList.push(dg.inlineOffsetInput);
-  fieldList.push(dg.truewidth);
-  fieldList.push(dg.trueheight);
+  if (dg.frameHeightInput) fieldList.push(dg.frameHeightInput);
+  if (dg.frameWidthInput) fieldList.push(dg.frameWidthInput);
+  if (dg.frameInlineOffsetInput) fieldList.push(dg.frameInlineOffsetInput);
+  if (dg.truewidth) fieldList.push(dg.truewidth);
+  if (dg.trueheight) fieldList.push(dg.trueheight);
   frameUnitHandler.setEditFieldList(fieldList);
 // The defaults for the document are set by the XUL document, modified by persist attributes.
 // These are then overwritten by preference settings, if they exist
   var prefBranch = GetPrefs();
+  var isFloat = false;
 // pref("swp.defaultGraphicsInlineOffset", "0.0");
 // pref("swp.defaultGraphicsSizeUnits", "in");
 
   prefUnit = prefBranch.getCharPref("swp.defaultGraphicsSizeUnits");
   frameUnitHandler.initCurrentUnit(prefUnit);
   v = prefBranch.getCharPref("swp.defaultGraphicsPlacement");
-  if (v != null) dg.placementRadioGroup.value = frameUnitHandler.getValueOf(v, prefUnit);
+  if (v != null && dg.locationList) dg.locationList.value = v;
   v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.forceHere");
-  if (v != null) dg.placeForceHereCheck.checked = v;
+  if (v != null) {
+    checkMenuItem(document.getElementById("placement_forceHere"),v);
+    isFloat  = isFloat | v;
+  }
   v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.here");
-  if (v != null) dg.placeHereCheck.checked = v;
+  if (v != null) {
+    checkMenuItem(document.getElementById("placement_here"),v);
+    isFloat  = isFloat | v;
+  }
   v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.pageFloats");
-  if (v != null) dg.placeFloatsCheck.checked = v;
+  if (v != null) {
+    checkMenuItem(document.getElementById("placement_pageOfFloats"),v);
+    isFloat  = isFloat | v;
+  }
   v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.topPage");
-  if (v != null) dg.placeTopCheck.checked = v;
+  if (v != null) {
+    checkMenuItem(document.getElementById("placement_topPage"),v);
+    isFloat  = isFloat | v;
+  }
   v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.bottomPage");
-  if (v != null) dg.placeBottomCheck.checked = v;
+  if (v != null) {
+    checkMenuItem(document.getElementById("placement_bottomPage"),v);
+    isFloat  = isFloat | v;
+  }
+  if (!isFloat) checkMenuItem(document.getElementById("floatlistNone"), true);
   v = prefBranch.getCharPref("swp.defaultGraphicsFloatPlacement");
-  if (v != null) dg.wrapOptionRadioGroup.value = frameUnitHandler.getValueOf(v, prefUnit)
+//  if (v != null) dg.wrapOptionRadioGroup.value = frameUnitHandler.getValueOf(v, prefUnit)
   v = prefBranch.getCharPref("swp.graphics.border");
-  if (v != null) dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.top.value = dg.borderInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit)
+  if (v != null && dg.borderInput && dg.borderInput.left && dg.borderInput.right && dg.borderInput.top && dg.borderInput.bottom) 
+    dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.left.value = dg.borderInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit)
   v = prefBranch.getCharPref("swp.graphics.HMargin");
-  if (v != null) dg.marginInput.left.value = dg.marginInput.right.value = frameUnitHandler.getValueOf(v, prefUnit)
+  if (v != null && dg.marginInput && dg.marginInput.left && dg.marginInput.right ) dg.marginInput.left.value = dg.marginInput.right.value = frameUnitHandler.getValueOf(v, prefUnit)
   v = prefBranch.getCharPref("swp.graphics.VMargin");
-  if (v != null) dg.marginInput.top.value = dg.marginInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit)
+  if (v != null && dg.marginInput && dg.marginInput.top && dg.marginInput.bottom) dg.marginInput.top.value = dg.marginInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit)
   v = prefBranch.getCharPref("swp.graphics.padding");
-  if (v != null) dg.paddingInput.left.value = dg.paddingInput.right.value = dg.paddingInput.top.value = dg.paddingInput.bottom .value= frameUnitHandler.getValueOf(v, prefUnit)
+  if (v != null && dg.paddingInput && dg.paddingInput.left && dg.paddingInput.right) dg.paddingInput.left.value = dg.paddingInput.right.value = dg.paddingInput.top.value = dg.paddingInput.bottom .value= frameUnitHandler.getValueOf(v, prefUnit)
   v = prefBranch.getCharPref("swp.graphics.BGColor");
-  if (v != null) dg.bgcolorWell.setAttribute('style',"background-color: " + v + ";");
+  if (v != null && dg.bgcolorWell) dg.bgcolorWell.setAttribute('style',"background-color: " + v + ";");
   v = prefBranch.getCharPref("swp.graphics.borderColor");
-  if (v != null) dg.colorWell.setAttribute('style',"background-color: " + v + ";");
+  if (v != null && dg.colorWell) dg.colorWell.setAttribute('style',"background-color: " + v + ";");
 
-  var placeLocation, placementStr, pos;
+  var floatLocation, posStr, pos;
   var inlineOffset = 0;
 try {
   if (!newElement)
   {   // we need to initialize the dg from the frame element
-    if (!contentsElement)
-      contentsElement = element;
-    if (element.getAttribute("naturalWidth") && element.getAttribute("naturalHeight")) {
-      gConstrainWidth = element.getAttribute("naturalWidth");
-      gConstrainHeight = element.getAttribute("naturalHeight"); 
+    if (! contentsElement)
+       contentsElement = element;
+    if ( contentsElement.getAttribute("naturalWidth") &&  contentsElement.getAttribute("naturalHeight")) {
+      gConstrainWidth =  contentsElement.getAttribute("naturalWidth");
+      gConstrainHeight =  contentsElement.getAttribute("naturalHeight"); 
       setHasNaturalSize(true);
     }
     else  setHasNaturalSize(false);
-    setFrameSizeFromExisting(dg, contentsElement);
+    setFrameSizeFromExisting(dg, element, contentsElement);
 
-    frameUnitHandler.setCurrentUnit(contentsElement.getAttribute("units"));
+    frameUnitHandler.setCurrentUnit(element.getAttribute("units"));
     
     // var width = 0;
     // var widthStr = "0";
-    // if (contentsElement.hasAttribute(widthAtt)) {
-    //   width = frameUnitHandler.getValueFromString( contentsElement.getAttribute(widthAtt) );
+    // if ( contentsElement.hasAttribute(widthAtt)) {
+    //   width = frameUnitHandler.getValueFromString(  contentsElement.getAttribute(widthAtt) );
     // }
     // var height = 0;
     // var heightStr = "0";
-    // if (contentsElement.hasAttribute(heightAtt)) {
-    //   height = frameUnitHandler.getValueFromString( contentsElement.getAttribute(heightAtt) );
+    // if ( contentsElement.hasAttribute(heightAtt)) {
+    //   height = frameUnitHandler.getValueFromString(  contentsElement.getAttribute(heightAtt) );
     // } else
     // {
     //   dg.autoHeightCheck.checked = true;
@@ -333,18 +364,18 @@ try {
 
     pos = element.getAttribute("pos");
     if (!pos)
-      pos = "";
+      pos = "unspecified";
+    dg.locationList.value = pos;
     if ((pos=="inline") && element.hasAttribute("inlineOffset"))
       inlineOffset = frameUnitHandler.getValueFromString( element.getAttribute("inlineOffset"), frameUnitHandler.currentUnit );
 
     // if (gFrameModeImage) 
     {
-      placement = element.getAttribute("placement");
-      if (placement == "L")
+      if (pos == "L")
       {
         position = 1;  // left = 1, right = 2, neither = 0
       }
-      else if (placement == "R")
+      else if (pos == "R")
       {
         position = 2;
       }
@@ -357,31 +388,74 @@ try {
       var topmargin = element.getAttribute("topmargin");
       if (topmargin == null) topmargin = 0;
       dg.marginInput.top.value = topmargin;
-      var borderwidth = contentsElement.getAttribute("borderw");
+      var borderwidth = element.getAttribute("borderw");
       if (borderwidth == null) borderwidth = 0;
       dg.borderInput.left.value = borderwidth;
-      var padding = contentsElement.getAttribute("padding");
+      var padding = element.getAttribute("padding");
       if (padding == null) padding = 0;
       dg.paddingInput.left.value = padding;
     }  
-    placeLocation = element.getAttribute("placeLocation");
-    if (!placeLocation)
-      placeLocation = "";
-    placementStr = element.getAttribute("placement");
-    if (!placementStr)
-      placementStr = "";
+    floatLocation = element.getAttribute("ltxfloat");
+    if (!floatLocation || floatLocation === "")
+      floatLocation = "";
+    dg.floatList.value = floatLocation;
 
+    isFloat = false;
+    v = (floatLocation.indexOf("H") >= 0);
+    checkMenuItem(document.getElementById("ltxfloat_forceHere"),v);
+    // if (v && !isFloat) dg.floatList.label = document.getElementById("ltxfloat_forceHere").getAttribute("label");
+    isFloat  = isFloat | v;
+
+    v = (floatLocation.indexOf("h") >= 0);
+    checkMenuItem(document.getElementById("ltxfloat_here"),v);
+    // if (v && !isFloat) dg.floatList.label = document.getElementById("ltxfloat_here").getAttribute("label");
+    isFloat  = isFloat | v;
+
+    v = (floatLocation.indexOf("p") >= 0);
+    checkMenuItem(document.getElementById("ltxfloat_pageOfFloats"),v);
+    // if (v && !isFloat) dg.floatList.label = document.getElementById("ltxfloat_pageOfFloats").getAttribute("label");
+    isFloat  = isFloat | v;
+
+    v = (floatLocation.indexOf("t") >= 0);
+    checkMenuItem(document.getElementById("ltxfloat_topPage"),v);
+    // if (v && !isFloat) dg.floatList.selectedIndex = 4;(document.getElementById("ltxfloat_topPage"));
+    isFloat  = isFloat | v;
+
+    v = (floatLocation.indexOf("b") >= 0);
+    checkMenuItem(document.getElementById("ltxfloat_bottomPage"),v);
+    // if (v && !isFloat) dg.floatList.label = document.getElementById("ltxfloat_bottomPage").getAttribute("label");
+    isFloat  = isFloat | v;
+
+    checkMenuItem(document.getElementById("floatlistNone"), !isFloat);
+//
+//    if (!isFloat) dg.floatList.label = document.getElementById("floatlistNone").getAttribute("label");
+    
     var theColor;
-    if (contentsElement.hasAttribute("border-color"))
+    if (element.hasAttribute("border-color"))
     {
-      theColor = hexcolor(contentsElement.getAttribute("border-color"));
+      theColor = hexcolor(element.getAttribute("border-color"));
       setColorInDialog("colorWell", theColor);
     }
-    if (contentsElement.hasAttribute("background-color"))
+    if (element.hasAttribute("background-color"))
     {
-      theColor = hexcolor(contentsElement.getAttribute("background-color"));
+      theColor = hexcolor(element.getAttribute("background-color"));
       setColorInDialog("bgcolorWell", theColor);
     }
+    var key = "";
+    var captionNodes = element.getElementsByTagName("caption");
+    var captionNode;
+    if (captionNodes && captionNodes.length > 0) captionNode = captionNodes[0];
+    if (captionNode) {
+      if (captionNode.hasAttribute("key"))
+        key = captionNode.getAttribute("key");
+      else if (captionNode.hasAttribute("id"))
+        key = captionNode.getAttribute("id");
+      dg.keyInput.value = key;
+      gOriginalKey = key;
+    }
+    var captionLoc = element.getAttribute("captionloc") || "none";
+    dg.captionLocation.value = captionLoc;
+    gCaptionLoc = captionLoc;
   }
   else  //so it is a new element
   {
@@ -393,9 +467,9 @@ try {
         pos = TrimString(defPlacementArray[0]);
         if (defPlacementArray.length > 1)
         {
-          placeLocation = TrimString(defPlacementArray[1]);
+          floatLocation = TrimString(defPlacementArray[1]);
           if (defPlacementArray.length > 2)
-            placementStr = TrimString(defPlacementArray[2]);
+            floatLocation = TrimString(defPlacementArray[2]);
         }
       }
     }
@@ -408,37 +482,23 @@ catch(e) {
 }
 
 try {
-  if ((!newElement || gDefaultPlacement.length) && dg.placeForceHereCheck)
+  if (!newElement || gDefaultPlacement.length)
   {
     try
-    {  
-      dg.placeForceHereCheck.checked = (placeLocation.search("H") != -1);
-      dg.placeHereCheck.checked = (placeLocation.search("h") != -1);
-      dg.placeFloatsCheck.checked = (placeLocation.search("p") != -1);
-      dg.placeTopCheck.checked = (placeLocation.search("t") != -1);
-      dg.placeBottomCheck.checked = (placeLocation.search("b") != -1);
+    { 
+      checkMenuItem(dg.ltxfloat_forceHere, (floatLocation.search("H") != -1));
+      checkMenuItem(dg.ltxfloat_here, (floatLocation.search("h") != -1));
+      checkMenuItem(dg.ltxfloat_pageOfFloats, (floatLocation.search("p") != -1));
+      checkMenuItem(dg.ltxfloat_topPage, (floatLocation.search("t") != -1));
+      checkMenuItem(dg.ltxfloat_bottomPage, (floatLocation.search("b") != -1));
 
 
-      if (dg.wrapOptionRadioGroup) {
-        dg.wrapOptionRadioGroup.value = placementStr;
-        if (!dg.wrapOptionRadioGroup.value || !dg.wrapOptionRadioGroup.value.length)
-          dg.wrapOptionRadioGroupValue = "full";  //as in the default below
-        switch (dg.wrapOptionRadioGroup.value) {
-          case "L": dg.wrapOptionRadioGroup.selectedIndex = 0;
-                    break;
-          case "R": dg.wrapOptionRadioGroup.selectedIndex = 1;
-                    break;
-          case "I": dg.wrapOptionRadioGroup.selectedIndex = 2;
-                    break;
-          case "O": dg.wrapOptionRadioGroup.selectedIndex = 3;
-                    break;
-          default:  dg.wrapOptionRadioGroup.selectedIndex = 4;
-        }
+      if (dg.locationList) {
+        dg.locationList.value = pos;
       }      
-      dg.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
       if (pos == "inline")
       {
-        dg.inlineOffsetInput.value= inlineOffset;
+        dg.frameInlineOffsetInput.value= inlineOffset;
       }
     }
     catch(e)
@@ -447,19 +507,25 @@ try {
     }
   }
 
-  if (dg.wrapOptionRadioGroup) {
+  if (dg.locationList) {
     var placement = 0;
-    var placementLetter = document.getElementById("wrapOptionRadioGroup").value;
+    var placementLetter = document.getElementById("locationList").value;
     if (/l|i/i.test(placementLetter)) placement=1;
     else if (/r|o/i.test(placementLetter)) placement = 2;    
-    enableFloatOptions(dg.wrapOptionRadioGroup);
+//    enableFloatOptions(dg.wrapOptionRadioGroup);
   }
   Dg = dg;
   setAlignment(placement);
-  enableFloatOptions(dg.wrapOptionRadioGroup);
-  enableFloating();
-  placementChanged();
+//  enableFloatOptions(dg.wrapOptionRadioGroup);
+//  enableFloating();
+
+// The following will figure out what is enabled in the current state.
+  locationChanged();
+  floatPropertyChanged();
+//  TablePropertyChanged('TableBaselineRadioGroup');
+  captionPropertyChanged();
   doDimensionEnabling();
+  updateMetrics();
   updateDiagram(marginAtt);
   updateDiagram(borderAtt);
   updateDiagram(paddingAtt);
@@ -468,7 +534,6 @@ try {
   if ( hiddenAttr == true )
     role = "textframe";
   else role = "image";
-  updateMetrics();
   return dg;
 }
 catch(e) {
@@ -590,7 +655,9 @@ function getCompositeMeasurement(attribute, unit, showUnit)
   var values = [];
   for (i = 0; i<4; i++)
   { 
-    values.push( Math.max(0,frameUnitHandler.getValueAs(Number(document.getElementById(attribute + sides[i] + "Input").value ),unit)));
+    if (document.getElementById(attribute + sides[i] + "Input"))
+      values.push( Math.max(0,frameUnitHandler.getValueAs(Number(document.getElementById(attribute + sides[i] + "Input").value ),unit)));
+    else values.push(0);
   }
   if (values[1] == values[3])
   {
@@ -621,8 +688,10 @@ function getSingleMeasurement(attribute, which, unit, showUnit)
     }
   }
   if (i < 0) return;
-  value = Math.max(0,frameUnitHandler.getValueAs(Number(document.getElementById(attribute + sides[i] + "Input").value ),unit));
-  if (showUnit) value = value + unit;
+  if (document.getElementById(attribute + sides[i] + "Input")) {
+    value = Math.max(0,frameUnitHandler.getValueAs(Number(document.getElementById(attribute + sides[i] + "Input").value ),unit));
+    if (showUnit) value = value + unit;
+  }
   return value;
 }
 
@@ -750,39 +819,27 @@ function setStyleAttributeByID( id, att, value)
 
 // called when one of these is clicked: inline, display, float
 
-function placementChanged()
+function locationChanged()
 {
-  var broadcaster = document.getElementById("floatingPlacement");
-  var bEnableInlineOffset = false;
+  var floatBroadcaster = document.getElementById("floatEnabled");
+  var inlineOffsetBroadcaster = document.getElementById("inlineOffsetEnabled");
   var bEnableWrapfig = true;
   var bEnableFloats = false;
+  var currentLocation = document.getElementById("locationList").value;
+  if (currentLocation === "unspecified")
+    floatBroadcaster.removeAttribute("disabled");
+  else
+    floatBroadcaster.setAttribute("disabled", "true");
+  if (currentLocation === "inline") 
+    inlineOffsetBroadcaster.removeAttribute("disabled");
+  else
+    inlineOffsetBroadcaster.setAttribute("disabled", "true");
 
-  if (document.getElementById('float') && document.getElementById('float').selected)
-  {
-    theValue = "false";
-    broadcaster.setAttribute("disabled",theValue);
-    bEnableWrapfig = false;
-    bEnableFloats = true;
-    enableFloatOptions();
-  }
-  else if (document.getElementById('display').selected)
-  {
-    setAlignment(0);
-    updateDiagram("margin");
-  } 
-  else if (document.getElementById('inline').selected)
-  {
-    updateDiagram("margin");
-    bEnableInlineOffset = true;
-  }
-  showDisableControlsByID(["frameInlineOffsetLabel","frameInlineOffsetInput"], bEnableInlineOffset);
-  showDisableControlsByID(["hereLeftRadio","hereRightRadio", "hereInsideRadio", "hereOutsideRadio", "hereFullWidthRadio"], !bEnableInlineOffset);
-  showDisableControlsByID(["placeForceHereCheck","placeHereCheck", "placeFloatsCheck", 
-                           "placeFloatsCheck", "placeTopCheck", "placeBottomCheck"], bEnableFloats);
 }
 
 function enableFloatOptions(radiogroup)
 {
+  return;
   var broadcaster = document.getElementById("wrapOption");
   var theValue = "true";
   var position;
@@ -805,6 +862,7 @@ function enableFloatOptions(radiogroup)
 
 function enableFloating( )
 {
+  return;
   var broadcaster = document.getElementById("floatingPlacement");
   var theValue = "true";
   var bEnableInlineOffset = false;
@@ -931,13 +989,13 @@ function setTextValueAttributes()
     for (j=0; j < arr2.length; j++)
     {
       textbox = document.getElementById(arr1[i]+arr2[j]+"Input");
-      if (textbox.value != null) textbox.setAttribute("value",textbox.value);
+      if (textbox && textbox.value != null) textbox.setAttribute("value",textbox.value);
     }
   }
   for (k=0; k < arr3.length; k++)
   {
     textbox = document.getElementById(arr3[k]+"Input");
-    if (textbox.value != null) textbox.setAttribute("value",textbox.value);
+    if (textbox && textbox.value != null) textbox.setAttribute("value",textbox.value);
   }
 }
 
@@ -951,15 +1009,22 @@ function isValid()
   return true;
 }
 
-// If there is a frame around the contents, then frameNode is the msiFrame.
-// If there is no frame, then frameNode == contentsNode, and attributes set on either one will
-// be set on contentsNode, actually.
+function isEnabled(element) 
+{
+  if (!element) return false;
+  return(!element.hasAttribute("disabled"));
+}
 
-function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when dimsonly, put only the dimensions in the style attribute of contentsNode.
-// this is the case for images in an msiframe
+/*If there is a frame around the contents, then frameNode is the msiFrame.
+If there is no frame, then frameNode == contentsNode, and attributes set on either one will
+be set on contentsNode.
+*/
+function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) 
+/*when dimsonly, put only the dimensions in the style attribute of contentsNode.
+this is the case for images in an msiframe
+*/
 {
   var rot;
-//  var editor = msiGetEditor(Dg.editorElement);
   if (frameNode.tagName == "msiframe") dimsonly = true;
   setTextValueAttributes();
   metrics.unit = frameUnitHandler.currentUnit;
@@ -980,114 +1045,105 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     rot = Dg.rotationList.value;
     if (rot ==="rot0")
     {
-      msiEditorEnsureElementAttribute(contentsNode, "rotation", null, editor);  //this will remove the "rotation" attribute
+      msiEditorEnsureElementAttribute(contentsNode, "rotation", null, editor);  
+       //this will remove the "rotation" attribute
     }
     else
     {
       msiEditorEnsureElementAttribute(contentsNode, "rotation", rot, editor);
     }
   }
-  //frameNode.setAttribute("req", "ragged2e");
   msiRequirePackage(Dg.editorElement, "ragged2e", null);
 
   var inlineOffsetNum = getInlineOffset("px");  //returns 0 unless inline position is chosen!
-  // if (gFrameModeImage) {
-    var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
-    msiEditorEnsureElementAttribute(frameNode, "sidemargin", sidemargin, editor);
-    var topmargin = getSingleMeasurement("margin", "Top", metrics.unit, false);
-    msiEditorEnsureElementAttribute(frameNode, "topmargin", topmargin, editor);
-    var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
-     msiEditorEnsureElementAttribute(frameNode, "overhang", overhang, editor);
-    var marginArray = [];
-    marginArray[0] = frameUnitHandler.getValueAs(topmargin,"px");
-    marginArray[2] = marginArray[0];
-    if (inlineOffsetNum > 0)
-      marginArray[2] += inlineOffsetNum;
-    if (position == 1) //left
-    {
-      if (overhang < 0) marginArray[3] = -frameUnitHandler.getValueAs(overhang,"px");
-      else
-      {
-        marginArray[3] = 0;
-      }
-      marginArray[1] = frameUnitHandler.getValueAs(sidemargin,"px");
-    }
-    else if (position == 2) // right
-    {
-      if (overhang < 0) marginArray[1] = -frameUnitHandler.getValueAs(overhang,"px");
-      else
-      {
-        marginArray[1] = 0;
-      }
-      marginArray[3] = frameUnitHandler.getValueAs(sidemargin,"px");
-    }
+  var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
+  msiEditorEnsureElementAttribute(frameNode, "sidemargin", sidemargin, editor);
+  var topmargin = getSingleMeasurement("margin", "Top", metrics.unit, false);
+  msiEditorEnsureElementAttribute(frameNode, "topmargin", topmargin, editor);
+  var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
+   msiEditorEnsureElementAttribute(frameNode, "overhang", overhang, editor);
+  var marginArray = [];
+  marginArray[0] = frameUnitHandler.getValueAs(topmargin,"px");
+  marginArray[2] = marginArray[0];
+  if (inlineOffsetNum > 0)
+    marginArray[2] += inlineOffsetNum;
+  if (position == 1) //left
+  {
+    if (overhang < 0) marginArray[3] = -frameUnitHandler.getValueAs(overhang,"px");
     else
     {
-      marginArray[1] = marginArray[3] = 0;
+      marginArray[3] = 0;
     }
-    setStyleAttributeOnNode(frameNode, "margin", marginArray.join("px ")+"px", editor);
- //  }
- //  else 
-  // {
- //    var style = "";
- //    if (inlineOffsetNum > 0)
- //    {
- //      style = getSingleMeasurement("margin", "Top", "px", true);
- //      style += " " + getSingleMeasurement("margin", "Right", "px", true);
- //      var bottomMargin = getSingleMeasurement("margin", "Bottom", "px", false);
- //      style += " " + String( Number(bottomMargin) + inlineOffsetNum ) + "px ";
- //      style += getSingleMeasurement("margin", "Left", "px", true);
- //    }
- //    else
- //      style = getCompositeMeasurement("margin","px", true);
- //    setStyleAttributeOnNode(frameNode, "margin", style, editor);
- //    msiEditorEnsureElementAttribute(frameNode, "margin", getCompositeMeasurement("margin", metrics.unit, false), editor);
-  // }  
-  gFrameModeImage = true;
+    marginArray[1] = frameUnitHandler.getValueAs(sidemargin,"px");
+  }
+  else if (position == 2) // right
+  {
+    if (overhang < 0) marginArray[1] = -frameUnitHandler.getValueAs(overhang,"px");
+    else
+    {
+      marginArray[1] = 0;
+    }
+    marginArray[3] = frameUnitHandler.getValueAs(sidemargin,"px");
+  }
+  else
+  {
+    marginArray[1] = marginArray[3] = 0;
+  }
+  setStyleAttributeOnNode(frameNode, "margin", marginArray.join("px ")+"px", editor);
+  // gFrameModeImage = true;
   if (gFrameModeImage) {
     var borderwidth = getSingleMeasurement(borderAtt, "Left", metrics.unit, false);
-    msiEditorEnsureElementAttribute(contentsNode, "borderw", borderwidth, editor);
+    msiEditorEnsureElementAttribute(frameNode, "borderw", borderwidth, editor);
   }
   else {
-    msiEditorEnsureElementAttribute(contentsNode, "borderw", getCompositeMeasurement("border",metrics.unit, false), editor);
+    msiEditorEnsureElementAttribute(frameNode, "borderw", getCompositeMeasurement("border",metrics.unit, false), editor);
   }
   if (gFrameModeImage) {
     var padding = getSingleMeasurement("padding", "Left", metrics.unit, false);
-    msiEditorEnsureElementAttribute(contentsNode, "padding", padding, editor);
+    msiEditorEnsureElementAttribute(frameNode, "padding", padding, editor);
   }
-  else{
-    msiEditorEnsureElementAttribute(contentsNode, "padding", getCompositeMeasurement("padding",metrics.unit, false), editor);
+  else {
+    msiEditorEnsureElementAttribute(frameNode, "padding", getCompositeMeasurement("padding",metrics.unit, false), editor);
   }
-  if (Dg.autoHeightCheck.checked)
+  if (Dg.autoHeightCheck && Dg.autoHeightCheck.checked)
   {
-    if (gFrameModeImage){
+    // if (gFrameModeImage){
       msiEditorEnsureElementAttribute(contentsNode, heightAtt, null, editor);
-    }
-    else{
-      msiEditorEnsureElementAttribute(contentsNode, heightAtt, "0", editor);
-    }
+    // }
+    // else{
+    //   msiEditorEnsureElementAttribute(contentsNode, heightAtt, "0", editor);
+    // }
   }
   else{
-    msiEditorEnsureElementAttribute(contentsNode, heightAtt, Dg.frameHeightInput.value, editor);
+    if (Dg.frameHeightInput)
+      msiEditorEnsureElementAttribute(contentsNode, heightAtt, Dg.frameHeightInput.value, editor);
   }
-  if ((Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked)
+  if ((Dg.autoWidthCheck && Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked)
   {
-    if (gFrameModeImage){
-      msiEditorEnsureElementAttribute(contentsNode, widthAtt, null, editor);
-    }
-    else{
-      msiEditorEnsureElementAttribute(contentsNode, widthAtt, "0", editor);
-      contentsNode.setAttribute(widthAtt,0);
-    }
+    // if (gFrameModeImage){
+      msiEditorEnsureElementAttribute(contentsNode, widthAtt, null, editor) || 0;
+    // }
+    // else{
+    //   msiEditorEnsureElementAttribute(contentsNode, widthAtt, "0", editor);
+    //   contentsNode.setAttribute(widthAtt,0);
+    // }
   }
   else{
-    msiEditorEnsureElementAttribute(contentsNode, widthAtt, Dg.frameWidthInput.value, editor);
-    contentsNode.setAttribute(widthAtt,Dg.frameWidthInput.value);
+    if (Dg.frameWidthInput) {
+      msiEditorEnsureElementAttribute(contentsNode, widthAtt, Dg.frameWidthInput.value, editor);
+      contentsNode.setAttribute(widthAtt,Dg.frameWidthInput.value);
+    }
   }
-  var pos;
-  if (document.getElementById("placementRadioGroup")) pos = document.getElementById("placementRadioGroup").selectedItem;
-  var posid = (pos && pos.getAttribute("id")) || "";
-  msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
+  var pos = null;
+  if (isEnabled(document.getElementById("locationList"))) 
+  {
+    if (document.getElementById("locationList")) pos = document.getElementById("locationList").selectedItem;
+    var posid = (pos && pos.getAttribute("id")) || "";
+    msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
+  }
+  if (document.getElementById("locationList")) pos = document.getElementById("locationList").selectedItem;
+  var posid = (pos && pos.getAttribute("id")) || null;
+  if (posid) msiEditorEnsureElementAttribute(frameNode, "pos", pos.value, editor);
   var bgcolor = Dg.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   var theColor = (arr && arr.length > 1) ? arr[1] : "";
@@ -1101,24 +1157,16 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
   msiRequirePackage(Dg.editorElement, "xcolor", "");
   msiEditorEnsureElementAttribute(frameNode, "textalignment", Dg.textAlignment.value, editor);
   setStyleAttributeOnNode(frameNode, "text-align", Dg.textAlignment.value, editor);
-  if (posid === "display" && Dg.wrapOptionRadioGroup){
-    msiEditorEnsureElementAttribute(frameNode, "wrapOption", Dg.wrapOptionRadioGroup.value, editor);
-  }
-
 //RWA - The display attribute should be set by a CSS rule rather than on the individual item's style. (So that, for instance,
 //      the override for graphics with captions will take effect. See baselatex.css.)
-//  if (document.getElementById("inline").selected)
-//    setStyleAttributeOnNode(frameNode, "display", "inline-block");
-//  else setStyleAttributeOnNode(frameNode, "display", "block");
-  // some experimentation here.
-  if (posid !=='inline') {
+  if (posid && posid !=='inline') {
      msiRequirePackage(Dg.editorElement, "boxedminipage", "");
   }
   else
   {
-    if (inlineOffsetNum != 0)
+    if (isEnabled(Dg.frameInlineOffsetInput) && inlineOffsetNum != 0)
     {
-      inlineOffset = Number(Dg.inlineOffsetInput.value);
+      inlineOffset = Number(Dg.frameInlineOffsetInput.value);
       var inlineOffsetStr = String(inlineOffset);
       msiEditorEnsureElementAttribute(frameNode, "inlineOffset", inlineOffsetStr, editor);
       inlineOffsetStr = String(-inlineOffset) + frameUnitHandler.currentUnit;
@@ -1132,68 +1180,66 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
       removeStyleAttributeFamilyOnNode(frameNode, "bottom", editor);
     }
   }
-  if (posid === "float")
+  if (isEnabled(document.getElementById("floatList")) && document.getElementById("floatList").value != "")
   {
-    var placeLocation="";
+    var floatPosition="";
     var isHere = false;
     var needsWrapfig = false;
-    if (Dg.placeForceHereCheck && Dg.placeForceHereCheck.checked) {
-      placeLocation += "H";
+    if (Dg.ltxfloat_forceHere && Dg.ltxfloat_forceHere.hasAttribute("checked")) {
+      floatPosition += "H";
       isHere = true;
     } 
-    if (Dg.placeHereCheck && Dg.placeHereCheck.checked) {
-      placeLocation += "h";
+    if (Dg.ltxfloat_here && Dg.ltxfloat_here.hasAttribute("checked")) {
+      floatPosition += "h";
       isHere = true;
     }
-    if (Dg.placeFloatsCheck && Dg.placeFloatsCheck.checked) {
-      placeLocation += "p";
+    if (Dg.ltxfloat_pageOfFloats && Dg.ltxfloat_pageOfFloats.hasAttribute("checked")) {
+      floatPosition += "p";
     }
-    if (Dg.placeTopCheck &&  Dg.placeTopCheck.checked) { 
-      placeLocation += "t";
+    if (Dg.ltxfloat_topPage &&  Dg.ltxfloat_topPage.hasAttribute("checked")) { 
+      floatPosition += "t";
     } 
-    if (Dg.placeBottomCheck && Dg.placeBottomCheck.checked) {
-      placeLocation += "b";
+    if (Dg.ltxfloat_bottomPage && Dg.ltxfloat_bottomPage.hasAttribute("checked")) {
+      floatPosition += "b";
     }
-    msiEditorEnsureElementAttribute(frameNode, "placeLocation", placeLocation, editor);
-    if (isHere && Dg.wrapOptionRadioGroup)
-    {
-      var floatparam = document.getElementById("wrapOptionRadioGroup").selectedItem.value;
-      if (floatparam != "full") {
-        msiRequirePackage(Dg.editorElement, "wrapfig","");
-      }
-      if (placeLocation.indexOf("H") >= 0) {
-        msiRequirePackage(Dg.editorElement,"float","");
-      }
-      var floatshort = floatparam.slice(0,1);
-      msiEditorEnsureElementAttribute(frameNode, "placement",floatshort, editor);
+    msiEditorEnsureElementAttribute(frameNode, "ltxfloat", floatPosition, editor);
+  } else frameNode.removeAttribute("ltxfloat");
+  if (isEnabled(Dg.locationList))
+  {
+    var locationParam = Dg.locationList.value;
+    if (locationParam && "LIRO".indexOf(locationParam) >= 0) {
+      msiRequirePackage(Dg.editorElement, "wrapfig","");
+    }
+    // if (locationParam.indexOf("H") >= 0) {
+    //   msiRequirePackage(Dg.editorElement,"float","");
+    // }
+    var locationShort = locationParam.slice(0,1);
+    msiEditorEnsureElementAttribute(frameNode, "pos", locationShort, editor);
+    needsWrapfig = true;
+    if (locationParam == "I" || locationParam == "L") locationParam = "left";
+    else if (locationParam == "O" || locationParam=="R") locationParam = "right";
+    else {
+      locationParam = "none";
       needsWrapfig = true;
-      if (floatparam == "I" || floatparam == "L") floatparam = "left";
-      else if (floatparam == "O" || floatparam=="R") floatparam = "right";
-      else {
-        floatparam = "none";
-        needsWrapfig = true;
-      }
-      setStyleAttributeOnNode(frameNode, "float", floatparam, editor);
-      if (floatparam == "right") side = "Right";
-      else if (floatparam == "left") side = "Left";
-      else side = null;
-      if (needsWrapfig) {
-        msiEditorEnsureElementAttribute(frameNode, "req", "wrapfig", "");  
-      }
-      if (!gFrameModeImage)
-      {
-        if (side){
-          msiEditorEnsureElementAttribute(frameNode, "overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false), editor);
-        }
+    }
+    setStyleAttributeOnNode(frameNode, "float", locationParam, editor);
+    if (locationParam == "right") side = "Right";
+    else if (locationParam == "left") side = "Left";
+    else side = null;
+    if (needsWrapfig) {
+      msiEditorEnsureElementAttribute(frameNode, "req", "wrapfig", "");  
+    }
+    if (!gFrameModeImage)
+    {
+      if (side){
+        msiEditorEnsureElementAttribute(frameNode, "overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false), editor);
       }
     }
   }
   else 
   {
     removeStyleAttributeFamilyOnNode(frameNode, "float", editor);
-    var fp;
-    if (document.getElementById("wrapOptionRadioGroup")) fp = document.getElementById("wrapOptionRadioGroup").value;
-    if (posid == "display" || (posid == "float" && (float==null || float=="full")))
+    if (posid == "ll_center")
     {
       setStyleAttributeOnNode(frameNode, "margin-left","auto", editor);
       setStyleAttributeOnNode(frameNode, "margin-right","auto", editor);
@@ -1221,7 +1267,7 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly) // when d
     removeStyleAttributeFamilyOnNode(contentsNode, "height", editor);
   }
   // if (frameNode.hasAttribute(heightAtt) && Number(frameNode.getAttribute(heightAtt))!= 0 ) {
-  if ( !(document.getElementById("autoHeight").checked) && Number(frameNode.getAttribute(heightAtt))!= 0 ) {
+  if ( document.getElementById("autoHeight") && !(document.getElementById("autoHeight").checked) && Number(frameNode.getAttribute(heightAtt))!= 0 ) {
     setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(frameNode.getAttribute(heightAtt),"px") + "px", editor);
   }
   else {
@@ -1280,8 +1326,8 @@ function getInlineOffset(whichUnit)
 {
   if (!whichUnit)
     whichUnit = frameUnitHandler.currentUnit;
-  if (Dg.placementRadioGroup.selectedIndex == 0)  //inline
-    return frameUnitHandler.getValueAs(Dg.inlineOffsetInput.value, whichUnit);
+  if (Dg.locationList.value === 'inline')
+    return frameUnitHandler.getValueAs(Dg.frameInlineOffsetInput.value, whichUnit);
   return 0;
 }
 
@@ -1303,7 +1349,7 @@ function checkAutoDimens(checkBox, textboxId)
   if (checkBox.checked && Dg.constrainCheckbox && !Dg.constrainCheckbox.checked){
     Dg.constrainCheckbox.checked = true;
   }
-  document.getElementById(textboxId).value = "0";
+//  document.getElementById(textboxId).value = "0";
   setDisabled(checkBox, textboxId);
 }
 
@@ -1332,7 +1378,7 @@ function constrainProportions( srcID, destID, event )
 
   if (gFrameModeImage)
   {
-    if (gActualWidth && gActualHeight &&
+    if (gActualWidth && gActualHeight && Dg.constrainCheckbox &&
         ((Dg.constrainCheckbox.checked && !Dg.constrainCheckbox.disabled) || destElement.hasAttribute("disabled")))
     {
   //  // double-check that neither width nor height is in percent mode; bail if so!
@@ -1365,6 +1411,7 @@ function constrainProportions( srcID, destID, event )
 
 function doDimensionEnabling()
 {
+  return;
   // Enabled only if "Custom" is selected, or actualsize is not enabled
   var enable = (document.getElementById("custom").selected) || !hasNaturalSize;
   if (enable) {
@@ -1407,4 +1454,35 @@ function setActualSize()
   }
 //  Dg.unitList.selectedIndex = 0;
   doDimensionEnabling();
+}
+
+function floatPropertyChanged() {
+  var floatList = document.getElementById("floatList");
+  var none = floatList.value === "";
+  var menuitems = floatList.getElementsByTagName("menuitem");
+  var i;
+  var item;
+  if (none) {
+    for (i = 0; i < menuitems.length; i++)
+    {
+      item = menuitems.item(i);
+      if (item.value != "") {
+        item.removeAttribute("checked");
+      }
+    }
+    document.getElementById("locationEnabled").removeAttribute("disabled");
+  }
+  else {
+    document.getElementById("locationEnabled").setAttribute("disabled", "true");
+    document.getElementById("floatlistNone").removeAttribute("checked");
+  }
+}
+
+function captionPropertyChanged() {
+  var captionLoc = document.getElementById("captionLocation"),value;
+  if (captionLoc === "none") {
+    document.getElementById("keyEnabled").setAttribute("disabled", "true");
+  } else {
+    document.getElementById("keyEnabled").removeAttribute("disabled");
+  }
 }

@@ -6,12 +6,9 @@
 <?xml-stylesheet href="chrome://global/skin/form.css" type="text/css"?>
 #include ../productname.inc
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Minipage.dtd">
- <!-- JLF - localization pass 7/2/2012-->
 <overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       xmlns:html="http://www.w3.org/1999/xhtml">
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/conteƒnt/msiEditorUtilities.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 #include ../editorkeys.inc
 
@@ -24,18 +21,21 @@
       control   = "frameUnitMenulist"
       accesskey = "&unitLabel.accesskey;"
       value     = "&unitLabel.label;" />
-    <hbox> <menulist id = "frameUnitMenulist" style="width: 8em"
-      persist="value selectedIndex" value="pt" selectedIndex="2"
-      oncommand  = "setNewUnit(this);" >
-      <menupopup id = "unitList">
-        <menuitem value="in" label="&inch;"/>        <!--menuitem value="pct" label="percent"/  -->
-        <menuitem value="cm" label="&centimeter;"/>
-        <menuitem value="pt" label="&point;"/>
-        <menuitem value="mm" label="&millimeter;"/>
-        <menuitem value="pc" label="&pica;"/>
-        <menuitem value="px" label="&pixel;"/>
-      </menupopup>
-    </menulist><spacer flex = "1"/></hbox>
+    <hbox> 
+      <menulist id = "frameUnitMenulist" style="width: 8em"
+        persist="value selectedIndex" value="pt" selectedIndex="2"
+        oncommand="setNewUnit(this);" >
+        <menupopup id = "unitList">
+          <menuitem value="in" label="&inch;"/>        <!--menuitem value="pct" label="percent"/  -->
+          <menuitem value="cm" label="&centimeter;"/>
+          <menuitem value="pt" label="&point;"/>
+          <menuitem value="mm" label="&millimeter;"/>
+          <menuitem value="pc" label="&pica;"/>
+          <menuitem value="px" label="&pixel;"/>
+        </menupopup>
+      </menulist>
+      <spacer flex = "1"/>
+    </hbox>
 <!--     hidden text boxes to take advantage of unithandler auto unit changes
  -->    
     <textbox
@@ -55,7 +55,6 @@
       type      = "number"
       increment = "1"
       decimalplaces = "0"/>
-      
     <hbox>
       <vbox id="illustration" pack="start" width="220px" 
          outer="false"> <!-- the illustration -->
@@ -69,12 +68,12 @@
           <hbox id="leftpage" height="1px" class="page" style="background-color:rgb(90,90,90); width: 0px"/> 
             <!-- width is max(0,leftmargin) (scaled, of course)
             or, when on the right, it is 100 - contentwidth - mx -px -bx -->
-          <box id="leftspace" class="page" style="background-color:transparent;" width="0px"/>
+          <hbox id="leftspace" class="page" style="background-color:transparent;" width="0px"/>
           <vbox id="frame" style="border-style:solid; border-width:0"><!-- border and padding are those of the frame-->
             <vbox id="content" style="" /><!-- height and width are those of the content of the frame --> 
           </vbox>
-          <box id="rightspace" class="page" style="background-color:transparent;" width="0px"/>
-          <box id="rightpage" class="page" style="background-color:rgb(90,90,90);" width="150px"/><!-- width is 150 - contentwidth - mx - px - bx,
+          <vbox id="rightspace" class="page" style="background-color:transparent;" width="0px"/>
+          <vbox id="rightpage" class="page" style="background-color:rgb(90,90,90);" width="150px"/><!-- width is 150 - contentwidth - mx - px - bx,
             where mx is the sum of the left and right margins, and px and bx are the same for the padding and border -->
         </hbox >
         <hbox>
@@ -107,7 +106,7 @@
         <groupbox>
           <caption label="&Minipage.textAlignmentLabel;"/>      
           <hbox align="center">
-            <menulist id = "textAlignment" value = "L" style="width: 10em" persist="value">
+            <menulist id = "textAlignment" value = "left" style="width: 10em" persist="value">
               <menupopup id = "alignments" >
                 <menuitem value="center" label="&Minipage.textCentered;"/>
                 <menuitem value="justify" label="&Minipage.textJustified;"/>
@@ -273,142 +272,181 @@
   <vbox id = "msiFrameSize">
     <groupbox>
       <caption label="&sizeTab.label;"/>
-      <!-- hbox observes="hasNaturalSize" -->
-        <radiogroup id="sizeRadio">
-          <hbox flex="1" visibility = "hidden">
-            <vbox >
-              <radio id="actual" value="actual" observes="hasNaturalSize" label="&sizeTab.actualSize;" oncommand="setActualSize();" radioGroup="sizeRadio"/>
-            </vbox>
-            <vbox >
-              <radio id="custom" value="custom" observes="hasNaturalSize" label="&sizeTab.custom;" oncommand="doDimensionEnabling();" radioGroup="sizeRadio"/>
-            </vbox>
-            <vbox >
-              <checkbox observes="hasNaturalSize" id="constrainCheckbox"    oncommand ="ToggleConstrain();"
-                  checked="false" persist = "checked" label="Preserve aspect ratio"/>
-            </vbox>
-          </hbox>
-        </radiogroup>
-        <hbox>
-          <grid>
-            <columns>
-              <column/>
-              <column/>
-              <column width="16px"/>
-              <column/>
-              <column/>
-            </columns>
-            <rows>
-              <row>
-                <label value="&width;" id="frameWidthLabel"/>
-                <hbox>
-                <label id="autoWidthLabel" observes="hasNaturalSize" value="&sizeTab.auto;" control="autoWidth"/></hbox>
-                <spacer/>
-                <label value="&height;" id="frameHeightLabel"/>
-                <hbox>
-                <label observes="hasNaturalSize" value="&sizeTab.auto;" control="autoHeight"/></hbox>
-              </row>
-              <row observes="customSize">
-                <textbox
-                  id        = "frameWidthInput"
-                  type      = "number"
-                  onkeypress= ""
-                  onchange  = "frameWidthChanged(this, event);"
-                  onload    = "frameWidthChanged(this, event);"
-                  value     = ""
-                  style     = "width: 1.0in;"
-                  persist   = "value"/>
-                  <hbox>
-                <checkbox id="autoWidth" observes="hasNaturalSize" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/></hbox>
-                <spacer/>
-                <textbox
-                  id        = "frameHeightInput"
-                  type      = "number"
-                  onkeypress= ""
-                  onchange  = "frameHeightChanged(this, event);"
-                  onload    = "frameHeightChanged(this, event);"
-                  value     = ""
-                  style     = "width: 1.0in;"   
-                  persist   =  "value"/>
-                  <hbox>
+      <radiogroup id="sizeRadio">
+        <hbox flex="1" visibility = "hidden">
+          <vbox >
+            <radio id="actual" value="actual" observes="hasNaturalSize" label="&sizeTab.actualSize;" oncommand="setActualSize();" radioGroup="sizeRadio"/>
+          </vbox>
+          <vbox >
+            <radio id="custom" value="custom" observes="hasNaturalSize" label="&sizeTab.custom;" oncommand="doDimensionEnabling();" radioGroup="sizeRadio"/>
+          </vbox>
+          <vbox >
+            <checkbox observes="hasNaturalSize" id="constrainCheckbox"    oncommand ="ToggleConstrain();"
+                checked="false" persist = "checked" label="Preserve aspect ratio"/>
+          </vbox>
+        </hbox>
+      </radiogroup>
+      <hbox>
+        <grid>
+          <columns>
+            <column/>
+            <column/>
+            <column width="16px"/>
+            <column/>
+            <column/>
+          </columns>
+          <rows>
+            <row>
+              <label value="&width;" id="frameWidthLabel"/>
+              <hbox>
+                <label id="autoWidthLabel" observes="hasNaturalSize" value="&sizeTab.auto;" control="autoWidth"/>
+              </hbox>
+              <spacer/>
+              <label value="&height;" id="frameHeightLabel"/>
+              <hbox>
+                <label observes="hasNaturalSize" value="&sizeTab.auto;" control="autoHeight"/>
+              </hbox>
+            </row>
+            <row observes="customSize">
+              <textbox
+                id        = "frameWidthInput"
+                type      = "number"
+                onkeypress= ""
+                onchange  = "frameWidthChanged(this, event);"
+                onload    = "frameWidthChanged(this, event);"
+                value     = ""
+                style     = "width: 1.0in;"
+                persist   = "value"/>
+              <hbox>
+                <checkbox id="autoWidth" observes="hasNaturalSize" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
+              </hbox>
+              <spacer/>
+              <textbox
+                id        = "frameHeightInput"
+                type      = "number"
+                onkeypress= ""
+                onchange  = "frameHeightChanged(this, event);"
+                onload    = "frameHeightChanged(this, event);"
+                value     = ""
+                style     = "width: 1.0in;"   
+                persist   =  "value"/>
+              <hbox>
                 <checkbox id="autoHeight"  
                   observes="hasNaturalSize"            
-                  oncommand="checkAutoDimens(this, 'frameHeightInput');"/></hbox>
-              </row>
-            </rows>
-          </grid>
-        </hbox>
+                  oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
+              </hbox>
+            </row>
+          </rows>
+        </grid>
+      </hbox>
 #ifndef PROD_SNB
-        <hbox id="rotate" align="center">
-          <label value="&sizeTab.rotateContents;"/>
-          <menulist id = "rotationList" value="rot0" persist="value">
-            <menupopup id = "rotationsList">
-              <menuitem value="rot0" label="&sizeTab.rotate0;"/>
-              <menuitem value="rot90" label="&sizeTab.rotate90;" />
-              <menuitem value="rot270" label="&sizeTab.rotate270;"/>
-            </menupopup>
-          </menulist>
-        </hbox>
+      <hbox id="rotate" align="center">
+        <label value="&sizeTab.rotateContents;"/>
+        <menulist id = "rotationList" value="rot0" persist="value">
+          <menupopup id = "rotationsList">
+            <menuitem value="rot0" label="&sizeTab.rotate0;"/>
+            <menuitem value="rot90" label="&sizeTab.rotate90;" />
+            <menuitem value="rot270" label="&sizeTab.rotate270;"/>
+          </menupopup>
+        </menulist>
+      </hbox>
 #endif
       <!-- /vbox -->
     </groupbox>
   </vbox>
-
-  <vbox id="msiPlacement">
-    <groupbox >
+  <vbox id="placementGroup">
+    <groupbox>
       <caption label="&Placementtab.label;"/>
-      <radiogroup id="placementRadioGroup" oncommand="placementChanged(this);" persist="value">
-      <hbox flex="1">
-        <vbox>
-          <radio id="inline" value="inline" class="medwidth" label="&inline;" radioGroup="placementRadioGroup" persist="selected" style="height: 40px"/>
-          <description value="&inlineOffset;" id="frameInlineOffsetLabel" class="medwidth"/>
-          <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" value = "0" min="-Infinity" persist = "value"/>
-        </vbox>
-        <vbox>
-          <radio id="display" selected="true" value="display" label="&display;" radioGroup="placementRadioGroup" persist="selected"/>
-        </vbox>
-#ifndef PROD_SNB
-        <vbox>
-          
-          
-          <vbox>
-            <checkbox id="placeForceHereCheck" label="&placement.forceHere;" observes="floatingPlacement" persist="checked"/>
-            <checkbox id="placeHereCheck" label="&placement.here;" observes="floatingPlacement" persist="checked"/>
-            <checkbox id="placeFloatsCheck" label="&placement.pageOfFloats;" observes="floatingPlacement" persist="checked"/>
-            <checkbox id="placeTopCheck" label="&placement.topPage;" observes="floatingPlacement" persist="checked"/>
-            <checkbox id="placeBottomCheck" label="&placement.bottomPage;" observes="floatingPlacement" persist="checked"/>
-          </vbox>
-        </vbox>
-#endif
-        <vbox>
-          <radiogroup id="wrapOptionRadioGroup" align="vertical" value="L" oncommand="enableFloatOptions(this);" persist="selectedIndex value">
-            <radio id="hereLeftRadio" label="&Minipage.descLeft;" value="L" observes="wrapOption" />
-            <radio id="hereRightRadio" label="&Minipage.descRight;" value="R" observes="wrapOption"/>
-#ifndef PROD_SNB
-            <radio id="hereInsideRadio" label="&placement.hereInside;" value="I" observes="wrapOption" />
-            <radio id="hereOutsideRadio" label="&placement.hereOutside;" value="O" observes="wrapOption" />
-#endif
-            <radio id="hereFullWidthRadio" label="&placement.hereFull;" value="full" observes="wrapOption" />
-          </radiogroup>
-        </vbox>
-      </hbox>
-      </radiogroup>
+      <grid style="width: 140px">
+        <columns>
+          <column flex="1"/>
+          <column flex="1" />
+        </columns>
+        <rows>
+          <row>
+            <label  observes="locationEnabled" control="locationList">Location</label>
+            <menulist id="locationList" observes="locationEnabled" oncommand="locationChanged()" >
+              <menupopup>
+                <menuitem  id="unspecified" label="&unspecified;" selected="true" value="unspecified"/>
+                <menuitem  id="inline" label="&inline.label;"  value="inline"/>
+                <menuitem  id="center" label="&display.label;" value="display"/>
+                <menuseparator/>
+                <menuitem  id="left" label="&left.label;" value="L"/>
+                <menuitem  id="inside" label="&inside.label;" value="I"/>
+                <menuitem  id="right" label="&right.label;" value="R"/>
+                <menuitem  id="outside" label="&outside.label;" value="O"/>
+              </menupopup>
+            </menulist>                 
+          </row>
+          <row>
+            <description value="&inlineOffset;" id="frameInlineOffsetLabel" observes="inlineOffsetEnabled"/>
+            <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" value = "0" min="-Infinity" persist = "value" observes="inlineOffsetEnabled"/>
+          </row>
+          <row flex="1">
+            <label control="floatList" observes="floatEnabled">Float</label>
+            <menulist id="floatList" observes="floatEnabled" oncommand="floatPropertyChanged();">
+              <menupopup selectedIndex="0">
+                <menuitem id="floatlistNone" label="&none;"  type="checkbox" value=""/>
+                <menuitem id="ltxfloat_forceHere" type="checkbox" label="&placement.forceHere;" value="H"/>
+                <menuitem id="ltxfloat_here" type="checkbox" label="&placement.here;" value="h"/>
+                <menuitem id="ltxfloat_pageOfFloats" type="checkbox" label="&placement.pageOfFloats;" value="p"/>
+                <menuitem id="ltxfloat_topPage" type="checkbox" label="&placement.topPage;" value="t"/>
+                <menuitem id="ltxfloat_bottomPage" type="checkbox" label="&placement.bottomPage;" value="b"/>
+              </menupopup>
+            </menulist> 
+          </row>
+          <row flex="1">
+            <label control="baselineList">Baseline
+            </label>
+            <menulist id="baselineList" oncommand="TablePropertyChanged('TableBaselineRadioGroup');">
+              <menupopup>
+                <menuitem label="&baseline.label;" value="baseline"/>
+                <menuitem label="&sameastoprow.label;"  value="top"/>
+                <menuitem label="&atverticalcenter.label;" value="middle"/>
+                <menuitem label="&sameasbottomrow.label;" value="bottom"/>
+              </menupopup>
+            </menulist>
+          </row>
+          <row flex="1">
+            <label observes = "captionEnabled">Caption</label>
+            <menulist id="captionLocation" oncommand="captionPropertyChanged();" tooltiptext="&Caption.tooltip;" observes="captionEnabled" >
+              <menupopup>
+                <menuitem label="&none;" value="none"/>
+                <menuitem label="&above;" value="top"/>
+                <menuitem label="&below;" value="bottom"/>
+              </menupopup>
+            </menulist>
+          </row>
+          <row flex="1">
+            <label id="keyInputLabel" observes="keyEnabled" value="&Key.label;"/>
+            <hbox>
+              <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+                completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
+                tooltiptext="&EnterNewName.tooltip;" observes="keyEnabled" />
+                <!-- ontextentered="" / -->
+            </hbox>
+          </row>
+        </rows>
+      </grid>
     </groupbox>
-    <broadcasterset>
-      <broadcaster id="floatingPlacement" disabled="true"/>
-#ifdef PROD_SNB
-      <broadcaster id="wrapOption" disabled="false"/>
-#endif
-      <broadcaster id="wrapOption" disabled="true"/>
-      <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notedata.width - sidemargin -->
-      <broadcaster id="noteheight" height="40"/>
-      <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->        
-      <broadcaster id="sidemargin" width="8"/>         
-      <broadcaster id="topmargin" height="8"/>
-      <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>
-      <broadcaster id="hasNaturalSize"/>  
-      <broadcaster id="role-image" hidden="false"/>      
-      <broadcaster id="customSize" disabled="true"/>      
-    </broadcasterset>
-  </vbox>
+  </vbox>  
+  <broadcasterset id="frameoverlayBroadcasters">
+    <broadcaster id="floatEnabled" disabled="true"/>
+    <broadcaster id="inlineOffsetEnabled" disabled="true"/>
+    <broadcaster id="locationEnabled" />
+    <broadcaster id="captionEnabled" />
+    <broadcaster id="keyEnabled" disabled="true" />
+
+    <broadcaster id="wrapOption" disabled="true"/>
+    <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notedata.width - sidemargin -->
+    <broadcaster id="noteheight" height="40"/>
+    <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->        
+    <broadcaster id="sidemargin" width="8"/>         
+    <broadcaster id="topmargin" height="8"/>
+    <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>
+    <broadcaster id="hasNaturalSize"/>  
+    <broadcaster id="role-image" hidden="false"/>      
+    <broadcaster id="customSize" disabled="true"/>      
+  </broadcasterset>
 
 </overlay>

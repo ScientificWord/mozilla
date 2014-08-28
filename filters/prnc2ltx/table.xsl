@@ -56,7 +56,7 @@
     <xsl:choose>
     <xsl:when test="@width &gt; 0">
       <xsl:call-template name="convertSizeSpecsToMM">
-        <xsl:with-param name="theSpec" select="concat(@width,@unit)" />
+        <xsl:with-param name="theSpec" select="concat(@width,@units)" />
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>0</xsl:otherwise>
@@ -200,22 +200,22 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
-    <xsl:when test="@pos='float' or @pos='inside' or @pos='outside' or ./html:caption">
+    <xsl:when test="@pos or ./html:caption">
       <xsl:value-of select="$newline"/> 
       <xsl:text>\begin{wraptable}{</xsl:text>
       <xsl:choose>
-        <xsl:when test="not(substring(@placement,1,1))">
+        <xsl:when test="not(substring(@pos,1,1))">
           <xsl:text>r</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="substring(@placement,1,1)"/>
+          <xsl:value-of select="substring(@pos,1,1)"/>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text>}{</xsl:text>
       <xsl:choose>
         <xsl:when test="@width">
           <xsl:value-of select="@width"/>
-          <xsl:value-of select="@unit"/>
+          <xsl:value-of select="@units"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:text xml:space="preserve">\linewidth </xsl:text>

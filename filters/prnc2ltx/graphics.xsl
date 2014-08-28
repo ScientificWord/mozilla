@@ -39,9 +39,9 @@
       <xsl:value-of select="$theUnit"/>
       <xsl:text>,</xsl:text>
     </xsl:if>
-    <xsl:if test="@imageHeight and (number(@imageHeight) != 0)">
+    <xsl:if test="@ltx_height and (number(@ltx_height) != 0)">
       <xsl:text> totalheight=</xsl:text>
-      <xsl:value-of select="@imageHeight"/>
+      <xsl:value-of select="@ltx_height"/>
       <xsl:value-of select="$theUnit"/>
       <xsl:text>,</xsl:text>
     </xsl:if>
@@ -173,7 +173,7 @@
   <xsl:variable name="movieOptions"><xsl:call-template name="getMovieOptions"/></xsl:variable>
   \includemovie<xsl:if test="$movieOptions and (string-length(normalize-space($movieOptions)) &gt; 0)">[<xsl:value-of select="$movieOptions"/>]</xsl:if>
   {<xsl:if test="number($imageWidth) != 0"><xsl:value-of select="$imageWidth"/>
-<xsl:value-of select="$theUnit"/></xsl:if>}{<xsl:if test="@imageHeight and (number(@imageHeight) != 0)"><xsl:value-of select="@imageHeight"/>
+<xsl:value-of select="$theUnit"/></xsl:if>}{<xsl:if test="@ltx_height and (number(@ltx_height) != 0)"><xsl:value-of select="@ltx_height"/>
 <xsl:value-of select="$theUnit"/></xsl:if>}
 {<xsl:call-template name="getSourceName"><xsl:with-param name="needExtension" select="1" /><xsl:with-param name="fullPath" select="1" /></xsl:call-template>}
   </xsl:template>
@@ -282,15 +282,15 @@
           <xsl:when test="@pos='inline'">
             <xsl:apply-templates select="." mode="contents"/>
           </xsl:when>
-          <xsl:when test="@pos='display'">
+          <xsl:when test="@pos='center'">
             <xsl:value-of select="$newline"/>
             <xsl:text>\begin{center}</xsl:text>
             <xsl:apply-templates select="." mode="contents"/>
             <xsl:text>\end{center}</xsl:text>
           </xsl:when>
-          <xsl:when test="@pos='float'">
+          <xsl:when test="@pos='l' or @pos='L' or @pos='r' or @pos='R' or @pos='i' or @pos='I' or @pos='o' or @pos='O' or @pos='center'">
             <xsl:choose>
-              <xsl:when test="@placement='f'">
+              <xsl:when test="@pos='center'">
                  <xsl:value-of select="$newline"/>
                  <xsl:text>\begin{figure}\begin{center}</xsl:text>
               </xsl:when>
@@ -298,11 +298,11 @@
                 <xsl:value-of select="$newline"/>
                 <xsl:text>\begin{wrapfigure}{</xsl:text>
                 <xsl:choose>
-                   <xsl:when test="not(substring(@placement,1,1))">
+                   <xsl:when test="not(substring(@pos,1,1))">
                      <xsl:text>O</xsl:text>
                    </xsl:when>
                    <xsl:otherwise>
-                     <xsl:value-of select="substring(@placement,1,1)"/>
+                     <xsl:value-of select="substring(@pos,1,1)"/>
                    </xsl:otherwise>
                 </xsl:choose>
                 <xsl:text>}</xsl:text>
@@ -316,7 +316,7 @@
               </xsl:otherwise>
             </xsl:choose>
             <xsl:if test="@sidemargin &gt; 0">
-              <xsl:text>columnsep=</xsl:text>
+              <xsl:text>\columnsep=</xsl:text>
               <xsl:value-of select="@sidemargin"/>
               <xsl:call-template name="unit"/>
               <xsl:text> </xsl:text>
@@ -330,7 +330,7 @@
           <!-- xsl:if test="@captionabove"><xsl:apply-templates/> </xsl:if -->
           <xsl:apply-templates select="." mode="contents"/>
           <xsl:choose>
-            <xsl:when test="@placement='f'">
+            <xsl:when test="@pos='center'">
                <xsl:text>\end{center}\end{figure}</xsl:text>
             </xsl:when>
             <xsl:otherwise>
@@ -359,11 +359,11 @@
     <xsl:param name="objNode"/>
     <xsl:param name="noZero" select="false"/>
     <xsl:choose>
-      <xsl:when test="$objNode/@imageWidth and (number($objNode/@imageWidth) != 0)">
-        <xsl:value-of select="number($objNode/@imageWidth)"/>
+      <xsl:when test="$objNode/@ltx_width and (number($objNode/@ltx_width) != 0)">
+        <xsl:value-of select="number($objNode/@ltx_width)"/>
       </xsl:when>
-      <xsl:when test="$objNode/@imageHeight and (number($objNode/@imageHeight) != 0) and $objNode/@naturalHeight and (number($objNode/@naturalHeight) != 0) and $objNode/@naturalWidth">
-        <xsl:value-of select="(number($objNode/@naturalWidth) * number($objNode/@imageHeight)) div number($objNode/@naturalHeight)"/>
+      <xsl:when test="$objNode/@ltx_height and (number($objNode/@ltx_height) != 0) and $objNode/@naturalHeight and (number($objNode/@naturalHeight) != 0) and $objNode/@naturalWidth">
+        <xsl:value-of select="(number($objNode/@naturalWidth) * number($objNode/@ltx_height)) div number($objNode/@naturalHeight)"/>
       </xsl:when>
       <xsl:when test="$objNode/@width and (number($objNode/@width) != 0)">
         <xsl:value-of select="number($objNode/@width)"/>
