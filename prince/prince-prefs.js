@@ -84,7 +84,7 @@ pref("swp.defaultGraphicsVSize", "2.0");
 pref("swp.defaultGraphicsHSize", "3.0");
 pref("swp.defaultGraphicsInlineOffset", "0.0");
 pref("swp.defaultGraphicsSizeUnits", "in");
-pref("swp.defaultGraphicsPlacement", "display");
+pref("swp.defaultGraphicsPlacement", "center");
 pref("swp.defaultGraphicsFloatLocation.forceHere", false);
 pref("swp.defaultGraphicsFloatLocation.here", true);
 pref("swp.defaultGraphicsFloatLocation.pageFloats", false);
