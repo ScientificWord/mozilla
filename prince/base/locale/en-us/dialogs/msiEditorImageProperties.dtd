@@ -55,7 +55,7 @@
 <!ENTITY title.label "Caption">
 <!ENTITY title.accesskey "C">
 <!ENTITY title.tooltip "The image's caption, if any">
-<!ENTITY altText.label "Alternate text:">
+<!ENTITY altText.label "Alternate text">
 <!ENTITY altText.accesskey "A">
 <!ENTITY altTextEditField.tooltip "Type text to display in place of the image">
 
