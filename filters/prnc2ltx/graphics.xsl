@@ -328,8 +328,7 @@
               <xsl:text> </xsl:text>
             </xsl:if>
           <!-- xsl:if test="@captionabove"><xsl:apply-templates/> </xsl:if -->
-          <xsl:apply-templates select="." mode="contents"/>
-          <xsl:choose>
+          <xsl:apply-templates select="." mode="contents"/><xsl:choose>
             <xsl:when test="@pos='center'">
                <xsl:text>\end{center}\end{figure}</xsl:text>
             </xsl:when>
@@ -345,16 +344,8 @@
     </xsl:if>
   </xsl:template>
 
-<!-- BBM: I'm commenting this out since \caption is inserted in frame.xsl, and we are seeing double captions.
-  <xsl:template match="html:caption">
-    <xsl:text>\caption{</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>}</xsl:text>
-  </xsl:template>
- -->
-  <xsl:template match="html:caption" mode="caption">
-    <xsl:apply-templates/>
-  </xsl:template>
+ 
+
   <xsl:template name="getImageWidth">
     <xsl:param name="objNode"/>
     <xsl:param name="noZero" select="false"/>
