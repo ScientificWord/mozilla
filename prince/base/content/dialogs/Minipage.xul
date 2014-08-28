@@ -41,7 +41,7 @@
     <tabpanels>
       <tabpanel orient="vertical">
         <vbox id="msiFrameSize"/>
-        <vbox id="msiPlacement"/>
+        <vbox id="placementGroup"/>
       </tabpanel>
       <vbox id="msiFrame"/>
     </tabpanels>
