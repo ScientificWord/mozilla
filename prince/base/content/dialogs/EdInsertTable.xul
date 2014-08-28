@@ -30,6 +30,7 @@
 <?xml-stylesheet href="chrome://prince/skin/EdInsertTable.css" type="text/css"?>
 
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/EdInsertTable.dtd">
 
@@ -47,6 +48,7 @@
 >
 
   <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
@@ -60,8 +62,7 @@
     <tabs id="tabpanel-tabs">
       <tab id="QuicklyTab" label="&quicklyTab.label;"/>
       <tab id="TableTab" label="&tableTab.label;"/>
-      <tab id="msiPlacementTab" label="&Placementtab.label;" />
-      <tab id="tableLabelingTab" label="&tableLabelingTab.label;"/>
+      <tab id="msiFrameTab"/>
       <tab id="CellsTab" label="&cellsTab.label;"/>
       <tab id="LinesTab" label="&linesTab.label;"/>
     </tabs>
@@ -178,6 +179,7 @@
                   </row>
                 </rows>
               </grid>
+              <vbox id="units" />
             </groupbox>
             <groupbox flex="1"><caption label="&widthEditField.label;"/>
               <checkbox id="autoWidthCheckbox" label="&autoWidth.label;" accesskey="&autoWidth.accesskey;" checked="true" persist="checked" oncommand="checkEnableWidthControls();"/>
@@ -187,92 +189,14 @@
               <hbox><label>&currentUnits;&#x00a0;</label><label observes="currentunits"/></hbox>        
             </groupbox>
             <groupbox orient="vertical" align="start">
-              <caption label="&tableLocation.label;"/>
-              <grid>
-                <columns>
-                  <column/>
-                  <column/>
-                </columns>
-                <rows>
-                  <row align="center">
-                    <label value="&Tablebaseline.label;" control="baselineList"/>
-                    <menulist id="baselineList" oncommand="TablePropertyChanged('TableBaselineRadioGroup');">
-                      <menupopup>
-                        <menuitem label="&baseline.label;" value="baseline"/>
-                        <menuitem label="&sameastoprow.label;"  value="top"/>
-                        <menuitem label="&atverticalcenter.label;" value="middle"/>
-                        <menuitem label="&sameasbottomrow.label;" value="bottom"/>
-                      </menupopup>
-                    </menulist>
-                  </row>                  
-                </rows>
-              </grid> 
+              <vbox id="placementGroup"/>
             </groupbox>
           </hbox>
         </vbox>
       </tabpanel>
-      <tabpanel id="msiPlacementTab">
-        <groupbox>
-          <caption label="&Placementtab.label;"/>
-          <radiogroup id="placementRadioGroup" oncommand="placementChanged(this);" persist="value">
-          <hbox flex="1">
-            <vbox>
-              <radio id="inline" value="inline" class="medwidth" label="&inline;" radioGroup="placementRadioGroup" persist="selected"/>
-              <description value="&inlineOffset;" id="frameInlineOffsetLabel" class="medwidth"/>
-              <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" value = "0" min="-Infinity" persist = "value"/>
-            </vbox>
-            <vbox>
-            <radio id="display" selected="true" value="display" label="&display;" radioGroup="placementRadioGroup" persist="selected"/>
-          </vbox>
-#ifndef PROD_SNB
-          <vbox>
-            <radio id="float" value="float" label="&floating;" radioGroup="placementRadioGroup" oncommand="enableFloatOptions(this);"
-               persist="selected"/>
-            <vbox>
-              <checkbox id="placeForceHereCheck" label="&placement.forceHere;" observes="floatingPlacement" persist="checked"/>
-              <checkbox id="placeHereCheck" label="&placement.here;" observes="floatingPlacement" persist="checked"/>
-              <checkbox id="placeFloatsCheck" label="&placement.pageOfFloats;" observes="floatingPlacement" persist="checked"/>
-              <checkbox id="placeTopCheck" label="&placement.topPage;" observes="floatingPlacement" persist="checked"/>
-              <checkbox id="placeBottomCheck" label="&placement.bottomPage;" observes="floatingPlacement" persist="checked"/>
-            </vbox>
-          </vbox>
-          <vbox>
-            <radiogroup id="herePlacementRadioGroup" align="vertical" value="L" oncommand="enableFloatOptions(this);" persist="selectedIndex value">
-              <radio id="hereLeftRadio" label="&Minipage.descLeft;" value="L" observes="herePlacement" />
-              <radio id="hereRightRadio" label="&Minipage.descRight;" value="R" observes="herePlacement"/>
-              <radio id="hereInsideRadio" label="&placement.hereInside;" value="I" observes="herePlacement" />
-              <radio id="hereOutsideRadio" label="&placement.hereOutside;" value="O" observes="herePlacement" />
-              <radio id="hereFullWidthRadio" label="&placement.hereFull;" value="full" observes="herePlacement" />
-            </radiogroup>
-          </vbox>
-#endif
-        </hbox>
-      </radiogroup>
-      </groupbox>
-  </tabpanel>
-
+      <vbox id="msiFrame" />
       
-      <vbox id="tabelLabelingTab">
-<!--         <spacer flex="1"/>
- -->    <hbox>
-          <label value="&tableKey.label;"/>
-          <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-            completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-            tooltiptext="&EnterNewName.tooltip;" />
-            <!-- ontextentered="" / -->
-        </hbox>
-        <groupbox>
-          <caption id="captionPlacementLabel" label="&captionPlacement.label;"/>
-          <radiogroup id="captionPlacementRadioGroup" orient="horizontal">
-            <radio id="captionNoneRadio" label="&None.label;" value="none"/>
-            <radio id="captionAboveRadio" label="&Above.label;" value="above"/>
-            <radio id="captionBelowRadio" label="&Below.label;" value="below"/>
-          </radiogroup>
-        </groupbox>
-        <label value="&AltText.label;"/>
-        <textbox id="altTextInput"/>
-      </vbox>
-      <!-- Cells PANEL -->
+ <!-- Cells PANEL -->
       <tabpanel id ="tableprops">
         <vbox><hbox>
           <vbox>

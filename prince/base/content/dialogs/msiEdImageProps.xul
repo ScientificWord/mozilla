@@ -77,10 +77,9 @@
   <!--script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
- 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
-
+  <broadcasterset id="frameoverlayBroadcasters"/>
   <popupset id="msiEditorContentContextSet"/>
 
   <commandset id="tasksCommands">
@@ -117,68 +116,33 @@
  
   <tabbox id="TabBox">
     <tabs flex="1">
-  <!--tab id="imageInputTab" label="&imageInputTab.label;"/ -->
       <tab id="imagePictureTab" label="&imagePictureTab.label;"/>
       <tab id="msiPlacementTab"/>
       <tab id="msiFrameTab"/>
-      <tab id="imageLabelingTab" label="&imageLabelingTab.label;"/>
       <tab observes="isVideo" id="videoPropertiesTab" label="&videoTab.label;"/>
-      <!-- tab id="imageLinkTab" label="&imageLinkTab.label;"/ -->
     </tabs>
     <tabpanels>
       <vbox id="imagePicture">
-<!--         <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
-          <radio id = "importRadio"
-            label   = "&importButton.label;"
-            accesskey = "&importButton.accesskey;"
-            oncommand = "SetImport(true);"/>
-          <radio id = "referenceRadio"
-            label   = "&referenceButton.label;"
-            accesskey = "&referenceButton.accesskey;"
-            oncommand = "SetImport(false);"/>
-        </radiogroup>
- -->        
-        <label control = "srcInput"
-          value = "&locationEditField.label;"
-          accesskey="&locationEditField.accesskey;"
-          tooltiptext="&locationEditField.tooltip;"
-          />
-          <textbox id="srcInput" oninput="chooseImgFile(false);" tabindex="1" class="uri-element"/>
-        <hbox>
-<!--           <checkbox
-            id  = "makeRelativeCheckbox"
-            for = "srcInput"
-            label = "&MakeRelativeCheckbox.label;"
-            tabindex="2"/>
- -->          
-          <!-- from EdDialogOverlay.xul -->
+        <groupbox>
+          <caption control = "srcInput"
+            label = "&locationEditField.label;"
+            accesskey="&locationEditField.accesskey;"
+            tooltiptext="&locationEditField.tooltip;" />
+          <textbox id="srcInput" onchange="chooseImgFile(false);" tabindex="1" class="uri-element"/>
           <msibutton label = "&chooseButton.label;" accesskey = "&chooseFile.accesskey;" id="ChooseImgFile"  oncommand="chooseImgFile(true);" tabindex="3"/>
-        </hbox>
+        </groupbox>
         <vbox id="msiFrameSize"/>
         <spacer flex="1"/>
-      </vbox>
-      <vbox id="msiPlacement"/>
-      <vbox id="msiFrame"/>
-      <vbox id="imageLabeling">
-<!--         <spacer flex="1"/>
- -->    <hbox>
-          <label value="&imageKey.label;"/>
-          <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-            completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-            tooltiptext="&EnterNewName.tooltip;" />
-            <!-- ontextentered="" / -->
-        </hbox>
         <groupbox>
-          <caption id="captionPlacementLabel" label="&captionPlacement.label;"/>
-          <radiogroup id="captionPlacementRadioGroup" orient="horizontal">
-            <radio id="captionNoneRadio" label="&None.label;" value="none"/>
-            <radio id="captionAboveRadio" label="&Above.label;" value="top"/>
-            <radio id="captionBelowRadio" label="&Below.label;" value="bottom"/>
-          </radiogroup>
+          <caption label="&AltText.label;"/>
+          <textbox id="altTextInput"/>
         </groupbox>
-        <label value="&AltText.label;"/>
-        <textbox id="altTextInput"/>
+
       </vbox>
+      <vbox id="msiPlacement">
+        <vbox id="placementGroup"/>
+      </vbox>
+      <vbox id="msiFrame"/>
       <vbox id="videoProperties" observes="isVideo">
         <checkbox id="vidAutoplayCheckbox" label="&videoAutoplay.label;" checked="false" persist="checked"/>
         <checkbox id="vidShowControlsCheckbox" label="&videoShowControls.label;" checked="false" persist="checked"/>
