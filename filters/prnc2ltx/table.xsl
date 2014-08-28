@@ -21,15 +21,14 @@
 
   <xsl:variable name="topCaption">
     <xsl:choose>
-      <xsl:when test="html:caption[not(@align)]">1</xsl:when>
-      <xsl:when test="html:caption[@align='top']">1</xsl:when>
+      <xsl:when test="@captionloc='top'">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
 
   <xsl:variable name="bottomCaption">
     <xsl:choose>
-      <xsl:when test="html:caption[@align='bottom']">1</xsl:when>
+      <xsl:when test="@captionloc='bottom'">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -177,6 +176,15 @@
   </xsl:if>
 </xsl:template>    
 
+
+<xsl:template match="html:table/html:caption">
+  <xsl:text>\caption{</xsl:text><xsl:apply-templates/><xsl:text>}</xsl:text>
+  <xsl:if test="@key"><xsl:text>\label{</xsl:text><xsl:value-of select="@key"/><xsl:text>}</xsl:text></xsl:if>
+</xsl:template>
+
+
+
+
 <xsl:template match="html:table|mml:table">
   <xsl:choose>
     <xsl:when test="@pos='center'">
@@ -218,7 +226,7 @@
           <xsl:value-of select="@units"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text xml:space="preserve">\linewidth </xsl:text>
+          <xsl:text xml:space="preserve">0pt </xsl:text>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text>}</xsl:text>
