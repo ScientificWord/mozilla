@@ -5915,12 +5915,12 @@ function msiGetEnclosingTableOrMatrixDimensions(editorElement, nodeInTable)
   else if (theMatrix)
   {
     for (var ix = 0; ix < theMatrix.childNodes.length; ++ix)
-    {
-      ++nRow;
+    {     
       switch(msiGetBaseNodeName(theMatrix.childNodes[ix]))
       {
         case "mtr":
         case "mlabeledtr":
+          ++nRow;
           currRow = theMatrix.childNodes[ix];
           nCol = 0;
           for (var jx = 0; jx < currRow.childNodes.length; ++jx)
