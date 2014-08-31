@@ -9,7 +9,7 @@
 function deleteSelection()
 {
   // dump("\ndeleteSelection();\n");
-  // msiGoDoCommand('cmd_delete');
+  msiGoDoCommand('cmd_delete');
 }
 
 function getCurrentEditorElement()
