@@ -1057,8 +1057,8 @@ msiEditingManager::InsertMathname(nsIEditor* editor,
     res = msiUtils::CreateMathname(editor, mathname, flags, PR_FALSE, mathmlElement);
     if (NS_SUCCEEDED(res) && mathmlElement) {
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
-      res = ed->GetNodeLocation(mathmlElement, address_of(parent), &parentOffset);
-      res = selection->Collapse(parent, parentOffset+1);
+      // res = ed->GetNodeLocation(mathmlElement, address_of(parent), &parentOffset);
+      // res = selection->Collapse(parent, parentOffset+1);
     }
   }
   return res;
