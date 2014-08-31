@@ -3284,7 +3284,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
       inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
     {
       selection->Collapse(node, offset);
-//      selection->Extend(originalNode,originalOffset);
+      selection->Extend(originalNode,originalOffset);
       if (action == msiIAutosub::ACTION_SUBSTITUTE)
         InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
       else if (action == msiIAutosub::ACTION_EXECUTE)
@@ -3299,9 +3299,9 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
 #endif
         }
       }
-      // selection->Collapse(node, offset);
-      selection->Extend(originalNode, originalOffset);
-      res = DeleteSelection(nsIEditor::eNone);
+//      selection->Collapse(node, offset);
+//      selection->Extend(originalNode, originalOffset);
+//      res = DeleteSelection(nsIEditor::eNone);
     }
 //    SetInComplexTransaction(PR_FALSE);
   }
