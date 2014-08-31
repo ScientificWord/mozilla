@@ -37,7 +37,7 @@ verbatim bodyText {
 }
 numberedListItem, 
 bulletListItem,
-descriptionListItem.
+descriptionListItem,
 bibitem {
        margin-left: 2em;
        padding-left: 1em;
