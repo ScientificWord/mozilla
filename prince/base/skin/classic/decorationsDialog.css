@@ -27,7 +27,8 @@ msibutton[group] > .button-box {
 
 
 msibutton[group] mml|*[class="phantomBox"], *[class="phantomBox"] {
-  border: 1px dotted black;
+  border: 1px dotted rgb(160,160,160);
+  padding: 10px;
 }
 
 #decorationsAboveButtonGroup box.fbox,
@@ -63,3 +64,5 @@ msibutton[group] mml|*[class="phantomBox"], *[class="phantomBox"] {
   margin: 1px;
   -moz-border-radius: 100%
 }
+
+
