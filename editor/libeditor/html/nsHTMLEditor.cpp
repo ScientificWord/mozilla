@@ -824,7 +824,7 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
   }
   mtagListManager->GetRealClassOfTag(strTagName, namespaceAtom, strTagClass);
   if (strTagClass.EqualsLiteral("paratag")||strTagClass.EqualsLiteral("structtag")||
-      strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")||strTagClass.EqualsLiteral("frontmtag"))
+      strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")|| strTagClass.EqualsLiteral("listparenttag") || strTagClass.EqualsLiteral("frontmtag"))
   {
    *aIsBlock = PR_TRUE;
    return NS_OK;
