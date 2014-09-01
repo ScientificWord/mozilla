@@ -1231,7 +1231,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("nexttag"), str);
   PRBool isEmpty = PR_FALSE;
   nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
-  if (editor) editor->IsEmptyNode( *secondNode, &isEmpty, PR_TRUE, PR_TRUE);
+  if (editor) editor->IsEmptyNode( *secondNode, &isEmpty, PR_TRUE, PR_FALSE);
 	if (isEmpty) isEmpty = HasNoSignificantTags( *secondNode, this);
   if (str.EqualsLiteral("none") && isEmpty)
   {

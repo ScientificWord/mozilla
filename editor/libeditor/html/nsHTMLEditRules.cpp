@@ -3746,6 +3746,7 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
 
 PRBool cleanUpTempInput(nsHTMLEditor * ed, nsCOMPtr<nsIDOMNode>& startNode, PRInt32 & startOffset)
 {
+  if (!startNode) return PR_FALSE;
   PRUint16 nodeType;
   nsCOMPtr<nsIDOMNode> node = startNode;
   nsCOMPtr<nsIDOMElement> elt;
@@ -3807,6 +3808,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
 // in mathematics it removes empty tags and if necessary inserts an input box. It needs to do this 
 // before calling the computation engine for cleanup
 {
+  if (!startNode) return;
   nsresult res = NS_OK;
   PRBool done =  PR_FALSE;
   PRBool isEmpty = PR_FALSE;
