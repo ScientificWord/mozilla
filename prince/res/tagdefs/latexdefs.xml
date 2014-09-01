@@ -264,6 +264,7 @@
           <description>Bullet list item</description>
           <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
+          <inclusion>true</inclusion>
           <initialcontents>
             <bulletListItem>
               <bodyText><cursor/><br/></bodyText>
@@ -518,7 +519,6 @@
               <bodyText><cursor/><br/></bodyText>
             </note>
           </initialcontents>
-          <inclusion>true</inclusion>
         </tag>
 				<tag nm="assertion">
           <level>*</level>
