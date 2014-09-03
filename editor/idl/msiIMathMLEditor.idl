@@ -141,7 +141,10 @@ interface msiIMathMLEditor : nsISupports
                        in PRInt32 whichCol);
 
   void removeDisplay(in nsIDOMNode firstNode, in nsIDOMNode secondNode);                      
-                        
+
+  void checkListItems(in nsIDOMNode leftBlock, in nsIDOMNode rightBlock, out nsIDOMNode newLeftBlock,
+    out nsIDOMNode newRightBlock);
+                       
   
   [noscript] void CreateReplaceTransaction(in nsIDOMNode newKid,
                                            in nsIDOMNode oldKid,
