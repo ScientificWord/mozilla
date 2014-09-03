@@ -173,13 +173,12 @@
 
 <!-- int-like bigops -->
 
-      <xsl:when test="$mo-nom='&#x222B;'
-      or              $mo-nom='&#x222C;'
-      or              $mo-nom='&#x222D;'
-      or              $mo-nom='&#xE378;'
-      or              $mo-nom='&#x222B;&#x22EF;&#x222B;'
-      or              $mo-nom='&#x222E;'
-      ">
+      <xsl:when test="normalize-space(string($mo-nom))='&#x222B;'
+      or              normalize-space(string($mo-nom))='&#x222C;'
+      or              normalize-space(string($mo-nom))='&#x222D;'
+      or              normalize-space(string($mo-nom))='&#xE378;'
+      or              normalize-space(string($mo-nom))='&#x222B;&#x22EF;&#x222B;'
+      or              normalize-space(string($mo-nom))='&#x222E;' ">
         <xsl:choose>
           <xsl:when test="$attr-nom='movablelimits'">
 		    <xsl:text>false</xsl:text>
