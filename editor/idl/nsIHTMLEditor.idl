@@ -502,6 +502,8 @@ interface nsIHTMLEditor : nsISupports
   nsIDOMElement getElementOrParentByTagName(in AString aTagName,
                                             in nsIDOMNode aNode);
 
+  nsIDOMElement getElementOrParentByTagClass(in AString aClassName, in nsIDOMNode aNode);
+  
   /** 
    * Return an element only if it is the only node selected,
    *    such as an image, horizontal rule, etc.
