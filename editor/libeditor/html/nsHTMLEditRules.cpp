@@ -2210,6 +2210,24 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       aSelection->Collapse(visNode, visOffset);
       return res;
     }
+    NS_NAMED_LITERAL_STRING(listtag, "listtag");
+    res = mHTMLEditor->GetElementOrParentByTagClass(listtag, startNode, getter_AddRefs(anchorAncestor));
+    res = mHTMLEditor->GetElementOrParentByTagClass(listtag, visNode, getter_AddRefs(focusAncestor));
+    if (focusAncestor && (focusAncestor != anchorAncestor)) { // we have entered an listtag object; delete it instead of text
+      res = mHTMLEditor->RemoveContainer(focusAncestor);
+      *aHandled = PR_TRUE;
+      aSelection->Collapse(visNode, visOffset);
+      return res;
+    }
+    NS_NAMED_LITERAL_STRING(listparenttag, "listparenttag");
+    res = mHTMLEditor->GetElementOrParentByTagClass(listparenttag, startNode, getter_AddRefs(anchorAncestor));
+    res = mHTMLEditor->GetElementOrParentByTagClass(listparenttag, visNode, getter_AddRefs(focusAncestor));
+    if (focusAncestor && (focusAncestor != anchorAncestor)) { // we have entered an listparenttag object; delete it instead of text
+      res = mHTMLEditor->RemoveContainer(focusAncestor);
+      *aHandled = PR_TRUE;
+      aSelection->Collapse(visNode, visOffset);
+      return res;
+    }
 
 
     if (wsType==nsWSRunObject::eNormalWS)
@@ -2530,12 +2548,18 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         return NS_ERROR_UNEXPECTED;
       nsCOMPtr<msiIMathMLEditor> mathmlEd(do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor)));
       if (mathmlEd) {
-       mathmlEd->RemoveDisplay(leftParent, rightParent);
+        mathmlEd->RemoveDisplay(leftParent, rightParent);
+          // BBM: TODO: This might be the place to put in special code for list items, lists, ...
+        mathmlEd->CheckListItems(leftParent, rightParent, (nsIDOMNode**)address_of(leftParent), (nsIDOMNode**)address_of(rightParent));
+        // Checklistitems may replace leftParent and rightParent with list or listitem ancestors.
       }
 
       // now join them
-      nsCOMPtr<nsIDOMNode> selPointNode = startNode;
-      PRInt32 selPointOffset = startOffset;
+      // nsCOMPtr<nsIDOMNode> selPointNode = startNode;
+      // PRInt32 selPointOffset = startOffset;
+      nsCOMPtr<nsIDOMNode> selPointNode = rightParent;
+      PRInt32 selPointOffset = 0;
+
       {
         nsAutoTrackDOMPoint tracker(mHTMLEditor->mRangeUpdater, address_of(selPointNode), &selPointOffset);
         res = JoinBlocks(address_of(leftParent), address_of(rightParent), aCancel);
@@ -2568,7 +2592,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
   if (!endNode) return NS_ERROR_FAILURE;
 
   // figure out if the endpoints are in nodes that can be merged
-  // adjust surrounding whitespace in preperation to delete selection
+  // adjust surrounding whitespace in preparation to delete selection
   if (!bPlaintext)
   {
     nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
