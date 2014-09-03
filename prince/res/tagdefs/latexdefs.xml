@@ -265,6 +265,7 @@
           <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <inclusion>true</inclusion>
+          <htmllist>ul</htmllist>
           <initialcontents>
             <bulletListItem>
               <bodyText><cursor/><br/></bodyText>
