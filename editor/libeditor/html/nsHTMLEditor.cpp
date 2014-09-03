@@ -3818,6 +3818,104 @@ NODE_FOUND:
 }
 
 NS_IMETHODIMP
+nsHTMLEditor::GetElementOrParentByTagClass(const nsAString& aClassName, nsIDOMNode *aNode, nsIDOMElement** aReturn)
+{
+  if (aClassName.IsEmpty() || !aReturn )
+    return NS_ERROR_NULL_POINTER;
+
+  nsresult res = NS_OK;
+  nsCOMPtr<nsIAtom> namespaceAtom;
+  nsCOMPtr<nsIDOMNode> currentNode;
+  nsCOMPtr<msiITagListManager> tlm;
+  res = GetTagListManager(getter_AddRefs(tlm));
+  if (!tlm) return NS_ERROR_FAILURE;
+
+  if (aNode)
+    currentNode = aNode;
+  else
+  {
+    // If no node supplied, get it from anchor node of current selection
+    nsCOMPtr<nsISelection>selection;
+    res = GetSelection(getter_AddRefs(selection));
+    if (NS_FAILED(res)) return res;
+    if (!selection) return NS_ERROR_NULL_POINTER;
+
+    nsCOMPtr<nsIDOMNode> anchorNode;
+    res = selection->GetAnchorNode(getter_AddRefs(anchorNode));
+    if(NS_FAILED(res)) return res;
+    if (!anchorNode)  return NS_ERROR_FAILURE;
+
+    // Try to get the actual selected node
+    PRBool hasChildren = PR_FALSE;
+    anchorNode->HasChildNodes(&hasChildren);
+    if (hasChildren)
+    {
+      PRInt32 offset;
+      res = selection->GetAnchorOffset(&offset);
+      if(NS_FAILED(res)) return res;
+      currentNode = nsEditor::GetChildAt(anchorNode, offset);
+    }
+    // anchor node is probably a text node - just use that
+    if (!currentNode)
+      currentNode = anchorNode;
+  }
+
+  nsAutoString ClassName(aClassName);
+  nsAutoString tagName;
+  // default is null - no element found
+  *aReturn = nsnull;
+
+  nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMElement> currentElement;
+  PRBool bNodeFound = PR_FALSE;
+  nsAutoString currentClassName;
+  while (PR_TRUE)
+  {
+    currentElement = do_QueryInterface(currentNode);
+    if (currentElement) {      
+      res = currentElement->GetTagName(tagName);
+      res = tlm->GetRealClassOfTag(tagName, namespaceAtom, currentClassName);
+      if (currentClassName.Equals(ClassName))
+      {
+  NODE_FOUND:
+        bNodeFound = PR_TRUE;
+        break;
+      }
+    }
+      // Search up the parent chain
+    // We should never fail because of root test below, but lets be safe
+    // XXX: ERROR_HANDLING error return code lost
+    if (NS_FAILED(currentNode->GetParentNode(getter_AddRefs(parent))) || !parent)
+      break;
+
+    // Stop searching if parent is a body tag
+    nsAutoString parentTagName;
+    parent->GetNodeName(parentTagName);
+    // Note: Originally used IsRoot to stop at table cells,
+    //  but that's too messy when you are trying to find the parent table
+    //PRBool isRoot;
+    //if (NS_FAILED(IsRootTag(parentTagName, isRoot)) || isRoot)
+    if(parentTagName.EqualsLiteral("body"))
+      break;
+
+    currentNode = parent;
+  }
+  if (bNodeFound)
+  {
+    currentElement = do_QueryInterface(currentNode);
+    if (currentElement)
+    {
+      *aReturn = currentElement;
+      // Getters must addref
+      NS_ADDREF(*aReturn);
+    }
+  }
+  else res = NS_EDITOR_ELEMENT_NOT_FOUND;
+
+  return res;
+}
+
+NS_IMETHODIMP
 nsHTMLEditor::GetSelectedElement(const nsAString& aTagName, nsIDOMElement** aReturn)
 {
   if (!aReturn )

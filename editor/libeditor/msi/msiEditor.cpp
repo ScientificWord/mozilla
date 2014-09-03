@@ -2128,6 +2128,27 @@ msiEditor::RemoveDisplay( nsIDOMNode * focusNode, nsIDOMNode * anchorNode) {
   return rv;
 }
 
+NS_IMETHODIMP
+msiEditor::CheckListItems(nsIDOMNode * leftBlock, nsIDOMNode * rightBlock, nsIDOMNode ** newLeftBlock, nsIDOMNode ** newRightBlock)
+{
+  nsresult res;
+  *newLeftBlock = leftBlock;
+  *newRightBlock = rightBlock;
+  nsCOMPtr<nsIDOMElement> leftListItem;
+  nsCOMPtr<nsIDOMElement> rightListItem;
+  nsCOMPtr<nsIDOMElement> leftList;
+  nsCOMPtr<nsIDOMElement> rightList;
+  NS_NAMED_LITERAL_STRING(listitemtag, "listtag");
+  res = GetElementOrParentByTagClass(listitemtag, leftBlock, getter_AddRefs(leftListItem));
+  res = GetElementOrParentByTagClass(listitemtag, rightBlock, getter_AddRefs(rightListItem));
+  if (leftListItem && rightListItem && (leftListItem != rightListItem)) {
+    // we are spanning a list item. Join the list items instead of the paragraphs
+    *newLeftBlock = leftListItem;
+    *newRightBlock = rightListItem;
+  }
+  return NS_OK;
+}
+
 nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset, 
                                  PRBool selecting, PRBool & preventDefault)
 {
