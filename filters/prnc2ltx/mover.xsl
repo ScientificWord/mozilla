@@ -241,7 +241,7 @@
       </big-op-char>
 
       <movablelimits>
-        <xsl:if test="*[1][self::mml:mo]">
+        <xsl:if test="./*[1][mml:mo]">
         <xsl:choose>
           <xsl:when test="string-length(*[1][@movablelimits]) &gt; 0">
             <xsl:for-each select="*[1][self::mml:mo]">
@@ -262,7 +262,7 @@
     <xsl:variable name="mover-structure" select="exsl:node-set($mover-structure.tr)"/>
 
     <xsl:variable name="limits">
-      <xsl:if test="*[1][self::mml:mo]">
+      <xsl:if test="./*[1][mml:mo]">
       <xsl:choose>
         <xsl:when test="$mover-structure/movablelimits='false'">
           <xsl:text>\limits </xsl:text>
