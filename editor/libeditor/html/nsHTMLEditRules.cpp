@@ -2555,10 +2555,10 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       }
 
       // now join them
-      // nsCOMPtr<nsIDOMNode> selPointNode = startNode;
-      // PRInt32 selPointOffset = startOffset;
-      nsCOMPtr<nsIDOMNode> selPointNode = rightParent;
-      PRInt32 selPointOffset = 0;
+      nsCOMPtr<nsIDOMNode> selPointNode = startNode;
+      PRInt32 selPointOffset = startOffset;
+      // nsCOMPtr<nsIDOMNode> selPointNode = rightParent;
+      // PRInt32 selPointOffset = 0;
 
       {
         nsAutoTrackDOMPoint tracker(mHTMLEditor->mRangeUpdater, address_of(selPointNode), &selPointOffset);
