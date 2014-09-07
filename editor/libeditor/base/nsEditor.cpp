@@ -4694,7 +4694,7 @@ nsEditor::JoinNodeDeep(nsIDOMNode *aLeftNode,
   nsCOMPtr<nsIDOMNode> parentNode,tmp;
   nsresult res = NS_OK;
 
-  leftNodeToJoin->GetParentNode(getter_AddRefs(parentNode));
+  rightNodeToJoin->GetParentNode(getter_AddRefs(parentNode));
 
   while (leftNodeToJoin && rightNodeToJoin && parentNode &&
           NodesSameType(leftNodeToJoin, rightNodeToJoin))
@@ -4713,7 +4713,7 @@ nsEditor::JoinNodeDeep(nsIDOMNode *aLeftNode,
       if (NS_FAILED(res)) return res;
     }
 
-    *aOutJoinNode = leftNodeToJoin;
+    *aOutJoinNode = rightNodeToJoin;
     *outOffset = length;
 
     // do the join
