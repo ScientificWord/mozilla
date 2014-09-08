@@ -1191,7 +1191,7 @@ function initializeAllVCamObjects() {
       obj.ctx = window;
       if (!obj.id) {
         obj.id = findUnusedId("plot");
-        obj.setAttributeValue("id", obj.id); // BBM: unnecessary??
+        obj.setAttribute("id", obj.id); // BBM: unnecessary??
       }
       doVCamPreInitialize(obj.id);
     }
