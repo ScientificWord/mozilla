@@ -2314,7 +2314,7 @@ function insertGraph(siblingElement, graph, editorElement) {
     obj.id = findUnusedId("plot");
     obj.setAttribute("id", obj.id); // BBM: unnecessary??
   }
-  doVCamPreInitialize(obj.id);
+  doVCamPreInitialize(obj);
   editorElement.focus();
 }
 function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElement, selection) {
