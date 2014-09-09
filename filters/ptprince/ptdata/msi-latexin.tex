@@ -4166,27 +4166,6 @@
                     \if #1p3 \else \z@ \@preamerr 0\fi
   \fi  \fi  \fi  \fi  \fi  \fi
 \fi}
-\def\hline{%
-  \noalign{\ifnum0=`}\fi\hrule \@height \arrayrulewidth \futurelet
-   \reserved@a\@xhline}
-\def\@xhline{\ifx\reserved@a\hline
-               \vskip\doublerulesep
-               \vskip-\arrayrulewidth
-             \fi
-      \ifnum0=`{\fi}}
-\def\vline{\vrule \@width \arrayrulewidth}
-\def\cline#1{\@cline#1\@nil}
-\def\@cline#1-#2\@nil{%
-  \omit
-  \@multicnt#1%
-  \advance\@multispan\m@ne
-  \ifnum\@multicnt=\@ne\@firstofone{&\omit}\fi
-  \@multicnt#2%
-  \advance\@multicnt-#1%
-  \advance\@multispan\@ne
-  \leaders\hrule\@height\arrayrulewidth\hfill
-  \cr
-  \noalign{\vskip-\arrayrulewidth}}
 \def\multispan{\omit\@multispan}
 \def\@multispan#1{%
   \@multicnt#1\relax
