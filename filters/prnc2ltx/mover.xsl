@@ -88,7 +88,9 @@
       <xsl:with-param name="arg-num" select="3"/>
     </xsl:call-template>
 
-    <xsl:text>}</xsl:text>
+    <xsl:if test="$size='d' or $size='t'">
+      <xsl:text>}</xsl:text>
+    </xsl:if>
 
     <xsl:choose>
       <xsl:when test="$output-mode='SW-LaTeX'">
