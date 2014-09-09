@@ -1168,7 +1168,6 @@
 <xsl:template match="html:texb">
   <xsl:if test="not(@pre) or (@pre='0')" >
     <xsl:if test="@enc='1'">
-      <xsl:value-of select="$newline"/>
       <xsl:text>%TCIMACRO{\TeXButton{</xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text>}{</xsl:text>
