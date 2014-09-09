@@ -1082,43 +1082,13 @@ function insertSnapshot(object, snapshotpath) {
   }
 }
 
-function buildSnapshotFile(obj, abspath, res) {
-  var func = function(abspath, res) {
-      obj.makeSnapshot(abspath, res);
-    };
-  func(abspath, res);
-}
-
-function doSnapshot(objid) 
-{
-  try {
-    alert('Snapshot '+ objid);
-    callVCamMethod(objid, "makeSnapshot", '~/foo.png', [600]);
-    alert('done');
+function doMakeSnapshot(argarray) { //doc, obj, graph, editorElement) {
+  var obj = argarray[1];
+  var ready = obj['readyState'];
+  if (!ready && (ready != 2)) {
+    AlertWithTitle("Ooops", "ready is "+ready+", obj.id is "+obj.id+", this is "+this.title+".");
   }
-  catch(e) {
-    alert(e.message);
-  }
-}
-
-// function objectLoaded(obj) {
-//   var thisobj = obj;
-//   var retval = "start";
-//   try {
-//     (function() {
-//       retval = thisobj.readyState;
-//     }());  
-//     return retval;
-//   }
-//   catch (e) {
-//     alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", " + e.message);
-//   }
-// };
-
-function doMakeSnapshot(doc, obj, graph, editorElement) {
-  var val = obj['readyState'];
-  val = 2; // hack!!
-  if (val > 1) {
+//  if (ready > 1) {
     try {
       var path = makeSnapshotPath(obj);
       var abspath;
@@ -1127,6 +1097,9 @@ function doMakeSnapshot(doc, obj, graph, editorElement) {
       var res;
       var DOMGraph;
       var gslist;
+      var doc = argarray[0];
+      var graph = argarray[2];
+      var editorElement = argarray[3];
       var plotWrapper = obj.parentNode;
       try {
         prefs = GetPrefs();
@@ -1155,15 +1128,11 @@ function doMakeSnapshot(doc, obj, graph, editorElement) {
       if (oldsnapshot.exists()) oldsnapshot.remove(true);
       snapshotDir = snapshotDir.parent;
       if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
-      callVCamMethod(doc, obj.id, "makeSnapshot", abspath, [res]);
-      tryUntilSuccessful(100, 20, function() { return oldsnapshot.exists(); });
+      obj.VcMakeSnapshot(abspath, [res]);
       insertSnapshot(obj, abspath);
     } catch (e) {
-      alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", " + e.message);
+      alert("obj is "+ obj.id + ", readyState is " + obj['readyState'] + ", " + e.message + " this is "+this.title);
     }
-  } else {
-    alert("obj is "+ obj + ", readyState is " + obj['readyState'] + ", " + e.message);
-  }
 }
 
 function rebuildSnapshots(doc) {
@@ -1193,7 +1162,7 @@ function initializeAllVCamObjects() {
         obj.id = findUnusedId("plot");
         obj.setAttributeValue("id", obj.id); // BBM: unnecessary??
       }
-      doVCamPreInitialize(obj.id);
+      doVCamPreInitialize(obj);
     }
   }
 }
@@ -1259,7 +1228,7 @@ function doVCamCommandOnObject(obj, cmd, editorElement) {
       obj.cursorTool = "zoomOut";
       break;
     case "cmd_vcSnapshot":
-      doMakeSnapshot(doc, obj, null, editorElement);
+      obj.VcMakeSnapshot([doc, obj, null, editorElement]);
       break;
     case "cmd_vcAutoSpeed":
       dump("cmd_vcAutoSpeed not implemented");
@@ -1457,29 +1426,28 @@ function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
     
 }
 
-function findUnusedId( prefix ) {
-  var n = 1;
-  var theId = prefix + n.toString();
-  while (document.getElementById(theId)) {
-    theId = prefix + Math.round(Math.random()*1000);
-  }
-  return theId;
-}
 
-
-function doVCamPreInitialize(objid) {
+function doVCamPreInitialize(obj) {
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-  tryUntilSuccessful(200, 10, function() {
+  // we might want to wait here until we are sure the object is initialized.
+
+//  tryUntilSuccessful(200, 10, function() {
     var editorElement = msiGetActiveEditorElement();
-    var doc = editorElement.contentDocument;
-    var obj = doc.getElementById(objid);
     var editor = msiGetEditor(editorElement);
+    var doc = editorElement.contentDocument;
+    // AlertWithTitle("preinitialize "+ obj.toString());
     var domGraph = editor.getElementOrParentByTagName("graph", obj);
     var graph = new Graph();
     graph.extractGraphAttributes(domGraph);
     var plotWrapper = obj.parentNode;
     try {
 //      if (obj.addEvent && (obj.readyState === 2)) {
+        obj.VcMakeSnapshot = function (args) {
+          doMakeSnapshot.apply(this, args);
+        };
+        obj.VcAddEvent = function (args) {
+          obj.addEvent.call(this, args);
+        }
         callVCamMethod( doc, objid, "addEvent", "leftMouseDown", [onVCamMouseDown]);
         callVCamMethod( doc, objid, "addEvent", "leftMouseUp", [onVCamMouseUp]);
         callVCamMethod( doc, objid, "addEvent", "leftMouseDoubleClick", [onVCamDblClick]);
@@ -1491,25 +1459,17 @@ function doVCamPreInitialize(objid) {
         }
         queryVCamValues(obj, graph, domGraph);
         plotWrapper.wrappedObj = obj;
-        var callback;
-
-        callback = (function(_this) {
-          return function() {
-            return obj.readyState;
-          };
-        })(this);
-        obj["ReadyState"] = callback;
-
         obj["vcamStatus"] = "initialized";  //add a property so we know we've successfully initialized the VCam object
         return true;
-      }
+      
+    }
     catch (e) {
       msidump(e.message);
       obj.vcamStatus = "needRecreate";
-      return true;  //just to stop the repetition - this isn't going to succeed
+      return false;  //just to stop the repetition - this isn't going to succeed
     }
     return false;
-  });
+//  });
 }
 
 
@@ -1610,6 +1570,17 @@ function showAnimationTime(obj) {
 function dontSetAnimationTime() {
   return;
 }
+
+
+function findUnusedId( prefix ) {
+  var n = 1;
+  var theId = prefix + n.toString();
+  while (document.getElementById(theId)) {
+    theId = prefix + Math.round(Math.random()*1000);
+  }
+  return theId;
+}
+
 
 function initComputeLogger(engine) {
   dump("initComputeLogger with " + engine + "\n");
@@ -3502,6 +3473,7 @@ function doEditPlot() {
 //reliable state.
 function ensureVCamPreinitForPlot(graphNode, editorElement)
 {
+  return;
   var editor = msiGetEditor(editorElement);
   var objElement = graphNode.getElementsByTagName("object");
   var theGraph;
