@@ -5933,6 +5933,10 @@ function msiGetEnclosingTableOrMatrixDimensions(editorElement, nodeInTable)
                 else
                   ++nCol;
               break;
+
+              case "#text":
+              break;
+
               default:
                 ++nCol;
               break;
