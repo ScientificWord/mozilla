@@ -8054,6 +8054,22 @@ msiEquationPropertiesObjectData.prototype =
           break;
       }
     }
+    if (this.mTableElement){
+      theAttr = this.mTableElement.getAttribute("subtype");
+      if (theAttr && theAttr.length){
+         if (theAttr === "align") {
+            this.mbAlignmentEnabled = true;
+            this.mAlignment = "alignStandard";
+         } else if (theAttr === "gather"){
+            this.mbAlignmentEnabled = true;
+            this.mAlignment = "alignCentered";
+         } else if (theAttr === "multline"){
+            this.mbAlignmentEnabled = true;
+            this.mAlignment = "alignSingleEqn";
+         }
+      }
+    }
+      
     if (this.mDisplay)
     {
       if (!this.mTableElement)
@@ -8063,12 +8079,14 @@ msiEquationPropertiesObjectData.prototype =
       theAttr = this.mDisplay.getAttribute("marker");
       if (theAttr && theAttr.length)
         this.mWholeArrayMarker = theAttr;
-      theAttr = this.mDisplay.getAttribute("alignment");
-      if (theAttr && theAttr.length)
-      {
-        this.mbAlignmentEnabled = true;
-        this.mAlignment = theAttr;
-      }
+
+      // theAttr = this.mDisplay.getAttribute("alignment");
+      // if (theAttr && theAttr.length)
+      // {
+      //   this.mbAlignmentEnabled = true;
+      //   this.mAlignment = theAttr;
+      // }
+  
       theAttr = this.mDisplay.getAttribute("subEquationNumbers");
       if (theAttr && theAttr == "true")
       {
