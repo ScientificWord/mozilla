@@ -8057,13 +8057,13 @@ msiEquationPropertiesObjectData.prototype =
     if (this.mTableElement){
       theAttr = this.mTableElement.getAttribute("subtype");
       if (theAttr && theAttr.length){
-         if (theAttr === "align") {
+         if (theAttr === "align" || theAttr === "align*") {
             this.mbAlignmentEnabled = true;
             this.mAlignment = "alignStandard";
-         } else if (theAttr === "gather"){
+         } else if (theAttr === "gather" || theAttr === "gather*"){
             this.mbAlignmentEnabled = true;
             this.mAlignment = "alignCentered";
-         } else if (theAttr === "multline"){
+         } else if (theAttr === "multline" || theAttr === "multline*"){
             this.mbAlignmentEnabled = true;
             this.mAlignment = "alignSingleEqn";
          }
