@@ -43,9 +43,9 @@ function Startup()
     if (texnode.hasAttribute("pre")) gPre.checked = texnode.getAttribute("pre")==1;
     putInPreamble();
     childnode = texnode.firstChild;
-    while (childnode && childnode.nodeType != Node.CDATA_SECTION_NODE) {
-      childnode = childnode.nextSibling;
-    }
+    //while (childnode && childnode.nodeType != Node.CDATA_SECTION_NODE) {
+    //  childnode = childnode.nextSibling;
+    //}
     if (childnode) 
       gTeX.value = childnode.textContent;
   }
