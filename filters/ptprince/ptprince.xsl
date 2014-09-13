@@ -13,7 +13,7 @@
     </xsl:copy>
 </xsl:template>
 
-<xsl:template match="html:tr">
+<xsl:template match="html:tr|mml:tr">
   <xsl:variable name="content">
      <xsl:value-of select="."/>
   </xsl:variable>

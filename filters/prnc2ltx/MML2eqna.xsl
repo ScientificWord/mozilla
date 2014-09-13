@@ -152,6 +152,9 @@
 
         <LaTeX-env>
           <xsl:choose>
+            <xsl:when test="@subtype">
+              <xsl:value-of select="@subtype"/>
+            </xsl:when>
             <xsl:when test="@type!=''">
               <xsl:value-of select="@type"/>
             </xsl:when>
@@ -172,6 +175,9 @@
 
         <is-starred>
           <xsl:choose>
+            <xsl:when test="@subtype">
+              <xsl:text>false</xsl:text>
+            </xsl:when>
             <xsl:when test="$n-labeledrows=0">
               <xsl:text>true</xsl:text>
             </xsl:when>
