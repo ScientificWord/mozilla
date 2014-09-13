@@ -16,6 +16,53 @@ var invPrefMapper;
 var prefEngineMapper;
 var prefLogMapper;
 
+
+/*
+JavaScript enhancements
+Until we sync with Mozilla again, we need do define our own Object.create and
+bind functions.
+*/
+
+function FixJS()
+{
+  if (typeof Object.create != 'function') {
+    Object.create = (function() {
+      var Object = function() {};
+      return function (prototype) {
+        if (arguments.length > 1) {
+          throw Error('Second argument not supported');
+        }
+        if (typeof prototype != 'object' && typeof prototype != 'function') {
+          throw TypeError('Argument must be an object or function');
+        }
+        Object.prototype = prototype;
+        var result = new Object();
+        Object.prototype = null;
+        return result;
+      };
+    })();
+  }
+  if (!Function.prototype.bind) {
+    Function.prototype.bind = function(o /*, args */) {
+      // Save the this and arguments values into variables so we can // use them in the nested function below.
+      var self = this, boundArgs = arguments;
+      // The return value of the bind() method is a function
+      return function() {
+        // Build up an argument list, starting with any args passed
+        // to bind after the first one, and follow those with all args // passed to this function.
+        var args = [], i;
+        for(i = 1; i < boundArgs.length; i++) 
+          args.push(boundArgs[i]); 
+        for(i = 0; i < arguments.length; i++) 
+          args.push(arguments[i]);
+        // Now invoke self as a method of o, with those arguments
+        return self.apply(o, args); 
+      };
+    }; 
+  }
+}
+
+
 function initializePrefMappersIfNeeded()
 { // map between pref names used by the engine and those used in SWP
   if (prefMapper == null)
@@ -13202,4 +13249,56 @@ function getChildByTagName(anElement, tagName)
   var elements = anElement.getElementsByTagName(tagName);
   if (elements && elements.length > 0) return elements[0];
   return null;
+}
+
+
+/*When derivedFile is built from sourceFile, is it necessary to recompute derivedFile?
+Only when lastModficationDate of sourceFile is > lastModficationDate of derivedFile
+*/
+
+function needRefresh(sourceFilePath, derivedFilePath) {
+  var editorElement = msiGetActiveEditorElement();
+  var sourceFile;
+  var derivedFile;
+  var sourceFileAbsPath = makeRelPathAbsolute(sourceFilePath, editorElement);
+  var derivedFileAbsPath = makeRelPathAbsolute(derivedFilePath, editorElement);
+  // the above strings can be "file://" urls or "/" paths
+  if (sourceFileAbsPath.indexOf("file://") < 0)
+    sourceFileAbsPath = "file://"+sourceFileAbsPath;
+  sourceFile = msiFileFromFileURL(msiURIFromString(sourceFileAbsPath));    
+  if (!sourceFile.exists()) return null;
+  if (derivedFileAbsPath.indexOf("file://") < 0)
+    derivedFileAbsPath = "file://"+derivedFileAbsPath;
+  derivedFile = msiFileFromFileURL(msiURIFromString(derivedFileAbsPath));
+  if (derivedFile.exists()) {
+    return (sourceFile.lastModifiedTime > derivedFile.lastModifiedTime);
+  }
+  else return true;
+}
+
+function makeRelPathAbsolute(relpath, editorElement) {
+  var longfilename;
+  var leaf;
+  var pathParts = relpath.split("/");
+  if (pathParts[0]==='' || pathParts[0]==='file:') {
+    return relpath;  // it looks like relpath is really absolute
+  }
+  try {
+    var documentfile;
+    var docauxdirectory;
+    var currdocdirectory;
+    var urlstring = msiGetEditorURL(editorElement);
+    var url = msiURIFromString(urlstring);
+    documentfile = msiFileFromFileURL(url);
+
+    currdocdirectory = documentfile.parent.clone();
+    var i;
+    for (i = 0; i < pathParts.length; i++) {
+      currdocdirectory.append(pathParts[i]);
+    }
+    longfilename = currdocdirectory.path;
+  } catch (e) {
+    dump("Error: " + e + "\n");
+  }
+  return longfilename;
 }
