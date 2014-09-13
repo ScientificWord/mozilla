@@ -588,7 +588,7 @@ var msiResizeListener =
       graph.setGraphAttribute("Height", String(newHeightInUnits));
 //      graph.recomputeVCamImage( editorElement);
       graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
-      ensureVCamPreinitForPlot(DOMGraph, editorElement);
+//      ensureVCamPreinitForPlot(DOMGraph, editorElement);
 //      var obj = anElement.getElementsByTagName("object");
 //      if (obj.length > 0 && obj[0].hasAttribute("msigraph"))
 //      {
@@ -3045,7 +3045,9 @@ function EditorClick(event)
 	      }
       }
     }
-  } catch(ex) {msidump("Exception in msiEditor.js, EditorClick() : " + ex + "\n");}
+  } catch(ex) {
+    msidump("Exception in msiEditor.js, EditorClick() : " + ex + "\n");
+  }
 
 //  event.currentTarget should be "body" or something...
 
