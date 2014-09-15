@@ -2051,7 +2051,7 @@ Frame.prototype = {
       // put the graph file in
       // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use
       // the load API
-      DOMObj.vcamStatus = "uninitialized";
+//      DOMObj.vcamStatus = "uninitialized";
       if (!forComp)  //don't trigger any loading if we're only serializing - this isn't a "real" <object>
       {
         var existingObjFile = DOMObj.getAttribute("data");
@@ -2140,7 +2140,7 @@ function newPlotFromText(currentNode, expression, editorElement, selection) {
     graph.computeQuery(plot);
     graph.recomputeVCamImage(editorElement);
     graph.reviseGraphDOMElement(currentNode, false, editorElement);
-    ensureVCamPreinitForPlot(currentNode, editorElement);
+//    ensureVCamPreinitForPlot(currentNode, editorElement);
     nonmodalRecreateGraph(graph, currentNode, editorElement);
     //    editor.replaceNode(domGraph, currentNode, currentNode.parentNode);
   }
@@ -2243,34 +2243,13 @@ function nonmodalRecreateGraph(graph, DOMGraph, editorElement) {
     dump("ERROR: Recreate Graph failed, line 715 in GraphOverlay.js\n");
   }
 }
-function makeRelPathAbsolute(relpath, editorElement) {
-  var longfilename;
-  var leaf;
-  try {
-    var documentfile;
-    var docauxdirectory;
-    var currdocdirectory;
-    var urlstring = msiGetEditorURL(editorElement);
-    var url = msiURIFromString(urlstring);
-    documentfile = msiFileFromFileURL(url);
 
-    currdocdirectory = documentfile.parent.clone();
-    var pathParts = relpath.split("/");
-    var i;
-    for (i = 0; i < pathParts.length; i++) {
-      currdocdirectory.append(pathParts[i]);
-    }
-    longfilename = currdocdirectory.path;
-  } catch (e) {
-    dump("Error: " + e + "\n");
-  }
-  return longfilename;
-}
 function isDifferentPlotFile(oldpath, newpath, editorElement) {
   var oldURI = msiCreateURI(msiMakeAbsoluteUrl(oldpath, editorElement));
   var newURI = msiCreateURI(msiMakeAbsoluteUrl(newpath, editorElement));
   return (!oldURI.equals(newURI));
 }
+
 function insertGraph(siblingElement, graph, editorElement) {
   /**----------------------------------------------------------------------------------*/
   // compute a graph, create a <graph> element, insert it into DOM after siblingElement
@@ -2308,15 +2287,17 @@ function insertGraph(siblingElement, graph, editorElement) {
 
   addGraphElementToDocument(gDomElement, siblingElement, editorElement);
   var obj = gDomElement.getElementsByTagName("object")[0];
+//  obj.setAttribute('data', "plots/"+leaf);  // this shouldn't be necessary. Someone is setting the attribute
+  // to the absolute path, which won't work
   var parentWindow = editorElement.ownerDocument.defaultView;
-  parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
+//  parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
   if (!obj.id) {
     obj.id = findUnusedId("plot");
     obj.setAttribute("id", obj.id); // BBM: unnecessary??
   }
-  doVCamPreInitialize(obj.id);
   editorElement.focus();
 }
+
 function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElement, selection) {
   /**-----------------------------------------------------------------------------------------*/
   // Create the <graph> element and insert into the document following this math element
