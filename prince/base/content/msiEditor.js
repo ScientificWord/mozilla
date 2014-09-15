@@ -1078,9 +1078,9 @@ function msiEditorDocumentObserver(editorElement)
           catch(e) {
             dump(e+"\n");
           }
-#ifndef PROD_SW
-          initializeAllVCamObjects(this.mEditorElement.document);
-#endif
+// #ifndef PROD_SW
+//           initializeAllVCamObjects(this.mEditorElement.document);
+// #endif
           // doVCamPreinitForPlotsInDocument(editorElement, true);
         }
 
@@ -3016,10 +3016,10 @@ function EditorClick(event)
       if (graphnode)
       {
         var obj = graphnode.getElementsByTagName("object")[0];
-        if (obj != null) {
+        if (obj) {
           doVCamInitialize(obj);
-//          doVCamCommand("cmd_refresh");
         }
+//        if (obj.wrappedJSObject) obj = obj.wrappedJSObject;  // not necessary here
       }
       else if (linkNode && (objName=="xref"))
       {

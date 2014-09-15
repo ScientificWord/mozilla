@@ -935,71 +935,99 @@ function doGlobalComputeCommand(cmd, editorElement) {
 
 var isRunning = false;
 
-// var callVCamMethod = function (doc, objid, method, id, args) {
-//   try {
-//     // the object that contains the exposed VCam functions
-//     var obj = doc.getElementById(objid);
-//     // if (obj.wrappedJSObject) {
-//     //     obj = obj.wrappedJSObject;
-//     // } 
-//     // find object holding functions
-//     var alternative = true;
-//     if (alternative && obj[method]) {
-//       obj[method].call(obj, id, args[0]);
-//       return;
-//     }
-//   } 
-//   catch(err) {
-//     alert(err.message);
-//   }
-//   // alert ('Unexpected way of execution');
-// }
-
 /*****************************************************************************
 
 VCam object section.
 
 The following functions will be bound to VCam plot objects, so 'this' in the
 code refers to the plot object. The attachment of the functions to the objects
-happen when the object is instantiated, in doVCamPreInitialize and doVCamInitialize.
+happen when the object is instantiated, in doVCamInitialize.
 
 ******************************************************************************/
+
+// I haven't found who is disabling these toolbar elements, but they are never disabled,
+// only hidden.
+
+// function enableToolbarElements(el) {
+//   var toolbaritems = el.childNodes;
+//   var i;
+//   for (i = 0; i< toolbaritems.length; i++) {
+//     toolbaritems.item(i).removeAttribute("disabled");
+//   }
+// }
 
 function vcamToolbarFromPlugin() {
   // sets the state of the toolbar buttoms from the plugin state
   // Call the fucnction for initialization and after each button action.
-
+  // Called so that *this* is the VCam object
+//  enableToolbarElements(document.getElementById("VCamToolbar"));
   // Cursor tool section
   var ct = this.cursorTool;
   var dim = this.dimension;
   var anim = this.isAnimated;
   var za = this.zoomAction;
+  document.getElementById("vc-Reset").removeAttribute("disabled");
+  document.getElementById("vc-FitContents").removeAttribute("disabled");
+  document.getElementById("vc-SnapShot").removeAttribute("disabled");
   document.getElementById("vc-SelObj").checked = (ct === 'select');
+  document.getElementById("vc-SelObj").removeAttribute("disabled");
   document.getElementById("vc-RotateScene").checked = (ct === 'rotate');
+  document.getElementById("vc-RotateScene").removeAttribute("disabled");
   document.getElementById("vc-Move").checked = (ct === 'move');
+  document.getElementById("vc-Move").removeAttribute("disabled");
   document.getElementById("vc-Query").checked = (ct === 'query');
+  document.getElementById("vc-Query").removeAttribute("disabled");
   document.getElementById("vc-AutoZoomIn").checked = (za === 1);
+  document.getElementById("vc-AutoZoomIn").removeAttribute("disabled");
   document.getElementById("vc-AutoZoomOut").checked = (za === 2);
+  document.getElementById("vc-AutoZoomOut").removeAttribute("disabled");
 
   // Rotation section
   if (dim === 3) {
     document.getElementById("vc-Zoom").checked = (ct === 'zoom');
+    document.getElementById("vc-Zoom").removeAttribute("disabled");
     var va = this.rotateVerticalAction;
     document.getElementById("vc-RotateRight").checked = (va === 1);
+    document.getElementById("vc-RotateRight").removeAttribute("disabled");
     document.getElementById("vc-RotateLeft").checked = (va === 2);
+    document.getElementById("vc-RotateLeft").removeAttribute("disabled");
     var ha = this.rotateHorizontalAction;
     document.getElementById("vc-RotateUp").checked = (ha === 1);
+    document.getElementById("vc-RotateUp").removeAttribute("disabled");
     document.getElementById("vc-RotateDown").checked = (ha === 2);
+    document.getElementById("vc-RotateDown").removeAttribute("disabled");
 
     // Speed controlf
     var spd = this.actionSpeed;
-    if (spd <= 0.125) document.getElementById("actionspeed8s").checked = true;
-    else if (spd > 0.125 && spd <= 0.25) document.getElementById("actionspeed4s").checked = true;
-    else if (spd > 0.25 && spd <= 0.5) document.getElementById("actionspeed2s").checked = true;
-    else if (spd > 0.5 && spd <= 1.0) document.getElementById("actionspeedN").checked = true;
-    else if (spd > 1.0 && spd <= 2.0) document.getElementById("actionspeed2f").checked = true;
-    else if (spd > 2.0 && spd <= 4.0) document.getElementById("actionspeed4f").checked = true;
-    else if (spd > 4.0) document.getElementById("actionspeed8f").checked = true;
+    if (spd <= 0.125) {
+      document.getElementById("actionspeed8s").checked = true;
+    }
+    else if (spd > 0.125 && spd <= 0.25) {
+      document.getElementById("actionspeed4s").checked = true;
+    }
+    else if (spd > 0.25 && spd <= 0.5) {
+      document.getElementById("actionspeed2s").checked = true;
+    }
+    else if (spd > 0.5 && spd <= 1.0) {
+      document.getElementById("actionspeedN").checked = true;
+    }
+    else if (spd > 1.0 && spd <= 2.0) {
+      document.getElementById("actionspeed2f").checked = true;
+    }
+    else if (spd > 2.0 && spd <= 4.0) {
+      document.getElementById("actionspeed4f").checked = true;
+    }
+    else if (spd > 4.0) {
+      document.getElementById("actionspeed8f").checked = true;
+    }
+    document.getElementById("actionspeed8s").removeAttribute("disabled");
+    document.getElementById("actionspeed4s").removeAttribute("disabled");
+    document.getElementById("actionspeed2s").removeAttribute("disabled");
+    document.getElementById("actionspeedN").removeAttribute("disabled");
+    document.getElementById("actionspeed2f").removeAttribute("disabled");
+    document.getElementById("actionspeed4f").removeAttribute("disabled");
+    document.getElementById("actionspeed8f").removeAttribute("disabled");
+
   }
   if (anim) {
     // animation section, including animation speed control
@@ -1011,11 +1039,19 @@ function vcamToolbarFromPlugin() {
     else if (aspd > 1.0 && aspd <= 2.0) document.getElementById("animspeed2f").checked = true;
     else if (aspd > 2.0 && aspd <= 4.0) document.getElementById("animspeed4f").checked = true;
     else if (aspd > 4.0) document.getElementById("animspeed8f").checked = true;
+    document.getElementById("animspeed8s").removeAttribute("disabled");
+    document.getElementById("animspeed4s").removeAttribute("disabled");
+    document.getElementById("animspeed2s").removeAttribute("disabled");
+    document.getElementById("animspeedN").removeAttribute("disabled");
+    document.getElementById("animspeed2f").removeAttribute("disabled");
+    document.getElementById("animspeed4f").removeAttribute("disabled");
+    document.getElementById("animspeed8f").removeAttribute("disabled");
   }
 }
 
 function makeSnapshotPath() {
   var extension;
+  var editorElement = msiGetActiveEditorElement();
   if ( getOS(window) == "win")  {
     extension = "bmp";
   } else {
@@ -1024,9 +1060,8 @@ function makeSnapshotPath() {
   var path;
   try {
     var strSrc = this.getAttribute("data") || this.getAttribute("src");
-    var srcPath = msiGetIOService().newURI(strSrc, null, null);
-    srcPath = srcPath.QueryInterface(Components.interfaces.nsIURL);
-    var fileName = srcPath.fileName;
+    var match = /plots\/(.*$)/.exec(strSrc);
+    var fileName = match[1];
     fileName = fileName.replace(/xv[cz]$/, extension);
     path = "graphics/" + fileName;
   } catch (e) {
@@ -1044,21 +1079,6 @@ function insertSnapshot(abssnapshotpath) {
   for (i = 0; i < objectlist.length;) {
     element = objectlist[i];
     if (element.hasAttribute("msisnap")) {
-      // remove the snapshot file as well as the object node
-      // oldpath = element.data;
-      // if (oldpath && oldpath.length > 7) {
-      //   oldpath = oldpath.slice(7);
-      // }
-      // file = Components.classes["@mozilla.org/file/local;1"].
-      // createInstance(Components.interfaces.nsILocalFile);
-      // file.initWithPath(oldpath);
-      // if (file.exists()) {
-      //   try {
-      //     file.remove(false);
-      //   } catch (e) {
-      //     msidump(e.message);
-      //   }
-      // }
       parent.removeChild(element);
     } else {
       i++;
@@ -1137,7 +1157,7 @@ function doMakeSnapshot()
       this.makeSnapshot(abspath, res);
       insertSnapshot.call(this, abspath);
     } catch (e) {
-      alert("obj is "+ this.id + ", readyState is " + this['readyState'] + ", " + e.message + ".");
+      throw new MsiException("Error inserting plot snapshot", e);
     }
   }
 }
@@ -1156,15 +1176,13 @@ function rebuildSnapshots(doc) {
     if (objlist.length > 0) {
       obj = objlist[0];
       if (obj.wrappedJSObject) obj = obj.wrappedJSObject;
-    }
-    if (objlist.length > 1) img = objlist[1];
-    if (!img) {
- //     doVCamInitialize(obj);
-      return doMakeSnapshot.call(obj);
-    }
-    if (needRefresh(obj.getAttribute('data'), img.getAttribute('data'))) {
-//      doVCamInitialize(obj);
-      return doMakeSnapshot.call(obj);
+      if (objlist.length > 1) img = objlist[1];
+      if (!img) {
+        return doMakeSnapshot.call(obj);
+      }
+      if (needRefresh(obj.getAttribute('data'), img.getAttribute('data'))) {
+        return doMakeSnapshot.call(obj);
+      }
     }
   }
 }
@@ -1172,7 +1190,7 @@ function rebuildSnapshots(doc) {
 function doVCamCommandOnObject(cmd, editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var doc = editorElement.contentDocument;
-  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');  // BBM: test to see if this is necessary
+  // netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');  // BBM: test to see if this is necessary
   try {
     switch (cmd) {
     case "cmd_vcSelObj":
@@ -1277,20 +1295,6 @@ function doVCamCommandOnObject(cmd, editorElement) {
   return;
 }
 
-function onCloseVCam(obj, editorElement)  //never used
-{
-  return;
-  // if (document.getElementById("vcamactive") && (document.getElementById("vcamactive").getAttribute("hidden")=="false"))
-  //   return;
-  // if (!editorElement)
-  //   editorElement = msiGetActiveEditorElement();
-  // var editor = msiGetEditor(editorElement);
-  // var graph = new Graph();
-  // var graphNode = editor.getElementOrParentByTagName("graph", obj);
-  // graph.extractGraphAttributes(graphNode);
-  // queryVCamValues(obj, graph, graphNode, true);
-}
-
 var gProgressbar;
 
 /*
@@ -1301,14 +1305,6 @@ VCam event handler section
 function onVCamMouseUp() {
   //  alert("Mouse up in plugin!");
 }
-
-// var setAnimationTime;
-// var VCamCommand;
-// var setActionSpeed;
-// var setAnimSpeed;
-// var setLoopMode;
-// var vcamCloseFunction;
-
 
 function onVCamMouseDown(screenX, screenY) {
   var editorElement = msiGetActiveEditorElement();
@@ -1367,9 +1363,6 @@ function onVCamTreeChange(treeEvent)
     msidump("Got exception in onVCamTreeChange: " + exc + "\n");
   }
 }
-
-
-
 
 function onVCamDragLeave(x, y) {}
 
@@ -1455,64 +1448,65 @@ function doVCamClose()
   if (document.getElementById("vcamactive") && (document.getElementById("vcamactive").getAttribute("hidden")=="false"))
     return;  //In other words, if we're being called because of the broadcaster turning VCam on, do nothing
   var editorElement = msiGetActiveEditorElement();
-  return vcamCloseFunction(editorElement);
+//  return vcamCloseFunction(editorElement);   //BBM: fix this up
 }
 
 function initializeAllVCamObjects() {
-  var wrapperlist, objlist, length, objlength, i;
-  var editorElement = msiGetActiveEditorElement();
-  var doc = editorElement.contentDocument;
-  var obj;
-  wrapperlist = doc.documentElement.getElementsByTagName("plotwrapper");
-  length = wrapperlist.length;
-  for (i = 0; i < length; i++) {
-    objlist = wrapperlist[i].getElementsByTagName("object");
-    obj = objlist[0];
-    if (obj) {
-      obj.ctx = window;
-      if (!obj.id) {
-        obj.id = findUnusedId("plot");
-        obj.setAttributeValue("id", obj.id); // BBM: unnecessary??
-      }
-      doVCamPreInitialize(obj);
-    }
-  }
-}
-
-
-
-function doVCamPreInitialize(obj) {
   return;
-  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-  // we might want to wait here until we are sure the object is initialized.
-
-/*  The functions we need to assign here are the ones that will need to be called
-  before the plot is selected, or if it is never selected.
-*/
-//  tryUntilSuccessful(200, 10, function() {
-    var editorElement = msiGetActiveEditorElement();
-    var editor = msiGetEditor(editorElement);
-    var doc = editorElement.contentDocument;
-    // AlertWithTitle("preinitialize "+ obj.toString());
-    var domGraph = editor.getElementOrParentByTagName("graph", obj);
-    var graph = new Graph();
-    graph.extractGraphAttributes(domGraph);
-    var plotWrapper = obj.parentNode;
-    try {
-//      if (obj.addEvent && (obj.readyState === 2)) {
-        obj.vcMakeSnapshot = function (args) {
-          doMakeSnapshot.apply(obj, args);
-        };
-        obj.vcAddEvent = function (args) {
-          obj.addEvent.apply(obj, args);
-        };
-        obj["vcamStatus"] = "initialized";  //add a property so we know we've successfully initialized the VCam object
-        return true;
-    }
-    catch (e) {
-      throw new MsiException("Error in doVCamPreInitialize", e);
-    }
+  // var wrapperlist, objlist, length, objlength, i;
+  // var editorElement = msiGetActiveEditorElement();
+  // var doc = editorElement.contentDocument;
+  // var obj;
+  // wrapperlist = doc.documentElement.getElementsByTagName("plotwrapper");
+  // length = wrapperlist.length;
+  // for (i = 0; i < length; i++) {
+  //   objlist = wrapperlist[i].getElementsByTagName("object");
+  //   obj = objlist[0];
+  //   if (obj) {
+  //     obj.ctx = window;
+  //     if (!obj.id) {
+  //       obj.id = findUnusedId("plot");
+  //       obj.setAttributeValue("id", obj.id); // BBM: unnecessary??
+  //     }
+  //     doVCamPreInitialize(obj);
+  //   }
+  // }
 }
+
+
+
+// function doVCamPreInitialize(obj) {
+//   return;
+//   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+//   // we might want to wait here until we are sure the object is initialized.
+
+// /*  The functions we need to assign here are the ones that will need to be called
+//   before the plot is selected, or if it is never selected.
+// */
+// //  tryUntilSuccessful(200, 10, function() {
+//     var editorElement = msiGetActiveEditorElement();
+//     var editor = msiGetEditor(editorElement);
+//     var doc = editorElement.contentDocument;
+//     // AlertWithTitle("preinitialize "+ obj.toString());
+//     var domGraph = editor.getElementOrParentByTagName("graph", obj);
+//     var graph = new Graph();
+//     graph.extractGraphAttributes(domGraph);
+//     var plotWrapper = obj.parentNode;
+//     try {
+// //      if (obj.addEvent && (obj.readyState === 2)) {
+//         obj.vcMakeSnapshot = function (args) {
+//           doMakeSnapshot.apply(obj, args);
+//         };
+//         obj.vcAddEvent = function (args) {
+//           obj.addEvent.apply(obj, args);
+//         };
+//         obj["vcamStatus"] = "initialized";  //add a property so we know we've successfully initialized the VCam object
+//         return true;
+//     }
+//     catch (e) {
+//       throw new MsiException("Error in doVCamPreInitialize", e);
+//     }
+// }
 
 /*
 VCam strategy
@@ -1537,12 +1531,13 @@ var VCamObject = null;
 
 function doVCamInitialize(obj) {
   document.getElementById("vcamactive").setAttribute("hidden", "false");
-  // Thee above line reveals the VCam toolbar,
+  // The above line reveals the VCam toolbar,
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement); 
   var os = getOS(window);
 
   // Now tailor the toolbar to the plot type.
+  if (obj.wrappedJSObject) obj = obj.wrappedJSObject;
   obj.threedplot = (obj.dimension === 3);
   obj.twodplot = (obj.dimension === 2);
   document.getElementById("3dplot").setAttribute("hidden", obj.threedplot ? "false" : "true");
@@ -1567,19 +1562,13 @@ function doVCamInitialize(obj) {
       this.animationLoopingMode = mode;
     };
   }
-  vcamToolbarFromPlugin(obj);
+  vcamToolbarFromPlugin.call(obj);
   obj.command = function command(cmd ) { 
       return doVCamCommandOnObject.call( this, cmd, editorElement);
   };
   obj.setActionSpeed = function setActionSpeed(factor) {
     this.actionSpeed = factor;
   };
-  // vcamCloseFunction = (function() {
-  //   var thisobj = obj;
-  //   return function(_editorElement) {
-  //     // return onCloseVCam(thisobj, _editorElement);
-  //   };
-  // }());
 
   obj.onVCamMouseUp = function onVCamMouseUp() {
     //  alert("Mouse up in plugin!");
@@ -1635,6 +1624,7 @@ function findUnusedId( prefix ) {
   return theId;
 }
 
+/* End of VCam section */
 
 function initComputeLogger(engine) {
   dump("initComputeLogger with " + engine + "\n");

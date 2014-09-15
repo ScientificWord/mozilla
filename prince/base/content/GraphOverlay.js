@@ -2287,15 +2287,17 @@ function insertGraph(siblingElement, graph, editorElement) {
 
   addGraphElementToDocument(gDomElement, siblingElement, editorElement);
   var obj = gDomElement.getElementsByTagName("object")[0];
+//  obj.setAttribute('data', "plots/"+leaf);  // this shouldn't be necessary. Someone is setting the attribute
+  // to the absolute path, which won't work
   var parentWindow = editorElement.ownerDocument.defaultView;
 //  parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
   if (!obj.id) {
     obj.id = findUnusedId("plot");
     obj.setAttribute("id", obj.id); // BBM: unnecessary??
   }
-  doVCamPreInitialize(obj);
   editorElement.focus();
 }
+
 function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElement, selection) {
   /**-----------------------------------------------------------------------------------------*/
   // Create the <graph> element and insert into the document following this math element
