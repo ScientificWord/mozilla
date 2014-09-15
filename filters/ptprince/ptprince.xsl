@@ -29,5 +29,24 @@
 </xsl:template>
 
 
+<xsl:template match="mml:mrow">
+  <xsl:choose>
+    <xsl:when test="
+                    parent::mml:mfrac or 
+                    parent::mml:msub or 
+                    parent::mml:msup or
+                    parent::mml:msubsup or
+                    parent::mml:munder or
+                    parent::mml:mover or
+                    parent::mml:munderover">
+      <mml:mrow><xsl:apply-templates/></mml:mrow>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+
 
 </xsl:stylesheet>

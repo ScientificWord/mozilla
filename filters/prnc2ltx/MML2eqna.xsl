@@ -288,7 +288,7 @@
             <!-- xsl:when test="position()=1
             and             name()='mml:maligngroup'">
             </xsl:when -->
-            <xsl:when test="name()='mml:maligngroup'">
+            <xsl:when test="name()='mml:maligngroup' or name()='maligngroup'">
               <xsl:text xml:space="preserve"> &amp; </xsl:text>
             </xsl:when>
             <xsl:when test="self::mml:mo and $insertedAlignmark and (generate-id(.)=$insertedAlignmark)">
@@ -302,7 +302,7 @@
 
               <xsl:for-each select="*">
                 <xsl:choose>
-                  <xsl:when test="name()='mml:maligngroup'">
+                  <xsl:when test="name()='mml:maligngroup' or name()='maligngroup'">
                     <xsl:text xml:space="preserve"> &amp; </xsl:text>
                   </xsl:when>
                   <xsl:when test="self::mml:mo and $insertedAlignmark and (generate-id(.)=$insertedAlignmark)">
