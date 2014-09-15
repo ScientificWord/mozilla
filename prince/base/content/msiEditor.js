@@ -586,15 +586,7 @@ var msiResizeListener =
       var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
       graph.setGraphAttribute("Width", String(newWidthInUnits));
       graph.setGraphAttribute("Height", String(newHeightInUnits));
-//      graph.recomputeVCamImage( editorElement);
       graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
-//      ensureVCamPreinitForPlot(DOMGraph, editorElement);
-//      var obj = anElement.getElementsByTagName("object");
-//      if (obj.length > 0 && obj[0].hasAttribute("msigraph"))
-//      {
-//        obj = obj[0];
-//        makeSnapshot(obj, graph, editorElement);
-//      }
     }
     catch(e) {
       msidump( e.message );
@@ -1078,10 +1070,6 @@ function msiEditorDocumentObserver(editorElement)
           catch(e) {
             dump(e+"\n");
           }
-// #ifndef PROD_SW
-//           initializeAllVCamObjects(this.mEditorElement.document);
-// #endif
-          // doVCamPreinitForPlotsInDocument(editorElement, true);
         }
 
 //        if (this.mDumpMessage)
@@ -11413,54 +11401,5 @@ function msiSaveAsPicture(editorElement)
     editor.saveSelectionAsImage(dialogResult.resultingLocalFile.path);
 }
 
-function doVCamPreinitForPlotsInDocument(editorElement, bJustLoaded, bNeedVCamFlaggedOnly)
-{
-  var editor = msiGetEditor(editorElement);
-  var aDocument = editor.document;
-  var ourExpr = "//*[local-name()='graph'][.//*[local-name()='object'][@type='application/x-mupad-graphics+gzip' or @type='application/x-mupad-graphics+xml']][.//*[local-name()='graphSpec']]";
-  if (bNeedVCamFlaggedOnly)
-    ourExpr = "//*[local-name()='graph'][@needPreInit='true'][.//*[local-name()='object'][@type='application/x-mupad-graphics+gzip' or @type='application/x-mupad-graphics+xml']][.//*[local-name()='graphSpec']]";
-//  var ourExpr1 = "//*[local-name()='graph'][.//*[local-name()='object'][@type='application/x-mupad-graphics+gzip' or @type='application/x-mupad-graphics+xml']]";
-  var xPathEval = new XPathEvaluator();
-  var nsResolver = xPathEval.createNSResolver(aDocument.documentElement);
-  var resultNodes = xPathEval.evaluate(ourExpr, aDocument.documentElement, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-//  if (!resultNodes.snapshotLength)
-//    resultNodes = xPathEval.evaluate(ourExpr1, aDocument.documentElement, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-  var currNode;
-  var objNodes;
-  try
-  {
-    for (var i = 0; i < resultNodes.snapshotLength; ++i)
-    {
-      currNode = resultNodes.snapshotItem(i);
-      msiEditorEnsureElementAttribute(currNode, "needPreInit", null, null);  //clear the attribute flag if it's present
-      if (bJustLoaded)  //in this case, odds are apparently very high that the VCam object will not function as needed - mark it to be re-created
-      {
-        objNodes = currNode.getElementsByTagName("object");
-        if (objNodes && objNodes.length)
-          objNodes[0].vcamStatus = "needRecreate";
-      }
-      if ("ensureVCamPreinitForPlot" in window)
-        ensureVCamPreinitForPlot(currNode, editorElement);
-      else
-      {
-        msidump("Document in editor with id [" + editorElement.id + "] contains plots but computeOverlay is not available.");
-        break;
-      }
-    }
-  }
-  catch(exc) {msidump("Exception in doVCamPreinitForPlotsInDocument: " + exc + "\n");}
-}
 
 
-function onNewPlotsInDocument()
-{
-//  return;
-  var editorElement = msiGetActiveEditorElement();
-  var aBroadcaster = document.getElementById("newPlotsInDocument");
-  if (aBroadcaster && (aBroadcaster.getAttribute("newplots") == "true") )
-  {
-    doVCamPreinitForPlotsInDocument(editorElement, false, true);
-    aBroadcaster.setAttribute("newplots", "false");
-  }
-}
