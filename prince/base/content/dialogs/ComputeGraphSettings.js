@@ -218,7 +218,7 @@ function OK() {
   }
   catch (e) {}
   var parentWindow = window.opener;
-  parentWindow.ensureVCamPreinitForPlot(graphnode, editorElement);
+//  parentWindow.ensureVCamPreinitForPlot(graphnode, editorElement);
   var obj = graphnode.getElementsByTagName("object");
   if (obj && obj.length)
   {
