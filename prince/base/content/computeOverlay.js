@@ -1451,81 +1451,6 @@ function doVCamClose()
 //  return vcamCloseFunction(editorElement);   //BBM: fix this up
 }
 
-function initializeAllVCamObjects() {
-  return;
-  // var wrapperlist, objlist, length, objlength, i;
-  // var editorElement = msiGetActiveEditorElement();
-  // var doc = editorElement.contentDocument;
-  // var obj;
-  // wrapperlist = doc.documentElement.getElementsByTagName("plotwrapper");
-  // length = wrapperlist.length;
-  // for (i = 0; i < length; i++) {
-  //   objlist = wrapperlist[i].getElementsByTagName("object");
-  //   obj = objlist[0];
-  //   if (obj) {
-  //     obj.ctx = window;
-  //     if (!obj.id) {
-  //       obj.id = findUnusedId("plot");
-  //       obj.setAttributeValue("id", obj.id); // BBM: unnecessary??
-  //     }
-  //     doVCamPreInitialize(obj);
-  //   }
-  // }
-}
-
-
-
-// function doVCamPreInitialize(obj) {
-//   return;
-//   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-//   // we might want to wait here until we are sure the object is initialized.
-
-// /*  The functions we need to assign here are the ones that will need to be called
-//   before the plot is selected, or if it is never selected.
-// */
-// //  tryUntilSuccessful(200, 10, function() {
-//     var editorElement = msiGetActiveEditorElement();
-//     var editor = msiGetEditor(editorElement);
-//     var doc = editorElement.contentDocument;
-//     // AlertWithTitle("preinitialize "+ obj.toString());
-//     var domGraph = editor.getElementOrParentByTagName("graph", obj);
-//     var graph = new Graph();
-//     graph.extractGraphAttributes(domGraph);
-//     var plotWrapper = obj.parentNode;
-//     try {
-// //      if (obj.addEvent && (obj.readyState === 2)) {
-//         obj.vcMakeSnapshot = function (args) {
-//           doMakeSnapshot.apply(obj, args);
-//         };
-//         obj.vcAddEvent = function (args) {
-//           obj.addEvent.apply(obj, args);
-//         };
-//         obj["vcamStatus"] = "initialized";  //add a property so we know we've successfully initialized the VCam object
-//         return true;
-//     }
-//     catch (e) {
-//       throw new MsiException("Error in doVCamPreInitialize", e);
-//     }
-// }
-
-/*
-VCam strategy
-
-We don't do much with VCam objects when they are displayed. We must select the object to get the
-Vcam toolbar to show. While the toolbar is shown, we will have one and only one object activated, and
-we enhance it to provide event callbacks and methods to the toolbar buttons.
-
-The first step is that we use the <object> to create a new JavaScript object that delegates to the
-<object> for some of its functionality. The callback functions for the toolbar buttons are bound methods
-of the Vcam object.
-
-Since at most one object is selected (i.e., controlled by the toolbar), we keep a global that represents
-the enhanced object when an object is selectedm and is null otherwise. That is, the lifetime of the object
-approximates the time the toolbar is made visible for the object.
-
-Note: the VCam toolbar always exists, even when it is hidden.
-
-*/
 
 var VCamObject = null;
 
@@ -1609,11 +1534,9 @@ function VCamCommand(cmd) {
   VCamObject.command(cmd);
 }
 
-
 function dontSetAnimationTime() {
   return;
 }
-
 
 function findUnusedId( prefix ) {
   var n = 1;
@@ -1627,7 +1550,6 @@ function findUnusedId( prefix ) {
 /* End of VCam section */
 
 function initComputeLogger(engine) {
-  dump("initComputeLogger with " + engine + "\n");
   var prefs = GetPrefs();
   var logMMLSent, logMMLReceived, logEngSent, logEngReceived;
   try {
@@ -3511,47 +3433,7 @@ function doEditPlot() {
 }
 
 
-//Warning! This function may replace the <object> node for the plot, so you should use getElementsByTagName()
-//again afterwards before referencing it. Furthermore, it calls tryUntilSuccessful() and so is asynchronous.
-//It's meant to set a plot which has been created (perhaps via a paste or document load) or modified into a
-//reliable state.
-function ensureVCamPreinitForPlot(graphNode, editorElement)
-{
-  return;
-  var editor = msiGetEditor(editorElement);
-  var objElement = graphNode.getElementsByTagName("object");
-  var theGraph;
-  if (objElement && objElement.length)
-    objElement = objElement[0];
-  var parent, newObj;
-  if (objElement)
-  {
-    theGraph = new Graph();
-    theGraph.extractGraphAttributes(graphNode);
-    //checkVCamStatusForPlot(objElement, theGraph, editorElement);
-    if (true) //objElement.vcamStatus === "initialized")
-    //checkVCamStatusForPlot(objElement, theGraph, editorElement);
-      return;  // skip the rest of this function for now
-    if ( (objElement.vcamStatus === "needRecreate") || (objElement.vcamStatus === "needReload") )
-    {
-//      doVCamInitialize(objElement);
-      objElement = regeneratePlotObject(objElement, theGraph, editorElement);
-//    }
-//    else if (objElement.vcamStatus === "needReload")
-//    {
-//      var vcamUri = msiMakeAbsoluteUrl(theGraph.getGraphAttribute("ImageFile"),editorElement);
-////      var vcamPath = msiPathFromFileURL(msiURIFromString(vcamUri));
-//      msidump("In ensureVCamPreinitForPlot, calling vcam load [" + vcamUri + "]\n");
-//      objElement.load(vcamUri);
-//      objElement.setAttribute("data", vcamUri);
-//      objElement.vcamStatus = "uninitialized";
-    }
-    //preInitializeVCam( objElement, theGraph, editorElement, true, true);
-  }
-}
-
 // form a single run of math but don't put caret on end
-
 
 function coalescemath(editorElement, leaveCursorAsIs) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
