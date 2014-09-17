@@ -1100,12 +1100,12 @@ function insertSnapshot(abssnapshotpath) {
     w = gslist.getAttribute("Width");
     if (w) {
       ssobj.setAttribute("naturalWidth", w);
-      ssobj.setAttribute("imageWidth", w);
+      ssobj.setAttribute("ltx_width", w);
     }
     h = gslist.getAttribute("Height");
     if (h) {
       ssobj.setAttribute("naturalHeight", h);
-      ssobj.setAttribute("imageHeight", h);
+      ssobj.setAttribute("ltx_height", h);
     }
     ssobj.setAttribute("units", gslist.getAttribute("Units"));
   }
