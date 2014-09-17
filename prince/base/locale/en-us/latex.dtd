@@ -16,3 +16,5 @@
 <!ENTITY  marker        "Marker: ">
 <!ENTITY  xref          "Cross ref: ">
 <!ENTITY  index         "Index: ">
+<!-- These are localizable entities for names that appear in prince/base/content/bindings/svjour3.xml -->
+<!ENTITY  subtitle      "Subtitle">
