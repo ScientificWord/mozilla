@@ -1382,5 +1382,15 @@
 \dotuline{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 <!-- End definitions for ulem package -->
+
+<!-- Start definitions for beamer package -->
+<xsl:template match="html:QTR[@type='frametitle']">
+\frametitle{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:QTR[@type='framesubtitle']">
+\framesubtitle{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+<!-- End definitions for beamer package -->
 </xsl:stylesheet>
 
