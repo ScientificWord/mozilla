@@ -259,14 +259,16 @@ alertstepnumberedListItem>bodyText:first-child:first-line { content: '  ';
 }
 
 
-frametitle{
+frametitle, QTR[type="frametitle"] {
   display: block;
   font-size: 120%;
   color: rgb(100,100,200);
+  -moz-user-select: text;
 }
 
-framesubtitle{
+framesubtitle, QTR[type="framesubtitle" {
   display: block; 
   font-size: 110%;
   color: rgb(75,75,150);
+  -moz-user-select: text;
 }
