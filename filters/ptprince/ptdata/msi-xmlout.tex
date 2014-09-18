@@ -639,14 +639,14 @@
   \ifmmode
     \msitag{\msipassthru{<xref key="#1" href="#1" reftype="obj"/>}}%
   \else
-    \msihmode\msitag{<xref key="#1" href="#1" reftype="obj"/>}%
+    \msihmode\msitag{<xref key="}#1\msitag{" href="}#1\msitag{" reftype="obj"/>}%
   \fi}
 
 \def\pageref#1{%
   \ifmmode
     \msitag{\msipassthru{<xref key="#1" href="#1" reftype="page"/>}}%
   \else
-    \msihmode\msitag{<xref key="#1" href="#1" reftype="page"/>}%
+    \msihmode\msitag{<xref key="}#1\msitag{" href="}#1\msitag{" reftype="page"/>}%
   \fi}
 
 
@@ -1514,7 +1514,7 @@
    \ifmmode
       \msitag{\label{#1}}%
    \else
-      \msihmode\msitag{<a name="#1" key="#1" id="#1"/>}%
+      \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
    \fi}
 
 \def\frac#1#2{\string\frac\@brace{#1}\@brace{#2}}
