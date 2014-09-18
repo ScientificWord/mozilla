@@ -356,14 +356,14 @@
 
 %% \usepackage
 \def\out@usepackageA[#1]#2{%
-   \msitag{<usepackage req="#2" opt="#1"/>}}
+   \msitag{<usepackage req="#2" opt="}#1\msitag{"/>}}
 
 \def\out@usepackageB#1{%
    \msitag{^^0a}\msitag{<usepackage req="#1"/>}}
 
 %% \RequirePackage
 \def\out@reqpackageA[#1]#2{%
-   \msitag{^^0a}\msitag{<usepackage requirepackage="true" req="#2" opt="#1"/>}}
+   \msitag{^^0a}\msitag{<usepackage requirepackage="true" req="#2" opt="}#1\msitag{"/>}}
 
 \def\out@reqpackageB#1{%
    \msitag{^^0a}\msitag{<usepackage requirepackage="true"  req="#1"/>}}
