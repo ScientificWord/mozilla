@@ -1782,7 +1782,7 @@ Frame.prototype = {
           "placeLocation", "textalignment"],
   FRAMEDOMATTRIBUTES: ["units", "sidemargin", "topmargin", "pos", "placeLocation", "placement",
     "captionloc", "textalignment", "req"],
-  WRAPPERATTRIBUTES: ["borderw", "padding", "imageheight", "imagewidth", "border-color", "background-color"],
+  WRAPPERATTRIBUTES: ["borderw", "padding", "ltx_height", "ltx_width", "border-color", "background-color"],
   isModified: function (x) {
     return (this.modFlag[x]);
   },
