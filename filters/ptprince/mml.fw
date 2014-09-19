@@ -106,7 +106,7 @@ void TakeDownMathML()
 
 void ProcessMathML(const char* str, std::string& outp, std::string& anom){
   s_equation = false;
-  s_nonumbering = false;
+  s_nonumbering = true;
   ConvertInline( str, mathmlHandler, 2 );
   outp = s_mathml;
   s_mathml = "";
