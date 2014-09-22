@@ -74,6 +74,9 @@ function Graph() {
   this.frame = new Frame(this);
 }
 Graph.prototype = {
+  //  BBM: Some of the following attributes below really belong on the msiframe object or the VCam object
+  // Namely: ImageFile===obj.data, Width, Height, Units, BGColor. Some of these probably should appear *only*
+  // elsewhere: width, height, units
   COMPATTRIBUTES: ["ImageFile", "XAxisLabel", "YAxisLabel", "ZAxisLabel", "Width", "Height",
                               "Units", "AxesType", "EqualScaling", "EnableTicks", "XTickCount",
                               "YTickCount", "ZTickCount", "AxesTips", "GridLines", "BGColor", "Dimension",

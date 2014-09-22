@@ -193,7 +193,7 @@ function Startup()
     window.close();
     return;
   }
-  gDialog = new Object();
+  gDialog = {};
   gDialog.isImport          = true;
   gDialog.tabBox            = document.getElementById( "TabBox" );
   gDialog.tabPicture        = document.getElementById( "imagePictureTab" );
