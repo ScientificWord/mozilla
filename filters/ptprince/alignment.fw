@@ -101,6 +101,9 @@ correct V-template followed by an ENDV token.
 bool xfcnTab(int, TeXToken*, SymbolData**)
 {
    LOG("\nAlignment --- found Tab");
+   if (s_alignTop < 0){
+      return true;
+   }
    if (s_alignState == AS_PEEKING){
       //InputStack::Putback(CurTok());
       s_alignState = AS_NORMAL;
