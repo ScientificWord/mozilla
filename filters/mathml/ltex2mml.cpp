@@ -5894,8 +5894,8 @@ TNODE* LaTeX2MMLTree::BindByOpPrecedence( TNODE* MML_list,
 
 		  } else if ( form==2 ) {		// infix
 
-            U16 r_space_nodes,r_operand_nodes;
-            U16 l_space_nodes,l_operand_nodes;
+        U16 r_space_nodes,r_operand_nodes;
+        U16 l_space_nodes,l_operand_nodes;
 		    if ( LocateOperand(MML_rover,TRUE,
 	                    r_space_nodes,r_operand_nodes,form,precedence)
 		    &&   LocateOperand(MML_rover,FALSE,
