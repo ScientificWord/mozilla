@@ -258,17 +258,17 @@ stepnumberedListItem>bodyText:first-child:first-line,
 alertstepnumberedListItem>bodyText:first-child:first-line { content: '  ';
 }
 
-
 frametitle, QTR[type="frametitle"] {
   display: block;
-  font-size: 120%;
+  font-size: 125%;
   color: rgb(100,100,200);
   -moz-user-select: text;
 }
 
-framesubtitle, QTR[type="framesubtitle" {
+framesubtitle, QTR[type="framesubtitle"] {
   display: block; 
-  font-size: 110%;
-  color: rgb(75,75,150);
+  font-size: 105%;
+  color: rgb(100,100,200);
   -moz-user-select: text;
 }
+
