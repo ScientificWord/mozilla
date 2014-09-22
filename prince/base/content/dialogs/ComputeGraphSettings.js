@@ -7,11 +7,21 @@
 Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 var gFrameModeImage = true;
 var gFrameModeTextFrame = false;
-var plotUnitsHandler = new UnitHandler();
 var graph;
 var graphnode;
 var plotwrapper;
 var plotArray = [];
+var gDefaultWidth = 200;
+var gDefaultHeight = 100;
+var gDefaultUnit = "pt";
+var gInitialSrc = "";
+var gHaveDocumentUrl = false;
+var gOriginalSrcUrl = "";
+var gSrcUrl;
+var gPreviewImageWidth = 80;
+var gPreviewImageHeight = 50;
+var gDialog;
+var gInsertNewObject = true;
 
 function getFirstElementByTagName(node, name) {
   var  element = node.getElementsByTagName(name);
@@ -27,34 +37,40 @@ function getFirstElementByTagName(node, name) {
 // if the document has an element matching an attribute name, 
 //   extract the value of the attribute and put it in the document
 function Startup(){ 
+  debugger;
   var plotwrapper, units, alist, id, i, plotNumControl, numPlots, firstActivePlot, 
     plot, theStringSource, oldval, captionnode, placeLocation, obj, frame, topWindow;
   var graphEditorControl, radiusEditorControl;
   try {
-    var gd = {};
+    gDialog = {};
     graphnode = window.arguments[2];
     var editorElement = window.arguments[0];
     graph = new Graph();
+
+    // get graph attributes
     graph.extractGraphAttributes(graphnode);
     frame = getFirstElementByTagName(graphnode,"msiframe");
     plotwrapper = getFirstElementByTagName(graphnode,"plotwrapper");
     obj = getFirstElementByTagName(graphnode, "object");
+    if (obj && obj.hasAttribute("data")) gInsertNewObject = false;
+
+    // get frame attributes
+    initFrameTab(gDialog, frame, gInsertNewObject, obj);
+
     topWindow = msiGetTopLevelWindow();
     if (topWindow && topWindow.document && topWindow.document.getElementById("vcamactive") 
          && (topWindow.document.getElementById("vcamactive").getAttribute("hidden")=="false"))
       queryVCamValues(obj, graph, graphnode, true);
 
-    units = graph["Units"];
+    units = frame["units"];
     if (!units || units.length === 0) 
     {
-      units = "cm";
-      graph["Units"] = units;
+      units = "pt";
+      frame["units"] = units;
     }
     setHasNaturalSize(false);
     setCanRotate(false);
     document.getElementById("role-image").setAttribute("hidden",(gFrameModeImage?"false":"true"));
-  //  graph.frame.extractFrameAttributes(frame, plotwrapper);
-    gd = initFrameTab(gd, frame, false, plotwrapper);
   
     alist = graph.graphAttributeList(); 
     for ( i=0; i<alist.length; i++) { 
@@ -64,7 +80,7 @@ function Startup(){
 //        document.getElementById(id).value = graph.getValue(alist[i]);
       }                                                       
     } 
-  ///  return; 
+
     plotNumControl    = document.getElementById('plotnumber');
     numPlots = graph.getNumActivePlots();  //don't count any that may be already deleted - though probably not relevant during startup
     if (numPlots ===  0){ 
@@ -91,12 +107,6 @@ function Startup(){
     }
     document.getElementById("defaultCameraCheckbox").checked = !graph.cameraValuesUserSet();
     document.getElementById("defaultviewintervals").checked = !graph.viewRangesUserSet();
-    placeLocation = graph.frame.getFrameAttribute("placeLocation");
-    if (document.getElementById("placeForceHereCheck")) document.getElementById("placeForceHereCheck").checked = (placeLocation.search("H") != -1);
-    if (document.getElementById("placeHereCheck")) document.getElementById("placeHereCheck").checked = (placeLocation.search("h") != -1);
-    if (document.getElementById("placeFloatsCheck")) document.getElementById("placeFloatsCheck").checked = (placeLocation.search("p") != -1);
-    if (document.getElementById("placeTopCheck")) document.getElementById("placeTopCheck").checked = (placeLocation.search("t") != -1);
-    if (document.getElementById("placeBottomCheck")) document.getElementById("placeBottomCheck").checked = (placeLocation.search("b") != -1);
     
     initKeyList();
   
@@ -139,7 +149,8 @@ function Startup(){
   catch(e) {
     msidump(e.message);
   }
-}                                                                                            
+}       
+
 // This part pastes data into the editor after the editor has started. 
 // implements nsIObserver
 var msiEditorDocumentObserverG = {
