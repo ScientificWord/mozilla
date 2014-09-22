@@ -1147,7 +1147,7 @@ function doMakeSnapshot()
       }
       abspath = makeRelPathAbsolute(path, editorElement);
       var snapshotDir = Components.classes["@mozilla.org/file/local;1"].
-      createInstance(Components.interfaces.nsILocalFile);
+        createInstance(Components.interfaces.nsILocalFile);
       var oldsnapshot;
       snapshotDir.initWithPath(abspath);
       oldsnapshot = snapshotDir.clone();
@@ -1155,6 +1155,12 @@ function doMakeSnapshot()
       snapshotDir = snapshotDir.parent;
       if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
       this.makeSnapshot(abspath, res);
+      if ( getOS(window) == "win")  {
+        graphicsConverter.init(window, snapshotDir);
+        abspath = graphicsConverter.copyAndConvert(abspath, true);
+
+      }
+
       insertSnapshot.call(this, abspath);
     } catch (e) {
       throw new MsiException("Error inserting plot snapshot", e);
