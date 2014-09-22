@@ -73,6 +73,7 @@
 %% \usepackage and \RequirePackage
 
 \def\usepackage{%
+  \catcode`\&=\active
   \@ifnextchar[{\@usepackagea}{\@usepackageb}}
 
 \def\@usepackagea[#1]#2{%
@@ -80,6 +81,8 @@
    \advance\msi@output by 1\relax
    \@@usepackage[#1]{#2}%
    \advance\msi@output by -1\relax
+   \catcode`\&=4
+
 }
 
 \def\@usepackageb#1{%
@@ -87,6 +90,8 @@
    \advance\msi@output by 1\relax
    \@@usepackage{#1}%
    \advance\msi@output by -1\relax
+   \catcode`\&=4
+
 }
 \def\@@usepackage{\@fileswithoptions\@pkgextension}
 
