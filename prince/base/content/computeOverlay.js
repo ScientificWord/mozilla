@@ -1075,7 +1075,12 @@ function insertSnapshot(abssnapshotpath) {
   parent = this.parentNode;
   objectlist = parent.getElementsByTagName("object");
   var snapshotUrl = msiFileURLFromAbsolutePath(abssnapshotpath);
-  var snapshotRelUrl = msiMakeRelativeUrl(snapshotUrl.spec);
+  var snapshotRelUrl;
+  if (snapshotUrl) {
+    snapshotRelUrl= msiMakeRelativeUrl(snapshotUrl.spec);
+  } else {
+    snapshotRelUrl = abssnapshotpath; // we were actually passed a relative url to begin with
+  }
   for (i = 0; i < objectlist.length;) {
     element = objectlist[i];
     if (element.hasAttribute("msisnap")) {
@@ -1156,9 +1161,9 @@ function doMakeSnapshot()
       if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
       this.makeSnapshot(abspath, res);
       if ( getOS(window) == "win")  {
-        graphicsConverter.init(window, snapshotDir);
-        abspath = graphicsConverter.copyAndConvert(abspath, true);
-
+        graphicsConverter.init(window, snapshotDir.parent);
+        // oldsnapshot is an nsIFile pointing to the .bmp file
+        abspath = graphicsConverter.copyAndConvert(oldsnapshot, false);
       }
 
       insertSnapshot.call(this, abspath);
