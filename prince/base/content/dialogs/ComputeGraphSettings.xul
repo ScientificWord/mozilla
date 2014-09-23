@@ -125,8 +125,8 @@
 
     <tabpanels>
       <vbox>
-        <vbox id = "msiFrameSize"/>
-        <vbox id="msiPlacement"/>
+        <vbox id="msiFrameSize"/>
+        <vbox id="placementGroup"/>
       </vbox>
       <vbox id="msiFrame"/>
 
