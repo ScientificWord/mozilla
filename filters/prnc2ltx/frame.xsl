@@ -6,6 +6,7 @@
     xmlns:exsl="http://exslt.org/common"
 >
 <xsl:template match="html:graph"><xsl:apply-templates /></xsl:template>
+<xsl:template match="html:caption"><xsl:apply-templates /></xsl:template>
 <xsl:template match="html:msiframe">
   <xsl:variable name="framePosType">
     <xsl:choose>
@@ -107,7 +108,9 @@
       <xsl:text>{</xsl:text>
       <xsl:choose>
         <xsl:when test="not(@rotation) or (@rotation='rot0')">
-          <xsl:text>\dimexpr </xsl:text><xsl:value-of select="$width"/><xsl:value-of select="$units"/> +2\fboxsep +2\fboxrule + .1in
+          <xsl:text>0pt</xsl:text>
+<!--             \dimexpr </xsl:text><xsl:value-of select="$width"/><xsl:value-of select="$units"/> +2\fboxsep +2\fboxrule + .1in
+ -->
         </xsl:when>
         <xsl:otherwise>
           <xsl:choose>
@@ -143,7 +146,7 @@
     <xsl:if test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
       <xsl:text>\caption{</xsl:text>
     </xsl:if>
-    <xsl:apply-templates select="html:caption[1]" mode="caption"/>
+    <xsl:apply-templates select="html:caption"/>
     <xsl:choose>
       <xsl:when test="$framePosType='ft-floating' or ($framePosType='ft-wrapped')">
         <xsl:text>}</xsl:text>
@@ -180,7 +183,7 @@
       </xsl:choose>
     </xsl:if>
     <xsl:if test="not(@border-color)">
-      <xsl:text>{#FFFFFF}</xsl:text>
+      <xsl:text>[HTML]{FFFFFF}</xsl:text>
     </xsl:if>
     <xsl:if test="@background-color">
       <xsl:text>{</xsl:text>
@@ -191,7 +194,7 @@
       <xsl:text>}</xsl:text>
     </xsl:if>
     <xsl:if test="not(@background-color)">
-      <xsl:text>{#FFFFFF}</xsl:text>
+      <xsl:text>{FFFFFF}</xsl:text>
     </xsl:if>
     <xsl:text>{</xsl:text>
   </xsl:if>
@@ -230,7 +233,7 @@
         <xsl:text>\\ </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:apply-templates select="html:caption[1]" mode="caption"/>
+    <xsl:apply-templates select="html:caption"/>
     <xsl:choose>
       <xsl:when test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
         <xsl:text>}</xsl:text>
