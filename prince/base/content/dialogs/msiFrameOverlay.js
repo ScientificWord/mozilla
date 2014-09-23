@@ -30,6 +30,10 @@ function setHasNaturalSize(istrue)
 // images frequently have a natural size
 {
   var bcaster = document.getElementById("hasNaturalSize"); 
+  if (!bcaster) {
+    hasNaturalSize = false;
+    return;
+  }
   hasNaturalSize = istrue;
   if (istrue) 
   {
@@ -478,7 +482,7 @@ try {
   }
 }
 catch(e) {
-  msidump(e.message);
+  //msidump(e.message);
 }
 
 try {
