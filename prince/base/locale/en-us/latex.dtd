@@ -18,3 +18,11 @@
 <!ENTITY  index         "Index: ">
 <!-- These are localizable entities for names that appear in prince/base/content/bindings/svjour3.xml -->
 <!ENTITY  subtitle      "Subtitle">
+<!ENTITY  titlerunning  "Running title">
+<!ENTITY  authorrunning "Running author">
+<!ENTITY  institute     "Institute">
+<!ENTITY  dedication    "Dedication">
+<!ENTITY  keywords      "Keywords">
+<!ENTITY  subclass      "Subclass">
+<!ENTITY  PACS          "PACS">
+<!ENTITY  CRclass       "CRclass">
