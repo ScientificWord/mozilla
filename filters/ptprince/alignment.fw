@@ -452,7 +452,9 @@ case CMD_ENDR:
 
 @$@<Misc commands@>+=@{@-
 case CMD_ALIGN_TAB:
-  LOG("\nERROR----Align tab");
+  LOG("\nWARNING----Align tab");
+  Typesetter::AppendTag("&amp;");
+  LOG("\n----Character " << CurTok().ChrCode());
   break;
 @}
 
