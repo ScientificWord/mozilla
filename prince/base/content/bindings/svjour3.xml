@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE xbl:bindings [
+	<!ENTITY % latexDTD SYSTEM "chrome://prince/locale/latex.dtd">
+	 %latexDTD;
+]>
+<xbl:bindings id="latexbindings"
+	xmlns:xbl="http://www.mozilla.org/xbl" 
+	xmlns:sw="http://www.sciword.com/namespaces/sciword"
+	xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml" 
+	xmlns:mml="http://www.w3.org/1998/Math/MathML" >
+
+	<xbl:binding id="fmtag-subtitle"> /*front matter   */
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand="">&subtitle;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="fmtag-titlerunning"> /*front matter   */
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand="">&titlerunning;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="fmtag-authorrunning"> /*front matter   */
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand="">&authorrunning;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="fmtag-institute"> /*front matter   */
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand="">&institute;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="fmtag-dedication"> /*front matter   */
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand="">&dedication;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="fmtag-keywords"> /*front matter   */
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand="">&keywords;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="fmtag-subclass"> /*front matter   */
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand="">&subclass;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="fmtag-PACS"> /*front matter   */
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand="">&PACS;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="fmtag-CRclass"> /*front matter   */
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+		<xbl:content>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand="">&CRclass;</html:button>
+			<xbl:children/>
+		</xbl:content>
+	</xbl:binding>
+
+</xbl:bindings>
