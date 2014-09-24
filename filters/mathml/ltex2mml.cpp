@@ -3366,18 +3366,18 @@ _LISTOFCELLS_LIST(5.35.11,_MTCELL_,5.35.12,,/mtr|/mtable,)
 _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
 */
 
-      TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
+    TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
 	  mtr->parts->parts =  mtd_head;
 	  mtd_head->sublist_owner =  mtr->parts;
 
-  // Put the current row under a node in the row list
+    // Put the current row under a node in the row list
 
 	  U8 zlistID[32];
-      UidsTozuID( 5,35,9,(U8*)zlistID );
+    UidsTozuID( 5,35,9,(U8*)zlistID );
 	  U16 zln =  strlen( (char*)zlistID );
 	  zlistID[zln]  =  ':';
-          // JCS non-standard: itoa( row_count,(char*)zlistID+zln+1,10 );
-          sprintf((char*)zlistID+zln+1, "%d", row_count);
+    // JCS non-standard: itoa( row_count,(char*)zlistID+zln+1,10 );
+    sprintf((char*)zlistID+zln+1, "%d", row_count);
 	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	  row_list_node->parts  =  mtr;
 	  mtr->sublist_owner  =  row_list_node;
