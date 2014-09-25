@@ -563,7 +563,15 @@
  \def\@newcommandA#1#2[#3]{\@ifnextchar[{\@newcommandB{#1}{#2}[#3]}{\@newcommandB{#1}{#2}[#3][]}}
 
  \def\@newcommandB#1#2[#3][#4]#5{%
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand#1{#2}[#3][#4]{#5}}}%
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand#1{#2}}%
+   \if x#3x
+   \else
+     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a[#3]}%
+   \fi
+   \if x#4x
+   \else
+     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a[#4]}\fi
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a{#5}}}%
 
  %%% #1 = optional star, #2 = command name
  \def\@renewcommand#1#2{\@ifnextchar[{\@renewcommandA{#1}{#2}}{\@renewcommandA{#1}{#2}[]}}
@@ -1376,9 +1384,9 @@
     \if@inaccent
       \@@accent{#1}{#2}%
     \else
-      \@inaccenttrue
+      %\@inaccenttrue
       \expandafter\csname \@@accent{#1}{#2}\endcsname
-      \@inaccentfalse
+      %\@inaccentfalse
     \fi
 }
 
@@ -1428,7 +1436,7 @@
 
 %% \'{\^{e}}
 
-\def\MSIUnicode#1#2{\@namedef{#1}{\ifmmode\expandafter\string\csname#1\endcsname{}\else\@hex{#2}\fi}}
+\def\MSIUnicode#1#2{\@namedef{#1}{\ifmmode\expandafter\string\csname#1 \endcsname\else\@hex{#2}\fi}}
 
 
 %% Spacing
