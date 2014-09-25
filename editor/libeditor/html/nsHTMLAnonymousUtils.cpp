@@ -352,7 +352,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     // a cell
 
     // get the enclosing table
-    if (nsEditProperty::img != focusTagAtom) {
+    if ((nsEditProperty::img != focusTagAtom) && (nsEditProperty::plotwrapper != focusTagAtom)) {
       // the element container of the selection is not an image, so we'll show
       // the resizers around the table
       nsCOMPtr<nsIDOMNode> tableNode = GetEnclosingTable(cellElement);
@@ -361,9 +361,10 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     }
   }
 
-  // we allow resizers only around images, tables, and absolutely positioned
-  // elements. If we don't have image/table, let's look at the latter case.
+  // we allow resizers only around images, tables, plots, and absolutely positioned
+  // elements. If we don't have image/plot/table, let's look at the latter case.
   if (!resizeRequested && nsEditProperty::img != focusTagAtom &&
+      nsEditProperty::plotwrapper != focusTagAtom &&
       nsEditProperty::table != focusTagAtom && nsEditProperty::object != focusTagAtom)
     focusElement = absPosElement;
 
@@ -419,12 +420,12 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
 
   if (mIsObjectResizingEnabled && focusElement &&
       IsModifiableNode(focusElement)) {
-    if (nsEditProperty::img == focusTagAtom || resizeRequested)
+    if (nsEditProperty::img == focusTagAtom || nsEditProperty::plotwrapper == focusTagAtom || resizeRequested)
       mResizedObjectIsAnImage = PR_TRUE;
     if (refreshResizing)
       res = RefreshResizers();
     else {
-      if (focusTagName.EqualsLiteral("plotwrapper"))
+      if (focusTagAtom == nsEditProperty::plotwrapper)
         res = SetFocusedPlot(focusElement);
 			if (mResizedObject)
 			{ 
