@@ -9,22 +9,38 @@
 
 <xsl:include href="latex.xsl"/>
 
-<xsl:template match="html:author[1]">
- \author{<xsl:apply-templates mode="frontmatter"/>
-   <xsl:if test="../html:address">~\\</xsl:if>
-   <xsl:apply-templates select="../html:address" mode="frontmatter" />}</xsl:template>  
+
+<!-- for the sake of the above template, -->
+<xsl:template match="html:msibr" mode="frontmatter">
+    <xsl:text>~\\</xsl:text>
+    <xsl:value-of select="$newline"/>
+</xsl:template>
+
+<xsl:template match="html:author">
+ <xsl:text>\author</xsl:text>
+ <xsl:if test="./*[1][self::html:authorid]">
+   <xsl:text>[</xsl:text>
+      <xsl:apply-templates select="./*[1]" />
+   <xsl:text>]</xsl:text>
+ </xsl:if>
+ <xsl:text>{</xsl:text>
+    <xsl:apply-templates mode="no-authorid"/>
+ <xsl:text>}</xsl:text>
+</xsl:template>
+  
  <!-- for the sake of the above template, -->
  <xsl:template match="html:msibr" mode="frontmatter">~\\
 </xsl:template>
 
-<xsl:template match="html:author">
- \author{<xsl:apply-templates mode="frontmatter"/>
-   <xsl:if test="../html:address">~\\</xsl:if>
-   <xsl:apply-templates select="../html:address" mode="frontmatter" />
- }</xsl:template>  
- <!-- for the sake of the above template, -->
- <xsl:template match="html:msibr" mode="frontmatter">~\\
+<xsl:template match="html:authorid">
+   <xsl:apply-templates/>
 </xsl:template>
+
+<xsl:template match="html:authorid" mode="no-authorid">
+</xsl:template>
+
+
+
 
 <xsl:template match="html:author" mode="building-author">
 </xsl:template>  
@@ -66,13 +82,9 @@
 <xsl:template match="html:contrib/html:authorid"></xsl:template>
 <xsl:template match="html:contrib//text()" mode="authorid"></xsl:template>
 
-<xsl:template match="html:author">
-  \author<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:author/html:authorid"></xsl:template>
-<xsl:template match="html:author//text()" mode="authorid"></xsl:template>
+<!-- xsl:template match="html:author/html:authorid"></xsl:template -->
 
-<xsl:template match="html:authorid" mode="authorid">[<xsl:apply-templates/>]</xsl:template>
+
 
 <xsl:template match="html:translator">
 \translator{<xsl:apply-templates/>}<xsl:text/>
