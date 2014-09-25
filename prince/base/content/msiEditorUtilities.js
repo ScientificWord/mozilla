@@ -1442,6 +1442,7 @@ function insertXML(editor, text, node, offset, bDump)
 function insertXMLNodes(editor, nodeList, node, offset)
 {
   var i;
+  if (!node) return;
   // we can only insert nodes under an element, not under anything else such as a text node or a
   // processing instruction node. The cursor is likely in a text node
   //
