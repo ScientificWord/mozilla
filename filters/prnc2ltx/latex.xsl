@@ -1311,7 +1311,10 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="html:frontmatter">\frontmatter<xsl:apply-templates/></xsl:template>
+<xsl:template match="html:frontmatter">
+   <xsl:value-of select="$newline"/>
+   <xsl:text>\frontmatter</xsl:text>
+</xsl:template>
 <xsl:template match="html:mainmatter">\mainmatter<xsl:apply-templates/></xsl:template>
 <xsl:template match="html:backmatter">\backmatter<xsl:apply-templates/></xsl:template>
 <xsl:template match="html:appendix">\appendix</xsl:template>
