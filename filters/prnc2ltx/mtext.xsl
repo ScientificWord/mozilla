@@ -47,9 +47,10 @@ fontstyle   - inheriting
     <xsl:variable name="content">
       <xsl:value-of select="$content.tr"/>
     </xsl:variable>
-    <xsl:call-template name="mtext-a">
+    <!-- xsl:call-template name="mtext-a">
      <xsl:with-param name="content" select="$content"/>
-    </xsl:call-template>        
+    </xsl:call-template -->
+    <xsl:value-of select="$content"/>        
   </xsl:template>
 
   <xsl:template name="mtext-a">
