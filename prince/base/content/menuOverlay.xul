@@ -180,10 +180,11 @@
                 accesskey="&insertimage.accesskey;"      
                 command="cmd_image"  
                 label="&insertImageCmd.label;"/>
-      <menuitem id="insertVideo" 
+<!--       <menuitem id="insertVideo" 
                 accesskey="&insertVideo.accesskey;"      
                 command="cmd_video"  
                 label="&insertVideoCmd.label;"/>
+ -->
       <menuitem id="insertTable" 
                 accesskey="&inserttable.accesskey;"      
                 command="cmd_InsertTable" 
@@ -324,7 +325,7 @@
       <menuitem id="helpmenuWebsite" 
                 label="&helpmenuWebsite.label;" 
                 accesskey="&helpmenuWebsite.accesskey;" 
-                observes="cmd_unimp"/>
+                oncommand="openBrowser('https://www.mackichan.com');"/>
       <menuseparator/>
       <menuitem id="helpmenuRegister" 
                 label="&helpmenuRegister.label;" 
