@@ -40,19 +40,21 @@
  <xsl:value-of select="$newline"/>
  <xsl:text>\address</xsl:text>
  <xsl:if test="./*[1][self::html:authorid]">
-   <xsl:text>[</xsl:text>
-      <xsl:apply-templates select="./*[1]" />
-   <xsl:text>]</xsl:text>
+    <xsl:apply-templates select="./*[1]" mode="authorid" />
  </xsl:if>
  <xsl:text>{</xsl:text>
-    <xsl:apply-templates mode="no-authorid"/>
+    <xsl:apply-templates/>
  <xsl:text>}</xsl:text>
 </xsl:template>
 
 
 
 <xsl:template match="html:subjclass">
-  \subjclass<xsl:apply-templates mode="subjclassyear"/>{<xsl:apply-templates/>}
+  <xsl:text>\subjclass</xsl:text>
+  <xsl:apply-templates mode="subjclassyear"/>
+  <xsl:text>{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:subjclass/html:subjclassyear"></xsl:template>
@@ -60,19 +62,34 @@
 <xsl:template match="html:subjclassyear" mode="subjclassyear">[<xsl:apply-templates/>]</xsl:template>
 
 <xsl:template match="html:urladdr">
-  \urladdr<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\urladdr</xsl:text>
+  <xsl:apply-templates mode="authorid"/>
+  <xsl:text>{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
 <xsl:template match="html:urladdr/html:authorid"></xsl:template>
 <xsl:template match="html:urladdr//text()" mode="authorid"></xsl:template>
 
 <xsl:template match="html:email">
-  \email<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\email</xsl:text>
+  <xsl:apply-templates mode="authorid"/>
+  <xsl:text>{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
 <xsl:template match="html:email/html:authorid"></xsl:template>
 <xsl:template match="html:email//text()" mode="authorid"></xsl:template>
 
 <xsl:template match="html:curraddr">
-  \curraddr<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\curraddr</xsl:text>
+  <xsl:apply-templates mode="authorid"/>
+  <xsl:text>{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
 <xsl:template match="html:curraddr/html:authorid"></xsl:template>
 <xsl:template match="html:curraddr//text()" mode="authorid"></xsl:template>
