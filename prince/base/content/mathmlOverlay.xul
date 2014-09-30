@@ -112,8 +112,8 @@
 		    <menupopup id="mathobjectsPopup" onpopupshowing="msiInitFontStyleMenu(this)">
 		      <menuitem label="&MSIfractionCmd.label;" accesskey="&MSIfractionCmd.accesskey;" key="MSIfractionKey"       command="cmd_MSIfractionCmd"/>
 		      <menuitem label="&MSIradicalCmd.label;"  accesskey="&MSIradicalCmd.accesskey;"  key="MSIradicalKey"        command="cmd_MSIradicalCmd"/>
-		      <menuitem label="&MSIsupCmd.label;"      accesskey="&MSIsupCmd.accesskey;"      key="MSIsupKey"            command="cmd_MSIsupCmd"/>
-		      <menuitem label="&MSIsubCmd.label;"      accesskey="&MSIsubCmd.accesskey;"      key="MSIsubKey"            command="cmd_MSIsubCmd"/>
+		      <menuitem label="&MSIsupCmd.label;"      accesskey="&MSIsupCmd.accesskey;"      key="MSIAltsupKey"            command="cmd_MSIsupCmd"/>
+		      <menuitem label="&MSIsubCmd.label;"      accesskey="&MSIsubCmd.accesskey;"      key="MSIAltsubKey"            command="cmd_MSIsubCmd"/>
 		      <menuitem label="&MSIdisplayCmd.label;"    accesskey="&MSIdisplayCmd.accesskey;"    key="MSIdisplayKey"    command="cmd_MSIdisplayMathCmd"/>
 		      <!--menuitem label="&MSIrootCmd.label;"     accesskey="&MSIrootCmd.accesskey;"                                command="cmd_MSIrootCmd"/ -->
 		      <menuitem label="&MSIoperatorsCmd.label;"       accesskey="&MSIoperatorsCmd.accesskey;"       command="cmd_MSIoperatorsCmd"/>
