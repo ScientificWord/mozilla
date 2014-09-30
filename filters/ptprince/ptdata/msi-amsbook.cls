@@ -27,7 +27,6 @@
 \def\address{\@ifnextchar[{\@addressa}{\@addressb}}
 
 \def\@addressa[#1]#2{%
-  \msitag{^^0a}%
   \msiopentag{address}{<address>}%
      \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
   #2%
@@ -40,7 +39,6 @@
 \def\curraddr{\@ifnextchar[{\@curraddra}{\@curraddrb}}
 
 \def\@curraddra[#1]#2{%
-  \msitag{^^0a}%
   \msiopentag{curraddr}{<curraddr>}%
      \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
   #2%
@@ -54,7 +52,6 @@
 \def\email{\@ifnextchar[{\@emaila}{\@emailb}}
 
 \def\@emaila[#1]#2{%
-  \msitag{^^0a}%
   \msiopentag{email}{<email>}%
      \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
   #2%
@@ -67,7 +64,6 @@
 \def\urladdr{\@ifnextchar[{\@urladdra}{\@urladdrb}}
 
 \def\@urladdra[#1]#2{%
-  \msitag{^^0a}%
   \msiopentag{urladdr}{<urladdr>}%
      \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
   #2%
@@ -77,7 +73,8 @@
 \def\@urladdrb#1{
   \msiopentag{urladdr}{<urladdr>}#1\msiclosetag{urladdr}{</urladdr>}}
 
-%% \date and \thanks handled by default LaTeX.
+
+\def\thanks#1{\msitag{<thanks>}#1\msitag{</thanks>}}
 
 \def\dedicatory#1{
   \msiopentag{dedicatory}{<dedicatory>}#1\msiclosetag{dedicatory}{</dedicatory>}}
@@ -91,7 +88,6 @@
 \def\subjclass{\@ifnextchar[{\@subjclassa}{\@subjclassb}}
 
 \def\@subjclassa[#1]#2{%
-  \msitag{^^0a}%
   \msiopentag{subjclass}{<subjclass>}%
      \msiopentag{subjclassyear}{<subjclassyear>}#1\msiclosetag{subjclassyear}{</subjclassyear>}%
   #2%
