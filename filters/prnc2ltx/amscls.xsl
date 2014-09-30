@@ -9,56 +9,91 @@
 
 <xsl:include href="latex.xsl"/>
 
-<xsl:template match="html:author[1]">
- \author{<xsl:apply-templates mode="frontmatter"/>
-   <xsl:if test="../html:address">~\\</xsl:if>
-   <xsl:apply-templates select="../html:address" mode="frontmatter" />}</xsl:template>  
- <!-- for the sake of the above template, -->
- <xsl:template match="html:msibr" mode="frontmatter">~\\
+
+<xsl:template match="html:msibr">
+    <xsl:text>~\\</xsl:text>
+    <xsl:value-of select="$newline"/>
 </xsl:template>
 
 <xsl:template match="html:author">
- \author{<xsl:apply-templates mode="frontmatter"/>
-   <xsl:if test="../html:address">~\\</xsl:if>
-   <xsl:apply-templates select="../html:address" mode="frontmatter" />
- }</xsl:template>  
- <!-- for the sake of the above template, -->
- <xsl:template match="html:msibr" mode="frontmatter">~\\
+ <xsl:value-of select="$newline"/>
+ <xsl:text>\author</xsl:text>
+ <xsl:if test="./*[1][self::html:authorid]">
+    <xsl:apply-templates select="./*[1]" mode="authorid"/>
+ </xsl:if>
+ <xsl:text>{</xsl:text>
+    <xsl:apply-templates/>
+ <xsl:text>}</xsl:text>
+</xsl:template>
+  
+<xsl:template match="html:authorid" mode="authorid">
+   <xsl:text>[</xsl:text>
+   <xsl:apply-templates/>
+   <xsl:text>]</xsl:text>
 </xsl:template>
 
-<xsl:template match="html:author" mode="building-author">
-</xsl:template>  
+<xsl:template match="html:authorid">
+</xsl:template>
+
+
+<xsl:template match="html:address">
+ <xsl:value-of select="$newline"/>
+ <xsl:text>\address</xsl:text>
+ <xsl:if test="./*[1][self::html:authorid]">
+    <xsl:apply-templates select="./*[1]" mode="authorid" />
+ </xsl:if>
+ <xsl:text>{</xsl:text>
+    <xsl:apply-templates/>
+ <xsl:text>}</xsl:text>
+</xsl:template>
+
+
 
 <xsl:template match="html:subjclass">
-  \subjclass<xsl:apply-templates mode="subjclassyear"/>{<xsl:apply-templates/>}
+  <xsl:text>\subjclass</xsl:text>
+  <xsl:apply-templates mode="subjclassyear"/>
+  <xsl:text>{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
+
 <xsl:template match="html:subjclass/html:subjclassyear"></xsl:template>
 <xsl:template match="html:subjclass//text()" mode="subjclassyear"></xsl:template>
 <xsl:template match="html:subjclassyear" mode="subjclassyear">[<xsl:apply-templates/>]</xsl:template>
 
 <xsl:template match="html:urladdr">
-  \urladdr<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\urladdr</xsl:text>
+  <xsl:apply-templates mode="authorid"/>
+  <xsl:text>{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
 <xsl:template match="html:urladdr/html:authorid"></xsl:template>
 <xsl:template match="html:urladdr//text()" mode="authorid"></xsl:template>
 
 <xsl:template match="html:email">
-  \email<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\email</xsl:text>
+  <xsl:apply-templates mode="authorid"/>
+  <xsl:text>{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
 <xsl:template match="html:email/html:authorid"></xsl:template>
 <xsl:template match="html:email//text()" mode="authorid"></xsl:template>
 
 <xsl:template match="html:curraddr">
-  \curraddr<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\curraddr</xsl:text>
+  <xsl:apply-templates mode="authorid"/>
+  <xsl:text>{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
 <xsl:template match="html:curraddr/html:authorid"></xsl:template>
 <xsl:template match="html:curraddr//text()" mode="authorid"></xsl:template>
 
-<xsl:template match="html:address">
-  \address<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:address/html:authorid"></xsl:template>
-<xsl:template match="html:address//text()" mode="authorid"></xsl:template>
 
 <xsl:template match="html:contrib">
   \contrib<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
@@ -66,13 +101,9 @@
 <xsl:template match="html:contrib/html:authorid"></xsl:template>
 <xsl:template match="html:contrib//text()" mode="authorid"></xsl:template>
 
-<xsl:template match="html:author">
-  \author<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:author/html:authorid"></xsl:template>
-<xsl:template match="html:author//text()" mode="authorid"></xsl:template>
+<!-- xsl:template match="html:author/html:authorid"></xsl:template -->
 
-<xsl:template match="html:authorid" mode="authorid">[<xsl:apply-templates/>]</xsl:template>
+
 
 <xsl:template match="html:translator">
 \translator{<xsl:apply-templates/>}<xsl:text/>

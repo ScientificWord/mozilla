@@ -52,7 +52,7 @@ var graphicsConverter = {
     var destFile;
     var returnPath;
     var copiedFile;
-    extension = chunks[chunks.length - 1];
+    extension = chunks[chunks.length - 1].toLowerCase();
     chunks.length = chunks.length - 1;
     baseName = chunks.join('.');
     try {
