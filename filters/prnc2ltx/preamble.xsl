@@ -224,8 +224,8 @@
     <!--put this in only if graphicx is used, which, now, it always is-->
     <!-- <xsl:if test="$packagelist//*[@package='graphicx']">  -->
     <xsl:value-of select="$newline"/>
-
     <xsl:text>\graphicspath{{../tcache/}{../gcache/}{../graphics/}}</xsl:text>
+    <xsl:value-of select="$newline"/>
     <xsl:text>\DeclareGraphicsExtensions{.pdf,.svg,.eps,.ps,.png,.jpg,.jpeg}</xsl:text>
 
 
