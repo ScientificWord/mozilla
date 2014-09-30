@@ -955,25 +955,22 @@
 <xsl:template match="html:p">\par<xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates
-  />}</xsl:template>
-<xsl:template match="html:bold">\textbf{<xsl:apply-templates
-  />}</xsl:template>
-<xsl:template match="html:italics">\textit{<xsl:apply-templates
-  />}</xsl:template>
+<xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:bold | mml:bold">\textbf{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:italics | mml:italics">\textit{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:smallbox">\fbox{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:roman">\textrm{<xsl:apply-templates
+<xsl:template match="html:roman | mml:roman">\textrm{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:sansSerif">\textsf{<xsl:apply-templates
+<xsl:template match="html:sansSerif | mml:sansSerif">\textsf{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:slanted">\textsl{<xsl:apply-templates
+<xsl:template match="html:slanted | mml:slanted">\textsl{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:smallCaps">\textsc{<xsl:apply-templates
+<xsl:template match="html:smallCaps | mml:smallCaps">\textsc{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:typewriter">\texttt{<xsl:apply-templates
+<xsl:template match="html:typewriter | mml:typewriter">\texttt{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:emphasized">\emph{<xsl:apply-templates
+<xsl:template match="html:emphasized | mml:emphasized">\emph{<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:upper">\uppercase{<xsl:apply-templates
   />}</xsl:template>
@@ -1311,7 +1308,10 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="html:frontmatter">\frontmatter<xsl:apply-templates/></xsl:template>
+<xsl:template match="html:frontmatter">
+   <xsl:value-of select="$newline"/>
+   <xsl:text>\frontmatter</xsl:text>
+</xsl:template>
 <xsl:template match="html:mainmatter">\mainmatter<xsl:apply-templates/></xsl:template>
 <xsl:template match="html:backmatter">\backmatter<xsl:apply-templates/></xsl:template>
 <xsl:template match="html:appendix">\appendix</xsl:template>
