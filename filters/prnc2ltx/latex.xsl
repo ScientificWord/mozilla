@@ -1179,7 +1179,16 @@
     <xsl:if test="@enc='1'">
       <xsl:value-of select="$newline"/>
       <xsl:text>%EndExpansion</xsl:text>
-      <xsl:value-of select="$newline"/>
+      <!-- add newline if needed -->
+      <xsl:variable name="next">
+         <xsl:value-of select="following-sibling::text()[1]" />
+      </xsl:variable>
+      <xsl:variable name="has-newline" >
+        <xsl:value-of select="substring($next,1,1)='&#xA;'" />
+      </xsl:variable>
+      <xsl:if test="not($has-newline)">
+         <xsl:value-of select="$newline"/>
+      </xsl:if>
     </xsl:if>
   </xsl:if>
 </xsl:template>
