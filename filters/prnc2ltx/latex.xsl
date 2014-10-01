@@ -688,8 +688,19 @@
 </xsl:template>
 
 <xsl:template match="html:environment">
-\begin{<xsl:value-of select="@type"/>}<xsl:apply-templates mode="envleadin"/>
-<xsl:apply-templates/>\end{<xsl:value-of select="@type"/>}\par
+  <xsl:text>\begin{</xsl:text>
+  <xsl:value-of select="@type"/>
+  <xsl:text>}</xsl:text>
+  <xsl:if test="@param">
+    <xsl:text>{</xsl:text>
+      <xsl:value-of select="@param"/>
+    <xsl:text>}</xsl:text>
+  </xsl:if>
+  <xsl:apply-templates mode="envleadin"/>
+  <xsl:apply-templates/>
+  <xsl:text>\end{</xsl:text>
+  <xsl:value-of select="@type"/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
 
 
