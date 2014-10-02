@@ -1176,6 +1176,16 @@
 <xsl:template match="html:texb">
   <xsl:if test="not(@pre) or (@pre='0')" >
     <xsl:if test="@enc='1'">
+      <!-- add newline if needed -->
+      <xsl:variable name="next">
+         <xsl:value-of select="preceding-sibling::*[last()]" />
+      </xsl:variable>
+      <xsl:variable name="has-newline" >
+         <xsl:value-of select="substring($next, string-length($next),1)='&#xA;'" />
+      </xsl:variable>
+      <xsl:if test="$has-newline='false'">
+         <xsl:value-of select="$newline"/>
+      </xsl:if>
       <xsl:text>%TCIMACRO{\TeXButton{</xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text>}{</xsl:text>
@@ -1197,7 +1207,7 @@
       <xsl:variable name="has-newline" >
         <xsl:value-of select="substring($next,1,1)='&#xA;'" />
       </xsl:variable>
-      <xsl:if test="not($has-newline)">
+      <xsl:if test="$has-newline='false'">
          <xsl:value-of select="$newline"/>
       </xsl:if>
     </xsl:if>
