@@ -111,13 +111,14 @@
     <broadcaster id="useDiscAdjust" collapsed="false" />
   </broadcasterset>
 
+  <broadcasterset id="frameoverlayBroadcasters"/>
+
   <vbox id="units"/>
   <tabbox id="outer-box" flex="1" persist="selectedIndex">
     <tabs class="tabs-top">
     <!-- <tab label="&tabbar.layout;"      selected="0" /> -->
     <tab id="msiPlacementTab"/>
     <tab id="msiFrameTab"/>
-      <tab label="&tabbar.labeling;"   selected="0" />
       <tab label="&tabbar.items;"       selected="1" />
       <tab label="&tabbar.axes;"        selected="0" />
       <tab label="&tabbar.view;"        selected="0" />
@@ -129,36 +130,6 @@
         <vbox id="placementGroup"/>
       </vbox>
       <vbox id="msiFrame"/>
-
-      <vbox id="Labeling">
-        <vbox>
-          <groupbox>        
-            <label value="&labelingkey.label;"/>
-            <textbox id="Key" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
-              forcecomplete="true"
-              completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
-              tooltiptext="&labelingkey.tooltip;"
-              maxrows="3"
-              onfocus="this.select()"
-              oninput="tagConflicts();"
-              ontextentered="tagConflicts();" />
-            <label id="uniquekeywarning" hidden="true">
-                &KeyNameConflict.label;</label>
-          </groupbox>
-          <groupbox>        
-            <label value="&labelingname.label;"/>
-            <textbox id="Name"/>
-          </groupbox>
-          <groupbox>
-            <caption label="&labelingcaption.label;"/>
-            <radiogroup id="CaptionPlace" orient="horizontal">
-              <radio id="captionNoneRadio" label="&none.label;" value="none"/>
-              <radio id="captionAboveRadio" label="&above.label;" value="top"/>
-              <radio id="captionBelowRadio" label="&below.label;" value="bottom"/>
-            </radiogroup>
-          </groupbox>
-       </vbox>
-      </vbox>   
          
       <vbox id="ItemsPlotted">
         <vbox>
