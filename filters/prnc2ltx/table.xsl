@@ -183,6 +183,23 @@
 </xsl:template>
 
 
+<xsl:template match="html:table[@ltxfloat] | mml:table[@ltxfloat]">
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\begin{table}</xsl:text>
+  <xsl:if test="not(@ltxfloat = '')">
+     <xsl:text>[</xsl:text>
+     <xsl:value-of select="@ltxfloat"/>
+     <xsl:text>]</xsl:text>
+  </xsl:if>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\begin{center}</xsl:text>
+  <xsl:call-template name="buildtable"/>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\end{center}</xsl:text>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\end{table}</xsl:text>
+  <xsl:value-of select="$newline"/>
+</xsl:template>
 
 
 <xsl:template match="html:table|mml:table">
