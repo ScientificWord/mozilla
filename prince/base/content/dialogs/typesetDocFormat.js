@@ -7,6 +7,7 @@ var secUnitHandler = new UnitHandler();
 var gNumStyles={};
 var widthElements;
 var heightElements;
+var sectionElements;
 var pagewidth;   // in mm
 var pageheight;                                                     
 var finishpage;
@@ -57,9 +58,13 @@ function initializeunits()
   var currentUnit = document.getElementById("docformat.units").selectedItem.value;
   unitHandler.initCurrentUnit(currentUnit);
   secUnitHandler.initCurrentUnit(currentUnit);
-//  unitHandler.buildUnitMenu(document.getElementById("docformat.units"),currentUnit);
-//  secUnitHandler.buildUnitMenu(document.getElementById("secoverlay.units"),currentUnit)
-//  setDecimalPlaces();
+  unitHandler.buildUnitMenu(document.getElementById("docformat.units"),currentUnit);
+  secUnitHandler.buildUnitMenu(document.getElementById("secoverlay.units"),currentUnit);
+  secUnitHandler.setEditFieldList([document.getElementById("tbsectleftheadingmargin"),
+     document.getElementById("tbsectrightheadingmargin"),
+     document.getElementById("tbsecttopheadingmargin"),
+     document.getElementById("tbsectbottomheadingmargin")]);
+  setDecimalPlaces();
 }
 
 function newValue(element, index, array)
@@ -85,10 +90,11 @@ function startup()
     window.close();                                               
     return;
   }
-  widthElements=new Array("lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
-    "sectrightheadingmargin", "sectleftheadingmargin", "pagewidth", "paperwidth");
-  heightElements=new Array("tmargin","hedd","heddsep",
-    "bodyheight","footer","footersep", "mnpush", "computedbmargin", "pageheight", "paperheight");
+  widthElements=["lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
+      "sectrightheadingmargin", "sectleftheadingmargin", "pagewidth", "paperwidth"];
+  heightElements=["tmargin","hedd","heddsep",
+      "bodyheight","footer","footersep", "mnpush", "computedbmargin", "pageheight", "paperheight"];
+  sectionElements=["tbsectleftheadingmargin","tbsectrightheadingmargin","tbsecttopheadingmargin","tbsectbottomheadingmargin"];
   var doc = editor.document;
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
   if (!preamble) {
@@ -186,8 +192,8 @@ function getEnableFlags(doc)
     var formatPageOK = progNode.getAttribute("pageFormatOK") == "true";
     document.getElementById("enablepagelayout").checked = formatPageOK;
     var secFormatOK = progNode.getAttribute("secFormatOK") == "true";
-    document.getElementById("allowsectionheaders").checked = secFormatOK;
-    enableDisableSectFormat(document.getElementById("allowsectionheaders"));
+//    document.getElementById("allowsectionheaders").checked = secFormatOK;
+//    enableDisableSectFormat(document.getElementById("allowsectionheaders"));
 
 
     var e = document.getElementById('reformatok');
@@ -697,6 +703,7 @@ function getMisc(docformat)
 	var list;
 	var node;
 	var val;
+  var i;
 	for (i = 0, len = packagecheckboxes.length; i < len; i++)
 	{
 		var name = packagecheckboxes[i];
@@ -880,8 +887,8 @@ function setDefaults()
   document.getElementById("tbmnpush").value = roundedOneline;
   document.getElementById("tbcolsep").value = roundedOneline;
   // the margin note text is just for show, but it needs to be a reasonable size
-  setHeight("topmarginnote", bodyheight*0.15);
-  setHeight("bottommarginnote", bodyheight*.1);
+  setHeight("topmarginnote", bodyheight*0.15, scale);
+  setHeight("bottommarginnote", bodyheight*.1, scale);
 }
 
 function changefinishpageSize(menu)
@@ -1092,28 +1099,34 @@ function onWindowSizeReset(initial)
     layoutPage("all");
 }
 
-function setWidth(id, units)
+function setWidth(id, units, scale)
 {
   var elt;
+  var wd = Math.round(units*scale)+"px"
   if (units < 0) units = 0;
   try {
     elt = document.getElementById(id);
-    if (elt)
-      elt.setAttribute("style","width:"+Math.round(units*scale)+"px;");
+    if (elt) {
+      elt.setAttribute("style","width:"+wd+";");
+      elt.setAttribute("width", wd);
+    }
   }
   catch(e) {
     dump(e+"\n");
   }
 }
 
-function setHeight(id, units)  
+function setHeight(id, units, scale)  
 {
   var elt;
+  var ht = Math.round(units*scale)+"px";
   if (units < 0) units = 0;
   try {
     elt = document.getElementById(id);
-    if (elt)
-      elt.setAttribute("style","height:"+Math.round(units*scale)+"px");
+    if (elt) {
+      elt.setAttribute("style","height:"+ht+";");
+      elt.setAttribute("height", ht);
+    }
   }
   catch(e) {
     dump(e+"\n");
@@ -1143,6 +1156,17 @@ function setDecimalPlaces()
     elt.setAttribute("increment", increment);
     elt.setAttribute("decimalplaces", places);
   }
+  u = secUnitHandler.units[secUnitHandler.getCurrentUnit()];
+  increment = u.increment;
+  places = u.places;
+  for (i=0; i<sectionElements.length; i++)
+  {
+    s=sectionElements[i];
+    elt = document.getElementById(s);
+    elt.setAttribute("increment", increment);
+    elt.setAttribute("decimalplaces", places);
+  }
+
   dump("Setting 'increment' to "+increment+" and 'decimalplaces' to "+places+"\n");
 }    
 
@@ -1229,7 +1253,7 @@ function layoutPage(which)
     for (i=0; i<widthElements.length; i++)
     {
       s=widthElements[i];
-      setWidth(s,document.getElementById("tb"+s).value);
+      setWidth(s,document.getElementById("tb"+s).value, scale);
       if (s == "mnbody" && document.getElementById("tb"+s).value == 0)
       {
         document.getElementById("disablemarginnotes").hidden=true;
@@ -1239,18 +1263,18 @@ function layoutPage(which)
     for (i=0; i<heightElements.length; i++)
     {
       s=heightElements[i];
-      setHeight(s,document.getElementById("tb"+s).value);
+      setHeight(s,document.getElementById("tb"+s).value, scale);
     }
   }
   else if (containedin(widthElements,which))
   { 
-    setWidth(which,document.getElementById("tb"+which).value);
-    if (hcenter) setWidth("lmargin", document.getElementById("tblmargin").value);
+    setWidth(which,document.getElementById("tb"+which).value, scale);
+    if (hcenter) setWidth("lmargin", document.getElementById("tblmargin").value, scale);
   }
   else if (containedin(heightElements,which))
   { 
-    setHeight(which,document.getElementById("tb"+which).value);
-    if (vcenter) setHeight("tmargin", document.getElementById("tbtmargin").value);
+    setHeight(which,document.getElementById("tb"+which).value, scale);
+    if (vcenter) setHeight("tmargin", document.getElementById("tbtmargin").value, scale);
   }
   // now check for overflows and set computed values
   updateComputedMargins();
@@ -2311,10 +2335,10 @@ function switchSectionUnits()
 {
   var newUnit = document.getElementById("secoverlay.units").selectedItem.value;
   if (newUnit !== secUnitHandler.currentUnit) secUnitHandler.setCurrentUnit(newUnit);
-  return;
-  var factor = 0;//convert(1, sectionUnit, newUnit);
-  dump("section factor is "+factor+"\n");
-  sectScale = sectScale/factor;
+  // return;
+  // var factor = 0;//convert(1, sectionUnit, newUnit);
+  // dump("section factor is "+factor+"\n");
+  // sectScale = sectScale/factor;
   secUnitHandler.setSectionUnit(newUnit); // this has to be set before unitRound and setDecimalPlaces are called
   sectSetDecimalPlaces();
 //    document.getElementById("tbsectrightheadingmargin").value = unitRound(factor*document.getElementById("tbsectrightheadingmargin").value);
@@ -2623,13 +2647,18 @@ function removeruleorspace()
 
 function reviseruleorspace(element)
 {
-  if (element.getAttribute("role")=="rule")
-    window.openDialog("chrome://prince/content/addruleforsection.xul", 
-      "addruleforsection", "chrome,close,titlebar,resizable,alwaysRaised",element, secUnitHandler.currentUnit);
-  else if (element.getAttribute("role")=="vspace")
-    window.openDialog("chrome://prince/content/vspaceforsection.xul", 
-      "vspaceforsection", "chrome,close,titlebar,resizable,alwaysRaised",element, secUnitHandler.currentUnit);
+   if (element.id === "") {}
 }                                
+
+function setDim(element, id) {
+  var dim = element.value;
+  if (id === 'topmargin' || id === 'bottommargin') {
+    setHeight(id, secUnitHandler.getValueAs(dim, 'px'), sectScale);
+  }
+  else {
+    setWidth(id, secUnitHandler.getValueAs(dim, 'px'), sectScale);
+  }
+}
 
 // add "old style" fonts (those with TeX metrics) to the menu. We get them from a file mathfonts.xml
 function addOldFontsToMenu(menuPopupId)
