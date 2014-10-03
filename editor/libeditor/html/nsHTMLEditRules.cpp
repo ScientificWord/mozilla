@@ -9236,6 +9236,8 @@ nsresult
 nsHTMLEditRules::RemoveStructureAboveSelection(nsISelection *selection)
 {
   printf("RemoveStructureAboveSelection\n");
+  nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
+
   nsCOMPtr<nsIDOMRange> domRange;
   nsresult rv = selection->GetRangeAt(0, getter_AddRefs(domRange));
   NS_ENSURE_SUCCESS(rv, rv);
@@ -9269,6 +9271,7 @@ nsresult
 nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
 {
   nsresult res;
+  nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
   nsCOMArray<nsIDOMNode> arrayOfNodes;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMNode> outLeftNode;
@@ -9331,12 +9334,11 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
       {
         mEditor->SplitNodeDeep( node, nodes[i], 0, &offset, PR_TRUE, &outLeftNode, &outRightNode);
         // Now we need to move nodes[1] to the split position, just past outLeftNode in node's parent
-        res = nsEditor::GetNodeLocation(node, address_of(newParent), &parentOffset);
-        res = mEditor->MoveNode((nsIDOMNode *)nodes[i], (nsIDOMNode *)newParent, parentOffset);
+        mEditor->RemoveContainer(outRightNode);
       }
     }
-
   }
+  nsEditorUtils::JiggleCursor(mHTMLEditor, selection, nsIEditor::eNext);
 }
 /*
 ///////////////////////////////////////////////////////////////////////////
@@ -9418,23 +9420,23 @@ nsHTMLEditRules::ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const ns
       {
         // since we are applying this to existing text, take out the contents of newNode
         nsCOMPtr<nsIDOMNode> child;
+        nsCOMPtr<nsIDOMNode> sibling;
+
         res = newNode->GetFirstChild(getter_AddRefs(child));
-        while (child && (res==NS_OK))
+        while (child/* && (res==NS_OK)*/)
         {
+        
+          child->GetNextSibling(getter_AddRefs(sibling));
           res = mHTMLEditor->DeleteNode(child);
-          if (res != NS_OK) break;
-          res = newNode->GetFirstChild(getter_AddRefs(child));
+//          if (res != NS_OK) break;
+          child = sibling;
         }
-        elem = do_QueryInterface(newNode);
-  			PRBool success;
-  			if (newNode) res = mHTMLEditor->SetCursorInNewHTML(elem, &success);
-        if (!success)
-        {
-          nsCOMPtr<nsISelection>selection;
-          nsresult res = mHTMLEditor->GetSelection(getter_AddRefs(selection));
-          res = selection->Collapse(newNode,0);
-        }
-      }
+		    elem = do_QueryInterface(newNode);
+		    nsCOMPtr<nsISelection>selection;
+		    nsresult res = mHTMLEditor->GetSelection(getter_AddRefs(selection));
+		    res = selection->Collapse(newNode,0);
+		    nsEditorUtils::JiggleCursor(mHTMLEditor, selection, nsIEditor::ePrevious);
+		  }
       else
       {
         res = mHTMLEditor->CreateHTMLContent(*aEnvironmentTag, getter_AddRefs(newContent));
