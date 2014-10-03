@@ -335,7 +335,7 @@ Graph.prototype = {
     var DOMGs = DOMgraph.getElementsByTagName("graphSpec")[0];
     var DOMPw = DOMgraph.getElementsByTagName("plotwrapper")[0];
     var DOMFrame = DOMgraph.getElementsByTagName("msiframe")[0];
-    var DOMCaption = DOMFrame.getElementsByTagName("imagecaption")[0];
+    var DOMCaption = DOMFrame.getElementsByTagName("caption")[0];
     var attr, value, alist, i, domPlots, plot, domPlotLabels, status, caption, captionloc, child, optnum;
     var graphData = new graphVarData(this);
     this.frame.reviseFrameDOMElement(DOMFrame, DOMPw, forComp, editorElement);
@@ -433,20 +433,20 @@ Graph.prototype = {
       removeStylePropFromNode( DOMFrame, 'caption-side', editor);
       if (captionNode) editor.deleteNode(captionNode);
     }
-    caption = this.getGraphAttribute("Caption");
-    if (caption && caption.length > 0) {
-      if (DOMCaption) {
-        while (DOMCaption.firstChild) {
-          editor.deleteNode(DOMCaption.firstChild);
-        }
-      }
-      else {
-        DOMCaption = document.createElementNS(htmlns,"imagecaption");
-        DOMFrame.appendChild(DOMCaption);
-      }
-      caption="<wrapper>"+caption+"</wrapper>";
+    // caption = this.getGraphAttribute("Caption");
+    // if (caption && caption.length > 0) {
+    //   if (DOMCaption) {
+    //     while (DOMCaption.firstChild) {
+    //       editor.deleteNode(DOMCaption.firstChild);
+    //     }
+    //   }
+    //   else {
+    //     DOMCaption = document.createElementNS(htmlns,"imagecaption");
+    //     DOMFrame.appendChild(DOMCaption);
+    //   }
+      caption="<caption>"+caption+"</caption>";
       insertXML(editor, caption, DOMCaption, 0);
-    }
+    //}
   },
 
   extractGraphAttributes: function (DOMGraph) {
@@ -494,14 +494,14 @@ Graph.prototype = {
   },
   extractCaption: function (DOMGraph) {
     var DOMCaption, basenode, serialized;
-    DOMCaption = DOMGraph.getElementsByTagName("imagecaption");
+    DOMCaption = DOMGraph.getElementsByTagName("caption");
     if (DOMCaption.length > 0) {
       DOMCaption = DOMCaption[0];
     }
     else {
       return;
     }
-    basenode = DOMCaption.getElementsByTagName("imagecaption");
+    basenode = DOMCaption.getElementsByTagName("caption");
     if (basenode.length > 0) {
       basenode = basenode[0];
     }
@@ -1783,9 +1783,10 @@ Frame.prototype = {
   FRAMEATTRIBUTES: ["placement", "floatPlacement", "border",
           "HMargin", "VMargin", "padding", "BGColor", "borderColor",
           "placeLocation", "textalignment"],
-  FRAMEDOMATTRIBUTES: ["units", "sidemargin", "topmargin", "pos", "placeLocation", "placement",
-    "captionloc", "textalignment", "req"],
-  WRAPPERATTRIBUTES: ["borderw", "padding", "ltx_height", "ltx_width", "border-color", "background-color"],
+  FRAMEDOMATTRIBUTES: ["pos", "sidemargin", "topmargin", "placeLocation", "textalignment", "width", "height",
+  "units",  "borderw", "padding", "background-color", "border-color", "ltxfloat",
+    "captionloc", "req"],
+  // WRAPPERATTRIBUTES: ["borderw", "padding", "ltx_height", "ltx_width", "border-color", "background-color"],
   isModified: function (x) {
     return (this.modFlag[x]);
   },
@@ -1838,16 +1839,16 @@ Frame.prototype = {
             this.setFrameAttribute("VMargin", DOMFrame.getAttribute(att));
             break;
           case "pos":
-            this.setFrameAttribute("placement", DOMFrame.getAttribute(att));
+            this.setFrameAttribute("pos", DOMFrame.getAttribute(att));
             break;
           case "placeLocation":
             if (DOMFrame.getAttribute(att).length > 0) {
               this.setFrameAttribute("placeLocation", DOMFrame.getAttribute(att));
             }
             break;
-          case "placement":
+          case "ltxfloat":
             if (DOMFrame.getAttribute("pos") === "float") {
-              this.setFrameAttribute("floatPlacement", DOMFrame.getAttribute(att));
+              this.setFrameAttribute("ltxfloat", DOMFrame.getAttribute(att));
             }
             break;
           case "textalignment":
@@ -1867,36 +1868,36 @@ Frame.prototype = {
         }
       }
     }
-    attlist = this.WRAPPERATTRIBUTES;
-    len = attlist.length;
-    if (DOMPw){
-    for (i = 0; i < len; i++) {
-      att = attlist[i];
-        if (DOMPw.hasAttribute(att)) {
-          switch (att) {
-            case "borderw":
-              this.setFrameAttribute("border", DOMPw.getAttribute(att));
-              break;
-            case "padding":
-              this.setFrameAttribute("padding", DOMPw.getAttribute(att));
-              break;
-//            case "imageheight":
-//              graph.setGraphAttribute("Height", DOMPw.getAttribute(att));
-//              break;
-//            case "imagewidth":
-//              this.setFrameAttribute("Width", DOMPw.getAttribute(att));
-//              break;
-            case "border-color":
-              this.setFrameAttribute("borderColor", hexcolor(DOMPw.getAttribute(att)));
-              break;
-            case "background-color":
-              this.setFrameAttribute("BGColor", hexcolor(DOMPw.getAttribute(att)));
-              break;
-            default: break;
-          }
-        }
-      }
-    }
+//     attlist = this.WRAPPERATTRIBUTES;
+//     len = attlist.length;
+//     if (DOMPw){
+//     for (i = 0; i < len; i++) {
+//       att = attlist[i];
+//         if (DOMPw.hasAttribute(att)) {
+//           switch (att) {
+//             case "borderw":
+//               this.setFrameAttribute("border", DOMPw.getAttribute(att));
+//               break;
+//             case "padding":
+//               this.setFrameAttribute("padding", DOMPw.getAttribute(att));
+//               break;
+// //            case "imageheight":
+// //              graph.setGraphAttribute("Height", DOMPw.getAttribute(att));
+// //              break;
+// //            case "imagewidth":
+// //              this.setFrameAttribute("Width", DOMPw.getAttribute(att));
+// //              break;
+//             case "border-color":
+//               this.setFrameAttribute("borderColor", hexcolor(DOMPw.getAttribute(att)));
+//               break;
+//             case "background-color":
+//               this.setFrameAttribute("BGColor", hexcolor(DOMPw.getAttribute(att)));
+//               break;
+//             default: break;
+//           }
+//         }
+//       }
+    // }
   },
   
   reviseFrameDOMElement: function (DOMFrame, DOMPw, forComp, editorElement) {
@@ -1924,6 +1925,7 @@ Frame.prototype = {
           break;
         case "Height":
           height = Number(graph.getGraphAttribute(att));
+          editor.setAttribute(DOMFrame, "ltxheight", height);
           heightinpx = unitHandler.getValueAs(height, "px");
           editor.setAttribute(DOMPw, "height", height);
           pwStyle += "height: "+ heightinpx + "px; ";
