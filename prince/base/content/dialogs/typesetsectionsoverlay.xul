@@ -14,251 +14,240 @@
     onload="sectStartup(); setalign('left');" >
 
   <tabpanel id="docformatSectionsPanel" orient="vertical">
-<!--    <script type="application/x-javascript" src="chrome://prince/content/typesetsectionsoverlay.js"/>-->
+    <!--    <script type="application/x-javascript" src="chrome://prince/content/typesetsectionsoverlay.js"/>-->
     <broadcasterset>
-      <broadcaster id="atpagetop" hidden="false"/>
+      <broadcaster hidden="false" id="atpagetop"/>
       <broadcaster id="leftalignment" msicollapsed="false"/>
       <broadcaster id="rightalignment" msicollapsed="true"/>
-      <broadcaster id="notcenteralignment" hidden="false"/>
-      <broadcaster id="toporbottommargin" disabled="true"/>
-      <broadcaster id="notmargin" disabled="true"/>
-    </broadcasterset>   
-
-     <hbox>
-       <vbox>
+      <broadcaster hidden="false" id="notcenteralignment"/>
+      <broadcaster disabled="true" id="toporbottommargin"/>
+      <broadcaster disabled="true" id="notmargin"/>
+    </broadcasterset>
+    <hbox>
+      <vbox>
         <label>&SectionType.label;</label>
-         <menulist id="sections.name" oncommand="switchSectionType();" persist="value" >
-           <menupopup>
-             <menuitem id="sections.part" label="&Part.label;" value="-1"/>
-             <menuitem id="sections.chapter" label="&Chapter.label;" value="0"/>
-             <menuitem id="sections.section" selected="true" label="&Section.label;" value="1"/>
-             <menuitem id="sections.subsection" label="&Subsection.label;" value="2"/>
-             <menuitem id="sections.subsubsection" label="&Subsubsection.label;" value="3"/>
-             <menuitem id="sections.paragraph" label="&Paragraph.label;" value="4"/>
-             <menuitem id="sections.subparagraph" label="&Subparagraph.label;" value="5"/>
-           </menupopup>
-         </menulist>
-       </vbox>
-       <vbox>
-         <label value="&NumberStyle.label;"/>
-         <menulist id="sections.numstyle" persist="value" oncommand="setNumStyle(this);" >
-           <menupopup>
-             <menuitem id="default" selected="true" label="&Default.label;" value=""/>
-             <menuitem id="none" label="&DontShow.label;" value="none"/>
-             <menuitem id="arabic" label="&Arabic.label;" value="arabic"/>
-             <menuitem id="roman" label="&LowercaseRoman.label;" value="roman"/>
-             <menuitem id="Roman" label="&UppercaseRoman.label;" value="Roman"/>
-             <menuitem id="Alph" label="&UppercaseLetters.label;" value="Alph"/>
-             <menuitem id="alph" label="&LowercaseLetters.label;" value="alph"/>
-           </menupopup>
-         </menulist>
-       </vbox>
-     </hbox>
- 
+        <menulist id="sections.name" oncommand="switchSectionType();" persist="value">
+          <menupopup>
+            <menuitem id="sections.part" label="&Part.label;" value="-1"/>
+            <menuitem id="sections.chapter" label="&Chapter.label;" value="0"/>
+            <menuitem id="sections.section" label="&Section.label;" selected="true" value="1"/>
+            <menuitem id="sections.subsection" label="&Subsection.label;" value="2"/>
+            <menuitem id="sections.subsubsection" label="&Subsubsection.label;" value="3"/>
+            <menuitem id="sections.paragraph" label="&Paragraph.label;" value="4"/>
+            <menuitem id="sections.subparagraph" label="&Subparagraph.label;" value="5"/>
+          </menupopup>
+        </menulist>
+      </vbox>
+      <vbox>
+        <label value="&NumberStyle.label;"/>
+        <menulist id="sections.numstyle" oncommand="setNumStyle(this);" persist="value">
+          <menupopup>
+            <menuitem id="default" label="&Default.label;" selected="true" value=""/>
+            <menuitem id="none" label="&DontShow.label;" value="none"/>
+            <menuitem id="arabic" label="&Arabic.label;" value="arabic"/>
+            <menuitem id="roman" label="&LowercaseRoman.label;" value="roman"/>
+            <menuitem id="Roman" label="&UppercaseRoman.label;" value="Roman"/>
+            <menuitem id="Alph" label="&UppercaseLetters.label;" value="Alph"/>
+            <menuitem id="alph" label="&LowercaseLetters.label;" value="alph"/>
+          </menupopup>
+        </menulist>
+      </vbox>
+    </hbox>
     <separator class="groove"/>
     <!-- JLF to Barry 7/4/2012 -->
-      <rawlabel id="rawlabel" label = "&Enableoverridingheaderformats.label;"/>
-      <checkbox id="allowsectionheaders" checked="false" label="&Enableoverridingheaderformats.label;"
-        oncommand="enableDisableSectFormat(this);"/>
-      <broadcaster id="secredefok" disabled="true"/>
+    <rawlabel id="rawlabel" label="&Enableoverridingheaderformats.label;"/>
+    <checkbox checked="false" id="allowsectionheaders" label="&Enableoverridingheaderformats.label;" oncommand="enableDisableSectFormat(this);"/>
+    <broadcaster disabled="true" id="secredefok"/>
     <separator class="groove"/>
     <hbox>
-      <vbox flex="1"/>
-      <vbox>
-        <label observes="secredefok" value="&StartNewPage.label;"/>
-        <checkbox observes="secredefok" id="sectionstartnewpage" persist="checked" oncommand="settopofpage(this);"/>
-      </vbox>
-      <vbox>
-       <label observes="secredefok">&docformatUnits;</label>
-       <menulist observes="secredefok" id="secoverlay.units" style="width: 8em" value="in" persist="value" 
-              oncommand="switchSectionUnits();" >
-         <menupopup id="secoverlay.unitspopup" style="width: 12em;">
-           <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
-           <menuitem id="docformat.cm" label="&docformatCentimeter;" value="cm"/>
-           <menuitem id="docformat.mm" label="&docformatMillimeter;" value="mm"/>
-           <menuitem id="docformat.pt" label="&docformatPoints;" value="pt"/>
-         </menupopup>
-       </menulist>
-      </vbox>
-      <vbox flex="1"/>
+      <hbox style="width: 40px;"/>
+      <hbox style="width: 375px;">
+        <vbox flex="1"/>
+        <vbox>
+          <label align="center" observes="secredefok" value="&StartNewPage.label;"/>
+          <checkbox align="center" id="sectionstartnewpage" observes="secredefok" oncommand="settopofpage(this);" persist="checked"/>
+        </vbox>
+        <vbox flex="1"/>
+      </hbox>
     </hbox>
     <separator class="groove"/>
     <spacer/>
     <hbox>
-      <vbox flex="1"/>
-      <vbox>
-       <label observes="secredefok" value="&HeaderStyle.label;"/>
-       <menulist observes="secredefok" id="sections.style" persist="value" >
-         <menupopup style="width: 10 em;">
-           <menuitem id="sections.hang" selected="true" label="&Hang.label;" value="hang"/>
-           <menuitem id="sections.runin" label="&Runin.label;" value="runin"/>
-           <menuitem id="sections.display" label="&Display.label;" value="display"/>
-           <menuitem id="sections.block" label="&Block.label;" value="block"/>
-           <menuitem id="sections.wrap" label="&Wrap.label;" value="wrap"/>
-           <menuitem id="sections.leftmargin" label="&LeftMargin.label;" value="leftmargin"/>
-           <menuitem id="sections.rightmargin" label="&RightMargin.label;" value="rightmargin"/>
-         </menupopup>
-       </menulist>
-      </vbox>
-      <vbox>
-       <label observes="secredefok" value="&Alignment.label;"/>
-       <radiogroup id="sections.align" orient="horizontal">
-         <radio observes="secredefok" id="sectionleft" label="&AlignmentLeft.label;" value="l" selected="true" oncommand="setalign('l');"/>
-         <radio observes="secredefok" id="sectioncenter" label="&AlignmentCenter.label;" value="c" oncommand="setalign('c');"/>
-         <radio observes="secredefok" id="sectionright" label="&AlignmentRight.label;" value="r" oncommand="setalign('r');"/>
-       </radiogroup>
-      </vbox>
-      <vbox flex="1"/>
+      <hbox style="width: 40px;"/>
+      <hbox style="width: 375px;">
+        <vbox flex="1"/>
+        <vbox>
+          <label observes="secredefok" value="&HeaderStyle.label;"/>
+          <menulist id="sections.style" observes="secredefok" persist="value">
+            <menupopup style="width: 10 em;">
+              <menuitem id="sections.hang" label="&Hang.label;" selected="true" value="hang"/>
+              <menuitem id="sections.runin" label="&Runin.label;" value="runin"/>
+              <menuitem id="sections.display" label="&Display.label;" value="display"/>
+              <menuitem id="sections.block" label="&Block.label;" value="block"/>
+              <menuitem id="sections.wrap" label="&Wrap.label;" value="wrap"/>
+              <menuitem id="sections.leftmargin" label="&LeftMargin.label;" value="leftmargin"/>
+              <menuitem id="sections.rightmargin" label="&RightMargin.label;" value="rightmargin"/>
+            </menupopup>
+          </menulist>
+        </vbox>
+        <vbox>
+          <label observes="secredefok" value="&Alignment.label;"/>
+          <radiogroup id="sections.align" orient="vertical">
+            <radio id="sectionleft" label="&AlignmentLeft.label;" observes="secredefok" oncommand="setalign('l');" selected="true" value="l"/>
+            <radio id="sectioncenter" label="&AlignmentCenter.label;" observes="secredefok" oncommand="setalign('c');" value="c"/>
+            <radio id="sectionright" label="&AlignmentRight.label;" observes="secredefok" oncommand="setalign('r');" value="r"/>
+          </radiogroup>
+        </vbox>
+        <vbox flex="1"/>
+      </hbox>
     </hbox>
-     <separator class="groove"/>
+    <separator class="groove"/>
     <spacer/>
     <hbox style="height:10px"/>
     <vbox>
       <hbox align="center" style="overflow:visible;">
         <!-- vbox style="width:50px; height:60px"/ -->
         <vbox>
-					<hbox>
-					  <vbox style="width: 40px"/>
-	          <vbox role="textarea" style="height:60px; width:375px" observes="atpagetop">
-	            <vbox flex="1"/>
-	            <hbox><hbox flex="1"/><label>&text.label;</label>
-	            <hbox flex="1"/></hbox>
-	            <vbox flex="1"/>
-	          </vbox>
-					  <vbox style="width: 40px"/>
-	        </hbox> 
-	        <hbox>  
-	          <hbox id="sectleftmargin" width="40px"/>
-	          <hbox id="sectionparts" pack="start" style="overflow:visible;">
-	            <vbox id="sectleftheadingmargin" role="sectionmargin"  observes="leftalignment"
-	              tooltiptext="&SetLeftIndentWidth.label;" width="30px"
-	              onclick="toggleselection(this);document.getElementById('tbsectleftheadingmargin').focus();"/>
-	            <vbox style="overflow:visible;">
-	              <vbox id="topmargin" pack="start" dir="rtl" role="sectionlayer" tooltiptext="&SetTopMarginOrEnterText.tooltip;"
-	                style="height:20px; width:200px;" onclick="toggleselection(this);">   
-                <deck id="tso_toprules" selectedIndex="0">
-                  <hbox>
-                    <label class="gray_instruction" value="&RulesAboveHeading.label;"/>
-                  </hbox>
-                  <vbox id = "toprules" pack="start" dir="reverse">                
-	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
-	                </vbox>
-	              </deck>
+          <hbox>
+            <vbox style="width: 40px"/>
+            <vbox observes="atpagetop" role="textarea" style="height:60px; width:375px">
+              <vbox flex="1"/>
+              <hbox>
+                <hbox flex="1"/>
+                <label>&text.label;</label>
+                <hbox flex="1"/>
+              </hbox>
+              <vbox flex="1"/>
+            </vbox>
+            <vbox style="width: 40px"/>
+          </hbox>
+          <hbox>
+            <hbox id="sectleftmargin" width="40px"/>
+            <hbox id="sectionparts" pack="start" style="overflow:visible;">
+              <vbox id="sectleftheadingmargin" role="sectionmargin"  observes="leftalignment"
+                tooltiptext="&SetLeftIndentWidth.label;" width="30px"
+                onclick="toggleselection(this);document.getElementById('tbsectleftheadingmargin').focus();"/>
+              <vbox style="overflow:visible;">
+                <vbox dir="rtl" id="topmargin" onclick="toggleselection(this);document.getElementById('tbsecttopheadingmargin').focus();" pack="start" role="sectionlayer" style="height:20px; width:200px;" tooltiptext="&topheadingmargin.tooltip;">
+                  <vbox hidden="true" onclick="reviseruleorspace(this)" role="vspace" tlwidth="narrow"/>
                 </vbox>
-								<deck id="tso_template" selectedIndex="0">
-                  <hbox onclick='textEditor();'>
-                    <label class="gray_instruction" value="&EnterFormatTemplate.label;"/>
-                  </hbox>
-                  <vbox id="sectiontextareacontainer"  style="overflow: hidden; width:200px; min-height:20px"  >
-		                <iframe id="sectiontextarea" tooltiptext="&EnterSectionText.tooltip;"
-		                  onclick="toggleselection(this);"	
-		                  src="chrome://prince/content/StdDialogShell.xhtml"> 
-		                </iframe> 
-		              </vbox>
-                </deck>                                                                                                                         
-              <!--editor  editortype="html" type="content" width="200" height="40"  id="sectiontitle-frame"  context="msiEditorContentContext"
-	                style="min-height:20px; min-width:200px;" /-->
-	              <vbox id="bottommargin" role="sectionlayer" pack="start" tooltiptext="&SetTopMarginOrEnterText.tooltip;"
-	                style="height:20px; width:200px; overflow:visible" onclick="toggleselection(this);">
-	                <deck id="tso_bottomrules" selectedIndex="0">
-                    <hbox >
-                      <label class="gray_instruction" value="&RulesBelowHeading.label;"/>
-                    </hbox>
-                    <vbox id="bottomrules" pack="start">
-	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
-	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
-                    </vbox>
-                  </deck> 
-	              </vbox>
-	            </vbox>  
-	            <vbox id="sectrightheadingmargin" width="30px" role="sectionmargin"	 msicollapsed="true"
-	              tooltiptext="&SetRightIndentWidth.label;" onclick="toggleselection(this);document.getElementById('tbsectrightheadingmargin').focus();" observes="rightalignment"/>
-	          </hbox>
-	          <hbox id="sectrightmargin" width="40px"  />
-					</hbox>
-					<hbox>
-						<hbox style="width: 40px"/>
-	          <vbox role="textarea" style="height:60px; width:375px">
-	            <vbox flex="1"/>
-	            <hbox><hbox flex="1"/><label>&text.label;</label><hbox flex="1"/></hbox>
-	            <vbox flex="1"/>
-	          </vbox> 
-						<hbox style="width: 40px"/>
-	        </hbox>  
+                <vbox id="sectiontextareacontainer" style="overflow: hidden; width:200px; min-height:20px">
+                  <iframe id="sectiontextarea" tooltiptext="&EnterSectionText.tooltip;"
+                    onclick="toggleselection(this);"  
+                    src="chrome://prince/content/StdDialogShell.xhtml"> 
+                  </iframe> 
+                </vbox>
+                <!--editor  editortype="html" type="content" width="200" height="40"  id="sectiontitle-frame"  context="msiEditorContentContext"
+                  style="min-height:20px; min-width:200px;" /-->
+                <vbox id="bottommargin" onclick="toggleselection(this);document.getElementById('tbsectbottomheadingmargin').focus();" pack="start" role="sectionlayer" style="height:20px; width:200px; overflow:visible" tooltiptext="&bottomheadingmargin.tooltip;">
+                  <vbox hidden="true" onclick="reviseruleorspace(this)" role="vspace" tlwidth="narrow"/>
+                </vbox>
+              </vbox>
+              <vbox id="sectrightheadingmargin" msicollapsed="true" observes="rightalignment" onclick="toggleselection(this);document.getElementById('tbsectrightheadingmargin').focus();" role="sectionmargin" tooltiptext="&SetRightIndentWidth.label;" width="30px"/>
+            </hbox>
+            <hbox id="sectrightmargin" width="40px"/>
+          </hbox>
+          <hbox>
+            <hbox style="width: 40px"/>
+            <vbox role="textarea" style="height:60px; width:375px">
+              <vbox flex="1"/>
+              <hbox>
+                <hbox flex="1"/>
+                <label>&text.label;</label>
+                <hbox flex="1"/>
+              </hbox>
+              <vbox flex="1"/>
+            </vbox>
+            <hbox style="width: 40px"/>
+          </hbox>
         </vbox>
       </hbox>
     </vbox>
     <separator class="groove"/>
-    <spacer/>
-    <hbox id="marginsection" observes="notcenteralignment" align="center" onkeypress="sectHandleChar(event);">
-      <vbox flex="1"/>
-      <vbox>
-        <label value="&LeftHeadingIndent.label;">
-          <observes element="secredefok" attribute="disabled"/>
-          <observes element="leftalignment"	attribute="msicollapsed"/>
-        </label>
-        <textbox id="tbsectleftheadingmargin" type="number" style="width:5em" min="-300" increment="1"
-          tooltip="&leftindentheading.tooltip;" value="0" onfocus="toggleselection(document.getElementById('sectleftheadingmargin'));">
-          <observes element="secredefok" attribute="disabled"/>
-          <observes element="leftalignment" attribute="hidden"/>
-        </textbox>
-        <observes element="leftalignment"	attribute="msicollapsed"/>
-      </vbox>
-      <spacer/>
-      <label observes="notcenteralignment">
-        Use negative size to outdent
-        <observes element="secredefok" attribute="disabled"/>
-      </label>
-      <spacer/>
-      <vbox>
-        <label value="&RightHeadingIndent.label;" >
-          <observes element="secredefok" attribute="disabled"/>
-          <observes element="rightalignment"	attribute="msicollapsed"/>
-        </label>
-        <textbox id="tbsectrightheadingmargin" type="number" style="width:5em" min="-300" increment="1" 
-          tooltip="&rightindentheading.tooltip;" value="30" onfocus="toggleselection(document.getElementById('sectrightheadingmargin'));">
-          <observes element="secredefok" attribute="disabled"/>
-          <observes element="rightalignment" attribute="hidden"/>
-        </textbox>
-        <observes element="rightalignment"	attribute="msicollapsed"/>
-      </vbox>
-      <vbox flex="1"/>
+    <spacer height="15px"/>
+    <hbox>
+      <hbox style="width: 40px;" />
+      <grid style="width: 375px;" >
+        <columns>
+          <column/>
+          <column/>
+          <column/>
+        </columns>
+        <rows>
+          <row>
+            <vbox/>
+            <vbox align="center">
+              <label observes="secredefok" value="&docformatUnits;"/>
+              <menulist id="secoverlay.units" observes="secredefok" oncommand="switchSectionUnits();" persist="value" style="width: 8em" value="in">
+                <menupopup id=" secoverlay.unitspopup" style="width: 12em;">
+                  <menuitem id="docformat.inch" label="in" value="in"/>
+                  <menuitem id="docformat.cm" label="cm" value="cm"/>
+                  <menuitem id="docformat.mm" label="mm" value="mm"/>
+                  <menuitem id="docformat.pt" label="pt" value="pt"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+            <vbox/>
+          </row>
+          <row observes="notcenteralignment">
+            <!--     <hbox id="marginsection" align="center" onkeypress="sectHandleChar(event);">-->
+            <vbox>
+              <label value="&LeftHeadingIndent.label;">
+                <observes attribute="disabled" element="secredefok"/>
+                <observes attribute="msicollapsed" element="leftalignment"/>
+              </label>
+              <textbox id="tbsectleftheadingmargin" increment="1" min="-300" onchange="setDim(this, 'sectleftheadingmargin');" onfocus="toggleselection(document.getElementById('sectleftheadingmargin'));" style="width:5em" tooltip="&leftindentheading.tooltip;" type="number" value="0">
+                <observes attribute="disabled" element="secredefok"/>
+                <observes attribute="hidden" element="leftalignment"/>
+              </textbox>
+              <observes attribute="msicollapsed" element="leftalignment"/>
+            </vbox>
+            <vbox valign="center">
+              <description observes="notcenteralignment" >&UseNegToOutdent;           
+                <observes attribute="disabled" element="secredefok"/>
+              </description>
+            </vbox>
+            <vbox>
+              <label value="&RightHeadingIndent.label;">
+                <observes attribute="disabled" element="secredefok"/>
+                <observes attribute="msicollapsed" element="rightalignment"/>
+              </label>
+              <textbox id="tbsectrightheadingmargin" increment="1" min="-300" onchange="setDim(this, 'sectrightheadingmargin');" onfocus="toggleselection(document.getElementById('sectrightheadingmargin'));" style="width:5em" tooltip="&rightindentheading.tooltip;" type="number" value="30">
+                <observes attribute="disabled" element="secredefok"/>
+                <observes attribute="hidden" element="rightalignment"/>
+              </textbox>
+              <observes attribute="msicollapsed" element="rightalignment"/>
+            </vbox>
+          </row>
+          <row>
+            <vbox>
+              <label value="&topMargin.label;">
+                <observes attribute="disabled" element="secredefok"/>
+              </label>
+              <textbox flex="0" id="tbsecttopheadingmargin" increment="1" min="-300" onchange="setDim(this, 'topmargin');" onfocus="toggleselection(document.getElementById('topmargin'));" style="width: 5em;" tooltip="" type="number" value="0">
+                <observes attribute="disabled" element="secredefok"/>
+              </textbox>
+            </vbox>
+            <vbox/>
+            <vbox/>
+          </row>
+          <row>
+            <vbox>
+              <label value="&bottomheadingMargin.label;">
+                <observes attribute="disabled" element="secredefok"/>
+              </label>
+              <textbox flex="0" id="tbsectbottomheadingmargin" increment="1" min="-300" onchange="setDim(this, 'bottommargin');" onfocus="toggleselection(document.getElementById('bottommargin'));" style="width: 5em;" tooltip="" type="number" value="0">
+                <observes attribute="disabled" element="secredefok"/>
+              </textbox>
+            </vbox>
+            <vbox/>
+            <vbox/>
+          </row>
+        </rows>
+      </grid>
     </hbox>
-    <separator observes="notcenteralignment" class="groove"/>
-    <spacer/>
-    <hbox align="center">
-      <vbox flex="1"/>
-      <msibutton label="&AddRule.label;" oncommand='addrule();'>
-        <observes element="secredefok" attribute="disabled"/>
-        <observes element="toporbottommargin" attribute="disabled"/>
-      </msibutton>
-      <spacer/>
-      <msibutton label="&AddVerticalSpace.label;" oncommand="addspace();" >
-        <observes element="secredefok" attribute="disabled"/>
-        <observes element="toporbottommargin" attribute="disabled"/>
-      </msibutton>
-      <spacer/>
-      <msibutton label="&RemoveTopRuleOrSpace.label;" oncommand="removeruleorspace();">
-        <observes element="secredefok" attribute="disabled"/>
-        <observes element="toporbottommargin" attribute="disabled"/>
-      </msibutton>
-      <spacer/>
-      <msibutton label="&InsertText.label;" oncommand= 'textEditor();' >
-        <observes element="secredefok" attribute="disabled"/>
-        <observes element="notmargin" attribute="disabled"/>
-      </msibutton>
-      <vbox flex="1"/>
-    </hbox>
+    <spacer flex="1"/>
+    <!--
+    <hbox align="center"><vbox flex="1"/><msibutton label="amp_AddRule.label;" oncommand='addrule();'><observes element="secredefok" attribute="disabled"/><observes element="toporbottommargin" attribute="disabled"/></msibutton><spacer/><msibutton label="amp_AddVerticalSpace.label;" oncommand="addspace();" ><observes element="secredefok" attribute="disabled"/><observes element="toporbottommargin" attribute="disabled"/></msibutton><spacer/><msibutton label="amp_RemoveTopRuleOrSpace.label;" oncommand="removeruleorspace();"><observes element="secredefok" attribute="disabled"/><observes element="toporbottommargin" attribute="disabled"/></msibutton><spacer/><msibutton label="amp_InsertText.label;" oncommand= 'textEditor();' ><observes element="secredefok" attribute="disabled"/><observes element="notmargin" attribute="disabled"/></msibutton><vbox flex="1"/></hbox>-->
   </tabpanel>
 </overlay>
