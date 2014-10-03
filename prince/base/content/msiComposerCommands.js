@@ -795,6 +795,8 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
   } catch(e) {
     dump("error thrown in msiDoStatefulCommand: "+e+"\n");
   }
+  msiUpdateStructToolbar(editorElement, true);
+
 }
 
 //This repeats much of the functionality from msiDoStatefulCommand above, but is called from the dialog which has to run first.
