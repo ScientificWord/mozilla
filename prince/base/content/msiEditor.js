@@ -9736,7 +9736,7 @@ function msiGetNumberOfContiguousSelectedColumns(editorElement)
 function msiResetStructToolbar(editorElement)
 {
 //  editorElement.mLastFocusNode = null;
-  msiUpdateStructToolbar(editorElement);
+  msiUpdateStructToolbar(editorElement, true);
 }
 
 function newCommandListener(element)
@@ -9780,7 +9780,9 @@ function insertStructToolbarButton(tag, toolbar, realElement, theDocument)
   return button;
 }
 
-function msiUpdateStructToolbar(editorElement)
+function msiUpdateStructToolbar(editorElement, noopt)
+// noopt means no optimization. It is true only when the cursor postion (node and offset) 
+// has not changed, but the ancestors of node might have changed.
 {
   const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
   if (!editorElement)
@@ -9797,7 +9799,7 @@ function msiUpdateStructToolbar(editorElement)
 
   if (!element) return;
 
-  if (element == editorElement.mLastFocusNode &&
+  if (noopt == null && element == editorElement.mLastFocusNode &&
       oneElementSelected == editorElement.mLastFocusNodeWasSelected)
     return;
 
