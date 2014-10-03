@@ -688,8 +688,19 @@
 </xsl:template>
 
 <xsl:template match="html:environment">
-\begin{<xsl:value-of select="@type"/>}<xsl:apply-templates mode="envleadin"/>
-<xsl:apply-templates/>\end{<xsl:value-of select="@type"/>}\par
+  <xsl:text>\begin{</xsl:text>
+  <xsl:value-of select="@type"/>
+  <xsl:text>}</xsl:text>
+  <xsl:if test="@param">
+    <xsl:text>{</xsl:text>
+      <xsl:value-of select="@param"/>
+    <xsl:text>}</xsl:text>
+  </xsl:if>
+  <xsl:apply-templates mode="envleadin"/>
+  <xsl:apply-templates/>
+  <xsl:text>\end{</xsl:text>
+  <xsl:value-of select="@type"/>
+  <xsl:text>}</xsl:text>
 </xsl:template>
 
 
@@ -955,25 +966,22 @@
 <xsl:template match="html:p">\par<xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates
-  />}</xsl:template>
-<xsl:template match="html:bold">\textbf{<xsl:apply-templates
-  />}</xsl:template>
-<xsl:template match="html:italics">\textit{<xsl:apply-templates
-  />}</xsl:template>
+<xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:bold | mml:bold">\textbf{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:italics | mml:italics">\textit{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:smallbox">\fbox{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:roman">\textrm{<xsl:apply-templates
+<xsl:template match="html:roman | mml:roman">\textrm{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:sansSerif">\textsf{<xsl:apply-templates
+<xsl:template match="html:sansSerif | mml:sansSerif">\textsf{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:slanted">\textsl{<xsl:apply-templates
+<xsl:template match="html:slanted | mml:slanted">\textsl{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:smallCaps">\textsc{<xsl:apply-templates
+<xsl:template match="html:smallCaps | mml:smallCaps">\textsc{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:typewriter">\texttt{<xsl:apply-templates
+<xsl:template match="html:typewriter | mml:typewriter">\texttt{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:emphasized">\emph{<xsl:apply-templates
+<xsl:template match="html:emphasized | mml:emphasized">\emph{<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:upper">\uppercase{<xsl:apply-templates
   />}</xsl:template>
@@ -1168,6 +1176,16 @@
 <xsl:template match="html:texb">
   <xsl:if test="not(@pre) or (@pre='0')" >
     <xsl:if test="@enc='1'">
+      <!-- add newline if needed -->
+      <xsl:variable name="next">
+         <xsl:value-of select="preceding-sibling::*[last()]" />
+      </xsl:variable>
+      <xsl:variable name="has-newline" >
+         <xsl:value-of select="substring($next, string-length($next),1)='&#xA;'" />
+      </xsl:variable>
+      <xsl:if test="$has-newline='false'">
+         <xsl:value-of select="$newline"/>
+      </xsl:if>
       <xsl:text>%TCIMACRO{\TeXButton{</xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text>}{</xsl:text>
@@ -1182,7 +1200,16 @@
     <xsl:if test="@enc='1'">
       <xsl:value-of select="$newline"/>
       <xsl:text>%EndExpansion</xsl:text>
-      <xsl:value-of select="$newline"/>
+      <!-- add newline if needed -->
+      <xsl:variable name="next">
+         <xsl:value-of select="following-sibling::text()[1]" />
+      </xsl:variable>
+      <xsl:variable name="has-newline" >
+        <xsl:value-of select="substring($next,1,1)='&#xA;'" />
+      </xsl:variable>
+      <xsl:if test="$has-newline='false'">
+         <xsl:value-of select="$newline"/>
+      </xsl:if>
     </xsl:if>
   </xsl:if>
 </xsl:template>

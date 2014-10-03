@@ -1366,7 +1366,7 @@ function openBrowser(url) {
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var extension;
   var exefile;
-  var arr = new Array();
+  var arr = [];
   var os = getOS(window);
   if (os == "win")
   {
