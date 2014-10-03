@@ -233,6 +233,11 @@
 <!ENTITY EnterFormatTemplate.label  "Click here to enter a format template">
 <!ENTITY EnterSectionText.tooltip "Click to enter section text">
 <!ENTITY SetTopMarginOrEnterText.tooltip  "Click to set top margin or to enter text">
+<!ENTITY topMargin.label "Margin above header">
+<!ENTITY topheadingmargin.tooltip "Set the space to set above the header">
+<!ENTITY bottomheadingMargin.label "Margin below header">
+<!ENTITY bottomheadingmargin.tooltip "Set the space to set below the header">
+
 <!ENTITY RulesBelowHeading.label  "Click here to enter rules below the heading">
 <!ENTITY LeftHeadingIndent.label  "Left Heading Indent">
 <!ENTITY RightHeadingIndent.label "Right Heading Indent">
@@ -240,6 +245,7 @@
 <!ENTITY AddVerticalSpace.label "Add Vertical Space">
 <!ENTITY RemoveTopRuleOrSpace.label "Remove Top Rule or Space">
 <!ENTITY InsertText.label "Insert Text">
+<!ENTITY UseNegToOutdent "(Use negative width to outdent)">
 
 <!ENTITY PolyglossiaLanguage.label  "Polyglossia Language">
 <!ENTITY BabelLanguage.label  "Babel Language">

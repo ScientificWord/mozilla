@@ -159,7 +159,6 @@ prince.jar:
 * content/typesetPreamble.xul       (dialogs/typesetPreamble.xul)
 * content/typesetStyleOptions.js    (dialogs/typesetStyleOptions.js)
 * content/typesetStyleOptions.xul   (dialogs/typesetStyleOptions.xul)
-* content/typesetsectionsoverlay.xul   (dialogs/typesetsectionsoverlay.xul)
   content/xref.xul                  (dialogs/xref.xul)
   content/xref.js                   (dialogs/xref.js)
 * content/msiEditorDefinitions.js   (msiEditorDefinitions.js)
