@@ -825,20 +825,19 @@ function setStyleAttributeByID( id, att, value)
 
 function locationChanged()
 {
-  var floatBroadcaster = document.getElementById("floatEnabled");
-  var inlineOffsetBroadcaster = document.getElementById("inlineOffsetEnabled");
-  var bEnableWrapfig = true;
-  var bEnableFloats = false;
-  var currentLocation = document.getElementById("locationList").value;
-  if (currentLocation === "unspecified")
-    floatBroadcaster.removeAttribute("disabled");
-  else
-    floatBroadcaster.setAttribute("disabled", "true");
-  if (currentLocation === "inline") 
-    inlineOffsetBroadcaster.removeAttribute("disabled");
-  else
-    inlineOffsetBroadcaster.setAttribute("disabled", "true");
-
+//  var floatBroadcaster = document.getElementById("floatEnabled");
+  // var inlineOffsetBroadcaster = document.getElementById("inlineOffsetEnabled");
+  // var bEnableWrapfig = true;
+  // var bEnableFloats = false;
+  // var currentLocation = document.getElementById("locationList").value;
+  // if (currentLocation === "unspecified")
+  //   floatBroadcaster.removeAttribute("disabled");
+  // else
+  //   floatBroadcaster.setAttribute("disabled", "true");
+  // if (currentLocation === "inline") 
+  //   inlineOffsetBroadcaster.removeAttribute("disabled");
+  // else
+  //   inlineOffsetBroadcaster.setAttribute("disabled", "true");
 }
 
 function enableFloatOptions(radiogroup)
@@ -1483,7 +1482,7 @@ function floatPropertyChanged() {
 }
 
 function captionPropertyChanged() {
-  var captionLoc = document.getElementById("captionLocation"),value;
+  var captionLoc = document.getElementById("captionLocation").value;
   if (captionLoc === "none") {
     document.getElementById("keyEnabled").setAttribute("disabled", "true");
   } else {

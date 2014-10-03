@@ -256,7 +256,7 @@ function GetValuesFromDialog(){
     anID = mapid(alist[i]);
     if (document.getElementById(anID)) {
       newval = getValueFromControlByID(anID);
-      if (newval != "undefined") {   // NOTE, "" is OK, e.g. delete a label              
+      if (newval !== "undefined" && newval !== "unspecified") {   // NOTE, "" is OK, e.g. delete a label              
         oldval = graph.getValue (alist[i]);                        
         if (newval != oldval) {                                        
            graph.setGraphAttribute(alist[i], newval);                  
@@ -299,7 +299,7 @@ function GetValuesFromDialog(){
   }
   var f = tempFrame.cloneNode(true);
   var p = tempPw.cloneNode(true);
-  setFrameAttributes(f, p, editor);  // treuse code in msiFrameOverlay.
+  setFrameAttributes(f, p, editor);  // reuse code in msiFrameOverlay.
   frame.extractFrameAttributes(f, p);
   var oldpt = plot.attributes["PlotType"];                        
   var newpt;
@@ -320,23 +320,27 @@ function GetValuesFromDialog(){
   {
     var doc = document.getElementById("plotDlg-content-frame").contentDocument;
     var mathnode = doc.getElementsByTagName("math")[0];
-    newval = graph.ser.serializeToString(mathnode);
-    oldval = plot.element["Expression"];
-    if (oldval != newval)
-    {
-      plot.element["Expression"] = newval;
-      plot.attributes["PlotStatus"] = "New";
+    if (mathnode) {
+      newval = graph.ser.serializeToString(mathnode);
+      oldval = plot.element["Expression"];
+      if (oldval != newval)
+      {
+        plot.element["Expression"] = newval;
+        plot.attributes["PlotStatus"] = "New";
+      }
     }
     if (newpt == "tube")
     {
       doc = document.getElementById("plotDlg-tube-radius").contentDocument;
       mathnode = doc.getElementsByTagName("math")[0];
-      newval = graph.ser.serializeToString(mathnode);
-      oldval = plot.element["TubeRadius"];
-      if (newval != oldval)
-      {
-        plot.element["TubeRadius"] = newval;  //should we mark plot as new for this? naaah
-      };
+      if (mathnode) {
+        newval = graph.ser.serializeToString(mathnode);
+        oldval = plot.element["TubeRadius"];
+        if (newval != oldval)
+        {
+          plot.element["TubeRadius"] = newval;  //should we mark plot as new for this? naaah
+        };
+      }
     }
   }
   catch (e)
