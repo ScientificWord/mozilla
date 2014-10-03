@@ -6,6 +6,7 @@
 
 
 % spacing environment ?
-
-\def\msi@begin@spacing#1{\msitag{<environment type="spacing" param="#1">}}
+\makeatletter
+\def\msi@begin@spacing#1{\msihmode\msitag{<environment type="spacing" param="#1">}}
 \def\msi@end@spacing{\msitag{</environment>}}
+\makeatother
