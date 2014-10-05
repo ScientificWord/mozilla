@@ -1078,7 +1078,7 @@ function ReadInAnOptionSection(lineList, sectionData)
     }
     else if (foundChoice = optionRE.exec(foundLine[1]))
     {
-      if (currOption.mNumber != foundChoice[1])
+      if (currOption && (currOption.mNumber != foundChoice[1]) )
         currOption = FindOptionByNumber(optionSectionData, foundChoice[1]);
       if (currOption)
       {
