@@ -958,7 +958,7 @@ function getLoadableGraphicFile(inputURL)
           fileName = newFile.path;
         }
       }
-      isSVGFile = /\.svg$/.test(fileName);
+  //    isSVGFile = /\.svg$/.test(fileName);
     }
     else
       fileName = file.path;
@@ -1799,7 +1799,14 @@ function onAccept()
       }
       var src = gSrcUrl;
       //  src = checkSourceAndImportSetting(src, gDialog.isImport);
-
+      if (/\.svg$/.test(src)) {
+        imageElement.setAttribute("isSVG", "1");
+        msiRequirePackage(gEditorElement,"svg","");
+      }
+      else
+      {
+        imageElement.removeAttribute("isSVG");
+      }
       imageElement.setAttribute("src", src);
       imageElement.setAttribute("data", src);
       if (bHasCaption)  // we need to set up the wrapper element
