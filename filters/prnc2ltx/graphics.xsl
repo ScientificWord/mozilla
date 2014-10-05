@@ -22,7 +22,14 @@
       </xsl:call-template>
     </xsl:variable>
 
-    <xsl:text>\includegraphics[</xsl:text>
+    <xsl:choose>
+      <xsl:when test="@isSVG">
+        <xsl:text>\includesvg[</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>\includegraphics[</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:if test="@rotation">
       <xsl:text> angle=</xsl:text>
       <xsl:if test="@rotation='rot90'">
@@ -40,7 +47,14 @@
       <xsl:text>,</xsl:text>
     </xsl:if>
     <xsl:if test="@ltx_height and (number(@ltx_height) != 0)">
-      <xsl:text> totalheight=</xsl:text>
+      <xsl:choose>
+        <xsl:when test="@isSVG">
+          <xsl:text> height=</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text> totalheight=</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:value-of select="@ltx_height"/>
       <xsl:value-of select="$theUnit"/>
       <xsl:text>,</xsl:text>

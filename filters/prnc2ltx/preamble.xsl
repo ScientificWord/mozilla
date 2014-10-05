@@ -214,6 +214,24 @@
       <xsl:value-of select="@package"/>
       <xsl:text>}  %% </xsl:text>
       <xsl:value-of select="@pri"/>
+      <xsl:if test="@package='svg'">
+        <xsl:text>\IfFileExists{/dev/null}{%</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>\newcommand{\Inkscape}{/Applications/Inkscape.app/Contents/Resources/bin/inkscape }%</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>}{</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>\newcommand{\Inkscape}{"C:/Program Files/Inkscape/inkscape.exe" }%</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>}</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>\setsvg{</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>inkscape=\Inkscape -z -C, svgpath=../graphics/</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>}</xsl:text>
+        <xsl:value-of select="$newline"/>
+      </xsl:if>
     </xsl:for-each>
 
 
