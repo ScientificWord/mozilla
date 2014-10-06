@@ -62,24 +62,29 @@ var graphicsConverter = {
       command = null;
     }
     if (command != null) {
-      if (copyToGraphics) {
-        this.assureSubdir("graphics");
-        destDir = this.baseDir.clone();
-        destDir.append("graphics");
-        destFile = destDir.clone();
-        destFile.append(leaf);
-        returnPath = "graphics/" + leaf;
-        if (graphicsFile.path !== destFile.path) {
-          if (destFile.exists()) destFile.remove(false);
-          graphicsFile.copyTo(destDir, leaf);
+      try {
+        if (copyToGraphics) {
+          this.assureSubdir("graphics");
+          destDir = this.baseDir.clone();
+          destDir.append("graphics");
+          destFile = destDir.clone();
+          destFile.append(leaf);
+          returnPath = "graphics/" + leaf;
+          if (graphicsFile.path !== destFile.path) {
+            if (destFile.exists()) destFile.remove(false);
+            graphicsFile.copyTo(destDir, leaf);
+          }
+        }
+        copiedFile = this.baseDir.clone();
+        copiedFile.append("graphics");
+        copiedFile.append(leaf);
+
+        if (command != "") {
+          returnPath = this.execCommands(copiedFile, command, width, height);
         }
       }
-      copiedFile = this.baseDir.clone();
-      copiedFile.append("graphics");
-      copiedFile.append(leaf);
-
-      if (command != "") {
-        returnPath = this.execCommands(copiedFile, command, width, height);
+      catch(e) {
+        msidump(e.message);
       }
     }
     return returnPath;
@@ -144,7 +149,12 @@ var graphicsConverter = {
         if (this.OS === "win") progname += ".exe";
         theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
         // use progname unchanged if it contains a '/', otherwise assume it is in the utilties dir.
-        if (regex0.test(progname) || regex1.test(progname)) {
+        if (commandparts[0]=="sam2p") {
+          utilityFile = toolsDir.clone();
+          utilityFile = utilityFile.parent;
+          utilityFile.append("shell"+(this.OS==="win"?".cmd":".bash"));
+        }
+        else if (regex0.test(progname) || regex1.test(progname)) {
           utilityFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
           utilityFile.initWithPath(progname);
         }
@@ -158,8 +168,9 @@ var graphicsConverter = {
         if (width && height) {
           resolutionParameter = this.setResolutionParameters(graphicsFile, width, height );
         }
-        for (j = 1; j < commandparts.length; j++) {
+        for (j = 0; j < commandparts.length; j++) {
           param = commandparts[j];
+          if (j==0 && param != "sam2p") continue;
           param = param.replace("$1", dollar1);
           if (regex2.test(param)) {
             param = param.replace("$2", dollar2);
