@@ -144,8 +144,11 @@ function StructRefreshTag()
   // catch (e) {};
   var editor = GetCurrentEditor();
   if (!editor) return;
-  StructRemoveTag();
-  editor.undo(1);
+  var element = gContextMenuFiringDocumentElement;
+
+  editor.markNodeDirty(element);
+  // StructRemoveTag();
+  // editor.undo(1);
 }
 
 
