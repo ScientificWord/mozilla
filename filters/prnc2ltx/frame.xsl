@@ -7,7 +7,7 @@
 >
 <xsl:template match="html:graph"><xsl:apply-templates /></xsl:template>
 <xsl:template match="html:caption"><xsl:apply-templates /></xsl:template>
-<xsl:template match="html:msiframe">...
+<xsl:template match="html:msiframe">
   <xsl:variable name="framePosType">
     <xsl:choose>
       <xsl:when test="@pos='inline'">ft-inline</xsl:when>
