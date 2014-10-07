@@ -2860,4 +2860,19 @@ nsresult msiUtils::GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
   point = nsPoint(screenX, screenY);
   return NS_OK;
 }
- 
+
+nsresult msiUtils::Refresh(nsIEditor * editor)
+{
+  return;
+  nsCOMPtr<nsISelection> sel;
+  nsCOMPtr<nsIDOMNode> startNode;
+  PRUint32 startOffset;
+  PRUint16 nodeType = 0;
+  nsresult res;
+  editor->GetSelection(getter_AddRefs(sel));
+  res = sel->GetAnchorNode(getter_AddRefs(startNode));
+  startNode->GetNodeType(&nodeType);
+  if (nodeType == nsIDOMNode::TEXT_NODE)
+    startNode->GetParentNode(getter_AddRefs(startNode));
+  editor->MarkNodeDirty(startNode);
+ }

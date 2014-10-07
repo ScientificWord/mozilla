@@ -156,9 +156,11 @@ NS_IMETHODIMP DeleteElementTxn::UndoTransaction(void)
   }
   // end debug output
 #endif
-
+  nsresult res;
   nsCOMPtr<nsIDOMNode> resultNode;
-  return mParent->InsertBefore(mElement, mRefNode, getter_AddRefs(resultNode));
+  res = mParent->InsertBefore(mElement, mRefNode, getter_AddRefs(resultNode));
+//  mEditor->markNodeDirty(mElement);
+  return res;
 }
 
 NS_IMETHODIMP DeleteElementTxn::RedoTransaction(void)
