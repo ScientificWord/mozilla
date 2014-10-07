@@ -406,6 +406,8 @@ public:
                             nsCOMPtr<nsIDOMNode> & left, 
                             nsCOMPtr<nsIDOMNode> & right);
 
+  static nsresult Refresh(nsIEditor * editor);
+
 //TODO - how should this be determined -- user preference??
   enum {MROW_PURGE_NONE = 0, MROW_PURGE_BOUNDARY, MROW_PURGE_ALL};
   static PRUint32  GetMrowPurgeMode();

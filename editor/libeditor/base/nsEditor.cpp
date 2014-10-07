@@ -119,6 +119,7 @@
 #include "nsIHTMLDocument.h"
 #include "nsIParserService.h"
 #include "nsHTMLEditUtils.h"
+ #include "msiUtils.h"
 //ljh
 #include "msiIEditActionListenerExtension.h"
 
@@ -960,6 +961,7 @@ nsEditor::Undo(PRUint32 aCount)
   }
 
   NotifyEditorObservers();
+  msiUtils::Refresh(this);
   return result;
 }
 
