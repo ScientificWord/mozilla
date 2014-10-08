@@ -11393,8 +11393,8 @@ var msiSpaceUtils =
     noBreak:                {charContent: "&#x2060;", showInvisibleChars: "~"},
     pageBreak:              {charContent: "<newPageRule></newPageRule>"},  //formfeed?  - showInvisibleChars: "&#x21b5;"?
     newPage:                {charContent: "<newPageRule/>"},  //formfeed?  - showInvisibleChars: "&#x21b5;"?
-    lineBreak:              {charContent: "<br xmlns=\"http://www.w3.org/1999/xhtml\"></br>", showInvisibleChars: "&#x21b5;"},
-    newLine:                {charContent: "<br xmlns=\"http://www.w3.org/1999/xhtml\"></br>", showInvisibleChars: "&#x21b5;"}
+    lineBreak:              {charContent: '<msibr xmlns=\"http://www.w3.org/1999/xhtml\">', showInvisibleChars: "&#x21b5;"},
+    newLine:                {charContent: '<msibr xmlns=\"http://www.w3.org/1999/xhtml\">', showInvisibleChars: "&#x21b5;"}
 //    lineBreak:              {charContent: "<br xmlns=\"" + xhtmlns + "\"></br>", showInvisibleChars: "&#x21b5;"},
 //    newLine:                {charContent: "<br xmlns=\"" + xhtmlns + "\"></br>", showInvisibleChars: "&#x21b5;"}
   },
