@@ -6381,10 +6381,6 @@ function msiInsertBreaks(dialogData, editorElement)
   var node = editor.document.createElement('msibr',true);
   editor.insertElementAtSelection(node,true);
   switch(dialogData.breakType) {
-    case "lineBreak":
-    case "newLine":
-      editor.createNode('br',node,0);
-      break;
     case "newPage":
     case "pageBreak":
       editor.createNode('newPageRule',node,0);
