@@ -6,6 +6,7 @@
 <?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
 
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorTableProperties.dtd">
 <!-- JLF - localization pass on 7/4/2012 -->
@@ -42,6 +43,8 @@
       <tab id="TableTab" label="&tableTab.label;"/>
       <tab id="CellsTab" label="&cellsTab.label;"/>
       <tab id="LinesTab" label="&linesTab.label;"/>
+      <tab id="msiPlacementTab"/>
+      <tab id="msiFrameTab"/>
     </tabs>
     <tabpanels>
       <tabpanel id="tablegrid" flex="1">
