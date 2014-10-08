@@ -4148,11 +4148,14 @@ nsEditor::CanContainTag(nsIDOMNode* aParent, const nsAString &aChildTag)
   if (isMath)
   {
     if (aChildTag.EqualsLiteral("math")) return PR_FALSE;
+    if (aChildTag.EqualsLiteral("msibr")) return PR_FALSE;
     if (aChildTag.EqualsLiteral("#text")) return PR_TRUE;
-    if (parentTag.EqualsLiteral("mrow") ||
-      parentTag.EqualsLiteral("math") ||
-      parentTag.EqualsLiteral("mstyle")) return PR_TRUE;
-    // BBM: this probably needs more cases
+    if (aChildTag.EqualsLiteral("mspace")) {
+      if (parentTag.EqualsLiteral("math") ||
+          parentTag.EqualsLiteral("mrow")) return PR_TRUE;
+      else return PR_FALSE;
+    }
+     // BBM: this probably needs more cases
     return PR_TRUE;
   }
   else
