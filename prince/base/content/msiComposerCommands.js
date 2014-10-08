@@ -9281,8 +9281,6 @@ var msiEditTableCommand =
       if (tableNodeData != null && editorElement != null)
       {
         msiEditorInsertOrEditTable(false, editorElement, aCommand, this, tableNodeData);
-  //      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "chrome,close,titlebar,dependent",
-  //                                                     editorElement, "cmd_editTable", tableNode);
       }
       editorElement.focus();
     }
