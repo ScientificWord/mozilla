@@ -1035,6 +1035,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         if (NS_SUCCEEDED(res))
         {
           bDidInsert = PR_TRUE;
+          insertedContextParent = curNode;
           lastInsertNode = curNode;
         }
 
