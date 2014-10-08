@@ -1541,6 +1541,7 @@ NS_IMETHODIMP nsEditor::CreateNode(const nsAString& aTag,
     if (NS_SUCCEEDED(result))
     {
       result = txn->GetNewNode(aNewNode);
+      NS_IF_ADDREF(*aNewNode);
       NS_ASSERTION((NS_SUCCEEDED(result)), "GetNewNode can't fail if txn::DoTransaction succeeded.");
     }
   }
@@ -1588,13 +1589,16 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   nsCOMPtr<msiITagListManager> tlm;
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   node->GetNodeName(tagName);
+  nsCOMPtr<nsIContent> content = do_QueryInterface(node);
+  if (content->TextIsOnlyWhitespace())
   tlm->GetRealClassOfTag(tagName, nsnull, tagclass);
     // Search up the parent chain to find a suitable container
-  while (!CanContainTag(ptr, tagName))
+  while (!CanContainTag(ptr, tagName) && !(content && content->TextIsOnlyWhitespace()))
   {
     // If the current parent is a root (body or table element)
     // then go no further - we can't insert. See if interposing a default paragraph helps.
-    if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm) || nsHTMLEditUtils::IsListItem(ptr, tlm))
+    if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm) || nsHTMLEditUtils::IsListItem(ptr, tlm) ||
+        nsHTMLEditUtils::IsStructNode(ptr, tlm) || nsHTMLEditUtils::IsEnvNode(ptr, tlm))
     {
       nsCOMPtr<nsIDOMNode> para;
       htmlEditor->CreateDefaultParagraph(parent, aPosition, PR_FALSE, getter_AddRefs(para));
@@ -5167,11 +5171,14 @@ NS_IMETHODIMP nsEditor::CreateTxnForInsertElement(nsIDOMNode * aNode,
                                                   PRInt32      aPosition,
                                                   InsertElementTxn ** aTxn)
 {
-  nsresult result = NS_ERROR_NULL_POINTER;
+  nsresult result =  NS_ERROR_NULL_POINTER;
   if (aNode && aParent && aTxn)
   {
     result = TransactionFactory::GetNewTransaction(InsertElementTxn::GetCID(), (EditTxn **)aTxn);
     if (NS_SUCCEEDED(result)) {
+      // BBM: Temporary stuff
+      NS_IF_ADDREF(aNode);
+      NS_IF_ADDREF(aParent);
       result = (*aTxn)->Init(aNode, aParent, aPosition, this);
     }
   }
