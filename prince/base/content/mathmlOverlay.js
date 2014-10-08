@@ -714,25 +714,25 @@ var msiReviseMatrixCmd =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement(window);
-    var theMatrixData = msiGetPropertiesDataFromCommandParams(aParams);
-//    var theMatrixData = msiGetReviseObjectFromCommandParams(aParams);
-//    AlertWithTitle("mathmlOverlay.js", "In msiReviseMatrixCmd, trying to revise matrix, dialog unimplemented.");
-    var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
-    var dlgWindow = window.openDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "modal, chrome,resizable,close,titlebar,dependent",
-                                                     editorElement, aCommand, this, theData);
+// jcs    var editorElement = msiGetActiveEditorElement(window);
+// jcs    var theMatrixData = msiGetPropertiesDataFromCommandParams(aParams);
+// jcs//    var theMatrixData = msiGetReviseObjectFromCommandParams(aParams);
+// jcs//    AlertWithTitle("mathmlOverlay.js", "In msiReviseMatrixCmd, trying to revise matrix, dialog unimplemented.");
+// jcs    var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
+// jcs    var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank", "modal, chrome,resizable,close,titlebar,dependent",
+// jcs                                                     editorElement, aCommand, this, theData);
   },
 
   doCommand: function(aCommand)
   {
-    var editorElement = msiGetActiveEditorElement(window);
-    var editor = msiGetEditor(editorElement);
-    var theMatrixData = new msiTablePropertiesObjectData();
-    theMatrixData.initFromSelection(editor.selection, editorElement);
-//    var theMatrixData = msiGetPropertiesObjectFromSelection(editorElement);
-    var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
-    var dlgWindow = window.openDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", 
-      "modal,chrome,resizable,close,titlebar,dependent", editorElement, aCommand, this, theData);
+// jcs    var editorElement = msiGetActiveEditorElement(window);
+// jcs    var editor = msiGetEditor(editorElement);
+// jcs    var theMatrixData = new msiTablePropertiesObjectData();
+// jcs    theMatrixData.initFromSelection(editor.selection, editorElement);
+// jcs//    var theMatrixData = msiGetPropertiesObjectFromSelection(editorElement);
+// jcs    var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
+// jcs    var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank", 
+// jcs      "modal,chrome,resizable,close,titlebar,dependent", editorElement, aCommand, this, theData);
   }
 };
 
