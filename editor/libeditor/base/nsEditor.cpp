@@ -4144,17 +4144,18 @@ nsEditor::CanContainTag(nsIDOMNode* aParent, const nsAString &aChildTag)
   if (!parentElement) return PR_FALSE;
   nsAutoString parentTag;
   parentElement->GetTagName(parentTag);
+  if (parentTag.EqualsLiteral("#text")) return (aChildTag.EqualsLiteral("#tesxt"));
   PRBool isMath = nsHTMLEditUtils::IsMath(aParent);
   if (isMath)
   {
     if (aChildTag.EqualsLiteral("math")) return PR_FALSE;
     if (aChildTag.EqualsLiteral("msibr")) return PR_FALSE;
-    if (aChildTag.EqualsLiteral("#text")) return PR_TRUE;
-    if (aChildTag.EqualsLiteral("mspace")) {
+    if (aChildTag.EqualsLiteral("mspace") || aChildTag.EqualsLiteral("msirule")) {
       if (parentTag.EqualsLiteral("math") ||
           parentTag.EqualsLiteral("mrow")) return PR_TRUE;
       else return PR_FALSE;
     }
+    if (aChildTag.EqualsLiteral("#text")) return PR_TRUE;
      // BBM: this probably needs more cases
     return PR_TRUE;
   }
