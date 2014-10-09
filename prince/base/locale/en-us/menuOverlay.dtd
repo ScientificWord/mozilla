@@ -672,8 +672,8 @@
 <!ENTITY matrixsplitcell.accesskey "c">
 <!ENTITY convertToMatrix.label "Create Matrix from Selection">
 <!ENTITY converttomatrix.accesskey "r">
-<!ENTITY matrixProperties.label "Matrix Properties...">
-<!ENTITY matrixProperties.accesskey "o">
+<!-- ENTITY matrixProperties.label "Matrix Properties..." -->
+<!-- ENTITY matrixProperties.accesskey "o" -->
 
 <!-- Tools menu -->
 <!ENTITY toolsmenu.label "Tools">
