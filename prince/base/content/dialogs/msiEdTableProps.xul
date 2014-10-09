@@ -62,6 +62,7 @@
     <tabs id="tabpanel-tabs">
       <tab id="QuicklyTab" label="&quicklyTab.label;"/>
       <tab id="TableTab" label="&tableTab.label;"/>
+      <tab id="msiPlacementTab"/>
       <tab id="msiFrameTab"/>
       <tab id="CellsTab" label="&cellsTab.label;"/>
       <tab id="LinesTab" label="&linesTab.label;"/>
@@ -190,12 +191,13 @@
               <hbox><label>&currentUnits;&#x00a0;</label><label observes="currentunits"/></hbox>        
  -->            
             </groupbox>
-            <groupbox orient="vertical" align="start">
-              <vbox id="placementGroup"/>
-            </groupbox>
           </hbox>
         </vbox>
       </tabpanel>
+      <vbox id="msiPlacement">
+        <vbox id="placementGroup"/>
+      </vbox>
+
       <vbox id="msiFrame" />
       
  <!-- Cells PANEL -->
