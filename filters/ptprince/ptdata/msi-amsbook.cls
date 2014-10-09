@@ -7,9 +7,10 @@
 
 %% Frontmatter commands
 
-\MSIEmptyElement{frontmatter}{T}
-\MSIEmptyElement{tableofcontents}{T}
-\MSIEmptyElement{maketitle}{T}
+% Already covered by msi-latex-default.tex
+%\MSIEmptyElement{frontmatter}{T}
+%\MSIEmptyElement{tableofcontents}{T}
+%\MSIEmptyElement{maketitle}{T}
 
 % Use default \title 
 
