@@ -265,10 +265,35 @@ vspace[type="customSpace"] {
   border-left: thin solid green;
 }
 
-msirule {
-/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msirule"); */
+/* msirule {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msirule");
   display: inline-block;
+} */
+
+/* ordinary breaks -- emulate behavior of <br/>*/
+
+msibr[type="lineBreak"]:before {
+  content: "\A";
+  white-space: pre;
+  -moz-user-select: -moz-none;
 }
+
+msibr[type="newLine"]:before {
+  content: "\A";
+  white-space: pre;
+  -moz-user-select: -moz-none;
+}
+
+*[showinvis="true"] msibr[type="lineBreak"]:before {
+  content: "\AC\A";
+  color: green;
+}
+
+*[showinvis="true"] msibr[type="newLine"]:before {
+  content: "\AC\A";
+  color: green;
+}
+
 
 msibr[type="customNewLine"]
 {
@@ -280,10 +305,6 @@ msibr[type="customNewLine"]:after {
   white-space: pre;
   content: "\A";
   -moz-user-select: -moz-none;
-}
-
-*[showinvis="true"] msibr {
-	width: 2px;
 }
 
 *[showinvis="true"] msibr[type="customNewLine"] {
@@ -702,22 +723,6 @@ preface {
   content: "Preface";
   display: block;
   font-size: medium; font-weight: bold;
-  color: green;
-  -moz-user-select: -moz-none;
-}
-
-
-/* ordinary breaks -- emulate behavior of <br/>*/
-
-msibr:before {
-  content: "\A";
-  white-space: pre;
-  -moz-user-select: -moz-none;
-}
-
-*[showinvis="true"] msibr:before {
-  content: "\AC\A";
-  white-space: pre;
   color: green;
   -moz-user-select: -moz-none;
 }
