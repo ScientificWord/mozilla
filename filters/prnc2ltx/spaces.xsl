@@ -69,7 +69,7 @@
 	</xsl:choose>
 </xsl:template>
 
-<xsl:template match="html:msirule">
+<xsl:template match="html:msirule|mml:msirule">
   <xsl:choose>
     <xsl:when test="@color = '#000000'
               or not(@color)">\rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}</xsl:when>
