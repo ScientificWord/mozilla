@@ -210,6 +210,7 @@ function setVariablesForControls()
   gDialog.TabBox =  document.getElementById("TabBox");
   gDialog.TableTab =  document.getElementById("TableTab");
   gDialog.PlacementTab = document.getElementById( "msiPlacementTab" );
+  gDialog.FrameTab = document.getElementById( "msiFrameTab" );
   gDialog.CellsTab =  document.getElementById("CellsTab");
   gDialog.LinesTab =  document.getElementById("LinesTab");
   gDialog.sizeLabel = document.getElementById("sizeLabel");
