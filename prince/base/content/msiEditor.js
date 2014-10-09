@@ -7145,10 +7145,10 @@ msiTablePropertiesObjectData.prototype =
 
     if (this.isMatrix())
     {
-//      strArray = ["MatrixCell", "MatrixCellGroup", "MatrixRow", "MatrixColumn", "Matrix"];
-      commandArray = [//"cmd_MSIreviseMatrixCellCmd", 
-      "cmd_MSIreviseMatrixCellGroupCmd", //"cmd_MSIreviseMatrixRowsCmd", "cmd_MSIreviseMatrixColsCmd", 
-      "cmd_MSIreviseMatrixCmd"];
+//    //  strArray = ["MatrixCell", "MatrixCellGroup", "MatrixRow", "MatrixColumn", "Matrix"];
+      //commandArray = [//"cmd_MSIreviseMatrixCellCmd", 
+      //"cmd_MSIreviseMatrixCellGroupCmd", //"cmd_MSIreviseMatrixRowsCmd", "cmd_MSIreviseMatrixColsCmd", 
+      //"cmd_MSIreviseMatrixCmd"];
     }
     else
     {
