@@ -590,7 +590,7 @@
 
     <command id="cmd_insertHorizontalSpaces"   oncommand="msiGoDoCommand('cmd_insertHorizontalSpaces')"/>
     <command id="cmd_insertVerticalSpaces"     oncommand="msiGoDoCommand('cmd_insertVerticalSpaces')"/>
-    <command id="cmd_msiInsertRules"   observes="inMathBroadcaster" 
+    <command id="cmd_msiInsertRules"    
       oncommand="msiGoDoCommand('cmd_msiInsertRules')"/>
     <command id="cmd_msiInsertBreaks"  
                  oncommand="msiGoDoCommand('cmd_msiInsertBreaks')"/>
