@@ -722,7 +722,6 @@ msiEditingManager::InsertMath(nsIEditor * editor,
             nsCOMPtr<nsIDOMElement> msidisplay;
             nsCOMPtr<nsIDOMNode> inserted;
             htmlEditor->CreateElementWithDefaults(strmsidisplay, getter_AddRefs(msidisplay));
-//            NS_IF_ADDREF((nsIDOMNode*)msidisplay);
             res = msidisplay->AppendChild(mathNode, getter_AddRefs(inserted)); // put node in msidisplay
             // and now put display in place of node
             mathNode = msidisplay;
