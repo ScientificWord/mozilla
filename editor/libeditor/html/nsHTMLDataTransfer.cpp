@@ -357,32 +357,36 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
   nsCOMPtr<nsIDOMNode> textNode;
   nsCOMPtr<nsIDOMNode> parentNode(*ioParent);
   nsCOMPtr<nsIDOMNode> newParentNode = parentNode;
+  nsCOMPtr<nsIDOMNode> insertedNode;
+  nsCOMPtr<nsIDOMNode> grandParent;
   nsCOMPtr<nsIDOMCharacterData> characterNode;
+  PRUint16 nodeType;
+  PRInt32 savedOffset = offsetOfNewNode;
+  res = cNode->GetNodeType(&nodeType);
+  if (nodeType == nsIDOMNode::TEXT_NODE) {
+    // We can't insert plain text, only an mi, an mn, or an mo. This should happen only when pasting, so cNode should
+    // have a parent
+    res = cNode->GetParentNode(getter_AddRefs(insertedNode));
+    if (!insertedNode) return NS_ERROR_INVALID_ARG;
+  }
+  else insertedNode = cNode;
   pNode = do_QueryInterface(parentNode);
   GetTagString(parentNode, tagName);
-  if (tagName.EqualsLiteral("mi") || tagName.EqualsLiteral("mo"))
+  // check for input box
+  if (tagName.EqualsLiteral("mi"))
   {
-    // can't insert in these. Move to the side or, if a tempinput mi, delete the mi.
-    nsCOMPtr<nsIDOMNode> grandParent;
-    PRUint32 saveOffset = offsetOfNewNode;
-    res = parentNode->GetParentNode(getter_AddRefs(grandParent));
-    res = GetChildOffset(parentNode, grandParent, offsetOfNewNode);
     res = pNode->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
     if (strTempInput.EqualsLiteral("true"))
     {
       // delete the tempinput mi, reset parentNode and offsetOfNewNode, and start again
+      res = GetNodeLocation(parentNode, address_of(grandParent), &offsetOfNewNode);
       res = DeleteNode(parentNode);
+      parentNode = grandParent;
+      newParentNode = parentNode;
+      GetTagString(parentNode, tagName);
     }
-    else
-    {
-      // move past the mi (which is parentNode right now)
-      if (saveOffset > 0) offsetOfNewNode++;
-    }
-    parentNode = grandParent;
-    newParentNode = parentNode;
-    GetTagString(parentNode, tagName);
   }
-  if (tagName.EqualsLiteral("mn") && (NodeContainsOnlyMn(cNode, getter_AddRefs(textNode)),textNode))
+  if (tagName.EqualsLiteral("mn") && (NodeContainsOnlyMn(insertedNode, getter_AddRefs(textNode)),textNode))
   {
     // don't put mn into an mn, but put the contents into the mn, which has had its text node split
     res = InsertNodeAtPoint(textNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
@@ -394,16 +398,18 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     || tagName.EqualsLiteral("#text")))
   {
     // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
+    res = GetNodeLocation(parentNode, address_of(grandParent), &offsetOfNewNode);    
     nsCOMPtr<nsIDOMElement> mrow;
-    msiUtils::CreateMRow(this, cNode, mrow);
-    res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+    msiUtils::CreateMRow(this, insertedNode, mrow);
+    res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(grandParent), &offsetOfNewNode, PR_TRUE);
+    res = MoveNode(parentNode, mrow, savedOffset > 0 ? 0 : 1);
     parentNode = mrow;
     newParentNode = mrow;
-    offsetOfNewNode = 1;
+    offsetOfNewNode = 2;
     if (NS_SUCCEEDED(res))
     {
       bDidInsert = PR_TRUE;
-      *lastInsertNode = cNode;
+      *lastInsertNode = insertedNode;
     }
   }
   else
