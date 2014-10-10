@@ -1377,15 +1377,19 @@ nsHTMLCopyEncoder::PromoteAncestorChain(nsCOMPtr<nsIDOMNode> *ioNode,
 
   nsresult rv = NS_OK;
   PRBool done = PR_FALSE;
-
+  nsAutoString tagName;
   nsCOMPtr<nsIDOMNode> frontNode, endNode, parent;
   PRInt32 frontOffset, endOffset;
+  nsCOMPtr<nsIDOMElement> parentElement;
   
   // loop for as long as we can promote both endpoints
   while (!done)
   {
     rv = (*ioNode)->GetParentNode(getter_AddRefs(parent));
-    if ((NS_FAILED(rv)) || !parent)
+    parentElement = do_QueryInterface(parent);
+    parentElement->GetTagName(tagName);
+
+    if ((NS_FAILED(rv)) || !parent || tagName.EqualsLiteral("msidisplay"))
       done = PR_TRUE;
     else
     {
