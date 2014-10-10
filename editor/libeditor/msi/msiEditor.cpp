@@ -344,6 +344,7 @@ msiEditor::InsertDisplay()
     if (parentName.Equals(strmsidisplay)) return NS_OK;
     // otherwise insert an msidisplay node above
     InsertContainerAbove(mathnode, address_of(msidisplay), strmsidisplay , nsnull, nsnull);
+//    NS_IF_ADDREF((nsIDOMNode*)msidisplay);
      return NS_OK;
     // find the math node and set the display attribute
   }
