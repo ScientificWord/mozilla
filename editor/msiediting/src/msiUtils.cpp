@@ -2477,9 +2477,10 @@ msiUtils::MergeMathTags(nsIDOMNode * node, PRBool lookLeft, PRBool lookRight, ns
       res = siblingNode->GetNodeType(&nodetype);
       if (nodetype == nsIDOMNode::TEXT_NODE)
       {
-        if (!IsWhitespace(siblingNode)) {
+        // BBM: we want to stop if there is a single space. See MSI bug 3198
+//        if (!IsWhitespace(siblingNode)) {
           return NS_OK;
-        }
+//        }
       }
       else if (nodetype = nsIDOMNode::ELEMENT_NODE) {
         res = siblingNode->GetLocalName(nodeName);
