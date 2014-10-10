@@ -786,18 +786,18 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     }
 // Now do the same for math as we did for tables and list items
     nsCOMPtr<nsIDOMNode> endNode = nodeList[0];
-    nsCOMPtr<nsIDOMNode> mathNode;
-    MathParent( endNode, getter_AddRefs(mathNode));
-    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
-    // now do the other end.
     PRUint32 length = nodeList.Count();
-    if (length > 1) {
-      endNode = nodeList[length-1];
-      MathParent( endNode, getter_AddRefs(mathNode));
-      if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
-    }
+   // nsCOMPtr<nsIDOMNode> mathNode;
+    // MathParent( endNode, getter_AddRefs(mathNode));
+    // if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+    // // now do the other end.
+    // if (length > 1) {
+    //   endNode = nodeList[length-1];
+    //   MathParent( endNode, getter_AddRefs(mathNode));
+    //   if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+    // }
 //// Now fix up fragments internal to the math node
-    endNode = nodeList[0];
+////    endNode = nodeList[0];
 //// #if DEBUG_barry || DEBUG_Barry
 ////   printf("\nendNode before FixMath\n");
 ////   DumpNode(endNode, 0, true);
@@ -927,7 +927,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         }
       }
       else if ( (nsHTMLEditUtils::IsMath(curNode))  || 
-                (nsHTMLEditUtils::IsMath(targetNode)) )
+                (nsHTMLEditUtils::IsMath(parentNode)) )
       {
         if ( ! nsHTMLEditUtils::IsMath(curNode) ) {
           // nsCOMPtr<nsIDOM3Node> d3node = do_QueryInterface(curNode);
@@ -4519,8 +4519,10 @@ nsHTMLEditor::GetListAndTableParents(PRBool aEnd,
   nsCOMPtr<nsIDOMNode>  pNode = aListOfNodes[idx];
   while (pNode)
   {
-    if (nsHTMLEditUtils::IsList(pNode, mtagListManager) || nsHTMLEditUtils::IsTable(pNode, mtagListManager) ||
-      nsHTMLEditUtils::IsMath(pNode))
+    if (nsHTMLEditUtils::IsList(pNode, mtagListManager) || nsHTMLEditUtils::IsTable(pNode, mtagListManager) 
+       )
+      // ||
+      // nsHTMLEditUtils::IsMath(pNode))
     {
       if (!outArray.AppendObject(pNode))
       {
@@ -4660,10 +4662,10 @@ nsHTMLEditor::ReplaceOrphanedMath(PRBool aEnd,
                                        nsCOMArray<nsIDOMNode>& aNodeArray,
                                        nsIDOMNode* mathParent)
 {
+  return NS_OK;
   if (!mathParent) return NS_OK;
   nsCOMPtr<nsIDOMNode> endpoint;
   do {
-    nsCOMPtr<nsIDOMNode> endpoint;
     endpoint = GetArrayEndpoint(aEnd, aNodeArray);
     if (!endpoint) break;
     if (nsEditorUtils::IsDescendantOf(endpoint, mathParent))
@@ -4693,7 +4695,7 @@ nsHTMLEditor::ReplaceOrphanedStructure(PRBool aEnd,
                                  curNode, address_of(replaceNode));
   NS_ENSURE_SUCCESS(res, res);
 
-  // if we found substructure, paste it instead of it's descendants
+  // if we found substructure, paste it instead of its descendants
   if (replaceNode)
   {
     // postprocess list to remove any descendants of this node
