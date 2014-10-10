@@ -1331,6 +1331,8 @@ nsresult msiEditingManager::DetermineParentLeftRight(nsIDOMNode * node,
                                                      nsCOMPtr<nsIDOMNode> & left,
                                                      nsCOMPtr<nsIDOMNode> & right)
 { 
+  // BBM: All or most of this function seems superfluous since the operation of inserting a node
+  // into text will split the text node.
   nsresult res(NS_ERROR_FAILURE);
   if (node)
   {                                                   
