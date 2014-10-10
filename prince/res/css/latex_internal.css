@@ -80,8 +80,8 @@ rulebox {
   white-space: pre;
 }
 
-span.msirule {
-  display: block;
+msirule, span.msirule {
+  display: inline-block;
   overflow: hidden;
 }
 
