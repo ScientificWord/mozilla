@@ -376,7 +376,7 @@ nsMathMLmsqrtFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
     }
    
 
-    pMCM = do_QueryInterface(pBaseFrame);
+    pMCM = GetMathCursorMover(pBaseFrame);
     if (pMCM) {
       pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
     } 
@@ -435,7 +435,7 @@ nsMathMLmsqrtFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
       }
     }
    
-    pMCM = do_QueryInterface(pBaseFrame);
+    pMCM = GetMathCursorMover(pBaseFrame);
     if (pMCM) {
       pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
     } 
@@ -462,7 +462,7 @@ nsMathMLmsqrtFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
 //  //    nsCOMPtr<nsIMathMLCursorMover> pMCM;
 //  //    if (pFrame)
 //  //    {
-//  //      pMCM = do_QueryInterface(pFrame);
+//  //      pMCM = GetMathCursorMover(pFrame);
 //  //      count--;
 //  //      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
 //  //      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
@@ -504,7 +504,7 @@ nsMathMLmsqrtFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame
     pTempFrame = leavingFrame->GetNextSibling();
     if (pTempFrame)
     {
-      pMCM = do_QueryInterface(pTempFrame);  
+      pMCM = GetMathCursorMover(pTempFrame);  
       if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else  // probably pTempFrame is a text frame
       {
@@ -551,7 +551,7 @@ nsMathMLmsqrtFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
     while (pTempFrame && (pTempFrame->GetNextSibling() != leavingFrame)) pTempFrame = pTempFrame->GetNextSibling();
     if (pTempFrame)
     {
-      pMCM = do_QueryInterface(pTempFrame);  
+      pMCM = GetMathCursorMover(pTempFrame);  
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else  // probably pTempFrame is a text frame
       {

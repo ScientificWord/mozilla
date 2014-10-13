@@ -135,7 +135,7 @@
 #include "nsBoxLayoutState.h"
 #include "nsBlockFrame.h"
 #include "nsDisplayList.h"
-
+#include "nsMathMLContainerCursorMover.h"
 #include "gfxContext.h"
 
 static NS_DEFINE_CID(kLookAndFeelCID,  NS_LOOKANDFEEL_CID);
@@ -165,6 +165,8 @@ struct nsContentAndOffset
   nsIContent* mContent;
   PRInt32 mOffset;
 };
+
+nsIMathMLCursorMover * GetMathCursorMover( nsIFrame * aFrame );
 
 // Some Misc #defines
 #define SELECTION_DEBUG        0
@@ -4878,7 +4880,7 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
       (*offset)++;
       return PR_TRUE;
     }
-    pMathCM =  do_QueryInterface(GetTopFrameForContent((*current)->GetParent()));
+    pMathCM =  GetMathCursorMover(GetTopFrameForContent((*current)->GetParent()));
     if (movingInFrameDirection) { //moving out of the text node.
       if (pMathCM) {
         pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
@@ -5487,6 +5489,10 @@ nsIMathMLCursorMover * GetMathCursorMover( nsIFrame * aFrame )
 {
   nsCOMPtr<nsIMathMLCursorMover> pMathCM;
   pMathCM =  do_QueryInterface(aFrame);
+  if (!pMathCM && IsMathFrame(aFrame)) {
+    pMathCM = new nsMathMLContainerCursorMover(aFrame);
+    if (pMathCM) NS_IF_ADDREF(pMathCM);
+  }
   return pMathCM;
 }
 
