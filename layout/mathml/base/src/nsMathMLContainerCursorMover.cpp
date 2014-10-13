@@ -5,6 +5,7 @@
 #include "nsMathMLContainerCursorMover.h"
 #include "nsMathCursorUtils.h"
 #include "nsIDOMElement.h"
+#include "nsFrame.h"
 
 NS_IMPL_ISUPPORTS1(nsMathMLContainerCursorMover, nsIMathMLCursorMover)
 
@@ -30,7 +31,7 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
     pTempFrame = leavingFrame->GetNextSibling();
     if (pTempFrame)
     {
-      pMCM = do_QueryInterface(pTempFrame);
+      pMCM = GetMathCursorMover(pTempFrame);
       if (pMCM) {
         pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
         return NS_OK;
@@ -53,14 +54,14 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
   if (pFrame->GetContent()->Tag() == nsGkAtoms::menclose_) {
     count = *_retval = 0;
   }
-  pMCM = do_QueryInterface(pTempFrame);
+  pMCM = GetMathCursorMover(pTempFrame);
   if (pMCM)
     pMCM->MoveOutToRight(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
   else
   {
     // Try the grandparent?
     pTempFrame = pTempFrame->GetParent();
-    pMCM = do_QueryInterface(pTempFrame);
+    pMCM = GetMathCursorMover(pTempFrame);
     if (pMCM) {
        pMCM->MoveOutToRight(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
        count = *_retval;
@@ -110,10 +111,10 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
 
     if (pTempFrame)
     {
-      pMCM = do_QueryInterface(pTempFrame);
+      pMCM = GetMathCursorMover(pTempFrame);
       if (!pMCM) {
         pTempFrame = GetTopFrameForContent(pTempFrame->GetParent());
-        pMCM = do_QueryInterface(pTempFrame);
+        pMCM = GetMathCursorMover(pTempFrame);
       }
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else  // probably pTempFrame is a text frame
@@ -132,9 +133,9 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
   // while (pTempFrame && (pMCM == nsnull))
   // {
   //   pTempFrame = pTempFrame->GetParent();
-  //   pMCM = do_QueryInterface(pTempFrame);
+  //   pMCM = GetMathCursorMover(pTempFrame);
   // }
-  pMCM = do_QueryInterface(pTempFrame);
+  pMCM = GetMathCursorMover(pTempFrame);
 
   if (pMCM) pMCM->MoveOutToLeft(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
   else // we have gone out of math.  Put the cursor at the beginning of the math if count == 0
@@ -182,7 +183,7 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   pTempFrame = pFrame->GetFirstChild(nsnull);
   if (pTempFrame) frametype = pTempFrame->GetType();
-  while (pTempFrame && (!(pMCM = do_QueryInterface(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
+  while (pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
   {
     pTempFrame = pTempFrame->GetFirstChild(nsnull);
     if (pTempFrame) frametype = pTempFrame->GetType();
@@ -222,7 +223,7 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
   }
   else // this frame has no children
   {
-    pMCM = do_QueryInterface(pFrame->GetParent());
+    pMCM = GetMathCursorMover(pFrame->GetParent());
     if (pMCM) {
       *aOutOffset = 0;
       pMCM->MoveOutToRight(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
@@ -261,7 +262,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
   while (pTempFrame && (pTempFrame->GetNextSibling())) 
     pTempFrame = pTempFrame->GetNextSibling();
   if (pTempFrame) frametype = pTempFrame->GetType();
-  while (pTempFrame && (!(pMCM = do_QueryInterface(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
+  while (pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
   {
     pTempFrame = pTempFrame->GetFirstChild(nsnull);
     while (pTempFrame && (pTempFrame->GetNextSibling()))
@@ -311,7 +312,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
   }
   else // this frame has no children
   {
-    pMCM = do_QueryInterface(pFrame->GetParent());
+    pMCM = GetMathCursorMover(pFrame->GetParent());
     if (pMCM) pMCM->MoveOutToLeft(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else // we have gone out of math
     {
