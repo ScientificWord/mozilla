@@ -372,7 +372,7 @@ nsMathMLmunderFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
   {
-    pMCM = do_QueryInterface(pFrame);
+    pMCM = GetMathCursorMover(pFrame);
     if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     {
@@ -400,7 +400,7 @@ nsMathMLmunderFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame
     nsCOMPtr<nsIMathMLCursorMover> pMCM;
     if (pFrame)
     {
-      pMCM = do_QueryInterface(pFrame);
+      pMCM = GetMathCursorMover(pFrame);
       count--;
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else // child frame is not a math frame. Probably a text frame. We'll assume this for now
@@ -444,7 +444,7 @@ nsMathMLmunderFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFram
     // leaving base 
     count= 0;
     pChild = pChild->GetNextSibling();
-    pMCM = do_QueryInterface(pChild);
+    pMCM = GetMathCursorMover(pChild);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else printf("munder MoveOutToRight: no under symbol\n");
    *_retval = 0;
@@ -463,7 +463,7 @@ nsMathMLmunderFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame
   if (leavingFrame == nsnull || leavingFrame == pChild)
   {
     nsIFrame * pParent = GetParent();
-    pMCM = do_QueryInterface(pParent);
+    pMCM = GetMathCursorMover(pParent);
     if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else  // parent isn't math??? shouldn't happen
     {
@@ -476,7 +476,7 @@ nsMathMLmunderFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame
   {
     // leaving undersymbol. Place the cursor just after the base.
     count= 0;
-    pMCM = do_QueryInterface(pChild);
+    pMCM = GetMathCursorMover(pChild);
     if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
    *_retval = 0;
   }

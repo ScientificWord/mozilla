@@ -586,7 +586,7 @@ nsMathMLmfracFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
   {
-    pMCM = do_QueryInterface(pFrame);
+    pMCM = GetMathCursorMover(pFrame);
     if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     // BBM come back and fix this!
@@ -619,7 +619,7 @@ nsMathMLmfracFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
   {
-    pMCM = do_QueryInterface(pFrame);
+    pMCM = GetMathCursorMover(pFrame);
     if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     // BBM come back and fix this!
@@ -648,7 +648,7 @@ nsMathMLmfracFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame
   if (leavingFrame == nsnull)
   {
     nsIFrame * pParent = GetParent();
-    pMCM = do_QueryInterface(pParent);
+    pMCM = GetMathCursorMover(pParent);
     if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else  // parent isn't math??? shouldn't happen
     {
@@ -678,7 +678,7 @@ nsMathMLmfracFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
   if (leavingFrame == nsnull)
   {
     nsIFrame * pParent = GetParent();
-    pMCM = do_QueryInterface(pParent);
+    pMCM = GetMathCursorMover(pParent);
     if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else  // parent isn't math??? shouldn't happen
     {

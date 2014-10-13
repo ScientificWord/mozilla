@@ -514,7 +514,7 @@ nsMathMLmunderoverFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFr
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pBaseFrame)
   {
-    pMCM = do_QueryInterface(pBaseFrame);
+    pMCM = GetMathCursorMover(pBaseFrame);
     if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     {
@@ -543,7 +543,7 @@ nsMathMLmunderoverFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutF
     nsCOMPtr<nsIMathMLCursorMover> pMCM;
     if (pFrame)
     {
-      pMCM = do_QueryInterface(pFrame);
+      pMCM = GetMathCursorMover(pFrame);
       count--;
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else // child frame is not a math frame. Probably a text frame. We'll assume this for now
@@ -589,7 +589,7 @@ nsMathMLmunderoverFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOut
   {
     // leaving base 
     count= 0;
-    pMCM = do_QueryInterface(pSup);
+    pMCM = GetMathCursorMover(pSup);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else printf("msup MoveOutToRight: no superscript\n");
    *_retval = 0;
@@ -611,7 +611,7 @@ nsMathMLmunderoverFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutF
   if (leavingFrame == nsnull || leavingFrame == pBase)
   {
     nsIFrame * pParent = GetParent();
-    pMCM = do_QueryInterface(pParent);
+    pMCM = GetMathCursorMover(pParent);
     if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else  // parent isn't math??? shouldn't happen
     {
@@ -624,7 +624,7 @@ nsMathMLmunderoverFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutF
   {
     // leaving superscript or subscript. Place the cursor just after the base.
     count= 0;
-    pMCM = do_QueryInterface(pBase);
+    pMCM = GetMathCursorMover(pBase);
     if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
    *_retval = 0;
   }
