@@ -49,7 +49,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   //   pFrame = GetSignificantParent(pFrame);
   // }
 
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  // nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {
     nsIAtom* frametype = pFrame->GetType();
@@ -151,7 +151,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   nsIFrame * pSiblingFrame = nsnull;
   pParent = GetSignificantParent(pFrame);
   nsCOMPtr<nsIContent> pContent;
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  // nsCOMPtr<nsIMathMLCursorMover> pMCM;
 
     // BBM provisional code
   // Cursor doesn't show up if it is inside an mo tag, so we arrange to have it outside

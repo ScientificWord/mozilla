@@ -2136,6 +2136,12 @@ function onAcceptNewTable()
       gActiveEditor.insertElementAtSelection(gTableElement, true);
     }
     gTableElement.normalize();
+    gActiveEditor instanceof Components.interfaces.nsIHTMLObjectResizer;
+    if (gActiveEditor.resizedObject)
+    {
+      gActiveEditor.refreshResizers();
+    }
+
 
   return true;
 }
@@ -2152,6 +2158,11 @@ function onAccept()
 //    gActiveEditor.undo(1);
 //  }
   gActiveEditor.markNodeDirty(gTableElement);
+  gActiveEditor instanceof Components.interfaces.nsIHTMLObjectResizer;
+  if (gActiveEditor.resizedObject)
+  {
+    gActiveEditor.refreshResizers();
+  }
 
   if (retVal)
     SaveWindowLocation();
