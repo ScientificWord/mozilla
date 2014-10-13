@@ -266,7 +266,7 @@ nsMathMLmsupFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, P
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
   {
-    pMCM = do_QueryInterface(pFrame);
+    pMCM = GetMathCursorMover(pFrame);
     if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     {
@@ -294,7 +294,7 @@ nsMathMLmsupFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
     nsCOMPtr<nsIMathMLCursorMover> pMCM;
     if (pFrame)
     {
-      pMCM = do_QueryInterface(pFrame);
+      pMCM = GetMathCursorMover(pFrame);
       count--;
       *_retval = count;
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
@@ -334,7 +334,7 @@ nsMathMLmsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
     count = 0;
     PlaceCursorAfter( this, PR_FALSE, aOutFrame, aOutOffset, count);
     *_retval = 0;
-	 //  pMCM = do_QueryInterface(pTempFrame);
+	 //  pMCM = GetMathCursorMover(pTempFrame);
 	 //  if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
 		// // there is no "else" because this frame has to be inside a math node.
 		// else NS_ASSERTION(PR_FALSE,"msubsup must be inside a math node!");
@@ -344,7 +344,7 @@ nsMathMLmsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
     // leaving base 
     count= 0;
     pChild = pChild->GetNextSibling();
-    pMCM = do_QueryInterface(pChild);
+    pMCM = GetMathCursorMover(pChild);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else printf("msup MoveOutToRight: no superscript\n");
    *_retval = 0;
@@ -363,7 +363,7 @@ nsMathMLmsupFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, 
   if (leavingFrame == nsnull || leavingFrame == pChild)
   {
     nsIFrame * pParent = GetParent();
-    pMCM = do_QueryInterface(pParent);
+    pMCM = GetMathCursorMover(pParent);
     if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else  // parent isn't math??? shouldn't happen
     {
@@ -380,7 +380,7 @@ nsMathMLmsupFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, 
     *aOutFrame = textFrame;
     *aOutOffset = (static_cast<nsTextFrame*>(textFrame))->GetContentEnd();
 //    PlaceCursorAfter(pChild, PR_TRUE, aOutFrame, aOutOffset, count);
-    //pMCM = do_QueryInterface(pChild);
+    //pMCM = GetMathCursorMover(pChild);
     //if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     *_retval = 0;
   }

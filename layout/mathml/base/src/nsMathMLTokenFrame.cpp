@@ -466,7 +466,7 @@ nsMathMLTokenFrame::SetQuotes()
 // {
 //   nsIFrame * pParent = GetParent();
 //   nsCOMPtr<nsIMathMLCursorMover> pMCM;
-//   pMCM = do_QueryInterface(pParent);
+//   pMCM = GetMathCursorMover(pParent);
 //   if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailing, _retval);
 //   return NS_OK;
 // }
@@ -477,7 +477,7 @@ nsMathMLTokenFrame::SetQuotes()
 // {
 //   nsIFrame * pParent = GetParent();
 //   nsCOMPtr<nsIMathMLCursorMover> pMCM;
-//   pMCM = do_QueryInterface(pParent);
+//   pMCM = GetMathCursorMover(pParent);
 //   if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailing, _retval);
 //   return NS_OK;
 // }

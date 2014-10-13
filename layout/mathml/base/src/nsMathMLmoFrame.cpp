@@ -1137,7 +1137,7 @@ nsMathMLmoFrame::MoveOutToRight(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PR
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
   {
-    pMCM = do_QueryInterface(pParent);
+    pMCM = GetMathCursorMover(pParent);
     if (pMCM) 
     {
       if (IsInvisibleOp())
@@ -1162,7 +1162,7 @@ nsMathMLmoFrame::MoveOutToLeft(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRI
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
   {
-    pMCM = do_QueryInterface(pParent);
+    pMCM = GetMathCursorMover(pParent);
     if (pMCM) 
     {
       if (IsInvisibleOp()) 

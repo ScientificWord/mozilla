@@ -113,6 +113,9 @@
 #define NS_FRAME_TRACE_REFLOW_IN(_method)
 #define NS_FRAME_TRACE_REFLOW_OUT(_method, _status)
 #endif
+  
+class nsIMathMLCursorMover;
+nsIMathMLCursorMover * GetMathCursorMover( nsIFrame * aFrame );
 
 //----------------------------------------------------------------------
 
