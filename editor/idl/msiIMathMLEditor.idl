@@ -12,6 +12,7 @@ interface nsITransaction;
 [scriptable, uuid(aec23fe1-2a0f-4fa8-9896-3a1c8a6fcb1b)]
 interface msiIMathMLEditor : nsISupports
 {
+  attribute boolean AutoSubEnabled;
   nsIDOMNode NodeInMath( in nsIDOMNode node );
   nsIDOMNode RangeInMath( in nsIDOMRange range );
   nsIDOMNode SelectionInMath();
@@ -44,7 +45,7 @@ interface msiIMathMLEditor : nsISupports
                         in DOMString aroundType);
   void AdjustSelectionEnds(in boolean isForDeletion, in unsigned long direction);
   void AdjustRange(in nsIDOMRange range, in boolean isForDeletion, in unsigned long direction);
-                  
+
   /* GetMathMLEditingBC returns a msiIMathMLEditingBC object based
    * on the aNode. A pointer to aNode and the offset are stored in the 
    * msiMathMLEditingBC.
