@@ -727,13 +727,8 @@ preface {
   -moz-user-select: -moz-none;
 }
 
-button[class="frontmattertag"] {
-  display: none;
-  -moz-user-select: none;
-  -moz-user-focus: none;
-}
 
-/**[showfmbuttons="true"] */button[class="frontmattertag"] {
+button[class="frontmattertag"] {
   position: absolute;
   left: 5px;
   font-family: sans-serif;
