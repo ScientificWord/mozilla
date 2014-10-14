@@ -3394,6 +3394,7 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
 {
 	var newNode = {};
   var newSelection = {};
+  var tempNode = node;
 	if ( (node.nodeType === Node.TEXT_NODE) || (node.nodeName ==="texb") )
 	{
     try {
@@ -3404,21 +3405,21 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
   		if (endOffset >= 0)
   		{
   			editor.splitNode(node, endOffset - startOffset, newNode);
-  			node = newNode.value;
+  			tempNode = newNode.value;
   		}
     	var parent = node.parentNode;
-    	var offset = offsetOfChild(parent, node);
+    	var offset = offsetOfChild(parent, tempNode);
       var mathnode;
-      if (node.nodeName === 'texb') {
+      if (tempNode.nodeName === 'texb') {
         mathnode = editor.document.createElementNS(mmlns, "math");
         editor.insertNode(mathnode, parent, offset, false);
-        editor.deleteNode(node);
-        editor.insertNode(node, mathnode, 0, false);
+        editor.deleteNode(tempNode);
+        editor.insertNode(tempNode, mathnode, 0, false);
         editor.selection.collapse(mathnode, 1);
       }
       else {
 
-      	var text = node.textContent;
+      	var text = tempNode.textContent;
         var o, p;
       	for (var i = 0; i < text.length; i++)
       	{
@@ -3446,7 +3447,7 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
       //
     }
 
-  	if (node.tagName !== 'texb') editor.deleteNode(node);
+  	if (tempNode.tagName !== 'texb') editor.deleteNode(tempNode);
   	var mathnode = coalescemath(null, true);
     if (mathnode) {
       editor.selection.collapse(mathnode,0);
@@ -3531,7 +3532,8 @@ function textToMath(editor)
       while (enumerator.hasMoreElements())
       {
         node = enumerator.getNext();
-        nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1); 
+        if (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))
+          nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1); 
       }
     }
 	}
