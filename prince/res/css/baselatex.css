@@ -1,13 +1,17 @@
 @namespace mml url("http://www.w3.org/1998/Math/MathML");
 
-/* Print-only rules. We put them here where they are noticeable. */
-@media print {
-*[nopr] {display: none;}
-object[msigraph="true"] {display:none;}
-}
-
 @media screen {
   plotwrapper object[msisnap] { display:none;}
+}
+/* Print-only rules. We put them here where they are noticeable. */
+@media print {
+  *[nopr] {display: none !important;}
+  object[msigraph="true"] {display:none;}
+  button[class="frontmattertag"] {
+    display: none !important; }
+  *[showexpanders="true"] button.expander {
+    display: none !important;
+  }
 }
 
 /* This section gives the default colors for a range
