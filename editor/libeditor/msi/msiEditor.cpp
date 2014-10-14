@@ -107,8 +107,21 @@ msiEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRo
                                                    SetSelectionCB, 
                                                    (void*)this);
   } 
+  m_AutoSubEnabled = PR_TRUE;
   return res; 
 }                
+
+/* attribute boolean AutoSubEnabled; */
+NS_IMETHODIMP msiEditor::GetAutoSubEnabled(PRBool *aAutoSubEnabled)
+{
+  *aAutoSubEnabled = m_AutoSubEnabled;
+  return NS_OK;
+}
+NS_IMETHODIMP msiEditor::SetAutoSubEnabled(PRBool aAutoSubEnabled)
+{
+  m_AutoSubEnabled = aAutoSubEnabled;
+  return NS_OK;
+}
 
 nsresult
 msiEditor::CreateEventListeners()
