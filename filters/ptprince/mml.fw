@@ -72,6 +72,7 @@ bool mathmlHandler(U32 type, const char* data)
   } else if ( type == 1001 || type == 1005) {
     s_anomaly = data;
   } else if ( type == 1004 ) { // \tag
+    s_nonumbering = false;
     //s_anomaly = data;
   } else if ( type == 1010 ){
     s_equation = true;

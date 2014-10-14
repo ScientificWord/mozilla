@@ -15,25 +15,25 @@
 #include <stdlib.h>
 
 
-#define	MML_IDENTIFIER	1
-#define	MML_NUMBER		2
-#define	MML_OPERATOR	3
-#define	MML_TEXT		4
-#define	MML_SPACE		5
+#define MML_IDENTIFIER  1
+#define MML_NUMBER    2
+#define MML_OPERATOR  3
+#define MML_TEXT    4
+#define MML_SPACE   5
 
-#define	TeX_ATOM_ORD	1
-#define	TeX_ATOM_OP 	2
-#define	TeX_ATOM_BIN	3
-#define	TeX_ATOM_REL	4
-#define	TeX_ATOM_OPEN   5
-#define	TeX_ATOM_CLOSE  6
-#define	TeX_ATOM_PUNCT  7
-#define	TeX_ATOM_INNER  8
+#define TeX_ATOM_ORD  1
+#define TeX_ATOM_OP   2
+#define TeX_ATOM_BIN  3
+#define TeX_ATOM_REL  4
+#define TeX_ATOM_OPEN   5
+#define TeX_ATOM_CLOSE  6
+#define TeX_ATOM_PUNCT  7
+#define TeX_ATOM_INNER  8
 
 
-#define	MF_UNKNOWN      0
-#define	MF_GEOMETRY     1
-#define	MF_MATRIX_ALG   2
+#define MF_UNKNOWN      0
+#define MF_GEOMETRY     1
+#define MF_MATRIX_ALG   2
 
 
 #define OPF_multiform   0
@@ -72,21 +72,21 @@ U8* context_math  =  (U8*)"MATH";
 
 LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
                               Grammar* src_mml_grammar,
-  							  Grammar* dest_mml_grammar,
-  							  LogFiler* logger,
-							  USERPREFS* preferences,
-							  const char** upref_zstrs ) {
+                  Grammar* dest_mml_grammar,
+                  LogFiler* logger,
+                USERPREFS* preferences,
+                const char** upref_zstrs ) {
 
   lparser       =  parent;
-  s_mml_grammar =  src_mml_grammar;		// keyed by name
-  d_mml_grammar =  dest_mml_grammar;	// keyed by uID
+  s_mml_grammar =  src_mml_grammar;   // keyed by name
+  d_mml_grammar =  dest_mml_grammar;  // keyed by uID
   logfiler      =  logger;
 // The "in_display" flag is kept current.  We use it to implement
 //  some aspects of displays IFF the renderer (TeX Explorer)
 //  doesn't implement <mstyle displaystyle="true">
   in_display    =  FALSE;
   script_level  =  0;
-  do_trig_args  =  TRUE;		// hard-coded flag for now
+  do_trig_args  =  TRUE;    // hard-coded flag for now
 
 
 // MML identifiers that are to be interpreted as function names.
@@ -109,7 +109,7 @@ LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
 
   p_userprefs =  preferences;
 
-  p_anomalies =  NULL;	// passed in with each tree to be translated
+  p_anomalies =  NULL;  // passed in with each tree to be translated
 
   math_field_ID =  MF_UNKNOWN;
 
@@ -148,7 +148,7 @@ LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
 // current value is empty
     U16 zln =  upref_zstrs[4] ? strlen( upref_zstrs[4] ) : 0;
     if ( zln ) {
-	  zMMLStyleAttrs =  TCI_NEW( char[zln+1] );
+    zMMLStyleAttrs =  TCI_NEW( char[zln+1] );
       strcpy( zMMLStyleAttrs,upref_zstrs[4] );
     }
 
@@ -156,7 +156,7 @@ LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
 // mathcolor="gray"
     zln =  upref_zstrs[5] ? strlen( upref_zstrs[5] ) : 0;
     if ( zln ) {
-	  zMMLFunctionAttrs =  TCI_NEW( char[zln+1] );
+    zMMLFunctionAttrs =  TCI_NEW( char[zln+1] );
       strcpy( zMMLFunctionAttrs,upref_zstrs[5] );
     }
 
@@ -164,7 +164,7 @@ LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
 // mathcolor="green"
     zln =  upref_zstrs[6] ? strlen( upref_zstrs[6] ) : 0;
     if ( zln ) {
-	  zMMLUnitAttrs =  TCI_NEW( char[zln+1] );
+    zMMLUnitAttrs =  TCI_NEW( char[zln+1] );
       strcpy( zMMLUnitAttrs,upref_zstrs[6] );
     }
 
@@ -172,7 +172,7 @@ LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
 // mathcolor="black"
     zln =  upref_zstrs[7] ? strlen( upref_zstrs[7] ) : 0;
     if ( zln ) {
-	  zMMLTextAttrs =  TCI_NEW( char[zln+1] );
+    zMMLTextAttrs =  TCI_NEW( char[zln+1] );
       strcpy( zMMLTextAttrs,upref_zstrs[7] );
     }
 
@@ -180,7 +180,7 @@ LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
 // mathcolor="green"
     zln =  upref_zstrs[8] ? strlen( upref_zstrs[8] ) : 0;
     if ( zln ) {
-	  zMMLHyperLinkAttrs =  TCI_NEW( char[zln+1] );
+    zMMLHyperLinkAttrs =  TCI_NEW( char[zln+1] );
       strcpy( zMMLHyperLinkAttrs,upref_zstrs[8] );
     }
 
@@ -257,13 +257,13 @@ LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
       U8* dest_zname;
       U8* d_template;
       if ( d_mml_grammar->GetGrammarDataFromUID(
-					               zuID,(U8*)"MMLCONTEXT",
-   							       &dest_zname,&d_template) ) {
+                         zuID,(U8*)"MMLCONTEXT",
+                       &dest_zname,&d_template) ) {
         if ( d_template ) {
           U16 zln =  strlen( (char*)d_template );
           switch (id ) {
             case  1 :
-		      mml_version =  atoi( (char*)d_template );
+          mml_version =  atoi( (char*)d_template );
             break;
             case  2 : // mml token prefix - "mml:"
             // MMLTiler uses this data
@@ -277,31 +277,31 @@ LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
             break;
             case  5 :
               if ( zln ) {
-	            zMMLStyleAttrs =  TCI_NEW( char[zln+1] );
+              zMMLStyleAttrs =  TCI_NEW( char[zln+1] );
                 strcpy( zMMLStyleAttrs,(char*)d_template );
               }
             break;
             case  6 :   //
               if ( zln ) {
-	            zMMLFunctionAttrs =  TCI_NEW( char[zln+1] );
+              zMMLFunctionAttrs =  TCI_NEW( char[zln+1] );
                 strcpy( zMMLFunctionAttrs,(char*)d_template );
               }
             break;
             case  7 :   //
               if ( zln ) {
-	            zMMLUnitAttrs =  TCI_NEW( char[zln+1] );
+              zMMLUnitAttrs =  TCI_NEW( char[zln+1] );
                 strcpy( zMMLUnitAttrs,(char*)d_template );
               }
             break;
             case  8 :   // 
               if ( zln ) {
-	            zMMLTextAttrs =  TCI_NEW( char[zln+1] );
+              zMMLTextAttrs =  TCI_NEW( char[zln+1] );
                 strcpy( zMMLTextAttrs,(char*)d_template );
               }
             break;
             case  9 :   // 
               if ( zln ) {
-	              zMMLHyperLinkAttrs =  TCI_NEW( char[zln+1] );
+                zMMLHyperLinkAttrs =  TCI_NEW( char[zln+1] );
                 strcpy( zMMLHyperLinkAttrs,(char*)d_template );
               }
             break;
@@ -321,10 +321,10 @@ LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
               output_entities_as_unicodes =  atoi( (char*)d_template );
             break;
             case 14 :
-		      mo_spacing_mode =  atoi( (char*)d_template );
+          mo_spacing_mode =  atoi( (char*)d_template );
             break;
             case 15 :
-		      spacing_mode_in_scripts =  atoi( (char*)d_template );
+          spacing_mode_in_scripts =  atoi( (char*)d_template );
             break;
             case 16 :
 // format string for equation numbers
@@ -344,10 +344,10 @@ LaTeX2MMLTree::LaTeX2MMLTree( TreeGenerator* parent,
         }   // if ( d_template )
 
       } else    // Normal loop exit - out of data
-	    break;
+      break;
 
       id++;
-	}         // Loop thru MathML.gmr :: MMLCONTEXT
+  }         // Loop thru MathML.gmr :: MMLCONTEXT
 
   }
 
@@ -387,19 +387,19 @@ LaTeX2MMLTree::~LaTeX2MMLTree() {
 //  tree from the parse of $Math, $$Math, or an eqnarray.
 
 TNODE* LaTeX2MMLTree::NBLaTeXTreeToMML( TNODE* LaTeX_parse_tree,
-									      MATH_CONTEXT& mc,
-  										  ANOMALY_REC* anomalies,
-			  							  U16& error_code ) {
+                        MATH_CONTEXT& mc,
+                        ANOMALY_REC* anomalies,
+                        U16& error_code ) {
 
   
   TNODE* mml_rv =  NULL;
   error_code  =  0;
-  p_anomalies =  anomalies;		// list head is passed in.
+  p_anomalies =  anomalies;   // list head is passed in.
 
 
   TNODE* mml_tree  =  TranslateMathObject( LaTeX_parse_tree );
 
-  p_anomalies =  NULL;	// the caller now owns this list.
+  p_anomalies =  NULL;  // the caller now owns this list.
 
 // Add "context" attributes, mathcolor, etc.
 
@@ -416,7 +416,7 @@ TNODE* LaTeX2MMLTree::NBLaTeXTreeToMML( TNODE* LaTeX_parse_tree,
       }
 
       SetMMLAttribs( mml_tree,(U8*)zMMLStyleAttrs );
-	}
+  }
 
     mml_rv =  MMLlistToMRow( mml_tree );
   }
@@ -429,7 +429,7 @@ TNODE* LaTeX2MMLTree::NBLaTeXTreeToMML( TNODE* LaTeX_parse_tree,
 // "math_container_obj" is a LaTeX tree ( Notebook.gmr )
 //  from the parse of $Math, $$Math, or an eqnarray.
 // Note that both TCI internal format and external LaTeX
-//	as scripted by SWP are accepted as sources.
+//  as scripted by SWP are accepted as sources.
 
 TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
   //JBMLine("\nTranslateMathObject");
@@ -443,13 +443,13 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
     TNODE* out_of_flow_list =  NULL;
 
     switch ( usubtype ) {
-	  case  TCMD_DollarMath  : 		// $x$
-		if ( uID == 0 ) {
+    case  TCMD_DollarMath  :    // $x$
+    if ( uID == 0 ) {
           TNODE* local_oof_list =  NULL;
           script_level  =  0;
           
           TNODE* mml_cont =  TranslateTeXDollarMath( math_container_obj,
-								                    &local_oof_list );
+                                    &local_oof_list );
           
           script_level  =  0;
 
@@ -457,11 +457,11 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
         // 1 - pass vspace up to caller
         // 2 - nest mml_cont in <mpadded>
           mml_cont  =  HandleOutOfFlowObjects( mml_cont,
-    						&local_oof_list,&out_of_flow_list,vspace_context );
+                &local_oof_list,&out_of_flow_list,vspace_context );
 
           mml_rv =  MMLlistToMRow( mml_cont );
           mml_rv->src_linenum =  math_container_obj->src_linenum;
-		}
+    }
 
 // We have translated the contents of the TeX inline.
 //  It remains to nest it in an <mstyle> marked for "inline".
@@ -475,14 +475,14 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
           SetNodeAttrib( mml_rv,(U8*)"scriptlevel",(U8*)"0" );
 */
         }
-	  break;
+    break;
 
-	  case  TCMD_DisplayedMath  : 	// \begin{mathdisplay}, etc.
-	    if ( uID==1 || uID==11 || uID==21 || uID==31 || uID==41 ) {
+    case  TCMD_DisplayedMath  :   // \begin{mathdisplay}, etc.
+      if ( uID==1 || uID==11 || uID==21 || uID==31 || uID==41 ) {
           script_level  =  0;
-		      in_display  =  TRUE;
+          in_display  =  TRUE;
           mml_rv  =  TranslateTeXDisplay( math_container_obj, uID, &out_of_flow_list );
-		      in_display  =  FALSE;
+          in_display  =  FALSE;
           script_level  =  0;
 
           if (out_of_flow_list){
@@ -499,7 +499,7 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
 // We have translated the contents of the TeX display.  It remains
 //  to nest it in an <mstyle> marked for "display".  There are other
 //  issues to be considered, like labels and tags (numbering in general).
-//	The only provision for tagging in MathML is <mlabeledtr>
+//  The only provision for tagging in MathML is <mlabeledtr>
 //  within <mtable>.
 
           if ( mml_rv ) {
@@ -510,13 +510,13 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
             SetNodeAttrib( mml_rv,(U8*)"displaystyle",(U8*)"true" );
             SetNodeAttrib( mml_rv,(U8*)"scriptlevel",(U8*)"0" );
 */
-		  }
-	    }
-	  break;
+      }
+      }
+    break;
 
 // \EQN<uID5.39.0>!\EQN!_ENUMID__NCOLS__MLLABEL__MATHLETTERS__EQNROWS_
-	  case  39  :
-	    if ( uID==0 ) {
+    case  39  :
+      if ( uID==0 ) {
 // Utility to generate external tree from internal version.
           TNODE* eqnarray =  EQNtoeqnarray( math_container_obj,
                                                 usubtype );
@@ -529,7 +529,7 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
 // Internally, SWP makes the following translations
 //   \begin{equation*}\begin{split}  <--> \EQN{6}...
             TNODE* local_oof_list =  NULL;
-		    if ( usub == TENV_cases ) {
+        if ( usub == TENV_cases ) {
               mml_rv  =  LaTeXCases2MML( eqnarray,&local_oof_list );
             } else {
               mml_rv  =  NestedTeXEqnArray2MML( eqnarray,
@@ -543,74 +543,74 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
               SetNodeAttrib( mml_rv,(U8*)"displaystyle",(U8*)"true" );
               SetNodeAttrib( mml_rv,(U8*)"scriptlevel",(U8*)"0" );
 */
-		    }
+        }
           } else
             mml_rv  =  TranslateMathObject( eqnarray );
 
           DisposeTList( eqnarray );
-		}
-	  break;
+    }
+    break;
 
-	  case TENV_eqnarray  :
-	  case TENV_eqnarraystar  :
-	  case 123  :		// TENV_align          123
-	  case 124  :		// \begin{align*}<uID5.124.0>!
-	  case 125  :		// TENV_alignat        125
-	  case 126  :		// TENV_alignatstar    126
-	  case 127  :		// TENV_xalignat       127
-	  case 128  :		// TENV_xalignatstar   128
-	  case 129  :		// TENV_xxalignat      129
-	  case 130  :		// TENV_xxalignatstar  130
-	  case 131  :		// TENV_gather         131
-	  case 132  :		// TENV_gatherstar     132
-	  case 133  :		// TENV_multline       133
-	  case 134  : 	// TENV_multlinestar   134
+    case TENV_eqnarray  :
+    case TENV_eqnarraystar  :
+    case 123  :   // TENV_align          123
+    case 124  :   // \begin{align*}<uID5.124.0>!
+    case 125  :   // TENV_alignat        125
+    case 126  :   // TENV_alignatstar    126
+    case 127  :   // TENV_xalignat       127
+    case 128  :   // TENV_xalignatstar   128
+    case 129  :   // TENV_xxalignat      129
+    case 130  :   // TENV_xxalignatstar  130
+    case 131  :   // TENV_gather         131
+    case 132  :   // TENV_gatherstar     132
+    case 133  :   // TENV_multline       133
+    case 134  :   // TENV_multlinestar   134
     //JBMLine("\nTranslateMathObject A");
     if ( usubtype == TENV_eqnarraystar )
     {
       RecordAnomaly( ANOMALY_NONUMBERING, NULL, 0, 0 );
 
     }
-		if ( uID == 0 ) {
+    if ( uID == 0 ) {
           script_level  =  0;
-		      in_display  =  TRUE;
+          in_display  =  TRUE;
           mml_rv  =  TranslateTeXEqnArray( math_container_obj,
-   							                &out_of_flow_list,usubtype );
+                                &out_of_flow_list,usubtype );
           mml_rv  =  AddEQNAttribs( mml_rv,usubtype );
-		      in_display  =  FALSE;
+          in_display  =  FALSE;
           script_level  =  0;
-		}
+    }
     
-	  break;
+    break;
 
-	  case 135  :
-	  case 136  :
-	  case 137  :
-	  case 138  :
-	  case 139  :
-	    if ( uID == 0 )	{	// these don't exist
-		    TCI_ASSERT(0);
+    case 135  :
+    case 136  :
+    case 137  :
+    case 138  :
+    case 139  :
+      if ( uID == 0 ) { // these don't exist
+        TCI_ASSERT(0);
       }
-	    break;
+      break;
 
-	  case 140  :		    // TENV_cases          140
-	  case 141  :		    // TENV_split          141
-	  case 142  :		    // TENV_gathered       142
-	  case 143  : 	        // TENV_aligned        143
-	    if ( uID == 0 )	{	// these are MATH only
-		  TCI_ASSERT(0);	// not level 1 objects
-	    break;				// must be in $'s, $$'s
+    case 140  :       // TENV_cases          140
+    case 141  :       // TENV_split          141
+    case 142  :       // TENV_gathered       142
+    case 143  :           // TENV_aligned        143
+      if ( uID == 0 ) { // these are MATH only
+      TCI_ASSERT(0);  // not level 1 objects
+      break;        // must be in $'s, $$'s
     }
 
     default : {
-	    TCI_ASSERT(0);	// un-expected object at level 1.
+      TCI_ASSERT(0);  // un-expected object at level 1.
     }
-	  break;
-	}
+    break;
+  }
 
     TCI_ASSERT( out_of_flow_list == NULL );
 
-  } else	// if ( uobjtype == 5 )
+  } else  // if ( uobjtype == 5 )
     TCI_ASSERT(0);
 
   //JBMLine("\nEnd TranslateMathObject");
@@ -627,14 +627,14 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
 
 TNODE* LaTeX2MMLTree::TranslateMathList( 
                             TNODE* LaTeX_list,
-  										      TCI_BOOL do_bindings,
- 								            MATH_CONTEXT_INFO* m_context,
+                            TCI_BOOL do_bindings,
+                            MATH_CONTEXT_INFO* m_context,
                             U16& tex_nodes_done,
                             U16& error_code,
                             TNODE** out_of_flow_list ) {
 
 
-  tex_nodes_done  =  0;		// first level LaTeX nodes processed
+  tex_nodes_done  =  0;   // first level LaTeX nodes processed
   error_code      =  0;
 
   TCI_ASSERT( *out_of_flow_list == NULL );
@@ -645,33 +645,33 @@ TNODE* LaTeX2MMLTree::TranslateMathList(
 
   TNODE* MML_rv   =  NULL;
 
-  TNODE* oof_list =  NULL;	// local out_of_flow_list
+  TNODE* oof_list =  NULL;  // local out_of_flow_list
   TNODE* curr_mml_node;
   TNODE* last_mml_node  =  NULL;
 
   TNODE* rover  =  LaTeX_list;
-  while ( rover ) {    		// Loop thru first level objects
-    						//  in source "LaTeX_parse_tree"
+  while ( rover ) {       // Loop thru first level objects
+                //  in source "LaTeX_parse_tree"
     curr_mml_node   =  NULL;
-    U16 local_nodes_done  =  1;	// assumed - set if otherwise
+    U16 local_nodes_done  =  1; // assumed - set if otherwise
     TNODE* save_next  =  NULL;
-	  TCI_BOOL use_save_next  =  FALSE;
+    TCI_BOOL use_save_next  =  FALSE;
 
     U16 uobjtype,usubtype,uID;
     GetUids( rover->zuID,uobjtype,usubtype,uID );
     
     switch ( uobjtype ) {       // switch on primary object type
-	  case 0  :
-      case 1  :	  // Context Start
+    case 0  :
+      case 1  :   // Context Start
       case 2  :   // Context End
         TCI_ASSERT( 0 );
       break;
 
       case 3  :   // LaTeX Symbol
-        if ( usubtype==17 && uID==106 ) {	// &
+        if ( usubtype==17 && uID==106 ) { // &
           // maligngroup<uID9.20.0>
           // mmltiler has special handling for <uID9.d.d> objects
-  		    curr_mml_node =  MakeTNode( 0L,0L,0L,(U8*)"9.20.0" );
+          curr_mml_node =  MakeTNode( 0L,0L,0L,(U8*)"9.20.0" );
           // mark this node as pure whitespace
           SetDetailNum( curr_mml_node,DETAILS_space_width,0 );
         } else {
@@ -694,15 +694,15 @@ TNODE* LaTeX2MMLTree::TranslateMathList(
           HyperObj2MML( &oof_list,rover,usubtype,TRUE,NULL );
           local_nodes_done  =  1;
         } else if ( usubtype==700 && uID==0 ) {
-	        use_save_next =  TRUE;
+          use_save_next =  TRUE;
           save_next   =  rover->next;
           oof_list  =  MoveNodeToList( oof_list,rover );
           local_nodes_done  =  1;
-		   } else {
-	        use_save_next =  TRUE;
+       } else {
+          use_save_next =  TRUE;
           save_next =  rover->next;
           curr_mml_node =  MathStructureToMML( rover,&oof_list,
-          					m_context,local_nodes_done,error_code );
+                    m_context,local_nodes_done,error_code );
           U16 count =  1;
           while ( save_next && count < local_nodes_done ) {
             count++;
@@ -712,50 +712,50 @@ TNODE* LaTeX2MMLTree::TranslateMathList(
       }
       break;
 
-	  case   6  :		// a { group } in MATH
-	    if ( usubtype==1 && uID==0 ) {
+    case   6  :   // a { group } in MATH
+      if ( usubtype==1 && uID==0 ) {
 // {<uID6.1.0>BUCKET(6.1.2,INHERIT,{,},,)
-		  if ( rover->parts && rover->parts->contents ) {
-			TNODE* TeX_cont =  rover->parts->contents;
-			U8 switch_nom[64];
+      if ( rover->parts && rover->parts->contents ) {
+      TNODE* TeX_cont =  rover->parts->contents;
+      U8 switch_nom[64];
             U16 switch_tag  =  GetMathRunTagFromTeXSwitch(
-       								    TeX_cont,switch_nom );
-			if ( switch_tag ) {
+                          TeX_cont,switch_nom );
+      if ( switch_tag ) {
     // {\large x = 1}
-			  curr_mml_node =  TaggedMath2MML( rover,TeX_cont,
-	  		  					          switch_tag,switch_nom,
-	  		  							  &oof_list );
-			} else {
+        curr_mml_node =  TaggedMath2MML( rover,TeX_cont,
+                              switch_tag,switch_nom,
+                          &oof_list );
+      } else {
 
-	// Here we're just dropping the tag.
-	// We translate the contents, leaving all binding for later.
+  // Here we're just dropping the tag.
+  // We translate the contents, leaving all binding for later.
 
-			  TCI_BOOL do_bindings  =  FALSE;
+        TCI_BOOL do_bindings  =  FALSE;
         U16 tex_nodes_done,error_code;
-			  TNODE* local_oof_list =  NULL;
+        TNODE* local_oof_list =  NULL;
         TNODE* mml_cont =  TranslateMathList( TeX_cont,
-							        do_bindings,NULL,tex_nodes_done,
-							        error_code,&local_oof_list );
-	      if ( !mml_cont ) {
-		       TCI_ASSERT(0);
+                      do_bindings,NULL,tex_nodes_done,
+                      error_code,&local_oof_list );
+        if ( !mml_cont ) {
+           TCI_ASSERT(0);
         }
-			  if ( local_oof_list ) {
-			    if ( oof_list ) {
-				  TNODE* tail =  oof_list;
-				  while ( tail->next )
-				    tail  =  tail->next;
-				  tail->next  =  local_oof_list;
-				  local_oof_list->prev  =  tail;
-				} else
-				  oof_list  =  local_oof_list;
-			  }
+        if ( local_oof_list ) {
+          if ( oof_list ) {
+          TNODE* tail =  oof_list;
+          while ( tail->next )
+            tail  =  tail->next;
+          tail->next  =  local_oof_list;
+          local_oof_list->prev  =  tail;
+        } else
+          oof_list  =  local_oof_list;
+        }
               curr_mml_node =  mml_cont;
-			}
-		  }
-		} else {
-		  TCI_ASSERT(0);
+      }
+      }
+    } else {
+      TCI_ASSERT(0);
     }
-	  break;
+    break;
 
       case 7  :   // Big (prefix) operator - integral, summation, etc.
         curr_mml_node =  BigOp2MML( rover,local_nodes_done,&oof_list );
@@ -763,16 +763,16 @@ TNODE* LaTeX2MMLTree::TranslateMathList(
 
       case 8  :   // Function name, "\limfunc", "\func", etc.
         curr_mml_node =  Function2MML( rover,usubtype,uID,
-							              local_nodes_done,&oof_list );
+                            local_nodes_done,&oof_list );
       break;
 
       case 9  :   // White space
-        if ( usubtype == 3 ) {		// vertical space
-	      use_save_next =  TRUE;
+        if ( usubtype == 3 ) {    // vertical space
+        use_save_next =  TRUE;
           save_next =  rover->next;
           oof_list  =  MoveNodeToList( oof_list,rover );
-       	  local_nodes_done  =  1;
-		} else                    // all non-vertical spacing elements
+          local_nodes_done  =  1;
+    } else                    // all non-vertical spacing elements
           curr_mml_node =  LaTeXHSpacing2MML( rover,usubtype,uID,
                                             local_nodes_done );
       break;
@@ -782,7 +782,7 @@ TNODE* LaTeX2MMLTree::TranslateMathList(
       break;
 
       default :
-		//TCI_ASSERT(0);
+    //TCI_ASSERT(0);
       break;
 
     }       // switch ( uobjtype )
@@ -795,18 +795,18 @@ TNODE* LaTeX2MMLTree::TranslateMathList(
       else {
         last_mml_node->next =  curr_mml_node;
         curr_mml_node->prev =  last_mml_node;
-	  }
+    }
 
       last_mml_node =  curr_mml_node;
       while ( last_mml_node->next )
         last_mml_node =  last_mml_node->next;
-    }		// if ( curr_mml_node )
+    }   // if ( curr_mml_node )
 
 // Advance TeX list pointer, rover
 
     if ( use_save_next ) {
       rover =  save_next;
-	} else {
+  } else {
       U16 count =  0;
       while ( rover && count < local_nodes_done ) {
         count++;
@@ -830,9 +830,9 @@ TNODE* LaTeX2MMLTree::TranslateMathList(
   if ( oof_list ) {
     if ( *out_of_flow_list ) {
       TNODE* tail =  *out_of_flow_list;
-	    while ( tail->next )
-	      tail  =  tail->next;
-	    tail->next  =  oof_list;
+      while ( tail->next )
+        tail  =  tail->next;
+      tail->next  =  oof_list;
     } else
       *out_of_flow_list =  oof_list;
   }
@@ -854,8 +854,8 @@ TNODE* LaTeX2MMLTree::TranslateMathList(
 // <=<uID3.21.12>&lt;=,infix,26,
 
 TCI_BOOL LaTeX2MMLTree::IsMultiTeXSymOp( TNODE* tex_sym_node,
-											U8** zop_info,
-											U16& advance ) {
+                      U8** zop_info,
+                      U16& advance ) {
 
   TCI_BOOL rv =  FALSE;
   *zop_info   =  NULL;
@@ -876,37 +876,37 @@ TCI_BOOL LaTeX2MMLTree::IsMultiTeXSymOp( TNODE* tex_sym_node,
 // Got second mml op
       U16 save_ln =  strlen( (char*)TeX_token_zstr );
       TNODE* nnn  =  nn->next;
-	  if ( advance2==2 )
+    if ( advance2==2 )
         nnn  =  nnn->next;
-	  TCI_BOOL is_triple =  FALSE;
+    TCI_BOOL is_triple =  FALSE;
       if ( GetLaTeXOpSymbol(nnn,TeX_token_zstr,advance3) ) {
 // Got third mml op
         U16 nln   =  strlen( (char*)TeX_token_zstr );
         if ( s_mml_grammar->GetGrammarDataFromNameAndAttrs(
-    							(U8*)TeX_token_zstr,nln,zform,
+                  (U8*)TeX_token_zstr,nln,zform,
                                 gmr_section,&op_zuID,zop_info) ) {
 // Lookup succeeds for triple, as in "..."
           advance =  advance1 + advance2 + advance3;
           is_triple =  TRUE;
           rv  =  TRUE;
-		}
-	  }
-	  if ( !is_triple ) {
+    }
+    }
+    if ( !is_triple ) {
         TeX_token_zstr[save_ln] =  0;
         if ( s_mml_grammar->GetGrammarDataFromNameAndAttrs(
-   							(U8*)TeX_token_zstr,save_ln,zform,
+                (U8*)TeX_token_zstr,save_ln,zform,
                                 gmr_section,&op_zuID,zop_info) ) {
 // Lookup succeeds for double, as in "++"
           advance =  advance1 + advance2;
           rv  =  TRUE;
-		} else {
+    } else {
           // jcs if ( !strncmp((char*)TeX_token_zstr,"\\not",4) )
           // jcs   TCI_ASSERT(0);                                                          
-		}
+    }
 
-	  }
+    }
 
-	}		// if ( GetLaTeXOpSymbol(nn,TeX_token_zstr,advance2) )
+  }   // if ( GetLaTeXOpSymbol(nn,TeX_token_zstr,advance2) )
 
   }// jcs  else
    // jcs  TCI_ASSERT(0);
@@ -920,8 +920,8 @@ TCI_BOOL LaTeX2MMLTree::IsMultiTeXSymOp( TNODE* tex_sym_node,
 //  to a string of operator symbols - "<=..."
 
 TCI_BOOL LaTeX2MMLTree::GetLaTeXOpSymbol( TNODE* tex_node,
-									  	    U8* zTeX_tokens,
-										    U16& nodes_done ) {
+                          U8* zTeX_tokens,
+                        U16& nodes_done ) {
 
   TCI_BOOL rv =  FALSE;
   U16 local_advance =  0;
@@ -929,19 +929,19 @@ TCI_BOOL LaTeX2MMLTree::GetLaTeXOpSymbol( TNODE* tex_node,
 // Step over narrow white space.
     U16 objclass,subclass,id;
     GetUids( tex_node->zuID,objclass,subclass,id );
-    if ( objclass==9 && tex_node->next ) {	// space
-	  TCI_BOOL omit_space =  FALSE;
+    if ( objclass==9 && tex_node->next ) {  // space
+    TCI_BOOL omit_space =  FALSE;
       if        ( subclass==1 ) {
-	    if ( id==3 || id==6 || id==8 || id==10 )
-	      omit_space  =  TRUE;
+      if ( id==3 || id==6 || id==8 || id==10 )
+        omit_space  =  TRUE;
       } else if ( subclass==5 ) {
-	    if ( id==3 )
-	      omit_space  =  TRUE;
-	  }
-	  if ( omit_space ) {
+      if ( id==3 )
+        omit_space  =  TRUE;
+    }
+    if ( omit_space ) {
         tex_node  =  tex_node->next;
         local_advance++;
-	  } else
+    } else
         tex_node  =  NULL;
     }
 
@@ -951,19 +951,19 @@ TCI_BOOL LaTeX2MMLTree::GetLaTeXOpSymbol( TNODE* tex_node,
       TCI_BOOL forces_geometry;
       U16 ilk =  ClassifyTeXSymbol( tex_node,NULL,
                                     forces_geometry,NULL );
-	  if ( ilk == MML_NUMBER ) {
+    if ( ilk == MML_NUMBER ) {
         U16 obj,sub,id;
         GetUids( tex_node->zuID,obj,sub,id );
-        if ( obj==3 && sub==17 && id==88 )	// "."
-	      ilk =  MML_OPERATOR;
-	  }
-	  if ( ilk == MML_OPERATOR ) {
+        if ( obj==3 && sub==17 && id==88 )  // "."
+        ilk =  MML_OPERATOR;
+    }
+    if ( ilk == MML_OPERATOR ) {
         strcat( (char*)zTeX_tokens,(char*)tex_node->src_tok );
         local_advance++;
         rv  =  TRUE;
-      }		// if ( ilk == MML_OPERATOR )
-    }	  // if ( tex_node )
-  }	    // if ( tex_node )
+      }   // if ( ilk == MML_OPERATOR )
+    }   // if ( tex_node )
+  }     // if ( tex_node )
 
   nodes_done =  rv ? local_advance : 0;
 
@@ -976,8 +976,8 @@ TCI_BOOL LaTeX2MMLTree::GetLaTeXOpSymbol( TNODE* tex_node,
 
 TNODE* LaTeX2MMLTree::MathSymbolToMML( TNODE* tex_symbol_node,
                                         TNODE* LaTeX_list,
-										TNODE** out_of_flow_list,
-				  						U16& tex_nodes_done ) {
+                    TNODE** out_of_flow_list,
+                      U16& tex_nodes_done ) {
 
   tex_nodes_done  =  0;
 
@@ -998,18 +998,18 @@ TNODE* LaTeX2MMLTree::MathSymbolToMML( TNODE* tex_symbol_node,
                         forces_geometry,tex_nodes_done );
     SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_ORD );
   } else if ( symbol_mml_ilk == MML_NUMBER ) {
-	mml_elem_ID =  202;		// <mn>
+  mml_elem_ID =  202;   // <mn>
     GetNumberStr( tex_symbol_node,out_of_flow_list,
-    						mml_rv,tex_nodes_done );
+                mml_rv,tex_nodes_done );
 
   } else if ( symbol_mml_ilk == MML_OPERATOR ) {
-	mml_elem_ID =  203;		// <mo>
+  mml_elem_ID =  203;   // <mo>
     SetMMLOpNode( tex_symbol_node,tex_nodes_done,mml_rv );
 
   } else if ( symbol_mml_ilk == MML_TEXT ) {
 
   } else if ( symbol_mml_ilk == MML_SPACE ) {
-	TCI_ASSERT(0);
+  TCI_ASSERT(0);
 
   } else {
 // When a LaTeX symbol can't be categorized as an
@@ -1018,7 +1018,7 @@ TNODE* LaTeX2MMLTree::MathSymbolToMML( TNODE* tex_symbol_node,
   }
 
   if ( symbol_mml_ilk == MML_TEXT ) {
-    mml_elem_ID =  204;		// <mtext>
+    mml_elem_ID =  204;   // <mtext>
 
     U8 entity_buffer[128];
     U8 unicode_buffer[128];
@@ -1029,16 +1029,16 @@ TNODE* LaTeX2MMLTree::MathSymbolToMML( TNODE* tex_symbol_node,
     if ( entity_buffer[0] ) {
       SetChData( mml_rv,entity_buffer,unicode_buffer );
     } else {
-	  TCI_ASSERT(0);
+    TCI_ASSERT(0);
       SetChData( mml_rv,(U8*)"???",NULL );
-	}
+  }
     tex_nodes_done  =  1;
   }
 
 // Set the zuID ( <mi>, <mn>, <mo>, <mtext> ) of the returned TNODE
 
   if ( mml_elem_ID ) {
-	U8 zuID[32];
+  U8 zuID[32];
     UidsTozuID( 3,mml_elem_ID,1,(U8*)zuID );
     strcpy( (char*)mml_rv->zuID,(char*)zuID );
   }
@@ -1107,14 +1107,14 @@ TNODE* LaTeX2MMLTree::AddOperatorInfo( TNODE* MML_parse_list ) {
     U16 uobjtype,usubtype,uID;
     GetUids( MML_rover->zuID,uobjtype,usubtype,uID );
 
-    if ( uobjtype==3 ) {	// non-structured
+    if ( uobjtype==3 ) {  // non-structured
 
       switch ( usubtype ) {
-        case 201  :  			//EID_mi	  mi<uID3.201.1>
-		break;
-        case 202  :  			//EID_mn	  mn<uID3.202.1>
-		break;
-        case 203  :  			//EID_mo	  mo<uID3.203.1>
+        case 201  :       //EID_mi    mi<uID3.201.1>
+    break;
+        case 202  :       //EID_mn    mn<uID3.202.1>
+    break;
+        case 203  :       //EID_mo    mo<uID3.203.1>
           if ( !MML_rover->details
           ||   MML_rover->details->form==UNDEFINED_DETAIL )
             SetMultiformOpAttrs( MML_rover,MML_rover );
@@ -1122,33 +1122,33 @@ TNODE* LaTeX2MMLTree::AddOperatorInfo( TNODE* MML_parse_list ) {
           if ( in_script ) {
             if ( spacing_mode_in_scripts == 3 )
               SetTeXOperatorSpacing( MML_rover,MML_rover,in_script );
-          }	else {
+          } else {
             if ( mo_spacing_mode == 3 )   // 3 - emulate TeX spacing
               SetTeXOperatorSpacing( MML_rover,MML_rover,in_script );
           }
 
-		break;
-        case 204  :  			//EID_mtext	  mtext<uID3.204.1>
-		break;
-        case 205  :  			//EID_mspace  mspace<uID3.205.1>
-		break;
-        case 206  :  			//EID_ms	    ms<uID3.206.1>
-		break;
-		default   :
-		  TCI_ASSERT(0);
-		break;
-	  }
+    break;
+        case 204  :       //EID_mtext   mtext<uID3.204.1>
+    break;
+        case 205  :       //EID_mspace  mspace<uID3.205.1>
+    break;
+        case 206  :       //EID_ms      ms<uID3.206.1>
+    break;
+    default   :
+      TCI_ASSERT(0);
+    break;
+    }
 
-    } else if ( uobjtype==5 ) {	// structured
+    } else if ( uobjtype==5 ) { // structured
 
 // Here's where "embellished operators" are handled.
 
-      if ( usubtype==750 && uID==1 ) {	// mrow
+      if ( usubtype==750 && uID==1 ) {  // mrow
         if ( MML_rover->parts && MML_rover->parts->contents ) {
           TNODE* cont =  MML_rover->parts->contents;
           U16 uobj,usub,id;
           GetUids( cont->zuID,uobj,usub,id );
-          if ( uobj==5 && usub==600 && id==0 ) {	// mstyle
+          if ( uobj==5 && usub==600 && id==0 ) {  // mstyle
             if ( cont->parts && cont->parts->contents ) {
               TNODE* cont2  =  cont->parts->contents;
               U16 uobjtype,usubtype,uID;
@@ -1158,17 +1158,17 @@ TNODE* LaTeX2MMLTree::AddOperatorInfo( TNODE* MML_parse_list ) {
                 if ( in_script ) {
                   if ( spacing_mode_in_scripts == 3 )
                     SetTeXOperatorSpacing( MML_rover,cont2,in_script );
-                }	else {
+                } else {
                   if ( mo_spacing_mode == 3 )   // 3 - emulate TeX spacing
                     SetTeXOperatorSpacing( MML_rover,cont2,in_script );
                 }
               }
 
-			}
-		  }		// mstyle clause
-		}
+      }
+      }   // mstyle clause
+    }
 
-	  }	else if ( usubtype>=50 && usubtype<=55 && uID==2 ) {
+    } else if ( usubtype>=50 && usubtype<=55 && uID==2 ) {
 
       // possible embellished operator
 
@@ -1196,14 +1196,14 @@ TNODE* LaTeX2MMLTree::AddOperatorInfo( TNODE* MML_parse_list ) {
                 SetTeXOperatorSpacing( MML_rover,cont,in_script );
             }
 
-		  }
-		}
-	  }
+      }
+    }
+    }
 
-	}	// uobj == 5 clause
+  } // uobj == 5 clause
 
     MML_rover =  MML_rover->next;
-  }		// loop thru mml list
+  }   // loop thru mml list
 
   return rv;
 }
@@ -1217,7 +1217,7 @@ TNODE* LaTeX2MMLTree::AddOperatorInfo( TNODE* MML_parse_list ) {
 // Otherwise, both args are the same - the op_node.
 
 void LaTeX2MMLTree::SetMultiformOpAttrs( TNODE* MML_rover,
-										    TNODE* op_node ) {
+                        TNODE* op_node ) {
 
   U8* opname  =  op_node->var_value;
   U16 nln =  strlen( (char*)opname );
@@ -1233,7 +1233,7 @@ void LaTeX2MMLTree::SetMultiformOpAttrs( TNODE* MML_rover,
   I16 left_space;
   I16 right_space;
   CheckForOperands( MML_rover,has_left_operand,has_right_operand,
-  									left_space,right_space );
+                    left_space,right_space );
 
   U16 form_ID;
   U16 precedence;
@@ -1283,10 +1283,10 @@ void LaTeX2MMLTree::SetMultiformOpAttrs( TNODE* MML_rover,
         form_ID =  OPF_postfix;
     }
 
-    U8* op_zuID;		// for return info from lookups
+    U8* op_zuID;    // for return info from lookups
     U8* op_zinfo;
     if ( s_mml_grammar->GetGrammarDataFromNameAndAttrs(
-   						opname,nln,(U8*)zop_forms[form_ID],
+              opname,nln,(U8*)zop_forms[form_ID],
                         (U8*)"MULTIFORMOPS",&op_zuID,&op_zinfo) ) {
 
 // +<uID3.13.60>prefix,47,U0002B,lspace="mediummathspace" rspace="0"
@@ -1294,9 +1294,9 @@ void LaTeX2MMLTree::SetMultiformOpAttrs( TNODE* MML_rover,
 
 // +<uID3.13.60>postfix,64,U0002B,lspace="0" rspace="mediummathspace"
 
-	  SetNodeAttrib( op_node,(U8*)"form",(U8*)zop_forms[form_ID] );
-	  OP_GRAMMAR_INFO op_record;
-	  if ( op_zinfo && *op_zinfo ) {
+    SetNodeAttrib( op_node,(U8*)"form",(U8*)zop_forms[form_ID] );
+    OP_GRAMMAR_INFO op_record;
+    if ( op_zinfo && *op_zinfo ) {
 
         if ( output_entities_as_unicodes ) {
           U8 unicode_buffer[128];
@@ -1306,48 +1306,48 @@ void LaTeX2MMLTree::SetMultiformOpAttrs( TNODE* MML_rover,
 
         GetAttribsFromGammarInfo( op_zinfo,op_record );
         if ( op_record.attr_list ) {
-		  MergeMOAttribs( op_node,op_record.attr_list );
+      MergeMOAttribs( op_node,op_record.attr_list );
           DisposeAttribs( op_record.attr_list );
           op_record.attr_list =  NULL;
         }
 
-	  } else
-	    TCI_ASSERT(0);
+    } else
+      TCI_ASSERT(0);
 
       precedence  =  op_record.precedence;
       SetDetailNum( MML_rover,DETAILS_form,form_ID );
       SetDetailNum( MML_rover,DETAILS_precedence,precedence );
-	  if ( form_ID==OPF_prefix && precedence==54 )
+    if ( form_ID==OPF_prefix && precedence==54 )
         SetDetailNum( MML_rover,DETAILS_is_differential,1 );
 
-	} else {
-	  TCI_ASSERT(0);
+  } else {
+    TCI_ASSERT(0);
       form_ID  =  0;
-	}
+  }
 
-  } else {		// Not a multi-form operator
+  } else {    // Not a multi-form operator
 
     if ( op_node->details
     &&   op_node->details->form != UNDEFINED_DETAIL ) {
       form_ID  =  op_node->details->form;
-	  precedence  =  op_node->details->precedence;
-	  if ( MML_rover != op_node ) {
+    precedence  =  op_node->details->precedence;
+    if ( MML_rover != op_node ) {
         SetDetailNum( MML_rover,DETAILS_form,form_ID );
         SetDetailNum( MML_rover,DETAILS_precedence,precedence );
-	    if ( form_ID==OPF_prefix && precedence==54 )
+      if ( form_ID==OPF_prefix && precedence==54 )
           SetDetailNum( MML_rover,DETAILS_is_differential,1 );
-	  }
+    }
 
-	} else
-	  TCI_ASSERT(0);
+  } else
+    TCI_ASSERT(0);
 
   }
 
 // the following as a diagnostic
 
   if        ( form_ID==OPF_prefix ) {
-	if ( precedence > 1 )
-	  if ( MML_rover->next ) {
+  if ( precedence > 1 )
+    if ( MML_rover->next ) {
         TCI_ASSERT( has_right_operand );
     }
   } else if ( form_ID==OPF_infix ) {
@@ -1355,8 +1355,8 @@ void LaTeX2MMLTree::SetMultiformOpAttrs( TNODE* MML_rover,
       TCI_ASSERT( 0 );
     }
   } else if ( form_ID==OPF_postfix ) {
-	if ( precedence > 1 )
-	  if ( MML_rover->prev ) {
+  if ( precedence > 1 )
+    if ( MML_rover->prev ) {
         TCI_ASSERT( has_left_operand );
     }
   }
@@ -1375,11 +1375,11 @@ TNODE* LaTeX2MMLTree::AbsorbMSpaces( TNODE* MML_list ) {
 
   TNODE* rv =  MML_list;
 
-// \ <uID9.1.2>      			width = "mediummathspace";
-// \,<uID9.1.6>	thin      		width = "thinmathspace";
-// \;<uID9.1.7>	thick     		width = "thickmathspace";
-// \/<uID9.1.8>	italic correct	width = "veryverythinmathspace";
-// \!<uID9.1.9>	negative thin   width = "negativethinmathspace";
+// \ <uID9.1.2>           width = "mediummathspace";
+// \,<uID9.1.6> thin          width = "thinmathspace";
+// \;<uID9.1.7> thick         width = "thickmathspace";
+// \/<uID9.1.8> italic correct  width = "veryverythinmathspace";
+// \!<uID9.1.9> negative thin   width = "negativethinmathspace";
 //;3.205.1 <mspace width="thinmathspace "/>
 
   TNODE* rover  =  MML_list;
@@ -1399,37 +1399,37 @@ TNODE* LaTeX2MMLTree::AbsorbMSpaces( TNODE* MML_list ) {
           if ( rover->attrib_list ) {
             U8* buffer;
             if ( LocateAttribVal(rover->attrib_list,
-								(U8*)"linebreak",&buffer) )
+                (U8*)"linebreak",&buffer) )
               try_to_absorb  =  FALSE;
           }
         }
       }
     }
     if ( try_to_absorb ) {
-	  TNODE* parent_op  =  NULL;
-	  TCI_BOOL right_side;
-	  if ( rover->prev ) {        // look for <mo> on the left
+    TNODE* parent_op  =  NULL;
+    TCI_BOOL right_side;
+    if ( rover->prev ) {        // look for <mo> on the left
         U16 uobjtype,usubtype,uID;
         GetUids( rover->prev->zuID,uobjtype,usubtype,uID );
         if ( uobjtype==3 && usubtype==203 && uID==1 ) { // mo<uID3.203.1>
-	      parent_op =  rover->prev;
-	      right_side  =  TRUE;
-		}
-	  }
-	  if ( !parent_op && rover->next ) {
+        parent_op =  rover->prev;
+        right_side  =  TRUE;
+    }
+    }
+    if ( !parent_op && rover->next ) {
         U16 uobjtype,usubtype,uID;
         GetUids( rover->next->zuID,uobjtype,usubtype,uID );
         if ( uobjtype==3 && usubtype==203 && uID==1 ) { // mo<uID3.203.1>
-	      parent_op =  rover->next;
-	      right_side  =  FALSE;
-		}
-	  }
+        parent_op =  rover->next;
+        right_side  =  FALSE;
+    }
+    }
 
       rover =  rover->next;
-	  if ( parent_op )
-		rv  =  AbsorbMMLSpaceNode( rv,parent_op,right_side );
+    if ( parent_op )
+    rv  =  AbsorbMMLSpaceNode( rv,parent_op,right_side );
 
-	} else
+  } else
       rover =  rover->next;
   }
 
@@ -1438,7 +1438,7 @@ TNODE* LaTeX2MMLTree::AbsorbMSpaces( TNODE* MML_list ) {
 
 
 TNODE* LaTeX2MMLTree::AbsorbMMLSpaceNode( TNODE* head,TNODE* op_node,
-									  	    TCI_BOOL space_on_right ) {
+                          TCI_BOOL space_on_right ) {
 
   TNODE* rv =  head;
 
@@ -1503,7 +1503,7 @@ TNODE* LaTeX2MMLTree::AbsorbMMLSpaceNode( TNODE* head,TNODE* op_node,
   double ems_val  =  (curr_op_space + delta_width) / 18.0;
 
   U8 zattr_val[80];
-	sprintf( (char*)zattr_val,"%fem",ems_val );
+  sprintf( (char*)zattr_val,"%fem",ems_val );
   if ( zattr_val[0] ) {
     U16 zln =  strlen( (char*)zattr_val );
     if ( space_on_right )
@@ -1519,7 +1519,7 @@ TNODE* LaTeX2MMLTree::AbsorbMMLSpaceNode( TNODE* head,TNODE* op_node,
 // Many LaTeX constructs are parsed to uobjtype = 8 nodes.
 // ( See NoteBook.gmr ) \func{}, \limfunc{}, \sin, etc.
 // Some of these LaTeX objects should be treated as prefix
-//  operators in MathML.	\lim for example?
+//  operators in MathML.  \lim for example?
 // At the time of writing this code, I am NOT clear as to
 //  which uobjtype 8's should be treated as functions
 //  and which should be treated as prefix operators.
@@ -1538,77 +1538,77 @@ of well-formed MathML regarding expressions containing mod.
 */
 
 TNODE* LaTeX2MMLTree::Function2MML( TNODE* src_tex_func,
-								    U16 usubtype,U16 uID,
-									U16& tex_nodes_done,
-									TNODE** out_of_flow_list ) {
+                    U16 usubtype,U16 uID,
+                  U16& tex_nodes_done,
+                  TNODE** out_of_flow_list ) {
 
-// uID8.1.?		\func
+// uID8.1.?   \func
 // uID8.2.?   \sin, etc.
-// uID8.3.?		\limfunc
-// uID8.4.?		\lim, etc.
+// uID8.3.?   \limfunc
+// uID8.4.?   \lim, etc.
 
   TNODE* mml_rv =  NULL;
 
-  if ( usubtype==1 || usubtype==3 ) {	// \func OR \limfunc
+  if ( usubtype==1 || usubtype==3 ) { // \func OR \limfunc
     U8 zuID[32];
     UidsTozuID( 8,usubtype,2,(U8*)zuID );
     TNODE* name_bucket  =  FindObject( src_tex_func->parts,
-									    (U8*)zuID,INVALID_LIST_POS );
-	if ( name_bucket ) {
+                      (U8*)zuID,INVALID_LIST_POS );
+  if ( name_bucket ) {
       U8* func_name =  GetFuncName( name_bucket->contents );
-	  if ( !strcmp((char*)func_name,"mod") ) {
+    if ( !strcmp((char*)func_name,"mod") ) {
         mml_rv  =  MakeTNode( 0L,0L,src_tex_func->src_linenum,
-                                     (U8*)"3.203.1" );	// <mo>
+                                     (U8*)"3.203.1" );  // <mo>
         SetChData( mml_rv,func_name,NULL );
 
-	    if ( src_tex_func->prev ) {
-	      SetNodeAttrib( mml_rv,(U8*)"form",(U8*)zop_forms[OPF_infix] );
+      if ( src_tex_func->prev ) {
+        SetNodeAttrib( mml_rv,(U8*)"form",(U8*)zop_forms[OPF_infix] );
         //SetNodeAttrib( mml_rv,(U8*)"lspace",(U8*)".33333em" );
           SetMOSpacing( mml_rv,TRUE,(U8*)"0.27777em" );
           SetMOSpacing( mml_rv,FALSE,(U8*)"0.27777em" );
           SetDetailNum( mml_rv,DETAILS_form,2 );
           SetDetailNum( mml_rv,DETAILS_precedence,27 );
           SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_BIN );
-	    } else {
-	      SetNodeAttrib( mml_rv,(U8*)"form",(U8*)zop_forms[OPF_prefix] );
+      } else {
+        SetNodeAttrib( mml_rv,(U8*)"form",(U8*)zop_forms[OPF_prefix] );
           SetDetailNum( mml_rv,DETAILS_form,1 );
           SetDetailNum( mml_rv,DETAILS_precedence,46 );
           SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_OP );
-	    }
+      }
         if ( zMMLFunctionAttrs )
           SetMMLAttribs( mml_rv,(U8*)zMMLFunctionAttrs );
-	    return mml_rv;
-	  }
-	}	// clause to handle "mod"
+      return mml_rv;
+    }
+  } // clause to handle "mod"
   }
 
-  if ( usubtype==1			// \func{myfunc}
-  ||   usubtype==2 ) {		// built-in, no limits
+  if ( usubtype==1      // \func{myfunc}
+  ||   usubtype==2 ) {    // built-in, no limits
 
 // \lim, \max, etc. are considered to be operators
 
     if ( usubtype==2 && FuncIsMMLOperator(2,uID) ) {
       mml_rv =  MakeTNode( 0L,0L,src_tex_func->src_linenum,
-                                     (U8*)"3.203.1" );	// <mo>
+                                     (U8*)"3.203.1" );  // <mo>
 
-	  SetNodeAttrib( mml_rv,(U8*)"form",(U8*)zop_forms[OPF_prefix] );
+    SetNodeAttrib( mml_rv,(U8*)"form",(U8*)zop_forms[OPF_prefix] );
       SetDetailNum( mml_rv,DETAILS_form,1 );
       SetDetailNum( mml_rv,DETAILS_precedence,29 );
-	} else {
+  } else {
       mml_rv =  MakeTNode( 0L,0L,src_tex_func->src_linenum,
-                                     (U8*)"3.201.1" );	// <mi>
+                                     (U8*)"3.201.1" );  // <mi>
       SetDetailNum( mml_rv,DETAILS_function_status,usubtype );
-	}
+  }
 
 // Get the name of this TeX function
 
-    if        ( usubtype==1 ) {		// user defined \func
+    if        ( usubtype==1 ) {   // user defined \func
       TNODE* name_bucket  =  FindObject( src_tex_func->parts,
-									(U8*)"8.1.2",INVALID_LIST_POS );
+                  (U8*)"8.1.2",INVALID_LIST_POS );
       U8* func_name =  GetFuncName( name_bucket->contents );
       SetChData( mml_rv,func_name,NULL );
 
-    } else if ( usubtype==2 ) {		// standard function like \sin
+    } else if ( usubtype==2 ) {   // standard function like \sin
       U8* f_nom =  src_tex_func->src_tok + 1;
       SetChData( mml_rv,f_nom,NULL );
     }
@@ -1618,19 +1618,19 @@ TNODE* LaTeX2MMLTree::Function2MML( TNODE* src_tex_func,
 
 // Some functions take limits - we call "LimFunc2MML"
 
-  } else if ( usubtype==3			// \limfunc
-  ||          usubtype==4 ) {		// built-in with limits
+  } else if ( usubtype==3     // \limfunc
+  ||          usubtype==4 ) {   // built-in with limits
 
     U8* func_name =  NULL;
     if ( usubtype==3 ) {
 // \limfunc<uID8.3.1>!\limfunc!REQPARAM(8.3.2,NONLATEX)_LIMPLACE__FIRSTLIM__SECONDLIM_
-	  TNODE* name_bucket  =  FindObject( src_tex_func->parts,
+    TNODE* name_bucket  =  FindObject( src_tex_func->parts,
                                 (U8*)"8.3.2",INVALID_LIST_POS );
       func_name =  GetFuncName( name_bucket->contents );
-	} else {
-	  U16 zln   =  strlen( (char*)src_tex_func->src_tok );
-	  func_name =  (U8*)TCI_NEW( char[zln] );
-	  strcpy( (char*)func_name,(char*)src_tex_func->src_tok + 1 );
+  } else {
+    U16 zln   =  strlen( (char*)src_tex_func->src_tok );
+    func_name =  (U8*)TCI_NEW( char[zln] );
+    strcpy( (char*)func_name,(char*)src_tex_func->src_tok + 1 );
     }
 
     mml_rv  =  LimFunc2MML( src_tex_func,func_name,
@@ -1654,7 +1654,7 @@ TNODE* LaTeX2MMLTree::Function2MML( TNODE* src_tex_func,
 U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
                                         TNODE* LaTeX_list,
                                         TCI_BOOL& forces_geometry,
-										TNODE* mml_node ) {
+                    TNODE* mml_node ) {
 
   U16 rv  =  0;
   forces_geometry =  FALSE;
@@ -1662,52 +1662,52 @@ U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
   TCI_BOOL is_ellipsis    =  FALSE;
   TCI_BOOL check_mml_gmr  =  FALSE;
   I16 TeX_atom_ilk  =  TeX_ATOM_ORD;
-//	TeX_ATOM_ORD	  1   TeX_ATOM_OP 		2   TeX_ATOM_BIN		3
-//	TeX_ATOM_REL	  4   TeX_ATOM_OPEN   5   TeX_ATOM_CLOSE  6
-//	TeX_ATOM_PUNCT  7   TeX_ATOM_INNER  8
+//  TeX_ATOM_ORD    1   TeX_ATOM_OP     2   TeX_ATOM_BIN    3
+//  TeX_ATOM_REL    4   TeX_ATOM_OPEN   5   TeX_ATOM_CLOSE  6
+//  TeX_ATOM_PUNCT  7   TeX_ATOM_INNER  8
 
   U16 objclass,subclass,id;
   GetUids( tex_sym_node->zuID,objclass,subclass,id );
 
-  if ( objclass != 3 )	// We handle only class 3 objects here.
+  if ( objclass != 3 )  // We handle only class 3 objects here.
     return rv;
 
   switch ( subclass ) {
     case    1 :     // a<uID3.1.1> ... z<uID3.1.26>
-	  if ( id==4 && IsDifferentiald(tex_sym_node,LaTeX_list) ) {
-	    rv  =  MML_OPERATOR;
+    if ( id==4 && IsDifferentiald(tex_sym_node,LaTeX_list) ) {
+      rv  =  MML_OPERATOR;
         if ( mml_node )
           SetDetailNum( mml_node,DETAILS_is_differential,1 );
-	  } else
-	    rv  =  MML_IDENTIFIER;
-	break;
+    } else
+      rv  =  MML_IDENTIFIER;
+  break;
     case    2 :     // A<uID3.2.1> ... Z<uID3.2.26>
-	  if ( id==4 && IsDifferentialD(tex_sym_node,LaTeX_list) ) {
-	    rv  =  MML_OPERATOR;
+    if ( id==4 && IsDifferentialD(tex_sym_node,LaTeX_list) ) {
+      rv  =  MML_OPERATOR;
         if ( mml_node ) {
           SetDetailNum( mml_node,DETAILS_is_differential,1 );
           SetDetailNum( tex_sym_node,DETAILS_is_differential,1 );
-	    }
-	  } else
-	    rv  =  MML_IDENTIFIER; 
-	break;
+      }
+    } else
+      rv  =  MML_IDENTIFIER; 
+  break;
 
-    case    3 :  	// 0<uID3.3.1> ... 9<uID3.3.10>
+    case    3 :   // 0<uID3.3.1> ... 9<uID3.3.10>
       rv  =  MML_NUMBER;
-	break;
+  break;
 
     case    4 :
     case    5 :
     case    6 :
     case    7 :
-	  TCI_ASSERT(0);  // no LaTeX nodes have uID3.4.x, etc.
+    TCI_ASSERT(0);  // no LaTeX nodes have uID3.4.x, etc.
     break;
 
     case    8 :
-//	;European Latin symbols
-//	\NG<uID3.8.1>
-//	\ng<uID3.8.2>
-	  rv  =  MML_IDENTIFIER; 
+//  ;European Latin symbols
+//  \NG<uID3.8.1>
+//  \ng<uID3.8.2>
+    rv  =  MML_IDENTIFIER; 
     break;
 
     case    9 : // the following can't occur in MATH
@@ -1720,82 +1720,82 @@ U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
 //  \TH<uID3.9.7>
 //  \th<uID3.9.8>
 //  \textquestiondown<uID3.9.9>
-	  TCI_ASSERT(0);
+    TCI_ASSERT(0);
     break;
 
-    case   10 : 		// \alpha<uID3.10.1> ... \straightphi<uID3.10.47>
-	  if ( id==34 ) {  	// \Delta<uID3.10.34>
+    case   10 :     // \alpha<uID3.10.1> ... \straightphi<uID3.10.47>
+    if ( id==34 ) {   // \Delta<uID3.10.34>
         rv  =  ClassDeltaFromContext( tex_sym_node ); 
         if ( !rv )
           check_mml_gmr  =  TRUE;
-	  } else
-	    rv  =  MML_IDENTIFIER; 
-	break;
+    } else
+      rv  =  MML_IDENTIFIER; 
+  break;
 
-    case   11 : 		// \not<uID3.11.1>
+    case   11 :     // \not<uID3.11.1>
       if ( id==1 )
-	    rv  =  MML_OPERATOR;
+      rv  =  MML_OPERATOR;
       else
         TCI_ASSERT(0);
-	break;
+  break;
 
-    case   12 : 		// arrow symbols
+    case   12 :     // arrow symbols
       //check_mml_gmr  =  TRUE;
       TeX_atom_ilk  =  TeX_ATOM_REL;
-	  rv  =  MML_OPERATOR;
-	break;
+    rv  =  MML_OPERATOR;
+  break;
 
-    case  13  : {		// binops	\pm<uID3.13.1>, etc.
+    case  13  : {   // binops \pm<uID3.13.1>, etc.
       //check_mml_gmr  =  TRUE;
-	  rv  =  MML_OPERATOR;
+    rv  =  MML_OPERATOR;
 
 // In certain contexts, binops are part of implied groupings
 //  that translate to MML objects that aren't <mo>'s
 
-	  if        ( id==4 ) {
-	    if ( tex_sym_node->next )
+    if        ( id==4 ) {
+      if ( tex_sym_node->next )
           if ( IsImpliedEllipsis(tex_sym_node) )
             is_ellipsis  =  TRUE;
 
-	  } else if ( id==39 || id==40 ) {
-	  // \bigtriangleup<uID3.13.39>	t-norm
-	  // \bigtriangledown<uID3.13.40>	t-conorm
+    } else if ( id==39 || id==40 ) {
+    // \bigtriangleup<uID3.13.39> t-norm
+    // \bigtriangledown<uID3.13.40> t-conorm
         if ( tex_sym_node->next ) {
-	      TNODE* nn =  tex_sym_node->next;
-	      if ( IsTeXThinOrThickSpace(nn) && nn->next )
-	        nn  =  nn->next;
+        TNODE* nn =  tex_sym_node->next;
+        if ( IsTeXThinOrThickSpace(nn) && nn->next )
+          nn  =  nn->next;
           U16 uobj,usub,uID;
           GetUids( nn->zuID,uobj,usub,uID );
-	      if ( uobj==3 ) {
-	        if        ( usub==14 ) {
-	          if ( uID==107		// <<uID3.14.107>
-			  ||   uID==108		// =<uID3.14.108>
-			  ||   uID==109 )	// ><uID3.14.109>
-	            rv  =  MML_IDENTIFIER; 
-		    } else if ( usub==17 ) {
-			  if ( uID==90 )	// :<uID3.17.90>
-	            rv  =  MML_IDENTIFIER; 
-			}
-		  }		// if ( uobj==3 )
+        if ( uobj==3 ) {
+          if        ( usub==14 ) {
+            if ( uID==107   // <<uID3.14.107>
+        ||   uID==108   // =<uID3.14.108>
+        ||   uID==109 ) // ><uID3.14.109>
+              rv  =  MML_IDENTIFIER; 
+        } else if ( usub==17 ) {
+        if ( uID==90 )  // :<uID3.17.90>
+              rv  =  MML_IDENTIFIER; 
+      }
+      }   // if ( uobj==3 )
 
-	    } else
-	      rv  =  MML_IDENTIFIER; 
+      } else
+        rv  =  MML_IDENTIFIER; 
 
-	  }		// else if ( id==39 || id==40 )
+    }   // else if ( id==39 || id==40 )
 
-	  if ( rv ==  MML_OPERATOR )
+    if ( rv ==  MML_OPERATOR )
         TeX_atom_ilk  =  TeX_ATOM_BIN;
-	}
-	break;
+  }
+  break;
 
-    case  14  : {		// binrels
+    case  14  : {   // binrels
       //check_mml_gmr  =  TRUE;
       TeX_atom_ilk  =  TeX_ATOM_REL;
-	    rv  =  MML_OPERATOR;
-	  }
-	  break;
+      rv  =  MML_OPERATOR;
+    }
+    break;
 
-    case  15  : {		// corners or delimiters
+    case  15  : {   // corners or delimiters
       //check_mml_gmr  =  TRUE;
       switch ( id ) {
         case 1  :  // \lfloor<uID3.15.1>
@@ -1829,12 +1829,12 @@ U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
         default :
           TCI_ASSERT(0);        break;
       }
-	    rv  =  MML_OPERATOR;
+      rv  =  MML_OPERATOR;
     }
-	  break;
+    break;
 
-    case  16  : {		// Miscellaneous symbols
-	    switch ( id ) {
+    case  16  : {   // Miscellaneous symbols
+      switch ( id ) {
         case  1 : // \AE<uID3.16.1>
         case  2 : // \OE<uID3.16.2>
         case  3 : // \ae<uID3.16.3>
@@ -1847,37 +1847,37 @@ U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
         case 10 : // \j<uID3.16.10>
         case 11 : // \ss<uID3.16.11>
         case 14 : // \AA<uID3.16.14>
-	        rv  =  MML_IDENTIFIER; 
-		    break;
+          rv  =  MML_IDENTIFIER; 
+        break;
         case 12 : // \questiondown<uID3.16.12>
         case 13 : // \exclamdown<uID3.16.13>
-	        rv  =  MML_OPERATOR;
-		    break;
-		    default :
-		      TCI_ASSERT(0);
-		    break;
-	    }
+          rv  =  MML_OPERATOR;
+        break;
+        default :
+          TCI_ASSERT(0);
+        break;
+      }
 
-	  }
-	  break;
+    }
+    break;
 
     case  17  : {
 
       switch ( id ) {
-        case  1  :		// \ldots<uID3.17.1>
-        case  2  :		// \cdots<uID3.17.2>
-        case  3  :		// \vdots<uID3.17.3>
-        case  4  :		// \ddots<uID3.17.4>
-	        rv  =  MML_IDENTIFIER;
-		    break;
+        case  1  :    // \ldots<uID3.17.1>
+        case  2  :    // \cdots<uID3.17.2>
+        case  3  :    // \vdots<uID3.17.3>
+        case  4  :    // \ddots<uID3.17.4>
+          rv  =  MML_IDENTIFIER;
+        break;
 
-        //case  3  :		// \vdots<uID3.17.3>
-        //case  4  :		// \ddots<uID3.17.4>
-	      //  rv  =  MML_TEXT;
-		    //break;
+        //case  3  :    // \vdots<uID3.17.3>
+        //case  4  :    // \ddots<uID3.17.4>
+        //  rv  =  MML_TEXT;
+        //break;
 
-        case 14  :		// \partial<uID3.17.14>
-		      rv  =  MML_OPERATOR;
+        case 14  :    // \partial<uID3.17.14>
+          rv  =  MML_OPERATOR;
           if ( mml_node )
             SetDetailNum( mml_node,DETAILS_is_differential,1 );
         break;
@@ -1886,26 +1886,26 @@ U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
           rv  =  MML_OPERATOR;
         break;
 
-        case 30  :		// \angle<uID3.17.30>
+        case 30  :    // \angle<uID3.17.30>
         case 31  :    // \triangle<uID3.17.31>
         case 38  :    // \square<uID3.17.38>
         case 44  :    // \measuredangle<uID3.17.44>
         case 45  :    // \sphericalangle<uID3.17.45>
-	        rv  =  MML_IDENTIFIER;
+          rv  =  MML_IDENTIFIER;
           math_field_ID =  MF_GEOMETRY;
           forces_geometry =  TRUE;
-		    break;
+        break;
 
-        case 87  : 		// ,<uID3.17.87>
-        case 92  : 		// ?<uID3.17.92>
-	      if ( !tex_sym_node->next )
-	          rv  =  MML_TEXT;
-	      else
+        case 87  :    // ,<uID3.17.87>
+        case 92  :    // ?<uID3.17.92>
+        if ( !tex_sym_node->next )
+            rv  =  MML_TEXT;
+        else
             check_mml_gmr =  TRUE;
-	    break;
+      break;
 
-        case 88  : {		// .<uID3.17.88>
-	      if ( tex_sym_node->next ) {
+        case 88  : {    // .<uID3.17.88>
+        if ( tex_sym_node->next ) {
             rv  =  MML_OPERATOR;
             U16 uobj,usub,id;
             TNODE* next_right =  tex_sym_node->next;
@@ -1931,26 +1931,26 @@ U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
                 rv  =  MML_TEXT;
             }
 
-	      } else
+        } else
             rv  =  MML_TEXT;
-	    }
-	    break;
+      }
+      break;
 
-        case 120 :		// \textvisiblespace<uID3.17.120>
+        case 120 :    // \textvisiblespace<uID3.17.120>
           TCI_ASSERT(0);
-		    break;
+        break;
 
   // currency symbols
 
-        case  63 :		// \pounds<uID3.17.63>
-        case  64 :		// \cents<uID3.17.64>
-        case  65 :		// \yen<uID3.17.65>
-        case 108 :		// \$<uID3.17.108>
-        case 140 :		// \textcurrency<uID3.17.140>
-        case 141 :		// \texteuro<uID3.17.141>
-        case 142 :		// \textlira<uID3.17.142>
-        case 143 :		// \textfranc<uID3.17.143>
-        case 144 :		// \textpeseta<uID3.17.144>
+        case  63 :    // \pounds<uID3.17.63>
+        case  64 :    // \cents<uID3.17.64>
+        case  65 :    // \yen<uID3.17.65>
+        case 108 :    // \$<uID3.17.108>
+        case 140 :    // \textcurrency<uID3.17.140>
+        case 141 :    // \texteuro<uID3.17.141>
+        case 142 :    // \textlira<uID3.17.142>
+        case 143 :    // \textfranc<uID3.17.143>
+        case 144 :    // \textpeseta<uID3.17.144>
           check_mml_gmr =  TRUE;
         break;
 
@@ -1966,41 +1966,41 @@ U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
         default :
           check_mml_gmr =  TRUE;
         break;
-	    }
-	  }
-	  break;
+      }
+    }
+    break;
 
-    case  18  :		// negrels
+    case  18  :   // negrels
       TeX_atom_ilk  =  TeX_ATOM_REL;
       rv  =  MML_OPERATOR;
-	  break;
+    break;
 
     default   :
-	    TCI_ASSERT(0);
-	  break;
+      TCI_ASSERT(0);
+    break;
   }
 
   if        ( is_ellipsis ) {
-	  rv  =  MML_IDENTIFIER; 
+    rv  =  MML_IDENTIFIER; 
 
   } else if ( check_mml_gmr ) {
     rv  =  MML_IDENTIFIER; 
     U8* dest_zname;
     U8* d_template;
     if ( d_mml_grammar->GetGrammarDataFromUID(tex_sym_node->zuID,
-						context_math,&dest_zname,&d_template) ) {
+            context_math,&dest_zname,&d_template) ) {
       if ( d_template && *d_template ) {
-	    U16 id  =  OPF_multiform;
-		while ( id <= OPF_postfix ) {
-	      if ( strstr((char*)d_template,zop_forms[id]) ) {
+      U16 id  =  OPF_multiform;
+    while ( id <= OPF_postfix ) {
+        if ( strstr((char*)d_template,zop_forms[id]) ) {
             rv  =  MML_OPERATOR;
-			break;
-		  }
-		  id++;
-		}
-	  }
+      break;
+      }
+      id++;
+    }
+    }
     } else
-	  TCI_ASSERT(0);
+    TCI_ASSERT(0);
   }
 
   if ( mml_node && TeX_atom_ilk )
@@ -2015,13 +2015,13 @@ U16 LaTeX2MMLTree::ClassifyTeXSymbol( TNODE* tex_sym_node,
 // A run of TeX symbols often coelesce into a single <mn>.
 
 void LaTeX2MMLTree::GetNumberStr( TNODE* TeX_num_node,
-									TNODE** out_of_flow_list,
-  									TNODE* mn_node,
-								  	U16& advance ) {
+                  TNODE** out_of_flow_list,
+                    TNODE* mn_node,
+                    U16& advance ) {
 
   advance =  0;
 
-  U8 zvar_value[5000];		// storage for <mn>'s chdata
+  U8 zvar_value[5000];    // storage for <mn>'s chdata
   zvar_value[0] =  0;
 
   U8 zvar_value2[5000];
@@ -2037,7 +2037,7 @@ void LaTeX2MMLTree::GetNumberStr( TNODE* TeX_num_node,
 
   TNODE* t_rover  =  TeX_num_node;
   while ( t_rover ) {       // loop thru LaTeX nodes
-	zname[0]    =  0;
+  zname[0]    =  0;
     is_digit    =  FALSE;
     is_decimal  =  FALSE;
     is_comma    =  FALSE;
@@ -2048,25 +2048,25 @@ void LaTeX2MMLTree::GetNumberStr( TNODE* TeX_num_node,
 
       U8 hex_digits[32];
       hex_digits[0] =  0;
-	  U16 hln =  0;
-	  if ( id==1 && t_rover->next ) {	// hit "0..."
+    U16 hln =  0;
+    if ( id==1 && t_rover->next ) { // hit "0..."
         U16 uobj,usub,uID;
         GetUids( t_rover->next->zuID,uobj,usub,uID );
-        if ( uobj==3 && usub==1 && uID==24 ) {	// 0x...
-		  TNODE* rover  =  t_rover->next->next;
-		  while ( rover ) {
-		    U8 h_digit;
-		    if ( h_digit = GetHexDigit(rover) ) {
+        if ( uobj==3 && usub==1 && uID==24 ) {  // 0x...
+      TNODE* rover  =  t_rover->next->next;
+      while ( rover ) {
+        U8 h_digit;
+        if ( h_digit = GetHexDigit(rover) ) {
               hex_digits[hln++] =  h_digit;
-		      rover =  rover->next;
-			} else
-			  break;
-		  }
-		}		// 0x...
-	  }
+          rover =  rover->next;
+      } else
+        break;
+      }
+    }   // 0x...
+    }
 
-	  if ( hln ) {
-	    hex_digits[hln] =  0;
+    if ( hln ) {
+      hex_digits[hln] =  0;
         advance +=  hln + 2;
         strcat( (char*)zvar_value,"0x" );
         strcat( (char*)zvar_value,(char*)hex_digits );
@@ -2074,7 +2074,7 @@ void LaTeX2MMLTree::GetNumberStr( TNODE* TeX_num_node,
         strcat( (char*)zvar_value2,(char*)hex_digits );
         is_digit  =  FALSE;
         break;
-	  }
+    }
 
     } else if ( objclass==3 && subclass==17 && id==88 ) {
   // a period or decimal point
@@ -2082,14 +2082,14 @@ void LaTeX2MMLTree::GetNumberStr( TNODE* TeX_num_node,
       if ( got_decimal )
         break;
       else {
-	    if ( t_rover->next ) {
-	// Look for ..
+      if ( t_rover->next ) {
+  // Look for ..
           U16 uobj,usub,uID;
           GetUids( t_rover->next->zuID,uobj,usub,uID );
           if ( uobj==3 && usub==17 && uID==88 )
             break;
 
-		}
+    }
         is_decimal  =  TRUE;
         got_decimal =  TRUE;
       }
@@ -2119,32 +2119,32 @@ void LaTeX2MMLTree::GetNumberStr( TNODE* TeX_num_node,
             }
           }
         }
-      }		// if ( t_rover->next )
+      }   // if ( t_rover->next )
 
       if ( quit ) break;
 
     } else if ( objclass==9 && subclass==1 && id==6 ) {
-	// \,<uID9.1.6>
+  // \,<uID9.1.6>
 
       if ( NumberContinues(t_rover,got_decimal) ) {
         AppendEntityToBuffer( (U8*)"9.1.6",zvar_value,zvar_value2 );
       } else
-	    break;
+      break;
 
     } else if ( objclass==9 && subclass==5 && id==1 ) {
-	// \allowbreak<uID9.5.1>  
+  // \allowbreak<uID9.5.1>  
 
     // Do nothing - throw away this space object \allowbreak
 
-    } else if ( objclass==9 && subclass==3 ) {	// vertical space
+    } else if ( objclass==9 && subclass==3 ) {  // vertical space
 
       if ( NumberContinues(t_rover,got_decimal) ) {
-	    TCI_ASSERT( t_rover->prev );
-	    t_rover =  t_rover->prev;
+      TCI_ASSERT( t_rover->prev );
+      t_rover =  t_rover->prev;
         *out_of_flow_list =  MoveNodeToList( *out_of_flow_list,t_rover->next );
         advance--;    
-	  } else
-	    break;
+    } else
+      break;
 
     } else
       break;
@@ -2178,7 +2178,7 @@ void LaTeX2MMLTree::GetNumberStr( TNODE* TeX_num_node,
 
 
 TCI_BOOL LaTeX2MMLTree::NumberContinues( TNODE* rover,
-											TCI_BOOL got_decimal ) {
+                      TCI_BOOL got_decimal ) {
 
   TCI_BOOL rv =  FALSE;
 
@@ -2186,7 +2186,7 @@ TCI_BOOL LaTeX2MMLTree::NumberContinues( TNODE* rover,
     TNODE* right1 =  rover->next;
     U16 uobj,usub,uid;
     GetUids( right1->zuID,uobj,usub,uid );
-    if ( uobj==9 && usub==5 && uid==1 ) {	// \allowbreak
+    if ( uobj==9 && usub==5 && uid==1 ) { // \allowbreak
       if ( right1->next )
         GetUids( right1->next->zuID,uobj,usub,uid );
     }
@@ -2207,10 +2207,10 @@ TCI_BOOL LaTeX2MMLTree::NumberContinues( TNODE* rover,
 //  operands occur around multi-form ops like "+" or "-".
 
 void LaTeX2MMLTree::CheckForOperands( TNODE* MML_op_node,
-								        TCI_BOOL& has_left_operand,
-								        TCI_BOOL& has_right_operand,
-								        I16& left_space,
-								        I16& right_space ) {
+                        TCI_BOOL& has_left_operand,
+                        TCI_BOOL& has_right_operand,
+                        I16& left_space,
+                        I16& right_space ) {
 
   U16 n_right_spaces;
   U16 n_left_spaces;
@@ -2218,11 +2218,11 @@ void LaTeX2MMLTree::CheckForOperands( TNODE* MML_op_node,
   U16 l_nodes_spanned;
   U16 curr_precedence =  0;
   has_right_operand =  OperandExists( MML_op_node,TRUE,
-  								        curr_precedence,n_right_spaces,
-										r_nodes_spanned,right_space );
+                          curr_precedence,n_right_spaces,
+                    r_nodes_spanned,right_space );
   has_left_operand  =  OperandExists( MML_op_node,FALSE,
-  								        curr_precedence,n_left_spaces,
-										l_nodes_spanned,left_space );
+                          curr_precedence,n_left_spaces,
+                    l_nodes_spanned,left_space );
 }
 
 
@@ -2243,18 +2243,18 @@ U16 LaTeX2MMLTree::GetCompoundOpForm( TNODE* tex_sym_node,
     if ( c1=='.' && c2=='.' ) {
       TCI_BOOL forces_geometry;
       U16 ilk =  ClassifyTeXSymbol( nnn,NULL,forces_geometry,NULL );
-	    if ( ilk == MML_NUMBER )
+      if ( ilk == MML_NUMBER )
         rv  =  COPF_INFIX;
-	    else
+      else
         rv  =  COPF_POSTFIX;
-	  } else
+    } else
       rv  =  COPF_PREFIX;
 
   } else if ( tex_sym_node->prev ) {
     rv  =  COPF_POSTFIX;
   } else {
     rv  =  COPF_PREFIX;
-	  TCI_ASSERT(0);
+    TCI_ASSERT(0);
   }
 
   return rv;
@@ -2266,8 +2266,8 @@ U16 LaTeX2MMLTree::GetCompoundOpForm( TNODE* tex_sym_node,
 //   or start a run of LaTeX nodes that maps to an identier.
 
 TNODE* LaTeX2MMLTree::GetIdentifier( TNODE* tex_symbol_node,
-  									    TCI_BOOL forces_geometry,
-  									    U16& tex_nodes_done ) {
+                        TCI_BOOL forces_geometry,
+                        U16& tex_nodes_done ) {
 
   LOG_MSG_REC* msg_list =  NULL;
 
@@ -2288,7 +2288,7 @@ TNODE* LaTeX2MMLTree::GetIdentifier( TNODE* tex_symbol_node,
     strcpy( (char*)zvar_value2,(char*)tex_symbol_node->src_tok );
     tex_nodes_done++;
 
-  } else if ( objclass==3 && subclass==13 && uid==4 ) {	// \cdot
+  } else if ( objclass==3 && subclass==13 && uid==4 ) { // \cdot
 
     if ( IsImpliedEllipsis(tex_symbol_node) ) {
 //    strcpy( (char*)zvar_value,"&ctdot;" );
@@ -2301,7 +2301,7 @@ TNODE* LaTeX2MMLTree::GetIdentifier( TNODE* tex_symbol_node,
     }
 
   } else if ( objclass==3 && subclass==17 && uid==88 ) {
-    if ( IsImpliedEllipsis(tex_symbol_node) ) {	// ...
+    if ( IsImpliedEllipsis(tex_symbol_node) ) { // ...
 //    strcpy( (char*)zvar_value,"&hellip;" );
 // &hellip;<uID3.17.1>,U02026
       AppendEntityToBuffer( (U8*)"3.17.1",zvar_value,zvar_value2 );
@@ -2311,7 +2311,7 @@ TNODE* LaTeX2MMLTree::GetIdentifier( TNODE* tex_symbol_node,
       TCI_ASSERT(0);
     }
 
-  } else {	// Does this LaTeX symbol correspond to a MathML entity?
+  } else {  // Does this LaTeX symbol correspond to a MathML entity?
 
     U16 zln   =  strlen( (char*)zvar_value );
     U16 zln2  =  strlen( (char*)zvar_value2 );
@@ -2323,12 +2323,12 @@ TNODE* LaTeX2MMLTree::GetIdentifier( TNODE* tex_symbol_node,
 
       GetUnicodeEntity( d_template,zvar_value2+zln2 );
 
-    } else {	//char* msg =  "No MathML entity for LaTeX symbol";
+    } else {  //char* msg =  "No MathML entity for LaTeX symbol";
       tex_nodes_done++;
       msg_list  =  logfiler->AppendLogMsg( msg_list,
-    								        MSG_ID4,SUFFIX_ID2,
-         							        tex_symbol_node->src_tok,
-         							        tex_symbol_node->src_linenum );
+                            MSG_ID4,SUFFIX_ID2,
+                              tex_symbol_node->src_tok,
+                              tex_symbol_node->src_linenum );
       TCI_ASSERT(0);
     }
   }
@@ -2368,8 +2368,8 @@ TNODE* LaTeX2MMLTree::GetIdentifier( TNODE* tex_symbol_node,
 // The only caller is "TranslateMathList".
 
 TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
-									TNODE** out_of_flow_list,
- 									MATH_CONTEXT_INFO* m_context,
+                  TNODE** out_of_flow_list,
+                  MATH_CONTEXT_INFO* m_context,
                                     U16& tex_nodes_done,
                                     U16& error_code ) {
 
@@ -2381,7 +2381,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
   U16 objclass,subclass,id;
   GetUids( obj_node->zuID,objclass,subclass,id );
 
-  if        ( subclass == 12 && id >= 15 ) {	// \mbox{TEXT}, etc.
+  if        ( subclass == 12 && id >= 15 ) {  // \mbox{TEXT}, etc.
     mml_rv  =  MBox2MML( obj_node,out_of_flow_list,id );
     tex_nodes_done  =  1;
 
@@ -2425,15 +2425,15 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       break;
 
       case 32 :         // \substack{...\\...}
-      case 717: {				// \begin{subarray}...
+      case 717: {       // \begin{subarray}...
   // multi-line script object
         mml_rv  =  ScriptStack2MML( obj_node,subclass,out_of_flow_list );
         tex_nodes_done  =  1;
       }
       break;
 
-      case 35 : { 			// \begin{array}
-	// We make some modifications to the source parse tree.
+      case 35 : {       // \begin{array}
+  // We make some modifications to the source parse tree.
         HLinesToBucket( obj_node,FALSE );
         ColsToList( obj_node );
         mml_rv  =  Array2MML( obj_node,out_of_flow_list );
@@ -2442,9 +2442,9 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       }
       break;
 
-	  case  36  : 	    // \MATRIX - TCI internal format
-	  case  37  : {	    // \TABLE - TCI internal format
-	//  we make an equivalent tree for \begin{array} or \begin{tabular}
+    case  36  :       // \MATRIX - TCI internal format
+    case  37  : {     // \TABLE - TCI internal format
+  //  we make an equivalent tree for \begin{array} or \begin{tabular}
         TNODE* array  =  MATRIXtoExternalFormat( obj_node );
 
         U16 uobj,usub,uid;
@@ -2468,55 +2468,55 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
           }
         }
 
-		TNODE* parent =  obj_node->sublist_owner;
-		TNODE* left_anchor  =  obj_node->prev;
-		TNODE* right_anchor =  obj_node->next;
+    TNODE* parent =  obj_node->sublist_owner;
+    TNODE* left_anchor  =  obj_node->prev;
+    TNODE* right_anchor =  obj_node->next;
 
-		obj_node->prev  =  NULL;
-		obj_node->next  =  NULL;
+    obj_node->prev  =  NULL;
+    obj_node->next  =  NULL;
         DisposeTList( obj_node );
 
-		if ( parent )
-		  parent->contents  =  array;
-		if ( left_anchor ) {
-		  left_anchor->next =  array;
-		  array->prev =  left_anchor;
-		}
-		if ( right_anchor )	{
-		  right_anchor->prev  =  array;
-		  array->next =  right_anchor;
-		}
+    if ( parent )
+      parent->contents  =  array;
+    if ( left_anchor ) {
+      left_anchor->next =  array;
+      array->prev =  left_anchor;
+    }
+    if ( right_anchor ) {
+      right_anchor->prev  =  array;
+      array->next =  right_anchor;
+    }
         tex_nodes_done  =  1;
       }
       break;
 
 // \EQN<uID5.39.0>!\EQN!_ENUMID__NCOLS__MLLABEL__MATHLETTERS__EQNROWS_
-	  case  39  : {
+    case  39  : {
 // Here we have a nested EQN!
-		if ( id==0 ) {
-		  TNODE* parent =  obj_node->sublist_owner;
-		  TNODE* left_anchor  =  obj_node->prev;
-		  TNODE* right_anchor =  obj_node->next;
+    if ( id==0 ) {
+      TNODE* parent =  obj_node->sublist_owner;
+      TNODE* left_anchor  =  obj_node->prev;
+      TNODE* right_anchor =  obj_node->next;
 
           TNODE* eqnarray =  EQNtoeqnarray( obj_node,subclass );
-		  in_display  =  TRUE;
+      in_display  =  TRUE;
           mml_rv  =  TranslateTeXEqnArray( eqnarray,out_of_flow_list,
-          												      subclass );
+                                        subclass );
           mml_rv  =  AddEQNAttribs( mml_rv,subclass );
-		  in_display  =  FALSE;
+      in_display  =  FALSE;
 
-		  obj_node->prev  =  NULL;
-		  obj_node->next  =  NULL;
+      obj_node->prev  =  NULL;
+      obj_node->next  =  NULL;
           DisposeTList( obj_node );
 
-		  if ( parent )       parent->contents    =  eqnarray;
-		  if ( left_anchor )  left_anchor->next   =  eqnarray;
-		  if ( right_anchor ) right_anchor->prev  =  eqnarray;
+      if ( parent )       parent->contents    =  eqnarray;
+      if ( left_anchor )  left_anchor->next   =  eqnarray;
+      if ( right_anchor ) right_anchor->prev  =  eqnarray;
 
           tex_nodes_done  =  1;
-		}
-	  }
-	  break;
+    }
+    }
+    break;
 
       case TCMD_superscript :   // "^" - superscript
       case TCMD_subscript   :   // "_" - subscript
@@ -2542,7 +2542,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       }
       break;
 
-      case 70 : {		    // LaTeX fence object, \leftx.. \rightx delimited
+      case 70 : {       // LaTeX fence object, \leftx.. \rightx delimited
         mml_rv  =  LaTeXFence2MML( obj_node,out_of_flow_list );
         tex_nodes_done  =  1;
       }
@@ -2572,20 +2572,20 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       case 96  :        // \boldsymbol{}
       case 459 : {      // \emph{}
         U8 zuID[16];
-	    U16 uID =  ( subclass == 459 ) ? 2 : 1;
+      U16 uID =  ( subclass == 459 ) ? 2 : 1;
         UidsTozuID( 5,subclass,uID,zuID );
         TNODE* bucket =  FindObject( obj_node->parts,
                                 (U8*)zuID,INVALID_LIST_POS );
-	    if ( bucket && bucket->contents ) {
-	      U8 switch_nom[64];
+      if ( bucket && bucket->contents ) {
+        U8 switch_nom[64];
           U8* tag_nom =  QTRuSubIDtoName( subclass );
-	      if ( tag_nom )
-	        strcpy( (char*)switch_nom,(char*)tag_nom );
+        if ( tag_nom )
+          strcpy( (char*)switch_nom,(char*)tag_nom );
           mml_rv  =  TaggedMath2MML( obj_node,bucket->contents,
-      							        subclass,switch_nom,
-      							        out_of_flow_list );
-	    } else
-	      TCI_ASSERT(0);
+                            subclass,switch_nom,
+                            out_of_flow_list );
+      } else
+        TCI_ASSERT(0);
         tex_nodes_done  =  1;
       }
       break;
@@ -2607,16 +2607,16 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
         U8 zuID[16];
         UidsTozuID( 5,subclass,bucketID,zuID );
         TNODE* bucket =  FindObject( obj_node->parts,
-  							        (U8*)zuID,INVALID_LIST_POS );
-	    if ( bucket && bucket->contents )
+                        (U8*)zuID,INVALID_LIST_POS );
+      if ( bucket && bucket->contents )
           mml_rv  =  TaggedText2MML( bucket->contents,
                                 out_of_flow_list,
                                 NULL,subclass );
-	    else
-	      TCI_ASSERT(0);
+      else
+        TCI_ASSERT(0);
           tex_nodes_done  =  1;
-	    }
-	    break;
+      }
+      break;
 
   // Fraction forms that include built-in delimiters - binomials
 
@@ -2643,35 +2643,35 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
         tex_nodes_done  =  1;
       break;
 
-	  case 135  :       // not used in NoteBook.gmr
-	  case 136  :       //           "
-	  case 137  :       //           "
-	  case 138  :       //           "
-	  case 139  :       //           "
-	    TCI_ASSERT(0);
-	  break;
+    case 135  :       // not used in NoteBook.gmr
+    case 136  :       //           "
+    case 137  :       //           "
+    case 138  :       //           "
+    case 139  :       //           "
+      TCI_ASSERT(0);
+    break;
 
       case 124            :   // align*
-	    TCI_ASSERT(0);
-	  break;
+      TCI_ASSERT(0);
+    break;
 
-	  case TENV_cases     :
-	    if ( id == 0 ) {
+    case TENV_cases     :
+      if ( id == 0 ) {
           mml_rv  =  LaTeXCases2MML( obj_node,out_of_flow_list );
           tex_nodes_done  =  1;
-	    }
-	  break;
+      }
+    break;
 
-	  case TENV_split     :
-	  case TENV_gathered  :
+    case TENV_split     :
+    case TENV_gathered  :
       case TENV_aligned   :
       case TENV_alignedat :
-	    if ( id == 0 ) {
+      if ( id == 0 ) {
           mml_rv  =  NestedTeXEqnArray2MML( obj_node,
                                 out_of_flow_list,subclass );
           tex_nodes_done  =  1;
-	    }
-	  break;
+      }
+    break;
 
       case 180  :       // \up<uID5.180.0>
       case 181  :       // \it<uID5.181.0>
@@ -2683,15 +2683,15 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       case 187  :       // \sf<uID5.187.0>
       case 188  :       // \tt<uID5.188.0>
       case 189  :       // \em<uID5.189.0>
-	  break;
+    break;
 
-	  case 298  : 	// \U<uID5.298.0>!\U!REQPARAM(5.298.2,NONLATEX)
-	  case 299  : {	// \UNICODE<uID5.299.0>!\UNICODE!REQPARAM(5.299.2,NONLATEX)
+    case 298  :   // \U<uID5.298.0>!\U!REQPARAM(5.298.2,NONLATEX)
+    case 299  : { // \UNICODE<uID5.299.0>!\UNICODE!REQPARAM(5.299.2,NONLATEX)
       //TCI_ASSERT(0);    // Should never get here - \U{}s converted to symbols earlier
         mml_rv  =  Unicode2MML( obj_node );
         tex_nodes_done  =  1;
-	  }
-	  break;
+    }
+    break;
 
       case 350 :
       case 351 :
@@ -2706,41 +2706,41 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
 // \QTR<uID5.400.0>!\QTR!REQPARAM(5.400.1,NONLATEX)REQPARAM(5.400.2,INHERIT)
       case 400 : {
         TNODE* ilk  =  FindObject( obj_node->parts,
-  						              (U8*)"5.400.1",INVALID_LIST_POS );
+                            (U8*)"5.400.1",INVALID_LIST_POS );
         U8* run_name  =  ilk->contents->var_value;
         U16 usub_ID   =  GetQTRuSubID( run_name,TRUE );
         TNODE* bucket =  FindObject( obj_node->parts,
-  						              (U8*)"5.400.2",INVALID_LIST_POS );
+                            (U8*)"5.400.2",INVALID_LIST_POS );
         if ( bucket && bucket->contents ) {
           // Note that QTR in MATH contains MATH!!!
-	        TNODE* TeX_cont =  bucket->contents;
-		      if ( usub_ID == TR_group ) {
-		        U8 switch_nom[64];
+          TNODE* TeX_cont =  bucket->contents;
+          if ( usub_ID == TR_group ) {
+            U8 switch_nom[64];
             U16 switch_tag  =  GetMathRunTagFromTeXSwitch( TeX_cont, switch_nom );
-			      if ( switch_tag )
-			        mml_rv =  TaggedMath2MML( obj_node, TeX_cont, switch_tag, switch_nom, out_of_flow_list );
-			      else {
-			        TCI_BOOL do_bindings  =  FALSE;
+            if ( switch_tag )
+              mml_rv =  TaggedMath2MML( obj_node, TeX_cont, switch_tag, switch_nom, out_of_flow_list );
+            else {
+              TCI_BOOL do_bindings  =  FALSE;
               U16 tex_nodes_done,error_code;
-			        TNODE* local_oof_list =  NULL;
+              TNODE* local_oof_list =  NULL;
               TNODE* mml_cont =  TranslateMathList( TeX_cont,
-			  		                       do_bindings,NULL,tex_nodes_done,
-			  		                       error_code,&local_oof_list );
-	            if ( !mml_cont ) {		// <mtext>
+                                   do_bindings,NULL,tex_nodes_done,
+                                   error_code,&local_oof_list );
+              if ( !mml_cont ) {    // <mtext>
                 mml_cont  =  MakeTNode( 0L,0L,0L,(U8*)zmtext );
                 SetChData( mml_cont,(U8*)"???",NULL );
-	            }
+              }
               mml_cont  =  HandleOutOfFlowObjects( mml_cont,
-           	  				      &local_oof_list,out_of_flow_list,3 );
+                            &local_oof_list,out_of_flow_list,3 );
               mml_rv =  mml_cont;
-			      }
+            }
 
-		      } else	// not a {\bb group}
+          } else  // not a {\bb group}
             mml_rv  =  TaggedMath2MML( obj_node,TeX_cont,usub_ID,
-           							    NULL,out_of_flow_list );
+                            NULL,out_of_flow_list );
 
-		} else	// empty \QTR
-		  TCI_ASSERT(0);
+    } else  // empty \QTR
+      TCI_ASSERT(0);
 
         tex_nodes_done  =  1;
       }
@@ -2748,61 +2748,61 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
 
 // \QTO<uID5.401.0>!\QTO!REQPARAM(5.401.1,NONLATEX)REQPARAM(5.401.2,INHERIT)
       case 401 : {
-	    TNODE* m_bucket =  FindObject( obj_node->parts,
-					                (U8*)"5.401.2",INVALID_LIST_POS );
-		if ( m_bucket && m_bucket->contents ) {
-		  TNODE* TeX_cont =  m_bucket->contents;
+      TNODE* m_bucket =  FindObject( obj_node->parts,
+                          (U8*)"5.401.2",INVALID_LIST_POS );
+    if ( m_bucket && m_bucket->contents ) {
+      TNODE* TeX_cont =  m_bucket->contents;
           U16 tex_nodes_done,error_code;
-  		  TCI_BOOL do_bindings  =  TRUE;
-		  TNODE* local_oof_list =  NULL;
+        TCI_BOOL do_bindings  =  TRUE;
+      TNODE* local_oof_list =  NULL;
           mml_rv  =  TranslateMathList( TeX_cont,do_bindings,NULL,
-									tex_nodes_done,error_code,
-									&local_oof_list );
+                  tex_nodes_done,error_code,
+                  &local_oof_list );
           mml_rv  =  HandleOutOfFlowObjects( mml_rv,&local_oof_list,
-        							            out_of_flow_list,3 );
-		}
+                                  out_of_flow_list,3 );
+    }
         tex_nodes_done  =  1;
       }
       break;
 
-      case 409  : 			// \FRAME in MATH
+      case 409  :       // \FRAME in MATH
         RecordAnomaly( 1002,NULL,obj_node->src_offset1,
-        						            obj_node->src_offset2 );
+                                obj_node->src_offset2 );
         tex_nodes_done  =  1;
       break;
 
-      case 414  :			  // \nonumber
+      case 414  :       // \nonumber
         tex_nodes_done  =  1;
       break;
 
-      case 417  :			  // \typeout
+      case 417  :       // \typeout
       break;
 
-      case 419  :			  // \FORMULA<uID5.419.1>
+      case 419  :       // \FORMULA<uID5.419.1>
         mml_rv  =  FORMULA2MML( obj_node,out_of_flow_list );
         tex_nodes_done  =  1;
       break;
 
 
 // \TeXButton<uID5.418.1>!\TeXButton!
-//	REQPARAM(5.418.2,NONLATEX)REQPARAM(5.418.3,NONLATEX)
-     case 418  :			// \TeXButton
+//  REQPARAM(5.418.2,NONLATEX)REQPARAM(5.418.3,NONLATEX)
+     case 418  :      // \TeXButton
         mml_rv = TEXBUTTON2MML(obj_node);
      break;
 // \HTMLButton<uID5.428.1>!\HTMLButton!
-//	REQPARAM(5.428.2,NONLATEX)REQPARAM(5.428.3,NONLATEX)
-      case 428  :			// \HTMLButton
-	    TCI_ASSERT(0);
+//  REQPARAM(5.428.2,NONLATEX)REQPARAM(5.428.3,NONLATEX)
+      case 428  :     // \HTMLButton
+      TCI_ASSERT(0);
       break;
 
-      case 420  :			  // \footnotemark
-      case 421  :			  // \footnote
-      case 422  :			  // \footnotetext
-      case 423  :			  // \endnote
-      case 424  :			  // \marginpar
-      case 426  : 			// \FOOTNOTE
+      case 420  :       // \footnotemark
+      case 421  :       // \footnote
+      case 422  :       // \footnotetext
+      case 423  :       // \endnote
+      case 424  :       // \marginpar
+      case 426  :       // \FOOTNOTE
         RecordAnomaly( 1001,NULL,obj_node->src_offset1,
-        				            obj_node->src_offset2 );
+                            obj_node->src_offset2 );
         tex_nodes_done  =  1;
       break;
 
@@ -2811,60 +2811,60 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
 // REQPARAM(5.425.3,NONLATEX)
 // REQPARAM(5.425.5,TEXT)
 
-      case 425  : { 		// \CustomNote
+      case 425  : {     // \CustomNote
         RecordAnomaly( 1001,NULL,obj_node->src_offset1,
-        				            obj_node->src_offset2 );
+                            obj_node->src_offset2 );
         tex_nodes_done  =  1;
 
-	    TNODE* t_bucket =  FindObject( obj_node->parts,
-			                (U8*)"5.425.2",INVALID_LIST_POS );
-		if ( t_bucket && t_bucket->contents ) {
+      TNODE* t_bucket =  FindObject( obj_node->parts,
+                      (U8*)"5.425.2",INVALID_LIST_POS );
+    if ( t_bucket && t_bucket->contents ) {
           TNODE* local_oof_list =  NULL;
-	      mml_rv =  TextInMath2MML( t_bucket->contents,
-			    	                &local_oof_list,FALSE,FALSE );
-	      if ( local_oof_list )
+        mml_rv =  TextInMath2MML( t_bucket->contents,
+                            &local_oof_list,FALSE,FALSE );
+        if ( local_oof_list )
             DisposeTList( local_oof_list );
-		}
+    }
       }
       break;
 
 
-      case 461  :			  // \textcircled{}
+      case 461  :       // \textcircled{}
       break;
 
-      case 465  :			  // \symbol{94}
+      case 465  :       // \symbol{94}
         mml_rv  =  CmdSymbol2MML( obj_node );
         tex_nodes_done  =  1;
       break;
 
-      case 471  :			  // 
+      case 471  :       // 
 //\hyperref<uID5.550.0>!\hyperref!
 // OPTPARAM(5.550.5,NONLATEX)
 // REQPARAM(5.550.6,TEXT)_OLDARGS_
 // _OLDARGS_IF(INHERIT,?{}?,_OLDHYPERREFARGS_)elseIF(?{?,_OLDHYPERREFARGS_)ifEND
 // _OLDHYPERREFARGS_REQPARAM(5.471.2,TEXT)REQPARAM(5.471.3,TEXT)REQPARAM(5.471.4,NONLATEX)
-        TCI_ASSERT(0);	// Should never get here
+        TCI_ASSERT(0);  // Should never get here
       break;
 
 
       case 476  :       // \msipassthru<uID5.476.0>!\msipassthru!REQPARAM(5.476.1,NONLATEX)
         mml_rv  =  PassThru2MML( obj_node, out_of_flow_list );
         break;
-      case 480  :	      // \tiny<uID5.480.0>
-      case 481  :	      // \scriptsize<uID5.481.0>
-      case 482  :	      // \footnotesize<uID5.482.0>
-      case 483  :	      // \small<uID5.483.0>
-      case 484  :	      // \normalsize<uID5.484.0>
-      case 485  :	      // \large<uID5.485.0>
-      case 486  :	      // \Large<uID5.486.0>
-      case 487  :	      // \LARGE<uID5.487.0>
-      case 488  :	      // \huge<uID5.488.0>
-      case 489  :	      // \Huge<uID5.489.0>
+      case 480  :       // \tiny<uID5.480.0>
+      case 481  :       // \scriptsize<uID5.481.0>
+      case 482  :       // \footnotesize<uID5.482.0>
+      case 483  :       // \small<uID5.483.0>
+      case 484  :       // \normalsize<uID5.484.0>
+      case 485  :       // \large<uID5.485.0>
+      case 486  :       // \Large<uID5.486.0>
+      case 487  :       // \LARGE<uID5.487.0>
+      case 488  :       // \huge<uID5.488.0>
+      case 489  :       // \Huge<uID5.489.0>
         tex_nodes_done  =  1;
       break;
 
       case 490  :       // \begin{tabular}
-      case 491  : {			// \begin{tabular*}
+      case 491  : {     // \begin{tabular*}
         HLinesToBucket( obj_node,TRUE );
         ColsToList( obj_node );
         mml_rv  =  Tabular2MML( obj_node,out_of_flow_list,subclass );
@@ -2872,15 +2872,15 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       } 
       break;
 
-	  case 550  :		    // \hyperref<uID5.550.0>
-	  case 551  :		    // \hyperlink<uID5.551.0>
-	  case 552  :		    // \hypertarget<uID5.552.0>
-	  case 553  :		    // \href<uID5.553.0>
-	  case 554  :		    // \HREFTOLABEL<uID5.554.0>
-	  case 555  :		    // \HYPERLINK<uID5.555.0>
-	  case 556  :		    // \HYPERTARGET<uID5.556.0>
-	  case 557  : {		  // \HREF<uID5.557.0>
-        TCI_ASSERT(0);	// Should never get here	
+    case 550  :       // \hyperref<uID5.550.0>
+    case 551  :       // \hyperlink<uID5.551.0>
+    case 552  :       // \hypertarget<uID5.552.0>
+    case 553  :       // \href<uID5.553.0>
+    case 554  :       // \HREFTOLABEL<uID5.554.0>
+    case 555  :       // \HYPERLINK<uID5.555.0>
+    case 556  :       // \HYPERTARGET<uID5.556.0>
+    case 557  : {     // \HREF<uID5.557.0>
+        TCI_ASSERT(0);  // Should never get here  
         tex_nodes_done  =  1;
       } 
       break;
@@ -2901,32 +2901,32 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
 // \TCItag<uID5.701.0>!\TCItag!REQPARAM(5.701.1,TEXT)
       case 472  :
 //\QTSN<uID5.472.0>!\QTSN!REQPARAM(5.472.1,NONLATEX)REQPARAM(5.472.2,TEXT)
-      case 700  : 			// \label
-      case 704  : 			// \ref
-      case 705  : {			// \pageref
+      case 700  :       // \label
+      case 704  :       // \ref
+      case 705  : {     // \pageref
         RecordAnomaly( 1001,NULL,obj_node->src_offset1,
-      					            obj_node->src_offset2 );
+                            obj_node->src_offset2 );
         tex_nodes_done  =  1;
       } 
       break;
 
-      case 701  : 		// \tag
-      case 702  : 		// \tag*
+      case 701  :     // \tag
+      case 702  :     // \tag*
       case 703  : {     // \notag
       RecordAnomaly( 1004,NULL,obj_node->src_offset1,
-     						            obj_node->src_offset2 );
+                            obj_node->src_offset2 );
         tex_nodes_done  =  1;
       } 
       break;
 
 
-      case 710  : 			// \matrix
-      case 711  : 			// \smallmatrix
-      case 712  : 			// \pmatrix
-      case 713  : 			// \bmatrix
-      case 714  : 			// \vmatrix
-      case 715  : 			// \Vmatrix
-      case 716  : {			// \Bmatrix
+      case 710  :       // \matrix
+      case 711  :       // \smallmatrix
+      case 712  :       // \pmatrix
+      case 713  :       // \bmatrix
+      case 714  :       // \vmatrix
+      case 715  :       // \Vmatrix
+      case 716  : {     // \Bmatrix
         HLinesToBucket( obj_node,FALSE );
     // These LaTeX schemata don't have a {cols} arg
         mml_rv  =  Matrix2MML( obj_node,out_of_flow_list,subclass );
@@ -2935,7 +2935,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       break;
 
       case 800  :
-	    mml_rv  =  Rule2MML( obj_node,out_of_flow_list );
+      mml_rv  =  Rule2MML( obj_node,out_of_flow_list );
       break;
 
       case 802  :
@@ -2948,7 +2948,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
         TCI_ASSERT(0);
       break;
 
-    }		// switch ( subclass )
+    }   // switch ( subclass )
 
   }
 
@@ -2958,11 +2958,11 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
 
 
 // \fbox<uID5.12.13>!\fbox!REQPARAM(5.15.1,TEXT)    - loose box
-// \frame<uID5.12.14>!\frame!REQPARAM(5.15.1,TEXT)	- tight box
+// \frame<uID5.12.14>!\frame!REQPARAM(5.15.1,TEXT)  - tight box
 
 TNODE* LaTeX2MMLTree::FBox2MML( TNODE* tex_fbox_node,
-							  	              TNODE** out_of_flow_list,
-								                U16 uID ) {
+                                TNODE** out_of_flow_list,
+                                U16 uID ) {
 
   DumpTList( tex_fbox_node, 0, TOKENIZER_TEX );
 
@@ -2971,17 +2971,17 @@ TNODE* LaTeX2MMLTree::FBox2MML( TNODE* tex_fbox_node,
   TNODE* tbucket  =  FindObject( tex_fbox_node->parts, (U8*)"5.15.1", INVALID_LIST_POS );
   if ( tbucket ) {
     TNODE* local_oof_list =  NULL;
-	  TNODE* contents =  TextInMath2MML( tbucket->contents, &local_oof_list,FALSE,FALSE );
+    TNODE* contents =  TextInMath2MML( tbucket->contents, &local_oof_list,FALSE,FALSE );
     if ( !contents )
       contents  =  MakeSmallmspace();
 
-	  if ( local_oof_list ) {
+    if ( local_oof_list ) {
       contents  =  Struts2MML( contents,local_oof_list );
       local_oof_list  =  DisposeOutOfFlowList( local_oof_list,5,800 );
       contents  =  Labels2MML( contents,local_oof_list );
-	    // We may want to pass this back to the caller in the future.
+      // We may want to pass this back to the caller in the future.
       DisposeTList( local_oof_list );
-	  }
+    }
     contents  =  FixImpliedMRow( contents );
 
     TNODE* cell;
@@ -2995,19 +2995,19 @@ TNODE* LaTeX2MMLTree::FBox2MML( TNODE* tex_fbox_node,
 //  
 //      // Put the cell under a cell list item node
 //  
-//  	  TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.11:0" );
-//  	  list_node->parts  =  cell;
-//  	  cell->sublist_owner =  list_node;
+//      TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.11:0" );
+//      list_node->parts  =  cell;
+//      cell->sublist_owner =  list_node;
 //  
 //      TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
-//  	  mtr->parts->parts =  list_node;
-//  	  list_node->sublist_owner =  mtr->parts;
+//      mtr->parts->parts =  list_node;
+//      list_node->sublist_owner =  mtr->parts;
 
 //      // Put the current row under a node in the row list
 //  
-//  	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.9:0" );
-//  	  row_list_node->parts  =  mtr;
-//  	  mtr->sublist_owner  =  row_list_node;
+//      TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.9:0" );
+//      row_list_node->parts  =  mtr;
+//      mtr->sublist_owner  =  row_list_node;
 //  
 //      // mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
 //      // _LISTOFROWS_LIST(5.35.9,_MTROW_,5.35.10,,/mtable,)
@@ -3019,7 +3019,7 @@ TNODE* LaTeX2MMLTree::FBox2MML( TNODE* tex_fbox_node,
 //      row_list_node->sublist_owner =  mml_rv->parts;
 //  
 //      SetNodeAttrib( mml_rv,(U8*)"frame",(U8*)"solid" );
-//  	  if ( uID==13 )
+//      if ( uID==13 )
 //          SetNodeAttrib( mml_rv,(U8*)"framespacing",(U8*)"0.8em 1.0ex" );
   }
 
@@ -3033,45 +3033,45 @@ TNODE* LaTeX2MMLTree::FBox2MML( TNODE* tex_fbox_node,
 
 
 TNODE* LaTeX2MMLTree::MBox2MML( TNODE* tex_box_node,
-							  	              TNODE** out_of_flow_list,
-								                U16 uID ) {
+                                TNODE** out_of_flow_list,
+                                U16 uID ) {
 
   TNODE* mml_rv =  NULL;
 
   TNODE* tbucket  =  FindObject( tex_box_node->parts,
-				  				              (U8*)"5.15.1",INVALID_LIST_POS );
+                                (U8*)"5.15.1",INVALID_LIST_POS );
   TNODE* mbucket  =  FindObject( tex_box_node->parts,
-				  				              (U8*)"5.15.2",INVALID_LIST_POS );
+                                (U8*)"5.15.2",INVALID_LIST_POS );
   TNODE* local_oof_list =  NULL;
-	TNODE* contents =  NULL;
+  TNODE* contents =  NULL;
   if        ( tbucket && tbucket->contents ) {
     TCI_BOOL no_line_breaks =  TRUE;
-	  contents =  TextInMath2MML( tbucket->contents,
+    contents =  TextInMath2MML( tbucket->contents,
                           &local_oof_list,no_line_breaks,FALSE );
     if ( !contents )
       contents  =  MakeSmallmspace();
-	  if ( local_oof_list ) {
+    if ( local_oof_list ) {
       contents  =  Struts2MML( contents,local_oof_list );
       local_oof_list  =  DisposeOutOfFlowList( local_oof_list,5,800 );
       contents  =  Labels2MML( contents,local_oof_list );
-	// We may want to pass this back to the caller in the future.
+  // We may want to pass this back to the caller in the future.
       DisposeTList( local_oof_list );
-	  }
+    }
 
   } else if ( mbucket && mbucket->contents ) {
     U16 tex_nodes_done,error_code;
-  	TCI_BOOL do_bindings  =  TRUE;
+    TCI_BOOL do_bindings  =  TRUE;
     contents  =  TranslateMathList( mbucket->contents,do_bindings,
-									              NULL,tex_nodes_done,error_code,
-									              &local_oof_list );
+                                NULL,tex_nodes_done,error_code,
+                                &local_oof_list );
     contents  =  HandleOutOfFlowObjects( contents,&local_oof_list,
-          									            out_of_flow_list,3 );
+                                        out_of_flow_list,3 );
   } else
     TCI_ASSERT(0);
 
-	if ( contents->next ) // mrow<uID5.750.1>!mrow!BUCKET(5.750.2,
+  if ( contents->next ) // mrow<uID5.750.1>!mrow!BUCKET(5.750.2,
     mml_rv  =  CreateElemWithBucketAndContents( 5,750,1,2,contents );
-	else
+  else
     mml_rv  =  contents;
 
   return mml_rv;
@@ -3080,7 +3080,7 @@ TNODE* LaTeX2MMLTree::MBox2MML( TNODE* tex_box_node,
 
 /*
 TNODE* LaTeX2MMLTree::Fraction2MML( TNODE* tex_frac_node,
-							  		    U16 subclass,TNODE** out_of_flow_list ) {
+                        U16 subclass,TNODE** out_of_flow_list ) {
 
   TNODE* rv =  NULL;
 
@@ -3091,20 +3091,20 @@ TNODE* LaTeX2MMLTree::Fraction2MML( TNODE* tex_frac_node,
 // mfrac<uID5.1.0>!mfrac!reqELEMENT(5.1.1)reqELEMENT(5.1.2)!/mfrac!
   TNODE* mml_frac =  MakeTNode( 0L,0L,0L,(U8*)"5.1.0" );
 
-  U16 size_ilk  =  0;		// auto
+  U16 size_ilk  =  0;   // auto
   if      ( subclass==2 || subclass==5 || subclass==8 )
-    size_ilk    =  1;		// small	- tfrac
+    size_ilk    =  1;   // small  - tfrac
   else if ( subclass==3 || subclass==6 || subclass==9 )
-    size_ilk    =  2;		// large	- dfrac
+    size_ilk    =  2;   // large  - dfrac
 
-  U16 line_ilk  =  0;		// normal
+  U16 line_ilk  =  0;   // normal
   if      ( subclass==4 || subclass==5 || subclass==6 )
-    line_ilk    =  1;		// thick
+    line_ilk    =  1;   // thick
   else if ( subclass==7 || subclass==8 || subclass==9 )
-    line_ilk    =  2;		// none
+    line_ilk    =  2;   // none
 
   if ( line_ilk ) {
-	  U8* attr_val  =  ( line_ilk==1 ) ? (U8*)"2" : (U8*)"0";
+    U8* attr_val  =  ( line_ilk==1 ) ? (U8*)"2" : (U8*)"0";
     SetNodeAttrib( mml_frac,(U8*)"linethickness",attr_val );
   }
 
@@ -3113,14 +3113,14 @@ TNODE* LaTeX2MMLTree::Fraction2MML( TNODE* tex_frac_node,
 
 // Locate and translate the numerator
   TNODE* numerator  =  FindObject( tex_frac_node->parts,
-									              (U8*)"5.1.1",INVALID_LIST_POS );
+                                (U8*)"5.1.1",INVALID_LIST_POS );
   TCI_ASSERT( numerator );
   TCI_BOOL do_bindings  =  TRUE;
   U16 tex_nodes_done,loc_error;
   TNODE* local_oof_list =  NULL;
   TNODE* mml_num_cont =  TranslateMathList( numerator->contents,
-							                  do_bindings,NULL,tex_nodes_done,
-							                  loc_error,&local_oof_list );
+                                do_bindings,NULL,tex_nodes_done,
+                                loc_error,&local_oof_list );
 // Put the numerator into rv
 // mfrac<uID5.1.0>!mfrac!reqELEMENT(5.1.1)reqELEMENT(5.1.2)!/mfrac!
   if ( !mml_num_cont )
@@ -3131,13 +3131,13 @@ TNODE* LaTeX2MMLTree::Fraction2MML( TNODE* tex_frac_node,
     if ( mml_num_cont->details
     &&   mml_num_cont->details->is_differential != UNDEFINED_DETAIL
     &&   mml_num_cont->details->form == 1 )
-	    is_differential_op  =  TRUE;
+      is_differential_op  =  TRUE;
     if ( mml_num_cont->details
     &&   mml_num_cont->details->unit_state == 1 )
-	    is_unit =  TRUE;
+      is_unit =  TRUE;
   }
   mml_num_cont  =  HandleOutOfFlowObjects( mml_num_cont,
-				                  &local_oof_list,out_of_flow_list,3 );
+                          &local_oof_list,out_of_flow_list,3 );
 
 // Put the numerator into mml_frac
   TNODE* part1  =  CreateBucketWithContents( 5,1,1,mml_num_cont );
@@ -3146,32 +3146,32 @@ TNODE* LaTeX2MMLTree::Fraction2MML( TNODE* tex_frac_node,
 
 // Locate and translate the denominator
   TNODE* denominator  =  FindObject( tex_frac_node->parts,
-  									            (U8*)"5.1.2",INVALID_LIST_POS );
+                                (U8*)"5.1.2",INVALID_LIST_POS );
   TNODE* mml_den_cont =  TranslateMathList( denominator->contents,
-									              do_bindings,NULL,tex_nodes_done,
-									              loc_error,&local_oof_list );
+                                do_bindings,NULL,tex_nodes_done,
+                                loc_error,&local_oof_list );
   if ( !mml_den_cont )
     mml_den_cont  =  MakeSmallmspace();
   else if ( mml_den_cont->next )
     mml_den_cont  =  MMLlistToMRow( mml_den_cont );
   mml_den_cont  =  HandleOutOfFlowObjects( mml_den_cont,
-							              &local_oof_list,out_of_flow_list,3 );
+                            &local_oof_list,out_of_flow_list,3 );
 
 // Put the denominator into rv
   TNODE* part2  =  CreateBucketWithContents( 5,1,2,mml_den_cont );
   part1->next   =  part2;
   part2->prev   =  part1;
 
-  if ( size_ilk ) {	// it's not auto
+  if ( size_ilk ) { // it's not auto
 // mstyle<uID5.600.0>!mstyle!BUCKET(5.600.2,MATH,,,/mstyle,)!/mstyle!
     TNODE* mstyle =  CreateElemWithBucketAndContents( 5,600,0,2,mml_frac );
-    if        ( size_ilk==1 ) {		// tfrac - \textstyle
+    if        ( size_ilk==1 ) {   // tfrac - \textstyle
       SetNodeAttrib( mstyle,(U8*)"displaystyle",(U8*)"false" );
       SetNodeAttrib( mstyle,(U8*)"scriptlevel",(U8*)"1" );
-    } else if ( size_ilk==2 ) {		// dfrac - \displaystyle
+    } else if ( size_ilk==2 ) {   // dfrac - \displaystyle
       SetNodeAttrib( mstyle,(U8*)"displaystyle",(U8*)"true" );
       SetNodeAttrib( mstyle,(U8*)"scriptlevel",(U8*)"0" );
-	  }
+    }
 
     SetDetailNum( mstyle,DETAILS_style,1 );
     rv  =  CreateElemWithBucketAndContents( 5,750,1,2,mstyle );
@@ -3179,13 +3179,13 @@ TNODE* LaTeX2MMLTree::Fraction2MML( TNODE* tex_frac_node,
     rv  =  mml_frac;
 
   if ( rv ) {
-	  if ( is_differential_op ) {
+    if ( is_differential_op ) {
       SetDetailNum( rv,DETAILS_is_differential,1 );
       SetDetailNum( rv,DETAILS_form,1 );
       SetDetailNum( rv,DETAILS_precedence,54 );
-	  } else if ( is_unit ) {
+    } else if ( is_unit ) {
       SetDetailNum( rv,DETAILS_unit_state,1 );
-	  } else
+    } else
       SetDetailNum( rv,DETAILS_is_expression,1 );
   }
 
@@ -3208,12 +3208,12 @@ _ARRBUCKET_BUCKET(5.35.8,MATH,,,&|\\|\\*|\end{array},)
 */
 
 TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
-								TNODE** out_of_flow_list ) {
+                TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
 
   TNODE* row_list  =  FindObject( tex_array_node->parts,
-   							    (U8*)"5.35.9",INVALID_LIST_POS );
+                    (U8*)"5.35.9",INVALID_LIST_POS );
 
   U16 nRows =  0;
   if ( row_list && row_list->parts ) {
@@ -3224,7 +3224,7 @@ TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
         nRows++;
       else {        // this is the last row - it may be empty
         TNODE* q  =  FindObject( row_rover->parts,
-   							    (U8*)"5.35.11",INVALID_LIST_POS );
+                    (U8*)"5.35.11",INVALID_LIST_POS );
         if ( q ) {
           TNODE* qq =  FindObject( q->parts,(U8*)"5.35.11",0 );
           if ( qq ) {
@@ -3232,12 +3232,12 @@ TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
               nRows++;
             else {
               TNODE* qqq  =  FindObject( qq->parts,(U8*)"5.35.8",
-                								INVALID_LIST_POS );
+                                INVALID_LIST_POS );
               if ( qqq && qqq->contents )
                 nRows++;
             }
           }
-        }		// if ( q )
+        }   // if ( q )
       }
       row_rover =  row_rover->next;
     }
@@ -3266,7 +3266,7 @@ TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
       TNODE* mtd_tail;
 // _ALINECELLS_LIST(5.35.11,_ACELL_,5.35.12,,\\|\end{array},&)
       TNODE* cell_list  =  FindObject( row_rover->parts,
-   							        (U8*)"5.35.11",INVALID_LIST_POS );
+                        (U8*)"5.35.11",INVALID_LIST_POS );
 
       TNODE* TeX_EOL  =  FindObject( row_rover->parts,(U8*)"9.5.8",
                                         INVALID_LIST_POS );
@@ -3274,7 +3274,7 @@ TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
         TeX_EOL =  FindObject( row_rover->parts,(U8*)"9.5.9",
                                         INVALID_LIST_POS );
 
-	    if ( cell_list && cell_list->parts ) {
+      if ( cell_list && cell_list->parts ) {
         TNODE* cell_rover =  cell_list->parts;    // head of list of "cells"
 
         U16 col_count =  0;
@@ -3282,27 +3282,27 @@ TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
           context.column_number++;
 
   // Translate current cell to MathML
-       	  U16 mcol_align    =  0;
-       	  U16 cols_spanned  =  0;
+          U16 mcol_align    =  0;
+          U16 cols_spanned  =  0;
           TNODE* local_oof_list =  NULL;
           TNODE* contents =  NULL;
-		  if ( cell_rover->parts ) {
+      if ( cell_rover->parts ) {
             TNODE* bucket =  cell_rover->parts;
             U16 uobj,usub,uID;
             GetUids( bucket->zuID,uobj,usub,uID );
             if ( uobj==5 && usub==412 ) {
               contents  =  Multicolumn2MML( bucket,&local_oof_list,
- 								     TRUE,mcol_align,cols_spanned );
+                     TRUE,mcol_align,cols_spanned );
             } else if ( uobj==5 && usub==431 ) {
               contents  =  Hdotsfor2MML( bucket,
- 								     TRUE,cols_spanned );
-	        } else {
+                     TRUE,cols_spanned );
+          } else {
               TCI_BOOL do_bindings  =  TRUE;
               U16 tex_nodes_done,error_code;
               contents =  TranslateMathList( bucket->contents,
-										do_bindings,&context,
-										tex_nodes_done,error_code,
-										&local_oof_list );
+                    do_bindings,&context,
+                    tex_nodes_done,error_code,
+                    &local_oof_list );
             }
           }
 
@@ -3310,8 +3310,8 @@ TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
             contents  =  MakeSmallmspace();
           U16 vspace_context  =  2;   //We handle vspace in array cells
           contents  =  HandleOutOfFlowObjects( contents,
-							          &local_oof_list,out_of_flow_list,
-							          vspace_context );
+                        &local_oof_list,out_of_flow_list,
+                        vspace_context );
 
           if ( TeX_EOL ) {
             contents  =  EOLSpace2MML( contents,TeX_EOL );
@@ -3321,7 +3321,7 @@ TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
   // mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd)!/mtd!
           contents  =  FixImpliedMRow( contents );
           TNODE* cell  =  CreateElemWithBucketAndContents( 5,35,
-											        14,8,contents );
+                              14,8,contents );
           SetMTRAttribs( cell,mcol_align,cols_spanned );
 
   // Put the current cell under a cell list item node
@@ -3342,7 +3342,7 @@ TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
             mtd_head =  list_node;
           else {
             mtd_tail->next  =  list_node;
-  	        list_node->prev =  mtd_tail;
+            list_node->prev =  mtd_tail;
           }
           mtd_tail  =  list_node;
 
@@ -3353,7 +3353,7 @@ TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
           if ( cols_spanned > 1 )
             context.column_number +=  cols_spanned - 1;
 
-        }		// loop across columns in a row
+        }   // loop across columns in a row
 
       }   // if ( cell_list && cell_list->parts )
 
@@ -3367,36 +3367,36 @@ _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
 */
 
     TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
-	  mtr->parts->parts =  mtd_head;
-	  mtd_head->sublist_owner =  mtr->parts;
+    mtr->parts->parts =  mtd_head;
+    mtd_head->sublist_owner =  mtr->parts;
 
     // Put the current row under a node in the row list
 
-	  U8 zlistID[32];
+    U8 zlistID[32];
     UidsTozuID( 5,35,9,(U8*)zlistID );
-	  U16 zln =  strlen( (char*)zlistID );
-	  zlistID[zln]  =  ':';
+    U16 zln =  strlen( (char*)zlistID );
+    zlistID[zln]  =  ':';
     // JCS non-standard: itoa( row_count,(char*)zlistID+zln+1,10 );
     sprintf((char*)zlistID+zln+1, "%d", row_count);
-	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	  row_list_node->parts  =  mtr;
-	  mtr->sublist_owner  =  row_list_node;
+    TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+    row_list_node->parts  =  mtr;
+    mtr->sublist_owner  =  row_list_node;
 
       if ( !mtr_head )
         mtr_head  =  row_list_node;
       else {
         mtr_tail->next =  row_list_node;
-	    row_list_node->prev =  mtr_tail;
-	  }
+      row_list_node->prev =  mtr_tail;
+    }
       mtr_tail  =  row_list_node;
 
   // Advance to the next row in the LaTeX source tree
       row_rover =  row_rover->next;
-	}
+  }
 
     row_count++;
 
-  }		// while ( row_count < nRows )
+  }   // while ( row_count < nRows )
 
 
 // mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
@@ -3426,7 +3426,7 @@ REQPARAM(5.1.2,MATH)      - the denominator
 */
 
 TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
-					        U16 subclass,TNODE** out_of_flow_list ) {
+                  U16 subclass,TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -3455,7 +3455,7 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
     case 113  :           // \cfrac
     case 114  :           // \lcfrac
     case 115  :           // \rcfrac
-      size_ilk  =  0;		// large
+      size_ilk  =  0;   // large
     break;
 
 // always textstyle
@@ -3466,17 +3466,17 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
     case 105  :           // \QTATOPD - small
     case 108  :           // \QTOVERD - small - normal line   \\ etc.
     case 111  :
-      size_ilk  =  1;		// small
+      size_ilk  =  1;   // small
     break;
 
     case 116  : {         // \genfrac{(}{]}{dimen}{empty,0-3}{num}{denom}
       TNODE* sizing_attr_node =  FindObject( TeX_frac_node->parts,
-									        (U8*)"5.1.6",INVALID_LIST_POS );
+                          (U8*)"5.1.6",INVALID_LIST_POS );
       if ( sizing_attr_node ) {
         if ( sizing_attr_node->contents && sizing_attr_node->contents->var_value )
           size_ilk  =  atoi( (char*)sizing_attr_node->contents->var_value );
         else
-          size_ilk  =  100;		// auto
+          size_ilk  =  100;   // auto
       } else
         TCI_ASSERT(0);
     }
@@ -3509,14 +3509,14 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
 
 // Locate and translate the numerator
   TNODE* numerator  =  FindObject( TeX_frac_node->parts,
-									(U8*)"5.1.1",INVALID_LIST_POS );
+                  (U8*)"5.1.1",INVALID_LIST_POS );
   TCI_ASSERT( numerator );
   TCI_BOOL do_bindings  =  TRUE;
   U16 tex_nodes_done,loc_error;
   TNODE* local_oof_list =  NULL;
   TNODE* mml_num_cont =  TranslateMathList( numerator->contents,
-								    do_bindings,NULL,tex_nodes_done,
-								    loc_error,&local_oof_list );
+                    do_bindings,NULL,tex_nodes_done,
+                    loc_error,&local_oof_list );
 
   if ( !mml_num_cont )          // numerator is empty
     mml_num_cont  =  MakeSmallmspace();
@@ -3526,13 +3526,13 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
     if ( mml_num_cont->details
     &&   mml_num_cont->details->is_differential != UNDEFINED_DETAIL
     &&   mml_num_cont->details->form == 1 )
-	  is_differential_op  =  TRUE;
+    is_differential_op  =  TRUE;
     if ( mml_num_cont->details
     &&   mml_num_cont->details->unit_state == 1 )
-	  is_unit =  TRUE;
+    is_unit =  TRUE;
   }
   mml_num_cont  =  HandleOutOfFlowObjects( mml_num_cont,
-	  	                  &local_oof_list,out_of_flow_list,3 );
+                        &local_oof_list,out_of_flow_list,3 );
 
 // Put the numerator into mml_frac
   TNODE* part1  =  CreateBucketWithContents(5,1,1,mml_num_cont );
@@ -3544,14 +3544,14 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
   TNODE* denominator  =  FindObject( TeX_frac_node->parts,
                                 (U8*)"5.1.2",INVALID_LIST_POS );
   TNODE* mml_den_cont =  TranslateMathList( denominator->contents,
-									              do_bindings,NULL,tex_nodes_done,
-									              loc_error,&local_oof_list );
+                                do_bindings,NULL,tex_nodes_done,
+                                loc_error,&local_oof_list );
   if ( !mml_den_cont )
     mml_den_cont  =  MakeSmallmspace();
   else if ( mml_den_cont->next )
     mml_den_cont  =  MMLlistToMRow( mml_den_cont );
   mml_den_cont  =  HandleOutOfFlowObjects( mml_den_cont,
-							              &local_oof_list,out_of_flow_list,3 );
+                            &local_oof_list,out_of_flow_list,3 );
 
 // Put the denominator into mml_frac
   TNODE* part2  =  CreateBucketWithContents(5,1,2,mml_den_cont );
@@ -3602,7 +3602,7 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
     case 115 :           // \rcfrac<uID5.115.0>
     case 116 : {  // specified line
       TNODE* dimen  =  FindObject( TeX_frac_node->parts,
-									(U8*)"5.1.3",INVALID_LIST_POS );
+                  (U8*)"5.1.3",INVALID_LIST_POS );
       if ( dimen ) {
         if ( dimen->contents ) {
           strcpy( (char*)thickness_attr_val,(char*)dimen->contents->var_value );
@@ -3633,7 +3633,7 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
   if ( subclass >= 113 && subclass <= 115 ) // \cfrac
     l_uID =  NULL;
   TNODE* l_fence  =  FindObject( TeX_frac_node->parts,
-									(U8*)"5.1.4",INVALID_LIST_POS );
+                  (U8*)"5.1.4",INVALID_LIST_POS );
   if ( l_fence ) {
     if ( l_fence->contents )
       l_uID =  l_fence->contents->zuID;
@@ -3647,7 +3647,7 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
   if ( l_uID ) {
     U8 mml_lfence_nom[64];
     U8 lunicode_nom[64];
-    U8 mml_lfence_attrs[128];				// (<uID10.4.3>
+    U8 mml_lfence_attrs[128];       // (<uID10.4.3>
     TeXDelimToMMLOp( l_uID,1,mml_lfence_nom,lunicode_nom,mml_lfence_attrs );
 
     left_mo =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );
@@ -3664,7 +3664,7 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
   if ( subclass >= 113 && subclass <= 115 ) // \cfrac
     r_uID =  NULL;
   TNODE* r_fence  =  FindObject( TeX_frac_node->parts,
-									(U8*)"5.1.5",INVALID_LIST_POS );
+                  (U8*)"5.1.5",INVALID_LIST_POS );
   if ( r_fence ) {
     if ( r_fence->contents )
       r_uID =  r_fence->contents->zuID;
@@ -3678,7 +3678,7 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
   if ( r_uID ) {
     U8 mml_rfence_nom[64];
     U8 runicode_nom[64];
-    U8 mml_rfence_attrs[128];				// )<uID10.4.4>
+    U8 mml_rfence_attrs[128];       // )<uID10.4.4>
     TeXDelimToMMLOp( r_uID,3,mml_rfence_nom,runicode_nom,mml_rfence_attrs );
     if ( mml_rfence_nom[0] != '.' ) {
       right_mo  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );
@@ -3691,22 +3691,22 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
 // join left + body + right
 
   TNODE* body =  mml_frac;
-  if ( size_ilk != 100 ) {	// it's not auto
+  if ( size_ilk != 100 ) {  // it's not auto
 // mstyle<uID5.600.0>!mstyle!BUCKET(5.600.2,MATH,,,/mstyle,)!/mstyle!
     TNODE* mstyle =  CreateElemWithBucketAndContents( 5,600,0,2,mml_frac );
-    if        ( size_ilk==0 ) {		// dbinom - \displaystyle
+    if        ( size_ilk==0 ) {   // dbinom - \displaystyle
       SetNodeAttrib( mstyle,(U8*)"displaystyle",(U8*)"true" );
       SetNodeAttrib( mstyle,(U8*)"scriptlevel",(U8*)"0" );
-    } else if ( size_ilk==1 ) {		// tbinom - \textstyle
+    } else if ( size_ilk==1 ) {   // tbinom - \textstyle
       SetNodeAttrib( mstyle,(U8*)"displaystyle",(U8*)"false" );
       SetNodeAttrib( mstyle,(U8*)"scriptlevel",(U8*)"0" );
-    } else if ( size_ilk==2 ) {		// 
+    } else if ( size_ilk==2 ) {   // 
       SetNodeAttrib( mstyle,(U8*)"displaystyle",(U8*)"false" );
       SetNodeAttrib( mstyle,(U8*)"scriptlevel",(U8*)"1" );
-    } else if ( size_ilk==3 ) {		// 
+    } else if ( size_ilk==3 ) {   // 
       SetNodeAttrib( mstyle,(U8*)"displaystyle",(U8*)"false" );
       SetNodeAttrib( mstyle,(U8*)"scriptlevel",(U8*)"2" );
-	  }
+    }
 
     SetDetailNum( mstyle,DETAILS_style,1 );
     body  =  CreateElemWithBucketAndContents( 5,750,1,2,mstyle );
@@ -3717,20 +3717,20 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
     TNODE* start;
     TNODE* tail;
     if ( left_mo ) {
-	    start =  left_mo;
-	    left_mo->next  =  body;
-	    if ( body )
-	      body->prev  =  left_mo;
+      start =  left_mo;
+      left_mo->next  =  body;
+      if ( body )
+        body->prev  =  left_mo;
     } else
-	    start =  body;
+      start =  body;
 
     if ( start ) {
-	    tail  =  start;
-	    while ( tail->next )
-	      tail  =  tail->next;
+      tail  =  start;
+      while ( tail->next )
+        tail  =  tail->next;
     } else {
-	    start =  right_mo;
-	    tail  =  right_mo;
+      start =  right_mo;
+      tail  =  right_mo;
     }
 
     if ( right_mo && right_mo != tail ) {
@@ -3745,13 +3745,13 @@ TNODE* LaTeX2MMLTree::GenFrac2MML( TNODE* TeX_frac_node,
 
   if ( mml_rv ) {
     SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_INNER );
-	if ( is_differential_op ) {
+  if ( is_differential_op ) {
       SetDetailNum( mml_rv,DETAILS_is_differential,1 );
       SetDetailNum( mml_rv,DETAILS_form,1 );
       SetDetailNum( mml_rv,DETAILS_precedence,54 );
-	} else if ( is_unit ) {
+  } else if ( is_unit ) {
       SetDetailNum( mml_rv,DETAILS_unit_state,1 );
-	} else
+  } else
       SetDetailNum( mml_rv,DETAILS_is_expression,1 );
   }
 
@@ -3771,7 +3771,7 @@ LaTex
 
 Map to high precedence postfix operators in MML
 
-/mover<uID5.54.1>		  base			  accent
+/mover<uID5.54.1>     base        accent
 mover<uID5.54.2>!mover!reqELEMENT(5.54.3)reqELEMENT(5.54.5)
 !/mover!
 
@@ -3789,7 +3789,7 @@ TNODE* LaTeX2MMLTree::MathAccToMML( TNODE* tex_acc_node,
   U8 zuID[16];
   UidsTozuID( 4,1,50,(U8*)zuID );
   TNODE* tex_base_bucket =  FindObject( tex_acc_node->parts,
-								(U8*)zuID,INVALID_LIST_POS );
+                (U8*)zuID,INVALID_LIST_POS );
 
 // Translate the contents of tex_base_bucket
 
@@ -3799,12 +3799,12 @@ TNODE* LaTeX2MMLTree::MathAccToMML( TNODE* tex_acc_node,
     U16 tex_nodes_done,error_code;
     TNODE* local_oof_list =  NULL;
     mml_bc  =  TranslateMathList( tex_base_bucket->contents,
-                           		do_bindings,NULL,tex_nodes_done,
-                           		error_code,&local_oof_list );
+                              do_bindings,NULL,tex_nodes_done,
+                              error_code,&local_oof_list );
     mml_bc  =  HandleOutOfFlowObjects( mml_bc,
-				        &local_oof_list,out_of_flow_list,3 );
+                &local_oof_list,out_of_flow_list,3 );
   } else {
-  	TCI_ASSERT(0);
+    TCI_ASSERT(0);
     mml_bc  =  MakeSmallmspace();
   }
 
@@ -3819,7 +3819,7 @@ TNODE* LaTeX2MMLTree::MathAccToMML( TNODE* tex_acc_node,
     I16 val =  GetDetailNum( mml_bc,DETAILS_form );
     SetDetailNum( mml_rv,DETAILS_form,val );
     val =  GetDetailNum( mml_bc,DETAILS_precedence );
-	if ( val != UNDEFINED_DETAIL )
+  if ( val != UNDEFINED_DETAIL )
       SetDetailNum( mml_rv,DETAILS_precedence,val );
   } else {
     SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_ORD );
@@ -3841,21 +3841,21 @@ TNODE* LaTeX2MMLTree::MathAccToMML( TNODE* tex_acc_node,
     if ( op_nom && *op_nom )
       SetChData( mml_acc_op,op_nom,entity_buffer );
 
-	OP_GRAMMAR_INFO op_record;
-	if ( op_info && *op_info ) {
+  OP_GRAMMAR_INFO op_record;
+  if ( op_info && *op_info ) {
       GetAttribsFromGammarInfo( op_info,op_record );
       U16 form_ID =  op_record.form;
-	  if ( form_ID >= OPF_prefix && form_ID <= OPF_postfix ) {
-	    SetNodeAttrib( mml_acc_op,(U8*)"form",(U8*)zop_forms[form_ID] );
-	    ATTRIB_REC* tail  =  mml_acc_op->attrib_list;
-	    while ( tail->next )
-	      tail  =  tail->next;
-	    tail->next  =  op_record.attr_list;
-	  } else
-	    mml_acc_op->attrib_list =  op_record.attr_list;
-	  op_record.attr_list =  NULL;
-	} else
-	  TCI_ASSERT(0);
+    if ( form_ID >= OPF_prefix && form_ID <= OPF_postfix ) {
+      SetNodeAttrib( mml_acc_op,(U8*)"form",(U8*)zop_forms[form_ID] );
+      ATTRIB_REC* tail  =  mml_acc_op->attrib_list;
+      while ( tail->next )
+        tail  =  tail->next;
+      tail->next  =  op_record.attr_list;
+    } else
+      mml_acc_op->attrib_list =  op_record.attr_list;
+    op_record.attr_list =  NULL;
+  } else
+    TCI_ASSERT(0);
 
   } else
     TCI_ASSERT(0);
@@ -3885,31 +3885,31 @@ _SECONDLIM_IF(MATH,?^?,5.51.1)elseIF(?\Sp?,5.31.0)elseIF(?_?,5.50.1)elseIF(?\Sb?
 */
 
 TNODE* LaTeX2MMLTree::BigOp2MML( TNODE* tex_bigop_node,
-						   			             U16& tex_nodes_done,
-						   			             TNODE** out_of_flow_list ) {
+                                 U16& tex_nodes_done,
+                                 TNODE** out_of_flow_list ) {
 
   TNODE* rv =  NULL;
 
-  tex_nodes_done  =  1;		// All LaTeX bigops are parsed
-  U16 n_integrals =  0;		//  to 1 node with various parts
+  tex_nodes_done  =  1;   // All LaTeX bigops are parsed
+  U16 n_integrals =  0;   //  to 1 node with various parts
 
   U16 uobjtype,usubtype,tex_uID;
   GetUids( tex_bigop_node->zuID,uobjtype,usubtype,tex_uID );
   switch ( tex_uID ) {
-    case  1 :	 //\int<uID7.1.1,a>
-	  n_integrals =  1;	  break;
-    case  2 :	 //\iint<uID7.1.2,a>
-	  n_integrals =  2;	  break;
-    case  3 :	 //\iiint<uID7.1.3,a>
-	  n_integrals =  3;	  break;
-    case  4 :	 //\iiiint<uID7.1.4,a>
-	  n_integrals =  4;	  break;
-    case  5 :	 //\idotsint<uID7.1.5,a>
-      n_integrals =  5;	  break;
-    case  6 :	 //\oint<uID7.1.6,a>
-	  n_integrals =  1;	  break;
-	default :
-	break;
+    case  1 :  //\int<uID7.1.1,a>
+    n_integrals =  1;   break;
+    case  2 :  //\iint<uID7.1.2,a>
+    n_integrals =  2;   break;
+    case  3 :  //\iiint<uID7.1.3,a>
+    n_integrals =  3;   break;
+    case  4 :  //\iiiint<uID7.1.4,a>
+    n_integrals =  4;   break;
+    case  5 :  //\idotsint<uID7.1.5,a>
+      n_integrals =  5;   break;
+    case  6 :  //\oint<uID7.1.6,a>
+    n_integrals =  1;   break;
+  default :
+  break;
   }
 
 // Determine the bigop's size attribute.  \int<uID7.1.1,a>
@@ -3938,7 +3938,7 @@ TNODE* LaTeX2MMLTree::BigOp2MML( TNODE* tex_bigop_node,
 
 // If tex_autolimits, limits are under/over in a display, - <munderover>
 //  and at the right for inline math, except for integrals.
-// If tex_limits, limit are always under/over			  - <munderover>
+// If tex_limits, limit are always under/over       - <munderover>
 // If tex_nolimits, limit are always at the right         - <msubsup>
 
   TCI_BOOL use_subsup;
@@ -3954,25 +3954,25 @@ TNODE* LaTeX2MMLTree::BigOp2MML( TNODE* tex_bigop_node,
 
   TNODE* mml_ll   =  NULL;
   TNODE* tex_sub  =  FindObject( op_parts,(U8*)"5.50.1",
-										    INVALID_LIST_POS );
-  if ( tex_sub ) {	// single line lower limit
+                        INVALID_LIST_POS );
+  if ( tex_sub ) {  // single line lower limit
     if ( tex_sub->parts && tex_sub->parts->contents ) {
       TNODE* tex_ll_cont  =  tex_sub->parts->contents;
       TCI_BOOL do_bindings  =  TRUE;
       U16 tex_nodes_done,loc_error;
       TNODE* local_oof_list =  NULL;
       mml_ll =  TranslateMathList( tex_ll_cont,do_bindings,NULL,
-						        tex_nodes_done,loc_error,&local_oof_list );
+                    tex_nodes_done,loc_error,&local_oof_list );
       if ( !mml_ll )
         mml_ll  =  MakeSmallmspace();
       else if ( mml_ll->next )
         mml_ll  =  MMLlistToMRow( mml_ll );
       mml_ll  =  HandleOutOfFlowObjects( mml_ll, &local_oof_list,out_of_flow_list,3 );
-	  }
+    }
 
   } else {  // We may have a multiline lower limit
     TNODE* tex_sb =  FindObject( op_parts,(U8*)"5.30.0",
-											INVALID_LIST_POS );
+                      INVALID_LIST_POS );
     if ( tex_sb )
       mml_ll  =  SbAndSp2MML( tex_sb,out_of_flow_list );
   }
@@ -3981,26 +3981,26 @@ TNODE* LaTeX2MMLTree::BigOp2MML( TNODE* tex_bigop_node,
 
   TNODE* mml_ul   =  NULL;
   TNODE* tex_sup  =  FindObject( op_parts,(U8*)"5.51.1",
-											INVALID_LIST_POS );
-  if ( tex_sup ) {	// single line upper limit
+                      INVALID_LIST_POS );
+  if ( tex_sup ) {  // single line upper limit
     if ( tex_sup->parts && tex_sup->parts->contents ) {
       TNODE* tex_ul_cont  =  tex_sup->parts->contents;
       TCI_BOOL do_bindings  =  TRUE;
       U16 tex_nodes_done,loc_error;
       TNODE* local_oof_list =  NULL;
       mml_ul =  TranslateMathList( tex_ul_cont,do_bindings,NULL,
-						    tex_nodes_done,loc_error,&local_oof_list );
+                tex_nodes_done,loc_error,&local_oof_list );
       if ( !mml_ul )
         mml_ul  =  MakeSmallmspace();
       else if ( mml_ul->next )
         mml_ul  =  MMLlistToMRow( mml_ul );
       mml_ul  =  HandleOutOfFlowObjects( mml_ul,
-     						&local_oof_list,out_of_flow_list,3 );
-	}
+                &local_oof_list,out_of_flow_list,3 );
+  }
 
-  } else {	// We may have a multiline upper limit
+  } else {  // We may have a multiline upper limit
     TNODE* tex_sp =  FindObject( op_parts,(U8*)"5.31.0",
-											INVALID_LIST_POS );
+                      INVALID_LIST_POS );
     if ( tex_sp )
       mml_ul  =  SbAndSp2MML( tex_sp,out_of_flow_list );
   }
@@ -4019,35 +4019,35 @@ TNODE* LaTeX2MMLTree::BigOp2MML( TNODE* tex_bigop_node,
 // We look up the mml operator entity that matches our TeX bigop
   } else {
 */
-    base_op  =  MakeTNode( 0L,0L,tex_bigop_node->src_linenum, (U8*)"3.203.1" );	// <mo>
+    base_op  =  MakeTNode( 0L,0L,tex_bigop_node->src_linenum, (U8*)"3.203.1" ); // <mo>
     precedence  =  SetMMLBigOpEntity( tex_bigop_node,base_op );
     SetNodeAttrib( base_op,(U8*)"form",(U8*)zop_forms[OPF_prefix] );
 
-	  if ( mml_ll || mml_ul ) {
-	    if ( !use_subsup ) {
-	      U8* attr_nom  =  (U8*)"movablelimits";
-	      U8* attr_val  =  NULL;
+    if ( mml_ll || mml_ul ) {
+      if ( !use_subsup ) {
+        U8* attr_nom  =  (U8*)"movablelimits";
+        U8* attr_val  =  NULL;
         if ( tex_autolimits ) {
           if ( renderer_implements_displays ) {
-   		      attr_val  =  (U8*)"true";
+            attr_val  =  (U8*)"true";
           } else {
             if ( in_display )
-   		        attr_val  =  (U8*)"false";
+              attr_val  =  (U8*)"false";
             else {
-   		        attr_val  =  (U8*)"true";
+              attr_val  =  (U8*)"true";
             }                                                            
           }
         } else if ( tex_limits ) {
-   		    attr_val  =  (U8*)"false";
+          attr_val  =  (U8*)"false";
           SetNodeAttrib( base_op, (U8*)"msiLimitPlacement" ,(U8*)"msiLimitsAboveBelow" );
         }
 
-	      if (attr_val)
+        if (attr_val)
           SetNodeAttrib( base_op, attr_nom,attr_val );
-	      } else {
+        } else {
          SetNodeAttrib( base_op, (U8*)"msiLimitPlacement" ,(U8*)"msiLimitsAtRight" );
         }         
-	 }
+   }
 
    base_op =  SetBigOpSize( base_op, tex_size_attr );
 
@@ -4069,36 +4069,36 @@ _UOSUPER_reqELEMENT(5.55.5)
 
   TNODE* mml_big_op =  NULL;
 
-  if ( mml_ll || mml_ul ) {	// we have limit(s)
+  if ( mml_ll || mml_ul ) { // we have limit(s)
 
     U16 mml_selem_type;
     U16 mml_ll_uID  =  0;
     U16 mml_ul_uID  =  0;
-    if ( use_subsup ) {		// under and/or over
+    if ( use_subsup ) {   // under and/or over
       if        ( mml_ll && mml_ul ) {
-        mml_selem_type  =  52;	// <msubsup>
+        mml_selem_type  =  52;  // <msubsup>
         mml_ll_uID  =  4;
         mml_ul_uID  =  5;
       } else if ( mml_ll ) {
-        mml_selem_type  =  50;	// <msub>
+        mml_selem_type  =  50;  // <msub>
         mml_ll_uID  =  4;
-	    } else {
-        mml_selem_type  =  51;	// <msup>
+      } else {
+        mml_selem_type  =  51;  // <msup>
         mml_ul_uID  =  5;
-	    }
-	 } else {					// sub and/or super
+      }
+   } else {         // sub and/or super
       if        ( mml_ll && mml_ul ) {
-        mml_selem_type  =  55;	// <munderover>
+        mml_selem_type  =  55;  // <munderover>
         mml_ll_uID  =  4;
         mml_ul_uID  =  5;
       } else if ( mml_ll ) {
-        mml_selem_type  =  53;	// <munder>
+        mml_selem_type  =  53;  // <munder>
         mml_ll_uID  =  4;
-	    } else {
-        mml_selem_type  =  54;	// <mover>
+      } else {
+        mml_selem_type  =  54;  // <mover>
         mml_ul_uID  =  5;
-	    }
-	 }
+      }
+   }
    if (tex_size_attr == 'l'){
      // <mstyle displaystyle="true">
      base_op =  CreateElemWithBucketAndContents( 5,600,0,2,base_op );
@@ -4108,35 +4108,35 @@ _UOSUPER_reqELEMENT(5.55.5)
 // construct mml_big_op - structured element
 
    mml_big_op  =  CreateElemWithBucketAndContents( 5,mml_selem_type,2,3,base_op );
-	 TNODE* parts_tail =  mml_big_op->parts;
+   TNODE* parts_tail =  mml_big_op->parts;
 
   // construct lower limit bucket
-	 if ( mml_ll ) {
+   if ( mml_ll ) {
       TNODE* next_part  =  CreateBucketWithContents( 5,mml_selem_type,mml_ll_uID,mml_ll );
       parts_tail->next  =  next_part;
       next_part->prev   =  parts_tail;
-	    parts_tail  =  next_part;
-	 }
+      parts_tail  =  next_part;
+   }
 
    // construct upper limit bucket
-	 if ( mml_ul ) {
+   if ( mml_ul ) {
        TNODE* next_part  =  CreateBucketWithContents( 5,mml_selem_type,mml_ul_uID,mml_ul );
        parts_tail->next  =  next_part;
        next_part->prev   =  parts_tail;
-	 }
+   }
 
-  } else		// there are no limits
-	    mml_big_op  =  base_op;
+  } else    // there are no limits
+      mml_big_op  =  base_op;
 
   rv  =  mml_big_op;
 
   I16 form  =  1;
-  if ( rv ) {		// a TeX BigOp, \int, \sum
+  if ( rv ) {   // a TeX BigOp, \int, \sum
     SetDetailNum( rv,DETAILS_form,form );
     SetDetailNum( rv,DETAILS_precedence,precedence );
     SetDetailNum( rv,DETAILS_bigop_status,1 );
     SetDetailNum( rv,DETAILS_TeX_atom_ilk,TeX_ATOM_OP );
-	  if ( n_integrals )
+    if ( n_integrals )
       SetDetailNum( rv,DETAILS_integral_num,n_integrals );
   }
 
@@ -4150,8 +4150,8 @@ _UOSUPER_reqELEMENT(5.55.5)
 // $x_{\substack{ 12 \\ 34}}$ - external
 
 TNODE* LaTeX2MMLTree::Script2PsuedoMML( TNODE* tex_script_node,
-									    MATH_CONTEXT_INFO* m_context,
-										TNODE** out_of_flow_list ) {
+                      MATH_CONTEXT_INFO* m_context,
+                    TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
   script_level++;
@@ -4160,13 +4160,13 @@ TNODE* LaTeX2MMLTree::Script2PsuedoMML( TNODE* tex_script_node,
   U16 objclass,subclass,id;
   GetUids( tex_script_node->zuID,objclass,subclass,id );
   if ( objclass==5 ) {
-    if      ( subclass==TCMD_superscript )	// superscript
+    if      ( subclass==TCMD_superscript )  // superscript
       op_nom =  (U8*)"TeX^";
-    else if ( subclass==TCMD_subscript )	// subscript
+    else if ( subclass==TCMD_subscript )  // subscript
       op_nom =  (U8*)"TeX_";
-    else if ( subclass==TCMD_Sb )			// "\Sb" - subscript stack
+    else if ( subclass==TCMD_Sb )     // "\Sb" - subscript stack
       op_nom =  (U8*)"TeXSb";
-    else if ( subclass==TCMD_Sp )			// "\Sp" - superscript stack
+    else if ( subclass==TCMD_Sp )     // "\Sp" - superscript stack
       op_nom =  (U8*)"TeXSp";
   }
 
@@ -4175,15 +4175,15 @@ TNODE* LaTeX2MMLTree::Script2PsuedoMML( TNODE* tex_script_node,
     if ( subclass==TCMD_Sb || subclass==TCMD_Sp ) {
 // multi-line script
       mml_rv  =  MakeTNode( 0L,0L,tex_script_node->src_linenum,
-        							      (U8*)"3.201.1" );	// mi<uID3.201.1>
+                            (U8*)"3.201.1" ); // mi<uID3.201.1>
       SetChData( mml_rv,op_nom,NULL );
       TNODE* mtable =  SbAndSp2MML( tex_script_node,out_of_flow_list );
-	  if ( mtable ) {
-	    mml_rv->next  =  mtable;
-	  	mtable->prev  =  mml_rv;
-	  }
+    if ( mtable ) {
+      mml_rv->next  =  mtable;
+      mtable->prev  =  mml_rv;
+    }
 
-	} else {		// _ or ^
+  } else {    // _ or ^
 // single line script
       TNODE* TeX_contents =  tex_script_node->parts->contents;
       if ( TeX_contents ) {
@@ -4194,10 +4194,10 @@ TNODE* LaTeX2MMLTree::Script2PsuedoMML( TNODE* tex_script_node,
         &&   ScriptIsCirc(TeX_contents) ) {
           is_degrees =  TRUE;
 
-	    } else if ( BaseIsDiffD(tex_script_node) ) {
-		  cont  =  TranslateDDsubscript( TeX_contents,out_of_flow_list );
+      } else if ( BaseIsDiffD(tex_script_node) ) {
+      cont  =  TranslateDDsubscript( TeX_contents,out_of_flow_list );
 
-		} else {
+    } else {
 
           if ( subclass==TCMD_subscript ) {
 
@@ -4213,25 +4213,25 @@ TNODE* LaTeX2MMLTree::Script2PsuedoMML( TNODE* tex_script_node,
             }
             if ( insert_commas )
               cont  =  SubscriptBody2MML( TeX_contents,m_context );
-		  }
+      }
 
-		  if ( !cont ) {
+      if ( !cont ) {
             TCI_BOOL do_bindings  =  TRUE;
             U16 tex_nodes_done,error_code;
             TNODE* local_oof_list =  NULL;
             cont  =  TranslateMathList( TeX_contents,do_bindings,
-   		  		      NULL,tex_nodes_done,error_code,&local_oof_list );
+                  NULL,tex_nodes_done,error_code,&local_oof_list );
             if ( !cont )
               cont  =  MakeSmallmspace();
             cont  =  HandleOutOfFlowObjects( cont,
-          			        &local_oof_list,out_of_flow_list,3 );
-		  }
+                        &local_oof_list,out_of_flow_list,3 );
+      }
         }
 
         if ( is_degrees ) {
           mml_rv  =  MakeTNode( 0L,0L,0L,(U8*)"3.201.1" );  // <mi>
 
-		  U8 num_entity[16];
+      U8 num_entity[16];
           CreateUnicodeEntity( num_entity,0,0xb0 );
 
           SetChData( mml_rv,(U8*)"&deg;",num_entity );
@@ -4242,12 +4242,12 @@ TNODE* LaTeX2MMLTree::Script2PsuedoMML( TNODE* tex_script_node,
           SetDetailNum( mml_rv,DETAILS_unit_state,1 );
           SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_ORD );
 
-		} else {
+    } else {
           if ( !cont )
             cont  =  MakeSmallmspace();
 
           mml_rv  =  MakeTNode( 0L,0L,tex_script_node->src_linenum,
-                                (U8*)"3.201.1" );	// mi<uID3.201.1>
+                                (U8*)"3.201.1" ); // mi<uID3.201.1>
           SetChData( mml_rv,op_nom,NULL );
 
           TNODE* mrow =   cont->next ? MMLlistToMRow(cont) : cont;
@@ -4258,9 +4258,9 @@ TNODE* LaTeX2MMLTree::Script2PsuedoMML( TNODE* tex_script_node,
         }
 
 
-	  } else
-	    TCI_ASSERT(0);		// empty script?
-	}
+    } else
+      TCI_ASSERT(0);    // empty script?
+  }
 
   } else        // node is not a script?
     TCI_ASSERT(0);
@@ -4277,7 +4277,7 @@ TNODE* LaTeX2MMLTree::Script2PsuedoMML( TNODE* tex_script_node,
 // mroot<uID5.61.0>!mroot!reqELEMENT(5.61.2)reqELEMENT(5.61.1)!/mroot!
 
 TNODE* LaTeX2MMLTree::Radical2MML( TNODE* tex_radical_node,
-								            U16 subclass,TNODE** out_of_flow_list ) {
+                            U16 subclass,TNODE** out_of_flow_list ) {
 
   TNODE* rv =  NULL;
   U8 zuID[16];
@@ -4285,11 +4285,11 @@ TNODE* LaTeX2MMLTree::Radical2MML( TNODE* tex_radical_node,
 // Locate the bucket that contains the power - if it exists
   UidsTozuID( 5,subclass,1,(U8*)zuID );
   TNODE* tex_power_bucket =  FindObject( tex_radical_node->parts,
-  									            (U8*)zuID,INVALID_LIST_POS );
+                                (U8*)zuID,INVALID_LIST_POS );
 // Locate the bucket that contains the base
   UidsTozuID( 5,subclass,2,(U8*)zuID );
   TNODE* tex_base_bucket  =  FindObject( tex_radical_node->parts,
-  									            (U8*)zuID,INVALID_LIST_POS );
+                                (U8*)zuID,INVALID_LIST_POS );
 
   TNODE* mml_power_bucket =  NULL;
   if ( tex_power_bucket ) {
@@ -4308,23 +4308,23 @@ TNODE* LaTeX2MMLTree::Radical2MML( TNODE* tex_radical_node,
   TNODE* bc =  NULL;
   if ( tex_base_bucket && tex_base_bucket->contents ) {
     bc  =  TranslateMathList( tex_base_bucket->contents,do_bindings,
-				    NULL,tex_nodes_done,error_code,&local_oof_list );
-	  if ( !bc )
+            NULL,tex_nodes_done,error_code,&local_oof_list );
+    if ( !bc )
       bc  =  MakeSmallmspace();
-	  else if ( tex_power_bucket ) {
+    else if ( tex_power_bucket ) {
       if ( bc->next )
-	      bc  =  MMLlistToMRow( bc );
-	  } else {
+        bc  =  MMLlistToMRow( bc );
+    } else {
 // We don't need to wrap a multi-node contents list in an <mrow>
 //   if we're generating <msqrt> - it contains an implied <mrow>
       bc  =  FixImpliedMRow( bc );
-	  }
+    }
 
     bc  =  HandleOutOfFlowObjects( bc,&local_oof_list,
                                   out_of_flow_list,3 );
 
-  	mml_base_bucket->contents =  bc;
-	  bc->sublist_owner =  mml_base_bucket;
+    mml_base_bucket->contents =  bc;
+    bc->sublist_owner =  mml_base_bucket;
   }
 
 // Translate the contents of the tex_power_bucket
@@ -4333,29 +4333,29 @@ TNODE* LaTeX2MMLTree::Radical2MML( TNODE* tex_radical_node,
   if ( tex_power_bucket ) {
     script_level++;
     pc  =  TranslateMathList( tex_power_bucket->contents,do_bindings,
-					NULL,tex_nodes_done,error_code,&local_oof_list );
+          NULL,tex_nodes_done,error_code,&local_oof_list );
     script_level--;
-	  if ( !pc )
+    if ( !pc )
       pc  =  MakeSmallmspace();
-	  else if ( pc->next )
-	    pc  =  MMLlistToMRow( pc );
+    else if ( pc->next )
+      pc  =  MMLlistToMRow( pc );
     pc  =  HandleOutOfFlowObjects( pc,&local_oof_list,
                                     out_of_flow_list,3 );
 
-	  mml_power_bucket->contents  =  pc;
-	  pc->sublist_owner =  mml_power_bucket;
+    mml_power_bucket->contents  =  pc;
+    pc->sublist_owner =  mml_power_bucket;
 
-    UidsTozuID( 5,61,0,(U8*)zuID );		// mroot
+    UidsTozuID( 5,61,0,(U8*)zuID );   // mroot
   } else
-    UidsTozuID( 5,60,0,(U8*)zuID );		// msqrt
+    UidsTozuID( 5,60,0,(U8*)zuID );   // msqrt
 
-  rv  =  MakeTNode( 0L,0L,0L,(U8*)zuID );		// mroot or msqrt
+  rv  =  MakeTNode( 0L,0L,0L,(U8*)zuID );   // mroot or msqrt
   rv->parts =  mml_base_bucket;
   mml_base_bucket->sublist_owner  =  rv;
 
   if ( mml_power_bucket ) {
     mml_base_bucket->next   =  mml_power_bucket;
-	  mml_power_bucket->prev  =  mml_base_bucket;
+    mml_power_bucket->prev  =  mml_base_bucket;
   }
 
   SetDetailNum( rv,DETAILS_is_expression,1 );
@@ -4367,7 +4367,7 @@ TNODE* LaTeX2MMLTree::Radical2MML( TNODE* tex_radical_node,
 /*
 \end{tabular}<uID5.490.99>
 \begin{tabular}<uID5.490.0>!\begin{tabular}!_TXALIGN__TCOLS__TROWS_!\end{tabular}!
-;;_TSWIDTH_REQPARAM(5.491.1,DIMEN)		no width
+;;_TSWIDTH_REQPARAM(5.491.1,DIMEN)    no width
 _TXALIGN_OPTPARAM(5.490.2,MEXTALIGN)
 _TCOLS_REQPARAM(5.490.3,COLS)
 _TROWS_LIST(5.490.9,_TLINE_,5.490.10,,\end{tabular},\\)
@@ -4386,8 +4386,8 @@ _TSWIDTH_REQPARAM(5.490.1,DIMEN)
 */
 
 TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
-									TNODE** out_of_flow_list,
-									U16 usubtype ) {
+                  TNODE** out_of_flow_list,
+                  U16 usubtype ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -4399,7 +4399,7 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
 //_TXALIGN_OPTPARAM(5.490.2,MEXTALIGN)
   UidsTozuID( 5,usubtype,2,(U8*)zuID );
   TNODE* ext_align  =  FindObject( tex_tabular_node->parts,
-									zuID,INVALID_LIST_POS );
+                  zuID,INVALID_LIST_POS );
 
   U16 nRows,nCols;
   TNODE* TeX_row_list;
@@ -4410,7 +4410,7 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
 
   UidsTozuID( 5,usubtype,9,(U8*)zuID );
   TeX_row_list  =  FindObject( tex_tabular_node->parts,
-   								    zuID,INVALID_LIST_POS );
+                      zuID,INVALID_LIST_POS );
 
   TNODE* TeX_row_rover;
   TNODE* TeX_cell_rover;
@@ -4422,7 +4422,7 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
 // _TLINECELLS_LIST(5.490.11,_TCELL_,5.490.12,,\\|\end{tabular},&)
     UidsTozuID( 5,usubtype,11,(U8*)zuID );
     TeX_cell_list =  FindObject( TeX_row_rover->parts,
-   								    zuID,INVALID_LIST_POS );
+                      zuID,INVALID_LIST_POS );
     TeX_cell_rover  =  TeX_cell_list->parts;    // head of list of "cells"
 
 // Count the parts, ie rows, in TeX_row_rover
@@ -4436,26 +4436,26 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
       } else {        // this is the last row - it may be empty
         UidsTozuID( 5,usubtype,11,(U8*)zuID );
         TNODE* q  =  FindObject( row_rover->parts,
-   									zuID,INVALID_LIST_POS );
+                    zuID,INVALID_LIST_POS );
         if ( q ) {
           TNODE* qq =  FindObject( q->parts,
-   									zuID,INVALID_LIST_POS );
+                    zuID,INVALID_LIST_POS );
           if ( qq ) {
             if ( qq->next )
               nRows++;
             else {
               UidsTozuID( 5,usubtype,8,(U8*)zuID );
               TNODE* qqq  =  FindObject( qq->parts,zuID,
-               						   INVALID_LIST_POS );
+                             INVALID_LIST_POS );
               if ( qqq && qqq->contents )
                 nRows++;
             }
           }
-        }		// if ( q )
+        }   // if ( q )
 
       }
       row_rover =  row_rover->next;
-    }		// loop thru rows
+    }   // loop thru rows
 
 // Count the parts, ie columns, in the first row
 
@@ -4485,37 +4485,37 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
     while ( TeX_cell_rover ) {      // loop across columns in a row
 // Translate current cell to MathML
 
-	  TNODE* local_oof_list =  NULL;
-	  TNODE* contents =  NULL;
+    TNODE* local_oof_list =  NULL;
+    TNODE* contents =  NULL;
 
       U16 mcol_align    =  0;
       U16 cols_spanned  =  0;
-	  if ( TeX_cell_rover->parts ) {
+    if ( TeX_cell_rover->parts ) {
         TNODE* bucket =  TeX_cell_rover->parts;
         U16 uobj,usub,uID;
         GetUids( bucket->zuID,uobj,usub,uID );
         if ( uobj==5 && usub==412 ) {
           contents  =  Multicolumn2MML( bucket,&local_oof_list,
- 								    FALSE,mcol_align,cols_spanned );
-	    } else
-	      contents  =  TextInMath2MML( bucket->contents,
-	   							    &local_oof_list,FALSE,FALSE );
+                    FALSE,mcol_align,cols_spanned );
+      } else
+        contents  =  TextInMath2MML( bucket->contents,
+                      &local_oof_list,FALSE,FALSE );
       }
 /*
       if ( local_oof_list ) {
         contents  =  Struts2MML( contents,local_oof_list );
         local_oof_list  =  DisposeOutOfFlowList( local_oof_list,5,800 );
         contents  =  Labels2MML( contents,local_oof_list );
-	// We may want to pass this back to the caller in the future.
+  // We may want to pass this back to the caller in the future.
         DisposeTList( local_oof_list );
-	  }
+    }
 */
       if ( !contents )
         contents  =  MakeSmallmspace();
       U16 vspace_context  =  2;   //We handle vspace in table cells
       contents  =  HandleOutOfFlowObjects( contents,
-      							&local_oof_list,out_of_flow_list,
-      							vspace_context );
+                    &local_oof_list,out_of_flow_list,
+                    vspace_context );
 
       if ( TeX_EOL ) {
         contents  =  EOLSpace2MML( contents,TeX_EOL );
@@ -4530,31 +4530,31 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
 
 
 // Put the current cell under a cell list item node
-	  U8 zlistID[32];
+    U8 zlistID[32];
       UidsTozuID( 5,35,11,(U8*)zlistID );
-	  U16 zln =  strlen( (char*)zlistID );
-	  zlistID[zln]  =  ':';
+    U16 zln =  strlen( (char*)zlistID );
+    zlistID[zln]  =  ':';
           // JCS non-standard itoa( col_count,(char*)zlistID+zln+1,10 );
           sprintf((char*)zlistID+zln+1, "%d", col_count);
 
-	  TNODE* mtd_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	  mtd_list_node->parts  =  mtd;
-	  mtd->sublist_owner  =  mtd_list_node;
+    TNODE* mtd_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+    mtd_list_node->parts  =  mtd;
+    mtd->sublist_owner  =  mtd_list_node;
 
 // Add this list item to the list we're building
       if ( !col_first )
         col_first =  mtd_list_node;
       else {
         col_last->next  =  mtd_list_node;
-	    mtd_list_node->prev =  col_last;
-	  }
+      mtd_list_node->prev =  col_last;
+    }
       col_last  =  mtd_list_node;
 
 // Advance to next source cell
       TeX_cell_rover  =  TeX_cell_rover->next;
       col_count++;
 
-    }		// loop across columns in a row
+    }   // loop across columns in a row
 
 // Add current row to the list of rows we're building
 
@@ -4563,26 +4563,26 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
 // _LISTOFCELLS_LIST(5.35.11,_MTCELL_,5.35.12,,/mtr|/mtable,)
 // _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
     TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
-	mtr->parts->parts =  col_first;
-	col_first->sublist_owner =  mtr->parts;
+  mtr->parts->parts =  col_first;
+  col_first->sublist_owner =  mtr->parts;
 
 // Put the current row under a node in the row list
-	U8 zlistID[32];
+  U8 zlistID[32];
     UidsTozuID( 5,35,9,(U8*)zlistID );
-	U16 zln =  strlen( (char*)zlistID );
-	zlistID[zln]  =  ':';
+  U16 zln =  strlen( (char*)zlistID );
+  zlistID[zln]  =  ':';
         // JCS non-standard itoa( row_count,(char*)zlistID+zln+1,10 );
         sprintf((char*)zlistID+zln+1, "%d", row_count);
-	TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	row_list_node->parts  =  mtr;
-	mtr->sublist_owner    =  row_list_node;
+  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+  row_list_node->parts  =  mtr;
+  mtr->sublist_owner    =  row_list_node;
 
     if ( !row_first )
       row_first   =  row_list_node;
     else {
       row_last->next  =  row_list_node;
-	  row_list_node->prev =  row_last;
-	}
+    row_list_node->prev =  row_last;
+  }
     row_last  =  row_list_node;
 
 // Advance to the next row in the LaTeX source tree
@@ -4604,7 +4604,7 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
       }
     }
     row_count++;
-  }			// loop thru rows in LaTeX source
+  }     // loop thru rows in LaTeX source
 
 // Create an mtable for mml_rv
 // mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
@@ -4623,25 +4623,25 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
 }
 
 
-//	Source LaTeX Syntax
+//  Source LaTeX Syntax
 // \begin{align}<uID5.123.0>!\begin{align}!_ALIGNLINES_!\end{align}!
 // _ALIGNLINES_LIST(5.121.9,_ALIGNLINE_,5.121.10,,\end{align},\\)
 // _ALIGNLINE_IF(TEXT,?\intertext?,5.330.1)ifEND_ALIGNCELLS_
 // _ALIGNCELLS_BUCKET(5.121.4,MATH,,,\\|\end{align},)
 
 TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
-									          TNODE** out_of_flow_list,
-											  U16 usubtype ) {
+                            TNODE** out_of_flow_list,
+                        U16 usubtype ) {
 
   TNODE* mml_rv   =  NULL;
 
-// Given usubtype, get the alignment pattern.
-//  ie. for eqnarray, "right center left"
+  // Given usubtype, get the alignment pattern.
+  //  ie. for eqnarray, "right center left"
 
   U8 column_align_vals[64];
   GetEQNAlignVals( usubtype,(U8*)column_align_vals,64 );
 
-// This seems to be the only way to handle extra space between lines
+  // This seems to be the only way to handle extra space between lines
 
   U8 row_spacing_vals[128];
   row_spacing_vals[0] =  0;
@@ -4650,120 +4650,111 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
   TCI_BOOL has_tagged_line   =  FALSE;
   U16 line_numbering_mode =  EqnHasNumberedLines( usubtype );
 
-  TNODE* mtr_head =  NULL;		// we build a list of <mtr>'s
+  TNODE* mtr_head =  NULL;    // we build a list of <mtr>'s
   TNODE* mtr_tail;
 
-// Locate the list of lines in the LaTeX source object
+  // Locate the list of lines in the LaTeX source object
 
-  U8 line_list_zuID[16];	// Same for all flavors of eqnarray
+  U8 line_list_zuID[16];  // Same for all flavors of eqnarray
   UidsTozuID( 5,TENV_eqnarray,9,line_list_zuID );
-  TNODE* list_of_lines  =  FindObject( src_eqn->parts,
-	  							              line_list_zuID,INVALID_LIST_POS );
+  TNODE* list_of_lines  =  FindObject( src_eqn->parts, line_list_zuID, INVALID_LIST_POS );
 
   U16 src_line_counter  =  0;
   U16 dest_line_counter =  0;
-  while ( TRUE ) {     	// loop down thru lines in LaTeX eqnarray
-    TNODE* mtd_cont_head  =  NULL;	// we build a list of <mtd>'s
+  while ( TRUE ) {      // loop down thru lines in LaTeX eqnarray
+    TNODE* mtd_cont_head  =  NULL;  // we build a list of <mtd>'s
 
 // Find the current line in the list of lines
-    TNODE* curr_line  =  FindObject( list_of_lines->parts,
-        						            line_list_zuID,src_line_counter );
-    if ( !curr_line ) break;	// normal exit - no more lines
+    TNODE* curr_line  =  FindObject( list_of_lines->parts, line_list_zuID,src_line_counter );
 
+    if ( !curr_line ) 
+      break;  // normal exit - no more lines
 
-    TNODE* TeX_EOL  =  FindObject( curr_line->parts,(U8*)"9.5.8",
-                                        INVALID_LIST_POS );
+    TNODE* TeX_EOL  =  FindObject( curr_line->parts, (U8*)"9.5.8", INVALID_LIST_POS );
+
     if ( !TeX_EOL )
-      TeX_EOL =  FindObject( curr_line->parts,(U8*)"9.5.9",
-                                        INVALID_LIST_POS );
+      TeX_EOL =  FindObject( curr_line->parts, (U8*)"9.5.9", INVALID_LIST_POS );
 
-// Process the current line
+    // Process the current line
 
-// \intertext<uID5.330.1>!\intertext!REQPARAM(5.330.2,TEXT)
-    TNODE* intertext  =  FindObject( curr_line->parts,
-       							            (U8*)"5.330.1",INVALID_LIST_POS );
+    // \intertext<uID5.330.1>!\intertext!REQPARAM(5.330.2,TEXT)
+    TNODE* intertext  =  FindObject( curr_line->parts, (U8*)"5.330.1", INVALID_LIST_POS );
 
-// Put the current intertext under a node in the lines list
+    // Put the current intertext under a node in the lines list
 
     if ( intertext
     &&   intertext->parts
     &&   intertext->parts->contents ) {
       TNODE* local_oof_list =  NULL;
-      TNODE* mtext  =  TextInMath2MML( intertext->parts->contents,
-   									    &local_oof_list,FALSE,FALSE );
+      TNODE* mtext  =  TextInMath2MML( intertext->parts->contents, &local_oof_list, FALSE, FALSE );
       if ( !mtext )
         mtext  =  MakeSmallmspace();
 
       U8 v_space[80];
       strcpy( (char*)v_space,"1.0ex " );
 
-	  if ( local_oof_list ) {
+      if ( local_oof_list ) {
         double extra_depth;
         if ( GetVSpaceFromOOFList(local_oof_list,extra_depth) ) {
           if ( extra_depth != 0.0 ) {
-    // the default row spacing is 1.0ex
+            // the default row spacing is 1.0ex
             sprintf( (char*)v_space,"%fex ",extra_depth + 1.0 );
             found_spacer =  TRUE;
           }
         }
-
         mtext  =  Struts2MML( mtext,local_oof_list );
         local_oof_list  =  DisposeOutOfFlowList( local_oof_list,5,800 );
         mtext  =  Labels2MML( mtext,local_oof_list );
-	// We may want to pass this back to the caller in the future.
+        // We may want to pass this back to the caller in the future.
         DisposeTList( local_oof_list );
-	  }
+      }
 
       mtext =  FixImpliedMRow( mtext );
-      TNODE* mtd  =  CreateElemWithBucketAndContents( 5,35,14,8,mtext );
+      TNODE* mtd =  CreateElemWithBucketAndContents( 5,35,14,8,mtext );
       SetNodeAttrib( mtd,(U8*)"groupalign",(U8*)"center" );
 
-      TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
+      TNODE* mtr = CreateElemWithBucketAndContents( 5,35,13,11,NULL );
 
       if ( strlen((char*)row_spacing_vals) < 120 )
         strcat( (char*)row_spacing_vals,(char*)v_space );
 
-	  U8 zlistID[32];
+      U8 zlistID[32];
       UidsTozuID( 5,35,11,(U8*)zlistID );
-	  U16 zln =  strlen( (char*)zlistID );
-	  zlistID[zln]  =  ':';
-          // JCS non-standard itoa( 0,(char*)zlistID+zln+1,10 );
-          sprintf((char*)zlistID+zln+1, "%d", 0);
-	  TNODE* col_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+      U16 zln =  strlen( (char*)zlistID );
+      zlistID[zln]  =  ':';
+      // JCS non-standard itoa( 0,(char*)zlistID+zln+1,10 );
+      sprintf((char*)zlistID+zln+1, "%d", 0);
+      TNODE* col_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 
-	  col_list_node->parts  =  mtd;
-	  mtd->sublist_owner  =  col_list_node;
+      col_list_node->parts  =  mtd;
+      mtd->sublist_owner  =  col_list_node;
 
       mtr->parts->parts =  col_list_node;
-	  col_list_node->sublist_owner  =  mtr->parts;
+      col_list_node->sublist_owner  =  mtr->parts;
 
-// Put the intertext under a node in the lines list
+      // Put the intertext under a node in the lines list
 
       UidsTozuID( 5,35,9,(U8*)zlistID );
-	  zln =  strlen( (char*)zlistID );
-	  zlistID[zln]  =  ':';
-          // JCS non-standard itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
-          sprintf((char*)zlistID+zln+1, "%d", dest_line_counter);
-	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+      zln =  strlen( (char*)zlistID );
+      zlistID[zln]  =  ':';
+      // JCS non-standard itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
+      sprintf((char*)zlistID+zln+1, "%d", dest_line_counter);
+      TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 
-	  row_list_node->parts  =  mtr;
-	  mtr->sublist_owner  =  row_list_node;
+      row_list_node->parts  =  mtr;
+      mtr->sublist_owner  =  row_list_node;
 
-// Append
-
+      // Append
       if ( !mtr_head )
         mtr_head  =  row_list_node;
       else {
         mtr_tail->next =  row_list_node;
-	    row_list_node->prev =  mtr_tail;
-	  }
+        row_list_node->prev =  mtr_tail;
+      }
       mtr_tail  =  row_list_node;
-
       dest_line_counter++;
-	}
-
-
-// end intertext
+    } 
+    // end intertext
 
     TNODE* tag  =  NULL;
     TCI_BOOL add_eqn_number =  FALSE;
@@ -4772,30 +4763,25 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
     strcpy( (char*)r_space,"1.0ex " );
 
     TNODE* line_bucket  =  FindObject( curr_line->parts,
-   							              (U8*)"5.121.4",INVALID_LIST_POS );
+                              (U8*)"5.121.4",INVALID_LIST_POS );
 
     if ( line_bucket ) {
-// Look for \TCItag, etc.
+    // Look for \TCItag, etc.
 
       if ( line_bucket->contents ) {
-        tag   =  FindObject( line_bucket->contents,(U8*)"5.701.0",
-                                        INVALID_LIST_POS );
+        tag   =  FindObject( line_bucket->contents,(U8*)"5.701.0", INVALID_LIST_POS );
         if ( !tag )
-          tag =  FindObject( line_bucket->contents,(U8*)"5.702.0",
-                                        INVALID_LIST_POS );
+          tag =  FindObject( line_bucket->contents,(U8*)"5.702.0", INVALID_LIST_POS );
       }
 
-
-// If there is no tag, determine if the line is enumerated
+      // If there is no tag, determine if the line is enumerated
 
       if ( tag==NULL && line_numbering_mode ) {
-// \notag<uID5.703.0>
-        TNODE* notag  =  FindObject( line_bucket->contents,
-                             (U8*)"5.703.0",INVALID_LIST_POS );
-// \nonumber<uID5.414.0>
+        // \notag<uID5.703.0>
+        TNODE* notag  =  FindObject( line_bucket->contents, (U8*)"5.703.0",INVALID_LIST_POS );
+        // \nonumber<uID5.414.0>
         if ( !notag )
-          notag =  FindObject( line_bucket->contents,(U8*)"5.414.0",
-                                        INVALID_LIST_POS );
+          notag =  FindObject( line_bucket->contents,(U8*)"5.414.0", INVALID_LIST_POS );
         if ( !notag ) {
           if ( ( usubtype == 133 || usubtype == 134 ) // multline
           &&   dest_line_counter > 0 ) {
@@ -4807,22 +4793,22 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
         }
       }
 
-// translate the line to MML
+      // translate the line to MML
 
-  	  TCI_BOOL do_bindings  =  TRUE;
+      TCI_BOOL do_bindings  =  TRUE;
       U16 tex_nodes_done,error_code;
       TNODE* local_oof_list =  NULL;
       TNODE* contents =  TranslateMathList( line_bucket->contents,
-								              do_bindings,NULL,tex_nodes_done,
-								              error_code,&local_oof_list );
-// WARNING: At present, TeX Explorer ignores <maligngroup> if it is nested
-//  in an <mpadded>, so we can't pad lines in an eqnarray
-//    U16 vspace_context  =  2;   // mpadded
+                              do_bindings,NULL,tex_nodes_done,
+                              error_code,&local_oof_list );
+      // WARNING: At present, TeX Explorer ignores <maligngroup> if it is nested
+      //  in an <mpadded>, so we can't pad lines in an eqnarray
+      //    U16 vspace_context  =  2;   // mpadded
 
       double extra_depth;
       if ( GetVSpaceFromOOFList(local_oof_list,extra_depth) ) {
         if ( extra_depth != 0.0 ) {
-    // the default row spacing is 1.0ex
+          // the default row spacing is 1.0ex
           sprintf( (char*)r_space,"%fex ",extra_depth + 1.0 );
           found_spacer =  TRUE;
         }
@@ -4830,7 +4816,7 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
 
       U16 vspace_context  =  3;   // ignore, for now
       contents  =  HandleOutOfFlowObjects( contents,&local_oof_list,
-   						                  out_of_flow_list,vspace_context );
+                                out_of_flow_list,vspace_context );
 
       if ( TeX_EOL ) {
         U8 depth[64];
@@ -4843,23 +4829,23 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
         TeX_EOL =  NULL;
       }
 
-  // Add mml "contents" to the list we're building
+      // Add mml "contents" to the list we're building
       if ( contents )
         mtd_cont_head   =  contents;
-	  }
+    }
 
 
-// mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd,)!/mtd!
-// maligngroup<uID9.20.0>
-// <maligngroup>s have already been put in by TranslateMathList.
-// jcs This seems to add and extra one for no reason.
-// 	  TNODE* alignmark  =  MakeTNode( 0,0,0,(U8*)"9.20.0" );
-//     // mark node as pure whitespace
-//     SetDetailNum( alignmark,DETAILS_space_width,0 );
-//     alignmark->next =  mtd_cont_head;
-//     if ( mtd_cont_head )
-//       mtd_cont_head->prev =  alignmark;
-// 
+    // mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd,)!/mtd!
+    // maligngroup<uID9.20.0>
+    // <maligngroup>s have already been put in by TranslateMathList.
+    // jcs This seems to add and extra one for no reason.
+    //    TNODE* alignmark  =  MakeTNode( 0,0,0,(U8*)"9.20.0" );
+    //     // mark node as pure whitespace
+    //     SetDetailNum( alignmark,DETAILS_space_width,0 );
+    //     alignmark->next =  mtd_cont_head;
+    //     if ( mtd_cont_head )
+    //       mtd_cont_head->prev =  alignmark;
+    // 
 
     TNODE* mml_cell =  CreateElemWithBucketAndContents( 5, 35, 14, 8, mtd_cont_head );
     if ( column_align_vals[0] ) {
@@ -4871,59 +4857,58 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
     }
 
 
-// Put the current mml_cell under a cell_list_item node
+    // Put the current mml_cell under a cell_list_item node
 
     U8 zlistID[32];
     UidsTozuID( 5,35,11,(U8*)zlistID );
-	U16 zln =  strlen( (char*)zlistID );
-	zlistID[zln]  =  ':';
-        // itoa( 0,(char*)zlistID+zln+1,10 );
-        sprintf((char*)zlistID+zln+1, "%d", 0);
-	TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	list_node->parts  =  mml_cell;
-	mml_cell->sublist_owner =  list_node;
+    U16 zln =  strlen( (char*)zlistID );
+    zlistID[zln]  =  ':';
+    // itoa( 0,(char*)zlistID+zln+1,10 );
+    sprintf((char*)zlistID+zln+1, "%d", 0);
+    TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+    list_node->parts  =  mml_cell;
+    mml_cell->sublist_owner =  list_node;
 
-// Add current one cell line to the list of lines we're building
+    // Add current one cell line to the list of lines we're building
 
-/*
-/mtr<uID5.35.16>
-/mtr<uID5.35.16>
-mtr<uID5.35.13>!mtr!_LISTOFCELLS_!/mtr!
-_LISTOFCELLS_LIST(5.35.11,_MTCELL_,5.35.12,,/mtr|/mtable,)
-_MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
+    /*
+    /mtr<uID5.35.16>
+    /mtr<uID5.35.16>
+    mtr<uID5.35.13>!mtr!_LISTOFCELLS_!/mtr!
+    _LISTOFCELLS_LIST(5.35.11,_MTCELL_,5.35.12,,/mtr|/mtable,)
+    _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
 
-;MathML 2.0
-/mlabeledtr<uID5.35.41>
-mlabeledtr<uID5.35.40>!mlabeledtr!_EQNNUMBER__LISTOFCELLS_!/mlabeledtr!
-_EQNNUMBER_reqELEMENT(5.35.42)
-;_LABELEDLIST_LIST(5.35.11,_TDATA_,5.35.12,,/mtr|/mtable,)
-;_TDATA_IF(MATH,?mtd?,5.35.14)ifEND
-*/
+    ;MathML 2.0
+    /mlabeledtr<uID5.35.41>
+    mlabeledtr<uID5.35.40>!mlabeledtr!_EQNNUMBER__LISTOFCELLS_!/mlabeledtr!
+    _EQNNUMBER_reqELEMENT(5.35.42)
+    ;_LABELEDLIST_LIST(5.35.11,_TDATA_,5.35.12,,/mtr|/mtable,)
+    ;_TDATA_IF(MATH,?mtd?,5.35.14)ifEND
+    */
 
+    
     TNODE* mtr;
     if ( tag && renderer_implements_mlabeledtr ) {
       has_tagged_line  =  TRUE;
       TNODE* tag_cont =  NULL;
-	  if ( tag->parts && tag->parts->contents ) {
+      if ( tag->parts && tag->parts->contents ) {
         TNODE* local_oof_list =  NULL;
-	    tag_cont  =  TextInMath2MML( tag->parts->contents,
-	  		    	                &local_oof_list,FALSE,FALSE );
-	    if ( local_oof_list )
+        tag_cont  =  TextInMath2MML( tag->parts->contents,
+                              &local_oof_list,FALSE,FALSE );
+        if ( local_oof_list )
           DisposeTList( local_oof_list );
 
-// \TCItag<uID5.701.0>!\TCItag!REQPARAM(5.701.1,TEXT)
+        // \TCItag<uID5.701.0>!\TCItag!REQPARAM(5.701.1,TEXT)
 
         U16 objclass,subclass,id;
         GetUids( tag->zuID,objclass,subclass,id );
         if ( subclass==701 ) {
-// We need to add ( parens ).
+          // We need to add ( parens ).
           TNODE* head =  MakeTNode( 0,0,0,(U8*)"3.204.1" );
           SetChData( head,(U8*)"(",NULL );
           TNODE* tail =  MakeTNode( 0,0,0,(U8*)"3.204.1" );
           SetChData( tail,(U8*)")",NULL );
           if ( zMMLTextAttrs ) {
-//          SetNodeAttrib( head,(U8*)"mathcolor",(U8*)zMMLTextAttrs );
-//          SetNodeAttrib( tail,(U8*)"mathcolor",(U8*)zMMLTextAttrs );
             SetMMLAttribs( head,(U8*)zMMLTextAttrs );
             SetMMLAttribs( tail,(U8*)zMMLTextAttrs );
           }
@@ -4942,17 +4927,30 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 
           tag_cont  =  MMLlistToMRow( head );
         }
-	  }
+      }
 
       mtr  =  CreateElemWithBucketAndContents( 5,35,40,42,tag_cont );
       TNODE* part1  =  mtr->parts;
 
       TNODE* part2  =  MakeTNode( 0,0,0,(U8*)"5.35.11" );
       part2->parts  =  list_node;
-	  list_node->sublist_owner =  part2;
+      list_node->sublist_owner =  part2;
 
-	  part1->next =  part2;
-	  part2->prev =  part1;
+      part1->next =  part2;
+      part2->prev =  part1;
+    } else if (tag) {
+      // <mtr customLabel="XX11" marker="x1" id="x1">
+      mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
+      mtr->parts->parts =  list_node;
+      list_node->sublist_owner =  mtr->parts; 
+
+      has_tagged_line  =  TRUE;
+      TNODE* local_oof_list =  NULL;
+      TNODE* tag_cont =  TextInMath2MML( tag->parts->contents,
+                              &local_oof_list,FALSE,FALSE );
+
+      SetNodeAttrib( mtr, (U8*)"customLabel", (U8*)(tag_cont->var_value) );
+
 
     } else if ( add_eqn_number && do_equation_numbers ) {
       has_tagged_line  =  TRUE;
@@ -4975,15 +4973,15 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 
       TNODE* part2  =  MakeTNode( 0,0,0,(U8*)"5.35.11" );
       part2->parts  =  list_node;
-	  list_node->sublist_owner =  part2;
+      list_node->sublist_owner =  part2;
 
-	  part1->next =  part2;
-	  part2->prev =  part1;
+      part1->next =  part2;
+      part2->prev =  part1;
 
     } else {
       mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
-	  mtr->parts->parts =  list_node;
-	  list_node->sublist_owner =  mtr->parts;
+      mtr->parts->parts =  list_node;
+      list_node->sublist_owner =  mtr->parts;
     }
 
     if (out_of_flow_list && *out_of_flow_list) {
@@ -5004,13 +5002,13 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 // Put the current line under a node in the lines list
 
     UidsTozuID( 5,35,9,(U8*)zlistID );
-	zln =  strlen( (char*)zlistID );
-	zlistID[zln]  =  ':';
+    zln =  strlen( (char*)zlistID );
+    zlistID[zln]  =  ':';
         // itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
         sprintf((char*)zlistID+zln+1, "%d", dest_line_counter);
-	TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	row_list_node->parts  =  mtr;
-	mtr->sublist_owner  =  row_list_node;
+  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+  row_list_node->parts  =  mtr;
+  mtr->sublist_owner  =  row_list_node;
 
 // Append
 
@@ -5018,14 +5016,14 @@ _EQNNUMBER_reqELEMENT(5.35.42)
       mtr_head  =  row_list_node;
     else {
       mtr_tail->next =  row_list_node;
-	  row_list_node->prev =  mtr_tail;
-	}
+    row_list_node->prev =  mtr_tail;
+  }
     mtr_tail  =  row_list_node;
 
     src_line_counter++;
     dest_line_counter++;
 
-  }		// loop down thru lines in LaTeX eqnarray
+}   // loop down thru lines in LaTeX eqnarray
 
 // mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
 // _LISTOFROWS_LIST(5.35.9,_MTROW_,5.35.10,,/mtable,)
@@ -5061,7 +5059,7 @@ $$<uID5.34.31>BUCKET(5.34.32,MATH,$$,$$,,)
 */
 
 TNODE* LaTeX2MMLTree::TranslateTeXDisplay( TNODE* tex_display_node,
-											          U16 id,TNODE** out_of_flow_list ) {
+                                U16 id,TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -5078,31 +5076,31 @@ TNODE* LaTeX2MMLTree::TranslateTeXDisplay( TNODE* tex_display_node,
 
     TNODE* mml_cont =  NULL;
     TNODE* tex_cont =  tex_display_node->parts->contents;
-	  if ( tex_cont ) {
-	    if ( BucketContainsMath(tex_cont) ) {
+    if ( tex_cont ) {
+      if ( BucketContainsMath(tex_cont) ) {
         TCI_BOOL do_bindings  =  TRUE;
         U16 tex_nodes_done,error_code;
         TNODE* local_oof_list =  NULL;
         mml_cont  =  TranslateMathList( tex_cont,do_bindings,NULL,
-						            tex_nodes_done,error_code,&local_oof_list );
+                        tex_nodes_done,error_code,&local_oof_list );
         mml_cont  =  HandleOutOfFlowObjects( mml_cont,
-      							    &local_oof_list,out_of_flow_list,2 );
-	    } else {          // MATH display contains no math
+                        &local_oof_list,out_of_flow_list,2 );
+      } else {          // MATH display contains no math
         U16 ilk   =  1010;
         U8* ztext =  NULL;
         U32 off1  =  0;
         U32 off2  =  0;
         RecordAnomaly( ilk,ztext,off1,off2 );
-		    return mml_rv;
-	    }
-	  }
+        return mml_rv;
+      }
+    }
 
     if ( id==41 && do_equation_numbers ) {
 // Handle equation number here - nest in <mtable> <mlabeledtr> etc.
       mml_rv  =  AddNumberToEquation( mml_cont );
     } else {
       mml_rv  =  MMLlistToMRow( mml_cont );
-	    mml_rv->src_linenum =  tex_display_node->src_linenum;
+      mml_rv->src_linenum =  tex_display_node->src_linenum;
     }
 
   } else
@@ -5121,11 +5119,11 @@ TNODE* LaTeX2MMLTree::MMLlistToMRow( TNODE* mml_list ) {
 // mrow<uID5.750.1>!mrow!BUCKET(5.750.2,MATH,,,/mrow)!/mrow!
 
   bool do_it  =  true;
-  if ( mml_list && !mml_list->next ) {	// a single node
+  if ( mml_list && !mml_list->next ) {  // a single node
     U16 uobjtype,usubtype,uID;
     GetUids( mml_list->zuID,uobjtype,usubtype,uID );
-	  if ( uobjtype==5 && usubtype==750 && uID==1 )
-      do_it  =  false;		// mml_list is already an mrow
+    if ( uobjtype==5 && usubtype==750 && uID==1 )
+      do_it  =  false;    // mml_list is already an mrow
   }
 
   TNODE* rv;
@@ -5135,7 +5133,7 @@ TNODE* LaTeX2MMLTree::MMLlistToMRow( TNODE* mml_list ) {
     rv->parts =  p;
     p->sublist_owner  =  rv;
     p->contents =  mml_list;
-	  if ( mml_list )
+    if ( mml_list )
       mml_list->sublist_owner  =  p;
   } else
     rv  =  mml_list;
@@ -5147,7 +5145,7 @@ TNODE* LaTeX2MMLTree::MMLlistToMRow( TNODE* mml_list ) {
 //Sum<uID7.1.?>prefix,29,largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace=".16666em"
 
 U16 LaTeX2MMLTree::SetMMLBigOpEntity( TNODE* tex_bigop_node,
-								  	    TNODE* mml_base_op ) {
+                        TNODE* mml_base_op ) {
 
   U16 precedence  =  32;
 
@@ -5160,13 +5158,13 @@ U16 LaTeX2MMLTree::SetMMLBigOpEntity( TNODE* tex_bigop_node,
   U8* dest_zname;
   U8* d_template;
   if ( d_mml_grammar->GetGrammarDataFromUID( mml_zuID,
-      				context_math,&dest_zname,&d_template ) ) {
-	if ( d_template && *d_template ) {
-	  char* p =  strchr( (char*)d_template,',' );
-	  if ( p )
-	    precedence  =  atoi(p+1);
+              context_math,&dest_zname,&d_template ) ) {
+  if ( d_template && *d_template ) {
+    char* p =  strchr( (char*)d_template,',' );
+    if ( p )
+      precedence  =  atoi(p+1);
       else
-	    TCI_ASSERT(0);
+      TCI_ASSERT(0);
 
       U8 entity_buffer[128];
       entity_buffer[0]  =  0;
@@ -5175,10 +5173,10 @@ U16 LaTeX2MMLTree::SetMMLBigOpEntity( TNODE* tex_bigop_node,
       SetChData( mml_base_op,dest_zname,entity_buffer );
 
     } else
-	  TCI_ASSERT(0);
+    TCI_ASSERT(0);
 
-  } else {			// big op lookup failed
-	TCI_ASSERT(0);
+  } else {      // big op lookup failed
+  TCI_ASSERT(0);
     SetChData( mml_base_op,(U8*)"unknown",NULL );
   }
 
@@ -5192,7 +5190,7 @@ U16 LaTeX2MMLTree::SetMMLBigOpEntity( TNODE* tex_bigop_node,
 */
 
 TNODE* LaTeX2MMLTree::BoldSymbolToMML( TNODE* TeX_node,
-											                  U16& advance ) {
+                                        U16& advance ) {
 
   TNODE* mml_rv =  NULL;
   advance =  1;
@@ -5201,11 +5199,11 @@ TNODE* LaTeX2MMLTree::BoldSymbolToMML( TNODE* TeX_node,
     TNODE* TeX_cont =  TeX_node->parts->contents;
 
     U16 tex_nodes_done,error_code;
-  	TCI_BOOL do_bindings  =  TRUE;
-		TNODE* local_oof_list =  NULL;
+    TCI_BOOL do_bindings  =  TRUE;
+    TNODE* local_oof_list =  NULL;
     mml_rv  =  TranslateMathList( TeX_cont,do_bindings,NULL,
-									tex_nodes_done,error_code,
-									&local_oof_list );
+                  tex_nodes_done,error_code,
+                  &local_oof_list );
     if ( local_oof_list )
       DisposeTList( local_oof_list );
 
@@ -5220,8 +5218,8 @@ TNODE* LaTeX2MMLTree::BoldSymbolToMML( TNODE* TeX_node,
 //  are handled in the following function.
 
 TNODE* LaTeX2MMLTree::LaTeXHSpacing2MML( TNODE* tex_math_space,
-										  U16 usubtype,U16 uID,
-										  U16& nodes_done ) {
+                      U16 usubtype,U16 uID,
+                      U16& nodes_done ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -5231,19 +5229,19 @@ TNODE* LaTeX2MMLTree::LaTeXHSpacing2MML( TNODE* tex_math_space,
   switch ( usubtype ) {
     case  1 :
       mml_rv  =  MathHSpacesToMML( tex_math_space,nodes_done );
-	break;
+  break;
     case  2 :
 //  \par<uID9.2.0>
-	break;
-    case  3 :	// vertical space - handled before this point
+  break;
+    case  3 : // vertical space - handled before this point
       TCI_ASSERT(0);
-	break;
+  break;
     case  5 : {
 // \allowbreak<uID9.5.1>  
 // \nolinebreak<uID9.5.3>!\nolinebreak!OPTPARAM(9.5.20,NONLATEX)
 // \\<uID9.5.8>!\\!OPTPARAM(9.5.23,DIMEN)
 // \\*<uID9.5.9>!\\*!OPTPARAM(9.5.24,DIMEN)
-	  if ( uID == 1 ) {
+    if ( uID == 1 ) {
 
 /*  I'm blocking \allowbreak for now - allowing it adds more work
       to semantic analysis.
@@ -5253,18 +5251,18 @@ TNODE* LaTeX2MMLTree::LaTeXHSpacing2MML( TNODE* tex_math_space,
         SetDetailNum( mml_rv,DETAILS_space_width,0 );
 */
 
-	  }
-	}
-	break;
+    }
+  }
+  break;
     case  8 :
 // \protect<uID9.8.0>
-	break;
+  break;
     case  9 :
 // \hline<uID9.9.0>
-	break;
-	default :
-	  TCI_ASSERT(0);
-	break;
+  break;
+  default :
+    TCI_ASSERT(0);
+  break;
   }
 
   return mml_rv;
@@ -5299,7 +5297,7 @@ TNODE* LaTeX2MMLTree::LaTeXHSpacing2MML( TNODE* tex_math_space,
 */
 
 TNODE* LaTeX2MMLTree::MathHSpacesToMML( TNODE* tex_math_space,
-										  	U16& nodes_done ) {
+                        U16& nodes_done ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -5336,22 +5334,22 @@ TNODE* LaTeX2MMLTree::MathHSpacesToMML( TNODE* tex_math_space,
           ems_width +=  5;
           AppendEntityToBuffer( (U8*)"9.1.7",mtext_buffer,munic_buffer );
         break;
-        case  3 :   // ~<uID9.1.3>		  non-breaking
+        case  3 :   // ~<uID9.1.3>      non-breaking
           no_break  =  TRUE;
           ems_width +=  5;
           AppendEntityToBuffer( (U8*)"9.1.7",mtext_buffer,munic_buffer );
         break;
-        case  4 :   // \quad<uID9.1.4>	em
+        case  4 :   // \quad<uID9.1.4>  em
           ems_width +=  18;
           AppendEntityToBuffer( (U8*)"9.1.18",mtext_buffer,munic_buffer );
         break;
-        case  5 :   // \qquad<uID9.1.5>	2-em
+        case  5 :   // \qquad<uID9.1.5> 2-em
           ems_width +=  36;
           AppendEntityToBuffer( (U8*)"9.1.18",mtext_buffer,munic_buffer );
           AppendEntityToBuffer( (U8*)"9.1.18",mtext_buffer,munic_buffer );
         break;
 
-        case 10 :   // {}<uID9.1.10>	  empty
+        case 10 :   // {}<uID9.1.10>    empty
           zero_space =  TRUE;
           AppendEntityToBuffer( (U8*)"9.1.10",mtext_buffer,munic_buffer );
         break;
@@ -5359,20 +5357,20 @@ TNODE* LaTeX2MMLTree::MathHSpacesToMML( TNODE* tex_math_space,
 // spaces that don't necessarily end expressions - mspace
 //   absorbable
 
-        case  6 :   // \,<uID9.1.6>		  thin
+        case  6 :   // \,<uID9.1.6>     thin
           ems_width +=  3;
           AppendEntityToBuffer( (U8*)"9.1.6",mtext_buffer,munic_buffer );
         break;
-        case  7 :   // \;<uID9.1.7>		  thick
+        case  7 :   // \;<uID9.1.7>     thick
           ems_width +=  5;
           AppendEntityToBuffer( (U8*)"9.1.7",mtext_buffer,munic_buffer );
         break;
-        case  8 :   // \/<uID9.1.8>		  italic correction
+        case  8 :   // \/<uID9.1.8>     italic correction
           ems_width +=  1;
           AppendEntityToBuffer( (U8*)"9.1.12",mtext_buffer,munic_buffer );
         break;
 //   not absorbable
-        case  9 :   // \!<uID9.1.9>		  negative thin
+        case  9 :   // \!<uID9.1.9>     negative thin
           AppendEntityToBuffer( (U8*)"9.1.9",mtext_buffer,munic_buffer );
           ems_width -=  3;
         break;
@@ -5381,10 +5379,10 @@ TNODE* LaTeX2MMLTree::MathHSpacesToMML( TNODE* tex_math_space,
 
         case 12 :   // \hspace<uID9.1.12>!\hspace!REQPARAM(9.1.20,GLUE)
         case 13 : { // \hspace*<uID9.1.13>!\hspace*!REQPARAM(9.1.21,GLUE)
-	      U8 bucket_zuID[32];
+        U8 bucket_zuID[32];
           UidsTozuID( 9,1,id+8,(U8*)bucket_zuID );
           TNODE* glue_bucket =  FindObject( rover->parts,
-						              (U8*)bucket_zuID,INVALID_LIST_POS );
+                          (U8*)bucket_zuID,INVALID_LIST_POS );
           GetValueFromGlue( glue_bucket,(U8*)hspace_buffer,
                                 FALSE,ems_width );
           has_hspace =  TRUE;
@@ -5422,9 +5420,9 @@ TNODE* LaTeX2MMLTree::MathHSpacesToMML( TNODE* tex_math_space,
           AppendEntityToBuffer( (U8*)"9.1.18",mtext_buffer,munic_buffer );
         break;
 
-	    default :
-	      TCI_ASSERT(0);
-	    break;
+      default :
+        TCI_ASSERT(0);
+      break;
       }
 
       nodes_done++;
@@ -5461,24 +5459,24 @@ TNODE* LaTeX2MMLTree::MathHSpacesToMML( TNODE* tex_math_space,
 
     U8* named_width_attr =  NULL;
 
-    if      ( ems_width < 0 )       // \!<uID9.1.9>		negative thin
+    if      ( ems_width < 0 )       // \!<uID9.1.9>   negative thin
       named_width_attr =  (U8*)"negativethinmathspace";
     else if ( ems_width == 0 )      // \ xxx
       named_width_attr =  (U8*)"veryverythinmathspace";
-    else if ( ems_width <= 1 )      // \/<uID9.1.8>		italic correction
+    else if ( ems_width <= 1 )      // \/<uID9.1.8>   italic correction
       named_width_attr =  (U8*)"veryverythinmathspace";
-    else if ( ems_width <= 3 )      // \,<uID9.1.6>		thin
+    else if ( ems_width <= 3 )      // \,<uID9.1.6>   thin
       named_width_attr =  (U8*)"thinmathspace";
-    else if ( ems_width <= 4 )      // \;<uID9.1.7>		thick
+    else if ( ems_width <= 4 )      // \;<uID9.1.7>   thick
       named_width_attr =  (U8*)"mediummathspace";
     else
       named_width_attr =  (U8*)"thickmathspace";
 
 
     mml_rv  =  MakeTNode( 0L,0L,tex_math_space->src_linenum,(U8*)zmspace );
-	U16 zln =  strlen( (char*)named_width_attr );
+  U16 zln =  strlen( (char*)named_width_attr );
     mml_rv->attrib_list =  MakeATTRIBNode( (U8*)"width",ELEM_ATTR_width,0,
-			  								    named_width_attr,zln,0 );
+                            named_width_attr,zln,0 );
     if ( no_break )
       SetNodeAttrib( mml_rv,(U8*)"linebreak",(U8*)"nobreak" );
 
@@ -5491,7 +5489,7 @@ TNODE* LaTeX2MMLTree::MathHSpacesToMML( TNODE* tex_math_space,
                                             (U8*)zmspace );
       U16 zln =  strlen( (char*)hspace_buffer );
       mml_rv->attrib_list =  MakeATTRIBNode( (U8*)"width",
-			                    ELEM_ATTR_width,0,hspace_buffer,zln,0 );
+                          ELEM_ATTR_width,0,hspace_buffer,zln,0 );
     } else {                    // <mtext>
       mml_rv =  MakeTNode( 0L,0L,tex_math_space->src_linenum,
                                             (U8*)zmtext );
@@ -5512,7 +5510,7 @@ U8* LaTeX2MMLTree::GetFuncName( TNODE* nom_bucket_contents ) {
 
   U8* znom;
   if ( uobjtype==888 && usubtype==8 && tex_uID==0 ) {
-	  znom  =  nom_bucket_contents->var_value;
+    znom  =  nom_bucket_contents->var_value;
   } else {
     znom  =  (U8*)"Unknown";
     TCI_ASSERT(0);
@@ -5531,9 +5529,9 @@ U8* LaTeX2MMLTree::GetFuncName( TNODE* nom_bucket_contents ) {
   <mfenced>         <mo fence="true">(</mo>
     <mi>x</mi>      <mrow>  
     <mi>y</mi>        <mi>x</mi>  
-  </mfenced>	        <mo separator="true">,</mo>  
+  </mfenced>          <mo separator="true">,</mo>  
                       <mi>y</mi>  
-  					        </mrow>  
+                    </mrow>  
                     <mo fence="true">)</mo>  
                       
 In the initial implementation, a LaTeX fence is mapped
@@ -5552,7 +5550,7 @@ LaTeX - NoteBook.gmr
 */
 
 TNODE* LaTeX2MMLTree::LaTeXFence2MML( TNODE* tex_fence_node,
-										                TNODE** out_of_flow_list ) {
+                                    TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -5585,13 +5583,13 @@ TNODE* LaTeX2MMLTree::LaTeXFence2MML( TNODE* tex_fence_node,
     U16 tex_nodes_done,error_code;
     TNODE* local_oof_list =  NULL;
     mml_body  =  TranslateMathList( TeX_contents,do_bindings,NULL,
-						            tex_nodes_done,error_code,&local_oof_list );
+                        tex_nodes_done,error_code,&local_oof_list );
     mml_body  =  HandleOutOfFlowObjects( mml_body,
-    						        &local_oof_list,out_of_flow_list,3 );
+                        &local_oof_list,out_of_flow_list,3 );
   // If there are any operators in mml_body, we nest it.
-	  if ( mml_body && DoNestFenceBody(mml_body) )
+    if ( mml_body && DoNestFenceBody(mml_body) )
       mml_body =  CreateElemWithBucketAndContents( 5,750,
-           											            1,2,mml_body );
+                                            1,2,mml_body );
   }
 
 // mo for left delimiter
@@ -5651,8 +5649,8 @@ TNODE* LaTeX2MMLTree::LaTeXFence2MML( TNODE* tex_fence_node,
 //  fence as a MathML "mfenced".
 
 void LaTeX2MMLTree::CheckFenceBody( U8* left_uID,U8* right_uID,
-									  TNODE* mml_body,
-                              		    TCI_BOOL& use_mfenced ) {
+                    TNODE* mml_body,
+                                      TCI_BOOL& use_mfenced ) {
 
   use_mfenced =  FALSE;
 
@@ -5674,7 +5672,7 @@ void LaTeX2MMLTree::CheckFenceBody( U8* left_uID,U8* right_uID,
   if ( uobjtype!=10 || usubtype!=4 ) return;    // not a fence
   //if ( uID != 4 ) return;                       // not )
 
-  TCI_BOOL OK =  TRUE;			// Assume OK
+  TCI_BOOL OK =  TRUE;      // Assume OK
 
 // Traverse the nodes that constitute the contents of the fence.
 //  Look for comma separators, etc.
@@ -5687,19 +5685,19 @@ void LaTeX2MMLTree::CheckFenceBody( U8* left_uID,U8* right_uID,
 
     if        ( uobjtype==3 ) {         // atomic object
 
-      if        ( usubtype==201 && uID==1 ) {	// mi
-	    if ( (item_ord % 2) == 0 )
+      if        ( usubtype==201 && uID==1 ) { // mi
+      if ( (item_ord % 2) == 0 )
           OK =  FALSE;
-      } else if ( usubtype==202 && uID==1 ) {	// mn
-	    if ( (item_ord % 2) == 0 )
+      } else if ( usubtype==202 && uID==1 ) { // mn
+      if ( (item_ord % 2) == 0 )
           OK =  FALSE;
-      } else if ( usubtype==203 && uID==1 ) {	// mo
-	    if ( (item_ord % 2) == 0 ) {
-		  if ( rover->v_len != 1 || rover->var_value[0] != ',' )
+      } else if ( usubtype==203 && uID==1 ) { // mo
+      if ( (item_ord % 2) == 0 ) {
+      if ( rover->v_len != 1 || rover->var_value[0] != ',' )
             OK =  FALSE;
-		} else
+    } else
           OK =  FALSE;
-	  }
+    }
 
     } else if ( uobjtype==5 ) {
       OK =  FALSE;
@@ -5713,7 +5711,7 @@ void LaTeX2MMLTree::CheckFenceBody( U8* left_uID,U8* right_uID,
   if ( item_ord < 2 )
     use_mfenced =  TRUE;
   else if ( OK ) {
-	if ( (item_ord % 2) == 1 )
+  if ( (item_ord % 2) == 1 )
       use_mfenced =  TRUE;
   }
 }
@@ -5725,9 +5723,9 @@ void LaTeX2MMLTree::CheckFenceBody( U8* left_uID,U8* right_uID,
 
 void LaTeX2MMLTree::TeXDelimToMMLOp( U8* TeX_fence_delim_uID,
                                         U16 left_center_right,
-									    U8* mml_fence_nom,
-									    U8* unicode_nom,
-										U8* mml_fence_attrs ) {
+                      U8* mml_fence_nom,
+                      U8* unicode_nom,
+                    U8* mml_fence_attrs ) {
 
   mml_fence_nom[0]    =  0;
   unicode_nom[0]      =  0;
@@ -5750,30 +5748,30 @@ void LaTeX2MMLTree::TeXDelimToMMLOp( U8* TeX_fence_delim_uID,
 
     U8* d_template;
     if ( d_mml_grammar->GetGrammarDataFromUID(lookup_uID,
-							(U8*)"FENCE",&dest_zname,&d_template ) ) {
+              (U8*)"FENCE",&dest_zname,&d_template ) ) {
 
-	  if ( dest_zname[0] != '.' )	// not the invisible fence
-		strcpy( (char*)mml_fence_nom,(char*)dest_zname );
+    if ( dest_zname[0] != '.' ) // not the invisible fence
+    strcpy( (char*)mml_fence_nom,(char*)dest_zname );
 
-	  if ( d_template && d_template[0] ) {
+    if ( d_template && d_template[0] ) {
 
         if ( usub == 4 ) {
           if ( output_entities_as_unicodes ) {
-			unicode_nom[0]  =  0;
+      unicode_nom[0]  =  0;
             GetUnicodeEntity( d_template,unicode_nom );
           }
 
         } else {
-  		  U16 zln =  strlen( (char*)d_template );
-	  	  if ( zln < 128 )
-		    strcat( (char*)mml_fence_attrs,(char*)d_template );
+        U16 zln =  strlen( (char*)d_template );
+        if ( zln < 128 )
+        strcat( (char*)mml_fence_attrs,(char*)d_template );
         }
-	  }
+    }
 
-	} else{
-	  //TCI_ASSERT(0);
-	}
-  }		// if ( tex_fence_delim_node )
+  } else{
+    //TCI_ASSERT(0);
+  }
+  }   // if ( tex_fence_delim_node )
 
 }
 
@@ -5789,7 +5787,7 @@ TNODE* LaTeX2MMLTree::CreateMError( const char* err_text,
   mml_rv->parts =  rv_parts;
   rv_parts->sublist_owner =  mml_rv;
 
-  TNODE* contents =  MakeTNode( 0L,0L,0L,(U8*)zmtext );	// <mtext>
+  TNODE* contents =  MakeTNode( 0L,0L,0L,(U8*)zmtext ); // <mtext>
   rv_parts->contents  =  contents;
   contents->sublist_owner =  rv_parts;
 
@@ -5802,8 +5800,8 @@ TNODE* LaTeX2MMLTree::CreateMError( const char* err_text,
 
 
 TNODE* LaTeX2MMLTree::CreateElemWithBucketAndContents(
-						    U16 uobjtype,U16 usubtype,U16 uID,
-							U16 bucketID,TNODE* contents ) {
+                U16 uobjtype,U16 usubtype,U16 uID,
+              U16 bucketID,TNODE* contents ) {
 
   U8 zuID[32];
   UidsTozuID( uobjtype,usubtype,uID,(U8*)zuID );
@@ -5816,7 +5814,7 @@ TNODE* LaTeX2MMLTree::CreateElemWithBucketAndContents(
 
   if ( contents ) {
     bucket->contents  =  contents;
-  	contents->sublist_owner =  bucket;
+    contents->sublist_owner =  bucket;
   }
 
   return rv;
@@ -5824,15 +5822,15 @@ TNODE* LaTeX2MMLTree::CreateElemWithBucketAndContents(
 
 
 TNODE* LaTeX2MMLTree::CreateBucketWithContents(
-							          U16 uobjtype,U16 usubtype,U16 bucketID,
-								        TNODE* contents ) {
+                        U16 uobjtype,U16 usubtype,U16 bucketID,
+                        TNODE* contents ) {
 
   U8 zuID[32];
   UidsTozuID( uobjtype,usubtype,bucketID,(U8*)zuID );
   TNODE* rv =  MakeTNode( 0L,0L,0L,(U8*)zuID );
   if ( contents ) {
     rv->contents  =  contents;
-  	contents->sublist_owner =  rv;
+    contents->sublist_owner =  rv;
   }
 
   return rv;
@@ -5840,7 +5838,7 @@ TNODE* LaTeX2MMLTree::CreateBucketWithContents(
 
 
 TNODE* LaTeX2MMLTree::BindByOpPrecedence( TNODE* MML_list,
-  										    U16 p_max,U16 p_min ) {
+                          U16 p_max,U16 p_min ) {
 
   TNODE* rv =  MML_list;
 
@@ -5851,10 +5849,10 @@ TNODE* LaTeX2MMLTree::BindByOpPrecedence( TNODE* MML_list,
   U16 curr_prec =  p_max;
 
   while ( curr_prec >= p_min
-  &&      curr_prec >= lowest_prec ) {	// loop down thru p levels
+  &&      curr_prec >= lowest_prec ) {  // loop down thru p levels
 
     TNODE* MML_rover  =  rv;
-    while ( MML_rover ) {		// loop thru contents nodes
+    while ( MML_rover ) {   // loop thru contents nodes
 
       TNODE* new_mrow;
 
@@ -5864,151 +5862,151 @@ TNODE* LaTeX2MMLTree::BindByOpPrecedence( TNODE* MML_list,
       if ( MML_rover->details
       &&   MML_rover->details->form != UNDEFINED_DETAIL
       &&   MML_rover->details->precedence != UNDEFINED_DETAIL ) {
-	    I16 precedence  =  MML_rover->details->precedence;
-		I16 form        =  MML_rover->details->form;
-		if ( precedence == curr_prec ) {
+      I16 precedence  =  MML_rover->details->precedence;
+    I16 form        =  MML_rover->details->form;
+    if ( precedence == curr_prec ) {
 
-		  if        ( form==1 ) {		// prefix
+      if        ( form==1 ) {   // prefix
 
             U16 n_right_spaces;
             U16 r_nodes_spanned;
-			I16 right_space;
+      I16 right_space;
             if ( OperandExists(MML_rover,TRUE,0,n_right_spaces,
-								  r_nodes_spanned,right_space) ) {
+                  r_nodes_spanned,right_space) ) {
 
               rv  =  BindPrefixOP( rv,MML_rover,curr_prec,&new_mrow );
               if ( new_mrow ) {
                 MML_rover =  new_mrow;
                 SetDetailIsExpr( new_mrow,curr_prec );
-                if ( curr_prec==55 || curr_prec==54 ) {	// DD and dd
+                if ( curr_prec==55 || curr_prec==54 ) { // DD and dd
                   SetDetailNum( new_mrow,DETAILS_is_differential,1 );
                 }
               } else {
                 if ( MML_rover->next ){
                   TCI_ASSERT(0);
                 }
-	    	  }
-			} else {
+          }
+      } else {
               //TCI_ASSERT(0);
-			}
+      }
 
-		  } else if ( form==2 ) {		// infix
+      } else if ( form==2 ) {   // infix
 
         U16 r_space_nodes,r_operand_nodes;
         U16 l_space_nodes,l_operand_nodes;
-		    if ( LocateOperand(MML_rover,TRUE,
-	                    r_space_nodes,r_operand_nodes,form,precedence)
-		    &&   LocateOperand(MML_rover,FALSE,
-	                    l_space_nodes,l_operand_nodes,form,precedence) ) {
+        if ( LocateOperand(MML_rover,TRUE,
+                      r_space_nodes,r_operand_nodes,form,precedence)
+        &&   LocateOperand(MML_rover,FALSE,
+                      l_space_nodes,l_operand_nodes,form,precedence) ) {
 
-			  if ( l_operand_nodes > 1 ) {
-			    TCI_ASSERT(0);
-			    TNODE* right_anchor =  MML_rover;
-			    U16 tally =  l_space_nodes;
-			    while ( tally ) {
-			      right_anchor  =  right_anchor->prev;
-			      tally--;
-			    }
-			    rv  =  NestNodesInMrow( rv,right_anchor,NULL,FALSE,
-			  			                    l_operand_nodes,&new_mrow );
-			  }
-
-			  if ( r_operand_nodes > 1 ) {
-			    TCI_ASSERT(0);
-			    TNODE* left_anchor  =  MML_rover;
-			    U16 tally =  r_space_nodes;
-			    while ( tally ) {
-			      left_anchor =  left_anchor->next;
-			      tally--;
-			    }
-			    rv  =  NestNodesInMrow( rv,left_anchor,NULL,TRUE,
-			  				            r_operand_nodes,&new_mrow );
-			  }
-
-			  U16 node_to_nest  =  3 + l_space_nodes + r_space_nodes;
-			  TNODE* start  =  MML_rover->prev;
-			  U16 tally =  l_space_nodes;
-			  while ( tally ) {
-			    start =  start->prev;
-			    tally--;
-			  }
-			  rv  =  NestNodesInMrow( rv,NULL,start,TRUE,
-			  					            node_to_nest,&new_mrow );
-
-			  if ( l_operand_nodes == 1 ) {
-			    if ( LeftGroupHasSamePrec(MML_rover,curr_prec,l_space_nodes) )
-			      TNODE* tmp  =  ElevateLeftOperand( NULL,MML_rover,l_space_nodes );
-			  }
-
-			  if ( new_mrow ) {
-			    MML_rover =  new_mrow;
-                SetDetailIsExpr( new_mrow,curr_prec );
-			  } else
-			    TCI_ASSERT(0);
-
-			} else {
-			  if ( MML_rover->next || MML_rover->prev ) {
-			    //TCI_ASSERT(0);
+        if ( l_operand_nodes > 1 ) {
+          TCI_ASSERT(0);
+          TNODE* right_anchor =  MML_rover;
+          U16 tally =  l_space_nodes;
+          while ( tally ) {
+            right_anchor  =  right_anchor->prev;
+            tally--;
+          }
+          rv  =  NestNodesInMrow( rv,right_anchor,NULL,FALSE,
+                                  l_operand_nodes,&new_mrow );
         }
-			}
 
-		  } else if ( form==3 ) {		// postfix
+        if ( r_operand_nodes > 1 ) {
+          TCI_ASSERT(0);
+          TNODE* left_anchor  =  MML_rover;
+          U16 tally =  r_space_nodes;
+          while ( tally ) {
+            left_anchor =  left_anchor->next;
+            tally--;
+          }
+          rv  =  NestNodesInMrow( rv,left_anchor,NULL,TRUE,
+                            r_operand_nodes,&new_mrow );
+        }
+
+        U16 node_to_nest  =  3 + l_space_nodes + r_space_nodes;
+        TNODE* start  =  MML_rover->prev;
+        U16 tally =  l_space_nodes;
+        while ( tally ) {
+          start =  start->prev;
+          tally--;
+        }
+        rv  =  NestNodesInMrow( rv,NULL,start,TRUE,
+                              node_to_nest,&new_mrow );
+
+        if ( l_operand_nodes == 1 ) {
+          if ( LeftGroupHasSamePrec(MML_rover,curr_prec,l_space_nodes) )
+            TNODE* tmp  =  ElevateLeftOperand( NULL,MML_rover,l_space_nodes );
+        }
+
+        if ( new_mrow ) {
+          MML_rover =  new_mrow;
+                SetDetailIsExpr( new_mrow,curr_prec );
+        } else
+          TCI_ASSERT(0);
+
+      } else {
+        if ( MML_rover->next || MML_rover->prev ) {
+          //TCI_ASSERT(0);
+        }
+      }
+
+      } else if ( form==3 ) {   // postfix
 
             U16 l_space_nodes,l_operand_nodes;
-		    if ( LocateOperand(MML_rover,FALSE,
-	                  l_space_nodes,l_operand_nodes,form,precedence) ) {
+        if ( LocateOperand(MML_rover,FALSE,
+                    l_space_nodes,l_operand_nodes,form,precedence) ) {
 
-			  if ( l_operand_nodes > 1 ) {
-			    TCI_ASSERT(0);
-			    TNODE* right_anchor =  MML_rover;
-			    U16 tally =  l_space_nodes;
-			    while ( tally ) {
-			      right_anchor  =  right_anchor->prev;
-			      tally--;
-			    }
-			    rv  =  NestNodesInMrow( rv,right_anchor,NULL,FALSE,
-			  					            l_operand_nodes,&new_mrow );
-			  }
+        if ( l_operand_nodes > 1 ) {
+          TCI_ASSERT(0);
+          TNODE* right_anchor =  MML_rover;
+          U16 tally =  l_space_nodes;
+          while ( tally ) {
+            right_anchor  =  right_anchor->prev;
+            tally--;
+          }
+          rv  =  NestNodesInMrow( rv,right_anchor,NULL,FALSE,
+                              l_operand_nodes,&new_mrow );
+        }
 
-			  U16 node_to_nest  =  2 + l_space_nodes;
-			  TNODE* start  =  MML_rover->prev;
-			  U16 tally =  l_space_nodes;
-			  while ( tally ) {
-			    start =  start->prev;
-			    tally--;
-			  }
-			  rv  =  NestNodesInMrow( rv,NULL,start,TRUE,
-			  				              node_to_nest,&new_mrow );
+        U16 node_to_nest  =  2 + l_space_nodes;
+        TNODE* start  =  MML_rover->prev;
+        U16 tally =  l_space_nodes;
+        while ( tally ) {
+          start =  start->prev;
+          tally--;
+        }
+        rv  =  NestNodesInMrow( rv,NULL,start,TRUE,
+                              node_to_nest,&new_mrow );
 
-			  if ( l_operand_nodes == 1 ) {
-			    if ( LeftGroupHasSamePrec(MML_rover,curr_prec,l_space_nodes) )
-			      TNODE* tmp  =  ElevateLeftOperand( NULL,MML_rover,l_space_nodes );
-			  }
+        if ( l_operand_nodes == 1 ) {
+          if ( LeftGroupHasSamePrec(MML_rover,curr_prec,l_space_nodes) )
+            TNODE* tmp  =  ElevateLeftOperand( NULL,MML_rover,l_space_nodes );
+        }
 
-			  if ( new_mrow ) {
-			    MML_rover =  new_mrow;
+        if ( new_mrow ) {
+          MML_rover =  new_mrow;
                 SetDetailsForBoundPostfix( new_mrow,curr_prec );
-			  } else
-			    TCI_ASSERT(0);
+        } else
+          TCI_ASSERT(0);
 
-			} else if ( MML_rover->prev ) {
-			  TCI_ASSERT(0);
+      } else if ( MML_rover->prev ) {
+        TCI_ASSERT(0);
       }
 
-		  } else {
-		    TCI_ASSERT(0);
+      } else {
+        TCI_ASSERT(0);
       }
 
-		}     // if ( precedence == curr_prec )
+    }     // if ( precedence == curr_prec )
 
-	  }   // if ( MML_rover->details )
+    }   // if ( MML_rover->details )
 
-	  MML_rover =  MML_rover->next;
+    MML_rover =  MML_rover->next;
 
-	}         // loop thru MML node list
+  }         // loop thru MML node list
 
     curr_prec--;
-  }		// loop down thru operator precedence levels
+  }   // loop down thru operator precedence levels
 
 
   return rv;
@@ -6017,7 +6015,7 @@ TNODE* LaTeX2MMLTree::BindByOpPrecedence( TNODE* MML_list,
 
 void LaTeX2MMLTree::InsertAF( TNODE* func_node,TCI_BOOL arg_is_delimited ) {
 
-  TNODE* af_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );	// <mo>
+  TNODE* af_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );  // <mo>
 
   U8 entity[32];
   entity[0] =  0;
@@ -6073,7 +6071,7 @@ void LaTeX2MMLTree::InsertApplyFunction( TNODE* MML_list ) {
   TCI_BOOL do_second_pass  =  FALSE;
 
   TNODE* mml_rover  =  MML_list;
-  while ( mml_rover ) {	// loop thru level one contents nodes
+  while ( mml_rover ) { // loop thru level one contents nodes
     TCI_BOOL do_insert  =  FALSE;
     TCI_BOOL is_delimited =  FALSE;
     if ( MMLNodeIsFunction(mml_rover) ) {
@@ -6082,113 +6080,113 @@ void LaTeX2MMLTree::InsertApplyFunction( TNODE* MML_list ) {
       if ( FunctionHasArg(mml_rover,n_space_nodes,n_arg_nodes,is_delimited) ) {
         do_insert =  TRUE;
 
-	      if ( n_space_nodes+n_arg_nodes > 1 ) {
+        if ( n_space_nodes+n_arg_nodes > 1 ) {
             // Multiple nodes in the arg, as in "sin 2x"
-	          // Here we complete bindings within the arg.
-		      TNODE* tail =  mml_rover;
-		      U16 tally =  0;
-	        while ( tally < n_space_nodes+n_arg_nodes ) {
-		        tail  =  tail->next;
-		        tally++;
-		      }
-		      TNODE* right_anchor =  tail->next;
-		      tail->next  =  NULL;
+            // Here we complete bindings within the arg.
+          TNODE* tail =  mml_rover;
+          U16 tally =  0;
+          while ( tally < n_space_nodes+n_arg_nodes ) {
+            tail  =  tail->next;
+            tally++;
+          }
+          TNODE* right_anchor =  tail->next;
+          tail->next  =  NULL;
           TNODE* arg_nodes  =  mml_rover->next;
           mml_rover->next =  NULL;
           TNODE* new_arg  =  FinishMMLBindings( arg_nodes );
           SetDetailNum( new_arg,DETAILS_is_func_arg,1 );
-		      mml_rover->next =  new_arg;
-		      new_arg->prev   =  mml_rover;
-		      if ( right_anchor ) {
-		        TNODE* new_arg_tail =  new_arg;
-	          while ( new_arg_tail->next )
-		          new_arg_tail  =  new_arg_tail->next;
-		        new_arg_tail->next  =  right_anchor;
-		        right_anchor->prev  =  new_arg_tail;
-		      }
-	      }
-	    }
-	  } else if ( MMLNodeIsOperator(mml_rover) ) {
+          mml_rover->next =  new_arg;
+          new_arg->prev   =  mml_rover;
+          if ( right_anchor ) {
+            TNODE* new_arg_tail =  new_arg;
+            while ( new_arg_tail->next )
+              new_arg_tail  =  new_arg_tail->next;
+            new_arg_tail->next  =  right_anchor;
+            right_anchor->prev  =  new_arg_tail;
+          }
+        }
+      }
+    } else if ( MMLNodeIsOperator(mml_rover) ) {
 
-	  } else {		// possible implicit function, f,g,...
-	  U16 args_on_right =  0;
-	  if ( mml_rover->next )
-	     if ( mml_rover->next->details )
-	       if ( mml_rover->next->details->delimited_group != UNDEFINED_DETAIL ) {
-	         args_on_right =  IsGroupAFuncArg( mml_rover->next );
+    } else {    // possible implicit function, f,g,...
+    U16 args_on_right =  0;
+    if ( mml_rover->next )
+       if ( mml_rover->next->details )
+         if ( mml_rover->next->details->delimited_group != UNDEFINED_DETAIL ) {
+           args_on_right =  IsGroupAFuncArg( mml_rover->next );
            is_delimited  =  TRUE;
          }
          if ( args_on_right ) {
            if ( IsFuncDerivative(mml_rover) ) {
-		         do_insert =  TRUE;
-	         } else {
-             U8 identifier_nom[80];	// We record name of each possible
-	           identifier_nom[0] =  0;   //  implicit function, f, myfunc,...
-	           TCI_BOOL in_funcs_list  =  FALSE;
+             do_insert =  TRUE;
+           } else {
+             U8 identifier_nom[80]; // We record name of each possible
+             identifier_nom[0] =  0;   //  implicit function, f, myfunc,...
+             TCI_BOOL in_funcs_list  =  FALSE;
              if ( MMLNodeCouldBeFunction(mml_rover,identifier_nom,80) ) {
-	             if ( IdentifierInList(funcs_list,identifier_nom) )
-		             in_funcs_list =  TRUE;
+               if ( IdentifierInList(funcs_list,identifier_nom) )
+                 in_funcs_list =  TRUE;
 
-	             if  ( args_on_right==2 )
-		              do_insert =  TRUE;
-	             else if ( args_on_right==1 ) {
-	               if ( in_funcs_list )
-		               do_insert =  TRUE;
-			           else {
-			             U16 nom_ln  =  strlen( (char*)identifier_nom );
-			             if ( nom_ln > 9 ) {
+               if  ( args_on_right==2 )
+                  do_insert =  TRUE;
+               else if ( args_on_right==1 ) {
+                 if ( in_funcs_list )
+                   do_insert =  TRUE;
+                 else {
+                   U16 nom_ln  =  strlen( (char*)identifier_nom );
+                   if ( nom_ln > 9 ) {
                       char* ptr =  (char*)identifier_nom + nom_ln - 9;
                       if  ( !strcmp(ptr,"^&minus;1") ) {
-		                     do_insert =  TRUE;
+                         do_insert =  TRUE;
                       } else {
-			                   if ( identifier_nom[nom_ln-3] == '^' )
-			                     if ( identifier_nom[nom_ln-2] == '-' )
-			                       if ( identifier_nom[nom_ln-1] == '1' )
-		                           do_insert =  TRUE;
+                         if ( identifier_nom[nom_ln-3] == '^' )
+                           if ( identifier_nom[nom_ln-2] == '-' )
+                             if ( identifier_nom[nom_ln-1] == '1' )
+                               do_insert =  TRUE;
                       }
-			             }
-			           }
-		           }
+                   }
+                 }
+               }
                if ( do_insert && !in_funcs_list ) {
                  funcs_list  =  AddIdentifier( funcs_list, identifier_nom );
-		             do_second_pass  =  TRUE;
-	             }
-		         }	// if ( MMLNodeCouldBeFunction(...) )
-		     }
-  	  }
-    }	// clause for implicit functions
+                 do_second_pass  =  TRUE;
+               }
+             }  // if ( MMLNodeCouldBeFunction(...) )
+         }
+      }
+    } // clause for implicit functions
 
     if ( do_insert ) {
-	    InsertAF( mml_rover,is_delimited );
-	    mml_rover =  mml_rover->next;	// <mo>ApplyF..
-	  }
+      InsertAF( mml_rover,is_delimited );
+      mml_rover =  mml_rover->next; // <mo>ApplyF..
+    }
 
     mml_rover =  mml_rover->next;
   }   // loop thru level one nodes - pass one
 
   if ( do_second_pass ) {
     TNODE* mml_rover  =  MML_list;
-    while ( mml_rover ) {	// loop thru level one contents nodes
-	    U16 args_on_right =  0;
+    while ( mml_rover ) { // loop thru level one contents nodes
+      U16 args_on_right =  0;
       TCI_BOOL is_delimited =  FALSE;
-	    if ( mml_rover->next )
-	      if ( mml_rover->next->details )
-	        if ( mml_rover->next->details->delimited_group != UNDEFINED_DETAIL ) {
-	          args_on_right =  IsGroupAFuncArg( mml_rover->next );
+      if ( mml_rover->next )
+        if ( mml_rover->next->details )
+          if ( mml_rover->next->details->delimited_group != UNDEFINED_DETAIL ) {
+            args_on_right =  IsGroupAFuncArg( mml_rover->next );
             is_delimited  =  TRUE;
           }
-	    if ( args_on_right ) {
-	      U8 identifier_nom[80];
+      if ( args_on_right ) {
+        U8 identifier_nom[80];
         if ( MMLNodeCouldBeFunction(mml_rover,identifier_nom,80) ) {
-	        TCI_BOOL in_funcs_list  =  FALSE;
-	        if ( IdentifierInList(funcs_list,identifier_nom) )
-	          in_funcs_list =  TRUE;
-	        if ( args_on_right==1 && in_funcs_list ) {
-	          InsertAF( mml_rover,is_delimited );
-	          mml_rover =  mml_rover->next;	// <mo>ApplyF..
-	        }
-	      }
-	    }		// if ( args_on_right )
+          TCI_BOOL in_funcs_list  =  FALSE;
+          if ( IdentifierInList(funcs_list,identifier_nom) )
+            in_funcs_list =  TRUE;
+          if ( args_on_right==1 && in_funcs_list ) {
+            InsertAF( mml_rover,is_delimited );
+            mml_rover =  mml_rover->next; // <mo>ApplyF..
+          }
+        }
+      }   // if ( args_on_right )
       mml_rover =  mml_rover->next;
     }   // loop thru level one nodes
   }   // second pass
@@ -6206,7 +6204,7 @@ void LaTeX2MMLTree::InsertInvisibleTimes( TNODE* MML_list ) {
   TNODE* mml_rover  =  MML_list;
   while ( mml_rover ) {
 
-	TCI_BOOL is_capitol_letter;
+  TCI_BOOL is_capitol_letter;
     if ( IsMMLNumber(mml_rover) || IsMMLFactor(mml_rover,TRUE,is_capitol_letter) ) {
       mml_rover =  mml_rover->next;
 
@@ -6214,11 +6212,11 @@ void LaTeX2MMLTree::InsertInvisibleTimes( TNODE* MML_list ) {
       while ( mml_rover ) {
         U8* op_nom  =  NULL;
         U8* op_uni  =  NULL;
-	    U16 op_precedence  =  0;
-        if        ( IsQualifier(mml_rover) ) {	// x{x!=0}
+      U16 op_precedence  =  0;
+        if        ( IsQualifier(mml_rover) ) {  // x{x!=0}
           op_nom  =  (U8*)entity_ic;
           op_uni  =  (U8*)entity_ic_unicode;
-	      op_precedence  =  2;
+        op_precedence  =  2;
         } else if ( IsMMLFactor(mml_rover,TRUE,is_capitol_letter) ) {
 
           TCI_BOOL do_it  =  TRUE;
@@ -6229,109 +6227,109 @@ void LaTeX2MMLTree::InsertInvisibleTimes( TNODE* MML_list ) {
           if ( do_it ) {
             op_nom  =  (U8*)entity_it;
             op_uni  =  (U8*)entity_it_unicode;
-	        op_precedence  =  39;
+          op_precedence  =  39;
           }
 
-        } else if ( IsVector(mml_rover) ) {	// 2(x,y,z)
+        } else if ( IsVector(mml_rover) ) { // 2(x,y,z)
           op_nom  =  (U8*)entity_it;
           op_uni  =  (U8*)entity_it_unicode;
-	      op_precedence  =  39;
+        op_precedence  =  39;
         } else if ( IsMMLNumber(mml_rover) ) {
-	      if ( mml_rover->prev
-	      &&   mml_rover->prev->details
-	      &&   mml_rover->prev->details->delimited_group != UNDEFINED_DETAIL ) {
+        if ( mml_rover->prev
+        &&   mml_rover->prev->details
+        &&   mml_rover->prev->details->delimited_group != UNDEFINED_DETAIL ) {
             op_nom  =  (U8*)entity_it;
             op_uni  =  (U8*)entity_it_unicode;
-	        op_precedence  =  39;
-	      } else if ( mml_rover->prev
-		  &&   IsMsup(mml_rover->prev) ) {
+          op_precedence  =  39;
+        } else if ( mml_rover->prev
+      &&   IsMsup(mml_rover->prev) ) {
             op_nom  =  (U8*)entity_it;
             op_uni  =  (U8*)entity_it_unicode;
-	        op_precedence  =  39;
-		  } else {
+          op_precedence  =  39;
+      } else {
 
 // This is tough call, "n5", "T12345"
 // The number may be a factor, or it may qualify a variable as a subscript would.
 
             op_nom  =  (U8*)entity_it;
             op_uni  =  (U8*)entity_it_unicode;
-	        op_precedence  =  39;
-		    //TCI_ASSERT(0);
-		  }
+          op_precedence  =  39;
+        //TCI_ASSERT(0);
+      }
         } else if ( mml_rover->details
-		&&          mml_rover->details->space_width != UNDEFINED_DETAIL ) {
-		  I16 width_from_details  =  mml_rover->details->space_width;
+    &&          mml_rover->details->space_width != UNDEFINED_DETAIL ) {
+      I16 width_from_details  =  mml_rover->details->space_width;
           if ( -3 <= width_from_details && width_from_details <= 6  )
-	        op_precedence  =  39;
+          op_precedence  =  39;
         // we don't insert an operator - just advance in inner loop
-		}
+    }
 
         if ( IsDegreeMinSec(mml_rover) ) {
           op_nom  =  (U8*)NULL;
           op_precedence =  0;
         }
 
-		if ( op_nom ) {		// insert op node
-          TNODE* mo_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );	// <mo>
+    if ( op_nom ) {   // insert op node
+          TNODE* mo_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );  // <mo>
           SetChData( mo_node,op_nom,op_uni );
           SetDetailNum( mo_node,DETAILS_form,COPF_INFIX );
           SetDetailNum( mo_node,DETAILS_precedence,op_precedence );
-		  TNODE* mml_prev =  mml_rover->prev;
-		  mo_node->prev   =  mml_prev;
-		  mml_prev->next  =  mo_node;
-		  mo_node->next   =  mml_rover;
-		  mml_rover->prev =  mo_node;
-		}
+      TNODE* mml_prev =  mml_rover->prev;
+      mo_node->prev   =  mml_prev;
+      mml_prev->next  =  mo_node;
+      mo_node->next   =  mml_rover;
+      mml_rover->prev =  mo_node;
+    }
 
-	    if ( op_precedence == 39 ) {    // Advance in inner loop
+      if ( op_precedence == 39 ) {    // Advance in inner loop
           last_was_cap =  is_capitol_letter;
           mml_rover =  mml_rover->next;
-        } else				// exit inner loop thru factors in 1 term
-		  break;	
-	  }
-	}		// if ( IsNumber || IsFactor )
+        } else        // exit inner loop thru factors in 1 term
+      break;  
+    }
+  }   // if ( IsNumber || IsFactor )
 
   // Advance along list - outer loop
 
     if ( mml_rover )
       mml_rover =  mml_rover->next;
-  }			// while ( mml_rover )
+  }     // while ( mml_rover )
 
 }
 
 
 
 TNODE* LaTeX2MMLTree::TranslateTeXDollarMath( TNODE* tex_dollar_node,
-     							  		            TNODE** out_of_flow_list ) {
+                                    TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
 
   if ( tex_dollar_node && tex_dollar_node->parts ) {
 
     TNODE* tex_cont =  tex_dollar_node->parts->contents;
-	  if ( tex_cont ) {
-	    if ( BucketContainsMath(tex_cont) ) {
+    if ( tex_cont ) {
+      if ( BucketContainsMath(tex_cont) ) {
         TCI_BOOL do_bindings  =  TRUE;
         U16 tex_nodes_done,error_code;
         mml_rv  =  TranslateMathList( tex_cont,do_bindings,
-					    NULL,tex_nodes_done,error_code,out_of_flow_list );
-	    } else {
+              NULL,tex_nodes_done,error_code,out_of_flow_list );
+      } else {
         U16 ilk   =  1010;
         U8* ztext =  NULL;
         U32 off1  =  0;
         U32 off2  =  0;
         RecordAnomaly( ilk,ztext,off1,off2 );
-		    return mml_rv;
+        return mml_rv;
       }
-	}
+  }
 /*
-	if ( !mml_rv ) {
+  if ( !mml_rv ) {
 // This fudge was added to stop WebEq from crashing.
 //  It can't handle an empty <mrow>, or an <mrow>
 //  with only whitespace in it.
       mml_rv  =  MakeTNode( 0L,0L,0L,(U8*)zmtext );
       SetChData( mml_rv,(U8*)"???",NULL );
-	}
+  }
 */
 
   } else
@@ -6347,10 +6345,10 @@ TCI_BOOL LaTeX2MMLTree::MMLNodeIsFunction( TNODE* mml_node ) {
   TCI_BOOL rv =  FALSE;
   if ( mml_node->details
   &&   mml_node->details->function_status != UNDEFINED_DETAIL ) {
-	  U16 func_stat =  mml_node->details->function_status;
-	  if ( func_stat ) {
-	    rv    =  ( func_stat <= 5 ) ? TRUE : FALSE;
-	  }
+    U16 func_stat =  mml_node->details->function_status;
+    if ( func_stat ) {
+      rv    =  ( func_stat <= 5 ) ? TRUE : FALSE;
+    }
   }
   return rv;
 }
@@ -6359,14 +6357,14 @@ TCI_BOOL LaTeX2MMLTree::MMLNodeIsFunction( TNODE* mml_node ) {
 // f(x), sin 2x, g(f(x)), etc.
 
 TCI_BOOL LaTeX2MMLTree::FunctionHasArg( TNODE* mml_func_node,
-      									U16& n_space_nodes,
-										U16& n_arg_nodes,
-										TCI_BOOL& is_delimited ) {
+                        U16& n_space_nodes,
+                    U16& n_arg_nodes,
+                    TCI_BOOL& is_delimited ) {
 
   TCI_BOOL rv   =  FALSE;
 
   n_space_nodes =  0;
-  n_arg_nodes   =  1;	// assumed, set if otherwise
+  n_arg_nodes   =  1; // assumed, set if otherwise
   is_delimited  =  FALSE;
 
   TNODE* arg    =  mml_func_node->next;
@@ -6385,42 +6383,42 @@ TCI_BOOL LaTeX2MMLTree::FunctionHasArg( TNODE* mml_func_node,
         arg =  arg->next;
         go_on =  TRUE;
       }
-	}
+  }
   }
 
   if ( arg ) {
 // We have a candidate argument
 
 // Delimited argument(s)
-	if ( arg->details
-	&&   arg->details->delimited_group != UNDEFINED_DETAIL ) {
+  if ( arg->details
+  &&   arg->details->delimited_group != UNDEFINED_DETAIL ) {
       GROUP_INFO gi;
       GetGroupInfo( arg,gi );
       if ( MMLDelimitersMatch(gi) ) {
         is_delimited  =  TRUE;
-	    rv  =  TRUE;
+      rv  =  TRUE;
       }
       if ( do_trig_args && FuncTakesTrigArgs(mml_func_node) ) {
         TCI_BOOL is_cap_letter;
         TNODE* mml_rover  =  arg->next;
         while ( mml_rover ) {
           if ( IsMMLFactor(mml_rover,FALSE,is_cap_letter) ) {
-			TCI_BOOL keep_going =  TRUE;
-	        if ( mml_rover->details
-	        &&   mml_rover->details->function_status != UNDEFINED_DETAIL ) {
-			  keep_going =  FALSE;
-			}
-			if ( keep_going ) {
+      TCI_BOOL keep_going =  TRUE;
+          if ( mml_rover->details
+          &&   mml_rover->details->function_status != UNDEFINED_DETAIL ) {
+        keep_going =  FALSE;
+      }
+      if ( keep_going ) {
               n_arg_nodes++;
               mml_rover =  mml_rover->next;
-			} else
-			  break;
-		  } else
-			break;
-		}
-	  }
+      } else
+        break;
+      } else
+      break;
+    }
+    }
 
-	} else {
+  } else {
 // Un-delimited argument
 
       if ( do_trig_args && FuncTakesTrigArgs(mml_func_node) ) {
@@ -6429,22 +6427,22 @@ TCI_BOOL LaTeX2MMLTree::FunctionHasArg( TNODE* mml_func_node,
         if ( IsMMLNumber(arg) || IsMMLFactor(arg,FALSE,is_cap_letter) ) {
           TCI_BOOL after_factor =  TRUE;
 
-	      rv  =  TRUE;
+        rv  =  TRUE;
           TNODE* mml_rover  =  arg->next;
           while ( mml_rover ) {
 
             if ( IsMMLFactor(mml_rover,FALSE,is_cap_letter) ) {
-			  TCI_BOOL keep_going =  TRUE;
-	          if ( mml_rover->details
-	          &&   mml_rover->details->function_status !=UNDEFINED_DETAIL ) {
-			    keep_going =  FALSE;
-			  }
-			  if ( keep_going ) {
+        TCI_BOOL keep_going =  TRUE;
+            if ( mml_rover->details
+            &&   mml_rover->details->function_status !=UNDEFINED_DETAIL ) {
+          keep_going =  FALSE;
+        }
+        if ( keep_going ) {
                 after_factor =  TRUE;
                 n_arg_nodes++;
                 mml_rover =  mml_rover->next;
-			  } else
-			    break;
+        } else
+          break;
 
             } else if ( after_factor && IsMMLMultOp(mml_rover) ) {
               after_factor =  FALSE;
@@ -6456,20 +6454,20 @@ TCI_BOOL LaTeX2MMLTree::FunctionHasArg( TNODE* mml_func_node,
               n_arg_nodes++;
               mml_rover =  mml_rover->next;
 
-			} else
-			  break;
-		  }
+      } else
+        break;
+      }
 
 
-	    } else if ( arg->details
-	    &&          arg->details->function_status != UNDEFINED_DETAIL ) {
+      } else if ( arg->details
+      &&          arg->details->function_status != UNDEFINED_DETAIL ) {
           rv  =  TRUE;
-		} else
-		  TCI_ASSERT(0);
+    } else
+      TCI_ASSERT(0);
 
-	  } else {
+    } else {
 // argument is single, un-delimited
-	    if ( arg->details ) {
+      if ( arg->details ) {
           if      ( arg->details->function_status != UNDEFINED_DETAIL )
             rv  =  TRUE;
           else if ( arg->details->unit_state != UNDEFINED_DETAIL )
@@ -6492,14 +6490,14 @@ TCI_BOOL LaTeX2MMLTree::FunctionHasArg( TNODE* mml_func_node,
             TCI_ASSERT(0);
           }
 
-	    } else {	// no details
+      } else {  // no details
           TCI_BOOL is_cap_letter;
           if ( IsMMLNumber(arg) || IsMMLFactor(arg,FALSE,is_cap_letter) )
-		    rv  =  TRUE;
-		}
-	  }			// argument is single, un-delimited
-	}		// Un-delimited arg clause
-  }		// if ( arg )
+        rv  =  TRUE;
+    }
+    }     // argument is single, un-delimited
+  }   // Un-delimited arg clause
+  }   // if ( arg )
 
   return rv;
 }
@@ -6516,11 +6514,11 @@ TCI_BOOL LaTeX2MMLTree::FuncTakesTrigArgs( TNODE* mml_func_node ) {
   U16 uobj,usub,id;
   GetUids( mml_func_node->zuID,uobj,usub,id );
 
-  if        ( uobj == 3 && usub == 201 && id == 1 ) {	// mi<uID3.201.1>
+  if        ( uobj == 3 && usub == 201 && id == 1 ) { // mi<uID3.201.1>
     f_nom =  (char*)mml_func_node->var_value;
     zln   =  mml_func_node->v_len;
 
-  } else if ( uobj == 5 && id == 2 ) {	// mi<uID3.201.1>
+  } else if ( uobj == 5 && id == 2 ) {  // mi<uID3.201.1>
 /*
 msub<uID5.50.2>!msub!reqELEMENT(5.50.3)
 msup<uID5.51.2>!msup!reqELEMENT(5.51.3)
@@ -6533,20 +6531,20 @@ munderover<uID5.55.2>!munderover!reqELEMENT(5.55.3)
       U8 zuID[16];
       UidsTozuID( 5,usub,3,zuID );
       TNODE* base_bucket  =  FindObject( mml_func_node->parts,
-	  							(U8*)zuID,INVALID_LIST_POS );
+                  (U8*)zuID,INVALID_LIST_POS );
       if ( base_bucket && base_bucket->contents ) {
         TNODE* f_node =  base_bucket->contents;
         U16 uobj,usub,id;
         GetUids( f_node->zuID,uobj,usub,id );
-        if ( uobj == 3 && usub == 201 && id == 1 ) {	// mi<uID3.201.1>
+        if ( uobj == 3 && usub == 201 && id == 1 ) {  // mi<uID3.201.1>
           f_nom =  (char*)f_node->var_value;
           zln   =  f_node->v_len;
-		} else
-		  TCI_ASSERT(0);
-	  } else
-	    TCI_ASSERT(0);
-	} else
-	  TCI_ASSERT(0);
+    } else
+      TCI_ASSERT(0);
+    } else
+      TCI_ASSERT(0);
+  } else
+    TCI_ASSERT(0);
   } else
     TCI_ASSERT(0);
 
@@ -6554,73 +6552,73 @@ munderover<uID5.55.2>!munderover!reqELEMENT(5.55.3)
   if ( f_nom ) {
     switch ( zln ) {
       case 2  :
-        if      ( !strcmp(f_nom,"lg") )	    // \lg<uID8.2.15>
+        if      ( !strcmp(f_nom,"lg") )     // \lg<uID8.2.15>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"ln") )	    // \ln<uID8.2.16>
+        else if ( !strcmp(f_nom,"ln") )     // \ln<uID8.2.16>
           rv =  TRUE;
-	    break;
+      break;
       case 3  :
-        if      ( !strcmp(f_nom,"cos") )	// \cos<uID8.2.5>
+        if      ( !strcmp(f_nom,"cos") )  // \cos<uID8.2.5>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"cot") )	// \cot<uID8.2.7>
+        else if ( !strcmp(f_nom,"cot") )  // \cot<uID8.2.7>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"csc") )	// \csc<uID8.2.9>
+        else if ( !strcmp(f_nom,"csc") )  // \csc<uID8.2.9>
           rv =  TRUE;
-//      else if ( !strcmp(f_nom,"lim") )	// \lim<uID8.4.5>
+//      else if ( !strcmp(f_nom,"lim") )  // \lim<uID8.4.5>
 //        rv =  TRUE;
-        else if ( !strcmp(f_nom,"log") )	// \log<uID8.2.17>
+        else if ( !strcmp(f_nom,"log") )  // \log<uID8.2.17>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"sec") )	// \sec<uID8.2.18>
+        else if ( !strcmp(f_nom,"sec") )  // \sec<uID8.2.18>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"sin") )	// \sin<uID8.2.19>
+        else if ( !strcmp(f_nom,"sin") )  // \sin<uID8.2.19>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"tan") )	// \tan<uID8.2.21>
+        else if ( !strcmp(f_nom,"tan") )  // \tan<uID8.2.21>
           rv =  TRUE;
-	    break;
+      break;
       case 4  :
-        if      ( !strcmp(f_nom,"cosh") )	// \cosh<uID8.2.6>
+        if      ( !strcmp(f_nom,"cosh") ) // \cosh<uID8.2.6>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"coth") )	// \coth<uID8.2.8>
+        else if ( !strcmp(f_nom,"coth") ) // \coth<uID8.2.8>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"sinh") )	// \sinh<uID8.2.20>
+        else if ( !strcmp(f_nom,"sinh") ) // \sinh<uID8.2.20>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"tanh") )	// \tanh<uID8.2.22>
+        else if ( !strcmp(f_nom,"tanh") ) // \tanh<uID8.2.22>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"sech") )	//
+        else if ( !strcmp(f_nom,"sech") ) //
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"csch") )	//
+        else if ( !strcmp(f_nom,"csch") ) //
           rv =  TRUE;
-	    break;
+      break;
       case 6  :
-        if      ( !strcmp(f_nom,"arccos") )	// \arccos<uID8.2.1>
+        if      ( !strcmp(f_nom,"arccos") ) // \arccos<uID8.2.1>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"arcsin") )	// \arcsin<uID8.2.2>
+        else if ( !strcmp(f_nom,"arcsin") ) // \arcsin<uID8.2.2>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"arctan") )	// \arctan<uID8.2.3>
+        else if ( !strcmp(f_nom,"arctan") ) // \arctan<uID8.2.3>
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"arcsec") )	//
+        else if ( !strcmp(f_nom,"arcsec") ) //
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"arccsc") )	//
+        else if ( !strcmp(f_nom,"arccsc") ) //
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"arccot") )	//
+        else if ( !strcmp(f_nom,"arccot") ) //
           rv =  TRUE;
-	    break;
+      break;
       case 7  :
-        if      ( !strcmp(f_nom,"arccosh") )	//
+        if      ( !strcmp(f_nom,"arccosh") )  //
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"arcsinh") )	//
+        else if ( !strcmp(f_nom,"arcsinh") )  //
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"arctanh") )	//
+        else if ( !strcmp(f_nom,"arctanh") )  //
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"arcsech") )	//
+        else if ( !strcmp(f_nom,"arcsech") )  //
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"arccsch") )	//
+        else if ( !strcmp(f_nom,"arccsch") )  //
           rv =  TRUE;
-        else if ( !strcmp(f_nom,"arccoth") )	//
+        else if ( !strcmp(f_nom,"arccoth") )  //
           rv =  TRUE;
-	    break;
-	    default :
-	    break;
+      break;
+      default :
+      break;
     }
   }
 
@@ -6653,14 +6651,14 @@ casesleft<uID10.9.1> form="prefix"  fence="true" stretchy="true" lspace="0em" rs
 
   U16 id  =  is_left ? 1 : 2;
 
-	U8 zuID[32];
+  U8 zuID[32];
   UidsTozuID( 10,subtype,id,(U8*)zuID );
 
   U8* dest_zname;
   U8* d_template;
   if ( d_mml_grammar->GetGrammarDataFromUID(
-					                      zuID,(U8*)"FENCE",
-   							                &dest_zname,&d_template) ) {
+                                zuID,(U8*)"FENCE",
+                                &dest_zname,&d_template) ) {
     if ( d_template && *d_template ) {
       ATTRIB_REC* ar  =  ExtractAttrs( (char*)d_template );
       if ( ar ) {
@@ -6681,11 +6679,11 @@ casesleft<uID10.9.1> form="prefix"  fence="true" stretchy="true" lspace="0em" rs
 //   Callers must handle these objects.
 
 TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
-										TNODE** out_of_flow_list,
-										TCI_BOOL no_line_breaks,
-										TCI_BOOL is_unit ) {
+                    TNODE** out_of_flow_list,
+                    TCI_BOOL no_line_breaks,
+                    TCI_BOOL is_unit ) {
 
-  TNODE* mml_head =  NULL;	    // head of returned list
+  TNODE* mml_head =  NULL;      // head of returned list
   TNODE* mml_tail;
 
   if ( text_contents ) {
@@ -6694,29 +6692,29 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
 
     char* zcolor  =  is_unit ? zMMLUnitAttrs : zMMLTextAttrs;
 
-	U8 ztext[512];  // buffer to accumulate contents of <mtext>
-	U16 tln =  0;
+  U8 ztext[512];  // buffer to accumulate contents of <mtext>
+  U16 tln =  0;
 
-	U8 utext[512];  // buffer to accumulate unicode contents of <mtext>
-	U16 uln =  0;
+  U8 utext[512];  // buffer to accumulate unicode contents of <mtext>
+  U16 uln =  0;
 
     U16 text_count  =  0;
     U16 space_count =  0;
     I16 space_width =  0;
 
     TNODE* rover  =  text_contents;
-	while ( rover ) {		        // loop thru TEXT nodes
-	  TNODE* node_to_insert =  NULL;
+  while ( rover ) {           // loop thru TEXT nodes
+    TNODE* node_to_insert =  NULL;
 
       TNODE* save_next  =  NULL;
-	  TCI_BOOL use_save_next  =  FALSE;
+    TCI_BOOL use_save_next  =  FALSE;
 
       U16 uobjtype,stype,uID;
       GetUids( rover->zuID,uobjtype,stype,uID );
 
-	  switch ( uobjtype ) {
+    switch ( uobjtype ) {
 
-        case 3 : {			// a non-ascii symbol in TEXT
+        case 3 : {      // a non-ascii symbol in TEXT
           ztext[tln] =  0;
           utext[uln] =  0;
           AppendEntityToBuffer( rover->zuID,ztext,utext );
@@ -6724,20 +6722,20 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
           uln =  strlen( (char*)utext );
 
           text_count++;
-		}
-		break;
+    }
+    break;
 
-        case 4 : {			// \accent{}... in TEXT
+        case 4 : {      // \accent{}... in TEXT
 
-		  if ( stype == 2 ) {
+      if ( stype == 2 ) {
             TNODE* t_bucket =  FindObject( rover->parts,
-  		  			                (U8*)"4.2.50",INVALID_LIST_POS );
+                              (U8*)"4.2.50",INVALID_LIST_POS );
             if ( t_bucket ) {
 
               char ch =  1;     // invalid value
 
               if ( t_bucket->contents ) {
-	            TNODE* TeX_cont =  t_bucket->contents;
+              TNODE* TeX_cont =  t_bucket->contents;
                 U16 uobj,usub,id;
                 GetUids( TeX_cont->zuID,uobj,usub,id );
 
@@ -6769,14 +6767,14 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
                 if ( !unicode )
                   unicode =  ch;
                 U8 buffer[32];
-				CreateUnicodeEntity( buffer,0,unicode );
+        CreateUnicodeEntity( buffer,0,unicode );
 
                 U16 zln =  strlen( (char*)buffer );
-		        strcpy( (char*)ztext+tln,(char*)buffer );
-		        tln +=  zln;
+            strcpy( (char*)ztext+tln,(char*)buffer );
+            tln +=  zln;
 
-		        strcpy( (char*)utext+uln,(char*)buffer );
-		        uln +=  zln;
+            strcpy( (char*)utext+uln,(char*)buffer );
+            uln +=  zln;
 
                 text_count++;
               }
@@ -6784,48 +6782,48 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
             } else          // accent has no bucket
               TCI_ASSERT(0);
 
-		  } else        // Accent in TEXT is not a known TEXT accent
+      } else        // Accent in TEXT is not a known TEXT accent
             TCI_ASSERT(0);
 
-		}
-		break;
+    }
+    break;
 
-        case 5 : {			// \cmd{}{}... in TEXT
+        case 5 : {      // \cmd{}{}... in TEXT
 // \QTR{}{}
-		  if ( stype == 400 ) {
+      if ( stype == 400 ) {
             TNODE* ilk  =  FindObject( rover->parts,
-  		  			                (U8*)"5.400.1",INVALID_LIST_POS );
+                              (U8*)"5.400.1",INVALID_LIST_POS );
             U8* run_name  =  ilk->contents->var_value;
             U16 usub_ID   =  GetQTRuSubID( run_name,FALSE );
             TNODE* bucket =  FindObject( rover->parts,
-  		  				            (U8*)"5.400.2",INVALID_LIST_POS );
+                            (U8*)"5.400.2",INVALID_LIST_POS );
             if ( bucket && bucket->contents ) {
-	          TNODE* TeX_cont =  bucket->contents;
+            TNODE* TeX_cont =  bucket->contents;
               node_to_insert  =  TaggedText2MML( TeX_cont,
-   									out_of_flow_list,run_name,usub_ID );
-		    } else
-		      TCI_ASSERT(0);
+                    out_of_flow_list,run_name,usub_ID );
+        } else
+          TCI_ASSERT(0);
 
 // text $x$ more text
-	      } else if ( stype == TCMD_DollarMath && uID == 0 ) {
+        } else if ( stype == TCMD_DollarMath && uID == 0 ) {
             TNODE* local_oof_list =  NULL;
             TNODE* mml_cont  =  TranslateTeXDollarMath( rover,
                                                 &local_oof_list );
 
             U16 vspace_context  =  2;   // script mpadded
             mml_cont  =  HandleOutOfFlowObjects( mml_cont,
-    						&local_oof_list,out_of_flow_list,vspace_context );
+                &local_oof_list,out_of_flow_list,vspace_context );
 
             node_to_insert =  MMLlistToMRow( mml_cont );
-	        node_to_insert->src_linenum =  rover->src_linenum;
+          node_to_insert->src_linenum =  rover->src_linenum;
 
-	      } else if ( stype == 409 && uID == 0 ) {	// \FRAME<uID5.409.0>!
+        } else if ( stype == 409 && uID == 0 ) {  // \FRAME<uID5.409.0>!
             RecordAnomaly( 1002,NULL,rover->src_offset1,
-          					          rover->src_offset2 );
+                              rover->src_offset2 );
 
-          } else if ( stype >= 420 && stype <= 426 ) {	// notes
+          } else if ( stype >= 420 && stype <= 426 ) {  // notes
             RecordAnomaly( 1001,NULL,rover->src_offset1,
-        							rover->src_offset2 );
+                      rover->src_offset2 );
 
 // text \textit{italics} more text
           } else if (  (stype >= 450 && stype <= 460)
@@ -6834,13 +6832,13 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
             U8 zuID[16];
             UidsTozuID( 5,stype,bucketID,zuID );
             TNODE* bucket =  FindObject( rover->parts,
-  							(U8*)zuID,INVALID_LIST_POS );
-	        if ( bucket && bucket->contents )
+                (U8*)zuID,INVALID_LIST_POS );
+          if ( bucket && bucket->contents )
               node_to_insert  =  TaggedText2MML( bucket->contents,
-           										    out_of_flow_list,
-              										NULL,stype );
-	        else
-	          TCI_ASSERT(0);
+                                  out_of_flow_list,
+                                  NULL,stype );
+          else
+            TCI_ASSERT(0);
 
 // text \begin{tabular}...\end{tabular} more text
           } else if ( ( stype == 490 || stype == 491 ) && uID == 0 ) {
@@ -6855,12 +6853,12 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
 // text \underline{...} more text
 // I'm handling contents and dropping the underlining for now.
               TNODE* bucket =  FindObject( rover->parts,
-  								        (U8*)"5.14.1",INVALID_LIST_POS );
+                          (U8*)"5.14.1",INVALID_LIST_POS );
               if ( bucket && bucket->contents ) {
-	            TNODE* TeX_cont =  bucket->contents;
+              TNODE* TeX_cont =  bucket->contents;
                 node_to_insert  =  TaggedText2MML( TeX_cont,
-               									  out_of_flow_list,
-               									  NULL,90 );
+                                  out_of_flow_list,
+                                  NULL,90 );
 
 // Added Jan. 17, 2003 - JBM - Found a case where this is needed.
 // munder<uID5.53.2>!munder!reqELEMENT(5.53.3)reqELEMENT(5.53.4)
@@ -6875,50 +6873,50 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
   part1->next   =  part2;
   part2->prev   =  part1;
 
-		      } else
-		        TCI_ASSERT(0);
+          } else
+            TCI_ASSERT(0);
 
-			} else if ( uID==13 || uID==14 ) {
+      } else if ( uID==13 || uID==14 ) {
               node_to_insert  =  FBox2MML( rover,out_of_flow_list,uID );
-			} else
-		      TCI_ASSERT(0);
+      } else
+          TCI_ASSERT(0);
 
           } else if ( stype>=550 && stype<=560 && uID==0 ) {
-	        use_save_next =  TRUE;
+          use_save_next =  TRUE;
             save_next   =  rover->next;
             HyperObj2MML( out_of_flow_list,rover,stype,
                                     FALSE,&node_to_insert );
 
 // text \label{...} more text
           } else if ( stype==700 && uID==0 ) {
-	        use_save_next =  TRUE;
+          use_save_next =  TRUE;
             save_next   =  rover->next;
             *out_of_flow_list  =  MoveNodeToList( *out_of_flow_list,rover );
 
 // \QTSN<uID5.472.0>!\QTSN!REQPARAM(5.472.1,NONLATEX)REQPARAM(5.472.2,TEXT)
           } else if ( stype==472 && uID==0 ) {
-	        use_save_next =  TRUE;
+          use_save_next =  TRUE;
             save_next   =  rover->next;
             *out_of_flow_list  =  MoveNodeToList( *out_of_flow_list,rover );
 
           } else if ( stype==800 && uID==0 ) {
 // \rule<uID5.800.0>!\rule!OPTPARAM(5.800.1,DIMEN)
-//	REQPARAM(5.800.2,DIMEN)REQPARAM(5.800.3,DIMEN)
+//  REQPARAM(5.800.2,DIMEN)REQPARAM(5.800.3,DIMEN)
             if ( RuleIsPureVSpace(rover) ) {
-	          use_save_next =  TRUE;
+            use_save_next =  TRUE;
               save_next   =  rover->next;
               *out_of_flow_list  =  MoveNodeToList( *out_of_flow_list,rover );
-			} else
+      } else
               TCI_ASSERT(0);
 
           } else if ( stype==37 && uID==0 ) {
 
-	        use_save_next =  TRUE;
+          use_save_next =  TRUE;
             save_next   =  rover->next;
 
 // \TABLE<uID5.37.0>!\TABLE!_COLSANDROWS__EXTALIGN__TWIDTH__VR__HR__TCELLS_
 
-	//  we make an equivalent tree for \begin{array} or \begin{tabular}
+  //  we make an equivalent tree for \begin{array} or \begin{tabular}
             TNODE* table  =  MATRIXtoExternalFormat( rover );
             HLinesToBucket( table,TRUE );
             ColsToList( table );
@@ -6927,52 +6925,52 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
             GetUids( table->zuID,uobj,usub,uid );
             node_to_insert  =  Tabular2MML( table,out_of_flow_list,usub );
 
-		    TNODE* parent =  rover->sublist_owner;
-		    TNODE* left_anchor  =  rover->prev;
-		    TNODE* right_anchor =  rover->next;
+        TNODE* parent =  rover->sublist_owner;
+        TNODE* left_anchor  =  rover->prev;
+        TNODE* right_anchor =  rover->next;
 
-		    rover->prev  =  NULL;
-		    rover->next  =  NULL;
+        rover->prev  =  NULL;
+        rover->next  =  NULL;
             DisposeTList( rover );
 
-		    if ( parent )
-		      parent->contents  =  table;
-		    if ( left_anchor ) {
-		      left_anchor->next =  table;
-		      table->prev =  left_anchor;
-		    }
-		    if ( right_anchor )	{
-		      right_anchor->prev  =  table;
-		      table->next =  right_anchor;
-		    }
+        if ( parent )
+          parent->contents  =  table;
+        if ( left_anchor ) {
+          left_anchor->next =  table;
+          table->prev =  left_anchor;
+        }
+        if ( right_anchor ) {
+          right_anchor->prev  =  table;
+          table->next =  right_anchor;
+        }
 
 
           } else if ( stype==298 && uID==0 ) {
 
-  			U32 unicode =  ExtractUNICODE( rover );
+        U32 unicode =  ExtractUNICODE( rover );
             U8 buffer[32];
             CreateUnicodeEntity( buffer,0,unicode );
 
             U16 zln =  strlen( (char*)buffer );
-			if ( tln + zln < 512 ) {
+      if ( tln + zln < 512 ) {
               strcpy( (char*)ztext+tln,(char*)buffer );
               tln +=  zln;
-			}
-			if ( uln + zln < 512 ) {
+      }
+      if ( uln + zln < 512 ) {
               strcpy( (char*)utext+uln,(char*)buffer );
-		      uln +=  zln;
-			}
+          uln +=  zln;
+      }
             text_count++;
 
           } else if ( stype==704 && uID==0 ) {
 // \ref<uID5.704.0>!\ref!REQPARAM(5.704.1,NONLATEX)
 // Bogus implementation here.
-		    strcpy( (char*)ztext+tln,"#ref" );
-		    tln +=  4;
+        strcpy( (char*)ztext+tln,"#ref" );
+        tln +=  4;
 
 
-		    strcpy( (char*)utext+uln,"#ref" );
-		    uln +=  4;
+        strcpy( (char*)utext+uln,"#ref" );
+        uln +=  4;
 
 
             text_count++;
@@ -6983,13 +6981,13 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
 // 188   ij
             U16 symb_number =  0;
             TNODE* bucket =  FindObject( rover->parts,(U8*)"5.465.1",
-   										              INVALID_LIST_POS );
-            if ( bucket && bucket->contents ) {		// locate NONLATEX content
+                                    INVALID_LIST_POS );
+            if ( bucket && bucket->contents ) {   // locate NONLATEX content
               U8* zNONLATEX =  (U8*)"888.8.0";
               TNODE* cont =  FindObject( bucket->contents,zNONLATEX,
-   										              INVALID_LIST_POS );
+                                    INVALID_LIST_POS );
               if ( cont )
-	            symb_number =  atoi( (char*)cont->var_value );
+              symb_number =  atoi( (char*)cont->var_value );
             }
 
             U8 buffer[32];
@@ -7007,11 +7005,11 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
 
             if ( buffer[0] ) {
               U16 zln =  strlen( (char*)buffer );
-		      strcpy( (char*)ztext+tln,(char*)buffer );
-		      tln +=  zln;
+          strcpy( (char*)ztext+tln,(char*)buffer );
+          tln +=  zln;
 
-		      strcpy( (char*)utext+uln,(char*)buffer );
-		      uln +=  zln;
+          strcpy( (char*)utext+uln,(char*)buffer );
+          uln +=  zln;
 
               text_count++;
             }
@@ -7041,7 +7039,7 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
                   } else if ( cont->v_len == 10 ){  // \backslash
 // &bsol;<uID3.17.95>,U0005C
                     AppendEntityToBuffer( (U8*)"3.17.95",ztext,utext );
-			      }
+            }
                 } else
                   TCI_ASSERT(0);
 
@@ -7054,29 +7052,29 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
                 TCI_ASSERT(0);
             }
 
-	      } else		// unhandled structure in TEXT
-		    TCI_ASSERT(0);
+        } else    // unhandled structure in TEXT
+        TCI_ASSERT(0);
 
-		}
-	    break;
+    }
+      break;
 
-	    case   6  :		// a { group } in TEXT
+      case   6  :   // a { group } in TEXT
           if ( stype==1 && uID==0 ) {
 // {<uID6.1.0>BUCKET(6.1.2,INHERIT,{,},,)
             if ( rover->parts && rover->parts->contents ) {
               TNODE* TeX_cont =  rover->parts->contents;
-		      U8 switch_nom[64];
+          U8 switch_nom[64];
               U16 switch_tag  =  GetMathRunTagFromTeXSwitch(
-											       TeX_cont,switch_nom );
-			  if ( switch_tag ) {
+                             TeX_cont,switch_nom );
+        if ( switch_tag ) {
                 node_to_insert  =  TaggedText2MML( TeX_cont,
-								out_of_flow_list,switch_nom,switch_tag );
-			  } else {
+                out_of_flow_list,switch_nom,switch_tag );
+        } else {
 
-	// Here we're just dropping the tag.
-	// We translate the contents.
+  // Here we're just dropping the tag.
+  // We translate the contents.
                 TCI_BOOL no_line_breaks =  FALSE;
-		        TCI_BOOL is_unit  =  FALSE;
+            TCI_BOOL is_unit  =  FALSE;
                 node_to_insert  =  TextInMath2MML( TeX_cont,
                        out_of_flow_list,no_line_breaks,is_unit );
               }
@@ -7084,9 +7082,9 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
 
           } else
             TCI_ASSERT(0);
-	    break;
+      break;
 
-	    case   9  :  {
+      case   9  :  {
           if ( stype==1 ) {         // horizontal space within TEXT
             U8 space_str[32];
             space_str[0]  =  0;
@@ -7094,31 +7092,31 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
             U8 uni_str[32];
             uni_str[0]  =  0;
 
-		    switch ( uID ) {
-			  case  1 :   //  <uID9.1.1>
-			  case  2 :   // \ <uID9.1.2>
-			  case  3 :   // ~<uID9.1.3>
+        switch ( uID ) {
+        case  1 :   //  <uID9.1.1>
+        case  2 :   // \ <uID9.1.2>
+        case  3 :   // ~<uID9.1.3>
                 AppendEntityToBuffer( (U8*)"9.1.17",space_str,uni_str );
                 space_count++;
                 space_width +=  9;
-			  break;
-			  case  4 :   // \quad<uID9.1.4>
+        break;
+        case  4 :   // \quad<uID9.1.4>
                 AppendEntityToBuffer( (U8*)"9.1.18",space_str,uni_str );
                 space_count++;
                 space_width +=  18;
-			  break;
-			  case  5 :   // \qquad<uID9.1.5>
+        break;
+        case  5 :   // \qquad<uID9.1.5>
                 AppendEntityToBuffer( (U8*)"9.1.18",space_str,uni_str );
                 AppendEntityToBuffer( (U8*)"9.1.18",space_str,uni_str );
                 space_count++;
                 space_width +=  36;
-			  break;
-			  case  6 :   // \thinspace<uID9.1.6>
-			  case  8 :   // \/<uID9.1.8>
-			  case  9 :   // \negthinspace<uID9.1.9>
-			  case 10 :   // {}<uID9.1.10>
-			  case 11 :   // \noindent<uID9.1.11>
-			  break;
+        break;
+        case  6 :   // \thinspace<uID9.1.6>
+        case  8 :   // \/<uID9.1.8>
+        case  9 :   // \negthinspace<uID9.1.9>
+        case 10 :   // {}<uID9.1.10>
+        case 11 :   // \noindent<uID9.1.11>
+        break;
 // \hspace{GLUE}
 
               case 12 :   // \hspace<uID9.1.12>!\hspace!REQPARAM(9.1.20,GLUE)
@@ -7126,10 +7124,10 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
                 I16 ems_width =  UNDEFINED_DETAIL;
                 U8 hspace_buffer[128];
                 hspace_buffer[0]  =  0;
-	            U8 bucket_zuID[32];
+              U8 bucket_zuID[32];
                 UidsTozuID( 9,1,uID+8,(U8*)bucket_zuID );
                 TNODE* glue_bucket =  FindObject( rover->parts,
-							              (U8*)bucket_zuID,INVALID_LIST_POS );
+                            (U8*)bucket_zuID,INVALID_LIST_POS );
                 GetValueFromGlue( glue_bucket,(U8*)hspace_buffer,
                                     FALSE,ems_width );
 
@@ -7139,7 +7137,7 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
                 U16 zln =  strlen( (char*)hspace_buffer );
                 node_to_insert->attrib_list =  MakeATTRIBNode( 
                                     (U8*)"width",ELEM_ATTR_width,
-			  					            0,hspace_buffer,zln,0 );
+                              0,hspace_buffer,zln,0 );
                 if ( ems_width != UNDEFINED_DETAIL )
                   SetDetailNum( node_to_insert,DETAILS_space_width,ems_width );
               }
@@ -7164,84 +7162,84 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
                 strcpy( (char*)uni_str,"......." );
               break;
 
-			  case 17 :   // \@<uID9.1.17>
-			  default :
-			  break;
-		    }
+        case 17 :   // \@<uID9.1.17>
+        default :
+        break;
+        }
 
-		    if ( space_str[0] ) {
-			  U16 zln =  strlen( (char*)space_str );
-		      if ( tln + zln < 255 ) {
-		        strcpy( (char*)ztext+tln,(char*)space_str );
-		        tln +=  zln;
+        if ( space_str[0] ) {
+        U16 zln =  strlen( (char*)space_str );
+          if ( tln + zln < 255 ) {
+            strcpy( (char*)ztext+tln,(char*)space_str );
+            tln +=  zln;
 
                 text_count++;
 
-		        if ( uni_str[0] ) {
-			      U16 zln =  strlen( (char*)uni_str );
-		          if ( uln + zln < 255 ) {
-		            strcpy( (char*)utext+uln,(char*)uni_str );
-		            uln +=  zln;
-			      }
-				}
+            if ( uni_str[0] ) {
+            U16 zln =  strlen( (char*)uni_str );
+              if ( uln + zln < 255 ) {
+                strcpy( (char*)utext+uln,(char*)uni_str );
+                uln +=  zln;
+            }
+        }
 
-		      } else
-		        TCI_ASSERT(0);
-		    }
+          } else
+            TCI_ASSERT(0);
+        }
 
 
-          } else if ( stype==3 ) {	// vertical space
+          } else if ( stype==3 ) {  // vertical space
             save_next  =  rover->next;
-	        use_save_next  =  TRUE;
+          use_save_next  =  TRUE;
             *out_of_flow_list  =  MoveNodeToList( *out_of_flow_list,rover );
 
-		  } else {
-		    TCI_ASSERT(0);
+      } else {
+        TCI_ASSERT(0);
 /*
-			case    :   // \par<uID9.2.0>
+      case    :   // \par<uID9.2.0>
 
-			case    :   // \smallskip<uID9.3.1>
-			case    :   // \medskip<uID9.3.2>
-			case    :   // \bigskip<uID9.3.3>
-			case    :   // \strut<uID9.3.4>
-			case    :   // \mathstrut<uID9.3.5>
-			case    :   // \vspace<uID9.3.6>!\vspace!REQPARAM(9.3.20,GLUE)
-			case    :   // \vspace*<uID9.3.7>!\vspace*!REQPARAM(9.3.21,GLUE)
+      case    :   // \smallskip<uID9.3.1>
+      case    :   // \medskip<uID9.3.2>
+      case    :   // \bigskip<uID9.3.3>
+      case    :   // \strut<uID9.3.4>
+      case    :   // \mathstrut<uID9.3.5>
+      case    :   // \vspace<uID9.3.6>!\vspace!REQPARAM(9.3.20,GLUE)
+      case    :   // \vspace*<uID9.3.7>!\vspace*!REQPARAM(9.3.21,GLUE)
 
-			case    :   // \indent<uID9.4.0>
+      case    :   // \indent<uID9.4.0>
 
-			case    :   // \allowbreak<uID9.5.1>  
-			case    :   // \nolinebreak<uID9.5.3>!\nolinebreak!OPTPARAM(9.5.20,NONLATEX)
+      case    :   // \allowbreak<uID9.5.1>  
+      case    :   // \nolinebreak<uID9.5.3>!\nolinebreak!OPTPARAM(9.5.20,NONLATEX)
 
-			case    :   // \protect<uID9.8.0>
-			case    :   // \hline<uID9.9.0>
+      case    :   // \protect<uID9.8.0>
+      case    :   // \hline<uID9.9.0>
 
-			case    :   // \vline<uID9.10.0>
-			case    :   // \vfill<uID9.14.0>
+      case    :   // \vline<uID9.10.0>
+      case    :   // \vfill<uID9.14.0>
 */
-		  }
+      }
 
-		}
-		break;
+    }
+    break;
 
 // comment in TEXT
-	    case 777  :  {
+      case 777  :  {
 // For now, I'm only looking for the case where a unicode
 //  is hidden in a %TCIMacro{} - used for some Latin chars.
 //  It's better to translate the unicode than attempt to handle
 //  the expansion - generally true crap.
- 		  U32 unicode;
+      U32 unicode;
           U16 advance;
           ProcessTextComment( rover,unicode,advance );
-  		  if ( unicode ) {
+        if ( unicode ) {
             U8 buffer[32];
             CreateUnicodeEntity( buffer,0,unicode );
             U16 zln =  strlen( (char*)buffer );
-		    strcpy( (char*)ztext+tln,(char*)buffer );
-		    tln +=  zln;
+        strcpy( (char*)ztext+tln,(char*)buffer );
+        tln +=  zln;
 
-		    strcpy( (char*)utext+uln,(char*)buffer );
-		    uln +=  zln;
+        strcpy( (char*)utext+uln,(char*)buffer );
+        uln +=  zln;
 
             text_count++;
   // Step over nodes in %TCIMacro{} and its expansion.
@@ -7249,74 +7247,74 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
               rover =  rover->next;
               advance--;
             }
-  		  } else {   // if ( unicode )
+        } else {   // if ( unicode )
   // Just step over everything else for now.
   // If it's a TCIMacro, we'll hit (and translate) the expansion next.
-  		  }
-		}
-		break;
+        }
+    }
+    break;
 
 // words in TEXT
-	    case 888  :  {
-		  if ( rover->var_value ) {
+      case 888  :  {
+      if ( rover->var_value ) {
             U16 i =  0;
             U16 xln =  rover->v_len;
-			while ( i < xln ) {
-			  U8 ch =  rover->var_value[i++];
-			  if ( ch == ' ' ) {      // space
+      while ( i < xln ) {
+        U8 ch =  rover->var_value[i++];
+        if ( ch == ' ' ) {      // space
                 if ( i > 0 && i < xln-1  ) {    // interior
-		          if ( tln+1 < 255 ) {
-			        ztext[tln++]  =  ch;
+              if ( tln+1 < 255 ) {
+              ztext[tln++]  =  ch;
 
-			        utext[uln++]  =  ch;
+              utext[uln++]  =  ch;
 
                     space_count++;
                     space_width +=  9;
                     text_count++;
-		          }
+              }
                 } else if ( tln + 7 < 255 ) {   // ending space
-		          ztext[tln]  =  0;
-		          utext[uln]  =  0;
+              ztext[tln]  =  0;
+              utext[uln]  =  0;
                   AppendEntityToBuffer( (U8*)"9.1.17",ztext,utext );
-		          tln =  strlen( (char*)ztext );
-		          uln =  strlen( (char*)utext );
+              tln =  strlen( (char*)ztext );
+              uln =  strlen( (char*)utext );
                   space_count++;
                   space_width +=  9;
                   text_count++;
-		        } else
-		          TCI_ASSERT(0);  // very long 888
+            } else
+              TCI_ASSERT(0);  // very long 888
 
-			  } else {                // non-space
-		        if ( tln+1 < 255 ) {
-			      ztext[tln++]  =  ch;
+        } else {                // non-space
+            if ( tln+1 < 255 ) {
+            ztext[tln++]  =  ch;
 
-			      utext[uln++]  =  ch;
+            utext[uln++]  =  ch;
 
                   text_count++;
-		        } else
-		          TCI_ASSERT(0);  // very long 888
-			  }
+            } else
+              TCI_ASSERT(0);  // very long 888
+        }
 
-		    }	// while loop thru letters
+        } // while loop thru letters
 
-		  } else          // 888 node with no data??
-		    TCI_ASSERT(0);
-		}
-		break;
+      } else          // 888 node with no data??
+        TCI_ASSERT(0);
+    }
+    break;
 
-		default   :
-		break;
+    default   :
+    break;
 
-	  }		// switch on uobjtype
+    }   // switch on uobjtype
 
 
       if ( node_to_insert ) {
 
-	// Append any accummulated ztext to the return list
+  // Append any accummulated ztext to the return list
 
-		if ( tln || uln ) {
-	      ztext[tln]    =  0;
-	      utext[uln]    =  0;
+    if ( tln || uln ) {
+        ztext[tln]    =  0;
+        utext[uln]    =  0;
           TNODE* mtext  =  MakeTNode( 0L,0L,0L,(U8*)zmtext );
           SetChData( mtext,ztext,utext );
 
@@ -7330,42 +7328,42 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
           space_count =  0;
 
 
-		  if ( !mml_head )
-		    mml_head  =  mtext;
-		  else {
-		    mml_tail->next  =  mtext;
-			mtext->prev =  mml_tail;
-		  }
-		  mml_tail  =  mtext;
-	      tln   =  0;
-	      uln   =  0;
-		}
+      if ( !mml_head )
+        mml_head  =  mtext;
+      else {
+        mml_tail->next  =  mtext;
+      mtext->prev =  mml_tail;
+      }
+      mml_tail  =  mtext;
+        tln   =  0;
+        uln   =  0;
+    }
 
-	// Append the "node_to_insert" to the return list
-		if ( !mml_head )
-		  mml_head  =  node_to_insert;
-		else {
-		  mml_tail->next    =  node_to_insert;
-		  node_to_insert->prev  =  mml_tail;
-		}
-		mml_tail  =  node_to_insert;
-	  }
+  // Append the "node_to_insert" to the return list
+    if ( !mml_head )
+      mml_head  =  node_to_insert;
+    else {
+      mml_tail->next    =  node_to_insert;
+      node_to_insert->prev  =  mml_tail;
+    }
+    mml_tail  =  node_to_insert;
+    }
 
   // advance to next node
 
       if ( use_save_next )
         rover =  save_next;
-	  else
+    else
         rover =  rover->next;
 
-	}		// loop thru nodes
+  }   // loop thru nodes
 
 
 // Append any remaining ztext to the return list
 
-	if ( tln || uln ) {
-	  ztext[tln]    =  0;
-	  utext[uln]    =  0;
+  if ( tln || uln ) {
+    ztext[tln]    =  0;
+    utext[uln]    =  0;
       TNODE* mtext  =  MakeTNode( 0L,0L,0L,(U8*)zmtext );
       if ( zcolor )
 //      SetNodeAttrib( mtext,(U8*)"mathcolor",(U8*)zcolor );
@@ -7374,15 +7372,15 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
       if ( text_count == space_count )
         SetDetailNum( mtext,DETAILS_space_width,space_width );
 
-	  if ( !mml_head )
-	    mml_head  =  mtext;
-	  else {
-	    mml_tail->next  =  mtext;
-	    mtext->prev =  mml_tail;
-	  }
-	}		// if ( tln )
+    if ( !mml_head )
+      mml_head  =  mtext;
+    else {
+      mml_tail->next  =  mtext;
+      mtext->prev =  mml_tail;
+    }
+  }   // if ( tln )
 
-  }		// if ( text_contents )
+  }   // if ( text_contents )
 
 
   return mml_head;
@@ -7398,7 +7396,7 @@ TNODE* LaTeX2MMLTree::TextInMath2MML( TNODE* text_contents,
 // Second pass, translating \unit{} to <mi>
 
 TNODE* LaTeX2MMLTree::UnitInMath2MML( TNODE* TeX_unit_node,
-									  TNODE** out_of_flow_list,
+                    TNODE** out_of_flow_list,
                                       TCI_BOOL nested,
                                       U16& tex_nodes_done ) {
 
@@ -7407,42 +7405,42 @@ TNODE* LaTeX2MMLTree::UnitInMath2MML( TNODE* TeX_unit_node,
 
 // \unit<uID5.802.0>!\unit!!{!BUCKET(5.802.1,MATH,,,},)!}!
   TNODE* bucket =  FindObject( TeX_unit_node->parts,
-						        (U8*)"5.802.1",INVALID_LIST_POS );
+                    (U8*)"5.802.1",INVALID_LIST_POS );
 
   if ( bucket && bucket->contents ) {
 
-	U8 z_unit_mtext[256];
+  U8 z_unit_mtext[256];
     z_unit_mtext[0] =  0;
-	U16 tln =  0;
-	U8 z_unit_munic[256];
+  U16 tln =  0;
+  U8 z_unit_munic[256];
     z_unit_munic[0] =  0;
-	U16 uln =  0;
+  U16 uln =  0;
 
-	TCI_BOOL use_save_next;
+  TCI_BOOL use_save_next;
     TNODE*   save_next;
 
     TNODE* rover  =  bucket->contents;
     UnicodesToSymbols( rover );     // Remove any \U{} constructs
 
-	while ( rover && tln < 255 ) {	// loop thru letters in \unit{}
-	  use_save_next =  FALSE;
+  while ( rover && tln < 255 ) {  // loop thru letters in \unit{}
+    use_save_next =  FALSE;
 
       U16 uobjtype,subtype,uID;
       GetUids( rover->zuID,uobjtype,subtype,uID );
-	  switch ( uobjtype ) {
-		case  3 : {
+    switch ( uobjtype ) {
+    case  3 : {
 
-		  if        ( subtype == 1 )  {		  // small letter
-		    z_unit_mtext[tln++]  =  'a' + uID - 1;
-		    z_unit_munic[uln++]  =  'a' + uID - 1;
-		  } else if ( subtype == 2 )  {		  // capitol letter
-		    z_unit_mtext[tln++]  =  'A' + uID - 1;
-		    z_unit_munic[uln++]  =  'A' + uID - 1;
-		  } else if ( subtype == 10 ) {       // Greek letter
+      if        ( subtype == 1 )  {     // small letter
+        z_unit_mtext[tln++]  =  'a' + uID - 1;
+        z_unit_munic[uln++]  =  'a' + uID - 1;
+      } else if ( subtype == 2 )  {     // capitol letter
+        z_unit_mtext[tln++]  =  'A' + uID - 1;
+        z_unit_munic[uln++]  =  'A' + uID - 1;
+      } else if ( subtype == 10 ) {       // Greek letter
 // &Omega;<uID3.10.43>,U003A9
 // &mu;<uID3.10.14>,U003BC
             U8* zuID_symbol =  NULL;
-			if        ( uID==43 ) {
+      if        ( uID==43 ) {
               z_unit_mtext[tln] =  0;
               z_unit_munic[uln] =  0;
               AppendEntityToBuffer( rover->zuID,z_unit_mtext+tln,z_unit_munic+uln );
@@ -7451,15 +7449,15 @@ TNODE* LaTeX2MMLTree::UnitInMath2MML( TNODE* TeX_unit_node,
             } else if ( uID==14 ) {
               z_unit_mtext[tln] =  0;
               z_unit_munic[uln] =  0;
-        	  strcat( (char*)z_unit_mtext,(char*)"&micro;" );
-	          if ( output_entities_as_unicodes )
+            strcat( (char*)z_unit_mtext,(char*)"&micro;" );
+            if ( output_entities_as_unicodes )
                 strcat( (char*)z_unit_munic,(char*)"&#xb5;" );
               tln =  strlen( (char*)z_unit_mtext );
               uln =  strlen( (char*)z_unit_munic );
             } else
               TCI_ASSERT(0);
 
-		  } else if ( subtype == 16 )	{   // Latin (upper ansi) symbols
+      } else if ( subtype == 16 ) {   // Latin (upper ansi) symbols
 // &angst;<uID3.16.14>,U0212B
             z_unit_mtext[tln] =  0;
             z_unit_munic[uln] =  0;
@@ -7467,7 +7465,7 @@ TNODE* LaTeX2MMLTree::UnitInMath2MML( TNODE* TeX_unit_node,
             tln =  strlen( (char*)z_unit_mtext );
             uln =  strlen( (char*)z_unit_munic );
 
-		  } else if ( subtype == 17 )	{   // miscellaneous
+      } else if ( subtype == 17 ) {   // miscellaneous
 // &deg;<uID3.17.159>,U000B0
 // &prime;<uID3.17.160>,U02032
 // &Prime;<uID3.17.161>,U02033
@@ -7479,18 +7477,18 @@ TNODE* LaTeX2MMLTree::UnitInMath2MML( TNODE* TeX_unit_node,
             tln =  strlen( (char*)z_unit_mtext );
             uln =  strlen( (char*)z_unit_munic );
 
-		  } else          // un-expected subtype
-		    TCI_ASSERT(0);
-		}
-		break;
+      } else          // un-expected subtype
+        TCI_ASSERT(0);
+    }
+    break;
 
-		case   5  :		// a structure
-	      if        ( subtype==90 && uID==0 ) {
-	// \text<uID5.90.0>!\text!REQPARAM(5.90.1,TEXT)
+    case   5  :   // a structure
+        if        ( subtype==90 && uID==0 ) {
+  // \text<uID5.90.0>!\text!REQPARAM(5.90.1,TEXT)
             TNODE* tbucket  =  FindObject( rover->parts,
                                 (U8*)"5.90.1",INVALID_LIST_POS );
             if ( tbucket && tbucket->contents ) {
-	// \text{\AA}%
+  // \text{\AA}%
 TCI_ASSERT(0);
 /*
               mml_rv  =  TextInMath2MML( tbucket->contents,
@@ -7499,85 +7497,85 @@ TCI_ASSERT(0);
             } else
               TCI_ASSERT(0);
 
-		  } else if ( subtype==51 && uID==1 ) {		// ^
+      } else if ( subtype==51 && uID==1 ) {   // ^
 TCI_ASSERT(0);
 /*
-			TCI_BOOL is_degree;
+      TCI_BOOL is_degree;
             mml_rv  =  ScriptedUnit2MML( rover,is_degree );
-			if ( is_degree ) {
+      if ( is_degree ) {
 //&deg;<uID3.17.159>,U000B0
-			  z_unit_mtext[tln] =  0;
-			  z_unit_munic[uln] =  0;
+        z_unit_mtext[tln] =  0;
+        z_unit_munic[uln] =  0;
               AppendEntityToBuffer( (U8*)"3.17.159",z_unit_mtext,z_unit_munic );
               tln =  strlen( (char*)z_unit_mtext );
               uln =  strlen( (char*)z_unit_munic );
-	  		}
+        }
 */
-		  } else if ( subtype >= 298
-		  &&          subtype <= 299
-		  &&          uID==0 ) {	// \U<uID5.298.0>!\U!REQPARAM(5.298.2,NONLATEX)
+      } else if ( subtype >= 298
+      &&          subtype <= 299
+      &&          uID==0 ) {  // \U<uID5.298.0>!\U!REQPARAM(5.298.2,NONLATEX)
 TCI_ASSERT(0);  // Shouldn't get here - unicodes all mapped to symbols earlier
-		  } else
-		    TCI_ASSERT(0);
-		break;
+      } else
+        TCI_ASSERT(0);
+    break;
 
-		case   6  :		// a { group }
+    case   6  :   // a { group }
 // {<uID6.1.0>BUCKET(6.1.2,INHERIT,{,},,)
 // Here's an example  -  {{}^\circ}%
-	      if ( subtype==1 && uID==0 ) {
-		    if ( rover->parts && rover->parts->contents )
-		      rover =  rover->parts->contents;
-		  } else
-		    TCI_ASSERT(0);
-		break;
+        if ( subtype==1 && uID==0 ) {
+        if ( rover->parts && rover->parts->contents )
+          rover =  rover->parts->contents;
+      } else
+        TCI_ASSERT(0);
+    break;
 
-		case   9  :		// a {}
-	      if ( subtype==1 && uID==10 ) {
-			// empty group
-		  } else if ( subtype == 3 ) {		// vertical space
-	        use_save_next =  TRUE;
+    case   9  :   // a {}
+        if ( subtype==1 && uID==10 ) {
+      // empty group
+      } else if ( subtype == 3 ) {    // vertical space
+          use_save_next =  TRUE;
             save_next   =  rover->next;
             *out_of_flow_list  =  MoveNodeToList( *out_of_flow_list,rover );
-		  } else
-		    TCI_ASSERT(0);
-		break;
+      } else
+        TCI_ASSERT(0);
+    break;
 
-		case 777  :		// a comment
+    case 777  :   // a comment
 // Might want to handle %TCIMACRO{\U{2126}}% here!
-		break;
+    break;
 
-		default :
+    default :
           //TCI_ASSERT(0);    // un-expected object in a \unit{}
-		break;
-	  }
+    break;
+    }
 
-	  if ( use_save_next )
+    if ( use_save_next )
         rover =  save_next;
-	  else
+    else
         rover =  rover->next;
 
-	}       // loop thru objectss in \unit{}
+  }       // loop thru objectss in \unit{}
 
 
     if ( mml_rv ) {
 TCI_ASSERT(0);
 
     } else {
-	  if ( tln ) {
-	    z_unit_mtext[tln] =  0;
-	    z_unit_munic[uln] =  0;
+    if ( tln ) {
+      z_unit_mtext[tln] =  0;
+      z_unit_munic[uln] =  0;
         U8 buffer[512];
         buffer[0]   =  0;
         U8 buffer2[512];
         buffer2[0]  =  0;
 
-	    strcat( (char*)buffer,(char*)z_unit_mtext );
-	    strcat( (char*)buffer2,(char*)z_unit_munic );
+      strcat( (char*)buffer,(char*)z_unit_mtext );
+      strcat( (char*)buffer2,(char*)z_unit_munic );
         mml_rv  =  MakeTNode( 0L,0L,0L,(U8*)"3.201.1" );  // <mi>
         SetChData( mml_rv,buffer,buffer2 );
         SetNodeAttrib( mml_rv,(U8*)"class",(U8*)"msi_unit" );
-		U16 zln =  strlen( (char*)buffer );
-		if ( zln==1 )
+    U16 zln =  strlen( (char*)buffer );
+    if ( zln==1 )
           SetNodeAttrib( mml_rv,(U8*)"mathvariant",(U8*)"normal" );
       } else
         TCI_ASSERT(0);
@@ -7586,7 +7584,7 @@ TCI_ASSERT(0);
 
 // look for \unit{}^{2}
 
-	if ( mml_rv ) {
+  if ( mml_rv ) {
       TNODE* TeX_next =  TeX_unit_node->next;
       if ( TeX_next ) {
         U16 uobj,usub,id;
@@ -7594,7 +7592,7 @@ TCI_ASSERT(0);
         if ( uobj==5 && usub==51 && id==1 ) {
           MATH_CONTEXT_INFO m_context;
           TNODE* mml_psuedo =  Script2PsuedoMML( TeX_next,
-								&m_context,out_of_flow_list );
+                &m_context,out_of_flow_list );
           if ( mml_psuedo && mml_psuedo->next ) {
             TNODE* mml_exp  =  mml_psuedo->next;
             mml_psuedo->next  =  NULL;
@@ -7615,12 +7613,12 @@ TCI_ASSERT(0);
       U16 local_nodes_done  =  0;
       mml_rv  =  CoelesceFollowingUnits( TeX_unit_node,out_of_flow_list,
                                             mml_rv,local_nodes_done );
-	  tex_nodes_done  +=  local_nodes_done;
-	}
+    tex_nodes_done  +=  local_nodes_done;
+  }
 
 
     if ( mml_rv ) {
-	  if ( !mml_rv->var_value && !nested ) {   // not <mi>
+    if ( !mml_rv->var_value && !nested ) {   // not <mi>
         mml_rv  =  FixImpliedMRow( mml_rv );
         mml_rv  =  CreateElemWithBucketAndContents( 5,600,0,2,mml_rv );
       }
@@ -7653,21 +7651,21 @@ Otherwise, we nest in an <mstyle>, then put the attrib on it.
 // mi/h  OR  ft lb, etc.
 
 TNODE* LaTeX2MMLTree::CoelesceFollowingUnits( TNODE* TeX_unit_node,
-									        TNODE** out_of_flow_list,
-											TNODE* MML_rv,
-											U16& tex_nodes_done ) {
+                          TNODE** out_of_flow_list,
+                      TNODE* MML_rv,
+                      U16& tex_nodes_done ) {
 
   TNODE* rv =  MML_rv;
 
   TNODE* rover  =  TeX_unit_node->next;
   if ( rover ) {
     TCI_BOOL go_on  =  FALSE;
-	U8 join[32];
-	join[0] =  0;
+  U8 join[32];
+  join[0] =  0;
     U16 join_nodes_done =  0;
 
-	U8 unicode_join[32];
-	unicode_join[0] =  0;
+  U8 unicode_join[32];
+  unicode_join[0] =  0;
 
     U16 uobjtype,subtype,uID;
     GetUids( rover->zuID,uobjtype,subtype,uID );
@@ -7683,27 +7681,27 @@ TNODE* LaTeX2MMLTree::CoelesceFollowingUnits( TNODE* TeX_unit_node,
 
 // Slash, /, is taken to mean "per" or "divided by" in this context
 
-	if ( uobjtype==3 && subtype==13 && uID==62 ) {	// "/"
-	  strcpy( (char*)join,(char*)"/" );
-	  if ( output_entities_as_unicodes )
-  	    strcpy( (char*)unicode_join,(char*)"/" );
+  if ( uobjtype==3 && subtype==13 && uID==62 ) {  // "/"
+    strcpy( (char*)join,(char*)"/" );
+    if ( output_entities_as_unicodes )
+        strcpy( (char*)unicode_join,(char*)"/" );
       go_on =  TRUE;
       join_nodes_done++;
       rover =  rover->next;
-	} else if ( uobjtype==5 && subtype==802 ) {     // \unit{}
+  } else if ( uobjtype==5 && subtype==802 ) {     // \unit{}
 //&middot;<uID3.13.64>infix,40,U000B7
       AppendEntityToBuffer( (U8*)"3.13.64",join,unicode_join );
       go_on =  TRUE;
-	}
+  }
 
 // Now look for a second \unit
 
-	if ( go_on && rover ) {
+  if ( go_on && rover ) {
 
-      TNODE* n_join =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );	// <mo>
+      TNODE* n_join =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );  // <mo>
       SetChData( n_join,join,unicode_join );
 
-	  SetNodeAttrib( n_join,(U8*)"form",(U8*)zop_forms[OPF_infix] );
+    SetNodeAttrib( n_join,(U8*)"form",(U8*)zop_forms[OPF_infix] );
       SetDetailNum( n_join,DETAILS_form,2 );
       SetDetailNum( n_join,DETAILS_precedence,46 );
       SetDetailNum( n_join,DETAILS_TeX_atom_ilk,TeX_ATOM_BIN );
@@ -7714,16 +7712,16 @@ TNODE* LaTeX2MMLTree::CoelesceFollowingUnits( TNODE* TeX_unit_node,
 
       U16 uobj,usub,ID;
       GetUids( rover->zuID,uobj,usub,ID );
-	  if ( uobj==5 && usub==802 ) {			// another \unit{}
+    if ( uobj==5 && usub==802 ) {     // another \unit{}
         U16 local_nodes_done  =  0;
         TNODE* unit2  =  UnitInMath2MML( rover,out_of_flow_list,
-                                      		TRUE,local_nodes_done );
+                                          TRUE,local_nodes_done );
         if ( unit2 ) {
           tex_nodes_done  +=  join_nodes_done + local_nodes_done;
 
           TNODE* tail =  rv;
-		  while ( tail->next )
-		    tail  =  tail->next;
+      while ( tail->next )
+        tail  =  tail->next;
 
           tail->next  =  unit2;
           unit2->prev =  tail;
@@ -7731,9 +7729,9 @@ TNODE* LaTeX2MMLTree::CoelesceFollowingUnits( TNODE* TeX_unit_node,
           rv  =  MMLlistToMRow( rv );
 
         }   // if ( unit2 ) was translateable
-	  }   // clause for second \unit{}
-	}
-  }		// if ( node follows unit )
+    }   // clause for second \unit{}
+  }
+  }   // if ( node follows unit )
 
   return rv;
 }
@@ -7744,15 +7742,15 @@ TNODE* LaTeX2MMLTree::CoelesceFollowingUnits( TNODE* TeX_unit_node,
 //   psuedo objects ( ie scripts ).
 
 TCI_BOOL LaTeX2MMLTree::OperandExists( TNODE* mml_op_node,
-									    TCI_BOOL on_the_right,
-										U16 curr_prec,
-  										U16& n_space_nodes,
-									    U16& nodes_spanned,
-									    I16& space_width ) {
+                      TCI_BOOL on_the_right,
+                    U16 curr_prec,
+                      U16& n_space_nodes,
+                      U16& nodes_spanned,
+                      I16& space_width ) {
 
   n_space_nodes   =  0;
   nodes_spanned   =  0;
-	space_width =  0;
+  space_width =  0;
 
   TNODE* candidate  =  on_the_right ? mml_op_node->next : mml_op_node->prev;
 
@@ -7764,14 +7762,14 @@ TCI_BOOL LaTeX2MMLTree::OperandExists( TNODE* mml_op_node,
     TNODE* script =  candidate->prev;
     U16 uobj,usub,id;
     GetUids( script->zuID,uobj,usub,id );
-	if ( uobj==3 && usub==201 && id==1 ) {	// mi<uID3.201.1>
-	  U8* op_nom  =  script->var_value;
-	  if ( !strcmp("TeX^",(char*)op_nom)
-	  ||   !strcmp("TeXSb",(char*)op_nom)
-	  ||   !strcmp("TeXSp",(char*)op_nom)
-	  ||   !strcmp("TeX_",(char*)op_nom) )
-	    candidate  =  script->prev;
-	}
+  if ( uobj==3 && usub==201 && id==1 ) {  // mi<uID3.201.1>
+    U8* op_nom  =  script->var_value;
+    if ( !strcmp("TeX^",(char*)op_nom)
+    ||   !strcmp("TeXSb",(char*)op_nom)
+    ||   !strcmp("TeXSp",(char*)op_nom)
+    ||   !strcmp("TeX_",(char*)op_nom) )
+      candidate  =  script->prev;
+  }
   }
 
 // Now we span any space-like nodes
@@ -7789,7 +7787,7 @@ TCI_BOOL LaTeX2MMLTree::OperandExists( TNODE* mml_op_node,
         candidate  =  on_the_right ? candidate->next : candidate->prev;
         go_on =  TRUE;
       }
-	}
+  }
   }
 
 
@@ -7800,93 +7798,93 @@ TCI_BOOL LaTeX2MMLTree::OperandExists( TNODE* mml_op_node,
     if ( uobjtype==5 && usubtype==70 && uID==0 ) {
 // mfenced<uID5.70.0>!mfenced!_FENCEDITEMS_!/mfenced!
       TCI_ASSERT(0);
-      nodes_spanned =  1;	// considered to be an operand?
+      nodes_spanned =  1; // considered to be an operand?
 
-    } else {	// candidate object not a fence
+    } else {  // candidate object not a fence
 
       U16 uobjtype,usubtype,uID;
       GetUids( candidate->zuID,uobjtype,usubtype,uID );
-	  if      ( uobjtype == 3 ) {
+    if      ( uobjtype == 3 ) {
         switch ( usubtype ) {
-          case 201  :			// mi<uID3.201.1>
-          case 202  :			// mn<uID3.202.1>
-            nodes_spanned =  1;		// considered to be an operand
-	      break;
-          case 203  : {		    // mo<uID3.203.1>
+          case 201  :     // mi<uID3.201.1>
+          case 202  :     // mn<uID3.202.1>
+            nodes_spanned =  1;   // considered to be an operand
+        break;
+          case 203  : {       // mo<uID3.203.1>
             U16 form_flags  =  GetOPFormFlags( candidate );
-			if ( on_the_right ) {
-			  if ( (form_flags & 4) && candidate->next ) {	// prefix op
+      if ( on_the_right ) {
+        if ( (form_flags & 4) && candidate->next ) {  // prefix op
                 U16 r_spaces,r_operand_nodes;
                 I16 local_space_width;
                 if ( OperandExists(candidate,on_the_right,curr_prec,
-              					r_spaces,r_operand_nodes,local_space_width) )
+                        r_spaces,r_operand_nodes,local_space_width) )
                   nodes_spanned =  1 + r_spaces + r_operand_nodes;
-			  }
-			} else {	// looking left
-			  if ( (form_flags & 1) && candidate->prev ) {	// postfix op
+        }
+      } else {  // looking left
+        if ( (form_flags & 1) && candidate->prev ) {  // postfix op
                 U16 l_spaces,l_operand_nodes;
                 I16 local_space_width;
                 if ( OperandExists(candidate,on_the_right,curr_prec,
-              					l_spaces,l_operand_nodes,local_space_width) )
+                        l_spaces,l_operand_nodes,local_space_width) )
                   nodes_spanned =  1 + l_spaces + l_operand_nodes;
-			  }
-			}
-		  }
-		  break;
+        }
+      }
+      }
+      break;
 
-          case 204  : {		// mtext<uID3.204.1>
+          case 204  : {   // mtext<uID3.204.1>
     // we stepped over NARROW whitespace before getting here!
             if      ( MTextIsWhiteSpace(candidate) )
               TCI_ASSERT(0);
             else if ( MTextIsWord(candidate) )
-              nodes_spanned =  1;		// considered to be an operand
-		  }
-	      break;
+              nodes_spanned =  1;   // considered to be an operand
+      }
+        break;
 
           case 205  : { // mspace<uID3.205.1>
     // Here we are looking at <mspace> that returned FALSE
     //  from IsMMLSpaceLikeNode.  Must be quite wide.
-		    TCI_ASSERT(0);
-		  }
-	      break;
-          case 206  :		// ms<uID3.206.1>
-		        TCI_ASSERT(0);
-		  break;
-		  default   :
-		  break;
-	    }
+        TCI_ASSERT(0);
+      }
+        break;
+          case 206  :   // ms<uID3.206.1>
+            TCI_ASSERT(0);
+      break;
+      default   :
+      break;
+      }
 
-	  } else if ( uobjtype == 5 ) {
+    } else if ( uobjtype == 5 ) {
 
         switch ( usubtype ) {
-          case 750  :		// mrow<uID5.750.1>
-          case   1  :		// mfrac<uID5.1.0>
-          case  35  :		// mtable<uID5.35.0>
-          case  50  :		// msub<uID5.50.2>
-          case  51  :		// msup<uID5.51.2>
-          case  52  :		// msubsup<uID5.52.2>
-          case  53  :		// munder<uID5.53.2>
-          case  54  :		// mover<uID5.54.2>
-          case  55  :		// munderover<uID5.55.2>
-          case  56  :		// mprescripts/<uID5.56.10>
-//        case  56  :		// mmultiscripts<uID5.56.2>
-          case  60  :		// msqrt<uID5.60.0>
-          case  61  :		// mroot<uID5.61.0>
-          case  70  :	{	// mfenced<uID5.70.0>
+          case 750  :   // mrow<uID5.750.1>
+          case   1  :   // mfrac<uID5.1.0>
+          case  35  :   // mtable<uID5.35.0>
+          case  50  :   // msub<uID5.50.2>
+          case  51  :   // msup<uID5.51.2>
+          case  52  :   // msubsup<uID5.52.2>
+          case  53  :   // munder<uID5.53.2>
+          case  54  :   // mover<uID5.54.2>
+          case  55  :   // munderover<uID5.55.2>
+          case  56  :   // mprescripts/<uID5.56.10>
+//        case  56  :   // mmultiscripts<uID5.56.2>
+          case  60  :   // msqrt<uID5.60.0>
+          case  61  :   // mroot<uID5.61.0>
+          case  70  : { // mfenced<uID5.70.0>
             nodes_spanned =  1;
           }
           break;
 
-          case 600  :		// mstyle<uID5.600.0>
+          case 600  :   // mstyle<uID5.600.0>
            if ( candidate->details ) {
              if ( candidate->details->unit_state==1 )
-               nodes_spanned =  1;		// considered to be an operand
+               nodes_spanned =  1;    // considered to be an operand
              else if ( candidate->details->bigop_status==1 ) {
-               if ( candidate->next ) {	// prefix op
+               if ( candidate->next ) { // prefix op
                  U16 r_spaces,r_operand_nodes;
                  I16 local_space_width;
                  if ( OperandExists(candidate,on_the_right,curr_prec,
-						r_spaces,r_operand_nodes,local_space_width) )
+            r_spaces,r_operand_nodes,local_space_width) )
                    nodes_spanned =  1 + r_spaces + r_operand_nodes;
                }
              } else
@@ -7894,30 +7892,30 @@ TCI_BOOL LaTeX2MMLTree::OperandExists( TNODE* mml_op_node,
            } else
              TCI_ASSERT(0);
           break;
-          case 601  :		// merror<uID5.601.0>
-          case 602  :		// mpadded<uID5.602.0>
-          case 603  :		// mphantom<uID5.603.0>
-		    TCI_ASSERT(0);
-		  break;
+          case 601  :   // merror<uID5.601.0>
+          case 602  :   // mpadded<uID5.602.0>
+          case 603  :   // mphantom<uID5.603.0>
+        TCI_ASSERT(0);
+      break;
 
-          case 604  :		// maction<uID5.604.0>
-		    if ( candidate->details
-		    &&   candidate->details->is_expression==1 ) {
-              nodes_spanned =  1;		// considered to be an operand
-		    } else
-		      TCI_ASSERT(0);
-		  break;
+          case 604  :   // maction<uID5.604.0>
+        if ( candidate->details
+        &&   candidate->details->is_expression==1 ) {
+              nodes_spanned =  1;   // considered to be an operand
+        } else
+          TCI_ASSERT(0);
+      break;
 
-		      default   :
-		        TCI_ASSERT(0);
-		      break;
-	      }
+          default   :
+            TCI_ASSERT(0);
+          break;
+        }
 
-	    }		// else if ( uobjtype == 5 )
+      }   // else if ( uobjtype == 5 )
 
-    }	  // un-delimited operand clause
+    }   // un-delimited operand clause
 
-  }		// if ( candidate )
+  }   // if ( candidate )
 
   return nodes_spanned ? TRUE : FALSE;
 }
@@ -7964,7 +7962,7 @@ TNODE* LaTeX2MMLTree::NestNodesInMrow( TNODE* list_head,
     if ( first && first == list_head )
       new_list_head  =  TRUE;
 
-  } else {		// looking to the left
+  } else {    // looking to the left
 
     TCI_ASSERT( anchor );
     left_anchor   =  ender->prev;
@@ -7998,16 +7996,16 @@ TNODE* LaTeX2MMLTree::NestNodesInMrow( TNODE* list_head,
     *p_new_mrow =  mrow;
     if ( left_anchor ) {
       left_anchor->next =  mrow;
-	  mrow->prev  =  left_anchor;
-	}
+    mrow->prev  =  left_anchor;
+  }
     if ( right_anchor ) {
       right_anchor->prev  =  mrow;
       mrow->next   =  right_anchor;
-	}
+  }
     if ( parent ) {
       parent->contents  =  mrow;
       mrow->sublist_owner =  parent;
-	}
+  }
     if ( new_list_head )
       rv =  mrow;
 
@@ -8031,26 +8029,26 @@ TCI_BOOL LaTeX2MMLTree::MMLNodeCouldStartGroup( TNODE* mml_node,
 
   U16 uobjtype,usubtype,uID;
   GetUids( mml_node->zuID,uobjtype,usubtype,uID );
-  if ( uobjtype==3 && usubtype==203 && uID== 1 ) {	// mo<uID3.203.1>
+  if ( uobjtype==3 && usubtype==203 && uID== 1 ) {  // mo<uID3.203.1>
     U16 precedence;
-	  if ( mml_node->details
-	  &&   mml_node->details->form != UNDEFINED_DETAIL ) {
+    if ( mml_node->details
+    &&   mml_node->details->form != UNDEFINED_DETAIL ) {
       precedence  =  mml_node->details->precedence;
-	  } else {
+    } else {
       precedence =  GetPrecedence( mml_node,OPF_prefix );
-	    if ( precedence != 1 )
+      if ( precedence != 1 )
         precedence =  GetPrecedence( mml_node,OPF_postfix );
     }
-	  if ( precedence == 1 ) {
+    if ( precedence == 1 ) {
       rv =  TRUE;
       U8* f_nom =  mml_node->var_value;
       strcpy( (char*)nom,(char*)f_nom );
-	    if ( mml_node->details
-	    &&   mml_node->details->bigl_size != UNDEFINED_DETAIL )
+      if ( mml_node->details
+      &&   mml_node->details->bigl_size != UNDEFINED_DETAIL )
         biglmr_size  =  mml_node->details->bigl_size;
       else
         biglmr_size  =  0;
-	  }
+    }
   }
 
   return rv;
@@ -8061,18 +8059,18 @@ TCI_BOOL LaTeX2MMLTree::MMLNodeCouldStartGroup( TNODE* mml_node,
 //  scanning from left to right.
 
 TCI_BOOL LaTeX2MMLTree::LocateMatchingDelim( TNODE* mml_fence_mo,
-	  										                    U8* fence_op_nom,
-									    	                    U16 biglmr_size,
-									    	                    U16& nodes_spanned ) {
+                                            U8* fence_op_nom,
+                                            U16 biglmr_size,
+                                            U16& nodes_spanned ) {
 
   TCI_BOOL rv   =  FALSE;
-  nodes_spanned =  0;		// count includes the 2 delimiters
+  nodes_spanned =  0;   // count includes the 2 delimiters
 
   U8 matching_delim[32];
-  U8 secondary_match[32];	// used in locating intervals like (0,1]
+  U8 secondary_match[32]; // used in locating intervals like (0,1]
   GetMatchingFence( fence_op_nom,matching_delim,secondary_match );
 
-  U16 nest_level  =  1;		// start at first interior node
+  U16 nest_level  =  1;   // start at first interior node
   U16 node_count  =  1;
 
   TNODE* mml_rover  =  mml_fence_mo->next;
@@ -8080,39 +8078,39 @@ TCI_BOOL LaTeX2MMLTree::LocateMatchingDelim( TNODE* mml_fence_mo,
     node_count++;
     U16 uobjtype,usubtype,uID;
     GetUids( mml_rover->zuID,uobjtype,usubtype,uID );
-    if ( uobjtype==3 && usubtype==203 && uID==1 ) {	// mo - operator
-	    char* op_nom  =  (char*)mml_rover->var_value;
-	    if ( op_nom ) {
+    if ( uobjtype==3 && usubtype==203 && uID==1 ) { // mo - operator
+      char* op_nom  =  (char*)mml_rover->var_value;
+      if ( op_nom ) {
 
         U16 curr_size =  0;
-	      if ( mml_rover->details )
-	        if ( mml_rover->details->bigl_size != UNDEFINED_DETAIL )
+        if ( mml_rover->details )
+          if ( mml_rover->details->bigl_size != UNDEFINED_DETAIL )
             curr_size =  mml_rover->details->bigl_size;
 
         if ( biglmr_size == curr_size ) {
-	        if        ( !strcmp(op_nom,(char*)matching_delim) ) {
-		        TCI_ASSERT( nest_level );
-		        nest_level--;
-		        if ( !nest_level ) {
+          if        ( !strcmp(op_nom,(char*)matching_delim) ) {
+            TCI_ASSERT( nest_level );
+            nest_level--;
+            if ( !nest_level ) {
               nodes_spanned =  node_count;
               rv   =  TRUE;
-		          break;
-		        }
-	        } else if ( !strcmp(op_nom,(char*)secondary_match) ) {
-		        if ( nest_level == 1 ) {
+              break;
+            }
+          } else if ( !strcmp(op_nom,(char*)secondary_match) ) {
+            if ( nest_level == 1 ) {
               nodes_spanned =  node_count;
               rv   =  TRUE;
-		          break;
-		        }
-	        } else if ( !strcmp(op_nom,(char*)fence_op_nom) )
-		        nest_level++;
+              break;
+            }
+          } else if ( !strcmp(op_nom,(char*)fence_op_nom) )
+            nest_level++;
         }
 
-	    }		// if ( op_nom )
-	  }	// <mo> clause
+      }   // if ( op_nom )
+    } // <mo> clause
 
-	  mml_rover =  mml_rover->next;
-  }		// while ( mml_rover )
+    mml_rover =  mml_rover->next;
+  }   // while ( mml_rover )
 
   return rv;
 }
@@ -8149,25 +8147,25 @@ TNODE* LaTeX2MMLTree::FinishMMLBindings( TNODE* mml_list ) {
   rv  =  BindDegMinSec( rv );
 
 // As soon as differential d has been processed, we handle integrals
-  rv  =  BindDelimitedIntegrals( rv );	    // \int ... dx
+  rv  =  BindDelimitedIntegrals( rv );      // \int ... dx
 
 // Nest operands with their operators
 //  according to operator precedences.
 
  rv  =  BindByOpPrecedence( rv,68,66 );
- InsertApplyFunction( rv );				// 65
+ InsertApplyFunction( rv );       // 65
  rv  =  BindByOpPrecedence( rv,65,54 );
 
  rv  =  BindByOpPrecedence( rv,53,40 );
-  InsertInvisibleTimes( rv );				// 39
+  InsertInvisibleTimes( rv );       // 39
   rv  =  AbsorbMSpaces( rv );
   rv  =  BindByOpPrecedence( rv,39,39 );
   rv  =  BindByOpPrecedence( rv,29,29 );
-  InsertInvisibleTimes( rv );				// 39
+  InsertInvisibleTimes( rv );       // 39
 
 
-   rv  =  BindByOpPrecedence( rv,39,28 );	// -> + -
-   InsertInvisibleTimes( rv );				// 39
+   rv  =  BindByOpPrecedence( rv,39,28 ); // -> + -
+   InsertInvisibleTimes( rv );        // 39
    rv  =  BindByOpPrecedence( rv,27,2 );
 
   return rv;
@@ -8188,11 +8186,11 @@ TNODE* LaTeX2MMLTree::BindDelimitedGroups( TNODE* MML_list ) {
     U8 fence_op_nom[32];
     U16 biglmr_size;
     if ( MMLNodeCouldStartGroup(rover,fence_op_nom,biglmr_size) ) {
-      U16 node_count  =  0;			// includes delimiting <mo>'s
+      U16 node_count  =  0;     // includes delimiting <mo>'s
       if ( LocateMatchingDelim(rover,fence_op_nom,biglmr_size,node_count) ) {
 
         U8* stretchy_val  =  biglmr_size ? (U8*)"true" : (U8*)"false";
-	// Add attributes to the delimiting <mo> nodes
+  // Add attributes to the delimiting <mo> nodes
         SetNodeAttrib( rover,(U8*)"form",(U8*)zop_forms[OPF_prefix] );
         SetNodeAttrib( rover,(U8*)"fence",(U8*)"true" );
         if ( biglmr_size ) {
@@ -8213,19 +8211,19 @@ TNODE* LaTeX2MMLTree::BindDelimitedGroups( TNODE* MML_list ) {
         } else
           SetNodeAttrib( right_delim,(U8*)"stretchy",stretchy_val );
 
-	// Nest the delimiters and their contents in an <mrow>
+  // Nest the delimiters and their contents in an <mrow>
         TNODE* new_mrow;
         rv  =  NestNodesInMrow( rv,NULL,rover,
-			  			    	TRUE,node_count,&new_mrow );
+                    TRUE,node_count,&new_mrow );
         if ( new_mrow ) {
-          rover =  new_mrow;	// for ongoing list iteration
+          rover =  new_mrow;  // for ongoing list iteration
 
-	// We mark the <mrow>, indicating that it contains a group
+  // We mark the <mrow>, indicating that it contains a group
           SetDetailNum( new_mrow,DETAILS_delimited_group,1 );
           SetDetailNum( new_mrow,DETAILS_TeX_atom_ilk,TeX_ATOM_INNER );
 
     // Now we set up a recursive call to "FinishMMLBindings"
-	//  on the contents list that has been nested.
+  //  on the contents list that has been nested.
 
           TNODE* cont =  new_mrow->parts->contents;
           if ( cont ) {
@@ -8246,11 +8244,11 @@ TNODE* LaTeX2MMLTree::BindDelimitedGroups( TNODE* MML_list ) {
               if ( fixed_interior ) {
                 if ( DoNestFenceBody(fixed_interior) )
                   fixed_interior =  CreateElemWithBucketAndContents( 5,750,1,2,
-                  											fixed_interior );
+                                        fixed_interior );
                 left_anchor->next   =  fixed_interior;
                 fixed_interior->prev  =  left_anchor;
                 TNODE* fini =  fixed_interior;
-                while ( fini->next )	// locate end of fixed interior
+                while ( fini->next )  // locate end of fixed interior
                   fini  =  fini->next;
                 fini->next  =  right_anchor;
                 right_anchor->prev  =  fini;
@@ -8260,16 +8258,16 @@ TNODE* LaTeX2MMLTree::BindDelimitedGroups( TNODE* MML_list ) {
                 right_anchor->prev  =  left_anchor;
               }
 
-            }		// if ( n_interior_nodes )
-          }		  // if ( cont )
+            }   // if ( n_interior_nodes )
+          }     // if ( cont )
 
-        } else	// if ( new_mrow )
+        } else  // if ( new_mrow )
           TCI_ASSERT(0);
-      }	  // if ( LocateMatchingDelim(rover,left_to_right,
-    }	// if ( MMLNodeCouldStartGroup(rover,fence_op_nom) )
+      }   // if ( LocateMatchingDelim(rover,left_to_right,
+    } // if ( MMLNodeCouldStartGroup(rover,fence_op_nom) )
 
     rover =  rover->next;
-  }		// loop thru contents list
+  }   // loop thru contents list
 
   return rv;
 }
@@ -8277,9 +8275,9 @@ TNODE* LaTeX2MMLTree::BindDelimitedGroups( TNODE* MML_list ) {
 
 // Attach "details" information to an mml TNODE.
 //  operator form and precedence, etc.
-/*	parser\fltutils.h
-define DETAILS_form		1
-define DETAILS_precedence	2
+/*  parser\fltutils.h
+define DETAILS_form   1
+define DETAILS_precedence 2
 define DETAILS_delimited_group   3
 
 typedef struct tagDETAILS {
@@ -8290,7 +8288,7 @@ typedef struct tagDETAILS {
 */
 
 void LaTeX2MMLTree::SetDetailNum( TNODE* mml_tnode,
-									U16 field_ID,I16 num ) {
+                  U16 field_ID,I16 num ) {
 
 TCI_ASSERT( num != UNDEFINED_DETAIL );
   DETAILS* info =  mml_tnode->details;
@@ -8316,81 +8314,81 @@ TCI_ASSERT( num != UNDEFINED_DETAIL );
   }
 
   if      ( field_ID == DETAILS_form )
-	  info->form  =  num;
+    info->form  =  num;
   else if ( field_ID == DETAILS_precedence )
-	  info->precedence      =  num;
+    info->precedence      =  num;
   else if ( field_ID == DETAILS_delimited_group )
-	  info->delimited_group =  num;
+    info->delimited_group =  num;
   else if ( field_ID == DETAILS_function_status )
-	  info->function_status =  num;
+    info->function_status =  num;
   else if ( field_ID == DETAILS_unit_state )
-	  info->unit_state      =  num;
+    info->unit_state      =  num;
   else if ( field_ID == DETAILS_is_expression )
-	  info->is_expression   =  num;
+    info->is_expression   =  num;
   else if ( field_ID == DETAILS_is_differential )
-	  info->is_differential =  num;
+    info->is_differential =  num;
   else if ( field_ID == DETAILS_bigop_status )
-	  info->bigop_status    =  num;
+    info->bigop_status    =  num;
   else if ( field_ID == DETAILS_integral_num )
-	  info->integral_num    =  num;
+    info->integral_num    =  num;
   else if ( field_ID == DETAILS_is_func_arg )
-	  info->is_func_arg     =  num;
+    info->is_func_arg     =  num;
   else if ( field_ID == DETAILS_space_width )
-	  info->space_width     =  num;
+    info->space_width     =  num;
   else if ( field_ID == DETAILS_style )
-	  info->style           =  num;
+    info->style           =  num;
   else if ( field_ID == DETAILS_is_geometry )
-	  info->is_geometry     =  num;
+    info->is_geometry     =  num;
   else if ( field_ID == DETAILS_is_Greek )
-	  info->is_Greek        =  num;
+    info->is_Greek        =  num;
   else if ( field_ID == DETAILS_bigl_size )
-	  info->bigl_size       =  num;
+    info->bigl_size       =  num;
   else if ( field_ID == DETAILS_TeX_atom_ilk )
-	  info->TeX_atom_ilk    =  num;
+    info->TeX_atom_ilk    =  num;
   else
     TCI_ASSERT(0);
 }
 
 
 I16 LaTeX2MMLTree::GetDetailNum( TNODE* mml_tnode,
-									                  U16 field_ID ) {
+                                    U16 field_ID ) {
 
   U16 rv  =  0;
   DETAILS* info =  mml_tnode->details;
 
   if ( info ) {
     if      ( field_ID == DETAILS_form )
-	    rv  =  info->form;
+      rv  =  info->form;
     else if ( field_ID == DETAILS_precedence )
-	    rv  =  info->precedence;
+      rv  =  info->precedence;
     else if ( field_ID == DETAILS_delimited_group )
-	    rv  =  info->delimited_group;
+      rv  =  info->delimited_group;
     else if ( field_ID == DETAILS_function_status )
-	    rv  =  info->function_status;
+      rv  =  info->function_status;
     else if ( field_ID == DETAILS_unit_state )
-	    rv  =  info->unit_state;
+      rv  =  info->unit_state;
     else if ( field_ID == DETAILS_is_expression )
-	    rv  =  info->is_expression;
+      rv  =  info->is_expression;
     else if ( field_ID == DETAILS_is_differential )
-	    rv  =  info->is_differential;
+      rv  =  info->is_differential;
     else if ( field_ID == DETAILS_bigop_status )
-	    rv  =  info->bigop_status;
+      rv  =  info->bigop_status;
     else if ( field_ID == DETAILS_integral_num )
-	    rv  =  info->integral_num;
+      rv  =  info->integral_num;
     else if ( field_ID == DETAILS_is_func_arg )
-	    rv  =  info->is_func_arg;
+      rv  =  info->is_func_arg;
     else if ( field_ID == DETAILS_space_width )
-	    rv  =  info->space_width;
+      rv  =  info->space_width;
     else if ( field_ID == DETAILS_style )
-	    rv  =  info->style;
+      rv  =  info->style;
     else if ( field_ID == DETAILS_is_geometry )
-	    rv  =  info->is_geometry;
+      rv  =  info->is_geometry;
     else if ( field_ID == DETAILS_is_Greek )
-	    rv  =  info->is_Greek;
+      rv  =  info->is_Greek;
     else if ( field_ID == DETAILS_bigl_size )
-	    rv  =  info->bigl_size;
+      rv  =  info->bigl_size;
     else if ( field_ID == DETAILS_TeX_atom_ilk )
-	    rv  =  info->TeX_atom_ilk;
+      rv  =  info->TeX_atom_ilk;
     else
       TCI_ASSERT(0);
   }
@@ -8400,7 +8398,7 @@ I16 LaTeX2MMLTree::GetDetailNum( TNODE* mml_tnode,
 
 
 void LaTeX2MMLTree::SetDetailzStr( TNODE* mml_tnode,
-									U16 field_ID,U8* zstr ) {
+                  U16 field_ID,U8* zstr ) {
 
   TCI_ASSERT(0);
 /*
@@ -8411,15 +8409,15 @@ void LaTeX2MMLTree::SetDetailzStr( TNODE* mml_tnode,
     info->form          =  0;
     info->precedence    =  0;
     info->delimited_group =  0;
-	...
+  ...
   }
 
   if ( field_ID == ) {
     U16 zln =  strlen( (char*)zstr );
-	if ( zln ) {
+  if ( zln ) {
       U8* tmp =  (U8*)TCI_NEW( char[ zln+1 ] );
       strcpy( (char*)tmp,(char*)zstr );
-	  info->  =  tmp;
+    info->  =  tmp;
     }
   }
 */
@@ -8438,9 +8436,9 @@ U16 LaTeX2MMLTree::GetOPFormFlags( TNODE* op_node ) {
       rv  =  2;
     else if ( op_node->details->form == OPF_postfix )
       rv  =  1;
-	else
-	  TCI_ASSERT(0);
-	return rv;
+  else
+    TCI_ASSERT(0);
+  return rv;
   }
 
   U8* mml_opname  =  op_node->var_value;
@@ -8463,18 +8461,18 @@ U16 LaTeX2MMLTree::GetOPFormFlags( TNODE* op_node ) {
 // f(z), R(R<=5), d(a,b), etc.
 // We often need to know what's in a group
 //  in order to decide what it represents 
-//    1. the argument list of a function	f(x,y)
-//    2. an operand						    2(x+1)
-//    3. parenthetic info					R(R>0)
-//    4. an interval						[0,10)
+//    1. the argument list of a function  f(x,y)
+//    2. an operand               2(x+1)
+//    3. parenthetic info         R(R>0)
+//    4. an interval            [0,10)
 
 void LaTeX2MMLTree::GetGroupInfo( TNODE* MML_group_node,
-					                  GROUP_INFO& gi ) {
+                            GROUP_INFO& gi ) {
 
   gi.opening_delim[0]   =  0;
   gi.closing_delim[0]   =  0;
-  gi.has_mtext		    =  FALSE;
-  gi.is_mod		        =  FALSE;
+  gi.has_mtext        =  FALSE;
+  gi.is_mod           =  FALSE;
   gi.lowest_precedence  =  999;
   gi.operator_count     =  0;
   gi.separator_count    =  0;
@@ -8515,30 +8513,30 @@ void LaTeX2MMLTree::GetGroupInfo( TNODE* MML_group_node,
         right_fence_mo  =  NULL;
     }
 
-    if ( body ) {		// there's an interior
+    if ( body ) {   // there's an interior
       TCI_BOOL nested_contents  =  FALSE;
       if ( !body->next || body->next == right_fence_mo ) {
-	// single node in this group
-	// check for ([...]) here.
+  // single node in this group
+  // check for ([...]) here.
         if ( body->details
         &&   body->details->delimited_group != UNDEFINED_DETAIL ) {
           gi.n_interior_nodes =  1;
-	      return;
-	    }
+        return;
+      }
         U16 uobj,usub,uID;
         GetUids( body->zuID,uobj,usub,uID );
-        if ( uobj==5 && usub==750 && uID==1 ) 	// mrow
+        if ( uobj==5 && usub==750 && uID==1 )   // mrow
           nested_contents =  TRUE;
-	  }
-	  if ( nested_contents )
+    }
+    if ( nested_contents )
         body  =  body->parts->contents;
-	  else if ( right_fence_mo )
+    else if ( right_fence_mo )
         right_fence_mo->prev->next  =  NULL;
 
       GetGroupInsideInfo( body,gi );
-	  if ( !nested_contents && right_fence_mo )
+    if ( !nested_contents && right_fence_mo )
         right_fence_mo->prev->next  =  right_fence_mo;
-    }	// if ( body )
+    } // if ( body )
   }   // if ( contents_list )
 }
 
@@ -8555,12 +8553,12 @@ void LaTeX2MMLTree::GetGroupInsideInfo( TNODE* MML_cont,GROUP_INFO& gi ) {
     GetUids( rover->zuID,uobjtype,usubtype,uID );
 
     switch ( uobjtype ) {
-      case  3 :	{
+      case  3 : {
 
-        if ( usubtype==203 && uID==1 ) {	// mo - operator
+        if ( usubtype==203 && uID==1 ) {  // mo - operator
           gi.operator_count++;
 
-          if ( rover->var_value	&& rover->v_len == 1 )
+          if ( rover->var_value && rover->v_len == 1 )
             if ( rover->var_value[0] == ',' || rover->var_value[0] == ';' )
               gi.separator_count++;
 
@@ -8569,35 +8567,35 @@ void LaTeX2MMLTree::GetGroupInsideInfo( TNODE* MML_cont,GROUP_INFO& gi ) {
             if ( rover->details->precedence < gi.lowest_precedence )
               gi.lowest_precedence =  rover->details->precedence;
 
-	        if ( gi.n_interior_nodes==1 && gi.operator_count == 1 )
-		      if ( rover->var_value )
-		        if ( !strcmp((char*)rover->var_value,"mod") )
+          if ( gi.n_interior_nodes==1 && gi.operator_count == 1 )
+          if ( rover->var_value )
+            if ( !strcmp((char*)rover->var_value,"mod") )
                 gi.is_mod =  TRUE;
 
-        } else if ( usubtype==201 && uID==1 ) {	// mi<uID3.201.1>
+        } else if ( usubtype==201 && uID==1 ) { // mi<uID3.201.1>
           if ( gi.n_interior_nodes==1 )
             if ( rover->var_value )
               if ( !strcmp((char*)rover->var_value,"mod") )
                 gi.is_mod =  TRUE;
 
-        } else if ( usubtype==204 && uID==1 ) {	// mtext<uID3.204.1>
+        } else if ( usubtype==204 && uID==1 ) { // mtext<uID3.204.1>
           gi.has_mtext =  TRUE;
-	    }
-	  }
-	  break;
+      }
+    }
+    break;
 
-	  case  5 : {
-        if        ( usubtype==750 && uID==1 ) {	// mrow
+    case  5 : {
+        if        ( usubtype==750 && uID==1 ) { // mrow
 // mrow<uID5.750.1>!mrow!BUCKET(5.750.2,MATH,,,/mrow,)!/mrow!
 
-        } else if ( usubtype >= 35 && usubtype <= 39 ) {	// \begin{array}
+        } else if ( usubtype >= 35 && usubtype <= 39 ) {  // \begin{array}
           gi.n_arrays++;
-        } else if ( usubtype >= 121 && usubtype <= 143 ) {	// \begin{array}
+        } else if ( usubtype >= 121 && usubtype <= 143 ) {  // \begin{array}
           gi.n_arrays++;
-        } else if ( usubtype >= 710 && usubtype <= 716 ) {	// \begin{array}
+        } else if ( usubtype >= 710 && usubtype <= 716 ) {  // \begin{array}
           gi.n_arrays++;
-        } else {		// clause for mrow in our list
-	    }
+        } else {    // clause for mrow in our list
+      }
       }
       break;
 
@@ -8606,7 +8604,7 @@ void LaTeX2MMLTree::GetGroupInsideInfo( TNODE* MML_cont,GROUP_INFO& gi ) {
     }
 
     rover =  rover->next;
-  }		// first level loop thru node list
+  }   // first level loop thru node list
 
 }
 
@@ -8617,9 +8615,9 @@ TCI_BOOL LaTeX2MMLTree::TeXNodeDenotesFunction( TNODE* TeX_node ) {
   TCI_BOOL rv =  FALSE;
 
   if ( TeX_node->src_tok ) {
-	char ch =  TeX_node->src_tok[0];
-	TCI_ASSERT(0);
-  }		  // if ( mml_node->var_value )
+  char ch =  TeX_node->src_tok[0];
+  TCI_ASSERT(0);
+  }     // if ( mml_node->var_value )
 
   return rv;
 }
@@ -8639,13 +8637,13 @@ TCI_BOOL LaTeX2MMLTree::DoNestFenceBody( TNODE* fixed_interior ) {
     node_count++;
     U16 uobj,usub,ID;
     GetUids( rover->zuID,uobj,usub,ID );
-    if      ( uobj==3 && usub==203 && ID==1 ) 	// mo - operator
+    if      ( uobj==3 && usub==203 && ID==1 )   // mo - operator
       operator_count++;
     else if ( rover->details
     &&        rover->details->precedence != UNDEFINED_DETAIL )
       operator_count++;
     rover =  rover->next;
-  }		// loop
+  }   // loop
 
   if ( operator_count && node_count > 1 )
     return TRUE;
@@ -8655,8 +8653,8 @@ TCI_BOOL LaTeX2MMLTree::DoNestFenceBody( TNODE* fixed_interior ) {
 
 
 TCI_BOOL LaTeX2MMLTree::LeftGroupHasSamePrec( TNODE* mml_op_node,
-												                        U16 curr_prec,
-												                        U16 l_space_nodes ) {
+                                                U16 curr_prec,
+                                                U16 l_space_nodes ) {
 
   TCI_BOOL rv   =  FALSE;
 
@@ -8674,8 +8672,8 @@ TCI_BOOL LaTeX2MMLTree::LeftGroupHasSamePrec( TNODE* mml_op_node,
   if ( lefty ) {
     U16 uobj,usub,ID;
     GetUids( lefty->zuID,uobj,usub,ID );
-    if ( uobj==5 && usub==750 && ID==1 ) {	// mrow
-	    if ( lefty->parts && lefty->parts->contents ) {
+    if ( uobj==5 && usub==750 && ID==1 ) {  // mrow
+      if ( lefty->parts && lefty->parts->contents ) {
         TNODE* rover  =  lefty->parts->contents;
         while ( rover ) {
           node_count++;
@@ -8684,17 +8682,17 @@ TCI_BOOL LaTeX2MMLTree::LeftGroupHasSamePrec( TNODE* mml_op_node,
           if ( rover->details
           &&   rover->details->precedence != UNDEFINED_DETAIL ) {
               op_count++;
-		        if ( rover->details->precedence == curr_prec )
-			      if ( rover->details->form == 2
-			      ||   rover->details->form == 3 )
-			        prec_op_count++;
+            if ( rover->details->precedence == curr_prec )
+            if ( rover->details->form == 2
+            ||   rover->details->form == 3 )
+              prec_op_count++;
           }
 
           rover =  rover->next;
         }
       }
-    }		// mrow clause
-  }		// if ( lefty )
+    }   // mrow clause
+  }   // if ( lefty )
 
   if ( op_count )
     if ( op_count == prec_op_count )
@@ -8711,15 +8709,15 @@ TCI_BOOL LaTeX2MMLTree::LeftGroupHasSamePrec( TNODE* mml_op_node,
 // handle third  '+' -> ((1+2+3)+4)=10  Elevate -> (1+2+3+4)=10
 
 TNODE* LaTeX2MMLTree::ElevateLeftOperand( TNODE* list_head,
-										  TNODE* mml_op_node,
-										  U16 l_space_nodes ) {
+                      TNODE* mml_op_node,
+                      U16 l_space_nodes ) {
 
   TNODE* rv   =  list_head;
 
   TNODE* right_anchor =  mml_op_node;
 
   TNODE* mrow =  mml_op_node->prev;
-  U16 tally =  l_space_nodes;	// skip over space-like nodes
+  U16 tally =  l_space_nodes; // skip over space-like nodes
   while ( tally && mrow ) {
     mrow  =  mrow->prev;
     right_anchor =  right_anchor->prev;
@@ -8753,19 +8751,19 @@ TNODE* LaTeX2MMLTree::ElevateLeftOperand( TNODE* list_head,
   if ( sub_head ) {
     if ( left_anchor ) {
       left_anchor->next =  sub_head;
-	  sub_head->prev    =  left_anchor;
-	}
+    sub_head->prev    =  left_anchor;
+  }
     right_anchor->prev  =  sub_tail;
     sub_tail->next      =  right_anchor;
     if ( parent ) {
       parent->contents  =  sub_head;
       sub_head->sublist_owner =  parent;
-	} else
+  } else
       sub_head->sublist_owner =  NULL;
     if ( new_list_head )
       rv =  sub_head;
-  } else			// if ( sub_head )
-	TCI_ASSERT(0);
+  } else      // if ( sub_head )
+  TCI_ASSERT(0);
 
   return rv;
 }
@@ -8784,36 +8782,36 @@ TCI_BOOL LaTeX2MMLTree::LookBackForIntegral( TNODE* tex_sym_node ) {
   while ( rover ) {
     U16 uobj,usub,ID;
     GetUids( rover->zuID,uobj,usub,ID );
-	if ( uobj==7 && usub==1 && ID>=1 && ID<=6 ) {
+  if ( uobj==7 && usub==1 && ID>=1 && ID<=6 ) {
 // \int<uID7.1.1,a>!\int!_LIMPLACE__FIRSTLIM__SECONDLIM_
 // ...
 // \doint<uID7.1.6,l>!\doint!_LIMPLACE__FIRSTLIM__SECONDLIM_
       rv  =  TRUE;
-	  break;
-	}
+    break;
+  }
 
 // &dd; may occur in a first level fraction after an integral
 
     if ( level == 1 && !rover->prev ) {
-	  TNODE* parts  =  NULL;
-	  if ( rover->sublist_owner ) {		// a parts list
-	    parts =  rover->sublist_owner;
-		while ( parts->prev )		// locate head of parts list
-		  parts =  parts->prev;
-	  }
-	  if ( parts && parts->sublist_owner ) {
-	    TNODE* frac =  parts->sublist_owner;
+    TNODE* parts  =  NULL;
+    if ( rover->sublist_owner ) {   // a parts list
+      parts =  rover->sublist_owner;
+    while ( parts->prev )   // locate head of parts list
+      parts =  parts->prev;
+    }
+    if ( parts && parts->sublist_owner ) {
+      TNODE* frac =  parts->sublist_owner;
         U16 uobj,usub,ID;
         GetUids( frac->zuID,uobj,usub,ID );
-	    if ( uobj==5 && ID==0 && usub>=1 && usub<=3 ) {
+      if ( uobj==5 && ID==0 && usub>=1 && usub<=3 ) {
           level =  2;
-		  rover =  frac;	// shift ongoing iteration up
-		}
-	  }
-	}
+      rover =  frac;  // shift ongoing iteration up
+    }
+    }
+  }
 
     rover =  rover->prev;
-  }		// loop back thru math run to find integral
+  }   // loop back thru math run to find integral
 
   return rv;
 }
@@ -8825,7 +8823,7 @@ TCI_BOOL LaTeX2MMLTree::IsFenceMO( TNODE* mml_node ) {
 
   U16 uobj,usub,uID;
   GetUids( mml_node->zuID,uobj,usub,uID );
-  if ( uobj==3 && usub==203 && uID==1 ) {	// <mo>
+  if ( uobj==3 && usub==203 && uID==1 ) { // <mo>
     ATTRIB_REC* arover  =  mml_node->attrib_list;
     while ( arover ) {
       if ( strcmp((char*)arover->attr_nom,"fence") )
@@ -8835,8 +8833,8 @@ TCI_BOOL LaTeX2MMLTree::IsFenceMO( TNODE* mml_node ) {
           rv  =  TRUE;
         break;
       }
-    }		// loop thru attribs
-  }		// <mo> clause
+    }   // loop thru attribs
+  }   // <mo> clause
 
   return rv;
 }
@@ -8845,8 +8843,8 @@ TCI_BOOL LaTeX2MMLTree::IsFenceMO( TNODE* mml_node ) {
 /*
 TEXT ONLY
 
-121 eqnarray 	  - list of lines C & C & C \\	5.121.9,5.121.11,5.121.4
-122 eqnarray*	  - 
+121 eqnarray    - list of lines C & C & C \\  5.121.9,5.121.11,5.121.4
+122 eqnarray*   - 
 
 \begin{align}<uID5.123.0>!\begin{align}!_ALIGNLINES_!\end{align}!
 
@@ -8868,62 +8866,62 @@ TEXT ONLY
 
 TEXT and MATH
 
-124 align*    - list of lines   C & C \\	5.121.9,5.121.11,5.121.4
+124 align*    - list of lines   C & C \\  5.121.9,5.121.11,5.121.4
                                 ?5.330.1\intertext{}?
                                   & C \\
 
 MATH only
 
-140 cases     - { list of lines C & C \\	5.121.9,5.121.11,5.121.4
+140 cases     - { list of lines C & C \\  5.121.9,5.121.11,5.121.4
 
-141 split     - list of lines   C & C \\	5.121.9,5.121.11,5.121.4
+141 split     - list of lines   C & C \\  5.121.9,5.121.11,5.121.4
                                 ?5.330.1\intertext{}?
                                   & C \\
 
-142 gathered  - [5.121.1,MEXTALIGN]			5.121.9,5.121.11,5.121.4
-			  - list of lines 	C \\
+142 gathered  - [5.121.1,MEXTALIGN]     5.121.9,5.121.11,5.121.4
+        - list of lines   C \\
 
-143 aligned   - [5.121.1,MEXTALIGN]			5.121.9,5.121.11,5.121.4
-			  - list of lines 	C & C \\
+143 aligned   - [5.121.1,MEXTALIGN]     5.121.9,5.121.11,5.121.4
+        - list of lines   C & C \\
                                 ?5.330.1\intertext{}?
                                 C & C \\
 */
 
 void LaTeX2MMLTree::AddNumbering( TNODE* mrow,
-									                TNODE* xml,
-									                TCI_BOOL is_eqnarray ) {
+                                  TNODE* xml,
+                                  TCI_BOOL is_eqnarray ) {
 
 
   if ( xml && mrow ) {
     if ( is_eqnarray ) {
-	    TNODE* x_rover  =  NULL;
+      TNODE* x_rover  =  NULL;
       TNODE* x_eqnarray =  FindObject( xml,(U8*)"5.121.0",INVALID_LIST_POS );
-	    if ( x_eqnarray && x_eqnarray->parts && x_eqnarray->parts->parts )
-	      x_rover  =  x_eqnarray->parts->parts;
+      if ( x_eqnarray && x_eqnarray->parts && x_eqnarray->parts->parts )
+        x_rover  =  x_eqnarray->parts->parts;
 
       U16 uobj,usub,ID;
       GetUids( mrow->zuID,uobj,usub,ID );
-	    if ( uobj==5 && usub==750 && ID==1 ) {
-	      mrow  =  mrow->parts->contents;
-	    } else {
-	      TCI_ASSERT(0);
+      if ( uobj==5 && usub==750 && ID==1 ) {
+        mrow  =  mrow->parts->contents;
+      } else {
+        TCI_ASSERT(0);
       }
 
-	    TNODE* m_rover  =  NULL;
+      TNODE* m_rover  =  NULL;
       TNODE* m_table  =  FindObject( mrow,(U8*)"5.35.0",INVALID_LIST_POS );
-	    if ( m_table && m_table->parts && m_table->parts->parts )
-	      m_rover  =  m_table->parts->parts;
+      if ( m_table && m_table->parts && m_table->parts->parts )
+        m_rover  =  m_table->parts->parts;
 
-	    U16 entry_num =  0;
-	    while ( x_rover && m_rover ) {
-		    TranscribeAttribs( x_rover,m_rover,entry_num );
-	      entry_num++;
-		    x_rover =  x_rover->next;
-		    m_rover =  m_rover->next;
-	    }
+      U16 entry_num =  0;
+      while ( x_rover && m_rover ) {
+        TranscribeAttribs( x_rover,m_rover,entry_num );
+        entry_num++;
+        x_rover =  x_rover->next;
+        m_rover =  m_rover->next;
+      }
 
-	  } else {
-	  }
+    } else {
+    }
   }
 
 }
@@ -8932,8 +8930,8 @@ void LaTeX2MMLTree::AddNumbering( TNODE* mrow,
 // MathML 2.0 supports line numbering for lines in an mtable.
 
 void LaTeX2MMLTree::TranscribeAttribs( TNODE* xml_line,
-									    TNODE* mml_line,
-									    U16 entry_num ) {
+                      TNODE* mml_line,
+                      U16 entry_num ) {
 
 // counter="equation" ordinal="1" label="wave" is-tagged="true"
 //  no_number="true"
@@ -8943,11 +8941,11 @@ void LaTeX2MMLTree::TranscribeAttribs( TNODE* xml_line,
 // Get the XML attributes associated with the current line.
 
     U8 *zcounter,*zordinal,*zlabel,*zis_tagged,*zno_number;
-	GetXMLAttrValues( xml_line->attrib_list,&zcounter,
-            		&zordinal,&zlabel,&zis_tagged,&zno_number );
+  GetXMLAttrValues( xml_line->attrib_list,&zcounter,
+                &zordinal,&zlabel,&zis_tagged,&zno_number );
 
-	if ( !zordinal ) return;
-	if ( zno_number && zno_number[0] == 't' ) return;
+  if ( !zordinal ) return;
+  if ( zno_number && zno_number[0] == 't' ) return;
 
 /*
 mlabeledtr<uID5.35.40>!mlabeledtr!_EQNNUMBER__LABELEDLIST_!/mlabeledtr!
@@ -8958,24 +8956,24 @@ _TDATA_IF(MATH,?mtd?,5.35.14)ifEND
 
   //  <mtr> --> <mlabeledtr>
     TNODE* mtr  =  mml_line->parts;
-    strcpy( (char*)mtr->zuID,"5.35.40" );		// mlabeledtr
+    strcpy( (char*)mtr->zuID,"5.35.40" );   // mlabeledtr
 
     TNODE* eqn_tag  =  NULL;
     if ( zordinal ) {
   // Generate the number for this line
       U8 ztext[80];
       ztext[0]  =  '(';
-	  strcpy( (char*)(ztext+1),(char*)zordinal );
-	  strcat( (char*)ztext,")" );
+    strcpy( (char*)(ztext+1),(char*)zordinal );
+    strcat( (char*)ztext,")" );
   // Put the number in an mtext node.
-      eqn_tag  =  MakeTNode( 0L,0L,0L,(U8*)zmtext );	// <mtext>
+      eqn_tag  =  MakeTNode( 0L,0L,0L,(U8*)zmtext );  // <mtext>
       SetChData( eqn_tag,ztext,NULL );
 
     } else if ( zis_tagged && zis_tagged[0]=='t' ) {
-	  TCI_ASSERT(0);	// not implemented yet
+    TCI_ASSERT(0);  // not implemented yet
 
     } else
-	  TCI_ASSERT(0);
+    TCI_ASSERT(0);
 
   // Put the mtext node in the parts bucket of <mlabeledtr>
     TNODE* num_bucket =  CreateBucketWithContents(5,35,42,eqn_tag );
@@ -9004,9 +9002,9 @@ _TDATA_IF(MATH,?mtd?,5.35.14)ifEND
 //  and line numbering.
 
 void LaTeX2MMLTree::GetXMLAttrValues( ATTRIB_REC* attrib_list,
-           						        U8** zcounter,U8** zordinal,
-           						        U8** zlabel,U8** zis_tagged,
-            							U8** zno_number ) {
+                              U8** zcounter,U8** zordinal,
+                              U8** zlabel,U8** zis_tagged,
+                          U8** zno_number ) {
 
   U8* attr_val;
   *zcounter  =  NULL;
@@ -9030,8 +9028,8 @@ void LaTeX2MMLTree::GetXMLAttrValues( ATTRIB_REC* attrib_list,
 // Get the value of an attribute from a list of ATTRIB_RECs.
 
 TCI_BOOL LaTeX2MMLTree::LocateAttribVal( ATTRIB_REC* attrib_list,
-											U8* targ_attr_name,
-											U8** zvalue ) {
+                      U8* targ_attr_name,
+                      U8** zvalue ) {
 
   TCI_BOOL rv =  FALSE;
 
@@ -9043,7 +9041,7 @@ TCI_BOOL LaTeX2MMLTree::LocateAttribVal( ATTRIB_REC* attrib_list,
       break;
     }
     arover  =  arover->next;
-  }		// loop thru list of ATTIB_RECs
+  }   // loop thru list of ATTIB_RECs
 
   return rv;
 }
@@ -9053,34 +9051,34 @@ TCI_BOOL LaTeX2MMLTree::LocateAttribVal( ATTRIB_REC* attrib_list,
 // LaTeX markups for "degree" and "prime(s)" use superscripts.
 
 TNODE* LaTeX2MMLTree::ScriptedUnit2MML( TNODE* script_node,
-											  TCI_BOOL& is_degree ) {
+                        TCI_BOOL& is_degree ) {
 
   is_degree =  FALSE;
   TNODE* rv =  NULL;
 
   if ( script_node->parts && script_node->parts->contents ) {
     U16 n_primes  =  0;
-	U16 degrees   =  0;
+  U16 degrees   =  0;
 
 // Iterate the contents of the superscript
 
-	TNODE* s_rover  =  script_node->parts->contents;
-	while ( s_rover ) {
+  TNODE* s_rover  =  script_node->parts->contents;
+  while ( s_rover ) {
       U16 uobj,usub,id;
       GetUids( s_rover->zuID,uobj,usub,id );
-	  if      ( uobj==3 && usub==17 && id==23 )
-	    n_primes++;
- 	  else if ( uobj==3 && usub==13 && id==10 )
-	    degrees++;
-	  else
-	   TCI_ASSERT(0);	// unknown token in superscripted unit
+    if      ( uobj==3 && usub==17 && id==23 )
+      n_primes++;
+    else if ( uobj==3 && usub==13 && id==10 )
+      degrees++;
+    else
+     TCI_ASSERT(0); // unknown token in superscripted unit
 
-	  s_rover =  s_rover->next;
+    s_rover =  s_rover->next;
     }
 
-	if ( degrees == 1 )
+  if ( degrees == 1 )
       is_degree =  TRUE;
-	if ( n_primes )
+  if ( n_primes )
       rv  =  PrimeAsScript2MML( n_primes );
   }
 
@@ -9104,7 +9102,7 @@ TNODE* LaTeX2MMLTree::PrimeAsScript2MML( U16 n_primes ) {
   U16 i =  0;
   while ( i<n_primes && i<36 ) {
     AppendEntityToBuffer( (U8*)"3.17.160",ztext,utext );
-	i++;
+  i++;
   }
 
   TNODE* mtext  =  MakeTNode( 0L,0L,0L,(U8*)zmtext );
@@ -9136,16 +9134,16 @@ TNODE* LaTeX2MMLTree::PrimeAsScript2MML( U16 n_primes ) {
 
 // $ {\bf...}$
 // \mathcal   <uID5.80.0>
-// \mathrm    <uID5.81.0>		-	May really be \textrm{}
-// \mathbf    <uID5.82.0>		-   Probably real tagged MATH
-// \mathsf    <uID5.83.0>		-	screwed up by SWP!!
+// \mathrm    <uID5.81.0>   - May really be \textrm{}
+// \mathbf    <uID5.82.0>   -   Probably real tagged MATH
+// \mathsf    <uID5.83.0>   - screwed up by SWP!!
 // \mathtt    <uID5.84.0>
 // \mathnormal<uID5.85.0>
 // \mathit    <uID5.86.0>
 // \mathbb    <uID5.87.0> OR \Bbb<uID5.87.0>
 // \mathfrak  <uID5.88.0> OR \frak<uID5.88.0>
 // \pmb       <uID5.89.0>
-// \QTR{}{}   <uID5.400.1> 	-  could be anything!!
+// \QTR{}{}   <uID5.400.1>  -  could be anything!!
 // \emph      <uID5.459.1> in MATH
 
 /* values of the mathvariant attribute
@@ -9156,13 +9154,13 @@ monospace
 */
 
 TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
-									    TNODE* TeX_cont,
-									    U16 tag_ilk,U8* tag_nom,
-									    TNODE** out_of_flow_list ) {
+                      TNODE* TeX_cont,
+                      U16 tag_ilk,U8* tag_nom,
+                      TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
 
-  if ( TeX_cont ) {		// there is something to tag
+  if ( TeX_cont ) {   // there is something to tag
 
     U8  attr_str[512];
     attr_str[0] =  0;
@@ -9174,43 +9172,43 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
 
 // Get the tag-specific data required to tag our mml.
 
-    U8*	entity_suffix =  NULL;
+    U8* entity_suffix =  NULL;
     U8* mathvariant =  NULL;
     switch ( tag_ilk ) {
 // \mathcal<uID5.80.0>!\mathcal!REQPARAM(5.80.1,MATH)
       case 80 :
         entity_suffix   =  (U8*)"scr";
         mathvariant =  (U8*)"script";
-	  break;
+    break;
 // \mathrm<uID5.81.0>!\mathrm!REQPARAM(5.81.1,MATH)
       case 81 :
         in_mml_grammar  =  TRUE;
-	  break;
+    break;
 // \mathbf<uID5.82.0>!\mathbf!REQPARAM(5.82.1,MATH)
       case TR_Mbf :
         in_mml_grammar  =  TRUE;
         mathvariant =  (U8*)"bold";
-	  break;
+    break;
 // \mathsf<uID5.83.0>!\mathsf!REQPARAM(5.83.1,MATH)
       case 83 :
         in_mml_grammar  =  TRUE;
         mathvariant =  (U8*)"sans-serif";
-	  break;
+    break;
 // \mathtt<uID5.84.0>!\mathtt!REQPARAM(5.84.1,MATH)
       case 84 :
         in_mml_grammar  =  TRUE;
         mathvariant =  (U8*)"monospace";
-	  break;
+    break;
 // \mathnormal<uID5.85.0>!\mathnormal!REQPARAM(5.85.1,MATH)
       case 85 :
         in_mml_grammar  =  TRUE;
         mathvariant =  (U8*)"normal";
-	  break;
+    break;
 // \mathit<uID5.86.0>!\mathit!REQPARAM(5.86.1,MATH)
       case 86 :
         in_mml_grammar  =  TRUE;
         mathvariant =  (U8*)"italic";
-	  break;
+    break;
 // \mathbb<uID5.87.0>!\mathbb!REQPARAM(5.87.1,MATH)
       case  87  :
         entity_suffix   =  (U8*)"opf";
@@ -9218,7 +9216,7 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
       break;
 // \mathfrak<uID5.88.0>!\mathfrak!REQPARAM(5.88.1,MATH)
       case  88  :
-		entity_suffix   =  (U8*)"fr";
+    entity_suffix   =  (U8*)"fr";
         mathvariant =  (U8*)"fraktur";
       break;
 // \pmb<uID5.89.0>!\pmb!REQPARAM(5.89.1,MATH)
@@ -9230,19 +9228,19 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
       case 96 :
         in_mml_grammar  =  TRUE;
         mathvariant =  (U8*)"bold-italic";
-	  break;
+    break;
 
 // TEXT
       case  TR_Tup      :
-      case  TR_Tit		:
+      case  TR_Tit    :
       case  TR_Tsl      :
       case  TR_Tsc      :
-      case  TR_Tmd		:
-      case  TR_Tbf		:
+      case  TR_Tmd    :
+      case  TR_Tbf    :
       case  TR_Trm      :
       case  TR_Tsf      :
       case  TR_Ttt      :
-      case  TR_em		:
+      case  TR_em   :
       case  TR_Tnormal  :
       case  TR_Tcircled :
         is_text =  TRUE;
@@ -9251,17 +9249,17 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
 
 // Style switches - resolve to size
 
-      case  TR_displaystyle  	  :
+      case  TR_displaystyle     :
         strcpy( (char*)attr_str,"displaystyle=\"true\"" );
         attr_nom2 =  (U8*)"scriptlevel";
         attr_val2 =  (U8*)"0";
       break;
-      case  TR_textstyle     	  :
+      case  TR_textstyle        :
         strcpy( (char*)attr_str,"displaystyle=\"false\"" );
         attr_nom2 =  (U8*)"scriptlevel";
         attr_val2 =  (U8*)"0";
       break;
-      case  TR_scriptstyle  	  :
+      case  TR_scriptstyle      :
         strcpy( (char*)attr_str,"displaystyle=\"false\"" );
         attr_nom2 =  (U8*)"scriptlevel";
         attr_val2 =  (U8*)"1";
@@ -9290,32 +9288,32 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
         in_mml_grammar  =  TRUE;
       break;
 
-	  default :
-	    TCI_ASSERT(0);
-	  break;
+    default :
+      TCI_ASSERT(0);
+    break;
     }
 
 
     if ( in_mml_grammar ) {
-	  U8 zuID[32];
+    U8 zuID[32];
       U16 uID =  is_text ? 1 : 0;
       UidsTozuID( 5,tag_ilk,uID,(U8*)zuID );
       U8* dest_zname;
       U8* d_template;
       if ( d_mml_grammar->GetGrammarDataFromUID(zuID,context_math,
-						                &dest_zname,&d_template) ) {
+                            &dest_zname,&d_template) ) {
         if ( d_template && d_template[0] )
           strcpy( (char*)attr_str,(char*)d_template );
       }
     }
 
 
-	TCI_BOOL tag_each_node  =  TRUE;
-    if ( attr_str[0] )		// nest in <mstyle>
+  TCI_BOOL tag_each_node  =  TRUE;
+    if ( attr_str[0] )    // nest in <mstyle>
       if ( !TeX_tag_node->next && !TeX_tag_node->prev )
-	    tag_each_node =  FALSE;
+      tag_each_node =  FALSE;
 
-	if ( tag_each_node ) {
+  if ( tag_each_node ) {
 
 // The algorithm here is VERY different from all other schemata.
 // A mml_list is generated from the input LaTeX contents list,
@@ -9330,80 +9328,80 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
       U16 tex_nodes_done,loc_error;
       TNODE* local_oof_list =  NULL;
       TNODE* mml_cont =  TranslateMathList( TeX_cont,do_bindings,
-					        NULL,tex_nodes_done,loc_error,&local_oof_list );
+                  NULL,tex_nodes_done,loc_error,&local_oof_list );
 
   // Traverse the first level mml list.
   //  Isolate each node, tag it,
   //  and append the result to the final return list, mml_rv.
 
-	  TNODE* tail =  NULL;	// for the final return list
+    TNODE* tail =  NULL;  // for the final return list
 
       TNODE* mml_rover  =  mml_cont;
-	  while ( mml_rover ) {
+    while ( mml_rover ) {
 
         TNODE* mml_next =  mml_rover->next;
-	    mml_rover->next =  NULL;
-	    mml_rover->prev =  NULL;
-	    mml_rover->sublist_owner =  NULL;
+      mml_rover->next =  NULL;
+      mml_rover->prev =  NULL;
+      mml_rover->sublist_owner =  NULL;
 
         TNODE* curr_tagged_node =  NULL;
-	    TCI_BOOL nest_in_mstyle =  TRUE;
+      TCI_BOOL nest_in_mstyle =  TRUE;
 
         U16 uobj,usub,id;
         GetUids( mml_rover->zuID,uobj,usub,id );
-	    if ( uobj==3 ) {
+      if ( uobj==3 ) {
           U8 buffer[64];
           buffer[0] =  0;
-	      if ( mml_rover->var_value ) {
-	        if ( mml_rover->v_len==1 ) {
-		      U8 ch =  mml_rover->var_value[0];
+        if ( mml_rover->var_value ) {
+          if ( mml_rover->v_len==1 ) {
+          U8 ch =  mml_rover->var_value[0];
 
-		      if ( ch=='{' || ch=='}' || ch=='[' || ch==']'
+          if ( ch=='{' || ch=='}' || ch=='[' || ch==']'
               ||   ch=='(' || ch==')' || ch=='|' ) {
 
-	            nest_in_mstyle =  FALSE;
+              nest_in_mstyle =  FALSE;
 
               } if ( (ch>='A' && ch<='Z') || (ch>='a' && ch<='z') ) {
 
                 if ( mathvariant ) {
                   if ( mml_version >= 200 ) {
                     SetNodeAttrib( mml_rover,(U8*)"mathvariant",mathvariant );
-	                nest_in_mstyle =  FALSE;
-			      } else if ( entity_suffix ) {
+                  nest_in_mstyle =  FALSE;
+            } else if ( entity_suffix ) {
                     strcpy( (char*)buffer,"&" );
                     strcat( (char*)buffer,(char*)mml_rover->var_value );
-			        delete mml_rover->var_value;
-			        mml_rover->var_value  =  NULL;
+              delete mml_rover->var_value;
+              mml_rover->var_value  =  NULL;
                     strcat( (char*)buffer,(char*)entity_suffix );
                     strcat( (char*)buffer,";" );
                     SetChData( mml_rover,buffer,NULL );
-	                nest_in_mstyle =  FALSE;
+                  nest_in_mstyle =  FALSE;
                     SetNodeAttrib( mml_rover,(U8*)"fontstyle",(U8*)"upright" );
-			      }
-			    }
-		      }
+            }
+          }
+          }
 
 
-	        } else if ( mml_rover->v_len==4 ) {
-	          if ( !strcmp("TeX^",(char*)mml_rover->var_value)
-	            ||   !strcmp("TeX_",(char*)mml_rover->var_value) )
-	            nest_in_mstyle =  FALSE;
+          } else if ( mml_rover->v_len==4 ) {
+            if ( !strcmp("TeX^",(char*)mml_rover->var_value)
+              ||   !strcmp("TeX_",(char*)mml_rover->var_value) )
+              nest_in_mstyle =  FALSE;
 
-	        } else if ( mml_rover->v_len==5 ) {
-	          if ( !strcmp("TeXSb",(char*)mml_rover->var_value)
-	            ||   !strcmp("TeXSp",(char*)mml_rover->var_value) )
-	            nest_in_mstyle =  FALSE;
+          } else if ( mml_rover->v_len==5 ) {
+            if ( !strcmp("TeXSb",(char*)mml_rover->var_value)
+              ||   !strcmp("TeXSp",(char*)mml_rover->var_value) )
+              nest_in_mstyle =  FALSE;
 
-	        }
+          }
 
 
-		  }		// if ( entity_suffix )
+      }   // if ( entity_suffix )
 
-	    } else
-	      nest_in_mstyle =  TRUE;
+      } else
+        nest_in_mstyle =  TRUE;
 
-	    if ( nest_in_mstyle ) {
-          if ( attr_str[0] ) {		// nest in <mstyle>
+      if ( nest_in_mstyle ) {
+          if ( attr_str[0] ) {    // nest in <mstyle>
             mml_rover =  FixImpliedMRow( mml_rover );
             TNODE* mstyle =  CreateElemWithBucketAndContents( 5,600,0,2,mml_rover );
             SetDetailNum( mstyle,DETAILS_style,tag_ilk );
@@ -9416,35 +9414,35 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
 
             curr_tagged_node  =  CreateElemWithBucketAndContents( 5,750,1,2,mstyle );
           } else
-	        curr_tagged_node  =  mml_rover;
-	      } else
-	        curr_tagged_node  =  mml_rover;
+          curr_tagged_node  =  mml_rover;
+        } else
+          curr_tagged_node  =  mml_rover;
 
   // Append the "tagged" node to output list
 
           if ( curr_tagged_node ) {
-	        if ( !mml_rv )
-		      mml_rv  =  curr_tagged_node;
-		    else {
-		      tail->next  =  curr_tagged_node;
-		      curr_tagged_node->prev  =  tail;
-		    }
-		    tail  =  curr_tagged_node;
-	      }
+          if ( !mml_rv )
+          mml_rv  =  curr_tagged_node;
+        else {
+          tail->next  =  curr_tagged_node;
+          curr_tagged_node->prev  =  tail;
+        }
+        tail  =  curr_tagged_node;
+        }
 
-	      mml_rover =  mml_next;
-	    }		// loop thru first-pass mml nodes
+        mml_rover =  mml_next;
+      }   // loop thru first-pass mml nodes
 
 
       //mml_cont  =  HandleOutOfFlowObjects( mml_cont,
-      //  					    &local_oof_list,out_of_flow_list,2 );
+      //                &local_oof_list,out_of_flow_list,2 );
 
         if ( local_oof_list ) {
           local_oof_list  =  DisposeOutOfFlowList( local_oof_list,0,0 );
         }
 
 
-	  } else {
+    } else {
 
 // Here we are handling an isolated run of MATH
 //  that will be nested within an <mstyle> element.
@@ -9457,9 +9455,9 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
       TNODE* mml_cont =  TranslateMathList( TeX_cont,do_bindings,
                     NULL,tex_nodes_done,loc_error,&local_oof_list );
       mml_cont  =  HandleOutOfFlowObjects( mml_cont,
-      						      &local_oof_list,out_of_flow_list,2 );
+                        &local_oof_list,out_of_flow_list,2 );
 
-      if ( attr_str[0] ) {		// nest in <mstyle>
+      if ( attr_str[0] ) {    // nest in <mstyle>
         mml_cont  =  FixImpliedMRow( mml_cont );
         TNODE* mstyle =  CreateElemWithBucketAndContents( 5,600,0,2,mml_cont );
         SetDetailNum( mstyle,DETAILS_style,tag_ilk );
@@ -9470,10 +9468,10 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
 
         mml_rv  =  CreateElemWithBucketAndContents( 5,750,1,2,mstyle );
       } else
-		TCI_ASSERT(0);
-	}
+    TCI_ASSERT(0);
+  }
 
-  }	  // if ( TeX_cont )
+  }   // if ( TeX_cont )
 
   return mml_rv;
 }
@@ -9484,14 +9482,14 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
 // If the bucket is tagged, nest in <mstyle>
 
 TNODE* LaTeX2MMLTree::TaggedText2MML( TNODE* TeX_cont,
-										TNODE** out_of_flow_list,
-										U8* tag_nom,U16 subclass ) {
+                    TNODE** out_of_flow_list,
+                    U8* tag_nom,U16 subclass ) {
 
   TNODE* mml_rv =  NULL;
 
   if ( TeX_cont ) {
     TCI_BOOL no_line_breaks =  FALSE;
-	TCI_BOOL is_unit  =  FALSE;
+  TCI_BOOL is_unit  =  FALSE;
     mml_rv  =  TextInMath2MML( TeX_cont,out_of_flow_list,
                                 no_line_breaks,is_unit );
 
@@ -9503,13 +9501,13 @@ TNODE* LaTeX2MMLTree::TaggedText2MML( TNODE* TeX_cont,
 
     if ( subclass ) {
       if ( subclass != 90 ) {   // \text{}
-	    U8 zuID[32];
+      U8 zuID[32];
         UidsTozuID( 5,subclass,1,(U8*)zuID );
         U8* dest_zname;
         U8* d_template;
         if ( d_mml_grammar->GetGrammarDataFromUID(
-					                    zuID,context_math,
-   							            &dest_zname,&d_template) ) {
+                              zuID,context_math,
+                            &dest_zname,&d_template) ) {
           if ( d_template && d_template[0] )
             strcpy( (char*)attr_str,(char*)d_template );
         } else
@@ -9539,7 +9537,7 @@ TNODE* LaTeX2MMLTree::TaggedText2MML( TNODE* TeX_cont,
     } else
       TCI_ASSERT(0);
 
-    if ( attr_str[0] ) {		// nest in <mstyle>
+    if ( attr_str[0] ) {    // nest in <mstyle>
       mml_rv  =  FixImpliedMRow( mml_rv );
       mml_rv  =  CreateElemWithBucketAndContents( 5,600,0,2,mml_rv );
       SetDetailNum( mml_rv,DETAILS_style,3 );
@@ -9592,19 +9590,19 @@ TNODE* LaTeX2MMLTree::MakeMMLScript( TNODE* list_head,
 
     U16 uobj,usub,id;
     GetUids( nnn->zuID,uobj,usub,id );
-    if ( uobj==3 && usub==201 && id==1 ) {	// mi<uID3.203.1>
+    if ( uobj==3 && usub==201 && id==1 ) {  // mi<uID3.203.1>
       U8* op_nom  =  nnn->var_value;
-  	  U16 script_ilk2 =  0;
+      U16 script_ilk2 =  0;
       if      ( !strcmp("TeX^",(char*)op_nom) )
-  	    script_ilk2 =  2;
+        script_ilk2 =  2;
       else if ( !strcmp("TeX_",(char*)op_nom) )
-  	    script_ilk2 =  1;
+        script_ilk2 =  1;
       else if ( !strcmp("TeXSp",(char*)op_nom) )
-  	    script_ilk2 =  2;
+        script_ilk2 =  2;
       else if ( !strcmp("TeXSb",(char*)op_nom) )
-  	    script_ilk2 =  1;
+        script_ilk2 =  1;
 
-  	  if ( script_ilk2 && script_ilk2 != script_ilk1 )
+      if ( script_ilk2 && script_ilk2 != script_ilk1 )
         return MakeMMLSubSup( list_head,psuedo_script_node,
                                 p_new_mscript,missing_left );
     }
@@ -9710,7 +9708,7 @@ _SUPERSCRIPT_reqELEMENT(5.51.5)
         if ( operand_left->details->form != UNDEFINED_DETAIL )
           SetDetailNum( mscript,DETAILS_form,1 );
         if ( operand_left->details->precedence != UNDEFINED_DETAIL )
-		  // partialD and nabla should be 54
+      // partialD and nabla should be 54
           SetDetailNum( mscript,DETAILS_precedence,55 );
         if ( operand_left->details->TeX_atom_ilk != UNDEFINED_DETAIL )
           SetDetailNum( mscript,DETAILS_TeX_atom_ilk,
@@ -9866,7 +9864,7 @@ _SSSUPER_reqELEMENT(5.52.5)
       if ( base->details->form != UNDEFINED_DETAIL )
         SetDetailNum( mscript,DETAILS_form,base->details->form );
       if ( base->details->precedence != UNDEFINED_DETAIL )
-		  // partialD and nabla should be 54
+      // partialD and nabla should be 54
         SetDetailNum( mscript,DETAILS_precedence,
                                 base->details->precedence );
       if ( base->details->TeX_atom_ilk != UNDEFINED_DETAIL )
@@ -9876,7 +9874,7 @@ _SSSUPER_reqELEMENT(5.52.5)
     *p_new_mscript =  mscript;
     if ( left_anchor ) {
       left_anchor->next =  mscript;
-	    mscript->prev     =  left_anchor;
+      mscript->prev     =  left_anchor;
     }
     if ( right_anchor ) {
       right_anchor->prev  =  mscript;
@@ -9901,10 +9899,10 @@ TNODE* LaTeX2MMLTree::BindUnits( TNODE* MML_list ) {
 
   TNODE* mml_rv =  MML_list;
 
-  U16 stopping_prec =  46;	// a bit arbitrary
+  U16 stopping_prec =  46;  // a bit arbitrary
 
   TNODE* MML_rover  =  MML_list;
-  while ( MML_rover ) {		// loop thru contents nodes
+  while ( MML_rover ) {   // loop thru contents nodes
 
     TNODE* new_mrow;
 
@@ -9913,7 +9911,7 @@ TNODE* LaTeX2MMLTree::BindUnits( TNODE* MML_list ) {
     if ( MML_rover->details
     &&   MML_rover->details->unit_state==1 ) {
 
-  	  U16 l_space_nodes,l_operand_nodes;
+      U16 l_space_nodes,l_operand_nodes;
       I16 local_space_width;
       if ( OperandExists(MML_rover,FALSE,stopping_prec,
                 l_space_nodes,l_operand_nodes,local_space_width) ) {
@@ -9927,13 +9925,13 @@ TNODE* LaTeX2MMLTree::BindUnits( TNODE* MML_list ) {
             tally--;
           }
           mml_rv  =  NestNodesInMrow( mml_rv,right_anchor,NULL,
-		  				            FALSE,l_operand_nodes,&new_mrow );
+                          FALSE,l_operand_nodes,&new_mrow );
         }
 
-        TNODE* it =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );	// <mo>
+        TNODE* it =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );  // <mo>
         SetChData( it,entity_it,entity_it_unicode );
 
-	    SetNodeAttrib( it,(U8*)"form",(U8*)zop_forms[OPF_infix] );
+      SetNodeAttrib( it,(U8*)"form",(U8*)zop_forms[OPF_infix] );
 
 //&deg;  &prime;  &Prime;
         if ( !NonSpacedUnit(MML_rover) )
@@ -9959,19 +9957,19 @@ TNODE* LaTeX2MMLTree::BindUnits( TNODE* MML_list ) {
         }
 
         mml_rv  =  NestNodesInMrow( mml_rv,NULL,start,TRUE,
-									node_to_nest,&new_mrow );
-	    if ( new_mrow ) {
+                  node_to_nest,&new_mrow );
+      if ( new_mrow ) {
           SetDetailNum( new_mrow,DETAILS_unit_state,11 );
           MML_rover =  new_mrow;
         } else {
           TCI_ASSERT(0);
         }
 
-	  } else {
+    } else {
         if ( MML_rover->prev )  {
-          TCI_ASSERT(0);		// un-attached unit
+          TCI_ASSERT(0);    // un-attached unit
         }
-	  }
+    }
 
     }       // if ( details->unit_state==1 )
 
@@ -9989,39 +9987,39 @@ TNODE* LaTeX2MMLTree::BindMixedNumbers( TNODE* MML_list ) {
   TNODE* rv =  MML_list;
 
   TNODE* MML_rover  =  MML_list;
-  while ( MML_rover ) {		// loop thru contents nodes
+  while ( MML_rover ) {   // loop thru contents nodes
 // Currently, only binding mixed numbers in this pass
-	  if ( IsMMLNumber(MML_rover) && MML_rover->next ) {
+    if ( IsMMLNumber(MML_rover) && MML_rover->next ) {
       TCI_BOOL do_binding =  FALSE;
-	    TNODE* frac =  MML_rover->next;
+      TNODE* frac =  MML_rover->next;
 
       U16 uobj,usub,id;
       GetUids( frac->zuID,uobj,usub,id );
 // mfrac<uID5.1.0>!mfrac!reqELEMENT(5.1.1)reqELEMENT(5.1.2)!/mfrac!
       if ( uobj==5 && usub==1 && id==0 ) {
-	      TNODE* num_bucket =  frac->parts;
-		    if ( num_bucket && num_bucket->contents ) {
-	        TNODE* denom_bucket =  num_bucket->next;
-		      if ( denom_bucket && denom_bucket->contents ) {
-	        if ( IsMMLNumber(num_bucket->contents)
-	        && 	 IsMMLNumber(denom_bucket->contents) )
+        TNODE* num_bucket =  frac->parts;
+        if ( num_bucket && num_bucket->contents ) {
+          TNODE* denom_bucket =  num_bucket->next;
+          if ( denom_bucket && denom_bucket->contents ) {
+          if ( IsMMLNumber(num_bucket->contents)
+          &&   IsMMLNumber(denom_bucket->contents) )
               do_binding =  TRUE;
-		      }
-		    }
-	    }
+          }
+        }
+      }
 
       if ( do_binding ) {
         TNODE* new_mrow;
-		//TNODE* anchor =  MML_rover->prev;
-		    rv  =  NestNodesInMrow( rv,NULL,MML_rover,TRUE,2,&new_mrow );
-		    if ( new_mrow ) {
-		// may want to add DETAILS_is_number
+    //TNODE* anchor =  MML_rover->prev;
+        rv  =  NestNodesInMrow( rv,NULL,MML_rover,TRUE,2,&new_mrow );
+        if ( new_mrow ) {
+    // may want to add DETAILS_is_number
           SetDetailNum( new_mrow,DETAILS_is_expression,1 );
-		      MML_rover =  new_mrow;
-		    } else
-		      TCI_ASSERT(0);
-	    }
-    }       // 	if ( IsMMLNumber(MML_rover) && MML_rover->next )
+          MML_rover =  new_mrow;
+        } else
+          TCI_ASSERT(0);
+      }
+    }       //  if ( IsMMLNumber(MML_rover) && MML_rover->next )
 
     MML_rover =  MML_rover->next;
   }       // loop thru MML node list
@@ -10036,7 +10034,7 @@ TNODE* LaTeX2MMLTree::BindDegMinSec( TNODE* MML_list ) {
   TNODE* rv =  MML_list;
 
   TNODE* MML_rover  =  MML_list;
-  while ( MML_rover ) {		// loop thru contents nodes
+  while ( MML_rover ) {   // loop thru contents nodes
     U16 t1 =  GetDegMinSec( MML_rover );
     U16 t2 =  0;
     U16 t3 =  0;
@@ -10053,20 +10051,20 @@ TNODE* LaTeX2MMLTree::BindDegMinSec( TNODE* MML_list ) {
             nodes_to_bind++;
         } else if ( t2 == 3 )
           nodes_to_bind =  2;
-	
+  
       } else if ( t1 == 2 ) {     // minute
         if ( t2 == 3 )
           nodes_to_bind =  2;
-      }	
+      } 
 
       if ( nodes_to_bind ) {
         TNODE* new_mrow;
-		TNODE* anchor =  NULL;
-		if ( MML_rover->prev )
-		  anchor =  MML_rover->prev;
+    TNODE* anchor =  NULL;
+    if ( MML_rover->prev )
+      anchor =  MML_rover->prev;
         rv  =  NestNodesInMrow( rv,anchor,MML_rover,TRUE,nodes_to_bind,&new_mrow );
         if ( new_mrow ) {
-		// may want to add DETAILS_is_number
+    // may want to add DETAILS_is_number
           SetDetailNum( new_mrow,DETAILS_is_expression,1 );
           MML_rover =  new_mrow;
         } else
@@ -10093,13 +10091,13 @@ TCI_BOOL LaTeX2MMLTree::IsVector( TNODE* mml_node ) {
       if ( gi.opening_delim[0]=='('
       ||   gi.opening_delim[0]=='{'
       ||   gi.opening_delim[0]=='[' ) {
-	    if ( MMLDelimitersMatch(gi) )
-	      if ( gi.lowest_precedence == 3 )	// has commas
-	        if ( gi.operator_count == gi.separator_count )
-		      if ( gi.n_interior_nodes == 2*gi.separator_count + 1 )
+      if ( MMLDelimitersMatch(gi) )
+        if ( gi.lowest_precedence == 3 )  // has commas
+          if ( gi.operator_count == gi.separator_count )
+          if ( gi.n_interior_nodes == 2*gi.separator_count + 1 )
                 rv =  TRUE;
-	    }
-	  }
+      }
+    }
   }
 
   return rv;
@@ -10115,14 +10113,14 @@ TCI_BOOL LaTeX2MMLTree::IsQualifier( TNODE* mml_node ) {
       GROUP_INFO gi;
       GetGroupInfo( mml_node,gi );
       if ( gi.opening_delim[0]=='(' || gi.opening_delim[0]=='{' )
-	    if ( MMLDelimitersMatch(gi) )
-      if ( gi.lowest_precedence < 28 )	// 28 is + or -
+      if ( MMLDelimitersMatch(gi) )
+      if ( gi.lowest_precedence < 28 )  // 28 is + or -
         rv =  TRUE;
-	    else {
-		    if ( gi.is_mod )
+      else {
+        if ( gi.is_mod )
           rv =  TRUE;
-	    }
-	  }
+      }
+    }
   }
 
   return rv;
@@ -10151,115 +10149,115 @@ TCI_BOOL LaTeX2MMLTree::MMLDelimitersMatch( GROUP_INFO& gi ) {
 
   if ( zln_left == 1 ) {
     if ( zln_right == 1 ) {
-	    U8 l_char =  opener[0];
-	    U8 r_char =  closer[0];
-	    if        ( l_char=='(' ) {
-	      if ( r_char==')' ) rv =  TRUE;
-	    } else if ( l_char=='[' ) {
-	      if ( r_char==']' ) rv =  TRUE;
-	    } else if ( l_char=='{' ) {
-	      if ( r_char=='}' ) rv =  TRUE;
-	    } else if ( l_char=='|' ) {
-	      if ( r_char=='|' ) rv =  TRUE;
-	    } else if ( l_char=='\\' ) {
-	      if ( r_char=='\\' ) rv =  TRUE;
-	    } else if ( l_char=='/' ) {
-	      if ( r_char=='/' ) rv =  TRUE;
-	    } else
-	      TCI_ASSERT(0);
-	  }
+      U8 l_char =  opener[0];
+      U8 r_char =  closer[0];
+      if        ( l_char=='(' ) {
+        if ( r_char==')' ) rv =  TRUE;
+      } else if ( l_char=='[' ) {
+        if ( r_char==']' ) rv =  TRUE;
+      } else if ( l_char=='{' ) {
+        if ( r_char=='}' ) rv =  TRUE;
+      } else if ( l_char=='|' ) {
+        if ( r_char=='|' ) rv =  TRUE;
+      } else if ( l_char=='\\' ) {
+        if ( r_char=='\\' ) rv =  TRUE;
+      } else if ( l_char=='/' ) {
+        if ( r_char=='/' ) rv =  TRUE;
+      } else
+        TCI_ASSERT(0);
+    }
 
-  }	else if ( zln_left == 2 ) {
+  } else if ( zln_left == 2 ) {
     if ( zln_right == 2 ) {
-	    if ( opener[0] == '|' && closer[0] == '|' )
-	      if ( opener[1] == '|' && closer[1] == '|' )
-		      rv  =  TRUE;
-	  }
+      if ( opener[0] == '|' && closer[0] == '|' )
+        if ( opener[1] == '|' && closer[1] == '|' )
+          rv  =  TRUE;
+    }
 
-  }	else if ( zln_left == 7 ) {
+  } else if ( zln_left == 7 ) {
     if ( !strcmp((char*)opener,"&lceil;") )
       if ( !strcmp((char*)closer,"&rceil;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
     if ( !strcmp((char*)opener,"&Slash;") )
       if ( !strcmp((char*)closer,"&Slash;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 8 ) {
+  } else if ( zln_left == 8 ) {
     if ( !strcmp((char*)opener,"&langle;") )
       if ( !strcmp((char*)closer,"&rangle;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
     if ( !strcmp((char*)opener,"&lfloor;") )
       if ( !strcmp((char*)closer,"&rfloor;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
     if ( !strcmp((char*)opener,"&Verbar;") )
       if ( !strcmp((char*)closer,"&Verbar;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 9 ) {
+  } else if ( zln_left == 9 ) {
     if ( !strcmp((char*)opener,"&UpArrow;") )
       if ( !strcmp((char*)closer,"&UpArrow;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 11 ) {
+  } else if ( zln_left == 11 ) {
     if ( !strcmp((char*)opener,"&LeftFloor;") )
       if ( !strcmp((char*)closer,"&RightFloor;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
     if ( !strcmp((char*)opener,"&Backslash;") )
       if ( !strcmp((char*)closer,"&Backslash;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 13 ) {
+  } else if ( zln_left == 13 ) {
     if ( !strcmp((char*)opener,"&LeftCeiling;") )
       if ( !strcmp((char*)closer,"&RightCeiling;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 14 ) {
+  } else if ( zln_left == 14 ) {
     if ( !strcmp((char*)opener,"&LeftSkeleton;") )
       if ( !strcmp((char*)closer,"&RightSkeleton;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 15 ) {
+  } else if ( zln_left == 15 ) {
     if ( !strcmp((char*)opener,"&DoubleUpArrow;") )
       if ( !strcmp((char*)closer,"&DoubleUpArrow;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 16 ) {
+  } else if ( zln_left == 16 ) {
     if ( !strcmp((char*)opener,"&OpenCurlyQuote;") )
       if ( !strcmp((char*)closer,"&CloseCurlyQuote;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 17 ) {
+  } else if ( zln_left == 17 ) {
     if ( !strcmp((char*)opener,"&DoubleDownArrow;") )
       if ( !strcmp((char*)closer,"&DoubleDownArrow;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 18 ) {
+  } else if ( zln_left == 18 ) {
     if ( !strcmp((char*)opener,"&LeftAngleBracket;") )
       if ( !strcmp((char*)closer,"&RightAngleBracket;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 19 ) {
+  } else if ( zln_left == 19 ) {
     if ( !strcmp((char*)opener,"&LeftBracketingBar;") )
       if ( !strcmp((char*)closer,"&RightBracketingBar;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
     if ( !strcmp((char*)opener,"&LeftDoubleBracket;") )
       if ( !strcmp((char*)closer,"&RightDoubleBracket;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 22 ) {
+  } else if ( zln_left == 22 ) {
     if ( !strcmp((char*)opener,"&OpenCurlyDoubleQuote;") )
       if ( !strcmp((char*)closer,"&CloseCurlyDoubleQuote;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
-  }	else if ( zln_left == 25 ) {
+  } else if ( zln_left == 25 ) {
     if ( !strcmp((char*)opener,"&LeftDoubleBracketingBar;") )
       if ( !strcmp((char*)closer,"&RightDoubleBracketingBar;") )
-		    rv  =  TRUE;
+        rv  =  TRUE;
 
   } else
     TCI_ASSERT(0);
@@ -10271,14 +10269,14 @@ TCI_BOOL LaTeX2MMLTree::MMLDelimitersMatch( GROUP_INFO& gi ) {
 
 TCI_BOOL LaTeX2MMLTree::IsMMLFactor( TNODE* mml_node,
                                     TCI_BOOL include_differential,
-									TCI_BOOL& is_capitol_letter ) {
+                  TCI_BOOL& is_capitol_letter ) {
 
   TCI_BOOL rv =  FALSE;
   is_capitol_letter =  FALSE;
 
   TCI_BOOL look_inside  =  FALSE;
   if ( mml_node->details ) {
-    if ( mml_node->details->form != UNDEFINED_DETAIL ) {	// an operator
+    if ( mml_node->details->form != UNDEFINED_DETAIL ) {  // an operator
       rv =  FALSE;
 
     } else if ( mml_node->details->delimited_group == 1 ) {
@@ -10288,10 +10286,10 @@ TCI_BOOL LaTeX2MMLTree::IsMMLFactor( TNODE* mml_node,
       if ( !gi.has_mtext ) {
         if ( MMLDelimitersMatch(gi) ) {
           rv =  TRUE;
-          if ( gi.lowest_precedence < 28 )	// 28 is + or -
+          if ( gi.lowest_precedence < 28 )  // 28 is + or -
             rv =  FALSE;
-  	    }
-  	  }
+        }
+      }
 
 // if GroupHasMatchedDelimiter && 
 
@@ -10331,7 +10329,7 @@ TCI_BOOL LaTeX2MMLTree::IsMMLFactor( TNODE* mml_node,
     } else
       TCI_ASSERT(0);
 
-  }	else
+  } else
     look_inside =  TRUE;
 
   if ( look_inside )
@@ -10344,8 +10342,8 @@ TCI_BOOL LaTeX2MMLTree::IsMMLFactor( TNODE* mml_node,
 
 
 TCI_BOOL LaTeX2MMLTree::IsMMLFactorFromInternals( TNODE* mml_node,
-									                  TCI_BOOL include_differential,
-									                  TCI_BOOL& is_capitol_letter ) {
+                                    TCI_BOOL include_differential,
+                                    TCI_BOOL& is_capitol_letter ) {
 
   TCI_BOOL rv =  FALSE;
   is_capitol_letter =  FALSE;
@@ -10361,63 +10359,63 @@ TCI_BOOL LaTeX2MMLTree::IsMMLFactorFromInternals( TNODE* mml_node,
       case 201  :       // mi<uID3.201.1>
         rv =  TRUE;
         if ( mml_node->v_len == 1 ) {
-	        char ch =  mml_node->var_value[0];
-	        if ( ch >= 'A' && ch <= 'Z' )
+          char ch =  mml_node->var_value[0];
+          if ( ch >= 'A' && ch <= 'Z' )
             is_capitol_letter =  TRUE;
         }
       break;
-      case 202  :		// mn<uID3.202.1>
+      case 202  :   // mn<uID3.202.1>
         rv =  FALSE;
       break;
-      case 203  :		// mo<uID3.203.1>
+      case 203  :   // mo<uID3.203.1>
         rv =  FALSE;
       break;
-      case 204  :		// mtext<uID3.204.1>
+      case 204  :   // mtext<uID3.204.1>
         //if ( mml_node->next )
         //  rv  =  GetIlk( mml_node->next );
       break;
-      case 205  :		// mspace<uID3.205.1>
-      case 206  :		// ms<uID3.206.1>
+      case 205  :   // mspace<uID3.205.1>
+      case 206  :   // ms<uID3.206.1>
       break;
       default   :
         TCI_ASSERT(0);
       break;
     }
 
-  } else if ( uobjtype == 5 ) {		// a structure or bucket
+  } else if ( uobjtype == 5 ) {   // a structure or bucket
 
     U8* bucket_ID =  NULL;
 
     switch ( stype ) {
-      case 750  : {	//mrow<uID5.750.1>	  BUCKET(5.750.2,MATH,,,/mrow,)
-		if ( mml_node->details ) {
-		} else {	// must look inside
-		  //TCI_ASSERT(0);
+      case 750  : { //mrow<uID5.750.1>    BUCKET(5.750.2,MATH,,,/mrow,)
+    if ( mml_node->details ) {
+    } else {  // must look inside
+      //TCI_ASSERT(0);
           TNODE* bucket =  FindObject( mml_node->parts,
-								(U8*)"5.750.2",INVALID_LIST_POS );
+                (U8*)"5.750.2",INVALID_LIST_POS );
           if ( bucket && bucket->contents ) {
             TCI_BOOL is_cap_letter;
             rv  =  IsMMLFactor( bucket->contents,include_differential,
                                     is_cap_letter );
           }
-		}
+    }
       }
       break;
-      case   1  : {	//mfrac<uID5.1.0>	  reqELEMENT(5.1.1)reqELEMENT(5.1.2)
+      case   1  : { //mfrac<uID5.1.0>   reqELEMENT(5.1.1)reqELEMENT(5.1.2)
         rv =  TRUE;
       }
       break;
-      case  60  : {	//msqrt<uID5.60.0>	  BUCKET(5.60.2,MATH,,,/msqrt,)
+      case  60  : { //msqrt<uID5.60.0>    BUCKET(5.60.2,MATH,,,/msqrt,)
       }
       break;
-      case  61  : {	//mroot<uID5.61.0>	  reqELEMENT(5.61.2)reqELEMENT(5.61.1)
+      case  61  : { //mroot<uID5.61.0>    reqELEMENT(5.61.2)reqELEMENT(5.61.1)
         rv =  TRUE;
       }
       break;
-      case 600  : {	//mstyle<uID5.600.0>  BUCKET(5.600.2,MATH,,,/mstyle,)
+      case 600  : { //mstyle<uID5.600.0>  BUCKET(5.600.2,MATH,,,/mstyle,)
     // need to look in bucket to decide
         TNODE* bucket =  FindObject( mml_node->parts,
-								              (U8*)"5.600.2",INVALID_LIST_POS );
+                              (U8*)"5.600.2",INVALID_LIST_POS );
         if ( bucket && bucket->contents ) {
           TCI_BOOL is_cap_letter;
           rv  =  IsMMLFactor( bucket->contents,include_differential,
@@ -10425,40 +10423,40 @@ TCI_BOOL LaTeX2MMLTree::IsMMLFactorFromInternals( TNODE* mml_node,
         }
       }
       break;
-      case 601  : {	//merror<uID5.601.0>  BUCKET(5.601.2,MATH,,,/merror,)
+      case 601  : { //merror<uID5.601.0>  BUCKET(5.601.2,MATH,,,/merror,)
       }
       break;
-      case 602  : {	//mpadded<uID5.602.0> BUCKET(5.602.2,MATH,,,/mpadded,)
+      case 602  : { //mpadded<uID5.602.0> BUCKET(5.602.2,MATH,,,/mpadded,)
       }
       break;
-      case 603  : {	//mphantom<uID5.603.0>BUCKET(5.603.2,MATH,,,/mphantom,)
+      case 603  : { //mphantom<uID5.603.0>BUCKET(5.603.2,MATH,,,/mphantom,)
       }
       break;
-      case  70  : {	//mfenced<uID5.70.0>  _FENCEDITEMS_
+      case  70  : { //mfenced<uID5.70.0>  _FENCEDITEMS_
     // need to look inside here
         rv =  TRUE;
       }
       break;
 
-      case  50  : 	//msub<uID5.50.2>!msub!_SUBBASE__SUBSCRIPT_!/msub!
+      case  50  :   //msub<uID5.50.2>!msub!_SUBBASE__SUBSCRIPT_!/msub!
         bucket_ID =  (U8*)"5.50.3";
-      case  51  : 	//msup<uID5.51.2>!msup!reqELEMENT(5.51.3)_SUPERSCRIPT_!/msup!
-	      if ( !bucket_ID )
+      case  51  :   //msup<uID5.51.2>!msup!reqELEMENT(5.51.3)_SUPERSCRIPT_!/msup!
+        if ( !bucket_ID )
           bucket_ID =  (U8*)"5.51.3";
-      case  52  : 	//msubsup<uID5.52.2>!msubsup!reqELEMENT(5.52.3)_SSSUB__SSSUPER_!/msubsup!
-	      if ( !bucket_ID )
+      case  52  :   //msubsup<uID5.52.2>!msubsup!reqELEMENT(5.52.3)_SSSUB__SSSUPER_!/msubsup!
+        if ( !bucket_ID )
           bucket_ID =  (U8*)"5.52.3";
-      case  53  : 	//munder<uID5.53.2>!munder!reqELEMENT(5.53.3)_UNDERSCRIPT_!/munder!
-	      if ( !bucket_ID )
+      case  53  :   //munder<uID5.53.2>!munder!reqELEMENT(5.53.3)_UNDERSCRIPT_!/munder!
+        if ( !bucket_ID )
           bucket_ID =  (U8*)"5.53.3";
       case  54  :   //mover<uID5.54.2>!mover!reqELEMENT(5.54.3)_OVERSCRIPT_!/mover!
-	      if ( !bucket_ID )
+        if ( !bucket_ID )
           bucket_ID =  (U8*)"5.54.3";
-      case  55  : {	//munderover<uID5.55.2>!munderover!reqELEMENT(5.55.3)_UOSUB__UOSUPER_!/munderover!
-	      if ( !bucket_ID )
+      case  55  : { //munderover<uID5.55.2>!munderover!reqELEMENT(5.55.3)_UOSUB__UOSUPER_!/munderover!
+        if ( !bucket_ID )
           bucket_ID =  (U8*)"5.55.3";
         TNODE* bucket =  FindObject( mml_node->parts,
-								              bucket_ID,INVALID_LIST_POS );
+                              bucket_ID,INVALID_LIST_POS );
         if ( bucket && bucket->contents ) {
           TCI_BOOL is_cap_letter;
           rv  =  IsMMLFactor( bucket->contents,include_differential,
@@ -10467,15 +10465,15 @@ TCI_BOOL LaTeX2MMLTree::IsMMLFactorFromInternals( TNODE* mml_node,
         rv =  TRUE;
       }
       break;
-      case  56  : {	//mprescripts/<uID5.56.10>LIST(5.56.11,_LEFTSUBSUPPAIR_,5.56.12,,/mmultiscripts,)
+      case  56  : { //mprescripts/<uID5.56.10>LIST(5.56.11,_LEFTSUBSUPPAIR_,5.56.12,,/mmultiscripts,)
         rv =  TRUE;
       }
 
       break;
-    //case  56  : {	//mmultiscripts<uID5.56.2>!mmultiscripts!reqELEMENT(5.56.3)_RIGHTSCRIPTS__LEFTSCRIPTS_!/mmultiscripts!
-    //case 602  : {	//mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd,)!/mtd!
-    //case 602  : {	//mtr<uID5.35.13>!mtr!_LISTOFCELLS_!/mtr!
-      case  35  : {	//mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
+    //case  56  : { //mmultiscripts<uID5.56.2>!mmultiscripts!reqELEMENT(5.56.3)_RIGHTSCRIPTS__LEFTSCRIPTS_!/mmultiscripts!
+    //case 602  : { //mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd,)!/mtd!
+    //case 602  : { //mtr<uID5.35.13>!mtr!_LISTOFCELLS_!/mtr!
+      case  35  : { //mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
         rv =  TRUE;
       }
       break;
@@ -10485,9 +10483,9 @@ TCI_BOOL LaTeX2MMLTree::IsMMLFactorFromInternals( TNODE* mml_node,
       break;
     }
 
-  } else if ( uobjtype == 9 ) {		// space
+  } else if ( uobjtype == 9 ) {   // space
 
-  } else	// if ( uobjtype == 3 )
+  } else  // if ( uobjtype == 3 )
     TCI_ASSERT(0);
 
   return rv;
@@ -10502,64 +10500,64 @@ TCI_BOOL LaTeX2MMLTree::IsMMLNumber( TNODE* mml_node ) {
   U16 uobjtype,stype,uID;
   GetUids( mml_node->zuID,uobjtype,stype,uID );
 
-  if ( uobjtype == 5 ) {		// a structure or bucket
+  if ( uobjtype == 5 ) {    // a structure or bucket
     U8* bucket_ID =  NULL;
 
     switch ( stype ) {
-      case   1  : {	//mfrac<uID5.1.0>	  reqELEMENT(5.1.1)reqELEMENT(5.1.2)
+      case   1  : { //mfrac<uID5.1.0>   reqELEMENT(5.1.1)reqELEMENT(5.1.2)
       }
       break;
-      case  60  : {	//msqrt<uID5.60.0>	  BUCKET(5.60.2,MATH,,,/msqrt,)
+      case  60  : { //msqrt<uID5.60.0>    BUCKET(5.60.2,MATH,,,/msqrt,)
       }
       break;
-      case  61  : {	//mroot<uID5.61.0>	  reqELEMENT(5.61.2)reqELEMENT(5.61.1)
+      case  61  : { //mroot<uID5.61.0>    reqELEMENT(5.61.2)reqELEMENT(5.61.1)
       }
       break;
-      case 600  : {	//mstyle<uID5.600.0>  BUCKET(5.600.2,MATH,,,/mstyle,)
+      case 600  : { //mstyle<uID5.600.0>  BUCKET(5.600.2,MATH,,,/mstyle,)
     // need to look in bucket to decide
         TNODE* bucket =  FindObject( mml_node->parts,
-								(U8*)"5.600.2",INVALID_LIST_POS );
+                (U8*)"5.600.2",INVALID_LIST_POS );
         if ( bucket && bucket->contents )
           rv  =  IsMMLNumber( bucket->contents );
       }
       break;
-      case  70  : {	//mfenced<uID5.70.0>  _FENCEDITEMS_
+      case  70  : { //mfenced<uID5.70.0>  _FENCEDITEMS_
     // need to look inside here
       }
       break;
 
-      case  50  : 	//msub<uID5.50.2>!msub!_SUBBASE__SUBSCRIPT_!/msub!
+      case  50  :   //msub<uID5.50.2>!msub!_SUBBASE__SUBSCRIPT_!/msub!
         bucket_ID =  (U8*)"5.50.3";
-      case  51  : 	//msup<uID5.51.2>!msup!reqELEMENT(5.51.3)_SUPERSCRIPT_!/msup!
-	    if ( !bucket_ID )
+      case  51  :   //msup<uID5.51.2>!msup!reqELEMENT(5.51.3)_SUPERSCRIPT_!/msup!
+      if ( !bucket_ID )
           bucket_ID =  (U8*)"5.51.3";
-      case  52  : 	//msubsup<uID5.52.2>!msubsup!reqELEMENT(5.52.3)_SSSUB__SSSUPER_!/msubsup!
-	    if ( !bucket_ID )
+      case  52  :   //msubsup<uID5.52.2>!msubsup!reqELEMENT(5.52.3)_SSSUB__SSSUPER_!/msubsup!
+      if ( !bucket_ID )
           bucket_ID =  (U8*)"5.52.3";
-      case  53  : 	//munder<uID5.53.2>!munder!reqELEMENT(5.53.3)_UNDERSCRIPT_!/munder!
-	    if ( !bucket_ID )
+      case  53  :   //munder<uID5.53.2>!munder!reqELEMENT(5.53.3)_UNDERSCRIPT_!/munder!
+      if ( !bucket_ID )
           bucket_ID =  (U8*)"5.53.3";
       case  54  :   //mover<uID5.54.2>!mover!reqELEMENT(5.54.3)_OVERSCRIPT_!/mover!
-	    if ( !bucket_ID )
+      if ( !bucket_ID )
           bucket_ID =  (U8*)"5.54.3";
-      case  55  : {	//munderover<uID5.55.2>!munderover!reqELEMENT(5.55.3)_UOSUB__UOSUPER_!/munderover!
-	    if ( !bucket_ID )
+      case  55  : { //munderover<uID5.55.2>!munderover!reqELEMENT(5.55.3)_UOSUB__UOSUPER_!/munderover!
+      if ( !bucket_ID )
           bucket_ID =  (U8*)"5.55.3";
         TNODE* bucket =  FindObject( mml_node->parts,
-								bucket_ID,INVALID_LIST_POS );
+                bucket_ID,INVALID_LIST_POS );
         if ( bucket && bucket->contents )
           rv  =  IsMMLNumber( bucket->contents );
       }
       break;
-      case  56  : {	//mprescripts/<uID5.56.10>LIST(5.56.11,_LEFTSUBSUPPAIR_,5.56.12,,/mmultiscripts,)
+      case  56  : { //mprescripts/<uID5.56.10>LIST(5.56.11,_LEFTSUBSUPPAIR_,5.56.12,,/mmultiscripts,)
       }
       break;
 
-    //case  56  : {	//mmultiscripts<uID5.56.2>!mmultiscripts!reqELEMENT(5.56.3)_RIGHTSCRIPTS__LEFTSCRIPTS_!/mmultiscripts!
-    //case 602  : {	//mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd,)!/mtd!
-    //case 602  : {	//mtr<uID5.35.13>!mtr!_LISTOFCELLS_!/mtr!
+    //case  56  : { //mmultiscripts<uID5.56.2>!mmultiscripts!reqELEMENT(5.56.3)_RIGHTSCRIPTS__LEFTSCRIPTS_!/mmultiscripts!
+    //case 602  : { //mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd,)!/mtd!
+    //case 602  : { //mtr<uID5.35.13>!mtr!_LISTOFCELLS_!/mtr!
 
-      case  35  : {	//mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
+      case  35  : { //mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
       }
       break;
 
@@ -10572,9 +10570,9 @@ TCI_BOOL LaTeX2MMLTree::IsMMLNumber( TNODE* mml_node ) {
     TCI_ASSERT( uID == 1 );
 
     switch ( stype ) {
-      case 201  :		// mi<uID3.201.1>
+      case 201  :   // mi<uID3.201.1>
       break;
-      case 202  :		// mn<uID3.202.1>
+      case 202  :   // mn<uID3.202.1>
         rv  =  TRUE;
       break;
       break;
@@ -10596,17 +10594,17 @@ TCI_BOOL LaTeX2MMLTree::IsMMLMultOp( TNODE* mml_node ) {
   U16 uobjtype,stype,uID;
   GetUids( mml_node->zuID,uobjtype,stype,uID );
 
-  if ( uobjtype == 5 ) {		// a structure or bucket
+  if ( uobjtype == 5 ) {    // a structure or bucket
 
   } else if ( uobjtype == 3 ) {
 
     TCI_ASSERT( uID == 1 );
 
     switch ( stype ) {
-      case 201  :		// mi<uID3.201.1>
-      case 202  :		// mn<uID3.202.1>
+      case 201  :   // mi<uID3.201.1>
+      case 202  :   // mn<uID3.202.1>
       break;
-      case 203  : {		// mn<uID3.202.1>
+      case 203  : {   // mn<uID3.202.1>
         DETAILS* info =  mml_node->details;
         if ( info 
         && info->form == 2
@@ -10626,7 +10624,7 @@ TCI_BOOL LaTeX2MMLTree::IsMMLMultOp( TNODE* mml_node ) {
 
 
 void LaTeX2MMLTree::SetDetailIsExpr( TNODE* mrow,
-									                      I16 precedence ) {
+                                        I16 precedence ) {
 
   U16 detail_id   =  DETAILS_is_expression;
   U16 detail_val  =  1;
@@ -10648,19 +10646,19 @@ TNODE* LaTeX2MMLTree::BindDelimitedIntegrals( TNODE* MML_list ) {
     if ( rover->details
     &&   rover->details->integral_num != UNDEFINED_DETAIL ) {
       rv  =  BindIntegral( rv,rover,&new_mrow );
-	  if ( new_mrow )
-	    rover =  new_mrow;
-	}
+    if ( new_mrow )
+      rover =  new_mrow;
+  }
     rover =  rover->next;
-  }		// loop thru contents list to dx
+  }   // loop thru contents list to dx
 
   return rv;
 }
 
 
 TNODE* LaTeX2MMLTree::BindIntegral( TNODE* list_head,
-									TNODE* MML_integral_node,
-									TNODE** pnew_mrow ) {
+                  TNODE* MML_integral_node,
+                  TNODE** pnew_mrow ) {
 
   TNODE* rv   =  list_head;
   *pnew_mrow  =  NULL;
@@ -10683,55 +10681,55 @@ TNODE* LaTeX2MMLTree::BindIntegral( TNODE* list_head,
 
     if ( i_rover->details 
     &&   i_rover->details->integral_num != UNDEFINED_DETAIL ) {
-	  TNODE* new_mrow;
+    TNODE* new_mrow;
       TNODE* tmp  =  BindIntegral( NULL,i_rover,&new_mrow );
-	  if ( new_mrow )
-	    i_rover =  new_mrow;
+    if ( new_mrow )
+      i_rover =  new_mrow;
 
-	} else {	// non-nested integral clause
+  } else {  // non-nested integral clause
 
       U16 uobj,usub,id;
       GetUids( i_rover->zuID,uobj,usub,id );
       switch ( uobj ) {
         case  3  : {
-          if        ( usub == 201 ) {	// mi<uID3.201.1>
+          if        ( usub == 201 ) { // mi<uID3.201.1>
 
-          } else if ( usub == 203 ) {	// mo<uID3.203.1>
+          } else if ( usub == 203 ) { // mo<uID3.203.1>
 
-		    if ( i_rover->details ) {
-		      U16 precedence  =  i_rover->details->precedence;
+        if ( i_rover->details ) {
+          U16 precedence  =  i_rover->details->precedence;
 
-		      if ( i_rover->details->is_differential != UNDEFINED_DETAIL ) {
+          if ( i_rover->details->is_differential != UNDEFINED_DETAIL ) {
                 dd_node =  i_rover;
 
                 n_integrals--;
-			    while ( n_integrals ) {
-			      if ( i_rover->next ) {
-			        if ( i_rover->next->details
-		            &&   i_rover->next->details->is_differential != UNDEFINED_DETAIL ) {
-			          i_rover =  i_rover->next;
-			          n_integrals--;
+          while ( n_integrals ) {
+            if ( i_rover->next ) {
+              if ( i_rover->next->details
+                &&   i_rover->next->details->is_differential != UNDEFINED_DETAIL ) {
+                i_rover =  i_rover->next;
+                n_integrals--;
                       node_count++;
-				    } else {
-				      i_rover =  i_rover->next;
+            } else {
+              i_rover =  i_rover->next;
                       node_count++;
-					}
-				// What about ellipsis?
-				  } else
-				    break;
-			    }
+          }
+        // What about ellipsis?
+          } else
+            break;
+          }
                 is_delimited =  TRUE;
-			    done  =  TRUE;
+          done  =  TRUE;
 
-			    if ( i_rover->next ) {
-				  i_rover =  i_rover->next;
+          if ( i_rover->next ) {
+          i_rover =  i_rover->next;
                   node_count++;
-				}
+        }
 
-		      } else if ( precedence && precedence < 27 )
-			    done  =  TRUE;
-		    } else
-		      TCI_ASSERT(0);
+          } else if ( precedence && precedence < 27 )
+          done  =  TRUE;
+        } else
+          TCI_ASSERT(0);
 
           } else if ( usub == 204 )     // mtext<uID3.204.1>
             done   =  TRUE;
@@ -10739,27 +10737,27 @@ TNODE* LaTeX2MMLTree::BindIntegral( TNODE* list_head,
         break;
 
         case  5  : {
-          if ( usub == 750 ) {	// mrow<uID5.750.1>
-		    if ( i_rover->details
-		    &&   i_rover->details->is_differential != UNDEFINED_DETAIL ) { // differential d
+          if ( usub == 750 ) {  // mrow<uID5.750.1>
+        if ( i_rover->details
+        &&   i_rover->details->is_differential != UNDEFINED_DETAIL ) { // differential d
               dd_node =  i_rover;
 
               n_integrals--;
-			  while ( n_integrals ) {
-			    if ( i_rover->next
-			     &&	 i_rover->next->details
-		        &&   i_rover->next->details->is_differential != UNDEFINED_DETAIL ) {
-			      i_rover =  i_rover->next;
-				  n_integrals--;
+        while ( n_integrals ) {
+          if ( i_rover->next
+           &&  i_rover->next->details
+            &&   i_rover->next->details->is_differential != UNDEFINED_DETAIL ) {
+            i_rover =  i_rover->next;
+          n_integrals--;
                   node_count++;
-				// What about ellipsis?
-				} else
-				  break;
-			  }
+        // What about ellipsis?
+        } else
+          break;
+        }
               is_delimited =  TRUE;
-			  done  =  TRUE;
-		    }
-          }		// if ( usub == 750 )
+        done  =  TRUE;
+        }
+          }   // if ( usub == 750 )
         }
         break;
 
@@ -10767,19 +10765,19 @@ TNODE* LaTeX2MMLTree::BindIntegral( TNODE* list_head,
         break;
       }
 
-    }	// non-nested integral clause
+    } // non-nested integral clause
 
-  }	  // loop thru contents list to dx
+  }   // loop thru contents list to dx
 
 // At this point, we've spanned \int ... dx
 
-  if ( is_delimited ) {		// we nest
+  if ( is_delimited ) {   // we nest
     TNODE* new_mrow;
     TNODE* anchor   =  MML_integral_node->prev;
     rv  =  NestNodesInMrow( list_head,anchor,MML_integral_node,
-		  			    	TRUE,node_count,&new_mrow );
-	if ( new_mrow ) {
-	  *pnew_mrow  =  new_mrow;
+                  TRUE,node_count,&new_mrow );
+  if ( new_mrow ) {
+    *pnew_mrow  =  new_mrow;
 
 
   // We mark the <mrow>, indicating that it contains a group
@@ -10788,48 +10786,48 @@ TNODE* LaTeX2MMLTree::BindIntegral( TNODE* list_head,
   // Now we set up a recursive call to "FinishMMLBindings"
   //  on the contents list that has been nested.
 
-	  TNODE* cont =  new_mrow->parts->contents;
-	  if ( cont ) {
-	    TNODE* left_anchor    =  cont;
-	    TNODE* start          =  left_anchor->next;
-	    TNODE* right_anchor   =  start;
-		//while ( right_anchor != dd_node ) {
-		//  n_interior_nodes++;
-		//  right_anchor  =  right_anchor->next;
-		//}
+    TNODE* cont =  new_mrow->parts->contents;
+    if ( cont ) {
+      TNODE* left_anchor    =  cont;
+      TNODE* start          =  left_anchor->next;
+      TNODE* right_anchor   =  start;
+    //while ( right_anchor != dd_node ) {
+    //  n_interior_nodes++;
+    //  right_anchor  =  right_anchor->next;
+    //}
 
-	    U16 n_interior_nodes  =  1;
-		while ( right_anchor != i_rover ) {
-		  n_interior_nodes++;
-		  right_anchor  =  right_anchor->next;
-		}
+      U16 n_interior_nodes  =  1;
+    while ( right_anchor != i_rover ) {
+      n_interior_nodes++;
+      right_anchor  =  right_anchor->next;
+    }
 
-		if ( n_interior_nodes ) {
-	      TNODE* ender  =  i_rover;
-		  ender->next   =  NULL;
+    if ( n_interior_nodes ) {
+        TNODE* ender  =  i_rover;
+      ender->next   =  NULL;
 
-	      TNODE* fixed_interior =  FinishMMLBindings( start );
-		  if ( fixed_interior ) {
-		    if ( DoNestFenceBody(fixed_interior) )
+        TNODE* fixed_interior =  FinishMMLBindings( start );
+      if ( fixed_interior ) {
+        if ( DoNestFenceBody(fixed_interior) )
               fixed_interior =  CreateElemWithBucketAndContents( 5,750,1,2,
-              											fixed_interior );
-	        left_anchor->next   =  fixed_interior;
-	        fixed_interior->prev  =  left_anchor;
-		  } else {
-	        left_anchor->next   =  right_anchor;
-	        right_anchor->prev  =  left_anchor;
-		  }
+                                    fixed_interior );
+          left_anchor->next   =  fixed_interior;
+          fixed_interior->prev  =  left_anchor;
+      } else {
+          left_anchor->next   =  right_anchor;
+          right_anchor->prev  =  left_anchor;
+      }
 
-		} else		// if ( n_interior_nodes )
-	      TCI_ASSERT(0);
+    } else    // if ( n_interior_nodes )
+        TCI_ASSERT(0);
 
-	  }	else	  // if ( cont )
-	    TCI_ASSERT(0);
+    } else    // if ( cont )
+      TCI_ASSERT(0);
 
-	} else	// if ( new_mrow )
-	  TCI_ASSERT(0);
+  } else  // if ( new_mrow )
+    TCI_ASSERT(0);
 
-  }	  // if ( is_delimited )
+  }   // if ( is_delimited )
 
   return rv;
 }
@@ -10842,72 +10840,72 @@ TNODE* LaTeX2MMLTree::BindScripts( TNODE* MML_list ) {
   U16 precedence;
 
   TNODE* MML_rover  =  MML_list;
-  while ( MML_rover ) {		// loop thru contents nodes
+  while ( MML_rover ) {   // loop thru contents nodes
     U16 uobj,usub,id;
     GetUids( MML_rover->zuID,uobj,usub,id );
 
-	TCI_BOOL is_script_op =  FALSE;
-	if ( uobj==3 && usub==201 && id==1 ) {		// mi<uID3.201.1>
+  TCI_BOOL is_script_op =  FALSE;
+  if ( uobj==3 && usub==201 && id==1 ) {    // mi<uID3.201.1>
       U8* op_nom  =  MML_rover->var_value;
       if ( op_nom ) {
         if        ( !strcmp("TeX^",(char*)op_nom) ) {
           is_script_op  =  TRUE;
-          precedence    =  58;	// this is arbitrary
+          precedence    =  58;  // this is arbitrary
         } else if ( !strcmp("TeXSp",(char*)op_nom) ) {
           is_script_op  =  TRUE;
-          precedence    =  58;	// this is arbitrary
+          precedence    =  58;  // this is arbitrary
         } else if ( !strcmp("TeX_",(char*)op_nom) ) {
           is_script_op  =  TRUE;
-          precedence    =  67;	// this is arbitrary
+          precedence    =  67;  // this is arbitrary
         } else if ( !strcmp("TeXSb",(char*)op_nom) ) {
           is_script_op  =  TRUE;
-          precedence    =  67;	// this is arbitrary
+          precedence    =  67;  // this is arbitrary
         }
       }
-	}
+  }
 
-	if ( is_script_op ) {			// build the MML
-	  TCI_BOOL no_left  =  FALSE;
+  if ( is_script_op ) {     // build the MML
+    TCI_BOOL no_left  =  FALSE;
       TNODE* new_mrow;
-  	  U16 l_nodes_spanned;
-	  if ( LocateScriptBase(MML_rover,l_nodes_spanned) ) {
-	    if ( l_nodes_spanned > 1 )
-	      mml_rv  =  NestNodesInMrow( mml_rv,MML_rover,NULL,FALSE,
+      U16 l_nodes_spanned;
+    if ( LocateScriptBase(MML_rover,l_nodes_spanned) ) {
+      if ( l_nodes_spanned > 1 )
+        mml_rv  =  NestNodesInMrow( mml_rv,MML_rover,NULL,FALSE,
                                         l_nodes_spanned,&new_mrow );
-	// If there are more than 2 nodes being nested,
-	//  we may want to call "TranslateMathList"
-	//  in order to complete any required bindings.
-	  } else      // no base found for script
-	    no_left  =  TRUE;
+  // If there are more than 2 nodes being nested,
+  //  we may want to call "TranslateMathList"
+  //  in order to complete any required bindings.
+    } else      // no base found for script
+      no_left  =  TRUE;
 
 
 
 
-	  TNODE* the_next =  MML_rover->next;
-	  mml_rv  =  MakeMMLScript( mml_rv,MML_rover,precedence,
+    TNODE* the_next =  MML_rover->next;
+    mml_rv  =  MakeMMLScript( mml_rv,MML_rover,precedence,
                                         &new_mrow,no_left );
 
-	  if ( new_mrow ) {
+    if ( new_mrow ) {
 
-	    if ( new_mrow->details
-	    &&   new_mrow->details->form != UNDEFINED_DETAIL ) {	// an operator
+      if ( new_mrow->details
+      &&   new_mrow->details->form != UNDEFINED_DETAIL ) {  // an operator
 // DETAILS_is_differential 7
-	    } else {
+      } else {
           SetDetailNum( new_mrow,DETAILS_is_expression,1 );
-	    }
-	    MML_rover =  new_mrow;
+      }
+      MML_rover =  new_mrow;
 
-	  } else {
-	    TCI_ASSERT(0);
-	    MML_rover =  the_next;
-	  }
-
-
+    } else {
+      TCI_ASSERT(0);
+      MML_rover =  the_next;
+    }
 
 
 
-	} else  // if ( is_script_op )
-	  MML_rover =  MML_rover->next;
+
+
+  } else  // if ( is_script_op )
+    MML_rover =  MML_rover->next;
 
   }     // loop thru MML node list
 
@@ -10936,26 +10934,26 @@ U16 LaTeX2MMLTree::IsGroupAFuncArg( TNODE* mrow_group ) {
         if ( gi.n_arrays == 0 )
           certainty =  2;
 
-      } else {	// multiple interior nodes, (...)
+      } else {  // multiple interior nodes, (...)
         if        ( gi.lowest_precedence == 999 ) { // no operators
           certainty =  0;
 
-        } else if ( gi.separator_count ) {	// has ,s or ;s
+        } else if ( gi.separator_count ) {  // has ,s or ;s
           if ( gi.operator_count == gi.separator_count )
             if ( gi.n_interior_nodes == 2*gi.separator_count +1 )
               certainty =  2;
 
-        } else if ( gi.lowest_precedence < 28 ) {	// 28 -> +,-
+        } else if ( gi.lowest_precedence < 28 ) { // 28 -> +,-
           certainty =  0;
 
         } else
           certainty =  1;
 
-      }			// ( multi-nodes ) clause
+      }     // ( multi-nodes ) clause
 
-    }		//  ( no text )
+    }   //  ( no text )
 
-  }		// if ( mrow_group )
+  }   // if ( mrow_group )
 
   return  certainty;
 }
@@ -10971,9 +10969,9 @@ TCI_BOOL LaTeX2MMLTree::TeXScriptIsUnit( TNODE* TeX_script_node ) {
   if ( scripted_stuff ) {
     U16 uobj,usub,id;
     GetUids( scripted_stuff->zuID,uobj,usub,id );
-	if ( uobj==3 && usub==13 && id==10 )
-	  if ( !scripted_stuff->next )
-	    rv =  TRUE;
+  if ( uobj==3 && usub==13 && id==10 )
+    if ( !scripted_stuff->next )
+      rv =  TRUE;
   }
   return  rv;
 }
@@ -10989,7 +10987,7 @@ void LaTeX2MMLTree::SetDetailsForBoundPostfix( TNODE* mrow,I16 curr_prec ) {
     &&   operand->details 
     &&   operand->details->function_status != UNDEFINED_DETAIL ) {
       SetDetailNum( mrow,DETAILS_function_status,
-      			operand->details->function_status );
+            operand->details->function_status );
       done  =  TRUE;
     }
   }
@@ -11000,7 +10998,7 @@ void LaTeX2MMLTree::SetDetailsForBoundPostfix( TNODE* mrow,I16 curr_prec ) {
 
 
 TCI_BOOL LaTeX2MMLTree::LocateScriptBase( TNODE* psuedo_script,
-											  U16& nodes_spanned ) {
+                        U16& nodes_spanned ) {
 
   TCI_BOOL rv   =  FALSE;
   nodes_spanned =  0;
@@ -11014,8 +11012,8 @@ TCI_BOOL LaTeX2MMLTree::LocateScriptBase( TNODE* psuedo_script,
 //  like \prime or factorial (!).  These are considered
 //  to be part of the script's base.
 
-	if ( !rover->details
-	||    rover->details->form != 3 )
+  if ( !rover->details
+  ||    rover->details->form != 3 )
       break;
 
     rover =  rover->prev;
@@ -11035,36 +11033,36 @@ TCI_BOOL LaTeX2MMLTree::LocateScriptBase( TNODE* psuedo_script,
 */
 
 void LaTeX2MMLTree::GetPrecedenceBounds( TNODE* MML_list,
-											                      U16& lowest,
-												                    U16& highest ) {
+                                            U16& lowest,
+                                            U16& highest ) {
 
-  lowest   =  999;	// 0 < actual values < 100
+  lowest   =  999;  // 0 < actual values < 100
   highest  =  0;
 
   TNODE* MML_rover  =  MML_list;
-  while ( MML_rover ) {		// loop thru contents nodes
-	  U16 cp  =  0;
-	  if ( MML_rover->details
-	  &&   MML_rover->details->precedence != UNDEFINED_DETAIL ) {
-	    cp  =  MML_rover->details->precedence;
-	  } else {
-	// this clause is entirely diagnostic
+  while ( MML_rover ) {   // loop thru contents nodes
+    U16 cp  =  0;
+    if ( MML_rover->details
+    &&   MML_rover->details->precedence != UNDEFINED_DETAIL ) {
+      cp  =  MML_rover->details->precedence;
+    } else {
+  // this clause is entirely diagnostic
       U16 uobjtype,usubtype,uID;
       GetUids( MML_rover->zuID,uobjtype,usubtype,uID );
-	    if ( uobjtype==3 && usubtype==203 && uID==1 ){		// <mo>
-		    TCI_ASSERT(0);
+      if ( uobjtype==3 && usubtype==203 && uID==1 ){    // <mo>
+        TCI_ASSERT(0);
       }
-	  }
+    }
 
-	  if ( cp ) {
-	    if ( cp < lowest )
-	      lowest   =  cp;
-	    if ( cp > highest && cp != 999 )
-	      highest  =  cp;
-	  }
+    if ( cp ) {
+      if ( cp < lowest )
+        lowest   =  cp;
+      if ( cp > highest && cp != 999 )
+        highest  =  cp;
+    }
 
     MML_rover  =  MML_rover->next;
-  }		// loop thru MML list
+  }   // loop thru MML list
 
 }
 
@@ -11106,24 +11104,24 @@ TNODE* LaTeX2MMLTree::Unicode2MML( TNODE* obj_node ) {
     U8* dest_zname;
     U8* d_template;
     if ( d_mml_grammar->GetGrammarDataFromUID(zuID,
-					context_math,&dest_zname,&d_template) ) {
+          context_math,&dest_zname,&d_template) ) {
       if ( !output_entities_as_unicodes )
         strcpy( (char*)entity,(char*)dest_zname );
       if ( d_template && *d_template ) {
-        if      ( *d_template == 'i' )	// mi<uID3.201.1>
+        if      ( *d_template == 'i' )  // mi<uID3.201.1>
           ilk =  201;
-        else if ( *d_template == 'n' )	// mn<uID3.202.1>
+        else if ( *d_template == 'n' )  // mn<uID3.202.1>
           ilk =  202;
-        else if ( *d_template == 'o' )	// mo<uID3.203.1>
+        else if ( *d_template == 'o' )  // mo<uID3.203.1>
           ilk =  203;
-        else if ( *d_template == '3' ) {	// an alias
+        else if ( *d_template == '3' ) {  // an alias
 
           TNODE* tmp  =  MakeTNode( 0L,0L,0L,d_template );
           TCI_BOOL forces_geometry;
           U16 mml_ilk =  ClassifyTeXSymbol( tmp,NULL,forces_geometry,NULL );
           if      ( mml_ilk == MML_IDENTIFIER )
             ilk =  201;
-          else if ( mml_ilk == MML_NUMBER	)
+          else if ( mml_ilk == MML_NUMBER )
             ilk =  202;
           else if ( mml_ilk == MML_OPERATOR )
             ilk =  203;
@@ -11149,7 +11147,7 @@ TNODE* LaTeX2MMLTree::Unicode2MML( TNODE* obj_node ) {
     if ( ilk == 201 || ilk == 202 ) {
       SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_ORD );
 
-    } else if ( ilk == 203 ) {	// operator
+    } else if ( ilk == 203 ) {  // operator
 
 // we need to set details here!
 
@@ -11192,7 +11190,7 @@ TNODE* LaTeX2MMLTree::Unicode2MML( TNODE* obj_node ) {
 
       }   // if ( alias[0] )
 
-    }   // if ( ilk == 203 ) 	// operator
+    }   // if ( ilk == 203 )  // operator
 
   } else            // if ( unicode )
     TCI_ASSERT(0);
@@ -11209,32 +11207,32 @@ U32 LaTeX2MMLTree::ExtractUNICODE( TNODE* tex_uni_node ) {
   U32 rv  =  0;
 
   U16 uobj,usub,uID;
-  GetUids( tex_uni_node->zuID,uobj,usub,uID );		// 5.298.2
-  U8 bucket_uID[32];								// OR 5.299.2
+  GetUids( tex_uni_node->zuID,uobj,usub,uID );    // 5.298.2
+  U8 bucket_uID[32];                // OR 5.299.2
   UidsTozuID( uobj,usub,2,(U8*)bucket_uID );
 
   TNODE* bucket =  FindObject( tex_uni_node->parts,(U8*)bucket_uID,
-      										INVALID_LIST_POS );
-  if ( bucket ) {		// locate NONLATEX content
+                          INVALID_LIST_POS );
+  if ( bucket ) {   // locate NONLATEX content
 
     U8* zNONLATEX =  (U8*)"888.8.0";
 
     TNODE* cont =  FindObject( bucket->contents,zNONLATEX,
-      										INVALID_LIST_POS );
+                          INVALID_LIST_POS );
     if ( cont ) {
       U32 dec_val =  0L;
       U8* p =  cont->var_value;
-      if ( *p=='0' && *(p+1)=='x' ) p +=  2;	// 0x
+      if ( *p=='0' && *(p+1)=='x' ) p +=  2;  // 0x
       char ch;
-      while ( ch = *p ) {						    // TCI software
-        U32 inc;								        // scripts and
-        if      ( ch>='0' && ch<='9' )	// expects
-          inc =  ch - '0';						  // hex digits
-        else if ( ch>='A' && ch<='F' )	// here.
+      while ( ch = *p ) {               // TCI software
+        U32 inc;                        // scripts and
+        if      ( ch>='0' && ch<='9' )  // expects
+          inc =  ch - '0';              // hex digits
+        else if ( ch>='A' && ch<='F' )  // here.
           inc =  ch - 'A' + 10;
         else if ( ch>='a' && ch<='f' )  // We script
-          inc =  ch - 'a' + 10;					// decimal unicodes
-        else									          // in our XML
+          inc =  ch - 'a' + 10;         // decimal unicodes
+        else                            // in our XML
           TCI_ASSERT(0);
         dec_val =  dec_val * 16L + inc;
         p++;
@@ -11242,7 +11240,7 @@ U32 LaTeX2MMLTree::ExtractUNICODE( TNODE* tex_uni_node ) {
 
       rv  =  dec_val;
 
-    } else				// 	if ( cont )
+    } else        //  if ( cont )
       TCI_ASSERT(0);
 
   } else
@@ -11260,12 +11258,12 @@ TCI_BOOL LaTeX2MMLTree::IsTeXVariable( TNODE* TeX_node ) {
     U16 uobjtype,usubtype,uID;
     GetUids( TeX_node->zuID,uobjtype,usubtype,uID );
     if ( uobjtype == 3 ) {
-      if        ( usubtype == 1 ) {		// a..z
+      if        ( usubtype == 1 ) {   // a..z
         char letter =  0;
         letter =  uID + 'a' - 1;
         if ( letter >= 'r' && letter <= 'z' )
           rv =  TRUE;
-      } else if ( usubtype == 10 ) {	// alpha, beta,...
+      } else if ( usubtype == 10 ) {  // alpha, beta,...
 // \theta<uID3.10.9>
 // \vartheta<uID3.10.10>
         if ( uID == 9 || uID == 10 )
@@ -11284,16 +11282,16 @@ U8 LaTeX2MMLTree::GetHexDigit( TNODE* TeX_node ) {
   if ( TeX_node ) {
     U16 uobjtype,usubtype,uID;
     GetUids( TeX_node->zuID,uobjtype,usubtype,uID );
-	  if ( uobjtype == 3 ) {
-	    if        ( usubtype == 1 ) {	// small letter
-	      if ( uID >= 1 && uID <= 6 )
-		      rv  =  'a' + uID - 1;
-	    } else if ( usubtype == 2 ) {	// capitol letter
-	      if ( uID >= 1 && uID <= 6 )
-		    rv  =  'A' + uID - 1;
-	    } else if ( usubtype == 3 ) {	// decimal digit
-		    rv  =  '0' + uID - 1;
-	    }
+    if ( uobjtype == 3 ) {
+      if        ( usubtype == 1 ) { // small letter
+        if ( uID >= 1 && uID <= 6 )
+          rv  =  'a' + uID - 1;
+      } else if ( usubtype == 2 ) { // capitol letter
+        if ( uID >= 1 && uID <= 6 )
+        rv  =  'A' + uID - 1;
+      } else if ( usubtype == 3 ) { // decimal digit
+        rv  =  '0' + uID - 1;
+      }
     }
   }
   return rv;
@@ -11330,27 +11328,27 @@ TNODE* LaTeX2MMLTree::ScriptStack2MML( TNODE* scriptstack_node,
   while ( row_rover ) {     // loop down thru rows
 // Translate current line to MathML
     TNODE* line_contents  =  NULL;
-	  if ( row_rover->parts && row_rover->parts->contents ) {
-	    TNODE* cont =  row_rover->parts->contents;
+    if ( row_rover->parts && row_rover->parts->contents ) {
+      TNODE* cont =  row_rover->parts->contents;
       U16 tex_nodes_done,error_code;
-  	  TCI_BOOL do_bindings  =  TRUE;
+      TCI_BOOL do_bindings  =  TRUE;
       TNODE* local_oof_list =  NULL;
       line_contents =  TranslateMathList( cont,do_bindings,
-                   	NULL,tex_nodes_done,error_code,&local_oof_list );
+                    NULL,tex_nodes_done,error_code,&local_oof_list );
       U16 vspace_mode =  2;
       line_contents =  HandleOutOfFlowObjects( line_contents,
-      							    &local_oof_list,out_of_flow_list,vspace_mode );
-	  } else
-	    TCI_ASSERT(0);
+                        &local_oof_list,out_of_flow_list,vspace_mode );
+    } else
+      TCI_ASSERT(0);
 
 // mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd)!/mtd!
     line_contents =  FixImpliedMRow( line_contents );
     TNODE* cell =  CreateElemWithBucketAndContents( 5,35,14,8,line_contents );
 
 // Put the current cell under a cell list item node
-	  TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.11:0" );
-	  list_node->parts  =  cell;
-	  cell->sublist_owner =  list_node;
+    TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.11:0" );
+    list_node->parts  =  cell;
+    cell->sublist_owner =  list_node;
 
 // Add current row to the list of rows we're building
 
@@ -11359,26 +11357,26 @@ TNODE* LaTeX2MMLTree::ScriptStack2MML( TNODE* scriptstack_node,
 // _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
 
     TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
-	  mtr->parts->parts =  list_node;
-	  list_node->sublist_owner =  mtr->parts;
+    mtr->parts->parts =  list_node;
+    list_node->sublist_owner =  mtr->parts;
 
 // Put the current row under a node in the row list
-	  U8 zlistID[32];
+    U8 zlistID[32];
     UidsTozuID( 5,35,9,(U8*)zlistID );
-	  U16 zln =  strlen( (char*)zlistID );
-	  zlistID[zln]  =  ':';
+    U16 zln =  strlen( (char*)zlistID );
+    zlistID[zln]  =  ':';
           // itoa( row_count,(char*)zlistID+zln+1,10 );
           sprintf((char*)zlistID+zln+1, "%d", row_count);
-	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	  row_list_node->parts  =  mtr;
-	  mtr->sublist_owner  =  row_list_node;
+    TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+    row_list_node->parts  =  mtr;
+    mtr->sublist_owner  =  row_list_node;
 
     if ( !mtr_head )
       mtr_head  =  row_list_node;
     else {
       tail->next  =  row_list_node;
-	    row_list_node->prev =  tail;
-	  }
+      row_list_node->prev =  tail;
+    }
     tail  =  row_list_node;
 
 // Advance to the next row in the LaTeX source tree
@@ -11403,7 +11401,7 @@ TNODE* LaTeX2MMLTree::ScriptStack2MML( TNODE* scriptstack_node,
   if ( subclass == 717 ) {    // \begin{subarray}{l|c|r}
     TNODE* cols_bucket  =  FindObject( scriptstack_node->parts,
                                 (U8*)"5.717.3",INVALID_LIST_POS );
-	  if ( cols_bucket && cols_bucket->contents ) {
+    if ( cols_bucket && cols_bucket->contents ) {
       U16 uobj,usub,id;
       GetUids( cols_bucket->contents->zuID,uobj,usub,id );
       if ( uobj==16 && usub==4 ) {
@@ -11412,12 +11410,12 @@ TNODE* LaTeX2MMLTree::ScriptStack2MML( TNODE* scriptstack_node,
         else if ( id==2 )
           SetNodeAttrib( mml_rv,(U8*)"columnalign",(U8*)"center" );
         else if ( id==3 )
-	        SetNodeAttrib( mml_rv,(U8*)"columnalign",(U8*)"right" );
+          SetNodeAttrib( mml_rv,(U8*)"columnalign",(U8*)"right" );
         else
           TCI_ASSERT(0);
       } else
         TCI_ASSERT(0);
-	  } else
+    } else
       TCI_ASSERT(0);
   }
 
@@ -11436,7 +11434,7 @@ TNODE* LaTeX2MMLTree::MakeSmallmspace() {
   U16 zln =  strlen( (char*)entity_buffer );
   mml_rv->attrib_list =  MakeATTRIBNode( (U8*)"width",
                                         ELEM_ATTR_width,
-                                        0,	//U16 e_ID,
+                                        0,  //U16 e_ID,
                                         entity_buffer,zln,0 );
   return mml_rv;
 }
@@ -11451,19 +11449,19 @@ IDENTIFIER_NODE* LaTeX2MMLTree::AddIdentifier( IDENTIFIER_NODE* i_list,
   if ( identifier_nom && identifier_nom[0] ) {
     if ( !IdentifierInList(i_list,identifier_nom) ) {
       IDENTIFIER_NODE* node =  TCI_NEW( IDENTIFIER_NODE );
-	    node->next  =  NULL;
+      node->next  =  NULL;
       U16 zln     =  strlen( (char*)identifier_nom );
       char* tmp   =  TCI_NEW( char[zln+1] );
       strcpy( tmp,(char*)identifier_nom );
-	    node->zidentifier =  (U8*)tmp;
+      node->zidentifier =  (U8*)tmp;
 
-	    if ( i_list ) {
-	      while ( i_list->next )
-	        i_list  =  i_list->next;
-	      i_list->next  =  node;
-	    } else
-	      rv  =  node;
-	  }
+      if ( i_list ) {
+        while ( i_list->next )
+          i_list  =  i_list->next;
+        i_list->next  =  node;
+      } else
+        rv  =  node;
+    }
   }
 
   return rv;
@@ -11476,27 +11474,27 @@ void LaTeX2MMLTree::DisposeIdentifierList( IDENTIFIER_NODE* i_list ) {
   while ( rover ) {
     IDENTIFIER_NODE* del  =  rover;
     rover =  rover->next;
-	  if ( del->zidentifier ) {
+    if ( del->zidentifier ) {
 //JBMLine( (char*)del->zidentifier );
 //JBMLine( "\n" );
-	    delete( del->zidentifier );
-	  }
-	  delete( del );
+      delete( del->zidentifier );
+    }
+    delete( del );
   }
 }
 
 
 TCI_BOOL LaTeX2MMLTree::IdentifierInList( IDENTIFIER_NODE* i_list,
-										                    U8* identifier_zstr ) {
+                                        U8* identifier_zstr ) {
 
   TCI_BOOL rv =  FALSE;
 
   IDENTIFIER_NODE* rover  =  i_list;
   while ( rover ) {
     if ( !strcmp((char*)identifier_zstr,(char*)rover->zidentifier) ) {
-	    rv  =  TRUE;
-	    break;
-	  }
+      rv  =  TRUE;
+      break;
+    }
     rover =  rover->next;
   }
 
@@ -11526,8 +11524,8 @@ TCI_BOOL LaTeX2MMLTree::BaseIsDiffD( TNODE* tex_script_node ) {
   TCI_BOOL rv =  FALSE;
   if ( tex_script_node->prev ) {
     TNODE* tex_base_node  =  tex_script_node->prev;
-	if ( tex_base_node->details
-	&&   tex_base_node->details->is_differential != UNDEFINED_DETAIL )
+  if ( tex_base_node->details
+  &&   tex_base_node->details->is_differential != UNDEFINED_DETAIL )
       rv  =  TRUE;
   }
   return rv;
@@ -11538,15 +11536,15 @@ TCI_BOOL LaTeX2MMLTree::BaseIsDiffD( TNODE* tex_script_node ) {
 //  "D_{x^{r}y^{n-r}}"
 
 TNODE* LaTeX2MMLTree::TranslateDDsubscript( TNODE* TeX_subscript_contents,
-										    TNODE** out_of_flow_list ) {
+                        TNODE** out_of_flow_list ) {
 
   TCI_BOOL do_bindings  =  FALSE;
   U16 tex_nodes_done,loc_error;
   TNODE* local_oof_list =  NULL;
   TNODE* mml_rv =  TranslateMathList( TeX_subscript_contents,do_bindings,
-						NULL,tex_nodes_done,loc_error,&local_oof_list );
+            NULL,tex_nodes_done,loc_error,&local_oof_list );
   mml_rv =  HandleOutOfFlowObjects( mml_rv,
-  						          &local_oof_list,out_of_flow_list,2 );
+                        &local_oof_list,out_of_flow_list,2 );
   if ( mml_rv ) {
     mml_rv  =  BindScripts( mml_rv );
 
@@ -11554,7 +11552,7 @@ TNODE* LaTeX2MMLTree::TranslateDDsubscript( TNODE* TeX_subscript_contents,
 
     TNODE* rover  =  mml_rv;
     while ( rover && rover->next ) {
-      TNODE* mo_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );	// <mo>
+      TNODE* mo_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );  // <mo>
       SetChData( mo_node,(U8*)entity_ic,(U8*)entity_ic_unicode );
       SetDetailNum( mo_node,DETAILS_form,COPF_INFIX );
       SetDetailNum( mo_node,DETAILS_precedence,2 );
@@ -11580,10 +11578,10 @@ TCI_BOOL LaTeX2MMLTree::IsTeXThinOrThickSpace( TNODE* LaTeX_node ) {
   if ( LaTeX_node ) {
     U16 uobj,usub,uID;
     GetUids( LaTeX_node->zuID,uobj,usub,uID );
-	if ( uobj == 9 && usub==1 ) {
+  if ( uobj == 9 && usub==1 ) {
       if ( uID==6 || uID==7 )     // \, OR \;
         rv  =  TRUE;
-	}
+  }
   }
 
   return rv;
@@ -11616,7 +11614,7 @@ minlabelspacing   number h-unit                                             0.8e
 */
 
 void LaTeX2MMLTree::SetMTableAttribs( TNODE* mtable,TCI_BOOL is_tabular,
-								        TNODE* tex_tabularORarray_node ) {
+                        TNODE* tex_tabularORarray_node ) {
 
 // External vertical alignment - [t|b], "center" if not specified.
 // Note that the default in LaTeX is "center"
@@ -11630,7 +11628,7 @@ void LaTeX2MMLTree::SetMTableAttribs( TNODE* mtable,TCI_BOOL is_tabular,
 // _TXALIGN_OPTPARAM(5.490.2,MEXTALIGN)
 
   U16 usubtype  =  is_tabular ? 490 : 35;
-	U8 ext_align_zuID[32];
+  U8 ext_align_zuID[32];
   UidsTozuID( 5,usubtype,2,(U8*)ext_align_zuID );
 
   TNODE* TeX_ext_align  =  FindObject( tex_tabularORarray_node->parts,
@@ -11669,7 +11667,7 @@ void LaTeX2MMLTree::SetMTableAttribs( TNODE* mtable,TCI_BOOL is_tabular,
   U16 left_lines,right_lines;
   if ( TeX_cols )
     GetMtableColumnAttrs( TeX_cols,&columnlines,&c_align_attrs,
-						 	                  left_lines,right_lines );
+                                left_lines,right_lines );
   else {
     left_lines  =  0;
     right_lines =  0;
@@ -11706,7 +11704,7 @@ void LaTeX2MMLTree::SetMTableAttribs( TNODE* mtable,TCI_BOOL is_tabular,
 //  it's "name" in our list of known functions.
 
 TCI_BOOL LaTeX2MMLTree::MMLNodeCouldBeFunction( TNODE* mml_node,
-									        U8* function_nom,U16 limit ) {
+                          U8* function_nom,U16 limit ) {
 
   TCI_BOOL rv =  FALSE;
   if ( mml_node && function_nom ) {
@@ -11714,11 +11712,11 @@ TCI_BOOL LaTeX2MMLTree::MMLNodeCouldBeFunction( TNODE* mml_node,
 
     U16 uobj,usub,uID;
     GetUids( mml_node->zuID,uobj,usub,uID );
-    if        ( uobj == 3 ) {		// atomic object
-      if ( usub==201 && uID==1 )      		// mi<uID3.201.1>
+    if        ( uobj == 3 ) {   // atomic object
+      if ( usub==201 && uID==1 )          // mi<uID3.201.1>
         AppendToFnom( function_nom,limit,mml_node->var_value );
-	} else if ( uobj == 5 ) {		// structured object
-      if ( usub==750 && uID==1 ) {	// <mrow>
+  } else if ( uobj == 5 ) {   // structured object
+      if ( usub==750 && uID==1 ) {  // <mrow>
         if ( mml_node->details
         &&   mml_node->details->function_status != UNDEFINED_DETAIL )
           TCI_ASSERT(0);
@@ -11726,7 +11724,7 @@ TCI_BOOL LaTeX2MMLTree::MMLNodeCouldBeFunction( TNODE* mml_node,
           TNODE* cont =  mml_node->parts->contents;
           ExtractFuncNameFromMrow( function_nom,limit,cont );
         }
-      } else if ( usub>=50 && usub<=55 && uID==2 ) {	// scripted, etc.
+      } else if ( usub>=50 && usub<=55 && uID==2 ) {  // scripted, etc.
         GetScriptedFuncName( mml_node,usub,function_nom,limit );
       } else {
       }
@@ -11734,7 +11732,7 @@ TCI_BOOL LaTeX2MMLTree::MMLNodeCouldBeFunction( TNODE* mml_node,
 
     if ( function_nom[0] )
       rv  =  TRUE;
-  }		// if ( mml_node && function_nom )
+  }   // if ( mml_node && function_nom )
 
   return rv;
 }
@@ -11746,16 +11744,16 @@ void LaTeX2MMLTree::AppendToFnom( U8* zdest,U16 limit,U8* zstr ) {
     U16 off =  strlen( (char*)zdest );
     U16 zln =  strlen( (char*)zstr );
     if ( off+zln < limit-1 )
-	    strcat( (char*)zdest,(char*)zstr );
+      strcat( (char*)zdest,(char*)zstr );
 
-	  else
-	    TCI_ASSERT(0);
+    else
+      TCI_ASSERT(0);
   }
 }
 
 
 void LaTeX2MMLTree::ExtractFuncNameFromMrow( U8* func_nom,U16 limit,
-		                                	      TNODE* mrow_cont_list ) {
+                                            TNODE* mrow_cont_list ) {
 
   func_nom[0]  =  0;
   TCI_BOOL ok =  TRUE;
@@ -11766,16 +11764,16 @@ void LaTeX2MMLTree::ExtractFuncNameFromMrow( U8* func_nom,U16 limit,
   U16 uobj,usub,id;
   GetUids( mrow_cont_list->zuID,uobj,usub,id );
   if ( uobj==5 && usub==600 && id==0 ) {
-	  if ( mrow_cont_list->details
-	  &&	 mrow_cont_list->details->style != UNDEFINED_DETAIL ) {
+    if ( mrow_cont_list->details
+    &&   mrow_cont_list->details->style != UNDEFINED_DETAIL ) {
       U8 style_nom[32];
-	    StyleIDtoStr( mrow_cont_list->details->style,style_nom );
+      StyleIDtoStr( mrow_cont_list->details->style,style_nom );
       AppendToFnom( func_nom,limit,style_nom );
-	  } else {
-	    TCI_ASSERT(0);
+    } else {
+      TCI_ASSERT(0);
       AppendToFnom( func_nom,limit,(U8*)"(stylized)" );
-	  }
-	  mrow_cont_list =  mrow_cont_list->parts->contents;
+    }
+    mrow_cont_list =  mrow_cont_list->parts->contents;
   }
 
 // Check for mfrac
@@ -11784,29 +11782,29 @@ void LaTeX2MMLTree::ExtractFuncNameFromMrow( U8* func_nom,U16 limit,
   U16 uobjtype,usubtype,uID;
   GetUids( mrow_cont_list->zuID,uobjtype,usubtype,uID );
   if ( uobjtype==5 && usubtype==1 && uID==0 ) {
-	  TNODE* numerator_cont =  mrow_cont_list->parts->contents;
+    TNODE* numerator_cont =  mrow_cont_list->parts->contents;
     U16 uobj,usub,id;
     GetUids( numerator_cont->zuID,uobj,usub,id );
-    if ( uobj==5 && usub==750 && id==1 ) {		// <mrow>
-	    TNODE* mrow_cont  =  numerator_cont->parts->contents;
+    if ( uobj==5 && usub==750 && id==1 ) {    // <mrow>
+      TNODE* mrow_cont  =  numerator_cont->parts->contents;
       GetUids( mrow_cont->zuID,uobj,usub,id );
-      if ( uobj==3 && usub==203 && uID==1 ) {	// mo<uID3.203.1>
-	      U8* op_name =  mrow_cont->var_value;
-		    if ( !strcmp((char*)op_name,"&PartialD;") ) {
-		      if ( mrow_cont->next ) {
-	          TNODE* mi_func  =  mrow_cont->next;
+      if ( uobj==3 && usub==203 && uID==1 ) { // mo<uID3.203.1>
+        U8* op_name =  mrow_cont->var_value;
+        if ( !strcmp((char*)op_name,"&PartialD;") ) {
+          if ( mrow_cont->next ) {
+            TNODE* mi_func  =  mrow_cont->next;
             U16 uobj,usub,id;
             GetUids( mi_func->zuID,uobj,usub,id );
-            if ( uobj==3 && usub==203 && uID==1 ) {	// mi<uID3.201.1>
+            if ( uobj==3 && usub==203 && uID==1 ) { // mi<uID3.201.1>
               func_nom[0]  =  0;
               AppendToFnom( func_nom,limit,mi_func->var_value );
-		        }      // <mi> clause
-		      }
-	      }     // "&Partial;" clause
-	    }    // <mo> clause
-	  }	// <mrow> clause
+            }      // <mi> clause
+          }
+        }     // "&Partial;" clause
+      }    // <mo> clause
+    } // <mrow> clause
 
-  } else {	    // start non-frac clause
+  } else {      // start non-frac clause
 
     U16 tally =  0;
     TNODE* cont_rover =  mrow_cont_list;
@@ -11814,30 +11812,30 @@ void LaTeX2MMLTree::ExtractFuncNameFromMrow( U8* func_nom,U16 limit,
       tally++;
       U16 uobj,usub,id;
       GetUids( cont_rover->zuID,uobj,usub,id );
-      if        ( uobj==3 && usub==201 && id==1 ) {	// <mi>
+      if        ( uobj==3 && usub==201 && id==1 ) { // <mi>
         if ( tally == 1 )
           AppendToFnom( func_nom,limit,cont_rover->var_value );
-	      else {
-	        ok  =  FALSE;
-		      break;
-	      }
-	    } else if ( uobj==3 && usub==203 && id==1 ) {	// <mo>
-	      if ( cont_rover->v_len==1
-	      &&   cont_rover->var_value[0] == '\'' )
+        else {
+          ok  =  FALSE;
+          break;
+        }
+      } else if ( uobj==3 && usub==203 && id==1 ) { // <mo>
+        if ( cont_rover->v_len==1
+        &&   cont_rover->var_value[0] == '\'' )
           AppendToFnom( func_nom,limit,(U8*)"'" );
-	      else {
-	        ok  =  FALSE;
-	        break;
-	      }
-	    } else {
-	      ok  =  FALSE;
-	      break;
-	    }
+        else {
+          ok  =  FALSE;
+          break;
+        }
+      } else {
+        ok  =  FALSE;
+        break;
+      }
 
       cont_rover  =  cont_rover->next;
     }
   }
-	
+  
   if ( !ok )
     func_nom[0]  =  0;
 }
@@ -11846,21 +11844,21 @@ void LaTeX2MMLTree::ExtractFuncNameFromMrow( U8* func_nom,U16 limit,
 // Note that we handle x_{a_1} here.
 
 void LaTeX2MMLTree::GetScriptedFuncName( TNODE* mml_node,U16 stype,
-									                  U8* identifier_nom,U16 limit ) {
+                                    U8* identifier_nom,U16 limit ) {
 
   U8 zuID[32];
   UidsTozuID( 5,stype,3,(U8*)zuID );
   TNODE* base_bucket =  FindObject( mml_node->parts,
-  										              zuID,INVALID_LIST_POS );
+                                    zuID,INVALID_LIST_POS );
   UidsTozuID( 5,stype,4,(U8*)zuID );
   TNODE* sub_bucket  =  FindObject( mml_node->parts,
-  										              zuID,INVALID_LIST_POS );
+                                    zuID,INVALID_LIST_POS );
   UidsTozuID( 5,stype,5,(U8*)zuID );
   TNODE* sup_bucket  =  FindObject( mml_node->parts,
-  										              zuID,INVALID_LIST_POS );
+                                    zuID,INVALID_LIST_POS );
 
-  U8 sub_join[2];		// I'm using '_' and '^' for <msub> and <msup>
-  U8 sup_join[2];		//      ';' and ':' for <munder> and <mover>
+  U8 sub_join[2];   // I'm using '_' and '^' for <msub> and <msup>
+  U8 sup_join[2];   //      ';' and ':' for <munder> and <mover>
   sub_join[0] =  ( stype>=50 && stype<=52 ) ? '_' : ';';
   sup_join[0] =  ( stype>=50 && stype<=52 ) ? '^' : ':';
   sub_join[1] =  0;
@@ -11869,7 +11867,7 @@ void LaTeX2MMLTree::GetScriptedFuncName( TNODE* mml_node,U16 stype,
   if ( base_bucket && base_bucket->contents ) {
     U16 uobj,usub,uID;
     GetUids( base_bucket->contents->zuID,uobj,usub,uID );
-    if ( uobj==3 && usub==201 && uID==1 ) {		// <mi>
+    if ( uobj==3 && usub==201 && uID==1 ) {   // <mi>
       AppendToFnom( identifier_nom,limit,base_bucket->contents->var_value );
 
       if ( sub_bucket && sub_bucket->contents ) {
@@ -11877,58 +11875,58 @@ void LaTeX2MMLTree::GetScriptedFuncName( TNODE* mml_node,U16 stype,
         AppendToFnom( identifier_nom,limit,sub_join );
         U16 uobj,usub,uID;
         GetUids( cont->zuID,uobj,usub,uID );
-        if        ( uobj==3 && usub==201 && uID==1 ) {		// <mi>
+        if        ( uobj==3 && usub==201 && uID==1 ) {    // <mi>
           AppendToFnom( identifier_nom,limit,cont->var_value );
-        } else if ( uobj==3 && usub==202 && uID==1 ) {		// <mn>
+        } else if ( uobj==3 && usub==202 && uID==1 ) {    // <mn>
           AppendToFnom( identifier_nom,limit,cont->var_value );
-        } else if ( uobj==5 && usub>=50 && usub<=55 && uID==2 ) {	// <msub>
+        } else if ( uobj==5 && usub>=50 && usub<=55 && uID==2 ) { // <msub>
           GetScriptedFuncName( cont,usub,identifier_nom,limit );
-        } else if ( uobj==5 && usub==750 && uID==1 ) {		// <mrow>
+        } else if ( uobj==5 && usub==750 && uID==1 ) {    // <mrow>
           TNODE* mrow_bucket  =  FindObject( cont->parts,
-  								(U8*)"5.750.2",INVALID_LIST_POS );
+                  (U8*)"5.750.2",INVALID_LIST_POS );
           if ( mrow_bucket && mrow_bucket->contents ) {
             TNODE* cont =  mrow_bucket->contents;
-  	        while ( cont ) {	// loop thru <mrow>
+            while ( cont ) {  // loop thru <mrow>
               U16 uobj,usub,uID;
               GetUids( cont->zuID,uobj,usub,uID );
-              if      ( uobj==3 && usub==201 && uID==1 )	// <mi>
+              if      ( uobj==3 && usub==201 && uID==1 )  // <mi>
                 AppendToFnom( identifier_nom,limit,cont->var_value );
-              else if ( uobj==3 && usub==202 && uID==1 )	// <mn>
+              else if ( uobj==3 && usub==202 && uID==1 )  // <mn>
                 AppendToFnom( identifier_nom,limit,cont->var_value );
-  	          cont  =  cont->next;
-  	        }
-  	      }
-        } // jcs else		// un-handled object in script
+              cont  =  cont->next;
+            }
+          }
+        } // jcs else   // un-handled object in script
           // jcs TCI_ASSERT(0);
       }
 
-	    if ( sup_bucket && sup_bucket->contents ) {
-	      TNODE* cont =  sup_bucket->contents;
+      if ( sup_bucket && sup_bucket->contents ) {
+        TNODE* cont =  sup_bucket->contents;
         AppendToFnom( identifier_nom,limit,sup_join );
         U16 uobj,usub,uID;
         GetUids( cont->zuID,uobj,usub,uID );
-        if        ( uobj==3 && usub==201 && uID==1 ) {	// <mi>
+        if        ( uobj==3 && usub==201 && uID==1 ) {  // <mi>
           AppendToFnom( identifier_nom,limit,cont->var_value );
-        } else if ( uobj==3 && usub==202 && uID==1 ) {	// <mn>
+        } else if ( uobj==3 && usub==202 && uID==1 ) {  // <mn>
           AppendToFnom( identifier_nom,limit,cont->var_value );
         } else if ( uobj==3 && usub==203 && uID==1 ) {  // <mo>
           AppendToFnom( identifier_nom,limit,cont->var_value );
         } else if ( uobj==5 && usub==750 && uID==1 ) {
-	        TNODE* c_rover  =  cont->parts->contents;
-	  	    while ( c_rover ) {
+          TNODE* c_rover  =  cont->parts->contents;
+          while ( c_rover ) {
             U16 uobj,usub,uID;
             GetUids( c_rover->zuID,uobj,usub,uID );
             if (  ( uobj==3 && usub==201 && uID==1 ) 
             ||    ( uobj==3 && usub==202 && uID==1 )
             ||    ( uobj==3 && usub==203 && uID==1 ) )
               AppendToFnom( identifier_nom,limit,c_rover->var_value );
-	  	      c_rover =  c_rover->next;
-	  	    }
-	      } else
-	        TCI_ASSERT(0);
-	    }
-	  }	//  if ( uobj==3 && usub==201 && uID==1 )
-  }	// if ( base_bucket with contents )
+            c_rover =  c_rover->next;
+          }
+        } else
+          TCI_ASSERT(0);
+      }
+    } //  if ( uobj==3 && usub==201 && uID==1 )
+  } // if ( base_bucket with contents )
 }
 
 
@@ -11936,11 +11934,11 @@ void LaTeX2MMLTree::GetScriptedFuncName( TNODE* mml_node,U16 stype,
 // All higher level bindings are completed at each call.
 
 TCI_BOOL LaTeX2MMLTree::LocateOperand( TNODE* mml_op_node,
-									    TCI_BOOL on_the_right,
-  										U16& n_space_nodes,
-									    U16& n_operand_nodes,
-  										U16 form,
-									    U16 precedence ) {
+                      TCI_BOOL on_the_right,
+                      U16& n_space_nodes,
+                      U16& n_operand_nodes,
+                      U16 form,
+                      U16 precedence ) {
 
   n_space_nodes   =  0;
   n_operand_nodes =  0;
@@ -11979,135 +11977,135 @@ TCI_BOOL LaTeX2MMLTree::LocateOperand( TNODE* mml_op_node,
 
     U16 uobjtype,usubtype,uID;
     GetUids( candidate->zuID,uobjtype,usubtype,uID );
-	if        ( uobjtype == 3 ) {
+  if        ( uobjtype == 3 ) {
       switch ( usubtype ) {
-        case 201  :			// mi<uID3.201.1>
-        case 202  :			// mn<uID3.202.1>
-          n_operand_nodes =  1;		// considered to be an operand
-	    break;
-        case 203  : {		// mo<uID3.203.1>
-          n_operand_nodes =  1;		// considered to be an operand
-		}
-		break;
+        case 201  :     // mi<uID3.201.1>
+        case 202  :     // mn<uID3.202.1>
+          n_operand_nodes =  1;   // considered to be an operand
+      break;
+        case 203  : {   // mo<uID3.203.1>
+          n_operand_nodes =  1;   // considered to be an operand
+    }
+    break;
 
-        case 204  : 		// mtext<uID3.204.1>
+        case 204  :     // mtext<uID3.204.1>
     // we stepped over NARROW whitespace before getting here!
           if ( MTextIsWhiteSpace(candidate) )
-		    TCI_ASSERT(0);
-		  else
-            n_operand_nodes =  1;		// considered to be an operand
-	    break;
+        TCI_ASSERT(0);
+      else
+            n_operand_nodes =  1;   // considered to be an operand
+      break;
 
-        case 205  : 	// mspace<uID3.205.1>
+        case 205  :   // mspace<uID3.205.1>
         // we stepped over mspace before getting here!
-		  TCI_ASSERT(0);
-	    break;
-        case 206  :		// ms<uID3.206.1>
-		  TCI_ASSERT(0);
-		break;
-		default   :
-		break;
-	  }
+      TCI_ASSERT(0);
+      break;
+        case 206  :   // ms<uID3.206.1>
+      TCI_ASSERT(0);
+    break;
+    default   :
+    break;
+    }
 
-	} else if ( uobjtype == 5 ) {		// schemata
+  } else if ( uobjtype == 5 ) {   // schemata
 
       switch ( usubtype ) {
-        case 750  :		// mrow<uID5.750.1>
-        case   1  :		// mfrac<uID5.1.0>
-        case  35  :		// mtable<uID5.35.0>
-        case  50  :		// msub<uID5.50.2>
-        case  51  :		// msup<uID5.51.2>
-        case  52  :		// msubsup<uID5.52.2>
-        case  53  :		// munder<uID5.53.2>
-        case  54  :		// mover<uID5.54.2>
-        case  55  :		// munderover<uID5.55.2>
-        case  56  :		// mprescripts/<uID5.56.10>
-//      case  56  :		// mmultiscripts<uID5.56.2>
-        case  60  :		// msqrt<uID5.60.0>
-        case  61  :		// mroot<uID5.61.0>
+        case 750  :   // mrow<uID5.750.1>
+        case   1  :   // mfrac<uID5.1.0>
+        case  35  :   // mtable<uID5.35.0>
+        case  50  :   // msub<uID5.50.2>
+        case  51  :   // msup<uID5.51.2>
+        case  52  :   // msubsup<uID5.52.2>
+        case  53  :   // munder<uID5.53.2>
+        case  54  :   // mover<uID5.54.2>
+        case  55  :   // munderover<uID5.55.2>
+        case  56  :   // mprescripts/<uID5.56.10>
+//      case  56  :   // mmultiscripts<uID5.56.2>
+        case  60  :   // msqrt<uID5.60.0>
+        case  61  :   // mroot<uID5.61.0>
           n_operand_nodes =  1;
-	    break;
+      break;
 
-        case  70  :	{	// mfenced<uID5.70.0>
+        case  70  : { // mfenced<uID5.70.0>
           TCI_ASSERT(0);
           n_operand_nodes =  1;
-	    }
-	    break;
+      }
+      break;
 
-        case 600  :		// mstyle<uID5.600.0>
+        case 600  :   // mstyle<uID5.600.0>
           if ( candidate->details ) {
             if ( candidate->details->unit_state==1 )
-              n_operand_nodes =  1;		// considered to be an operand
+              n_operand_nodes =  1;   // considered to be an operand
             else if ( candidate->details->bigop_status==1 )
-              n_operand_nodes =  1;		// considered to be an operand
+              n_operand_nodes =  1;   // considered to be an operand
             else
-	          TCI_ASSERT(0);
+            TCI_ASSERT(0);
           } else
-	        TCI_ASSERT(0);
-	    break;
-        case 601  :		// merror<uID5.601.0>
-        case 602  :		// mpadded<uID5.602.0>
-        case 603  :		// mphantom<uID5.603.0>
-	      TCI_ASSERT(0);
-	    break;
+          TCI_ASSERT(0);
+      break;
+        case 601  :   // merror<uID5.601.0>
+        case 602  :   // mpadded<uID5.602.0>
+        case 603  :   // mphantom<uID5.603.0>
+        TCI_ASSERT(0);
+      break;
 
-        case 604  :		// maction<uID5.604.0>
-		  if ( candidate->details
-		  &&   candidate->details->is_expression==1 ) {
-            n_operand_nodes =  1;		// considered to be an operand
-		  } else
-		    TCI_ASSERT(0);
-		break;
+        case 604  :   // maction<uID5.604.0>
+      if ( candidate->details
+      &&   candidate->details->is_expression==1 ) {
+            n_operand_nodes =  1;   // considered to be an operand
+      } else
+        TCI_ASSERT(0);
+    break;
 
-	    default   :
-	      TCI_ASSERT(0);
-	    break;
-	  }
-	}		// clause for uobjtype == 5 
+      default   :
+        TCI_ASSERT(0);
+      break;
+    }
+  }   // clause for uobjtype == 5 
 
-  }		// if ( candidate )
+  }   // if ( candidate )
 
   return n_operand_nodes ? TRUE : FALSE;
 }
 
 
-//\QTR{bf}{B}		\mathbf{B} 		    \mathbf{B}		
-//\QTR{bf}{over } 	\textbf{over }	    \mathbf{over }
-//\QTR{bf}{over } 	{\bf over }		    \mathbf{over }
-//\QTR{em}{I hope } \emph{I hope }	    \emph{I hope }
-//\QTR{em}{The end.}{\em The end.}	    \emph{The end.}
-//\QTR{it}{D}		\mathit{D} 		    \mathit{D}
-//\QTR{it}{quick } 	\textit{quick }	    \mathit{quick }
-//\QTR{it}{quick } 	{\it quick }	    \mathit{quick }
-//\QTR{md}{jumps } 	\textmd{jumps }    	\QTR{md}{jumps }
-//\QTR{nf}{c}		\mathnormal{c} 		\mathnormal{c}	
-//\QTR{nf}{a and }  \textnormal{a and }	\mathnormal{a and }
-//\QTR{rm}{a}		\mathrm{a} 		    \mathrm{a}		
-//\QTR{rm}{the } 	  {\rm the }		\mathrm{the }
-//\QTR{sc}{fox } 	\textsc{fox }	    \QTR{sc}{fox }
-//\QTR{sc}{fox } 	  {\sc fox }		\QTR{sc}{fox }
-//\QTR{sf}{b}		\mathsf{b} 		    \mathsf{b}
-//\QTR{sf}{lazy } 	\textsf{lazy }	    \mathsf{lazy }
-//\QTR{sf}{lazy } 	{\sf lazy }		    \mathsf{lazy }
-//\QTR{sl}{brown } 	\textsl{brown }	    \QTR{sl}{brown }
-//\QTR{sl}{brown } 	{\sl brown }	    \QTR{sl}{brown }
-//\QTR{tt}{C}		\mathtt{C} 		    \mathtt{C}
-//\QTR{tt}{dog.} 	\texttt{dog.}	    \mathtt{dog.}
-//\QTR{tt}{dog. } 	{\tt dog. }		    \mathtt{dog. }
-//\QTR{up}{The } 	\textup{The }	    \QTR{up}{The } 			
-//\QTR{cal}{A}		\mathcal{A} 	    \mathcal{A}
-//\QTR{Bbb}{E}		\Bbb{E}			    \mathbb{E} 		
-//\QTR{Bbb}{F}		\mathbb{F}		    \mathbb{F} 		
-//\QTR{frak}{G}		\frak{G}		    \mathfrak{G} 	
-//\QTR{frak}{H}		\mathfrak{H}	    \mathfrak{H} 	
+//\QTR{bf}{B}   \mathbf{B}        \mathbf{B}    
+//\QTR{bf}{over }   \textbf{over }      \mathbf{over }
+//\QTR{bf}{over }   {\bf over }       \mathbf{over }
+//\QTR{em}{I hope } \emph{I hope }      \emph{I hope }
+//\QTR{em}{The end.}{\em The end.}      \emph{The end.}
+//\QTR{it}{D}   \mathit{D}        \mathit{D}
+//\QTR{it}{quick }  \textit{quick }     \mathit{quick }
+//\QTR{it}{quick }  {\it quick }      \mathit{quick }
+//\QTR{md}{jumps }  \textmd{jumps }     \QTR{md}{jumps }
+//\QTR{nf}{c}   \mathnormal{c}    \mathnormal{c}  
+//\QTR{nf}{a and }  \textnormal{a and } \mathnormal{a and }
+//\QTR{rm}{a}   \mathrm{a}        \mathrm{a}    
+//\QTR{rm}{the }    {\rm the }    \mathrm{the }
+//\QTR{sc}{fox }  \textsc{fox }     \QTR{sc}{fox }
+//\QTR{sc}{fox }    {\sc fox }    \QTR{sc}{fox }
+//\QTR{sf}{b}   \mathsf{b}        \mathsf{b}
+//\QTR{sf}{lazy }   \textsf{lazy }      \mathsf{lazy }
+//\QTR{sf}{lazy }   {\sf lazy }       \mathsf{lazy }
+//\QTR{sl}{brown }  \textsl{brown }     \QTR{sl}{brown }
+//\QTR{sl}{brown }  {\sl brown }      \QTR{sl}{brown }
+//\QTR{tt}{C}   \mathtt{C}        \mathtt{C}
+//\QTR{tt}{dog.}  \texttt{dog.}     \mathtt{dog.}
+//\QTR{tt}{dog. }   {\tt dog. }       \mathtt{dog. }
+//\QTR{up}{The }  \textup{The }     \QTR{up}{The }      
+//\QTR{cal}{A}    \mathcal{A}       \mathcal{A}
+//\QTR{Bbb}{E}    \Bbb{E}         \mathbb{E}    
+//\QTR{Bbb}{F}    \mathbb{F}        \mathbb{F}    
+//\QTR{frak}{G}   \frak{G}        \mathfrak{G}  
+//\QTR{frak}{H}   \mathfrak{H}      \mathfrak{H}  
 
 //\QTR{group}{\QTO{md}{\md }jumps }{\md jumps }
 //\QTR{group}{\QTO{up}{\up }The }{\up The }
 
-//\QTR{group}{\QTO{displaystyle}     {\displaystyle}x}	        {\displaystyle x}
-//\QTR{group}{\QTO{textstyle}        {\textstyle}y} 			{\textstyle y}
-//\QTR{group}{\QTO{scriptstyle}      {\scriptstyle}z} 	        {\scriptstyle z}
-//\QTR{group}{\QTO{scriptscriptstyle}{\scriptscriptstyle}123}	{\scriptscriptstyle 123}
+//\QTR{group}{\QTO{displaystyle}     {\displaystyle}x}          {\displaystyle x}
+//\QTR{group}{\QTO{textstyle}        {\textstyle}y}       {\textstyle y}
+//\QTR{group}{\QTO{scriptstyle}      {\scriptstyle}z}           {\scriptstyle z}
+//\QTR{group}{\QTO{scriptscriptstyle}{\scriptscriptstyle}123} {\scriptscriptstyle 123}
 
 U16 LaTeX2MMLTree::GetQTRuSubID( U8* run_name,TCI_BOOL in_math ) {
 
@@ -12116,93 +12114,93 @@ U16 LaTeX2MMLTree::GetQTRuSubID( U8* run_name,TCI_BOOL in_math ) {
   U16 zln =  strlen( (char*)run_name );
   switch ( zln ) {
     case 2  :
-	  if      ( !strcmp((char*)run_name,"bf") )
-	    rv  =  in_math ? TR_Mbf : TR_Tbf;
-	  else if ( !strcmp((char*)run_name,"bs") )
-	    rv  =  TR_Mbs;
-	  else if ( !strcmp((char*)run_name,"em") )
-	    rv  =  TR_em;
-	  else if ( !strcmp((char*)run_name,"it") )
-	    rv  =  in_math ? TR_Mit : TR_Tit;
-	  else if ( !strcmp((char*)run_name,"md") )
-	    rv  =  TR_Tmd;
-	  else if ( !strcmp((char*)run_name,"nf") )
-	    rv  =  TR_Mnf;
-	  else if ( !strcmp((char*)run_name,"rm") )
-	    rv  =   in_math ? TR_Mrm : TR_Trm;
-	  else if ( !strcmp((char*)run_name,"sc") )
-	    rv  =  TR_Tsc;
-	  else if ( !strcmp((char*)run_name,"sf") )
-	    rv  =  in_math ? TR_Msf : TR_Tsf;
-	  else if ( !strcmp((char*)run_name,"sl") )
-	    rv  =  TR_Tsl;
-	  else if ( !strcmp((char*)run_name,"tt") )
-	    rv  =   in_math ? TR_Mtt : TR_Ttt;
-	  else if ( !strcmp((char*)run_name,"up") )
-	    rv  =  TR_Tup;
+    if      ( !strcmp((char*)run_name,"bf") )
+      rv  =  in_math ? TR_Mbf : TR_Tbf;
+    else if ( !strcmp((char*)run_name,"bs") )
+      rv  =  TR_Mbs;
+    else if ( !strcmp((char*)run_name,"em") )
+      rv  =  TR_em;
+    else if ( !strcmp((char*)run_name,"it") )
+      rv  =  in_math ? TR_Mit : TR_Tit;
+    else if ( !strcmp((char*)run_name,"md") )
+      rv  =  TR_Tmd;
+    else if ( !strcmp((char*)run_name,"nf") )
+      rv  =  TR_Mnf;
+    else if ( !strcmp((char*)run_name,"rm") )
+      rv  =   in_math ? TR_Mrm : TR_Trm;
+    else if ( !strcmp((char*)run_name,"sc") )
+      rv  =  TR_Tsc;
+    else if ( !strcmp((char*)run_name,"sf") )
+      rv  =  in_math ? TR_Msf : TR_Tsf;
+    else if ( !strcmp((char*)run_name,"sl") )
+      rv  =  TR_Tsl;
+    else if ( !strcmp((char*)run_name,"tt") )
+      rv  =   in_math ? TR_Mtt : TR_Ttt;
+    else if ( !strcmp((char*)run_name,"up") )
+      rv  =  TR_Tup;
     break;
 
     case 3  :
-	  if      ( !strcmp((char*)run_name,"cal") )
-	    rv  =  TR_Mcal;
-	  else if ( !strcmp((char*)run_name,"Bbb") )
-	    rv  =  TR_MBbb;
+    if      ( !strcmp((char*)run_name,"cal") )
+      rv  =  TR_Mcal;
+    else if ( !strcmp((char*)run_name,"Bbb") )
+      rv  =  TR_MBbb;
     break;
 
     case 4  :
-	  if      ( !strcmp((char*)run_name,"frak") )
-	    rv  =  TR_Mfrak;
-	  else if ( !strcmp((char*)run_name,"Huge") )
-	    rv  =  TR_Huge;
-	  else if ( !strcmp((char*)run_name,"huge") )
-	    rv  =  TR_huge;
-	  else if ( !strcmp((char*)run_name,"tiny") )
-	    rv  =  TR_tiny;
+    if      ( !strcmp((char*)run_name,"frak") )
+      rv  =  TR_Mfrak;
+    else if ( !strcmp((char*)run_name,"Huge") )
+      rv  =  TR_Huge;
+    else if ( !strcmp((char*)run_name,"huge") )
+      rv  =  TR_huge;
+    else if ( !strcmp((char*)run_name,"tiny") )
+      rv  =  TR_tiny;
     break;
 
     case 5  :
-	  if      ( !strcmp((char*)run_name,"group") )
-	    rv  =  TR_group;
-	  else if ( !strcmp((char*)run_name,"LARGE") )
-	    rv  =  TR_LARGE;
-	  else if ( !strcmp((char*)run_name,"Large") )
-	    rv  =  TR_Large;
-	  else if ( !strcmp((char*)run_name,"large") )
-	    rv  =  TR_large;
-	  else if ( !strcmp((char*)run_name,"small") )
-	    rv  =  TR_small;
+    if      ( !strcmp((char*)run_name,"group") )
+      rv  =  TR_group;
+    else if ( !strcmp((char*)run_name,"LARGE") )
+      rv  =  TR_LARGE;
+    else if ( !strcmp((char*)run_name,"Large") )
+      rv  =  TR_Large;
+    else if ( !strcmp((char*)run_name,"large") )
+      rv  =  TR_large;
+    else if ( !strcmp((char*)run_name,"small") )
+      rv  =  TR_small;
     break;
 
     case 9  :
-	  if      ( !strcmp((char*)run_name,"textstyle") )
+    if      ( !strcmp((char*)run_name,"textstyle") )
         rv =  TR_textstyle;
     break;
 
     case 10 :
-	  if      ( !strcmp((char*)run_name,"normalsize") )
-	    rv  =  TR_normalsize;
-	  else if ( !strcmp((char*)run_name,"scriptsize") )
-	    rv  =  TR_scriptsize;
+    if      ( !strcmp((char*)run_name,"normalsize") )
+      rv  =  TR_normalsize;
+    else if ( !strcmp((char*)run_name,"scriptsize") )
+      rv  =  TR_scriptsize;
     break;
 
     case 11 :
-	  if      ( !strcmp((char*)run_name,"scriptstyle") )
+    if      ( !strcmp((char*)run_name,"scriptstyle") )
         rv =  TR_scriptstyle;
     break;
 
     case 12 :
-	  if      ( !strcmp((char*)run_name,"footnotesize") )
-	    rv  =  TR_footnotesize;
-	  else if ( !strcmp((char*)run_name,"displaystyle") )
+    if      ( !strcmp((char*)run_name,"footnotesize") )
+      rv  =  TR_footnotesize;
+    else if ( !strcmp((char*)run_name,"displaystyle") )
         rv =  TR_displaystyle;
     break;
 
     case 17 :
-	  if      ( !strcmp((char*)run_name,"scriptscriptstyle") )
+    if      ( !strcmp((char*)run_name,"scriptscriptstyle") )
         rv =  TR_scriptscriptstyle;
     break;
 
-    default :	// could be anything from file.cst
+    default : // could be anything from file.cst
 // UserInput
 // MenuDialog
 // KeyName
@@ -12252,8 +12250,8 @@ U8* LaTeX2MMLTree::QTRuSubIDtoName( U16 sub_ID ) {
     case TR_Huge                :  rv =  (U8*)"Huge";           break;
 
     case TR_displaystyle        :  rv =  (U8*)"displaystyle";       break;
-    case TR_textstyle           :  rv =  (U8*)"textstyle";		    break;
-    case TR_scriptstyle         :  rv =  (U8*)"scriptstyle";		break;
+    case TR_textstyle           :  rv =  (U8*)"textstyle";        break;
+    case TR_scriptstyle         :  rv =  (U8*)"scriptstyle";    break;
     case TR_scriptscriptstyle   :  rv =  (U8*)"scriptscriptstyle";  break;
 
     default :
@@ -12272,22 +12270,22 @@ void LaTeX2MMLTree::GetUnicodeForBoldSymbol( TNODE* mml_rover,
 
   if ( mml_rover->var_value && mml_rover->v_len==1 ) {
 
-	U32 offset  =  100L;
+  U32 offset  =  100L;
     U8 ch =  mml_rover->var_value[0];
-	if        ( ch>='A' && ch<='Z' ) {
-	  offset  =  ch - 'A';
-	} else if ( ch>='a' && ch<='z' ) {
-	  offset  =  ch - 'a' + 26;
-	} else
-	  TCI_ASSERT(0);
+  if        ( ch>='A' && ch<='Z' ) {
+    offset  =  ch - 'A';
+  } else if ( ch>='a' && ch<='z' ) {
+    offset  =  ch - 'a' + 26;
+  } else
+    TCI_ASSERT(0);
 
-	if ( offset != 100L ) {
-	  U32 the_unicode =  0x1D400 + offset;
-	  unicode[0]  =  '#';
-	  //unicode[1]  =  'x';
-	  //ultoa( the_unicode,(char*)unicode+1,10 );
-	  sprintf((char*)unicode+1, "%d", the_unicode);
-	}
+  if ( offset != 100L ) {
+    U32 the_unicode =  0x1D400 + offset;
+    unicode[0]  =  '#';
+    //unicode[1]  =  'x';
+    //ultoa( the_unicode,(char*)unicode+1,10 );
+    sprintf((char*)unicode+1, "%d", the_unicode);
+  }
 
   } else
     TCI_ASSERT(0);
@@ -12313,43 +12311,43 @@ U16 LaTeX2MMLTree::GetMathRunTagFromTeXSwitch( TNODE* TeX_cont,
 
     U16 uobjtype,usubtype,uID;
     GetUids( rover->zuID,uobjtype,usubtype,uID );
-    if ( uobjtype==5 ) {	// all switches are of type 5
+    if ( uobjtype==5 ) {  // all switches are of type 5
 
       switch ( usubtype ) {
 
   // font related switches
 
-        case 180  :  // \up<uID5.180.0>		\textup<uID5.450.1>
+        case 180  :  // \up<uID5.180.0>   \textup<uID5.450.1>
           rv  =  TR_Tup;    break;
-        case 181  :  // \it<uID5.181.0>		\textit<uID5.451.1>
+        case 181  :  // \it<uID5.181.0>   \textit<uID5.451.1>
           rv  =  TR_Mit;    break;
-        case 182  :  // \sl<uID5.182.0>		\textsl<uID5.452.1>
+        case 182  :  // \sl<uID5.182.0>   \textsl<uID5.452.1>
           rv  =  TR_Tsl;    break;
-        case 183  :  // \sc<uID5.183.0>		\textsc<uID5.453.1>
+        case 183  :  // \sc<uID5.183.0>   \textsc<uID5.453.1>
           rv  =  TR_Tsc;    break;
-        case 184  :  // \md<uID5.184.0>		\textmd<uID5.454.1>
+        case 184  :  // \md<uID5.184.0>   \textmd<uID5.454.1>
           rv  =  TR_Tmd;    break;
-        case 185  :  // \bf<uID5.185.0>		\textbf<uID5.455.1>
+        case 185  :  // \bf<uID5.185.0>   \textbf<uID5.455.1>
           rv  =  TR_Mbf;    break;
-        case 186  :  // \rm<uID5.186.0>		\textrm<uID5.456.1>
+        case 186  :  // \rm<uID5.186.0>   \textrm<uID5.456.1>
           rv  =  TR_Mrm;    break;
-        case 187  :  // \sf<uID5.187.0>		\textsf<uID5.457.1>
+        case 187  :  // \sf<uID5.187.0>   \textsf<uID5.457.1>
           rv  =  TR_Msf;    break;
-        case 188  :  // \tt<uID5.188.0>		\texttt<uID5.458.1>
+        case 188  :  // \tt<uID5.188.0>   \texttt<uID5.458.1>
           rv  =  TR_Mtt;    break;
-        case 189  :  // \em<uID5.189.0>		\emph<uID5.459.1>
+        case 189  :  // \em<uID5.189.0>   \emph<uID5.459.1>
           rv  =  TR_em;     break;
 
   // \QTO
 
         case 401  :  {  // \QTO<uID5.401.0> can encapsulate a switch
-	        TNODE* nom_bucket =  FindObject( rover->parts,
+          TNODE* nom_bucket =  FindObject( rover->parts,
                                 (U8*)"5.401.1",INVALID_LIST_POS );
           if ( nom_bucket ) {
             rv  =  GetQTRuSubID( nom_bucket->contents->var_value,TRUE );
             if ( rv ) 
               strcpy( (char*)switch_nom,
-            		(char*)nom_bucket->contents->var_value );
+                (char*)nom_bucket->contents->var_value );
           } else
             TCI_ASSERT(0);
         }
@@ -12381,11 +12379,11 @@ U16 LaTeX2MMLTree::GetMathRunTagFromTeXSwitch( TNODE* TeX_cont,
   // style switches
 
         case 600  :  // \displaystyle<uID5.600.1>
-          rv  =  TR_displaystyle;			break;
+          rv  =  TR_displaystyle;     break;
         case 601  :  // \textstyle<uID5.601.1>
-          rv  =  TR_textstyle;			  break;
+          rv  =  TR_textstyle;        break;
         case 602  :  // \scriptstyle<uID5.602.1>
-          rv  =  TR_scriptstyle;			break;
+          rv  =  TR_scriptstyle;      break;
         case 603  :  // \scriptscriptstyle<uID5.603.1>
           rv  =  TR_scriptscriptstyle;break;
 
@@ -12393,10 +12391,10 @@ U16 LaTeX2MMLTree::GetMathRunTagFromTeXSwitch( TNODE* TeX_cont,
         break;
       }
 
-    }		// if ( uobjtype==5 )
+    }   // if ( uobjtype==5 )
 
     rover =  rover->next;
-  }	// loop thru TeX_cont;
+  } // loop thru TeX_cont;
 
 
   if ( rv && switch_nom[0] == 0 ) {
@@ -12417,9 +12415,9 @@ TCI_BOOL LaTeX2MMLTree::IsImpliedEllipsis( TNODE* TeX_dot_node ) {
   TCI_BOOL rv =  FALSE;
 
   if ( TeX_dot_node->next && TeX_dot_node->next->next ) {
-	  U8* zuID  =  TeX_dot_node->zuID;
-	  U8* n_zuID  =  TeX_dot_node->next->zuID;
-	  U8* nn_zuID   =  TeX_dot_node->next->next->zuID;
+    U8* zuID  =  TeX_dot_node->zuID;
+    U8* n_zuID  =  TeX_dot_node->next->zuID;
+    U8* nn_zuID   =  TeX_dot_node->next->next->zuID;
     if ( !strcmp((char*)zuID,(char*)n_zuID) )
       if ( !strcmp((char*)zuID,(char*)nn_zuID) )
         rv  =  TRUE;
@@ -12435,7 +12433,7 @@ TCI_BOOL LaTeX2MMLTree::IsImpliedEllipsis( TNODE* TeX_dot_node ) {
 //   which we separate with invisible commas.
 
 TNODE* LaTeX2MMLTree::SubscriptBody2MML( TNODE* TeX_sub_contents,
-								        MATH_CONTEXT_INFO* m_context ) {
+                        MATH_CONTEXT_INFO* m_context ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -12452,7 +12450,7 @@ TNODE* LaTeX2MMLTree::SubscriptBody2MML( TNODE* TeX_sub_contents,
     U16 uobj,usub,id;
     GetUids( rover->zuID,uobj,usub,id );
     if ( uobj==3 ) {
-      if        ( usub==1 )	{   // small letter
+      if        ( usub==1 ) {   // small letter
         n_sletters++;
       } else if ( usub==2 ) {   // cap letter
         n_cletters++;
@@ -12480,23 +12478,23 @@ TNODE* LaTeX2MMLTree::SubscriptBody2MML( TNODE* TeX_sub_contents,
       TNODE* new_node =  NULL;
       U16 uobj,usub,id;
       GetUids( rover->zuID,uobj,usub,id );
-      if        ( uobj==3 && usub==1  ) {	// small letter
-        new_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.201.1" );	// <mi>
+      if        ( uobj==3 && usub==1  ) { // small letter
+        new_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.201.1" );  // <mi>
         v_v[0]  =  'a' + id - 1;
         SetChData( new_node,v_v,NULL );
-      } else if ( uobj==3 && usub==2 ) {	// cap letter
-        new_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.201.1" );	// <mi>
+      } else if ( uobj==3 && usub==2 ) {  // cap letter
+        new_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.201.1" );  // <mi>
         v_v[0]  =  'A' + id - 1;
         SetChData( new_node,v_v,NULL );
-      } else if ( uobj==3 && usub==3 ) {	// digit
-        new_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.202.1" );	// <mn>
+      } else if ( uobj==3 && usub==3 ) {  // digit
+        new_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.202.1" );  // <mn>
         v_v[0]  =  '0' + id - 1;
         SetChData( new_node,v_v,NULL );
       }
 
       if ( new_node ) {
         if ( mml_rv ) {
-          TNODE* mo_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );	// <mo>
+          TNODE* mo_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );  // <mo>
           SetChData( mo_node,(U8*)entity_ic,(U8*)entity_ic_unicode );
           SetDetailNum( mo_node,DETAILS_form,COPF_INFIX );
           SetDetailNum( mo_node,DETAILS_precedence,2 );
@@ -12515,7 +12513,7 @@ TNODE* LaTeX2MMLTree::SubscriptBody2MML( TNODE* TeX_sub_contents,
       rover =  rover->next;
     }
 
-  }	else {	// if ( do_it )
+  } else {  // if ( do_it )
 // a_{n-1}  J_{n}_{1}  K_{mathbf{u}}
 //  TCI_ASSERT(0);
   }
@@ -12532,63 +12530,63 @@ TCI_BOOL LaTeX2MMLTree::FuncIsMMLOperator( U16 subtype,U16 uID ) {
 
   TCI_BOOL rv =  FALSE;
 
-  if ( subtype==2 ) {	// LaTeX built-in, no limits
+  if ( subtype==2 ) { // LaTeX built-in, no limits
     switch ( uID ) {
-      case 27 :	// \bmod<uID8.2.27>
-      case  1 :	// \arccos<uID8.2.1>
-      case  2 :	// \arcsin<uID8.2.2>
-      case  3 :	// \arctan<uID8.2.3>
-      case  4 :	// \arg<uID8.2.4>
-      case  5 :	// \cos<uID8.2.5>
-      case  6 :	// \cosh<uID8.2.6>
-      case  7 :	// \cot<uID8.2.7>
-      case  8 :	// \coth<uID8.2.8>
-      case  9 :	// \csc<uID8.2.9>
-      case 10 :	// \deg<uID8.2.10>
-      case 11 :	// \dim<uID8.2.11>
-      case 12 :	// \exp<uID8.2.12>
-      case 13 :	// \hom<uID8.2.13>
-      case 14 :	// \ker<uID8.2.14>
-      case 15 :	// \lg<uID8.2.15>
-      case 16 :	// \ln<uID8.2.16>
-      case 17 :	// \log<uID8.2.17>
-      case 18 :	// \sec<uID8.2.18>
-      case 19 :	// \sin<uID8.2.19>
-      case 20 :	// \sinh<uID8.2.20>
-      case 21 :	// \tan<uID8.2.21>
-      case 22 :	// \tanh<uID8.2.22>
-	    rv  =  FALSE;			break;
-	  default :
-	    TCI_ASSERT(0);
-	  break;
+      case 27 : // \bmod<uID8.2.27>
+      case  1 : // \arccos<uID8.2.1>
+      case  2 : // \arcsin<uID8.2.2>
+      case  3 : // \arctan<uID8.2.3>
+      case  4 : // \arg<uID8.2.4>
+      case  5 : // \cos<uID8.2.5>
+      case  6 : // \cosh<uID8.2.6>
+      case  7 : // \cot<uID8.2.7>
+      case  8 : // \coth<uID8.2.8>
+      case  9 : // \csc<uID8.2.9>
+      case 10 : // \deg<uID8.2.10>
+      case 11 : // \dim<uID8.2.11>
+      case 12 : // \exp<uID8.2.12>
+      case 13 : // \hom<uID8.2.13>
+      case 14 : // \ker<uID8.2.14>
+      case 15 : // \lg<uID8.2.15>
+      case 16 : // \ln<uID8.2.16>
+      case 17 : // \log<uID8.2.17>
+      case 18 : // \sec<uID8.2.18>
+      case 19 : // \sin<uID8.2.19>
+      case 20 : // \sinh<uID8.2.20>
+      case 21 : // \tan<uID8.2.21>
+      case 22 : // \tanh<uID8.2.22>
+      rv  =  FALSE;     break;
+    default :
+      TCI_ASSERT(0);
+    break;
     }
 
-  } else if ( subtype==4 ) {	// LaTeX built-in, with limits
+  } else if ( subtype==4 ) {  // LaTeX built-in, with limits
 
     switch ( uID ) {
-      case  1 :	// \det<uID8.4.1>!\det!_LIMPLACE__FIRSTLIM__SECONDLIM_
-      case 10 :	// \Pr<uID8.4.10>
-	    rv  =  FALSE;			break;
+      case  1 : // \det<uID8.4.1>!\det!_LIMPLACE__FIRSTLIM__SECONDLIM_
+      case 10 : // \Pr<uID8.4.10>
+      rv  =  FALSE;     break;
 
-      case  2 :	// \gcd<uID8.4.2>
-      case  3 :	// \inf<uID8.4.3>
-      case  4 :	// \injlim<uID8.4.4>
-      case  5 :	// \lim<uID8.4.5>
-      case  6 :	// \liminf<uID8.4.6>
-      case  7 :	// \limsup<uID8.4.7>
-      case  8 :	// \max<uID8.4.8>
-      case  9 :	// \min<uID8.4.9>
-      case 11 :	// \projlim<uID8.4.11>
-      case 12 :	// \sup<uID8.4.12>
-      case 13 :	// \varinjlim<uID8.4.13>
-      case 14 :	// \varliminf<uID8.4.14>
-      case 15 :	// \varlimsup<uID8.4.15>
-      case 16 :	// \varprojlim<uID8.4.16>
-	    rv  =  TRUE;			break;
+      case  2 : // \gcd<uID8.4.2>
+      case  3 : // \inf<uID8.4.3>
+      case  4 : // \injlim<uID8.4.4>
+      case  5 : // \lim<uID8.4.5>
+      case  6 : // \liminf<uID8.4.6>
+      case  7 : // \limsup<uID8.4.7>
+      case  8 : // \max<uID8.4.8>
+      case  9 : // \min<uID8.4.9>
+      case 11 : // \projlim<uID8.4.11>
+      case 12 : // \sup<uID8.4.12>
+      case 13 : // \varinjlim<uID8.4.13>
+      case 14 : // \varliminf<uID8.4.14>
+      case 15 : // \varlimsup<uID8.4.15>
+      case 16 : // \varprojlim<uID8.4.16>
+      rv  =  TRUE;      break;
 
-	  default :
-	    TCI_ASSERT(0);
-	  break;
+    default :
+      TCI_ASSERT(0);
+    break;
     }
 
   } else
@@ -12602,9 +12600,9 @@ TCI_BOOL LaTeX2MMLTree::FuncIsMMLOperator( U16 subtype,U16 uID ) {
 //  _LIMPLACE__FIRSTLIM__SECONDLIM_
 
 TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
-				  			  		U8* limfunc_name,
-					  			  	U16 usubtype,U16 uID,
-					  			  	TNODE** out_of_flow_list ) {
+                      U8* limfunc_name,
+                      U16 usubtype,U16 uID,
+                      TNODE** out_of_flow_list ) {
 
   TNODE* rv =  NULL;
 
@@ -12627,7 +12625,7 @@ TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
   if ( usubtype==4 && uID >= 13 && uID <= 16 )
     is_varlim  =  TRUE;
 
-// if tex_limits, limits are always under/over		- <munderover>
+// if tex_limits, limits are always under/over    - <munderover>
 // if tex_nolimits, limits are always at the right  - <msubsup>
 // if tex_autolimits, limits are under/over         - <munderover>
 //   in a display, and at the right for inline math.
@@ -12635,8 +12633,8 @@ TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
   TNODE* mml_ll =  NULL;
 
 // Locate the TeX lower limit.
-  TNODE* tex_sub  =  FindObject( lfunc_parts,(U8*)"5.50.1",	// _
-									INVALID_LIST_POS );
+  TNODE* tex_sub  =  FindObject( lfunc_parts,(U8*)"5.50.1", // _
+                  INVALID_LIST_POS );
   if ( tex_sub ) {
     if ( tex_sub->parts ) {
       TNODE* tex_ll_cont  =  tex_sub->parts->contents;
@@ -12644,17 +12642,17 @@ TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
       U16 tex_nodes_done,loc_error;
       TNODE* local_oof_list =  NULL;
       mml_ll =  TranslateMathList( tex_ll_cont,do_bindings,
-				NULL,tex_nodes_done,loc_error,&local_oof_list );
+        NULL,tex_nodes_done,loc_error,&local_oof_list );
       if ( !mml_ll )
         mml_ll  =  MakeSmallmspace();
       else if ( mml_ll->next )
         mml_ll  =  MMLlistToMRow( mml_ll );
       mml_ll =  HandleOutOfFlowObjects( mml_ll,
-      					        &local_oof_list,out_of_flow_list,2 );
-	}
+                        &local_oof_list,out_of_flow_list,2 );
+  }
   } else {  // We may have a multiline lower limit
-    TNODE* tex_sb =  FindObject( lfunc_parts,(U8*)"5.30.0",	// \Sb
-									INVALID_LIST_POS );
+    TNODE* tex_sb =  FindObject( lfunc_parts,(U8*)"5.30.0", // \Sb
+                  INVALID_LIST_POS );
     if ( tex_sb )
       mml_ll  =  SbAndSp2MML( tex_sb,out_of_flow_list );
   }
@@ -12663,7 +12661,7 @@ TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
 
 // Locate the TeX upper limit.
   TNODE* tex_sup  =  FindObject( lfunc_parts,(U8*)"5.51.1",
-								    INVALID_LIST_POS );
+                    INVALID_LIST_POS );
   if ( tex_sup ) {
     if ( tex_sup->parts ) {
       TNODE* tex_ul_cont  =  tex_sup->parts->contents;
@@ -12671,17 +12669,17 @@ TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
       U16 tex_nodes_done,loc_error;
       TNODE* local_oof_list =  NULL;
       mml_ul =  TranslateMathList( tex_ul_cont,do_bindings,
-				NULL,tex_nodes_done,loc_error,&local_oof_list );
+        NULL,tex_nodes_done,loc_error,&local_oof_list );
       if ( !mml_ul )
         mml_ul  =  MakeSmallmspace();
       else if ( mml_ul->next )
         mml_ul  =  MMLlistToMRow( mml_ul );
       mml_ul =  HandleOutOfFlowObjects( mml_ul,
-   						          &local_oof_list,out_of_flow_list,2 );
+                        &local_oof_list,out_of_flow_list,2 );
     }
   } else {  // we may have a multiline upper limit
     TNODE* tex_sp =  FindObject( lfunc_parts,(U8*)"5.31.0",
-									INVALID_LIST_POS );
+                  INVALID_LIST_POS );
     if ( tex_sp )
       mml_ul  =  SbAndSp2MML( tex_sp,out_of_flow_list );
   }
@@ -12695,37 +12693,37 @@ TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
 
   TCI_BOOL is_function  =  FALSE;
   TCI_BOOL is_variable  =  FALSE;
-  if ( !mml_ll && !mml_ul ) {	// we have NO limit(s)
+  if ( !mml_ll && !mml_ul ) { // we have NO limit(s)
 
-	if        ( usubtype==4 && FuncIsMMLOperator(usubtype,uID) ) {
+  if        ( usubtype==4 && FuncIsMMLOperator(usubtype,uID) ) {
 // gcd, etc.
-	} else if ( usubtype==3 && IsKnownOperator(limfunc_name) ) {
+  } else if ( usubtype==3 && IsKnownOperator(limfunc_name) ) {
 // div, grad, curl
-	} else if ( is_varlim ) {
+  } else if ( is_varlim ) {
 // it's an operator
-	} else if ( IdentifierInList(vars_list,limfunc_name) ) {
+  } else if ( IdentifierInList(vars_list,limfunc_name) ) {
       is_variable =  TRUE;
-	} else {
+  } else {
       TNODE* nn =  tex_limfunc_node->next;
-	  if ( nn ) {
+    if ( nn ) {
         U16 objclass,subclass,id;
         GetUids( nn->zuID,objclass,subclass,id );
         if ( objclass==3 ) {
           TCI_BOOL forces_geometry;
           U16 ilk =  ClassifyTeXSymbol( nn,NULL,forces_geometry,NULL );
-	      if ( ilk == MML_OPERATOR ) {
-  		    TNODE* mml_op_node  =  MakeTNode( 0L,0L,0L,(U8*)NULL );
-		    U16 tex_nodes_spanned;
+        if ( ilk == MML_OPERATOR ) {
+          TNODE* mml_op_node  =  MakeTNode( 0L,0L,0L,(U8*)NULL );
+        U16 tex_nodes_spanned;
             SetMMLOpNode( nn,tex_nodes_spanned,mml_op_node );
             U16 form  =  GetDetailNum( mml_op_node,DETAILS_form );
             if      ( form == OPF_infix )
-	          is_variable =  TRUE;
+            is_variable =  TRUE;
             else if ( form == OPF_prefix ) {
-              if ( nn->src_tok[0] == '(' )			  
+              if ( nn->src_tok[0] == '(' )        
                 is_function =  TRUE;
             }
             DisposeTNode( mml_op_node );
-		  }
+      }
 
         } else if ( objclass==5 && subclass==70 && id==0 ) {
           if ( nn->parts && nn->parts->var_value ) {
@@ -12735,15 +12733,15 @@ TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
           }
         }
 
-	  } else
-	    is_variable =  TRUE;
-	}
+    } else
+      is_variable =  TRUE;
+  }
 
   }
 
   if        ( is_function ) {
     rv =  MakeTNode( 0L,0L,tex_limfunc_node->src_linenum,
-                                     (U8*)"3.201.1" );	// <mi>
+                                     (U8*)"3.201.1" );  // <mi>
     SetDetailNum( rv,DETAILS_function_status,1 );
     SetChData( rv,limfunc_name,NULL );
     if ( zMMLFunctionAttrs )
@@ -12752,68 +12750,68 @@ TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
   } else if ( is_variable ) {
     vars_list =  AddIdentifier( vars_list,limfunc_name );
     rv =  MakeTNode( 0L,0L,tex_limfunc_node->src_linenum,
-                                     (U8*)"3.201.1" );	// <mi>
+                                     (U8*)"3.201.1" );  // <mi>
     rv->var_value  =  limfunc_name;
     rv->v_len      =  strlen( (char*)limfunc_name );
     if ( zMMLFunctionAttrs )
       SetMMLAttribs( rv,(U8*)zMMLFunctionAttrs );
     SetDetailNum( rv,DETAILS_is_expression,1 );
 
-  } else {			// prefix operator clause
+  } else {      // prefix operator clause
 
     TNODE* base_op =  NULL;
     base_op  =  MakeTNode( 0L,0L,tex_limfunc_node->src_linenum,
-                                  		(U8*)"3.203.1" );	// <mo>
+                                      (U8*)"3.203.1" ); // <mo>
 
     base_op->var_value  =  limfunc_name;
     base_op->v_len      =  strlen( (char*)limfunc_name );
     if ( zMMLFunctionAttrs )
       SetMMLAttribs( base_op,(U8*)zMMLFunctionAttrs );
 
-	if ( is_varlim ) {
+  if ( is_varlim ) {
 // \varlimsup, etc.
       SetChData( base_op,(U8*)"lim",NULL );
       base_op =  DecorateVarLim( base_op,uID );
-	} else
+  } else
       SetNodeAttrib( base_op,(U8*)"form",(U8*)zop_forms[OPF_prefix] );
 
 
-    if ( mml_ll || mml_ul ) {	// we have limit(s)
+    if ( mml_ll || mml_ul ) { // we have limit(s)
       U16 mml_selem_type;
       U16 mml_ll_uID  =  0;
       U16 mml_ul_uID  =  0;
-      if ( tex_limits || tex_autolimits ) {	// under and/or over
+      if ( tex_limits || tex_autolimits ) { // under and/or over
 
         if ( is_varlim ) {
 
           if ( mml_ll && mml_ul ) {
-            mml_selem_type  =  in_display ? 55 : 52;	// <munderover> : <msubsup>
+            mml_selem_type  =  in_display ? 55 : 52;  // <munderover> : <msubsup>
             mml_ll_uID  =  4;
             mml_ul_uID  =  5;
           } else if ( mml_ll ) {
-            mml_selem_type  =  in_display ? 53 : 50;	// <munder> : <msub>
+            mml_selem_type  =  in_display ? 53 : 50;  // <munder> : <msub>
             mml_ll_uID  =  4;
-	      } else {
-            mml_selem_type  =  in_display ? 54 : 51;	// <mover> : <msup>
+        } else {
+            mml_selem_type  =  in_display ? 54 : 51;  // <mover> : <msup>
             mml_ul_uID  =  5;
-	      }
+        }
 
         } else {
           if ( mml_ll && mml_ul ) {
-            mml_selem_type  =  55;	// <munderover>
+            mml_selem_type  =  55;  // <munderover>
             mml_ll_uID  =  4;
             mml_ul_uID  =  5;
           } else if ( mml_ll ) {
-            mml_selem_type  =  53;	// <munder>
+            mml_selem_type  =  53;  // <munder>
             mml_ll_uID  =  4;
-	      } else {
-            mml_selem_type  =  54;	// <mover>
+        } else {
+            mml_selem_type  =  54;  // <mover>
             mml_ul_uID  =  5;
-	      }
+        }
 
-	      U8* attr_nom  =  (U8*)"movablelimits";
+        U8* attr_nom  =  (U8*)"movablelimits";
 
-          if ( tex_limits ) {	// under and/or over
+          if ( tex_limits ) { // under and/or over
             SetNodeAttrib( base_op,attr_nom,(U8*)"false" );
           } else {    // auto_limits
             if ( renderer_implements_displays )
@@ -12827,46 +12825,46 @@ TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
           }
         }
 
-	  } else {						// \nolimits - sub and/or sup
+    } else {            // \nolimits - sub and/or sup
         if ( mml_ll && mml_ul ) {
-          mml_selem_type  =  52;	// <msubsup>
+          mml_selem_type  =  52;  // <msubsup>
           mml_ll_uID  =  4;
           mml_ul_uID  =  5;
         } else if ( mml_ll ) {
-          mml_selem_type  =  50;	// <msub>
+          mml_selem_type  =  50;  // <msub>
           mml_ll_uID  =  4;
-	    } else {
-          mml_selem_type  =  51;	// <msup>
+      } else {
+          mml_selem_type  =  51;  // <msup>
           mml_ul_uID  =  5;
-	    }
-	  }
+      }
+    }
 
 
 
 // Construct rv
       rv  =  CreateElemWithBucketAndContents( 5,mml_selem_type,2,
-			  									3,base_op );
-	  TNODE* parts_tail =  rv->parts;
-      if ( mml_ll ) {		// construct lower limit bucket
+                          3,base_op );
+    TNODE* parts_tail =  rv->parts;
+      if ( mml_ll ) {   // construct lower limit bucket
         TNODE* next_part  =  CreateBucketWithContents(
-							    5,mml_selem_type,mml_ll_uID,mml_ll );
+                  5,mml_selem_type,mml_ll_uID,mml_ll );
         parts_tail->next  =  next_part;
         next_part->prev   =  parts_tail;
-	      parts_tail  =  next_part;
-	  }
-      if ( mml_ul ) {		// construct upper limit bucket
+        parts_tail  =  next_part;
+    }
+      if ( mml_ul ) {   // construct upper limit bucket
         TNODE* next_part  =  CreateBucketWithContents(
-							    5,mml_selem_type,mml_ul_uID,mml_ul );
+                  5,mml_selem_type,mml_ul_uID,mml_ul );
         parts_tail->next  =  next_part;
         next_part->prev   =  parts_tail;
-	  }
+    }
 
-    } else		// there are no limits
-	  rv  =  base_op;
+    } else    // there are no limits
+    rv  =  base_op;
 
     SetDetailNum( rv,DETAILS_form,1 );
     SetDetailNum( rv,DETAILS_precedence,29 );
-  }		// prefix operator clause
+  }   // prefix operator clause
    
   return rv;
 }
@@ -12884,24 +12882,24 @@ We generate an <mtable> with 0 row and column spacing.
 */
 
 TNODE* LaTeX2MMLTree::SbAndSp2MML( TNODE* SborSp_node,
-									                  TNODE** out_of_flow_list ) {
+                                    TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
 
   U16 uobjtype,usubtype,uID;
   GetUids( SborSp_node->zuID,uobjtype,usubtype,uID );
-	U8 list_zuID[32];
+  U8 list_zuID[32];
   UidsTozuID( 5,usubtype,1,(U8*)list_zuID );
 
   TNODE* line_list  =  FindObject( SborSp_node->parts,
-   								              (U8*)list_zuID,INVALID_LIST_POS );
+                                (U8*)list_zuID,INVALID_LIST_POS );
 
   TNODE* first_entry  =  NULL;
   if ( line_list ) {
     first_entry  =  line_list->parts;
   } else {
     TNODE* sb_group =  FindObject( SborSp_node->parts,
-   								              (U8*)"6.1.0",INVALID_LIST_POS );
+                                (U8*)"6.1.0",INVALID_LIST_POS );
   // \Sb{\CELL{}\CELL{}...}
     if ( sb_group && sb_group->parts && sb_group->parts->contents )
       first_entry   =  sb_group->parts->contents;
@@ -12918,58 +12916,58 @@ TNODE* LaTeX2MMLTree::SbAndSp2MML( TNODE* SborSp_node,
       TNODE* line_contents  =  NULL;
       U16 uobj,usub,id;
       GetUids( cell_rover->zuID,uobj,usub,id );
-      if ( (uobj==6 && usub==1  && id==0) 		// {group}
+      if ( (uobj==6 && usub==1  && id==0)     // {group}
       ||   (uobj==5 && usub==usubtype && id==1) ) {
   // Translate current line to MathML
-	      TNODE* cont =  cell_rover->parts->contents;
+        TNODE* cont =  cell_rover->parts->contents;
         U16 tex_nodes_done,error_code;
-  	    TCI_BOOL do_bindings  =  TRUE;
+        TCI_BOOL do_bindings  =  TRUE;
         TNODE* local_oof_list =  NULL;
         line_contents =  TranslateMathList( cont,do_bindings,
-               		  NULL,tex_nodes_done,error_code,&local_oof_list );
+                    NULL,tex_nodes_done,error_code,&local_oof_list );
 
         U16 vspace_context  =  2;
         // 1 - pass vspace up to caller
         // 2 - nest mml_cont in <mpadded>
 
         line_contents =  HandleOutOfFlowObjects( line_contents,
-        						&local_oof_list,out_of_flow_list,vspace_context );
+                    &local_oof_list,out_of_flow_list,vspace_context );
   // mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd)!/mtd!
         line_contents =  FixImpliedMRow( line_contents );
         TNODE* cell =  CreateElemWithBucketAndContents( 5,35,14,8,
-        											line_contents );
+                              line_contents );
 
   // Put the current cell under a cell list item node
-	      TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.11:0" );
-	      list_node->parts  =  cell;
-	      cell->sublist_owner =  list_node;
+        TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.11:0" );
+        list_node->parts  =  cell;
+        cell->sublist_owner =  list_node;
 
   // Add current row to the list of rows we're building
-	// mtr<uID5.35.13>!mtr!_LISTOFCELLS_!/mtr!
-	// _LISTOFCELLS_LIST(5.35.11,_MTCELL_,5.35.12,,/mtr|/mtable,)
-	// _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
+  // mtr<uID5.35.13>!mtr!_LISTOFCELLS_!/mtr!
+  // _LISTOFCELLS_LIST(5.35.11,_MTCELL_,5.35.12,,/mtr|/mtable,)
+  // _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
 
         TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
-	      mtr->parts->parts =  list_node;
-	      list_node->sublist_owner =  mtr->parts;
+        mtr->parts->parts =  list_node;
+        list_node->sublist_owner =  mtr->parts;
 
   // Put the current row under a node in the row list
-	      U8 zlistID[32];
+        U8 zlistID[32];
         UidsTozuID( 5,35,9,(U8*)zlistID );
-	      U16 zln =  strlen( (char*)zlistID );
-	      zlistID[zln]  =  ':';
+        U16 zln =  strlen( (char*)zlistID );
+        zlistID[zln]  =  ':';
               // itoa( row_count,(char*)zlistID+zln+1,10 );
               sprintf((char*)zlistID+zln+1, "%d", row_count);
-	      TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	      row_list_node->parts  =  mtr;
-	      mtr->sublist_owner  =  row_list_node;
+        TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+        row_list_node->parts  =  mtr;
+        mtr->sublist_owner  =  row_list_node;
 
         if ( !head )
           head  =  row_list_node;
         else {
           tail->next =  row_list_node;
-	        row_list_node->prev =  tail;
-	      }
+          row_list_node->prev =  tail;
+        }
         tail  =  row_list_node;
 
   // Advance to the next row in the LaTeX source tree
@@ -12979,7 +12977,7 @@ TNODE* LaTeX2MMLTree::SbAndSp2MML( TNODE* SborSp_node,
 
 // \CELL<uID5.39.5> - Nothing to do here.
 
-	    } else
+      } else
         TCI_ASSERT(0);
 
       cell_rover =  cell_rover->next;
@@ -13004,7 +13002,7 @@ TNODE* LaTeX2MMLTree::SbAndSp2MML( TNODE* SborSp_node,
 
 
 TNODE* LaTeX2MMLTree::BindPrefixOP( TNODE* head,TNODE* MML_rover,
-									              U16 curr_prec,TNODE** new_mrow ) {
+                                U16 curr_prec,TNODE** new_mrow ) {
 
   TNODE* rv =  head;
   *new_mrow =  NULL;
@@ -13017,28 +13015,28 @@ TNODE* LaTeX2MMLTree::BindPrefixOP( TNODE* head,TNODE* MML_rover,
   &&   MML_rover->next->next->details
   &&   MML_rover->next->next->details->form==1 ) {
     rv  =  BindPrefixOP( head,MML_rover->next->next,
-								curr_prec,new_mrow );
+                curr_prec,new_mrow );
 
-    TNODE* mo_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );	// <mo>
+    TNODE* mo_node  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );  // <mo>
     SetChData( mo_node,(U8*)entity_it,(U8*)entity_it_unicode );
     SetDetailNum( mo_node,DETAILS_form,COPF_INFIX );
     SetDetailNum( mo_node,DETAILS_precedence,39 );
-	  TNODE* prev =  MML_rover->next;
-	  TNODE* next =  MML_rover->next->next;
-	  mo_node->prev =  prev;
-	  prev->next  =  mo_node;
-	  mo_node->next =  next;
-	  next->prev  =  mo_node;
+    TNODE* prev =  MML_rover->next;
+    TNODE* next =  MML_rover->next->next;
+    mo_node->prev =  prev;
+    prev->next  =  mo_node;
+    mo_node->next =  next;
+    next->prev  =  mo_node;
 
     TNODE* anchor =  MML_rover;
     TNODE* first  =  MML_rover->next;
-	  rv  =  NestNodesInMrow( head,anchor,first,
-							  TRUE,3,new_mrow );
+    rv  =  NestNodesInMrow( head,anchor,first,
+                TRUE,3,new_mrow );
 
-	  if ( new_mrow )
+    if ( new_mrow )
       SetDetailIsExpr( *new_mrow,curr_prec );
-	  else {
-	    TCI_ASSERT(0);
+    else {
+      TCI_ASSERT(0);
     }
 
   } else
@@ -13046,26 +13044,26 @@ TNODE* LaTeX2MMLTree::BindPrefixOP( TNODE* head,TNODE* MML_rover,
   &&   MML_rover->next->details
   &&   MML_rover->next->details->form==1 )
     rv  =  BindPrefixOP( head,MML_rover->next,
-								curr_prec,new_mrow );
+                curr_prec,new_mrow );
 
 
   U16 n_space_nodes;
   U16 n_operand_nodes;
   if ( LocateOperand(MML_rover,TRUE,
-  		n_space_nodes,n_operand_nodes,1,curr_prec) ) {
+      n_space_nodes,n_operand_nodes,1,curr_prec) ) {
     if ( n_operand_nodes > 1 ) {
       TCI_ASSERT(0);
       TNODE* left_anchor  =  MML_rover;
-  	  U16 tally =  n_space_nodes;
-  	  while ( tally ) {
-  	    left_anchor =  left_anchor->next;
-  	    tally--;
-  	  }
-  	  rv  =  NestNodesInMrow( rv,left_anchor,NULL,TRUE,
-  							                n_operand_nodes,new_mrow );
+      U16 tally =  n_space_nodes;
+      while ( tally ) {
+        left_anchor =  left_anchor->next;
+        tally--;
+      }
+      rv  =  NestNodesInMrow( rv,left_anchor,NULL,TRUE,
+                                n_operand_nodes,new_mrow );
     }
     rv  =  NestNodesInMrow( rv,NULL,MML_rover,TRUE,
-  							                2+n_space_nodes,new_mrow );
+                                2+n_space_nodes,new_mrow );
 
   } else if ( MML_rover->next ) {
     TCI_ASSERT(0);
@@ -13089,23 +13087,23 @@ TCI_BOOL LaTeX2MMLTree::IsMultiFormOp( U8* mml_op_name,U16& forms ) {
   U8* op_zuID;
   U8* op_ztemplate;
   if ( s_mml_grammar->GetGrammarDataFromNameAndAttrs(
-					mml_op_name,op_ln,zform,(U8*)"MULTIFORMOPS",
-                               		&op_zuID,&op_ztemplate) ) {
-	if ( op_ztemplate ) {
-	  char* ptr =  strchr( (char*)op_ztemplate,',' );
-	  if ( ptr ) {
-	    ptr++;
-	    if ( ptr[0] == '1' )	// prefix
-	      forms +=  4;
-	    if ( ptr[1] == '1' )	// infix
-	      forms +=  2;
-	    if ( ptr[2] == '1' )	// postfix
-	      forms +=  1;
-	    rv  =  TRUE;
-	  } else
-	    TCI_ASSERT(0);
-	} else
-	  TCI_ASSERT(0);
+          mml_op_name,op_ln,zform,(U8*)"MULTIFORMOPS",
+                                  &op_zuID,&op_ztemplate) ) {
+  if ( op_ztemplate ) {
+    char* ptr =  strchr( (char*)op_ztemplate,',' );
+    if ( ptr ) {
+      ptr++;
+      if ( ptr[0] == '1' )  // prefix
+        forms +=  4;
+      if ( ptr[1] == '1' )  // infix
+        forms +=  2;
+      if ( ptr[2] == '1' )  // postfix
+        forms +=  1;
+      rv  =  TRUE;
+    } else
+      TCI_ASSERT(0);
+  } else
+    TCI_ASSERT(0);
   }
 
   return rv;
@@ -13123,64 +13121,64 @@ TCI_BOOL LaTeX2MMLTree::IsFuncDerivative( TNODE* mml_node ) {
   U16 uobj,usub,id;
   GetUids( mml_node->zuID,uobj,usub,id );
 // mfrac<uID5.1.0>!mfrac!reqELEMENT(5.1.1)reqELEMENT(5.1.2)!/mfrac!
-  if ( uobj==5 && usub==1 && id==0 ) {	// <mfrac>
+  if ( uobj==5 && usub==1 && id==0 ) {  // <mfrac>
     TNODE* denom  =  FindObject( mml_node->parts,
-								(U8*)"5.1.2",INVALID_LIST_POS );
+                (U8*)"5.1.2",INVALID_LIST_POS );
     if ( denom && denom->contents ) {
       TNODE* cont =  denom->contents;
       U16 uobj,usub,id;
       GetUids( cont->zuID,uobj,usub,id );
-      if ( uobj==5 && usub==750 && id==1 ) {	// <mrow>
-		    TNODE* mrow =  cont;
-		    if ( mrow->parts && mrow->parts->contents ) {
-		      TNODE* cont2  =  mrow->parts->contents;
-		      if ( cont2->details
-		      &&   cont2->details->is_differential != UNDEFINED_DETAIL )
-		        if ( cont2->next )
-		          rv  =  TRUE;
-		    }
-	    }
-	  }
+      if ( uobj==5 && usub==750 && id==1 ) {  // <mrow>
+        TNODE* mrow =  cont;
+        if ( mrow->parts && mrow->parts->contents ) {
+          TNODE* cont2  =  mrow->parts->contents;
+          if ( cont2->details
+          &&   cont2->details->is_differential != UNDEFINED_DETAIL )
+            if ( cont2->next )
+              rv  =  TRUE;
+        }
+      }
+    }
 
-	  if ( rv ) {			// denominator is "d something"
-	    rv  =  FALSE;
+    if ( rv ) {     // denominator is "d something"
+      rv  =  FALSE;
       TNODE* numer  =  FindObject( mml_node->parts,
-								(U8*)"5.1.1",INVALID_LIST_POS );
+                (U8*)"5.1.1",INVALID_LIST_POS );
       if ( numer && numer->contents ) {
         TNODE* cont =  numer->contents;
         U16 uobj,usub,id;
         GetUids( cont->zuID,uobj,usub,id );
-        if ( uobj==5 && usub==750 && id==1 ) {	// <mrow>
-		      TNODE* mrow =  cont;
-		      if ( mrow->parts && mrow->parts->contents ) {
-		        TNODE* cont2  =  mrow->parts->contents;
-		        if ( cont2->details
-		        &&   cont2->details->is_differential != UNDEFINED_DETAIL )
-		          if ( cont2->next )
-		            rv  =  TRUE;
-		      }
-		    }
-	    }
-	  }
+        if ( uobj==5 && usub==750 && id==1 ) {  // <mrow>
+          TNODE* mrow =  cont;
+          if ( mrow->parts && mrow->parts->contents ) {
+            TNODE* cont2  =  mrow->parts->contents;
+            if ( cont2->details
+            &&   cont2->details->is_differential != UNDEFINED_DETAIL )
+              if ( cont2->next )
+                rv  =  TRUE;
+          }
+        }
+      }
+    }
 
-  }	else if ( uobj==5 && usub==750 && id==1 ) {	// <mrow>
+  } else if ( uobj==5 && usub==750 && id==1 ) { // <mrow>
     TNODE* mbucket  =  FindObject( mml_node->parts,
-								(U8*)"5.750.2",INVALID_LIST_POS );
+                (U8*)"5.750.2",INVALID_LIST_POS );
     if ( mbucket && mbucket->contents && !mbucket->contents->next )
       return IsFuncDerivative( mbucket->contents );
 
-  }	else if ( uobj==5 && usub==600 && id==0 ) {	// <mstyle>
+  } else if ( uobj==5 && usub==600 && id==0 ) { // <mstyle>
     TNODE* mbucket  =  FindObject( mml_node->parts,
-								(U8*)"5.600.2",INVALID_LIST_POS );
+                (U8*)"5.600.2",INVALID_LIST_POS );
     if ( mbucket && mbucket->contents && !mbucket->contents->next )
       return IsFuncDerivative( mbucket->contents );
 
   } else if ( uobj==5 && usub==51 && id==2 ) { // <msup>
 //msup<uID5.51.2>!msup!reqELEMENT(5.51.3)reqELEMENT(5.51.5)!/msup!
     TNODE* base =  FindObject( mml_node->parts,
-								(U8*)"5.51.3",INVALID_LIST_POS );
+                (U8*)"5.51.3",INVALID_LIST_POS );
     TNODE* exp  =  FindObject( mml_node->parts,
-								(U8*)"5.51.5",INVALID_LIST_POS );
+                (U8*)"5.51.5",INVALID_LIST_POS );
     if ( base
     &&   base->contents
     &&   MMLNodeIsFunction(base->contents) ) {
@@ -13189,13 +13187,13 @@ TCI_BOOL LaTeX2MMLTree::IsFuncDerivative( TNODE* mml_node ) {
       TNODE* cont =  exp->contents;
       U16 uobj,usub,id;
       GetUids( cont->zuID,uobj,usub,id );
-      if ( uobj==3 && usub==203 && id==1 ) {	// <mo>
+      if ( uobj==3 && usub==203 && id==1 ) {  // <mo>
         if ( cont->var_value ) {
           char* ptr =  strstr( (char*)cont->var_value,"&prime;" );
-		  if ( ptr )
+      if ( ptr )
             rv  =  TRUE;
         }
-	  }
+    }
     }
   }
 
@@ -13211,9 +13209,9 @@ TCI_BOOL LaTeX2MMLTree::IsFuncDerivative( TNODE* mml_node ) {
 
 
 U8* LaTeX2MMLTree::GetMtableRowLines( TNODE* TeX_tabularORarray_node,
-										TCI_BOOL is_tabular,
-										U16& top_lines,
-										U16& bottom_lines ) {
+                    TCI_BOOL is_tabular,
+                    U16& top_lines,
+                    U16& bottom_lines ) {
 
   U8* rv  =  NULL;
   top_lines     =  0;
@@ -13239,40 +13237,40 @@ U8* LaTeX2MMLTree::GetMtableRowLines( TNODE* TeX_tabularORarray_node,
   while ( row_rover && bi<500 ) {
     row_count++;
     TNODE* hline_bucket =  FindObject( row_rover->parts,
-   							(U8*)"5.490.13",INVALID_LIST_POS );
+                (U8*)"5.490.13",INVALID_LIST_POS );
     TNODE* cell_list    =  FindObject( row_rover->parts,
-   							cells_list_zuID,INVALID_LIST_POS );
+                cells_list_zuID,INVALID_LIST_POS );
 
-	  if        ( row_count == 1 ) {  // top of table
-	    if ( hline_bucket )
+    if        ( row_count == 1 ) {  // top of table
+      if ( hline_bucket )
           top_lines++;
 
-	  } else if ( cell_list ) {       // interior
+    } else if ( cell_list ) {       // interior
 
 // This is rather crude.  I'm not looking
 //  at the contents of hline_bucket, just it's existance.
 
-	    if ( hline_bucket ) {
+      if ( hline_bucket ) {
           has_lines  =  TRUE;
           if ( bi )
             buffer[bi++]  =  ' ';
           strcpy( (char*)buffer+bi,"solid" );
-	      bi  +=  5;
-	    } else {
+        bi  +=  5;
+      } else {
           if ( bi )
             buffer[bi++]  =  ' ';
           strcpy( (char*)buffer+bi,"none" );
-	      bi  +=  4;
-	    }
+        bi  +=  4;
+      }
 
-	  } else {						// bottom of table
+    } else {            // bottom of table
 
 // If there \hline's at the bottom of a table,
 //  we add row with no cell_list to carry them.
 
-	    if ( hline_bucket )
+      if ( hline_bucket )
           bottom_lines++;
-	  }
+    }
 
     row_rover =  row_rover->next;
   }
@@ -13285,8 +13283,8 @@ U8* LaTeX2MMLTree::GetMtableRowLines( TNODE* TeX_tabularORarray_node,
   }
 
   if ( has_lines ) {
-	rv  =  (U8*)TCI_NEW( char[bi+1] );
-	strcpy( (char*)rv,(char*)buffer );
+  rv  =  (U8*)TCI_NEW( char[bi+1] );
+  strcpy( (char*)rv,(char*)buffer );
   }
 
   return rv;
@@ -13297,10 +13295,10 @@ U8* LaTeX2MMLTree::GetMtableRowLines( TNODE* TeX_tabularORarray_node,
 // Map the "cols" arg to mtable column attributes.
 
 void LaTeX2MMLTree::GetMtableColumnAttrs( TNODE* TeX_cols_list,
-										                    U8** columnlines,
-										                    U8** c_align_attrs,
-										                    U16& left_lines,
-										                    U16& right_lines ) {
+                                        U8** columnlines,
+                                        U8** c_align_attrs,
+                                        U16& left_lines,
+                                        U16& right_lines ) {
 
   *columnlines    =  NULL;
   *c_align_attrs  =  NULL;
@@ -13310,44 +13308,44 @@ void LaTeX2MMLTree::GetMtableColumnAttrs( TNODE* TeX_cols_list,
   if ( TeX_cols_list && TeX_cols_list->parts ) {
 
     TCI_BOOL has_lines  =  FALSE;
-	  U8 vline_buffer[512];       // "solid none solid"
-	  U16 ri  =  0;
+    U8 vline_buffer[512];       // "solid none solid"
+    U16 ri  =  0;
 
     TCI_BOOL has_aligns =  FALSE;
-	  U8 a_buffer[512];           // "left center right"
-	  U16 ai  =  0;
+    U8 a_buffer[512];           // "left center right"
+    U16 ai  =  0;
 
     U16 column_count  =  0;
     TNODE* crover =  TeX_cols_list->parts;
-	  while ( crover ) {		// loop thru columns
+    while ( crover ) {    // loop thru columns
       column_count++;
 
-	    if ( crover->parts && crover->parts->contents ) {
-	      U8* c_alignment =  NULL;
-		    U16 l_verts =  0;
-		    U16 r_verts =  0;
+      if ( crover->parts && crover->parts->contents ) {
+        U8* c_alignment =  NULL;
+        U16 l_verts =  0;
+        U16 r_verts =  0;
 
         TNODE* cont_rover =  crover->parts->contents;
-		    while ( cont_rover ) {	// loop thru cols for current column
+        while ( cont_rover ) {  // loop thru cols for current column
           U16 uobj,usub,id;
           GetUids( cont_rover->zuID,uobj,usub,id );
           if ( uobj==16 && usub==4 ) {
 
             switch ( id ) {
               case  1  :
-	              c_alignment =  (U8*)"left";
+                c_alignment =  (U8*)"left";
                 has_aligns  =  TRUE;
               break;
               case  2  :
-	              c_alignment =  (U8*)"center";
+                c_alignment =  (U8*)"center";
               break;
               case  3  :
-	              c_alignment =  (U8*)"right";
+                c_alignment =  (U8*)"right";
                 has_aligns  =  TRUE;
               break;
               case  4  :
                 if ( c_alignment )
-		              r_verts++;
+                  r_verts++;
                 else
                   l_verts++;
               break;
@@ -13356,12 +13354,12 @@ void LaTeX2MMLTree::GetMtableColumnAttrs( TNODE* TeX_cols_list,
 // p<uID16.4.6>!p!REQPARAM(16.4.51,DIMEN)
 // *<uID16.4.7>!*!REQPARAM(16.4.52,NONLATEX)REQPARAM(16.4.53,COLS)
               default :
-			          TCI_ASSERT(0);
+                TCI_ASSERT(0);
               break;
-			      }
+            }
 
-		      } else {
-		        TCI_ASSERT(0);
+          } else {
+            TCI_ASSERT(0);
 // {<uID6.1.0>
 // }<uID6.1.1>
 // ,<uID3.17.87>
@@ -13377,57 +13375,57 @@ void LaTeX2MMLTree::GetMtableColumnAttrs( TNODE* TeX_cols_list,
 // 7<uID3.3.8>
 // 8<uID3.3.9>
 // 9<uID3.3.10>
-		      }
+          }
 
-	        cont_rover  =  cont_rover->next;
-		    }						// loop thru cols for current column
+          cont_rover  =  cont_rover->next;
+        }           // loop thru cols for current column
 
-	      if ( c_alignment ) {
+        if ( c_alignment ) {
           if ( ai < 500 ) {
             if ( ai )
               a_buffer[ai++]  =  ' ';
-	          strcpy( (char*)a_buffer+ai,(char*)c_alignment );
-		      }
-	        ai  +=  strlen( (char*)c_alignment );
-		    } else
-		      TCI_ASSERT(0);
+            strcpy( (char*)a_buffer+ai,(char*)c_alignment );
+          }
+          ai  +=  strlen( (char*)c_alignment );
+        } else
+          TCI_ASSERT(0);
 
         if ( column_count == 1 && l_verts )
           left_lines++;
 
-		    if ( !crover->next ) {		// last column
-		      if ( r_verts )
+        if ( !crover->next ) {    // last column
+          if ( r_verts )
             right_lines++;
-		    } else {
+        } else {
           if ( ri < 500 ) {
             if ( ri )
               vline_buffer[ri++]  =  ' ';
-	    const char* line_attr =  r_verts ? "solid" : "none";
-	    strcpy( (char*)vline_buffer+ri,line_attr );
-	    ri  +=  strlen( line_attr );
-	  }
+      const char* line_attr =  r_verts ? "solid" : "none";
+      strcpy( (char*)vline_buffer+ri,line_attr );
+      ri  +=  strlen( line_attr );
+    }
           if ( r_verts )
             has_lines =  TRUE;
-		    }
+        }
 
-	    }		// if ( crover->parts && crover->parts->contents )
+      }   // if ( crover->parts && crover->parts->contents )
 
-	    crover  =  crover->next;
-	  }		// loop thru columns
+      crover  =  crover->next;
+    }   // loop thru columns
 
 
     if ( has_lines ) {
-	    U8* rv  =  (U8*)TCI_NEW( char[ri+1] );
-	    strcpy( (char*)rv,(char*)vline_buffer );
+      U8* rv  =  (U8*)TCI_NEW( char[ri+1] );
+      strcpy( (char*)rv,(char*)vline_buffer );
       *columnlines    =  rv;
-	  }
+    }
     if ( has_aligns ) {
-	    U8* rv  =  (U8*)TCI_NEW( char[ai+1] );
-	    strcpy( (char*)rv,(char*)a_buffer );
+      U8* rv  =  (U8*)TCI_NEW( char[ai+1] );
+      strcpy( (char*)rv,(char*)a_buffer );
       *c_align_attrs  =  rv;
-	  }
+    }
 
-  }		// if ( TeX_cols_list && TeX_cols_list->parts )
+  }   // if ( TeX_cols_list && TeX_cols_list->parts )
 }
 
 
@@ -13436,9 +13434,9 @@ TCI_BOOL LaTeX2MMLTree::IsMsup( TNODE* MML_node ) {
 
   TCI_BOOL rv =  FALSE;
   if ( MML_node ) {
-    U16 uobj,usub,uID;			// msup<uID5.51.2>
+    U16 uobj,usub,uID;      // msup<uID5.51.2>
     GetUids( MML_node->zuID,uobj,usub,uID );
-	  if ( uobj==5 && usub==51 && uID==2 )
+    if ( uobj==5 && usub==51 && uID==2 )
       rv  =  TRUE;
   }
 
@@ -13459,12 +13457,12 @@ TNODE* LaTeX2MMLTree::MoveNodeToList( TNODE* list,TNODE* TeX_node ) {
   TeX_node->sublist_owner =  NULL;
   TeX_node->prev  =  NULL;
 
-  TeX_node->next  =  list;	// Notice - goes to head
+  TeX_node->next  =  list;  // Notice - goes to head
   if ( list )
     list->prev =  TeX_node;
 
   if ( owner )
-	owner->contents =  next;
+  owner->contents =  next;
   if ( next ) {
     next->prev  =  prev;
     if ( owner )
@@ -13512,7 +13510,7 @@ TNODE* LaTeX2MMLTree::IDotsInt2MML() {
   TNODE* cont =  MakeTNode( 0L,0L,0L,(U8*)"3.202.1" );
   SetChData( cont,ent_int,ent_int_unicode );
 
-  TNODE* cn	  =  MakeTNode( 0L,0L,0L,(U8*)"3.201.1" );
+  TNODE* cn   =  MakeTNode( 0L,0L,0L,(U8*)"3.201.1" );
   SetChData( cn,ent_dots,ent_dots_unicode );
   cont->next  =  cn;
   cn->prev    =  cont;
@@ -13531,72 +13529,72 @@ TNODE* LaTeX2MMLTree::IDotsInt2MML() {
 // goto's - anomalies in the present implementation.
 
 void LaTeX2MMLTree::HyperObj2MML( TNODE** out_of_flow_list,
-									TNODE* TeX_hyper_obj,
-							  		U16 subclass,TCI_BOOL in_math,
-							  		TNODE** node_to_insert ) {
+                  TNODE* TeX_hyper_obj,
+                    U16 subclass,TCI_BOOL in_math,
+                    TNODE** node_to_insert ) {
 
   U16 anomaly_ID  =  0;
   U8* zuID_tbucket  =  NULL;
   switch ( subclass ) {
-    case  550 :				// \hyperref<uID5.550.0>
+    case  550 :       // \hyperref<uID5.550.0>
 //\hyperref<uID5.550.0>!\hyperref!OPTPARAM(5.550.5,NONLATEX)REQPARAM(5.550.6,INHERIT)_OLDARGS_
       zuID_tbucket  =  (U8*)"5.550.6";
       anomaly_ID  =  1000;
-	  break;
+    break;
 
-    case  551 :				// \hyperlink<uID5.551.0>
+    case  551 :       // \hyperlink<uID5.551.0>
 //\hyperlink<uID5.551.0>!\hyperlink!REQPARAM(5.551.1,NONLATEX)REQPARAM(5.551.2,INHERIT)
       zuID_tbucket  =  (U8*)"5.551.2";
       anomaly_ID  =  1000;
-	  break;
+    break;
 
-    case  552 :				// \hypertarget<uID5.552.0>
+    case  552 :       // \hypertarget<uID5.552.0>
 //\hypertarget<uID5.552.0>!\hypertarget!REQPARAM(5.552.1,NONLATEX)REQPARAM(5.552.2,INHERIT)
       zuID_tbucket  =  (U8*)"5.552.2";
       *out_of_flow_list  =  MoveNodeToList( *out_of_flow_list,TeX_hyper_obj );
-	  break;
+    break;
 
-    case  553 :				// \href<uID5.553.0>
+    case  553 :       // \href<uID5.553.0>
       anomaly_ID  =  1000;
-	  break;
+    break;
 
-    case  554 :				// \HREFTOLABEL<uID5.554.0> internal
+    case  554 :       // \HREFTOLABEL<uID5.554.0> internal
 // \HREFTOLABEL<uID5.554.0>!\HREFTOLABEL!REQPARAM(5.554.1,NONLATEX)REQPARAM(5.554.2,TEXT)
       zuID_tbucket  =  (U8*)"5.554.2";
       anomaly_ID  =  1000;
-	  break;
+    break;
 
-    case  555 :				// \HYPERLINK<uID5.555.0> internal
+    case  555 :       // \HYPERLINK<uID5.555.0> internal
 //\HYPERLINK<uID5.555.0>!\HYPERLINK!REQPARAM(5.555.1,NONLATEX)REQPARAM(5.555.2,TEXT)
       zuID_tbucket  =  (U8*)"5.555.2";
       anomaly_ID  =  1000;
-	  break;
+    break;
 
-    case  556 :				// \HYPERTARGET<uID5.556.0>
+    case  556 :       // \HYPERTARGET<uID5.556.0>
 //\HYPERTARGET<uID5.556.0>!\HYPERTARGET!REQPARAM(5.556.1,TEXT)REQPARAM(5.556.2,NONLATEX)
       zuID_tbucket  =  (U8*)"5.556.1";
       *out_of_flow_list  =  MoveNodeToList( *out_of_flow_list,TeX_hyper_obj );
-	  break;
+    break;
 
-    case  557 :				// \HREF<uID5.557.0> internal
+    case  557 :       // \HREF<uID5.557.0> internal
 // \HREF<uID5.557.0>
 // REQPARAM(5.557.1,NONLATEX)
 // REQPARAM(5.557.2,NONLATEX)
 // REQPARAM(5.557.3,TEXT)
       zuID_tbucket  =  (U8*)"5.557.3";
       anomaly_ID  =  1000;
-	  break;
+    break;
 
-    case  558 :				// \HYPERREF<uID5.558.0>
+    case  558 :       // \HYPERREF<uID5.558.0>
 // REQPARAM(5.558.1,NONLATEX)
 // REQPARAM(5.558.2,NONLATEX)
 // REQPARAM(5.558.3,NONLATEX)
 // REQPARAM(5.558.4,TEXT)
       zuID_tbucket  =  (U8*)"5.558.4";
       anomaly_ID  =  1000;
-	  break;
+    break;
 
-    case  559 :				// \MSIHYPERREF<uID5.559.0>
+    case  559 :       // \MSIHYPERREF<uID5.559.0>
 // REQPARAM(5.559.1,TEXT)     - screen
 // REQPARAM(5.559.2,TEXT)     - left
 // REQPARAM(5.559.3,TEXT)     - right
@@ -13604,36 +13602,36 @@ void LaTeX2MMLTree::HyperObj2MML( TNODE** out_of_flow_list,
 // REQPARAM(5.559.5,NONLATEX) - marker
       zuID_tbucket  =  (U8*)"5.559.1";
       anomaly_ID  =  1000;
-	  break;
+    break;
 
-    case  560 :				// \HYPERDEF<uID5.560.0>
+    case  560 :       // \HYPERDEF<uID5.560.0>
 // REQPARAM(5.560.1,NONLATEX)
 // REQPARAM(5.560.2,NONLATEX)
 // REQPARAM(5.560.3,INHERIT)
 //    zuID_tbucket  =  (U8*)"5.560.3";
       anomaly_ID  =  1000;
-	  break;
+    break;
 
     default :
-	    TCI_ASSERT(0);
-	  break;
+      TCI_ASSERT(0);
+    break;
   }
 
   if ( node_to_insert && zuID_tbucket ) {
     TNODE* tbucket  =  FindObject( TeX_hyper_obj->parts,
-	  						                zuID_tbucket,INVALID_LIST_POS );
-	  if ( tbucket && tbucket->contents ) {
+                                zuID_tbucket,INVALID_LIST_POS );
+    if ( tbucket && tbucket->contents ) {
       TCI_BOOL no_line_breaks =  TRUE;
-	    TNODE* mml_text =  TextInMath2MML( tbucket->contents,
-  								out_of_flow_list,no_line_breaks,FALSE );
+      TNODE* mml_text =  TextInMath2MML( tbucket->contents,
+                  out_of_flow_list,no_line_breaks,FALSE );
       if ( mml_text ) {
         U16 uobj,usub,id;
         GetUids( mml_text->zuID,uobj,usub,id );
 
-	      if ( uobj==5 && usub==750 && id==1 ) {  // mrow<uID5.750.1>
+        if ( uobj==5 && usub==750 && id==1 ) {  // mrow<uID5.750.1>
           mml_text  =  FixImpliedMRow( mml_text );
           mml_text  =  CreateElemWithBucketAndContents( 5,600,0,2,mml_text );
-	      }
+        }
 
         if ( zMMLHyperLinkAttrs )
 //        SetNodeAttrib( mml_text,(U8*)"mathcolor",(U8*)zMMLHyperLinkAttrs );
@@ -13641,13 +13639,13 @@ void LaTeX2MMLTree::HyperObj2MML( TNODE** out_of_flow_list,
       }
       *node_to_insert =  mml_text;
 
-	  } else
-	    TCI_ASSERT(0);
+    } else
+      TCI_ASSERT(0);
   }
 
   if ( anomaly_ID )
     RecordAnomaly( anomaly_ID,NULL,TeX_hyper_obj->src_offset1,
-       							            TeX_hyper_obj->src_offset2 );
+                                TeX_hyper_obj->src_offset2 );
 }
 
 
@@ -13659,40 +13657,40 @@ TCI_BOOL LaTeX2MMLTree::MMLNodeIsOperator( TNODE* MML_node ) {
   if ( MML_node ) {
     U16 uobjtype,usubtype,uID;
     GetUids( MML_node->zuID,uobjtype,usubtype,uID );
-    if        ( uobjtype==3 ) {	// non-structured
+    if        ( uobjtype==3 ) { // non-structured
       if ( usubtype==203 )
         rv =  TRUE;
-    } else if ( uobjtype==5 ) {	// structured
+    } else if ( uobjtype==5 ) { // structured
 // Here's where "embellished operators" are handled.
-      if ( usubtype==750 && uID==1 ) {	// mrow
+      if ( usubtype==750 && uID==1 ) {  // mrow
         if ( MML_node->parts && MML_node->parts->contents ) {
           TNODE* cont =  MML_node->parts->contents;
           U16 uobj,usub,id;
           GetUids( cont->zuID,uobj,usub,id );
-          if ( uobj==5 && usub==600 && id==0 ) {	// mstyle
+          if ( uobj==5 && usub==600 && id==0 ) {  // mstyle
             if ( cont->parts && cont->parts->contents ) {
               TNODE* cont2  =  cont->parts->contents;
               GetUids( cont2->zuID,uobj,usub,id );
               if ( uobj==3 && usub==203 )
                 rv =  TRUE;
-			      }
-		      }		// mstyle clause
-		    } else
-		      TCI_ASSERT(0);
+            }
+          }   // mstyle clause
+        } else
+          TCI_ASSERT(0);
 
-	    }	else if ( usubtype>=50 && usubtype<=55 && uID==2 ) {
+      } else if ( usubtype>=50 && usubtype<=55 && uID==2 ) {
         if ( MML_node->parts && MML_node->parts->contents ) {
           TNODE* cont =  MML_node->parts->contents;
           U16 uobj,usub,id;
           GetUids( cont->zuID,uobj,usub,id );
           if ( uobj==3 && usub==203 )
             rv =  TRUE;
-		    } else
-		      TCI_ASSERT(0);
-	    }
+        } else
+          TCI_ASSERT(0);
+      }
 
-	  }	// uobjtype == 5 clause
-  }		// if ( MML_node )
+    } // uobjtype == 5 clause
+  }   // if ( MML_node )
 
   return rv;
 }
@@ -13709,9 +13707,9 @@ TCI_BOOL LaTeX2MMLTree::IsDifferentiald( TNODE* tex_d_node,
   if ( next_right ) {
     U16 uobj,usub,id;
     GetUids( next_right->zuID,uobj,usub,id );
-	  if ( uobj==5 && usub==51 && id==1 )	  // ^<uID5.51.1>
-	    next_right  =  next_right->next;
-	  rv  =  IsTeXVariable( next_right );
+    if ( uobj==5 && usub==51 && id==1 )   // ^<uID5.51.1>
+      next_right  =  next_right->next;
+    rv  =  IsTeXVariable( next_right );
   }
 
 // catch \frac{df}{dx} or \frac{d}{dy}
@@ -13720,21 +13718,21 @@ TCI_BOOL LaTeX2MMLTree::IsDifferentiald( TNODE* tex_d_node,
     TNODE* mbucket  =  tex_d_node->sublist_owner;
     U16 uobj,usub,id;
     GetUids( mbucket->zuID,uobj,usub,id );
-	  if ( uobj==5 && usub==1 && id==1 )	{	// numerator of a fraction
+    if ( uobj==5 && usub==1 && id==1 )  { // numerator of a fraction
       TNODE* denom  =  FindObject( mbucket,(U8*)"5.1.2",
                                     INVALID_LIST_POS );
-	    if ( denom && denom->contents ) {
+      if ( denom && denom->contents ) {
         TNODE* d_cont =  denom->contents;
         U16 uobj,usub,id;
         GetUids( d_cont->zuID,uobj,usub,id );
         if ( uobj==3 && usub==1 && id==4 )  // d<uID3.1.4>
-	        rv  =  IsTeXVariable( d_cont->next );
-	    }
-	  }
+          rv  =  IsTeXVariable( d_cont->next );
+      }
+    }
   }
 
   if ( !rv && LaTeX_list ) {
-	  if ( TeXListHasIntegral(LaTeX_list,tex_d_node) ) {
+    if ( TeXListHasIntegral(LaTeX_list,tex_d_node) ) {
       if ( next_right ) {
         U16 uobj,usub,id;
         GetUids( next_right->zuID,uobj,usub,id );
@@ -13744,7 +13742,7 @@ TCI_BOOL LaTeX2MMLTree::IsDifferentiald( TNODE* tex_d_node,
           }
         }
       }
-	  }
+    }
   }
 
   return rv;
@@ -13761,24 +13759,24 @@ TCI_BOOL LaTeX2MMLTree::IsDifferentialD( TNODE* tex_D_node,
     U16 uobjtype,usubtype,uID;
     GetUids( next_right->zuID,uobjtype,usubtype,uID );
 // _<uID5.50.1>!_!REQPARAM(5.50.2,MATH)
-	  if ( uobjtype==5 &&	usubtype==50 && uID==1 ) {
-	    TNODE* mbucket  =  FindObject( next_right->parts,
+    if ( uobjtype==5 && usubtype==50 && uID==1 ) {
+      TNODE* mbucket  =  FindObject( next_right->parts,
                                 (U8*)"5.50.2",INVALID_LIST_POS );
-	    TNODE* cont =  mbucket->contents;
-	    while ( cont ) {
-	      if ( IsTeXVariable(cont) ) {
-		      rv  =  TRUE;
-		      if ( cont->next )
-		        if ( IsPowerForm(cont->next) )
-		          cont  =  cont->next;
-		    } else {
-		      rv  =  FALSE;
-		      break;
-		    }
-		    cont  =  cont->next;
-	    }		// while ( cont )
-	  }
-  }		// if ( next_right )
+      TNODE* cont =  mbucket->contents;
+      while ( cont ) {
+        if ( IsTeXVariable(cont) ) {
+          rv  =  TRUE;
+          if ( cont->next )
+            if ( IsPowerForm(cont->next) )
+              cont  =  cont->next;
+        } else {
+          rv  =  FALSE;
+          break;
+        }
+        cont  =  cont->next;
+      }   // while ( cont )
+    }
+  }   // if ( next_right )
 
   return rv;
 }
@@ -13792,15 +13790,15 @@ TCI_BOOL LaTeX2MMLTree::IsPowerForm( TNODE* tex_node ) {
   GetUids( tex_node->zuID,uobjtype,usubtype,uID );
 // ^<uID5.51.1>!^!REQPARAM(5.51.2,MATH)
   if ( uobjtype==5 && usubtype==51 && uID==1 ) {
-	  TNODE* mbucket  =  FindObject( tex_node->parts,
-							(U8*)"5.51.2",INVALID_LIST_POS );
-	  TNODE* cont =  mbucket->contents;
-	  if ( cont ) {
+    TNODE* mbucket  =  FindObject( tex_node->parts,
+              (U8*)"5.51.2",INVALID_LIST_POS );
+    TNODE* cont =  mbucket->contents;
+    if ( cont ) {
       //U16 uobj,usub,id;
       //GetUids( cont->zuID,uobj,usub,id );
       //if ( uobj==3 && usub==3 )
-	    rv  =  TRUE; 
-	  }
+      rv  =  TRUE; 
+    }
   }
 
   return rv;
@@ -13824,9 +13822,9 @@ TCI_BOOL LaTeX2MMLTree::IsPowerForm( TNODE* tex_node ) {
 */
 
 TNODE* LaTeX2MMLTree::Decoration2MML( TNODE* obj_node,
-										TNODE** out_of_flow_list,
-										U16 TeX_subclass,
-										U16 tex_uID ) {
+                    TNODE** out_of_flow_list,
+                    U16 TeX_subclass,
+                    U16 tex_uID ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -13847,29 +13845,29 @@ TNODE* LaTeX2MMLTree::Decoration2MML( TNODE* obj_node,
   U8* op_nom;
   U8* op_info;
   if ( d_mml_grammar->GetGrammarDataFromUID(mml_op_zuID,
-								context_math,&op_nom,&op_info) ) {
+                context_math,&op_nom,&op_info) ) {
 
 // &OverBar;<uID3.25.1>postfix,70,U000AF,stretchy="true" accent="true"
 
     if ( op_nom && *op_nom )
       SetChData( mml_script_contents,op_nom,NULL );
-	else
-	  TCI_ASSERT(0);
+  else
+    TCI_ASSERT(0);
 
-	OP_GRAMMAR_INFO op_record;
-	if ( op_info && *op_info ) {
+  OP_GRAMMAR_INFO op_record;
+  if ( op_info && *op_info ) {
       if ( output_entities_as_unicodes ) {
         U8 unicode_buffer[128];
         if ( GetUnicodeEntity(op_info,unicode_buffer) )
           SetChData( mml_script_contents,NULL,unicode_buffer );
-	  }
+    }
       GetAttribsFromGammarInfo( op_info,op_record );
       if ( op_record.attr_list ) {
-	    TCI_ASSERT( mml_script_contents->attrib_list == NULL );
-	    mml_script_contents->attrib_list  =  op_record.attr_list;
-		op_record.attr_list =  NULL;
-	  }
-	}
+      TCI_ASSERT( mml_script_contents->attrib_list == NULL );
+      mml_script_contents->attrib_list  =  op_record.attr_list;
+    op_record.attr_list =  NULL;
+    }
+  }
 
   } else
     TCI_ASSERT(0);
@@ -13880,17 +13878,17 @@ TNODE* LaTeX2MMLTree::Decoration2MML( TNODE* obj_node,
 
   U8* bucket_zuID =  (tex_uID==8) ? (U8*)"5.14.1" : (U8*)"5.13.1";
   TNODE* base_bucket =  FindObject( obj_node->parts,
-									bucket_zuID,INVALID_LIST_POS );
+                  bucket_zuID,INVALID_LIST_POS );
   if ( base_bucket ) {
-	  TCI_BOOL do_bindings  =  TRUE;
+    TCI_BOOL do_bindings  =  TRUE;
     U16 tex_nodes_done,error_code;
     TNODE* local_oof_list =  NULL;
     mml_base_contents =  TranslateMathList( base_bucket->contents,
-			do_bindings,NULL,tex_nodes_done,error_code,&local_oof_list );
+      do_bindings,NULL,tex_nodes_done,error_code,&local_oof_list );
     mml_base_contents =  HandleOutOfFlowObjects( mml_base_contents,
-    						        &local_oof_list,out_of_flow_list,2 );
+                        &local_oof_list,out_of_flow_list,2 );
   } else
-	  TCI_ASSERT(0);
+    TCI_ASSERT(0);
 
 
   TNODE* b_cont =  mml_base_contents;
@@ -13934,18 +13932,18 @@ TNODE* LaTeX2MMLTree::Decoration2MML( TNODE* obj_node,
 */
 
 TNODE* LaTeX2MMLTree::OverOrUnder2MML( TNODE* obj_node,
-						   			            U16 TeX_subclass,U16 tex_uID,
-					   			              TNODE** out_of_flow_list ) {
+                                U16 TeX_subclass,U16 tex_uID,
+                                TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
 
-  U16 mode  =  0;			// 1 = <mover>, 2 = <munder>
+  U16 mode  =  0;     // 1 = <mover>, 2 = <munder>
   if ( TeX_subclass==10 || TeX_subclass==26 || TeX_subclass==28 )
-    mode  =  1;				// <mover>
+    mode  =  1;       // <mover>
   else if ( TeX_subclass==11 || TeX_subclass==27 )
-    mode  =  2;				// <munder>
+    mode  =  2;       // <munder>
   else
-	TCI_ASSERT(0);
+  TCI_ASSERT(0);
 
 // Translate the decoration to MathML.
 
@@ -13956,7 +13954,7 @@ TNODE* LaTeX2MMLTree::OverOrUnder2MML( TNODE* obj_node,
   TNODE* script_bucket  =  FindObject( obj_node->parts,
                             (U8*)bucket_zuID,INVALID_LIST_POS );
   if ( script_bucket ) {
-	  TCI_BOOL do_bindings  =  TRUE;
+    TCI_BOOL do_bindings  =  TRUE;
     U16 tex_nodes_done,error_code;
     TNODE* local_oof_list =  NULL;
     script_level++;
@@ -13965,7 +13963,7 @@ TNODE* LaTeX2MMLTree::OverOrUnder2MML( TNODE* obj_node,
                                 error_code,&local_oof_list );
     script_level--;
     mml_script_contents =  HandleOutOfFlowObjects( mml_script_contents,
-    								            &local_oof_list,out_of_flow_list,2 );
+                                &local_oof_list,out_of_flow_list,2 );
   } else
     TCI_ASSERT(0);
 
@@ -13975,17 +13973,17 @@ TNODE* LaTeX2MMLTree::OverOrUnder2MML( TNODE* obj_node,
   UidsTozuID( 5,TeX_subclass,2,(U8*)bucket_zuID );
 
   TNODE* base_bucket =  FindObject( obj_node->parts,
-  							(U8*)bucket_zuID,INVALID_LIST_POS );
+                (U8*)bucket_zuID,INVALID_LIST_POS );
   if ( base_bucket ) {
-	  TCI_BOOL do_bindings  =  TRUE;
+    TCI_BOOL do_bindings  =  TRUE;
     U16 tex_nodes_done,error_code;
     TNODE* local_oof_list =  NULL;
     mml_base_contents =  TranslateMathList( base_bucket->contents,
-				do_bindings,NULL,tex_nodes_done,error_code,&local_oof_list );
+        do_bindings,NULL,tex_nodes_done,error_code,&local_oof_list );
     mml_base_contents =  HandleOutOfFlowObjects( mml_base_contents,
-    								        &local_oof_list,out_of_flow_list,2 );
+                            &local_oof_list,out_of_flow_list,2 );
   } else
-	  TCI_ASSERT(0);
+    TCI_ASSERT(0);
 
 
   TNODE* b_cont =  mml_base_contents;
@@ -14029,29 +14027,29 @@ TNODE* LaTeX2MMLTree::CmdSymbol2MML( TNODE* obj_node ) {
 
 // \symbol<uID5.465.0>!\symbol!REQPARAM(5.465.1,NONLATEX)
   TNODE* bucket =  FindObject( obj_node->parts,(U8*)"5.465.1",
-      										              INVALID_LIST_POS );
-  if ( bucket && bucket->contents ) {		// locate NONLATEX content
+                                        INVALID_LIST_POS );
+  if ( bucket && bucket->contents ) {   // locate NONLATEX content
     U8* zNONLATEX =  (U8*)"888.8.0";
     TNODE* cont =  FindObject( bucket->contents,zNONLATEX,
-      										              INVALID_LIST_POS );
+                                        INVALID_LIST_POS );
     if ( cont ) {
-	  U16 code  =  atoi( (char*)cont->var_value );
+    U16 code  =  atoi( (char*)cont->var_value );
       U8 zuID[32];
       UidsTozuID( 3,5,code,(U8*)zuID );
       U8* dest_zname;
       U8* d_template;
       if ( d_mml_grammar->GetGrammarDataFromUID(zuID,
-					        context_math,&dest_zname,&d_template) ) {
+                  context_math,&dest_zname,&d_template) ) {
         mml_rv   =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );
         SetChData( mml_rv,dest_zname,NULL );
-	  } else
-	    TCI_ASSERT(0);
-
-	} else
-	  TCI_ASSERT(0);
+    } else
+      TCI_ASSERT(0);
 
   } else
-	  TCI_ASSERT(0);
+    TCI_ASSERT(0);
+
+  } else
+    TCI_ASSERT(0);
 
   return mml_rv;
 }
@@ -14078,13 +14076,13 @@ U16 LaTeX2MMLTree::GetPrecedence( TNODE* mml_node,U16 op_form_ID ) {
   U8* zuID;
   U8* zproduction;
   if ( s_mml_grammar->GetGrammarDataFromNameAndAttrs(opname,
-    									nln,zform,gmr_section,
-                                		&zuID,&zproduction) ) {
-	if ( zproduction ) {
-	  char* p =  strchr( (char*)zproduction,',' );
-	  if ( p )
-	    rv  =  atoi(p+1);
-	} else
+                      nln,zform,gmr_section,
+                                    &zuID,&zproduction) ) {
+  if ( zproduction ) {
+    char* p =  strchr( (char*)zproduction,',' );
+    if ( p )
+      rv  =  atoi(p+1);
+  } else
       TCI_ASSERT(0);
   }
 
@@ -14099,8 +14097,8 @@ U16 LaTeX2MMLTree::GetPrecedence( TNODE* mml_node,U16 op_form_ID ) {
 //  in the CLOSERS section of MathML.gmr
 
 void LaTeX2MMLTree::GetMatchingFence( U8* left_delim,
-  									     U8* matching_delim,
-  									     U8* secondary_match ) {
+                         U8* matching_delim,
+                         U8* secondary_match ) {
 
   matching_delim[0]   =  0;
   secondary_match[0]  =  0;
@@ -14111,40 +14109,40 @@ void LaTeX2MMLTree::GetMatchingFence( U8* left_delim,
   U8* closer_zuID;
   U8* closer_zinfo;
   if ( s_mml_grammar->GetGrammarDataFromNameAndAttrs(
-   						left_delim,nln,NULL,(U8*)"CLOSERS",
+              left_delim,nln,NULL,(U8*)"CLOSERS",
                             &closer_zuID,&closer_zinfo) ) {
     if ( closer_zinfo && *closer_zinfo ) {
 // (<uID13.1.1> mate=")" secondary="]"
-	    char* pm  =  strstr( (char*)closer_zinfo,"mate" );
-	    if ( pm ) {
-		    char* p1  =  strchr( pm,'"' );
-		    if ( p1 ) {
-		      p1++;
-		      char* p2  =  strchr( p1,'"' );
-		      if ( p2 ) {
-		        U16 zln =  p2 - p1;
-		        strncpy( (char*)matching_delim,p1,zln );
-		        matching_delim[zln] =  0;
-		      }
-		    }
-	    }
-	    char* ps  =  strstr( (char*)closer_zinfo,"secondary" );
-	    if ( ps ) {
-		    char* p1  =  strchr( ps,'"' );
-		    if ( p1 ) {
-		      p1++;
-		      char* p2  =  strchr( p1,'"' );
-		      if ( p2 ) {
-		        U16 zln =  p2 - p1;
-		        strncpy( (char*)secondary_match,p1,zln );
-		        secondary_match[zln] =  0;
-		      }
-		    }
-	    }
+      char* pm  =  strstr( (char*)closer_zinfo,"mate" );
+      if ( pm ) {
+        char* p1  =  strchr( pm,'"' );
+        if ( p1 ) {
+          p1++;
+          char* p2  =  strchr( p1,'"' );
+          if ( p2 ) {
+            U16 zln =  p2 - p1;
+            strncpy( (char*)matching_delim,p1,zln );
+            matching_delim[zln] =  0;
+          }
+        }
+      }
+      char* ps  =  strstr( (char*)closer_zinfo,"secondary" );
+      if ( ps ) {
+        char* p1  =  strchr( ps,'"' );
+        if ( p1 ) {
+          p1++;
+          char* p2  =  strchr( p1,'"' );
+          if ( p2 ) {
+            U16 zln =  p2 - p1;
+            strncpy( (char*)secondary_match,p1,zln );
+            secondary_match[zln] =  0;
+          }
+        }
+      }
 
-	  } else		// missing CLOSERS info??
-	    TCI_ASSERT(0);
-  }		// if ( lookup succeeded )
+    } else    // missing CLOSERS info??
+      TCI_ASSERT(0);
+  }   // if ( lookup succeeded )
 
 }
 
@@ -14155,7 +14153,7 @@ void LaTeX2MMLTree::GetMatchingFence( U8* left_delim,
 // form_name,precedence_number,Unicode_hex,att1_nom="att1_val" att2_nom="att2_val"...
 
 void LaTeX2MMLTree::GetAttribsFromGammarInfo( U8* zinfo,
-								                OP_GRAMMAR_INFO& op_record ) {
+                                OP_GRAMMAR_INFO& op_record ) {
 
   op_record.form        =  0;
   op_record.precedence  =  0;
@@ -14167,50 +14165,50 @@ void LaTeX2MMLTree::GetAttribsFromGammarInfo( U8* zinfo,
   U16 state =  0;
   do {
     eptr  =  strchr( sptr,',' );
-	  if ( !eptr )
-	    eptr  =  (char*)zinfo + strlen( (char*)zinfo );
-	  if ( eptr >= sptr ) {
-	    state++;
-	    if        ( state==1 ) {		// multiform,prefix,infix,postfix
-		    U16 ln  =  eptr - sptr;
-		    if ( ln > 0 && ln < 8 ) {
-		      char buffer[16];
-		      strncpy( buffer,sptr,ln );
-		      buffer[ln]  =  0;
-		      U16 id  =  OPF_prefix;
-		      while ( id <= OPF_postfix ) {
+    if ( !eptr )
+      eptr  =  (char*)zinfo + strlen( (char*)zinfo );
+    if ( eptr >= sptr ) {
+      state++;
+      if        ( state==1 ) {    // multiform,prefix,infix,postfix
+        U16 ln  =  eptr - sptr;
+        if ( ln > 0 && ln < 8 ) {
+          char buffer[16];
+          strncpy( buffer,sptr,ln );
+          buffer[ln]  =  0;
+          U16 id  =  OPF_prefix;
+          while ( id <= OPF_postfix ) {
             if ( !strcmp(zop_forms[id],buffer) ) {
-		          op_record.form  =  id;
-			        break;
-			      } else
-			        id++;
-		      }
-	        TCI_ASSERT( op_record.form );
-		    }
+              op_record.form  =  id;
+              break;
+            } else
+              id++;
+          }
+          TCI_ASSERT( op_record.form );
+        }
 
-	    } else if ( state==2 ) {		// 30,
-		    U16 ln  =  eptr - sptr;
-		    if ( ln > 0 ) {
-		      op_record.precedence  =  atoi( sptr );
-	        //TCI_ASSERT( op_record.precedence );
-		    }
-	    } else if ( state==3 ) {		// U0dddd,
-	  // currently not used
-	    } else if ( state==4 ) {		// lspace="..."
-		    if ( eptr > sptr )
+      } else if ( state==2 ) {    // 30,
+        U16 ln  =  eptr - sptr;
+        if ( ln > 0 ) {
+          op_record.precedence  =  atoi( sptr );
+          //TCI_ASSERT( op_record.precedence );
+        }
+      } else if ( state==3 ) {    // U0dddd,
+    // currently not used
+      } else if ( state==4 ) {    // lspace="..."
+        if ( eptr > sptr )
           op_record.attr_list =  ExtractAttrs( sptr );
-	    } else
-	      TCI_ASSERT(0);
+      } else
+        TCI_ASSERT(0);
 
-	// Advance to the next "," separated field
+  // Advance to the next "," separated field
 
       if ( *eptr )
         sptr  =  eptr + 1;
-	    else
-	      break;
+      else
+        break;
 
-	  } else
-	    break;
+    } else
+      break;
 
   } while ( TRUE );
 
@@ -14221,7 +14219,7 @@ void LaTeX2MMLTree::GetAttribsFromGammarInfo( U8* zinfo,
      
 ATTRIB_REC* LaTeX2MMLTree::ExtractAttrs( char* zattrs ) {
 
-  ATTRIB_REC* head  =  NULL;	// We build an "attrib_list"
+  ATTRIB_REC* head  =  NULL;  // We build an "attrib_list"
   ATTRIB_REC* tail;
 
   if ( zattrs ) {
@@ -14256,15 +14254,15 @@ ATTRIB_REC* LaTeX2MMLTree::ExtractAttrs( char* zattrs ) {
               } else    // attrib zname exceeds 80 bytes??
                 TCI_ASSERT(0);
               anom_ptr =  right_delim + 1;
-            } else			// no ending "
+            } else      // no ending "
               done  =  TRUE;
-          } else			// no starting "
-	          done  =  TRUE;
-        } else		// no = 
+          } else      // no starting "
+            done  =  TRUE;
+        } else    // no = 
           done  =  TRUE;
-      } else		// nothing after spaces
+      } else    // nothing after spaces
         done  =  TRUE;
-    }			// while ( !done )
+    }     // while ( !done )
   }
 
   return head;
@@ -14275,7 +14273,7 @@ ATTRIB_REC* LaTeX2MMLTree::ExtractAttrs( char* zattrs ) {
 //  of a TNODE that represents a MathML object.
 
 void LaTeX2MMLTree::SetNodeAttrib( TNODE* mml_node,
-									U8* a_nom,U8* a_val ) {
+                  U8* a_nom,U8* a_val ) {
 
   if ( a_nom && a_val && a_nom[0] ) {
     U16 vln =  strlen( (char*)a_val );
@@ -14288,19 +14286,19 @@ void LaTeX2MMLTree::SetNodeAttrib( TNODE* mml_node,
     while ( rover ) {
       if ( !strcmp((char*)rover->attr_nom,(char*)a_nom) ) {
   // overwrite the existing attribute value
-	    if ( rover->z_val )
-	      delete rover->z_val;
-	    char* tmp =  TCI_NEW( char[vln+1] );
+      if ( rover->z_val )
+        delete rover->z_val;
+      char* tmp =  TCI_NEW( char[vln+1] );
         strcpy( tmp,(char*)a_val );
-	    rover->z_val  =  (U8*)tmp;
+      rover->z_val  =  (U8*)tmp;
         new_attrib    =  FALSE;
         break;
-	  }
+    }
       tail  =  rover;
       rover =  rover->next;
     }
 
-    if ( new_attrib ) {		// Not a reset
+    if ( new_attrib ) {   // Not a reset
       ATTRIB_REC* arp =  MakeATTRIBNode( a_nom,7,0,a_val,vln,0 );
       if ( mml_node->attrib_list ) {
         tail->next =  arp;
@@ -14322,12 +14320,12 @@ void LaTeX2MMLTree::SetNodeAttrib( TNODE* mml_node,
 //  MathML.gmr
 
 TCI_BOOL LaTeX2MMLTree::IsDeprecatedOp( TNODE* tex_sym_node,
-									U8** name,U8** production ) {
+                  U8** name,U8** production ) {
 
   TCI_BOOL rv =  FALSE;
   if ( mml_version < 200 || !stretch_for_long_arrows )
     if ( d_mml_grammar->GetGrammarDataFromUID(tex_sym_node->zuID,
-						  		(U8*)"DEPOPS",name,production) )
+                  (U8*)"DEPOPS",name,production) )
       rv  =  TRUE;
 
   return rv;
@@ -14340,7 +14338,7 @@ TCI_BOOL LaTeX2MMLTree::IsDeprecatedOp( TNODE* tex_sym_node,
 // Otherwise, we append a new attribute/value.
 
 void LaTeX2MMLTree::MergeMOAttribs( TNODE* mml_op_node,
-								ATTRIB_REC* attr_list ) {
+                ATTRIB_REC* attr_list ) {
 
   if ( attr_list ) {
     ATTRIB_REC* a_rover =  attr_list;
@@ -14367,11 +14365,11 @@ void LaTeX2MMLTree::MergeMOAttribs( TNODE* mml_op_node,
 */
 
 void LaTeX2MMLTree::SetMMLOpNode( TNODE* tex_op_node,
-									U16& tex_nodes_spanned,
-									TNODE* mml_rv ) {
+                  U16& tex_nodes_spanned,
+                  TNODE* mml_rv ) {
 
-  U8 mml_opname[256];		// Buffer for the contents of the
-  mml_opname[0] =  0;		//  MathML TNODE we're generating.
+  U8 mml_opname[256];   // Buffer for the contents of the
+  mml_opname[0] =  0;   //  MathML TNODE we're generating.
 
   U8 mml_uniname[256];
   mml_uniname[0]  =  0;
@@ -14395,29 +14393,29 @@ void LaTeX2MMLTree::SetMMLOpNode( TNODE* tex_op_node,
 
     is_single_token_op  =  FALSE;
     if ( production && *production ) {
-	  U8* p_comma =  (U8*)strchr( (char*)production,',' );
-	  if ( p_comma ) {
+    U8* p_comma =  (U8*)strchr( (char*)production,',' );
+    if ( p_comma ) {
         U16 nln =  p_comma - production;
-	    strncpy( (char*)mml_opname,(char*)production,nln );
-	    mml_opname[nln] =  0;
-	    mml_op_info =  p_comma + 1;
+      strncpy( (char*)mml_opname,(char*)production,nln );
+      mml_opname[nln] =  0;
+      mml_op_info =  p_comma + 1;
 
-	    U8* p_comma2  =  (U8*)strchr( (char*)mml_op_info,',' );
-	    if ( p_comma2 ) {
-	      if ( output_entities_as_unicodes ) {
+      U8* p_comma2  =  (U8*)strchr( (char*)mml_op_info,',' );
+      if ( p_comma2 ) {
+        if ( output_entities_as_unicodes ) {
             U16 nln =  p_comma2 - mml_op_info;
-	        strncpy( (char*)mml_uniname,(char*)mml_op_info,nln );
-	        mml_uniname[nln] =  0;
-		  }
-	      mml_op_info =  p_comma2 + 1;
+          strncpy( (char*)mml_uniname,(char*)mml_op_info,nln );
+          mml_uniname[nln] =  0;
+      }
+        mml_op_info =  p_comma2 + 1;
 
-	    } else
+      } else
           TCI_ASSERT(0);
 
-	  } else
+    } else
         TCI_ASSERT(0);
-	} else
-	  TCI_ASSERT(0);
+  } else
+    TCI_ASSERT(0);
   }
 
   if ( is_single_token_op ) {
@@ -14431,17 +14429,17 @@ void LaTeX2MMLTree::SetMMLOpNode( TNODE* tex_op_node,
       if ( output_entities_as_unicodes )
         GetUnicodeEntity( mml_op_info,mml_uniname );
 
-	} else if ( d_mml_grammar->GetGrammarDataFromUID(tex_op_node->zuID,
-    							  context_math,&dest_zname,&mml_op_info) ) {
+  } else if ( d_mml_grammar->GetGrammarDataFromUID(tex_op_node->zuID,
+                    context_math,&dest_zname,&mml_op_info) ) {
       strcpy( (char*)mml_opname,(char*)dest_zname );
       if ( output_entities_as_unicodes )
         GetUnicodeEntity( mml_op_info,mml_uniname );
 
-	} else {
-	  TCI_ASSERT(0);
+  } else {
+    TCI_ASSERT(0);
       strcpy( (char*)mml_opname,(char*)tex_op_node->src_tok );
       strcat( (char*)mml_opname,"??" );
-	}
+  }
   }
 
 // Here we have the MML name of the operator.
@@ -14461,13 +14459,13 @@ void LaTeX2MMLTree::SetMMLOpNode( TNODE* tex_op_node,
         op_record.attr_list =  NULL;
       }
 
-	} else {
+  } else {
 // Here the operator has only one form - we have it's mml info.
       U16 form_ID =  op_record.form;
-	  if ( form_ID >= OPF_prefix && form_ID <= OPF_postfix )
-	    SetNodeAttrib( mml_rv,(U8*)"form",(U8*)zop_forms[form_ID] );
-	  else
-	    TCI_ASSERT(0);
+    if ( form_ID >= OPF_prefix && form_ID <= OPF_postfix )
+      SetNodeAttrib( mml_rv,(U8*)"form",(U8*)zop_forms[form_ID] );
+    else
+      TCI_ASSERT(0);
       if ( op_record.attr_list ) {
         MergeMOAttribs( mml_rv,op_record.attr_list );
         DisposeAttribs( op_record.attr_list );
@@ -14498,46 +14496,46 @@ void LaTeX2MMLTree::StyleIDtoStr( U16 ID,U8* style_nom ) {
   char* nom =  NULL;
   switch ( ID ) {
     case 1  :
-	  // scriptlevel
-	  break;
+    // scriptlevel
+    break;
     case 2  :
-	  // displaystyle
-	  break;
-    case 80 :	// \mathcal<uID5.80.0>
+    // displaystyle
+    break;
+    case 80 : // \mathcal<uID5.80.0>
       nom =  "mathcal ";
-	  break;
-    case 81 :	// \mathrm<uID5.81.0>
+    break;
+    case 81 : // \mathrm<uID5.81.0>
       nom =  "mathrm ";
-	  break;
-    case 82 :	// \mathbf<uID5.82.0>
+    break;
+    case 82 : // \mathbf<uID5.82.0>
       nom =  "mathbf ";
-	  break;
-    case 83 :	// \mathsf<uID5.83.0>
+    break;
+    case 83 : // \mathsf<uID5.83.0>
       nom =  "mathsf ";
     break;
-    case 84 :	// \mathtt<uID5.84.0>
+    case 84 : // \mathtt<uID5.84.0>
       nom =  "mathtt ";
-	  break;
-    case 85 :	// \mathnormal<uID5.85.0>
+    break;
+    case 85 : // \mathnormal<uID5.85.0>
       nom =  "mathnormal ";
-	  break;
-    case 86 :	// \mathit<uID5.86.0>
+    break;
+    case 86 : // \mathit<uID5.86.0>
       nom =  "mathit ";
-	  break;
-    case 87  :	// \mathbb<uID5.87.0>
+    break;
+    case 87  :  // \mathbb<uID5.87.0>
       nom =  "mathbb ";
     break;
-    case 88  :	// \mathfrak<uID5.88.0>
+    case 88  :  // \mathfrak<uID5.88.0>
       nom =  "mathfrak ";
     break;
-    case 89  :	// \pmb<uID5.89.0>!
+    case 89  :  // \pmb<uID5.89.0>!
       TCI_ASSERT(0);
     break;
     case  TR_Tup  :
       // attr_nom  =  (U8*)"fontstyle";
       // attr_val  =  (U8*)"upright";
     break;
-    case  TR_Tmd	:
+    case  TR_Tmd  :
       //  attr_nom  =  (U8*)"fontweight";
       //  attr_val  =  (U8*)"medium";
     break;
@@ -14556,9 +14554,9 @@ void LaTeX2MMLTree::StyleIDtoStr( U16 ID,U8* style_nom ) {
     case  TR_group  :
     break;
 
-	  default :
-	    TCI_ASSERT(0);
-	  break;
+    default :
+      TCI_ASSERT(0);
+    break;
   }
 
   if ( nom )
@@ -14599,7 +14597,7 @@ TNODE* LaTeX2MMLTree::PassThru2MML( TNODE* TeX_node, TNODE** out_of_flow_list )
 //  We can translate these to <mpadded> elements.
 
 TNODE* LaTeX2MMLTree::Rule2MML( TNODE* TeX_rule_node,
-									              TNODE** out_of_flow_list ) {
+                                TNODE** out_of_flow_list ) {
 
   TNODE* rv =  NULL;
 
@@ -14621,7 +14619,7 @@ TCI_BOOL LaTeX2MMLTree::RuleIsPureVSpace( TNODE* TeX_rule_node ) {
   TCI_BOOL rv =  FALSE;
 
   TNODE* wp =  FindObject( TeX_rule_node->parts,
-							(U8*)"5.800.2",INVALID_LIST_POS );
+              (U8*)"5.800.2",INVALID_LIST_POS );
   if ( wp && wp->contents ) {
     double rule_width  =  0.0;
     rule_width  =  atof( (char*)wp->contents->src_tok );
@@ -14638,20 +14636,20 @@ TCI_BOOL LaTeX2MMLTree::RuleIsPureVSpace( TNODE* TeX_rule_node ) {
 //  above and/or below.
 
 void LaTeX2MMLTree::GetVSpaceFromRule( TNODE* TeX_rule_node,
-										                    U8* depth,U8* height ) {
+                                        U8* depth,U8* height ) {
 
 // \rule<uID5.800.0>!\rule!
-//	OPTPARAM(5.800.1,DIMEN) - offset from baseline
-//	REQPARAM(5.800.2,DIMEN) - rule horizontal extent
-//	REQPARAM(5.800.3,DIMEN) - rule vertical extent
+//  OPTPARAM(5.800.1,DIMEN) - offset from baseline
+//  REQPARAM(5.800.2,DIMEN) - rule horizontal extent
+//  REQPARAM(5.800.3,DIMEN) - rule vertical extent
 
   TNODE* offset =  FindObject( TeX_rule_node->parts,
-							              (U8*)"5.800.1",INVALID_LIST_POS );
+                            (U8*)"5.800.1",INVALID_LIST_POS );
   TNODE* hp     =  FindObject( TeX_rule_node->parts,
-							              (U8*)"5.800.3",INVALID_LIST_POS );
+                            (U8*)"5.800.3",INVALID_LIST_POS );
 
   U16 offset_type =  0;
-  double rule_offset =  0.0;		// vertical offset from baseline.
+  double rule_offset =  0.0;    // vertical offset from baseline.
   if ( offset && offset->contents ) {
     char* p_dimen =  (char*)offset->contents->src_tok;
     rule_offset =  atof( p_dimen );
@@ -14674,14 +14672,14 @@ void LaTeX2MMLTree::GetVSpaceFromRule( TNODE* TeX_rule_node,
   U16 mml_dest_type =  GetMMLdimenType( height_type );
   if ( rule_ascent < -0.00001 || rule_ascent > 0.00001 ) {
     rule_ascent =  ConvertTeXDimen( rule_ascent,height_type,mml_dest_type );
-	  sprintf( (char*)height,"%f",rule_ascent );
+    sprintf( (char*)height,"%f",rule_ascent );
     AttachUnit( (char*)height,mml_dest_type );
   } else
     height[0] =  0;
 
   if ( rule_descent < -0.00001 || rule_descent > 0.00001 ) {
     rule_descent  =  ConvertTeXDimen( rule_descent,height_type,mml_dest_type );
-	  sprintf( (char*)depth,"%f",rule_descent );
+    sprintf( (char*)depth,"%f",rule_descent );
     AttachUnit( (char*)depth,mml_dest_type );
   } else
     depth[0] =  0;
@@ -14697,7 +14695,7 @@ void LaTeX2MMLTree::GetVSpaceFromRule( TNODE* TeX_rule_node,
 //  and font relative units are provided.  This is BOGUS.
 
 double LaTeX2MMLTree::ConvertTeXDimen( double s,U16 src_type,
-												                      U16 dest_type ) {
+                                              U16 dest_type ) {
 
   double rv =  0.0;
 
@@ -14709,85 +14707,85 @@ double LaTeX2MMLTree::ConvertTeXDimen( double s,U16 src_type,
 // Warnings re absolute <-> relative conversions
 
     if      ( src_type == 6 || dest_type == 6 ) {    // ex
-	    TCI_ASSERT(0);	// Can't convert "ex"s into anything else
+      TCI_ASSERT(0);  // Can't convert "ex"s into anything else
     } else if ( src_type == 5 && dest_type != 9 ) {    // em
-	    TCI_ASSERT(0);  // Can't convert "em"s or "mu"s into anything else
+      TCI_ASSERT(0);  // Can't convert "em"s or "mu"s into anything else
     } else if ( src_type == 9 && dest_type != 5 ) {    // mu->em
-	    TCI_ASSERT(0);  // Can't convert "em"s or "mu"s into anything else
+      TCI_ASSERT(0);  // Can't convert "em"s or "mu"s into anything else
     }
 
     double numerator;
     double denominator;
 
     U16 i =  0;
-	  while ( i < 2 ) {
+    while ( i < 2 ) {
       U16 the_type  =  (i==0) ? src_type : dest_type;
-	    switch ( the_type ) {
-	      case 1  :				// bp
+      switch ( the_type ) {
+        case 1  :       // bp
           numerator   =  1000.0;
           denominator =  72.0;
-	      break;
-	      case 2  :				// cc
+        break;
+        case 2  :       // cc
           numerator   =  2845.0;
           denominator =  4.531 * 72.27;
-	      break;
-	      case 3  :				// cm
+        break;
+        case 3  :       // cm
           numerator   =  28450.0;
           denominator =  72.27;
-	      break;
-	      case 4  :				// dd
+        break;
+        case 4  :       // dd
           numerator   =  2845.0;
           denominator =  0.376 * 72.27;
-	      break;
-	      case 7  :				// in
+        break;
+        case 7  :       // in
           numerator   =  1000.0;
           denominator =  1.0;
-	      break;
-	      case 8  :				// mm
+        break;
+        case 8  :       // mm
           numerator   =  2845.0;
           denominator =  72.27;
-	      break;
-	      case 10 :				// pc
+        break;
+        case 10 :       // pc
           numerator   =  12000.0;
           denominator =  72.27;
-	      break;
-	      case 11 :				// pt
+        break;
+        case 11 :       // pt
           numerator   =  1000.0;
           denominator =  72.27;
-	      break;
-	      case 12 :				// sp
+        break;
+        case 12 :       // sp
           numerator   =  1000.0;
           denominator =  65536.0 * 72.27;
-	      break;
+        break;
 
 // font relative
-	      case 5  :				// em
+        case 5  :       // em
           numerator   =  18000.0;
           denominator =  120.0;
-	      break;
-	      case 6  :				// ex
+        break;
+        case 6  :       // ex
           numerator   =  9000.0;
           denominator =  120.0;
-	      break;
-	      case 9  :				// mu
+        break;
+        case 9  :       // mu
           numerator   =  1000.0;
           denominator =  120.0;
-	      break;
+        break;
 
-	      default :
-	        TCI_ASSERT(0);
+        default :
+          TCI_ASSERT(0);
           numerator   =  1.0;
           denominator =  1.0;
-	      break;
-	    }
+        break;
+      }
 
       if ( i==0 )
         rv  =  ( s * numerator ) / denominator;
-	    else
+      else
         rv  =  ( rv * denominator ) / numerator;
 
-	    i++;
-	  }
+      i++;
+    }
 
   }
 
@@ -14796,7 +14794,7 @@ double LaTeX2MMLTree::ConvertTeXDimen( double s,U16 src_type,
 
 
 static char* z_TeX_units =  "bp cc cm dd em ex in mm mu pc pt sp ";
-//	          ids ->				 1  2  3  4	 5  6  7  8	 9	10 11 12
+//            ids ->         1  2  3  4  5  6  7  8  9  10 11 12
 
 U16 LaTeX2MMLTree::TeXUnitToID( char* p_dimen ) {
 
@@ -14804,21 +14802,21 @@ U16 LaTeX2MMLTree::TeXUnitToID( char* p_dimen ) {
 
 // Locate the unit in p_dimen.
 // p_dimen  =  "0.25in" , "12pt" , "2.35mm" , etc.
-//					^		 ^			^
+//          ^    ^      ^
 
   int unit_offset  =  strcspn( p_dimen,"bcdeimps" );
   if ( unit_offset >= 0 && unit_offset < strlen(p_dimen) ) {
-	  char z_unit[4];
-	  z_unit[0] =  p_dimen[unit_offset];
-	  z_unit[1] =  p_dimen[unit_offset+1];
-	  z_unit[2] =  ' ';
-	  z_unit[3] =  0;
+    char z_unit[4];
+    z_unit[0] =  p_dimen[unit_offset];
+    z_unit[1] =  p_dimen[unit_offset+1];
+    z_unit[2] =  ' ';
+    z_unit[3] =  0;
     char* p =  strstr( z_TeX_units,z_unit );
     if ( p ) {
       U16 offset  =  p - z_TeX_units;
-	    rv  =  ( offset / 3 ) + 1;
+      rv  =  ( offset / 3 ) + 1;
     } else
-      TCI_ASSERT( 0 );	// unknown TeX unit?
+      TCI_ASSERT( 0 );  // unknown TeX unit?
 
   } else
     TCI_ASSERT( 0 );
@@ -14831,10 +14829,10 @@ void LaTeX2MMLTree::AttachUnit( char* mml_dimen,U16 unit_id ) {
 
   if ( mml_dimen && unit_id && unit_id <= 12 ) {
     U16 offset  =  ( unit_id - 1 ) * 3;
-	  U16 zln =  strlen( mml_dimen );
-	  mml_dimen[zln++]  =  z_TeX_units[offset++];
-	  mml_dimen[zln++]  =  z_TeX_units[offset];
-	  mml_dimen[zln]    =  0;
+    U16 zln =  strlen( mml_dimen );
+    mml_dimen[zln++]  =  z_TeX_units[offset++];
+    mml_dimen[zln++]  =  z_TeX_units[offset];
+    mml_dimen[zln]    =  0;
   }
 
 }
@@ -14850,20 +14848,20 @@ U16 LaTeX2MMLTree::GetMMLdimenType( U16 TeX_dimen_type ) {
   U16 rv  =  0;
 
   switch ( TeX_dimen_type ) {
-    case 1  : rv  =  7;		break;		// Big point,   bp -> in
-    case 2  : rv  =  8;		break;		// Cicero,      cc -> mm
-    case 4  : rv  =  8;		break;		// Didot point, dd -> mm
+    case 1  : rv  =  7;   break;    // Big point,   bp -> in
+    case 2  : rv  =  8;   break;    // Cicero,      cc -> mm
+    case 4  : rv  =  8;   break;    // Didot point, dd -> mm
 
-    case 3  : rv  =  3;		break;		// cm ->  not changed
-    case 5  : rv  =  5;		break;		// em -> 	  "
-    case 6  : rv  =  6;		break;		// ex -> 	  "
-    case 7  : rv  =  7;		break;		// in -> 	  "
-    case 8  : rv  =  8;		break;		// mm -> 	  "
-    case 11 : rv  =  11;	break;		// pt -> 	  "
+    case 3  : rv  =  3;   break;    // cm ->  not changed
+    case 5  : rv  =  5;   break;    // em ->    "
+    case 6  : rv  =  6;   break;    // ex ->    "
+    case 7  : rv  =  7;   break;    // in ->    "
+    case 8  : rv  =  8;   break;    // mm ->    "
+    case 11 : rv  =  11;  break;    // pt ->    "
 
-    case 9  : rv  =  5;		break;		// Math unit,   mu -> em
-    case 10 : rv  =  11;	break;		// Pica,        pc -> pt
-    case 12 : rv  =  11;	break;		// Scaled point,sp -> pt
+    case 9  : rv  =  5;   break;    // Math unit,   mu -> em
+    case 10 : rv  =  11;  break;    // Pica,        pc -> pt
+    case 12 : rv  =  11;  break;    // Scaled point,sp -> pt
     default :
       TCI_ASSERT(0);
     break;
@@ -14874,7 +14872,7 @@ U16 LaTeX2MMLTree::GetMMLdimenType( U16 TeX_dimen_type ) {
 
 
 TNODE* LaTeX2MMLTree::DisposeOutOfFlowList( TNODE* out_of_flow_list,
-												                      U16 id1,U16 id2 ) {
+                                              U16 id1,U16 id2 ) {
 
 
   TNODE* head   =  NULL;
@@ -14883,30 +14881,30 @@ TNODE* LaTeX2MMLTree::DisposeOutOfFlowList( TNODE* out_of_flow_list,
   while ( rover ) {
     U16 uobjtype,usubtype,uID;
     GetUids( rover->zuID,uobjtype,usubtype,uID );
-	  TCI_BOOL do_dispose =  FALSE;
+    TCI_BOOL do_dispose =  FALSE;
     if      ( !id1  )
-	    do_dispose =  TRUE;
+      do_dispose =  TRUE;
     else if ( uobjtype==id1 && usubtype==id2 )
-	    do_dispose =  TRUE;
+      do_dispose =  TRUE;
     if ( do_dispose ) {
-	    TNODE* del  =  rover;
-	    rover =  rover->next;
-	    del->next   =  NULL;
-	    if ( rover )
-	      rover->prev =  NULL;
-	    DisposeTNode( del );
-	  } else {
-	    if ( head ) {
-	      tail->next  =  rover;
-		    rover->prev =  tail;
-	    } else
-	      head  =  rover;
-	    tail  = rover;
-	    rover =  rover->next;
-	    tail->next  =  NULL;
-	    if ( rover )
-	      rover->prev =  NULL;
-	  }
+      TNODE* del  =  rover;
+      rover =  rover->next;
+      del->next   =  NULL;
+      if ( rover )
+        rover->prev =  NULL;
+      DisposeTNode( del );
+    } else {
+      if ( head ) {
+        tail->next  =  rover;
+        rover->prev =  tail;
+      } else
+        head  =  rover;
+      tail  = rover;
+      rover =  rover->next;
+      tail->next  =  NULL;
+      if ( rover )
+        rover->prev =  NULL;
+    }
   }
 
   return head;
@@ -14920,16 +14918,16 @@ TNODE* LaTeX2MMLTree::DisposeOutOfFlowList( TNODE* out_of_flow_list,
 //  may be wrapped in an <mpadded>.
 
 TNODE* LaTeX2MMLTree::VSpace2MML( TNODE* MML_rv,
-									TNODE* out_of_flow_list,
-									U16 vspace_context ) {
+                  TNODE* out_of_flow_list,
+                  U16 vspace_context ) {
 
   TNODE* rv =  NULL;
 
   if ( MML_rv ) {
-	  U8 depth[64];
-	  U8 height[64];
-	  depth[0]  =  0;
-	  height[0] =  0;
+    U8 depth[64];
+    U8 height[64];
+    depth[0]  =  0;
+    height[0] =  0;
     double skip_multiplier =  0.0;
 
     TNODE* rover  =  out_of_flow_list;
@@ -14938,68 +14936,68 @@ TNODE* LaTeX2MMLTree::VSpace2MML( TNODE* MML_rv,
       GetUids( rover->zuID,uobjtype,usubtype,uID );
 
       if ( uobjtype==9 && usubtype==3 ) {
-	      switch ( uID ) {
+        switch ( uID ) {
 
-	        case 1 :		// \smallskip<uID9.3.1> 0.25 * \baselineskip
-	        case 2 :		// \medskip<uID9.3.2>	0.50 * \baselineskip
-	        case 3 :		// \bigskip<uID9.3.3>	1.00 * \baselineskip
+          case 1 :    // \smallskip<uID9.3.1> 0.25 * \baselineskip
+          case 2 :    // \medskip<uID9.3.2> 0.50 * \baselineskip
+          case 3 :    // \bigskip<uID9.3.3> 1.00 * \baselineskip
             if        ( vspace_context == 1 ) {
               RecordAnomaly( 1003,NULL,rover->src_offset1,
-        						            rover->src_offset2 );
+                                rover->src_offset2 );
             } else if ( vspace_context == 2 ) {
-	            if      ( uID==1 )
+              if      ( uID==1 )
                 skip_multiplier +=  1.0;
-	            else if ( uID==2 )
+              else if ( uID==2 )
                 skip_multiplier +=  2.0;
-	            else if ( uID==3 )
+              else if ( uID==3 )
                 skip_multiplier +=  4.0;
             } else if ( vspace_context == 3 ) {
               // ignore - that's what LaTeX does.
             } else
-	            TCI_ASSERT(0);
-	        break;
+              TCI_ASSERT(0);
+          break;
 
 
-	        case 4 :		// \strut<uID9.3.4>
-	        case 5 :		// \mathstrut<uID9.3.5>  // not implemented
-	          strcpy( (char*)depth,"+3.5pt" );
-	          strcpy( (char*)height,"+8.5pt" );
-	        break;
+          case 4 :    // \strut<uID9.3.4>
+          case 5 :    // \mathstrut<uID9.3.5>  // not implemented
+            strcpy( (char*)depth,"+3.5pt" );
+            strcpy( (char*)height,"+8.5pt" );
+          break;
 
-	        break;
-	        case 6 :		// \vspace<uID9.3.6>!\vspace!REQPARAM(9.3.20,GLUE)
-	        case 7 :		// \vspace*<uID9.3.7>!\vspace*!REQPARAM(9.3.21,GLUE)
+          break;
+          case 6 :    // \vspace<uID9.3.6>!\vspace!REQPARAM(9.3.20,GLUE)
+          case 7 :    // \vspace*<uID9.3.7>!\vspace*!REQPARAM(9.3.21,GLUE)
             if        ( vspace_context == 1 ) {
               RecordAnomaly( 1003,NULL,rover->src_offset1,
-        						            rover->src_offset2 );
+                                rover->src_offset2 );
             } else if ( vspace_context == 2 ) {
 // \vspace<uID9.3.6>!\vspace!REQPARAM(9.3.20,GLUE)
 // \vspace*<uID9.3.7>!\vspace*!REQPARAM(9.3.21,GLUE)
               I16 ems_value;
-	            U8 bucket_zuID[32];
+              U8 bucket_zuID[32];
               UidsTozuID( 9,3,uID+14,(U8*)bucket_zuID );
               TNODE* glue_bucket =  FindObject( rover->parts,
-							              (U8*)bucket_zuID,INVALID_LIST_POS );
+                            (U8*)bucket_zuID,INVALID_LIST_POS );
               GetValueFromGlue( glue_bucket,(U8*)depth,TRUE,ems_value );
             } else if ( vspace_context == 3 ) {
               // ignore - that's what LaTeX does.
             } else
-	            TCI_ASSERT(0);
-	        break;
-	        default :
-	          TCI_ASSERT(0);
-	        break;
-	      }
+              TCI_ASSERT(0);
+          break;
+          default :
+            TCI_ASSERT(0);
+          break;
+        }
 
-	    }
+      }
 
-	    rover =  rover->next;
+      rover =  rover->next;
     }
 
     if ( skip_multiplier ) {
       TCI_ASSERT( depth[0] == 0 );
       double extra_depth  = skip_multiplier * 0.5;
-	    sprintf( (char*)depth,"+%fex",extra_depth );
+      sprintf( (char*)depth,"+%fex",extra_depth );
     }
 
     if ( depth[0] || height[0] ) {
@@ -15012,12 +15010,12 @@ TNODE* LaTeX2MMLTree::VSpace2MML( TNODE* MML_rv,
       if ( height[0] )
         SetNodeAttrib( rv,(U8*)"height",height );
 
-	  } else
+    } else
       rv  =  MML_rv;
 
-  } else 	// MATH content list has only vspace in it.
+  } else  // MATH content list has only vspace in it.
     RecordAnomaly( 1003,NULL,out_of_flow_list->src_offset1,
-        						out_of_flow_list->src_offset2 );
+                    out_of_flow_list->src_offset2 );
 
   return rv;
 }
@@ -15027,7 +15025,7 @@ TNODE* LaTeX2MMLTree::VSpace2MML( TNODE* MML_rv,
 //   on a containing MML element.
 
 TNODE* LaTeX2MMLTree::Labels2MML( TNODE* MML_rv,
-									                TNODE* label_list ) {
+                                  TNODE* label_list ) {
 
   TNODE* rv =  NULL;
 
@@ -15036,7 +15034,7 @@ TNODE* LaTeX2MMLTree::Labels2MML( TNODE* MML_rv,
 //  as contents for the following <mrow>.
     rv  =  CreateElemWithBucketAndContents( 5,750,1,2,MML_rv );
   } else
-	  rv  =  MML_rv;
+    rv  =  MML_rv;
 
   while ( label_list ) {
 // \label      <uID5.700.0>...REQPARAM(5.700.1,NONLATEX)
@@ -15045,30 +15043,30 @@ TNODE* LaTeX2MMLTree::Labels2MML( TNODE* MML_rv,
 // \QTSN<uID5.472.0>!\QTSN!REQPARAM(5.472.1,NONLATEX)REQPARAM(5.472.2,TEXT)
     U16 uobjtype,usubtype,uID;
     GetUids( label_list->zuID,uobjtype,usubtype,uID );
-	  U8* zuID_name_bucket  =  NULL;
+    U8* zuID_name_bucket  =  NULL;
     if ( uobjtype==5 && uID==0 ) {
       if      ( usubtype == 700 )
-	      zuID_name_bucket  =  (U8*)"5.700.1";
+        zuID_name_bucket  =  (U8*)"5.700.1";
       else if ( usubtype == 552 )
-	      zuID_name_bucket  =  (U8*)"5.552.1";
+        zuID_name_bucket  =  (U8*)"5.552.1";
       else if ( usubtype == 556 )
-	      zuID_name_bucket  =  (U8*)"5.556.2";
+        zuID_name_bucket  =  (U8*)"5.556.2";
       else if ( usubtype == 472 )
-	      zuID_name_bucket  =  (U8*)"5.472.1";
+        zuID_name_bucket  =  (U8*)"5.472.1";
       else
         TCI_ASSERT(0);
-	  }
+    }
 
 
-	  if ( zuID_name_bucket ) {
+    if ( zuID_name_bucket ) {
       TNODE* l_name_bucket  =  FindObject( label_list->parts,
                                 zuID_name_bucket,INVALID_LIST_POS );
       if ( l_name_bucket && l_name_bucket->contents) {
         U8* attr_val  =  l_name_bucket->contents->var_value;
         SetNodeAttrib( rv,(U8*)"key",attr_val );
-	    } else
-	      TCI_ASSERT(0);
-	  }
+      } else
+        TCI_ASSERT(0);
+    }
 
 
     label_list  =  label_list->next;
@@ -15076,7 +15074,7 @@ TNODE* LaTeX2MMLTree::Labels2MML( TNODE* MML_rv,
 //  in another <mrow> and label this new wrapper <mrow>.
     if ( label_list )
       rv  =  CreateElemWithBucketAndContents( 5,750,1,2,rv );
-  }		// loop thru label_list
+  }   // loop thru label_list
 
   return rv;
 }
@@ -15088,26 +15086,26 @@ TNODE* LaTeX2MMLTree::Labels2MML( TNODE* MML_rv,
 //  be handled in MathML are passed back by this mechanism.
 
 void LaTeX2MMLTree::RecordAnomaly( U16 ilk,U8* ztext,
-									                  U32 off1,U32 off2 ) {
+                                    U32 off1,U32 off2 ) {
 
-  if ( p_anomalies ) {		// We're reporting anomalies - DLL
-  	ANOMALY_REC* new_anomaly;
-    if ( p_anomalies->ilk ) {	// first node is already taken.
-  	  new_anomaly  =  TCI_NEW( ANOMALY_REC );
-	    new_anomaly->next =  NULL;
+  if ( p_anomalies ) {    // We're reporting anomalies - DLL
+    ANOMALY_REC* new_anomaly;
+    if ( p_anomalies->ilk ) { // first node is already taken.
+      new_anomaly  =  TCI_NEW( ANOMALY_REC );
+      new_anomaly->next =  NULL;
   // Append to end of the current list.
-  	  ANOMALY_REC* rover  =  p_anomalies;
-	    while ( rover->next )
-	      rover =  rover->next;
-	    rover->next =  new_anomaly;
-	  } else
-  	  new_anomaly =  p_anomalies;
+      ANOMALY_REC* rover  =  p_anomalies;
+      while ( rover->next )
+        rover =  rover->next;
+      rover->next =  new_anomaly;
+    } else
+      new_anomaly =  p_anomalies;
 
   // Fill out ANOMALY_REC
-  	new_anomaly->ilk  =  ilk;		// an id
-  	new_anomaly->atext  =  ztext ? ztext : NULL;
-  	new_anomaly->off1 =  off1;		// src offsets
-  	new_anomaly->off2 =  off2;
+    new_anomaly->ilk  =  ilk;   // an id
+    new_anomaly->atext  =  ztext ? ztext : NULL;
+    new_anomaly->off1 =  off1;    // src offsets
+    new_anomaly->off2 =  off2;
   }
 }
 
@@ -15119,11 +15117,11 @@ void LaTeX2MMLTree::RecordAnomaly( U16 ilk,U8* ztext,
 //  where MML_rv may be wrapped in an <mpadded>.
 
 TNODE* LaTeX2MMLTree::Struts2MML( TNODE* MML_rv,
-									              TNODE* out_of_flow_list ) {
+                                TNODE* out_of_flow_list ) {
 
   TNODE* rv =  NULL;
 
-/*		diagnostic to test all the unit conversions
+/*    diagnostic to test all the unit conversions
 char src[64];
 char dst[64];
 char output[128];
@@ -15133,9 +15131,9 @@ for ( U16 i=1; i<13; i++ ) {
 
     U16 dst_type  =  GetMMLdimenType( j );
     double d  =  ConvertTeXDimen( s,i,dst_type );
-	  sprintf( src,"%f",s );
+    sprintf( src,"%f",s );
     AttachUnit( src,i );
-	  sprintf( dst,"%f",d );
+    sprintf( dst,"%f",d );
     AttachUnit( dst,dst_type );
 
     sprintf( output,"%s,%s",src,dst );
@@ -15150,20 +15148,20 @@ for ( U16 i=1; i<13; i++ ) {
 // \vspace*<uID9.3.7>!\vspace*!REQPARAM(9.3.21,GLUE)
 
   if ( MML_rv ) {
-	  U8 depth[64];
-	  U8 height[64];
-	  depth[0]  =  0;
-	  height[0] =  0;
+    U8 depth[64];
+    U8 height[64];
+    depth[0]  =  0;
+    height[0] =  0;
 
     TNODE* rover  =  out_of_flow_list;
     while ( rover ) {
       U16 uobjtype,usubtype,uID;
       GetUids( rover->zuID,uobjtype,usubtype,uID );
-	    if      ( uobjtype==5 && usubtype==800 )
-		    GetVSpaceFromRule( rover,depth,height );
+      if      ( uobjtype==5 && usubtype==800 )
+        GetVSpaceFromRule( rover,depth,height );
 
-	    rover =  rover->next;
-    }	// loop thru out_of_flow_list
+      rover =  rover->next;
+    } // loop thru out_of_flow_list
 
     if ( depth[0] || height[0] ) {
 // mpadded<uID5.602.0>!mpadded!BUCKET(5.602.2,MATH,,,/mpadded,)!/mpadded!
@@ -15173,12 +15171,12 @@ for ( U16 i=1; i<13; i++ ) {
         SetNodeAttrib( rv,(U8*)"depth",depth );
       if ( height[0] )
         SetNodeAttrib( rv,(U8*)"height",height );
-	  } else
+    } else
       rv  =  MML_rv;
 
-  } else 	// MATH content list has only vspace in it.
+  } else  // MATH content list has only vspace in it.
     RecordAnomaly( 1003,NULL,out_of_flow_list->src_offset1,
-       						out_of_flow_list->src_offset2 );
+                  out_of_flow_list->src_offset2 );
 
   return rv;
 }
@@ -15188,9 +15186,9 @@ for ( U16 i=1; i<13; i++ ) {
 // Handle any "out-of-flow" objects.
 
 TNODE* LaTeX2MMLTree::HandleOutOfFlowObjects( TNODE* MML_list,
-											TNODE** local_oof_list,
-											TNODE** out_of_flow_list,
-											U16 vspace_context ) {
+                      TNODE** local_oof_list,
+                      TNODE** out_of_flow_list,
+                      U16 vspace_context ) {
 
   TNODE* MML_rv =  MML_list;
 
@@ -15244,7 +15242,7 @@ Each line has 2 MATH buckets, each containing an independent expression.
 */
 
 TNODE* LaTeX2MMLTree::LaTeXCases2MML( TNODE* src_cases,
-									TNODE** out_of_flow_list ) {
+                  TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -15255,7 +15253,7 @@ TNODE* LaTeX2MMLTree::LaTeXCases2MML( TNODE* src_cases,
   TNODE* list_of_lines  =  FindObject( src_cases->parts,
                                 line_list_zuID,INVALID_LIST_POS );
 
-  TNODE* mml_rows_head  =  NULL;		// list of rows we're building
+  TNODE* mml_rows_head  =  NULL;    // list of rows we're building
   TNODE* mml_rows_tail;
 
   U16 src_line_counter  =  0;
@@ -15263,7 +15261,7 @@ TNODE* LaTeX2MMLTree::LaTeXCases2MML( TNODE* src_cases,
 // Find the current line in the list of lines
     TNODE* curr_line  =  FindObject( list_of_lines->parts,
                                 line_list_zuID,src_line_counter );
-    if ( !curr_line ) break;	// normal exit - no more lines
+    if ( !curr_line ) break;  // normal exit - no more lines
 
 // Generate a list of <mtd>'s for the 2 cells in this line.
 
@@ -15279,9 +15277,9 @@ TNODE* LaTeX2MMLTree::LaTeXCases2MML( TNODE* src_cases,
 
 // Translate current cell to MathML
 
-	    TCI_BOOL do_bindings  =  TRUE;
+      TCI_BOOL do_bindings  =  TRUE;
       U16 tex_nodes_done,error_code;
-	    TNODE* local_oof_list =  NULL;
+      TNODE* local_oof_list =  NULL;
       TNODE* mml_contents =  TranslateMathList( TeX_cell->contents,
                                         do_bindings,NULL,
                                         tex_nodes_done,error_code,
@@ -15289,31 +15287,31 @@ TNODE* LaTeX2MMLTree::LaTeXCases2MML( TNODE* src_cases,
       if ( !mml_contents )
         mml_contents  =  MakeSmallmspace();
       mml_contents  =  HandleOutOfFlowObjects( mml_contents,
-							            &local_oof_list,out_of_flow_list,2 );
+                          &local_oof_list,out_of_flow_list,2 );
 
       TNODE* mml_cell;
   // mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd)!/mtd!
       mml_contents  =  FixImpliedMRow( mml_contents );
       mml_cell  =  CreateElemWithBucketAndContents( 5,35,14,8,
-      												mml_contents );
+                              mml_contents );
   // Put the current mml_cell under a cell list item node
-	    U8 zlistID[32];
+      U8 zlistID[32];
       UidsTozuID( 5,35,11,(U8*)zlistID );
-	    U16 zln =  strlen( (char*)zlistID );
-	    zlistID[zln]  =  ':';
+      U16 zln =  strlen( (char*)zlistID );
+      zlistID[zln]  =  ':';
             // itoa( col_count,(char*)zlistID+zln+1,10 );
             sprintf((char*)zlistID+zln+1, "%d", col_count);
-	    TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	    list_node->parts  =  mml_cell;
-	    mml_cell->sublist_owner =  list_node;
+      TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+      list_node->parts  =  mml_cell;
+      mml_cell->sublist_owner =  list_node;
 
   // Add this list item to the list we're building
       if ( !mml_cols_head )
         mml_cols_head =  list_node;
       else {
         mml_cols_tail->next  =  list_node;
-		    list_node->prev =  mml_cols_tail;
-	    }
+        list_node->prev =  mml_cols_tail;
+      }
       mml_cols_tail  =  list_node;
 
   // Find the right cell in the current line.
@@ -15321,7 +15319,7 @@ TNODE* LaTeX2MMLTree::LaTeXCases2MML( TNODE* src_cases,
                             (U8*)"5.140.7",INVALID_LIST_POS );
       col_count++;
 
-    }	// loop across columns in a line
+    } // loop across columns in a line
 
 // Add current row to the list of rows we're building
 
@@ -15333,27 +15331,27 @@ _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
 */
 
     TNODE* mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
-	  mtr->parts->parts =  mml_cols_head;
-	  mml_cols_head->sublist_owner =  mtr->parts;
+    mtr->parts->parts =  mml_cols_head;
+    mml_cols_head->sublist_owner =  mtr->parts;
 
 // Put the current row under a node in the row list
 
-	  U8 zlistID[32];
+    U8 zlistID[32];
     UidsTozuID( 5,35,9,(U8*)zlistID );
-	  U16 zln =  strlen( (char*)zlistID );
-	  zlistID[zln]  =  ':';
-	  // itoa( src_line_counter,(char*)zlistID+zln+1,10 );
+    U16 zln =  strlen( (char*)zlistID );
+    zlistID[zln]  =  ':';
+    // itoa( src_line_counter,(char*)zlistID+zln+1,10 );
           sprintf((char*)zlistID+zln+1, "%d", src_line_counter);
 
-	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	  row_list_node->parts  =  mtr;
-	  mtr->sublist_owner  =  row_list_node;
+    TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+    row_list_node->parts  =  mtr;
+    mtr->sublist_owner  =  row_list_node;
     if ( !mml_rows_head )
       mml_rows_head  =  row_list_node;
     else {
       mml_rows_tail->next =  row_list_node;
-	    row_list_node->prev =  mml_rows_tail;
-	  }
+      row_list_node->prev =  mml_rows_tail;
+    }
     mml_rows_tail  =  row_list_node;
 
     src_line_counter++;
@@ -15378,7 +15376,7 @@ _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
     SetAttrsForFenceMO( left_end,9,TRUE );
 
     left_end->next  =  mml_rv;
-	  mml_rv->prev    =  left_end;
+    mml_rv->prev    =  left_end;
 
     mml_rv  =  MMLlistToMRow( left_end );
     SetDetailNum( mml_rv,DETAILS_is_expression,1 );
@@ -15394,8 +15392,8 @@ _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
 // external parse tree, then the following function is called.
 
 TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
-								    TNODE** out_of_flow_list,
-								    U16 subtype ) {
+                    TNODE** out_of_flow_list,
+                    U16 subtype ) {
 
   TNODE* mml_rv =  Array2MML( tex_matrix_node,out_of_flow_list );
 
@@ -15436,7 +15434,7 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
             if ( GetUnicodeEntity(delim_attrs,unicode_buffer) )
               SetChData( left_end,NULL,unicode_buffer );
           }
-		  U8* p_comma =  (U8*)strchr( (char*)delim_attrs,',' );
+      U8* p_comma =  (U8*)strchr( (char*)delim_attrs,',' );
           if ( p_comma ) {
             ATTRIB_REC* ar  =  ExtractAttrs( (char*)p_comma+1 );
             if ( ar ) {
@@ -15447,7 +15445,7 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
         }
 
         left_end->next  =  mml_rv;
-	    mml_rv->prev    =  left_end;
+      mml_rv->prev    =  left_end;
 
         U16 zln =  strlen( (char*)lookup_zuID );
         lookup_zuID[zln-1]  =  'r';
@@ -15463,7 +15461,7 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
                 if ( GetUnicodeEntity(delim_attrs,unicode_buffer) )
                   SetChData( right_end,NULL,unicode_buffer );
               }
-		      U8* p_comma =  (U8*)strchr( (char*)delim_attrs,',' );
+          U8* p_comma =  (U8*)strchr( (char*)delim_attrs,',' );
               if ( p_comma ) {
                 ATTRIB_REC* ar  =  ExtractAttrs( (char*)p_comma+1 );
                 if ( ar ) {
@@ -15474,15 +15472,15 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
             }
 
             mml_rv->next    =  right_end;
-	        right_end->prev =  mml_rv;
-	      }
+          right_end->prev =  mml_rv;
+        }
         }
 
         mml_rv  =  MMLlistToMRow( left_end );
       }
 
-	} else
-	  TCI_ASSERT(0);
+  } else
+    TCI_ASSERT(0);
 
   }   // if ( subtype >= 712 && subtype <= 716 )
 
@@ -15505,10 +15503,10 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
 //   REQPARAM(5.412.3,INHERIT)
 
 TNODE* LaTeX2MMLTree::Multicolumn2MML( TNODE* tex_node,
-									TNODE** out_of_flow_list,
-									TCI_BOOL in_math,
-									U16& mcol_align,
-									U16& cols_spanned ) {
+                  TNODE** out_of_flow_list,
+                  TCI_BOOL in_math,
+                  U16& mcol_align,
+                  U16& cols_spanned ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -15517,48 +15515,48 @@ TNODE* LaTeX2MMLTree::Multicolumn2MML( TNODE* tex_node,
 // Get number of columns spanned
 
     TNODE* ncols_bucket =  FindObject( tex_node->parts,
-					          (U8*)"5.412.1",INVALID_LIST_POS );
+                    (U8*)"5.412.1",INVALID_LIST_POS );
     if ( ncols_bucket && ncols_bucket->contents ) {
       TNODE* text =  ncols_bucket->contents;
       if ( text->var_value )
-	    cols_spanned  =  atoi( (char*)text->var_value );
-	}
+      cols_spanned  =  atoi( (char*)text->var_value );
+  }
 
 // Get specified column alignment
 
     TNODE* cols_bucket =  FindObject( tex_node->parts,
-					          (U8*)"5.412.2",INVALID_LIST_POS );
-	if ( cols_bucket && cols_bucket->contents ) {
+                    (U8*)"5.412.2",INVALID_LIST_POS );
+  if ( cols_bucket && cols_bucket->contents ) {
       TNODE* c_rover  =  cols_bucket->contents;
       U16 uobjtype,usubtype,id;
       GetUids( c_rover->zuID,uobjtype,usubtype,id );
       if ( uobjtype==16 && usubtype==4 )
         mcol_align  =  id;
-	}
+  }
 
     TNODE* bucket =  FindObject( tex_node->parts,
-					          (U8*)"5.412.3",INVALID_LIST_POS );
-	if ( bucket && bucket->contents ) {
-	  TNODE* local_oof_list =  NULL;
+                    (U8*)"5.412.3",INVALID_LIST_POS );
+  if ( bucket && bucket->contents ) {
+    TNODE* local_oof_list =  NULL;
       TNODE* contents =  NULL;
       if ( in_math ) {
   // Translate current cell to MathML
-	    TCI_BOOL do_bindings  =  TRUE;
+      TCI_BOOL do_bindings  =  TRUE;
         U16 tex_nodes_done,error_code;
         contents =  TranslateMathList( bucket->contents,
-							            do_bindings,NULL,
-							            tex_nodes_done,
-							            error_code,
-							            &local_oof_list );
-	  } else {
-	    contents  =  TextInMath2MML( bucket->contents,
-	  					    	&local_oof_list,FALSE,FALSE );
-	  }
+                          do_bindings,NULL,
+                          tex_nodes_done,
+                          error_code,
+                          &local_oof_list );
+    } else {
+      contents  =  TextInMath2MML( bucket->contents,
+                    &local_oof_list,FALSE,FALSE );
+    }
       if ( !contents )
         contents  =  MakeSmallmspace();
       mml_rv  =  HandleOutOfFlowObjects( contents,
-   						      &local_oof_list,out_of_flow_list,2 );
-	}		// if ( bucket && bucket->contents )
+                    &local_oof_list,out_of_flow_list,2 );
+  }   // if ( bucket && bucket->contents )
 
   }
 
@@ -15571,8 +15569,8 @@ TNODE* LaTeX2MMLTree::Multicolumn2MML( TNODE* tex_node,
 // REQPARAM(5.431.2,NONLATEX) - number of columns spanned
 
 TNODE* LaTeX2MMLTree::Hdotsfor2MML( TNODE* tex_node,
-									TCI_BOOL in_math,
-									U16& cols_spanned ) {
+                  TCI_BOOL in_math,
+                  U16& cols_spanned ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -15580,17 +15578,17 @@ TNODE* LaTeX2MMLTree::Hdotsfor2MML( TNODE* tex_node,
 // Get number of columns spanned
 
     TNODE* ncols_bucket =  FindObject( tex_node->parts,
-							    (U8*)"5.431.2",INVALID_LIST_POS );
-	if ( ncols_bucket && ncols_bucket->contents ) {
+                  (U8*)"5.431.2",INVALID_LIST_POS );
+  if ( ncols_bucket && ncols_bucket->contents ) {
       TNODE* text =  ncols_bucket->contents;
       if ( text->var_value )
-		cols_spanned  =  atoi( (char*)text->var_value );
-	}
+    cols_spanned  =  atoi( (char*)text->var_value );
+  }
 
 // Get spacing multiplier
     TNODE* mult_bucket  =  FindObject( tex_node->parts,
-							    (U8*)"5.431.1",INVALID_LIST_POS );
-	if ( mult_bucket && mult_bucket->contents ) {
+                  (U8*)"5.431.1",INVALID_LIST_POS );
+  if ( mult_bucket && mult_bucket->contents ) {
 
     }
 
@@ -15609,12 +15607,12 @@ TNODE* LaTeX2MMLTree::Hdotsfor2MML( TNODE* tex_node,
 
 TCI_BOOL LaTeX2MMLTree::BucketContainsMath( TNODE* contents ) {
 
-  TCI_BOOL rv =  TRUE;		// assumed
+  TCI_BOOL rv =  TRUE;    // assumed
 
 // Objects that are specifically NOT math.
-  U16 n_spaces    =  0;			// I'm tracking more things
-  U16 n_tabulars  =  0;			// than needed by the logic
-  U16 n_text_runs =  0;			// currently employed here.
+  U16 n_spaces    =  0;     // I'm tracking more things
+  U16 n_tabulars  =  0;     // than needed by the logic
+  U16 n_text_runs =  0;     // currently employed here.
 // Everything else is considered to be math.
   U16 n_math_objects  =  0;
 
@@ -15623,38 +15621,38 @@ TCI_BOOL LaTeX2MMLTree::BucketContainsMath( TNODE* contents ) {
   while ( rover && !n_math_objects ) {
     U16 uobj,usub,uID;
     GetUids( rover->zuID,uobj,usub,uID );
-	  if ( uobj==5 ) {			// LaTeX schemata
-	    if      ( usub==90  && uID==0 )
+    if ( uobj==5 ) {      // LaTeX schemata
+      if      ( usub==90  && uID==0 )
   // \text{...}
-	      n_text_runs++;
-	    else if ( usub>=450 && usub<=461 )
+        n_text_runs++;
+      else if ( usub>=450 && usub<=461 )
   // \textup{...} .. \textcircled{...}
-	      n_text_runs++;
-	    else if ( usub==490 || usub==491 )
+        n_text_runs++;
+      else if ( usub==490 || usub==491 )
   // \begin{tabular}<uID5.490.0>  \begin{tabular*}<uID5.491.0>
-	      n_tabulars++;
-	    else if ( usub==37 )
+        n_tabulars++;
+      else if ( usub==37 )
   // \TABLE<uID5.37.0>!\TABLE!_COLSANDROWS__EXTALIGN__TWIDTH_...
-	      n_tabulars++;
-	    else						// all other schemata
-	      n_math_objects++;
-	  } else if ( uobj==9 ) {		// LaTeX spaces
+        n_tabulars++;
+      else            // all other schemata
+        n_math_objects++;
+    } else if ( uobj==9 ) {   // LaTeX spaces
   // \smallskip<uID9.3.1>
-	    if ( usub==1 || usub==3 )
-	      n_spaces++;
-	    else
-	      n_math_objects++;
-	  } else						// everything else
-	    n_math_objects++;
+      if ( usub==1 || usub==3 )
+        n_spaces++;
+      else
+        n_math_objects++;
+    } else            // everything else
+      n_math_objects++;
 
-	  rover =  rover->next;
-  }		// loop thru MATH bucket
+    rover =  rover->next;
+  }   // loop thru MATH bucket
 
   if ( n_math_objects == 0
   &&   n_text_runs    == 0
-  &&   n_tabulars     == 0 ) {	// Run contains no math!!
-	  //TCI_ASSERT(0);
-	  rv  =  FALSE;
+  &&   n_tabulars     == 0 ) {  // Run contains no math!!
+    //TCI_ASSERT(0);
+    rv  =  FALSE;
   }
 
   return rv;
@@ -15742,19 +15740,19 @@ void LaTeX2MMLTree::GetValueFromGlue( TNODE* glue_bucket,
       tmp =  tmp * 120.0;         // bogus
     }
     tmp +=  0.5;
-	  sprintf( (char*)val,"%f",tmp );
+    sprintf( (char*)val,"%f",tmp );
     val_in_math_units =  atoi( (char*)val );
 
 
     magnitude =  ConvertTeXDimen( magnitude,TeX_unit_ID,mml_dest_units );
     if ( is_minus )
-	    sprintf( (char*)val,"%f",magnitude );
+      sprintf( (char*)val,"%f",magnitude );
     else {
       if ( is_relative ) {
         val[0] =  '+';
         sprintf( (char*)val+1,"%f",magnitude );
       } else
-	      sprintf( (char*)val,"%f",magnitude );
+        sprintf( (char*)val,"%f",magnitude );
     }
     AttachUnit( (char*)val,mml_dest_units );
 
@@ -15778,7 +15776,7 @@ JBMLine( (char*)buffer );
 //  REQPARAM(5.419.4,NONLATEX)  - the computation, evaluate, etc.
 
 TNODE* LaTeX2MMLTree::FORMULA2MML( TNODE* TeX_FORMULA_node,
-									                  TNODE** out_of_flow_list ) {
+                                    TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -15786,36 +15784,36 @@ TNODE* LaTeX2MMLTree::FORMULA2MML( TNODE* TeX_FORMULA_node,
 
     TNODE* mml_formula  =  NULL;
     TNODE* formula_bucket =  FindObject( TeX_FORMULA_node->parts,
-									              (U8*)"5.419.2",INVALID_LIST_POS );
+                                (U8*)"5.419.2",INVALID_LIST_POS );
     if ( formula_bucket && formula_bucket->contents ) {
       U16 tex_nodes_done,error_code;
-  	  TCI_BOOL do_bindings  =  TRUE;  // the formula component
-		  TNODE* local_oof_list =  NULL;  // is a complete expression
+      TCI_BOOL do_bindings  =  TRUE;  // the formula component
+      TNODE* local_oof_list =  NULL;  // is a complete expression
       mml_formula =  TranslateMathList( formula_bucket->contents,
                                     do_bindings,NULL,
-									                  tex_nodes_done,error_code,
-									                  &local_oof_list );
+                                    tex_nodes_done,error_code,
+                                    &local_oof_list );
 // There shouldn't be any struts, labels, etc. in the formula.
 //  It's not rendered in the LaTeX output.
-	    if ( local_oof_list )
+      if ( local_oof_list )
         DisposeTList( local_oof_list );
     }
 
     TNODE* mml_result =  NULL;
     TNODE* result_bucket  =  FindObject( TeX_FORMULA_node->parts,
-									              (U8*)"5.419.3",INVALID_LIST_POS );
+                                (U8*)"5.419.3",INVALID_LIST_POS );
     if ( result_bucket && result_bucket->contents ) {
       U16 tex_nodes_done,error_code;
-  	  TCI_BOOL do_bindings  =  TRUE;
-		  TNODE* local_oof_list =  NULL;
+      TCI_BOOL do_bindings  =  TRUE;
+      TNODE* local_oof_list =  NULL;
       mml_result  =  TranslateMathList( result_bucket->contents,
                                     do_bindings,NULL,
-									                  tex_nodes_done,error_code,
-									                  &local_oof_list );
+                                    tex_nodes_done,error_code,
+                                    &local_oof_list );
 // Generally, the result component of a \FORMULA should be
 //  generated by an engine.  It shouldn't contain any out_of_flows.
       mml_result  =  HandleOutOfFlowObjects( mml_result,
-       									     &local_oof_list,out_of_flow_list,3 );
+                             &local_oof_list,out_of_flow_list,3 );
     }
 
 
@@ -15823,14 +15821,14 @@ TNODE* LaTeX2MMLTree::FORMULA2MML( TNODE* TeX_FORMULA_node,
 // maction<uID5.604.0>!maction!reqELEMENT(5.604.1)reqELEMENT(5.604.2)!/maction!
 
     mml_rv  =  CreateElemWithBucketAndContents( 5,604,0,1,mml_formula );
-	  TNODE* parts_tail =  mml_rv->parts;
+    TNODE* parts_tail =  mml_rv->parts;
 
 // append the "result" to the parts of the returned <maction> 
 
     TNODE* next_part  =  CreateBucketWithContents(5,604,2,mml_result );
     parts_tail->next  =  next_part;
     next_part->prev   =  parts_tail;
-	  parts_tail  =  next_part;
+    parts_tail  =  next_part;
 
     SetNodeAttrib( mml_rv, (U8*)"actiontype", (U8*)"toggle" );
     SetNodeAttrib( mml_rv, (U8*)"selection", (U8*)"2" );
@@ -15851,15 +15849,15 @@ TNODE* LaTeX2MMLTree::FORMULA2MML( TNODE* TeX_FORMULA_node,
 // Handle semantic comments in MATH - only found in external format.
 
 TNODE* LaTeX2MMLTree::MathComment2MML( TNODE* TeX_comment_node,
-												                        U16 &advance ) {
+                                                U16 &advance ) {
 
   TNODE* mml_rv =  NULL;
 
   advance =  1;
 
 // Handle %TCIMACRO{...
-// 		    %............
-// 		    %...........}
+//        %............
+//        %...........}
 //        %BeginExpansion
 
   U8* tcimacro_data =  TCIMacroToBuffer( TeX_comment_node );
@@ -15871,24 +15869,24 @@ TNODE* LaTeX2MMLTree::MathComment2MML( TNODE* TeX_comment_node,
 // At present, I am scripting mml for the external object only,
 //  EXCEPT when the %TCIMACRO contains \FORMULA.
 
-		TNODE* MML_expansion;
+    TNODE* MML_expansion;
     TNODE* hidden_internal_markup =  GetTCIMacroParts( tcimacro_data,
                                             TeX_comment_node,
-								                            &MML_expansion,advance );
-	  delete tcimacro_data;
+                                            &MML_expansion,advance );
+    delete tcimacro_data;
 
     TCI_BOOL done =  FALSE;
     if ( hidden_internal_markup ) {
       TNODE* formula  =  FindObject( hidden_internal_markup,
-					                      (U8*)"5.419.1",INVALID_LIST_POS );
+                                (U8*)"5.419.1",INVALID_LIST_POS );
       if ( formula ) {
         TCI_BOOL do_bindings  =  TRUE;
         U16 tex_nodes_done,error_code;
         TNODE* local_oof_list =  NULL;
         mml_rv =  TranslateMathList( hidden_internal_markup,
-                     		do_bindings,NULL,tex_nodes_done,
-                         		error_code,&local_oof_list );
-	      if ( local_oof_list )
+                        do_bindings,NULL,tex_nodes_done,
+                            error_code,&local_oof_list );
+        if ( local_oof_list )
           DisposeTList( local_oof_list );
         done  =  TRUE;
         if ( MML_expansion )
@@ -15903,7 +15901,7 @@ TNODE* LaTeX2MMLTree::MathComment2MML( TNODE* TeX_comment_node,
     if ( !done )
       mml_rv  =  MML_expansion;
 
-  } else {		// Not a %TCIMACRO comment
+  } else {    // Not a %TCIMACRO comment
   // Nothing implemented re any non-TCIMACRO comments, for now.
   // Just discarding here.
   }
@@ -15921,8 +15919,8 @@ TNODE* LaTeX2MMLTree::MathComment2MML( TNODE* TeX_comment_node,
 // %EndExpansion
 
 void LaTeX2MMLTree::ProcessTextComment( TNODE* TeX_comment_node,
-												                  U32& unicode,
-												                    U16& advance ) {
+                                          U32& unicode,
+                                            U16& advance ) {
 
   unicode =  0;
   advance =  1;
@@ -15942,9 +15940,9 @@ void LaTeX2MMLTree::ProcessTextComment( TNODE* TeX_comment_node,
         TCI_ASSERT(0);
       DisposeTList( hidden_internal_markup );
     }
-	  delete tcimacro_data;
+    delete tcimacro_data;
 
-  } else {		// Not a %TCIMACRO comment
+  } else {    // Not a %TCIMACRO comment
 // Nothing implemented re any non-TCIMACRO comments, for now.
 // Just discarding here.
   }
@@ -15965,32 +15963,32 @@ U8* LaTeX2MMLTree::TCIMacroToBuffer( TNODE* comment_node ) {
   TCI_BOOL macro_found  =  FALSE;
   CVLINE_REC* cv_rover  =  comment_node->cv_list;
   while ( cv_rover ) {
-	  if ( cv_rover->cvline ) {
+    if ( cv_rover->cvline ) {
       if ( !macro_found ) {
         if ( !strncmp((char*)cv_rover->cvline,(char*)TCIMACRO,9) ) {
           macro_found  =  TRUE;
           buf_lim =  1024;
-		      rv  =  (U8*)TCI_NEW( char[buf_lim] );
+          rv  =  (U8*)TCI_NEW( char[buf_lim] );
           buf_i =  0;
-	      }
-	    }
+        }
+      }
 
       if ( macro_found ) {
         U8* new_bytes =  cv_rover->cvline;
         U32 n_bytes   =  strlen( (char*)new_bytes );
-		    U32 save_i  =  buf_i;
+        U32 save_i  =  buf_i;
         rv  =  AppendBytesToBuffer( rv,buf_lim,buf_i,
-        								            new_bytes,n_bytes );
-		    if ( save_i ) {
-		      TCI_ASSERT( rv[save_i] == '%' );
-		      rv[save_i] = '\n';
-	      }
-	    }
+                                    new_bytes,n_bytes );
+        if ( save_i ) {
+          TCI_ASSERT( rv[save_i] == '%' );
+          rv[save_i] = '\n';
+        }
+      }
 
-	  }		// if ( cv_rover->cvline )
+    }   // if ( cv_rover->cvline )
 
-	  cv_rover  =  cv_rover->next;
-  }		// while ( cv_rover )
+    cv_rover  =  cv_rover->next;
+  }   // while ( cv_rover )
 
   return rv;
 }
@@ -16001,9 +15999,9 @@ U8* LaTeX2MMLTree::TCIMacroToBuffer( TNODE* comment_node ) {
 // internal data contained %TCIMacro{hidden internal data}.
 
 TNODE* LaTeX2MMLTree::GetTCIMacroParts( U8* zTCIMacro,
-										                    TNODE* comment_node,
-										                    TNODE** MML_expansion,
-										  	                U16& advance ) {
+                                        TNODE* comment_node,
+                                        TNODE** MML_expansion,
+                                        U16& advance ) {
 
   if ( MML_expansion )
     *MML_expansion  =  NULL;
@@ -16022,10 +16020,10 @@ TNODE* LaTeX2MMLTree::GetTCIMacroParts( U8* zTCIMacro,
   // Advance to contents of %TCIMACRO{..contents..}
 
     char* ptr =  (char*)zTCIMacro + s_off + 1;
-	  while ( *ptr ) {
-	    if ( *ptr <= ' ' ) ptr++;
-	    else break;
-	  }
+    while ( *ptr ) {
+      if ( *ptr <= ' ' ) ptr++;
+      else break;
+    }
 
     if ( !strncmp(ptr,"\\TeXButton{",11) )
       isTeXButton =  TRUE;
@@ -16035,31 +16033,31 @@ TNODE* LaTeX2MMLTree::GetTCIMacroParts( U8* zTCIMacro,
 
 // Copy TCIMACRO contents to a buffer
 
-	  *(zTCIMacro+e_off)  =  0;   // NULL terminate
+    *(zTCIMacro+e_off)  =  0;   // NULL terminate
 
     U8* data  =  (U8*)TCI_NEW( char[e_off-s_off] );
     strcpy( (char*)data,ptr );
 
 // Build LaTeX parse tree for the body of the TCIMACRO
 
-	  U8* local_context   =  (U8*)"MATH";
+    U8* local_context   =  (U8*)"MATH";
     TCI_BOOL is_clipbrd =  FALSE;
     U16 nlog_msgs;
     hidden_LaTeX =  lparser->ParseBytes( local_context,
-    										            data,is_clipbrd,nlog_msgs );
+                                    data,is_clipbrd,nlog_msgs );
 
     delete data;
 
-  } else				// LocateBraces failed!
+  } else        // LocateBraces failed!
     TCI_ASSERT( 0 );
 
 // There is an object boundary issue here.
 // %TCIMacro{\FORMULA{...}}
-//			 \HTML{...}
-//			 \UNICODE{...}
-//			 \TeXButton{...}
-//			 .
-//			 .
+//       \HTML{...}
+//       \UNICODE{...}
+//       \TeXButton{...}
+//       .
+//       .
 // %BeginExpansion
 // some visible LaTeX
 // %EndExpansion
@@ -16079,81 +16077,81 @@ TNODE* LaTeX2MMLTree::GetTCIMacroParts( U8* zTCIMacro,
   if ( isTeXButton ) {
 /*
     rv->attrib_list =  attrman->AppendAttrIDval( rv->attrib_list,
-		AID_isTeXButton,AVAL_true,0 );
+    AID_isTeXButton,AVAL_true,0 );
 */
 
   } else if ( hasBeginExpansion ) {
 
-	  U16 local_advance;
+    U16 local_advance;
     TNODE* ender  =  LocateEndExpansion( comment_node,local_advance );
 
-	  TCI_ASSERT( ender );
+    TCI_ASSERT( ender );
 
     if ( local_advance > 1 ) {
 
       TNODE* save =  ender;
-		  if ( ender )
-	      ender->prev->next =  NULL;
+      if ( ender )
+        ender->prev->next =  NULL;
 
       if ( MML_expansion ) {
         TCI_BOOL do_bindings  =  TRUE;
         U16 tex_nodes_done,error_code;
         TNODE* local_oof_list =  NULL;
         TNODE* cont =  TranslateMathList( comment_node->next,
-                           		do_bindings,NULL,tex_nodes_done,
-                           		error_code,&local_oof_list );
+                              do_bindings,NULL,tex_nodes_done,
+                              error_code,&local_oof_list );
       //cont  =  HandleOutOfFlowObjects( cont,
-			//	                &local_oof_list,out_of_flow_list,3 );
+      //                  &local_oof_list,out_of_flow_list,3 );
 
         if ( cont )
           *MML_expansion  =  cont;
       }
 
-	    if ( ender ) {
-	      ender->prev->next =  save;
+      if ( ender ) {
+        ender->prev->next =  save;
         advance =  local_advance + 1;
-	    } else 	// no ender
+      } else  // no ender
         advance =  local_advance;
 
-	  }		// if ( local_advance > 1 )
+    }   // if ( local_advance > 1 )
 
-  }		//  if ( hasBeginExpansion )
+  }   //  if ( hasBeginExpansion )
 
   return hidden_LaTeX;
 }
 
 
 
-//  Comment ->	TNODE -> ...  -> Comment
-//    %BeginExpansion			   %EndExpansion
+//  Comment ->  TNODE -> ...  -> Comment
+//    %BeginExpansion        %EndExpansion
 
 TNODE* LaTeX2MMLTree::LocateEndExpansion( TNODE* start_node,
-	                                        	U16& advance ) {
+                                            U16& advance ) {
 
   advance =  0;
 
 // Note that "start_node" contains %BeginExpansion
 
   TNODE* trover =  start_node;
-  while ( trover ) {		// loop thru LaTeX tnodes
+  while ( trover ) {    // loop thru LaTeX tnodes
     U16 uobjtype,usubtype,uID;
     GetUids( trover->zuID,uobjtype,usubtype,uID );
     if ( uobjtype == 777 && usubtype == 0 ) {   // LaTeX comment
       CVLINE_REC* cv_rover  =  trover->cv_list;
-      while ( cv_rover ) {	// loop thru comment lines
-	      if ( cv_rover->cvline ) {
+      while ( cv_rover ) {  // loop thru comment lines
+        if ( cv_rover->cvline ) {
           if ( !strcmp((char*)cv_rover->cvline,"%EndExpansion") )
-		        return trover;
-	      }		// if ( cv_rover->cvline )
-	      cv_rover  =  cv_rover->next;
-      }		// loop thru lines of one comment node
+            return trover;
+        }   // if ( cv_rover->cvline )
+        cv_rover  =  cv_rover->next;
+      }   // loop thru lines of one comment node
 
-	  }		// comment node processing
+    }   // comment node processing
 
     trover  =  trover->next;
     advance++;
-  }				// loop thru LaTeX nodes looking for
-				//  %EndExpansion
+  }       // loop thru LaTeX nodes looking for
+        //  %EndExpansion
   return NULL;
 }
 
@@ -16172,21 +16170,21 @@ TCI_BOOL LaTeX2MMLTree::LocateBraces( U8* TCIData,
   U8* ptr =  TCIData;
   while ( ch = *ptr ) {
     if        ( ch=='\\') {
-	    ptr++;
+      ptr++;
     } else if ( ch=='{' ) {
-	    if ( level==0 )
-	      s_off  =  ptr - TCIData;
-	    level++;
+      if ( level==0 )
+        s_off  =  ptr - TCIData;
+      level++;
     } else if ( ch=='}' ) {
-	    TCI_ASSERT( level>0 );
-	    level--;
-	    if ( level==0 ) {
-	      rv  =  TRUE;
-	      e_off  =  ptr - TCIData;
-		    break;
-	    }
-	  }
-	  ptr++;
+      TCI_ASSERT( level>0 );
+      level--;
+      if ( level==0 ) {
+        rv  =  TRUE;
+        e_off  =  ptr - TCIData;
+        break;
+      }
+    }
+    ptr++;
   }
 
   return rv;
@@ -16257,23 +16255,23 @@ void LaTeX2MMLTree::GetEQNAlignVals( U16 eqnarray_ilk,
 // non-nested eqnarrays
 
     case TENV_eqnarray  :
-	  case TENV_eqnarraystar  :
+    case TENV_eqnarraystar  :
       alignments[group_counter++] =  zright;
       alignments[group_counter++] =  zcenter;
       alignments[group_counter++] =  zleft;
     break;
-	  case 123  :		      // TENV_align
-	  case 124  :		      // \begin{align*}<uID5.124.0>!
+    case 123  :         // TENV_align
+    case 124  :         // \begin{align*}<uID5.124.0>!
       alignments[group_counter++] =  zright;
       alignments[group_counter++] =  zleft;
     break;
 
-	  case 125  :		      // TENV_alignat
-	  case 126  :		      // TENV_alignatstar
-	  case 127  :		      // TENV_xalignat
-	  case 128  :		      // TENV_xalignatstar
-	  case 129  :		      // TENV_xxalignat
-	  case 130  :		      // TENV_xxalignatstar
+    case 125  :         // TENV_alignat
+    case 126  :         // TENV_alignatstar
+    case 127  :         // TENV_xalignat
+    case 128  :         // TENV_xalignatstar
+    case 129  :         // TENV_xxalignat
+    case 130  :         // TENV_xxalignatstar
       alignments[group_counter++] =  zright;
       alignments[group_counter++] =  zleft;
       alignments[group_counter++] =  zright;
@@ -16282,26 +16280,26 @@ void LaTeX2MMLTree::GetEQNAlignVals( U16 eqnarray_ilk,
       alignments[group_counter++] =  zleft;
     break;
 
-	  case 131  :		      // TENV_gather
-	  case 132  :		      // TENV_gatherstar
+    case 131  :         // TENV_gather
+    case 132  :         // TENV_gatherstar
       alignments[group_counter++] =  zcenter;
     break;
-	  case 133  :		      // TENV_multline
-	  case 134  : 	      // TENV_multlinestar
+    case 133  :         // TENV_multline
+    case 134  :         // TENV_multlinestar
       alignments[group_counter++] =  zcenter;
     break;
 
 // nested eqnarrays - occur in MATH
 //  case 124            :
-	  case 140            :   // cases
+    case 140            :   // cases
       alignments[group_counter++] =  zleft;
       alignments[group_counter++] =  zleft;
     break;
-	  case TENV_split     :
+    case TENV_split     :
       alignments[group_counter++] =  zright;
       alignments[group_counter++] =  zleft;
     break;
-	  case TENV_gathered  :
+    case TENV_gathered  :
       alignments[group_counter++] =  zcenter;
     break;
     case TENV_aligned   :
@@ -16342,10 +16340,10 @@ TNODE* LaTeX2MMLTree::AddEQNAttribs( TNODE* mml_eqn_node,
 
   TNODE* mml_rv =  mml_eqn_node;
   if ( mml_rv ) {
-    if ( usubtype == 140 ) {	// cases
+    if ( usubtype == 140 ) {  // cases
       TCI_ASSERT(0);
     } else if ( usubtype >= TENV_eqnarray
-    &&          usubtype <= 134 ) {	// TENV_multlinestar   134
+    &&          usubtype <= 134 ) { // TENV_multlinestar   134
       mml_rv  =  FixImpliedMRow( mml_rv );
       mml_rv  =  CreateElemWithBucketAndContents( 5,600,0,2,mml_rv );
       SetNodeAttrib( mml_rv,(U8*)"displaystyle",(U8*)"true" );
@@ -16353,7 +16351,7 @@ TNODE* LaTeX2MMLTree::AddEQNAttribs( TNODE* mml_eqn_node,
     } else {
 // 5.141. is split, 5.142. is gathered, 5.143. is aligned
 // these are MATH only environments - always occur within MATH
-	  }
+    }
 
   } // if ( mml_rv )
 
@@ -16398,8 +16396,8 @@ TNODE* LaTeX2MMLTree::SetBigOpSize( TNODE* base_op,
   U8* dest_zname;
   U8* d_template;
   if ( d_mml_grammar->GetGrammarDataFromUID(
-					                      zuID,context_math,
-   							                &dest_zname,&d_template) ) {
+                                zuID,context_math,
+                                &dest_zname,&d_template) ) {
     if ( d_template && *d_template )
       SetMMLAttribs( base_op,d_template );
     else
@@ -16433,17 +16431,17 @@ TCI_BOOL LaTeX2MMLTree::MTextIsWord( TNODE* mtext ) {
   if ( mtext && mtext->var_value ) {
     rv  =  TRUE;
     U8* ptr =  mtext->var_value;
-	U8 ch;
-	while ( ch = *ptr ) {
-	  if        ( ch>='0' && ch<='9' ) {
-	  } else if ( ch>='A' && ch<='Z' ) {
-	  } else if ( ch>='a' && ch<='z' ) {
-	  } else if ( ch==' ' ) {
-	  } else {
+  U8 ch;
+  while ( ch = *ptr ) {
+    if        ( ch>='0' && ch<='9' ) {
+    } else if ( ch>='A' && ch<='Z' ) {
+    } else if ( ch>='a' && ch<='z' ) {
+    } else if ( ch==' ' ) {
+    } else {
         rv  =  FALSE;
-		break;
-	  }
-	  ptr++;
+    break;
+    }
+    ptr++;
     }
   }
 
@@ -16458,7 +16456,7 @@ TCI_BOOL LaTeX2MMLTree::ContainsAllCaps( TNODE* TeX_decoration_node ) {
   U16 n_caps  =  0;
 
   TNODE* math_bucket  =  FindObject( TeX_decoration_node->parts,
-									(U8*)"5.13.1",INVALID_LIST_POS );
+                  (U8*)"5.13.1",INVALID_LIST_POS );
 
   if ( math_bucket && math_bucket->contents ) {
     TNODE* rover  =  math_bucket->contents;
@@ -16502,7 +16500,7 @@ TNODE* LaTeX2MMLTree::BindGeometryObjs( TNODE* MML_list ) {
 
 
   TNODE* MML_rover  =  MML_list;
-  while ( MML_rover ) {		// loop thru contents nodes
+  while ( MML_rover ) {   // loop thru contents nodes
 
     U16 objclass,subclass,id;
     GetUids( MML_rover->zuID,objclass,subclass,id );
@@ -16525,17 +16523,17 @@ TNODE* LaTeX2MMLTree::BindGeometryObjs( TNODE* MML_list ) {
     }
 
     if ( try_coelesce ) {
-  	  U16 node_to_nest;
-	    if ( SpanGeometricObj(MML_rover,node_to_nest) ) {
+      U16 node_to_nest;
+      if ( SpanGeometricObj(MML_rover,node_to_nest) ) {
         TNODE* new_mrow;
-		    mml_rv  =  NestNodesInMrow( mml_rv,NULL,MML_rover,TRUE,
+        mml_rv  =  NestNodesInMrow( mml_rv,NULL,MML_rover,TRUE,
                                 node_to_nest,&new_mrow );
-		    if ( new_mrow ) {
+        if ( new_mrow ) {
           SetDetailNum( new_mrow,DETAILS_is_expression,1 );
-		      MML_rover =  new_mrow;
-		    } else
-		      TCI_ASSERT(0);
-	    }
+          MML_rover =  new_mrow;
+        } else
+          TCI_ASSERT(0);
+      }
     }     // if ( try_coelesce )
 
 
@@ -16634,7 +16632,7 @@ TCI_BOOL LaTeX2MMLTree::IsPrimedPoint( TNODE* rover ) {
   TCI_BOOL rv =  FALSE;
 
   TNODE* base =  FindObject( rover->parts,(U8*)"5.51.3",
-									    INVALID_LIST_POS );
+                      INVALID_LIST_POS );
   if ( base && base->contents ) {
     TNODE* bc =  base->contents;
     if ( bc && !bc->next ) {
@@ -16660,7 +16658,7 @@ TCI_BOOL LaTeX2MMLTree::IsPrimedPoint( TNODE* rover ) {
 
       if ( check_super ) {
         TNODE* super  =  FindObject( rover->parts,
-									(U8*)"5.51.5",INVALID_LIST_POS );
+                  (U8*)"5.51.5",INVALID_LIST_POS );
         if ( super && super->contents ) {
           TNODE* sc =  super->contents;
           if ( sc && !sc->next ) {
@@ -16691,7 +16689,7 @@ TCI_BOOL LaTeX2MMLTree::IsSubscriptedPoint( TNODE* msub ) {
   TCI_BOOL rv =  FALSE;
 
   TNODE* base =  FindObject( msub->parts,(U8*)"5.50.3",
-									                      INVALID_LIST_POS );
+                                        INVALID_LIST_POS );
   if ( base && base->contents ) {
     TNODE* bc =  base->contents;
     if ( bc && !bc->next ) {
@@ -16717,7 +16715,7 @@ TCI_BOOL LaTeX2MMLTree::IsSubscriptedPoint( TNODE* msub ) {
 
       if ( check_sub ) {
         TNODE* sub  =  FindObject( msub->parts,
-									          (U8*)"5.50.4",INVALID_LIST_POS );
+                            (U8*)"5.50.4",INVALID_LIST_POS );
         if ( sub && sub->contents ) {
           TNODE* sc =  sub->contents;
           if ( sc && !sc->next ) {
@@ -16779,32 +16777,32 @@ TCI_BOOL LaTeX2MMLTree::GetVSpaceFromOOFList( TNODE* TeX_oof_list,
     GetUids( rover->zuID,uobjtype,usubtype,uID );
     if ( uobjtype==9 && usubtype==3 ) {   // v-space objects
       switch ( uID ) {
-        case 1 :		// \smallskip<uID9.3.1> 0.25 * \baselineskip
+        case 1 :    // \smallskip<uID9.3.1> 0.25 * \baselineskip
           skip_depth +=  0.5;     // in "ex"s
         break;
-        case 2 :		// \medskip<uID9.3.2>	  0.50 * \baselineskip
+        case 2 :    // \medskip<uID9.3.2>   0.50 * \baselineskip
           skip_depth +=  1.0;
         break;
-        case 3 :		// \bigskip<uID9.3.3>	  1.00 * \baselineskip
+        case 3 :    // \bigskip<uID9.3.3>   1.00 * \baselineskip
           skip_depth +=  2.0;
         break;
 
-        case 4 :		// \strut<uID9.3.4>
-        case 5 :		// \mathstrut<uID9.3.5>  // not implemented
+        case 4 :    // \strut<uID9.3.4>
+        case 5 :    // \mathstrut<uID9.3.5>  // not implemented
 //        strcpy( (char*)depth,"+3.5pt" );
 //        strcpy( (char*)height,"+8.5pt" );
         break;
 
         break;
-        case 6 :		// \vspace<uID9.3.6>!\vspace!REQPARAM(9.3.20,GLUE)
-        case 7 : {	// \vspace*<uID9.3.7>!\vspace*!REQPARAM(9.3.21,GLUE)
+        case 6 :    // \vspace<uID9.3.6>!\vspace!REQPARAM(9.3.20,GLUE)
+        case 7 : {  // \vspace*<uID9.3.7>!\vspace*!REQPARAM(9.3.21,GLUE)
           U8 depth[64];
           depth[0]  =  0;
           I16 mu_value;
           U8 bucket_zuID[32];
           UidsTozuID( 9,3,uID+14,(U8*)bucket_zuID );
           TNODE* glue_bucket =  FindObject( rover->parts,
-						              (U8*)bucket_zuID,INVALID_LIST_POS );
+                          (U8*)bucket_zuID,INVALID_LIST_POS );
           TCI_BOOL is_relative  =  FALSE;
           GetValueFromGlue( glue_bucket,(U8*)depth,is_relative,mu_value );
           vs_in_math_units  +=  mu_value;
@@ -16896,9 +16894,9 @@ TNODE* LaTeX2MMLTree::DecorateVarLim( TNODE* mo,U16 TeX_varlim_uID ) {
     U8* op_nom;
     U8* op_info;
     if ( d_mml_grammar->GetGrammarDataFromUID(mml_op_zuID,
-								context_math,&op_nom,&op_info) ) {
-	  U8 entity_buffer[80];
-	  entity_buffer[0]  =  0;
+                context_math,&op_nom,&op_info) ) {
+    U8 entity_buffer[80];
+    entity_buffer[0]  =  0;
       if ( output_entities_as_unicodes )
         if ( op_info && *op_info )
           GetUnicodeEntity( op_info,entity_buffer );
@@ -16907,14 +16905,14 @@ TNODE* LaTeX2MMLTree::DecorateVarLim( TNODE* mo,U16 TeX_varlim_uID ) {
         SetChData( decor,op_nom,entity_buffer );
 
       OP_GRAMMAR_INFO op_record;
-	  if ( op_info && *op_info ) {
+    if ( op_info && *op_info ) {
         GetAttribsFromGammarInfo( op_info,op_record );
         if ( op_record.attr_list ) {
-	      TCI_ASSERT( decor->attrib_list == NULL );
-	      decor->attrib_list  =  op_record.attr_list;
-		  op_record.attr_list =  NULL;
-	    }
-	  }
+        TCI_ASSERT( decor->attrib_list == NULL );
+        decor->attrib_list  =  op_record.attr_list;
+      op_record.attr_list =  NULL;
+      }
+    }
     } else
       TCI_ASSERT(0);
 
@@ -16962,7 +16960,7 @@ TNODE* LaTeX2MMLTree::MarkingCmd2MML( TNODE* obj_node ) {
 //  is padded below.
 
 TNODE* LaTeX2MMLTree::EOLSpace2MML( TNODE* mml_cell_contents,
-									    TNODE* TeX_EOL ) {
+                      TNODE* TeX_EOL ) {
 
   TNODE* rv =  mml_cell_contents;
 
@@ -16972,10 +16970,10 @@ TNODE* LaTeX2MMLTree::EOLSpace2MML( TNODE* mml_cell_contents,
     U16 uobjtype,usubtype,uID;
     GetUids( TeX_EOL->zuID,uobjtype,usubtype,uID );
     if ( uobjtype==9 && usubtype==5 && uID>=8 && uID<=9 ) {
-	    U8 bucket_zuID[32];
+      U8 bucket_zuID[32];
       UidsTozuID( 9,5,uID+15,(U8*)bucket_zuID );
       TNODE* dimen  =  FindObject( TeX_EOL->parts,
-							    (U8*)bucket_zuID,INVALID_LIST_POS );
+                  (U8*)bucket_zuID,INVALID_LIST_POS );
       if ( dimen && dimen->contents ) {
         char* dimen_str =  (char*)dimen->contents->src_tok;
         double eol_depth  =  atof( dimen_str );
@@ -16984,8 +16982,8 @@ TNODE* LaTeX2MMLTree::EOLSpace2MML( TNODE* mml_cell_contents,
           U16 mml_dest_unit =  GetMMLdimenType( TeX_unit_ID );
           eol_depth  =  ConvertTeXDimen( eol_depth,TeX_unit_ID,
                                               mml_dest_unit );
-	      U8 depth[64];
-	      sprintf( (char*)depth,"+%f",eol_depth );
+        U8 depth[64];
+        sprintf( (char*)depth,"+%f",eol_depth );
           AttachUnit( (char*)depth,mml_dest_unit );
 // mpadded<uID5.602.0>!mpadded!BUCKET(5.602.2,MATH,,,/mpadded,)!/mpadded!
           mml_cell_contents =  FixImpliedMRow( mml_cell_contents );
@@ -16997,7 +16995,7 @@ TNODE* LaTeX2MMLTree::EOLSpace2MML( TNODE* mml_cell_contents,
 
     } else
       TCI_ASSERT(0);
-	}
+  }
 
   return rv;
 }
@@ -17016,10 +17014,10 @@ void LaTeX2MMLTree::GetEOLSpace( TNODE* TeX_EOL,U8* depth ) {
 // \\*<uID9.5.9>!\\*!OPTPARAM(9.5.24,DIMEN)
 
   if ( uobjtype==9 && usubtype==5 && uID>=8 && uID<=9 ) {
-	  U8 bucket_zuID[32];
+    U8 bucket_zuID[32];
     UidsTozuID( 9,5,uID+15,(U8*)bucket_zuID );
     TNODE* dimen  =  FindObject( TeX_EOL->parts,
-							              (U8*)bucket_zuID,INVALID_LIST_POS );
+                            (U8*)bucket_zuID,INVALID_LIST_POS );
     if ( dimen && dimen->contents ) {
       char* dimen_str   =  (char*)dimen->contents->var_value;
       double eol_depth  =  atof( dimen_str );
@@ -17027,7 +17025,7 @@ void LaTeX2MMLTree::GetEOLSpace( TNODE* TeX_EOL,U8* depth ) {
         U16 TeX_unit_ID =  TeXUnitToID( dimen_str );
         U16 MML_unit_ID =  6;     // ex
         eol_depth  =  ConvertTeXDimen( eol_depth,TeX_unit_ID,MML_unit_ID );
-	      sprintf( (char*)depth,"%f",eol_depth + 1.0 );
+        sprintf( (char*)depth,"%f",eol_depth + 1.0 );
         AttachUnit( (char*)depth,MML_unit_ID );
       }
     }
@@ -17049,9 +17047,9 @@ TNODE* LaTeX2MMLTree::AddNumberToEquation( TNODE* mml_equation ) {
 
 // Put the mtd under a cell list item node
 
-	TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.11:0" );
-	list_node->parts  =  mtd;
-	mtd->sublist_owner  =  list_node;
+  TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)"5.35.11:0" );
+  list_node->parts  =  mtd;
+  mtd->sublist_owner  =  list_node;
 
 // Form the text for our equation number - need to add ( parens ).
 
@@ -17073,10 +17071,10 @@ TNODE* LaTeX2MMLTree::AddNumberToEquation( TNODE* mml_equation ) {
 
   TNODE* part2  =  MakeTNode( 0,0,0,(U8*)"5.35.11" );
   part2->parts  =  list_node;
-	list_node->sublist_owner =  part2;
+  list_node->sublist_owner =  part2;
 
-	part1->next =  part2;
-	part2->prev =  part1;
+  part1->next =  part2;
+  part2->prev =  part1;
 
 // Put the mlabeledtr under a node in the row list
 
@@ -17099,21 +17097,21 @@ TNODE* LaTeX2MMLTree::AddNumberToEquation( TNODE* mml_equation ) {
 char* uIDToString(U16 usub){
   switch (usub) {
      case TENV_eqnarray  : return "eqnarray";
-	   case 123            : return "align";
-	   case 125            : return "alignat";
-	   case 127            : return "xalignat";
-	   case 131            : return "gather";
-	   case 133            : return "multline";
-	   case 124            : return "align*";
-	   case 126            : return "alignat*";
-	   case 128            : return "xalignat*";
-	   case 130            : return "xxalignat*";
-	   case 132            : return "gather*";
-	   case 134            : return "multline*";
-	   case TENV_eqnarraystar  :  return "eqnarray*";
-	   case 129            : return "xxalignat";
-	   case TENV_split     : return "split";
-	   case TENV_gathered  : return "gathered";
+     case 123            : return "align";
+     case 125            : return "alignat";
+     case 127            : return "xalignat";
+     case 131            : return "gather";
+     case 133            : return "multline";
+     case 124            : return "align*";
+     case 126            : return "alignat*";
+     case 128            : return "xalignat*";
+     case 130            : return "xxalignat*";
+     case 132            : return "gather*";
+     case 134            : return "multline*";
+     case TENV_eqnarraystar  :  return "eqnarray*";
+     case 129            : return "xxalignat";
+     case TENV_split     : return "split";
+     case TENV_gathered  : return "gathered";
      case TENV_aligned   : return "alinged";
      case TENV_alignedat : return "alignedat";
    }
@@ -17132,33 +17130,33 @@ U16 LaTeX2MMLTree::EqnHasNumberedLines( U16 usub ) {
   switch ( usub ) {
 
 //TEXT
-	case TENV_eqnarray  :
-	case 123  :		// TENV_align          123
-	case 125  :		// TENV_alignat        125
-	case 127  :		// TENV_xalignat       127
-	case 131  :		// TENV_gather         131
+  case TENV_eqnarray  :
+  case 123  :   // TENV_align          123
+  case 125  :   // TENV_alignat        125
+  case 127  :   // TENV_xalignat       127
+  case 131  :   // TENV_gather         131
       rv =  1;      // all lines are numbered
     break;
-	case 133  :		// TENV_multline       133
+  case 133  :   // TENV_multline       133
       rv =  2;      // the first line is numbered
     break;
 
-	case 124  :		// \begin{align*}<uID5.124.0>!
-	case 126  :		// TENV_alignatstar    126
-	case 128  :		// TENV_xalignatstar   128
-	case 130  :		// TENV_xxalignatstar  130
-	case 132  :		// TENV_gatherstar     132
-	case 134  : 	// TENV_multlinestar   134
+  case 124  :   // \begin{align*}<uID5.124.0>!
+  case 126  :   // TENV_alignatstar    126
+  case 128  :   // TENV_xalignatstar   128
+  case 130  :   // TENV_xxalignatstar  130
+  case 132  :   // TENV_gatherstar     132
+  case 134  :   // TENV_multlinestar   134
 
-	case TENV_eqnarraystar  :
-	case 129  :		// TENV_xxalignat      129
+  case TENV_eqnarraystar  :
+  case 129  :   // TENV_xxalignat      129
       rv =  0;      // no lines are numbered
     break;
 
 //MATH
 //  case 124            :
-	case TENV_split     :
-	case TENV_gathered  :
+  case TENV_split     :
+  case TENV_gathered  :
     case TENV_aligned   :
     case TENV_alignedat :
       rv =  0;
@@ -17314,13 +17312,13 @@ TNODE* LaTeX2MMLTree::BiglmrToMML( TNODE* tex_bigl_node,
 
 void LaTeX2MMLTree::SetBiglSizingAttrs( TNODE* mml_delim_op,U16 biglmr_size ) {
 
-	U8 zuID[16];
+  U8 zuID[16];
   UidsTozuID( 15,biglmr_size,0,(U8*)zuID );
   U8* dest_zname;
   U8* d_template;
   if ( d_mml_grammar->GetGrammarDataFromUID(
-					            zuID,(U8*)"BIGLMR",
-   							    &dest_zname,&d_template) ) {
+                      zuID,(U8*)"BIGLMR",
+                    &dest_zname,&d_template) ) {
 // \big<uID15.1.0>  stretchy="true" minsize="1.2" maxsize="1.2"
 // \Big<uID15.2.0>  stretchy="true" minsize="1.8" maxsize="1.8"
     if ( d_template && *d_template )
@@ -17366,7 +17364,7 @@ TNODE* LaTeX2MMLTree::XArrow2MML( TNODE* obj_node,
       GetUnicodeEntity( op_info,entity_buffer );
     SetChData( mo,op_nom,entity_buffer );
 
-	if ( op_info && *op_info ) {
+  if ( op_info && *op_info ) {
       GetAttribsFromGammarInfo( op_info,op_record );
       if ( op_record.attr_list ) {
         mo->attrib_list  =  op_record.attr_list;
@@ -17395,7 +17393,7 @@ TNODE* LaTeX2MMLTree::XArrow2MML( TNODE* obj_node,
                                 error_code,&local_oof_list );
     script_level--;
     under_contents =  HandleOutOfFlowObjects( under_contents,
-    								        &local_oof_list,out_of_flow_list,2 );
+                            &local_oof_list,out_of_flow_list,2 );
   } else
     under_contents =  MakeSmallmspace();
 
@@ -17415,7 +17413,7 @@ TNODE* LaTeX2MMLTree::XArrow2MML( TNODE* obj_node,
                                 error_code,&local_oof_list );
     script_level--;
     over_contents  =  HandleOutOfFlowObjects( over_contents,
-    								        &local_oof_list,out_of_flow_list,2 );
+                            &local_oof_list,out_of_flow_list,2 );
   } else
     over_contents  =  MakeSmallmspace();
 
@@ -17460,10 +17458,10 @@ TCI_BOOL LaTeX2MMLTree::TeXListHasIntegral( TNODE* LaTeX_list,
   while ( rover && (rover != tex_d_node) ) {
     U16 uobj,usub,id;
     GetUids( rover->zuID,uobj,usub,id );
-	  if ( uobj==7 && usub==1 && id<=6 ) {
+    if ( uobj==7 && usub==1 && id<=6 ) {
       rv =  TRUE;
       break;
-	  }
+    }
     rover =  rover->next;
   }
 
@@ -17509,8 +17507,8 @@ _ALIGNEDCELLS_BUCKET(5.143.4,MATH,,,\\|\\*|\end{aligned},)
 
 
 TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
-									        TNODE** out_of_flow_list,
-											U16 usubtype ) {
+                          TNODE** out_of_flow_list,
+                      U16 usubtype ) {
 
   TNODE* mml_rv =  NULL;
 
@@ -17528,7 +17526,7 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
   TCI_BOOL found_spacer =  FALSE;
 
 
-  TNODE* mtr_head =  NULL;		  // we build a list of <mtr>'s
+  TNODE* mtr_head =  NULL;      // we build a list of <mtr>'s
   TNODE* mtr_tail;
 
   U8 lbucket_uID[16];
@@ -17536,21 +17534,21 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
 
 // Locate the list of lines in the LaTeX source object
 
-  U8 line_list_zuID[16];	      // 
+  U8 line_list_zuID[16];        // 
   UidsTozuID( 5,121,9,line_list_zuID );
   TNODE* list_of_lines  =  FindObject( src_eqn->parts,
-	  							line_list_zuID,INVALID_LIST_POS );
+                  line_list_zuID,INVALID_LIST_POS );
 
   U16 src_line_counter  =  0;
   U16 dest_line_counter =  0;
-  while ( TRUE ) {     	// loop down thru lines in LaTeX environment
+  while ( TRUE ) {      // loop down thru lines in LaTeX environment
 
-    TNODE* mtd_cont_head  =  NULL;	// we build a list of <mtd>'s
+    TNODE* mtd_cont_head  =  NULL;  // we build a list of <mtd>'s
 
 // Find the current line in the list of lines
     TNODE* curr_line  =  FindObject( list_of_lines->parts,
-        						line_list_zuID,src_line_counter );
-    if ( !curr_line ) break;	// normal exit - no more lines
+                    line_list_zuID,src_line_counter );
+    if ( !curr_line ) break;  // normal exit - no more lines
 
 
     TNODE* TeX_EOL  =  FindObject( curr_line->parts,(U8*)"9.5.8",
@@ -17563,7 +17561,7 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
 
 // \intertext<uID5.330.1>!\intertext!REQPARAM(5.330.2,TEXT)
     TNODE* intertext  =  FindObject( curr_line->parts,
-       							(U8*)"5.330.1",INVALID_LIST_POS );
+                    (U8*)"5.330.1",INVALID_LIST_POS );
 
 // Put the current intertext under a node in the lines list
 
@@ -17572,14 +17570,14 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
     &&   intertext->parts->contents ) {
       TNODE* local_oof_list =  NULL;
       TNODE* mtext  =  TextInMath2MML( intertext->parts->contents,
-   								&local_oof_list,FALSE,FALSE );
+                  &local_oof_list,FALSE,FALSE );
       if ( !mtext )
         mtext  =  MakeSmallmspace();
 
       U8 v_space[80];
       strcpy( (char*)v_space,"1.0ex " );
 
-	  if ( local_oof_list ) {
+    if ( local_oof_list ) {
         double extra_depth;
         if ( GetVSpaceFromOOFList(local_oof_list,extra_depth) ) {
           if ( extra_depth != 0.0 ) {
@@ -17592,9 +17590,9 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
         mtext  =  Struts2MML( mtext,local_oof_list );
         local_oof_list  =  DisposeOutOfFlowList( local_oof_list,5,800 );
         mtext  =  Labels2MML( mtext,local_oof_list );
-	// We may want to pass this back to the caller in the future.
+  // We may want to pass this back to the caller in the future.
         DisposeTList( local_oof_list );
-	  }
+    }
 
       mtext =  FixImpliedMRow( mtext );
       TNODE* mtd  =  CreateElemWithBucketAndContents( 5,35,14,8,mtext );
@@ -17605,32 +17603,32 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
       if ( strlen((char*)row_spacing_vals) < 120 )
         strcat( (char*)row_spacing_vals,(char*)v_space );
 
-	  U8 zlistID[32];
+    U8 zlistID[32];
       UidsTozuID( 5,35,11,(U8*)zlistID );
-	  U16 zln =  strlen( (char*)zlistID );
-	  zlistID[zln]  =  ':';
-	  // JCS non-standard: itoa( 0,(char*)zlistID+zln+1,10 );
+    U16 zln =  strlen( (char*)zlistID );
+    zlistID[zln]  =  ':';
+    // JCS non-standard: itoa( 0,(char*)zlistID+zln+1,10 );
           sprintf((char*)zlistID+zln+1,"%d", 0);
 
-	  TNODE* col_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+    TNODE* col_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 
-	  col_list_node->parts  =  mtd;
-	  mtd->sublist_owner  =  col_list_node;
+    col_list_node->parts  =  mtd;
+    mtd->sublist_owner  =  col_list_node;
 
       mtr->parts->parts =  col_list_node;
-	  col_list_node->sublist_owner  =  mtr->parts;
+    col_list_node->sublist_owner  =  mtr->parts;
 
 // Put the intertext under a node in the lines list
 
       UidsTozuID( 5,35,9,(U8*)zlistID );
-	  zln =  strlen( (char*)zlistID );
-	  zlistID[zln]  =  ':';
-	  // JCS non-standard: itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
+    zln =  strlen( (char*)zlistID );
+    zlistID[zln]  =  ':';
+    // JCS non-standard: itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
           sprintf((char*)zlistID+zln+1, "%d", dest_line_counter);
-	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+    TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 
-	  row_list_node->parts  =  mtr;
-	  mtr->sublist_owner  =  row_list_node;
+    row_list_node->parts  =  mtr;
+    mtr->sublist_owner  =  row_list_node;
 
 // Append
 
@@ -17638,12 +17636,12 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
         mtr_head  =  row_list_node;
       else {
         mtr_tail->next =  row_list_node;
-	    row_list_node->prev =  mtr_tail;
-	  }
+      row_list_node->prev =  mtr_tail;
+    }
       mtr_tail  =  row_list_node;
 
       dest_line_counter++;
-	}
+  }
 
 // end intertext
 
@@ -17654,7 +17652,7 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
     strcpy( (char*)r_space,"1.0ex " );
 
     TNODE* line_bucket  =  FindObject( curr_line->parts,
-   							    lbucket_uID,INVALID_LIST_POS );
+                    lbucket_uID,INVALID_LIST_POS );
     if ( line_bucket ) {
 
 // Look for \TCItag, etc.
@@ -17670,12 +17668,12 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
 
 // translate the line to MML
 
-  	  TCI_BOOL do_bindings  =  TRUE;
+      TCI_BOOL do_bindings  =  TRUE;
       U16 tex_nodes_done,error_code;
       TNODE* local_oof_list =  NULL;
       TNODE* contents =  TranslateMathList( line_bucket->contents,
-								              do_bindings,NULL,tex_nodes_done,
-								              error_code,&local_oof_list );
+                              do_bindings,NULL,tex_nodes_done,
+                              error_code,&local_oof_list );
 
 // WARNING: At present, TeX Explorer ignores <maligngroup> if it is nested
 //  in an <mpadded>, so we can't pad lines in an eqnarray
@@ -17692,7 +17690,7 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
 
       U16 vspace_context  =  3;   // ignore, for now
       contents  =  HandleOutOfFlowObjects( contents,&local_oof_list,
-   						                  out_of_flow_list,vspace_context );
+                                out_of_flow_list,vspace_context );
 
       if ( TeX_EOL ) {
         U8 depth[64];
@@ -17708,7 +17706,7 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
   // Add mml "contents" to the list we're building
       if ( contents )
         mtd_cont_head   =  contents;
-	}
+  }
 
 
 // mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd,)!/mtd!
@@ -17717,7 +17715,7 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
 
 // <maligngroup>s have already been put in by TranslateMathList.
 // jcs This seems to add and extra one for no reason.
-// 	TNODE* alignmark  =  MakeTNode( 0,0,0,(U8*)"9.20.0" );
+//  TNODE* alignmark  =  MakeTNode( 0,0,0,(U8*)"9.20.0" );
 //   // mark node as pure whitespace
 //     SetDetailNum( alignmark,DETAILS_space_width,0 );
 //     alignmark->next =  mtd_cont_head;
@@ -17739,16 +17737,16 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
 
 // Put the current mml_cell under a cell_list_item node
 
-	U8 zlistID[32];
+  U8 zlistID[32];
     UidsTozuID( 5,35,11,(U8*)zlistID );
-	U16 zln =  strlen( (char*)zlistID );
-	zlistID[zln]  =  ':';
-	// JCS non-standard: itoa( 0,(char*)zlistID+zln+1,10 );
+  U16 zln =  strlen( (char*)zlistID );
+  zlistID[zln]  =  ':';
+  // JCS non-standard: itoa( 0,(char*)zlistID+zln+1,10 );
         sprintf((char*)zlistID+zln+1,"%d", 0);
 
-	TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	list_node->parts  =  mml_cell;
-	mml_cell->sublist_owner =  list_node;
+  TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+  list_node->parts  =  mml_cell;
+  mml_cell->sublist_owner =  list_node;
 
 // Add current one cell line to the list of lines we're building
 
@@ -17774,8 +17772,8 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 
     } else {
       mtr  =  CreateElemWithBucketAndContents( 5,35,13,11,NULL );
-	    mtr->parts->parts =  list_node;
-	    list_node->sublist_owner =  mtr->parts;
+      mtr->parts->parts =  list_node;
+      list_node->sublist_owner =  mtr->parts;
     }
 
 
@@ -17785,13 +17783,13 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 // Put the current line under a node in the lines list
 
     UidsTozuID( 5,35,9,(U8*)zlistID );
-	zln =  strlen( (char*)zlistID );
-	zlistID[zln]  =  ':';
-	// JCS non-standard: itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
+  zln =  strlen( (char*)zlistID );
+  zlistID[zln]  =  ':';
+  // JCS non-standard: itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
         sprintf((char*)zlistID+zln+1, "%d", dest_line_counter);
-	TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
-	row_list_node->parts  =  mtr;
-	mtr->sublist_owner  =  row_list_node;
+  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
+  row_list_node->parts  =  mtr;
+  mtr->sublist_owner  =  row_list_node;
 
 // Append
 
@@ -17799,14 +17797,14 @@ _EQNNUMBER_reqELEMENT(5.35.42)
       mtr_head  =  row_list_node;
     else {
       mtr_tail->next =  row_list_node;
-	  row_list_node->prev =  mtr_tail;
-	}
+    row_list_node->prev =  mtr_tail;
+  }
     mtr_tail  =  row_list_node;
 
     src_line_counter++;
     dest_line_counter++;
 
-  }		// loop down thru lines in LaTeX eqnarray
+  }   // loop down thru lines in LaTeX eqnarray
 
 
 // mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
@@ -17844,8 +17842,8 @@ _EQNNUMBER_reqELEMENT(5.35.42)
 // Otherwise, both args are the same - the op_node.
 
 void LaTeX2MMLTree::SetTeXOperatorSpacing( TNODE* MML_rover,
-										                        TNODE* op_node,
-										                        TCI_BOOL in_script ) {
+                                            TNODE* op_node,
+                                            TCI_BOOL in_script ) {
 
   U8* opname  =  op_node->var_value;
   U16 nln =  strlen( (char*)opname );
@@ -18097,7 +18095,7 @@ void LaTeX2MMLTree::SetMOSpacing( TNODE* mo,TCI_BOOL is_left,U8* zval ) {
       U8* op_zuID;
       U8* op_zinfo;
       if ( s_mml_grammar->GetGrammarDataFromNameAndAttrs(
-     						    op_name,nln,NULL,(U8*)"OPSPACING",
+                    op_name,nln,NULL,(U8*)"OPSPACING",
                                 &op_zuID,&op_zinfo) ) {
 // The "OPSPACING" section of MathML.gmr contain last resort
 //  overrides for operator spacing. - mod, etc.
@@ -18201,7 +18199,7 @@ void LaTeX2MMLTree::SetMOSpacingFromID( TNODE* op_node,I16 TeX_space_ID,
       TeX_space_ID =  in_script ? 0 : (-1*TeX_space_ID);
     if ( TeX_space_ID > 0 )
       mus =  TeX_space_ID + 2.0;
-	  sprintf( (char*)zattr_val,"%fem",mus / 18.0 );
+    sprintf( (char*)zattr_val,"%fem",mus / 18.0 );
     SetMOSpacing( op_node,is_left,zattr_val );
   }
 }
@@ -18215,7 +18213,7 @@ void LaTeX2MMLTree::SetMOSpacingFromID( TNODE* op_node,I16 TeX_space_ID,
 void LaTeX2MMLTree::UnicodesToSymbols( TNODE* LaTeX_list ) {
 
   TNODE* rover  =  LaTeX_list;
-  while ( rover ) {    		// Loop thru first level objects
+  while ( rover ) {       // Loop thru first level objects
 // \U<uID5.298.0>!\U!REQPARAM(5.298.2,NONLATEX)
 // \UNICODE<uID5.299.0>!\UNICODE!OPTPARAM(5.299.1,NONLATEX)REQPARAM(5.299.2,NONLATEX)
     U16 uobjtype,usubtype,uID;
@@ -18237,7 +18235,7 @@ void LaTeX2MMLTree::UnicodesToSymbols( TNODE* LaTeX_list ) {
         U8* dest_zname;
         U8* d_template;
         if ( d_mml_grammar->GetGrammarDataFromUID(zuID,
-					          context_math,&dest_zname,&d_template) ) {
+                    context_math,&dest_zname,&d_template) ) {
           if ( d_template && *d_template=='3' ) {
             strcpy( (char*)rover->zuID,(char*)d_template );
             TNODE* parts  =  rover->parts;
@@ -18246,9 +18244,9 @@ void LaTeX2MMLTree::UnicodesToSymbols( TNODE* LaTeX_list ) {
             DisposeTList( parts );
           } else
             TCI_ASSERT(0);
-		} else{
+    } else{
           //TCI_ASSERT(0);
-		}
+    }
       } else    // if ( unicode )
         TCI_ASSERT(0);
 
@@ -18269,8 +18267,8 @@ void LaTeX2MMLTree::FormatCurrEqnNumber( U8* ztag ) {
   U8* dest_zname;
   U8* d_template;
   if ( d_mml_grammar->GetGrammarDataFromUID(
-	                      (U8*)"12.1.16",(U8*)"MMLCONTEXT",
-						                &dest_zname,&d_template) ) {
+                        (U8*)"12.1.16",(U8*)"MMLCONTEXT",
+                            &dest_zname,&d_template) ) {
     if ( d_template && *d_template ) {
       U16 tag_len =  0;
 
@@ -18390,11 +18388,11 @@ TCI_BOOL LaTeX2MMLTree::GetUnicodeEntity( U8* d_template,
           offset  =  strlen( (char*)entity_buffer );
           p +=  2;              // step over "'U"
         } else {
-		  TCI_ASSERT(0);
+      TCI_ASSERT(0);
           break;
-		}
-	  } else
-	    break;
+    }
+    } else
+      break;
     }
 
   }
@@ -18448,7 +18446,7 @@ TCI_BOOL LaTeX2MMLTree::InsideOfList( TNODE* node ) {
   TCI_BOOL rv =  FALSE;
   if ( node ) {
     TNODE* first  =  node;
-	while ( first->prev )
+  while ( first->prev )
       first =  first->prev;    
     if ( first && first->sublist_owner ) {
       TNODE* parent  =  first->sublist_owner;
@@ -18473,9 +18471,9 @@ TCI_BOOL LaTeX2MMLTree::NonSpacedUnit( TNODE* MML_unit_mi ) {
   if ( MML_unit_mi ) {
     if ( MML_unit_mi->var_value ) {
       char* ent =  (char*)MML_unit_mi->var_value;
-	  if ( !strcmp(ent,"&deg;")
-	  ||   !strcmp(ent,"&prime;")
-	  ||   !strcmp(ent,"&Prime;") )
+    if ( !strcmp(ent,"&deg;")
+    ||   !strcmp(ent,"&prime;")
+    ||   !strcmp(ent,"&Prime;") )
         rv  =  TRUE;
     }
   }
@@ -18495,15 +18493,15 @@ TCI_BOOL LaTeX2MMLTree::IsKnownOperator( U8* limfunc_name ) {
           rv  =  TRUE;
         else if ( !strcmp((char*)limfunc_name,"lcm") )
           rv  =  TRUE;
-	  break;
+    break;
       case 4 :
         if      ( !strcmp((char*)limfunc_name,"curl") )
           rv  =  TRUE;
         else if ( !strcmp((char*)limfunc_name,"grad") )
           rv  =  TRUE;
-	  break;
+    break;
       default :
-	  break;
+    break;
     }
   }
 
@@ -18524,8 +18522,8 @@ U16 LaTeX2MMLTree::GetDegMinSec( TNODE* MML_node ) {
     &&   MML_node->parts 
     &&   MML_node->parts->contents ) {
       c2 =  MML_node->parts->contents;
-	  if ( c2 ) c2  =  c2->next;
-	  if ( c2 ) c2  =  c2->next;
+    if ( c2 ) c2  =  c2->next;
+    if ( c2 ) c2  =  c2->next;
     }
     if ( !c2
     &&   uobjtype==5 && usubtype==51 && uID==2
@@ -18568,7 +18566,7 @@ TCI_BOOL LaTeX2MMLTree::IsDegreeMinSec( TNODE* mml_rover ) {
       } else if ( t1 == 2 ) {     // minute
         if ( t2 == 3 )
           rv =  TRUE;
-      }	
+      } 
     }
   }
 
