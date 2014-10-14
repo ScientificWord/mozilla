@@ -5488,10 +5488,14 @@ PRBool IsMathFrame( nsIFrame * aFrame )
 nsIMathMLCursorMover * GetMathCursorMover( nsIFrame * aFrame )
 {
   nsCOMPtr<nsIMathMLCursorMover> pMathCM;
+  nsIMathMLCursorMover * pcm;
   pMathCM =  do_QueryInterface(aFrame);
   if (!pMathCM && IsMathFrame(aFrame)) {
-    pMathCM = new nsMathMLContainerCursorMover(aFrame);
-    if (pMathCM) NS_IF_ADDREF(pMathCM);
+    pMathCM = nsMathMLContainerCursorMover::Create(aFrame);
+    if (pMathCM) {
+      pcm = pMathCM;
+      NS_IF_ADDREF((nsMathMLCursorMover*)pcm);
+    }
   }
   return pMathCM;
 }
