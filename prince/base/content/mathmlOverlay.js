@@ -3421,10 +3421,12 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
 
       	var text = tempNode.textContent;
         var o, p;
+//        var saveEnabled = editor.autoSubEnabled;
+//        editor.autoSubEnabled = false;
+        editor.selection.collapse(parent, offset);
       	for (var i = 0; i < text.length; i++)
       	{
-      		editor.selection.collapse(parent, offset+i);
-          insertsymbol(text[i]);
+          if (text[i] != ' ') insertsymbol(text[i]);
           // if (firstnode && i===0) {  // put the selection start in the new symbol node; it would sure help if insertsymbol returned the inserted node!
           //   o = 0;
           //   p = parent.firstChild;
@@ -3440,6 +3442,7 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
           //   newSelection.endOffset = p.childNodes.length;
           // }
       	}
+//        editor.autoSubEnabled = saveEnabled;
       }
     }
     catch(e) {
