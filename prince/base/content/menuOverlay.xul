@@ -450,14 +450,14 @@
                 accesskey="&viewShortTitles.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewShortTitles.label;"/>
-      <menuitem id="viewFMButtons"
+<!--       <menuitem id="viewFMButtons"
                 type="checkbox"
                 persist="checked"
                 checked="false"
                 accesskey="&viewFMButtons.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewFMButtons.label;"/>
-      <menuitem id="viewHelperLines" 
+ -->      <menuitem id="viewHelperLines" 
                 type="checkbox"
                 persist="checked"
                 accesskey="&viewHelperLines.accesskey;"
