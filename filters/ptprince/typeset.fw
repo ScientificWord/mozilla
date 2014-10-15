@@ -736,6 +736,8 @@ void Typesetter::EndDisplay()
          if (s_equation){
            if (s_nonumbering){
              str += " numbering=\"none\" ";
+           } else {
+             str += " numbering=\"eqns\" ";
            }
          } else if (!s_nonumbering) {
            str += " numbering=\"eqns\" ";
