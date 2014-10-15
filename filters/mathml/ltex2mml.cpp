@@ -4665,6 +4665,8 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
 
   U16 src_line_counter  =  0;
   U16 dest_line_counter =  0;
+  TCI_BOOL suppressAnnotation = FALSE;
+
   while ( TRUE ) {      // loop down thru lines in LaTeX eqnarray
     TNODE* mtd_cont_head  =  NULL;  // we build a list of <mtd>'s
 
@@ -4773,9 +4775,11 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
     // Look for \TCItag, etc.
 
       if ( line_bucket->contents ) {
-        tag   =  FindObject( line_bucket->contents,(U8*)"5.701.0", INVALID_LIST_POS );
-        if ( !tag )
-          tag =  FindObject( line_bucket->contents,(U8*)"5.702.0", INVALID_LIST_POS );
+        tag =  FindObject( line_bucket->contents,(U8*)"5.701.0", INVALID_LIST_POS );   // \TCITag
+        if ( !tag ) {
+          tag =  FindObject( line_bucket->contents,(U8*)"5.702.0", INVALID_LIST_POS );   // \TCITag*
+          suppressAnnotation = TRUE;
+        }
       }
 
       // If there is no tag, determine if the line is enumerated
