@@ -285,7 +285,7 @@ typedef struct tagTILE { // Struct to carry translated fragments
 #define TENV_eqnarray       121
 #define TENV_eqnarraystar   122
 #define TENV_align          123
-
+#define TENV_alignstar      124
 #define TENV_alignat        125
 #define TENV_alignatstar    126
 #define TENV_xalignat       127

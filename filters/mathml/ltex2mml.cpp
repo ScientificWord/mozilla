@@ -554,7 +554,7 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
     case TENV_eqnarray  :
     case TENV_eqnarraystar  :
     case 123  :   // TENV_align          123
-    case 124  :   // \begin{align*}<uID5.124.0>!
+    case 124  :   // TENV_alignstar      124
     case 125  :   // TENV_alignat        125
     case 126  :   // TENV_alignatstar    126
     case 127  :   // TENV_xalignat       127
@@ -566,10 +566,14 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
     case 133  :   // TENV_multline       133
     case 134  :   // TENV_multlinestar   134
     //JBMLine("\nTranslateMathObject A");
-    if ( usubtype == TENV_eqnarraystar )
+    if ( usubtype == TENV_eqnarraystar || 
+         usubtype == TENV_alignstar ||  
+         usubtype == TENV_gatherstar)
     {
       RecordAnomaly( ANOMALY_NONUMBERING, NULL, 0, 0 );
 
+    } else {
+      RecordAnomaly( ANOMALY_AUTONUMBERING, NULL, 0, 0 );
     }
     if ( uID == 0 ) {
           script_level  =  0;
@@ -5065,12 +5069,12 @@ TNODE* LaTeX2MMLTree::TranslateTeXDisplay( TNODE* tex_display_node,
 
   if ( tex_display_node && tex_display_node->parts ) {
 
-    if ( id==41 )  {     // \begin{equation}
+    if ( id==41 )  {     // \begin{equation} 
       theequation++;     // increment the equation counter
       // These are auto-numbered, which has to be handled outside in pretex
-      RecordAnomaly(1010, NULL, 0, 0);
+      RecordAnomaly(ANOMALY_AUTONUMBERING, NULL, 0, 0);
     }
-    if ( id == 21 ) {   // \begin{equation*}
+    if ( id == 21 || id == 31) {   // \begin{equation*}  or $$
       RecordAnomaly(ANOMALY_NONUMBERING, NULL, 0, 0);
     }
 
