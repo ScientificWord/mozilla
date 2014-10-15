@@ -730,7 +730,7 @@ preface {
 
 button[class="frontmattertag"] {
   position: absolute;
-  left: 5px;
+  right: 5px;
   font-family: sans-serif;
   font-style: normal;
   opacity: 0.7;
