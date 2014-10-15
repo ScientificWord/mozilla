@@ -400,7 +400,15 @@
                    and           $eqn-info/LaTeX-env!='multline'">
           <xsl:choose>
             <xsl:when test="@customLabel">
-              <xsl:text xml:space="preserve"> \tag{</xsl:text>
+              <xsl:choose>
+                <xsl:when test="$eqn-info/LaTeX-env='eqnarray'">
+                   <xsl:text> \TCItag</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                   <xsl:text> \tag{</xsl:text>
+                </xsl:otherwise>
+              </xsl:choose>
+              <xsl:text>{</xsl:text>
               <xsl:value-of select="@customLabel"/>
               <xsl:text>}</xsl:text>
             </xsl:when>
