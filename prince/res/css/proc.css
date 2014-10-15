@@ -262,7 +262,7 @@ abstract:before {
 
 button[class="frontmattertag"]{
   position: absolute;
-  left: 5px;
+  right: 5px;
 }
 
 /**********************/
