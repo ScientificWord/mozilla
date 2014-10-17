@@ -1861,7 +1861,7 @@
 \def\TCItag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
 
 \def\@TCItag#1{\msitag{\TCItag{#1}}}
-\def\@TCItagstar*#1{\msitag{\TCItag{#1}}}
+\def\@TCItagstar*#1{\string\TCItag\msitag{*{#1}}}
 
 %{\catcode`\'=\active
 % \gdef'{^{\prime}}}
