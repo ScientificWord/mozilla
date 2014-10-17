@@ -4665,9 +4665,11 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
 
   U16 src_line_counter  =  0;
   U16 dest_line_counter =  0;
-  TCI_BOOL suppressAnnotation = FALSE;
+  
 
   while ( TRUE ) {      // loop down thru lines in LaTeX eqnarray
+    TCI_BOOL suppressAnnotation = FALSE;
+
     TNODE* mtd_cont_head  =  NULL;  // we build a list of <mtd>'s
 
 // Find the current line in the list of lines
@@ -4959,6 +4961,9 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
 
       SetNodeAttrib( mtr, (U8*)"customLabel", (U8*)(tag_cont->var_value) );
 
+      if (suppressAnnotation){
+         SetNodeAttrib( mtr, (U8*)"suppressAnnotation", (U8*)"true" );
+      }
 
     } else if ( add_eqn_number && do_equation_numbers ) {
       has_tagged_line  =  TRUE;
