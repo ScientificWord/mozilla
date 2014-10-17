@@ -405,9 +405,12 @@
                    <xsl:text> \TCItag</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
-                   <xsl:text> \tag{</xsl:text>
+                   <xsl:text> \tag</xsl:text>
                 </xsl:otherwise>
               </xsl:choose>
+              <xsl:if test="@suppressAnnotation='true'">
+                <xsl:text>*</xsl:text>
+              </xsl:if>
               <xsl:text>{</xsl:text>
               <xsl:value-of select="@customLabel"/>
               <xsl:text>}</xsl:text>
