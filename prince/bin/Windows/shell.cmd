@@ -1,5 +1,5 @@
 echo off
-set T=%TEXBINDIR%
+set T=%MSITEXBIN%
 if %T%x==x set T=c:\texlive\2014msi\bin\win32
 echo %T%
 path=%T%;%windir%\system32
