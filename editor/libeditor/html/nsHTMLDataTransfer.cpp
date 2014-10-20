@@ -4637,13 +4637,14 @@ nsHTMLEditor::ScanForListAndTableStructure( PRBool aEnd,
   while (pNode)
   {
     if ( (bList && nsHTMLEditUtils::IsListItem(pNode, mtagListManager)) ||
-      (!bList && !bMath && (nsHTMLEditUtils::IsTableElement(pNode, mtagListManager) && !nsHTMLEditUtils::IsTable(pNode, mtagListManager)))
+      (!bList && /*!bMath && */(nsHTMLEditUtils::IsTableElement(pNode, mtagListManager) && !nsHTMLEditUtils::IsTable(pNode, mtagListManager)))
         || (bMath && nsHTMLEditUtils::IsMath(pNode)) )
     {
       nsCOMPtr<nsIDOMNode> structureNode;
       if (bList) structureNode = GetListParent(pNode);
-      else if (bMath) structureNode = GetMathParent(pNode);
       else structureNode = GetTableParent(pNode);
+      // mtable parts are to be treated as tables parts rather than math parts, so we call the above line first.
+      if ((!structureNode) && bMath) structureNode = GetMathParent(pNode);
       if (structureNode == aListOrTable)
       {
 //        if (bList)
