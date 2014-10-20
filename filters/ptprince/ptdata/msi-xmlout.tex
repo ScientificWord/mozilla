@@ -180,6 +180,11 @@
    %\expandafter\def\csname#1\endcsname{\char`\\#1\char32\relax}}
    \expandafter\def\csname#1\endcsname{\expandafter\string\csname#1\endcsname\char32\relax}}
 
+
+\def\left#1{\string\left#1}
+\def\right#1{\string\right#1}
+
+
 % \newcounter{#1}[#2]
 
 \newtoks\preambleToks
@@ -872,10 +877,10 @@
 }
 \def\@ruleb#1#2{%
   \ifmmode
-    \msitag{\msipassthru{<msirule lift="0" width="#1" height="#2" %
+    \msitag{\msipassthru{<msirule lift="0pt" width="#1" height="#2" %
                      style="vertical-align: 0; width: #1; height: #2; background-color: rgb(0, 0, 0);"/>}}%
   \else
-    \msitag{<msirule lift="0" width="#1" height="#2" %
+    \msitag{<msirule lift="0pt" width="#1" height="#2" %
                      style="vertical-align: 0; width: #1; height: #2; background-color: rgb(0, 0, 0);"/>}%
   \fi
 }

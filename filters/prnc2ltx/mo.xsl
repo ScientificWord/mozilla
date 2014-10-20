@@ -64,301 +64,297 @@
 				</xsl:choose>
 	  	</xsl:when>
       <xsl:otherwise>
-        
+        <xsl:if test="string-length(@lspace)&gt;0">
+
+          <xsl:variable name="ls-value">
+            <xsl:call-template name="get-number-chars">
+              <xsl:with-param name="attrib-cdata" select="@lspace"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:variable name="ls-unit">
+            <xsl:value-of select="substring-after(@lspace,$ls-value)"/>
+          </xsl:variable>
+
+          <xsl:call-template name="operator-lrspace-2LaTeX">
+            <xsl:with-param name="value" select="$ls-value"/>
+            <xsl:with-param name="unit"  select="$ls-unit"/>
+          </xsl:call-template>
+	      </xsl:if>
+
+        <xsl:if test="@largeop='true'">
   
-    <xsl:if test="string-length(@lspace)&gt;0">
-
-      <xsl:variable name="ls-value">
-        <xsl:call-template name="get-number-chars">
-          <xsl:with-param name="attrib-cdata" select="@lspace"/>
-        </xsl:call-template>
-      </xsl:variable>
-      <xsl:variable name="ls-unit">
-        <xsl:value-of select="substring-after(@lspace,$ls-value)"/>
-      </xsl:variable>
-
-      <xsl:call-template name="operator-lrspace-2LaTeX">
-        <xsl:with-param name="value" select="$ls-value"/>
-        <xsl:with-param name="unit"  select="$ls-unit"/>
-      </xsl:call-template>
-	</xsl:if>
-
-    <xsl:if test="@largeop='true'">
-  
-    <xsl:choose>
-
-<!-- Start of Big op's -->
-
-      <xsl:when test="normalize-space(string())='&#x222B;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'int'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x222C;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'iint'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x222D;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'iiint'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2A0C;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'iiiint'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x222B;&#x22EF;&#x222B;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'idotsint'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x222E;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'oint'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2211;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'sum'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x220F;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'prod'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x22C2;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigcap'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x22C0;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigwedge'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2295;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigoplus'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2299;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigodot'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2294;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigsqcup'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2210;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'coprod'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x22C3;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigcup'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x22C1;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigvee'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2297;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigotimes'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x228E;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'biguplus'"/>
-        </xsl:call-template>
-      </xsl:when>
+          <xsl:choose>
+            <!-- Start of Big op's -->
+            <xsl:when test="normalize-space(string())='&#x222B;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'int'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x222C;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'iint'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x222D;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'iiint'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2A0C;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'iiiint'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x222B;&#x22EF;&#x222B;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'idotsint'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x222E;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'oint'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2211;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'sum'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x220F;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'prod'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x22C2;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigcap'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x22C0;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigwedge'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2295;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigoplus'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2299;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigodot'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2294;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigsqcup'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2210;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'coprod'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x22C3;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigcup'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x22C1;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigvee'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2297;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigotimes'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x228E;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'biguplus'"/>
+              </xsl:call-template>
+            </xsl:when>
             <xsl:when test="normalize-space(string())='&#x2A00;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigodot'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2A01;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigoplus'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2A02;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigotimes'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2A04;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'biguplus'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2A06;'">
-        <xsl:call-template name="bigop">
-          <xsl:with-param name="LaTeX-nom" select="'bigsqcup'"/>
-        </xsl:call-template>
-      </xsl:when>
-    </xsl:choose>
-    </xsl:if>
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigodot'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2A01;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigoplus'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2A02;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigotimes'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2A04;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'biguplus'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2A06;'">
+              <xsl:call-template name="bigop">
+                <xsl:with-param name="LaTeX-nom" select="'bigsqcup'"/>
+              </xsl:call-template>
+            </xsl:when>
+          </xsl:choose>
+        </xsl:if>
 
-    <xsl:if test="not(@largeop='true')">
-    <xsl:choose>
-<!-- Start of fencing <mo>'s -->
-      <xsl:when test="normalize-space(string())='&#x250A;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
-        </xsl:call-template>
-      </xsl:when>
+        <xsl:if test="not(@largeop='true')">
+          <xsl:choose>
+            <!-- Start of fencing <mo>'s -->
+            <xsl:when test="normalize-space(string())='&#x250A;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
+              </xsl:call-template>
+            </xsl:when>
 
-      <xsl:when test="normalize-space(string())='('">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'('"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())=')'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="')'"/>
-        </xsl:call-template>
-      </xsl:when>
+            <xsl:when test="normalize-space(string())='('">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'('"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())=')'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="')'"/>
+              </xsl:call-template>
+            </xsl:when>
 
-      <xsl:when test="normalize-space(string())='['">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'['"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())=']'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="']'"/>
-        </xsl:call-template>
-      </xsl:when>
+            <xsl:when test="normalize-space(string())='['">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'['"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())=']'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="']'"/>
+              </xsl:call-template>
+            </xsl:when>
 
-      <xsl:when test="normalize-space(string())='{'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\{'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='}'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\}'"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\langle       \right\rangle      --> 
-      <xsl:when test="normalize-space(string())='&#x2329;'
-      or              normalize-space(string())='&#x3008;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\langle '"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x232A;'
-      or              normalize-space(string())='&#x3009;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\rangle '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\lfloor       \right\rfloor 		-->
-      <xsl:when test="normalize-space(string())='&#x230A;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\lfloor '"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x230B;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\rfloor '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\lceil        \right\rceil		-->
-      <xsl:when test="normalize-space(string())='&#x2308;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\lceil '"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='&#x2309;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\rceil '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\vert         \right\vert 		-->
-      <xsl:when test="normalize-space(string())='|'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\vert '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\Vert         \right\Vert 		-->
-      <xsl:when test="normalize-space(string())='&#x2016;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\Vert '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left/             \right/			-->
-      <xsl:when test="normalize-space(string())='/'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'/'"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\backslash    \right\backslash 	-->
-      <xsl:when test="normalize-space(string())='\'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\backslash '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\updownarrow  \right\updownarrow	-->
-      <xsl:when test="normalize-space(string())='&#x2195;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\updownarrow '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left.             \right.  -->
-      <xsl:when test="normalize-space(string())='.' and  @fence='true'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="normalize-space(string())='' and  @fence='true'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\Updownarrow  \right\Updownarrow -->
-      <xsl:when test="normalize-space(string())='&#x21D5;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\Updownarrow '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\uparrow      \right\uparrow 	-->
-      <xsl:when test="normalize-space(string())='&#x2191;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\uparrow '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\Uparrow      \right\Uparrow 	-->
-      <xsl:when test="normalize-space(string())='&#x21D1;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\Uparrow '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\downarrow    \right\downarrow 	-->
-      <xsl:when test="normalize-space(string())='&#x2193;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\downarrow '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!-- \left\Downarrow    \right\Downarrow 	-->
-      <xsl:when test="normalize-space(string())='&#x21D3;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'\Downarrow '"/>
-        </xsl:call-template>
-      </xsl:when>
-<!--       invisible brace match -->
-<!--       <xsl:when test="normalize-space(string())='&#x250A;'">
-        <xsl:call-template name="translate-fencing-mo">
-          <xsl:with-param name="LaTeX-fence-token" select="'&#x002E;'"/>
-        </xsl:call-template>
+            <xsl:when test="normalize-space(string())='{'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\{'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='}'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\}'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\langle       \right\rangle      --> 
+            <xsl:when test="normalize-space(string())='&#x2329;'
+            or              normalize-space(string())='&#x3008;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\langle '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x232A;'
+            or              normalize-space(string())='&#x3009;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\rangle '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\lfloor       \right\rfloor 		-->
+            <xsl:when test="normalize-space(string())='&#x230A;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\lfloor '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x230B;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\rfloor '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\lceil        \right\rceil		-->
+            <xsl:when test="normalize-space(string())='&#x2308;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\lceil '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='&#x2309;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\rceil '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\vert         \right\vert 		-->
+            <xsl:when test="normalize-space(string())='|'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\vert '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\Vert         \right\Vert 		-->
+            <xsl:when test="normalize-space(string())='&#x2016;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\Vert '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left/             \right/			-->
+            <xsl:when test="normalize-space(string())='/'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'/'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\backslash    \right\backslash 	-->
+            <xsl:when test="normalize-space(string())='\'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\backslash '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\updownarrow  \right\updownarrow	-->
+            <xsl:when test="normalize-space(string())='&#x2195;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\updownarrow '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left.     \right.   -->
+            <xsl:when test="normalize-space(string())='.' and  @fence='true'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="normalize-space(string())='' and  @fence='true'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'.'"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\Updownarrow  \right\Updownarrow -->
+            <xsl:when test="normalize-space(string())='&#x21D5;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\Updownarrow '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\uparrow      \right\uparrow 	-->
+            <xsl:when test="normalize-space(string())='&#x2191;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\uparrow '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\Uparrow      \right\Uparrow 	-->
+            <xsl:when test="normalize-space(string())='&#x21D1;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\Uparrow '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\downarrow    \right\downarrow 	-->
+            <xsl:when test="normalize-space(string())='&#x2193;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\downarrow '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!-- \left\Downarrow    \right\Downarrow 	-->
+            <xsl:when test="normalize-space(string())='&#x21D3;'">
+              <xsl:call-template name="translate-fencing-mo">
+                <xsl:with-param name="LaTeX-fence-token" select="'\Downarrow '"/>
+              </xsl:call-template>
+            </xsl:when>
+            <!--       invisible brace match -->
+            <!--       <xsl:when test="normalize-space(string())='&#x250A;'">
+            <xsl:call-template name="translate-fencing-mo">
+              <xsl:with-param name="LaTeX-fence-token" select="'&#x002E;'"/>
+            </xsl:call-template>
       </xsl:when> -->
 
 <!-- !ENTITY dd or DifferentialD "d" 
