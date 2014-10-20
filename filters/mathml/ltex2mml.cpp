@@ -4669,6 +4669,8 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
 
   while ( TRUE ) {      // loop down thru lines in LaTeX eqnarray
     TCI_BOOL suppressAnnotation = FALSE;
+    TNODE* notag  = NULL;
+
 
     TNODE* mtd_cont_head  =  NULL;  // we build a list of <mtd>'s
 
@@ -4788,7 +4790,7 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
 
       if ( tag==NULL && line_numbering_mode ) {
         // \notag<uID5.703.0>
-        TNODE* notag  =  FindObject( line_bucket->contents, (U8*)"5.703.0",INVALID_LIST_POS );
+        notag  =  FindObject( line_bucket->contents, (U8*)"5.703.0",INVALID_LIST_POS );
         // \nonumber<uID5.414.0>
         if ( !notag )
           notag =  FindObject( line_bucket->contents,(U8*)"5.414.0", INVALID_LIST_POS );
@@ -4996,6 +4998,10 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
       mtr->parts->parts =  list_node;
       list_node->sublist_owner =  mtr->parts;
     }
+    if ( notag ) {
+      SetNodeAttrib( mtr, (U8*)"numbering", (U8*)"none" );
+    }
+
 
     if (out_of_flow_list && *out_of_flow_list) {
        TNODE* lis = *out_of_flow_list;  
@@ -5735,10 +5741,10 @@ void LaTeX2MMLTree::CheckFenceBody( U8* left_uID,U8* right_uID,
 //  look up the corresponding MathML operator.
 
 void LaTeX2MMLTree::TeXDelimToMMLOp( U8* TeX_fence_delim_uID,
-                                        U16 left_center_right,
-                      U8* mml_fence_nom,
-                      U8* unicode_nom,
-                    U8* mml_fence_attrs ) {
+                                     U16 left_center_right,
+                                     U8* mml_fence_nom,
+                                     U8* unicode_nom,
+                                     U8* mml_fence_attrs ) {
 
   mml_fence_nom[0]    =  0;
   unicode_nom[0]      =  0;
@@ -5763,29 +5769,28 @@ void LaTeX2MMLTree::TeXDelimToMMLOp( U8* TeX_fence_delim_uID,
     if ( d_mml_grammar->GetGrammarDataFromUID(lookup_uID,
               (U8*)"FENCE",&dest_zname,&d_template ) ) {
 
-    if ( dest_zname[0] != '.' ) // not the invisible fence
-    strcpy( (char*)mml_fence_nom,(char*)dest_zname );
+       if ( dest_zname[0] != '.' ) // not the invisible fence
+          strcpy( (char*)mml_fence_nom,(char*)dest_zname );
+       else
+          strcpy( (char*)mml_fence_nom, (char*)"&#x250A;" );
 
-    if ( d_template && d_template[0] ) {
 
-        if ( usub == 4 ) {
-          if ( output_entities_as_unicodes ) {
-      unicode_nom[0]  =  0;
-            GetUnicodeEntity( d_template,unicode_nom );
-          }
+       if ( d_template && d_template[0] ) {
 
-        } else {
-        U16 zln =  strlen( (char*)d_template );
-        if ( zln < 128 )
-        strcat( (char*)mml_fence_attrs,(char*)d_template );
-        }
+           if ( usub == 4 ) {
+             if ( output_entities_as_unicodes ) {
+               unicode_nom[0]  =  0;
+               GetUnicodeEntity( d_template,unicode_nom );
+             }
+
+           } else {
+             U16 zln =  strlen( (char*)d_template );
+             if ( zln < 128 )
+             strcat( (char*)mml_fence_attrs,(char*)d_template );
+           }
+       }
     }
-
-  } else{
-    //TCI_ASSERT(0);
-  }
   }   // if ( tex_fence_delim_node )
-
 }
 
 
