@@ -268,7 +268,7 @@ nsHTMLEditor::RefreshInlineTableEditingUI()
   res = GetTableSize(tableElement, &rowCount, &colCount);
   if (NS_FAILED(res)) return res;
 
-  SetAnonymousElementPosition(xHoriz-10, yCell-7,  mAddColumnBeforeButton);
+  SetAnonymousElementPosition(xHoriz-12, yCell-5,  mAddColumnBeforeButton);
 #ifdef DISABLE_TABLE_DELETION
   NS_NAMED_LITERAL_STRING(classStr, "class");
 
@@ -282,13 +282,13 @@ nsHTMLEditor::RefreshInlineTableEditingUI()
     if (NS_SUCCEEDED(res) && hasClass)
       mRemoveColumnButton->RemoveAttribute(classStr);
 #endif
-    SetAnonymousElementPosition(xHoriz-4, yCell-7,  mRemoveColumnButton);
+    SetAnonymousElementPosition(xHoriz-6, yCell-5,  mRemoveColumnButton);
 #ifdef DISABLE_TABLE_DELETION
   }
 #endif
-  SetAnonymousElementPosition(xHoriz+6, yCell-7,  mAddColumnAfterButton);
+  SetAnonymousElementPosition(xHoriz+4, yCell-5,  mAddColumnAfterButton);
 
-  SetAnonymousElementPosition(xCell-7, yVert-10,  mAddRowBeforeButton);
+  SetAnonymousElementPosition(xCell-5, yVert-10,  mAddRowBeforeButton);
 #ifdef DISABLE_TABLE_DELETION
   if (rowCount== 1) {
     mRemoveRowButton->SetAttribute(classStr,
@@ -300,11 +300,11 @@ nsHTMLEditor::RefreshInlineTableEditingUI()
     if (NS_SUCCEEDED(res) && hasClass)
       mRemoveRowButton->RemoveAttribute(classStr);
 #endif
-    SetAnonymousElementPosition(xCell-7, yVert-4,  mRemoveRowButton);
+    SetAnonymousElementPosition(xCell-5, yVert-4,  mRemoveRowButton);
 #ifdef DISABLE_TABLE_DELETION
   }
 #endif
-  SetAnonymousElementPosition(xCell-7, yVert+6,  mAddRowAfterButton);
+  SetAnonymousElementPosition(xCell-5, yVert+6,  mAddRowAfterButton);
 
   return NS_OK;
 }
