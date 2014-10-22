@@ -490,24 +490,24 @@ nsHTMLEditor::GetPositionAndDimensions(nsIDOMElement * aElement,
                                        positionStr);
     isPositioned = positionStr.EqualsLiteral("absolute");
   }
+  nsCOMPtr<nsIDOMViewCSS> viewCSS;
+  res = mHTMLCSSUtils->GetDefaultViewCSS(aElement, getter_AddRefs(viewCSS));
+  if (NS_FAILED(res)) return res;
+
+  nsCOMPtr<nsIDOMCSSStyleDeclaration> cssDecl;
+  // Get the all the computed css styles attached to the element node
+  res = viewCSS->GetComputedStyle(aElement, EmptyString(), getter_AddRefs(cssDecl));
+  if (NS_FAILED(res)) return res;
+
+  aBorderLeft = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("border-left-width"));
+  aBorderTop  = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("border-top-width"));
+  aMarginLeft = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("margin-left"));
+  aMarginTop  = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("margin-top"));
 
   if (isPositioned) {
     // Yes, it is absolutely positioned
     mResizedObjectIsAbsolutelyPositioned = PR_TRUE;
 
-    nsCOMPtr<nsIDOMViewCSS> viewCSS;
-    res = mHTMLCSSUtils->GetDefaultViewCSS(aElement, getter_AddRefs(viewCSS));
-    if (NS_FAILED(res)) return res;
-
-    nsCOMPtr<nsIDOMCSSStyleDeclaration> cssDecl;
-    // Get the all the computed css styles attached to the element node
-    res = viewCSS->GetComputedStyle(aElement, EmptyString(), getter_AddRefs(cssDecl));
-    if (NS_FAILED(res)) return res;
-
-    aBorderLeft = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("border-left-width"));
-    aBorderTop  = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("border-top-width"));
-    aMarginLeft = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("margin-left"));
-    aMarginTop  = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("margin-top"));
 
     aX = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("left")) +
          aMarginLeft + aBorderLeft;
@@ -528,7 +528,9 @@ nsHTMLEditor::GetPositionAndDimensions(nsIDOMElement * aElement,
       if (!nsElement) return res;
     }
 
-    GetElementOrigin(aElement, aX, aY);
+    MsiGetElementOrigin(aElement, aX, aY);
+    aX += aMarginLeft + aBorderLeft;
+    aY += aMarginTop + aBorderTop;
 
     res = nsElement->GetOffsetWidth(&aW);
     if (NS_FAILED(res)) return res;
