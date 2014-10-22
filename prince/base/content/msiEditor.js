@@ -4485,7 +4485,7 @@ var gSelectionStartNode;
 var gSelectionEndNode;
 var gSelectionStartData;
 var gSelectionEndData;
-const kBGBGBG = "--BG--";
+const kSW = "--SW--";
 
 function MarkSelection(editor)
 {
@@ -4506,7 +4506,7 @@ function MarkSelection(editor)
       var data = startContainer.data;
       gSelectionStartNode = startContainer;
       gSelectionStartData = data;
-      data = data.substr(0, startOffset) + kBGBGBG + data.substr(startOffset);
+      data = data.substr(0, startOffset) + kSW + data.substr(startOffset);
       startContainer.data = data;
     }
     else if (startContainer.nodeType == Node.ELEMENT_NODE) {
@@ -4516,17 +4516,17 @@ function MarkSelection(editor)
           var data = node.data;
           gSelectionStartNode = node;
           gSelectionStartData = data;
-          data = kBGBGBG + data;
+          data = kSW + data;
           node.data = data;
         }
         else {
-          var t = editor.document.createTextNode(kBGBGBG);
+          var t = editor.document.createTextNode(kSW);
           gSelectionStartNode = t;
           startContainer.insertBefore(t, node);
         }
       }
       else {
-        var t = editor.document.createTextNode(kBGBGBG);
+        var t = editor.document.createTextNode(kSW);
         gSelectionStartNode = t;
         startContainer.appendChild(t);
       }
@@ -4538,14 +4538,14 @@ function MarkSelection(editor)
         var data = endContainer.data;
         gSelectionEndNode = endContainer;
         gSelectionEndData = data;
-        data = data.substr(0, endOffset + kBGBGBG.length) + kBGBGBG + data.substr(endOffset + kBGBGBG.length);
+        data = data.substr(0, endOffset + kSW.length) + kSW + data.substr(endOffset + kSW.length);
         endContainer.data = data;
       }
       else {
         var data = endContainer.data;
         gSelectionEndNode = endContainer;
         gSelectionEndData = data;
-        data = data.substr(0, endOffset) + kBGBGBG + data.substr(endOffset);
+        data = data.substr(0, endOffset) + kSW + data.substr(endOffset);
         endContainer.data = data;
       }
     }
@@ -4555,11 +4555,11 @@ function MarkSelection(editor)
         var data = node.data;
         gSelectionEndNode = node;
         gSelectionEndData = data;
-        data += kBGBGBG;
+        data += kSW;
         node.data = data;
       }
       else {
-        var t = editor.document.createTextNode(kBGBGBG);
+        var t = editor.document.createTextNode(kSW);
         gSelectionEndNode = t;
         endContainer.insertBefore(t, node.nextSibling);
       }
@@ -4589,13 +4589,13 @@ function MarkSelectionInCM(aSourceEditor)
 {
   aSourceEditor.setSelection( { line: 0, ch: 0 }, { line: 0, ch: 0 } );
 
-  var searchCursor = aSourceEditor.getSearchCursor(kBGBGBG, { line: 0, ch: 0 }, true);
+  var searchCursor = aSourceEditor.getSearchCursor(kSW, { line: 0, ch: 0 }, true);
   searchCursor.findNext();
   var startRow    = searchCursor.from().line;
   var startColumn = searchCursor.from().ch;
   searchCursor.replace("");
 
-  searchCursor = aSourceEditor.getSearchCursor(kBGBGBG, { line: 0, ch: 0 }, true);
+  searchCursor = aSourceEditor.getSearchCursor(kSW, { line: 0, ch: 0 }, true);
   searchCursor.findNext();
   var endRow      = searchCursor.from().line;
   var endColumn   = searchCursor.from().ch;
@@ -4702,6 +4702,10 @@ function msiSetEditMode(mode, editorElement)
     // Get the entire document's source string
     MarkSelection(editor);
     var source = prettyprint(editor);
+    // const nsIDE = Components.interfaces.nsIDocumentEncoder;
+    // var encoder = Components.classes["@mozilla.org/layout/documentEncoder;1?type=" + mimeType]
+    //                .createInstance(nsIDE);
+    // var source = encoder.encodeToString();
     //source = escaped(source);
     UnmarkSelection(editor);
     // replace the following with proper selection tracking
@@ -4709,6 +4713,10 @@ function msiSetEditMode(mode, editorElement)
     sourceIframe.contentWindow.gChangeCallback = null; //onSourceChangeCallback;
 
     var theme = "neat";
+    // try {
+    //   theme = GetPrefs().getCharPref("SWP.source.theme");
+    // }
+    // catch(e) {}
     var tagManager = editor.tagListManager;
     var tagsArray = [].concat(
       tagManager.getTagsInClass('hidden',',',false).split(','),
@@ -4720,7 +4728,7 @@ function msiSetEditMode(mode, editorElement)
       tagManager.getTagsInClass('envtag',',',false).split(','),
       tagManager.getTagsInClass('frontmtag',',',false).split(','));
 
-    sourceIframe.contentWindow.installCodeMirror(onBrowserKeyDown,
+    sourceIframe.contentWindow./*wrappedJSObject.*/installCodeMirror(onBrowserKeyDown,
                                                  theme,
                                                  tagsArray,
                                                  null);
