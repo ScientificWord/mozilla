@@ -22,6 +22,8 @@
 
 msiSimpleComputeEngine2* s_engine;
 
+
+
 /* static */ 
 msiSimpleComputeEngine2* msiSimpleComputeEngine2::GetInstance()
 {
@@ -86,7 +88,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Startup(nsILocalFile *engFile)
   if (rv == NS_OK) {
     ComputeDLL::InitCompDLL();  //check return?
 
-    client_handle =  ComputeDLL::GetClientHandle( 0 );
+    client_handle = ComputeDLL::GetClientHandle( 0 );
     if (client_handle == 0) {
 	    Shutdown();
 	    rv = NS_ERROR_FAILURE;
@@ -837,6 +839,18 @@ NS_IMETHODIMP msiSimpleComputeEngine2::SetUserPrefByName(char const* prefName, P
   return rv;
 }
 
+
+NS_IMETHODIMP msiSimpleComputeEngine2::GetEditorID(PRUint32 *_retval)
+{
+  *_retval = (PRUint32)ComputeDLL::GetClientHandle( 0 );
+  return NS_OK;
+} 
+
+NS_IMETHODIMP msiSimpleComputeEngine2::SetEditorID(PRUint32 id)
+{
+  client_handle = id;
+  return NS_OK;
+}
 
 /* long getUserPref (in unsigned long attrID); */
 NS_IMETHODIMP msiSimpleComputeEngine2::GetUserPref(PRUint32 attrID, PRInt32 *_retval)
