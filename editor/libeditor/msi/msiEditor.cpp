@@ -58,6 +58,8 @@
 static PRInt32 instanceCounter = 0;
 nsCOMPtr<nsIRangeUtils> msiEditor::m_rangeUtils = nsnull;
 nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
+PRInt32 msiEditor::s_editorCount = 0;
+
 
 
 
@@ -75,7 +77,7 @@ msiEditor::msiEditor()
   instanceCounter += 1;
   if (!m_autosub)
     m_autosub = do_GetService("@mozilla.org/autosubstitute;1");
-  
+  m_editorID = 0;
 }
 
 msiEditor::~msiEditor()
@@ -122,6 +124,19 @@ NS_IMETHODIMP msiEditor::SetAutoSubEnabled(PRBool aAutoSubEnabled)
   m_AutoSubEnabled = aAutoSubEnabled;
   return NS_OK;
 }
+
+NS_IMETHODIMP msiEditor::GetEditorID(PRUint32* id) 
+{ 
+  *id = m_editorID;
+  return NS_OK; 
+}
+
+NS_IMETHODIMP msiEditor::SetEditorID(PRUint32 id) 
+{ 
+  m_editorID = id;
+  return NS_OK; 
+}
+
 
 nsresult
 msiEditor::CreateEventListeners()
