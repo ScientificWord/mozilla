@@ -149,6 +149,8 @@ pref("swp.plot.AISubIntervals", 10);
 pref("swp.plot.Animate",        "false");
 pref("swp.plot.DiscAdjust",     "true");
 pref("swp.plot.IncludeLines",   "true");
+pref("swp.plot.AxisScaling", "LinLin");
+pref("swp.plot.AxisEqualScaling", "false");
 pref("swp.plot.TubeRadius",     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>1</mn></mrow></math>");
 pref("swp.plot.XMax", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>6</mn></mrow></math>");
 pref("swp.plot.XMin", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo form=\"prefix\">-</mo><mn>6</mn></mrow></math>");
