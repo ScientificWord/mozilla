@@ -13,6 +13,7 @@ interface nsITransaction;
 interface msiIMathMLEditor : nsISupports
 {
   attribute boolean AutoSubEnabled;
+  attribute PRUint32 EditorID;
   nsIDOMNode NodeInMath( in nsIDOMNode node );
   nsIDOMNode RangeInMath( in nsIDOMRange range );
   nsIDOMNode SelectionInMath();
