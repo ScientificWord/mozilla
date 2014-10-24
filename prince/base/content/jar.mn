@@ -239,6 +239,7 @@ prince.jar:
   content/bindings/amscls.xml        (bindings/amscls.xml)
   content/bindings/beamer.xml        (bindings/beamer.xml)
   content/bindings/revtex.xml        (bindings/revtex.xml)
+  content/bindings/svjour3.xml        (bindings/svjour3.xml)
 * content/communicator/contentAreaUtils.js    (/toolkit/content/contentAreaUtils.js)
 * content/communicator/contentAreaDD.js       (/xpfe/communicator/resources/content/contentAreaDD.js)
 * content/communicator/findUtils.js           (/toolkit/content/findUtils.js)

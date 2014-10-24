@@ -336,6 +336,9 @@ interface msiISimpleComputeEngine : nsISupports
   */
   long getUserPref(in unsigned long attrID);
 
+  void getEditorID([retval] out PRUint32 id);  
+  void setEditorID(in PRUint32 id);  
+
   /**
    * Perform the operation on the input.  Pass in command ID.
   */
