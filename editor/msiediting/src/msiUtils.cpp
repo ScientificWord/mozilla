@@ -350,13 +350,16 @@ nsresult msiUtils::CreateMathMLElement(nsIEditor* editor, nsIAtom* type,
   NS_ASSERTION(domDoc, "Editor GetDocument return Null DOMDocument!");
   nsAutoString name;
   type->ToString(name);
+  nsString kXMLNS = NS_LITERAL_STRING("xmlns");
   if (domDoc && !name.IsEmpty())
   {
     nsAutoString mmlnsURI;
+    PRBool hasNSAttribute;
+    res = mmlElement->HasAttribute(kXMLNS, &hasNSAttribute);
     msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_MathML, mmlnsURI);
     res = domDoc->CreateElementNS(mmlnsURI, name, getter_AddRefs(mmlElement));
-    if (name.EqualsLiteral("math")) {
-      mmlElement->SetAttribute(NS_LITERAL_STRING("xmlns"), mmlnsURI);
+    if (name.EqualsLiteral("math") && !(hasNSAttribute)) {
+       mmlElement->SetAttribute(kXMLNS, mmlnsURI);
     }
   }
   return res;  
