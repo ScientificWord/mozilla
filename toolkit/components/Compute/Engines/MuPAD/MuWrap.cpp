@@ -39,6 +39,7 @@
 
 MuPADEngine* mupd_eng = NULL;
 
+
 MuPADWrapper::MuPADWrapper(void* ID_dBase, void* NOM_dBase)
 {
   id_dBase = (Grammar *) ID_dBase;

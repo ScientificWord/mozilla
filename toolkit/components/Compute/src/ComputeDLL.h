@@ -21,6 +21,7 @@ public:
   static const char *GetNextCommand(U32 engine_ID, U32 * curr_cmd_ID);
 
   static U32 GetClientHandle(U32 parent_handle);
+  // static void SetClientHandle(U32 h);
   static void ReleaseClientHandle(U32 c_handle);
 
   static U32 CreateTransaction(U32 c_handle, const U16 * w_mml,
@@ -61,8 +62,11 @@ public:
                               const U16 * wide_str);
   static const char * GetUserPref(U32 client_ID, U32 pref_ID,
                                   int no_inherit);
+
   static const U16 * GetWideUserPref(U32 client_ID, U32 pref_ID,
                                       int no_inherit);
+
+
 private:
   static bool CheckParam(MathServiceRequest * msr, U32 p_ID, U32 expected_type);
   static int ValidateParams(U32 cmd_ID, MathServiceRequest * msr);

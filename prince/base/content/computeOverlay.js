@@ -1615,6 +1615,17 @@ function GetCurrentEngine() {
       AlertWithTitle(GetComputeString("Error.title"), GetComputeString(msg_key));
     }
   }
+  if (compsample) {
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    var edID = mathmlEditor.EditorID;
+    if (edID === 0){
+      mathmlEditor.EditorID = compsample.getEditorID();
+      edID = mathmlEditor.EditorID;
+    }
+    compsample.setEditorID(edID);
+  }
   return compsample;
 }
 
