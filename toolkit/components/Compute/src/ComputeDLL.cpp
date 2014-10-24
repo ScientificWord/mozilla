@@ -110,6 +110,12 @@ U32 ComputeDLL::GetClientHandle(U32 parent_handle)
   return workshop->GetClientHandle(parent_handle);
 }
 
+// void ComputeDLL::SetClientHandle(U32 h)
+// {
+//   return workshop->GetClientHandle(h);
+// }
+
+
 void ComputeDLL::ReleaseClientHandle(U32 c_handle)
 {
   workshop->ReleaseClientHandle(c_handle);
@@ -126,7 +132,7 @@ U32 ComputeDLL::CreateTransaction(U32 c_handle, const U16 * w_mml, U32 eng_ID, U
     msr = new MathServiceRequest();
   }    
   MathResult *mr = new MathResult();
-  msr->PutClientHandle(c_handle);
+  msr->PutClientHandle( c_handle );
   msr->PutEngineID(eng_ID);
   msr->PutOpID(cmd_ID);
   msr->PutWideMarkup(w_mml);
