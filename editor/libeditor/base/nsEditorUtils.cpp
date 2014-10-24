@@ -260,6 +260,7 @@ PRBool nsEditorUtils::Acceptable(nsEditor * ed, msiITagListManager * tlm, nsIDOM
   if (ed->IsTextNode(node))
   {
     node->GetParentNode(getter_AddRefs(parent));
+    if (!parent) return PR_FALSE;
     return nsEditorUtils::Acceptable(ed, tlm, parent);
   }
   else

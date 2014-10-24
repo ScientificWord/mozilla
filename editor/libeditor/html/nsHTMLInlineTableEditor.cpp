@@ -219,7 +219,6 @@ nsHTMLEditor::RemoveMouseClickListener(nsIDOMElement * aElement)
     evtTarget->RemoveEventListener(NS_LITERAL_STRING("click"), mMouseListenerP, PR_TRUE);
 }
 
-
 nsresult
 nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY)
 {
@@ -232,13 +231,28 @@ nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt3
 
   nsCOMPtr<nsIDOMElement> body = GetRoot();
   nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
-  nsCOMPtr<nsIContent> bodyContent = do_QueryInterface(body);
+  nsCOMPtr<nsIContent> elContent;
+  nsAutoString positionStr;
+  nsCOMPtr<nsIDOMElement> el;
+  nsCOMPtr<nsIDOMNode> elNode = do_QueryInterface(el);
+  aElement->GetParentNode(getter_AddRefs(elNode));
+  if (elNode) {
+    el = do_QueryInterface(elNode);
+    mHTMLCSSUtils->GetComputedProperty(el, nsEditProperty::cssPosition, positionStr);
+    for (;
+      el && !positionStr.EqualsLiteral("absolute") && !positionStr.EqualsLiteral("relative") && !positionStr.EqualsLiteral("fixed");
+      el->GetParentNode(getter_AddRefs(elNode))) 
+    {
+      el = do_QueryInterface(elNode);
+      mHTMLCSSUtils->GetComputedProperty(el, nsEditProperty::cssPosition, positionStr);
+    }
+  }
+  if (!el) el = body;
+  elContent = do_QueryInterface(el);
+  nsIFrame *f = ps->GetPrimaryFrameFor(elContent);
   nsIFrame *frame = ps->GetPrimaryFrameFor(content);
-  nsIFrame *bodyFrame = ps->GetPrimaryFrameFor(bodyContent);
-
-  if (!frame) return NS_OK;
-  if (!bodyFrame) return NS_OK;
-  nsPoint off = frame->GetOffsetTo(bodyFrame);
+  if (!f) return NS_OK;
+  nsPoint off = frame->GetOffsetTo(f);
   aX = nsPresContext::AppUnitsToIntCSSPixels(off.x);
   aY = nsPresContext::AppUnitsToIntCSSPixels(off.y);
 
