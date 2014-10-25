@@ -236,12 +236,16 @@
 <!ENTITY helpmenu.label    "Help">
 <!ENTITY helpMac.commandkey "?">
 <!ENTITY helpmenu.accesskey    "H">
-<!ENTITY helpmenuContents.label    "Contents...">
-<!ENTITY helpmenuContents.accesskey    "C">
-<!ENTITY helpmenuSearch.label    "Search...">
-<!ENTITY helpmenuSearch.accesskey    "S">
-<!ENTITY helpmenuIndex.label    "Index">
-<!ENTITY helpmenuIndex.accesskey    "I">
+#ifdef PROD_SWP
+<!ENTITY helpmenuSWP.label    "Scientific Workplace Help...">
+#endif
+#ifdef PROD_SW
+<!ENTITY helpmenuSW.label    "Scientific Word Help...">
+#endif
+#ifdef PROD_SNB
+<!ENTITY helpmenuSNB.label    "Scientific Notebook Help...">
+#endif
+<!ENTITY helpmenuProduct.accesskey    "S">
 <!ENTITY helpmenuWebsite.label    "MacKichan Software Website">
 <!ENTITY helpmenuWebsite.accesskey    "M">
 <!ENTITY helpmenuRegister.label    "Activate...">
