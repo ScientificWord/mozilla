@@ -62,6 +62,7 @@ pref("editor.use_background_image",         false);
 pref("editor.use_custom_default_colors", 1);
 pref("editor.use_html_editor",              0);
 pref("editor.use_image_editor",             0);
+pref("app.support.baseURL", "http://www.mackichan.com");
 pref("extensions.dss.switchPending",false);
 pref("fastcursor.enabled", true);
 pref("fastcursor.flashbar", 1);

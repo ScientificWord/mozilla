@@ -308,19 +308,24 @@
   <menu id="helpmenu" label="&helpmenu.label;" accesskey="&helpmenu.accesskey;">
 <!--      key="msiMacHelp"
  -->    <menupopup id="helpPopup" >
-      <menuitem id="helpmenuContents" 
-                label="&helpmenuContents.label;" 
-                accesskey="&helpmenuContents.accesskey;" 
+      <menuitem accesskey="&helpmenuProduct.accesskey;" 
                 key="keyhelpcontents" 
-                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/swp.rdf');"/>
-      <menuitem id="helpmenuSearch" 
-                label="&helpmenuSearch.label;" 
-                accesskey="&helpmenuSearch.accesskey;" 
-                observes="cmd_unimp"/>
-      <menuitem id="helpmenuIndex" 
-                label="&helpmenuIndex.label;" 
-                accesskey="&helpmenuIndex.accesskey;" 
-                observes="cmd_unimp"/>
+#ifdef PROD_SWP
+                label="&helpmenuSWP.label;" 
+                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/swp.rdf');"
+                id="helpmenuSWP" 
+#endif
+#ifdef PROD_SW
+                label="&helpmenuSW.label;" 
+                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/sw.rdf');"
+                id="helpmenuSW" 
+#endif
+#ifdef PROD_SNB
+                label="&helpmenuSNB.label;" 
+                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/snb.rdf');"
+                id="helpmenuSNB" 
+#endif
+      />
       <menuseparator/>
       <menuitem id="helpmenuWebsite" 
                 label="&helpmenuWebsite.label;" 
