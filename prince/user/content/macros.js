@@ -5,6 +5,11 @@
 
 // Some utility function for the use of macros and autosubstitute
 
+function showhelp()
+{
+  deleteSelection();
+  document.getElementById('helpmenu').open=true;
+}
 
 function deleteSelection()
 {
