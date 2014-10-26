@@ -107,10 +107,11 @@ function msiHelpHandleClick(event)
 
   if (event.detail == 1)
   {
+    try{
     if ((currObj() === event.target) && (document.getElementById("vcamactive").getAttribute("hidden") == "false")) return;
     if (currObj() != null && (currObj().getAttribute("id") === "msi-current")) 
     {
-      currObj().removeEvent("currentTimeChange", showAnimationTime);
+      // currObj().removeEvent("currentTimeChange", showAnimationTime);
       currObj().removeAttribute("id");
     }
     var isPlot = false;
@@ -150,6 +151,10 @@ function msiHelpHandleClick(event)
     {
 	    document.getElementById("vcamactive").setAttribute("hidden",true);
     }
+  }
+  catch(e) {
+    msidump(e.message);
+  }
   }
 }
 
