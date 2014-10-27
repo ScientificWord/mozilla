@@ -566,12 +566,15 @@ TNODE* LaTeX2MMLTree::TranslateMathObject( TNODE* math_container_obj ) {
     case 133  :   // TENV_multline       133
     case 134  :   // TENV_multlinestar   134
     //JBMLine("\nTranslateMathObject A");
+
+    if ( (usubtype != TENV_multline) &&  (usubtype != TENV_multlinestar)) {
+      RecordAnomaly( ANOMALY_EQUATIONARRAY, NULL, 0, 0);
+    }
     if ( usubtype == TENV_eqnarraystar || 
          usubtype == TENV_alignstar ||  
          usubtype == TENV_gatherstar)
     {
       RecordAnomaly( ANOMALY_NONUMBERING, NULL, 0, 0 );
-
     } else {
       RecordAnomaly( ANOMALY_AUTONUMBERING, NULL, 0, 0 );
     }
