@@ -15,7 +15,8 @@
   <key id="msiFindNextKey" keycode="VK_F3" keytext="F3" command="cmd_findNext" />
   <key id="msiFindPrevKey" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
   <key id="msiGreekKeyboardKey" key="g" modifiers="accel"   command="cmd_oneshotGreek"/>
-  <key id="msiMacHelp" key="?" modifiers="accel,shift" command="cmd_showhelp"/>
+<!--   <key id="msiMacHelp" key="?" modifiers="accel,shift" command="cmd_showhelp"/>
+ -->  
   <key id="msiNewFileKey" key="n" modifiers="accel" oncommand="openNewDocument();"/>
   <key id="msiOpenFileKey" key="o" modifiers="accel" oncommand = "openDocument();" />
   <key id="msiPasteKey" key="v" command="cmd_paste" modifiers="accel"/>
