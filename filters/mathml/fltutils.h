@@ -55,6 +55,7 @@ typedef struct tagANOMALY_REC {	// Struct to
 #define ANOMALY_LEFTOVER (1005)
 #define ANOMALY_AUTONUMBERING (1010)
 #define ANOMALY_NONUMBERING (1011)
+#define ANOMALY_EQUATIONARRAY (1012) // signal that we have eqnarray, align, etc
 
 
 
