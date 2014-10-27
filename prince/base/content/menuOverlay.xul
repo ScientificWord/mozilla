@@ -305,11 +305,12 @@
   </menu>  
 
 
-  <menu id="helpmenu" label="&helpmenu.label;" accesskey="&helpmenu.accesskey;">
+  <menu id="helpmenu" label="&helpmenu.label;" key="keyhelp">
 <!--      key="msiMacHelp"
- -->    <menupopup id="helpPopup" >
-      <menuitem accesskey="&helpmenuProduct.accesskey;" 
-                key="keyhelpcontents" 
+ -->    
+    <menupopup id="helpPopup" >
+      <menuitem  
+          key="keyhelpcontents"
 #ifdef PROD_SWP
                 label="&helpmenuSWP.label;" 
                 oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/swp.rdf');"
@@ -329,24 +330,19 @@
       <menuseparator/>
       <menuitem id="helpmenuWebsite" 
                 label="&helpmenuWebsite.label;" 
-                accesskey="&helpmenuWebsite.accesskey;" 
                 oncommand="openBrowser('https://www.mackichan.com');"/>
       <menuseparator/>
       <menuitem id="helpmenuRegister" 
                 label="&helpmenuRegister.label;" 
-                accesskey="&helpmenuRegister.accesskey;" 
                 observes="cmd_unimp"/>
       <menuitem id="helpmenuFeatures" 
                 label="&helpmenuFeatures.label;" 
-                accesskey="&helpmenuFeatures.accesskey;" 
                 observes="cmd_unimp"/>
       <menuitem id="helpmenuLicense" 
                 label="&helpmenuLicense.label;" 
-                accesskey="&helpmenuLicense.accesskey;" 
                 observes="cmd_unimp"/>
       <menuseparator id="aboutSeparator"/>
-      <menuitem accesskey="&aboutCmd.accesskey;" 
-                label="&aboutCmd.label;" 
+      <menuitem label="&aboutCmd.label;" 
                 id="aboutName" 
                 oncommand="goAboutDialog();"/>
     </menupopup>
