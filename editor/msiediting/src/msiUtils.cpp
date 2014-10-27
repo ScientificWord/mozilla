@@ -362,7 +362,6 @@ nsresult msiUtils::CreateMathMLElement(nsIEditor* editor, nsIAtom* type,
       if (!(hasNSAttribute)) {
         mmlElement->SetAttribute(kXMLNS, mmlnsURI);
       }
-    }
   }
   return res;  
 }                                       
