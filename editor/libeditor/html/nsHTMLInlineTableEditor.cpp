@@ -69,7 +69,8 @@ nsHTMLEditor::ShowInlineTableEditingUI(nsIDOMElement * aCell)
   NS_ENSURE_ARG_POINTER(aCell);
 
   // do nothing if aCell is not a table cell...
-  if (!nsHTMLEditUtils::IsTableCell(aCell, mtagListManager))
+  if (!nsHTMLEditUtils::IsTableCell(aCell, mtagListManager) ||
+    nsHTMLEditUtils::IsMath(aCell))
     return NS_OK;
 
   // the resizers and the shadow will be anonymous children of the body
