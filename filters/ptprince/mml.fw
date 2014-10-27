@@ -61,6 +61,7 @@ std::string s_mathml;
 std::string s_anomaly;
 bool s_equation = false;
 bool s_nonumbering = false;
+bool s_eqnarray = false;
 
 extern char* s_mmldirname;
 
@@ -78,6 +79,8 @@ bool mathmlHandler(U32 type, const char* data)
     s_nonumbering = false;
   } else if ( type == 1011 ) {
     s_nonumbering = true;
+  } else if ( type == 1012 ) {
+    s_eqnarray = true;
   }
   return true;
 }
@@ -109,6 +112,7 @@ void TakeDownMathML()
 
 void ProcessMathML(const char* str, std::string& outp, std::string& anom){
   s_equation = false;
+  s_eqnarray = false;
   s_nonumbering = true;
   ConvertInline( str, mathmlHandler, 2 );
   outp = s_mathml;

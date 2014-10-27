@@ -43,6 +43,7 @@ static char* s_processor;
 static const bool s_bMathml = true;
 extern bool s_equation;
 extern bool s_nonumbering;
+extern bool s_eqnarray;
 
 @<Node declarations@>
 @<Semantic nest@>
@@ -733,12 +734,18 @@ void Typesetter::EndDisplay()
 
          std::string str;
          str += "<msidisplay";
-         if (s_equation){
+         if (s_eqnarray) {
+           if (!s_nonumbering) {
+             str += " numbering=\"eqns\" ";
+           } else {
+             str += " numbering=\"none\" ";
+           }
+         } else if (s_equation){
            if (s_nonumbering){
              str += " numbering=\"none\" ";
            } else {
-             str += " numbering=\"eqns\" ";
-           }
+             //str += " numbering=\"eqns\" ";
+           }         
          } else if (!s_nonumbering) {
            str += " numbering=\"eqns\" ";
          } else {
