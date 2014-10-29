@@ -180,68 +180,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
     </toolbar>
 
 #ifndef PROD_SW
-    <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed"
-      flex = "1"
-      mode="icons" customizable="true"  hidden = "true">
-	    <observes id="vcamactiveObserver" element="vcamactive" attribute="hidden" onbroadcast="doVCamClose();"/>
-      <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
-      <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents"/>
-      <!-- <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/> -->
-      <toolbarseparator/>
-      <toolbarbutton id="vc-SelObj" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcSelObj" command="cmd_vcSelObj"/>
-      <toolbarbutton id="vc-RotateScene" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcRotateScene" command="cmd_vcRotateScene" observes="3dplot"/>
-      <toolbarbutton id="vc-Zoom" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoom" command="cmd_vcZoom" observes="3dplot"/>
-      <toolbarbutton id="vc-Move" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcMove" command="cmd_vcMove"/>
-      <toolbarbutton id="vc-Query" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcQuery" command="cmd_vcQuery"/>
-      <toolbarseparator observes="3dplot"/>
-      <toolbarbutton id="vc-RotateLeft" class="toolbarbutton-1" type="radio" group="lrrotategroup" label="Rotate left" command="cmd_vcRotateLeft" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateRight" class="toolbarbutton-1" type="radio" group="lrrotategroup" label="vcRotateRight" command="cmd_vcRotateRight" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateUp" class="toolbarbutton-1" type="radio" group="udrotategroup" label="vcRotateUp" command="cmd_vcRotateUp" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateDown" class="toolbarbutton-1" type="radio" group="udrotategroup" label="vcRotateDown" command="cmd_vcRotateDown" observes="3dplot"/>
-      <toolbarseparator observes="3dplot"/>
-      <toolbarbutton id="vc-AutoZoomIn" class="toolbarbutton-1" type="radio" group="zoomgroup" label="vcAutoZoomIn" command="cmd_vcAutoZoomIn" observes="3dplot"/>
-      <toolbarbutton id="vc-AutoZoomOut" class="toolbarbutton-1" type="radio" group="zoomgroup" label="vcAutoZoomOut" command="cmd_vcAutoZoomOut" observes="3dplot"/>
-      <toolbarbutton id="vc-ZoomIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomIn" command="cmd_vcZoomIn" observes="2dplot"/>
-      <toolbarbutton id="vc-ZoomOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomOut" command="cmd_vcZoomOut" observes="2dplot"/>
-      <toolbarbutton id="vc-ZoomBoxIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxIn" command="cmd_vcZoomBoxIn" observes="2dplot"/>
-      <toolbarbutton id="vc-ZoomBoxOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxOut" command="cmd_vcZoomBoxOut" observes="2dplot"/>
-      <toolbarbutton id="vc-SnapShot" class="toolbarbutton-1" label="vcSnapshot" command="cmd_vcSnapshot"/>
-      <toolbarseparator/>
-      <toolbarbutton id="vc-AutoSpeed" type="menu" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
-        <menupopup>
-          <menuitem id="actionspeed8s" name = "action" type="radio" label="8x slower" oncommand="VCamObject.setActionSpeed(0.125);" />
-          <menuitem id="actionspeed4s" name = "action" type="radio" label="4x slower" oncommand="VCamObject.setActionSpeed(0.25);" />
-          <menuitem id="actionspeed2s" name = "action" type="radio" label="2x slower" oncommand="VCamObject.setActionSpeed(0.5);" />
-          <menuitem id="actionspeedN"  name = "action" type="radio" checked="true" label="Natural" oncommand="VCamObject.setActionSpeed(1.0);" />
-          <menuitem id="actionspeed2f" name = "action" type="radio" label="2x faster" oncommand="VCamObject.setActionSpeed(2.0);" />
-          <menuitem id="actionspeed4f" name = "action" type="radio" label="4x faster" oncommand="VCamObject.setActionSpeed(4.0);" />
-          <menuitem id="actionspeed8f" name = "action" type="radio" label="8x faster" oncommand="VCamObject.setActionSpeed(8.0);" />
-        </menupopup>
-      </toolbarbutton>
-      <toolbarseparator observes="animplot"/>
-      <toolbarbutton id="vc-GoToStart" class="toolbarbutton-1" label="vcGoToStart" command="cmd_vcGoToStart" observes="animplot"/>
-      <toolbarbutton id="vc-Play" class="toolbarbutton-1" type="checkbox" label="vcPlay" command="cmd_vcPlay" observes="animplot"/>
-      <scale id="vc-AnimScale" width="150" onchange= "setAnimationTime();" observes="animplot"/>
-      <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot"/>
-      <toolbarbutton id="vc-LoopType" type="menu" class="toolbarbutton-1" label="vcLoopType" observes="animplot">
-        <menupopup>
-          <menuitem id="runonce"      name= "looptype" type="radio" checked="true" label="Run once" oncommand="setLoopMode(0);" />
-          <menuitem id="loop"         name= "looptype" type="radio" label="Loop" oncommand="setLoopMode(1);" />
-          <menuitem id="backandforth" name= "looptype" type="radio" label="Back and forth" oncommand="setLoopMode(2);" />
-        </menupopup>
-      </toolbarbutton>
-      <toolbarbutton id="vc-AnimSpeed" type="menu" class="toolbarbutton-1" label="vcAnimSpeed" observes="animplot">
-        <menupopup>
-          <menuitem id="animspeed8s" name = "anim" type="radio" label="8x slower" oncommand="VCamObject.setAnimSpeed(0.125);" />
-          <menuitem id="animspeed4s" name = "anim" type="radio" label="4x slower" oncommand="VCamObject.setAnimSpeed(0.250);" />
-          <menuitem id="animspeed2s" name = "anim" type="radio" label="2x slower" oncommand="VCamObject.setAnimSpeed(0.5);" />
-          <menuitem id="animspeedN"  name = "anim" type="radio" checked="true" label="Natural" oncommand="VCamObject.setAnimSpeed(1.0);" />
-          <menuitem id="animspeed2f" name = "anim" type="radio" label="2x faster" oncommand="VCamObject.setAnimSpeed(2.0);" />
-          <menuitem id="animspeed4f" name = "anim" type="radio" label="4x faster" oncommand="VCamObject.setAnimSpeed(4.0);" />
-          <menuitem id="animspeed8f" name = "anim" type="radio" label="8x faster" oncommand="VCamObject.setAnimSpeed(8.0);" />
-        </menupopup>
-      </toolbarbutton>
-    </toolbar>
+    <toolbar id="VCamToolbar"/>
 #endif
   </toolbox>
 

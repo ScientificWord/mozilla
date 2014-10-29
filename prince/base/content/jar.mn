@@ -19,6 +19,8 @@ prince.jar:
 * content/MathmlOverlay.js          (mathmlOverlay.js)
 * content/MathmlOverlay.xul         (mathmlOverlay.xul)
 * content/computeOverlay.js         (computeOverlay.js)
+* content/vcamoverlay.xul           (vcamoverlay.xul)
+* content/vcamoverlay.js            (vcamoverlay.js)
 * content/ComputeUtils.js           (ComputeUtils.js)
 * content/WhitespaceUtils.js        (WhitespaceUtils.js)
 * content/ComputeDebug.js           (computeDebug.js)
