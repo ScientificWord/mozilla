@@ -200,8 +200,10 @@
   <commandset id="MSImathMenuCommands"/>
   <commandset id="tagsMenuCommands"/>
   <commandset id="princegotoitems"/>
-	<commandset id="MSIVCamCommands" />
   <commandset id="mainCommandSet"/> <!-- from MozRepl-->
+
+  <commandset id="MSIVCamCommands" />
+  <broadcasterset id="vcam_broadcasterset" />
 
  
 

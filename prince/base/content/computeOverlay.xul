@@ -214,43 +214,6 @@
     <!-- For disabling certain menu items when in math -->
   </commandset>
  
-  <commandset id="MSIVCamCommands"
-                  commandupdater="true"
-                  events="create, mode_switch"
-                  oncommandupdate="goUpdateMSIcomputeMenuItems(this)">
-    <command id="cmd_vcReset"         oncommand="VCamCommand('cmd_vcReset')"/>
-    <command id="cmd_vcFitContents"   oncommand="VCamCommand('cmd_vcFitContents')"/>
-    <command id="cmd_vcRotateLeft"    oncommand="VCamCommand('cmd_vcRotateLeft')"/>
-    <command id="cmd_vcRotateRight"   oncommand="VCamCommand('cmd_vcRotateRight')"/>
-    <command id="cmd_vcRotateUp"      oncommand="VCamCommand('cmd_vcRotateUp')"/>
-    <command id="cmd_vcRotateDown"    oncommand="VCamCommand('cmd_vcRotateDown')"/>
-    <command id="cmd_vcRotateScene"   oncommand="VCamCommand('cmd_vcRotateScene')"/>
-    <command id="cmd_vcZoom"          oncommand="VCamCommand('cmd_vcZoom')"/>
-    <command id="cmd_vcMove"          oncommand="VCamCommand('cmd_vcMove')"/>
-    <command id="cmd_vcZoomBoxIn"     oncommand="VCamCommand('cmd_vcZoomBoxIn')"/>
-    <command id="cmd_vcZoomBoxOut"    oncommand="VCamCommand('cmd_vcZoomBoxOut')"/>
-    <command id="cmd_vcZoomIn"        oncommand="VCamCommand('cmd_vcZoomIn')"/>
-    <command id="cmd_vcZoomOut"       oncommand="VCamCommand('cmd_vcZoomOut')"/>
-    <command id="cmd_vcSnapshot"      oncommand="VCamCommand('cmd_vcSnapshot')"/>
-    <command id="cmd_vcAutoSpeed"     oncommand="VCamCommand('cmd_vcAutoSpeed')"/>
-    <command id="cmd_vcAnimSpeed"     oncommand="VCamCommand('cmd_vcAnimSpeed')"/>
-    <command id="cmd_vcAutoZoomIn"    oncommand="VCamCommand('cmd_vcAutoZoomIn')"/>
-    <command id="cmd_vcAutoZoomOut"   oncommand="VCamCommand('cmd_vcAutoZoomOut')"/>
-    <command id="cmd_vcGoToEnd"       oncommand="VCamCommand('cmd_vcGoToEnd')"/>
-    <command id="cmd_vcGoToStart"     oncommand="VCamCommand('cmd_vcGoToStart')"/>
-    <command id="cmd_vcLoopType"      oncommand="VCamCommand('cmd_vcLoopType')"/>
-    <command id="cmd_vcPlay"          oncommand="VCamCommand('cmd_vcPlay')"/>
-    <command id="cmd_vcQuery"         oncommand="VCamCommand('cmd_vcQuery')"/>
-    <command id="cmd_vcSelObj"        oncommand="VCamCommand('cmd_vcSelObj')"/>
-    <command id="cmd_vcFitContents"   oncommand="VCamCommand('cmd_vcFitContents')"/>
-  </commandset>
-
-  <broadcasterset id="vcam_broadcasterset">
-    <broadcaster id="vcamactive" hidden = "true"/>
-    <broadcaster id="3dplot" hidden = "true" />
-    <broadcaster id="2dplot" hidden = "true" />
-    <broadcaster id="animplot" hidden = "true" />
-  </broadcasterset>
   
   
   <broadcasterset id="broadcasterset">
