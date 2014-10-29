@@ -3,10 +3,14 @@ en-US.jar:
 % locale prince en-US %locale/
 % locale helpfiles en-US %locale/helpfiles/
   locale/helpfiles/swp.rdf                    (swp.rdf)
+  locale/helpfiles/sw.rdf                    (sw.rdf)
+  locale/helpfiles/snb.rdf                    (snb.rdf)
   locale/helpfiles/glossary.xhtml			  (glossary.xhtml)
   locale/helpfiles/help-toc.rdf				  (help-toc.rdf)
   locale/helpfiles/swp-glossary.rdf			  (swp-glossary.rdf)
   locale/helpfiles/swp-toc.rdf				  (swp-toc.rdf)
+  locale/helpfiles/sw-toc.rdf				  (sw-toc.rdf)
+  locale/helpfiles/snb-toc.rdf				  (snb-toc.rdf)
   locale/helpfiles/welcome.xhtml			  (welcome.xhtml)
   locale/helpfiles/shortcuts.xhtml			  (shortcuts.xhtml)
   locale/helpfiles/images/anchor-in-doc.gif	  (images/anchor-in-doc.gif)
@@ -23,6 +27,8 @@ en-US.jar:
   locale/helpfiles/css/article.css            (css/article.css)
   locale/helpfiles/graphics/princelogo.png    (graphics/princelogo.png)
   locale/helpfiles/cd00-00-creating_documents.xhtml	(cd00-00-creating_documents.xhtml)
+  locale/helpfiles/cd00-00-creating_documents-sw.xhtml	(cd00-00-creating_documents-sw.xhtml)
+  locale/helpfiles/cd00-00-creating_documents-snb.xhtml	(cd00-00-creating_documents-snb.xhtml)
   locale/helpfiles/cd01-00-gettingstarted.xhtml     (cd01-00-gettingstarted.xhtml)
   locale/helpfiles/cd01-01-gettingstarted.xhtml     (cd01-01-gettingstarted.xhtml)
   locale/helpfiles/cd01-02-gettingstarted.xhtml     (cd01-02-gettingstarted.xhtml)
