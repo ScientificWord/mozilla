@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:nc="http://home.netscape.com/NC-rdf#">
+
+  <rdf:Description about="urn:root">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="swp-doc"	  nc:name="Introducing Scientific Word" nc:link="cd00-00-creating_documents-sw.xhtml"/> </rdf:li>
+<!--         <rdf:li> <rdf:Description ID="doing-math" nc:name="Doing Mathematics"                nc:link="dm00-00-doing_mathematics.xhtml"/> </rdf:li>  -->
+	    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+
+  <rdf:Description about="#swp-doc">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="cd-getting-started"   nc:name="Getting Started"                     nc:link="cd01-00-gettingstarted-sw.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd-basics"            nc:name="Basics"                              nc:link="cd02-00-basics.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd-simple-document"   nc:name="Creating a Simple Document"          nc:link="cd03-00-simpledoc.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd-editing-documents" nc:name="Editing Documents"                   nc:link="cd04-00-editingdocs.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd-working-with-math" nc:name="Working with Mathematics"            nc:link="cd05-00-workwithmath.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd-final-touches"     nc:name="Final Touches: Document Production"  nc:link="cd06-00-finaltouch.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd-shortcuts"         nc:name="Shortcut Reference"                  nc:link="cd07-00-shortcuts.xhtml"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+ 
+  <rdf:Description about="#cd-getting-started">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="cd01-01" nc:name="For Existing Users" nc:link="cd01-01-gettingstarted.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd01-02" nc:name="For New Users"      nc:link="cd01-02-gettingstarted.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd01-03" nc:name="Before You Begin"   nc:link="cd01-03-gettingstarted.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd01-04" nc:name="Conventions"        nc:link="cd01-04-gettingstarted.xhtml"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+ 
+  <rdf:Description about="#cd-basics">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="cd02-01" nc:name="Menus"                  nc:link="cd02-01-basics.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd02-02" nc:name="Toolbars"               nc:link="cd02-02-basics.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd02-03" nc:name="Sidebars"               nc:link="cd02-03-basics.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd02-04" nc:name="Display Modes"          nc:link="cd02-04-basics.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd02-05" nc:name="Status Bar"             nc:link="cd02-05-basics.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd02-06" nc:name="Additional Information" nc:link="cd02-06-basics.xhtml"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+ 
+  <rdf:Description about="#cd-simple-document">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="cd03-01" nc:name="About Document Shells"                          nc:link="cd03-01-simpledoc.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd03-02" nc:name="Opening Existing Documents"                     nc:link="cd03-02-simpledoc.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd03-03" nc:name="Saving Documents in Other Formats and Location" nc:link="cd03-03-simpledoc.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd03-04" nc:name="Information for Power Users"                    nc:link="cd03-04-simpledoc.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd03-05" nc:name="Shortcuts"                                      nc:link="cd03-05-simpledoc.xhtml"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+ 
+  <rdf:Description about="#cd-editing-documents">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="cd04-01" nc:name="Before You Begin"                 nc:link="cd04-01-editingdocs.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd04-02" nc:name="Basic Text Editing"               nc:link="cd04-02-editingdocs.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd04-03" nc:name="Entering Text with Special Tools" nc:link="cd04-03-editingdocs.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd04-04" nc:name="Enhancing Text"                   nc:link="cd04-04-editingdocs.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd04-05" nc:name="Creating Section Headings"        nc:link="cd04-05-editingdocs.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd04-06" nc:name="Creating Lists"                   nc:link="cd04-06-editingdocs.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd04-07" nc:name="Adding Non-Text Elements"         nc:link="cd04-07-editingdocs.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd04-08" nc:name="Information for Power Users"      nc:link="cd04-08-editingdocs.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd04-09" nc:name="Shortcuts"                        nc:link="cd04-09-editingdocs.xhtml"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+ 
+  <rdf:Description about="#cd-working-with-math">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="cd05-01" nc:name="Before You Begin"                            nc:link="cd05-01-workwithmath.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd05-02" nc:name="Entering and Editing Symbols and Characters" nc:link="cd05-02-workwithmath.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd05-03" nc:name="Tagging Mathematics"                         nc:link="cd05-03-workwithmath.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd05-04" nc:name="Entering and Editing Mathematical Objects"   nc:link="cd05-04-workwithmath.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd05-05" nc:name="Information for Power Users"                 nc:link="cd05-05-workwithmath.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd05-06" nc:name="Shortcuts"                                   nc:link="cd05-06-workwithmath.xhtml"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+ 
+  <rdf:Description about="#cd-final-touches">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="cd06-01" nc:name="Understanding Differences in Document Production" nc:link="cd06-01-finaltouch.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd06-02" nc:name="Readying a Document for Production"               nc:link="cd06-02-finaltouch.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd06-03" nc:name="Previewing and Printing a Document"               nc:link="cd06-03-finaltouch.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd06-04" nc:name="Creating Documents for the Web"                   nc:link="cd06-04-finaltouch.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd06-05" nc:name="Information for Power Users"                      nc:link="cd06-05-finaltouch.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd06-06" nc:name="Shortcuts"                                        nc:link="cd06-06-finaltouch.xhtml"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+ 
+  <rdf:Description about="#cd-shortcuts">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="cd07-01" nc:name="Document Creation Shortcuts"   nc:link="cd07-01-shortcuts.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd07-02" nc:name="Document Editing Shortcuts"    nc:link="cd07-02-shortcuts.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd07-03" nc:name="Math Editing Shortcuts"        nc:link="cd07-03-shortcuts.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd07-04" nc:name="Document Production Shortcuts" nc:link="cd07-04-shortcuts.xhtml"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+</rdf:RDF>
