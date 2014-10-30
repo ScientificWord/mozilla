@@ -43,7 +43,7 @@
 <?xml-stylesheet href="chrome://help/skin/" type="text/css"?>
 
 <?xul-overlay href="chrome://help/content/helpContextOverlay.xul"?>
-<?xul-overlay href="chrome://help/content/msiHelpOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/vcamoverlay.xul"?>
 <!DOCTYPE window [
     <!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd">
     %brandDTD;
