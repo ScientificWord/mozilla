@@ -41,7 +41,7 @@ function BuildJSEAttributeNameList()
   gDialog.AddJSEAttributeNameList.removeAllItems();
   
   // Get events specific to current element
-  var elementName = gElement.localName.toLowerCase();
+  var elementName = gElement.localName;
   if (elementName in gJSAttr)
   {
     var attNames = gJSAttr[elementName];
@@ -111,7 +111,7 @@ function BuildJSEAttributeTable()
         continue;   // repeated or non-JS handler, ignore this one and go to next
       if( !IsEventHandler( nodeMap[i].nodeName ) )
         continue; // attribute isn't an event handler.
-      var name  = nodeMap[i].nodeName.toLowerCase();
+      var name  = nodeMap[i].nodeName;
       var value = gElement.getAttribute(nodeMap[i].nodeName);
       if (AddTreeItem( name, value, "JSEAList", JSEAttrs )) // add item to tree
         added = true;
@@ -126,7 +126,7 @@ function BuildJSEAttributeTable()
 // check to see if given string is an event handler.
 function IsEventHandler( which )
 {
-  var handlerName = which.toLowerCase();
+  var handlerName = which;
   var firstTwo = handlerName.substring(0,2);
   if (firstTwo == "on")
     return true;

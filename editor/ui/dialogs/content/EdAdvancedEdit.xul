@@ -58,7 +58,7 @@
     ondialoghelp="return doHelpButton();">
 
   <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <!-- element page functions -->
   <script type="application/x-javascript" src="chrome://editor/content/EdAEHTMLAttributes.js"/>

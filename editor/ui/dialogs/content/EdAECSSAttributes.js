@@ -42,13 +42,18 @@
 // build attribute list in tree form from element attributes
 function BuildCSSAttributeTable()
 {
-  var style = gElement.style;
-  if (style == undefined)
+  var styleString = gElement.getAttribute('style');
+  var style; 
+  var pair;
+  var name;
+  var nameArray = [];
+  var value;
+  if (styleString == null || TrimString(styleString).length == 0)
   {
     dump("Inline styles undefined\n");
     return;
   }
-
+  style = styleString.split(';');
   var declLength = style.length;
 
   if (declLength == undefined || declLength == 0)
@@ -64,12 +69,19 @@ function BuildCSSAttributeTable()
   {
     for (var i = 0; i < declLength; ++i)
     {
-      var name = style.item(i);
-      var value = style.getPropertyValue(name);
-      AddTreeItem( name, value, "CSSAList", CSSAttrs );
+      pair =  style[i].split(':')
+      if (pair && pair.length > 1)
+      {
+        name = TrimString(pair[0]);
+        if (nameArray.indexOf(name) == -1)
+        {
+          nameArray.push(name);
+          value = TrimString(pair[1]);
+          AddTreeItem( name, value, "CSSAList", CSSAttrs );
+        }
+      }
     }
   }
-
   ClearCSSInputWidgets();
 }
 
@@ -110,7 +122,7 @@ function onSelectCSSTreeItem()
 
 function onInputCSSAttributeName()
 {
-  var attName = TrimString(gDialog.AddCSSAttributeNameInput.value).toLowerCase();
+  var attName = TrimString(gDialog.AddCSSAttributeNameInput.value);
   var newValue = "";
 
   var existingValue = GetAndSelectExistingAttributeValue(attName, "CSSAList");
