@@ -25,11 +25,11 @@ function initDocument(browserElement)
 function addClickEventListenerForBrowserElement(browserElement)
 {
   try {
-    if (!browserElement.contentDocument) alert("browserElement.contentDocument not ready!");
-    if (browserElement && browserElement.contentDocument)
-    {
-      browserElement.contentDocument.addEventListener("click", msiHelpHandleClick, true);
-    }
+    // if (!browserElement.contentDocument) alert("browserElement.contentDocument not ready!");
+    // if (browserElement && browserElement.contentDocument)
+    // {
+      browserElement.addEventListener("click", msiHelpHandleClick, true);
+    // }
   } catch (e) {dump("Unable to register browser element click event listener; error [" + e + "].\n");}
 }
 
