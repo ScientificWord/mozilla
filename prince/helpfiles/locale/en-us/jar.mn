@@ -3,7 +3,7 @@ en-US.jar:
 % locale prince en-US %locale/
 % locale helpfiles en-US %locale/helpfiles/
   locale/helpfiles/swp.rdf                    (swp.rdf)
-  locale/helpfiles/sw.rdf                    (sw.rdf)
+  locale/helpfiles/sw.rdf                     (sw.rdf)
   locale/helpfiles/snb.rdf                    (snb.rdf)
   locale/helpfiles/glossary.xhtml			  (glossary.xhtml)
   locale/helpfiles/help-toc.rdf				  (help-toc.rdf)
