@@ -16,7 +16,7 @@
   <rdf:Description about="#swp-doc">
     <nc:subheadings>
       <rdf:Seq>
-        <rdf:li> <rdf:Description ID="cd-getting-started"   nc:name="Getting Started"                     nc:link="cd01-00-gettingstarted-sw.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd-getting-started"   nc:name="Getting Started"                     nc:link="cd01-00-gettingstarted.xhtml"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cd-basics"            nc:name="Basics"                              nc:link="cd02-00-basics.xhtml"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cd-simple-document"   nc:name="Creating a Simple Document"          nc:link="cd03-00-simpledoc.xhtml"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cd-editing-documents" nc:name="Editing Documents"                   nc:link="cd04-00-editingdocs.xhtml"/> </rdf:li>
