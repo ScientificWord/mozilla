@@ -40,7 +40,7 @@ function BuildHTMLAttributeNameList()
 {
   gDialog.AddHTMLAttributeNameInput.removeAllItems();
   
-  var elementName = gElement.localName.toLowerCase();
+  var elementName = gElement.localName;
   var attNames = gHTMLAttr[elementName];
 
   if (attNames && attNames.length)
@@ -133,12 +133,11 @@ function BuildHTMLAttributeTable()
     {
       if ( CheckAttributeNameSimilarity( nodeMap[i].nodeName, HTMLAttrs ) ||
           IsEventHandler( nodeMap[i].nodeName ) ||
-          TrimString( nodeMap[i].nodeName.toLowerCase() ) == "style" ) {
+          TrimString( nodeMap[i].nodeName ) == "style" ) {
         continue;   // repeated or non-HTML attribute, ignore this one and go to next
       }
-      var name  = nodeMap[i].name.toLowerCase();
-      if ( name.indexOf("_moz") != 0 &&
-           AddTreeItem(name, nodeMap[i].value, "HTMLAList", HTMLAttrs) )
+      var name  = nodeMap[i].name;
+      if ( AddTreeItem(name, nodeMap[i].value, "HTMLAList", HTMLAttrs) )
       {
         added = true;
       }
@@ -180,7 +179,7 @@ function onSelectHTMLTreeItem()
   var tree = gDialog.AddHTMLAttributeTree;
   if (tree && tree.view.selection.count)
   {
-    var inputName = TrimString(gDialog.AddHTMLAttributeNameInput.value).toLowerCase();
+    var inputName = TrimString(gDialog.AddHTMLAttributeNameInput.value);
     var selectedItem = getSelectedItem(tree);
     var selectedName = selectedItem.firstChild.firstChild.getAttribute("label");
 
@@ -201,7 +200,7 @@ function onSelectHTMLTreeItem()
 
 function onInputHTMLAttributeName()
 {
-  var attName = TrimString(gDialog.AddHTMLAttributeNameInput.value).toLowerCase();
+  var attName = TrimString(gDialog.AddHTMLAttributeNameInput.value);
 
   // Clear value widget, but prevent triggering update in tree
   gUpdateTreeValue = false;
@@ -219,7 +218,7 @@ function onInputHTMLAttributeName()
     if (attName == "dir")
       valueListName = "all_dir";
     else
-      valueListName = gElement.localName.toLowerCase() + "_" + attName;
+      valueListName = gElement.localName + "_" + attName;
 
     // Strip off leading "_" we sometimes use (when element name is reserved word)
     if (valueListName[0] == "_")
