@@ -211,6 +211,9 @@
           </initialcontents>
           <nexttag>bodyText</nexttag>
         </tag>
+        <tag nm="caption">
+          <description>Caption for image, plot, or table</description>
+        </tag>
 			</tags>
 		</tagclass>
     <tagclass>
