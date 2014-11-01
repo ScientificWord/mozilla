@@ -357,12 +357,11 @@ nsresult msiUtils::CreateMathMLElement(nsIEditor* editor, nsIAtom* type,
     PRBool hasNSAttribute;
     msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_MathML, mmlnsURI);
     res = domDoc->CreateElementNS(mmlnsURI, name, getter_AddRefs(mmlElement));
-    if (mmlElement && name.EqualsLiteral("math")) {
-      res = mmlElement->HasAttribute(kXMLNS, &hasNSAttribute);
-      if (!(hasNSAttribute)) {
-        mmlElement->SetAttribute(kXMLNS, mmlnsURI);
-      }
-    }
+    // if (mmlElement && name.EqualsLiteral("math")) {
+    //   res = mmlElement->HasAttribute(kXMLNS, &hasNSAttribute);
+    //   if (!(hasNSAttribute)) {
+    //     mmlElement->SetAttribute(kXMLNS, mmlnsURI);
+    //   }
   }
   return res;  
 }                                       

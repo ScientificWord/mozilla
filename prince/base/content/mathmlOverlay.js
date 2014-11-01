@@ -3260,7 +3260,6 @@ function nestinmath(editor, node)
 {
   var d = editor.document.createDocumentFragment();
   var m = editor.document.createElementNS(mmlns,"math");
-  m.setAttribute("xmlns",mmlns);
   var r = editor.document.createElementNS(mmlns,"mrow");
   r.appendChild(node);
   m.appendChild(r);
