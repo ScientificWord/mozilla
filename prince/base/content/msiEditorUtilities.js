@@ -12679,6 +12679,14 @@ function processNode( editor, node, treeWalker, output, currentline, indent, sta
 
 function prettyprint(editor)
 {
+  var serializer = new XMLSerializer();
+  var doc = editor.document;
+  var prettyString = serializer.serializeToString(doc);
+  return prettyString;
+
+  /* The above code is replacing the following until the following is modified to handle namespaces
+  correctly, even when the namespaces are not included as an attribute. */
+
   var output = new Object();
   output.s = "";
   var currentline = new Object;
