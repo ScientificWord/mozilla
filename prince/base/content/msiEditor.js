@@ -4706,7 +4706,7 @@ function msiSetEditMode(mode, editorElement)
     // var encoder = Components.classes["@mozilla.org/layout/documentEncoder;1?type=" + mimeType]
     //                .createInstance(nsIDE);
     // var source = encoder.encodeToString();
-    //source = escaped(source);
+    // source = escaped(source);
     UnmarkSelection(editor);
     // replace the following with proper selection tracking
     var start = 0;

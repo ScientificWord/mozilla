@@ -2089,10 +2089,6 @@ Frame.prototype = {
             msidump("In reviseDOMFrameElement, changing data attribute to [" + vcamUri + "]\n");
             DOMObj.setAttribute( "data", vcamUri );
           }
-          else
-            DOMObj.vcamState = "needReload";  //IF this is an already existing plot being revised, DON'T initiate a vcam load
-                                              //here! Marking it this way will cause the object to be recreated, which is necessary.
-//          }
         }
       }
 //NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
