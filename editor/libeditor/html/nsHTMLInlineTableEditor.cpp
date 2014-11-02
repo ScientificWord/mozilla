@@ -221,7 +221,7 @@ nsHTMLEditor::RemoveMouseClickListener(nsIDOMElement * aElement)
 }
 
 nsresult
-nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY)
+nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY, PRBool useBody)
 {
   aX = 0;
   aY = 0;
@@ -234,10 +234,10 @@ nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt3
   nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
   nsCOMPtr<nsIContent> elContent;
   nsAutoString positionStr;
-  nsCOMPtr<nsIDOMElement> el;
+  nsCOMPtr<nsIDOMElement> el = nsnull;
   nsCOMPtr<nsIDOMNode> elNode = do_QueryInterface(el);
   aElement->GetParentNode(getter_AddRefs(elNode));
-  if (elNode) {
+  if (elNode && !useBody) {
     el = do_QueryInterface(elNode);
     mHTMLCSSUtils->GetComputedProperty(el, nsEditProperty::cssPosition, positionStr);
     for (;
@@ -248,7 +248,7 @@ nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt3
       mHTMLCSSUtils->GetComputedProperty(el, nsEditProperty::cssPosition, positionStr);
     }
   }
-  if (!el) el = body;
+  if (!el || useBody) el = body;
   elContent = do_QueryInterface(el);
   nsIFrame *f = ps->GetPrimaryFrameFor(elContent);
   nsIFrame *frame = ps->GetPrimaryFrameFor(content);
@@ -267,7 +267,7 @@ nsHTMLEditor::RefreshInlineTableEditingUI()
   if (!nsElement) {return NS_ERROR_NULL_POINTER; }
 
   PRInt32 xCell, yCell, wCell, hCell;
-  MsiGetElementOrigin(mInlineEditedCell, xCell, yCell);
+  MsiGetElementOrigin(mInlineEditedCell, xCell, yCell, PR_TRUE);
 
   nsresult res = nsElement->GetOffsetWidth(&wCell);
   if (NS_FAILED(res)) return res;
