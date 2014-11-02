@@ -481,6 +481,7 @@ nsHTMLEditor::GetPositionAndDimensions(nsIDOMElement * aElement,
 
   // Is the element positioned ? let's check the cheap way first...
   PRBool isPositioned = PR_FALSE;
+  nsAutoString name;
   nsresult res = aElement->HasAttribute(NS_LITERAL_STRING("_moz_abspos"), &isPositioned);
   if (NS_FAILED(res)) return res;
   if (!isPositioned) {
@@ -528,9 +529,12 @@ nsHTMLEditor::GetPositionAndDimensions(nsIDOMElement * aElement,
       if (!nsElement) return res;
     }
 
-    MsiGetElementOrigin(aElement, aX, aY);
-    aX += aMarginLeft + aBorderLeft;
-    aY += aMarginTop + aBorderTop;
+    MsiGetElementOrigin(aElement, aX, aY, PR_FALSE);
+    aElement->GetNodeName(name);
+    if (name.EqualsLiteral("table")) {
+      aX += aMarginLeft + aBorderLeft;
+      aY += aMarginTop + aBorderTop;
+    }
 
     res = nsElement->GetOffsetWidth(&aW);
     if (NS_FAILED(res)) return res;
