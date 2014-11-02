@@ -899,7 +899,7 @@ protected:
   // Returns the offset of an element's frame to its absolute containing block.
   nsresult GetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY);
   // Returns the offset of an element's frame to the body.
-  nsresult MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY);
+  nsresult MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY, PRBool useBody);
   nsresult GetPositionAndDimensions(nsIDOMElement * aElement,
                                     PRInt32 & aX, PRInt32 & aY,
                                     PRInt32 & aW, PRInt32 & aH,
