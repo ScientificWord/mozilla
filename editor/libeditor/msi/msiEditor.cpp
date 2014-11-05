@@ -2230,7 +2230,7 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
         " msub msup msubsup mover munder munderover mrow ");
       nsString foundTags;
       nsString foundTags2;
-      PRBool fSkipChanges;
+      PRBool fSkipChanges = PR_FALSE;
       nodeAncestorsOfType(specialTags, focusNode, foundTags);
       nodeAncestorsOfType(specialTags, anchorNode, foundTags2);
       if (!foundTags.Equals(foundTags2)) fSkipChanges = PR_TRUE;
