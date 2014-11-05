@@ -3761,6 +3761,7 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
   }
   else if (name.EqualsLiteral("math") && deletingInputbox)
   {
+//  BBM: took out and restored 2014-11-05  
     ed->GetNodeLocation(elt, address_of(startnode), &offset);
     retval = PR_TRUE;
     ed->DeleteNode(elt);
@@ -3894,24 +3895,24 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
     }
     PRBool isInComplexTransaction;
     ed->GetInComplexTransaction(&isInComplexTransaction);
-      // Some special handling when node is in math, and the next character in the math is in an <mo>.
-      // The cursor isn't really where we'd like it because of problems with cursor display in mo's.
-    // if (nsHTMLEditUtils::IsMath(node)) {
-    //     PRUint16 NodeType;
-    //     node->GetNodeType(&NodeType);
-    //     while (node && ((NodeType != nsIDOMNode::TEXT_NODE) || nodeIsWhiteSpace(node, 0, (PRInt32)(PRUint32)(-1)))) {
-    //       if (NodeType == nsIDOMNode::TEXT_NODE) {
-    //           node->GetNextSibling(getter_AddRefs(node));
-    //       } else {
-    //           node->GetFirstChild(getter_AddRefs(node));
-    //       }
-    //       node->GetNodeType(&NodeType);         
-    //     }
-    //     if (node) {
-    //       nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
-    //       isEmpty = PR_FALSE;
-    //     }
-    // }
+// Some special handling when node is in math, and the next character in the math is in an <mo>.
+// The cursor isn't really where we'd like it because of problems with cursor display in mo's.
+// if (nsHTMLEditUtils::IsMath(node)) {
+//     PRUint16 NodeType;
+//     node->GetNodeType(&NodeType);
+//     while (node && ((NodeType != nsIDOMNode::TEXT_NODE) || nodeIsWhiteSpace(node, 0, (PRInt32)(PRUint32)(-1)))) {
+//       if (NodeType == nsIDOMNode::TEXT_NODE) {
+//           node->GetNextSibling(getter_AddRefs(node));
+//       } else {
+//           node->GetFirstChild(getter_AddRefs(node));
+//       }
+//       node->GetNodeType(&NodeType);         
+//     }
+//     if (node) {
+//       nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
+//       isEmpty = PR_FALSE;
+//     }
+// }
 
     done = !(isEmpty && node && !isInComplexTransaction);
     if (node && isEmpty && !isInComplexTransaction) {
