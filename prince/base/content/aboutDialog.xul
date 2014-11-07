@@ -8,7 +8,7 @@
 <!ENTITY % brandDTD SYSTEM "chrome://prince/locale/branding/brand.dtd" >
 %brandDTD;
 ]>
-<!--JLF - Localization pass on 6/25/2012-->
+
 <dialog xmlns:html="http://www.w3.org/1999/xhtml"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         id="aboutDialog"
@@ -17,8 +17,7 @@
         title="&aboutDialog.title;"
         screenX="40"
         screenY="40"
-        persist="screenX screenY width height"
-        >
+        persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/about.js"/>
   <tabbox>
