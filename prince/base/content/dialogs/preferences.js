@@ -124,6 +124,31 @@ function skinChanged()
 //  chromedoc.getElementById("EditorToolbox").customizeDone(true);
 }
 
+function getColorAndUpdatePref(id)
+{
+  var colorWell; 
+  colorWell = document.getElementById(id);
+  if (!colorWell) return;
+  var color = getValueFromControl(colorWell);
+  // Don't allow a blank color, i.e., using the "default"
+  var colorObj = { NoDefault:true, Type:"Rule", TextColor:color, PageColor:0, Cancel:false };
+  var alphaVal;
+  if (colorWell.getAttribute("hasAlpha") == "true")
+  {
+    alphaVal = colorWell.getAttribute("alpha");
+    if (color && color.length > 6)
+      colorObj.TextColor = color.substr(0, color.length - 2);
+    if (alphaVal && alphaVal.length)
+    {
+      colorObj.alpha = twoHexDigitsToNumber(alphaVal);
+      if (colorObj.alpha == Number.NaN)
+        colorObj.alpha = 255;
+    }
+    else
+      colorObj.alpha = 255;
+  }
+}
+
 
 function writeComputePreferences()
 {
@@ -506,11 +531,11 @@ function onChangeUnits(unitBox)
 }
 
 
-function getColorAndUpdate(id)
+function getColorAndUpdatePref(id)
 {
   var colorWell = document.getElementById(id);
   if (!colorWell) return;
-  var color;
+  var color = colorWell.getAttribute("color");
 
   var colorObj = { NoDefault: false, Type: "Rule", TextColor: color, PageColor: 0, Cancel: false };
   window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
@@ -1040,6 +1065,35 @@ function elementDisabledOrHidden(anElement)
   }
   return rv;
 }
+
+// Stolen from Mozilla -- needs modification
+function GetColorAndUpdatePref(aType, aButtonID)
+{
+  // Don't allow a blank color, i.e., using the "default"
+  var colorObj = { NoDefault:true, Type:"", TextColor:0, PageColor:0, Cancel:false };
+  var preference = document.getElementById("editor." + aButtonID + "_color");
+
+  if (aButtonID == "background")
+    colorObj.PageColor = preference.value;
+  else
+    colorObj.TextColor = preference.value;
+
+  colorObj.Type = aType;
+
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "_blank", "chrome,close,titlebar,modal", "", colorObj);
+
+  // User canceled the dialog
+  if (colorObj.Cancel)
+    return;
+
+  // Update preference with picked color
+  if (aType == "Page")
+    preference.value = colorObj.BackgroundColor;
+  else
+    preference.value = colorObj.TextColor;
+}
+
+
 //function writeAPlotPref(dim, plottype, prefID, value)
 //{
 ////What about "ConfHorizontalPts", "ConfVerticalPts"?

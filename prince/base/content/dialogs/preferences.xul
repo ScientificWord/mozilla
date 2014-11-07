@@ -144,14 +144,14 @@
       <preference id="millisecondsfortaps" 
                   name="fastcursor.millisecondsfortaps" 
                   type="int"/>
+
+<!-- Graph parameters                   -->
+<!-- Frame and location -->
       <preference id="graph.HSize" 
                   name="swp.graph.HSize" 
                   type="string"/>
       <preference id="graph.VSize" 
                   name="swp.graph.VSize" 
-                  type="string"/>
-      <preference id="graph.border" 
-                  name="swp.graph.border" 
                   type="string"/>
       <preference id="graph.HMargin" 
                   name="swp.graph.HMargin" 
@@ -159,14 +159,20 @@
       <preference id="graph.VMargin" 
                   name="swp.graph.VMargin" 
                   type="string"/>
-      <preference id="graph.padding" 
-                  name="swp.graph.padding" 
-                  type="string"/>
       <preference id="graph.BGColor" 
                   name="swp.graph.BGColor" 
                   type="string"/>
+      <preference id="graph.borderWidth" 
+                  name="swp.graph.borderWidth" 
+                  type="string"/>
       <preference id="graph.borderColor" 
                   name="swp.graph.borderColor" 
+                  type="string"/>
+      <preference id="graph.paddingWidth" 
+                  name="swp.graph.paddingWidth" 
+                  type="string"/>
+      <preference id="graph.paddingColor" 
+                  name="swp.graph.paddingColor" 
                   type="string"/>
       <preference id="graph.defaultUnits" 
                   name="swp.graph.defaultUnits" 
@@ -192,15 +198,17 @@
       <preference id="graph.floatPlacement" 
                   name="swp.graph.floatPlacement" 
                   type="string"/>
-      <preference id="XTickCount"
-                  name="swp.graph.XTickCount"
-                  type= "string"/>
-      <preference id="YTickCount"
-                  name="swp.graph.YTickCount"
-                  type= "string"/>
-      <preference id="ZTickCount"
-                  name="swp.graph.ZTickCount"
-                  type= "string"/>
+      <preference id="graph.orthogProj" 
+                  name="swp.graph.orthogProj" 
+                  type="bool"/>
+      <preference id="graph.keepUpVector" 
+                  name="swp.graph.keepUpVector" 
+                  type="bool"/>
+      <preference id="graph.defaultViewIntervals" 
+                  name="swp.graph.defaultViewIntervals" 
+                  type="bool"/>
+
+<!-- Axis group                   -->
       <preference id="XAxisLabel"
                   name="swp.graph.XAxisLabel"
                   type= "string"/>
@@ -210,6 +218,60 @@
       <preference id="ZAxisLabel"
                   name="swp.graph.ZAxisLabel"
                   type= "string"/>
+      <preference id="AxisFontFamily"
+                  name="swp.graph.AxisFontFamily"
+                  type= "string"/>
+      <preference id="AxisFontSize"
+                  name="swp.graph.AxisFontSize"
+                  type= "int"/>
+      <preference id="AxisFontColor"
+                  name="swp.graph.AxisFontColor"
+                  type= "string"/>
+      <preference id="AxisFontItalic"
+                  name="swp.graph.AxisItalic"
+                  type= "bool"/>
+      <preference id="AxisFontBold"
+                  name="swp.graph.AxisFontBold"
+                  type= "bool"/>
+      <preference id="AxisScaling"
+                  name="swp.graph.AxisScaling"
+                  type= "string"/>
+      <preference id="AxisEqualScaling"
+                  name="swp.graph.AxisEqualScaling"
+                  type= "bool"/>
+
+<!-- Ticks group                   -->
+
+      <preference id="TicksFontFamily"
+                  name="swp.graph.TicksFontFamily"
+                  type= "string"/>
+      <preference id="TicksFontSize"
+                  name="swp.graph.TicksFontSize"
+                  type= "int"/>
+      <preference id="TicksFontColor"
+                  name="swp.graph.TicksFontColor"
+                  type= "string"/>
+      <preference id="TicksFontItalic"
+                  name="swp.graph.TicksItalic"
+                  type= "bool"/>
+      <preference id="TicksFontBold"
+                  name="swp.graph.TicksFontBold"
+                  type= "bool"/>
+       <preference id="XTickCount"
+                  name="swp.graph.XTickCount"
+                  type= "int"/>
+       <preference id="YTickCount"
+                  name="swp.graph.YTickCount"
+                  type= "int"/>
+       <preference id="ZTickCount"
+                  name="swp.graph.ZTickCount"
+                  type= "int"/>
+       <preference id="TickMark"
+                  name="swp.graph.TickMark"
+                  type= "int"/>
+
+
+<!-- Miscellaneous                   -->
       <preference id="Dimension"
                   name="swp.graph.Dimension"
                   type=  "int"/>
@@ -219,10 +281,9 @@
       <preference id = "captionplacement"  
                    name="swp.graph.captionplacement"     
                    type = "string" />          
+<!-- End of graph properties -->
 
-      <!-- preference id="enablerealtimespell"
-                  name="swp.spellchecker.enablerealtimespell"
-                  type="bool"/ --> <!-- Commented out as it's duplicated below - rwa 050613 -->
+
       <preference id="digitsRenderedpref"
                   name="swp.user.digitsrendered"
                   type="int"
@@ -559,8 +620,8 @@
                   <textbox id="graphicsPadding" type="number" decimalplaces="2"
                     preference="defaultGraphicsPadding" class="medwidth"/>
                   <label value="&PaddingColor.label;"/>
-                  <msibutton id="graphics.padding,colorbutton" class="color-button" oncommand="getColorAndUpdate('graphics.padding.CW');">
-                    <spacer id="graphics.padding.CW" class="color-well" preference="graphics.BGColor"/>
+                  <msibutton id="graphics.padding,colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graphics.padding.CW');">
+                    <spacer id="graphics.padding.CW" class="color-well" preference="graphics.paddingColor"/>
                   </msibutton>
                 </row>
                 <row align="center">
@@ -568,7 +629,7 @@
                   <textbox id="graphicsBorder" type="number" decimalplaces="2" 
                     preference="defaultGraphicsBorderWidth" class="medwidth"/>
                   <label value="&BorderColor.label;"/>
-                  <msibutton id="graphics.border,colorbutton" class="color-button" oncommand="getColorAndUpdate('graphics.border.CW');">
+                  <msibutton id="graphics.border,colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graphics.border.CW');">
                     <spacer id="graphics.border.CW" class="color-well" preference="graphics.borderColor"/>
                   </msibutton>
                   
@@ -1087,13 +1148,13 @@
         <vbox>
           <groupbox>
           <caption label="&axisaxesscale.label;" />
-          <radiogroup id="axisscale" orient="horizontal">
+          <radiogroup id="axisscale" preference="AxisScaling" orient="horizontal">
             <radio label="&axislinear.label;"  value="LinLin"      selected="true"/>
             <radio label="&axislinlog.label;"  value="LinLog"      selected="false"/>
             <radio label="&axisloglin.label;"  value="LogLin"      selected="false"/>
             <radio label="&axisloglog.label;"  value="LogLog"      selected="false"/>
           </radiogroup>
-          <checkbox id="equalscale" label="&axisequal.label;"/>
+          <checkbox id="equalscale" preference="AxisEqualScaling" label="&axisequal.label;"/>
           </groupbox>
 
           <groupbox>
@@ -1122,8 +1183,8 @@
           <groupbox>
             <hbox align="center">
               <description>&axistickmark.label;</description>
-              <menulist id="XTickCount">
-                <menupopup preference="XTickCount"> 
+              <menulist id="TickMarkMenu">
+                <menupopup preference="TickMark"> 
                   <menuitem label="&none.label;"   value="none"/>
                   <menuitem label="&low.label;"    value="low"/>
                   <menuitem label="&normal.label;" value="normal"/>
@@ -1236,7 +1297,7 @@
         </groupbox>
         <groupbox>
         <!--JLF - note that axisframed.label is used more than once in this file. -->
-          <caption label="&axisframed.label;"/>
+          <caption label="&frame.label;"/>
           <grid>
             <columns>
               <column/>
@@ -1256,19 +1317,20 @@
               <row align="center">
                 <label value="&Padding.label;"/>
                 <textbox id="graphPadding" type="number" decimalplaces="2"
-                  preference="graph.padding" class="medwidth"/>
+                  preference="graph.paddingWidth" class="medwidth"/>
                 <label value="&PaddingColor.label;"/>
-                <msibutton id="graph.padding,colorbutton" class="color-button" oncommand="getColorAndUpdate('graph.padding.CW');">
-                  <spacer id="graph.padding.CW" class="color-well" preference="graph.BGColor"/>
+                <msibutton id="graph.padding.colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graph.padding.CW');">
+                  <spacer id="graph.padding.CW" preference="graph.paddingColor" class="color-well"/>
                 </msibutton>
               </row>
               <row align="center">
                 <label value="&BorderWidth.label;"/>
                 <textbox id="graphBorder" type="number" decimalplaces="2" 
-                  preference="graph.border" class="medwidth"/>
+                  preference="graph.borderWidth" class="medwidth"/>
                 <label value="&BorderColor.label;"/>
-                <msibutton id="graph.border,colorbutton" class="color-button" oncommand="getColorAndUpdate('graph.border.CW');">
-                  <spacer id="graph.border.CW" class="color-well" preference="graph.borderColor"/>
+                <msibutton id="graph.border.colorbutton" class="color-button"  oncommand="getColorAndUpdatePref('graph.border.CW');">
+                  <spacer id="graph.border.CW" preference="graph.borderColor" class="color-well"
+                        onchange="getColorAndUpdatePref('');"/>
                 </msibutton>
               </row>
             </rows>
@@ -1328,7 +1390,7 @@
                 </row>
                 <row>
                   <hbox>
-                    <msibutton id="plotLineColor" class="color-button" oncommand="getPlotColorAndUpdate('plotLineColorWell');" observes="plot.use1LineColor" >
+                    <msibutton id="plotLineColor" class="color-button" oncommand="getColorAndUpdatePref('plotLineColorWell');" observes="plot.use1LineColor" >
                       <spacer id="plotLineColorWell" hasAlpha="false" preference="plot.LineColor" observes="plot.colorAlphaEnabled" class="color-well"/>
                     </msibutton>
                   </hbox>
@@ -1350,7 +1412,7 @@
                   </hbox>
                   <hbox/>
                   <hbox>
-                    <msibutton id="plotBaseColor" class="color-button" oncommand="getPlotColorAndUpdate('plotBaseColorWell');" observes="plot.useBaseColor">
+                    <msibutton id="plotBaseColor" class="color-button" oncommand="getColorAndUpdatePref('plotBaseColorWell');" observes="plot.useBaseColor">
                       <spacer id="plotBaseColorWell" preference="plot.BaseColor" hasAlpha="false" observes="plot.colorAlphaEnabled" class="color-well"/>
                     </msibutton>
                   </hbox>
@@ -1368,7 +1430,7 @@
                   <hbox/>
                   <hbox/>
                   <hbox>
-                    <msibutton id="plotSecondColor" class="color-button" oncommand="getPlotColorAndUpdate('plotSecondColorWell');" observes="plot.use2FillColors" >
+                    <msibutton id="plotSecondColor" class="color-button" oncommand="getColorAndUpdatePref('plotSecondColorWell');" observes="plot.use2FillColors" >
                       <spacer id="plotSecondColorWell" preference="plot.SecondaryColor" hasAlpha="false" observes="plot.colorAlphaEnabled" class="color-well" />
                     </msibutton>
                   </hbox>
@@ -1616,15 +1678,15 @@
           <separator/>
           <hbox align="center">
             <label id="bgcolor" control="TextButton" value="&DefaultBGColor.label;" />
-            <msibutton id="bgcolorbutton" class="color-button" oncommand="getColorAndUpdate('plotCW');">
-               <spacer id="plotCW" class="color-well"/>
+            <msibutton id="bgcolorbutton" class="color-button" oncommand="getColorAndUpdatePref('plotCW');">
+               <spacer id="plotCW" preference="graph.BGColor" class="color-well"/>
             </msibutton>
           </hbox>
           <separator/>
           <vbox>
-            <checkbox id="OrthogonalProjection" label="&OrthogonalProjection.label;"/>
-            <checkbox id="KeepUp"               label="&KeepUpVector.label;"/>
-            <checkbox id="defaultviewintervals" label="&viewinterval.label;"/>
+            <checkbox id="OrthogonalProjection" preference="graph.orthogProj" label="&OrthogonalProjection.label;"/>
+            <checkbox id="KeepUp" preference="graph.keepUpVector"                label="&KeepUpVector.label;"/>
+            <checkbox id="defaultviewintervals" preference="graph.defaultViewIntervals" label="&viewinterval.label;"/>
           </vbox>
           <groupbox>
             <caption>&InitialViewIntervals.label;</caption>        
