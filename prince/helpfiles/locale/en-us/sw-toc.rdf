@@ -105,15 +105,4 @@
     </nc:subheadings>
   </rdf:Description>
  
-  <rdf:Description about="#cd-shortcuts">
-    <nc:subheadings>
-      <rdf:Seq>
-        <rdf:li> <rdf:Description ID="cd07-01" nc:name="Document Creation Shortcuts"   nc:link="cd07-01-shortcuts.xhtml"/> </rdf:li>
-        <rdf:li> <rdf:Description ID="cd07-02" nc:name="Document Editing Shortcuts"    nc:link="cd07-02-shortcuts.xhtml"/> </rdf:li>
-        <rdf:li> <rdf:Description ID="cd07-03" nc:name="Math Editing Shortcuts"        nc:link="cd07-03-shortcuts.xhtml"/> </rdf:li>
-        <rdf:li> <rdf:Description ID="cd07-04" nc:name="Document Production Shortcuts" nc:link="cd07-04-shortcuts.xhtml"/> </rdf:li>
-      </rdf:Seq>
-    </nc:subheadings>
-  </rdf:Description>
-
 </rdf:RDF>
