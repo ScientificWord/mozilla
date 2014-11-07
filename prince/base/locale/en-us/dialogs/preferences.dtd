@@ -349,7 +349,7 @@
 <!ENTITY axiscustom.label           "Custom">
 <!ENTITY axisnticks.label           "Number of X Ticks">
 <!ENTITY axisdisable.label          "Disable Tick Labeling">
-<!ENTITY axislabels.label           "Axis abels">
+<!ENTITY axislabels.label           "Axis labels">
 <!ENTITY axisxaxis.label            "X">
 <!ENTITY axisyaxis.label            "Y">
 <!ENTITY axiszaxis.label            "Z">
@@ -368,8 +368,8 @@
 <!ENTITY axisnormal.label           "Normal">
 <!ENTITY axisboxed.label            "Boxed">
 <!ENTITY axistickmark.label         "Axis Tick Marks">
-<!-- axisframed.label is also used on groupbox caption label -->
 <!ENTITY axisframed.label           "Frame">
+<!ENTITY frame.label                "Frame">
 <!ENTITY axisauto.label             "Automatic">
 
 <!ENTITY plotxrangehigh.label       "X High Range">
