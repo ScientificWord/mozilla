@@ -344,12 +344,12 @@ Graph.prototype = {
     alist = this.graphAttributeList();
     for (i = 0; i < alist.length; i++) {
       attr = alist[i];
-      value = this.getGraphAttribute(attr);
+      value = this.getValue(attr);
       if (value == null || value === "unspecified" || value === "undefined")
       {
         if (forComp && (attr == "TicksFontSize"))  //if we've set axis font size but not tick font size, want to make tick font size proportional
         {
-          value = Number(this.getGraphAttribute("AxesFontSize"));
+          value = Number(this.getValue("AxesFontSize"));
           if (value != Number.NaN)
             value = String( Math.round(4 * value/5) );
         }
@@ -409,7 +409,7 @@ Graph.prototype = {
     for (i = 0; i < this.plotLabels.length; ++i)
       DOMGs.appendChild(this.plotLabels[i].createPlotLabelDOMElement(document, forComp));
 
-    captionloc = this.getGraphAttribute("CaptionPlace");
+    captionloc = this.getValue("CaptionPlace");
     var captionNodes = DOMFrame.getElementsByTagName('caption');
     var captionNode = null;
     if (captionNodes.length > 0) {
@@ -433,7 +433,7 @@ Graph.prototype = {
       removeStylePropFromNode( DOMFrame, 'caption-side', editor);
       if (captionNode) editor.deleteNode(captionNode);
     }
-    // caption = this.getGraphAttribute("Caption");
+    // caption = this.getValue("Caption");
     // if (caption && caption.length > 0) {
     //   if (DOMCaption) {
     //     while (DOMCaption.firstChild) {
@@ -528,6 +528,9 @@ Graph.prototype = {
     else if (prefs.getPrefType(keyname) === prefs.PREF_BOOL) {
       value = prefs.getBoolPref(keyname);
     }
+    else if (prefs.getPrefType(keyname) === prefs.PREF_INT) {
+      value = prefs.getIntPref(keyname);
+    }
     if (!value)
     {
       switch(key)
@@ -558,16 +561,10 @@ Graph.prototype = {
     return value;
   },
   getGraphAttribute: function (name) {
-    if (this[name])
-      return (this[name]);
-    return null;
+    return (this[name] || null);
   },
   getValue: function (key) {
-    var value = this.getGraphAttribute(key);
-    if ((value != null) && (value !== "")) {
-      return value;
-    }
-    return (this.getDefaultValue(key));
+    return this.getGraphAttribute(key) || this.getDefaultValue(key);
   },
   getPlotValue : function(key, plotNum)
   {
@@ -586,7 +583,7 @@ Graph.prototype = {
   },
   graphCompAttributeList: function () {
     var NA = this.COMPATTRIBUTES;
-    var dim = Number(this.getGraphAttribute("Dimension"));
+    var dim = getDimension();
     if (dim === 2) {
       NA = attributeArrayRemove(NA, "ZAxisLabel");
       NA = attributeArrayRemove(NA, "OrientationTiltTurn");
@@ -603,13 +600,13 @@ Graph.prototype = {
   },
   isAnimated : function()
   {
-    var rv = false;
-    for (var jj = 0; !rv && (jj < this.plots.length); ++jj)
+    for (var jj = 0; (jj < this.plots.length); ++jj)
     {
-      if (this.plots[jj].attributes["Animate"] == "true")
-        rv = true;
+      if (this.plots[jj].attributes["Animate"] == "true") {
+        return true;
+      }
     }
-    return rv;
+    return false;
   },
   omitAttributeIfDefault : function(attr) {
     return (this.omitAttributeIfDefaultList.indexOf(attr) >= 0);
@@ -1841,6 +1838,18 @@ Frame.prototype = {
           case "pos":
             this.setFrameAttribute("pos", DOMFrame.getAttribute(att));
             break;
+          case "width":
+            this.setFrameAttribute("Width", DOMFrame.getAttribute(att));
+            break;
+          case "height":
+            this.setFrameAttribute("Height", DOMFrame.getAttribute(att));
+            break;
+          case "ltx_height":
+            this.setFrameAttribute("ltx_height", DOMFrame.getAttribute(att));
+            break;
+          case "ltx_width":
+            this.setFrameAttribute("ltx_width", DOMFrame.getAttribute(att));
+            break;
           case "placeLocation":
             if (DOMFrame.getAttribute(att).length > 0) {
               this.setFrameAttribute("placeLocation", DOMFrame.getAttribute(att));
@@ -1911,7 +1920,7 @@ Frame.prototype = {
     var needsWrapfig = false;
     try {
       graph = this.parent;
-      units = graph.getGraphAttribute("Units");
+      units = graph.getValue("Units");
       unitHandler.initCurrentUnit(units);
       attributes = this.frameAttributeList().concat(this.parent.graphAttributeList());
       for (j = 0; j < attributes.length; j++) {
@@ -1924,8 +1933,8 @@ Frame.prototype = {
           editor.setAttribute(DOMFrame, "topmargin", this.getFrameAttribute(att));
           break;
         case "Height":
-          height = Number(graph.getGraphAttribute(att));
-          editor.setAttribute(DOMFrame, "ltxheight", height);
+          height = Number(graph.getValue(att));
+          editor.setAttribute(DOMFrame, "ltx_height", height);
           heightinpx = unitHandler.getValueAs(height, "px");
           editor.setAttribute(DOMPw, "height", height);
           pwStyle += "height: "+ heightinpx + "px; ";
@@ -1946,7 +1955,8 @@ Frame.prototype = {
           frmStyle += "height: " + heightinpx + "px; ";
           break;
         case "Width":
-          width = Number(graph.getGraphAttribute(att));
+          width = Number(graph.getValue(att));
+          editor.setAttribute(DOMFrame, "ltx_width", width);
           widthinpx = unitHandler.getValueAs(width, "px");
           editor.setAttribute(DOMPw, "width", width);
           pwStyle += "width: "+ widthinpx + "px; ";
@@ -2105,7 +2115,7 @@ Frame.prototype = {
       }
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
-//      DOMObj.setAttribute("data", graph.getGraphAttribute("ImageFile"));
+//      DOMObj.setAttribute("data", graph.getValue("ImageFile"));
       editor.setAttribute(DOMPw, "style", pwStyle);
       editor.setAttribute(DOMFrame, "style", frmStyle);
       editor.setAttribute(DOMObj, "style", objStyle);
