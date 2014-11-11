@@ -63,9 +63,25 @@ function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
   var height;
   var width;
   var aspectRatio;
+  var unit;
+  var border = 0, padding = 0;
+  var node;
   if (!wrapperNode) return;
-  width = contentsNode.getAttribute(widthAtt);
-  height= contentsNode.getAttribute(heightAtt);
+  // Cope with different capitalization in plots.
+  if (wrapperNode.nodeName === "msiframe") {
+    width = wrapperNode.getAttribute(widthAtt);
+    height = wrapperNode.getAttribute(heightAtt);
+  }
+  if (!width) {
+    width = contentsNode.getAttribute(widthAtt) ||
+      wrapperNode.getAttribute("width") || wrapperNode.getAttribute("Width") || wrapperNode.getAttribute(widthAtt);
+  }
+  if (!height) {
+    height= contentsNode.getAttribute(heightAtt) ||
+      wrapperNode.getAttribute("height") || wrapperNode.getAttribute("Height") || wrapperNode.getAttribute(heightAtt);
+  }
+  unit = contentsNode.getAttribute("units") || wrapperNode.getAttribute("units") || wrapperNode.getAttribute("Units");
+
   // if (height == null && width == null) return;
   dg.frameWidthInput           = document.getElementById("frameWidthInput");
   dg.frameHeightInput          = document.getElementById("frameHeightInput");
@@ -95,6 +111,7 @@ function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
     if (dg.frameHeightInput) dg.frameHeightInput.setAttribute("disabled", true);
   }
   dg.constrainCheckbox.checked = (width == null || height == null);
+  dg.unitList.value = unit;
 }
 
 function updateMetrics()
@@ -293,7 +310,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
 //  if (v != null) dg.wrapOptionRadioGroup.value = frameUnitHandler.getValueOf(v, prefUnit)
   v = prefBranch.getCharPref("swp.graphics.border");
   if (v != null && dg.borderInput && dg.borderInput.left && dg.borderInput.right && dg.borderInput.top && dg.borderInput.bottom) 
-    dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.left.value = dg.borderInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit)
+    dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit);
   v = prefBranch.getCharPref("swp.graphics.HMargin");
   if (v != null && dg.marginInput && dg.marginInput.left && dg.marginInput.right ) dg.marginInput.left.value = dg.marginInput.right.value = frameUnitHandler.getValueOf(v, prefUnit)
   v = prefBranch.getCharPref("swp.graphics.VMargin");
