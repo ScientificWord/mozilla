@@ -132,7 +132,7 @@ msiMnCoalesce::Coalesce(nsIEditor * editor,
             }
             else {
               nodeHasMark = msiUtils::NodeHasCaretMark(m_mathmlNode, caretPos, onText);
-              newCaretPos = caretPos + newTextLen;
+              newCaretPos = caretPos; //+ newTextLen; The caret is on the left node, so the pos doesn't get incremented
             }
             if (newCaretPos <= msiIMathMLEditingBC::LAST_VALID ||
                 newCaretPos <= msiIMathMLEditingBC::TO_LEFT    ||
