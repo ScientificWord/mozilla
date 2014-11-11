@@ -402,6 +402,7 @@ function isEmptyMathEditControl(editCtrl)
 function isEmptyMathNode(aNode)
 {
   var rv = true;
+  var ii;
   var kids;
   if (!aNode)
     return true;
