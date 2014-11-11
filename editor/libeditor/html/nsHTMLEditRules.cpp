@@ -3645,8 +3645,11 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
       node2 = do_QueryInterface(parent);
       if (empty) editor->DeleteNode(node);
       node = node2;
-      node->GetTagName(name);
-      ed->IsEmptyNode(node, &empty, PR_TRUE, PR_FALSE, PR_FALSE);
+      if (node) {
+        node->GetTagName(name);
+        ed->IsEmptyNode(node, &empty, PR_TRUE, PR_FALSE, PR_FALSE);
+      } else
+        empty = PR_FALSE;  // get out of the loop
     }
     if (name.EqualsLiteral("math") && empty) 
     {
@@ -4096,14 +4099,15 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   res = mEditor->GetStartNodeAndOffset(curSelection, getter_AddRefs(startNode), &startOffset);
   PRUint16 nodeType;
   res = startNode->GetNodeType(&nodeType);
-  if (nodeType == nsIDOMNode::TEXT_NODE) {
-    nsCOMPtr<nsIDOMNode> parent;
-    if (startOffset > 0) deltaOffset = 1;
-    nsEditor * editor = static_cast<nsEditor*>(mHTMLEditor);
-    editor->GetNodeLocation(startNode, &parent, &startOffset);
-    startNode = parent;
-    startOffset += deltaOffset;
-  }
+  // BBM: WTF?
+  // if (nodeType == nsIDOMNode::TEXT_NODE) {
+  //   nsCOMPtr<nsIDOMNode> parent;
+  //   if (startOffset > 0) deltaOffset = 1;
+  //   nsEditor * editor = static_cast<nsEditor*>(mHTMLEditor);
+  //   editor->GetNodeLocation(startNode, &parent, &startOffset);
+  //   startNode = parent;
+  //   startOffset += deltaOffset;
+  // }
   hackSelectionCorrection(mHTMLEditor, startNode, startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
