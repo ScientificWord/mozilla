@@ -37,7 +37,6 @@ function getFirstElementByTagName(node, name) {
 // if the document has an element matching an attribute name, 
 //   extract the value of the attribute and put it in the document
 function Startup(){ 
-  debugger;
   var plotwrapper, units, alist, id, i, plotNumControl, numPlots, firstActivePlot, 
     plot, theStringSource, oldval, captionnode, placeLocation, obj, frame, topWindow;
   var graphEditorControl, radiusEditorControl;
@@ -59,14 +58,14 @@ function Startup(){
 
     topWindow = msiGetTopLevelWindow();
     if (topWindow && topWindow.document && topWindow.document.getElementById("vcamactive") 
-         && (topWindow.document.getElementById("vcamactive").getAttribute("hidden")=="false"))
+      ) //   && (topWindow.document.getElementById("vcamactive").getAttribute("hidden")=="false"))
       queryVCamValues(obj, graph, graphnode, true);
 
-    units = frame["units"];
+    units = frame.getAttribute("units");
     if (!units || units.length === 0) 
     {
       units = "pt";
-      frame["units"] = units;
+      frame.setAttribute("units") = units;
     }
     setHasNaturalSize(false);
     setCanRotate(false);
@@ -143,7 +142,7 @@ function Startup(){
 
     testUseSignificantDigits();
     // Caption placement
-    document.getElementById("CaptionPlace").value = graph["CaptionPlace"];
+    document.getElementById("captionLocation").value = graph.CaptionPlace;
   //  checkEnableFloating();
   }
   catch(e) {
@@ -951,7 +950,7 @@ function radioGroupSetCurrent (elemID, oldval) {
 function initKeyList()
 {
   gDialog.markerList = new msiKeyMarkerList(window);
-  gDialog.markerList.setUpTextBoxControl(document.getElementById("Key"));
+  gDialog.markerList.setUpTextBoxControl(document.getElementById("keyInput"));
 }
 
 function tagConflicts()
