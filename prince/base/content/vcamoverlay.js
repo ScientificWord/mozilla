@@ -465,17 +465,22 @@ function onVCamTreeChange(treeEvent)
 
 function onVCamDragLeave(x, y) {}
 
-function queryVCamValues(graph, domGraph, bUserSetIfChanged)
+function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
 {
   var cameraVals = null;
   var coordSysVals = {XAxisTitle : "x", YAxisTitle : "y",
                       ViewingBoxXMin : "-5", ViewingBoxXMax : "5",
                       ViewingBoxYMin : "-5", ViewingBoxYMax : "5"};
   var camera, vcamDoc, kidNode, coordSysNode, sceneNode
-  var dim = this["dimension"];
+  var dim = graph.Dimension;
   var sceneNodeName = "Scene" + dim + "d";
+  var docElement;
   var coordSysNodeName = "CoordinateSystem" + dim + "d";
   var aProp;
+
+  if (obj.wrappedJSObject) {
+    obj = obj.wrappedJSObject;
+  }
   
   if (dim == 3)
   {
@@ -486,11 +491,11 @@ function queryVCamValues(graph, domGraph, bUserSetIfChanged)
     coordSysVals.ViewingBoxZMin = "-5";
     coordSysVals.ViewingBoxZMax = "5";
     coordSysVals.ZAxisTitle = "z";
-    if (this.camera)
+    if (graph.camera)
     {
       for (aProp in cameraVals)
       {
-        cameraVals[aProp] = String(this.camera[aProp]);
+        cameraVals[aProp] = String(graph.camera[aProp]);
       }
 //      aVal = camera.positionX;
 //      aVal = camera.positionY;
@@ -509,29 +514,41 @@ function queryVCamValues(graph, domGraph, bUserSetIfChanged)
       graph.setCameraValsFromVCam(cameraVals, domGraph, bUserSetIfChanged);
     }
   }
-  if (this.isAnimated)
+  if (graph.isAnimated() )
   {
     animVals = {beginTime : 0, endTime : 10, currentTime : 0};
     for (aProp in animVals)
-      animVals[aProp] = String(this[aProp]);
+      animVals[aProp] = String(graph[aProp]);
     animVals.framesPerSecond = 5;
     if (graph)
       graph.setAnimationValsFromVCam(animVals, domGraph, bUserSetIfChanged);
   }
-  vcamDoc = this.document;
+  vcamDoc = obj.document;
   if (vcamDoc)
   {
-    sceneNode = vcamDoc.documentElement.getChildByTagName(sceneNodeName)
-    coordSysNode = sceneNode.getChildByTagName(coordSysNodeName);
-    if (coordSysNode)
-    {
-      kidNode = coordSysNode.firstChild;
-      while (kidNode)
-      {
-        if (kidNode.nodeName in coordSysVals)
-          coordSysVals[kidNode.nodeName] = String(kidNode.firstChild.nodeValue);
-        kidNode = kidNode.nextSibling;
+    try {
+      if (vcamDoc.wrappedJSObject) {
+        vcamDoc = vcamDoc.wrappedJSObject;
       }
+      docElement = vcamDoc.documentElement;
+      if (docElement.wrappedJSObject) {
+        docElement = docElement.wrappedJSObject;
+      }
+      sceneNode = getChildByTagName(docElement,sceneNodeName)
+      coordSysNode = getChildByTagName(sceneNode,coordSysNodeName);
+      if (coordSysNode)
+      {
+        kidNode = coordSysNode.firstChild;
+        while (kidNode)
+        {
+          if (kidNode.nodeName in coordSysVals)
+            coordSysVals[kidNode.nodeName] = String(kidNode.firstChild.nodeValue);
+          kidNode = kidNode.nextSibling;
+        }
+      }
+    }
+    catch(e) {
+      msidump(e.message);
     }
   }
   if (!coordSysNode)
