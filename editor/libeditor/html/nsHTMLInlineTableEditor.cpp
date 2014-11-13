@@ -239,13 +239,19 @@ nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt3
   aElement->GetParentNode(getter_AddRefs(elNode));
   if (elNode && !useBody) {
     el = do_QueryInterface(elNode);
-    mHTMLCSSUtils->GetComputedProperty(el, nsEditProperty::cssPosition, positionStr);
-    for (;
-      el && !positionStr.EqualsLiteral("absolute") && !positionStr.EqualsLiteral("relative") && !positionStr.EqualsLiteral("fixed");
-      el->GetParentNode(getter_AddRefs(elNode))) 
-    {
+    while (elNode && !el) {
+      elNode->GetParentNode(getter_AddRefs(elNode));
       el = do_QueryInterface(elNode);
+    }
+    if (el) {
       mHTMLCSSUtils->GetComputedProperty(el, nsEditProperty::cssPosition, positionStr);
+      while (el && !positionStr.EqualsLiteral("absolute") && !positionStr.EqualsLiteral("relative") && !positionStr.EqualsLiteral("fixed")) {
+        el->GetParentNode(getter_AddRefs(elNode));
+        el = do_QueryInterface(elNode);
+        if (el) {
+          mHTMLCSSUtils->GetComputedProperty(el, nsEditProperty::cssPosition, positionStr);
+        }
+      }
     }
   }
   if (!el || useBody) el = body;
