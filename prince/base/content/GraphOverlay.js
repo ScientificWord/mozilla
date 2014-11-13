@@ -223,6 +223,7 @@ Graph.prototype = {
     return false;
   },
   computeGraph: function (editorElement, filename) {
+    // filename is used only as a destination for logging
     // call the compute engine to create an image
     ComputeCursor(editorElement);
     var oldError, newError;
@@ -231,7 +232,9 @@ Graph.prototype = {
       try {
         oldError = GetCurrentEngine().getEngineErrors();  //to compare below
         var topWin = msiGetTopLevelWindow();
-        topWin.msiComputeLogger.Sent4("plotfuncCmd", filename, str, "");
+        if (filename) {
+          topWin.msiComputeLogger.Sent4("plotfuncCmd", filename, str, "");
+        }
         var out = GetCurrentEngine().plotfuncCmd(str);
         msiComputeLogger.Received(out);
       }
@@ -317,14 +320,12 @@ Graph.prototype = {
     var DOMGraph = document.createElementNS(htmlns, "graph");
     var DOMGs = document.createElementNS(htmlns, "graphSpec");
     var DOMFrame = document.createElementNS(htmlns, "msiframe");
-    var DOMPw = document.createElementNS(htmlns, "plotwrapper");
     var DOMObj = document.createElementNS(htmlns, "object");
     var DOMCaption = document.createElementNS(htmlns,"imagecaption");
     DOMGraph.appendChild(DOMGs);
     DOMGraph.appendChild(DOMFrame);
-    DOMFrame.appendChild(DOMPw);
     DOMFrame.appendChild(DOMCaption);
-    DOMPw.appendChild(DOMObj);
+    DOMFrame.appendChild(DOMObj);
     this.reviseGraphDOMElement(DOMGraph, forComp, editorElement, optplot);
     return DOMGraph;
   },
@@ -333,12 +334,11 @@ Graph.prototype = {
     var htmlns = "http://www.w3.org/1999/xhtml";
     var editor = msiGetEditor(editorElement);
     var DOMGs = DOMgraph.getElementsByTagName("graphSpec")[0];
-    var DOMPw = DOMgraph.getElementsByTagName("plotwrapper")[0];
     var DOMFrame = DOMgraph.getElementsByTagName("msiframe")[0];
     var DOMCaption = DOMFrame.getElementsByTagName("caption")[0];
     var attr, value, alist, i, domPlots, plot, domPlotLabels, status, caption, captionloc, child, optnum;
     var graphData = new graphVarData(this);
-    this.frame.reviseFrameDOMElement(DOMFrame, DOMPw, forComp, editorElement);
+    this.frame.reviseFrameDOMElement(DOMFrame, forComp, editorElement);
 
     // loop through graph attributes and insert them
     alist = this.graphAttributeList();
@@ -433,24 +433,12 @@ Graph.prototype = {
       removeStylePropFromNode( DOMFrame, 'caption-side', editor);
       if (captionNode) editor.deleteNode(captionNode);
     }
-    // caption = this.getValue("Caption");
-    // if (caption && caption.length > 0) {
-    //   if (DOMCaption) {
-    //     while (DOMCaption.firstChild) {
-    //       editor.deleteNode(DOMCaption.firstChild);
-    //     }
-    //   }
-    //   else {
-    //     DOMCaption = document.createElementNS(htmlns,"imagecaption");
-    //     DOMFrame.appendChild(DOMCaption);
-    //   }
-      caption="<caption>"+caption+"</caption>";
-      insertXML(editor, caption, DOMCaption, 0);
-    //}
+    caption="<caption>"+caption+"</caption>";
+    insertXML(editor, caption, DOMCaption, 0);
   },
 
   extractGraphAttributes: function (DOMGraph) {
-    var key, value, i, plot, plotno, plotLabel, DOMGs, DOMPlots, DOMFrame, DOMPw, DOMPlotLabels;
+    var key, value, i, plot, plotno, plotLabel, DOMGs, DOMPlots, DOMFrame, DOMPlotLabels;
     if (!DOMGraph) return;
     DOMGs = DOMGraph.getElementsByTagName("graphSpec");
     if (DOMGs.length > 0) {
@@ -469,10 +457,6 @@ Graph.prototype = {
     if (DOMFrame.length > 0) {
       DOMFrame = DOMFrame[0];
     }
-    DOMPw = DOMGraph.getElementsByTagName("plotwrapper");
-    if (DOMPw.length > 0) {
-      DOMPw = DOMPw[0];
-    }
     DOMPlots = DOMGraph.getElementsByTagName("plot");
     for (i = 0; i < DOMPlots.length; i++) {
       plot = new Plot(this.getDimension(), DOMPlots[i].getAttribute("PlotType"));
@@ -488,7 +472,7 @@ Graph.prototype = {
       plotLabel.extractPlotLabelAttributes(DOMPlotLabels[i]);
     }
     if (DOMFrame){
-      this.frame.extractFrameAttributes(DOMFrame, DOMPw);
+      this.frame.extractFrameAttributes(DOMFrame);
     }
     this.extractCaption(DOMGraph);
   },
@@ -1815,7 +1799,7 @@ Frame.prototype = {
     this.attributes[name] = value;
     this.setModified(name);
   },
-  extractFrameAttributes: function (DOMFrame, DOMPw) {
+  extractFrameAttributes: function (DOMFrame) {
     var i, att, attlist, len;
     var graph = this.parent;
     attlist = this.FRAMEDOMATTRIBUTES;
@@ -1877,44 +1861,13 @@ Frame.prototype = {
         }
       }
     }
-//     attlist = this.WRAPPERATTRIBUTES;
-//     len = attlist.length;
-//     if (DOMPw){
-//     for (i = 0; i < len; i++) {
-//       att = attlist[i];
-//         if (DOMPw.hasAttribute(att)) {
-//           switch (att) {
-//             case "borderw":
-//               this.setFrameAttribute("border", DOMPw.getAttribute(att));
-//               break;
-//             case "padding":
-//               this.setFrameAttribute("padding", DOMPw.getAttribute(att));
-//               break;
-// //            case "imageheight":
-// //              graph.setGraphAttribute("Height", DOMPw.getAttribute(att));
-// //              break;
-// //            case "imagewidth":
-// //              this.setFrameAttribute("Width", DOMPw.getAttribute(att));
-// //              break;
-//             case "border-color":
-//               this.setFrameAttribute("borderColor", hexcolor(DOMPw.getAttribute(att)));
-//               break;
-//             case "background-color":
-//               this.setFrameAttribute("BGColor", hexcolor(DOMPw.getAttribute(att)));
-//               break;
-//             default: break;
-//           }
-//         }
-//       }
-    // }
   },
   
-  reviseFrameDOMElement: function (DOMFrame, DOMPw, forComp, editorElement) {
+  reviseFrameDOMElement: function (DOMFrame, forComp, editorElement) {
     var editor = msiGetEditor(editorElement);
     var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, pos, placeLocation, floattts, fltatt, ch, captionlocation, x;
-    var DOMObj = DOMPw.getElementsByTagName("object")[0];
+    var DOMObj = DOMFrame.getElementsByTagName("object")[0];
     var frmStyle = "";
-    var pwStyle = "";
     var objStyle = "";
     var unitHandler = new UnitHandler();
     var needsWrapfig = false;
@@ -1936,8 +1889,7 @@ Frame.prototype = {
           height = Number(graph.getValue(att));
           editor.setAttribute(DOMFrame, "ltx_height", height);
           heightinpx = unitHandler.getValueAs(height, "px");
-          editor.setAttribute(DOMPw, "height", height);
-          pwStyle += "height: "+ heightinpx + "px; ";
+          editor.setAttribute(DOMFrame, "height", height);
           objStyle += "height: "+ heightinpx + "px; ";
           // dimensions of outer msiframe need to be adjusted for border and padding
           x = this.getFrameAttribute("border");
@@ -1958,8 +1910,7 @@ Frame.prototype = {
           width = Number(graph.getValue(att));
           editor.setAttribute(DOMFrame, "ltx_width", width);
           widthinpx = unitHandler.getValueAs(width, "px");
-          editor.setAttribute(DOMPw, "width", width);
-          pwStyle += "width: "+ widthinpx + "px; ";
+          editor.setAttribute(DOMFrame, "width", width);
           objStyle += "width: "+ widthinpx + "px; ";
           x = this.getFrameAttribute("border");
           if (x) {
@@ -1974,23 +1925,19 @@ Frame.prototype = {
           frmStyle += "width: " + widthinpx + "px; ";
           break;
         case "border":
-          editor.setAttribute(DOMPw, "borderw", this.getFrameAttribute(att));
-          pwStyle += "border: " + unitHandler.getValueStringAs(this.getFrameAttribute(att),"px") +
-            " solid " + cssColor(this.getFrameAttribute("borderColor")) + "; ";
+          editor.setAttribute(DOMFrame, "borderw", this.getFrameAttribute(att));
           break;
         case "padding":
-          editor.setAttribute(DOMPw, "padding", this.getFrameAttribute(att));
-          pwStyle += "padding: " + unitHandler.getValueStringAs(this.getFrameAttribute(att), "px") + "; ";
+          editor.setAttribute(DOMFrame, "padding", this.getFrameAttribute(att));
           break;
         case "Units":
-          editor.setAttribute(DOMPw, "units", units);
           editor.setAttribute(DOMFrame, "units", units);
           break;
         case "BGColor":
-          editor.setAttribute(DOMPw, "background-color", hexcolor(this.getFrameAttribute(att)));
+          editor.setAttribute(DOMFrame, "background-color", hexcolor(this.getFrameAttribute(att)));
           break;
         case "borderColor":
-          editor.setAttribute(DOMPw, "border-color", hexcolor(this.getFrameAttribute(att)));
+          editor.setAttribute(DOMFrame, "border-color", hexcolor(this.getFrameAttribute(att)));
           break;
         case "placement":
           pos = this.getFrameAttribute(att);
@@ -2021,7 +1968,7 @@ Frame.prototype = {
           break;
         }
       }
-      editor.setAttribute(DOMPw, "msi_resize", "true");
+      editor.setAttribute(DOMFrame, "msi_resize", "true");
 
       // what about overhang?
       // Now we build the CSS style for the object and the plotwrapper
@@ -2082,18 +2029,6 @@ Frame.prototype = {
         if (bLoadIt)
         {
           var vcamUri = msiMakeAbsoluteUrl(graph.getGraphAttribute("ImageFile"),editorElement);
-//          var vcamPath = msiPathFromFileURL(msiURIFromString(vcamUri));
-//          if (DOMObj.addEvent) //the object is connected to the VCam interface - use its "load" member
-//          {
-//            DOMObj.load(vcamUri);
-//            msidump("In reviseDOMFrameElement, DOMObj.addEvent exists and we're calling load [" + vcamUri + "]; afterwards DOMObj.dimension reports [" + DOMObj.dimension + "]\n");
-//            DOMObj.setAttribute("data", vcamUri);
-//            msidump("In reviseDOMFrameElement, DOMObj.addEvent exists and we've called load and set object's data attribute; afterwards DOMObj.dimension reports [" + DOMObj.dimension + "]\n");
-//          }
-//          else
-//          {
-//            msidump("In reviseDOMFrameElement, DOMObj.addEvent doesn't exist and we're changing data attribute\n");
-
           if (!existingObjFile || !existingObjFile.length)
           {
             msidump("In reviseDOMFrameElement, changing data attribute to [" + vcamUri + "]\n");
@@ -2116,10 +2051,9 @@ Frame.prototype = {
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
 //      DOMObj.setAttribute("data", graph.getValue("ImageFile"));
-      editor.setAttribute(DOMPw, "style", pwStyle);
       editor.setAttribute(DOMFrame, "style", frmStyle);
       editor.setAttribute(DOMObj, "style", objStyle);
-      return (DOMPw);
+      return (DOMFrame);
     }
     catch (e) {
       msidump("reviseFrameDOMElement "+e.message);
@@ -2244,11 +2178,7 @@ function nonmodalRecreateGraph(graph, DOMGraph, editorElement) {
   // parent (i.e., deleted). No parent, no changes to the picture.
   try {
 
-//    var parent = DOMGraph.parentNode;
-//    var editor = msiGetEditor(editorElement);
     graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
-//    insertGraph(DOMGraph, graph, editorElement);
-//    editor.deleteNode(DOMGraph);
   }
   catch (e) {
     dump("ERROR: Recreate Graph failed, line 715 in GraphOverlay.js\n");
@@ -2292,7 +2222,7 @@ function insertGraph(siblingElement, graph, editorElement) {
   }
   GetCurrentEngine().clearEngineStrings();  //clear errors before starting a plot
   //  dump("In insertGraph, about to computeGraph.\n");
-  graph.computeGraph(editorElement, longfilename);
+  graph.computeGraph(editorElement);
   graph.setGraphAttribute("ImageFile", "plots/" + leaf);
   var gDomElement = graph.createGraphDOMElement(false);
 
@@ -2385,7 +2315,8 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
       // set caption-side in style
     }
     // BBM: need to set up style as well
-    var style = frame.getAttribute("style");
+    var style = frame.getAttribute("style")||"";
+
     style = style.replace(/margin[^;]+;/,'');
     style = style.replace(/border[^;]+;/,'');
     style = style.replace(/background[^;]+;/,'');
@@ -2772,56 +2703,20 @@ function parseQueryReturn(out, graph, plot) {
 //    commas = false;
   var ii;
 
-  // (1) try to identify all of the variables
-  //     Variables are indicated by <mi>, but these might also be mathnames of functions
-//  var count = 0;
-//  var index = 0;
-//  var start;
-//  while ((start = out.indexOf("<mi", index)) >= 0) {
-//    mathvars = true;
-//    start = out.indexOf(">", start);
-//    var stop = out.indexOf("</mi>", start) + 1; // find </mi>
-//    index = stop + 1;
-//    var v = out.slice(start + 1, stop - 1);
-//    if (nameNotIn(v, stack)) {
-//      stack.push(v);
-//    }
-//  }
-//  for (var i = 0; i < stack.length; i++) {
-//    if (varNotFun(stack[i])) {
-//      variableList.push(stack[i]);
-//    }
-//  }
   plot.element["OriginalExpression"] = plot.element["Expression"];  //store original form - should display it in dialog
   var fixedOut = runFixup(runFixup(out));
   plot.element["Expression"] = fixedOut;  //this may be sharpened below, but for now
-
-//  var varsList;
-//  varsList = GetCurrentEngine().getVariables(fixedExpr);
-//  var foundVariables = splitMathMLList(varsList);
-//  var isParametric = (foundVariables && foundVariables.length == dim);
-
   var varData = new graphVarData( graph );
   var retVariables;
-
-//  // check variables
-//  var varsNeeded = plotVarsNeeded(dim, pt, animated);
-//  var altvariableList;
-
   // (2) Given a list of potential variables, match them to x,y,z, and t
   try
   {
     retVariables = doAnalyzeVars(varData, plot);
   } catch(ex) 
   {msidump("Error in GraphOverlay.js, parseQueryReturn: " + ex + "\n");}
-
-//  for (ii = 0; ii < variableList.length; ++ii)
-//    variableList[ii] = variableList[ii].textContent;
-//  variableList = matchVarNames(variableList, animated);
   if (retVariables)
     graphSaveVariablesAndDefaults(graph, plot, retVariables);
 
-//  if (variableList) graphSaveVars(variableList, plot);
 
   //rwa - following are now done during doAnalyzeVars() - if the plottype is to change, we should know it before
   //      setting the variables!
@@ -2836,29 +2731,6 @@ function parseQueryReturn(out, graph, plot) {
   // (5) some special handling for polar, spherical, and cylindrical
   //     build an expression that looks like [r,t] for polar, [r,t,p] for spherical and cylindrical
   //     Allow constants. For animations, if there is only 1 var, it's the animation var.
-//  if ((pt === "polar") || (pt === "spherical") || (pt === "cylindrical")) {
-//    if (!bParametric)
-//    {
-//////    if (!commas) { // create [fn, xvar]
-////      if ( (!mathvars) || ((animated) && (actualVarCount(variableList) < 2)) ) {
-////        // first arg is a constant, the rest are new
-////        var animvar = variableList[0];
-////        variableList[0] = newVar("1");
-////        plot.element["XVar"] = wrapMath(wrapmi(variableList[0]));
-////        variableList[1] = newVar("2");
-////        plot.element["YVar"] = wrapMath(wrapmi(variableList[1]));
-////        if (animated) {
-////          if (pt === "polar") {
-////            plot.element["YVar"] = wrapMath(wrapmi(animvar));
-////          } else {
-////            plot.element["ZVar"] = wrapMath(wrapmi(animvar));
-////          }
-////        }
-//      fixedOut = runFixup(createPolarExpression(plot));
-////      }
-////      plot.element["Expression"] = fixedOut;  //This will be done in the next step anyway...
-//    }
-//  }
 
   // (6) add the ilk="enclosed-list" attribute to <mfenced>
   if (fixedOut) {
@@ -3248,30 +3120,6 @@ function orderMathNodes(node1, node2)
   return 0;
 }
 
-//function extractVariableData(graph, plotnum)
-//{
-//  var dim = graph["Dimension"];
-//  var fixedExpr = runFixup(runFixup(graph.getPlotValue("Expression", plotnum)));
-//  var splitExpr = splitMathMLExpression(fixedExpr);
-//  var bParametric = (splitExpr.length == dim);
-//  var aPlotType = graph.getPlotValue("PlotType",plotnum);
-//  var bAnimated = (graph.getPlotValue("Animate",plotnum)=="true");
-//  var varsNeeded = plotVarsNeeded(dim, aPlotType, bAnimated);
-//
-//  var rawvarsList =  GetCurrentEngine().getVariables(fixedExpr);
-//  var foundVarsList = splitMathMLList(rawvarsList);
-//  foundVarsList.sort(orderMathNodes);
-//  var textVars = [];
-//  var xmlVars = [];
-//  for (var ii = 0; ii < foundVarsList.length; ++ii)
-//  {
-//    textVars.push( foundVarsList[ii].textContent );
-//    xmlVars.push( graph.ser.serializeToString(foundVarsList[ii]) );
-//  }
-//
-//  retval = {mPlotType : aPlotType, mVarsNeeded : varsNeeded, mbAnimated : bAnimated,
-//            mExpr : fixedExpr, mVarList : foundVarsList, xmlVarList : xmlVars );
-//}
 
 var plotVarDataBase = 
 {
