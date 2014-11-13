@@ -1092,8 +1092,8 @@ function openDocument()
   fp.init(window, GetString("OpenAppFile"), Components.interfaces.nsIFilePicker.modeOpen);
   msiSetFilePickerDirectory(fp, MSI_EXTENSION);
   fp.appendFilter(GetString("AppDocs"),"*."+MSI_EXTENSION);
-  fp.appendFilter(GetString("XHTMLFiles"),"*.xhtml; *.xht");
-  fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
+//  fp.appendFilter(GetString("XHTMLFiles"),"*.xhtml; *.xht");
+//  fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
 
   try {
     fp.show();
