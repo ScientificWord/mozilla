@@ -268,9 +268,8 @@ function GetValuesFromDialog(){
   graph.markViewRangesUserSet( !document.getElementById("defaultviewintervals").checked );
 
   // grab anything that's in the plot attribute list
-  // we save data for only the currently displayed plot, since the others are
+  // we save data for only the currently displayed plot, since the others are 
   // already saved.
-//  var alist  = Plot.prototype.plotAttributeList();                                
   var plotno = Number(graph.getGraphAttribute("plotnumber"));
   var plot = graph.plots[plotno];
   var alist  = plot.plotAttributeList();                                
@@ -293,14 +292,9 @@ function GetValuesFromDialog(){
   if (tempFrame.length > 0) {
     tempFrame = tempFrame[0];
   }
-  var tempPw = graphnode.getElementsByTagName("msiframe");
-  if (tempPw.length > 0) {
-    tempPw = tempPw[0];
-  }
   var f = tempFrame.cloneNode(true);
-  var p = tempPw.cloneNode(true);
-  setFrameAttributes(f, p, editor);  // reuse code in msiFrameOverlay.
-  frame.extractFrameAttributes(f, p);
+  setFrameAttributes(f, f, editor);  // reuse code in msiFrameOverlay.
+  frame.extractFrameAttributes(f, f);
   var oldpt = plot.attributes["PlotType"];                        
   var newpt;
   if (dim == 3) {
@@ -353,50 +347,6 @@ function GetValuesFromDialog(){
   if (status == "New")
      plot.computeQuery();
 
-  // AXES TAB
-//  // GraphAxesScale
-////  if (document.getElementById("AxisScale")) {
-////    var newval = document.getElementById("AxisScale").selectedItem.value;
-//  newval = getValueFromControl("AxisScale");
-//  oldval = graph.getValue ("AxisScale");  
-//  if (newval != oldval) {                                        
-//    graph.setGraphAttribute ("AxisScale", newval);
-//  }                                                               
-////  }
-//  // GraphEqualScaling
-////  if (document.getElementById("equalscale")) {                            
-////    var newval = document.getElementById("equalscale").checked ? "true" : "false";
-//  newval = getValueFromControl("equalscale");
-//  oldval = graph.getValue ("EqualScaling");  
-//  if (newval != oldval) {                                        
-//    graph.setGraphAttribute ("EqualScaling", newval);
-//  }                                                               
-////  }
-//  // GraphAxesTips
-//  if (document.getElementById("AxesTips")) {                            
-//    var newval = document.getElementById("AxesTips").checked ? "true" : "false";
-//    var oldval = graph.getValue ("AxesTips");  
-//    if (newval != oldval) {                                        
-//      graph.setGraphAttribute ("AxesTips", newval);
-//    }                                                               
-//  }
-//  // GraphGridLines
-//  if (document.getElementById("gridlines")) {                            
-//    var newval = document.getElementById("GridLines").checked ? "true" : "false";
-//    var oldval = graph.getValue ("GridLines");  
-//    if (newval != oldval) {                                        
-//      graph.setGraphAttribute ("GridLines", newval);
-//    }                                                               
-//  }
-//  // GraphAxesType
-//  if (document.getElementById("axistype")) {                            
-//    var index  = document.getElementById("axistype").selectedIndex;
-//    var newval = document.getElementById("axistype").selectedItem.value;
-//    var oldval = graph.getValue ("AxesType"); 
-//    if (newval != oldval) {                                        
-//      graph.setGraphAttribute ("AxesType", newval);
-//    }                                                               
-//  }
 
   // Layout Tab
   // printAttribute
@@ -430,60 +380,6 @@ function GetValuesFromDialog(){
     newval = document.getElementById("CaptionPlace").value;
     graph.setGraphAttribute ("CaptionPlace", newval);
   }
-  // View Tab
-  // Orientation
-//  if (document.getElementById("CameraLocationX")) {
-//    var camLocX = document.getElementById("CameraLocationX").value;
-//    graph.setGraphAttribute ("CameraLocationX", camLocX);
-//  }
-//  if (document.getElementById("CameraLocationY")){
-//    var camLocY = document.getElementById("CameraLocationY").value;
-//    graph.setGraphAttribute ("CameraLocationY", camLocY);
-//  }
-//
-//  if ( document.getElementById("CameraLocationZ") ){
-//    var camLocZ = document.getElementById("CameraLocationZ").value;
-//    graph.setGraphAttribute ("CameraLocationZ", camLocZ);
-//  }
-//
-//  if ( document.getElementById("FocalPointX") ){
-//    var focalPtX = document.getElementById("FocalPointX").value;
-//    graph.setGraphAttribute ("FocalPointX", focalPtX);
-//  }
-//  if ( document.getElementById("FocalPointY") ){
-//    var focalPtY = document.getElementById("FocalPointY").value;
-//    graph.setGraphAttribute ("FocalPointY", focalPtY);
-//  }
-//
-//  if ( document.getElementById("FocalPointZ") ) {
-//    var focalPtZ = document.getElementById("FocalPointZ").value;
-//    graph.setGraphAttribute ("FocalPointZ", focalPtZ);
-//  }
-//
-//  if (document.getElementById("UpVectorX")){
-//    var upVecX = document.getElementById("UpVectorX").value;
-//    graph.setGraphAttribute ("UpVectorX", upVecX);
-//  }
-//  if (document.getElementById("UpVectorY")){
-//    var upVecY = document.getElementById("UpVectorY").value;
-//    graph.setGraphAttribute ("UpVectorY", upVecY);
-//  }
-//  if (document.getElementById("UpVectorZ")){
-//    var upVecZ = document.getElementById("UpVectorZ").value;
-//    graph.setGraphAttribute ("UpVectorZ", upVecZ);
-//  }
-//  if (document.getElementById("ViewingAngle")){
-//     var va = document.getElementById("ViewingAngle").value;
-//     graph.setGraphAttribute ("ViewingAngle", va);
-//  }
-//  if (document.getElementById("OrthogonalProjection")){
-//     var op = document.getElementById("OrthogonalProjection").checked ? "true" : "false";
-//     graph.setGraphAttribute ("OrthogonalProjection", op);
-//  }
-//  if (document.getElementById("KeepUp")){
-//    var ku = document.getElementById("KeepUp").checked ? "true" : "false";
-//    graph.setGraphAttribute ("KeepUp", ku);
-//  }
 }                          
 
 // for conformals, save the horizontal and vertical samples
