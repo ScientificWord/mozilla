@@ -37,19 +37,20 @@ function getFirstElementByTagName(node, name) {
 // if the document has an element matching an attribute name, 
 //   extract the value of the attribute and put it in the document
 function Startup(){ 
-  var plotwrapper, units, alist, id, i, plotNumControl, numPlots, firstActivePlot, 
+  var units, alist, id, i, plotNumControl, numPlots, firstActivePlot, 
     plot, theStringSource, oldval, captionnode, placeLocation, obj, frame, topWindow;
   var graphEditorControl, radiusEditorControl;
   try {
     gDialog = {};
     graphnode = window.arguments[2];
+    if (graphnode.nodeName !== 'graph')
+      graphnode = findtagparent(graphnode, 'graph');
     var editorElement = window.arguments[0];
     graph = new Graph();
 
     // get graph attributes
     graph.extractGraphAttributes(graphnode);
     frame = getFirstElementByTagName(graphnode,"msiframe");
-    plotwrapper = getFirstElementByTagName(graphnode,"plotwrapper");
     obj = getFirstElementByTagName(graphnode, "object");
     if (obj && obj.hasAttribute("data")) gInsertNewObject = false;
 

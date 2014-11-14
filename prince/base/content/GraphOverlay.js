@@ -1872,6 +1872,8 @@ Frame.prototype = {
     var unitHandler = new UnitHandler();
     var needsWrapfig = false;
     try {
+      setFrameAttributes(DOMFrame, DOMFrame, editor, false);
+      return;
       graph = this.parent;
       units = graph.getValue("Units");
       unitHandler.initCurrentUnit(units);
@@ -1976,6 +1978,7 @@ Frame.prototype = {
       var isdisplay = this.getFrameAttribute("placement") === "display";
       var lmargin = unitHandler.getValueStringAs(this.getFrameAttribute("HMargin"), "px");
       var rmargin = lmargin;
+      if (isdisplay) lmargin = rmargin = 'auto';
       var vmargin = unitHandler.getValueStringAs(this.getFrameAttribute("VMargin"), "px");
       if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="full")) {
         frmStyle = "margin: " + vmargin + " auto; ";
@@ -2093,17 +2096,20 @@ function newPlotFromText(currentNode, expression, editorElement, selection) {
     var m = e.message;
   }
 }
-function graphClickEvent(cmdstr, editorElement) {
+function graphClickEvent(cmdstr, editorElement, element) {
   /**----------------------------------------------------------------------------------*/
   // Handle a mouse double click on a graph image in the document. This is bound in editor.js.
   // This function should be deprecated. It handled <img> elements inside <graph> elements
+  var element;
   try {
     if (!editorElement) editorElement = msiGetActiveEditorElement();
     var selection = msiGetEditor(editorElement).selection;
-    if (selection) {
-      var element = findtagparent(selection.focusNode, "graph");
-      if (element) formatRecreateGraph(element, cmdstr, editorElement);
+    if (selection && !element) {
+      element = findtagparent(selection.focusNode, "graph");
     }
+    else 
+      element = findtagparent(element, "graph");
+    if (element) formatRecreateGraph(element, cmdstr, editorElement);
   }
   catch (exc) {
     AlertWithTitle("Error in GraphOverlay.js", "Error in graphClickEvent: " + exc);
