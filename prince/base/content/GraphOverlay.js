@@ -1872,8 +1872,6 @@ Frame.prototype = {
     var unitHandler = new UnitHandler();
     var needsWrapfig = false;
     try {
-      setFrameAttributes(DOMFrame, DOMFrame, editor, false);
-      return;
       graph = this.parent;
       units = graph.getValue("Units");
       unitHandler.initCurrentUnit(units);
@@ -1912,7 +1910,6 @@ Frame.prototype = {
           width = Number(graph.getValue(att));
           editor.setAttribute(DOMFrame, "ltx_width", width);
           widthinpx = unitHandler.getValueAs(width, "px");
-          editor.setAttribute(DOMFrame, "width", width);
           objStyle += "width: "+ widthinpx + "px; ";
           x = this.getFrameAttribute("border");
           if (x) {
@@ -1963,7 +1960,7 @@ Frame.prototype = {
         case "floatPlacement":
           if (this.getFrameAttribute("placement") === "float")
           {
-            editor.setAttribute(DOMFrame, "placement", this.getFrameAttribute(att));
+            editor.setAttribute(DOMFrame, "placement", "float");
           }
           break;
         default:
@@ -1973,15 +1970,14 @@ Frame.prototype = {
       editor.setAttribute(DOMFrame, "msi_resize", "true");
 
       // what about overhang?
-      // Now we build the CSS style for the object and the plotwrapper
+      // Now we build the CSS style for the object and the frame
       var isfloat = this.getFrameAttribute("placement") === "float";
       var isdisplay = this.getFrameAttribute("placement") === "display";
       var lmargin = unitHandler.getValueStringAs(this.getFrameAttribute("HMargin"), "px");
       var rmargin = lmargin;
-      if (isdisplay) lmargin = rmargin = 'auto';
       var vmargin = unitHandler.getValueStringAs(this.getFrameAttribute("VMargin"), "px");
       if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="full")) {
-        frmStyle = "margin: " + vmargin + " auto; ";
+        frmStyle += "margin: " + vmargin + " auto; ";
       }
       else {
         if (isfloat) {

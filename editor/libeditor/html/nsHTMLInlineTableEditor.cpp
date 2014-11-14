@@ -258,7 +258,7 @@ nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt3
   elContent = do_QueryInterface(el);
   nsIFrame *f = ps->GetPrimaryFrameFor(elContent);
   nsIFrame *frame = ps->GetPrimaryFrameFor(content);
-  if (!f) return NS_OK;
+  if (!f || !frame) return NS_OK;
   nsPoint off = frame->GetOffsetTo(f);
   aX = nsPresContext::AppUnitsToIntCSSPixels(off.x);
   aY = nsPresContext::AppUnitsToIntCSSPixels(off.y);
