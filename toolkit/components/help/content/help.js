@@ -538,7 +538,7 @@ function nsHelpStatusHandler() {
 nsHelpStatusHandler.prototype = {
 
     onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus) {
-      msiCheckLoadStatus(aWebProgress, aRequest, aStateFlags, aStatus);
+//      msiCheckLoadStatus(aWebProgress, aRequest, aStateFlags, aStatus);
     },
     onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress,
         aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) {},
