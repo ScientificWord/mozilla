@@ -2946,31 +2946,20 @@ function EditorDblClick(event)
 {
   // We check event.explicitOriginalTarget here because .target will never
   // be a textnode (bug 193689)
-//  var editorElement = GetEditorElementForDocument(event.currentTarget.ownerDocument);
-
   var editorElement = msiGetEditorElementFromEvent(event);
   msiSetActiveEditor(editorElement, false);
+  var element = event.explicitOriginalTarget;
 
-  if (event.explicitOriginalTarget)
-  {
-    // Only bring up properties if clicked on an element or selected link
-    var element;
+  if (!element) {
     try {
-      element = event.explicitOriginalTarget.QueryInterface(Components.interfaces.nsIDOMElement);
+      element = msiGetEditor(editorElement).getSelectedElement("href");
     } catch (e) {}
+  }
 
-    if (!element)
-      try {
-//        var editorElement = GetEditorElementForDocument(event.currentTarget.ownerDocument);
-        element = msiGetEditor(editorElement).getSelectedElement("href");
-      } catch (e) {}
-
-    if (element)
-    {
-      dump("In EditorDblClick, element is [" + element.nodeName + "].\n");
-      goDoPrinceCommand("cmd_objectProperties", element, editorElement);
-      event.preventDefault();
-    }
+  if (element)
+  {
+    goDoPrinceCommand("cmd_objectProperties", element, editorElement);
+    event.preventDefault();
   }
 }
 
@@ -10084,12 +10073,13 @@ function FillInHTMLTooltip(tooltip)
 // handle events on prince-specific elements here, or call the default goDoCommand()
 function goDoPrinceCommand (cmdstr, element, editorElement)
 {
+  var elementName;
   try
   {
     if (!editorElement)
       editorElement = findEditorElementForDocument(element.ownerDocument);
 
-    var elementName = element.localName;
+    elementName = element.localName;
     if ((elementName == "object" || elementName == "embed") && !element.hasAttribute("msigraph"))
     { // if this is one of our graphics objects ...
       openObjectTagDialog(elementName, element, editorElement);
@@ -10131,7 +10121,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       openTeXButtonDialog('texb', element);
     }
-    else if (elementName == "msiframe")
+    else if (elementName == "msiframe" && element.parentNode.nodeName !== "graph")
     {
       msiFrame(editorElement, null, element);
     }
@@ -10159,24 +10149,24 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       openFontSizeDialog(elementName,element);
     }
-    else if ((elementName == "img") || (elementName=="graph") || elementName=="plotwrapper")
+    else if ((elementName == "img") || (elementName=="graph") || (elementName == "msiframe"))
     {
-      var bIsGraph = (element.tagName == "plotwrapper");
-      if (!bIsGraph)
-      {
-        for (var ix = 0; !bIsGraph && (ix < element.childNodes.length); ++ix)
-        {
-          if (element.childNodes[ix].tagName == "plotwrapper")
-            bIsGraph = true;
-        }
-      }
+      var bIsGraph = (elementName !== "img");
+      // if (!bIsGraph)
+      // {
+      //   for (var ix = 0; !bIsGraph && (ix < element.childNodes.length); ++ix)
+      //   {
+      //     if (element.childNodes[ix].tagName == "plotwrapper")
+      //       bIsGraph = true;
+      //   }
+      // }
       if (bIsGraph)
       {
 //        dump("In goDoPrinceCommand, bIsGraph is true.\n");
         var theWindow = window;
         if (!("graphClickEvent" in theWindow))
           theWindow = msiGetTopLevelWindow(window);
-        theWindow.graphClickEvent(cmdstr, editorElement);
+        theWindow.graphClickEvent(cmdstr, editorElement, element);
       }
 //      else
 //        dump("In goDoPrinceCommand, bIsGraph is false.\n");
@@ -10187,7 +10177,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       if (!("graphClickEvent" in theWindow))
         theWindow = msiGetTopLevelWindow(window);
       // theWindow.graphObjectClickEvent(cmdstr,element, editorElement);
-      theWindow.graphClickEvent(cmdstr, editorElement);
+      theWindow.graphClickEvent(cmdstr, editorElement, element);
     }
     else
     {
