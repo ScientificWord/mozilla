@@ -1,7 +1,8 @@
-// Copyright (c) 2004-2013 MacKichan Software, Inc. All rights reserved
+// Copyright (c) 2004-2013 MacFKichan Software, Inc. All rights reserved
+/* jshint ignore:start */
 #include productname.inc
-
 #ifndef PROD_SW
+/* jshint ignore:end */
 Components.utils.import("resource://app/modules/os.jsm");
 //----------------------------------------------------------------------------------
 // ************ Graph section ******
@@ -28,7 +29,7 @@ function Graph() {
 
 Graph.prototype = {
   //  BBM: Some of the following attributes below really belong on the msiframe object or the VCam object
-  // Namely: ImageFile===obj.data, Width, Height, Units, BGColor. Some of these probably should appear *only*
+  // Namely: ImageFile====obj.data, Width, Height, Units, BGColor. Some of these probably should appear *only*
   // elsewhere: width, height, units
   COMPATTRIBUTES: ["ImageFile", "XAxisLabel", "YAxisLabel", "ZAxisLabel", "Width", "Height",
                               "Units", "AxesType", "EqualScaling", "EnableTicks", "XTickCount",
@@ -90,8 +91,9 @@ Graph.prototype = {
     var nCount = 0;
     for (var ii = 0; ii < this.plots.length; ++ii)
     {
-      if (this.plots[ii].getPlotAttribute("PlotStatus") != "Deleted")
+      if (this.plots[ii].getPlotAttribute("PlotStatus") !== "Deleted") {
         ++nCount;
+      }
     }
     return nCount;
   },
@@ -109,10 +111,12 @@ Graph.prototype = {
   },
   markUserSet: function(attr, bUserSet) {
     var nIndex = this.userSetAttrs.indexOf(attr);
-    if ((nIndex >= 0) && !bUserSet)
+    if ((nIndex >= 0) && !bUserSet) {
       this.userSetAttrs.splice(nIndex,1);
-    else if ((nIndex < 0) && bUserSet)
+    }
+    else if ((nIndex < 0) && bUserSet) {
       this.userSetAttrs.push(attr);
+    }
   },
   cameraValuesUserSet : function()
   {
@@ -171,8 +175,9 @@ Graph.prototype = {
   },
   varNameFromFoundVariable : function(plotno, whichVar)
   {
-    if (plotno < this.plots.length)
+    if (plotno < this.plots.length) {
       return this.plots[plotno].varNameFromFoundVariable(whichVar);
+    }
     return false;
   },
   computeGraph: function (editorElement, filename) {
@@ -193,7 +198,7 @@ Graph.prototype = {
         msiComputeLogger.Exception(e);
       }
       newError = GetCurrentEngine().getEngineErrors();
-      if (newError && (newError.length > 0) && (newError != oldError))
+      if (newError && (newError.length > 0) && (newError !== oldError))
       {
         this.errStr = newError;
         alert("Computation Error", "Compute Graph: " + this.errStr);
@@ -228,14 +233,14 @@ Graph.prototype = {
     }
     finally {
       if (plot) {
-        plot.attributes["PlotStatus"] = status;
+        plot.attributes.PlotStatus = status;
       }
       else {
         msidump("In GraphOverlay.js, Graph.computeQuery, no plot was passed in!");
         //This really shouldn't happen - if it does, only plots[0] should be marked as "Inited"
-        end = (status == "Inited") ? 1 : this.plots.length;
+        end = (status === "Inited") ? 1 : this.plots.length;
         for (i = 0; i < end; i++) {
-          this.plots[i].attributes["PlotStatus"] = status;
+          this.plots[i].attributes.PlotStatus = status;
         }
       }
     }
@@ -298,14 +303,16 @@ Graph.prototype = {
       value = this.getValue(attr);
       if (value == null || value === "unspecified" || value === "undefined")
       {
-        if (forComp && (attr == "TicksFontSize"))  //if we've set axis font size but not tick font size, want to make tick font size proportional
+        if (forComp && (attr === "TicksFontSize"))  //if we've set axis font size but not tick font size, want to make tick font size proportional
         {
           value = Number(this.getValue("AxesFontSize"));
-          if (value != Number.NaN)
+          if (value !== Number.NaN) {
             value = String( Math.round(4 * value/5) );
+          }
         }
-        else
+        else {
           DOMGs.removeAttribute(attr);
+        }
       }
       else if (forComp && this.omitAttributeIfDefault(attr) && !this.isUserSet(attr))
       {
@@ -317,8 +324,9 @@ Graph.prototype = {
       }
     }
     DOMGs.setAttribute("errStr", this.errStr);  //preserve this so we'll know not to try activating VCam, etc.
-    if (this.userSetAttrs.length)
+    if (this.userSetAttrs.length) {
       DOMGs.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
+    }
 
     // if the optional plot number was specified, include that plot first (since the query routine only operates on the first plot)
     // otherwise, for each plot, create a <plot> element
@@ -334,8 +342,9 @@ Graph.prototype = {
       if (status === "ERROR") {
         for (i = 0; (optnum < 0) && (i < this.plots.length); ++i)
         {
-          if (this.plots[i] === optplot)
+          if (this.plots[i] === optplot) {
             optnum = i;
+          }
         }
         this.errStr = "ERROR, Plot number " + optnum + " " + this.errStr;
       } else {
@@ -344,8 +353,9 @@ Graph.prototype = {
     }
     for (i = 0; i < this.plots.length; i++) {
       plot = this.plots[i];
-      if (optplot && (plot === optplot))
+      if (optplot && (plot === optplot)) {
         continue;   //we already got this one
+      }
       status = this.plots[i].attributes.PlotStatus;
       if (status === "ERROR") {
         this.errStr = "ERROR, Plot number " + i + " " + this.errStr;
@@ -357,23 +367,24 @@ Graph.prototype = {
     for (i = domPlotLabels.length - 1; i >= 0; i--) {
       editor.deleteNode(domPlotLabels[i]);
     }
-    for (i = 0; i < this.plotLabels.length; ++i)
+    for (i = 0; i < this.plotLabels.length; ++i) {
       DOMGs.appendChild(this.plotLabels[i].createPlotLabelDOMElement(document, forComp));
+    }
 
     captionloc = this.getValue("CaptionPlace");
-    var captionNodes = DOMFrame.getElementsByTagName('caption');
+    var captionNodes = DOMFrame.getElementsByTagName("caption");
     var captionNode = null;
     if (captionNodes.length > 0) {
       captionNode = captionNodes[0];
     }
-    if (captionloc && captionloc != "none") {
+    if (captionloc && captionloc !== "none") {
       var tlm;
       tlm = editor.tagListManager;
       DOMFrame.setAttribute("captionloc", captionloc);
       setStyleAttributeOnNode(DOMFrame, "caption-side", captionloc, editor);
       // if there is no caption node, create an empty one.
       if (!captionNode) {
-         captionNode = editor.createElementWithDefaults('caption');
+         captionNode = editor.createElementWithDefaults("caption");
          var namespace = { value: null };
          captionNode.appendChild(tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, captionNode.ownerDocument));
          DOMFrame.appendChild(captionNode);
@@ -381,8 +392,10 @@ Graph.prototype = {
     } else
     {
       DOMFrame.removeAttribute("captionloc");
-      removeStyleAttributeFamilyOnNode( DOMFrame, 'caption-side', editor);
-      if (captionNode) editor.deleteNode(captionNode);
+      removeStyleAttributeFamilyOnNode( DOMFrame, "caption-side", editor);
+      if (captionNode) {
+        editor.deleteNode(captionNode);
+      }
     }
     caption="<caption>"+caption || ""+"</caption>";
     insertXML(editor, caption, DOMCaption, 0);
@@ -390,7 +403,9 @@ Graph.prototype = {
 
   extractGraphAttributes: function (DOMGraph) {
     var key, value, i, plot, plotno, plotLabel, DOMGs, DOMPlots, DOMFrame, DOMPlotLabels;
-    if (!DOMGraph) return;
+    if (!DOMGraph) {
+      return;
+    }
     DOMGs = DOMGraph.getElementsByTagName("graphSpec");
     if (DOMGs.length > 0) {
       DOMGs = DOMGs[0];
@@ -519,7 +534,7 @@ Graph.prototype = {
   graphCompAttributeList: function () {
     var NA = this.COMPATTRIBUTES;
     var dim = getDimension();
-    if (dim === 2) {
+    if (Number(dim) === 2) {
       NA = attributeArrayRemove(NA, "ZAxisLabel");
       NA = attributeArrayRemove(NA, "OrientationTiltTurn");
     }
@@ -537,7 +552,7 @@ Graph.prototype = {
   {
     for (var jj = 0; (jj < this.plots.length); ++jj)
     {
-      if (this.plots[jj].attributes["Animate"] == "true") {
+      if (this.plots[jj].attributes.Animate === "true") {
         return true;
       }
     }
@@ -583,17 +598,17 @@ Graph.prototype = {
     if ((this[name] && this[name].length) && (!value || !value.length))
       return true;
     if (sigDigits)
-      return ( useSignificantDigits(value, sigDigits) != useSignificantDigits(this[name], sigDigits) );
-    if (name == "userSetAttrs")
+      return ( useSignificantDigits(value, sigDigits) !== useSignificantDigits(this[name], sigDigits) );
+    if (name === "userSetAttrs")
     {
       for (var ii = 0; ii < this.userSetAttrs.length; ++ii)
       {
-        if (this.userSetAttrs[ii] != value[ii])
+        if (this.userSetAttrs[ii] !== value[ii])
           return true;
       }
       return false;
     }
-    return (!(value == this[name]));
+    return (value !== this[name]);
   },
   significantDigitsInVal : function(attr)
   {
@@ -606,7 +621,6 @@ Graph.prototype = {
       case "ViewingBoxZMin":
       case "ViewingBoxZMax":
         return 4;
-      break;
       case "CameraLocationX":
       case "CameraLocationY":
       case "CameraLocationZ":
@@ -617,12 +631,9 @@ Graph.prototype = {
       case "UpVectorY":
       case "UpVectorZ":
         return 4;
-      break;
       case "ViewingAngle":
         return 3;
-      break;
       default:           return 0;
-      break;
     }
   },
   setPlotValue : function(name, plotnum, value) {
@@ -672,11 +683,12 @@ Graph.prototype = {
       msidump("Got camera vals from VCam:\n");
       var attrName;
       var graphSpec;
+      var aProp;
       var bChanged = false;
       var graphSpecList = domGraph.getElementsByTagName("graphSpec");
       if (graphSpecList && graphSpecList.length)
         graphSpec = graphSpecList[0];
-      for (var aProp in cameraVals)
+      for (aProp in cameraVals)
       {
         msidump("  " + aProp + " = " + cameraVals[aProp] + "\n");
         attrName = this.mapVCamNameToAttr(aProp);
@@ -689,7 +701,7 @@ Graph.prototype = {
       }
       if (bUserSetIfChanged && bChanged)
       {
-        for (var aProp in cameraVals)
+        for (aProp in cameraVals)
         {
           attrName = this.mapVCamNameToAttr(aProp);
           if (attrName)
@@ -707,10 +719,11 @@ Graph.prototype = {
       var attrName;
       var bChanged = false;
       var graphSpec;
+      var aProp;
       var graphSpecList = domGraph.getElementsByTagName("graphSpec");
       if (graphSpecList && graphSpecList.length)
         graphSpec = graphSpecList[0];
-      for (var aProp in animVals)
+      for (aProp in animVals)
       {
         msidump("  " + aProp + " = " + animVals[aProp] + "\n");
         attrName = this.mapVCamNameToAttr(aProp);
@@ -723,7 +736,7 @@ Graph.prototype = {
       }
       if (bUserSetIfChanged && bChanged)
       {
-        for (var aProp in animVals)
+        for (aProp in animVals)
         {
           attrName = this.mapVCamNameToAttr(aProp);
           if (attrName)
@@ -741,10 +754,11 @@ Graph.prototype = {
       var attrName;
       var bChanged = false;
       var graphSpec;
+      var aProp;
       var graphSpecList = domGraph.getElementsByTagName("graphSpec");
       if (graphSpecList && graphSpecList.length)
         graphSpec = graphSpecList[0];
-      for (var aProp in coordSysVals)
+      for (aProp in coordSysVals)
       {
         msidump("  " + aProp + " = " + coordSysVals[aProp] + "\n");
         attrName = this.mapVCamNameToAttr(aProp);
@@ -757,7 +771,7 @@ Graph.prototype = {
       }
       if (bUserSetIfChanged && bChanged)
       {
-        for (var aProp in coordSysVals)
+        for (aProp in coordSysVals)
         {
           attrName = this.mapVCamNameToAttr(aProp);
           if (attrName)
@@ -822,7 +836,7 @@ Graph.prototype = {
         var dropData, str;
         var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
         dragService = dragService.QueryInterface(Components.interfaces.nsIDragService);
-        netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
         dropData = DNDUtils.getData("text/html", 0);
         str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
         //      dragService.endDragSession(true);
@@ -839,7 +853,7 @@ Graph.prototype = {
       var dropData, str;
       var dragService = Components.classes["@mozilla.org/widget/dragservice;1"].getService();
       dragService = dragService.QueryInterface(Components.interfaces.nsIDragService);
-      netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+      netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
       dropData = DNDUtils.getData("text/html", 0);
       str = dropData.QueryInterface(Components.interfaces.nsISupportsString);
       thisGraph.scheduleNewPlotFromText(__domGraph, str.data, __editorElement);
@@ -858,10 +872,10 @@ function Plot(dim, ptype) {
   this.modFlag = {};
   this.parent = null;
   this.dimen = dim;
-  this.attributes["PlotType"]= ptype;
+  this.attributes.PlotType = ptype;
   for (i = 0; i < this.PLOTATTRIBUTES.length; i++) {
     attr = this.PLOTATTRIBUTES[i];
-    if (attr != "PlotType")
+    if (attr !== "PlotType")
       this.attributes[attr] = this.getDefaultPlotValue(attr);
     this.modFlag[attr] = false;
   }
@@ -872,7 +886,8 @@ function Plot(dim, ptype) {
   }
 }
 
-Plot.prototype = {
+Plot.prototype =
+{
   constructor: Plot,
   PLOTATTRIBUTES: ["PlotStatus", "PlotType",
                            "LineStyle", "PointStyle", "LineThickness", "LineColor",
@@ -892,23 +907,19 @@ Plot.prototype = {
   {
     if (isParametric)
     {
-      if (dim == 3)
+      if (Number(dim) === 3)
       {
         switch(plottype)
         {
           case "curve":
           case "tube":
             return [["t"],["s"],["u"],["x"]];
-          break;
           case "cylindrical":
             return [["u","v",],["\u03b8","z"],["x","y"]];  //[u,v],[theta,z],[x,y]
-          break;
           case "spherical":
             return [["u","v"],["\u03b8","\u03d5"],["x","y"]];  //[u,v],[theta,phi],[x,y]
-          break;
           default:
             return [["u","v"],["x","y"]];
-          break;
         }
       }
       else  //dim presumably 2
@@ -917,40 +928,32 @@ Plot.prototype = {
         {
           case "polar":
             return [["\u03b8"],["t"],["s"],["u"],["x"]];  //theta,t,s,u,x
-          break;
           case "conformal":  //What would a user want from a conformal parametric plot??? Probably ends in an error anyway...
             return [["z"],["t"],["s"],["u"],["x"]];
-          break;
           default:
             return [["t"],["s"],["u"],["x"]];
-          break;
         }
       }
     }
     else
     {
-      if (dim == 3)
+      if (Number(dim) === 3)
       {
         switch(plottype)
         {
           case "curve":
           case "tube":   //What would a user want from a curve or tube plot NOT given parametrically? Again, probably isn't going to work anyway.
             return [["x","y"],["u","v"],["s","t"]];
-          break;
           case "cylindrical":
             return [["\u03b8","z"],["x","y"]];  //[theta,z],[x,y] - Here "y" would be interpreted as the actual z-axis...
-          break;
           case "spherical":
             return [["\u03b8","\u03d5"],["x","y"]];  //[theta,phi],[x,y]
-          break;
           case "implicit":
           case "gradient":
           case "vectorField":
             return [["x","y","z"],["u","v","w"]];
-          break;
           default:
             return [["x","y"],["u","v"],["s","t"]];
-          break;
         }
       }
       else
@@ -959,22 +962,17 @@ Plot.prototype = {
         {
           case "polar":
             return [["\u03b8"],["x"],["u"]];  //theta,x,u
-          break;
           case "implicit":
           case "inequality":
           case "gradient":
           case "vectorField":
             return [["x","y"],["u","v"],["s","t"]];
-          break;
           case "conformal":
             return [["z"],["w"],["\u03b6"],["x"]];  //z,w,zeta,x
-          break;
           case "ode":
             return [["x"],["t"],["s"]];
-          break;
           default:
             return [["x"],["u"],["t"],["s"]];
-          break;
         }
       }
     }
@@ -1007,19 +1005,19 @@ Plot.prototype = {
   {
     if (!this.hasVariable(whichVar))
       return false;
-    return (this.attributes["DefaultedVars"].indexOf(whichVar) < 0);
+    return (this.attributes.DefaultedVars.indexOf(whichVar) < 0);
   },
   isAnimated : function()
   {
-    return (this.attributes["Animate"] === "true");
+    return (this.attributes.Animate === "true");
   },
   hasVariable : function(whichVar)
   {
-    if (whichVar == "AnimVar")
+    if (whichVar === "AnimVar")
     {
-      return (this.attributes["Animate"] === "true");
+      return (this.attributes.Animate === "true");
     }
-    var plottype = this.attributes["PlotType"];
+    var plottype = this.attributes.PlotType;
     var nWhichVar = Graph.prototype.plotVariablePropertyNames.indexOf(whichVar);
     return ((nWhichVar >= 0) && (nWhichVar < plotVarsNeeded(this.getDimension(), plottype, false)) );
       //pass "false" for animated to plotVarsNeeded, as we don't care about animation here
@@ -1029,7 +1027,9 @@ Plot.prototype = {
      // do the plot attributes as DOM attributes of <plot>
     var status = this.PlotStatus;
     var attr;
-    if (status != "Deleted") {
+    var tNode;
+
+    if (status !== "Deleted") {
       var plotData = graphData ? graphData.findPlotData(this) : null;
       if (plotData)
       {
@@ -1053,11 +1053,11 @@ Plot.prototype = {
         if (forComp || (this.element[attr])) {
           var DOMEnode = doc.createElement(attr);
           var textval = this.element[attr];
-          if ((attr == "Expression") && forComp)
+          if ((attr === "Expression") && forComp)
             textval = this.adjustExpressionForComputation(plotData);
-          if ((textval !=="") && (textval !== "unspecified")) {
+          if ((textval !== "") && (textval !== "unspecified")) {
             textval = runFixup(runFixup(textval));
-            var tNode = (new DOMParser()).parseFromString (textval, "text/xml");
+            tNode = (new DOMParser()).parseFromString (textval, "text/xml");
             DOMEnode.appendChild (tNode.documentElement);
             DOMPlot.appendChild (DOMEnode);
           }
@@ -1075,10 +1075,7 @@ Plot.prototype = {
       case "New":
       case "Deleted":
       case "ERROR":
-        return this.element["Expression"];
-      break;
-      default:
-      break;
+        return this.element.Expression;
     }
     switch( plotData.plottype )
     {
@@ -1089,25 +1086,23 @@ Plot.prototype = {
         {
           return runFixup(runFixup(createPolarExpression(this)));
         }
-      break;
-
+        break;
       default:
-      break;
+        return this.element.Expression;
     }
-    return this.element["Expression"];
   },
   //the following is really only correcting for "old-style" animated plots which may have been saved - where the
   //  animation var isn't identified as such, but is just an extra variable
   checkAnimationVar : function(plotData) {
-    if (this.attributes["Animate"] === "true")
+    if (this.attributes.Animate === "true")
     {
-      if (!this.element["AnimVar"] || !this.element["AnimVar"].length)
+      if (!this.element.AnimVar || !this.element.AnimVar.length)
       {
         var numPlainVars = plotData.numPlainVariablesNeeded();
         var extraVar = plotData.getVariableByIndex(numPlainVars);
         if (extraVar && extraVar.length)
         {
-          this.element["AnimVar"] = extraVar;
+          this.element.AnimVar= extraVar;
           plotData.setVariableByIndex(numPlainVars, "");
         }
       }
@@ -1118,7 +1113,7 @@ Plot.prototype = {
     // do the plot attributes as DOM attributes of <plot>
     var status = this.PlotStatus;
     var attr;
-    if (status != "Deleted") {
+    if (status !== "Deleted") {
       var DOMPlot = doc.createElement("plot");
       var attrs = (forComp) ? this.plotCompAttributeList() : this.plotAttributeList();
       for (var i = 0; i < attrs.length; i++) {
@@ -1201,7 +1196,7 @@ Plot.prototype = {
       value = this.attributes[key];
     else if (key in this.element)
       value = this.element[key];
-    if ((value !== null) && (value !== "")) {
+    if ((value != null) && (value !== "")) {
       return value;
     }
     switch(key)
@@ -1210,25 +1205,24 @@ Plot.prototype = {
       case "YPts":
       case "ZPts":
         return this.getDefaultNumPlotPoints(key);
-      break;
       case "AnimateStart":
       case "AnimateEnd":
       case "AnimateFPS":
         if (this.getPlotValue("AnimCommonOrCustomSettings") === "common")
           return this.parent.getValue(key);
-      break;
+        break;
       default:
       break;
     }
     return (this.getDefaultPlotValue(key));
   },
   getDefaultNumPlotPoints : function (key) {
-    var ptype = this.attributes["PlotType"];
+    var ptype = this.attributes.PlotType;
     var dim = this.getDimension();
     var value = getPlotDefaultValue(dim, ptype, key);
     if (!value)
     {
-      if (dim === 2) {
+      if (Number(dim) === 2) {
         switch (ptype) {
         case "implicit":
           value = 20;
@@ -1264,7 +1258,7 @@ Plot.prototype = {
           value = 6;
           break;
         case "tube":
-          if (key == "TubeRadialPts")
+          if (key === "TubeRadialPts")
             value = 9;
           else
             value = 40;
@@ -1281,8 +1275,10 @@ Plot.prototype = {
   },
   getDefaultPlotValue: function (key) {
     // get defaults from preference system, or if not there, from hardcoded list
+    /* jshint ignore:start */
     var math = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
-    var ptype = this.attributes["PlotType"];
+    /* jshint ignore:end */
+    var ptype = this.attributes.PlotType;
     var dim = this.getDimension();
     switch(key)
     {
@@ -1291,34 +1287,33 @@ Plot.prototype = {
       case "ZPts":
       case "TubeRadialPts":
         return this.getDefaultNumPlotPoints(key);
-      break;
     }
     var value = getPlotDefaultValue(dim, ptype, key);
     if (!value)
     {
       switch (key) {
-        case 'PlotStatus':
+        case "PlotStatus":
           value = "New"; // this should never be moved from here
           break;
-        case 'ConfHorizontalPts':
+        case "ConfHorizontalPts":
           value = "15";
           break;
-        case 'ConfVerticalPts':
+        case "ConfVerticalPts":
           value = "15";
           break;
           //      default:
           //        value = math + "<mrow><mi tempinput=\"true\">()</mi></mrow></math>";
-        case 'Expression':
+        case "Expression":
           value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi tempinput='true'></mi></math>";
           break;
-        case 'TubeRadius':
+        case "TubeRadius":
           value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math>";
         break;
-        case 'AnimCommonOrCustomSettings':
+        case "AnimCommonOrCustomSettings":
           value = "common";
         break;
-        case 'AnimateVisBefore':
-        case 'AnimateVisAfter':
+        case "AnimateVisBefore":
+        case "AnimateVisAfter":
           value = "true";
         break;
         default:
@@ -1340,11 +1335,11 @@ Plot.prototype = {
   plotCompAttributeList: function () {
     var NA;
     var dim = this.getDimension();
-    var ptype = this.attributes["PlotType"];
-    var animate = this.attributes["Animate"];
+    var ptype = this.attributes.PlotType;
+    var animate = this.attributes.Animate;
     NA = attributeArrayRemove(this.PLOTATTRIBUTES, "PlotStatus");
 
-    if (ptype != "approximateIntegral") {
+    if (ptype !== "approximateIntegral") {
       NA = attributeArrayRemove(NA, "AISubIntervals");
       NA = attributeArrayRemove(NA, "AIMethod");
       NA = attributeArrayRemove(NA, "AIInfo");
@@ -1359,7 +1354,7 @@ Plot.prototype = {
       NA = attributeArrayRemove(NA, "ConfVerticalPts");
     }
 
-    if (dim === 2) {
+    if (Number(dim) === 2) {
       NA = attributeArrayRemove(NA, "DirectionalShading");
       NA = attributeArrayRemove(NA, "SurfaceStyle");
       NA = attributeArrayRemove(NA, "SurfaceMesh");
@@ -1371,11 +1366,11 @@ Plot.prototype = {
       NA = attributeArrayRemove(NA, "AxisScale");
     }
 
-    if ((ptype != "rectangular") && (ptype != "parametric") && (ptype != "implicit")) {
+    if ((ptype !== "rectangular") && (ptype !== "parametric") && (ptype !== "implicit")) {
       NA = attributeArrayRemove(NA, "DiscAdjust");
     }
 
-    if (animate != "true") {
+    if (animate !== "true") {
       NA = attributeArrayRemove(NA, "AnimCommonOrCustomSettings");
       NA = attributeArrayRemove(NA, "AnimateStart");
       NA = attributeArrayRemove(NA, "AnimateEnd");
@@ -1388,11 +1383,11 @@ Plot.prototype = {
   },
   plotCompElementList: function () {
     var dim = this.getDimension();
-    var animate = (this.attributes["Animate"] == "true");
-    var ptype = this.attributes["PlotType"];
+    var animate = (this.attributes.Animate === "true");
+    var ptype = this.attributes.PlotType;
     var NA = this.PLOTELEMENTS;
 
-    if (ptype != "tube") {
+    if (ptype !== "tube") {
       NA = attributeArrayRemove(NA, "TubeRadius");
       NA = attributeArrayRemove(NA, "TubeRadialPts");
     }
@@ -1482,8 +1477,8 @@ PlotLabel.prototype =
   {
     var theList = this.PLOTLABELATTRIBUTES;
     var dim = this.getDimension();
-    var bNonCartesianOrientation = ((this.getPlotLabelAttribute("OrientationType") == "angle")
-                                    || (this.getPlotLabelAttribute("OrientationType") == "tiltAndTurn"));
+    var bNonCartesianOrientation = ((this.getPlotLabelAttribute("OrientationType") === "angle")
+                                    || (this.getPlotLabelAttribute("OrientationType") === "tiltAndTurn"));
     var bNeedNonCartesianOrientation = bNonCartesianOrientation;
     if (this.isHeaderOrFooter())
     {
@@ -1501,7 +1496,7 @@ PlotLabel.prototype =
     }
     else
     {
-      if (dim == 2)
+      if (Number(dim) === 2)
       {
         if (forComp)
           bNeedNonCartesianOrientation = true;
@@ -1512,7 +1507,7 @@ PlotLabel.prototype =
       }
       else if (forComp)
         bNeedNonCartesianOrientation = false;
-      if (bNeedNonCartesianOrientation != bNonCartesianOrientation)
+      if (bNeedNonCartesianOrientation !== bNonCartesianOrientation)
         this.convertOrientation(bNeedNonCartesianOrientation);
       if (bNeedNonCartesianOrientation)
       {
@@ -1535,14 +1530,14 @@ PlotLabel.prototype =
   {
     var theList = this.KEYATTRIBUTES;
     var dim = this.getDimension();
-    if (dim == 2)
+    if (Number(dim) === 2)
       theList = attributeArrayRemove(theList, "Billboarding");
     return theList;
   },
   extractPlotLabelAttributes : function(DOMPlotLabel)
   {
     var ii;
-    for (var ii = 0; ii < DOMPlotLabel.attributes.length; ++ii)
+    for (ii = 0; ii < DOMPlotLabel.attributes.length; ++ii)
     {
       this.setPlotLabelAttribute(DOMPlotLabel.attributes[ii].nodeName, DOMPlotLabel.attributes[ii].nodeValue);
     }
@@ -1587,8 +1582,8 @@ PlotLabel.prototype =
   },
   setPlotLabelAttribute : function(key, value)
   {
-    var bConvertOrientation = ( (key == "OrientationType") && (this.attributes.OrientationType != value)
-                                && ((value == "cartesian") || (this.attributes.OrientationType == "cartesian")) );
+    var bConvertOrientation = ( (key === "OrientationType") && (this.attributes.OrientationType !== value)
+                                && ((value === "cartesian") || (this.attributes.OrientationType === "cartesian")) );
     if (this.PLOTLABELATTRIBUTES.indexOf(key) >= 0)
     {
       if (!value || !value.length)
@@ -1596,7 +1591,7 @@ PlotLabel.prototype =
       this.attributes[key] = value;
     }
     if (bConvertOrientation)
-      this.convertOrientation((value == "angle") || (value == "tiltAndTurn"));
+      this.convertOrientation((value === "angle") || (value === "tiltAndTurn"));
   },
   createPlotLabelDOMElement: function (doc, forComp)
   {
@@ -1646,7 +1641,7 @@ PlotLabel.prototype =
   convertOrientationToTiltAndTurn : function()
   {
     var retVal;
-    if (this.getDimension() == 3)
+    if (Number(this.getDimension()) === 3)
     {
       retVal = convertCartesianToSpherical(Number(this.getPlotLabelAttribute("OrientationX")),
                                            Number(this.getPlotLabelAttribute("OrientationY")),
@@ -1666,7 +1661,7 @@ PlotLabel.prototype =
   {
     //We use oldLength below so that if the user toggles from Cartesian to non-Cartesian and back she gets what she started with
     var oldLength, retVal;
-    if (this.getDimension() == 3)
+    if (Number(this.getDimension()) === 3)
     {
       oldLength = this.getNorm([Number(this.getPlotLabelAttribute("OrientationX")), Number(this.getPlotLabelAttribute("OrientationY")), Number(this.getPlotLabelAttribute("OrientationZ"))]);
       if (!oldLength)
@@ -1767,7 +1762,7 @@ Frame.prototype = {
       graph.setGraphAttribute("Units", DOMFrame.getAttribute("units"));
 
     var i, att, attlist, len;
-    var graph = this.parent;
+    graph = this.parent;
     attlist = this.FRAMEDOMATTRIBUTES;
     len = attlist.length;
     for (i = 0; i < len; i++) {
@@ -1994,7 +1989,7 @@ Frame.prototype = {
       // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use
       // the load API
 //      DOMObj.vcamStatus = "uninitialized";
-      if (!forComp)  //don't trigger any loading if we're only serializing - this isn't a "real" <object>
+      if (!forComp)  //don"t trigger any loading if we're only serializing - this isn't a "real" <object>
       {
         var existingObjFile = DOMObj.getAttribute("data");
         var newImageFile = graph.getGraphAttribute("ImageFile");
@@ -2047,7 +2042,7 @@ function newPlotFromText(currentNode, expression, editorElement, selection) {
     var firstplot = graph.plots[0];
     var plottype;
     if (firstplot)
-      plottype = firstplot.attributes["PlotType"];
+      plottype = firstplot.attributes.PlotType;
     else
       plottype = "rectangular";
     var domParser = new DOMParser();
@@ -2058,7 +2053,7 @@ function newPlotFromText(currentNode, expression, editorElement, selection) {
 
     var plot = new Plot(graph.getDimension(), plottype);
     graph.addPlot(plot);
-    plot.element["Expression"] = fixedExpr;
+    plot.element.Expression = fixedExpr;
 //    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
     graph.computeQuery(plot);
     graph.recomputeVCamImage(editorElement);
@@ -2075,7 +2070,6 @@ function graphClickEvent(cmdstr, editorElement, element) {
   /**----------------------------------------------------------------------------------*/
   // Handle a mouse double click on a graph image in the document. This is bound in editor.js.
   // This function should be deprecated. It handled <img> elements inside <graph> elements
-  var element;
   try {
     if (!editorElement) editorElement = msiGetActiveEditorElement();
     var selection = msiGetEditor(editorElement).selection;
@@ -2090,6 +2084,7 @@ function graphClickEvent(cmdstr, editorElement, element) {
     AlertWithTitle("Error in GraphOverlay.js", "Error in graphClickEvent: " + exc);
   }
 }
+
 function graphObjectClickEvent(cmdstr, element, editorElement) {
   /**----------------------------------------------------------------------------------*/
   // Handle a mouse double click on a <graph> <object> element. This is bound in msiEditor.js.
@@ -2209,7 +2204,7 @@ function insertGraph(siblingElement, graph, editorElement) {
 
   addGraphElementToDocument(gDomElement, siblingElement, editorElement);
   var obj = gDomElement.getElementsByTagName("object")[0];
-//  obj.setAttribute('data', "plots/"+leaf);  // this shouldn't be necessary. Someone is setting the attribute
+//  obj.setAttribute("data", "plots/"+leaf);  // this shouldn't be necessary. Someone is setting the attribute
   // to the absolute path, which won't work
   var parentWindow = editorElement.ownerDocument.defaultView;
 //  parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
@@ -2257,7 +2252,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   graph.setGraphAttribute("Width", width);
   graph.setGraphAttribute("Height", height);
   graph.setGraphAttribute("Units", unit);
-  graph["Dimension"] = dimension;
+  graph.Dimension = dimension;
   if (XTickCount) graph.setGraphAttribute("XTickCount", XTickCount);
   if (YTickCount) graph.setGraphAttribute("YTickCount", YTickCount);
   if (ZTickCount) graph.setGraphAttribute("ZTickCount", ZTickCount);
@@ -2268,11 +2263,11 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
 
   var plot = new Plot(dimension, plottype);
   var plotnum = graph.addPlot(plot);
-  plot.attributes["PlotStatus"] = "New";
-  plot.element["Expression"] = expr;
-  graph["plotnumber"] = plotnum;
+  plot.attributes.PlotStatus = "New";
+  plot.element.Expression = expr;
+  graph.plotnumber = plotnum;
   if ((arguments.length > 3) && (arguments[3] === true)) {
-    plot.attributes["Animate"] = "true";
+    plot.attributes.Animate = "true";
   }
   plot.computeQuery();
   insertGraph(math, graph, editorElement);
@@ -2312,18 +2307,18 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
     if (frmPadding)
       setStyleAttributeOnNode(frame, "padding", frmPadding, null);
     // Handle the caption node
-    var captionNodes = frame.getElementsByTagName('caption');
+    var captionNodes = frame.getElementsByTagName("caption");
     var captionNode = null;
     if (captionNodes.length > 0) {
       captionNode = captionNodes[0];
     }
-    if (plotcaptionpref && (plotcaptionpref != "none")) {
+    if (plotcaptionpref && (plotcaptionpref !== "none")) {
       var tlm;
       tlm = editor.tagListManager;
       setStyleAttributeOnNode(frame, "caption-side", plotcaptionpref, null);
       // if there is no caption node, create an empty one.
       if (!captionNode) {
-         captionNode = editor.createElementWithDefaults('caption');
+         captionNode = editor.createElementWithDefaults("caption");
          var namespace = { value: null };
          captionNode.appendChild(tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, captionNode.ownerDocument));
          frame.appendChild(captionNode);
@@ -2331,7 +2326,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
     } else
     {
       frame.removeAttribute("captionloc");
-      removeStyleAttributeFamilyOnNode( frame, 'caption-side', null);
+      removeStyleAttributeFamilyOnNode( frame, "caption-side", null);
       if (captionNode)
         editor.deleteNode(captionNode);
     }
@@ -2361,7 +2356,7 @@ function extractSelectedMath(math, selection, editorElement)
   var theRange = selection.getRangeAt(0);
   var bHasContentBefore = msiNavigationUtils.nodeHasContentBeforeRangeStart(theRange, math);
   var bHasContentAfter = msiNavigationUtils.nodeHasContentAfterRangeEnd(theRange, math);
-  if (!bHasContentBefore && !bHasContentAfter)  //the whole math object is in the selection - just return what we're given
+  if (!bHasContentBefore && !bHasContentAfter)  //the whole math object is in the selection - just return what we"re given
     return { mathObj : math, focusNode : selection.focusNode, focusOffset : selection.focusOffset };
   //Otherwise
   var bFocusAtStart = (msiNavigationUtils.comparePositions(selection.anchorNode, selection.anchorOffset, selection.focusNode, selection.focusOffset) > 0);
@@ -2376,7 +2371,7 @@ function extractSelectedMath(math, selection, editorElement)
 
 function extractMathContent(aNode)
 {
-  if (msiGetBaseNodeName(aNode) == "math")
+  if (msiGetBaseNodeName(aNode) === "math")
     return aNode;
   var mathReturn;
   if (msiNavigationUtils.isMathNode(aNode))
@@ -2394,7 +2389,7 @@ function extractMathContent(aNode)
   for (ii = 0; (ii < kids.length) && (!bStarted || !bFinished); ++ii)
   {
     //if we find a <math> node, we just return the first one
-    if (msiGetBaseNodeName(kids[ii]) == "math")
+    if (msiGetBaseNodeName(kids[ii]) === "math")
       return kids[ii];
 
     isMath = msiNavigationUtils.isMathNode(kids[ii]);
@@ -2424,7 +2419,7 @@ function extractPlottableExpression(mathNode, plotType, focusNode, focusOffset)
   do
   {
     currNode = tempNode;
-    if (currNode == focusNode)
+    if (currNode === focusNode)
       break;
     tempNode = msiNavigationUtils.getSingleWrappedChild(currNode);
     if (!tempNode)
@@ -2449,7 +2444,7 @@ function extractPlottableExpression(mathNode, plotType, focusNode, focusOffset)
     else
       topFocusPos = 0;
   }
-  else if (topFocusNode == currNode)
+  else if (topFocusNode === currNode)
     topFocusPos = focusOffset;
   else
   {
@@ -2464,9 +2459,9 @@ function extractPlottableExpression(mathNode, plotType, focusNode, focusOffset)
       binOps.push(ii);
   }
   var okayOps = 0;
-  if ((plotType == "implicit") || (plotType == "inequality"))
+  if ((plotType === "implicit") || (plotType === "inequality"))
     okayOps = 1;
-  if (binOps.length == okayOps)
+  if (binOps.length === okayOps)
     return mathNode;
   var numOps = 0;
   var endPos, startPos;
@@ -2527,7 +2522,7 @@ function graphSaveVars(varList, plot, animated) {
 
   var varNames = ["XVar", "YVar", "ZVar"];
   if (animated) {
-    plot.element["AnimVar"] = varList[nLast--];
+    plot.element.AnimVar = varList[nLast--];
   }
   for (; nLast >= 0; --nLast)
   {
@@ -2541,14 +2536,14 @@ function graphSaveVariablesAndDefaults(graph, plot, retVariables)
   var whichVar;
   for (whichVar in retVariables.found)
     plot.element[whichVar] = retVariables.found[whichVar];
-  plot.attributes["DefaultedVars"] = "";
+  plot.attributes.DefaultedVars = "";
   for (whichVar in retVariables.defaulted)
   {
     plot.element[whichVar] = retVariables.defaulted[whichVar];
-    if (plot.attributes["DefaultedVars"].length)
-      plot.attributes["DefaultedVars"] += "," + whichVar;
+    if (plot.attributes.DefaultedVars.length)
+      plot.attributes.DefaultedVars += "," + whichVar;
     else
-      plot.attributes["DefaultedVars"] = whichVar;
+      plot.attributes.DefaultedVars = whichVar;
   }
   if ("axes" in retVariables)
   {
@@ -2558,18 +2553,18 @@ function graphSaveVariablesAndDefaults(graph, plot, retVariables)
     var axisName;
     var nIndex = -1;
     var jj, kk;
-    for (var jj = 0; jj < graph.graphAxesPropertyNames.length; ++jj)
+    for (jj = 0; jj < graph.graphAxesPropertyNames.length; ++jj)
     {
       axisName = graph.graphAxesPropertyNames[jj];
       currAxesLabels[axisName] = graph.getValue(axisName);
     }
     for (whichVar in retVariables.axes)
     {
-      if (currAxesLabels[whichVar] == retVariables.axes[whichVar])
+      if (currAxesLabels[whichVar] === retVariables.axes[whichVar])
         continue;  //nothing to do
       for (axisName in currAxesLabels)
       {
-        if (currAxesLabels[axisName] == retVariables.axes[whichVar])
+        if (currAxesLabels[axisName] === retVariables.axes[whichVar])
           needReplace.push(axisName);
       }
       discarded.push(whichVar);
@@ -2650,9 +2645,9 @@ function testQuery(domgraph) {
   var graph = new Graph();
   graph.extractGraphAttributes(domgraph);
 
-  var expr = graph.plots[0].element["Expression"];
+  var expr = graph.plots[0].element.Expression;
   var expr2 = runFixup(runFixup(expr));
-  graph.plots[0].element["Expression"] = expr2;
+  graph.plots[0].element.Expression = expr2;
 
   graph.computeQuery(graph.plots[0]);
 }
@@ -2660,9 +2655,9 @@ function testQueryGraph(domgraph, editorElement) {
   var graph = new Graph();
   graph.extractGraphAttributes(domgraph);
 
-  var expr = graph.plots[0].element["Expression"];
+  var expr = graph.plots[0].element.Expression;
   var expr2 = runFixup(runFixup(expr));
-  graph.plots[0].element["Expression"] = expr2;
+  graph.plots[0].element.Expression = expr2;
   graph.computeQuery(plots[0]);
 
   var parent = domgraph.parentNode;
@@ -2679,16 +2674,16 @@ function parseQueryReturn(out, graph, plot) {
   var level = 0;
   var result;
   var variableList = [];
-  var pt = plot.attributes["PlotType"];
+  var pt = plot.attributes.PlotType;
   var dim = graph.getDimension();
-  var animated = (plot.attributes["Animate"] === "true");
+  var animated = (plot.attributes.Animate === "true");
 //  var mathvars = false,
 //    commas = false;
   var ii;
 
-  plot.element["OriginalExpression"] = plot.element["Expression"];  //store original form - should display it in dialog
+  plot.element.OriginalExpression = plot.element.Expression;  //store original form - should display it in dialog
   var fixedOut = runFixup(runFixup(out));
-  plot.element["Expression"] = fixedOut;  //this may be sharpened below, but for now
+  plot.element.Expression = fixedOut;  //this may be sharpened below, but for now
   var varData = new graphVarData( graph );
   var retVariables;
   // (2) Given a list of potential variables, match them to x,y,z, and t
@@ -2706,7 +2701,7 @@ function parseQueryReturn(out, graph, plot) {
   // (3) identify explicitList and parametric types
   // (4) try to identify explicit lists
   var plotData = varData.findPlotData(plot);
-  plot.attributes["PlotType"] = pt = plotData.plottype;
+  plot.attributes.PlotType = pt = plotData.plottype;
 
   //rwa - the adjustment of polar forms should only take place when building the computation input. We should
   //  leave the user's original form stored. Accordingly, this functionality is now called from plot.createDOMPlotElement
@@ -2726,7 +2721,7 @@ function parseQueryReturn(out, graph, plot) {
         }
       }
       fixedOut = runFixup(fixedOut);
-      plot.element["Expression"] = fixedOut;
+      plot.element.Expression = fixedOut;
     }
     else if (pt === "explicitList")
     {
@@ -2746,10 +2741,10 @@ function fixExplicitList(aPlotData, dim)
   var rowNode, cellNode, kids, topNode, topName, nrows;
   var mathNode = document.createElementNS(mmlns, "math");
   var bOkay = false;
-  if ((cellList.length == 1) && (msiGetBaseNodeName(cellList[0]) == "mtable"))
+  if ((cellList.length === 1) && (msiGetBaseNodeName(cellList[0]) === "mtable"))
   {
     tableInfo = atomizeMTable(cellList[0]);
-    if (tableInfo.nCols == dim)
+    if (tableInfo.nCols === dim)
     {
       tableNode = cellList[0];
       bOkay = true;
@@ -2770,7 +2765,7 @@ function fixExplicitList(aPlotData, dim)
         cellNode = document.createElementNS(mmlns, "mtd");
         topNode = cellList[(ii * dim) + jj];
         topName = msiGetBaseNodeName(topNode);
-        if ( (topName == "math") || (topName == "mrow") )
+        if ( (topName === "math") || (topName === "mrow") )
           kids = msiNavigationUtils.getSignificantContents(topNode);
         else
           kids = [topNode];
@@ -2791,7 +2786,7 @@ function fixInequalityList(plotData)
 {
   var exprList = plotData.expressionAsList();
   if (exprList.length <= 1)
-    return plotData.mPlot.element["Expression"];  //leave it unchanged
+    return plotData.mPlot.element.Expression;  //leave it unchanged
 
   var mathNode = document.createElementNS(mmlns, "math");
   var fenceNode = document.createElementNS(mmlns, "mfenced");
@@ -2802,7 +2797,7 @@ function fixInequalityList(plotData)
   for (jj = 0; jj < exprList.length; ++jj)
   {
     listNode = exprList[jj];
-    if (msiGetBaseNodeName(listNode) == "math")
+    if (msiGetBaseNodeName(listNode) === "math")
     {
       if (listNode.childNodes.length > 1)
       {
@@ -2860,7 +2855,7 @@ function splitMathMLList(expr, bFenced)
   var topNode = littleDoc.documentElement;
   var childName;
   var bTopFound = false;
-  while (!bTopFound && (topNode.childNodes.length == 1))
+  while (!bTopFound && (topNode.childNodes.length === 1))
   {
     childName = msiGetBaseNodeName(topNode.childNodes[0]);
     switch(childName)
@@ -2879,15 +2874,15 @@ function splitMathMLList(expr, bFenced)
   }
   var theNodes = msiNavigationUtils.getSignificantContents(topNode);
   var topName = msiGetBaseNodeName(topNode);
-  if (topName == "mfenced")
+  if (topName === "mfenced")
     return theNodes;
-  else if (topName == "mtable")
+  else if (topName === "mtable")
     return getRowOrColumnVectorContentsAsList(topNode);
   var nStart = 0;
   var nEnd = theNodes.length - 1;
   var aChild;
   aChild = theNodes[nEnd];
-  if (aChild.nodeName != "mo")
+  if (aChild.nodeName !== "mo")
   {
     if (bFenced)
       return [topNode];
@@ -2895,12 +2890,12 @@ function splitMathMLList(expr, bFenced)
   }
   else
   {
-    if ((aChild.getAttribute("form") != "postfix") && !bFenced)
+    if ((aChild.getAttribute("form") !== "postfix") && !bFenced)
       msidump("In GraphOverlay.js, splitMathMLList(), last <mo> isn't marked as postfix: " + content + "\n");  //But assume it is anyway
     --nEnd;  //if the last is a closing delimiter, stop before it
   }
   aChild = theNodes[0];
-  if (aChild.nodeName != "mo")
+  if (aChild.nodeName !== "mo")
   {
     if (bFenced)
       return [topNode];
@@ -2908,12 +2903,12 @@ function splitMathMLList(expr, bFenced)
   }
   else
   {
-   if ((aChild.getAttribute("form") != "prefix") && !bFenced)
+   if ((aChild.getAttribute("form") !== "prefix") && !bFenced)
       msidump("In GraphOverlay.js, splitMathMLList(), opening <mo> isn't marked as prefix: " + content + "\n");  //But assume it is anyway
     ++nStart;  //if the last is a closing delimiter, stop before it
   }
 
-  if (nStart == nEnd)  //Special code dealing with only one element - it may be an <mrow> or such simply containing the elements (though that isn't correct markup, really)
+  if (nStart === nEnd)  //Special code dealing with only one element - it may be an <mrow> or such simply containing the elements (though that isn't correct markup, really)
   {
     switch( msiGetBaseNodeName(theNodes[nStart]) )
     {
@@ -2924,7 +2919,7 @@ function splitMathMLList(expr, bFenced)
         retArray = removeDelimitersFromNodeList( msiNavigationUtils.getSignificantContents(theNodes[nStart]) );
         if (retArray.length > 1)
         {
-          if (msiGetBaseNodeName(retArray[0]) == "mo")
+          if (msiGetBaseNodeName(retArray[0]) === "mo")
           {
             switch(retArray[0].textContent)
             {
@@ -2935,7 +2930,6 @@ function splitMathMLList(expr, bFenced)
               break;
               default:
                 return retArray;
-              break;
             }
           }
           else
@@ -2962,12 +2956,12 @@ function removeDelimitersFromNodeList(nodeArray, delimiterList)
   for (var nKid = 0; nKid < nodeArray.length; ++nKid)
   {
     aChild = nodeArray[nKid];
-    if (aChild.nodeName == "mo")
+    if (aChild.nodeName === "mo")
     {
       var content = TrimString(aChild.textContent);
       if (delimiterList.indexOf(content) >= 0)
         prevWas = sep;
-      else if (prevWas == sep)
+      else if (prevWas === sep)
       {
         msidump("In GraphOverlay.js, splitMathMLList(), found <mo> where expected entry: " + content + "\n");
         retArray.push(aChild);
@@ -2976,7 +2970,7 @@ function removeDelimitersFromNodeList(nodeArray, delimiterList)
       else
         prevWas = sep;
     }
-    else if (prevWas == sep)
+    else if (prevWas === sep)
     {
       prevWas = entry;
       retArray.push(aChild);
@@ -2988,7 +2982,7 @@ function removeDelimitersFromNodeList(nodeArray, delimiterList)
 function getRowOrColumnVectorContentsAsList(tableNode)
 {
   var tableContents = atomizeMTable(tableNode);
-  if ( (tableContents.nRows == 1) || (tableContents.nCols == 1) )
+  if ( (tableContents.nRows === 1) || (tableContents.nCols === 1) )
     return tableContents.cellContentsList;
   return [tableNode];
 }
@@ -2996,7 +2990,7 @@ function getRowOrColumnVectorContentsAsList(tableNode)
 function atomizeMTable(tableNode)
 {
   var retContents = {nRows : 0, nCols : 0, cellContentsList : []};
-  if (msiGetBaseNodeName(tableNode) != "mtable")
+  if (msiGetBaseNodeName(tableNode) !== "mtable")
     return retContents;
   var ii, jj, nodeName;
   var kids = msiNavigationUtils.getSignificantContents(tableNode);
@@ -3035,13 +3029,13 @@ function atomizeMTable(tableNode)
   for (jj = 0; jj < kids.length; ++jj)
   {
     nodeName = msiGetBaseNodeName(kids[jj]);
-    if ((cellList.length == 0) && (nodeArray.length == 0) ) //starting a new row, whether <mtr> or not
+    if ((cellList.length === 0) && (nodeArray.length === 0) ) //starting a new row, whether <mtr> or not
     {
       ++retContents.nRows;
 //      if (checkNonVector())
 //        return [tableNode];
     }
-    if (nodeName == "mtr")
+    if (nodeName === "mtr")
     {
       flushNodeArray();
       flushCellArray();
@@ -3049,7 +3043,7 @@ function atomizeMTable(tableNode)
       for (ii = 0; ii < grandkids.length; ++ii)
       {
         nodeName = msiGetBaseNodeName(grandkids[ii]);
-        if (nodeName == "mtd")
+        if (nodeName === "mtd")
         {
           flushNodeArray();
           cellList.push( encloseContentsInMathNode(msiNavigationUtils.getSignificantContents(grandkids[ii]),true) );
@@ -3062,7 +3056,7 @@ function atomizeMTable(tableNode)
 //        return [tableNode];
       flushCellArray();
     }
-    else if (nodeName == "mtd")
+    else if (nodeName === "mtd")
     {
       flushNodeArray();
       cellList.push( encloseContentsInMathNode(msiNavigationUtils.getSignificantContents(kids[jj]),true) );
@@ -3121,7 +3115,7 @@ var plotVarDataBase =
         case "tube":
         break;
         default:
-          if ((this.dim == 3) && (this.numPlainVariablesFound() < 2))
+          if ((Number(this.dim) === 3) && (this.numPlainVariablesFound() < 2))
             this.plottype = "curve";
           else
             this.plottype = "parametric";
@@ -3133,7 +3127,7 @@ var plotVarDataBase =
   numPlainVariablesNeeded : function()
   {
     var nVars = plotVarsNeeded(this.dim, this.plottype, false);
-    if (this.plottype == "conformal")
+    if (this.plottype === "conformal")
       --nVars;
     return nVars;
   },
@@ -3161,7 +3155,7 @@ var plotVarDataBase =
   expressionAsList : function()
   {
     if (!this.mSplitExprList)
-      this.mSplitExprList = splitMathMLList(this.mPlot.element["Expression"], true);
+      this.mSplitExprList = splitMathMLList(this.mPlot.element.Expression, true);
     return this.mSplitExprList;
   },
   varTeXForm : function(whichVar)
@@ -3179,18 +3173,18 @@ var plotVarDataBase =
   {
     if (!this.mFoundVars)
     {
-      var rawVars = GetCurrentEngine().getVariables(this.mPlot.element["Expression"]);
+      var rawVars = GetCurrentEngine().getVariables(this.mPlot.element.Expression);
       var foundVarList = splitMathMLList(rawVars);
       //special check for returning the empty set symbol
-      if ( (foundVarList.length == 1) && (msiGetBaseNodeName(foundVarList[0]) == "mi")
-            && (foundVarList[0].textContent == "\u2205") )
+      if ( (foundVarList.length === 1) && (msiGetBaseNodeName(foundVarList[0]) === "mi")
+            && (foundVarList[0].textContent === "\u2205") )
         foundVarList = [];
       foundVarList.sort(orderMathNodes);
       this.mFoundVars = [];
       var topVarNode;
       for (var ii = 0; ii < foundVarList.length; ++ii)
       {
-        if (msiGetBaseNodeName(foundVarList[ii]) == "math")
+        if (msiGetBaseNodeName(foundVarList[ii]) === "math")
           topVarNode = foundVarList[ii];
         else
         {
@@ -3215,7 +3209,7 @@ var plotVarDataBase =
   },
   isParametric : function()
   {
-    return ((this.expressionAsList().length == this.dim) && (this.plottype != "inequality"));
+    return ((this.expressionAsList().length === this.dim) && (this.plottype !== "inequality"));
   },
   isAnimated : function()
   {
@@ -3227,9 +3221,9 @@ var plotVarDataBase =
       return false;
     if ((this.foundVarList().length > 0) && !this.animated)
       return false;
-    if (this.expressionAsList().length == 1)
+    if (this.expressionAsList().length === 1)
     {
-      if (msiGetBaseNodeName( this.expressionAsList()[0] ) == "mtable")
+      if (msiGetBaseNodeName( this.expressionAsList()[0] ) === "mtable")
         return true;
     }
     else
@@ -3243,7 +3237,7 @@ var plotVarDataBase =
 //    var texVar = this.varTeXForm(whichVar);
 //    for (var jj = 0; jj < foundList.length; ++jj)
 //    {
-//      if (foundList[jj] == texVar)
+//      if (foundList[jj] === texVar)
 //        return true;
 //    }
 //    return false;
@@ -3258,7 +3252,7 @@ var plotVarDataBase =
     for (var ii = 0; ii < 4; ++ii)
     {
       varName = this.plotVarName(ii);
-      if (this.varTeXForm(varName) == texVar)
+      if (this.varTeXForm(varName) === texVar)
         return varName;
     }
     return null;
@@ -3270,8 +3264,8 @@ function plotVarData(plot, dim, graphData)
   this.mPlot = plot;
   this.parent = graphData;
   this.dim = dim;
-  this.animated = (this.mPlot.attributes["Animate"] === "true");
-  this.plottype = plot.attributes["PlotType"];
+  this.animated = (this.mPlot.attributes.Animate === "true");
+  this.plottype = plot.attributes.PlotType;
 }
 
 plotVarData.prototype = plotVarDataBase;
@@ -3290,7 +3284,7 @@ var graphVarDataBase =
   {
     for (var ii = 0; ii < this.plotData.length; ++ii)
     {
-      if (this.plotData[ii].mPlot == aPlot)
+      if (this.plotData[ii].mPlot === aPlot)
       {
         return this.plotData[ii];
       }
@@ -3365,12 +3359,11 @@ var graphVarDataBase =
           case "Deleted":
           case "ERROR":
             continue;  //don't want to do anything in these cases
-          break;
         }
         varName = this.plotData[jj].matchVariableTeXForm(this.mGraph[axisName]);
         if (varName && this.plotData[jj].varWasFound(varName))
         {
-          if (Graph.prototype.plotVariablePropertyNames.indexOf(varName) == ii)
+          if (Graph.prototype.plotVariablePropertyNames.indexOf(varName) === ii)
           {
             retArray.push(axisName);
             break;
@@ -3414,7 +3407,7 @@ var varMatchDataBase =
   },
   userSet : function()
   {
-    if (this.whichPlot == 0)
+    if (this.whichPlot === 0)
       return this.graphData.axisNameIsUserSet(this.whichVar);
     return this.graphData.plotVarIsUserSet(this.whichPlot - 1, this.whichVar);
   },
@@ -3430,7 +3423,7 @@ var varMatchDataBase =
     var pdata = this.getPlotData();
     if (!pdata)  //this is at global graph level - matching an axis name
       return true;
-    if (this.whichVar == "AnimVar")
+    if (this.whichVar === "AnimVar")
     {
       return this.targetAnimated;
     }
@@ -3456,7 +3449,7 @@ var varMatchDataBase =
     {
       case "cylindrical":
       case "spherical":
-        if (ptype == "cylindrical" || ptype == "spherical")
+        if (ptype === "cylindrical" || ptype === "spherical")
         {
           return (this.whichVar !== "YVar");
         }
@@ -3470,11 +3463,11 @@ var varMatchDataBase =
 //  {
 //    if ("expressionParametric" in this)
 //      return this.expressionParametric;
-//    if (this.whichPlot != 0)
+//    if (this.whichPlot !=== 0)
 //    {
 //      var expr = graph.getPlotValue("Expression", this.whichPlot - 1);
 //      var exprListNodes = splitMathMLList(expr, false);
-//      this.expressionParametric = (exprListNodes && exprListNodes.length == this.dim);
+//      this.expressionParametric = (exprListNodes && exprListNodes.length === this.dim);
 //      return this.expressionParametric;
 //    }
 //    return false;
@@ -3524,7 +3517,7 @@ function doAnalyzeVars(graphVarData, plot)
   for (ii = 0; ii < ourNumPlainVars; ++ii)
     newVarList[ Graph.prototype.plotVariablePropertyNames[ii] ] = -1;
   if (isAnimated)
-    newVarList["AnimVar"] = -1;
+    newVarList.AnimVar = -1;
 
 //This should really be the key, then:
   function orderMatches(matchDataA, matchDataB)
@@ -3578,13 +3571,14 @@ function doAnalyzeVars(graphVarData, plot)
 
   function findPlaceForVariable(nFoundVar, prefVarName, usedFoundVarsList, assignedVars)
   {
+    var ll;
     if (usedFoundVarsList.indexOf(nFoundVar) >= 0)
       return null;
     if (assignedVars[prefVarName] < 0)
       return prefVarName;
-    for (var ll in assignedVars)
+    for (ll in assignedVars)
     {
-      if (ll == prefVarName)
+      if (ll === prefVarName)
         continue;
       if (assignedVars[ll] < 0)
         return ll;
@@ -3675,7 +3669,7 @@ function doAnalyzeVars(graphVarData, plot)
       {
 //        animatedIndex = nIndex;
         usedFoundVars.push(nIndex);
-        newVarList["AnimVar"] = nIndex;
+        newVarList.AnimVar = nIndex;
         --nVarsAvailable;
         break;
       }
@@ -3735,13 +3729,13 @@ function doAnalyzeVars(graphVarData, plot)
   }
 
   //Apportion the rest of the unused found variables, starting with the animation variable if present
-  if (isAnimated && (nVarsAvailable > 0) && (newVarList["AnimVar"] < 0) )
+  if (isAnimated && (nVarsAvailable > 0) && (newVarList.AnimVar < 0) )
   {
     for (jj = 0; jj < foundVarsTeX.length; ++jj)
     {
       if (usedFoundVars.indexOf(jj) < 0)
       {
-        newVarList["AnimVar"] = jj;
+        newVarList.AnimVar = jj;
         usedFoundVars.push(jj);
         --nVarsAvailable;
         break;
@@ -3796,7 +3790,7 @@ function doAnalyzeVars(graphVarData, plot)
       }
       if (!outList.defaulted[varName])  //fall back to expected list
       {
-        if (varName == "AnimVar")
+        if (varName === "AnimVar")
           outList.defaulted[varName] = wrapMath(wrapmi(animatedVarList[0]));
         else
         {
@@ -3931,7 +3925,7 @@ function doAnalyzeVars(graphVarData, plot)
 //  var mathNode;
 //  for (ii = 0; ii < variableList.length; ++ii)
 //  {
-//    if (msiGetBaseNodeName(variableList[ii]) != "math")
+//    if (msiGetBaseNodeName(variableList[ii]) !=== "math")
 //    {
 //      mathNode = document.createElementNS(mmlns, "math");
 //      mathNode.appendChild(variableList[ii]);
@@ -4058,18 +4052,18 @@ function matchVarNames(variableList, animated)
 
 function createPolarExpression(plot)
 {
-  var plottype = plot.attributes["PlotType"];
-  var newexp = stripMath(plot.element["Expression"]);
+  var plottype = plot.attributes.PlotType;
+  var newexp = stripMath(plot.element.Expression);
   var mrowIndex = newexp.indexOf("<mrow");
-  var needsMRow = (mrowIndex != 0);
+  var needsMRow = (mrowIndex !== 0);
 //  var needsMRow = (!newexp.startsWith("<mrow"));
   if (needsMRow)
     newexp = "<mfenced open=\"(\" close=\")\" separators=\",\"><mrow>" + newexp + "</mrow>";
   else
     newexp = "<mfenced open=\"(\" close=\")\" separators=\",\">" + newexp;
-  newexp += stripMath(plot.element["XVar"]);
-  if (plottype != "polar")
-    newexp += stripMath(plot.element["YVar"]);
+  newexp += stripMath(plot.element.XVar);
+  if (plottype !== "polar")
+    newexp += stripMath(plot.element.YVar);
   newexp += "</mfenced>";
   return wrapMath(newexp);
 }
@@ -4078,7 +4072,7 @@ function createPolarExpr(mathexp, variableList, plottype) {
   var newexp = stripMath(mathexp);
   newexp = "<mrow><mo>[</mo>" + newexp;
   newexp = newexp + "<mo>,</mo>" + wrapmi(variableList[0]);
-  if (plottype != "polar") {
+  if (plottype !== "polar") {
     newexp = newexp + "<mo>,</mo>" + wrapmi(variableList[1]);
   }
   newexp = newexp + "<mo>]</mo></mrow>";
@@ -4099,10 +4093,8 @@ function plotVarsShouldMatchAxes(plotType, dim)
     case "ode":
     case "approximateIntegral":
       for (ii = 0; ii < dim-1; ++ii)
-        retArray[ii] = ii;  //says the 1st var should match 1st axis, or vars 0 and 1 should match axes 0 and 1 if dim==3
+        retArray[ii] = ii;  //says the 1st var should match 1st axis, or vars 0 and 1 should match axes 0 and 1 if dim===3
       return retArray;
-    break;
-
     case "implicit":
     case "inequality":
     case "gradient":
@@ -4110,8 +4102,6 @@ function plotVarsShouldMatchAxes(plotType, dim)
       for (ii = 0; ii < dim; ++ii)
         retArray[ii] = ii;
       return retArray;
-    break;
-
 //    case "polar":
 //    case "parametric":
 //    case "conformal":
@@ -4166,7 +4156,7 @@ function convertCartesianToSpherical(xval, yval, zval)
 {
   var planeLength = Math.sqrt((xval * xval) + (yval * yval));
   var rho = Math.sqrt((planeLength * planeLength) + (zval * zval));
-  if (rho == 0)
+  if (rho === 0)
     return [0,0,0];
   var theta = Math.atan2(yval, xval);
   var phi = Math.acos(zval/rho);
@@ -4201,14 +4191,14 @@ function useSignificantDigits(aVal, sigDigits)
     number = numberRE.exec(aVal);
     if (!number || !number[0])
       return aVal;  //can't do anything with it!?
-    neg = (number[1]=="-") ? true : false;
+    neg = (number[1]==="-") ? true : false;
     whole = number[2] ? number[2] : "";
     dec = number[3] ? number[3].substr(1) : ""; //skip the decimal point
     exp = 0;
   }
   else
   {
-    neg = (scinotation[1]=="-") ? true : false;
+    neg = (scinotation[1]==="-") ? true : false;
     whole = scinotation[2] ? scinotation[2] : "";
     dec = scinotation[3] ? scinotation[3].substr(1) : ""; //skip the decimal point
     exp = (scinotation[4] && scinotation[4].length) ? Number(scinotation[4]) : 0;
@@ -4224,7 +4214,7 @@ function useSignificantDigits(aVal, sigDigits)
   var bCarry = false;
   if (firstPos + sigDigits < theDigits.length)
   {
-    if (theDigits[firstPos + sigDigits] == '5')
+    if (Number(theDigits[firstPos + sigDigits]) === 5)
     {
       if ( (firstPos + sigDigits + 1 < theDigits.length) && (theDigits.substr(firstPos + sigDigits + 1).match(/[^0]/)) )
         bCarry = true;
@@ -4238,8 +4228,8 @@ function useSignificantDigits(aVal, sigDigits)
     {
       for (jj = firstPos + sigDigits - 1; bCarry && (jj >= 0); --jj)
       {
-        bCarry = (theDigits[jj] == '9');
-        retStr = (bCarry ? '0' : String(Number(theDigits[jj]) + 1) ) + retStr;
+        bCarry = (Number(theDigits[jj]) === 9);
+        retStr = (bCarry ? "0" : String(Number(theDigits[jj]) + 1) ) + retStr;
       }
       if (bCarry)
         theDigits = "1" + retStr.substr(0,retStr.length - 1);
@@ -4292,14 +4282,14 @@ function getPlotDefaultValue(dim, plotType, key)
   {
     try
     {
-      var prefType = prefs.getPrefType(prefix[ii] + key);
-      if (prefType == prefs.PREF_STRING)
+      prefType = prefs.getPrefType(prefix[ii] + key);
+      if (prefType === prefs.PREF_STRING)
         value = prefs.getCharPref(prefix[ii] + key);
-      else if (prefType == prefs.PREF_INT)
+      else if (prefType === prefs.PREF_INT)
       {
         value = String(prefs.getIntPref(prefix[ii] + key));
       }
-      else if (prefType == prefs.PREF_BOOL)
+      else if (prefType === prefs.PREF_BOOL)
       {
         value = prefs.getBoolPref(prefix[ii] + key);
         if (value)
@@ -4359,7 +4349,7 @@ var plotObserver = {
   //        {
   //          dataString = decodeURIComponent(node.textContent);
   //        }
-  //        if (dataString.length == 0) return;  // no point in going on in this case
+  //        if (dataString.length === 0) return;  // no point in going on in this case
   //        node = null;
   //        nodelist = xmlDoc.getElementsByTagName("context");
   //        if (nodelist.length > 0) node = nodelist.item(0);
@@ -4395,7 +4385,7 @@ var plotObserver = {
   onDrop: function (evt, dropData, session) {
     if (session.isDataFlavorSupported("text/html")) {
       try {
-        var trans = Components.classes["@mozilla.org/widget/transferable;1"].
+        var trans = Components.classes["@mozillarg/widget/transferable;1"].
         createInstance(Components.interfaces.nsITransferable);
         var value;
         if (!trans) return;
@@ -4434,5 +4424,7 @@ var plotObserver = {
   }
 };
 
+/* jshint ignore:start */
 #endif
+/* jshint ignore:end */
 
