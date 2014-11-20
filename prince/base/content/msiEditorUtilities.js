@@ -1,7 +1,7 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 //Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
-Components.utils.import("resource://app/modules/fontlist.jsm"); 
+Components.utils.import("resource://app/modules/fontlist.jsm");
 
 const msiEditorUtilitiesJS_duplicateTest = "Bad";
 
@@ -19,7 +19,7 @@ var prefLogMapper;
 
 /*
 JavaScript enhancements
-Until we sync with Mozilla again, we need do define our own Object.create and
+Until we sync with Mozilla again, we need to define our own Object.create and
 bind functions.
 */
 
@@ -51,22 +51,75 @@ function FixJS()
         // Build up an argument list, starting with any args passed
         // to bind after the first one, and follow those with all args // passed to this function.
         var args = [], i;
-        for(i = 1; i < boundArgs.length; i++) 
-          args.push(boundArgs[i]); 
-        for(i = 0; i < arguments.length; i++) 
+        for(i = 1; i < boundArgs.length; i++)
+          args.push(boundArgs[i]);
+        for(i = 0; i < arguments.length; i++)
           args.push(arguments[i]);
         // Now invoke self as a method of o, with those arguments
-        return self.apply(o, args); 
+        return self.apply(o, args);
       };
-    }; 
+    };
   }
 }
+
+
+function arrayFromNodelist (nodelist) {
+  var retArray = [];
+  if (!nodelist) return retArray;
+  var l = nodelist.length;
+  var j;
+  for ( j = 0; j < l; j++) {
+    if (nodelist.item(j)) retArray.push(nodelist.item(j));
+  }
+  return retArray;
+}
+
+function setStyleAttributeOnNode( node, att, value, editor)
+{
+  var style="";
+  if (!node) {
+    return;
+  }
+  removeStyleAttributeFamilyOnNode( node, att, editor);
+  if (node.hasAttribute("style")) style = node.getAttribute("style");
+  style.replace("null","");
+  style = style + " " + att +": " + value + "; ";
+  if (editor)
+    msiEditorEnsureElementAttribute(node, "style", style, editor);
+  else
+    node.setAttribute("style",style);
+}
+
+function removeStyleAttributeFamilyOnNode( node, att, editor)
+{
+  if (!node) {
+    return;
+  }
+  var style="";
+  if (node.hasAttribute("style")) style = node.getAttribute("style");
+  style.replace("null","");
+  var re = new RegExp("^|[^-]"+att + "[-a-zA-Z]*:[^;]*;","g");
+  if (re.test(style))
+  {
+    style = style.replace(re, "");
+    if (editor)
+      msiEditorEnsureElementAttribute(node, "style", style, editor);
+    else
+      node.setAttribute("style",style);
+  }
+}
+
+function setStyleAttributeByID( id, att, value)
+{
+  setStyleAttributeOnNode(document.getElementById(id), att, value);
+}
+
 
 
 function initializePrefMappersIfNeeded()
 { // map between pref names used by the engine and those used in SWP
   if (prefMapper == null)
-  {  
+  {
     prefMapper = new Object();
     prefMapper.mfencedpref = "use_mfenced";
     prefMapper.digitsRenderedpref = "Sig_digits_rendered";
@@ -91,13 +144,13 @@ function initializePrefMappersIfNeeded()
     prefMapper.j_imaginarypref = "Input_j_Imaginary";
     prefMapper.e_exppref = "Input_e_Euler";
   }
-  if (invPrefMapper == null) 
+  if (invPrefMapper == null)
   {
     invPrefMapper = new Array;
     invPrefMapper["Default_matrix_delims"] = prefMapper.matrix_delimpref;
   }
   if (prefEngineMapper == null)
-  {  
+  {
     prefEngineMapper = new Object();
     prefEngineMapper.digitsusedpref  = "Digits";
     prefEngineMapper.degreepref      = "MaxDegree";
@@ -111,7 +164,7 @@ function initializePrefMappersIfNeeded()
     prefLogMapper.logReceivedpref = "LogMMLReceived";
     prefLogMapper.engSentpref     = "LogEngSent";
     prefLogMapper.engReceivedpref = "LogEngReceived";
-  } 
+  }
 }
 
 
@@ -2049,7 +2102,7 @@ function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, e
     return msiEnsureElementAttribute(elementNode, attribName, attribValue);
 
   var retVal = false;
-  if ( (!attribValue) || (attribValue.length === 0) )
+  if ( (attribValue == null) || (attribValue ==="") )
   {
     if (elementNode.hasAttribute(attribName))
     {
@@ -13045,7 +13098,7 @@ function tryUntilSuccessful(interval, timeout, funct)
 //    {
 //      bDone = funct();
 //    }
-//    catch(ex) 
+//    catch(ex)
 //    {
 //      if (onException && onException(ex))
 //        clearInterval(intervalId);
@@ -13125,8 +13178,8 @@ function getCachedXSLTString(xslRootFileURLString)
 
     var str = myXMLHTTPRequest.responseText;
   // a bug in the Mozilla XSLT processor causes problems with included stylesheets, so
-  // we do the inclusions ourselves 
-    var filesSeen= []; 
+  // we do the inclusions ourselves
+    var filesSeen= [];
     while (match = includeFileRegEx.exec(str))
     {
       resultString += str.slice(0, match.index);
@@ -13156,11 +13209,11 @@ function getCachedXSLTString(xslRootFileURLString)
       else {
         contents="";
         break;
-      }                         
+      }
       str = contents + str;
     }
     resultString += str;
-    writeStringAsFile( resultString, cachefile); 
+    writeStringAsFile( resultString, cachefile);
   }
   else {
     path = msiFileURLFromFile( cachefile );
@@ -13272,7 +13325,7 @@ function needRefresh(sourceFilePath, derivedFilePath) {
   // the above strings can be "file://" urls or "/" paths
   if (sourceFileAbsPath.indexOf("file://") < 0)
     sourceFileAbsPath = "file://"+sourceFileAbsPath;
-  sourceFile = msiFileFromFileURL(msiURIFromString(sourceFileAbsPath));    
+  sourceFile = msiFileFromFileURL(msiURIFromString(sourceFileAbsPath));
   if (!sourceFile.exists()) return null;
   if (derivedFileAbsPath.indexOf("file://") < 0)
     derivedFileAbsPath = "file://"+derivedFileAbsPath;
@@ -13309,3 +13362,4 @@ function makeRelPathAbsolute(relpath, editorElement) {
   }
   return longfilename;
 }
+
