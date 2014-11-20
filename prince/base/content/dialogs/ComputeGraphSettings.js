@@ -1,10 +1,10 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
-// Three data items are passed into this dialog: 
-// window.arguments[0]: editorElement 
+// Three data items are passed into this dialog:
+// window.arguments[0]: editorElement
 // window.arguments[1]: commandStr
 // window.arguments[2]: DOMGraph, the DOM element that should be replaced
 
-Components.utils.import("resource://app/modules/unitHandler.jsm"); 
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 var gFrameModeImage = true;
 var gFrameModeTextFrame = false;
 var graph;
@@ -34,10 +34,10 @@ function getFirstElementByTagName(node, name) {
 
 // Populate the dialog with the current values stored in the Graph object.
 // The element ids in ComputeGraphSettings.xul match the Graph attributes
-// if the document has an element matching an attribute name, 
+// if the document has an element matching an attribute name,
 //   extract the value of the attribute and put it in the document
-function Startup(){ 
-  var units, alist, id, i, plotNumControl, numPlots, firstActivePlot, 
+function Startup(){
+  var units, alist, id, i, plotNumControl, numPlots, firstActivePlot,
     plot, theStringSource, oldval, captionnode, placeLocation, obj, frame, topWindow;
   var graphEditorControl, radiusEditorControl;
   try {
@@ -58,12 +58,12 @@ function Startup(){
     initFrameTab(gDialog, frame, gInsertNewObject, obj);
 
     topWindow = msiGetTopLevelWindow();
-    if (topWindow && topWindow.document && topWindow.document.getElementById("vcamactive") 
+    if (topWindow && topWindow.document && topWindow.document.getElementById("vcamactive")
       ) //   && (topWindow.document.getElementById("vcamactive").getAttribute("hidden")=="false"))
       queryVCamValues(obj, graph, graphnode, true);
 
     units = frame.getAttribute("units");
-    if (!units || units.length === 0) 
+    if (!units || units.length === 0)
     {
       units = "pt";
       frame.setAttribute("units") = units;
@@ -71,19 +71,19 @@ function Startup(){
     setHasNaturalSize(false);
     setCanRotate(false);
     document.getElementById("role-image").setAttribute("hidden",(gFrameModeImage?"false":"true"));
-  
-    alist = graph.graphAttributeList(); 
-    for ( i=0; i<alist.length; i++) { 
-      id = mapid(alist[i]);                      
-      if (document.getElementById(id)) {                    
+
+    alist = graph.graphAttributeList();
+    for ( i=0; i<alist.length; i++) {
+      id = mapid(alist[i]);
+      if (document.getElementById(id)) {
         putValueToControlByID(id, graph.getValue(alist[i]));
 //        document.getElementById(id).value = graph.getValue(alist[i]);
-      }                                                       
-    } 
+      }
+    }
 
     plotNumControl    = document.getElementById('plotnumber');
     numPlots = graph.getNumActivePlots();  //don't count any that may be already deleted - though probably not relevant during startup
-    if (numPlots ===  0){ 
+    if (numPlots ===  0){
       addPlot();
       numPlots = 1;
     }
@@ -93,23 +93,23 @@ function Startup(){
     graph["plotnumber"] = firstActivePlot.toString();
     plot = graph.plots[firstActivePlot];
     graph.currentDisplayedPlot = -1;  //initialize to -1 so that populateDialog will execute (so that currentDisplayedPlot != plotnum)
-    // some attributes can't be found as values of dialog elements  
-//    setColorWell("baseColorWell", makeColorVal(plot.getPlotValue("BaseColor")));  
+    // some attributes can't be found as values of dialog elements
+//    setColorWell("baseColorWell", makeColorVal(plot.getPlotValue("BaseColor")));
 //    setColorWell("secondColorWell", makeColorVal(plot.getPlotValue("SecondaryColor")));
 //    setColorWell("lineColorWell", makeColorVal(plot.getPlotValue("LineColor")));
-    alist = graph.frame.FRAMEATTRIBUTES; 
-    for ( i=0; i<alist.length; i++) { 
-      id = mapid(alist[i]);                      
+    alist = graph.frame.FRAMEATTRIBUTES;
+    for ( i=0; i<alist.length; i++) {
+      id = mapid(alist[i]);
       if (document.getElementById(id)) {
         putValueToControlByID(id, graph.frame.getFrameAttribute(alist[i]));
-//        document.getElementById(id).value = graph.frame.getFrameAttribute(alist[i]);         
-      }                                                       
+//        document.getElementById(id).value = graph.frame.getFrameAttribute(alist[i]);
+      }
     }
     document.getElementById("defaultCameraCheckbox").checked = !graph.cameraValuesUserSet();
     document.getElementById("defaultviewintervals").checked = !graph.viewRangesUserSet();
-    
+
     initKeyList();
-  
+
     graphEditorControl = document.getElementById("plotDlg-content-frame");
     graphEditorControl.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : msiEditorDocumentObserverG}];
     graphEditorControl.mbSinglePara = true;
@@ -119,9 +119,9 @@ function Startup(){
 //    msiInitializeEditorForElement(editorControl, theStringSource, true);
     var editorInitializer = new msiEditorArrayInitializer();
     editorInitializer.addEditorInfo(graphEditorControl, theStringSource, true);
-    
+
     captionnode = getFirstElementByTagName(graphnode,"caption");
- 
+
     radiusEditorControl = document.getElementById("plotDlg-tube-radius");
     radiusEditorControl.mbSinglePara = true;
     radiusEditorControl.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
@@ -149,9 +149,9 @@ function Startup(){
   catch(e) {
     msidump(e.message);
   }
-}       
+}
 
-// This part pastes data into the editor after the editor has started. 
+// This part pastes data into the editor after the editor has started.
 // implements nsIObserver
 var msiEditorDocumentObserverG = {
   observe: function (aSubject, aTopic, aData) {
@@ -170,25 +170,28 @@ function mapid( graphattribute)
 {
   switch (graphattribute)
   {
-    case "Width"             :   return "frameWidthInput";
-    case "Height"            :   return "frameHeightInput";
-    case "Placement"         :   return "placementRadioGroup";
-    case "Float"             :   return "float";
-    case "Units"             :   return "frameUnitMenulist";
-    case "AxesType"          :   return "axistype";
-    case "EqualScaling"      :   return "equalscale";
-    case "BGColor"           :   return "plotCW";
-    case "ViewingBoxXMin"    :   return "xrangelow";
-    case "ViewingBoxXMax"    :   return "xrangehigh";
-    case "ViewingBoxYMin"    :   return "yrangelow";
-    case "ViewingBoxYMax"    :   return "yrangehigh";
-    case "ViewingBoxZMin"    :   return "zrangelow";
-    case "ViewingBoxZMax"    :   return "zrangehigh";
+    case "Width"              :   return "frameWidthInput";
+    case "Height"             :   return "frameHeightInput";
+    case "Placement"          :   return "locationList";
+    case "CaptionPlace"       :   return "captionLocation";
+    case "Key"                :   return "keyInput";
+    case "Dimension"          :   return "dimension";
+    case "Float"              :   return "float";
+    case "Units"              :   return "frameUnitMenulist";
+    case "AxesType"           :   return "axistype";
+    case "EqualScaling"       :   return "equalscale";
+    case "BGColor"            :   return "plotCW";
+    case "ViewingBoxXMin"     :   return "xrangelow";
+    case "ViewingBoxXMax"     :   return "xrangehigh";
+    case "ViewingBoxYMin"     :   return "yrangelow";
+    case "ViewingBoxYMax"     :   return "yrangehigh";
+    case "ViewingBoxZMin"     :   return "zrangelow";
+    case "ViewingBoxZMax"     :   return "zrangehigh";
 
-    //then to avoid the automatic placing of values where not appropriate:
-    case "plotnumber"        :   return "";
+    //then to avoid the automatic placing of values where not appropriat  :
+    case "plotnumber"         :   return "";
 
-    default                  :   return graphattribute;
+    default                   :   return graphattribute;
   }
 }
 
@@ -218,7 +221,7 @@ function OK() {
   //  var editor = msiGetEditor(editorElement);
   changed = true;
   if (changed) {
-    graph.recomputeVCamImage(editorElement); 
+    graph.recomputeVCamImage(editorElement);
   }
   theWindow = window.opener;
   if (!theWindow || !(theWindow.hasOwnProperty("nonmodalRecreateGraph"))) {
@@ -251,28 +254,28 @@ function GetValuesFromDialog(){
   var alist = graph.graphAttributeList();
   var anID, attr;
   var newval, oldval;
-  var frame = graph.frame;                               
+  var frame = graph.frame;
   for (var i=0; i<alist.length; i++) {
     anID = mapid(alist[i]);
     if (document.getElementById(anID)) {
       newval = getValueFromControlByID(anID);
-      if (newval !== "undefined" && newval !== "unspecified") {   // NOTE, "" is OK, e.g. delete a label              
-        oldval = graph.getValue (alist[i]);                        
-        if (newval != oldval) {                                        
-           graph.setGraphAttribute(alist[i], newval);                  
-        }                                                              
-      }                                                                
-    }                                                                   
-  }                                                                               
+      if (newval !== "undefined" && newval !== "unspecified") {   // NOTE, "" is OK, e.g. delete a label
+        oldval = graph.getValue (alist[i]);
+        if (newval != oldval) {
+           graph.setGraphAttribute(alist[i], newval);
+        }
+      }
+    }
+  }
   graph.markCameraValuesUserSet( !document.getElementById("defaultCameraCheckbox").checked );
   graph.markViewRangesUserSet( !document.getElementById("defaultviewintervals").checked );
 
   // grab anything that's in the plot attribute list
-  // we save data for only the currently displayed plot, since the others are 
+  // we save data for only the currently displayed plot, since the others are
   // already saved.
   var plotno = Number(graph.getGraphAttribute("plotnumber"));
   var plot = graph.plots[plotno];
-  var alist  = plot.plotAttributeList();                                
+  var alist  = plot.plotAttributeList();
   if (!plot) return;
   var dim    = graph.getDimension();
   for (var i=0; i<alist.length; i++) {
@@ -280,37 +283,37 @@ function GetValuesFromDialog(){
     if (document.getElementById(anID)) {
       var newval = getValueFromControlByID(anID);
 //      var newval = document.getElementById(anID).value;
-      if (newval && (newval != "") && (newval != "undefined")) {                 
-        var oldval = graph.getPlotValue (alist[i], plotno);                        
-        if (newval != oldval) {                                        
+      if (newval && (newval != "") && (newval != "undefined")) {
+        var oldval = graph.getPlotValue (alist[i], plotno);
+        if (newval != oldval) {
            graph.setPlotValue(alist[i], plotno, newval);
-        }                                                              
-      }                                                                
-    }                                                                   
-  } 
+        }
+      }
+    }
+  }
   var tempFrame = graphnode.getElementsByTagName("msiframe");
   if (tempFrame.length > 0) {
     tempFrame = tempFrame[0];
   }
   var f = tempFrame.cloneNode(true);
   setFrameAttributes(f, f, editor);  // reuse code in msiFrameOverlay.
-  frame.extractFrameAttributes(f, f);
-  var oldpt = plot.attributes["PlotType"];                        
+  frame.extractFrameAttributes(f);
+  var oldpt = plot.attributes["PlotType"];
   var newpt;
   if (dim == 3) {
-    newpt = document.getElementById("pt3d").value;            
-  } else { 
-    newpt = document.getElementById("pt2d").value;            
+    newpt = document.getElementById("pt3d").value;
+  } else {
+    newpt = document.getElementById("pt2d").value;
   }
   if (newpt != oldpt) {
     if (newpt) plot.attributes["PlotType"] = newpt;
     plot.attributes["PlotStatus"] = "New";
-  }    
+  }
   var oldanimate = (plot.attributes["Animate"] === "true");
   var newanimate = document.getElementById("animate").checked;
   if (oldanimate != newanimate)
     plot.attributes["Animate"] = (newanimate ? "true" : "false");
-  try  
+  try
   {
     var doc = document.getElementById("plotDlg-content-frame").contentDocument;
     var mathnode = doc.getElementsByTagName("math")[0];
@@ -350,37 +353,37 @@ function GetValuesFromDialog(){
 
   // Layout Tab
   // printAttribute
-  if (document.getElementById("printattr")) {                            
+  if (document.getElementById("printattr")) {
     newval = document.getElementById("printattr").selectedItem.value;
-    oldval = graph.getValue ("PrintAttribute"); 
-    if (newval != oldval) {                                        
+    oldval = graph.getValue ("PrintAttribute");
+    if (newval != oldval) {
       graph.setGraphAttribute ("PrintAttribute", newval);
-    }                                                               
+    }
   }
   // ScreenDisplay
-  if (document.getElementById("screendisplayattr")) {                            
+  if (document.getElementById("screendisplayattr")) {
     newval = document.getElementById("screendisplayattr").selectedItem.value;
-    oldval = graph.getValue ("PrintFrame"); 
-    if (newval != oldval) {                                        
+    oldval = graph.getValue ("PrintFrame");
+    if (newval != oldval) {
       graph.setGraphAttribute ("PrintFrame", newval);
-    }                                                               
+    }
   }
   // GraphAxesType
   if (document.getElementById("placementRadioGroup")) {
     var placement = document.getElementById("placementRadioGroup").selectedItem;
     var newval = placement ? placement.id : "";
-    var oldval = graph.getValue ("Placement"); 
-    if (newval != oldval) {                                        
+    var oldval = graph.getValue ("Placement");
+    if (newval != oldval) {
       graph.setGraphAttribute ("Placement", newval);
-    }                                                               
+    }
   }
   // Labelling Tab
   // Captionplace
-  if (document.getElementById("CaptionPlace")) {                            
+  if (document.getElementById("CaptionPlace")) {
     newval = document.getElementById("CaptionPlace").value;
     graph.setGraphAttribute ("CaptionPlace", newval);
   }
-}                          
+}
 
 // for conformals, save the horizontal and vertical samples
 // row is a table row with four elements
@@ -388,14 +391,14 @@ function SaveConformalSamples (name, row, plotno) {
   try {
     var cols = row.getElementsByTagName ("td");
     var newval = ExtractTextFromNode(cols[3]);
-    var oldval = graph.getPlotValue (name, plotno);   
+    var oldval = graph.getPlotValue (name, plotno);
     if (oldval != newval) {
       graph.setPlotValue(name, plotno, newval);
-    }  
+    }
   }
   catch (e) {
     alert ("ERROR: Unable to save values in plot table\n");
-  }  
+  }
 }
 
 function ExtractTextFromNode (node) {
@@ -409,7 +412,7 @@ function Cancel(){
 }
 
 // This is the callback for the command button to add a new plot
-// Create a new plot, fire up the ComputePlotSettings.xul edit dialog. 
+// Create a new plot, fire up the ComputePlotSettings.xul edit dialog.
 // Set the PlotStatus to New so OK can call the preparePlot function
 function addPlot () {
   // save any changes to current plot, then change plots. Cancel ignores all changes
@@ -450,7 +453,7 @@ function addPlotDialogContents () {
 //  newElement.setAttribute("label", plotnumber.toString());
 //  newElement.setAttribute("value", plotnumber.toString());
 //  popup.appendChild(newElement);
-//  document.getElementById("plot").selectedItem = newElement; 
+//  document.getElementById("plot").selectedItem = newElement;
   // grab the plottype from plot 1 and set it as default
   plotnum = getPlotInternalNum(plotnum);
   var copyAttrs;
@@ -464,17 +467,17 @@ function addPlotDialogContents () {
     plot.copyAttributes(graph.plots[firstPlotNum], copyAttrs);
   }
   populateDialog (plotnum);
-}         
+}
 
 //// This is the callback for the command button to edit a plot
-//// on entry, the "plotnumber" widget has the plot number of the items to be edited. 
-//// on exit, the ComputePlotSettings.xul dialog has saved the new data 
+//// on entry, the "plotnumber" widget has the plot number of the items to be edited.
+//// on exit, the ComputePlotSettings.xul dialog has saved the new data
 //function formatPlot () {
 //  // only open one dialog per window
-//  var count = document.getElementById("plotnumber").valueNumber; 
+//  var count = document.getElementById("plotnumber").valueNumber;
 //  graph.setGraphAttribute("plotnumber", getPlotInternalNum(count));
-//  window.openDialog("chrome://prince/content/ComputePlotSettings.xul", 
-//                    "Plot_Settings", "chrome,close,titlebar,dependent,resizable", 
+//  window.openDialog("chrome://prince/content/ComputePlotSettings.xul",
+//                    "Plot_Settings", "chrome,close,titlebar,dependent,resizable",
 //                    graph, window, window.arguments[2]);
 //}
 
@@ -482,7 +485,7 @@ function addPlotDialogContents () {
 function deletePlot () {
   // extract the plot number from the dialog
   var newplotno, numplots, plotno, plotNumControl;
-  plotNumControl    = document.getElementById('plotnumber');                    
+  plotNumControl    = document.getElementById('plotnumber');
 //  plotno = document.getElementById("plot").selectedItem.value;
   plotno = Number(plotNumControl.value);
   var intPlotNum = getPlotInternalNum(plotno);
@@ -504,32 +507,32 @@ function deletePlot () {
   }
 }
 
-// the user has just selected a new plot type for this plot. Rebuild the 
+// the user has just selected a new plot type for this plot. Rebuild the
 // dialog
 function changePlotType () {
   // get the plot number and the plot type. Then populate
   var dim    = graph.getDimension();
-  var plotno = getPlotInternalNum(document.getElementById("plotnumber").valueNumber); 
+  var plotno = getPlotInternalNum(document.getElementById("plotnumber").valueNumber);
   if (!plotno)
     plotno = 0;
-  var oldpt = graph.getPlotValue ("PlotType", plotno);                        
+  var oldpt = graph.getPlotValue ("PlotType", plotno);
 //  if ((plotno == null) || (plotno == "")) {
 //  }
   graph.setGraphAttribute("plotnumber", String(plotno));
   var newpt;
   if (dim == 3) {
-    newpt = document.getElementById("pt3d").value;            
-  } else { 
-    newpt = document.getElementById("pt2d").value;            
+    newpt = document.getElementById("pt3d").value;
+  } else {
+    newpt = document.getElementById("pt2d").value;
   }
   if (newpt != oldpt) {
     graph.setPlotValue ("PlotType", plotno, newpt);
     graph.setPlotValue ("PlotStatus", plotno, "New");
-  }    
+  }
   populateDialog (plotno);
 }
 
-// the user has just selected a new plot number in the dialog: populate the 
+// the user has just selected a new plot number in the dialog: populate the
 // current screen with the data for this plot
 function changePlot () {
   // save any changes to this plot, then change plots. Cancel ignores all changes
@@ -537,8 +540,8 @@ function changePlot () {
   graph.setGraphAttribute("returnvalue", "false");
 
   // extract the plot number from the dialog
-  var plotno = document.getElementById("plotnumber").value; 
-  if ((plotno == null) || (plotno == "")) {              
+  var plotno = document.getElementById("plotnumber").value;
+  if ((plotno == null) || (plotno == "")) {
     plotno = 1;
   }
   plotno = getPlotInternalNum(plotno);
@@ -578,7 +581,7 @@ function getActivePlotNumber(internalPlotNum)
 
 function populateDialog (plotno) {
   // remove contents here
-  try 
+  try
   {
     var oldplotno = graph.currentDisplayedPlot;
     if ((plotno == oldplotno) || (plotno < 0) || plotno >= graph.getNumPlots()) return;
@@ -638,7 +641,7 @@ function populateDialog (plotno) {
   {
     msidump("populateDialog: " + e.message + "\n");
   }
-  
+
   try
   {
     // handle the top descriptor
@@ -649,13 +652,13 @@ function populateDialog (plotno) {
     hideShowControls(dim, ptype, graph.isAnimated(), aiMethod)
 
     if (dim == 3) {
-//      document.getElementById("plotcs3d").collapsed = false;            
-//      document.getElementById("plotcs2d").collapsed = true;            
+//      document.getElementById("plotcs3d").collapsed = false;
+//      document.getElementById("plotcs2d").collapsed = true;
       populatePopupMenu ("pt3d", ptype);
     } else {
-//      document.getElementById("plotcs2d").collapsed = false;            
-//      document.getElementById("plotcs3d").collapsed = true;            
-      populatePopupMenu ("pt2d", ptype);  
+//      document.getElementById("plotcs2d").collapsed = false;
+//      document.getElementById("plotcs3d").collapsed = true;
+      populatePopupMenu ("pt2d", ptype);
     }
 //    if (ptype == "tube")
 //    {
@@ -677,11 +680,11 @@ function populateDialog (plotno) {
     var plotml = document.getElementById("plotnumber");
     plotml.valueNumber = getActivePlotNumber(plotno);
 //This happens automatically with number-type textboxes.
-//    for (var idx=0; idx<plotml.childNodes.length; idx++) { 
+//    for (var idx=0; idx<plotml.childNodes.length; idx++) {
 //      if (plotml.childNodes[idx].getAttribute("value") == plotno) {
-//        document.getElementById("plotnumber").selectedItem = plotml.childNodes[idx]; 
-//      }    
-//    }       
+//        document.getElementById("plotnumber").selectedItem = plotml.childNodes[idx];
+//      }
+//    }
 
     var alist = graph.plotAttributeList(plotno);
     var anID, theVal;
@@ -692,51 +695,51 @@ function populateDialog (plotno) {
         theVal = graph.getPlotValue (alist[i], plotno);
         putValueToControlByID(anID, theVal);
 //        document.getElementById(anID).value = theVal;
-      }                                                                   
+      }
     }
-//    setColorWell("baseColorWell", makeColorVal(graph.getPlotValue("BaseColor", plotno)));  
+//    setColorWell("baseColorWell", makeColorVal(graph.getPlotValue("BaseColor", plotno)));
 //    setColorWell("secondColorWell", makeColorVal(graph.getPlotValue("SecondaryColor", plotno)));
 //    setColorWell("lineColorWell", makeColorVal(graph.getPlotValue("LineColor", plotno)));
-  
+
 //**rwa - these should already have been taken carae of, during the loop through the graph's attributes***//
 //    // AXES TAB
 //    // GraphAxesScale
-//    var oldval = graph.getValue ("AxisScale"); 
+//    var oldval = graph.getValue ("AxisScale");
 //    radioGroupSetCurrent ("AxisScale", oldval);
 //    // GraphEqualScaling
-//    if (document.getElementById("equalscale")) {  
-//      var oldval = graph.getValue ("EqualScaling");  
+//    if (document.getElementById("equalscale")) {
+//      var oldval = graph.getValue ("EqualScaling");
 //      if (oldval == "true") {
-//         document.getElementById("equalscale").checked = true;            
-//      }                                                               
+//         document.getElementById("equalscale").checked = true;
+//      }
 //    }
 //    // GraphAxesTips
-//    if (document.getElementById("AxesTips")) {                            
-//      var oldval = graph.getValue ("AxesTips");  
+//    if (document.getElementById("AxesTips")) {
+//      var oldval = graph.getValue ("AxesTips");
 //      if (oldval == "true") {
-//         document.getElementById("AxesTips").checked = true;            
-//      }                                                               
+//         document.getElementById("AxesTips").checked = true;
+//      }
 //    }
 //    // GraphGridLines
-//    if (document.getElementById("GridLines")) {                            
-//      var oldval = graph.getValue ("GridLines");  
+//    if (document.getElementById("GridLines")) {
+//      var oldval = graph.getValue ("GridLines");
 //      if (oldval == "true") {
-//         document.getElementById("GridLines").checked = true;            
-//      }                                                               
+//         document.getElementById("GridLines").checked = true;
+//      }
 //    }
 //    // GraphAxesType
-//    var oldval = graph.getValue ("AxesType");  
+//    var oldval = graph.getValue ("AxesType");
 //    radioGroupSetCurrent ("axistype", oldval);
 
     // Layout Tab
     // printAttribute
-    var oldval = graph.getValue ("PrintAttribute");  
+    var oldval = graph.getValue ("PrintAttribute");
     radioGroupSetCurrent ("printattr", oldval);
     // ScreenDisplay
-    var oldval = graph.getValue ("PrintFrame");  
+    var oldval = graph.getValue ("PrintFrame");
     radioGroupSetCurrent ("screendisplayattr", oldval);
     // GraphAxesType
-    var oldval = graph.getValue ("Placement");  
+    var oldval = graph.getValue ("Placement");
     radioGroupSetCurrent ("placement", oldval);
 
     // Labelling Tab
@@ -787,7 +790,7 @@ function populatePopupMenu (popupname, datavalue) {
     if (items[i].value == datavalue) {
       popup.selectedItem = items[i];
       break;
-    } 
+    }
   }
 }
 
@@ -799,12 +802,12 @@ function populateDescription (name, datavalue) {
 
 // set the radio group identified by elemID to the element with curval
 function radioGroupSetCurrent (elemID, oldval) {
-  var elem = document.getElementById(elemID); 
-  if (elem) {                            
+  var elem = document.getElementById(elemID);
+  if (elem) {
     elem.selectedIndex=0;
     var children = elem.childNodes;
     for (var i=0; i<children.length; i++) {
-      if (oldval == children[i].value) {    
+      if (oldval == children[i].value) {
 	      elem.selectedIndex = i;
 	    }
     }
@@ -840,7 +843,7 @@ function radioGroupSetCurrent (elemID, oldval) {
 ///*      || (pt == "spherical") || (pt == "cylindrical")|| (pt == "curve")) */
 ///*     return false;                                                       */
 ///*   return true;                                                          */
-//  
+//
 //}
 
 
@@ -885,7 +888,7 @@ function hideShowControls(dim, ptype, graphAnimated, aiMethod)
   var bUseDirShading = false;
   var bAnimated = graph.isAnimated();
   if (dim == 3) {
-    document.getElementById("plotcs3d").collapsed = false;            
+    document.getElementById("plotcs3d").collapsed = false;
     document.getElementById("plotcs2d").collapsed = true;
     document.getElementById("threeDim").collapsed = false;
     document.getElementById("colorAlphaEnabled").setAttribute("hasAlpha", "true");
@@ -906,7 +909,7 @@ function hideShowControls(dim, ptype, graphAnimated, aiMethod)
       break;
     }
   } else {
-    document.getElementById("plotcs2d").collapsed = false;            
+    document.getElementById("plotcs2d").collapsed = false;
     document.getElementById("plotcs3d").collapsed = true;
     document.getElementById("threeDim").collapsed = true;
     document.getElementById("colorAlphaEnabled").setAttribute("hasAlpha", "false");
@@ -942,7 +945,7 @@ function hideShowControls(dim, ptype, graphAnimated, aiMethod)
   document.getElementById("useMesh").collapsed = !bUseMesh;
   document.getElementById("approxIntPlot").collapsed = (ptype !== "approximateIntegral");
   document.getElementById("useAreaFill").collapsed = ((ptype != "approximateIntegral") && (ptype !== "inequality"));
-  document.getElementById("useDiscAdjust").collapsed = ((ptype != "rectangular") && (ptype != "parametric") && (ptype != "implicit")); 
+  document.getElementById("useDiscAdjust").collapsed = ((ptype != "rectangular") && (ptype != "parametric") && (ptype != "implicit"));
   changeDefaultCamera();  //this just enables or disables according to the checkbox state
   changeDefaultViewIntervals();  //this just enables or disables according to the checkbox state
 }
@@ -990,7 +993,7 @@ function openAxisFontSettingsDlg()
         graph.markUserSet(attrName, false);
       }
     }
-  }  
+  }
 }
 
 function openAxisTickFontSettingsDlg()
@@ -1034,7 +1037,7 @@ function openAxisTickFontSettingsDlg()
         graph.markUserSet(attrName, false);
       }
     }
-  }  
+  }
 }
 
 function openPlotLabelsDlg()
@@ -1080,11 +1083,11 @@ function changeDefaultCamera()
 function changeAIMethod()
 {
   var dim = graph.getDimension();
-  var ptype; 
+  var ptype;
   if (dim == 3) {
-    ptype = document.getElementById("pt3d").value;            
-  } else { 
-    ptype = document.getElementById("pt2d").value;            
+    ptype = document.getElementById("pt3d").value;
+  } else {
+    ptype = document.getElementById("pt2d").value;
   }
   hideShowControls(dim, ptype,
                      (graph.isAnimated() || document.getElementById("animate").checked),

@@ -6,54 +6,6 @@ Components.utils.import("resource://app/modules/os.jsm");
 //----------------------------------------------------------------------------------
 // ************ Graph section ******
 
-function setStyleAttributeOnNode( node, att, value, editor)  // this is a candidate for msiEditorUtilities.js
-{
-  var style="";
-  if (!node) {
-    return;
-  }
-  removeStyleAttributeFamilyOnNode( node, att, editor);
-  if (node.hasAttribute("style")) style = node.getAttribute("style");
-  style.replace("null","");
-  style = style + " " + att +": " + value + "; ";
-  if (editor)
-    msiEditorEnsureElementAttribute(node, "style", style, editor);
-  else
-    node.setAttribute("style",style);
-}
-
-function removeStyleAttributeFamilyOnNode( node, att, editor)  // this is a candidate for msiEditorUtilities.js
-{
-  var style="";
-  if (node.hasAttribute("style")) style = node.getAttribute("style");
-  style.replace("null","");
-  var re = new RegExp("^|[^-]"+att + "[-a-zA-Z]*:[^;]*;","g");
-  if (re.test(style))
-  {
-    style = style.replace(re, "");
-    if (editor)
-      msiEditorEnsureElementAttribute(node, "style", style, editor);
-    else
-      node.setAttribute("style",style);
-  }
-}
-
-
-function removeStylePropFromNode(node, property, editor)
-{
-  var style="";
-  if (node.hasAttribute("style")) style = node.getAttribute("style");
-  var re = new RegExp(property + ":[^;]*;","g");
-  if (re.test(style))
-  {
-    style = style.replace(re, "");
-    if (editor)
-      msiEditorEnsureElementAttribute(node, "style", style, editor);
-    else
-      node.setAttribute("style",style);
-  }
-}
-
 function Graph() {
   // these arrays enumerate the data for a graph. PLOTELEMENTS are in mathml
   // When adding to this list, you must also add to the MathServiceRequest in the compute engine
@@ -73,6 +25,7 @@ function Graph() {
   }
   this.frame = new Frame(this);
 }
+
 Graph.prototype = {
   //  BBM: Some of the following attributes below really belong on the msiframe object or the VCam object
   // Namely: ImageFile===obj.data, Width, Height, Units, BGColor. Some of these probably should appear *only*
@@ -89,7 +42,7 @@ Graph.prototype = {
                               "AxisFontFamily", "AxisFontSize", "AxisFontColor", "AxisFontItalic", "AxisFontBold",
                               "TicksFontFamily", "TicksFontSize", "TicksFontColor", "TicksFontItalic", "TicksFontBold"],
   GRAPHATTRIBUTES: ["Key", "Name", "CaptionPlace"],
-  omitAttributeIfDefaultList : //["XAxisLabel", "YAxisLabel", "ZAxisLabel", 
+  omitAttributeIfDefaultList : //["XAxisLabel", "YAxisLabel", "ZAxisLabel",
                                ["CameraLocationX", "CameraLocationY", "CameraLocationZ",
                                 "FocalPointX", "FocalPointY", "FocalPointZ",
                                 "UpVectorX", "UpVectorY","UpVectorZ", "ViewingAngle", "OrientationTiltTurn",
@@ -223,7 +176,6 @@ Graph.prototype = {
     return false;
   },
   computeGraph: function (editorElement, filename) {
-    // filename is used only as a destination for logging
     // call the compute engine to create an image
     ComputeCursor(editorElement);
     var oldError, newError;
@@ -232,9 +184,7 @@ Graph.prototype = {
       try {
         oldError = GetCurrentEngine().getEngineErrors();  //to compare below
         var topWin = msiGetTopLevelWindow();
-        if (filename) {
-          topWin.msiComputeLogger.Sent4("plotfuncCmd", filename, str, "");
-        }
+        topWin.msiComputeLogger.Sent4("plotfuncCmd", filename, str, "");
         var out = GetCurrentEngine().plotfuncCmd(str);
         msiComputeLogger.Received(out);
       }
@@ -338,6 +288,7 @@ Graph.prototype = {
     var DOMCaption = DOMFrame.getElementsByTagName("caption")[0];
     var attr, value, alist, i, domPlots, plot, domPlotLabels, status, caption, captionloc, child, optnum;
     var graphData = new graphVarData(this);
+    frameUnitHandler = new UnitHandler();
     this.frame.reviseFrameDOMElement(DOMFrame, forComp, editorElement);
 
     // loop through graph attributes and insert them
@@ -430,10 +381,10 @@ Graph.prototype = {
     } else
     {
       DOMFrame.removeAttribute("captionloc");
-      removeStylePropFromNode( DOMFrame, 'caption-side', editor);
+      removeStyleAttributeFamilyOnNode( DOMFrame, 'caption-side', editor);
       if (captionNode) editor.deleteNode(captionNode);
     }
-    caption="<caption>"+caption+"</caption>";
+    caption="<caption>"+caption || ""+"</caption>";
     insertXML(editor, caption, DOMCaption, 0);
   },
 
@@ -522,7 +473,7 @@ Graph.prototype = {
         case "AxisFontFamily":
         case "TicksFontFamily":
           value = "sans-serif";
-        break;  
+        break;
         case "AxisFontSize":
           value = "10";
         break;
@@ -670,7 +621,7 @@ Graph.prototype = {
       case "ViewingAngle":
         return 3;
       break;
-      default:           return 0;   
+      default:           return 0;
       break;
     }
   },
@@ -705,7 +656,7 @@ Graph.prototype = {
       case("XAxisTitle") :          return "XAxisLabel";
       case("YAxisTitle") :          return "YAxisLabel";
       case("ZAxisTitle") :          return "ZAxisLabel";
-      case("ViewingBoxXMin") : 
+      case("ViewingBoxXMin") :
       case("ViewingBoxXMax") :
       case("ViewingBoxYMin") :
       case("ViewingBoxYMax") :
@@ -927,7 +878,7 @@ Plot.prototype = {
                            "LineStyle", "PointStyle", "LineThickness", "LineColor",
                            "DiscAdjust", "DirectionalShading", "BaseColor", "SecondaryColor",
                            "PointSymbol", "SurfaceStyle"/*,  "IncludePoints"*/,    //"IncludePoints" and "IncludeLines" are determined by LineStyle and/or SurfaceStyle
-                           "SurfaceMesh"/*,  "IncludeLines"*/, 
+                           "SurfaceMesh"/*,  "IncludeLines"*/,
                            "AISubIntervals", "AIMethod", "AIInfo", "FillPattern",
                            "Animate", "AnimCommonOrCustomSettings", "AnimateStart", "AnimateEnd",
                            "AnimateFPS", "AnimateVisBefore", "AnimateVisAfter",
@@ -964,7 +915,7 @@ Plot.prototype = {
       {
         switch(plottype)
         {
-          case "polar": 
+          case "polar":
             return [["\u03b8"],["t"],["s"],["u"],["x"]];  //theta,t,s,u,x
           break;
           case "conformal":  //What would a user want from a conformal parametric plot??? Probably ends in an error anyway...
@@ -1145,7 +1096,7 @@ Plot.prototype = {
     }
     return this.element["Expression"];
   },
-  //the following is really only correcting for "old-style" animated plots which may have been saved - where the 
+  //the following is really only correcting for "old-style" animated plots which may have been saved - where the
   //  animation var isn't identified as such, but is just an extra variable
   checkAnimationVar : function(plotData) {
     if (this.attributes["Animate"] === "true")
@@ -1512,7 +1463,7 @@ function PlotLabel(dim)
     this.setPlotLabelAttribute( attrs[ii], this.getDefaultPlotLabelAttribute(attrs[ii]) );
 }
 
-PlotLabel.prototype = 
+PlotLabel.prototype =
 {
   //The order of these IS significant
   PLOTLABELATTRIBUTES : ["PlotType", "PositionType", "OrientationType", "Text",
@@ -1548,7 +1499,7 @@ PlotLabel.prototype =
       theList = attributeArrayRemove(theList, "Tilt");
       theList = attributeArrayRemove(theList, "Turn");
     }
-    else 
+    else
     {
       if (dim == 2)
       {
@@ -1636,7 +1587,7 @@ PlotLabel.prototype =
   },
   setPlotLabelAttribute : function(key, value)
   {
-    var bConvertOrientation = ( (key == "OrientationType") && (this.attributes.OrientationType != value) 
+    var bConvertOrientation = ( (key == "OrientationType") && (this.attributes.OrientationType != value)
                                 && ((value == "cartesian") || (this.attributes.OrientationType == "cartesian")) );
     if (this.PLOTLABELATTRIBUTES.indexOf(key) >= 0)
     {
@@ -1697,8 +1648,8 @@ PlotLabel.prototype =
     var retVal;
     if (this.getDimension() == 3)
     {
-      retVal = convertCartesianToSpherical(Number(this.getPlotLabelAttribute("OrientationX")), 
-                                           Number(this.getPlotLabelAttribute("OrientationY")), 
+      retVal = convertCartesianToSpherical(Number(this.getPlotLabelAttribute("OrientationX")),
+                                           Number(this.getPlotLabelAttribute("OrientationY")),
                                            Number(this.getPlotLabelAttribute("OrientationZ")));
       this.setPlotLabelAttribute("Turn", String(retVal[1]));
       this.setPlotLabelAttribute("Tilt", String((Math.PI/2) - retVal[2]));
@@ -1706,7 +1657,7 @@ PlotLabel.prototype =
     }
     else
     {
-      retVal = convertCartesianToPolar(Number(this.getPlotLabelAttribute("OrientationX")), 
+      retVal = convertCartesianToPolar(Number(this.getPlotLabelAttribute("OrientationX")),
                                            Number(this.getPlotLabelAttribute("OrientationY")));
       this.setPlotLabelAttribute("Turn", String(retVal[1]));
     }
@@ -1720,8 +1671,8 @@ PlotLabel.prototype =
       oldLength = this.getNorm([Number(this.getPlotLabelAttribute("OrientationX")), Number(this.getPlotLabelAttribute("OrientationY")), Number(this.getPlotLabelAttribute("OrientationZ"))]);
       if (!oldLength)
         oldLength = 1;
-      retVal = convertSphericalToCartesian(oldLength, Number(this.getPlotLabelAttribute("Turn")), 
-                                              (Math.PI/2) - Number(this.getPlotLabelAttribute("Tilt"))); 
+      retVal = convertSphericalToCartesian(oldLength, Number(this.getPlotLabelAttribute("Turn")),
+                                              (Math.PI/2) - Number(this.getPlotLabelAttribute("Tilt")));
                                 //We do this transformation since a spherical coordinate of PI/2 should mean a tilt of 0
       this.setPlotLabelAttribute("OrientationX", String(retVal[0]));
       this.setPlotLabelAttribute("OrientationY", String(retVal[1]));
@@ -1799,7 +1750,22 @@ Frame.prototype = {
     this.attributes[name] = value;
     this.setModified(name);
   },
+  translateName: function(inName) {
+    switch(inName) {
+      case "units": return "Units";
+      case "sidemargin": return "HMargin";
+      case "topmargin": return "VMargin";
+      case "width": return "Width";
+      case "height": return "Height";
+      case "captionloc": return "CaptionPlace";
+      default: return inName;
+    }
+  },
   extractFrameAttributes: function (DOMFrame) {
+    var graph = this.parent;
+    if( DOMFrame.hasAttribute("units") && graph)
+      graph.setGraphAttribute("Units", DOMFrame.getAttribute("units"));
+
     var i, att, attlist, len;
     var graph = this.parent;
     attlist = this.FRAMEDOMATTRIBUTES;
@@ -1834,10 +1800,22 @@ Frame.prototype = {
           case "ltx_width":
             this.setFrameAttribute("ltx_width", DOMFrame.getAttribute(att));
             break;
+          case "borderw":
+            this.setFrameAttribute("borderw", DOMFrame.getAttribute(att));
+            break;
+          case "border-color":
+            this.setFrameAttribute("border-color", DOMFrame.getAttribute(att));
+            break;
+          case "padding":
+            this.setFrameAttribute("padding", DOMFrame.getAttribute(att));
+            break;
           case "placeLocation":
             if (DOMFrame.getAttribute(att).length > 0) {
               this.setFrameAttribute("placeLocation", DOMFrame.getAttribute(att));
             }
+            break;
+          case "captionloc":
+            graph.setGraphAttribute("CaptionPlace", DOMFrame.getAttribute(att));
             break;
           case "ltxfloat":
             if (DOMFrame.getAttribute("pos") === "float") {
@@ -1862,13 +1840,11 @@ Frame.prototype = {
       }
     }
   },
-  
+
   reviseFrameDOMElement: function (DOMFrame, forComp, editorElement) {
     var editor = msiGetEditor(editorElement);
     var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, pos, placeLocation, floattts, fltatt, ch, captionlocation, x;
     var DOMObj = DOMFrame.getElementsByTagName("object")[0];
-    var frmStyle = "";
-    var objStyle = "";
     var unitHandler = new UnitHandler();
     var needsWrapfig = false;
     try {
@@ -1878,6 +1854,7 @@ Frame.prototype = {
       attributes = this.frameAttributeList().concat(this.parent.graphAttributeList());
       for (j = 0; j < attributes.length; j++) {
         att = attributes[j];
+        if (!att) continue;
         switch (att) {
         case "HMargin":
           editor.setAttribute(DOMFrame, "sidemargin", this.getFrameAttribute(att));
@@ -1890,40 +1867,42 @@ Frame.prototype = {
           editor.setAttribute(DOMFrame, "ltx_height", height);
           heightinpx = unitHandler.getValueAs(height, "px");
           editor.setAttribute(DOMFrame, "height", height);
-          objStyle += "height: "+ heightinpx + "px; ";
+          setStyleAttributeOnNode(DOMObj, "height", heightinpx + "px");
           // dimensions of outer msiframe need to be adjusted for border and padding
           x = this.getFrameAttribute("border");
           if (x)
           {
-            height += 2*(x-0);
+//            height += 2*(x-0);
           }
           x = this.getFrameAttribute("padding");
           if (x)
           {
-            height += 2*(x-0);
+//            height += 2*(x-0);
           }
           editor.setAttribute(DOMFrame, "height", height);
           heightinpx = unitHandler.getValueAs(height, "px");
-          frmStyle += "height: " + heightinpx + "px; ";
+          setStyleAttributeOnNode( DOMFrame, "height", heightinpx + "px", null);
           break;
         case "Width":
           width = Number(graph.getValue(att));
           editor.setAttribute(DOMFrame, "ltx_width", width);
           widthinpx = unitHandler.getValueAs(width, "px");
-          objStyle += "width: "+ widthinpx + "px; ";
+          setStyleAttributeOnNode(DOMObj, "width", widthinpx + "px", null);
+
           x = this.getFrameAttribute("border");
           if (x) {
-            width += 2*(x-0);
+//   BBM: experimenting        width += 2*(x-0);
           }
           x = this.getFrameAttribute("padding");
           if (x) {
-            width += 2*(x-0);
+//            width += 2*(x-0);
           }
           editor.setAttribute(DOMFrame, "width", width);
           widthinpx = unitHandler.getValueAs(width, "px");
-          frmStyle += "width: " + widthinpx + "px; ";
+          setStyleAttributeOnNode( DOMFrame, "width", widthinpx + "px", null);
           break;
         case "border":
+        case "borderw":
           editor.setAttribute(DOMFrame, "borderw", this.getFrameAttribute(att));
           break;
         case "padding":
@@ -1938,6 +1917,9 @@ Frame.prototype = {
         case "borderColor":
           editor.setAttribute(DOMFrame, "border-color", hexcolor(this.getFrameAttribute(att)));
           break;
+        case "pos":
+          editor.setAttribute(DOMFrame, "pos", this.getFrameAttribute(att));
+          break;
         case "placement":
           pos = this.getFrameAttribute(att);
           editor.setAttribute(DOMFrame, "pos", pos);
@@ -1947,7 +1929,7 @@ Frame.prototype = {
           break;
         case "textalignment":
           editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
-          frmStyle += "text-align: "+ this.getFrameAttribute(att)+"; ";
+          setStyleAttributeOnNode( DOMFrame, "text-align", this.getFrameAttribute(att), null);
           break;
         case "placeLocation":
           placeLocation = this.getFrameAttribute(att);
@@ -1958,16 +1940,15 @@ Frame.prototype = {
           editor.setAttribute(DOMFrame, att, captionlocation);
           break;
         case "floatPlacement":
-          if (this.getFrameAttribute("placement") === "float")
-          {
-            editor.setAttribute(DOMFrame, "placement", "float");
-          }
+          editor.setAttribute(DOMFrame, "floatPlacement", "float");
           break;
         default:
+//          editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
           break;
         }
       }
       editor.setAttribute(DOMFrame, "msi_resize", "true");
+      editor.setAttribute(DOMFrame, "style", this.getFrameAttribute("style"));
 
       // what about overhang?
       // Now we build the CSS style for the object and the frame
@@ -1976,38 +1957,38 @@ Frame.prototype = {
       var lmargin = unitHandler.getValueStringAs(this.getFrameAttribute("HMargin"), "px");
       var rmargin = lmargin;
       var vmargin = unitHandler.getValueStringAs(this.getFrameAttribute("VMargin"), "px");
-      if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="full")) {
-        frmStyle += "margin: " + vmargin + " auto; ";
-      }
-      else {
-        if (isfloat) {
-          switch (this.getFrameAttribute("floatPlacement")) {
-            case "L":
-            case "I":
-            default:
-              lmargin = "0px";
-              break;
-            case "R":
-            case "O":
-              rmargin = "0px";
-              break;
-          }
-        }
-        frmStyle += "margin: " + vmargin + " " + rmargin + " " + vmargin + " " + lmargin + "; ";
-      }
-      if (isfloat) {
-        var floatParam = this.getFrameAttribute("floatPlacement");
-        if (floatParam === "I" || floatParam === "L") {
-          floatParam = "left";
-        }
-        else if (floatParam === "O" || floatParam === "R") {
-          floatParam = "right";
-        }
-        else {
-          floatParam = "none";
-        }
-        frmStyle += "float: " + floatParam + "; ";
-      }
+      // if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="full")) {
+      //   setStyleAttributeOnNode( DOMFrame, "margin", vmargin + " auto", null);
+      // }
+      // else {
+      //   if (isfloat) {
+      //     switch (this.getFrameAttribute("floatPlacement")) {
+      //       case "L":
+      //       case "I":
+      //       default:
+      //         lmargin = "0px";
+      //         break;
+      //       case "R":
+      //       case "O":
+      //         rmargin = "0px";
+      //         break;
+      //     }
+      //   }
+      //   setStyleAttributeOnNode( DOMFrame, "margin", vmargin + " " + rmargin + " " + vmargin + " " + lmargin, null);
+      // }
+      // if (isfloat) {
+      //   var floatParam = this.getFrameAttribute("floatPlacement");
+      //   if (floatParam === "I" || floatParam === "L") {
+      //     floatParam = "left";
+      //   }
+      //   else if (floatParam === "O" || floatParam === "R") {
+      //     floatParam = "right";
+      //   }
+      //   else {
+      //     floatParam = "none";
+      //   }
+      //   setStyleAttributeOnNode( DOMFrame, "float", floatParam, null);
+      // }
       var border = unitHandler.getValueStringAs(this.getFrameAttribute("border"), "px");
       // put the graph file in
       // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use
@@ -2050,8 +2031,6 @@ Frame.prototype = {
       DOMObj.setAttribute("alt", "Generated Plot");
       DOMObj.setAttribute("msigraph", "true");
 //      DOMObj.setAttribute("data", graph.getValue("ImageFile"));
-      editor.setAttribute(DOMFrame, "style", frmStyle);
-      editor.setAttribute(DOMObj, "style", objStyle);
       return (DOMFrame);
     }
     catch (e) {
@@ -2103,7 +2082,7 @@ function graphClickEvent(cmdstr, editorElement, element) {
     if (selection && !element) {
       element = findtagparent(selection.focusNode, "graph");
     }
-    else 
+    else
       element = findtagparent(element, "graph");
     if (element) formatRecreateGraph(element, cmdstr, editorElement);
   }
@@ -2224,7 +2203,7 @@ function insertGraph(siblingElement, graph, editorElement) {
   }
   GetCurrentEngine().clearEngineStrings();  //clear errors before starting a plot
   //  dump("In insertGraph, about to computeGraph.\n");
-  graph.computeGraph(editorElement);
+  graph.computeGraph(editorElement, longfilename);
   graph.setGraphAttribute("ImageFile", "plots/" + leaf);
   var gDomElement = graph.createGraphDOMElement(false);
 
@@ -2317,20 +2296,21 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
       // set caption-side in style
     }
     // BBM: need to set up style as well
-    var style = frame.getAttribute("style")||"";
 
-    style = style.replace(/margin[^;]+;/,'');
-    style = style.replace(/border[^;]+;/,'');
-    style = style.replace(/background[^;]+;/,'');
-    style = style.replace(/padding[^;]+;/,'');
-    style = style.replace(/caption-side[^;]+;/,'');
+    removeStyleAttributeFamilyOnNode( frame, "margin", null);
+    removeStyleAttributeFamilyOnNode( frame, "border", null);
+    removeStyleAttributeFamilyOnNode( frame, "background", null);
+    removeStyleAttributeFamilyOnNode( frame, "padding", null);
+    removeStyleAttributeFamilyOnNode( frame, "caption-side", null);
     if ((frmHMargin != null) || (frmVMargin != null)) {
-      style += ("margin: " + (frmVMargin || "") + (frmHMargin || "") + ";");
+      setStyleAttributeOnNode(frame, "margin", (frmVMargin || "") + " " + (frmHMargin || ""), null);
     }
-    if (frmBorder) style +=( "border:" + frmBorder + ";");
-    if (frmBGColor) style += ("background-color: " + frmBGColor + ";");
-    if (frmPadding) style += ("padding: " + frmPadding + ";");
-    frame.setAttribute("style", style);
+    if (frmBorder)
+      setStyleAttributeOnNode(frame, "border-width", frmBorder, null);
+    if (frmBGColor)
+      setStyleAttributeOnNode(frame, "background-color", frmBGColor, null);
+    if (frmPadding)
+      setStyleAttributeOnNode(frame, "padding", frmPadding, null);
     // Handle the caption node
     var captionNodes = frame.getElementsByTagName('caption');
     var captionNode = null;
@@ -2340,7 +2320,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
     if (plotcaptionpref && (plotcaptionpref != "none")) {
       var tlm;
       tlm = editor.tagListManager;
-      setStyleAttributeOnNode(frame, "caption-side", plotcaptionpref, editor);
+      setStyleAttributeOnNode(frame, "caption-side", plotcaptionpref, null);
       // if there is no caption node, create an empty one.
       if (!captionNode) {
          captionNode = editor.createElementWithDefaults('caption');
@@ -2351,8 +2331,9 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
     } else
     {
       frame.removeAttribute("captionloc");
-      removeStylePropFromNode( frame, 'caption-side', editor);
-      if (captionNode) editor.deleteNode(captionNode);
+      removeStyleAttributeFamilyOnNode( frame, 'caption-side', null);
+      if (captionNode)
+        editor.deleteNode(captionNode);
     }
   }
 }
@@ -2714,7 +2695,7 @@ function parseQueryReturn(out, graph, plot) {
   try
   {
     retVariables = doAnalyzeVars(varData, plot);
-  } catch(ex) 
+  } catch(ex)
   {msidump("Error in GraphOverlay.js, parseQueryReturn: " + ex + "\n");}
   if (retVariables)
     graphSaveVariablesAndDefaults(graph, plot, retVariables);
@@ -2795,7 +2776,7 @@ function fixExplicitList(aPlotData, dim)
           kids = [topNode];
         for (var kk = 0; kk < kids.length; ++kk)
         {
-          cellNode.appendChild( kids[kk].cloneNode(true) ); 
+          cellNode.appendChild( kids[kk].cloneNode(true) );
         }
         rowNode.appendChild(cellNode);
       }
@@ -2994,7 +2975,7 @@ function removeDelimitersFromNodeList(nodeArray, delimiterList)
       }
       else
         prevWas = sep;
-    } 
+    }
     else if (prevWas == sep)
     {
       prevWas = entry;
@@ -3089,7 +3070,7 @@ function atomizeMTable(tableNode)
     else
     {
       nodeArray.push(kids[jj]);
-    }  
+    }
   }
   flushNodeArray();
 //  if (checkNonVector())
@@ -3123,7 +3104,7 @@ function orderMathNodes(node1, node2)
 }
 
 
-var plotVarDataBase = 
+var plotVarDataBase =
 {
   checkPlotType : function()
   {
@@ -3201,7 +3182,7 @@ var plotVarDataBase =
       var rawVars = GetCurrentEngine().getVariables(this.mPlot.element["Expression"]);
       var foundVarList = splitMathMLList(rawVars);
       //special check for returning the empty set symbol
-      if ( (foundVarList.length == 1) && (msiGetBaseNodeName(foundVarList[0]) == "mi") 
+      if ( (foundVarList.length == 1) && (msiGetBaseNodeName(foundVarList[0]) == "mi")
             && (foundVarList[0].textContent == "\u2205") )
         foundVarList = [];
       foundVarList.sort(orderMathNodes);
@@ -3295,7 +3276,7 @@ function plotVarData(plot, dim, graphData)
 
 plotVarData.prototype = plotVarDataBase;
 
-var graphVarDataBase = 
+var graphVarDataBase =
 {
   graphAxisName : function(nWhichVar)
   {
@@ -3314,7 +3295,7 @@ var graphVarDataBase =
         return this.plotData[ii];
       }
     }
-    return null;  
+    return null;
   },
   plotVarIsUserSet : function(nWhichPlot, whichVar)
   {
@@ -3416,7 +3397,7 @@ function graphVarData(graph)
 
 graphVarData.prototype = graphVarDataBase;
 
-var varMatchDataBase = 
+var varMatchDataBase =
 {
   getPlotData : function()
   {
@@ -3623,7 +3604,7 @@ function doAnalyzeVars(graphVarData, plot)
       matchingVarName = graphVarData.matchAxisToTeXName(foundVarsTeX[kk], axesMatch);
       if (matchingVarName)
       {
-        matchData.push( new varMatchData(graphVarData, 0, kk, matchingVarName, ourPlotType, dim, ourNumPlainVars, false, isParametric) );  
+        matchData.push( new varMatchData(graphVarData, 0, kk, matchingVarName, ourPlotType, dim, ourNumPlainVars, false, isParametric) );
         //We pass "false" for "animated" for the global graph object; there's no axis string associated with animation variable
       }
     }
@@ -3818,7 +3799,7 @@ function doAnalyzeVars(graphVarData, plot)
         if (varName == "AnimVar")
           outList.defaulted[varName] = wrapMath(wrapmi(animatedVarList[0]));
         else
-        {  
+        {
           nIndex = Graph.prototype.plotVariablePropertyNames.indexOf(varName);
           expectedList = expectedVarLists[defaultListUsed];
           outList.defaulted[varName] = wrapMath(wrapmi(expectedList[nIndex]));
@@ -4130,7 +4111,7 @@ function plotVarsShouldMatchAxes(plotType, dim)
         retArray[ii] = ii;
       return retArray;
     break;
-    
+
 //    case "polar":
 //    case "parametric":
 //    case "conformal":
@@ -4309,7 +4290,7 @@ function getPlotDefaultValue(dim, plotType, key)
   }
   for (var ii = 0; !value && (ii < prefix.length); ++ii)
   {
-    try 
+    try
     {
       var prefType = prefs.getPrefType(prefix[ii] + key);
       if (prefType == prefs.PREF_STRING)
