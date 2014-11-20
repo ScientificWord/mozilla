@@ -1463,7 +1463,7 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
   if (!bPlaintext && !mHTMLEditor->IsTextNode(selNode) &&
       !mHTMLEditor->CanContainTag(selNode, NS_LITERAL_STRING("#text")))
   {
-    
+
     nsCOMPtr<nsIDOMText>textNode;
     res = doc->CreateTextNode(EmptyString(), getter_AddRefs(textNode));
     nsCOMPtr<nsIDOMNode> outNode;
@@ -2186,7 +2186,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     NS_NAMED_LITERAL_STRING(munder, "munder");
     res = mHTMLEditor->GetElementOrParentByTagName(munder, startNode, getter_AddRefs(anchorAncestor));
     res = mHTMLEditor->GetElementOrParentByTagName(munder, visNode, getter_AddRefs(focusAncestor));
-    if (focusAncestor && !anchorAncestor) { 
+    if (focusAncestor && !anchorAncestor) {
     // we have entered an munder object; delete it but let the code go and delete the under character.
       res = mHTMLEditor->RemoveContainer(focusAncestor);
       aSelection->Collapse(visNode, visOffset);
@@ -2195,7 +2195,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
    NS_NAMED_LITERAL_STRING(mover, "mover");
     res = mHTMLEditor->GetElementOrParentByTagName(mover, startNode, getter_AddRefs(anchorAncestor));
     res = mHTMLEditor->GetElementOrParentByTagName(mover, visNode, getter_AddRefs(focusAncestor));
-    if (focusAncestor && !anchorAncestor) { 
+    if (focusAncestor && !anchorAncestor) {
       // we have entered an mover object; delete it but let the code go and delete the over character.
       res = mHTMLEditor->RemoveContainer(focusAncestor);
       aSelection->Collapse(visNode, visOffset);
@@ -2607,7 +2607,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     nsAutoTrackDOMPoint tracker(mHTMLEditor->mRangeUpdater, address_of(endNode), &endOffset);
     // we are handling all ranged deletions directly now.
     *aHandled = PR_TRUE;
-      
+
     // if there is an unmatched fence character in the selection, save its mate for deletion during cleanup.
     nsCOMPtr<nsIDOMNodeList> fenceNodes;
     FindMatchForFenceInSelection(aSelection, getter_AddRefs(fenceNodes));
@@ -3626,6 +3626,7 @@ GetEngine() {
 
 PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& nodecount, PRInt32& offset, nsHTMLEditor * ed)
 {
+  nsresult res;
   PRBool retval = PR_FALSE;
   if (!node) return retval;
   PRBool isMath = nsHTMLEditUtils::IsMath(node);
@@ -3640,7 +3641,7 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
 
   if (isMath) {
     node->GetTagName(name);
-    while (name.EqualsLiteral("mi") || name.EqualsLiteral("mo") || (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle")) && empty) {
+    while (node && (name.EqualsLiteral("mi") || name.EqualsLiteral("mo") || (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle") && empty))) {
       editor->GetNodeLocation(node, &parent, &offset);
       node2 = do_QueryInterface(parent);
       if (empty) editor->DeleteNode(node);
@@ -3651,7 +3652,7 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
       } else
         empty = PR_FALSE;  // get out of the loop
     }
-    if (name.EqualsLiteral("math") && empty) 
+    if (name.EqualsLiteral("math") && empty)
     {
       nodecount = 0; // not used
       retval = PR_TRUE;
@@ -3673,7 +3674,7 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
     {
       nodecount = 3;
       retval = PR_TRUE;
-    } 
+    }
     else {
       if ((name.EqualsLiteral("mtd") && empty) || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
         // Search up and see if the enclosing table has the attribute 'type="eqnarray"'. If so,
@@ -3715,7 +3716,7 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
   // A subnode has been deleted. If elt is an msub or msup, remove that tag. If elt is an msubsup,
   // replace it with an msub or msup, depending on whether siblingNode is null or not.
   PRBool retval = PR_FALSE;
-  if (!deletingInputbox)  
+  if (!deletingInputbox)
     return retval;
   nsresult res;
   nsAutoString name;
@@ -3726,7 +3727,7 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
   nsCOMPtr<nsIDOMNode> newNode;
   elt->GetTagName(name) ;
   if (name.EqualsLiteral("msubsup") || name.EqualsLiteral("munderover"))
-  {  
+  {
     retval = PR_TRUE;
     PRUint16 type;
     nsCOMPtr<nsIDOMElement> subOrSup;
@@ -3764,7 +3765,7 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
   }
   else if (name.EqualsLiteral("math") && deletingInputbox)
   {
-//  BBM: took out and restored 2014-11-05  
+//  BBM: took out and restored 2014-11-05
     ed->GetNodeLocation(elt, address_of(startnode), &offset);
     retval = PR_TRUE;
     ed->DeleteNode(elt);
@@ -3785,7 +3786,7 @@ PRBool cleanUpTempInput(nsHTMLEditor * ed, nsCOMPtr<nsIDOMNode>& startNode, PRIn
   PRInt32 offset;
   PRBool attResult;
   node->GetNodeType(&nodeType);
-  if (nodeType == nsIDOMNode::TEXT_NODE) 
+  if (nodeType == nsIDOMNode::TEXT_NODE)
     res = node->GetParentNode(getter_AddRefs(node));
   elt = do_QueryInterface(node);
   if (elt == nsnull) return PR_FALSE;
@@ -3831,9 +3832,9 @@ PRUint32 elementCount( nsIDOMElement * elt)
 void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsIDOMNode> & startNode,
   PRInt32 & startOffset)
-// Mathematics contains objects that must have a fixed number of subobjects; e.g. an mfrac has two 
+// Mathematics contains objects that must have a fixed number of subobjects; e.g. an mfrac has two
 // subobjects and msub and msup have one. This routine checks the cursor after a deletion and if it is
-// in mathematics it removes empty tags and if necessary inserts an input box. It needs to do this 
+// in mathematics it removes empty tags and if necessary inserts an input box. It needs to do this
 // before calling the computation engine for cleanup
 {
   if (!startNode) return;
@@ -3859,7 +3860,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
     elt = do_QueryInterface(node);
     DeleteMatchingFence(ed, elt);
   }
-  
+
 
 // A special case is a temp input box. If we delete a math object so that the constraints
 // for math objects like fractions, superscripts, etc. are no longer valid, we replace it with
@@ -3870,7 +3871,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   while (!done) {
     res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
     elt = do_QueryInterface(node);
-    if (node && IsSpecialMath(elt, isEmpty, nodecount, startOffset, ed)) {
+    if (elt && IsSpecialMath(elt, isEmpty, nodecount, startOffset, ed)) {
       if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
       {
         done = PR_TRUE;
@@ -3894,7 +3895,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           tempnode = nextSiblingNode;
         }
       }
-      return;    
+      return;
     }
     PRBool isInComplexTransaction;
     ed->GetInComplexTransaction(&isInComplexTransaction);
@@ -3909,7 +3910,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
 //       } else {
 //           node->GetFirstChild(getter_AddRefs(node));
 //       }
-//       node->GetNodeType(&NodeType);         
+//       node->GetNodeType(&NodeType);
 //     }
 //     if (node) {
 //       nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
@@ -4137,7 +4138,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
     //       // delete the node and leave
     //       if (emptyParent) {
     //         mHTMLEditor->DeleteNode(parentNode); // take the math node with it.
-    //       } 
+    //       }
     //       return NS_OK;
     //     }
     //   }
@@ -6500,7 +6501,7 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
       element = do_QueryInterface(parent);
       element ->GetLocalName(name);
       if (name.EqualsLiteral("mfrac") || name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("msubsup") ||
-        name.EqualsLiteral("munder") || name.EqualsLiteral("mover") || name.EqualsLiteral("munderover") || 
+        name.EqualsLiteral("munder") || name.EqualsLiteral("mover") || name.EqualsLiteral("munderover") ||
         name.EqualsLiteral("mtable") || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtd") || name.EqualsLiteral("mroot") || name.EqualsLiteral("msqrt") ||
         name.EqualsLiteral("msubsup"))
       {
@@ -9430,7 +9431,7 @@ nsHTMLEditRules::ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const ns
         res = newNode->GetFirstChild(getter_AddRefs(child));
         while (child/* && (res==NS_OK)*/)
         {
-        
+
           child->GetNextSibling(getter_AddRefs(sibling));
           res = mHTMLEditor->DeleteNode(child);
 //          if (res != NS_OK) break;
