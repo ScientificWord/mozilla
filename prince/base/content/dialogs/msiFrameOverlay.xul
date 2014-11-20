@@ -1,4 +1,4 @@
-<?xml version="1.0"?>                                   
+<?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
@@ -21,7 +21,7 @@
       control   = "frameUnitMenulist"
       accesskey = "&unitLabel.accesskey;"
       value     = "&unitLabel.label;" />
-    <hbox> 
+    <hbox>
       <menulist id = "frameUnitMenulist" style="width: 8em"
         persist="value selectedIndex" value="pt" selectedIndex="2"
         oncommand="setNewUnit(this);" >
@@ -37,7 +37,7 @@
       <spacer flex = "1"/>
     </hbox>
 <!--     hidden text boxes to take advantage of unithandler auto unit changes
- -->    
+ -->
     <textbox
       id        = "truewidth"
       value     = "0"
@@ -56,7 +56,7 @@
       increment = "1"
       decimalplaces = "0"/>
     <hbox>
-      <vbox id="illustration" pack="start" width="220px" 
+      <vbox id="illustration" pack="start" width="220px"
          outer="false"> <!-- the illustration -->
         <hbox flex="1"/>
         <hbox>
@@ -65,12 +65,12 @@
         </hbox>
         <hbox>
           <hbox id="leftspacer" height="1px" width="60px"/> <!-- width is 60 + left margin -->
-          <hbox id="leftpage" height="1px" class="page" style="background-color:rgb(90,90,90); width: 0px"/> 
+          <hbox id="leftpage" height="1px" class="page" style="background-color:rgb(90,90,90); width: 0px"/>
             <!-- width is max(0,leftmargin) (scaled, of course)
             or, when on the right, it is 100 - contentwidth - mx -px -bx -->
           <hbox id="leftspace" class="page" style="background-color:transparent;" width="0px"/>
           <vbox id="frame" style="border-style:solid; border-width:0"><!-- border and padding are those of the frame-->
-            <vbox id="content" style="" /><!-- height and width are those of the content of the frame --> 
+            <vbox id="content" style="" /><!-- height and width are those of the content of the frame -->
           </vbox>
           <vbox id="rightspace" class="page" style="background-color:transparent;" width="0px"/>
           <vbox id="rightpage" class="page" style="background-color:rgb(90,90,90);" width="150px"/><!-- width is 150 - contentwidth - mx - px - bx,
@@ -89,7 +89,7 @@
             <vbox align="center">
               <label value="&Minipage.borderLabel;"/>
               <msibutton id="colorButton" class="color-button" oncommand="getColorAndUpdate('colorWell');">
-                <spacer persist="style" id="colorWell" class="color-well"  
+                <spacer persist="style" id="colorWell" class="color-well"
                   style="background-color: black"/>
               </msibutton>
             </vbox>
@@ -97,14 +97,14 @@
               <label value="&Minipage.backgroundLabel;" align="center"/>
                <msibutton id="bgcolorButton" class="color-button"
                     oncommand="getColorAndUpdate('bgcolorWell');">
-                <spacer persist="style" id="bgcolorWell" class="color-well"    
+                <spacer persist="style" id="bgcolorWell" class="color-well"
                   style="background-color: white"/>
-              </msibutton>          
+              </msibutton>
             </vbox>
           </hbox>
         </groupbox>
         <groupbox>
-          <caption label="&Minipage.textAlignmentLabel;"/>      
+          <caption label="&Minipage.textAlignmentLabel;"/>
           <hbox align="center">
             <menulist id = "textAlignment" value = "left" style="width: 10em" persist="value">
               <menupopup id = "alignments" >
@@ -115,9 +115,9 @@
                 <menuitem value="inner" label="&Minipage.textInside;"/>
                 <menuitem value="outer" label="&Minipage.textOutside;"/>
               </menupopup>
-            </menulist>         
+            </menulist>
           </hbox>
-        </groupbox>       
+        </groupbox>
       </vbox>
     </hbox>
     <grid>
@@ -195,7 +195,7 @@
               onkeypress= "handleChar(event, this.id);"
               onchange  = "update(this.id);"
               value     = "0"
-              persist   = "value"/>              
+              persist   = "value"/>
             <button class="extend" observes="role-textframe" oncommand="extendInput('border')"/>
           </hbox>
           <hbox observes="role-textframe">
@@ -267,7 +267,7 @@
           </hbox>
         </row>
       </rows>
-    </grid>    
+    </grid>
   </vbox>
   <vbox id = "msiFrameSize">
     <groupbox>
@@ -328,11 +328,11 @@
                 onchange  = "frameHeightChanged(this, event);"
                 onload    = "frameHeightChanged(this, event);"
                 value     = ""
-                style     = "width: 1.0in;"   
+                style     = "width: 1.0in;"
                 persist   =  "value"/>
               <hbox>
-                <checkbox id="autoHeight"  
-                  observes="hasNaturalSize"            
+                <checkbox id="autoHeight"
+                  observes="hasNaturalSize"
                   oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
               </hbox>
             </row>
@@ -376,7 +376,7 @@
                 <menuitem  id="right" label="&right.label;" value="R"/>
                 <menuitem  id="outside" label="&outside.label;" value="O"/>
               </menupopup>
-            </menulist>                 
+            </menulist>
           </row>
           <row>
             <description value="&inlineOffset;" id="frameInlineOffsetLabel" observes="inlineOffsetEnabled"/>
@@ -393,7 +393,7 @@
                 <menuitem id="ltxfloat_topPage" type="checkbox" label="&placement.topPage;" value="t"/>
                 <menuitem id="ltxfloat_bottomPage" type="checkbox" label="&placement.bottomPage;" value="b"/>
               </menupopup>
-            </menulist> 
+            </menulist>
           </row>
           <row flex="1">
             <label control="baselineList">Baseline
@@ -429,7 +429,7 @@
         </rows>
       </grid>
     </groupbox>
-  </vbox>  
+  </vbox>
   <broadcasterset id="frameoverlayBroadcasters">
     <broadcaster id="floatEnabled" disabled="true"/>
     <broadcaster id="inlineOffsetEnabled" disabled="true"/>
@@ -440,13 +440,13 @@
     <broadcaster id="wrapOption" disabled="true"/>
     <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notedata.width - sidemargin -->
     <broadcaster id="noteheight" height="40"/>
-    <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->        
-    <broadcaster id="sidemargin" width="8"/>         
+    <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->
+    <broadcaster id="sidemargin" width="8"/>
     <broadcaster id="topmargin" height="8"/>
     <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>
-    <broadcaster id="hasNaturalSize"/>  
-    <broadcaster id="role-image" hidden="false"/>      
-    <broadcaster id="customSize" disabled="true"/>      
+    <broadcaster id="hasNaturalSize"/>
+    <broadcaster id="role-image" hidden="false"/>
+    <broadcaster id="customSize" disabled="true"/>
   </broadcasterset>
 
 </overlay>
