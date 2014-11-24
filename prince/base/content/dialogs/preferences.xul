@@ -11,7 +11,7 @@
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?>
 <!-- If an editor control is to support context menus, also need: -->
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 #endif
@@ -44,19 +44,25 @@
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
   <commandset id="MSImathMenuCommands"/>
-  
+
 #endif
+<broadcaster id="floatEnabled" disabled="true"/>
+<broadcaster id="inlineOffsetEnabled" disabled="true"/>
+<broadcaster id="locationEnabled" />
+<broadcaster id="captionEnabled" />
+<broadcaster id="keyEnabled" disabled="true" />
+
 
   <prefpane id="prefGeneral" label="&GeneralTab.label;">
     <preferences>
-      <preference id="defaultshell" 
-                  name="swp.defaultShell" 
+      <preference id="defaultshell"
+                  name="swp.defaultShell"
                   type="string"/>
       <preference id="openLastFile"
                   name="swp.openlastfile"
                   type="bool" />
-      <preference id="selectedSkin" 
-                  name="general.skins.selectedSkin" 
+      <preference id="selectedSkin"
+                  name="general.skins.selectedSkin"
                   type="string"/>
       <preference id="sci.compression"
                   name="swp.sci.compression"
@@ -67,156 +73,156 @@
       <preference id="pdf.viewer"
                   name="swp.prefPDFPath"
                   type="string"/>
-      <preference id="GraphicsSnapshopRes" 
-                  name="swp.GraphicsSnapshopRes" 
+      <preference id="GraphicsSnapshopRes"
+                  name="swp.graphics.snapshopres"
                   type="int"/>
-      <preference id="defaultGraphicsHSize" 
-                  name="swp.defaultGraphicsHSize" 
+      <preference id="defaultGraphicsHSize"
+                  name="swp.graphics.hsize"
                   type="string"/>
-      <preference id="defaultGraphicsVSize" 
-                  name="swp.defaultGraphicsVSize" 
+      <preference id="defaultGraphicsVSize"
+                  name="swp.graphics.vsize"
                   type="string"/>
-      <preference id="defaultGraphicsSizeUnits" 
-                  name="swp.defaultGraphicsSizeUnits" 
+      <preference id="defaultGraphicsSizeUnits"
+                  name="swp.graphics.units"
                   type="string"/>
       <preference id="graphicUseDefaultWidth"
-                  name="swp.graphicsUseDefaultWidth"
+                  name="swp.graphics.usedefaultwidth"
                   type="bool"/>
       <preference id="graphicUseDefaultHeight"
-                  name="swp.graphicsUseDefaultHeight"
+                  name="swp.graphics.usedefaultheight"
                   type="bool"/>
-      <preference id="defaultGraphicsPlacement" 
-                  name="swp.defaultGraphicsPlacement" 
+      <preference id="defaultGraphicsPlacement"
+                  name="swp.graphics.placement"
                   type="string"/>
-      <preference id="defaultGraphicsInlineOffset" 
-                  name="swp.defaultGraphicsInlineOffset" 
+      <preference id="defaultGraphicsInlineOffset"
+                  name="swp.graphics.inlineoffset"
                   type="string"/>
       <preference id="defaultGraphicsFloatLocation.forceHere"
-                  name="swp.defaultGraphicsFloatLocation.forceHere"
-                  type="bool"/> 
+                  name="swp.graphics.floatlocation.forcehere"
+                  type="bool"/>
       <preference id="defaultGraphicsFloatLocation.here"
-                  name="swp.defaultGraphicsFloatLocation.here"
-                  type="bool"/> 
+                  name="swp.graphics.floatlocation.here"
+                  type="bool"/>
       <preference id="defaultGraphicsFloatLocation.pageFloats"
-                  name="swp.defaultGraphicsFloatLocation.pageFloats"
-                  type="bool"/> 
+                  name="swp.graphics.floatlocation.pagefloats"
+                  type="bool"/>
       <preference id="defaultGraphicsFloatLocation.topPage"
-                  name="swp.defaultGraphicsFloatLocation.topPage"
-                  type="bool"/> 
+                  name="swp.graphics.floatlocation.toppage"
+                  type="bool"/>
       <preference id="defaultGraphicsFloatLocation.bottomPage"
-                  name="swp.defaultGraphicsFloatLocation.bottomPage"
-                  type="bool"/> 
+                  name="swp.graphics.floatlocation.bottompage"
+                  type="bool"/>
       <preference id="defaultGraphicsFloatPlacement"
-                  name="swp.defaultGraphicsFloatPlacement"
-                  type="string"/> 
+                  name="swp.graphics.floatplacement"
+                  type="string"/>
       <preference id="defaultGraphicsHMargin"
-                  name="swp.defaultGraphicsHMargin"
-                  type="string"/> 
+                  name="swp.graphics.hmargin"
+                  type="string"/>
       <preference id="defaultGraphicsVMargin"
-                  name="swp.defaultGraphicsVMargin"
-                  type="string"/> 
+                  name="swp.graphics.vmargin"
+                  type="string"/>
       <preference id="defaultGraphicsBorderWidth"
-                  name="swp.defaultGraphicsBorderWidth"
-                  type="string"/> 
+                  name="swp.graphics.borderwidth"
+                  type="string"/>
       <preference id="defaultGraphicsPadding"
-                  name="swp.defaultGraphicsPadding"
-                  type="string"/> 
+                  name="swp.graphics.paddingwidth"
+                  type="string"/>
       <preference id="graphics.BGColor"
-                  name="swp.graphics.BGColor"
-                  type="string"/> 
+                  name="swp.graphics.bgcolor"
+                  type="string"/>
       <preference id="graphics.borderColor"
-                  name="swp.graphics.borderColor"
-                  type="string"/> 
-      <preference id="saveintervalseconds" 
-                  name="swp.saveintervalseconds" 
+                  name="swp.graphics.bordercolor"
+                  type="string"/>
+      <preference id="saveintervalseconds"
+                  name="swp.saveintervalseconds"
                   type="int"/>
 #ifndef PROD_SNB
-      <preference id="genTeXonsave" 
-                  name="swp.generateTeXonsave" 
+      <preference id="genTeXonsave"
+                  name="swp.generateTeXonsave"
                   type="int"/>
 #endif
-      <preference id="fastcursor.enabled" 
-                  name="fastcursor.enabled" 
+      <preference id="fastcursor.enabled"
+                  name="fastcursor.enabled"
                   type="bool"/>
-      <preference id="tapsforrepeat" 
-                  name="fastcursor.tapsforrepeat" 
+      <preference id="tapsforrepeat"
+                  name="fastcursor.tapsforrepeat"
                   type="int"/>
-      <preference id="millisecondsfortaps" 
-                  name="fastcursor.millisecondsfortaps" 
+      <preference id="millisecondsfortaps"
+                  name="fastcursor.millisecondsfortaps"
                   type="int"/>
 
 <!-- Graph parameters                   -->
 <!-- Frame and location -->
-      <preference id="graph.HSize" 
-                  name="swp.graph.HSize" 
+      <preference id="graph.HSize"
+                  name="swp.graph.hsize"
                   type="string"/>
-      <preference id="graph.VSize" 
-                  name="swp.graph.VSize" 
+      <preference id="graph.VSize"
+                  name="swp.graph.vsize"
                   type="string"/>
-      <preference id="graph.HMargin" 
-                  name="swp.graph.HMargin" 
+      <preference id="graph.HMargin"
+                  name="swp.graph.hmargin"
                   type="string"/>
-      <preference id="graph.VMargin" 
-                  name="swp.graph.VMargin" 
+      <preference id="graph.VMargin"
+                  name="swp.graph.vmargin"
                   type="string"/>
-      <preference id="graph.BGColor" 
-                  name="swp.graph.BGColor" 
+      <preference id="graph.BGColor"
+                  name="swp.graph.bgcolor"
                   type="string"/>
-      <preference id="graph.borderWidth" 
-                  name="swp.graph.borderWidth" 
+      <preference id="graph.borderWidth"
+                  name="swp.graph.borderwidth"
                   type="string"/>
-      <preference id="graph.borderColor" 
-                  name="swp.graph.borderColor" 
+      <preference id="graph.borderColor"
+                  name="swp.graph.bordercolor"
                   type="string"/>
-      <preference id="graph.paddingWidth" 
-                  name="swp.graph.paddingWidth" 
+      <preference id="graph.paddingWidth"
+                  name="swp.graph.paddingwidth"
                   type="string"/>
-      <preference id="graph.paddingColor" 
-                  name="swp.graph.paddingColor" 
+      <preference id="graph.paddingColor"
+                  name="swp.graph.paddingcolor"
                   type="string"/>
-      <preference id="graph.defaultUnits" 
-                  name="swp.graph.defaultUnits" 
+      <preference id="graph.defaultUnits"
+                  name="swp.graph.units"
                   type="string"/>
-      <preference id="graph.placement" 
-                  name="swp.graph.placement" 
+      <preference id="graph.placement"
+                  name="swp.graph.placement"
                   type="string"/>
-      <preference id="graph.floatLocation.forceHere" 
-                  name="swp.graph.floatLocation.forceHere" 
+      <preference id="graph.floatLocation.forceHere"
+                  name="swp.graph.floatlocation.forcehere"
                   type="bool"/>
-      <preference id="graph.floatLocation.here" 
-                  name="swp.graph.floatLocation.here" 
+      <preference id="graph.floatLocation.here"
+                  name="swp.graph.floatlocation.here"
                   type="bool"/>
-      <preference id="graph.floatLocation.pageFloats" 
-                  name="swp.graph.floatLocation.pageFloats" 
+      <preference id="graph.floatLocation.pageFloats"
+                  name="swp.graph.floatlocation.pagefloats"
                   type="bool"/>
-      <preference id="graph.floatLocation.topPage" 
-                  name="swp.graph.floatLocation.topPage" 
+      <preference id="graph.floatLocation.topPage"
+                  name="swp.graph.floatlocation.toppage"
                   type="bool"/>
-      <preference id="graph.floatLocation.bottomPage" 
-                  name="swp.graph.floatLocation.bottomPage" 
+      <preference id="graph.floatLocation.bottomPage"
+                  name="swp.graph.floatlocation.bottompage"
                   type="bool"/>
-      <preference id="graph.floatPlacement" 
-                  name="swp.graph.floatPlacement" 
+      <preference id="graph.floatPlacement"
+                  name="swp.graph.floatplacement"
                   type="string"/>
-      <preference id="graph.orthogProj" 
-                  name="swp.graph.orthogProj" 
-                  type="bool"/>
-      <preference id="graph.keepUpVector" 
-                  name="swp.graph.keepUpVector" 
-                  type="bool"/>
-      <preference id="graph.defaultViewIntervals" 
-                  name="swp.graph.defaultViewIntervals" 
-                  type="bool"/>
 
-<!-- Axis group                   -->
+
+      <preference id="graph.orthogProj"
+                  name="swp.graph.orthogproj"
+                  type="bool"/>
+      <preference id="graph.keepUpVector"
+                  name="swp.graph.keepupvector"
+                  type="bool"/>
+      <preference id="graph.defaultViewIntervals"
+                  name="swp.graph.defaultViewIntervals"
+                  type="bool"/>
       <preference id="XAxisLabel"
-                  name="swp.graph.XAxisLabel"
+                  name="swp.graph.xaxislabel"
                   type= "string"/>
       <preference id="YAxisLabel"
-                  name="swp.graph.YAxisLabel"
+                  name="swp.graph.yaxislabel"
                   type= "string"/>
       <preference id="ZAxisLabel"
-                  name="swp.graph.ZAxisLabel"
+                  name="swp.graph.zaxislabel"
                   type= "string"/>
       <preference id="AxisFontFamily"
                   name="swp.graph.AxisFontFamily"
@@ -243,167 +249,168 @@
 <!-- Ticks group                   -->
 
       <preference id="TicksFontFamily"
-                  name="swp.graph.TicksFontFamily"
+                  name="swp.graph.ticksfontfamily"
                   type= "string"/>
       <preference id="TicksFontSize"
-                  name="swp.graph.TicksFontSize"
+                  name="swp.graph.ticksfontsize"
                   type= "int"/>
       <preference id="TicksFontColor"
-                  name="swp.graph.TicksFontColor"
+                  name="swp.graph.ticksfontcolor"
                   type= "string"/>
       <preference id="TicksFontItalic"
-                  name="swp.graph.TicksItalic"
+                  name="swp.graph.ticksitalic"
                   type= "bool"/>
       <preference id="TicksFontBold"
-                  name="swp.graph.TicksFontBold"
+                  name="swp.graph.ticksfontbold"
                   type= "bool"/>
        <preference id="XTickCount"
-                  name="swp.graph.XTickCount"
+                  name="swp.graph.xtickcount"
                   type= "int"/>
        <preference id="YTickCount"
-                  name="swp.graph.YTickCount"
+                  name="swp.graph.ytickcount"
                   type= "int"/>
        <preference id="ZTickCount"
-                  name="swp.graph.ZTickCount"
+                  name="swp.graph.ztickcount"
                   type= "int"/>
        <preference id="TickMark"
-                  name="swp.graph.TickMark"
+                  name="swp.graph.tickmark"
                   type= "int"/>
 
 
 <!-- Miscellaneous                   -->
+<!-- This next preference is never used -->
       <preference id="Dimension"
                   name="swp.graph.Dimension"
                   type=  "int"/>
       <preference id="DefaultFileType"
-                  name="swp.graph.DefaultFileType"
+                  name="swp.graph.filetype"
                   type= "string"/>
-      <preference id = "captionplacement"  
-                   name="swp.graph.captionplacement"     
-                   type = "string" />          
+      <preference id = "captionplacement"
+                   name="swp.graph.captionplacement"
+                   type = "string" />
 <!-- End of graph properties -->
 
 
       <preference id="digitsRenderedpref"
                   name="swp.user.digitsrendered"
                   type="int"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="lowerthresholdpref"
                   name="swp.user.lowerthreshold"
                   type="int"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="upperthresholdpref"
                   name="swp.user.upperthreshold"
                   type="int"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="primesasnpref"
                   name="swp.user.primesasn"
                   type="int"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="mixednumpref"
                   name="swp.user.mixednum"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="trigargspref"
                   name="swp.user.trigargs"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="usearcpref"
                   name="swp.user.usearc"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="logepref"
                   name="swp.user.loge"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="dotderivativepref"
                   name="swp.user.dotderivative"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="barconjpref"
                   name="swp.user.barconj"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="i_imaginarypref"
                   name="swp.user.i_imaginary"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="j_imaginarypref"
                   name="swp.user.j_imaginary"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="e_exppref"
                   name="swp.user.e_exp"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="primederivpref"
                   name="swp.user.primederiv"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="matrix_delimpref"
                   name="swp.user.matrix_delim"
                   type="string"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="derivformatpref"
                   name="swp.user.derivformat"
                   type="string"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="imagipref"
                   name="swp.user.imagi"
                   type="string"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="diffDpref"
                   name="swp.user.diffD"
                   type="string"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id="expepref"
                   name="swp.user.expe"
                   type="string"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id ="digitsusedpref"
                   name="swp.user.digitsused"
                   type="int"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id ="degreepref"
                   name="swp.user.degree"
                   type="int"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id ="principalpref"
                   name="swp.user.principal"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id ="specialpref"
                   name="swp.user.special"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id ="logSentpref"
                   name="swp.user.logSent"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id ="engSentpref"
                   name="swp.user.engSent"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id ="engReceivedpref"
                   name="swp.user.engReceived"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id ="logReceivedpref"
                   name="swp.user.logReceived"
                   type="bool"
-                  onchange = "onComputeSettingChange(this, true)"/>                  
+                  onchange = "onComputeSettingChange(this, true)"/>
       <preference id ="doublespacepref"
                   name="swp.space.after.space"
-                  type="bool"/>   
+                  type="bool"/>
       <preference id ="spaceinmathaddsspace"
-                  name="swp.spaces.after.math"  
-                  type="bool"/>             
+                  name="swp.spaces.after.math"
+                  type="bool"/>
       <preference id ="ctrlTpref"
                   name="swp.ctrl.t"
-                  type="string"/>                  
+                  type="string"/>
       <preference id ="ctrlMpref"
                   name="swp.ctrl.m"
-                  type="string"/> 
+                  type="string"/>
     </preferences>
 
     <tabbox id="generalTabbox" persist="selectedIndex" selectedIndex="0">
@@ -459,7 +466,7 @@
                     <menuitem label="&Middle.label;" value="6"/>
                     <menuitem label="&Best.label;" value="9"/>
                   </menupopup>
-                </menulist>                
+                </menulist>
               </vbox>
               <vbox>
                 <label value="&webfiles.label;"/>
@@ -479,7 +486,7 @@
           <hbox style="height: 3in">
             <vbox style="width:2in" >
               <label value="&ShellDirectories.label;"/>
-              <tree id="dir-tree" flex="1" enableColumnDrag="true" seltype="single" 
+              <tree id="dir-tree" flex="1" enableColumnDrag="true" seltype="single"
                      onselect="showShellsInDir(this);"
                      datasources="rdf:files" flags="dont-build-content"
                      sortActive="true" sortDirection="ascending"
@@ -511,7 +518,7 @@
                     </rule>
                   </template>
               </tree>
-            </vbox> 
+            </vbox>
             <vbox style="width:2in" >
               <label value="&ShellFiles.label;"/>
               <listbox preference="defaultshell" flex = "1" onselect="onShellSelect();" id="dircontents"/>
@@ -544,9 +551,9 @@
                   <menulist id="graphicsUnitsList" value="pt" selectedIndex="2" preference="defaultGraphicsSizeUnits" oncommand="onChangeUnits(this);">
                   <menupopup id = "graphicsUnitPopup">
                     <menuitem value="in" label="&unitsinches.label;"/>
-                    <menuitem value="cm" label="&unitscm.label;"/>             
-                    <menuitem value="mm" label="&unitsmm.label;"/>         
-                    <menuitem value="pt" label="&unitspoints.label;"/>               
+                    <menuitem value="cm" label="&unitscm.label;"/>
+                    <menuitem value="mm" label="&unitsmm.label;"/>
+                    <menuitem value="pt" label="&unitspoints.label;"/>
                   </menupopup>
                 </menulist>
               </vbox>
@@ -626,13 +633,13 @@
                 </row>
                 <row align="center">
                   <label value="&BorderWidth.label;"/>
-                  <textbox id="graphicsBorder" type="number" decimalplaces="2" 
+                  <textbox id="graphicsBorder" type="number" decimalplaces="2"
                     preference="defaultGraphicsBorderWidth" class="medwidth"/>
                   <label value="&BorderColor.label;"/>
                   <msibutton id="graphics.border,colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graphics.border.CW');">
                     <spacer id="graphics.border.CW" class="color-well" preference="graphics.borderColor"/>
                   </msibutton>
-                  
+
                 </row>
               </rows>
             </grid>
@@ -672,7 +679,7 @@
             <hbox>
               <checkbox preference="enablerealtimespell" label="&EnableRTSpellCheck.label;" accesskey="&EnableRTSpellCheck.accesskey;"/>
             </hbox>
-	
+
           </groupbox>
           <groupbox>
             <caption>&SourceEditing.label;</caption>
@@ -711,7 +718,7 @@
 								<radio label="&ToggleMathText.label;" value="toggle"/>
 								<radio label="&ForceText.label;" value="text"/>
 							</radiogroup>
-						</groupbox> 
+						</groupbox>
 						<groupbox>
 							<caption>&CtrlM.label;</caption>
 							<radiogroup preference="ctrlMpref">
@@ -720,7 +727,7 @@
 							</radiogroup>
 						</groupbox>
 					</hbox>
-				</tabpanel>          
+				</tabpanel>
       </tabpanels>
     </tabbox>
   </prefpane>
@@ -789,7 +796,7 @@
             </hbox>
           </groupbox>
          </vbox>
-        </tabpanel>      
+        </tabpanel>
 
         <tabpanel id="compusersettings.outputpage">
          <vbox>
@@ -839,7 +846,7 @@
             </hbox>
           </groupbox>
          </vbox>
-        </tabpanel>      
+        </tabpanel>
 
         <tabpanel id="compusersettings.fencespage">
          <vbox>
@@ -857,7 +864,7 @@
             </hbox>
           </groupbox>
          </vbox>
-        </tabpanel>      
+        </tabpanel>
 
         <tabpanel id="compusersettings.derivpage">
          <vbox>
@@ -888,7 +895,7 @@
             </hbox>
           </groupbox>
          </vbox>
-        </tabpanel>      
+        </tabpanel>
 
         <tabpanel id="compusersettings.entitiespage">
          <vbox>
@@ -947,7 +954,7 @@
               <hbox align="center">
                 <description>&desc.Max;</description>
                 <spacer flex="1"/>
-                <textbox id ="degree" preference="degreepref" type="number" decimalplaces="0" min="0" increment="1" 
+                <textbox id ="degree" preference="degreepref" type="number" decimalplaces="0" min="0" increment="1"
                   class="medwidth" value="2"/>
               </hbox>
               <hbox align="center">
@@ -985,7 +992,7 @@
               </hbox>
             </groupbox>
           </vbox>
-        </tabpanel>      
+        </tabpanel>
       </tabpanels>
     </tabbox>
   </prefpane>
@@ -1104,7 +1111,7 @@
                   name="swp.graph.AxisTips"
                   type="bool"/>
       <preference id="graph.GridLines"
-                  name="swp.graph.GridLines"
+                  name="swp.graph.gridlines"
                   type="bool"/>
       <preference id="graph.AxisType"
                   name="swp.graph.AxisType"
@@ -1139,8 +1146,8 @@
       <tabs class="tabs-top">
 	    <tab label="&tabbar.axes;"        selected="0" />
 	    <tab label="&tabbar.layout;"      selected="0" />
-      <tab label="&tabbar.plotItems;"   selected="0" />
-	    <tab label="&tabbar.labeling;"    selected="0" />
+          <tab label="&tabbar.plotItems;"   selected="0" />
+<!-- 	    <tab label="&tabbar.labeling;"    selected="0" /> -->
 	    <tab label="&tabbar.view;"        selected="0" />
 	  </tabs>
     <tabpanels>
@@ -1165,7 +1172,7 @@
                 <column/>
               </columns>
               <rows>
-                <row align="center">        
+                <row align="center">
                   <label value="&axisxaxis.label;"/>
                   <textbox style="width: 10em;" id="XAxisLabelTB" cols="20" preference="XAxisLabel"/>
                 </row>
@@ -1184,7 +1191,7 @@
             <hbox align="center">
               <description>&axistickmark.label;</description>
               <menulist id="TickMarkMenu">
-                <menupopup preference="TickMark"> 
+                <menupopup preference="TickMark">
                   <menuitem label="&none.label;"   value="none"/>
                   <menuitem label="&low.label;"    value="low"/>
                   <menuitem label="&normal.label;" value="normal"/>
@@ -1222,7 +1229,7 @@
             </radiogroup>
           </groupbox>
        </vbox>
-      </tabpanel>      
+      </tabpanel>
 
       <tabpanel id="Layout" orient="vertical">
         <groupbox>
@@ -1235,7 +1242,7 @@
               </columns>
               <rows>
                 <row align="center">
-                   <label value="&DefaultSizeNewPlotsWidth.label;"/> 
+                   <label value="&DefaultSizeNewPlotsWidth.label;"/>
                    <textbox type="number" preference="graph.HSize" decimalplaces="2" id="plotWidth" class="medwidth"/>
                 </row>
                 <row align="center">
@@ -1257,6 +1264,72 @@
             </vbox>
           </hbox>
         </groupbox>
+
+
+        <groupbox>
+          <caption label="&Placementtab.label;"/>
+          <grid style="width: 140px">
+            <columns>
+              <column flex="1"/>
+              <column flex="1" />
+            </columns>
+            <rows>
+              <row>
+                <label  observes="locationEnabled" control="locationList">Location</label>
+                <menulist id="locationList" observes="locationEnabled" preference="graph.placement" oncommand="locationChanged()" >
+                  <menupopup>
+                    <menuitem  id="unspecified" label="&unspecified;" selected="true" value="unspecified"/>
+                    <menuitem  id="inline" label="&inline.label;"  value="inline"/>
+                    <menuitem  id="center" label="&display.label;" value="display"/>
+                    <menuseparator/>
+                    <menuitem  id="left" label="&left.label;" value="L"/>
+                    <menuitem  id="inside" label="&inside.label;" value="I"/>
+                    <menuitem  id="right" label="&right.label;" value="R"/>
+                    <menuitem  id="outside" label="&outside.label;" value="O"/>
+                  </menupopup>
+                </menulist>
+              </row>
+              <row>
+                <description value="&inlineOffset;" id="frameInlineOffsetLabel" observes="inlineOffsetEnabled"/>
+                <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" decimalplaces = "2" value = "0" min="-Infinity" persist = "value" observes="inlineOffsetEnabled"/>
+              </row>
+              <row flex="1">
+                <label control="floatList" observes="floatEnabled">Float</label>
+                <menulist id="floatList" observes="floatEnabled" preference="graph.floatPlacement" oncommand="floatPropertyChanged();">
+                  <menupopup selectedIndex="0">
+                    <menuitem id="floatlistNone" label="&none;"  type="checkbox" value=""/>
+                    <menuitem id="ltxfloat_forceHere" type="checkbox" label="&placement.forceHere;" value="H"/>
+                    <menuitem id="ltxfloat_here" type="checkbox" label="&placement.here;" value="h"/>
+                    <menuitem id="ltxfloat_pageOfFloats" type="checkbox" label="&placement.pageOfFloats;" value="p"/>
+                    <menuitem id="ltxfloat_topPage" type="checkbox" label="&placement.topPage;" value="t"/>
+                    <menuitem id="ltxfloat_bottomPage" type="checkbox" label="&placement.bottomPage;" value="b"/>
+                  </menupopup>
+                </menulist>
+              </row>
+              <row flex="1">
+                <label control="baselineList">Baseline
+                </label>
+                <menulist id="baselineList" >
+                  <menupopup>
+                    <menuitem label="&baseline.label;" value="baseline"/>
+                    <menuitem label="&atverticalcenter.label;" value="middle"/>
+                  </menupopup>
+                </menulist>
+              </row>
+              <row flex="1">
+                <label observes = "captionEnabled">Caption</label>
+                <menulist id="captionLocation" oncommand="captionPropertyChanged();" preference = "captionplacement" tooltiptext="&Caption.tooltip;" observes="captionEnabled" >
+                  <menupopup>
+                    <menuitem label="&none;" value="none"/>
+                    <menuitem label="&above;" value="top"/>
+                    <menuitem label="&below;" value="bottom"/>
+                  </menupopup>
+                </menulist>
+              </row>
+            </rows>
+          </grid>
+        </groupbox>
+<!--
         <groupbox>
           <caption label="&DefaultPlacementNewPlots.label;"/>
           <radiogroup id="plotPlacementRadioGroup" preference="graph.placement">
@@ -1295,7 +1368,7 @@
           </hbox>
           </radiogroup>
         </groupbox>
-        <groupbox>
+ -->        <groupbox>
         <!--JLF - note that axisframed.label is used more than once in this file. -->
           <caption label="&frame.label;"/>
           <grid>
@@ -1325,7 +1398,7 @@
               </row>
               <row align="center">
                 <label value="&BorderWidth.label;"/>
-                <textbox id="graphBorder" type="number" decimalplaces="2" 
+                <textbox id="graphBorder" type="number" decimalplaces="2"
                   preference="graph.borderWidth" class="medwidth"/>
                 <label value="&BorderColor.label;"/>
                 <msibutton id="graph.border.colorbutton" class="color-button"  oncommand="getColorAndUpdatePref('graph.border.CW');">
@@ -1336,7 +1409,7 @@
             </rows>
           </grid>
         </groupbox>
-      </tabpanel>      
+      </tabpanel>
 
       <tabpanel id="PlotItems">
         <vbox>
@@ -1594,37 +1667,37 @@
                 </row>
                 <row observes="plot.1Var">
                   <label id ="plotVar1">&plotVarX.label;</label>
-                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="plotVar1StartEdit" preference="plot.XMin" flex="1" width="150" height="40"/>
                   <label value="&plotVarsTo.label;" />
-                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="plotVar1EndEdit" preference="plot.XMax" flex="1" width="150" height="40"/>
 		              <hbox><textbox id="plotPtssamp1" type="number" preference="plot.XPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.2Vars">
                   <label id ="plotVar2" >&plotVarY.label;</label>
-                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="plotVar2StartEdit" preference="plot.YMin" flex="1" width="150" height="40"/>
                   <label value="&plotVarsTo.label;" />
-                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="plotVar2EndEdit" preference="plot.YMax" flex="1" width="150" height="40"/>
                   <hbox><textbox id="plotPtssamp2" type="number" preference="plot.YPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.3Vars">
                   <label id ="plotVar3" >&plotVarZ.label;</label>
-                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="plotVar3StartEdit" preference="plot.ZMin" flex="1" width="150" height="40"/>
                   <label value="&plotVarsTo.label;" />
-                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="plotVar3EndEdit" preference="plot.ZMax" flex="1" width="150" height="40"/>
                   <hbox><textbox id="plotPtssamp3" type="number" preference="plot.ZPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.4Vars">
                   <label id ="plotVar4" >&plotVarT.label;</label>
-                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="plotVar4StartEdit" preference="plot.AnimMin" flex="1" width="150" height="40"/>
                   <label value="&plotVarsTo.label;" />
-                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="plotVar4EndEdit" preference="plot.AnimMax" flex="1" width="150" height="40"/>
                   <spacer />
                   <spacer />
@@ -1660,7 +1733,7 @@
         </vbox>
       </tabpanel>
 
-      <tabpanel id="&LabellingTab.label;">
+<!--       <tabpanel id="&LabellingTab.label;">
         <vbox>
           <groupbox>
             <caption label="&labelingcaption.label;"/>
@@ -1671,8 +1744,8 @@
             </radiogroup>
           </groupbox>
        </vbox>
-      </tabpanel>      
-
+      </tabpanel>
+ -->
       <tabpanel id="&ViewDefaults.label;">
         <vbox>
           <separator/>
@@ -1689,34 +1762,34 @@
             <checkbox id="defaultviewintervals" preference="graph.defaultViewIntervals" label="&viewinterval.label;"/>
           </vbox>
           <groupbox>
-            <caption>&InitialViewIntervals.label;</caption>        
+            <caption>&InitialViewIntervals.label;</caption>
             <hbox align="center">
               <label value="&axisxrange.label;"/>
-                  <editor editortype="html" type="content" context="msiEditorContentContext" 
+                  <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="xrangelow" preference="plot.XMin" flex="1" width="150" height="40"/>
 
 <!--                <editor editortype="html" type="content" context="msiEditorContentContext" id="xrangelow" style="width: 5em;" preference="plot.XMin"/>
- -->              <editor editortype="html" type="content" context="msiEditorContentContext" 
+ -->              <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="xrangehigh" preference="plot.XMax" flex="1" width="150" height="40"/>
 <!--              <textbox id="xrangehigh" style="width: 5em;" cols="6" preference="plot.XMax"/>
  -->        </hbox>
             <hbox align="center">
               <label value="&axisyrange.label;"/>
-              <editor editortype="html" type="content" context="msiEditorContentContext" 
+              <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="yrangelow" preference="plot.YMin" flex="1" width="150" height="40"/>
-              <editor editortype="html" type="content" context="msiEditorContentContext" 
+              <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="yrangehigh" preference="plot.YMax" flex="1" width="150" height="40"/>
             </hbox>
             <hbox align="center">
               <label value="&axiszrange.label;"/>
-              <editor editortype="html" type="content" context="msiEditorContentContext" 
+              <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="zrangelow" preference="plot.ZMin" flex="1" width="150" height="40"/>
-              <editor editortype="html" type="content" context="msiEditorContentContext" 
+              <editor editortype="html" type="content" context="msiEditorContentContext"
                           id="zrangehigh" preference="plot.ZMax" flex="1" width="150" height="40"/>
             </hbox>
           </groupbox>
           <groupbox>
-            <menulist id="plotresolutions" preference="swp.GraphicsSnapshopRes">
+            <menulist id="plotresolutions" preference="swp.graphics.snapshopres">
               <menupopup>
                 <menuitem value="72" label="72"/>
                 <menuitem value="100" label="100"/>
@@ -1727,7 +1800,7 @@
             </menulist>
           </groupbox>
        </vbox>
-      </tabpanel>      
+      </tabpanel>
 
     </tabpanels>
     </tabbox>
@@ -1739,18 +1812,18 @@
     <preferences>
 <!--       <preference id="bibTeXExecutable"
                   name="swp.bibtex.appPath"
-                  onchange="setTextboxValue(this);" 
+                  onchange="setTextboxValue(this);"
                   type="file"/>
- -->  
+ -->
       <preference id="bibTeXDatabaseDir"
                   name="swp.bibtex.dir"
-                  onchange="setTextboxValue(this);" 
+                  onchange="setTextboxValue(this);"
                   type="file"/>
 <!--       <preference id="bibTeXStyleDir"
                   name="swp.bibtex.styledir"
-                  onchange="setTextboxValue(this);" 
+                  onchange="setTextboxValue(this);"
                   type="file"/>
- -->  
+ -->
       <preference id="bibchoice"
                   name="swp.bibchoice"
                   type="string" />
@@ -1853,7 +1926,7 @@
       </tabpanels>
     </tabbox>
   </prefpane>
-  
+
 
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
