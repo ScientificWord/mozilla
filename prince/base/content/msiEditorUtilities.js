@@ -376,6 +376,7 @@ function msiGetSelectionAsText(editorElement) {
   return '';
 }
 function hexcolor(rgbcolor) {
+  if (rgbcolor == null) return '#ffffff';
   var regexp = /\s*rgb\s*\(\s*(\d+)[^\d]*(\d+)[^\d]*(\d+)/;
   var arr = regexp.exec(rgbcolor);
   if (!arr || arr.length < 4)
@@ -1178,16 +1179,17 @@ function msiRequirePackage(editorElement, packagename, options) {
     var req;
     var opt;
     for (i = 0; i < currentReq.length; i++) {
-      req = currentReq[i].getAttribute('requirespackage');
+      req = currentReq[i].getAttribute('req');
       if (req === packagename) {
         opt = currentReq[i].getAttribute('opt');
         if (opt && options && opt === options)
           return;
         // already there
-        if (!opt && !options)
+        if ((opt == null) && (options == null))
           return;  // both are void or null
       }
     }
+    // BBM: we probably should be merging the options.changed
     var reqpkg = doc.createElement('requirespackage');
     reqpkg.setAttribute('req', packagename);
     if (options && options.length > 0)
@@ -10556,7 +10558,9 @@ function newline(output, currentline, indent, state) {
     for (var i = 0; i < indent; i++)
       currentline.s += indentIncrement;
 }
-var nonInlineTags = '.math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX.' + 'msidisplay.pagelayout.page.textregion.columns.header.footer.plot.verbatim.' + 'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.';
+var nonInlineTags = '.math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX.' +
+'msidisplay.pagelayout.page.textregion.columns.header.footer.plot.verbatim.' +
+'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.';
 function isInlineElement(editor, element) {
   if (nonInlineTags.search('.' + element.localName + '.') >= 0)
     return false;
