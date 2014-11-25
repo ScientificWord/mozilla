@@ -180,7 +180,7 @@ function insertSnapshot(abssnapshotpath) {
 }
 
 function doMakeSnapshot()
-{ 
+{
   var editorElement;
   try {
     editorElement = msiGetActiveEditorElement();
@@ -190,7 +190,7 @@ function doMakeSnapshot()
   }
   var doc = editorElement.contentDocument;
   var ready = this.readyState;
-  if (ready > 1) {  
+  if (ready > 1) {
     try {
       var path = makeSnapshotPath.call(this);
       var abspath;
@@ -203,7 +203,7 @@ function doMakeSnapshot()
       var plotWrapper = this.parentNode;
       try {
         prefs = GetPrefs();
-        res = prefs.getIntPref("swp.GraphicsSnapshotRes");
+        res = prefs.getIntPref("swp.graph.snapshotres");
       } catch (e) {
         res = 300;
       }
@@ -370,7 +370,7 @@ function doVCamCommandOnObject(cmd, editorElement) {
     default:
     }
   } catch (e) {
-    throw new MsiException("Unable to execute VCam command "+cmd, e);2  
+    throw new MsiException("Unable to execute VCam command "+cmd, e);2
   }
   vcamToolbarFromPlugin.call(this);
   return;
@@ -456,7 +456,7 @@ function onVCamTreeChange(treeEvent)
   try
   {
     msidump("Reported VCam tree change event: type is [" + treeEvent.type + "], target node is [" + treeEvent.target.nodeName + "], property changed is [" + treeEvent.property + "]\n");
-  } 
+  }
   catch(exc)
   {
     msidump("Got exception in onVCamTreeChange: " + exc + "\n");
@@ -481,7 +481,7 @@ function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
   if (obj.wrappedJSObject) {
     obj = obj.wrappedJSObject;
   }
-  
+
   if (dim == 3)
   {
     cameraVals = {positionX : "0", positionY : "0", positionZ : "0",
@@ -555,7 +555,7 @@ function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
     coordSysVals = null;
   if (graph)
     graph.setCoordSysValsFromVCam(coordSysVals, domGraph, bUserSetIfChanged);
-    
+
 }
 
 
@@ -578,7 +578,7 @@ function doVCamInitialize(obj) {
   try {
     if (msiGetActiveEditorElement != null) {
       editorElement = msiGetActiveEditorElement();
-      editor = msiGetEditor(editorElement); 
+      editor = msiGetEditor(editorElement);
     }
   }
   catch(e) {}
@@ -612,7 +612,7 @@ function doVCamInitialize(obj) {
     };
   }
   vcamToolbarFromPlugin.call(obj);
-  obj.command = function command(cmd ) { 
+  obj.command = function command(cmd ) {
       return doVCamCommandOnObject.call( this, cmd, editorElement);
   };
   obj.setActionSpeed = function setActionSpeed(factor) {
@@ -624,7 +624,7 @@ function doVCamInitialize(obj) {
   };
 
   obj.onVCamMouseDown = function onVCamMouseDown(screenX, screenY) {
-    try 
+    try
     {
       var editorElement = msiGetActiveEditorElement();
       var editor = msiGetEditor(editorElement);
@@ -642,7 +642,7 @@ function doVCamInitialize(obj) {
     return 1;
   };
 
-  obj.vcMakeSnapshot = function vcMakeSnapshot () { 
+  obj.vcMakeSnapshot = function vcMakeSnapshot () {
     doMakeSnapshot.call(obj);
   };
 
