@@ -97,13 +97,19 @@ function Startup(){
 //    setColorWell("baseColorWell", makeColorVal(plot.getPlotValue("BaseColor")));
 //    setColorWell("secondColorWell", makeColorVal(plot.getPlotValue("SecondaryColor")));
 //    setColorWell("lineColorWell", makeColorVal(plot.getPlotValue("LineColor")));
-    alist = graph.frame.FRAMEATTRIBUTES;
-    for ( i=0; i<alist.length; i++) {
-      id = mapid(alist[i]);
-      if (document.getElementById(id)) {
-        putValueToControlByID(id, graph.frame.getFrameAttribute(alist[i]));
-//        document.getElementById(id).value = graph.frame.getFrameAttribute(alist[i]);
+    try {
+      alist = graph.frame.FRAMEATTRIBUTES;
+      for ( i=0; i<alist.length; i++) {
+        id = mapid(alist[i]);
+        if (document.getElementById(id)) {
+          if (graph.frame.getFrameAttribute(alist[i]))
+          putValueToControlByID(id, graph.frame.getFrameAttribute(alist[i]));
+  //        document.getElementById(id).value = graph.frame.getFrameAttribute(alist[i]);
+        }
       }
+    }
+    catch(e) {
+      msidump(e.messsage);
     }
     document.getElementById("defaultCameraCheckbox").checked = !graph.cameraValuesUserSet();
     document.getElementById("defaultviewintervals").checked = !graph.viewRangesUserSet();

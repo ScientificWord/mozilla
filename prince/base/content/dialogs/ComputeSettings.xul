@@ -5,7 +5,7 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
-<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/ComputeSettings.dtd">
 <!--JLF - Localization pass on 6/28/2012-->
@@ -52,7 +52,7 @@
         <hbox>
           <description>&desc.Max;</description>
           <spacer flex="1"/>
-          <textbox id="degree" type="number" decimalplaces="0" min="0" increment="1" 
+          <textbox id="degree" type="number" decimalplaces="2" min="0" increment="1"
             style="width: 3em" value="2"/>
         </hbox>
         <hbox>

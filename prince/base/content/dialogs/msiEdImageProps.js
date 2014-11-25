@@ -88,8 +88,8 @@ var bNeedTypeset = true;
 // dialog initialization code
 
 /* An essay on the files in this module;
-An image can be inserted as an <object> or as an <object> wrapped in a frame <msiframe>. The frame is necessary for placing captions correctly on the screen. When this dialog is created, it may be passed an <object> (when an image is being revised) or not (when a new image is inserted). Ron's code uses two temporary elements (an <object> and a <msiframe>) to collect the attributes for the final objects, although it really doesn't seem necessary, as the attributes are all applied inside the onAccept function, and take place inside a transaction. 
-imageElement: this is passed as a parameter in the revision case; in the new image case, it is null until it is assigned in onAccept. 
+An image can be inserted as an <object> or as an <object> wrapped in a frame <msiframe>. The frame is necessary for placing captions correctly on the screen. When this dialog is created, it may be passed an <object> (when an image is being revised) or not (when a new image is inserted). Ron's code uses two temporary elements (an <object> and a <msiframe>) to collect the attributes for the final objects, although it really doesn't seem necessary, as the attributes are all applied inside the onAccept function, and take place inside a transaction.
+imageElement: this is passed as a parameter in the revision case; in the new image case, it is null until it is assigned in onAccept.
 wrapperElement: if imageElement is passed, and has an <msiframe> parent, the parent is assigned to wrapperElement. Otherwise it is null until it is assigned in onAccept.
 */
 
@@ -123,7 +123,7 @@ For the frame properties, the values should come from the defaults in the prefer
 */
 
 
-function setImageSizeFields(imageWidth, imageHeight, dialogUnits) 
+function setImageSizeFields(imageWidth, imageHeight, dialogUnits)
 {
   var prefWidth, prefHeight, prefWidthEnabled, prefHeightEnabled;
   var aspectRatio, prefUnits;
@@ -135,14 +135,14 @@ function setImageSizeFields(imageWidth, imageHeight, dialogUnits)
   var h = null;
   var unitHandler = new  UnitHandler();
 
-  prefUnits = prefBranch.getCharPref("swp.defaultGraphicsSizeUnits");
+  prefUnits = prefBranch.getCharPref("swp.graphics.units");
   unitHandler.initCurrentUnit(dialogUnits);
 
-  prefWidth = prefBranch.getCharPref("swp.defaultGraphicsHSize");
-  prefWidthEnabled = prefBranch.getBoolPref("swp.graphicsUseDefaultWidth");
+  prefWidth = prefBranch.getCharPref("swp.graphics.hsize");
+  prefWidthEnabled = prefBranch.getBoolPref("swp.graphics.usedefaultwidth");
   if (!prefWidthEnabled) prefWidth = null;
-  prefHeight = prefBranch.getCharPref("swp.defaultGraphicsVSize");
-  prefHeightEnabled = prefBranch.getBoolPref("swp.graphicsUseDefaultHeight");
+  prefHeight = prefBranch.getCharPref("swp.graphics.vsize");
+  prefHeightEnabled = prefBranch.getBoolPref("swp.graphics.usedefaultheight");
   if (!prefHeightEnabled) prefHeight = null;
   if (prefHeight && prefWidth) aspectRatio = prefHeight/prefWidth;
   document.getElementById("unitList").value = prefUnits;
@@ -208,7 +208,7 @@ function Startup()
   gDialog.PreviewImage      = null;
   gDialog.OkButton          = document.documentElement.getButton("accept");
   gDialog.keyInput          = document.getElementById("keyInput");
-  
+
   // Get a single selected image element
   imageElement = null;
   wrapperElement = null;
@@ -235,9 +235,9 @@ function Startup()
       {
         wrapperElement = imageElement.parentNode;
       }
-      else 
+      else
         wrapperElement = null;  // no frame
-    } 
+    }
     else
     {
       var tagsToTry = gVideo ? ["embed", "object"] : ["object", "img", "embed"];
@@ -301,7 +301,7 @@ function Startup()
   }
 
   initFrameTab(gDialog, wrapperElement||imageElement, gInsertNewImage, imageElement);
-  
+
   initKeyList();
 
 
@@ -366,11 +366,11 @@ function getSourceLocationFromElement(imageNode)
 function loadDefaultsFromPrefs()
 {
   try
-  { gDefaultPlacement = GetStringPref("swp.defaultGraphicsPlacement"); }
-  catch(ex) {gDefaultPlacement = "inline"; dump("Exception getting pref swp.defaultGraphicsPlacement: " + ex + "\n");}
+  { gDefaultPlacement = GetStringPref("swp.graphics.placement"); }
+  catch(ex) {gDefaultPlacement = "inline"; dump("Exception getting pref swp.graphics.placement: " + ex + "\n");}
   try
-  { gDefaultInlineOffset = GetStringPref("swp.defaultGraphicsInlineOffset"); }
-  catch(ex) {gDefaultInlineOffset = "0"; dump("Exception getting pref swp.defaultGraphicsInlineOffset: " + ex + "\n");}
+  { gDefaultInlineOffset = GetStringPref("swp.graphics.inlineoffset"); }
+  catch(ex) {gDefaultInlineOffset = "0"; dump("Exception getting pref swp.graphics.inlineoffset: " + ex + "\n");}
 }
 
 var vidStartTimeControlIds = ["startFramesInput","startSecondsInput","startMinutesInput"];
@@ -380,7 +380,7 @@ function setVideoControlsFromElement(anElement)
 {
   if (anElement && (msiGetBaseNodeName(anElement)=="object"))
     return setVideoControlsFromObjectElement(anElement);
-  
+
   var attrStr;
   if (anElement)
     attrStr = anElement.getAttribute("autoplay");
@@ -469,7 +469,7 @@ function setVideoSettingsToElement(anElement, editor)
   msiEditorEnsureElementAttribute(anElement, "controller", attrStr, editor);
 
   msiEditorEnsureElementAttribute(anElement, "loop", document.getElementById("vidLoopingList").value, editor);
-  
+
   attrStr = readVideoStartEndControls(true);
   msiEditorEnsureElementAttribute(anElement, "starttime", attrStr, editor);
   attrStr = readVideoStartEndControls(false);
@@ -485,7 +485,7 @@ function setVideoSettingsToObjectElement(anElement, editor)
   msiEditorEnsureObjElementParam(anElement, "controller", attrStr, editor);
 
   msiEditorEnsureObjElementParam(anElement, "loop", document.getElementById("vidLoopingList").value, editor);
-  
+
   attrStr = readVideoStartEndControls(true);
   msiEditorEnsureObjElementParam(anElement, "starttime", attrStr, editor);
   attrStr = readVideoStartEndControls(false);
@@ -579,8 +579,8 @@ function InitImage()
   {
     // var defaultUnitStr, defaultWidthStr, defaultHeightStr;
     // try
-    // {defaultUnitStr = GetStringPref("swp.defaultGraphicsSizeUnits");}
-    // catch(ex) {defaultUnitStr = ""; dump("Exception getting pref swp.defaultGraphicsSizeUnits: " + ex + "\n");}
+    // {defaultUnitStr = GetStringPref("swp.graphics.units");}
+    // catch(ex) {defaultUnitStr = ""; dump("Exception getting pref swp.graphics.units: " + ex + "\n");}
     // if (defaultUnitStr.length)
     // {
     //   gDefaultUnit = defaultUnitStr;
@@ -589,25 +589,25 @@ function InitImage()
     // }
 
     // try
-    // {defaultWidthStr = GetStringPref("swp.defaultGraphicsHSize");}
-    // catch(ex) {defaultWidthStr = ""; dump("Exception getting pref swp.defaultGraphicsHSize: " + ex + "\n");}
+    // {defaultWidthStr = GetStringPref("swp.graphics.hsize");}
+    // catch(ex) {defaultWidthStr = ""; dump("Exception getting pref swp.graphics.hsize: " + ex + "\n");}
     // if (defaultWidthStr.length)
     //   width = frameUnitHandler.getValueFromString( defaultWidthStr, gDefaultUnit );
     // gDefaultWidth = Math.round(frameUnitHandler.getValueAs(width, "px"));
 
     // try
-    // {defaultHeightStr = GetStringPref("swp.defaultGraphicsVSize");}
-    // catch(ex) {defaultHeightStr = ""; dump("Exception getting pref swp.defaultGraphicsVSize: " + ex + "\n");}
+    // {defaultHeightStr = GetStringPref("swp.graphics.vsize");}
+    // catch(ex) {defaultHeightStr = ""; dump("Exception getting pref swp.graphics.vsize: " + ex + "\n");}
     // if (defaultHeightStr.length)
     //   height = frameUnitHandler.getValueFromString( defaultHeightStr, gDefaultUnit );
     // gDefaultHeight = Math.round(frameUnitHandler.getValueAs(height,"px"));
-    
+
   }
 
   if ((width > 0) || (height > 0))
     setWidthAndHeight(width, height, null);
-  else if ((gActualHeight > 0)||(gActualWidth > 0)) 
-    setWidthAndHeight(unitRound(frameUnitHandler.getValueOf(gActualWidth,"px")), 
+  else if ((gActualHeight > 0)||(gActualWidth > 0))
+    setWidthAndHeight(unitRound(frameUnitHandler.getValueOf(gActualWidth,"px")),
                       unitRound(frameUnitHandler.getValueOf(gActualHeight,"px")), null);
   else
     setWidthAndHeight(unitRound(frameUnitHandler.getValueOf(gDefaultWidth,"pt")),
@@ -616,7 +616,7 @@ function InitImage()
   LoadPreviewImage(null);
   // caption and key info comes from frameOverlay
   document.getElementById("captionLocation").value = gCaptionLoc;
-  
+
 
   var hasAltText = imageElement.hasAttribute("alt");
   var altText;
@@ -648,17 +648,17 @@ function InitImage()
       ; /* all four values were given */
     else if (bordervalues[2] && bordervalues[2].length > 0)
       // only 3 values given. The last is the same as the second.
-      bordervalues[3] = bordervalues[1]; 
+      bordervalues[3] = bordervalues[1];
     else if (bordervalues[1] && bordervalues[1].length > 0) {
       // only 2 values given; repeat
       bordervalues[2] = bordervalues[0]; bordervalues[3] = bordervalues[1];}
-    else if (bordervalues[0] && bordervalues[0].length > 0) 
-      bordervalues[3] = bordervalues[2]  = bordervalues[1] = bordervalues[0]; 
+    else if (bordervalues[0] && bordervalues[0].length > 0)
+      bordervalues[3] = bordervalues[2]  = bordervalues[1] = bordervalues[0];
   }
   else bordervalues = [0,0,0,0];
   bordervalues.forEach(fillInValue);
   bordervalues.forEach(stripPx);
-}    
+}
 
 
 
@@ -694,7 +694,7 @@ function initImageUnitList(unitPopUp)
     dump("element with value "+elements[i].value+" has label "+elements[i].label+"\n");
   }
 }
-  
+
 
 function ChangeLinkLocation()
 {
@@ -865,7 +865,7 @@ function chooseImgFile(fBrowsing)
     var filterArray = [{filter : fileFilterStr, filterTitle : filterTitleStr}];
     var fileName = msiGetLocalFileURLSpecial(filterArray, fileTypeStr);
 
-  }  
+  }
   else
   {
     fileName = document.getElementById('srcInput').value;
@@ -880,7 +880,7 @@ function chooseImgFile(fBrowsing)
       gOriginalSrcUrl = decodeURI(url.spec);
       leafname = msiFileFromFileURL(url).leafName;
       file = msiFileFromFileURL(url);
-    } 
+    }
     catch (e) {
       var arr = fileName.split('/');
       leafname = arr[arr.length - 1];
@@ -904,7 +904,7 @@ function chooseImgFile(fBrowsing)
       fileName = "";
     }
     else {
-      gCopiedSrcUrl = internalName; 
+      gCopiedSrcUrl = internalName;
     }
 
     if (gDialog.isImport) {
@@ -935,7 +935,7 @@ function getLoadableGraphicFile(inputURL)
   if (!dir.exists())
     dir.create(1, 0755);
 
-  if (extension) 
+  if (extension)
   {
     var nNative = graphicsConverter.nativeGraphicTypes.indexOf(extension.toLowerCase());
     if ((nNative < 0) && !gVideo)
@@ -1309,7 +1309,7 @@ function PreviewImageLoaded()
       }
 
       doDimensionEnabling();
-      SetSizeWidgets( Math.round(frameUnitHandler.getValueAs(gDialog.frameWidthInput.value,"px")), 
+      SetSizeWidgets( Math.round(frameUnitHandler.getValueAs(gDialog.frameWidthInput.value,"px")),
                       Math.round(frameUnitHandler.getValueAs(gDialog.frameHeightInput.value,"px")) );
     }
 
@@ -1330,7 +1330,7 @@ function PreviewImageLoaded()
         }
         var height = svg.getAttribute("width");
         var arr = numregexp.exec(height);
-        if (arr) 
+        if (arr)
         {
           frameUnitHandler.setCurrentUnit(arr[2]);
           height = frameUnitHandler.getValueAs(arr[1],"px");
@@ -1363,7 +1363,7 @@ function LoadPreviewImage(importName, srcName)
   gDialog.PreviewSize.collapsed = true;
 
   try {
-    
+
     var IOService = msiGetIOService();
     if (IOService)
     {
@@ -1390,7 +1390,7 @@ function LoadPreviewImage(importName, srcName)
 
   if (gDialog.ImageHolder.firstChild)
     gDialog.ImageHolder.removeChild(gDialog.ImageHolder.firstChild);
-    
+
   var prevNodeName = "html:object";
   if (gVideo)
     prevNodeName = "html:embed";
@@ -1450,18 +1450,18 @@ function setActualOrDefaultSize()
   var prefStr = "";
   var bUseDefaultWidth, bUseDefaultHeight;
   var width, height;
-  try {bUseDefaultWidth = GetBoolPref("swp.graphicsUseDefaultWidth");}
-  catch(ex) 
-  {bUseDefaultWidth = false; dump("Exception getting pref swp.graphicsUseDefaultWidth: " + ex + "\n");}
+  try {bUseDefaultWidth = GetBoolPref("swp.graphics.usedefaultwidth");}
+  catch(ex)
+  {bUseDefaultWidth = false; dump("Exception getting pref swp.graphics.usedefaultwidth: " + ex + "\n");}
 
-  try {bUseDefaultHeight = GetBoolPref("swp.graphicsUseDefaultHeight");}
-  catch(ex) {bUseDefaultHeight = false; dump("Exception getting pref swp.graphicsUseDefaultHeight: " + ex + "\n");}
+  try {bUseDefaultHeight = GetBoolPref("swp.graphics.usedefaultheight");}
+  catch(ex) {bUseDefaultHeight = false; dump("Exception getting pref swp.graphics.usedefaultheight: " + ex + "\n");}
 
   if (bUseDefaultWidth || bUseDefaultHeight)
   {
     gDialog.sizeRadioGroup.selectedItem = document.getElementById("custom");
-    try {prefStr = GetStringPref("swp.defaultGraphicsSizeUnits");}
-    catch(ex) {prefStr = ""; dump("Exception getting pref swp.defaultGraphicsSizeUnits: " + ex + "\n");}
+    try {prefStr = GetStringPref("swp.graphics.units");}
+    catch(ex) {prefStr = ""; dump("Exception getting pref swp.graphics.units: " + ex + "\n");}
     if (prefStr.length)
       gDefaultUnit = prefStr;
     frameUnitHandler.setCurrentUnit(gDefaultUnit);
@@ -1470,8 +1470,8 @@ function setActualOrDefaultSize()
   if (bUseDefaultWidth)
   {
     gDialog.autoWidthCheck.checked = false;
-    try {prefStr = GetStringPref("swp.defaultGraphicsHSize");}
-    catch(ex) {prefStr = ""; dump("Exception getting pref swp.defaultGraphicsHSize: " + ex + "\n");}
+    try {prefStr = GetStringPref("swp.graphics.hsize");}
+    catch(ex) {prefStr = ""; dump("Exception getting pref swp.graphics.hsize: " + ex + "\n");}
     if (prefStr.length)
     {
       width = frameUnitHandler.getValueFromString( prefStr, gDefaultUnit );
@@ -1480,8 +1480,8 @@ function setActualOrDefaultSize()
     }
     if (bUseDefaultHeight)
     {
-      try {prefStr = GetStringPref("swp.defaultGraphicsVSize");}
-      catch(ex) {prefStr = ""; dump("Exception getting pref swp.defaultGraphicsVSize: " + ex + "\n");}
+      try {prefStr = GetStringPref("swp.graphics.vsize");}
+      catch(ex) {prefStr = ""; dump("Exception getting pref swp.graphics.vsize: " + ex + "\n");}
       if (prefStr.length)
       {
         height = frameUnitHandler.getValueFromString( prefStr, gDefaultUnit );
@@ -1501,8 +1501,8 @@ function setActualOrDefaultSize()
   }
   else if (bUseDefaultHeight)
   {
-    try {prefStr = GetStringPref("swp.defaultGraphicsVSize");}
-    catch(ex) {prefStr = ""; dump("Exception getting pref swp.defaultGraphicsVSize: " + ex + "\n");}
+    try {prefStr = GetStringPref("swp.graphics.vsize");}
+    catch(ex) {prefStr = ""; dump("Exception getting pref swp.graphics.vsize: " + ex + "\n");}
     if (prefStr.length)
     {
       height = frameUnitHandler.getValueFromString( prefStr, gDefaultUnit );
@@ -1652,12 +1652,12 @@ function ValidateImage()
   if (!(document.getElementById("actual").selected))
   {
     // Get user values for width and height
-    width = msiValidateNumber(gDialog.frameWidthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
+    width = msiValidateNumber(gDialog.frameWidthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels,
                            imageElement, widthAtt, false, true);
     if (gValidationError)
       return false;
 
-    height = msiValidateNumber(gDialog.frameHeightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
+    height = msiValidateNumber(gDialog.frameHeightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels,
                             imageElement, heightAtt, false, true);
     if (gValidationError)
       return false;
@@ -1678,7 +1678,7 @@ function ValidateImage()
 
   if (height)
     imageElement.setAttribute(heightAtt, height);
-  else if (srcChanged) 
+  else if (srcChanged)
     editor.removeAttributeOrEquivalent(imageElement, heightAtt, true);
   return true;
 }
@@ -1704,7 +1704,7 @@ function imageLoaded(event)
         }
         var height = svg.getAttribute("width");
         var arr = numregexp.exec(height);
-        if (arr) 
+        if (arr)
         {
           frameUnitHandler.setCurrentUnit(arr[2]);
           height = frameUnitHandler.getValueAs(arr[1],"px");
@@ -1721,7 +1721,7 @@ function imageLoaded(event)
   }
 }
 
-function isEnabled(element) 
+function isEnabled(element)
 {
   if (!element) return false;
   return(!element.hasAttribute("disabled"));
@@ -1749,11 +1749,11 @@ function onAccept()
     var hInput = document.getElementById("frameHeightInput");
     // The next elements are from msiFrameOverlay
     if (!wInput.hasAttribute('disabled')) width = wInput.value;
-    if (!hInput.hasAttribute('disabled')) height = hInput.value;   
+    if (!hInput.hasAttribute('disabled')) height = hInput.value;
 //    frameUnitHandler.setCurrentUnit(unit);
     // srcurl is for debugging purposes
     // BBM: use gOriginalSrcUrl or gCopiedSrcUrl
-    var srcurl = graphicsConverter.copyAndConvert(msiFileFromFileURL(msiURIFromString(gOriginalSrcUrl)), false, 
+    var srcurl = graphicsConverter.copyAndConvert(msiFileFromFileURL(msiURIFromString(gOriginalSrcUrl)), false,
       frameUnitHandler.getValueAs(width, 'px'), frameUnitHandler.getValueAs(height, 'px') );
 
 
@@ -1774,14 +1774,14 @@ function onAccept()
       // caption dance: If there was a caption and the user specifies none, delete the caption
       if (gCaptionNode && captionloc === 'none') {
         gCaptionNode = null;
-      } 
+      }
       else if (!gCaptionNode && captionloc !== 'none') {
         gCaptionNode = gEditor.createElementWithDefaults('caption');
         var namespace = { value: null };
         gCaptionNode.appendChild(tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, gCaptionNode.ownerDocument));
       }
       if (gCaptionNode && isEnabled(document.getElementById("keyInput"))) {
-        if (document.getElementById("keyInput").value != "") 
+        if (document.getElementById("keyInput").value != "")
           gCaptionNode.setAttribute("key", document.getElementById("keyInput").value);
         else gCaptionNode.removeAttribute("key");
       }
@@ -1793,7 +1793,7 @@ function onAccept()
 
       imgExists = !gInsertNewImage;
       if (!imgExists)
-      {      
+      {
         if (imageElement == null) imageElement = gEditor.createElementWithDefaults(tagname);
         imageElement.addEventListener("load", imageLoaded, true);
       }
@@ -1811,9 +1811,9 @@ function onAccept()
       imageElement.setAttribute("data", src);
       if (bHasCaption)  // we need to set up the wrapper element
       {
-        if (wrapperElement == null) 
+        if (wrapperElement == null)
           wrapperElement = gEditor.createElementWithDefaults("msiframe");
-        wrapperElement.setAttribute("frametype", "image");       
+        wrapperElement.setAttribute("frametype", "image");
         wrapperElement.appendChild(gCaptionNode);
         msiEditorEnsureElementAttribute(wrapperElement, "captionloc", captionloc, null);
         // if (gDialog.wrapOptionRadioGroup.value != "full"){
@@ -1836,7 +1836,7 @@ function onAccept()
             style = style.replace(/background[^;]+;/,'');
             style = style.replace(/padding[^;]+;/,'');
             style = style.replace(/caption-side[^;]+;/,'');
-            if (captionloc != 'none') 
+            if (captionloc != 'none')
               style = style + 'caption-side: ' + captionloc + ';';
             imageElement.setAttribute("style", style);
             gEditor.insertNode(wrapperElement, imageParent, posInParent);
@@ -1852,7 +1852,7 @@ function onAccept()
       }
 
       if (gInsertNewImage) {
-        if (!bHasCaption) 
+        if (!bHasCaption)
           wrapperElement = imageElement;
         gEditor.insertElementAtSelection(wrapperElement, true);
       }
@@ -1883,7 +1883,7 @@ function onAccept()
       msiEditorEnsureElementAttribute(imageElement, "copiedSrcUrl", gCopiedSrcUrl, null);
       // if (!gDialog.isImport)
       //   msiEditorEnsureElementAttribute(imageElement, "byReference", "true", null);
-          
+
       setFrameAttributes(wrapperElement||imageElement, imageElement, null, bHasCaption);
       if (bHasCaption) {
         if (captionloc && captionloc !== 'none') setStyleAttributeOnNode(wrapperElement||imageElement, "caption-side", captionloc, gEditor);
