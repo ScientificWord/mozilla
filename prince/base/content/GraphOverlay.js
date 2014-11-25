@@ -1,5 +1,6 @@
 // Copyright (c) 2004-2013 MacFKichan Software, Inc. All rights reserved
 /* jshint ignore:start */
+// For JSHint documentation see  http://www.jshint.com/docs/
 #include productname.inc
 #ifndef PROD_SW
 /* jshint ignore:end */
@@ -22,7 +23,8 @@ function Graph() {
   list = this.graphAttributeList();
   length = list.length;
   for (i = 0; i < length; i++) {
-    this[list[i]] = this.getDefaultValue(list[i]);
+    if (this.mapAttToPrefkey[list[i]])
+      this[list[i]] = this.getDefaultValue(this.mapAttToPrefkey[list[i]]);
   }
   this.frame = new Frame(this);
 }
@@ -57,6 +59,59 @@ Graph.prototype = {
 
   constructor: Graph,
   ser: new XMLSerializer(),
+  mapAttToPrefkey: {
+    "ImageFile" : null,
+    "XAxisLabel" : "xaxislabel",
+    "YAxisLabel" : "yaxislabel",
+    "ZAxisLabel" : "zaxislabel",
+    "Width" : "hsize",
+    "Height" : "vsize",
+    "Units" : "units",
+    "AxesType" : "AxisType",
+    "EqualScaling" : "AxisEqualScaling",
+    "EnableTicks" : null,
+    "XTickCount" : "xtickcount",
+    "YTickCount" : "ytickcount",
+    "ZTickCount" : "ztickcount",
+    "AxesTips" : "AxisTips",
+    "GridLines" : "gridlines",
+    "BGColor" : "bgcolor",
+    "Dimension" : null,
+    "AxisScale" : "AxisScaling",
+    "CameraLocationX" : null,
+    "CameraLocationY" : null,
+    "CameraLocationZ" : null,
+    "FocalPointX" : null,
+    "FocalPointY" : null,
+    "FocalPointZ" : null,
+    "UpVectorX" : null,
+    "UpVectorY" : null,
+    "UpVectorZ" : null,
+    "ViewingAngle" : null,
+    "OrthogonalProjection" : "orthogproj",
+    "KeepUp" : "keepupvector",
+    "OrientationTiltTurn" : null,
+    "ViewingBoxXMin" : null,
+    "ViewingBoxXMax" : null,
+    "ViewingBoxYMin" : null,
+    "ViewingBoxYMax" : null,
+    "ViewingBoxZMin" : null,
+    "ViewingBoxZMax" : null,
+    "AnimateStart" : null,
+    "AnimateEnd" : null,
+    "AnimateFPS" : null,
+    "AnimateCurrTime" : null,
+    "AxisFontFamily" : "AxisFontFamily",
+    "AxisFontSize" : "AxisFontSize",
+    "AxisFontColor" : "AxisFontColor",
+    "AxisFontItalic" : "AxisFontItalic",
+    "AxisFontBold" : "AxisFontBold",
+    "TicksFontFamily" : "ticksfontfamily",
+    "TicksFontSize" : "ticksfontsize",
+    "TicksFontColor" : "ticksfontcolor",
+    "TicksFontItalic" : "ticksfontitalic",
+    "TicksFontBold" : "ticksfontbold",
+  },
   addPlot: function (plot) {
     // Add a plot to a graph. Conceptually, a plot is a collection of attribute/value pairs
     this.plots.push(plot);
@@ -293,7 +348,9 @@ Graph.prototype = {
     var DOMCaption = DOMFrame.getElementsByTagName("caption")[0];
     var attr, value, alist, i, domPlots, plot, domPlotLabels, status, caption, captionloc, child, optnum;
     var graphData = new graphVarData(this);
-    frameUnitHandler = new UnitHandler();
+    var unitHandler = new UnitHandler();
+    var units = this.getValue("Units");
+    unitHandler.initCurrentUnit(units);
     this.frame.reviseFrameDOMElement(DOMFrame, forComp, editorElement);
 
     // loop through graph attributes and insert them
@@ -381,7 +438,7 @@ Graph.prototype = {
       var tlm;
       tlm = editor.tagListManager;
       DOMFrame.setAttribute("captionloc", captionloc);
-      setStyleAttributeOnNode(DOMFrame, "caption-side", captionloc, editor);
+      setStyleAttributeOnNode(DOMFrame, "caption-side", captionloc || "", editor);
       // if there is no caption node, create an empty one.
       if (!captionNode) {
          captionNode = editor.createElementWithDefaults("caption");
@@ -397,7 +454,7 @@ Graph.prototype = {
         editor.deleteNode(captionNode);
       }
     }
-    caption="<caption>"+caption || ""+"</caption>";
+    caption="<caption>"+ (caption || "") +"</caption>";
     insertXML(editor, caption, DOMCaption, 0);
   },
 
@@ -461,6 +518,7 @@ Graph.prototype = {
     serialized = this.ser.serializeToString(basenode);
     this.setGraphAttribute("Caption", serialized);
   },
+
   getDefaultValue: function (key) {
     // get defaults from preference system, or if not there, from hardcoded list
     var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
@@ -1710,9 +1768,9 @@ Frame.prototype = {
   FRAMEATTRIBUTES: ["placement", "floatPlacement", "border",
           "HMargin", "VMargin", "padding", "BGColor", "borderColor",
           "placeLocation", "textalignment"],
-  FRAMEDOMATTRIBUTES: ["pos", "sidemargin", "topmargin", "placeLocation", "textalignment", "width", "height",
+  FRAMEDOMATTRIBUTES: ["pos", "sidemargin", "topmargin", "width", "height",
   "units",  "borderw", "padding", "background-color", "border-color", "ltxfloat",
-    "captionloc", "req"],
+    "captionloc", "req", "floatlocation"],
   // WRAPPERATTRIBUTES: ["borderw", "padding", "ltx_height", "ltx_width", "border-color", "background-color"],
   isModified: function (x) {
     return (this.modFlag[x]);
@@ -1739,7 +1797,7 @@ Frame.prototype = {
     return (this.FRAMEATTRIBUTES.concat(this.FLOATLOCATIONS));
   },
   getFrameAttribute: function (name) {
-    return (this.attributes[name]);
+      return (this.attributes[name]);
   },
   setFrameAttribute: function (name, value) {
     this.attributes[name] = value;
@@ -1817,11 +1875,11 @@ Frame.prototype = {
               this.setFrameAttribute("ltxfloat", DOMFrame.getAttribute(att));
             }
             break;
-          case "textalignment":
-            if (DOMFrame.getAttribute(att)) {
-              this.setFrameAttribute(att, DOMFrame.getAttribute(att));
-            }
-            break;
+          // case "textalignment":
+          //   if (DOMFrame.getAttribute(att)) {
+          //     this.setFrameAttribute(att, DOMFrame.getAttribute(att));
+          //   }
+          //   break;
           case "captionloc":
             if (DOMFrame.hasAttribute("captionloc")) {
               graph.setGraphAttribute("CaptionPlace", DOMFrame.getAttribute("captionloc"));
@@ -1838,7 +1896,7 @@ Frame.prototype = {
 
   reviseFrameDOMElement: function (DOMFrame, forComp, editorElement) {
     var editor = msiGetEditor(editorElement);
-    var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, pos, placeLocation, floattts, fltatt, ch, captionlocation, x;
+    var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, pos, placeLocation, captionlocation, x;
     var DOMObj = DOMFrame.getElementsByTagName("object")[0];
     var unitHandler = new UnitHandler();
     var needsWrapfig = false;
@@ -1862,7 +1920,7 @@ Frame.prototype = {
           editor.setAttribute(DOMFrame, "ltx_height", height);
           heightinpx = unitHandler.getValueAs(height, "px");
           editor.setAttribute(DOMFrame, "height", height);
-          setStyleAttributeOnNode(DOMObj, "height", heightinpx + "px");
+          if (heightinpx) setStyleAttributeOnNode(DOMObj, "height", heightinpx + "px", null);
           // dimensions of outer msiframe need to be adjusted for border and padding
           x = this.getFrameAttribute("border");
           if (x)
@@ -1876,13 +1934,13 @@ Frame.prototype = {
           }
           editor.setAttribute(DOMFrame, "height", height);
           heightinpx = unitHandler.getValueAs(height, "px");
-          setStyleAttributeOnNode( DOMFrame, "height", heightinpx + "px", null);
+          setStyleAttributeOnNode( DOMFrame, "height", height + units, null);
           break;
         case "Width":
           width = Number(graph.getValue(att));
           editor.setAttribute(DOMFrame, "ltx_width", width);
           widthinpx = unitHandler.getValueAs(width, "px");
-          setStyleAttributeOnNode(DOMObj, "width", widthinpx + "px", null);
+          setStyleAttributeOnNode(DOMObj, "width", width + units, null);
 
           x = this.getFrameAttribute("border");
           if (x) {
@@ -1894,23 +1952,26 @@ Frame.prototype = {
           }
           editor.setAttribute(DOMFrame, "width", width);
           widthinpx = unitHandler.getValueAs(width, "px");
-          setStyleAttributeOnNode( DOMFrame, "width", widthinpx + "px", null);
+          setStyleAttributeOnNode( DOMFrame, "width", width + units, null);
           break;
         case "border":
         case "borderw":
-          editor.setAttribute(DOMFrame, "borderw", this.getFrameAttribute(att));
+          editor.setAttribute(DOMFrame, "borderw", this.getFrameAttribute("border"));
           break;
         case "padding":
           editor.setAttribute(DOMFrame, "padding", this.getFrameAttribute(att));
+          setStyleAttributeOnNode(DOMFrame, "padding", this.getFrameAttribute(att), null);
           break;
         case "Units":
           editor.setAttribute(DOMFrame, "units", units);
           break;
         case "BGColor":
-          editor.setAttribute(DOMFrame, "background-color", hexcolor(this.getFrameAttribute(att)));
+          editor.setAttribute(DOMFrame, "background-color", hexcolor(this.getFrameAttribute("BGColor")));
+          setStyleAttributeOnNode(DOMFrame, "background-color", hexcolor(this.getFrameAttribute("BGColor")));
           break;
         case "borderColor":
           editor.setAttribute(DOMFrame, "border-color", hexcolor(this.getFrameAttribute(att)));
+          setStyleAttributeOnNode(DOMFrame, "border-color", hexcolor(this.getFrameAttribute(att)));
           break;
         case "pos":
           editor.setAttribute(DOMFrame, "pos", this.getFrameAttribute(att));
@@ -1918,24 +1979,22 @@ Frame.prototype = {
         case "placement":
           pos = this.getFrameAttribute(att);
           editor.setAttribute(DOMFrame, "pos", pos);
-          if (pos === "float") {
-            needsWrapfig = this.getFrameAttribute("floatPlacement") !== "none";
-          }
+          needsWrapfig = (pos === "L" || pos === "I" || pos === "R" || pos === "O");
           break;
         case "textalignment":
           editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
-          setStyleAttributeOnNode( DOMFrame, "text-align", this.getFrameAttribute(att), null);
+          setStyleAttributeOnNode( DOMFrame, "text-align", this.getFrameAttribute(att) || "", null);
           break;
         case "placeLocation":
           placeLocation = this.getFrameAttribute(att);
           editor.setAttribute(DOMFrame, "placeLocation", placeLocation);
           break;
-        case "captionloc":
-          captionlocation = this.getFrameAttribute(att);
-          editor.setAttribute(DOMFrame, att, captionlocation);
+        case "CaptionPlace":
+          captionlocation = this.getFrameAttribute("captionloc");
+          editor.setAttribute(DOMFrame, "captionloc", captionlocation);
           break;
         case "floatPlacement":
-          editor.setAttribute(DOMFrame, "floatPlacement", "float");
+          editor.setAttribute(DOMFrame, "floatlocation", this.getFrameAttribute("floatPlacement"));
           break;
         default:
 //          editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
@@ -1943,52 +2002,38 @@ Frame.prototype = {
         }
       }
       editor.setAttribute(DOMFrame, "msi_resize", "true");
-      editor.setAttribute(DOMFrame, "style", this.getFrameAttribute("style"));
+//      editor.setAttribute(DOMFrame, "style", this.getFrameAttribute("style"));
 
       // what about overhang?
       // Now we build the CSS style for the object and the frame
-      var isfloat = this.getFrameAttribute("placement") === "float";
+      var isfloat = this.getFrameAttribute("placement") === "unspecified";
       var isdisplay = this.getFrameAttribute("placement") === "display";
-      var lmargin = unitHandler.getValueStringAs(this.getFrameAttribute("HMargin"), "px");
-      var rmargin = lmargin;
+      var lmargin;
+      var rmargin;
+      if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="full")) {
+        lmargin = rmargin = "auto";
+        removeStyleAttributeFamilyOnNode(DOMFrame, "float");
+      }
+      else {
+        lmargin = unitHandler.getValueStringAs(this.getFrameAttribute("HMargin"), "px");
+        rmargin = lmargin;
+        switch (this.getFrameAttribute("placement")) {
+          case "L" :
+          case "I" :
+            lmargin = "0px";
+            setStyleAttributeOnNode(DOMFrame, "float", "left", null);
+            break;
+          case "R" :
+          case "O" :
+            rmargin = "0px";
+            setStyleAttributeOnNode(DOMFrame, "float", "right", null);
+            break;
+          default : removeStyleAttributeFamilyOnNode(DOMFrame, "float");
+        }
+      }
       var vmargin = unitHandler.getValueStringAs(this.getFrameAttribute("VMargin"), "px");
-      // if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="full")) {
-      //   setStyleAttributeOnNode( DOMFrame, "margin", vmargin + " auto", null);
-      // }
-      // else {
-      //   if (isfloat) {
-      //     switch (this.getFrameAttribute("floatPlacement")) {
-      //       case "L":
-      //       case "I":
-      //       default:
-      //         lmargin = "0px";
-      //         break;
-      //       case "R":
-      //       case "O":
-      //         rmargin = "0px";
-      //         break;
-      //     }
-      //   }
-      //   setStyleAttributeOnNode( DOMFrame, "margin", vmargin + " " + rmargin + " " + vmargin + " " + lmargin, null);
-      // }
-      // if (isfloat) {
-      //   var floatParam = this.getFrameAttribute("floatPlacement");
-      //   if (floatParam === "I" || floatParam === "L") {
-      //     floatParam = "left";
-      //   }
-      //   else if (floatParam === "O" || floatParam === "R") {
-      //     floatParam = "right";
-      //   }
-      //   else {
-      //     floatParam = "none";
-      //   }
-      //   setStyleAttributeOnNode( DOMFrame, "float", floatParam, null);
-      // }
-      var border = unitHandler.getValueStringAs(this.getFrameAttribute("border"), "px");
-      // put the graph file in
-      // resetting the data attribute seems to trigger loading a new VCam object. If it already exists, use
-      // the load API
-//      DOMObj.vcamStatus = "uninitialized";
+      setStyleAttributeOnNode( DOMFrame, "margin", vmargin + " " + rmargin + " " + vmargin + " " + lmargin, null);
+      var border = unitHandler.getValueStringAs(this.getFrameAttribute("borderw"), "px");
       if (!forComp)  //don"t trigger any loading if we're only serializing - this isn't a "real" <object>
       {
         var existingObjFile = DOMObj.getAttribute("data");
@@ -2013,7 +2058,7 @@ Frame.prototype = {
       }
 //NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
 //  the scriptable vcam interface to work!
-      var filetype = graph.getDefaultValue("DefaultFileType");
+      var filetype = graph.getDefaultValue("filetype");
       msidump("SMR file type is " + filetype + "\n");
       if (filetype === "xvz") {
         DOMObj.setAttribute("type", "application/x-mupad-graphics+gzip");
@@ -2170,7 +2215,7 @@ function isDifferentPlotFile(oldpath, newpath, editorElement) {
 function insertGraph(siblingElement, graph, editorElement) {
   /**----------------------------------------------------------------------------------*/
   // compute a graph, create a <graph> element, insert it into DOM after siblingElement
-  var filetype = graph.getDefaultValue("DefaultFileType");
+  var filetype = graph.getDefaultValue("filetype");
   // May want to ensure file type is compatible with animated here
   //  var editorElement = null;
   if (!editorElement || editorElement == null) editorElement = findEditorElementForDocument(siblingElement.ownerDocument);
@@ -2224,29 +2269,39 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   var checkedExpr = preParsePlotExpression(math, plottype, selection, editorElement);
   var expr = runFixup(GetFixedMath(checkedExpr));
   var graph = new Graph();
-  var width = GetStringPref("swp.graph.HSize");
-  var height = GetStringPref("swp.graph.VSize");
-  var unit = GetStringPref("swp.graph.defaultUnits");
-  var XTickCount = GetStringPref("swp.graph.XTickCount");
-  var YTickCount = GetStringPref("swp.graph.YTickCount");
-  var ZTickCount = GetStringPref("swp.graph.ZTickCount");
-  var XAxisLabel = GetStringPref("swp.graph.XAxisLabel");
-  var YAxisLabel = GetStringPref("swp.graph.YAxisLabel");
-  var ZAxisLabel = GetStringPref("swp.graph.ZAxisLabel");
+  var frame = graph.frame;
+  var width = GetStringPref("swp.graph.hsize");
+  var height = GetStringPref("swp.graph.vsize");
+  var unit = GetStringPref("swp.graph.units");
+  var XTickCount = GetStringPref("swp.graph.xtickcount");
+  var YTickCount = GetStringPref("swp.graph.ytickcount");
+  var ZTickCount = GetStringPref("swp.graph.ztickcount");
+  var XAxisLabel = GetStringPref("swp.graph.xaxislabel");
+  var YAxisLabel = GetStringPref("swp.graph.yaxislabel");
+  var ZAxisLabel = GetStringPref("swp.graph.zaxislabel");
   var plotcaptionpref = GetStringPref("swp.graph.captionplacement");
-  var frmBorder = GetStringPref("swp.graph.border");
-  var frmHMargin = GetStringPref("swp.graph.HMargin");
-  var frmVMargin  = GetStringPref("swp.graph.VMargin");
-  var frmPadding = GetStringPref("swp.graph.padding");
-  var frmBGColor = GetStringPref("swp.graph.BGColor");
-  var frmBorderColor = GetStringPref("swp.graph..borderColor");
+  var frmBorder = GetStringPref("swp.graph.borderwidth");
+  var frmHMargin = GetStringPref("swp.graph.hmargin");
+  var frmVMargin  = GetStringPref("swp.graph.vmargin");
+  var frmPadding = GetStringPref("swp.graph.paddingwidth");
+  var frmBGColor = GetStringPref("swp.graph.bgcolor");
+  var frmBorderColor = GetStringPref("swp.graph.bordercolor");
   var frmPlacement = GetStringPref("swp.graph.placement");
-  var frmFloatLocation_forceHere = GetBoolPref("swp.graph.floatLocation.forceHere");
-  var frmFloatLocation_here = GetBoolPref("swp.graph.floatLocation.here");
-  var frmFloatLocation_pageFloats = GetBoolPref("swp.graph.floatLocation.pageFloats");
-  var frmFloatLocation_topPage = GetBoolPref("swp.graph.floatLocation.topPage");
-  var frmFloatLocation_bottomPage = GetBoolPref("swp.graph.floatLocation.bottomPage");
-  var frmFloatPlacement = GetStringPref("swp.graph.floatPlacement");
+  var frmFloatLocation_forceHere = GetBoolPref("swp.graph.floatlocation.forcehere");
+  var frmFloatLocation_here = GetBoolPref("swp.graph.floatlocation.here");
+  var frmFloatLocation_pageFloats = GetBoolPref("swp.graph.floatlocation.pagefloats");
+  var frmFloatLocation_topPage = GetBoolPref("swp.graph.floatlocation.toppage");
+  var frmFloatLocation_bottomPage = GetBoolPref("swp.graph.floatlocation.bottompage");
+
+
+
+
+
+
+
+
+
+//  var frmFloatPlacement = GetStringPref("swp.graph.floatplacement");
 
 
   graph.setGraphAttribute("Width", width);
@@ -2261,6 +2316,23 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   if (ZAxisLabel) graph.setGraphAttribute("ZAxisLabel", ZAxisLabel);
   if (plotcaptionpref) graph.setGraphAttribute("CaptionPlace", plotcaptionpref);
 
+  if (plotcaptionpref) frame.setFrameAttribute("plotcaptionpref", plotcaptionpref);
+  if (frmBorder) frame.setFrameAttribute("borderw", frmBorder);
+  if (frmHMargin) frame.setFrameAttribute("HMargin", frmHMargin);
+  if (frmVMargin) frame.setFrameAttribute("VMargin", frmVMargin);
+  if (frmPadding) frame.setFrameAttribute("paddadding", frmPadding);
+  if (frmBGColor) frame.setFrameAttribute("BGColor", frmBGColor);
+  if (frmBorderColor) frame.setFrameAttribute("borderColor", frmBorderColor);
+  if (frmPlacement) frame.setFrameAttribute("placement", frmPlacement);
+  var floatLoc = "";
+  if (frmFloatLocation_forceHere) floatLoc += "H";
+  if (frmFloatLocation_here) floatLoc += "h";
+  if (frmFloatLocation_pageFloats) floatLoc += "p";
+  if (frmFloatLocation_topPage) floatLoc += "t";
+  if (frmFloatLocation_bottomPage) floatLoc += "b";
+  if (floatLoc !== "") frame.setFrameAttribute(floatPlacement, floatLoc);
+
+
   var plot = new Plot(dimension, plottype);
   var plotnum = graph.addPlot(plot);
   plot.attributes.PlotStatus = "New";
@@ -2271,66 +2343,76 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   }
   plot.computeQuery();
   insertGraph(math, graph, editorElement);
-  var frame = math.nextSibling.getElementsByTagName("msiframe")[0];
-  if (frame) {
-    if (frmBorder) frame.setAttribute("border", frmBorder);
-    if (frmHMargin) frame.setAttribute("sidemargin", frmHMargin);
-    if (frmVMargin) frame.setAttribute("topmargin", frmVMargin);
-    if (frmPadding) frame.setAttribute("padding", frmPadding);
-    if (frmBGColor) frame.setAttribute("background-color", frmBGColor);
-    if (frmBorderColor) frame.setAttribute("border-color", frmBorderColor);
-    if (frmPlacement) frame.setAttribute("placement", frmPlacement);
-    if (frmFloatLocation_forceHere != null && frmFloatLocation_forceHere) frame.setAttribute("placeLocation", frmFloatLocation_forceHere);
-    if (frmFloatLocation_here != null && frmFloatLocation_here) frame.setAttribute("placeLocation", frmFloatLocation_here);
-    if (frmFloatLocation_pageFloats != null && frmFloatLocation_pageFloats) frame.setAttribute("placeLocation", frmFloatLocation_pageFloats);
-    if (frmFloatLocation_topPage != null && frmFloatLocation_topPage) frame.setAttribute("placeLocation", frmFloatLocation_topPage);
-    if (frmFloatLocation_bottomPage != null && frmFloatLocation_bottomPage) frame.setAttribute("placeLocation", frmFloatLocation_bottomPage);
-    if (frmFloatPlacement) frame.setAttribute("placement", frmFloatPlacement);
-    if (plotcaptionpref && plotcaptionpref !== "none") {
-      frame.setAttribute("captionloc", plotcaptionpref);
-      // set caption-side in style
-    }
-    // BBM: need to set up style as well
+  // var frame = math.nextSibling.getElementsByTagName("msiframe")[0];
+  // if (frame) {
+  //   if (frmBorder) frame.setAttribute("borderw", frmBorder);
+  //   if (frmHMargin) frame.setAttribute("sidemargin", frmHMargin);
+  //   if (frmVMargin) frame.setAttribute("topmargin", frmVMargin);
+  //   if (frmPadding) frame.setAttribute("padding", frmPadding);
+  //   if (frmBGColor) frame.setAttribute("background-color", frmBGColor);
+  //   if (frmBorderColor) frame.setAttribute("border-color", frmBorderColor);
+  //   if (frmPlacement) {
+  //     frame.setAttribute("placement", frmPlacement);
+  //     frame.setAttribute("pos", frmPlacement);
+  //   }
+  //   if (frmFloatLocation_forceHere != null && frmFloatLocation_forceHere) frame.setAttribute("placeLocation", frmFloatLocation_forceHere);
+  //   if (frmFloatLocation_here != null && frmFloatLocation_here) frame.setAttribute("placeLocation", frmFloatLocation_here);
+  //   if (frmFloatLocation_pageFloats != null && frmFloatLocation_pageFloats) frame.setAttribute("placeLocation", frmFloatLocation_pageFloats);
+  //   if (frmFloatLocation_topPage != null && frmFloatLocation_topPage) frame.setAttribute("placeLocation", frmFloatLocation_topPage);
+  //   if (frmFloatLocation_bottomPage != null && frmFloatLocation_bottomPage) frame.setAttribute("placeLocation", frmFloatLocation_bottomPage);
+  //   if (frmPlacement === "unspecified" && frmFloatPlacement) frame.setAttribute("placement", frmFloatPlacement);
+  //   if (plotcaptionpref && plotcaptionpref !== "none") {
+  //     frame.setAttribute("captionloc", plotcaptionpref);
+  //   }
 
-    removeStyleAttributeFamilyOnNode( frame, "margin", null);
-    removeStyleAttributeFamilyOnNode( frame, "border", null);
-    removeStyleAttributeFamilyOnNode( frame, "background", null);
-    removeStyleAttributeFamilyOnNode( frame, "padding", null);
-    removeStyleAttributeFamilyOnNode( frame, "caption-side", null);
-    if ((frmHMargin != null) || (frmVMargin != null)) {
-      setStyleAttributeOnNode(frame, "margin", (frmVMargin || "") + " " + (frmHMargin || ""), null);
-    }
-    if (frmBorder)
-      setStyleAttributeOnNode(frame, "border-width", frmBorder, null);
-    if (frmBGColor)
-      setStyleAttributeOnNode(frame, "background-color", frmBGColor, null);
-    if (frmPadding)
-      setStyleAttributeOnNode(frame, "padding", frmPadding, null);
-    // Handle the caption node
-    var captionNodes = frame.getElementsByTagName("caption");
-    var captionNode = null;
-    if (captionNodes.length > 0) {
-      captionNode = captionNodes[0];
-    }
-    if (plotcaptionpref && (plotcaptionpref !== "none")) {
-      var tlm;
-      tlm = editor.tagListManager;
-      setStyleAttributeOnNode(frame, "caption-side", plotcaptionpref, null);
-      // if there is no caption node, create an empty one.
-      if (!captionNode) {
-         captionNode = editor.createElementWithDefaults("caption");
-         var namespace = { value: null };
-         captionNode.appendChild(tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, captionNode.ownerDocument));
-         frame.appendChild(captionNode);
-      }
-    } else
-    {
-      frame.removeAttribute("captionloc");
-      removeStyleAttributeFamilyOnNode( frame, "caption-side", null);
-      if (captionNode)
-        editor.deleteNode(captionNode);
-    }
-  }
+  //   removeStyleAttributeFamilyOnNode( frame, "margin", null);
+  //   removeStyleAttributeFamilyOnNode( frame, "border", null);
+  //   removeStyleAttributeFamilyOnNode( frame, "background", null);
+  //   removeStyleAttributeFamilyOnNode( frame, "padding", null);
+  //   removeStyleAttributeFamilyOnNode( frame, "caption-side", null);
+  //   if ((frmHMargin != null) || (frmVMargin != null)) {
+  //     setStyleAttributeOnNode(frame, "margin", (frmVMargin || "") + " " + (frmHMargin || ""), null);
+  //   }
+  //   if (frmPlacement === "display") {
+  //     setStyleAttributeOnNode(frame, "margin", (frmVMargin || "0") + " auto", null);
+  //   }
+  //   if (frmBorder)
+  //     setStyleAttributeOnNode(frame, "border-width", frmBorder, null);
+  //   if (frmBorderColor)
+  //     setStyleAttributeOnNode(frame, "border-color", frmBGColor, null);
+  //   if (frmBGColor)
+  //     setStyleAttributeOnNode(frame, "background-color", frmBGColor, null);
+  //   if (frmPadding)
+  //     setStyleAttributeOnNode(frame, "padding", frmPadding, null);
+  //   if (width != null) {
+  //     setStyleAttributeOnNode(frame, "width", width+unit, null);
+  //   }
+  //   if (height != null) {
+  //     setStyleAttributeOnNode(frame, "height", height+unit, null);
+  //   }
+  //   // Handle the caption node
+  //   var captionNodes = frame.getElementsByTagName("caption");
+  //   var captionNode = null;
+  //   if (captionNodes.length > 0) {
+  //     captionNode = captionNodes[0];
+  //   }
+  //   if (plotcaptionpref && (plotcaptionpref !== "none")) {
+  //     var tlm;
+  //     tlm = editor.tagListManager;
+  //     setStyleAttributeOnNode(frame, "caption-side", plotcaptionpref, null);
+  //     // if there is no caption node, create an empty one.
+  //     if (!captionNode) {
+  //        captionNode = editor.createElementWithDefaults("caption");
+  //        frame.appendChild(captionNode);
+  //     }
+  //   } else
+  //   {
+  //     frame.removeAttribute("captionloc");
+  //     removeStyleAttributeFamilyOnNode( frame, "caption-side", null);
+  //     if (captionNode)
+  //       editor.deleteNode(captionNode);
+  //   }
+  // }
 }
 
 function preParsePlotExpression(math, plotType, selection, editorElement)
