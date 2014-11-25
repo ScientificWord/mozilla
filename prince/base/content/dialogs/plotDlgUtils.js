@@ -98,6 +98,7 @@ function getColorFromCSSSpec(cssStr)
 
 function putValueToControlByID(anID, aVal)
 {
+  if (aVal == null) return;
   var theControl = document.getElementById(anID);
   putValueToControl(theControl, aVal);
 }
@@ -172,15 +173,15 @@ function testUseSignificantDigits()
 function makeColorVal(attribStr)
 {
   var retVal = attribStr.replace(/^#?([0-9a-fA-F]{1,6}).*$/,"#$1");
-  return retVal; 
+  return retVal;
 }
 
-var invisibleMathOpFilter = 
+var invisibleMathOpFilter =
 {
   //parameters: in AString mimeType, in nsIURL contentSourceURL, in nsIDOMDocument sourceDocument,
   //               in PRBool willDeleteSelection, inout nsIDOMNode docFragment, inout nsIDOMNode contentStartNode,
   //               inout long contentStartOffset, inout nsIDOMNode contentEndNode, inout long contentEndOffset,
-  //               inout nsIDOMNode insertionPointNode, inout long insertionPointOffset, 
+  //               inout nsIDOMNode insertionPointNode, inout long insertionPointOffset,
   //               out boolean continueWithInsertion);
   notifyOfInsertion : function(mimeType, contentSourceURL, sourceDocument, willDeleteSelection,
                                docFragment, contentStartNode, contentStartOffset,
@@ -284,7 +285,7 @@ function putMathMLExpressionToControl(ctrl, expr)
             sigDigits = 5;
         }
         theValue = useSignificantDigits(theValue, sigDigits);
-      }       
+      }
       ctrl.value = theValue;
     break;
 
@@ -444,7 +445,7 @@ function mathNodeFromNumericText(text)
 
 function getPlotColorAndUpdate(id)
 {
-  var colorWell; 
+  var colorWell;
 	colorWell = document.getElementById(id);
   if (!colorWell) return;
   var color = getValueFromControl(colorWell);
