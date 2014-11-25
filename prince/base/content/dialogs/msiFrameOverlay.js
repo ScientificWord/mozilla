@@ -281,10 +281,13 @@ function initFrameTab(dg, element, newElement,  contentsElement)
 // These are then overwritten by preference settings, if they exist
   var prefBranch = GetPrefs();
   var isFloat = false;
-// pref("swp.defaultGraphicsInlineOffset", "0.0");
-// pref("swp.defaultGraphicsSizeUnits", "in");
+  var prefprefix;
+  if (contentsElement && contentsElement.getAttribute("type").indexOf("mupad") >= 0)
+    prefprefix = "swp.graph.";
+  else
+    prefprefix = "swp.graphics.";
 
-  prefUnit = prefBranch.getCharPref("swp.defaultGraphicsSizeUnits");
+  prefUnit = prefBranch.getCharPref(prefprefix + "units");
   if (newElement) {
     currUnit = prefUnit;
   }
@@ -293,60 +296,60 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   }
   frameUnitHandler.initCurrentUnit(currUnit);
   v = null;
-  v = (!newElement && element.getAttribute("placement") || prefBranch.getCharPref("swp.defaultGraphicsPlacement"));
+  v = (!newElement && element.getAttribute("placement") || prefBranch.getCharPref(prefprefix + "placement"));
   if (v != null && dg.locationList) dg.locationList.value = v;
   if (!newElement) {
     v = element.getAttribute("placeLocation");
     isFloat = (v != null) && v.length > 0;
   }
   else {
-    v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.forceHere");
+    v = prefBranch.getBoolPref(prefprefix + "floatlocation.forcehere");
     if (v != null) {
       checkMenuItem(document.getElementById("placement_forceHere"),v);
       isFloat  = isFloat | v;
     }
-    v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.here");
+    v = prefBranch.getBoolPref(prefprefix + "floatlocation.here");
     if (v != null) {
       checkMenuItem(document.getElementById("placement_here"),v);
       isFloat  = isFloat | v;
     }
-    v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.pageFloats");
+    v = prefBranch.getBoolPref(prefprefix + "floatlocation.pagefloats");
     if (v != null) {
       checkMenuItem(document.getElementById("placement_pageOfFloats"),v);
       isFloat  = isFloat | v;
     }
-    v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.topPage");
+    v = prefBranch.getBoolPref(prefprefix + "floatlocation.toppage");
     if (v != null) {
       checkMenuItem(document.getElementById("placement_topPage"),v);
       isFloat  = isFloat | v;
     }
-    v = prefBranch.getBoolPref("swp.defaultGraphicsFloatLocation.bottomPage");
+    v = prefBranch.getBoolPref(prefprefix + "floatlocation.bottompage");
     if (v != null) {
       checkMenuItem(document.getElementById("placement_bottomPage"),v);
       isFloat  = isFloat | v;
     }
   }
   if (!isFloat) checkMenuItem(document.getElementById("floatlistNone"), true);
-  v = prefBranch.getCharPref("swp.defaultGraphicsFloatPlacement");
+  v = prefBranch.getCharPref(prefprefix + "floatplacement");
 //  if (v != null) dg.wrapOptionRadioGroup.value = frameUnitHandler.getValueOf(v, prefUnit)
   v = null;
-  v = (!newElement && element.getAttribute("borderw") || prefBranch.getCharPref("swp.graphics.border"));
+  v = (!newElement && element.getAttribute("borderw") || prefBranch.getCharPref(prefprefix + "borderwidth"));
   if (v != null && dg.borderInput && dg.borderInput.left && dg.borderInput.right && dg.borderInput.top && dg.borderInput.bottom)
     dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit);
   v = null;
-  v = (!newElement && element.getAttribute("sidemargin") || prefBranch.getCharPref("swp.graphics.HMargin"));
+  v = (!newElement && element.getAttribute("sidemargin") || prefBranch.getCharPref(prefprefix + "hmargin"));
   if (v != null && dg.marginInput && dg.marginInput.left && dg.marginInput.right ) dg.marginInput.left.value = dg.marginInput.right.value = frameUnitHandler.getValueOf(v, prefUnit);
   v = null;
-  v = (!newElement && element.getAttribute("topmargin") ||  prefBranch.getCharPref("swp.graphics.VMargin"));
+  v = (!newElement && element.getAttribute("topmargin") ||  prefBranch.getCharPref(prefprefix + "vmargin"));
   if (v != null && dg.marginInput && dg.marginInput.top && dg.marginInput.bottom) dg.marginInput.top.value = dg.marginInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit);
   v = null;
-  v = (!newElement && element.getAttribute("padding") || prefBranch.getCharPref("swp.graphics.padding"));
+  v = (!newElement && element.getAttribute("padding") || prefBranch.getCharPref(prefprefix + "paddingwidth"));
   if (v != null && dg.paddingInput && dg.paddingInput.left && dg.paddingInput.right) dg.paddingInput.left.value = dg.paddingInput.right.value = dg.paddingInput.top.value = dg.paddingInput.bottom .value= frameUnitHandler.getValueOf(v, prefUnit);
   v = null;
-  v = (!newElement && element.getAttribute("background-color") || prefBranch.getCharPref("swp.graphics.BGColor"));
+  v = (!newElement && element.getAttribute("background-color") || prefBranch.getCharPref(prefprefix + "bgcolor"));
   if (v != null && dg.bgcolorWell) dg.bgcolorWell.setAttribute("style","background-color: " + v + ";");
   v = null;
-  v = (!newElement && element.getAttribute("border-color") || prefBranch.getCharPref("swp.graphics.borderColor"));
+  v = (!newElement && element.getAttribute("border-color") || prefBranch.getCharPref(prefprefix + "bordercolor"));
   if (v != null && dg.colorWell) dg.colorWell.setAttribute("style","background-color: " + v + ";");
 
   var floatLocation, posStr, pos;
@@ -827,19 +830,19 @@ function redrawDiagram()
 
 function locationChanged()
 {
-//  var floatBroadcaster = document.getElementById("floatEnabled");
-  // var inlineOffsetBroadcaster = document.getElementById("inlineOffsetEnabled");
-  // var bEnableWrapfig = true;
-  // var bEnableFloats = false;
-  // var currentLocation = document.getElementById("locationList").value;
-  // if (currentLocation === "unspecified")
-  //   floatBroadcaster.removeAttribute("disabled");
-  // else
-  //   floatBroadcaster.setAttribute("disabled", "true");
-  // if (currentLocation === "inline")
-  //   inlineOffsetBroadcaster.removeAttribute("disabled");
-  // else
-  //   inlineOffsetBroadcaster.setAttribute("disabled", "true");
+  var floatBroadcaster = document.getElementById("floatEnabled");
+  var inlineOffsetBroadcaster = document.getElementById("inlineOffsetEnabled");
+  var bEnableWrapfig = true;
+  var bEnableFloats = false;
+  var currentLocation = document.getElementById("locationList").value;
+  if (currentLocation === "unspecified")
+    floatBroadcaster.removeAttribute("disabled");
+  else
+    floatBroadcaster.setAttribute("disabled", "true");
+  if (currentLocation === "inline")
+    inlineOffsetBroadcaster.removeAttribute("disabled");
+  else
+    inlineOffsetBroadcaster.setAttribute("disabled", "true");
 }
 
 function enableFloatOptions(radiogroup)
