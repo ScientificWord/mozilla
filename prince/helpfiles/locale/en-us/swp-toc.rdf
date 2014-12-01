@@ -932,7 +932,7 @@
         <nc:subheadings>
         <rdf:Seq>
           <rdf:li> <rdf:Description ID="plotting_creating-3d_cylinA" nc:name="Expressions in cylindrical coordinates"            nc:link="dm06-06-plotting.xhtml#expressions in cylindrical coordinates"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="plotting_creating-3d_cylinB" nc:name="parameterized surfaces in cylindrical coordinates" nc:link="dm06-06-plotting.xhtml#parameterized surfaces in cylindrical coordinates"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_cylinB" nc:name="Parameterized surfaces in cylindrical coordinates" nc:link="dm06-06-plotting.xhtml#parameterized surfaces in cylindrical coordinates"/> </rdf:li>
         </rdf:Seq>
         </nc:subheadings>
       </rdf:Description>
