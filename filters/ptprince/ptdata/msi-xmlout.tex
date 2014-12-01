@@ -1123,6 +1123,7 @@
          \else
            \def\do@cr{\@ifnextchar[{\@cra}{\@crb}}%
          \fi
+         \advance\msirow by 1\relax
          \do@cr}
 
 
@@ -1192,6 +1193,7 @@
 
 \newif\ifmathtabular
 \mathtabulartrue
+\newcount\msirow=0
 
 \def\msi@begin@tabularA[#1]#2{%
    \begingroup
@@ -1208,6 +1210,7 @@
       \msiopentag{table}{<table cols="#2" cellpadding="4" border="1" req="tabulary" _moz_resizing="true">}%
       \msiopentag{tbody}{<tbody>}%
       \begingroup
+        \msirow=1
         \aftergroup\msi@closetabular
         \let\\=\@cr
         \def\tabularnewline{\\}%
@@ -1239,11 +1242,11 @@
   \endgroup}
 
 
-%\def\cline#1{\msitag{<cline/>}}
-%\def\hline{\msitag{<hline/>}}
+\def\cline#1{\msitag{<cline arg="#1"/>}}
+\def\hline{\msitag{<hline row="}\the\msirow\msitag{"/>}}
 
-\def\hline{}
-\def\cline#1{}
+%\def\hline{}
+%\def\cline#1{}
 
 
 %%\def\multicolumn#1#2#3{%
