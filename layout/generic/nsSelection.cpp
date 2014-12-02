@@ -1379,8 +1379,8 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
           nsIContent* pContent = tempFrame -> GetParent() -> GetContent();
           nsIAtom * tag = pContent->Tag();
           if (tag == nsGkAtoms::mo_) {
-            nsIFrame* outFrame;
-            PRInt32  outOffset;
+            nsIFrame* outFrame = nsnull;
+            PRInt32  outOffset = 0;
             if (aAmount == eSelectCharacter) {
               if (offsetused == 0) {
                 nsCOMPtr<nsINode> node;
@@ -1420,8 +1420,8 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
                 }
                 if (!pMathCM)
                   return NS_ERROR_FAILURE;
-                nsIFrame* outFrame;
-                PRInt32  outOffset;
+                nsIFrame* outFrame = nsnull;
+                PRInt32  outOffset = 0;
                 PRInt32 count = 1;
                 PRBool  fBailing;
 
@@ -2805,7 +2805,6 @@ nsFrameSelection::GetFrameForNodeOffset(nsIContent *aNode,
 
       if (!childNode)
         return nsnull;
-
       theNode = childNode;
     }
 
