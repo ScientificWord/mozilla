@@ -272,7 +272,7 @@ void Typesetter::AdjustAttributes(std::string str, std::string newstr)
     bool found = false;
     while (!found && (it != s_pList -> rend())){
       TagNode* node = static_cast<TagNode*>(*it);
-      if (node && (node -> m_str == str)){
+      if (node && (node -> m_str) && (node -> m_str == str)){
         found = true;
         delete[] (node-> m_str);
         node-> m_str = new char[newstr.length()+1];
