@@ -9,6 +9,7 @@
 #include "nsFrame.h"
 #include "msiITagListManager.h"
 #include "nsIEditor.h"
+#include "nsIDOMText.h"
 #include "../../editor/libeditor/base/nsEditor.h"
 #include "../../editor/libeditor/base/nsEditorUtils.h"
 
@@ -36,6 +37,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   nsIFrame * pSiblingFrame;
   nsCOMPtr<nsIContent> pContent;
   nsCOMPtr<nsIContent> pDisplayParentContent;
+  nsCOMPtr<nsIDOMDocument> doc;
   pParent = GetSignificantParent(pFrame);
 
   // BBM provisional code
@@ -113,6 +115,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
     }
     else
     { 
+      PRBool fSelectable;
       count = 0;
       // special case. We are leaving math, so we need to see if  we are in a math display.
       // If so, leave that too.
@@ -127,7 +130,20 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
       }
 
       pSiblingFrame = pFrame->GetNextSibling();
+      // Whoa! We must check that the cursor can go into this tag -- it sometimes is a <br/>
       if (pSiblingFrame) {
+        pSiblingFrame->IsSelectable( &fSelectable, nsnull);
+      }
+      if (pSiblingFrame && fSelectable) {
+        *aOutFrame = pParent;
+        pChild = pParent->GetFirstChild(nsnull);
+        *aOutOffset = 1;
+        while (pChild && (pChild != pFrame))
+        {
+          pChild = pChild->GetNextSibling();
+          (*aOutOffset)++;
+        }
+      } else if (pSiblingFrame) {
         *aOutFrame = pSiblingFrame;
         *aOutOffset = 0;
       }
@@ -138,6 +154,16 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
         if (*aOutFrame == nsnull) {
           pFrame->MoveRightAtDocEnd( nsnull );
         }
+        // nsCOMPtr<nsIDOMNode> frameNode = do_QueryInterface(pFrame->GetContent());
+        // nsCOMPtr<nsIDOMNode> dummy;
+        // parentNode->GetOwnerDocument(getter_AddRefs(doc));
+        // nsCOMPtr<nsIDOMText>text;
+        // doc->CreateTextNode(NS_LITERAL_STRING(" "), getter_AddRefs(text));
+        // nsCOMPtr<nsIContent> textContent = do_QueryInterface(text);
+        // nsCOMPtr<nsIDOMNode> textNode = do_QueryInterface(text);
+        // parentNode->InsertAfter( textNode, frameNode, getter_AddRefs(dummy));
+        // *aOutFrame = pFrame->GeNextSibling();
+        // *aOutOffset = 0;
       }
     }
   }
@@ -150,6 +176,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   nsIFrame * pParent = nsnull;
   nsIFrame * pSiblingFrame = nsnull;
   pParent = GetSignificantParent(pFrame);
+  nsCOMPtr<nsIDOMDocument> doc;
   nsCOMPtr<nsIContent> pContent;
   // nsCOMPtr<nsIMathMLCursorMover> pMCM;
 
@@ -226,18 +253,32 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
       }
       else
       {
-        pChild = GetLastTextFrameBeforeFrame(pFrame);
-        if (pChild)
-        {
-          *aOutFrame = pChild;
-          nsIAtom*  frameType = pChild->GetType();
-          if (nsGkAtoms::textFrame == frameType)
-            *aOutOffset = (pChild->GetContent())->TextLength() - count;
-          else
-            *aOutOffset = 0;
-        }
-        else
-          pFrame->MoveLeftAtDocStart( nsnull);
+        // We don't want to go to a text frame. Suppose the math is the
+        // first item in a paragraph. We want the cursor before the math, but
+        // in the paragraph.
+        // pChild = GetLastTextFrameBeforeFrame(pFrame);
+        // if (pChild)
+        // {
+        //   *aOutFrame = pChild;
+        //   nsIAtom*  frameType = pChild->GetType();
+        //   if (nsGkAtoms::textFrame == frameType)
+        //     *aOutOffset = (pChild->GetContent())->TextLength() - count;
+        //   else
+        //     *aOutOffset = 0;
+        // }
+        // else
+        //   pFrame->MoveLeftAtDocStart( nsnull);
+        nsCOMPtr<nsIDOMNode> parentNode = do_QueryInterface(pParent->GetContent());
+        nsCOMPtr<nsIDOMNode> frameNode = do_QueryInterface(pFrame->GetContent());
+        nsCOMPtr<nsIDOMNode> dummy;
+        parentNode->GetOwnerDocument(getter_AddRefs(doc));
+        nsCOMPtr<nsIDOMText>text;
+        doc->CreateTextNode(NS_LITERAL_STRING(" "), getter_AddRefs(text));
+        nsCOMPtr<nsIContent> textContent = do_QueryInterface(text);
+        nsCOMPtr<nsIDOMNode> textNode = do_QueryInterface(text);
+        parentNode->InsertBefore( textNode, frameNode, getter_AddRefs(dummy));
+        *aOutFrame = pFrame->GetPrevSibling();
+        *aOutOffset = 0; 
       }
     }
   }
@@ -367,14 +408,23 @@ nsIFrame * GetSignificantParent(nsIFrame * pFrame)
 // Finds the first ancestor that has different content from pFrame
 {
   nsCOMPtr<nsIContent> pContent = pFrame->GetContent();
+  nsCOMPtr<nsIContent> pContentNew;
   nsIFrame * rval = pFrame->GetParent();
-  while (rval && rval->GetContent() == pContent)
+  if (rval) {
+    pContentNew = rval->GetContent();
+  }
+  while (rval && (pContentNew == pContent)) {
     rval = rval->GetParent();
+    if (rval) {
+      pContentNew = rval->GetContent();
+    }
+  }
   return rval;
 }
 
 nsIFrame * GetTopFrameForContent(nsIFrame * pFrame)
 {
+  if (!pFrame) return nsnull;
   nsCOMPtr<nsIContent> pContent = pFrame->GetContent();
   nsIFrame * rval = pFrame;
   nsIFrame * pParent;
