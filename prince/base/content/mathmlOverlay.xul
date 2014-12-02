@@ -124,8 +124,8 @@
 		      <menuitem label="&MSIdecorationsCmd.label;"     accesskey="&MSIdecorationsCmd.accesskey;"     command="cmd_MSIdecorationsCmd"/>
 		      <menuitem id="insertmenuUnitNames" label="&insertmenuUnitNames.label;"
 		        accesskey="&insertmenuUnitNames.accesskey;" command="cmd_MSIunitsCommand" />
-		      <menuitem id="insertmenuFormula" label="&insertmenuFormula.label;"
-		        accesskey="&insertmenuFormula.accesskey;" observes="cmd_unimp" />
+<!-- 		      <menuitem id="insertmenuFormula" label="&insertmenuFormula.label;"
+		        accesskey="&insertmenuFormula.accesskey;" observes="cmd_unimp" /> -->
 		    </menupopup>
       </menu>
       <menuitem id="insertmenuMarker" label="&insertmenuMarker.label;"

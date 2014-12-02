@@ -70,7 +70,7 @@
       <toolbarbutton id="defineButton" />
       <toolbarbutton id="showdefsButton" />
       <toolbarbutton id="stopButton" />
-      <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;" label="&formulaButton.label;" />
+<!--       <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;" label="&formulaButton.label;" /> -->
 #endif
       <toolbarbutton id="radicalButton"/>
       <toolbarbutton id="fractionButton"/>
@@ -143,11 +143,11 @@ defaultset=
       tbalign="center"
       context="toolbar-context-menu"
 #ifdef PROD_SNB
-defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,importtexButton"
+defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,importtexButton"
 #elifdef PROD_SW
  defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
 #else
-defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
+defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
 #endif
       mode="icons"
       customizable="true" />
