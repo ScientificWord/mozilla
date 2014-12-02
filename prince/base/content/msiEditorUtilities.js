@@ -1170,6 +1170,7 @@ function msiGetEditorURL(editorElement) {
 }
 function msiRequirePackage(editorElement, packagename, options) {
   try {
+    if (!editorElement) editorElement = msiGetParentEditorElementForDialog(window);
     var editor = msiGetEditor(editorElement);
     // BBM: NO, get main editor.
     var doc = editor.document;
