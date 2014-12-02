@@ -194,7 +194,24 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   var currUnit;
   var placement;
   Dg = dg;
-  frameUnitHandler = new UnitHandler();
+  frameUnitHandler = new UnitHandler();  
+  var prefBranch = GetPrefs();
+  var isFloat = false;
+  var prefprefix;
+  if (contentsElement && contentsElement.getAttribute("type") && contentsElement.getAttribute("type").indexOf("mupad") >= 0)
+    prefprefix = "swp.graph.";
+  else
+    prefprefix = "swp.graphics.";
+
+  prefUnit = prefBranch.getCharPref(prefprefix + "units");
+  if (newElement) {
+    currUnit = prefUnit;
+  }
+  else {
+    currUnit = element.getAttribute("units");
+  }
+  frameUnitHandler.initCurrentUnit(currUnit);
+
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
   scale = 0.25;
   scaledWidthDefault = 50;
@@ -279,22 +296,6 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   frameUnitHandler.setEditFieldList(fieldList);
 // The defaults for the document are set by the XUL document, modified by persist attributes.
 // These are then overwritten by preference settings, if they exist
-  var prefBranch = GetPrefs();
-  var isFloat = false;
-  var prefprefix;
-  if (contentsElement && contentsElement.getAttribute("type").indexOf("mupad") >= 0)
-    prefprefix = "swp.graph.";
-  else
-    prefprefix = "swp.graphics.";
-
-  prefUnit = prefBranch.getCharPref(prefprefix + "units");
-  if (newElement) {
-    currUnit = prefUnit;
-  }
-  else {
-    currUnit = element.getAttribute("units");
-  }
-  frameUnitHandler.initCurrentUnit(currUnit);
   v = null;
   v = (!newElement && element.getAttribute("placement") || prefBranch.getCharPref(prefprefix + "placement"));
   if (v != null && dg.locationList) dg.locationList.value = v;
