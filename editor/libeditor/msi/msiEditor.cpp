@@ -3245,7 +3245,8 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         rv = mtagListManager->GetTagOfNode(parentNode, &atomNS, parentTag);
         rv = mtagListManager->GetTagOfNode(node2, &atomNS, tag);
         if (tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) {
-          if (!(parentTag.EqualsLiteral("mrow") || parentTag.EqualsLiteral("math"))) {
+          if (!(parentTag.EqualsLiteral("mrow") || parentTag.EqualsLiteral("math") ||
+            parentTag.EqualsLiteral("msqrt") )) {
             validNode = PR_FALSE;
           }
           nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(node2);
