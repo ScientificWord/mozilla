@@ -98,46 +98,46 @@
     <key name="=">insertMathSymbol("&ne;");</key>
     <key name="+">insertMathSymbol("&plusmn;");</key>
     <key name="w">insertMathSymbol("&approx;");</key>
-    <key name="W">insertMathSymbol("&aleph;");</key>
+    <key name="w"  modifiers="shift">insertMathSymbol("&aleph;");</key>
     <key name="e">insertMathSymbol("&Element;");</key>
-    <key name="E">insertMathSymbol("&notin;");</key>
+    <key name="e"  modifiers="shift">insertMathSymbol("&notin;");</key>
     <key name="r">msiGoDoCommand("cmd_MSIrootCmd");</key>
-    <key name="R">msiGoDoCommand("cmd_MSIradicalCmd");</key>
+    <key name="r"  modifiers="shift">msiGoDoCommand("cmd_MSIradicalCmd");</key>
     <key name="t">insertMathSymbol("&otimes;");</key>
-    <key name="T">insertMathSymbol("&otimes;");</key>
+    <key name="t"  modifiers="shift">insertMathSymbol("&otimes;");</key>
     <key name="i">insertMathSymbol("&int;");</key>
-    <key name="I">insertMathSymbol("&infin;");</key>
+    <key name="i"  modifiers="shift">insertMathSymbol("&infin;");</key>
     <key name="o">insertMathSymbol("&emptyset;");</key>
     <key name="p">insertOperator("&prod;", "auto", "auto");</key>
-    <key name="P">insertMathSymbol("&weierp;");</key>
+    <key name="p"  modifiers="shift">insertMathSymbol("&weierp;");</key>
     <key name="[">msiGoDoCommand("cmd_MSIbracketCmd");</key>
     <key name="{">msiGoDoCommand("cmd_MSIbraceCmd");</key> 
     <key name="]">msiGoDoCommand("cmd_MSIbracketCmd");</key>
     <key name="}">msiGoDoCommand("cmd_MSIbraceCmd");</key>
     <key name="a">insertMathSymbol("&angle;");</key>
-    <key name="A">insertMathSymbol("&ForAll;");</key>
+    <key name="a  modifiers="shift"">insertMathSymbol("&ForAll;");</key>
     <key name="s">insertOperator("&sum;", "auto", "auto");</key>
-    <key name="S">insertMathSymbol("&oplus;");</key>
+    <key name="s"  modifiers="shift">insertMathSymbol("&oplus;");</key>
     <key name="d">insertMathSymbol("&PartialD;");</key>
-    <key name="D">insertMathSymbol("&diam;");</key>
+    <key name="d"  modifiers="shift">insertMathSymbol("&diam;");</key>
     <key name="f">msiGoDoCommand("cmd_MSIfractionCmd");</key>
-    <key name="F">msiGoDoCommand("cmd_MSIfractionCmd");</key> 
+    <key name="f"  modifiers="shift">msiGoDoCommand("cmd_MSIfractionCmd");</key> 
     <key name="h">msiGoDoCommand("cmd_MSIsupCmd");</key>
-    <key name="H">msiGoDoCommand("cmd_MSIsupCmd");</key>
+    <key name="h"  modifiers="shift">msiGoDoCommand("cmd_MSIsupCmd");</key>
     <key name="l">msiGoDoCommand("cmd_MSIsubCmd");</key>
-    <key name="L">msiGoDoCommand("cmd_MSIsubCmd");</key>
+    <key name="l"  modifiers="shift">msiGoDoCommand("cmd_MSIsubCmd");</key>
     <key name="z">insertMathSymbol("&Exists;");</key>
     <key name="x">insertMathSymbol("&times;");</key>
-    <key name="X">insertMathSymbol("&divide;");</key>
-    <key name="m">msiGoDoCommand("cmd_MSIMatrixCmdLast");</key> 
-    <key name="M">msiGoDoCommand("cmd_MSIMatrixCmd22");</key>
+    <key name="x"  modifiers="shift">insertMathSymbol("&divide;");</key>
+    <key name="m">msiGoDoCommand("cmd_MSIMatrixLastCmd");</key>
+    <key name="m"  modifiers="shift">msiGoDoCommand("cmd_MSIMatrix22Cmd");</key>
     <key name="c">insertMathSymbol("&subset;");</key>
-    <key name="C">insertMathSymbol("&#x22c5;");</key>
+    <key name="c"  modifiers="shift">insertMathSymbol("&#x22c5;");</key>
     <key name="v">insertMathSymbol("&vee;");</key>
-    <key name="V">insertMathSymbol("&and;");</key>
+    <key name="v"  modifiers="shift">insertMathSymbol("&and;");</key>
     <key name="b">insertMathSymbol("&bull;");</key>
     <key name="n">insertMathSymbol("&nabla;");</key>
-    <key name="N">insertMathSymbol("&not;");</key>
+    <key name="n"  modifiers="shift">insertMathSymbol("&not;");</key>
     <key name="&lt;">insertMathSymbol("&le;");</key>
     <key name="&gt;">insertMathSymbol("&ge;");</key>
   </keytable>  

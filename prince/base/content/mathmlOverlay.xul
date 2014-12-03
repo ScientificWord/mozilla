@@ -57,6 +57,8 @@
     <command id="cmd_MSIparenCmd"       oncommand="msiGoDoCommand('cmd_MSIparenCmd')"/>
     <command id="cmd_MSIbracketCmd"     oncommand="msiGoDoCommand('cmd_MSIbracketCmd')"/>
     <command id="cmd_MSIbraceCmd"       oncommand="msiGoDoCommand('cmd_MSIbraceCmd')"/>
+    <command id="cmd_MSIMatrixLastCmd"       oncommand="msiGoDoCommand('cmd_MSIMatrixLastCmd')"/>
+    <command id="cmd_MSIMatrix22Cmd"       oncommand="msiGoDoCommand('cmd_MSIMatrix22Cmd')"/>
     <command id="cmd_MSIabsvalueCmd"    oncommand="msiGoDoCommand('cmd_MSIabsvalueCmd')"/>
     <command id="cmd_MSInormCmd"        oncommand="msiGoDoCommand('cmd_MSInormCmd')"/>
     <command id="cmd_MSIsymbolCmd"      oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'));" />
