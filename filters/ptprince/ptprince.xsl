@@ -13,6 +13,9 @@
     </xsl:copy>
 </xsl:template>
 
+<!-- throw away hlines. these are processed below -->
+<xsl:template match="html:hline | mml:hline" />
+
 <!-- throws away empty mrows that are not required -->
 <xsl:template match="mml:mrow">
   <xsl:choose>
@@ -53,7 +56,7 @@
                 <html:cell-attribute>
                   <xsl:attribute name="type">line</xsl:attribute>
 		              <xsl:attribute name="dir">vertical</xsl:attribute>
-                  <xsl:attribute name="subtype">double</xsl:attribute>
+                  <xsl:attribute name="kind">double</xsl:attribute>
 		              <xsl:attribute name="side">right</xsl:attribute>
                   <xsl:attribute name="col">
                      <xsl:value-of select="$col - 1"/>
@@ -131,7 +134,7 @@
      <xsl:when test="substring($str,1,1)='l'" >
        <html:cell-attribute>
          <xsl:attribute name="type">left-justify</xsl:attribute>
-	 <xsl:attribute name="col">
+	       <xsl:attribute name="col">
            <xsl:value-of select="$col"/>
          </xsl:attribute>
        </html:cell-attribute>
@@ -146,11 +149,12 @@
      </xsl:when>
      
      <xsl:when test="substring($str,1,1)='r'" >
-       <html:right-justified>
-	 <xsl:attribute name="col">
+       <html:cell-attribute>
+         <xsl:attribute name="type">right-justify</xsl:attribute>
+	       <xsl:attribute name="col">
            <xsl:value-of select="$col"/>
          </xsl:attribute>
-       </html:right-justified>
+       </html:cell-attribute>
        <xsl:call-template name="get-spec">
          <xsl:with-param name="str">
            <xsl:value-of select="substring($str,2)"/>
@@ -162,11 +166,12 @@
      </xsl:when>
      
      <xsl:when test="substring($str,1,1)='c'" >
-       <html:center-justified>
-	 <xsl:attribute name="col">
+       <html:cell-attribute>
+         <xsl:attribute name="type">center-justify</xsl:attribute>
+	       <xsl:attribute name="col">
            <xsl:value-of select="$col"/>
          </xsl:attribute>
-       </html:center-justified>
+       </html:cell-attribute>
        <xsl:call-template name="get-spec">
          <xsl:with-param name="str">
            <xsl:value-of select="substring($str,2)"/>
@@ -174,8 +179,7 @@
          <xsl:with-param name="col">
            <xsl:value-of select="$col + 1" />
          </xsl:with-param>
-       </xsl:call-template>
-     </xsl:when>
+       </xsl:call-template>     </xsl:when>
 
      <xsl:otherwise>Huh??</xsl:otherwise>
  
@@ -185,34 +189,34 @@
 <xsl:template name="get-hlines">
    <xsl:param name="raw-hlines"/>
    <xsl:for-each select="$raw-hlines">
+      <xsl:variable name="parent" select=".."/>
+      
       <html:cell-attribute>
          <xsl:attribute name="type">line</xsl:attribute>
          <xsl:attribute name="dir">horizontal</xsl:attribute>
-         <xsl:attribute name="row">
-	          <xsl:value-of select="@row"/>
-         </xsl:attribute>
-         <xsl:attribute name="side">top</xsl:attribute>
+         <xsl:choose>
+           <xsl:when test="$parent=''">
+              <xsl:attribute name="row">
+	               <xsl:value-of select="@row - 1"/>
+              </xsl:attribute>
+              <xsl:attribute name="side">bottom</xsl:attribute>
+           </xsl:when>
+           <xsl:otherwise>  
+              <xsl:attribute name="row">
+	              <xsl:value-of select="@row"/>
+              </xsl:attribute>
+              <xsl:attribute name="side">top</xsl:attribute>
+           </xsl:otherwise>
+        </xsl:choose>                  
+         
       </html:cell-attribute>
    </xsl:for-each>
 </xsl:template>
 
 
-<xsl:template name="get-attribs">
-  <xsl:param name="row" />
-  <xsl:param name="col" />
-  <xsl:param name="the-spec" />
-  <xsl:param name="the-attribs"/>
-  <xsl:text>[</xsl:text>
-  <xsl:value-of select='$row'/>
-  <xsl:text>:</xsl:text>
-  <xsl:value-of select='$col' />
-  <xsl:text>:</xsl:text>
-  <xsl:value-of select="$the-spec"/>
-  <xsl:text>]</xsl:text>
-  
-</xsl:template>
 
 <xsl:template match="html:table">
+   
    <xsl:variable name="colspec">
      <xsl:value-of select="./@cols"/>
    </xsl:variable>
@@ -220,7 +224,7 @@
    <xsl:variable name="theHLines" 
                  select=".//*[local-name()='hline' or local-name()='cline']"/>
    
-   <xsl:variable name="the-spec.tr">
+    <xsl:variable name="the-spec.tr">
      <xsl:call-template name="get-spec">
       <xsl:with-param name="str">
         <xsl:value-of select="$colspec"/>
@@ -236,11 +240,11 @@
    <xsl:variable name="theTable" select="."/>
    
    <!-- html:note>
-       [Table: <xsl:copy-of select="$theTable"></xsl:copy-of>]
-       [thespec: <html:pre><xsl:copy-of select="$the-spec"/></html:pre>]
+       [thespec: <xsl:copy-of select="$the-spec"/>]
    </html:note -->
 
    <html:table>
+     <xsl:apply-templates select="@*"/>
      <xsl:apply-templates>
        <xsl:with-param name="the-spec">
           <xsl:copy-of select="$the-spec"/>
@@ -252,15 +256,12 @@
 
 <xsl:template match="html:tbody">
   <xsl:param name="the-spec"/>
-
-  <!-- html:tbody -->
-    <xsl:copy>
-      <xsl:apply-templates select="@*|node()">
-         <xsl:with-param name="the-spec" select="$the-spec"/>
-      </xsl:apply-templates>
-    </xsl:copy>
-  <!-- /html:tbody -->
-
+  <xsl:variable name = "nrows" select="count(./html:tr)"/>
+  <xsl:copy>
+    <xsl:apply-templates select="@*|node()">
+       <xsl:with-param name="the-spec" select="$the-spec"/>
+    </xsl:apply-templates>
+  </xsl:copy>
 </xsl:template>
 
 <xsl:template match="html:tr|mml:tr">
@@ -272,7 +273,7 @@
     <xsl:when test="(position()=last()) and ($content='')">
     </xsl:when>
     <xsl:otherwise>
-       <xsl:copy>
+       <xsl:copy>                        
           <xsl:apply-templates select="@*|node()">
             <xsl:with-param name="the-spec" select="$the-spec"/>
           </xsl:apply-templates>
@@ -296,7 +297,6 @@
      </xsl:call-template>
    </xsl:variable>
    
-
    <xsl:variable name="my-spec" select="exsl:node-set($the-spec)"/>
 
    <xsl:variable name="my-attribs.tr">
@@ -305,22 +305,62 @@
 
    <xsl:variable name="my-attribs" select="exsl:node-set($my-attribs.tr)"/>
 
-
-   
    <html:td>
+     <xsl:apply-templates select="@*"/>
      <xsl:if test="$my-attribs//*[@side ='left']">
-        <xsl:attribute name="line-left">solid</xsl:attribute>
+       <xsl:choose>
+          <xsl:when test="$my-attribs//*[@side ='left' and @kind='double']">
+            <xsl:attribute name="line-left">double</xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+             <xsl:attribute name="line-left">solid</xsl:attribute>
+          </xsl:otherwise>
+      </xsl:choose>
      </xsl:if>
      <xsl:if test="$my-attribs//*[@side ='right']">
-        <xsl:attribute name="line-right">solid</xsl:attribute>
+       <xsl:choose>
+          <xsl:when test="$my-attribs//*[@side ='right' and @kind='double']">
+             <xsl:attribute name="line-right">double</xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+             <xsl:attribute name="line-right">solid</xsl:attribute>
+          </xsl:otherwise>
+       </xsl:choose>     
      </xsl:if>
      <xsl:if test="$my-attribs//*[@side ='top']">
-        <xsl:attribute name="line-top">solid</xsl:attribute>
+       <xsl:choose>
+          <xsl:when test="$my-attribs//*[@side ='top' and @kind='double']">
+            <xsl:attribute name="line-top">double</xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+             <xsl:attribute name="line-top">solid</xsl:attribute>
+          </xsl:otherwise>
+       </xsl:choose>     
+     </xsl:if>
+     <xsl:if test="$my-attribs//*[@side ='bottom']">
+       <xsl:choose>
+          <xsl:when test="$my-attribs//*[@side ='bottom' and @kind='double']">
+             <xsl:attribute name="line-bottom">double</xsl:attribute>
+          </xsl:when>
+          <xsl:otherwise>
+             <xsl:attribute name="line-bottom">solid</xsl:attribute>
+          </xsl:otherwise>
+       </xsl:choose>
+     </xsl:if>
+     <xsl:if test="$my-attribs//*[@type ='left-justify']">
+        <xsl:attribute name="align">left</xsl:attribute>
+     </xsl:if>
+     <xsl:if test="$my-attribs//*[@type ='right-justify']">
+        <xsl:attribute name="align">right</xsl:attribute>
+     </xsl:if>
+     <xsl:if test="$my-attribs//*[@type ='center-justify']">
+        <xsl:attribute name="align">center</xsl:attribute>
      </xsl:if>
 
-     <xsl:apply-templates />
-
+     <xsl:apply-templates select="@*|node()"/>
+     
    </html:td>
+
 </xsl:template>
 
 <xsl:template name="colspan">
@@ -354,7 +394,7 @@
         <xsl:call-template name="sum-colspans">
            <xsl:with-param name="nodes" select="$nodes[position() != 1]" />
            <xsl:with-param name="result" select="$result + $cs" />
-         </xsl:call-template>
+        </xsl:call-template>
       </xsl:otherwise>
    </xsl:choose>
 </xsl:template>
