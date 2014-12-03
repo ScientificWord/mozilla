@@ -1,4 +1,4 @@
-}// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
 #include "nsCOMPtr.h"
 #include "nsISupportsPrimitives.h"
 #include "msiEditor.h"
