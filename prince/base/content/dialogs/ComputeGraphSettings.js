@@ -222,32 +222,41 @@ function OK() {
   var editorElement, changed, theWindow;
   editorElement = msiGetParentEditorElementForDialog(window);
   GetValuesFromDialog();
+  graph.recomputeVCamImage(editorElement);
   graph.reviseGraphDOMElement(graphnode, false, editorElement);
   graph.setGraphAttribute("returnvalue", "true");
   //  var editor = msiGetEditor(editorElement);
-  changed = true;
-  if (changed) {
-    graph.recomputeVCamImage(editorElement);
-  }
-  theWindow = window.opener;
-  if (!theWindow || !(theWindow.hasOwnProperty("nonmodalRecreateGraph"))) {
-    theWindow = msiGetTopLevelWindow();
-  }
-  try {
-    theWindow.nonmodalRecreateGraph(graph, window.arguments[2], editorElement);
-  }
-  catch (e) {}
-  var parentWindow = window.opener;
-  var obj = graphnode.getElementsByTagName("object");
-  if (obj && obj.length)
-  {
-    obj = obj[0];
-    if (obj) {
-      obj.setAttribute('data', graphnode.getElementsByTagName('graphSpec')[0].getAttribute('ImageFile'));
-      parentWindow.doVCamInitialize(obj);
-    }
-  }
-
+//   changed = true;
+//   if (changed) {
+//     graph.recomputeVCamImage(editorElement);
+//   }
+//   theWindow = window.opener;
+//   if (!theWindow || !(theWindow.hasOwnProperty("nonmodalRecreateGraph"))) {
+//     theWindow = msiGetTopLevelWindow();
+//   }
+//   try {
+//     theWindow.nonmodalRecreateGraph(graph, window.arguments[2], editorElement);
+//   }
+//   catch (e) {}
+//   var parentWindow = window.opener;
+//   var data;
+//   var obj = graphnode.getElementsByTagName("object");
+//   if (obj && obj.length)
+//   {
+//     obj = obj[0];
+//   }
+// //     if (obj) {
+// //       if (obj.wrappedJSObject) obj = obj.wrappedJSObject;
+// //       try {
+// //         data = graphnode.getElementsByTagName('graphSpec')[0].getAttribute('ImageFile');
+// //         obj.setAttribute('data', data);
+// // //        parentWindow.doVCamInitialize(obj);
+// //       }
+// //       catch(e)
+// //       {}
+// //     }
+// //  }
+// //  graph.setGraphAttribute("returnvalue", "true");
   return true;
 }
 
