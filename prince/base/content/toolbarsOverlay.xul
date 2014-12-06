@@ -178,10 +178,6 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
       context="symbol-palettes-context-menu" >
       <tabbox textsize="small" id="Symbol-tabbox" />
     </toolbar>
-
-#ifndef PROD_SW
-    <toolbar id="VCamToolbar"/>
-#endif
   </toolbox>
 
 <!-- Button section -->
