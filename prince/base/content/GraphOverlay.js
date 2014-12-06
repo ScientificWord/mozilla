@@ -1909,96 +1909,98 @@ Frame.prototype = {
         att = attributes[j];
         if (!att) continue;
         switch (att) {
-        case "HMargin":
-          editor.setAttribute(DOMFrame, "sidemargin", this.getFrameAttribute(att));
-          break;
-        case "VMargin":
-          editor.setAttribute(DOMFrame, "topmargin", this.getFrameAttribute(att));
-          break;
-        case "Height":
-          height = Number(graph.getValue(att));
-          editor.setAttribute(DOMFrame, "ltx_height", height);
-          heightinpx = unitHandler.getValueAs(height, "px");
-          editor.setAttribute(DOMFrame, "height", height);
-          if (heightinpx) setStyleAttributeOnNode(DOMObj, "height", heightinpx + "px", null);
-          // dimensions of outer msiframe need to be adjusted for border and padding
-          x = this.getFrameAttribute("border");
-          if (x)
-          {
-//            height += 2*(x-0);
-          }
-          x = this.getFrameAttribute("padding");
-          if (x)
-          {
-//            height += 2*(x-0);
-          }
-          editor.setAttribute(DOMFrame, "height", height);
-          heightinpx = unitHandler.getValueAs(height, "px");
-          setStyleAttributeOnNode( DOMFrame, "height", height + units, null);
-          break;
-        case "Width":
-          width = Number(graph.getValue(att));
-          editor.setAttribute(DOMFrame, "ltx_width", width);
-          widthinpx = unitHandler.getValueAs(width, "px");
-          setStyleAttributeOnNode(DOMObj, "width", width + units, null);
+          case "ImageFile":
+            editor.setAttribute(DOMObj, "data", graph.getValue("ImageFile"));
+          case "HMargin":
+            editor.setAttribute(DOMFrame, "sidemargin", this.getFrameAttribute(att));
+            break;
+          case "VMargin":
+            editor.setAttribute(DOMFrame, "topmargin", this.getFrameAttribute(att));
+            break;
+          case "Height":
+            height = Number(graph.getValue(att));
+            editor.setAttribute(DOMFrame, "ltx_height", height);
+            heightinpx = unitHandler.getValueAs(height, "px");
+            editor.setAttribute(DOMFrame, "height", height);
+            if (heightinpx) setStyleAttributeOnNode(DOMObj, "height", heightinpx + "px", null);
+            // dimensions of outer msiframe need to be adjusted for border and padding
+            x = this.getFrameAttribute("border");
+            if (x)
+            {
+  //            height += 2*(x-0);
+            }
+            x = this.getFrameAttribute("padding");
+            if (x)
+            {
+  //            height += 2*(x-0);
+            }
+            editor.setAttribute(DOMFrame, "height", height);
+            heightinpx = unitHandler.getValueAs(height, "px");
+            setStyleAttributeOnNode( DOMFrame, "height", height + units, null);
+            break;
+          case "Width":
+            width = Number(graph.getValue(att));
+            editor.setAttribute(DOMFrame, "ltx_width", width);
+            widthinpx = unitHandler.getValueAs(width, "px");
+            setStyleAttributeOnNode(DOMObj, "width", width + units, null);
 
-          x = this.getFrameAttribute("border");
-          if (x) {
-//   BBM: experimenting        width += 2*(x-0);
-          }
-          x = this.getFrameAttribute("padding");
-          if (x) {
-//            width += 2*(x-0);
-          }
-          editor.setAttribute(DOMFrame, "width", width);
-          widthinpx = unitHandler.getValueAs(width, "px");
-          setStyleAttributeOnNode( DOMFrame, "width", width + units, null);
-          break;
-        case "border":
-        case "borderw":
-          editor.setAttribute(DOMFrame, "borderw", this.getFrameAttribute("border"));
-          break;
-        case "padding":
-          editor.setAttribute(DOMFrame, "padding", this.getFrameAttribute(att));
-          setStyleAttributeOnNode(DOMFrame, "padding", this.getFrameAttribute(att), null);
-          break;
-        case "Units":
-          editor.setAttribute(DOMFrame, "units", units);
-          break;
-        case "BGColor":
-          editor.setAttribute(DOMFrame, "background-color", hexcolor(this.getFrameAttribute("BGColor")));
-          setStyleAttributeOnNode(DOMFrame, "background-color", hexcolor(this.getFrameAttribute("BGColor")));
-          break;
-        case "borderColor":
-          editor.setAttribute(DOMFrame, "border-color", hexcolor(this.getFrameAttribute(att)));
-          setStyleAttributeOnNode(DOMFrame, "border-color", hexcolor(this.getFrameAttribute(att)));
-          break;
-        case "pos":
-          editor.setAttribute(DOMFrame, "pos", this.getFrameAttribute(att));
-          break;
-        case "placement":
-          pos = this.getFrameAttribute(att);
-          editor.setAttribute(DOMFrame, "pos", pos);
-          needsWrapfig = (pos === "L" || pos === "I" || pos === "R" || pos === "O");
-          break;
-        case "textalignment":
-          editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
-          setStyleAttributeOnNode( DOMFrame, "text-align", this.getFrameAttribute(att) || "", null);
-          break;
-        case "placeLocation":
-          placeLocation = this.getFrameAttribute(att);
-          editor.setAttribute(DOMFrame, "placeLocation", placeLocation);
-          break;
-        case "CaptionPlace":
-          captionlocation = this.getFrameAttribute("captionloc");
-          editor.setAttribute(DOMFrame, "captionloc", captionlocation);
-          break;
-        case "floatPlacement":
-          editor.setAttribute(DOMFrame, "floatlocation", this.getFrameAttribute("floatPlacement"));
-          break;
-        default:
-//          editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
-          break;
+            x = this.getFrameAttribute("border");
+            if (x) {
+  //   BBM: experimenting        width += 2*(x-0);
+            }
+            x = this.getFrameAttribute("padding");
+            if (x) {
+  //            width += 2*(x-0);
+            }
+            editor.setAttribute(DOMFrame, "width", width);
+            widthinpx = unitHandler.getValueAs(width, "px");
+            setStyleAttributeOnNode( DOMFrame, "width", width + units, null);
+            break;
+          case "border":
+          case "borderw":
+            editor.setAttribute(DOMFrame, "borderw", this.getFrameAttribute("border"));
+            break;
+          case "padding":
+            editor.setAttribute(DOMFrame, "padding", this.getFrameAttribute(att));
+            setStyleAttributeOnNode(DOMFrame, "padding", this.getFrameAttribute(att), null);
+            break;
+          case "Units":
+            editor.setAttribute(DOMFrame, "units", units);
+            break;
+          case "BGColor":
+            editor.setAttribute(DOMFrame, "background-color", hexcolor(this.getFrameAttribute("BGColor")));
+            setStyleAttributeOnNode(DOMFrame, "background-color", hexcolor(this.getFrameAttribute("BGColor")));
+            break;
+          case "borderColor":
+            editor.setAttribute(DOMFrame, "border-color", hexcolor(this.getFrameAttribute(att)));
+            setStyleAttributeOnNode(DOMFrame, "border-color", hexcolor(this.getFrameAttribute(att)));
+            break;
+          case "pos":
+            editor.setAttribute(DOMFrame, "pos", this.getFrameAttribute(att));
+            break;
+          case "placement":
+            pos = this.getFrameAttribute(att);
+            editor.setAttribute(DOMFrame, "pos", pos);
+            needsWrapfig = (pos === "L" || pos === "I" || pos === "R" || pos === "O");
+            break;
+          case "textalignment":
+            editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
+            setStyleAttributeOnNode( DOMFrame, "text-align", this.getFrameAttribute(att) || "", null);
+            break;
+          case "placeLocation":
+            placeLocation = this.getFrameAttribute(att);
+            editor.setAttribute(DOMFrame, "placeLocation", placeLocation);
+            break;
+          case "CaptionPlace":
+            captionlocation = this.getFrameAttribute("captionloc");
+            editor.setAttribute(DOMFrame, "captionloc", captionlocation);
+            break;
+          case "floatPlacement":
+            editor.setAttribute(DOMFrame, "floatlocation", this.getFrameAttribute("floatPlacement"));
+            break;
+          default:
+  //          editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
+            break;
         }
       }
       editor.setAttribute(DOMFrame, "msi_resize", "true");
