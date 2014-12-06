@@ -32,6 +32,8 @@ function aColorObj(editorElement)
 
 function msiAddToolbarPrefListener(editorElement)
 {
+  var l = isLicensed();
+  var s = licenseTimeRemaining();
   try {
     var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
     pbi.addObserver(kEditorToolbarPrefs, editorElement.mEditorToolbarPrefListener, false);
@@ -476,6 +478,7 @@ function msiEditorKeyListener(event)
   }
 }
 
+
 var msiResizeListener =
 {
   onStartResizing : function(aElement) {},
@@ -488,9 +491,9 @@ var msiResizeListener =
       case "embed":
         this.resizeGraphic(anElement, oldWidth, oldHeight, newWidth, newHeight);
       break;
-      case "plotwrapper":
-        this.resizePlot(anElement, oldWidth, oldHeight, newWidth, newHeight);
-        break;
+      // case "plotwrapper":
+      //   this.resizePlot(anElement, oldWidth, oldHeight, newWidth, newHeight);
+      //   break;
       case "msiframe":
         this.resizeFrame(anElement, oldWidth, oldHeight, newWidth, newHeight);
         break;
@@ -603,14 +606,29 @@ var msiResizeListener =
       var unithandler = new UnitHandler();
       var units;
 // skip preserving aspect ratio for now.
-      var editorElement = msiGetActiveEditorElement();
+// adjust width or height using aspect ratio when the time comes
+//      var editorElement = msiGetActiveEditorElement();
       units = anElement.getAttribute("units");
       unithandler.initCurrentUnit(units);
       var newWidthInUnits = unithandler.getValueOf(newWidth, "px");
       var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
       anElement.setAttribute("width", String(newWidthInUnits));
-      if (anElement.hasAttribute("height")) {
-        anElement.setAttribute("height", String(newHeightInUnits));
+      anElement.setAttribute("height", String(newHeightInUnits));
+      setStyleAttributeOnNode(anElement, "width", String(newWidthInUnits) + units, this.mEditor);
+      setStyleAttributeOnNode(anElement, "height", String(newHeightInUnits) + units, this.mEditor);
+      var parent = anElement.parentNode;
+      if (parent.nodeName === 'graph') {
+        // the frame is part of a graph
+        var graph = new Graph();
+        var obj = parent.getElementsByTagName("object")[0];
+        var editorElement = msiGetActiveEditorElement();
+        graph.extractGraphAttributes(parent);
+        graph.setGraphAttribute("Width", String(newWidthInUnits));
+        graph.setGraphAttribute("Height", String(newHeightInUnits));
+        graph.reviseGraphDOMElement(parent, false, editorElement);
+        if (obj) {
+          doVCamInitialize(obj);
+        }
       }
     }
     catch(e) {
@@ -1041,6 +1059,7 @@ function msiEditorDocumentObserver(editorElement)
           addFocusEventListenerForEditor(this.mEditorElement);
           addKeyDownEventListenerForEditor(this.mEditorElement);
           addObjectResizeListenerForEditor(this.mEditorElement);
+
 //          addDOMEventListenerForEditor(editorElement);
 
           this.mEditorElement.pdfModCount = -1;
@@ -2982,10 +3001,14 @@ function EditorClick(event)
       var obj, theURI, targWin;
       var objName = msiGetBaseNodeName(event.target);
 	    var editor = msiGetEditor(editorElement);
-	    var graphnode = getEventParentByTag(event, "plotwrapper");
+	    var graphnode = getEventParentByTag(event, "graph");
       var linkNode;
       if (!graphnode)
       {
+        if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false")
+        {
+          document.getElementById("vcamactive").setAttribute("hidden", true);
+        }
 	      linkNode = getEventParentByTag(event, "xref");
         if (!linkNode)
 	        linkNode = getEventParentByTag(event, "a");
@@ -3013,13 +3036,6 @@ function EditorClick(event)
         if (event.target.hasAttribute("target"))
           targWin = event.target.getAttribute("target");
         msiClickLink(event, theURI, targWin, editorElement);
-      }
-      else
-      {
-		    if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false")
-	      {
-	        document.getElementById("vcamactive").setAttribute("hidden",true);
-	      }
       }
     }
   } catch(ex) {
