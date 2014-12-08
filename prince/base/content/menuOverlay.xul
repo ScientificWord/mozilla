@@ -31,7 +31,7 @@
                   key="msiOpenFileKey" oncommand="openDocument();" 
                   label="&openFileCmd.label;"/>
       <menuitem oncommand="openTeX();" label="&importTeXCmd.label;" accesskey="&importTeX.accesskey;"/>
-      <menuitem observes="cmd_exportTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
+      <menuitem observes="cmd_exportToTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
       <menuitem observes="cmd_exportToWeb" label="&exporttowebCmd.label;" accesskey="&exporttoweb.accesskey;"/>
       <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
             onpopupshowing="BuildRecentFilesMenu();">
@@ -525,7 +525,7 @@
 -->
     <command id="cmd_openTeX" oncommand="openTeX();" />
     <command id="cmd_exportTeX" oncommand="exportTeX();" />
-    <command id="cmd_exportToWeb" oncommand="exportToWeb();" />
+    <command id="cmd_exportToWeb" oncommand="msiGoDoCommand('cmd_exportToWeb');" />
     
     <command id="cmd_printDirect"    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();"/>
     <command id="cmd_printPdf"    oncommand="msiGoDoCommand('cmd_printPdf');;event.stopPropagation();"/>
@@ -657,6 +657,7 @@
     <command id="cmd_saveAsDir"      oncommand="msiGoDoCommand('cmd_saveAsDir')"/>
     <command id="cmd_saveCopyAsDir"  oncommand="msiGoDoCommand('cmd_saveCopyAsDir')"/>
     <command id="cmd_exportToText"   label="&exportToTextCmd.label;"   oncommand="msiGoDoCommand('cmd_exportToText')"/>
+    <command id="cmd_exportToTeX"   label="&exportToTexCmd.label;"   oncommand="msiGoDoCommand('cmd_exportToTeX')"/>
     <command id="cmd_saveAndChangeEncoding"  label="&saveAndChangeEncodingCmd.label;"  oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding')"/>
     <command id="cmd_publish"        label="&publishCmd.label;"        oncommand="msiGoDoCommand('cmd_publish')"/>
     <command id="cmd_publishAs"      label="&publishAsCmd.label;"      oncommand="msiGoDoCommand('cmd_publishAs')"/>
