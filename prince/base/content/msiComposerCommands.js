@@ -258,6 +258,9 @@ function msiSetupComposerWindowCommands(editorElement)
   commandTable.registerCommand("cmd_saveCopyAs",     msiSaveCopyAsCommand);
   commandTable.registerCommand("cmd_saveCopyAsDir",  msiSaveCopyAsCommand);
   commandTable.registerCommand("cmd_exportToText",   msiExportToTextCommand);
+  commandTable.registerCommand("cmd_exportToTeX",    msiExportToTexCommand);
+  commandTable.registerCommand("cmd_exportToWeb",    msiExportToWebCommand);
+
   commandTable.registerCommand("cmd_saveAndChangeEncoding",  msiSaveAndChangeEncodingCommand);
   commandTable.registerCommand("cmd_publish",        msiPublishCommand);
   commandTable.registerCommand("cmd_publishAs",      msiPublishAsCommand);
@@ -1205,7 +1208,7 @@ var msiSaveCommand =
     try
     {
       var docUrl = msiGetEditorURL(editorElement);
-      return msiIsDocumentEditable(editorElement) &&
+      return msiIsDocumentEditable(editorElement) && isLicensed() &&
         (msiIsDocumentModified(editorElement) || msiIsHTMLSourceChanged(editorElement) ||
          IsUrlAboutBlank(docUrl) || IsUrlUntitled(docUrl) || GetScheme(docUrl) != "file");
     }
@@ -1219,25 +1222,31 @@ var msiSaveCommand =
 
   doCommand: function(aCommand)
   {
-    try {
-      var result = false;
-      var editorElement = msiGetActiveEditorElement();
-      if (!msiIsTopLevelEditor(editorElement))
-        return result;
+    if (isLIcensed()) {
 
-      var editor = msiGetEditor(editorElement);
-      if (editor)
-      {
-        msiFinishHTMLSource(editorElement);
-        var url = msiGetEditorURL(editorElement);
-        result = msiSaveDocument(true, IsUrlAboutBlank(url)||IsUrlUntitled(url), false, editor.contentsMIMEType, editor, editorElement);
-        editorElement.contentWindow.focus();
+      try {
+        var result = false;
+        var editorElement = msiGetActiveEditorElement();
+        if (!msiIsTopLevelEditor(editorElement))
+          return result;
+
+        var editor = msiGetEditor(editorElement);
+        if (editor)
+        {
+          msiFinishHTMLSource(editorElement);
+          var url = msiGetEditorURL(editorElement);
+          result = msiSaveDocument(true, IsUrlAboutBlank(url)||IsUrlUntitled(url), false, editor.contentsMIMEType, editor, editorElement);
+          editorElement.contentWindow.focus();
+        }
       }
+      catch (e) {
+        finalThrow(cmdFailString('save'), e.message);
+      }
+      return result;
     }
-    catch (e) {
-      finalThrow(cmdFailString('save'), e.message);
+    else {
+      finalThrow(cmdFailString("save"), "Saving is not allowed. This program is not licensed."); 
     }
-    return result;
   }
 }
 
@@ -1365,6 +1374,53 @@ var msiSaveCopyAsCommand =
   }
 }
 
+var msiExportToTexCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy) {
+    return okToPrint();
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    if (okToPrint())
+    {
+      try {
+        return exportTex();
+      }
+      catch (e) {
+        finalThrow(cmdFailString('exporttex'), e.message);
+      }
+    }
+    else
+      finalThrow(cmdFailString("exporttex"), "Exporting a modified document to TeX is not allowed since his program is not licensed.")
+    return false;
+  }
+}    
+
+var msiExportToWebCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy) {
+    return okToPrint();
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    if (okToPrint())
+    {
+      try {
+        return exportToWeb();
+      }
+      catch (e) {
+        finalThrow(cmdFailString('exporttoweb'), e.message);
+      }
+    }
+    else
+      finalThrow(cmdFailString("exporttoweb"), "Exporting a modified document to the web is not allowed since his program is not licensed.")
+    return false;
+  }
+}    
 
 
 var msiExportToTextCommand =
@@ -3796,7 +3852,7 @@ var msiPreviewCommand =
     var editorElement = msiGetActiveEditorElement();
     if (!editorElement || !msiIsTopLevelEditor(editorElement))
       return false;
-    return true;
+    return okToPrint();
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -3894,7 +3950,7 @@ var msiDirectPrintCommand =
     var editorElement = msiGetActiveEditorElement();
     if (!editorElement || !msiIsTopLevelEditor(editorElement))
       return false;
-    return true;
+    return okToPrint();
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -3902,19 +3958,24 @@ var msiDirectPrintCommand =
 
   doCommand: function(aCommand)
   {
-    try
+    if (okToPrint())
     {
-      var editorElement = msiGetActiveEditorElement();
-      var doc = editorElement.contentDocument;
+      try
+      {
+        var editorElement = msiGetActiveEditorElement();
+        var doc = editorElement.contentDocument;
 #ifndef PROD_SW
-      rebuildSnapshots(doc);
+        rebuildSnapshots(doc);
 #endif
-      msiFinishHTMLSource();
-      PrintUtils.print();
+        msiFinishHTMLSource();
+        PrintUtils.print();
+      }
+      catch (e) {
+        finalThrow(cmdFailString('directprint'), e.message);
+      }
     }
-    catch (e) {
-      finalThrow(cmdFailString('directprint'), e.message);
-    }
+    else
+      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed."); 
   }
 };
 
@@ -3923,7 +3984,7 @@ var msiPrintCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return true;
+    return okToPrint();
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon)
@@ -3935,12 +3996,16 @@ var msiPrintCommand =
   },
   doCommand: function(aCommand)
   {
-    try {
-      printTeX(aCommand=='cmd_printPdf',false);
+    if (okToPrint()) {
+      try {
+        printTeX(aCommand=='cmd_printPdf',false);
+      }
+      catch (e) {
+        finalThrow(cmdFailString('printPdf'), e.message);
+      }      
     }
-    catch (e) {
-      finalThrow(cmdFailString('printPdf'), e.message);
-    }
+    else
+      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed."); 
   }
 };
 
@@ -3949,7 +4014,7 @@ var msiPreviewCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return true;
+    return okToPrint();
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon)
@@ -3961,12 +4026,16 @@ var msiPreviewCommand =
   },
   doCommand: function(aCommand)
   {
-    try {
-      printTeX(aCommand=='cmd_previewPdf',true);
+    if (okToPrint()) {
+      try {
+        printTeX(aCommand=='cmd_previewPdf',true);
+      }
+      catch (e) {
+        finalThrow(cmdFailString('previewPDF'), e.message);
+      }
     }
-    catch (e) {
-      finalThrow(cmdFailString('previewPDF'), e.message);
-    }
+    else
+      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed."); 
   }
 };
 
@@ -3975,7 +4044,7 @@ var msiCompileCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return true;  // BBM todo: doesn't this depend on the save state?
+    return okToPrint();  // BBM todo: doesn't this depend on the save state?
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon)
@@ -3988,12 +4057,16 @@ var msiCompileCommand =
   },
   doCommand: function(aCommand)
   {
-     try {
-       compileTeX(aCommand=='cmd_compilePdf')
-     }
-     catch (e) {
-       finalThrow(cmdFailString('compilePDF'), e.message);
-     }
+    if (okToPrint()) {
+      try {
+        compileTeX(aCommand=='cmd_compilePdf')
+      }
+      catch (e) {
+        finalThrow(cmdFailString('compilePDF'), e.message);
+      }
+    }
+    else
+      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed."); 
   }
 };
 
@@ -4093,9 +4166,9 @@ var msiCopyTeX =
 {
   isCommandEnabled: function(aCommand, aRefCon)
   {
-    editor = aRefCon;
+    var editor = aRefCon.QueryInterface(Components.interfaces.nsIEditor);
     if (editor)
-      return editor,canCut();
+      return editor.canCut();
     return false;
   },
 
