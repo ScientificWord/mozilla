@@ -9988,7 +9988,7 @@ function SS_Timer(delayMS, editor, editorElement) {
 }
 SS_Timer.prototype.callback_ = function () {
   var modCt = this.editor.getModificationCount();
-  if (modCt !== this.modCount)
+  if (modCt !== this.modCount && isLicensed())
     doSoftSave(this.editorElement, this.editor);
   this.modCount = modCt;
   return true;
