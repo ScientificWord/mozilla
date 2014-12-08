@@ -51,6 +51,7 @@
 <!ENTITY publishAsCmd.label "Publish As...">
 <!ENTITY publishas.accesskey "b">
 <!ENTITY exportToTextCmd.label "Export to Text...">
+<!ENTITY exportToTexCmd.label "Export to TeX...">
 <!ENTITY fileexporttotext.accesskey "T">
 <!ENTITY saveAndChangeEncodingCmd.label "Save and Change Character Encoding">
 <!ENTITY filesaveandchangeencoding.accesskey "h">
