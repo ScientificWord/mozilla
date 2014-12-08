@@ -1,3 +1,4 @@
+/* @flow */
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
@@ -1258,7 +1259,7 @@ var msiSoftSaveCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return msiSaveCommand.isCommandEnabled(aCommand, dummy);
+    return isLicensed() && msiSaveCommand.isCommandEnabled(aCommand, dummy);
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -1266,18 +1267,21 @@ var msiSoftSaveCommand =
 
   doCommand: function(aCommand)
   {
-    try {
-      var result = false;
-      var editorElement = msiGetActiveEditorElement();
-      if (!msiIsTopLevelEditor(editorElement))
-        return result;
+    if (isLicensed()) {
+      try {
+        var result = false;
+        var editorElement = msiGetActiveEditorElement();
+        if (!msiIsTopLevelEditor(editorElement))
+          return result;
 
-      var editor = msiGetEditor(editorElement);
-      return doSoftSave(editorElement, editor, false);
+        var editor = msiGetEditor(editorElement);
+        return doSoftSave(editorElement, editor, false);
+      }
+      catch (e) {
+        finalThrow(cmdFailString('softsave'), e.message);
+      }
     }
-    catch (e) {
-      finalThrow(cmdFailString('softsave'), e.message);
-    }
+    finalThrow(cmdFailString("softsave"), "Saving is not allowed. This program is not licensed."); 
   }
 }
 
@@ -1288,7 +1292,7 @@ var msiSaveAsCommand =
     var editorElement = msiGetActiveEditorElement();
     if (!msiIsTopLevelEditor(editorElement))
       return false;
-    return msiIsDocumentEditable(editorElement);
+    return isLicensed() && msiIsDocumentEditable(editorElement);
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -1296,22 +1300,25 @@ var msiSaveAsCommand =
 
   doCommand: function(aCommand)
   {
-    try {
-      var editorElement = msiGetActiveEditorElement();
-      if (!msiIsTopLevelEditor(editorElement))
-        return false;
-      var editor = msiGetEditor(editorElement);
-      if (editor)
-      {
-        msiFinishHTMLSource(editorElement);
-        var result = msiSaveDocument(true, true, false, editor.contentsMIMEType, editor, editorElement, aCommand==="cmd_saveAsDir");
-        editorElement.contentWindow.focus();
-        return result;
+    if (isLicensed()) {
+      try {
+        var editorElement = msiGetActiveEditorElement();
+        if (!msiIsTopLevelEditor(editorElement))
+          return false;
+        var editor = msiGetEditor(editorElement);
+        if (editor)
+        {
+          msiFinishHTMLSource(editorElement);
+          var result = msiSaveDocument(true, true, false, editor.contentsMIMEType, editor, editorElement, aCommand==="cmd_saveAsDir");
+          editorElement.contentWindow.focus();
+          return result;
+        }
+      }
+      catch (e) {
+        finalThrow(cmdFailString('saveas'), e.message);
       }
     }
-    catch (e) {
-      finalThrow(cmdFailString('saveas'), e.message);
-    }
+    finalThrow(cmdFailString("saveas"), "Saving is not allowed. This program is not licensed.");
     return false;
   }
 }
@@ -1322,7 +1329,7 @@ var msiSaveCopyAsCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return true;
+    return isLicensed();
     var editorElement = msiGetActiveEditorElement();
     if (!msiIsTopLevelEditor(editorElement))
       return false;
@@ -1334,22 +1341,26 @@ var msiSaveCopyAsCommand =
 
   doCommand: function(aCommand)
   {
-    try {
-      var editorElement = msiGetActiveEditorElement();
-      if (!msiIsTopLevelEditor(editorElement))
+    if (isLicensed()) {
+     try {
+        var editorElement = msiGetActiveEditorElement();
+        if (!msiIsTopLevelEditor(editorElement))
+          return false;
+        var editor = msiGetEditor(editorElement);
+        if (editor)
+        {
+          msiFinishHTMLSource(editorElement);
+          var result = msiSaveDocument(true, true, true, editor.contentsMIMEType, editor, editorElement, aCommand==="cmd_saveCopyAsDir");
+          editorElement.contentWindow.focus();
+          return result;
+        }
+      }
+      catch (e) {
+        finalThrow(cmdFailString('savecopyas'), e.message);
         return false;
-      var editor = msiGetEditor(editorElement);
-      if (editor)
-      {
-        msiFinishHTMLSource(editorElement);
-        var result = msiSaveDocument(true, true, true, editor.contentsMIMEType, editor, editorElement, aCommand==="cmd_saveCopyAsDir");
-        editorElement.contentWindow.focus();
-        return result;
       }
     }
-    catch (e) {
-      finalThrow(cmdFailString('savecopyas'), e.message);
-    }
+    finalThrow(cmdFailString("savecopyas"), "Saving is not allowed. This program is not licensed.");
     return false;
   }
 }
@@ -1363,7 +1374,7 @@ var msiExportToTextCommand =
     var editorElement = msiGetActiveEditorElement();
     if (!msiIsTopLevelEditor(editorElement))
       return false;
-    return (msiIsDocumentEditable(editorElement));
+    return (msiIsDocumentEditable(editorElement) && okToPrint());
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -1371,22 +1382,28 @@ var msiExportToTextCommand =
 
   doCommand: function(aCommand)
   {
-    try {
-      var editorElement = msiGetActiveEditorElement();
-      if (!msiIsTopLevelEditor(editorElement))
-        return false;
-      var editor = msiGetEditor(editorElement);
-      if (editor)
-      {
-        msiFinishHTMLSource(editorElement);
-        var result = msiSaveDocument(true, true, true, "text/plain", editor, editorElement, falsle);
-        editorElement.contentWindow.focus();
-        return result;
+    if (okToPrint())
+    {
+      try {
+        var editorElement = msiGetActiveEditorElement();
+        if (!msiIsTopLevelEditor(editorElement))
+          return false;
+        var editor = msiGetEditor(editorElement);
+        if (editor)
+        {
+          msiFinishHTMLSource(editorElement);
+          var result = msiSaveDocument(true, true, true, "text/plain", editor, editorElement, falsle);
+          editorElement.contentWindow.focus();
+          return result;
+        }
+      }
+      catch (e) {
+        finalThrow(cmdFailString('exporttotext'), e.message);
       }
     }
-    catch (e) {
-      finalThrow(cmdFailString('exporttotext'), e.message);
-    }
+    else
+      finalThrow(cmdFailString("exporttotext"), "Exporting a modified document to text is not allowed since his program is not licensed.")
+
     return false;
   }
 }
@@ -1442,7 +1459,7 @@ var msiPrintDirectCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return true;
+    return okToPrint();
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -1450,17 +1467,20 @@ var msiPrintDirectCommand =
 
   doCommand: function(aCommand)
   {
-    try {
-      var editorElement = msiGetActiveEditorElement();
-      var doc = editorElement.contentDocument;
+    if (okToPrint()) {
+      try {
+        var editorElement = msiGetActiveEditorElement();
+        var doc = editorElement.contentDocument;
 #ifndef PROD_SW
-      rebuildSnapshots(doc);
+        rebuildSnapshots(doc);
 #endif
-      PrintUtils.print();
-    }
-    catch (e) {
-      finalThrow(cmdFailString('directprint'), e.message);
-    }
+        PrintUtils.print();
+      }
+      catch (e) {
+        finalThrow(cmdFailString('directprint'), e.message);
+      }
+    } else
+      finalThrow(cmdFailString("directprint"), "Printing is not allowed for modified documents since this program is not licensed.");
   }
 }
 
@@ -1498,16 +1518,21 @@ var msiPreviewDirectCommand =
 
   doCommand: function(aCommand)
   {
-    try {
-      var editorElement = msiGetActiveEditorElement();
-      var doc = editorElement.contentDocument;
+    if (okToPrint()) {
+      try {
+        var editorElement = msiGetActiveEditorElement();
+        var doc = editorElement.contentDocument;
 #ifndef PROD_SW
-      rebuildSnapshots(doc);
+        rebuildSnapshots(doc);
 #endif
-      PrintUtils.printPreview(onEnterPP, onExitPP);
+        PrintUtils.printPreview(onEnterPP, onExitPP);
+      }
+      catch (e) {
+        finalThrow(cmdFailString('directprintpreview'), e.message);
+      }
     }
-    catch (e) {
-      finalThrow(cmdFailString('directprintpreview'), e.message);
+    else {
+      finalThrow(cmdFailString("directprintpreview"), "Printing and previewing are not allowed for modified documents since this program is not licensed.");
     }
   }
 }
@@ -2574,6 +2599,11 @@ function msiIsSupportedTextMimeType(aMimeType)
 
 function msiSoftSave( editor, editorElement, noTeX)
 {
+  if (!isLicensed())
+  {
+    finalThrow(cmdFailString("save"), "Saving is not allowed. This program is not licensed.");
+    return false;
+  }
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
 
@@ -3483,7 +3513,7 @@ var msiCleanupCommand =
     var editorElement = msiGetActiveEditorElement();
     if (!editorElement|| !msiIsTopLevelEditor(editorElement))
       return false;
-    return true;
+    return okToPrint();
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -4061,9 +4091,12 @@ var msiOneShotSymbol =
 
 var msiCopyTeX =
 {
-  isCommandEnabled: function(aCommand, dummy)
+  isCommandEnabled: function(aCommand, aRefCon)
   {
-    return true;
+    editor = aRefCon;
+    if (editor)
+      return editor,canCut();
+    return false;
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon)

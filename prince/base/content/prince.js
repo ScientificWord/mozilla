@@ -41,6 +41,8 @@ function princeStartUp()
   msiEditorOnLoad();
 }
 
+// Some temporary functions to test how the program behaves when not licensed
+
 function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "about", "modal,chrome,resizable=yes");
 }
@@ -637,6 +639,10 @@ function currentFileName()
 
 function exportTeX()
 {
+  if (!okToPrint()) {
+   finalThrow(cmdFailString("exporttotex"), "Exporting TeX for a modified document is not allowed since this program is not licensed.")
+   return;
+  }
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor) return;
@@ -691,8 +697,10 @@ function exportTeX()
 
 function exportToWeb()
 {
-  dump("\nExport to Web\n");
-
+  if (!okToPrint()) {
+   finalThrow(cmdFailString("exporttoweb"), "Exporting to the web for a modified document is not allowed since this program is not licensed.")
+   return;
+  }
   if (currentFileName().length < 0) return;
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
@@ -767,6 +775,10 @@ function removeOldPDFFiles(outputDir)
 function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInfo )
 {
   // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex 
+  if (!okToPrint()) {
+    finalThrow(cmdFailString("compiletex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
+    return false;
+  }
   var passData;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
@@ -857,6 +869,10 @@ function printPDFFile(infile)
 // Returns true if everything succeeded. 
 function compileDocument()
 {
+  if (!okToPrint()) {
+    finalThrow(cmdFailString("compiletex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
+    return false;
+  }
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor) return null;
@@ -971,6 +987,10 @@ function compileDocument()
 
 function printTeX(preview )
 {
+  if (!okToPrint()) {
+    finalThrow(cmdFailString("printtex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
+    return false;
+  }
   try {
     var pdffile = compileDocument();
     if (pdffile)
@@ -1037,6 +1057,10 @@ function printTeX(preview )
 
 function previewTeX()
 {
+  if (!okToPrint()) {
+    finalThrow(cmdFailString("printtex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
+    return false;
+  }
   printTeX(true);
 };
 
@@ -1307,6 +1331,10 @@ function toOpenWindowByType( inType, uri )
 
 function documentToTeXString(document, xslPath)
 {
+  if (!okToPrint()) {
+    finalThrow(cmdFailString("totexstring"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
+    return false;
+  }
   var xsltString = "";
   var strResult = "";
   var editorElement = msiGetActiveEditorElement();

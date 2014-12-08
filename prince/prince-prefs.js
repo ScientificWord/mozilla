@@ -20,6 +20,7 @@ pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");
 
 /* default table prefs */
 /* for Prince */
+pref("swp.licensed_until",					"Feb 8, 2015");
 pref("browser.cache.disk.enable",           false);
 pref("browser.hiddenWindowChromeURL", "chrome://prince/content/hiddenwindow.xul");
 pref("browser.chromeURL", "chrome://prince/content/prince.xul");
