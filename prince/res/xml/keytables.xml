@@ -115,7 +115,7 @@
     <key name="]">msiGoDoCommand("cmd_MSIbracketCmd");</key>
     <key name="}">msiGoDoCommand("cmd_MSIbraceCmd");</key>
     <key name="a">insertMathSymbol("&angle;");</key>
-    <key name="a  modifiers="shift"">insertMathSymbol("&ForAll;");</key>
+    <key name="a" modifiers="shift">insertMathSymbol("&ForAll;");</key>
     <key name="s">insertOperator("&sum;", "auto", "auto");</key>
     <key name="s"  modifiers="shift">insertMathSymbol("&oplus;");</key>
     <key name="d">insertMathSymbol("&PartialD;");</key>
