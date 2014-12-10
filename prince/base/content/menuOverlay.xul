@@ -335,12 +335,9 @@
       <menuitem id="helpmenuRegister" 
                 label="&helpmenuRegister.label;" 
                 observes="cmd_unimp"/>
-      <menuitem id="helpmenuFeatures" 
-                label="&helpmenuFeatures.label;" 
-                observes="cmd_unimp"/>
       <menuitem id="helpmenuLicense" 
                 label="&helpmenuLicense.label;" 
-                observes="cmd_unimp"/>
+                oncommand="openDialog('chrome://prince/content/licenseDialog.xul', 'License', 'chrome,close,titlebar,modal,resizable');"/>
       <menuseparator id="aboutSeparator"/>
       <menuitem label="&aboutCmd.label;" 
                 id="aboutName" 
@@ -518,20 +515,10 @@
     <command id="cmd_newDocument"  oncommand="msiGoDoCommand('cmd_new');"/>
     <command id="cmd_open"         oncommand="msiOpenCommand.doCommand('cmd_open');"/>
     <command id="cmd_close"        label="&closeCmd.label;"         oncommand="msiGoDoCommand('cmd_close')"/>
-    <command id="cmd_cleanup"        label="&cleanupCmd.label;"         oncommand="msiGoDoCommand('cmd_cleanup')"/>
     <command id="cmd_printSetup"   oncommand="msiGoDoCommand('cmd_printSetup')"/>
 <!--
     <command id="cmd_printPreview" label="printPreviewCmd.label;"  oncommand="msiGoDoCommand('cmd_printPreview')"/>
 -->
-    <command id="cmd_openTeX" oncommand="openTeX();" />
-    <command id="cmd_exportTeX" oncommand="exportTeX();" />
-    <command id="cmd_exportToWeb" oncommand="msiGoDoCommand('cmd_exportToWeb');" />
-    
-    <command id="cmd_printDirect"    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();"/>
-    <command id="cmd_printPdf"    oncommand="msiGoDoCommand('cmd_printPdf');;event.stopPropagation();"/>
-    <command id="cmd_previewDirect"  oncommand="msiGoDoCommand('cmd_previewDirect');event.stopPropagation();"/>
-    <command id="cmd_previewPdf"  oncommand="msiGoDoCommand('cmd_previewPdf');event.stopPropagation();" />
-    <command id="cmd_compilePdf"  oncommand="msiGoDoCommand('cmd_compilePdf')"/>
     <command id="cmd_documentInfo" oncommand="msiGoDoCommand('cmd_documentInfo')"/>
     <command id="cmd_documentStyle" oncommand="msiGoDoCommand('cmd_documentStyle')"/>
     <command id="cmd_quit"        oncommand="msiGoDoCommand('cmd_quit')"/>
@@ -555,6 +542,16 @@
     <command id="cmd_backmatter"  oncommand="msiGoDoCommand('cmd_backmatter')" />
     <command id="cmd_frontmatter"  oncommand="msiGoDoCommand('cmd_frontmatter')" />
     <command id="cmd_printindex" oncommand="msiGoDoCommand('cmd_printindex')" />
+    <command id="cmd_cleanup"        label="&cleanupCmd.label;"         oncommand="msiGoDoCommand('cmd_cleanup')"/>
+    <command id="cmd_openTeX" oncommand="openTeX();" />
+    <command id="cmd_exportToTeX" oncommand="msiGoDoCommand('cmd_exportToTeX');" />
+    <command id="cmd_exportToWeb" oncommand="msiGoDoCommand('cmd_exportToWeb');" />
+    
+    <command id="cmd_printDirect"    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();"/>
+    <command id="cmd_printPdf"    oncommand="msiGoDoCommand('cmd_printPdf');;event.stopPropagation();"/>
+    <command id="cmd_previewDirect"  oncommand="msiGoDoCommand('cmd_previewDirect');event.stopPropagation();"/>
+    <command id="cmd_previewPdf"  oncommand="msiGoDoCommand('cmd_previewPdf');event.stopPropagation();" />
+    <command id="cmd_compilePdf"  oncommand="msiGoDoCommand('cmd_compilePdf')"/>
 
 
 
