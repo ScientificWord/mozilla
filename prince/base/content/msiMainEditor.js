@@ -488,6 +488,7 @@ function msiEditorInitFileMenu()
       historyUrl = GetUnicharPref("editor.history_url_1");
   }
   SetElementEnabledById("menu_RecentFiles", historyUrl != "");
+  msiGoUpdateComposerMenuItems(document.getElementById("composerMenuItems"));
 }
 
 // --------------------------- Logging stuff ---------------------------

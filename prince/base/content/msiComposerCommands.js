@@ -9047,7 +9047,7 @@ var msiPreviewModeCommand =
   isCommandEnabled: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    return (msiIsTopLevelEditor(editorElement) && msiIsDocumentEditable(editorElement) && msiIsHTMLEditor(editorElement));
+    return (okToPrint() && msiIsTopLevelEditor(editorElement) && msiIsDocumentEditable(editorElement) && msiIsHTMLEditor(editorElement));
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -9055,14 +9055,19 @@ var msiPreviewModeCommand =
 
   doCommand: function(aCommand)
   {
-    try
-    {
-      var editorElement = msiGetTopLevelEditorElement();
-      msiSetEditMode(kDisplayModePreview, editorElement);
+    if (okToPrint()) {
+
+      try
+      {
+        var editorElement = msiGetTopLevelEditorElement();
+        msiSetEditMode(kDisplayModePreview, editorElement);
+      }
+      catch (e) {
+        finalThrow(cmdFailString('pdfpreviewmode'), e.message);
+      }
     }
-    catch (e) {
-      finalThrow(cmdFailString('pdfpreviewmode'), e.message);
-    }
+    else 
+      finalThrow(cmdFailString("pdfpreview"), "Previewing a modified file is not allowed since this program is not licensed."); 
   }
 };
 
