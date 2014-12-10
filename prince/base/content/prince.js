@@ -1009,7 +1009,7 @@ function printTeX(preview )
             return;
           }
           // Switch to the preview pane (third in the deck)
-          goDoCommand("cmd_PreviewMode"); 
+          msiGoDoCommand("cmd_PreviewMode"); 
         }
         else 
         {

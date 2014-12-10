@@ -1,0 +1,43 @@
+
+#container
+{
+  height:175px;
+  width:179px;
+  background-image: url('chrome://prince/content/blank-gold-seal-md.png');
+}
+
+#image
+{    
+  height:175px;
+  width:179px;
+  left:0;
+  top:0;
+}
+#text
+{
+  z-index:100;
+  height:175px;
+  width:179px;  
+  top: 0;
+  left: 0;
+}
+#textbox, #textbox2, #textbox3 {
+  width: 179px;
+  text-align: center;
+  font-size:13px;
+  font-weight:bold;
+  color:black;
+}
+
+#rhs, #nolicense {
+  font-size: 15px;
+  color: black;
+  margin: 7px;
+  width: 3in;
+  text-align: center;
+}
+
+.smaller {
+  font-size: 10px;
+  font-weight: normal;
+}
