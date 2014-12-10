@@ -55,6 +55,65 @@ function FixJS() {
     };
   }
 }
+
+function isLicensed() {
+  var prefs = GetPrefs();
+  var expDate, remaining;
+  var licenseDateStr = prefs.getCharPref("swp.licensed_until");
+  if (licenseDateStr === 'permanent') return true;
+  if (licenseDateStr && licenseDateStr.length > 0) {
+    try {
+      expDate = Date.parse(licenseDateStr);
+      remaining = expDate - Date.now();
+      if (remaining > 0) {
+        return true;
+      }
+      else return false;
+    }
+    catch (e) {
+      return false;
+    }
+  } else return false;
+}
+
+function okToPrint()
+{
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  return (isLicensed() || editor.getModificationCount() == 0);
+}
+
+function licenseTimeRemaining() {
+  var prefs = GetPrefs();
+  var expDate, remaining;
+  var day = new Date(2000,0,1) - new Date(2000,0,0);
+  var licenseDateStr = prefs.getCharPref("swp.licensed_until");
+  if (licenseDateStr === 'permanent') return 'permanent';
+  if (licenseDateStr && licenseDateStr.length > 0) {
+    try {
+      expDate = Date.parse(licenseDateStr);
+      remaining = expDate - Date.now();
+      if (remaining > 0) {
+        return Math.round(remaining / day);
+      }
+      else return null;
+    }
+    catch(e) {
+      return null;
+    }
+  }
+  return null;
+}
+
+function licenseExpDate() {
+  var prefs = GetPrefs();
+  var expDate, remaining;
+  var day = new Date(2000,0,1) - new Date(2000,0,0);
+  var licenseDateStr = prefs.getCharPref("swp.licensed_until");
+  return licenseDateStr;
+}
+
+
 function arrayFromNodelist(nodelist) {
   var retArray = [];
   if (!nodelist)
