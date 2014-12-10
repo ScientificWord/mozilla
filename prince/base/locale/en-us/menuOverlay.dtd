@@ -116,7 +116,7 @@
 <!ENTITY copytexCmd.label					 "Copy as TeX">  
 <!ENTITY copypictureCmd.label			 "Copy as Picture">
 <!ENTITY copypictureCmd.accesskey	 "i">
-<!ENTITY savepictureCmd.label			"Export Selection as Picture">
+<!ENTITY savepictureCmd.label			"Export Selection as Picture…">
 <!ENTITY savepictureCmd.accesskey	"x">
 <!ENTITY pasteCmd.label						"Paste">  
 <!ENTITY pasteCmd.key						"V">  
@@ -354,7 +354,7 @@
 <!ENTITY delete.accesskey "d">
 <!ENTITY clearCmd.label "Clear">
 <!ENTITY clear.accesskey "l">
-<!ENTITY countWords.label "Count Words...">
+<!ENTITY countWords.label "Count Words…">
 <!ENTITY countWords.accesskey "w">
 <!ENTITY selectAllCmd.label "Select All">
 <!ENTITY selectall.accesskey "a">

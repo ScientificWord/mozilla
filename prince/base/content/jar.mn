@@ -4,9 +4,10 @@ prince.jar:
 % content communicator %content/communicator/
   content/branding/icon64.png       (icon64.png) 
   content/branding/splash.png       (SWP.png) 
+  content/blank-gold-seal-md.png    (blank-gold-seal-md.png)
 * content/prince.xul                (prince.xul)
-* content/credits.xhtml             (credits.xhtml)
-* content/licenses.xhtml            (licenses.xhtml)
+* content/credits.html              (credits.html)
+* content/licenses.html             (licenses.html)
 * content/prince.js                 (prince.js)
   content/openLocation.xul          (openLocation.xul)
 * content/aboutDialog.xul           (aboutDialog.xul)
@@ -286,3 +287,5 @@ prince.jar:
   content/plotLabelsDlg.js              (dialogs/plotLabelsDlg.js)
   content/plotFontSettings.xul          (dialogs/plotFontSettings.xul)
 * content/plotFontSettings.js           (dialogs/plotFontSettings.js)
+* content/licenseDialog.js              (dialogs/licenseDialog.js)
+* content/licenseDialog.xul             (dialogs/licenseDialog.xul)
