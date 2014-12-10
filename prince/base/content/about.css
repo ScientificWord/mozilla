@@ -1,0 +1,11 @@
+body {
+	font-family: sans-serif;
+	width: 4in;
+	overflow-y: hidden;
+}
+li {
+	list-style-image: none;
+}
+html {
+	width: 4in;
+}
