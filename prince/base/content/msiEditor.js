@@ -7,55 +7,6 @@ Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 
 #include productname.inc
 const msiEditorJS_duplicateTest = "Bad";
-
-function isLicensed() {
-  var prefs = GetPrefs();
-  var expDate, remaining;
-  var licenseDateStr = prefs.getCharPref("swp.licensed_until");
-  if (licenseDateStr && licenseDateStr.length > 0) {
-    try {
-      expDate = Date.parse(licenseDateStr);
-      remaining = expDate - Date.now();
-      if (remaining > 0) {
-        return true;
-      }
-      else return false;
-    }
-    catch (e) {
-      return false;
-    }
-  } else return false;
-}
-
-function okToPrint()
-{
-  var editorElement = msiGetActiveEditorElement();
-  var editor = msiGetEditor(editorElement);
-  return (isLicensed() || editor.getModificationCount() == 0);
-}
-
-function licenseTimeRemaining() {
-  var prefs = GetPrefs();
-  var expDate, remaining;
-  var expired = "License expired on ";
-  var day = new Date(2000,0,1) - new Date(2000,0,0);
-  var licenseDateStr = prefs.getCharPref("swp.licensed_until");
-  if (licenseDateStr && licenseDateStr.length > 0) {
-    try {
-      expDate = Date.parse(licenseDateStr);
-      remaining = expDate - Date.now();
-      if (remaining > 0) {
-        return Math.round(remaining / day) + " days remaining" ;
-      }
-      else return expired + licenseDateStr;
-    }
-    catch(e) {
-      return "Can't parse license";
-    }
-  }
-  return "Can't parse license";
-}
-
 var dynAllTagsStyleSheet;
 
 function aColorObj(editorElement)
