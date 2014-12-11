@@ -2235,16 +2235,7 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
       nodeAncestorsOfType(specialTags, anchorNode, foundTags2);
       if (!foundTags.Equals(foundTags2)) fSkipChanges = PR_TRUE;
       if (fSkipChanges) return NS_OK;
-      // BBM: Now check to see if we have crossed the boundary of an msiDisplay
-      // foundTags = EmptyString();
-      // foundTags2 = EmptyString();
-      // NS_NAMED_LITERAL_STRING(displayTag, " msidisplay ");
-      // nodeAncestorsOfType(displayTag, focusNode, foundTags);
-      // nodeAncestorsOfType(displayTag, anchorNode, foundTags2);
-      // if (!foundTags.Equals(foundTags2)) {
-        RemoveDisplay(focusNode, anchorNode);
-      //   return NS_OK;
-      // }
+//        RemoveDisplay(focusNode, anchorNode);
       nsCOMPtr<msiIMathMLCaret> mathCaret;
       res = GetMathMLCaretInterface(commonAncestor, 0, getter_AddRefs(mathCaret));
       if (NS_SUCCEEDED(res) && mathCaret && !fSkipChanges)
