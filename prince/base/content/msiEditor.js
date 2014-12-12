@@ -4437,7 +4437,9 @@ function handleSourceParseError(errorMsg) // returns true if the user wants to g
                              "parseerror",
                              "chrome,resizable,titlebar,modal",
                              data);
-    return data.result;
+    //BBM: somehow returning data.result returned a string.
+    if (data.result) return true;
+    return false;
   }
   catch(exc) {AlertWithTitle("Error in msiEditor.js", "In msiEditorNewPlaintext(), failed to open; exception: " + exc);}
   return false;
@@ -4775,10 +4777,12 @@ function msiSetEditMode(mode, editorElement)
             return;
           }
         }
+        else {
+          RebuildFromSource(doc, editorElement);
+        }
       }
       catch (e) {
       }
-      RebuildFromSource(doc, editorElement);
         // Get the text for the <title> from the newly-parsed document
         // (must do this for proper conversion of "escaped" characters)
       var title = "";
