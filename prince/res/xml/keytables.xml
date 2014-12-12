@@ -129,8 +129,8 @@
     <key name="z">insertMathSymbol("&Exists;");</key>
     <key name="x">insertMathSymbol("&times;");</key>
     <key name="x"  modifiers="shift">insertMathSymbol("&divide;");</key>
-    <key name="m">msiGoDoCommand("cmd_MSIMatrixLastCmd");</key>
-    <key name="m"  modifiers="shift">msiGoDoCommand("cmd_MSIMatrix22Cmd");</key>
+    <key name="m" modifiers="shift">msiGoDoCommand("cmd_MSIMatrixLastCmd");</key>
+    <key name="m">msiGoDoCommand("cmd_MSIMatrix22Cmd");</key>
     <key name="c">insertMathSymbol("&subset;");</key>
     <key name="c"  modifiers="shift">insertMathSymbol("&#x22c5;");</key>
     <key name="v">insertMathSymbol("&vee;");</key>
