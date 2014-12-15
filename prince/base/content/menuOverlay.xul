@@ -332,9 +332,10 @@
                 label="&helpmenuWebsite.label;" 
                 oncommand="openBrowser('https://www.mackichan.com');"/>
       <menuseparator/>
-      <menuitem id="helpmenuRegister" 
-                label="&helpmenuRegister.label;" 
-                observes="cmd_unimp"/>
+      <menuitem id="helpmenuActivate" 
+                label="&helpmenuActivate.label;" 
+                observes="cmd_activate"
+                oncommand="openDialog('chrome://prince/content/activateDialog.xul', 'Activate', 'chrome,close,titlebar,modal,resizable');"/>
       <menuitem id="helpmenuLicense" 
                 label="&helpmenuLicense.label;" 
                 oncommand="openDialog('chrome://prince/content/licenseDialog.xul', 'License', 'chrome,close,titlebar,modal,resizable');"/>
