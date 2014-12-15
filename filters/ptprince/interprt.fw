@@ -581,118 +581,145 @@ case CMD_MSISPECIAL: {
     kvmap[name] = value;
     i = valueEnd+1;
   }
-  std::string result =
-"<graph>\
- <graphSpec ImageFile=\"%ImageFile%\" \
- XAxisLabel=%xaxislabel%\
- YAxisLabel=%yaxislabel%\
- ZAxisLabel=%zaxislabel%\
- Width=\"%width%\" \
- Height=\"%height%\"\
- Units=\"%unit%\" \
- XTickCount=\"0\" YTickCount=\"0\" ZTickCount=\"0\"\
- BGColor=\"#FFFFFF\" Dimension=\"2\" \
- AxisFontFamily=\"sans-serif\" AxisFontSize=\"10\" \
- AxisFontColor=\"#000000\"  AxisFontItalic=\"false\" \
- AxisFontBold=\"false\" TicksFontFamily=\"sans-serif\" \
- TicksFontSize=\"8\" TicksFontColor=\"#000000\"\
- TicksFontItalic=\"false\"\
- TicksFontBold=\"false\" errStr=\"\" \
- ViewingBoxXMin=\"-6.000000001e0\"\
- ViewingBoxXMax=\"6.000000001e0\" ViewingBoxYMin=\"-9.998181315e-1\"\
- ViewingBoxYMax=\"9.998181315e-1\"\
- CaptionPlace=\"labelabove\" \
- EqualScaling=\"false\" AxesTips=\"false\" GridLines=\"false\" \
- OrthogonalProjection=\"false\" KeepUp=\"false\">\
- <plot xmlns=%mathmlns% \
- PlotType=\"rectangular\" LineStyle=\"Solid\" PointStyle=\"Dot\" \
- LineThickness=\"thin\" LineColor=\"#000000ff\" DiscAdjust=\"true\"\
- BaseColor=\"#ff0000ff\" SecondaryColor=\"#0000ffff\" \
- PointSymbol=\"FilledCircles\" Animate=\"false\" PlotStatus=\"undefined\">\
- <Expression><math xmlns=%mathmlns%>%function%</math></Expression>\
- <XMax><math xmlns=%mathmlns%>%xmax%</math></XMax>\
- <XMin><math xmlns=%mathmlns%>%xmin%</math></XMin>\
- <XVar><math xmlns=%mathmlns%>%xvar%</math></XVar>\
- <XPts><math xmlns=%mathmlns%><mn>30</mn></math></XPts>\
- </plot></graphSpec>\
- <msiframe pos=\"display,,I\" sidemargin=\"0.3\" topmargin=\"0.15\"\
- placeLocation=\"h\" textalignment=\"\" width=\"3.46\" height=\"4.96\"\
- units=\"cm\" style=\"margin: 5.66929px 11.3386px; width: 130.772px; \
- height: 187.465px;\"><plotwrapper borderw=\"0.03\" padding=\"0.2\"\
- background-color=\"#ffffff\" border-color=\"#000000\" width=\"3\"\
- height=\"4.5\" units=\"cm\" msi_resize=\"true\" \
- style=\"border: 1.13386px solid rgb(0, 0, 0); padding: 7.55906px;\
- width: 113.386px; height: 170.079px;\">\
- <object data=\"file://%ImageFileFull%\"\
-   type=\"application/x-mupad-graphics+xml\" alt=\"Generated Plot\" \
-   msigraph=\"true\" style=\"width: 113.386px; height: 170.079px;\"/>\
- </plotwrapper></msiframe></graph>";
-         
-   // search and replace
-   find_and_replace(result, "%mathmlns%", 
-                            "\"http://www.w3.org/1998/Math/MathML\"");
 
-   find_and_replace(result, "%mozns%",
-       "\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\"");
-   
-   std::string name = kvmap["VCamFile"];
-   strip_quotes(name);
-   std::string newname = MaybeCopyGraphicFile(name.c_str());
-   find_and_replace(result, "%ImageFile%", newname.c_str());
-   
-   std::string fullname = newname;
-   find_and_replace(result, "%ImageFileFull%", fullname.c_str());
- 
-   find_and_replace(result, "%function%", kvmap["function"].c_str());
+  std::string result;
+  if (kvmap["type"] == "PLOT") {
+     result =
+     "<graph>\
+      <graphSpec ImageFile=\"%ImageFile%\" \
+      XAxisLabel=%xaxislabel%\
+      YAxisLabel=%yaxislabel%\
+      ZAxisLabel=%zaxislabel%\
+      Width=\"%width%\" \
+      Height=\"%height%\"\
+      Units=\"%unit%\" \
+      XTickCount=\"0\" YTickCount=\"0\" ZTickCount=\"0\"\
+      BGColor=\"#FFFFFF\" Dimension=\"2\" \
+      AxisFontFamily=\"sans-serif\" AxisFontSize=\"10\" \
+      AxisFontColor=\"#000000\"  AxisFontItalic=\"false\" \
+      AxisFontBold=\"false\" TicksFontFamily=\"sans-serif\" \
+      TicksFontSize=\"8\" TicksFontColor=\"#000000\"\
+      TicksFontItalic=\"false\"\
+      TicksFontBold=\"false\" errStr=\"\" \
+      ViewingBoxXMin=\"-6.000000001e0\"\
+      ViewingBoxXMax=\"6.000000001e0\" ViewingBoxYMin=\"-9.998181315e-1\"\
+      ViewingBoxYMax=\"9.998181315e-1\"\
+      CaptionPlace=\"labelabove\" \
+      EqualScaling=\"false\" AxesTips=\"false\" GridLines=\"false\" \
+      OrthogonalProjection=\"false\" KeepUp=\"false\">\
+      <plot xmlns=%mathmlns% \
+      PlotType=\"rectangular\" LineStyle=\"Solid\" PointStyle=\"Dot\" \
+      LineThickness=\"thin\" LineColor=\"#000000ff\" DiscAdjust=\"true\"\
+      BaseColor=\"#ff0000ff\" SecondaryColor=\"#0000ffff\" \
+      PointSymbol=\"FilledCircles\" Animate=\"false\" PlotStatus=\"undefined\">\
+      <Expression><math xmlns=%mathmlns%>%function%</math></Expression>\
+      <XMax><math xmlns=%mathmlns%>%xmax%</math></XMax>\
+      <XMin><math xmlns=%mathmlns%>%xmin%</math></XMin>\
+      <XVar><math xmlns=%mathmlns%>%xvar%</math></XVar>\
+      <XPts><math xmlns=%mathmlns%><mn>30</mn></math></XPts>\
+      </plot></graphSpec>\
+      <msiframe pos=\"display,,I\" sidemargin=\"0.3\" topmargin=\"0.15\"\
+      placeLocation=\"h\" textalignment=\"\" width=\"3.46\" height=\"4.96\"\
+      units=\"cm\" style=\"margin: 5.66929px 11.3386px; width: 130.772px; \
+      height: 187.465px;\"><plotwrapper borderw=\"0.03\" padding=\"0.2\"\
+      background-color=\"#ffffff\" border-color=\"#000000\" width=\"3\"\
+      height=\"4.5\" units=\"cm\" msi_resize=\"true\" \
+      style=\"border: 1.13386px solid rgb(0, 0, 0); padding: 7.55906px;\
+      width: 113.386px; height: 170.079px;\">\
+      <object data=\"file://%ImageFileFull%\"\
+        type=\"application/x-mupad-graphics+xml\" alt=\"Generated Plot\" \
+        msigraph=\"true\" style=\"width: 113.386px; height: 170.079px;\"/>\
+      </plotwrapper></msiframe></graph>";
+          
+        // search and replace
+        find_and_replace(result, "%mathmlns%", 
+                                 "\"http://www.w3.org/1998/Math/MathML\"");
 
-   strip_quotes(kvmap["xmin"]);
-   std::string xmin = simple_math_to_mathml(kvmap["xmin"]);
-   find_and_replace(result, "%xmin%", xmin.c_str());
+        find_and_replace(result, "%mozns%",
+        "\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\"");
+    
+        std::string name = kvmap["VCamFile"];
+        strip_quotes(name);
+        std::string newname = MaybeCopyGraphicFile(name.c_str());
+        find_and_replace(result, "%ImageFile%", newname.c_str());
+    
+        std::string fullname = newname;
+        find_and_replace(result, "%ImageFileFull%", fullname.c_str());
+  
+        find_and_replace(result, "%function%", kvmap["function"].c_str());
 
-   strip_quotes(kvmap["xmax"]);
-   std::string xmax = simple_math_to_mathml(kvmap["xmax"]);
-   find_and_replace(result, "%xmax%", xmax.c_str());
+        strip_quotes(kvmap["xmin"]);
+        std::string xmin = simple_math_to_mathml(kvmap["xmin"]);
+        find_and_replace(result, "%xmin%", xmin.c_str());
 
-   find_and_replace(result, "%xvar%", kvmap["var1name"].c_str());
+        strip_quotes(kvmap["xmax"]);
+        std::string xmax = simple_math_to_mathml(kvmap["xmax"]);
+        find_and_replace(result, "%xmax%", xmax.c_str());
 
-   if (kvmap.find("x-label") != kvmap.end()){
-      find_and_replace(result, "%xaxislabel%", kvmap["x-label"].c_str());
+        find_and_replace(result, "%xvar%", kvmap["var1name"].c_str());
+
+        if (kvmap.find("x-label") != kvmap.end()){
+           find_and_replace(result, "%xaxislabel%", kvmap["x-label"].c_str());
+        } else {
+           find_and_replace(result, "%xaxislabel%", "\"x\"");
+        } 
+        if (kvmap.find("y-label") != kvmap.end()){
+           find_and_replace(result, "%yaxislabel%", kvmap["y-label"].c_str());
+        } else {
+           find_and_replace(result, "%yaxislabel%", "\"y\"");
+        } 
+        if (kvmap.find("z-label") != kvmap.end()){
+           find_and_replace(result, "%zaxislabel%", kvmap["z-label"].c_str());
+        } else {
+           find_and_replace(result, "%zaxislabel%", "\"z\"");
+        }
+        std::string unit = "in";
+        if (kvmap.find("width") != kvmap.end()){
+           std::string dim = kvmap["width"];
+           int unitPos = dim.find_first_not_of("0123456789.");
+           unit = dim.substr(unitPos);
+           std::string width = dim.substr(0,unitPos);
+           find_and_replace(result, "%unit%", unit.c_str());
+           find_and_replace(result, "%width%", width.c_str());
+        } else {
+           find_and_replace(result, "%width%", "3");
+        }
+
+        if (kvmap.find("height") != kvmap.end()){
+           std::string dim = kvmap["height"];
+           int unitPos = dim.find_first_not_of("0123456789.");
+           unit = dim.substr(unitPos);
+           std::string height = dim.substr(0,unitPos);
+           find_and_replace(result, "%unit%", unit.c_str());
+           find_and_replace(result, "%height%", height.c_str());
+        } else {
+           find_and_replace(result, "%height%", "3");
+        }
    } else {
-      find_and_replace(result, "%xaxislabel%", "\"x\"");
-   } 
-   if (kvmap.find("y-label") != kvmap.end()){
-      find_and_replace(result, "%yaxislabel%", kvmap["y-label"].c_str());
-   } else {
-      find_and_replace(result, "%yaxislabel%", "\"y\"");
-   } 
-   if (kvmap.find("z-label") != kvmap.end()){
-      find_and_replace(result, "%zaxislabel%", kvmap["z-label"].c_str());
-   } else {
-      find_and_replace(result, "%zaxislabel%", "\"z\"");
+     // a graphic 
+     result = "<object alt=\"\" \
+ src=\"%ImageFile%\" \
+ req=\"graphics\" \
+ naturalWidth=\"0\" \
+ naturalHeight=\"0\" \
+ ltx_width=\"2\" \
+ ltx_height=\"2\" \
+ originalSrcUrl=\"%ImageFileFull%\" \
+ copiedSrcUrl=\"graphics/%ImageFile%\" \
+ units=\"in\" \
+ msi_resize=\"true\" \
+ style=\"height: 192px; width: 192px;\"/>";
+
+      std::string name = kvmap["filename"];
+
+      strip_quotes(name);
+      std::string newname = MaybeCopyGraphicFile(name.c_str());
+      find_and_replace(result, "%ImageFile%", newname.c_str());
+    
+      std::string fullname = newname;
+      find_and_replace(result, "%ImageFileFull%", fullname.c_str());
    }
-   std::string unit = "in";
-   if (kvmap.find("width") != kvmap.end()){
-      std::string dim = kvmap["width"];
-      int unitPos = dim.find_first_not_of("0123456789.");
-      unit = dim.substr(unitPos);
-      std::string width = dim.substr(0,unitPos);
-      find_and_replace(result, "%unit%", unit.c_str());
-      find_and_replace(result, "%width%", width.c_str());
-   } else {
-      find_and_replace(result, "%width%", "3");
-   }
-
-   if (kvmap.find("height") != kvmap.end()){
-      std::string dim = kvmap["height"];
-      int unitPos = dim.find_first_not_of("0123456789.");
-      unit = dim.substr(unitPos);
-      std::string height = dim.substr(0,unitPos);
-      find_and_replace(result, "%unit%", unit.c_str());
-      find_and_replace(result, "%height%", height.c_str());
-   } else {
-      find_and_replace(result, "%height%", "3");
-   }
-   
+    
 
    Typesetter::AppendTag(result.c_str()) ;
 
