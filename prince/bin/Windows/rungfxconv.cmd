@@ -9,12 +9,12 @@ REM cdr cdt ccx cdrx cmx cgm xfig sk sk1 aff plt dxf dst pes exp pcs eps ps
 REM wmf emf
 REM END EXTENSION LIST
 
-if %ImageMagick%x==x set ImageMagick=%5
-if %Uniconvertor%x==x set Uniconvertor=%6
-if %wmf2epsDir%x==x set wmf2epsDir=%7
-set inputPath=%1
+if "%ImageMagick%x"=="x" set ImageMagick=%5
+if "%Uniconvertor%x"=="x" set Uniconvertor=%6
+if "%wmf2epsDir%x"=="x" set wmf2epsDir=%7
+set inputPath=%~1
 set inputFormat=%2
-set outputPath=%3
+set outputPath=%~3
 set mode=%4
 set outputFile=%8
 set extraFiles=()
@@ -35,7 +35,7 @@ if %mode%x==texx set outputFormat=pdf
 if %mode%x==outtexx set outputFormat=pdf
 if %mode%x==outx goto echoIt
 if %mode%x==outtexx goto echoIt
-call %Uniconvertor%\uniconvertor "%~1.%inputFormat%" "%~3.%outputFormat%" >%outputPath%.%outputFormat%.log 2>&1
+call "%Uniconvertor%\uniconvertor" "%~1.%inputFormat%" "%~3.%outputFormat%" >%outputPath%.%outputFormat%.log 2>&1
 goto finish
 :wmfeps
 set outputFormat=svg
@@ -44,9 +44,12 @@ if %mode%x==texx set outputFormat=eps
 if %mode%x==outtexx set outputFormat=eps
 if %mode%x==outx goto echoIt
 if %mode%x==outtexx goto echoIt
-copy /Y %inputPath%.%inputFormat% %outputPath%.%inputFormat%
-%wmf2epsDir%\wmf2epsc %outputPath%.%inputFormat% >%outputPath%.%outputFormat%.log 2>&1
-call %Uniconvertor%/uniconvertor "%~3.eps" %~3.%outputFormat%" >>%outputPath%.%outputFormat%.log 2>&1
+set T=%MSITEXBIN%
+if %T%x==x set T=c:\texlive\2014msi\bin\win32
+path=%T%;%windir%\system32
+copy /Y "%inputPath%.%inputFormat%" "%outputPath%.%inputFormat%"
+%wmf2epsDir%\wmf2epsc "%outputPath%.%inputFormat%" "%outputPath%.eps"
+%wmf2epsDir%\sam2p "%outputPath%.eps" "%outputPath%.png" >> "%outputPath%.png.log" 2>&1
 goto finish
 :echoIt
 if %outputFile%x==x goto noextra

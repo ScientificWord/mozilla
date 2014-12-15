@@ -367,7 +367,7 @@
             <label  observes="locationEnabled" control="locationList">Location</label>
             <menulist id="locationList" observes="locationEnabled" oncommand="locationChanged()" >
               <menupopup>
-                <menuitem  id="unspecified" label="&unspecified;" selected="true" value="unspecified"/>
+                <menuitem  id="floating" label="&floating;" selected="true" value="floating"/>
                 <menuitem  id="inline" label="&inline.label;"  value="inline"/>
                 <menuitem  id="center" label="&display.label;" value="display"/>
                 <menuseparator/>
