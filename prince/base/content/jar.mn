@@ -289,3 +289,5 @@ prince.jar:
 * content/plotFontSettings.js           (dialogs/plotFontSettings.js)
 * content/licenseDialog.js              (dialogs/licenseDialog.js)
 * content/licenseDialog.xul             (dialogs/licenseDialog.xul)
+* content/activateDialog.js              (dialogs/activateDialog.js)
+* content/activateDialog.xul             (dialogs/activateDialog.xul)

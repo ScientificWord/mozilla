@@ -24,6 +24,7 @@ modern.jar:
   skin/modern/MatrixInsertRowsCols.css  (MatrixInsertRowsCols.css)
   skin/modern/aboutDialog.css           (aboutDialog.css)
   skin/modern/licenseDialog.css           (licenseDialog.css)
+  skin/modern/activate.css           (activate.css)
   skin/modern/icons/background.png      (icons/background.png)
   skin/modern/icons/background-sm.png   (icons/background-sm.png)
   skin/modern/icons/copy.png            (icons/copy.png)
