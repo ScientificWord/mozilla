@@ -1178,6 +1178,13 @@ function msiEditorDocumentObserver(editorElement)
           delete this.mEditorElement.initialMarker;  //don't want to leave this around for later reloads or anything
           msiGoToMarker(this.mEditorElement, markerStr);
         }
+        if (bIsRealDocument){
+          // Convert graphics
+          var doc = msiGetEditor(this.mEditorElement).document;
+          var win = this.mEditorElement.contentWindow;
+
+          graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
+        }
         if (bIsRealDocument)
           this.mEditorElement.mbInitializationCompleted = true;
 
@@ -11300,6 +11307,7 @@ function msiEditPage(url, launchWindow, delay, isShell, windowName)
       useEditorElement.focus();
       useEditorElement.isShellFile = isShell;
       msiSetSaveAndPublishUI(uri.spec, useEditorElement);
+
 
 //      if (emptyWindow.IsInHTMLSourceMode())
 //        emptyWindow.SetEditMode(emptyWindow.PreviousNonSourceDisplayMode);
