@@ -249,8 +249,8 @@
 <!ENTITY helpmenuProduct.accesskey    "S">
 <!ENTITY helpmenuWebsite.label    "MacKichan Software Website">
 <!ENTITY helpmenuWebsite.accesskey    "M">
-<!ENTITY helpmenuRegister.label    "Activate...">
-<!ENTITY helpmenuRegister.accesskey    "R">
+<!ENTITY helpmenuActivate.label    "Activate...">
+<!ENTITY helpmenuActivate.accesskey    "A">
 <!ENTITY helpmenuFeatures.label    "System Features...">
 <!ENTITY helpmenuFeatures.accesskey    "F">
 <!ENTITY helpmenuLicense.label    "License Information">

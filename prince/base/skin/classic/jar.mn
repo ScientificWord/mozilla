@@ -829,4 +829,5 @@ classic.jar:
   skin/classic/toolbarsOverlay.css	(toolbarsOverlay.css)
   skin/classic/typesetDocFormat.css (typesetDocFormat.css)
   skin/classic/aboutDialog.css      (aboutDialog.css)
-  skin/classic/licenseDialog.css	    (licenseDialog.css)
+  skin/classic/licenseDialog.css      (licenseDialog.css)
+  skin/classic/activate.css	    (activate.css)
