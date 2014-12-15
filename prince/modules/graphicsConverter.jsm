@@ -369,11 +369,11 @@ var graphicsConverter = {
       var utilsDir = dsprops.get("CurProcD", Components.interfaces.nsIFile);
       //      utilsDir = utilsDir.parent;
       utilsDir.append("utilities");
-      this.uniconvertorDir = this.imageMagickDir = utilsDir;
-      this.wmf2epsDir = utilsDir.clone();
-      this.wmf2epsDir.append("wmf2epsc");
-      if (!this.wmf2epsDir.exists())
-        this.wmf2epsDir = null;
+      this.uniconvertorDir = this.imageMagickDir = this.wmf2epsDir = utilsDir;
+      //this.wmf2epsDir = utilsDir.clone();
+      //this.wmf2epsDir.append("wmf2epsc");
+      //if (!this.wmf2epsDir.exists())
+      //  this.wmf2epsDir = null;
       //      dump("Path to UniConvertor and ImageMagick is " + utilsDir.path + "\n");
     }
     switch (filterName) {
