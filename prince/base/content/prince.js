@@ -1,4 +1,5 @@
-Components.utils.import("resource://app/modules/os.jsm");
+Components.utils.import("resource://app/modules/graphicsConverter.jsm");
+
 #include productname.inc
 
 const NS_IPCSERVICE_CONTRACTID  = "@mozilla.org/process/ipc-service;1";
