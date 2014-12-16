@@ -1235,6 +1235,16 @@ function msiEditorDocumentObserver(editorElement)
         // cmd_bold is a proxy; see EditorSharedStartup (above) for details
         window.updateCommands("style");
         window.updateCommands("undo");
+        if (editor)
+        {
+          var enabled={value: null};
+          var can = {value: null};
+          editor.canUndo(enabled, can);
+          if (enabled.value && can.value) {
+            document.getElementById("cmd_PreviewMode").setAttribute("disabled",  true);
+          } else
+            document.getElementById("cmd_PreviewMode").removeAttribute("disabled");
+        }
         break;
     }
   }
