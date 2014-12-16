@@ -3845,64 +3845,64 @@ var msiOpenRemoteCommand =
 ////-----------------------------------------------------------------------------------
 //This command may be assumed to be useful only from a primary editor. If sufficient reason should arise to change this,
 //the version below isn't ready for prime time; a version using the correct editor would be needed.
-var msiPreviewCommand =
-{
-  isCommandEnabled: function(aCommand, dummy)
-  {
-    var editorElement = msiGetActiveEditorElement();
-    if (!editorElement || !msiIsTopLevelEditor(editorElement))
-      return false;
-    return okToPrint();
-  },
+// var msiPreviewCommand =
+// {
+//   isCommandEnabled: function(aCommand, dummy)
+//   {
+//     var editorElement = msiGetActiveEditorElement();
+//     if (!editorElement || !msiIsTopLevelEditor(editorElement))
+//       return false;
+//     return okToPrint();
+//   },
 
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
+//   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+//   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
-  doCommand: function(aCommand)
-  {
-    var editorElement = msiGetActiveEditorElement();
-    // Don't continue if user canceled during prompt for saving
-    // DocumentHasBeenSaved will test if we have a URL and suppress "Don't Save" button if not
-    if (!msiCheckAndSaveDocument("cmd_preview", DocumentHasBeenSaved()))
-      return;
+//   doCommand: function(aCommand)
+//   {
+//     var editorElement = msiGetActiveEditorElement();
+//     // Don't continue if user canceled during prompt for saving
+//     // DocumentHasBeenSaved will test if we have a URL and suppress "Don't Save" button if not
+//     if (!msiCheckAndSaveDocument("cmd_preview", DocumentHasBeenSaved()))
+//       return;
 
-    // Check if we saved again just in case?
-    if (DocumentHasBeenSaved())
-    {
-      var browser;
-      try {
-        // Find a browser with this URL
-        var windowManager = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService();
-        var windowManagerInterface = windowManager.QueryInterface(Components.interfaces.nsIWindowMediator);
-        var enumerator = windowManagerInterface.getEnumerator("navigator:browser");
+//     // Check if we saved again just in case?
+//     if (DocumentHasBeenSaved())
+//     {
+//       var browser;
+//       try {
+//         // Find a browser with this URL
+//         var windowManager = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService();
+//         var windowManagerInterface = windowManager.QueryInterface(Components.interfaces.nsIWindowMediator);
+//         var enumerator = windowManagerInterface.getEnumerator("navigator:browser");
 
-        var documentURI = msiGetEditorURL(editorElement);
-        while ( enumerator.hasMoreElements() )
-        {
-          browser = enumerator.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
-          if ( browser && (documentURI == browser.getBrowser().currentURI.spec))
-            break;
+//         var documentURI = msiGetEditorURL(editorElement);
+//         while ( enumerator.hasMoreElements() )
+//         {
+//           browser = enumerator.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
+//           if ( browser && (documentURI == browser.getBrowser().currentURI.spec))
+//             break;
 
-          browser = null;
-        }
-      }
-      catch (ex) {}
+//           browser = null;
+//         }
+//       }
+//       catch (ex) {}
 
-      // If none found, open a new browser
-      if (!browser)
-      {
-        browser = window.openDialog(getBrowserURL(), "_blank", "chrome,all,dialog=no", documentURI);
-      }
-      else
-      {
-        try {
-          browser.BrowserReloadSkipCache();
-          browser.focus();
-        } catch (ex) {}
-      }
-    }
-  }
-};
+//       // If none found, open a new browser
+//       if (!browser)
+//       {
+//         browser = window.openDialog(getBrowserURL(), "_blank", "chrome,all,dialog=no", documentURI);
+//       }
+//       else
+//       {
+//         try {
+//           browser.BrowserReloadSkipCache();
+//           browser.focus();
+//         } catch (ex) {}
+//       }
+//     }
+//   }
+// };
 
 //-----------------------------------------------------------------------------------
 //Again, presumably not needed by a subordinate editor.
