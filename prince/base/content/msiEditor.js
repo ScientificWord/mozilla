@@ -1193,6 +1193,11 @@ function msiEditorDocumentObserver(editorElement)
       case "cmd_setDocumentModified":
 //        msiDumpWithID("Hit setDocumentModified observer in base msiEditorDocumentObserver, for editor [@].\n", this.mEditorElement);
         window.updateCommands("save");
+        if (msiPreviewCommand.isCommandEnabled()) {
+          document.getElementById('PreviewModeButton').removeAttribute('disabled');
+        } else {
+          document.getElementById('PreviewModeButton').setAttribute('disabled', 'true');
+        }
 //        window.updateCommands("undo");
 //        msiDoUpdateCommands("undo", this.mEditorElement);
         break;
@@ -4755,71 +4760,67 @@ function msiSetEditMode(mode, editorElement)
   }
   else if (previousMode == kDisplayModeSource)
   {
-    // Only rebuild document if a change was made in source window
-    var historyCount = sourceEditor.historySize();
-    if (historyCount.undo > 0)
-    {
-//   Reduce the undo count so we don't use too much memory
-//   during multiple uses of source window
-//   (reinserting entire doc caches all nodes)
-//      try {
-//      editor.transactionManager.maxTransactionCount = 1;
-//      } catch (e) {}
-//
-      var errMsg="";
-      var willReturn = false;
-      source = sourceEditor.getValue();
-      //source = decodeEntities(source);
-      var xmlParser = new DOMParser();
-      try {
-        var doc = xmlParser.parseFromString(source, "text/xml");
-        if (doc.documentElement.nodeName == "parsererror") {
-          var errMsg = doc.documentElement.firstChild.textContent;
-          var ptrLine = doc.documentElement.lastChild.textContent;
-          errMsg += "\n"+ptrLine;;
-          willReturn = handleSourceParseError(errMsg);
-          if (willReturn)
-          {
-             msiSetDisplayMode(editorElement, kDisplayModeSource);
-            return;
+    // Only rebuild document if a change was made in source window and licensed
+    if (isLicensed()) {
+      var historyCount = sourceEditor.historySize();
+      if (historyCount.undo > 0 )
+      {
+  //   Reduce the undo count so we don't use too much memory
+  //   during multiple uses of source window
+  //   (reinserting entire doc caches all nodes)
+  //      try {
+  //      editor.transactionManager.maxTransactionCount = 1;
+  //      } catch (e) {}
+  //
+        var errMsg="";
+        var willReturn = false;
+        source = sourceEditor.getValue();
+        //source = decodeEntities(source);
+        var xmlParser = new DOMParser();
+        try {
+          var doc = xmlParser.parseFromString(source, "text/xml");
+          if (doc.documentElement.nodeName == "parsererror") {
+            var errMsg = doc.documentElement.firstChild.textContent;
+            var ptrLine = doc.documentElement.lastChild.textContent;
+            errMsg += "\n"+ptrLine;;
+            willReturn = handleSourceParseError(errMsg);
+            if (willReturn)
+            {
+               msiSetDisplayMode(editorElement, kDisplayModeSource);
+              return;
+            }
+          }
+          else {
+            RebuildFromSource(doc, editorElement);
           }
         }
-        else {
-          RebuildFromSource(doc, editorElement);
+        catch (e) {
         }
-      }
-      catch (e) {
-      }
-        // Get the text for the <title> from the newly-parsed document
-        // (must do this for proper conversion of "escaped" characters)
-      var title = "";
-      var preambles = editor.document.getElementsByTagName("preamble");
-      if (preambles.length > 0)
-      {
-        var titlenodelist =  preambles[0].getElementsByTagName("title");
-        if (titlenodelist.length > 0)
+          // Get the text for the <title> from the newly-parsed document
+          // (must do this for proper conversion of "escaped" characters)
+        var title = "";
+        var preambles = editor.document.getElementsByTagName("preamble");
+        if (preambles.length > 0)
         {
-          var titleNode = titlenodelist.item(0);
-          if (titleNode)
-            title = titleNode.textContent;
+          var titlenodelist =  preambles[0].getElementsByTagName("title");
+          if (titlenodelist.length > 0)
+          {
+            var titleNode = titlenodelist.item(0);
+            if (titleNode)
+              title = titleNode.textContent;
+          }
+        }
+        if (editor.document.title != title && ("msiUpdateWindowTitle" in window))
+        {
+          editor.document.title = title;
+          msiUpdateWindowTitle();
         }
       }
-      if (editor.document.title != title && ("msiUpdateWindowTitle" in window))
-      {
-        editor.document.title = title;
-        msiUpdateWindowTitle();
-      }
+      editorElement.makeEditable("html");
     }
-    // Restore unlimited undo count
-//    try {
-//      editor.transactionManager.maxTransactionCount = -1;
-//    } catch (e) {}
-////    editor.enableStyleSheet(dynAllTagsStyleSheet, false);
-    msiSetDisplayMode(editorElement, mode);
-
+ 
     // Clear out the string buffers
     msiClearSource(editorElement);
-    editorElement.makeEditable("html");
     editorElement.contentWindow.focus();
   }
   else editorElement.contentWindow.focus();
