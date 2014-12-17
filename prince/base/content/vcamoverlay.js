@@ -188,6 +188,7 @@ function doMakeSnapshot()
   catch(e) {
     return;
   }
+  msiRequirePackage(editorElement, "wrapfig", "");
   var doc = editorElement.contentDocument;
   var ready = this.readyState;
   if (ready > 1) {
@@ -198,7 +199,6 @@ function doMakeSnapshot()
       var prefs;
       var res;
       var DOMGraph;
-      var gslist;
       var graph = null;
       var plotWrapper = this.parentNode;
       try {
@@ -210,10 +210,6 @@ function doMakeSnapshot()
       if (graph == null) {
         graph = new Graph();
         DOMGraph = msiFindParentOfType(this, "graph");
-        gslist = DOMGraph.getElementsByTagName("graphSpec");
-        if (gslist.length > 0) {
-          gslist = gslist[0];
-        }
         graph.extractGraphAttributes(DOMGraph);
       }
       if (editorElement == null) {
@@ -249,14 +245,18 @@ function rebuildSnapshots(doc) {
   var img = null;
   var obj = null;
   var doRefresh = false;
-  wrapperlist = doc.documentElement.getElementsByTagName("plotwrapper");
+  wrapperlist = doc.documentElement.getElementsByTagName("msiframe");
   length = wrapperlist.length;
   for (i = 0; i < length; i++) {
-    objlist = wrapperlist[i].getElementsByTagName("object");
-    if (objlist.length > 0) {
-      obj = objlist[0];
+    if (wrapperlist[i].parentNode.tagName === "graph")
+    {
+      obj = wrapperlist[i].firstChild;
+      if (obj) {
+        img = obj.nextSibling;
+      }
+      else continue;
       if (obj.wrappedJSObject) obj = obj.wrappedJSObject;
-      if (objlist.length > 1) img = objlist[1];
+      if (img && img.nodeName !== 'object') img = null;
       if (!img) {
         return doMakeSnapshot.call(obj);
       }

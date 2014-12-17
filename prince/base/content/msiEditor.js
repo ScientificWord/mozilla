@@ -1240,7 +1240,7 @@ function msiEditorDocumentObserver(editorElement)
           var enabled={value: null};
           var can = {value: null};
           editor.canUndo(enabled, can);
-          if (enabled.value && can.value) {
+          if (!isLicensed() && enabled.value && can.value) {
             document.getElementById("cmd_PreviewMode").setAttribute("disabled",  true);
           } else
             document.getElementById("cmd_PreviewMode").removeAttribute("disabled");
