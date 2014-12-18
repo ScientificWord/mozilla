@@ -1,4 +1,4 @@
- // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+// Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 "use strict";
 Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
@@ -856,7 +856,6 @@ function msiEditorDocumentObserver(editorElement)
     {
       case "obs_documentCreated":
         // Get state to see if document creation succeeded
-        msiDumpWithID("Got obs_documentCreated message in documentCreated observer for editor [@]; aData is [" + aData + "]; msiGetEditor returned [" + edStr + "].\n", editorElement);
         setZoom();
         var params = newCommandParams();
         if (!params)
@@ -1182,6 +1181,12 @@ function msiEditorDocumentObserver(editorElement)
           // Convert graphics
           var doc = msiGetEditor(this.mEditorElement).document;
           var win = this.mEditorElement.contentWindow;
+          var editorElement = msiGetActiveEditorElement();
+          var docUrlString = msiGetEditorURL(editorElement);
+          var url = msiURIFromString(docUrlString);
+          var baseDir = msiFileFromFileURL(url);
+          baseDir = baseDir.parent; // and now it points to the working directory
+          graphicsConverter.init(win, baseDir);
 
           graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
         }
@@ -11432,6 +11437,4 @@ function msiSaveAsPicture(editorElement)
   if (dialogResult.filepickerClick != msIFilePicker.returnCancel)
     editor.saveSelectionAsImage(dialogResult.resultingLocalFile.path);
 }
-
-
 
