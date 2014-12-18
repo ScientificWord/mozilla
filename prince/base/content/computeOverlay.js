@@ -14,7 +14,7 @@ Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 var msiEvaluateCommand = {
   isCommandEnabled: function(aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    return (theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
+    return (isLicensed() && theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -22,14 +22,15 @@ var msiEvaluateCommand = {
 
   doCommand: function(aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    doComputeCommand(aCommand, theEditorElement, this);
+    if (isLicensed())
+      doComputeCommand(aCommand, theEditorElement, this);
   }
 };
 
 var msiComputeStopCommand = {
   isCommandEnabled: function(aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    return (theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
+    return (isLicensed() && theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
   },
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
   doCommandParams: function(aCommand, aParams, editorElement) {},
@@ -60,7 +61,7 @@ var msiComputeStopCommand = {
 var msiDefineCommand = {
   isCommandEnabled: function(aCommand, dummy) {
     var editorElement = msiGetActiveEditorElement();
-    return (editorElement && msiGetEditor(editorElement) && msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement) && (isInMath(editorElement) || aCommand == "cmd_MSIComputeShowDefs" || aCommand == "cmd_MSIComputeMapMuPADName" ||
+    return (isLicensed() && editorElement && msiGetEditor(editorElement) && msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement) && (isInMath(editorElement) || aCommand == "cmd_MSIComputeShowDefs" || aCommand == "cmd_MSIComputeMapMuPADName" ||
     //aCommand == "cmd_MSI/ComputeUserSettings" ||
     aCommand == "cmd_MSIComputeClearDefs" ||
     //aCommand == "cmd_MSIComputeSettings" ||
@@ -73,7 +74,8 @@ var msiDefineCommand = {
 
   doCommand: function(aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    doComputeCommand(aCommand, theEditorElement);
+    if (isLicensed())
+      doComputeCommand(aCommand, theEditorElement);
   }
 };
 
