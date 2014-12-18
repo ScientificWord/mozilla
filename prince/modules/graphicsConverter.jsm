@@ -751,6 +751,18 @@ var graphicsConverter = {
       targetFile = targetDir.clone();
       targetFile.append(fName);
       this.doImportGraphicsToTarget(gfxFile, targetFile, "tex", aWindow, callbackObject);
+      var newGraphic = documentDir.clone();
+      newGraphic.append("tcache");
+      newGraphic.append(nameAndExt.name + '.png');
+                       
+      newGraphic = msiMakeUrlRelativeTo(newGraphic, documentDir);
+
+      if (objElement.hasAttribute("src")) 
+         objElement.removeAttribute("src");
+      objElement.setAttribute("src", newGraphic.path);
+      if (objElement.hasAttribute("data")) 
+         objElement.removeAttribute("data");
+      objElement.setAttribute("data", newGraphic.path);
       bChanged = true;
     }
     dump("In graphicsConverter.ensureTypesetGraphicForElement, 9\n");
@@ -1101,3 +1113,103 @@ function graphicsMultipleTimerHandler() {
 }
 
 graphicsMultipleTimerHandler.prototype = graphicsMultipleTimerBase;
+
+
+function msiMakeUrlRelativeTo(inputFile, baseDir) {
+   var inputURL = msiFileURLFromFile(inputFile);
+   var baseURL = msiFileURLFromFile(baseDir);
+ 
+   var basePath = baseURL.path;
+   var urlPath = inputURL.path;
+ 
+   
+   var doCaseInsensitive = (this.graphicsConverter.OS = 'win');
+   if (doCaseInsensitive)
+     basePath = basePath.toLowerCase();
+ 
+   // Get base filename before we start chopping up the basePath
+   var baseFilename = GetFilename(basePath);
+ 
+   // Both url and base paths now begin with "/"
+   // Look for shared dirs starting after that
+   urlPath = urlPath.slice(1);
+   basePath = basePath.slice(1);
+   var firstDirTest = true;
+   var nextBaseSlash = 0;
+   var done = false;
+   // Remove all matching subdirs common to both base and input urls
+   do {
+     nextBaseSlash = basePath.indexOf('/');
+     var nextUrlSlash = urlPath.indexOf('/');
+     if (nextUrlSlash === -1) {
+       // We're done matching and all dirs in url
+       // what's left is the filename
+       done = true;
+       // Remove filename for named anchors in the same file
+       if (nextBaseSlash === -1 && baseFilename) {
+         var anchorIndex = urlPath.indexOf('#');
+         if (anchorIndex > 0) {
+           var urlFilename = doCaseInsensitive ? urlPath.toLowerCase() : urlPath;
+           if (urlFilename.indexOf(baseFilename) === 0)
+             urlPath = urlPath.slice(anchorIndex);
+         }
+       }
+     } else if (nextBaseSlash >= 0) {
+       // Test for matching subdir
+       var baseDir = basePath.slice(0, nextBaseSlash);
+       var urlDir = urlPath.slice(0, nextUrlSlash);
+       if (doCaseInsensitive)
+         urlDir = urlDir.toLowerCase();
+       if (urlDir === baseDir) {
+         // Remove matching dir+"/" from each path
+         //  and continue to next dir
+         basePath = basePath.slice(nextBaseSlash + 1);
+         urlPath = urlPath.slice(nextUrlSlash + 1);
+       } else {
+         // No match, we're done
+         done = true;
+         // Be sure we are on the same local drive or volume
+         //   (the first "dir" in the path) because we can't
+         //   relativize to different drives/volumes.
+         // UNIX doesn't have volumes, so we must not do this else
+         //  the first directory will be misinterpreted as a volume name
+         if (firstDirTest && baseScheme === 'file' && os !== 'osx')
+           return inputUrl;
+       }
+     } else
+       // No more base dirs left, we're done
+       done = true;
+     firstDirTest = false;
+   } while (!done);
+   // Add "../" for each dir left in basePath
+   while (nextBaseSlash > 0) {
+     urlPath = '../' + urlPath;
+     nextBaseSlash = basePath.indexOf('/', nextBaseSlash + 1);
+   }
+   return urlPath;
+}
+
+
+// function GetFilename(urlspec)
+// {
+//   if (!urlspec || IsUrlAboutBlank(urlspec))
+//     return "";
+// 
+//   var IOService = GetIOService();
+//   if (!IOService)
+//     return "";
+// 
+//   var filename;
+// 
+//   try {
+//     var uri = IOService.newURI(urlspec, null, null);
+//     if (uri)
+//     {
+//       var url = uri.QueryInterface(Components.interfaces.nsIURL);
+//       if (url)
+//         filename = url.fileName;
+//     }
+//   } catch (e) {}
+// 
+//   return filename ? filename : "";
+// }
