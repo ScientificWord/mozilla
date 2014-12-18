@@ -1,4 +1,4 @@
-@echo off
+@echo on
 setlocal
 REM If you add support for any new graphics type, please add it to the extension list below.
 REM BEGIN EXTENSION LIST
@@ -49,7 +49,7 @@ if %T%x==x set T=c:\texlive\2014msi\bin\win32
 path=%T%;%windir%\system32
 copy /Y "%inputPath%.%inputFormat%" "%outputPath%.%inputFormat%"
 %wmf2epsDir%\wmf2epsc "%outputPath%.%inputFormat%" "%outputPath%.eps"
-%wmf2epsDir%\sam2p "%outputPath%.eps" "%outputPath%.png" >> "%outputPath%.png.log" 2>&1
+start sam2p "%outputPath%.eps" "%outputPath%.png" >> "%outputPath%.png.log" 2>&1
 goto finish
 :echoIt
 if %outputFile%x==x goto noextra
