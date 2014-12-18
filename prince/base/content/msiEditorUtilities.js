@@ -80,7 +80,11 @@ function okToPrint()
 {
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  return (isLicensed() || editor.getModificationCount() == 0);
+  var enabled={value: null};
+  var can = {value: null};
+  editor.canUndo(enabled, can);
+  var canUndo = enabled.value && can.value;
+  return (isLicensed() || !canUndo);
 }
 
 function licenseTimeRemaining() {
