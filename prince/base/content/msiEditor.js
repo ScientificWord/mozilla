@@ -856,7 +856,7 @@ function msiEditorDocumentObserver(editorElement)
     {
       case "obs_documentCreated":
         // Get state to see if document creation succeeded
-        msiDumpWithID("Got obs_documentCreated message in documentCreated observer for editor [@]; aData is [" + aData + "]; msiGetEditor returned [" + edStr + "].\n", editorElement);
+        msiDumpWithID("Got obs_documentCreated message in documentCreated observer for editor [@]; aData is [" + aData + "]; msiGetEditor returned [" + edStr + "].\n", this.mEditorElement);
         setZoom();
         var params = newCommandParams();
         if (!params)
@@ -1182,6 +1182,13 @@ function msiEditorDocumentObserver(editorElement)
           // Convert graphics
           var doc = msiGetEditor(this.mEditorElement).document;
           var win = this.mEditorElement.contentWindow;
+
+          var editorElement = msiGetActiveEditorElement();
+          var docUrlString = msiGetEditorURL(editorElement);
+          var url = msiURIFromString(docUrlString);
+          var baseDir = msiFileFromFileURL(url);
+          baseDir = baseDir.parent; // and now it points to the working directory
+          graphicsConverter.init(win, baseDir);
 
           graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
         }
