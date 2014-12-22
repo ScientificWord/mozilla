@@ -755,15 +755,16 @@ var graphicsConverter = {
       newGraphic.append("tcache");
       newGraphic.append(nameAndExt.name + '.png');
                        
-      newGraphic = msiMakeUrlRelativeTo(newGraphic, documentDir);
+      var newGraphicPath = msiMakeUrlRelativeTo(newGraphic, documentDir);
 
       if (objElement.hasAttribute("src")) 
          objElement.removeAttribute("src");
-      objElement.setAttribute("src", newGraphic.path);
+      objElement.setAttribute("src", newGraphicPath);
       if (objElement.hasAttribute("data")) 
          objElement.removeAttribute("data");
-      objElement.setAttribute("data", newGraphic.path);
+      objElement.setAttribute("data", newGraphicPath);
       bChanged = true;
+      objElement.setAttribute("-moz_dirty","true");
     }
     dump("In graphicsConverter.ensureTypesetGraphicForElement, 9\n");
     return bChanged;
@@ -787,7 +788,7 @@ var graphicsConverter = {
 
     for (var ii = 0; ii < objList.length; ++ii) {
       timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
-      bChanged = this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, timerHandler) || bChanged;
+      bChanged = this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null) || bChanged;
     }
     for (ii = 0; ii < imgList.length; ++ii) {
       timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
@@ -1121,15 +1122,15 @@ function msiMakeUrlRelativeTo(inputFile, baseDir) {
  
    var basePath = baseURL.path;
    var urlPath = inputURL.path;
- 
+
+   // Get base filename before we start chopping up the basePath
+   var baseFilename = baseURL.fileName;
    
    var doCaseInsensitive = (this.graphicsConverter.OS = 'win');
    if (doCaseInsensitive)
      basePath = basePath.toLowerCase();
  
-   // Get base filename before we start chopping up the basePath
-   var baseFilename = GetFilename(basePath);
- 
+    
    // Both url and base paths now begin with "/"
    // Look for shared dirs starting after that
    urlPath = urlPath.slice(1);

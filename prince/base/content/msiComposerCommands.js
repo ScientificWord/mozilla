@@ -1386,7 +1386,7 @@ var msiExportToTexCommand =
     if (okToPrint())
     {
       try {
-        return exportTex();
+        return exportTeX();
       }
       catch (e) {
         finalThrow(cmdFailString('exporttex'), e.message);
@@ -4166,9 +4166,12 @@ var msiCopyTeX =
 {
   isCommandEnabled: function(aCommand, aRefCon)
   {
-    var editor = aRefCon.QueryInterface(Components.interfaces.nsIEditor);
-    if (editor)
-      return editor.canCut();
+    //var editor = aRefCon.QueryInterface(Components.interfaces.nsIEditor);
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    var nsed = editor.QueryInterface(Components.interfaces.nsIEditor);
+    if (nsed)
+      return nsed.canCut();
     return false;
   },
 
