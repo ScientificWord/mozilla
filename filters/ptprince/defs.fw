@@ -794,11 +794,17 @@ void DefAssignment(CommandCode curcmd, int prefixes){
    bool bLong   = prefixes & PREFIX_LONG;
    TokenList* pTL = 0;
    MacroDef* pMD = 0;
+
    TokenList* pTap = new TokenList();
-   // bool tapping = (Global::msioutput == 0) &&
-   //                InputStack::StartTap(pTap);
    bool tapping = false;
+   if (Global::msiinpreamble) {
+     InputStack::Clean();
+     tapping = InputStack::StartTap(pTap);
+   }
+     
+   //bool tapping = false;
    if (tapping){
+     //InputStack::StartTap(pTap);
      if (bGlobal){
        // push back \global
        pTap -> AppendSymbol("global");
@@ -818,6 +824,17 @@ void DefAssignment(CommandCode curcmd, int prefixes){
       InputStack::StopTap();
       LOG("\nTapped tokens = " << *pTap);
       PrintDefn(*pTap);
+      StringUtils::AppendToks(*pTap);
+      String str = StringBuilder::Create();
+      std::string strTemp;
+      int i = 0;
+      while (i < str.Size()){
+          strTemp += (char) str[i];
+          ++i;
+      }
+      StringBuilder::Discard(str);
+      s_preambleExtra+= "\n";
+      s_preambleExtra += strTemp;
    }
    delete pTap;
 
@@ -1137,6 +1154,8 @@ TokenListTokenSource* xfcnThe_nopush(
                           int /* ignored */,
                           TeXToken*,
                           SymbolData**);
+
+extern std::string s_preambleExtra;
 
 
 
