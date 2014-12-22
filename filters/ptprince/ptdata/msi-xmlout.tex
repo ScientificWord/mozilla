@@ -571,12 +571,12 @@
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand#1{#2}}%
    \if x#3x
    \else
-     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a[#3]}%
+     \expandafter\preambleToks\expandafter{\the\preambleToks[#3]}%
    \fi
    \if x#4x
    \else
-     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a[#4]}\fi
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a{#5}}}%
+     \expandafter\preambleToks\expandafter{\the\preambleToks[#4]}\fi
+   \expandafter\preambleToks\expandafter{\the\preambleToks{#5}}}%
 
  %%% #1 = optional star, #2 = command name
  \def\@renewcommand#1#2{\@ifnextchar[{\@renewcommandA{#1}{#2}}{\@renewcommandA{#1}{#2}[]}}
@@ -587,12 +587,12 @@
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\renewcommand#1{#2}}
    \if x#3x
    \else
-     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a[#3]}%
+     \expandafter\preambleToks\expandafter{\the\preambleToks[#3]}%
    \fi
    \if x#4x
    \else
-     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a[#4]}\fi
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a{#5}}}%
+     \expandafter\preambleToks\expandafter{\the\preambleToks[#4]}\fi
+   \expandafter\preambleToks\expandafter{\the\preambleToks{#5}}}%
  
 
 %   \MSILocalDef{#2}}
@@ -2004,21 +2004,33 @@
    \msi@br\msitag{<head>}
    \msi@br\msiopentag{preamble}{<preamble>}
    %\expandafter\out@preamble@tex\expandafter{\the\preambleToks}
-   \msi@inpreamble=1
    \def\makeatother{%
        \msihmode
-       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatother">}%
-           <![CDATA[\string\makeatother]]>%
-       \msitag{</texb>}%
+       \ifnum\msi@inpreamble=1
+         \ifnum\msi@output=0
+           \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\makeatother}
+         \fi
+       \else
+           \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatother">}%
+              <![CDATA[\string\makeatother]]>%
+           \msitag{</texb>}%
+       \fi
        \catcode`\@=12}
 
    \def\makeatletter{%
        \msihmode
-       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatletter">}%
+       \ifnum\msi@inpreamble=1
+          \ifnum\msi@output=0
+            \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\makeatletter}
+          \fi
+       \else
+         \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatletter">}%
            <![CDATA[\string\makeatletter]]>%
-       \msitag{</texb>}%
+         \msitag{</texb>}%
+       \fi
        \catcode`\@=11}
 
+   \msi@inpreamble=1
 }
 
 
