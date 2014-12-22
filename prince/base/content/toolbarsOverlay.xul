@@ -398,7 +398,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
                  label="&spellToolbarCmd.label;" observes="cmd_spelling"
                  tooltiptext="&spellToolbarCmd.tooltip;"/>
 
-  <toolbarbutton id="exporttexButton" class="toolbarbutton-1" observes="cmd_exportTeX"
+  <toolbarbutton id="exporttexButton" class="toolbarbutton-1" observes="cmd_exportToTeX"
                  tooltiptext="&exporttexToolbarButton.tooltip;" label="&exporttexToolbarButton.label;"/>
 
   <toolbarbutton id="exportwebButton" class="toolbarbutton-1" observes="cmd_exportToWeb"
