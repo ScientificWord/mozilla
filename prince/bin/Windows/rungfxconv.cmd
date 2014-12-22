@@ -46,10 +46,10 @@ if %mode%x==outx goto echoIt
 if %mode%x==outtexx goto echoIt
 set T=%MSITEXBIN%
 if %T%x==x set T=c:\texlive\2014msi\bin\win32
-path=%T%;%windir%\system32
+path=C:\Program Files\gs\gs9.14\bin;%T%;%windir%\system32
 copy /Y "%inputPath%.%inputFormat%" "%outputPath%.%inputFormat%"
 %wmf2epsDir%\wmf2epsc "%outputPath%.%inputFormat%" "%outputPath%.eps"
-start sam2p "%outputPath%.eps" "%outputPath%.png" >> "%outputPath%.png.log" 2>&1
+%wmf2epsDir%\sam2p "%outputPath%.eps" "%outputPath%.png" >> "%outputPath%.png.log" 2>&1
 goto finish
 :echoIt
 if %outputFile%x==x goto noextra
@@ -62,3 +62,4 @@ goto endIt
 if not exist %outputPath%.%outputFormat% echo failed >%outputPath%.%outputFormat%.txt
 :endIt
 endlocal
+ump("swp.prefDcoument
