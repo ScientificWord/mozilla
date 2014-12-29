@@ -668,7 +668,8 @@ var graphicsConverter = {
     dump("In graphicsConverter.ensureTypesetGraphicForElement, 1\n");
     if (objElement.getAttribute("msigraph") == "true")
       return false;
-    var gfxFileStr = objElement.getAttribute("data");
+
+    var gfxFileStr = objElement.getAttribute("originalSrcUrl");
     if (!gfxFileStr || !gfxFileStr.length)
       gfxFileStr = objElement.getAttribute("src");
     if (!gfxFileStr || !gfxFileStr.length) {
@@ -677,6 +678,7 @@ var graphicsConverter = {
     }
     if (!this.isDisplayableGraphicFile(gfxFileStr))
       return false;
+    
 
     var theUnits = objElement.getAttribute("units");
     if (!theUnits || !theUnits.length)
@@ -703,6 +705,12 @@ var graphicsConverter = {
         dump("In graphicsConverter.ensureTypesetGraphicForElement, error [" + exc + "] trying to get offsetWidth or offsetHeight for graphic [" + gfxFileStr + "]\n");
       }
     }
+    var graphicURI = msiURIFromString(gfxFileStr);
+    var graphicFile = msiFileFromFileURL(graphicURI);
+    var importName = this.copyAndConvert(graphicFile, false, theWidth, theHeight);
+    objElement.setAttribute("src", importName);
+    objElement.setAttribute("data", importName);
+    return true;
 
     var typesetFile = objElement.getAttribute("typesetSource");
     if (typesetFile && typesetFile.length) {
@@ -736,6 +744,7 @@ var graphicsConverter = {
           return false; //no action needed
       }
     }
+
 
     //if we get here, we need to generate a typesettable graphic file
     targetDir = documentDir.clone();
