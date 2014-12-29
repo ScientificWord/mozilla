@@ -73,15 +73,27 @@
   <xsl:variable name="needminipage" select="0"/>
   <xsl:if test="$inlineOffset and string-length($inlineOffset)">\raisebox{<xsl:value-of select="$inlineOffset"/>}{</xsl:if>
 	<xsl:if test="$limitframemetrics=1"><!-- <xsl:if test="not($inlineOffset) or not(string-length($inlineOffset))">{</xsl:if> -->
-    <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/>
-      <xsl:value-of select="$units"/>}
+    <xsl:if test="@sidemargin">
+         <xsl:value-of select="$newline"/>
+         <xsl:text>\setlength\columnsep{</xsl:text>
+           <xsl:value-of select="@sidemargin"/>
+           <xsl:value-of select="$units"/>
+         <xsl:text>}</xsl:text>
     </xsl:if>
     <xsl:choose>   
-      <xsl:when test="@borderw">\setlength\fboxrule{<xsl:value-of select="@borderw"/><xsl:value-of select="$units"/>} 
+      <xsl:when test="@borderw">
+         <xsl:value-of select="$newline"/>
+         <xsl:text>\setlength\fboxrule{</xsl:text>
+         <xsl:value-of select="@borderw"/><xsl:value-of select="$units"/>
+         <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
     </xsl:choose>
-    <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="$units"/>} 
+    <xsl:if test="@padding">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\setlength\fboxsep{</xsl:text>
+      <xsl:value-of select="@padding"/><xsl:value-of select="$units"/>
+      <xsl:text>}</xsl:text>
     </xsl:if>
   </xsl:if>
 
