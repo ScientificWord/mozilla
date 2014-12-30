@@ -121,6 +121,8 @@ pref("swp.graph.ztickcount", "0");
 pref("swp.graph.border", "0.00");
 pref("swp.graph.hmargin", "0.1");
 pref("swp.graph.vmargin", "0.1");
+pref("swp.graph.HMargin", "0.1");
+pref("swp.graph.VMargin", "0.1");
 pref("swp.graph.paddingwidth", "0.0");
 pref("swp.graph.paddingcolor", "#FFFFFF");
 pref("swp.graph.bgcolor", "#FFFFFF");

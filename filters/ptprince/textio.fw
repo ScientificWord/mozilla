@@ -858,7 +858,6 @@ bool LineSource::GetLine(LineOfText* pLine)
                    pLine -> StripTCIMEnd(true);
                    pLine -> Append(0x20); // add a space
                    CopyLine (pNextLine, pLine);
-                   
                    LOG("\nINTER: " << *pLine);
                    delete pNextLine;
                 } else {
