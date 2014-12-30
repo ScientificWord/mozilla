@@ -1512,6 +1512,7 @@ nsGenericElement::GetChildNodes(nsIDOMNodeList** aChildNodes)
 nsresult
 nsGenericElement::HasChildNodes(PRBool* aReturn)
 {
+  NS_ENSURE_ARG_POINTER(aReturn);
   *aReturn = mAttrsAndChildren.ChildCount() > 0;
 
   return NS_OK;
@@ -1520,6 +1521,7 @@ nsGenericElement::HasChildNodes(PRBool* aReturn)
 nsresult
 nsGenericElement::GetFirstChild(nsIDOMNode** aNode)
 {
+  NS_ENSURE_ARG_POINTER(aNode);
   nsIContent* child = GetChildAt(0);
   if (child) {
     return CallQueryInterface(child, aNode);
@@ -1533,7 +1535,8 @@ nsGenericElement::GetFirstChild(nsIDOMNode** aNode)
 nsresult
 nsGenericElement::GetLastChild(nsIDOMNode** aNode)
 {
-  PRUint32 count = GetChildCount();
+  NS_ENSURE_ARG_POINTER(aNode);
+   PRUint32 count = GetChildCount();
   
   if (count > 0) {
     return CallQueryInterface(GetChildAt(count - 1), aNode);
