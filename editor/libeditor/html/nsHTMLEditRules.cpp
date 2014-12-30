@@ -3837,7 +3837,8 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
 // in mathematics it removes empty tags and if necessary inserts an input box. It needs to do this
 // before calling the computation engine for cleanup
 {
-  if (!startNode) return;
+
+  if (!startNode || !ed) return;  //NS_ERROR_INVALID_POINTER
   nsresult res = NS_OK;
   PRBool done =  PR_FALSE;
   PRBool isEmpty = PR_FALSE;
