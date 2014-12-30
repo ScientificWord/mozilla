@@ -1911,6 +1911,7 @@ Frame.prototype = {
         switch (att) {
           case "ImageFile":
             editor.setAttribute(DOMObj, "data", graph.getValue("ImageFile"));
+            break;
           case "HMargin":
             editor.setAttribute(DOMFrame, "sidemargin", this.getFrameAttribute(att));
             break;

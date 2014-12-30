@@ -51,6 +51,27 @@ void strip_quotes(std::string& str){
   }
 }
 
+std::string get_number(std::string s)
+{
+    int unitPos = s.find_first_not_of("0123456789.");
+    if (unitPos != -1){
+       return s.substr(0,unitPos);
+    } else 
+       return s;
+}
+
+std::string get_units(std::string s)
+{
+   std::string unit = "in";
+   int unitPos = s.find_first_not_of("0123456789.");
+   if (unitPos != -1){
+      unit = s.substr(unitPos);
+   }
+   return unit;
+}
+
+
+
 std::string simple_math_to_mathml(std::string str){
       std::string mml;
       SetupMathML();
@@ -630,22 +651,22 @@ case CMD_MSISPECIAL: {
         type=\"application/x-mupad-graphics+xml\" alt=\"Generated Plot\" \
         msigraph=\"true\" style=\"width: 113.386px; height: 170.079px;\"/>\
       </plotwrapper></msiframe></graph>";
-          
+    
         // search and replace
-        find_and_replace(result, "%mathmlns%", 
+        find_and_replace(result, "%mathmlns%",
                                  "\"http://www.w3.org/1998/Math/MathML\"");
 
         find_and_replace(result, "%mozns%",
         "\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\"");
-    
+
         std::string name = kvmap["VCamFile"];
         strip_quotes(name);
         std::string newname = MaybeCopyGraphicFile(name.c_str());
         find_and_replace(result, "%ImageFile%", newname.c_str());
-    
+
         std::string fullname = newname;
         find_and_replace(result, "%ImageFileFull%", fullname.c_str());
-  
+
         find_and_replace(result, "%function%", kvmap["function"].c_str());
 
         strip_quotes(kvmap["xmin"]);
@@ -662,12 +683,12 @@ case CMD_MSISPECIAL: {
            find_and_replace(result, "%xaxislabel%", kvmap["x-label"].c_str());
         } else {
            find_and_replace(result, "%xaxislabel%", "\"x\"");
-        } 
+        }
         if (kvmap.find("y-label") != kvmap.end()){
            find_and_replace(result, "%yaxislabel%", kvmap["y-label"].c_str());
         } else {
            find_and_replace(result, "%yaxislabel%", "\"y\"");
-        } 
+        }
         if (kvmap.find("z-label") != kvmap.end()){
            find_and_replace(result, "%zaxislabel%", kvmap["z-label"].c_str());
         } else {
@@ -696,19 +717,23 @@ case CMD_MSISPECIAL: {
            find_and_replace(result, "%height%", "3");
         }
    } else {
-     // a graphic 
+     // a graphic
      result = "<object alt=\"\" \
  src=\"%ImageFile%\" \
  req=\"graphics\" \
- naturalWidth=\"0\" \
- naturalHeight=\"0\" \
- ltx_width=\"2\" \
- ltx_height=\"2\" \
+ naturalWidth=\"%naturalWidth%\" \
+ naturalHeight=\"%naturalHeight%\" \
+ imageWidth=\"%width%\" \
+ imageHeight=\"%height%\" \
  originalSrcUrl=\"%ImageFileFull%\" \
- copiedSrcUrl=\"graphics/%ImageFile%\" \
+ copiedSrcUrl=\"%ImageFile%\" \
  units=\"in\" \
  msi_resize=\"true\" \
- style=\"height: 192px; width: 192px;\"/>";
+ style=\"border-color: rgb(0, 0, 0); \
+ border-width: 0px; margin: 0px; padding: 0px; \
+ background-color: rgb(255, 255, 255); \
+ width: %width%; height: %height% \
+ text-align: center; float: none;\" />";
 
       std::string name = kvmap["filename"];
 
@@ -716,13 +741,25 @@ case CMD_MSISPECIAL: {
       std::string newname = MaybeCopyGraphicFile(name.c_str());
       find_and_replace(result, "%ImageFile%", newname.c_str());
     
-      std::string fullname = newname;
+      std::string fullname = std::string("file://") + s_docdir + SEP + name;
       find_and_replace(result, "%ImageFileFull%", fullname.c_str());
-   }
-    
+
+      if (kvmap.find("original-width") != kvmap.end()){
+         find_and_replace(result, "%naturalWidth%",
+                    get_number(kvmap["original-width"]).c_str());
+         find_and_replace(result, "%units%",
+                    get_units(kvmap["original-width"]).c_str());
+      }
+      
+      find_and_replace(result, "%naturalHeight%",
+               get_number(kvmap["original-height"]).c_str());
+      find_and_replace(result, "%width%",
+               kvmap["width"].c_str());
+      find_and_replace(result, "%height%",
+               kvmap["height"].c_str());
 
    Typesetter::AppendTag(result.c_str()) ;
-
+  }
   break;
 }
 
