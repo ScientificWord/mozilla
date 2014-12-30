@@ -229,19 +229,23 @@ function InitLanguageMenu(aCurLang)
   );
 
   // Remove any languages from the list.
-  var languageMenuPopup = gDialog.LanguageMenulist.firstChild;
-  while (languageMenuPopup.firstChild.localName != "menuseparator")
-    languageMenuPopup.removeChild(languageMenuPopup.firstChild);
+  var languageMenuPopup = null;
+  var defaultItem = null; 
+  if (gDialog.LanguageMenulist) {
+    languageMenuPopup = gDialog.LanguageMenulist.firstChild;
+    while (languageMenuPopup && anguageMenuPopup.firstChild.localName != "menuseparator")
+      languageMenuPopup.removeChild(languageMenuPopup.firstChild);
 
-  var defaultItem = null;
+  
 
-  for (i = 0; i < count; i++)
-  {
-    var item = gDialog.LanguageMenulist.insertItemAt(i, dictList[i][0], dictList[i][1]);
-    if (aCurLang && dictList[i][1] == aCurLang)
-      defaultItem = item;
+    for (i = 0; i < count; i++)
+    {
+      var item = gDialog.LanguageMenulist.insertItemAt(i, dictList[i][0], dictList[i][1]);
+      if (aCurLang && dictList[i][1] == aCurLang)
+        defaultItem = item;
+    }
   }
-
+ 
   // Now make sure the correct item in the menu list is selected.
   if (defaultItem)
   {
