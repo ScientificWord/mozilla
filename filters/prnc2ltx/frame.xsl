@@ -12,6 +12,7 @@
     <xsl:choose>
       <xsl:when test="@pos='inline'">ft-inline</xsl:when>
       <xsl:when test="@pos='center'">ft-centered</xsl:when>
+      <xsl:when test="@pos='d'">ft-centered</xsl:when>
       <xsl:when test="@ltxfloat">ft-floating</xsl:when>
       <xsl:otherwise>ft-wrapped</xsl:otherwise>
     </xsl:choose>
@@ -72,18 +73,32 @@
   </xsl:variable>
   <xsl:variable name="needminipage" select="0"/>
   <xsl:if test="$inlineOffset and string-length($inlineOffset)">\raisebox{<xsl:value-of select="$inlineOffset"/>}{</xsl:if>
-	<xsl:if test="$limitframemetrics=1"><!-- <xsl:if test="not($inlineOffset) or not(string-length($inlineOffset))">{</xsl:if> -->
-    <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/>
-      <xsl:value-of select="$units"/>}
+<!-- 	
+	<xsl:if test="$limitframemetrics=1">
+    <xsl:if test="@sidemargin">
+         <xsl:value-of select="$newline"/>
+         <xsl:text>\setlength\columnsep{</xsl:text>
+           <xsl:value-of select="@sidemargin"/>
+           <xsl:value-of select="$units"/>
+         <xsl:text>}</xsl:text>
     </xsl:if>
     <xsl:choose>   
-      <xsl:when test="@borderw">\setlength\fboxrule{<xsl:value-of select="@borderw"/><xsl:value-of select="$units"/>} 
+      <xsl:when test="@borderw">
+         <xsl:value-of select="$newline"/>
+         <xsl:text>\setlength\fboxrule{</xsl:text>
+         <xsl:value-of select="@borderw"/><xsl:value-of select="$units"/>
+         <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
     </xsl:choose>
-    <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="$units"/>} 
+    <xsl:if test="@padding">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\setlength\fboxsep{</xsl:text>
+      <xsl:value-of select="@padding"/><xsl:value-of select="$units"/>
+      <xsl:text>}</xsl:text>
     </xsl:if>
   </xsl:if>
+-->
 
   <xsl:choose>
     <xsl:when test="$framePosType='ft-wrapped'">
@@ -108,7 +123,7 @@
       <xsl:text>{</xsl:text>
       <xsl:choose>
         <xsl:when test="not(@rotation) or (@rotation='rot0')">
-          <xsl:text>0pt</xsl:text>
+          <xsl:value-of select="$width"/><xsl:value-of select="$units"/>
 <!--             \dimexpr </xsl:text><xsl:value-of select="$width"/><xsl:value-of select="$units"/> +2\fboxsep +2\fboxrule + .1in
  -->
         </xsl:when>

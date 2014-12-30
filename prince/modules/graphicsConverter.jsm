@@ -668,7 +668,8 @@ var graphicsConverter = {
     dump("In graphicsConverter.ensureTypesetGraphicForElement, 1\n");
     if (objElement.getAttribute("msigraph") == "true")
       return false;
-    var gfxFileStr = objElement.getAttribute("data");
+
+    var gfxFileStr = objElement.getAttribute("originalSrcUrl");
     if (!gfxFileStr || !gfxFileStr.length)
       gfxFileStr = objElement.getAttribute("src");
     if (!gfxFileStr || !gfxFileStr.length) {
@@ -677,6 +678,7 @@ var graphicsConverter = {
     }
     if (!this.isDisplayableGraphicFile(gfxFileStr))
       return false;
+    
 
     var theUnits = objElement.getAttribute("units");
     if (!theUnits || !theUnits.length)
@@ -703,70 +705,78 @@ var graphicsConverter = {
         dump("In graphicsConverter.ensureTypesetGraphicForElement, error [" + exc + "] trying to get offsetWidth or offsetHeight for graphic [" + gfxFileStr + "]\n");
       }
     }
+    var graphicURI = msiURIFromString(gfxFileStr);
+    var graphicFile = msiFileFromFileURL(graphicURI);
+    var importName = this.copyAndConvert(graphicFile, false, theWidth, theHeight);
+    objElement.setAttribute("src", importName);
+    objElement.setAttribute("data", importName);
+    return true;
 
-    var typesetFile = objElement.getAttribute("typesetSource");
-    if (typesetFile && typesetFile.length) {
-      var typesetNSFile = this.resolveRelativeFilePath(documentDir, typesetFile);
-      if (typesetNSFile && typsetNSFile.exists())
-        return false;
-    }
-    dump("In graphicsConverter.ensureTypesetGraphicForElement, 2\n");
-    var gfxFile = this.resolveRelativeFilePath(documentDir, gfxFileStr);
-    dump("In graphicsConverter.ensureTypesetGraphicForElement, 3\n");
-    gfxFileStr = gfxFile.leafName;
-    var nameAndExt = this.splitExtension(gfxFileStr);
-    if (this.canUseFormatForTypeset(nameAndExt.ext))
-      return false;
-
-    var bChanged = false;
-    var graphicsDirNames = ["tcache", "graphics", "gcache"];
-    var targetDir, dirEntries;
-    var aFile, fName, fNameAndExt;
-    for (var jj = 0; jj < graphicsDirNames.length; ++jj) {
-      dump("In graphicsConverter.ensureTypesetGraphicForElement, " + String(jj + 4) + "\n");
-      targetDir = documentDir.clone();
-      targetDir.append(graphicsDirNames[jj]);
-      if (!targetDir.exists())
-        continue;
-      dirEntries = targetDir.directoryEntries;
-      while (dirEntries.hasMoreElements()) {
-        aFile = dirEntries.getNext().QueryInterface(Components.interfaces.nsILocalFile);
-        fNameAndExt = this.splitExtension(aFile.leafName);
-        if ((fNameAndExt.name == nameAndExt.name) && this.canUseFormatForTypeset(nameAndExt.ext))
-          return false; //no action needed
-      }
-    }
-
-    //if we get here, we need to generate a typesettable graphic file
-    targetDir = documentDir.clone();
-    targetDir.append("tcache");
-    if (!targetDir.exists())
-      targetDir.create(1, 0755);
-    dump("In graphicsConverter.ensureTypesetGraphicForElement, 7\n");
-    var targExtArray = this.getTargetFileExtensions(gfxFile, targetDir, "tex", aWindow);
-    var targetFile;
-    dump("In graphicsConverter.ensureTypesetGraphicForElement, 8\n");
-    if (targExtArray && targExtArray.length) {
-      fName = nameAndExt.name + targExtArray[targExtArray.length - 1];
-      targetFile = targetDir.clone();
-      targetFile.append(fName);
-      this.doImportGraphicsToTarget(gfxFile, targetFile, "tex", aWindow, callbackObject);
-      var newGraphic = documentDir.clone();
-      newGraphic.append("tcache");
-      newGraphic.append(nameAndExt.name + '.png');
-                       
-      newGraphic = msiMakeUrlRelativeTo(newGraphic, documentDir);
-
-      if (objElement.hasAttribute("src")) 
-         objElement.removeAttribute("src");
-      objElement.setAttribute("src", newGraphic.path);
-      if (objElement.hasAttribute("data")) 
-         objElement.removeAttribute("data");
-      objElement.setAttribute("data", newGraphic.path);
-      bChanged = true;
-    }
-    dump("In graphicsConverter.ensureTypesetGraphicForElement, 9\n");
-    return bChanged;
+//     var typesetFile = objElement.getAttribute("typesetSource");
+//     if (typesetFile && typesetFile.length) {
+//       var typesetNSFile = this.resolveRelativeFilePath(documentDir, typesetFile);
+//       if (typesetNSFile && typsetNSFile.exists())
+//         return false;
+//     }
+//     dump("In graphicsConverter.ensureTypesetGraphicForElement, 2\n");
+//     var gfxFile = this.resolveRelativeFilePath(documentDir, gfxFileStr);
+//     dump("In graphicsConverter.ensureTypesetGraphicForElement, 3\n");
+//     gfxFileStr = gfxFile.leafName;
+//     var nameAndExt = this.splitExtension(gfxFileStr);
+//     if (this.canUseFormatForTypeset(nameAndExt.ext))
+//       return false;
+// 
+//     var bChanged = false;
+//     var graphicsDirNames = ["tcache", "graphics", "gcache"];
+//     var targetDir, dirEntries;
+//     var aFile, fName, fNameAndExt;
+//     for (var jj = 0; jj < graphicsDirNames.length; ++jj) {
+//       dump("In graphicsConverter.ensureTypesetGraphicForElement, " + String(jj + 4) + "\n");
+//       targetDir = documentDir.clone();
+//       targetDir.append(graphicsDirNames[jj]);
+//       if (!targetDir.exists())
+//         continue;
+//       dirEntries = targetDir.directoryEntries;
+//       while (dirEntries.hasMoreElements()) {
+//         aFile = dirEntries.getNext().QueryInterface(Components.interfaces.nsILocalFile);
+//         fNameAndExt = this.splitExtension(aFile.leafName);
+//         if ((fNameAndExt.name == nameAndExt.name) && this.canUseFormatForTypeset(nameAndExt.ext))
+//           return false; //no action needed
+//       }
+//     }
+// 
+// 
+//     //if we get here, we need to generate a typesettable graphic file
+//     targetDir = documentDir.clone();
+//     targetDir.append("tcache");
+//     if (!targetDir.exists())
+//       targetDir.create(1, 0755);
+//     dump("In graphicsConverter.ensureTypesetGraphicForElement, 7\n");
+//     var targExtArray = this.getTargetFileExtensions(gfxFile, targetDir, "tex", aWindow);
+//     var targetFile;
+//     dump("In graphicsConverter.ensureTypesetGraphicForElement, 8\n");
+//     if (targExtArray && targExtArray.length) {
+//       fName = nameAndExt.name + targExtArray[targExtArray.length - 1];
+//       targetFile = targetDir.clone();
+//       targetFile.append(fName);
+//       this.doImportGraphicsToTarget(gfxFile, targetFile, "tex", aWindow, callbackObject);
+//       var newGraphic = documentDir.clone();
+//       newGraphic.append("tcache");
+//       newGraphic.append(nameAndExt.name + '.png');
+//                        
+//       var newGraphicPath = msiMakeUrlRelativeTo(newGraphic, documentDir);
+// 
+//       if (objElement.hasAttribute("src")) 
+//          objElement.removeAttribute("src");
+//       objElement.setAttribute("src", newGraphicPath);
+//       if (objElement.hasAttribute("data")) 
+//          objElement.removeAttribute("data");
+//       objElement.setAttribute("data", newGraphicPath);
+//       bChanged = true;
+//       objElement.setAttribute("-moz_dirty","true");
+//     }
+//     dump("In graphicsConverter.ensureTypesetGraphicForElement, 9\n");
+//     return bChanged;
   },
 
   ensureTypesetGraphicsForDocument: function(aDocument, aWindow) {
@@ -787,7 +797,7 @@ var graphicsConverter = {
 
     for (var ii = 0; ii < objList.length; ++ii) {
       timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
-      bChanged = this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, timerHandler) || bChanged;
+      bChanged = this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null) || bChanged;
     }
     for (ii = 0; ii < imgList.length; ++ii) {
       timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
@@ -1121,15 +1131,15 @@ function msiMakeUrlRelativeTo(inputFile, baseDir) {
  
    var basePath = baseURL.path;
    var urlPath = inputURL.path;
- 
+
+   // Get base filename before we start chopping up the basePath
+   var baseFilename = baseURL.fileName;
    
    var doCaseInsensitive = (this.graphicsConverter.OS = 'win');
    if (doCaseInsensitive)
      basePath = basePath.toLowerCase();
  
-   // Get base filename before we start chopping up the basePath
-   var baseFilename = GetFilename(basePath);
- 
+    
    // Both url and base paths now begin with "/"
    // Look for shared dirs starting after that
    urlPath = urlPath.slice(1);

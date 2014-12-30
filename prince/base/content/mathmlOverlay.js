@@ -2519,6 +2519,7 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
     case "alignCentered":
       infoStr += "with each line centered.\n";
       alignAttr = "alignCentered";
+      msiEditorEnsureElementAttribute(tableNode, "subtype", "gather", editor);
     break;
     case "alignStandard":
       infoStr += "as usual.\n";
