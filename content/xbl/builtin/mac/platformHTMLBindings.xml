@@ -39,6 +39,13 @@
       <handler event="keypress" key="u" modifiers="control" command="cmd_deleteToBeginningOfLine"/>
       <handler event="keypress" key="w" modifiers="control" command="cmd_deleteWordBackward"/>
       <handler event="keypress" key="v" modifiers="control" command="cmd_scrollPageDown"/>
+      <handler event="keypress" key="f" command="cmd_find" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_undo" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_redo" modifiers="accel,shift" />
+      <handler event="keypress" key="y" command="cmd_redo" modifiers="accel" />
+      <handler event="keypress" key="x" command="cmd_cut" modifiers="accel"/>
+      <handler event="keypress" key="c" command="cmd_copy" modifiers="accel"/>
+      <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
     </handlers>
   </binding>
 
@@ -87,6 +94,13 @@
       <handler event="keypress" key="u" modifiers="control" command="cmd_deleteToBeginningOfLine"/>
       <handler event="keypress" key="w" modifiers="control" command="cmd_deleteWordBackward"/>
       <handler event="keypress" key="v" modifiers="control" command="cmd_scrollPageDown"/>
+      <handler event="keypress" key="f" command="cmd_find" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_undo" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_redo" modifiers="accel,shift" />
+      <handler event="keypress" key="y" command="cmd_redo" modifiers="accel" />
+      <handler event="keypress" key="x" command="cmd_cut" modifiers="accel"/>
+      <handler event="keypress" key="c" command="cmd_copy" modifiers="accel"/>
+      <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
     </handlers>
   </binding>
 
