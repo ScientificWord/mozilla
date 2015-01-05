@@ -302,6 +302,19 @@ const AppInstall = {
     "<string>6.0</string>\n" +
     "<key>CFBundlePackageType</key>\n" +
     "<string>APPL</string>\n" +
+    "<key>CFBundleDocumentTypes</key>" +
+    "<array>" +
+      "<dict>" +
+        "<key>CFBundleTypeExtensions</key>" +
+        "<array>" +
+          "<string>sci</string>" +
+        "</array>" +
+        "<key>CFBundleTypeName</key>" +
+        "<string>Scientific WorkPlace Document</string>" +
+        "<key>CFBundleTypeRole</key>" +
+        "<string>Editor</string>" +
+      "</dict>" +
+    "</array>" +
     "<key>CFBundleExecutable</key>\n" +
     "<string>xulrunner</string>\n" +
     "<key>NSAppleScriptEnabled</key>\n" +
