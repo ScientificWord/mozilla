@@ -43,9 +43,10 @@ numberedListItem,
 bulletListItem,
 descriptionListItem,
 bibitem {
-       margin-left: 2em;
-       padding-left: 1em;
-       display: list-item;}
+  margin-left: 2em;
+  padding-left: 1em;
+  display: list-item;
+}
 
 numberedlist {
   list-style-type: none;
