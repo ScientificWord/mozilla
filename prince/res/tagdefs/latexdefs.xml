@@ -267,7 +267,7 @@
           <description>Bullet list item</description>
           <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-          <inclusion>true</inclusion>
+<!--           <inclusion>true</inclusion> -->
           <htmllist>ul</htmllist>
           <initialcontents>
             <bulletListItem>
@@ -302,7 +302,7 @@
           <description>Bibliography entry</description>
           <htmllistparent>bibliography</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-          <inclusion>true</inclusion>
+<!--           <inclusion>true</inclusion> -->
           <initialcontents>
             <bibitem>
               <biblabel></biblabel>
