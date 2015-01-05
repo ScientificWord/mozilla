@@ -1957,18 +1957,30 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     res = IsEmptyNode( rightNode, &isEmpty, PR_TRUE, PR_FALSE, PR_TRUE);
     if (isEmpty)
     {
-      res = rightNode->GetOwnerDocument(getter_AddRefs(doc));
+
       res = rightNode->GetLocalName(sNewNodeName);
-      newNode = nsnull;
-      res = mtagListManager->GetNewInstanceOfNode(sNewNodeName, atomNS, doc, getter_AddRefs(newNode));
-      if (newNode)
-      {
-        PRBool success = PR_FALSE;
-        res = nsEditor::GetNodeLocation(rightNode, address_of(parent), &offset);
-        res = nsEditor::InsertNode(newNode, parent, offset);
-        res = nsEditor::DeleteNode(rightNode);
-        newElement = do_QueryInterface(newNode);
-        SetCursorInNewHTML(newElement, &success);
+      mtagListManager->GetStringPropertyForTag(sNewNodeName, atomNS, NS_LITERAL_STRING("inclusion"), sInclusion);
+      fInclusion = (sInclusion.EqualsLiteral("true"));
+      if (fInclusion) {
+        res = GetNodeLocation(outLeftNode, address_of(parent), &offset);
+        res = DeleteNode(rightNode);
+        GetSelection(getter_AddRefs(selection));
+        selection->Collapse(parent, offset+1);
+      }
+      else {
+        res = rightNode->GetOwnerDocument(getter_AddRefs(doc));
+        res = rightNode->GetLocalName(sNewNodeName);
+        newNode = nsnull;
+        res = mtagListManager->GetNewInstanceOfNode(sNewNodeName, atomNS, doc, getter_AddRefs(newNode));
+        if (newNode)
+        {
+          PRBool success = PR_FALSE;
+          res = GetNodeLocation(rightNode, address_of(parent), &offset);
+          res = InsertNode(newNode, parent, offset);
+          res = DeleteNode(rightNode);        
+          newElement = do_QueryInterface(newNode);
+          SetCursorInNewHTML(newElement, &success); 
+        }
       }
     }
   } 
