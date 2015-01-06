@@ -61,6 +61,7 @@ var gPreviewImageHeight = 50;
 var gPreviewSrc;
 var gCopiedSrcUrl;
 var gOriginalKey;
+var unitHandler;
 
 // These mode variables control the msiFrameOverlay code
 var gFrameModeImage = true;
@@ -183,6 +184,8 @@ function setImageSizeFields(imageWidth, imageHeight, dialogUnits)
 
 function Startup()
 {
+  unitHandler = new UnitHandler();
+
   //gActiveEditorElement = msiGetParentEditorElementForDialog(window);
   //gActiveEditor = msiGetTableEditor(gActiveEditorElement);
   var existingImage = false;
@@ -216,8 +219,24 @@ function Startup()
   if (window.arguments && window.arguments.length > 0)
   {
     gVideo = window.arguments[0].isVideo;
-    imageElement = window.arguments[0].mNode;
-    if (imageElement) existingImage = true;
+    var selectedElement = window.arguments[0].mNode;
+    if (selectedElement){
+      if (selectedElement.nodeName === "msiframe") {
+         existingImage = true;
+         wrapperElement = selectedElement;
+         objList = msiNavigationUtils.getChildrenByTagName(wrapperElement, "object");
+         imageElement = objList[0];
+      } else if (selectedElement === "object"){
+         existingImage = true;
+         imageElement = selctedElement;
+         if (imageElement.parentNode.nodeName !== "msiframe"){
+             wrapperElement = gEditor.createElementWithDefaults("msiframe");
+             wrapperElement.setAttribute("frametype", "image");
+             wrapperElement.appendChild(imageElement);
+         }
+      }
+    }
+
     if (gVideo)
     {
       document.getElementById("isVideo").removeAttribute("hidden");
@@ -227,37 +246,45 @@ function Startup()
   }
 
   var tagName = gVideo ? "embed" : "object";
-  if (imageElement)  // if the image already exists, search for a frame.
-  {
-    if (imageElement.nodeName !== "msiframe")
-    {
-      if (imageElement.parentNode.nodeName === "msiframe")
-      {
-        wrapperElement = imageElement.parentNode;
-      }
-      else
-        wrapperElement = null;  // no frame
-    }
-    else
-    {
-      var tagsToTry = gVideo ? ["embed", "object"] : ["object", "img", "embed"];
-      wrapperElement = imageElement;
-      var imgList = null;
-      for (var iii = 0; (!imgList || !imgList.length) && (iii < tagsToTry.length); ++iii)
-      {
-        imgList = msiNavigationUtils.getChildrenByTagName(wrapperElement, tagsToTry[iii]);
-      }
-      if (!imgList || !imgList.length)
-      {
-        for (iii = 0; (!imgList || !imgList.length) && (iii < tagsToTry.length); ++iii)
-        {
-          imgList = wrapperElement.getElementsByTagName(tagsToTry[iii]);
-        }
-      }
-      if (imgList && imgList.length)
-        imageElement = imgList[0];
-    }
-  }
+
+//   if (wrapperElement) 
+//   {
+//     if (wrapperElement.nodeName !== "msiframe")
+//     {
+//       if (imageElement.parentNode.nodeName === "msiframe")
+//       {
+//         wrapperElement = imageElement.parentNode;
+//       }
+//       else {
+//         //wrapperElement = null;  // no frame
+//         wrapperElement = gEditor.createElementWithDefaults("msiframe");
+//         wrapperElement.setAttribute("frametype", "image");
+//         wrapperElement.appendChild(gCaptionNode);
+//         msiEditorEnsureElementAttribute(wrapperElement, "captionloc", captionloc, null);
+//         wrapperElement.appendChild(imageElement);
+//       }
+//     }
+//     else
+//     {
+//       var tagsToTry = gVideo ? ["embed", "object"] : ["object", "img", "embed"];
+//       //wrapperElement = imageElement;
+//       var imgList = null;
+//       for (var iii = 0; (!imgList || !imgList.length) && (iii < tagsToTry.length); ++iii)
+//       {
+//         imgList = msiNavigationUtils.getChildrenByTagName(wrapperElement, tagsToTry[iii]);
+//       }
+//       if (!imgList || !imgList.length)
+//       {
+//         for (iii = 0; (!imgList || !imgList.length) && (iii < tagsToTry.length); ++iii)
+//         {
+//           imgList = wrapperElement.getElementsByTagName(tagsToTry[iii]);
+//         }
+//       }
+//       if (imgList && imgList.length)
+//         imageElement = imgList[0];
+//     }
+//   }
+
   if (!gVideo && !imageElement)
   {
     try {
@@ -294,10 +321,22 @@ function Startup()
   {
     gInsertNewImage = true;
   }
+  if (imageElement !== null  && imageElement.hasAttribute("units")) {
+     unitHandler.initCurrentUnit(imageElement.getAttribute("units"));
+  } else {
+     unitHandler.initCurrentUnit("in");
+  }
+
   // if inserting a new image, create elements now.
+  
   if (imageElement == null) {
     imageElement = gEditor.createElementWithDefaults(tagName);
-    // Don't create a wrapper element until needed
+    wrapperElement = gEditor.createElementWithDefaults("msiframe");
+    wrapperElement.setAttribute("frametype", "image");
+    //wrapperElement.appendChild(gCaptionNode);
+    //msiEditorEnsureElementAttribute(wrapperElement, "captionloc", captionloc, null);
+    wrapperElement.appendChild(imageElement);
+
   }
 
   initFrameTab(gDialog, wrapperElement||imageElement, gInsertNewImage, imageElement);
@@ -311,7 +350,7 @@ function Startup()
 
   InitDialog();
   if (!existingImage)
-    setImageSizeFields(null,null, frameUnitHandler.currentUnit);
+    setImageSizeFields(null,null, unitHandler.currentUnit);
   // Save initial source URL
   gInitialSrc = document.getElementById("srcInput").value || "";
   gCopiedSrcUrl = gInitialSrc;
@@ -516,6 +555,7 @@ function InitImage()
   var height = 0;
   var pixelWidth = 0;
   var pixelHeight = 0;
+  var unitHandler = new UnitHandler();
 
   loadDefaultsFromPrefs();
 
@@ -529,34 +569,34 @@ function InitImage()
     if (imageElement.hasAttribute("units"))
     {
       var unit = imageElement.getAttribute("units");
-      frameUnitHandler.setCurrentUnit(unit);
+      unitHandler.setCurrentUnit(unit);
       gDialog.frameUnitMenulist.value = unit;
     }
     if (imageElement.hasAttribute(widthAtt))
     {
       widthStr = imageElement.getAttribute(widthAtt);
-      width = frameUnitHandler.getValueFromString(widthStr);
-      pixelWidth = Math.round(frameUnitHandler.getValueAs(width,"px"));
+      width = unitHandler.getValueFromString(widthStr);
+      pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
       width = unitRound(width);
     }
     if (!width)
     {
       widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
-      width = unitRound(frameUnitHandler.getValueFromString(widthStr, "px"));
+      width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
       widthStr = widthStr.replace(re,"");
       pixelWidth = Math.round(Number(widthStr));
     }
     if (imageElement.hasAttribute(heightAtt))
     {
       heightStr = imageElement.getAttribute(heightAtt);
-      height = frameUnitHandler.getValueFromString(heightStr);
-      pixelHeight = Math.round(frameUnitHandler.getValueAs(height,"px"));
+      height = unitHandler.getValueFromString(heightStr);
+      pixelHeight = Math.round(unitHandler.getValueAs(height,"px"));
       height = unitRound(height);
     }
     if (!height)
     {
       heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
-      height = unitRound(frameUnitHandler.getValueFromString(heightStr, "px"));
+      height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
       heightStr = heightStr.replace(re,"");
       pixelHeight = Math.round(Number(heightStr));
     }
@@ -566,11 +606,11 @@ function InitImage()
       var natWidth = imageElement.getAttribute("naturalWidth");
       var natHeight = imageElement.getAttribute("naturalHeight");
       if (natWidth)
-        gActualWidth = gConstrainWidth = Math.round(frameUnitHandler.getValueAs(frameUnitHandler.getValueFromString(natWidth), "px"));
+        gActualWidth = gConstrainWidth = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(natWidth), "px"));
       if (!gActualWidth)
         gActualWidth  = gConstrainWidth = imageElement.offsetWidth - Math.round(readTotalExtraWidth("px"));
       if (natHeight)
-        gActualHeight = gConstrainHeight = Math.round(frameUnitHandler.getValueAs(frameUnitHandler.getValueFromString(natHeight), "px"));
+        gActualHeight = gConstrainHeight = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(natHeight), "px"));
       if (!gActualHeight)
         gActualHeight = gConstrainHeight = imageElement.offsetHeight - Math.round(readTotalExtraHeight("px"));
     }
@@ -584,7 +624,7 @@ function InitImage()
     // if (defaultUnitStr.length)
     // {
     //   gDefaultUnit = defaultUnitStr;
-    //   frameUnitHandler.setCurrentUnit(gDefaultUnit);
+    //   unitHandler.setCurrentUnit(gDefaultUnit);
     //   gDialog.frameUnitMenulist.value = gDefaultUnit;
     // }
 
@@ -592,26 +632,26 @@ function InitImage()
     // {defaultWidthStr = GetStringPref("swp.graphics.hsize");}
     // catch(ex) {defaultWidthStr = ""; dump("Exception getting pref swp.graphics.hsize: " + ex + "\n");}
     // if (defaultWidthStr.length)
-    //   width = frameUnitHandler.getValueFromString( defaultWidthStr, gDefaultUnit );
-    // gDefaultWidth = Math.round(frameUnitHandler.getValueAs(width, "px"));
+    //   width = unitHandler.getValueFromString( defaultWidthStr, gDefaultUnit );
+    // gDefaultWidth = Math.round(unitHandler.getValueAs(width, "px"));
 
     // try
     // {defaultHeightStr = GetStringPref("swp.graphics.vsize");}
     // catch(ex) {defaultHeightStr = ""; dump("Exception getting pref swp.graphics.vsize: " + ex + "\n");}
     // if (defaultHeightStr.length)
-    //   height = frameUnitHandler.getValueFromString( defaultHeightStr, gDefaultUnit );
-    // gDefaultHeight = Math.round(frameUnitHandler.getValueAs(height,"px"));
+    //   height = unitHandler.getValueFromString( defaultHeightStr, gDefaultUnit );
+    // gDefaultHeight = Math.round(unitHandler.getValueAs(height,"px"));
 
   }
 
   if ((width > 0) || (height > 0))
     setWidthAndHeight(width, height, null);
   else if ((gActualHeight > 0)||(gActualWidth > 0))
-    setWidthAndHeight(unitRound(frameUnitHandler.getValueOf(gActualWidth,"px")),
-                      unitRound(frameUnitHandler.getValueOf(gActualHeight,"px")), null);
+    setWidthAndHeight(unitRound(unitHandler.getValueOf(gActualWidth,"px")),
+                      unitRound(unitHandler.getValueOf(gActualHeight,"px")), null);
   else
-    setWidthAndHeight(unitRound(frameUnitHandler.getValueOf(gDefaultWidth,"pt")),
-                      unitRound(frameUnitHandler.getValueOf(gDefaultHeight,"pt")), null);
+    setWidthAndHeight(unitRound(unitHandler.getValueOf(gDefaultWidth,"pt")),
+                      unitRound(unitHandler.getValueOf(gDefaultHeight,"pt")), null);
 
   LoadPreviewImage(null);
   // caption and key info comes from frameOverlay
@@ -690,7 +730,7 @@ function initImageUnitList(unitPopUp)
   var i, len;
   for (i=0, len = elements.length; i<len; i++)
   {
-    elements[i].label = frameUnitHandler.getDisplayString(elements[i].value);
+    elements[i].label = unitHandler.getDisplayString(elements[i].value);
     dump("element with value "+elements[i].value+" has label "+elements[i].label+"\n");
   }
 }
@@ -1267,12 +1307,14 @@ function forceIsImport(bImport)
 
 function PreviewImageLoaded()
 {
+  var unitHandler = new UnitHandler();
+
   if (gDialog.PreviewImage)
   {
     // Image loading has completed -- we can get actual width
     gActualWidth  = gDialog.PreviewImage.offsetWidth;
     gActualHeight = gDialog.PreviewImage.offsetHeight;
-    setImageSizeFields(gActualWidth, gActualHeight, frameUnitHandler.currentUnit);
+    setImageSizeFields(gActualWidth, gActualHeight, unitHandler.currentUnit);
     if (gVideo)
       dump("PreviewImageLoaded reached for video file!\n");
     var bReset = false;
@@ -1309,8 +1351,8 @@ function PreviewImageLoaded()
       }
 
       doDimensionEnabling();
-      SetSizeWidgets( Math.round(frameUnitHandler.getValueAs(gDialog.frameWidthInput.value,"px")),
-                      Math.round(frameUnitHandler.getValueAs(gDialog.frameHeightInput.value,"px")) );
+      SetSizeWidgets( Math.round(unitHandler.getValueAs(gDialog.frameWidthInput.value,"px")),
+                      Math.round(unitHandler.getValueAs(gDialog.frameHeightInput.value,"px")) );
     }
 
     // if the image is svg, we need to modify it to make it resizable.
@@ -1319,21 +1361,21 @@ function PreviewImageLoaded()
       var svg = gDialog.PreviewImage.contentDocument.documentElement;
       if (svg.hasAttribute("height") && svg.hasAttribute("width") && !svg.hasAttribute("viewBox"))
       {
-        var currentUnit = frameUnitHandler.currentUnit;
+        var currentUnit = unitHandler.currentUnit;
         var width = svg.getAttribute("height");
         var numregexp = /(\d+\.*\d*)([A-Za-z]*$)/;
         var arr = numregexp.exec(width);
         if (arr) {
-          frameUnitHandler.setCurrentUnit(arr[2]);
-          width = frameUnitHandler.getValueAs(arr[1],"px");
+          unitHandler.setCurrentUnit(arr[2]);
+          width = unitHandler.getValueAs(arr[1],"px");
           width = Math.round(width);
         }
         var height = svg.getAttribute("width");
         var arr = numregexp.exec(height);
         if (arr)
         {
-          frameUnitHandler.setCurrentUnit(arr[2]);
-          height = frameUnitHandler.getValueAs(arr[1],"px");
+          unitHandler.setCurrentUnit(arr[2]);
+          height = unitHandler.getValueAs(arr[1],"px");
           height = Math.round(height);
         }
         svg.setAttribute("viewBox", "0 0 "+height+" "+width);
@@ -1354,6 +1396,7 @@ function isVideoSource(srcFile)
 
 function LoadPreviewImage(importName, srcName)
 {
+  var unitHandler = new UnitHandler();
   if (!importName || !srcName) return;
   var imageSrc;
   var importSrc;
@@ -1411,10 +1454,10 @@ function LoadPreviewImage(importName, srcName)
     if (extension == "pdf") {
       dimensions = graphicsConverter.readSizeFromPDFFile(msiFileFromFileURL(msiURIFromString(msiMakeAbsoluteUrl(srcName))));
       // convert bp to px
-      intermediate = frameUnitHandler.getValueOf(dimensions.width, 'bp');
-      gConstrainWidth = gActualWidth = frameUnitHandler.getValueAs(intermediate, 'px');
-      intermediate = frameUnitHandler.getValueOf(dimensions.height, 'bp');
-      gConstrainHeight = gActualHeight = frameUnitHandler.getValueAs(intermediate, 'px');
+      intermediate = unitHandler.getValueOf(dimensions.width, 'bp');
+      gConstrainWidth = gActualWidth = unitHandler.getValueAs(intermediate, 'px');
+      intermediate = unitHandler.getValueOf(dimensions.height, 'bp');
+      gConstrainHeight = gActualHeight = unitHandler.getValueAs(intermediate, 'px');
     }
     adjustObjectForFileType(gDialog.PreviewImage, extension);
     if (gVideo)
@@ -1447,6 +1490,7 @@ function adjustObjectForFileType(imageNode, extension)
 
 function setActualOrDefaultSize()
 {
+  var unitHandler = new UnitHandler();
   var prefStr = "";
   var bUseDefaultWidth, bUseDefaultHeight;
   var width, height;
@@ -1464,7 +1508,7 @@ function setActualOrDefaultSize()
     catch(ex) {prefStr = ""; dump("Exception getting pref swp.graphics.units: " + ex + "\n");}
     if (prefStr.length)
       gDefaultUnit = prefStr;
-    frameUnitHandler.setCurrentUnit(gDefaultUnit);
+    unitHandler.setCurrentUnit(gDefaultUnit);
     gDialog.frameUnitMenulist.value = gDefaultUnit;
   }
   if (bUseDefaultWidth)
@@ -1474,8 +1518,8 @@ function setActualOrDefaultSize()
     catch(ex) {prefStr = ""; dump("Exception getting pref swp.graphics.hsize: " + ex + "\n");}
     if (prefStr.length)
     {
-      width = frameUnitHandler.getValueFromString( prefStr, gDefaultUnit );
-      gDefaultWidth = Math.round(frameUnitHandler.getValueAs(width, "px"));
+      width = unitHandler.getValueFromString( prefStr, gDefaultUnit );
+      gDefaultWidth = Math.round(unitHandler.getValueAs(width, "px"));
       gDialog.frameWidthInput.value = width;
     }
     if (bUseDefaultHeight)
@@ -1484,8 +1528,8 @@ function setActualOrDefaultSize()
       catch(ex) {prefStr = ""; dump("Exception getting pref swp.graphics.vsize: " + ex + "\n");}
       if (prefStr.length)
       {
-        height = frameUnitHandler.getValueFromString( prefStr, gDefaultUnit );
-        gDefaultHeight = Math.round(frameUnitHandler.getValueAs(height,"px"));
+        height = unitHandler.getValueFromString( prefStr, gDefaultUnit );
+        gDefaultHeight = Math.round(unitHandler.getValueAs(height,"px"));
       }
       gDialog.autoHeightCheck.checked = false;
       gDialog.constrainCheckbox.checked = false;
@@ -1505,8 +1549,8 @@ function setActualOrDefaultSize()
     catch(ex) {prefStr = ""; dump("Exception getting pref swp.graphics.vsize: " + ex + "\n");}
     if (prefStr.length)
     {
-      height = frameUnitHandler.getValueFromString( prefStr, gDefaultUnit );
-      gDefaultHeight = Math.round(frameUnitHandler.getValueAs(height,"px"));
+      height = unitHandler.getValueFromString( prefStr, gDefaultUnit );
+      gDefaultHeight = Math.round(unitHandler.getValueAs(height,"px"));
     }
     gDialog.autoWidthCheck.checked = true;
     gDialog.autoHeightCheck.checked = false;
@@ -1543,19 +1587,21 @@ function getExtension(aFilename)
 
 function readTotalExtraWidth(unit)
 {
+  var unitHandler = new UnitHandler();
   var totWidth = 0;
-//  totWidth += 2* frameUnitHandler.getValueAs(Number(gDialog.marginInput.left.value), "px");
-  totWidth += 2 * frameUnitHandler.getValueAs(Number(gDialog.borderInput.left.value), "px");
-  totWidth += 2 * frameUnitHandler.getValueAs(Number(gDialog.paddingInput.left.value), "px");
+//  totWidth += 2* unitHandler.getValueAs(Number(gDialog.marginInput.left.value), "px");
+  totWidth += 2 * unitHandler.getValueAs(Number(gDialog.borderInput.left.value), "px");
+  totWidth += 2 * unitHandler.getValueAs(Number(gDialog.paddingInput.left.value), "px");
   return totWidth;
 }
 
 function readTotalExtraHeight(unit)
 {
+  var unitHandler = new UnitHandler();
   var totHeight = 0;
-//  totHeight += 2 * frameUnitHandler.getValueAs(Number(gDialog.marginInput.top.value), "px");
-  totHeight += 2 * frameUnitHandler.getValueAs(Number(gDialog.borderInput.left.value), "px");
-  totHeight += 2 * frameUnitHandler.getValueAs(Number(gDialog.paddingInput.left.value), "px");
+//  totHeight += 2 * unitHandler.getValueAs(Number(gDialog.marginInput.top.value), "px");
+  totHeight += 2 * unitHandler.getValueAs(Number(gDialog.borderInput.left.value), "px");
+  totHeight += 2 * unitHandler.getValueAs(Number(gDialog.paddingInput.left.value), "px");
   return totHeight;
 }
 
@@ -1686,6 +1732,7 @@ function ValidateImage()
 
 function imageLoaded(event)
 {
+  var unitHandler = new UnitHandler();
   try {
     var isSVGFile = /\.svg$/.test(event.data);
     if (isSVGFile)
@@ -1693,21 +1740,21 @@ function imageLoaded(event)
       var svg = event.target.contentDocument.documentElement;
       if (svg.hasAttribute("height") && svg.hasAttribute("width") && !svg.hasAttribute("viewBox"))
       {
-        var currentUnit = frameUnitHandler.currentUnit;
+        var currentUnit = unitHandler.currentUnit;
         var width = svg.getAttribute("height");
         var numregexp = /(\d+\.*\d*)([A-Za-z]*$)/;
         var arr = numregexp.exec(width);
         if (arr) {
-          frameUnitHandler.setCurrentUnit(arr[2]);
-          width = frameUnitHandler.getValueAs(arr[1],"px");
+          unitHandler.setCurrentUnit(arr[2]);
+          width = unitHandler.getValueAs(arr[1],"px");
           width = Math.round(width);
         }
         var height = svg.getAttribute("width");
         var arr = numregexp.exec(height);
         if (arr)
         {
-          frameUnitHandler.setCurrentUnit(arr[2]);
-          height = frameUnitHandler.getValueAs(arr[1],"px");
+          unitHandler.setCurrentUnit(arr[2]);
+          height = unitHandler.getValueAs(arr[1],"px");
           height = Math.round(height);
         }
         svg.setAttribute("viewBox", "0 0 "+height+" "+width);
@@ -1730,6 +1777,7 @@ function isEnabled(element)
 
 function onAccept()
 {
+  
   /* The variables imageElement and wrapperElement point to the image element we are revising, and possibly the wrapper element if there was one. We want to preserve these in the revising case because they might contain attributes the user added. We can tell if we are in the revising case because then gInsertNewImage is false. That there was a wrapper element originally does not imply that there will or will not be one now, since the user may have added or deleted a caption.
   */
   // Use this now (default = false) so Advanced Edit button dialog doesn't trigger error message
@@ -1750,11 +1798,11 @@ function onAccept()
     // The next elements are from msiFrameOverlay
     if (!wInput.hasAttribute('disabled')) width = wInput.value;
     if (!hInput.hasAttribute('disabled')) height = hInput.value;
-//    frameUnitHandler.setCurrentUnit(unit);
+    unitHandler.setCurrentUnit(unit);
     // srcurl is for debugging purposes
     // BBM: use gOriginalSrcUrl or gCopiedSrcUrl
     var srcurl = graphicsConverter.copyAndConvert(msiFileFromFileURL(msiURIFromString(gOriginalSrcUrl)), false,
-      frameUnitHandler.getValueAs(width, 'px'), frameUnitHandler.getValueAs(height, 'px') );
+    unitHandler.getValueAs(width, 'px'), unitHandler.getValueAs(height, 'px') );
 
 
     gEditor.beginTransaction();
@@ -1813,7 +1861,7 @@ function onAccept()
       {
         if (wrapperElement == null)
           wrapperElement = gEditor.createElementWithDefaults("msiframe");
-        wrapperElement.setAttribute("frametype", "image");
+        //wrapperElement.setAttribute("frametype", "image");
         wrapperElement.appendChild(gCaptionNode);
         msiEditorEnsureElementAttribute(wrapperElement, "captionloc", captionloc, null);
         // if (gDialog.wrapOptionRadioGroup.value != "full"){
@@ -1843,17 +1891,17 @@ function onAccept()
           }
         }
       }
-      if (wrapperElement && wrapperElement.parentNode && wrapperElement != imageElement && !bHasCaption)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
-      {
-        posInParent = msiNavigationUtils.offsetInParent(wrapperElement);
-        gEditor.insertNode(imageElement, wrapperElement.parentNode, posInParent);
-        gEditor.deleteNode(wrapperElement);
-        wrapperElement = imageElement;
-      }
+      // if (wrapperElement && wrapperElement.parentNode && wrapperElement != imageElement && !bHasCaption)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
+      // {
+      //   posInParent = msiNavigationUtils.offsetInParent(wrapperElement);
+      //   gEditor.insertNode(imageElement, wrapperElement.parentNode, posInParent);
+      //   gEditor.deleteNode(wrapperElement);
+      //   wrapperElement = imageElement;
+      // }
 
       if (gInsertNewImage) {
-        if (!bHasCaption)
-          wrapperElement = imageElement;
+        //if (!bHasCaption)
+        //  wrapperElement = imageElement;
         gEditor.insertElementAtSelection(wrapperElement, true);
       }
 
@@ -1871,9 +1919,9 @@ function onAccept()
       }
 
       if (gConstrainWidth > 0)
-        msiEditorEnsureElementAttribute(imageElement, "naturalWidth", String(frameUnitHandler.getValueOf(gActualWidth, "px")), null);
+        msiEditorEnsureElementAttribute(imageElement, "naturalWidth", String(unitHandler.getValueOf(gActualWidth, "px")), null);
       if (gConstrainHeight > 0)
-        msiEditorEnsureElementAttribute(imageElement, "naturalHeight", String(frameUnitHandler.getValueOf(gActualHeight, "px")), null);
+        msiEditorEnsureElementAttribute(imageElement, "naturalHeight", String(unitHandler.getValueOf(gActualHeight, "px")), null);
       if (width > 0) imageElement.setAttribute(widthAtt, width);
       else imageElement.removeAttribute(widthAtt);
       if (height > 0) imageElement.setAttribute(heightAtt, height);
