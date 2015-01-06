@@ -20,7 +20,7 @@ var gConstrainWidth = 0;
 var gConstrainHeight = 0;
 var gActualWidth = 0;
 var gActualHeight = 0;
-var gDefaultPlacement = "";
+var gDefaultPlacement = "center";
 var gDefaultInlineOffset = "";
 var hasNaturalSize;
 var gCaptionLoc;
@@ -194,7 +194,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   var currUnit;
   var placement;
   Dg = dg;
-  frameUnitHandler = new UnitHandler();  
+  initUnitHandler();  
   var prefBranch = GetPrefs();
   var isFloat = false;
   var prefprefix;
@@ -334,7 +334,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   v = prefBranch.getCharPref(prefprefix + "floatplacement");
 //  if (v != null) dg.wrapOptionRadioGroup.value = frameUnitHandler.getValueOf(v, prefUnit)
   v = null;
-  v = (!newElement && element.getAttribute("borderw") || prefBranch.getCharPref(prefprefix + "borderwidth"));
+  v = ((!newElement && element.getAttribute("borderw")) || prefBranch.getCharPref(prefprefix + "border"));
   if (v != null && dg.borderInput && dg.borderInput.left && dg.borderInput.right && dg.borderInput.top && dg.borderInput.bottom)
     dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit);
   v = null;
@@ -416,7 +416,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
 
       pos = element.getAttribute("pos");
       if (!pos)
-        pos = "unspecified";
+        pos = "center";
       dg.locationList.value = pos;
       if ((pos=="inline") && element.hasAttribute("inlineOffset"))
         inlineOffset = frameUnitHandler.getValueFromString( element.getAttribute("inlineOffset"), frameUnitHandler.currentUnit );
@@ -836,10 +836,13 @@ function locationChanged()
   var bEnableWrapfig = true;
   var bEnableFloats = false;
   var currentLocation = document.getElementById("locationList").value;
-  if (currentLocation === "unspecified")
+  if (currentLocation === "floating") {
     floatBroadcaster.removeAttribute("disabled");
-  else
+    if (Dg.floatList.selectedItem === "floatlistNone")
+      Dg.floatList.selectedItem = "ltxfloat_here";
+  } else {
     floatBroadcaster.setAttribute("disabled", "true");
+  }
   if (currentLocation === "inline")
     inlineOffsetBroadcaster.removeAttribute("disabled");
   else
@@ -1143,14 +1146,16 @@ this is the case for images in an msiframe
       contentsNode.setAttribute(widthAtt,Dg.frameWidthInput.value);
     }
   }
-  var pos = null;
+  var posItem = null;
   var posid;
   if (isEnabled(document.getElementById("locationList")))
   {
-    if (document.getElementById("locationList")) pos = document.getElementById("locationList").selectedItem;
-    posid = (pos && pos.getAttribute("id")) || "";
+    if (document.getElementById("locationList")) 
+      posItem = document.getElementById("locationList").selectedItem;
+    posid = (posItem && posItem.getAttribute("id")) || "";
     msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
   }
+
   var bgcolor = Dg.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   var theColor = (arr && arr.length > 1) ? arr[1] : "";
@@ -1216,30 +1221,45 @@ this is the case for images in an msiframe
   if (isEnabled(Dg.locationList))
   {
     var locationParam = Dg.locationList.value;
-    if (locationParam && "LIRO".indexOf(locationParam) >= 0) {
+    if ((locationParam === "inside") || 
+        (locationParam === "outside") || 
+        (locationParam === "left") ||
+        (locationParam === "right") )
+    {
       msiRequirePackage(Dg.editorElement, "wrapfig","");
     }
     // if (locationParam.indexOf("H") >= 0) {
     //   msiRequirePackage(Dg.editorElement,"float","");
     // }
-    var locationShort = locationParam.slice(0,1);
-    msiEditorEnsureElementAttribute(frameNode, "pos", locationShort, editor);
-    needsWrapfig = true;
-    if (locationParam == "I" || locationParam == "L") locationParam = "left";
-    else if (locationParam == "O" || locationParam=="R") locationParam = "right";
+    //var locationShort = locationParam.slice(0,1);
+    //msiEditorEnsureElementAttribute(frameNode, "pos", locationShort, editor);
+    // needsWrapfig = true;
+    // if (locationParam == "I" || locationParam == "L") locationParam = "left";
+    // else if (locationParam == "O" || locationParam=="R") locationParam = "right";
+    // else {
+    //   locationParam = "none";
+    //   needsWrapfig = true;
+    // }
+    var needsWrapfig = true;
+    if (locationParam === "right" || locationParam === "inside") 
+       setStyleAttributeOnNode(frameNode, "float", "right", editor);
+    else if (locationParam === "left" || locationParam === "outside")
+       setStyleAttributeOnNode(frameNode, "float", "left", editor);
     else {
-      locationParam = "none";
-      needsWrapfig = true;
+       removeStyleAttributeFamilyOnNode(frameNode, "float", editor);
+       needsWrapfig = false;
     }
-    setStyleAttributeOnNode(frameNode, "float", locationParam, editor);
-    if (locationParam == "right") side = "Right";
-    else if (locationParam == "left") side = "Left";
-    else side = null;
+
+    //setStyleAttributeOnNode(frameNode, "float", locationParam, editor);
     if (needsWrapfig) {
       msiEditorEnsureElementAttribute(frameNode, "req", "wrapfig", "");
     }
     if (!gFrameModeImage)
     {
+      if (locationParam == "right") side = "Right";
+      else if (locationParam == "left") side = "Left";
+      else side = null;
+
       if (side){
         msiEditorEnsureElementAttribute(frameNode, "overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false), editor);
       }
