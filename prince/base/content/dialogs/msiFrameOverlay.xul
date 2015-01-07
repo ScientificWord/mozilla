@@ -369,12 +369,12 @@
               <menupopup>
                 <menuitem  id="floating" label="&floating;" selected="true" value="floating"/>
                 <menuitem  id="inline" label="&inline.label;"  value="inline"/>
-                <menuitem  id="center" label="&display.label;" value="display"/>
+                <menuitem  id="center" label="&display.label;" value="center"/>
                 <menuseparator/>
-                <menuitem  id="left" label="&left.label;" value="L"/>
-                <menuitem  id="inside" label="&inside.label;" value="I"/>
-                <menuitem  id="right" label="&right.label;" value="R"/>
-                <menuitem  id="outside" label="&outside.label;" value="O"/>
+                <menuitem  id="left" label="&left.label;" value="left"/>
+                <menuitem  id="inside" label="&inside.label;" value="inside"/>
+                <menuitem  id="right" label="&right.label;" value="right"/>
+                <menuitem  id="outside" label="&outside.label;" value="outside"/>
               </menupopup>
             </menulist>
           </row>

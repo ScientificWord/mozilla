@@ -288,8 +288,8 @@
 <!ENTITY insertImageMapCmd.label "Image Map...">
 <!ENTITY insertLine.label "Line...">
 <!ENTITY insertline.accesskey "L">
-<!ENTITY insertMinipage.label "Minipage...">
-<!ENTITY insertMinipage.accesskey "F">
+<!ENTITY insertFrame.label "Frame...">
+<!ENTITY insertFrame.accesskey "F">
 <!ENTITY insertTableCmd.label "Table...">
 <!ENTITY inserttable.accesskey "a">
 <!ENTITY insertFormMenu.label "Form...">

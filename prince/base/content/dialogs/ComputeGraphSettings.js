@@ -8,6 +8,7 @@ Components.utils.import("resource://app/modules/unitHandler.jsm");
 var gFrameModeImage = true;
 var gFrameModeTextFrame = false;
 var graph;
+var frame;
 var graphnode;
 var plotwrapper;
 var plotArray = [];
