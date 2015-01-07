@@ -2009,8 +2009,8 @@ Frame.prototype = {
 
       // what about overhang?
       // Now we build the CSS style for the object and the frame
-      var isfloat = this.getFrameAttribute("placement") === "unspecified";
-      var isdisplay = this.getFrameAttribute("placement") === "display";
+      var isfloat = this.getFrameAttribute("placement") === "floating";
+      var isdisplay = this.getFrameAttribute("placement") === "center";
       var lmargin;
       var rmargin;
       if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="full")) {
