@@ -109,10 +109,10 @@
         <xsl:when test="@pos='O'">{o}</xsl:when>
         <xsl:when test="@pos='L'">{l}</xsl:when>
         <xsl:when test="@pos='R'">{r}</xsl:when>
-        <xsl:when test="@pos='i'">{I}</xsl:when>
-        <xsl:when test="@pos='o'">{o}</xsl:when>
-        <xsl:when test="@pos='l'">{L}</xsl:when>
-        <xsl:when test="@pos='r'">{R}</xsl:when>
+        <xsl:when test="@pos='inside'">{I}</xsl:when>
+        <xsl:when test="@pos='outside'">{O}</xsl:when>
+        <xsl:when test="@pos='left'">{L}</xsl:when>
+        <xsl:when test="@pos='right'">{R}</xsl:when>
         <xsl:otherwise>{r}</xsl:otherwise>
       </xsl:choose>
       <xsl:if test="@overhang">
@@ -148,14 +148,14 @@
     <xsl:when test="$framePosType='ft-centered'">
       <xsl:text>\begin{center}</xsl:text>
     </xsl:when>
-    <xsl:when test="($framePosType='ft-inline') and (@frametype='image')">
+    <!-- xsl:when test="($framePosType='ft-inline') and (@frametype='image')">
        <xsl:text>\parbox[b]{</xsl:text>
        <xsl:value-of select="$width"/>
        <xsl:value-of select="$units"/>
        <xsl:text>}{ %</xsl:text>
        <xsl:value-of select="$newline"/>
        <xsl:text>\begin{center}</xsl:text>
-    </xsl:when>
+    </xsl:when -->
   </xsl:choose>
   <xsl:if test="$captionloc=1">
     <xsl:if test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
@@ -265,11 +265,11 @@
   </xsl:if>
 
   <xsl:choose>
-    <xsl:when test="$framePosType='ft-inline'"><xsl:text>\end{center}}</xsl:text></xsl:when>
+    <!-- xsl:when test="$framePosType='ft-inline'"><xsl:text>\end{center}}</xsl:text></xsl:when -->
     <xsl:when test="$framePosType='ft-centered'">\end{center}</xsl:when>
     <xsl:when test="$framePosType='ft-floating'">\end{center}\end{figure}</xsl:when>
     <xsl:when test="$framePosType='ft-wrapped'">\end{wrapfigure}</xsl:when>   
   </xsl:choose>
-    <!-- <xsl:if test="($limitframemetrics=1) or ($inlineOffset and string-length($inlineOffset))">}</xsl:if>  -->
+    <!-- xsl:if test="($inlineOffset and string-length($inlineOffset))">}</xsl:if> -->
 </xsl:template>
 </xsl:stylesheet>
