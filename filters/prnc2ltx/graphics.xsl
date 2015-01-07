@@ -18,9 +18,16 @@
     </xsl:variable>
     <xsl:variable name="imageWidth">
       <xsl:call-template name="getImageWidth">
-        <xsl:with-param name="objNode" select="."/>
+        <xsl:with-param name="objNode" select=".."/>   <!-- .. means get from msiframe -->
       </xsl:call-template>
     </xsl:variable>
+        <xsl:variable name="imageHeight">
+      <xsl:call-template name="getImageHeight">
+        <xsl:with-param name="objNode" select=".."/>   <!-- .. means get from msiframe -->
+      </xsl:call-template>
+    </xsl:variable>
+
+
 
     <xsl:choose>
       <xsl:when test="@isSVG">
@@ -46,7 +53,15 @@
       <xsl:value-of select="$theUnit"/>
       <xsl:text>,</xsl:text>
     </xsl:if>
-    <xsl:if test="@ltx_height and (number(@ltx_height) != 0)">
+    <xsl:if test="number($imageHeight) != 0">
+      <xsl:text> height=</xsl:text>
+      <xsl:value-of select="$imageHeight"/>
+      <xsl:value-of select="$theUnit"/>
+      <xsl:text>,</xsl:text>
+    </xsl:if>
+
+
+    <!-- xsl:if test="@ltx_height and (number(@ltx_height) != 0)">
       <xsl:choose>
         <xsl:when test="@isSVG">
           <xsl:text> height=</xsl:text>
@@ -58,7 +73,7 @@
       <xsl:value-of select="@ltx_height"/>
       <xsl:value-of select="$theUnit"/>
       <xsl:text>,</xsl:text>
-    </xsl:if>
+    </xsl:if -->
     <xsl:if test="@naturalWidth and @naturalHeight and (number(@naturalWidth) != 0) and (number(@naturalHeight) != 0)">
       <xsl:text> natwidth=</xsl:text>
       <xsl:value-of select="@naturalWidth"/>
@@ -382,6 +397,18 @@
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+ <xsl:template name="getImageHeight">
+    <xsl:param name="objNode"/>
+    <xsl:param name="noZero" select="false"/>
+    <xsl:choose>
+      <xsl:when test="$objNode/@ltx_height and (number($objNode/@ltx_height) != 0)">
+        <xsl:value-of select="number($objNode/@ltx_height)"/>
+      </xsl:when>
+      <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <xsl:template name="getObjectWidth">
     <xsl:param name="objNode"/>
     <xsl:variable name="baseWidth">

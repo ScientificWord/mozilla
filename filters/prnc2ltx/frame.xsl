@@ -270,6 +270,6 @@
     <xsl:when test="$framePosType='ft-floating'">\end{center}\end{figure}</xsl:when>
     <xsl:when test="$framePosType='ft-wrapped'">\end{wrapfigure}</xsl:when>   
   </xsl:choose>
-    <xsl:if test="($inlineOffset and string-length($inlineOffset))">}</xsl:if> >
+    <!-- xsl:if test="($inlineOffset and string-length($inlineOffset))">}</xsl:if> -->
 </xsl:template>
 </xsl:stylesheet>
