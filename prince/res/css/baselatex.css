@@ -557,6 +557,7 @@ body[showshort='true'] shortTitle:after {
 msiframe {
   display: block;
   overflow: hidden;
+  text-align: center;
   text-indent: 0;
 }
 

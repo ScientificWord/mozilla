@@ -109,7 +109,7 @@ pref("swp.graph.Dimension",  "2");
 pref("swp.graph.hsize", "5.0");
 pref("swp.graph.vsize", "4.0");
 pref("swp.graph.units", "in");
-pref("swp.graph.placement", "display");
+pref("swp.graph.placement", "center");
 pref("swp.graph.placeLocation", "h");  // other choices from LaTeX: subsets of hHptb
 pref("swp.graph.floatplacement", "I");
 pref("swp.graph.xaxislabel", "x");
