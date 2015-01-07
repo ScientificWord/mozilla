@@ -39,18 +39,18 @@
 <!-- extracted from EdReplace.xul -->
 
 <!ENTITY replaceDialog.title "Find and Replace">
-<!ENTITY findField.label "Find text:">
+<!ENTITY findField.label "Find text">
 <!ENTITY findField.accesskey "n">
-<!ENTITY replaceField.label "Replace with:">
+<!ENTITY replaceField.label "Replace with">
 <!ENTITY replaceField.accesskey "e">
-<!ENTITY caseSensitiveCheckbox.label "Match upper/lower case">
+<!ENTITY caseSensitiveCheckbox.label "Match case">
 <!ENTITY caseSensitiveCheckbox.accesskey "c">
 <!ENTITY wrapCheckbox.label "Wrap around">
 <!ENTITY wrapCheckbox.accesskey "W">
 <!ENTITY backwardsCheckbox.label "Search backwards">
 <!ENTITY backwardsCheckbox.accesskey "b">
-<!ENTITY multiParaCheckbox.label "Allow multi-paragraph search">
-<!ENTITY multiParaCheckbox.accesskey "m">
+<!ENTITY entireWordCheckbox.label "Entire word">
+<!ENTITY entireWordCheckbox.accesskey "n">
 <!ENTITY findNextButton.label "Find Next">
 <!ENTITY findNextButton.accesskey "F">
 <!ENTITY replaceButton.label "Replace">
@@ -60,4 +60,4 @@
 <!ENTITY replaceAllButton.label "Replace All">
 <!ENTITY replaceAllButton.accesskey "A">
 <!ENTITY closeButton.label "Close">
-<!ENTITY notFoundWarning.label "The text you entered was not found.">
+<!ENTITY notfoundwarning "Pattern not found">
