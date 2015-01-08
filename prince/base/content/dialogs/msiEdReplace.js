@@ -8,11 +8,16 @@ var gReplaceDialog;      // Quick access to document/form elements.
 var gFindInst;           // nsIWebBrowserFind that we're going to use
 var gFindService;        // Global service which remembers find params
 var gEditor;             // the editor we're using
-var gStringBundle = strBundleService.createBundle('chrome://prince/locale/editor.properties');
+var gStringBundle;
 
 function initDialogObject()
 {
   // Create gReplaceDialog object and initialize.
+  var strBundleService =
+    Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
+  strBundleService = 
+    strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
+  gStringBundle = strBundleService.createBundle('chrome://prince/locale/editor.properties');
   gReplaceDialog = {};
   gReplaceDialog.findInput       = document.getElementById("findInput");
   gReplaceDialog.replaceInput    = document.getElementById("replaceInput");
@@ -201,37 +206,28 @@ function onLoad()
 //  else
 //    gReplaceDialog.findInput.focus();
   msiSetInitialDialogFocus(gReplaceDialog.findInput);
+  msiSetActiveEditor(gReplaceDialog.findInput, false);
+  msiGetEditor(gReplaceDialog.findInput).selectAll();
 }
 
-//function toggleMultiPara()
-//{
-//  msiSetEditorSinglePara(gReplaceDialog.findInput, gReplaceDialog.multiParaCheckbox.checked);
-//  msiSetEditorSinglePara(gReplaceDialog.replaceInput, gReplaceDialog.multiParaCheckbox.checked);
-//}
-//
 function onUnload() {
   // Disconnect context from this dialog.
   gFindReplaceData.replaceDialog = null;
 }
 
-// function initFindData()
-// {
-//   // Set data attributes per user input.
-//   if (gFindService)
-//   {
-// //    gFindService.searchString  = gReplaceDialog.findInput.value;
-// //    var serializer = new XMLSerializer();
-// //    gFindService.searchString = serializer.serializeToString(gReplaceDialog.findInput.contentDocument.documentElement);
+function saveFindData()
+{
+  // Set data attributes per user input.
+  if (gFindService)
+  {
+    gFindService.searchString = gReplaceDialog.findInput.textContent;
 
-//     // if (gReplaceDialog.findContentFilter == null)
-//     //   gReplaceDialog.findContentFilter = new msiDialogEditorContentFilter(gReplaceDialog.findInput);
-//     gFindService.searchString = gReplaceDialog.findInput.textContent;
-
-//     gFindService.matchCase     = gReplaceDialog.caseSensitive.checked;
-//     gFindService.wrapFind      = gReplaceDialog.wrap.checked;
-//     gFindService.findBackwards = gReplaceDialog.searchBackwards.checked;
-//   }
-// }
+    gFindService.matchCase     = gReplaceDialog.caseSensitive.checked;
+    gFindService.wrapFind      = gReplaceDialog.wrap.checked;
+    gFindService.entireWord    = gReplaceDialog.entireWord.checked;
+    gFindService.findBackwards = gReplaceDialog.searchBackwards.checked;
+  }
+}
 
 // function retrieveSearchExpression()
 // {
@@ -247,22 +243,27 @@ function initFindData()
   else return false;
   gFindInst.matchCase     = gReplaceDialog.caseSensitive.checked;
   gFindInst.wrapFind      = gReplaceDialog.wrap.checked;
-  gFindInst.entireWord    = false;
+  gFindInst.entireWord    = gReplaceDialog.entireWord.checked;
   gFindInst.searchFrames  = false;
   gFindInst.findBackwards = gReplaceDialog.searchBackwards.checked;
+  saveFindData();
   return true;
 }
 
 function onFindNext()
 {
-  if (initFindData())
-    return gFindInst.findNext();
-  return false;
+  var result = false;
+  clearMessages();
+  if (initFindData()) {
+    result = gFindInst.findNext();
+  }
+  if (!result) showNotFound();
+  return result;
 }
 
 function onReplace()
 {
- 
+  clearMessages();
   // Does the current selection match the find string?
   var selection = gEditor.selection;
 
@@ -334,8 +335,31 @@ function onReplace()
   return true;
 }
 
+// Handling notification messages
+
+function clearMessages()
+{
+  document.getElementById("notfound").setAttribute('hidden', 'true');
+  document.getElementById("replaceallResults").setAttribute('hidden','true')
+}
+
+function showNotFound()
+{
+  document.getElementById("notfound").removeAttribute("hidden");
+}
+
+function showReplacedCount(count)
+{
+  document.getElementById("replacemessage").textContent =
+    gStringBundle.GetStringFromName("Replaced") + " "
+      + count +
+      " " + gStringBundle.GetStringFromName("occurrences");
+  document.getElementById("replaceallResults").removeAttribute("hidden");
+}
+
 function onReplaceAll()
 {
+  clearMessages();
   var occurrences = 0;
   // if (GetCurrentViewMode() == "source") {
   //   var sourceIframe = EditorUtils.getCurrentSourceEditorElement();
@@ -389,10 +413,7 @@ function onReplaceAll()
     result = gFindInst.findNext();
   }
   gEditor.endTransaction();
-  var msg = gStringBundle.GetStringFromName("Replaced") +
-          occurrences +
-          " " + gStringBundle.GetStringFromName("occurrences");
-//  Services.prompt.alert(null, title, msg);
+  showReplacedCount(occurrences);
 }
 
     //The data depending on "current state" of the search rather than the search string will be kept in gReplaceDialog.mSearchState.
