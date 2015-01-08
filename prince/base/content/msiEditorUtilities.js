@@ -710,55 +710,24 @@ function msiClearAllFocusTimers(theWindow, timerList) {
 }
 function msiSetActiveEditor(editorElement, bIsFocusEvent) {
   var theWindow = msiGetTopLevelWindow();
-  //Logging stuff only:
-  //  var currEdId = "";
-  //  if ( ("msiActiveEditorElement" in theWindow) && (theWindow.msiActiveEditorElement !== null) )
-  //    currEdId = theWindow.msiActiveEditorElement.id;
   var newEdId = '';
   if (editorElement)
     newEdId = editorElement.id;
-  //  var prevEdId = "";
-  //  if ( ("msiPrevEditorElement" in theWindow) && (theWindow.msiPrevEditorElement !== null) )
-  //    prevEdId = theWindow.msiPrevEditorElement.id;
-  //End logging stuff
   var bIsDifferent = !theWindow.msiActiveEditorElement || theWindow.msiActiveEditorElement !== editorElement;
   if (bIsDifferent) {
-    //Logging stuff only:
-    //    var logStr = "In msiSetActiveEditor, current msiActiveEditor is [" + currEdId + "], prevEdId is [" + prevEdId + "]";
-    var logStr = 'In msiSetActiveEditor; ';
-    logStr += msiEditorStateLogString(theWindow);
-    logStr += ',\n  trying to change to [' + newEdId + '], setting; bIsFocusEvent is  ';
-    if (bIsFocusEvent)
-      logStr += 'true';
-    else
-      logStr += 'false';
-    //End logging stuff
     if (bIsFocusEvent) {
       if (!theWindow.msiPrevEditorElement)
         theWindow.msiPrevEditorElement = theWindow.msiActiveEditorElement;
-      //    {
-      var newTimerData = {};
       var nNewTimer = theWindow.setTimeout(clearPrevActiveEditor, 0, newTimerData);
       if (!('msiClearEditorTimerList' in theWindow) || theWindow.msiClearEditorTimerList === null)
         theWindow.msiClearEditorTimerList = [];
       theWindow.msiClearEditorTimerList.push(nNewTimer);
-      newTimerData.nTimerID = nNewTimer;  //Logging stuff only:
-                                          //      logStr += ", new clearEditorTimer ID is " + nNewTimer;
-                                          //    }
+      newTimerData.nTimerID = nNewTimer;                       
     }
-    logStr += '.\n';
-    msiKludgeLogString(logStr);
-    //End logging stuff
     //To Do: re-parent appropriate dialogs at this point? or if there's a timer set, wait for it?
     theWindow.msiActiveEditorElement = editorElement;
     var editor = msiGetEditor(theWindow.msiActiveEditorElement);
     if (editor && bIsFocusEvent && editor.tagListManager) {
-      //    try
-      //    {
-      //      var nsiEditor = editor.QueryInterface(Components.interfaces.nsIEditor);
-      ////      editor instanceof Components.interfaces.nsIEditor;
-      //      editor.tagListManager.editor = nsiEditor;
-      //    } catch(ex) {msidump("In msiSetActiveEditor, error setting tagListManager's editor to " + theWindow.msiActiveEditorElement.id + ": " + ex + "\n");}
       editor.setEditorActive();
       editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
     }
@@ -767,36 +736,6 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent) {
       msiDoUpdateCommands('style', theWindow.msiActiveEditorElement);
     }  //    To Do: update command states, Math/Text state...
   }
-  //  if (!theWindow.bIgnoreNextFocus || !bIsFocusEvent)
-  //  {
-  ////Logging stuff only:
-  //    var logStr = "In msiSetActiveEditor, current msiActiveEditor is [" + currEdId + "], trying to change to [" + newEdId + "], setting; bIgnoreNextFocus is "
-  //    if (theWindow.bIgnoreNextFocus)
-  //      logStr += "true, bIsFocusEvent is ";
-  //    else
-  //      logStr += "false, bIsFocusEvent is  ";
-  //    if (bIsFocusEvent)
-  //      logStr += "true";
-  //    else
-  //      logStr += "false";
-  ////End logging stuff
-  //    if (bIsDifferent)
-  //    {
-  //      theWindow.msiActiveEditorElement = editorElement;
-  //      if (bIsFocusEvent)
-  //      {
-  //        theWindow.msiClearEditorTimer = setTimeout(clearPrevActiveEditor, 0);
-  //        logStr += ", clearEditorTimer ID is " + theWindow.msiClearEditorTimer + ".\n";
-  //      }
-  //      else
-  //        logStr += ".\n";
-  //    }
-  //    else
-  //      logStr += ".\n";
-  //    msiKludgeLogString(logStr);
-  //  }
-  //  else
-  //    msiKludgeLogString("In msiSetActiveEditor, current msiActiveEditor is [" + currEdId + "], trying to change to [" + newEdId + "], not setting; bIgnoreNextFocus is true, bIsFocusEvent is true.\n");
   //The rationale for this line is that, as long as we're processing focus messages from clicking on a control in the main window
   //while the active editor is in another one, we keep the active editor where it is until focus gets reset to it, or until
   //another mechanism forces us to change it.
