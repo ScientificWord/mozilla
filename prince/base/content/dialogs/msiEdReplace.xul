@@ -124,33 +124,35 @@
                height="600px" />
             </groupbox>
           </row>
-          <row align="start" >
-            <description observes="notfound">"&notfoundwarning;"</description>
-            <description id="replacemessage" observes="replaceallResults"/>
-            <spacer class="bigspacer"/>
-            <grid>
-              <columns>
-                <column/>
-                <column/>
-              </columns>
-              <rows>
-                <row>
-                  <checkbox id="dialog.caseSensitive" label="&caseSensitiveCheckbox.label;" 
-                      accesskey="&caseSensitiveCheckbox.accesskey;"/>
-                  <checkbox id="dialog.entireWord" label="&entireWordCheckbox.label;" 
-                      accesskey="&entireWordCheckbox.accesskey;"/>
-                </row>
-                <row>
-                  <checkbox id="dialog.wrap" label="&wrapCheckbox.label;" 
-                      accesskey="&wrapCheckbox.accesskey;"/>
-                  <checkbox id="dialog.searchBackwards" label="&backwardsCheckbox.label;" 
-                      accesskey="&backwardsCheckbox.accesskey;"/>
-                </row>
-              </rows>
-            </grid>
-          </row>
         </rows>
       </grid>
+      <vbox>
+        <vbox height="2em">
+          <description id="notfoundmessage" observes="notfound" hidden="true">&notfoundwarning;</description>
+          <description id="replacemessage" observes="replaceallResults" hidden="true"/>
+        </vbox>
+        <spacer class="bigspacer"/>
+        <grid>
+          <columns>
+            <column/>
+            <column/>
+          </columns>
+          <rows>
+            <row>
+              <checkbox id="dialog.caseSensitive" label="&caseSensitiveCheckbox.label;" 
+                  accesskey="&caseSensitiveCheckbox.accesskey;"/>
+              <checkbox id="dialog.entireWord" label="&entireWordCheckbox.label;" 
+                  accesskey="&entireWordCheckbox.accesskey;"/>
+            </row>
+            <row>
+              <checkbox id="dialog.wrap" label="&wrapCheckbox.label;" 
+                  accesskey="&wrapCheckbox.accesskey;"/>
+              <checkbox id="dialog.searchBackwards" label="&backwardsCheckbox.label;" 
+                  accesskey="&backwardsCheckbox.accesskey;"/>
+            </row>
+          </rows>
+        </grid>
+      </vbox>
     </vbox>
     <vbox>
       <msibutton id="findNext" label="&findNextButton.label;" accesskey="&findNextButton.accesskey;" 
