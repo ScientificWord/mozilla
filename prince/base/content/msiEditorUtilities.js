@@ -718,6 +718,7 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent) {
     if (bIsFocusEvent) {
       if (!theWindow.msiPrevEditorElement)
         theWindow.msiPrevEditorElement = theWindow.msiActiveEditorElement;
+      var newTimerData = {};
       var nNewTimer = theWindow.setTimeout(clearPrevActiveEditor, 0, newTimerData);
       if (!('msiClearEditorTimerList' in theWindow) || theWindow.msiClearEditorTimerList === null)
         theWindow.msiClearEditorTimerList = [];
