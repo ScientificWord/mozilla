@@ -7,7 +7,7 @@ object[msigraph="true"] {display:none;}
 }
 
 @media screen {
-  plotwrapper object[msisnap] { display:none;}
+  object[msisnap] { display:none;}
 }
 
 /* This section gives the default colors for a range 
