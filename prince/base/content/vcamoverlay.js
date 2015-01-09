@@ -257,12 +257,12 @@ function rebuildSnapshots(doc) {
       else continue;
       if (obj.wrappedJSObject) obj = obj.wrappedJSObject;
       if (img && img.nodeName !== 'object') img = null;
-      if (!img) {
+    // if (!img) {
         return doMakeSnapshot.call(obj);
-      }
-      if (needRefresh(obj.getAttribute('data'), img.getAttribute('data'))) {
-        return doMakeSnapshot.call(obj);
-      }
+    //   }
+    //   if (needRefresh(obj.getAttribute('data'), img.getAttribute('data'))) {
+    //     return doMakeSnapshot.call(obj);
+    //   }
     }
   }
 }
