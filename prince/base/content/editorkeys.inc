@@ -23,6 +23,7 @@
   <key id="msiPasteKeyNoFormatting" key="v" command="cmd_pasteNoFormatting" modifiers="accel,shift"/>
   <key id="msiRedoKey" key="z" command="cmd_redo" modifiers="accel,shift" />
   <key id="msiSaveAsKey" key="s" command="cmd_saveAs" modifiers="accel,shift" />
+  <key id="msiSaveKey" key="s" command="cmd_save" modifiers="accel" />
   <key id="msiSelectAllKey" modifiers="accel" key="a" command="cmd_selectAll"/>
   <key id="msiSelectDownKey" keycode="VK_DOWN" command="cmd_selectLineNext" modifiers="shift"/>
   <key id="msiSelectMacroKey" key=" " modifiers="control,accel" command="cmd_macrofragment"/>

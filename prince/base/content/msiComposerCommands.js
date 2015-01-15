@@ -1222,7 +1222,7 @@ var msiSaveCommand =
 
   doCommand: function(aCommand)
   {
-    if (isLIcensed()) {
+    if (isLicensed()) {
 
       try {
         var result = false;
