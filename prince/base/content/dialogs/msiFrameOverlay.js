@@ -110,7 +110,8 @@ function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
     if (dg.autoHeightCheck) dg.autoHeightCheck.checked = true;
     if (dg.frameHeightInput) dg.frameHeightInput.setAttribute("disabled", true);
   }
-  dg.constrainCheckbox.checked = (width === null || height === null);
+  if (dg.constrainCheckbox) 
+    dg.constrainCheckbox.checked = (width === null || height === null);
   dg.unitList.value = unit;
 }
 
@@ -538,11 +539,11 @@ function initFrameTab(dg, element, newElement,  contentsElement)
     {
       try
       {
-        checkMenuItem(dg.ltxfloat_forceHere, (floatLocation.search("H") != -1));
-        checkMenuItem(dg.ltxfloat_here, (floatLocation.search("h") != -1));
-        checkMenuItem(dg.ltxfloat_pageOfFloats, (floatLocation.search("p") != -1));
-        checkMenuItem(dg.ltxfloat_topPage, (floatLocation.search("t") != -1));
-        checkMenuItem(dg.ltxfloat_bottomPage, (floatLocation.search("b") != -1));
+        // checkMenuItem(dg.ltxfloat_forceHere, (floatLocation.search("H") != -1));
+        // checkMenuItem(dg.ltxfloat_here, (floatLocation.search("h") != -1));
+        // checkMenuItem(dg.ltxfloat_pageOfFloats, (floatLocation.search("p") != -1));
+        // checkMenuItem(dg.ltxfloat_topPage, (floatLocation.search("t") != -1));
+        // checkMenuItem(dg.ltxfloat_bottomPage, (floatLocation.search("b") != -1));
 
 
         if (dg.locationList) {
