@@ -257,41 +257,46 @@ that is listed in the enumerated type @{CommandCode@}.
       @<Misc commands@>
       @<Extensions@>
       case CMD_NONE:{
-        LOG("\n----" << CurTok()
-                     << " ERROR -- no command code.");
+        if (CurTok().Type() == TT_PARAM){
+           // a stray #, just copy it 
+           Typesetter::AppendTag("#");
+        } else {
+           LOG("\n----" << CurTok()
+                        << " ERROR -- no command code.");
 
-        std::cout << "\n-- Undefined " ;
-        String s = Symbols::GetName(CurTok().Symbol());
-        std::cout << "\\";
-        for (int i = 0; i < s.Size(); ++i){
-          if (s[i] >= 32 && s[i] <= 126){
-             std::cout << (char) s[i];
-          } else {
-             std::cout << "[chr " << (int) s[i] << "]";
-          }
+           std::cout << "\n-- Undefined " ;
+           String s = Symbols::GetName(CurTok().Symbol());
+           std::cout << "\\";
+           for (int i = 0; i < s.Size(); ++i){
+             if (s[i] >= 32 && s[i] <= 126){
+                std::cout << (char) s[i];
+             } else {
+                std::cout << "[chr " << (int) s[i] << "]";
+             }
+           }
+           // Give it a default definition and put back the token
+           TokenList* pTokenList = new TokenList;
+           pTokenList -> push_back(TeXToken(TT_END_MATCH,0,0));
+
+           pTokenList -> AppendSymbol("msidefault");
+           pTokenList -> push_back(TeXToken(TT_LEFT_BRACE,'{',0));
+           pTokenList -> push_back(TeXToken(CurTok()));
+           pTokenList -> push_back(TeXToken(TT_RIGHT_BRACE,'}',0));
+           MacroDef* pMacroDef = new MacroDef(pTokenList);
+
+           Symbols::SetDef(CurTok().Symbol(), pMacroDef, false);
+           // Now rescan the newly defined token
+           inp.Putback(CurTok());
+
+           //  // Let's just append the token to the
+           //  // output stream, and assume we go to hmode
+           //  if (Typesetter::GetMode() == MODE_VERTICAL){
+           //     Typesetter::GotoHMode();
+           //     Typesetter::SetInner(false);
+           //     inp.Putback(Global::msieverypar);
+           //     inp.Putback(Global::everypar);
+           //  }
         }
-        // Give it a default definition and put back the token
-        TokenList* pTokenList = new TokenList;
-        pTokenList -> push_back(TeXToken(TT_END_MATCH,0,0));
-
-        pTokenList -> AppendSymbol("msidefault");
-        pTokenList -> push_back(TeXToken(TT_LEFT_BRACE,'{',0));
-        pTokenList -> push_back(TeXToken(CurTok()));
-        pTokenList -> push_back(TeXToken(TT_RIGHT_BRACE,'}',0));
-        MacroDef* pMacroDef = new MacroDef(pTokenList);
-
-        Symbols::SetDef(CurTok().Symbol(), pMacroDef, false);
-        // Now rescan the newly defined token
-        inp.Putback(CurTok());
-
-        //  // Let's just append the token to the
-        //  // output stream, and assume we go to hmode
-        //  if (Typesetter::GetMode() == MODE_VERTICAL){
-        //     Typesetter::GotoHMode();
-        //     Typesetter::SetInner(false);
-        //     inp.Putback(Global::msieverypar);
-        //     inp.Putback(Global::everypar);
-        //  }
         break;
       }
       default:
