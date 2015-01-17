@@ -458,10 +458,12 @@ function translateSelectionTypeString(selTypeStr)
 
 function Startup()
 {
-  dump("\nHELLO\n");
+  
+  frameUnitHandler = new UnitHandler();
+
   gActiveEditorElement = msiGetParentEditorElementForDialog(window);
   gActiveEditor = msiGetTableEditor(gActiveEditorElement);
-//  gActiveEditor = GetCurrentTableEditor();
+
   if (!gActiveEditor)
   {
     window.close();
@@ -469,7 +471,6 @@ function Startup()
   }
 
   setVariablesForControls();
-//  initframeUnitHandler(null);
   
   data = window.arguments[3];
   if (!data) {
@@ -478,7 +479,9 @@ function Startup()
       gTableElement = gActiveEditor.createElementWithDefaults("table");
       gTableElement.removeAttribute("border");
       gTableElement.setAttribute("req","tabulary");
-      gWrapperElement = null;
+      gWrapperElement = gActiveEditor.createElementWithDefaults("msiframe");
+      gWrapperElement.setAttribute("frametype", "table");
+      gWrapperElement.appendChild(gTableElement);
     } 
     catch (e) {
 
@@ -487,22 +490,21 @@ function Startup()
   else {
     newTable = false;
     gTableElement = data.reviseData.mTableElement;
-    gWrapperElement = null;
-    if (gTableElement)  {
-      if (gTableElement.nodeName !== "msiframe") {
-        if (gTableElement.parentNode.nodeName === "msiframe") {
-          wrapperElement = gTableElement.parentNode;
-        }
-      } else
-        gWrapperElement = gTableElement;
-    } 
-      
+    gWrapperElement = gTableElement.parentNode;
+
+          
     // We disable resetting row and column count -- the user has more direct ways of doing that.
     // document.getElementById("QuicklyTab").setAttribute("collapsed", true);
     // document.getElementById("tablegrid").setAttribute("collapsed", true);
     // document.getElementById("rowsInput").disabled = true;
     // document.getElementById("columnsInput").disabled = true;
     document.getElementById("mainTabBox").selectedTab = document.getElementById("TableTab");
+  }
+
+  if (gTableElement !== null  && gTableElement.hasAttribute("units")) {
+     frameUnitHandler.initCurrentUnit(gTableElement.getAttribute("units"));
+  } else {
+     frameUnitHandler.initCurrentUnit("in");
   }
 
   var theCommand = "cmd_editTable";
@@ -521,13 +523,6 @@ function Startup()
   }
 
 
-//  if (!gSelection)  //should get set in "setDataFromReviseData" call
-//  {
-//    try {
-//      gSelection = gActiveEditor.selection;
-//    } catch (e) {}
-//    if (!gSelection) return;
-//  }
 
   if (!gTableElement)
   {
@@ -570,20 +565,20 @@ function initKeyList()
 
 function InitDialog()
 {
-  initFrameTab(gDialog, gTableElement, newTable, gTableElement);
+  initFrameTab(gDialog, gWrapperElement || gTableElement, newTable, gTableElement);
   initKeyList();
   initTablePanel();
   initLabelingPanel();
   initCellsPanel();
   initLinesPanel();
-  placementChanged();
+  //placementChanged();
 }
 
 
 function initframeUnitHandler(unit)
 {
-  return;
-  frameUnitHandler = new frameUnitHandler();
+  if (!frameUnitHandler) 
+     frameUnitHandler = new UnitHandler();
   var fieldList = [];
   var initUnit = unit;
   fieldList.push(gDialog.CellHeightInput);
@@ -1190,7 +1185,7 @@ function doSetStyleAttr(styleProp, styleVal)
 
 function ApplyTableAttributes()
 {  
-  setFrameAttributes(gTableElement, gTableElement, gActiveEditor, false);
+  setFrameAttributes(gWrapperElement, gTableElement, gActiveEditor, false);
 }
 
 
@@ -1971,7 +1966,7 @@ function Apply()
     var i;
     var caps = gTableElement.getElementsByTagName('caption');
         
-    if (captionloc !== '') {
+    if (captionloc !== 'none') {
       if (caps.length > 0) {
         cap = caps[0];
       }
