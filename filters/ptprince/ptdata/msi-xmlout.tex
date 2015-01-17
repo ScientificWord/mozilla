@@ -16,7 +16,7 @@
    \ifmmode
       \msitag{\msipassthru{<a href="#1">#2</a>}}%
    \else
-      \msiopentag{a}{<a href="#1">}#2\msiclosetag{a}{</a>}%
+      \msiopentag{a}{<a href="}#1\msitag{">}#2\msiclosetag{a}{</a>}%
    \fi}
 
 
@@ -1279,6 +1279,11 @@
    \catcode`&=\active
    \gdef&{\ifmmode\char`\&\else\char`\&amp;\fi}%
 \egroup
+\bgroup
+   \catcode`#=\active
+   \gdef#{\char`\#}%
+\egroup
+
 
 
 \def\out@verbatim#1{%

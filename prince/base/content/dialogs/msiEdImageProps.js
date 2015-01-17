@@ -184,11 +184,6 @@ function setImageSizeFields(imageWidth, imageHeight, dialogUnits)
 
 function Startup()
 {
-  unitHandler = new UnitHandler();
-
-  //gActiveEditorElement = msiGetParentEditorElementForDialog(window);
-  //gActiveEditor = msiGetTableEditor(gActiveEditorElement);
-  var existingImage = false;
   gEditorElement = msiGetParentEditorElementForDialog(window);
   gEditor = msiGetEditor(gEditorElement);
   if (!gEditor)
@@ -196,6 +191,11 @@ function Startup()
     window.close();
     return;
   }
+
+  unitHandler = new UnitHandler();
+
+  var existingImage = false;
+
   gDialog = {};
   gDialog.isImport          = true;
   gDialog.tabBox            = document.getElementById( "TabBox" );
