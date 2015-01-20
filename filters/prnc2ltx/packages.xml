@@ -7,4 +7,5 @@
 	<package name="minipage" pri="200"/>
 	<package name="hyperref" pri="10000"/>
 	<package name="bidi" pri="10001"/>
+	<package name="tcibkpk" pri="200"/>
 </packages>													 
