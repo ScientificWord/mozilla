@@ -6,6 +6,9 @@ body {
 li {
 	list-style-image: none;
 }
+.former {
+	color: #909090;
+}
 html {
 	width: 4in;
 }
