@@ -44,6 +44,7 @@
           width="350" height="540"/>
         <vbox flex="1"/></hbox>
         <description id="versionField" align="center"/> 
+        <description id="CopyRight" align="center"/>
       </tabpanel> 
       <tabpanel>
         <iframe src="chrome://prince/content/licenses.html"/>
