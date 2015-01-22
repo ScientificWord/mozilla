@@ -2,11 +2,11 @@ Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 
 #include productname.inc
 
-const NS_IPCSERVICE_CONTRACTID  = "@mozilla.org/process/ipc-service;1";
-const NS_IPCBUFFER_CONTRACTID   = "@mozilla.org/process/ipc-buffer;1";
-const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
-const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
-const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
+// const NS_IPCSERVICE_CONTRACTID  = "@mozilla.org/process/ipc-service;1";
+// const NS_IPCBUFFER_CONTRACTID   = "@mozilla.org/process/ipc-buffer;1";
+// const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
+// const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
+// const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
 //const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
