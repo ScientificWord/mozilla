@@ -3585,6 +3585,37 @@ function msiFindOriginalDocname(docUrlString) {
   }
   return path;
 }
+
+
+function isPathBeingEdited(path) {
+  var cancel = false;
+  var w;
+  var i;
+  var count = 0;
+  var editorList;
+  var editorElement;
+  var doc;
+  var uriString = msiFileURLFromAbsolutePath(path).spec;
+  // uriString ends in xxxx.sci; we will be comparing it to something ending in xxxx_work/main.xhtml
+  // so change it
+  uriString = uriString.replace(/\.sci$/, '_work/main.xhtml');
+  var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService();
+  wm = wm.QueryInterface(Components.interfaces.nsIWindowMediator);
+  var wlist = wm.getEnumerator(null);
+  while (!cancel && wlist.hasMoreElements())
+  {
+    w = wlist.getNext();
+    editorList = w.document.getElementsByTagName('editor');
+    if (editorList)
+      count = editorList.length;
+    for (i = 0; !cancel && (i < count); i++) {
+      editorElement = editorList[i];
+      doc = editorElement.contentDocument;
+      cancel = (uriString === doc.documentURI);
+    }
+  }
+  return cancel;
+}
 // createWorkingDirectory does the following:
 // It creates a directory, foo_work, and unpacks the contents of foo.sci into the new directory.
 // The return value is an nsILocalFile which is the main xhtml file in the .sci file, usually named
@@ -3677,6 +3708,12 @@ function createWorkingDirectory(documentfile) {
           dir.append(basename + '_work');
         }
         if (dir.exists()) {
+          // Possibly there is only an orphaned working directory, but first we should chck that we are
+          // not about tdo edit the same file in two different editors.
+          if (isPathBeingEdited(doc.path)) {
+            AlertWithTitle(GetString('OnlyOneEditorPerFile'), doc.leafname);
+            return null;
+          }
           var mainfile = dir.clone();
           mainfile.append('main' + extension);
           if (mainfile.exists()) {
