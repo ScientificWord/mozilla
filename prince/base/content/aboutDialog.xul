@@ -41,7 +41,7 @@
 #ifdef PROD_SWP
           src="chrome://prince/content/aboutSWP.png" 
 #endif
-          width="350" height="540"/>
+          width="350" height="600"/>
         <vbox flex="1"/></hbox>
         <description id="versionField" align="center"/> 
         <description id="CopyRight" align="center"/>
