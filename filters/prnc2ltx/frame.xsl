@@ -6,12 +6,17 @@
     xmlns:exsl="http://exslt.org/common"
 >
 <xsl:template match="html:graph"><xsl:apply-templates /></xsl:template>
-<xsl:template match="html:caption"><xsl:apply-templates /></xsl:template>
+
+<xsl:template match="html:caption" mode="doit"><xsl:apply-templates /></xsl:template>
+
+<xsl:template match="html:caption"></xsl:template>
+
 <xsl:template match="html:msiframe">
   <xsl:variable name="framePosType">
     <xsl:choose>
       <xsl:when test="@pos='inline'">ft-inline</xsl:when>
       <xsl:when test="@pos='center'">ft-centered</xsl:when>
+      <xsl:when test="@pos='floating'">ft-floating</xsl:when>
       <xsl:when test="@pos='d'">ft-centered</xsl:when>
       <xsl:when test="@ltxfloat">ft-floating</xsl:when>
       <xsl:otherwise>ft-wrapped</xsl:otherwise>
@@ -138,12 +143,20 @@
   <!-- <xsl:when test="@pos='float' and ((@placement='full') or (@frametype='image') or ((@placeLocation !='h') and (@placeLocation !='H')))">\begin{figure}[<xsl:value-of select="@placeLocation"></xsl:value-of>]<xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\begin{center}</xsl:if></xsl:when> -->
    <xsl:when test="$framePosType='ft-floating'">
        <xsl:value-of select="$newline"/>
-       <xsl:text>\begin{figure}</xsl:text>
+       <xsl:choose>
+         <xsl:when test="@frametype='table'">
+            <xsl:text>\begin{table}</xsl:text>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:text>\begin{figure}</xsl:text>
+         </xsl:otherwise>
+       </xsl:choose>
        <xsl:if test="@ltxfloat">
           <xsl:text>[</xsl:text>
           <xsl:value-of select="@ltxfloat"/>
-          <xsl:text>]\begin{center}</xsl:text>
+          <xsl:text>]</xsl:text>
        </xsl:if>
+       <xsl:text>\centering </xsl:text>
     </xsl:when>
     <xsl:when test="$framePosType='ft-centered'">
       <xsl:text>\begin{center}</xsl:text>
@@ -161,7 +174,7 @@
     <xsl:if test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
       <xsl:text>\caption{</xsl:text>
     </xsl:if>
-    <xsl:apply-templates select="html:caption"/>
+    <xsl:apply-templates select="html:caption" mode="doit"/>
     <xsl:choose>
       <xsl:when test="$framePosType='ft-floating' or ($framePosType='ft-wrapped')">
         <xsl:text>}</xsl:text>
@@ -248,7 +261,7 @@
         <xsl:text>\\ </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:apply-templates select="html:caption"/>
+    <xsl:apply-templates select="html:caption" mode="doit"/>
     <xsl:choose>
       <xsl:when test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
         <xsl:text>}</xsl:text>
@@ -267,9 +280,18 @@
   <xsl:choose>
     <!-- xsl:when test="$framePosType='ft-inline'"><xsl:text>\end{center}}</xsl:text></xsl:when -->
     <xsl:when test="$framePosType='ft-centered'">\end{center}</xsl:when>
-    <xsl:when test="$framePosType='ft-floating'">\end{center}\end{figure}</xsl:when>
+    <xsl:when test="$framePosType='ft-floating'">
+      <xsl:choose>
+        <xsl:when test="@frametype='table'">
+          <xsl:text>\end{table}</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>\end{figure}</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
     <xsl:when test="$framePosType='ft-wrapped'">\end{wrapfigure}</xsl:when>   
   </xsl:choose>
-    <!-- xsl:if test="($inlineOffset and string-length($inlineOffset))">}</xsl:if> -->
+    <xsl:if test="($inlineOffset and string-length($inlineOffset))">}</xsl:if>
 </xsl:template>
 </xsl:stylesheet>
