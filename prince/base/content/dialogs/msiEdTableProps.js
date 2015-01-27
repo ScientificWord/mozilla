@@ -710,7 +710,7 @@ function initTablePanel()
 function initLabelingPanel()
 {
   // Be sure to get caption from table in doc, not the copied "globalTableElement"
-  gTableCaptionElement = gTableElement.caption;
+  gTableCaptionElement = gWrapperElement.caption;
   if (gTableCaptionElement)
   {
     gTableCaptionPlacement = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side");
@@ -1964,7 +1964,7 @@ function Apply()
     var captiontext;
     var cap;
     var i;
-    var caps = gTableElement.getElementsByTagName('caption');
+    var caps = gWrapperElement.getElementsByTagName('caption');
         
     if (captionloc !== 'none') {
       if (caps.length > 0) {
@@ -1972,7 +1972,8 @@ function Apply()
       }
       else {  //create new caption node
         cap = gActiveEditor.createElementWithDefaults('caption');
-        gTableElement.appendChild(cap);
+        gWrapperElement.appendChild(cap);
+        msiEditorEnsureElementAttribute(gWrapperElement, "captionloc", captionloc, null);
         var namespace = { value: null };
         var tlm = gActiveEditor.tagListManager;
         captiontext = tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, cap.ownerDocument);
@@ -1981,12 +1982,21 @@ function Apply()
       }
       cap.setAttribute('style', 'caption-side: '+ captionloc +';');
       cap.setAttribute('align', captionloc);
+      if (isEnabled(document.getElementById("keyInput"))) {
+         if (document.getElementById("keyInput").value != "")
+            cap.setAttribute("key", document.getElementById("keyInput").value);
+         else   
+            cap.removeAttribute("key");
+      } else 
+          cap.removeAttribute("key");
     }
     else if (caps.length > 0) { // remove caption(s)
       for (i = caps.length -1; i >= 0; i--) {
         gActiveEditor.deleteNode(caps[i]);
       }
     }
+    
+
 
 //    ApplyColAndRowAttributes();
 
@@ -2047,11 +2057,19 @@ function onAcceptNewTable()
         var cap = gActiveEditor.createElementWithDefaults('caption');
         var namespace = { value: null };
         var tlm = gActiveEditor.tagListManager;
-        gTableElement.appendChild(cap);
+        gWrapperElement.appendChild(cap);
+        msiEditorEnsureElementAttribute(gWrapperElement, "captionloc", captionloc, null);
         cap.setAttribute('style', 'caption-side: '+ captionloc +';');
         cap.setAttribute('align', captionloc);
         captiontext = tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, cap.ownerDocument);
         cap.appendChild(captiontext);
+        if (isEnabled(document.getElementById("keyInput"))) {
+         if (document.getElementById("keyInput").value != "")
+            cap.setAttribute("key", document.getElementById("keyInput").value);
+         else   
+            cap.removeAttribute("key");
+      } else 
+          cap.removeAttribute("key");
       }
       gTableElement.appendChild(tableBody);
       color = document.getElementById('backgroundCW').getAttribute("color");
