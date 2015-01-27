@@ -853,49 +853,49 @@ function locationChanged()
 function enableFloatOptions(radiogroup)
 {
   return;
-  var broadcaster = document.getElementById("wrapOption");
-  var theValue = "true";
-  var position;
-  if (!radiogroup)
-    radiogroup = document.getElementById("wrapOptionRadioGroup");
-
-  if (document.getElementById("placeHereCheck") && document.getElementById('placeHereCheck').checked && radiogroup)
-  {
-    theValue = "false";
-    position = radiogroup.selectedItem.value;
-    setAlignment((position==="L" || position==="I")?1:((position==="R"||position=="O")?2:0));
-  }
-  else
-  {
-    setAlignment(0);
-  }
-  broadcaster.setAttribute("disabled",theValue);
-  updateDiagram("margin");
+  // var broadcaster = document.getElementById("wrapOption");
+  // var theValue = "true";
+  // var position;
+  // if (!radiogroup)
+  //   radiogroup = document.getElementById("wrapOptionRadioGroup");
+  // 
+  // if (document.getElementById("placeHereCheck") && document.getElementById('placeHereCheck').checked && radiogroup)
+  // {
+  //   theValue = "false";
+  //   position = radiogroup.selectedItem.value;
+  //   setAlignment((position==="L" || position==="I")?1:((position==="R"||position=="O")?2:0));
+  // }
+  // else
+  // {
+  //   setAlignment(0);
+  // }
+  // broadcaster.setAttribute("disabled",theValue);
+  // updateDiagram("margin");
 }
 
 function enableFloating( )
 {
   return;
-  var broadcaster = document.getElementById("floatingPlacement");
-  var theValue = "true";
-  var bEnableInlineOffset = false;
-  if (document.getElementById('float') && document.getElementById('float').selected)
-  {
-    theValue = "false";
-    broadcaster.setAttribute("disabled",theValue);
-    enableFloatOptions();
-  }
-  else if (document.getElementById('display').selected)
-  {
-    setAlignment(0);
-    updateDiagram("margin");
-  }
-  else if (document.getElementById('inline').selected)
-  {
-    updateDiagram("margin");
-    bEnableInlineOffset = true;
-  }
-  showDisableControlsByID(["frameInlineOffsetLabel","frameInlineOffsetInput"], bEnableInlineOffset);
+  // var broadcaster = document.getElementById("floatingPlacement");
+  // var theValue = "true";
+  // var bEnableInlineOffset = false;
+  // if (document.getElementById('float') && document.getElementById('float').selected)
+  // {
+  //   theValue = "false";
+  //   broadcaster.setAttribute("disabled",theValue);
+  //   enableFloatOptions();
+  // }
+  // else if (document.getElementById('display').selected)
+  // {
+  //   setAlignment(0);
+  //   updateDiagram("margin");
+  // }
+  // else if (document.getElementById('inline').selected)
+  // {
+  //   updateDiagram("margin");
+  //   bEnableInlineOffset = true;
+  // }
+  // showDisableControlsByID(["frameInlineOffsetLabel","frameInlineOffsetInput"], bEnableInlineOffset);
 }
 
 /************************************/
@@ -1503,7 +1503,7 @@ function floatPropertyChanged() {
     document.getElementById("locationEnabled").removeAttribute("disabled");
   }
   else {
-    document.getElementById("locationEnabled").setAttribute("disabled", "true");
+    //document.getElementById("locationEnabled").setAttribute("disabled", "true");
     document.getElementById("floatlistNone").removeAttribute("checked");
   }
 }
