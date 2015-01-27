@@ -168,19 +168,17 @@
   <xsl:text>\end{</xsl:text>
   <xsl:value-of select="$tabularType"/>
   <xsl:text>}</xsl:text>
-  <xsl:if test="$bottomCaption='1'">
-     <xsl:apply-templates select="$caption"/>
-  </xsl:if>
   <xsl:if test="$embedded">
     <xsl:text>}</xsl:text>
   </xsl:if>
 </xsl:template>    
 
-
+<!--
 <xsl:template match="html:table/html:caption">
   <xsl:text>\caption{</xsl:text><xsl:apply-templates/><xsl:text>}</xsl:text>
   <xsl:if test="@key"><xsl:text>\label{</xsl:text><xsl:value-of select="@key"/><xsl:text>}</xsl:text></xsl:if>
 </xsl:template>
+-->
 
 
 <xsl:template match="html:table[@ltxfloat] | mml:table[@ltxfloat]">
@@ -203,57 +201,7 @@
 
 
 <xsl:template match="html:table|mml:table">
-  <xsl:choose>
-    <xsl:when test="@pos='center'">
-      <xsl:choose>
-        <xsl:when test="html:caption">
-          <xsl:value-of select="$newline"/>
-          <xsl:text>\begin{table}[h]</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$newline"/>
-          <xsl:text>\begin{center}</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:call-template name="buildtable"/>
-      <xsl:choose>
-        <xsl:when test="html:caption">
-          <xsl:text>\end{table}</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>\end{center}</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:when>
-    <xsl:when test="@pos or ./html:caption">
-      <xsl:value-of select="$newline"/> 
-      <xsl:text>\begin{wraptable}{</xsl:text>
-      <xsl:choose>
-        <xsl:when test="not(substring(@pos,1,1))">
-          <xsl:text>r</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="substring(@pos,1,1)"/>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text>}{</xsl:text>
-      <xsl:choose>
-        <xsl:when test="@width">
-          <xsl:value-of select="@width"/>
-          <xsl:value-of select="@units"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text xml:space="preserve">0pt </xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text>}</xsl:text>
-      <xsl:call-template name="buildtable"/>
-      <xsl:text>\end{wraptable}</xsl:text>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:call-template name="buildtable"/>
-    </xsl:otherwise>
-  </xsl:choose>
+    <xsl:call-template name="buildtable"/>
 </xsl:template>
 		  
 <xsl:template match="html:td//html:br">
