@@ -26,7 +26,8 @@
                     parent::mml:msubsup or
                     parent::mml:munder or
                     parent::mml:mover or
-                    parent::mml:munderover">
+                    parent::mml:munderover or
+                    preceding-sibling::mml:mo[1][@fence='true']">
       <mml:mrow><xsl:apply-templates/></mml:mrow>
     </xsl:when>
     <xsl:otherwise>
