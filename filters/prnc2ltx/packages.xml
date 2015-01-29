@@ -1,3 +1,4 @@
+<?xml version='1.0'?>
 <packages>
 	<package name="titlesec" pri="100"/>
 	<package name="amsfonts" pri="010"/>
