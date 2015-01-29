@@ -12,12 +12,23 @@
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
-\def\href#1#2{%
+\begingroup\catcode`\"=\active\relax
+\gdef"{'}
+\endgroup
+
+\def\href{
+    \begingroup
+    \catcode`\"=\active    
+    \@href}
+
+
+\def\@href#1#2{%
    \ifmmode
       \msitag{\msipassthru{<a href="#1">#2</a>}}%
    \else
       \msiopentag{a}{<a href="}#1\msitag{">}#2\msiclosetag{a}{</a>}%
-   \fi}
+   \fi
+   \endgroup}
 
 
 % This writes the css file my.css. 
