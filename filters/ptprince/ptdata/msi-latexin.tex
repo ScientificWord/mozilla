@@ -76,6 +76,7 @@
 
 \def\@usepackagea[#1]#2{%
    \out@usepackageA[#1]{#2}%
+   \msi@inpreamble=0
    \advance\msi@output by 1\relax
    \@@usepackage[#1]{#2}%
    \advance\msi@output by -1\relax
@@ -83,6 +84,7 @@
 
 \def\@usepackageb#1{%
    \out@usepackageB{#1}%
+   \msi@inpreamble=0
    \advance\msi@output by 1\relax
    \@@usepackage{#1}%
    \advance\msi@output by -1\relax
