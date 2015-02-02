@@ -46,6 +46,7 @@ interface nsISupportsArray;
 interface nsISelection;
 interface nsIContentFilter;
 interface msiITagListManager;
+interface msiIAppUtils;
 interface nsIArray;
 
 %{C++
@@ -659,6 +660,7 @@ interface nsIHTMLEditor : nsISupports
    */
   attribute boolean returnInParagraphCreatesNewParagraph;
   attribute msiITagListManager tagListManager;
+  readonly attribute msiIAppUtils mAppUtils;
   attribute nsIDOMElement focusedPlot;
   void addTagInfo( in AString strPath );
   void setOneShotTranslation( in AString tablename );
