@@ -206,7 +206,6 @@ function createExtractor(aFile) {
 }
 
 const AppInstall = {
-
   /* nsISupports */
   QueryInterface : function ai_QI(iid) {
     if (iid.equals(nsIXULAppInstall) ||
@@ -218,11 +217,10 @@ const AppInstall = {
 
   /* nsIXULAppInstall */
   installApplication : function ai_IA(aAppFile, aDirectory, aLeafName) {
+    try {
     var extractor = createExtractor(aAppFile);
     var iniParser = extractor.iniParser;
-
     var appName = iniParser.getString("App", "Name");
-
     // vendor is optional
     var vendor;
     try {
@@ -281,8 +279,8 @@ const AppInstall = {
     }
  
     var version = iniParser.getString("App", "Version");
-    var buildID = iniParser.getString("App", "BuildID");
-    var longname = iniParser.getString("App", "longname");
+   var buildID = iniParser.getString("App", "BuildID");
+   var longname = iniParser.getString("App", "longname");
 
     var infoString = "";
     if (vendor) {
@@ -316,10 +314,6 @@ const AppInstall = {
         "<string>Scientific WorkPlace Document</string>\n" +
         "<key>CFBundleTypeRole</key>\n" +
         "<string>Editor</string>\n" +
-        "<key>LSTypeIsPackage</key>\n" +
-        "<array>\n" +
-          "<string></string>\n" +
-        "</array>\n" +
     "</dict>\n" +
     "</array>\n" +
     "<key>CFBundleExecutable</key>\n" +
@@ -378,6 +372,10 @@ const AppInstall = {
     xulrunnerBinary.copyTo(aDirectory, appName.toLowerCase() + "@BIN_SUFFIX@");
 #endif
   }
+  catch(e) {
+    dump(e.message + '\n');
+  }
+}
 };
 
 const AppInstallFactory = {
