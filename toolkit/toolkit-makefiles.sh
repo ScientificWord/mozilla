@@ -651,6 +651,7 @@ MAKEFILES_xulapp="
   toolkit/components/autosub/Makefile
   toolkit/components/autosub/public/Makefile
   toolkit/components/autosub/src/Makefile
+  toolkit/components/rlm/Makefile
   toolkit/components/msiutil/Makefile
   toolkit/components/msiutil/public/Makefile
   toolkit/components/msiutil/src/Makefile
@@ -780,16 +781,16 @@ MAKEFILES_libmar="
 "
 
 # MAKEFILES_prince="
-# 	Prince/Makefile
-# 	Prince/Compute/Makefile
-# 	Prince/res/Makefile
-# 	Prince/samples/Makefile
-# 	Prince/shells/Makefile
-# 	Prince/base/Makefile
-# 	Prince/plugins/Makefile
-# 	filters/Makefile
-# 	filters/ptprince/Makefile
-# 	filters/ptprince/ptdata/Makefile
+#   Prince/Makefile
+#   Prince/Compute/Makefile
+#   Prince/res/Makefile
+#   Prince/samples/Makefile
+#   Prince/shells/Makefile
+#   Prince/base/Makefile
+#   Prince/plugins/Makefile
+#   filters/Makefile
+#   filters/ptprince/Makefile
+#   filters/ptprince/ptdata/Makefile
 #   "
 
 add_makefiles "
