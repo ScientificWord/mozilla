@@ -124,6 +124,7 @@ COMPONENT_LIBS += \
 	toolkitcomps \
 	pipboot \
 	pipnss \
+	rlm  \
 	$(NULL)
 
 ifdef MOZ_XMLEXTRAS
