@@ -281,7 +281,13 @@ const AppInstall = {
     }
  
     var version = iniParser.getString("App", "Version");
-    var buildID = iniParser.getString("App", "BuildID");
+    var buildID;
+    try {
+     buildID = iniParser.getString("App", "BuildID");
+    }
+    catch(e) {
+      buildID = "no_build_id";
+    }
     var longname = iniParser.getString("App", "longname");
 
     var infoString = "";
@@ -316,11 +322,7 @@ const AppInstall = {
         "<string>Scientific WorkPlace Document</string>\n" +
         "<key>CFBundleTypeRole</key>\n" +
         "<string>Editor</string>\n" +
-        "<key>LSTypeIsPackage</key>\n" +
-        "<array>\n" +
-          "<string></string>\n" +
-        "</array>\n" +
-    "</dict>\n" +
+      "</dict>\n" +
     "</array>\n" +
     "<key>CFBundleExecutable</key>\n" +
     "<string>xulrunner</string>\n" +
@@ -346,8 +348,6 @@ const AppInstall = {
     "<string>Copyright 2015 by MacKichan Software, Inc.</string>\n" +
     "<key>LSMultipleInstancesProhibited</key>\n" +
     "<true/>\n" +
-    "<key>LSMinimumSystemVersion</key>\n" +
-    "<string>10.5</string>\n" +
     "</dict>\n" +
     "</plist>";
 
