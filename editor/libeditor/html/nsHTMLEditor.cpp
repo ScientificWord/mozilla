@@ -7374,6 +7374,8 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
         _retval.Append(NS_LITERAL_STRING("\\ ")); break;
       case 0x2003 :
         _retval.Append(NS_LITERAL_STRING("\\quad ")); break;
+      case 0x2004 :
+        _retval.Append(NS_LITERAL_STRING("\\ ")); break;
       case 0x2009 :
         _retval.Append(NS_LITERAL_STRING("\\thinspace ")); break;
       case 0x200B :

@@ -34,7 +34,7 @@
 <xsl:template match="mml:hspace">
   <xsl:choose>
     <xsl:when test="@type='normal'"> </xsl:when>
-	  <xsl:when test="@type='requiredSpace'">&#x2001;</xsl:when>
+	  <xsl:when test="@type='requiredSpace'">\ </xsl:when>
 	  <xsl:when test="@type='emSpace'">\quad </xsl:when>
 	  <xsl:when test="@type='twoEmSpace'">\qquad </xsl:when>
 	  <xsl:when test="@type='nonBreakingSpace'">~</xsl:when>
