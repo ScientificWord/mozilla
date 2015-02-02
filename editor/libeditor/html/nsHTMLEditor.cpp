@@ -140,6 +140,7 @@
 #include "nsIWidget.h"
 #include "nsIParserService.h"
 #include "msiTagListManager.h"
+#include "msiAppUtils.h"
 #include "msiIKeyMap.h"
 #include "msiIScriptRunner.h"
 #include "nsIEventStateManager.h"
@@ -192,6 +193,7 @@ nsHTMLEditor::nsHTMLEditor()
 , mHaveNewPlots(PR_FALSE)
 {
   mHTMLCSSUtils = nsnull;
+  mAppUtils = new msiAppUtils;
   nsCOMPtr<msiTagListManager> manager;
   manager = new msiTagListManager;
   manager->SetEditor(this);
@@ -2919,8 +2921,8 @@ nsHTMLEditor::MakeOrChangeList(const nsAString& aListType, PRBool entireList, co
         res = CreateNode(aListType, newList, 0, getter_AddRefs(newItem));
       }
       nsCOMPtr<nsIDOMElement> newElement = do_QueryInterface(newItem);
-			PRBool success;
-			if (newItem) res = SetCursorInNewHTML(newElement, &success);
+      PRBool success;
+      if (newItem) res = SetCursorInNewHTML(newElement, &success);
       if (NS_FAILED(res)) return res;
       if (!success)
         selection->Collapse(newItem, 0);
@@ -3066,7 +3068,7 @@ nsHTMLEditor::InsertBasicBlock(const nsAString& aBlockType)
 
       // reposition selection to inside the block
       nsCOMPtr<nsIDOMElement> newElement(do_QueryInterface(newBlock));
-  		if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
+      if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
       if (NS_FAILED(res)) return res;
     }
   }
@@ -3164,7 +3166,7 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
       if (NS_FAILED(res)) return res;
       // reposition selection to inside the block
       nsCOMPtr<nsIDOMElement> newElement(do_QueryInterface(newBlock));
-  		if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
+      if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
       if (NS_FAILED(res)) return res;
     }
   }
@@ -3564,7 +3566,7 @@ nsHTMLEditor::InsertStructureNS(const nsAString& aStructType, nsIAtom * namespac
       if (NS_FAILED(res)) return res;
       // reposition selection to inside the block
       nsCOMPtr<nsIDOMElement> newElement(do_QueryInterface(newBlock));
-  		if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
+      if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
       if (NS_FAILED(res)) return res;
     }
   }
@@ -6995,6 +6997,13 @@ nsHTMLEditor::SetTagListManager( msiITagListManager * pTagListMan)
   mtagListManager = nsCOMPtr<msiITagListManager>(pTagListMan);
   return NS_OK;
 }
+
+nsresult
+nsHTMLEditor::GetMAppUtils( msiIAppUtils ** _retval) {
+  NS_ADDREF(*_retval = mAppUtils);
+  return NS_OK;
+}
+ 
 
 nsresult
 nsHTMLEditor::AddTagInfo( const nsAString & strPath )

@@ -49,7 +49,7 @@
 #include "nsRelatedLinksHandlerImpl.h"
 #include "nsDocShellCID.h"
 #include "nsDownloadManager.h"
-#include "nsDownloadProxy.h"
+// #include "nsDownloadProxy.h"
 
 #if !defined(MOZ_PLACES)
 #include "nsGlobalHistory.h"
@@ -91,7 +91,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsBrowserInstance)
 #ifdef MOZ_SUITE
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(RelatedLinksHandlerImpl, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsDownloadManager, Init)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsDownloadProxy)
+// NS_GENERIC_FACTORY_CONSTRUCTOR(nsDownloadProxy)
 
 #if !defined(MOZ_PLACES)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsGlobalHistory, Init)
@@ -156,8 +156,8 @@ static const nsModuleComponentInfo components[] = {
 #ifdef MOZ_SUITE
     { "Download Manager", NS_DOWNLOADMANAGER_CID, NS_DOWNLOADMANAGER_CONTRACTID,
       nsDownloadManagerConstructor },
-    { "Download", NS_DOWNLOAD_CID, NS_TRANSFER_CONTRACTID,
-      nsDownloadProxyConstructor },
+    // { "Download", NS_DOWNLOAD_CID, NS_TRANSFER_CONTRACTID,
+    //   nsDownloadProxyConstructor },
     { "Related Links Handler", NS_RELATEDLINKSHANDLER_CID, NS_RELATEDLINKSHANDLER_CONTRACTID,
        RelatedLinksHandlerImplConstructor},
 
