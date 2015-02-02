@@ -75,6 +75,7 @@
 #include "nsPoint.h"
 // New XML tag stuff
 #include "msiTagListManager.h"
+#include "msiAppUtils.h"
 #include "msiIKeyMap.h"
 #include "nsTArray.h"
 
@@ -221,7 +222,7 @@ public:
   NS_IMETHOD DeleteTableCellContents();
   NS_IMETHOD DeleteTableColumn(PRInt32 aNumber);
   NS_IMETHOD DeleteTableRow(PRInt32 aNumber);
-	NS_IMETHOD DeleteTableCellsForDeleteKey();
+  NS_IMETHOD DeleteTableCellsForDeleteKey();
   NS_IMETHOD SelectTableCell();
   NS_IMETHOD SelectBlockOfCells(nsIDOMElement *aStartCell, nsIDOMElement *aEndCell);
   NS_IMETHOD SelectTableRow();
@@ -271,7 +272,7 @@ public:
 
   // Upper-left-most selected cell in table
   NS_IMETHOD GetFirstSelectedCellInTable(PRInt32 *aRowIndex, PRInt32 *aColIndex, nsIDOMElement **aCell);
-	NS_IMETHOD GetAllCellsSelected(nsIDOMElement **, PRBool * _retval);
+  NS_IMETHOD GetAllCellsSelected(nsIDOMElement **, PRBool * _retval);
     
   /* miscellaneous */
   // This sets background on the appropriate container element (table, cell,)
@@ -848,6 +849,7 @@ protected:
   nsCOMPtr<nsIDOMNode> mCachedNode;
   //TagListManager
   nsCOMPtr<msiITagListManager> mtagListManager;
+  nsCOMPtr<msiIAppUtils> mAppUtils;
   
   nsCOMPtr<nsIDOMElement> mfocusedPlot;
   //KeyMaps
