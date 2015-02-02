@@ -1,0 +1,1 @@
+The subdirectories in this directory are named to match the $(OS_ARCH) macro in the makefile. Changing their names will probably break the build.
