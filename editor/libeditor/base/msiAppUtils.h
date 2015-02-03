@@ -14,12 +14,11 @@ public:
 
 private:
   ~msiAppUtils();
-
-protected:
-  PRInt32 mLicensedApp;
-  nsString mLicensedUntil;
-  RLM_HANDLE mrh;
-  RLM_LICENSE mLic;
+  static PRUint32 licensedProd;
+  static char * pchProdName;
+  static char * pchExpDate;
+  static RLM_HANDLE rh;
+  static RLM_LICENSE lic;
 };
 
 #endif
