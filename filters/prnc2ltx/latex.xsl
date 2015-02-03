@@ -30,6 +30,40 @@
     <char-table>
        <char unicode="&#x03B1;" latex="\alpha"/>
        <char unicode="&#x03B2;" latex="\beta"/>
+              <char unicode="&#x03B3;" latex="\gamma"/>
+       <char unicode="&#x03B4;" latex="\delta"/>
+       <char unicode="&#x03B5;" latex="\epsilon"/>
+       <char unicode="&#x03B6;" latex="\zeta"/>
+       <char unicode="&#x03B7;" latex="\eta"/>
+       <char unicode="&#x03B8;" latex="\theta"/>
+       <char unicode="&#x03B9;" latex="\iota"/>
+       <char unicode="&#x03BA;" latex="\kappa"/>
+       <char unicode="&#x03BB;" latex="\lambda"/>
+       <char unicode="&#x03BC;" latex="\mu"/>
+       <char unicode="&#x03BD;" latex="\nu"/>
+       <char unicode="&#x03BE;" latex="\xi"/>
+       <!-- char unicode="&#x03BF;" latex="\omicron"/ -->
+       <char unicode="&#x03C0;" latex="\pi"/>
+       <char unicode="&#x03C1;" latex="\rho"/>
+       <char unicode="&#x03C3;" latex="\sigma"/>
+       <char unicode="&#x03C4;" latex="\tau"/>
+       <char unicode="&#x03C5;" latex="\upsilon"/>
+       <char unicode="&#x03C6;" latex="\phi"/>
+       <char unicode="&#x03C7;" latex="\chi"/>
+       <char unicode="&#x03C8;" latex="\psi"/>
+       <char unicode="&#x03C9;" latex="\omega"/>
+
+       <char unicode="&#x0393;" latex="\Gamma"/>
+       <char unicode="&#x0394;" latex="\Delta"/>
+       <char unicode="&#x0398;" latex="\Theta"/>
+       <char unicode="&#x039B;" latex="\Lambda"/>
+       <char unicode="&#x039E;" latex="\Xi"/>
+       <char unicode="&#x03A0;" latex="\Pi"/>
+       <char unicode="&#x03A3;" latex="\Sigma"/>
+       <char unicode="&#x03A5;" latex="\Upsilon"/>
+       <char unicode="&#x03A6;" latex="\Phi"/>
+       <char unicode="&#x03A8;" latex="\Psi"/>
+       <char unicode="&#x03A9;" latex="\Omega"/>
 
        <char unicode="&#x2A00;" latex="\bigodot" />
        <char unicode="&#x2A02;" latex="\bigotimes" />
