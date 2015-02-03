@@ -163,6 +163,9 @@
 
   <xsl:template name="check-accent">
       <xsl:choose>
+      <xsl:when test="./*[2][@stretchy='true']">
+         <xsl:text>false</xsl:text>
+      </xsl:when>
 <!--
       <xsl:when test="*[2][@accent='true']">
         <xsl:text>true</xsl:text>
