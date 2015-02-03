@@ -224,8 +224,8 @@
   
    <xsl:variable name="theHLines" 
                  select=".//*[local-name()='hline' or local-name()='cline']"/>
-   
-    <xsl:variable name="the-spec.tr">
+
+   <xsl:variable name="the-spec.tr">
      <xsl:call-template name="get-spec">
       <xsl:with-param name="str">
         <xsl:value-of select="$colspec"/>
@@ -235,9 +235,10 @@
        <xsl:with-param name="raw-hlines" select="exsl:node-set($theHLines)"/>
      </xsl:call-template>
    </xsl:variable>
+   
 
    <xsl:variable name="the-spec" select="exsl:node-set($the-spec.tr)"/>
-
+   
    <xsl:variable name="theTable" select="."/>
    
    <!-- html:note>
@@ -330,7 +331,8 @@
      </xsl:if>
      <xsl:if test="$my-attribs//*[@side ='top']">
        <xsl:choose>
-          <xsl:when test="$my-attribs//*[@side ='top' and @kind='double']">
+          <xsl:when test="$my-attribs//*[@side ='top' and @kind='double']
+                        or count($my-attribs//*[@side ='top']) = 2 ">
             <xsl:attribute name="line-top">double</xsl:attribute>
           </xsl:when>
           <xsl:otherwise>

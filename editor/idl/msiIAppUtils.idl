@@ -8,7 +8,7 @@
 interface msiIAppUtils : nsISupports
 {
 	[noscript] readonly attribute PRInt32 licensedApp; // 0=unlicensed, 1=SNB, 2=SW, 3=SWP
-	readonly attribute DOMString licensedUntil;
+	readonly attribute AUTF8String licensedUntil;
 	void hello();
 	void goodbye();
 };
