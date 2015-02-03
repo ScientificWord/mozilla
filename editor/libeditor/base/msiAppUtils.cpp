@@ -4,7 +4,11 @@
 #include "nsDirectoryService.h"
 #include "msiAppUtils.h"
 
-
+PRUint32 msiAppUtils::licensedProd;
+char * msiAppUtils::pchProdName;
+char * msiAppUtils::pchExpDate;
+RLM_HANDLE msiAppUtils::rh;
+RLM_LICENSE msiAppUtils::lic;
 
 /* Header file */
 
@@ -24,56 +28,73 @@ msiAppUtils::msiAppUtils()
 /* [noscript] readonly attribute PRInt32 licensedApp; */
 NS_IMETHODIMP msiAppUtils::GetLicensedApp(PRInt32 *aLicensedApp)
 {
-    *aLicensedApp = mLicensedApp;
+    nsCString sProd;
+    PRInt32 index;
+    sProd = nsDependentCString(pchProdName);
+//    index = (NS_LITERAL_STRING("snbsw_swp")).indexOf(sProd);
     return NS_OK;
 }
 
 /* readonly attribute DOMString licensedUntil; */
-NS_IMETHODIMP msiAppUtils::GetLicensedUntil(nsAString & aLicensedUntil)
+NS_IMETHODIMP msiAppUtils::GetLicensedUntil(nsACString & aLicensedUntil)
 {
-    aLicensedUntil = mLicensedUntil;
+    aLicensedUntil = nsDependentCString(pchExpDate);
     return NS_OK;
 }
 
 /* void hello (); */
 NS_IMETHODIMP msiAppUtils::Hello()
 {
-    int stat;
-    char *product;
-    int count = 1;
-    const char * utf8Path;
-    const char * ver = "6.0";
-    nsString path;
-    RLM_LICENSE lic = NULL;
+  int stat;
+  char *product = "swp";    // BBM -- we don't want any ifdefs here. How do we do it?
+  char *licensedProd;
+  PRInt32 count = 1;
+  PRInt32 days;
+  const char * utf8Path;
+  const char * ver = "6.0";
+  nsString path;
+
+  if (lic == nsnull || rlm_license_stat(lic) != 0)
+  {
     nsCOMPtr<nsIProperties> fileLocator(do_GetService("@mozilla.org/file/directory_service;1"));
     nsCOMPtr<nsILocalFile> licFile;
     fileLocator->Get("resource:app", NS_GET_IID(nsIFile), getter_AddRefs(licFile));
+    licFile->Append(NS_LITERAL_STRING("license.lic"));
     licFile->GetPath(path);
-
     utf8Path = ToNewUTF8String(path);
 
 
-    mrh = rlm_init(utf8Path, utf8Path, (char *) NULL);
-    stat = rlm_stat(mrh);
+    rh = rlm_init(utf8Path, (char *)nsnull, (char *) nsnull);
+    stat = rlm_stat(rh);
     if (stat)
     {
       char errstring[RLM_ERRSTRING_MAX];
 
       (void) printf("Error initializing license system\n");
-      (void) printf("%s\n", rlm_errstring((RLM_LICENSE) NULL, mrh, 
+      (void) printf("%s\n", rlm_errstring((RLM_LICENSE) nsnull, rh, 
                   errstring));
     }
     else
     {
-      mLic = rlm_checkout(mrh, product, ver, count);
-    }    
-    return NS_OK;
+      lic = rlm_checkout(rh, product, ver, count);
+        
+      stat = rlm_license_stat(lic);
+      if (! stat)
+        printf("License is valid\n");
+      else 
+        printf("Invalid license\n");
+      days= rlm_license_exp_days(lic);
+      pchProdName = rlm_license_product(lic);
+      pchExpDate = rlm_license_exp(lic);
+    }
+  }
+  return NS_OK;
 }
 
 /* void goodbye (); */
 NS_IMETHODIMP msiAppUtils::Goodbye()
 {
-  rlm_close(mrh);
+  rlm_close(rh);
   return NS_OK;
 }
 
