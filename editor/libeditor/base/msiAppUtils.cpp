@@ -39,28 +39,29 @@ NS_IMETHODIMP msiAppUtils::GetLicensedUntil(nsAString & aLicensedUntil)
 NS_IMETHODIMP msiAppUtils::Hello()
 {
     int stat;
-    char *product;
+    char *product = "swp";
     int count = 1;
     const char * utf8Path;
     const char * ver = "6.0";
     nsString path;
-    RLM_LICENSE lic = NULL;
+    RLM_LICENSE lic =nsnull;
     nsCOMPtr<nsIProperties> fileLocator(do_GetService("@mozilla.org/file/directory_service;1"));
     nsCOMPtr<nsILocalFile> licFile;
     fileLocator->Get("resource:app", NS_GET_IID(nsIFile), getter_AddRefs(licFile));
+    licFile.append('license.lic');
     licFile->GetPath(path);
 
     utf8Path = ToNewUTF8String(path);
 
 
-    mrh = rlm_init(utf8Path, utf8Path, (char *) NULL);
+    mrh = rlm_init(utf8Path, (char *) nsnull, (char *) nsnull);
     stat = rlm_stat(mrh);
     if (stat)
     {
       char errstring[RLM_ERRSTRING_MAX];
 
       (void) printf("Error initializing license system\n");
-      (void) printf("%s\n", rlm_errstring((RLM_LICENSE) NULL, mrh, 
+      (void) printf("%s\n", rlm_errstring((RLM_LICENSE) nsnull, mrh, 
                   errstring));
     }
     else
