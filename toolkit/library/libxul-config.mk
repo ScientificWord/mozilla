@@ -119,13 +119,14 @@ COMPONENT_LIBS += \
 	webbrwsr \
 	nsappshell \
 	txmgr \
+	rlm  \
 	chrome \
 	commandlines \
 	toolkitcomps \
 	pipboot \
 	pipnss \
 	$(NULL)
-# 	rlm  \
+
 
 ifdef MOZ_XMLEXTRAS
 COMPONENT_LIBS += \
