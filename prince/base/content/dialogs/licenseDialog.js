@@ -22,13 +22,13 @@ function onLoad()
 		} 
 		document.getElementById('expiration').value=expstr;
 	} else {	
-		document.getElementById('licensed').setAttribute('hidden', true);
-	  document.getElementById('unlicensed').removeAttribute('hidden');
-	  if (daysleft && daysleft < 0) {
-	  	document.getElementById('expiredon').value =
-	  	'The license for this computer expired on '+licenseExpDate()+'.';
-	  	document.getElementById('expired').removeAttribute('hidden');
-	  }
+		document.getElementById('unlicensed').removeAttribute('hidden');
+	  document.getElementById('licensed').setAttribute('hidden', true);
+		if (daysleft && daysleft < 0) {
+		  	document.getElementById('expiredon').value =
+		  	'The license for this computer expired on '+licensedUntil()+'.';
+		  	document.getElementById('expired').removeAttribute('hidden');
+		  }
 	  else {
 	  	document.getElementById('expired').setAttribute('hidden', true);
 

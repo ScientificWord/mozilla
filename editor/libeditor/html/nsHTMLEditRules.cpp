@@ -10928,6 +10928,19 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   {
     res = CreateMozBR(aNode, 0, address_of(brNode));
   }
+  // Now look for msiframe and math at the end of the paragraph
+  nsCOMPtr<nsIDOMNode> lastchild;
+  res = aNode->GetLastChild(getter_AddRefs(lastchild));
+  nsAutoString tagName;
+  PRUint32 count;
+  nsCOMPtr<nsIDOMNodeList> children;
+  lastchild->GetLocalName(tagName);
+  if (tagName.EqualsLiteral("msiframe") || tagName.EqualsLiteral("msidisplay") ||
+    tagName.EqualsLiteral("math")) {
+    aNode->GetChildNodes(getter_AddRefs(children));
+    children->GetLength(&count);
+    res = CreateMozBR(aNode, count, address_of(brNode));
+  } 
   return res;
 }
 
@@ -11159,11 +11172,15 @@ nsHTMLEditRules::DidDeleteText(nsIDOMCharacterData *aTextNode,
 {
   if (!mListenerEnabled) return NS_OK;
   nsCOMPtr<nsIDOMNode> theNode = do_QueryInterface(aTextNode);
+  nsCOMPtr<nsIDOMNode> theParent;
+  aTextNode->GetParentNode(getter_AddRefs(theParent));
   nsresult res = mUtilRange->SetStart(theNode, aOffset);
   if (NS_FAILED(res)) return res;
   res = mUtilRange->SetEnd(theNode, aOffset);
   if (NS_FAILED(res)) return res;
   res = UpdateDocChangeRange(mUtilRange);
+  InsertMozBRIfNeeded(theParent);
+
   return res;
 }
 

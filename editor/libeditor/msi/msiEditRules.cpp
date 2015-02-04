@@ -511,6 +511,9 @@ NS_IMETHODIMP
 msiEditRules::DidDeleteNode(nsIDOMNode *aChild, nsresult aResult)
 {
   return nsHTMLEditRules::DidDeleteNode(aChild, aResult);  
+  nsCOMPtr<nsIDOMNode> parent;
+  aChild->GetParentNode(getter_AddRefs(parent));
+  nsHTMLEditRules::InsertMozBRIfNeeded(parent);
 }
 
 
