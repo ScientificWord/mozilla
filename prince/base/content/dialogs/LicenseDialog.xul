@@ -41,9 +41,9 @@
     </vbox>
   </box>
   <vbox id='nolicense' observes="unlicensed"> 
-    <description>This computer is not licensed to run &brandShortName;.</description>
-    <description class='smaller'>You will not be able to save files, or to print modified files.</description>
-    <description id="expiredon" obseves='expired' class='smaller'/>
-    <description>Stuff about buying goes here</description>
+    <description observes="unlicensed">This computer is not licensed to run &brandShortName;.</description>
+    <description observes="unlicensed" class='smaller'>You will not be able to save files, or to print modified files.</description>
+    <description id="expiredon" observes='expired' class='smaller'/>
+    <description observes="unlicensed"> Stuff about buying goes here</description>
   </vbox>
 </dialog>
