@@ -7112,9 +7112,6 @@ case "$target" in
         NO_LD_ARCHIVE_FLAGS=
     fi
     ;;
-*-darwin*)
-    NO_LD_ARCHIVE_FLAGS=
-    ;;
 esac
 
 
