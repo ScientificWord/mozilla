@@ -100,7 +100,6 @@ ifdef MOZ_XUL
 DIRS += \
 	autocomplete \
 	autosub \
-	rlm \
 	Compute \
 	keymap \
 	scriptrunner \
@@ -108,6 +107,8 @@ DIRS += \
 	satchel \
   msiutil \
 	$(NULL)
+# rlm \
+
 endif # MOZ_XUL
 
 ifdef MOZ_SUITE

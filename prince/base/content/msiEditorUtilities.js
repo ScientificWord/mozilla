@@ -57,23 +57,10 @@ function FixJS() {
 }
 
 function isLicensed() {
-  var prefs = GetPrefs();
-  var expDate, remaining;
-  var licenseDateStr = prefs.getCharPref("swp.licensed_until");
-  if (licenseDateStr === 'permanent') return true;
-  if (licenseDateStr && licenseDateStr.length > 0) {
-    try {
-      expDate = Date.parse(licenseDateStr);
-      remaining = expDate - Date.now();
-      if (remaining > 0) {
-        return true;
-      }
-      else return false;
-    }
-    catch (e) {
-      return false;
-    }
-  } else return false;
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var licensedApp = editor.mAppUtils.licensedApp;
+  return (licensedApp !== 0);
 }
 
 function okToPrint()
@@ -88,11 +75,13 @@ function okToPrint()
 }
 
 function licenseTimeRemaining() {
-  var prefs = GetPrefs();
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   var expDate, remaining;
   var day = new Date(2000,0,1) - new Date(2000,0,0);
-  var licenseDateStr = prefs.getCharPref("swp.licensed_until");
+  var licenseDateStr = editor.mAppUtils.licensedUntil;
   if (licenseDateStr === 'permanent') return 'permanent';
+  if (licenseDateStr === 'unlicensed') return 'unlicensed';
   if (licenseDateStr && licenseDateStr.length > 0) {
     try {
       expDate = Date.parse(licenseDateStr);
@@ -110,10 +99,12 @@ function licenseTimeRemaining() {
 }
 
 function licenseExpDate() {
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   var prefs = GetPrefs();
   var expDate, remaining;
   var day = new Date(2000,0,1) - new Date(2000,0,0);
-  var licenseDateStr = prefs.getCharPref("swp.licensed_until");
+  var licenseDateStr = editor.mAppUtils.licensedUntil;
   return licenseDateStr;
 }
 
