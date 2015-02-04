@@ -28,73 +28,96 @@ msiAppUtils::msiAppUtils()
 /* [noscript] readonly attribute PRInt32 licensedApp; */
 NS_IMETHODIMP msiAppUtils::GetLicensedApp(PRInt32 *aLicensedApp)
 {
-    nsCString sProd;
-    PRInt32 index;
-    sProd = nsDependentCString(pchProdName);
-//    index = (NS_LITERAL_STRING("snbsw_swp")).indexOf(sProd);
+    // nsCString sProd;
+    // PRInt32 index;
+    // PRInt32 stat = -1;
+    // if (lic) stat = rlm_license_stat(lic);
+    // if (stat) {
+    //   index = 0;
+    // } else {
+    //   sProd = nsDependentCString(pchProdName);
+    //   if (sProd.EqualsLiteral("snb")) index = 1;
+    //   else if (sProd.EqualsLiteral("sw")) index = 2;
+    //   else if (sProd.EqualsLiteral("swp")) index = 3;
+    //   else index = 0;
+    // }
+    // *aLicensedApp = index;
+    *aLicensedApp = 3;
     return NS_OK;
 }
 
 /* readonly attribute DOMString licensedUntil; */
 NS_IMETHODIMP msiAppUtils::GetLicensedUntil(nsACString & aLicensedUntil)
 {
-    aLicensedUntil = nsDependentCString(pchExpDate);
+    // PRInt32 stat = rlm_license_stat(lic);
+    // if (!stat) {
+    //   aLicensedUntil = nsDependentCString(pchExpDate);
+    // }
+    // else aLicensedUntil = nsDependentCString("unlicensed");
+   aLicensedUntil = nsDependentCString("permanent");
     return NS_OK;
 }
 
 /* void hello (); */
 NS_IMETHODIMP msiAppUtils::Hello()
 {
-  int stat;
-  char *product = "swp";    // BBM -- we don't want any ifdefs here. How do we do it?
-  char *licensedProd;
-  PRInt32 count = 1;
-  PRInt32 days;
-  const char * utf8Path;
-  const char * ver = "6.0";
-  nsString path;
+  // int stat;
+  // PRInt32 x;
+  // char *product = "swp";    // BBM -- we don't want any ifdefs here. How do we do it?
+  // char *licensedProd;
+  // PRInt32 count = 1;
+  // PRInt32 days;
+  // const char * utf8Path;
+  // const char * ver = "6.0";
+  // nsString path;
 
-  if (lic == nsnull || rlm_license_stat(lic) != 0)
-  {
-    nsCOMPtr<nsIProperties> fileLocator(do_GetService("@mozilla.org/file/directory_service;1"));
-    nsCOMPtr<nsILocalFile> licFile;
-    fileLocator->Get("resource:app", NS_GET_IID(nsIFile), getter_AddRefs(licFile));
-    licFile->Append(NS_LITERAL_STRING("license.lic"));
-    licFile->GetPath(path);
-    utf8Path = ToNewUTF8String(path);
+  // if (lic == nsnull || rlm_license_stat(lic) != 0)
+  // {
+  //   nsCOMPtr<nsIProperties> fileLocator(do_GetService("@mozilla.org/file/directory_service;1"));
+  //   nsCOMPtr<nsILocalFile> licFile;
+  //   fileLocator->Get("resource:app", NS_GET_IID(nsIFile), getter_AddRefs(licFile));
+  //   licFile->Append(NS_LITERAL_STRING("license.lic"));
+  //   licFile->GetPath(path);
+  //   utf8Path = ToNewUTF8String(path);
 
 
-    rh = rlm_init(utf8Path, (char *)nsnull, (char *) nsnull);
-    stat = rlm_stat(rh);
-    if (stat)
-    {
-      char errstring[RLM_ERRSTRING_MAX];
+  //   rh = rlm_init(utf8Path, (char *)nsnull, (char *) nsnull);
+  //   stat = rlm_stat(rh);
+  //   if (stat)
+  //   {
+  //     char errstring[RLM_ERRSTRING_MAX];
 
-      (void) printf("Error initializing license system\n");
-      (void) printf("%s\n", rlm_errstring((RLM_LICENSE) nsnull, rh, 
-                  errstring));
-    }
-    else
-    {
-      lic = rlm_checkout(rh, product, ver, count);
+  //     (void) printf("Error initializing license system\n");
+  //     (void) printf("%s\n", rlm_errstring((RLM_LICENSE) nsnull, rh, 
+  //                 errstring));
+  //   }
+  //   else
+  //   {
+  //     lic = rlm_checkout(rh, product, ver, count);
         
-      stat = rlm_license_stat(lic);
-      if (! stat)
-        printf("License is valid\n");
-      else 
-        printf("Invalid license\n");
-      days= rlm_license_exp_days(lic);
-      pchProdName = rlm_license_product(lic);
-      pchExpDate = rlm_license_exp(lic);
-    }
-  }
+  //     stat = rlm_license_stat(lic);
+  //     if (! stat) {
+  //       printf("License is valid\n");
+  //       days= rlm_license_exp_days(lic);
+  //       pchProdName = rlm_license_product(lic);
+  //       pchExpDate = rlm_license_exp(lic);
+  //     }  
+  //     else {
+  //       printf("Invalid license\n");
+  //       days = -1;
+  //       pchProdName = "";
+  //       pchExpDate = "unlicensed";
+  //     }
+  //       GetLicensedApp(&x);
+  //   }
+  // }
   return NS_OK;
 }
 
 /* void goodbye (); */
 NS_IMETHODIMP msiAppUtils::Goodbye()
 {
-  rlm_close(rh);
+  // rlm_close(rh);
   return NS_OK;
 }
 
