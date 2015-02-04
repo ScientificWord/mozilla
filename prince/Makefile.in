@@ -12,7 +12,7 @@ DIRS		= base samples res plugins helpfiles bin sidebar shells TeX dictionaries u
 	$(NULL)
 
 PREF_JS_EXPORTS	= $(srcdir)/prince-prefs.js
-DIST_FILES	= application.ini
+DIST_FILES	= application.ini license.lic
 
 ifneq (,$(filter windows,$(MOZ_WIDGET_TOOLKIT)))
 ICONS		= icons/SWP.ico icons/SW.ico icons/SNB.ico
