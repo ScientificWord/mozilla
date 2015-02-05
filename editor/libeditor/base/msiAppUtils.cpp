@@ -42,7 +42,6 @@ NS_IMETHODIMP msiAppUtils::GetLicensedApp(PRInt32 *aLicensedApp)
       else index = 0;
     }
     *aLicensedApp = index;
-    *aLicensedApp = 3;
     return NS_OK;
 }
 
@@ -54,7 +53,6 @@ NS_IMETHODIMP msiAppUtils::GetLicensedUntil(nsACString & aLicensedUntil)
       aLicensedUntil = nsDependentCString(pchExpDate);
     }
     else aLicensedUntil = nsDependentCString("unlicensed");
-   aLicensedUntil = nsDependentCString("permanent");
     return NS_OK;
 }
 
@@ -62,7 +60,6 @@ NS_IMETHODIMP msiAppUtils::GetLicensedUntil(nsACString & aLicensedUntil)
 NS_IMETHODIMP msiAppUtils::Hello()
 {
   int stat;
-  PRInt32 x;
   char *product = "swp";    // BBM -- we don't want any ifdefs here. How do we do it?
   char *licensedProd;
   PRInt32 count = 1;
@@ -108,7 +105,6 @@ NS_IMETHODIMP msiAppUtils::Hello()
         pchProdName = "";
         pchExpDate = "unlicensed";
       }
-        GetLicensedApp(&x);
     }
   }
   return NS_OK;
