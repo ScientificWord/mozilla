@@ -78,12 +78,15 @@ function licenseTimeRemaining() {
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var expDate, remaining;
+  var dateArray;
   var day = new Date(2000,0,1) - new Date(2000,0,0);
   var licenseDateStr = editor.mAppUtils.licensedUntil;
   if (licenseDateStr === 'permanent') return 'permanent';
   if (licenseDateStr === 'unlicensed') return 'unlicensed';
   if (licenseDateStr && licenseDateStr.length > 0) {
     try {
+      dateArray = licenseDateStr.split('-');
+      licenseDateStr = dateArray[1] + " " + dateArray[0] + ", " + dateArray[2];
       expDate = Date.parse(licenseDateStr);
       remaining = expDate - Date.now();
       if (remaining > 0) {
