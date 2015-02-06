@@ -420,13 +420,17 @@
 \def\out@title#1{%
    {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
 
+
 \def\out@thanks#1{%
-   \msitag{<notewrapper type="footnote" markOrText="undefined">
+   \msitag{%
+      <notewrapper type="footnote" markOrText="undefined">
         <note style="padding: 10px;" type="footnote" hide="false">
-          <bodyText>#1<br/>
+          <bodyText>}%
+   #1
+   \msitag{%
           </bodyText>
         </note>
-        </notewrapper>}}
+      </notewrapper>}}
 
 \def\out@and{\msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
 
@@ -1955,12 +1959,14 @@
     \msiopentag{bodyText}{<bodyText>}%
     % Next couple lines read the brace following \footnote and then does \footnoteb
     \afterassignment\@footnoteb
-    \let\junk
-}
+    \let\junk}
+
 \def\@footnoteb{%
     \bgroup
     \def\par{\msiclosetag{bodyText}{</bodyText>}\msiopentag{bodyText}{<bodyText>}}
-    \aftergroup\@footnot
+    \aftergroup\@footnotc
+    \let\junk}
+
 \def\@footnoteb{%
     \msi@br
     \msiopentag{notewrapper}{<notewrapper type='footnote'>}
