@@ -30,22 +30,6 @@ NS_IMETHODIMP msiAppUtils::GetLicensedApp(PRInt32 *aLicensedApp)
 {
   *aLicensedApp = syzygy;
   return NS_OK;
-
-    // nsCString sProd;
-    // PRInt32 index;
-    // PRInt32 stat = -1;
-    // if (lic) stat = rlm_license_stat(lic);
-    // if (stat) {
-    //   index = 0;
-    // } else {
-    //   sProd = nsDependentCString(pchProdName);
-    //   if (sProd.EqualsLiteral("snb")) index = 1;
-    //   else if (sProd.EqualsLiteral("sw")) index = 2;
-    //   else if (sProd.EqualsLiteral("swp")) index = 3;
-    //   else index = 0;
-    // }
-    // *aLicensedApp = index;
-    // return NS_OK;
 }
 
 /* readonly attribute DOMString licensedUntil; */
@@ -78,7 +62,7 @@ NS_IMETHODIMP msiAppUtils::Hello()
     nsCOMPtr<nsIProperties> fileLocator(do_GetService("@mozilla.org/file/directory_service;1"));
     nsCOMPtr<nsILocalFile> licFile;
     fileLocator->Get("resource:app", NS_GET_IID(nsIFile), getter_AddRefs(licFile));
-    licFile->Append(NS_LITERAL_STRING("license.lic"));
+//    licFile->Append(NS_LITERAL_STRING("license.lic"));
     licFile->GetPath(path);
     utf8Path = ToNewUTF8String(path);
 
