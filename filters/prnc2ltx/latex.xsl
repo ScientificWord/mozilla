@@ -1338,7 +1338,6 @@
     </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>  <!-- Single-line display - either \equation or \equation* -->
-      <xsl:value-of select="$newline"/> 
       <xsl:text>\begin{equation</xsl:text>
       <xsl:if test="@numbering='none'">
         <xsl:text>*</xsl:text>
