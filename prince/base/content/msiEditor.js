@@ -65,8 +65,8 @@ function msiEditorToolbarPrefListener(editorElement)
       button.hidden = !gPrefs.getBoolPref(prefName);
       msiShowHideToolbarSeparators(button.parentNode);
     }
-  };
-};
+  }
+}
 
 function msiButtonPrefListener(editorElement)
 {

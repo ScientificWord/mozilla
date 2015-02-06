@@ -1,5 +1,7 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 //Components.utils.import("resource://app/modules/pathutils.jsm");
+#include productname.inc
+
 Components.utils.import('resource://app/modules/os.jsm');
 Components.utils.import('resource://app/modules/fontlist.jsm');
 const msiEditorUtilitiesJS_duplicateTest = 'Bad';
@@ -60,7 +62,15 @@ function isLicensed() {
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var licensedApp = editor.mAppUtils.licensedApp;
-  return (licensedApp !== 0);
+#ifdef PROD_SWP
+    return (licensedApp == 3);
+#endif
+#ifdef PROD_SW
+    return (licensedApp == 2);
+#endif
+#ifdef PROD_SNB
+    return (licensedApp == 1);
+#endif
 }
 
 function okToPrint()

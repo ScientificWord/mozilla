@@ -9,7 +9,7 @@ char * msiAppUtils::pchProdName;
 char * msiAppUtils::pchExpDate;
 RLM_HANDLE msiAppUtils::rh;
 RLM_LICENSE msiAppUtils::lic;
-
+PRUint32 syzygy; // obscure name for licensed product number
 /* Header file */
 
 /* Implementation file */
@@ -28,21 +28,24 @@ msiAppUtils::msiAppUtils()
 /* [noscript] readonly attribute PRInt32 licensedApp; */
 NS_IMETHODIMP msiAppUtils::GetLicensedApp(PRInt32 *aLicensedApp)
 {
-    nsCString sProd;
-    PRInt32 index;
-    PRInt32 stat = -1;
-    if (lic) stat = rlm_license_stat(lic);
-    if (stat) {
-      index = 0;
-    } else {
-      sProd = nsDependentCString(pchProdName);
-      if (sProd.EqualsLiteral("snb")) index = 1;
-      else if (sProd.EqualsLiteral("sw")) index = 2;
-      else if (sProd.EqualsLiteral("swp")) index = 3;
-      else index = 0;
-    }
-    *aLicensedApp = index;
-    return NS_OK;
+  *aLicensedApp = syzygy;
+  return NS_OK;
+
+    // nsCString sProd;
+    // PRInt32 index;
+    // PRInt32 stat = -1;
+    // if (lic) stat = rlm_license_stat(lic);
+    // if (stat) {
+    //   index = 0;
+    // } else {
+    //   sProd = nsDependentCString(pchProdName);
+    //   if (sProd.EqualsLiteral("snb")) index = 1;
+    //   else if (sProd.EqualsLiteral("sw")) index = 2;
+    //   else if (sProd.EqualsLiteral("swp")) index = 3;
+    //   else index = 0;
+    // }
+    // *aLicensedApp = index;
+    // return NS_OK;
 }
 
 /* readonly attribute DOMString licensedUntil; */
@@ -60,13 +63,15 @@ NS_IMETHODIMP msiAppUtils::GetLicensedUntil(nsACString & aLicensedUntil)
 NS_IMETHODIMP msiAppUtils::Hello()
 {
   int stat;
-  char *product = "swp";    // BBM -- we don't want any ifdefs here. How do we do it?
+  char *product = "swp";    
   char *licensedProd;
   PRInt32 count = 1;
   PRInt32 days;
   const char * utf8Path;
   const char * ver = "6.0";
   nsString path;
+  PRBool done;
+  PRUint32 prodnum;
 
   if (lic == nsnull || rlm_license_stat(lic) != 0)
   {
@@ -90,20 +95,37 @@ NS_IMETHODIMP msiAppUtils::Hello()
     }
     else
     {
-      lic = rlm_checkout(rh, product, ver, count);
-        
-      stat = rlm_license_stat(lic);
-      if (! stat) {
-        printf("License is valid\n");
-        days= rlm_license_exp_days(lic);
-        pchProdName = rlm_license_product(lic);
-        pchExpDate = rlm_license_exp(lic);
-      }  
-      else {
-        printf("Invalid license\n");
-        days = -1;
-        pchProdName = "";
-        pchExpDate = "unlicensed";
+      syzygy = 0;
+      prodnum = 3;
+      done = PR_FALSE;
+      while (!done) {
+        lic = rlm_checkout(rh, product, ver, count);
+        stat = rlm_license_stat(lic);
+        if (! stat) {
+          printf("License is valid\n");
+          days= rlm_license_exp_days(lic);
+          pchProdName = rlm_license_product(lic);
+          pchExpDate = rlm_license_exp(lic);
+          syzygy = prodnum;
+          done = PR_TRUE;
+        }  
+        else {
+          if (strcmp(product,"swp") == 0) {
+            product = "sw";
+            prodnum = 2;
+          }
+          else if (strcmp(product, "sw") == 0) {
+            product = "snb";
+            prodnum = 1;
+          }
+          else {
+            printf("Invalid license\n");
+            days = -1;
+            pchProdName = "";
+            pchExpDate = "unlicensed";
+            done = PR_TRUE;
+          }
+        }
       }
     }
   }
