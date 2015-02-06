@@ -1949,33 +1949,21 @@
 %%<note type="#2">
 
 
-\def\footnote{\@ifnextchar[{\@footnotea}{\@footnoteb}}
-
-\def\@footnotea[#1]{%
-    \msi@br
-    \msiopentag{notewrapper}{<notewrapper type='footnote' footnoteNumber='#1'>}
-    \msiopentag{note}{<note type="footnote" hide='false'>}%
+\def\footnote{%
+    \msi@br\@start@notewrapper
+    \msiopentag{note}{<note type="footnote">}%
     \msiopentag{bodyText}{<bodyText>}%
     % Next couple lines read the brace following \footnote and then does \footnoteb
-    \afterassignment\@footnotec
-    \let\junk}
-  
+    \afterassignment\@footnoteb
+    \let\junk
+}
 \def\@footnoteb{%
-    \msi@br
-    \msiopentag{notewrapper}{<notewrapper type='footnote'>}
-    \msiopentag{note}{<note type="footnote" hide='false'>}%
-    \msiopentag{bodyText}{<bodyText>}%
-    % Next couple lines read the brace following \footnote and then does \footnoteb
-    \afterassignment\@footnotec
-    \let\junk}
-
-\def\@footnotec{%
     \bgroup
     \def\par{\msiclosetag{bodyText}{</bodyText>}\msiopentag{bodyText}{<bodyText>}}
-    \aftergroup\@footnoted
+    \aftergroup\@footnotec
 }
 
-\def\@footnoted{%
+\def\@footnotec{%
     \msiclosetag{bodyText}{</bodyText>}%
     \msiclosetag{note}{</note>}%
     \@end@notewrapper}
