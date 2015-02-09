@@ -1589,6 +1589,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
     offsetused = mDomSelections[index]->FetchFocusOffset();
     PRBool isBRFrame = frame->GetType() == nsGkAtoms::brFrame;
     mDomSelections[index]->Collapse(weakNodeUsed, offsetused);
+//    frame->MoveRightAtDocEnd(mDomSelections[index]);
     // Note: 'frame' might be dead here.
     if (isBRFrame) {
       tHint = mHint;    // 1: make the line below restore the original hint
@@ -1598,7 +1599,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
     }
     result = NS_OK;
   }
-  if (NS_SUCCEEDED(result))
+  if (NS_SUCCEEDED(result) && (tHint != mHint))
   {
     mHint = tHint; //save the hint parameter now for the next time
   }
