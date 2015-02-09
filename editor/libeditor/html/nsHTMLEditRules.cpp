@@ -2031,7 +2031,6 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
   if (!aSelection || !aCancel || !aHandled) { return NS_ERROR_NULL_POINTER; }
   nsCOMPtr<msiIMathMLEditor> mathmlEd;
-  printf("In nsHTMLEditRules::WillDeleteSelection\n");
   //DumpSelection(aSelection);
 
   // initialize out param
@@ -2159,7 +2158,6 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       res = wsObj.PriorVisibleNode(startNode, startOffset, address_of(visNode), &visOffset, &wsType);
     if (NS_FAILED(res)) return res;
 
-    printf("In nsHTMLEditRules::WillDeleteSelection. VisNode = \n");
  //   DumpNode(visNode, 0, true);
 
 
@@ -3239,7 +3237,6 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
                         PRInt32 level,
                         nsAString& chars)
 {
-  printf("\nFindCursor\n");
   nsAutoString str;
   editor->DumpNode(node, 2*level, true);
 
@@ -3254,12 +3251,10 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
 
       if (caretNode == node) {
           done = true;
-          printf("\nReturn caret offset %d", caretOffset);
           str.Truncate(caretOffset);
           chars += str;
           return caretOffset;
       } else {
-          printf("\nReturn char length %d", CharLength(node));
           chars += str;
           return str.Length();
       }
@@ -4245,9 +4240,9 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
       }
     }
   }
-
   // call through to base class
-  return nsTextEditRules::DidDeleteSelection(aSelection, aDir, aResult);
+  res = nsTextEditRules::DidDeleteSelection(aSelection, aDir, aResult);
+  return res; //InsertMozBRIfNeeded(startNode);
 }
 
 nsresult
@@ -10930,16 +10925,26 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   }
   // Now look for msiframe and math at the end of the paragraph
   nsCOMPtr<nsIDOMNode> lastchild;
+  nsCOMPtr<nsIDOMText> nodeAsText;
   res = aNode->GetLastChild(getter_AddRefs(lastchild));
   nsAutoString tagName;
   PRUint32 count;
+  nsCOMPtr<nsIDOMDocument> aDoc;
+  aNode->GetOwnerDocument(getter_AddRefs(aDoc));
   nsCOMPtr<nsIDOMNodeList> children;
   lastchild->GetLocalName(tagName);
   if (tagName.EqualsLiteral("msiframe") || tagName.EqualsLiteral("msidisplay") ||
-    tagName.EqualsLiteral("math")) {
+    tagName.EqualsLiteral("math")) 
+  {
     aNode->GetChildNodes(getter_AddRefs(children));
     children->GetLength(&count);
-    res = CreateMozBR(aNode, count, address_of(brNode));
+    // create a text node
+    res = aDoc->CreateTextNode(NS_LITERAL_STRING("_"), getter_AddRefs(nodeAsText));
+    if (NS_FAILED(res)) return res;
+    if (!nodeAsText) return NS_ERROR_NULL_POINTER;
+    nsCOMPtr<nsIDOMNode> newNode = do_QueryInterface(nodeAsText);
+    // then we insert it into the dom tree
+    res = mHTMLEditor->InsertNode(newNode, aNode, count);  
   } 
   return res;
 }
