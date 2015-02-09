@@ -7,6 +7,8 @@
     xmlns:msi="http://www.sciword.com/namespaces/sciword"
     xmlns:exsl="http://exslt.org/common">
 
+
+
 <xsl:template match="@*|node()">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
