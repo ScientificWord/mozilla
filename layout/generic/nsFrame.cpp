@@ -8120,6 +8120,7 @@ void DR_cookie::Change() const
 NS_IMETHODIMP 
 nsFrame::MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index)
 {
+  printf("MoveRightAtDocEndFrame\n");
   PRUint32 offset;
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
@@ -8143,6 +8144,7 @@ nsFrame::MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index)
 
 NS_IMETHODIMP nsFrame::MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index)
 {
+  printf("MoveLeftAtDocStartFrame\n");
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
   nsIDocument *doc = shell->GetDocument();
@@ -8166,10 +8168,11 @@ nsFrame::MoveLeftAtDocStart(nsISelection * selection)
 {
   nsresult res;
   nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<nsIDOMNode> startNode;
+  nsCOMPtr<nsIDOMNode> ancestorNode;
   nsCOMPtr<nsISelection> sel(selection);
   res = GetEditor(this, getter_AddRefs(htmlEditor));
   NS_ENSURE_SUCCESS(res, res);
-  // NS_ENSURE_TRUE(htmlEditor, NS_ERROR_FAILURE);
   nsPresContext* presContext = PresContext();
   NS_ENSURE_TRUE(presContext, NS_ERROR_FAILURE);
   nsIPresShell *shell = presContext->GetPresShell();
@@ -8183,6 +8186,7 @@ nsFrame::MoveLeftAtDocStart(nsISelection * selection)
     nsCOMPtr<nsIEditor> editor = do_QueryInterface(htmlEditor);
     editor->GetSelection(getter_AddRefs(sel));
   }
+  res = selection->GetAnchorNode(getter_AddRefs(startNode));
   nsIDocument *doc = shell->GetDocument();
   nsIAtom * namespaceatom;
   namespaceatom = nsnull;
@@ -8208,7 +8212,10 @@ nsFrame::MoveLeftAtDocStart(nsISelection * selection)
       NS_ENSURE_SUCCESS(res, NS_ERROR_FAILURE);
       if (fTakesText) // this is where we want the cursor to go
       {
-        sel->Collapse(currentNode, 0);
+        nsContentUtils::GetCommonAncestor(startNode, currentNode, getter_AddRefs(ancestorNode));
+        if (currentNode == ancestorNode) {
+          sel->Collapse(currentNode, 0);
+        }
         return NS_OK;
       }
       tw->NextNode(getter_AddRefs(currentNode));
@@ -8251,6 +8258,7 @@ nsFrame::MoveRightAtDocEnd(nsISelection * selection)
   nsIPresShell *shell = presContext->GetPresShell();
   nsCOMPtr<nsISupports> container = presContext->GetContainer();
   nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  nsCOMPtr<nsIDOMNode> ancestorNode;
   PRBool isEditable;
   PRBool fTakesText = PR_FALSE;
   if (!editorDocShell ||
@@ -8272,11 +8280,14 @@ nsFrame::MoveRightAtDocEnd(nsISelection * selection)
   nsIDocument *doc = shell->GetDocument();
   nsIAtom * namespaceatom;
   PRUint32 offset;
+  PRBool isPara;
   namespaceatom = nsnull;
   nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
     do_QueryInterface(doc);
   if (htmlDoc) {
     NS_NAMED_LITERAL_STRING(strText,"#text");
+    NS_NAMED_LITERAL_STRING(strPara,"paratag");
+
     nsCOMPtr<nsIDOMHTMLElement> bodyElement;
 
     htmlDoc->GetBody(getter_AddRefs(bodyElement));
@@ -8288,56 +8299,44 @@ nsFrame::MoveRightAtDocEnd(nsISelection * selection)
     if (!(NS_SUCCEEDED(res) && tw)) return NS_ERROR_FAILURE;
 
     nsCOMPtr<nsIDOMNode> currentNode;
+    nsCOMPtr<nsIDOMNode> startNode;
+    sel->GetAnchorNode(getter_AddRefs(startNode));
     tw->GetCurrentNode(getter_AddRefs(currentNode));
     nsCOMPtr<nsIDOMNode> lastElement;
     nsString name;
-    // find the last visible element
-    while (currentNode) {
-      lastElement = currentNode;
+    res = currentNode->GetNodeName(name);
+    tlm->GetTagInClass(strPara, name, namespaceatom, &isPara);
+    while (currentNode && !isPara) {
+      // lastElement = currentNode;
       tw->LastChild(getter_AddRefs(currentNode));
+//      if (currentNode) {
+        res = currentNode->GetNodeName(name);
+        tlm->GetTagInClass(strPara, name, namespaceatom, &isPara);
+//      }
     }
-    // set the tree walker position to the last element
-    res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
-    tw->SetCurrentNode(lastElement);
-    currentNode = lastElement;
-    while (currentNode)
+    if (!currentNode) return NS_OK;
+    // currentNode now should be the last paragraph-type object in the document
+    res = nsContentUtils::GetCommonAncestor(startNode, currentNode, getter_AddRefs(ancestorNode));
+    if (currentNode == ancestorNode)
     {
-      nsAutoString tagname;
-      res = currentNode->GetNodeName(tagname);
-      if (tagname.EqualsLiteral("#text")) 
-        fTakesText = PR_TRUE;
-      else
-        res = tlm->NodeCanContainTag( currentNode, strText, namespaceatom, &fTakesText);
-      if (fTakesText) // this is where we want the cursor to go
-      {
-        if (tagname.EqualsLiteral("#text")) {
-          nsAutoString nodeText;
-          currentNode->GetNodeValue(nodeText);
-          sel->Collapse(currentNode, nodeText.Length());
-          return NS_OK;
+      // proceed only if the selection is contained in currentNode
+      nsCOMPtr<nsIDOMNodeList> childList;    
+      PRUint32 len;
+      currentNode->GetChildNodes(getter_AddRefs(childList));   
+      //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
+      //  as a direct DOM child, we'll answer PR_FALSE.
+      childList->GetLength(&len);
+      offset = len;
+      nsCOMPtr<nsIDOMNode> maybeBreak;
+      childList->Item(offset-1, getter_AddRefs(maybeBreak));
+      if (maybeBreak) {
+        maybeBreak->GetNodeName(name);
+        if (name.EqualsLiteral("br")) {
+          offset -= 1;
         }
-
-        nsCOMPtr<nsIDOMNodeList> childList;    
-        PRUint32 len;
-        currentNode->GetChildNodes(getter_AddRefs(childList));   
-        //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
-        //  as a direct DOM child, we'll answer PR_FALSE.
-        childList->GetLength(&len);
-        offset = len;
-        nsCOMPtr<nsIDOMNode> maybeBreak;
-        childList->Item(offset-1, getter_AddRefs(maybeBreak));
-        if (maybeBreak) {
-          maybeBreak->GetNodeName(name);
-          if (name.EqualsLiteral("br")) {
-            offset -= 1;
-          }
-        }
-        sel->Collapse(currentNode, offset);
-        return NS_OK;
       }
-      tw->PreviousNode(getter_AddRefs(currentNode));
+      sel->Collapse(currentNode, offset);
     }
-    sel->Collapse(bodyElement, 0);  // gets executed only if there is nothing else found.
   }
   return NS_OK;
 }
