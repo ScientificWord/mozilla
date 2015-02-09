@@ -856,7 +856,7 @@ bool LineSource::GetLine(LineOfText* pLine)
                    break;
                 } else if ( pNextLine -> bPeek("%" )) {
                    pLine -> StripTCIMEnd(true);
-                   pLine -> Append(0x20); // add a space
+                   pLine -> Append(0x0A); // add a newline?
                    CopyLine (pNextLine, pLine);
                    LOG("\nINTER: " << *pLine);
                    delete pNextLine;
