@@ -25,6 +25,38 @@ msiAppUtils::msiAppUtils()
   Hello();
 }
 
+
+PRBool msiAppUtils::rlm_compute_ok () {
+  char * prodname = getProd();
+  if (!prodname) return PR_FALSE;
+  return ((strcmp(prodname, "swp") == 0) || 
+   (strcmp(prodname, "snb") == 0));
+};
+
+PRBool msiAppUtils::rlm_tex_ok() {
+  char * prodname = getProd();
+  if (!prodname) return PR_FALSE;
+  return ((strcmp(prodname, "swp") == 0) || 
+  (strcmp(prodname, "sw") == 0));
+};
+
+PRBool msiAppUtils::rlm_save_ok () {
+  char * prodname = getProd();
+  if (!prodname) return PR_FALSE;
+  return ((strcmp(prodname, "swp") == 0) || 
+   (strcmp(prodname, "snb") == 0) ||
+   (strcmp(prodname, "sw") == 0));
+};
+
+char * msiAppUtils::getProd() {
+  PRUint32 stat = rlm_license_stat(lic);
+  char * prodname = nsnull;
+  if (! stat) 
+    prodname = rlm_license_product(lic);
+  return prodname;
+};
+
+
 /* [noscript] readonly attribute PRInt32 licensedApp; */
 NS_IMETHODIMP msiAppUtils::GetLicensedApp(PRInt32 *aLicensedApp)
 {

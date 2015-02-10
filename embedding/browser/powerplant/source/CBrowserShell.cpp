@@ -1082,6 +1082,7 @@ NS_METHOD CBrowserShell::GetCurrentURL(nsACString& urlText)
 NS_METHOD CBrowserShell::SaveDocument(ESaveFormat inSaveFormat)
 {
     nsresult    rv;
+    if (! nsAppUtils::rlm_save_ok()) return NS_OK;
     
     nsCOMPtr<nsIDOMDocument> domDocument;
     rv = mWebBrowserAsWebNav->GetDocument(getter_AddRefs(domDocument));

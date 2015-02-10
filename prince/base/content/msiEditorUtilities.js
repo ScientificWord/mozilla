@@ -1133,7 +1133,7 @@ function msiIsHTMLSourceChanged(editorElement) {
   return false;
 }
 function msiIsInHTMLSourceMode(editorElement) {
-  return false;
+    return (kDisplayModeSource == editorElement.mEditorDisplayMode);
 }
 // are we editing HTML (i.e. neither in HTML source mode, nor editing a text file)
 function msiIsEditingRenderedHTML(editorElement) {

@@ -2804,6 +2804,12 @@ function deleteWorkingDirectory(editorElement)
 function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor, editorElement, fUseDirectory)
 {
   var tempdir;
+  try {
+    msiFinishHTMLSource(editorElement);   
+  }
+  catch(e) {
+    msidump(e.message);
+  }
   var success =  msiSoftSave( editor, editorElement, true);
   if (!success) {
     var saveDocStr = GetString("SaveDocument");
