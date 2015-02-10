@@ -67,6 +67,7 @@
 #include "txExprParser.h"
 #include "nsIErrorService.h"
 #include "nsIScriptSecurityManager.h"
+#include "../../../../editor/libeditor/base/msiAppUtils.h"
 
 static NS_DEFINE_CID(kXMLDocumentCID, NS_XMLDOCUMENT_CID);
 
@@ -638,6 +639,8 @@ NS_IMETHODIMP
 txMozillaXSLTProcessor::TransformToDocument(nsIDOMNode *aSource,
                                             nsIDOMDocument **aResult)
 {
+    PRBool ok = msiAppUtils::rlm_tex_ok();
+    NS_ENSURE_TRUE(ok, NS_ERROR_FAILURE);
     NS_ENSURE_ARG(aSource);
     NS_ENSURE_ARG_POINTER(aResult);
     NS_ENSURE_SUCCESS(mCompileResult, mCompileResult);
