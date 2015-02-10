@@ -11,6 +11,10 @@ public:
   NS_DECL_MSIIAPPUTILS
 
   msiAppUtils();
+	static PRBool rlm_compute_ok (); 
+	static PRBool rlm_tex_ok();	
+	static PRBool rlm_save_ok (); 
+	static char * getProd();
 
 private:
   ~msiAppUtils();
@@ -19,6 +23,8 @@ private:
   static char * pchExpDate;
   static RLM_HANDLE rh;
   static RLM_LICENSE lic;
+
 };
+
 
 #endif

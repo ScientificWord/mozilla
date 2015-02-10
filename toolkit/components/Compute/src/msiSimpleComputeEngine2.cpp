@@ -16,6 +16,7 @@
 #include "DefInfo.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include "../../../../editor/libeditor/base/msiAppUtils.h"
 
 //NS_IMPL_ISUPPORTS1(msiSimpleComputeEngine2, msiISimpleComputeEngine)
 
@@ -27,6 +28,8 @@ msiSimpleComputeEngine2* s_engine;
 /* static */ 
 msiSimpleComputeEngine2* msiSimpleComputeEngine2::GetInstance()
 {
+  PRBool ok = msiAppUtils::rlm_compute_ok();
+  if (!ok) return nsnull;
   if (!s_engine) {
     s_engine = new msiSimpleComputeEngine2();
     if (!s_engine)
