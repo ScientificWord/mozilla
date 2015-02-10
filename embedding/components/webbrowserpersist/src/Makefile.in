@@ -50,6 +50,7 @@ REQUIRES	= xpcom \
 		  string \
 		  dom \
 		  content \
+		  editor \
 		  layout \
 		  necko \
 		  widget \
