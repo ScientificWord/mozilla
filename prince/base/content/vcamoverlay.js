@@ -251,6 +251,9 @@ function rebuildSnapshots(doc) {
     if (wrapperlist[i].parentNode.tagName === "graph")
     {
       obj = wrapperlist[i].firstChild;
+      while (obj && obj.nodeName !== 'object') {
+        obj = obj.nextSibling;
+      }
       if (obj) {
         img = obj.nextSibling;
       }
