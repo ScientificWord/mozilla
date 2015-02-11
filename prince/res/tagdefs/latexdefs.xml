@@ -1011,7 +1011,8 @@
           <contains>#text</contains>
         </tag>
         <tag nm="hspace"><description>hspace</description></tag>
-				<tag nm="object"><description>Object</description></tag>
+        <tag nm="object"><description>Object</description></tag>
+				<tag nm="graph"><description>Graph</description></tag>
 				<tag nm="td"><description>Table cell</description>
 				  <contains>paratag</contains>
 				</tag>
