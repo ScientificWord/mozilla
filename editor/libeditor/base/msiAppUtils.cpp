@@ -74,6 +74,16 @@ NS_IMETHODIMP msiAppUtils::GetLicensedUntil(nsACString & aLicensedUntil)
     else aLicensedUntil = nsDependentCString("unlicensed");
     return NS_OK;
 }
+/* readonly attribute DOMString licensedUntil; */
+NS_IMETHODIMP msiAppUtils::GetHostid(nsACString & aHostid)
+{
+  PRInt32 type = RLM_HOSTID_ETHER;
+  char hostid[RLM_MAX_HOSTID_STRING];
+  const char *description;
+  description = rlm_hostid(rh, type, hostid);
+  aHostid = nsDependentCString(hostid);
+  return NS_OK;
+}
 
 /* void hello (); */
 NS_IMETHODIMP msiAppUtils::Hello()
