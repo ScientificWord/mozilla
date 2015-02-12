@@ -1,0 +1,14 @@
+<!-- Copyright (c) 2015 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Activate">
+<!ENTITY dialog.title "Activation">
+<!ENTITY verbiage1 "Enter your serial number and your email address in this form, and press OK. In return we will send and install your license file, which will activate your program.">
+<!ENTITY computerid.label "Computer ID:">
+<!ENTITY product.label "Product:">
+<!ENTITY prodsw "Scientific Word">
+<!ENTITY prodnsb "Scientific Notebook">
+<!ENTITY prodswp "Scientific WorkPlace">
+<!ENTITY serial.label "Serial number:">
+<!ENTITY verbiage2 "Your email address is required if you are activating a home-use license associated with a site license. Without the address, we cannot send you your license. In other cases, the email address is not required.">
+<!ENTITY email.label "Email address:">
+<!ENTITY phone.label "Phone:">
