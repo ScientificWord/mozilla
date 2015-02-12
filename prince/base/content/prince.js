@@ -545,7 +545,6 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   }
   var outfileTeXPath = outTeXfile.path;
   var stylefile;
-  var xslPath;
   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
   compileInfo.runMakeIndex = /\\printindex/.test(str);

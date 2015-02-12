@@ -13,6 +13,7 @@ help files that contain plots. The difference is that in the latter case therer 
 editor element, and msiGetActiveEditorElement is not defined. Hence there are
 a number of try blocks surrounding calls to msiGetActiveEditorElement. */
 
+
 function vcamToolbarFromPlugin() {
   // sets the state of the toolbar buttoms from the plugin state
   // Call the function for initialization and after each button action.
@@ -251,9 +252,6 @@ function rebuildSnapshots(doc) {
     if (wrapperlist[i].parentNode.tagName === "graph")
     {
       obj = wrapperlist[i].firstChild;
-      while (obj && obj.nodeName !== 'object') {
-        obj = obj.nextSibling;
-      }
       if (obj) {
         img = obj.nextSibling;
       }
@@ -642,8 +640,42 @@ function doVCamInitialize(obj) {
   };
 
   obj.onVCamDragMove = function onVCamDragMove(x, y) {
-    return 1;
+    var data;
+    const kHTMLMimer = "text/html";
+
+    try {
+      if (DNDUtils.checkCanDrop([kHTMLMime])) {
+        data = DNDUtils.getData(kHTMLMime, 0);
+        if (/<math/.test(data)) {
+          return 1;
+        }
+      }
+    }
+    catch(e) {
+      msidump(e.message);
+    }
+    return 0;
   };
+
+  obj.onVCamDrop = function onVCamDrop(x, y) {
+    var data;
+    const kHTMLMimer = "text/html";
+
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);
+      if (DNDUtils.checkCanDrop([kHTMLMime])) {
+        data = DNDUtils.getData(kHTMLMime, 0);
+        if (/<math/.test(data)) {
+          alert("Dropped "+data);
+        }
+      }
+    }
+    catch(e) {
+      msidump(e.message);
+    }
+  };
+
 
   obj.vcMakeSnapshot = function vcMakeSnapshot () {
     doMakeSnapshot.call(obj);
@@ -655,6 +687,7 @@ function doVCamInitialize(obj) {
   obj.addEvent('leftMouseUp', obj.onVCamMouseUp.bind(obj));
   obj.addEvent('leftMouseDoubleClick', obj.onVCamDblClick.bind(obj, screenX, screenY));
   obj.addEvent('dragMove', obj.onVCamDragMove.bind(obj));
+  obj.addEvent('drop', obj.onVCamDrop.bind(obj));
   obj.addEvent('dragLeave', (function() {}));
 
   if (editorElement) editorElement.focus();
