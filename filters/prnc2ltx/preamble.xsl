@@ -322,76 +322,92 @@
 
   <!-- use docformat information to call the geometry package -->
   <xsl:template match="html:pagelayout[@latex='true']">
-    <xsl:if test="$pagelayoutok"
->
+    <xsl:if test="$pagelayoutok">
       <xsl:variable name="unit">
         <xsl:value-of select="@unit"/>
       </xsl:variable>
-      \usepackage[<xsl:apply-templates/>]{geometry}
-    </xsl:if
-></xsl:template>
-
-  <xsl:template match="html:page">
-    <xsl:if test="$pagelayoutok">
-      paper=<xsl:value-of select="@paper"/>paper, twoside=<xsl:value-of select="@twoside"
-  />,
-      <!--landscape=<xsl:value-of select="@landscape"/>
-      , -->
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\usepackage[</xsl:text>
+      <xsl:apply-templates/>
+      <xsl:text>]{geometry}</xsl:text>
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="html:page[@paper='screen']"><xsl:if test="$pagelayoutok"
- >paper=screen, twoside=false, landscape=false,</xsl:if>
+  <xsl:template match="html:page">
+    <xsl:if test="$pagelayoutok">
+      <xsl:text>paper=</xsl:text>
+      <xsl:value-of select="@paper"/>
+      <xsl:text>paper, twoside=</xsl:text>
+      <xsl:value-of select="@twoside"/>
+      <xsl:text>,</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="html:page[@paper='screen']">
+    <xsl:if test="$pagelayoutok">
+      <xsl:text>paper=screen, twoside=false, landscape=false,</xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:page[@paper='other']">
     <xsl:if test="$pagelayoutok">
-      paperwidth=<xsl:value-of select="@width"
-  />, paperheight=<xsl:value-of select="@height"
-/>,
+      <xsl:text>paperwidth=</xsl:text>
+      <xsl:value-of select="@width"/>
+      <xsl:text>, paperheight=</xsl:text>
+      <xsl:value-of select="@height"/>
+      <xsl:text>,</xsl:text>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:textregion">
     <xsl:if test="$pagelayoutok">
-      textwidth=<xsl:value-of select="@width"/>, textheight=<xsl:value-of select="@height"
-/>,
+      <xsl:text>textwidth=</xsl:text>
+      <xsl:value-of select="@width"/>
+      <xsl:text>, textheight=</xsl:text>
+      <xsl:value-of select="@height"/>
+      <xsl:text>,</xsl:text>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:margin">
     <xsl:if test="$pagelayoutok">
-      left=<xsl:value-of select="@left"/>, top=<xsl:value-of select="@top"
-/>,
+      <xsl:text>left=</xsl:text>
+      <xsl:value-of select="@left"/>
+      <xsl:text>, top=</xsl:text>
+      <xsl:value-of select="@top"/>
+      <xsl:text>,</xsl:text>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:hedd">
     <xsl:if test="$pagelayoutok">
-      headheight=<xsl:value-of select="@height"
-  />, headsep=<xsl:value-of select="@sep"
-/>,
+      <xsl:text>headheight=</xsl:text>
+      <xsl:value-of select="@height"/>
+      <xsl:text>, headsep=</xsl:text>
+      <xsl:value-of select="@sep"/>
+      <xsl:text>,</xsl:text>
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="html:columns[@count='2']"
-  >
-    twocolumn=true, columnsep=<xsl:value-of select="@sep"/>,
+  <xsl:template match="html:columns[@count='2']">
+    <xsl:text>twocolumn=true, columnsep=</xsl:text>
+    <xsl:value-of select="@sep"/>
+    <xsl:text>,</xsl:text>
   </xsl:template>
 
-  <xsl:template match="html:columns[@count!='2']"
-  ></xsl:template>
+  <xsl:template match="html:columns[@count!='2']"></xsl:template>
 
-  <xsl:template match="html:marginnote[@hidden='false']"
-  ><xsl:if test="$pagelayoutok">
-      marginparwidth=<xsl:value-of select="@width"
-  />, marginparsep=<xsl:value-of select="@sep"
-/>,
+  <xsl:template match="html:marginnote[@hidden='false']">
+    <xsl:if test="$pagelayoutok">
+      <xsl:text>marginparwidth=</xsl:text>
+      <xsl:value-of select="@width"/>
+      <xsl:text>, marginparsep=</xsl:text>
+      <xsl:value-of select="@sep"/>
+      <xsl:text>,</xsl:text>
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="html:marginnote[@hidden!='false']"
-  ></xsl:template>
+  <xsl:template match="html:marginnote[@hidden!='false']"></xsl:template>
 
   <xsl:template match="html:footer"></xsl:template>
   <!--%%  footskip=<xsl:value-of select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep-2)),substring(@sep,string-length(@sep)-2))"/>
