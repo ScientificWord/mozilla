@@ -1060,6 +1060,7 @@ struct InputByteFileData{
    std::string   m_filename;
    int           m_lineno;
    Byte m_buf;
+   // int           m_codepage; // read from first line
 };
 @}
 
@@ -1271,6 +1272,11 @@ bool InputByteFile::Open(const Filename& fullpath){
       return false;
    }
    LOG("\nOpened for reading: " << filepath.c_str());
+   // // Read the first line and look for codepage
+   // char firstLine[200]
+   // m_byteFileData -> m_file.getline(firstLine, 190);
+
+
    // Get the first byte into the buffer
    m_byteFileData -> m_buf =  m_byteFileData -> m_file.get();
    return true;

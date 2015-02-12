@@ -196,9 +196,10 @@ void CharNode::Print(OutputStream& out)
   if (0 < m_char && m_char <= 126)
      out << (char) m_char;
   else if (127 < m_char && m_char <= 255){
-     char buf[10];
-     sprintf(buf, "%d", m_char);
-     out <<  "&#" << buf << ";";
+     //char buf[10];
+     //sprintf(buf, "%d", m_char);
+     //out <<  "&#" << buf << ";";
+     out << (char) m_char;
   } else {
   }
 }
