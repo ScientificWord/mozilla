@@ -1,91 +1,66 @@
 <?xml version="1.0"?>
+#include ../productname.inc
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/activate.css" type="text/css"?>
 
-<!DOCTYPE dialog [
-<!ENTITY % activateDialogDTD SYSTEM "chrome://prince/locale/activate.dtd" >
-%aboutDialogDTD;
-<!ENTITY % brandDTD SYSTEM "chrome://prince/locale/branding/brand.dtd" >
-%brandDTD;
-]>
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/activate.dtd">
+
 <dialog
   xmlns   = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   id      = "activateDialog"
-  title   = "Activate"
+  title   = "&windowTitle.label;"
   onload  = "startUp()"
-  screenX = "10" screenY="10" width="300" height="500"
+  screenX = "10" screenY="10" width="350px" height="390px"
   persist = "screenX screenY width height" 
 >
    
   <script type="application/x-javascript" src="chrome://prince/content/activateDialog.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msieditorutilities.js"/>
 
-  <description>Verbiage here</description>
-  <grid flex="1">
+  <description align="center" class="title">&dialog.title;</description>
+  <description>&verbiage1;</description>
+  <spacer style="height: 20px;" />
+  <grid >
   	<columns>
-  		<column flex="1"/>
-  		<column flex="1"/>
-  		<column flex="1"/>
+  		<column />
+  		<column />
   	</columns>
   	<rows>
   		<row>
-  			<label>Computer ID:</label>
-  			<label>Serial nubmer:</label>
-  			<label>Product:</label>
+  			<label>&computerid.label;</label><label id="computerid" value=""/>
+      </row>
+      <row>
+  			<label>product.label</label><label id="productname"  
+#ifdef PROD_SW
+          value="&prodsw;"  />
+#endif
+#ifdef PROD_SNB
+          value="&prodnsb;"  />
+#endif
+#ifdef PROD_SWP
+          value="&prodswp;"  />
+#endif
   		</row>
-  		<row>
-  			<textbox id="computerid" width="15%"/>
-  			<textbox id="serial" width="55%"/>
-  			<textbox id="productname" width="30%"/>
-  		</row>
+        <row>
+          <label>&serial.label;</label><textbox id="serial"/>
+        </row>
   	</rows>
   </grid>
-  <description>More verbiage.</description>
+  <spacer style="height: 20px;" />
+  <description>&verbiage2;</description>
+  <spacer style="height: 20px;" />
   <grid>
   	<columns>
   		<column/>
   		<column/>
-  		<column/>
-  		<column/>
-  	</columns>
+   	</columns>
   	<rows>
   		<row>
-  			<label>EMail address:</label>
+  			<label>&email.label;</label>
   			<textbox id="email"/>
   		</row>
   		<row>
-  			<label>Title and first name</label>
-  			<textbox id="firstname"/>
-  		</row>
-  		<row>
-  			<label>Family name</label>
-  			<textbox id="familyname"/>
-  		</row>
-  		<row>
-  			<label>Organization</label>
-  			<textbox id="organization"/>
-  		</row>
-  		<row>
-  			<label>Address</label>
-  			<textbox id="address1"/>
-  		</row>
-  		<row>
-  			<label>Address</label>
-  			<textbox id="address2"/>
-  		</row>
-  		<row>
-  			<label>City:</label>
-  			<textbox id="city"/>
-    		<label>Postal code:</label>
-    		<textbox id="zipcode" style="width: 5em;sourceparseerror.js" />
-  		</row>
-  		<row>
-				<label>State or province:</label>
-				<textbox id="state"/>
-	  		<label>Country:</label>
-	  		<textbox id="country" style="width: 5em;sourceparseerror.js"/>
-  		</row>
-  		<row>
-  			<label>Phone:</label>
+  			<label>&phone.label;</label>
   			<textbox id="phone"/>
   		</row>
    	</rows>
