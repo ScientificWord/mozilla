@@ -7,7 +7,7 @@ var secUnitHandler = new UnitHandler();
 var gNumStyles={};
 var widthElements;
 var heightElements;
-var sectionElements;
+// var sectionElements;
 var pagewidth;   // in mm
 var pageheight;
 var finishpage;
@@ -55,16 +55,21 @@ function enable(checkbox)
 
 function initializeunits()
 {
-  var currentUnit = document.getElementById("docformat.units").selectedItem.value;
-  unitHandler.initCurrentUnit(currentUnit);
-  secUnitHandler.initCurrentUnit(currentUnit);
-  unitHandler.buildUnitMenu(document.getElementById("docformat.units"),currentUnit);
-  secUnitHandler.buildUnitMenu(document.getElementById("secoverlay.units"),currentUnit);
-  secUnitHandler.setEditFieldList([document.getElementById("tbsectleftheadingmargin"),
-     document.getElementById("tbsectrightheadingmargin"),
-     document.getElementById("tbsecttopheadingmargin"),
-     document.getElementById("tbsectbottomheadingmargin")]);
-  setDecimalPlaces();
+  try {
+    var currentUnit = document.getElementById("docformat.units").selectedItem.value;
+    unitHandler.initCurrentUnit(currentUnit);
+//    secUnitHandler.initCurrentUnit(currentUnit);
+    unitHandler.buildUnitMenu(document.getElementById("docformat.units"),currentUnit);
+    // secUnitHandler.buildUnitMenu(document.getElementById("secoverlay.units"),currentUnit);
+    // secUnitHandler.setEditFieldList([document.getElementById("tbsectleftheadingmargin"),
+    //    document.getElementById("tbsectrightheadingmargin"),
+    //    document.getElementById("tbsecttopheadingmargin"),
+    //    document.getElementById("tbsectbottomheadingmargin")]);
+    setDecimalPlaces();
+  }
+  catch(e) {
+    dump(e.message);
+  }
 }
 
 function newValue(element, index, array)
@@ -83,7 +88,7 @@ function stripPath(element, index, array)
 
 function startup()
 {
-  initializeFontFamilyList(false, window);
+  initializeFontFamilyList(false);
   var editorElement = msiGetParentEditorElementForDialog(window);
   editor = msiGetEditor(editorElement);
   if (!editor) {
@@ -91,10 +96,10 @@ function startup()
     return;
   }
   widthElements=["lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
-      "sectrightheadingmargin", "sectleftheadingmargin", "pagewidth", "paperwidth"];
+      /*"sectrightheadingmargin", "sectleftheadingmargin",*/ "pagewidth", "paperwidth"];
   heightElements=["tmargin","hedd","heddsep",
       "bodyheight","footer","footersep", "mnpush", "computedbmargin", "pageheight", "paperheight"];
-  sectionElements=["tbsectleftheadingmargin","tbsectrightheadingmargin","tbsecttopheadingmargin","tbsectbottomheadingmargin"];
+  // sectionElements=["tbsectleftheadingmargin","tbsectrightheadingmargin","tbsecttopheadingmargin","tbsectbottomheadingmargin"];
   var doc = editor.document;
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
   if (!preamble) {
@@ -1159,13 +1164,13 @@ function setDecimalPlaces()
   u = secUnitHandler.units[secUnitHandler.getCurrentUnit()];
   increment = u.increment;
   places = u.places;
-  for (i=0; i<sectionElements.length; i++)
-  {
-    s=sectionElements[i];
-    elt = document.getElementById(s);
-    elt.setAttribute("increment", increment);
-    elt.setAttribute("decimalplaces", places);
-  }
+  // for (i=0; i<sectionElements.length; i++)
+  // {
+  //   s=sectionElements[i];
+  //   elt = document.getElementById(s);
+  //   elt.setAttribute("increment", increment);
+  //   elt.setAttribute("decimalplaces", places);
+  // }
 
   dump("Setting 'increment' to "+increment+" and 'decimalplaces' to "+places+"\n");
 }
@@ -1433,11 +1438,11 @@ function sectHandleChar(event)
 {
   var tbid = event.target.id;
   var id;
-  if (tbid == "tbsectleftheadingmargin")
-    id = "sectleftheadingmargin";
-  else if (tbid == "tbsectrightheadingmargin")
-    id = "sectrightheadingmargin";
-  else return;
+  // if (tbid == "tbsectleftheadingmargin")
+  //   id = "sectleftheadingmargin";
+  // else if (tbid == "tbsectrightheadingmargin")
+  //   id = "sectrightheadingmargin";
+  // else return;
   handleChar(event.keyCode, event.charCode, id, tbid);
   sectInputChar(event, id, tbid);
 }
@@ -2046,152 +2051,153 @@ function buildStyleForRule(displayVbox)
 
 function switchSectionTypeImp(from, to, settingSecRedefOk)
 {
-  var i;
-  currentSectionType = to;
-  var boxlist;
-  var box;
-  var enabled = document.getElementById("allowsectionheaders").checked;
-  var boxdata={};
-  var sec;
-  if (from)
-  {
-//    gNumStyles[from] = document.getElementById("sections.numstyle").value;
-    if (enabled)
-    {
-      if (!sectitleformat[from]) sectitleformat[from] = new Object();
-      sec = sectitleformat[from];
-      sec.enabled = enabled;
-      if (sec.enabled)
-			{
-			  document.getElementById("secredefok").removeAttribute("disabled");
-			}
-			else
-			{
-				document.getElementById("secredefok").setAttribute("disabled", "true");
-			}
-      sec.newPage = document.getElementById("sectionstartnewpage").checked;
-      sec.sectStyle = document.getElementById("sections.style").value;
-      sec.align = document.getElementById("sections.align").value;
-      sec.units = document.getElementById("secoverlay.units").value;
-      sec.lhindent = document.getElementById("tbsectleftheadingmargin").value;
-      sec.rhindent = document.getElementById("tbsectrightheadingmargin").value;
-      boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-      sec.toprules = [];
-      for (i=0; i< boxlist.length; i++) {
-        box = boxlist[i];
-        if (!box.hidden) {
-          boxdata = new Object();
-          boxdata.role = box.getAttribute("role");
-          boxdata.tlwidth = box.getAttribute("tlwidth");
-          boxdata.tlheight = box.getAttribute("tlheight");
-          boxdata.color = box.getAttribute("color");
-          boxdata.tlalign = box.getAttribute("tlalign");
-          boxdata.style = box.getAttribute("style");
-          sec.toprules.push(boxdata);
-        }
-      }
-      boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-      sec.bottomrules = [];
-      for (i=0; i< boxlist.length; i++) {
-        box = boxlist[i];
-        if (!box.hidden) {
-          boxdata = new Object();
-          boxdata.role = box.getAttribute("role");
-          boxdata.tlwidth = box.getAttribute("tlwidth");
-          boxdata.tlheight = box.getAttribute("tlheight");
-          boxdata.color = box.getAttribute("color");
-          boxdata.tlalign = box.getAttribute("tlalign");
-          boxdata.style = box.getAttribute("style");
-          sec.bottomrules.push(boxdata);
-        }
-      }
-    }
-    //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs
-  }
-  //Now initialize for the new section type.
-  if (to)
-  {
-    if (from != to)
-    {
-      sec = sectitleformat[to];
-      if (sec==null)
-      {
-        sec = sectitleformat[to] = new Object();
-      }
-      enabled = sec.enabled;
-      if (enabled==null) enabled = false;
-      var broadcaster = document.getElementById("secredefok");
-      if (!settingSecRedefOk)
-      {
-        if (!enabled)
-          broadcaster.setAttribute("disabled", true);
-        else
-          broadcaster.removeAttribute("disabled");
-        document.getElementById("allowsectionheaders").checked = enabled;
-      }
-      document.getElementById("sections.numstyle").value = gNumStyles[to];
 
-      var rawlabel = document.getElementById("rawlabel").getAttribute("label");
-      document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
-        // for localizability, we should look up a string valued function of "to"
-      var newpage = sec.newPage
-      if (newpage==null) newpage = false;
-      else
-      {
-        document.getElementById("sectionstartnewpage").checked = newpage;
-        settopofpage(newpage);
-      }
-      if (sec.setStyle!=null) document.getElementById("sections.style").value = sec.sectStyle;
-      if (sec.align!=null) document.getElementById("sections.align").value = sec.align;
-      if (sec.units!=null)
-      {
-        document.getElementById("secoverlay.units").value = sec.units;
-        secUnitHandler.initCurrentUnit(sec.units);
-      }
-      if (sec.lhindent!=null) document.getElementById("tbsectleftheadingmargin").value = sec.lhindent;
-      if (sec.rhindent!=null) document.getElementById("tbsectrightheadingmargin").value = sec.rhindent;
-      if (sec.toprules && (sec.toprules.length > 0))
-      {
-        document.getElementById("tso_toprules").selectedIndex="1";
-        boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-        for (i=0; i < sec.toprules.length; i++)
-        {
-          boxlist[i].hidden=false;
-          boxlist[i].setAttribute("role", sec.toprules[i].role);
-          boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
-          boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
-          boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
-          boxlist[i].setAttribute("color", sec.toprules[i].color);
-          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
-        }
-        for (i = sec.toprules.length; i<boxlist.length; i++)
-        {
-          boxlist[i].hidden=true;
-        };
-      }
-      if (sec.bottomrules && (sec.bottomrules.length > 0))
-      {
-        document.getElementById("tso_bottomrules").selectedIndex="1";
-        boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-        for (i=0; i < sec.bottomrules.length; i++)
-        {
-          boxlist[i].hidden=false;
-          boxlist[i].setAttribute("role", sec.bottomrules[i].role);
-          boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
-          boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
-          boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
-          boxlist[i].setAttribute("color", sec.bottomrules[i].color);
-          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
-        }
-        for (i = sec.bottomrules.length; i<boxlist.length; i++)
-        {
-          boxlist[i].hidden=true;
-        }
-      }
-      displayTextForSectionHeader(to);
-      if (sec.align!=null) setalign(sec.align);
-    }
-  }
+//   var i;
+//   currentSectionType = to;
+//   var boxlist;
+//   var box;
+//   var enabled = document.getElementById("allowsectionheaders").checked;
+//   var boxdata={};
+//   var sec;
+//   if (from)
+//   {
+// //    gNumStyles[from] = document.getElementById("sections.numstyle").value;
+//     if (enabled)
+//     {
+//       if (!sectitleformat[from]) sectitleformat[from] = new Object();
+//       sec = sectitleformat[from];
+//       sec.enabled = enabled;
+//       if (sec.enabled)
+// 			{
+// 			  document.getElementById("secredefok").removeAttribute("disabled");
+// 			}
+// 			else
+// 			{
+// 				document.getElementById("secredefok").setAttribute("disabled", "true");
+// 			}
+//       sec.newPage = document.getElementById("sectionstartnewpage").checked;
+//       sec.sectStyle = document.getElementById("sections.style").value;
+//       sec.align = document.getElementById("sections.align").value;
+//       sec.units = document.getElementById("secoverlay.units").value;
+//       sec.lhindent = document.getElementById("tbsectleftheadingmargin").value;
+//       sec.rhindent = document.getElementById("tbsectrightheadingmargin").value;
+//       boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+//       sec.toprules = [];
+//       for (i=0; i< boxlist.length; i++) {
+//         box = boxlist[i];
+//         if (!box.hidden) {
+//           boxdata = new Object();
+//           boxdata.role = box.getAttribute("role");
+//           boxdata.tlwidth = box.getAttribute("tlwidth");
+//           boxdata.tlheight = box.getAttribute("tlheight");
+//           boxdata.color = box.getAttribute("color");
+//           boxdata.tlalign = box.getAttribute("tlalign");
+//           boxdata.style = box.getAttribute("style");
+//           sec.toprules.push(boxdata);
+//         }
+//       }
+//       boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+//       sec.bottomrules = [];
+//       for (i=0; i< boxlist.length; i++) {
+//         box = boxlist[i];
+//         if (!box.hidden) {
+//           boxdata = new Object();
+//           boxdata.role = box.getAttribute("role");
+//           boxdata.tlwidth = box.getAttribute("tlwidth");
+//           boxdata.tlheight = box.getAttribute("tlheight");
+//           boxdata.color = box.getAttribute("color");
+//           boxdata.tlalign = box.getAttribute("tlalign");
+//           boxdata.style = box.getAttribute("style");
+//           sec.bottomrules.push(boxdata);
+//         }
+//       }
+//     }
+//     //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs
+//   }
+//   //Now initialize for the new section type.
+//   if (to)
+//   {
+//     if (from != to)
+//     {
+//       sec = sectitleformat[to];
+//       if (sec==null)
+//       {
+//         sec = sectitleformat[to] = new Object();
+//       }
+//       enabled = sec.enabled;
+//       if (enabled==null) enabled = false;
+//       var broadcaster = document.getElementById("secredefok");
+//       if (!settingSecRedefOk)
+//       {
+//         if (!enabled)
+//           broadcaster.setAttribute("disabled", true);
+//         else
+//           broadcaster.removeAttribute("disabled");
+//         document.getElementById("allowsectionheaders").checked = enabled;
+//       }
+//       document.getElementById("sections.numstyle").value = gNumStyles[to];
+
+//       var rawlabel = document.getElementById("rawlabel").getAttribute("label");
+//       document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
+//         // for localizability, we should look up a string valued function of "to"
+//       var newpage = sec.newPage
+//       if (newpage==null) newpage = false;
+//       else
+//       {
+//         document.getElementById("sectionstartnewpage").checked = newpage;
+//         settopofpage(newpage);
+//       }
+//       if (sec.setStyle!=null) document.getElementById("sections.style").value = sec.sectStyle;
+//       if (sec.align!=null) document.getElementById("sections.align").value = sec.align;
+//       if (sec.units!=null)
+//       {
+//         document.getElementById("secoverlay.units").value = sec.units;
+//         secUnitHandler.initCurrentUnit(sec.units);
+//       }
+//       if (sec.lhindent!=null) document.getElementById("tbsectleftheadingmargin").value = sec.lhindent;
+//       if (sec.rhindent!=null) document.getElementById("tbsectrightheadingmargin").value = sec.rhindent;
+//       if (sec.toprules && (sec.toprules.length > 0))
+//       {
+//         document.getElementById("tso_toprules").selectedIndex="1";
+//         boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+//         for (i=0; i < sec.toprules.length; i++)
+//         {
+//           boxlist[i].hidden=false;
+//           boxlist[i].setAttribute("role", sec.toprules[i].role);
+//           boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
+//           boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
+//           boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
+//           boxlist[i].setAttribute("color", sec.toprules[i].color);
+//           boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+//         }
+//         for (i = sec.toprules.length; i<boxlist.length; i++)
+//         {
+//           boxlist[i].hidden=true;
+//         };
+//       }
+//       if (sec.bottomrules && (sec.bottomrules.length > 0))
+//       {
+//         document.getElementById("tso_bottomrules").selectedIndex="1";
+//         boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+//         for (i=0; i < sec.bottomrules.length; i++)
+//         {
+//           boxlist[i].hidden=false;
+//           boxlist[i].setAttribute("role", sec.bottomrules[i].role);
+//           boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
+//           boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
+//           boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
+//           boxlist[i].setAttribute("color", sec.bottomrules[i].color);
+//           boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+//         }
+//         for (i = sec.bottomrules.length; i<boxlist.length; i++)
+//         {
+//           boxlist[i].hidden=true;
+//         }
+//       }
+//       displayTextForSectionHeader(to);
+//       if (sec.align!=null) setalign(sec.align);
+//     }
+//   }
 }
 
 function firstElementChild(element)
@@ -2330,78 +2336,78 @@ function getBaseNodeForIFrame( )
 
 function switchSectionUnits()
 {
-  var newUnit = document.getElementById("secoverlay.units").selectedItem.value;
-  if (newUnit !== secUnitHandler.currentUnit) secUnitHandler.setCurrentUnit(newUnit);
-  // return;
-  // var factor = 0;//convert(1, sectionUnit, newUnit);
-  // dump("section factor is "+factor+"\n");
-  // sectScale = sectScale/factor;
-  secUnitHandler.setSectionUnit(newUnit); // this has to be set before unitRound and setDecimalPlaces are called
-  sectSetDecimalPlaces();
-//    document.getElementById("tbsectrightheadingmargin").value = unitRound(factor*document.getElementById("tbsectrightheadingmargin").value);
-//    document.getElementById("tbsectleftheadingmargin").value = unitRound(factor*document.getElementById("tbsectleftheadingmargin").value);
+//   var newUnit = document.getElementById("secoverlay.units").selectedItem.value;
+//   if (newUnit !== secUnitHandler.currentUnit) secUnitHandler.setCurrentUnit(newUnit);
+//   // return;
+//   // var factor = 0;//convert(1, sectionUnit, newUnit);
+//   // dump("section factor is "+factor+"\n");
+//   // sectScale = sectScale/factor;
+//   secUnitHandler.setSectionUnit(newUnit); // this has to be set before unitRound and setDecimalPlaces are called
+//   sectSetDecimalPlaces();
+// //    document.getElementById("tbsectrightheadingmargin").value = unitRound(factor*document.getElementById("tbsectrightheadingmargin").value);
+// //    document.getElementById("tbsectleftheadingmargin").value = unitRound(factor*document.getElementById("tbsectleftheadingmargin").value);
 }
 
 
 function sectSetDecimalPlaces() // and increments
 {
-  var places;
-  var increment;
-  var elt;
-  var i;
-  var s;
-  switch (secUnitHandler.currentUnit) {
-    case "in" : increment = .1; places = 2; break;
-    case "cm" : increment = .1; places = 2; break;
-    case "mm" : increment = 1; places = 1; break;
-    case "pt" : increment = 1; places = 1; break;
-    default : increment = 1; places = 1; break;
-  }
-  elt = document.getElementById("tbsectrightheadingmargin");
-  elt.setAttribute("increment", increment);
-  elt.setAttribute("decimalplaces", places);
-  elt = document.getElementById("tbsectleftheadingmargin");
-  elt.setAttribute("increment", increment);
-  elt.setAttribute("decimalplaces", places);
+  // var places;
+  // var increment;
+  // var elt;
+  // var i;
+  // var s;
+  // switch (secUnitHandler.currentUnit) {
+  //   case "in" : increment = .1; places = 2; break;
+  //   case "cm" : increment = .1; places = 2; break;
+  //   case "mm" : increment = 1; places = 1; break;
+  //   case "pt" : increment = 1; places = 1; break;
+  //   default : increment = 1; places = 1; break;
+  // }
+  // elt = document.getElementById("tbsectrightheadingmargin");
+  // elt.setAttribute("increment", increment);
+  // elt.setAttribute("decimalplaces", places);
+  // elt = document.getElementById("tbsectleftheadingmargin");
+  // elt.setAttribute("increment", increment);
+  // elt.setAttribute("decimalplaces", places);
 }
 
 function displayTextForSectionHeader(name)
 {
-  try {
-    var secname;
-    if (name && name.length > 0) secname = name;
-    else secname = document.getElementById("sections.name").label.toLowerCase();
-    var basepara;
-  //	var width;
-	  var height;
-    basepara = getBaseNodeForIFrame();
-    var strContents;
-    if (sectitleformat[secname]) strContents = sectitleformat[secname].proto;
-	  if (strContents && strContents.length > 0)
-	  {
-	    var parser = new DOMParser();
-	    var doc = parser.parseFromString(strContents,"application/xhtml+xml");
-	    basepara.parentNode.replaceChild(doc.documentElement, basepara);
-		  basepara = getBaseNodeForIFrame();
-		  var boxObject=basepara.getBoundingClientRect();
-		  height = boxObject.bottom - boxObject.top;
-      document.getElementById("tso_template").setAttribute("selectedIndex","1");
-	  }
-	  else
-	  {
-	    height = 20;
-      document.getElementById("tso_template").setAttribute("selectedIndex","0");
-  //		width = 200;
-    }
-	  var iframecontainer = document.getElementById("sectiontextareacontainer");
-  //	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
-  //	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
-	  setStyleAttribute(iframecontainer,"height",Number(height)+"px");
-	  setStyleAttribute(iframecontainer,"scale",0.33);
-  }
-  catch(e) {
-    dump("displayTextForSectionHeader exception: "+e.message+"\n");
-  }
+  // try {
+  //   var secname;
+  //   if (name && name.length > 0) secname = name;
+  //   else secname = document.getElementById("sections.name").label.toLowerCase();
+  //   var basepara;
+  // //	var width;
+	 //  var height;
+  //   basepara = getBaseNodeForIFrame();
+  //   var strContents;
+  //   if (sectitleformat[secname]) strContents = sectitleformat[secname].proto;
+	 //  if (strContents && strContents.length > 0)
+	 //  {
+	 //    var parser = new DOMParser();
+	 //    var doc = parser.parseFromString(strContents,"application/xhtml+xml");
+	 //    basepara.parentNode.replaceChild(doc.documentElement, basepara);
+		//   basepara = getBaseNodeForIFrame();
+		//   var boxObject=basepara.getBoundingClientRect();
+		//   height = boxObject.bottom - boxObject.top;
+  //     document.getElementById("tso_template").setAttribute("selectedIndex","1");
+	 //  }
+	 //  else
+	 //  {
+	 //    height = 20;
+  //     document.getElementById("tso_template").setAttribute("selectedIndex","0");
+  // //		width = 200;
+  //   }
+	 //  var iframecontainer = document.getElementById("sectiontextareacontainer");
+  // //	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
+  // //	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
+	 //  setStyleAttribute(iframecontainer,"height",Number(height)+"px");
+	 //  setStyleAttribute(iframecontainer,"scale",0.33);
+  // }
+  // catch(e) {
+  //   dump("displayTextForSectionHeader exception: "+e.message+"\n");
+  // }
 }
 
 function refresh()
@@ -2416,118 +2422,118 @@ function refresh()
 
 function textEditor()
 {
-  var secname=document.getElementById("sections.name").label;
-  var units=document.getElementById("secoverlay.units").value;
-  sectitleformat.refresh = refresh;
-  sectitleformat.destNode = getBaseNodeForIFrame();
-  sectitleformat.currentLevel = secname.toLowerCase();
-  window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,resizable,chrome,close,titlebar,alwaysRaised", sectitleformat,
-      secname, units);
-  displayTextForSectionHeader();
+  // var secname=document.getElementById("sections.name").label;
+  // var units=document.getElementById("secoverlay.units").value;
+  // sectitleformat.refresh = refresh;
+  // sectitleformat.destNode = getBaseNodeForIFrame();
+  // sectitleformat.currentLevel = secname.toLowerCase();
+  // window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,resizable,chrome,close,titlebar,alwaysRaised", sectitleformat,
+  //     secname, units);
+  // displayTextForSectionHeader();
 }
 
 function setalign(which)
 {
-  var element;
-  var otherelement;
-  var sectionparts = document.getElementById("sectionparts");
-  if (which == "c")
-  {
-    sectionparts.setAttribute("pack","center");
-    document.getElementById("leftalignment").setAttribute("msicollapsed","true");
-		document.getElementById("leftalignment").setAttribute("width","1px");
-    document.getElementById("rightalignment").setAttribute("msicollapsed","true");
-		document.getElementById("rightalignment").setAttribute("width","1px");
-    document.getElementById("notcenteralignment").setAttribute("msicollapsed","true");
-    element = document.getElementById("sectleftheadingmargin");
-    otherelement = document.getElementById('sectrightheadingmargin');
-    //element.setAttribute("role", "spacer");
-    document.getElementById("sectleftmargin").setAttribute("flex", "1");
-    document.getElementById("sectleftmargin").setAttribute("width", "40px");
-		document.getElementById("sectrightmargin").setAttribute("flex", "1");
-		document.getElementById("sectrightmargin").setAttribute("width", "40px");
-  }
-  else
-  {
-    document.getElementById("notcenteralignment").setAttribute("msicollapsed","false");
-    if (which == "l")
-    {
-      sectionparts.setAttribute("pack", "start");
-      var width = document.getElementById("tbsectleftheadingmargin").value;
-			if (Number(width) ==  NaN) width=30;
-      document.getElementById("leftalignment").setAttribute("msicollapsed","false");
-      document.getElementById("leftalignment").setAttribute("width",width+"px");
-      document.getElementById("rightalignment").setAttribute("msicollapsed","true");
-		  document.getElementById("rightalignment").setAttribute("width","1px");
-      element = document.getElementById("sectleftheadingmargin");
-      otherelement = document.getElementById('sectrightheadingmargin');
-	    document.getElementById("sectleftmargin").setAttribute("flex", "0");
-	    document.getElementById("sectleftmargin").setAttribute("width", "40px");
-			document.getElementById("sectrightmargin").setAttribute("flex", "1");
-			document.getElementById("sectrightmargin").setAttribute("width", "40px");
-      element.setAttribute("role", "sectionmargin");
-    }
-    else if (which == "r")
-    {
-      sectionparts.setAttribute("pack", "end");
-      var rwidth = document.getElementById("tbsectrightheadingmargin").value;
-			if (Number(rwidth) ==  NaN) width=30;
-      document.getElementById("leftalignment").setAttribute("msicollapsed","true");
-		  document.getElementById("leftalignment").setAttribute("width","1px");
-      document.getElementById("rightalignment").setAttribute("msicollapsed","false");
-      document.getElementById("rightalignment").setAttribute("width",rwidth+"px");
-      element = document.getElementById("sectrightheadingmargin");
-      otherelement = document.getElementById('sectleftheadingmargin');
-			document.getElementById("sectrightmargin").setAttribute("flex","0");
-	    document.getElementById("sectleftmargin").setAttribute("flex","1");
-	    document.getElementById("sectleftmargin").setAttribute("width", "40px");
-			document.getElementById("sectrightmargin").setAttribute("width", "40px");
-      element.setAttribute("role", "sectionmargin");
-    }
-  }
+  // var element;
+  // var otherelement;
+  // var sectionparts = document.getElementById("sectionparts");
+  // if (which == "c")
+  // {
+  //   sectionparts.setAttribute("pack","center");
+  //   document.getElementById("leftalignment").setAttribute("msicollapsed","true");
+		// document.getElementById("leftalignment").setAttribute("width","1px");
+  //   document.getElementById("rightalignment").setAttribute("msicollapsed","true");
+		// document.getElementById("rightalignment").setAttribute("width","1px");
+  //   document.getElementById("notcenteralignment").setAttribute("msicollapsed","true");
+  //   element = document.getElementById("sectleftheadingmargin");
+  //   otherelement = document.getElementById('sectrightheadingmargin');
+  //   //element.setAttribute("role", "spacer");
+  //   document.getElementById("sectleftmargin").setAttribute("flex", "1");
+  //   document.getElementById("sectleftmargin").setAttribute("width", "40px");
+		// document.getElementById("sectrightmargin").setAttribute("flex", "1");
+		// document.getElementById("sectrightmargin").setAttribute("width", "40px");
+  // }
+  // else
+  // {
+  //   document.getElementById("notcenteralignment").setAttribute("msicollapsed","false");
+  //   if (which == "l")
+  //   {
+  //     sectionparts.setAttribute("pack", "start");
+  //     var width = document.getElementById("tbsectleftheadingmargin").value;
+		// 	if (Number(width) ==  NaN) width=30;
+  //     document.getElementById("leftalignment").setAttribute("msicollapsed","false");
+  //     document.getElementById("leftalignment").setAttribute("width",width+"px");
+  //     document.getElementById("rightalignment").setAttribute("msicollapsed","true");
+		//   document.getElementById("rightalignment").setAttribute("width","1px");
+  //     element = document.getElementById("sectleftheadingmargin");
+  //     otherelement = document.getElementById('sectrightheadingmargin');
+	 //    document.getElementById("sectleftmargin").setAttribute("flex", "0");
+	 //    document.getElementById("sectleftmargin").setAttribute("width", "40px");
+		// 	document.getElementById("sectrightmargin").setAttribute("flex", "1");
+		// 	document.getElementById("sectrightmargin").setAttribute("width", "40px");
+  //     element.setAttribute("role", "sectionmargin");
+  //   }
+  //   else if (which == "r")
+  //   {
+  //     sectionparts.setAttribute("pack", "end");
+  //     var rwidth = document.getElementById("tbsectrightheadingmargin").value;
+		// 	if (Number(rwidth) ==  NaN) width=30;
+  //     document.getElementById("leftalignment").setAttribute("msicollapsed","true");
+		//   document.getElementById("leftalignment").setAttribute("width","1px");
+  //     document.getElementById("rightalignment").setAttribute("msicollapsed","false");
+  //     document.getElementById("rightalignment").setAttribute("width",rwidth+"px");
+  //     element = document.getElementById("sectrightheadingmargin");
+  //     otherelement = document.getElementById('sectleftheadingmargin');
+		// 	document.getElementById("sectrightmargin").setAttribute("flex","0");
+	 //    document.getElementById("sectleftmargin").setAttribute("flex","1");
+	 //    document.getElementById("sectleftmargin").setAttribute("width", "40px");
+		// 	document.getElementById("sectrightmargin").setAttribute("width", "40px");
+  //     element.setAttribute("role", "sectionmargin");
+  //   }
+  // }
   //otherelement.setAttribute("role", "spacer");
 }
 
 function clearselection(element)
 {
- if (element.nodeType != element.ELEMENT_NODE) return;
- if (element.getAttribute('sectionselected') != null)
-    element.setAttribute('sectionselected', 'false');
-  var node;
-  for (var i = 0; i < element.childNodes.length; i++)
-  {
-    clearselection(element.childNodes[i]);
-  }
+ // if (element.nodeType != element.ELEMENT_NODE) return;
+ // if (element.getAttribute('sectionselected') != null)
+ //    element.setAttribute('sectionselected', 'false');
+ //  var node;
+ //  for (var i = 0; i < element.childNodes.length; i++)
+ //  {
+ //    clearselection(element.childNodes[i]);
+ //  }
 }
 
 var lastselected = null;
 
 function toggleselection( element )
 {
-  lastselected = element;
-  var root = document.getElementById("sectionparts");
-  var NCAbroadcaster = document.getElementById("notcenteralignment");
-  var TOBbroadcaster=document.getElementById("toporbottommargin");
-  var NMbroadcaster=document.getElementById("notmargin");
-  clearselection(root);
-  element.setAttribute('sectionselected','true');
-  if (element.id == "sectleftheadingmargin" || element.id=="sectrightheadingmargin")
-  {
-    NCAbroadcaster.removeAttribute("disabled");
-    TOBbroadcaster.setAttribute("disabled", "true");
-    NMbroadcaster.setAttribute("disabled", "true");
-  }
-  else
-  {
-    NCAbroadcaster.setAttribute("disabled","true");
-    NMbroadcaster.removeAttribute("disabled");
-    if (element.id == "topmargin" || element.id == "bottommargin")
-    {
-      TOBbroadcaster.removeAttribute("disabled");
-    }
-    else
-      TOBbroadcaster.setAttribute("disabled", "true");
-  }
+  // lastselected = element;
+  // var root = document.getElementById("sectionparts");
+  // var NCAbroadcaster = document.getElementById("notcenteralignment");
+  // var TOBbroadcaster=document.getElementById("toporbottommargin");
+  // var NMbroadcaster=document.getElementById("notmargin");
+  // clearselection(root);
+  // element.setAttribute('sectionselected','true');
+  // if (element.id == "sectleftheadingmargin" || element.id=="sectrightheadingmargin")
+  // {
+  //   NCAbroadcaster.removeAttribute("disabled");
+  //   TOBbroadcaster.setAttribute("disabled", "true");
+  //   NMbroadcaster.setAttribute("disabled", "true");
+  // }
+  // else
+  // {
+  //   NCAbroadcaster.setAttribute("disabled","true");
+  //   NMbroadcaster.removeAttribute("disabled");
+  //   if (element.id == "topmargin" || element.id == "bottommargin")
+  //   {
+  //     TOBbroadcaster.removeAttribute("disabled");
+  //   }
+  //   else
+  //     TOBbroadcaster.setAttribute("disabled", "true");
+  // }
 }
 
 function settopofpage( checkbox )
@@ -2542,110 +2548,110 @@ function settopofpage( checkbox )
 
 function sectLayout(id, tbid)
 {
-  var textbox = document.getElementById(tbid);
-  var box = document.getElementById(id);
-  var dim = Number(textbox.value);
-  secSetWidth(box,dim);
+  // var textbox = document.getElementById(tbid);
+  // var box = document.getElementById(id);
+  // var dim = Number(textbox.value);
+  // secSetWidth(box,dim);
 }
 
 function secSetWidth(box, dim)
 {
   // dim is in the current units -- add conversion to pixels
-	var theotherbox;
-	if (box.id == "sectleftheadingmargin")
-	{
-	  theotherbox = document.getElementById("sectleftmargin");
-	  if (dim < 0) {
-	    box.setAttribute("width", "0");
-			theotherbox.setAttribute("width",40-Number(-dim));
-		}
-		else
-		{
-			box.setAttribute("width",Number(dim));
-			theotherbox.setAttribute("width",40);
-		}
-  }
-	else
-	{
-	  theotherbox = document.getElementById("sectrightmargin");
-	  if (dim < 0) {
-	    box.setAttribute("width", "0");
-			theotherbox.setAttribute("width",40-Number(-dim));
-		}
-		else
-		{
-			box.setAttribute("width",Number(dim));
-			theotherbox.setAttribute("width",40);
-		}
-  }
+	// var theotherbox;
+	// if (box.id == "sectleftheadingmargin")
+	// {
+	//   theotherbox = document.getElementById("sectleftmargin");
+	//   if (dim < 0) {
+	//     box.setAttribute("width", "0");
+	// 		theotherbox.setAttribute("width",40-Number(-dim));
+	// 	}
+	// 	else
+	// 	{
+	// 		box.setAttribute("width",Number(dim));
+	// 		theotherbox.setAttribute("width",40);
+	// 	}
+ //  }
+	// else
+	// {
+	//   theotherbox = document.getElementById("sectrightmargin");
+	//   if (dim < 0) {
+	//     box.setAttribute("width", "0");
+	// 		theotherbox.setAttribute("width",40-Number(-dim));
+	// 	}
+	// 	else
+	// 	{
+	// 		box.setAttribute("width",Number(dim));
+	// 		theotherbox.setAttribute("width",40);
+	// 	}
+ //  }
 }
 
-function addrule()
-{
-  // find which is selected
-  var i;
-  if (!lastselected) return;
-  var boxlist = lastselected.getElementsByTagName("vbox");
-  var nextbox;
-  for (var i = 1; i < boxlist.length; i++)    // we start at 1 because the first is the parent of the others
-  {
-    if (boxlist[i].getAttribute("hidden") == "true")
-    {
-      nextbox = boxlist[i];
-      break;
-    }
-  }
-  if (!nextbox) return;
-  nextbox.setAttribute("role","rule");
-  nextbox.hidden=false;
-  nextbox.setAttribute("style","height:3px;background-color:black;");
-  window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection",
-    "chrome,close,titlebar,resizable,alwaysRaised", nextbox, secUnitHandler.currentUnit);
-  boxlist[i] = nextbox;
-}
+// function addrule()
+// {
+//   // find which is selected
+//   var i;
+//   if (!lastselected) return;
+//   var boxlist = lastselected.getElementsByTagName("vbox");
+//   var nextbox;
+//   for (var i = 1; i < boxlist.length; i++)    // we start at 1 because the first is the parent of the others
+//   {
+//     if (boxlist[i].getAttribute("hidden") == "true")
+//     {
+//       nextbox = boxlist[i];
+//       break;
+//     }
+//   }
+//   if (!nextbox) return;
+//   nextbox.setAttribute("role","rule");
+//   nextbox.hidden=false;
+//   nextbox.setAttribute("style","height:3px;background-color:black;");
+//   window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection",
+//     "chrome,close,titlebar,resizable,alwaysRaised", nextbox, secUnitHandler.currentUnit);
+//   boxlist[i] = nextbox;
+// }
 
-function addspace()
-{
-  // find which is selected
-  if (!lastselected) return;
-  var boxlist = lastselected.getElementsByTagName("vbox");
-  var nextbox;
-  for (var i = 1; i<boxlist.length; i++)
-  {
-    if (boxlist[i].getAttribute("hidden") == "true")
-    {
-      nextbox = boxlist[i];
-      break;
-    }
-  }
-  if (!nextbox) return;
-  nextbox.setAttribute("role","vspace");
-  nextbox.hidden=false;
-  nextbox.setAttribute("style","height:6px;background-color:silver;");
-	window.openDialog("chrome://prince/content/vspaceforsection.xul",
-	  "vspaceforsection", "resizable=yes, chrome,close,titlebar,alwaysRaised",nextbox, secUnitHandler.currentUnit);
-}
+// function addspace()
+// {
+//   // find which is selected
+//   if (!lastselected) return;
+//   var boxlist = lastselected.getElementsByTagName("vbox");
+//   var nextbox;
+//   for (var i = 1; i<boxlist.length; i++)
+//   {
+//     if (boxlist[i].getAttribute("hidden") == "true")
+//     {
+//       nextbox = boxlist[i];
+//       break;
+//     }
+//   }
+//   if (!nextbox) return;
+//   nextbox.setAttribute("role","vspace");
+//   nextbox.hidden=false;
+//   nextbox.setAttribute("style","height:6px;background-color:silver;");
+// 	window.openDialog("chrome://prince/content/vspaceforsection.xul",
+// 	  "vspaceforsection", "resizable=yes, chrome,close,titlebar,alwaysRaised",nextbox, secUnitHandler.currentUnit);
+// }
 
-function removeruleorspace()
-{
-  onAccept();// find which is selected
-  if (!lastselected) return;
-  var boxlist = lastselected.getElementsByTagName("vbox");
-  var lastbox;
-  for (var i = 1; i<boxlist.length; i++)
-  {
-    if (boxlist[i].getAttribute("hidden") != "true")
-      lastbox = boxlist[i];
-    else break;
-  }
-  if (!lastbox) return;
-  lastbox.hidden=true;
-}
+// function removeruleorspace()
+// {
+//   onAccept();// find which is selected
+//   if (!lastselected) return;
+//   var boxlist = lastselected.getElementsByTagName("vbox");
+//   var lastbox;
+//   for (var i = 1; i<boxlist.length; i++)
+//   {
+//     if (boxlist[i].getAttribute("hidden") != "true")
+//       lastbox = boxlist[i];
+//     else break;
+//   }
+//   if (!lastbox) return;
+//   lastbox.hidden=true;
+// }
 
-function reviseruleorspace(element)
-{
-   if (element.id === "") {}
-}
+// function reviseruleorspace(element)
+// {
+//    if (element.id === "") {}
+// }
 
 function setDim(element, id) {
   var dim = element.value;
@@ -2908,6 +2914,7 @@ function setCompiler(compilername)
 	compilerInfo.prog = compilername;
 	if (compilername=="xelatex")
 	{
+    initializeFontFamilyList(false);
 	  document.getElementById("xelatex").hidden=false;
 	  document.getElementById("pdflatex").hidden=true;
 	  changeOpenType(true);
