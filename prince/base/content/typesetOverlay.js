@@ -511,9 +511,9 @@ var msiInsertSubdocument =
 function doDocFormatDlg()
 {
   var editorElement = document.getElementById("content-frame");
-  window.openDialog("chrome://prince/content/typesetDocFormat.xul", "docformat", 
+  window.openDialog("chrome://prince/content/typesetDocFormat.xul", "docformat",
     "chrome,close,resizable,titlebar,dependent", editorElement);
-  if (!doDocFormatData.Cancel)
+  //if (!doDocFormatData.Cancel)
   {
 		msiGetEditor(editorElement).incrementModificationCount(1);
   }
