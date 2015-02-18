@@ -1253,7 +1253,7 @@ var msiSaveCommand =
 function doSoftSave(editorElement, editor, noTeX)
 {
   var result;
-  if (editor)
+  if (editor && !msiIsInHTMLSourceMode(editorElement))
   {
     // we should be doing this only for top level documents, and we should restore the focus
     msiFinishHTMLSource(editorElement);
@@ -1396,9 +1396,9 @@ var msiExportToTexCommand =
       finalThrow(cmdFailString("exporttex"), "Exporting a modified document to TeX is not allowed since his program is not licensed.")
     return false;
   }
-}    
+}
 
-var msiExportToWebCommand = 
+var msiExportToWebCommand =
 {
   isCommandEnabled: function(aCommand, dummy) {
     return okToPrint();
@@ -4072,7 +4072,7 @@ var msiCompileCommand =
       }
     }
     else
-      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed."); 
+      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed.");
   }
 };
 
@@ -5392,7 +5392,7 @@ function msiRevCharQuick(accent)
   var editor = msiGetEditor(editorElement);
   var sel = editor.selection; // this operation applies only to the last character in the selection, if it is a single-character mi or mo (in math)
   var isMath = isInMath(editorElement);
-  var lastNode = sel.focusNode; 
+  var lastNode = sel.focusNode;
   var offset = sel.focusOffset;
   var firstNode = sel.anchorNode;
   var firstOffset = sel.anchorOffset;
@@ -5440,7 +5440,7 @@ function msiRevCharQuick(accent)
     else {
       normalizer.NormalizeUnicodeNFC(character+accent, combined);
       editor.insertText(combined.value);
-//      editor.selection.collapse(firstNode, firstOffset); 
+//      editor.selection.collapse(firstNode, firstOffset);
 //      editor.selection.extend(lastNode, offset -1 + combined.value.length);
     }
     editor.endTransaction();
@@ -6630,7 +6630,7 @@ function msiReviseBreaks(reviseData, dialogData, editorElement)
 }
 
 function setAlignmentOK(editorElement) {
-  var editor = msiGetEditor(editorElement); 
+  var editor = msiGetEditor(editorElement);
   var selection = editor.selection;
   var isMath;
   var selNode;
@@ -6695,7 +6695,7 @@ function insertAlignment(alignmentNode, editor) {
     } else {
       offset = tempOffset;
     }
-  } 
+  }
   editor.beginTransaction();
   editor.insertNode(alignmentNode, node, offset);
   if (currentAlignNode) {
@@ -6724,7 +6724,7 @@ var msiSetAlignmentCommand =
         var alignmentNode;
         if (setAlignmentOK(editorElement)) {
           alignmentNode = editor.document.createElementNS(mmlns, "maligngroup");
-          insertAlignment(alignmentNode, editor);  
+          insertAlignment(alignmentNode, editor);
         }
       }
       catch (e) {
@@ -8961,7 +8961,7 @@ function msiFollowLink( element ) {
         extension = "cmd";
         arr = ['start', '/max', href];
       }
-      else 
+      else
       {
         extension = "bash";
         arr = [href];
@@ -9075,8 +9075,8 @@ var msiPreviewModeCommand =
         finalThrow(cmdFailString('pdfpreviewmode'), e.message);
       }
     }
-    else 
-      finalThrow(cmdFailString("pdfpreview"), "Previewing a modified file is not allowed since this program is not licensed."); 
+    else
+      finalThrow(cmdFailString("pdfpreview"), "Previewing a modified file is not allowed since this program is not licensed.");
   }
 };
 
@@ -9450,7 +9450,7 @@ var msiSelectTableCommand =
           editor.markNodeDirty(tableNode);
         }
       }
-    
+
       if (editorElement) {
         editorElement.contentWindow.focus();
       }
@@ -10600,7 +10600,7 @@ function callColorDialog()
 //  theWindow.msiRequirePackage(editorElement, "xcolor", null);
 }
 
-var msiShowBibTeXLogCommand = 
+var msiShowBibTeXLogCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -10619,7 +10619,7 @@ var msiShowBibTeXLogCommand =
       {
         var resurl = match[1]+"/tex/main.blg";
         var thefile = msiFileFromFileURL(msiURIFromString(resurl));
-        result = thefile && 
+        result = thefile &&
           thefile.exists();
       }
     }
@@ -10681,7 +10681,7 @@ var msiShowTeXLogCommand =
       {
         var resurl = match[1]+"/tex/main.log";
         var thefile = msiFileFromFileURL(msiURIFromString(resurl));
-        result = thefile && 
+        result = thefile &&
         thefile.exists();
       }
     }
@@ -10745,7 +10745,7 @@ var msiShowTeXFileCommand =
       {
         var resurl = match[1]+"/tex/main.tex";
         var thefile = msiFileFromFileURL(msiURIFromString(resurl));
-        result = thefile && 
+        result = thefile &&
         thefile.exists();
       }
     }
