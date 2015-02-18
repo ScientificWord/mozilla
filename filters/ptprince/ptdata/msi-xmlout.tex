@@ -1951,9 +1951,19 @@
 \def\@innote{\bgroup\aftergroup\@end@footnote}
 
 %%<note type="#2">
-
-
 \def\footnote{%
+  \@ifnextchar[{\footnotex}{\footnotea}}
+
+
+\def\footnotex[#1]{%
+  \msi@br\@start@notewrapper
+  \msiopentag{note}{<note type="footnote" footnoteNumber="#1">}%
+  \msiopentag{bodyText}{<bodyText>}%
+  % Next couple lines read the brace following \footnote and then does \footnoteb
+  \afterassignment\@footnoteb
+  \let\junk}
+
+\def\footnotea{%
     \msi@br\@start@notewrapper
     \msiopentag{note}{<note type="footnote">}%
     \msiopentag{bodyText}{<bodyText>}%
