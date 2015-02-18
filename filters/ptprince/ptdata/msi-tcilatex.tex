@@ -1,11 +1,12 @@
-\expandafter\advance\csname msi@output\endcsname by 1\relax
 \makeatletter
 
 
-\ifnum\msi@inpreamble=1
-%   \msitopreambleextra{<texb pre="1" enc="1" name="tcilatex"><![CDATA[\input{tcilatex}]]></texb>}
-   \msi@output=1
-\fi
+%\ifnum\msi@inpreamble=1
+   %\msitopreambleextra{<texb pre="1" enc="1" name="tcilatex"><![CDATA[\input{tcilatex}]]></texb>}
+   %\msi@output=1
+%\fi
+\expandafter\advance\csname msi@output\endcsname by 1\relax
+
 
 \@ifundefined{@TCILATEX}
   {\gdef\@TCILATEX{\relax}}%
