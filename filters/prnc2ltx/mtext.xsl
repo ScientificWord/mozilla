@@ -50,7 +50,9 @@ fontstyle   - inheriting
     <!-- xsl:call-template name="mtext-a">
      <xsl:with-param name="content" select="$content"/>
     </xsl:call-template -->
-    <xsl:value-of select="$content"/>        
+    <xsl:text>\text{</xsl:text>
+    <xsl:value-of select="$content"/>
+    <xsl:text>}</xsl:text>        
   </xsl:template>
 
   <xsl:template name="mtext-a">
