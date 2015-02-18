@@ -1964,25 +1964,24 @@
 \def\@footnoteb{%
     \bgroup
     \def\par{\msiclosetag{bodyText}{</bodyText>}\msiopentag{bodyText}{<bodyText>}}
-    \aftergroup\@footnotc
-    \let\junk}
+    \aftergroup\@footnotec}
 
-\def\@footnoteb{%
-    \msi@br
-    \msiopentag{notewrapper}{<notewrapper type='footnote'>}
-    \msiopentag{note}{<note type="footnote" hide='false'>}%
-    \msiopentag{bodyText}{<bodyText>}%
-    % Next couple lines read the brace following \footnote and then does \footnoteb
-    \afterassignment\@footnotec
-    \let\junk}
+%% \def\@footnoteb{%
+%%     \msi@br
+%%     \msiopentag{notewrapper}{<notewrapper type='footnote'>}
+%%     \msiopentag{note}{<note type="footnote" hide='false'>}%
+%%     \msiopentag{bodyText}{<bodyText>}%
+%%     % Next couple lines read the brace following \footnote and then does \footnoteb
+%%     \afterassignment\@footnotec
+%%     \let\junk}
+
+%% \def\@footnotec{%
+%%     \bgroup
+%%     \def\par{\msiclosetag{bodyText}{</bodyText>}\msiopentag{bodyText}{<bodyText>}}
+%%     \aftergroup\@footnoted
+%% }
 
 \def\@footnotec{%
-    \bgroup
-    \def\par{\msiclosetag{bodyText}{</bodyText>}\msiopentag{bodyText}{<bodyText>}}
-    \aftergroup\@footnoted
-}
-
-\def\@footnoted{%
     \msiclosetag{bodyText}{</bodyText>}%
     \msiclosetag{note}{</note>}%
     \@end@notewrapper}
