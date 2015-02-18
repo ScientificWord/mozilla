@@ -80,6 +80,7 @@
    \advance\msi@output by 1\relax
    \@@usepackage[#1]{#2}%
    \advance\msi@output by -1\relax
+   \msi@inpreamble=1
 }
 
 \def\@usepackageb#1{%
@@ -88,6 +89,7 @@
    \advance\msi@output by 1\relax
    \@@usepackage{#1}%
    \advance\msi@output by -1\relax
+   \msi@inpreamble=1
 }
 \def\@@usepackage{\@fileswithoptions\@pkgextension}
 
