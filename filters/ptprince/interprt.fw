@@ -737,7 +737,7 @@ case CMD_MSISPECIAL: {
  style=\"border-color: rgb(0, 0, 0); \
  border-width: 0px; margin: 0px; padding: 0px; \
  background-color: rgb(255, 255, 255); \
- width: %width%; height: %height% \
+ width: %width%; height: %height%; \
  text-align: center; float: none;\" />";
 
       std::string name = kvmap["filename"];
