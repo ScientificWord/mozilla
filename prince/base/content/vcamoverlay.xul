@@ -13,7 +13,7 @@
 <overlay id="vcamoverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <script type="application/x-javascript" src="chrome://prince/content/vcamoverlay.js"/>
-    <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+    <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/ -->
     <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed"
       flex = "1"
       mode="icons" hidden = "true">
