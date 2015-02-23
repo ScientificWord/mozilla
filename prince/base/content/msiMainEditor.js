@@ -298,7 +298,8 @@ function msiUpdateWindowTitle()
 {
   try
   {
-   var editorElement = msiGetTopLevelEditorElement();
+    var editorElement = msiGetTopLevelEditorElement();
+    var fileName;
     if (editorElement.isShellFile) fileName = "not saved";
     else //if (!fileName)
     {
