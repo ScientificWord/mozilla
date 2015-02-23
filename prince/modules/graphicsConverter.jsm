@@ -708,8 +708,11 @@ var graphicsConverter = {
     var graphicURI = msiURIFromString(gfxFileStr);
     var graphicFile = msiFileFromFileURL(graphicURI);
     var importName = this.copyAndConvert(graphicFile, false, theWidth, theHeight);
-    objElement.setAttribute("src", importName);
-    objElement.setAttribute("data", importName);
+    
+    if (importName){
+      objElement.setAttribute("src", importName);
+      objElement.setAttribute("data", importName);
+    }
     return true;
 
 //     var typesetFile = objElement.getAttribute("typesetSource");
@@ -780,13 +783,13 @@ var graphicsConverter = {
   },
 
   ensureTypesetGraphicsForDocument: function(aDocument, aWindow) {
-    dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 1\n");
+    //dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 1\n");
     var docURI = msiURIFromString(aDocument.documentURI);
     var filePath = msiPathFromFileURL(docURI);
     var documentDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
     //    dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 2\n  with documentURI=[" + aDocument.documentURI + "]\n");
     documentDir.initWithPath(filePath);
-    dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 3\n");
+    //dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 3\n");
     documentDir = documentDir.parent;
 
     var objList = aDocument.getElementsByTagName("object");
