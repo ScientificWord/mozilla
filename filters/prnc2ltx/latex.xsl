@@ -554,10 +554,16 @@
 
 
 <xsl:template match="html:bodyText|mml:bodyText">
+   <xsl:variable name="content">
+     <xsl:value-of select="."/>
+   </xsl:variable>
+  
   <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
     <xsl:call-template name="maketables" />
   </xsl:if>
-  <xsl:apply-templates/>
+  <xsl:if test="position()!=last or string-length($content) != '0'">
+    <xsl:apply-templates/>
+  </xsl:if>
   <xsl:if test="position()!=last()">
      <xsl:value-of select="$blankline"/>
   </xsl:if>
@@ -739,8 +745,11 @@
 
 
 <xsl:template match="html:proof">
-\begin{proof}<xsl:apply-templates mode="envleadin"/>
-<xsl:apply-templates/>\end{proof}\par
+  <xsl:text>\begin{proof}</xsl:text>
+  <xsl:apply-templates mode="envleadin"/>
+  <xsl:apply-templates/>
+  <xsl:text>\end{proof}</xsl:text>
+  <xsl:value-of select="$blankline"/>
 </xsl:template>
 
 <xsl:template match="html:envLeadIn"></xsl:template>
