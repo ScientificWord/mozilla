@@ -6,7 +6,7 @@ function startUp() {
 	var editorElement = msiGetActiveEditorElement();
 	var editor = msiGetEditor(editorElement);
 	var hostid = editor.mAppUtils.hostid;
-	document.getElementById('computerid').setAttribute('value', hostid);
+	document.getElementById('computerid').value = hostid;
 }
 
 function accept() {
@@ -25,6 +25,7 @@ function accept() {
 	var editorElement = msiGetActiveEditorElement();
 	var editor = msiGetEditor(editorElement);
 	var hostid = editor.mAppUtils.hostid;
+	var url = 'http://licensing.mackichan.com/licensing.net/licensedispenser.asmx/getlicense'
 	var querystring = "?sSerial="+document.getElementById('serial').value
 		+ "&sProductName=" +
 #ifdef PROD_SW
@@ -46,14 +47,12 @@ function accept() {
 		req = new XMLHttpRequest();
 		req.addEventListener("load", transferComplete, true);
 		req.addEventListener("error", transferFailed, true);
-		req.open('GET','http://licensing.mackichan.com/licensing.net/licensedispenser.asmx/getlicense'+querystring, false);
+		req.open('GET',url+querystring, false);
 	}
 	catch(e) {
 		dump( e.message);
 	}
 	return 0;
-
-
 }
 
 
