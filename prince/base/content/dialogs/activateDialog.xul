@@ -28,10 +28,10 @@
   	</columns>
   	<rows>
   		<row>
-  			<label>&computerid.label;</label><label id="computerid" value=""/>
+  			<label>&computerid.label;</label><textbox readonly="true" id="computerid" value=""/>
       </row>
       <row>
-  			<label>product.label</label><label id="productname"  
+  			<label>product.label</label><label id="productname"
 #ifdef PROD_SW
           value="&prodsw;"  />
 #endif
@@ -66,5 +66,5 @@
   		</row>
    	</rows>
   </grid>
-  
+
 </dialog>
