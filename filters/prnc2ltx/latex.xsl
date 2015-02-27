@@ -411,8 +411,8 @@
   <xsl:value-of select="$newline"/>
 </xsl:template>
 
-<xsl:template match="html:verbatim/html:br"><xsl:text>
-</xsl:text>
+<xsl:template match="html:br" mode="verb">
+  <xsl:value-of select="$newline"/>
 </xsl:template>
 
 <xsl:template match="html:author">
@@ -550,6 +550,10 @@
 
 <xsl:template match="html:subparagraph">
   <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:bodyText|mml:bodyText" mode="verb">
+   <xsl:apply-templates mode="verb"/>
 </xsl:template>
 
 
@@ -959,7 +963,7 @@
 <xsl:template match="html:verbatim">
   <xsl:value-of select="$newline"/>
   <xsl:text>\begin{verbatim}</xsl:text>
-  <xsl:apply-templates/>
+  <xsl:apply-templates mode="verb"/>
   <xsl:text>\end{verbatim}</xsl:text>  
 </xsl:template>
 
