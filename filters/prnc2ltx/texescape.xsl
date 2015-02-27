@@ -15,6 +15,11 @@
   <xsl:value-of select="."/>
 </xsl:template>
 
+<xsl:template mode="verb" match="text()">
+  <xsl:value-of select="."/>
+</xsl:template>
+
+
 <xsl:template match="text()">
   <xsl:variable name="sub1">
     <xsl:call-template name="replace-substring">
