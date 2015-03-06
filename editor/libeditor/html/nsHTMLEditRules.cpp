@@ -3614,7 +3614,9 @@ GetEngine() {
   iniFile->Append(NS_LITERAL_STRING("mupInstall.gmr"));
 
   nsCOMPtr<msiISimpleComputeEngine> engine(do_GetService("@mackichan.com/simplecomputeengine;2"));
-  engine->Startup(iniFile);
+  if (engine) {
+    engine->Startup(iniFile);
+  }
   return engine;
 }
 
@@ -4160,62 +4162,63 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
      nsCOMPtr<msiISimpleComputeEngine>  pEngine = GetEngine();
 
      PRUnichar* result;
-     const PRUnichar* inp;
-     text.GetData(&inp);
+     if (pEngine) {
+       const PRUnichar* inp;
+       text.GetData(&inp);
 
-     printf("\nSending for cleanup: %ls\n" , inp);
-     res = pEngine->Perform(inp, 152, &result); // Cleanup function
-     printf("\nBack from cleanup: %ls\n", result);
+       printf("\nSending for cleanup: %ls\n" , inp);
+       res = pEngine->Perform(inp, 152, &result); // Cleanup function
+       printf("\nBack from cleanup: %ls\n", result);
 
-     nsString resString(result);
-          nsCOMPtr<nsIDOMElement> mathElement;
-     mathElement = do_QueryInterface(mathNode);
-     mHTMLEditor->DeleteNode(mathElement);
+       nsString resString(result);
+            nsCOMPtr<nsIDOMElement> mathElement;
+       mathElement = do_QueryInterface(mathNode);
+       mHTMLEditor->DeleteNode(mathElement);
 
-     nsCOMPtr<nsIDOMNode> parentOfMath;
-     nsCOMPtr<nsIDOMNode> newMath;
-     PRInt32 mathOffset;
+       nsCOMPtr<nsIDOMNode> parentOfMath;
+       nsCOMPtr<nsIDOMNode> newMath;
+       PRInt32 mathOffset;
 
-     res = mHTMLEditor->GetStartNodeAndOffset(curSelection, getter_AddRefs(parentOfMath), &mathOffset);
+       res = mHTMLEditor->GetStartNodeAndOffset(curSelection, getter_AddRefs(parentOfMath), &mathOffset);
 
-     mHTMLEditor -> InsertHTML(resString);
+       mHTMLEditor -> InsertHTML(resString);
 
-     msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
+       msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
 
-     printf("\nThe New Math\n ");
-     mHTMLEditor->DumpNode(newMath, 0, true);
-     printf("\nCursor idx = %d\n", idx);
+       printf("\nThe New Math\n ");
+       mHTMLEditor->DumpNode(newMath, 0, true);
+       printf("\nCursor idx = %d\n", idx);
 
-     if (newMath != NULL){
-
-
-        //DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
-
-        nsCOMPtr<nsIDOMNode> theNode = 0;
-        PRInt32 theOffset = 0;
-        FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset, chars, array);
-
-        printf("\nThe indicated node\n ");
-        mHTMLEditor->DumpNode(theNode, 0, true);
-        printf("\nOffset = %d\n", theOffset);
-
-        nsIDOMRange* range;
-        curSelection->GetRangeAt(0, &range);
+       if (newMath != NULL){
 
 
-        range->SetStart(theNode, theOffset);
-        curSelection->CollapseToStart();
+          //DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
 
-        msiUtils::ClearCaretPositionMark(ed, newMath, true);
+          nsCOMPtr<nsIDOMNode> theNode = 0;
+          PRInt32 theOffset = 0;
+          FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset, chars, array);
 
-        //mHTMLEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+          printf("\nThe indicated node\n ");
+          mHTMLEditor->DumpNode(theNode, 0, true);
+          printf("\nOffset = %d\n", theOffset);
 
-        //DebDisplaySelection("\nFinal selection", aSelection, mMSIEditor, true);
-     }
-     return res;
+          nsIDOMRange* range;
+          curSelection->GetRangeAt(0, &range);
+
+
+          range->SetStart(theNode, theOffset);
+          curSelection->CollapseToStart();
+
+          msiUtils::ClearCaretPositionMark(ed, newMath, true);
+
+          //mHTMLEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+
+          //DebDisplaySelection("\nFinal selection", aSelection, mMSIEditor, true);
+       }
+       return res;
+    }
+
   }
-
-
   // find any enclosing mailcite
   nsCOMPtr<nsIDOMNode> citeNode;
   res = GetTopEnclosingMailCite(startNode, address_of(citeNode),
@@ -10934,7 +10937,7 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   nsCOMPtr<nsIDOMNodeList> children;
   lastchild->GetLocalName(tagName);
   if (tagName.EqualsLiteral("msiframe") || tagName.EqualsLiteral("msidisplay") ||
-    tagName.EqualsLiteral("math")) 
+    tagName.EqualsLiteral("math"))
   {
     aNode->GetChildNodes(getter_AddRefs(children));
     children->GetLength(&count);
@@ -10944,8 +10947,8 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
     if (!nodeAsText) return NS_ERROR_NULL_POINTER;
     nsCOMPtr<nsIDOMNode> newNode = do_QueryInterface(nodeAsText);
     // then we insert it into the dom tree
-    res = mHTMLEditor->InsertNode(newNode, aNode, count);  
-  } 
+    res = mHTMLEditor->InsertNode(newNode, aNode, count);
+  }
   return res;
 }
 
