@@ -59,7 +59,6 @@ function FixJS() {
 }
 
 function isLicensed() {
-  return true;
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var licensedApp = editor.mAppUtils.licensedApp;
