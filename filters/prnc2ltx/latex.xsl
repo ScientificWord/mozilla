@@ -4,10 +4,10 @@
 
   The funny spacing and line breaks come from the need to keep the XSL from putting blank lines in the
   generated TeX. This could be done by having each template definition all on one line, but that would be
-  unreadable. The compromise is to make all of most of the line breaks in this document fall *inside* the 
+  unreadable. The compromise is to make all of most of the line breaks in this document fall *inside* the
   xsl tags. This is why many lines start with the ">" character. -->
 
-<xsl:stylesheet version="1.1" 
+<xsl:stylesheet version="1.1"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
@@ -132,7 +132,7 @@
   <xsl:value-of select="name()"/>
   <xsl:text>]]]</xsl:text>
   <xsl:value-of select="$newline"/>
-  <!-- Matches all elements. Make it visible for now 
+  <!-- Matches all elements. Make it visible for now
        so we can better catch lost cases. -->
 </xsl:template>
 
@@ -314,7 +314,7 @@
 
 <xsl:template name="writeNewTheoremList">
   <xsl:choose>
-    <xsl:when test="$theoremenvNodeList/thmenvnode[@thmstyle and (@thmstyle!='plain')] |$sortedNeededNewTheoremsNodeList/thmenvnode[@thmstyle and (@thmstyle!='plain')]"> 
+    <xsl:when test="$theoremenvNodeList/thmenvnode[@thmstyle and (@thmstyle!='plain')] |$sortedNeededNewTheoremsNodeList/thmenvnode[@thmstyle and (@thmstyle!='plain')]">
       <xsl:for-each select="$theoremenvNodeList/thmenvnode[not(@thmstyle) or (@thmstyle='plain')] | $sortedNeededNewTheoremsNodeList/thmenvnode[not(@thmstyle) or (@thmstyle='plain')]">
         <xsl:if test="position()=1">
           <xsl:text xml:space="preserve">
@@ -357,13 +357,13 @@
 </xsl:variable>
 
 <xsl:template name="checkEndSubEquationsScope">
-  
+
   <xsl:variable name="n-msidisplays">
     <xsl:value-of select="count(.//html:msidisplay)" />
   </xsl:variable>
-  
+
   <xsl:if test="contains($equationNumberingContainers, concat('-',local-name(.),'-'))">
-    <xsl:if test=".//html:msidisplay[$n-msidisplays][@subEquationNumbers='true'] 
+    <xsl:if test=".//html:msidisplay[$n-msidisplays][@subEquationNumbers='true']
         and (.//html:msidisplay[last()]/ancestor::*[contains($equationNumberingContainers, concat('-',local-name(.),'-'))][1]=current())">
       <xsl:value-of select="$newline"/>
       <xsl:text>\end{subequations}</xsl:text>
@@ -418,7 +418,7 @@
 <xsl:template match="html:author">
   <xsl:value-of select="$newline"/>
   <xsl:text>\author{</xsl:text>
-  <xsl:apply-templates mode="frontmatter"/>
+  <xsl:apply-templates/>
   <xsl:if test="name(following-sibling::*[1])='address'">
     <xsl:text>~\\</xsl:text>
     <xsl:value-of select="$newline"/>
@@ -431,8 +431,8 @@
 <xsl:template match="html:address" mode="frontmatter">
    <xsl:apply-templates  mode="frontmatter"/>
 </xsl:template>
- 
- 
+
+
 <!-- for the sake of the above template, -->
 <xsl:template match="html:msibr" mode="frontmatter">
   <xsl:text>~\\</xsl:text>
@@ -444,11 +444,11 @@
   <xsl:if test="name(following-sibling::*[1])='address'">~\\
     <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
   </xsl:if>
-</xsl:template>  
- 
+</xsl:template>
 
 
-<!-- Special handling for footnotes in front matter tags          
+
+<!-- Special handling for footnotes in front matter tags
  -->
 
 <xsl:template match="html:note[@type='footnote']" mode="frontmatter">\thanks{<xsl:apply-templates/>}</xsl:template>
@@ -561,7 +561,7 @@
    <xsl:variable name="content">
      <xsl:value-of select="."/>
    </xsl:variable>
-  
+
   <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
     <xsl:call-template name="maketables" />
   </xsl:if>
@@ -612,7 +612,7 @@
       <xsl:when test="name(..)='chapter'">
          <xsl:text>\chapter</xsl:text>
       </xsl:when>
-         
+
       <xsl:when test="name(..)='section'">
          <xsl:text>\section</xsl:text>
       </xsl:when>
@@ -825,7 +825,7 @@
         <xsl:apply-templates/>
      </xsl:otherwise>
   </xsl:choose>
-  <xsl:text>]</xsl:text>     
+  <xsl:text>]</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:bulletListItem">
@@ -911,15 +911,15 @@
     <xsl:value-of select="@enc"/>
   </xsl:if>
   <xsl:text>}</xsl:text>
-</xsl:template>  
+</xsl:template>
 
 <xsl:template match="html:notewrapper">
   <xsl:apply-templates/>
 </xsl:template>
-  
+
 
 <xsl:template match="html:note[@type='footnote']">
-  
+
   <xsl:variable name="markOrText" select="parent::html:notewrapper/@markOrText" />
 
   <xsl:variable name="overrideNumber" select="parent::html:notewrapper/@footnoteNumber" />
@@ -964,10 +964,10 @@
   <xsl:value-of select="$newline"/>
   <xsl:text>\begin{verbatim}</xsl:text>
   <xsl:apply-templates mode="verb"/>
-  <xsl:text>\end{verbatim}</xsl:text>  
+  <xsl:text>\end{verbatim}</xsl:text>
 </xsl:template>
 
-<xsl:template match="html:shortQuote"> 
+<xsl:template match="html:shortQuote">
 \begin{quote}
 <xsl:apply-templates/>
 \end{quote}
@@ -975,7 +975,7 @@
 
 
 <xsl:template match="html:longQuotation">
-  
+
 \begin{quotation}
 <xsl:apply-templates/>
 \end{quotation}
@@ -988,7 +988,7 @@
 </xsl:template>
 
 <xsl:template match="html:hebrew">
-  
+
 \begin{hebrew}
 <xsl:apply-templates/>
 \end{hebrew}
@@ -1096,7 +1096,7 @@
     <xsl:when test=".='max'">\max </xsl:when>
     <xsl:when test=".='sin'">\sin </xsl:when>
     <xsl:when test=".='tanh'">\tanh </xsl:when>
-    <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>	
+    <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 <xsl:template match="mml:mi[@msiunit='true']">
@@ -1151,10 +1151,10 @@
 </xsl:if>
 </xsl:template>
 
-<xsl:template match="html:TBLabel">{<xsl:apply-templates/>}  
+<xsl:template match="html:TBLabel">{<xsl:apply-templates/>}
 </xsl:template>
 
-<xsl:template match="html:TBTeX">{<xsl:apply-templates/>}%  
+<xsl:template match="html:TBTeX">{<xsl:apply-templates/>}%
 %BeginExpansion
 <xsl:apply-templates/>
 %EndExpansion
@@ -1173,11 +1173,11 @@
 
 <xsl:template match="a">\ref{<xsl:apply-templates/>}</xsl:template>
 
-<xsl:template match="html:requestimplementation">[ NEED TO IMPLEMENT: \verb+<xsl:apply-templates/>+] 
+<xsl:template match="html:requestimplementation">[ NEED TO IMPLEMENT: \verb+<xsl:apply-templates/>+]
 </xsl:template>
 
 <xsl:template match="html:Note">
-  
+
 \begin{Note}
 <xsl:apply-templates/>
 \end{Note}
@@ -1185,7 +1185,7 @@
 
 
 <xsl:template match="html:GrayBox">
-  
+
 \begin{GrayBox}
 <xsl:apply-templates/>
 \end{GrayBox}
@@ -1199,7 +1199,7 @@
 </xsl:template>
 
 
-<xsl:template match="html:QTR">\QTR{<xsl:value-of select="@type"/>}{<xsl:apply-templates/>} 
+<xsl:template match="html:QTR">\QTR{<xsl:value-of select="@type"/>}{<xsl:apply-templates/>}
 </xsl:template>
 
 <!-- Just send Body Math through without additional markup -->
@@ -1218,7 +1218,7 @@
 </xsl:template>
 
 <!-- labels -->
-<xsl:template match="html:a[@name]">\label{<xsl:value-of select="@name"/>}</xsl:template> 
+<xsl:template match="html:a[@name]">\label{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:texb">
   <xsl:if test="not(@pre) or (@pre='0')" >
@@ -1309,7 +1309,7 @@
   <xsl:choose>
     <xsl:when test=".//mml:mtable[@type='eqnarray']">
 
-    <xsl:for-each select=".//mml:mtable[@type='eqnarray'][1]"> 
+    <xsl:for-each select=".//mml:mtable[@type='eqnarray'][1]">
       <xsl:call-template name="eqnarray">
         <xsl:with-param name="n-rows" select="count(./mml:mtr)" />
         <xsl:with-param name="n-labeledrows">
@@ -1344,7 +1344,7 @@
              </xsl:choose>
           -->
           <xsl:value-of select="count(./mml:mtr[1]/mml:mtd/mml:maligngroup)"/>
-       
+
         </xsl:with-param>
         <xsl:with-param name="theAlignment" select="@alignment"/>
       </xsl:call-template>
