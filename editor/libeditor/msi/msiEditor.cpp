@@ -167,7 +167,7 @@ msiEditor::InstallEventListeners()
 
   nsCOMPtr<nsPIDOMEventTarget> piTarget = GetPIDOMEventTarget();
 
-  if (!piTarget) 
+  if (!piTarget)
   {
     RemoveEventListeners();
     return NS_ERROR_FAILURE;
@@ -175,7 +175,7 @@ msiEditor::InstallEventListeners()
   nsresult rv = piTarget->AddEventListenerByIID(m_mouseMotionListener, NS_GET_IID(nsIDOMMouseMotionListener));
   if (NS_SUCCEEDED(rv))
     rv = nsHTMLEditor::InstallEventListeners();
-  else  
+  else
   {
     NS_ERROR("failed to register some event listeners");
     RemoveEventListeners();
@@ -208,7 +208,7 @@ msiEditor::RemoveEventListeners()
 
 //Begin msiIMathMLEditor
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::GetMathMLEditingBC(nsIDOMNode * node, PRUint32 offset, PRBool clean,
                               msiIMathMLEditingBC** editingBC)
 {
@@ -218,7 +218,7 @@ msiEditor::GetMathMLEditingBC(nsIDOMNode * node, PRUint32 offset, PRBool clean,
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::GetMathMLInsertionInterface(nsIDOMNode * node, PRUint32 offset,
                                        msiIMathMLInsertion** mathml)
 {
@@ -229,7 +229,7 @@ msiEditor::GetMathMLInsertionInterface(nsIDOMNode * node, PRUint32 offset,
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::GetMathMLCaretInterface(nsIDOMNode * node, PRUint32 offset,
                                     msiIMathMLCaret** mathml)
 {
@@ -246,7 +246,7 @@ msiEditor::GetMathMLCaretInterface(nsIDOMNode * node, PRUint32 offset,
     if (bcEditing)
     {
       bcEditing->GetMathmlType(&mmlType);
-      if (mmlType != msiIMathMLEditingBC::MATHML_UNKNOWN && 
+      if (mmlType != msiIMathMLEditingBC::MATHML_UNKNOWN &&
           mmlType != msiIMathMLEditingBC::MATHML_MATH)
       {
         nsCOMPtr<nsIDOMNode> mmlNode, parent;
@@ -255,18 +255,18 @@ msiEditor::GetMathMLCaretInterface(nsIDOMNode * node, PRUint32 offset,
         if (NS_SUCCEEDED(res) && mmlNode)
           res = mmlNode->GetParentNode(getter_AddRefs(parent));
         if (NS_SUCCEEDED(res) && parent)
-          res = m_msiEditingMan->GetMathMLCaretInterface(this, parent, 
-                                                         msiIMathMLEditingBC::INVALID, 
+          res = m_msiEditingMan->GetMathMLCaretInterface(this, parent,
+                                                         msiIMathMLEditingBC::INVALID,
                                                          getter_AddRefs(parentEditing));
         if (NS_SUCCEEDED(res) && parentEditing)
           res = parentEditing->PrepareForCaret(this);
       }
     }
-  }  
+  }
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::GetMathMLCoalesceInterface(nsIDOMNode * node, PRUint32 offset,
                                       msiIMathMLCoalesce** mathml)
 {
@@ -279,7 +279,7 @@ msiEditor::GetMathMLCoalesceInterface(nsIDOMNode * node, PRUint32 offset,
 
 
 
-nsresult 
+nsresult
 msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
 {
   nsresult res;
@@ -287,8 +287,8 @@ msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
   nsCOMPtr<nsIDOMNode> startNode, endNode;
   PRInt32 startOffset(0), endOffset(0);
   PRBool bCollapsed(PR_FALSE);
-  res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
-                         endOffset, bCollapsed);	
+  res = GetNSSelectionData(selection, startNode, startOffset, endNode,
+                         endOffset, bCollapsed);
   if (bCollapsed)
   {
     return m_msiEditingMan->InsertMathmlElement(this, selection, startNode, startOffset, 0, aElement);
@@ -305,9 +305,9 @@ nsresult msiEditor::InsertMath(PRBool isDisplay)
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                           endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
@@ -338,14 +338,14 @@ nsresult msiEditor::InsertMath(PRBool isDisplay)
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::InsertInlineMath()
 {
   return InsertMath(PR_FALSE);
 }
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::InsertDisplay()
 {
   nsCOMPtr<nsIDOMNode> mathnode;
@@ -378,34 +378,34 @@ msiEditor::InsertDisplay()
   }
   else
   return InsertMath(PR_TRUE);
-}                                                      
+}
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::InsertSuperscript()
 {
   return InsertSubOrSup(PR_TRUE);
 }
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::InsertSubscript()
 {
   return InsertSubOrSup(PR_FALSE);
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::InsertFraction(const nsAString& lineThickness, PRUint32 attrFlags)
 {
   nsresult res(NS_ERROR_FAILURE);
-  if (!(mFlags & eEditorPlaintextMask)) 
+  if (!(mFlags & eEditorPlaintextMask))
   {
     nsCOMPtr<nsISelection> selection;
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
@@ -416,13 +416,13 @@ msiEditor::InsertFraction(const nsAString& lineThickness, PRUint32 attrFlags)
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
         res = m_msiEditingMan->InsertFraction(editor, selection, theNode, theOffset, lineThickness, attrFlags);
-      }  
+      }
     }
   }
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::InsertBinomial(const nsAString& opening, const nsAString& closing,
                           const nsAString& lineThickness, PRUint32 attrFlags)
 {
@@ -433,9 +433,9 @@ msiEditor::InsertBinomial(const nsAString& opening, const nsAString& closing,
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
@@ -446,13 +446,13 @@ msiEditor::InsertBinomial(const nsAString& opening, const nsAString& closing,
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
         res = m_msiEditingMan->InsertBinomial(editor, selection, theNode, theOffset, opening, closing, lineThickness, attrFlags);
-      }  
+      }
     }
   }
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::InsertSqRoot()
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -462,9 +462,9 @@ msiEditor::InsertSqRoot()
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
@@ -475,13 +475,13 @@ msiEditor::InsertSqRoot()
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
         res = m_msiEditingMan->InsertSqRoot(editor, selection, theNode, theOffset);
-      }  
+      }
     }
   }
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::InsertRoot()
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -491,9 +491,9 @@ msiEditor::InsertRoot()
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
@@ -504,7 +504,7 @@ msiEditor::InsertRoot()
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
         res = m_msiEditingMan->InsertRoot(editor, selection, theNode, theOffset);
-      }  
+      }
     }
   }
   return res;
@@ -515,14 +515,14 @@ msiEditor::InsertSymbol(const nsAString & symbol)
 {
   nsresult res(NS_ERROR_FAILURE);
   PRBool bCollapsed(PR_FALSE);
-  if (!(mFlags & eEditorPlaintextMask)) 
+  if (!(mFlags & eEditorPlaintextMask))
   {
     nsCOMPtr<nsISelection> selection;
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
@@ -534,7 +534,7 @@ msiEditor::InsertSymbol(const nsAString & symbol)
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+      res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                              endOffset, bCollapsed);
       theNode = startNode;
       theOffset = startOffset;
@@ -556,13 +556,13 @@ msiEditor::InsertMathname(const nsAString & mathname)
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    
+
     //printf("\njcs -- InsertMathName selection:\n");
     //DumpSelection(selection);
 
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       // PRInt32 comparison;
       // PRInt32 offset;
@@ -581,19 +581,19 @@ msiEditor::InsertMathname(const nsAString & mathname)
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = DeleteSelection(nsIEditor::eNone); 
+        res = DeleteSelection(nsIEditor::eNone);
         // TODO add stuff so that selected stuff is changed to become the base  or the script ?
         // current SWP behavoir is to make it the script, but this may not be correct in light
         // of the fact that sub and sup have a well defined base in mathml.
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+      res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                              endOffset, bCollapsed);
       theNode = startNode;
       theOffset = startOffset;
       selection->Collapse(theNode, theOffset);
-      
+
       if (NS_SUCCEEDED(res))
         res = InsertMathnameEx(selection, theNode, theOffset, mathname); // BBM: Why does Larry pass post selection and (node,offset)?
     }
@@ -615,9 +615,9 @@ msiEditor::InsertMathunit(const nsAString & mathunit)
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
@@ -643,15 +643,15 @@ msiEditor::InsertEngineFunction(const nsAString & mathname)
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = DeleteSelection(nsIEditor::eNone); 
+        res = DeleteSelection(nsIEditor::eNone);
         // TODO add stuff so that selected stuff is changed to become the base  or the script ?
         // current SWP behavoir is to make it the script, but this may not be correct in light
         // of the fact that sub and sup have a well defined base in mathml.
@@ -688,9 +688,9 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
 			SelectTable();
 		}
 
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
@@ -698,7 +698,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
       theOffset = startOffset;
       nsCOMPtr<nsIEditor> editor;
       QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
-      res = m_msiEditingMan->InsertFence(editor, selection, theNode, 
+      res = m_msiEditingMan->InsertFence(editor, selection, theNode,
                                          theOffset, open, close);
     }
   }
@@ -716,16 +716,16 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
         //res = NS_ERROR_FAILURE;
-        res = DeleteSelection(nsIEditor::eNone); 
+        res = DeleteSelection(nsIEditor::eNone);
         // TODO add stuff so that selected stuff is changed to become the base  or the script ?
         // current SWP behavoir is to make it the script, but this may not be correct in light
         // of the fact that sub and sup have a well defined base in mathml.
@@ -734,14 +734,14 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
       }
       theNode = startNode;
       theOffset = startOffset;
-      
+
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
-        res = m_msiEditingMan->InsertMatrix(editor, selection, theNode, 
+        res = m_msiEditingMan->InsertMatrix(editor, selection, theNode,
                                            theOffset, rows, cols, rowSignature, delim);
-      }  
+      }
     }
   }
   return res;
@@ -759,16 +759,16 @@ msiEditor::InsertOperator(const nsAString & symbol, PRUint32 attrFlags,
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
         //res = NS_ERROR_FAILURE;
-        res = DeleteSelection(nsIEditor::eNone); 
+        res = DeleteSelection(nsIEditor::eNone);
         // TODO add stuff to delete and replace the selection?
         // current SWP behavoir is to replace selection by the operator, but since we may want to allow
         // arbitrary math to be the content of an <mo> at some time, this should be considered.
@@ -778,16 +778,16 @@ msiEditor::InsertOperator(const nsAString & symbol, PRUint32 attrFlags,
       }
       theNode = startNode;
       theOffset = startOffset;
-      
+
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
-        res = m_msiEditingMan->InsertOperator(editor, selection, theNode, 
+        res = m_msiEditingMan->InsertOperator(editor, selection, theNode,
                                               theOffset, symbol, attrFlags,
-                                              leftspace, rightspace, 
+                                              leftspace, rightspace,
                                               minsize, maxsize);
-      }  
+      }
     }
   }
   return res;
@@ -804,15 +804,15 @@ msiEditor::InsertDecoration(const nsAString & above, const nsAString & below,
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
 //      if (!bCollapsed)
 //      {
-//        res = DeleteSelection(nsIEditor::eNone); 
+//        res = DeleteSelection(nsIEditor::eNone);
 //      }
       theNode = startNode;
       theOffset = startOffset;
@@ -820,9 +820,9 @@ msiEditor::InsertDecoration(const nsAString & above, const nsAString & below,
       {
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
-        res = m_msiEditingMan->InsertDecoration(editor, selection, theNode, 
+        res = m_msiEditingMan->InsertDecoration(editor, selection, theNode,
                                                 theOffset, above, below, aroundNotation, aroundType);
-      }  
+      }
     }
   }
   return res;
@@ -834,24 +834,24 @@ msiEditor::CreateReplaceTransaction(nsIDOMNode * newKid, nsIDOMNode * oldKid,
 {
   if (!newKid || !oldKid || !parent || !transaction)
     return NS_ERROR_FAILURE;
-  return CreateTxnForReplaceElement(newKid, oldKid, parent, PR_TRUE, (ReplaceElementTxn**)transaction);  
-}                                    
-                                            
+  return CreateTxnForReplaceElement(newKid, oldKid, parent, PR_TRUE, (ReplaceElementTxn**)transaction);
+}
+
 NS_IMETHODIMP
 msiEditor::CreateDeleteTransaction(nsIDOMNode * node, nsITransaction ** transaction)
 {
   if (!node || !transaction)
     return NS_ERROR_FAILURE;
-  return CreateTxnForDeleteElement(node, (DeleteElementTxn**)transaction);  
-} 
+  return CreateTxnForDeleteElement(node, (DeleteElementTxn**)transaction);
+}
 
 NS_IMETHODIMP
 msiEditor::CreateInsertTransaction(nsIDOMNode * node, nsIDOMNode * parent, PRUint32 offset, nsITransaction ** transaction)
 {
   if (!node || !transaction || !parent)
     return NS_ERROR_FAILURE;
-  return CreateTxnForInsertElement(node, parent, (PRInt32)offset, (InsertElementTxn**)transaction);  
-} 
+  return CreateTxnForInsertElement(node, parent, (PRInt32)offset, (InsertElementTxn**)transaction);
+}
 
 NS_IMETHODIMP
 msiEditor::CreateDeleteTextTransaction(nsIDOMCharacterData * node,
@@ -861,8 +861,8 @@ msiEditor::CreateDeleteTextTransaction(nsIDOMCharacterData * node,
 {
   if (!node || !transaction)
     return NS_ERROR_FAILURE;
-  return CreateTxnForDeleteText(node, offset, numChar, (DeleteTextTxn**)transaction);  
-}         
+  return CreateTxnForDeleteText(node, offset, numChar, (DeleteTextTxn**)transaction);
+}
 
 NS_IMETHODIMP
 msiEditor::CreateDeleteChildrenTransaction(nsIDOMNode * parent,
@@ -880,13 +880,13 @@ msiEditor::CreateDeleteChildrenTransaction(nsIDOMNode * parent,
   if (offset >= numKids || numToDelete == 0)
     return NS_OK;
   if (offset + numToDelete >= numKids)
-    numToDelete = numKids - offset;    
+    numToDelete = numKids - offset;
   // allocate the out-param transaction
   EditAggregateTxn * aggTxn = nsnull;
   res = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn **)&aggTxn);
-  if (NS_FAILED(res) || !(aggTxn)) 
+  if (NS_FAILED(res) || !(aggTxn))
     return NS_ERROR_FAILURE;
-  for (PRInt32 i=offset+numToDelete-1; ((i >= static_cast<PRInt32>(offset)) && NS_SUCCEEDED(res)); i--) 
+  for (PRInt32 i=offset+numToDelete-1; ((i >= static_cast<PRInt32>(offset)) && NS_SUCCEEDED(res)); i--)
   {
     nsCOMPtr<nsIDOMNode> currChild;
     res = childNodes->Item(i, getter_AddRefs(currChild));
@@ -903,11 +903,11 @@ msiEditor::CreateDeleteChildrenTransaction(nsIDOMNode * parent,
   if (NS_SUCCEEDED(res))
   {
     *transaction = aggTxn;
-    NS_ADDREF(*transaction); 
+    NS_ADDREF(*transaction);
   }
   return res;
-}                                                                                                                  
-           
+}
+
 NS_IMETHODIMP
 msiEditor::CreateDeleteScriptTransaction(nsIDOMNode * script,
                                          nsIDOMNode * dummyChild,
@@ -918,27 +918,27 @@ msiEditor::CreateDeleteScriptTransaction(nsIDOMNode * script,
   // allocate the out-param transaction
   EditAggregateTxn * aggTxn = nsnull;
   nsresult res = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn **)&aggTxn);
-  if (NS_FAILED(res) || !(aggTxn)) 
+  if (NS_FAILED(res) || !(aggTxn))
     return NS_ERROR_FAILURE;
-  
+
   nsCOMPtr<nsIDOMNode> first, parent;
   script->GetFirstChild(getter_AddRefs(first));
   script->GetParentNode(getter_AddRefs(parent));
-  
+
   ReplaceElementTxn * txn1 = nsnull;
   ReplaceElementTxn * txn2 = nsnull;
-  PRBool deepRangeUpdate(PR_FALSE); 
-  CreateTxnForReplaceElement(dummyChild, first, script, deepRangeUpdate, &txn1);  
-  CreateTxnForReplaceElement(first, script, parent, deepRangeUpdate, &txn2);  
+  PRBool deepRangeUpdate(PR_FALSE);
+  CreateTxnForReplaceElement(dummyChild, first, script, deepRangeUpdate, &txn1);
+  CreateTxnForReplaceElement(first, script, parent, deepRangeUpdate, &txn2);
   if (txn1 && txn2)
   {
      aggTxn->AppendChild((EditTxn*)txn1);
      aggTxn->AppendChild((EditTxn*)txn2);
-  }  
+  }
   if (NS_SUCCEEDED(res))
   {
     *transaction = aggTxn;
-    NS_ADDREF(*transaction); 
+    NS_ADDREF(*transaction);
   }
   return res;
 
@@ -953,7 +953,7 @@ msiEditor::CreateFlattenMrowTransaction(nsIDOMNode * mrow,
   // allocate the out-param transaction
   FlattenMrowTxn * txn = nsnull;
   nsresult res = TransactionFactory::GetNewTransaction(FlattenMrowTxn::GetCID(), (EditTxn **)&txn);
-  if (NS_FAILED(res) || !(txn)) 
+  if (NS_FAILED(res) || !(txn))
     return NS_ERROR_FAILURE;
   nsCOMPtr<nsIEditor> editor;
   QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
@@ -963,11 +963,11 @@ msiEditor::CreateFlattenMrowTransaction(nsIDOMNode * mrow,
   if (NS_SUCCEEDED(res))
   {
     *transaction = txn;
-    NS_ADDREF(*transaction); 
+    NS_ADDREF(*transaction);
   }
   return res;
 }
-    
+
 NS_IMETHODIMP
 msiEditor::CreateReplaceScriptBaseTransaction(nsIDOMNode * script,
                                               nsIDOMNode * newbase,
@@ -978,7 +978,7 @@ msiEditor::CreateReplaceScriptBaseTransaction(nsIDOMNode * script,
   // allocate the out-param transaction
   ReplaceScriptBaseTxn * txn = nsnull;
   nsresult res = TransactionFactory::GetNewTransaction(ReplaceScriptBaseTxn::GetCID(), (EditTxn **)&txn);
-  if (NS_FAILED(res) || !(txn)) 
+  if (NS_FAILED(res) || !(txn))
     return NS_ERROR_FAILURE;
   nsCOMPtr<nsIEditor> editor;
   QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
@@ -988,10 +988,10 @@ msiEditor::CreateReplaceScriptBaseTransaction(nsIDOMNode * script,
   if (NS_SUCCEEDED(res))
   {
     *transaction = txn;
-    NS_ADDREF(*transaction); 
+    NS_ADDREF(*transaction);
   }
   return res;
-}    
+}
 
 //End nsIMathMLEditor
 //
@@ -1012,10 +1012,10 @@ PRBool SpacesAtEndOfMathAddsSpace()
 
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 {
-  if (! aKeyEvent)  
+  if (! aKeyEvent)
     return NS_ERROR_NULL_POINTER;
   nsresult res(NS_OK);
   SetInComplexTransaction(PR_FALSE);
@@ -1034,9 +1034,9 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
    {
      PRBool preventDefault(PR_FALSE);
-     if (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN) 
+     if (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
      {
-       res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault); 
+       res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault);
        if (NS_SUCCEEDED(res) && preventDefault)
          aKeyEvent->PreventDefault();
        if (preventDefault) return NS_OK;
@@ -1050,7 +1050,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
    }
 
     // Check for mapped characters -- function keys or one-shot mapping
-    
+
     if (mKeyMap)
     {
       nsAutoString mapName;
@@ -1121,10 +1121,10 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 #ifdef DEBUG_Barry
             else printf("key %d is reserved\n", keyCode);
 #endif
-          }  
+          }
         }
       }
-    }           
+    }
     if (symbol && !ctrlKey && !altKey && !metaKey)
     {
       PRBool collapsed(PR_FALSE);
@@ -1136,11 +1136,11 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
       nsCOMPtr<nsISelection> nsSelection(do_QueryInterface(msiSelection));
       if (!nsSelection)
         return NS_ERROR_FAILURE;
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = nsSelection->GetIsCollapsed(&collapsed);
       if (!collapsed)
-        res = DeleteSelection(nsIEditor::eNone); // TODO 
-      if (NS_SUCCEEDED(res))  
+        res = DeleteSelection(nsIEditor::eNone); // TODO
+      if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIDOMNode> currFocusNode;
 				nsCOMPtr<nsIDOMElement> currFocusElement;
@@ -1166,9 +1166,9 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
             // SWP actually has some special behavior if you're at the end of math
             prefset = SpacesAtEndOfMathAddsSpace();
             if (!isShift) {
-              res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault); 
+              res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault);
               // if preference is set, and we are now out of math, type a space
-              if (prefset) 
+              if (prefset)
               {
                  res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
                  res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
@@ -1179,14 +1179,14 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
           }
           else if (symbol == '\t')
           {
-            res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_TAB, isShift, ctrlKey, altKey, metaKey, preventDefault); 
+            res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_TAB, isShift, ctrlKey, altKey, metaKey, preventDefault);
           }
           else if (symbol == '\'')
           {
             NS_NAMED_LITERAL_STRING(bigprime,"\x2032");
             res = InsertSuperscript();
             res = InsertSymbol(bigprime);  // need 'big prime'
-            res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault); 
+            res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault);
             preventDefault = PR_TRUE;
           }
           else {
@@ -1203,9 +1203,9 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
           }
           if (preventDefault)
             aKeyEvent->PreventDefault();
-        }    
-      }    
-    }    
+        }
+      }
+    }
   }
   // Check that the selection does not include table cells
   nsCOMPtr<nsIDOMElement> tableOrCellElement;
@@ -1215,37 +1215,37 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
   }
   // if not handled then pass along to nsHTMLEditor
   nsCOMPtr<nsIDOMNSUIEvent> nsUIEvent = do_QueryInterface(aKeyEvent);
-  if(nsUIEvent) 
+  if(nsUIEvent)
   {
     PRBool defaultPrevented;
     nsUIEvent->GetPreventDefault(&defaultPrevented);
     if (defaultPrevented)
       return res;
-    else 
+    else
       // res = nsEditor::BeginUpdateViewBatch();
       res = nsHTMLEditor::HandleKeyPress(aKeyEvent);
       if (NS_SUCCEEDED(res) &&(!(mFlags & eEditorPlaintextMask)))
 		    res = CheckForAutoSubstitute(PR_FALSE);
       // res = nsEditor::EndUpdateViewBatch();
       return res;
-      
+
   }
   else
     return NS_ERROR_FAILURE;
 }
 
-// nsresult 
+// nsresult
 // msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
 // {
 //   nsCOMPtr<nsISelection>selection;
 //   nsresult res = GetSelection(getter_AddRefs(selection));
-//   if (NS_FAILED(res)) 
+//   if (NS_FAILED(res))
 //     return res;
 //   msiSelectionManager msiSelMan(selection, this);
 //   mRangeUpdater.RegisterSelectionState(msiSelMan);
 //   EditAggregateTxn *txn;
 //   res = CreateTxnForDeleteSelection(aAction, msiSelMan, &txn);
-//   if (NS_FAILED(res)) 
+//   if (NS_FAILED(res))
 //   {
 //     mRangeUpdater.DropSelectionState(msiSelMan);
 //     return res;
@@ -1254,7 +1254,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 
 //   PRInt32 i;
 //   nsIEditActionListener *listener;
-//   if (NS_SUCCEEDED(res))  
+//   if (NS_SUCCEEDED(res))
 //   {
 //     for (i = 0; i < mActionListeners.Count(); i++)
 //     {
@@ -1263,7 +1263,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 //         listener->WillDeleteSelection(selection);
 //     }
 
-//     res = DoTransaction(txn);  
+//     res = DoTransaction(txn);
 
 //     for (i = 0; i < mActionListeners.Count(); i++)
 //     {
@@ -1304,7 +1304,7 @@ msiEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
 
     // allocate the out-param transaction
     result = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn **)aTxn);
-    if (NS_FAILED(result)) 
+    if (NS_FAILED(result))
       return result;
     PRUint32 rangeCount = msiSelMan.RangeCount();
     for (PRUint32 index = 0; index < rangeCount && NS_SUCCEEDED(result); index++)
@@ -1343,12 +1343,12 @@ msiEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
 //XXX: currently, this doesn't handle edge conditions because GetNext/GetPrior are not implemented
 nsresult
 msiEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
-                                            PRUint32 index, 
+                                            PRUint32 index,
                                             nsIEditor::EDirection aAction,
                                             EditAggregateTxn     *aTxn)
 {
   NS_ASSERTION(aAction == eNext || aAction == ePrevious, "invalid action");
-  
+
   nsRangeStore * rangeItem = msiSelMan.GetRangeStoreItem(index);
   if (!rangeItem)
     return NS_ERROR_FAILURE;
@@ -1366,7 +1366,7 @@ msiEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
   if (nodeAsText)
     nodeAsText->GetLength(&count);
   else
-  { 
+  {
     // get the child list and count
     nsCOMPtr<nsIDOMNodeList>childList;
     result = node->GetChildNodes(getter_AddRefs(childList));
@@ -1377,7 +1377,7 @@ msiEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
   PRBool isFirst = (0 == offset);
   PRBool isLast  = (count == (PRUint32)offset);
 
-  // XXX: if isFirst && isLast, then we'll need to delete the node 
+  // XXX: if isFirst && isLast, then we'll need to delete the node
   //      as well as the 1 child
 
   // build a transaction for deleting the appropriate data
@@ -1486,7 +1486,7 @@ msiEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
         result = GetNextNode(node, offset, PR_TRUE, address_of(selectedNode));
       }
       if (NS_FAILED(result)) { return result; }
-      if (selectedNode) 
+      if (selectedNode)
       {
         nsCOMPtr<nsIDOMCharacterData> selectedNodeAsText =
                                              do_QueryInterface(selectedNode);
@@ -1541,15 +1541,15 @@ NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
       {
         res = DeleteSelection(nsIEditor::eNone);
         //NS_ASSERTION(theNode,"need to set theNode");
-        //if (NS_FAILED(res)) 
+        //if (NS_FAILED(res))
         //  return res;  // TODO -- is it not clear what to do here -- pass along to nsHTMLEditor
       }
-      theNode = startNode;  
+      theNode = startNode;
       theOffset = startOffset;
 
       if (aStringToInsert.Length() > 1)
         res = InsertMathnameEx(selection, theNode, theOffset, aStringToInsert);
-      else  
+      else
         res = InsertSymbolEx(selection, theNode, theOffset, Substring(aStringToInsert,0,1));
         // This needs to be revisited. Symbols can be and are 2 or more characters. --BBM
       return res;
@@ -1570,7 +1570,7 @@ NS_IMETHODIMP msiEditor::NodeInMath(nsIDOMNode *node, nsIDOMNode **_retval)
   if (IsTextContentNode(node))
     node->GetParentNode(getter_AddRefs(checkNode));
   else
-    checkNode = node;  
+    checkNode = node;
   if (m_msiEditingMan && checkNode)
   {
     m_msiEditingMan->SupportsMathMLInsertionInterface(checkNode, &isMath);
@@ -1596,14 +1596,14 @@ NS_IMETHODIMP msiEditor::NodeInMath(nsIDOMNode *node, nsIDOMNode **_retval)
 NS_IMETHODIMP msiEditor::RangeInMath(nsIDOMRange *range, nsIDOMNode **_retval)
 {
   nsCOMPtr<nsIArray> arrayOfNodes;
-  nsCOMPtr<nsIDOMNode> currentNode; 
+  nsCOMPtr<nsIDOMNode> currentNode;
   nsCOMPtr<nsIDOMNode> mathNode;
   nsCOMPtr<nsIDOMNode> firstMathNode;
   PRUint32 length;
   nsresult res;
   res = NodesInRange(range, getter_AddRefs(arrayOfNodes));
   arrayOfNodes->GetLength(&length);
-  
+
   if (length == 0) // no nodes, presumably all contained in a text node
   {
     res = range->GetStartContainer(getter_AddRefs(currentNode));
@@ -1630,7 +1630,7 @@ NS_IMETHODIMP msiEditor::RangeInMath(nsIDOMRange *range, nsIDOMNode **_retval)
     if (!mathNode)
     {
       nsCOMPtr<nsIContent> content = do_QueryInterface(currentNode);
-      if (!(content->TextIsOnlyWhitespace())) 
+      if (!(content->TextIsOnlyWhitespace()))
       {
         *_retval = nsnull;
         return NS_OK;
@@ -1687,7 +1687,7 @@ nsresult msiEditor::GetMathParent(nsIDOMNode * node,
     }
   }
   return res;
-}   
+}
 
 nsresult msiEditor::ExtractDataFromKeyEvent(nsIDOMKeyEvent * aKeyEvent,
                                             PRUint32 & keyCode, PRUint32 & character,
@@ -1695,7 +1695,7 @@ nsresult msiEditor::ExtractDataFromKeyEvent(nsIDOMKeyEvent * aKeyEvent,
                                             PRBool & altKey, PRBool & metaKey)
 {
   nsresult res(NS_OK);
-  if (!aKeyEvent) 
+  if (!aKeyEvent)
     res = NS_ERROR_NULL_POINTER;
   else
   {
@@ -1707,9 +1707,9 @@ nsresult msiEditor::ExtractDataFromKeyEvent(nsIDOMKeyEvent * aKeyEvent,
     // this royally blows: because tabs come in from keyDowns instead
     // of keyPress, and because GetCharCode refuses to work for keyDown
     // i have to play games.
-    if (keyCode == nsIDOMKeyEvent::DOM_VK_TAB) 
+    if (keyCode == nsIDOMKeyEvent::DOM_VK_TAB)
       character = '\t';
-    else 
+    else
       aKeyEvent->GetCharCode(&character);
   }
   return res;
@@ -1729,7 +1729,7 @@ nsresult msiEditor::GetNSSelectionData(nsCOMPtr<nsISelection> &selection,
                                        PRBool  &bCollapsed)
 {
   nsresult res = GetSelection(getter_AddRefs(selection));
-  if (NS_SUCCEEDED(res)) 
+  if (NS_SUCCEEDED(res))
   {
     res = GetStartNodeAndOffset(selection, getter_AddRefs(startNode), &startOffset);
     if (NS_SUCCEEDED(res))
@@ -1748,7 +1748,7 @@ PRBool msiEditor::IsSelectionCollapsed()
   PRBool isCollapsed(PR_FALSE);
   nsCOMPtr<nsISelection> selection;
   nsresult res = GetSelection(getter_AddRefs(selection));
-  if (NS_SUCCEEDED(res) && selection) 
+  if (NS_SUCCEEDED(res) && selection)
     selection->GetIsCollapsed(&isCollapsed);
   return isCollapsed;
 }
@@ -1765,7 +1765,7 @@ nsresult msiEditor::EnsureMathWithSelectionCollapsed(nsCOMPtr<nsIDOMNode> &node,
   res = NS_ERROR_FAILURE;
   }
   return res;
-  
+
 }
 
 nsresult
@@ -1778,9 +1778,9 @@ msiEditor::InsertSubOrSup(PRBool isSup)
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                           endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
@@ -1824,7 +1824,7 @@ msiEditor::InsertSubOrSup(PRBool isSup)
 }
 
 nsresult
-msiEditor::InsertSymbolEx(nsISelection * aSelection, nsIDOMNode * aNode, 
+msiEditor::InsertSymbolEx(nsISelection * aSelection, nsIDOMNode * aNode,
                           PRInt32 aOffset, const nsAString & aSymbol)
 {
   nsresult res(NS_OK);
@@ -1835,7 +1835,7 @@ msiEditor::InsertSymbolEx(nsISelection * aSelection, nsIDOMNode * aNode,
 }
 
 nsresult
-msiEditor::InsertMathnameEx(nsISelection * aSelection, nsIDOMNode * aNode, 
+msiEditor::InsertMathnameEx(nsISelection * aSelection, nsIDOMNode * aNode,
                            PRInt32 aOffset, const nsAString & aMathname)
 {
   nsresult res(NS_OK);
@@ -1846,7 +1846,7 @@ msiEditor::InsertMathnameEx(nsISelection * aSelection, nsIDOMNode * aNode,
 }
 
 nsresult
-msiEditor::InsertMathunitEx(nsISelection * aSelection, nsIDOMNode * aNode, 
+msiEditor::InsertMathunitEx(nsISelection * aSelection, nsIDOMNode * aNode,
                            PRInt32 aOffset, const nsAString & aMathunit)
 {
   nsresult res(NS_OK);
@@ -1858,7 +1858,7 @@ msiEditor::InsertMathunitEx(nsISelection * aSelection, nsIDOMNode * aNode,
 
 
 nsresult
-msiEditor::InsertEngineFunctionEx(nsISelection * aSelection, nsIDOMNode * aNode, 
+msiEditor::InsertEngineFunctionEx(nsISelection * aSelection, nsIDOMNode * aNode,
                                   PRInt32 aOffset, const nsAString & aName)
 {
   nsresult res(NS_OK);
@@ -1895,7 +1895,7 @@ msiEditor::KeyCodeToCaretOp(PRUint32 keyCode, PRBool isShift, PRBool ctrlKey)
         rv = msiIMathMLCaret::CARET_OBJECTUP;
       else
         rv = msiIMathMLCaret::CARET_UP;
-    }    
+    }
   }
   else if (keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
   {
@@ -1905,7 +1905,7 @@ msiEditor::KeyCodeToCaretOp(PRUint32 keyCode, PRBool isShift, PRBool ctrlKey)
         rv = msiIMathMLCaret::CARET_OBJECTDOWN;
       else
         rv = msiIMathMLCaret::CARET_DOWN;
-    }    
+    }
   }
   else if (keyCode == nsIDOMKeyEvent::DOM_VK_TAB)
   {
@@ -1915,7 +1915,7 @@ msiEditor::KeyCodeToCaretOp(PRUint32 keyCode, PRBool isShift, PRBool ctrlKey)
         rv = msiIMathMLCaret::TAB_LEFT;
       else
         rv = msiIMathMLCaret::TAB_RIGHT;
-    }    
+    }
   }
   else
     NS_ASSERTION(keyCode==0,"Unknown/unhandled keycode.");
@@ -1923,7 +1923,7 @@ msiEditor::KeyCodeToCaretOp(PRUint32 keyCode, PRBool isShift, PRBool ctrlKey)
 }
 
 nsresult
-msiEditor::GetNodeAndOffsetFromMMLCaretOp(PRUint32 caretOp, 
+msiEditor::GetNodeAndOffsetFromMMLCaretOp(PRUint32 caretOp,
                                           nsCOMPtr<nsIDOMNode> & currNode,
                                           PRUint32 currOffset,
                                           nsCOMPtr<nsIDOMNode>& newNode,
@@ -1976,7 +1976,7 @@ msiEditor::GetNodeAndOffsetFromMMLCaretOp(PRUint32 caretOp,
     }
   }
   return res;
-}         
+}
 
 nsresult msiEditor::GetMSISelection(nsCOMPtr<msiISelection> & msiSelection)
 {
@@ -1988,7 +1988,7 @@ nsresult msiEditor::GetMSISelection(nsCOMPtr<msiISelection> & msiSelection)
     msiSelection = do_QueryInterface(selection);
   if (!msiSelection)
     res = NS_ERROR_FAILURE;
-  return res;    
+  return res;
 }
 
 nsresult msiEditor::ComparePoints(nsIDOMNode * node1, PRUint32 offset1,
@@ -2002,7 +2002,7 @@ nsresult msiEditor::ComparePoints(nsIDOMNode * node1, PRUint32 offset1,
   }
   else
     return NS_ERROR_FAILURE;
-}                                  
+}
 
 nsresult msiEditor::AddMatrixRows(nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany)
 {
@@ -2127,7 +2127,7 @@ void nodeAncestorsOfType(const nsAString& specialTags,
   }
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditor::RemoveDisplay( nsIDOMNode * focusNode, nsIDOMNode * anchorNode) {
   nsCOMPtr<nsIDOMElement> displayNode;
   nsresult rv(NS_OK);
@@ -2149,10 +2149,10 @@ msiEditor::RemoveDisplay( nsIDOMNode * focusNode, nsIDOMNode * anchorNode) {
       nsCOMPtr<nsIDOMElement> item(do_QueryInterface(mathNode));
       if (item) {
         RemoveAttribute(item, NS_LITERAL_STRING("display"));
-      } 
+      }
     }
     RemoveContainer(displayNode);
-    EndTransaction();    
+    EndTransaction();
   }
   return rv;
 }
@@ -2178,7 +2178,7 @@ msiEditor::CheckListItems(nsIDOMNode * leftBlock, nsIDOMNode * rightBlock, nsIDO
   return NS_OK;
 }
 
-nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset, 
+nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset,
                                  PRBool selecting, PRBool & preventDefault)
 {
 //BBM ToDo Check for other non-text, non-structure, non-para tags.
@@ -2191,11 +2191,11 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
   GetMSISelection(msiSelection);
   if (!msiSelection)
     return NS_ERROR_FAILURE;
-    
-  nsresult res(NS_OK);  
+
+  nsresult res(NS_OK);
   PRBool collapse = !selecting;
   preventDefault = PR_FALSE;
-  //TODO 
+  //TODO
   //if (m_trackingMouse)
   //  m_msiEditor->SaveSelection(selection);
   if (selecting)
@@ -2208,7 +2208,7 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
     PRUint32 startOffset(msiIMathMLEditingBC::INVALID), endOffset(msiIMathMLEditingBC::INVALID);
     PRInt32 compareFocusAnchor(0);
     PRInt32 compareOldFocusFocus(0);
-    
+
     msiSelection->GetMsiAnchorNode(getter_AddRefs(anchorNode));
     msiSelection->GetMsiAnchorOffset(&anchorOffset);
     if (NS_SUCCEEDED(res) && anchorNode && anchorOffset <= msiIMathMLEditingBC::LAST_VALID)
@@ -2239,27 +2239,27 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
       nsCOMPtr<msiIMathMLCaret> mathCaret;
       res = GetMathMLCaretInterface(commonAncestor, 0, getter_AddRefs(mathCaret));
       if (NS_SUCCEEDED(res) && mathCaret && !fSkipChanges)
-      { 
+      {
       if (compareFocusAnchor < 0 ) //focus before anchor
-      res = mathCaret->GetSelectableMathFragment(this, 
+      res = mathCaret->GetSelectableMathFragment(this,
                                                 focusNode, focusOffset,
-                                                anchorNode, anchorOffset, 
+                                                anchorNode, anchorOffset,
                                                 getter_AddRefs(startNode), &startOffset,
                                                 getter_AddRefs(endNode), &endOffset);
       else // focus after anchor
-      res = mathCaret->GetSelectableMathFragment(this, 
+      res = mathCaret->GetSelectableMathFragment(this,
                                                 anchorNode, anchorOffset,
                                                 focusNode, focusOffset,
                                                 getter_AddRefs(startNode), &startOffset,
                                                 getter_AddRefs(endNode), &endOffset);
       if (NS_SUCCEEDED(res) && startNode && startOffset <= msiIMathMLEditingBC::LAST_VALID &&
        endNode && endOffset <= msiIMathMLEditingBC::LAST_VALID)
-      doSet = PR_TRUE;                                                              
-      }  
+      doSet = PR_TRUE;
+      }
       else  // focus and/or anchor may be in math.
       {
-      mathCaret = nsnull;  
-      PRBool endSet(PR_FALSE), startSet(PR_FALSE);  
+      mathCaret = nsnull;
+      PRBool endSet(PR_FALSE), startSet(PR_FALSE);
       nsCOMPtr<nsIDOMNode> dummyNode;
       PRUint32 dummyOffset(msiIMathMLEditingBC::INVALID);
       res = GetMathMLCaretInterface(focusNode, 0, getter_AddRefs(mathCaret));
@@ -2274,7 +2274,7 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
       {
 //             nsCOMPtr<nsIDOMNode> oldFocusNode;
 //             PRUint32 oldFocusOffset(msiIMathMLEditingBC::INVALID);
-//    
+//
 //             msiSelection->GetMsiFocusNode(getter_AddRefs(oldFocusNode));
 //             msiSelection->GetMsiFocusOffset(&oldFocusOffset);
 //             ComparePoints(oldFocusNode, oldFocusOffset, focusNode, focusOffset, &compareOldFocusFocus);
@@ -2282,14 +2282,14 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
              msiSelection->GetMsiAnchorOffset(&anchorOffset);
              if (compareFocusAnchor < 0 ) //focus before anchor
              {
-               res = mathCaret->GetSelectableMathFragment(this, 
+               res = mathCaret->GetSelectableMathFragment(this,
                                                           focusNode, focusOffset,
                                                           nsnull, msiIMathMLEditingBC::INVALID,
                                                           getter_AddRefs(startNode), &startOffset,
                                                           getter_AddRefs(dummyNode), &dummyOffset);
                // The focus node has possibly been expanded to a larger object. We now need to determine whether this
                // will be added or subtracted from the selection (whether the selection is being enlarged or shrunken)
-               if (compareOldFocusFocus < 0) // old focus is before the focus. We are shortening the selection.    
+               if (compareOldFocusFocus < 0) // old focus is before the focus. We are shortening the selection.
                {
                  startNode->GetChildNodes(getter_AddRefs(childNodes));
                  childNodes->GetLength(&startOffset);
@@ -2298,20 +2298,20 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
              }
              else
              {
-               res = mathCaret->GetSelectableMathFragment(this, 
+               res = mathCaret->GetSelectableMathFragment(this,
                                                           nsnull, msiIMathMLEditingBC::INVALID,
                                                           focusNode, focusOffset,
                                                           getter_AddRefs(dummyNode), &dummyOffset,
                                                           getter_AddRefs(endNode), &endOffset);
                // The focus node has possibly been expanded to a larger object. We now need to determine whether this
                // will be added or subtracted from the selection (whether the selection is being enlarged or shrunken)
-               if (compareOldFocusFocus > 0) // old focus is after the focus. We are shortening the selection.    
+               if (compareOldFocusFocus > 0) // old focus is after the focus. We are shortening the selection.
                {
                  endOffset = 0;
                }
                endSet  = NS_SUCCEEDED(res) && endNode && endOffset <= msiIMathMLEditingBC::LAST_VALID;
-             }  
-           }                                               
+             }
+           }
          }
          mathCaret = nsnull;
          res = GetMathMLCaretInterface(anchorNode, 0, getter_AddRefs(mathCaret));
@@ -2331,7 +2331,7 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
                                                           anchorNode, anchorOffset,
                                                           getter_AddRefs(dummyNode), &dummyOffset,
                                                           getter_AddRefs(endNode), &endOffset);
-               if (compareOldFocusFocus < 0) // old focus is before the focus. We are shortening the selection.    
+               if (compareOldFocusFocus < 0) // old focus is before the focus. We are shortening the selection.
                {
                  endNode->GetChildNodes(getter_AddRefs(childNodes));
                  childNodes->GetLength(&endOffset);
@@ -2340,18 +2340,18 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
              }
              else  // focus is after anchor
              {
-               res = mathCaret->GetSelectableMathFragment(this, 
+               res = mathCaret->GetSelectableMathFragment(this,
                                                           anchorNode, anchorOffset,
                                                           nsnull, msiIMathMLEditingBC::INVALID,
                                                           getter_AddRefs(startNode), &startOffset,
                                                           getter_AddRefs(dummyNode), &dummyOffset);
-               if (compareOldFocusFocus > 0) // old focus is after the focus. We are shortening the selection.    
+               if (compareOldFocusFocus > 0) // old focus is after the focus. We are shortening the selection.
                {
                  startOffset = 0;
                }
                startSet  = NS_SUCCEEDED(res) && startNode && startOffset <= msiIMathMLEditingBC::LAST_VALID;
-             }                                             
-           }                                               
+             }
+           }
          }
          PRBool bEndIsFocus = PR_TRUE;
          if (startSet || endSet)
@@ -2367,7 +2367,7 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
            {
              startNode = anchorNode;
              startOffset = anchorOffset;
-           }                                             
+           }
          }
          if(!endSet)
          {
@@ -2381,7 +2381,7 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
            {
              endNode = focusNode;
              endOffset = focusOffset;
-           }                                             
+           }
          }
          nsCOMPtr<nsIDOMNode> tmpNode;
          nsCOMPtr<nsIDOMNode> targNode;
@@ -2469,11 +2469,11 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
                            focusNode, focusOffset, anchorNode, anchorOffset);
             //               endNode, endOffset, anchorNode, anchorOffset);
          preventDefault = PR_TRUE;
-       }  
+       }
     }
     else
      collapse = PR_TRUE;
-  }    
+  }
   if (collapse)
   {
     nsCOMPtr<nsISelection> selection(do_QueryInterface(msiSelection));
@@ -2487,12 +2487,12 @@ nsresult msiEditor::GetMayDrag(PRBool * mayDrag)
 {
   if (!mMouseListenerP || !mayDrag)
     return NS_ERROR_FAILURE;
-  *mayDrag = PR_FALSE;  
+  *mayDrag = PR_FALSE;
   nsresult res(NS_OK);
   nsCOMPtr<msiIMouse> msiMouse(do_QueryInterface(mMouseListenerP));
-  if (msiMouse)  
+  if (msiMouse)
     res = msiMouse->GetMayDrag(mayDrag);
-  return res; 
+  return res;
 }
 
 nsresult msiEditor::IsPointWithinCurrentSelection(nsCOMPtr<nsIDOMNode> & node, PRUint32 offset, PRBool & withinSelection)
@@ -2504,7 +2504,7 @@ nsresult msiEditor::IsPointWithinCurrentSelection(nsCOMPtr<nsIDOMNode> & node, P
   nsresult res = GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(res) || !selection)
     return NS_ERROR_FAILURE;
-  
+
   PRInt32 rangeCount(0);
   res = selection->GetRangeCount(&rangeCount);
   for (PRInt32 i = 0; i < rangeCount && NS_SUCCEEDED(res) && !withinSelection; i++)
@@ -2518,15 +2518,15 @@ nsresult msiEditor::IsPointWithinCurrentSelection(nsCOMPtr<nsIDOMNode> & node, P
     res = range->GetStartContainer(getter_AddRefs(start));
     if (NS_SUCCEEDED(res) && start)
       res = range->GetEndContainer(getter_AddRefs(end));
-    else 
+    else
       res = NS_ERROR_FAILURE;
     if (NS_SUCCEEDED(res) && end)
       res = range->GetStartOffset(&startOff);
-    else 
+    else
       res = NS_ERROR_FAILURE;
     if (NS_SUCCEEDED(res))
       res = range->GetEndOffset(&endOff);
-    PRInt32 compareToStart(0), compareToEnd(0); 
+    PRInt32 compareToStart(0), compareToEnd(0);
     if (NS_SUCCEEDED(res))
       res = ComparePoints(node, offset, start, startOff, &compareToStart);
     if (NS_SUCCEEDED(res))
@@ -2534,11 +2534,11 @@ nsresult msiEditor::IsPointWithinCurrentSelection(nsCOMPtr<nsIDOMNode> & node, P
     if ( compareToStart >= 0 && compareToEnd <= 0)
       withinSelection = PR_TRUE;
   }
-  return res;    
-}  
+  return res;
+}
 
-nsresult 
-msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown, 
+nsresult
+msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown,
                                PRBool altDown, PRBool metaDown, PRBool & preventDefault)
 {
   preventDefault = PR_FALSE;
@@ -2552,37 +2552,37 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
   if (!nsSelection)
     return NS_ERROR_FAILURE;
   nsresult res(NS_OK);
-  PRInt32 compareFocusAnchor(0);  
+  PRInt32 compareFocusAnchor(0);
   PRBool collapsed(PR_FALSE);
   nsCOMPtr<nsIDOMNode> msiFocus, msiAnchor;
   PRUint32 msiFocusOff(msiIMathMLEditingBC::INVALID), msiAnchorOff(msiIMathMLEditingBC::INVALID);
-  
-  if (NS_SUCCEEDED(res)) 
+
+  if (NS_SUCCEEDED(res))
     res = nsSelection->GetIsCollapsed(&collapsed);
-  if (NS_SUCCEEDED(res)) 
+  if (NS_SUCCEEDED(res))
     res = msiSelection->GetMsiFocusNode(getter_AddRefs(msiFocus));
-  if (NS_SUCCEEDED(res)) 
+  if (NS_SUCCEEDED(res))
     res = msiSelection->GetMsiFocusOffset(&msiFocusOff);
-  if (NS_SUCCEEDED(res)) 
+  if (NS_SUCCEEDED(res))
     res = msiSelection->GetMsiAnchorNode(getter_AddRefs(msiAnchor));
-  if (NS_SUCCEEDED(res)) 
+  if (NS_SUCCEEDED(res))
     res = msiSelection->GetMsiAnchorOffset(&msiAnchorOff);
-  if (NS_SUCCEEDED(res)) 
+  if (NS_SUCCEEDED(res))
    res = ComparePoints(msiFocus, msiFocusOff, msiAnchor, msiAnchorOff, &compareFocusAnchor);
   if (NS_FAILED(res))
     return res;
-  if (!msiFocus || msiFocusOff > msiIMathMLEditingBC::LAST_VALID || 
+  if (!msiFocus || msiFocusOff > msiIMathMLEditingBC::LAST_VALID ||
       !msiAnchor || msiAnchorOff > msiIMathMLEditingBC::LAST_VALID)
-    return NS_ERROR_FAILURE;  
-    
+    return NS_ERROR_FAILURE;
+
   if (!collapsed && !isShift) //not collapsed and not selecting -- so collapse the selection
   {
     nsCOMPtr<nsIDOMNode> left = compareFocusAnchor < 0 ? msiFocus : msiAnchor;
     PRUint32 leftOff = compareFocusAnchor < 0 ? msiFocusOff : msiAnchorOff;
     nsCOMPtr<nsIDOMNode> right = compareFocusAnchor < 0 ? msiAnchor : msiFocus;
     PRUint32 rightOff = compareFocusAnchor < 0 ? msiAnchorOff : msiFocusOff;
-    
-    
+
+
     if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT || keyCode == nsIDOMKeyEvent::DOM_VK_UP)
     {
       res = nsSelection->Collapse(left, leftOff);
@@ -2591,7 +2591,7 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
         preventDefault = PR_TRUE;
         collapsed = PR_TRUE;
       }
-    }  
+    }
     else if (keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT || keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
     {
       res = nsSelection->Collapse(right, rightOff);
@@ -2603,23 +2603,23 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
     }
     if (collapsed)
     { // reset these
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = msiSelection->GetMsiFocusNode(getter_AddRefs(msiFocus));
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = msiSelection->GetMsiFocusOffset(&msiFocusOff);
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = msiSelection->GetMsiAnchorNode(getter_AddRefs(msiAnchor));
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = msiSelection->GetMsiAnchorOffset(&msiAnchorOff);
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
        res = ComparePoints(msiFocus, msiFocusOff, msiAnchor, msiAnchorOff, &compareFocusAnchor);
       if (NS_FAILED(res))
         return res;
-    }  
+    }
     if (!ctrlDown &&(keyCode == nsIDOMKeyEvent::DOM_VK_LEFT || keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT))  //TODO this is SWP behavior
       return res;
   }
- 
+
   nsCOMPtr<nsIDOMNode>currNode, newFocus;
   PRUint32 currOffset(msiIMathMLEditingBC::INVALID), newOffset(msiIMathMLEditingBC::INVALID);
   if (collapsed)
@@ -2664,7 +2664,7 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
 //            if (currOffset == length)
 //            {
 //              nsCOMPtr<nsIDOMNode> nextnode;
-//              GetNextNode(currNode, PR_FALSE, address_of(nextnode), PR_FALSE); 
+//              GetNextNode(currNode, PR_FALSE, address_of(nextnode), PR_FALSE);
 //              if (nextnode)
 //              {
 //                testNode = nextnode;
@@ -2672,18 +2672,18 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
 //                newOffset = 1;
 //              }
 //            }
-//            else 
+//            else
 //            {
 //              newFocus = currNode;
 //              newOffset = currOffset+1;
 //            }
-//          }  
-//        }  
+//          }
+//        }
 //      }
 //      else
 //      {
 //        nsCOMPtr<nsIDOMNode> nextnode;
-//        GetNextNode(currNode, currOffset, PR_FALSE, address_of(nextnode), PR_FALSE); 
+//        GetNextNode(currNode, currOffset, PR_FALSE, address_of(nextnode), PR_FALSE);
 //        if (nextnode)
 //        {
 //          testNode = nextnode;
@@ -2691,7 +2691,7 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
 //          newOffset = 1;
 //        }
 //      }
-//    }  
+//    }
 //    else if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT)
 //    {
 //      if (IsTextContentNode(currNode))
@@ -2699,15 +2699,15 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
 //        if (currOffset == 0)
 //        {
 //          nsCOMPtr<nsIDOMNode> priornode;
-//          GetPriorNode(currNode, PR_FALSE, address_of(priornode), PR_FALSE); 
+//          GetPriorNode(currNode, PR_FALSE, address_of(priornode), PR_FALSE);
 //          if (priornode)
 //          {
 //            testNode = priornode;
 //            newFocus = currNode;
 //            newOffset = 0; // BBM fix this
-//          } 
+//          }
 //        }
-//        else 
+//        else
 //        {
 //          newFocus = currNode;
 //          newOffset = currOffset-1;
@@ -2716,7 +2716,7 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
 //      else
 //      {
 //        nsCOMPtr<nsIDOMNode> priornode;
-//        GetPriorNode(currNode, currOffset, PR_FALSE, address_of(priornode), PR_FALSE); 
+//        GetPriorNode(currNode, currOffset, PR_FALSE, address_of(priornode), PR_FALSE);
 //        if (priornode)
 //          testNode = priornode;
 //      }
@@ -2736,7 +2736,7 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
 //          res = mathParent->GetChildNodes(getter_AddRefs(childNodes));
 //          if (NS_SUCCEEDED(res) && childNodes)
 //            res = childNodes->GetLength(&number);
-//          offset = number;  
+//          offset = number;
 //        }
 //        else
 //          offset = 0;
@@ -2747,19 +2747,19 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
 //        PRUint32 flags = keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ? msiIMathMLCaret::FROM_LEFT : msiIMathMLCaret::FROM_RIGHT;
 //        res = mathmlEditing->Accept(this, flags, getter_AddRefs(newFocus), &newOffset);
 //      }
-//    }  
+//    }
   }
   if (NS_SUCCEEDED(res))
   {
     if (newFocus && newOffset <= msiIMathMLEditingBC::LAST_VALID)
-      res = SetSelection(newFocus, newOffset, isShift, preventDefault); 
+      res = SetSelection(newFocus, newOffset, isShift, preventDefault);
   }
-  return res;  
+  return res;
 }
 
 
 //ljh  GetCommonAncestor algorithm is copied from nsContentUtils::GetCommonAncestor.
-// I decided to duplicate this function instead of bringing in all the baggage need to 
+// I decided to duplicate this function instead of bringing in all the baggage need to
 // link with nsContentUtils.
 
 nsresult
@@ -2770,8 +2770,8 @@ msiEditor::GetCommonAncestor(nsIDOMNode * node1,
   commonAncestor = nsnull;
   if (!node1 || !node2)
     return NS_ERROR_FAILURE;
-  
-  if (node1 == node2) 
+
+  if (node1 == node2)
   {
     commonAncestor = node1;
     return NS_OK;
@@ -2799,11 +2799,11 @@ msiEditor::GetCommonAncestor(nsIDOMNode * node1,
   PRUint32 pos2 = parents2.Count();
   nsIDOMNode* parent = nsnull;
   PRUint32 len;
-  for (len = PR_MIN(pos1, pos2); len > 0; --len) 
+  for (len = PR_MIN(pos1, pos2); len > 0; --len)
   {
     nsIDOMNode* child1 = static_cast<nsIDOMNode*>(parents1.FastElementAt(--pos1));
     nsIDOMNode* child2 = static_cast<nsIDOMNode*>(parents2.FastElementAt(--pos2));
-    if (child1 != child2) 
+    if (child1 != child2)
       break;
     parent = child1;
   }
@@ -2835,18 +2835,18 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
   if (!aMouseEvent || !node || offset< 0)
     return NS_OK;
   nsCOMPtr<nsIDOMMouseEvent> mouseEvent (do_QueryInterface(aMouseEvent));
-  if (!mouseEvent) 
+  if (!mouseEvent)
     return NS_OK;
-  
+
   nsCOMPtr<nsIDOMNode> adjustedNode;
   PRUint32 adjustedOffset(msiIMathMLEditingBC::INVALID);
-  nsCOMPtr<msiIMathMLCaret> mathCaret;  
+  nsCOMPtr<msiIMathMLCaret> mathCaret;
   nsCOMPtr<nsIPresShell> presShell;
   GetPresShell(getter_AddRefs(presShell));
-  
+
   nsresult res = GetMathMLCaretInterface(node, offset, getter_AddRefs(mathCaret));
   if (NS_SUCCEEDED(res) && mathCaret && presShell)
-    res = mathCaret->AdjustNodeAndOffsetFromMouseEvent(this, presShell, msiIMathMLCaret::FLAGS_NONE, 
+    res = mathCaret->AdjustNodeAndOffsetFromMouseEvent(this, presShell, msiIMathMLCaret::FLAGS_NONE,
                                                        mouseEvent, getter_AddRefs(adjustedNode), &adjustedOffset);
   else
   {
@@ -2858,12 +2858,12 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
     offset = adjustedOffset;
   }
   return NS_OK;
-}  
+}
 
-//NS_IMETHODIMP 
+//NS_IMETHODIMP
 //msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 //{
-//  if (! aKeyEvent)  
+//  if (! aKeyEvent)
 //    return NS_ERROR_NULL_POINTER;
 //  nsresult res(NS_OK);
 //  if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
@@ -2873,9 +2873,9 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //    nsCOMPtr<nsIDOMNode> startNode, endNode;
 //    PRInt32 startOffset(0), endOffset(0);
 //    PRBool bCollapsed(PR_FALSE);
-//    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+//    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
 //                        endOffset, bCollapsed);
-//    if (NS_SUCCEEDED(res)) 
+//    if (NS_SUCCEEDED(res))
 //    {
 //      PRUint32 keyCode(0), symbol(0);
 //      PRBool isShift(PR_FALSE), ctrlKey(PR_FALSE), altKey(PR_FALSE), metaKey(PR_FALSE);
@@ -2889,19 +2889,19 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //        {
 //          res = DeleteSelection(nsIEditor::eNone);
 //          // need to set "theNode"
-//          if (NS_FAILED(res)) 
+//          if (NS_FAILED(res))
 //            return res;  // TODO -- is it not clear what to do here -- pass along to nsHTMLEditor
 //        }
 //        else
 //        {
-//          theNode = startNode;  
+//          theNode = startNode;
 //          theOffset = startOffset;
 //        }
 //        if (symbol)
 //          res = InsertSymbol(symbol);
-//        else if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  || 
+//        else if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  ||
 //                 keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ||
-//                 keyCode == nsIDOMKeyEvent::DOM_VK_UP    || 
+//                 keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||
 //                 keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
 //        {
 //          PRUint32 caretOp = KeyCodeToCaretOperation(keyCode, isShift, ctrlKey, altKey, metaKey);
@@ -2915,21 +2915,21 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //        if (NS_SUCCEEDED(res))
 //          aKeyEvent->PreventDefault();
 //      }
-//      else if (NS_SUCCEEDED(res) && !NodeInMath(startNode) && !altKey && !isShift && 
+//      else if (NS_SUCCEEDED(res) && !NodeInMath(startNode) && !altKey && !isShift &&
 //               (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  || keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ||
 //                keyCode == nsIDOMKeyEvent::DOM_VK_UP    || keyCode == nsIDOMKeyEvent::DOM_VK_DOWN  ))
-//                                                               
+//
 //      {
 //        if (!bCollapsed)
 //        {
 //          if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  || keyCode == nsIDOMKeyEvent::DOM_VK_UP)
 //          {
-//            theNode = startNode;  
+//            theNode = startNode;
 //            theOffset = startOffset;
 //          }
 //          else if (keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT  || keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
 //          {
-//            theNode = endNode;  
+//            theNode = endNode;
 //            theOffset = endOffset;
 //          }
 //          if (theNode)
@@ -2961,20 +2961,20 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //                if (length > 0 && startOffset == length)
 //                {
 //                  nsCOMPtr<nsIDOMNode> nextnode;
-//                  GetNextNode(startNode, PR_FALSE, address_of(nextnode), PR_FALSE); 
+//                  GetNextNode(startNode, PR_FALSE, address_of(nextnode), PR_FALSE);
 //                  if (nextnode)
 //                    testNode = nextnode;
 //                }
-//              }  
+//              }
 //            }
 //            else
 //            {
 //              nsCOMPtr<nsIDOMNode> nextnode;
-//              GetNextNode(startNode, startOffset, PR_FALSE, address_of(nextnode), PR_FALSE); 
+//              GetNextNode(startNode, startOffset, PR_FALSE, address_of(nextnode), PR_FALSE);
 //              if (nextnode)
 //                testNode = nextnode;
 //            }
-//          }  
+//          }
 //          else if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT)
 //          {
 //            if (IsTextContentNode(startNode))
@@ -2982,7 +2982,7 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //              if (startOffset == 0)
 //              {
 //                nsCOMPtr<nsIDOMNode> priornode;
-//                GetPriorNode(startNode, PR_FALSE, address_of(priornode), PR_FALSE); 
+//                GetPriorNode(startNode, PR_FALSE, address_of(priornode), PR_FALSE);
 //                if (priornode)
 //                  testNode = priornode;
 //              }
@@ -2990,7 +2990,7 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //            else
 //            {
 //              nsCOMPtr<nsIDOMNode> priornode;
-//              GetPriorNode(startNode, startOffset, PR_FALSE, address_of(priornode), PR_FALSE); 
+//              GetPriorNode(startNode, startOffset, PR_FALSE, address_of(priornode), PR_FALSE);
 //              if (priornode)
 //                testNode = priornode;
 //            }
@@ -3007,7 +3007,7 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //                res = theNode->GetChildNodes(getter_AddRefs(childNodes));
 //                if (NS_SUCCEEDED(res) && childNodes)
 //                  res = childNodes->GetLength(&number);
-//                theOffset = number;  
+//                theOffset = number;
 //              }
 //              else
 //                theOffset = 0;
@@ -3030,23 +3030,23 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //              {
 //                selection->Collapse(node, offset);
 //                aKeyEvent->PreventDefault();
-//              }  
+//              }
 //              EndTransaction();
-//            }  
+//            }
 //          }
-//        }    
+//        }
 //      }
 //    }
 //  }
 //  // if not handled then pass along to nsHTMLEditor
 //  nsCOMPtr<nsIDOMNSUIEvent> nsUIEvent = do_QueryInterface(aKeyEvent);
-//  if(nsUIEvent) 
+//  if(nsUIEvent)
 //  {
 //    PRBool defaultPrevented;
 //    nsUIEvent->GetPreventDefault(&defaultPrevented);
 //    if (defaultPrevented)
 //      return res;
-//    else 
+//    else
 //      return nsHTMLEditor::HandleKeyPress(aKeyEvent);
 //  }
 //  else
@@ -3058,10 +3058,10 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 // in reverse order. There are some conditions that will cause it to quit:
 // 1. There are no more patterns that could match
 // 2. We have hit the beginning of a tag other than a text formatting tag. We do not allow patterns to span
-//    paragraphs or other block object, and we do not go into or out of math if we started on the outside or 
+//    paragraphs or other block object, and we do not go into or out of math if we started on the outside or
 //    inside, respectively.
 // 3. In math, we will quit once we encounter a node other than <mi>, <mn> or <mo>. If we encounter a multicharacter <mi>,
-//    we set fCanEndHere to false until we are returning the first character in the <mi>. This keeps us from 
+//    we set fCanEndHere to false until we are returning the first character in the <mi>. This keeps us from
 //    matching a proper subset of a multicharacter <mi> (but we can include al of the <mi> contents in a match).
 // 4. Multiple white space characters will be coalesced into a space, and &invisibletimes is ignored. For this reason
 //    we pass the last character matched (actually, a boolean telling if the last character matched was a space would
@@ -3083,8 +3083,8 @@ PRBool TwoSpacesSwitchesToMath()
 	return PR_FALSE;
 }
 
-nsresult 
-msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar, 
+nsresult
+msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar,
  PRInt32 & _result)
 {
   if (!nodeIn) return NS_ERROR_NULL_POINTER;
@@ -3120,7 +3120,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         nsAutoString val;
         if (nodeElement) {
           // rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
-          // if (val.EqualsLiteral("true")) 
+          // if (val.EqualsLiteral("true"))
           // {
           //   fValidChar = PR_FALSE;
           // }
@@ -3136,9 +3136,9 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
             {
               // *nodeOut and offsetOut should still be valid
               NS_ADDREF(*nodeOut);
-            } 
+            }
             return NS_OK;
-          }          
+          }
         }
       }
       // check for double spaces in text mode; possible to convert to math
@@ -3149,7 +3149,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   			{
 					*nodeOut = nodeIn;
 					offsetOut = offset - 1;
-					_result = msiIAutosub::STATE_SPECIAL; 
+					_result = msiIAutosub::STATE_SPECIAL;
 					return NS_OK;
 				}
 			}
@@ -3169,13 +3169,13 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
           _result = msiIAutosub::STATE_FAIL;
         }
       }
-      if (_result == msiIAutosub::STATE_FAIL) 
+      if (_result == msiIAutosub::STATE_FAIL)
       {
         if (*nodeOut) // we did find a match earlier
         {
           // *nodeOut and offsetOut should still be valid
           NS_ADDREF(*nodeOut);
-        } 
+        }
         return NS_OK;
       }
     }
@@ -3200,7 +3200,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         {
           // *nodeOut and offsetOut should still be valid
           NS_ADDREF(*nodeOut);
-        } 
+        }
         return NS_OK;
       }
     }
@@ -3225,7 +3225,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         {
           // *nodeOut and offsetOut should still be valid
           NS_ADDREF(*nodeOut);
-        } 
+        }
          return NS_OK; // no more nodes available. return _result.
       }
       else
@@ -3236,14 +3236,14 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         rv = mtagListManager->GetTagOfNode(parentNode, &atomNS, parentTag);
         rv = mtagListManager->GetTagOfNode(node2, &atomNS, tag);
         if (tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) {
-          if (!(parentTag.EqualsLiteral("mrow") || parentTag.EqualsLiteral("math") ||
+          if (!(parentTag.EqualsLiteral("mrow") || parentTag.EqualsLiteral("math") || parentTag.EqualsLiteral("mtd") ||
             parentTag.EqualsLiteral("msqrt") )) {
             validNode = PR_FALSE;
           }
           nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(node2);
           nsAutoString val;
           // rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
-          // if (val.EqualsLiteral("true")) 
+          // if (val.EqualsLiteral("true"))
           // {
           //   validNode = PR_FALSE;
           // }
@@ -3256,14 +3256,14 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         }
         PRBool fTagIsTextTag;
         rv =  mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"),tag,atomNS, &fTagIsTextTag);
-        if (!(fTagIsTextTag || ((tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) && validNode) || tag.EqualsLiteral("mo") || tag.EqualsLiteral("mn")))  
+        if (!(fTagIsTextTag || ((tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) && validNode) || tag.EqualsLiteral("mo") || tag.EqualsLiteral("mn")))
         {
           _result = msiIAutosub::STATE_FAIL;
           if (*nodeOut) // we did find a match earlier
           {
             // *nodeOut and offsetOut should still be valid
             NS_ADDREF(*nodeOut);
-          } 
+          }
           return NS_OK;
         }
       }
@@ -3272,10 +3272,10 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     }
   }
   offset2 = (PRUint32)(-1);
-  if (node2) GetNextCharacter(node2, offset2, nodeOut, offsetOut, inMath, prevChar, _result); 
+  if (node2) GetNextCharacter(node2, offset2, nodeOut, offsetOut, inMath, prevChar, _result);
   return NS_OK;
 }
-  
+
 
 nsresult
 msiEditor::CheckForAutoSubstitute(PRBool inmath)
@@ -3283,7 +3283,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   nsresult res = NS_OK;
   if (!m_autosub) return NS_ERROR_FAILURE;
   nsCOMPtr<nsISelection> selection;
-  GetSelection(getter_AddRefs(selection)); 
+  GetSelection(getter_AddRefs(selection));
   if (!selection) return res;
   // this is called immediately after an insertion, so the selection is collapsed. Thus we can check any of of the
   // nodes.
@@ -3291,12 +3291,12 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   nsCOMPtr<nsIDOM3Node> textNode;
   nsCOMPtr<nsIDOMNode> originalNode = nsnull;
   PRUnichar ch = 0;
-  PRInt32 ctx, action; 
+  PRInt32 ctx, action;
   PRInt32 intOffset;
   PRUint32 offset = 0;
   nsAutoString theText;
   PRInt32 lookupResult;
-  nsAutoString data, pasteContext, pasteInfo, error;       
+  nsAutoString data, pasteContext, pasteInfo, error;
   selection->GetAnchorNode((nsIDOMNode **) getter_AddRefs(originalNode));
   if (!originalNode) return res;
   selection->GetAnchorOffset( &intOffset );
@@ -3314,21 +3314,21 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
 //    SetInComplexTransaction(PR_TRUE);
     if (lookupResult == msiIAutosub::STATE_SPECIAL)
 		{
-			ctx =	msiIAutosub::CONTEXT_TEXTONLY; 
+			ctx =	msiIAutosub::CONTEXT_TEXTONLY;
 			action = msiIAutosub::ACTION_EXECUTE;
-			data = NS_LITERAL_STRING("inserttext(' '); msiGoDoCommand('cmd_MSImathtext')"); 
-			pasteContext = NS_LITERAL_STRING(""); 
+			data = NS_LITERAL_STRING("inserttext(' '); msiGoDoCommand('cmd_MSImathtext')");
+			pasteContext = NS_LITERAL_STRING("");
 			pasteInfo = NS_LITERAL_STRING("");
 		}
 		else
 			m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
-    if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath || 
+    if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath ||
       inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
     {
       selection->Collapse(node, offset);
       selection->Extend(originalNode,originalOffset);
       if (action == msiIAutosub::ACTION_SUBSTITUTE)
-        InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
+        InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE);
       else if (action == msiIAutosub::ACTION_EXECUTE)
       {
         nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
@@ -3355,18 +3355,18 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
 //{
 //  nsresult res = NS_OK;
 //  nsCOMPtr<nsISelection> selection;
-//  GetSelection(getter_AddRefs(selection)); 
+//  GetSelection(getter_AddRefs(selection));
 //  if (!selection) return res;
 //  nsCOMPtr<nsIDOMNode> node;
 //  nsCOMPtr<nsIDOM3Node> textNode;
 //  nsCOMPtr<nsIDOMNode> originalNode;
 //  PRUnichar ch = 0;
-//  PRInt32 ctx, action; 
+//  PRInt32 ctx, action;
 //  PRInt32 intOffset;
 //  PRUint32 offset;
 //  nsAutoString theText;
 //  PRInt32 lookupResult;
-//  nsAutoString data, pasteContext, pasteInfo, error;       
+//  nsAutoString data, pasteContext, pasteInfo, error;
 //  selection->GetFocusNode((nsIDOMNode **) getter_AddRefs(originalNode));
 //  if (!originalNode) return res;
 //  selection->GetFocusOffset( &intOffset );
@@ -3376,13 +3376,13 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
 //  if (node)  // there was success somewhere
 //  {
 //    m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
-//    if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath || 
+//    if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath ||
 //      inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
 //    {
 //      selection->Collapse(node, offset);
 //      selection->Extend(originalNode,originalOffset);
 //      if (action == msiIAutosub::ACTION_SUBSTITUTE)
-//        InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
+//        InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE);
 //      else if (action == msiIAutosub::ACTION_EXECUTE)
 //      {
 //        nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
@@ -3405,7 +3405,7 @@ msiEditor::InitRules()
   if (NS_FAILED(res)) return res;
   if (!mRules) return NS_ERROR_UNEXPECTED;
   res = mRules->Init(static_cast<nsPlaintextEditor*>(this), mFlags);
-  
+
   return res;
 }
 
@@ -3511,7 +3511,7 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
 //      a given child position or "-1" in the case of single-child math nodes (that is, those which create "inferred mrows" within them).
 //      If we don't find any such node, then we want to leave the split point intact and allow the usual Split() to proceed.
 //  (2) We now know that a matrix or matrix row is to be inserted and need to determine where to split the existing contents to
-//      distribute among the new (and existing, in the case that we're within a one-column matrix) cells. 
+//      distribute among the new (and existing, in the case that we're within a one-column matrix) cells.
 //  (2) Then we start at the split point and traverse up the tree looking for nodes which do split (in the sense of the function
 //      SplitNodesDeep() - that is, into two nodes of the same sort)
 nsresult
@@ -3551,7 +3551,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
   //The split container is most likely an <mrow> or perhaps an <mstyle>. If the splitpointnode passed in is a leaf node, we should move
   //  the split point outside of it. (Left if we're at the beginning, right otherwise?) If the splitppointnode (perhaps after this operation)
   //  is a "template" (an <mfrac>, <mroot>, <msubsup>, <munderover>, or even an <mtd>), then no splitting will occur - the child of the
-  //  template before position splitpointOffset (unless it's 0, in which case the first child) will contain the new matrix, 
+  //  template before position splitpointOffset (unless it's 0, in which case the first child) will contain the new matrix,
   //  and the current child will be the content of first cell (except for the 0 case, and then the "split" is envisioned as occurring from the left and
   //  the current child will be the contents of the second cell).
   splitChild = nsnull;
@@ -3620,10 +3620,10 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       }
       toLeftRight = 0;
     }
-    else if ( tagName.EqualsLiteral("mover") || tagName.EqualsLiteral("mfrac") || tagName.EqualsLiteral("munderover") 
-         || tagName.EqualsLiteral("munder") || tagName.EqualsLiteral("maction") || tagName.EqualsLiteral("menclose") || tagName.EqualsLiteral("mphantom") 
+    else if ( tagName.EqualsLiteral("mover") || tagName.EqualsLiteral("mfrac") || tagName.EqualsLiteral("munderover")
+         || tagName.EqualsLiteral("munder") || tagName.EqualsLiteral("maction") || tagName.EqualsLiteral("menclose") || tagName.EqualsLiteral("mphantom")
          || tagName.EqualsLiteral("mroot") || tagName.EqualsLiteral("msub") || tagName.EqualsLiteral("msup") || tagName.EqualsLiteral("msubsup") || tagName.EqualsLiteral("mmultiscripts") )
-    { 
+    {
       //These are the multi-position templates. currPos is where we'll insert the matrix.
       splitParent = nextNode;
       nInsertPos = currPos;
@@ -3642,9 +3642,9 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       }
 //      break;
     }
-    else if ( tagName.EqualsLiteral("mtd") || tagName.EqualsLiteral("maction") || tagName.EqualsLiteral("menclose") || tagName.EqualsLiteral("mphantom") 
+    else if ( tagName.EqualsLiteral("mtd") || tagName.EqualsLiteral("maction") || tagName.EqualsLiteral("menclose") || tagName.EqualsLiteral("mphantom")
          || tagName.EqualsLiteral("msqrt") )  //The one-child "templates"
-    { 
+    {
       splitParent = nextNode;
       nInsertPos = -1;  //This signifies that the inserted matrix is to replace the entire contents
       if (!splittable)
@@ -3678,7 +3678,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
     }
     else if ( tagName.EqualsLiteral("mrow") )  //Here we must test to see whether this is in fact an mfenced, in which case it will be both the splittable and the split parent.
     {
-	    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+	    nsCOMPtr<msiIMathMLEditingBC> editingBC;
       GetMathMLEditingBC(nextNode, 0, true, getter_AddRefs(editingBC));
       if (editingBC)
       {
@@ -4155,7 +4155,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
           newRange->SetStart(caretNode, caretPos);
 //          newRange->SetStartOffset(caretPos);
           newRange->Collapse(PR_TRUE);
-          selection->RemoveAllRanges();  
+          selection->RemoveAllRanges();
           selection->AddRange(newRange);
         }
       }
@@ -4165,7 +4165,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
   EndTransaction();
   return res;
 }
-  
+
 
 // Implementation of an nsIContentFilter
 
@@ -4195,10 +4195,10 @@ PRBool IsRelativePath(const nsString& path)
 }
 
 
-NS_IMETHODIMP msiContentFilter::copyfiles( 
+NS_IMETHODIMP msiContentFilter::copyfiles(
   nsIDocument * srcDoc,
   nsIDocument * doc,
-  nsIDOMNodeList * objnodes, 
+  nsIDOMNodeList * objnodes,
   nsIDOMNode * anode,
   PRUint32 count)
 {
@@ -4246,7 +4246,7 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
   }
   if (!bNeedUnique && (srcDoc == doc)) {
     // nothing to do, except make sure recently copied files show up
-    // if copying a graphic from another document, we have written a file to 
+    // if copying a graphic from another document, we have written a file to
     // the document directory tree, but it may not be ready to show up yet.
     nsCOMPtr<nsITimer> timer = do_CreateInstance("@mozilla.org/timer;1");
     if (!timer) {
@@ -4259,10 +4259,10 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
     NS_ADDREF(elemPtr);  //Have to do this to ensure that the pointer passed to the timer callback sticks around
     timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, static_cast<void*>(elemPtr), 200,
                                   nsITimer::TYPE_ONE_SHOT);
-    m_timerlist.AppendObject(timer); 
+    m_timerlist.AppendObject(timer);
     return NS_OK;
   }
-  
+
   NS_ENSURE_SUCCESS(res, res);
   attr = NS_LITERAL_STRING("data");
   elem->GetAttribute(attr, dataPath);
@@ -4299,7 +4299,7 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
       res = destURL->GetSpec(dirPath);  //We'll take the parent of the nsILocalFile we create from this
       char * unescaped = strdup(dirPath.get());
       nsUnescape(unescaped);
-      dirPath.Assign(unescaped, PR_UINT32_MAX); 
+      dirPath.Assign(unescaped, PR_UINT32_MAX);
 //      res = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(destFile));
       res = NS_GetFileFromURLSpec(dirPath, getter_AddRefs(destIFile));
       nsCOMPtr<nsIFile> dirAsFile;
@@ -4327,7 +4327,7 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
         NS_ADDREF(elemPtr);  //Have to do this to ensure that the pointer passed to the timer callback sticks around
         timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, static_cast<void*>(elemPtr), 200,
                                   nsITimer::TYPE_ONE_SHOT);
-        m_timerlist.AppendObject(timer); 
+        m_timerlist.AppendObject(timer);
         return NS_OK;
       }
 
@@ -4379,8 +4379,8 @@ NS_IMETHODIMP msiContentFilter::copyfiles(
       NS_ADDREF(elemPtr);  //Have to do this to ensure that the pointer passed to the timer callback sticks around
       timer->InitWithFuncCallback(msiContentFilter::SetDataFromTimer, (void*)elemPtr, 200,
                                     nsITimer::TYPE_ONE_SHOT);
-      m_timerlist.AppendObject(timer); 
-      
+      m_timerlist.AppendObject(timer);
+
   }
   return NS_OK;
 }
@@ -4395,11 +4395,11 @@ void msiContentFilter::SetDataFromTimer(nsITimer *aTimer, void *closure)
 //    nsEditor * editor = mystruct->ed;
     nsCOMPtr<nsIDOMNode> parent;
 //    PRInt32 offset;
-    
+
 //    nsresult res = editor->GetNodeLocation(elem, address_of(parent), &offset);
 //    editor->DeleteNode(elem);
 //    editor->InsertNode(elem, parent, offset);
-    
+
 
     nsAutoString dataPath;
     elem->HasAttribute(NS_LITERAL_STRING("data"), &fExists);
@@ -4434,23 +4434,23 @@ void msiContentFilter::ClearTimerList()
   for (i=0; i<n; ++i) {
     nsCOMPtr<nsITimer> timer = m_timerlist[i];
     if (timer)
-        timer->Cancel();        
+        timer->Cancel();
   }
   m_timerlist.Clear();
 }
 
 NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
-  const nsAString & mimeType, 
-  nsIURL *contentSourceURL, 
-  nsIDOMDocument *sourceDocument, 
-  PRBool willDeleteSelection, 
-  nsIDOMNode **docFragment, 
-  nsIDOMNode **contentStartNode, 
-  PRInt32 *contentStartOffset, 
+  const nsAString & mimeType,
+  nsIURL *contentSourceURL,
+  nsIDOMDocument *sourceDocument,
+  PRBool willDeleteSelection,
+  nsIDOMNode **docFragment,
+  nsIDOMNode **contentStartNode,
+  PRInt32 *contentStartOffset,
   nsIDOMNode **contentEndNode,
-  PRInt32 *contentEndOffset, 
+  PRInt32 *contentEndOffset,
   nsIDOMNode **insertionPointNode,
-  PRInt32 *insertionPointOffset, 
+  PRInt32 *insertionPointOffset,
   PRBool *continueWithInsertion)
 {
   nsresult res(NS_OK);
@@ -4490,7 +4490,7 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
         copyfiles(srcDoc, doc, nsnull, elem, i);
       }
       else
-      {  
+      {
         objnodes->GetLength(&count);
         for (i = 0; i < count; i++) {
           copyfiles(srcDoc, doc, objnodes, nsnull, i);
@@ -4503,7 +4503,7 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
         copyfiles(srcDoc, doc, nsnull, elem, i);
       }
       else
-      {  
+      {
         objnodes->GetLength(&count);
         for (i = 0; i < count; i++) {
           copyfiles(srcDoc, doc, objnodes, nsnull, i);
