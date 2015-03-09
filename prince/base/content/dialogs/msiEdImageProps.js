@@ -226,9 +226,9 @@ function Startup()
          wrapperElement = selectedElement;
          objList = msiNavigationUtils.getChildrenByTagName(wrapperElement, "object");
          imageElement = objList[0];
-      } else if (selectedElement === "object"){
+      } else if (selectedElement.nodeName === "object"){
          existingImage = true;
-         imageElement = selctedElement;
+         imageElement = selectedElement;
          if (imageElement.parentNode.nodeName !== "msiframe"){
              wrapperElement = gEditor.createElementWithDefaults("msiframe");
              wrapperElement.setAttribute("frametype", "image");
