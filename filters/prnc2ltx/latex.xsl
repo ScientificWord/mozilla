@@ -559,9 +559,9 @@
 
 <xsl:template match="html:bodyText|mml:bodyText">
    <xsl:variable name="content">
-     <xsl:value-of select="."/>
+     <!-- xsl:value-of select="."/ -->
+     <xsl:apply-templates />
    </xsl:variable>
-
   <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
     <xsl:call-template name="maketables" />
   </xsl:if>
