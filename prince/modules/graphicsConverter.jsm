@@ -111,6 +111,7 @@ var graphicsConverter = {
     var dollar2; // these correspond to $1 and $2 in graphicsConversions.ini
     var theProcess;
     var utilityFile;
+    var programFile;
     var extension;
     var paramArray;
     var paramArray1 = [];
@@ -121,9 +122,9 @@ var graphicsConverter = {
     var returnPath; // the path of the file to display, relative to baseDir
     var pathParts = graphicsFile.path.split('.');
     if (regex0.test(pathParts[pathParts.length - 1]) || regex1.test(pathParts[pathParts.length - 1])) { // there is a '/' past the last '.', so there is no useful extension -- shouldn't happen
-      return; 
+      return;
     }
-    if (pathParts.length > 1) 
+    if (pathParts.length > 1)
     {
       extension = pathParts[pathParts.length-1];
       pathParts.length = pathParts.length - 1; //delete the extension
@@ -149,28 +150,26 @@ var graphicsConverter = {
         if (this.OS === "win") progname += ".exe";
         theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
         // use progname unchanged if it contains a '/', otherwise assume it is in the utilties dir.
-        if (commandparts[0]=="sam2p") {
-          utilityFile = toolsDir.clone();
-          utilityFile = utilityFile.parent;
-          utilityFile.append("shell"+(this.OS==="win"?".cmd":".bash"));
+        if (!regex0.test(progname) && !regex1.test(progname))
+        {
+          programFile = toolsDir.clone();
+          programFile.append(progname);
         }
         else if (regex0.test(progname) || regex1.test(progname)) {
-          utilityFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-          utilityFile.initWithPath(progname);
+          programFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+          programFile.initWithPath(progname);
         }
-        else {
-          utilityFile = toolsDir.clone();
-          utilityFile.append(progname);
-        }
-        theProcess.init(utilityFile);
+
+        theProcess.init(programFile);
         // build parameters
         // bRunSynchronously = (i+1) < commandlist.length;  // run all commands but the last synchronously
         if (width && height) {
           resolutionParameter = this.setResolutionParameters(graphicsFile, width, height );
         }
-        for (j = 0; j < commandparts.length; j++) {
+        // We skip over the program name in building the parameters, so we start j at 1, not 0
+        for (j = 1; j < commandparts.length; j++) {
           param = commandparts[j];
-          if (j==0 && param != "sam2p") continue;
+       //   if (j==0 && param != "sam2p") continue;
           param = param.replace("$1", dollar1);
           if (regex2.test(param)) {
             param = param.replace("$2", dollar2);
@@ -182,10 +181,10 @@ var graphicsConverter = {
             if (/gcache/.test(param)) this.assureSubdir('gcache');
             if (/graphics/.test(param)) this.assureSubdir('graphics');
             if (this.OS === "win") {
-              param = this.baseDir.path + '\\' + param;  
-            } 
+              param = this.baseDir.path + '\\' + param;
+            }
             else {
-              param = this.baseDir.path + '/' + param;                
+              param = this.baseDir.path + '/' + param;
             }
             param = param.replace(/\"/g,'');
           }
@@ -209,7 +208,7 @@ var graphicsConverter = {
   // A function to call when an existing graphics object changes dimensions, requiring
   // a new preview file optimized for those dimensions.
   setResolutionParameters: function(graphicsFile, newWidth, newHeight) {
-    // should we be saving the old dimensions in the node attributes, to skip this 
+    // should we be saving the old dimensions in the node attributes, to skip this
     // function when possible?
     // newWidth and newHeight are in pixels?
     var originalUrl = graphicsFile.path;
@@ -220,7 +219,7 @@ var graphicsConverter = {
     var origDimension = null;
     var resolutionParameter;
     var intermediate;
-    var w, h; 
+    var w, h;
     var pixelsPerInch;
 
     switch (extension) {
@@ -338,14 +337,14 @@ var graphicsConverter = {
     {
       var bReset = false;
       // htWdth fields are in Adobe Big Points
-      dimensions.width  = htWdth.wdth; 
+      dimensions.width  = htWdth.wdth;
       dimensions.height = htWdth.ht;
       dimensions.unit = 'bp';
       // bReset = true;
       // if (frameTabDlg.actual.selected || bReset)
       //   setActualOrDefaultSize();
 
-      // SetSizeWidgets( Math.round(this.handler.getValueAs(frameTabDlg.widthInput.value,"px")), 
+      // SetSizeWidgets( Math.round(this.handler.getValueAs(frameTabDlg.widthInput.value,"px")),
       //                 Math.round(this.handler.getValueAs(frameTabDlg.heightInput.value,"px")) );
     }
     return dimensions;
@@ -467,7 +466,7 @@ var graphicsConverter = {
   //  mode - a string, either "tex" or "import" (defaults to "import")
   //  aWindow = a reference window (typically the ambient variable "window"), mostly to pass to the getOS() function
   //  callbackObject = object to be used for timer callbacks; must implement the usual "notify(timer)" function, and
-  //                   additionally (though it needn't do anything) a startLoading function - 
+  //                   additionally (though it needn't do anything) a startLoading function -
   //                       startLoading(graphicsInFile, graphicsOutFile, theProcess, mode, theTimer)
   //                   which will be called to allow the object to store the source and target files, process, mode, and timer
   //    NOTE: If callbackObject is null, the conversion will be run as a synchronous process, and will thus block the calling thread.
@@ -534,7 +533,7 @@ var graphicsConverter = {
     }
   },
 
-  //Calling this function with an array of objects of the form {mFile : nsIFile, mOutDirectory : nsIFile, mMode : modeString} to convert will 
+  //Calling this function with an array of objects of the form {mFile : nsIFile, mOutDirectory : nsIFile, mMode : modeString} to convert will
   //  return a graphicsMultipleTimerHandler (see bottom of file). This handler will record successes and failures for
   //  each conversion process; after mSecTimeLimit number of milliseconds it will stop any unfinished processes.
   //  It can initially be queried to get the target files by calling getTargetFile(sourceFile, mode).
@@ -678,7 +677,7 @@ var graphicsConverter = {
     }
     if (!this.isDisplayableGraphicFile(gfxFileStr))
       return false;
-    
+
 
     var theUnits = objElement.getAttribute("units");
     if (!theUnits || !theUnits.length)
@@ -708,7 +707,7 @@ var graphicsConverter = {
     var graphicURI = msiURIFromString(gfxFileStr);
     var graphicFile = msiFileFromFileURL(graphicURI);
     var importName = this.copyAndConvert(graphicFile, false, theWidth, theHeight);
-    
+
     if (importName){
       objElement.setAttribute("src", importName);
       objElement.setAttribute("data", importName);
@@ -728,7 +727,7 @@ var graphicsConverter = {
 //     var nameAndExt = this.splitExtension(gfxFileStr);
 //     if (this.canUseFormatForTypeset(nameAndExt.ext))
 //       return false;
-// 
+//
 //     var bChanged = false;
 //     var graphicsDirNames = ["tcache", "graphics", "gcache"];
 //     var targetDir, dirEntries;
@@ -747,8 +746,8 @@ var graphicsConverter = {
 //           return false; //no action needed
 //       }
 //     }
-// 
-// 
+//
+//
 //     //if we get here, we need to generate a typesettable graphic file
 //     targetDir = documentDir.clone();
 //     targetDir.append("tcache");
@@ -766,13 +765,13 @@ var graphicsConverter = {
 //       var newGraphic = documentDir.clone();
 //       newGraphic.append("tcache");
 //       newGraphic.append(nameAndExt.name + '.png');
-//                        
+//
 //       var newGraphicPath = msiMakeUrlRelativeTo(newGraphic, documentDir);
-// 
-//       if (objElement.hasAttribute("src")) 
+//
+//       if (objElement.hasAttribute("src"))
 //          objElement.removeAttribute("src");
 //       objElement.setAttribute("src", newGraphicPath);
-//       if (objElement.hasAttribute("data")) 
+//       if (objElement.hasAttribute("data"))
 //          objElement.removeAttribute("data");
 //       objElement.setAttribute("data", newGraphicPath);
 //       bChanged = true;
@@ -1007,7 +1006,7 @@ var graphicsTimerCallbackBase = {
 };
 
 // This timer handler will handle tracking the success or failure of the conversion up to the time limit passed in.
-//   Either when the conversion succeeds (or definitively fails) or at the end of the time limit, a function the 
+//   Either when the conversion succeeds (or definitively fails) or at the end of the time limit, a function the
 //   terminateCallback object should contain will be called. It will be passed the parameters:
 //     endCallback(nsIFile sourceGraphicsFile, nsIFile targetGraphicsFile, importStatus, string errorMessage, data)
 //   The importStatus parameter is one of the constants in graphicsTimerCallbackBase, so one of:
@@ -1131,18 +1130,18 @@ graphicsMultipleTimerHandler.prototype = graphicsMultipleTimerBase;
 function msiMakeUrlRelativeTo(inputFile, baseDir) {
    var inputURL = msiFileURLFromFile(inputFile);
    var baseURL = msiFileURLFromFile(baseDir);
- 
+
    var basePath = baseURL.path;
    var urlPath = inputURL.path;
 
    // Get base filename before we start chopping up the basePath
    var baseFilename = baseURL.fileName;
-   
+
    var doCaseInsensitive = (this.graphicsConverter.OS = 'win');
    if (doCaseInsensitive)
      basePath = basePath.toLowerCase();
- 
-    
+
+
    // Both url and base paths now begin with "/"
    // Look for shared dirs starting after that
    urlPath = urlPath.slice(1);
@@ -1207,13 +1206,13 @@ function msiMakeUrlRelativeTo(inputFile, baseDir) {
 // {
 //   if (!urlspec || IsUrlAboutBlank(urlspec))
 //     return "";
-// 
+//
 //   var IOService = GetIOService();
 //   if (!IOService)
 //     return "";
-// 
+//
 //   var filename;
-// 
+//
 //   try {
 //     var uri = IOService.newURI(urlspec, null, null);
 //     if (uri)
@@ -1223,6 +1222,6 @@ function msiMakeUrlRelativeTo(inputFile, baseDir) {
 //         filename = url.fileName;
 //     }
 //   } catch (e) {}
-// 
+//
 //   return filename ? filename : "";
 // }
