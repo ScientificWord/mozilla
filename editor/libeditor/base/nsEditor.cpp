@@ -1557,7 +1557,7 @@ NS_IMETHODIMP nsEditor::CreateNode(const nsAString& aTag,
 /**
  * Sometimes we need to put a node where the rules do not allow it. A common example is inserting text into the
  * body tag or into a td tag. We do not allow this, but before aborting, we check to see if we can put in a default
- * paragraph tag to go between the text tag and the body or table tag. 
+ * paragraph tag to go between the text tag and the body or table tag.
  *
  * node -- the node being inserted
  * parent -- in: the node into which we are inserting
@@ -1566,11 +1566,11 @@ NS_IMETHODIMP nsEditor::CreateNode(const nsAString& aTag,
  * _retval -- the final offset into which we are inserting. It may be different from aPosition because of node splitting.
  */
 
-NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node, 
-                                                 nsIDOMNode **  outNode, 
-                                                 nsIDOMNode *   parent, 
-                                                 nsIDOMNode **  outParent, 
-                                                 PRInt32        aPosition, 
+NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
+                                                 nsIDOMNode **  outNode,
+                                                 nsIDOMNode *   parent,
+                                                 nsIDOMNode **  outParent,
+                                                 PRInt32        aPosition,
                                                  PRInt32 *      _retval)
 {
   nsresult res = NS_OK;
@@ -1593,7 +1593,7 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   if (content->TextIsOnlyWhitespace())
   tlm->GetRealClassOfTag(tagName, nsnull, tagclass);
     // Search up the parent chain to find a suitable container
-  while (!CanContainTag(ptr, tagName) && !(content && content->TextIsOnlyWhitespace()))
+  while (!CanContainTag(ptr, tagName)) // && !(content && content->TextIsOnlyWhitespace()))
   {
     // If the current parent is a root (body or table element)
     // then go no further - we can't insert. See if interposing a default paragraph helps.
@@ -1723,7 +1723,7 @@ NS_IMETHODIMP nsEditor::SaveSelection(nsISelection * selection)
   {
     result = DoTransaction(txn);
   }
-  
+
   return result;
 }
 
@@ -1848,7 +1848,7 @@ nsEditor::SetSelectionOnCursorTag(nsIDOMNode * node, PRBool * setCursor)
   nsCOMPtr<nsIDOMNode> selNode;
   nsCOMPtr<nsIDOMNode> cursorNode;
   PRUint32 nodeCount = 0;
-  PRInt32 selOffset; 
+  PRInt32 selOffset;
   PRBool rv = PR_FALSE;
   nsCOMPtr<nsISelection> selection;
   element = do_QueryInterface(node);
@@ -4141,10 +4141,21 @@ PRBool
 nsEditor::CanContainTag(nsIDOMNode* aParent, const nsAString &aChildTag)
 {
   nsCOMPtr<nsIDOMElement> parentElement = do_QueryInterface(aParent);
+  nsCOMPtr<nsIDOMNode> grandParentNode;
+  nsCOMPtr<nsIDOMElement> grandParentElement;
   if (!parentElement) return PR_FALSE;
   nsAutoString parentTag;
   parentElement->GetTagName(parentTag);
-  if (parentTag.EqualsLiteral("#text")) return (aChildTag.EqualsLiteral("#tesxt"));
+  if (parentTag.EqualsLiteral("#text")) {
+    // we want to guard against giving permission to put real text into an empty white space node
+    parentElement->GetParentNode(getter_AddRefs(grandParentNode));
+    if (grandParentNode) {
+      grandParentElement = do_QueryInterface(grandParentElement);
+      grandParentElement->GetTagName(parentTag);
+      return TagCanContainTag(parentTag, aChildTag);
+    }
+    return PR_FALSE;
+  }
   PRBool isMath = nsHTMLEditUtils::IsMath(aParent);
   if (isMath)
   {
@@ -4502,9 +4513,9 @@ nsEditor::GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset)
 
 
 ///////////////////////////////////////////////////////////////////////////
-// GetStartNodeAndOffset: returns whatever the start parent & offset is of 
+// GetStartNodeAndOffset: returns whatever the start parent & offset is of
 //                        the first range in the selection.
-nsresult 
+nsresult
 nsEditor::GetStartNodeAndOffset(nsISelection *aSelection,
                                        nsIDOMNode **outStartNode,
                                        PRInt32 *outStartOffset)
@@ -4533,9 +4544,9 @@ nsEditor::GetStartNodeAndOffset(nsISelection *aSelection,
 
 
 ///////////////////////////////////////////////////////////////////////////
-// GetEndNodeAndOffset: returns whatever the end parent & offset is of 
+// GetEndNodeAndOffset: returns whatever the end parent & offset is of
 //                        the first range in the selection.
-nsresult 
+nsresult
 nsEditor::GetEndNodeAndOffset(nsISelection *aSelection,
                                        nsIDOMNode **outEndNode,
                                        PRInt32 *outEndOffset)

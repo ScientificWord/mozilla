@@ -731,7 +731,7 @@ var msiReviseMatrixCmd =
 // jcs    theMatrixData.initFromSelection(editor.selection, editorElement);
 // jcs//    var theMatrixData = msiGetPropertiesObjectFromSelection(editorElement);
 // jcs    var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
-// jcs    var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank", 
+// jcs    var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank",
 // jcs      "modal,chrome,resizable,close,titlebar,dependent", editorElement, aCommand, this, theData);
   }
 };
@@ -2216,10 +2216,10 @@ function insertmathunit(unitName, editorElement)
     var bUsedAppearance = false;
 
     if ( (unitName === "minarc") || (unitName === "secarc") ){
-       
+
        dump("unitName is minarc or minsec\n");
        mathmlEditor.InsertSuperscript();
-       
+
     } else if (nameData.appearance != null) {
 
       if (("nodeName" in nameData.appearance) && nameData.appearance.childNodes.length > 0)
@@ -3433,7 +3433,7 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
           //   while (o++ < offset + i) p = p.nextSibling;
           //   newSelection.startNode = p;
           //   newSelection.startOffset = 0;
-          // } 
+          // }
           // if (lastnode && i===text.length-1) {
           //   o = 0;
           //   p = parent.firstChild;
@@ -3536,7 +3536,7 @@ function textToMath(editor)
       {
         node = enumerator.getNext();
         if (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))
-          nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1); 
+          nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1);
       }
     }
 	}
@@ -3545,7 +3545,7 @@ function textToMath(editor)
 
 function toggleMathText(editor)
 {
-  if (editor.tagListManager.selectionContainedInTag("math",null))
+  if (editor.tagListManager.selectionContainedInTag("math",null) && !editor.tagListManager.selectionContainedInTag("mtext",null))
   {
     try {
       mathToText(editor);

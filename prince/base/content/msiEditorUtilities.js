@@ -727,7 +727,7 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent) {
       if (!('msiClearEditorTimerList' in theWindow) || theWindow.msiClearEditorTimerList === null)
         theWindow.msiClearEditorTimerList = [];
       theWindow.msiClearEditorTimerList.push(nNewTimer);
-      newTimerData.nTimerID = nNewTimer;                       
+      newTimerData.nTimerID = nNewTimer;
     }
     //To Do: re-parent appropriate dialogs at this point? or if there's a timer set, wait for it?
     theWindow.msiActiveEditorElement = editorElement;
@@ -3605,7 +3605,7 @@ function isPathBeingEdited(path) {
   var os = getOS(window);
   if (os === 'win')
     uriString = uriString.replace(/\.sci$/, '_work\\main.xhtml');
-  else 
+  else
     uriString = uriString.replace(/\.sci$/, '_work/main.xhtml');
 
   var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService();
@@ -8519,7 +8519,7 @@ var msiNavigationUtils = {
     return thePara;
   },
   nodeIsInMath: function (aNode) {
-    return this.getParentOfType(aNode, 'math') !== null;
+    return (this.getParentOfType(aNode, 'math') !== null);
   },
   isMathTag: function (tagName) {
     switch (tagName) {
@@ -11223,18 +11223,32 @@ function setMathTextToggle(editorElement, ismath) {
   var inlineMathState;
   // watched by the inline Math command
   var noInlineMathState;
+  var isInMText = false;
+  var editor;
+  var selNode;
   // watched by the Text command
   if (ismath == null) {
     ismath = isInMath(editorElement);
+  }
+  if (ismath) {
+    editor = msiGetEditor(editorElement);
+    selNode = editor.getSelectionContainer();
+    isInMText = msiNavigationUtils.getParentOfType(selNode, 'mtext') !== null;
   }
   inMathBroadcaster = document.getElementById('inMathBroadcaster');
   inlineMathState = document.getElementById('inlineMathState');
   noInlineMathState = document.getElementById('noInlineMathState');
   if (ismath) {
-    inMathBroadcaster && inMathBroadcaster.setAttribute('disabled', 'true');
+    if (!isInMText) {
+      inMathBroadcaster.setAttribute('disabled', 'true');
+      document.getElementById('cmd_MSImathtext').setAttribute('isMath', 'true');
+    }
+    else {
+      inMathBroadcaster.removeAttribute('disabled');
+      document.getElementById('cmd_MSImathtext').setAttribute('isMath', 'false');
+    }
     noInlineMathState && noInlineMathState.removeAttribute('hidden');
     inlineMathState && inlineMathState.setAttribute('hidden', 'true');
-    document.getElementById('cmd_MSImathtext').setAttribute('isMath', 'true');
   } else {
     inMathBroadcaster && inMathBroadcaster.removeAttribute('disabled');
     inlineMathState && inlineMathState.removeAttribute('hidden');
