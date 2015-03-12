@@ -2163,7 +2163,7 @@ nsFrameSelection::GetPrevNextBidiLevels(nsIContent *aNode,
   PRBool fBailing = PR_FALSE;
   nsresult rv = currentFrame->GetFrameFromDirection(direction, PR_FALSE,
                                                     aJumpLines, PR_TRUE,
-                                                    &newFrame, &offset, &jumpedLine, &math,
+                                                    &newFrame, &offset, &jumpedLine, &peekoffset,
                                                     &fBailing);
   if (NS_FAILED(rv))
     newFrame = nsnull;
