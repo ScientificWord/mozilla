@@ -552,7 +552,7 @@ var msiResizeListener =
         while (decomposedRelativePath[0] && decomposedRelativePath[0].length > 0) {
           graphicsDir.append(decomposedRelativePath.shift());
         }
-        
+
         graphicsConverter.copyAndConvert(graphicsDir, false, msiCSSUnitsList.convertUnits(newWidth, "px", theUnits),
           msiCSSUnitsList.convertUnits(newHeight, "px", theUnits) );
 
@@ -630,7 +630,7 @@ var msiResizeListener =
     catch(e) {
       msidump( e.message );
     }
-  },  
+  },
 }
 
 function msiResizeListenerForEditor(editor)
@@ -800,7 +800,7 @@ function coalesceDocumentOptions(editor)
     }
     for (i=0; i < optionlist.length; i++) {
       option = optionlist[i].split(/\s*=\s*/);
-      if (option[1] && option[1].length > 0) 
+      if (option[1] && option[1].length > 0)
         optionval = option[1];
       else optionval = option[0];
       colist.setAttribute("co_" + option[0], optionval);
@@ -1753,7 +1753,7 @@ function msiEditorLoadUrl(editorElement, url, markerStr)
              null,                                         // referrer
              null,                                         // post-data stream
              null);
-  } 
+  }
   catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
 }
 
@@ -4833,7 +4833,7 @@ function msiSetEditMode(mode, editorElement)
       }
       editorElement.makeEditable("html");
     }
- 
+
     // Clear out the string buffers
     msiClearSource(editorElement);
     editorElement.contentWindow.focus();
@@ -5080,7 +5080,7 @@ function msiEditorGetShowInvisibles(editorElement)  // returns viewSettings
   var viewSettings = {};
   var theBody = msiGetRealBodyElement(editor.document);
   theBody.getAttribute("showinvis") === "true"
-  
+
   viewSettings.showInvisibles = theBody.getAttribute("showinvis")==="true";
   viewSettings.showSectionExpanders = theBody.getAttribute("showexpanders") ==="true";
   viewSettings.showShortTitles = theBody.getAttribute("showshort") === "true";
@@ -5941,7 +5941,7 @@ function msiGetEnclosingTableOrMatrixDimensions(editorElement, nodeInTable)
   else if (theMatrix)
   {
     for (var ix = 0; ix < theMatrix.childNodes.length; ++ix)
-    {     
+    {
       switch(msiGetBaseNodeName(theMatrix.childNodes[ix]))
       {
         case "mtr":
@@ -6142,7 +6142,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
     var colspan = 1;
     var rowspan = 1;
 
-    try 
+    try
     {
       switch(msiGetBaseNodeName(cellNode))
       {
@@ -6831,13 +6831,13 @@ msiTablePropertiesObjectData.prototype =
   mColSelectionArray : [],
 
 
-  matrixStrArray : [//"MatrixCell", 
-                    "MatrixCellGroup", 
-                    // "MatrixRow", "MatrixColumn", 
+  matrixStrArray : [//"MatrixCell",
+                    "MatrixCellGroup",
+                    // "MatrixRow", "MatrixColumn",
                     "Matrix"],
-  tableStrArray : [//"TableCell", 
-                    "TableCellGroup", 
-                    // "TableRow", "TableColumn", 
+  tableStrArray : [//"TableCell",
+                    "TableCellGroup",
+                    // "TableRow", "TableColumn",
                     "Table"],
 
 //Interface:
@@ -7171,9 +7171,9 @@ msiTablePropertiesObjectData.prototype =
     // (ii) We don't want to show Table Row properties only if the rows selection includes the whole table, and similarly for columns.
     //(iii) if we do have a cell then the others should show up if present? (If we have a cell in a one-row table, would we want to activate
     //      column properties?)
-    var ourArray = [//"mCell", 
-      "mSelection", 
-      //"mRowSelection", "mColSelection", 
+    var ourArray = [//"mCell",
+      "mSelection",
+      //"mRowSelection", "mColSelection",
       "mTableElement"];
     var strArray = null;
     var commandArray = null;
@@ -7182,16 +7182,16 @@ msiTablePropertiesObjectData.prototype =
     if (this.isMatrix())
     {
 //    //  strArray = ["MatrixCell", "MatrixCellGroup", "MatrixRow", "MatrixColumn", "Matrix"];
-      //commandArray = [//"cmd_MSIreviseMatrixCellCmd", 
-      //"cmd_MSIreviseMatrixCellGroupCmd", //"cmd_MSIreviseMatrixRowsCmd", "cmd_MSIreviseMatrixColsCmd", 
+      //commandArray = [//"cmd_MSIreviseMatrixCellCmd",
+      //"cmd_MSIreviseMatrixCellGroupCmd", //"cmd_MSIreviseMatrixRowsCmd", "cmd_MSIreviseMatrixColsCmd",
       //"cmd_MSIreviseMatrixCmd"];
     }
     else
     {
 //      strArray = ["TableCell", "TableCellGroup", "TableRow", "TableColumn", "Table"];
-      commandArray = [//"cmd_editTableCell", 
-      "cmd_editTableCellGroup", 
-      //"cmd_editTableRows", "cmd_editTableCols", 
+      commandArray = [//"cmd_editTableCell",
+      "cmd_editTableCellGroup",
+      //"cmd_editTableRows", "cmd_editTableCols",
       "cmd_editTable"];
     }
 
@@ -8095,7 +8095,7 @@ msiEquationPropertiesObjectData.prototype =
          }
       }
     }
-      
+
     if (this.mDisplay)
     {
       if (!this.mTableElement)
@@ -8112,7 +8112,7 @@ msiEquationPropertiesObjectData.prototype =
       //   this.mbAlignmentEnabled = true;
       //   this.mAlignment = theAttr;
       // }
-  
+
       theAttr = this.mDisplay.getAttribute("subEquationNumbers");
       if (theAttr && theAttr == "true")
       {
@@ -9408,7 +9408,7 @@ function msiGoUpdateTableMenuItems(commandset, editorElement)
         try {
           msiGoUpdateCommand(commandID, editorElement);
         }
-        catch(e) {          
+        catch(e) {
         }
       }
       // Directly set with the values calculated here
@@ -9421,15 +9421,15 @@ function msiGoUpdateTableMenuItems(commandset, editorElement)
         try {
             msiGoSetCommandEnabled(commandID, enabledIfTable, editorElement);
         }
-        catch(e) {          
+        catch(e) {
         }
-      } 
-      else 
+      }
+      else
       {
         try {
           msiGoSetCommandEnabled(commandID, enabled, editorElement);
         }
-        catch(e) {          
+        catch(e) {
         }
       }
     }
@@ -9795,7 +9795,7 @@ function insertStructToolbarButton(tag, toolbar, realElement, theDocument)
     catch(e)
     {
       msidump(e.message);
-    }     
+    }
   }
   button = theDocument.createElementNS(XUL_NS, "toolbarbutton");
   button.setAttribute("label",   "<" + tag + ">");
@@ -9814,7 +9814,7 @@ function insertStructToolbarButton(tag, toolbar, realElement, theDocument)
 }
 
 function msiUpdateStructToolbar(editorElement, noopt)
-// noopt means no optimization. It is true only when the cursor postion (node and offset) 
+// noopt means no optimization. It is true only when the cursor postion (node and offset)
 // has not changed, but the ancestors of node might have changed.
 {
   const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
@@ -9878,7 +9878,7 @@ function msiUpdateStructToolbar(editorElement, noopt)
   // the theory here is that by following up the chain of parentNodes,
   // we will eventually get to the root <body> tag. But due to some bug,
   // there may be multiple <body> elements in the document.
-  setMathTextToggle(editorElement, false);
+  setMathTextToggle(editorElement, null);
   var cursorSetProps = editor.readCursorSetProps().split(";"); // these are tags set on the cursor
   var cursorClearedProps = editor.readCursorClearedProps().split(";"); // these are tags cleared at the cursor
   for (i = 0; i < cursorClearedProps.length; i++)
@@ -10176,7 +10176,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       openFontColorDialog(elementName,element);
     }
-    else if (elementName == "bibitem") 
+    else if (elementName == "bibitem")
     {
       msiGoDoCommand("cmd_reviseManualBibItemCmd");
     }
@@ -10491,7 +10491,7 @@ function msiGoSetMenuValue(command, labelAttribute, editorElement) { msiCommandU
 function msiGoSetAccessKey(command, valueAttribute, editorElement) { msiCommandUpdater.setAccessKey(command, valueAttribute, editorElement); }
 function msiGoOnEvent(node, event) { msiCommandUpdater.onEvent(node, event); }
 
-var msiDialogEditorContentFilterBase = 
+var msiDialogEditorContentFilterBase =
 {
   reject : 0,
   accept : 1,
@@ -10909,7 +10909,7 @@ function openParaTagDialog(tagname, node, editorElement)
   }
   else{
     msiDoModelessPropertiesDialog("chrome://prince/content/paragraphproperties.xul", "paraproperties", "chrome,close,titlebar,resizable, dependent", editorElement, "cmd_reviseParagraphNode", node, node);
-  } 
+  }
 }
 
 function openEnvTagDialog(tagname, aNode, editorElement)
@@ -11393,7 +11393,7 @@ function msiGetSaveLocationForImage(editorElement)
 //    var lastDot = suggestedFileName.lastIndexOf(".");
 //    if (lastDot != -1)
 //      suggestedFileName = suggestedFileName.slice(0, lastDot);
-//  
+//
 //    fp.defaultString = suggestedFileName;
 //  }
 
