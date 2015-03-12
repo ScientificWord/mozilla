@@ -1460,7 +1460,7 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
   if (NS_FAILED(res)) return res;
 
   // dont put text in places that can't have it
-  if (!bPlaintext && !mHTMLEditor->IsTextNode(selNode) &&
+  if (!bPlaintext &&
       !mHTMLEditor->CanContainTag(selNode, NS_LITERAL_STRING("#text")))
   {
 

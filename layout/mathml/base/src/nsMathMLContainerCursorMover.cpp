@@ -24,13 +24,13 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
   nsIFrame* pFrame;
   pFrame = m_pMyFrame;
   nsIAtom* whoAmI;
-  whoAmI = (pFrame->GetContent())->Tag(); 
+  whoAmI = (pFrame->GetContent())->Tag();
   nsIFrame* pTempFrame;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (leavingFrame)
   {
     NS_ASSERTION(m_pMyFrame == GetSignificantParent(leavingFrame), "In MoveOutToRight, leavingFrame must be a child!");
-    whoAmI = (leavingFrame->GetContent())->Tag(); 
+    whoAmI = (leavingFrame->GetContent())->Tag();
     leavingFrame =  GetTopFrameForContent(leavingFrame);
     pTempFrame = leavingFrame->GetNextSibling();
     if (pTempFrame)
@@ -52,7 +52,7 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
   }
   // if we get here, leavingFrame is null or there is no child after leavingFrame. Leave this frame.
   pTempFrame = GetSignificantParent(pFrame);
-  whoAmI = (pTempFrame->GetContent())->Tag(); 
+  whoAmI = (pTempFrame->GetContent())->Tag();
   // Hack alert. Most MathML tags have corresponding frames, but the menclose tag has a mathmlrowframe, and so
   //  uses this code. When the cursor leaves an menclose tag, that counts as a visible motion, so count must be decremented.
   //  This accounts for the next few lines
@@ -107,10 +107,10 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
 //    NS_ASSERTION(m_pMyFrame == GetTopFrameForContent(GetSignificantParent(leavingFrame)), "In MoveOutToLeft, leavingFrame must be a child!");
     // awkward getprevioussibling
     pTempFrame = pFrame->GetFirstChild(nsnull);
-    if (pTempFrame == leavingFrame) 
+    if (pTempFrame == leavingFrame)
       pTempFrame = nsnull; //there is no predecessor to leavingFrame
     pTempFrame = GetTopFrameForContent(pTempFrame);
-    while (pTempFrame && (pTempFrame->GetNextSibling() != leavingFrame)) 
+    while (pTempFrame && (pTempFrame->GetNextSibling()->GetContent() != leavingFrame.GetContent()))
       pTempFrame = pTempFrame->GetNextSibling();
 
     if (pTempFrame)
@@ -154,7 +154,7 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
   return NS_OK;
 }
 
-PRBool IsTempInput(nsIContent * pContent) 
+PRBool IsTempInput(nsIContent * pContent)
 {
   nsCOMPtr<nsIDOMElement> pContentElement;
   PRBool fResult = PR_FALSE;
@@ -210,7 +210,7 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
           PlaceCursorAfter(pTempFrame, PR_TRUE, aOutFrame, aOutOffset, count);
           *_retval = count;
         }
-        else {          
+        else {
           *aOutOffset = count;
           *aOutFrame = pTempFrame;
           *_retval = count;
@@ -257,7 +257,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   // get last child
   pTempFrame = pFrame->GetFirstChild(nsnull);
-  while (pTempFrame && (pTempFrame->GetNextSibling())) 
+  while (pTempFrame && (pTempFrame->GetNextSibling()))
     pTempFrame = pTempFrame->GetNextSibling();
   if (pTempFrame) frametype = pTempFrame->GetType();
   while (pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
@@ -293,15 +293,15 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
         }
         if (count > 0) {
           // Check for mn
-            
+
           if (pContent ->Tag() == nsGkAtoms::mn_) {
              *aOutOffset = (end - start - count);
           } else {
              *aOutOffset = 0; // was (end - start - count), but we do not want the cursor inside math names or multiple-character operators.
           }
-        
+
         } else {
-          *aOutOffset = end; 
+          *aOutOffset = end;
         }
         *_retval = 0;
       }
