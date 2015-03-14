@@ -1599,7 +1599,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
     }
     result = NS_OK;
   }
-  if (NS_SUCCEEDED(result) && (tHint != mHint))
+  if (NS_SUCCEEDED(result)) // && (tHint != mHint))
   {
     mHint = tHint; //save the hint parameter now for the next time
   }
