@@ -110,7 +110,8 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
     if (pTempFrame == leavingFrame)
       pTempFrame = nsnull; //there is no predecessor to leavingFrame
     pTempFrame = GetTopFrameForContent(pTempFrame);
-    while (pTempFrame && (pTempFrame->GetNextSibling()->GetContent() != leavingFrame->GetContent()))
+    while (pTempFrame && (pTempFrame->GetNextSibling() != leavingFrame))
+    // while (pTempFrame && (pTempFrame->GetNextSibling()->GetContent() != leavingFrame->GetContent()))
       pTempFrame = pTempFrame->GetNextSibling();
 
     if (pTempFrame)
