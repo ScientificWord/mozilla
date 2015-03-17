@@ -193,12 +193,12 @@ public:
       return mDocument;
   }
 
-  nsIViewManager* GetViewManager() { return GetPresShell()->GetViewManager(); } 
+  nsIViewManager* GetViewManager() { return GetPresShell()->GetViewManager(); }
 #ifdef _IMPL_NS_LAYOUT
   nsStyleSet* StyleSet() { return GetPresShell()->StyleSet(); }
 
   nsFrameManager* FrameManager()
-    { return GetPresShell()->FrameManager(); } 
+    { return GetPresShell()->FrameManager(); }
 #endif
 
   void RebuildAllStyleData(nsChangeHint aExtraHint);
@@ -236,7 +236,7 @@ public:
    */
   nsILookAndFeel* LookAndFeel() { return mLookAndFeel; }
 
-  /** 
+  /**
    * Get medium of presentation
    */
   nsIAtom* Medium() { return mMedium; }
@@ -272,7 +272,7 @@ public:
   /**
    * Get the default font corresponding to the given ID.  This object is
    * read-only, you must copy the font to modify it.
-   * 
+   *
    * When aFontID is kPresContext_DefaultVariableFontID or
    * kPresContext_DefaultFixedFontID (which equals
    * kGenericFont_moz_fixed, which is used for the -moz-fixed generic),
@@ -341,7 +341,7 @@ public:
    */
   PRInt32 FontScaler() const { return mFontScaler; }
 
-  /** 
+  /**
    * Get the default colors
    */
   const nscolor DefaultColor() const { return mDefaultColor; }
@@ -355,7 +355,7 @@ public:
   PRBool GetUseFocusColors() const { return mUseFocusColors; }
   PRUint8 FocusRingWidth() const { return mFocusRingWidth; }
   PRBool GetFocusRingOnAnything() const { return mFocusRingOnAnything; }
- 
+
 
   /**
    * Load an image for the target frame. This call can be made
@@ -408,7 +408,7 @@ public:
    * context.
    */
   PRBool IsPaginated() const { return mPaginated; }
-  
+
   PRBool GetRenderedPositionVaryingContent() const { return mRenderedPositionVaryingContent; }
   void SetRenderedPositionVaryingContent() { mRenderedPositionVaryingContent = PR_TRUE; }
 
@@ -475,7 +475,7 @@ public:
   nscoord GetAutoQualityMinFontSize() {
     return DevPixelsToAppUnits(mAutoQualityMinFontSizePixelsPref);
   }
-  
+
   static PRInt32 AppUnitsPerCSSPixel() { return nsIDeviceContext::AppUnitsPerCSSPixel(); }
   PRInt32 AppUnitsPerDevPixel() const  { return mDeviceContext->AppUnitsPerDevPixel(); }
   PRInt32 AppUnitsPerInch() const      { return mDeviceContext->AppUnitsPerInch(); }
@@ -606,7 +606,7 @@ public:
    *
    *  Visual directionality is a presentation method that displays text
    *  as if it were a uni-directional, according to the primary display
-   *  direction only. 
+   *  direction only.
    *
    *  Implicit directionality is a presentation method in which the
    *  direction is determined by the Bidi algorithm according to the
@@ -637,7 +637,7 @@ public:
 
   /**
    * Set the Bidi options for the presentation context
-   */  
+   */
   NS_HIDDEN_(void) SetBidi(PRUint32 aBidiOptions,
                            PRBool aForceRestyle = PR_FALSE);
 
@@ -645,7 +645,7 @@ public:
    * Get the Bidi options for the presentation context
    * Not inline so consumers of nsPresContext are not forced to
    * include nsIDocument.
-   */  
+   */
   NS_HIDDEN_(PRUint32) GetBidi() const;
 
   /**
@@ -711,7 +711,7 @@ public:
      to unsuppress focus in that case.
   */
   NS_HIDDEN_(PRBool) EnsureVisible(PRBool aUnsuppressFocus);
-  
+
 #ifdef MOZ_REFLOW_PERF
   NS_HIDDEN_(void) CountReflows(const char * aName,
                                 nsIFrame * aFrame);
@@ -745,7 +745,7 @@ protected:
   friend class nsRunnableMethod<nsPresContext>;
   NS_HIDDEN_(void) ThemeChangedInternal();
   NS_HIDDEN_(void) SysColorChangedInternal();
-  
+
   NS_HIDDEN_(void) SetImgAnimations(nsIContent *aParent, PRUint16 aMode);
   NS_HIDDEN_(void) GetDocumentColorPreferences();
 
@@ -763,7 +763,7 @@ protected:
   // IMPORTANT: The ownership implicit in the following member variables
   // has been explicitly checked.  If you add any members to this class,
   // please make the ownership explicit (pinkerton, scc).
-  
+
   nsPresContextType     mType;
   nsIPresShell*         mShell;         // [WEAK]
   nsCOMPtr<nsIDocument> mDocument;
@@ -946,8 +946,8 @@ struct nsAutoLayoutPhase {
         // The nsXBLService::LoadBindings call in ConstructFrameInternal
         // makes us hit this one too often to be an NS_ASSERTION,
         // despite how scary it is.
-        NS_WARN_IF_FALSE(mPresContext->mLayoutPhaseCount[eLayoutPhase_FrameC] == 0,
-                         "recurring into frame construction");
+        // NS_WARN_IF_FALSE(mPresContext->mLayoutPhaseCount[eLayoutPhase_FrameC] == 0,
+        //                  "recurring into frame construction");
         break;
       default:
         break;
@@ -995,7 +995,7 @@ private:
 #ifdef MOZ_REFLOW_PERF
 
 #define DO_GLOBAL_REFLOW_COUNT(_name) \
-  aPresContext->CountReflows((_name), (nsIFrame*)this); 
+  aPresContext->CountReflows((_name), (nsIFrame*)this);
 #else
 #define DO_GLOBAL_REFLOW_COUNT(_name)
 #endif // MOZ_REFLOW_PERF
