@@ -11,7 +11,7 @@ class msiMtext : public msiMInsertionBase
 {
 public:
   msiMtext(nsIDOMNode* mathmlNode, PRUint32 offset);
-  NS_IMETHOD Inquiry(nsIEditor * editor, PRUint32 inquiryID, PRBool * result);
+  // NS_IMETHOD Inquiry(nsIEditor * editor, PRUint32 inquiryID, PRBool * result);
 };
 
 #endif // msiMtext_h___
