@@ -3507,7 +3507,7 @@ function mathToText(editor)
   }
 //  if (gProcessor)
 //    gProcessor.reset();
-  coalescemath(null, true);
+//  coalescemath(null, true);
   editor.endTransaction();
 }
 

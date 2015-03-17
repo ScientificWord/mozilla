@@ -11218,6 +11218,7 @@ function processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString) {
   }
   return texStr;
 }
+
 function setMathTextToggle(editorElement, ismath) {
   var inMathBroadcaster;
   var inlineMathState;
