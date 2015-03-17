@@ -601,6 +601,7 @@ var msiResizeListener =
     try {
       var unithandler = new UnitHandler();
       var units;
+      var aVCamObject;
 // skip preserving aspect ratio for now.
 // adjust width or height using aspect ratio when the time comes
 //      var editorElement = msiGetActiveEditorElement();
@@ -623,7 +624,8 @@ var msiResizeListener =
         graph.setGraphAttribute("Height", String(newHeightInUnits));
         graph.reviseGraphDOMElement(parent, false, editorElement);
         if (obj) {
-          doVCamInitialize(obj);
+          aVCamObject= new VCamObject(obj);
+          aVCamObject.init();
         }
       }
     }
@@ -3026,6 +3028,7 @@ function EditorClick(event)
 	    var editor = msiGetEditor(editorElement);
 	    var graphnode = getEventParentByTag(event, "graph");
       var linkNode;
+      var aVCamObject;
       if (!graphnode)
       {
         if (document.getElementById("vcamactive") && document.getElementById("vcamactive").getAttribute("hidden")=="false")
@@ -3040,7 +3043,8 @@ function EditorClick(event)
       {
         var obj = graphnode.getElementsByTagName("object")[0];
         if (obj) {
-          doVCamInitialize(obj);
+          aVCamObject = new VCamObject(obj);
+          aVCamObject.init();
         }
 //        if (obj.wrappedJSObject) obj = obj.wrappedJSObject;  // not necessary here
       }
