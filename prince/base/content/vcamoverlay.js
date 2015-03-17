@@ -9,243 +9,551 @@ happen when the object is instantiated, i.e. clicked on, in doVCamInitialize.
 ******************************************************************************/
 
 /* This code is called both when editing a document with plots, and when displaying
-help files that contain plots. The difference is that in the latter case therer is no
+help files that contain plots. The difference is that in the latter case there is no
 editor element, and msiGetActiveEditorElement is not defined. Hence there are
 a number of try blocks surrounding calls to msiGetActiveEditorElement. */
 
 
-function vcamToolbarFromPlugin() {
-  // sets the state of the toolbar buttoms from the plugin state
-  // Call the function for initialization and after each button action.
-  // Called so that *this* is the VCam object
+// VCamObject definition
 
+// Constructor and prototype
 
-  // Cursor tool section
-  var ct = this.cursorTool;
-  var dim = this.dimension;
-  var anim = this.isAnimated;
-  var za = this.zoomAction;
-  document.getElementById("vc-Reset").removeAttribute("disabled");
-  document.getElementById("vc-FitContents").removeAttribute("disabled");
-  document.getElementById("vc-SnapShot").removeAttribute("disabled");
-  try {
-    msiGetActiveEditorElement();
+var currentVCamObject = null;
+
+function VCamObject( vcampluginObject) {
+
+  if (vcampluginObject.wrappedJSObject) {
+    this.obj = vcampluginObject.wrappedJSObject;
   }
-  catch (e) {
-    document.getElementById("vc-SnapShot").setAttribute("hidden");
+  else {
+    this.obj = vcampluginObject;
   }
-  document.getElementById("vc-SelObj").checked = (ct === 'select');
-  document.getElementById("vc-SelObj").removeAttribute("disabled");
-  document.getElementById("vc-RotateScene").checked = (ct === 'rotate');
-  document.getElementById("vc-RotateScene").removeAttribute("disabled");
-  document.getElementById("vc-Move").checked = (ct === 'move');
-  document.getElementById("vc-Move").removeAttribute("disabled");
-  document.getElementById("vc-Query").checked = (ct === 'query');
-  document.getElementById("vc-Query").removeAttribute("disabled");
-  document.getElementById("vc-AutoZoomIn").checked = (za === 1);
-  document.getElementById("vc-AutoZoomIn").removeAttribute("disabled");
-  document.getElementById("vc-AutoZoomOut").checked = (za === 2);
-  document.getElementById("vc-AutoZoomOut").removeAttribute("disabled");
 
-  // Rotation section
-  if (dim === 3) {
-    document.getElementById("vc-Zoom").checked = (ct === 'zoom');
-    document.getElementById("vc-Zoom").removeAttribute("disabled");
-    var va = this.rotateVerticalAction;
-    document.getElementById("vc-RotateRight").checked = (va === 1);
-    document.getElementById("vc-RotateRight").removeAttribute("disabled");
-    document.getElementById("vc-RotateLeft").checked = (va === 2);
-    document.getElementById("vc-RotateLeft").removeAttribute("disabled");
-    var ha = this.rotateHorizontalAction;
-    document.getElementById("vc-RotateUp").checked = (ha === 1);
-    document.getElementById("vc-RotateUp").removeAttribute("disabled");
-    document.getElementById("vc-RotateDown").checked = (ha === 2);
-    document.getElementById("vc-RotateDown").removeAttribute("disabled");
-
-    // Speed control
-    var spd = this.actionSpeed;
-    if (spd <= 0.125) {
-      document.getElementById("actionspeed8s").checked = true;
-    }
-    else if (spd > 0.125 && spd <= 0.25) {
-      document.getElementById("actionspeed4s").checked = true;
-    }
-    else if (spd > 0.25 && spd <= 0.5) {
-      document.getElementById("actionspeed2s").checked = true;
-    }
-    else if (spd > 0.5 && spd <= 1.0) {
-      document.getElementById("actionspeedN").checked = true;
-    }
-    else if (spd > 1.0 && spd <= 2.0) {
-      document.getElementById("actionspeed2f").checked = true;
-    }
-    else if (spd > 2.0 && spd <= 4.0) {
-      document.getElementById("actionspeed4f").checked = true;
-    }
-    else if (spd > 4.0) {
-      document.getElementById("actionspeed8f").checked = true;
-    }
-    document.getElementById("actionspeed8s").removeAttribute("disabled");
-    document.getElementById("actionspeed4s").removeAttribute("disabled");
-    document.getElementById("actionspeed2s").removeAttribute("disabled");
-    document.getElementById("actionspeedN").removeAttribute("disabled");
-    document.getElementById("actionspeed2f").removeAttribute("disabled");
-    document.getElementById("actionspeed4f").removeAttribute("disabled");
-    document.getElementById("actionspeed8f").removeAttribute("disabled");
-
-  }
-  if (anim) {
-    // animation section, including animation speed control
-    var aspd = this.animationSpeed;
-    if (aspd <= 0.125) document.getElementById("animspeed8s").checked = true;
-    else if (aspd > 0.125 && aspd <= 0.25) document.getElementById("animspeed4s").checked = true;
-    else if (aspd > 0.25 && aspd <= 0.5) document.getElementById("animspeed2s").checked = true;
-    else if (aspd > 0.5 && aspd <= 1.0) document.getElementById("animspeedN").checked = true;
-    else if (aspd > 1.0 && aspd <= 2.0) document.getElementById("animspeed2f").checked = true;
-    else if (aspd > 2.0 && aspd <= 4.0) document.getElementById("animspeed4f").checked = true;
-    else if (aspd > 4.0) document.getElementById("animspeed8f").checked = true;
-    document.getElementById("animspeed8s").removeAttribute("disabled");
-    document.getElementById("animspeed4s").removeAttribute("disabled");
-    document.getElementById("animspeed2s").removeAttribute("disabled");
-    document.getElementById("animspeedN").removeAttribute("disabled");
-    document.getElementById("animspeed2f").removeAttribute("disabled");
-    document.getElementById("animspeed4f").removeAttribute("disabled");
-    document.getElementById("animspeed8f").removeAttribute("disabled");
-  }
 }
 
-function makeSnapshotPath() {
-  var extension;
-  if ( getOS(window) == "win")  {
-    extension = "bmp";
-  } else {
-    extension = "png";
-  }
-  var path;
-  try {
-    var strSrc = this.getAttribute("data") || this.getAttribute("src");
-    var match = /plots\/(.*$)/.exec(strSrc);
-    var fileName = match[1];
-    fileName = fileName.replace(/xv[cz]$/, extension);
-    path = "graphics/" + fileName;
-  } catch (e) {
-    throw new MsiException("Error finding path for plot snapshot", e);
-  }
-  return path;
-}
+VCamObject.prototype = {
 
-function insertSnapshot(abssnapshotpath) {
-  var parent, i, objectlist, element, ssobj, graph, gslist, w, h, units, oldpath, file, url;
-  parent = this.parentNode;
-  objectlist = parent.getElementsByTagName("object");
-  var snapshotUrl = msiFileURLFromAbsolutePath(abssnapshotpath);
-  var snapshotRelUrl;
-  if (snapshotUrl) {
-    snapshotRelUrl= msiMakeRelativeUrl(snapshotUrl.spec);
-  } else {
-    snapshotRelUrl = abssnapshotpath; // we were actually passed a relative url to begin with
-  }
-  for (i = 0; i < objectlist.length;) {
-    element = objectlist[i];
-    if (element.hasAttribute("msisnap")) {
-      parent.removeChild(element);
-    } else {
-      i++;
-    }
-  }
-  graph = msiFindParentOfType(this, "graph");
-  gslist = graph.getElementsByTagName("graphSpec");
-  if (gslist.length > 0) {
-    gslist = gslist[0];
-  }
-  ssobj = this.cloneNode(true); // copies useful attributes
-  ssobj.id = "ss" + ssobj.id;
-  ssobj.removeAttribute("msigraph");
-  ssobj.setAttribute("data", snapshotRelUrl);
-  ssobj.setAttribute("msisnap", "true");
-  ssobj.removeAttribute("type");
-  parent.appendChild(ssobj);
-  if (gslist) { // copy some attributes from the graphspec
-    w = gslist.getAttribute("Width");
-    if (w) {
-      ssobj.setAttribute("naturalWidth", w);
-      ssobj.setAttribute("ltx_width", w);
-    }
-    h = gslist.getAttribute("Height");
-    if (h) {
-      ssobj.setAttribute("naturalHeight", h);
-      ssobj.setAttribute("ltx_height", h);
-    }
-    ssobj.setAttribute("units", gslist.getAttribute("Units"));
-  }
-}
+  // plot info
+  threedplot: false,
+  twodplot: false,
+  animplot: false,
 
-function doMakeSnapshot()
-{
-  var editorElement;
-  try {
-    editorElement = msiGetActiveEditorElement();
-  }
-  catch(e) {
-    return;
-  }
-  msiRequirePackage(editorElement, "wrapfig", "");
-  var doc = editorElement.contentDocument;
-  var ready = this.readyState;
-  if (ready > 1) {
+  // plot control
+  setAnimationTime: null,
+  showAnimationTime: null,
+  setAnimSpeed: null,
+  setLoopMode: null,
+  setActionSpeed: null,
+
+  // plot event handlers
+  onVCamMouseDown: null,
+  onVCamMouseUp: null,
+  onVCamDblClick: null,
+  onVCamDragMove: null,
+  onVCamDrop: null,
+
+  init: function() {
+    this.initToolbar();
+    this.initEventHandlers();
+    },
+
+  initToolbar: function() {
+    // sets the state of the toolbar buttons from the plugin state
+    // Call the function for initialization and after each button action.
+
+    // Cursor tool section
+    var ct = this.obj.cursorTool,
+      dim = this.obj.dimension,
+      anim = this.obj.isAnimated,
+      za = this.obj.zoomAction;
+
+    document.getElementById("vc-Reset").removeAttribute("disabled");
+    document.getElementById("vc-FitContents").removeAttribute("disabled");
+    document.getElementById("vc-SnapShot").removeAttribute("disabled");
     try {
-      var path = makeSnapshotPath.call(this);
-      var abspath;
-      var abspath2;
-      var prefs;
-      var res;
-      var DOMGraph;
-      var graph = null;
-      var plotWrapper = this.parentNode;
-      try {
-        prefs = GetPrefs();
-        res = prefs.getIntPref("swp.graph.snapshotres");
-      } catch (e) {
-        res = 300;
-      }
-      if (graph == null) {
-        graph = new Graph();
-        DOMGraph = msiFindParentOfType(this, "graph");
-        graph.extractGraphAttributes(DOMGraph);
-      }
-      if (editorElement == null) {
-        editorElement = msiGetActiveEditorElement();
-      }
-      abspath = makeRelPathAbsolute(path, editorElement);
-      var snapshotDir = Components.classes["@mozilla.org/file/local;1"].
-        createInstance(Components.interfaces.nsILocalFile);
-      var oldsnapshot;
-      snapshotDir.initWithPath(abspath);
-      oldsnapshot = snapshotDir.clone();
-      if (oldsnapshot.exists()) oldsnapshot.remove(true);
-      snapshotDir = snapshotDir.parent;
-      if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
-      this.makeSnapshot(abspath, res);
-      if ( getOS(window) == "win")  {
-        graphicsConverter.init(window, snapshotDir.parent);
-        // oldsnapshot is an nsIFile pointing to the .bmp file
-        abspath = graphicsConverter.copyAndConvert(oldsnapshot, false);
-      }
-
-      insertSnapshot.call(this, abspath);
-    } catch (e) {
-      throw new MsiException("Error inserting plot snapshot", e);
+      msiGetActiveEditorElement();
     }
-  }
-}
+    catch (e) {
+      document.getElementById("vc-SnapShot").setAttribute("hidden");
+      // this disables snapshots if we are not in an editor; e.g., in a help file.
+    }
+    document.getElementById("vc-SelObj").checked = (ct === 'select');
+    document.getElementById("vc-SelObj").removeAttribute("disabled");
+    document.getElementById("vc-RotateScene").checked = (ct === 'rotate');
+    document.getElementById("vc-RotateScene").removeAttribute("disabled");
+    document.getElementById("vc-Move").checked = (ct === 'move');
+    document.getElementById("vc-Move").removeAttribute("disabled");
+    document.getElementById("vc-Query").checked = (ct === 'query');
+    document.getElementById("vc-Query").removeAttribute("disabled");
+    document.getElementById("vc-AutoZoomIn").checked = (za === 1);
+    document.getElementById("vc-AutoZoomIn").removeAttribute("disabled");
+    document.getElementById("vc-AutoZoomOut").checked = (za === 2);
+    document.getElementById("vc-AutoZoomOut").removeAttribute("disabled");
 
-function rebuildSnapshots(doc) {
-  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');  // BBM: test to see if this is necessary
+    // Rotation section
+    if (dim === 3) {
+      document.getElementById("vc-Zoom").checked = (ct === 'zoom');
+      document.getElementById("vc-Zoom").removeAttribute("disabled");
+      var va = this.obj.rotateVerticalAction;
+      document.getElementById("vc-RotateRight").checked = (va === 1);
+      document.getElementById("vc-RotateRight").removeAttribute("disabled");
+      document.getElementById("vc-RotateLeft").checked = (va === 2);
+      document.getElementById("vc-RotateLeft").removeAttribute("disabled");
+      var ha = this.obj.rotateHorizontalAction;
+      document.getElementById("vc-RotateUp").checked = (ha === 1);
+      document.getElementById("vc-RotateUp").removeAttribute("disabled");
+      document.getElementById("vc-RotateDown").checked = (ha === 2);
+      document.getElementById("vc-RotateDown").removeAttribute("disabled");
+
+      // Speed control
+      var spd = this.obj.actionSpeed;
+      if (spd <= 0.125) {
+        document.getElementById("actionspeed8s").checked = true;
+      }
+      else if (spd > 0.125 && spd <= 0.25) {
+        document.getElementById("actionspeed4s").checked = true;
+      }
+      else if (spd > 0.25 && spd <= 0.5) {
+        document.getElementById("actionspeed2s").checked = true;
+      }
+      else if (spd > 0.5 && spd <= 1.0) {
+        document.getElementById("actionspeedN").checked = true;
+      }
+      else if (spd > 1.0 && spd <= 2.0) {
+        document.getElementById("actionspeed2f").checked = true;
+      }
+      else if (spd > 2.0 && spd <= 4.0) {
+        document.getElementById("actionspeed4f").checked = true;
+      }
+      else if (spd > 4.0) {
+        document.getElementById("actionspeed8f").checked = true;
+      }
+      document.getElementById("actionspeed8s").removeAttribute("disabled");
+      document.getElementById("actionspeed4s").removeAttribute("disabled");
+      document.getElementById("actionspeed2s").removeAttribute("disabled");
+      document.getElementById("actionspeedN").removeAttribute("disabled");
+      document.getElementById("actionspeed2f").removeAttribute("disabled");
+      document.getElementById("actionspeed4f").removeAttribute("disabled");
+      document.getElementById("actionspeed8f").removeAttribute("disabled");
+
+    }
+    if (anim) {
+      // animation section, including animation speed control
+      var aspd = this.obj.animationSpeed;
+      if (aspd <= 0.125) document.getElementById("animspeed8s").checked = true;
+      else if (aspd > 0.125 && aspd <= 0.25) document.getElementById("animspeed4s").checked = true;
+      else if (aspd > 0.25 && aspd <= 0.5) document.getElementById("animspeed2s").checked = true;
+      else if (aspd > 0.5 && aspd <= 1.0) document.getElementById("animspeedN").checked = true;
+      else if (aspd > 1.0 && aspd <= 2.0) document.getElementById("animspeed2f").checked = true;
+      else if (aspd > 2.0 && aspd <= 4.0) document.getElementById("animspeed4f").checked = true;
+      else if (aspd > 4.0) document.getElementById("animspeed8f").checked = true;
+      document.getElementById("animspeed8s").removeAttribute("disabled");
+      document.getElementById("animspeed4s").removeAttribute("disabled");
+      document.getElementById("animspeed2s").removeAttribute("disabled");
+      document.getElementById("animspeedN").removeAttribute("disabled");
+      document.getElementById("animspeed2f").removeAttribute("disabled");
+      document.getElementById("animspeed4f").removeAttribute("disabled");
+      document.getElementById("animspeed8f").removeAttribute("disabled");
+    }
+    document.getElementById("vcamactive").setAttribute("hidden", "false");
+    // The above line reveals the VCam toolbar,
+  },
+
+  initEventHandlers: function() {
+    // there might not be an editor element; e.g., which displaying help files
+    var editorElement = null;
+    var editor = null;
+    try {
+      if (msiGetActiveEditorElement != null) {
+        editorElement = msiGetActiveEditorElement();
+        if (editorElement) {
+          editor = msiGetEditor(editorElement);
+        }
+      }
+    }
+    catch(e) {} // it's ok to fail
+
+    // Currently we keep a global pointer to the currently active object.
+    currentVCamObject = this;
+
+    this.threedplot = (this.obj.dimension === 3);
+    this.twodplot = (this.obj.dimension === 2);
+    if (this.threedplot) {
+      document.getElementById("3dplot").removeAttribute("hidden");
+    }
+    else {
+      document.getElementById("3dplot").setAttribute("hidden", "true");
+    }
+    if (this.twodplot) {
+      document.getElementById("2dplot").removeAttribute("hidden");
+    }
+    else {
+      document.getElementById("2dplot").setAttribute("hidden", "true");
+    }
+    this.animplot = this.obj.isAnimated;
+
+    if (this.animplot) // set up the progress bar
+    {
+      document.getElementById("animplot").removeAttribute("hidden");
+      this.setAnimationTime = function() {
+        var time = this.obj.beginTime + (document.getElementById("vc-AnimScale").value / 100) *
+          (this.obj.endTime - this.obj.beginTime);
+        this.obj.currentTime = time;
+      };
+
+      this.showAnimationTime = function(time) {
+        var newval = Math.round(100 * (time / (this.obj.endTime - this.obj.beginTime)));
+        document.getElementById("vc-AnimScale").value = newval;
+      };
+
+      this.setAnimSpeed = function(factor) {
+        this.obj.animationSpeed = factor;
+      };
+
+      this.setLoopMode = function(mode) {
+        this.obj.animationLoopingMode = mode;
+      };
+    }
+    else {
+      document.getElementById("animplot").setAttribute("hidden", "true");
+    }
+    this.setActionSpeed = function(factor) {
+      this.obj.actionSpeed = factor;
+    };
+
+    // define mouse handlers
+
+    this.onVCamMouseUp = function() {
+      //  alert("Mouse up in plugin!");
+    };
+
+    this.onVCamMouseDown = function(screenX, screenY) {
+      // parameters are unused
+      try
+      {
+        if (this.editor) {
+          this.editor.selection.collapse(this.parentNode, 0);
+          this.checkSelectionStateForAnonymousButtons(editor.selection);
+        }
+      }
+      catch(e) {}
+    };
+
+    this.onVCamDblClick = function(screenX, screenY) {
+    // parameters are unused
+      try
+      {
+        if (this.editorElement) {
+          goDoPrinceCommand("cmd_objectProperties", this, editorElement);
+        }
+      }
+      catch(e) {}
+    };
+
+    this.onVCamDragMove = function(x, y) {
+      // parameters are unused
+      var data;
+      const kHTMLMime = "text/html";
+
+      try {
+        if (DNDUtils.checkCanDrop([kHTMLMime])) {
+          data = DNDUtils.getData(kHTMLMime, 0);
+          if (/<math/.test(data)) {
+            return 1;
+          }
+        }
+      }
+      catch(e) {
+        throw new MsiException('in VCam drag/move', e);
+      }
+      return 0;
+    };
+
+    this.onVCamDrop = function(x, y) {
+      var data;
+      const kHTMLMime = "text/html";
+
+      try {
+        if (this.editorElement) {
+          if (DNDUtils.checkCanDrop([kHTMLMime])) {
+            data = DNDUtils.getData(kHTMLMime, 0);
+            if (/<math/.test(data)) {
+              alert("Dropped "+data);
+            }
+          }
+        }
+      }
+      catch(e) {
+        throw new MsiException('in VCam drop', e);
+      }
+    };
+
+    this.obj.addEvent('leftMouseDown', this.onVCamMouseDown.bind(this, screenX, screenY));
+    this.obj.addEvent('leftMouseUp', this.onVCamMouseUp.bind(this));
+    this.obj.addEvent('leftMouseDoubleClick', this.onVCamDblClick.bind(this, screenX, screenY));
+    this.obj.addEvent('dragMove', this.onVCamDragMove.bind(this));
+    this.obj.addEvent('drop', this.onVCamDrop.bind(this));
+    this.obj.addEvent('dragLeave', (function() {}));
+    this.obj.addEvent("currentTimeChange", this.showAnimationTime.bind(this));
+
+    if (editorElement) editorElement.focus();
+  },
+
+  doCommand: function(cmd, editorElement) {
+    var doc = null;
+    var editor = null;
+    try {
+      if (editorElement === null && msiGetActiveEditorElement != null) {
+       editorElement = msiGetActiveEditorElement();
+      }
+    }
+    catch(e) {} // it's ok to fail   if (editorElement) doc = editorElement.contentDocument;
+    // netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');  // BBM: test to see if this is necessary
+    if (editorElement) {
+      editor = msiGetEditor(editorElement);
+    }
+
+    try {
+      switch (cmd) {
+        case "cmd_vcSelObj":
+          this.obj.cursorTool = "select";
+          break;
+        case "cmd_vcRotateLeft":
+          if (this.obj.rotateVerticalAction == 2) {
+            this.obj.rotateVerticalAction = 0;
+          } else {
+            this.obj.rotateVerticalAction = 2;
+          }
+          break;
+        case "cmd_vcRotateRight":
+          if (this.obj.rotateVerticalAction == 1) {
+            this.obj.rotateVerticalAction = 0;
+          } else {
+            this.obj.rotateVerticalAction = 1;
+          }
+          break;
+        case "cmd_vcRotateUp":
+          if (this.obj.rotateHorizontalAction == 1) {
+            this.obj.rotateHorizontalAction = 0;
+          } else {
+            this.obj.rotateHorizontalAction = 1;
+          }
+         break;
+        case "cmd_vcRotateDown":
+          if (this.obj.rotateHorizontalAction == 2) {
+            this.obj.rotateHorizontalAction = 0;
+          } else {
+            this.obj.rotateHorizontalAction = 2;
+          }
+         break;
+        case "cmd_vcRotateScene":
+          this.obj.cursorTool = "rotate";
+          break;
+        case "cmd_vcZoom":
+          this.obj.cursorTool = "zoom";
+          break;
+        case "cmd_vcMove":
+          this.obj.cursorTool = "move";
+          break;
+        case "cmd_vcQuery":
+          this.obj.cursorTool = "query";
+          break;
+        case "cmd_vcZoomBoxIn":
+          this.obj.cursorTool = "select"; // This.obj is zoomBoxIn in the 2d case
+          break;
+          case "cmd_vcZoomBoxOut":
+          this.obj.cursorTool = "select";
+          break;
+        case "cmd_vcZoomIn":
+          this.obj.cursorTool = "zoomIn";
+          break;
+        case "cmd_vcZoomOut":
+          this.obj.cursorTool = "zoomOut";
+          break;
+        case "cmd_vcSnapshot":
+          this.makeSnapshot();
+          break;
+        case "cmd_vcAutoSpeed":
+          dump("cmd_vcAutoSpeed not implemented");
+          break;
+        case "cmd_vcAnimSpeed":
+          dump("cmd_vcAnimSpeed not implemented");
+          break;
+        case "cmd_vcAutoZoomIn":
+          if (this.obj.zoomAction == 1) this.obj.zoomAction = 0;
+          else this.obj.zoomAction = 1;
+          break;
+        case "cmd_vcAutoZoomOut":
+          if (this.obj.zoomAction == 2) this.obj.zoomAction = 0;
+          else this.obj.zoomAction = 2;
+          break;
+        case "cmd_vcGoToEnd":
+          this.obj.currentTime = this.obj.endTime;
+          break;
+        case "cmd_vcGoToStart":
+          this.obj.currentTime = this.obj.beginTime;
+          break;
+        case "cmd_vcLoopType":
+          dump("cmd_vcLoopType not implemented");
+          break;
+        case "cmd_vcPlay":
+          if (isRunning) this.obj.stopAnimation();
+          else this.obj.startAnimation();
+          isRunning = !isRunning;
+          break;
+        case "cmd_vcFitContents":
+          this.obj.fitContents();
+          break;
+        //    case "cmd_refresh":  // shouldn't be needed, but this causes the display to refresh
+        //      this.camera.focalPointX = this.camera.focalPointX;
+        //      break;
+
+        default:
+      }
+    }
+    catch (e) {
+      throw new MsiException("Unable to execute VCam command "+cmd, e);
+    }
+  },
+
+  makeSnapshot: function() {
+    var editorElement;
+    try {
+      editorElement = msiGetActiveEditorElement();
+    }
+    catch(e) {
+      return;
+    }
+    msiRequirePackage(editorElement, "wrapfig", "");
+    var doc = editorElement.contentDocument;
+    var ready = this.obj.readyState;
+    if (ready > 1) {
+      try {
+        var path = this.makeSnapshotPath();
+        var abspath;
+        var abspath2;
+        var prefs;
+        var res;
+        var DOMGraph;
+        var graph = null;
+        var plotWrapper = this.obj.parentNode;
+        try {
+          prefs = GetPrefs();
+          res = prefs.getIntPref("swp.graph.snapshotres");
+        } catch (e) {
+          res = 300;
+        }
+        if (graph == null) {
+          graph = new Graph();
+          DOMGraph = msiFindParentOfType(this, "graph");
+          graph.extractGraphAttributes(DOMGraph);
+        }
+        abspath = makeRelPathAbsolute(path, editorElement);
+        var snapshotDir = Components.classes["@mozilla.org/file/local;1"].
+          createInstance(Components.interfaces.nsILocalFile);
+        var oldsnapshot;
+        snapshotDir.initWithPath(abspath);
+        oldsnapshot = snapshotDir.clone();
+        if (oldsnapshot.exists()) oldsnapshot.remove(true);
+        snapshotDir = snapshotDir.parent;
+        if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
+        this.obj.makeSnapshot(abspath, res);
+        if ( getOS(window) == "win")  {
+          graphicsConverter.init(window, snapshotDir.parent);
+          // oldsnapshot is an nsIFile pointing to the .bmp file
+          abspath = graphicsConverter.copyAndConvert(oldsnapshot, false);
+        }
+
+        this.insertSnapshot(abspath);
+      } catch (e) {
+        throw new MsiException("Error inserting plot snapshot", e);
+      }
+    }
+  },
+
+  makeSnapshotPath: function() {
+    var extension;
+    if ( getOS(window) == "win")  {
+      extension = "bmp";
+    } else {
+      extension = "png";
+    }
+    var path;
+    try {
+      var strSrc = this.obj.getAttribute("data") || this.obj.getAttribute("src");
+      var match = /plots\/(.*$)/.exec(strSrc);
+      var fileName = match[1];
+      fileName = fileName.replace(/xv[cz]$/, extension);
+      path = "graphics/" + fileName;
+    }
+    catch (e) {
+      throw new MsiException("Error finding path for plot snapshot", e);
+    }
+    return path;
+  },
+
+  insertSnapshot: function(abssnapshotpath) {
+    var parent, i, objectlist, element, ssobj, graph, gslist, w, h, units, oldpath, file, url;
+    parent = this.obj.parentNode;
+    objectlist = parent.getElementsByTagName("object");
+    var snapshotUrl = msiFileURLFromAbsolutePath(abssnapshotpath);
+    var snapshotRelUrl;
+    if (snapshotUrl) {
+      snapshotRelUrl= msiMakeRelativeUrl(snapshotUrl.spec);
+    } else {
+      snapshotRelUrl = abssnapshotpath; // we were actually passed a relative url to begin with
+    }
+
+    // remove current snapshots
+    for (i = 0; i < objectlist.length;) {
+      element = objectlist[i];
+      if (element.hasAttribute("msisnap")) {
+        parent.removeChild(element);
+      } else {
+        i++;
+      }
+    }
+
+    graph = msiFindParentOfType(this.obj, "graph");
+    gslist = graph.getElementsByTagName("graphSpec");
+    if (gslist.length > 0) {
+      gslist = gslist[0];
+    }
+    ssobj = this.obj.cloneNode(true); // copies useful attributes
+    ssobj.id = "ss" + ssobj.id;
+    ssobj.removeAttribute("msigraph");
+    ssobj.setAttribute("data", snapshotRelUrl);
+    ssobj.setAttribute("msisnap", "true");
+    ssobj.removeAttribute("type");
+    parent.appendChild(ssobj);
+    if (gslist) { // copy some attributes from the graphspec
+      w = gslist.getAttribute("Width");
+      if (w) {
+        ssobj.setAttribute("naturalWidth", w);
+        ssobj.setAttribute("ltx_width", w);
+      }
+      h = gslist.getAttribute("Height");
+      if (h) {
+        ssobj.setAttribute("naturalHeight", h);
+        ssobj.setAttribute("ltx_height", h);
+      }
+      ssobj.setAttribute("units", gslist.getAttribute("Units"));
+    }
+  },
+
+
+
+};
+
+function rebuildSnapshots(doc)
+{
+  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+  // BBM: test to see if this is necessary
 
   var wrapperlist, objlist, length, objlength, i, obj, snapshot;
-  var img = null;
   var obj = null;
   var doRefresh = false;
+  var aVCamObject;
   wrapperlist = doc.documentElement.getElementsByTagName("msiframe");
   length = wrapperlist.length;
   for (i = 0; i < length; i++) {
@@ -256,133 +564,17 @@ function rebuildSnapshots(doc) {
         img = obj.nextSibling;
       }
       else continue;
-      if (obj.wrappedJSObject) obj = obj.wrappedJSObject;
-      if (img && img.nodeName !== 'object') img = null;
-    // if (!img) {
-        return doMakeSnapshot.call(obj);
-    //   }
-    //   if (needRefresh(obj.getAttribute('data'), img.getAttribute('data'))) {
-    //     return doMakeSnapshot.call(obj);
-    //   }
+      aVCamObject = new VCamObject(obj);
+
+      return aVCamObject.makeSnapshot();
+
     }
   }
 }
 
-function doVCamCommandOnObject(cmd, editorElement) {
-//  if (!editorElement && msiGetActiveEditorElement != null) editorElement = msiGetActiveEditorElement();
-  var doc = null;
-  if (editorElement) doc = editorElement.contentDocument;
-  // netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');  // BBM: test to see if this is necessary
-  try {
-    switch (cmd) {
-    case "cmd_vcSelObj":
-      this.cursorTool = "select";
-      break;
-    case "cmd_vcRotateLeft":
-      if (this.rotateVerticalAction == 2) {
-        this.rotateVerticalAction = 0;
-      } else {
-        this.rotateVerticalAction = 2;
-      }
-      break;
-    case "cmd_vcRotateRight":
-      if (this.rotateVerticalAction == 1) {
-        this.rotateVerticalAction = 0;
-      } else {
-        this.rotateVerticalAction = 1;
-      }
-      break;
-    case "cmd_vcRotateUp":
-      if (this.rotateHorizontalAction == 1) {
-        this.rotateHorizontalAction = 0;
-      } else {
-        this.rotateHorizontalAction = 1;
-      }
-      break;
-    case "cmd_vcRotateDown":
-      if (this.rotateHorizontalAction == 2) {
-        this.rotateHorizontalAction = 0;
-      } else {
-        this.rotateHorizontalAction = 2;
-      }
-      break;
-    case "cmd_vcRotateScene":
-      this.cursorTool = "rotate";
-      break;
-    case "cmd_vcZoom":
-      this.cursorTool = "zoom";
-      break;
-    case "cmd_vcMove":
-      this.cursorTool = "move";
-      break;
-    case "cmd_vcQuery":
-      this.cursorTool = "query";
-      break;
-    case "cmd_vcZoomBoxIn":
-      this.cursorTool = "select"; // This is zoomBoxIn in the 2d case
-      break;
-    case "cmd_vcZoomBoxOut":
-      this.cursorTool = "select";
-      break;
-    case "cmd_vcZoomIn":
-      this.cursorTool = "zoomIn";
-      break;
-    case "cmd_vcZoomOut":
-      this.cursorTool = "zoomOut";
-      break;
-    case "cmd_vcSnapshot":
-      this.vcMakeSnapshot();
-      break;
-    case "cmd_vcAutoSpeed":
-      dump("cmd_vcAutoSpeed not implemented");
-      break;
-    case "cmd_vcAnimSpeed":
-      dump("cmd_vcAnimSpeed not implemented");
-      break;
-    case "cmd_vcAutoZoomIn":
-      if (this.zoomAction == 1) this.zoomAction = 0;
-      else this.zoomAction = 1;
-      break;
-    case "cmd_vcAutoZoomOut":
-      if (this.zoomAction == 2) this.zoomAction = 0;
-      else this.zoomAction = 2;
-      break;
-    case "cmd_vcGoToEnd":
-      this.currentTime = this.endTime;
-      break;
-    case "cmd_vcGoToStart":
-      this.currentTime = this.beginTime;
-      break;
-    case "cmd_vcLoopType":
-      dump("cmd_vcLoopType not implemented");
-      break;
-    case "cmd_vcPlay":
-      if (isRunning) this.stopAnimation();
-      else this.startAnimation();
-      isRunning = !isRunning;
-      break;
-    case "cmd_vcFitContents":
-      this.fitContents();
-      break;
-//    case "cmd_refresh":  // shouldn't be needed, but this causes the display to refresh
-//      this.camera.focalPointX = this.camera.focalPointX;
-//      break;
-
-    default:
-    }
-  } catch (e) {
-    throw new MsiException("Unable to execute VCam command "+cmd, e);2
-  }
-  vcamToolbarFromPlugin.call(this);
-  return;
+function VCamCommand(cmd) {
+  currentVCamObject.doCommand(cmd);
 }
-
-var gProgressbar;
-
-/*
-VCam event handler section
-
-*/
 
 function onVCamMouseUp() {
   //  alert("Mouse up in plugin!");
@@ -566,134 +758,5 @@ function doVCamClose()
     return;  //In other words, if we're being called because of the broadcaster turning VCam on, do nothing
   // var editorElement = msiGetActiveEditorElement();
 //  return vcamCloseFunction(editorElement);   //BBM: fix this up
-}
-
-var VCamObject = null;
-
-
-function doVCamInitialize(obj) {
-  document.getElementById("vcamactive").setAttribute("hidden", "false");
-  // The above line reveals the VCam toolbar,
-  var editorElement = null;
-  var editor = null;
-  try {
-    if (msiGetActiveEditorElement != null) {
-      editorElement = msiGetActiveEditorElement();
-      editor = msiGetEditor(editorElement);
-    }
-  }
-  catch(e) {}
-  var os = getOS(window);
-
-  // Now tailor the toolbar to the plot type.
-  if (obj.wrappedJSObject) obj = obj.wrappedJSObject;
-  VCamObject = obj;
-  obj.threedplot = (obj.dimension === 3);
-  obj.twodplot = (obj.dimension === 2);
-  document.getElementById("3dplot").setAttribute("hidden", obj.threedplot ? "false" : "true");
-  document.getElementById("2dplot").setAttribute("hidden", obj.twodplot ? "false" : "true");
-  obj.animplot = obj.isAnimated;
-  document.getElementById("animplot").setAttribute("hidden", obj.animplot ? "false" : "true");
-  if (obj.animplot) // set up the progress bar
-  {
-    obj.setAnimationTime = function setAnimationTime() {
-      var time = this.beginTime + (document.getElementById("vc-AnimScale").value / 100) * (this.endTime - this.beginTime);
-      this.currentTime = time;
-    };
-    obj.showAnimationTime = function showAnimationTime(time) {
-      var newval = Math.round(100 * (time / (this.endTime - this.beginTime)));
-      document.getElementById("vc-AnimScale").value = newval;
-    };
-    obj.addEvent("currentTimeChange", obj.showAnimationTime.call(VCamObject));
-    obj.setAnimSpeed = function setAnimSpeed(factor) {
-      this.animationSpeed = factor;
-    };
-    obj.setLoopMode = function(mode) {
-      this.animationLoopingMode = mode;
-    };
-  }
-  vcamToolbarFromPlugin.call(obj);
-  obj.command = function command(cmd ) {
-      return doVCamCommandOnObject.call( this, cmd, editorElement);
-  };
-  obj.setActionSpeed = function setActionSpeed(factor) {
-    this.actionSpeed = factor;
-  };
-
-  obj.onVCamMouseUp = function onVCamMouseUp() {
-    //  alert("Mouse up in plugin!");
-  };
-
-  obj.onVCamMouseDown = function onVCamMouseDown(screenX, screenY) {
-    try
-    {
-      var editorElement = msiGetActiveEditorElement();
-      var editor = msiGetEditor(editorElement);
-      editor.selection.collapse(this.parentNode, 0);
-      editor.checkSelectionStateForAnonymousButtons(editor.selection);
-    }
-    catch(e) {return;}
-  };
-
-  obj.onVCamDblClick = function onVCamDblClick(screenX, screenY) {
-    goDoPrinceCommand("cmd_objectProperties", this, editorElement);
-  };
-
-  obj.onVCamDragMove = function onVCamDragMove(x, y) {
-    var data;
-    const kHTMLMimer = "text/html";
-
-    try {
-      if (DNDUtils.checkCanDrop([kHTMLMime])) {
-        data = DNDUtils.getData(kHTMLMime, 0);
-        if (/<math/.test(data)) {
-          return 1;
-        }
-      }
-    }
-    catch(e) {
-      msidump(e.message);
-    }
-    return 0;
-  };
-
-  obj.onVCamDrop = function onVCamDrop(x, y) {
-    var data;
-    const kHTMLMimer = "text/html";
-
-    try {
-      var editorElement = msiGetActiveEditorElement();
-      var editor = msiGetEditor(editorElement);
-      if (DNDUtils.checkCanDrop([kHTMLMime])) {
-        data = DNDUtils.getData(kHTMLMime, 0);
-        if (/<math/.test(data)) {
-          alert("Dropped "+data);
-        }
-      }
-    }
-    catch(e) {
-      msidump(e.message);
-    }
-  };
-
-
-  obj.vcMakeSnapshot = function vcMakeSnapshot () {
-    doMakeSnapshot.call(obj);
-  };
-
-  VCamObject = obj;
-
-  obj.addEvent('leftMouseDown', obj.onVCamMouseDown.bind(obj, screenX, screenY));
-  obj.addEvent('leftMouseUp', obj.onVCamMouseUp.bind(obj));
-  obj.addEvent('leftMouseDoubleClick', obj.onVCamDblClick.bind(obj, screenX, screenY));
-  obj.addEvent('dragMove', obj.onVCamDragMove.bind(obj));
-  obj.addEvent('drop', obj.onVCamDrop.bind(obj));
-  obj.addEvent('dragLeave', (function() {}));
-
-  if (editorElement) editorElement.focus();
-}
-
-function VCamCommand(cmd) {
-  doVCamCommandOnObject.call(VCamObject, cmd, null);
 }
 
