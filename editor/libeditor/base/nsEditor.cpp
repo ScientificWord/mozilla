@@ -4586,7 +4586,7 @@ nsEditor::IsPreformatted(nsIDOMNode *aNode, PRBool *aResult)
 
   nsIFrame *frame = ps->GetPrimaryFrameFor(content);
 
-  NS_ASSERTION(frame, "no frame, see bug #188946");
+  // NS_ASSERTION(frame, "no frame, see bug #188946");
   if (!frame)
   {
     // Consider nodes without a style context to be NOT preformatted:
