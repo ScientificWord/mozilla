@@ -33,7 +33,7 @@ function loadDocumentFromURI(pathString) {
   }
   else {
     // BBM: make this localizable
-    AlertWithTitle("Recent file has been deleted", "The file "+file.leafName+" has been moved or deletedBuild.");
+    AlertWithTitle("Recent file has been deleted", "The file "+file.leafName+" has been moved or deleted.");
     var popup = document.getElementById("menupopup_RecentFiles");
     if (popup){
       var items = popup.childNodes;
