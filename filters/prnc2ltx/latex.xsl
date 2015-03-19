@@ -363,12 +363,13 @@
   </xsl:variable>
 
   <xsl:if test="contains($equationNumberingContainers, concat('-',local-name(.),'-'))">
-    <xsl:if test=".//html:msidisplay[$n-msidisplays][@subEquationNumbers='true']
-        and (.//html:msidisplay[last()]/ancestor::*[contains($equationNumberingContainers, concat('-',local-name(.),'-'))][1]=current())">
+    <xsl:if test="descendant::html:msidisplay[last()][@subEquationNumbers='true']
+        and (descendant::html:msidisplay[last()]/ancestor::*[contains($equationNumberingContainers, concat('-',local-name(.),'-'))][1]=current())">
       <xsl:value-of select="$newline"/>
       <xsl:text>\end{subequations}</xsl:text>
     </xsl:if>
   </xsl:if>
+
 </xsl:template>
 
 <xsl:template match="html:body">
