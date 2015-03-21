@@ -16,7 +16,7 @@ var editsReady = [];
 var animAttributes = ["AnimCommonOrCustomSettings", "AnimateStart", "AnimateEnd",
                            "AnimateFPS", "AnimateVisBefore", "AnimateVisAfter"];
 
-// This part pastes data into the editor after the editor has started. 
+// This part pastes data into the editor after the editor has started.
 // implements nsIObserver
 var minMaxDocumentObserverBase = {
   observe: function (aSubject, aTopic, aData)
@@ -204,7 +204,13 @@ function getAnimationDataFromDialog()
 function changeCommonOrCustomAnimationSettings()
 {
   var currVal = document.getElementById("AnimCommonOrCustomSettings").value;
-  document.getElementById("customAnimSettings").setAttribute( "disabled", ((currVal != "custom") ? "true" : "false") );
+  var element = document.getElementById("customAnimSettings");
+  if (currVal === 'custom') {
+    element.removeAttribute('disabled');
+  }
+  else {
+    element.setAttribute('disabled', 'true');
+  }
 }
 
 function onAccept() {
@@ -260,7 +266,7 @@ function onChangeRole(whichControl)
   } catch(ex)
   { msidump("Error in intervalsAndAnimation.js, onChangeRole(): " + ex + "\n"); }
 
-  inRoleChange = false; 
+  inRoleChange = false;
 }
 
 //If this variable was using default values for start, end, or num points, change them to defaults for new variable

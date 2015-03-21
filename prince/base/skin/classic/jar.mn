@@ -1,5 +1,5 @@
 classic.jar:
-% skin prince classic %skin/classic/	
+% skin prince classic %skin/classic/
   skin/classic/icons/combobox-left-sm.png	(icons/combobox-left-sm.png)
   skin/classic/icons/combobox-left.png	(icons/combobox-left.png)
   skin/classic/icons/combobox-middle-sm.png	(icons/combobox-middle-sm.png)
@@ -818,7 +818,8 @@ classic.jar:
   skin/modern/icons/math_snapshot-disabled-sm.png  (icons/math_snapshot-disabled-sm.png)
   skin/classic/mathmlmatrix.css	                                (mathmlmatrix.css)
   skin/classic/MathmlOverlay.css	(MathMLOverlay.css)
-  skin/classic/MathVarsDialog.css	(MathVarsDialog.css)
+  skin/classic/MathVarsDialog.css (MathVarsDialog.css)
+  skin/classic/intervalsAndAnimation.css	(intervalsAndAnimation.css)
   skin/classic/MatrixInsertRowsCols.css	(MatrixInsertRowsCols.css)
   skin/classic/msiMathDlgStyle.css	(msiMathDlgStyle.css)
   skin/classic/msiTypesetDlgStyle.css	(msiTypesetDlgStyle.css)
