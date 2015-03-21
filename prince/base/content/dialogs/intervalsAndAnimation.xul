@@ -5,16 +5,18 @@
   Copyright (c) 2012 MacKichan Software, Inc.. All rights reserved.
 -->
 
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/cleanup.css" type="text/css"?>
+<!-- <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+ -->
 
 <!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?>
 <!-- If an editor control is to support context menus, also need: -->
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+
+<?xml-stylesheet href="chrome://prince/skin/intervalsAndAnimation.css" type="text/css"?>
 
 <!DOCTYPE dialog [
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/intervalsAndAnimation.dtd" >
@@ -54,7 +56,7 @@
 <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
-  
+
   <stringbundle id="computeBundle" src="chrome://prince/locale/compute.properties"/>
   <broadcasterset>
     <broadcaster id="1Var"/>
@@ -65,7 +67,7 @@
     <broadcaster id="isanimated" collapsed="true"/>
     <broadcaster id="customAnimSettings" disabled="true"/>
   </broadcasterset>
-  
+
 #include ../keysfordialogs.inc
 
   <commandset id="tasksCommands">
@@ -82,7 +84,7 @@
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
   <commandset id="MSImathMenuCommands"/>
-  
+
   <groupbox>
     <caption label="&VariablesTitle.label;" />
     <grid>
@@ -105,14 +107,14 @@
         </row>
         <row observes="1Var">
           <label id ="var1">&x.label;</label>
-          <editor editortype="html" type="content" context="msiEditorContentContext" 
+          <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var1StartEdit" flex="1" width="150" height="40"/>
           <label value="&to.label;" />
-          <editor editortype="html" type="content" context="msiEditorContentContext" 
+          <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var1EndEdit" flex="1" width="150" height="40"/>
-		      <hbox><textbox id="ptssamp1" type="number" class="narrow" /></hbox>
+		      <hbox><textbox id="ptssamp1" type="number" class="medium" /></hbox>
           <menulist id="var1Role" observes="2Vars" oncommand="onChangeRole(this);">
-            <menupopup> 
+            <menupopup>
               <menuitem label="&x.label;"      value="X"/>
               <menuitem label="&y.label;"      value="Y"/>
               <menuitem label="&z.label;"      value="Z"/>
@@ -122,12 +124,12 @@
         </row>
         <row observes="2Vars">
           <label id ="var2" >&y.label;</label>
-          <editor editortype="html" type="content" context="msiEditorContentContext" 
+          <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var2StartEdit" flex="1" width="150" height="40"/>
           <label value="&to.label;" />
-          <editor editortype="html" type="content" context="msiEditorContentContext" 
+          <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var2EndEdit" flex="1" width="150" height="40"/>
-          <hbox><textbox id="ptssamp2" type="number" class="narrow" /></hbox>
+          <hbox><textbox id="ptssamp2" type="number" class="medium" /></hbox>
           <menulist id="var2Role" oncommand="onChangeRole(this);">
             <menupopup>
               <menuitem label="&x.label;"      value="X"/>
@@ -139,12 +141,12 @@
         </row>
         <row observes="3Vars">
           <label id ="var3" >&y.label;</label>
-          <editor editortype="html" type="content" context="msiEditorContentContext" 
+          <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var3StartEdit" flex="1" width="150" height="40"/>
           <label value="&to.label;" />
-          <editor editortype="html" type="content" context="msiEditorContentContext" 
+          <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var3EndEdit" flex="1" width="150" height="40"/>
-          <hbox><textbox id="ptssamp3" type="number" class="narrow" /></hbox>
+          <hbox><textbox id="ptssamp3" type="number" class="medium" /></hbox>
           <menulist id="var3Role" oncommand="onChangeRole(this);">
             <menupopup>
               <menuitem label="&x.label;"      value="X"/>
@@ -156,12 +158,12 @@
         </row>
         <row observes="4Vars">
           <label id ="var4" >&t.label;</label>
-          <editor editortype="html" type="content" context="msiEditorContentContext" 
+          <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var4StartEdit" flex="1" width="150" height="40"/>
           <label value="&to.label;" />
-          <editor editortype="html" type="content" context="msiEditorContentContext" 
+          <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var4EndEdit" flex="1" width="150" height="40"/>
-          <hbox><textbox id="ptssamp4" type="number" class="narrow" /></hbox>
+          <hbox><textbox id="ptssamp4" type="number" class="medium" /></hbox>
           <spacer/>
           <menulist id="var4Role" oncommand="onChangeRole(this);">
             <menupopup>

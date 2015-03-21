@@ -55,13 +55,13 @@
       <toolbarseparator observes="animplot"/>
       <toolbarbutton id="vc-GoToStart" class="toolbarbutton-1" label="vcGoToStart" command="cmd_vcGoToStart" observes="animplot"/>
       <toolbarbutton id="vc-Play" class="toolbarbutton-1" type="checkbox" label="vcPlay" command="cmd_vcPlay" observes="animplot"/>
-      <scale id="vc-AnimScale" width="150" onchange= "setAnimationTime();" observes="animplot"/>
+      <scale id="vc-AnimScale" width="150" onchange= "VCamObject.setAnimationTime();" observes="animplot"/>
       <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot"/>
       <toolbarbutton id="vc-LoopType" type="menu" class="toolbarbutton-1" label="vcLoopType" observes="animplot">
         <menupopup>
-          <menuitem id="runonce"      name= "looptype" type="radio" checked="true" label="Run once" oncommand="setLoopMode(0);" />
-          <menuitem id="loop"         name= "looptype" type="radio" label="Loop" oncommand="setLoopMode(1);" />
-          <menuitem id="backandforth" name= "looptype" type="radio" label="Back and forth" oncommand="setLoopMode(2);" />
+          <menuitem id="runonce"      name= "looptype" type="radio" checked="true" label="Run once" oncommand="VCamObject.setLoopMode(0);" />
+          <menuitem id="loop"         name= "looptype" type="radio" label="Loop" oncommand="VCamObject.setLoopMode(1);" />
+          <menuitem id="backandforth" name= "looptype" type="radio" label="Back and forth" oncommand="VCamObject.setLoopMode(2);" />
         </menupopup>
       </toolbarbutton>
       <toolbarbutton id="vc-AnimSpeed" type="menu" class="toolbarbutton-1" label="vcAnimSpeed" observes="animplot">
