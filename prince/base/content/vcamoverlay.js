@@ -199,6 +199,7 @@ VCamObject.prototype = {
         var time = this.obj.beginTime + (document.getElementById("vc-AnimScale").value / 100) *
           (this.obj.endTime - this.obj.beginTime);
         this.obj.currentTime = time;
+        this.obj.startAnimation();
       };
 
       this.showAnimationTime = function(time) {
