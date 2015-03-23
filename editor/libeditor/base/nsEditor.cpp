@@ -1613,6 +1613,11 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
     else
     {
       // Get the next parent
+      ptr->GetNodeName(tagName);
+      if (tagName.EqualsLiteral("graph") || tagName.EqualsLiteral("img") || tagName.EqualsLiteral("object")) {
+        *_retval = -1;
+        return NS_OK;
+      }
       ptr->GetParentNode(getter_AddRefs(tmp));
       NS_ENSURE_TRUE(tmp, NS_ERROR_FAILURE);
       topChild = ptr;
@@ -1624,8 +1629,10 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
     // we need to split some levels above the original selection parent
     res = SplitNodeDeep(topChild, parent, offsetOfInsert, &offsetOfInsert, PR_TRUE);
     *outParent = ptr;
-    if (NS_FAILED(res))
-      return -1;
+    if (NS_FAILED(res)) {
+      *_retval= -1;
+      return NS_OK;
+    }
   }
   *_retval = offsetOfInsert;
 }
