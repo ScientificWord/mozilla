@@ -4915,7 +4915,7 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
       return (count == 0);
     }
     else { // ran off the end. Leave the parent node (*current)
-      pMathCM =  do_QueryInterface(*current); 
+      pMathCM =  do_QueryInterface(*current);
       if (pMathCM) pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
       return (count == 0);
     }
@@ -4928,10 +4928,10 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
     }
     else {
       if (*offset == 0) {
-        pMathCM =  do_QueryInterface(*current); 
+        pMathCM =  do_QueryInterface(*current);
       }
       else {
-        pMathCM =  do_QueryInterface(pAfter); 
+        pMathCM =  do_QueryInterface(pAfter);
       }
       if (pMathCM) pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &count);
       return (count == 0);
@@ -5009,14 +5009,14 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
             done = PR_FALSE;
           else
             done = current->PeekOffsetNoAmount(movingInFrameDirection, &offset);
-          // PeekOffsetNoAmount returns true if there is a character for the cursor to sit beside. We also want to return 
+          // PeekOffsetNoAmount returns true if there is a character for the cursor to sit beside. We also want to return
           // true when the next frame is math
           if (!done) {
             if (movingInFrameDirection) {
               pNext = current->GetNextSibling();
               done = pNext && (IsMathFrame(pNext) || IsMathFrame(pNext->GetParent()));
             }
-            else 
+            else
             {
               // have to search for previous sibling.
               pPrevious = current->GetParent()->GetFirstChild(nsnull);
@@ -5032,7 +5032,7 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
           done = current->PeekOffsetCharacter(movingInFrameDirection, &offset);
 
         if (!done) {
-          PRBool jumpedLine;
+          PRBool jumpedLine = PR_FALSE;
           result =
             current->GetFrameFromDirection(aPos->mDirection, aPos->mVisual,
                                            aPos->mJumpLines, aPos->mScrollViewStop,
@@ -5689,7 +5689,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
             pMathCM->MoveOutToRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
           else
             (*fBailing) = PR_TRUE;
-        } 
+        }
       }
     }
     else {
@@ -5709,13 +5709,13 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         nsString strcontent;
         nsContentUtils::GetNodeTextContent(node, PR_FALSE, strcontent);
         length = strcontent.Length();
-        if (length < count) 
+        if (length < count)
           length = count;
         *aOutOffset = length - count;
-        count = 0; 
-        *aOutFrame = pLastChild;        
+        count = 0;
+        *aOutFrame = pLastChild;
       }
-      else 
+      else
       {
         while (pMathCM == nsnull && pFrame) {
           pFrame = pFrame->GetParent();
@@ -5725,7 +5725,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
           pMathCM->MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
         else
           (*fBailing) = PR_TRUE;
-      }  
+      }
     }
     if (*fBailing) goto bailedOut;
     *aMath = PR_TRUE;
@@ -5741,12 +5741,12 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
 //      nsAutoString name;
 //      nsCOMPtr<nsIDOMElement> frameNode;
       pFrame = GetTopFrameForContent(pFrame);
-//     frameNode = do_QueryInterface(pFrame->GetContent()); 
+//     frameNode = do_QueryInterface(pFrame->GetContent());
 //      if (frameNode) frameNode->GetNodeName(name);
 //
 //      while (!(name.EqualsLiteral("mo")) && !(name.EqualsLiteral("mi") && !(name.EqualsLiteral("mn")))) {
 //        pFrame = pFrame->GetParent();
-//        frameNode = do_QueryInterface(pFrame->GetContent()); 
+//        frameNode = do_QueryInterface(pFrame->GetContent());
 //        if (frameNode) frameNode->GetNodeName(name);
 //      }
       nsMathMLFrame::DumpMathFrameData(pFrame);
@@ -6408,7 +6408,7 @@ PRBool nsFrame::IsMSIPlotOrGraphicContainer( nsIContent* aContent)
     aContent->Tag()->ToString(buf);
     if (buf.EqualsLiteral("plotwrapper") || buf.EqualsLiteral("graph"))
       return PR_TRUE;
-    
+
     pContentElement = do_QueryInterface(aContent);
     if (pContentElement)
     {
@@ -6427,13 +6427,13 @@ PRBool nsFrame::IsMSIPlotOrGraphicContainer( nsIContent* aContent)
 
     if (buf.EqualsLiteral("msiframe"))  //May contain, e.g., a <plotwrapper>, or an image <object>
     {
-      nsCOMPtr<nsIDOMNode> kid;    
-      nsCOMPtr<nsIDOMNodeList> childList;    
+      nsCOMPtr<nsIDOMNode> kid;
+      nsCOMPtr<nsIDOMNodeList> childList;
       PRUint32 len;
       PRBool rv = PR_FALSE;
       nsCOMPtr<nsIDOMNode> contentNode = do_QueryInterface(aContent);
 
-      contentNode->GetChildNodes(getter_AddRefs(childList));   
+      contentNode->GetChildNodes(getter_AddRefs(childList));
       //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
       //  as a direct DOM child, we'll answer PR_FALSE.
       childList->GetLength(&len);
@@ -8117,7 +8117,7 @@ void DR_cookie::Change() const
 #endif
 // End Display Reflow
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsFrame::MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index)
 {
   printf("MoveRightAtDocEndFrame\n");
@@ -8130,7 +8130,7 @@ nsFrame::MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index)
   if (htmlDoc) {
     nsCOMPtr<nsIDOMHTMLElement> bodyElement;
     htmlDoc->GetBody(getter_AddRefs(bodyElement));
-    nsCOMPtr<nsIDOMNodeList> nodeList;    
+    nsCOMPtr<nsIDOMNodeList> nodeList;
     bodyElement->GetChildNodes(getter_AddRefs(nodeList));
     nodeList->GetLength(&offset);
     nsCOMPtr<nsIContent> content = do_QueryInterface(bodyElement);
@@ -8320,9 +8320,9 @@ nsFrame::MoveRightAtDocEnd(nsISelection * selection)
     if (currentNode == ancestorNode)
     {
       // proceed only if the selection is contained in currentNode
-      nsCOMPtr<nsIDOMNodeList> childList;    
+      nsCOMPtr<nsIDOMNodeList> childList;
       PRUint32 len;
-      currentNode->GetChildNodes(getter_AddRefs(childList));   
+      currentNode->GetChildNodes(getter_AddRefs(childList));
       //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
       //  as a direct DOM child, we'll answer PR_FALSE.
       childList->GetLength(&len);

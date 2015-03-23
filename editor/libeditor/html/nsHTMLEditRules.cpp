@@ -1469,8 +1469,13 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
     nsCOMPtr<nsIDOMNode> outNode;
     nsCOMPtr<nsIDOMNode> outParent;
     mHTMLEditor->InsertBufferNodeIfNeeded(textNode, getter_AddRefs(outNode), selNode, getter_AddRefs(outParent), selOffset, &selOffset);
+    if (selOffset < 0) // There is no place for a character and no buffer can be inserted
+    {
+      *aCancel = PR_TRUE;
+      return NS_OK;
+    }
+    else
     // Now we can insert the new node
-    if (selOffset >= 0)
     {
       res = mHTMLEditor->InsertNode(outNode, outParent, selOffset);
       aSelection->Collapse(outNode, 0);
