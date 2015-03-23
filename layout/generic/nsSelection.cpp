@@ -1585,10 +1585,12 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
     // Collapse selection if PeekOffset failed, we either
     //  1. bumped into the BRFrame, bug 207623
     //  2. had select-all in a text input (DIV range), bug 352759.
+
     weakNodeUsed = mDomSelections[index]->FetchFocusNode();
     offsetused = mDomSelections[index]->FetchFocusOffset();
+    frame->MoveRightAtDocEnd(mDomSelections[index]);
     PRBool isBRFrame = frame->GetType() == nsGkAtoms::brFrame;
-    mDomSelections[index]->Collapse(weakNodeUsed, offsetused);
+    // mDomSelections[index]->Collapse(weakNodeUsed, offsetused);
 //    frame->MoveRightAtDocEnd(mDomSelections[index]);
     // Note: 'frame' might be dead here.
     if (isBRFrame) {
