@@ -3967,7 +3967,10 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           // Insert an input box at node, offset
           res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_FALSE, PR_TRUE, dummy, inputbox);
           if (NS_FAILED(res) || !inputbox) return;
-          res = ed->InsertNode(inputbox, elt, selOffset);
+          if (nextSiblingNode)
+            res = ed->InsertNode(inputbox, elt, selOffset);
+          else
+            res = ed->InsertNode(inputbox, elt, selOffset + 1);
           // Put the cursor in the input box BBM: is there a method for this?
           res = inputbox->GetNextSibling(getter_AddRefs(nextSiblingNode));
           if (nextSiblingNode) {
