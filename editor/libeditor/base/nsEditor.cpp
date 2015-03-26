@@ -1907,8 +1907,8 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
   res = manager->GetNewInstanceOfNode(aNodeType, nsnull, doc, getter_AddRefs(newNode));
   if (newNode)
   {
-    *outNode = newNode;
-    // res = doc->ImportNode(newNode, PR_TRUE, getter_AddRefs(*outNode));
+//    *outNode = newNode;
+    res = doc->ImportNode(newNode, PR_TRUE, getter_AddRefs(*outNode));
     elem = do_QueryInterface(*outNode);
     nsCOMPtr<nsINode> elemNode(do_QueryInterface(*outNode));
     elemNode->SetEditableFlag(PR_TRUE);
@@ -1977,14 +1977,7 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
         inNode->HasChildNodes(&bHasMoreChildren);
       }
     }
-  // }
-  // insert new container into tree
-//  res = InsertNode( *outNode, parent, offset);
-//  if (NS_FAILED(res)) return res;
-
-  // delete old container
     return DeleteNode(inNode);
-
 }
 
 ///////////////////////////////////////////////////////////////////////////
