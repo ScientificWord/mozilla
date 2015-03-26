@@ -365,7 +365,9 @@ while (@<r doesn't point to a TT_MATCH or a TT_END_MATCH@>){
 @$@<scan undelimited parameter@>==@{@-
 do{
   GetRawToken();
-} while (CurTok().Type() == TT_SPACE);
+} while ((CurTok().Type() == TT_SPACE) || 
+          (CurTok().ChrCode() == 0x0A) || 
+          (CurTok().ChrCode() == 0x0D) );
 
 if (CurTok().Type() == TT_LEFT_BRACE){
    @<Contribute balanced token list@>
