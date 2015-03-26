@@ -29,7 +29,7 @@ PRBool IsDisplayFrame( nsIFrame * aFrame, PRInt32& count )
   return retval;
 }
 
-    
+
 PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
 {
   nsIFrame * pParent;
@@ -60,7 +60,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
       *aOutOffset = pFrame->GetContent()->TextLength();
       count = 0;
       return NS_OK;
-    }    
+    }
      // find the last child
     pChild = GetLastChild(pFrame);
     pContent = pFrame->GetContent();
@@ -111,10 +111,10 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
           *aOutFrame = pSiblingFrame;
           *aOutOffset = 0;
         }
-      } 
+      }
     }
     else
-    { 
+    {
       PRBool fSelectable;
       count = 0;
       // special case. We are leaving math, so we need to see if  we are in a math display.
@@ -206,12 +206,14 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   }
   else // don't put the cursor inside the tag
   {
+    *aOutFrame = pFrame->GetParent();
+    *aOutOffset = mmlFrameGetIndexInParent(pFrame, *aOutFrame);
     if (IsMathFrame(pParent))
     {
       pContent = pParent->GetContent();
       *aOutOffset = pContent->IndexOf(pFrame->GetContent());
       *aOutFrame = pParent;
-      //check to see if previous frame is a temp input
+     //check to see if previous frame is a temp input
       pSiblingFrame = pFrame->GetPrevSibling();
       if (pSiblingFrame) {
         pContent = pSiblingFrame->GetContent();
@@ -223,7 +225,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
           *aOutFrame = pSiblingFrame;
           *aOutOffset = 0;
         }
-      } 
+      }
     }
     else
     {
@@ -278,7 +280,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
         nsCOMPtr<nsIDOMNode> textNode = do_QueryInterface(text);
         parentNode->InsertBefore( textNode, frameNode, getter_AddRefs(dummy));
         *aOutFrame = pFrame->GetPrevSibling();
-        *aOutOffset = 0; 
+        *aOutOffset = 0;
       }
     }
   }
@@ -434,6 +436,31 @@ nsIFrame * GetTopFrameForContent(nsIFrame * pFrame)
     pParent = pParent->GetParent();
   }
   return rval;
+}
+
+PRUint32
+mmlFrameGetIndexInParent( nsIFrame * pF, nsIFrame * pParent)
+{
+  nsIFrame * pF2 = pParent->GetFirstChild(nsnull);
+  PRUint32 index = 0;
+  while (pF2 && pF != pF2)
+  {
+    index++;
+    pF2 = pF2->GetNextSibling();
+  }
+  if (!pF2) return -1;
+  return index;
+}
+
+PRUint32 GetFrameChildCount(nsIFrame * pParent)
+{
+  nsIFrame * pF = pParent->GetFirstChild(nsnull);
+  PRUint32 index = 0;
+  while (pF) {
+    index++;
+    pF = pF->GetNextSibling();
+  }
+  return index;
 }
 
 // DOM tree navigation routines that pass over ignorable white space.
