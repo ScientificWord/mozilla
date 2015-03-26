@@ -2434,8 +2434,20 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
   return NS_OK;
 }
 
+// Get the length of aNode
+PRInt32 msiGetNodeLength(nsIDOMNode *aNode)
+{
+  nsCOMPtr<nsINode> node = do_QueryInterface(aNode);
+  if(node->IsNodeOfType(nsINode::eDATA_NODE)) {
+    return (static_cast<nsIContent *>((nsINode*)node))->TextLength();
+  }
+
+  return node->GetChildCount();
+}
+
 nsresult
-msiUtils::MergeMathTags(nsIDOMNode * node, PRBool lookLeft, PRBool lookRight, nsIEditor * editor)  // If the node is within mathematics, go up to the math
+msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRBool lookRight, nsIEditor * editor)
+// If the node is within mathematics, go up to the math
 // node and check to see if it is adjacent to (except for white-space text nodes) another math node. If so,
 // merge the nodes. Also if the selection is in text but between two math nodes which are adjacent except
 // for white-space text nodes, merge those math nodes also.
@@ -2449,7 +2461,7 @@ msiUtils::MergeMathTags(nsIDOMNode * node, PRBool lookLeft, PRBool lookRight, ns
 
   nsresult res;
   res = GetMathParent(node, mathParent);
-  if (!mathParent) {
+  if (!mathParent && (offset >= msiGetNodeLength(node))) {
     done = PR_FALSE;
     // possibly the cursor is between two math modes, as is the case after a deletion.
     // Check to see if there is math to the right

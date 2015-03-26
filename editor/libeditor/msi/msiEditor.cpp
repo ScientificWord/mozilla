@@ -66,7 +66,7 @@ PRInt32 msiEditor::s_editorCount = 0;
 msiEditor::msiEditor()
 {
   nsresult res(NS_OK);
-  if (m_filter == nsnull) { 
+  if (m_filter == nsnull) {
     m_filter = new msiContentFilter(this);
   }
   AddInsertionListener(m_filter);
@@ -85,7 +85,7 @@ msiEditor::~msiEditor()
   instanceCounter -= 1;
   m_msiEditingMan = nsnull;
   RemoveInsertionListener(m_filter);
-  
+
 //  if (instanceCounter <= 0)
 //    NS_IF_RELEASE(m_rangeUtils);
 }
@@ -94,7 +94,7 @@ NS_IMPL_ISUPPORTS_INHERITED1(msiEditor, nsHTMLEditor, msiIMathMLEditor)
 
 
 nsresult
-msiEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRoot, 
+msiEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRoot,
                 nsISelectionController *aSelCon, PRUint32 aFlags)
 {
   // Init the HTML editor
@@ -105,13 +105,13 @@ msiEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRo
     GetMSISelection(msiSelection);
     if (!msiSelection)
       return NS_ERROR_FAILURE;
-    res = msiSelection->InitalizeCallbackFunctions(AdjustCaretCB, 
-                                                   SetSelectionCB, 
+    res = msiSelection->InitalizeCallbackFunctions(AdjustCaretCB,
+                                                   SetSelectionCB,
                                                    (void*)this);
-  } 
+  }
   m_AutoSubEnabled = PR_TRUE;
-  return res; 
-}                
+  return res;
+}
 
 /* attribute boolean AutoSubEnabled; */
 NS_IMETHODIMP msiEditor::GetAutoSubEnabled(PRBool *aAutoSubEnabled)
@@ -125,16 +125,16 @@ NS_IMETHODIMP msiEditor::SetAutoSubEnabled(PRBool aAutoSubEnabled)
   return NS_OK;
 }
 
-NS_IMETHODIMP msiEditor::GetEditorID(PRUint32* id) 
-{ 
+NS_IMETHODIMP msiEditor::GetEditorID(PRUint32* id)
+{
   *id = m_editorID;
-  return NS_OK; 
+  return NS_OK;
 }
 
-NS_IMETHODIMP msiEditor::SetEditorID(PRUint32 id) 
-{ 
+NS_IMETHODIMP msiEditor::SetEditorID(PRUint32 id)
+{
   m_editorID = id;
-  return NS_OK; 
+  return NS_OK;
 }
 
 
@@ -150,7 +150,7 @@ msiEditor::CreateEventListeners()
     if (NS_FAILED(rv))
       return rv;
   }
-  if (!m_mouseMotionListener) 
+  if (!m_mouseMotionListener)
   {
     rv = NS_NewMSIEditorMouseMotionListener(getter_AddRefs(m_mouseMotionListener), this);
     if (NS_FAILED(rv))
@@ -514,6 +514,7 @@ NS_IMETHODIMP
 msiEditor::InsertSymbol(const nsAString & symbol)
 {
   nsresult res(NS_ERROR_FAILURE);
+  if (symbol.CharAt(0) == ' ') return res;
   PRBool bCollapsed(PR_FALSE);
   if (!(mFlags & eEditorPlaintextMask))
   {
@@ -1175,6 +1176,13 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
                  if (!mathnode)
                    HandleKeyPress(aKeyEvent);
               }
+            }
+            else
+            {
+              // No shift space in math
+              if (preventDefault)
+                aKeyEvent->PreventDefault();
+              return NS_OK;
             }
           }
           else if (symbol == '\t')

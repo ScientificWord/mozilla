@@ -2059,6 +2059,10 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
   res = aSelection->GetIsCollapsed(&bCollapsed);
   if (NS_FAILED(res)) return res;
 
+
+  nsAutoSelectionReset selectionResetter(aSelection, mHTMLEditor);
+  nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
+
   nsCOMPtr<nsIDOMNode> startNode, selNode;
   PRInt32 startOffset, selOffset;
 
@@ -2794,14 +2798,14 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
   }
 //TODO ljh 11/06 -- this is late in the process to be collasping the selection,
 // for example, if math is involved, these nodes may not exist.
-//  if (aAction == nsIEditor::eNext)
-//  {
-//    res = aSelection->Collapse(endNode,endOffset);
-//  }
-//  else
-//  {
-//    res = aSelection->Collapse(startNode,startOffset);
-//  }
+ // if (aAction == nsIEditor::eNext)
+ // {
+ //   res = aSelection->Collapse(endNode,endOffset);
+ // }
+ // else
+ // {
+ //   res = aSelection->Collapse(startNode,startOffset);
+ // }
   return res;
 }
 
@@ -3713,10 +3717,16 @@ void DeleteMatchingFence(nsHTMLEditor * ed, nsIDOMElement * elt)
 }
 
 
-PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * siblingElement, PRBool deletingInputbox, nsCOMPtr<nsIDOMNode> & startnode, PRInt32 & offset)
+PRBool HandledScripts(nsHTMLEditor * ed,
+                      nsIDOMElement * elt,
+                      nsIDOMNode * siblingElement,
+                      PRBool deletingInputbox,
+                      nsCOMPtr<nsIDOMNode> & startnode,
+                      PRInt32 & offset)
 {
   // A subnode has been deleted. If elt is an msub or msup, remove that tag. If elt is an msubsup,
   // replace it with an msub or msup, depending on whether siblingNode is null or not.
+  // Offset gives the offset of the part that was deleted.
   PRBool retval = PR_FALSE;
   if (!deletingInputbox)
     return retval;
@@ -3727,36 +3737,37 @@ PRBool HandledScripts(nsHTMLEditor * ed, nsIDOMElement * elt, nsIDOMNode * sibli
   nsCOMPtr<msiITagListManager> tlm;
   nsCOMPtr<nsIDOMNode> siblingNode = siblingElement;
   nsCOMPtr<nsIDOMNode> newNode;
+  nsCOMPtr<nsIDOMElement> newElement;
   elt->GetTagName(name) ;
   if (name.EqualsLiteral("msubsup") || name.EqualsLiteral("munderover"))
   {
     retval = PR_TRUE;
     PRUint16 type;
-    nsCOMPtr<nsIDOMElement> subOrSup;
-    if (siblingNode) {
-      siblingNode->GetNodeType(&type);
-      while (siblingNode && type != nsIDOMNode::ELEMENT_NODE) {
-        siblingNode->GetNextSibling(getter_AddRefs(siblingNode));
-        siblingNode->GetNodeType(&type);
-      }
-    }
 
-    // BBM: Must also cope with the case where the base has been removed !!!
-    // Also: code here for munderover?
-    if (siblingNode) { // the sub was deleted
-      if (name.EqualsLiteral("msubsup"))
-        tagName = NS_LITERAL_STRING("msup");
-      else
-        tagName = NS_LITERAL_STRING("mover");
-    }
-    else {
-      if (name.EqualsLiteral("msubsup"))
-        tagName = NS_LITERAL_STRING("msub");
-      else
-        tagName = NS_LITERAL_STRING("munder");
+    switch (offset) {
+      case 0:
+        break;
+      case 1: // the sub or under was deleted
+        if (name.EqualsLiteral("msubsup"))
+          tagName = NS_LITERAL_STRING("msup");
+        else
+          tagName = NS_LITERAL_STRING("mover");
+        break;
+      case 2:
+        if (name.EqualsLiteral("msubsup"))
+          tagName = NS_LITERAL_STRING("msub");
+        else
+          tagName = NS_LITERAL_STRING("munder");
+        break;
     }
     ed->GetTagListManager(getter_AddRefs(tlm));
-    ed->ReplaceContainer((nsIDOMNode*)elt, address_of(newNode), tagName, tlm, nsnull, nsnull, PR_TRUE);
+    if (offset == 0)
+      ed->RemoveContainer((nsIDOMNode*)elt);
+    else {
+      ed->ReplaceContainer((nsIDOMNode*)elt, address_of(newNode), tagName, tlm, nsnull, nsnull, PR_TRUE);
+      newElement = do_QueryInterface(newNode);
+      newElement->RemoveAttribute(NS_LITERAL_STRING("xmlns"));
+    }
   }
   else if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") ||
            name.EqualsLiteral("mover") || name.EqualsLiteral("mfrac")  || name.EqualsLiteral("mroot") || name.EqualsLiteral("msqrt")
@@ -3967,10 +3978,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           // Insert an input box at node, offset
           res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_FALSE, PR_TRUE, dummy, inputbox);
           if (NS_FAILED(res) || !inputbox) return;
-          if (nextSiblingNode)
-            res = ed->InsertNode(inputbox, elt, selOffset);
-          else
-            res = ed->InsertNode(inputbox, elt, selOffset + 1);
+          res = ed->InsertNode(inputbox, elt, startOffset);
           // Put the cursor in the input box BBM: is there a method for this?
           res = inputbox->GetNextSibling(getter_AddRefs(nextSiblingNode));
           if (nextSiblingNode) {
@@ -4118,7 +4126,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   hackSelectionCorrection(mHTMLEditor, startNode, startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
-  msiUtils::MergeMathTags(startNode, PR_TRUE, PR_TRUE, ed);
+  msiUtils::MergeMathTags(startNode, startOffset, PR_TRUE, PR_TRUE, ed);
 
   // See if we're in math
   mHTMLEditor->GetInComplexTransaction(&isInComplexTransaction);

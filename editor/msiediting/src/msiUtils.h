@@ -25,13 +25,13 @@ class msiUtils
 public:
   static void Initalize();
   static PRInt32  GetMathMLNodeTypeFromCharacter(PRUint32 character);
-  
+
   static nsresult GetMathMLEditingBC(nsIEditor *editor,
                                      nsIDOMNode * node,
                                      PRUint32   offset,
                                      bool       clean,
                                      nsCOMPtr<msiIMathMLEditingBC> & editingBC);
-                                     
+
   static nsresult GetMathMLInsertionInterface(nsIEditor *editor,
                                               nsIDOMNode * node,
                                               PRUint32   offset,
@@ -41,7 +41,7 @@ public:
                                              nsIDOMNode * child,
                                              PRBool incrementOffset,
                                              nsCOMPtr<msiIMathMLInsertion> & msiEditing);
-                                             
+
   static nsresult GetMathMLCaretInterface(nsIEditor *editor,
                                           nsIDOMNode * node,
                                           PRUint32   offset,
@@ -51,50 +51,50 @@ public:
                                             nsIDOMNode * child,
                                             PRBool incrementOffset,
                                             nsCOMPtr<msiIMathMLCaret> & msiEditing);
-                                            
-  static nsresult CreateMathElement(nsIEditor *editor, 
+
+  static nsresult CreateMathElement(nsIEditor *editor,
                                     PRBool isDisplay,
                                     PRBool markCaret,
                                     PRUint32 & flags,
                                     nsCOMPtr<nsIDOMElement> & mathElement);
- 
-  static nsresult CreateMathMLLeafElement(nsIEditor *editor, 
+
+  static nsresult CreateMathMLLeafElement(nsIEditor *editor,
                                           const nsAString & text,
                                           PRUint32 caretPos,
                                           PRUint32 & flags,
                                           nsCOMPtr<nsIDOMElement> & mathmlElement);
-                                          
+
   static nsresult CreateMathMLLeafElement(nsIEditor *editor,
                                           PRUint32 character,
-                                          PRUint32 tagType, 
+                                          PRUint32 tagType,
                                           PRUint32 caretPos,
                                           PRUint32 & flags,
                                           nsCOMPtr<nsIDOMElement> & mathmlElement);
-                                          
+
   static nsresult CreateMathMLLeafElement(nsIEditor *editor,
                                           const nsAString & text,
-                                          PRUint32 tagType, 
+                                          PRUint32 tagType,
                                           PRUint32 caretPos,
                                           PRUint32 & flags,
                                           nsCOMPtr<nsIDOMElement> & mathmlElement);
-                                          
-  static nsresult CreateInputbox(nsIEditor *editor, 
+
+  static nsresult CreateInputbox(nsIEditor *editor,
                                  PRBool nestInRow,
                                  PRBool markCaret,
                                  PRUint32 & flags,
                                  nsCOMPtr<nsIDOMElement> & mathmlElement);
-                                 
+
   static nsresult CreateMathOperator(nsIEditor * editor,
                                      const nsAString & text,
                                      PRUint32 caretPos,
                                      PRUint32 & flags,
                                      PRUint32 attribflags,
-                                     const nsAString & lspace,                                 
-                                     const nsAString & rspace,                                 
-                                     const nsAString & minsize,                                 
+                                     const nsAString & lspace,
+                                     const nsAString & rspace,
+                                     const nsAString & minsize,
                                      const nsAString & maxsize,
                                      nsCOMPtr<nsIDOMElement> & mathmlElement);
-                                 
+
   static nsresult CreateMSubOrMSup(nsIEditor *editor,
                                    PRBool isSup,
                                    nsIDOMNode * base,
@@ -102,7 +102,7 @@ public:
                                    PRBool scriptInRow,
                                    PRBool markCaret,
                                    PRUint32 & flags,
-                                   const nsAString & scriptShift,                                 
+                                   const nsAString & scriptShift,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement);
 
   static nsresult CreateMSubSup(nsIEditor * editor,
@@ -113,8 +113,8 @@ public:
                                 PRBool supscriptInRow,
                                 PRBool markCaret,
                                 PRUint32 & flags,
-                                const nsAString & subscriptShift,                                 
-                                const nsAString & supscriptShift,                                 
+                                const nsAString & subscriptShift,
+                                const nsAString & supscriptShift,
                                 nsCOMPtr<nsIDOMElement> & mathmlElement);
 
   static nsresult CreateMunderOrMover(nsIEditor *editor,
@@ -140,7 +140,7 @@ public:
                                    const nsAString & underIsAccent,
                                    const nsAString & overIsAccent,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement);
- 
+
   static nsresult CreateMenclose(nsIEditor *editor,
                                  const nsAString & around,
                                  const nsAString & typeAttr,
@@ -156,7 +156,7 @@ public:
                               PRBool markCaret,
                               PRUint32 & flags,
                               nsCOMPtr<nsIDOMElement> & mathmlElement);
-                              
+
   static nsresult CreateMroot(nsIEditor *editor,
                               nsIDOMNode * radicand,
                               nsIDOMNode * index,
@@ -164,7 +164,7 @@ public:
                               PRBool markCaret,
                               PRUint32 & flags,
                               nsCOMPtr<nsIDOMElement> & mathmlElement);
-                              
+
   static nsresult CreateMfrac(nsIEditor * editor,
                               nsIDOMNode * num,
                               nsIDOMNode * denom,
@@ -174,7 +174,7 @@ public:
                               const nsAString & lineThickness,
                               PRUint32 & attrFlags,
                               nsCOMPtr<nsIDOMElement> & mathmlElement);
-                              
+
   static nsresult CreateBinomial(nsIEditor * editor,
                                  nsIDOMNode * num,
                                  nsIDOMNode * denom,
@@ -186,7 +186,7 @@ public:
                                  const nsAString & lineThickness,
                                  PRUint32 & attrFlags,
                                  nsCOMPtr<nsIDOMElement> & mathmlElement);
-                              
+
   static nsresult CreateMathname(nsIEditor * editor,
                                  const nsAString & name,
                                  PRUint32 & flags,
@@ -211,11 +211,11 @@ public:
   static nsresult CreateMRow(nsIEditor *editor,
                              nsIDOMNode * child,
                              nsCOMPtr<nsIDOMElement> & mathmlElement);
-                             
+
   static nsresult CreateMRow(nsIEditor *editor,
                              nsIArray * nodeArray,
                              nsCOMPtr<nsIDOMElement> & mathmlElement);
-                             
+
   static nsresult CreateMtd(nsIEditor *editor,
                             PRBool markCaret,
                             PRUint32 & flags,
@@ -236,7 +236,7 @@ public:
                                PRUint32 & flags,
                                nsCOMPtr<nsIDOMElement> & mathmlElement,
                                const nsAString & delim);
-                               
+
   static nsresult CreateDecoration(nsIEditor * editor,
                                    nsIDOMNode * child,
                                    const nsAString & above,
@@ -247,7 +247,7 @@ public:
                                    PRBool markCaret,
                                    PRUint32 & flags,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement);
-                               
+
   static nsresult CreateContainer(nsIEditor *editor,
                                   const nsAString & elementName,
                                   nsIDOMNode * cloneMyKids,
@@ -263,24 +263,24 @@ public:
   static nsresult WrapNodeInMStyle(nsIEditor * editor,
                                    nsIDOMNode * node,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement);
-                              
+
   static nsresult GetRightMostCaretPosition(nsIEditor * editor,
                                             nsIDOMNode * node,
                                             PRUint32 & position);
-                                          
+
   static nsresult GetNumberofChildren(nsIDOMNode * node,
                                       PRUint32 & number);
-                                          
-  static nsresult GetIndexOfChildInParent(nsIDOMNode * child, 
+
+  static nsresult GetIndexOfChildInParent(nsIDOMNode * child,
                                           PRUint32 & index);
-                                          
+
   static nsresult GetNonWhitespaceChildren(nsIDOMNode * parent,
                                            nsCOMPtr<nsIArray> & children);
-                                          
+
   static nsresult GetChildNode(nsIDOMNode * parent,
                                PRUint32 indexOfChild,
-                               nsCOMPtr<nsIDOMNode> & child);                                          
-                               
+                               nsCOMPtr<nsIDOMNode> & child);
+
   static nsresult RemoveChildNode(nsIDOMNode * parent,
                                   PRUint32 indexOfChild,
                                   nsCOMPtr<nsIDOMNode> & removedChild);
@@ -291,20 +291,20 @@ public:
                                    PRUint32 indexOfChild,
                                    nsCOMPtr<nsIDOMNode> & removedChild);
 
-                                  
+
   static nsresult ReplaceChildNode(nsIDOMNode * parent,
                                    PRUint32 indexOfChild,
                                    nsIDOMNode * newChild,
                                    nsCOMPtr<nsIDOMNode> & replacedChild);
-                                   
-  static nsresult InsertChildren(nsIDOMNode * parent, 
-                                 PRUint32 offset, 
+
+  static nsresult InsertChildren(nsIDOMNode * parent,
+                                 PRUint32 offset,
                                  nsIArray * newChildList);
 
-  static nsresult ClearCaretPositionMark(nsIEditor * editor, 
+  static nsresult ClearCaretPositionMark(nsIEditor * editor,
                                          nsIDOMNode * node,
                                          PRBool clearAll);
-                                         
+
   static PRBool NodeHasCaretMark(nsIDOMNode * node,
                                  PRUint32 & pos,
                                  PRBool & caretOnText);
@@ -315,7 +315,7 @@ public:
                                     PRUint32 & flags,
                                     PRBool caretOnText,
                                     PRBool overwrite);
-                 
+
   static nsresult doSetCaretPosition(nsIEditor * editor,
                                      nsISelection * selection,
                                      nsIDOMNode * rootnode);
@@ -323,44 +323,44 @@ public:
   static nsresult doSetCaretPosition(nsISelection * selection,
                                      nsIDOMNode * node,
                                      PRUint32 offset);
-                                     
+
   static nsresult GetNSEventFromMouseEvent(nsIDOMMouseEvent * mouseEvent, nsEvent ** nsEvent);
-  
-  static nsresult GetScreenPointFromMouseEvent(nsIDOMMouseEvent * mouseEvent, nsPoint & point);                                     
-                                     
+
+  static nsresult GetScreenPointFromMouseEvent(nsIDOMMouseEvent * mouseEvent, nsPoint & point);
+
   static PRBool IsWhitespace(nsIDOMNode * node);
-                                       
+
   static PRBool IsInputbox(nsIEditor * editor,
-                           nsIDOMNode * node);       
-                                                 
+                           nsIDOMNode * node);
+
   static PRBool IsInputbox(nsISupports * isupports);
 
   static PRBool hasMMLType(nsIEditor * editor,	nsIDOMNode * node, 	unsigned short mmlType);
 
-  
+
   static PRBool IsMrow(nsIEditor* editor,
-                       nsIDOMNode * node);       
-                                                 
+                       nsIDOMNode * node);
+
   static PRBool IsMrow(nsISupports * isupports);
-  
+
   static PRBool IsMleaf(nsIEditor* editor,
                         nsIDOMNode * node,
-                        PRBool allowInputbox);       
-                                                 
+                        PRBool allowInputbox);
+
   static PRBool IsMleaf(nsISupports* isupports,
                         PRBool allowInputbox);
 
   static PRBool IsEmpty(nsIDOMNode* pNode);
-  
 
 
-                        
+
+
   static nsresult GetMathmlNodeType(nsIEditor * editor,
                                     nsIDOMNode * node,
-                                    PRUint32 & nodetype);  
-                                    
+                                    PRUint32 & nodetype);
+
   static PRUint32 GetMathmlNodeType(nsISupports * isupports);
-  
+
   static nsresult GetMathTagParent(nsIDOMNode * node,
                                    nsIAtom * elementAtom,
                                    nsCOMPtr<nsIDOMNode> & tagParent);
@@ -368,34 +368,34 @@ public:
   static nsresult GetMathParent(nsIDOMNode * node,
                                 nsCOMPtr<nsIDOMNode> & mathParent);
 
-  static nsresult MergeMathTags(nsIDOMNode * node, PRBool pLookLeft, PRBool pLookRight, nsIEditor * editor);
+  static nsresult MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool pLookLeft, PRBool pLookRight, nsIEditor * editor);
 
   static nsresult GetTableCell(nsIEditor* editor,
                                nsIDOMNode * node,
                                nsCOMPtr<nsIDOMNode> & mtdCell);
-                        
-  static nsresult CreateMathMLElement(nsIEditor* editor, nsIAtom * type, 
+
+  static nsresult CreateMathMLElement(nsIEditor* editor, nsIAtom * type,
                                       nsCOMPtr<nsIDOMElement> & mmlElement);
-                                      
-  static nsresult AddToNodeList(nsIArray* nodeList, 
-                                nsIArray * addToFront, 
-                                nsIArray * addToEnd, 
+
+  static nsresult AddToNodeList(nsIArray* nodeList,
+                                nsIArray * addToFront,
+                                nsIArray * addToEnd,
                                 nsCOMPtr<nsIArray> & pArray);
-                                
-  static nsresult AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableList, 
+
+  static nsresult AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableList,
                                       nsCOMPtr<nsIArray> & tobeAdded);
-                                
-  static nsresult RemoveNodesFromList(nsIArray * nodeList, 
+
+  static nsresult RemoveNodesFromList(nsIArray * nodeList,
                                       PRUint32 index,
                                       PRUint32 count,
                                       nsCOMPtr<nsIArray> & pArray);
-                                      
+
   static nsresult GetMathmlNodeFromCaretInterface(nsCOMPtr<msiIMathMLCaret> & caret,
                                                   nsCOMPtr<nsIDOMNode> & mathmlNode);
-                                                  
+
   static nsresult GetOffsetFromCaretInterface(nsCOMPtr<msiIMathMLCaret> & caret,
                                               PRUint32 & offset);
-                                              
+
   static nsresult ComparePoints(nsIEditor * editor,
                                 nsIDOMNode * node1, PRUint32 offset1,
                                 nsIDOMNode * node2, PRUint32 offset2,
@@ -403,7 +403,7 @@ public:
 
   static nsresult SplitNode(nsIDOMNode * node, PRUint32 offset,
                             PRBool emptyOK,
-                            nsCOMPtr<nsIDOMNode> & left, 
+                            nsCOMPtr<nsIDOMNode> & left,
                             nsCOMPtr<nsIDOMNode> & right);
 
   static nsresult Refresh(nsIEditor * editor);
@@ -411,7 +411,7 @@ public:
 //TODO - how should this be determined -- user preference??
   enum {MROW_PURGE_NONE = 0, MROW_PURGE_BOUNDARY, MROW_PURGE_ALL};
   static PRUint32  GetMrowPurgeMode();
-                                      
-};                  
+
+};
 
 #endif // msiUtils_h___
