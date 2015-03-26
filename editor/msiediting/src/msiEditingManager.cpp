@@ -747,8 +747,8 @@ msiEditingManager::InsertMath(nsIEditor * editor,
           if (editor) {
             mathNode = do_QueryInterface(mathElement);
             if (mathNode) {
-              msiUtils::MergeMathTags(mathNode, PR_TRUE, PR_FALSE, editor);
-              msiUtils::MergeMathTags(mathNode, PR_FALSE, PR_TRUE, editor);
+              msiUtils::MergeMathTags(mathNode, 0, PR_TRUE, PR_FALSE, editor);
+              msiUtils::MergeMathTags(mathNode, 0, PR_FALSE, PR_TRUE, editor);
             }
           }
 
