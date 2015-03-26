@@ -133,7 +133,7 @@ nsMathMLmoFrame::GetPointFromOffset(PRInt32 inOffset,
   return NS_OK;
 }
 
-                                
+
 NS_IMETHODIMP
 nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                                   const nsRect&           aDirtyRect,
@@ -150,7 +150,7 @@ nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
   } else {
     rv = DisplayBorderBackgroundOutline(aBuilder, aLists);
     NS_ENSURE_SUCCESS(rv, rv);
-    
+
     // make our char selected if our inner child text frame is selected
     bool isSelected = false;
     nsRect selectedRect;
@@ -158,14 +158,14 @@ nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
     firstChild = mFrames.FirstChild();
 //    while (firstChild->GetFirstChild(nsnull)) firstChild = firstChild->GetFirstChild(nsnull);
 //    // drill down to the text child
-//    
+//
     if (IsFrameInSelection(firstChild)) {
       selectedRect = firstChild->GetRect();
       isSelected = true;
     }
     rv = mMathMLChar.Display(aBuilder, this, aLists, 0, isSelected ? &selectedRect : nsnull);
     NS_ENSURE_SUCCESS(rv, rv);
-  
+
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
     // for visual debug
     rv = DisplayBoundingMetrics(aBuilder, this, mReference, mBoundingMetrics, aLists);
@@ -192,9 +192,9 @@ nsMathMLmoFrame::ProcessTextData()
   PRInt32 length = data.Length();
   PRUnichar ch = (length == 0) ? kNullCh : data[0];
 
-  if ((length == 1) && 
-      (ch == kInvisibleComma || 
-       ch == kApplyFunction  || 
+  if ((length == 1) &&
+      (ch == kInvisibleComma ||
+       ch == kApplyFunction  ||
        ch == kInvisibleTimes)) {
     mFlags |= NS_MATHML_OPERATOR_INVISIBLE;
   }
@@ -241,7 +241,7 @@ nsMathMLmoFrame::ProcessTextData()
   if (isMutable)
     mFlags |= NS_MATHML_OPERATOR_MUTABLE;
 
-  // see if this is an operator that should be centered to cater for 
+  // see if this is an operator that should be centered to cater for
   // fonts that are not math-aware
   // if (1 == length) {
   //   if ((ch == '+') || (ch == '=') || (ch == '*') ||
@@ -263,7 +263,7 @@ nsMathMLmoFrame::ProcessTextData()
   mEmbellishData.direction = mMathMLChar.GetStretchDirection();
 }
 
-// get our 'form' and lookup in the Operator Dictionary to fetch 
+// get our 'form' and lookup in the Operator Dictionary to fetch
 // our default data that may come from there. Then complete our setup
 // using attributes that we may have. To stay in sync, this function is
 // called very often. We depend on many things that may change around us.
@@ -283,7 +283,7 @@ nsMathMLmoFrame::ProcessOperatorData()
   // it mutable irrespective of the form of the embellished container.
   // Also remember the other special bits that we want to carry forward.
   mFlags &= NS_MATHML_OPERATOR_MUTABLE |
-            NS_MATHML_OPERATOR_ACCENT | 
+            NS_MATHML_OPERATOR_ACCENT |
             NS_MATHML_OPERATOR_MOVABLELIMITS |
             NS_MATHML_OPERATOR_CENTERED |
             NS_MATHML_OPERATOR_INVISIBLE;
@@ -299,7 +299,7 @@ nsMathMLmoFrame::ProcessOperatorData()
     mEmbellishData.leadingSpace = 0;
     mEmbellishData.trailingSpace = 0;
     if (mMathMLChar.Length() != 1)
-      mEmbellishData.direction = NS_STRETCH_DIRECTION_UNSUPPORTED;  
+      mEmbellishData.direction = NS_STRETCH_DIRECTION_UNSUPPORTED;
     // else... retain the native direction obtained in ProcessTextData()
 
     if (!mFrames.FirstChild()) {
@@ -357,7 +357,7 @@ nsMathMLmoFrame::ProcessOperatorData()
   // container. A null form here means that an earlier attempt to stretch
   // our mMathMLChar failed, in which case we don't bother re-stretching again
   if (form) {
-    // get our outermost embellished container and its parent. 
+    // get our outermost embellished container and its parent.
     // (we ensure that we are the core, not just a sibling of the core)
     nsIFrame* embellishAncestor = this;
     nsEmbellishData embellishData;
@@ -667,7 +667,7 @@ nsMathMLmoFrame::Stretch(nsIRenderingContext& aRenderingContext,
   GetAxisHeight(aRenderingContext, fm, axisHeight);
 
   // get the leading to be left at the top and the bottom of the stretched char
-  // this seems more reliable than using fm->GetLeading() on suspicious fonts               
+  // this seems more reliable than using fm->GetLeading() on suspicious fonts
   nscoord em;
   GetEmHeight(fm, em);
   nscoord leading = NSToCoordRound(0.2f * em);
@@ -751,7 +751,7 @@ nsMathMLmoFrame::Stretch(nsIRenderingContext& aRenderingContext,
       if (mMinSize > 0.0f) {
         // if we are here, there is a user defined minsize ...
         // always allow the char to stretch in its natural direction,
-        // even if it is different from the caller's direction 
+        // even if it is different from the caller's direction
         if (aStretchDirection != NS_STRETCH_DIRECTION_DEFAULT &&
             aStretchDirection != mEmbellishData.direction) {
           aStretchDirection = NS_STRETCH_DIRECTION_DEFAULT;
@@ -816,7 +816,7 @@ nsMathMLmoFrame::Stretch(nsIRenderingContext& aRenderingContext,
     // update our bounding metrics... it becomes that of our MathML char
     mBoundingMetrics = charSize;
 
-    // if the returned direction is 'unsupported', the char didn't actually change. 
+    // if the returned direction is 'unsupported', the char didn't actually change.
     // So we do the centering only if necessary
     if (mMathMLChar.GetStretchDirection() != NS_STRETCH_DIRECTION_UNSUPPORTED ||
         NS_MATHML_OPERATOR_IS_CENTERED(mFlags)) {
@@ -1084,7 +1084,7 @@ nsMathMLmoFrame::AttributeChanged(PRInt32         aNameSpaceID,
 }
 
 // ----------------------
-// No need to track the style context given to our MathML char. 
+// No need to track the style context given to our MathML char.
 // the Style System will use these to pass the proper style context to our MathMLChar
 nsStyleContext*
 nsMathMLmoFrame::GetAdditionalStyleContext(PRInt32 aIndex) const
@@ -1113,17 +1113,17 @@ nsMathMLmoFrame::IsInvisibleOp()
 {
   nsIContent * pContent = GetContent();
   nsCOMPtr<nsIDOMNode> node;
-  nsCOMPtr<nsIDOMCharacterData> cd;         
+  nsCOMPtr<nsIDOMCharacterData> cd;
   node=do_QueryInterface(pContent);
   if (!node) return PR_TRUE;
   nsString strContents;
-  nsresult res;   
+  nsresult res;
   res = node->GetFirstChild((nsIDOMNode **)&node);
   cd = do_QueryInterface(node);
   if (cd) res = cd->GetData(strContents);
   else return PR_TRUE;
   if ((strContents.Length()==1)&&(strContents[0]==0x2061 || strContents[0]==0x2062)) return PR_TRUE;
-  return PR_FALSE;  
+  return PR_FALSE;
 }
 
 nsresult
@@ -1131,14 +1131,14 @@ nsMathMLmoFrame::MoveOutToRight(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PR
    PRBool* fBailingOut, PRInt32* fRetValue)
 {
   printf("moframe: moveouttoright, count = %d\n", count);
-  // because the cursor does not show up when inside an mo, put it either before or after, 
+  // because the cursor does not show up when inside an mo, put it either before or after,
   // depending on count
   nsIFrame * pParent = GetParent();
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
   {
     pMCM = GetMathCursorMover(pParent);
-    if (pMCM) 
+    if (pMCM)
     {
       if (IsInvisibleOp())
       {
@@ -1147,8 +1147,8 @@ nsMathMLmoFrame::MoveOutToRight(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PR
       }
       pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
     }
-  } 
-  return NS_OK;  
+  }
+  return NS_OK;
 }
 
 nsresult
@@ -1156,63 +1156,64 @@ nsMathMLmoFrame::MoveOutToLeft(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRI
    PRBool* fBailingOut, PRInt32* fRetValue)
 {
   printf("moframe: moveouttoleft, count = %d\n", count);
-  // because the cursor does not show up when inside an mo, put it either before or after, 
+  // because the cursor does not show up when inside an mo, put it either before or after,
   // depending on count
   nsIFrame * pParent = GetParent();
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
   {
     pMCM = GetMathCursorMover(pParent);
-    if (pMCM) 
+    if (pMCM)
     {
-      if (IsInvisibleOp()) 
+      if (IsInvisibleOp())
       {
         pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
         return NS_OK;
       }
       pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
-    } 
+    }
   }
-  return NS_OK;  
+  return NS_OK;
 }
 
 
 
-nsresult 
-nsMathMLmoFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, 
+nsresult
+nsMathMLmoFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset,
    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
 {
-  if (IsInvisibleOp()) 
+  if (IsInvisibleOp())
     return MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
   else
   {
     if (count == 0) {
       PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
     }
-    else 
+    else
     {
       count = 0;
       *_retval = 0;
-      MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-//      PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+      // MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+     PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, count);
     }
   }
  return NS_OK;
 }
- 
-nsresult 
-nsMathMLmoFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, 
+
+
+nsresult
+nsMathMLmoFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset,
    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
 {
   if (IsInvisibleOp()) return MoveOutToRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
   else
   {
-    if (count == 0) PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
-    else 
+    if (count == 0) PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, count);
+    else
     {
       count = 0;
       *_retval = 0;
-      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, count);
     }
   }
   return NS_OK;

@@ -16,7 +16,7 @@
     #1
     <mbar>
 	   	#2some text
-	</mbar>		   
+	</mbar>
   </mfoo>
 
   If fInside is true, the cursor advances recursively until is precedes a character in a text frame.
@@ -32,7 +32,7 @@ nsIFrame * GetFirstTextFrame( nsIFrame * pFrame );
 
 nsIFrame * GetFirstTextFramePastFrame( nsIFrame * pFrame );
 
-nsIFrame * GetLastTextFrame( nsIFrame * pFrame );											   
+nsIFrame * GetLastTextFrame( nsIFrame * pFrame );
 
 nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame );
 nsIFrame * GetLastChild(nsIFrame * pFrame);
@@ -42,7 +42,7 @@ nsIFrame * GetLastChild(nsIFrame * pFrame);
  *   to go up the parent tree until the content pointer is different. That is what this function does.
  * @param  pFrame A child frame
  * @return        The first ancestor with a different content pointer.
- * 
+ *
  */
 nsIFrame * GetSignificantParent( nsIFrame * pFrame);
 
@@ -63,5 +63,8 @@ nsIDOMNode * FirstChild( nsIDOMNode * parent);
 
 nsIDOMNode * LastChild( nsIDOMNode * parent);
 
+PRUint32 mmlFrameGetIndexInParent( nsIFrame * pF, nsIFrame * pParent);
+
+PRUint32 GetFrameChildCount(nsIFrame * pParent);
 
 #endif /* nsMathCursorUtils_h___ */
