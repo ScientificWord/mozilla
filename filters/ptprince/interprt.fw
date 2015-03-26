@@ -572,11 +572,11 @@ case CMD_MSISPECIAL: {
   // Break the content of special into name, value pairs
   i=0;
   while (i < strTemp.size()){
-    int nameBegin = strTemp.find_first_not_of(" ", i);
-    int nameEnd = strTemp.find_first_of(" ", nameBegin);
+    int nameBegin = strTemp.find_first_not_of(" \r\n\t", i);
+    int nameEnd = strTemp.find_first_of(" \r\n\t", nameBegin);
     std::string name = strTemp.substr(nameBegin, nameEnd - nameBegin);
     std::string value;
-    int valueBegin = strTemp.find_first_not_of(" ", nameEnd);
+    int valueBegin = strTemp.find_first_not_of(" \r\n\t", nameEnd);
     int valueEnd = 0;
     if (strTemp[valueBegin] != '\\'){
       valueEnd = strTemp.find_first_of(";", valueBegin);
