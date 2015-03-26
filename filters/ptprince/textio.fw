@@ -778,6 +778,7 @@ private:
    TCIMState m_tcimState;
    LineOfText* m_held;
    std::string m_codepage;
+   std::string m_outputfilter;
 
 public:
    LineSource(CharStream*);
@@ -883,6 +884,7 @@ bool LineSource::GetLine(LineOfText* pLine)
         // scan ahead removing leading % until a line starts
         // with %BeginExpansion or a non %. Then remove
         // the preceeding brace-percent
+        //pLine -> StripTCIMEnd(true);
         LOG("\nLINE: " << *pLine);
         while (true){
             LineOfText* pNextLine = new LineOfText;
@@ -921,6 +923,18 @@ bool LineSource::GetLine(LineOfText* pLine)
           m_codepage = line.substr(p+1, q-p-1);
           if (m_codepage == "65001"){
             // switch to a utf8 filter
+
+          }
+
+        }
+        p = line.find("OutputFilter");
+        if (p != std::string::npos){
+          p = line.find("=", p);
+          size_t q = line.find("}");
+          m_outputfilter = line.substr(p+1, q-p-1);
+          if (m_outputfilter == "latex2.dll"){
+            // portable filter was used
+
 
           }
         }
