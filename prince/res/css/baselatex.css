@@ -24,9 +24,10 @@ mml|math { color: red;}
 mml|* [msiunit="true"] {color: green;
 	font-style: normal;}
 mml|mtd {border-color: green; }
-msidisplay mml|math {border-color: green; 
-  border-width: 1px; 
-  border-style: solid; 
+msidisplay {border-color: green;
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
   min-height: 12px;}
 mml|mtext { color: black; }
 [msiclass="msi_passthrough"] {color: orange; }
@@ -39,7 +40,7 @@ verbatim bodyText {
   margin: 0;
   padding: 0;
 }
-numberedListItem, 
+numberedListItem,
 bulletListItem,
 descriptionListItem,
 bibitem {
@@ -386,7 +387,7 @@ printindex, frontmatter, mainmatter, backmatter {
   font-style: normal;
   -moz-user-select: all;
 
-} 
+}
 
 mml|menclose {
   min-width: 1em;
@@ -476,7 +477,7 @@ bibliography {
 }
 
 bibliography:before {
-  content: "References"; 
+  content: "References";
   font-size: 150%;
 }
 
