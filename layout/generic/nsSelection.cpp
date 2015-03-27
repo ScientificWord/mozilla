@@ -2800,7 +2800,7 @@ nsFrameSelection::GetFrameForNodeOffset(nsIContent *aNode,
     if (childIndex > 0 || numChildren > 0) {
 
       nsCOMPtr<nsIContent> childNode = theNode->GetChildAt(childIndex);
-      while ( childIndex > 0 && childNode && (childNode->TextIsOnlyWhitespace() || !childNode->MayHaveFrame()) )
+      while ( childIndex > 0 && childNode && (/* childNode->TextIsOnlyWhitespace() || */ !childNode->MayHaveFrame()) )
       {
         childIndex--;
         childNode = theNode->GetChildAt(childIndex);
