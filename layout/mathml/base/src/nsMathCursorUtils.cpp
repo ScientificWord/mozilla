@@ -175,7 +175,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   nsIFrame * pChild = nsnull;
   nsIFrame * pParent = nsnull;
   nsIFrame * pSiblingFrame = nsnull;
-  pParent = GetSignificantParent(pFrame);
+  pParent = pFrame->GetParent();
   nsCOMPtr<nsIDOMDocument> doc;
   nsCOMPtr<nsIContent> pContent;
   // nsCOMPtr<nsIMathMLCursorMover> pMCM;
@@ -206,7 +206,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   }
   else // don't put the cursor inside the tag
   {
-    *aOutFrame = pFrame->GetParent();
+    *aOutFrame = pParent;
     *aOutOffset = mmlFrameGetIndexInParent(pFrame, *aOutFrame);
     if (IsMathFrame(pParent))
     {
@@ -251,7 +251,7 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
           textlength = (pSiblingFrame)->GetContent()->TextLength();
           *aOutOffset = textlength;
         } else
-          *aOutOffset = (PRUint32(-1));
+          *aOutOffset = mmlFrameGetIndexInParent(pFrame, *aOutFrame);
       }
       else
       {
