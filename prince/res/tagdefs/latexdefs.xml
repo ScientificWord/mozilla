@@ -214,6 +214,15 @@
         <tag nm="caption">
           <description>Caption for image, plot, or table</description>
         </tag>
+        <tag nm="msidisplay" hidden="1">
+          <level>*</level>
+        <!--    <contains>mml:math</contains> -->
+          <description>Display</description>
+          <discardemptyblock>true</discardemptyblock>
+        <!--   <nextafteremptyblock>bodyText</nextafteremptyblock> -->
+          <inclusion>true</inclusion>
+        </tag>
+
 			</tags>
 		</tagclass>
     <tagclass>
@@ -326,7 +335,9 @@
         <contains>shortTitle</contains>
       </classcontains>
 			<tags>
-				<tag nm="(removesection)" id="clearsectiontag" ><description>Remove innermost section-like tag</description></tag>
+				<tag nm="(removesection)" id="clearsectiontag" >
+          <description>Remove innermost section-like tag</description>
+        </tag>
 				<tag nm="set">
         	<level>-3</level>
           <description>Set of books</description>
@@ -852,14 +863,6 @@
           <initialcontents>
             <acknowledgment/>
           </initialcontents>
-        </tag>
-        <tag nm="msidisplay" hidden="1">
-          <level>*</level>
-          <contains>mml:math</contains>
-          <description>Display</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <inclusion>true</inclusion>
         </tag>
   		  <tag nm="msiframe">
           <contains>envtag</contains>
