@@ -363,7 +363,7 @@
 				<tag nm="section">
           <level>2</level>
           <description>Section</description>
-          <discardemptyblock>false</discardemptyblock>
+          <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
              <section>
