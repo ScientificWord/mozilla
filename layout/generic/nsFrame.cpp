@@ -8309,10 +8309,10 @@ nsFrame::MoveRightAtDocEnd(nsISelection * selection)
     while (currentNode && !isPara) {
       // lastElement = currentNode;
       tw->LastChild(getter_AddRefs(currentNode));
-//      if (currentNode) {
+      if (currentNode) {
         res = currentNode->GetNodeName(name);
         tlm->GetTagInClass(strPara, name, namespaceatom, &isPara);
-//      }
+      }
     }
     if (!currentNode) return NS_OK;
     // currentNode now should be the last paragraph-type object in the document
