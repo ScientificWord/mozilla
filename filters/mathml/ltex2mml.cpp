@@ -5084,6 +5084,10 @@ TNODE* LaTeX2MMLTree::TranslateTeXDisplay( TNODE* tex_display_node,
                                 U16 id,TNODE** out_of_flow_list ) {
 
   TNODE* mml_rv =  NULL;
+  TNODE* tag  =  NULL;
+  TNODE* notag  =  NULL;
+  bool suppressAnnotation = FALSE;
+
 
   if ( tex_display_node && tex_display_node->parts ) {
 
@@ -5103,10 +5107,17 @@ TNODE* LaTeX2MMLTree::TranslateTeXDisplay( TNODE* tex_display_node,
         TCI_BOOL do_bindings  =  TRUE;
         U16 tex_nodes_done,error_code;
         TNODE* local_oof_list =  NULL;
-        mml_cont  =  TranslateMathList( tex_cont,do_bindings,NULL,
-                        tex_nodes_done,error_code,&local_oof_list );
-        mml_cont  =  HandleOutOfFlowObjects( mml_cont,
-                        &local_oof_list,out_of_flow_list,2 );
+        mml_cont  =  TranslateMathList( tex_cont, do_bindings, NULL, tex_nodes_done, error_code, &local_oof_list );
+        mml_cont  =  HandleOutOfFlowObjects( mml_cont, &local_oof_list, out_of_flow_list, 2 );
+        
+        if ( mml_cont ) {
+             tag =  FindObject( tex_cont, (U8*)"5.701.0", INVALID_LIST_POS );   // \TCITag, tag
+             if ( !tag ) {
+               tag =  FindObject( tex_cont ,(U8*)"5.702.0", INVALID_LIST_POS );   // \TCITag*, tag*
+               suppressAnnotation = TRUE;
+             }
+        }
+      
       } else {          // MATH display contains no math
         U16 ilk   =  1010;
         U8* ztext =  NULL;
