@@ -72,7 +72,10 @@ bool mathmlHandler(U32 type, const char* data)
     s_mathml += data;
   } else if ( type == 1001 || type == 1005) {
     s_anomaly = data;
-  } else if ( type == 1004 ) { // \tag
+  } else if ( type == 1004 ) { // \tag, \TCItag, \tag*, \notag, ...
+    if (s_equation && !s_eqnarray){
+      s_anomaly = data;
+    }
     s_nonumbering = false;
   } else if ( type == 1010 ){  // \begin{equation}
     s_equation = true;
