@@ -1627,7 +1627,8 @@
 
 
 
-\mathpass@arg{\tag}
+%\mathpass@arg{\tag}
+
 
 
 \mathpass@arg{\mathbb}
@@ -1887,6 +1888,7 @@
 
 
 \def\TCItag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
+\def\tag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
 
 \def\@TCItag#1{\msitag{\TCItag{#1}}}
 \def\@TCItagstar*#1{\string\TCItag\msitag{*{#1}}}
