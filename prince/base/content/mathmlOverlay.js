@@ -11,11 +11,12 @@ function msiSetupMSIMathMenuCommands(editorElement)
 
   //dump("Registering msi math menu commands\n");
 
-  commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
+  commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiToggleMathText);
   commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
   commandTable.registerCommand("cmd_MSImathtext",       msiToggleMathText);
   commandTable.registerCommand("cmd_MSItextmath",       msiToggleMathText);
-  commandTable.registerCommand("cmd_MSImathtextButton",       msiToggleMathText);
+  commandTable.registerCommand("cmd_MSImathtextButton", msiToggleMathText);
+  commandTable.registerCommand("cmd_MSItextModeCmd",    msiToggleMathText);
   commandTable.registerCommand("cmd_MSIfractionCmd",    msiFraction);
   commandTable.registerCommand("cmd_MSIradicalCmd",     msiRadical);
   commandTable.registerCommand("cmd_MSIrootCmd",        msiRoot);
@@ -130,13 +131,9 @@ var msiToggleMathText =
 		  togglekey = "m";
 		else
 			togglekey = "t";
-		if (aCommand == "cmd_MSImathtextButton" || this.keyIsToggle(togglekey) || this.currentState() != togglekey)
+		if (aCommand === "cmd_MSImathtextButton" || aCommand === "cmd_MSIinlineMathCmd" || this.keyIsToggle(togglekey) || this.currentState() != togglekey)
 		{
       toggleMathText(editor);
-	    //if (this.currentState() == "t")
-			//	insertinlinemath();
-
-
 			editorElement.contentWindow.focus();
 		}
     return;
