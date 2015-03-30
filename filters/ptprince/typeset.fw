@@ -719,12 +719,19 @@ void Typesetter::EndDisplay()
          std::string customLabel = "";
          bool suppressAnnotation = false;
          if (s_anom != ""){
-            if (s_anom.substr(0,5) == "\\tag{"){
-               int end = s_anom.find_first_of("}", 5);
-               customLabel = s_anom.substr(5, end-5);
+            if (s_anom.substr(0,6) == "\\tag {" ){
+               int end = s_anom.find_first_of("}", 6);
+               customLabel = s_anom.substr(6, end-6);
+            } else if (s_anom.substr(0,9) == "\\TCItag {"){
+               int end = s_anom.find_first_of("}", 9);
+               customLabel = s_anom.substr(9, end-9); 
+            }  else if (s_anom.substr(0,9) == "\\TCItag*{"){
+               int end = s_anom.find_first_of("}", 9);
+               suppressAnnotation = true;
+               customLabel = s_anom.substr(9, end-9);           
             } else if (s_anom.substr(0,6) == "\\tag*{"){
                int end = s_anom.find_first_of("}", 6);
-               customLabel = s_anom.substr(6, end-5);
+               customLabel = s_anom.substr(6, end-6);
                suppressAnnotation = true;
             }  else if (s_anom.substr(0,6) == "\\notag"){
                s_nonumbering = true;               
@@ -771,7 +778,7 @@ void Typesetter::EndDisplay()
            str +="\"";
          }
          if (suppressAnnotation){
-           str += " suppressAnnotation='true'";
+           str += " suppressAnnotation=\"true\"";
          }
          if (marker != ""){
            str += " marker=\"";
