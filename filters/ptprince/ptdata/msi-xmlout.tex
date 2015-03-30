@@ -188,8 +188,7 @@
 
 
 \def\MSIMathQuote#1{%
-   %\expandafter\def\csname#1\endcsname{\char`\\#1\char32\relax}}
-   \expandafter\def\csname#1\endcsname{\expandafter\string\csname#1\endcsname\char32\relax}}
+   \expandafter\def\csname#1\endcsname{\expandafter\string\csname#1\endcsname\@ifnextchar*{}{\char32}}}
 
 
 \def\left#1{\string\left#1}
@@ -1627,7 +1626,8 @@
 
 
 
-%\mathpass@arg{\tag}
+%\mathpass{\tag}
+%\mathpass{\TCItag}
 
 
 
@@ -1887,8 +1887,8 @@
 
 
 
-\def\TCItag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
-\def\tag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
+%\def\TCItag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
+%\def\tag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
 
 \def\@TCItag#1{\msitag{\TCItag{#1}}}
 \def\@TCItagstar*#1{\string\TCItag\msitag{*{#1}}}
