@@ -1359,7 +1359,11 @@
       <xsl:text>}</xsl:text>
       <xsl:apply-templates select="mml:math/*" />
       <xsl:if test="@customLabel and string-length(@customLabel)">
-        <xsl:text xml:space="preserve"> \tag{</xsl:text>
+        <xsl:text>\tag</xsl:text>
+          <xsl:if test="@suppressAnnotation='true'">
+             <xsl:text>*</xsl:text>
+          </xsl:if>
+        <xsl:text>{</xsl:text>
         <xsl:value-of select="@customLabel" />
         <xsl:text>}</xsl:text>
       </xsl:if>
