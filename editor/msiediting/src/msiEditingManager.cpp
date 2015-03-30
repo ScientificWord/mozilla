@@ -128,25 +128,48 @@ nsresult MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, nsIDOMNode *node, P
 {
   nsCOMPtr<nsIArray> arrayOfNodes;
   nsCOMPtr<nsIDOMNode> currentNode;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsCOMPtr<nsIDOMNode> topNode = nsnull;
+  nsCOMPtr<nsIDOMNode> tempNode;
+  nsCOMPtr<nsIDOMNode> parentElement;
+  nsAutoString name;
   PRUint16 nodeType;
   PRUint32 length;
   nsCOMPtr<nsIHTMLEditor> htmlEditor(do_QueryInterface(editor));
   htmlEditor->NodesInRange(range, getter_AddRefs(arrayOfNodes));
   arrayOfNodes->GetLength(&length);
 
+  editor->BeginTransaction();
   for (PRInt32 i = (length-1); i>=0; i--)
   {
     currentNode = do_QueryElementAt(arrayOfNodes, i);
     // put inNode in new parent, outNode
+    tempNode = currentNode;
+    while (tempNode && (tempNode != topNode)) {
+      tempNode->GetParentNode(getter_AddRefs(tempNode));
+    }
+    if (tempNode && (tempNode == topNode)) continue;  // this node has already been included when we walked up the tree with a following node.
     currentNode->GetNodeType(&nodeType);
 
     //  jcs -- what is this supposed to do?
-    //  if (nodeType==3) // Means a #text ?
-    //    currentNode->GetParentNode(getter_AddRefs(currentNode));
+    if (nodeType==3) // Means a #text ?
+      currentNode->GetParentNode(getter_AddRefs(currentNode));
+    currentNode->GetParentNode(getter_AddRefs(parentNode));
+    parentElement = do_QueryInterface(parentNode);
+    parentElement->GetNodeName(name);
+    while (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("msubsup") || name.EqualsLiteral("mfrac")
+      || name.EqualsLiteral("mroot")) {
+      currentNode = parentNode;
+      topNode = currentNode;
+      currentNode->GetParentNode(getter_AddRefs(parentNode));
+      parentElement = do_QueryInterface(parentNode);
+      parentElement->GetNodeName(name);
+    }
 
     editor->DeleteNode(currentNode);
     editor->InsertNode(currentNode, node, offset);//past the mo
   }
+  editor->EndTransaction();
   return NS_OK;
 }
 
