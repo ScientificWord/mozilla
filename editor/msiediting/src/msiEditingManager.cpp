@@ -774,7 +774,7 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
 
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSymbol");
   nsCOMPtr<nsIHTMLEditor> htmleditor = do_QueryInterface(editor);
@@ -843,7 +843,6 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
                                   PRUint32 attrFlags)
 {
   nsresult res(NS_ERROR_FAILURE);
-  // BBM: force collapsed selection for first version
   nsCOMPtr<nsIDOMRange> range;
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
@@ -852,10 +851,8 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
   PRInt32 anchorOffset;
   nsCOMPtr<nsIDOMNode> selStartNode;
   PRInt32 selStartOffset;
-  // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
   res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
   PRBool inMath = (nsnull != mathnode);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
@@ -907,7 +904,7 @@ msiEditingManager::InsertBinomial(nsIEditor * editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
 
   nsCOMPtr<nsIDOMRange> range;
   selection->GetRangeAt(0, getter_AddRefs(range));
@@ -947,7 +944,6 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
                                 PRUint32 offset)
 {
   nsresult res(NS_ERROR_FAILURE);
-  // BBM: force collapsed selection for first version
   //check that we are entirely in one math object
   nsCOMPtr<nsIDOMRange> range;
   nsCOMPtr<nsIDOMNode> selStartNode;
@@ -955,7 +951,7 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
   nsCOMPtr<nsIDOMNode> mathnode;
@@ -1000,7 +996,7 @@ msiEditingManager::InsertRoot(nsIEditor * editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
 
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSqRoot");
   nsCOMPtr<nsIDOMRange> range;
@@ -1050,7 +1046,7 @@ msiEditingManager::InsertFence(nsIEditor* editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
   nsCOMPtr<nsIDOMRange> range;
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
@@ -1108,7 +1104,7 @@ msiEditingManager::InsertMathname(nsIEditor* editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
 
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathname");
   if (editor && selection && node)
@@ -1140,7 +1136,7 @@ msiEditingManager::InsertMathunit(nsIEditor* editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
 
   nsEditor * ed = static_cast<nsEditor *>(editor);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathname");
@@ -1172,7 +1168,7 @@ msiEditingManager::InsertEngineFunction(nsIEditor* editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+  // selection->Collapse(selStartNode, selStartOffset);
 
   if (editor && selection && node)
   {
@@ -1202,7 +1198,7 @@ msiEditingManager::InsertMatrix(nsIEditor * editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
 
   if (editor && selection && node)
   {
@@ -1233,7 +1229,7 @@ msiEditingManager::InsertOperator(nsIEditor * editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+  // selection->Collapse(selStartNode, selStartOffset);
 
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertOperator");
   if (editor && selection && node)
@@ -1268,7 +1264,7 @@ msiEditingManager::InsertScript(nsIEditor * editor,
   // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-  selection->Collapse(selStartNode, selStartOffset);
+  // selection->Collapse(selStartNode, selStartOffset);
 
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertOperator");
   if (editor && selection && node)
@@ -1302,7 +1298,7 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
   res = selection->GetFocusOffset(&selStartOffset);
   nsCOMPtr<nsIDOMRange> range;
   // BBM for first release, force selection to be collapsed
-  selection->Collapse(selStartNode, selStartOffset);
+  // selection->Collapse(selStartNode, selStartOffset);
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
   nsCOMPtr<nsIDOMNode> mathnode;
