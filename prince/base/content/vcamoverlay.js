@@ -566,9 +566,7 @@ function rebuildSnapshots(doc)
       }
       else continue;
       aVCamObject = new VCamObject(obj);
-
-      return aVCamObject.makeSnapshot();
-
+      aVCamObject.makeSnapshot();
     }
   }
 }
