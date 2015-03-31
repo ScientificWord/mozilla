@@ -1,4 +1,4 @@
-<xsl:stylesheet version="1.1" 
+<xsl:stylesheet version="1.1"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
@@ -34,9 +34,9 @@
   </xsl:variable>
 
   <xsl:variable name="caption" select="html:caption"/>
- 
 
-  <xsl:variable name="embedded" 
+
+  <xsl:variable name="embedded"
     select="count(ancestor::html:table)"/>
 
   <xsl:variable name="tabularType">
@@ -66,7 +66,7 @@
     <xsl:call-template name="collectCellData" />
   </xsl:variable>
 
-  <xsl:variable name="cellData" 
+  <xsl:variable name="cellData"
     select="exsl:node-set($cellData.tf)"/>
 
   <xsl:value-of select="$newline"/>
@@ -123,7 +123,7 @@
     <xsl:with-param name="whichLine" select="'top'" />
   </xsl:call-template>
 
-  <xsl:value-of select="$newline"/>
+  <!-- <xsl:value-of select="$newline"/>   see bug 3260 -->
 
   <xsl:for-each select="$cellData/rowData">
     <xsl:for-each select="./cellData[(@cellID and string-length(normalize-space(@cellID))) or (@continuation='row')]">
@@ -171,7 +171,7 @@
   <xsl:if test="$embedded">
     <xsl:text>}</xsl:text>
   </xsl:if>
-</xsl:template>    
+</xsl:template>
 
 <!--
 <xsl:template match="html:table/html:caption">
@@ -203,7 +203,7 @@
 <xsl:template match="html:table|mml:table">
     <xsl:call-template name="buildtable"/>
 </xsl:template>
-		  
+
 <xsl:template match="html:td//html:br">
    <xsl:text xml:space="preserve">\par </xsl:text>
 </xsl:template> <!-- don't allow \\ in table data-->
@@ -241,13 +241,13 @@
 
 <xsl:template match="html:td|html:th|mml:td" mode="doOutput">
   <xsl:if test="@ccolor">
-    <xsl:text>\cellcolor</xsl:text> 
+    <xsl:text>\cellcolor</xsl:text>
     <xsl:choose>
       <xsl:when test="substring(./@ccolor,1,1)='#'">
 	<xsl:text>[HTML]{</xsl:text>
 	<xsl:value-of select="translate(substring(./@ccolor,2,8),'abcdef','ABCDEF')"/>
       </xsl:when>
-      <xsl:otherwise> 
+      <xsl:otherwise>
 	<xsl:text>{</xsl:text>
 	<xsl:value-of select="./@ccolor"/>
       </xsl:otherwise>
@@ -713,7 +713,7 @@
      then to find a way to compromise on the distribution of the rest of the width without computing the layout of the
      whole table. A max width and min width are decided on based on how much leeway there appears to be, and a crude
      guess as to the size needed (counting text length, and assuming images need their whole widths on one line) is
-     compared to the max and min, finally resulting in a number. --> 
+     compared to the max and min, finally resulting in a number. -->
 <xsl:template name="forceGetWidth">
   <xsl:param name="theCell" />
   <xsl:param name="colData" />
@@ -871,7 +871,7 @@
 
 <!--The point of this is to resolve linestyle conflicts at shared edges and to translate line style specifiers from HTML form
     to "LaTeX" form (either 'none', 'single', or 'double'). -->
-    
+
 <xsl:template name="refineCellData">
   <xsl:param name="rawCellData" />
   <xsl:param name="rowList" />
@@ -991,11 +991,11 @@
         to collect it can't then be modified (and I can't see any viable way to concatenate it in general in order to construct
         "with-param" values). The only usable approach seems to be recursively calling a function from itself.
     iv) Results returned as nodes or node-sets wouldn't be able to be queried until the variables holding them were fully defined
-        (for instance, if you're still constructing an element named <cellsData>, you wouldn't be able to select 
+        (for instance, if you're still constructing an element named <cellsData>, you wouldn't be able to select
         "cellsData/tr/td[@rowspan &gt; 1]" while constructing the data for a later cell). This seems to force constructing the
-        information first as strings, which can be passed and queried. The semicolon-separated strings will take the form of 
-        "(2,3)(#ID)(L)(single,none,double,none)" for a normal cell or "(2,4)()()(single,none,single,single)" if the cell is a continuation cell; 
-        the first entry gives the (row,column), the second if not empty is the generate-id() of the relevant <td> or <th>, 
+        information first as strings, which can be passed and queried. The semicolon-separated strings will take the form of
+        "(2,3)(#ID)(L)(single,none,double,none)" for a normal cell or "(2,4)()()(single,none,single,single)" if the cell is a continuation cell;
+        the first entry gives the (row,column), the second if not empty is the generate-id() of the relevant <td> or <th>,
         the third gives the alignment specification, and the fourth gives the (top, right, bottom, left) line specifiers.
      -->
 
