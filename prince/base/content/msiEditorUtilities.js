@@ -759,6 +759,7 @@ function msiGetCurrentEditor(theWindow) {
   editorElement = msiGetCurrentEditorElementForWindow(currWindow);
   return msiGetEditor(editorElement);  //  return GetCurrentEditor();  //punt - this functionality should be handled by the above calls.
 }
+
 function msiGetActiveEditorElement(currWindow) {
   var editorElement;
   if (!currWindow)
@@ -778,6 +779,7 @@ function msiGetActiveEditorElement(currWindow) {
     dump('\nCan\'t find active editor element!\n');
   return editorElement;
 }
+
 function msiGetTopLevelEditorElement(currWindow)
   //Is this right?
   {
@@ -791,9 +793,10 @@ function msiGetTopLevelEditorElement(currWindow)
     if (!editorElement)
       editorElement = msiGetPrimaryEditorElementForWindow(currWindow);
     if (!editorElement)
-      dump('\nmsiGetTopLevelEditorElement returning void or nullm');
+      dump('\nmsiGetTopLevelEditorElement returning void or null');
     return editorElement;
   }
+
 function msiGetCurrentEditorElementForWindow(theWindow) {
   if (!theWindow)
     theWindow = window.document.defaultView;
@@ -818,9 +821,10 @@ function msiGetCurrentEditorElementForWindow(theWindow) {
     editorElement = editorList[0];
   //just return the first one in the list
   if (!editorElement)
-    dump('\nmsiGetCurrentEditorElementForWindow returning void or nullm');
+    dump('\nmsiGetCurrentEditorElementForWindow returning void or null');
   return editorElement;
 }
+
 function msiGetPrimaryEditorElementForWindow(theWindow) {
   if (!theWindow)
     theWindow = window.document.defaultView;
@@ -834,7 +838,7 @@ function msiGetPrimaryEditorElementForWindow(theWindow) {
     if (!theEditor)
       theEditor = editorElements[0];
     if (!theEditor)
-      dump('\nmsiGetPrimaryEditorElementForWindow returning void or nullm');
+      dump('\nmsiGetPrimaryEditorElementForWindow returning void or null');
     return theEditor;
   } else {
     return msiGetEditorElement();
@@ -871,7 +875,7 @@ function msiGetParentEditor(editorElement) {
   var parentWindow = msiGetWindowContainingEditor(editorElement);
   if ('msiParentEditor' in parentWindow) {
     if (!parentWindow.msiParentEditor)
-      dump('\nmsiGetParentEditor returning void or nullm');
+      dump('\nmsiGetParentEditor returning void or null');
     return parentWindow.msiParentEditor;  //  var docElement = parentWindow.document.documentElement;
                                           //  if ("msiParentEditor" in docElement)
                                           //    return docElement.msiParentEditor;
