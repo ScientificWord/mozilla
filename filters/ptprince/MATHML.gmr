@@ -452,7 +452,7 @@ unknown_op<uID3.5.7>infix,25
 ;DiacriticalLeftRightArrow<uID3.25.4>postfix,70,,stretchy="true"
 &harr;<uID3.25.4>postfix,70,U02194,stretchy="true"
 &OverBrace;<uID3.25.5>postfix,70,U0F612,stretchy="true"
-&Hat;<uID3.25.6>postfix,70,,stretchy="true"
+&widehat;<uID3.25.6>postfix,70,U0FE3F,stretchy="true"
 &DiacriticalTilde;<uID3.25.7>postfix,70,,stretchy="true"
 &UnderBar;<uID3.25.8>postfix,70,U00332,stretchy="true"
 ;DiacriticalLeftArrow<uID3.25.9>postfix,70,,stretchy="true"
@@ -462,6 +462,7 @@ unknown_op<uID3.5.7>infix,25
 ;DiacriticalLeftRightArrow<uID3.25.11>postfix,70,,stretchy="true"
 &harr;<uID3.25.11>postfix,70,U02194,stretchy="true"
 &UnderBrace;<uID3.25.12>postfix,70,U0F613,stretchy="true"
+
 
 
 ;Greek letters
