@@ -13860,7 +13860,7 @@ TNODE* LaTeX2MMLTree::Decoration2MML( TNODE* obj_node,
 
   TNODE* mml_rv =  NULL;
 
-  if ( tex_uID==13 || tex_uID==14 )
+  if ( tex_uID==14 )
     return FBox2MML( obj_node,out_of_flow_list,tex_uID );
 
   if ( tex_uID>=1 && tex_uID<=4 )
