@@ -50,6 +50,7 @@
 <!ENTITY OverBrace "&#xFE37;">
 <!-- ENTITY UnderBrace "&#x23DF;" -->
 <!ENTITY UnderBrace "&#xFE38;">
+<!ENTITY widehat "&#xFE3F;">
 
 <!ENTITY trpezium "&#x23E2;">
 <!ENTITY elinters "&#x23E7;">
