@@ -150,6 +150,10 @@
       and             ./*[2][@stretchy='true']">
         <xsl:text>true</xsl:text>
       </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#xFE3F;']
+      and             ./*[2][@stretchy='true']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x02DC;']
       and             ./*[2][@stretchy='true']">
         <xsl:text>true</xsl:text>
@@ -208,6 +212,9 @@
         <xsl:text>true</xsl:text>
       </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x0302;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#xFE3F;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
       
@@ -293,6 +300,11 @@
           <xsl:when test="./*[2][normalize-space(string())='&#x0302;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\hat'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#xFE3F;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\widehat'"/>
             </xsl:call-template>
           </xsl:when>
           <xsl:when test="./*[2][normalize-space(string())='&#x02C7;']">
@@ -424,6 +436,11 @@
             </xsl:call-template>
           </xsl:when>
           <xsl:when test="./*[2][normalize-space(string())='&#x0302;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\widehat'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#xFE3F;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\widehat'"/>
             </xsl:call-template>

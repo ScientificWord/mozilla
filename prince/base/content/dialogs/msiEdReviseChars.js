@@ -203,6 +203,7 @@ function getStandAloneForm(aUniChar)
   {
     case "^":
     case "\u0302":
+    case "\uFE3F":
       retVal = "^";
     break;
     case "\u02c7":
