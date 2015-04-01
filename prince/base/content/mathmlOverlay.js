@@ -897,7 +897,7 @@ var msiDecorations =
 
 var standardDecorAboveStrings =
   [ String.fromCharCode(0x00AF), String.fromCharCode(0x2190), String.fromCharCode(0x2192),
-    String.fromCharCode(0x2194), String.fromCharCode(0xFE37), String.fromCharCode(0x0302),
+    String.fromCharCode(0x2194), String.fromCharCode(0xFE37), String.fromCharCode(0xFE3F),
     String.fromCharCode(0x02DC) ];
 
 var standardDecorBelowStrings =
