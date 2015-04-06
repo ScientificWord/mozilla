@@ -542,6 +542,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::DefineMupadName(const PRUnichar* swpname,
   
   U32 trans_ID  =  ComputeDLL::CreateTransaction( client_handle, swpname, MuPAD_eng_ID, cmdCode );
   ComputeDLL::AddWideParam( trans_ID, PID_mupname, zPT_WIDE_text, mupname );
+  ComputeDLL::AddWideParam( trans_ID, PID_mupnameloc, zPT_WIDE_text, loc );
   
   rv =  DoTransaction( trans_ID, result );
 
