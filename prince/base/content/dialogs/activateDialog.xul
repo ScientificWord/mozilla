@@ -31,17 +31,18 @@
   			<label>&computerid.label;</label><textbox readonly="true" id="computerid" value=""/>
       </row>
       <row>
-  			<label>product.label</label><label id="productname"
+  			<label>product.label</label><label id="productname" value=
 #ifdef PROD_SW
-          value="&prodsw;"  />
+    "&prodsw;"
 #endif
 #ifdef PROD_SNB
-          value="&prodnsb;"  />
+    "&prodnsb;"
 #endif
 #ifdef PROD_SWP
-          value="&prodswp;"  />
+    "&prodswp;"
 #endif
-  		</row>
+  		  />
+      </row>
         <row>
           <label>&serial.label;</label><textbox id="serial"/>
         </row>

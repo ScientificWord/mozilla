@@ -1,8 +1,9 @@
 #include ../productname.inc
+/// This comment fixes a syntax highlighting glitch on my laption -- BBM
 
 var req;
 // var server='licensing.mackichan.com';
-var server='192.168.17.200:8090';
+var server='licensing.mackichan.com';
 
 
 
@@ -13,9 +14,37 @@ function startUp() {
 	document.getElementById('computerid').value = hostid;
 }
 
+function writeStringAsFile( str, file )
+{
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  fos.init(file, -1, -1, false);
+  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+    .createInstance(Components.interfaces.nsIConverterOutputStream);
+  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+  os.writeString(str);
+  os.close();
+  fos.close();
+}
+
+function writeLicense(licenseText)
+{
+	var dsprops = Components.classes['@mozilla.org/file/directory_service;1'].getService(Components.interfaces.nsIProperties);
+  var licenseFile = dsprops.get('ProfD', Components.interfaces.nsILocalFile);
+  if (!licenseFile) return false;
+  licenseFile.append("license.lic");
+  writeStringAsFile(licenseText, licenseFile);
+  return true;
+}
+
 function accept() {
 	var transferComplete = function() {
-		alert(this.responseText);
+		if (this.responseText.length === 0 || this.responseText.indexOf('error') >= 0)
+		{
+			alert("Failed to get license: error is "+this.responseText);
+		}
+		else {
+			writeLicense(this.responseText);
+		}
 	};
 
 	var transferFailed = function() {
