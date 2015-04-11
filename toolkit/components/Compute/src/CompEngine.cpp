@@ -565,6 +565,7 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
          //
          U32 ptype;
          const char* p_mupadname = msr.GetParam(PID_mupname, ptype);
+         const char* p_mupadnameloc = msr.GetParam(PID_mupnameloc, ptype);
          U32 engineID = msr.GetEngineID();
          DefStore* ds = msr.GetDefStore();
          const char* ASCII_src = msr.GetASCIIMarkupPtr();
