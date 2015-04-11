@@ -616,18 +616,21 @@ string MuPADPlot::GlobalParamsStr (MuPADPlot* T) {
 		  break;                                                                                
         case PID_GraphAxesScaling  :                                                            
           retstr += "@axesscaling@";
-		  break;                                                                                
+		    break;                                                                                
         case PID_GraphEqualScaling  :  
           retstr += "@equalscaling@";
           break;                                                                                
         case PID_GraphEnableTicks   :                                                           
-		  break;                                                                                
-        case PID_GraphXTickCount	   :                                                        
-		  break;                                                                                
-        case PID_GraphYTickCount	   :                                                        
-		  break;                                                                                
-        case PID_GraphZTickCount	   :                                                        
-		  break;                                                                                
+		    break;                                                                                
+        case PID_GraphXTickCount	   :
+          retstr += "@xticks@";                                                                  
+		    break;                                                                                
+        case PID_GraphYTickCount	   :
+          retstr += "@yticks@";                                                        
+		    break;                                                                                
+        case PID_GraphZTickCount	   :
+          retstr += "@zticks@";                                                        
+		    break;                                                                                
         case PID_GraphAxesTips	   : 
           retstr += "@axestips@";
 		  break;                                                                                
