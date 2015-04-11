@@ -29,21 +29,21 @@ msiAppUtils::msiAppUtils()
 PRBool msiAppUtils::rlm_compute_ok () {
   char * prodname = getProd();
   if (!prodname) return PR_FALSE;
-  return ((strcmp(prodname, "swp") == 0) || 
+  return ((strcmp(prodname, "swp") == 0) ||
    (strcmp(prodname, "snb") == 0));
 };
 
 PRBool msiAppUtils::rlm_tex_ok() {
   char * prodname = getProd();
   if (!prodname) return PR_FALSE;
-  return ((strcmp(prodname, "swp") == 0) || 
+  return ((strcmp(prodname, "swp") == 0) ||
   (strcmp(prodname, "sw") == 0));
 };
 
 PRBool msiAppUtils::rlm_save_ok () {
   char * prodname = getProd();
   if (!prodname) return PR_FALSE;
-  return ((strcmp(prodname, "swp") == 0) || 
+  return ((strcmp(prodname, "swp") == 0) ||
    (strcmp(prodname, "snb") == 0) ||
    (strcmp(prodname, "sw") == 0));
 };
@@ -51,7 +51,7 @@ PRBool msiAppUtils::rlm_save_ok () {
 char * msiAppUtils::getProd() {
   PRUint32 stat = rlm_license_stat(lic);
   char * prodname = nsnull;
-  if (! stat) 
+  if (! stat)
     prodname = rlm_license_product(lic);
   return prodname;
 };
@@ -89,44 +89,55 @@ NS_IMETHODIMP msiAppUtils::GetHostid(nsACString & aHostid)
 NS_IMETHODIMP msiAppUtils::Hello()
 {
   int stat;
-  char *product = "swp";    
+  char *product = "swp";
   char *licensedProd;
   PRInt32 count = 1;
   PRInt32 days;
   const char * utf8Path;
   const char * ver = "6.0";
-  nsString path;
+  nsString path1, path2;
   PRBool done;
   PRUint32 prodnum;
-
+  printf("1\n");
   if (lic == nsnull || rlm_license_stat(lic) != 0)
   {
     nsCOMPtr<nsIProperties> fileLocator(do_GetService("@mozilla.org/file/directory_service;1"));
     nsCOMPtr<nsILocalFile> licFile;
     fileLocator->Get("resource:app", NS_GET_IID(nsIFile), getter_AddRefs(licFile));
 //    licFile->Append(NS_LITERAL_STRING("license.lic"));
-    licFile->GetPath(path);
-    utf8Path = ToNewUTF8String(path);
-
-
+    licFile->GetPath(path1);
+    fileLocator->Get("ProfD", NS_GET_IID(nsIFile), getter_AddRefs(licFile));
+    licFile->GetPath(path2);
+#ifdef XP_WIN32
+    path1.Append(NS_LITERAL_STRING(";"));
+#else
+    path1.Append(NS_LITERAL_STRING(":"));
+#endif
+    path1.Append(path2);
+    utf8Path = ToNewUTF8String(path1);
     rh = rlm_init(utf8Path, (char *)nsnull, (char *) nsnull);
     stat = rlm_stat(rh);
-    if (stat)
-    {
+    printf("2\n");
+    if (stat) {
+      printf("6\n");
       char errstring[RLM_ERRSTRING_MAX];
-
       (void) printf("Error initializing license system\n");
-      (void) printf("%s\n", rlm_errstring((RLM_LICENSE) nsnull, rh, 
+      (void) printf("%s\n", rlm_errstring((RLM_LICENSE) nsnull, rh,
                   errstring));
     }
     else
     {
+      printf("5\n");
       syzygy = 0;
       prodnum = 3;
       done = PR_FALSE;
       while (!done) {
+
         lic = rlm_checkout(rh, product, ver, count);
+        printf("Checking out %s, ver is %s, count is %d\n", product, ver, count);
         stat = rlm_license_stat(lic);
+        printf("stat %d\n", stat);
+        printf("product %s\n", product);
         if (! stat) {
           printf("License is valid\n");
           days= rlm_license_exp_days(lic);
@@ -134,7 +145,7 @@ NS_IMETHODIMP msiAppUtils::Hello()
           pchExpDate = rlm_license_exp(lic);
           syzygy = prodnum;
           done = PR_TRUE;
-        }  
+        }
         else {
           if (strcmp(product,"swp") == 0) {
             product = "sw";
