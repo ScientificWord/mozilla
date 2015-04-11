@@ -37,24 +37,37 @@ function writeLicense(licenseText)
 }
 
 function accept() {
+	var acceptMessage = "Your license has been installed. Thank you for supporting ";
+	acceptMessage = acceptMessage +
+#ifdef PROD_SW
+	"Scientific Word.";
+#endif
+#ifdef PROD_SNB
+	"Scientific Notebook.";
+#endif
+#ifdef PROD_SWP
+	"Scientific WorkPlace.";
+#endif
+
+
 	var transferComplete = function() {
-		if (this.responseText.length === 0 || this.responseText.indexOf('error') >= 0)
+		if (this.responseText.length === 0 || !(/LICENSE mackichn[ a-z]+6\.0/.test(this.responseText)))
 		{
-			alert("Failed to get license: error is "+this.responseText);
+			AlertWithTitle("Activation Failure","Failed to get license: "+this.responseText);
 		}
 		else {
 			writeLicense(this.responseText);
+			AlertWithTitle("Activation Success", acceptMessage);
 		}
 	};
 
 	var transferFailed = function() {
-		alert("Failed to get license");
+		AlertWithTitle("Activation Failure","Unable to connect to licensing server");
 	};
 
 	var transferCanceled = function() {
-		 alert("Getting a license was cancelled");
+		 AlertWithTitle("Activation Failure","Getting a license was cancelled");
 	};
-	debugger;
 	var editorElement = msiGetActiveEditorElement();
 	var editor = msiGetEditor(editorElement);
 	var hostid = editor.mAppUtils.hostid;
@@ -95,7 +108,7 @@ function accept() {
 	catch(e) {
 		dump( e.message);
 	}
-	return 0;
+	return true;
 }
 
 

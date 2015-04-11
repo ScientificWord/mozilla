@@ -11,8 +11,7 @@
   title   = "&windowTitle.label;"
   onload  = "startUp()"
   ondialogaccept= "return accept()"
-  screenX = "10" screenY="10" width="350px" height="390px"
-  persist = "screenX screenY width height"
+  screenX = "10" screenY="10" width="600px" height="400px"
 >
 
   <script type="application/x-javascript" src="chrome://prince/content/activateDialog.js"/>
@@ -31,7 +30,7 @@
   			<label>&computerid.label;</label><textbox readonly="true" id="computerid" value=""/>
       </row>
       <row>
-  			<label>product.label</label><label id="productname" value=
+  			<label>&product.label;</label><label id="productname" value=
 #ifdef PROD_SW
     "&prodsw;"
 #endif
@@ -67,5 +66,6 @@
   		</row>
    	</rows>
   </grid>
+
 
 </dialog>
