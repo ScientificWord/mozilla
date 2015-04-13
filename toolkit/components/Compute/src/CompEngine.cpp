@@ -599,7 +599,19 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
                            WIDE_src
                      );
 
-
+      
+            string fcnsPath(p_mupadnameloc);
+            size_t i = fcnsPath.find("\\");
+            while (i != string::npos){
+               fcnsPath[i] = '/';
+               i = fcnsPath.find("\\");
+            }
+            string packba = "fread(\"";
+            packba += fcnsPath;
+            packba += "\"):";
+            int res;
+            wrapper->Execute(packba.c_str(), &res);
+          
       } else if (UI_cmd_ID == CCID_Undefine) {
         def_canon_ID = ConvertTreeToUnDef(semantics_tree);
         if (!def_canon_ID) {
