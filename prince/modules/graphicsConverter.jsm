@@ -575,15 +575,15 @@ var graphicsConverter = {
   },
 
   //Returns an nsIFile
-  getBatchFile: function(theOS) {
-    var extension = "";
-    if (theOS == "win") extension = "cmd";
-    else extension = "bash";
-    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-    var templateFile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-    templateFile.append("rungfxconv." + extension);
-    return templateFile;
-  },
+  // getBatchFile: function(theOS) {
+  //   var extension = "";
+  //   if (theOS == "win") extension = "cmd";
+  //   else extension = "bash";
+  //   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  //   var templateFile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+  //   templateFile.append("rungfxconv." + extension);
+  //   return templateFile;
+  // },
 
   getConvertibleFileTypes: function(aWindow) {
     var os = getOS(aWindow);
