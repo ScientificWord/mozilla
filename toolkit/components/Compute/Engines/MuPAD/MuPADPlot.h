@@ -104,6 +104,7 @@ private:
   static string PlotTextFontStr(MuPADPlot* T);
   static string AxisFontStr(MuPADPlot* T);
   static string TicksFontStr(MuPADPlot* T);
+  static string TicksCountStr(MuPADPlot* T);
   static string GetFontDescriptionStr(MuPADPlot* T, string whichFont);
 };
 
