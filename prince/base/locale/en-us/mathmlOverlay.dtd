@@ -25,14 +25,14 @@
 <!ENTITY MSIMathMenu.accesskey "m">
 <!ENTITY MSIinlineMathCmd.label "Math">
 <!ENTITY MSIinlineMathCmd.accesskey "m">
-<!ENTITY MSIinlineMathCmd.keybinding "m">      
-<!ENTITY MSIinlineTextCmd.keybinding "t">      
+<!ENTITY MSIinlineMathCmd.keybinding "m">
+<!ENTITY MSIinlineTextCmd.keybinding "t">
 <!ENTITY MSIdisplayCmd.label "Display">
 <!ENTITY MSIdisplayCmd.accesskey "d">
 <!ENTITY MSIdisplayCmd.keybinding "d">
 <!ENTITY MSItextCmd.label "Text">
 <!ENTITY MSItextCmd.accesskey "T">
-<!ENTITY MSItextCmd.keybinding "T"> 
+<!ENTITY MSItextCmd.keybinding "T">
 <!ENTITY MSImathObjectsMenu.label "Math Objects">
 <!ENTITY MSImathObjectsMenu.accesskey "o">
 <!ENTITY MSIfractionCmd.label "Fraction">
@@ -133,8 +133,8 @@
 <!ENTITY insertmenuFormula.accesskey "M">
 <!ENTITY insertmenuMarker.label "Marker...">
 <!ENTITY insertmenuMarker.accesskey "K">
-<!ENTITY insertmenuHTMLField.label "HTML Field...">
-<!ENTITY insertmenuHTMLField.accesskey "H">
+<!ENTITY insertmenuHTMLField.label "XHTML Field...">
+<!ENTITY insertmenuHTMLField.accesskey "X">
 <!ENTITY insertmenuUnitNames.label "Unit Name...">
 <!ENTITY insertmenuUnitNames.accesskey "U">
 <!ENTITY insertmenuTSO.label "Typeset Object">
@@ -173,8 +173,8 @@
 
 <!ENTITY symbolalpha.tooltip       "alpha">
 <!ENTITY symbolbeta.tooltip        "beta">
-<!ENTITY symbolgamma.tooltip       "gamma">    
-<!ENTITY symboldelta.tooltip       "delta">    
+<!ENTITY symbolgamma.tooltip       "gamma">
+<!ENTITY symboldelta.tooltip       "delta">
 <!ENTITY symbolvarepsilon.tooltip     "varepsilon">
 <!ENTITY symbolzeta.tooltip        "zeta">
 <!ENTITY symboleta.tooltip         "eta">
@@ -187,21 +187,21 @@
 <!ENTITY symbolxi.tooltip          "xi">
 <!ENTITY symbolomicron.tooltip     "omicron">
 <!ENTITY symbolpi.tooltip          "pi">
-<!ENTITY symbolrho.tooltip         "rho">      
+<!ENTITY symbolrho.tooltip         "rho">
 <!ENTITY symbolvarsigma.tooltip  "varsigma">
-<!ENTITY symbolsigma.tooltip       "sigma">    
-<!ENTITY symboltau.tooltip         "tau">      
-<!ENTITY symbolupsilon.tooltip     "upsilon">  
-<!ENTITY symbolvarphi.tooltip         "varphi">     
-<!ENTITY symboltextchi.tooltip         "chi">      
-<!ENTITY symbolpsi.tooltip         "psi">      
+<!ENTITY symbolsigma.tooltip       "sigma">
+<!ENTITY symboltau.tooltip         "tau">
+<!ENTITY symbolupsilon.tooltip     "upsilon">
+<!ENTITY symbolvarphi.tooltip         "varphi">
+<!ENTITY symboltextchi.tooltip         "chi">
+<!ENTITY symbolpsi.tooltip         "psi">
 <!ENTITY symbolomega.tooltip       "omega">
-<!ENTITY symbolvartheta.tooltip      "vartheta">   
+<!ENTITY symbolvartheta.tooltip      "vartheta">
 <!ENTITY symbolphi.tooltip      "phi">
-<!ENTITY symbolvarpi.tooltip         "varpi">      
-<!ENTITY symbolstigma.tooltip      "stigma">   
-<!ENTITY symbolvarkappa.tooltip      "varkappa">   
-<!ENTITY symbolvarrho.tooltip        "varrho">     
+<!ENTITY symbolvarpi.tooltip         "varpi">
+<!ENTITY symbolstigma.tooltip      "stigma">
+<!ENTITY symbolvarkappa.tooltip      "varkappa">
+<!ENTITY symbolvarrho.tooltip        "varrho">
 <!ENTITY symbolepsilon.tooltip    "epsilon">
 <!ENTITY symbolbackepsilon.tooltip "backepsilon">
 
@@ -212,8 +212,8 @@
 <!ENTITY symbolXi.tooltip      "Xi">
 <!ENTITY symbolPi.tooltip      "Pi">
 <!ENTITY symbolSigma.tooltip   "Sigma">
-<!ENTITY symbolPhi.tooltip     "Phi">  
-<!ENTITY symbolPsi.tooltip     "Psi">  
+<!ENTITY symbolPhi.tooltip     "Phi">
+<!ENTITY symbolPsi.tooltip     "Psi">
 <!ENTITY symbolOmega.tooltip   "Omega">
 <!ENTITY symbolUpsilon.tooltip "Upsilon">
 <!ENTITY symboldigamma.tooltip "digamma">
@@ -230,9 +230,9 @@
 <!ENTITY symboldiv.tooltip     "div">
 <!ENTITY symbolsqcup.tooltip      "sqcup">
 <!ENTITY symbolsqcap.tooltip      "sqcap">
-<!ENTITY symbolbigcirc.tooltip    "bigcirc"> 
-<!ENTITY symbolsetminus.tooltip   "setminus"> 
-<!-- ENTITY symbolsmallsetminus.tooltip   "smallsetminus" --> 
+<!ENTITY symbolbigcirc.tooltip    "bigcirc">
+<!ENTITY symbolsetminus.tooltip   "setminus">
+<!-- ENTITY symbolsmallsetminus.tooltip   "smallsetminus" -->
 <!ENTITY symboloplus.tooltip      "oplus">
 <!ENTITY symbolominus.tooltip     "ominus">
 <!ENTITY symbolotimes.tooltip     "otimes">
@@ -351,7 +351,7 @@
 <!ENTITY symbolbetween.tooltip   "between">
 <!ENTITY symbolsmallblacktriangleright.tooltip   "smallblacktriangleright">
 <!ENTITY symbolsmallblacktriangleleft.tooltip   "smallblacktriangleleft">
-<!ENTITY symboleqcirc.tooltip        "eqcirc">   
+<!ENTITY symboleqcirc.tooltip        "eqcirc">
 <!ENTITY symbollesseqgtr.tooltip  "lesseqgtr">
 <!ENTITY symbolgtreqless.tooltip  "gtreqless">
 <!ENTITY symbollesseqqgtr.tooltip    "lesseqqgtr">
@@ -373,10 +373,10 @@
 <!ENTITY symboleqsim.tooltip   "eqsim">
 <!ENTITY symbollessdot.tooltip   "lessdot">
 <!ENTITY symbolgtrdot.tooltip   "gtrdot">
-<!ENTITY symbolshortmid.tooltip   "shortmid"> 
-<!ENTITY symbolshortparallel.tooltip   "shortparallel"> 
-<!ENTITY symbolthicksim.tooltip   "thicksim">  
-<!ENTITY symbolthickapprox.tooltip   "thickapprox"> 
+<!ENTITY symbolshortmid.tooltip   "shortmid">
+<!ENTITY symbolshortparallel.tooltip   "shortparallel">
+<!ENTITY symbolthicksim.tooltip   "thicksim">
+<!ENTITY symbolthickapprox.tooltip   "thickapprox">
 <!ENTITY symbolapproxeq.tooltip   "approxeq">
 <!ENTITY symbolsuccapprox.tooltip    "succapprox">
 <!ENTITY symbolprecapprox.tooltip    "precapprox">
@@ -384,8 +384,8 @@
 
 <!ENTITY symbolne.tooltip          "neq">
 <!ENTITY symbolnotin.tooltip  "notin">
-<!ENTITY symbollvertneqq.tooltip  "lvertneqq">	
-<!ENTITY symbolgvertneqq.tooltip	 "gvertneqq"> 
+<!ENTITY symbollvertneqq.tooltip  "lvertneqq">
+<!ENTITY symbolgvertneqq.tooltip	 "gvertneqq">
 <!ENTITY symbolnleq.tooltip			 "nleq">
 <!ENTITY symbolngeq.tooltip			 "ngeq">
 <!ENTITY symbolnless.tooltip   "nless">
@@ -394,18 +394,18 @@
 <!ENTITY symbolnsucc.tooltip   "nsucc">
 <!ENTITY symbollneqq.tooltip		 "lneqq">
 <!ENTITY symbolgneqq.tooltip		 "gneqq">
-<!ENTITY symbolnleqslant.tooltip     "nleqslant"> 
-<!ENTITY symbolngeqslant.tooltip     "ngeqslant"> 
+<!ENTITY symbolnleqslant.tooltip     "nleqslant">
+<!ENTITY symbolngeqslant.tooltip     "ngeqslant">
 <!ENTITY symbollneq.tooltip			 "lneq">
 <!ENTITY symbolgneq.tooltip		     "gneq">
-<!ENTITY symbolnpreceq.tooltip   "npreceq"> 
+<!ENTITY symbolnpreceq.tooltip   "npreceq">
 <!ENTITY symbolnsucceq.tooltip   "nsucceq">
 <!ENTITY symbolprecnsim.tooltip      "precnsim">
 <!ENTITY symbolsuccnsim.tooltip      "succnsim">
 <!ENTITY symbollnsim.tooltip   "lnsim">
 <!ENTITY symbolgnsim.tooltip   "gnsim">
 <!ENTITY symbolnleqq.tooltip		 "nleqq">
-<!ENTITY symbolngeqq.tooltip		 "ngeqq"> 
+<!ENTITY symbolngeqq.tooltip		 "ngeqq">
 <!ENTITY symbolprecneqq.tooltip   "precneqq">
 <!ENTITY symbolsuccneqq.tooltip   "succneqq">
 <!ENTITY symbolprecnapprox.tooltip   "precnapprox">
@@ -414,22 +414,22 @@
 <!ENTITY symbolgnapprox.tooltip   "gnapprox">
 <!ENTITY symbolnsim.tooltip    "nsim">
 <!ENTITY symbolncong.tooltip   "ncong">
-<!ENTITY symbolvarsubsetneq.tooltip   "varsubsetneq"> 
-<!ENTITY symbolvarsupsetneq.tooltip   "varsupsetneq"> 
+<!ENTITY symbolvarsubsetneq.tooltip   "varsubsetneq">
+<!ENTITY symbolvarsupsetneq.tooltip   "varsupsetneq">
 <!ENTITY symbolnsubseteqq.tooltip    "nsubseteqq">
-<!ENTITY symbolnsupseteqq.tooltip    "nsupseteqq">	
-<!ENTITY symbolsubsetneqq.tooltip    "subsetneqq"> 
-<!ENTITY symbolsupsetneqq.tooltip    "supsetneqq"> 
-<!ENTITY symbolvarsubsetneqq.tooltip   "varsubsetneqq"> 
-<!ENTITY symbolvarsupsetneqq.tooltip   "varsupsetneqq"> 
+<!ENTITY symbolnsupseteqq.tooltip    "nsupseteqq">
+<!ENTITY symbolsubsetneqq.tooltip    "subsetneqq">
+<!ENTITY symbolsupsetneqq.tooltip    "supsetneqq">
+<!ENTITY symbolvarsubsetneqq.tooltip   "varsubsetneqq">
+<!ENTITY symbolvarsupsetneqq.tooltip   "varsupsetneqq">
 <!ENTITY symbolsubsetneq.tooltip	 "subsetneq">
 <!ENTITY symbolsupsetneq.tooltip	 "supsetneq">
 <!ENTITY symbolnsubseteq.tooltip	 "nsubseteq">
 <!ENTITY symbolnsupseteq.tooltip	 "nsupseteq">
 <!ENTITY symbolnparallel.tooltip	 "nparallel">
 <!ENTITY symbolnmid.tooltip			 "nmid">
-<!ENTITY symbolnshortmid.tooltip     "nshortmid"> 
-<!ENTITY symbolnshortparallel.tooltip  "nshortparallel"> 
+<!ENTITY symbolnshortmid.tooltip     "nshortmid">
+<!ENTITY symbolnshortparallel.tooltip  "nshortparallel">
 <!ENTITY symbolnvdash.tooltip		 "nvdash">
 <!ENTITY symbolnVdash.tooltip		 "nVdash">
 <!ENTITY symbolnvDash.tooltip		 "nvDash">
@@ -467,7 +467,7 @@
 <!ENTITY symbollongleftrightarrow.tooltip   "longleftrightarrow">
 <!ENTITY symbolLongleftrightarrow.tooltip   "Longleftrightarrow">
 <!ENTITY symbollongmapsto.tooltip  "longmapsto">
-<!ENTITY symbolhookrightarrow.tooltip "hookrightarrow">      
+<!ENTITY symbolhookrightarrow.tooltip "hookrightarrow">
 <!ENTITY symbolrightharpoonup.tooltip "rightharpoonup">
 <!ENTITY symbolrightharpoondown.tooltip   "rightharpoondown">
 <!ENTITY symbolleadsto.tooltip   "leadsto">
@@ -609,7 +609,7 @@
 <!ENTITY symbolntilde.tooltip    "ntilde">
 <!ENTITY symboltextcent.tooltip    "cents">
 <!ENTITY symboltexttwosuperior.tooltip     "texttwosuperior">
-<!ENTITY symbolAcircumflex.tooltip       "Acircumflex">  
+<!ENTITY symbolAcircumflex.tooltip       "Acircumflex">
 <!ENTITY symbolOgrave.tooltip    "Ograve">
 <!ENTITY symbolacircumflex.tooltip    "acircumflex">
 <!ENTITY symbolograve.tooltip    "ograve">
@@ -623,7 +623,7 @@
 <!ENTITY symboltextasciiacute.tooltip    "textasciiacute">
 <!ENTITY symbolAdieresis.tooltip     "Adieresis">
 <!ENTITY symbolOcircumflex.tooltip    "Ocircumflex">
-<!ENTITY symboladieresis.tooltip        "adieresis">   
+<!ENTITY symboladieresis.tooltip        "adieresis">
 <!ENTITY symbolocircumflex.tooltip    "ocircumflex">
 <!ENTITY symbolyen.tooltip     "yen">
 <!ENTITY symboltextmu.tooltip    "textmu">
@@ -673,7 +673,7 @@
 <!ENTITY symboludieresis.tooltip        "udieresis">
 <!ENTITY symbolshy.tooltip        "shy">
 <!ENTITY symboltextonehalf.tooltip    "textonehalf">
-<!ENTITY symbolIacute.tooltip      "Iacute"> 
+<!ENTITY symbolIacute.tooltip      "Iacute">
 <!ENTITY symbolYacute.tooltip    "Yacute">
 <!ENTITY symboliacute.tooltip    "iacute">
 <!ENTITY symbolyacute.tooltip    "yacute">
@@ -711,7 +711,7 @@
 <!ENTITY symbolIJ.tooltip     "IJ">
 <!ENTITY symboll.tooltip    "l">
 <!ENTITY symbolOE.tooltip     "OE">
-<!ENTITY symbolTcedil.tooltip    "Tcedil">      
+<!ENTITY symbolTcedil.tooltip    "Tcedil">
 <!ENTITY symbolUogon.tooltip    "Uogon">
 <!ENTITY symbolabreve.tooltip    "abreve">
 <!ENTITY symbolemacr.tooltip    "emacr">
@@ -746,7 +746,7 @@
 <!ENTITY symbolTstrok.tooltip    "Tstrok">
 <!ENTITY symbolYcirc.tooltip    "Ycirc">
 <!ENTITY symbolcacute.tooltip    "cacute">
-<!ENTITY symboledot.tooltip     "edot">      
+<!ENTITY symboledot.tooltip     "edot">
 <!ENTITY symboltextcrh.tooltip    "textcrh">
 <!ENTITY symbolkcedil.tooltip    "kcedil">
 <!ENTITY symbolNcaron.tooltip    "Ncaron">
@@ -776,7 +776,7 @@
 <!ENTITY symbolNG.tooltip     "NG">
 <!ENTITY symbolSacute.tooltip    "Sacute">
 <!ENTITY symbolUmacr.tooltip    "Umacr">
-<!ENTITY symbolzacute.tooltip    "zacute">					  
+<!ENTITY symbolzacute.tooltip    "zacute">
 <!ENTITY symboldotc.tooltip     "dotc">
 <!ENTITY symbolecaron.tooltip    "ecaron">
 <!ENTITY symbolimacr.tooltip    "imacr">
