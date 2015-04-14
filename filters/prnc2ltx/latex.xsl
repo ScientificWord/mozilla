@@ -417,16 +417,18 @@
 </xsl:template>
 
 <xsl:template match="html:author">
-  <xsl:value-of select="$newline"/>
-  <xsl:text>\author{</xsl:text>
-  <xsl:apply-templates/>
-  <xsl:if test="name(following-sibling::*[1])='address'">
-    <xsl:text>~\\</xsl:text>
-    <xsl:value-of select="$newline"/>
-    <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
+  <xsl:if test="not (preceding-sibling::html:author)">
+     <xsl:value-of select="$newline"/>
+     <xsl:text>\author{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:if test="name(following-sibling::*[1])='address'">
+       <xsl:text>~\\</xsl:text>
+       <xsl:value-of select="$newline"/>
+       <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
+     </xsl:if>
+     <xsl:apply-templates select="following-sibling::html:author" mode="building-author" />
+     <xsl:text>}</xsl:text>
   </xsl:if>
-  <xsl:apply-templates select="following-sibling::html:author" mode="building-author" />
-  <xsl:text>}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:address" mode="frontmatter">
