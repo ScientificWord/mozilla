@@ -778,6 +778,14 @@
   \msi@br\msiclosetag{bibliography}{</bibliography>}}
 
 
+\def\bibliographystyle#1{\def\the@style{#1}}
+\def\bibliography#1{%
+  \msihmode
+  \msitag{<bibtexbibliography xmlns="http://www.w3.org/1999/xhtml" databaseFile="#1" styleFile="}%
+  \the@style
+  \msitag{"></bibtexbibliography>}}
+
+
 \def\msi@thm@like#1{}
 
 
