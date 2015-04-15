@@ -31,7 +31,7 @@ function UnitHandler()
   this.currentUnit = null;
 
   this.getValueAs = function( value, unit )  // given a measurement that is 'value' in the current unit, provide it in the new unit.
-  { 
+  {
     if (!(unit in this.units)){ return null;}
     if (unit === this.currentUnit) { return value; }
     return (value/this.units[unit].size)*this.units[this.currentUnit].size;
@@ -39,10 +39,15 @@ function UnitHandler()
 
   this.getValueOf = function( value, unit )  // given a measurement that is 'value' in the unit "unit"
     // return it in the current unit.
-  { 
+  {
     if (!(unit in this.units)){ return null;}
     if (unit === this.currentUnit) { return value; }
-    return value*this.units[unit].size/this.units[this.currentUnit].size;
+    try {
+      return value*this.units[unit].size/this.units[this.currentUnit].size;
+    }
+    catch(e) {
+      return 0;
+    }
   };
 
   this.getValueFromString = function( aString, defaultUnit )
@@ -71,7 +76,7 @@ function UnitHandler()
   this.setCurrentUnit = function( unit ) // returns the previous value
   {
     var prev = this.currentUnit;
-    if (!(unit in this.units)) 
+    if (!(unit in this.units))
     {
       return prev;
     }
@@ -81,7 +86,7 @@ function UnitHandler()
     var len = this.editFieldList.length;
     for ( i = 0; i < len; i++)
     {
-      this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
+      this.editFieldList[i].setAttribute("increment", this.units[unit].increment);
       this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places);
       limAttr = this.editFieldList[i].getAttribute("min");
       if (limAttr && (Number(limAttr) != Number.NaN))
@@ -94,7 +99,7 @@ function UnitHandler()
     this.currentUnit = unit;
     return prev;
   };
-   
+
   this.initCurrentUnit = function(unit) // this is for setting the initial value -- no conversions
   {
     var len = this.editFieldList.length;
@@ -102,13 +107,13 @@ function UnitHandler()
     if (!unit) return;
     for (i = 0;  i < len; i++)
     {
-      this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
-      this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places); 
+      this.editFieldList[i].setAttribute("increment", this.units[unit].increment);
+      this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places);
 			this.editFieldList[i].value *= 1; // force a redisplay
     }
     this.currentUnit = unit;
   }
-   
+
   this.getCurrentUnit = function()
   {
     return this.currentUnit;
@@ -129,9 +134,9 @@ function UnitHandler()
     if (!this.mStringBundle)
     {
       try {
-        var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
+        var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService();
         strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
-        this.mStringBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties"); 
+        this.mStringBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties");
       } catch (ex) {dump("Problem in initializing string bundle in unitHandler.getDisplayString: exception is [" + ex + "].\n");}
     }
     if (this.mStringBundle)
@@ -182,12 +187,12 @@ function UnitHandler()
   this.buildUnitMenu = function(menulist, initialValue)
   {
     var x;
-    var unit;    
+    var unit;
     var index;
     for (x=0; x < this.supportedUnits.length; x++)
     {
       unit = this.supportedUnits[x];
-      menulist.appendItem(this.getDisplayString(unit), unit, "");      
+      menulist.appendItem(this.getDisplayString(unit), unit, "");
       if (unit==initialValue) index=x;
     }
     menulist.value = initialValue;

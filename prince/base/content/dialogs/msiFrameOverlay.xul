@@ -53,8 +53,9 @@
       class     = "medwidth"
       unit      = "px"
       type      = "number"
+      decimalplaces = "2"
       increment = "1"
-      decimalplaces = "0"/>
+      />
     <hbox>
       <vbox id="illustration" pack="start" width="220px"
          outer="false"> <!-- the illustration -->
@@ -275,18 +276,19 @@
       <radiogroup id="sizeRadio">
         <hbox flex="1" visibility = "hidden">
           <vbox >
-            <radio id="actual" value="actual" observes="hasNaturalSize" label="&sizeTab.actualSize;" oncommand="setActualSize();" radioGroup="sizeRadio"/>
+            <radio id="actual" value="actual" observes="hasNaturalSize" label="&sizeTab.actualSize;" oncommand="sizeState.selectActualSize();" radioGroup="sizeRadio"/>
           </vbox>
           <vbox >
-            <radio id="custom" value="custom" observes="hasNaturalSize" label="&sizeTab.custom;" oncommand="doDimensionEnabling();" radioGroup="sizeRadio"/>
+            <radio id="custom" value="custom" observes="hasNaturalSize" label="&sizeTab.custom;" oncommand="sizeState.selectCustomSize();" radioGroup="sizeRadio"/>
           </vbox>
           <vbox >
-            <checkbox observes="hasNaturalSize" id="constrainCheckbox"    oncommand ="ToggleConstrain();"
+            <checkbox observes="hasNaturalSize" id="constrainCheckbox"    oncommand ="sizeState.setPreserveAspectRatio(this.checked);"
                 checked="false" persist = "checked" label="Preserve aspect ratio"/>
           </vbox>
         </hbox>
       </radiogroup>
       <hbox>
+        <radiogroup id='autoDims' orient="horizontal"/>
         <grid>
           <columns>
             <column/>
@@ -311,29 +313,29 @@
               <textbox
                 id        = "frameWidthInput"
                 type      = "number"
+                decimalplaces = "2"
                 onkeypress= ""
                 onchange  = "frameWidthChanged(this, event);"
                 onload    = "frameWidthChanged(this, event);"
                 value     = ""
-                style     = "width: 1.0in;"
-                persist   = "value"/>
+                style     = "width: 1.0in;"/>
               <hbox>
-                <checkbox id="autoWidth" observes="hasNaturalSize" oncommand = "checkAutoDimens(this, 'frameWidthInput');"/>
+                <radio id="autoWidth" observes="hasNaturalSize" oncommand = "sizeState.selectAutoWidth();" group="autoDims"/>
               </hbox>
               <spacer/>
               <textbox
                 id        = "frameHeightInput"
                 type      = "number"
+                decimalplaces = "2"
                 onkeypress= ""
                 onchange  = "frameHeightChanged(this, event);"
                 onload    = "frameHeightChanged(this, event);"
                 value     = ""
-                style     = "width: 1.0in;"
-                persist   =  "value"/>
+                style     = "width: 1.0in;"/>
               <hbox>
-                <checkbox id="autoHeight"
+                <radio id="autoHeight"
                   observes="hasNaturalSize"
-                  oncommand="checkAutoDimens(this, 'frameHeightInput');"/>
+                  oncommand="sizeState.selectAutoHeight();" group="autoDims"/>
               </hbox>
             </row>
           </rows>
@@ -380,7 +382,7 @@
           </row>
           <row>
             <description value="&inlineOffset;" id="frameInlineOffsetLabel" observes="inlineOffsetEnabled"/>
-            <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" value = "0" min="-Infinity" persist = "value" observes="inlineOffsetEnabled"/>
+            <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" value = "0"   decimalplaces = "3" min="-Infinity" persist = "value" observes="inlineOffsetEnabled"/>
           </row>
           <row flex="1">
             <label control="floatList" observes="floatEnabled">Float</label>

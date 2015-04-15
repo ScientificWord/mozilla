@@ -586,34 +586,35 @@ var graphicsConverter = {
   // },
 
   getConvertibleFileTypes: function(aWindow) {
-    var os = getOS(aWindow);
-    var cmdFile = this.getBatchFile(os);
-    var cmdContents = this.getFileAsString(cmdFile);
-    var theLines = cmdContents.split(/\n/);
-    var fileTypes = [];
-    var inFileTypeList = false;
+    return;
+    // var os = getOS(aWindow);
+    // var cmdFile = this.getBatchFile(os);
+    // var cmdContents = this.getFileAsString(cmdFile);
+    // var theLines = cmdContents.split(/\n/);
+    // var fileTypes = [];
+    // var inFileTypeList = false;
 
-    var remarkStr = "^\\s*REM\\s+";
-    if (os != "win")
-      remarkStr = "^\\s*#\\s*";
-    var remarkRE = new RegExp(remarkStr);
-    var startFlagRE = new RegExp(remarkStr + "BEGIN\\s+EXTENSION\\s+LIST");
-    var endFlagRE = new RegExp(remarkStr + "END\\s+EXTENSION\\s+LIST");
-    var theLine;
+    // var remarkStr = "^\\s*REM\\s+";
+    // if (os != "win")
+    //   remarkStr = "^\\s*#\\s*";
+    // var remarkRE = new RegExp(remarkStr);
+    // var startFlagRE = new RegExp(remarkStr + "BEGIN\\s+EXTENSION\\s+LIST");
+    // var endFlagRE = new RegExp(remarkStr + "END\\s+EXTENSION\\s+LIST");
+    // var theLine;
 
-    for (var ix = 0; ix < theLines.length; ++ix) {
-      if (!inFileTypeList) {
-        if (startFlagRE.test(theLines[ix]))
-          inFileTypeList = true;
-      } else if (endFlagRE.test(theLines[ix]))
-        inFileTypeList = false;
-      else if (remarkRE.test(theLines[ix])) {
-        theLine = theLines[ix].replace(remarkRE, "");
-        theLine = this.trimStr(theLine);
-        fileTypes = fileTypes.concat(theLine.split(/\s+/));
-      }
-    }
-    return fileTypes;
+    // for (var ix = 0; ix < theLines.length; ++ix) {
+    //   if (!inFileTypeList) {
+    //     if (startFlagRE.test(theLines[ix]))
+    //       inFileTypeList = true;
+    //   } else if (endFlagRE.test(theLines[ix]))
+    //     inFileTypeList = false;
+    //   else if (remarkRE.test(theLines[ix])) {
+    //     theLine = theLines[ix].replace(remarkRE, "");
+    //     theLine = this.trimStr(theLine);
+    //     fileTypes = fileTypes.concat(theLine.split(/\s+/));
+    //   }
+    // }
+    // return fileTypes;
   },
 
   trimStr: function(aStr) {
