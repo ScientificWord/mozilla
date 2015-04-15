@@ -247,7 +247,7 @@ function Startup()
 
   var tagName = gVideo ? "embed" : "object";
 
-//   if (wrapperElement) 
+//   if (wrapperElement)
 //   {
 //     if (wrapperElement.nodeName !== "msiframe")
 //     {
@@ -328,7 +328,7 @@ function Startup()
   }
 
   // if inserting a new image, create elements now.
-  
+
   if (imageElement == null) {
     imageElement = gEditor.createElementWithDefaults(tagName);
     wrapperElement = gEditor.createElementWithDefaults("msiframe");
@@ -1314,6 +1314,14 @@ function PreviewImageLoaded()
     // Image loading has completed -- we can get actual width
     gActualWidth  = gDialog.PreviewImage.offsetWidth;
     gActualHeight = gDialog.PreviewImage.offsetHeight;
+    sizeState.actualSize.width = gActualWidth;
+    sizeState.actualSize.height = gActualHeight;
+    sizeState.actualSize.unit = 'px';
+    unitHandler.initCurrentUnit('px');
+    sizeState.width = unitHandler.getValueAs(gActualWidth, sizeState.sizeUnit);
+    sizeState.height = unitHandler.getValueAs(gActualHeight, sizeState.sizeUnit);
+    sizeState.isCustomSize = false;
+    sizeState.update();
     setImageSizeFields(gActualWidth, gActualHeight, unitHandler.currentUnit);
     if (gVideo)
       dump("PreviewImageLoaded reached for video file!\n");
@@ -1777,7 +1785,7 @@ function isEnabled(element)
 
 function onAccept()
 {
-  
+
   /* The variables imageElement and wrapperElement point to the image element we are revising, and possibly the wrapper element if there was one. We want to preserve these in the revising case because they might contain attributes the user added. We can tell if we are in the revising case because then gInsertNewImage is false. That there was a wrapper element originally does not imply that there will or will not be one now, since the user may have added or deleted a caption.
   */
   // Use this now (default = false) so Advanced Edit button dialog doesn't trigger error message
@@ -1984,6 +1992,7 @@ function initKeyList()
 
 function getGraphicsImportFilterString()
 {
+  return;
   var convertData = graphicsConverter.getConvertibleFileTypes(window);
   var typeArray = [];
   for (var jx = 0; jx < graphicsConverter.nativeGraphicTypes.length; ++jx)

@@ -25,8 +25,159 @@ var gDefaultInlineOffset = "";
 var hasNaturalSize;
 var gCaptionLoc;
 
+var sizeState = null;
 
-function setHasNaturalSize(istrue)
+function SizeState(dialog) {
+  this.dialog = dialog;
+}
+
+SizeState.prototype = {
+  dialog: null,
+  isCustomSize: false,
+  preserveAspectRatio: false,
+  width: 0,
+  autoWidth: false,
+  height: 0,
+  autoHeight: false,
+  enabledState: {
+    isActualSize: true,
+    preserveAspectRatio: true,
+    width: true,
+    autoWidth: false,
+    height: true,
+    autoHeight: false
+  },
+  actualSize: {
+    width: null,
+    height: null,
+    aspectRatio: null,
+    unit: ''
+  },
+  sizeUnit: null,
+
+  selectActualSize: function() {
+    var unitHandler = new UnitHandler();
+    unitHandler.initCurrentUnit('px');
+    this.isCustomSize = false;
+    this.preserveAspectRatio = false;
+    this.width = unitHandler.getValueAs(this.actualSize.width, this.sizeUnit);
+    this.height = unitHandler.getValueAs(this.actualSize.height, this.sizeUnit);
+    this.update(this.dialog);
+  },
+
+  selectCustomSize: function() {
+    this.isCustomSize = true;
+    this.update(this.dialog);
+  },
+
+  setPreserveAspectRatio: function(val) {
+    this.preserveAspectRatio = val;
+    if (val) {
+      this.enabledState.autoWidth = this.enabledState.autoHeight = true;
+      this.autoWidth = this.dialog.autoWidth.selected;
+      this.autoHeight = this.dialog.autoHeight.selected;
+      this.enabledState.width = !this.autoWidth;
+      this.enabledState.height = !this.autoHeight;
+    }
+    else {
+      this.enabledState.autoWidth = this.enabledState.autoHeight = false;
+      this.enabledState.width = this.enabledState.height = true;
+    }
+    this.update(this.dialog);
+  },
+
+  selectAutoHeight: function() {
+    this.autoHeight = true;
+    this.autoWidth = false;
+    this.enabledState.width = true;
+    this.enabledState.height = false;
+    this.update(this.dialog);
+  },
+
+  selectAutoWidth: function() {
+    this.autoHeight = false;
+    this.autoWidth = true;
+    this.enabledState.width = false;
+    this.enabledState.height = true;
+    this.update(this.dialog);
+  },
+
+
+  applySizes: function() {  // dg is a dialog
+    this.dialog.frameWidthInput.disabled = !this.enabledState.width;
+    this.dialog.frameHeightInput.disabled = !this.enabledState.height;
+    this.dialog.autoWidth.disabled = !this.enabledState.autoWidth;
+    this.dialog.autoHeight.disabled = !this.enabledState.autoHeight;
+    this.dialog.constrainCheckbox.disabled = !this.enabledState.preserveAspectRatio;
+    //this.dialog.actual.disabled = !this.enabledState.isActualSize;
+
+    // now for the values
+    this.dialog.unitList.value = this.sizeUnit;
+    this.dialog.frameWidthInput.value = this.width;
+    this.dialog.frameHeightInput.value = this.height;
+    if (this.autoWidth) {
+      this.dialog.autoDims.selectedItem = this.dialog.autoWidth;
+    }
+    else {
+      this.dialog.autoDims.selectedItem = this.dialog.autoHeight;
+    }
+    this.dialog.constrainCheckbox.checked = this.preserveAspectRatio;
+    this.dialog.sizeRadio.value = this.isCustomSize?"custom":"actual";
+  },
+
+  computeDerivedQuantities: function() {
+    if (this.actualSize.width && this.actualSize.height && this.actualSize.width > 0) {
+      this.actualSize.aspectRatio = this.actualSize.height/this.actualSize.width;
+    }
+    else {
+      this.actualSize.aspectRatio = null;
+    }
+  },
+
+  computeInferredDimensions: function() {
+    var unitHandler = new UnitHandler();
+    if (!this.isCustomSize &&
+      this.actualSize.width != null && this.actualSize.height != null)
+    {
+      unitHandler.initCurrentUnit(this.actualSize.unit);
+      this.width = unitHandler.getValueAs(this.actualSize.width, this.sizeUnit);
+      this.height = unitHandler.getValueAs(this.actualSize.height, this.sizeUnit);
+      this.enabledState.height = this.enabledState.width = false;
+    }
+    if (this.preserveAspectRatio && this.isCustomSize) {
+      if (this.autoHeight) {
+        this.height = this.width * this.actualSize.aspectRatio;
+      }
+      if (this.autoWidth && this.actualSize.aspectRatio > 0) {
+        this.width = this.height/this.actualSize.aspectRatio;
+      }
+    }
+  },
+
+  computeConstraints: function() {
+    this.enabledState.preserveAspectRatio = (this.actualSize.aspectRatio != null) &&
+      this.isCustomSize;
+    this.enabledState.autoWidth = this.enabledState.autoHeight = (this.actualSize.aspectRatio != null) &&
+      this.preserveAspectRatio;
+    this.enabledState.height = (this.isCustomSize) && (!this.enabledState.autoHeight
+      || !this.autoHeight);
+    this.enabledState.width = (this.isCustomSize) && (!this.enabledState.autoWidth
+      || !this.autoWidth);
+  },
+
+  update: function() {
+    if (!this.dialog)
+      return;
+    this.computeDerivedQuantities();
+    this.computeConstraints();
+    this.computeInferredDimensions();
+    this.applySizes();
+  }
+
+}
+
+
+function setHasNaturalSize()
 // images frequently have a natural size
 {
   var bcaster = document.getElementById("hasNaturalSize");
@@ -34,7 +185,7 @@ function setHasNaturalSize(istrue)
     hasNaturalSize = false;
     return;
   }
-  hasNaturalSize = istrue;
+  hasNaturalSize = (sizeState.actualSize.width != null) && (sizeState.actualSize.height != null);
   if (istrue)
   {
     bcaster.removeAttribute("hidden");
@@ -60,59 +211,48 @@ function setCanRotate(istrue)
 
 function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
 {
-  var height;
-  var width;
-  var aspectRatio;
-  var unit;
   var border = 0, padding = 0;
   var node;
+  var graphspec;
+  var unitHandler;
   if (!wrapperNode) return;
   // Cope with different capitalization in plots.
   if (wrapperNode.nodeName === "msiframe") {
-    width = wrapperNode.getAttribute(widthAtt);
-    height = wrapperNode.getAttribute(heightAtt);
+    sizeState.width = wrapperNode.getAttribute(widthAtt);
+    sizeState.height = wrapperNode.getAttribute(heightAtt);
   }
-  if (!width) {
-    width = contentsNode.getAttribute(widthAtt) ||
-      wrapperNode.getAttribute("width") || wrapperNode.getAttribute("Width") || wrapperNode.getAttribute(widthAtt);
-  }
-  if (!height) {
-    height= contentsNode.getAttribute(heightAtt) ||
-      wrapperNode.getAttribute("height") || wrapperNode.getAttribute("Height") || wrapperNode.getAttribute(heightAtt);
-  }
-  unit = contentsNode.getAttribute("units") || wrapperNode.getAttribute("units") || wrapperNode.getAttribute("Units");
+  sizeState.sizeUnit = contentsNode.getAttribute("units") || wrapperNode.getAttribute("units") || wrapperNode.getAttribute("Units");
 
-  // if (height === null && width === null) return;
-  dg.frameWidthInput           = document.getElementById("frameWidthInput");
-  dg.frameHeightInput          = document.getElementById("frameHeightInput");
-  dg.autoHeightCheck      = document.getElementById("autoHeight");
-  dg.autoWidthCheck       = document.getElementById("autoWidth");
-  dg.frameUnitMenulist    = document.getElementById("frameUnitMenulist"); // ??
-  dg.unitList             = document.getElementById("unitList");          // ??
-  dg.sizeRadioGroup       = document.getElementById("sizeRadio");
-  dg.actual               = document.getElementById( "actual" );
-  dg.custom               = document.getElementById( "custom" );
-  dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
-  dg.captionLocation      = document.getElementById( "captionLocation");
-  if (width != null) {
-    if (dg.frameWidthInput) dg.frameWidthInput.removeAttribute("disabled");
-    if (dg.autoWidthCheck) dg.autoWidthCheck.checked = false;
-    if (dg.frameWidthInput) dg.frameWidthInput.value = width;
-  } else {
-    if (dg.autoWidthCheck) dg.autoWidthCheck.checked = true;
-    if (dg.frameWidthInput) dg.frameWidthInput.setAttribute("disabled", true);
+  if (wrapperNode.parentNode.nodeName ==='graph') {
+    graphspec = wrapperNode.parentNode.firstChild;
+    sizeState.actualSize.width = graphspec.getAttribute('Width');
+    sizeState.actualSize.height = graphspec.getAttribute('Height');
+    sizeState.actualSize.unit = graphspec.getAttribute('Units');
+    unitHandler = new UnitHandler;
+    unitHandler.initCurrentUnit(sizeState.actualSize.unit);
+    sizeState.width = unitHandler.getValueAs(sizeState.actualSize.width, sizeState.sizeUnit);
+    sizeState.height = unitHandler.getValueAs(sizeState.actualSize.height, sizeState.sizeUnit);
   }
-  if (height != null) {
-    if (dg.frameHeightInput) dg.frameHeightInput.removeAttribute("disabled");
-    if (dg.autoHeightCheck) dg.autoHeightCheck.checked = false;
-    if (dg.frameHeightInput) dg.frameHeightInput.value = height;
-  } else {
-    if (dg.autoHeightCheck) dg.autoHeightCheck.checked = true;
-    if (dg.frameHeightInput) dg.frameHeightInput.setAttribute("disabled", true);
+  else {
+    if (!sizeState.width) {
+      width = contentsNode.getAttribute(widthAtt) ||
+        wrapperNode.getAttribute("width") || wrapperNode.getAttribute("Width") || wrapperNode.getAttribute(widthAtt);
+    }
+    if (!sizeState.height) {
+      height= contentsNode.getAttribute(heightAtt) ||
+        wrapperNode.getAttribute("height") || wrapperNode.getAttribute("Height") || wrapperNode.getAttribute(heightAtt);
+    }
+
+    // For existing nodes, we have the actual sizes in the document.
+    if (!sizeState.actualSize.width) {
+      sizeState.actualSize.width = contentsNode.getAttribute('naturalWidth') || wrapperNode.getAttribute('natualWidth');
+    }
+    if (!sizeState.actualSize.height) {
+      sizeState.actualSize.height = contentsNode.getAttribute('naturalHeight') || wrapperNode.getAttribute('natualHeight');
+    }
   }
-  if (dg.constrainCheckbox) 
-    dg.constrainCheckbox.checked = (width === null || height === null);
-  dg.unitList.value = unit;
+  sizeState.update(dg);
+  setHasNaturalSize();
 }
 
 function updateMetrics()
@@ -195,7 +335,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   var currUnit;
   var placement;
   Dg = dg;
-  initUnitHandler();  
+  initUnitHandler();
   var prefBranch = GetPrefs();
   var isFloat = false;
   var prefprefix;
@@ -261,8 +401,9 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   dg.trueheight           = document.getElementById( "trueheight" );
   dg.frameHeightInput     = document.getElementById("frameHeightInput");
   dg.frameWidthInput      = document.getElementById("frameWidthInput");
-  dg.autoHeightCheck      = document.getElementById("autoHeight");
-  dg.autoWidthCheck       = document.getElementById("autoWidth");
+  dg.autoDims             = document.getElementById("autoDims");
+  dg.autoHeight           = document.getElementById("autoHeight");
+  dg.autoWidth            = document.getElementById("autoWidth");
   dg.captionLocation      = document.getElementById( "captionLocation");
   dg.floatlistNone        = document.getElementById("floatlistNone");
   dg.ltxfloat_forceHere   = document.getElementById("ltxfloat_forceHere");
@@ -270,6 +411,16 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   dg.ltxfloat_pageOfFloats= document.getElementById("ltxfloat_pageOfFloats");
   dg.ltxfloat_topPage     = document.getElementById("ltxfloat_topPage");
   dg.ltxfloat_bottomPage  = document.getElementById("ltxfloat_bottomPage");
+
+  dg.unitList             = document.getElementById("unitList");          // ??
+  dg.sizeRadioGroup       = document.getElementById("sizeRadio");
+  dg.actual               = document.getElementById( "actual" );
+  dg.custom               = document.getElementById( "custom" );
+  dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
+  dg.sizeRadio            = document.getElementById( "sizeRadio" );
+  sizeState = new SizeState(dg);
+  sizeState.sizeUnit = currUnit;
+
   var fieldList = [];
   var attrs = ["margin","border","padding"];
   var name;
@@ -338,7 +489,6 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   v = ((!newElement && element.getAttribute("borderw")) || prefBranch.getCharPref(prefprefix + "border"));
   if (v != null && dg.borderInput && dg.borderInput.left && dg.borderInput.right && dg.borderInput.top && dg.borderInput.bottom)
     dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit);
-  v = null;
   v = (!newElement && element.getAttribute("sidemargin") || prefBranch.getCharPref(prefprefix + "hmargin"));
   if (v != null && dg.marginInput && dg.marginInput.left && dg.marginInput.right ) dg.marginInput.left.value = dg.marginInput.right.value = frameUnitHandler.getValueOf(v, prefUnit);
   v = null;
@@ -361,44 +511,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
     {   // we need to initialize the dg from the frame element
       if (! contentsElement)
          contentsElement = element;
-      if ( contentsElement.getAttribute("naturalWidth") &&  contentsElement.getAttribute("naturalHeight")) {
-        gConstrainWidth =  contentsElement.getAttribute("naturalWidth");
-        gConstrainHeight =  contentsElement.getAttribute("naturalHeight");
-        setHasNaturalSize(true);
-      }
-      else  setHasNaturalSize(false);
       setFrameSizeFromExisting(dg, element, contentsElement);
-
-      // frameUnitHandler.setCurrentUnit(element.getAttribute("units"));
-
-      // var width = 0;
-      // var widthStr = "0";
-      // if ( contentsElement.hasAttribute(widthAtt)) {
-      //   width = frameUnitHandler.getValueFromString(  contentsElement.getAttribute(widthAtt) );
-      // }
-      // var height = 0;
-      // var heightStr = "0";
-      // if ( contentsElement.hasAttribute(heightAtt)) {
-      //   height = frameUnitHandler.getValueFromString(  contentsElement.getAttribute(heightAtt) );
-      // } else
-      // {
-      //   dg.autoHeightCheck.checked = true;
-      // }
-      // if (gConstrainWidth || gConstrainHeight)
-      //   setConstrainDimensions(frameUnitHandler.getValueAs(width, "px"), frameUnitHandler.getValueAs(height,"px"));
-      // setWidthAndHeight(width, height, null);
-      // if (width === 0) {
-      //   dg.autoWidthCheck.checked = true;
-      //   dg.widthInput.setAttribute('disabled', 'true');
-      // }
-      // else dg.widthInput.removeAttribute('disabled');
-
-      // if (height === 0) {
-      //   dg.autoHeightCheck.checked = true;
-      //   dg.frameHeightInput.setAttribute('disabled', 'true');
-      // }
-      // else dg.frameHeightInput.removeAttribute('disabled');
-
       try
       {
         for (i = 0; i < dg.frameUnitMenulist.itemCount; i++)
@@ -539,13 +652,6 @@ function initFrameTab(dg, element, newElement,  contentsElement)
     {
       try
       {
-        // checkMenuItem(dg.ltxfloat_forceHere, (floatLocation.search("H") != -1));
-        // checkMenuItem(dg.ltxfloat_here, (floatLocation.search("h") != -1));
-        // checkMenuItem(dg.ltxfloat_pageOfFloats, (floatLocation.search("p") != -1));
-        // checkMenuItem(dg.ltxfloat_topPage, (floatLocation.search("t") != -1));
-        // checkMenuItem(dg.ltxfloat_bottomPage, (floatLocation.search("b") != -1));
-
-
         if (dg.locationList) {
           dg.locationList.value = pos;
         }
@@ -641,19 +747,10 @@ function update( anId )
   if (anId.length === 0) return;
   var regexp=/(.*)(Left|Right|Top|Bottom)(.*)/;
   var result = regexp.exec(anId);
-//  switch (result[2]) { // notice that there are no breaks in this switch statement -- intentional
-//    case "Left":  document.getElementById(result[1]+"Left"+result[3]).value = document.getElementById(anId).value;
-//    case "Right": document.getElementById(result[1]+"Right"+result[3]).value = document.getElementById(anId).value;
-//    case "Top":   document.getElementById(result[1]+"Top"+result[3]).value = document.getElementById(anId).value;
-//    case "Bottom": document.getElementById(result[1]+"Bottom"+result[3]).value = document.getElementById(anId).value;
-//  }
- // if (gFrameModeImage)
-  // {
-    if (result[1] == "border" || result[1] == "padding")
-    {
-      extendInput( result[1] );
-    }
-  // }
+  if (result[1] == "border" || result[1] == "padding")
+  {
+    extendInput( result[1] );
+  }
   updateDiagram( result[1] );
 }
 
@@ -858,7 +955,7 @@ function enableFloatOptions(radiogroup)
   // var position;
   // if (!radiogroup)
   //   radiogroup = document.getElementById("wrapOptionRadioGroup");
-  // 
+  //
   // if (document.getElementById("placeHereCheck") && document.getElementById('placeHereCheck').checked && radiogroup)
   // {
   //   theValue = "false";
@@ -936,18 +1033,26 @@ function unitRound( size, unit )
 
 function setConstrainDimensions(width, height)
 {
-  gConstrainWidth = width;
-  gConstrainHeight = height;
+  // gConstrainWidth = width;
+  // gConstrainHeight = height;
+  sizeState.actualSize.width = width;
+  sizeState.actualSize.height = height;
+  sizeState.computeDerivedQuantities();
 }
 
 function setWidthAndHeight(width, height, event)
 {
-  Dg.frameWidthInput.value = width;
-  Dg.frameHeightInput.value = height;
-  if (Dg.autoHeightCheck.checked && !Dg.autoWidthCheck.checked)
-    constrainProportions( "frameWidthInput", "frameHeightInput", event );
-  else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
-    constrainProportions( "frameHeightInput", "frameWidthInput", event );
+  sizeState.width = width;
+  sizeState.height = height;
+  sizeState.computeConstraints();
+
+
+  // Dg.frameWidthInput.value = width;
+  // Dg.frameHeightInput.value = height;
+  // if (Dg.autoHeightCheck.checked && !Dg.autoWidthCheck.checked)
+  //   constrainProportions( "frameWidthInput", "frameHeightInput", event );
+  // else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
+  //   constrainProportions( "frameHeightInput", "frameWidthInput", event );
 }
 
 function setContentSize(width, height)
@@ -1151,7 +1256,7 @@ this is the case for images in an msiframe
   var posid;
   if (isEnabled(document.getElementById("locationList")))
   {
-    if (document.getElementById("locationList")) 
+    if (document.getElementById("locationList"))
       posItem = document.getElementById("locationList").selectedItem;
     posid = (posItem && posItem.getAttribute("id")) || "";
     msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
@@ -1222,8 +1327,8 @@ this is the case for images in an msiframe
   if (isEnabled(Dg.locationList))
   {
     var locationParam = Dg.locationList.value;
-    if ((locationParam === "inside") || 
-        (locationParam === "outside") || 
+    if ((locationParam === "inside") ||
+        (locationParam === "outside") ||
         (locationParam === "left") ||
         (locationParam === "right") )
     {
@@ -1242,7 +1347,7 @@ this is the case for images in an msiframe
     //   needsWrapfig = true;
     // }
     var needsWrapfig = true;
-    if (locationParam === "right" || locationParam === "inside") 
+    if (locationParam === "right" || locationParam === "inside")
        setStyleAttributeOnNode(frameNode, "float", "right", editor);
     else if (locationParam === "left" || locationParam === "outside")
        setStyleAttributeOnNode(frameNode, "float", "left", editor);
@@ -1327,20 +1432,9 @@ function frameHeightChanged(input, event)
   }
   else scaledHeight = scaledHeightDefault;
   setStyleAttributeByID("content", "height", scaledHeight + "px");
-  constrainProportions( "frameHeightInput", "frameWidthInput", event );
+  sizeState.height = input.value;
   redrawDiagram();
-  if (input.value === 0)
-  {
-    if (input.id === "frameHeightInput"){
-      Dg.autoHeightCheck.checked = true;
-    }
-  }
-  else
-  {
-    if (input.id === "frameHeightInput"){
-      Dg.autoHeightCheck.checked = false;
-    }
-  }
+  sizeState.update();
 }
 
 function frameWidthChanged(input, event)
@@ -1348,7 +1442,8 @@ function frameWidthChanged(input, event)
   if (input.value > 0) scaledWidth = toPixels(input.value);
     else scaledWidth = scaledWidthDefault;
   setStyleAttributeByID("content", "width", scaledWidth + "px");
-  constrainProportions( "frameWidthInput", "frameHeightInput", event );
+  sizeState.width = input.value;
+  sizeState.update(Dg);
   redrawDiagram();
 }
 
@@ -1363,6 +1458,7 @@ function getInlineOffset(whichUnit)
 
 function setDisabled(checkbox,id)
 {
+  return;
   var textbox = document.getElementById(id);
   if (checkbox.checked)
   {
@@ -1374,26 +1470,28 @@ function setDisabled(checkbox,id)
   }
 }
 
-function checkAutoDimens(checkBox, textboxId)
+function checkAutoDimens(radio, textboxId)
 {
-  if (checkBox.checked && Dg.constrainCheckbox && !Dg.constrainCheckbox.checked){
-    Dg.constrainCheckbox.checked = true;
+  if (radio.id === 'autoWidth') {
+    sizeState.autoWidth = radio.selected;
+    sizeState.autoHeight = !radio.selected;
+    sizeState.enabledState.width = !radio.selected;
+    sizeState.enabledState.height = radio.selected;
   }
-//  document.getElementById(textboxId).value = "0";
-  setDisabled(checkBox, textboxId);
+  else {
+    sizeState.autoHeight = radio.selected;
+    sizeState.autoWidth = !radio.selected;
+    sizeState.enabledState.height = !radio.selected;
+    sizeState.enabledState.width = radio.selected;
+  }
+  sizeState.update(Dg);
 }
 
 function ToggleConstrain()
 {
   // If just turned on, save the current width and height as basis for constrain ratio
-  // Thus clicking on/off lets user say "Use these values as aspect ration"
-  if (!gFrameModeImage && Dg.constrainCheckbox && Dg.constrainCheckbox.checked && !Dg.constrainCheckbox.disabled)
-//     && (gDialog.widthUnitsMenulist.selectedIndex === 0)
-//     && (gDialog.heightUnitsMenulist.selectedIndex === 0))
-  {
-    gConstrainWidth = frameUnitHandler.getValueAs(Number(TrimString(Dg.frameWidthInput.value)), "px");
-    gConstrainHeight = frameUnitHandler.getValueAs(Number(TrimString(Dg.frameHeightInput.value)), "px");
-  }
+  sizeState.preserveAspectRatio = !sizeState.preserveAspectRatio;
+  sizeState.update(Dg);
 }
 
 function constrainProportions( srcID, destID, event )
@@ -1469,21 +1567,23 @@ function doDimensionEnabling()
 
 }
 
-function setActualSize()
+function setActualSize(val)
 {
-  var width, height;
-  if (gActualWidth && gActualHeight)
-  {
-    width = Dg.frameWidthInput.value = frameUnitHandler.getValueOf(gActualWidth,"px");
-    height = Dg.frameHeightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
-  }
-  else if (gConstrainWidth && gConstrainHeight)
-  {
-    width = Dg.frameWidthInput.value = frameUnitHandler.getValueOf(gConstrainWidth,"px");
-    height = Dg.frameHeightInput.value = frameUnitHandler.getValueOf(gConstrainHeight,"px");
-  }
-//  Dg.unitList.selectedIndex = 0;
-  doDimensionEnabling();
+  sizeState.isCustomSize = !val;
+  sizeState.update(Dg);
+//   var width, height;
+//   if (gActualWidth && gActualHeight)
+//   {
+//     width = Dg.frameWidthInput.value = frameUnitHandler.getValueOf(gActualWidth,"px");
+//     height = Dg.frameHeightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
+//   }
+//   else if (gConstrainWidth && gConstrainHeight)
+//   {
+//     width = Dg.frameWidthInput.value = frameUnitHandler.getValueOf(gConstrainWidth,"px");
+//     height = Dg.frameHeightInput.value = frameUnitHandler.getValueOf(gConstrainHeight,"px");
+//   }
+// //  Dg.unitList.selectedIndex = 0;
+//   doDimensionEnabling();
 }
 
 function floatPropertyChanged() {
