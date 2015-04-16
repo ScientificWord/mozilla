@@ -1973,13 +1973,21 @@
   \afterassignment\@footnoteb
   \let\junk}
 
+\newif\ifmathfootnote
+\mathfootnotefalse
+
 \def\footnotea{%
-    \msi@br\@start@notewrapper
-    \msiopentag{note}{<note type="footnote">}%
-    \msiopentag{bodyText}{<bodyText>}%
-    % Next couple lines read the brace following \footnote and then does \footnoteb
-    \afterassignment\@footnoteb
-    \let\junk}
+  \mathfootnotefalse
+  \ifmmode
+       %\string\msipassthrough\char`\{%
+       %\mathfootnotetrue
+  \fi
+  \msi@br\@start@notewrapper
+  \msiopentag{note}{<note type="footnote">}%
+  \msiopentag{bodyText}{<bodyText>}%
+  % Next couple lines read the brace following \footnote and then does \footnoteb
+  \afterassignment\@footnoteb
+  \let\junk}
 
 \def\@footnoteb{%
     \bgroup
@@ -2004,7 +2012,10 @@
 \def\@footnotec{%
     \msiclosetag{bodyText}{</bodyText>}%
     \msiclosetag{note}{</note>}%
-    \@end@notewrapper}
+    \@end@notewrapper
+    \ifmathfootnote
+      \char`\}%
+    \fi}
 
 \def\out@CustomNoteA[#1]#2#3{%
     \msiopentag{notewrapper}{<notewrapper xmlns="http://www.w3.org/1999/xhtml">}%
