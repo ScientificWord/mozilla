@@ -593,10 +593,8 @@ string MuPADPlot::GlobalParamsStr (MuPADPlot* T) {
         case PID_GraphXTickCount:
         case PID_GraphYTickCount:
         case PID_GraphZTickCount:
-          if (tickcountcount == 0) {
+          if (retstr.find("@tickcount@")==string::npos)
             retstr += "@tickcount@";
-            tickcountcount++;
-          }  
           break;
 
         case PID_GraphViewBoxXMin:
@@ -1481,9 +1479,39 @@ string MuPADPlot::UNIMPLEMENTED(MuPADPlot* T) {
   return pstr;
 }
 
-
 string MuPADPlot::TicksCountStr(MuPADPlot* T) {
-  string v = "";// ",Ticks=[1,1]";
+  U32 plottype;
+  string v = "";
+  string val = T->psr->RetrievePlotParam (T->plotno, PID_GraphXTickCount, plottype);
+  if (val != "0" && val != ""){
+     if (val == "none") val = "None";
+     if (val == "low") val = "Low";
+     if (val == "normal") val = "Normal";
+     if (val == "high") val = "High";
+
+     v += ", XTicksNumber=";
+     v += val;
+  }
+  val = T->psr->RetrievePlotParam (T->plotno, PID_GraphYTickCount, plottype);
+  if (val != "0" && val != ""){
+     if (val == "none") val = "None";
+     if (val == "low") val = "Low";
+     if (val == "normal") val = "Normal";
+     if (val == "high") val = "High";
+
+     v += ", YTicksNumber=";
+     v += val;
+  }
+  val = T->psr->RetrievePlotParam (T->plotno, PID_GraphZTickCount, plottype);
+  if (val != "0" && val != ""){
+     if (val == "none") val = "None";
+     if (val == "low") val = "Low";
+     if (val == "normal") val = "Normal";
+     if (val == "high") val = "High";
+     v += ", ZTicksNumber=";
+     v += val;
+  }
+
   return v;
 }
 
