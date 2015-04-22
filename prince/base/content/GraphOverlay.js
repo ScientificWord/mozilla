@@ -348,7 +348,7 @@ Graph.prototype = {
     var DOMCaption = DOMFrame.getElementsByTagName("caption")[0];
     var attr, value, alist, i, domPlots, plot, domPlotLabels, status, caption, captionloc, child, optnum;
     var graphData = new graphVarData(this);
-    var unitHandler = new UnitHandler();
+    var unitHandler = new UnitHandler(editor);
     var units = this.getValue("Units");
     unitHandler.initCurrentUnit(units);
     this.frame.reviseFrameDOMElement(DOMFrame, forComp, editorElement);
@@ -1898,7 +1898,7 @@ Frame.prototype = {
     var editor = msiGetEditor(editorElement);
     var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, pos, placeLocation, captionlocation, x;
     var DOMObj = DOMFrame.getElementsByTagName("object")[0];
-    var unitHandler = new UnitHandler();
+    var unitHandler = new UnitHandler(editor);
     var needsWrapfig = false;
     try {
       graph = this.parent;
