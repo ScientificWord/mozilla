@@ -16,12 +16,13 @@
     xmlns:exsl="http://exslt.org/common">
 
 <xsl:variable name="newline">
-   <xsl:text>&#xA;</xsl:text>
+   <!-- xsl:text>&#xA;</xsl:text -->
+   <xsl:text>\MsiNewline</xsl:text>
 </xsl:variable>
 
 <xsl:variable name="blankline">
-   <xsl:value-of select="$newline"/>
-   <xsl:value-of select="$newline"/>
+   <!-- xsl:value-of select="$newline"/><xsl:value-of select="$newline"/ -->
+   <xsl:text>\MsiBlankline</xsl:text>
 </xsl:variable>
 
 
