@@ -504,40 +504,56 @@ var msiResizeListener =
 
   resizeGraphic : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
   {
-    var theUnits = anElement.getAttribute("units");
-    // var style = "";
-    var elemWidth = anElement.getAttribute("imageWidth");
-    var elemHeight = anElement.getAttribute("imageHeight");
-    var bSetWidth = elemWidth && (Number(elemWidth) != 0);
-    var bSetHeight = elemHeight && (Number(elemHeight) != 0);
-    if (bSetWidth && !bSetHeight)  //only set height if no longer preserves aspect ratio
-    {
-      var ratio = Number(anElement.getAttribute("naturalHeight"))/Number(anElement.getAttribute("naturalWidth"));
-      if (!ratio || (ratio == Number.POSITIVE_INFINITY) || (ratio == Number.NEGATIVE_INFINITY) || (ratio == Number.NaN))
-        bSetHeight = true;
-      else
-        bSetHeight = (Math.abs(ratio * newWidth - newHeight) > 2.0);
+    // When this is called, the height and width style attributes for anElement have already been set.
+    // We take care of a possible surrounding msiframe, and attributes other than style,such as ltx_width and
+    // ltx_height
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+
+    var unitHandler = new UnitHandler(editor);
+    var frame = anElement.parentNode;
+    var dHeight = newHeight - oldHeight;
+    var dWidth = newWidth - oldWidth;
+    var frameWidth, frameHeight;
+;
+    var theUnits = anElement.getAttribute("units") || frame.getAttribute("units");
+    var pixelsPerUnit;
+    var elemWidth = anElement.getAttribute("ltx_width");
+    var elemHeight = anElement.getAttribute("ltx_height");
+
+    unitHandler.initCurrentUnit('px'); //the unit for resize callbacks
+    if (!(theUnits || elemWidth || elemHeight)) return;
+    pixelsPerUnit = unitHandler.getValueOf(1, theUnits);
+    anElement.setAttribute('ltx_width', newWidth/pixelsPerUnit);
+    anElement.setAttribute('ltx_height', newHeight/pixelsPerUnit);
+
+    // Do we also set width and height attributes, or imageWidth and imageHeight attributes
+
+    if (frame.nodeName === 'msiframe') {
+      theUnits = frame.getAttribute("units");
+      unitHandler.initCurrentUnit(theUnits);
+      frame.setAttribute('width',
+        parseFloat(frame.getAttribute('width')) + parseFloat(unitHandler.getValueAs( dWidth, theUnits)));
+      frame.setAttribute('height',
+        parseFloat(frame.getAttribute('height')) + parseFloat(unitHandler.getValueAs( dHeight, theUnits)));
+      frameWidth = getStyleAttributeOnNode(frame, 'width', editor);
+      setStyleAttributeOnNode(frame, 'width', parseFloat(frameWidth) + parseFloat(unitHandler.getValueAs( dWidth, theUnits)));
+      frameHeight = getStyleAttributeOnNode(frame, 'height', editor);
+      setStyleAttributeOnNode(frame, 'height', parseFloat(frameHeight) + parseFloat(unitHandler.getValueAs( dHeight, theUnits)));
     }
-    else if (!bSetWidth)  //Note that this includes case where neither attribute was set - if the ratio is okay we'll set only the width
-    {
-      var ratio = Number(anElement.getAttribute("naturalWidth"))/Number(anElement.getAttribute("naturalHeight"));
-      if (!ratio || (ratio == Number.POSITIVE_INFINITY) || (ratio == Number.NEGATIVE_INFINITY) || (ratio == Number.NaN))
-        bSetWidth = true;
-      else
-        bSetWidth = (Math.abs(ratio * newHeight - newWidth) > 2.0);
+    else {
+      if (frame.nodeName === 'graph') {
+        frame = frame.firstChild; // the graphspec
+        theUnits = frame.getAttribute('Units');
+        frame.setAttribute('Width',  unitHandler.getValueAs(newWidth, theUnits));
+        frame.setAttribute('Height', unitHandler.getValueAs(newWidth, theUnits));
+        getStyleAttributeOnNode(frame, 'width', editor);
+      }
     }
-    if (bSetWidth) {
-      msiEditorEnsureElementAttribute(anElement, "imageWidth", msiCSSUnitsList.convertUnits(newWidth, "pt", theUnits), this.mEditor);
-      // style += "width: "+msiCSSUnitsList.convertUnits(newWidth, "px", theUnits) + "; ";
-    }
-    if (bSetHeight) {
-      msiEditorEnsureElementAttribute(anElement, "imageHeight", msiCSSUnitsList.convertUnits(newHeight, "pt", theUnits), this.mEditor);
-      // style += "height: "+msiCSSUnitsList.convertUnits(newHeight, "px", theUnits) + "; ";
-    }
-    // anElement.setAttribute('style', style);
-    msiSetGraphicFrameAttrsFromGraphic(anElement, null);
+
     // recompute the cached bitmap if doing so will improve things; i.e., if the src is a vector graphic.
     var copiedSrcUrl = anElement.getAttribute('copiedSrcUrl');
+
     if (copiedSrcUrl) {
       var ext = /\....$/.exec(copiedSrcUrl) [0];
       if (ext == '.eps' || ext == '.pdf' || ext == '.ps') { // recompute bit map image
@@ -553,8 +569,8 @@ var msiResizeListener =
           graphicsDir.append(decomposedRelativePath.shift());
         }
 
-        graphicsConverter.copyAndConvert(graphicsDir, false, msiCSSUnitsList.convertUnits(newWidth, "px", theUnits),
-          msiCSSUnitsList.convertUnits(newHeight, "px", theUnits) );
+        graphicsConverter.copyAndConvert(graphicsDir, false, newWidth,
+          newHeight);
 
       }
     }
@@ -573,7 +589,10 @@ var msiResizeListener =
       return;
     }
     try {
-      var unithandler = new UnitHandler();
+      var editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);
+
+      var unithandler = new UnitHandler(editor);
       var units;
 // skip preserving aspect ratio for now.
       var graph = new Graph();
@@ -594,12 +613,15 @@ var msiResizeListener =
 
   resizeFrame : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
   {
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+
     // dimensions are given in pixels.
     if (oldWidth === newWidth && oldHeight === newHeight) {
       return;
     }
     try {
-      var unithandler = new UnitHandler();
+      var unithandler = new UnitHandler(editor);
       var units;
       var aVCamObject;
 // skip preserving aspect ratio for now.
@@ -934,23 +956,23 @@ function msiEditorDocumentObserver(editorElement)
 
           }
 
-					UpdateWindowTitle();
+          UpdateWindowTitle();
 // Add language tags if there is a <babel> tag
-					addLanguageTagsFromBabelTag(editor.document)
-				  var htmlurlstring = editor.document.documentURI;;
-				  var htmlurl = msiURIFromString(htmlurlstring);
-				  var htmlFile = msiFileFromFileURL(htmlurl);
+          addLanguageTagsFromBabelTag(editor.document)
+          var htmlurlstring = editor.document.documentURI;;
+          var htmlurl = msiURIFromString(htmlurlstring);
+          var htmlFile = msiFileFromFileURL(htmlurl);
           editor.QueryInterface(nsIEditorStyleSheets);
-				  if (htmlFile)
-				  {
-						var cssFile = htmlFile.parent;
-					  cssFile.append("css");
-					  cssFile.append("msi_Tags.css");
+          if (htmlFile)
+          {
+            var cssFile = htmlFile.parent;
+            cssFile.append("css");
+            cssFile.append("msi_Tags.css");
             if (!(cssFile.exists()))
             {
               buildAllTagsViewStylesheet(editor);
             }
-					  dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+            dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
             var stylesheet;
             try
             {
@@ -962,7 +984,7 @@ function msiEditorDocumentObserver(editorElement)
               editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
               editor.enableStyleSheet(dynAllTagsStyleSheet, false);
             }catch(e) {}
-					}
+          }
 
           try{
              var elemList = editor.document.getElementsByTagName("definitionlist");
@@ -1188,9 +1210,10 @@ function msiEditorDocumentObserver(editorElement)
           var url = msiURIFromString(docUrlString);
           var baseDir = msiFileFromFileURL(url);
           baseDir = baseDir.parent; // and now it points to the working directory
-          graphicsConverter.init(win, baseDir);
 
-          graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
+        // Temporarily skipping this -- the call comes too early.
+          // graphicsConverter.init(win, baseDir);
+          // graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
         }
         if (bIsRealDocument)
           this.mEditorElement.mbInitializationCompleted = true;
@@ -1286,7 +1309,7 @@ function EditorStartupForEditorElement(editorElement, topwindow, isShell)
 //  msiDumpWithID("Entering EditorStartupForEditorElement for element [@].\n", editorElement);
   var is_HTMLEditor = msiIsHTMLEditor(editorElement);
   var is_topLevel = topwindow;
-	if (topwindow == null) is_topLevel = msiIsTopLevelEditor(editorElement);
+  if (topwindow == null) is_topLevel = msiIsTopLevelEditor(editorElement);
   var prefs = GetPrefs();
   var filename = "untitled";
 
@@ -1973,11 +1996,11 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     document = editor.document;
     if (!document)
       return true;
-		var htmlurlstring = msiGetEditorURL(editorElement);
-	  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
-	  var fileURL = msiURIFromString(sciurlstring);
-	  var file = msiFileFromFileURL(fileURL);
-		var scifileExists = file.exists();
+    var htmlurlstring = msiGetEditorURL(editorElement);
+    var sciurlstring = msiFindOriginalDocname(htmlurlstring);
+    var fileURL = msiURIFromString(sciurlstring);
+    var file = msiFileFromFileURL(fileURL);
+    var scifileExists = file.exists();
     var prefs = GetPrefs();
     var newfileisdirty = prefs.getBoolPref("swp.newFileConsideredDirty");
     if ((!editor.documentModified) && (!msiIsHTMLSourceChanged(editorElement)) && (scifileExists || !newfileisdirty))
@@ -1988,9 +2011,9 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
       return true;
     }
   }
-	catch (e) {
-		return false;
-	}
+  catch (e) {
+    return false;
+  }
 
   // call window.focus, since we need to pop up a dialog
   // and therefore need to be visible (to prevent user confusion)
@@ -3025,8 +3048,8 @@ function EditorClick(event)
     {
       var obj, theURI, targWin;
       var objName = msiGetBaseNodeName(event.target);
-	    var editor = msiGetEditor(editorElement);
-	    var graphnode = getEventParentByTag(event, "graph");
+      var editor = msiGetEditor(editorElement);
+      var graphnode = getEventParentByTag(event, "graph");
       var linkNode;
       var aVCamObject;
       if (!graphnode)
@@ -3035,9 +3058,9 @@ function EditorClick(event)
         {
           document.getElementById("vcamactive").setAttribute("hidden", true);
         }
-	      linkNode = getEventParentByTag(event, "xref");
+        linkNode = getEventParentByTag(event, "xref");
         if (!linkNode)
-	        linkNode = getEventParentByTag(event, "a");
+          linkNode = getEventParentByTag(event, "a");
       }
       if (graphnode)
       {
@@ -8433,18 +8456,18 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       if (commandString)
         item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandString + "', this);");
       else if (scriptString)
-			{
-			  item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
-			}
-			if (propData.mNode && propData.mNode.setAttribute)
-			{
-				item.addEventListener("DOMMenuItemActive", function (event) {
-					event.target.propertiesData.mNode.setAttribute("hilite","1");
-				}, false);
-				item.addEventListener("DOMMenuItemInactive", function (event) {
-					event.target.propertiesData.mNode.removeAttribute("hilite");
-				}, false);
-			}
+      {
+        item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
+      }
+      if (propData.mNode && propData.mNode.setAttribute)
+      {
+        item.addEventListener("DOMMenuItemActive", function (event) {
+          event.target.propertiesData.mNode.setAttribute("hilite","1");
+        }, false);
+        item.addEventListener("DOMMenuItemInactive", function (event) {
+          event.target.propertiesData.mNode.removeAttribute("hilite");
+        }, false);
+      }
       item.setAttribute("label", menuString);
       item.refElement = propData.getReferenceNode();
       item.refEditor = editorElement;
@@ -8635,17 +8658,17 @@ function AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData)
 //  if (editPopup.id.substr(-3) == "_cm")
 //    bIsContextMenu = true;
 //  var sepID = "InsertMatrixRowColSeparator";
-//	var insertMatrixID = "matrixInsert";
-//	var selectMatrixID = "matrixSelect";
-//	var deleteMatrixID = "matrixDelete";
+//  var insertMatrixID = "matrixInsert";
+//  var selectMatrixID = "matrixSelect";
+//  var deleteMatrixID = "matrixDelete";
 //
 ////  var rowID = "InsertMatrixRows";
 ////  var colID = "InsertMatrixColumns";
 //  if (bIsContextMenu)
 //  {
-//		insertMatrixID += "_cm";
-//		selectMatrixID += "_cm";
-//		deleteMatrixID += "_cm";
+//    insertMatrixID += "_cm";
+//    selectMatrixID += "_cm";
+//    deleteMatrixID += "_cm";
 //  }
 //  var menuItems = editPopup.getElementsByAttribute("id", rowID);
 //  if (menuItems && (menuItems.length > 0))
@@ -8657,9 +8680,9 @@ function AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData)
 ////  }
 //  var xulNS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 //  var sepItem = document.createElementNS(xulNS, "menuseparator");
-//	var insertMatrixItem = document.createElementNS(xulNS, "menuitem");
-//	var selectMatrixItem = document.createElementNS(xulNS, "menuitem");
-//	var deleteMatrixItem = document.createElementNS(xulNS, "menuitem");
+//  var insertMatrixItem = document.createElementNS(xulNS, "menuitem");
+//  var selectMatrixItem = document.createElementNS(xulNS, "menuitem");
+//  var deleteMatrixItem = document.createElementNS(xulNS, "menuitem");
 ////  var rowItem = document.createElementNS(xulNS, "menuitem");
 ////  var colItem = document.createElementNS(xulNS, "menuitem");
 //
@@ -9563,7 +9586,7 @@ function msiEditorInsertTable(editorElement, command, commandHandler)
 
 
   window.openDialog("chrome://prince/content/msiEdTableProps.xul", "inserttable", "modal, chrome,close,titlebar,resizable", "");
-	msiGetEditor(editorElement).incrementModificationCount(1);
+  msiGetEditor(editorElement).incrementModificationCount(1);
   editorElement.focus();
 }
 
@@ -9583,7 +9606,7 @@ function msiEditorTableCellProperties(editorElement)
       // Start Table Properties dialog on the "Cell" panel
       //HERE USE MODELESS DIALOG FUNCTIONALITY!
       window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal,resizable", "", "CellPanel");
-			msiGetEditor(editorElement).incrementModificationCount(1);
+      msiGetEditor(editorElement).incrementModificationCount(1);
       editorElement.focus();
     }
   } catch (e) {}
@@ -10238,7 +10261,7 @@ function msiSetGraphicFrameAttrsFromGraphic(imageObj, editor)
     return;
 
   var theUnits = imageObj.getAttribute("units");
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(editor);
   unitHandler.initCurrentUnit(theUnits);
   var width = Number(imageObj.getAttribute("imageWidth"));
   var borderWidth = Number(imageObj.getAttribute("borderw"));
@@ -10487,7 +10510,7 @@ function msiGoDoCommand(command, editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   // editorElement && editorElement.focus();
-	msiCommandUpdater.doCommand(command, editorElement);
+  msiCommandUpdater.doCommand(command, editorElement);
 }
 function msiGoUpdateCommand(command, editorElement) { msiCommandUpdater.updateCommand(command, editorElement); }
 function msiGoSetCommandEnabled(command, enabled, editorElement) { msiCommandUpdater.enableCommand(command, enabled, editorElement); }
@@ -10969,7 +10992,7 @@ function openTeXButtonDialog(tagname, node)
   openDialog('chrome://prince/content/texbuttoncontents.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
     node);
   var editorElement = msiGetActiveEditorElement();
-	msiGetEditor(editorElement).incrementModificationCount(1);
+  msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
 function openOTFontDialog(tagname, node)
@@ -10985,7 +11008,7 @@ function openHTMLField(node)
   openDialog('chrome://prince/content/htmlfield.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
     node);
   var editorElement = msiGetActiveEditorElement();
-	msiGetEditor(editorElement).incrementModificationCount(1);
+  msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
 //function openFontColorDialog(tagname, node)
@@ -11008,7 +11031,7 @@ function openGraphDialog(tagname, node, editorElement)
   var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot Dialog", "chrome,close,resizable,titlebar,dependent",
      editorElement, "cmd_objectProperties", node);
 // why find it again???  var editorElement = msiGetActiveEditorElement();
-	msiGetEditor(editorElement).incrementModificationCount(1);
+  msiGetEditor(editorElement).incrementModificationCount(1);
 
 }
 
@@ -11441,4 +11464,5 @@ function msiSaveAsPicture(editorElement)
   if (dialogResult.filepickerClick != msIFilePicker.returnCancel)
     editor.saveSelectionAsImage(dialogResult.resultingLocalFile.path);
 }
+
 
