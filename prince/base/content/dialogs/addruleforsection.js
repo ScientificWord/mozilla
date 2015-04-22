@@ -1,13 +1,16 @@
-Components.utils.import("resource://app/modules/unitHandler.jsm"); 
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 var color;
 var ruleElement;
 var ruleUnits;
-var unitHandler = new UnitHandler();
+var unitHandler;
 
 
 function startUp()
 {
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  unitHandler = new UnitHandler(editor);
   ruleElement= window.arguments[0];
   if (!ruleElement) return;
 //  color = window.arguments[1];
@@ -18,7 +21,7 @@ function startUp()
   unitHandler.initCurrentUnit(ruleUnits);
   document.getElementById("ruleUnits").setAttribute("value",unitHandler.currentUnit);
   var numberAndUnit;
-  var tlheight = ruleElement.getAttribute("tlheight"); 
+  var tlheight = ruleElement.getAttribute("tlheight");
   var ht;
   numberAndUnit = unitHandler.getNumberAndUnitFromString(tlheight);
   if (numberAndUnit)
@@ -72,7 +75,7 @@ function getColorAndUpdate()
 		msiGetEditor(editorElement).incrementModificationCount(1);
 	}
   color = colorObj.TextColor;
-  setColorWell("colorWell", color); 
+  setColorWell("colorWell", color);
 }
 
 
@@ -90,7 +93,7 @@ function onAccept()
     var style= "background-color:"+color +"; height:"+ nInPixels + "px; ";
     var tlwidth = document.getElementById("rulelength").value;
     switch (tlwidth) {
-      case "other": 
+      case "other":
       {
         tlwidth = document.getElementById("ruleWidth").value+ruleUnits;
         break;

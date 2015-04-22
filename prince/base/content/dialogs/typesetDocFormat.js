@@ -2,8 +2,8 @@ Components.utils.import("resource://app/modules/fontlist.jsm");
 Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
-var unitHandler = new UnitHandler();
-var secUnitHandler = new UnitHandler();
+var unitHandler;
+var secUnitHandler;
 var gNumStyles={};
 var widthElements;
 var heightElements;
@@ -95,6 +95,8 @@ function startup()
     window.close();
     return;
   }
+  unitHandler = new UnitHandler(editor);
+  secUnitHandler = new UnitHandler(editor);
   widthElements=["lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
       /*"sectrightheadingmargin", "sectleftheadingmargin",*/ "pagewidth", "paperwidth"];
   heightElements=["tmargin","hedd","heddsep",
