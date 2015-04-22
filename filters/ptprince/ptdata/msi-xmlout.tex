@@ -1960,8 +1960,16 @@
 \def\@end@footnote{\msiclosetag{note}{</note>}\@end@notewrapper}
 \def\@innote{\bgroup\aftergroup\@end@footnote}
 
-%%<note type="#2">
+
+\newif\ifmathfootnote
+\mathfootnotefalse
+
 \def\footnote{%
+  \mathfootnotefalse
+  \ifmmode
+       \string\msipassthru\char`\{%
+       \mathfootnotetrue
+  \fi
   \@ifnextchar[{\footnotex}{\footnotea}}
 
 
@@ -1973,15 +1981,8 @@
   \afterassignment\@footnoteb
   \let\junk}
 
-\newif\ifmathfootnote
-\mathfootnotefalse
 
 \def\footnotea{%
-  \mathfootnotefalse
-  \ifmmode
-       %\string\msipassthrough\char`\{%
-       %\mathfootnotetrue
-  \fi
   \msi@br\@start@notewrapper
   \msiopentag{note}{<note type="footnote">}%
   \msiopentag{bodyText}{<bodyText>}%
@@ -1990,7 +1991,8 @@
   \let\junk}
 
 \def\@footnoteb{%
-    \bgroup
+    \begingroup
+    \msihmode
     \def\par{\msiclosetag{bodyText}{</bodyText>}\msiopentag{bodyText}{<bodyText>}}
     \aftergroup\@footnotec}
 
