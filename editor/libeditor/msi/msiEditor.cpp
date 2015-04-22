@@ -113,6 +113,28 @@ msiEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRo
   return res;
 }
 
+
+/* readonly attribute double cssPixelsPerInch; */
+NS_IMETHODIMP msiEditor::GetCssPixelsPerInch(double *_retval)
+{
+  nsCOMPtr<nsIPresShell> presShell;
+  nsPresContext* context;
+  nsresult rv;
+  rv = GetPresShell(getter_AddRefs(presShell));
+  if (NS_SUCCEEDED(rv)) {
+     context = presShell->GetPresContext();
+  }
+  PRInt32 auPerCSSPixel = context->AppUnitsPerDevPixel();
+  // PRInt32 AppUnitsPerDevPixel() const  { return mDeviceContext->AppUnitsPerDevPixel(); }
+  PRInt32 auPerInch = context->AppUnitsPerInch();
+  if (auPerCSSPixel > 0) {
+    *_retval = (double)auPerInch / (double)auPerCSSPixel;
+    return NS_OK;
+  }
+  else
+    return NS_ERROR_ILLEGAL_VALUE;
+}
+
 /* attribute boolean AutoSubEnabled; */
 NS_IMETHODIMP msiEditor::GetAutoSubEnabled(PRBool *aAutoSubEnabled)
 {
