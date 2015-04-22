@@ -1,16 +1,19 @@
-Components.utils.import("resource://app/modules/unitHandler.jsm"); 
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 var spaceElement;
 var unit;
-var unitHandler = new UnitHandler();
+var unitHandler;
 
 function startUp()
 {
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  unitHandler = new UnitHandler(editor);
   spaceElement= window.arguments[0];
   if (!spaceElement) return;
   unit = window.arguments[1];
   unitHandler.initCurrentUnit(unit);
-  var spaceHeight = spaceElement.getAttribute("tlheight"); 
+  var spaceHeight = spaceElement.getAttribute("tlheight");
   var ht;
   numberAndUnit = unitHandler.getNumberAndUnitFromString(spaceHeight);
   if (numberAndUnit)
