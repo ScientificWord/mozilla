@@ -16,6 +16,8 @@ interface msiIMathMLEditor : nsISupports
   attribute PRUint32 EditorID;
   nsIDOMNode NodeInMath( in nsIDOMNode node );
   nsIDOMNode RangeInMath( in nsIDOMRange range );
+  // stick this in so it is available to our JavaScript
+  double CSSPixelsPerInch();
   nsIDOMNode SelectionInMath();
   void InsertMathNodeAtSelection(in nsIDOMElement aElement);
   void InsertInlineMath();
@@ -33,14 +35,14 @@ interface msiIMathMLEditor : nsISupports
   void InsertEngineFunction(in DOMString name);
   void InsertFence(in DOMString open,
                    in DOMString close);
-  void InsertMatrix(in unsigned long rows, 
+  void InsertMatrix(in unsigned long rows,
                     in unsigned long cols,
                     in DOMString rowSignature,
                     in DOMString delim);
   void InsertOperator(in DOMString symbol, in unsigned long attrFlags,
                       in DOMString leftspace, in DOMString rightspace,
                       in DOMString minsize, in DOMString maxsize);
-  void InsertDecoration(in DOMString above, 
+  void InsertDecoration(in DOMString above,
                         in DOMString below,
                         in DOMString aroundNotation,
                         in DOMString aroundType);
@@ -48,32 +50,32 @@ interface msiIMathMLEditor : nsISupports
   void AdjustRange(in nsIDOMRange range, in boolean isForDeletion, in unsigned long direction);
 
   /* GetMathMLEditingBC returns a msiIMathMLEditingBC object based
-   * on the aNode. A pointer to aNode and the offset are stored in the 
+   * on the aNode. A pointer to aNode and the offset are stored in the
    * msiMathMLEditingBC.
    */
   [noscript]void GetMathMLEditingBC(in nsIDOMNode aNode,
                           in unsigned long offset,
                           in boolean clean,
                           out msiIMathMLEditingBC editingBC);
-                   
+
   /* GetMathMLInsertionInterface returns a msiIMathMLInsertion object based
-   * on the aNode. A pointer to aNode and the offset are stored in the 
+   * on the aNode. A pointer to aNode and the offset are stored in the
    * msiMathMLEditingBC. The parameter callToEditForm is used to determine if
    */
   [noscript]void GetMathMLInsertionInterface(in nsIDOMNode aNode,
                                    in unsigned long offset,
                                    out msiIMathMLInsertion mathml);
-  
+
   /* GetMathMLCaretInterface returns a msiIMathMLCaret object based
-   * on the aNode. A pointer to aNode and the offset are stored in the 
+   * on the aNode. A pointer to aNode and the offset are stored in the
    * msiMathMLEditingBC. The parameter callToEditForm is used to determine if
    */
   [noscript]void GetMathMLCaretInterface(in nsIDOMNode aNode,
                                in unsigned long offset,
                                out msiIMathMLCaret mathml);
-                               
+
   /* GetMathMLCoalesceInterface returns a msiIMathMLCoalesce object based
-   * on the aNode. A pointer to aNode and the offset are stored in the 
+   * on the aNode. A pointer to aNode and the offset are stored in the
    * msiMathMLEditingBC.
    */
   [noscript]void GetMathMLCoalesceInterface(in nsIDOMNode aNode,
@@ -83,13 +85,13 @@ interface msiIMathMLEditor : nsISupports
   /*  returns -1 if node1/offset1 < node2/offset2
    *  returns  0 if node1/offset1 == node2/offset2
    *  returns  1 if node1/offset1 > node2/offset2
-   */                                       
+   */
   [noscript] void ComparePoints(in nsIDOMNode node1,
                                  in PRUint32 offset1,
                                  in nsIDOMNode node2,
                                  in PRUint32 offset2,
                                  out PRInt32 comparison);
-                                 
+
   /**
    * Call addMatrixRows to insert new rows in an <mtable>.
    * The "insertAt" parameter indicates which row to insert the new ones
@@ -97,8 +99,8 @@ interface msiIMathMLEditor : nsISupports
    * greater than or equal to the number of rows currently in the matrix
    * appends them (at the bottom).
   */
-  void addMatrixRows(in nsIDOMNode aMatrix, 
-                     in PRUint32 insertAt, 
+  void addMatrixRows(in nsIDOMNode aMatrix,
+                     in PRUint32 insertAt,
                      in PRUint32 howMany);
 
   /**
@@ -134,7 +136,7 @@ interface msiIMathMLEditor : nsISupports
 
   /**
    * getMatrixCellAt() returns the cell (<mtd>) in an <mtable> which occupies the
-   * position in the matrix described by the "whichRow" row and "whichCol" column. 
+   * position in the matrix described by the "whichRow" row and "whichCol" column.
    * These are 1-based! (i.e., the first row or column is numbered 1 rather than 0).
    * It takes "rowspan" and "colspan" attributes into account.
   */
@@ -142,43 +144,43 @@ interface msiIMathMLEditor : nsISupports
                        in PRInt32 whichRow,
                        in PRInt32 whichCol);
 
-  void removeDisplay(in nsIDOMNode firstNode, in nsIDOMNode secondNode);                      
+  void removeDisplay(in nsIDOMNode firstNode, in nsIDOMNode secondNode);
 
   void checkListItems(in nsIDOMNode leftBlock, in nsIDOMNode rightBlock, out nsIDOMNode newLeftBlock,
     out nsIDOMNode newRightBlock);
-                       
-  
+
+
   [noscript] void CreateReplaceTransaction(in nsIDOMNode newKid,
                                            in nsIDOMNode oldKid,
                                            in nsIDOMNode parent,
                                            out nsITransaction transaction);
-                                            
+
   [noscript] void CreateDeleteTransaction(in nsIDOMNode node,
-                                          out nsITransaction transaction);                                 
-                                                                            
+                                          out nsITransaction transaction);
+
   [noscript] void CreateInsertTransaction(in nsIDOMNode node,
                                           in nsIDOMNode parent,
                                           in PRUint32 offset,
                                           out nsITransaction transaction);
-                                          
+
   [noscript] void CreateDeleteTextTransaction(in nsIDOMCharacterData node,
                                               in PRUint32 offset,
                                               in PRUint32 numChar,
-                                              out nsITransaction transaction);                                                                           
-                                              
+                                              out nsITransaction transaction);
+
   [noscript] void CreateDeleteChildrenTransaction(in nsIDOMNode parent,
                                                   in PRUint32 offset,
                                                   in PRUint32 numToDelete,
-                                                  out nsITransaction transaction);                                                                           
+                                                  out nsITransaction transaction);
 
   [noscript] void CreateDeleteScriptTransaction(in nsIDOMNode script,
                                                 in nsIDOMNode dummyFirstChild,
-                                                out nsITransaction transaction);                                                                           
+                                                out nsITransaction transaction);
 
   [noscript] void CreateFlattenMrowTransaction(in nsIDOMNode mrow,
-                                                out nsITransaction transaction);                                                                           
+                                                out nsITransaction transaction);
 
   [noscript] void CreateReplaceScriptBaseTransaction(in nsIDOMNode script,
                                                      in nsIDOMNode newbase,
-                                                     out nsITransaction transaction);                                                                           
+                                                     out nsITransaction transaction);
 };

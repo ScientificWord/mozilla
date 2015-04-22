@@ -1,9 +1,13 @@
 var EXPORTED_SYMBOLS = ["UnitHandler" ];
 
 
-function UnitHandler()
+function UnitHandler( editor )
 {
   this.supportedUnits = ["mm", "cm", "in", "pt", "bp", "pc", "px", "pct"];
+  var pixelsPerInch;
+  if (editor) pixelsPerInch =  editor.CSSPixelsPerInch();
+  if (!pixelsPerInch) pixelsPerInch = 96;
+
   this.units =  // in mm
     {mm: {size: 1, increment: .1, places: 1 },
      cm: {size: 10, increment: .1, places: 2 },
@@ -11,7 +15,7 @@ function UnitHandler()
      pt: {size: 0.3514598, increment: .1, places: 1 },
      bp: {size: 0.3527778, increment: .1, places: 1 },
      pc: {size: 2.54, increment: .1, places: 1 },
-     px: {size: 0.2645833, increment: 1, places: 0 },	// we say 96 pixels/inch. It varies but portability requires a fixed value
+     px: {size: 25.4/pixelsPerInch, increment: 1, places: 0 },
      pct: {size: null, increment: .1, places: 1 },
      "%": {size: null, increment: .1, places: 1 }
   };
@@ -34,7 +38,12 @@ function UnitHandler()
   {
     if (!(unit in this.units)){ return null;}
     if (unit === this.currentUnit) { return value; }
-    return (value/this.units[unit].size)*this.units[this.currentUnit].size;
+    try {
+      return (value/this.units[unit].size)*this.units[this.currentUnit].size;
+    }
+    catch(e) {
+      return 0;
+    }
   };
 
   this.getValueOf = function( value, unit )  // given a measurement that is 'value' in the unit "unit"

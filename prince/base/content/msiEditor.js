@@ -504,40 +504,56 @@ var msiResizeListener =
 
   resizeGraphic : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
   {
-    var theUnits = anElement.getAttribute("units");
-    // var style = "";
-    var elemWidth = anElement.getAttribute("imageWidth");
-    var elemHeight = anElement.getAttribute("imageHeight");
-    var bSetWidth = elemWidth && (Number(elemWidth) != 0);
-    var bSetHeight = elemHeight && (Number(elemHeight) != 0);
-    if (bSetWidth && !bSetHeight)  //only set height if no longer preserves aspect ratio
-    {
-      var ratio = Number(anElement.getAttribute("naturalHeight"))/Number(anElement.getAttribute("naturalWidth"));
-      if (!ratio || (ratio == Number.POSITIVE_INFINITY) || (ratio == Number.NEGATIVE_INFINITY) || (ratio == Number.NaN))
-        bSetHeight = true;
-      else
-        bSetHeight = (Math.abs(ratio * newWidth - newHeight) > 2.0);
+    // When this is called, the height and width style attributes for anElement have already been set.
+    // We take care of a possible surrounding msiframe, and attributes other than style,such as ltx_width and
+    // ltx_height
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+
+    var unitHandler = new UnitHandler(editor);
+    var frame = anElement.parentNode;
+    var dHeight = newHeight - oldHeight;
+    var dWidth = newWidth - oldWidth;
+    var frameWidth, frameHeight;
+;
+    var theUnits = anElement.getAttribute("units") || frame.getAttribute("units");
+    var pixelsPerUnit;
+    var elemWidth = anElement.getAttribute("ltx_width");
+    var elemHeight = anElement.getAttribute("ltx_height");
+
+    unitHandler.initCurrentUnit('px'); //the unit for resize callbacks
+    if (!(theUnits || elemWidth || elemHeight)) return;
+    pixelsPerUnit = unitHandler.getValueOf(1, theUnits);
+    anElement.setAttribute('ltx_width', newWidth/pixelsPerUnit);
+    anElement.setAttribute('ltx_height', newHeight/pixelsPerUnit);
+
+    // Do we also set width and height attributes, or imageWidth and imageHeight attributes
+
+    if (frame.nodeName === 'msiframe') {
+      theUnits = frame.getAttribute("units");
+      unitHandler.initCurrentUnit(theUnits);
+      frame.setAttribute('width',
+        parseFloat(frame.getAttribute('width')) + parseFloat(unitHandler.getValueAs( dWidth, theUnits)));
+      frame.setAttribute('height',
+        parseFloat(frame.getAttribute('height')) + parseFloat(unitHandler.getValueAs( dHeight, theUnits)));
+      frameWidth = getStyleAttributeOnNode(frame, 'width', editor);
+      setStyleAttributeOnNode(frame, 'width', parseFloat(frameWidth) + parseFloat(unitHandler.getValueAs( dWidth, theUnits)));
+      frameHeight = getStyleAttributeOnNode(frame, 'height', editor);
+      setStyleAttributeOnNode(frame, 'height', parseFloat(frameHeight) + parseFloat(unitHandler.getValueAs( dHeight, theUnits)));
     }
-    else if (!bSetWidth)  //Note that this includes case where neither attribute was set - if the ratio is okay we'll set only the width
-    {
-      var ratio = Number(anElement.getAttribute("naturalWidth"))/Number(anElement.getAttribute("naturalHeight"));
-      if (!ratio || (ratio == Number.POSITIVE_INFINITY) || (ratio == Number.NEGATIVE_INFINITY) || (ratio == Number.NaN))
-        bSetWidth = true;
-      else
-        bSetWidth = (Math.abs(ratio * newHeight - newWidth) > 2.0);
+    else {
+      if (frame.nodeName === 'graph') {
+        frame = frame.firstChild; // the graphspec
+        theUnits = frame.getAttribute('Units');
+        frame.setAttribute('Width',  unitHandler.getValueAs(newWidth, theUnits));
+        frame.setAttribute('Height', unitHandler.getValueAs(newWidth, theUnits));
+        getStyleAttributeOnNode(frame, 'width', editor);
+      }
     }
-    if (bSetWidth) {
-      msiEditorEnsureElementAttribute(anElement, "imageWidth", msiCSSUnitsList.convertUnits(newWidth, "pt", theUnits), this.mEditor);
-      // style += "width: "+msiCSSUnitsList.convertUnits(newWidth, "px", theUnits) + "; ";
-    }
-    if (bSetHeight) {
-      msiEditorEnsureElementAttribute(anElement, "imageHeight", msiCSSUnitsList.convertUnits(newHeight, "pt", theUnits), this.mEditor);
-      // style += "height: "+msiCSSUnitsList.convertUnits(newHeight, "px", theUnits) + "; ";
-    }
-    // anElement.setAttribute('style', style);
-    msiSetGraphicFrameAttrsFromGraphic(anElement, null);
+
     // recompute the cached bitmap if doing so will improve things; i.e., if the src is a vector graphic.
     var copiedSrcUrl = anElement.getAttribute('copiedSrcUrl');
+
     if (copiedSrcUrl) {
       var ext = /\....$/.exec(copiedSrcUrl) [0];
       if (ext == '.eps' || ext == '.pdf' || ext == '.ps') { // recompute bit map image
@@ -553,12 +569,11 @@ var msiResizeListener =
           graphicsDir.append(decomposedRelativePath.shift());
         }
 
-        graphicsConverter.copyAndConvert(graphicsDir, false, msiCSSUnitsList.convertUnits(newWidth, "px", theUnits),
-          msiCSSUnitsList.convertUnits(newHeight, "px", theUnits) );
+        graphicsConverter.copyAndConvert(graphicsDir, false, newWidth,
+          newHeight);
 
       }
     }
-
   },
 
   resizePlot : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
@@ -573,7 +588,10 @@ var msiResizeListener =
       return;
     }
     try {
-      var unithandler = new UnitHandler();
+      var editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);
+
+      var unithandler = new UnitHandler(editor);
       var units;
 // skip preserving aspect ratio for now.
       var graph = new Graph();
@@ -594,12 +612,15 @@ var msiResizeListener =
 
   resizeFrame : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
   {
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+
     // dimensions are given in pixels.
     if (oldWidth === newWidth && oldHeight === newHeight) {
       return;
     }
     try {
-      var unithandler = new UnitHandler();
+      var unithandler = new UnitHandler(editor);
       var units;
       var aVCamObject;
 // skip preserving aspect ratio for now.
@@ -1188,9 +1209,10 @@ function msiEditorDocumentObserver(editorElement)
           var url = msiURIFromString(docUrlString);
           var baseDir = msiFileFromFileURL(url);
           baseDir = baseDir.parent; // and now it points to the working directory
-          graphicsConverter.init(win, baseDir);
 
-          graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
+        // Temporarily skipping this -- the call comes too early.
+          // graphicsConverter.init(win, baseDir);
+          // graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
         }
         if (bIsRealDocument)
           this.mEditorElement.mbInitializationCompleted = true;
@@ -10238,7 +10260,7 @@ function msiSetGraphicFrameAttrsFromGraphic(imageObj, editor)
     return;
 
   var theUnits = imageObj.getAttribute("units");
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(editor);
   unitHandler.initCurrentUnit(theUnits);
   var width = Number(imageObj.getAttribute("imageWidth"));
   var borderWidth = Number(imageObj.getAttribute("borderw"));

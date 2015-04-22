@@ -634,7 +634,7 @@ function msiPokeMultiStateUI(uiID, cmdParams)
     else
       try {
         desiredAttrib = cmdParams.getStringValue("state_attribute");
-      } 
+      }
       catch( e ) {
         return;
       }
@@ -704,7 +704,7 @@ function msiPokeMultiStateUI(uiID, cmdParams)
 //        }
 //      }
 //    }
-//  } 
+//  }
 //  catch(e) {}
 //}
 //
@@ -792,7 +792,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
         msiPokeMultiStateUI(commandID, cmdParams);
     }
     msiResetStructToolbar(editorElement);
-    if (newState === 'bibitem') 
+    if (newState === 'bibitem')
     {
       msiGoDoCommand("cmd_reviseManualBibItemCmd");
     }
@@ -967,7 +967,7 @@ function updateViewMenuFromEditor(editorElement)
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"]];
 
-  // I don't know what Ron intended here, but this can't work because command is not set.                      
+  // I don't know what Ron intended here, but this can't work because command is not set.
 
   // var docList = msiGetUpdatableItemContainers(command, editorElement);
   // var menuItem;
@@ -998,7 +998,7 @@ function updateViewMenuFromEditor(editorElement)
       else
         menuItem.setAttribute("checked", "false");
     }
-  }  
+  }
 }
 
 ////-----------------------------------------------------------------------------------
@@ -1113,7 +1113,7 @@ function openDocument()
       dump("Ready to edit page: " + fp.fileURL.spec +"\n");
       var newdocumentfile;
       newdocumentfile = createWorkingDirectory(fp.file);
-      
+
       msiEditPage(msiFileURLFromFile(newdocumentfile), window, false, false);
       msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
     }
@@ -1245,7 +1245,7 @@ var msiSaveCommand =
       return result;
     }
     else {
-      finalThrow(cmdFailString("save"), "Saving is not allowed. This program is not licensed."); 
+      finalThrow(cmdFailString("save"), "Saving is not allowed. This program is not licensed.");
     }
   }
 }
@@ -1290,7 +1290,7 @@ var msiSoftSaveCommand =
         finalThrow(cmdFailString('softsave'), e.message);
       }
     }
-    finalThrow(cmdFailString("softsave"), "Saving is not allowed. This program is not licensed."); 
+    finalThrow(cmdFailString("softsave"), "Saving is not allowed. This program is not licensed.");
   }
 }
 
@@ -1374,7 +1374,7 @@ var msiSaveCopyAsCommand =
   }
 }
 
-var msiExportToTexCommand = 
+var msiExportToTexCommand =
 {
   isCommandEnabled: function(aCommand, dummy) {
     return okToPrint();
@@ -1420,7 +1420,7 @@ var msiExportToWebCommand =
       finalThrow(cmdFailString("exporttoweb"), "Exporting a modified document to the web is not allowed since his program is not licensed.")
     return false;
   }
-}    
+}
 
 
 var msiExportToTextCommand =
@@ -2805,7 +2805,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
 {
   var tempdir;
   try {
-    msiFinishHTMLSource(editorElement);   
+    msiFinishHTMLSource(editorElement);
   }
   catch(e) {
     msidump(e.message);
@@ -3057,7 +3057,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         while (count < 2 && workingDir.exists()) {
           try
           {
-            workingDir.remove(1); 
+            workingDir.remove(1);
           }
           catch(e)
           {
@@ -3981,7 +3981,7 @@ var msiDirectPrintCommand =
       }
     }
     else
-      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed."); 
+      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed.");
   }
 };
 
@@ -4008,10 +4008,10 @@ var msiPrintCommand =
       }
       catch (e) {
         finalThrow(cmdFailString('printPdf'), e.message);
-      }      
+      }
     }
     else
-      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed."); 
+      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed.");
   }
 };
 
@@ -4041,7 +4041,7 @@ var msiPreviewCommand =
       }
     }
     else
-      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed."); 
+      finalThrow(cmdFailString("print"), "Printing a modified file is not allowed since this program is not licensed.");
   }
 };
 
@@ -6304,9 +6304,9 @@ var msiReviseRulesCommand =
 
 function msiInsertRules(dialogData, editorElement)
 {
-	var unitHandler = new UnitHandler();
-	unitHandler.initCurrentUnit(dialogData.height.units);
   var editor = msiGetEditor(editorElement);
+  var unitHandler = new UnitHandler(editor);
+  unitHandler.initCurrentUnit(dialogData.height.units);
   var node = editor.document.createElement('msirule');
   var styleStr = "";
   var colorStr;

@@ -24,10 +24,11 @@ var graphicsConverter = {
   iniParser: null,
   codeDir: null,
   OS: "",
-  handler: new UnitHandler(),
+  handler: null,
 
 
   init: function(aWindow, baseDirIn) {
+    this.handler = new UnitHandler(null);
     this.OS = getOS(aWindow);
     this.baseDir = baseDirIn;
     var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);

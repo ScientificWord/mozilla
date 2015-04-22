@@ -192,7 +192,7 @@ function Startup()
     return;
   }
 
-  unitHandler = new UnitHandler();
+  unitHandler = new UnitHandler(gEditor);
 
   var existingImage = false;
 
@@ -555,7 +555,7 @@ function InitImage()
   var height = 0;
   var pixelWidth = 0;
   var pixelHeight = 0;
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
 
   loadDefaultsFromPrefs();
 
@@ -569,50 +569,49 @@ function InitImage()
     if (imageElement.hasAttribute("units"))
     {
       var unit = imageElement.getAttribute("units");
-      unitHandler.setCurrentUnit(unit);
-      gDialog.frameUnitMenulist.value = unit;
+      unitHandler.initCurrentUnit(unit);
     }
-    if (imageElement.hasAttribute(widthAtt))
-    {
-      widthStr = imageElement.getAttribute(widthAtt);
-      width = unitHandler.getValueFromString(widthStr);
-      pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
-      width = unitRound(width);
-    }
-    if (!width)
-    {
-      widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
-      width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
-      widthStr = widthStr.replace(re,"");
-      pixelWidth = Math.round(Number(widthStr));
-    }
-    if (imageElement.hasAttribute(heightAtt))
-    {
-      heightStr = imageElement.getAttribute(heightAtt);
-      height = unitHandler.getValueFromString(heightStr);
-      pixelHeight = Math.round(unitHandler.getValueAs(height,"px"));
-      height = unitRound(height);
-    }
-    if (!height)
-    {
-      heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
-      height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
-      heightStr = heightStr.replace(re,"");
-      pixelHeight = Math.round(Number(heightStr));
-    }
+    else return;
+    // if (imageElement.hasAttribute(widthAtt))
+    // {
+    //   widthStr = imageElement.getAttribute(widthAtt);
+    //   width = unitHandler.getValueFromString(widthStr);
+    //   pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
+    //   width = unitRound(width);
+    // }
+    // if (!width)
+    // {
+    //   widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
+    //   width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
+    //   widthStr = widthStr.replace(re,"");
+    //   pixelWidth = Math.round(Number(widthStr));
+    // }
+    // if (imageElement.hasAttribute(heightAtt))
+    // {
+    //   heightStr = imageElement.getAttribute(heightAtt);
+    //   height = unitHandler.getValueFromString(heightStr);
+    //   pixelHeight = Math.round(unitHandler.getValueAs(height,"px"));
+    //   height = unitRound(height);
+    // }
+    // if (!height)
+    // {
+    //   heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
+    //   height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
+    //   heightStr = heightStr.replace(re,"");
+    //   pixelHeight = Math.round(Number(heightStr));
+    // }
     if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
     {
       gPreviewImageNeeded = true;
-      var natWidth = imageElement.getAttribute("naturalWidth");
-      var natHeight = imageElement.getAttribute("naturalHeight");
-      if (natWidth)
-        gActualWidth = gConstrainWidth = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(natWidth), "px"));
-      if (!gActualWidth)
+      // The next two lines were done in setting up the frame tab
+      // sizeState.actualSize.width = imageElement.getAttribute("naturalWidth");
+      // sizeState.actualSize.height = imageElement.getAttribute("naturalHeight");
+      gActualWidth = gConstrainWidth = Math.round(unitHandler.getValueAs(sizeState.width, "px"));
+      if (!gActualWidth) {
         gActualWidth  = gConstrainWidth = imageElement.offsetWidth - Math.round(readTotalExtraWidth("px"));
-      if (natHeight)
-        gActualHeight = gConstrainHeight = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(natHeight), "px"));
-      if (!gActualHeight)
+        gActualHeight = gConstrainHeight = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(sizeState.actualSize.height+ sizeState.sizeUnit), "px"));
         gActualHeight = gConstrainHeight = imageElement.offsetHeight - Math.round(readTotalExtraHeight("px"));
+      }
     }
   }
   else  // existing image
@@ -644,14 +643,13 @@ function InitImage()
 
   }
 
-  if ((width > 0) || (height > 0))
-    setWidthAndHeight(width, height, null);
-  else if ((gActualHeight > 0)||(gActualWidth > 0))
-    setWidthAndHeight(unitRound(unitHandler.getValueOf(gActualWidth,"px")),
-                      unitRound(unitHandler.getValueOf(gActualHeight,"px")), null);
-  else
-    setWidthAndHeight(unitRound(unitHandler.getValueOf(gDefaultWidth,"pt")),
-                      unitRound(unitHandler.getValueOf(gDefaultHeight,"pt")), null);
+  setWidthAndHeight(sizeState.width, sizeState.height, null);
+  // else if ((gActualHeight > 0)||(gActualWidth > 0))
+  //   setWidthAndHeight(unitRound(unitHandler.getValueOf(gActualWidth,"px")),
+  //                     unitRound(unitHandler.getValueOf(gActualHeight,"px")), null);
+  // else
+  //   setWidthAndHeight(unitRound(unitHandler.getValueOf(gDefaultWidth,"pt")),
+  //                     unitRound(unitHandler.getValueOf(gDefaultHeight,"pt")), null);
 
   LoadPreviewImage(null);
   // caption and key info comes from frameOverlay
@@ -1307,7 +1305,7 @@ function forceIsImport(bImport)
 
 function PreviewImageLoaded()
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
 
   if (gDialog.PreviewImage)
   {
@@ -1404,7 +1402,7 @@ function isVideoSource(srcFile)
 
 function LoadPreviewImage(importName, srcName)
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
   if (!importName || !srcName) return;
   var imageSrc;
   var importSrc;
@@ -1498,7 +1496,7 @@ function adjustObjectForFileType(imageNode, extension)
 
 function setActualOrDefaultSize()
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
   var prefStr = "";
   var bUseDefaultWidth, bUseDefaultHeight;
   var width, height;
@@ -1595,7 +1593,7 @@ function getExtension(aFilename)
 
 function readTotalExtraWidth(unit)
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
   var totWidth = 0;
 //  totWidth += 2* unitHandler.getValueAs(Number(gDialog.marginInput.left.value), "px");
   totWidth += 2 * unitHandler.getValueAs(Number(gDialog.borderInput.left.value), "px");
@@ -1605,7 +1603,7 @@ function readTotalExtraWidth(unit)
 
 function readTotalExtraHeight(unit)
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
   var totHeight = 0;
 //  totHeight += 2 * unitHandler.getValueAs(Number(gDialog.marginInput.top.value), "px");
   totHeight += 2 * unitHandler.getValueAs(Number(gDialog.borderInput.left.value), "px");
@@ -1631,7 +1629,7 @@ function doOverallEnabling()
 
   SetElementEnabled(gDialog.OkButton, enabled);
   SetElementEnabledById("AdvancedEditButton1", enabled);
-  doDimensionEnabling();
+  // doDimensionEnabling();
 }
 
 function shouldShowErrorMessage()
@@ -1740,7 +1738,7 @@ function ValidateImage()
 
 function imageLoaded(event)
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
   try {
     var isSVGFile = /\.svg$/.test(event.data);
     if (isSVGFile)
@@ -1863,6 +1861,9 @@ function onAccept()
       {
         imageElement.removeAttribute("isSVG");
       }
+      if (/\.eps$/.test(src)) {
+        msiRequirePackage(gEditorElement,"epstopdf","");
+      }
       imageElement.setAttribute("src", src);
       imageElement.setAttribute("data", src);
       if (bHasCaption)  // we need to set up the wrapper element
@@ -1917,8 +1918,6 @@ function onAccept()
       adjustObjectForFileType(imageElement, extension);
 
       msiEnsureElementPackage(imageElement,"graphics",null);
-      if (extension === "eps") msiEnsureElementPackage(imageElement, "epstopdf", null);
-      // BBM: add package for svg
       if (gVideo)
       {
         setVideoSettingsToElement(imageElement, null);
