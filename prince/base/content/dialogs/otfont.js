@@ -1,6 +1,7 @@
 #include ../productname.inc
-Components.utils.import("resource://app/modules/fontlist.jsm"); 
-//Components.utils.import("resource://app/modules/pathutils.jsm"); 
+///
+Components.utils.import("resource://app/modules/fontlist.jsm");
+//Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 var texnode;
@@ -17,11 +18,11 @@ function startup()
   {
     throw("No editor in otfont.OnAccept!");
   }
-  var editor = msiGetEditor(editorElement);  
+  var editor = msiGetEditor(editorElement);
   var name;
   var count = 0;
   var item;
-	unitHandler = new UnitHandler();
+	unitHandler = new UnitHandler(editor);
 	initializeUnitHandler(unitHandler);
   var menuObject = { menulist: []};
   menuObject.menulist = document.getElementById("otfontlist");
@@ -92,7 +93,7 @@ function getColorAndUpdate()
   if (colorObj.Cancel)
     return;
   color = colorObj.TextColor;
-  setColorWell("colorWell", color); 
+  setColorWell("colorWell", color);
   colorWell.setAttribute("color",color);
 }
 
@@ -105,7 +106,7 @@ function onAccept()
      throw("No editor in otfont.OnAccept!");
    }
 	var editor = msiGetEditor(editorElement);
-  
+
   var fontname = getFontName();
 	var leading = unitHandler.getValueAs(getLeading(), "pt");
 	var color = getColorFromColorPicker();
@@ -114,7 +115,7 @@ function onAccept()
 #ifndef PROD_SNB
   rawtex = getRawTeX();
 #endif
-	
+
   var theWindow = window.opener;
   if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
   {
@@ -126,7 +127,7 @@ function onAccept()
 		editor.beginTransaction();
 		if (fontname) theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
 		if (color) theWindow.msiEditorSetTextProperty(editorElement, "fontcolor", "color", color);
-		if (fontsize) 
+		if (fontsize)
 		{
 			var fontsizedata;
 			if (leading) fontsizedata = fontsize+"/"+leading+" pt";
@@ -157,7 +158,7 @@ function getFontName()
   return null;
 }
 
-function getFontSize() 
+function getFontSize()
 {
 	var size = document.getElementById("otfont.fontsize").value;
 	if (Number(size) == 0)
@@ -167,7 +168,7 @@ function getFontSize()
 	return size;
 }
 
-function getLeading() 
+function getLeading()
 {
 	var leading = document.getElementById("leading").value;
 	if (Number(leading) == 0)
@@ -177,7 +178,7 @@ function getLeading()
 	return leading;
 }
 
-function getUnits() 
+function getUnits()
 {
 	var units = document.getElementById("otfont.units").value;
 	return units;
@@ -186,7 +187,7 @@ function getUnits()
 function getColorFromColorPicker()
 {
 	var color = getColor("colorWell");
-  if (!color || color=="") color = null;	
+  if (!color || color=="") color = null;
 	return color;
 }
 

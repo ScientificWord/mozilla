@@ -607,7 +607,10 @@ function getTypesetFilePrefs()
 
 function initUnitsControl(unitBox, pref, controlArray)
 {
-  unitBox.unitsHandler = new UnitHandler();
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+
+  unitBox.unitsHandler = new UnitHandler(editor);
   unitBox.unitsHandler.setEditFieldList(controlArray);
 
   var currUnit = "pt";
