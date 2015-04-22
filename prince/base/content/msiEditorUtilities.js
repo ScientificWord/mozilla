@@ -61,16 +61,19 @@ function FixJS() {
 function isLicensed() {
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  var licensedApp = editor.mAppUtils.licensedApp;
+  if (editor) {
+    var licensedApp = editor.mAppUtils.licensedApp;
 #ifdef PROD_SWP
-    return (licensedApp == 3);
+      return (licensedApp == 3);
 #endif
 #ifdef PROD_SW
-    return (licensedApp == 2);
+      return (licensedApp == 2);
 #endif
 #ifdef PROD_SNB
-    return (licensedApp == 1);
+      return (licensedApp == 1);
 #endif
+  }
+  else return false;
 }
 
 function okToPrint()
@@ -149,6 +152,16 @@ function setStyleAttributeOnNode(node, att, value, editor) {
   else
     node.setAttribute('style', style);
 }
+function getStyleAttributeOnNode(node, att, editor) {
+  var style = node.getAttribute('style');
+  var regexp = new RegExp('\\b' + att + ':\\s*([a-zA-Z0-9])');
+  var value = regexp.exec(style);
+  if (value && value.length > 1) {
+    return value[1];
+  }
+  return null;
+}
+
 function removeStyleAttributeFamilyOnNode(node, att, editor) {
   if (!node) {
     return;
