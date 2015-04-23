@@ -97,7 +97,6 @@ function startup()
   }
   unitHandler = new UnitHandler(editor);
   secUnitHandler = new UnitHandler(editor);
-
   widthElements=["lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
       /*"sectrightheadingmargin", "sectleftheadingmargin",*/ "pagewidth", "paperwidth"];
   heightElements=["tmargin","hedd","heddsep",

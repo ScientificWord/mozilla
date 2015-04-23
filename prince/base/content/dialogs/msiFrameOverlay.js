@@ -1356,8 +1356,6 @@ this is the case for images in an msiframe
   setStyleAttributeOnNode(contentsNode, "width", frameUnitHandler.getValueAs(sizeState.width,"px") + "px", editor);
   contentsNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
   frameNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
-
-
   if (style !== "0px")
     setStyleAttributeOnNode( frameNode, "border-style", "solid", editor );
 }

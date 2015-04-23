@@ -574,7 +574,6 @@ var msiResizeListener =
 
       }
     }
-
   },
 
   resizePlot : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
