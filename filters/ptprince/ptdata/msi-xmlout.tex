@@ -8,7 +8,6 @@
 
 
 
-%%\def\msiToPreamble#1{\expandafter\preambleToks\expandafter{\the\preambleToks #1}}
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
@@ -197,7 +196,7 @@
 
 % \newcounter{#1}[#2]
 
-\newtoks\preambleToks
+%%\newtoks\preambleToks
 
 
 %% redefine these to produce output
@@ -337,8 +336,8 @@
 
 \def\out@preamble@tex#1{%
    \advance\preambleid by 1
-   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1}\msipreambleextra\msitag{]]></preambleTeX>}%
-   \preambleToks={}}
+   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1]]></preambleTeX>}%
+   \msi@preamble={}}
 
 
 %% \document and \enddocument
@@ -347,12 +346,9 @@
    %\br\msiopentag{docformat}{<docformat>}
    %   \msitag{<colist }\colist\msitag{/>}
    %\br\msiclosetag{docformat}{</docformat>}
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{bm}}%
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{tabulary}}%
-%   \@ifundefined{@TCILATEX}
-%     {\relax}
-%     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\input{tcilatex}}}
-   \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
+   \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\usepackage{bm}}%
+   \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\usepackage{tabulary}}%
+   \expandafter\out@preamble@tex\expandafter{\the\msi@preamble}
    \msiclosetag{preamble}{</preamble>}%
    \msi@inpreamble = 0
    \msitag{</head>}\msitag{^^0a}%
@@ -505,7 +501,7 @@
   %\msitag{^^0a<newtheorem }%
   %\if@newtheoremstar\msitag{star="1" }\fi%
   %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
-  \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
+  \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}[#2]{#3}}
   \@ifundefined{msi@begin@#1}%
     {\@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
@@ -517,7 +513,7 @@
     {%\msitag{^^0a<newtheorem }%
      %\if@newtheoremstar\msitag{star="1" }\fi% 
      %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
-     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
+     \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}{#2}}
      \@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
     {}}
@@ -528,7 +524,7 @@
   %\msitag{^^0a<newtheorem }
   %\if@newtheoremstar\msitag{star="1" }\fi% 
   %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
-  \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}[#3]}%
+  \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}{#2}[#3]}%
   \@ifundefined{msi@begin@#1}%
     {\@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
@@ -549,18 +545,18 @@
    \@ifnextchar[{\@newenv@b{#1}{#2}[#3]}{\@newenv@b{#1}{#2}[#3][]}}
 
 \def\@newenv@b#1#2[#3][#4]#5#6{%
-    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newenvironment#1{#2}}%
+    \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newenvironment#1{#2}}%
     \def\msi@tmp{#3}%
     \ifx\msi@tmp\@empty
     \else
-       \expandafter\preambleToks\expandafter{\the\preambleToks[#3]}
+       \expandafter\msi@preamble\expandafter{\the\msi@preamble[#3]}
     \fi
     \def\msi@tmp{#4}%
     \ifx\msi@tmp\@empty
     \else
-       \expandafter\preambleToks\expandafter{\the\preambleToks[#4]}
+       \expandafter\msi@preamble\expandafter{\the\msi@preamble[#4]}
     \fi
-    \expandafter\preambleToks\expandafter{\the\preambleToks{#5}{#6}}
+    \expandafter\msi@preamble\expandafter{\the\msi@preamble{#5}{#6}}
     \@ifundefined{msi@begin@#2}%
       {\@namedef{msi@begin@#2}{\msi@open@element<#2>}%
        \@namedef{msi@end@#2}{\msi@close@element</#2>}}
@@ -582,15 +578,15 @@
  \def\@newcommandA#1#2[#3]{\@ifnextchar[{\@newcommandB{#1}{#2}[#3]}{\@newcommandB{#1}{#2}[#3][]}}
 
  \def\@newcommandB#1#2[#3][#4]#5{%
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand#1{#2}}%
+   \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newcommand#1{#2}}%
    \if x#3x
    \else
-     \expandafter\preambleToks\expandafter{\the\preambleToks[#3]}%
+     \expandafter\msi@preamble\expandafter{\the\msi@preamble[#3]}%
    \fi
    \if x#4x
    \else
-     \expandafter\preambleToks\expandafter{\the\preambleToks[#4]}\fi
-   \expandafter\preambleToks\expandafter{\the\preambleToks{#5}}}%
+     \expandafter\msi@preamble\expandafter{\the\msi@preamble[#4]}\fi
+   \expandafter\msi@preamble\expandafter{\the\msi@preamble{#5}}}%
 
  %%% #1 = optional star, #2 = command name
  \def\@renewcommand#1#2{\@ifnextchar[{\@renewcommandA{#1}{#2}}{\@renewcommandA{#1}{#2}[]}}
@@ -598,15 +594,15 @@
  \def\@renewcommandA#1#2[#3]{\@ifnextchar[{\@renewcommandB{#1}{#2}[#3]}{\@renewcommandB{#1}{#2}[#3][]}}
 
  \def\@renewcommandB#1#2[#3][#4]#5{%
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\renewcommand#1{#2}}
+   \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\renewcommand#1{#2}}
    \if x#3x
    \else
-     \expandafter\preambleToks\expandafter{\the\preambleToks[#3]}%
+     \expandafter\msi@preamble\expandafter{\the\msi@preamble[#3]}%
    \fi
    \if x#4x
    \else
-     \expandafter\preambleToks\expandafter{\the\preambleToks[#4]}\fi
-   \expandafter\preambleToks\expandafter{\the\preambleToks{#5}}}%
+     \expandafter\msi@preamble\expandafter{\the\msi@preamble[#4]}\fi
+   \expandafter\msi@preamble\expandafter{\the\msi@preamble{#5}}}%
  
 
 %   \MSILocalDef{#2}}
@@ -2070,12 +2066,11 @@
              xmlns:sw="http://www.sciword.com/namespaces/sciword">}
    \msi@br\msitag{<head>}
    \msi@br\msiopentag{preamble}{<preamble>}
-   %\expandafter\out@preamble@tex\expandafter{\the\preambleToks}
    \def\makeatother{%
        \msihmode
        \ifnum\msi@inpreamble=1
          \ifnum\msi@output=0
-           \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\makeatother}
+           \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\makeatother}
          \fi
        \else
            \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatother">}%
@@ -2088,14 +2083,14 @@
        \msihmode
        \ifnum\msi@inpreamble=1
           \ifnum\msi@output=0
-            \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\makeatletter}
+            \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\makeatletter}%
           \fi
        \else
          \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatletter">}%
            <![CDATA[\string\makeatletter]]>%
          \msitag{</texb>}%
        \fi
-       \catcode`\@=11}
+       \catcode`\@=11\relax}
 
    \msi@inpreamble=1
 }
@@ -2274,7 +2269,7 @@
   \msi@scan@filecontents}
 
 \def\out@filecontents#1{%
-   \expandafter\global\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\begin{filecontents}#1\end{filecontents}}}
+   \expandafter\global\expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\begin{filecontents}#1\end{filecontents}}}
 
 
 % A hack to fool the jbm filter into handling \dots gracefully
