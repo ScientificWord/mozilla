@@ -797,11 +797,11 @@ void DefAssignment(CommandCode curcmd, int prefixes){
    TokenList* pTL = 0;
    MacroDef* pMD = 0;
 
-   TokenList* pTap = new TokenList();
+   //TokenList* pTap = new TokenList();
    bool tapping = false;
    if (Global::msiinpreamble) {
      InputStack::Clean();
-     tapping = InputStack::StartTap(pTap);
+     tapping = InputStack::StartTap(&Global::msipreamble);
    }
      
    //bool tapping = false;
@@ -809,13 +809,13 @@ void DefAssignment(CommandCode curcmd, int prefixes){
      //InputStack::StartTap(pTap);
      if (bGlobal){
        // push back \global
-       pTap -> AppendSymbol("global");
+       Global::msipreamble.AppendSymbol("global");
      }
      if (bLong){
        // push back \long
-       pTap -> AppendSymbol("long");
+       Global::msipreamble.AppendSymbol("long");
      }
-     pTap -> push_back(CurTok());
+     Global::msipreamble.push_back(CurTok());
    }
    @<Scan definable symbol@>
    pTL = new TokenList();
@@ -824,9 +824,9 @@ void DefAssignment(CommandCode curcmd, int prefixes){
    @<Scan body@>
    if (tapping){
       InputStack::StopTap();
-      LOG("\nTapped tokens = " << *pTap);
-      PrintDefn(*pTap);
-      StringUtils::AppendToks(*pTap);
+      LOG("\nTapped tokens = " << Global::msipreamble);
+      //PrintDefn(Global::msipreamble);
+      StringUtils::AppendToks(Global::msipreamble);
       String str = StringBuilder::Create();
       std::string strTemp;
       int i = 0;
@@ -838,7 +838,7 @@ void DefAssignment(CommandCode curcmd, int prefixes){
       s_preambleExtra+= "\n";
       s_preambleExtra += strTemp;
    }
-   delete pTap;
+   //delete pTap;
 
    if (bHashBrace){
       pTL -> push_back(TeXToken(TT_LEFT_BRACE, '{', 0));
@@ -882,20 +882,18 @@ void EdefAssignment(CommandCode curcmd, int prefixes)
    TokenList* pTL = 0;
    MacroDef* pMD = 0;
 
-   TokenList* pTap = new TokenList();
-   //bool tapping = (Global::msioutput == 0) &&
-   //               InputStack::StartTap(pTap);
-   bool tapping = false;
+   //TokenList* pTap = new TokenList();
+   bool tapping = (Global::msioutput == 0);
    if (tapping){
      if (bGlobal){
        // push back \global
-       pTap -> AppendSymbol("global");
+       Global::msipreamble.AppendSymbol("global");
      }
      if (bLong){
        // push back \long
-       pTap -> AppendSymbol("long");
+       Global::msipreamble.AppendSymbol("long");
      }
-     pTap -> push_back(CurTok());
+     Global::msipreamble.push_back(CurTok());
    }
 
    @<Scan definable symbol@>
@@ -907,10 +905,10 @@ void EdefAssignment(CommandCode curcmd, int prefixes)
    InputStack::Clean();
    if (tapping){
       InputStack::StopTap();
-      LOG("\nTapped tokens = " << *pTap);
-      PrintDefn(*pTap);
+      LOG("\nTapped tokens = " << Global::msipreamble);
+      //PrintDefn(Global::msipreamble);
    }
-   delete pTap;
+   //delete pTap;
 
    if (bHashBrace){
       pTL -> push_back(TeXToken(TT_LEFT_BRACE, '{', 0));
