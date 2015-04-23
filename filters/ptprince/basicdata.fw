@@ -619,6 +619,7 @@ static TokenList msidisplaymathproc;
 static TokenList msieverypar;
 static TokenList msieveryhbox;
 static TokenList msigraphicspath;
+static TokenList msipreamble;
 
 @}
 
@@ -644,6 +645,7 @@ TokenList Global::msidisplaymathproc;
 TokenList Global::msieverypar;
 TokenList Global::msieveryhbox;
 TokenList Global::msigraphicspath;
+TokenList Global::msipreamble;
 @}
 
 The @{ToksReg@} array holds all the token list registers.
@@ -690,6 +692,7 @@ Global::msidisplaymathproc.clear();
 Global::msieverypar.clear();
 Global::msieveryhbox.clear();
 Global::msigraphicspath.clear();
+Global::msipreamble.clear();
 
 
 }
