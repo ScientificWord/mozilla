@@ -38,23 +38,23 @@
    - the terms of any one of the MPL, the GPL or the LGPL.
    -
    - ***** END LICENSE BLOCK ***** -->
- 
+
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
- 
+
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> <!--DO NOT DELETE -->
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/mathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <!-- If an editor control is to support context menus, also need: -->
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
- 
+
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorImageProperties.dtd">
 <!--JLF - Localization pass on 6/29/2012-->
-<dialog id="imgDialog" 
+<dialog id="imgDialog"
     title="&windowTitle.label;"
     xmlns ="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
@@ -64,13 +64,12 @@
     ondialogcancel="return onCancel();"
     screenX="40"
     screenY="40">
- 
+
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageProps.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
@@ -96,7 +95,7 @@
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
   <commandset id="MSImathMenuCommands"/>
-  
+
   <keyset id="editorKeys">
     <keyset id="tasksKeys"/>
     <keyset id="MSIKeySet"/>
@@ -113,7 +112,7 @@
     <broadcaster id="isVideo" hidden="true"/>
   </broadcasterset>
   <vbox id="units" />
- 
+
   <tabbox id="TabBox">
     <tabs flex="1">
       <tab id="imagePictureTab" label="&imagePictureTab.label;"/>
@@ -202,7 +201,7 @@
       <!-- /vbox -->
     </tabpanels>
   </tabbox>
- 
+
   <hbox align="end">
     <groupbox id="imagePreview" orient="horizontal" flex="1">
       <caption label="&previewBox.label;"/>
@@ -231,4 +230,6 @@
     <vbox id="AdvancedEdit"/>
   </hbox>
   <spacer class="spacer" flex="1"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
+
 </dialog>

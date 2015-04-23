@@ -1,4 +1,6 @@
+"use strict";
 Components.utils.import("resource://app/modules/unitHandler.jsm");
+
 
 var frameUnitHandler;
 var sides;
@@ -24,6 +26,9 @@ var gDefaultPlacement = "center";
 var gDefaultInlineOffset = "";
 var hasNaturalSize;
 var gCaptionLoc;
+var editorElement = msiGetActiveEditorElement();
+var editor = msiGetEditor(editorElement);
+
 
 var sizeState = null;
 
@@ -51,13 +56,13 @@ SizeState.prototype = {
     width: null,
     height: null,
     aspectRatio: null,
-    unit: ''
+    unit: ""
   },
   sizeUnit: null,
 
   selectActualSize: function() {
-    var unitHandler = new UnitHandler();
-    unitHandler.initCurrentUnit('px');
+    var unitHandler = new UnitHandler(editor);
+    unitHandler.initCurrentUnit(this.actualSize.unit);
     this.isCustomSize = false;
     this.preserveAspectRatio = false;
     this.width = unitHandler.getValueAs(this.actualSize.width, this.sizeUnit);
@@ -135,13 +140,13 @@ SizeState.prototype = {
   },
 
   computeInferredDimensions: function() {
-    var unitHandler = new UnitHandler();
+    var unitHandler = new UnitHandler(editor);
     if (!this.isCustomSize &&
       this.actualSize.width != null && this.actualSize.height != null)
     {
       unitHandler.initCurrentUnit(this.actualSize.unit);
-      this.width = unitHandler.getValueAs(this.actualSize.width, this.sizeUnit);
-      this.height = unitHandler.getValueAs(this.actualSize.height, this.sizeUnit);
+      if (this.width == 0) this.width = unitHandler.getValueAs(this.actualSize.width, this.sizeUnit);
+      if (this.height == 0) this.height = unitHandler.getValueAs(this.actualSize.height, this.sizeUnit);
       this.enabledState.height = this.enabledState.width = false;
     }
     if (this.preserveAspectRatio && this.isCustomSize) {
@@ -159,10 +164,8 @@ SizeState.prototype = {
       this.isCustomSize;
     this.enabledState.autoWidth = this.enabledState.autoHeight = (this.actualSize.aspectRatio != null) &&
       this.preserveAspectRatio;
-    this.enabledState.height = (this.isCustomSize) && (!this.enabledState.autoHeight
-      || !this.autoHeight);
-    this.enabledState.width = (this.isCustomSize) && (!this.enabledState.autoWidth
-      || !this.autoWidth);
+    this.enabledState.height = (this.isCustomSize) && (!this.enabledState.autoHeight || !this.autoHeight);
+    this.enabledState.width = (this.isCustomSize) && (!this.enabledState.autoWidth || !this.autoWidth);
   },
 
   update: function() {
@@ -186,7 +189,7 @@ function setHasNaturalSize()
     return;
   }
   hasNaturalSize = (sizeState.actualSize.width != null) && (sizeState.actualSize.height != null);
-  if (istrue)
+  if (hasNaturalSize)
   {
     bcaster.removeAttribute("hidden");
   }
@@ -199,13 +202,13 @@ function setHasNaturalSize()
 function setCanRotate(istrue)
 {
   var rotationbox = document.getElementById("rotate");
-  if (!istrue)
+  if (istrue)
   {
-    rotationbox.setAttribute("hidden", "true");
+    rotationbox.removeAttribute("hidden");
   }
   else
   {
-    rotationbox.removeAttribute("hidden");
+    rotationbox.setAttribute("hidden", "true");
   }
 }
 
@@ -217,39 +220,26 @@ function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
   var unitHandler;
   if (!wrapperNode) return;
   // Cope with different capitalization in plots.
-  if (wrapperNode.nodeName === "msiframe") {
-    sizeState.width = wrapperNode.getAttribute(widthAtt);
-    sizeState.height = wrapperNode.getAttribute(heightAtt);
+  if (contentsNode.getAttribute("msigraph") !== "true") {
+    sizeState.width = contentsNode.getAttribute("ltx_width");
+    sizeState.height = contentsNode.getAttribute("ltx_height");
+    sizeState.sizeUnit = sizeState.actualSize.unit = contentsNode.getAttribute("units");
+    sizeState.preserveAspectRatio = contentsNode.getAttribute("aspect") === "true";
+    sizeState.actualSize.width = contentsNode.getAttribute("naturalWidth");
+    sizeState.actualSize.height = contentsNode.getAttribute("naturalHeight");
   }
   sizeState.sizeUnit = contentsNode.getAttribute("units") || wrapperNode.getAttribute("units") || wrapperNode.getAttribute("Units");
 
-  if (wrapperNode.parentNode.nodeName ==='graph') {
+  if (wrapperNode.parentNode.nodeName === "graph") {
     graphspec = wrapperNode.parentNode.firstChild;
-    sizeState.actualSize.width = graphspec.getAttribute('Width');
-    sizeState.actualSize.height = graphspec.getAttribute('Height');
-    sizeState.actualSize.unit = graphspec.getAttribute('Units');
-    unitHandler = new UnitHandler;
+    sizeState.actualSize.width = graphspec.getAttribute("Width");
+    sizeState.actualSize.height = graphspec.getAttribute("Height");
+    sizeState.sizeUnit = sizeState.actualSize.unit = graphspec.getAttribute("Units");
+    sizeState.preserveAspectRatio = graphspec.getAttribute("Aspect") === "true";
+    unitHandler = new UnitHandler(editor);
     unitHandler.initCurrentUnit(sizeState.actualSize.unit);
     sizeState.width = unitHandler.getValueAs(sizeState.actualSize.width, sizeState.sizeUnit);
     sizeState.height = unitHandler.getValueAs(sizeState.actualSize.height, sizeState.sizeUnit);
-  }
-  else {
-    if (!sizeState.width) {
-      width = contentsNode.getAttribute(widthAtt) ||
-        wrapperNode.getAttribute("width") || wrapperNode.getAttribute("Width") || wrapperNode.getAttribute(widthAtt);
-    }
-    if (!sizeState.height) {
-      height= contentsNode.getAttribute(heightAtt) ||
-        wrapperNode.getAttribute("height") || wrapperNode.getAttribute("Height") || wrapperNode.getAttribute(heightAtt);
-    }
-
-    // For existing nodes, we have the actual sizes in the document.
-    if (!sizeState.actualSize.width) {
-      sizeState.actualSize.width = contentsNode.getAttribute('naturalWidth') || wrapperNode.getAttribute('natualWidth');
-    }
-    if (!sizeState.actualSize.height) {
-      sizeState.actualSize.height = contentsNode.getAttribute('naturalHeight') || wrapperNode.getAttribute('natualHeight');
-    }
   }
   sizeState.update(dg);
   setHasNaturalSize();
@@ -320,7 +310,7 @@ function checkMenuItem( item, checkit ) {
 function initUnitHandler()
 {
   // this is so some functions can use setFrameAttributes without having called initFrameTab.
-  frameUnitHandler = new UnitHandler();
+  frameUnitHandler = new UnitHandler(editor);
 }
 
 function initFrameTab(dg, element, newElement,  contentsElement)
@@ -1045,14 +1035,6 @@ function setWidthAndHeight(width, height, event)
   sizeState.width = width;
   sizeState.height = height;
   sizeState.computeConstraints();
-
-
-  // Dg.frameWidthInput.value = width;
-  // Dg.frameHeightInput.value = height;
-  // if (Dg.autoHeightCheck.checked && !Dg.autoWidthCheck.checked)
-  //   constrainProportions( "frameWidthInput", "frameHeightInput", event );
-  // else if (!Dg.autoHeightCheck.checked && Dg.autoWidthCheck.checked)
-  //   constrainProportions( "frameHeightInput", "frameWidthInput", event );
 }
 
 function setContentSize(width, height)
@@ -1145,7 +1127,7 @@ this is the case for images in an msiframe
   var rot;
   // if (frameNode.tagName == "msiframe") dimsonly = true;
   setTextValueAttributes();
-  metrics.unit = frameUnitHandler.currentUnit;
+  metrics.unit = sizeState.sizeUnit;
   if (metrics.unit == "px") // switch to pts
   {
     var el = {value: "pt"};
@@ -1154,9 +1136,9 @@ this is the case for images in an msiframe
   }
 
   msiEditorEnsureElementAttribute(frameNode, "units",metrics.unit, editor);
-  if (contentsNode) {
-    msiEditorEnsureElementAttribute(contentsNode, "units",metrics.unit, editor);
-  }
+  // if (contentsNode) {
+  //   msiEditorEnsureElementAttribute(contentsNode, "units",metrics.unit, editor);
+  // }
 
   msiEditorEnsureElementAttribute(contentsNode, "msi_resize","true", editor);
   if (Dg.rotationList) {
@@ -1223,35 +1205,9 @@ this is the case for images in an msiframe
   else {
     msiEditorEnsureElementAttribute(frameNode, "padding", getCompositeMeasurement("padding",metrics.unit, false), editor);
   }
-  if (Dg.autoHeightCheck && Dg.autoHeightCheck.checked)
-  {
-    // if (gFrameModeImage){
-      msiEditorEnsureElementAttribute(contentsNode, heightAtt, null, editor);
-    // }
-    // else{
-    //   msiEditorEnsureElementAttribute(contentsNode, heightAtt, "0", editor);
-    // }
-  }
-  else{
-    if (Dg.frameHeightInput)
-      msiEditorEnsureElementAttribute(contentsNode, heightAtt, Dg.frameHeightInput.value, editor);
-  }
-  if ((Dg.autoWidthCheck && Dg.autoWidthCheck.getAttribute("style")!=="visibility: hidden;") && Dg.autoWidthCheck.checked)
-  {
-    // if (gFrameModeImage){
-      msiEditorEnsureElementAttribute(contentsNode, widthAtt, null, editor);
-    // }
-    // else{
-    //   msiEditorEnsureElementAttribute(contentsNode, widthAtt, "0", editor);
-    //   contentsNode.setAttribute(widthAtt,0);
-    // }
-  }
-  else{
-    if (Dg.frameWidthInput) {
-      msiEditorEnsureElementAttribute(contentsNode, widthAtt, Dg.frameWidthInput.value, editor);
-      contentsNode.setAttribute(widthAtt,Dg.frameWidthInput.value);
-    }
-  }
+  msiEditorEnsureElementAttribute(contentsNode, heightAtt, sizeState.height, editor);
+  msiEditorEnsureElementAttribute(contentsNode, widthAtt, sizeState.width, editor);
+
   var posItem = null;
   var posid;
   if (isEnabled(document.getElementById("locationList")))
@@ -1277,7 +1233,7 @@ this is the case for images in an msiframe
   setStyleAttributeOnNode(frameNode, "text-align", Dg.textAlignment.value, editor);
 //RWA - The display attribute should be set by a CSS rule rather than on the individual item's style. (So that, for instance,
 //      the override for graphics with captions will take effect. See baselatex.css.)
-  if (posid && posid !=='inline') {
+  if (posid && posid !== "inline") {
      msiRequirePackage(Dg.editorElement, "boxedminipage", "");
   }
   else
@@ -1346,7 +1302,7 @@ this is the case for images in an msiframe
     //   locationParam = "none";
     //   needsWrapfig = true;
     // }
-    var needsWrapfig = true;
+    needsWrapfig = true;
     if (locationParam === "right" || locationParam === "inside")
        setStyleAttributeOnNode(frameNode, "float", "right", editor);
     else if (locationParam === "left" || locationParam === "outside")
@@ -1395,31 +1351,13 @@ this is the case for images in an msiframe
     style = getCompositeMeasurement("border","px", true);
     setStyleAttributeOnNode(frameNode, "border-width", style, editor);
   }
-  if (contentsNode.hasAttribute(heightAtt) && Number(contentsNode.getAttribute(heightAtt))!== 0 ) {
-    setStyleAttributeOnNode(contentsNode, "height", frameUnitHandler.getValueAs(contentsNode.getAttribute(heightAtt),"px") + "px", editor);
-  }
-  else {
-    removeStyleAttributeFamilyOnNode(contentsNode, "height", editor);
-  }
-  // if (frameNode.hasAttribute(heightAtt) && Number(frameNode.getAttribute(heightAtt))!== 0 ) {
-  if ( document.getElementById("autoHeight") && !(document.getElementById("autoHeight").checked) && Number(frameNode.getAttribute(heightAtt))!== 0 ) {
-    setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(frameNode.getAttribute(heightAtt),"px") + "px", editor);
-  }
-  else {
-    removeStyleAttributeFamilyOnNode(frameNode, "height", editor);
-  }
-  if (contentsNode.hasAttribute(widthAtt) && Number(contentsNode.getAttribute(widthAtt))!== 0) {
-    setStyleAttributeOnNode(contentsNode, "width", frameUnitHandler.getValueAs(contentsNode.getAttribute(widthAtt),"px") + "px", editor);
-  }
-  else {
-    removeStyleAttributeFamilyOnNode(contentsNode, "width", editor);
-  }
-  if (frameNode.hasAttribute(widthAtt) && Number(frameNode.getAttribute(widthAtt))!== 0) {
-    setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(frameNode.getAttribute(widthAtt),"px") + "px", editor);
-  }
-  else {
-    removeStyleAttributeFamilyOnNode(frameNode, "width", editor);
-  }
+
+  setStyleAttributeOnNode(contentsNode, "height", frameUnitHandler.getValueAs(sizeState.height,"px") + "px", editor);
+  setStyleAttributeOnNode(contentsNode, "width", frameUnitHandler.getValueAs(sizeState.width,"px") + "px", editor);
+  contentsNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
+  frameNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
+
+
   if (style !== "0px")
     setStyleAttributeOnNode( frameNode, "border-style", "solid", editor );
 }
@@ -1451,7 +1389,7 @@ function getInlineOffset(whichUnit)
 {
   if (!whichUnit)
     whichUnit = frameUnitHandler.currentUnit;
-  if (Dg.locationList.value === 'inline')
+  if (Dg.locationList.value === "inline")
     return frameUnitHandler.getValueAs(Dg.frameInlineOffsetInput.value, whichUnit);
   return 0;
 }
@@ -1472,7 +1410,7 @@ function setDisabled(checkbox,id)
 
 function checkAutoDimens(radio, textboxId)
 {
-  if (radio.id === 'autoWidth') {
+  if (radio.id === "autoWidth") {
     sizeState.autoWidth = radio.selected;
     sizeState.autoHeight = !radio.selected;
     sizeState.enabledState.width = !radio.selected;
@@ -1539,7 +1477,6 @@ function constrainProportions( srcID, destID, event )
 
 function doDimensionEnabling()
 {
-  return;
   // Enabled only if "Custom" is selected, or actualsize is not enabled
   var enable = (document.getElementById("custom").selected) || !hasNaturalSize;
   if (enable) {
