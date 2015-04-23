@@ -6307,6 +6307,7 @@ function msiInsertRules(dialogData, editorElement)
   var editor = msiGetEditor(editorElement);
   var unitHandler = new UnitHandler(editor);
 	unitHandler.initCurrentUnit(dialogData.height.units);
+
   var node = editor.document.createElement('msirule');
   var styleStr = "";
   var colorStr;
