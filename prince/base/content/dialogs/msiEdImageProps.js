@@ -41,6 +41,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include ../productname.inc
+///
 
 var gDialog;
 var gEditorElement;
@@ -192,7 +193,7 @@ function Startup()
     return;
   }
 
-  unitHandler = new UnitHandler();
+  unitHandler = new UnitHandler(gEditor);
 
   var existingImage = false;
 
@@ -555,7 +556,7 @@ function InitImage()
   var height = 0;
   var pixelWidth = 0;
   var pixelHeight = 0;
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
 
   loadDefaultsFromPrefs();
 
@@ -569,7 +570,7 @@ function InitImage()
     if (imageElement.hasAttribute("units"))
     {
       var unit = imageElement.getAttribute("units");
-      unitHandler.setCurrentUnit(unit);
+      unitHandler.initCurrentUnit(unit);
       gDialog.frameUnitMenulist.value = unit;
     }
     if (imageElement.hasAttribute(widthAtt))
@@ -1307,7 +1308,7 @@ function forceIsImport(bImport)
 
 function PreviewImageLoaded()
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
 
   if (gDialog.PreviewImage)
   {
@@ -1404,7 +1405,7 @@ function isVideoSource(srcFile)
 
 function LoadPreviewImage(importName, srcName)
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
   if (!importName || !srcName) return;
   var imageSrc;
   var importSrc;
@@ -1498,7 +1499,7 @@ function adjustObjectForFileType(imageNode, extension)
 
 function setActualOrDefaultSize()
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
   var prefStr = "";
   var bUseDefaultWidth, bUseDefaultHeight;
   var width, height;
@@ -1595,7 +1596,7 @@ function getExtension(aFilename)
 
 function readTotalExtraWidth(unit)
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
   var totWidth = 0;
 //  totWidth += 2* unitHandler.getValueAs(Number(gDialog.marginInput.left.value), "px");
   totWidth += 2 * unitHandler.getValueAs(Number(gDialog.borderInput.left.value), "px");
@@ -1605,7 +1606,7 @@ function readTotalExtraWidth(unit)
 
 function readTotalExtraHeight(unit)
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
   var totHeight = 0;
 //  totHeight += 2 * unitHandler.getValueAs(Number(gDialog.marginInput.top.value), "px");
   totHeight += 2 * unitHandler.getValueAs(Number(gDialog.borderInput.left.value), "px");
@@ -1740,7 +1741,7 @@ function ValidateImage()
 
 function imageLoaded(event)
 {
-  var unitHandler = new UnitHandler();
+  var unitHandler = new UnitHandler(gEditor);
   try {
     var isSVGFile = /\.svg$/.test(event.data);
     if (isSVGFile)
