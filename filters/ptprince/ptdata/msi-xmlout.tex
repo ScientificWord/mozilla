@@ -439,11 +439,11 @@
           \msitag{^^0a}%
           \msiopentag{address}{<address>}%
           \msiopentag{bodyText}{<bodyText>}%
-          \def\\{\par}%
+          %\def\\{\par}%
           \ignorespaces}
           
    \def\and{\msiclosetag{address}{</address>}%
-            \msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
+            \msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}\msiopentag{bodyText}{<bodyText>}}%
    \msitag{^^0a}%
    \msiopentag{author}{<author>}#1\msiclosetag{address}{</address>}\msiclosetag{author}{</author>}%
   \endgroup
@@ -1960,8 +1960,16 @@
 \def\@end@footnote{\msiclosetag{note}{</note>}\@end@notewrapper}
 \def\@innote{\bgroup\aftergroup\@end@footnote}
 
-%%<note type="#2">
+
+\newif\ifmathfootnote
+\mathfootnotefalse
+
 \def\footnote{%
+  \mathfootnotefalse
+  \ifmmode
+       \string\msipassthru\char`\{%
+       \mathfootnotetrue
+  \fi
   \@ifnextchar[{\footnotex}{\footnotea}}
 
 
@@ -1973,16 +1981,18 @@
   \afterassignment\@footnoteb
   \let\junk}
 
+
 \def\footnotea{%
-    \msi@br\@start@notewrapper
-    \msiopentag{note}{<note type="footnote">}%
-    \msiopentag{bodyText}{<bodyText>}%
-    % Next couple lines read the brace following \footnote and then does \footnoteb
-    \afterassignment\@footnoteb
-    \let\junk}
+  \msi@br\@start@notewrapper
+  \msiopentag{note}{<note type="footnote">}%
+  \msiopentag{bodyText}{<bodyText>}%
+  % Next couple lines read the brace following \footnote and then does \footnoteb
+  \afterassignment\@footnoteb
+  \let\junk}
 
 \def\@footnoteb{%
-    \bgroup
+    \begingroup
+    \msihmode
     \def\par{\msiclosetag{bodyText}{</bodyText>}\msiopentag{bodyText}{<bodyText>}}
     \aftergroup\@footnotec}
 
@@ -2004,7 +2014,10 @@
 \def\@footnotec{%
     \msiclosetag{bodyText}{</bodyText>}%
     \msiclosetag{note}{</note>}%
-    \@end@notewrapper}
+    \@end@notewrapper
+    \ifmathfootnote
+      \char`\}%
+    \fi}
 
 \def\out@CustomNoteA[#1]#2#3{%
     \msiopentag{notewrapper}{<notewrapper xmlns="http://www.w3.org/1999/xhtml">}%
