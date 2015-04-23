@@ -113,7 +113,6 @@ msiEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRo
   return res;
 }
 
-
 /* readonly attribute double cssPixelsPerInch; */
 NS_IMETHODIMP msiEditor::GetCssPixelsPerInch(double *_retval)
 {

@@ -9,7 +9,6 @@
 
 <xsl:include href="latex.xsl"/>
 
-
 <xsl:template match="html:msibr">
     <xsl:text>~\\</xsl:text>
     <xsl:value-of select="$newline"/>
