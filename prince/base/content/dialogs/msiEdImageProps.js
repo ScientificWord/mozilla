@@ -601,19 +601,47 @@ function InitImage()
       heightStr = heightStr.replace(re,"");
       pixelHeight = Math.round(Number(heightStr));
     }
+    else return;
+    // if (imageElement.hasAttribute(widthAtt))
+    // {
+    //   widthStr = imageElement.getAttribute(widthAtt);
+    //   width = unitHandler.getValueFromString(widthStr);
+    //   pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
+    //   width = unitRound(width);
+    // }
+    // if (!width)
+    // {
+    //   widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
+    //   width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
+    //   widthStr = widthStr.replace(re,"");
+    //   pixelWidth = Math.round(Number(widthStr));
+    // }
+    // if (imageElement.hasAttribute(heightAtt))
+    // {
+    //   heightStr = imageElement.getAttribute(heightAtt);
+    //   height = unitHandler.getValueFromString(heightStr);
+    //   pixelHeight = Math.round(unitHandler.getValueAs(height,"px"));
+    //   height = unitRound(height);
+    // }
+    // if (!height)
+    // {
+    //   heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
+    //   height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
+    //   heightStr = heightStr.replace(re,"");
+    //   pixelHeight = Math.round(Number(heightStr));
+    // }
     if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
     {
       gPreviewImageNeeded = true;
-      var natWidth = imageElement.getAttribute("naturalWidth");
-      var natHeight = imageElement.getAttribute("naturalHeight");
-      if (natWidth)
-        gActualWidth = gConstrainWidth = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(natWidth), "px"));
-      if (!gActualWidth)
+      // The next two lines were done in setting up the frame tab
+      // sizeState.actualSize.width = imageElement.getAttribute("naturalWidth");
+      // sizeState.actualSize.height = imageElement.getAttribute("naturalHeight");
+      gActualWidth = gConstrainWidth = Math.round(unitHandler.getValueAs(sizeState.width, "px"));
+      if (!gActualWidth) {
         gActualWidth  = gConstrainWidth = imageElement.offsetWidth - Math.round(readTotalExtraWidth("px"));
-      if (natHeight)
-        gActualHeight = gConstrainHeight = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(natHeight), "px"));
-      if (!gActualHeight)
+        gActualHeight = gConstrainHeight = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(sizeState.actualSize.height+ sizeState.sizeUnit), "px"));
         gActualHeight = gConstrainHeight = imageElement.offsetHeight - Math.round(readTotalExtraHeight("px"));
+      }
     }
   }
   else  // existing image
@@ -645,14 +673,13 @@ function InitImage()
 
   }
 
-  if ((width > 0) || (height > 0))
-    setWidthAndHeight(width, height, null);
-  else if ((gActualHeight > 0)||(gActualWidth > 0))
-    setWidthAndHeight(unitRound(unitHandler.getValueOf(gActualWidth,"px")),
-                      unitRound(unitHandler.getValueOf(gActualHeight,"px")), null);
-  else
-    setWidthAndHeight(unitRound(unitHandler.getValueOf(gDefaultWidth,"pt")),
-                      unitRound(unitHandler.getValueOf(gDefaultHeight,"pt")), null);
+  setWidthAndHeight(sizeState.width, sizeState.height, null);
+  // else if ((gActualHeight > 0)||(gActualWidth > 0))
+  //   setWidthAndHeight(unitRound(unitHandler.getValueOf(gActualWidth,"px")),
+  //                     unitRound(unitHandler.getValueOf(gActualHeight,"px")), null);
+  // else
+  //   setWidthAndHeight(unitRound(unitHandler.getValueOf(gDefaultWidth,"pt")),
+  //                     unitRound(unitHandler.getValueOf(gDefaultHeight,"pt")), null);
 
   LoadPreviewImage(null);
   // caption and key info comes from frameOverlay
@@ -1632,7 +1659,7 @@ function doOverallEnabling()
 
   SetElementEnabled(gDialog.OkButton, enabled);
   SetElementEnabledById("AdvancedEditButton1", enabled);
-  doDimensionEnabling();
+  // doDimensionEnabling();
 }
 
 function shouldShowErrorMessage()
@@ -1864,6 +1891,9 @@ function onAccept()
       {
         imageElement.removeAttribute("isSVG");
       }
+      if (/\.eps$/.test(src)) {
+        msiRequirePackage(gEditorElement,"epstopdf","");
+      }
       imageElement.setAttribute("src", src);
       imageElement.setAttribute("data", src);
       if (bHasCaption)  // we need to set up the wrapper element
@@ -1918,8 +1948,6 @@ function onAccept()
       adjustObjectForFileType(imageElement, extension);
 
       msiEnsureElementPackage(imageElement,"graphics",null);
-      if (extension === "eps") msiEnsureElementPackage(imageElement, "epstopdf", null);
-      // BBM: add package for svg
       if (gVideo)
       {
         setVideoSettingsToElement(imageElement, null);

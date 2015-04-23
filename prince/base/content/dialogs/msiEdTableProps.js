@@ -459,8 +459,6 @@ function translateSelectionTypeString(selTypeStr)
 function Startup()
 {
 
-
-
   gActiveEditorElement = msiGetParentEditorElementForDialog(window);
   gActiveEditor = msiGetTableEditor(gActiveEditorElement);
   frameUnitHandler = new UnitHandler(gActiveEditor);

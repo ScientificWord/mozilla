@@ -7,7 +7,6 @@ function UnitHandler( editor )
   var pixelsPerInch;
   if (editor) pixelsPerInch =  editor.cssPixelsPerInch;
   if (!pixelsPerInch) pixelsPerInch = 96;
-
   this.units =  // in mm
     {mm: {size: 1, increment: .1, places: 1 },
      cm: {size: 10, increment: .1, places: 2 },
