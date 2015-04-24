@@ -30,6 +30,7 @@ OR
 #include "MuP2Tree.h"
 #include "CmpTypes.h"
 #include "strutils.h"
+#include "dumputils.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -43,6 +44,11 @@ MuPAD2Tree::~MuPAD2Tree()
 
 MNODE* MuPAD2Tree::MuPADStr2Tree(const char* src)
 {
+
+  #ifdef DEBUG
+     JBM::JBMLine("\n===== MuPADStr2Tree =====\n");
+     JBM::JBMLine(src);
+  #endif
   MNODE *rv = NULL;
 
   if (src && *src) {
@@ -55,6 +61,10 @@ MNODE* MuPAD2Tree::MuPADStr2Tree(const char* src)
     rv = DoPrecedenceBinds(rv);
   }
   //JBM::DumpTList(rv,0);
+    #ifdef DEBUG
+     JBM::JBMLine("\n===== End MuPADStr2Tree =====\n");
+     JBM::DumpTList(rv,0);
+  #endif
   return rv;
 }
 
@@ -151,9 +161,11 @@ MNODE *MuPAD2Tree::GetElementList(const char *z_src,
           bytes_spanned += 3 * (n_primes - 1);
 
           // Extract the part we want from the "arglist" created
-          MNODE *bucket = args->first_kid;
-          MNODE *func = bucket->first_kid;
-          bucket->first_kid = NULL;
+          MNODE *varbucket = args->first_kid;
+          MNODE *funcbucket = varbucket->next;
+          MNODE *var  = varbucket->first_kid;
+          MNODE *func = funcbucket->first_kid;
+          varbucket->first_kid = NULL;
           DisposeTList(args);
 
           strcpy(func->src_tok, "function");
