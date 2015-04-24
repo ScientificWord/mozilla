@@ -233,6 +233,12 @@ char *STree2MML::BackTranslate(SEMANTICS_NODE* semantic_tree,
                                DefStore* ds, 
                                MathResult* mr)
 {
+
+  #ifdef DEBUG
+     JBM::JBMLine("\n===== BackTranslate =====\n");
+     JBM::DumpSList(semantic_tree);
+  #endif
+
   char *zh_rv = NULL;
 
   output_markup = output_markup_ID;
@@ -244,9 +250,6 @@ char *STree2MML::BackTranslate(SEMANTICS_NODE* semantic_tree,
 
   SetUserPrefs(ds);
 
-// #ifdef DEBUG
-//   JBM::DumpSList(semantic_tree);
-// #endif
 
   int error_code = 0;
   int nodes_made, terms_made;
@@ -266,7 +269,10 @@ char *STree2MML::BackTranslate(SEMANTICS_NODE* semantic_tree,
     zh_rv = TNodeToStr(tree, up_mml_prefix, 0);
     DisposeTNode(tree);
   }
-
+  #ifdef DEBUG
+     JBM::JBMLine("\n===== End BackTranslate =====\n");
+     JBM::JBMLine(zh_rv);
+  #endif
   return zh_rv;
 }
 
