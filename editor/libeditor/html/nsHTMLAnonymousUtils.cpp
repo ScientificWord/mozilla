@@ -159,7 +159,7 @@ nsHTMLEditor::CreateAnonymousElement(const nsAString & aTag, nsIDOMNode *  aPare
     newContent->UnbindFromTree();
     return res;
   }
-  
+
   // display the element
   ps->RecreateFramesFor(newContent);
 
@@ -221,7 +221,7 @@ nsHTMLEditor::DeleteRefToAnonymousNode(nsIDOMElement* aElement,
       content->UnbindFromTree();
     }
   }
-}  
+}
 
 //Utility used in CheckSelectionStateForAnonymousButtons below
 nsCOMPtr<nsIDOMElement> nsHTMLEditor::FindResizableElement(nsCOMPtr<nsIDOMElement> inElement)
@@ -303,7 +303,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   {
     res = tempElement->GetAttribute(NS_LITERAL_STRING("msi_resize"), strResizeAttr);
     if (NS_FAILED(res)) break;
-    if (strResizeAttr.EqualsLiteral("true")) 
+    if (strResizeAttr.EqualsLiteral("true"))
     {
       resizeRequested = PR_TRUE;
       foundResizeElement = tempElement;
@@ -315,7 +315,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     tempElement = do_QueryInterface(node);
     if (!tempElement) break;
   }
-  
+
   if (!resizeRequested)
   {
     foundResizeElement = FindResizableElement(focusElement);   //if focusElement is a good suspect, this checks its children
@@ -389,7 +389,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     nsAutoString resizedTagName;
     res = mResizedObject->GetTagName(resizedTagName);
     if (NS_FAILED(res)) return res;
-      
+
     if (resizedTagName.EqualsLiteral("plotwrapper"))
     {
       res = SetFocusedPlot(nsnull);
@@ -420,7 +420,9 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
 
   if (mIsObjectResizingEnabled && focusElement &&
       IsModifiableNode(focusElement)) {
-    if (nsEditProperty::img == focusTagAtom || nsEditProperty::plotwrapper == focusTagAtom || resizeRequested)
+    if (nsEditProperty::img == focusTagAtom ||
+      nsEditProperty::object == focusTagAtom ||
+      nsEditProperty::plotwrapper == focusTagAtom || resizeRequested)
       mResizedObjectIsAnImage = PR_TRUE;
     if (refreshResizing)
       res = RefreshResizers();
@@ -428,7 +430,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
       if (focusTagAtom == nsEditProperty::plotwrapper)
         res = SetFocusedPlot(focusElement);
 			if (mResizedObject)
-			{ 
+			{
 				res = HideResizers();
 			}
       res = ShowResizers(focusElement);
@@ -520,7 +522,7 @@ nsHTMLEditor::GetPositionAndDimensions(nsIDOMElement * aElement,
   else {
     mResizedObjectIsAbsolutelyPositioned = PR_FALSE;
     nsCOMPtr<nsIDOMNSHTMLElement> nsElement = do_QueryInterface(aElement);
-    if (!nsElement) 
+    if (!nsElement)
     {
       // BBM hack: if our element is a XUL element, we put an html element around it with the same size
       nsCOMPtr<nsIDOMNode> el;
