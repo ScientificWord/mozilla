@@ -235,6 +235,9 @@ function Startup()
              wrapperElement.setAttribute("frametype", "image");
              wrapperElement.appendChild(imageElement);
          }
+         else {
+          wrapperElement = selectedElement.parentNode;
+         }
       }
     }
 
@@ -575,33 +578,29 @@ function InitImage()
     }
     if (imageElement.hasAttribute(widthAtt))
     {
-      widthStr = imageElement.getAttribute(widthAtt);
-      width = unitHandler.getValueFromString(widthStr);
-      pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
-      width = unitRound(width);
+      width = imageElement.getAttribute(widthAtt);
+      // pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
+      // width = unitRound(width);
     }
-    if (!width)
-    {
-      widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
-      width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
-      widthStr = widthStr.replace(re,"");
-      pixelWidth = Math.round(Number(widthStr));
-    }
+    // if (!width)
+    // {
+    //   widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
+    //   width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
+    //   widthStr = widthStr.replace(re,"");
+    //   pixelWidth = Math.round(Number(widthStr));
+    // }
     if (imageElement.hasAttribute(heightAtt))
     {
-      heightStr = imageElement.getAttribute(heightAtt);
-      height = unitHandler.getValueFromString(heightStr);
-      pixelHeight = Math.round(unitHandler.getValueAs(height,"px"));
-      height = unitRound(height);
+      height = imageElement.getAttribute(heightAtt);
     }
-    if (!height)
-    {
-      heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
-      height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
-      heightStr = heightStr.replace(re,"");
-      pixelHeight = Math.round(Number(heightStr));
-    }
-    else return;
+    //  if (!height)
+    // {
+    //   heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
+    //   height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
+    //   heightStr = heightStr.replace(re,"");
+    //   pixelHeight = Math.round(Number(heightStr));
+    // }
+    // else return;
     // if (imageElement.hasAttribute(widthAtt))
     // {
     //   widthStr = imageElement.getAttribute(widthAtt);
@@ -1891,43 +1890,44 @@ function onAccept()
       {
         imageElement.removeAttribute("isSVG");
       }
-      if (/\.eps$/.test(src)) {
+      if (/\.eps$/.test(gOriginalSrcUrl)) {
         msiRequirePackage(gEditorElement,"epstopdf","");
       }
       imageElement.setAttribute("src", src);
       imageElement.setAttribute("data", src);
-      if (bHasCaption)  // we need to set up the wrapper element
-      {
-        if (wrapperElement == null)
-          wrapperElement = gEditor.createElementWithDefaults("msiframe");
-        //wrapperElement.setAttribute("frametype", "image");
+      if (wrapperElement == null) {
+        wrapperElement = gEditor.createElementWithDefaults("msiframe");
+      }
+
+      //wrapperElement.setAttribute("frametype", "image");
+      if (bHasCaption) {
         wrapperElement.appendChild(gCaptionNode);
         msiEditorEnsureElementAttribute(wrapperElement, "captionloc", captionloc, null);
-        // if (gDialog.wrapOptionRadioGroup.value != "full"){
-        //   msiEnsureElementPackage(wrapperElement,"wrapfig",null);
-        // }
-        if (gInsertNewImage)
+      }
+      // if (gDialog.wrapOptionRadioGroup.value != "full"){
+      //   msiEnsureElementPackage(wrapperElement,"wrapfig",null);
+      // }
+      if (gInsertNewImage)
+        wrapperElement.appendChild(imageElement);
+      else
+      {
+        // If we are revising an image element and adding a wrapper element where there wasn't one before, we
+        // need to remove the margin, padding, border, background color style attributes from the image.
+        var imageParent = imageElement.parentNode;
+        var style;
+        if (imageParent.tagName !== "msiframe") {
+          gEditor.deleteNode(imageElement);
           wrapperElement.appendChild(imageElement);
-        else
-        {
-          // If we are revising an image element and adding a wrapper element where there wasn't one before, we
-          // need to remove the margin, padding, border, background color style attributes from the image.
-          var imageParent = imageElement.parentNode;
-          var style;
-          if (imageParent.tagName !== "msiframe") {
-            gEditor.deleteNode(imageElement);
-            wrapperElement.appendChild(imageElement);
-            style = imageElement.getAttribute("style");
-            style = style.replace(/margin[^;]+;/,'');
-            style = style.replace(/border[^;]+;/,'');
-            style = style.replace(/background[^;]+;/,'');
-            style = style.replace(/padding[^;]+;/,'');
-            style = style.replace(/caption-side[^;]+;/,'');
-            if (captionloc != 'none')
-              style = style + 'caption-side: ' + captionloc + ';';
-            imageElement.setAttribute("style", style);
-            gEditor.insertNode(wrapperElement, imageParent, posInParent);
-          }
+          style = imageElement.getAttribute("style");
+          style = style.replace(/margin[^;]+;/,'');
+          style = style.replace(/border[^;]+;/,'');
+          style = style.replace(/background[^;]+;/,'');
+          style = style.replace(/padding[^;]+;/,'');
+          style = style.replace(/caption-side[^;]+;/,'');
+          if (captionloc != 'none')
+            style = style + 'caption-side: ' + captionloc + ';';
+          imageElement.setAttribute("style", style);
+          gEditor.insertNode(wrapperElement, imageParent, posInParent);
         }
       }
       // if (wrapperElement && wrapperElement.parentNode && wrapperElement != imageElement && !bHasCaption)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
@@ -1969,13 +1969,13 @@ function onAccept()
       // if (!gDialog.isImport)
       //   msiEditorEnsureElementAttribute(imageElement, "byReference", "true", null);
 
-      setFrameAttributes(wrapperElement||imageElement, imageElement, null, bHasCaption);
+      setFrameAttributes(wrapperElement, imageElement, null, bHasCaption);
       if (bHasCaption) {
         if (captionloc && captionloc !== 'none') setStyleAttributeOnNode(wrapperElement||imageElement, "caption-side", captionloc, gEditor);
        // if there is no frame, globalElement == globalImage
       }
 
-      msiSetGraphicFrameAttrsFromGraphic(imageElement, null);  //unless we first end the transaction, this seems to have trouble!
+      //msiSetGraphicFrameAttrsFromGraphic(imageElement, null);  //unless we first end the transaction, this seems to have trouble!
 
       if (gVideo)
       {

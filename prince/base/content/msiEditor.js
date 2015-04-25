@@ -509,13 +509,8 @@ var msiResizeListener =
     // ltx_height
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
-
     var unitHandler = new UnitHandler(editor);
-    var frame = anElement.parentNode;
-    var dHeight = newHeight - oldHeight;
-    var dWidth = newWidth - oldWidth;
-    var frameWidth, frameHeight;
-;
+    var frame = anElement.parentNode;;
     var theUnits = anElement.getAttribute("units") || frame.getAttribute("units");
     var pixelsPerUnit;
     var elemWidth = anElement.getAttribute("ltx_width");
@@ -532,22 +527,19 @@ var msiResizeListener =
     if (frame.nodeName === 'msiframe') {
       theUnits = frame.getAttribute("units");
       unitHandler.initCurrentUnit(theUnits);
-      frame.setAttribute('width',
-        parseFloat(frame.getAttribute('width')) + parseFloat(unitHandler.getValueAs( dWidth, theUnits)));
-      frame.setAttribute('height',
-        parseFloat(frame.getAttribute('height')) + parseFloat(unitHandler.getValueAs( dHeight, theUnits)));
-      frameWidth = getStyleAttributeOnNode(frame, 'width', editor);
-      setStyleAttributeOnNode(frame, 'width', parseFloat(frameWidth) + parseFloat(unitHandler.getValueAs( dWidth, theUnits)));
-      frameHeight = getStyleAttributeOnNode(frame, 'height', editor);
-      setStyleAttributeOnNode(frame, 'height', parseFloat(frameHeight) + parseFloat(unitHandler.getValueAs( dHeight, theUnits)));
+      frame.setAttribute('width', unitHandler.getValueOf(newWidth, 'px'));
+      setStyleAttributeOnNode(frame, 'width', newWidth +'px');
+      frame.setAttribute('height', unitHandler.getValueOf(newHeight, 'px'));
+      setStyleAttributeOnNode(frame, 'height', newHeight +'px');
     }
     else {
       if (frame.nodeName === 'graph') {
         frame = frame.firstChild; // the graphspec
         theUnits = frame.getAttribute('Units');
         frame.setAttribute('Width',  unitHandler.getValueAs(newWidth, theUnits));
-        frame.setAttribute('Height', unitHandler.getValueAs(newWidth, theUnits));
-        getStyleAttributeOnNode(frame, 'width', editor);
+        frame.setAttribute('Height', unitHandler.getValueAs(newHeight, theUnits));
+        setStyleAttributeOnNode(frame, 'width', newWidth +'px');
+        setStyleAttributeOnNode(frame, 'height', newHeight +'px');
       }
     }
 
@@ -10259,35 +10251,37 @@ function msiSetGraphicFrameAttrsFromGraphic(imageObj, editor)
   if (!frameObj)
     return;
 
-  var theUnits = imageObj.getAttribute("units");
+  var theUnits = imageObj.getAttribute("units")||frameObj.getAttribute("units")||"px";
   var unitHandler = new UnitHandler(editor);
   unitHandler.initCurrentUnit(theUnits);
   var width = Number(imageObj.getAttribute("imageWidth"));
-  var borderWidth = Number(imageObj.getAttribute("borderw"));
+  if (!width) {
+    width = unitHandler.getValueOf(parseFloat(getStyleAttributeOnNode(imageObj, "width")), "px");
+  }
+  var borderWidth = Number(frameObj.getAttribute("borderw"));
   if (!borderWidth || isNaN(borderWidth))
     borderWidth = 0;
-  var paddingWidth = Number(imageObj.getAttribute("padding"));
+  var paddingWidth = Number(frameObj.getAttribute("padding"));
   if (!paddingWidth || isNaN(paddingWidth))
     paddingWidth = 0;
 
   if (width && !isNaN(width))
   {
     width += 2 * borderWidth + 2 * paddingWidth;
-    msiEditorEnsureElementAttribute(frameObj, "width", String(width), editor);
-    msiEnsureElementCSSProperty(frameObj, "width", String(unitHandler.getValueAs(width, "px")), editor);
-    msiEditorEnsureElementAttribute(frameObj, "units", theUnits, editor);
+    frameObj.setAttribute("width", String(width));
+    setStyleAttributeOnNode(frameObj, "width", String(unitHandler.getValueAs(width, "px")), editor);
+    frameObj.setAttribute("units", theUnits);
   }
   var height = Number(imageObj.getAttribute("imageHeight"));
+  if (!height) {
+    height = unitHandler.getValueOf(parseFloat(getStyleAttributeOnNode(imageObj, "height")), "px");
+  }
   if (height && !isNaN(height))
   {
     height += 2 * borderWidth + 2 * paddingWidth;
     msiEditorEnsureElementAttribute(frameObj, "height", String(height), editor);
-    msiEnsureElementCSSProperty(frameObj, "height", String(unitHandler.getValueAs(height, "px")), editor);
-    msiEditorEnsureElementAttribute(frameObj, "units", theUnits, editor);
+    setStyleAttributeOnNode(frameObj, "height", String(unitHandler.getValueAs(height, "px")), editor);
   }
-  var rotation = imageObj.getAttribute("rotation");
-  if (rotation && rotation.length)
-    msiEditorEnsureElementAttribute(frameObj, "rotation", rotation, editor);
 }
 
 

@@ -93,7 +93,7 @@
   <xsl:variable name="requiredpackages" select ="exsl:node-set($requiredpackages.tf)"/>
   <xsl:variable name="preambletexbuttons" select ="exsl:node-set($preambletexbuttons.tf)"/>
 
-  <xsl:variable name="packagelist.tf"> 
+  <xsl:variable name="packagelist.tf">
     <xsl:for-each select="$requiredpackages/*">
       <xsl:variable name="pos" select="position()"/>
 	    <xsl:variable name="currentpackage" select="@pkgname"/>
@@ -122,8 +122,8 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:variable>
- 
-  <!-- xsl:variable name="packagelist.tf"> 
+
+  <!-- xsl:variable name="packagelist.tf">
     <xsl:for-each select="$requiredpackages/*">
       <xsl:variable name="pos" select="position()"/>
 	    <xsl:variable name="currentpackage" select="@req"/>
@@ -160,7 +160,7 @@
       <!-- /xsl:if>
     </xsl:for-each>
   </xsl:variable -->
-   
+
   <xsl:variable name="packagelist" select ="exsl:node-set($packagelist.tf)"/>
 
   <xsl:variable name="compiler" select="//html:texprogram/@prog"/>
@@ -242,7 +242,7 @@
     <!--put this in only if graphicx is used, which, now, it always is-->
     <!-- <xsl:if test="$packagelist//*[@package='graphicx']">  -->
     <xsl:value-of select="$newline"/>
-    <xsl:text>\graphicspath{{../tcache/}{../gcache/}{../graphics/}}</xsl:text>
+    <xsl:text>\graphicspath{{../graphics/}{../tcache/}{../gcache/}}</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:text>\DeclareGraphicsExtensions{.pdf,.svg,.eps,.ps,.png,.jpg,.jpeg}</xsl:text>
 
@@ -314,7 +314,7 @@
           <xsl:value-of select="@paper"/>
           <xsl:text>,</xsl:text>
         </xsl:otherwise>
-        <!-- you can add any crop options you want here, separated with commas --> 
+        <!-- you can add any crop options you want here, separated with commas -->
       </xsl:choose>
       <xsl:text>center]{crop}</xsl:text>
     </xsl:if>
@@ -465,7 +465,7 @@
       <xsl:when test="@align='r'">\filleft</xsl:when>
       <xsl:when test="@align='c'">\center</xsl:when>
       <xsl:otherwise>\filright</xsl:otherwise>
-    </xsl:choose>    
+    </xsl:choose>
     <xsl:apply-templates select="html:toprule"
     />}{}{0pt}{\msi<xsl:value-of select="@level"/>}[{<xsl:apply-templates select="html:bottomrule"/>}]
   </xsl:if>

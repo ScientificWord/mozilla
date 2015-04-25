@@ -288,7 +288,7 @@
       <xsl:value-of select="$theUnit"/>}
       <xsl:if test="@padding"> \setlength\fboxsep{<xsl:value-of select="@padding"/>
         <xsl:value-of select="$theUnit"/>}</xsl:if>
-      <xsl:if test="@border-color">{\color    
+      <xsl:if test="@border-color">{\color
         <xsl:choose><xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}</xsl:when>
           <xsl:otherwise>{black}</xsl:otherwise></xsl:choose>
       </xsl:if>
@@ -373,20 +373,20 @@
     </xsl:if>
   </xsl:template>
 
- 
+
 
   <xsl:template name="getImageWidth">
     <xsl:param name="objNode"/>
     <xsl:param name="noZero" select="false"/>
     <xsl:choose>
       <xsl:when test="$objNode/@ltx_width and (number($objNode/@ltx_width) != 0)">
-        <xsl:value-of select="number($objNode/@ltx_width)"/>
+        <xsl:value-of select="number($objNode/@ltx_width)"/><xsl:value-of select="$objNode/@units"/>
       </xsl:when>
       <xsl:when test="$objNode/@ltx_height and (number($objNode/@ltx_height) != 0) and $objNode/@naturalHeight and (number($objNode/@naturalHeight) != 0) and $objNode/@naturalWidth">
         <xsl:value-of select="(number($objNode/@naturalWidth) * number($objNode/@ltx_height)) div number($objNode/@naturalHeight)"/>
       </xsl:when>
       <xsl:when test="$objNode/@width and (number($objNode/@width) != 0)">
-        <xsl:value-of select="number($objNode/@width)"/>
+        <xsl:value-of select="number($objNode/@width)"/><xsl:value-of select="$objNode/@units"/>
       </xsl:when>
       <xsl:when test="$objNode/@height and (number($objNode/@height) != 0) and $objNode/@naturalHeight and (number($objNode/@naturalHeight) != 0) and $objNode/@naturalWidth">
         <xsl:value-of select="(number($objNode/@naturalWidth) * number($objNode/@height)) div number($objNode/@naturalHeight)"/>
@@ -403,7 +403,7 @@
     <xsl:param name="noZero" select="false"/>
     <xsl:choose>
       <xsl:when test="$objNode/@ltx_height and (number($objNode/@ltx_height) != 0)">
-        <xsl:value-of select="number($objNode/@ltx_height)"/>
+        <xsl:value-of select="number($objNode/@ltx_height)"/><xsl:value-of select="$objNode/@units"/>
       </xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
@@ -480,7 +480,7 @@
       <xsl:text>{</xsl:text>
       <xsl:apply-templates/>
       <xsl:text>}</xsl:text>
-    </xsl:if>    
+    </xsl:if>
     <xsl:if test="not (@border-color or @background-color)">
       <xsl:apply-templates/>
     </xsl:if>

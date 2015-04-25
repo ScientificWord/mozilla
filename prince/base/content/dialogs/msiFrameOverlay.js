@@ -221,10 +221,11 @@ function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
   if (!wrapperNode) return;
   // Cope with different capitalization in plots.
   if (contentsNode.getAttribute("msigraph") !== "true") {
-    sizeState.width = contentsNode.getAttribute("ltx_width");
-    sizeState.height = contentsNode.getAttribute("ltx_height");
+    sizeState.width = contentsNode.getAttribute(widthAtt);
+    sizeState.height = contentsNode.getAttribute(heightAtt);
     sizeState.sizeUnit = sizeState.actualSize.unit = contentsNode.getAttribute("units");
-    sizeState.preserveAspectRatio = contentsNode.getAttribute("aspect") === "true";
+    sizeState.preserveAspectRatio = (contentsNode.getAttribute("aspect") === "true") ||
+      (wrapperNode.getAttribute("aspect") == "true");
     sizeState.actualSize.width = contentsNode.getAttribute("naturalWidth");
     sizeState.actualSize.height = contentsNode.getAttribute("naturalHeight");
   }
@@ -924,12 +925,14 @@ function locationChanged()
   var bEnableWrapfig = true;
   var bEnableFloats = false;
   var currentLocation = document.getElementById("locationList").value;
-  if (currentLocation === "floating") {
-    floatBroadcaster.removeAttribute("disabled");
-    if (Dg.floatList.selectedItem === "floatlistNone")
-      Dg.floatList.selectedItem = "ltxfloat_here";
-  } else {
-    floatBroadcaster.setAttribute("disabled", "true");
+  if (floatBroadcaster) {
+    if (currentLocation === "floating") {
+      floatBroadcaster.removeAttribute("disabled");
+      if (Dg.floatList.selectedItem === "floatlistNone")
+        Dg.floatList.selectedItem = "ltxfloat_here";
+    } else {
+      floatBroadcaster.setAttribute("disabled", "true");
+    }
   }
   if (currentLocation === "inline")
     inlineOffsetBroadcaster.removeAttribute("disabled");
@@ -1352,12 +1355,17 @@ this is the case for images in an msiframe
     setStyleAttributeOnNode(frameNode, "border-width", style, editor);
   }
 
-  setStyleAttributeOnNode(contentsNode, "height", frameUnitHandler.getValueAs(sizeState.height,"px") + "px", editor);
-  setStyleAttributeOnNode(contentsNode, "width", frameUnitHandler.getValueAs(sizeState.width,"px") + "px", editor);
+  style = "height: " + frameUnitHandler.getValueAs(sizeState.height,"px") + "px; " +
+    "width: " + frameUnitHandler.getValueAs(sizeState.width,"px") + "px;";
+  contentsNode.setAttribute("style", style);
+  setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(sizeState.width,"px") + "px", editor);
+  setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(sizeState.height,"px") + "px", editor);
+  frameNode.setAttribute("width", sizeState.width);
+  frameNode.setAttribute("height", sizeState.height);
   contentsNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
   frameNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
-  if (style !== "0px")
-    setStyleAttributeOnNode( frameNode, "border-style", "solid", editor );
+  // if (style !== "0px")
+  //   setStyleAttributeOnNode( frameNode, "border-style", "solid", editor );
 }
 
 function frameHeightChanged(input, event)
