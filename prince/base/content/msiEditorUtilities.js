@@ -154,7 +154,7 @@ function setStyleAttributeOnNode(node, att, value, editor) {
 }
 function getStyleAttributeOnNode(node, att, editor) {
   var style = node.getAttribute('style');
-  var regexp = new RegExp('\\b' + att + ':\\s*([a-zA-Z0-9])');
+  var regexp = new RegExp('\\b' + att + ':\\s*([a-zA-Z0-9\.]+)');
   var value = regexp.exec(style);
   if (value && value.length > 1) {
     return value[1];
