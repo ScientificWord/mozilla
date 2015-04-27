@@ -481,6 +481,7 @@ var msiResizeListener =
 
   onEndResizing : function(anElement, oldWidth, oldHeight, newWidth, newHeight)
   {
+    var child;
     switch(msiGetBaseNodeName(anElement))
     {
       case "object":
@@ -491,7 +492,11 @@ var msiResizeListener =
       //   this.resizePlot(anElement, oldWidth, oldHeight, newWidth, newHeight);
       //   break;
       case "msiframe":
-        this.resizeFrame(anElement, oldWidth, oldHeight, newWidth, newHeight);
+        child = getChildByTagName (anElement, 'object');
+        if (child)
+          this.resizeGraphic(child, oldWidth, oldHeight, newWidth, newHeight);
+        else
+          this.resizeFrame(anElement, oldWidth, oldHeight, newWidth, newHeight);
         break;
       case "table":
         this.resizeFrame(anElement, oldWidth, oldHeight, newWidth, newHeight);
@@ -510,7 +515,8 @@ var msiResizeListener =
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     var unitHandler = new UnitHandler(editor);
-    var frame = anElement.parentNode;;
+    var frame = anElement.parentNode;
+    var graphspec;
     var theUnits = anElement.getAttribute("units") || frame.getAttribute("units");
     var pixelsPerUnit;
     var elemWidth = anElement.getAttribute("ltx_width");
@@ -528,42 +534,58 @@ var msiResizeListener =
       theUnits = frame.getAttribute("units");
       unitHandler.initCurrentUnit(theUnits);
       frame.setAttribute('width', unitHandler.getValueOf(newWidth, 'px'));
-      setStyleAttributeOnNode(frame, 'width', newWidth +'px');
+      // setStyleAttributeOnNode(frame, 'width', newWidth +'px'); Not needed; done by Gecko
       frame.setAttribute('height', unitHandler.getValueOf(newHeight, 'px'));
-      setStyleAttributeOnNode(frame, 'height', newHeight +'px');
+      // setStyleAttributeOnNode(frame, 'height', newHeight +'px');
     }
-    else {
-      if (frame.nodeName === 'graph') {
-        frame = frame.firstChild; // the graphspec
-        theUnits = frame.getAttribute('Units');
-        frame.setAttribute('Width',  unitHandler.getValueAs(newWidth, theUnits));
-        frame.setAttribute('Height', unitHandler.getValueAs(newHeight, theUnits));
-        setStyleAttributeOnNode(frame, 'width', newWidth +'px');
-        setStyleAttributeOnNode(frame, 'height', newHeight +'px');
+    if (frame.parentNode.nodeName === 'graph' && frame.parentNode.firstChild.nodeName === 'graphSpec' ) {
+      graphspec = frame.parentNode.firstChild;
+      graphspec.setAttribute('Width',  unitHandler.getValueOf(newWidth, "px"));
+      graphspec.setAttribute('Height', unitHandler.getValueAs(newHeight, "px"));
+      var DOMGraph = frame.parentNode;
+      if (DOMGraph.nodeName !== "graph") {
+        return;
       }
-    }
-
+      try {
+        var unithandler = new UnitHandler(editor);
+        var units;
+  // skip preserving aspect ratio for now.
+        var graph = new Graph();
+        graph.extractGraphAttributes(DOMGraph);
+        theUnits = graph.getGraphAttribute("Units");
+        unithandler.initCurrentUnit(theUnits);
+        var newWidthInUnits = unithandler.getValueOf(newWidth, "px");
+        var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
+        graph.setGraphAttribute("Width", String(newWidthInUnits));
+        graph.setGraphAttribute("Height", String(newHeightInUnits));
+        graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
+      }
+      catch(e) {
+        dump('Error in resizeGraphic');
+      }
+    } else {
     // recompute the cached bitmap if doing so will improve things; i.e., if the src is a vector graphic.
-    var copiedSrcUrl = anElement.getAttribute('copiedSrcUrl');
+      var copiedSrcUrl = anElement.getAttribute('copiedSrcUrl');
 
-    if (copiedSrcUrl) {
-      var ext = /\....$/.exec(copiedSrcUrl) [0];
-      if (ext == '.eps' || ext == '.pdf' || ext == '.ps') { // recompute bit map image
-        var editorElement = msiGetActiveEditorElement();
-        var docUrlString = msiGetEditorURL(editorElement);
-        var url = msiURIFromString(docUrlString);
-        var baseDir = msiFileFromFileURL(url);
-        baseDir = baseDir.parent; // and now it points to the working directory
-        graphicsConverter.init(window, baseDir);
-        var decomposedRelativePath = copiedSrcUrl.split('/');
-        var graphicsDir = baseDir.clone(false);
-        while (decomposedRelativePath[0] && decomposedRelativePath[0].length > 0) {
-          graphicsDir.append(decomposedRelativePath.shift());
+      if (copiedSrcUrl) {
+        var ext = /\....$/.exec(copiedSrcUrl) [0];
+        if (ext == '.eps' || ext == '.pdf' || ext == '.ps') { // recompute bit map image
+          var editorElement = msiGetActiveEditorElement();
+          var docUrlString = msiGetEditorURL(editorElement);
+          var url = msiURIFromString(docUrlString);
+          var baseDir = msiFileFromFileURL(url);
+          baseDir = baseDir.parent; // and now it points to the working directory
+          graphicsConverter.init(window, baseDir);
+          var decomposedRelativePath = copiedSrcUrl.split('/');
+          var graphicsDir = baseDir.clone(false);
+          while (decomposedRelativePath[0] && decomposedRelativePath[0].length > 0) {
+            graphicsDir.append(decomposedRelativePath.shift());
+          }
+
+          graphicsConverter.copyAndConvert(graphicsDir, false, newWidth,
+            newHeight);
+
         }
-
-        graphicsConverter.copyAndConvert(graphicsDir, false, newWidth,
-          newHeight);
-
       }
     }
   },
@@ -8611,6 +8633,7 @@ function msiFormatPropertiesMenuString(objectStringID)
 
 function msiCleanUpPropertiesMenu(event, theMenu, menuID)
 {
+  return
   var bRightOne = (event.target == theMenu) || ( (event.target.nodeName == "menupopup") && (event.target.parentNode == theMenu) );
   if (!bRightOne)
     return;

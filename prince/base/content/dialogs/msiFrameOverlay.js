@@ -1127,8 +1127,7 @@ function setFrameAttributes(frameNode, contentsNode, editor, dimsonly)
 this is the case for images in an msiframe
 */
 {
-  var rot;
-  // if (frameNode.tagName == "msiframe") dimsonly = true;
+  var rotation;
   setTextValueAttributes();
   metrics.unit = sizeState.sizeUnit;
   if (metrics.unit == "px") // switch to pts
@@ -1145,15 +1144,15 @@ this is the case for images in an msiframe
 
   msiEditorEnsureElementAttribute(contentsNode, "msi_resize","true", editor);
   if (Dg.rotationList) {
-    rot = Dg.rotationList.value;
-    if (rot ==="rot0")
+    rotation = Dg.rotationList.value;
+    if (rotation ==="rot0")
     {
       msiEditorEnsureElementAttribute(contentsNode, "rotation", null, editor);
        //this will remove the "rotation" attribute
     }
     else
     {
-      msiEditorEnsureElementAttribute(contentsNode, "rotation", rot, editor);
+      msiEditorEnsureElementAttribute(contentsNode, "rotation", rotation, editor);
     }
   }
   msiRequirePackage(Dg.editorElement, "ragged2e", null);
