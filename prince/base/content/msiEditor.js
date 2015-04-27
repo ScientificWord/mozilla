@@ -534,9 +534,9 @@ var msiResizeListener =
       theUnits = frame.getAttribute("units");
       unitHandler.initCurrentUnit(theUnits);
       frame.setAttribute('width', unitHandler.getValueOf(newWidth, 'px'));
-      // setStyleAttributeOnNode(frame, 'width', newWidth +'px'); Not needed; done by Gecko
+      setStyleAttributeOnNode(frame, 'width', newWidth +'px');
       frame.setAttribute('height', unitHandler.getValueOf(newHeight, 'px'));
-      // setStyleAttributeOnNode(frame, 'height', newHeight +'px');
+      setStyleAttributeOnNode(frame, 'height', newHeight +'px');
     }
     if (frame.parentNode.nodeName === 'graph' && frame.parentNode.firstChild.nodeName === 'graphSpec' ) {
       graphspec = frame.parentNode.firstChild;
