@@ -161,12 +161,16 @@ MNODE *MuPAD2Tree::GetElementList(const char *z_src,
           bytes_spanned += 3 * (n_primes - 1);
 
           // Extract the part we want from the "arglist" created
-          MNODE *varbucket = args->first_kid;
-          MNODE *funcbucket = varbucket->next;
-          MNODE *var  = varbucket->first_kid;
+          MNODE *varbucket = NULL;
+          MNODE *funcbucket = NULL;
+          if (args->first_kid && args->first_kid->next){
+            varbucket = args->first_kid;
+            funcbucket = args->first_kid -> next;
+            MNODE *varblist  = varbucket->first_kid;
+          } else {
+            MNODE *funcbucket = args->first_kid;
+          }
           MNODE *func = funcbucket->first_kid;
-          varbucket->first_kid = NULL;
-          DisposeTList(args);
 
           strcpy(func->src_tok, "function");
           func->parent = new_node;
