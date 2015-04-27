@@ -311,9 +311,9 @@ function GetValuesFromDialog(){
   if (tempFrame.length > 0) {
     tempFrame = tempFrame[0];
   }
-  var f = tempFrame.cloneNode(true);
-  setFrameAttributes(f, f, editor);  // reuse code in msiFrameOverlay.
-  frame.extractFrameAttributes(f);
+  var f = tempFrame;  //.cloneNode(true);
+  setFrameAttributes(tempFrame, tempFrame.firstChild, editor);  // reuse code in msiFrameOverlay.
+  frame.extractFrameAttributes(tempFrame);
   var oldpt = plot.attributes["PlotType"];
   var newpt;
   if (dim == 3) {
