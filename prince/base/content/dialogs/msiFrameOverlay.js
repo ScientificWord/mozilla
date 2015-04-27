@@ -528,11 +528,11 @@ function initFrameTab(dg, element, newElement,  contentsElement)
 
       // if (gFrameModeImage)
       {
-        if (pos === "L")
+        if (pos === "L" || pos ==='left')
         {
           position = 1;  // left = 1, right = 2, neither = 0
         }
-        else if (pos === "R")
+        else if (pos === "R" || pos === 'right')
         {
           position = 2;
         }
