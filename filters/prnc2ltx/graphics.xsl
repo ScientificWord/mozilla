@@ -50,13 +50,11 @@
     <xsl:if test="number($imageWidth) != 0">
       <xsl:text> width=</xsl:text>
       <xsl:value-of select="$imageWidth"/>
-      <xsl:value-of select="$theUnit"/>
       <xsl:text>,</xsl:text>
     </xsl:if>
     <xsl:if test="number($imageHeight) != 0">
       <xsl:text> height=</xsl:text>
       <xsl:value-of select="$imageHeight"/>
-      <xsl:value-of select="$theUnit"/>
       <xsl:text>,</xsl:text>
     </xsl:if>
 
@@ -77,10 +75,8 @@
     <xsl:if test="@naturalWidth and @naturalHeight and (number(@naturalWidth) != 0) and (number(@naturalHeight) != 0)">
       <xsl:text> natwidth=</xsl:text>
       <xsl:value-of select="@naturalWidth"/>
-      <xsl:value-of select="$theUnit"/>
       <xsl:text>, natheight=</xsl:text>
       <xsl:value-of select="@naturalHeight"/>
-      <xsl:value-of select="$theUnit"/>
     </xsl:if>
     <xsl:text>]{</xsl:text>
     <xsl:call-template name="getSourceName"/>
