@@ -208,7 +208,7 @@ ifndef GNU_CC
 # details. -- chase@mozilla.org
 #
 # Changes to the PDBFILE naming scheme should also be reflected in HOST_PDBFILE
-# 
+#
 ifdef LIBRARY_NAME
 PDBFILE=$(LIBRARY_NAME).pdb
 ifdef MOZ_DEBUG
@@ -402,7 +402,7 @@ TAG_PROGRAM		= xargs etags -a
 
 #
 # Turn on C++ linking if we have any .cpp or .mm files
-# (moved this from config.mk so that config.mk can be included 
+# (moved this from config.mk so that config.mk can be included
 #  before the CPPSRCS are defined)
 #
 ifneq ($(CPPSRCS)$(CMMSRCS),)
@@ -420,7 +420,7 @@ endif
 endif
 
 #
-# This will strip out symbols that the component should not be 
+# This will strip out symbols that the component should not be
 # exporting from the .dynsym section.
 #
 ifdef IS_COMPONENT
@@ -428,7 +428,7 @@ EXTRA_DSO_LDOPTS += $(MOZ_COMPONENTS_VERSION_SCRIPT_LDFLAGS)
 endif # IS_COMPONENT
 
 #
-# Enforce the requirement that MODULE_NAME must be set 
+# Enforce the requirement that MODULE_NAME must be set
 # for components in static builds
 #
 ifdef IS_COMPONENT
@@ -527,18 +527,18 @@ ifeq ($(OS_ARCH),OSF1)
 ifdef IS_COMPONENT
 ifeq ($(GNU_CC)$(GNU_CXX),)
 EXTRA_DSO_LDOPTS += -B symbolic
-endif  
-endif  
+endif
+endif
 endif
 
 #
 # Linux: add -Bsymbolic flag for components
-# 
+#
 ifeq ($(OS_ARCH),Linux)
 ifdef IS_COMPONENT
 EXTRA_DSO_LDOPTS += -Wl,-Bsymbolic
 endif
-endif 
+endif
 
 #
 # MINGW32
@@ -614,7 +614,7 @@ default all::
 	$(MAKE) tools
 
 # Do depend as well
-alldep:: 
+alldep::
 	$(MAKE) export
 	$(MAKE) depend
 	$(MAKE) libs
@@ -625,7 +625,7 @@ endif # SUPPRESS_DEFAULT_RULES
 
 MAKE_TIER_SUBMAKEFILES = +$(if $(tier_$*_dirs),$(MAKE) $(addsuffix /Makefile,$(tier_$*_dirs)))
 
-export_tier_%: 
+export_tier_%:
 	@echo "$@"
 	@$(MAKE_TIER_SUBMAKEFILES)
 	@$(EXIT_ON_ERROR) \
@@ -832,7 +832,7 @@ distclean:: $(SUBMAKEFILES)
 	+-$(LOOP_OVER_DIRS)
 	+-$(LOOP_OVER_STATIC_DIRS)
 	+-$(LOOP_OVER_TOOL_DIRS)
-	-rm -rf $(ALL_TRASH_DIRS) 
+	-rm -rf $(ALL_TRASH_DIRS)
 	-rm -f $(ALL_TRASH)  \
 	Makefile .HSancillary \
 	$(wildcard *.$(OBJ_SUFFIX)) $(wildcard *.ho) $(wildcard host_*.o*) \
@@ -979,7 +979,7 @@ endif
 
 #
 # Purify target.  Solaris/sparc only to start.
-# Purify does not recognize "egcs" or "c++" so we go with 
+# Purify does not recognize "egcs" or "c++" so we go with
 # "gcc" and "g++" for now.
 #
 pure:	$(PROGRAM)
@@ -1056,14 +1056,14 @@ ifeq ($(IS_COMPONENT),1)
 ifeq ($(HAS_EXTRAEXPORTS),1)
 ifndef MOZ_OS2_USE_DECLSPEC
 	$(FILTER) $(OBJS) $(SHARED_LIBRARY_LIBS) >> $@
-endif	
+endif
 else
 	echo    _NSGetModule >> $@
 endif
 else
 ifndef MOZ_OS2_USE_DECLSPEC
 	$(FILTER) $(OBJS) $(SHARED_LIBRARY_LIBS) >> $@
-endif	
+endif
 endif
 	$(ADD_TO_DEF_FILE)
 
@@ -1258,7 +1258,7 @@ host_%.$(OBJ_SUFFIX): %.mm Makefile Makefile.in
 	$(ELOG) $(CC) $(OUTOPTION)$@ -c $(COMPILE_CFLAGS) $(_VPATH_SRCS)
 
 moc_%.cpp: %.h Makefile Makefile.in
-	$(MOC) $< $(OUTOPTION)$@ 
+	$(MOC) $< $(OUTOPTION)$@
 
 ifdef ASFILES
 # The AS_DASH_C_FLAG is needed cause not all assemblers (Solaris) accept
@@ -1470,7 +1470,7 @@ ifndef NO_DIST_INSTALL
 ifneq ($(EXPORTS),)
 export:: $(EXPORTS) $(PUBLIC)
 	$(INSTALL) $(IFLAGS1) $^
-endif 
+endif
 
 ifneq ($(SDK_HEADERS),)
 export:: $(SDK_HEADERS) $(SDK_PUBLIC)
@@ -1478,7 +1478,7 @@ export:: $(SDK_HEADERS) $(SDK_PUBLIC)
 
 export:: $(SDK_HEADERS) $(PUBLIC)
 	$(INSTALL) $(IFLAGS1) $^
-endif 
+endif
 endif # NO_DIST_INSTALL
 
 ################################################################################
@@ -1524,9 +1524,9 @@ export:: $(AUTOCFG_JS_EXPORTS) $(FINAL_TARGET)/defaults/autoconfig
 	$(INSTALL) $(IFLAGS1) $^
 endif
 
-endif 
+endif
 ################################################################################
-# Export the elements of $(XPIDLSRCS) & $(SDK_XPIDLSRCS), 
+# Export the elements of $(XPIDLSRCS) & $(SDK_XPIDLSRCS),
 # generating .h and .xpt files and moving them to the appropriate places.
 
 ifneq ($(XPIDLSRCS)$(SDK_XPIDLSRCS),)
@@ -1550,7 +1550,7 @@ $(SDK_IDL_DIR) $(IDL_DIR)::
 	@if test ! -d $@; then echo Creating $@; rm -rf $@; $(NSINSTALL) -D $@; else true; fi
 
 # generate .h files from into $(XPIDL_GEN_DIR), then export to $(PUBLIC);
-# warn against overriding existing .h file. 
+# warn against overriding existing .h file.
 $(XPIDL_GEN_DIR)/.done:
 	@if test ! -d $(XPIDL_GEN_DIR); then echo Creating $(XPIDL_GEN_DIR)/.done; rm -rf $(XPIDL_GEN_DIR); mkdir $(XPIDL_GEN_DIR); fi
 	@touch $@
@@ -1574,7 +1574,7 @@ $(XPIDL_GEN_DIR)/%.xpt: %.idl $(XPIDL_COMPILE) $(XPIDL_GEN_DIR)/.done
 # no need to link together if XPIDLSRCS contains only XPIDL_MODULE
 ifneq ($(XPIDL_MODULE).idl,$(strip $(XPIDLSRCS)))
 $(XPIDL_GEN_DIR)/$(XPIDL_MODULE).xpt: $(patsubst %.idl,$(XPIDL_GEN_DIR)/%.xpt,$(XPIDLSRCS) $(SDK_XPIDLSRCS)) Makefile.in Makefile $(XPIDL_LINK)
-	$(XPIDL_LINK) $(XPIDL_GEN_DIR)/$(XPIDL_MODULE).xpt $(patsubst %.idl,$(XPIDL_GEN_DIR)/%.xpt,$(XPIDLSRCS) $(SDK_XPIDLSRCS)) 
+	$(XPIDL_LINK) $(XPIDL_GEN_DIR)/$(XPIDL_MODULE).xpt $(patsubst %.idl,$(XPIDL_GEN_DIR)/%.xpt,$(XPIDLSRCS) $(SDK_XPIDLSRCS))
 endif # XPIDL_MODULE.xpt != XPIDLSRCS
 
 libs:: $(XPIDL_GEN_DIR)/$(XPIDL_MODULE).xpt
@@ -1595,7 +1595,7 @@ export:: $(XPIDLSRCS) $(IDL_DIR)
 	$(INSTALL) $(IFLAGS1) $^
 
 export:: $(patsubst %.idl,$(XPIDL_GEN_DIR)/%.h, $(XPIDLSRCS)) $(PUBLIC)
-	$(INSTALL) $(IFLAGS1) $^ 
+	$(INSTALL) $(IFLAGS1) $^
 endif # NO_DIST_INSTALL
 
 endif # XPIDLSRCS
@@ -1906,7 +1906,7 @@ else
 FWDSLASH_TOPSRCDIR := $(topsrcdir)
 ifeq ($(HOST_OS_ARCH),WINNT)
 NATIVE_TOPSRCDIR   := $(subst /,\\,$(WIN_TOP_SRC))
-else 
+else
 NATIVE_TOPSRCDIR   := $(topsrcdir)
 endif
 endif # CYGWIN_WRAPPER
@@ -2093,7 +2093,7 @@ FORCE:
 .DELETE_ON_ERROR:
 
 # Properly set LIBPATTERNS for the platform
-.LIBPATTERNS = $(if $(IMPORT_LIB_SUFFIX),$(LIB_PREFIX)%.$(IMPORT_LIB_SUFFIX)) $(LIB_PREFIX)%.$(LIB_SUFFIX) $(DLL_PREFIX)%$(DLL_SUFFIX) 
+.LIBPATTERNS = $(if $(IMPORT_LIB_SUFFIX),$(LIB_PREFIX)%.$(IMPORT_LIB_SUFFIX)) $(LIB_PREFIX)%.$(LIB_SUFFIX) $(DLL_PREFIX)%$(DLL_SUFFIX)
 
 tags: TAGS
 
@@ -2221,3 +2221,5 @@ documentation:
 check:: $(SUBMAKEFILES) $(MAKE_DIRS)
 	+$(LOOP_OVER_DIRS)
 	+$(LOOP_OVER_TOOL_DIRS)
+
+print-%: ; @echo $*=$($*)
