@@ -1335,49 +1335,51 @@ function forceIsImport(bImport)
 function PreviewImageLoaded()
 {
   var unitHandler = new UnitHandler(gEditor);
+  var previewActualWidth;
+  var previewActualHeight;
 
   if (gDialog.PreviewImage)
   {
     // Image loading has completed -- we can get actual width
-    gActualWidth  = gDialog.PreviewImage.offsetWidth;
-    gActualHeight = gDialog.PreviewImage.offsetHeight;
-    sizeState.actualSize.width = gActualWidth;
-    sizeState.actualSize.height = gActualHeight;
+    previewActualWidth  = gDialog.PreviewImage.offsetWidth;
+    previewActualHeight = gDialog.PreviewImage.offsetHeight;
+    sizeState.actualSize.width = previewActualWidth;
+    sizeState.actualSize.height = previewActualHeight;
     sizeState.actualSize.unit = 'px';
     unitHandler.initCurrentUnit('px');
-    sizeState.width = unitHandler.getValueAs(gActualWidth, sizeState.sizeUnit);
-    sizeState.height = unitHandler.getValueAs(gActualHeight, sizeState.sizeUnit);
+    sizeState.width = sizeState.width || unitHandler.getValueAs(previewActualWidth, sizeState.sizeUnit);
+    sizeState.height = sizeState.height || unitHandler.getValueAs(previewActualHeight, sizeState.sizeUnit);
     sizeState.isCustomSize = false;
     sizeState.update();
-    setImageSizeFields(gActualWidth, gActualHeight, unitHandler.currentUnit);
+//    setImageSizeFields(previewActualWidth, previewActualHeight, unitHandler.currentUnit);
     if (gVideo)
       dump("PreviewImageLoaded reached for video file!\n");
     var bReset = false;
 
-    if (gActualWidth && gActualHeight)
+    if (previewActualWidth && previewActualHeight)
     {
       // Use actual size or scale to fit preview if either dimension is too large
-      var width = gActualWidth;
-      var height = gActualHeight;
-      if (gActualWidth > gPreviewImageWidth)
+      var width = previewActualWidth;
+      var height = previewActualHeight;
+      if (previewActualWidth > gPreviewImageWidth)
       {
           width = gPreviewImageWidth;
-          height = gActualHeight * (gPreviewImageWidth / gActualWidth);
+          height = previewActualHeight * (gPreviewImageWidth / previewActualWidth);
       }
       if (height > gPreviewImageHeight)
       {
         height = gPreviewImageHeight;
-        width = gActualWidth * (gPreviewImageHeight / gActualHeight);
+        width = previewActualWidth * (gPreviewImageHeight / previewActualHeight);
       }
       gDialog.PreviewImage.width = width;
       gDialog.PreviewImage.height = height;
 
-      gDialog.PreviewWidth.setAttribute("value", Math.round(gActualWidth)+" pixels");
-      gDialog.PreviewHeight.setAttribute("value", Math.round(gActualHeight)+" pixels");
+      gDialog.PreviewWidth.setAttribute("value", Math.round(previewActualWidth)+" pixels");
+      gDialog.PreviewHeight.setAttribute("value", Math.round(previewActualHeight)+" pixels");
 
       gDialog.PreviewSize.collapsed = false;
       gDialog.ImageHolder.collapsed = false;
-      setContentSize(gActualWidth, gActualHeight);
+      setContentSize(previewActualWidth, previewActualHeight);
 
 
       if (document.getElementById("actual").selected || bReset)
