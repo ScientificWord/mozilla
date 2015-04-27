@@ -2009,8 +2009,8 @@ Frame.prototype = {
 
       // what about overhang?
       // Now we build the CSS style for the object and the frame
-      var isfloat = this.getFrameAttribute("placement") === "floating";
-      var isdisplay = this.getFrameAttribute("placement") === "center";
+      var isfloat = this.getFrameAttribute("pos") === "floating";
+      var isdisplay = this.getFrameAttribute("pos") === "center";
       var lmargin;
       var rmargin;
       if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="full")) {
@@ -2020,14 +2020,15 @@ Frame.prototype = {
       else {
         lmargin = unitHandler.getValueStringAs(this.getFrameAttribute("HMargin"), "px");
         rmargin = lmargin;
-        switch (this.getFrameAttribute("placement")) {
-          case "L" :
-          case "I" :
+        editor.setAttribute(DOMFrame, "pos", this.getFrameAttribute("pos"));
+        switch (this.getFrameAttribute("pos")) {
+          case "left" :
+          case "inside" :
             lmargin = "0px";
             setStyleAttributeOnNode(DOMFrame, "float", "left", null);
             break;
-          case "R" :
-          case "O" :
+          case "right" :
+          case "outside" :
             rmargin = "0px";
             setStyleAttributeOnNode(DOMFrame, "float", "right", null);
             break;
