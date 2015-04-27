@@ -468,6 +468,7 @@
 <xsl:template match="html:maketitle">
    <xsl:value-of select="$newline"/>
    <xsl:text>\maketitle</xsl:text>
+   <xsl:value-of select="$newline"/>
 </xsl:template>
 
 <xsl:template name="maketables">
