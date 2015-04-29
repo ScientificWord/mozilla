@@ -3043,6 +3043,8 @@ function EditorDblClick(event)
 
   if (element)
   {
+    if (GetParentTable(element))
+      element = GetParentTable(element);
     goDoPrinceCommand("cmd_objectProperties", element, editorElement);
     event.preventDefault();
   }
