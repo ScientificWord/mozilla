@@ -628,6 +628,12 @@ var msiResizeListener =
   {
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
+    if (anElement.nodeName === 'table') {
+      anElement = anElement.parentNode;
+      if (anElement.nodeName !== 'msiframe') {
+        return;
+      }
+    }
 
     // dimensions are given in pixels.
     if (oldWidth === newWidth && oldHeight === newHeight) {
@@ -639,15 +645,14 @@ var msiResizeListener =
       var aVCamObject;
 // skip preserving aspect ratio for now.
 // adjust width or height using aspect ratio when the time comes
-//      var editorElement = msiGetActiveEditorElement();
       units = anElement.getAttribute("units");
       unithandler.initCurrentUnit(units);
       var newWidthInUnits = unithandler.getValueOf(newWidth, "px");
       var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
       anElement.setAttribute("width", String(newWidthInUnits));
       anElement.setAttribute("height", String(newHeightInUnits));
-      setStyleAttributeOnNode(anElement, "width", String(newWidthInUnits) + units, this.mEditor);
-      setStyleAttributeOnNode(anElement, "height", String(newHeightInUnits) + units, this.mEditor);
+      setStyleAttributeOnNode(anElement, "width", newWidth + "px", this.mEditor);
+      setStyleAttributeOnNode(anElement, "height", newHeight + "px", this.mEditor);
       var parent = anElement.parentNode;
       if (parent.nodeName === 'graph') {
         // the frame is part of a graph
