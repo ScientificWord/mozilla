@@ -1098,8 +1098,12 @@ function setTextValueAttributes()
   for (k=0; k < arr3.length; k++)
   {
     textbox = document.getElementById(arr3[k]+"Input");
+    if (!textbox) { // these input fields don't exist, so our work here is donw.
+      return false;
+    }
     if (textbox && textbox.value != null) textbox.setAttribute("value",textbox.value);
   }
+  return true;
 }
 
 function isValid()
@@ -1128,7 +1132,26 @@ this is the case for images in an msiframe
 */
 {
   var rotation;
-  setTextValueAttributes();
+  var w, h;
+  var rowCountObj = { value: 0 };
+  var colCountObj = { value: 0 };
+  if (!setTextValueAttributes()) { // width and height didn't get set because those input fields don't exist
+    w = getStyleAttributeOnNode( contentsNode, "width", editor);
+    h = getStyleAttributeOnNode( contentsNode, "height", editor);
+    if (!w) {
+      try {
+        w = 15 * Number(Dg.columnsInput.value);
+        h = Number(Dg.rowsInput.value) * 30;
+      }
+      catch(e){
+        dump( e.message);
+      }
+    }
+    setStyleAttributeOnNode(frameNode, "width", w, editor);
+    setStyleAttributeOnNode(frameNode, "height", h, editor);
+    sizeState.width = frameUnitHandler.getValueFromString(w, "px");
+    sizeState.height = frameUnitHandler.getValueFromString(h, "px");
+  }
   metrics.unit = sizeState.sizeUnit;
   if (metrics.unit == "px") // switch to pts
   {
@@ -1209,6 +1232,15 @@ this is the case for images in an msiframe
   }
   msiEditorEnsureElementAttribute(contentsNode, heightAtt, sizeState.height, editor);
   msiEditorEnsureElementAttribute(contentsNode, widthAtt, sizeState.width, editor);
+
+  var captionLoc = document.getElementById("captionLocation").value;
+  if (captionLoc === "none") {
+    frameNode.removeAttribute("captionloc");
+    removeStyleAttributeFamilyOnNode(frameNode, "caption-side");
+  } else {
+    frameNode.setAttribute("captionloc", captionLoc);
+    setStyleAttributeOnNode(frameNode, "caption-side", captionLoc);
+  }
 
   var posItem = null;
   var posid;
