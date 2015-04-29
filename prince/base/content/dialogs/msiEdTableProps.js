@@ -9,7 +9,8 @@ Components.utils.import("resource://app/modules/unitHandler.jsm");
 //Cancel() is in msiEdDialogCommon.js
 var gTableElement;
 var gWrapperElement;
-//var gCellElement;
+var gWidthStr;
+var gHeightStr;
 var gTableCaptionElement;
 var gTableCaptionPlacement;
 
@@ -500,8 +501,8 @@ function Startup()
     document.getElementById("mainTabBox").selectedTab = document.getElementById("TableTab");
   }
 
-  if (gTableElement !== null  && gTableElement.hasAttribute("units")) {
-     frameUnitHandler.initCurrentUnit(gTableElement.getAttribute("units"));
+  if (gWrapperElement.hasAttribute("units")) {
+     frameUnitHandler.initCurrentUnit(gWrapperElement.getAttribute("units"));
   } else {
      frameUnitHandler.initCurrentUnit("in");
   }
@@ -603,55 +604,30 @@ function initTablePanel()
   var colCountObj = { value: 0 };
   var widthVal = 0;
   var heightVal = 0;
-  var widthStr = "";
-  var heightStr = "";
   var re;
   var match;
-  var currUnit = gTableElement.getAttribute("unit");
+  var wrapperNode;
+  if (gTableElement.parentNode.nodeName === "msiframe") {
+    wrapperNode = gTableElement.parentNode;
+  }
+  else {
+    wrapperNode = gTableElement;
+  }
+  var currUnit = wrapperNode.getAttribute("unit");
   currUnit = currUnit || "pt";
   initframeUnitHandler(currUnit);
   var tableStyle = gTableElement.getAttribute("style");
   // The next 30 lines seem superfluous, but maybe harmless. Leave them for now.
-  if (gTableElement.hasAttribute("width"))
+  if (wrapperNode.hasAttribute("width"))
   {
-    widthStr = gTableElement.getAttribute("width");
-    widthVal = frameframeUnitHandler.getNumberAndUnitFromString(widthStr);
-    if (!widthVal)
-      widthVal = frameframeUnitHandler.getNumberAndUnitFromString(widthStr + currUnit);
+    gWidthStr = wrapperNode.getAttribute("width");
   }
-  else if (gTableElement.hasAttribute("style"))
+  if (wrapperNode.hasAttribute("height"))
   {
-    re = /width:\s*(\d*[^;]*)(;|$)/;
-//    match = re.exec(gTableElement.getAttribute("style"));
-    match = re.exec(tableStyle);
-    if (match && match.length > 1) widthVal = frameUnitHandler.getNumberAndUnitFromString(match[1]);
-  }
-  if (gTableElement.hasAttribute("height"))
-  {
-    heightStr = gTableElement.getAttribute("height");
-    heightVal = frameUnitHandler.getNumberAndUnitFromString(heightStr);
-    if (!heightVal)
-      heightVal = frameUnitHandler.getNumberAndUnitFromString(heightStr + "pt");
-  }
-  else if (gTableElement.hasAttribute("style"))
-  {
-    re = /height:\s*(\d*[^;]*)(;|$)/;
-//    match = re.exec(gTableElement.getAttribute("style"));
-    match = re.exec(tableStyle);
-    if (match && match.length > 1) heightVal = frameUnitHandler.getNumberAndUnitFromString(match[1]);
+    gHeightStr = wrapperNode.getAttribute("height");
   }
 
-//  unitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
-  if (widthVal)
-  {
-    currUnit = widthVal.unit;
-    gDialog.autoWidthCheckbox.checked = false;
-  }
-  else
-    gDialog.autoWidthCheckbox.checked = true;
-  // frameUnitHandler.initCurrentUnit(currUnit);
-  // frameUnitHandler.buildUnitMenu(gDialog.unitMenulist, currUnit);
-  checkEnableWidthControls();
+  //checkEnableWidthControls();
 
   try {
     gActiveEditor.getTableSize(gTableElement, rowCountObj, colCountObj);
@@ -663,11 +639,11 @@ function initTablePanel()
   gLastColIndex = gColCount-1;
   gDialog.rowsInput.value = " " + gRowCount;
   gDialog.columnsInput.value = " " + gColCount;
-  if (widthVal && widthVal.number) gDialog.tableWidthInput.value = widthVal.number;
+  if (gWidthVal) gDialog.tableWidthInput.value = gWidthVal;
   gDialog.baselineList.value = gTableBaseline;
 
-  var pos = gTableElement.getAttribute("pos");
-  var placement = gTableElement.getAttribute("placement");
+  var pos = wrapperNode.getAttribute("pos");
+  var placement = wrapperNode.getAttribute("placement");
 
   var longPlacement;
   if (placement=="L") longPlacement = "left";
