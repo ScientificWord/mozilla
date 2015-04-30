@@ -109,25 +109,25 @@ SizeState.prototype = {
 
 
   applySizes: function() {  // dg is a dialog
-    this.dialog.frameWidthInput.disabled = !this.enabledState.width;
-    this.dialog.frameHeightInput.disabled = !this.enabledState.height;
-    this.dialog.autoWidth.disabled = !this.enabledState.autoWidth;
-    this.dialog.autoHeight.disabled = !this.enabledState.autoHeight;
-    this.dialog.constrainCheckbox.disabled = !this.enabledState.preserveAspectRatio;
+    if (this.dialog.frameWidthInput) this.dialog.frameWidthInput.disabled = !this.enabledState.width;
+    if (this.dialog.frameHeightInput) this.dialog.frameHeightInput.disabled = !this.enabledState.height;
+    if (this.dialog.autoWidth) this.dialog.autoWidth.disabled = !this.enabledState.autoWidth;
+    if (this.dialog.autoHeight) this.dialog.autoHeight.disabled = !this.enabledState.autoHeight;
+    if (this.dialog.constrainCheckbox) this.dialog.constrainCheckbox.disabled = !this.enabledState.preserveAspectRatio;
     //this.dialog.actual.disabled = !this.enabledState.isActualSize;
 
     // now for the values
-    this.dialog.unitList.value = this.sizeUnit;
-    this.dialog.frameWidthInput.value = this.width;
-    this.dialog.frameHeightInput.value = this.height;
+    if (this.dialog.unitList) this.dialog.unitList.value = this.sizeUnit;
+    if (this.dialog.frameWidthInput) this.dialog.frameWidthInput.value = this.width;
+    if (this.dialog.frameHeightInput) this.dialog.frameHeightInput.value = this.height;
     if (this.autoWidth) {
       this.dialog.autoDims.selectedItem = this.dialog.autoWidth;
     }
     else {
-      this.dialog.autoDims.selectedItem = this.dialog.autoHeight;
+      if (this.dialog.autoDims) this.dialog.autoDims.selectedItem = this.dialog.autoHeight;
     }
-    this.dialog.constrainCheckbox.checked = this.preserveAspectRatio;
-    this.dialog.sizeRadio.value = this.isCustomSize?"custom":"actual";
+    if (this.dialog.constrainCheckbox) this.dialog.constrainCheckbox.checked = this.preserveAspectRatio;
+    if (this.dialog.sizeRadio) this.dialog.sizeRadio.value = this.isCustomSize?"custom":"actual";
   },
 
   computeDerivedQuantities: function() {
