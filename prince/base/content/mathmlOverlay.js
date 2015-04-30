@@ -35,6 +35,7 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIMatrixLastCmd",  msiMatrixLast);
   commandTable.registerCommand("cmd_MSIparenCmd",       msiParen);
   commandTable.registerCommand("cmd_MSIbracketCmd",     msiBracket);
+  commandTable.registerCommand("cmd_MSIanglebracketCmd",     msiAngleBracket);
   commandTable.registerCommand("cmd_MSIbraceCmd",       msiBrace);
   commandTable.registerCommand("cmd_MSIabsvalueCmd",    msiAbsValue);
   commandTable.registerCommand("cmd_MSInormCmd",        msiNorm);
@@ -550,8 +551,9 @@ var msiParen =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    if (isInMath(editorElement))
+    if (makeMathIfNeeded(editorElement)) {
       insertfence("(", ")", editorElement);
+    }
   }
 };
 
@@ -570,6 +572,24 @@ var msiBracket =
     var editorElement = msiGetActiveEditorElement(window);
     if (makeMathIfNeeded(editorElement))
       insertfence("[", "]", editorElement);
+  }
+};
+
+var msiAngleBracket =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    if (makeMathIfNeeded(editorElement))
+      insertfence("\u2329", "\u232A", editorElement);
   }
 };
 
@@ -3395,15 +3415,15 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
 	if ( (node.nodeType === Node.TEXT_NODE) || (node.nodeName ==="texb") )
 	{
     try {
-  		if (startOffset >0)
-  		{
-  		  editor.splitNode(node, startOffset, newNode);
-  		}
-  		if (endOffset >= 0)
-  		{
-  			editor.splitNode(node, endOffset - startOffset, newNode);
-  			tempNode = newNode.value;
-  		}
+      if (startOffset >0)
+      {
+        editor.splitNode(node, startOffset, newNode);
+      }
+      if (endOffset >= 0)
+      {
+        editor.splitNode(node, endOffset - startOffset, newNode);
+        tempNode = newNode.value;
+      }
     	var parent = node.parentNode;
     	var offset = offsetOfChild(parent, tempNode);
       var mathnode;
@@ -3420,25 +3440,25 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
         var o, p;
 //        var saveEnabled = editor.autoSubEnabled;
 //        editor.autoSubEnabled = false;
-        editor.selection.collapse(parent, offset);
+       editor.selection.collapse(parent, offset);
       	for (var i = 0; i < text.length; i++)
       	{
           if (text[i] != ' ') insertsymbol(text[i]);
-          // if (firstnode && i===0) {  // put the selection start in the new symbol node; it would sure help if insertsymbol returned the inserted node!
-          //   o = 0;
-          //   p = parent.firstChild;
-          //   while (o++ < offset + i) p = p.nextSibling;
+            // if (firstnode && i===0) {  // put the selection start in the new symbol node; it would sure help if insertsymbol returned the inserted node!
+            //   o = 0;
+            //   p = parent.firstChild;
+            //   while (o++ < offset + i) p = p.nextSibling;
           //   newSelection.startNode = p;
           //   newSelection.startOffset = 0;
-          // }
-          // if (lastnode && i===text.length-1) {
-          //   o = 0;
-          //   p = parent.firstChild;
-          //   while (o++ < offset + i && p && p.nextSibling) p = p.nextSibling;
+            // }
+            // if (lastnode && i===text.length-1) {
+            //   o = 0;
+            //   p = parent.firstChild;
+            //   while (o++ < offset + i && p && p.nextSibling) p = p.nextSibling;
           //   newSelection.endNode = p;
           //   newSelection.endOffset = p.childNodes.length;
-          // }
-      	}
+            // }
+          }
 //        editor.autoSubEnabled = saveEnabled;
       }
     }
@@ -3448,7 +3468,7 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
     }
 
   	if (tempNode.tagName !== 'texb') editor.deleteNode(tempNode);
-  	var mathnode = coalescemath(null, true);
+  	mathnode = coalescemath(null, true);
     if (mathnode) {
       editor.selection.collapse(mathnode,0);
       editor.selection.extend(mathnode, mathnode.childNodes.length);
