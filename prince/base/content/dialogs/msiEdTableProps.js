@@ -10,6 +10,7 @@ Components.utils.import("resource://app/modules/unitHandler.jsm");
 var gTableElement;
 var gWrapperElement;
 var gWidthStr;
+var gWidthVal;
 var gHeightStr;
 var gTableCaptionElement;
 var gTableCaptionPlacement;
@@ -26,7 +27,7 @@ const charStr =     "char";    // 4
 const defVAlign =   "middle";
 const topStr =      "top";
 const bottomStr =   "bottom";
-const bgcolor = "bgcolor";
+const bgcolor =     "bgcolor";
 
 //var gCellColor;
 
