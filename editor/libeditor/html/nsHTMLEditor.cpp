@@ -824,8 +824,14 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
     *aIsBlock = PR_TRUE;
     return NS_OK;
   }
+  if (strTagName.EqualsLiteral("msiframe"))
+  {
+    *aIsBlock = PR_FALSE;
+    return NS_OK;
+  }
   mtagListManager->GetRealClassOfTag(strTagName, namespaceAtom, strTagClass);
-  if (strTagClass.EqualsLiteral("paratag")||strTagClass.EqualsLiteral("structtag")||
+  if (strTagClass.EqualsLiteral("paratag")
+    ||strTagClass.EqualsLiteral("structtag")||
       strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")|| strTagClass.EqualsLiteral("listparenttag") || strTagClass.EqualsLiteral("frontmtag"))
   {
    *aIsBlock = PR_TRUE;
@@ -3255,7 +3261,7 @@ void AddStringToContents(nsAString& contents, nsAString& strToAdd)
 
   while (curStr < endStr) {
     if (nsCRT::IsAsciiSpace(*curStr)) {
-      if (!space) { // move the space over 
+      if (!space) { // move the space over
         (*curCont++) = ' ';
         ctr++;
       }
@@ -3305,7 +3311,7 @@ nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
   if (!aSelection) return NS_ERROR_NULL_POINTER;
   NS_NAMED_LITERAL_STRING(verbType, "verbatim");
 
-  nsCOMPtr<nsIDOMNode> tempNode; 
+  nsCOMPtr<nsIDOMNode> tempNode;
   PRUint16 nodeType;
   PRBool isCollapsed;
   nsresult res = aSelection->GetIsCollapsed(&isCollapsed);
@@ -3393,7 +3399,7 @@ nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
       }
     }
   }
-   
+
 
   // now look at the range
   nodeData(startParent, nodeNameOrContents);
@@ -3874,7 +3880,7 @@ nsHTMLEditor::GetElementOrParentByTagClass(const nsAString& aClassName, nsIDOMNo
   while (PR_TRUE)
   {
     currentElement = do_QueryInterface(currentNode);
-    if (currentElement) {      
+    if (currentElement) {
       res = currentElement->GetTagName(tagName);
       res = tlm->GetRealClassOfTag(tagName, namespaceAtom, currentClassName);
       if (currentClassName.Equals(ClassName))
@@ -5360,7 +5366,7 @@ nsHTMLEditor::ContentInserted(nsIDocument *aDocument, nsIContent* aContainer,
             aGraph->SetAttribute(NS_LITERAL_STRING("needPreInit"), NS_LITERAL_STRING("true"));
           }
         }
-      } 
+      }
     }
   }
 }
@@ -7003,7 +7009,7 @@ nsHTMLEditor::GetMAppUtils( msiIAppUtils ** _retval) {
   NS_ADDREF(*_retval = mAppUtils);
   return NS_OK;
 }
- 
+
 
 nsresult
 nsHTMLEditor::AddTagInfo( const nsAString & strPath )
@@ -7371,7 +7377,7 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
       _retval.Append(*(charMap->StringAt((int)(*cur) - 160)));
       }
     else switch ((int)(*cur)) {
-      case 0x01CD : 
+      case 0x01CD :
          _retval.Append(NS_LITERAL_STRING("\\v{A}")); break;
       case 0x0226 :
          _retval.Append(NS_LITERAL_STRING("\\.{A}")); break;
@@ -7444,14 +7450,14 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
           default:
             tf->ssprintf(str, fmt.get(), *cur);
             str.Cut(str.Length()-1,1);
-            _retval.Append(str); 
+            _retval.Append(str);
             break;
         }
         break;
       default :
         tf->ssprintf(str, fmt.get(), *cur);
         str.Cut(str.Length()-1,1);
-        _retval.Append(str); 
+        _retval.Append(str);
         break;
     }
   }
@@ -7492,7 +7498,7 @@ nsHTMLEditor::CreateDefaultParagraph(nsIDOMNode *inParent, PRInt32 inOffset, PRB
   paraElem =do_QueryInterface(para);
   if (!markCursor) {
 
-    if (paraElem == nsnull) 
+    if (paraElem == nsnull)
       return NS_ERROR_NULL_POINTER;
 
     paraElem->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));

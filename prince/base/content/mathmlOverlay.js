@@ -531,11 +531,11 @@ function makeMathIfNeeded(editorElement)
         textToMath(editor);
       }
       catch (e) {
-        retVal = false;
+        return false;
       }
     }
   }
-  return retVal;
+  return true;
 }
 
 var msiParen =
@@ -3463,8 +3463,7 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
       }
     }
     catch(e) {
-      msidump(e.message);
-      //
+      throw new MsiException("Error converting text to math", e.message);
     }
 
   	if (tempNode.tagName !== 'texb') editor.deleteNode(tempNode);
@@ -3496,8 +3495,8 @@ function mathToText(editor)
   var node;
   var offset;
   editor.beginTransaction();
-  try
-  {
+  // try
+  // {
 		if (editor.selection.isCollapsed)
 		{
 			var node = editor.selection.anchorNode;
@@ -3518,10 +3517,10 @@ function mathToText(editor)
 	      }
 	    }
 	  }
-	}
-  catch(e) {
-    dump("error in MathNodeToText: "+e.message+"\n");
-  }
+	// }
+ //  catch(e) {
+ //    dump("error in MathNodeToText: "+e.message+"\n");
+ //  }
 //  if (gProcessor)
 //    gProcessor.reset();
 //  coalescemath(null, true);
@@ -3568,7 +3567,7 @@ function toggleMathText(editor)
       mathToText(editor);
     }
     catch(e) {
-      dump("Exception in toggleMathText: "+e.message+"\n");
+      finalThrow("Error converting math to text", null)
     }
   }
   else
@@ -3577,7 +3576,7 @@ function toggleMathText(editor)
       textToMath(editor);
     }
     catch(e) {
-      dump("Exception in toggleMathText: "+e.message+"\n");
+      finalThrow("Error converting text to math", null);
     }
   }
 }
