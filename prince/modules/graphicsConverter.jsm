@@ -118,6 +118,7 @@ var graphicsConverter = {
     var paramArray1 = [];
     var paramArray2 = [];
     var param;
+    var temp;
     var bRunSynchronously = true;
     var resolutionParameter = null;
     var returnPath; // the path of the file to display, relative to baseDir
@@ -195,7 +196,9 @@ var graphicsConverter = {
           // }
         }
         if (resolutionParameter) {
+          temp = paramArray.shift();
           paramArray.unshift(resolutionParameter);
+          paramArray.unshift(temp);
         }
         theProcess.run(bRunSynchronously, paramArray, paramArray.length);
       }
