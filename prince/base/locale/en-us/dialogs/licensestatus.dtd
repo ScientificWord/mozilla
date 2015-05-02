@@ -1,0 +1,12 @@
+<!-- Copyright (c) 2015 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "License status">
+<!ENTITY dialog.title "License status">
+<!ENTITY verbiage1 "The license for this copy of **prod** will expire in **days** days. At that time the software will become much less functional.">
+<!ENTITY verbiage1a "This copy of **prod** is unlicensed or the license has expired. If you have a serial number, go to Help/Activate to activate your license. Without a license, the program's functionality is greatly reduced.">
+<!ENTITY prodsw "Scientific Word">
+<!ENTITY prodnsb "Scientific Notebook">
+<!ENTITY prodswp "Scientific WorkPlace">
+<!ENTITY verbiage2 "To renew your license or to buy a new license, go to the MacKichan Software online store at http://store.mackichan.com">
+<!ENTITY willexpiresoon "Your license will expire soon!">
+

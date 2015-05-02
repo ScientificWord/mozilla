@@ -831,4 +831,5 @@ classic.jar:
   skin/classic/typesetDocFormat.css (typesetDocFormat.css)
   skin/classic/aboutDialog.css      (aboutDialog.css)
   skin/classic/licenseDialog.css      (licenseDialog.css)
-  skin/classic/activate.css	    (activate.css)
+  skin/classic/activate.css     (activate.css)
+  skin/classic/licensestatus.css	    (licensestatus.css)
