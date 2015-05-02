@@ -8,6 +8,7 @@ Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 #include productname.inc
 const msiEditorJS_duplicateTest = "Bad";
 var dynAllTagsStyleSheet;
+var licenseWarningGiven = false;
 
 function aColorObj(editorElement)
 {
@@ -891,6 +892,8 @@ function msiEditorDocumentObserver(editorElement)
     }
 
     var edStr = "";
+    var licenseStatus;
+    var daysleft;
     if (editor != null)
       edStr = "non-null";
 
@@ -898,6 +901,24 @@ function msiEditorDocumentObserver(editorElement)
     {
       case "obs_documentCreated":
         // Get state to see if document creation succeeded
+        if (!licenseWarningGiven) {
+          licenseStatus = licenseTimeRemaining();
+          if (licenseStatus === "unlicensed") {
+            openDialog('chrome://prince/content/licensestatus.xul', 'License status', 'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
+          } else if (licenseStatus !== "permanent") {
+            // licenseStatus should be a number
+            daysleft = Number(licenseStatus);
+            if (!isNaN(daysleft)) {
+              if (daysleft <= 30 && daysleft >= 0) {
+                openDialog('chrome://prince/content/licensestatus.xul', 'License status', 'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', true, daysleft);
+              } else if (daysleft < 0) {
+                openDialog('chrome://prince/content/licensestatus.xul', 'License status', 'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
+              }
+            }
+          }
+          licenseWarningGiven = true;
+        }
+
         setZoom();
         var params = newCommandParams();
         if (!params)
