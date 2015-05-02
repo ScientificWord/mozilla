@@ -3744,7 +3744,7 @@ function createWorkingDirectory(documentfile) {
           mainfile.append('main' + extension);
           if (mainfile.exists()) {
             var data = { value: false };
-            var result = window.openDialog('chrome://prince/content/useWorkInProgress.xul', 'workinprogress', 'chrome,titlebar,resizable,modal', data);
+            var result = window.openDialog('chrome://prince/content/useWorkInProgress.xul', 'workinprogress', 'chrome,titlebar,resizable,modal,centerscreen', data);
             if (data.value) {
               return mainfile;
             }
