@@ -1,5 +1,5 @@
 #include ../productname.inc
-/// This comment fixes a syntax highlighting glitch on my laption -- BBM
+/// This comment fixes a syntax highlighting glitch on my laptop -- BBM
 
 var req;
 // var server='licensing.mackichan.com';
