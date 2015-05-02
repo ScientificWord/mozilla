@@ -35,7 +35,7 @@
     "&prodsw;"
 #endif
 #ifdef PROD_SNB
-    "&prodnsb;"
+    "&prodsnb;"
 #endif
 #ifdef PROD_SWP
     "&prodswp;"
