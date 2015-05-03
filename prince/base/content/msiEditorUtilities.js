@@ -3619,11 +3619,11 @@ function isPathBeingEdited(path) {
   var uriString = msiFileURLFromAbsolutePath(path).spec;
   // uriString ends in xxxx.sci; we will be comparing it to something ending in xxxx_work/main.xhtml
   // so change it
-  var os = getOS(window);
-  if (os === 'win')
-    uriString = uriString.replace(/\.sci$/, '_work\\main.xhtml');
-  else
-    uriString = uriString.replace(/\.sci$/, '_work/main.xhtml');
+  // var os = getOS(window);
+  // if (os === 'win')
+  //   uriString = uriString.replace(/\.sci$/, '_work\\main.xhtml');
+  // else
+  //   uriString = uriString.replace(/\.sci$/, '_work/main.xhtml');
 
   var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService();
   wm = wm.QueryInterface(Components.interfaces.nsIWindowMediator);
