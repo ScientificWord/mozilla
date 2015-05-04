@@ -1196,21 +1196,24 @@ function msiRequirePackage(editorElement, packagename, options) {
   try {
     if (!editorElement) editorElement = msiGetParentEditorElementForDialog(window);
     var editor = msiGetEditor(editorElement);
-    // BBM: NO, get main editor.
     var doc = editor.document;
     var preamble = doc.getElementsByTagName('preamble')[0];
     var currentReq = preamble.getElementsByTagName('requirespackage');
     var i;
     var req;
     var opt;
+    if (options && options.length === 0) {
+      options = null;
+    }
     for (i = 0; i < currentReq.length; i++) {
       req = currentReq[i].getAttribute('req');
       if (req === packagename) {
         opt = currentReq[i].getAttribute('opt');
+        if (opt && opt.length === 0) opt = null;
         if (opt && options && opt === options)
           return;
         // already there
-        if ((opt == null) && (options == null))
+        if ((opt == null || opt.length === 0) && (options == null))
           return;  // both are void or null
       }
     }
