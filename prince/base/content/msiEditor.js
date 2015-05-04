@@ -11075,6 +11075,7 @@ function openGraphDialog(tagname, node, editorElement)
   var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot Dialog", "chrome,close,resizable,titlebar,dependent",
      editorElement, "cmd_objectProperties", node);
 // why find it again???  var editorElement = msiGetActiveEditorElement();
+  document.getElementById("vcamactive").setAttribute("hidden", "true");
   msiGetEditor(editorElement).incrementModificationCount(1);
 
 }
