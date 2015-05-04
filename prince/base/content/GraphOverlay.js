@@ -2194,6 +2194,7 @@ function formatRecreateGraph(DOMGraph, commandStr, editorElement) {
   //  msiOpenModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul",
   //                     "", "chrome,close,titlebar,dependent", editorElement, commandStr, DOMGraph, extraArgsArray);
   var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot dialog", "chrome,close,titlebar,resizable, dependent", editorElement, commandStr, DOMGraph);
+  document.getElementById("vcamactive").setAttribute("hidden", "true");
   return;
 }
 function nonmodalRecreateGraph(graph, DOMGraph, editorElement) {
