@@ -138,7 +138,9 @@ function initMetaData( doc ) {
     node = doc.createElement("sw-meta");
     node.setAttribute("id", "sw-meta");
     // put in the head
-    headnode.insertBefore(node, headnode.firstChild);
+    if (headnode){
+      headnode.insertBefore(node, headnode.firstChild);
+    }
   }
   // Initial data are version, created, lastrevised
   var product = "Scientific WorkPlace";
