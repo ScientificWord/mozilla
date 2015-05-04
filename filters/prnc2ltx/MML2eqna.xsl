@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet 
+<xsl:stylesheet
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:exsl="http://exslt.org/common"
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
@@ -16,7 +16,7 @@
 
   <xsl:template name="extract-row-spaces">
     <xsl:param name="rowspacing-list"/>
-  
+
     <xsl:choose>
       <xsl:when test="string-length($rowspacing-list)=0">
         <!-- Nothing to do here. -->
@@ -72,7 +72,7 @@
   <xsl:template name="end-eqn-row">
     <xsl:param name="current-row"/>
     <xsl:param name="last-row"/>
-  
+
     <xsl:if test="$current-row &lt; $last-row">
       <xsl:text> \\</xsl:text>
       <xsl:value-of select="$newline"/>
@@ -144,7 +144,7 @@
     <xsl:param name="n-labeledrows"/>
     <xsl:param name="n-aligns"/>
     <xsl:param name="theAlignment"/>
-  
+
     <xsl:variable name="eqn-info.tr">
       <xsl:choose>
 <!-- multline or gather -->
@@ -152,12 +152,6 @@
 
         <LaTeX-env>
           <xsl:choose>
-            <xsl:when test="@subtype">
-              <xsl:value-of select="@subtype"/>
-            </xsl:when>
-            <xsl:when test="@type!=''">
-              <xsl:value-of select="@type"/>
-            </xsl:when>
             <xsl:when test="$theAlignment='alignCentered'">
               <xsl:text>gather</xsl:text>
             </xsl:when>
@@ -166,6 +160,12 @@
             </xsl:when>
             <xsl:when test="$n-labeledrows=1">
               <xsl:text>multline</xsl:text>
+            </xsl:when>
+            <xsl:when test="@subtype">
+              <xsl:value-of select="@subtype"/>
+            </xsl:when>
+            <xsl:when test="@type!=''">
+              <xsl:value-of select="@type"/>
             </xsl:when>
             <xsl:otherwise>
               <xsl:text>gather</xsl:text>
