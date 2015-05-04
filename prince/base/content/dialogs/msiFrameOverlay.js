@@ -176,7 +176,6 @@ SizeState.prototype = {
     this.computeInferredDimensions();
     this.applySizes();
   }
-
 }
 
 
@@ -1312,6 +1311,9 @@ this is the case for images in an msiframe
       floatPosition += "b";
     }
     msiEditorEnsureElementAttribute(frameNode, "ltxfloat", floatPosition, editor);
+    if (floatPosition.length > 0) {
+      msiRequirePackage(Dg.editorElement, "float","");
+    }
   } else
     frameNode.removeAttribute("ltxfloat");
   if (isEnabled(Dg.locationList))
