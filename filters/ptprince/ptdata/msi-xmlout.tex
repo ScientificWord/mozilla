@@ -25,7 +25,7 @@
    \ifmmode
       \msitag{\msipassthru{<a href="#1">#2</a>}}%
    \else
-      \msiopentag{a}{<a href="}#1\msitag{">}#2\msiclosetag{a}{</a>}%
+      \msihmode\msiopentag{a}{<a href="}#1\msitag{">}#2\msiclosetag{a}{</a>}%
    \fi
    \endgroup}
 
