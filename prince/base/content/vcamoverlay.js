@@ -46,9 +46,11 @@ VCamObject.prototype = {
   setActionSpeed: null,
 
   // plot event handlers
-  onVCamMouseDown: null,
-  onVCamMouseUp: null,
-  onVCamDblClick: null,
+  onVCamLeftMouseDown: null,
+  onVCamRightMouseDown: null,
+  onVCamLeftMouseUp: null,
+  onVCamRightMouseUp: null,
+  onVCamLeftDblClick: null,
   onVCamDragMove: null,
   onVCamDrop: null,
 
@@ -224,32 +226,15 @@ VCamObject.prototype = {
 
     // define mouse handlers
 
-    this.onVCamMouseUp = function() {
-      //  alert("Mouse up in plugin!");
-    };
+    this.onVCamLeftMouseUp = onVCamLeftMouseUp;
 
-    this.onVCamMouseDown = function(screenX, screenY) {
-      // parameters are unused
-      try
-      {
-        if (this.editor) {
-          this.editor.selection.collapse(this.parentNode, 0);
-          this.checkSelectionStateForAnonymousButtons(editor.selection);
-        }
-      }
-      catch(e) {}
-    };
+    this.onVCamLeftMouseDown = onVCamLeftMouseDown;
 
-    this.onVCamDblClick = function(screenX, screenY) {
-    // parameters are unused
-      try
-      {
-        if (this.editorElement) {
-          goDoPrinceCommand("cmd_objectProperties", this, editorElement);
-        }
-      }
-      catch(e) {}
-    };
+    this.onVCamRightMouseUp = onVCamRightMouseUp;
+
+    this.onVCamRightMouseDown = onVCamRightMouseDown;
+
+    this.onVCamLeftDblClick = onVCamLeftDblClick;
 
     this.onVCamDragMove = function(x, y) {
       // parameters are unused
@@ -289,9 +274,11 @@ VCamObject.prototype = {
       }
     };
 
-    this.obj.addEvent('leftMouseDown', this.onVCamMouseDown.bind(this, screenX, screenY));
-    this.obj.addEvent('leftMouseUp', this.onVCamMouseUp.bind(this));
-    this.obj.addEvent('leftMouseDoubleClick', this.onVCamDblClick.bind(this, screenX, screenY));
+    this.obj.addEvent('leftMouseDown', this.onVCamLeftMouseDown.bind(this, screenX, screenY));
+    this.obj.addEvent('leftMouseUp', this.onVCamLeftMouseUp.bind(this));
+    this.obj.addEvent('leftMouseDoubleClick', this.onVCamLeftDblClick.bind(this, screenX, screenY));
+    this.obj.addEvent('rightMouseDown', this.onVCamRightMouseDown.bind(this, screenX, screenY));
+    this.obj.addEvent('rightMouseUp', this.onVCamRightMouseUp.bind(this));
     this.obj.addEvent('dragMove', this.onVCamDragMove.bind(this));
     this.obj.addEvent('drop', this.onVCamDrop.bind(this));
     this.obj.addEvent('dragLeave', (function() {}));
@@ -575,11 +562,12 @@ function VCamCommand(cmd) {
   currentVCamObject.doCommand(cmd);
 }
 
-function onVCamMouseUp() {
-  //  alert("Mouse up in plugin!");
+function onVCamLeftMouseUp() {
+  // alert("left mouse up in plugin!");
 }
 
-function onVCamMouseDown(screenX, screenY) {
+function onVCamLeftMouseDown(screenX, screenY) {
+  // alert('left mouse');
   try {
     if (msiGetActiveEditorElement != null) {
       var editorElement = msiGetActiveEditorElement();
@@ -592,7 +580,15 @@ function onVCamMouseDown(screenX, screenY) {
   this.doVCamInitialize();
 }
 
-function onVCamDblClick(screenX, screenY) {
+
+
+function onVCamRightMouseUp() {
+   // alert("right mouse up in plugin!");
+}
+
+
+function onVCamLeftDblClick(screenX, screenY) {
+  // alert('double click');
   try {
     if (msiGetActiveEditorElement != null) {
       var editorElement = msiGetActiveEditorElement();
@@ -604,6 +600,7 @@ function onVCamDblClick(screenX, screenY) {
 
 function onVCamRightMouseDown(screenX, screenY)
 {
+  // alert('right mouse');
   try {
     var editorElement = msiGetActiveEditorElement();
   }
@@ -621,6 +618,7 @@ function onVCamRightMouseDown(screenX, screenY)
 function onVCamRightMouseUp(screenX, screenY)  // BBM: ???
 {
   try {
+    // alert('right mouse up');
     if (msiGetActiveEditorElement != null)  {
       var editorElement = msiGetActiveEditorElement();
       var editor = msiGetEditor(editorElement);
