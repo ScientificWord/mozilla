@@ -226,15 +226,98 @@ VCamObject.prototype = {
 
     // define mouse handlers
 
-    this.onVCamLeftMouseUp = onVCamLeftMouseUp;
+    this.onVCamLeftMouseUp = function onVCamLeftMouseUp() {
+      // alert("left mouse up in plugin!");
+    }
 
-    this.onVCamLeftMouseDown = onVCamLeftMouseDown;
+    this.onVCamLeftMouseDown = function onVCamLeftMouseDown(screenX, screenY) {
+      // alert('left mouse');
+      // try {
+      //   if (msiGetActiveEditorElement != null) {
+      //     var editorElement = msiGetActiveEditorElement();
+      //     var editor = msiGetEditor(editorElement);
+      //     editor.selection.collapse(this.obj.parentNode, 0);
+      //     editor.checkSelectionStateForAnonymousButtons(editor.selection);
+      //   }
+      // }
+      // catch(e) {}
+//      this.doVCamInitialize();
+    }
 
-    this.onVCamRightMouseUp = onVCamRightMouseUp;
 
-    this.onVCamRightMouseDown = onVCamRightMouseDown;
 
-    this.onVCamLeftDblClick = onVCamLeftDblClick;
+    this.onVCamRightMouseUp = function onVCamRightMouseUp() {
+       // alert("right mouse up in plugin!");
+    }
+
+
+    this.onVCamLeftDblClick = function onVCamLeftDblClick(screenX, screenY) {
+      // alert('double click');
+      try {
+        if (msiGetActiveEditorElement != null) {
+          var editorElement = msiGetActiveEditorElement();
+          goDoPrinceCommand("cmd_objectProperties", this.obj.parentNode.parentNode, editorElement); // go up to the graph object
+        }
+      }
+      catch(e) {}
+    }
+
+    this.onVCamRightMouseDown = function onVCamRightMouseDown(screenX, screenY)
+    {
+      // alert('right mouse');
+      try {
+        var editorElement = msiGetActiveEditorElement();
+      }
+      catch(e) { return; }
+      var editor = msiGetEditor(editorElement);
+      var graphNode = editor.getElementOrParentByTagName("graph", this.obj);
+      var contextMenu = document.getElementById("msiEditorContentContext");
+      if (contextMenu)
+      {
+        contextMenu.showPopup(graphNode, screenX, screenY, "none", "none");
+        contextMenu.focus();
+      }
+    }
+
+    this.onVCamRightMouseUp = function onVCamRightMouseUp(screenX, screenY)  // BBM: ???
+    {
+      try {
+        // alert('right mouse up');
+        if (msiGetActiveEditorElement != null)  {
+          var editorElement = msiGetActiveEditorElement();
+          var editor = msiGetEditor(editorElement);
+          var evt = editor.document.createEvent("MouseEvents");
+          evt.initMouseEvent("mouseup", true, true, editor.document.defaultView, 1,
+            screenX, screenY, null, null, 0, 0, 0, 0, 2, null);
+          this.parentNode.dispatchEvent(evt);
+        }
+      }
+      catch(e) {}
+    }
+
+    this.onVCamKeyDown = function onVCamKeyDown(aKeyCodeMaybe)
+    {
+      dump("In onVCamKeyDown, keyCode was " + (aKeyCodeMaybe ? aKeyCodeMaybe : "null") + "\n");
+    }
+
+    this.onVCamKeyUp = function onVCamKeyUp(aKeyCodeMaybe)
+    {
+      dump("In onVCamKeyUp, keyCode was " + (aKeyCodeMaybe ? aKeyCodeMaybe : "null") + "\n");
+    }
+
+    this.onVCamTreeChange = function onVCamTreeChange(treeEvent)
+    {
+      try
+      {
+        msidump("Reported VCam tree change event: type is [" + treeEvent.type + "], target node is [" + treeEvent.target.nodeName + "], property changed is [" + treeEvent.property + "]\n");
+      }
+      catch(exc)
+      {
+        msidump("Got exception in onVCamTreeChange: " + exc + "\n");
+      }
+    }
+
+    this.onVCamDragLeave = function onVCamDragLeave(x, y) {}
 
     this.onVCamDragMove = function(x, y) {
       // parameters are unused
@@ -562,98 +645,6 @@ function VCamCommand(cmd) {
   currentVCamObject.doCommand(cmd);
 }
 
-function onVCamLeftMouseUp() {
-  // alert("left mouse up in plugin!");
-}
-
-function onVCamLeftMouseDown(screenX, screenY) {
-  // alert('left mouse');
-  try {
-    if (msiGetActiveEditorElement != null) {
-      var editorElement = msiGetActiveEditorElement();
-      var editor = msiGetEditor(editorElement);
-      editor.selection.collapse(this.parentNode, 0);
-      editor.checkSelectionStateForAnonymousButtons(editor.selection);
-    }
-  }
-  catch(e) {}
-  this.doVCamInitialize();
-}
-
-
-
-function onVCamRightMouseUp() {
-   // alert("right mouse up in plugin!");
-}
-
-
-function onVCamLeftDblClick(screenX, screenY) {
-  // alert('double click');
-  try {
-    if (msiGetActiveEditorElement != null) {
-      var editorElement = msiGetActiveEditorElement();
-      goDoPrinceCommand("cmd_objectProperties", this, editorElement);
-    }
-  }
-  catch(e) {}
-}
-
-function onVCamRightMouseDown(screenX, screenY)
-{
-  // alert('right mouse');
-  try {
-    var editorElement = msiGetActiveEditorElement();
-  }
-  catch(e) { return; }
-  var editor = msiGetEditor(editorElement);
-  var graphNode = editor.getElementOrParentByTagName("graph", this);
-  var contextMenu = document.getElementById("msiEditorContentContext");
-  if (contextMenu)
-  {
-    contextMenu.showPopup(graphNode, screenX, screenY, "none", "none");
-	  contextMenu.focus();
-  }
-}
-
-function onVCamRightMouseUp(screenX, screenY)  // BBM: ???
-{
-  try {
-    // alert('right mouse up');
-    if (msiGetActiveEditorElement != null)  {
-      var editorElement = msiGetActiveEditorElement();
-      var editor = msiGetEditor(editorElement);
-      var evt = editor.document.createEvent("MouseEvents");
-      evt.initMouseEvent("mouseup", true, true, editor.document.defaultView, 1,
-        screenX, screenY, null, null, 0, 0, 0, 0, 2, null);
-      this.parentNode.dispatchEvent(evt);
-    }
-  }
-  catch(e) {}
-}
-
-function onVCamKeyDown(aKeyCodeMaybe)
-{
-  dump("In onVCamKeyDown, keyCode was " + (aKeyCodeMaybe ? aKeyCodeMaybe : "null") + "\n");
-}
-
-function onVCamKeyUp(aKeyCodeMaybe)
-{
-  dump("In onVCamKeyUp, keyCode was " + (aKeyCodeMaybe ? aKeyCodeMaybe : "null") + "\n");
-}
-
-function onVCamTreeChange(treeEvent)
-{
-  try
-  {
-    msidump("Reported VCam tree change event: type is [" + treeEvent.type + "], target node is [" + treeEvent.target.nodeName + "], property changed is [" + treeEvent.property + "]\n");
-  }
-  catch(exc)
-  {
-    msidump("Got exception in onVCamTreeChange: " + exc + "\n");
-  }
-}
-
-function onVCamDragLeave(x, y) {}
 
 function queryVCamValues(obj, graph, domGraph, bUserSetIfChanged)
 {
