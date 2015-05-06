@@ -3,22 +3,22 @@ var theProcess;
 var theIndexProcess;
 var theBibTeXProcess;
 var passData;
-var sentinel;
+var sentinel = null;
 var blocking = false; // set whether blocking or not.
 var timer = Components.classes["@mozilla.org/timer;1"]
                     .createInstance(Components.interfaces.nsITimer);
 
-var timerCallback = 
-{  
+var timerCallback =
+{
   timercopy: timer,
   notify: function(timer)
-   { 
-     if (timer) timercopy = timer;
+   {
+     if (timer && (timercopy !== timer)) timercopy = timer;
      if (!sentinel)
      {
         if (timercopy) timercopy.cancel();
         return;
-     } 
+     }
      if (sentinel.exists())
      {
        if (passData.passCounter < passData.passCount)
@@ -50,18 +50,18 @@ var timerCallback =
          var dlg = document.getElementById("passesDlg");
          dlg.getButton("accept").disabled = false;
          dlg.getButton("cancel").disabled = true;
-         top.document.commandDispatcher.focusedWindow.focus();  
+         top.document.commandDispatcher.focusedWindow.focus();
 //         window.opener.cancelSendMessage = true;
 //         window.close();
        }
      }
-   } 
+   }
  }
 
 
 function Init()
 {
-  
+
   passData = window.arguments[0];
   passData.passCounter = 1;
   document.getElementById("numpasses").value = passData.passCount;
@@ -118,7 +118,7 @@ function onCancel()
   theProcess = null;
   Components.utils.reportError("in onCancel\n");
   SaveWindowLocation();
-  top.document.commandDispatcher.focusedWindow.focus();  
+  top.document.commandDispatcher.focusedWindow.focus();
   window.close();
   return true;
 }

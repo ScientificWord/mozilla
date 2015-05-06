@@ -3,21 +3,21 @@
    - License Version 1.1 (the "License"); you may not use this file
    - except in compliance with the License. You may obtain a copy of
    - the License at http://www.mozilla.org/NPL/
-   -  
+   -
    - Software distributed under the License is distributed on an "AS
    - IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
    - implied. See the License for the specific language governing
    - rights and limitations under the License.
-   -  
+   -
    - The Original Code is Mozilla Communicator client code, released
    - March 31, 1998.
-   - 
+   -
    - The Initial Developer of the Original Code is Netscape
    - Communications Corporation. Portions created by Netscape are
    - Copyright (C) 1998-2000 Netscape Communications Corporation. All
    - Rights Reserved.
-   - 
-   - Contributor(s): 
+   -
+   - Contributor(s):
   -->
 
 <!-- Window title -->
@@ -72,9 +72,9 @@
 <!ENTITY tableColumns.label               "Columns">
 <!ENTITY tableColumns.accesskey           "C" -->
 
-<!ENTITY tableRowHeight.label             "Row height">
+<!ENTITY tableRowHeight.label             "Extra row height">
 <!ENTITY tableRowHeight.accesskey         "H">
-<!ENTITY tableColumnWidth.label           "Column width">
+<!ENTITY tableColumnWidth.label           "Extra column width">
 <!ENTITY tableColumnWidth.accesskey       "W">
 
 <!-- !ENTITY tableBorderSpacing.label         "Spacing">
@@ -152,7 +152,7 @@
 <!ENTITY borderStyleInset.label "Inset">
 <!ENTITY borderStyleOutset.label "Outset">
 
-<!ENTITY borderColor.label "Line color"> 
+<!ENTITY borderColor.label "Line color">
 
 <!ENTITY cellSelection.label              "Selection">
 <!ENTITY cellSelectCell.label             "Cell">
@@ -244,16 +244,13 @@
 <!ENTITY abovetable.label "Above table">
 <!ENTITY belowtable.label "Below table">
 <!ENTITY Basecolor.label  "Base color">
-<!ENTITY Rowheight.label  "Row height">
-<!ENTITY Columnwidth.label  "Column width">
+<!ENTITY Rowheight.label  "Extra row height">
+<!ENTITY Columnwidth.label  "Extra column width">
 <!ENTITY Cellcolor.label  "Cell color">
 <!ENTITY inherit.label  "Inherit">
 
 <!ENTITY currentUnits "Current units: ">
 <!ENTITY other.label "Other" >
-<!ENTITY rowheightRule "A row's height will be the height of its tallest cell" >
-<!ENTITY colwidthRule "A column's width will be the width of its widest cell" >
-<!ENTITY cellsizeInstructions "Use cell dimension of 0.0 to leave current dimensions unchanged" >
 
 <!ENTITY tableLabelingTab.label "Labeling" >
 <!ENTITY tableKey.label "Key">

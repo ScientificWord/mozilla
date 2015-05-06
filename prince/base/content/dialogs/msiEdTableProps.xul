@@ -218,19 +218,18 @@
                 <rows>
                   <row align="center">
                     <label value="&Rowheight.label;"/>
-                    <textbox id="CellHeightInput" type="number" class="medwidth"
+                    <textbox id="CellHeightInput" type="number" class="medwidth" decimalplaces="3" min="0" increment=".1"
                              oninput=""/>
                   </row>
                   <row align="center">
                     <label value="&Columnwidth.label;"/>
-                    <textbox id="CellWidthInput" type="number" class="medwidth"
+                    <textbox id="CellWidthInput" type="number" class="medwidth"  decimalplaces="3" min="0" increment=".1"
                              oninput=""/>
                   </row>
                 </rows>
               </grid>
             <spacer flex="1"/>
             <hbox><label>&currentUnits;&#x00a0;</label><label observes="currentunits"/></hbox>
-            <description style="width:230px">&cellsizeInstructions;</description>
           </groupbox>
         </vbox>
           <groupbox><caption label="&CellContentAlign.label;"/>
@@ -281,11 +280,6 @@
             </msibutton>
           </groupbox>
         </hbox>
-
-          <vbox>
-            <label>&rowheightRule;</label>
-            <label>&colwidthRule;</label>
-          </vbox>
       </vbox>
         <spacer flex="1"/>
       </tabpanel><!-- Cells Panel -->
