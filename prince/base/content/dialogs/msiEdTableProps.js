@@ -94,7 +94,7 @@ var gCellWidthUnit = "pt";
 var gCellHeightUnit = "pt";
 var gCellFontSize = 10;
 
-var rowHeightControlIDs = ["tableRowHeightLabel", "tableRowHeight"];
+var rowHeightControlIDs = ["RowheightLabel", "CellHeightInput"];
 
 var data;
 
@@ -1125,12 +1125,12 @@ function DoStyleChangesForACell(destCell)
   for (i = 0; i < length; i++) {
     propArray.push(styleArray[i][0]);
   }
-  if (gDialog.CellWidthInput.value > 0) {
-    setStyleAttribute("width", gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value);
-  }
-  if (gDialog.CellHeightInput.value > 0) {
-    setStyleAttribute("height", gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value );
-  }
+  // if (gDialog.CellWidthInput.value > 0) {
+  //   setStyleAttribute("width", gDialog.CellWidthInput.value + document.getElementById("unitMenulist").value);
+  // }
+  // if (gDialog.CellHeightInput.value > 0) {
+  //   setStyleAttribute("height", gDialog.CellHeightInput.value + document.getElementById("unitMenulist").value );
+  // }
   if (color) {
     setStyleAttribute('background-color', color);
   }
@@ -1879,16 +1879,16 @@ function ApplyAttributesToOneCell(destElement, newLineObject)
   if (Number(gDialog.CellHeightInput.value) !== 0)
   {
     aVal = frameUnitHandler.getValueString(gDialog.CellHeightInput.value);
-    SetAnAttribute(destElement, "cellheight", aVal);
+    SetAnAttribute(destElement, "xtracellheight", aVal);
   }
-  else gActiveEditor.removeAttribute(destElement,"cellheight");
+  else gActiveEditor.removeAttribute(destElement,"xtracellheight");
 
   if (Number(gDialog.CellWidthInput.value) !== 0)
   {
     aVal = frameUnitHandler.getValueString(gDialog.CellWidthInput.value);
-    SetAnAttribute(destElement, "cellwidth", aVal);
+    SetAnAttribute(destElement, "xtracellwidth", aVal);
   }
-  else gActiveEditor.removeAttribute(destElement,"cellwidth");
+  else gActiveEditor.removeAttribute(destElement,"xtracellwidth");
 
 
 //  for (ix = 0; ix < gCellChangeData.border.style.length; ++ix)
