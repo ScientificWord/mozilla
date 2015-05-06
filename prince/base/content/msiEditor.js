@@ -610,6 +610,7 @@ var msiResizeListener =
 
       var unithandler = new UnitHandler(editor);
       var units;
+      var obj;
 // skip preserving aspect ratio for now.
       var graph = new Graph();
       var editorElement = msiGetActiveEditorElement();
@@ -621,6 +622,13 @@ var msiResizeListener =
       graph.setGraphAttribute("Width", String(newWidthInUnits));
       graph.setGraphAttribute("Height", String(newHeightInUnits));
       graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
+      obj = DOMGraph.getElementsByTagName('obj');
+      if (obj.length >= 1) obj = obj[0];
+      else obj = null;
+      if (obj) {
+        aVCamObject= new VCamObject(obj);
+        aVCamObject.init();
+      }
     }
     catch(e) {
       msidump( e.message );
@@ -10259,7 +10267,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       openFontSizeDialog(elementName,element);
     }
-    else if ((elementName == "img") || (elementName=="graph") || (elementName == "msiframe"))
+    else if ((elementName === "img") || (elementName==="graph") || (elementName === "msiframe"))
     {
       var bIsGraph = (elementName !== "img");
       // if (!bIsGraph)

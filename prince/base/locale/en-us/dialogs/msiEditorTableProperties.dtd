@@ -49,9 +49,9 @@
 <!ENTITY tableColumns.label               "Columns:">
 <!ENTITY tableColumns.accesskey           "C" -->
 
-<!ENTITY tableRowHeight.label             "Row height:">
+<!ENTITY tableRowHeight.label             "Extra row height:">
 <!ENTITY tableRowHeight.accesskey         "H">
-<!ENTITY tableColumnWidth.label           "Column width:">
+<!ENTITY tableColumnWidth.label           "Extra column width:">
 <!ENTITY tableColumnWidth.accesskey       "W">
 
 <!-- !ENTITY tableBorderSpacing.label         "Spacing">
@@ -118,7 +118,7 @@
 <!ENTITY borderStyleInset.label "Inset">
 <!ENTITY borderStyleOutset.label "Outset">
 
-<!ENTITY borderColor.label "Line color"> 
+<!ENTITY borderColor.label "Line color">
 
 <!ENTITY cellSelection.label              "Selection">
 <!ENTITY cellSelectCell.label             "Cell">
