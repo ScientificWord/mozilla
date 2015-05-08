@@ -37,8 +37,8 @@
       <toolbarbutton id="vc-AutoZoomOut" class="toolbarbutton-1" type="radio" group="zoomgroup" label="vcAutoZoomOut" command="cmd_vcAutoZoomOut" observes="3dplot"/>
       <toolbarbutton id="vc-ZoomIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomIn" command="cmd_vcZoomIn" observes="2dplot"/>
       <toolbarbutton id="vc-ZoomOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomOut" command="cmd_vcZoomOut" observes="2dplot"/>
-      <toolbarbutton id="vc-ZoomBoxIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxIn" command="cmd_vcZoomBoxIn" observes="2dplot"/>
-      <toolbarbutton id="vc-ZoomBoxOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxOut" command="cmd_vcZoomBoxOut" observes="2dplot"/>
+      <!--       <toolbarbutton id="vc-ZoomBoxIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxIn" command="cmd_vcZoomBoxIn" observes="2dplot"/>
+      <toolbarbutton id="vc-ZoomBoxOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxOut" command="cmd_vcZoomBoxOut" observes="2dplot"/> -->
       <toolbarbutton id="vc-SnapShot" class="toolbarbutton-1" label="vcSnapshot" command="cmd_vcSnapshot"/>
       <toolbarseparator/>
       <toolbarbutton id="vc-AutoSpeed" type="menu" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
