@@ -55,6 +55,7 @@ VCamObject.prototype = {
   onVCamDrop: null,
 
   init: function() {
+    netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');  // BBM: test to see if this is necessary
     this.initToolbar();
     this.initEventHandlers();
     },
