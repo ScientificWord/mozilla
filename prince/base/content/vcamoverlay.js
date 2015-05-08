@@ -21,7 +21,7 @@ a number of try blocks surrounding calls to msiGetActiveEditorElement. */
 var currentVCamObject = null;
 
 function VCamObject( vcampluginObject) {
-
+  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');  // BBM: test to see if this is necessary
   if (vcampluginObject.wrappedJSObject) {
     this.obj = vcampluginObject.wrappedJSObject;
   }
