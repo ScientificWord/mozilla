@@ -13,10 +13,10 @@ var timerCallback =
   timercopy: timer,
   notify: function(timer)
    {
-     if (timer && (timercopy !== timer)) timercopy = timer;
+     if (timer && (this.timercopy !== timer)) this.timercopy = timer;
      if (!sentinel)
      {
-        if (timercopy) timercopy.cancel();
+        if (this.timercopy) this.timercopy.cancel();
         return;
      }
      if (sentinel.exists())
