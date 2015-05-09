@@ -41,6 +41,7 @@
 #include "nsIDOMEventTarget.h"
 #include "nsIDOMNSHTMLElement.h"
 #include "nsPIDOMEventTarget.h"
+#include "nsIStyledElement.h"
 #include "nsIDOMText.h"
 
 #include "nsIDOMCSSValue.h"
@@ -311,9 +312,19 @@ nsHTMLEditor::SetAllResizersPosition()
 NS_IMETHODIMP
 nsHTMLEditor::RefreshResizers()
 {
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsCOMPtr<nsIDOMElement> parentElement;
+  nsCOMPtr<nsIStyledElement> styled;
+  nsCOMPtr<nsICSSStyleRule> rule;
   // nothing to do if resizers are not displayed...
   if (!mResizedObject)
     return NS_OK;
+  PRInt32 x = mResizedObjectX;
+  PRInt32 y = mResizedObjectY;
+  PRInt32 w = mResizedObjectWidth;
+  PRInt32 h = mResizedObjectHeight;
+  nsAutoString tagName;
+  nsAutoString ruletext;
 
   nsresult res = GetPositionAndDimensions(mResizedObject,
                                           mResizedObjectX,
@@ -328,6 +339,23 @@ nsHTMLEditor::RefreshResizers()
   if (NS_FAILED(res)) return res;
   res = SetAllResizersPosition();
   if (NS_FAILED(res)) return res;
+  // This is the point at which we need to check to see if there is an msiframe surrounding this object.
+
+  res = mResizedObject->GetParentNode(getter_AddRefs(parentNode));
+  parentElement = do_QueryInterface(parentNode);
+  parentElement->GetTagName(tagName);
+  if (tagName.EqualsLiteral("msiframe")) {
+    if (w != mResizedObjectWidth) {
+      // set new width for the frame
+      styled = do_QueryInterface(parentElement);
+      styled->GetInlineStyleRule(getter_AddRefs(rule));
+      rule->GetCSSText(ruletext);
+    }
+    if (h != mResizedObjectHeight) {
+
+    }
+  }
+
   return SetShadowPosition(mResizingShadow, mResizedObject,       // BBM: Disable shadows -- see below
                            mResizedObjectX, mResizedObjectY);
 }
