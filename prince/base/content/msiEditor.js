@@ -627,7 +627,6 @@ var msiResizeListener =
       else obj = null;
       if (obj) {
         aVCamObject= new VCamObject(obj);
-        aVCamObject.init();
       }
     }
     catch(e) {
@@ -676,7 +675,6 @@ var msiResizeListener =
         graph.reviseGraphDOMElement(parent, false, editorElement);
         if (obj) {
           aVCamObject= new VCamObject(obj);
-          aVCamObject.init();
         }
       }
     }
@@ -3118,7 +3116,6 @@ function EditorClick(event)
         var obj = graphnode.getElementsByTagName("object")[0];
         if (obj) {
           aVCamObject = new VCamObject(obj);
-          aVCamObject.init();
         }
 //        if (obj.wrappedJSObject) obj = obj.wrappedJSObject;  // not necessary here
       }
