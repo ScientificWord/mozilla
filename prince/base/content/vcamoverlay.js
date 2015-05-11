@@ -20,15 +20,34 @@ a number of try blocks surrounding calls to msiGetActiveEditorElement. */
 
 var currentVCamObject = null;
 
-function VCamObject( vcampluginObject) {
+function saveObj(obj) {  // this hack won't be necessary with ES6
+  try {
+    vcamIdArray.push(obj.id);
+    vcamObjArray[vcamIdArray.length - 1] = obj;
+  }
+ catch(e) {
+
+ }
+}
+
+function VCamObject( vcampluginObject ) {
+  var index = -1;
+  var id = vcampluginObject.id;
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');  // BBM: test to see if this is necessary
-  if (vcampluginObject.wrappedJSObject) {
-    this.obj = vcampluginObject.wrappedJSObject;
+  index = vcamIdArray.indexOf(id);
+  if (index >= 0) {
+    this.obj = vcamObjArray[index];
   }
   else {
-    this.obj = vcampluginObject;
+    if (vcampluginObject.wrappedJSObject) {
+      this.obj = vcampluginObject.wrappedJSObject;
+    }
+    else {
+      this.obj = vcampluginObject;
+    }
+    saveObj(this.obj);
   }
-
+  if (this.obj) this.init();
 }
 
 VCamObject.prototype = {
