@@ -40,7 +40,7 @@ var msiComputeStopCommand = {
     doComputeStopCommand();
   }
 
-  
+
 };
 
 // var msiEvaluateCommandKeyboard = {
@@ -941,12 +941,11 @@ function dontSetAnimationTime() {
   return;
 }
 
+var lastId = 0;
 function findUnusedId( prefix ) {
-  var n = 1;
+  lastId += 1;
+  var n = lastId;
   var theId = prefix + n.toString();
-  while (document.getElementById(theId)) {
-    theId = prefix + Math.round(Math.random()*1000);
-  }
   return theId;
 }
 
@@ -1265,7 +1264,7 @@ function appendLabeledResult(result, label, math, editorElement) {
 
   editor.setCaretAfterElement(math);
   if (res2Loc == -1 && res1Loc == -1) {
-    editor.insertHTML(preStr + result + postStr);  
+    editor.insertHTML(preStr + result + postStr);
   }
   else {
     resPre = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow>";
@@ -1274,11 +1273,11 @@ function appendLabeledResult(result, label, math, editorElement) {
     temp = temp.replace(resPost,"");
     resultArray = temp.split("<mo>,</mo>");
     if (resultArray && resultArray.length > 1) {
-      var answer = preStr + space + 
-                   resPre + resultArray[0] + resPost + space + 
-                   midStr + space + 
-                   resPre + resultArray[1] + 
-                   resPost + space + 
+      var answer = preStr + space +
+                   resPre + resultArray[0] + resPost + space +
+                   midStr + space +
+                   resPre + resultArray[1] +
+                   resPost + space +
                    postStr + space;
       editor.insertHTML(answer);
     }
@@ -2187,7 +2186,7 @@ function doComputeSolveODENumeric(math, labelID, titleID, vars, editorElement, c
       o.theCommandHandler = cmdHandler;
       o.afterDialog = function(editorElement) {
         if (this.Cancel) return;
-        this.mParentWin.doComputeSolveODENumeric(this.theMath, this.theLabelID, 
+        this.mParentWin.doComputeSolveODENumeric(this.theMath, this.theLabelID,
                    this.theTitleID, this.vars, this.theEditorElement, this.theCommand, this.theCommandHandler);
       };
       try {
@@ -2865,7 +2864,7 @@ function coalescemath(editorElement, leaveCursorAsIs) {
       }
     }
     var left = node_before(element);
-    while (left) 
+    while (left)
     {
       if (left.localName != "math") {
         left = null;
@@ -2878,7 +2877,7 @@ function coalescemath(editorElement, leaveCursorAsIs) {
       }
     }
     var right = node_after(element);
-    while (right) 
+    while (right)
     {
       if (right.localName != "math") {
         right = null;

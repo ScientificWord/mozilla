@@ -6,6 +6,9 @@
 /* jshint ignore:end */
 Components.utils.import("resource://app/modules/os.jsm");
 //----------------------------------------------------------------------------------
+
+var vcamObjArray = [];
+var vcamIdArray = [];
 // ************ Graph section ******
 
 function Graph() {
@@ -327,15 +330,22 @@ Graph.prototype = {
     var htmlns = "http://www.w3.org/1999/xhtml";
     var editorElement = msiGetActiveEditorElement();
 //    var document = editorElement.contentDocument;
-    var DOMGraph = document.createElementNS(htmlns, "graph");
-    var DOMGs = document.createElementNS(htmlns, "graphSpec");
-    var DOMFrame = document.createElementNS(htmlns, "msiframe");
-    var DOMObj = document.createElementNS(htmlns, "object");
+    var DOMGraph;
+    var DOMGs;
+    var DOMFrame;
+    var DOMObj;
+    DOMGraph = document.createElementNS(htmlns, "graph");
+    DOMGs = document.createElementNS(htmlns, "graphSpec");
+    DOMFrame = document.createElementNS(htmlns, "msiframe");
+    DOMObj = null;
+    if (!forComp) {
+      DOMObj = document.createElementNS(htmlns, "object");
+    }
     var DOMCaption = document.createElementNS(htmlns,"imagecaption");
     DOMGraph.appendChild(DOMGs);
     DOMGraph.appendChild(DOMFrame);
     DOMFrame.appendChild(DOMCaption);
-    DOMFrame.appendChild(DOMObj);
+    if (DOMObj) DOMFrame.appendChild(DOMObj);
     this.reviseGraphDOMElement(DOMGraph, forComp, editorElement, optplot);
     return DOMGraph;
   },
@@ -2262,6 +2272,7 @@ function insertGraph(siblingElement, graph, editorElement) {
     obj.id = findUnusedId("plot");
     obj.setAttribute("id", obj.id); // BBM: unnecessary??
   }
+  saveObj(obj);
   editorElement.focus();
 }
 
