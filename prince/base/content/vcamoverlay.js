@@ -385,7 +385,7 @@ VCamObject.prototype = {
     this.obj.addEvent('dragMove', this.onVCamDragMove.bind(this));
     this.obj.addEvent('drop', this.onVCamDrop.bind(this));
     this.obj.addEvent('dragLeave', (function() {}));
-    this.obj.addEvent("currentTimeChange", this.showAnimationTime.bind(this));
+    if (this.showAnimationTime) this.obj.addEvent("currentTimeChange", this.showAnimationTime.bind(this));
 
     if (editorElement) editorElement.focus();
   },
