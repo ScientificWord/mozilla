@@ -88,8 +88,8 @@ VCamObject.prototype = {
   init: function() {
     netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect'); // BBM: test to see if this is necessary
     this.cursorTool = this.obj.cursorTool;
-    this.threedplot = (3 === this.obj.dimension);
     this.twodplot = (2 === this.obj.dimension);
+    this.threedplot = !this.twodplot;
     this.animplot = this.obj.isAnimated;
     this.zoomAction = this.obj.zoomAction;
     this.verticalAction = this.obj.rotateVerticalAction;
@@ -132,13 +132,13 @@ VCamObject.prototype = {
     if (this.threedplot) {
       document.getElementById("vc-Zoom").checked = (this.cursorTool === 'zoom');
       document.getElementById("vc-Zoom").removeAttribute("disabled");
-      document.getElementById("vc-RotateRight").checked = (this.verticalAction === 1);
+      document.getElementById("vc-RotateRight").checked = (this.verticalAction == 1);
       document.getElementById("vc-RotateRight").removeAttribute("disabled");
-      document.getElementById("vc-RotateLeft").checked = (this.verticalAction === 2);
+      document.getElementById("vc-RotateLeft").checked = (this.verticalAction == 2);
       document.getElementById("vc-RotateLeft").removeAttribute("disabled");
-      document.getElementById("vc-RotateUp").checked = (this.horizontalAction === 1);
+      document.getElementById("vc-RotateUp").checked = (this.horizontalAction == 1);
       document.getElementById("vc-RotateUp").removeAttribute("disabled");
-      document.getElementById("vc-RotateDown").checked = (this.horizontalAction === 2);
+      document.getElementById("vc-RotateDown").checked = (this.horizontalAction == 2);
       document.getElementById("vc-RotateDown").removeAttribute("disabled");
 
       // Speed control
