@@ -7,8 +7,7 @@
 Components.utils.import("resource://app/modules/os.jsm");
 //----------------------------------------------------------------------------------
 
-var vcamObjArray = [];
-var vcamIdArray = [];
+
 // ************ Graph section ******
 
 function Graph() {

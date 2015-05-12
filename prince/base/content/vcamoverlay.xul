@@ -43,36 +43,36 @@
       <toolbarseparator/>
       <toolbarbutton id="vc-AutoSpeed" type="menu" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
         <menupopup>
-          <menuitem id="actionspeed8s" name = "action" type="radio" label="8x slower" oncommand="currentVCamObject.setActionSpeed(0.125);" />
-          <menuitem id="actionspeed4s" name = "action" type="radio" label="4x slower" oncommand="currentVCamObject.setActionSpeed(0.25);" />
-          <menuitem id="actionspeed2s" name = "action" type="radio" label="2x slower" oncommand="currentVCamObject.setActionSpeed(0.5);" />
-          <menuitem id="actionspeedN"  name = "action" type="radio" checked="true" label="Natural" oncommand="currentVCamObject.setActionSpeed(1.0);" />
-          <menuitem id="actionspeed2f" name = "action" type="radio" label="2x faster" oncommand="currentVCamObject.setActionSpeed(2.0);" />
-          <menuitem id="actionspeed4f" name = "action" type="radio" label="4x faster" oncommand="currentVCamObject.setActionSpeed(4.0);" />
-          <menuitem id="actionspeed8f" name = "action" type="radio" label="8x faster" oncommand="currentVCamObject.setActionSpeed(8.0);" />
+          <menuitem id="actionspeed8s" name = "action" type="radio" label="8x slower" oncommand="vcamWrapperArray[currentVCamObjectNum].setActionSpeed(0.125);" />
+          <menuitem id="actionspeed4s" name = "action" type="radio" label="4x slower" oncommand="vcamWrapperArray[currentVCamObjectNum].setActionSpeed(0.25);" />
+          <menuitem id="actionspeed2s" name = "action" type="radio" label="2x slower" oncommand="vcamWrapperArray[currentVCamObjectNum].setActionSpeed(0.5);" />
+          <menuitem id="actionspeedN"  name = "action" type="radio" checked="true" label="Natural" oncommand="vcamWrapperArray[currentVCamObjectNum].setActionSpeed(1.0);" />
+          <menuitem id="actionspeed2f" name = "action" type="radio" label="2x faster" oncommand="vcamWrapperArray[currentVCamObjectNum].setActionSpeed(2.0);" />
+          <menuitem id="actionspeed4f" name = "action" type="radio" label="4x faster" oncommand="vcamWrapperArray[currentVCamObjectNum].setActionSpeed(4.0);" />
+          <menuitem id="actionspeed8f" name = "action" type="radio" label="8x faster" oncommand="vcamWrapperArray[currentVCamObjectNum].setActionSpeed(8.0);" />
         </menupopup>
       </toolbarbutton>
       <toolbarseparator observes="animplot"/>
       <toolbarbutton id="vc-GoToStart" class="toolbarbutton-1" label="vcGoToStart" command="cmd_vcGoToStart" observes="animplot"/>
       <toolbarbutton id="vc-Play" class="toolbarbutton-1" type="checkbox" label="vcPlay" command="cmd_vcPlay" observes="animplot"/>
-      <scale id="vc-AnimScale" width="150" onchange= "currentVCamObject.setAnimationTime();" observes="animplot"/>
+      <scale id="vc-AnimScale" width="150" onchange= "vcamWrapperArray[currentVCamObjectNum].setAnimationTime();" observes="animplot"/>
       <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot"/>
       <toolbarbutton id="vc-LoopType" type="menu" class="toolbarbutton-1" label="vcLoopType" observes="animplot">
         <menupopup>
-          <menuitem id="runonce"      name= "looptype" type="radio" checked="true" label="Run once" oncommand="currentVCamObject.setLoopMode(0);" />
-          <menuitem id="loop"         name= "looptype" type="radio" label="Loop" oncommand="currentVCamObject.setLoopMode(1);" />
-          <menuitem id="backandforth" name= "looptype" type="radio" label="Back and forth" oncommand="currentVCamObject.setLoopMode(2);" />
+          <menuitem id="runonce"      name= "looptype" type="radio" checked="true" label="Run once" oncommand="vcamWrapperArray[currentVCamObjectNum].setLoopMode(0);" />
+          <menuitem id="loop"         name= "looptype" type="radio" label="Loop" oncommand="vcamWrapperArray[currentVCamObjectNum].setLoopMode(1);" />
+          <menuitem id="backandforth" name= "looptype" type="radio" label="Back and forth" oncommand="vcamWrapperArray[currentVCamObjectNum].setLoopMode(2);" />
         </menupopup>
       </toolbarbutton>
       <toolbarbutton id="vc-AnimSpeed" type="menu" class="toolbarbutton-1" label="vcAnimSpeed" observes="animplot">
         <menupopup>
-          <menuitem id="animspeed8s" name = "anim" type="radio" label="8x slower" oncommand="currentVCamObject.setAnimSpeed(0.125);" />
-          <menuitem id="animspeed4s" name = "anim" type="radio" label="4x slower" oncommand="currentVCamObject.setAnimSpeed(0.250);" />
-          <menuitem id="animspeed2s" name = "anim" type="radio" label="2x slower" oncommand="currentVCamObject.setAnimSpeed(0.5);" />
-          <menuitem id="animspeedN"  name = "anim" type="radio" checked="true" label="Natural" oncommand="currentVCamObject.setAnimSpeed(1.0);" />
-          <menuitem id="animspeed2f" name = "anim" type="radio" label="2x faster" oncommand="currentVCamObject.setAnimSpeed(2.0);" />
-          <menuitem id="animspeed4f" name = "anim" type="radio" label="4x faster" oncommand="currentVCamObject.setAnimSpeed(4.0);" />
-          <menuitem id="animspeed8f" name = "anim" type="radio" label="8x faster" oncommand="currentVCamObject.setAnimSpeed(8.0);" />
+          <menuitem id="animspeed8s" name = "anim" type="radio" label="8x slower" oncommand="vcamWrapperArray[currentVCamObjectNum].setAnimSpeed(0.125);" />
+          <menuitem id="animspeed4s" name = "anim" type="radio" label="4x slower" oncommand="vcamWrapperArray[currentVCamObjectNum].setAnimSpeed(0.250);" />
+          <menuitem id="animspeed2s" name = "anim" type="radio" label="2x slower" oncommand="vcamWrapperArray[currentVCamObjectNum].setAnimSpeed(0.5);" />
+          <menuitem id="animspeedN"  name = "anim" type="radio" checked="true" label="Natural" oncommand="vcamWrapperArray[currentVCamObjectNum].setAnimSpeed(1.0);" />
+          <menuitem id="animspeed2f" name = "anim" type="radio" label="2x faster" oncommand="vcamWrapperArray[currentVCamObjectNum].setAnimSpeed(2.0);" />
+          <menuitem id="animspeed4f" name = "anim" type="radio" label="4x faster" oncommand="vcamWrapperArray[currentVCamObjectNum].setAnimSpeed(4.0);" />
+          <menuitem id="animspeed8f" name = "anim" type="radio" label="8x faster" oncommand="vcamWrapperArray[currentVCamObjectNum].setAnimSpeed(8.0);" />
         </menupopup>
       </toolbarbutton>
     </toolbar>
