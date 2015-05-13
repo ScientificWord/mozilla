@@ -67,7 +67,7 @@ function VCamObject(vcampluginObject) {
 }
 
 VCamObject.prototype = {
-
+  initialized: false,
   // plot info
   threedplot: false,
   twodplot: false,
@@ -80,29 +80,36 @@ VCamObject.prototype = {
   animationSpeed: null,
 
   setupUI: function() {
-    this.initToolbar();
-    document.getElementById("vcamactive").setAttribute("hidden", "false");
-    // The above line reveals the VCam toolbar,
+    this.init();
+    if (this.initialized) {
+      this.initToolbar();
+      document.getElementById("vcamactive").setAttribute("hidden", "false");
+      // The above line reveals the VCam toolbar,
+    }
   },
 
   init: function() {
     netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect'); // BBM: test to see if this is necessary
-    this.cursorTool = this.obj.cursorTool;
-    this.twodplot = (2 === this.obj.dimension);
-    this.threedplot = !this.twodplot;
-    this.animplot = this.obj.isAnimated;
-    this.zoomAction = this.obj.zoomAction;
-    this.verticalAction = this.obj.rotateVerticalAction;
-    this.horizontalAction = this.obj.rotateHorizontalAction;
-    this.actionSpeed = this.obj.actionSpeed;
-    this.animationSpeed = this.obj.animationSpeed;
+    if (this.obj.readyState === 2 && !this.initialized) {
+      this.cursorTool = this.obj.cursorTool;
+      this.twodplot = (2 === this.obj.dimension);
+      this.threedplot = !this.twodplot;
+      this.animplot = this.obj.isAnimated;
+      this.zoomAction = this.obj.zoomAction;
+      this.verticalAction = this.obj.rotateVerticalAction;
+      this.horizontalAction = this.obj.rotateHorizontalAction;
+      this.actionSpeed = this.obj.actionSpeed;
+      this.animationSpeed = this.obj.animationSpeed;
 
-    this.initEventHandlers();
+      this.initEventHandlers();
+      this.initialized = true;
+    }
   },
 
   initToolbar: function() {
     // sets the state of the toolbar buttons from the plugin state
     // Call the function for initialization and after each button action.
+    if (!this.initialized) return;
 
     // Cursor tool section
 
@@ -115,17 +122,17 @@ VCamObject.prototype = {
       document.getElementById("vc-SnapShot").setAttribute("hidden");
       // this disables snapshots if we are not in an editor; e.g., in a help file.
     }
-    document.getElementById("vc-SelObj").checked = (this.cursorTool === 'select');
+    document.getElementById("vc-SelObj").checked = (this.cursorTool == 'select');
     document.getElementById("vc-SelObj").removeAttribute("disabled");
-    document.getElementById("vc-RotateScene").checked = (this.cursorTool === 'rotate');
+    document.getElementById("vc-RotateScene").checked = (this.cursorTool == 'rotate');
     document.getElementById("vc-RotateScene").removeAttribute("disabled");
-    document.getElementById("vc-Move").checked = (this.cursorTool === 'move');
+    document.getElementById("vc-Move").checked = (this.cursorTool == 'move');
     document.getElementById("vc-Move").removeAttribute("disabled");
-    document.getElementById("vc-Query").checked = (this.cursorTool === 'query');
+    document.getElementById("vc-Query").checked = (this.cursorTool == 'query');
     document.getElementById("vc-Query").removeAttribute("disabled");
-    document.getElementById("vc-AutoZoomIn").checked = (this.zoomAction === 1);
+    document.getElementById("vc-AutoZoomIn").checked = (this.zoomAction == 1);
     document.getElementById("vc-AutoZoomIn").removeAttribute("disabled");
-    document.getElementById("vc-AutoZoomOut").checked = (this.zoomAction === 2);
+    document.getElementById("vc-AutoZoomOut").checked = (this.zoomAction == 2);
     document.getElementById("vc-AutoZoomOut").removeAttribute("disabled");
 
     // Rotation section
