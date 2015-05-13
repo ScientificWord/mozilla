@@ -1481,9 +1481,6 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
       aSelection->Collapse(outNode, 0);
     }
     res = mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(selNode), &selOffset);
-#ifdef DEBUG_Barry
-    printf("Just inserted default paragraph (%s) here\n", defPara.BeginReading());
-#endif
   }
 
   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(selNode), &selOffset);

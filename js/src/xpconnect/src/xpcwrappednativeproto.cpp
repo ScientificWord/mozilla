@@ -77,7 +77,7 @@ XPCWrappedNativeProto::~XPCWrappedNativeProto()
 #ifdef DEBUG
     PR_AtomicDecrement(&gDEBUG_LiveProtoCount);
 #endif
-
+    
     // Note that our weak ref to mScope is not to be trusted at this point.
 
     XPCNativeSet::ClearCacheEntryForClassInfo(mClassInfo);
@@ -99,30 +99,30 @@ XPCWrappedNativeProto::Init(
             return JS_FALSE;
     }
 
-    JSClass* jsclazz = &XPC_WN_ModsAllowed_WithCall_Proto_JSClass;
+    JSClass* jsclazz;
 
 
-    // if(mScriptableInfo)
-    // {
-    //     const XPCNativeScriptableFlags& flags(mScriptableInfo->GetFlags());
+    if(mScriptableInfo)
+    {
+        const XPCNativeScriptableFlags& flags(mScriptableInfo->GetFlags());
 
-    //     if(flags.AllowPropModsToPrototype())
-    //     {
-    //         jsclazz = flags.WantCall() ?
-    //             &XPC_WN_ModsAllowed_WithCall_Proto_JSClass :
-    //             &XPC_WN_ModsAllowed_NoCall_Proto_JSClass;
-    //     }
-    //     else
-    //     {
-    //         jsclazz = flags.WantCall() ?
-    //             &XPC_WN_NoMods_WithCall_Proto_JSClass :
-    //             &XPC_WN_NoMods_NoCall_Proto_JSClass;
-    //     }
-    // }
-    // else
-    // {
-    //     jsclazz = &XPC_WN_NoMods_NoCall_Proto_JSClass;
-    // }
+        if(flags.AllowPropModsToPrototype())
+        {
+            jsclazz = flags.WantCall() ?
+                &XPC_WN_ModsAllowed_WithCall_Proto_JSClass :
+                &XPC_WN_ModsAllowed_NoCall_Proto_JSClass;
+        }
+        else
+        {
+            jsclazz = flags.WantCall() ?
+                &XPC_WN_NoMods_WithCall_Proto_JSClass :
+                &XPC_WN_NoMods_NoCall_Proto_JSClass;
+        }
+    }
+    else
+    {
+        jsclazz = &XPC_WN_NoMods_NoCall_Proto_JSClass;
+    }
 
     JSObject *parent = mScope->GetGlobalJSObject();
 
@@ -148,7 +148,7 @@ XPCWrappedNativeProto::JSProtoObjectFinalized(JSContext *cx, JSObject *obj)
     if(IsShared())
     {
         // Only remove this proto from the map if it is the one in the map.
-        ClassInfo2WrappedNativeProtoMap* map =
+        ClassInfo2WrappedNativeProtoMap* map = 
             GetScope()->GetWrappedNativeProtoMap();
         if(map->Find(mClassInfo) == this)
             map->Remove(mClassInfo);
