@@ -12,6 +12,7 @@
   onload  = "startUp()"
   buttons = "accept"
   width="300px" height="300px"
+  persist="width height"
 >
 
   <script type="application/x-javascript" src="chrome://prince/content/msieditorutilities.js"/>
