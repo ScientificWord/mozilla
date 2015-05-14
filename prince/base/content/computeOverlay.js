@@ -941,10 +941,10 @@ function dontSetAnimationTime() {
   return;
 }
 
-var lastId = 0;
+var vcamlastId = 0;
 function findUnusedId( prefix ) {
-  lastId += 1;
-  var n = lastId;
+  vcamlastId += 1;
+  var n = vcamlastId;
   var theId = prefix + n.toString();
   return theId;
 }
