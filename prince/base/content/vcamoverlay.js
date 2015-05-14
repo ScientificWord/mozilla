@@ -534,11 +534,14 @@ VCamObject.prototype = {
         if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
         this.obj.makeSnapshot(abspath, res);
         if (getOS(window) == "win") {
-          graphicsConverter.init(window, snapshotDir.parent);
-          // oldsnapshot is an nsIFile pointing to the .bmp file
-          abspath = graphicsConverter.copyAndConvert(oldsnapshot, false);
+          if (this.threedplot) {
+            abspath = convertBMPtoPNG(oldsnapshot);
+          } else {
+            graphicsConverter.init(window, snapshotDir.parent);
+            // oldsnapshot is an nsIFile pointing to the .bmp file
+            abspath = graphicsConverter.copyAndConvert(oldsnapshot, false);
+          }
         }
-
         this.insertSnapshot(abspath);
       } catch (e) {
         throw new MsiException("Error inserting plot snapshot", e);
@@ -777,4 +780,22 @@ function doVCamClose() {
     return; //In other words, if we're being called because of the broadcaster turning VCam on, do nothing
   // var editorElement = msiGetActiveEditorElement();
   //  return vcamCloseFunction(editorElement);   //BBM: fix this up
+}
+
+// oldsnapshot is an nsIFile pointing to the .bmp file
+function convertBMPtoPNG( aFile ) {
+  // used only for converting BMP 3-D snapshots to PNG on Windows.
+  var dir = aFile.parent;
+  var leaf = aFile.leafName;
+  var outfilepath = aFile.path.replace(/bmp$/, 'png');
+  var process;
+  var utilsDir;
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  var codeDir = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+  codeDir.append("utilities");
+  codeDir.append('convert.exe');
+  process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+  process.init(codeDir);
+  process.run(true, ["%80x%80", aFile.path, outfilepath], 3);
+  return outfilepath;
 }
