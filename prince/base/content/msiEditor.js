@@ -516,6 +516,7 @@ var msiResizeListener = {
       try {
         var unithandler = new UnitHandler(editor);
         var units;
+        var vcamObj;
         // skip preserving aspect ratio for now.
         var graph = new Graph();
         graph.extractGraphAttributes(DOMGraph);
@@ -526,6 +527,8 @@ var msiResizeListener = {
         graph.setGraphAttribute("Width", String(newWidthInUnits));
         graph.setGraphAttribute("Height", String(newHeightInUnits));
         graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
+        vcamObj = frame.getElementsByTagName('object')[0];
+//        saveObj(vcamObj);
       } catch (e) {
         dump('Error in resizeGraphic');
       }
@@ -536,7 +539,7 @@ var msiResizeListener = {
       if (copiedSrcUrl) {
         var ext = /\....$/.exec(copiedSrcUrl)[0];
         if (ext == '.eps' || ext == '.pdf' || ext == '.ps') { // recompute bit map image
-          var editorElement = msiGetActiveEditorElement();
+          editorElement = msiGetActiveEditorElement();
           var docUrlString = msiGetEditorURL(editorElement);
           var url = msiURIFromString(docUrlString);
           var baseDir = msiFileFromFileURL(url);
@@ -4534,6 +4537,8 @@ function RebuildFromSource(aDoc, editorElement, aContext) {
 
     // the window title is updated by DOMTitleChanged event
   } catch (ex) {}
+  // from vcamoverlay
+  initVCamObjects(editor.document);
   //  NotifierUtils.notify("afterLeavingSourceMode");
   window.content.focus();
   editorElement.focus();

@@ -89,7 +89,18 @@ VCamObject.prototype = {
   },
 
   init: function() {
+    var editorElement, o, editor;
     netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect'); // BBM: test to see if this is necessary
+    if (!this.obj.readyState || !this.obj.cursorTool) {
+      editorElement = msiGetActiveEditorElement();
+      if (editorElement) {
+        editor = msiGetEditor(editorElement);
+      }
+      o = editor.document.getElementById(this.obj.id);
+      if (o.readyState) {
+        this.obj = o;
+      }
+    }
     if (this.obj.readyState === 2 && !this.initialized) {
       this.cursorTool = this.obj.cursorTool;
       this.twodplot = (2 === this.obj.dimension);
@@ -201,7 +212,7 @@ VCamObject.prototype = {
   },
 
   initEventHandlers: function() {
-    // there might not be an editor element; e.g., which displaying help files
+    // there might not be an editor element; e.g., when displaying help files
     var editorElement = null;
     var editor = null;
     try {
@@ -212,17 +223,15 @@ VCamObject.prototype = {
         }
       }
     } catch (e) {} // it's ok to fail
-    this.obj.addEvent('leftMouseDown', this.onVCamLeftMouseDown.bind(this, screenX, screenY));
-    this.obj.addEvent('leftMouseUp', this.onVCamLeftMouseUp.bind(this));
-    this.obj.addEvent('leftMouseDoubleClick', this.onVCamLeftDblClick.bind(this, screenX,
-      screenY));
-    this.obj.addEvent('rightMouseDown', this.onVCamRightMouseDown.bind(this, screenX, screenY));
-    this.obj.addEvent('rightMouseUp', this.onVCamRightMouseUp.bind(this));
-    this.obj.addEvent('dragMove', this.onVCamDragMove.bind(this));
-    this.obj.addEvent('drop', this.onVCamDrop.bind(this));
-    this.obj.addEvent('dragLeave', (function() {}));
-    if (this.showAnimationTime) this.obj.addEvent("currentTimeChange", this.showAnimationTime.bind(
-      this));
+    this.obj.addEvent('leftMouseDown', this.onVCamLeftMouseDown);
+    this.obj.addEvent('leftMouseUp', this.onVCamLeftMouseUp);
+    this.obj.addEvent('leftMouseDoubleClick', this.onVCamLeftDblClick);
+    this.obj.addEvent('rightMouseDown', this.onVCamRightMouseDown);
+    this.obj.addEvent('rightMouseUp', this.onVCamRightMouseUp);
+    this.obj.addEvent('dragMove', this.onVCamDragMove);
+    this.obj.addEvent('drop', this.onVCamDrop);
+    this.obj.addEvent('dragLeave', this.onVCamDragLeave);
+    if (this.showAnimationTime) this.obj.addEvent("currentTimeChange", this.showAnimationTime);
 
     if (editorElement) editorElement.focus();
   },
@@ -263,6 +272,7 @@ VCamObject.prototype = {
         var editorElement = msiGetActiveEditorElement();
         var editor = msiGetEditor(editorElement);
         editor.selection.collapse(this.obj.parentNode, 0);
+        editor.selection.extend(this.obj.parentNode, 1);
         editor.checkSelectionStateForAnonymousButtons(editor.selection);
         this.initUI();
       }
@@ -615,13 +625,17 @@ function initVCamObjects(doc) {
 
   var wrapperlist, length, i, obj;
   var obj = null;
-//  var aVCamObjectNum;
+  vcamlastId = 0;
+  vcamObjArray = [];
+  vcamIdArray = [];
+  vcamWrapperArray = [];
   wrapperlist = doc.documentElement.getElementsByTagName("msiframe");
   length = wrapperlist.length;
   for (i = 0; i < length; i++) {
     if (wrapperlist[i].parentNode.tagName === "graph") {
       obj = wrapperlist[i].firstChild;
       if (obj && obj.nodeName === "object") {
+        vcamlastId++;
         saveObj(obj);
       }
     }
