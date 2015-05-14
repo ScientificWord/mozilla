@@ -854,7 +854,7 @@ function msiEditorDocumentObserver(editorElement) {
     switch (aTopic) {
       case "obs_documentCreated":
         // Get state to see if document creation succeeded
-        if (!licenseWarningGiven) {
+        if (!licenseWarningGiven && (this.mEditorElement.id === 'content-frame')) {
           licenseStatus = licenseTimeRemaining();
           if (licenseStatus === "unlicensed") {
             openDialog('chrome://prince/content/licensestatus.xul', 'License status',
