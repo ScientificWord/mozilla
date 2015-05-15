@@ -794,10 +794,11 @@ function convertBMPtoPNG( aFile ) {
   var codeFile = dsprops.get("CurProcD", Components.interfaces.nsIFile);
   codeFile.append("utilities");
   utilityDir = codeFile.path;
+  codeFile = codeFile.parent;
   codeFile.append('fixbmp.cmd');
   process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
   process.init(codeFile);
-  process.run(true, ['"'+workDirectory.path+'"', '"'+utilityDir+'"', basename], 2);
+  process.run(true, [workDirectory.path, utilityDir, basename], 3);
   var outfile = workDirectory.clone();
   outfile.append('gcache');
   outfile.append(basename+'.png');
