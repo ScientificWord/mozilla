@@ -785,17 +785,21 @@ function doVCamClose() {
 // oldsnapshot is an nsIFile pointing to the .bmp file
 function convertBMPtoPNG( aFile ) {
   // used only for converting BMP 3-D snapshots to PNG on Windows.
-  var dir = aFile.parent;
   var leaf = aFile.leafName;
-  var outfilepath = aFile.path.replace(/bmp$/, 'png');
+  var basename = leaf.replace(/\.bmp$/,'');
+  var workDirectory = aFile.parent.parent.clone();
+  var utilityDir;
   var process;
-  var utilsDir;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  var codeDir = dsprops.get("CurProcD", Components.interfaces.nsIFile);
-  codeDir.append("utilities");
-  codeDir.append('convert.exe');
+  var codeFile = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+  codeFile.append("utilities");
+  utilityDir = codeFile.path;
+  codeFile.append('fixbmp.cmd');
   process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-  process.init(codeDir);
-  process.run(true, ["%80x%80", aFile.path, outfilepath], 3);
-  return outfilepath;
+  process.init(codeFile);
+  process.run(true, ['"'+workDirectory.path+'"', '"'+utilityDir+'"', basename], 2);
+  var outfile = workDirectory.clone();
+  outfile.append('gcache');
+  outfile.append(basename+'.png');
+  return outfile.path;
 }
