@@ -517,6 +517,7 @@ var msiResizeListener = {
         var unithandler = new UnitHandler(editor);
         var units;
         var vcamObj;
+        var t, d;
         // skip preserving aspect ratio for now.
         var graph = new Graph();
         graph.extractGraphAttributes(DOMGraph);
@@ -528,6 +529,12 @@ var msiResizeListener = {
         graph.setGraphAttribute("Height", String(newHeightInUnits));
         graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
         vcamObj = frame.getElementsByTagName('object')[0];
+        t = vcamObj.type;
+        d = vcamObj.data;
+        vcamObj.type = "";
+        vcamObj.data = "";
+        vcamObj.type = t;
+        vcamObj.data = d;
 //        saveObj(vcamObj);
       } catch (e) {
         dump('Error in resizeGraphic');
