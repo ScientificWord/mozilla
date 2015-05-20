@@ -32,6 +32,8 @@ function writeLicense(licenseText)
   var licenseFile = dsprops.get('ProfD', Components.interfaces.nsILocalFile);
   if (!licenseFile) return false;
   licenseFile.append("license.lic");
+  if (licenseFile.exists())
+  	licenseFile.remove(false);
   writeStringAsFile(licenseText, licenseFile);
   return true;
 }
