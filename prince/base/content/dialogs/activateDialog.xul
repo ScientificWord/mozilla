@@ -27,7 +27,7 @@
   	</columns>
   	<rows>
   		<row>
-  			<label>&computerid.label;</label><textbox readonly="true" id="computerid" value=""/>
+  			<label>&computerid.label;</label><textbox  id="computerid" value=""/>
       </row>
       <row>
   			<label>&product.label;</label><label id="productname" value=

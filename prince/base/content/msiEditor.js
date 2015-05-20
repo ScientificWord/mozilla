@@ -855,28 +855,47 @@ function msiEditorDocumentObserver(editorElement) {
     var edStr = "";
     var licenseStatus;
     var daysleft;
+    var prefs;
+    var timestamp;
+    var date;
+    var elapsed = 0;
+    var day = 24*3600*1000; // one day in milliseconds
     if (editor != null)
       edStr = "non-null";
 
     switch (aTopic) {
       case "obs_documentCreated":
         // Get state to see if document creation succeeded
+        var prefs = GetPrefs();
+        if (prefs) {
+          try {
+            timestamp = prefs.getIntPref("swp.lastexpirationwarning");
+          }
+          catch(e){}
+          if (timestamp) {
+            elapsed = Date.now() - timestamp;
+          }
+        }
+
         if (!licenseWarningGiven && (this.mEditorElement.id === 'content-frame')) {
           licenseStatus = licenseTimeRemaining();
-          if (licenseStatus === "unlicensed") {
+          if (licenseStatus === "unlicensed" && elapsed > day) {
             openDialog('chrome://prince/content/licensestatus.xul', 'License status',
               'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
-          } else if (licenseStatus !== "permanent") {
+            prefs.setIntPref("swp.lastexpirationwarning". Date.now());
+          } else if (licenseStatus !== "permanent" && elapsed > day) {
             // licenseStatus should be a number
             daysleft = Number(licenseStatus);
             if (!isNaN(daysleft)) {
-              if (daysleft <= 30 && daysleft >= 0) {
+              if (daysleft <= 5 && daysleft >= 0) {
                 openDialog('chrome://prince/content/licensestatus.xul', 'License status',
                   'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', true, daysleft
                 );
+                prefs.setIntPref("swp.lastexpirationwarning", Date.now());
               } else if (daysleft < 0) {
                 openDialog('chrome://prince/content/licensestatus.xul', 'License status',
                   'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
+                prefs.setIntPref("swp.lastexpirationwarning", Date.now());
               }
             }
           }
