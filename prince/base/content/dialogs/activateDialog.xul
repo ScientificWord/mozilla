@@ -15,7 +15,7 @@
 >
 
   <script type="application/x-javascript" src="chrome://prince/content/activateDialog.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msieditorutilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
 
   <description align="center" class="title">&dialog.title;</description>
   <description>&verbiage1;</description>
