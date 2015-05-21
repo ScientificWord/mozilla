@@ -98,7 +98,7 @@ NS_IMETHODIMP msiAppUtils::Hello()
   nsString path1, path2;
   PRBool done;
   PRUint32 prodnum;
-  printf("1\n");
+//  printf("1\n");
   if (lic == nsnull || rlm_license_stat(lic) != 0)
   {
     nsCOMPtr<nsIProperties> fileLocator(do_GetService("@mozilla.org/file/directory_service;1"));
@@ -117,29 +117,29 @@ NS_IMETHODIMP msiAppUtils::Hello()
     utf8Path = ToNewUTF8String(path1);
     rh = rlm_init(utf8Path, (char *)nsnull, (char *) nsnull);
     stat = rlm_stat(rh);
-    printf("2\n");
+//    printf("2\n");
     if (stat) {
-      printf("6\n");
+//      printf("6\n");
       char errstring[RLM_ERRSTRING_MAX];
-      (void) printf("Error initializing license system\n");
-      (void) printf("%s\n", rlm_errstring((RLM_LICENSE) nsnull, rh,
-                  errstring));
+//      (void) printf("Error initializing license system\n");
+//      (void) printf("%s\n", rlm_errstring((RLM_LICENSE) nsnull, rh,
+//                  errstring));
     }
     else
     {
-      printf("5\n");
+//      printf("5\n");
       syzygy = 0;
       prodnum = 3;
       done = PR_FALSE;
       while (!done) {
 
         lic = rlm_checkout(rh, product, ver, count);
-        printf("Checking out %s, ver is %s, count is %d\n", product, ver, count);
+//        printf("Checking out %s, ver is %s, count is %d\n", product, ver, count);
         stat = rlm_license_stat(lic);
-        printf("stat %d\n", stat);
-        printf("product %s\n", product);
+//        printf("stat %d\n", stat);
+//        printf("product %s\n", product);
         if (! stat) {
-          printf("License is valid\n");
+//          printf("License is valid\n");
           days= rlm_license_exp_days(lic);
           pchProdName = rlm_license_product(lic);
           pchExpDate = rlm_license_exp(lic);
@@ -156,7 +156,7 @@ NS_IMETHODIMP msiAppUtils::Hello()
             prodnum = 1;
           }
           else {
-            printf("Invalid license\n");
+//            printf("Invalid license\n");
             days = -1;
             pchProdName = "";
             pchExpDate = "unlicensed";
