@@ -6,7 +6,7 @@
 <!ENTITY computerid.label "Computer ID:">
 <!ENTITY product.label "Product:">
 <!ENTITY prodsw "Scientific Word">
-<!ENTITY prodnsb "Scientific Notebook">
+<!ENTITY prodsnb "Scientific Notebook">
 <!ENTITY prodswp "Scientific WorkPlace">
 <!ENTITY serial.label "Serial number:">
 <!ENTITY verbiage2 "Your email address is required if you are activating a home-use license associated with a site license. Without the address, we cannot send you your license. In other cases, the email address is not required.">
