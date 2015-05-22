@@ -186,14 +186,14 @@ function setOfflineUI(offline)
   var panel = document.getElementById("offline-status");
   if (!broadcaster || !panel) return;
 
-  //Checking for a preference "network.online", if it's locked, disabling 
+  //Checking for a preference "network.online", if it's locked, disabling
   // network icon and menu item
   var prefService = Components.classes["@mozilla.org/preferences-service;1"];
   prefService = prefService.getService(Components.interfaces.nsIPrefService);
   var prefBranch = prefService.getBranch(null);
-  
-  var offlineLocked = prefBranch.prefIsLocked("network.online"); 
-  
+
+  var offlineLocked = prefBranch.prefIsLocked("network.online");
+
   if (offlineLocked ) {
       broadcaster.setAttribute("disabled","true");
   }
@@ -242,7 +242,7 @@ function goPreferences(containerID, paneURL, itemID)
                        .getService(Components.interfaces.nsIPrefBranch);
   try {
     // We are resizable ONLY if in box debugging mode, because in
-    // this special debug mode it is often impossible to see the 
+    // this special debug mode it is often impossible to see the
     // content of the debug panel in order to disable debug mode.
     resizable = pref.getBoolPref("xul.debug.box");
   }
@@ -260,7 +260,7 @@ function goPreferences(containerID, paneURL, itemID)
   else {
     var resizability = resizable ? "yes" : "no";
     var features = "chrome,titlebar,resizable=" + resizability;
-    openDialog("chrome://communicator/content/pref/pref.xul","PrefWindow", 
+    openDialog("chrome://communicator/content/pref/pref.xul","PrefWindow",
                features, paneURL, containerID, itemID);
   }
 }
@@ -372,7 +372,7 @@ function goAboutDialog()
     defaultAboutState = false;
   }
   if( defaultAboutState )
-    window.openDialog("chrome://global/content/about.xul", "About", "modal,chrome,resizable=yes,height=450,width=550");
+    window.openDialog("chrome://global/content/about.xul", "About", "chrome,resizable=yes,height=450,width=550");
   else
     window.openDialog( getBrowserURL(), "_blank", "chrome,all,dialog=no", 'about:' );
 }
@@ -429,18 +429,18 @@ function extractFileNameFromUrl(urlstr) {
   // The 2nd url (ie, "imap://...") is generated for inline images by MimeInlineImage_parse_begin() in mimeiimg.cpp.
   var lastSlash = urlstr.slice(urlstr.lastIndexOf( "/" )+1);
   if (lastSlash)
-  { 
+  {
     var nameIndex = lastSlash.lastIndexOf( "filename=" );
     if (nameIndex != -1)
       return (lastSlash.slice(nameIndex+9));
     else
       return lastSlash;
   }
-  return null; 
+  return null;
 }
 
 // Gather all descendent text under given document node.
-function gatherTextUnder ( root ) 
+function gatherTextUnder ( root )
 {
   var text = "";
   var node = root.firstChild;
@@ -531,7 +531,7 @@ function utilityOnLoad(aEvent)
   setOfflineUI(ioService.offline);
 }
 
-function utilityOnUnload(aEvent) 
+function utilityOnUnload(aEvent)
 {
   var observerService = Components.classes[kObserverServiceProgID]
 			  .getService(Components.interfaces.nsIObserverService);
@@ -540,7 +540,7 @@ function utilityOnUnload(aEvent)
   prefService = prefService.getService(Components.interfaces.nsIPrefService);
   var prefBranch = prefService.getBranch(null);
   prefBranch = prefBranch.QueryInterface(Components.interfaces.nsIPrefBranch2);
-  
+
   prefBranch.removeObserver("network.proxy.type", proxyTypeObserver);
 }
 
@@ -571,7 +571,7 @@ function validateFileName(aFileName)
   }
   else if (navigator.appVersion.indexOf("Macintosh") != -1)
     re = /[\:\/]+/g;
-  
+
   return aFileName.replace(re, "_");
 }
 

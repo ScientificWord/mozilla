@@ -29,7 +29,7 @@
   contenttitlesetting="true"
   titlemodifier="&editorWindow.titlemodifier;"
   titlemodifierseparator="&editorWindow.titlemodifierseparator;"
-  windowtype="swp:xhtml_mathml"        
+  windowtype="swp:xhtml_mathml"
   screenX="10" screenY="10" width="1000" height="600"
   persist="screenX screenY width height sizemode"
   sizemode="normal"
@@ -48,7 +48,7 @@
    <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
 
 
-# All sets except for popupsets (commands, keys, stringbundles and broadcasters) *must* go into the 
+# All sets except for popupsets (commands, keys, stringbundles and broadcasters) *must* go into the
 # browser-sets.inc file for sharing with hiddenWindow.xul.
 #include prince-sets.inc
 
@@ -57,9 +57,9 @@
   <popup id="sidebarPopup"/>
 
   <toolbox class="toolbox-top" id="EditorToolbox" defaultmode="icons" defaulticonsize="large">
-# The entire main menubar is placed into prince-menubar.inc, so that it can be shared by 
+# The entire main menubar is placed into prince-menubar.inc, so that it can be shared by
 # hiddenWindo#w.xul.
-#include prince-menubar.inc 
+#include prince-menubar.inc
 #include prince-toolbars.inc
   </toolbox>
 
@@ -70,11 +70,11 @@
 
 <sidebaritems id="sidebaritems">
 <!--JLF with BBM-->
-  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/beta/What%27s%20new%20sidebar.xhtml" title="&NewsSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>
-  <!--sidebaritem id="sidebaritem-ajarfile"   name="jarfile" src="jar:file:///C:/Documents and Settings/Barry/My Documents/SWPDocs/guided tour of prince.sci!/main.xhtml" title="Guide"/-->
+  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/info_sidebar/What%27s%20new%20sidebar.xhtml" title="&NewsSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>
+
   <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="&FragmentsSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>
-  <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="&BookmarksSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>                              
-  <sidebaritem id="sidebaritem-log"   name="compute log" src="chrome://global/content/engineconsole.xul" title="&EnginelogSidebar.title;"/>                         
+  <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="&BookmarksSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>
+  <sidebaritem id="sidebaritem-log"   name="compute log" src="chrome://global/content/engineconsole.xul" title="&EnginelogSidebar.title;"/>
   <sidebaritem id="sidebaritem-symbols"   height="500px" name="symbols" src="chrome://prince/content/symbols.xul" title="&SymbolsSidebar.title;" persist="height width screenx screeny" width="200px" screenx="200px"/>
 </sidebaritems>
 
@@ -89,9 +89,9 @@
     <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
       <editor id="content-frame" type="content-primary" context="msiEditorContentContext"
                 editortype="html" flex="1" spellcheck="true" tooltip="aHTMLTooltip"/>
-      <vbox>                                    
+      <vbox>
         <label id="doctype-text" crop="right"/>
-        <iframe id="content-source" 
+        <iframe id="content-source"
                 src="resource://app/res/cm2/cm2.html" flex="1" tooltip="aSourceTooltip"/>
       </vbox>
 #ifndef PROD_SNB
@@ -100,11 +100,11 @@
     </deck>
     <hbox id="EditModeToolbar" hidden="false" persist="collapsed">
       <tabs id="EditModeTabs" align="start" class="tabs-bottom" flex="1">
-       <tab id="NormalModeButton"   class="tab-bottom edit-mode _plain" type="text" selected="1" label="&NormalMode.label;" 
+       <tab id="NormalModeButton"   class="tab-bottom edit-mode _plain" type="text" selected="1" label="&NormalMode.label;"
           oncommand="msiGoDoCommand('cmd_NormalMode');" tooltiptext="&NormalMode.tooltip;"/>
-       <tab id="TagModeButton"      class="tab-bottom edit-mode _plain" type="text" selected="0" label="&TagsMode.label;"  
+       <tab id="TagModeButton"      class="tab-bottom edit-mode _plain" type="text" selected="0" label="&TagsMode.label;"
            oncommand="msiGoDoCommand('cmd_AllTagsMode');" tooltiptext="&TagsMode.tooltip;"/>
-       <tab id="SourceModeButton"   class="tab-bottom edit-mode _plain" type="text" selected="0" label="&SourceMode.label;" 
+       <tab id="SourceModeButton"   class="tab-bottom edit-mode _plain" type="text" selected="0" label="&SourceMode.label;"
              oncommand="msiGoDoCommand('cmd_HTMLSourceMode');" tooltiptext="&SourceMode.tooltip;" dir="&SourceTabDirection;"/>
 #ifndef PROD_SNB
        <tab id="PreviewModeButton"  class="tab-bottom edit-mode _plain" type="text" selected="0" label="&PreviewMode.label;"
@@ -127,9 +127,9 @@
 	      <textbox id="macroAndFragments" timeout="50" type="autocomplete"
           minresultsforpopup="1"
           forcecomplete="true"
-          completedefaultindex="true" autocompletesearch="stringarray" 
-          autocompletesearchparam="macros fragments" 
-		      tooltiptext="&macro.tooltip;" 
+          completedefaultindex="true" autocompletesearch="stringarray"
+          autocompletesearchparam="macros fragments"
+		      tooltiptext="&macro.tooltip;"
           onfocus="this.select();"
           enablehistory="false"
           ontextentered="dump('hello\n');onMacroOrFragmentEntered(this.value);" />
@@ -159,7 +159,7 @@
       <image id="fastcursor-status-icon"/>
       <label id="fastcursor-status"/>
       <toolbarbutton id="fastcursor-closebutton" tooltiptext="&fastcursorCloseButton.tooltip;"
-                     oncommand="hideFastCursorBar();"/>  
+                     oncommand="hideFastCursorBar();"/>
     </toolbar>
     </statusbarpanel>
 
@@ -205,7 +205,7 @@
   <commandset id="MSIVCamCommands" />
   <broadcasterset id="vcam_broadcasterset" />
 
- 
+
 
 
 # All JS files which are not content (only) dependent that prince.xul
