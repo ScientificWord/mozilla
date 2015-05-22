@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?> 
-<?xml-stylesheet href="chrome://prince/skin/licenseDialog.css" type="text/css"?> 
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/licenseDialog.css" type="text/css"?>
 
 #include ../productname.inc
 <!DOCTYPE dialog [
@@ -26,24 +26,34 @@
   <broadcaster id="unlicensed"/>
   <broadcaster id="expired"/>
   <label id="prodname" hidden="true">&brandShortName;</label>
-  <box observes="licensed"> 
+  <box observes="licensed">
     <vbox id="container" >
       <hbox flex="1" ></hbox>
       <vbox id="textbox" >Scientific</vbox>
-      <vbox id="textbox2">WorkPlace</vbox>
+      <vbox id="textbox2">
+#ifdef PROD_SW
+    &prodword2sw;
+#endif
+#ifdef PROD_SNB
+    &prodword2snb;
+#endif
+#ifdef PROD_SWP
+    &prodword2swp;
+#endif
+      </vbox>
       <vbox id="textbox3">Version 6.0</vbox>
       <hbox flex="1"></hbox>
-    </vbox>    
+    </vbox>
     <vbox id="rhs">
       <description>Thank you for supporting &brandShortName;!</description>
       <description class='smaller'>This computer is licensed to run &brandShortName;.</description>
       <description id="expiration" class='smaller'/>
     </vbox>
   </box>
-  <vbox id='nolicense' observes="unlicensed"> 
+  <vbox id='nolicense' observes="unlicensed">
     <description observes="unlicensed">This computer is not licensed to run &brandShortName;.</description>
     <description observes="unlicensed" class='smaller'>You will not be able to save files, or to print modified files.</description>
     <description id="expiredon" observes='expired' class='smaller'/>
-    <description observes="unlicensed"> Stuff about buying goes here</description>
+    <description observes="unlicensed">&verbiage2;</description>
   </vbox>
 </dialog>

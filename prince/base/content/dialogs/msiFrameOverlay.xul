@@ -370,17 +370,17 @@
             <menulist id="locationList" observes="locationEnabled" oncommand="locationChanged()" >
               <menupopup>
                 <menuitem  id="floating" label="&floating;" selected="true" value="floating"/>
-                <menuitem  id="inline" label="&inline.label;"  value="inline"/>
+                <menuitem  id="inline" label="&inline.label;"  value="inline" observes="forplots"/>
                 <menuitem  id="center" label="&display.label;" value="center"/>
                 <menuseparator/>
-                <menuitem  id="left" label="&left.label;" value="left"/>
-                <menuitem  id="inside" label="&inside.label;" value="inside"/>
-                <menuitem  id="right" label="&right.label;" value="right"/>
-                <menuitem  id="outside" label="&outside.label;" value="outside"/>
+                <menuitem  id="left" label="&left.label;" value="left"  observes="forplots"/>
+                <menuitem  id="inside" label="&inside.label;" value="inside" observes="forplots"/>
+                <menuitem  id="right" label="&right.label;" value="right" observes="forplots"/>
+                <menuitem  id="outside" label="&outside.label;" value="outside" observes="forplots"/>
               </menupopup>
             </menulist>
           </row>
-          <row>
+          <row observes="forplots">
             <description value="&inlineOffset;" id="frameInlineOffsetLabel" observes="inlineOffsetEnabled"/>
             <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" value = "0"   decimalplaces = "3" min="-Infinity" persist = "value" observes="inlineOffsetEnabled"/>
           </row>
@@ -434,6 +434,7 @@
   </vbox>
   <broadcasterset id="frameoverlayBroadcasters">
     <broadcaster id="floatEnabled" disabled="true"/>
+    <broadcaster id="forplots" hidden="false"/>
     <broadcaster id="inlineOffsetEnabled" disabled="true"/>
     <broadcaster id="locationEnabled" />
     <broadcaster id="captionEnabled" />

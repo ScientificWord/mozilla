@@ -53,6 +53,8 @@
 <broadcaster id="keyEnabled" disabled="true" />
 
 
+
+
   <prefpane id="prefGeneral" label="&GeneralTab.label;">
     <preferences>
       <preference id="defaultshell"
@@ -1279,20 +1281,20 @@
                 <menulist id="locationList" observes="locationEnabled" preference="graph.placement" oncommand="locationChanged()" >
                   <menupopup>
                     <menuitem  id="unspecified" label="&unspecified;" selected="true" value="unspecified"/>
-                    <menuitem  id="inline" label="&inline.label;"  value="inline"/>
+<!--                     <menuitem  id="inline" label="&inline.label;"  value="inline" observes="forplots" /> -->
                     <menuitem  id="center" label="&display.label;" value="display"/>
-                    <menuseparator/>
-                    <menuitem  id="left" label="&left.label;" value="L"/>
-                    <menuitem  id="inside" label="&inside.label;" value="I"/>
-                    <menuitem  id="right" label="&right.label;" value="R"/>
-                    <menuitem  id="outside" label="&outside.label;" value="O"/>
+<!--                     <menuseparator observes="forplots"/>
+                    <menuitem  id="left" label="&left.label;" value="L" observes="forplots"/>
+                    <menuitem  id="inside" label="&inside.label;" value="I" observes="forplots"/>
+                    <menuitem  id="right" label="&right.label;" value="R" observes="forplots"/>
+                    <menuitem  id="outside" label="&outside.label;" value="O" observes="forplots"> -->
                   </menupopup>
                 </menulist>
               </row>
-              <row>
+<!--               <row observes="forplots">
                 <description value="&inlineOffset;" id="frameInlineOffsetLabel" observes="inlineOffsetEnabled"/>
                 <textbox id = "frameInlineOffsetInput" class="medwidth" type = "number" decimalplaces = "2" value = "0" min="-Infinity" persist = "value" observes="inlineOffsetEnabled"/>
-              </row>
+              </row> -->
               <row flex="1">
                 <label control="floatList" observes="floatEnabled">Float</label>
                 <menulist id="floatList" observes="floatEnabled" preference="graph.floatPlacement" oncommand="floatPropertyChanged();">
