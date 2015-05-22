@@ -56,6 +56,8 @@ function Startup(){
     if (obj && obj.hasAttribute("data")) gInsertNewObject = false;
 
     // get frame attributes
+    // turn off inline, left, right, inside, outside options for plots
+    document.getElementById('forplots').hidden = true;
     initFrameTab(gDialog, frame, gInsertNewObject, obj);
 
     topWindow = msiGetTopLevelWindow();
