@@ -1892,9 +1892,9 @@ function onAccept()
       {
         imageElement.removeAttribute("isSVG");
       }
-      if (/\.eps$/.test(gOriginalSrcUrl)) {
-        msiRequirePackage(gEditorElement,"epstopdf","");
-      }
+      // if (/\.eps$/.test(gOriginalSrcUrl)) {
+      //   msiRequirePackage(gEditorElement,"epstopdf","");
+      // }
       imageElement.setAttribute("src", src);
       imageElement.setAttribute("data", src);
       if (wrapperElement == null) {
