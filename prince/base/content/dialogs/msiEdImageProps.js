@@ -1838,8 +1838,8 @@ function onAccept()
     unitHandler.setCurrentUnit(unit);
     // srcurl is for debugging purposes
     // BBM: use gOriginalSrcUrl or gCopiedSrcUrl
-    var srcurl = graphicsConverter.copyAndConvert(msiFileFromFileURL(msiURIFromString(gOriginalSrcUrl)), false,
-    unitHandler.getValueAs(width, 'px'), unitHandler.getValueAs(height, 'px') );
+    // var srcurl = graphicsConverter.copyAndConvert(msiFileFromFileURL(msiURIFromString(gOriginalSrcUrl)), false,
+    // unitHandler.getValueAs(width, 'px'), unitHandler.getValueAs(height, 'px') );
 
 
     gEditor.beginTransaction();
