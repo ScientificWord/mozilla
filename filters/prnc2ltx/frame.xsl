@@ -1,4 +1,4 @@
-<xsl:stylesheet version="1.1" 
+<xsl:stylesheet version="1.1"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
@@ -78,7 +78,7 @@
   </xsl:variable>
   <xsl:variable name="needminipage" select="0"/>
   <xsl:if test="$inlineOffset and string-length($inlineOffset)">\raisebox{<xsl:value-of select="$inlineOffset"/>}{</xsl:if>
-<!-- 	
+<!--
 	<xsl:if test="$limitframemetrics=1">
     <xsl:if test="@sidemargin">
          <xsl:value-of select="$newline"/>
@@ -87,7 +87,7 @@
            <xsl:value-of select="$units"/>
          <xsl:text>}</xsl:text>
     </xsl:if>
-    <xsl:choose>   
+    <xsl:choose>
       <xsl:when test="@borderw">
          <xsl:value-of select="$newline"/>
          <xsl:text>\setlength\fboxrule{</xsl:text>
@@ -230,7 +230,7 @@
   <xsl:if test="$needminipage=1">
     \begin{<xsl:if test="@kind='table'">table}[t]</xsl:if>
       <xsl:if test="not(@kind='table')">minipage}[t]<xsl:if test="$height > 0">[<xsl:value-of select="$height"/><xsl:value-of select="$units"/>]</xsl:if></xsl:if>
-    <xsl:if test="not(@kind='table')"> 
+    <xsl:if test="not(@kind='table')">
     <xsl:choose>
       <xsl:when test="not(@rotation) or (@rotation='rot0')">{<xsl:value-of select="$width"/></xsl:when>
       <xsl:otherwise>{<xsl:value-of select="$width"/></xsl:otherwise>
@@ -249,7 +249,7 @@
   <!-- Now back out putting in \end{environment} or } as necessary -->
   <xsl:if test="$needminipage=1">
   \end{<xsl:if test="@kind='table'">table</xsl:if><xsl:if test="not(@kind='table')">minipage</xsl:if>}
-  </xsl:if>  
+  </xsl:if>
   <xsl:if test="$usecolor=1">}</xsl:if>
   <xsl:if test="@rotation='rot90' or @rotation='rot270'">\end{turn}</xsl:if>
   <xsl:if test="$captionloc=2">
@@ -290,7 +290,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
-    <xsl:when test="$framePosType='ft-wrapped'">\end{wrapfigure}</xsl:when>   
+    <xsl:when test="$framePosType='ft-wrapped'">\end{wrapfigure}</xsl:when>
   </xsl:choose>
     <xsl:if test="($inlineOffset and string-length($inlineOffset))">}</xsl:if>
 </xsl:template>
