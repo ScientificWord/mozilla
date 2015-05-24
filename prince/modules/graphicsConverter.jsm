@@ -85,7 +85,7 @@ var graphicsConverter = {
         }
       }
       catch(e) {
-        msidump(e.message);
+        //msidump(e.message);
       }
     }
     return returnPath;
@@ -147,6 +147,10 @@ var graphicsConverter = {
         ithCommand = commandlist[i];
         ithCommand = ithCommand.replace(/^\s*/,'');  // aka 'trim'
         ithCommand = ithCommand.replace(/\s*$/,'');
+        if (ithCommand.indexOf('epstopdf') == 0) {
+          this.handleEpsToPdfConversion(ithCommand, graphicsFile);
+          continue;
+        }
         commandparts = commandlist[i].split(',');
         progname = commandparts[0];
         if (this.OS === "win") progname += ".exe";
@@ -207,6 +211,26 @@ var graphicsConverter = {
       AlertWithTitle("Dump", e.message, null);
     }
     return returnPath.replace("\\","/", 'g');
+  },
+
+  handleEpsToPdfConversion: function(ithCommand, graphicsFile) {
+    var commandparts;
+    var progname;
+    var programFile;
+    var theProcess;
+    var paramArray = [];
+    var dollar1 = graphicsFile.path;
+    var dollar2 = graphicsFile.leafName.replace(/\.eps$/,'');
+    commandparts = ithCommand.split(',');
+    progname = commandparts[0];  // this will ge epstopdf
+    if (this.OS === "win") progname += ".cmd";
+    theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+    programFile = this.converterDir.clone();
+    programFile.append(progname);
+    theProcess.init(programFile);
+    paramArray.push(dollar2);
+    paramArray.push(this.baseDir.path);
+    theProcess.run(true, paramArray, paramArray.length);
   },
 
   // A function to call when an existing graphics object changes dimensions, requiring
