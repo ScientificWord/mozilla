@@ -222,7 +222,7 @@ var graphicsConverter = {
     var dollar1 = graphicsFile.path;
     var dollar2 = graphicsFile.leafName.replace(/\.eps$/,'');
     commandparts = ithCommand.split(',');
-    progname = commandparts[0];  // this will ge epstopdf
+    progname = commandparts[0];  // this will be epstopdf
     if (this.OS === "win" && !(/\.cmd$/.test(progname))) progname += ".cmd";
     theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     programFile = this.converterDir.clone();
