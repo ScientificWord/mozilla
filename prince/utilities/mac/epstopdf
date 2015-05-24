@@ -1,0 +1,10 @@
+#!/bin/sh
+source ~/.mackichan/MSITeX.bash
+export PATH=$MSITEXBIN:$PATH
+echo First: $1
+echo Second: $2
+
+cd $2
+echo `pwd`
+echo "repstopdf --outfile=graphics/$1.pdf graphics/$1.eps"
+repstopdf --outfile=graphics/$1.pdf graphics/$1.eps
