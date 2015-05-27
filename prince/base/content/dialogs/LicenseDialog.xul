@@ -16,8 +16,8 @@
         buttons="accept"
         onload="onLoad();"
         title="&licenseDialog.title;"
-        screenX="40"
-        screenY="40"
+        screenX="40" screenY="40"
+        width="536px" height="263px"
         persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/licenseDialog.js"/>
