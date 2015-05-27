@@ -139,7 +139,9 @@ MNODE *MuPAD2Tree::GetElementList(const char *z_src,
 
         if (!strcmp(name, "D")) { // derivative - special notation
           strcpy(new_node->src_tok, "derivative");
-          //D(D(D(q1m)))(q1x)
+          // old notation: D(D(D(q1m)))(q1x)
+          // new notation: D([i1,...], f)
+
           const char *l_needle = needle + 1;
           int n_primes = 1;
           while (*l_needle == 'D' && *(l_needle + 1) == '(') {
