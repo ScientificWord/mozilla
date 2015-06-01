@@ -70,7 +70,7 @@
 
 <sidebaritems id="sidebaritems">
 <!--JLF with BBM-->
-  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/info_sidebar/What%27s%20new%20sidebar.xhtml" title="&NewsSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>
+  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/info_sidebar/whatsnewsidebar.xhtml" title="&NewsSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>
 
   <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="&FragmentsSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>
   <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="&BookmarksSidebar.title;" persist="height width screenx screeny" width="200px" height="500px" screenx="200px"/>
