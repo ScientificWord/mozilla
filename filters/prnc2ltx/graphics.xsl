@@ -224,10 +224,12 @@
     </xsl:variable>
     <xsl:variable name="correctedName">
       <xsl:choose>
-        <xsl:when test="contains($rawName,'%') and @originalSrcUrl and string-length(@originalSrcUrl)"
-        ><xsl:value-of select="@originalSrcUrl"/>
+        <xsl:when test="contains($rawName,'%') and @originalSrcUrl and string-length(@originalSrcUrl)">
+           <xsl:value-of select="@originalSrcUrl"/>
         </xsl:when>
-        <xsl:otherwise><xsl:value-of select="$rawName"/></xsl:otherwise>
+        <xsl:otherwise>
+           <xsl:value-of select="$rawName"/>
+        </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="fileName">

@@ -1239,8 +1239,8 @@ function msiEditorDocumentObserver(editorElement) {
           baseDir = baseDir.parent; // and now it points to the working directory
 
           // Temporarily skipping this -- the call comes too early.
-          // graphicsConverter.init(win, baseDir);
-          // graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
+          graphicsConverter.init(win, baseDir);
+          graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
         }
         if (bIsRealDocument)
           this.mEditorElement.mbInitializationCompleted = true;
