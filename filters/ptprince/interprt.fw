@@ -723,22 +723,36 @@ case CMD_MSISPECIAL: {
         }
    } else {
      // a graphic
-     result = "<object alt=\"\" \
+     result = "<msiframe frametype=\"image\" \
+ units=\"in\" \
+ sidemargin=\"0.3\" topmargin=\"0.15\" overhang=\"0.3\" \
+ style=\"border-color: rgb(0, 0, 0); border-width: 2.88px; \
+ margin: 14.4px 0px 14.4px 28.8px; padding: 19.2px; \
+ background-color: rgb(255, 255, 255); text-align: left;\" \
+ borderw=\"0.03\" \
+ padding=\"0.2\" \
+ captionloc=\"\" \
+ pos=\"center\" \
+ border-color=\"#000000\" \
+ background-color=\"#ffffff\" \
+ textalignment=\"left\" \
+ width=\"%width%\" \
+ height=\"%height%\" \
+ aspect=\"false\">";
+
+      result += "<object alt=\"\" \
  src=\"%ImageFile%\" \
+ data=\"%ImageFile%\" \
  req=\"graphics\" \
  naturalWidth=\"%naturalWidth%\" \
  naturalHeight=\"%naturalHeight%\" \
- imageWidth=\"%width%\" \
- imageHeight=\"%height%\" \
+ ltx_width=\"%width%\" \
+ ltx_height=\"%height%\" \
  originalSrcUrl=\"%ImageFileFull%\" \
  copiedSrcUrl=\"%ImageFile%\" \
- units=\"in\" \
  msi_resize=\"true\" \
- style=\"border-color: rgb(0, 0, 0); \
- border-width: 0px; margin: 0px; padding: 0px; \
- background-color: rgb(255, 255, 255); \
- width: %width%; height: %height%; \
- text-align: center; float: none;\" />";
+ aspect=\"false\" />";
+      result += "</msiframe>";
 
       std::string name = kvmap["filename"];
 
