@@ -858,23 +858,24 @@ function msiEditorDocumentObserver(editorElement) {
     var prefs;
     var timestamp;
     var date;
+    var now;
     var elapsed = 0;
     var day = 24*3600*1000; // one day in milliseconds
     if (editor != null)
       edStr = "non-null";
-
+    now = Date.now();
     switch (aTopic) {
       case "obs_documentCreated":
         // Get state to see if document creation succeeded
-        var prefs = GetPrefs();
+        d = new Date( 1980, 1, 1 );
+        timestamp = d.valueOf();
+        prefs = GetPrefs();
         if (prefs) {
           try {
-            timestamp = prefs.getIntPref("swp.lastexpirationwarning");
+            timestamp = parseInt(prefs.getCharPref("swp.lastexpirationwarning"), 10);
           }
           catch(e){}
-          if (timestamp) {
-            elapsed = Date.now() - timestamp;
-          }
+          elapsed = now.valueOf() - timestamp;
         }
 
         if (!licenseWarningGiven && (this.mEditorElement.id === 'content-frame')) {
@@ -882,7 +883,7 @@ function msiEditorDocumentObserver(editorElement) {
           if (licenseStatus === "unlicensed" && elapsed > day) {
             openDialog('chrome://prince/content/licensestatus.xul', 'License status',
               'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
-            prefs.setIntPref("swp.lastexpirationwarning". Date.now());
+            prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
           } else if (licenseStatus !== "permanent" && elapsed > day) {
             // licenseStatus should be a number
             daysleft = Number(licenseStatus);
@@ -891,11 +892,11 @@ function msiEditorDocumentObserver(editorElement) {
                 openDialog('chrome://prince/content/licensestatus.xul', 'License status',
                   'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', true, daysleft
                 );
-                prefs.setIntPref("swp.lastexpirationwarning", Date.now());
+                prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
               } else if (daysleft < 0) {
                 openDialog('chrome://prince/content/licensestatus.xul', 'License status',
                   'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
-                prefs.setIntPref("swp.lastexpirationwarning", Date.now());
+                prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
               }
             }
           }
