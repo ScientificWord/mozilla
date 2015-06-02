@@ -880,10 +880,9 @@ function msiEditorDocumentObserver(editorElement) {
 
         if (!licenseWarningGiven && (this.mEditorElement.id === 'content-frame')) {
           licenseStatus = licenseTimeRemaining();
-          if (licenseStatus === "unlicensed" && elapsed > day) {
+          if (licenseStatus === "unlicensed" ) {
             openDialog('chrome://prince/content/licensestatus.xul', 'License status',
               'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
-            prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
           } else if (licenseStatus !== "permanent" && elapsed > day) {
             // licenseStatus should be a number
             daysleft = Number(licenseStatus);
@@ -896,7 +895,6 @@ function msiEditorDocumentObserver(editorElement) {
               } else if (daysleft < 0) {
                 openDialog('chrome://prince/content/licensestatus.xul', 'License status',
                   'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
-                prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
               }
             }
           }
@@ -1330,6 +1328,59 @@ function isShell(filename) {
   return foundit;
 }
 
+function copyAndLoadWelcomeDoc() {
+  var welcomeLeaf;
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var sourceFile = dsprops.get("resource:app", Components.interfaces.nsIFile);
+  var newdoc;
+  var doc;
+  var dirkey;
+  var docdir;
+  var defdocdirstring;
+
+  sourceFile.append("samples");
+#ifdef PROD_SWP
+  welcomeLeaf = "swpwelcome.sci";
+#endif
+#ifdef PROD_SW
+  welcomeLeaf = "swwelcome.sci";
+#endif
+#ifdef PROD_SNB
+  welcomeLeaf = "snwelcome.sci";
+#endif
+  sourceFile.append(welcomeLeaf);
+  if (sourceFile.exists()) {
+    if (getOS(window) == "win")
+      dirkey = "Pers";
+    else
+    if (getOS(window) =="osx")
+      dirkey = "UsrDocs";
+    else
+      dirkey = "Home";
+    // if we can't find the one in the prefs, get the default
+    docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
+    if (!docdir.exists()) docdir.create(1,0755);
+    defdocdirstring = GetStringPref("swp.prefDocumentDir");
+    if (defdocdirstring.length == 0) defdocdirstring = "SWPDocs";
+    docdir.append(defdocdirstring);
+    if (!docdir.exists()) docdir.create(1,0755);
+    // Now we have docdir, so we can copy sourceFile
+    doc = docdir.clone();
+    doc.append(welcomeLeaf);
+    if (doc.exists()) {
+      doc.remove(true);
+    }
+    sourceFile.copyTo(docdir, welcomeLeaf);
+    // doc = docdir.clone();
+    // doc.append(welcomeLeaf);
+    newdoc = createWorkingDirectory(doc);
+    docurl = msiFileURLFromFile(newdoc);
+    return docurl;
+  }
+  return null;
+}
+
+
 function EditorStartupForEditorElement(editorElement, topwindow, isShell) {
 
   //  msiDumpWithID("Entering EditorStartupForEditorElement for element [@].\n", editorElement);
@@ -1427,23 +1478,37 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
       if (docurl != null) dump("Url in args is " + docurl.spec + "\n");
     };
     if (!docurl && bTopLevel) {
+      debugger;
       var prefs = GetPrefs();
       var fUseLastSavedFile;
+      var firstRun;
       try {
-        fUseLastSavedFile = prefs.getBoolPref("swp.openlastfile");
-      } catch (ex) {
-        msidump(
-          "Exception in msiLoadInitialDocument; couldn't get preference swp.lastfilesaved\n");
-        fUseLastSavedFile = false;
+        firstRun = prefs.getBoolPref("swp.firstrun");
+        if (firstRun) {
+          docurl = copyAndLoadWelcomeDoc();
+          prefs.setBoolPref("swp.firstrun", false);
+        }
       }
-      if (fUseLastSavedFile) {
-        docurlstring = prefs.getCharPref("swp.lastfilesaved");
-        if (docurlstring.length > 0) {
-          var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces
-            .nsILocalFile);
-          file.initWithPath(docurlstring);
-          if (file.exists())
-            docurl = msiURIFromString("file://" + docurlstring);
+      catch (e) {
+        msidump(e.message);
+      }
+      if (!docurl) {
+        try {
+          fUseLastSavedFile = prefs.getBoolPref("swp.openlastfile");
+        } catch (ex) {
+          msidump(
+            "Exception in msiLoadInitialDocument; couldn't get preference swp.lastfilesaved\n");
+          fUseLastSavedFile = false;
+        }
+        if (fUseLastSavedFile) {
+          docurlstring = prefs.getCharPref("swp.lastfilesaved");
+          if (docurlstring.length > 0) {
+            var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces
+              .nsILocalFile);
+            file.initWithPath(docurlstring);
+            if (file.exists())
+              docurl = msiURIFromString("file://" + docurlstring);
+          }
         }
       }
     }
