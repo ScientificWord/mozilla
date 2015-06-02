@@ -48,6 +48,7 @@
       <description>Thank you for supporting &brandShortName;!</description>
       <description class='smaller'>This computer is licensed to run &brandShortName;.</description>
       <description id="expiration" class='smaller'/>
+      <description id="activationnumber" class='smaller'/>
     </vbox>
   </box>
   <vbox id='nolicense' observes="unlicensed">
