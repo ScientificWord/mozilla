@@ -188,7 +188,11 @@ std::string MaybeCopyGraphicFile(const char* fullname)
       reltarget += fn.GetNameString();
       reltarget += ".";
       reltarget += fn.GetExtString();
-
+      std::string::iterator it;
+      for (it = reltarget.begin(); it != reltarget.end(); ++it){
+         if (*it == '\\') 
+           *it = '/';
+      }
       return reltarget;
   }
 @}
@@ -769,13 +773,15 @@ case CMD_MSISPECIAL: {
          find_and_replace(result, "%units%",
                     get_units(kvmap["original-width"]).c_str());
       }
+
+
       
       find_and_replace(result, "%naturalHeight%",
                get_number(kvmap["original-height"]).c_str());
       find_and_replace(result, "%width%",
-               kvmap["width"].c_str());
+               get_number(kvmap["width"]).c_str());
       find_and_replace(result, "%height%",
-               kvmap["height"].c_str());
+               get_number(kvmap["height"]).c_str());
 
    Typesetter::AppendTag(result.c_str()) ;
   }
