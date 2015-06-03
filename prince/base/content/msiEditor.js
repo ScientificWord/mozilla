@@ -1367,10 +1367,15 @@ function copyAndLoadWelcomeDoc() {
     // Now we have docdir, so we can copy sourceFile
     doc = docdir.clone();
     doc.append(welcomeLeaf);
-    if (doc.exists()) {
-      doc.remove(true);
+    try {
+      sourceFile.copyTo(docdir, welcomeLeaf);
     }
-    sourceFile.copyTo(docdir, welcomeLeaf);
+    catch(e) {
+      // if the file already existed its ok to go on
+      if (!doc.exists()) {
+        return null;
+      }
+    }
     // doc = docdir.clone();
     // doc.append(welcomeLeaf);
     newdoc = createWorkingDirectory(doc);
