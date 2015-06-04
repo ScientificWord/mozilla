@@ -7,6 +7,8 @@
 @media print {
   *[nopr] {display: none !important;}
   object[msigraph="true"] {display:none;}
+  object[msisnap="true"] { display:block !important;}
+
   button[class="frontmattertag"] {
     display: none !important; }
   *[showexpanders="true"] button.expander {

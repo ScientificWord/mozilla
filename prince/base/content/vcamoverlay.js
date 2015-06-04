@@ -570,7 +570,7 @@ VCamObject.prototype = {
   },
 
   insertSnapshot: function(abssnapshotpath) {
-    var parent, i, objectlist, element, ssobj, graph, gslist, w, h, units, oldpath, file, url;
+    var parent, i, objectlist, element, ssobj, graph, gslist, w, h, units, oldpath, file, url, editorElement, editor;
     parent = this.obj.parentNode;
     objectlist = parent.getElementsByTagName("object");
     var snapshotUrl = msiFileURLFromAbsolutePath(abssnapshotpath);
@@ -604,22 +604,26 @@ VCamObject.prototype = {
     ssobj.removeAttribute("type");
     parent.appendChild(ssobj);
     if (gslist) { // copy some attributes from the graphspec
-      w = gslist.getAttribute("Width");
+      units = gslist.getAttribute("Units");
+      editorElement = msiGetActiveEditorElement();
+      if (editorElement) {
+        editor = msiGetEditor(editorElement);
+      }
+      w = gslist.getAttribute("Width") + units;
       if (w) {
         ssobj.setAttribute("naturalWidth", w);
         ssobj.setAttribute("ltx_width", w);
+        setStyleAttributeOnNode(ssobj, "width", w, editor)
       }
-      h = gslist.getAttribute("Height");
+      h = gslist.getAttribute("Height")+units;
       if (h) {
         ssobj.setAttribute("naturalHeight", h);
         ssobj.setAttribute("ltx_height", h);
+        setStyleAttributeOnNode(ssobj, "height", h, editor)
       }
-      ssobj.setAttribute("units", gslist.getAttribute("Units"));
+      ssobj.setAttribute("units", units);
     }
   },
-
-
-
 };
 
 function initVCamObjects(doc) {
