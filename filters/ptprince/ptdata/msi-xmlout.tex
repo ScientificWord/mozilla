@@ -336,7 +336,9 @@
 
 \def\out@preamble@tex#1{%
    \advance\preambleid by 1
-   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1]]></preambleTeX>}%
+   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1}%
+   \msipreambleextra
+   \msitag{]]> </preambleTeX>}%
    \msi@preamble={}}
 
 
