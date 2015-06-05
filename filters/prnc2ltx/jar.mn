@@ -30,4 +30,5 @@ prnc2ltx.jar:
 * packages.xml     (packages.xml) 
 * beamer.xsl       (beamer.xsl)      
 * babel.xsl        (babel.xsl)
+* amscls.xsl       (amscls.xsl)
 * revtex4-1.xsl    (revtex4-1.xsl)

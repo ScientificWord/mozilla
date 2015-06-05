@@ -1,9 +1,12 @@
 var EXPORTED_SYMBOLS = ["UnitHandler" ];
 
 
-function UnitHandler()
+function UnitHandler( editor )
 {
   this.supportedUnits = ["mm", "cm", "in", "pt", "bp", "pc", "px", "pct"];
+  var pixelsPerInch;
+  if (editor) pixelsPerInch =  editor.cssPixelsPerInch;
+  if (!pixelsPerInch) pixelsPerInch = 96;
   this.units =  // in mm
     {mm: {size: 1, increment: .1, places: 1 },
      cm: {size: 10, increment: .1, places: 2 },
@@ -11,7 +14,7 @@ function UnitHandler()
      pt: {size: 0.3514598, increment: .1, places: 1 },
      bp: {size: 0.3527778, increment: .1, places: 1 },
      pc: {size: 2.54, increment: .1, places: 1 },
-     px: {size: 0.2645833, increment: 1, places: 0 },	// we say 96 pixels/inch. It varies but portability requires a fixed value
+     px: {size: 25.4/pixelsPerInch, increment: 1, places: 0 },
      pct: {size: null, increment: .1, places: 1 },
      "%": {size: null, increment: .1, places: 1 }
   };
@@ -31,18 +34,28 @@ function UnitHandler()
   this.currentUnit = null;
 
   this.getValueAs = function( value, unit )  // given a measurement that is 'value' in the current unit, provide it in the new unit.
-  { 
+  {
     if (!(unit in this.units)){ return null;}
     if (unit === this.currentUnit) { return value; }
-    return (value/this.units[unit].size)*this.units[this.currentUnit].size;
+    try {
+      return (value/this.units[unit].size)*this.units[this.currentUnit].size;
+    }
+    catch(e) {
+      return 0;
+    }
   };
 
   this.getValueOf = function( value, unit )  // given a measurement that is 'value' in the unit "unit"
     // return it in the current unit.
-  { 
+  {
     if (!(unit in this.units)){ return null;}
     if (unit === this.currentUnit) { return value; }
-    return value*this.units[unit].size/this.units[this.currentUnit].size;
+    try {
+      return value*this.units[unit].size/this.units[this.currentUnit].size;
+    }
+    catch(e) {
+      return 0;
+    }
   };
 
   this.getValueFromString = function( aString, defaultUnit )
@@ -71,15 +84,17 @@ function UnitHandler()
   this.setCurrentUnit = function( unit ) // returns the previous value
   {
     var prev = this.currentUnit;
-    if (!(unit in this.units)) 
+    if (!(unit in this.units))
     {
       return prev;
     }
     var factor = this.units[this.currentUnit].size/this.units[unit].size;
     var limAttr;
-    for (var i = 0, len = this.editFieldList.length; i < len; i++)
+    var i;
+    var len = this.editFieldList.length;
+    for ( i = 0; i < len; i++)
     {
-      this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
+      this.editFieldList[i].setAttribute("increment", this.units[unit].increment);
       this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places);
       limAttr = this.editFieldList[i].getAttribute("min");
       if (limAttr && (Number(limAttr) != Number.NaN))
@@ -92,19 +107,21 @@ function UnitHandler()
     this.currentUnit = unit;
     return prev;
   };
-   
+
   this.initCurrentUnit = function(unit) // this is for setting the initial value -- no conversions
   {
+    var len = this.editFieldList.length;
+    var i;
     if (!unit) return;
-    for (var i = 0, len = this.editFieldList.length; i < len; i++)
+    for (i = 0;  i < len; i++)
     {
-      this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
-      this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places); 
-			this.editFieldList[i].value *= 1; // force a redisplay
+      this.editFieldList[i].setAttribute("increment", this.units[unit].increment);
+      this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places);
+      this.editFieldList[i].value *= 1; // force a redisplay
     }
     this.currentUnit = unit;
   }
-   
+
   this.getCurrentUnit = function()
   {
     return this.currentUnit;
@@ -113,7 +130,9 @@ function UnitHandler()
   this.convertAll = function(newUnit, valueArray )
   {
     var factor = this.units[this.currentUnit].size/this.units[newUnit].size;
-    for (var i = 0, len = valueArray.length; i < len; i++)
+    var i;
+    var len = valueArray.length;
+    for (i = 0; i < len; i++)
       { valueArray[i] *= factor; }
   };
 
@@ -123,9 +142,9 @@ function UnitHandler()
     if (!this.mStringBundle)
     {
       try {
-        var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
+        var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService();
         strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
-        this.mStringBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties"); 
+        this.mStringBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties");
       } catch (ex) {dump("Problem in initializing string bundle in unitHandler.getDisplayString: exception is [" + ex + "].\n");}
     }
     if (this.mStringBundle)
@@ -176,12 +195,12 @@ function UnitHandler()
   this.buildUnitMenu = function(menulist, initialValue)
   {
     var x;
-    var unit;    
+    var unit;
     var index;
     for (x=0; x < this.supportedUnits.length; x++)
     {
       unit = this.supportedUnits[x];
-      menulist.appendItem(this.getDisplayString(unit), unit, "");      
+      menulist.appendItem(this.getDisplayString(unit), unit, "");
       if (unit==initialValue) index=x;
     }
     menulist.value = initialValue;

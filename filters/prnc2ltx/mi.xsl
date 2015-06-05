@@ -438,19 +438,19 @@
     <xsl:choose>
       <xsl:when test="@mathvariant='bold'
       or              ancestor::mml:mstyle[@fontweight='bold']">
-        <xsl:text>\mathbf{</xsl:text>
+        <xsl:text>\boldsymbol{</xsl:text>
       </xsl:when>
       <xsl:when test="@mathvariant='italic'
       or              ancestor::mml:mstyle[@fontstyle='italic']">
         <xsl:text>\mathit{</xsl:text>
       </xsl:when>
       <xsl:when test="ancestor::mml:mstyle[@fontstyle='slanted']">
-      <xsl:if test="$output-mode='SW-LaTeX'">
-          <xsl:text>\QTR{sl}{</xsl:text>
-      </xsl:if>
-      <xsl:if test="$output-mode='Portable-LaTeX'">
-          <xsl:text>\mathit{</xsl:text>
-      </xsl:if>
+        <xsl:if test="$output-mode='SW-LaTeX'">
+            <xsl:text>\QTR{sl}{</xsl:text>
+        </xsl:if>
+        <xsl:if test="$output-mode='Portable-LaTeX'">
+            <xsl:text>\mathit{</xsl:text>
+        </xsl:if>
       </xsl:when>
       <xsl:when test="ancestor::mml:mstyle[@fontweight='normal']">
         <xsl:text>\mathrm{</xsl:text>
@@ -463,49 +463,49 @@
       </xsl:when>
 
       <xsl:when test="@mathvariant='script'">
-        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+        <!-- <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))"> -->
           <xsl:text>\mathcal{</xsl:text>
-        </xsl:if>
+        <!-- </xsl:if> -->
       </xsl:when>
       <xsl:when test="@mathvariant='fraktur'">
-        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+        <!-- <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))"> -->
           <xsl:text>\mathfrak{</xsl:text>
-        </xsl:if>
+        <!-- </xsl:if> -->
       </xsl:when>
       <xsl:when test="@mathvariant='double-struck'">
-        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+        <!-- <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))"> -->
           <xsl:text>\mathbb{</xsl:text>
-        </xsl:if>
+        <!-- </xsl:if> -->
       </xsl:when>
       <xsl:when test="@mathvariant='bold-italic'">
-        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
-          <xsl:text>\boldsymbol{</xsl:text>
-        </xsl:if>
-      </xsl:when>
+<!--         <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+ -->          <xsl:text>\boldsymbol{</xsl:text>
+<!--         </xsl:if>
+ -->      </xsl:when>
       <xsl:when test="@mathvariant='bold-fraktur'"> <!-- requires unicode-math package -->
-        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
-          <xsl:text>\mathbffrak{</xsl:text>
-        </xsl:if>
-      </xsl:when>
+<!--         <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+ -->          <xsl:text>\mathbffrak{</xsl:text>
+<!--         </xsl:if>
+ -->      </xsl:when>
       <xsl:when test="@mathvariant='bold-script'">
-        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
-          <xsl:text>\mathbfscr{</xsl:text>
-        </xsl:if>
+<!--         <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+ -->          <xsl:text>\mathbfscr{</xsl:text>
+<!--         </xsl:if> -->
       </xsl:when>
       <xsl:when test="@mathvariant='bold-sans-serif'">
-        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+<!--         <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))"> -->
           <xsl:text>\mathbfsfup{</xsl:text>
-        </xsl:if>
+<!--         </xsl:if> -->
       </xsl:when>
       <xsl:when test="@mathvariant='sans-serif-italic'">
-        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+        <!-- <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))"> -->
           <xsl:text>\mathsfit{</xsl:text>
-        </xsl:if>
+        <!-- </xsl:if> -->
       </xsl:when>
       <xsl:when test="@mathvariant='sans-serif-bold-italic'">
-        <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))">
+        <!-- <xsl:if test="string-length($raw-LaTeX) = string-length(normalize-space(string()))"> -->
           <xsl:text>\mathbfsfit{</xsl:text>
-        </xsl:if>
+        <!-- </xsl:if> -->
       </xsl:when>
 
       <xsl:otherwise>

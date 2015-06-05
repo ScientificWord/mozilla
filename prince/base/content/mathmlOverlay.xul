@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--<?xml version="1.0" encoding="UTF-8"?> -->
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+#include productname.inc
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xul-stylesheet href="chrome://prince/skin/MathmlOverlay.css" type="text/css"?>
@@ -55,7 +56,10 @@
     <command id="cmd_MSImathnameCmd"    oncommand="msiGoDoCommand('cmd_MSImathnameCmd')"/>
     <command id="cmd_MSIparenCmd"       oncommand="msiGoDoCommand('cmd_MSIparenCmd')"/>
     <command id="cmd_MSIbracketCmd"     oncommand="msiGoDoCommand('cmd_MSIbracketCmd')"/>
+    <command id="cmd_MSIanglebracketCmd" oncommand="msiGoDoCommand('cmd_MSIanglebracketCmd')"/>
     <command id="cmd_MSIbraceCmd"       oncommand="msiGoDoCommand('cmd_MSIbraceCmd')"/>
+    <command id="cmd_MSIMatrixLastCmd"       oncommand="msiGoDoCommand('cmd_MSIMatrixLastCmd')"/>
+    <command id="cmd_MSIMatrix22Cmd"       oncommand="msiGoDoCommand('cmd_MSIMatrix22Cmd')"/>
     <command id="cmd_MSIabsvalueCmd"    oncommand="msiGoDoCommand('cmd_MSIabsvalueCmd')"/>
     <command id="cmd_MSInormCmd"        oncommand="msiGoDoCommand('cmd_MSInormCmd')"/>
     <command id="cmd_MSIsymbolCmd"      oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'));" />
@@ -111,8 +115,8 @@
 		    <menupopup id="mathobjectsPopup" onpopupshowing="msiInitFontStyleMenu(this)">
 		      <menuitem label="&MSIfractionCmd.label;" accesskey="&MSIfractionCmd.accesskey;" key="MSIfractionKey"       command="cmd_MSIfractionCmd"/>
 		      <menuitem label="&MSIradicalCmd.label;"  accesskey="&MSIradicalCmd.accesskey;"  key="MSIradicalKey"        command="cmd_MSIradicalCmd"/>
-		      <menuitem label="&MSIsupCmd.label;"      accesskey="&MSIsupCmd.accesskey;"      key="MSIsupKey"            command="cmd_MSIsupCmd"/>
-		      <menuitem label="&MSIsubCmd.label;"      accesskey="&MSIsubCmd.accesskey;"      key="MSIsubKey"            command="cmd_MSIsubCmd"/>
+		      <menuitem label="&MSIsupCmd.label;"      accesskey="&MSIsupCmd.accesskey;"      key="MSIAltsupKey"            command="cmd_MSIsupCmd"/>
+		      <menuitem label="&MSIsubCmd.label;"      accesskey="&MSIsubCmd.accesskey;"      key="MSIAltsubKey"            command="cmd_MSIsubCmd"/>
 		      <menuitem label="&MSIdisplayCmd.label;"    accesskey="&MSIdisplayCmd.accesskey;"    key="MSIdisplayKey"    command="cmd_MSIdisplayMathCmd"/>
 		      <!--menuitem label="&MSIrootCmd.label;"     accesskey="&MSIrootCmd.accesskey;"                                command="cmd_MSIrootCmd"/ -->
 		      <menuitem label="&MSIoperatorsCmd.label;"       accesskey="&MSIoperatorsCmd.accesskey;"       command="cmd_MSIoperatorsCmd"/>
@@ -123,16 +127,19 @@
 		      <menuitem label="&MSIdecorationsCmd.label;"     accesskey="&MSIdecorationsCmd.accesskey;"     command="cmd_MSIdecorationsCmd"/>
 		      <menuitem id="insertmenuUnitNames" label="&insertmenuUnitNames.label;"
 		        accesskey="&insertmenuUnitNames.accesskey;" command="cmd_MSIunitsCommand" />
-		      <menuitem id="insertmenuFormula" label="&insertmenuFormula.label;"
-		        accesskey="&insertmenuFormula.accesskey;" observes="cmd_unimp" />
+<!-- 		      <menuitem id="insertmenuFormula" label="&insertmenuFormula.label;"
+		        accesskey="&insertmenuFormula.accesskey;" observes="cmd_unimp" /> -->
 		    </menupopup>
       </menu>
       <menuitem id="insertmenuMarker" label="&insertmenuMarker.label;"
         accesskey="&insertmenuMarker.accesskey;" observes="cmd_marker" />
+#ifndef PROD_SNB
       <menuitem id="insertmenuFootnote" label="&insertmenuFootnote.label;"
         accesskey="&insertmenuFootnote.accesskey;" observes="cmd_footnote" />
+#endif
       <menuitem id="insertmenuNote" label="&insertmenuNote.label;"
         accesskey="&insertmenuNote.accesskey;" observes="cmd_note" />
+#ifndef PROD_SNB
       <menu id="insertmenuTypesetObject" label="&insertmenuTSO.label;" accesskey="&insertmenuTSO.accesskey;" >
 				<menupopup>
           <menuitem id="MSIinsertIndexEntry"
@@ -170,10 +177,11 @@
           <menuitem id="LTPappendix" label="&LTPappendix.label;" accesskey="&LTPappendix.accesskey;" command="cmd_appendix" />
           <menuitem id="LTPmainMatter" label="&LTPmainMatter.label;" accesskey="&LTPmainMatter.accesskey;" command="cmd_mainmatter" />
           <menuitem id="LTPbackMatter" label="&LTPbackMatter.label;" accesskey="&LTPbackMatter.accesskey;" command="cmd_backmatter" />
+          <menuitem id="LTPfrontMatter" label="&LTPfrontMatter.label;" accesskey="&LTPfrontMatter.accesskey;" command="cmd_frontmatter" />
           <menuitem id="LTPmakeIndex" label="&LTPprintIndex.label;" accesskey="&LTPprintIndex.accesskey;" command="cmd_printindex" />
         </menupopup>
-      </menu>  
-
+      </menu>
+#endif
       <menuitem id="insertmenuHyperlink" label="&insertmenuHyperlink.label;"
         accesskey="&insertmenuHyperlink.accesskey;" command="cmd_link" />
       <menuitem id="insertmenuHTMLField" label="&insertmenuHTMLField.label;"
@@ -201,11 +209,11 @@
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x00A3;&#x00B9;" tooltiptext="&MSISymbolTabLatin1;"/>
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x0141;&#x011B;" tooltiptext="&MSISymbolTabLatinE;"/>
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x201C;&#x201D;" tooltiptext="&MSISymbolTabPunctuation;"/>
-<!--       <tab id="cachebar2" label="User" mathsym="true" tooltiptext="&MSISymbolTabDrag.tooltip;" linkedpanel="cachepanel2"   ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event, 
+<!--       <tab id="cachebar2" label="User" mathsym="true" tooltiptext="&MSISymbolTabDrag.tooltip;" linkedpanel="cachepanel2"   ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event,
 
         );"
         />
- -->    
+ -->
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
 
@@ -974,7 +982,7 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolomicron" label="&#x03BF;" tooltiptext="&symbolomicron.tooltip;" msivalue="&#x03BF;"
             observes="cmd_MSIsymbolCmd"/>
-  
+
 
 <!-- UPPERCASE GREEK -->
         <toolbarbutton id ="symbolGamma" label="&#x0393;" tooltiptext="&symbolGamma.tooltip;"  msivalue="&#x0393;"

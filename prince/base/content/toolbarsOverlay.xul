@@ -70,7 +70,7 @@
       <toolbarbutton id="defineButton" />
       <toolbarbutton id="showdefsButton" />
       <toolbarbutton id="stopButton" />
-      <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;" label="&formulaButton.label;" />
+<!--       <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;" label="&formulaButton.label;" /> -->
 #endif
       <toolbarbutton id="radicalButton"/>
       <toolbarbutton id="fractionButton"/>
@@ -98,7 +98,8 @@
       <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" label="&indexentryButton.label;" observes="cmd_MSIinsertIndexEntryCmd"/>
       <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" label="&xrefButton.label;" observes="cmd_MSIinsertCrossReferenceCmd"/>
       <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;" label="&texfieldButton.label;" observes="cmd_MSIinsertTeXFieldCmd"/>
-      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" label="&bibliographyButton.label;" observes="cmd_unimp"/>
+      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" label="&bibliographyButton.label;" 
+            observes="cmd_MSIinsertBibliographyCmd"/>
       <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" label="&citationButton.label;" observes="cmd_citation"/>
 #endif
       <toolbarbutton id="hspaceButton" tooltiptext="&hspaceButton.tooltip;" label="&hspaceButton.label;" observes="cmd_insertHorizontalSpaces" />
@@ -142,11 +143,11 @@ defaultset=
       tbalign="center"
       context="toolbar-context-menu"
 #ifdef PROD_SNB
-defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,importtexButton"
+defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,importtexButton"
 #elifdef PROD_SW
  defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
 #else
-defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
+defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
 #endif
       mode="icons"
       customizable="true" />
@@ -177,71 +178,6 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
       context="symbol-palettes-context-menu" >
       <tabbox textsize="small" id="Symbol-tabbox" />
     </toolbar>
-
-#ifndef PROD_SW
-    <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed"
-      flex = "1"
-      mode="icons" customizable="true"  hidden = "true">
-	    <observes id="vcamactiveObserver" element="vcamactive" attribute="hidden" onbroadcast="doVCamClose();"/>
-      <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
-      <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents"/>
-      <!-- <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/> -->
-      <toolbarseparator/>
-      <toolbarbutton id="vc-SelObj" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcSelObj" command="cmd_vcSelObj"/>
-      <toolbarbutton id="vc-RotateScene" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcRotateScene" command="cmd_vcRotateScene" observes="3dplot"/>
-      <toolbarbutton id="vc-Zoom" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoom" command="cmd_vcZoom" observes="3dplot"/>
-      <toolbarbutton id="vc-Move" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcMove" command="cmd_vcMove"/>
-      <toolbarbutton id="vc-Query" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcQuery" command="cmd_vcQuery"/>
-      <toolbarseparator observes="3dplot"/>
-      <toolbarbutton id="vc-RotateLeft" class="toolbarbutton-1" type="radio" group="lrrotategroup" label="Rotate left" command="cmd_vcRotateLeft" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateRight" class="toolbarbutton-1" type="radio" group="lrrotategroup" label="vcRotateRight" command="cmd_vcRotateRight" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateUp" class="toolbarbutton-1" type="radio" group="udrotategroup" label="vcRotateUp" command="cmd_vcRotateUp" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateDown" class="toolbarbutton-1" type="radio" group="udrotategroup" label="vcRotateDown" command="cmd_vcRotateDown" observes="3dplot"/>
-      <toolbarseparator observes="3dplot"/>
-      <toolbarbutton id="vc-AutoZoomIn" class="toolbarbutton-1" type="radio" group="zoomgroup" label="vcAutoZoomIn" command="cmd_vcAutoZoomIn" observes="3dplot"/>
-      <toolbarbutton id="vc-AutoZoomOut" class="toolbarbutton-1" type="radio" group="zoomgroup" label="vcAutoZoomOut" command="cmd_vcAutoZoomOut" observes="3dplot"/>
-      <toolbarbutton id="vc-ZoomIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomIn" command="cmd_vcZoomIn" observes="2dplot"/>
-      <toolbarbutton id="vc-ZoomOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomOut" command="cmd_vcZoomOut" observes="2dplot"/>
-      <toolbarbutton id="vc-ZoomBoxIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxIn" command="cmd_vcZoomBoxIn" observes="2dplot"/>
-      <toolbarbutton id="vc-ZoomBoxOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxOut" command="cmd_vcZoomBoxOut" observes="2dplot"/>
-      <toolbarbutton id="vc-SnapShot" class="toolbarbutton-1" label="vcSnapshot" command="cmd_vcSnapshot"/>
-      <toolbarseparator/>
-      <toolbarbutton id="vc-AutoSpeed" type="menu" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
-        <menupopup>
-          <menuitem id="actionspeed8s" name = "action" type="radio" label="8x slower" oncommand="setActionSpeed(0.125);" />
-          <menuitem id="actionspeed4s" name = "action" type="radio" label="4x slower" oncommand="setActionSpeed(0.25);" />
-          <menuitem id="actionspeed2s" name = "action" type="radio" label="2x slower" oncommand="setActionSpeed(0.5);" />
-          <menuitem id="actionspeedN"  name = "action" type="radio" checked="true" label="Natural" oncommand="setActionSpeed(1.0);" />
-          <menuitem id="actionspeed2f" name = "action" type="radio" label="2x faster" oncommand="setActionSpeed(2.0);" />
-          <menuitem id="actionspeed4f" name = "action" type="radio" label="4x faster" oncommand="setActionSpeed(4.0);" />
-          <menuitem id="actionspeed8f" name = "action" type="radio" label="8x faster" oncommand="setActionSpeed(8.0);" />
-        </menupopup>
-      </toolbarbutton>
-      <toolbarseparator observes="animplot"/>
-      <toolbarbutton id="vc-GoToStart" class="toolbarbutton-1" label="vcGoToStart" command="cmd_vcGoToStart" observes="animplot"/>
-      <toolbarbutton id="vc-Play" class="toolbarbutton-1" type="checkbox" label="vcPlay" command="cmd_vcPlay" observes="animplot"/>
-      <scale id="vc-AnimScale" width="150" onchange= "setAnimationTime();" observes="animplot"/>
-      <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot"/>
-      <toolbarbutton id="vc-LoopType" type="menu" class="toolbarbutton-1" label="vcLoopType" observes="animplot">
-        <menupopup>
-          <menuitem id="runonce"      name= "looptype" type="radio" checked="true" label="Run once" oncommand="setLoopMode(0);" />
-          <menuitem id="loop"         name= "looptype" type="radio" label="Loop" oncommand="setLoopMode(1);" />
-          <menuitem id="backandforth" name= "looptype" type="radio" label="Back and forth" oncommand="setLoopMode(2);" />
-        </menupopup>
-      </toolbarbutton>
-      <toolbarbutton id="vc-AnimSpeed" type="menu" class="toolbarbutton-1" label="vcAnimSpeed" observes="animplot">
-        <menupopup>
-          <menuitem id="animspeed8s" name = "anim" type="radio" label="8x slower" oncommand="setAnimSpeed(0.125);" />
-          <menuitem id="animspeed4s" name = "anim" type="radio" label="4x slower" oncommand="setAnimSpeed(0.250);" />
-          <menuitem id="animspeed2s" name = "anim" type="radio" label="2x slower" oncommand="setAnimSpeed(0.5);" />
-          <menuitem id="animspeedN"  name = "anim" type="radio" checked="true" label="Natural" oncommand="setAnimSpeed(1.0);" />
-          <menuitem id="animspeed2f" name = "anim" type="radio" label="2x faster" oncommand="setAnimSpeed(2.0);" />
-          <menuitem id="animspeed4f" name = "anim" type="radio" label="4x faster" oncommand="setAnimSpeed(4.0);" />
-          <menuitem id="animspeed8f" name = "anim" type="radio" label="8x faster" oncommand="setAnimSpeed(8.0);" />
-        </menupopup>
-      </toolbarbutton>
-    </toolbar>
-#endif
   </toolbox>
 
 <!-- Button section -->
@@ -462,7 +398,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
                  label="&spellToolbarCmd.label;" observes="cmd_spelling"
                  tooltiptext="&spellToolbarCmd.tooltip;"/>
 
-  <toolbarbutton id="exporttexButton" class="toolbarbutton-1" observes="cmd_exportTeX"
+  <toolbarbutton id="exporttexButton" class="toolbarbutton-1" observes="cmd_exportToTeX"
                  tooltiptext="&exporttexToolbarButton.tooltip;" label="&exporttexToolbarButton.label;"/>
 
   <toolbarbutton id="exportwebButton" class="toolbarbutton-1" observes="cmd_exportToWeb"
@@ -521,6 +457,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
     <command id="cmd_viewSymbolToolbar"  oncommand="goToggleToolbar('SymbolToolbar','cmd_viewSymbolToolbar');"   checked="true"/>
     <command id="cmd_compactSymbolPanels"  oncommand="setCompact('menuCompactSymbolPanels','cmd_compactSymbolPanels');"   checked="false"/>
     <command id="cmd_showTeXLog" oncommand="msiGoDoCommand('cmd_showTeXLog');" />
+    <command id="cmd_showBibTeXLog" oncommand="msiGoDoCommand('cmd_showBibTeXLog');" />
     <command id="cmd_showTeXFile" oncommand="msiGoDoCommand('cmd_showTeXFile');" />
     <!--command id="cmd_showXSLTLog" oncommand="msiGoDoCommand('cmd_showXSLTLog');" / -->
     <command id="cmd_textBold" oncommand="msiDoStatefulCommand('cmd_texttag','bold');" />

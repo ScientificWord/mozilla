@@ -12,8 +12,8 @@
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/typesetsectionsoverlay.xul"?>
-
+<!-- <?xul-overlay href="chrome://prince/content/typesetsectionsoverlay.xul"?>
+ -->
 <!DOCTYPE dialog [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
@@ -65,8 +65,8 @@
       <tab label="&docformatGeneraltab;"/>
       <tab label="&docformatPageLayouttab;"/>
       <tab label="&docformatFontstab;"/>
-      <tab label="&docformatSectionstab;"/>
-      <!--tab label="&docformatHeaderstab;"/>
+<!--       <tab label="&docformatSectionstab;"/>
+ -->      <!--tab label="&docformatHeaderstab;"/>
       <tab label="&docformatNotestab;"/>
       <tab label="&docformatAdvancedtab;"/-->
     </tabs>
@@ -1141,8 +1141,8 @@
           </groupbox>
         </vbox>
        </tabpanel>
-      <tabpanel id="docformatSectionsPanel"></tabpanel>
-      <!--tabpanel id="docformatHeadersPanel"></tabpanel>
+<!--       <tabpanel id="docformatSectionsPanel"></tabpanel>
+ -->      <!--tabpanel id="docformatHeadersPanel"></tabpanel>
       <tabpanel id="docformatNotesPanel"></tabpanel>
       <tabpanel id="docformatAdvancedPanel"></tabpanel  -->
     </tabpanels>

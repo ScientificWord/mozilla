@@ -22,16 +22,18 @@
      \substack{ m=2 \\ n=0}
      }
 -->
+    <!-- Show unicode hex value [<xsl:value-of select="./*[1]"/>] -->
+    
     <xsl:variable name="LaTeX-BigOp">
       <xsl:apply-templates select="./*[1]"/>
     </xsl:variable>
 
     <xsl:variable name="size">
       <xsl:choose>
-        <xsl:when test="parent::mml:mstyle[@displaystyle='true'][count(./*)=1]">
+        <xsl:when test="./*[1][@displaystyle='true']">
           <xsl:value-of select="'d'"/>
 		</xsl:when>
-        <xsl:when test="parent::mml:mstyle[@displaystyle='false'][count(./*)=1]">
+        <xsl:when test="./*[1][@displaystyle='false']">
           <xsl:value-of select="'t'"/>
         </xsl:when>
         <xsl:otherwise>
@@ -50,7 +52,6 @@
           <xsl:otherwise>
             <xsl:text>{\displaystyle</xsl:text>
             <xsl:value-of select="$LaTeX-BigOp"/>
-            <xsl:text>}</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -63,7 +64,6 @@
           <xsl:otherwise>
             <xsl:text>{\textstyle</xsl:text>
             <xsl:value-of select="$LaTeX-BigOp"/>
-            <xsl:text>}</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -88,7 +88,16 @@
       <xsl:with-param name="arg-num" select="3"/>
     </xsl:call-template>
 
-    <xsl:text>}</xsl:text>
+    <xsl:if test="$size='d' or $size='t'">
+      <xsl:text>}</xsl:text>
+    </xsl:if>
+
+    <xsl:choose>
+      <xsl:when test="$output-mode='SW-LaTeX'">
+      </xsl:when>
+      <xsl:otherwise>}</xsl:otherwise>
+    </xsl:choose>
+ 
   </xsl:template>
 
 
@@ -141,6 +150,10 @@
       and             ./*[2][@stretchy='true']">
         <xsl:text>true</xsl:text>
       </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#xFE3F;']
+      and             ./*[2][@stretchy='true']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x02DC;']
       and             ./*[2][@stretchy='true']">
         <xsl:text>true</xsl:text>
@@ -154,6 +167,9 @@
 
   <xsl:template name="check-accent">
       <xsl:choose>
+      <xsl:when test="./*[2][@stretchy='true']">
+         <xsl:text>false</xsl:text>
+      </xsl:when>
 <!--
       <xsl:when test="*[2][@accent='true']">
         <xsl:text>true</xsl:text>
@@ -183,15 +199,25 @@
       <xsl:when test="./*[2][normalize-space(string())='&#x02DC;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='~']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x02D9;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x02D8;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#x02DD;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
       <xsl:when test="./*[2][normalize-space(string())='&#x0302;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#xFE3F;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      
       <xsl:when test="./*[2][normalize-space(string())='&#x20D7;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
@@ -227,7 +253,7 @@
       </big-op-char>
 
       <movablelimits>
-        <xsl:if test="*[1][self::mml:mo]">
+        <xsl:if test="./*[1][mml:mo]">
         <xsl:choose>
           <xsl:when test="string-length(*[1][@movablelimits]) &gt; 0">
             <xsl:for-each select="*[1][self::mml:mo]">
@@ -248,7 +274,7 @@
     <xsl:variable name="mover-structure" select="exsl:node-set($mover-structure.tr)"/>
 
     <xsl:variable name="limits">
-      <xsl:if test="*[1][self::mml:mo]">
+      <xsl:if test="./*[1][mml:mo]">
       <xsl:choose>
         <xsl:when test="$mover-structure/movablelimits='false'">
           <xsl:text>\limits </xsl:text>
@@ -261,6 +287,112 @@
     </xsl:variable>
 
     <xsl:choose>
+
+      <!-- the top element is an accent operator -->
+
+      <xsl:when test="$mover-structure/is-accent='true'">
+        <xsl:choose>
+          <xsl:when test="./*[2][normalize-space(string())='&#x005E;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\hat'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x0302;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\hat'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#xFE3F;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\widehat'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x02C7;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\check'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x02DC;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\tilde'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='~']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\tilde'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x00B4;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\acute'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x0060;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\grave'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x02D9;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\dot'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x00A8;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\ddot'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x02D8;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\breve'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x02DD;']">
+            <xsl:text>\text{</xsl:text>
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\H'"/>
+            </xsl:call-template>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+         
+          <xsl:when test="./*[2][normalize-space(string())='&#x00AF;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\bar'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x2192;']
+          or              ./*[2][normalize-space(string())='&#x20D7;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\vec'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x20DB;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\dddot'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x02DA;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\mathring'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x20DC;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\ddddot'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x23DE;']
+          or              ./*[2][normalize-space(string())='&#xFE37;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overbrace'"/>
+            </xsl:call-template>
+          </xsl:when>
+
+		  <xsl:otherwise>
+		  </xsl:otherwise>
+        </xsl:choose>
+	  </xsl:when>
+
 
 <!-- the base element is a big operator -->
 
@@ -308,97 +440,20 @@
               <xsl:with-param name="LaTeX-acc" select="'\widehat'"/>
             </xsl:call-template>
           </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#xFE3F;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\widehat'"/>
+            </xsl:call-template>
+          </xsl:when>
           <xsl:when test="./*[2][normalize-space(string())='&#x02DC;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\widetilde'"/>
             </xsl:call-template>
           </xsl:when>
-
-		  <xsl:otherwise>
-		  </xsl:otherwise>
-        </xsl:choose>
-	  </xsl:when>
-
-<!-- the top element is an accent operator -->
-
-      <xsl:when test="$mover-structure/is-accent='true'">
-        <xsl:choose>
-          <xsl:when test="./*[2][normalize-space(string())='&#x005E;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\hat'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x0302;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\hat'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x02C7;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\check'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x02DC;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\tilde'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x00B4;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\acute'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x0060;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\grave'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x02D9;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\dot'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x00A8;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\ddot'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x02D8;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\breve'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x00AF;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\bar'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x2192;']
-          or              ./*[2][normalize-space(string())='&#x20D7;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\vec'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x20DB;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\dddot'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x02DA;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\mathring'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x20DC;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\ddddot'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x23DE;']
-          or              ./*[2][normalize-space(string())='&#xFE37;']">
-            <xsl:call-template name="math-accent">
-              <xsl:with-param name="LaTeX-acc" select="'\overbrace'"/>
-            </xsl:call-template>
+          <xsl:when test="./*[2][normalize-space(string())='~']">
+             <xsl:call-template name="math-accent">
+               <xsl:with-param name="LaTeX-acc" select="'\widetilde'"/>
+             </xsl:call-template>
           </xsl:when>
 
 		  <xsl:otherwise>

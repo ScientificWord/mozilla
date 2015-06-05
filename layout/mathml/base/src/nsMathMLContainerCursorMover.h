@@ -13,7 +13,7 @@
 class nsMathMLContainerCursorMover : public nsIMathMLCursorMover {
 public:
   NS_DECL_ISUPPORTS
-
+  
   NS_IMETHOD 
   MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
 
@@ -27,6 +27,13 @@ public:
   EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
 
   nsMathMLContainerCursorMover(nsIFrame * pFrame) : m_pMyFrame(pFrame) {};
+
+  static nsMathMLContainerCursorMover* 
+  Create(nsIFrame * pFrame) {
+    nsMathMLContainerCursorMover * pcm = new nsMathMLContainerCursorMover(pFrame);
+  //  if (pcm) pcm->AddRef();
+    return pcm;
+  }
 
 private:
   nsIFrame * m_pMyFrame;

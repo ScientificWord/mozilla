@@ -173,7 +173,7 @@ nsPrintOptions::ShowPrintSetupDialog(nsIPrintSettings *aPS)
 
   return wwatch->OpenWindow(parent,
                             "chrome://global/content/printPageSetup.xul",
-                            "_blank","chrome,modal,centerscreen", array,
+                            "_blank","chrome, resizable, centerscreen", array,
                             getter_AddRefs(newWindow));
 }
 

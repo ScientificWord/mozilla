@@ -83,6 +83,7 @@ EDITOR_ATOM(a, "a")
 EDITOR_ATOM(href, "href")     // Use to differentiate between "a" for link, "a" for named anchor
 EDITOR_ATOM(name, "name")   
 EDITOR_ATOM(img, "img")   
+EDITOR_ATOM(plotwrapper, "plotwrapper")   
 EDITOR_ATOM(object, "object")
 EDITOR_ATOM(br, "br")    
 EDITOR_ATOM(msibr, "msibr")    

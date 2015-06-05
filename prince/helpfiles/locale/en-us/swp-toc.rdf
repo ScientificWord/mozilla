@@ -105,17 +105,6 @@
     </nc:subheadings>
   </rdf:Description>
  
-  <rdf:Description about="#cd-shortcuts">
-    <nc:subheadings>
-      <rdf:Seq>
-        <rdf:li> <rdf:Description ID="cd07-01" nc:name="Document Creation Shortcuts"   nc:link="cd07-01-shortcuts.xhtml"/> </rdf:li>
-        <rdf:li> <rdf:Description ID="cd07-02" nc:name="Document Editing Shortcuts"    nc:link="cd07-02-shortcuts.xhtml"/> </rdf:li>
-        <rdf:li> <rdf:Description ID="cd07-03" nc:name="Math Editing Shortcuts"        nc:link="cd07-03-shortcuts.xhtml"/> </rdf:li>
-        <rdf:li> <rdf:Description ID="cd07-04" nc:name="Document Production Shortcuts" nc:link="cd07-04-shortcuts.xhtml"/> </rdf:li>
-      </rdf:Seq>
-    </nc:subheadings>
-  </rdf:Description>
- 
 
   <rdf:Description about="#doing-math">
     <nc:subheadings>
@@ -895,7 +884,7 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="plotting_animated-2d_tools"      nc:name="Animation Tools"                                nc:link="dm06-05-plotting.xhtml#animation tools"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_animated-2d_2drect"     nc:name="Animated 2D Rectangular Plots"                  nc:link="dm06-05-plotting.xhtml"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_animated-2d_2drect"     nc:name="Animated 2D Rectangular Plots"                  nc:link="dm06-05-plotting.xhtml#animated 2d rectangular plots"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_animated-2d_2dpara"     nc:name="Animated 2D Parametric Plots"                   nc:link="dm06-05-plotting.xhtml#animated 2d parametric plots"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_animated-2d_polar"      nc:name="Animated Plots In Polar Coordinates"            nc:link="dm06-05-plotting.xhtml#animated plots in polar coordinates"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_animated-2d_para"       nc:name="Animated Parametric Plots in Polar Coordinates" nc:link="dm06-05-plotting.xhtml#animated parametric plots in polar coordinates"/> </rdf:li>
@@ -943,7 +932,7 @@
         <nc:subheadings>
         <rdf:Seq>
           <rdf:li> <rdf:Description ID="plotting_creating-3d_cylinA" nc:name="Expressions in cylindrical coordinates"            nc:link="dm06-06-plotting.xhtml#expressions in cylindrical coordinates"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="plotting_creating-3d_cylinB" nc:name="parameterized surfaces in cylindrical coordinates" nc:link="dm06-06-plotting.xhtml#parameterized surfaces in cylindrical coordinates"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="plotting_creating-3d_cylinB" nc:name="Parameterized surfaces in cylindrical coordinates" nc:link="dm06-06-plotting.xhtml#parameterized surfaces in cylindrical coordinates"/> </rdf:li>
         </rdf:Seq>
         </nc:subheadings>
       </rdf:Description>

@@ -1,6 +1,6 @@
 var EXPORTED_SYMBOLS = ["msiPathFromFileURL", "msiFileURLFromAbsolutePath",
 	"msiFileURLFromChromeURI", "msiFileURLFromFile", "msiURIFromString", 
-	"msiFileURLStringFromFile", "msiPathFromFileURL" ];
+	"msiFileURLStringFromFile", "msiPathFromFileURL" , "msiFileFromFileURL"];
 
 // msiFileURLFromAbsolutePath
 // Takes an absolute path (the direction of the slashes is OS-dependent) and

@@ -781,7 +781,8 @@ OpMatrixIntervalType GetOpType(MNODE * mo)
       U32 unicode = ASCII2U32(ptr + 3, 16);
       if (unicode == 0x2212     // &minus;
           || unicode == 0xd7    // &times;
-          || unicode == 0x22c5) { // DOT PRODUCT
+          || unicode == 0x22c5  // DOT PRODUCT
+          || unicode == 0x2062) { // Invisible times 
         rv = OMI_matrix;
       } else if (unicode == 0x2208  // &elem;
                  || unicode == 0x220a  // &elem;

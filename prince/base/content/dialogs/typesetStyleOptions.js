@@ -125,22 +125,23 @@ function doGoNative()
 
 function itemIsDefaultChoice(anItem)
 {
-  var bDefault = false;
-  if (anItem.label.search(/\s*\-\s*default/i) >= 0)
-    bDefault = true;
-  else if (anItem.value.length <= 0)
-    bDefault = true;
-  return bDefault;
+  return false;
+//  var bDefault = false;
+//  if (anItem.label.search(/\s*\-\s*default/i) >= 0)
+//    bDefault = true;
+//  else if (anItem.value.length <= 0)
+//    bDefault = true;
+//  return bDefault;
 }
 
 function findDefaultOption()
 {
   var nDefault = -1;
-  for (var i = 0; (nDefault < 0) && (i < gDialog.choicesListbox.getRowCount()); ++i)
-  {
-    if ( itemIsDefaultChoice(gDialog.choicesListbox.getItemAtIndex(i)) )
-      nDefault = i;
-  }
+//  for (var i = 0; (nDefault < 0) && (i < gDialog.choicesListbox.getRowCount()); ++i)
+//  {
+//    if ( itemIsDefaultChoice(gDialog.choicesListbox.getItemAtIndex(i)) )
+//      nDefault = i;
+//  }
   return nDefault;
 }
 
@@ -159,21 +160,21 @@ function setSelectedOptionChoice()
       if (nFound >= 0)
 	    {
 		    bFound = true;
-        if ( !itemIsDefaultChoice(thisItem) && (gDialog.currSelectedChoices.indexOf(thisItem.value) < 0) )
+        if ((gDialog.currSelectedChoices.indexOf(thisItem.value) < 0) )
           gDialog.currSelectedChoices.push( thisItem.value );
 		    gDialog.choicesListbox.addItemToSelection(thisItem);
 	    }
     }
   }
-  if (!bFound)
-  {
-    if (nDefault >= 0)
-    {
-	    var theItem = gDialog.choicesListbox.getItemAtIndex(nDefault);
-      //gDialog.currSelectedChoices.push( theItem.value );	if this is the default option, we don't want to add anything to the string
-      gDialog.choicesListbox.addItemToSelection( theItem );
-    }
-  }
+//  if (!bFound)
+//  {
+//    if (nDefault >= 0)
+//    {
+//	    var theItem = gDialog.choicesListbox.getItemAtIndex(nDefault);
+//      //gDialog.currSelectedChoices.push( theItem.value );	if this is the default option, we don't want to add anything to the string
+//      gDialog.choicesListbox.addItemToSelection( theItem );
+//    }
+//  }
 }
 
 
@@ -291,7 +292,7 @@ function changeOptionChoice()
   var stringArray = new Array();
   for (var i = 0; i < gDialog.choicesListbox.selectedItems.length; ++i)
   {
-	  if (!(itemIsDefaultChoice(gDialog.choicesListbox.selectedItems[i])) && (gDialog.choicesListbox.selectedItems[i].value.length > 0))
+	  if (gDialog.choicesListbox.selectedItems[i].value.length > 0)
       stringArray.push(gDialog.choicesListbox.selectedItems[i].value);
   }
   gDialog.selectedOptionsArray = replaceStringsInArray(gDialog.selectedOptionsArray, gDialog.currSelectedChoices, stringArray);

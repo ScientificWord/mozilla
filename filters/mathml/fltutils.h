@@ -47,6 +47,16 @@ typedef struct tagANOMALY_REC {	// Struct to
   U32 off2;
 } ANOMALY_REC;
 
+#define ANOMALY_HYPERREF (1000) // a \hyperref in math
+#define ANOMALY_NOTE     (1001) // eg \footnote in math
+#define ANOMALY_FRAME    (1002) // a \frame in math
+#define ANOMALY_VSPACE   (1003) // \vspace, \medskip, ...
+#define ANOMALY_TAG      (1004) // tag, notag, tag*
+#define ANOMALY_LEFTOVER (1005)
+#define ANOMALY_AUTONUMBERING (1010)
+#define ANOMALY_NONUMBERING (1011)
+#define ANOMALY_EQUATIONARRAY (1012) // signal that we have eqnarray, align, etc
+
 
 
 typedef struct tagATTRIB_REC {	// Struct to define an attribute node.
@@ -276,7 +286,7 @@ typedef struct tagTILE { // Struct to carry translated fragments
 #define TENV_eqnarray       121
 #define TENV_eqnarraystar   122
 #define TENV_align          123
-
+#define TENV_alignstar      124
 #define TENV_alignat        125
 #define TENV_alignatstar    126
 #define TENV_xalignat       127

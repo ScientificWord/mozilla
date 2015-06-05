@@ -1,6 +1,6 @@
 // Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved.
 
-//const xhtmlns  = "http://www.w3.org/1999/xhtml";
+// var xhtmlns  = "http://www.w3.org/1999/xhtml";  Seems to be declared already.
 
 var texnode;
 var editor;
@@ -43,13 +43,13 @@ function Startup()
     if (texnode.hasAttribute("pre")) gPre.checked = texnode.getAttribute("pre")==1;
     putInPreamble();
     childnode = texnode.firstChild;
-    while (childnode && childnode.nodeType != Node.CDATA_SECTION_NODE) {
-      childnode = childnode.nextSibling;
-    }
+    //while (childnode && childnode.nodeType != Node.CDATA_SECTION_NODE) {
+    //  childnode = childnode.nextSibling;
+    //}
     if (childnode) 
       gTeX.value = childnode.textContent;
   }
-  else texnode = editor.document.createElement("texb");
+  else texnode = editor.document.createElementNS(xhtmlns, "texb");
 
 // TeX buttons looks like:
 // <texb enc="0/1" name=" " req = " " opt = " ">,<![CDATA[[texbutton contents]]></texb>  

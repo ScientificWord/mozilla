@@ -9,6 +9,7 @@
 
 <?xul-overlay href="chrome://editor/content/editorOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/vcamoverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/composerOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 <?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"?>

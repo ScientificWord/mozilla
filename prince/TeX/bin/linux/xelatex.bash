@@ -1,9 +1,9 @@
 #!/bin/sh
 pushd $1
-if [ "`uname -s`" = "Darwin" ]; then
-	export PATH=/usr/texbin:$PATH
-fi
-xelatex -jobname=$3 $2 $4
+source ~/.mackichan/MSITeX.bash
+export PATH=$MSITEXBIN:$PATH
+
+xelatex main
 echo done > sentinel
 popd
 

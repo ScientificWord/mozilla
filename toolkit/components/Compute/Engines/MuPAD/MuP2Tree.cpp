@@ -30,6 +30,7 @@ OR
 #include "MuP2Tree.h"
 #include "CmpTypes.h"
 #include "strutils.h"
+#include "dumputils.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -43,6 +44,11 @@ MuPAD2Tree::~MuPAD2Tree()
 
 MNODE* MuPAD2Tree::MuPADStr2Tree(const char* src)
 {
+
+  #ifdef DEBUG
+     JBM::JBMLine("\n===== MuPADStr2Tree =====\n");
+     JBM::JBMLine(src);
+  #endif
   MNODE *rv = NULL;
 
   if (src && *src) {
@@ -51,10 +57,14 @@ MNODE* MuPAD2Tree::MuPADStr2Tree(const char* src)
 
     int advance = 0;            // a byte offset into src string
     rv = GetElementList(src, advance, NULL, NULL);
-    JBM::DumpTList(rv,0);
+    //JBM::DumpTList(rv,0);
     rv = DoPrecedenceBinds(rv);
   }
-  JBM::DumpTList(rv,0);
+  //JBM::DumpTList(rv,0);
+    #ifdef DEBUG
+     JBM::JBMLine("\n===== End MuPADStr2Tree =====\n");
+     JBM::DumpTList(rv,0);
+  #endif
   return rv;
 }
 
@@ -129,7 +139,9 @@ MNODE *MuPAD2Tree::GetElementList(const char *z_src,
 
         if (!strcmp(name, "D")) { // derivative - special notation
           strcpy(new_node->src_tok, "derivative");
-          //D(D(D(q1m)))(q1x)
+          // old notation: D(D(D(q1m)))(q1x)
+          // new notation: D([i1,...], f)
+
           const char *l_needle = needle + 1;
           int n_primes = 1;
           while (*l_needle == 'D' && *(l_needle + 1) == '(') {
@@ -151,10 +163,16 @@ MNODE *MuPAD2Tree::GetElementList(const char *z_src,
           bytes_spanned += 3 * (n_primes - 1);
 
           // Extract the part we want from the "arglist" created
-          MNODE *bucket = args->first_kid;
-          MNODE *func = bucket->first_kid;
-          bucket->first_kid = NULL;
-          DisposeTList(args);
+          MNODE *varbucket = NULL;
+          MNODE *funcbucket = NULL;
+          if (args->first_kid && args->first_kid->next){
+            varbucket = args->first_kid;
+            funcbucket = args->first_kid -> next;
+            MNODE *varblist  = varbucket->first_kid;
+          } else {
+            MNODE *funcbucket = args->first_kid;
+          }
+          MNODE *func = funcbucket->first_kid;
 
           strcpy(func->src_tok, "function");
           func->parent = new_node;
@@ -935,7 +953,7 @@ MNODE *MuPAD2Tree::DoPrecedenceBinds(MNODE * src_list)
   rv = BindOperators(rv, 18, OP_infix);  //","
   rv = BindOperators(rv, 17, OP_infix);  //":="
 
-  JBM::DumpTList(rv, 0);
+  //JBM::DumpTList(rv, 0);
   return rv;
 }
 

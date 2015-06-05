@@ -47,6 +47,10 @@ private:
                        int & local_nodes_done);
   void AnalyzeCONSTANT(MNODE * eng_node, SEMANTICS_NODE * rv,
                        int & local_nodes_done);
+
+  void AnalyzeSUBSTITUTION(MNODE * eng_node, SEMANTICS_NODE * rv,
+                       int & local_nodes_done);
+
   void AnalyzeBOOLEAN(MNODE * eng_node, SEMANTICS_NODE * rv,
                       int & local_nodes_done);
   void AnalyzeFRACTION(MNODE * eng_node, SEMANTICS_NODE * rv,
@@ -104,6 +108,7 @@ private:
   void FixMapleSimplexStandardize(SEMANTICS_NODE * s_list);
   SEMANTICS_NODE *FixMapleSimplexDual(SEMANTICS_NODE * s_list);
   SEMANTICS_NODE *FixQuantileResult(SEMANTICS_NODE * s_list);
+  SEMANTICS_NODE *FixDefinitenessTests(SEMANTICS_NODE * s_list);
 
   SEMANTICS_NODE *RemoveParens(SEMANTICS_NODE * expr);
   SEMANTICS_NODE *RemoveRedundantPrecGroups(SEMANTICS_NODE * s_node);

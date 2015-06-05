@@ -16,15 +16,20 @@
 #include "DefInfo.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include "../../../../editor/libeditor/base/msiAppUtils.h"
 
 //NS_IMPL_ISUPPORTS1(msiSimpleComputeEngine2, msiISimpleComputeEngine)
 
 
 msiSimpleComputeEngine2* s_engine;
 
+
+
 /* static */ 
 msiSimpleComputeEngine2* msiSimpleComputeEngine2::GetInstance()
 {
+  PRBool ok = msiAppUtils::rlm_compute_ok();
+  if (!ok) return nsnull;
   if (!s_engine) {
     s_engine = new msiSimpleComputeEngine2();
     if (!s_engine)
@@ -86,7 +91,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Startup(nsILocalFile *engFile)
   if (rv == NS_OK) {
     ComputeDLL::InitCompDLL();  //check return?
 
-    client_handle =  ComputeDLL::GetClientHandle( 0 );
+    client_handle = ComputeDLL::GetClientHandle( 0 );
     if (client_handle == 0) {
 	    Shutdown();
 	    rv = NS_ERROR_FAILURE;
@@ -276,9 +281,10 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Iterate(const PRUnichar *expr, const PRUn
 }
 
 /* void implicitDiff (in wstring expr, in wstring var, in wstring depvar, [retval] out wstring result); */
-NS_IMETHODIMP msiSimpleComputeEngine2::FindExtrema(const PRUnichar *expr, const PRUnichar *var, const PRUnichar *depvar, PRUnichar **result)
+NS_IMETHODIMP msiSimpleComputeEngine2::FindExtrema(const PRUnichar *expr, const PRUnichar *var, PRUnichar **result)
 {
-  return CommandWithArgs( expr,result,CCID_Calculus_Find_Extrema, PID_ImplDiffIndepVar, var, PID_ImplDiffDepVars, depvar, PID_last );
+  return CommandWithArgs( expr,result,CCID_Calculus_Find_Extrema, PID_needvarresult, var, PID_last );
+  //expr,result,CCID_Solve_Exact, PID_needvarresult, vars, PID_last 
 }
 
 NS_IMETHODIMP msiSimpleComputeEngine2::ImplicitDiff(const PRUnichar *expr, const PRUnichar *var, const PRUnichar *depvar, PRUnichar **result)
@@ -536,6 +542,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::DefineMupadName(const PRUnichar* swpname,
   
   U32 trans_ID  =  ComputeDLL::CreateTransaction( client_handle, swpname, MuPAD_eng_ID, cmdCode );
   ComputeDLL::AddWideParam( trans_ID, PID_mupname, zPT_WIDE_text, mupname );
+  ComputeDLL::AddWideParam( trans_ID, PID_mupnameloc, zPT_WIDE_text, loc );
   
   rv =  DoTransaction( trans_ID, result );
 
@@ -818,6 +825,34 @@ NS_IMETHODIMP msiSimpleComputeEngine2::SetUserPref(PRUint32 attrID, PRInt32 valu
   }
 
   ComputeDLL::SetUserPref( 0/*client_handle*/, attrID, buf);  // check return?
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP msiSimpleComputeEngine2::SetUserPrefByName(char const* prefName, PRInt32 value)
+{
+  nsresult rv = NS_OK;
+  if (0 == strcmp("Default_matrix_delims", prefName)){
+    rv = SetUserPref(CLPF_Default_matrix_delims, value);
+  } else if (0 == strcmp("Output_imaginaryi", prefName)){
+    rv = SetUserPref(CLPF_Output_imaginaryi, value);
+  } else if (0 == strcmp("Output_Euler_e", prefName)){
+    rv = SetUserPref(CLPF_Output_Euler_e, value);
+  }
+
+  return rv;
+}
+
+
+NS_IMETHODIMP msiSimpleComputeEngine2::GetEditorID(PRUint32 *_retval)
+{
+  *_retval = (PRUint32)ComputeDLL::GetClientHandle( 0 );
+  return NS_OK;
+} 
+
+NS_IMETHODIMP msiSimpleComputeEngine2::SetEditorID(PRUint32 id)
+{
+  client_handle = id;
   return NS_OK;
 }
 

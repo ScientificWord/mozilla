@@ -34,7 +34,7 @@ function OK(){
   data.mupadname = mupname.value;
 
   var infile = document.getElementById("infile.input");
-  data.infile = mupname.infile;
+  data.infile = infile.value;
     
    
   return true;

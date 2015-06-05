@@ -2,8 +2,141 @@
 @namespace sw url("http://www.sciword.com/namespaces/sciword");
 
 beamerframe, stepnumberedListItem, stepbulletListItem, alertstepnumberedListItem, alertstepbulletListItem,
-frametitle, framesubtitle, institute {
+frametitle, framesubtitle, subtitle, institute, subject, keywords {
   -moz-user-select: text;
+}
+
+author {
+  text-align: center;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  display: block;
+  padding-top: 10pt;
+}
+
+authorid {
+  display: none;
+}
+
+body[showshort='true'] authorid {
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] authorid:before {
+  content: '[';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] authorid:after {
+  content: '] ';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+subtitle {
+  text-align: center;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  display: block;
+  padding-top: 10pt;
+  -moz-binding: url("chrome://prince/content/bindings/beamer.xml#fmtag-subtitle");
+}
+
+subtitleid {
+  display: none;
+}
+
+body[showshort='true'] subtitleid {
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] subtitleid:before {
+  content: '[';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] subtitleid:after {
+  content: '] ';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+date {
+  text-align: center;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  display: block;
+  padding-top: 10pt;
+}
+
+option {
+  display: none;
+}
+
+body[showshort='true'] option {
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] option:before {
+  content: '[';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] option:after {
+  content: '] ';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+institute {
+  display:block;
+  text-align: center;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  -moz-binding: url("chrome://prince/content/bindings/beamer.xml#fmtag-institute");
+}
+
+instituteid {
+  display: none;
+}
+
+body[showshort='true'] instituteid {
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] instituteid:before {
+  content: '[';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] instituteid:after {
+  content: '] ';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+subject {
+  display:block;
+  text-align: center;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  -moz-binding: url("chrome://prince/content/bindings/beamer.xml#fmtag-subject");
+}
+
+keywords {
+  display:block;
+  text-align: center;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  -moz-binding: url("chrome://prince/content/bindings/beamer.xml#fmtag-keywords");
 }
 
 beamerframe {
@@ -125,15 +258,17 @@ stepnumberedListItem>bodyText:first-child:first-line,
 alertstepnumberedListItem>bodyText:first-child:first-line { content: '  ';
 }
 
-
-frametitle{
+frametitle, QTR[type="frametitle"] {
   display: block;
-  font-size: 120%;
+  font-size: 125%;
   color: rgb(100,100,200);
+  -moz-user-select: text;
 }
 
-framesubtitle{
+framesubtitle, QTR[type="framesubtitle"] {
   display: block; 
-  font-size: 110%;
-  color: rgb(75,75,150);
+  font-size: 105%;
+  color: rgb(100,100,200);
+  -moz-user-select: text;
 }
+

@@ -11,9 +11,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
                         <beamerframe>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
+                            <bodyText><cursor/><br/>
                             </bodyText>
                         </beamerframe>
                     </initialcontents>
@@ -31,9 +29,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <initialcontents>
-                        <frametitle>
-                            <cursor/>
-                            <br/>
+                        <frametitle><cursor/><br/>
                         </frametitle>
                     </initialcontents>
                 </tag>
@@ -43,22 +39,8 @@
                     <discardemptyblock>true</discardemptyblock>
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <initialcontents>
-                        <framesubtitle>
-                            <cursor/>
-                            <br/>
+                        <framesubtitle><cursor/><br/>
                         </framesubtitle>
-                    </initialcontents>
-                </tag>
-                <tag nm="institute">
-                    <nexttag>bodyText</nexttag>
-                    <description>Beamer institute</description>
-                    <discardemptyblock>true</discardemptyblock>
-                    <nextafteremptyblock>bodyText</nextafteremptyblock>
-                    <initialcontents>
-                        <institute>
-                            <cursor/>
-                            <br/>
-                        </institute>
                     </initialcontents>
                 </tag>
             </tags>
@@ -105,9 +87,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
                         <stepbulletListItem>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
+                            <bodyText><cursor/><br/>
                             </bodyText>
                         </stepbulletListItem>
                     </initialcontents>
@@ -120,9 +100,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents> 
                          <stepnumberedListItem>
-                             <bodyText>
-                                 <cursor/>
-                                 <br/>
+                             <bodyText><cursor/><br/>
                              </bodyText>
                          </stepnumberedListItem>
                     </initialcontents>
@@ -135,9 +113,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents> 
                         <alertstepbulletListItem>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
+                            <bodyText><cursor/><br/>
                             </bodyText>
                         </alertstepbulletListItem>
                     </initialcontents>
@@ -150,9 +126,7 @@
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents> 
                         <alertstepnumberedlistItem>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
+                            <bodyText><cursor/><br/>
                             </bodyText>
                         </alertstepnumberedlistItem>
                     </initialcontents>
@@ -161,5 +135,69 @@
                 </tag>
             </tags>
         </tagclass>
+		<tagclass>
+			<tagclassname>frontmtag</tagclassname>
+			<tags>
+                <tag nm="institute">
+                    <description>Beamer institute</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <institute><cursor/><br/></institute>
+                    </initialcontents>
+                </tag>
+			</tags>
+		</tagclass>
+		<tagclass>
+			<tagclassname>frontmtag</tagclassname>
+			<tags>
+                <tag nm="subtitle">
+                    <description>Beamer subtitle</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <subtitle><cursor/><br/></subtitle>
+                    </initialcontents>
+                </tag>
+			</tags>
+		</tagclass>
+		<tagclass>
+			<tagclassname>frontmtag</tagclassname>
+			<tags>
+                <tag nm="subject">
+                    <description>Beamer subject</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <subject><cursor/><br/></subject>
+                    </initialcontents>
+                </tag>
+			</tags>
+		</tagclass>
+		<tagclass>
+			<tagclassname>frontmtag</tagclassname>
+			<tags>
+                <tag nm="keywords">
+                    <description>Beamer keywords</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <keywords><cursor/><br/></keywords>
+                    </initialcontents>
+                </tag>
+			</tags>
+		</tagclass>
     </tagclasses>
 </tagproperties>
