@@ -375,10 +375,10 @@
         \let\special\msispecial
         \ifmmode
           \string\msipassthru\char`\{
-          #8
+          #8{#1}%
           \char`\}
         \else 
-          #8
+          #8{#1}%
         \fi
       \endgroup
    \else
@@ -387,10 +387,10 @@
         %% #8 will be a special with a graphic file
         \ifmmode
           \string\msipassthru\char`\{
-          #8
+          #8{#1}%
           \char`\}
         \else 
-          #8
+          #8{#1}%
         \fi
       \endgroup
    \fi
