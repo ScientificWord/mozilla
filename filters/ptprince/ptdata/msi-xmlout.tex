@@ -336,8 +336,9 @@
 
 \def\out@preamble@tex#1{%
    \advance\preambleid by 1
-   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1}%
-   \msipreambleextra
+   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[^^0a%
+     \usepackage{bm}^^0a\usepackage{tabulary}}%
+   \msipreambleextra   
    \msitag{]]> </preambleTeX>}%
    \msi@preamble={}}
 
@@ -345,11 +346,6 @@
 %% \document and \enddocument
 
 \def\out@begin@document{%
-   %\br\msiopentag{docformat}{<docformat>}
-   %   \msitag{<colist }\colist\msitag{/>}
-   %\br\msiclosetag{docformat}{</docformat>}
-   \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\usepackage{bm}}%
-   \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\usepackage{tabulary}}%
    \expandafter\out@preamble@tex\expandafter{\the\msi@preamble}
    \msiclosetag{preamble}{</preamble>}%
    \msi@inpreamble = 0
@@ -500,10 +496,8 @@
 % should check for second optional
 \def\out@newtheorema#1[#2]#3{%
   \endgroup% started in \newtheorem
-  %\msitag{^^0a<newtheorem }%
-  %\if@newtheoremstar\msitag{star="1" }\fi%
-  %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
-  \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}[#2]{#3}}
+%  \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}[#2]{#3}}
+  \msitopreambleextra{^^0a\newtheorem{#1}[#2]{#3}}
   \@ifundefined{msi@begin@#1}%
     {\@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
@@ -515,7 +509,8 @@
     {%\msitag{^^0a<newtheorem }%
      %\if@newtheoremstar\msitag{star="1" }\fi% 
      %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
-     \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}{#2}}
+%     \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}{#2}}
+     \msitopreambleextra{^^0a\newtheorem{#1}{#2}}
      \@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
      \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
     {}}
@@ -547,18 +542,22 @@
    \@ifnextchar[{\@newenv@b{#1}{#2}[#3]}{\@newenv@b{#1}{#2}[#3][]}}
 
 \def\@newenv@b#1#2[#3][#4]#5#6{%
-    \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newenvironment#1{#2}}%
+    %\expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newenvironment#1{#2}}%
+    \msitopreambleextra{^^0a\newenvironment#1{#2}}
     \def\msi@tmp{#3}%
     \ifx\msi@tmp\@empty
     \else
-       \expandafter\msi@preamble\expandafter{\the\msi@preamble[#3]}
+       %\expandafter\msi@preamble\expandafter{\the\msi@preamble[#3]}
+       \msitopreambleextra{[#3]}%
     \fi
     \def\msi@tmp{#4}%
     \ifx\msi@tmp\@empty
     \else
-       \expandafter\msi@preamble\expandafter{\the\msi@preamble[#4]}
+       %\expandafter\msi@preamble\expandafter{\the\msi@preamble[#4]}
+       \msitopreambleextra{[#4]}%
     \fi
-    \expandafter\msi@preamble\expandafter{\the\msi@preamble{#5}{#6}}
+    %\expandafter\msi@preamble\expandafter{\the\msi@preamble{#5}{#6}}
+    \msitopreambleextra{{#5}{#6}}%
     \@ifundefined{msi@begin@#2}%
       {\@namedef{msi@begin@#2}{\msi@open@element<#2>}%
        \@namedef{msi@end@#2}{\msi@close@element</#2>}}
