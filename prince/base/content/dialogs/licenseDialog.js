@@ -16,7 +16,7 @@ function getActivationNumber()
 	if (!licenseFile.exists()) {
 		licenseFile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
 		licenseFile.append('license.lic');
-		if (!licenseFile.exists*()) return "";
+		if (!licenseFile.exists()) return "";
 	}
 	path = msiFileURLFromFile(licenseFile);
 	myXMLHTTPRequest = new XMLHttpRequest();
