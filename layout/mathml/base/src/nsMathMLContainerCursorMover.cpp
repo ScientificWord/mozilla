@@ -5,6 +5,7 @@
 #include "nsMathMLContainerCursorMover.h"
 #include "nsMathCursorUtils.h"
 #include "nsIDOMElement.h"
+#include "nsFrame.h"
 
 NS_IMPL_ISUPPORTS1(nsMathMLContainerCursorMover, nsIMathMLCursorMover)
 
@@ -22,15 +23,19 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
   // get the frame we are part of
   nsIFrame* pFrame;
   pFrame = m_pMyFrame;
+  nsIAtom* whoAmI;
+  whoAmI = (pFrame->GetContent())->Tag();
   nsIFrame* pTempFrame;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (leavingFrame)
   {
-    NS_ASSERTION(m_pMyFrame == leavingFrame->GetParent(), "In MoveOutToRight, leavingFrame must be a child!");
+    NS_ASSERTION(m_pMyFrame == GetSignificantParent(leavingFrame), "In MoveOutToRight, leavingFrame must be a child!");
+    whoAmI = (leavingFrame->GetContent())->Tag();
+    leavingFrame =  GetTopFrameForContent(leavingFrame);
     pTempFrame = leavingFrame->GetNextSibling();
     if (pTempFrame)
     {
-      pMCM = do_QueryInterface(pTempFrame);
+      pMCM = GetMathCursorMover(pTempFrame);
       if (pMCM) {
         pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
         return NS_OK;
@@ -46,38 +51,39 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
     }
   }
   // if we get here, leavingFrame is null or there is no child after leavingFrame. Leave this frame.
-  pTempFrame = pFrame->GetParent();
+  pTempFrame = GetSignificantParent(pFrame);
+  whoAmI = (pTempFrame->GetContent())->Tag();
   // Hack alert. Most MathML tags have corresponding frames, but the menclose tag has a mathmlrowframe, and so
   //  uses this code. When the cursor leaves an menclose tag, that counts as a visible motion, so count must be decremented.
   //  This accounts for the next few lines
   if (pFrame->GetContent()->Tag() == nsGkAtoms::menclose_) {
     count = *_retval = 0;
   }
-  pMCM = do_QueryInterface(pTempFrame);
+  pMCM = GetMathCursorMover(pTempFrame);
   if (pMCM)
     pMCM->MoveOutToRight(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
   else
   {
     // Try the grandparent?
-    pTempFrame = pTempFrame->GetParent();
-    pMCM = do_QueryInterface(pTempFrame);
-    if (pMCM)
+    pTempFrame = GetSignificantParent(pTempFrame);
+    pMCM = GetMathCursorMover(pTempFrame);
+    if (pMCM) {
        pMCM->MoveOutToRight(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-
+       count = *_retval;
+    }
     else {  // we have gone out of math.  Put the cursor at the end of the math if count == 0
             // and after the math if count == 1
 
-       if (count == 0)
-       {
-         PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-       }
-       else  //bail out so that the default Mozilla code takes over
-       {
-         //count = 0;
-         PlaceCursorAfter(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
+      if (count == 0)
+      {
+        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+      }
+      else  //bail out so that the default Mozilla code takes over
+      {
+        PlaceCursorAfter(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
          //*fBailingOut = PR_TRUE;
-       }
-       *_retval = 0;
+      }
+      *_retval = 0;
     }
   }
   return NS_OK;
@@ -98,21 +104,22 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (leavingFrame)
   {
-    NS_ASSERTION(m_pMyFrame == leavingFrame->GetParent(), "In MoveOutToLeft, leavingFrame must be a child!");
+//    NS_ASSERTION(m_pMyFrame == GetTopFrameForContent(GetSignificantParent(leavingFrame)), "In MoveOutToLeft, leavingFrame must be a child!");
     // awkward getprevioussibling
     pTempFrame = pFrame->GetFirstChild(nsnull);
-    if (pTempFrame == leavingFrame) 
+    if (pTempFrame == leavingFrame)
       pTempFrame = nsnull; //there is no predecessor to leavingFrame
-
-    while (pTempFrame && (pTempFrame->GetNextSibling() != leavingFrame)) 
+    pTempFrame = GetTopFrameForContent(pTempFrame);
+    while (pTempFrame && (pTempFrame->GetNextSibling() != leavingFrame))
+    // while (pTempFrame && (pTempFrame->GetNextSibling()->GetContent() != leavingFrame->GetContent()))
       pTempFrame = pTempFrame->GetNextSibling();
 
     if (pTempFrame)
     {
-      pMCM = do_QueryInterface(pTempFrame);
+      pMCM = GetMathCursorMover(pTempFrame);
       if (!pMCM) {
-        pTempFrame = GetSignificantParent(pTempFrame);
-        pMCM = do_QueryInterface(pTempFrame);
+        pTempFrame = GetTopFrameForContent(GetSignificantParent(pTempFrame));
+        pMCM = GetMathCursorMover(pTempFrame);
       }
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else  // probably pTempFrame is a text frame
@@ -125,15 +132,9 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
     }
   }
   // if we get here, leavingFrame is null or there is no child preceding leavingFrame. Leave this frame.
-  pTempFrame = pFrame->GetParent();
-  // pTempFrame = pFrame;
-  // pMCM = nsnull;
-  // while (pTempFrame && (pMCM == nsnull))
-  // {
-  //   pTempFrame = pTempFrame->GetParent();
-  //   pMCM = do_QueryInterface(pTempFrame);
-  // }
-  pMCM = do_QueryInterface(pTempFrame);
+  pTempFrame = GetTopFrameForContent(GetSignificantParent(pFrame));
+  pFrame = GetTopFrameForContent(pFrame);
+  pMCM = GetMathCursorMover(pTempFrame);
 
   if (pMCM) pMCM->MoveOutToLeft(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
   else // we have gone out of math.  Put the cursor at the beginning of the math if count == 0
@@ -145,7 +146,7 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
     }
     else  //bail out so that the default Mozilla code takes over
     {
-      //count = 0;
+      count = 0;
       PlaceCursorBefore(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
 //      *fBailingOut = PR_TRUE;
     }
@@ -154,7 +155,7 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
   return NS_OK;
 }
 
-PRBool IsTempInput(nsIContent * pContent) 
+PRBool IsTempInput(nsIContent * pContent)
 {
   nsCOMPtr<nsIDOMElement> pContentElement;
   PRBool fResult = PR_FALSE;
@@ -172,27 +173,27 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
 #ifdef debug_barry
   printf("nsMathMLContainerCursorMover EnterFromLeft, count = %d\n", count);
 #endif
-	NS_ASSERTION(leavingFrame==nsnull, "Non-null leavingFrame passed to nsMathMLContainerCursorMover::EnterFromLeft!");
-	nsIFrame* pFrame;
-	nsCOMPtr<nsIContent> pContent;
-	pFrame = m_pMyFrame;
-	nsIFrame* pTempFrame;
-	nsIAtom * frametype;
-	nsCOMPtr<nsIMathMLCursorMover> pMCM;
-	pTempFrame = pFrame->GetFirstChild(nsnull);
-	if (pTempFrame) frametype = pTempFrame->GetType();
-	while (pTempFrame && (!(pMCM = do_QueryInterface(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
-	{
-		pTempFrame = pTempFrame->GetFirstChild(nsnull);
-		if (pTempFrame) frametype = pTempFrame->GetType();
-	}
-	if (pTempFrame)
-	{ // either pMCM is not null, or frametype == textframe
-		if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-		else
-		{
-			if (nsGkAtoms::textFrame == frametype)
-			{
+  NS_ASSERTION(leavingFrame==nsnull, "Non-null leavingFrame passed to nsMathMLContainerCursorMover::EnterFromLeft!");
+  nsIFrame* pFrame;
+  nsCOMPtr<nsIContent> pContent;
+  pFrame = m_pMyFrame;
+  nsIFrame* pTempFrame;
+  nsIAtom * frametype;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  pTempFrame = pFrame->GetFirstChild(nsnull);
+  if (pTempFrame) frametype = pTempFrame->GetType();
+  while (pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
+  {
+    pTempFrame = pTempFrame->GetFirstChild(nsnull);
+    if (pTempFrame) frametype = pTempFrame->GetType();
+  }
+  if (pTempFrame)
+  { // either pMCM is not null, or frametype == textframe
+    if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else
+    {
+      if (nsGkAtoms::textFrame == frametype)
+      {
         pContent = m_pMyFrame->GetContent();
         if (IsTempInput(pContent))  {
           *aOutOffset = 0; // middle of input box
@@ -200,7 +201,7 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
           *aOutFrame = pTempFrame;
           return NS_OK;
         }
-  			if (count == 0){
+        if (count == 0){
           *_retval = 0;
           PlaceCursorBefore(pTempFrame, PR_TRUE, aOutFrame, aOutOffset, count);
           *_retval = count;
@@ -210,18 +211,18 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
           PlaceCursorAfter(pTempFrame, PR_TRUE, aOutFrame, aOutOffset, count);
           *_retval = count;
         }
-        else {          
+        else {
           *aOutOffset = count;
           *aOutFrame = pTempFrame;
-  			  *_retval = count;
+          *_retval = count;
         }
-			}
-		}
-		return NS_OK;
-	}
+      }
+    }
+    return NS_OK;
+  }
   else // this frame has no children
   {
-    pMCM = do_QueryInterface(pFrame->GetParent());
+    pMCM = GetMathCursorMover(GetSignificantParent(pFrame));
     if (pMCM) {
       *aOutOffset = 0;
       pMCM->MoveOutToRight(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
@@ -253,36 +254,39 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
   nsCOMPtr<nsIContent> pContent;
   pFrame = m_pMyFrame;
   nsIFrame* pTempFrame;
-	nsIAtom * frametype = nsnull;
+  nsIAtom * frametype = nsnull;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   // get last child
   pTempFrame = pFrame->GetFirstChild(nsnull);
-  while (pTempFrame && (pTempFrame->GetNextSibling())) pTempFrame = pTempFrame->GetNextSibling();
-	if (pTempFrame) frametype = pTempFrame->GetType();
-	while (pTempFrame && (!(pMCM = do_QueryInterface(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
-	{
-		pTempFrame = pTempFrame->GetFirstChild(nsnull);
-		while (pTempFrame && (pTempFrame->GetNextSibling()))
-		{
- 			pTempFrame = pTempFrame->GetNextSibling();
-		}
-		if (pTempFrame)
-		{
-			frametype = pTempFrame->GetType();
-		}
-	}
+  while (pTempFrame && (pTempFrame->GetNextSibling()))
+    pTempFrame = pTempFrame->GetNextSibling();
+  if (pTempFrame) frametype = pTempFrame->GetType();
+  while (pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
+  {
+    pTempFrame = pTempFrame->GetFirstChild(nsnull);
+    while (pTempFrame && (pTempFrame->GetNextSibling()))
+    {
+      pTempFrame = pTempFrame->GetNextSibling();
+    }
+    if (pTempFrame)
+    {
+      frametype = pTempFrame->GetType();
+    }
+  }
   if (pTempFrame)
   {
     frametype = pTempFrame->GetType();
-    if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    if (pMCM) {
+      pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    }
     else
-		{
-			if (nsGkAtoms::textFrame == frametype)
-			{
-	      pContent = m_pMyFrame->GetContent();
-			  *aOutFrame = pTempFrame;
-	      PRInt32 start, end;
-	      pTempFrame->GetOffsets(start,end);
+    {
+      if (nsGkAtoms::textFrame == frametype)
+      {
+        pContent = m_pMyFrame->GetContent();
+        *aOutFrame = pTempFrame;
+        PRInt32 start, end;
+        pTempFrame->GetOffsets(start,end);
         if (IsTempInput(pContent))  {
           *aOutOffset = 0; // middle of input box
           *_retval = 0;
@@ -290,24 +294,24 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
         }
         if (count > 0) {
           // Check for mn
-            
+
           if (pContent ->Tag() == nsGkAtoms::mn_) {
              *aOutOffset = (end - start - count);
           } else {
-	           *aOutOffset = 0; // was (end - start - count), but we do not want the cursor inside math names or multiple-character operators.
+             *aOutOffset = 0; // was (end - start - count), but we do not want the cursor inside math names or multiple-character operators.
           }
-	      
+
         } else {
-          *aOutOffset = end; 
+          *aOutOffset = end;
         }
         *_retval = 0;
-			}
+      }
     }
     return NS_OK;
   }
   else // this frame has no children
   {
-    pMCM = do_QueryInterface(pFrame->GetParent());
+    pMCM = GetMathCursorMover(GetSignificantParent(pFrame));
     if (pMCM) pMCM->MoveOutToLeft(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else // we have gone out of math
     {

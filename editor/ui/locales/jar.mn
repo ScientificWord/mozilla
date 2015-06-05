@@ -8,7 +8,7 @@
 #endif
   locale/@AB_CD@/editor/editorSmileyOverlay.dtd              (%chrome/composer/editorSmileyOverlay.dtd)
   locale/@AB_CD@/editor/editorOverlay.dtd                    (%chrome/composer/editorOverlay.dtd)
-  locale/@AB_CD@/editor/editor.properties                    (%chrome/composer/editor.properties)
+#  locale/@AB_CD@/editor/editor.properties                    (%chrome/composer/editor.properties)
   locale/@AB_CD@/editor/EditorHLineProperties.dtd            (%chrome/dialogs/EditorHLineProperties.dtd)
   locale/@AB_CD@/editor/EditorImageProperties.dtd            (%chrome/dialogs/EditorImageProperties.dtd)
   locale/@AB_CD@/editor/EditorInsertSource.dtd               (%chrome/dialogs/EditorInsertSource.dtd)

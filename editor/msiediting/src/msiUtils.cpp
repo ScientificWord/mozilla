@@ -25,6 +25,7 @@
 
 
 #include "msiUtils.h"
+#include "nsEditor.h"
 #include "msiIMMLEditDefines.h"
 #include "msiIMathMLInsertion.h"
 #include "msiIMathMLEditingBC.h"
@@ -69,7 +70,7 @@ void msiUtils::Initalize()
 {
   initalized = PR_TRUE;
   return;
-}    
+}
 
 nsresult msiUtils::GetMathMLInsertionInterface(nsIEditor *editor,
                                              nsIDOMNode * node,
@@ -84,7 +85,7 @@ nsresult msiUtils::GetMathMLInsertionInterface(nsIEditor *editor,
       res = msiEditor->GetMathMLInsertionInterface(node, offset, getter_AddRefs(msiEditing));
   }
   return res;
-}                  
+}
 
 nsresult msiUtils::GetMathMLEditingBC(nsIEditor *editor,
                                       nsIDOMNode * node,
@@ -100,7 +101,7 @@ nsresult msiUtils::GetMathMLEditingBC(nsIEditor *editor,
       res = msiEditor->GetMathMLEditingBC(node, offset, clean, getter_AddRefs(editingBC));
   }
   return res;
-}                      
+}
 
 nsresult msiUtils::GetMathMLCaretInterface(nsIEditor *editor,
                                            nsIDOMNode * node,
@@ -115,7 +116,7 @@ nsresult msiUtils::GetMathMLCaretInterface(nsIEditor *editor,
       res = msiEditor->GetMathMLCaretInterface(node, offset, getter_AddRefs(msiEditing));
   }
   return res;
-}                      
+}
 
 nsresult msiUtils::SetupPassOffInsertToParent(nsIEditor * editor,
                                               nsIDOMNode * child,
@@ -136,7 +137,7 @@ nsresult msiUtils::SetupPassOffInsertToParent(nsIEditor * editor,
       res = msiEditor->GetMathMLInsertionInterface(parent, offset, getter_AddRefs(msiEditing));
   }
   return res;
-}                                    
+}
 
 nsresult msiUtils::SetupPassOffCaretToParent(nsIEditor * editor,
                                              nsIDOMNode * child,
@@ -159,9 +160,9 @@ nsresult msiUtils::SetupPassOffCaretToParent(nsIEditor * editor,
       res = msiEditor->GetMathMLCaretInterface(parent, offset, getter_AddRefs(msiEditing));
   }
   return res;
-}                                            
-        
-                      
+}
+
+
 // Unicode characters we think should be operators.
 // See section 4.9 of Unicode 3.0 spec. and DerivedCoreProperties.txt
 // I (and SWP) disagree with their classification in many places.
@@ -179,6 +180,7 @@ struct {
   {0x0028,0x002A},  // ()*
   {0x002B,0x002B},  // PLUS SIGN
   {0x002C,0x002F},  // ,-./
+  {0x003A,0x003A},  // comma
   {0x003C,0x003E},  // LESS-THAN SIGN..GREATER-THAN SIGN
   {0x003F,0x0040},  // ?@
   {0x005B,0x005D},  // [\]^
@@ -316,7 +318,7 @@ static
 PRBool CharacterIsOperator(PRUint32 ch)
 {
   const int listLength = sizeof(OperatorList)/sizeof(OperatorList[0]);
-  
+
   for (int i = 0; i < listLength; i++) {
     if (OperatorList[i].lower <= ch && ch <= OperatorList[i].higher)
       return PR_TRUE;
@@ -339,7 +341,7 @@ PRInt32 msiUtils::GetMathMLNodeTypeFromCharacter(PRUint32 character)
 nsresult msiUtils::CreateMathMLElement(nsIEditor* editor, nsIAtom* type,
                                         nsCOMPtr<nsIDOMElement> & mmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(editor && type, "Null editor or nodetype!");
   if (!editor || !type)
     return NS_ERROR_FAILURE;
@@ -348,14 +350,21 @@ nsresult msiUtils::CreateMathMLElement(nsIEditor* editor, nsIAtom* type,
   NS_ASSERTION(domDoc, "Editor GetDocument return Null DOMDocument!");
   nsAutoString name;
   type->ToString(name);
+  nsString kXMLNS = NS_LITERAL_STRING("xmlns");
   if (domDoc && !name.IsEmpty())
   {
     nsAutoString mmlnsURI;
+    PRBool hasNSAttribute;
     msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_MathML, mmlnsURI);
     res = domDoc->CreateElementNS(mmlnsURI, name, getter_AddRefs(mmlElement));
+    // if (mmlElement && name.EqualsLiteral("math")) {
+    //   res = mmlElement->HasAttribute(kXMLNS, &hasNSAttribute);
+    //   if (!(hasNSAttribute)) {
+    //     mmlElement->SetAttribute(kXMLNS, mmlnsURI);
+    //   }
   }
-  return res;  
-}                                       
+  return res;
+}
 
 nsresult msiUtils::CreateMathElement(nsIEditor * editor,
                                      PRBool isDisplay,
@@ -363,12 +372,12 @@ nsresult msiUtils::CreateMathElement(nsIEditor * editor,
                                      PRUint32 & flags,
                                      nsCOMPtr<nsIDOMElement> & mathElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   res = CreateMathMLElement(editor, msiEditingAtoms::math, mathElement);
-  if (NS_SUCCEEDED(res) && mathElement) 
+  if (NS_SUCCEEDED(res) && mathElement)
   {
     nsAutoString xmlnsURI, mmlnsURI;
-    PRBool nestInMrow = MROW_PURGE_NONE == GetMrowPurgeMode() ? PR_TRUE : PR_FALSE; 
+    PRBool nestInMrow = MROW_PURGE_NONE == GetMrowPurgeMode() ? PR_TRUE : PR_FALSE;
     msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_MathML, mmlnsURI);
     msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_XMLNS, xmlnsURI);
     nsAutoString xmlns, display, block;
@@ -381,7 +390,7 @@ nsresult msiUtils::CreateMathElement(nsIEditor * editor,
     nsCOMPtr<nsIDOMElement> inputbox;
     res = CreateInputbox(editor, nestInMrow, markCaret, flags, inputbox);
     nsCOMPtr<nsIDOMNode> inputboxNode(do_QueryInterface(inputbox));
-    if (NS_SUCCEEDED(res) && inputboxNode) 
+    if (NS_SUCCEEDED(res) && inputboxNode)
     {
       nsCOMPtr<nsIDOMNode> dontcare;
       res = mathElement->AppendChild(inputboxNode, getter_AddRefs(dontcare));
@@ -394,7 +403,7 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
                                            const nsAString & text,
                                            PRUint32 tagType,
                                            PRUint32 caretPos,
-                                           PRUint32 & flags, 
+                                           PRUint32 & flags,
                                            nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -411,7 +420,7 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
     else
       elementAtom = msiEditingAtoms::mi;
     res = CreateMathMLElement(editor, elementAtom, leafElement);
-    if (NS_SUCCEEDED(res) && leafElement) 
+    if (NS_SUCCEEDED(res) && leafElement)
     {
       nsCOMPtr<nsIDOMText> textNode;
       nsCOMPtr<nsIDOMDocument> domDoc;
@@ -424,32 +433,32 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
       if (domDoc)
       {
         res = domDoc->CreateTextNode(text, getter_AddRefs(textNode));
-        if (NS_SUCCEEDED(res)) 
+        if (NS_SUCCEEDED(res))
         {
           nsCOMPtr<nsIDOMNode> resultNode;
-          nsCOMPtr<nsIDOMNode> newNode(do_QueryInterface(textNode));  
+          nsCOMPtr<nsIDOMNode> newNode(do_QueryInterface(textNode));
           res = leafElement->AppendChild(newNode, getter_AddRefs(resultNode));
-          if (NS_SUCCEEDED(res)) 
+          if (NS_SUCCEEDED(res))
           {
             if (caretPos <= msiIMathMLEditingBC::LAST_VALID)
             {
-              nsCOMPtr<nsIDOMNode> leafNode(do_QueryInterface(leafElement));  
+              nsCOMPtr<nsIDOMNode> leafNode(do_QueryInterface(leafElement));
               if (leafNode)
                 MarkCaretPosition(editor, leafNode, caretPos, flags, PR_TRUE, PR_TRUE);
             }
             mathmlElement = leafElement;
-          }  
+          }
         }
-      }  
-    }    
-  }    
+      }
+    }
+  }
   return res;
 }
 
 nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
                                            PRUint32 character,
-                                           PRUint32 tagType, 
-                                           PRUint32 caretPos, 
+                                           PRUint32 tagType,
+                                           PRUint32 caretPos,
                                            PRUint32 & flags,
                                            nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
@@ -459,7 +468,7 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
   {
     nsAutoString text(static_cast<PRUnichar>(character));
     res = CreateMathMLLeafElement(editor, text, tagType, caretPos, flags, mathmlElement);
-  }    
+  }
   return res;
 }
 
@@ -477,29 +486,29 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor *editor,
 //    nsAutoString text((PRUnichar)character);
     res = CreateMathMLLeafElement(editor, text, tagType, caretPos, flags, mathmlElement);
   }
-  return res;  
-}                                 
+  return res;
+}
 
 nsresult msiUtils::CreateMathOperator(nsIEditor * editor,
                                       const nsAString & text,
                                       PRUint32 caretPos,
                                       PRUint32 & flags,
                                       PRUint32 attrFlags,
-                                      const nsAString & lspace,                                 
-                                      const nsAString & rspace,                                 
-                                      const nsAString & minsize,                                 
+                                      const nsAString & lspace,
+                                      const nsAString & rspace,
+                                      const nsAString & minsize,
                                       const nsAString & maxsize,
                                       nsCOMPtr<nsIDOMElement> & mathElement)
 {
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> moElement;
   res = CreateMathMLLeafElement(editor, text, msiIMathMLEditingBC::MATHML_MO, caretPos, flags, moElement);
-  if (NS_SUCCEEDED(res) && moElement)   
+  if (NS_SUCCEEDED(res) && moElement)
   {
     nsAutoString form, prefix, postfix, infix, stretchy, msitrue, msifalse, fence;
     nsAutoString msiBoundFence, largeop, separator, movablelimits, symmetric;
     nsAutoString lspace, rspace, maxsize, minsize, accent;
-    nsAutoString msiLimitPlacement, msiLimitsAtRight, msiLimitsAboveBelow, displaystyle; 
+    nsAutoString msiLimitPlacement, msiLimitsAtRight, msiLimitsAboveBelow, displaystyle;
     msiEditingAtoms::form->ToString(form);
     msiEditingAtoms::prefix->ToString(prefix);
     msiEditingAtoms::postfix->ToString(postfix);
@@ -522,61 +531,61 @@ nsresult msiUtils::CreateMathOperator(nsIEditor * editor,
     msiEditingAtoms::msiLimitsAtRight->ToString(msiLimitsAtRight);
     msiEditingAtoms::msiLimitsAboveBelow->ToString(msiLimitsAboveBelow);
     msiEditingAtoms::displaystyle->ToString(displaystyle);
-    
+
     if (attrFlags & msiIMMLEditDefines::MO_ATTR_prefix)
       res = moElement->SetAttribute(form, prefix);
     else if (attrFlags & msiIMMLEditDefines::MO_ATTR_postfix)
       res = moElement->SetAttribute(form, postfix);
     else if (attrFlags & msiIMMLEditDefines::MO_ATTR_infix)
       res = moElement->SetAttribute(form, infix);
-    
+
     if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_stretchy_T))
       res = moElement->SetAttribute(stretchy, msitrue);
     else if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_stretchy_F))
       res = moElement->SetAttribute(stretchy, msifalse);
-    
+
     if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_fence_T))
       res = moElement->SetAttribute(fence, msitrue);
     else if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_fence_F))
       res = moElement->SetAttribute(fence, msifalse);
-    
+
     if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_boundFence))
       res = moElement->SetAttribute(msiBoundFence, msitrue);
-    
+
     if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_accent_T))
       res = moElement->SetAttribute(accent, msitrue);
     else if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_accent_F))
       res = moElement->SetAttribute(accent, msifalse);
-    
+
     if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_largeop_T))
       res = moElement->SetAttribute(largeop, msitrue);
     else if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_largeop_F))
       res = moElement->SetAttribute(largeop, msifalse);
-    
+
     if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_separator_T))
       res = moElement->SetAttribute(separator, msitrue);
     else if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_separator_F))
       res = moElement->SetAttribute(separator, msifalse);
-    
+
     if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_movablelimits_T))
       res = moElement->SetAttribute(movablelimits, msitrue);
     else if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_movablelimits_F))
       res = moElement->SetAttribute(movablelimits, msifalse);
-    
+
     if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_symmetric_T))
       res = moElement->SetAttribute(symmetric, msitrue);
     else if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_symmetric_F))
       res = moElement->SetAttribute(symmetric, msifalse);
-    
+
     if (NS_SUCCEEDED(res) && !lspace.IsEmpty())
       res = moElement->SetAttribute(lspace, lspace);
-    
+
     if (NS_SUCCEEDED(res) && !rspace.IsEmpty())
       res = moElement->SetAttribute(rspace, rspace);
-    
+
     if (NS_SUCCEEDED(res) && !maxsize.IsEmpty())
       res = moElement->SetAttribute(maxsize, maxsize);
-    
+
     if (NS_SUCCEEDED(res) && !minsize.IsEmpty())
       res = moElement->SetAttribute(minsize, minsize);
 
@@ -603,9 +612,9 @@ nsresult msiUtils::CreateMathOperator(nsIEditor * editor,
     }
     else
       mathElement = moElement;
-  } 
+  }
   return res;
-}                            
+}
 
 nsresult msiUtils::CreateInputbox(nsIEditor *editor,
                                   PRBool nestInRow,
@@ -616,7 +625,7 @@ nsresult msiUtils::CreateInputbox(nsIEditor *editor,
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> inputbox;
   PRUint32 dummyFlags(msiIMathMLInsertion::FLAGS_NONE);
-  nsAutoString text(PRUnichar(0x200B)); // zero width space
+  nsAutoString text(PRUnichar(0x200A)); // hair width space, so cursor shows
   res = CreateMathMLLeafElement(editor, text, msiIMathMLEditingBC::MATHML_MI, -1, dummyFlags, inputbox);
   if (NS_SUCCEEDED(res) && inputbox)
   {
@@ -645,10 +654,10 @@ nsresult msiUtils::CreateMSubOrMSup(nsIEditor * editor,
                                     PRBool scriptInRow,
                                     PRBool markCaret,
                                     PRUint32 & flags,
-                                    const nsAString & scriptShift,                                 
+                                    const nsAString & scriptShift,
                                     nsCOMPtr<nsIDOMElement> & mathmlElement)
-{  
-  nsresult res(NS_ERROR_FAILURE); 
+{
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> subOrSup;
   nsCOMPtr<nsIDOMNode> theBase, theScript, tmpScript;
   tmpScript = nsnull;
@@ -667,7 +676,7 @@ nsresult msiUtils::CreateMSubOrMSup(nsIEditor * editor,
     if (NS_SUCCEEDED(res) && subOrSup && !scriptShift.IsEmpty())
       subOrSup->SetAttribute(subscriptshift, scriptShift);
   }
-  if (NS_SUCCEEDED(res) && subOrSup) 
+  if (NS_SUCCEEDED(res) && subOrSup)
   {
     if (base)
       theBase = base;
@@ -677,24 +686,26 @@ nsresult msiUtils::CreateMSubOrMSup(nsIEditor * editor,
       PRBool locMarkCaret(markCaret);
       if (locMarkCaret && script == nsnull)
         locMarkCaret = PR_FALSE;  // mark script inputbox instead
+      // BBM
+      locMarkCaret = PR_TRUE;
       res = CreateInputbox(editor, PR_FALSE, locMarkCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         theBase = do_QueryInterface(inputbox);
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     }
     if (script)
       tmpScript = script;
     else
-    {    
+    {
       nsCOMPtr<nsIDOMElement> inputbox;
       res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         tmpScript = do_QueryInterface(inputbox);
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     }
-    if (NS_SUCCEEDED(res) && tmpScript) 
+    if (NS_SUCCEEDED(res) && tmpScript)
     {
       if (scriptInRow)
       {
@@ -706,18 +717,18 @@ nsresult msiUtils::CreateMSubOrMSup(nsIEditor * editor,
       else
         theScript = tmpScript;
     }
-    if (NS_SUCCEEDED(res) && subOrSup && theBase && theScript) 
+    if (NS_SUCCEEDED(res) && subOrSup && theBase && theScript)
     {
       nsCOMPtr<nsIDOMNode> dontcare, dontcare1;
       res = subOrSup->AppendChild(theBase, getter_AddRefs(dontcare));
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = subOrSup->AppendChild(theScript, getter_AddRefs(dontcare1));
       if (NS_SUCCEEDED(res))
-        mathmlElement = subOrSup; 
-    }  
+        mathmlElement = subOrSup;
+    }
   }
   return res;
-}   
+}
 
 nsresult msiUtils::CreateMSubSup(nsIEditor * editor,
                                  nsIDOMNode * base,
@@ -727,11 +738,11 @@ nsresult msiUtils::CreateMSubSup(nsIEditor * editor,
                                  PRBool supscriptInRow,
                                  PRBool markCaret,
                                  PRUint32 & flags,
-                                 const nsAString & subscriptShift,                                 
-                                 const nsAString & supscriptShift,                                 
+                                 const nsAString & subscriptShift,
+                                 const nsAString & supscriptShift,
                                  nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> subsup;
   nsCOMPtr<nsIDOMNode> theBase, thesubScript, tmpsubScript, thesupScript, tmpsupScript;
   tmpsubScript = nsnull;
@@ -740,7 +751,7 @@ nsresult msiUtils::CreateMSubSup(nsIEditor * editor,
   nsAutoString subscriptshift, superscriptshift;
   msiEditingAtoms::subscriptshift->ToString(subscriptshift);
   msiEditingAtoms::superscriptshift->ToString(superscriptshift);
-  if (NS_SUCCEEDED(res) && subsup) 
+  if (NS_SUCCEEDED(res) && subsup)
   {
     if (!subscriptShift.IsEmpty())
       subsup->SetAttribute(subscriptshift, subscriptShift);
@@ -755,26 +766,26 @@ nsresult msiUtils::CreateMSubSup(nsIEditor * editor,
       if (locMarkCaret && (subscript == nsnull || supscript == nsnull))
         locMarkCaret = PR_FALSE;  // mark script inputbox instead
       res = CreateInputbox(editor, PR_FALSE, locMarkCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         theBase = do_QueryInterface(inputbox);
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     }
     if (subscript)
       tmpsubScript = subscript;
     else
-    {    
+    {
       nsCOMPtr<nsIDOMElement> inputbox;
       PRBool locMarkCaret(markCaret);
       if (locMarkCaret && supscript == nsnull)
         locMarkCaret = PR_FALSE;  // mark supscript inputbox instead
       res = CreateInputbox(editor, PR_FALSE, locMarkCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         tmpsubScript = do_QueryInterface(inputbox);
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     }
-    if (NS_SUCCEEDED(res) && tmpsubScript) 
+    if (NS_SUCCEEDED(res) && tmpsubScript)
     {
       if (subscriptInRow)
       {
@@ -790,15 +801,15 @@ nsresult msiUtils::CreateMSubSup(nsIEditor * editor,
     if (supscript)
       tmpsupScript = supscript;
     else
-    {    
+    {
       nsCOMPtr<nsIDOMElement> inputbox;
       res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         tmpsupScript = do_QueryInterface(inputbox);
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     }
-    if (NS_SUCCEEDED(res) && tmpsupScript) 
+    if (NS_SUCCEEDED(res) && tmpsupScript)
     {
       if (supscriptInRow)
       {
@@ -810,17 +821,17 @@ nsresult msiUtils::CreateMSubSup(nsIEditor * editor,
       else
         thesupScript = tmpsupScript;
     }
-    if (NS_SUCCEEDED(res) && subsup && theBase && thesubScript && thesupScript) 
+    if (NS_SUCCEEDED(res) && subsup && theBase && thesubScript && thesupScript)
     {
       nsCOMPtr<nsIDOMNode> dontcare, dontcare1, dontcare2;
       res = subsup->AppendChild(theBase, getter_AddRefs(dontcare));
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = subsup->AppendChild(thesubScript, getter_AddRefs(dontcare1));
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = subsup->AppendChild(thesupScript, getter_AddRefs(dontcare2));
       if (NS_SUCCEEDED(res))
-        mathmlElement = subsup; 
-    }  
+        mathmlElement = subsup;
+    }
   }
   return res;
 }
@@ -840,7 +851,7 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
   if (editor && (!above.IsEmpty() || !below.IsEmpty() || !aroundNotation.IsEmpty() || !aroundType.IsEmpty()))
   {
     res = NS_OK;
-    PRBool isOverUnder = !above.IsEmpty() && !below.IsEmpty();
+    PRBool isUnderOver = !above.IsEmpty() && !below.IsEmpty();
     PRBool isOver = !above.IsEmpty() && below.IsEmpty();
     PRBool isOverOrUnder = !above.IsEmpty() || !below.IsEmpty();
     PRUint32 dummyFlags(0);
@@ -849,28 +860,28 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
     nsAutoString emptyString;
     if (!above.IsEmpty() && !(msiEditingAtoms::label->Equals(above)))
     {
-      res = CreateMathOperator(editor, above, msiIMathMLEditingBC::INVALID, dummyFlags, 
+      res = CreateMathOperator(editor, above, msiIMathMLEditingBC::INVALID, dummyFlags,
                                msiIMMLEditDefines::MO_ATTR_stretchy_T, emptyString,
-                               emptyString, emptyString, emptyString, over); 
+                               emptyString, emptyString, emptyString, over);
       dummyFlags = 0;
       if (NS_SUCCEEDED(res) && over)
         overNode = do_QueryInterface(over);
     }
     if (NS_SUCCEEDED(res) &&!below.IsEmpty() && !(msiEditingAtoms::label->Equals(below)))
     {
-      res = CreateMathOperator(editor, below, msiIMathMLEditingBC::INVALID, dummyFlags, 
+      res = CreateMathOperator(editor, below, msiIMathMLEditingBC::INVALID, dummyFlags,
                                msiIMMLEditDefines::MO_ATTR_stretchy_T, emptyString,
-                               emptyString, emptyString, emptyString, under); 
+                               emptyString, emptyString, emptyString, under);
       if (NS_SUCCEEDED(res) && under)
         underNode = do_QueryInterface(under);
     }
-    if (NS_SUCCEEDED(res) && isOverUnder)
+    if (NS_SUCCEEDED(res) && isUnderOver)
       res = CreateMunderover(editor, base, underNode, overNode, PR_FALSE, PR_FALSE,
                              createInputBox, PR_TRUE, flags, emptyString, emptyString, enclosed);
     else if (NS_SUCCEEDED(res) && isOverOrUnder)
     {
       nsCOMPtr<nsIDOMNode> script = isOver ? overNode : underNode;
-      res = CreateMunderOrMover(editor, isOver, base, script, PR_FALSE, createInputBox, PR_TRUE, flags, 
+      res = CreateMunderOrMover(editor, isOver, base, script, PR_FALSE, createInputBox, PR_TRUE, flags,
                                 emptyString, enclosed);
     }
     if (NS_SUCCEEDED(res))
@@ -888,8 +899,8 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
       mathmlElement = enclosed;
   }
   return res;
-}                                   
-                                   
+}
+
 nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
                                        PRBool isOver,
                                        nsIDOMNode * base,
@@ -898,17 +909,18 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
                                        PRBool createInputBox,
                                        PRBool markCaret,
                                        PRUint32 & flags,
-                                       const nsAString & isAccent,                                 
+                                       const nsAString & isAccent,
                                        nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsISelection> sel;
   nsCOMPtr<nsIDOMElement> underOrOver;
   nsCOMPtr<nsIDOMNode> theBase, theScript, tmpScript;
   tmpScript = nsnull;
   nsAutoString accent, accentunder;
   msiEditingAtoms::accent->ToString(accent);
   msiEditingAtoms::accentunder->ToString(accentunder);
-  
+
   if (isOver)
   {
     res = CreateMathMLElement(editor, msiEditingAtoms::mover, underOrOver);
@@ -921,7 +933,7 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
     if (NS_SUCCEEDED(res) && underOrOver && !isAccent.IsEmpty())
       underOrOver->SetAttribute(accentunder, isAccent);
   }
-  if (NS_SUCCEEDED(res) && underOrOver) 
+  if (NS_SUCCEEDED(res) && underOrOver)
   {
     if (base)
       theBase = base;
@@ -932,10 +944,10 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
       if (locMarkCaret && script == nsnull)
         locMarkCaret = PR_FALSE;  // mark script inputbox instead
       res = CreateInputbox(editor, PR_FALSE, locMarkCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         theBase = do_QueryInterface(inputbox);
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     } else
     {
       nsCOMPtr<nsIArray> nodeArray;  //deliberately empty
@@ -947,15 +959,15 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
     if (script)
       tmpScript = script;
     else
-    {    
+    {
       nsCOMPtr<nsIDOMElement> inputbox;
       res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         tmpScript = do_QueryInterface(inputbox);
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     }
-    if (NS_SUCCEEDED(res) && tmpScript) 
+    if (NS_SUCCEEDED(res) && tmpScript)
     {
       if (scriptInRow)
       {
@@ -967,18 +979,23 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
       else
         theScript = tmpScript;
     }
-    if (NS_SUCCEEDED(res) && underOrOver && theBase && theScript) 
+    if (NS_SUCCEEDED(res) && underOrOver && theBase && theScript)
     {
       nsCOMPtr<nsIDOMNode> dontcare, dontcare1;
       res = underOrOver->AppendChild(theBase, getter_AddRefs(dontcare));
-      if (NS_SUCCEEDED(res)) 
-        res = underOrOver->AppendChild(theScript, getter_AddRefs(dontcare1));
       if (NS_SUCCEEDED(res))
-        mathmlElement = underOrOver; 
-    }  
+        res = underOrOver->AppendChild(theScript, getter_AddRefs(dontcare1));
+      if (NS_SUCCEEDED(res)) {
+        res = editor->GetSelection(getter_AddRefs(sel));
+        if (NS_SUCCEEDED(res))
+          res = sel->Collapse(theScript, 0);
+      }
+      if (NS_SUCCEEDED(res))
+        mathmlElement = underOrOver;
+    }
   }
   return res;
-}   
+}
 
 nsresult msiUtils::CreateMunderover(nsIEditor * editor,
                                     nsIDOMNode * base,
@@ -986,21 +1003,21 @@ nsresult msiUtils::CreateMunderover(nsIEditor * editor,
                                     nsIDOMNode * overscript,
                                     PRBool underscriptInRow,
                                     PRBool overscriptInRow,
-                                    PRBool createInputBox, 
+                                    PRBool createInputBox,
                                     PRBool markCaret,
                                     PRUint32 & flags,
-                                    const nsAString & isunderAccent,                                 
-                                    const nsAString & isoverAccent,                                 
+                                    const nsAString & isunderAccent,
+                                    const nsAString & isoverAccent,
                                     nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> underover;
   nsCOMPtr<nsIDOMNode> theBase, theunderScript, tmpunderScript, theoverScript, tmpoverScript;
   res = CreateMathMLElement(editor, msiEditingAtoms::munderover, underover);
   nsAutoString accent, accentunder;
   msiEditingAtoms::accent->ToString(accent);
   msiEditingAtoms::accentunder->ToString(accentunder);
-  if (NS_SUCCEEDED(res) && underover) 
+  if (NS_SUCCEEDED(res) && underover)
   {
     if (!isunderAccent.IsEmpty())
       underover->SetAttribute(accentunder, isunderAccent);
@@ -1015,10 +1032,10 @@ nsresult msiUtils::CreateMunderover(nsIEditor * editor,
       if (locMarkCaret && (underscript == nsnull || overscript == nsnull))
         locMarkCaret = PR_FALSE;  // mark script inputbox instead
       res = CreateInputbox(editor, PR_FALSE, locMarkCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         theBase = do_QueryInterface(inputbox);
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     } else
     {
       nsCOMPtr<nsIArray> nodeArray;  //deliberately empty
@@ -1029,18 +1046,18 @@ nsresult msiUtils::CreateMunderover(nsIEditor * editor,
     if (underscript)
       tmpunderScript = underscript;
     else
-    {    
+    {
       nsCOMPtr<nsIDOMElement> inputbox;
       PRBool locMarkCaret(markCaret);
       if (locMarkCaret && overscript == nsnull)
         locMarkCaret = PR_FALSE;  // mark overscript inputbox instead
       res = CreateInputbox(editor, PR_FALSE, locMarkCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         tmpunderScript = do_QueryInterface(inputbox);
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     }
-    if (NS_SUCCEEDED(res) && tmpunderScript) 
+    if (NS_SUCCEEDED(res) && tmpunderScript)
     {
       if (underscriptInRow)
       {
@@ -1056,15 +1073,15 @@ nsresult msiUtils::CreateMunderover(nsIEditor * editor,
     if (overscript)
       tmpoverScript = overscript;
     else
-    {    
+    {
       nsCOMPtr<nsIDOMElement> inputbox;
       res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         tmpoverScript = do_QueryInterface(inputbox);
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     }
-    if (NS_SUCCEEDED(res) && tmpoverScript) 
+    if (NS_SUCCEEDED(res) && tmpoverScript)
     {
       if (overscriptInRow)
       {
@@ -1076,17 +1093,17 @@ nsresult msiUtils::CreateMunderover(nsIEditor * editor,
       else
         theoverScript = tmpoverScript;
     }
-    if (NS_SUCCEEDED(res) && underover && theBase && theunderScript && theoverScript) 
+    if (NS_SUCCEEDED(res) && underover && theBase && theunderScript && theoverScript)
     {
       nsCOMPtr<nsIDOMNode> dontcare, dontcare1, dontcare2;
       res = underover->AppendChild(theBase, getter_AddRefs(dontcare));
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = underover->AppendChild(theunderScript, getter_AddRefs(dontcare1));
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = underover->AppendChild(theoverScript, getter_AddRefs(dontcare2));
       if (NS_SUCCEEDED(res))
-        mathmlElement = underover; 
-    }  
+        mathmlElement = underover;
+    }
   }
   return res;
 }
@@ -1100,12 +1117,12 @@ nsresult msiUtils::CreateMenclose(nsIEditor *editor,
                                   PRUint32 & flags,
                                   nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> enclosed;
   nsCOMPtr<nsIDOMElement> enclose;
   res = CreateMathMLElement(editor, msiEditingAtoms::menclose, enclose);
 
-  if (NS_SUCCEEDED(res) && enclose) 
+  if (NS_SUCCEEDED(res) && enclose)
   {
     nsAutoString notation, msiTypeAttr;
     msiEditingAtoms::typeAttr->ToString(msiTypeAttr);
@@ -1115,8 +1132,8 @@ nsresult msiUtils::CreateMenclose(nsIEditor *editor,
     if (NS_SUCCEEDED(res) && !typeAttr.IsEmpty())
       res = enclose->SetAttribute(msiTypeAttr, typeAttr);
   }
-    
-  if (NS_SUCCEEDED(res) && enclose) 
+
+  if (NS_SUCCEEDED(res) && enclose)
   {
     if (child)
       enclosed = child;
@@ -1124,7 +1141,7 @@ nsresult msiUtils::CreateMenclose(nsIEditor *editor,
     {
       nsCOMPtr<nsIDOMElement> inputbox;
       res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         enclosed = do_QueryInterface(inputbox);
     } else
     {
@@ -1133,16 +1150,16 @@ nsresult msiUtils::CreateMenclose(nsIEditor *editor,
       CreateMRow(editor, (nsIArray *) nodeArray, enclosedElement);
       enclosed = enclosedElement;
     }
-    if (NS_SUCCEEDED(res) && enclosed)  
+    if (NS_SUCCEEDED(res) && enclosed)
     {
       nsCOMPtr<nsIDOMNode> dontcare;   //TODO -- do these need to be saved for undo!!!!!!!
       res = enclose->AppendChild(enclosed, getter_AddRefs(dontcare));
       if (NS_SUCCEEDED(res))
         mathmlElement = enclose;
-    }  
+    }
   }
   return res;
-} 
+}
 
 nsresult msiUtils::CreateMsqrt(nsIEditor *editor,
                                nsIDOMNode * child,
@@ -1151,11 +1168,11 @@ nsresult msiUtils::CreateMsqrt(nsIEditor *editor,
                                PRUint32 & flags,
                                nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> radicand;
   nsCOMPtr<nsIDOMElement> sqrt;
   res = CreateMathMLElement(editor, msiEditingAtoms::msqrt, sqrt);
-  if (NS_SUCCEEDED(res) && sqrt) 
+  if (NS_SUCCEEDED(res) && sqrt)
   {
     if (child)
       radicand = child;
@@ -1163,7 +1180,7 @@ nsresult msiUtils::CreateMsqrt(nsIEditor *editor,
     {
       nsCOMPtr<nsIDOMElement> inputbox;
       res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
-      if (NS_SUCCEEDED(res) && inputbox) 
+      if (NS_SUCCEEDED(res) && inputbox)
         radicand = do_QueryInterface(inputbox);
     } else
     {
@@ -1172,16 +1189,16 @@ nsresult msiUtils::CreateMsqrt(nsIEditor *editor,
       CreateMRow(editor, (nsIArray *) nodeArray, radElement);
       radicand = radElement;
     }
-    if (NS_SUCCEEDED(res) && radicand)  
+    if (NS_SUCCEEDED(res) && radicand)
     {
       nsCOMPtr<nsIDOMNode> dontcare;   //TODO -- do these need to be saved for undo!!!!!!!
       res = sqrt->AppendChild(radicand, getter_AddRefs(dontcare));
       if (NS_SUCCEEDED(res))
         mathmlElement = sqrt;
-    }  
+    }
   }
   return res;
-} 
+}
 
 nsresult msiUtils::CreateMroot(nsIEditor * editor,
                                nsIDOMNode * radicand,
@@ -1190,12 +1207,12 @@ nsresult msiUtils::CreateMroot(nsIEditor * editor,
                                PRBool markCaret,
                                PRUint32 & flags,
                                nsCOMPtr<nsIDOMElement> & mathmlElement)
-{  
-  nsresult res(NS_ERROR_FAILURE); 
+{
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> loc_radicand, loc_index;
   nsCOMPtr<nsIDOMElement> root;
   res = CreateMathMLElement(editor, msiEditingAtoms::mroot, root);
-  if (NS_SUCCEEDED(res) && root) 
+  if (NS_SUCCEEDED(res) && root)
   {
     if (radicand)
       loc_radicand = radicand;
@@ -1204,7 +1221,7 @@ nsresult msiUtils::CreateMroot(nsIEditor * editor,
       nsCOMPtr<nsIDOMElement> inputbox;
       CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
       NS_ASSERTION(inputbox, "CreateInputbox failed.");
-      if (inputbox) 
+      if (inputbox)
         loc_radicand = do_QueryInterface(inputbox);
     } else
     {
@@ -1221,7 +1238,7 @@ nsresult msiUtils::CreateMroot(nsIEditor * editor,
       nsCOMPtr<nsIDOMElement> inputbox;
       res = CreateInputbox(editor, PR_FALSE, doMarkCaret, flags, inputbox);
       NS_ASSERTION(inputbox, "CreateInputbox failed.");
-      if (inputbox) 
+      if (inputbox)
         loc_index = do_QueryInterface(inputbox);
     }
     if (loc_radicand && loc_index)
@@ -1229,16 +1246,16 @@ nsresult msiUtils::CreateMroot(nsIEditor * editor,
       nsCOMPtr<nsIDOMNode> dontcare;
       res = root->AppendChild(loc_radicand, getter_AddRefs(dontcare));
       dontcare = nsnull;
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = root->AppendChild(loc_index, getter_AddRefs(dontcare));
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
           mathmlElement = root;
     }
-    else 
+    else
       res = NS_ERROR_FAILURE;
   }
   return res;
-}        
+}
 
 nsresult msiUtils::CreateMathname(nsIEditor * editor,
                                   const nsAString & name,
@@ -1246,12 +1263,12 @@ nsresult msiUtils::CreateMathname(nsIEditor * editor,
                                   PRBool isUnit,
                                   nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> theChild;
   nsCOMPtr<nsIDOMElement> mathname;
   PRUint32 caretPos(msiIMathMLEditingBC::INVALID);
   nsAutoString msimathname, msitrue, msiunit;
-  if (isUnit) 
+  if (isUnit)
     msiEditingAtoms::msiunit->ToString(msiunit);
   else
     msiEditingAtoms::msimathname->ToString(msimathname);
@@ -1264,34 +1281,34 @@ nsresult msiUtils::CreateMathname(nsIEditor * editor,
   } else {
     res = CreateMathMLLeafElement(editor, name, msiIMathMLEditingBC::MATHML_MI, caretPos, flags, mathname);
   }
-  if (NS_SUCCEEDED(res) && mathname) 
+  if (NS_SUCCEEDED(res) && mathname)
   {
     mathname->SetAttribute(isUnit?msiunit:msimathname, msitrue);
     mathmlElement = mathname;
   }
   return res;
-}                               
+}
 
 nsresult msiUtils::CreateEngineFunction(nsIEditor * editor,
                                         const nsAString & name,
                                         PRUint32 & flags,
                                         nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> theChild;
   nsCOMPtr<nsIDOMElement> mathname;
   res = msiUtils::CreateMathname(editor, name, flags, PR_FALSE, mathname);
   nsAutoString msiclass, enginefunction;
   msiEditingAtoms::msiclass->ToString(msiclass);
   msiEditingAtoms::enginefunction->ToString(enginefunction);
-  if (NS_SUCCEEDED(res) && mathname) 
+  if (NS_SUCCEEDED(res) && mathname)
   {
     mathname->SetAttribute(msiclass, enginefunction);
     mathmlElement = mathname;
   }
   return res;
-}                               
-            
+}
+
 nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
                                    nsIDOMNode * child,
                                    PRBool createInputBox,
@@ -1302,7 +1319,7 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
                                    PRUint32 & attrFlags,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   PRUint32 dummyFlags(msiIMathMLInsertion::FLAGS_NONE);
   nsCOMPtr<nsIDOMNode> theChild;
   nsCOMPtr<nsIDOMElement> fence;
@@ -1312,12 +1329,12 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
   PRUint32 commonflags(msiIMMLEditDefines::MO_ATTR_fence_T | msiIMMLEditDefines::MO_ATTR_stretchy_T | msiIMMLEditDefines::MO_ATTR_symmetric_T);
   commonflags |= (attrFlags & msiIMMLEditDefines::MO_ATTR_boundFence);
   res = CreateMathOperator(editor, open,  msiIMathMLEditingBC::INVALID, dummyFlags,
-                           msiIMMLEditDefines::MO_ATTR_prefix|commonflags, emptyString, emptyString, 
-                           emptyString, emptyString, opening); 
-  if (NS_SUCCEEDED(res)) 
+                           msiIMMLEditDefines::MO_ATTR_prefix|commonflags, emptyString, emptyString,
+                           emptyString, emptyString, opening);
+  if (NS_SUCCEEDED(res))
     res = CreateMathOperator(editor, close, msiIMathMLEditingBC::INVALID, dummyFlags,
-                             msiIMMLEditDefines::MO_ATTR_postfix|commonflags, emptyString, emptyString, 
-                             emptyString, emptyString, closing); 
+                             msiIMMLEditDefines::MO_ATTR_postfix|commonflags, emptyString, emptyString,
+                             emptyString, emptyString, closing);
   if (NS_SUCCEEDED(res))
   {
     nsCOMPtr<nsIDOMNode> openNode(do_QueryInterface(opening));
@@ -1337,7 +1354,7 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
             nsCOMPtr<nsIDOMElement> inputbox;
             res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
             NS_ASSERTION(inputbox, "CreateInputbox failed.");
-            if (NS_SUCCEEDED(res) && inputbox) 
+            if (NS_SUCCEEDED(res) && inputbox)
               res = mutableArray->AppendElement(inputbox, PR_FALSE);
           }
         }
@@ -1348,35 +1365,35 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
           nsCOMPtr<nsIArray> nodeArray(do_QueryInterface(mutableArray));
           res = CreateMRow(editor, nodeArray, fence);
         }
-      }    
+      }
     }
   }
-  if (NS_SUCCEEDED(res)) 
+  if (NS_SUCCEEDED(res))
     mathmlElement = fence;
   return res;
-} 
-                              
+}
+
 nsresult msiUtils::CreateMRow(nsIEditor *editor,
                               nsIDOMNode * child,
                               nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   res = CreateMathMLElement(editor, msiEditingAtoms::mrow, mathmlElement);
-  if (NS_SUCCEEDED(res) && mathmlElement && child) 
+  if (NS_SUCCEEDED(res) && mathmlElement && child)
   {
     nsCOMPtr<nsIDOMNode> dontcare;
     res = mathmlElement->AppendChild(child, getter_AddRefs(dontcare));
   }
   return res;
-}        
+}
 
 nsresult msiUtils::CreateMRow(nsIEditor * editor,
                               nsIArray * nodeArray,
                               nsCOMPtr<nsIDOMElement> & mathmlElement)
-{  
-  nsresult res(NS_ERROR_FAILURE); 
+{
+  nsresult res(NS_ERROR_FAILURE);
   res = CreateMathMLElement(editor, msiEditingAtoms::mrow, mathmlElement);
-  if (NS_SUCCEEDED(res) && mathmlElement) 
+  if (NS_SUCCEEDED(res) && mathmlElement)
   {
     nsCOMPtr<nsISimpleEnumerator> enumerator;
     if (nodeArray)
@@ -1384,25 +1401,25 @@ nsresult msiUtils::CreateMRow(nsIEditor * editor,
     if (enumerator)
     {
       PRBool someMore(PR_FALSE);
-      while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore) 
+      while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore)
       {
         nsCOMPtr<nsISupports> isupp;
         if (NS_FAILED(enumerator->GetNext(getter_AddRefs(isupp))))
         {
-          res = NS_ERROR_FAILURE; 
+          res = NS_ERROR_FAILURE;
           break;
         }
         nsCOMPtr<nsIDOMNode> child(do_QueryInterface(isupp));
-        if (child) 
+        if (child)
         {
           nsCOMPtr<nsIDOMNode> dontcare;
           res = mathmlElement->AppendChild(child, getter_AddRefs(dontcare));
         }
-      }  
+      }
     }
   }
   return res;
-}        
+}
 
 nsresult msiUtils::CreateMfrac(nsIEditor * editor,
                                nsIDOMNode * num,
@@ -1413,8 +1430,8 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
                                const nsAString & lineThickness,
                                PRUint32 & attrFlags,
                                nsCOMPtr<nsIDOMElement> & mathmlElement)
-{  
-  nsresult res(NS_ERROR_FAILURE); 
+{
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> numerator, denominator;
   nsCOMPtr<nsIDOMElement> frac;
   nsCOMPtr<nsIDOMNode> installedNum;
@@ -1426,10 +1443,10 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
   msiEditingAtoms::displaystyle->ToString(displaystyle);
   msiEditingAtoms::msitrue->ToString(msitrue);
   msiEditingAtoms::msifalse->ToString(msifalse);
-  
+
   res = CreateMathMLElement(editor, msiEditingAtoms::mfrac, frac);
-  
-  if (NS_SUCCEEDED(res) && frac) 
+
+  if (NS_SUCCEEDED(res) && frac)
   {
     if (NS_SUCCEEDED(res) && !lineThickness.IsEmpty())
       res = frac->SetAttribute(linethickness, lineThickness);
@@ -1439,7 +1456,7 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
     else if (createInputBox)
     {
       CreateInputbox(editor, PR_FALSE, markCaret, flags, numInputbox);
-      if (numInputbox) 
+      if (numInputbox)
         numerator = do_QueryInterface(numInputbox);
     }
     else
@@ -1457,14 +1474,14 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
       if (num && markCaret)
         doMarkCaret = PR_TRUE;
       res = CreateInputbox(editor, PR_FALSE, doMarkCaret, flags, denInputbox);
-      if (denInputbox) 
+      if (denInputbox)
         denominator = do_QueryInterface(denInputbox);
     }
-                         
+
     if (numerator && denominator)
     {
       res = frac->AppendChild(numerator, getter_AddRefs(installedNum));
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         res = frac->AppendChild(denominator, getter_AddRefs(installedDen));
       if (NS_SUCCEEDED(res))
       {
@@ -1491,11 +1508,11 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
         res = sel->Collapse(cursorNode, 0);
       }
     }
-    else 
+    else
       res = NS_ERROR_FAILURE;
   }
   return res;
-} 
+}
 
 nsresult msiUtils::CreateBinomial(nsIEditor * editor,
                                   nsIDOMNode * num,
@@ -1509,7 +1526,7 @@ nsresult msiUtils::CreateBinomial(nsIEditor * editor,
                                   PRUint32 & attrFlags,
                                   nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> frac;
 //  PRUint32 fracFlags = attrFlags & (msiIMMLEditDefines::MO_ATTR_sizeFlags);
   PRUint32 fracFlags = msiIMMLEditDefines::MO_ATTR_none;
@@ -1523,9 +1540,9 @@ nsresult msiUtils::CreateBinomial(nsIEditor * editor,
       nsCOMPtr<nsIDOMNode> child = do_QueryInterface(frac);   //TODO -- do these need to be saved for undo!!!!!!!
       PRUint32 fenceFlags = msiIMMLEditDefines::MO_ATTR_boundFence;
       res = CreateMRowFence(editor, child, PR_FALSE, opening, closing, PR_FALSE, flags, fenceFlags, mrowElement);
-      if (NS_SUCCEEDED(res)) 
+      if (NS_SUCCEEDED(res))
         mathmlElement = mrowElement;
-      else 
+      else
         res = NS_ERROR_FAILURE;
     }
     else
@@ -1551,7 +1568,7 @@ nsresult msiUtils::CreateBinomial(nsIEditor * editor,
     }
 
   }
-  else 
+  else
     res = NS_ERROR_FAILURE;
 
   return res;
@@ -1562,23 +1579,23 @@ nsresult msiUtils::CreateMtd(nsIEditor * editor,
                              PRUint32 & flags,
                              nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> cell;
   res = CreateMathMLElement(editor, msiEditingAtoms::mtd, cell);
-  if (NS_SUCCEEDED(res) && cell) 
+  if (NS_SUCCEEDED(res) && cell)
   {
     nsCOMPtr<nsIDOMElement> inputbox;
     res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
-    if (NS_SUCCEEDED(res) && inputbox) 
+    if (NS_SUCCEEDED(res) && inputbox)
     {
       nsCOMPtr<nsIDOMNode> dontcare;
       res = cell->AppendChild(inputbox, getter_AddRefs(dontcare));
       if (NS_SUCCEEDED(res))
         mathmlElement = cell;
-    }  
+    }
   }
   return res;
-}                            
+}
 
 nsresult msiUtils::CreateMtr(nsIEditor * editor,
                             PRUint32 numCols,
@@ -1587,7 +1604,7 @@ nsresult msiUtils::CreateMtr(nsIEditor * editor,
                             PRUint32 & flags,
                             nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> row;
   mathmlElement = nsnull;
   if (isLabeledTr)
@@ -1610,17 +1627,17 @@ nsresult msiUtils::CreateMtr(nsIEditor * editor,
       res = CreateMtd(editor, doMarkCaret, flags, cell);
       if (NS_SUCCEEDED(res) && cell)
       {
-        nsCOMPtr<nsIDOMNode> dontcare; 
+        nsCOMPtr<nsIDOMNode> dontcare;
         res = row->AppendChild(cell, getter_AddRefs(dontcare));
       }
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     }
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
         mathmlElement = row;
-  } 
+  }
   return res;
-}                            
+}
 
 nsresult msiUtils::CreateMtable(nsIEditor * editor,
                                PRUint32 numRows,
@@ -1631,7 +1648,7 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
                                nsCOMPtr<nsIDOMElement> & mathmlElement,
                                const nsAString & delim)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> table;
   nsCOMPtr<nsIDOMElement> row;
   PRUint32 fenceflags = 0;
@@ -1640,7 +1657,7 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
   res = CreateMathMLElement(editor, msiEditingAtoms::mtable, table);
   if (NS_SUCCEEDED(res) && table)
   {
-    PRBool isLabeledTr(PR_FALSE); // use row signature to determine 
+    PRBool isLabeledTr(PR_FALSE); // use row signature to determine
     for (PRUint32 i=0; i < numRows && NS_SUCCEEDED(res); i++)
     {
       PRBool doMarkCaret = (markCaret && i == 0);
@@ -1648,11 +1665,11 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
       res = CreateMtr(editor, numCols, isLabeledTr, doMarkCaret, flags, row);
       if (NS_SUCCEEDED(res) && row)
       {
-        nsCOMPtr<nsIDOMNode> dontcare; 
+        nsCOMPtr<nsIDOMNode> dontcare;
         res = table->AppendChild(row, getter_AddRefs(dontcare));
       }
       else
-        res = NS_ERROR_FAILURE;  
+        res = NS_ERROR_FAILURE;
     }
     if (NS_SUCCEEDED(res)) {
       if (delim.Length() > 0) {
@@ -1660,7 +1677,7 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
         if (delim.EqualsLiteral("[")) right = NS_LITERAL_STRING("]");
         else if (delim.EqualsLiteral("(")) right = NS_LITERAL_STRING(")");
         else if (delim.EqualsLiteral("{")) right = NS_LITERAL_STRING("}");
-        else // no need for fence 
+        else // no need for fence
         {
           mathmlElement = table;
           return res;
@@ -1673,11 +1690,11 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
         }
       }
     }
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
         mathmlElement = table;
-  } 
+  }
   return res;
-}                            
+}
 
 nsresult msiUtils::CloneNode(nsIDOMNode * node,
                              nsCOMPtr <nsIDOMNode> & clone)
@@ -1688,26 +1705,26 @@ nsresult msiUtils::CloneNode(nsIDOMNode * node,
     PRBool deep(PR_TRUE); //TODO -- what is the purpose of deep?
     res = node->CloneNode(deep, getter_AddRefs(clone));
   }
-  return res;  
+  return res;
 }
 
 nsresult msiUtils::CloneChildNode(nsIDOMNode * parent,
                                   PRUint32 indexOfChild,
                                   nsCOMPtr <nsIDOMNode> & clone)
-{ 
-  nsresult res(NS_ERROR_FAILURE);                            
+{
+  nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> kid;
   res = GetChildNode(parent, indexOfChild, kid);
   if (NS_SUCCEEDED(res) && kid)
     res =msiUtils::CloneNode(kid, clone);
   return res;
-}    
+}
 
 nsresult msiUtils::WrapNodeInMStyle(nsIEditor * editor, nsIDOMNode * node, nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE); 
+  nsresult res(NS_ERROR_FAILURE);
   res = CreateMathMLElement(editor, msiEditingAtoms::mstyle, mathmlElement);
-  if (NS_SUCCEEDED(res) && mathmlElement) 
+  if (NS_SUCCEEDED(res) && mathmlElement)
   {
     if (node)
     {
@@ -1729,13 +1746,13 @@ nsresult msiUtils::GetIndexOfChildInParent(nsIDOMNode * child, PRUint32 &index)
     {
       nsCOMPtr<nsIDOMNodeList> children;
       res = parent->GetChildNodes(getter_AddRefs(children));
-      if (NS_SUCCEEDED(res) && children) 
+      if (NS_SUCCEEDED(res) && children)
       {
         PRUint32 i, count;
         res = children->GetLength(&count);
         if (NS_SUCCEEDED(res))
         {
-          for (i=0; i < count; i++) 
+          for (i=0; i < count; i++)
           {
             nsCOMPtr<nsIDOMNode> currChild;
             res = children->Item(i, getter_AddRefs(currChild));
@@ -1747,12 +1764,12 @@ nsresult msiUtils::GetIndexOfChildInParent(nsIDOMNode * child, PRUint32 &index)
             }
           }
         }
-      }  
+      }
     }
   }
   NS_ASSERTION(res==NS_OK, "Call failing, caller probably not checking.");
   return res;
-} 
+}
 
 nsresult msiUtils::GetNonWhitespaceChildren(nsIDOMNode * parent,
                                             nsCOMPtr<nsIArray> & children)
@@ -1763,7 +1780,7 @@ nsresult msiUtils::GetNonWhitespaceChildren(nsIDOMNode * parent,
   {
     nsCOMPtr<nsIMutableArray> mutableArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
     if (NS_SUCCEEDED(res) && mutableArray)
-    { 
+    {
       nsCOMPtr<nsIDOMNode> currChild;
       res = parent->GetFirstChild(getter_AddRefs(currChild));
       while (NS_SUCCEEDED(res) && currChild)
@@ -1772,7 +1789,7 @@ nsresult msiUtils::GetNonWhitespaceChildren(nsIDOMNode * parent,
         res = currChild->GetNextSibling(getter_AddRefs(nextChild));
         if (NS_SUCCEEDED(res) && !IsWhitespace(currChild))
           res = mutableArray->AppendElement(currChild, PR_FALSE);
-        currChild = nextChild;    
+        currChild = nextChild;
       }
       if (NS_SUCCEEDED(res))
         children = do_QueryInterface(mutableArray);
@@ -1781,9 +1798,9 @@ nsresult msiUtils::GetNonWhitespaceChildren(nsIDOMNode * parent,
   if (children)
     res = NS_OK;
   else
-    res = NS_ERROR_FAILURE;  
-  return res;  
-}                                            
+    res = NS_ERROR_FAILURE;
+  return res;
+}
 
 nsresult msiUtils::GetChildNode(nsIDOMNode * parent,
                                 PRUint32 indexOfChild,
@@ -1795,15 +1812,15 @@ nsresult msiUtils::GetChildNode(nsIDOMNode * parent,
   {
     nsCOMPtr<nsIDOMNodeList> children;
     parent->GetChildNodes(getter_AddRefs(children));
-    if (children) 
+    if (children)
       children->Item(indexOfChild, getter_AddRefs(child));
     if (child)
       res = NS_OK;
   }
   else
    res = NS_ERROR_NULL_POINTER;
-  return res; 
-}                  
+  return res;
+}
 
 nsresult msiUtils::RemoveChildNode(nsIDOMNode * parent,
                                    PRUint32 indexOfChild,
@@ -1820,7 +1837,7 @@ nsresult msiUtils::RemoveChildNode(nsIDOMNode * parent,
   }
   else
    res = NS_ERROR_NULL_POINTER;
-  return res; 
+  return res;
 }
 
 nsresult msiUtils::RemoveIndexedChildNode(nsIEditor * editor,
@@ -1839,9 +1856,9 @@ nsresult msiUtils::RemoveIndexedChildNode(nsIEditor * editor,
   }
   else
    res = NS_ERROR_NULL_POINTER;
-  return res; 
-}                 
-                 
+  return res;
+}
+
 
 nsresult msiUtils::ReplaceChildNode(nsIDOMNode * parent,
                                     PRUint32 indexOfChild,
@@ -1859,11 +1876,11 @@ nsresult msiUtils::ReplaceChildNode(nsIDOMNode * parent,
   }
   else
    res = NS_ERROR_NULL_POINTER;
-  return res; 
-}                                
+  return res;
+}
 
-nsresult msiUtils::InsertChildren(nsIDOMNode * parent, 
-                                  PRUint32 offset, 
+nsresult msiUtils::InsertChildren(nsIDOMNode * parent,
+                                  PRUint32 offset,
                                   nsIArray * newChildList)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -1884,7 +1901,7 @@ nsresult msiUtils::InsertChildren(nsIDOMNode * parent,
         res = newChildList->QueryElementAt(index, NS_GET_IID(nsIDOMNode), getter_AddRefs(currNode));
         if (NS_SUCCEEDED(res) && currNode)
           res = parent->AppendChild(currNode, getter_AddRefs(before));
-        index -= 1;  
+        index -= 1;
       }
       else
         msiUtils::GetChildNode(parent, offset, before);
@@ -1892,7 +1909,7 @@ nsresult msiUtils::InsertChildren(nsIDOMNode * parent,
       {
         nsCOMPtr<nsIDOMNode> currNode, newBefore;
         res = newChildList->QueryElementAt(index, NS_GET_IID(nsIDOMNode), getter_AddRefs(currNode));
-        index -= 1;  
+        index -= 1;
         if (NS_SUCCEEDED(res) && currNode)
           res = parent->InsertBefore(currNode, before, getter_AddRefs(newBefore));
         if (NS_SUCCEEDED(res) && newBefore)
@@ -1900,7 +1917,7 @@ nsresult msiUtils::InsertChildren(nsIDOMNode * parent,
       }
     }
   }
-  return res;      
+  return res;
 }
 
 PRUint32 msiUtils::GetMathmlNodeType(nsISupports* isupports)
@@ -1911,10 +1928,10 @@ PRUint32 msiUtils::GetMathmlNodeType(nsISupports* isupports)
     nsCOMPtr<msiIMathMLEditingBC> msiEditing(do_QueryInterface(isupports));
     if (msiEditing)
       msiEditing->GetMathmlType(&rv);
-  }    
+  }
   return rv;
 }
-     
+
 nsresult msiUtils::GetMathmlNodeType(nsIEditor * editor,
                                      nsIDOMNode * node,
                                      PRUint32 & nodetype)
@@ -1923,15 +1940,15 @@ nsresult msiUtils::GetMathmlNodeType(nsIEditor * editor,
   nodetype = msiIMathMLEditingBC::MATHML_UNKNOWN;
   if (editor && node)
   {
-    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+    nsCOMPtr<msiIMathMLEditingBC> editingBC;
     PRUint32 dontcare(0);
     GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
     if (editingBC)
       res = editingBC->GetMathmlType(&nodetype);
-  }    
+  }
   return res;
-}  
-     
+}
+
 PRBool msiUtils::IsWhitespace(nsIDOMNode * node)
 {
   if (node)
@@ -1940,7 +1957,7 @@ PRBool msiUtils::IsWhitespace(nsIDOMNode * node)
     if (tc && tc->TextIsOnlyWhitespace())
       return PR_TRUE;
   }
-  return PR_FALSE;    
+  return PR_FALSE;
 }
 
 PRBool msiUtils::IsInputbox(nsIEditor * editor,
@@ -1949,15 +1966,15 @@ PRBool msiUtils::IsInputbox(nsIEditor * editor,
   PRBool rv(PR_FALSE);
   if (editor && node)
   {
-    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+    nsCOMPtr<msiIMathMLEditingBC> editingBC;
     PRUint32 dontcare(0);
     GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
     if (editingBC)
       rv = IsInputbox(editingBC);
-  }    
+  }
   return rv;
-}  
-  
+}
+
 PRBool msiUtils::IsInputbox(nsISupports * isupports)
 {
   PRUint32 mathmltype = GetMathmlNodeType(isupports);
@@ -1971,16 +1988,16 @@ PRBool msiUtils::IsMleaf(nsIEditor * editor,
   PRBool rv(PR_FALSE);
   if (editor && node)
   {
-    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+    nsCOMPtr<msiIMathMLEditingBC> editingBC;
     PRUint32 dontcare(0);
     GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
     if (editingBC)
       rv = IsMleaf(editingBC, allowInputbox);
-  }    
+  }
   return rv;
-}  
-  
-PRBool msiUtils::IsMleaf(nsISupports * isupports, 
+}
+
+PRBool msiUtils::IsMleaf(nsISupports * isupports,
                          PRBool allowInputbox)
 {
   PRBool rv(PR_FALSE);
@@ -1990,7 +2007,7 @@ PRBool msiUtils::IsMleaf(nsISupports * isupports,
           mathmltype == msiIMathMLEditingBC::MATHML_MI    ||
           mathmltype == msiIMathMLEditingBC::MATHML_MN    ||
           mathmltype == msiIMathMLEditingBC::MATHML_MO     );
-  else        
+  else
     rv = (mathmltype == msiIMathMLEditingBC::MATHML_MI    ||
           mathmltype == msiIMathMLEditingBC::MATHML_MN    ||
           mathmltype == msiIMathMLEditingBC::MATHML_MO     );
@@ -2003,15 +2020,15 @@ PRBool msiUtils::IsMrow(nsIEditor * editor,
   PRBool rv(PR_FALSE);
   if (editor && node)
   {
-    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+    nsCOMPtr<msiIMathMLEditingBC> editingBC;
     PRUint32 dontcare(0);
     GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
     if (editingBC)
       rv = IsMrow(editingBC);
-  }    
+  }
   return rv;
-}  
-  
+}
+
 PRBool msiUtils::IsMrow(nsISupports * isupports)
 {
   PRUint32 mathmltype = GetMathmlNodeType(isupports);
@@ -2034,7 +2051,7 @@ PRBool msiUtils::hasMMLType(nsIEditor * editor,	nsIDOMNode * node, 	unsigned sho
   PRBool rv(PR_FALSE);
   if (editor && node)
   {
-    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+    nsCOMPtr<msiIMathMLEditingBC> editingBC;
     PRUint32 dontcare(0);
     GetMathMLEditingBC(editor, node, dontcare, false, editingBC);
     if (editingBC) {
@@ -2042,7 +2059,7 @@ PRBool msiUtils::hasMMLType(nsIEditor * editor,	nsIDOMNode * node, 	unsigned sho
 
       rv = (mathmltype == mmlType);
 	}
-  }    
+  }
   return rv;
 }
 
@@ -2106,11 +2123,14 @@ nsresult msiUtils::MarkCaretPosition(nsIEditor * editor,
                                      PRBool overwrite)
 {
   nsresult res(NS_ERROR_FAILURE);
-  if (editor && node && (pos <= msiIMathMLEditingBC::LAST_VALID || 
+  if (editor && node && (pos <= msiIMathMLEditingBC::LAST_VALID ||
                          pos == msiIMathMLEditingBC::TO_LEFT    ||
-                         pos == msiIMathMLEditingBC::TO_RIGHT)) 
+                         pos == msiIMathMLEditingBC::TO_RIGHT))
   {
     res = NS_OK;
+    nsCOMPtr<nsISelection> sel;
+    res = editor->GetSelection(getter_AddRefs(sel));
+    sel->Collapse(node, pos);
     PRBool caretMarked = (flags & msiIMathMLInsertion::FLAGS_CARET_MARKED) ? PR_TRUE : PR_FALSE;
     if (caretMarked && overwrite)
     {
@@ -2118,7 +2138,7 @@ nsresult msiUtils::MarkCaretPosition(nsIEditor * editor,
       GetMathParent(node, mathParent);
       ClearCaretPositionMark(editor, mathParent, PR_FALSE);
       caretMarked = PR_FALSE;
-    } 
+    }
     if (!caretMarked)
     {
       res = NS_ERROR_FAILURE;
@@ -2127,22 +2147,22 @@ nsresult msiUtils::MarkCaretPosition(nsIEditor * editor,
       value.AppendInt(pos);
       if (caretOnText)
         msiEditingAtoms::msicaretpostext->ToString(attribute);
-      else  
+      else
        msiEditingAtoms::msicaretpos->ToString(attribute);
       if (element)
       {
         res = element->SetAttribute(attribute, value);
         flags |= msiIMathMLInsertion::FLAGS_CARET_MARKED;
       }
-    }  
+    }
   }
   return res;
-}                                                 
+}
 
-//ljh The location of the caret is given via the temp attribute 
+//ljh The location of the caret is given via the temp attribute
 // _msi_caret_pos set on a node in the subtree of rootnode.
 // the value of the attribute gives to offset.
-  
+
 nsresult msiUtils::doSetCaretPosition(nsIEditor * editor,
                                       nsISelection * selection,
                                       nsIDOMNode * rootnode)
@@ -2167,7 +2187,7 @@ nsresult msiUtils::doSetCaretPosition(nsIEditor * editor,
       {
         nsCOMPtr<nsIDOMNode> currentNode;
         walker->GetCurrentNode(getter_AddRefs(currentNode));
-        
+
         PRBool found(PR_FALSE);
         while (currentNode && !found)
         {
@@ -2189,10 +2209,10 @@ nsresult msiUtils::doSetCaretPosition(nsIEditor * editor,
              {
                PRInt32 errorCode;
                thePos = value2.ToInteger(&errorCode);
-               if (thePos == msiIMathMLEditingBC::TO_LEFT || 
+               if (thePos == msiIMathMLEditingBC::TO_LEFT ||
                    thePos == msiIMathMLEditingBC::TO_RIGHT) // bit of a shotgun approach
                  theNode == currentNode;
-               else  
+               else
                  currentNode->GetFirstChild(getter_AddRefs(theNode));
                currElement->RemoveAttribute(msicaretpostext);
                found = PR_TRUE;
@@ -2201,8 +2221,8 @@ nsresult msiUtils::doSetCaretPosition(nsIEditor * editor,
           if (!found)
             walker->NextNode(getter_AddRefs(currentNode));
         }
-      }  
-    } 
+      }
+    }
     if (theNode)
     {
       if (thePos == msiIMathMLEditingBC::TO_LEFT || thePos == msiIMathMLEditingBC::TO_RIGHT)
@@ -2213,9 +2233,9 @@ nsresult msiUtils::doSetCaretPosition(nsIEditor * editor,
           GetIndexOfChildInParent(theNode, offset);
           if (thePos == msiIMathMLEditingBC::TO_RIGHT)
             offset += 1;
-          if (parent)  
+          if (parent)
             res = selection->Collapse(parent, offset);
-          else  
+          else
             res = NS_ERROR_FAILURE;
       }
       else
@@ -2227,12 +2247,12 @@ nsresult msiUtils::doSetCaretPosition(nsIEditor * editor,
       GetMathParent(rootnode, mathParent);
       if (mathParent != rootnode)
         doSetCaretPosition(editor, selection, mathParent); // recursive call -- but only once
-      else  
+      else
         res = NS_ERROR_FAILURE;
-    }    
+    }
   }
   return res;
-} 
+}
 
 nsresult msiUtils::doSetCaretPosition(nsISelection * selection,
                                       nsIDOMNode * node,
@@ -2242,9 +2262,9 @@ nsresult msiUtils::doSetCaretPosition(nsISelection * selection,
   if (selection && node)
     res = selection->Collapse(node, offset);
   return res;
-}                            
+}
 
-nsresult msiUtils::ClearCaretPositionMark(nsIEditor * editor, 
+nsresult msiUtils::ClearCaretPositionMark(nsIEditor * editor,
                                           nsIDOMNode * node,
                                           PRBool clearAll)
 {
@@ -2291,10 +2311,10 @@ nsresult msiUtils::ClearCaretPositionMark(nsIEditor * editor,
           walker->NextNode(getter_AddRefs(currentNode));
         }
       }
-    }  
+    }
   }
   return res;
-}                                          
+}
 
 nsresult msiUtils::GetMathTagParent(nsIDOMNode * node,
                                     nsIAtom * tagAtom,
@@ -2312,7 +2332,7 @@ nsresult msiUtils::GetMathTagParent(nsIDOMNode * node,
     p->GetNamespaceURI(nsURI);
     PRInt32 nsID(kNameSpaceID_Unknown);
     msiNameSpaceUtils::GetNameSpaceID(nsURI, nsID);
-    
+
     if (tagAtom->Equals(localName) && nsID == kNameSpaceID_MathML)
     {
       mathParent = p;
@@ -2330,13 +2350,14 @@ nsresult msiUtils::GetMathTagParent(nsIDOMNode * node,
 nsresult msiUtils::GetMathParent(nsIDOMNode * node,
                                  nsCOMPtr<nsIDOMNode> & mathParent)
 {
+//BBM: modified this so that an mtext in math is considered to be outside of math.
   return GetMathTagParent(node,msiEditingAtoms::math,mathParent);
-}   
+}
 
 nsresult msiUtils::GetNumberofChildren(nsIDOMNode * node,
                                       PRUint32  & number)
-{  
-  //TODO -- need to worry about kruff nodes                                    
+{
+  //TODO -- need to worry about kruff nodes
   nsresult res(NS_ERROR_FAILURE);
   if (node)
   {
@@ -2346,13 +2367,180 @@ nsresult msiUtils::GetNumberofChildren(nsIDOMNode * node,
       res = childNodes->GetLength(&number);
   }
   return res;
-}  
+}
+
+
+nsresult
+MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
+  nsresult res = NS_OK;
+  nsCOMPtr<nsIDOMNodeList> childNodes;
+  nsAutoString tagName;
+  PRBool isTemp;
+  res = left->GetChildNodes(getter_AddRefs(childNodes));
+  PRUint32 offset;
+  PRInt32 selStartOffset;
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  nsCOMPtr<nsIDOMNode> ignored;
+  nsCOMPtr<nsIDOMElement> el;
+  PRInt32 selEndOffset;
+  nsCOMPtr<nsIDOMNode> selEndNode;
+  childNodes->GetLength(&offset);
+  offset--;
+  nsEditor * realEditor = static_cast<nsEditor*>(editor);
+  if (!realEditor) return NS_ERROR_FAILURE;
+  nsCOMPtr<nsISelection> sel;
+  res = realEditor->GetSelection(getter_AddRefs(sel));
+  PRBool shouldSetSelection;
+  res = realEditor->ShouldTxnSetSelection(&shouldSetSelection);
+  res = realEditor->SetShouldTxnSetSelection(PR_FALSE);
+  nsCOMPtr<nsIDOMNode> child;
+  right->GetFirstChild(getter_AddRefs(child));
+  while (child)
+  {
+    child->GetLocalName(tagName);
+    if (tagName.EqualsLiteral("mi")) {
+      el = do_QueryInterface(child);
+      res = el->HasAttribute(NS_LITERAL_STRING("tempinput"), &isTemp);
+      if (!isTemp) {
+        offset++;
+        res = realEditor->MoveNode(child, left, offset);
+      } else
+      {
+        // throw away temp input box
+        res = msiUtils::RemoveChildNode(right, 0, ignored);
+        sel->Collapse(left, offset);
+      }
+    }
+    else {
+      offset++;
+      res = realEditor->MoveNode(child, left, offset);
+    }
+
+    if (NS_FAILED(res)) return res;
+    right->GetFirstChild(getter_AddRefs(child));
+  }
+  res = realEditor->SetShouldTxnSetSelection(shouldSetSelection);
+
+  // The selection needs updating only if one of the nodes is *right
+  res = realEditor->GetStartNodeAndOffset(sel, getter_AddRefs(selStartNode), &selStartOffset);
+  if (selStartNode == right) {
+    sel->Collapse(left, selStartOffset + offset);
+  }
+  res = realEditor->GetEndNodeAndOffset(sel, getter_AddRefs(selEndNode), &selEndOffset);
+  if (selEndNode == right) {
+    sel->Extend(left, selEndOffset + offset);
+  }
+  realEditor->DeleteNode(right);
+  return NS_OK;
+}
+
+// Get the length of aNode
+PRInt32 msiGetNodeLength(nsIDOMNode *aNode)
+{
+  nsCOMPtr<nsINode> node = do_QueryInterface(aNode);
+  if(node->IsNodeOfType(nsINode::eDATA_NODE)) {
+    return (static_cast<nsIContent *>((nsINode*)node))->TextLength();
+  }
+
+  return node->GetChildCount();
+}
+
+nsresult
+msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRBool lookRight, nsIEditor * editor)
+// If the node is within mathematics, go up to the math
+// node and check to see if it is adjacent to (except for white-space text nodes) another math node. If so,
+// merge the nodes. Also if the selection is in text but between two math nodes which are adjacent except
+// for white-space text nodes, merge those math nodes also.
+{
+  nsCOMPtr<nsIDOMNode> mathParent;
+  nsCOMPtr<nsIDOMNode> siblingNode;
+  nsCOMPtr<nsISelection> sel;
+  PRUint16 nodetype;
+  nsAutoString nodeName;
+  PRBool done;
+
+  nsresult res;
+  res = GetMathParent(node, mathParent);
+  if (!mathParent && (offset >= msiGetNodeLength(node))) {
+    done = PR_FALSE;
+    // possibly the cursor is between two math modes, as is the case after a deletion.
+    // Check to see if there is math to the right
+    res = node->GetNextSibling(getter_AddRefs(siblingNode));
+    while (siblingNode != nsnull && !done) {
+      res = siblingNode->GetNodeType(&nodetype);
+      if (nodetype == nsIDOMNode::TEXT_NODE)
+      {
+        if (!IsWhitespace(siblingNode)) {
+          return NS_OK;
+        }
+      }
+      else if (nodetype = nsIDOMNode::ELEMENT_NODE) {
+        res = siblingNode->GetLocalName(nodeName);
+        if (nodeName.EqualsLiteral("math")) {
+          done = PR_TRUE;
+          mathParent = siblingNode;
+          lookLeft = PR_TRUE;
+          lookRight = PR_FALSE;
+          res = editor->GetSelection(getter_AddRefs(sel));
+          sel->Collapse(mathParent, 0);
+        }
+        else return NS_OK;
+      }
+      // The only possibility for looping again is that siblingNode is a white-space text node
+      if (!done) res = siblingNode->GetNextSibling(getter_AddRefs(siblingNode));
+    }
+  }
+  if (mathParent && lookLeft) {
+    // check to the left
+    res = mathParent->GetPreviousSibling(getter_AddRefs(siblingNode));
+    while (siblingNode != nsnull) {
+      res = siblingNode->GetNodeType(&nodetype);
+      if (nodetype == nsIDOMNode::TEXT_NODE)
+      {
+        // BBM: we want to stop if there is a single space. See MSI bug 3198
+//        if (!IsWhitespace(siblingNode)) {
+          return NS_OK;
+//        }
+      }
+      else if (nodetype = nsIDOMNode::ELEMENT_NODE) {
+        res = siblingNode->GetLocalName(nodeName);
+        if (nodeName.EqualsLiteral("math")) {
+          res = MergeMath(siblingNode, mathParent, editor);
+          return NS_OK;
+        }
+        return NS_OK;
+      }
+      // The only possibility for looping again is that siblingNode is a white-space text node
+      res = siblingNode->GetPreviousSibling(getter_AddRefs(siblingNode));
+    }
+  }
+  if (mathParent && lookRight) {
+    res = mathParent->GetNextSibling(getter_AddRefs(siblingNode));
+    while (siblingNode != nsnull) {
+      res = siblingNode->GetNodeType(&nodetype);
+      if (nodetype == nsIDOMNode::TEXT_NODE)
+      {
+        if (!IsWhitespace(siblingNode)) return NS_OK;
+      }
+      else if (nodetype = nsIDOMNode::ELEMENT_NODE) {
+        res = siblingNode->GetLocalName(nodeName);
+        if (nodeName.EqualsLiteral("math")) {
+          MergeMath(mathParent, siblingNode, editor);
+          return NS_OK;
+        }
+        return NS_OK;
+      }
+      res = siblingNode->GetNextSibling(getter_AddRefs(siblingNode));
+    }
+  }
+}
+
 
 nsresult msiUtils::GetRightMostCaretPosition(nsIEditor* editor,
                                              nsIDOMNode * node,
                                              PRUint32  & number)
-{  
-  //TODO -- need to worry about kruff nodes                                    
+{
+  //TODO -- need to worry about kruff nodes
   nsresult res(NS_ERROR_FAILURE);
   if (node)
   {
@@ -2369,7 +2557,7 @@ nsresult msiUtils::GetRightMostCaretPosition(nsIEditor* editor,
       if (IsInputbox(editor, node))
         number = 1;
       else
-      {  
+      {
         nsCOMPtr<nsIDOMNode> child;
         node->GetFirstChild(getter_AddRefs(child));
         if (child)
@@ -2383,7 +2571,7 @@ nsresult msiUtils::GetRightMostCaretPosition(nsIEditor* editor,
                 res = characterdata->GetLength(&number);
           }
         }
-      }  
+      }
     }
     else
     {
@@ -2391,14 +2579,14 @@ nsresult msiUtils::GetRightMostCaretPosition(nsIEditor* editor,
       res = node->GetChildNodes(getter_AddRefs(childNodes));
       if (NS_SUCCEEDED(res) && childNodes)
         res = childNodes->GetLength(&number);
-    }    
+    }
   }
   return res;
-}  
+}
 
-nsresult msiUtils::AddToNodeList(nsIArray* nodeList, 
-                                 nsIArray * addToFront, 
-                                 nsIArray * addToEnd, 
+nsresult msiUtils::AddToNodeList(nsIArray* nodeList,
+                                 nsIArray * addToFront,
+                                 nsIArray * addToEnd,
                                  nsCOMPtr<nsIArray> & pArray)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -2415,19 +2603,19 @@ nsresult msiUtils::AddToNodeList(nsIArray* nodeList,
         if (enumerator)
         {
           PRBool someMore(PR_FALSE);
-          while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore) 
+          while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore)
           {
             nsCOMPtr<nsISupports> isupp;
             if (NS_FAILED(enumerator->GetNext(getter_AddRefs(isupp))))
             {
-              res = NS_ERROR_FAILURE; 
+              res = NS_ERROR_FAILURE;
               break;
             }
             nsCOMPtr<nsIDOMNode> node(do_QueryInterface(isupp));
-            if (node) 
+            if (node)
               res = mutableArray->AppendElement(node, PR_FALSE);
           }
-        }    
+        }
       }
       if (NS_SUCCEEDED(res))
       {
@@ -2437,19 +2625,19 @@ nsresult msiUtils::AddToNodeList(nsIArray* nodeList,
         if (enumerator)
         {
           PRBool someMore(PR_FALSE);
-          while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore) 
+          while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore)
           {
             nsCOMPtr<nsISupports> isupp;
             if (NS_FAILED(enumerator->GetNext(getter_AddRefs(isupp))))
             {
-              res = NS_ERROR_FAILURE; 
+              res = NS_ERROR_FAILURE;
               break;
             }
             nsCOMPtr<nsIDOMNode> node(do_QueryInterface(isupp));
-            if (node) 
+            if (node)
               res = mutableArray->AppendElement(node, PR_FALSE);
           }
-        }    
+        }
       }
       if (NS_SUCCEEDED(res) && addToEnd)
       {
@@ -2458,35 +2646,35 @@ nsresult msiUtils::AddToNodeList(nsIArray* nodeList,
         if (enumerator)
         {
           PRBool someMore(PR_FALSE);
-          while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore) 
+          while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore)
           {
             nsCOMPtr<nsISupports> isupp;
             if (NS_FAILED(enumerator->GetNext(getter_AddRefs(isupp))))
             {
-              res = NS_ERROR_FAILURE; 
+              res = NS_ERROR_FAILURE;
               break;
             }
             nsCOMPtr<nsIDOMNode> node(do_QueryInterface(isupp));
-            if (node) 
+            if (node)
               res = mutableArray->AppendElement(node, PR_FALSE);
           }
-        }    
+        }
       }
       if (NS_SUCCEEDED(res))
         pArray = do_QueryInterface(mutableArray);
     }
-  }  
+  }
   else if (nodeList)
     pArray = do_QueryInterface(nodeList);
-      
+
   if (pArray)
     res = NS_OK;
   else
     res = NS_ERROR_FAILURE;
-  return res;  
-}   
+  return res;
+}
 
-nsresult msiUtils::AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableList, 
+nsresult msiUtils::AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableList,
                                        nsCOMPtr<nsIArray> & tobeAdded)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -2501,23 +2689,23 @@ nsresult msiUtils::AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableList,
       {
         res = NS_OK;
         PRBool someMore(PR_FALSE);
-        while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore) 
+        while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore)
         {
           nsCOMPtr<nsISupports> isupp;
           if (NS_FAILED(enumerator->GetNext(getter_AddRefs(isupp))))
           {
-            res = NS_ERROR_FAILURE; 
+            res = NS_ERROR_FAILURE;
             break;
           }
           res = mutableList->AppendElement(isupp, PR_FALSE);
         }
       }
     }
-  }  
-  return res;      
-}                                       
+  }
+  return res;
+}
 
-nsresult msiUtils::RemoveNodesFromList(nsIArray* nodeList, 
+nsresult msiUtils::RemoveNodesFromList(nsIArray* nodeList,
                                        PRUint32 index,
                                        PRUint32 count,
                                        nsCOMPtr<nsIArray> & pArray)
@@ -2536,20 +2724,20 @@ nsresult msiUtils::RemoveNodesFromList(nsIArray* nodeList,
       {
         nsCOMPtr<nsIDOMNode> node;
         res = nodeList->QueryElementAt(i, NS_GET_IID(nsIDOMNode), getter_AddRefs(node));
-        if (NS_SUCCEEDED(res) && node && (i < index || i >= index+count)) 
+        if (NS_SUCCEEDED(res) && node && (i < index || i >= index+count))
            res = mutableArray->AppendElement(node, PR_FALSE);
       }
     }
     if (NS_SUCCEEDED(res))
-      pArray = do_QueryInterface(mutableArray);   
+      pArray = do_QueryInterface(mutableArray);
   }
   else if (nodeList)
   {
-    pArray = do_QueryInterface(nodeList);   
+    pArray = do_QueryInterface(nodeList);
     res = NS_OK;
   }
-  return res;  
-}                                                 
+  return res;
+}
 
 nsresult msiUtils::GetMathmlNodeFromCaretInterface(nsCOMPtr<msiIMathMLCaret> & caret,
                                                    nsCOMPtr<nsIDOMNode> & mathmlNode)
@@ -2561,9 +2749,9 @@ nsresult msiUtils::GetMathmlNodeFromCaretInterface(nsCOMPtr<msiIMathMLCaret> & c
     bc->GetMathmlNode(getter_AddRefs(mathmlNode));
   if (mathmlNode)
     res = NS_OK;
-  return res;    
+  return res;
 }
-                                         
+
 nsresult msiUtils::GetOffsetFromCaretInterface(nsCOMPtr<msiIMathMLCaret> & caret,
                                               PRUint32 & offset)
 {
@@ -2574,9 +2762,9 @@ nsresult msiUtils::GetOffsetFromCaretInterface(nsCOMPtr<msiIMathMLCaret> & caret
     bc->GetOffset(&offset);
   if (offset <= msiIMathMLEditingBC::LAST_VALID)
     res = NS_OK;
-  return res;    
+  return res;
 }
-                                      
+
 nsresult msiUtils::ComparePoints(nsIEditor * editor,
                                  nsIDOMNode * node1, PRUint32 offset1,
                                  nsIDOMNode * node2, PRUint32 offset2,
@@ -2589,7 +2777,7 @@ nsresult msiUtils::ComparePoints(nsIEditor * editor,
     if (msiEditor)
       res = msiEditor->ComparePoints(node1, offset1, node2, offset2, &comparison);
   }
-  return res; 
+  return res;
 }
 
 PRUint32 msiUtils::GetMrowPurgeMode()
@@ -2602,7 +2790,7 @@ nsresult msiUtils::SplitNode(nsIDOMNode * node, PRUint32 offset,
                              PRBool emptyOK,
                              nsCOMPtr<nsIDOMNode> & left,
                              nsCOMPtr<nsIDOMNode> & right)
-{ 
+{
   if (!node)
     return NS_ERROR_FAILURE;
   PRUint32 count;
@@ -2618,7 +2806,7 @@ nsresult msiUtils::SplitNode(nsIDOMNode * node, PRUint32 offset,
     res = msiUtils::CloneNode(node, left);
   }
   else
-  { 
+  {
     res = msiUtils::CloneNode(node, left);
     if (NS_SUCCEEDED(res))
       res = msiUtils::CloneNode(node, right);
@@ -2642,13 +2830,13 @@ nsresult msiUtils::SplitNode(nsIDOMNode * node, PRUint32 offset,
           right->RemoveChild(child, getter_AddRefs(dontcare));
       }
     }
-    else 
-      res = NS_ERROR_FAILURE;  
-  } 
-  return res;  
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  return res;
 }
 
-nsresult msiUtils::GetNSEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent, 
+nsresult msiUtils::GetNSEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
                                             nsEvent ** nsEvent)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -2658,10 +2846,10 @@ nsresult msiUtils::GetNSEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
   nsCOMPtr<nsIPrivateDOMEvent> privateEvent(do_QueryInterface(mouseEvent));
   if (privateEvent)
      res = privateEvent->GetInternalNSEvent(nsEvent);
-  return res;  
+  return res;
 }
 
-//nsresult msiUtils::GetGUIEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent, 
+//nsresult msiUtils::GetGUIEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
 //                                             nsGUIEvent ** guiEvent)
 //{
 //  nsresult res(NS_ERROR_FAILURE);
@@ -2678,12 +2866,12 @@ nsresult msiUtils::GetNSEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
 //  {
 //     NS_ASSERTION(PR_FALSE, "internal event is not a guiEvent.");
 //    res = NS_ERROR_FAILURE;
-//  }  
-//  return res;  
+//  }
+//  return res;
 //}
-  
-nsresult msiUtils::GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent, 
-                                                nsPoint & point)                                     
+
+nsresult msiUtils::GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
+                                                nsPoint & point)
 {
   if (!mouseEvent)
     return NS_ERROR_FAILURE;
@@ -2693,3 +2881,19 @@ nsresult msiUtils::GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
   point = nsPoint(screenX, screenY);
   return NS_OK;
 }
+
+nsresult msiUtils::Refresh(nsIEditor * editor)
+{
+  return NS_OK;
+  nsCOMPtr<nsISelection> sel;
+  nsCOMPtr<nsIDOMNode> startNode;
+  PRUint32 startOffset;
+  PRUint16 nodeType = 0;
+  nsresult res;
+  editor->GetSelection(getter_AddRefs(sel));
+  res = sel->GetAnchorNode(getter_AddRefs(startNode));
+  startNode->GetNodeType(&nodeType);
+  if (nodeType == nsIDOMNode::TEXT_NODE)
+    startNode->GetParentNode(getter_AddRefs(startNode));
+  editor->MarkNodeDirty(startNode);
+ }

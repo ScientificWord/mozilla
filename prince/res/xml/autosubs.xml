@@ -17,10 +17,9 @@
   <sub ctx="text" tp="subst"><pattern>&lt;&#x2013;#</pattern><data>&#x2190;</data><context/><info>0,0</info></sub>
   <sub ctx="both" tp="subst"><pattern>|^#</pattern><data>&#x2191;</data><context/><info>0,0</info></sub>
   <sub ctx="both" tp="subst"><pattern>|v#</pattern><data>&#x2193;</data><context/><info>0,0</info></sub>
-  <sub ctx="both" tp="subst"><pattern>...</pattern><data>&#x2026;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>...</pattern><data>&#x2026;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="sc"><pattern>.yell.</pattern><data>yell('Hey!',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>intx</pattern><data>insertIntegral(true);</data><context/><info>0,0</info></sub>
-  <sub ctx="text" tp="sc"><pattern>.yell.</pattern><data>yell('Hey!',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.spell.</pattern><data>checkSpelling(true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.preview.</pattern><data>previewPDF(true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.save.</pattern><data>softSave(true);</data></sub>

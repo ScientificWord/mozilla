@@ -1,15 +1,18 @@
+
+
+%\ifnum\msi@inpreamble=1
+   %\msitopreambleextra{<texb pre="1" enc="1" name="tcilatex"><![CDATA[\input{tcilatex}]]></texb>}
+   %\msi@output=1
+%\fi
+\expandafter\advance\csname msi@output\endcsname by 1\relax
 \makeatletter
 
-
-\ifnum\msi@inpreamble=1
-   \msitopreambleextra{<texb pre="1" enc="1" name="tcilatex"><![CDATA[\input{tcilatex}]]></texb>}
-   \msi@output=1
-\fi
 
 \@ifundefined{@TCILATEX}
   {\gdef\@TCILATEX{\relax}}%
   {\endinput}
   
+\let\qhyperref\hyperref
 
 \def\QTR#1{%
    \let\@temp=\relax
@@ -49,7 +52,7 @@
 %%}
 
 
-\MSIMathQuote{\FORMULA}
+\MSIMathQuote{FORMULA}
 
 %%%%%%%%%%%%%%%%%%%%%
 % pdfTeX related.
@@ -327,7 +330,7 @@
   \catcode`\"=\active
   \catcode`\;=\active
   \catcode`\:=\active
-  \catcode`\'=\active
+%  \catcode`\'=\active
   \catcode`\~=\active
 }
 \bgroup
@@ -336,7 +339,7 @@
       \def"{\string"}%
       \def;{\string;}%
       \def:{\string:}%
-      \def'{\string'}%
+%      \def'{\string'}%
       \def~{\string~}%
       %\bbl@deactivate{"}%
       %\bbl@deactivate{;}%
@@ -356,9 +359,11 @@
    \msitag{/>}
 }
 
-\def\FRAME{\msihmode\begingroup
+\def\FRAME{\begingroup
              \catcode`\&=13
              \catcode`\~=11\relax\@FRAME}
+
+\def\stripspecial#1{}
 
 \def\@FRAME#1#2#3#4#5#6#7#8{%
    \def\reserved@@a{#7}
@@ -366,31 +371,59 @@
    \ifx\reserved@@a\reserved@@b
       \begingroup
         %% #8 will be a special with a vcam file
-        \let\special\@vcamspecial
-        #8
+        %\let\special\@vcamspecial
+        \let\special\msispecial
+        \ifmmode
+          \string\msipassthru\char`\{
+          #8{#1}%
+          \char`\}
+        \else 
+          #8{#1}%
+        \fi
       \endgroup
    \else
       \begingroup
+        \let\special\msispecial
         %% #8 will be a special with a graphic file
-        #8
+        \ifmmode
+          \string\msipassthru\char`\{
+          #8{#1}%
+          \char`\}
+        \else 
+          #8{#1}%
+        \fi
       \endgroup
    \fi
    \endgroup
 }%
+
+\newtoks\splittoks
+\def\split@one#1{%
+   \expandafter\splittoks\expandafter{\the\splittoks #1}%
+   \ifx#1;
+     [[\the\splittoks]]
+     \let\next\relax
+   \else     
+     \let\next\split@one
+   \fi
+   \next
+}
+
 
 \def\@vcamspecial#1{%
    \msihmode
    \msitag{<graph>}%
       \msitag{<graphSpec ImageFile=}"\expandafter{\expandafter\msigraphicname\msi@getVCamFile#1VCamFile'';XXXXX}"\msitag{>}%
       \msitag{<plot xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" PlotStatus="Inited" PlotType="rectangular">}%
-      \msitag{<Expression>
-         <math xmlns="http://www.w3.org/1998/Math/MathML">
-            <mrow><mi>x</mi><mo form="infix">−</mo><mn>1</mn></mrow>
-         </math>
-       </Expression>
-       <XVar>
-         <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>
-       </XVar>}%
+      \msitag{<Expression>}
+         \split@one#1;
+         %<math xmlns="http://www.w3.org/1998/Math/MathML"> 
+         %   <mrow><mi>x</mi><mo form="infix">−</mo><mn>1</mn></mrow>
+         %</math>
+       \msitag{</Expression>}
+       \msitag{<XVar>
+                 <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>
+               </XVar>}%
       \msitag{</plot>}%
       \msitag{</graphSpec>}%
       \msitag{<plotwrapper msi_resize="true">} %
@@ -428,6 +461,8 @@
 
 \def\TEXUX#1{"texux"}
 
+\def\HTMLButton#1{\msitag{#1}}
+
 %
 % Macros for text attributes:
 %
@@ -457,9 +492,10 @@
 
 \def\TeXButton#1#2{%
    \ifmmode
-     \string\TeXButton{#1}{#2}%
+     %\string\TeXButton{#1}{#2}%
+     \msitag{\msipassthru{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}}
    \else
-     \msihmode\msitag{<texb enc="1" name="}\@wrap{#1}\msitag{"><![CDATA[#2]]></texb>}%
+     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}\@wrap{#1}\msitag{"><![CDATA[#2]]></texb>}%
    \fi}
 
 
@@ -635,7 +671,7 @@
    \@temp
 }
 
-
-
 \makeatother
+\expandafter\advance\csname msi@output\endcsname by -1\relax
+
 \endinput

@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!DOCTYPE tagproperties [
+<!ATTLIST tag id ID #IMPLIED> ]>
+<tagproperties xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+    <tagclasses>
+        <tagclass>
+            <tagclassname>frontmtag</tagclassname>
+                <classcontains/>
+            <tags>
+            <!-- Front matter tags to add for AMS classes
+                 curraddr
+                 email
+                 urladdr
+                 thanks
+                 translator
+                 subjclass
+                 keywords
+                 dedicatory
+			-->
+                <tag nm="curraddr">
+                    <description>Current address</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <curraddr><cursor/><br type="_moz"/></curraddr>
+                    </initialcontents>
+                </tag>
+                <tag nm="email">
+                    <description>Email</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <email><cursor/><br type="_moz"/></email>
+                    </initialcontents>
+                </tag>
+                <tag nm="urladdr">
+                    <description>URL</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <urladdr><cursor/><br type="_moz"/></urladdr>
+                    </initialcontents>
+                </tag>
+                <tag nm="thanks">
+                    <description>Thanks</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                      <thanks><cursor/><br type="_moz"/></thanks>
+                    </initialcontents>
+                </tag>
+                <tag nm="translator">
+                    <description>Translator</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <translator><cursor/><br type="_moz"/></translator>
+                    </initialcontents>
+                </tag>
+                <tag nm="subjclass">
+                    <description>Subject classification</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <subjclass><cursor/><br type="_moz"/></subjclass>
+                    </initialcontents>
+                </tag>
+                <tag nm="keywords">
+                    <description>Keywords</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <keywords><cursor/><br type="_moz"/></keywords>
+                    </initialcontents>
+                </tag>
+                <tag nm="dedicatory">
+                    <description>Dedicatory</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <dedicatory><cursor/><br type="_moz"/></dedicatory>
+                    </initialcontents>
+                </tag>
+            </tags>
+        </tagclass>
+    </tagclasses>
+</tagproperties>

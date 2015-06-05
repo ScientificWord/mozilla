@@ -4,8 +4,8 @@ var gd;
 var editor;
 var msiframe;
 var isNewNode;
-var gFrameModeImage = false;
-var gFrameModeTextFrame = true;
+var gFrameModeTextFrame = true ;
+var gFrameModeImage = false ;
 
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
@@ -27,14 +27,11 @@ function startUp()
     if (window.arguments.length > 0) msiframe = window.arguments[0];
     isNewNode = !(msiframe);
     gd = new Object();
-    setHasNaturalSize(false);
     
     gd = initFrameTab(gd, msiframe, isNewNode, null);
+    setHasNaturalSize(false);
   // we don't want heavy-weight frames inline
     document.getElementById('inline').hidden=true;
-    // no natural size ==> autowidth not possible
-    gd.autoWidthCheck.setAttribute("style", "visibility:hidden;");
-    gd.autoWidthLabel.setAttribute("style", "visibility:hidden;");
   //  initFrameSizePanel(); // needed when the user can set the size
   }
   catch(e) {

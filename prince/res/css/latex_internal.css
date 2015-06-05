@@ -80,12 +80,12 @@ rulebox {
   white-space: pre;
 }
 
-span.msirule {
-  display: block;
+msirule, span.msirule {
+  display: inline-block;
   overflow: hidden;
 }
 
-msibreak {
+msibr {
   display: inline;
   white-space: pre;
 }
@@ -95,7 +95,7 @@ breakobj {
   white-space: pre;
 }
 
-*[showinvis="true"] breakobj:before, *[showinvis="true"] msibreak:before {
+*[showinvis="true"] breakobj:before, *[showinvis="true"] msibr:before {
   color: green;
   content: attr(invisDisplay);
 }

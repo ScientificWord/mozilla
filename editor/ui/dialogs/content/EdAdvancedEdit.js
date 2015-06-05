@@ -47,6 +47,7 @@ var JSEAttrs    = [];   // js events
 
 var HTMLRAttrs  = [];   // removed html attributes
 var JSERAttrs   = [];   // removed js events
+var XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
 /* Set false to allow changing selection in tree
    without doing "onselect" handler actions
@@ -64,7 +65,7 @@ var gUpdateTreeValue = true;
  **/
 function Startup()
 {
-   var editorElement = getCurrentEditorElement();
+   var editorElement = msiGetActiveEditorElement();
    var editor = msiGetEditor(editorElement);
    
   // Element to edit is passed in
@@ -130,7 +131,8 @@ function Startup()
  **/
 function onAccept()
 {
-  var editor = GetCurrentEditor();
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
   try {
     // Update our gElement attributes
@@ -154,7 +156,8 @@ function onAccept()
 function doRemoveAttribute(attrib)
 {
   try {
-    var editor = GetCurrentEditor();
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
     if (gElement.parentNode)
       editor.removeAttribute(gElement, attrib);
     else
@@ -165,7 +168,8 @@ function doRemoveAttribute(attrib)
 function doSetAttribute(attrib, value)
 {
   try {
-    var editor = GetCurrentEditor();
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
     if (gElement.parentNode)
       editor.setAttribute(gElement, attrib, value);
     else
@@ -184,7 +188,7 @@ function CheckAttributeNameSimilarity(attName, attArray)
 {
   for (var i = 0; i < attArray.length; i++)
   {
-    if (attName.toLowerCase() == attArray[i].toLowerCase())
+    if (attName == attArray[i])
       return true;
   }
   return false;
@@ -205,14 +209,14 @@ function UpdateExistingAttribute( attName, attValue, treeChildrenId )
 
   var name;
   var i;
-  attName = TrimString(attName).toLowerCase();
+  attName = TrimString(attName);
   attValue = TrimString(attValue);
 
   for (i = 0; i < treeChildren.childNodes.length; i++)
   {
     var item = treeChildren.childNodes[i];
     name = GetTreeItemAttributeStr(item);
-    if (name.toLowerCase() == attName)
+    if (name == attName)
     {
       // Set the text in the "value' column treecell
       SetTreeItemValueStr(item, attValue);
@@ -249,7 +253,7 @@ function GetAndSelectExistingAttributeValue( attName, treeChildrenId )
   {
     var item = treeChildren.childNodes[i];
     name = GetTreeItemAttributeStr(item);
-    if (name.toLowerCase() == attName.toLowerCase())
+    if (name == attName)
     {
       // Select item in the tree
       //  but don't trigger the tree's onSelect handler
@@ -314,7 +318,7 @@ function RemoveNameFromAttArray(attName, attArray)
 {
   for (var i=0; i < attArray.length; i++)
   {
-    if (attName.toLowerCase() == attArray[i].toLowerCase())
+    if (attName == attArray[i])
     {
       // Remove 1 array item
       attArray.splice(i,1);

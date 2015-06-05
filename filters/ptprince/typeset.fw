@@ -42,6 +42,8 @@ static char* s_processor;
 
 static const bool s_bMathml = true;
 extern bool s_equation;
+extern bool s_nonumbering;
+extern bool s_eqnarray;
 
 @<Node declarations@>
 @<Semantic nest@>
@@ -269,8 +271,8 @@ void Typesetter::AdjustAttributes(std::string str, std::string newstr)
   if (Global::msioutput == 0){
     bool found = false;
     while (!found && (it != s_pList -> rend())){
-      TagNode* node = static_cast<TagNode*>(*it);
-      if (node && (node -> m_str == str)){
+      TagNode* node = dynamic_cast<TagNode*>(*it);
+      if (node && (node -> m_str) && (node -> m_str == str)){
         found = true;
         delete[] (node-> m_str);
         node-> m_str = new char[newstr.length()+1];
@@ -278,7 +280,6 @@ void Typesetter::AdjustAttributes(std::string str, std::string newstr)
       }
       ++it;
     }
-    
   }
 }
 @}
@@ -716,11 +717,27 @@ void Typesetter::EndDisplay()
          LOG("\nGot back " << s_mathml.c_str());
 
          std::string customLabel = "";
+         bool suppressAnnotation = false;
          if (s_anom != ""){
-            if (s_anom.substr(0,5) == "\\tag{"){
-               int end = s_anom.find_first_of("}", 5);
-               customLabel = s_anom.substr(5, end-5);
+            if (s_anom.substr(0,6) == "\\tag {" ){
+               int end = s_anom.find_first_of("}", 6);
+               customLabel = s_anom.substr(6, end-6);
+            } else if (s_anom.substr(0,9) == "\\TCItag {"){
+               int end = s_anom.find_first_of("}", 9);
+               customLabel = s_anom.substr(9, end-9); 
+            }  else if (s_anom.substr(0,9) == "\\TCItag*{"){
+               int end = s_anom.find_first_of("}", 9);
+               suppressAnnotation = true;
+               customLabel = s_anom.substr(9, end-9);           
+            } else if (s_anom.substr(0,6) == "\\tag*{"){
+               int end = s_anom.find_first_of("}", 6);
+               customLabel = s_anom.substr(6, end-6);
+               suppressAnnotation = true;
+            }  else if (s_anom.substr(0,6) == "\\notag"){
+               s_nonumbering = true;               
+               suppressAnnotation = true;
             }
+
          }
          std::string marker = "";
          if (s_anom != ""){
@@ -733,13 +750,35 @@ void Typesetter::EndDisplay()
 
          std::string str;
          str += "<msidisplay";
-         if (!s_equation){
+         if (s_eqnarray) {
+           if (!s_nonumbering) {
+             str += " numbering=\"eqns\" ";
+           } else {
+             str += " numbering=\"none\" ";
+           }
+         } else if (s_equation){
+           if (s_nonumbering){
+             str += " numbering=\"none\" ";
+           } else {
+             
+             //str += " numbering=\"eqns\" ";
+           }         
+         } else if (!s_nonumbering) {
+           str += " numbering=\"eqns\" ";
+         } else {
            str += " numbering=\"none\" ";
          }
+         if (Global::msiinsubequations == 1){
+           str+= " subEquationNumbers='true' "; 
+         }
+
          if (customLabel != ""){
            str += " customLabel=\"";
            str += customLabel;
            str +="\"";
+         }
+         if (suppressAnnotation){
+           str += " suppressAnnotation=\"true\"";
          }
          if (marker != ""){
            str += " marker=\"";
@@ -751,7 +790,11 @@ void Typesetter::EndDisplay()
          str += ">";
          str +=  "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" \
             display=\"block\">";
-         str +=  s_mathml;
+         if (s_mathml.size() == 0){
+           str+= "<mi></mi>"; //"&ZeroWidthSpace;";
+         } else {
+           str +=  s_mathml;
+         }
          str +=  "</math>";
          str += "</msidisplay>";
          AppendTag(str.c_str());

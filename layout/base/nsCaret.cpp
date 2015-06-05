@@ -70,7 +70,7 @@
 #include "nsTextFrame.h"
 
 // The bidi indicator hangs off the caret to one side, to show which
-// direction the typing is in. It needs to be at least 2x2 to avoid looking like 
+// direction the typing is in. It needs to be at least 2x2 to avoid looking like
 // an insignificant dot
 static const PRUint32 kMinBidiIndicatorPixels = 2;
 
@@ -108,14 +108,14 @@ nsCaret::~nsCaret()
 NS_IMETHODIMP nsCaret::Init(nsIPresShell *inPresShell)
 {
   NS_ENSURE_ARG(inPresShell);
-  
+
   mPresShell = do_GetWeakReference(inPresShell);    // the presshell owns us, so no addref
   NS_ASSERTION(mPresShell, "Hey, pres shell should support weak refs");
 
   // get nsILookAndFeel from the pres context, which has one cached.
   nsILookAndFeel *lookAndFeel = nsnull;
   nsPresContext *presContext = inPresShell->GetPresContext();
-  
+
   PRInt32 caretPixelsWidth = 1;
   if (presContext && (lookAndFeel = presContext->LookAndFeel())) {
     PRInt32 tempInt;
@@ -126,7 +126,7 @@ NS_IMETHODIMP nsCaret::Init(nsIPresShell *inPresShell)
     if (NS_SUCCEEDED(lookAndFeel->GetMetric(nsILookAndFeel::eMetric_ShowCaretDuringSelection, tempInt)))
       mShowDuringSelection = tempInt ? PR_TRUE : PR_FALSE;
   }
-  
+
   mCaretWidth = presContext->DevPixelsToAppUnits(caretPixelsWidth);
   mBidiIndicatorSize = presContext->DevPixelsToAppUnits(kMinBidiIndicatorPixels);
   if (mBidiIndicatorSize < mCaretWidth) {
@@ -152,7 +152,7 @@ NS_IMETHODIMP nsCaret::Init(nsIPresShell *inPresShell)
   if (privateSelection)
     privateSelection->AddSelectionListener(this);
   mDomSelectionWeak = do_GetWeakReference(domSelection);
-  
+
   // set up the blink timer
   if (mVisible)
   {
@@ -170,7 +170,7 @@ NS_IMETHODIMP nsCaret::Terminate()
 {
   // this doesn't erase the caret if it's drawn. Should it? We might not have
   // a good drawing environment during teardown.
-  
+
   KillTimer();
   mBlinkTimer = nsnull;
 
@@ -183,7 +183,7 @@ NS_IMETHODIMP nsCaret::Terminate()
   mPresShell = nsnull;
 
   mLastContent = nsnull;
-  
+
   return NS_OK;
 }
 
@@ -195,7 +195,7 @@ NS_IMPL_ISUPPORTS2(nsCaret, nsICaret, nsISelectionListener)
 NS_IMETHODIMP nsCaret::GetCaretDOMSelection(nsISelection **aDOMSel)
 {
   nsCOMPtr<nsISelection> sel(do_QueryReferent(mDomSelectionWeak));
-  
+
   NS_IF_ADDREF(*aDOMSel = sel);
 
   return NS_OK;
@@ -275,24 +275,24 @@ NS_IMETHODIMP nsCaret::GetCaretCoordinates(EViewCoordinates aRelativeToType,
   outCoordinates->width = -1;
   outCoordinates->height = -1;
   *outIsCollapsed = PR_FALSE;
-  
+
   nsresult err = domSelection->GetIsCollapsed(outIsCollapsed);
-  if (NS_FAILED(err)) 
+  if (NS_FAILED(err))
     return err;
-    
+
   nsCOMPtr<nsIDOMNode>  focusNode;
-  
+
   err = domSelection->GetFocusNode(getter_AddRefs(focusNode));
   if (NS_FAILED(err))
     return err;
   if (!focusNode)
     return NS_ERROR_FAILURE;
-  
+
   PRInt32 focusOffset;
   err = domSelection->GetFocusOffset(&focusOffset);
   if (NS_FAILED(err))
     return err;
-    
+
   nsCOMPtr<nsIContent> contentNode = do_QueryInterface(focusNode);
   if (!contentNode)
     return NS_ERROR_FAILURE;
@@ -305,20 +305,20 @@ NS_IMETHODIMP nsCaret::GetCaretCoordinates(EViewCoordinates aRelativeToType,
   if (!frameSelection)
     return NS_ERROR_FAILURE;
   PRUint8 bidiLevel = frameSelection->GetCaretBidiLevel();
-  
+
   err = GetCaretFrameForNodeOffset(contentNode, focusOffset,
                                    frameSelection->GetHint(), bidiLevel,
                                    &theFrame, &theFrameOffset);
   if (NS_FAILED(err) || !theFrame)
     return err;
-  
+
   nsPoint   viewOffset(0, 0);
   nsIView   *drawingView;     // views are not refcounted
 
   GetViewForRendering(theFrame, aRelativeToType, viewOffset, &drawingView, outView);
   if (!drawingView)
     return NS_ERROR_UNEXPECTED;
- 
+
   nsPoint   framePos(0, 0);
   err = theFrame->GetPointFromOffset(theFrameOffset, &framePos);
   if (NS_FAILED(err))
@@ -337,7 +337,7 @@ NS_IMETHODIMP nsCaret::GetCaretCoordinates(EViewCoordinates aRelativeToType,
   outCoordinates->y = viewOffset.y;
   outCoordinates->height = theFrame->GetSize().height;
   outCoordinates->width  = mCaretWidth;
-  
+
   return NS_OK;
 }
 
@@ -346,10 +346,10 @@ void nsCaret::DrawCaretAfterBriefDelay()
   // Make sure readonly caret gets drawn again if it needs to be
   if (!mBlinkTimer) {
     nsresult  err;
-    mBlinkTimer = do_CreateInstance("@mozilla.org/timer;1", &err);    
+    mBlinkTimer = do_CreateInstance("@mozilla.org/timer;1", &err);
     if (NS_FAILED(err))
       return;
-  }    
+  }
 
   mBlinkTimer->InitWithFuncCallback(CaretBlinkCallback, this, 0,
                                     nsITimer::TYPE_ONE_SHOT);
@@ -370,7 +370,7 @@ NS_IMETHODIMP nsCaret::EraseCaret()
   return NS_OK;
 }
 
-NS_IMETHODIMP nsCaret::SetVisibilityDuringSelection(PRBool aVisibility) 
+NS_IMETHODIMP nsCaret::SetVisibilityDuringSelection(PRBool aVisibility)
 {
   mShowDuringSelection = aVisibility;
   return NS_OK;
@@ -504,10 +504,10 @@ nsresult nsCaret::PrimeTimer()
   {
     if (!mBlinkTimer) {
       nsresult  err;
-      mBlinkTimer = do_CreateInstance("@mozilla.org/timer;1", &err);    
+      mBlinkTimer = do_CreateInstance("@mozilla.org/timer;1", &err);
       if (NS_FAILED(err))
         return err;
-    }    
+    }
 
     mBlinkTimer->InitWithFuncCallback(CaretBlinkCallback, this, mBlinkRate,
                                       nsITimer::TYPE_REPEATING_SLACK);
@@ -537,7 +537,7 @@ nsresult nsCaret::StartBlinking()
     DrawCaret(PR_TRUE);
 
   DrawCaret(PR_TRUE);    // draw it right away
-  
+
   return NS_OK;
 }
 
@@ -581,7 +581,7 @@ nsCaret::DrawAtPositionWithHint(nsIDOMNode*             aNode,
       (userinterface->mUserInput == NS_STYLE_USER_INPUT_DISABLED))
   {
     return PR_FALSE;
-  }  
+  }
 
   if (!mDrawn)
   {
@@ -676,12 +676,12 @@ AdjustCaretFrameForLineEnd(nsIFrame** aFrame, PRInt32* aOffset)
   }
 }
 
-PRUint32 
+PRUint32
 GetIndexInParent( nsIFrame * pF, nsIFrame * pParent)
 {
   nsIFrame * pF2 = pParent->GetFirstChild(nsnull);
   PRUint32 index = 0;
-  while (pF2 && pF != pF2) 
+  while (pF2 && pF != pF2)
   {
     index++;
     pF2 = pF2->GetNextSibling();
@@ -744,7 +744,7 @@ PRBool IsMathNode(nsIContent * aNode)
   return PR_FALSE;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsCaret::GetCaretFrameForNodeOffset(nsIContent*             aContentNode,
                                     PRInt32                 aOffset,
                                     nsFrameSelection::HINT aFrameHint,
@@ -784,8 +784,8 @@ nsCaret::GetCaretFrameForNodeOffset(nsIContent*             aContentNode,
   // that text frame instead. This way, the caret will be positioned as if
   // trailing whitespace was not trimmed.
   AdjustCaretFrameForLineEnd(&theFrame, &theFrameOffset);
-//  AdjustCaretFrameForMathMLmo(&theFrame, &theFrameOffset);
-  
+  AdjustCaretFrameForMathMLmo(&theFrame, &theFrameOffset);
+
   // Mamdouh : modification of the caret to work at rtl and ltr with Bidi
   //
   // Direction Style from this->GetStyleData()
@@ -813,7 +813,7 @@ nsCaret::GetCaretFrameForNodeOffset(nsIContent*             aContentNode,
     {
       nsPrevNextBidiLevels levels = frameSelection->
         GetPrevNextBidiLevels(aContentNode, aOffset, PR_FALSE);
-    
+
       /* Boundary condition, we need to know the Bidi levels of the characters before and after the caret */
       if (levels.mFrameBefore || levels.mFrameAfter)
       {
@@ -838,7 +838,7 @@ nsCaret::GetCaretFrameForNodeOffset(nsIContent*             aContentNode,
                 theFrame->GetOffsets(start, end);
                 theFrameOffset = end;
               }
-              else 
+              else
               {
                 // if there is no frameBefore, we must be at the beginning of the line
                 // so we stay with the current frame.
@@ -858,7 +858,7 @@ nsCaret::GetCaretFrameForNodeOffset(nsIContent*             aContentNode,
             }
           }
           else if (aBidiLevel == levelAfter                                                                     // rule c2
-                   || aBidiLevel > levelBefore && aBidiLevel < levelAfter && !((aBidiLevel ^ levelAfter) & 1)   // rule c6  
+                   || aBidiLevel > levelBefore && aBidiLevel < levelAfter && !((aBidiLevel ^ levelAfter) & 1)   // rule c6
                    || aBidiLevel < levelBefore && aBidiLevel > levelAfter && !((aBidiLevel ^ levelAfter) & 1))  // rule c10
           {
             if (theFrame != frameAfter)
@@ -870,7 +870,7 @@ nsCaret::GetCaretFrameForNodeOffset(nsIContent*             aContentNode,
                 theFrame->GetOffsets(start, end);
                 theFrameOffset = start;
               }
-              else 
+              else
               {
                 // if there is no frameAfter, we must be at the end of the line
                 // so we stay with the current frame.
@@ -916,7 +916,7 @@ nsCaret::GetCaretFrameForNodeOffset(nsIContent*             aContentNode,
               else               // c11: caret to the right of the rightmost character
                 theFrameOffset = (levelBefore & 1) ? start : end;
             }
-          }   
+          }
         }
       }
     }
@@ -945,23 +945,23 @@ void nsCaret::GetViewForRendering(nsIFrame *caretFrame,
 #if defined(XP_MACOSX) || defined(XP_WIN)
    // #59405 and #313918, on Mac and Windows, the coordinate for IME need to be
    // root view related.
-   coordType = eTopLevelWindowCoordinates; 
+   coordType = eTopLevelWindowCoordinates;
 #else
    // #59405, on unix, the coordinate for IME need to be view
    // (nearest native window) related.
-   coordType = eRenderingViewCoordinates; 
+   coordType = eRenderingViewCoordinates;
 #endif
   }
 
   *outRenderingView = nsnull;
   if (outRelativeView)
     *outRelativeView = nsnull;
-  
+
   NS_ASSERTION(caretFrame, "Should have a frame here");
- 
+
   viewOffset.x = 0;
   viewOffset.y = 0;
-  
+
   nsPoint withinViewOffset(0, 0);
   // get the offset of this frame from its parent view (walks up frame hierarchy)
   nsIView* theView = nsnull;
@@ -974,13 +974,13 @@ void nsCaret::GetViewForRendering(nsIFrame *caretFrame,
 
   // Note: views are not refcounted.
   nsIView* returnView = nsIView::GetViewFor(theView->GetNearestWidget(nsnull));
-  
+
   // This gets uses the first view with a widget
   if (coordType == eRenderingViewCoordinates) {
     if (returnView) {
       // Now adjust the view offset for this view.
       withinViewOffset += theView->GetOffsetTo(returnView);
-      
+
       // Account for the view's origin not lining up with the widget's
       // (bug 190290)
       withinViewOffset += returnView->GetPosition() -
@@ -1015,12 +1015,12 @@ void nsCaret::GetViewForRendering(nsIFrame *caretFrame,
 /*-----------------------------------------------------------------------------
 
   MustDrawCaret
-  
+
   FInd out if we need to do any caret drawing. This returns true if
   either a) or b)
   a) caret has been drawn, and we need to erase it.
   b) caret is not drawn, and selection is collapsed
-  
+
 ----------------------------------------------------------------------------- */
 PRBool nsCaret::MustDrawCaret()
 {
@@ -1053,7 +1053,7 @@ PRBool nsCaret::MustDrawCaret()
 /*-----------------------------------------------------------------------------
 
   DrawCaret
-    
+
 ----------------------------------------------------------------------------- */
 
 void nsCaret::DrawCaret(PRBool aInvalidate)
@@ -1061,7 +1061,7 @@ void nsCaret::DrawCaret(PRBool aInvalidate)
   // do we need to draw the caret at all?
   if (!MustDrawCaret())
     return;
-  
+
   nsCOMPtr<nsIDOMNode> node;
   PRInt32 offset;
   nsFrameSelection::HINT hint;
@@ -1072,7 +1072,7 @@ void nsCaret::DrawCaret(PRBool aInvalidate)
     nsCOMPtr<nsISelection> domSelection = do_QueryReferent(mDomSelectionWeak);
     nsCOMPtr<nsISelectionPrivate> privateSelection(do_QueryInterface(domSelection));
     if (!privateSelection) return;
-    
+
     PRBool isCollapsed = PR_FALSE;
     domSelection->GetIsCollapsed(&isCollapsed);
     if (!mShowDuringSelection && !isCollapsed)
@@ -1086,7 +1086,7 @@ void nsCaret::DrawCaret(PRBool aInvalidate)
     domSelection->GetFocusNode(getter_AddRefs(node));
     if (!node)
       return;
-    
+
     if (NS_FAILED(domSelection->GetFocusOffset(&offset)))
       return;
 
@@ -1236,7 +1236,7 @@ nsresult nsCaret::UpdateHookRect(nsPresContext* aPresContext)
        * reflect the location in which the next character typed will
        * appear. We will call |SelectionLanguageChange| and exit
        * without drawing the caret in the old position.
-       */ 
+       */
       mKeyboardRTL = isCaretRTL;
       nsCOMPtr<nsISelection> domSelection = do_QueryReferent(mDomSelectionWeak);
       if (domSelection)
@@ -1278,7 +1278,7 @@ void nsCaret::CaretBlinkCallback(nsITimer *aTimer, void *aClosure)
 {
   nsCaret   *theCaret = reinterpret_cast<nsCaret*>(aClosure);
   if (!theCaret) return;
-  
+
   theCaret->DrawCaret(PR_TRUE);
 }
 
@@ -1318,11 +1318,11 @@ nsCaret::SetIgnoreUserModify(PRBool aIgnoreUserModify)
 nsresult NS_NewCaret(nsICaret** aInstancePtrResult)
 {
   NS_PRECONDITION(aInstancePtrResult, "null ptr");
-  
+
   nsCaret* caret = new nsCaret();
   if (nsnull == caret)
       return NS_ERROR_OUT_OF_MEMORY;
-      
+
   return caret->QueryInterface(NS_GET_IID(nsICaret), (void**) aInstancePtrResult);
 }
 

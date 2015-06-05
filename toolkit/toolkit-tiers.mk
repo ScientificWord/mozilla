@@ -134,6 +134,7 @@ tier_gecko_dirs	+= \
 		widget \
 		content \
 		toolkit/components/scriptrunner \
+		toolkit/components/rlm \
 		toolkit/components/autocomplete/public \
 		toolkit/components/keymap/public \
 		toolkit/components/Compute/public \

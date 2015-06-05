@@ -207,7 +207,7 @@ File /a "${srcdir}\${notefile}"
 File /a "${srctree}\prince\icons\${icon}"
 !endif
  
-File "/oname=$TEMPLATES\New Scientific WorkPlace 6 Document.sci" "${srcdir}\shells\articles\Blank_LaTeX_Article.sci"
+File "/oname=$TEMPLATES\New Scientific WorkPlace 6 Document.sci" "${srcdir}\shells\Articles\Blank_LaTeX_Article.sci"
 ; any application-specific files
 !ifdef files
 !include "${files}"

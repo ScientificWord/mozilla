@@ -31,10 +31,10 @@ protected:
   PRBool IsMouseEventActive();
   
 protected:
-  nsCOMPtr<nsIDOMNode>  m_msiFocusNode;
-  nsCOMPtr<nsIDOMNode>  m_msiAnchorNode;
-  PRUint32              m_msiFocusOffset;
-  PRUint32              m_msiAnchorOffset;
+  //nsCOMPtr<nsIDOMNode>  m_msiFocusNode;
+  //nsCOMPtr<nsIDOMNode>  m_msiAnchorNode;
+  //PRUint32              m_msiFocusOffset;
+  //PRUint32              m_msiAnchorOffset;
   msiAdjustCaretCB      m_adjustCaretCB; 
   msiSetSelectionCB     m_setSelectionCB;
   void *                m_msiEditor;
@@ -43,13 +43,13 @@ protected:
 
 
 msiTypedSelection::msiTypedSelection() 
-: nsTypedSelection(), m_msiFocusOffset(INVALID_OFFSET), m_msiAnchorOffset(INVALID_OFFSET),
+: nsTypedSelection(), // m_msiFocusOffset(INVALID_OFFSET), m_msiAnchorOffset(INVALID_OFFSET),
 m_adjustCaretCB(nsnull), m_setSelectionCB(nsnull), m_msiEditor(nsnull)
 {
 }
 
 msiTypedSelection::msiTypedSelection(nsFrameSelection* aList)
-: nsTypedSelection(aList), m_msiFocusOffset(INVALID_OFFSET), m_msiAnchorOffset(INVALID_OFFSET),
+: nsTypedSelection(aList), //m_msiFocusOffset(INVALID_OFFSET), m_msiAnchorOffset(INVALID_OFFSET),
 m_adjustCaretCB(nsnull), m_setSelectionCB(nsnull), m_msiEditor(nsnull)
 {
 }
@@ -64,17 +64,19 @@ NS_IMPL_ISUPPORTS_INHERITED1(msiTypedSelection, nsTypedSelection, msiISelection)
 
 // msiISelection interface
 NS_IMETHODIMP 
-msiTypedSelection::GetMsiAnchorNode(nsIDOMNode * *msiAnchorNode)
+msiTypedSelection::GetMsiAnchorNode(nsIDOMNode* *anAnchorNode)
 {
-  if (!msiAnchorNode)
+  if (!anAnchorNode)
     return NS_ERROR_NULL_POINTER;
-  *msiAnchorNode = nsnull;
-  if (m_msiAnchorNode)
+  *anAnchorNode = nsnull;
+
+  nsIDOMNode* myAnchorNode = FetchAnchorNode();
+  if (myAnchorNode)
   {
-    *msiAnchorNode = m_msiAnchorNode;
-    NS_ADDREF(*msiAnchorNode);
+    *anAnchorNode = myAnchorNode;
+    NS_ADDREF(*anAnchorNode);
   }
-  return NS_OK;  
+  return NS_OK;
 }
 
 NS_IMETHODIMP 
@@ -82,20 +84,22 @@ msiTypedSelection::GetMsiAnchorOffset(PRUint32 *msiAnchorOffset)
 {
   if (!msiAnchorOffset)
     return NS_ERROR_NULL_POINTER;
-  *msiAnchorOffset = m_msiAnchorOffset;
+  *msiAnchorOffset = FetchAnchorOffset();
   return NS_OK;  
 }
 
 NS_IMETHODIMP 
-msiTypedSelection::GetMsiFocusNode(nsIDOMNode * *msiFocusNode)
+msiTypedSelection::GetMsiFocusNode(nsIDOMNode* *aFocusNode)
 {
-  if (!msiFocusNode)
+  if (!aFocusNode)
     return NS_ERROR_NULL_POINTER;
-  *msiFocusNode = nsnull;
-  if (m_msiFocusNode)
+  *aFocusNode = nsnull;
+
+  nsIDOMNode* myFocusNode = FetchFocusNode();
+  if (myFocusNode)
   {
-    *msiFocusNode = m_msiFocusNode;
-    NS_ADDREF(*msiFocusNode);
+    *aFocusNode = myFocusNode;
+    NS_ADDREF(*aFocusNode);
   }
   return NS_OK;  
 }
@@ -105,7 +109,8 @@ msiTypedSelection::GetMsiFocusOffset(PRUint32 *msiFocusOffset)
 {
   if (!msiFocusOffset)
     return NS_ERROR_NULL_POINTER;
-  *msiFocusOffset = m_msiFocusOffset;
+  *msiFocusOffset = FetchFocusOffset();
+
   return NS_OK;  
 }
 
@@ -177,10 +182,10 @@ msiTypedSelection::Set(nsIDOMNode *startNode, PRUint32 startOffset,
   {
     if (anchorNode && anchorOffset != INVALID_OFFSET && focusNode && focusOffset != INVALID_OFFSET)
     {
-      m_msiFocusNode = focusNode;
-      m_msiAnchorNode = anchorNode;
-      m_msiFocusOffset = focusOffset;
-      m_msiAnchorOffset = anchorOffset;
+      //m_msiFocusNode = focusNode;
+      //m_msiAnchorNode = anchorNode;
+      //m_msiFocusOffset = focusOffset;
+      //m_msiAnchorOffset = anchorOffset;
     }
     else
       SyncMSIwithNS();
@@ -299,10 +304,10 @@ msiTypedSelection::RemoveAllRanges(void)
 NS_IMETHODIMP
 msiTypedSelection::SyncMSIwithNS()
 {
-  m_msiFocusNode = FetchFocusNode();
-  m_msiAnchorNode = FetchAnchorNode();
-  m_msiFocusOffset = FetchFocusOffset();
-  m_msiAnchorOffset = FetchAnchorOffset();
+  //m_msiFocusNode = FetchFocusNode();
+  //m_msiAnchorNode = FetchAnchorNode();
+  //m_msiFocusOffset = FetchFocusOffset();
+  //m_msiAnchorOffset = FetchAnchorOffset();
   return NS_OK;
 }
 

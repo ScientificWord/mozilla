@@ -66,11 +66,15 @@
 #include "nsISelectionController.h"
 #include "nsIFileChannel.h"
 #include "nsIFileURL.h"
-
+#include "nsIController.h"
+#include "nsIControllers.h"
+#include "nsIDOMXULCommandDispatcher.h"
+#include "nsIDOMXULElement.h" 
 #include "nsICSSLoader.h"
 #include "nsICSSStyleSheet.h"
 #include "nsIDocumentObserver.h"
 #include "nsIDocumentStateListener.h"
+#include "nsIDOMWindowInternal.h"
 
 #include "nsIEnumerator.h"
 #include "nsIContent.h"
@@ -130,7 +134,9 @@
 #include "nsIDOMHTMLTableElement.h"
 #include "nsIDOMHTMLBodyElement.h"
 #include "nsIDOM3Node.h"
-
+#include "nsIDOMWindow.h"
+#include "nsIDOMDocumentView.h"
+#include "nsIDOMAbstractView.h"
 // Misc
 #include "TextEditorTest.h"
 #include "nsEditorUtils.h"
@@ -144,6 +150,7 @@
 #include "../../../content/base/src/nsAttrName.h"
 #include "../../msiediting/src/msiEditingAtoms.h"
 #include "msiIMathMLEditor.h"
+#include "jcsDumpNode.h"
 
 
 #define DEBUG_barry 1
@@ -350,32 +357,36 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
   nsCOMPtr<nsIDOMNode> textNode;
   nsCOMPtr<nsIDOMNode> parentNode(*ioParent);
   nsCOMPtr<nsIDOMNode> newParentNode = parentNode;
+  nsCOMPtr<nsIDOMNode> insertedNode;
+  nsCOMPtr<nsIDOMNode> grandParent;
   nsCOMPtr<nsIDOMCharacterData> characterNode;
+  PRUint16 nodeType;
+  PRInt32 savedOffset = offsetOfNewNode;
+  res = cNode->GetNodeType(&nodeType);
+  if (nodeType == nsIDOMNode::TEXT_NODE) {
+    // We can't insert plain text, only an mi, an mn, or an mo. This should happen only when pasting, so cNode should
+    // have a parent
+    res = cNode->GetParentNode(getter_AddRefs(insertedNode));
+    if (!insertedNode) return NS_ERROR_INVALID_ARG;
+  }
+  else insertedNode = cNode;
   pNode = do_QueryInterface(parentNode);
   GetTagString(parentNode, tagName);
-  if (tagName.EqualsLiteral("mi") || tagName.EqualsLiteral("mo"))
+  // check for input box
+  if (tagName.EqualsLiteral("mi"))
   {
-    // can't insert in these. Move to the side or, if a tempinput mi, delete the mi.
-    nsCOMPtr<nsIDOMNode> grandParent;
-    PRUint32 saveOffset = offsetOfNewNode;
-    res = parentNode->GetParentNode(getter_AddRefs(grandParent));
-    res = GetChildOffset(parentNode, grandParent, offsetOfNewNode);
     res = pNode->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
     if (strTempInput.EqualsLiteral("true"))
     {
       // delete the tempinput mi, reset parentNode and offsetOfNewNode, and start again
+      res = GetNodeLocation(parentNode, address_of(grandParent), &offsetOfNewNode);
       res = DeleteNode(parentNode);
+      parentNode = grandParent;
+      newParentNode = parentNode;
+      GetTagString(parentNode, tagName);
     }
-    else
-    {
-      // move past the mi (which is parentNode right now)
-      if (saveOffset > 0) offsetOfNewNode++;
-    }
-    parentNode = grandParent;
-    newParentNode = parentNode;
-    GetTagString(parentNode, tagName);
   }
-  if (tagName.EqualsLiteral("mn") && (NodeContainsOnlyMn(cNode, getter_AddRefs(textNode)),textNode))
+  if (tagName.EqualsLiteral("mn") && (NodeContainsOnlyMn(insertedNode, getter_AddRefs(textNode)),textNode))
   {
     // don't put mn into an mn, but put the contents into the mn, which has had its text node split
     res = InsertNodeAtPoint(textNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
@@ -387,16 +398,18 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     || tagName.EqualsLiteral("#text")))
   {
     // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
+    res = GetNodeLocation(parentNode, address_of(grandParent), &offsetOfNewNode);    
     nsCOMPtr<nsIDOMElement> mrow;
-    msiUtils::CreateMRow(this, cNode, mrow);
-    res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+    msiUtils::CreateMRow(this, insertedNode, mrow);
+    res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(grandParent), &offsetOfNewNode, PR_TRUE);
+    res = MoveNode(parentNode, mrow, savedOffset > 0 ? 0 : 1);
     parentNode = mrow;
     newParentNode = mrow;
-    offsetOfNewNode = 1;
+    offsetOfNewNode = 2;
     if (NS_SUCCEEDED(res))
     {
       bDidInsert = PR_TRUE;
-      *lastInsertNode = cNode;
+      *lastInsertNode = insertedNode;
     }
   }
   else
@@ -451,8 +464,11 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   nsresult res;
   nsCOMPtr<nsISelection>selection;
   res = GetSelection(getter_AddRefs(selection));
-  if (NS_FAILED(res)) return res;
+  //printf("\n\nStarting selection\n");
+  //DumpSelection(selection);
 
+  if (NS_FAILED(res)) return res;
+  
   // create a dom document fragment that represents the structure to paste
   nsCOMPtr<nsIDOMNode> fragmentAsNode, streamStartParent, streamEndParent;
   PRInt32 streamStartOffset = 0, streamEndOffset = 0;
@@ -472,7 +488,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   {
     // if caller didn't provide the destination/target node,
     // fetch the paste insertion point from our selection
-    res = GetStartNodeAndOffset(selection, address_of(targetNode), &targetOffset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(targetNode), &targetOffset);
     if (!targetNode) res = NS_ERROR_FAILURE;
     if (NS_FAILED(res)) return res;
   }
@@ -700,7 +716,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   {
     // The rules code (WillDoAction above) might have changed the selection.
     // refresh our memory...
-    res = GetStartNodeAndOffset(selection, address_of(parentNode), &offsetOfNewNode);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(parentNode), &offsetOfNewNode);
     if (!parentNode) res = NS_ERROR_FAILURE;
     if (NS_FAILED(res)) return res;
 
@@ -775,34 +791,35 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
       NS_ENSURE_SUCCESS(res, res);
     }
 // Now do the same for math as we did for tables and list items
-//    nsCOMPtr<nsIDOMNode> endNode = nodeList[0];
-//    nsCOMPtr<nsIDOMNode> mathNode;
-//    MathParent( endNode, getter_AddRefs(mathNode));
-//    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
-//    // now do the other end.
-//    PRUint32 length = nodeList.Count();
-//    if (length > 1) {
-//    endNode = nodeList[length-1];
-//    MathParent( endNode, getter_AddRefs(mathNode));
-//    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
-//    }
+    nsCOMPtr<nsIDOMNode> endNode = nodeList[0];
+    PRUint32 length = nodeList.Count();
+   // nsCOMPtr<nsIDOMNode> mathNode;
+    // MathParent( endNode, getter_AddRefs(mathNode));
+    // if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+    // // now do the other end.
+    // if (length > 1) {
+    //   endNode = nodeList[length-1];
+    //   MathParent( endNode, getter_AddRefs(mathNode));
+    //   if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+    // }
 //// Now fix up fragments internal to the math node
-//    endNode = nodeList[0];
+////    endNode = nodeList[0];
 //// #if DEBUG_barry || DEBUG_Barry
 ////   printf("\nendNode before FixMath\n");
 ////   DumpNode(endNode, 0, true);
 //// #endif
-//    FixMathematics(endNode, length > 1, PR_FALSE);
+     
+    FixMathematics(endNode, length > 1, PR_FALSE);
 //// #if DEBUG_barry || DEBUG_Barry
 ////   printf("\nendNode after FixMath\n");
 ////   DumpNode(endNode, 0, true);
 //// #endif
 //
-//    if (length > 1)
-//    {
-//      endNode = nodeList[length-1];
-//      FixMathematics(endNode, PR_FALSE, PR_TRUE);
-//    }
+    if (length > 1)
+    {
+      endNode = nodeList[length-1];
+      FixMathematics(endNode, PR_FALSE, PR_TRUE);
+    }
     listCount = nodeList.Count();
     // Loop over the node list and paste the nodes:
     PRBool bDidInsert = PR_FALSE;
@@ -916,7 +933,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         }
       }
       else if ( (nsHTMLEditUtils::IsMath(curNode))  || 
-                (nsHTMLEditUtils::IsMath(targetNode)) )
+                (nsHTMLEditUtils::IsMath(parentNode)) )
       {
         if ( ! nsHTMLEditUtils::IsMath(curNode) ) {
           // nsCOMPtr<nsIDOM3Node> d3node = do_QueryInterface(curNode);
@@ -1024,6 +1041,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         if (NS_SUCCEEDED(res))
         {
           bDidInsert = PR_TRUE;
+          insertedContextParent = curNode;
           lastInsertNode = curNode;
         }
 
@@ -1153,6 +1171,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   }
 
   res = mRules->DidDoAction(selection, &ruleInfo, res);
+
   return res;
 }
 
@@ -1202,7 +1221,7 @@ nsHTMLEditor::InsertReturnImpl( PRBool fFancy )
   PRInt32 splitpointOffset;
   nsCOMPtr<nsISelection>selection;
   res = GetSelection(getter_AddRefs(selection));
-  res = GetStartNodeAndOffset(selection, address_of(splitpointNode), &splitpointOffset);
+  res = GetStartNodeAndOffset(selection, getter_AddRefs(splitpointNode), &splitpointOffset);
   PRBool bHandled = PR_FALSE;
   res = InsertReturnInMath(splitpointNode, splitpointOffset, &bHandled);
   if (NS_FAILED(res)) return res;
@@ -1210,6 +1229,8 @@ nsHTMLEditor::InsertReturnImpl( PRBool fFancy )
     return res;
 
   res = InsertReturnAt(splitpointNode, splitpointOffset, fFancy);
+  res = nsEditorUtils::JiggleCursor(this, selection, nsIEditor::eNext);
+
   return res;
 }
 
@@ -1721,6 +1742,25 @@ PRBool StructureHasStructureAncestor( nsIDOMNode * node, msiITagListManager * pT
   return fIsStruct; 
 }
 
+PRBool
+nsHTMLEditor::InEmptyCell( nsIDOMNode * node) {
+  nsresult res = NS_OK;
+  nsCOMPtr<nsIDOMNode> parent;
+  PRInt32 offset;
+  nsAutoString tagName;
+  node->GetNodeName(tagName);
+  while (node && !(tagName.EqualsLiteral("td") || tagName.EqualsLiteral("mtd"))) {
+    res = GetNodeLocation(node, &parent, &offset); 
+    node = parent;
+    if (node) node->GetNodeName(tagName);
+  }
+  if (!node) return false;
+  nsCOMPtr<nsIDOMElement> el;
+  el = do_QueryInterface(node);
+  if (!el) return false;
+  return IsEmptyCell(el);
+}
+
 // InsertReturnAt -- usually splits a paragraph; may call itself recursively
 nsresult
 nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy)
@@ -1759,8 +1799,10 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   if (!IsBlockNode(splitNode)||strTagName.EqualsLiteral("body")
     ||strTagName.EqualsLiteral("#document"))
   {
-    nsCOMPtr<nsIDOMNode> brNode;
-    return InsertBR(address_of(brNode));  // only inserts a br node
+    nsCOMPtr<nsIDOMNode> para;
+    return CreateDefaultParagraph(splitNode, splitpointOffset, PR_TRUE, getter_AddRefs(para));
+    // nsCOMPtr<nsIDOMNode> brNode;
+    // return InsertBR(address_of(brNode));  // only inserts a br node
   }
   else
   // and if we are in verbatim, put in a newline rather than split
@@ -1785,6 +1827,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     // The booleans are: aSingleBRDoesntCount, aListOrCellNotEmpty, and aSafeToAskFrames.
     // Check that there aren't significant tags in it, such as empty tables, etc.
     if (isEmpty) isEmpty = HasNoSignificantTags(splitNode, mtagListManager);
+    if (InEmptyCell(splitNode)) return NS_OK;
     fDiscardNode = PR_FALSE;
     if (isEmpty) mtagListManager->GetDiscardEmptyBlockNode(splitNode, &fDiscardNode);
     // fDiscardNode tells if the this node should be discarded in this case. We don't want to delete it yet;
@@ -1856,6 +1899,40 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
 
     res = GetTagString(outLeftNode, leftName);
     res = GetTagString(outRightNode, rightName);
+    if (rightName.EqualsLiteral("bibitem")) {
+
+      nsCOMPtr<nsIDOMDocument> ownerDoc;
+      nsCOMPtr<nsIDOMNode> parent;
+      PRInt32 offset = 0;
+      outRightNode->GetOwnerDocument(getter_AddRefs(ownerDoc));
+      NS_ENSURE_STATE(ownerDoc);
+    
+      nsCOMPtr<nsIDOMDocumentView> docView = do_QueryInterface(ownerDoc);
+      NS_ENSURE_STATE(docView);
+    
+      nsCOMPtr<nsIDOMAbstractView> absView;
+      docView->GetDefaultView(getter_AddRefs(absView));
+      NS_ENSURE_STATE(absView);
+    
+      nsCOMPtr<nsIDOMWindowInternal> win = do_QueryInterface(absView);
+
+
+      nsCOMPtr<nsIControllers> controllers;
+      res = win->GetControllers(getter_AddRefs(controllers));
+      nsCOMPtr<nsIController> controller;
+      const char * command = "cmd_reviseManualBibItemCmd";
+      res = controllers->GetControllerForCommand(command, getter_AddRefs(controller));
+      nsCOMPtr<nsISelection>selection;
+      nsresult res = GetSelection(getter_AddRefs(selection));
+      if (NS_FAILED(res)) return res;
+//      res = nsEditor::GetNodeLocation(outRightNode, address_of(parent), &offset);
+//      if (NS_FAILED(res)) return res;
+      selection->Collapse(outRightNode, offset);
+//      nsEditor::DeleteNode(outRightNode);
+
+      controller->DoCommand(command);
+      return res;
+    }
     if (!(leftName.Equals(rightName))) {
       // strip attributes off of the right node
       nsCOMPtr<nsIDOMNamedNodeMap> attributemap;
@@ -1880,18 +1957,30 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     res = IsEmptyNode( rightNode, &isEmpty, PR_TRUE, PR_FALSE, PR_TRUE);
     if (isEmpty)
     {
-      res = rightNode->GetOwnerDocument(getter_AddRefs(doc));
+
       res = rightNode->GetLocalName(sNewNodeName);
-      newNode = nsnull;
-      res = mtagListManager->GetNewInstanceOfNode(sNewNodeName, atomNS, doc, getter_AddRefs(newNode));
-      if (newNode)
-      {
-        PRBool success = PR_FALSE;
-        res = nsEditor::GetNodeLocation(rightNode, address_of(parent), &offset);
-        res = nsEditor::InsertNode(newNode, parent, offset);
-        res = nsEditor::DeleteNode(rightNode);
-        newElement = do_QueryInterface(newNode);
-        SetCursorInNewHTML(newElement, &success);
+      mtagListManager->GetStringPropertyForTag(sNewNodeName, atomNS, NS_LITERAL_STRING("inclusion"), sInclusion);
+      fInclusion = (sInclusion.EqualsLiteral("true"));
+      if (fInclusion) {
+        res = GetNodeLocation(outLeftNode, address_of(parent), &offset);
+        res = DeleteNode(rightNode);
+        GetSelection(getter_AddRefs(selection));
+        selection->Collapse(parent, offset+1);
+      }
+      else {
+        res = rightNode->GetOwnerDocument(getter_AddRefs(doc));
+        res = rightNode->GetLocalName(sNewNodeName);
+        newNode = nsnull;
+        res = mtagListManager->GetNewInstanceOfNode(sNewNodeName, atomNS, doc, getter_AddRefs(newNode));
+        if (newNode)
+        {
+          PRBool success = PR_FALSE;
+          res = GetNodeLocation(rightNode, address_of(parent), &offset);
+          res = InsertNode(newNode, parent, offset);
+          res = DeleteNode(rightNode);        
+          newElement = do_QueryInterface(newNode);
+          SetCursorInNewHTML(newElement, &success); 
+        }
       }
     }
   } 
@@ -4448,8 +4537,10 @@ nsHTMLEditor::GetListAndTableParents(PRBool aEnd,
   nsCOMPtr<nsIDOMNode>  pNode = aListOfNodes[idx];
   while (pNode)
   {
-    if (nsHTMLEditUtils::IsList(pNode, mtagListManager) || nsHTMLEditUtils::IsTable(pNode, mtagListManager) ||
-      nsHTMLEditUtils::IsMath(pNode))
+    if (nsHTMLEditUtils::IsList(pNode, mtagListManager) || nsHTMLEditUtils::IsTable(pNode, mtagListManager) 
+       )
+      // ||
+      // nsHTMLEditUtils::IsMath(pNode))
     {
       if (!outArray.AppendObject(pNode))
       {
@@ -4558,13 +4649,14 @@ nsHTMLEditor::ScanForListAndTableStructure( PRBool aEnd,
   while (pNode)
   {
     if ( (bList && nsHTMLEditUtils::IsListItem(pNode, mtagListManager)) ||
-      (!bList && !bMath && (nsHTMLEditUtils::IsTableElement(pNode, mtagListManager) && !nsHTMLEditUtils::IsTable(pNode, mtagListManager)))
+      (!bList && /*!bMath && */(nsHTMLEditUtils::IsTableElement(pNode, mtagListManager) && !nsHTMLEditUtils::IsTable(pNode, mtagListManager)))
         || (bMath && nsHTMLEditUtils::IsMath(pNode)) )
     {
       nsCOMPtr<nsIDOMNode> structureNode;
       if (bList) structureNode = GetListParent(pNode);
-      else if (bMath) structureNode = GetMathParent(pNode);
       else structureNode = GetTableParent(pNode);
+      // mtable parts are to be treated as tables parts rather than math parts, so we call the above line first.
+      if ((!structureNode) && bMath) structureNode = GetMathParent(pNode);
       if (structureNode == aListOrTable)
       {
 //        if (bList)
@@ -4589,10 +4681,10 @@ nsHTMLEditor::ReplaceOrphanedMath(PRBool aEnd,
                                        nsCOMArray<nsIDOMNode>& aNodeArray,
                                        nsIDOMNode* mathParent)
 {
+  return NS_OK;
   if (!mathParent) return NS_OK;
   nsCOMPtr<nsIDOMNode> endpoint;
   do {
-    nsCOMPtr<nsIDOMNode> endpoint;
     endpoint = GetArrayEndpoint(aEnd, aNodeArray);
     if (!endpoint) break;
     if (nsEditorUtils::IsDescendantOf(endpoint, mathParent))
@@ -4622,7 +4714,7 @@ nsHTMLEditor::ReplaceOrphanedStructure(PRBool aEnd,
                                  curNode, address_of(replaceNode));
   NS_ENSURE_SUCCESS(res, res);
 
-  // if we found substructure, paste it instead of it's descendants
+  // if we found substructure, paste it instead of its descendants
   if (replaceNode)
   {
     // postprocess list to remove any descendants of this node

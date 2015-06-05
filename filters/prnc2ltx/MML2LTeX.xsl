@@ -25,9 +25,34 @@
 -->
   </xsl:variable>
 
+  <xsl:template name="protect">
+    <xsl:choose>
+       <xsl:when test="ancestor::*[@protecting='true']">
+            <xsl:text>\protect </xsl:text>
+       </xsl:when>
+       <xsl:otherwise>
+       </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+
 
   <xsl:template match="mml:math">
+
+       <xsl:variable name="protect">
+          <xsl:choose>
+             <xsl:when test="count(ancestor::html:sectiontitle)='1'">
+                <xsl:text>true</xsl:text>
+             </xsl:when>
+             <xsl:otherwise>
+                <xsl:text>false</xsl:text>
+             </xsl:otherwise>
+          </xsl:choose>
+       </xsl:variable>
+
        <xsl:variable name="the-math">
+         <math-with-attributes protecting="{$protect}">
+
         <xsl:choose>
            <xsl:when test="count(*)=1">
                <sw-domath><xsl:copy-of select="@*"/><xsl:copy-of select="*"/></sw-domath>
@@ -44,14 +69,38 @@
              </xsl:choose>
            </xsl:otherwise>
         </xsl:choose>
+        </math-with-attributes>
      </xsl:variable>
      <xsl:apply-templates select="exsl:node-set($the-math)"/>
   </xsl:template>
 
+
+  <xsl:template match="math-with-attributes">
+     <xsl:apply-templates/>
+  </xsl:template>
+
+
   <xsl:template match="mml:menclose">
     <xsl:choose>
       <xsl:when test="@notation='box'">
-        \fbox{<xsl:apply-templates/>}
+        <xsl:choose>
+          <xsl:when test="@type='fbox'">
+            <xsl:text>\fbox{</xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+          <xsl:when test="@type='frame'">
+            <xsl:text>\frame{</xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text>}</xsl:text>
+           </xsl:when>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:when test="@notation='roundedbox'">
+          \fbox{<xsl:apply-templates/>}
+      </xsl:when>
+      <xsl:when test="@notation='circle'">
+          \fbox{<xsl:apply-templates/>}
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
@@ -435,26 +484,37 @@ no indent - disregarded completely
     <xsl:choose>
       <xsl:when test="@type">
         <xsl:choose>
-          <xsl:when test="@type='normalSpace'"> </xsl:when>
-          <xsl:when test="@type='requiredSpace'">\ </xsl:when>
-          <xsl:when test="@type='nonBreakingSpace'">~</xsl:when>
-          <xsl:when test="@type='emSpace'">\quad </xsl:when>
-          <xsl:when test="@type='twoEmSpace'">\qquad </xsl:when>
-          <xsl:when test="@type='thinSpace'">\thinspace </xsl:when>
-          <xsl:when test="@type='thickSpace'">\ </xsl:when>
-          <xsl:when test="@type='italicCorrectionSpace'">\/ </xsl:when>
-          <xsl:when test="@type='negativeThinSpace'">\negthinspace </xsl:when>
-          <xsl:when test="@type='zeroSpace'">{}</xsl:when>
-          <xsl:when test="@type='noIndent'">\noindent </xsl:when>
-          <xsl:when test="@type='customSpace'">\hspace<xsl:if test="@atEnd='true'">*</xsl:if> {
-            <xsl:if test="@class='stretchySpace'">\stretch{<xsl:value-of select="@flex"/>}</xsl:if>
+          <xsl:when test="@type='normalSpace'"><xsl:text> </xsl:text></xsl:when>
+          <xsl:when test="@type='requiredSpace'"><xsl:text>\ </xsl:text></xsl:when>
+          <xsl:when test="@type='nonBreakingSpace'"><xsl:text>~</xsl:text></xsl:when>
+          <xsl:when test="@type='emSpace'"><xsl:text>\quad </xsl:text></xsl:when>
+          <xsl:when test="@type='twoEmSpace'"><xsl:text>\qquad </xsl:text></xsl:when>
+          <xsl:when test="@type='thinSpace'"><xsl:text>\thinspace </xsl:text></xsl:when>
+          <xsl:when test="@type='thickSpace'"><xsl:text>\ </xsl:text></xsl:when>
+          <xsl:when test="@type='italicCorrectionSpace'"><xsl:text>\/</xsl:text></xsl:when>
+          <xsl:when test="@type='negativeThinSpace'"><xsl:text>\negthinspace </xsl:text> </xsl:when>
+          <xsl:when test="@type='zeroSpace'"><xsl:text>{}</xsl:text></xsl:when>
+          <xsl:when test="@type='noIndent'"><xsl:text>\noindent </xsl:text></xsl:when>
+          <xsl:when test="@type='customSpace'">
+             <xsl:text>\hspace</xsl:text>
+             <xsl:if test="@atEnd='true'"><xsl:text>*</xsl:text></xsl:if> {
+             <xsl:if test="@class='stretchySpace'">
+               <xsl:text>\stretch{</xsl:text>
+               <xsl:value-of select="@flex"/>
+               <xsl:text>}</xsl:text>
+             </xsl:if>
             <xsl:if test="@dim">
               <xsl:value-of select="@dim"/>
             </xsl:if>
-             }
+
+            <xsl:text>}</xsl:text>
             <xsl:if test="@fillWith">
-              <xsl:if test="@fillWith='dots'">\dotfill </xsl:if>
-              <xsl:if test="@fillWith='line'">\hrulefill </xsl:if>
+              <xsl:if test="@fillWith='dots'">
+                <xsl:text>\dotfill </xsl:text>
+              </xsl:if>
+              <xsl:if test="@fillWith='line'">
+                <xsl:text>\hrulefill </xsl:text>
+              </xsl:if>
             </xsl:if>
           </xsl:when>
         </xsl:choose>
@@ -712,23 +772,7 @@ no indent - disregarded completely
       </mml:maction>
 -->
     <xsl:choose>
-
-      <xsl:when test="$output-mode='SW-LaTeX'">
-        <xsl:choose>
-          <xsl:when test="@actiontype='toggle'">
-            <xsl:text>\FORMULA{</xsl:text>
-            <xsl:apply-templates select="./*[1]"/>
-            <xsl:text>}{</xsl:text>
-            <xsl:apply-templates select="./*[2]"/>
-            <xsl:text>}{evaluate}</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <!--xsl:text xml:space="preserve"> unexpected maction </xsl:text -->
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-
-      <xsl:when test="output-mode='Portable-LaTeX'">
+            <xsl:when test="output-mode='Portable-LaTeX'">
         <xsl:choose>
           <xsl:when test="@actiontype='toggle'">
             <xsl:choose>
@@ -748,15 +792,35 @@ no indent - disregarded completely
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
-
       <xsl:otherwise>
+      <!-- xsl:when test="$output-mode='SW-LaTeX'" -->
+        <xsl:choose>
+          <xsl:when test="@actiontype='toggle'">
+            <xsl:text>%\FORMULA{</xsl:text>
+            <xsl:apply-templates select="./*[1]"/>
+            <xsl:text>}{</xsl:text>
+            <xsl:apply-templates select="./*[2]"/>
+            <xsl:text>}{evaluate}</xsl:text>
+            <xsl:value-of select="$newline"/>
+            <xsl:text>%BeginExpansion</xsl:text>
+            <xsl:value-of select="$newline"/>
+            <xsl:apply-templates select="./*[2]"/>
+            <xsl:value-of select="$newline"/>
+            <xsl:text>%EndExpansion</xsl:text>
+            <xsl:value-of select="$newline"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <!--xsl:text xml:space="preserve"> unexpected maction </xsl:text -->
+          </xsl:otherwise>
+        </xsl:choose>
+      <!-- /xsl:when -->
       </xsl:otherwise>
     </xsl:choose>
 
   </xsl:template>
 
   <xsl:template match="mml:maction" mode="in-text">
-      <xsl:text>$</xsl:text>
+    <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
   </xsl:template>

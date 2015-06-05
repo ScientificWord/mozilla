@@ -14,6 +14,7 @@
 <!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/vcamoverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
 <!-- If an editor control is to support context menus, also need: -->
@@ -111,13 +112,14 @@
     <broadcaster id="useDiscAdjust" collapsed="false" />
   </broadcasterset>
 
+  <broadcasterset id="frameoverlayBroadcasters"/>
+
   <vbox id="units"/>
   <tabbox id="outer-box" flex="1" persist="selectedIndex">
     <tabs class="tabs-top">
     <!-- <tab label="&tabbar.layout;"      selected="0" /> -->
     <tab id="msiPlacementTab"/>
     <tab id="msiFrameTab"/>
-      <tab label="&tabbar.labeling;"   selected="0" />
       <tab label="&tabbar.items;"       selected="1" />
       <tab label="&tabbar.axes;"        selected="0" />
       <tab label="&tabbar.view;"        selected="0" />
@@ -125,102 +127,10 @@
 
     <tabpanels>
       <vbox>
-        <vbox id = "msiFrameSize"/>
-        <vbox id="msiPlacement"/>
+        <vbox id="msiFrameSize"/>
+        <vbox id="placementGroup"/>
       </vbox>
       <vbox id="msiFrame"/>
-      <!-- <tabpanel id="Layout" orient="vertical">
-        <groupbox>
-          <caption label="&defaultsizenewplot.label;"/>
-          <grid>
-            <columns>
-              <column flex="0"/>
-              <column flex="0"/>
-              <column flex="0"/>
-              <column flex="0"/>
-            </columns>
-            <rows>
-              <row>
-                <label value="&Width.label;"/> 
-                <textbox id="Width" type="number" style="width: 5em;" preference="swp.graph.HSize"/>
-                <label value="&Pixels.label;"/>
-              </row>
-              <row>
-                <label value="&Height.label;"/> 
-                <textbox id="Height" type="number" style="width: 5em;" preference="swp.graph.VSize"/>
-                <label value="&Pixels.label;"/>
-              </row>
-            </rows>
-          </grid>
-        </groupbox>
-        <groupbox>
-          <caption label="&defaultplacementnewplot.label;"/>
-          <radiogroup id="graphPlacement" preference="swp.graph.Placement">
-          <hbox flex="1">
-            <vbox>
-              <radio id="inline" value="inlne" label="&Inline.label;" name="Placement" oncommand="checkEnableFloating();"/>
-            </vbox>
-            <vbox>
-              <radio id="display" value="display" label="&Displayed.label;" name="Placement" oncommand="checkEnableFloating();"/>
-            </vbox>
-            <vbox>
-              <radio id="float" value="float" label="&Floating.label;" name="Placement" oncommand="checkEnableFloating();"/>
-              <vbox>
-                <checkbox id="placeForceHereCheck" label="&ForceHere.label;" />
-                <checkbox id="placeHereCheck" label="&Here.label;" />
-                <checkbox id="placeFloatsCheck" label="&OnPageOfFloats.label;"/>
-                <checkbox id="placeTopCheck" label="&TopOfPage.label;" />
-                <checkbox id="placeBottomCheck" label="&BottomOfPage.label;" />
-              </vbox>
-            </vbox>
-            <vbox>
-              <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
-                <radio id="hereLeftRadio" label="&Left.label;" value="left" observes="herePlacement" />
-                <radio id="hereRightRadio" label="&Right.label;" value="right" observes="herePlacement"/>
-                <radio id="hereInsideRadio" label="&Inside.label;" value="inside" observes="herePlacement" />
-                <radio id="hereOutsideRadio" label="&Outside.label;" value="outside" observes="herePlacement" />
-                <radio id="hereFullWidthRadio" label="&FullWidth.label;" value="full" observes="herePlacement" />
-              </radiogroup>
-            </vbox>
-          </hbox>
-          </radiogroup>
-        </groupbox>
-      </tabpanel>       -->
-
-      <vbox id="Labelling">
-        <vbox>
-          <groupbox>        
-            <label value="&labelingkey.label;"/>
-            <textbox id="Key" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
-              forcecomplete="true"
-              completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
-              tooltiptext="&labelingkey.tooltip;"
-              maxrows="3"
-              onfocus="this.select()"
-              oninput="tagConflicts();"
-              ontextentered="tagConflicts();" />
-            <label id="uniquekeywarning" hidden="true">
-                &KeyNameConflict.label;</label>
-          </groupbox>
-          <groupbox>        
-            <label value="&labelingname.label;"/>
-            <textbox id="Name"/>
-          </groupbox>
-          <groupbox>
-            <caption label="&labelingcaption.label;"/>
-            <radiogroup id="captionplacement" orient="horizontal">
-              <radio label="&labelingnone.label;" value="labelnone" selected="false" />
-              <radio label="&labelingabove.label;"    value="labelabove" selected="false"/>
-              <radio label="&labelingbelow.label;"    value="labelbelow" selected="true"/>
-            </radiogroup>
-          </groupbox>
-          <groupbox style="height: 2.5in;">
-            <caption value="Caption"/>
-            <editor id="captionText" editortype="html" type="content" height="2in"
-              context="msiEditorContentContext" width="5in" flex="1"/>   
-          </groupbox>       
-       </vbox>
-      </vbox>   
          
       <vbox id="ItemsPlotted">
         <vbox>

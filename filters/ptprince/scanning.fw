@@ -854,8 +854,9 @@ bool ScanKeyword(String str, TokenList* pList)
             InputStack::Putback(CurTok());
             if (tl -> size() != 0){
                InputStack::Putback(*tl);
+            } else {
+               delete tl;
             }
-            delete tl;
             return false;
          }
          // If we get here CurCmdCode() ==

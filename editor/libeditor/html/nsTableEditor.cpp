@@ -1850,6 +1850,9 @@ nsHTMLEditor::SelectAllTableCells()
 {
   nsCOMPtr<nsIDOMElement> cell;
   nsresult res = GetElementOrParentByTagName(NS_LITERAL_STRING("td"), nsnull, getter_AddRefs(cell));
+  if (!cell) {
+    res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtd"), nsnull, getter_AddRefs(cell));
+  }
   if (NS_FAILED(res)) return res;
   
   // Don't fail if we didn't find a cell
@@ -1860,6 +1863,9 @@ nsHTMLEditor::SelectAllTableCells()
   // Get parent table
   nsCOMPtr<nsIDOMElement> table;
   res = GetElementOrParentByTagName(NS_LITERAL_STRING("table"), cell, getter_AddRefs(table));
+  if (!table) {
+    res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), cell, getter_AddRefs(table));
+  }
   if (NS_FAILED(res)) return res;
   if(!table) return NS_ERROR_NULL_POINTER;
 
@@ -3842,7 +3848,7 @@ nsHTMLEditor::IsEmptyCell(nsIDOMElement *aCell)
 {
   nsCOMPtr<nsIDOMNode> cellChild;
 
-  // Check if target only contains empty text node or <br>
+  // Check if target only contains empty text or paragraph node or <br>
   nsresult res = aCell->GetFirstChild(getter_AddRefs(cellChild));
   if (NS_FAILED(res)) return PR_FALSE;
 
@@ -3859,7 +3865,7 @@ nsHTMLEditor::IsEmptyCell(nsIDOMElement *aCell)
       // Or check if no real content
       if (!isEmpty)
       {
-        res = IsEmptyNode(cellChild, &isEmpty, PR_FALSE, PR_FALSE);
+        res = IsEmptyNode(cellChild, &isEmpty, PR_TRUE, PR_FALSE);
         if (NS_FAILED(res)) return PR_FALSE;
       }
 

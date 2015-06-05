@@ -4,16 +4,97 @@
 
   The funny spacing and line breaks come from the need to keep the XSL from putting blank lines in the
   generated TeX. This could be done by having each template definition all on one line, but that would be
-  unreadable. The compromise is to make all of most of the line breaks in this document fall *inside* the 
+  unreadable. The compromise is to make all of most of the line breaks in this document fall *inside* the
   xsl tags. This is why many lines start with the ">" character. -->
 
-<xsl:stylesheet version="1.1" 
+<xsl:stylesheet version="1.1"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
     xmlns:msi="http://www.sciword.com/namespaces/sciword"
     xmlns:exsl="http://exslt.org/common">
+
+<xsl:variable name="newline">
+   <!-- xsl:text>&#xA;</xsl:text -->
+   <xsl:text>\MsiNewline</xsl:text>
+</xsl:variable>
+
+<xsl:variable name="blankline">
+   <!-- xsl:value-of select="$newline"/><xsl:value-of select="$newline"/ -->
+   <xsl:text>\MsiBlankline</xsl:text>
+</xsl:variable>
+
+
+
+<xsl:variable name="char-info.tr">
+    <char-table>
+       <char unicode="&#x03B1;" latex="\alpha"/>
+       <char unicode="&#x03B2;" latex="\beta"/>
+              <char unicode="&#x03B3;" latex="\gamma"/>
+       <char unicode="&#x03B4;" latex="\delta"/>
+       <char unicode="&#x03B5;" latex="\epsilon"/>
+       <char unicode="&#x03B6;" latex="\zeta"/>
+       <char unicode="&#x03B7;" latex="\eta"/>
+       <char unicode="&#x03B8;" latex="\theta"/>
+       <char unicode="&#x03B9;" latex="\iota"/>
+       <char unicode="&#x03BA;" latex="\kappa"/>
+       <char unicode="&#x03BB;" latex="\lambda"/>
+       <char unicode="&#x03BC;" latex="\mu"/>
+       <char unicode="&#x03BD;" latex="\nu"/>
+       <char unicode="&#x03BE;" latex="\xi"/>
+       <!-- char unicode="&#x03BF;" latex="\omicron"/ -->
+       <char unicode="&#x03C0;" latex="\pi"/>
+       <char unicode="&#x03C1;" latex="\rho"/>
+       <char unicode="&#x03C3;" latex="\sigma"/>
+       <char unicode="&#x03C4;" latex="\tau"/>
+       <char unicode="&#x03C5;" latex="\upsilon"/>
+       <char unicode="&#x03C6;" latex="\phi"/>
+       <char unicode="&#x03C7;" latex="\chi"/>
+       <char unicode="&#x03C8;" latex="\psi"/>
+       <char unicode="&#x03C9;" latex="\omega"/>
+
+       <char unicode="&#x0393;" latex="\Gamma"/>
+       <char unicode="&#x0394;" latex="\Delta"/>
+       <char unicode="&#x0398;" latex="\Theta"/>
+       <char unicode="&#x039B;" latex="\Lambda"/>
+       <char unicode="&#x039E;" latex="\Xi"/>
+       <char unicode="&#x03A0;" latex="\Pi"/>
+       <char unicode="&#x03A3;" latex="\Sigma"/>
+       <char unicode="&#x03A5;" latex="\Upsilon"/>
+       <char unicode="&#x03A6;" latex="\Phi"/>
+       <char unicode="&#x03A8;" latex="\Psi"/>
+       <char unicode="&#x03A9;" latex="\Omega"/>
+
+       <char unicode="&#x2A00;" latex="\bigodot" />
+       <char unicode="&#x2A02;" latex="\bigotimes" />
+       <char unicode="&#x2A04;" latex="\tbiguplus"/>
+       <char unicode="&#x2A06;" latex="\bigsqcup"/>
+       <char unicode="&#x2A0C;" latex="\iiiint" />
+       <char unicode="&#x22C3;" latex="\tbigcup"/>
+    </char-table>
+</xsl:variable>
+
+<xsl:variable name="char-info" select="exsl:node-set($char-info.tr)"/>
+
+<!-- if the context is something you want stuffed between [...] call
+     this -->
+
+<xsl:template name="optional">
+
+   <xsl:variable name="content">
+     <xsl:value-of select="."/>
+   </xsl:variable>
+
+   <xsl:if test="string-length($content)!='0'">
+     <xsl:text>[</xsl:text>
+     <xsl:value-of select="."/>
+     <xsl:text>]</xsl:text>
+   </xsl:if>
+</xsl:template>
+
+
+
 
 <xsl:param name="endnotes" select="count(//html:endnotes[@val='end'])"/>
 <xsl:param name="footnotecount" select="count(//html:note[@type='footnote'])"/>
@@ -29,8 +110,10 @@
 </xsl:param>
 
 <xsl:output method="text" encoding="UTF-8"/>
+
 <xsl:strip-space elements="*"/>
-<xsl:preserve-space elements="pre"/>
+
+<xsl:preserve-space elements="pre html:bodyText"/>
 
 <xsl:include href="table.xsl"/>
 <xsl:include href="graphics.xsl"/>
@@ -45,8 +128,30 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="*">%<!-- Matches everything but the root -->
+<xsl:template match="*">
+  <xsl:text>%[[[What?? </xsl:text>
+  <xsl:value-of select="name()"/>
+  <xsl:text>]]]</xsl:text>
+  <xsl:value-of select="$newline"/>
+  <!-- Matches all elements. Make it visible for now
+       so we can better catch lost cases. -->
 </xsl:template>
+
+<!-- documentclass and usepackage are handled specially by the
+     preamble code. So ignore if you see in the clear -->
+
+<xsl:template match="html:documentclass"/>
+<xsl:template match="html:sw-meta"/>
+<xsl:template match="html:usepackage"/>
+<xsl:template match="html:address"/> <!-- Gobbled by <author> -->
+<xsl:template match="html:plot"/>
+<xsl:template match="html:cursor"/>
+
+
+
+
+
+
 
 <xsl:template match="html:html">
     <xsl:apply-templates/>
@@ -54,18 +159,25 @@
 
 <xsl:template match="html:head">
   <xsl:call-template name="metadata"/>
-\documentclass<xsl:if test="//html:documentclass/@options">[<xsl:value-of select="//html:documentclass/@options"/>]</xsl:if>
-<xsl:if test="//html:colist/@*">[<xsl:for-each select="//html:colist/@*"
-    ><xsl:if test="name()!='enabled'"><xsl:value-of select="."/><xsl:if test="(position()>1) and (position()!=last())">, </xsl:if></xsl:if></xsl:for-each>]</xsl:if>{<xsl:value-of select="//html:documentclass/@class"/>}
+  <xsl:value-of select="$blankline"/>
+  <xsl:text>\documentclass</xsl:text>
+    <xsl:if test="//html:colist/@*">
+       <xsl:text>[</xsl:text>
+       <xsl:for-each select="//html:colist/@*">
+          <xsl:if test="name()!='enabled'">
+             <xsl:value-of select="."/>
+             <xsl:if test="(position()!=last()) and (string-length(normalize-space(.)) > 0)">
+               <xsl:text>, </xsl:text>
+             </xsl:if>
+          </xsl:if>
+       </xsl:for-each>
+       <xsl:text>]</xsl:text>
+     </xsl:if>
+     <xsl:text>{</xsl:text>
+     <xsl:value-of select="//html:documentclass/@class"/>
+     <xsl:text>}</xsl:text>
   <xsl:apply-templates/>
 </xsl:template>
-
-
-<!-- JCS
-<xsl:template match="html:body">
-<xsl:apply-templates/>
-</xsl:template>
--->
 
 
 
@@ -88,8 +200,8 @@
 <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:usepackage">
-\usepackage{<xsl:value-of select="@package"/>}</xsl:template>
+<!-- Usepackage is handled specially by the preamble code. So ignore it here -->
+<xsl:template match="html:usepackage"></xsl:template>
 
 <xsl:variable name="theoremenvList">
   <xsl:for-each select="//html:newtheorem">
@@ -203,7 +315,7 @@
 
 <xsl:template name="writeNewTheoremList">
   <xsl:choose>
-    <xsl:when test="$theoremenvNodeList/thmenvnode[@thmstyle and (@thmstyle!='plain')] |$sortedNeededNewTheoremsNodeList/thmenvnode[@thmstyle and (@thmstyle!='plain')]"> 
+    <xsl:when test="$theoremenvNodeList/thmenvnode[@thmstyle and (@thmstyle!='plain')] |$sortedNeededNewTheoremsNodeList/thmenvnode[@thmstyle and (@thmstyle!='plain')]">
       <xsl:for-each select="$theoremenvNodeList/thmenvnode[not(@thmstyle) or (@thmstyle='plain')] | $sortedNeededNewTheoremsNodeList/thmenvnode[not(@thmstyle) or (@thmstyle='plain')]">
         <xsl:if test="position()=1">
           <xsl:text xml:space="preserve">
@@ -246,30 +358,43 @@
 </xsl:variable>
 
 <xsl:template name="checkEndSubEquationsScope">
+
+  <xsl:variable name="n-msidisplays">
+    <xsl:value-of select="count(.//html:msidisplay)" />
+  </xsl:variable>
+
   <xsl:if test="contains($equationNumberingContainers, concat('-',local-name(.),'-'))">
-    <xsl:if test=".//html:msidisplay[last()][@subEquationNumbers='true'] 
-        and (.//html:msidisplay[last()]/ancestor::*[contains($equationNumberingContainers, concat('-',local-name(.),'-'))]=current())">
-      <xsl:text xml:space="preserve">
-\end{subequations}
-</xsl:text>
+    <xsl:if test="descendant::html:msidisplay[last()][@subEquationNumbers='true']
+        and (descendant::html:msidisplay[last()]/ancestor::*[contains($equationNumberingContainers, concat('-',local-name(.),'-'))][1]=current())">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\end{subequations}</xsl:text>
     </xsl:if>
   </xsl:if>
+
 </xsl:template>
 
 <xsl:template match="html:body">
-<!--\input tcilatex.tex  
-should not be done under some conditions -->
-<xsl:if test="count(//html:indexitem) &gt; 0"
-  >\makeindex</xsl:if>
-\begin{document}
-<xsl:apply-templates/>
-<xsl:if test="($endnotes &gt; 0) and ($footnotecount &gt; 0)">
-\theendnotes
-</xsl:if>
-<xsl:if test="$indexitems &gt; 0"
-><xsl:if test="count(//html:printindex) = 0"
->\printindex</xsl:if></xsl:if>
-\end{document}
+   <!--\input tcilatex.tex  should not be done under some conditions -->
+   <xsl:if test="count(//html:indexitem) &gt; 0">
+     <xsl:value-of select="$newline"/>
+     <xsl:text>\makeindex</xsl:text>
+   </xsl:if>
+   <xsl:value-of select="$newline"/>
+   <xsl:text>\begin{document}</xsl:text>
+   <xsl:apply-templates/>
+   <xsl:if test="($endnotes &gt; 0) and ($footnotecount &gt; 0)">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\theendnotes </xsl:text>
+   </xsl:if>
+   <xsl:if test="$indexitems &gt; 0">
+     <xsl:if test="count(//html:printindex) = 0">
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\printindex </xsl:text>
+     </xsl:if>
+   </xsl:if>
+   <xsl:call-template name="checkEndSubEquationsScope"/>
+   <xsl:value-of select="$newline"/>
+   <xsl:text>\end{document}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:printindex">
@@ -279,63 +404,98 @@ should not be done under some conditions -->
 <xsl:template match="html:br[@hard='1']">~\\
 </xsl:template>
 
+<!-- use version in spaces.xsl
 <xsl:template match="html:msibr">~\\
 </xsl:template>
+-->
 
-
-<xsl:template match="html:br"
-></xsl:template>
-
-<xsl:template match="html:verbatim/html:br"><xsl:text>
-</xsl:text>
+<xsl:template match="html:br|mml:br">
+  <xsl:value-of select="$newline"/>
 </xsl:template>
 
-<xsl:template match="html:title">
-\title{<xsl:apply-templates />}<xsl:text/>
+<xsl:template match="html:br" mode="verb">
+  <xsl:value-of select="$newline"/>
 </xsl:template>
 
 <xsl:template match="html:author">
- \author{<xsl:apply-templates mode="frontmatter"/>
-   <xsl:if test="../html:address">~\\</xsl:if>
-   <xsl:apply-templates select="../html:address" mode="frontmatter" />
- }</xsl:template>  
- <!-- for the sake of the above template, -->
- <xsl:template match="html:msibr" mode="frontmatter">~\\
+  <xsl:if test="not (preceding-sibling::html:author)">
+     <xsl:value-of select="$newline"/>
+     <xsl:text>\author{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:if test="name(following-sibling::*[1])='address'">
+       <xsl:text>~\\</xsl:text>
+       <xsl:value-of select="$newline"/>
+       <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
+     </xsl:if>
+     <xsl:apply-templates select="following-sibling::html:author" mode="building-author" />
+     <xsl:text>}</xsl:text>
+  </xsl:if>
 </xsl:template>
 
-<!-- Special handling for footnotes in front matter tags          
+<xsl:template match="html:address" mode="frontmatter">
+   <xsl:apply-templates  mode="frontmatter"/>
+</xsl:template>
+
+
+<!-- for the sake of the above template, -->
+<xsl:template match="html:msibr" mode="frontmatter">
+  <xsl:text>~\\</xsl:text>
+  <xsl:value-of select="$newline"/>
+</xsl:template>
+
+<xsl:template match="html:author" mode="building-author">
+ \and <xsl:apply-templates mode="frontmatter"/>
+  <xsl:if test="name(following-sibling::*[1])='address'">~\\
+    <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
+  </xsl:if>
+</xsl:template>
+
+
+
+<!-- Special handling for footnotes in front matter tags
  -->
 
- <xsl:template match="html:note[@type='footnote']" mode="frontmatter">
-  \thanks{<xsl:apply-templates/>}
- </xsl:template>
+<xsl:template match="html:note[@type='footnote']" mode="frontmatter">\thanks{<xsl:apply-templates/>}</xsl:template>
 
- <xsl:template match="html:abstract">
-\begin{abstract}
-<xsl:apply-templates/>
-\end{abstract}
+<xsl:template match="html:abstract">
+    <xsl:value-of select="$newline"/>
+    <xsl:text>\begin{abstract}</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>\end{abstract}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:maketitle">
-\maketitle
+   <xsl:value-of select="$newline"/>
+   <xsl:text>\maketitle</xsl:text>
+   <xsl:value-of select="$newline"/>
 </xsl:template>
 
 <xsl:template name="maketables">
 <!--  \tableofcontents <xsl:text/>
-  <xsl:if test="//html:lof">\listoffigures</xsl:if>
-  <xsl:if test="//html:lot">\listoftables</xsl:if> -->
+   <xsl:if test="//html:lof">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\listoffigures</xsl:text>
+   </xsl:if>
+   <xsl:if test="//html:lot">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\listoftables</xsl:text>
+   </xsl:if> -->
 </xsl:template>
 
 <xsl:template match="html:maketoc">
-\tableofcontents <xsl:text/>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\tableofcontents</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:makelof">
-\listoffigures <xsl:text/>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\listoffigures</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:makelot">
-\listoftables <xsl:text/>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\listoftables</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:date">
@@ -377,34 +537,66 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:section">
-<xsl:apply-templates/>
-<xsl:call-template name="checkEndSubEquationsScope"/>
+  <xsl:apply-templates/>
+  <xsl:call-template name="checkEndSubEquationsScope"/>
 </xsl:template>
 
 <xsl:template match="html:subsection">
-<xsl:apply-templates/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:subsubsection">
-<xsl:apply-templates/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:paragraph">
-<xsl:apply-templates/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:subparagraph">
-<xsl:apply-templates/>
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:bodyText|mml:bodyText" mode="verb">
+   <xsl:apply-templates mode="verb"/>
 </xsl:template>
 
 
-<xsl:template match="html:bodyText">
+<xsl:template match="html:bodyText|mml:bodyText">
+   <xsl:variable name="content">
+     <!-- xsl:value-of select="."/ -->
+     <xsl:apply-templates />
+   </xsl:variable>
   <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
     <xsl:call-template name="maketables" />
   </xsl:if>
-<xsl:apply-templates/>
-<xsl:if test="position()!=last()">\par </xsl:if>
+  <xsl:if test="position()!=last or string-length($content) != '0'">
+    <xsl:apply-templates/>
+  </xsl:if>
+  <xsl:if test="position()!=last()">
+     <xsl:value-of select="$blankline"/>
+  </xsl:if>
 </xsl:template>
+
+<xsl:template match="html:bodyText" mode="inner">
+  <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
+    <xsl:call-template name="maketables" />
+  </xsl:if>
+  <xsl:apply-templates/>
+  <xsl:if test="position()!=last()">
+     <xsl:text>\par </xsl:text>
+   </xsl:if>
+</xsl:template>
+
+<xsl:template match="html:bodyText" mode="frontmatter">
+  <xsl:apply-templates/>
+  <xsl:if test="position()!=last()">
+     <xsl:text>\\</xsl:text>
+     <xsl:value-of select="$newline"/>
+  </xsl:if>
+</xsl:template>
+
+
 <xsl:template match="html:bodyMath">
   <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
     <xsl:call-template name="maketables" />
@@ -416,32 +608,60 @@ should not be done under some conditions -->
 
 
 <xsl:template match="html:sectiontitle">
-<xsl:if test="name(..)='part'">
-\part<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='chapter'">
-\chapter<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='section'">
-\section<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='subsection'">
-\subsection<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='subsubsection'">
-\subsubsection<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='paragraph'">
-\paragraph<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
-<xsl:if test="name(..)='subparagraph'">
-\subparagraph<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
-</xsl:if>
+   <xsl:value-of select="$blankline"/>
+   <xsl:choose>
+      <xsl:when test="name(..)='part'">
+         <xsl:text>\part</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='chapter'">
+         <xsl:text>\chapter</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='section'">
+         <xsl:text>\section</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='subsection'">
+         <xsl:text>\subsection</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='subsubsection'">
+         <xsl:text>\subsubsection</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='paragraph'">
+         <xsl:text>\paragraph</xsl:text>
+      </xsl:when>
+
+      <xsl:when test="name(..)='subparagraph'">
+         <xsl:text>\subparagraph</xsl:text>
+      </xsl:when>
+
+    </xsl:choose>
+    <xsl:if test="../@nonum='true'">
+       <xsl:text>*</xsl:text>
+    </xsl:if>
+    <xsl:apply-templates mode="shortTitle"/>
+    <xsl:text>{</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="$newline"/>
 </xsl:template>
 
+<xsl:template match="html:title">
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\title</xsl:text>
+  <xsl:apply-templates mode="shortTitle"/>
+  <xsl:text>{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
+</xsl:template>
 
 <xsl:template match="html:sectiontitle/html:shortTitle"></xsl:template>
 <xsl:template match="html:sectiontitle//text()" mode="shortTitle"></xsl:template>
+<xsl:template match="html:title/html:shortTitle"></xsl:template>
+<xsl:template match="html:title//text()" mode="shortTitle"></xsl:template>
 <xsl:template match="html:shortTitle" mode="shortTitle">[<xsl:apply-templates/>]</xsl:template>
 
 
@@ -516,9 +736,29 @@ should not be done under some conditions -->
 \end{<xsl:value-of select="$tagnameToUse"/>}
 </xsl:template>
 
+<xsl:template match="html:environment">
+  <xsl:text>\begin{</xsl:text>
+  <xsl:value-of select="@type"/>
+  <xsl:text>}</xsl:text>
+  <xsl:if test="@param">
+    <xsl:text>{</xsl:text>
+      <xsl:value-of select="@param"/>
+    <xsl:text>}</xsl:text>
+  </xsl:if>
+  <xsl:apply-templates mode="envleadin"/>
+  <xsl:apply-templates/>
+  <xsl:text>\end{</xsl:text>
+  <xsl:value-of select="@type"/>
+  <xsl:text>}</xsl:text>
+</xsl:template>
+
+
 <xsl:template match="html:proof">
-\begin{proof}<xsl:apply-templates mode="envleadin"/>
-<xsl:apply-templates/>\end{proof}\par
+  <xsl:text>\begin{proof}</xsl:text>
+  <xsl:apply-templates mode="envleadin"/>
+  <xsl:apply-templates/>
+  <xsl:text>\end{proof}</xsl:text>
+  <xsl:value-of select="$blankline"/>
 </xsl:template>
 
 <xsl:template match="html:envLeadIn"></xsl:template>
@@ -530,60 +770,103 @@ should not be done under some conditions -->
 </xsl:template>
 
 
-<xsl:template match="html:numberedlist"><xsl:if test="*">
-\begin{enumerate}
-<xsl:apply-templates/>
-\end{enumerate}</xsl:if>
+<xsl:template match="html:numberedlist">
+  <xsl:if test="*">
+    <xsl:text>\begin{enumerate}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:apply-templates/>
+    <xsl:text>\end{enumerate}</xsl:text>
+    <xsl:value-of select="$newline"/>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:bulletlist">
-<xsl:if test="*">
-\begin{itemize}
-<xsl:apply-templates/>
-\end{itemize}
-</xsl:if>
+  <xsl:if test="*">
+    <xsl:text>\begin{itemize}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:apply-templates/>
+    <xsl:text>\end{itemize}</xsl:text>
+    <xsl:value-of select="$newline"/>
+  </xsl:if>
 </xsl:template>
 
-<xsl:template match="html:descriptionlist"><xsl:if test="*">
-\begin{description}
-<xsl:apply-templates/>
-\end{description}</xsl:if>
+<xsl:template match="html:descriptionlist">
+   <xsl:if test="*">
+     <xsl:text>\begin{description}</xsl:text>
+     <xsl:value-of select="$newline"/>
+     <xsl:apply-templates/>
+     <xsl:text>\end{description}</xsl:text>
+   </xsl:if>
 </xsl:template>
+
 
 <xsl:template match="html:numberedListItem">
-\item <xsl:apply-templates/>
+
+   <xsl:text>\item </xsl:text>
+   <xsl:apply-templates/>
+   <xsl:if test="position() != last()">
+     <xsl:value-of select="$blankline"/>
+   </xsl:if>
 </xsl:template>
 
+<!-- If we have an optional argument that contains a ] then we add {...} to make sure that
+     we don't accidently close the opening [ of the optional argument -->
+
 <xsl:template match="html:numberedLabel">
-  [<xsl:apply-templates/>]
+  <xsl:variable name="theLabel">
+    <xsl:apply-templates/>
+  </xsl:variable>
+  <xsl:variable name="theText">
+    <xsl:value-of select="$theLabel"/>
+  </xsl:variable>
+  <xsl:text>[</xsl:text>
+  <xsl:choose>
+     <xsl:when test="contains($theText, ']')" >
+        <xsl:text>{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+     </xsl:when>
+     <xsl:otherwise>
+        <xsl:apply-templates/>
+     </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text>]</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:bulletListItem">
-\item <xsl:apply-templates/>
+  <xsl:text>\item </xsl:text>
+   <xsl:apply-templates/>
+   <xsl:if test="position() != last()">
+     <xsl:value-of select="$blankline"/>
+   </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:bulletLabel">
-  [<xsl:apply-templates/>]
+  <xsl:call-template name="optional"/>
 </xsl:template>
 
 <xsl:template match="html:descriptionListItem">
-\item <xsl:apply-templates/>
+  <xsl:text>\item </xsl:text>
+   <xsl:apply-templates/>
+   <xsl:if test="position() != last()">
+     <xsl:value-of select="$blankline"/>
+   </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:descriptionLabel">
-  [<xsl:apply-templates/>]
+  <xsl:call-template name="optional"/>
+  <!-- [<xsl:apply-templates/>] -->
 </xsl:template>
 
 <xsl:template match="html:citation">
 <xsl:choose>
   <xsl:when test="@nocite='true'">\nocite</xsl:when>
-  <xsl:otherwise>\cite</xsl:otherwise>
-</xsl:choose>
-<xsl:if test="@hasRemark='true'">[<xsl:apply-templates select="html:biblabel"/>]</xsl:if
->{<xsl:value-of select="@citekey"/>}
-</xsl:template>
+  <xsl:otherwise>\cite</xsl:otherwise></xsl:choose>
+<xsl:if test="@hasRemark='true'"><xsl:apply-templates select="html:biblabel"/></xsl:if>{<xsl:value-of select="@citekey"/>}</xsl:template>
 
+<!-- biblabe defined below
 <xsl:template match="html:biblabel"><xsl:apply-templates/></xsl:template>
+-->
 
 <xsl:template match="html:bibtexbibliography">\bibliographystyle{<xsl:value-of select="@styleFile"/>}
 \bibliography{<xsl:value-of select="@databaseFile"/>}
@@ -593,18 +876,17 @@ should not be done under some conditions -->
   <xsl:choose>
     <xsl:when test="@req='varioref'">
       <xsl:choose>
-        <xsl:when test="@reftype='page'">\vpageref{<xsl:value-of select="@key"/>}\xspace%%</xsl:when>
-        <xsl:otherwise>\vref{<xsl:value-of select="@key"/>}\xspace%%</xsl:otherwise>
+        <xsl:when test="@reftype='page'">\vpageref{<xsl:value-of select="@key"/>}</xsl:when>
+        <xsl:otherwise>\vref{<xsl:value-of select="@key"/>}</xsl:otherwise>
       </xsl:choose>
     </xsl:when>
     <xsl:otherwise>
       <xsl:choose>
-        <xsl:when test="@reftype='page'">\pageref{<xsl:value-of select="@key"/>}\xspace%%</xsl:when>
-        <xsl:otherwise>\ref{<xsl:value-of select="@key"/>}\xspace%%</xsl:otherwise>
+        <xsl:when test="@reftype='page'">\pageref{<xsl:value-of select="@key"/>}</xsl:when>
+        <xsl:otherwise>\ref{<xsl:value-of select="@key"/>}</xsl:otherwise>
       </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
-  
 </xsl:template>
 
 
@@ -613,40 +895,66 @@ should not be done under some conditions -->
 <xsl:template match="html:terspec">@<xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:indexitem">
-\index<xsl:if test="@pri"
-  >{<xsl:value-of select="@pri"/><xsl:apply-templates select="html:prispec"/></xsl:if
-  ><xsl:if test="@sec">!<xsl:value-of select="@sec"/><xsl:apply-templates select="html:secspec"/></xsl:if
-  ><xsl:if test="@ter">!<xsl:value-of select="@ter"/><xsl:apply-templates select="html:terspec"/></xsl:if
-  ><xsl:if test="@xreftext">|see {<xsl:value-of select="@reftext"/>}</xsl:if
-  ><xsl:if test="@pnformat='bold'">|textbf</xsl:if
-  ><xsl:if test="@pnformat='italics'">|textit</xsl:if>}
+  <xsl:text>\index</xsl:text>
+  <xsl:text>{</xsl:text>
+  <xsl:if test="@pri">
+    <xsl:value-of select="@pri"/>
+    <xsl:apply-templates select="html:prispec"/>
+  </xsl:if>
+  <xsl:if test="@sec">
+    <xsl:text>!</xsl:text>
+    <xsl:value-of select="@sec"/>
+    <xsl:apply-templates select="html:secspec"/>
+  </xsl:if>
+  <xsl:if test="@ter">
+    <xsl:text>!</xsl:text>
+    <xsl:value-of select="@ter"/>
+    <xsl:apply-templates select="html:terspec"/>
+  </xsl:if>
+  <xsl:if test="@enc">
+    <xsl:text>|</xsl:text>
+    <xsl:value-of select="@enc"/>
+  </xsl:if>
+  <xsl:text>}</xsl:text>
 </xsl:template>
-  
 
-<xsl:template match="html:notewrapper"><xsl:apply-templates/></xsl:template>
-  
+<xsl:template match="html:notewrapper">
+  <xsl:apply-templates/>
+</xsl:template>
+
 
 <xsl:template match="html:note[@type='footnote']">
-  
-<xsl:variable name="markOrText" select="parent::html:notewrapper/@markOrText" />
-<xsl:variable name="overrideNumber" select="parent::html:notewrapper/@footnoteNumber" />
-<xsl:choose>
-  <xsl:when test="$endnotes &gt; 0">\protect\endnote</xsl:when>
-  <xsl:when test="$markOrText='textOnly'">\protect\footnotetext</xsl:when>
-  <xsl:when test="$markOrText='markOnly'">\protect\footnotemark</xsl:when>
-  <xsl:otherwise>\protect\footnote</xsl:otherwise>
-</xsl:choose>
-<xsl:if test="$overrideNumber"><xsl:text>[</xsl:text><xsl:value-of select="$overrideNumber"/><xsl:text>]</xsl:text></xsl:if>
-<xsl:if test="not($markOrText='markOnly')">
-<xsl:text>{</xsl:text>
-<xsl:apply-templates/>
-<xsl:text xml:space="preserve">}
-</xsl:text>
-</xsl:if>
+
+  <xsl:variable name="markOrText" select="parent::html:notewrapper/@markOrText" />
+
+  <xsl:variable name="overrideNumber" select="parent::html:notewrapper/@footnoteNumber" />
+
+  <xsl:choose>
+    <xsl:when test="$endnotes &gt; 0">\protect\endnote</xsl:when>
+    <xsl:when test="$markOrText='textOnly'">\protect\footnotetext</xsl:when>
+    <xsl:when test="$markOrText='markOnly'">\protect\footnotemark</xsl:when>
+    <xsl:otherwise>
+      <xsl:text>\protect\footnote</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+
+  <xsl:if test="$overrideNumber">
+    <xsl:text>[</xsl:text>
+    <xsl:value-of select="$overrideNumber"/>
+    <xsl:text>]</xsl:text>
+  </xsl:if>
+
+  <xsl:if test="not($markOrText='markOnly')">
+    <xsl:text>{</xsl:text>
+    <xsl:apply-templates mode="inner"/>
+    <xsl:text >}</xsl:text>
+  </xsl:if>
 </xsl:template>
 
-<xsl:template match="html:note">\marginpar{<xsl:apply-templates/>}
-  
+<xsl:template match="html:note">
+   <xsl:text>\marginpar{</xsl:text>
+   <xsl:apply-templates/>
+   <xsl:text>}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:note//html:bodyText[position()=last()]">
@@ -658,13 +966,13 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:verbatim">
-  
-\begin{verbatim}
-<xsl:apply-templates/>
-\end{verbatim}
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\begin{verbatim}</xsl:text>
+  <xsl:apply-templates mode="verb"/>
+  <xsl:text>\end{verbatim}</xsl:text>
 </xsl:template>
 
-<xsl:template match="html:shortQuote"> 
+<xsl:template match="html:shortQuote">
 \begin{quote}
 <xsl:apply-templates/>
 \end{quote}
@@ -672,7 +980,7 @@ should not be done under some conditions -->
 
 
 <xsl:template match="html:longQuotation">
-  
+
 \begin{quotation}
 <xsl:apply-templates/>
 \end{quotation}
@@ -685,7 +993,7 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:hebrew">
-  
+
 \begin{hebrew}
 <xsl:apply-templates/>
 \end{hebrew}
@@ -710,25 +1018,22 @@ should not be done under some conditions -->
 <xsl:template match="html:p">\par<xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates
-  />}</xsl:template>
-<xsl:template match="html:bold">\textbf{<xsl:apply-templates
-  />}</xsl:template>
-<xsl:template match="html:italics">\textit{<xsl:apply-templates
-  />}</xsl:template>
+<xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:bold | mml:bold">\textbf{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:italics | mml:italics">\textit{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:smallbox">\fbox{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:roman">\textrm{<xsl:apply-templates
+<xsl:template match="html:roman | mml:roman">\textrm{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:sansSerif">\textsf{<xsl:apply-templates
+<xsl:template match="html:sansSerif | mml:sansSerif">\textsf{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:slanted">\textsl{<xsl:apply-templates
+<xsl:template match="html:slanted | mml:slanted">\textsl{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:smallCaps">\textsc{<xsl:apply-templates
+<xsl:template match="html:smallCaps | mml:smallCaps">\textsc{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:typewriter">\texttt{<xsl:apply-templates
+<xsl:template match="html:typewriter | mml:typewriter">\texttt{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:emphasized">\emph{<xsl:apply-templates
+<xsl:template match="html:emphasized | mml:emphasized">\emph{<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:upper">\uppercase{<xsl:apply-templates
   />}</xsl:template>
@@ -796,8 +1101,11 @@ should not be done under some conditions -->
     <xsl:when test=".='max'">\max </xsl:when>
     <xsl:when test=".='sin'">\sin </xsl:when>
     <xsl:when test=".='tanh'">\tanh </xsl:when>
-    <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>	
+    <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>
 	</xsl:choose>
+</xsl:template>
+<xsl:template match="mml:mi[@msiunit='true']">
+  \ensuremath{\operatorname{<xsl:apply-templates/>}}
 </xsl:template>
 <xsl:template match="html:large">{\large <xsl:apply-templates
   />}</xsl:template>
@@ -848,16 +1156,18 @@ should not be done under some conditions -->
 </xsl:if>
 </xsl:template>
 
-<xsl:template match="html:TBLabel">{<xsl:apply-templates/>}  
+<xsl:template match="html:TBLabel">{<xsl:apply-templates/>}
 </xsl:template>
 
-<xsl:template match="html:TBTeX">{<xsl:apply-templates/>}%  
+<xsl:template match="html:TBTeX">{<xsl:apply-templates/>}%
 %BeginExpansion
 <xsl:apply-templates/>
 %EndExpansion
 </xsl:template>
 
-<xsl:template match="html:explicit-item">[<xsl:apply-templates/>]  
+<xsl:template match="html:explicit-item">
+  <xsl:call-template name="optional"/>
+ <!--  [<xsl:apply-templates/>]  -->
 </xsl:template>
 
 <xsl:template match="html:a">\href{<xsl:value-of select="@href"/>}
@@ -868,11 +1178,11 @@ should not be done under some conditions -->
 
 <xsl:template match="a">\ref{<xsl:apply-templates/>}</xsl:template>
 
-<xsl:template match="html:requestimplementation">[ NEED TO IMPLEMENT: \verb+<xsl:apply-templates/>+] 
+<xsl:template match="html:requestimplementation">[ NEED TO IMPLEMENT: \verb+<xsl:apply-templates/>+]
 </xsl:template>
 
 <xsl:template match="html:Note">
-  
+
 \begin{Note}
 <xsl:apply-templates/>
 \end{Note}
@@ -880,7 +1190,7 @@ should not be done under some conditions -->
 
 
 <xsl:template match="html:GrayBox">
-  
+
 \begin{GrayBox}
 <xsl:apply-templates/>
 \end{GrayBox}
@@ -894,7 +1204,7 @@ should not be done under some conditions -->
 </xsl:template>
 
 
-<xsl:template match="html:QTR">\QTR{<xsl:value-of select="@type"/>}{<xsl:apply-templates/>} 
+<xsl:template match="html:QTR">\QTR{<xsl:value-of select="@type"/>}{<xsl:apply-templates/>}
 </xsl:template>
 
 <!-- Just send Body Math through without additional markup -->
@@ -913,22 +1223,47 @@ should not be done under some conditions -->
 </xsl:template>
 
 <!-- labels -->
-<xsl:template match="html:a[@name]">\label{<xsl:value-of select="@name"/>}</xsl:template> 
+<xsl:template match="html:a[@name]">\label{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:texb">
   <xsl:if test="not(@pre) or (@pre='0')" >
     <xsl:if test="@enc='1'">
-%TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates mode="texcomment"/>}}%
-<!-- %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>} -->
-%BeginExpansion
+      <!-- add newline if needed -->
+      <xsl:variable name="next">
+         <xsl:value-of select="preceding-sibling::*[last()]" />
+      </xsl:variable>
+      <xsl:variable name="has-newline" >
+         <xsl:value-of select="substring($next, string-length($next),1)='&#xA;'" />
+      </xsl:variable>
+      <xsl:if test="$has-newline='false'">
+         <xsl:value-of select="$newline"/>
+      </xsl:if>
+      <xsl:text>%TCIMACRO{\TeXButton{</xsl:text>
+      <xsl:value-of select="@name"/>
+      <xsl:text>}{</xsl:text>
+      <xsl:apply-templates mode="texcomment"/>
+      <xsl:text>}}%</xsl:text>
+      <!-- %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>} -->
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%BeginExpansion</xsl:text>
+      <xsl:value-of select="$newline"/>
     </xsl:if>
     <xsl:apply-templates mode="tex"/>
     <xsl:if test="@enc='1'">
-      <xsl:text>
-%EndExpansion
-      </xsl:text>
-</xsl:if>
-</xsl:if>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%EndExpansion</xsl:text>
+      <!-- add newline if needed -->
+      <xsl:variable name="next">
+         <xsl:value-of select="following-sibling::text()[1]" />
+      </xsl:variable>
+      <xsl:variable name="has-newline" >
+        <xsl:value-of select="substring($next,1,1)='&#xA;'" />
+      </xsl:variable>
+      <xsl:if test="$has-newline='false'">
+         <xsl:value-of select="$newline"/>
+      </xsl:if>
+    </xsl:if>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:bibliography">
@@ -939,8 +1274,23 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:bibitem">
-\bibitem<xsl:if test="@hasLabel='true'">[<xsl:apply-templates select="html:biblabel"/>]</xsl:if
->{<xsl:value-of select="@bibitemkey"/>} <xsl:apply-templates select="*[local-name()!='biblabel']"/>
+   <xsl:text>\bibitem </xsl:text>
+   <xsl:apply-templates/>
+   <xsl:if test="position() != last()">
+     <xsl:value-of select="$blankline"/>
+   </xsl:if>
+</xsl:template>
+
+<xsl:template match="html:bibkey">
+  <xsl:text>{</xsl:text>
+  <xsl:value-of select="."/>
+  <xsl:text>}</xsl:text>
+</xsl:template>
+
+<xsl:template match="html:biblabel">
+  <xsl:if test = "string-length(normalize-space(.)) > 0">
+    <xsl:call-template name="optional"/>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:msidisplay">
@@ -963,12 +1313,13 @@ should not be done under some conditions -->
   </xsl:if>
   <xsl:choose>
     <xsl:when test=".//mml:mtable[@type='eqnarray']">
+
     <xsl:for-each select=".//mml:mtable[@type='eqnarray'][1]">
       <xsl:call-template name="eqnarray">
         <xsl:with-param name="n-rows" select="count(./mml:mtr)" />
         <xsl:with-param name="n-labeledrows">
           <xsl:choose>
-            <xsl:when test="@numbering='none'">
+            <xsl:when test="@numbering='none' or ancestor::html:msidisplay[@numbering='none']">
               <xsl:text>0</xsl:text>
             </xsl:when>
             <xsl:when test="@alignment='alignSingleEqn'">
@@ -987,30 +1338,36 @@ should not be done under some conditions -->
           </xsl:choose>
         </xsl:with-param>
         <xsl:with-param name="n-aligns">
-          <xsl:choose>
-            <xsl:when test="(@alignment='alignCentered') or (@alignment='alignSingleEqn')">
-              <xsl:text>0</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>1</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
+        <!-- jcs I don't understand this. It seems we want to count the number of alignments.
+             <xsl:choose>
+               <xsl:when test="(@alignment='alignCentered') or (@alignment='alignSingleEqn')">
+                 <xsl:text>0</xsl:text>
+               </xsl:when>
+               <xsl:otherwise>
+                 <xsl:text>1</xsl:text>
+               </xsl:otherwise>
+             </xsl:choose>
+          -->
+          <xsl:value-of select="count(./mml:mtr[1]/mml:mtd/mml:maligngroup)"/>
+
         </xsl:with-param>
         <xsl:with-param name="theAlignment" select="@alignment"/>
       </xsl:call-template>
     </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>  <!-- Single-line display - either \equation or \equation* -->
-      <xsl:text xml:space="preserve">
-\begin{equation</xsl:text>
+      <xsl:text>\begin{equation</xsl:text>
       <xsl:if test="@numbering='none'">
         <xsl:text>*</xsl:text>
       </xsl:if>
-      <xsl:text xml:space="preserve">}
-</xsl:text>
+      <xsl:text>}</xsl:text>
       <xsl:apply-templates select="mml:math/*" />
       <xsl:if test="@customLabel and string-length(@customLabel)">
-        <xsl:text xml:space="preserve"> \tag{</xsl:text>
+        <xsl:text>\tag</xsl:text>
+          <xsl:if test="@suppressAnnotation='true'">
+             <xsl:text>*</xsl:text>
+          </xsl:if>
+        <xsl:text>{</xsl:text>
         <xsl:value-of select="@customLabel" />
         <xsl:text>}</xsl:text>
       </xsl:if>
@@ -1026,18 +1383,20 @@ should not be done under some conditions -->
           <xsl:text>}</xsl:text>
         </xsl:when>
       </xsl:choose>
-      <xsl:text xml:space="preserve">
-\end{equation</xsl:text>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\end{equation</xsl:text>
       <xsl:if test="@numbering='none'">
         <xsl:text>*</xsl:text>
       </xsl:if>
-      <xsl:text xml:space="preserve">}
-</xsl:text>
+      <xsl:text>}</xsl:text>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="html:frontmatter">\frontmatter<xsl:apply-templates/></xsl:template>
+<xsl:template match="html:frontmatter">
+   <xsl:value-of select="$newline"/>
+   <xsl:text>\frontmatter</xsl:text>
+</xsl:template>
 <xsl:template match="html:mainmatter">\mainmatter<xsl:apply-templates/></xsl:template>
 <xsl:template match="html:backmatter">\backmatter<xsl:apply-templates/></xsl:template>
 <xsl:template match="html:appendix">\appendix</xsl:template>
@@ -1108,5 +1467,15 @@ should not be done under some conditions -->
 \dotuline{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 <!-- End definitions for ulem package -->
+
+<!-- Start definitions for beamer package -->
+<xsl:template match="html:QTR[@type='frametitle']">
+\frametitle{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:QTR[@type='framesubtitle']">
+\framesubtitle{<xsl:apply-templates/>}<xsl:text/>
+</xsl:template>
+<!-- End definitions for beamer package -->
 </xsl:stylesheet>
 

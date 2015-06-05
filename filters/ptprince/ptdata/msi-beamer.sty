@@ -1,13 +1,84 @@
 %% Jon, I need help here  Compare with beamer.xsl
 
 \MSISimpleEnvironment[beamerframe]{frame}
-\MSIListEnvironment{stepnumberedlist}{enumerate}{stepnumberedListItem}
-\MSIListEnvironment{stepbulletlist}{itemize}{stepbulletListItem}
-\MSIListEnvironment{alertstepnumberedlist}{enumerate}{alertstepnumberedListItem}
-\MSIListEnvironment{alertbulletlist}{itemize}{alertstepbulletListItem}
+\MSIListEnvironment{stepnumberedlist}{stepenumerate}{stepnumberedListItem}
+\MSIListEnvironment{stepbulletlist}{stepitemize}{stepbulletListItem}
+\MSIListEnvironment{alertstepnumberedlist}{stepenumeratewithalert}{alertstepnumberedListItem}
+\MSIListEnvironment{alertstepbulletlist}{stepitemizewithalert}{alertstepbulletListItem}
 
 %% Jon, is there more to handling the various items?
 
 %% can these be handled by default?
 %%  frametitle
 %%  framesubtitle
+
+%% Beamer has optional parameter for author
+\def\author{\@ifnextchar[{\@authora}{\@authorb}}
+
+\def\@authora[#1]#2{%
+  \msiopentag{author}{<author>}
+    \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+    #2%
+  \msiclosetag{author}{</author>}}
+
+\def\@authorb#1{%
+  \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}}
+
+%% Beamer has optional parameter for author
+\def\author{\@ifnextchar[{\@authora}{\@authorb}}
+
+\def\@authora[#1]#2{%
+  \msiopentag{author}{<author>}
+    \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+    #2%
+  \msiclosetag{author}{</author>}}
+
+\def\@authorb#1{%
+  \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}}
+
+%% Beamer has optional parameter for institute
+\def\institute{\@ifnextchar[{\@institutea}{\@instituteb}}
+
+\def\@institutea[#1]#2{%
+  \msiopentag{institute}{<institute>}
+    \msiopentag{instituteid}{<instituteid>}#1\msiclosetag{instituteid}{</instituteid>}%
+    #2%
+  \msiclosetag{institute}{</institute>}}
+
+\def\@instituteb#1{%
+  \msiopentag{institute}{<institute>}#1\msiclosetag{institute}{</institute>}}
+
+%% Beamer has optional parameter for subtitle
+\def\subtitle{\@ifnextchar[{\@subtitlea}{\@subtitleb}}
+
+\def\@subtitlea[#1]#2{%
+  \msiopentag{subtitle}{<subtitle>}
+    \msiopentag{subtitleid}{<subtitleid>}#1\msiclosetag{subtitleid}{</subtitleid>}%
+    #2%
+  \msiclosetag{subtitle}{</subtitle>}}
+
+\def\@subtitleb#1{%
+  \msiopentag{subtitle}{<subtitle>}#1\msiclosetag{subtitle}{</subtitle>}}
+
+%% Beamer has optional parameter for date
+\def\date{\@ifnextchar[{\@datea}{\@dateb}}
+
+\def\@datea[#1]#2{%
+  \msiopentag{date}{<date>}
+    \msiopentag{option}{<option>}#1\msiclosetag{option}{</option>}%
+    #2%
+  \msiclosetag{date}{</date>}}
+
+\def\@dateb#1{%
+  \msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
+
+%\subject{text}
+\def\subject#1{\out@subject{#1}}
+\def\out@subject#1{%
+   \msitag{^^0a}\msiopentag{subject}{<subject>}#1\msiclosetag{subject}{</subject>}}
+
+%\keywords{text}
+\def\keywords#1{\out@keywords{#1}}
+\def\out@keywords#1{%
+   \msitag{^^0a}\msiopentag{keywords}{<keywords>}#1\msiclosetag{keywords}{</keywords>}}
+
