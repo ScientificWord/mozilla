@@ -102,7 +102,7 @@ nsMathMLmsubFrame::Place (nsIRenderingContext& aRenderingContext,
     }
   }
 
-  return nsMathMLmsubFrame::PlaceSubScript(PresContext(), 
+  return nsMathMLmsubFrame::PlaceSubScript(PresContext(),
                                            aRenderingContext,
                                            aPlaceOrigin,
                                            aDesiredSize,
@@ -122,7 +122,7 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
                                    nscoord              aUserSubScriptShift,
                                    nscoord              aScriptSpace)
 {
-  // force the scriptSpace to be atleast 1 pixel 
+  // force the scriptSpace to be atleast 1 pixel
   aScriptSpace = PR_MAX(nsPresContext::CSSPixelsToAppUnits(1), aScriptSpace);
 
   ////////////////////////////////////
@@ -138,7 +138,7 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
   if (!baseFrame || !subScriptFrame || subScriptFrame->GetNextSibling()) {
     // report an error, encourage people to get their markups in order
     NS_WARNING("invalid markup");
-    return static_cast<nsMathMLContainerFrame*>(aFrame)->ReflowError(aRenderingContext, 
+    return static_cast<nsMathMLContainerFrame*>(aFrame)->ReflowError(aRenderingContext,
                                                aDesiredSize);
   }
   GetReflowAndBoundingMetricsFor(baseFrame, baseSize, bmBase);
@@ -152,7 +152,7 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
 
   //////////////////
   // Place Children
-  
+
   // get min subscript shift limit from x-height
   // = h(x) - 4/5 * sigma_5, Rule 18b, App. G, TeXbook
   nscoord xHeight = 0;
@@ -160,7 +160,7 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
     aPresContext->GetMetricsFor(baseFrame->GetStyleFont()->mFont);
 
   fm->GetXHeight (xHeight);
-  nscoord minShiftFromXHeight = (nscoord) 
+  nscoord minShiftFromXHeight = (nscoord)
     (bmSubScript.ascent - (4.0f/5.0f) * xHeight);
 
   // subScriptShift
@@ -171,18 +171,18 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
   // get subScriptShift default from font
   GetSubScriptShifts (fm, subScriptShift, dummy);
 
-  subScriptShift = 
+  subScriptShift =
     PR_MAX(subScriptShift, aUserSubScriptShift);
 
   // get actual subscriptshift to be used
   // Rule 18b, App. G, TeXbook
-  nscoord actualSubScriptShift = 
+  nscoord actualSubScriptShift =
     PR_MAX(minSubScriptShift,PR_MAX(subScriptShift,minShiftFromXHeight));
   // get bounding box for base + subscript
   nsBoundingMetrics boundingMetrics;
-  boundingMetrics.ascent = 
+  boundingMetrics.ascent =
     PR_MAX(bmBase.ascent, bmSubScript.ascent - actualSubScriptShift);
-  boundingMetrics.descent = 
+  boundingMetrics.descent =
     PR_MAX(bmBase.descent, bmSubScript.descent + actualSubScriptShift);
 
   // add aScriptSpace to the subscript's width
@@ -193,7 +193,7 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
   aFrame->SetBoundingMetrics (boundingMetrics);
 
   // reflow metrics
-  aDesiredSize.ascent = 
+  aDesiredSize.ascent =
     PR_MAX(baseSize.ascent, subScriptSize.ascent - actualSubScriptShift);
   aDesiredSize.height = aDesiredSize.ascent +
     PR_MAX(baseSize.height - baseSize.ascent,
@@ -209,7 +209,7 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
     dx = 0; dy = aDesiredSize.ascent - baseSize.ascent;
     FinishReflowChild (baseFrame, aPresContext, nsnull, baseSize, dx, dy, 0);
     // ... and subscript
-    dx = bmBase.width; 
+    dx = bmBase.width;
     dy = aDesiredSize.ascent - (subScriptSize.ascent - actualSubScriptShift);
     FinishReflowChild (subScriptFrame, aPresContext, nsnull, subScriptSize, dx, dy, 0);
   }
@@ -227,7 +227,7 @@ nsMathMLmsubFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, P
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
   {
-    pMCM = do_QueryInterface(pFrame);
+    pMCM = GetMathCursorMover(pFrame);
     if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     {
@@ -236,11 +236,11 @@ nsMathMLmsubFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, P
       return NS_OK;
     }
   }
-  else 
+  else
   {
     printf("Found msup frame with no children\n");
   }
-  return NS_OK;  
+  return NS_OK;
 }
 
 nsresult
@@ -255,7 +255,7 @@ nsMathMLmsubFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
     nsCOMPtr<nsIMathMLCursorMover> pMCM;
     if (pFrame)
     {
-      pMCM = do_QueryInterface(pFrame);
+      pMCM = GetMathCursorMover(pFrame);
       count--;
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else // child frame is not a math frame. Probably a text frame. We'll assume this for now
@@ -265,20 +265,21 @@ nsMathMLmsubFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
         return NS_OK;
       }
     }
-    else 
+    else
     {
       printf("Found msup frame with no superscript\n");
     }
   }
   else
   {
-    printf("msub EnterFromRight called with count == 0\n");
-    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    // printf("msub EnterFromRight called with count == 0\n");
+    PlaceCursorAfter( this, PR_FALSE, aOutFrame, aOutOffset, count);
+    *_retval = 0;
   }
-  return NS_OK;  
+  return NS_OK;
 }
 
-                            
+
 nsresult
 nsMathMLmsubFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
@@ -286,31 +287,35 @@ nsMathMLmsubFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
   printf("msup MoveOutToRight, count = %d\n", count);
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild = GetFirstChild(nsnull);
+  nsIFrame * pParent;
+  // pChild is the base
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (leavingFrame != pChild)
   {
-    // leaving superscript. Count = 0
-    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    // not leaving the base, so must be leaving the subscript
+    count = 0;
+    pParent = this->GetParent();
+    pMCM = GetMathCursorMover(pParent);
+    if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     *_retval = 0;
-    return NS_OK;
   }
   else
   {
-    // leaving base 
+    // leaving base
     count= 0;
     pChild = pChild->GetNextSibling();
-    pMCM = do_QueryInterface(pChild);
+    pMCM = GetMathCursorMover(pChild);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-    else printf("msup MoveOutToRight: no superscript\n");
+    else printf("msub MoveOutToRight: no subscript\n");
    *_retval = 0;
   }
-  return NS_OK;  
+  return NS_OK;
 }
 
 nsresult
 nsMathMLmsubFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
-{                
+{
   printf("msup MoveOutToLeft, count = %d\n", count);
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild = GetFirstChild(nsnull);
@@ -318,7 +323,7 @@ nsMathMLmsubFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, 
   if (leavingFrame == nsnull || leavingFrame == pChild)
   {
     nsIFrame * pParent = GetParent();
-    pMCM = do_QueryInterface(pParent);
+    pMCM = GetMathCursorMover(pParent);
     if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else  // parent isn't math??? shouldn't happen
     {
@@ -332,9 +337,9 @@ nsMathMLmsubFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, 
     // leaving superscript. Place the cursor just after the base.
     count= 0;
     PlaceCursorAfter(pChild, PR_TRUE, aOutFrame, aOutOffset, count);
-    //pMCM = do_QueryInterface(pChild);
+    //pMCM = GetMathCursorMover(pChild);
     //if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
    *_retval = 0;
   }
-  return NS_OK;  
-}  
+  return NS_OK;
+}

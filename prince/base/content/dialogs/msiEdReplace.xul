@@ -97,6 +97,10 @@
     <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
     <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
   </keyset -->
+  <broadcasterset>
+    <broadcaster id="notfound" hidden="true"/>
+    <broadcaster id="replaceallResults" hidden="true"/>
+  </broadcasterset>
 
   <hbox flex="1">
     <vbox flex="1">
@@ -109,7 +113,7 @@
             <!-- textbox id="dialog.findInput" oninput="doEnabling();"/ -->
             <groupbox flex="1" align="stretch">
               <editor editortype="html" type="content" context="msiEditorContentContext" id="findInput" flex="1" align="stretch"
-                minheight="60" minwidth="250" height="600px" onblur="doEnabling();"/>
+                minheight="60" minwidth="250" height="600px" onblur=""/>
             </groupbox>
           </row>
           <row align="start" flex="1">
@@ -120,22 +124,35 @@
                height="600px" />
             </groupbox>
           </row>
-          <row align="start" >
-            <spacer/>
-            <vbox align="start">
-              <spacer class="bigspacer"/>
+        </rows>
+      </grid>
+      <vbox>
+        <vbox height="2em">
+          <description id="notfoundmessage" observes="notfound" hidden="true">&notfoundwarning;</description>
+          <description id="replacemessage" observes="replaceallResults" hidden="true"/>
+        </vbox>
+        <spacer class="bigspacer"/>
+        <grid>
+          <columns>
+            <column/>
+            <column/>
+          </columns>
+          <rows>
+            <row>
               <checkbox id="dialog.caseSensitive" label="&caseSensitiveCheckbox.label;" 
                   accesskey="&caseSensitiveCheckbox.accesskey;"/>
+              <checkbox id="dialog.entireWord" label="&entireWordCheckbox.label;" 
+                  accesskey="&entireWordCheckbox.accesskey;"/>
+            </row>
+            <row>
               <checkbox id="dialog.wrap" label="&wrapCheckbox.label;" 
                   accesskey="&wrapCheckbox.accesskey;"/>
               <checkbox id="dialog.searchBackwards" label="&backwardsCheckbox.label;" 
                   accesskey="&backwardsCheckbox.accesskey;"/>
-              <!-- checkbox id="multiParaCheckbox" label="&multiParaCheckbox.label;" 
-                  accesskey="&multiParaCheckbox.accesskey;" oncommand="toggleMultiPara();" / -->
-            </vbox>
-          </row>
-        </rows>
-      </grid>
+            </row>
+          </rows>
+        </grid>
+      </vbox>
     </vbox>
     <vbox>
       <msibutton id="findNext" label="&findNextButton.label;" accesskey="&findNextButton.accesskey;" 
@@ -143,7 +160,7 @@
       <msibutton id="replace" label="&replaceButton.label;" accesskey="&replaceButton.accesskey;" 
           oncommand="onReplace();"/>
       <msibutton id="replaceAndFind" label="&replaceAndFindButton.label;" 
-          accesskey="&replaceAndFindButton.accesskey;" oncommand="onReplace(); onFindNext();"/>
+          accesskey="&replaceAndFindButton.accesskey;" oncommand="if (onReplace()) onFindNext();"/>
       <msibutton id="replaceAll" label="&replaceAllButton.label;" 
           accesskey="&replaceAllButton.accesskey;" oncommand="onReplaceAll();"/>
       <msibutton dlgtype="cancel" label="&closeButton.label;"/>

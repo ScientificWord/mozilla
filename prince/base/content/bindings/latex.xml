@@ -594,7 +594,7 @@
 
 	<xbl:binding id="fmtag-maketoc"> /*front matter label*/
 		<xbl:resources>
-			<xbl:stylesheet src="resource://app/res/css/latex_internal.css"/>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
 		<xbl:content>
 			<html:button type="button" class="msi" nopr="1" oncommand="" >
@@ -722,6 +722,48 @@ Make list of figures here
 
 		<xbl:content>
 			<html:button type="button" class="msi" nopr="1" oncommand="">&appendix;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="mainmatter">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&mainmatter;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="backmatter">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&backmatter;
+			</html:button>
+			<html:span style="display:none">
+			<xbl:children/>
+			</html:span>
+		</xbl:content>
+	</xbl:binding>
+
+	<xbl:binding id="frontmatter">
+		<xbl:resources>
+			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+		</xbl:resources>
+
+		<xbl:content>
+			<html:button type="button" class="msi" nopr="1" oncommand="">&frontmatter;
 			</html:button>
 			<html:span style="display:none">
 			<xbl:children/>
@@ -1089,7 +1131,7 @@ Make list of figures here
 
 	</xbl:binding>
 
-	<xbl:binding id="msibreak">
+	<xbl:binding id="msibr">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
@@ -1148,7 +1190,7 @@ Make list of figures here
 		</xbl:implementation>
 	</xbl:binding>
 
-	<xbl:binding id="mathmsibreak">
+	<xbl:binding id="mathmsibr">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
@@ -1305,7 +1347,7 @@ Make list of figures here
 		</xbl:implementation>
 	</xbl:binding>
 
-	<xbl:binding id="graph">
+<!-- 	<xbl:binding id="graph">
 		<xbl:resources>
 			<xbl:stylesheet  src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
@@ -1317,7 +1359,7 @@ Make list of figures here
 				<xbl:children includes="plotcaption"/>
 		</xbl:content>
 		<xbl:implementation>
-			<xbl:field name="plotplugin" >
+ 			<xbl:field name="plotplugin" >
 				this.getElementsByTagName('object')[0];
 			</xbl:field> 
 			<xbl:field name="document" >
@@ -1326,7 +1368,7 @@ Make list of figures here
 			<xbl:field name="camera">
 				this.plotplugin.camera;
 			</xbl:field>
-		<!-- read-only properties -->
+		read-only properties ++>
 			<xbl:property name="dimension" readonly="true" onget="return this.plotplugin.dimension;" />
 			<xbl:property name="readyState" readonly="true" onget="return this.plotplugin.readyState;" />
 			<xbl:property name="useGdiplus" readonly="true" onget="return this.plotplugin.useGdiplus;" />
@@ -1335,7 +1377,7 @@ Make list of figures here
 			<xbl:property name="beginTime" readonly="true" 
 				onget="return this.plotplugin.beginTime;" />
 			<xbl:property name="endTime" readonly="true" onget="return this.plotplugin.endTime;" />
-		<!-- read-write properties -->
+		    read-write properties ++>
 			<xbl:property name="currentTime" onget="return this.plotplugin.currentTime;"
 				onset="this.plotplugin.currentTime = val; return val;"  />
 			<xbl:property name="cursorTool" onget="return this.plotplugin.cursorTool;"
@@ -1352,7 +1394,7 @@ Make list of figures here
 				onset="this.plotplugin.zoomAction = val; return val;"  />
 			<xbl:property name="actionSpeed" onget="return this.plotplugin.actionSpeed;" 
 				onset="this.plotplugin.actionSpeed = val; return val;"  />
-		<!-- methods -->
+		<!++ methods ++>
 			<xbl:method name="startAnimation">
 				<xbl:body>
 					this.plotplugin.startAnimation();
@@ -1410,9 +1452,10 @@ Make list of figures here
 					this.plotplugin.makeSnapshot(abspath,res);
 				</xbl:body>
 			</xbl:method>
-		</xbl:implementation>
+	
+   		</xbl:implementation>
 	</xbl:binding>
-
+ -->
 	<xbl:binding id="collapsible">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
@@ -1546,7 +1589,7 @@ Make list of figures here
 		</xbl:resources>
 
 		<xbl:content>
-			<html:button type="button" class="frontmatter" oncommand="">
+			<html:button type="button" class="frontmatter" command='cmd_reviseBibTeXBibliographyCmd'>
 				BIBTEX
 			</html:button>
 			<html:span style="display:none">
@@ -1555,28 +1598,15 @@ Make list of figures here
 		</xbl:content>
 	</xbl:binding>
 
-	<xbl:binding id="bibitem">
+<!-- 	<xbl:binding id="bibitem">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
 
 		<xbl:content>
-			<html:button type="transparentbutton" class="frontmatter" xbl:inherits="xbl:text=bibitemkey" oncommand=""></html:button>
-			<xbl:children/>
-		</xbl:content>
-	</xbl:binding>
-
-	<xbl:binding id="bibitemwithlabel">
-		<xbl:resources>
-			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-		</xbl:resources>
-
-		<xbl:content>
-			<html:button class="bibitemlabel" anonid="theButton" oncommand="">
-				<xbl:children includes="biblabel"/>
-				<html:span style="white-space: pre"> (<html:span xbl:inherits="xbl:text=bibitemkey"/>)</html:span>
-			</html:button>
-			<xbl:children/>
+			<xbl:children includes="bibkey"/>
+			<xbl:children includes="biblabel"/>
+            <xbl:children/>
 		</xbl:content>
 	</xbl:binding>
 
@@ -1626,6 +1656,6 @@ Make list of figures here
 				<html:p><html:object xbl-inherits="src,data,title,alt,width,height" /></html:p>
 			</html:div>
 		</xbl:content>
-	</xbl:binding>
+	</xbl:binding> -->
 
 </xbl:bindings>

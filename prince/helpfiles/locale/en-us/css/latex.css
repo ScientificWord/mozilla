@@ -149,27 +149,27 @@ msirule {
   display: inline-block;
 }
 
-msibreak[type="customNewLine"]
+msibr[type="customNewLine"]
 {
 	display: block;
 	width: 2px;
 }
 
-msibreak[type="customNewLine"]:after {
+msibr[type="customNewLine"]:after {
   white-space: pre;
   content: "\A";
   -moz-user-select: -moz-none;
 }
 
-*[showinvis="true"] msibreak {
+*[showinvis="true"] msibr {
 	width: 2px;
 }
 
-*[showinvis="true"] msibreak[type="customNewLine"] {
+*[showinvis="true"] msibr[type="customNewLine"] {
 	background-color: green;
 }
 
-msibreak[type="newPage"]:after {
+msibr[type="newPage"]:after {
   white-space: pre;
   content: "\A";
   -moz-user-select: -moz-none;
@@ -441,6 +441,10 @@ msidisplay[numbering="none"][marker] {
 }
 
 msidisplay[numbering="eqns"] mtable[type="eqnarray"]>mtr {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrownumbered");
+}
+
+msidisplay[numbering="eqns"] mtable[type="align"]>mtr {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrownumbered");
 }
 
@@ -1073,7 +1077,7 @@ rawTeX {
 }
 
 smallbox {
-	border: 1px solid black;
+	border: 10px solid black;
 }
 
 *[hilite] {

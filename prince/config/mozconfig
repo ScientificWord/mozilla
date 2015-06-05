@@ -4,14 +4,12 @@
 # to the top of your mozconfig file.
 
 mk_add_options MOZ_BUILD_PROJECTS="xulrunner prince"
-# mk_add_options MOZ_BUILD_PROJECTS="xulrunner prince transformiix"
 mk_add_options MOZ_CO_PROJECT="prince xulrunner"
 ac_add_app_options xulrunner --enable-application=xulrunner
 ac_add_app_options prince --enable-application=prince
 ac_add_app_options prince --with-libxul-sdk=../xulrunner/dist/
 ac_add_app_options prince --enable-libxul
 ac_add_app_options prince --enable-extensions=default,inspector,venkman,editor/cascades
-# ac_add_app_options transformiix --enable-application=content/xslt
 
 ac_add_options --disable-javaxpcom
 ac_add_options --disable-activex

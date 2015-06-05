@@ -75,7 +75,7 @@
     rv = inCommandTable->RegisterCommand(_cmdName,                      \
                        static_cast<nsIControllerCommand *>(theCmd));    \
   }
-  
+
 #define NS_REGISTER_TAG_COMMAND(_cmdClass, _cmdName, _tagName)          \
   {                                                                     \
     _cmdClass* theCmd = new _cmdClass(_tagName);                        \
@@ -83,7 +83,7 @@
     rv = inCommandTable->RegisterCommand(_cmdName,                      \
                        static_cast<nsIControllerCommand *>(theCmd));    \
   }
-  
+
 
 // static
 nsresult
@@ -116,7 +116,7 @@ nsComposerController::RegisterHTMLEditorCommands(
                         nsIControllerCommandTable *inCommandTable)
 {
   nsresult rv;
-  
+
   // Edit menu
   NS_REGISTER_ONE_COMMAND(nsPasteNoFormattingCommand, "cmd_pasteNoFormatting");
 
@@ -138,7 +138,7 @@ nsComposerController::RegisterHTMLEditorCommands(
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_em", "em");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_strong", "strong");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_cite", "cite");
-  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_abbr", "abbr");                        
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_abbr", "abbr");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_acronym", "acronym");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_code", "code");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_samp", "samp");
@@ -182,7 +182,7 @@ nsComposerController::RegisterHTMLEditorCommands(
   NS_REGISTER_TAG_COMMAND(nsInsertTagCommand, "cmd_insertImageNoUI", "img");
   NS_REGISTER_TAG_COMMAND(nsInsertTagCommand, "cmd_insertHR", "hr");
 
-  NS_REGISTER_ONE_COMMAND(nsAbsolutePositioningCommand, "cmd_absPos");
+//  NS_REGISTER_ONE_COMMAND(nsAbsolutePositioningCommand, "cmd_absPos");
   NS_REGISTER_ONE_COMMAND(nsDecreaseZIndexCommand, "cmd_decreaseZIndex");
   NS_REGISTER_ONE_COMMAND(nsIncreaseZIndexCommand, "cmd_increaseZIndex");
 

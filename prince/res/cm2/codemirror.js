@@ -1721,7 +1721,7 @@ var CodeMirror = (function() {
     extraGutterSize: 0,
     electricChars: true,
     onKeyEvent: null,
-    lineWrapping: false,
+    lineWrapping: true,
     lineNumbers: false,
     gutter: false,
     fixedGutter: false,

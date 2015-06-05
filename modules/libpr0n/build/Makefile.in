@@ -111,6 +111,7 @@ export::
 	$(foreach d,$(MOZ_IMG_ENCODERS), \
 		echo "#define IMG_BUILD_ENCODER_${d}";) \
 	} > nsImgBuildDefines.tmp
+	-mv nsImgBnes.Defines.tmp nsImgBuildDefines.tmp
 	@if `cmp -s nsImgBuildDefines.h nsImgBuildDefines.tmp`; then \
 		rm -f nsImgBuildDefines.tmp; \
 	else \

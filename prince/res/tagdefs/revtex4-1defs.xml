@@ -20,10 +20,7 @@
                     <nexttag>bodyText</nexttag>
                     <initialcontents>
                         <widetext>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
-                            </bodyText>
+                            <bodyText><cursor/><br/></bodyText>
                         </widetext>
                     </initialcontents>
                 </tag>
@@ -36,10 +33,7 @@
                     <nexttag>bodyText</nexttag>
                     <initialcontents>
                         <acknowledgments>
-                            <bodyText>
-                                <cursor/>
-                                <br/>
-                            </bodyText>
+                            <bodyText><cursor/><br/></bodyText>
                         </acknowledgments>
                     </initialcontents>
                 </tag>
@@ -110,10 +104,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <affiliation>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </affiliation>
+                        <affiliation><cursor/><br type="_moz"/></affiliation>
                     </initialcontents>
                 </tag>
                 <tag nm="altaffiliation">
@@ -124,10 +115,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <altaffiliation>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </altaffiliation>
+                        <altaffiliation><cursor/><br type="_moz"/></altaffiliation>
                     </initialcontents>
                 </tag>
                 <tag nm="noaffiliation">
@@ -138,10 +126,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <noaffiliation>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </noaffiliation>
+                        <noaffiliation><cursor/><br type="_moz"/></noaffiliation>
                     </initialcontents>
                 </tag>
                 <tag nm="email">
@@ -152,10 +137,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <email>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </email>
+                        <email><cursor/><br type="_moz"/></email>
                     </initialcontents>
                 </tag>
                 <tag nm="homepage">
@@ -166,10 +148,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <homepage>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </homepage>
+                        <homepage><cursor/><br type="_moz"/></homepage>
                     </initialcontents>
                 </tag>
                 <tag nm="pacs">
@@ -180,10 +159,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <pacs>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </pacs>
+                        <pacs><cursor/><br type="_moz"/></pacs>
                     </initialcontents>
                 </tag>
                 <tag nm="keywords">
@@ -194,10 +170,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <keywords>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </keywords>
+                        <keywords><cursor/><br type="_moz"/></keywords>
                     </initialcontents>
                 </tag>
                 <tag nm="preprint">
@@ -208,10 +181,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <preprint>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </preprint>
+                        <preprint><cursor/><br type="_moz"/></preprint>
                     </initialcontents>
                 </tag>
                 <tag nm="volumeyear">
@@ -222,10 +192,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <volumeyear>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </volumeyear>
+                        <volumeyear><cursor/><br type="_moz"/></volumeyear>
                     </initialcontents>
                 </tag>
                 <tag nm="volumenumber">
@@ -236,10 +203,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <volumenumber>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </volumenumber>
+                        <volumenumber><cursor/><br type="_moz"/></volumenumber>
                     </initialcontents>
                 </tag>
                 <tag nm="issuenumber">
@@ -250,10 +214,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <issuenumber>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </issuenumber>
+                        <issuenumber><cursor/><br type="_moz"/></issuenumber>
                     </initialcontents>
                 </tag>
                 <tag nm="eid">
@@ -264,10 +225,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <eid>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </eid>
+                        <eid><cursor/><br type="_moz"/></eid>
                     </initialcontents>
                 </tag>
                 <tag nm="startpage">
@@ -278,10 +236,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <startpage>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </startpage>
+                        <startpage><cursor/><br type="_moz"/></startpage>
                     </initialcontents>
                 </tag>
                 <tag nm="endpage">
@@ -292,10 +247,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <endpage>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </endpage>
+                        <endpage><cursor/><br type="_moz"/></endpage>
                     </initialcontents>
                 </tag>
                 <tag nm="accepted">
@@ -306,10 +258,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <accepted>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </accepted>
+                        <accepted><cursor/><br type="_moz"/></accepted>
                     </initialcontents>
                 </tag>
                 <tag nm="published">
@@ -320,10 +269,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <published>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </published>
+                        <published><cursor/><br type="_moz"/></published>
                     </initialcontents>
                 </tag>
                 <tag nm="received">
@@ -334,10 +280,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <received>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </received>
+                        <received><cursor/><br type="_moz"/></received>
                     </initialcontents>
                 </tag>
                 <tag nm="revised">
@@ -348,10 +291,7 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents>
-                        <revised>
-                            <cursor/>
-                            <br type="_moz"/>
-                        </revised>
+                        <revised><cursor/><br type="_moz"/></revised>
                     </initialcontents>
                 </tag>
             </tags>

@@ -120,8 +120,7 @@
       <xsl:when test="./*[2][normalize-space(string())='&#xF613;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
-      <xsl:when test="./*[2][normalize-space(string())='&#xFE38;']
-          or              ./*[2][normalize-space(string())='&#xFE38;']">
+      <xsl:when test="./*[2][normalize-space(string())='&#x23DF;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
 
@@ -177,7 +176,7 @@
       </is-user-op-limits>
 
       <movablelimits>
-        <xsl:if test="*[1][self::mml:mo]">
+        <xsl:if test="./*[1][mml:mo]">
         <xsl:choose>
           <xsl:when test="string-length(*[1][@movablelimits]) &gt; 0">
             <xsl:for-each select="*[1][self::mml:mo]">
@@ -198,7 +197,7 @@
     <xsl:variable name="munder-structure" select="exsl:node-set($munder-structure.tr)"/>
 
     <xsl:variable name="limits">
-      <xsl:if test="*[1][self::mml:mo]">
+      <xsl:if test="./*[1][mml:mo]">
       <xsl:choose>
         <xsl:when test="$munder-structure/movablelimits='false'">
           <xsl:text>\limits </xsl:text>
@@ -282,8 +281,7 @@
               <xsl:with-param name="LaTeX-acc" select="'\underleftrightarrow'"/>
             </xsl:call-template>
           </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#xFE38;']
-          or              ./*[2][normalize-space(string())='&#x23DF;']">
+          <xsl:when test="./*[2][normalize-space(string())='&#x23DF;']">
             <xsl:call-template name="under-struct">
               <xsl:with-param name="LaTeX-acc" select="'\underbrace'"/>
             </xsl:call-template>

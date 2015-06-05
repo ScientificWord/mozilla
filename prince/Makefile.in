@@ -8,7 +8,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 DIRS		= base samples res plugins helpfiles bin sidebar shells TeX dictionaries user  \
-	fastcursor modules Wrappers utilities \
+	fastcursor modules Wrappers utilities conversions \
 	$(NULL)
 
 PREF_JS_EXPORTS	= $(srcdir)/prince-prefs.js
@@ -18,7 +18,7 @@ ifneq (,$(filter windows,$(MOZ_WIDGET_TOOLKIT)))
 ICONS		= icons/SWP.ico icons/SW.ico icons/SNB.ico
 endif
 ifneq (,$(filter gtk gtk2,$(MOZ_WIDGET_TOOLKIT)))
-ICONS		= icons/SWP.xpm 
+ICONS		= icons/SWP.xpm
 endif
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 ICONS		= icons/SWP.icns icons/SW.icns icons/SNB.icns

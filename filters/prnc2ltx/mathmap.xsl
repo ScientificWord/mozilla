@@ -24,11 +24,33 @@
 <!ENTITY supsetneq "&#x228B;"> <!ENTITY supsetneqq "&#x228B;">
 
 -->
+  <xsl:template match="textcurrency">
+    <xsl:text>\textcurrency </xsl:text>
+  </xsl:template>
 
+<!--   <xsl:text xml:space="preserve">\textcurrency </xsl:text>
+ -->
   <xsl:template name="chars-to-LaTeX-Math">
       <xsl:param name="unicode-cdata"/>
       <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
+
+      <xsl:variable name="char-info-lookup"
+		    select="$char-info/char-table/char[@unicode=$first-char][1]/@latex"/>
+
       <xsl:choose>
+         <xsl:when
+	          test="contains('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+		                       $first-char)">
+            <xsl:value-of select="$first-char"/>
+         </xsl:when>
+
+         
+          <xsl:when test="$char-info-lookup != ''">
+           <xsl:call-template name="protect"/>
+           <xsl:value-of select="$char-info-lookup"/>
+           <xsl:text> </xsl:text>
+          </xsl:when>
+
       <xsl:when test="$first-char = '0'
       or              $first-char = '1'
       or              $first-char = '2'
@@ -1304,6 +1326,9 @@
           </xsl:when>
           <xsl:when test="$first-char='&#x2209;'">
             <xsl:text xml:space="preserve">\notin </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x220A;'">
+            <xsl:text xml:space="preserve">\in </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x220B;'">
             <xsl:text xml:space="preserve">\ni </xsl:text>
@@ -2658,11 +2683,6 @@
             <xsl:text xml:space="preserve">\longmapsto </xsl:text>
           </xsl:when>
 
-<!-- !ENTITY underbrace "&#xFE38;" -->
-          <xsl:when test="$first-char='&#xFE38;'">
-            <!-- <xsl:text xml:space="preserve"></xsl:text> -->
-          </xsl:when>
-
 <!-- !ENTITY underbrace "&#x23DF;" -->
           <xsl:when test="$first-char='&#x23DF;'">
             <!-- <xsl:text xml:space="preserve"></xsl:text> -->
@@ -2713,9 +2733,12 @@
 
           <xsl:otherwise>
 <!-- BBM: we want to let unidentified unicodes through, since XeLaTeX can handle them, and for PDFLaTeX we post-process
--->
+-->          <!-- jcs - this may need a \mathop{} --> 
+             <xsl:text>\mathop{</xsl:text>
              <xsl:value-of select="$first-char"/>
+             <xsl:text>}</xsl:text>
           </xsl:otherwise>
+ 
         </xsl:choose>
     
 <!--  The End
