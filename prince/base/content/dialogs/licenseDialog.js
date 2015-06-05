@@ -16,6 +16,7 @@ function getActivationNumber()
 	if (!licenseFile.exists()) {
 		licenseFile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
 		licenseFile.append('license.lic');
+		if (!licenseFile.exists*()) return "";
 	}
 	path = msiFileURLFromFile(licenseFile);
 	myXMLHTTPRequest = new XMLHttpRequest();
@@ -25,6 +26,7 @@ function getActivationNumber()
 	if (regexp.test(resultString)) {
 		return (regexp.exec(resultString)[0]);
 	}
+	return "";
 }
 
 function onLoad()
@@ -34,7 +36,10 @@ function onLoad()
 	var permanent = (daysleft === "permanent");
 	var expstr = "This license ";
 	var prodname = document.getElementById('prodname').textContent;
-	document.getElementById('activationnumber').textContent = 'Your activation number is '+getActivationNumber();
+	var actno = getActivationNumber();
+	if (actno && actno.length>5) {
+	  document.getElementById('activationnumber').textContent = 'Your activation number is '+actno;
+	}
 	var prodnameArray = prodname.split(" ");
 	if (bLicensed) {
 		document.getElementById('licensed').removeAttribute('hidden');
@@ -49,10 +54,10 @@ function onLoad()
 		document.getElementById('unlicensed').removeAttribute('hidden');
 	  document.getElementById('licensed').setAttribute('hidden', true);
 		if (daysleft && daysleft < 0) {
-		  	document.getElementById('expiredon').value =
-		  	'The license for this computer expired on '+licensedUntil()+'.';
-		  	document.getElementById('expired').removeAttribute('hidden');
-		  }
+	  	document.getElementById('expiredon').value =
+	  	'The license for this computer expired on '+licensedUntil()+'.';
+	  	document.getElementById('expired').removeAttribute('hidden');
+		}
 	  else {
 	  	document.getElementById('expired').setAttribute('hidden', true);
 
