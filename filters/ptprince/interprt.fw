@@ -561,8 +561,10 @@ case CMD_MSITOPREAMBLEEXTRA:{
 
 case CMD_MSISPECIAL: {
   std::map<std::string,std::string> kvmap;
+  TokenList* tlpos = new TokenList;
   TokenList* tl = new TokenList;
   ScanTokenList(tl, false);
+  ScanTokenList(tlpos, false);
   StringUtils::AppendToks(*tl);
   String str = StringBuilder::Create();
   std::string strTemp;
@@ -572,6 +574,17 @@ case CMD_MSISPECIAL: {
       ++i;
   }
   StringBuilder::Discard(str);
+
+  StringUtils::AppendToks(*tlpos);
+  str = StringBuilder::Create();
+  std::string strTemppos;
+  i = 0;
+  while (i < str.Size()){
+      strTemppos += (char) str[i];
+      ++i;
+  }
+  StringBuilder::Discard(str);
+  
 
   // Break the content of special into name, value pairs
   i=0;
@@ -736,7 +749,7 @@ case CMD_MSISPECIAL: {
  borderw=\"0.03\" \
  padding=\"0.2\" \
  captionloc=\"\" \
- pos=\"center\" \
+ pos=\"%pos%\" \
  border-color=\"#000000\" \
  background-color=\"#ffffff\" \
  textalignment=\"left\" \
@@ -757,6 +770,14 @@ case CMD_MSISPECIAL: {
  msi_resize=\"true\" \
  aspect=\"false\" />";
       result += "</msiframe>";
+
+      if (strTemppos[0] == 'd'){
+        find_and_replace(result, "%pos%", "center");
+      } else if (strTemppos[0] == 'i'){
+        find_and_replace(result, "%pos%", "inline");
+      } else {
+        find_and_replace(result, "%pos%", "floating");
+      }
 
       std::string name = kvmap["filename"];
       if (name == ""){
