@@ -39,6 +39,102 @@ function initialize()
   setTypesetFilePrefTestboxes();
 }
 
+function locationChanged()
+{
+  var floatBroadcaster = document.getElementById("floatEnabled");
+  var inlineOffsetBroadcaster = document.getElementById("inlineOffsetEnabled");
+  var bEnableWrapfig = true;
+  var bEnableFloats = false;
+  var currentLocation = document.getElementById("locationList").value;
+  if (currentLocation === "unspecified")
+    floatBroadcaster.removeAttribute("disabled");
+  else
+    floatBroadcaster.setAttribute("disabled", "true");
+  if (currentLocation === "inline")
+    inlineOffsetBroadcaster.removeAttribute("disabled");
+  else
+    inlineOffsetBroadcaster.setAttribute("disabled", "true");
+}
+
+function enableFloatOptions(radiogroup)
+{
+  return;
+  var broadcaster = document.getElementById("wrapOption");
+  var theValue = "true";
+  var position;
+  if (!radiogroup)
+    radiogroup = document.getElementById("wrapOptionRadioGroup");
+
+  if (document.getElementById("placeHereCheck") && document.getElementById('placeHereCheck').checked && radiogroup)
+  {
+    theValue = "false";
+    position = radiogroup.selectedItem.value;
+    setAlignment((position==="L" || position==="I")?1:((position==="R"||position=="O")?2:0));
+  }
+  else
+  {
+    setAlignment(0);
+  }
+  broadcaster.setAttribute("disabled",theValue);
+  updateDiagram("margin");
+}
+
+function enableFloating( )
+{
+  return;
+  var broadcaster = document.getElementById("floatingPlacement");
+  var theValue = "true";
+  var bEnableInlineOffset = false;
+  if (document.getElementById('float') && document.getElementById('float').selected)
+  {
+    theValue = "false";
+    broadcaster.setAttribute("disabled",theValue);
+    enableFloatOptions();
+  }
+  else if (document.getElementById('display').selected)
+  {
+    setAlignment(0);
+    updateDiagram("margin");
+  }
+  else if (document.getElementById('inline').selected)
+  {
+    updateDiagram("margin");
+    bEnableInlineOffset = true;
+  }
+  showDisableControlsByID(["frameInlineOffsetLabel","frameInlineOffsetInput"], bEnableInlineOffset);
+}
+
+function floatPropertyChanged() {
+  var floatList = document.getElementById("floatList");
+  var none = floatList.value === "";
+  var menuitems = floatList.getElementsByTagName("menuitem");
+  var i;
+  var item;
+  if (none) {
+    for (i = 0; i < menuitems.length; i++)
+    {
+      item = menuitems.item(i);
+      if (item.value !== "") {
+        item.removeAttribute("checked");
+      }
+    }
+    document.getElementById("locationEnabled").removeAttribute("disabled");
+  }
+  else {
+    document.getElementById("locationEnabled").setAttribute("disabled", "true");
+    document.getElementById("floatlistNone").removeAttribute("checked");
+  }
+}
+
+function captionPropertyChanged() {
+  var captionLoc = document.getElementById("captionLocation").value;
+  if (captionLoc === "none") {
+    document.getElementById("keyEnabled").setAttribute("disabled", "true");
+  } else {
+    document.getElementById("keyEnabled").removeAttribute("disabled");
+  }
+}
+
 
 function showShellsInDir(tree)
 {
@@ -47,7 +143,7 @@ function showShellsInDir(tree)
   var i = tree.currentIndex;
   var leafname = tree.view.getCellText( i,namecol);
   while (tree.view.getParentIndex(i) >= 0)
-  {           
+  {
     i = tree.view.getParentIndex(i);
     leafname = tree.view.getCellText(i,namecol)+ "/" + leafname;
   }
@@ -57,8 +153,8 @@ function showShellsInDir(tree)
     directory = msiFileFromFileURL(dirurl);
     directory.append(leafname);
     var items = directory.directoryEntries;
-    var name; 
-    var listItem; 
+    var name;
+    var listItem;
     var listbox = document.getElementById("dircontents");
     while (listbox.itemCount > 0) listbox.removeItemAt(0);
     while (items.hasMoreElements()) {
@@ -69,7 +165,7 @@ function showShellsInDir(tree)
         listItem = listbox.appendItem(name, item.path);
       }
     }
-    listbox.selectedIndex =0; 
+    listbox.selectedIndex =0;
   }
   catch(e) {
     dump(e.toString());
@@ -91,7 +187,7 @@ function onShellSelect()
     if (shelldirs[i] != filepathdirs[i])
     {
       throw("Non-shell path");
-    } 
+    }
   }
   var relpath = filepathdirs.slice(shelldirs.length).join("/");
   var pref = document.getElementById("defaultshell");
@@ -124,6 +220,31 @@ function skinChanged()
 //  chromedoc.getElementById("EditorToolbox").customizeDone(true);
 }
 
+function getColorAndUpdatePref(id)
+{
+  var colorWell;
+  colorWell = document.getElementById(id);
+  if (!colorWell) return;
+  var color = getValueFromControl(colorWell);
+  // Don't allow a blank color, i.e., using the "default"
+  var colorObj = { NoDefault:true, Type:"Rule", TextColor:color, PageColor:0, Cancel:false };
+  var alphaVal;
+  if (colorWell.getAttribute("hasAlpha") == "true")
+  {
+    alphaVal = colorWell.getAttribute("alpha");
+    if (color && color.length > 6)
+      colorObj.TextColor = color.substr(0, color.length - 2);
+    if (alphaVal && alphaVal.length)
+    {
+      colorObj.alpha = twoHexDigitsToNumber(alphaVal);
+      if (colorObj.alpha == Number.NaN)
+        colorObj.alpha = 255;
+    }
+    else
+      colorObj.alpha = 255;
+  }
+}
+
 
 function writeComputePreferences()
 {
@@ -134,17 +255,17 @@ function writeComputePreferences()
   for (prefId in prefMapper)
   {
     pref = document.getElementById(prefId);
-    onComputeSettingChange(pref, true);    
-  }  
+    onComputeSettingChange(pref, true);
+  }
   for (prefId in prefEngineMapper)
   {
     pref = document.getElementById(prefId);
-    onComputeSettingChange(pref, true);    
-  }  
+    onComputeSettingChange(pref, true);
+  }
   for (prefId in prefLogMapper)
   {
     pref = document.getElementById(prefId);
-    onComputeSettingChange(pref, true);    
+    onComputeSettingChange(pref, true);
   }
   storePlotItemPreferences();
 }
@@ -206,7 +327,7 @@ function writeColorWell(id)
   {
     var m = e.message;
   }
-  
+
 }
 
 
@@ -305,55 +426,6 @@ function writeGraphicPlacementPreferences(whichIDs)
   pref.value = pos + "," + placeLocation + "," + placement;
 }
 
-var prefMapper;
-var prefEngineMapper;
-var prefLogMapper;
-
-function initializePrefMappersIfNeeded()
-{ // map between pref names used by the engine and those used in SWP
-  if (prefMapper == null)
-  {  
-    prefMapper = new Object();
-    prefMapper.mfencedpref = "use_mfenced";
-    prefMapper.digitsRenderedpref = "Sig_digits_rendered";
-    prefMapper.lowerthresholdpref = "SciNote_lower_thresh";
-    prefMapper.upperthresholdpref = "SciNote_upper_thresh";
-    prefMapper.trigargspref = "Parens_on_trigargs";
-    prefMapper.imagipref = "Output_imaginaryi";
-    prefMapper.diffDpref = "Output_diffD_uppercase";
-    prefMapper.diffdpref = "Output_diffd_lowercase";
-    prefMapper.expepref = "Output_Euler_e";
-    prefMapper.matrix_delimpref = "Default_matrix_delims";
-    prefMapper.usearcpref    = "Output_InvTrigFuncs_1";
-    prefMapper.mixednumpref = "Output_Mixed_Numbers";
-    prefMapper.derivformatpref = "Default_derivative_format";
-    prefMapper.primesasnpref = "Primes_as_n_thresh";
-    prefMapper.primederivpref = "Prime_means_derivative";
-
-    prefMapper.logepref = "log_is_base_e";
-    prefMapper.dotderivativepref = "Dot_derivative";
-    prefMapper.barconjpref = "Overbar_conjugate";
-    prefMapper.i_imaginarypref = "Input_i_Imaginary";
-    prefMapper.j_imaginarypref = "Input_j_Imaginary";
-    prefMapper.e_exppref = "Input_e_Euler";
-  }
-  if (prefEngineMapper == null)
-  {  
-    prefEngineMapper = new Object();
-    prefEngineMapper.digitsusedpref  = "Digits";
-    prefEngineMapper.degreepref      = "MaxDegree";
-    prefEngineMapper.principalpref   = "PvalOnly";
-    prefEngineMapper.specialpref     = "IgnoreSCases";
-  }
-  if (prefLogMapper == null)
-  {
-    prefLogMapper = new Object();
-    prefLogMapper.logSentpref     = "LogMMLSent";
-    prefLogMapper.logReceivedpref = "LogMMLReceived";
-    prefLogMapper.engSentpref     = "LogEngSent";
-    prefLogMapper.engReceivedpref = "LogEngReceived";
-  } 
-}
 
 function onComputeSettingChange(pref, force)
 {
@@ -366,7 +438,7 @@ function onComputeSettingChange(pref, force)
     var val = pref.value;
     initializePrefMappersIfNeeded();
     try
-    {  
+    {
       var mappedPref;
       if (mappedPref = prefMapper[prefId])
       {
@@ -375,19 +447,26 @@ function onComputeSettingChange(pref, force)
           if (val === "matrix_brackets") val = 1;
           else if (val === "matrix_parens") val = 2;
           else if (val === "matrix_braces") val = 3;
-          else (val = 0); 
+          else (val = 0);
         }
         if (mappedPref === "Output_imaginaryi") {
           if (val === "imagi_i") val = 0;
           else if (val === "imagi_j") val = 1;
-          else (val = 2); 
+          else (val = 2);
         }
-        currEngine.setUserPref(currEngine[mappedPref], val); 
+        if (mappedPref === "Output_Euler_e") {
+          if (val === "expe_d")
+            val = 0;
+          else
+            val = 1;
+        }
+
+        currEngine.setUserPref(currEngine[mappedPref], val);
       }
       else if (mappedPref = prefEngineMapper[prefId])
       {
         dump("Setting engine attribute " + mappedPref + " to " + val + "\n");
-        currEngine.setEngineAttr(currEngine[mappedPref], val);      
+        currEngine.setEngineAttr(currEngine[mappedPref], val);
       }
       else if (mappedPref = prefLogMapper[prefId])
       {
@@ -403,11 +482,11 @@ function onComputeSettingChange(pref, force)
     {
       dump(e.message+", prefId = "+prefId+"\n");
     }
-  } 
+  }
   catch(e)
   {
     dump(e.message+"\n");
-  } 
+  }
 }
 
 function onBrowseBibTeXExecutable()
@@ -467,6 +546,8 @@ function onBrowseBibTeXStyleDir()
 
 function setTextboxValue(aPref)
 {
+  if (!aPref)
+    return;
   var theTextbox;
   switch(aPref.id)
   {
@@ -506,7 +587,7 @@ function setFilePrefFromTextbox(aPref)
   if (theTextbox && theTextbox.value)
   {
     try { aPref.value.initWithPath(theTextbox.value); }
-    catch(exc) {dump("Error in preferences.js setFilePrefFromTextbox for pref [" + aPref.id + "]: [" + exc + "].\n");} 
+    catch(exc) {dump("Error in preferences.js setFilePrefFromTextbox for pref [" + aPref.id + "]: [" + exc + "].\n");}
   }
 }
 
@@ -526,7 +607,10 @@ function getTypesetFilePrefs()
 
 function initUnitsControl(unitBox, pref, controlArray)
 {
-  unitBox.unitsHandler = new UnitHandler();
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+
+  unitBox.unitsHandler = new UnitHandler(editor);
   unitBox.unitsHandler.setEditFieldList(controlArray);
 
   var currUnit = "pt";
@@ -539,16 +623,18 @@ function initUnitsControl(unitBox, pref, controlArray)
 
 function onChangeUnits(unitBox)
 {
-  if (unitBox.unitsHandler)
+  if (unitBox.unitsHandler) {
     unitBox.unitsHandler.setCurrentUnit(unitBox.value);
+    writeGraphicLayoutPreferences("graphics")
+  }
 }
 
 
-function getColorAndUpdate(id)
+function getColorAndUpdatePref(id)
 {
   var colorWell = document.getElementById(id);
   if (!colorWell) return;
-  var color;
+  var color = colorWell.getAttribute("color");
 
   var colorObj = { NoDefault: false, Type: "Rule", TextColor: color, PageColor: 0, Cancel: false };
   window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
@@ -557,7 +643,7 @@ function getColorAndUpdate(id)
   color = colorObj.TextColor;
   setColorWell(id,color);
   colorWell.setAttribute("color",color);
-  // next line for immediate writing only 
+  // next line for immediate writing only
   writeColorWell(id);
 }
 
@@ -637,7 +723,7 @@ function initPlotItemEditors()
     {
       prefElement = document.getElementById(editorElement.getAttribute("preference"));
       theStringSource = prefElement.value;
-    } catch(ex) { 
+    } catch(ex) {
       dump("Exception trying to initialize editor " + plotVarEditControls[ii] + " in initPlotItemPreferences().\n");
     }
     if (!theStringSource.length)
@@ -756,7 +842,7 @@ function setPlotItemBroadcasters()
   document.getElementById("plot.enableConformal").collapsed = (plotTypeObj.plotType != "conformal");
   document.getElementById("plot.useDiscAdjust").collapsed = ((plotTypeObj.plotType != "rectangular") &&
                                 (plotTypeObj.plotType != "parametric") && (plotTypeObj.plotType != "implicit"));
-}                                
+}
 
 function onChangePlotType()
 {
@@ -843,7 +929,7 @@ function setPlotItemIntervalControls()
         prefIdBase = prefix + varNames[jj-1];
         document.getElementById("plotVar" + jj).textContent = getPlotIntervalVarName(plotTypeObj.plotType, varNames[jj-1]);
       }
-      
+
       startPrefId = prefIdBase + "Min";
       endPrefId = prefIdBase + "Max";
       ptsPrefId = prefIdBase + "Pts";
@@ -912,7 +998,7 @@ function storePlotItemPreferences()
     refPref = getReferencePlotItemPreference(prefStr);
     value = getValueFromControl(element);
     badVal = isBadPlotPrefValue(refPref, value);
-    if ( (prefElement.getAttribute("msi-temp") == "true") && (refPref != prefElement) 
+    if ( (prefElement.getAttribute("msi-temp") == "true") && (refPref != prefElement)
              && (badVal || (prefElement.value == refPref.value)) )
       prefElement.parentNode.removeChild(prefElement);
     else if (badVal)
@@ -1078,6 +1164,35 @@ function elementDisabledOrHidden(anElement)
   }
   return rv;
 }
+
+// Stolen from Mozilla -- needs modification
+function GetColorAndUpdatePref(aType, aButtonID)
+{
+  // Don't allow a blank color, i.e., using the "default"
+  var colorObj = { NoDefault:true, Type:"", TextColor:0, PageColor:0, Cancel:false };
+  var preference = document.getElementById("editor." + aButtonID + "_color");
+
+  if (aButtonID == "background")
+    colorObj.PageColor = preference.value;
+  else
+    colorObj.TextColor = preference.value;
+
+  colorObj.Type = aType;
+
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "_blank", "chrome,close,titlebar,modal", "", colorObj);
+
+  // User canceled the dialog
+  if (colorObj.Cancel)
+    return;
+
+  // Update preference with picked color
+  if (aType == "Page")
+    preference.value = colorObj.BackgroundColor;
+  else
+    preference.value = colorObj.TextColor;
+}
+
+
 //function writeAPlotPref(dim, plottype, prefID, value)
 //{
 ////What about "ConfHorizontalPts", "ConfVerticalPts"?
@@ -1104,7 +1219,7 @@ function elementDisabledOrHidden(anElement)
 //  {
 //    currPrefix = currPrefix.substr(0, nLastDot);
 //    currKey = currPrefix + "." + subkey;
-//    try 
+//    try
 //    {
 //      var prefType = prefs.getPrefType(currKey);
 //      if (prefType == prefs.PREF_STRING)

@@ -33,10 +33,21 @@ caption {
 table {
   margin: 0px 5px;
   border-collapse: collapse;
+  display: inline-table;
+}
+
+table[display="true"] {
+  display: table;
 }
 
 table:focus {
   border-collapse: separate;
+}
+
+caption bodyText {
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
 }
 
 /*table {
@@ -48,25 +59,24 @@ table:focus {
 
 td {
   border: 0.9px solid #BBBBBB;
-
 }
 
-td[lines="none"] {
+/*td[lines="none"] {
   border-style: none;
-}
+}*/
 
 td[lines="solid"] {
-  border: thin solid black;
+  border: thin solid;
 }
 
 td[lines="double"] {
   border: medium double black;
 }
 
-td[line-left="none"] {
+/*td[line-left="none"] {
   border-left-style: none;
 }
-
+*/
 td[line-left="solid"] {
   border-left: thin solid black;
 }
@@ -76,10 +86,10 @@ td[line-left="double"] {
 }
 
 
-td[line-right="none"] {
+/*td[line-right="none"] {
   border-right-style: none;
 }
-
+*/
 td[line-right="solid"] {
   border-right: thin solid black;
 }
@@ -89,9 +99,9 @@ td[line-right="double"] {
 }
 
 
-td[line-top="none"] {
+/*td[line-top="none"] {
   border-top-style: none;
-}
+}*/
 
 td[line-top="solid"] {
   border-top: thin solid black;
@@ -102,9 +112,9 @@ td[line-top="double"] {
 }
 
 
-td[line-bottom="none"] {
+/*td[line-bottom="none"] {
   border-bottom-style: none;
-}
+}*/
 
 td[line-bottom="solid"] {
   border-bottom: thin solid black;
@@ -186,18 +196,32 @@ hspace[type="nonBreakingSpace"] {
   white-space: nowrap;
 }
 
-/*
+mml|maligngroup:before {
+  visibility: hidden;
+}
+
+body[showinvis="true"] mml|maligngroup:before {
+  content: ".";
+  visibility: visible;
+  color: green;
+}
+
+/*mml|mtd > mml|maligngroup:first-child:before {
+  visibility: none;
+}
+*/
+
 hspace[type="negativeThinSpace"] {
-  min-width: 0.0em;
+  min-width: 0.17em;
 }
 
 hspace[type="zeroSpace"] {
-  min-width: 0.0em;
+  min-width: 0.17em;
 }
 
 hspace[type="noIndent"] {
   min-width: 0.0em;
-} */
+} 
 
 vspace {
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#vspace"); */
@@ -241,32 +265,53 @@ vspace[type="customSpace"] {
   border-left: thin solid green;
 }
 
-msirule {
-/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msirule"); */
+/* msirule {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msirule");
   display: inline-block;
+} */
+
+/* ordinary breaks -- emulate behavior of <br/>*/
+
+msibr[type="lineBreak"]:before {
+  content: "\A";
+  white-space: pre;
+  -moz-user-select: -moz-none;
 }
 
-msibreak[type="customNewLine"]
+msibr[type="newLine"]:before {
+  content: "\A";
+  white-space: pre;
+  -moz-user-select: -moz-none;
+}
+
+*[showinvis="true"] msibr[type="lineBreak"]:before {
+  content: "\AC\A";
+  color: green;
+}
+
+*[showinvis="true"] msibr[type="newLine"]:before {
+  content: "\AC\A";
+  color: green;
+}
+
+
+msibr[type="customNewLine"]
 {
 	display: block;
 	width: 2px;
 }
 
-msibreak[type="customNewLine"]:after {
+msibr[type="customNewLine"]:after {
   white-space: pre;
   content: "\A";
   -moz-user-select: -moz-none;
 }
 
-*[showinvis="true"] msibreak {
-	width: 2px;
-}
-
-*[showinvis="true"] msibreak[type="customNewLine"] {
+*[showinvis="true"] msibr[type="customNewLine"] {
 	background-color: green;
 }
 
-msibreak[type="newPage"]:after {
+msibr[type="newPage"]:after {
   white-space: pre;
   content: "\A";
   -moz-user-select: -moz-none;
@@ -286,6 +331,15 @@ deleted {
   text-decoration: line-through;
 }
 
+environment {
+  display: block;
+  font-style: italic;
+}
+
+environment:before {
+  content:  attr(type)  ;
+  -moz-user-select: -moz-none;
+}
 
 centeredEnv, centered {
   text-align: center;
@@ -322,6 +376,9 @@ fontcolor {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fontcolor");
 }
 
+sectiontitle {
+  line-height: 1.2em;
+}
 
 /* paragraph indenting rule -- indent all paragraphs except as in the next rules */
 bodyText,
@@ -655,17 +712,6 @@ paragraph[nonum="true"]>sectiontitle:before {
   -moz-user-select: -moz-none;
 }
 
-
-frontmatter, mainmatter, backmatter {
-  display: block;
-  position: relative;
-  margin-left: 100px;
-  padding: 10px 0px;
-  border: thin solid black;
-  background-color: #EEE8E0;
-  -moz-border-radius: 10px;
-}
-
 preface {
   display: block;
   margin-top: 30pt;
@@ -682,30 +728,9 @@ preface {
 }
 
 
-/* ordinary breaks -- emulate behavior of <br/>*/
-
-msibr:before {
-  content: "\A";
-  white-space: pre;
-  -moz-user-select: -moz-none;
-}
-
-*[showinvis="true"] msibr:before {
-  content: "\AC\A";
-  white-space: pre;
-  color: green;
-  -moz-user-select: -moz-none;
-}
-
 button[class="frontmattertag"] {
-  display: none;
-  -moz-user-select: none;
-  -moz-user-focus: none;
-}
-
-*[showfmbuttons="true"] button[class="frontmattertag"] {
   position: absolute;
-  left: 5px;
+  right: 5px;
   font-family: sans-serif;
   font-style: normal;
   opacity: 0.7;
@@ -729,7 +754,7 @@ body {
 
 bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epigraph, title, line,
   dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
-  abstract, address, author, date, title {
+  abstract, address, author, date, title, maketitle {
   -moz-user-select: text;
 }
 
@@ -827,6 +852,11 @@ msidisplay[numbering="eqns"] mtable[type="eqnarray"]>mtr {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrownumbered");
 }
 
+msidisplay[numbering="eqns"] mtable[type="align"]>mtr {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrownumbered");
+}
+
+
 msidisplay mtable[type="eqnarray"]>mtr[numbering="none"] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowbase");
 }
@@ -874,6 +904,7 @@ button[class="eqnnum"]{
   font-style: normal;
   color: red;
   -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="subeqnnum"]{
@@ -884,6 +915,7 @@ button[class="subeqnnum"]{
   font-style: normal;
   color: blue;
   -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="eqnmarker"]{
@@ -892,31 +924,42 @@ button[class="eqnmarker"]{
   font-style: normal;
   color: red;
   -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 mtr button[class="eqnnum"], mtr button[class="subeqnnum"], mtr button[class="eqnmarker"] {
   display: inline;
   right: 0px;
+  -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="eqnnum"]:after{
   content: "  (" counter(section) "." counter(eqnnumber) ")";
   -moz-user-modify: read-only ! important;
+  -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="eqnnum"][customLabel]:after{
   content: "  " attr(customLabel);
   -moz-user-modify: read-only ! important;
+  -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="subeqnnum"]:after{
   content: "  (" counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin) ")";
   -moz-user-modify: read-only ! important;
+  -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 button[class="subeqnnum"][customLabel]:after{
   content: "  " attr(customLabel);
   -moz-user-modify: read-only ! important;
+  -moz-user-select: -moz-none ! important;
+  -moz-user-focus: ignore;
 }
 
 
@@ -954,6 +997,22 @@ makelot {
 
 appendix {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#appendix");
+}
+
+printindex {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#printindex");
+}
+
+mainmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#mainmatter");
+}
+
+backmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#backmatter");
+}
+
+frontmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#frontmatter");
 }
 
 line {
@@ -1256,7 +1315,7 @@ acknowledgment, case, claim, conclusion, notation, remark, summary {
   counter-increment: theorem;
 }
 
-acknowledgment > sectiontitle:first-child::before {
+ acknowledgment > sectiontitle:first-child::before {
   content: 'Acknowledgment ' counter(section) "." counter(theorem) ' ';
   -moz-user-modify: read-only;
 }
@@ -1473,6 +1532,72 @@ texnote[leadInType="custom"], solution[leadInType="custom"] {
 }
 */
 
+/* Additional theorem-like environments that are used in shells */
+acknowledgement, convention, observation
+{
+  display: block;
+  font-style: normal;
+  counter-increment: theorem;
+}
+
+acknowledgement > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
+acknowledgement > sectiontitle:first-child::before {
+  content: 'Acknowledgement ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+acknowledgement[numbering="none"] > sectiontitle:first-child::before {
+  content: 'Acknowledgement ';
+  -moz-user-modify: read-only;
+}
+
+convention > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
+convention > sectiontitle:first-child::before {
+  content: 'Convention ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+convention[numbering="none"] > sectiontitle:first-child::before {
+  content: 'Convention ';
+  -moz-user-modify: read-only;
+}
+
+observation > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
+observation > sectiontitle:first-child::before {
+  content: 'Observation ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+observation[numbering="none"] > sectiontitle:first-child::before {
+  content: 'Observation ';
+  -moz-user-modify: read-only;
+}
+
+acknowledgement[leadInType="custom"],
+convention[leadInType="custom"],
+observation[leadInType="custom"]
+{
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
+}
+
+acknowledgement > envLeadIn,
+convention > envLeadIn,
+observation > envLeadIn
+{
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremLeadin");
+}
+
+acknowledgement[numbering="none"],
+convention[numbering="none"],
+observation[numbering="none"] {
+  counter-increment: none;
+}
+
+acknowledgement > envLeadIn+bodyText,
+convention > envLeadIn+bodyText,
+observation > envLeadIn+bodyText {
+  display: inline;
+}
+
+
+
 rawTeX {
  color: #6600cc;
 }
@@ -1524,6 +1649,11 @@ alt {
 
 bold {
   font-weight: 700
+}
+
+boldsymbol {
+  font-weight: 700;
+  font-style: italic;
 }
 
 blackboardBold {

@@ -31,7 +31,7 @@
                   key="msiOpenFileKey" oncommand="openDocument();" 
                   label="&openFileCmd.label;"/>
       <menuitem oncommand="openTeX();" label="&importTeXCmd.label;" accesskey="&importTeX.accesskey;"/>
-      <menuitem observes="cmd_exportTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
+      <menuitem observes="cmd_exportToTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
       <menuitem observes="cmd_exportToWeb" label="&exporttowebCmd.label;" accesskey="&exporttoweb.accesskey;"/>
       <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
             onpopupshowing="BuildRecentFilesMenu();">
@@ -40,8 +40,8 @@
             false, false);"/>
           <!-- menuitems appended at runtime -->
       </menu>
-      <menuitem accesskey="&filecleanup.accesskey;" key="cleanupkb" observes="cmd_cleanup"
-          label="&cleanupCmd.label;"/>
+      <!-- menuitem accesskey="&filecleanup.accesskey;" key="cleanupkb" observes="cmd_cleanup"
+          label="&cleanupCmd.label;"/ -->
       <menuitem accesskey="&fileclose.accesskey;" key="msiCloseFileKey" observes="cmd_close" label="&closeCmd.label;"/>
       <menuseparator/>
       <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"
@@ -55,10 +55,15 @@
       <menuseparator/>
       <menuitem id="printSetupMenuItem" observes="cmd_printSetup" label="&printSetupCmd.label;"
             accesskey="&fileprintsetup.accesskey;"/>
-      <menuitem id="printPreviewPDF" key="msiTypesetPrintKey"
+#ifndef PROD_SNB
+      <menuitem id="printPreviewPDF" observes="cmd_previewPdf" key="msiTypesetPrintKey"
             label="&printPreviewPDF.label;"/>
-      <menuitem id="directPrintPreview" label="&printPreviewCmd.label;"/>
-      <menuitem id="msiDirectPrintMenuItem" label="&directPrint.label;"
+#endif
+
+#ifndef XP_MACOSX
+      <menuitem id="directPrintPreview" observes="cmd_previewDirect" label="&printPreviewCmd.label;"/>
+#endif
+      <menuitem id="msiDirectPrintMenuItem" observes="cmd_printDirect" label="&directPrint.label;"
             accesskey="&fileprint.accesskey;" 
             key="msiDirectPrintKey" />
       <menuseparator/>
@@ -159,6 +164,12 @@
                 observes="cmd_countwords" 
                 disabled="false"
                 label="&countWords.label;"/>
+      <menuseparator id="sep_setalignment" />
+      <menuitem id="menu_setalignment"
+                accesskey="&setalignment.accesskey;"
+                key="setalignmentkb"   
+                observes="cmd_MSIsetAlignmentCommand" 
+                label="&setalignment.label;"/>
     </menupopup>
   </menu>
 
@@ -169,10 +180,11 @@
                 accesskey="&insertimage.accesskey;"      
                 command="cmd_image"  
                 label="&insertImageCmd.label;"/>
-      <menuitem id="insertVideo" 
+<!--       <menuitem id="insertVideo" 
                 accesskey="&insertVideo.accesskey;"      
                 command="cmd_video"  
                 label="&insertVideoCmd.label;"/>
+ -->
       <menuitem id="insertTable" 
                 accesskey="&inserttable.accesskey;"      
                 command="cmd_InsertTable" 
@@ -182,9 +194,9 @@
                 command="cmd_msiInsertRules" 
                 label="&insertLine.label;"/>
 			<menuitem id="insertFrame" 
-			          accesskey="&insertMinipage.accesskey;"      
+			          accesskey="&insertFrame.accesskey;"      
 			          command="cmd_frame"       
-                label="&insertMinipage.label;"/>
+                label="&insertFrame.label;"/>
       <menuitem accesskey="&insertBreaks.accesskey;"               
                 command="cmd_msiInsertBreaks"                
                 label="&insertBreaks.label;"/>
@@ -293,49 +305,48 @@
   </menu>  
 
 
-  <menu id="helpmenu" label="&helpmenu.label;" accesskey="&helpmenu.accesskey;">
+  <menu id="helpmenu" label="&helpmenu.label;" key="keyhelp">
 <!--      key="msiMacHelp"
- -->    <menupopup id="helpPopup" >
-      <menuitem id="helpmenuContents" 
-                label="&helpmenuContents.label;" 
-                accesskey="&helpmenuContents.accesskey;" 
-                key="keyhelpcontents" 
-                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/swp.rdf');"/>
-      <menuitem id="helpmenuSearch" 
-                label="&helpmenuSearch.label;" 
-                accesskey="&helpmenuSearch.accesskey;" 
-                observes="cmd_unimp"/>
-      <menuitem id="helpmenuIndex" 
-                label="&helpmenuIndex.label;" 
-                accesskey="&helpmenuIndex.accesskey;" 
-                observes="cmd_unimp"/>
+ -->    
+    <menupopup id="helpPopup" >
+      <menuitem  
+          key="keyhelpcontents"
+#ifdef PROD_SWP
+                label="&helpmenuSWP.label;" 
+                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/swp.rdf');"
+                id="helpmenuSWP" 
+#endif
+#ifdef PROD_SW
+                label="&helpmenuSW.label;" 
+                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/sw.rdf');"
+                id="helpmenuSW" 
+#endif
+#ifdef PROD_SNB
+                label="&helpmenuSNB.label;" 
+                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/snb.rdf');"
+                id="helpmenuSNB" 
+#endif
+      />
       <menuseparator/>
       <menuitem id="helpmenuWebsite" 
                 label="&helpmenuWebsite.label;" 
-                accesskey="&helpmenuWebsite.accesskey;" 
-                observes="cmd_unimp"/>
+                oncommand="openBrowser('https://www.mackichan.com');"/>
       <menuseparator/>
-      <menuitem id="helpmenuRegister" 
-                label="&helpmenuRegister.label;" 
-                accesskey="&helpmenuRegister.accesskey;" 
-                observes="cmd_unimp"/>
-      <menuitem id="helpmenuFeatures" 
-                label="&helpmenuFeatures.label;" 
-                accesskey="&helpmenuFeatures.accesskey;" 
-                observes="cmd_unimp"/>
+      <menuitem id="helpmenuActivate" 
+                label="&helpmenuActivate.label;" 
+                observes="cmd_activate"
+                oncommand="openDialog('chrome://prince/content/activateDialog.xul', 'Activate', 'chrome,close,titlebar,modal,resizable');"/>
       <menuitem id="helpmenuLicense" 
                 label="&helpmenuLicense.label;" 
-                accesskey="&helpmenuLicense.accesskey;" 
-                observes="cmd_unimp"/>
+                oncommand="openDialog('chrome://prince/content/licenseDialog.xul', 'License', 'chrome,close,titlebar,modal,resizable');"/>
       <menuseparator id="aboutSeparator"/>
-      <menuitem accesskey="&aboutCmd.accesskey;" 
-                label="&aboutCmd.label;" 
+      <menuitem label="&aboutCmd.label;" 
                 id="aboutName" 
                 oncommand="goAboutDialog();"/>
     </menupopup>
   </menu>
   
-  <menu id="viewMenu" label="&viewMenu.label;" accesskey="&viewMenu.accesskey;" >
+  <menu id="viewMenu" label="&viewMenu.label;" accesskey="&viewMenu.accesskey;" onpopupshowing="msiEditorInitViewMenu();">
     <menupopup id="viewMenuPopup">
       <menuitem id="viewNormalMode"   
                 type="radio" 
@@ -355,6 +366,8 @@
                 accesskey="&SourceMode.accesskey;" 
                 observes="cmd_HTMLSourceMode"
                 label="&SourceMode.label;"/>
+#ifndef PROD_SNB
+<!--   later we could have this bring up the direct print preview in SNB  -->
       <menuitem id="viewPreviewMode"  
                 type="radio" 
                 group="mode" 
@@ -362,27 +375,32 @@
                 observes="cmd_PreviewMode"
                   label="&PreviewMode.label;"/>
       <menuseparator/>
-#ifndef PROD_SNB
-      <menuitem id="viewTeXLog"  
-                accesskey="&viewTeXLog.accesskey;"    
-                observes="cmd_showTeXLog" 
-                label="&viewTeXLog.label;"/>
       <menuitem id="viewTeXFile"  
                 accesskey="&viewTeXFile.accesskey;"    
                 observes="cmd_showTeXFile" 
                 label="&viewTeXFile.label;"/>
+      <menuitem id="viewTeXLog"  
+                accesskey="&viewTeXLog.accesskey;"    
+                observes="cmd_showTeXLog" 
+                label="&viewTeXLog.label;"/>
+      <menuitem id="viewBibTeXLog"  
+                accesskey="&viewBibTeXLog.accesskey;"    
+                observes="cmd_showBibTeXLog" 
+                label="&viewBibTeXLog.label;"/>
       <menuseparator/>
 #endif
       <menu id="sidebar-menu" label="&viewSidebars.label;" accesskey="&viewsidebars.accesskey;" >
         <menupopup>
           <menuitem id="viewsidebarleft" 
-                    type="checkbox" 
+                    type="checkbox"
+                    persist="checked" 
                     checked="true" 
                     observes="cmd_viewStatusBar"
                     accesskey="&viewStatusBar.accesskey;"
                     label="&viewsidebarleft.label;" />
           <menuitem id="viewsidebarright" 
-                    type="checkbox" 
+                    type="checkbox"
+                    persist="checked" 
                     checked="true" 
                     observes="cmd_viewStatusBar"
                     accesskey="&viewStatusBar.accesskey;"
@@ -398,60 +416,70 @@
       <menuseparator/>
       <menuitem id="viewFootnotes"
                 type="checkbox"
-                checked="true"
                 persist="checked"
+                checked="true"
                 accesskey="&viewFootnotes.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewFootnotes.label;"/>
       <menuitem id="viewOtherNotes" 
                 type="checkbox"
-                checked="true"
                 persist="checked"
+                checked="true"
                 accesskey="&viewOtherNotes.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewOtherNotes.label;"/>
       <menuitem id="viewInvisibles"
                 type="checkbox"
+                persist="checked"
+                checked="false"
                 accesskey="&viewInvisibles.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewInvisibles.label;"/>
       <menuitem id="viewSectionExpanders"
                 type="checkbox"
+                persist="checked"
                 checked="true"
                 accesskey="&viewSectionExpanders.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewSectionExpanders.label;"/>
       <menuitem id="viewShortTitles"
                 type="checkbox"
+                persist="checked"
                 checked="true"
                 accesskey="&viewShortTitles.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewShortTitles.label;"/>
-      <menuitem id="viewFMButtons"
+<!--       <menuitem id="viewFMButtons"
                 type="checkbox"
+                persist="checked"
+                checked="false"
                 accesskey="&viewFMButtons.accesskey;"
                 observes="cmd_viewInvisibles"
                 label="&viewFMButtons.label;"/>
-      <menuitem id="viewHelperLines" 
+ -->      <menuitem id="viewHelperLines" 
                 type="checkbox"
+                persist="checked"
                 accesskey="&viewHelperLines.accesskey;"
                 checked="true"
                 observes="cmd_viewInvisibles"
                 label="&viewHelperLines.label;"/>
       <menuitem id="viewInputBoxes"
                 type="checkbox"
+                persist="checked"
                 accesskey="&viewInputBoxes.accesskey;"
                 checked="true"
                 observes="cmd_viewInvisibles"
                 label="&viewInputBoxes.label;"/>
       <menuitem id="viewIndexEntries" 
                 type="checkbox"
+                persist="checked"
                 accesskey="&viewIndexEntries.accesskey;"
                 checked="true"
                 observes="cmd_viewInvisibles"
                 label="&viewIndexEntries.label;"/>
       <menuitem id="viewMarkers"  
                 type="checkbox"
+                persist="checked"
                 accesskey="&viewMarkers.accesskey;"
                 checked="true"
                 observes="cmd_viewInvisibles"
@@ -479,7 +507,7 @@
     </menupopup>
   </menu>
   
-  <!-- commands updated when the editor gets created -->
+  <!-- commands updatgd when the editor gets created -->
   <commandset id="commonEditorMenuItems"
           commandupdater="true"
           events="create"
@@ -488,20 +516,10 @@
     <command id="cmd_newDocument"  oncommand="msiGoDoCommand('cmd_new');"/>
     <command id="cmd_open"         oncommand="msiOpenCommand.doCommand('cmd_open');"/>
     <command id="cmd_close"        label="&closeCmd.label;"         oncommand="msiGoDoCommand('cmd_close')"/>
-    <command id="cmd_cleanup"        label="&cleanupCmd.label;"         oncommand="msiGoDoCommand('cmd_cleanup')"/>
     <command id="cmd_printSetup"   oncommand="msiGoDoCommand('cmd_printSetup')"/>
 <!--
     <command id="cmd_printPreview" label="printPreviewCmd.label;"  oncommand="msiGoDoCommand('cmd_printPreview')"/>
 -->
-    <command id="cmd_openTeX" oncommand="openTeX();" />
-    <command id="cmd_exportTeX" oncommand="exportTeX();" />
-    <command id="cmd_exportToWeb" oncommand="exportToWeb();" />
-    
-    <command id="cmd_printDirect"    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();"/>
-    <command id="cmd_printPdf"    oncommand="msiGoDoCommand('cmd_printPdf');;event.stopPropagation();"/>
-    <command id="cmd_previewDirect"  oncommand="msiGoDoCommand('cmd_previewDirect');event.stopPropagation();"/>
-    <command id="cmd_previewPdf"  oncommand="msiGoDoCommand('cmd_previewPdf');event.stopPropagation();" />
-    <command id="cmd_compilePdf"  oncommand="msiGoDoCommand('cmd_compilePdf')"/>
     <command id="cmd_documentInfo" oncommand="msiGoDoCommand('cmd_documentInfo')"/>
     <command id="cmd_documentStyle" oncommand="msiGoDoCommand('cmd_documentStyle')"/>
     <command id="cmd_quit"        oncommand="msiGoDoCommand('cmd_quit')"/>
@@ -523,7 +541,18 @@
     <command id="cmd_appendix"  oncommand="msiGoDoCommand('cmd_appendix')" />
     <command id="cmd_mainmatter" oncommand="msiGoDoCommand('cmd_mainmatter')" />
     <command id="cmd_backmatter"  oncommand="msiGoDoCommand('cmd_backmatter')" />
+    <command id="cmd_frontmatter"  oncommand="msiGoDoCommand('cmd_frontmatter')" />
     <command id="cmd_printindex" oncommand="msiGoDoCommand('cmd_printindex')" />
+    <command id="cmd_cleanup"        label="&cleanupCmd.label;"         oncommand="msiGoDoCommand('cmd_cleanup')"/>
+    <command id="cmd_openTeX" oncommand="openTeX();" />
+    <command id="cmd_exportToTeX" oncommand="msiGoDoCommand('cmd_exportToTeX');" />
+    <command id="cmd_exportToWeb" oncommand="msiGoDoCommand('cmd_exportToWeb');" />
+    
+    <command id="cmd_printDirect"    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();"/>
+    <command id="cmd_printPdf"    oncommand="msiGoDoCommand('cmd_printPdf');;event.stopPropagation();"/>
+    <command id="cmd_previewDirect"  oncommand="msiGoDoCommand('cmd_previewDirect');event.stopPropagation();"/>
+    <command id="cmd_previewPdf"  oncommand="msiGoDoCommand('cmd_previewPdf');event.stopPropagation();" />
+    <command id="cmd_compilePdf"  oncommand="msiGoDoCommand('cmd_compilePdf')"/>
 
 
 
@@ -560,7 +589,7 @@
 
     <command id="cmd_insertHorizontalSpaces"   oncommand="msiGoDoCommand('cmd_insertHorizontalSpaces')"/>
     <command id="cmd_insertVerticalSpaces"     oncommand="msiGoDoCommand('cmd_insertVerticalSpaces')"/>
-    <command id="cmd_msiInsertRules"   observes="inMathBroadcaster" 
+    <command id="cmd_msiInsertRules"    
       oncommand="msiGoDoCommand('cmd_msiInsertRules')"/>
     <command id="cmd_msiInsertBreaks"  
                  oncommand="msiGoDoCommand('cmd_msiInsertBreaks')"/>
@@ -580,7 +609,9 @@
     <command id="cmd_viewStatusBar"    oncommand="setStatusBarVisibility();" />
 
     <!-- only used in context popup menu -->
-    <command id="cmd_editLink"                 oncommand="msiGoDoCommand('cmd_editLink')"/>
+<!--     <command id="cmd_editLink"                 oncommand="msiGoDoCommand('cmd_editLink')"/>
+ -->
+    <command id="cmd_followLink"                 oncommand="msiGoDoCommand('cmd_followLink')"/>
     <command id="cmd_msiReviseHyperlink"       oncommand="msiGoDoCommand('cmd_msiReviseHyperlink')"/>
     <command id="cmd_reviseAnchor"             oncommand="msiGoDoCommand('cmd_reviseAnchor')"/>
     <command id="cmd_reviseImage"              oncommand="msiGoDoCommand('cmd_reviseImage')"/>
@@ -624,6 +655,7 @@
     <command id="cmd_saveAsDir"      oncommand="msiGoDoCommand('cmd_saveAsDir')"/>
     <command id="cmd_saveCopyAsDir"  oncommand="msiGoDoCommand('cmd_saveCopyAsDir')"/>
     <command id="cmd_exportToText"   label="&exportToTextCmd.label;"   oncommand="msiGoDoCommand('cmd_exportToText')"/>
+    <command id="cmd_exportToTeX"   label="&exportToTexCmd.label;"   oncommand="msiGoDoCommand('cmd_exportToTeX')"/>
     <command id="cmd_saveAndChangeEncoding"  label="&saveAndChangeEncodingCmd.label;"  oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding')"/>
     <command id="cmd_publish"        label="&publishCmd.label;"        oncommand="msiGoDoCommand('cmd_publish')"/>
     <command id="cmd_publishAs"      label="&publishAsCmd.label;"      oncommand="msiGoDoCommand('cmd_publishAs')"/>
@@ -676,6 +708,9 @@
     <command id="cmd_paste" 
              oncommand="msiGoDoCommand('cmd_paste')"
              acceltext="&pasteCmd.acceltext;"/>
+    <command id="cmd_define" 
+             oncommand="defineSelection()"
+             accesskey="&define.accesskey;"/>
     <command id="cmd_pasteNoFormatting" oncommand="msiGoDoCommand('cmd_pasteNoFormatting')"
                label="&pasteNoFormattingCmd.label;" accesskey="&pasteNoFormattingCmd.accesskey;"/>
     <command id="cmd_delete"
@@ -698,6 +733,7 @@
     <command id="cmd_checkLinks"    oncommand="msiGoDoCommand('cmd_checkLinks')"/>
     <command id="cmd_pasteQuote"    oncommand="msiGoDoCommand('cmd_pasteQuote')" label="&pasteAsQuotationCmd.label;"/>
     <command id="cmd_publishSettings" label="&publishSettings.label;" accesskey="&publishSettings.accesskey;" oncommand="msiGoDoCommand('cmd_publishSettings')"/>
+    <command id="cmd_MSIsetAlignmentCommand"    oncommand="msiGoDoCommand('cmd_MSIsetAlignmentCommand')"/>
   </commandset>
 
   <!-- style related commands that update on creation, and on selection change -->
@@ -820,6 +856,7 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
       oncommand="callOTFontDialog();"/>
     <command id="cmd_tagkeyassignments" oncommand="callFunctionKeyDialog();"/>
   </commandset>
+
 
     
 #ifdef DEBUG

@@ -463,7 +463,13 @@ var msiReviseManualBibItemCmd =
     editorElement.focus();
   },
 
-  doCommand: function(aCommand) {}
+  doCommand: function(aCommand) {
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    var bibItemData = {key : "", bibLabel : "", paragraphNode : editor.selection.focusNode, offset : editor.selection.focusOffset};
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+                                                           editorElement, "cmd_reviseManualBibItemCmd", this, bibItemData);
+  }
 };
 
 var msiInsertTeXField =
@@ -505,9 +511,9 @@ var msiInsertSubdocument =
 function doDocFormatDlg()
 {
   var editorElement = document.getElementById("content-frame");
-  window.openDialog("chrome://prince/content/typesetDocFormat.xul", "docformat", 
-    "chrome,close,resizable,titlebar,dependent", editorElement);
-  if (!doDocFormatData.Cancel)
+  window.openDialog("chrome://prince/content/typesetDocFormat.xul", "docformat",
+    "chrome,close,resizable,titlebar,dependent", msiGetActiveEditorElement);
+  //if (!doDocFormatData.Cancel)
   {
 		msiGetEditor(editorElement).incrementModificationCount(1);
   }
@@ -557,14 +563,14 @@ function doBibChoiceDlg(editorElement)
   var bibChoiceData = new Object();
   bibChoiceData.bBibTeX = false;
   var theBibChoice = getBibliographyScheme(editorElement);
-  if (theBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
+  if (theBibChoice == "bibtex")  //a kludge - must get hooked up to editor to really work
     bibChoiceData.bBibTeX = true;
   window.openDialog("chrome://prince/content/typesetBibChoice.xul", "bibchoice", "chrome,close,titlebar,modal,resizable", bibChoiceData);
   if (!bibChoiceData.Cancel)
   {
     var choiceStr = "manual";
     if (bibChoiceData.bBibTeX)
-      choiceStr = "BibTeX";
+      choiceStr = "bibtex";
     else
       choiceStr = "manual";
     setBibliographyScheme(editorElement, choiceStr);
@@ -760,9 +766,9 @@ function getTypesetGenSettingsFromPrefs()
   theData.bUseExistingAuxFiles = GetBoolPref("swp.typeset.useExistingAuxFiles");
   theData.bConvertLinksToPDF = GetBoolPref("swp.pdftypeset.convertLinksToPDF");
   theData.bPassThroughUniMacro = GetBoolPref("swp.typeset.passThroughUniMacro");
-  theData.bibTeXExePath = GetLocalFilePref("swp.bibtex.appPath");
+//  theData.bibTeXExePath = GetLocalFilePref("swp.bibtex.appPath");
   theData.bibTeXDBaseDir = GetLocalFilePref("swp.bibtex.dir");
-  theData.bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
+//  theData.bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
   return theData;
 }
 
@@ -772,9 +778,9 @@ function setTypesetGenSettings(genSettingsData)
   SetBoolPref("swp.typeset.useExistingAuxFiles", genSettingsData.bUseExistingAuxFiles);
   SetBoolPref("swp.pdftypeset.convertLinksToPDF", genSettingsData.bConvertLinksToPDF);
   SetBoolPref("swp.typeset.passThroughUniMacro", genSettingsData.bPassThroughUniMacro);
-  SetLocalFilePref("swp.bibtex.appPath", genSettingsData.bibTeXExePath);
+//  SetLocalFilePref("swp.bibtex.appPath", genSettingsData.bibTeXExePath);
   SetLocalFilePref("swp.bibtex.dir", genSettingsData.bibTeXDBaseDir);
-  SetLocalFilePref("swp.bibtex.styledir", genSettingsData.bibTeXStyleDir);
+//  SetLocalFilePref("swp.bibtex.styledir", genSettingsData.bibTeXStyleDir);
 }
 
 
@@ -950,9 +956,16 @@ function doReviseBibTeXBibliography(editorElement, reviseData, dlgData)
 
 function doReviseManualBibItem(editorElement, bibitemNode, dlgData)
 {
+  var ix;
   var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
-  msiEditorEnsureElementAttribute(bibitemNode, "bibitemkey", dlgData.key, editor);
+  var bodytext = getChildByTagName(bibitemNode, "bodyText");
+  if (!bodytext) bodytext = editor.createNode("bodytext", bibitemNode, 0);
+
+  var bibkey = getChildByTagName(bibitemNode, "bibkey");
+  if (!bibkey) bibkey = editor.createNode("bibkey", bibitemNode, 0);
+  bibkey.textContent = dlgData.key;
+
   if (dlgData.bBibLabelChanged)
   {
     var currLabelNode = null;

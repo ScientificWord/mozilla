@@ -158,8 +158,10 @@ nsMathMLmspaceFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
     count = 0;
     PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
   }
-
-
+  else {
+    PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, count);
+  }
+  *_retval = count;
   return NS_OK;  
 }
 
@@ -174,7 +176,10 @@ nsMathMLmspaceFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame
     count = 0;
     PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
   }
-
+  else {
+    PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, count);
+  }
+  *_retval = count;
   return NS_OK;  
 }
 

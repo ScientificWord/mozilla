@@ -55,13 +55,14 @@
 <!ENTITY title.label "Caption">
 <!ENTITY title.accesskey "C">
 <!ENTITY title.tooltip "The image's caption, if any">
-<!ENTITY altText.label "Alternate text:">
+<!ENTITY altText.label "Alternate text">
 <!ENTITY altText.accesskey "A">
 <!ENTITY altTextEditField.tooltip "Type text to display in place of the image">
 
 <!ENTITY previewBox.label "Image Preview">
 <!ENTITY MoreFewerButton.tooltip "Display more or fewer properties to edit">
-
+<!ENTITY chooseButton.label "Choose File...">
+<!ENTITY chooseFile.accesskey "F">
 <!-- These controls are in the Dimensions tab panel -->
 <!-- actualSize.label should be same as actualSizeRadio.label + ":" -->
 <!ENTITY actualSize.label "Actual Size:">
@@ -128,9 +129,9 @@
 
 <!ENTITY placement.label "Placement">
 <!ENTITY EnterNewName.tooltip "Enter a new key name">
-<!ENTITY Above.label  "Above">
-<!ENTITY Below.label  "Below">
-<!ENTITY CaptionText.label  "Caption Text">
+<!ENTITY None.label  "None">
+<!ENTITY Above.label  "Top">
+<!ENTITY Below.label  "Bottom">
 <!ENTITY AltText.label  "Alt Text">
 <!ENTITY NewKeyOrDocName.tooltip  "Enter a new key name or a document name">
 <!ENTITY MakeRelativeCheckbox.label  "Make reference relative">

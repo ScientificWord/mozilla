@@ -77,7 +77,7 @@ static NS_DEFINE_CID(kLookAndFeelCID, NS_LOOKANDFEEL_CID);
 // ==================================================================
 NS_IMPL_ISUPPORTS1(DocumentResizeEventListener, nsIDOMEventListener)
 
-DocumentResizeEventListener::DocumentResizeEventListener(nsIHTMLEditor * aEditor) 
+DocumentResizeEventListener::DocumentResizeEventListener(nsIHTMLEditor * aEditor)
 {
   mEditor = do_GetWeakReference(aEditor);
 }
@@ -115,7 +115,7 @@ ResizerSelectionListener::NotifySelectionChanged(nsIDOMDocument *, nsISelection 
 {
   if ((aReason & (nsISelectionListener::MOUSEDOWN_REASON |
                   nsISelectionListener::KEYPRESS_REASON |
-                  nsISelectionListener::SELECTALL_REASON)) && aSelection) 
+                  nsISelectionListener::SELECTALL_REASON)) && aSelection)
   {
     // the selection changed and we need to check if we have to
     // hide and/or redisplay resizing handles
@@ -138,7 +138,7 @@ ResizerMouseMotionListener::ResizerMouseMotionListener(nsIHTMLEditor * aEditor)
   mEditor = do_GetWeakReference(aEditor);
 }
 
-ResizerMouseMotionListener::~ResizerMouseMotionListener() 
+ResizerMouseMotionListener::~ResizerMouseMotionListener()
 {
 }
 
@@ -295,14 +295,14 @@ nsHTMLEditor::SetAllResizersPosition()
   PRInt32 rh =  (PRInt32)((resizerHeight+ 1) / 2);
 
   SetAnonymousElementPosition(x-rw,     y-rh, mTopLeftHandle);
-  SetAnonymousElementPosition(x+w/2-rw, y-rh, mTopHandle);
+  SetAnonymousElementPosition(x+w/2-rw-1, y-rh, mTopHandle);
   SetAnonymousElementPosition(x+w-rw-1, y-rh, mTopRightHandle);
 
   SetAnonymousElementPosition(x-rw,     y+h/2-rh, mLeftHandle);
   SetAnonymousElementPosition(x+w-rw-1, y+h/2-rh, mRightHandle);
 
   SetAnonymousElementPosition(x-rw,     y+h-rh-1, mBottomLeftHandle);
-  SetAnonymousElementPosition(x+w/2-rw, y+h-rh-1, mBottomHandle);
+  SetAnonymousElementPosition(x+w/2-rw-1, y+h-rh-1, mBottomHandle);
   SetAnonymousElementPosition(x+w-rw-1, y+h-rh-1, mBottomRightHandle);
 
   return NS_OK;
@@ -332,7 +332,7 @@ nsHTMLEditor::RefreshResizers()
                            mResizedObjectX, mResizedObjectY);
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsHTMLEditor::ShowResizers(nsIDOMElement *aResizedElement)
 {
   NS_ENSURE_ARG_POINTER(aResizedElement);
@@ -386,7 +386,7 @@ nsHTMLEditor::ShowResizers(nsIDOMElement *aResizedElement)
   res = SetAllResizersPosition();
   if (NS_FAILED(res)) return res;
 
-// BBM: Disable shadows, since they were producing a second image out of place 
+// BBM: Disable shadows, since they were producing a second image out of place
 // // now, let's create the resizing shadow
   res = CreateShadow(getter_AddRefs(mResizingShadow), parentNode,
                      aResizedElement);
@@ -419,7 +419,7 @@ nsHTMLEditor::ShowResizers(nsIDOMElement *aResizedElement)
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsHTMLEditor::HideResizers(void)
 {
   if (!mResizedObject)
@@ -538,6 +538,13 @@ nsHTMLEditor::StartResizing(nsIDOMElement *aHandle)
 
   // do we want to preserve ratio or not?
   PRBool preserveRatio = nsHTMLEditUtils::IsImage(mResizedObject, mtagListManager);
+  if (!preserveRatio) {
+     nsAutoString aspect;
+    mResizedObject->GetAttribute(NS_LITERAL_STRING("aspect"), aspect);
+    if (aspect.EqualsLiteral("true")) {
+      preserveRatio = PR_TRUE;
+    }
+  }
   nsresult result;
   nsCOMPtr<nsIPrefBranch> prefBranch =
     do_GetService(NS_PREFSERVICE_CONTRACTID, &result);
@@ -611,7 +618,7 @@ nsHTMLEditor::StartResizing(nsIDOMElement *aHandle)
 }
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsHTMLEditor::MouseDown(PRInt32 aClientX, PRInt32 aClientY,
                         nsIDOMElement *aTarget)
 {
@@ -638,7 +645,7 @@ nsHTMLEditor::MouseDown(PRInt32 aClientX, PRInt32 aClientY,
   return NS_OK;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsHTMLEditor::MouseUp(PRInt32 aClientX, PRInt32 aClientY,
                       nsIDOMElement *aTarget)
 {
@@ -803,7 +810,7 @@ nsHTMLEditor::GetNewResizingIncrement(PRInt32 aX, PRInt32 aY, PRInt32 aID)
 
   PRInt32 xi = (aX - mOriginalX) * mWidthIncrementFactor;
   PRInt32 yi = (aY - mOriginalY) * mHeightIncrementFactor;
-  float objectSizeRatio = 
+  float objectSizeRatio =
               ((float)mResizedObjectWidth) / ((float)mResizedObjectHeight);
   result = (xi > yi) ? xi : yi;
   switch (aID) {
@@ -953,7 +960,7 @@ nsHTMLEditor::SetFinalSize(PRInt32 aX, PRInt32 aY)
   PRInt32 height = GetNewResizingHeight(aX, aY);
   PRBool setWidth  = !mResizedObjectIsAbsolutelyPositioned || (width != mResizedObjectWidth);
   PRBool setHeight = !mResizedObjectIsAbsolutelyPositioned || (height != mResizedObjectHeight);
-  
+
   PRInt32 x, y;
   x = left - ((mResizedObjectIsAbsolutelyPositioned) ? mResizedObjectBorderLeft+mResizedObjectMarginLeft : 0);
   y = top - ((mResizedObjectIsAbsolutelyPositioned) ? mResizedObjectBorderTop+mResizedObjectMarginTop : 0);
@@ -967,7 +974,7 @@ nsHTMLEditor::SetFinalSize(PRInt32 aX, PRInt32 aY)
 
   NS_NAMED_LITERAL_STRING(widthStr,  "width");
   NS_NAMED_LITERAL_STRING(heightStr, "height");
-  
+
   PRBool hasAttr = PR_FALSE;
   if (mResizedObjectIsAbsolutelyPositioned) {
     if (setHeight)

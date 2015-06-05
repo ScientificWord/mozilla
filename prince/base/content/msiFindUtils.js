@@ -1409,7 +1409,7 @@ msiMatchNode.prototype =
       targRange.setStart( ourTargRange.startContainer, ourTargRange.startOffset );
       targRange.setEnd( ourTargRange.endContainer, ourTargRange.endOffset );
       //experimental
-      if (matched == msiSearchUtils.completedMatch)
+      if (ourRange && matched == msiSearchUtils.completedMatch)  // BBM: ?? OurRange is local; it will get lost!
       {
         ourRange.setStartBefore(this.mNode);
         ourRange.setEndAfter(this.mNode);

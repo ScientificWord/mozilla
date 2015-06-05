@@ -93,7 +93,7 @@
   <xsl:variable name="requiredpackages" select ="exsl:node-set($requiredpackages.tf)"/>
   <xsl:variable name="preambletexbuttons" select ="exsl:node-set($preambletexbuttons.tf)"/>
 
-  <xsl:variable name="packagelist.tf"> 
+  <xsl:variable name="packagelist.tf">
     <xsl:for-each select="$requiredpackages/*">
       <xsl:variable name="pos" select="position()"/>
 	    <xsl:variable name="currentpackage" select="@pkgname"/>
@@ -122,8 +122,8 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:variable>
- 
-  <!-- xsl:variable name="packagelist.tf"> 
+
+  <!-- xsl:variable name="packagelist.tf">
     <xsl:for-each select="$requiredpackages/*">
       <xsl:variable name="pos" select="position()"/>
 	    <xsl:variable name="currentpackage" select="@req"/>
@@ -160,7 +160,7 @@
       <!-- /xsl:if>
     </xsl:for-each>
   </xsl:variable -->
-   
+
   <xsl:variable name="packagelist" select ="exsl:node-set($packagelist.tf)"/>
 
   <xsl:variable name="compiler" select="//html:texprogram/@prog"/>
@@ -171,53 +171,94 @@
   <xsl:variable name="lang2" select="//html:babel/@lang2"/>
 
   <xsl:template match="html:preamble">
-    <xsl:text>
-%% preamble
-\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl, rotating} % ,revsymb4-1}
-    </xsl:text>
+    <xsl:value-of select="$blankline"/>
+    <xsl:text>%% preamble</xsl:text>
+    <xsl:value-of select="$blankline"/>
+    <xsl:text>\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl, rotating} % ,revsymb4-1}</xsl:text>
+
     <xsl:if test="$compiler='xelatex'">
-\usepackage{xltxtra,xkeyval}
-\TeXXeTstate=1
-\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\usepackage{xltxtra,xkeyval}</xsl:text>
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\TeXXeTstate=1</xsl:text>
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}</xsl:text>
     </xsl:if>
-    <xsl:if test="not($compiler='xelatex')">
-\usepackage[T1]{fontenc}
+<!--     <xsl:if test="not($compiler='xelatex')">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\usepackage[T1]{fontenc}</xsl:text>
+    </xsl:if>
+ -->
+
+    <xsl:if test="$compiler!='xelatex'">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\usepackage{textcomp}</xsl:text>
     </xsl:if>
 
+    <xsl:if test="count(//html:indexitem) &gt; 0">
+       <xsl:value-of select="$newline"/>
+       <xsl:text>\usepackage{makeidx}</xsl:text>
+    </xsl:if>
 
-    <xsl:if test="$compiler!='xelatex'">\usepackage{textcomp}</xsl:if>
+    <xsl:for-each select="$packagelist/*">
 
-    <xsl:if test="count(//html:indexitem) &gt; 0">\usepackage{makeidx}</xsl:if>
-
-    <xsl:for-each select="$packagelist/*"
-  >
       <xsl:sort select="@pri" data-type="number"/>
-      \usepackage<xsl:if test="@options"
-    >[<xsl:value-of select="@options"/>]</xsl:if
-    >{<xsl:value-of select="@package"/>}  %%  <xsl:value-of select="@pri"/>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\usepackage</xsl:text>
+      <xsl:if test="@options">
+         <xsl:text>[</xsl:text>
+         <xsl:value-of select="@options"/>
+        <xsl:text>]</xsl:text>
+      </xsl:if>
+      <xsl:text>{</xsl:text>
+      <xsl:value-of select="@package"/>
+      <xsl:text>}  %% </xsl:text>
+      <xsl:value-of select="@pri"/>
+      <xsl:if test="@package='svg'">
+        <xsl:text>\IfFileExists{/dev/null}{%</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>\newcommand{\Inkscape}{/Applications/Inkscape.app/Contents/Resources/bin/inkscape }%</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>}{</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>\newcommand{\Inkscape}{"C:/Program Files/Inkscape/inkscape.exe" }%</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>}</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>\setsvg{</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>inkscape=\Inkscape -z -C, svgpath=../graphics/</xsl:text>
+        <xsl:value-of select="$newline"/>
+        <xsl:text>}</xsl:text>
+        <xsl:value-of select="$newline"/>
+      </xsl:if>
     </xsl:for-each>
-    <!--xsl:apply-templates/ -->
+
 
     <!-- back to template match="html:preamble"-->
     <!-- xsl:call-template name="generateMissingNewTheorems" / -->
-    <xsl:call-template name="writeNewTheoremList" />
+    <!--     <xsl:call-template name="writeNewTheoremList" /> -->
 
     <!--put this in only if graphicx is used, which, now, it always is-->
-    <!-- <xsl:if test="$packagelist//*[@package='graphicx']">
-    -->
-  \graphicspath{{../tcache/}{../gcache/}{../graphics/}}
-    <!-- </xsl:if>
-    -->
+    <!-- <xsl:if test="$packagelist//*[@package='graphicx']">  -->
+    <xsl:value-of select="$newline"/>
+    <xsl:text>\graphicspath{{../graphics/}{../tcache/}{../gcache/}}</xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>\DeclareGraphicsExtensions{.pdf,.svg,.eps,.ps,.png,.jpg,.jpeg}</xsl:text>
+
+
+
     <xsl:apply-templates/>
     <xsl:for-each select="$preambletexbuttons/*">
       <xsl:if test="@pre='1'">
-        <xsl:text>
-        </xsl:text>
+
+
         <xsl:apply-templates mode="tex"/>
       </xsl:if>
     </xsl:for-each>
 
   </xsl:template>
+
 
   <xsl:template match="html:preambleTeX">
     <xsl:value-of select="."/>
@@ -251,98 +292,122 @@
 
   <!-- use docformat information to call the crop package -->
   <xsl:template match="html:crop">
-    <xsl:if test="$pagelayoutok"
-  ><xsl:variable name="unit">
+    <xsl:if test="$pagelayoutok">
+      <xsl:variable name="unit">
         <xsl:value-of select="@unit"/>
-      </xsl:variable
-  >\usepackage[<xsl:value-of select="@type"/><xsl:text>,</xsl:text
-  ><xsl:choose
-    ><xsl:when test="@paper='other'"
-      >width =<xsl:value-of select="@width"/><xsl:value-of select="$unit"/><xsl:text>,</xsl:text
-      >
-          height =<xsl:value-of select="@height"/><xsl:value-of select="$unit"/><xsl:text>,</xsl:text
-    ></xsl:when>
-        <xsl:otherwise
-      ><xsl:value-of select="@paper"/><xsl:text>,</xsl:text></xsl:otherwise>
-        <!-- you can add any crop options you want here, separated with commas --> </xsl:choose
-  >
-      center]{crop}
-    </xsl:if
->
+      </xsl:variable>
+      <xsl:text>\usepackage[</xsl:text>
+      <xsl:value-of select="@type"/>
+      <xsl:text>,</xsl:text>
+      <xsl:choose>
+        <xsl:when test="@paper='other'">
+          <xsl:text>width =</xsl:text>
+          <xsl:value-of select="@width"/>
+          <xsl:value-of select="$unit"/>
+          <xsl:text>,</xsl:text>
+          <xsl:text>height =</xsl:text>
+          <xsl:value-of select="@height"/>
+          <xsl:value-of select="$unit"/>
+          <xsl:text>,</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@paper"/>
+          <xsl:text>,</xsl:text>
+        </xsl:otherwise>
+        <!-- you can add any crop options you want here, separated with commas -->
+      </xsl:choose>
+      <xsl:text>center]{crop}</xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <!-- use docformat information to call the geometry package -->
   <xsl:template match="html:pagelayout[@latex='true']">
-    <xsl:if test="$pagelayoutok"
->
+    <xsl:if test="$pagelayoutok">
       <xsl:variable name="unit">
         <xsl:value-of select="@unit"/>
       </xsl:variable>
-      \usepackage[<xsl:apply-templates/>]{geometry}
-    </xsl:if
-></xsl:template>
-
-  <xsl:template match="html:page">
-    <xsl:if test="$pagelayoutok">
-      paper=<xsl:value-of select="@paper"/>paper, twoside=<xsl:value-of select="@twoside"
-  />,
-      <!--landscape=<xsl:value-of select="@landscape"/>
-      , -->
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\usepackage[</xsl:text>
+      <xsl:apply-templates/>
+      <xsl:text>]{geometry}</xsl:text>
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="html:page[@paper='screen']"><xsl:if test="$pagelayoutok"
- >paper=screen, twoside=false, landscape=false,</xsl:if>
+  <xsl:template match="html:page">
+    <xsl:if test="$pagelayoutok">
+      <xsl:text>paper=</xsl:text>
+      <xsl:value-of select="@paper"/>
+      <xsl:text>paper, twoside=</xsl:text>
+      <xsl:value-of select="@twoside"/>
+      <xsl:text>,</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="html:page[@paper='screen']">
+    <xsl:if test="$pagelayoutok">
+      <xsl:text>paper=screen, twoside=false, landscape=false,</xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:page[@paper='other']">
     <xsl:if test="$pagelayoutok">
-      paperwidth=<xsl:value-of select="@width"
-  />, paperheight=<xsl:value-of select="@height"
-/>,
+      <xsl:text>paperwidth=</xsl:text>
+      <xsl:value-of select="@width"/>
+      <xsl:text>, paperheight=</xsl:text>
+      <xsl:value-of select="@height"/>
+      <xsl:text>,</xsl:text>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:textregion">
     <xsl:if test="$pagelayoutok">
-      textwidth=<xsl:value-of select="@width"/>, textheight=<xsl:value-of select="@height"
-/>,
+      <xsl:text>textwidth=</xsl:text>
+      <xsl:value-of select="@width"/>
+      <xsl:text>, textheight=</xsl:text>
+      <xsl:value-of select="@height"/>
+      <xsl:text>,</xsl:text>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:margin">
     <xsl:if test="$pagelayoutok">
-      left=<xsl:value-of select="@left"/>, top=<xsl:value-of select="@top"
-/>,
+      <xsl:text>left=</xsl:text>
+      <xsl:value-of select="@left"/>
+      <xsl:text>, top=</xsl:text>
+      <xsl:value-of select="@top"/>
+      <xsl:text>,</xsl:text>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="html:hedd">
     <xsl:if test="$pagelayoutok">
-      headheight=<xsl:value-of select="@height"
-  />, headsep=<xsl:value-of select="@sep"
-/>,
+      <xsl:text>headheight=</xsl:text>
+      <xsl:value-of select="@height"/>
+      <xsl:text>, headsep=</xsl:text>
+      <xsl:value-of select="@sep"/>
+      <xsl:text>,</xsl:text>
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="html:columns[@count='2']"
-  >
-    twocolumn=true, columnsep=<xsl:value-of select="@sep"/>,
+  <xsl:template match="html:columns[@count='2']">
+    <xsl:text>twocolumn=true, columnsep=</xsl:text>
+    <xsl:value-of select="@sep"/>
+    <xsl:text>,</xsl:text>
   </xsl:template>
 
-  <xsl:template match="html:columns[@count!='2']"
-  ></xsl:template>
+  <xsl:template match="html:columns[@count!='2']"></xsl:template>
 
-  <xsl:template match="html:marginnote[@hidden='false']"
-  ><xsl:if test="$pagelayoutok">
-      marginparwidth=<xsl:value-of select="@width"
-  />, marginparsep=<xsl:value-of select="@sep"
-/>,
+  <xsl:template match="html:marginnote[@hidden='false']">
+    <xsl:if test="$pagelayoutok">
+      <xsl:text>marginparwidth=</xsl:text>
+      <xsl:value-of select="@width"/>
+      <xsl:text>, marginparsep=</xsl:text>
+      <xsl:value-of select="@sep"/>
+      <xsl:text>,</xsl:text>
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="html:marginnote[@hidden!='false']"
-  ></xsl:template>
+  <xsl:template match="html:marginnote[@hidden!='false']"></xsl:template>
 
   <xsl:template match="html:footer"></xsl:template>
   <!--%%  footskip=<xsl:value-of select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep-2)),substring(@sep,string-length(@sep)-2))"/>
@@ -400,7 +465,7 @@
       <xsl:when test="@align='r'">\filleft</xsl:when>
       <xsl:when test="@align='c'">\center</xsl:when>
       <xsl:otherwise>\filright</xsl:otherwise>
-    </xsl:choose>    
+    </xsl:choose>
     <xsl:apply-templates select="html:toprule"
     />}{}{0pt}{\msi<xsl:value-of select="@level"/>}[{<xsl:apply-templates select="html:bottomrule"/>}]
   </xsl:if>
@@ -683,16 +748,20 @@
 
 <xsl:template name="metadata">
   <xsl:if test="html:sw-meta/@product">
-      %% Produced by <xsl:value-of select="html:sw-meta/@product"/>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%% Produced by </xsl:text><xsl:value-of select="html:sw-meta/@product"/>
   </xsl:if>
   <xsl:if test="html:sw-meta/@version">
-      %% Version <xsl:value-of select="html:sw-meta/@version"/>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%% Version </xsl:text><xsl:value-of select="html:sw-meta/@version"/>
   </xsl:if>
   <xsl:if test="html:sw-meta/@created">
-      %% Created <xsl:value-of select="html:sw-meta/@created"/>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%% Created </xsl:text><xsl:value-of select="html:sw-meta/@created"/>
   </xsl:if>
   <xsl:if test="html:sw-meta/@lastrevised">
-      %% Last revised <xsl:value-of select="html:sw-meta/@lastrevised"/>
+      <xsl:value-of select="$newline"/>
+      <xsl:text>%% Last revised </xsl:text><xsl:value-of select="html:sw-meta/@lastrevised"/>
   </xsl:if>
 </xsl:template>
 

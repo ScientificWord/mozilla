@@ -1,5 +1,5 @@
 modern.jar:
-% skin prince modern %skin/modern/	
+% skin prince modern %skin/modern/
   skin/modern/toolbarsOverlay.css       (toolbarsOverlay.css)
   skin/modern/toolbarbuttonoverride.css (toolbarbuttonoverride.css)
   skin/modern/toolbaroverride.css       (toolbaroverride.css)
@@ -8,7 +8,7 @@ modern.jar:
   skin/modern/editorModeToolbar.css     (editorModeToolbar.css)
   skin/modern/EditorDialog.css          (EditorDialog.css)
   skin/modern/typesetDocFormat.css      (typesetDocFormat.css)
-  skin/modern/editor.css		  		 (editor.css)
+  skin/modern/editor.css		  		      (editor.css)
   skin/modern/binomialsDialog.css       (binomialsDialog.css)
   skin/modern/bracketsDialog.css        (bracketsDialog.css)
   skin/modern/decorationsDialog.css     (decorationsDialog.css)
@@ -18,10 +18,15 @@ modern.jar:
   skin/modern/preferences.css          (preferences.css)
   skin/modern/msiMathDlgStyle.css       (msiMathDlgStyle.css)
   skin/modern/MathVarsDialog.css        (MathVarsDialog.css)
+  skin/modern/intervalsAndAnimation.css  (intervalsAndAnimation.css)
   skin/modern/msiTypesetDlgStyle.css    (msiTypesetDlgStyle.css)
   skin/modern/chamtest.css              (chamtest.css)
   skin/modern/documentStyle.css         (documentStyle.css)
   skin/modern/MatrixInsertRowsCols.css  (MatrixInsertRowsCols.css)
+  skin/modern/aboutDialog.css           (aboutDialog.css)
+  skin/modern/licenseDialog.css           (licenseDialog.css)
+  skin/modern/activate.css           (activate.css)
+  skin/modern/licensestatus.css           (licensestatus.css)
   skin/modern/icons/background.png      (icons/background.png)
   skin/modern/icons/background-sm.png   (icons/background-sm.png)
   skin/modern/icons/copy.png            (icons/copy.png)

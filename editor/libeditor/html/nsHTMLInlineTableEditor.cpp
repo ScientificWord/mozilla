@@ -69,7 +69,8 @@ nsHTMLEditor::ShowInlineTableEditingUI(nsIDOMElement * aCell)
   NS_ENSURE_ARG_POINTER(aCell);
 
   // do nothing if aCell is not a table cell...
-  if (!nsHTMLEditUtils::IsTableCell(aCell, mtagListManager))
+  if (!nsHTMLEditUtils::IsTableCell(aCell, mtagListManager) ||
+    nsHTMLEditUtils::IsMath(aCell))
     return NS_OK;
 
   // the resizers and the shadow will be anonymous children of the body
@@ -219,9 +220,8 @@ nsHTMLEditor::RemoveMouseClickListener(nsIDOMElement * aElement)
     evtTarget->RemoveEventListener(NS_LITERAL_STRING("click"), mMouseListenerP, PR_TRUE);
 }
 
-
 nsresult
-nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY)
+nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY, PRBool useBody)
 {
   aX = 0;
   aY = 0;
@@ -232,13 +232,34 @@ nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt3
 
   nsCOMPtr<nsIDOMElement> body = GetRoot();
   nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
-  nsCOMPtr<nsIContent> bodyContent = do_QueryInterface(body);
+  nsCOMPtr<nsIContent> elContent;
+  nsAutoString positionStr;
+  nsCOMPtr<nsIDOMElement> el = nsnull;
+  nsCOMPtr<nsIDOMNode> elNode = do_QueryInterface(el);
+  aElement->GetParentNode(getter_AddRefs(elNode));
+  if (elNode && !useBody) {
+    el = do_QueryInterface(elNode);
+    while (elNode && !el) {
+      elNode->GetParentNode(getter_AddRefs(elNode));
+      el = do_QueryInterface(elNode);
+    }
+    if (el) {
+      mHTMLCSSUtils->GetComputedProperty(el, nsEditProperty::cssPosition, positionStr);
+      while (el && !positionStr.EqualsLiteral("absolute") && !positionStr.EqualsLiteral("relative") && !positionStr.EqualsLiteral("fixed")) {
+        el->GetParentNode(getter_AddRefs(elNode));
+        el = do_QueryInterface(elNode);
+        if (el) {
+          mHTMLCSSUtils->GetComputedProperty(el, nsEditProperty::cssPosition, positionStr);
+        }
+      }
+    }
+  }
+  if (!el || useBody) el = body;
+  elContent = do_QueryInterface(el);
+  nsIFrame *f = ps->GetPrimaryFrameFor(elContent);
   nsIFrame *frame = ps->GetPrimaryFrameFor(content);
-  nsIFrame *bodyFrame = ps->GetPrimaryFrameFor(bodyContent);
-
-  if (!frame) return NS_OK;
-  if (!bodyFrame) return NS_OK;
-  nsPoint off = frame->GetOffsetTo(bodyFrame);
+  if (!f || !frame) return NS_OK;
+  nsPoint off = frame->GetOffsetTo(f);
   aX = nsPresContext::AppUnitsToIntCSSPixels(off.x);
   aY = nsPresContext::AppUnitsToIntCSSPixels(off.y);
 
@@ -252,7 +273,7 @@ nsHTMLEditor::RefreshInlineTableEditingUI()
   if (!nsElement) {return NS_ERROR_NULL_POINTER; }
 
   PRInt32 xCell, yCell, wCell, hCell;
-  MsiGetElementOrigin(mInlineEditedCell, xCell, yCell);
+  MsiGetElementOrigin(mInlineEditedCell, xCell, yCell, PR_TRUE);
 
   nsresult res = nsElement->GetOffsetWidth(&wCell);
   if (NS_FAILED(res)) return res;
@@ -268,7 +289,7 @@ nsHTMLEditor::RefreshInlineTableEditingUI()
   res = GetTableSize(tableElement, &rowCount, &colCount);
   if (NS_FAILED(res)) return res;
 
-  SetAnonymousElementPosition(xHoriz-10, yCell-7,  mAddColumnBeforeButton);
+  SetAnonymousElementPosition(xHoriz-12, yCell-5,  mAddColumnBeforeButton);
 #ifdef DISABLE_TABLE_DELETION
   NS_NAMED_LITERAL_STRING(classStr, "class");
 
@@ -282,13 +303,13 @@ nsHTMLEditor::RefreshInlineTableEditingUI()
     if (NS_SUCCEEDED(res) && hasClass)
       mRemoveColumnButton->RemoveAttribute(classStr);
 #endif
-    SetAnonymousElementPosition(xHoriz-4, yCell-7,  mRemoveColumnButton);
+    SetAnonymousElementPosition(xHoriz-6, yCell-5,  mRemoveColumnButton);
 #ifdef DISABLE_TABLE_DELETION
   }
 #endif
-  SetAnonymousElementPosition(xHoriz+6, yCell-7,  mAddColumnAfterButton);
+  SetAnonymousElementPosition(xHoriz+4, yCell-5,  mAddColumnAfterButton);
 
-  SetAnonymousElementPosition(xCell-7, yVert-10,  mAddRowBeforeButton);
+  SetAnonymousElementPosition(xCell-5, yVert-10,  mAddRowBeforeButton);
 #ifdef DISABLE_TABLE_DELETION
   if (rowCount== 1) {
     mRemoveRowButton->SetAttribute(classStr,
@@ -300,11 +321,11 @@ nsHTMLEditor::RefreshInlineTableEditingUI()
     if (NS_SUCCEEDED(res) && hasClass)
       mRemoveRowButton->RemoveAttribute(classStr);
 #endif
-    SetAnonymousElementPosition(xCell-7, yVert-4,  mRemoveRowButton);
+    SetAnonymousElementPosition(xCell-5, yVert-4,  mRemoveRowButton);
 #ifdef DISABLE_TABLE_DELETION
   }
 #endif
-  SetAnonymousElementPosition(xCell-7, yVert+6,  mAddRowAfterButton);
+  SetAnonymousElementPosition(xCell-5, yVert+6,  mAddRowAfterButton);
 
   return NS_OK;
 }

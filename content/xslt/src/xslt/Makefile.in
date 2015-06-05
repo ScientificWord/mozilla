@@ -55,6 +55,7 @@ ifndef MOZ_XSLT_STANDALONE
 REQUIRES += \
 		  dom \
 		  content \
+      editor \
 		  widget \
 		  necko \
 		  unicharutil \

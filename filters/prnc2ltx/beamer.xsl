@@ -9,6 +9,37 @@
 
 <xsl:include href="latex.xsl"/>
 
+<xsl:template match="html:date">
+\date<xsl:apply-templates mode="option"/>{<xsl:apply-templates/>}
+</xsl:template>
+<xsl:template match="html:date/html:option"></xsl:template>
+<xsl:template match="html:date//text()" mode="option"></xsl:template>
+<xsl:template match="html:option" mode="option">[<xsl:apply-templates/>]</xsl:template>
+
+<xsl:template match="html:subtitle">
+\subtitle<xsl:apply-templates mode="subtitleid"/>{<xsl:apply-templates/>}
+</xsl:template>
+<xsl:template match="html:subtitle/html:subtitleid"></xsl:template>
+<xsl:template match="html:subtitle//text()" mode="subtitleid"></xsl:template>
+<xsl:template match="html:subtitleid" mode="subtitleid">[<xsl:apply-templates/>]</xsl:template>
+
+<xsl:template match="html:institute">
+\institute<xsl:apply-templates mode="instituteid"/>{<xsl:apply-templates/>}
+</xsl:template>
+<xsl:template match="html:institute/html:instituteid"></xsl:template>
+<xsl:template match="html:institute//text()" mode="instituteid"></xsl:template>
+<xsl:template match="html:instituteid" mode="instituteid">[<xsl:apply-templates/>]</xsl:template>
+
+<xsl:template match="html:subject">\subject{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:keywords">\keywords{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:template match="html:author">
+\author<xsl:apply-templates mode="authorid"/>{<xsl:apply-templates/>}
+</xsl:template>
+<xsl:template match="html:author/html:authorid"></xsl:template>
+<xsl:template match="html:author//text()" mode="authorid"></xsl:template>
+<xsl:template match="html:authorid" mode="authorid">[<xsl:apply-templates/>]</xsl:template>
+
 <xsl:template match="html:beamerframe">
 \begin{frame}
 <xsl:apply-templates/>
@@ -24,44 +55,50 @@
 </xsl:template>
 
 <xsl:template match="html:stepnumberedlist">
-\begin{enumerate}[&lt;+-&gt;]
+\begin{stepenumerate}
 <xsl:apply-templates/>
-\end{enumerate}
+\end{stepenumerate}
 </xsl:template>
 
 <xsl:template match="html:stepbulletlist">
-\begin{itemize}[&lt;+-&gt;]
+\begin{stepitemize}
 <xsl:apply-templates/>
-\end{itemize}
+\end{stepitemize}
 </xsl:template>
 
 <xsl:template match="html:alertstepnumberedlist">
-\begin{enumerate}[&lt;+-| alert@+&gt;]
+\begin{stepenumeratewithalert}[&lt;+-| alert@+&gt;]
 <xsl:apply-templates/>
 \end{enumerate}
 </xsl:template>
 
 <xsl:template match="html:alertstepbulletlist">
-\begin{itemize}[&lt;+-| alert@+&gt;]
+\begin{stepitemizewithalert}
 <xsl:apply-templates/>
-\end{itemize}
+\end{stepitemizewithalert}
 </xsl:template>
 
 <xsl:template match="html:stepnumberedListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>
+
 </xsl:template>
 
 <xsl:template match="html:stepbulletListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>
+
 </xsl:template>
 
 <xsl:template match="html:alertstepnumberedListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>
+
 </xsl:template>
 
 <xsl:template match="html:alertstepbulletListItem">
-\item {<xsl:apply-templates/>}
+\item <xsl:apply-templates/>
+
 </xsl:template>
 
 
 </xsl:stylesheet>
+
+

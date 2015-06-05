@@ -8,7 +8,7 @@
 <!-- <!ENTITY .tooltip "">  -->
 
 <!-- The following are used in htmlfield.xul -->
-<!ENTITY HTMLField.title  "HTML Field">
+<!ENTITY HTMLField.title  "XHTML Field">
 <!ENTITY name.label "Name">
 <!ENTITY name.accesskey "N">
 <!ENTITY Encapsulated.label "Encapsulated">

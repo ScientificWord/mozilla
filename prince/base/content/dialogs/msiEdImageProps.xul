@@ -38,23 +38,23 @@
    - the terms of any one of the MPL, the GPL or the LGPL.
    -
    - ***** END LICENSE BLOCK ***** -->
- 
+
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
- 
+
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> <!--DO NOT DELETE -->
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/mathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <!-- If an editor control is to support context menus, also need: -->
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
- 
+
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorImageProperties.dtd">
 <!--JLF - Localization pass on 6/29/2012-->
-<dialog id="imgDialog" 
+<dialog id="imgDialog"
     title="&windowTitle.label;"
     xmlns ="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
@@ -64,23 +64,21 @@
     ondialogcancel="return onCancel();"
     screenX="40"
     screenY="40">
- 
+
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageProps.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <!--script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
- 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
-
+  <broadcasterset id="frameoverlayBroadcasters"/>
   <popupset id="msiEditorContentContextSet"/>
 
   <commandset id="tasksCommands">
@@ -97,7 +95,7 @@
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
   <commandset id="MSImathMenuCommands"/>
-  
+
   <keyset id="editorKeys">
     <keyset id="tasksKeys"/>
     <keyset id="MSIKeySet"/>
@@ -114,73 +112,36 @@
     <broadcaster id="isVideo" hidden="true"/>
   </broadcasterset>
   <vbox id="units" />
- 
+
   <tabbox id="TabBox">
     <tabs flex="1">
-  <!--tab id="imageInputTab" label="&imageInputTab.label;"/ -->
       <tab id="imagePictureTab" label="&imagePictureTab.label;"/>
       <tab id="msiPlacementTab"/>
       <tab id="msiFrameTab"/>
-      <tab id="imageLabelingTab" label="&imageLabelingTab.label;"/>
       <tab observes="isVideo" id="videoPropertiesTab" label="&videoTab.label;"/>
-      <!-- tab id="imageLinkTab" label="&imageLinkTab.label;"/ -->
     </tabs>
     <tabpanels>
       <vbox id="imagePicture">
-          <!-- 12/10/2010 commented out by JLF per BBM
-          <button oncommand="onAccept();"/>
-          -->
-        <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
-          <radio id = "importRadio"
-            label   = "&importButton.label;"
-            accesskey = "&importButton.accesskey;"
-            oncommand = "SetImport(true);"/>
-          <radio id = "referenceRadio"
-            label   = "&referenceButton.label;"
-            accesskey = "&referenceButton.accesskey;"
-            oncommand = "SetImport(false);"/>
-        </radiogroup>
-        <label control = "srcInput"
-          value = "&locationEditField.label;"
-          accesskey="&locationEditField.accesskey;"
-          tooltiptext="&locationEditField.tooltip;"
-          />
-        <textbox id="srcInput" oninput="ChangeImageSrc();" tabindex="1" class="uri-element"/>
-        <hbox>
-          <checkbox
-            id  = "makeRelativeCheckbox"
-            for = "srcInput"
-            label = "&MakeRelativeCheckbox.label;"
-            tabindex="2"/>
-          <!-- from EdDialogOverlay.xul -->
-          <msibutton id="ChooseFile"  tabindex="3"/>
-        </hbox>
+        <groupbox>
+          <caption control = "srcInput"
+            label = "&locationEditField.label;"
+            accesskey="&locationEditField.accesskey;"
+            tooltiptext="&locationEditField.tooltip;" />
+          <textbox id="srcInput" onchange="chooseImgFile(false);" tabindex="1" class="uri-element"/>
+          <msibutton label = "&chooseButton.label;" accesskey = "&chooseFile.accesskey;" id="ChooseImgFile"  oncommand="chooseImgFile(true);" tabindex="3"/>
+        </groupbox>
         <vbox id="msiFrameSize"/>
         <spacer flex="1"/>
-      </vbox>
-      <vbox id="msiPlacement"/>
-      <vbox id="msiFrame"/>
-      <vbox id="imageLabeling">
-<!--         <spacer flex="1"/>
- -->    <hbox>
-          <label value="&imageKey.label;"/>
-          <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-            completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-            tooltiptext="&EnterNewName.tooltip;" />
-            <!-- ontextentered="" / -->
-        </hbox>
         <groupbox>
-          <caption id="captionPlacementLabel" label="&captionPlacement.label;"/>
-          <radiogroup id="captionPlacementRadioGroup" orient="horizontal">
-            <radio id="captionAboveRadio" label="&Above.label;" value="above"/>
-            <radio id="captionBelowRadio" label="&Below.label;" value="below"/>
-          </radiogroup>
+          <caption label="&AltText.label;"/>
+          <textbox id="altTextInput"/>
         </groupbox>
-        <label value="&CaptionText.label;"/>
-        <editor id="captionTextInput" editortype="html" type="content" context="msiEditorContentContext" height="2in" flex="1"/>
-        <label value="&AltText.label;"/>
-        <textbox id="altTextInput"/>
+
       </vbox>
+      <vbox id="msiPlacement">
+        <vbox id="placementGroup"/>
+      </vbox>
+      <vbox id="msiFrame"/>
       <vbox id="videoProperties" observes="isVideo">
         <checkbox id="vidAutoplayCheckbox" label="&videoAutoplay.label;" checked="false" persist="checked"/>
         <checkbox id="vidShowControlsCheckbox" label="&videoShowControls.label;" checked="false" persist="checked"/>
@@ -240,7 +201,7 @@
       <!-- /vbox -->
     </tabpanels>
   </tabbox>
- 
+
   <hbox align="end">
     <groupbox id="imagePreview" orient="horizontal" flex="1">
       <caption label="&previewBox.label;"/>

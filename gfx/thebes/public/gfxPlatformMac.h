@@ -53,7 +53,7 @@ public:
     already_AddRefed<gfxASurface> CreateOffscreenSurface(const gfxIntSize& size,
                                                          gfxASurface::gfxImageFormat imageFormat);
 
-    already_AddRefed<gfxASurface> gfxPlatformMac::OptimizeImage(gfxImageSurface *aSurface,
+    already_AddRefed<gfxASurface> OptimizeImage(gfxImageSurface *aSurface,
                                                                 gfxASurface::gfxImageFormat format);
 
     nsresult ResolveFontName(const nsAString& aFontName,
@@ -72,7 +72,7 @@ public:
     void GetLangPrefs(eFontPrefLang aPrefLangs[], PRUint32 &aLen, eFontPrefLang aCharLang, eFontPrefLang aPageLang);
     
 private:
-    void gfxPlatformMac::AppendCJKPrefLangs(eFontPrefLang aPrefLangs[], PRUint32 &aLen, 
+    void AppendCJKPrefLangs(eFontPrefLang aPrefLangs[], PRUint32 &aLen, 
                                             eFontPrefLang aCharLang, eFontPrefLang aPageLang);
                                                
     virtual cmsHPROFILE GetPlatformCMSOutputProfile();

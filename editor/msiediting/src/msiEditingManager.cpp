@@ -127,35 +127,58 @@ msiEditingManager::~msiEditingManager()
 nsresult MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, nsIDOMNode *node, PRUint32 offset)
 {
   nsCOMPtr<nsIArray> arrayOfNodes;
-  nsCOMPtr<nsIDOMNode> currentNode; 
+  nsCOMPtr<nsIDOMNode> currentNode;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsCOMPtr<nsIDOMNode> topNode = nsnull;
+  nsCOMPtr<nsIDOMNode> tempNode;
+  nsCOMPtr<nsIDOMNode> parentElement;
+  nsAutoString name;
   PRUint16 nodeType;
   PRUint32 length;
   nsCOMPtr<nsIHTMLEditor> htmlEditor(do_QueryInterface(editor));
   htmlEditor->NodesInRange(range, getter_AddRefs(arrayOfNodes));
   arrayOfNodes->GetLength(&length);
 
+  editor->BeginTransaction();
   for (PRInt32 i = (length-1); i>=0; i--)
   {
     currentNode = do_QueryElementAt(arrayOfNodes, i);
     // put inNode in new parent, outNode
+    tempNode = currentNode;
+    while (tempNode && (tempNode != topNode)) {
+      tempNode->GetParentNode(getter_AddRefs(tempNode));
+    }
+    if (tempNode && (tempNode == topNode)) continue;  // this node has already been included when we walked up the tree with a following node.
     currentNode->GetNodeType(&nodeType);
 
-    //  jcs -- what is this supposed to do? 
-    //  if (nodeType==3) // Means a #text ?
-    //    currentNode->GetParentNode(getter_AddRefs(currentNode));
+    //  jcs -- what is this supposed to do?
+    if (nodeType==3) // Means a #text ?
+      currentNode->GetParentNode(getter_AddRefs(currentNode));
+    currentNode->GetParentNode(getter_AddRefs(parentNode));
+    parentElement = do_QueryInterface(parentNode);
+    parentElement->GetNodeName(name);
+    while (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("msubsup") || name.EqualsLiteral("mfrac")
+      || name.EqualsLiteral("mroot")) {
+      currentNode = parentNode;
+      topNode = currentNode;
+      currentNode->GetParentNode(getter_AddRefs(parentNode));
+      parentElement = do_QueryInterface(parentNode);
+      parentElement->GetNodeName(name);
+    }
 
     editor->DeleteNode(currentNode);
     editor->InsertNode(currentNode, node, offset);//past the mo
   }
+  editor->EndTransaction();
   return NS_OK;
 }
 
 NS_IMETHODIMP
-msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode, 
+msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode,
                                       PRUint32    rawOffset,
                                       PRBool clean,
                                       msiIMathMLEditingBC ** editingBC)
-                                             
+
 {
   nsresult res(NS_ERROR_FAILURE);
   *editingBC = nsnull;
@@ -178,7 +201,7 @@ msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode,
 }
 
 NS_IMETHODIMP
-msiEditingManager::GetMathMLInsertionInterface(nsIDOMNode* rawNode, 
+msiEditingManager::GetMathMLInsertionInterface(nsIDOMNode* rawNode,
                                               PRUint32    rawOffset,
                                               msiIMathMLInsertion ** mathml)
 {
@@ -307,8 +330,8 @@ msiEditingManager::GetMathMLInsertionInterface(nsIDOMNode* rawNode,
           PRUint32 bigOpOffset(msiIMathMLEditingBC::INVALID);
           if (bigOpInfo)
           {
-            bigOpInfo->GetMathmlNode(getter_AddRefs(mmlNode)); 
-            bigOpInfo->GetOffset(&bigOpOffset); 
+            bigOpInfo->GetMathmlNode(getter_AddRefs(mmlNode));
+            bigOpInfo->GetOffset(&bigOpOffset);
           }
           else
           {
@@ -321,17 +344,17 @@ msiEditingManager::GetMathMLInsertionInterface(nsIDOMNode* rawNode,
         case msiIMathMLEditingBC::MSI_WHITESPACE:
           *mathml = new msiWhitespace(mathmlNode, offset);
         break;
-        
+
         default:
           res = NS_ERROR_NO_INTERFACE;
         break;
-      }  
+      }
       if (res == NS_OK && *mathml == nsnull)
         res = NS_ERROR_OUT_OF_MEMORY;
       if (NS_SUCCEEDED(res) && *mathml)
         NS_ADDREF(*mathml);
     }
-  }   
+  }
   return res;
 }
 
@@ -349,13 +372,13 @@ msiEditingManager::SupportsMathMLInsertionInterface(nsIDOMNode* node, PRBool *su
     PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(node, dontcare1, dontcare, dontcare1);
     if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN)
       *supportsMathml = PR_TRUE;
-  }   
+  }
   return res;
 }
 
 NS_IMETHODIMP
 msiEditingManager::GetMathMLCaretInterface(nsIEditor* editor,
-                                           nsIDOMNode* rawNode, 
+                                           nsIDOMNode* rawNode,
                                            PRUint32    rawOffset,
                                            msiIMathMLCaret ** mathml)
 {
@@ -487,8 +510,8 @@ msiEditingManager::GetMathMLCaretInterface(nsIEditor* editor,
           PRUint32 bigOpOffset(msiIMathMLEditingBC::INVALID);
           if (bigOpInfo)
           {
-            bigOpInfo->GetMathmlNode(getter_AddRefs(mmlNode)); 
-            bigOpInfo->GetOffset(&bigOpOffset); 
+            bigOpInfo->GetMathmlNode(getter_AddRefs(mmlNode));
+            bigOpInfo->GetOffset(&bigOpOffset);
           }
           else
           {
@@ -501,13 +524,13 @@ msiEditingManager::GetMathMLCaretInterface(nsIEditor* editor,
         default:
           res = NS_ERROR_NO_INTERFACE;
         break;
-      }  
+      }
       if (res == NS_OK && *mathml == nsnull)
         res = NS_ERROR_OUT_OF_MEMORY;
       if (NS_SUCCEEDED(res) && *mathml)
         NS_ADDREF(*mathml);
     }
-  }   
+  }
   return res;
 }
 
@@ -524,13 +547,13 @@ msiEditingManager::SupportsMathMLCaretInterface(nsIDOMNode* node, PRBool *suppor
     PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(node, dummyOffset, dontcare, dummyOffset);
     if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN)
       *supportsMathml = PR_TRUE;
-  }   
+  }
   return res;
 }
 //////////////////////
 
 NS_IMETHODIMP
-msiEditingManager::GetMathMLCoalesceInterface(nsIDOMNode* rawNode, 
+msiEditingManager::GetMathMLCoalesceInterface(nsIDOMNode* rawNode,
                                               PRUint32    rawOffset,
                                               msiIMathMLCoalesce ** mathml)
 {
@@ -580,7 +603,7 @@ msiEditingManager::GetMathMLCoalesceInterface(nsIDOMNode* rawNode,
         case msiIMathMLEditingBC::MATHML_MSUP:
           *mathml = new msiMsupCoalesce(mathmlNode, offset);
         break;
-        
+
         case msiIMathMLEditingBC::MATHML_MSUBSUP:
           *mathml = new msiMsubsupCoalesce(mathmlNode, offset);
         break;
@@ -608,8 +631,8 @@ msiEditingManager::GetMathMLCoalesceInterface(nsIDOMNode* rawNode,
           PRUint32 bigOpOffset(msiIMathMLEditingBC::INVALID);
           if (bigOpInfo)
           {
-            bigOpInfo->GetMathmlNode(getter_AddRefs(mmlNode)); 
-            bigOpInfo->GetOffset(&bigOpOffset); 
+            bigOpInfo->GetMathmlNode(getter_AddRefs(mmlNode));
+            bigOpInfo->GetOffset(&bigOpOffset);
           }
           else
           {
@@ -625,13 +648,13 @@ msiEditingManager::GetMathMLCoalesceInterface(nsIDOMNode* rawNode,
         default:
           res = NS_ERROR_NO_INTERFACE;
         break;
-      }  
+      }
       if (res == NS_OK && *mathml == nsnull)
         res = NS_ERROR_OUT_OF_MEMORY;
       if (NS_SUCCEEDED(res) && *mathml)
         NS_ADDREF(*mathml);
     }
-  }   
+  }
   return res;
 }
 
@@ -640,19 +663,32 @@ msiEditingManager::GetMathMLCoalesceInterface(nsIDOMNode* rawNode,
 // 2. If inserting into a bold span, should the math inherit the bold, via mstyle.
 NS_IMETHODIMP
 msiEditingManager::InsertMath(nsIEditor * editor,
-                              nsISelection * selection, 
-                              nsIDOMNode* node, 
+                              nsISelection * selection,
+                              nsIDOMNode* node,
                               PRUint32 offset,
                               PRUint32 flags,
                               PRBool   isDisplay)
 {
   nsresult res(NS_ERROR_FAILURE);
-  nsCOMPtr<nsIDOMNode> mathParent, parent, left, right;
+  nsCOMPtr<nsIDOMNode> mathParent, parent, left, right, mtextParent;
   nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  PRInt32 outOffset;
   htmlEditor = do_QueryInterface(editor);
+  nsEditor * ed = static_cast<nsEditor *>(editor);
   if (!htmlEditor) return NS_ERROR_FAILURE;
-  if (node)
+  if (node)  {// special case of inserting math into mtext
+    msiUtils::GetMathTagParent(node, msiEditingAtoms::mtext, mathParent);
+    if (mathParent) { //mtext was found
+      mathParent -> GetParentNode(getter_AddRefs(mtextParent));
+      ed -> SplitNodeDeep(mathParent, node, offset, &outOffset, PR_TRUE, nsnull, nsnull);
+      // the place to insert now is mtextParent, outOffset
+      node = mtextParent;
+      offset = outOffset;
+      selection->Collapse(node, offset);
+      mathParent = nsnull;
+    }
     msiUtils::GetMathParent(node, mathParent);
+  }
   if (mathParent)
   {
     PRUint16 nodeType;
@@ -661,13 +697,13 @@ msiEditingManager::InsertMath(nsIEditor * editor,
     if (nodeType == nsIDOMNode::TEXT_NODE)
       node->GetParentNode(getter_AddRefs(theNode));
     else
-      theNode = node;  
+      theNode = node;
     nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
     GetMathMLInsertionInterface(theNode, offset, getter_AddRefs(mathmlEditing));
     if (mathmlEditing && editor)
     {
       PRBool isFeasible(PR_FALSE);
-      PRUint32 inquiryID = isDisplay ? msiIMathMLInsertion::INSERT_DISPLAY : 
+      PRUint32 inquiryID = isDisplay ? msiIMathMLInsertion::INSERT_DISPLAY :
                                          msiIMathMLInsertion::INSERT_INLINE_MATH;
       mathmlEditing->Inquiry(editor, inquiryID, &isFeasible);
       if (isFeasible)
@@ -676,8 +712,8 @@ msiEditingManager::InsertMath(nsIEditor * editor,
       {
         res = NS_OK;
         //TODO -- message about can't insert object
-      }  
-    }  
+      }
+    }
   }
   else // not in math
   {
@@ -691,7 +727,7 @@ msiEditingManager::InsertMath(nsIEditor * editor,
       if (isDisplay) // make sure we don't insert an msidisplay into an msidisplay
       {
         nsCOMPtr<nsIDOMNode> tempparent = node;
-        nsString localName;  
+        nsString localName;
         res = tempparent->GetLocalName(localName);
         if (!localName.EqualsLiteral("body") && !localName.Equals(strmsidisplay))
         {
@@ -731,23 +767,38 @@ msiEditingManager::InsertMath(nsIEditor * editor,
             offset++;
             res = htmlEditor->InsertNodeAtPoint(right,(nsIDOMNode **)address_of(parent), (PRInt32*)&offset, true);
           }
+          if (editor) {
+            mathNode = do_QueryInterface(mathElement);
+            if (mathNode) {
+              msiUtils::MergeMathTags(mathNode, 0, PR_TRUE, PR_FALSE, editor);
+              msiUtils::MergeMathTags(mathNode, 0, PR_FALSE, PR_TRUE, editor);
+            }
+          }
+
           if (NS_SUCCEEDED(res))
             msiUtils::doSetCaretPosition(editor, selection, mathNode);
         }
       }
-    }  
-  }  
+    }
+  }
   return res;
 }
 
 NS_IMETHODIMP
 msiEditingManager::InsertSymbol(nsIEditor * editor,
-                                nsISelection * selection, 
-                                nsIDOMNode* node, 
+                                nsISelection * selection,
+                                nsIDOMNode* node,
                                 PRUint32 offset,
                                 const nsAString & symbol)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
+
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSymbol");
   nsCOMPtr<nsIHTMLEditor> htmleditor = do_QueryInterface(editor);
   if (editor && selection && node)
@@ -758,7 +809,7 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
 
     if (symbol.EqualsLiteral("-")) {
       newSymbol.Assign(0x2212);
-    }      
+    }
     res = msiUtils::CreateMathMLLeafElement(editor, newSymbol, 1, flags, mathmlElement);
     if (NS_SUCCEEDED(res) && mathmlElement)
     {
@@ -767,13 +818,13 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
       nsAutoString tag;
       nsAutoString mathtag;
       PRUint32 len;
-      
+
       nsAutoString strSep(NS_LITERAL_STRING(","));
       mathmlElement->GetLocalName(localName);
       if (localName.EqualsLiteral("mi"))
       {
         nsCOMPtr<msiITagListManager> TagListManager;
-        htmleditor->GetTagListManager(getter_AddRefs(TagListManager));        
+        htmleditor->GetTagListManager(getter_AddRefs(TagListManager));
         // see if one of the math variants applies
         TagListManager->BuildParentTagList();
           // return a comma-separated list of all the tags containing the selection.
@@ -799,17 +850,17 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
           }
           wordend++;
         }
-      }        
+      }
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
-    } 
+    }
   }
   return res;
-}      
+}
 
 NS_IMETHODIMP
 msiEditingManager::InsertFraction(nsIEditor * editor,
-                                  nsISelection * selection, 
-                                  nsIDOMNode* node, 
+                                  nsISelection * selection,
+                                  nsIDOMNode* node,
                                   PRUint32 offset,
                                   const nsAString & lineThickness,
                                   PRUint32 attrFlags)
@@ -821,6 +872,10 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
   nsCOMPtr<nsIDOMNode> mathnode;
   nsCOMPtr<nsIDOMNode> anchorNode;
   PRInt32 anchorOffset;
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
   res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
   PRBool inMath = (nsnull != mathnode);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
@@ -839,7 +894,7 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
       res = selection->GetAnchorNode(getter_AddRefs(anchorNode));
       res = selection->GetAnchorOffset(&anchorOffset);
       MoveRangeTo(editor, range, numerator, 0);
-    } 
+    }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
 //        editor->InsertNode(mathmlElement, node, offset);
@@ -851,10 +906,10 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
     {
       //selection->Collapse(mathmlElement,1);
     }
-    editor->EndTransaction();  
+    editor->EndTransaction();
   }
   return res;
-}      
+}
 
 NS_IMETHODIMP
 msiEditingManager::InsertBinomial(nsIEditor * editor,
@@ -867,6 +922,13 @@ msiEditingManager::InsertBinomial(nsIEditor * editor,
                                     PRUint32 attrFlags)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
+
   nsCOMPtr<nsIDOMRange> range;
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
@@ -888,25 +950,31 @@ msiEditingManager::InsertBinomial(nsIEditor * editor,
     if (!bCollapsed && inMath)
     {
       MoveRangeTo(editor, range, top, 0);
-    } 
+    }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
 //        editor->InsertNode(mathmlElement, node, offset);
     //selection->Collapse(node,offset+1);
-    editor->EndTransaction();  
+    editor->EndTransaction();
   }
   return res;
-}      
+}
 
 NS_IMETHODIMP
 msiEditingManager::InsertSqRoot(nsIEditor * editor,
-                                nsISelection * selection, 
-                                nsIDOMNode* node, 
+                                nsISelection * selection,
+                                nsIDOMNode* node,
                                 PRUint32 offset)
 {
   nsresult res(NS_ERROR_FAILURE);
   //check that we are entirely in one math object
   nsCOMPtr<nsIDOMRange> range;
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
   nsCOMPtr<nsIDOMNode> mathnode;
@@ -929,7 +997,7 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
       if (!radNode) radicand = mathmlElement;
       else radicand = do_QueryInterface(radNode);
       MoveRangeTo(editor, range, radicand, 0);
-    } 
+    }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
 //        editor->InsertNode(mathmlElement, node, offset);
@@ -937,15 +1005,22 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
     editor->EndTransaction();
   }
   return res;
-}   
+}
 
 NS_IMETHODIMP
 msiEditingManager::InsertRoot(nsIEditor * editor,
-                                nsISelection * selection, 
-                                nsIDOMNode* node, 
+                                nsISelection * selection,
+                                nsIDOMNode* node,
                                 PRUint32 offset)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
+
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSqRoot");
   nsCOMPtr<nsIDOMRange> range;
   selection->GetRangeAt(0, getter_AddRefs(range));
@@ -969,7 +1044,7 @@ msiEditingManager::InsertRoot(nsIEditor * editor,
       if (!radNode) radicand = mathmlElement;
       else radicand = do_QueryInterface(radNode);
       MoveRangeTo(editor, range, radicand, 0);
-    } 
+    }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
 //        editor->InsertNode(mathmlElement, node, offset);
@@ -977,18 +1052,24 @@ msiEditingManager::InsertRoot(nsIEditor * editor,
     editor->EndTransaction();
   }
   return res;
-}   
+}
 
 NS_IMETHODIMP
 msiEditingManager::InsertFence(nsIEditor* editor,
                                nsISelection * selection,
-                               nsIDOMNode* node, 
+                               nsIDOMNode* node,
                                PRUint32 offset,
                                const nsAString & open,
                                const nsAString & close)
 {
   nsresult res(NS_ERROR_FAILURE);
   //check that we are entirely in one math object
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
   nsCOMPtr<nsIDOMRange> range;
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
@@ -1010,21 +1091,21 @@ msiEditingManager::InsertFence(nsIEditor* editor,
     if (!bCollapsed)
     {
       MoveRangeTo(editor, range, mathmlElement, 1);
-    } 
+    }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
 //        editor->InsertNode(mathmlElement, node, offset);
     //selection->Collapse(node,offset+1);
-    editor->EndTransaction();  
+    editor->EndTransaction();
   }
   return res;
-}                
+}
 
 //TODO Are lim, limsup and such mathnames. How are scripts to be handled
 NS_IMETHODIMP
 msiEditingManager::InsertMathname(nsIEditor* editor,
                                   nsISelection * selection,
-                                  nsIDOMNode* node, 
+                                  nsIDOMNode* node,
                                   PRUint32 offset,
                                   const nsAString & mathname)
 {
@@ -1038,47 +1119,80 @@ msiEditingManager::InsertMathname(nsIEditor* editor,
 
 
   nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMNode> parent;
+  PRInt32 parentOffset;
+  nsEditor * ed = static_cast<nsEditor *>(editor);
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
+
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathname");
   if (editor && selection && node)
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
     res = msiUtils::CreateMathname(editor, mathname, flags, PR_FALSE, mathmlElement);
-    if (NS_SUCCEEDED(res) && mathmlElement)
+    if (NS_SUCCEEDED(res) && mathmlElement) {
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+      // res = ed->GetNodeLocation(mathmlElement, address_of(parent), &parentOffset);
+      // res = selection->Collapse(parent, parentOffset+1);
+    }
   }
   return res;
-}                                                 
+}
 
 NS_IMETHODIMP
 msiEditingManager::InsertMathunit(nsIEditor* editor,
                                   nsISelection * selection,
-                                  nsIDOMNode* node, 
+                                  nsIDOMNode* node,
                                   PRUint32 offset,
                                   const nsAString & mathunit)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMNode> parent;
+  PRInt32 parentOffset;
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
+
+  nsEditor * ed = static_cast<nsEditor *>(editor);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathname");
   if (editor && selection && node)
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
     res = msiUtils::CreateMathname(editor, mathunit, flags, PR_TRUE, mathmlElement);
-    if (NS_SUCCEEDED(res) && mathmlElement)
+    if (NS_SUCCEEDED(res) && mathmlElement){
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+      res = ed->GetNodeLocation(mathmlElement, address_of(parent), &parentOffset);
+      res = selection->Collapse(parent, parentOffset+1);
+   }
   }
   return res;
-}                                                 
+}
 
 NS_IMETHODIMP
 msiEditingManager::InsertEngineFunction(nsIEditor* editor,
                                         nsISelection * selection,
-                                        nsIDOMNode* node, 
+                                        nsIDOMNode* node,
                                         PRUint32 offset,
                                         const nsAString & name)
 {
   nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathname");
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+  // selection->Collapse(selStartNode, selStartOffset);
+
   if (editor && selection && node)
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
@@ -1088,7 +1202,7 @@ msiEditingManager::InsertEngineFunction(nsIEditor* editor,
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
   }
   return res;
-}                                                 
+}
 
 NS_IMETHODIMP
 msiEditingManager::InsertMatrix(nsIEditor * editor,
@@ -1102,6 +1216,13 @@ msiEditingManager::InsertMatrix(nsIEditor * editor,
 {
   nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMatrix");
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+//  selection->Collapse(selStartNode, selStartOffset);
+
   if (editor && selection && node)
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
@@ -1111,7 +1232,7 @@ msiEditingManager::InsertMatrix(nsIEditor * editor,
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
   }
   return res;
-}   
+}
 
 NS_IMETHODIMP
 msiEditingManager::InsertOperator(nsIEditor * editor,
@@ -1126,6 +1247,13 @@ msiEditingManager::InsertOperator(nsIEditor * editor,
                                   const nsAString & maxsize)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+  // selection->Collapse(selStartNode, selStartOffset);
+
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertOperator");
   if (editor && selection && node)
   {
@@ -1137,7 +1265,7 @@ msiEditingManager::InsertOperator(nsIEditor * editor,
     {
       newSymbol.Assign(0x2212);
     }
-    res = msiUtils::  CreateMathOperator(editor, newSymbol, caretPos, flags, attrFlags, 
+    res = msiUtils::  CreateMathOperator(editor, newSymbol, caretPos, flags, attrFlags,
                                        leftspace, rightspace, minsize, maxsize, mathmlElement);
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
@@ -1154,6 +1282,13 @@ msiEditingManager::InsertScript(nsIEditor * editor,
                                 const nsAString & scriptShift)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  // BBM: force collapsed selection for first version
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
+  // selection->Collapse(selStartNode, selStartOffset);
+
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertOperator");
   if (editor && selection && node)
   {
@@ -1171,7 +1306,7 @@ msiEditingManager::InsertScript(nsIEditor * editor,
 NS_IMETHODIMP
 msiEditingManager::InsertDecoration(nsIEditor* editor,
                                     nsISelection * selection,
-                                    nsIDOMNode* node, 
+                                    nsIDOMNode* node,
                                     PRUint32 offset,
                                     const nsAString & above,
                                     const nsAString & below,
@@ -1180,7 +1315,13 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
 {
   nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFence");
+  nsCOMPtr<nsIDOMNode> selStartNode;
+  PRInt32 selStartOffset;
+  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+  res = selection->GetFocusOffset(&selStartOffset);
   nsCOMPtr<nsIDOMRange> range;
+  // BBM for first release, force selection to be collapsed
+  // selection->Collapse(selStartNode, selStartOffset);
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
   nsCOMPtr<nsIDOMNode> mathnode;
@@ -1193,7 +1334,7 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
     res = selection->GetIsCollapsed(&bCollapsed);
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateDecoration(editor, nsnull, above, below, aroundNotation, aroundType, 
+    res = msiUtils::CreateDecoration(editor, nsnull, above, below, aroundNotation, aroundType,
                                              bCollapsed || !inMath, PR_TRUE, flags, mathmlElement);
     if (!bCollapsed && inMath)
     {
@@ -1205,7 +1346,7 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
         res = tempparent->GetFirstChild(getter_AddRefs(base));
       }
       MoveRangeTo(editor, range, base, 0);
-    } 
+    }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
         //editor->InsertNode(mathmlElement, node, offset);
@@ -1213,7 +1354,7 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
     editor->EndTransaction();
   }
   return res;
-}                
+}
 
 nsresult msiEditingManager::DetermineParentLeftRight(nsIDOMNode * node,
                                                      PRUint32 & offset,
@@ -1221,10 +1362,12 @@ nsresult msiEditingManager::DetermineParentLeftRight(nsIDOMNode * node,
                                                      nsCOMPtr<nsIDOMNode> & parent,
                                                      nsCOMPtr<nsIDOMNode> & left,
                                                      nsCOMPtr<nsIDOMNode> & right)
-{ 
+{
+  // BBM: All or most of this function seems superfluous since the operation of inserting a node
+  // into text will split the text node.
   nsresult res(NS_ERROR_FAILURE);
   if (node)
-  {                                                   
+  {
     PRUint16 nodeType;
     node->GetNodeType(&nodeType);
     if (nodeType == nsIDOMNode::TEXT_NODE)
@@ -1240,7 +1383,7 @@ nsresult msiEditingManager::DetermineParentLeftRight(nsIDOMNode * node,
         if (text)
           textlen = text->TextLength();
         if (0 < offset && offset < textlen)
-        { 
+        {
           msiUtils::CloneNode(node, right);
           msiUtils::CloneNode(node, left);
           nsCOMPtr<nsIDOMCharacterData> lfSideCharData(do_QueryInterface(left));
@@ -1249,14 +1392,14 @@ nsresult msiEditingManager::DetermineParentLeftRight(nsIDOMNode * node,
           {
             lfSideCharData->DeleteData(offset, textlen-offset);
             rtSideCharData->DeleteData(0, offset);
-          }  
-        } 
+          }
+        }
         if (0 < offset)
           offset = index + 1;
-        else (offset = index); 
+        else (offset = index);
       }
       else
-        parent = nsnull;  
+        parent = nsnull;
     }
     else if (NodeSupportsMathChild(node, PR_FALSE))
     {
@@ -1266,7 +1409,7 @@ nsresult msiEditingManager::DetermineParentLeftRight(nsIDOMNode * node,
       res = NS_OK;
     }
   }
-  return res;  
+  return res;
 }
 
 PRBool msiEditingManager::NodeSupportsMathChild(nsIDOMNode * node, PRBool displayed)
@@ -1283,7 +1426,7 @@ PRBool msiEditingManager::NodeSupportsMathChild(nsIDOMNode * node, PRBool displa
   return rv;
 }
 
-PRUint32 
+PRUint32
 msiEditingManager::GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 rawOffset,
                                                 nsCOMPtr<nsIDOMNode> & mathmlNode,
                                                 PRUint32 & offset)
@@ -1291,7 +1434,7 @@ msiEditingManager::GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 r
   offset = rawOffset;
   PRUint32 rv(msiIMathMLEditingBC::MATHML_UNKNOWN);
   if (rawNode)
-  { 
+  {
     nsAutoString localName, nsURI;
     PRUint32 length(0);
     nsCOMPtr<nsIDOMText> text(do_QueryInterface(rawNode));
@@ -1308,13 +1451,13 @@ msiEditingManager::GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 r
     PRInt32 nsID(kNameSpaceID_Unknown);
     msiNameSpaceUtils::GetNameSpaceID(nsURI, nsID);
     if (nsID == kNameSpaceID_MathML)
-    { 
+    {
       if (text)
-      { 
+      {
         nsCOMPtr<nsIContent> tc(do_QueryInterface(text));
         if (tc && tc->TextIsOnlyWhitespace())
         {
-          rv = msiIMathMLEditingBC::MSI_WHITESPACE; 
+          rv = msiIMathMLEditingBC::MSI_WHITESPACE;
           mathmlNode = rawNode;
           length = 0;
         }
@@ -1338,7 +1481,7 @@ msiEditingManager::GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 r
           rv == msiIMathMLEditingBC::MATHML_MROWFENCE)
         SetMathmlNodeAndOffsetForMrowFence(localName, mathmlNode, offset);
     }
-  }  
+  }
   return rv;
 }
 
@@ -1365,14 +1508,14 @@ nsresult msiEditingManager::EnsureMathWithSelectionCollapsed(nsIDOMNode * node)
 
 NS_IMETHODIMP
 msiEditingManager::InsertMathmlElement(nsIEditor * editor,
-                                       nsISelection * selection, 
-                                       nsIDOMNode* node, 
+                                       nsISelection * selection,
+                                       nsIDOMNode* node,
                                        PRUint32 offset,
                                        PRUint32 flags,
                                        nsIDOMElement* mathmlElement)
 {
   nsresult res(NS_ERROR_FAILURE);
-  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathmlElement");
   if (editor && selection && node && mathmlElement)
   {
     PRBool transacting(PR_FALSE);
@@ -1419,7 +1562,7 @@ msiEditingManager::InsertMathmlElement(nsIEditor * editor,
             transacting = PR_TRUE;
           }
           res = mathmlEditing->InsertNode(editor, selection, newMathmlNode, flags);
-        }  
+        }
       }
     }
     if (transacting)
@@ -1427,10 +1570,10 @@ msiEditingManager::InsertMathmlElement(nsIEditor * editor,
 
   }
   return res;
-}      
+}
 
 PRUint32
-msiEditingManager::GetMMLNodeTypeFromLocalName(nsIDOMNode * mathmlNode, 
+msiEditingManager::GetMMLNodeTypeFromLocalName(nsIDOMNode * mathmlNode,
                                                const nsAString & localName)
 {
   PRUint32 rv(msiIMathMLEditingBC::MATHML_UNKNOWN);
@@ -1579,7 +1722,7 @@ msiEditingManager::GetMMLNodeTypeFromLocalName(nsIDOMNode * mathmlNode,
       rv = msiIMathMLEditingBC::MSI_BIGOPERATOR;
   }
   return rv;
-}  
+}
 
 PRUint32 msiEditingManager::GetMRowNodeType(nsIDOMNode* mathmlNode)
 {
@@ -1599,10 +1742,10 @@ PRUint32 msiEditingManager::GetMRowNodeType(nsIDOMNode* mathmlNode)
     children->QueryElementAt(numKids-1, NS_GET_IID(nsIDOMNode), getter_AddRefs(last));
     if (first && last)
     {
-    
+
       if (msiNameSpaceUtils::GetNameSpaceID(first) == kNameSpaceID_MathML &&
           msiNameSpaceUtils::GetNameSpaceID(last) == kNameSpaceID_MathML)
-      { 
+      {
         nsAutoString firstName, lastName;
         first->GetLocalName(firstName);
         last->GetLocalName(lastName);
@@ -1636,24 +1779,24 @@ PRUint32 msiEditingManager::GetMRowNodeType(nsIDOMNode* mathmlNode)
             }
           }
         }
-      }  
+      }
     }
   }
   return rv;
 }
 
-PRBool msiEditingManager::IsBigOperator(nsIDOMNode* mathmlNode, const nsAString & localName) 
+PRBool msiEditingManager::IsBigOperator(nsIDOMNode* mathmlNode, const nsAString & localName)
 {
   PRBool rv(PR_FALSE);
   nsCOMPtr<nsIDOMNode> mo, mstyle, script;
   PRUint32 scriptType(msiIMathMLEditingBC::MATHML_UNKNOWN);
   rv = GetBigOpNodes(mathmlNode, localName, mo, mstyle, script, scriptType);
-  return rv; 
+  return rv;
 }
 
 PRBool msiEditingManager::GetBigOpNodes(nsIDOMNode* mathmlNode, const nsAString & localName,
                                         nsCOMPtr<nsIDOMNode> & mo, nsCOMPtr<nsIDOMNode> & mstyle,
-                                        nsCOMPtr<nsIDOMNode> & script, PRUint32 &scriptType) 
+                                        nsCOMPtr<nsIDOMNode> & script, PRUint32 &scriptType)
 {
   PRBool rv(PR_FALSE);
   nsresult res(NS_OK);
@@ -1667,7 +1810,7 @@ PRBool msiEditingManager::GetBigOpNodes(nsIDOMNode* mathmlNode, const nsAString 
       msiEditingAtoms::munder->Equals(localName)     || msiEditingAtoms::mover->Equals(localName)  ||
       msiEditingAtoms::munderover->Equals(localName) || msiEditingAtoms::msub->Equals(localName)   ||
       msiEditingAtoms::msup->Equals(localName)       || msiEditingAtoms::msubsup->Equals(localName) )
-  {    
+  {
     if (msiEditingAtoms::mo->Equals(localName))
     {
       mo = mathmlNode;
@@ -1771,13 +1914,13 @@ PRBool msiEditingManager::GetBigOpNodes(nsIDOMNode* mathmlNode, const nsAString 
               }
             }
           }
-        }  
+        }
       }
     }
     if (mo)
     {
-      //TODO --- should we only allow the fixed set of symbol from the dialog? 
-      //TODO --- should big ops have form ="prefix" set? 
+      //TODO --- should we only allow the fixed set of symbol from the dialog?
+      //TODO --- should big ops have form ="prefix" set?
       nsCOMPtr<nsIDOMElement> moElement(do_QueryInterface(mo));
       if (moElement)
       {
@@ -1795,7 +1938,7 @@ PRBool msiEditingManager::GetBigOpNodes(nsIDOMNode* mathmlNode, const nsAString 
           nsAutoString value, displaystyle;
           msiEditingAtoms::displaystyle->ToString(displaystyle);
           res = styleElement->GetAttribute(displaystyle,  value);
-          if (NS_SUCCEEDED(res) && (msiEditingAtoms::msitrue->Equals(value) || 
+          if (NS_SUCCEEDED(res) && (msiEditingAtoms::msitrue->Equals(value) ||
                                     msiEditingAtoms::msifalse->Equals(value)))
           {
             nsCOMPtr<nsIDOMNamedNodeMap> attrMap;
@@ -1868,11 +2011,11 @@ PRUint32 msiEditingManager::GetMoNodeType(nsIDOMNode * mathmlNode)
         children->QueryElementAt(0, NS_GET_IID(nsIDOMNode), getter_AddRefs(first));
         children->QueryElementAt(numKids-1, NS_GET_IID(nsIDOMNode), getter_AddRefs(last));
         if (first && last && (first == mathmlNode || last == mathmlNode))
-          mathmlType = parentType;   
-      }  
-    }   
+          mathmlType = parentType;
+      }
+    }
   }
-  return mathmlType;    
+  return mathmlType;
 }
 
 void msiEditingManager::SetMathmlNodeAndOffsetForMrowFence(const nsAString & localName,
@@ -1891,9 +2034,9 @@ void msiEditingManager::SetMathmlNodeAndOffsetForMrowFence(const nsAString & loc
         index += 1;
       offset = index;
     }
-    mathmlNode = mrowFence;  
+    mathmlNode = mrowFence;
   }
-}                                                        
+}
 
 nsresult msiEditingManager::AddMatrixRows(nsIEditor * editor, nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany)
 {
@@ -1990,11 +2133,11 @@ nsresult msiEditingManager::AddMatrixRows(nsIEditor * editor, nsIDOMNode *aMatri
             retVal = msiUtils::CreateMtd(editor, doMarkCaret, flags, aCell);
             if (NS_SUCCEEDED(retVal) && aCell)
             {
-              nsCOMPtr<nsIDOMNode> dontcare; 
+              nsCOMPtr<nsIDOMNode> dontcare;
               retVal = aRow->AppendChild(aCell, getter_AddRefs(dontcare));
             }
             else
-              retVal = NS_ERROR_FAILURE;  
+              retVal = NS_ERROR_FAILURE;
           }
         }
         //Then insert aRow - is it safe to assume that each direct child of <mtable> is an <mtr> or an inferred <mtr> at worst?
@@ -2111,11 +2254,11 @@ nsresult msiEditingManager::AddMatrixColumns(nsIEditor * editor, nsIDOMNode *aMa
           if (NS_SUCCEEDED(retVal) && asElement)
           {
             aCell = do_QueryInterface(asElement);
-            nsCOMPtr<nsIDOMNode> dontcare; 
+            nsCOMPtr<nsIDOMNode> dontcare;
             retVal = editor->InsertNode(aCell, nextRow, insertPos++);
           }
           else
-            retVal = NS_ERROR_FAILURE;  
+            retVal = NS_ERROR_FAILURE;
         }
       }
       lastRow = nextRow;
@@ -2294,7 +2437,7 @@ nsresult msiEditingManager::GetMatrixCellAt(nsIDOMNode* aMatrix, PRInt32 whichRo
 //  If nRow and nCol are zero but *pFindCell is not, we should find the starting row and column containing *pFindCell in nRow and nCol.
 //  Otherwise, we return the number of rows and columns in nCol and nRow.
 //  Additionally, if multiCellArray is nonzero, we should fill the array with any multi-span cell information.
-nsresult msiEditingManager::GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PRInt32& nCol, 
+nsresult msiEditingManager::GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PRInt32& nCol,
                                           nsIDOMNode** pFindCell, nsTArray<msiMultiSpanCellInfo> *multiCellArray)
 {
 //  NS_ENSURE_ARG_POINTER(aRowCount);
@@ -2364,7 +2507,7 @@ nsresult msiEditingManager::GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PR
           if (multiCellArray)
             multiCellArray->AppendElement(cellInfo);
         }
-        
+
         if (pFindCell)
         {
           if (nRow && nCol)  //in this case we're asked to find the cell at this position
@@ -2496,7 +2639,7 @@ nsresult msiEditingManager::GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PR
     }
     if (bAllUsed) //This probably should never happen, but it might if we're using block matrices - means the whole next row(s) is already occupied
     {
-//        ++nCurrRow; 
+//        ++nCurrRow;
       nCurrRow += minVal;
       for (PRUint32 lx = 0; lx < usedCount.Length(); ++lx)
       {
@@ -2504,7 +2647,7 @@ nsresult msiEditingManager::GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PR
       }
       bAllUsed = PR_FALSE;
     }
-  
+
     prevRow = nextRow;
     res = GetNextMatrixRow(matrix, prevRow, getter_AddRefs(nextRow));
   };
@@ -2520,7 +2663,7 @@ nsresult msiEditingManager::GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PR
 
 
 
-//nsresult msiEditingManager::GetMatrixInfo(nsIDOMElement *aMatrix, PRInt32& nRow, PRInt32& nCol, 
+//nsresult msiEditingManager::GetMatrixInfo(nsIDOMElement *aMatrix, PRInt32& nRow, PRInt32& nCol,
 //                                          nsIDOMElement** pFindCell, nsTArray<msiMultiSpanCellInfo> *multiCellArray)
 //{
 //  NS_ENSURE_ARG_POINTER(aRowCount);

@@ -41,6 +41,10 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* 
         rv = BT_OPERATOR;
       if (ContentIs(base, "lim")) // varinjlim
         rv = BT_OPERATOR;
+      if (ContentIs(base, "max")) 
+        rv = BT_OPERATOR;
+      if (ContentIs(base, "min")) 
+        rv = BT_OPERATOR;
 
       if (rv == BT_UNKNOWN && !isLHSofDef) {
 

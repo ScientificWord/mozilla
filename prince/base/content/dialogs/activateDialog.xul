@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+#include ../productname.inc
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/activate.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/activate.dtd">
+
+<dialog
+  xmlns   = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id      = "activateDialog"
+  title   = "&windowTitle.label;"
+  onload  = "startUp()"
+  ondialogaccept= "return accept()"
+  screenX = "10" screenY="10" width="600px" height="400px"
+>
+
+  <script type="application/x-javascript" src="chrome://prince/content/activateDialog.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+
+  <description align="center" class="title">&dialog.title;</description>
+  <description>&verbiage1;</description>
+  <spacer style="height: 20px;" />
+  <grid >
+  	<columns>
+  		<column />
+  		<column />
+  	</columns>
+  	<rows>
+  		<row>
+  			<label>&computerid.label;</label><textbox  id="computerid" value=""/>
+      </row>
+      <row>
+  			<label>&product.label;</label><label id="productname" value=
+#ifdef PROD_SW
+    "&prodsw;"
+#endif
+#ifdef PROD_SNB
+    "&prodsnb;"
+#endif
+#ifdef PROD_SWP
+    "&prodswp;"
+#endif
+  		  />
+      </row>
+        <row>
+          <label>&serial.label;</label><textbox id="serial"/>
+        </row>
+  	</rows>
+  </grid>
+  <spacer style="height: 20px;" />
+  <description>&verbiage2;</description>
+  <spacer style="height: 20px;" />
+  <grid>
+  	<columns>
+  		<column/>
+  		<column/>
+   	</columns>
+  	<rows>
+  		<row>
+  			<label>&email.label;</label>
+  			<textbox id="email"/>
+  		</row>
+  		<row>
+  			<label>&phone.label;</label>
+  			<textbox id="phone"/>
+  		</row>
+   	</rows>
+  </grid>
+
+
+</dialog>

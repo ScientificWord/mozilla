@@ -8,13 +8,13 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
-SHELL_RESOURCES := $(wildcard	$(srcdir)/*.sci  $(srcdir)/*.xhtml) \
+SHELL_RESOURCES := $(wildcard	$(srcdir)/*.sci) \
 	$(NULL)
 
 
 libs::	$(SHELL_RESOURCES)
-	-mkdir $(FINAL_TARGET)/shells/theses
-	cp	$(SHELL_RESOURCES)	$(FINAL_TARGET)/shells/theses
+	- mkdir -p $(FINAL_TARGET)/shells/Theses
+	- cp $(SHELL_RESOURCES) $(FINAL_TARGET)/shells/Theses
 
 
 

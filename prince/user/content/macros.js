@@ -5,10 +5,15 @@
 
 // Some utility function for the use of macros and autosubstitute
 
+function showhelp()
+{
+  deleteSelection();
+  document.getElementById('helpmenu').open=true;
+}
 
 function deleteSelection()
 {
-  dump("\ndeleteSelection();\n");
+  // dump("\ndeleteSelection();\n");
   msiGoDoCommand('cmd_delete');
 }
 
@@ -17,6 +22,15 @@ function getCurrentEditorElement()
   var theEditorElement = msiGetActiveEditorElement();
   return theEditorElement;
 }
+
+function refreshVCam()
+{
+  var theEditorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(theEditorElement);
+  deleteSelection();
+  initVCamObjects(editor.document);
+}
+
 
 
 function insertMathSymbol( s, delSelection )
@@ -56,10 +70,23 @@ function insertTag( name, delSelection )
   var editor = msiGetEditor(editorElement);
   var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
   if (delSelection) deleteSelection();
-  var node = editor.document.createElement(name);
-  editor.insertElementAtSelection(node,true);
+  var tagclass = editor.tagListManager.getRealClassOfTag(name, null);
+  var cmd = "";
+  switch (tagclass) {
+    case "texttag"  : cmd = "cmd_texttag";
+      break;
+    case "paratag"  :
+    case "listtag"  : cmd = "cmd_paratag";
+      break;
+    case "structtag":
+    case "envtag"   : cmd = "cmd_structtag";
+      break;
+    default:
+  }
+  if (cmd !== "")
+    msiDoStatefulCommand(cmd,name);
 }
-  
+
 
 function insertText ( textString )
 {
@@ -71,7 +98,7 @@ function insertText ( textString )
 
 function checkSpelling(delSelection)
 {
-  if (delSelection) deleteSelection(); 
+  if (delSelection) deleteSelection();
   msiGoDoCommand('cmd_spelling');
 }
 
@@ -116,7 +143,7 @@ function insertFragmentOrMacro( name, delSelection )
   if (delSelection) deleteSelection();
   onMacroOrFragmentEntered( name );
 }
-  
+
 function previewPDF(delSelection)
 {
   if (delSelection) deleteSelection();
@@ -135,14 +162,14 @@ function insertFootnote(delSelection)
   var editorElement = getCurrentEditorElement();
   msiNote(null, editorElement, 'footnote', false);
 }
-     
+
 function insertMarginNote(delSelection)
 {
   if (delSelection) deleteSelection();
   var editorElement = getCurrentEditorElement();
   msiNote(null, editorElement, 'marginnote',false);
 }
-     
+
 
 function softSave(delSelection)
 {
@@ -153,10 +180,10 @@ function softSave(delSelection)
 function insertIntegral(delSelection)
 {
   dump("\ninsertIntegeral\n");
-  if (delSelection) 
+  if (delSelection)
     deleteSelection();
   insertMathSymbol("\u222B");
-  insertMathSymbol("\u2146"); 
+  insertMathSymbol("\u2146");
   insertText('x');
   //msiGoDoCommand('cmd_charPrevious');
   //msiGoDoCommand('cmd_charPrevious');

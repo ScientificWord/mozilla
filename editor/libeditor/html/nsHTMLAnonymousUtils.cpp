@@ -159,7 +159,7 @@ nsHTMLEditor::CreateAnonymousElement(const nsAString & aTag, nsIDOMNode *  aPare
     newContent->UnbindFromTree();
     return res;
   }
-  
+
   // display the element
   ps->RecreateFramesFor(newContent);
 
@@ -221,7 +221,7 @@ nsHTMLEditor::DeleteRefToAnonymousNode(nsIDOMElement* aElement,
       content->UnbindFromTree();
     }
   }
-}  
+}
 
 //Utility used in CheckSelectionStateForAnonymousButtons below
 nsCOMPtr<nsIDOMElement> nsHTMLEditor::FindResizableElement(nsCOMPtr<nsIDOMElement> inElement)
@@ -303,7 +303,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   {
     res = tempElement->GetAttribute(NS_LITERAL_STRING("msi_resize"), strResizeAttr);
     if (NS_FAILED(res)) break;
-    if (strResizeAttr.EqualsLiteral("true")) 
+    if (strResizeAttr.EqualsLiteral("true"))
     {
       resizeRequested = PR_TRUE;
       foundResizeElement = tempElement;
@@ -315,7 +315,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     tempElement = do_QueryInterface(node);
     if (!tempElement) break;
   }
-  
+
   if (!resizeRequested)
   {
     foundResizeElement = FindResizableElement(focusElement);   //if focusElement is a good suspect, this checks its children
@@ -352,7 +352,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     // a cell
 
     // get the enclosing table
-    if (nsEditProperty::img != focusTagAtom) {
+    if ((nsEditProperty::img != focusTagAtom) && (nsEditProperty::plotwrapper != focusTagAtom)) {
       // the element container of the selection is not an image, so we'll show
       // the resizers around the table
       nsCOMPtr<nsIDOMNode> tableNode = GetEnclosingTable(cellElement);
@@ -361,9 +361,10 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     }
   }
 
-  // we allow resizers only around images, tables, and absolutely positioned
-  // elements. If we don't have image/table, let's look at the latter case.
+  // we allow resizers only around images, tables, plots, and absolutely positioned
+  // elements. If we don't have image/plot/table, let's look at the latter case.
   if (!resizeRequested && nsEditProperty::img != focusTagAtom &&
+      nsEditProperty::plotwrapper != focusTagAtom &&
       nsEditProperty::table != focusTagAtom && nsEditProperty::object != focusTagAtom)
     focusElement = absPosElement;
 
@@ -388,7 +389,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     nsAutoString resizedTagName;
     res = mResizedObject->GetTagName(resizedTagName);
     if (NS_FAILED(res)) return res;
-      
+
     if (resizedTagName.EqualsLiteral("plotwrapper"))
     {
       res = SetFocusedPlot(nsnull);
@@ -419,15 +420,17 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
 
   if (mIsObjectResizingEnabled && focusElement &&
       IsModifiableNode(focusElement)) {
-    if (nsEditProperty::img == focusTagAtom || resizeRequested)
+    if (nsEditProperty::img == focusTagAtom ||
+      nsEditProperty::object == focusTagAtom ||
+      nsEditProperty::plotwrapper == focusTagAtom || resizeRequested)
       mResizedObjectIsAnImage = PR_TRUE;
     if (refreshResizing)
       res = RefreshResizers();
     else {
-      if (focusTagName.EqualsLiteral("plotwrapper"))
+      if (focusTagAtom == nsEditProperty::plotwrapper)
         res = SetFocusedPlot(focusElement);
 			if (mResizedObject)
-			{ 
+			{
 				res = HideResizers();
 			}
       res = ShowResizers(focusElement);
@@ -480,6 +483,7 @@ nsHTMLEditor::GetPositionAndDimensions(nsIDOMElement * aElement,
 
   // Is the element positioned ? let's check the cheap way first...
   PRBool isPositioned = PR_FALSE;
+  nsAutoString name;
   nsresult res = aElement->HasAttribute(NS_LITERAL_STRING("_moz_abspos"), &isPositioned);
   if (NS_FAILED(res)) return res;
   if (!isPositioned) {
@@ -489,24 +493,24 @@ nsHTMLEditor::GetPositionAndDimensions(nsIDOMElement * aElement,
                                        positionStr);
     isPositioned = positionStr.EqualsLiteral("absolute");
   }
+  nsCOMPtr<nsIDOMViewCSS> viewCSS;
+  res = mHTMLCSSUtils->GetDefaultViewCSS(aElement, getter_AddRefs(viewCSS));
+  if (NS_FAILED(res)) return res;
+
+  nsCOMPtr<nsIDOMCSSStyleDeclaration> cssDecl;
+  // Get the all the computed css styles attached to the element node
+  res = viewCSS->GetComputedStyle(aElement, EmptyString(), getter_AddRefs(cssDecl));
+  if (NS_FAILED(res)) return res;
+
+  aBorderLeft = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("border-left-width"));
+  aBorderTop  = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("border-top-width"));
+  aMarginLeft = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("margin-left"));
+  aMarginTop  = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("margin-top"));
 
   if (isPositioned) {
     // Yes, it is absolutely positioned
     mResizedObjectIsAbsolutelyPositioned = PR_TRUE;
 
-    nsCOMPtr<nsIDOMViewCSS> viewCSS;
-    res = mHTMLCSSUtils->GetDefaultViewCSS(aElement, getter_AddRefs(viewCSS));
-    if (NS_FAILED(res)) return res;
-
-    nsCOMPtr<nsIDOMCSSStyleDeclaration> cssDecl;
-    // Get the all the computed css styles attached to the element node
-    res = viewCSS->GetComputedStyle(aElement, EmptyString(), getter_AddRefs(cssDecl));
-    if (NS_FAILED(res)) return res;
-
-    aBorderLeft = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("border-left-width"));
-    aBorderTop  = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("border-top-width"));
-    aMarginLeft = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("margin-left"));
-    aMarginTop  = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("margin-top"));
 
     aX = GetCSSFloatValue(cssDecl, NS_LITERAL_STRING("left")) +
          aMarginLeft + aBorderLeft;
@@ -518,7 +522,7 @@ nsHTMLEditor::GetPositionAndDimensions(nsIDOMElement * aElement,
   else {
     mResizedObjectIsAbsolutelyPositioned = PR_FALSE;
     nsCOMPtr<nsIDOMNSHTMLElement> nsElement = do_QueryInterface(aElement);
-    if (!nsElement) 
+    if (!nsElement)
     {
       // BBM hack: if our element is a XUL element, we put an html element around it with the same size
       nsCOMPtr<nsIDOMNode> el;
@@ -527,7 +531,12 @@ nsHTMLEditor::GetPositionAndDimensions(nsIDOMElement * aElement,
       if (!nsElement) return res;
     }
 
-    GetElementOrigin(aElement, aX, aY);
+    MsiGetElementOrigin(aElement, aX, aY, PR_FALSE);
+    aElement->GetNodeName(name);
+    if (name.EqualsLiteral("table")) {
+      aX += aMarginLeft + aBorderLeft;
+      aY += aMarginTop + aBorderTop;
+    }
 
     res = nsElement->GetOffsetWidth(&aW);
     if (NS_FAILED(res)) return res;

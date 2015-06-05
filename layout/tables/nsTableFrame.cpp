@@ -1384,7 +1384,9 @@ nsTableFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
   nsresult rv = aLists.BorderBackground()->AppendNewToTop(new (aBuilder)
       nsDisplayTableBorderBackground(this));
   NS_ENSURE_SUCCESS(rv, rv);
-  
+
+  //BBM
+  DisplaySelectionUnderlay(aBuilder,aLists);
   return DisplayGenericTablePart(aBuilder, this, aDirtyRect, aLists, PR_TRUE);
 }
 

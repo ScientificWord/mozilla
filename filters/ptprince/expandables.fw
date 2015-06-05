@@ -43,6 +43,7 @@ if (braced){
 
 @$@<Misc functions@>+=@{@-
 
+extern std::string s_preambleExtra;
 
 bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
 {
@@ -51,6 +52,17 @@ bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
    @<Scan filename@>
    const char* name = fn.GetNameString();
    const char* ext = fn.GetExtString();
+   if (Global::msioutput == 0 && Global::msiinpreamble) {
+     std::string strTemp;
+     //strTemp = "\n<texb pre=\"1\" enc=\"1\" name=\"Input\">";
+     //strTemp +="<![CDATA[";
+     strTemp += "\n\\input{";
+     strTemp += name;
+     strTemp += "}";
+     //strTemp += "]]></texb>";
+     s_preambleExtra += strTemp;
+     //Typesetter::AppendTag(strTemp.c_str());
+   }
    if (ext == 0)
      ext = "tex";
 

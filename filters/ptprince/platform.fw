@@ -813,7 +813,7 @@ void SplitFilename(FilenameData* pfd){
    if (!pfd -> m_bSplit) {
       const std::string& str = pfd -> m_strFullName;
       int len = str.length();
-      ASSERT(len > 0);
+      //ASSERT(len > 0);
       int name_pos;
       int name_len;
 
@@ -1060,6 +1060,7 @@ struct InputByteFileData{
    std::string   m_filename;
    int           m_lineno;
    Byte m_buf;
+   // int           m_codepage; // read from first line
 };
 @}
 
@@ -1103,7 +1104,7 @@ bool FileExists(const char* file)
        buf[i] = SEP;
      } else {
        buf[i] = file[i];
-     }     
+     }
    }
    buf[strlen(file)] = 0;
 
@@ -1177,11 +1178,11 @@ void SearchEnv(const char *file, const char *env, bool isEnvVar, char *buf)
       strcat(curPath, s_docdir);
       strcat(curPath, SEP_STR);
       memcpy(curPath + strlen(s_docdir) + 1, penv, n);
-      n = n + strlen(s_docdir); 
+      n = n + strlen(s_docdir);
     } else {
       memcpy(curPath, penv, n);
     }
-    
+
     if (curPath[n - 1] != '/' && curPath[n - 1] != '\\')
     {
       #ifdef _WINDOWS
@@ -1271,6 +1272,11 @@ bool InputByteFile::Open(const Filename& fullpath){
       return false;
    }
    LOG("\nOpened for reading: " << filepath.c_str());
+   // // Read the first line and look for codepage
+   // char firstLine[200]
+   // m_byteFileData -> m_file.getline(firstLine, 190);
+
+
    // Get the first byte into the buffer
    m_byteFileData -> m_buf =  m_byteFileData -> m_file.get();
    return true;
