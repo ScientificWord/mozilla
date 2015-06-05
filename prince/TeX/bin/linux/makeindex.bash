@@ -1,5 +1,4 @@
-pushd $2
+cd $2
 export PATH=$MSITEXBIN:$PATH
-makeindex $4
+makeindex main
 echo done > sentinel
-popd

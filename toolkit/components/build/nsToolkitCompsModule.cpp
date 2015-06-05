@@ -48,7 +48,7 @@
 // XXX Suite isn't ready to include this just yet
 #ifdef MOZ_RDF
 #include "nsDownloadManager.h"
-#include "nsDownloadProxy.h"
+// #include "nsDownloadProxy.h"
 #endif
 #endif // MOZ_SUITE
 
@@ -90,7 +90,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsAlertsService)
 #ifdef MOZ_RDF
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(nsDownloadManager,
                                          nsDownloadManager::GetSingleton) 
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsDownloadProxy)
+// NS_GENERIC_FACTORY_CONSTRUCTOR(nsDownloadProxy)
 #endif
 #endif // MOZ_SUITE
 
@@ -164,10 +164,10 @@ static const nsModuleComponentInfo components[] =
     NS_DOWNLOADMANAGER_CID,
     NS_DOWNLOADMANAGER_CONTRACTID,
     nsDownloadManagerConstructor },
-  { "Download",
-    NS_DOWNLOAD_CID,
-    NS_TRANSFER_CONTRACTID,
-    nsDownloadProxyConstructor },
+  // { "Download",
+  //   NS_DOWNLOAD_CID,
+  //   NS_TRANSFER_CONTRACTID,
+  //   nsDownloadProxyConstructor },
 #endif
 #endif // MOZ_SUITE
   { "TypeAheadFind Component",

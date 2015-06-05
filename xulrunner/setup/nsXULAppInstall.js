@@ -206,7 +206,6 @@ function createExtractor(aFile) {
 }
 
 const AppInstall = {
-
   /* nsISupports */
   QueryInterface : function ai_QI(iid) {
     if (iid.equals(nsIXULAppInstall) ||
@@ -218,11 +217,10 @@ const AppInstall = {
 
   /* nsIXULAppInstall */
   installApplication : function ai_IA(aAppFile, aDirectory, aLeafName) {
+    try {
     var extractor = createExtractor(aAppFile);
     var iniParser = extractor.iniParser;
-
     var appName = iniParser.getString("App", "Name");
-
     // vendor is optional
     var vendor;
     try {
@@ -281,7 +279,8 @@ const AppInstall = {
     }
  
     var version = iniParser.getString("App", "Version");
-    var buildID = iniParser.getString("App", "BuildID");
+   var buildID = iniParser.getString("App", "BuildID");
+   var longname = iniParser.getString("App", "longname");
 
     var infoString = "";
     if (vendor) {
@@ -300,8 +299,23 @@ const AppInstall = {
     "<dict>\n" +
     "<key>CFBundleInfoDictionaryVersion</key>\n" +
     "<string>6.0</string>\n" +
+    "<key>CFBundleDevelopmentRegion</key>\n" +
+    "<string>English</string>\n" +
     "<key>CFBundlePackageType</key>\n" +
     "<string>APPL</string>\n" +
+    "<key>CFBundleDocumentTypes</key>\n" +
+    "<array>\n" +
+      "<dict>\n" +
+        "<key>CFBundleTypeExtensions</key>\n" +
+        "<array>\n" +
+          "<string>sci</string>\n" +
+        "</array>\n" +
+        "<key>CFBundleTypeName</key>\n" +
+        "<string>Scientific WorkPlace Document</string>\n" +
+        "<key>CFBundleTypeRole</key>\n" +
+        "<string>Editor</string>\n" +
+    "</dict>\n" +
+    "</array>\n" +
     "<key>CFBundleExecutable</key>\n" +
     "<string>xulrunner</string>\n" +
     "<key>NSAppleScriptEnabled</key>\n" +
@@ -310,12 +324,24 @@ const AppInstall = {
     "<string>" + infoString + "</string>\n" +
     "<key>CFBundleName</key>\n" +
     "<string>" + appName + "</string>\n" +
+    "<key>CFBundleIdentifier</key>\n" +
+    "<string>com.mackichan." + longname +"</string>\n" +
     "<key>CFBundleIconFile</key>\n" +
     "<string>" + appName + ".icns</string>\n" +
     "<key>CFBundleShortVersionString</key>\n" +
     "<string>" + version + "</string>\n" +
     "<key>CFBundleVersion</key>\n" +
     "<string>" + version + "." + buildID + "</string>\n" +
+    "<key>LSApplicationCategoryType</key>\n" +
+    "<string>public.app-category.productivity</string>\n" +
+    "<key>NSPrincipalClass</key>\n" +
+    "<string>NSApplication</string>\n" +
+    "<key>NSHumanReadableCopyright</key>\n" +
+    "<string>Copyright 2015 by MacKichan Software, Inc.</string>\n" +
+    "<key>LSMultipleInstancesProhibited</key>\n" +
+    "<true/>\n" +
+    "<key>LSMinimumSystemVersion</key>\n" +
+    "<string>10.5</string>\n" +
     "</dict>\n" +
     "</plist>";
 
@@ -346,6 +372,10 @@ const AppInstall = {
     xulrunnerBinary.copyTo(aDirectory, appName.toLowerCase() + "@BIN_SUFFIX@");
 #endif
   }
+  catch(e) {
+    dump(e.message + '\n');
+  }
+}
 };
 
 const AppInstallFactory = {

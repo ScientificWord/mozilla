@@ -26,11 +26,9 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/Minipage.js"/>
   <broadcaster id="role-image" />
   <broadcaster id="role-textframe" hidden="true"/>
-  
+
   <vbox id="units" />
   <spacer/>
   <tabbox id="frametabbox">
@@ -41,10 +39,11 @@
     <tabpanels>
       <tabpanel orient="vertical">
         <vbox id="msiFrameSize"/>
-        <vbox id="msiPlacement"/>
+        <vbox id="placementGroup"/>
       </tabpanel>
       <vbox id="msiFrame"/>
     </tabpanels>
   </tabbox>
+  <script type="application/x-javascript" src="chrome://prince/content/Minipage.js"/>
 </dialog>
 

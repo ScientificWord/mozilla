@@ -1,13 +1,19 @@
 @namespace mml url("http://www.w3.org/1998/Math/MathML");
 
+@media screen {
+  object[msisnap] { display:none !important;}
+}
 /* Print-only rules. We put them here where they are noticeable. */
 @media print {
-*[nopr] {display: none;}
-object[msigraph="true"] {display:none;}
-}
+  *[nopr] {display: none !important;}
+  object[msigraph="true"] {display:none;}
+  object[msisnap="true"] { display:block !important;}
 
-@media screen {
-  plotwrapper object[msisnap] { display:none;}
+  button[class="frontmattertag"] {
+    display: none !important; }
+  *[showexpanders="true"] button.expander {
+    display: none !important;
+  }
 }
 
 /* This section gives the default colors for a range
@@ -20,27 +26,30 @@ mml|math { color: red;}
 mml|* [msiunit="true"] {color: green;
 	font-style: normal;}
 mml|mtd {border-color: green; }
-msidisplay mml|math {border-color: green; 
-  border-width: 1px; 
-  border-style: solid; 
+msidisplay {border-color: green;
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
   min-height: 12px;}
 mml|mtext { color: black; }
 [msiclass="msi_passthrough"] {color: orange; }
 mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
 
 
-pre, verbatim { font-family: Courier; white-space: pre }
+pre, verbatim, verb { font-family: Courier; white-space: pre }
 
 verbatim bodyText {
   margin: 0;
   padding: 0;
 }
-numberedListItem, 
+numberedListItem,
 bulletListItem,
-descriptionListItem {
-       margin-left: 2em;
-       padding-left: 1em;
-       display: list-item;}
+descriptionListItem,
+bibitem {
+  margin-left: 2em;
+  padding-left: 1em;
+  display: list-item;
+}
 
 numberedlist {
   list-style-type: none;
@@ -208,8 +217,12 @@ otfont {
 }
 
 descriptionLabel {
+  margin-right: 1em;
+  min-width: .5em;
   display: inline;
-  background-color: #FFFFBB;
+  border: thin solid #BBBB77;
+/*  border-radius: 3px;
+*/  background-color: #FFFFBB;
 }
 
 numberedLabel {
@@ -223,11 +236,10 @@ bulletLabel {
 }
 
 /* show footnotes by default*/
-note[type="footnote"], node[type="footnote"][hide="false"] {
+note[type="footnote"], note[type="footnote"][hide="false"] {
   display: block;
-  float: left;
-  width: 100%;
-  clear: right;
+  float: none;
+  width: 90%;
   font-size: small;
 }
 
@@ -338,7 +350,7 @@ drop {
 }
 
 marker {
-  background-color: gray;
+  background-color: rgb(240,240,240);
 }
 
 marker:before {
@@ -371,12 +383,13 @@ button[class="msi"]::-moz-selection, button[class="msi"][selected="true"] {
   background-color: blue;
 }
 
-texb, makelof, makelot, maketitle, maketoc, appendix {
+texb, makelof, makelot, maketitle, maketoc, appendix,
+printindex, frontmatter, mainmatter, backmatter {
   font-family: sans-serif;
   font-style: normal;
   -moz-user-select: all;
 
-} 
+}
 
 mml|menclose {
   min-width: 1em;
@@ -412,6 +425,10 @@ mml|menclose[notation~="circle"] {
 }
 
 *[hidemarkers] a[key] {
+  display: none !important;
+}
+
+*[hidemarkers] marker {
   display: none !important;
 }
 
@@ -461,17 +478,61 @@ bibliography {
   counter-reset: bibliographylist;
 }
 
-bibitem {
-  counter-increment: bibliographylist;
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitem");
+bibliography:before {
+  content: "References";
+  font-size: 150%;
 }
 
-bibitem[hasLabel="true"] {
+bibitem {
+  counter-increment: bibliographylist;
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitem");
+*/}
+
+
+biblabel {
+  display: inline;
+  font-weight: bold;
+  background-color: rgb(255,255,230);
+  min-width: 1em;
+  -moz-user-input: enabled;
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
+}
+
+bibkey {
+  display: inline;
+  background-color: rgb(255,230,255);
+  min-width: 1em;
+  margin-right: 1em;
+  -moz-user-input: enabled;
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
+}
+
+bibkey:before {
+  content: '(';
+}
+
+bibkey:after {
+  content: ')';
+}
+
+biblabel:before {
+  content: '[';
+}
+
+biblabel:after {
+  content: ']';
+}
+
+/*bibitem[hasLabel="true"] {
+  display:  block;
   counter-increment: none;
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitemwithlabel");
 }
+*/
 
-bibitem > biblabel+bodyText {
+bibitem > bibkey+bodyText {
   display: inline;
 }
 
@@ -498,6 +559,9 @@ body[showshort='true'] shortTitle:after {
 
 msiframe {
   display: block;
+  overflow: hidden;
+  text-align: center;
+  text-indent: 0;
 }
 
 msiframe[pos="inline"] {

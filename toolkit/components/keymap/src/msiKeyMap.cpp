@@ -444,7 +444,7 @@ NS_IMETHODIMP msiKeyMap::AddScriptMapping(const nsAString & mapname, PRUint32 vi
     nsAutoPtr<nsString> newString(new nsString(theScript));
     m_fDirty = PR_TRUE;
     *_retval = PR_FALSE;
-    nsString str(theScript);
+//    nsString str(theScript);
     nameHashPair * p = m_pnhp;
     while (p)
     {

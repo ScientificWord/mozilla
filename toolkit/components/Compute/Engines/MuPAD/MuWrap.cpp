@@ -39,6 +39,7 @@
 
 MuPADEngine* mupd_eng = NULL;
 
+
 MuPADWrapper::MuPADWrapper(void* ID_dBase, void* NOM_dBase)
 {
   id_dBase = (Grammar *) ID_dBase;
@@ -344,19 +345,21 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
 
             if (cmd_ID >= CCID_Solve_PDE && cmd_ID <= CCID_Solve_ODE_Series) {
               PurgeDEFuncNames();
-              // The names in eng_tree have been defined in the engine. We have to 
-              // announce to defstore
+              if (cmd_ID == CCID_Solve_ODE_Numeric){
+                 // The names in eng_tree have been defined in the engine. We have to 
+                 // announce to defstore
               
-              DefStore* defstore = curr_msr->GetDefStore();
-              U32 engine_ID = curr_msr->GetEngineID();
-              BUCKET_REC* b = children -> bucket_list;
-              while (b) {
-                 if (b->bucket_ID == MB_ODEFUNC) {
-                    if (b -> first_child && b -> first_child -> canonical_ID) {
-                      defstore->PushDefInfo(engine_ID, b -> first_child -> canonical_ID, 2, NULL, NULL, 0, NULL, NULL);
+                 DefStore* defstore = curr_msr->GetDefStore();
+                 U32 engine_ID = curr_msr->GetEngineID();
+                 BUCKET_REC* b = children -> bucket_list;
+                 while (b) {
+                    if (b->bucket_ID == MB_ODEFUNC) {
+                       if (b -> first_child && b -> first_child -> canonical_ID) {
+                         defstore->PushDefInfo(engine_ID, b -> first_child -> canonical_ID, 2, NULL, NULL, 0, NULL, NULL);
+                       }
                     }
+                    b = b -> next;
                  }
-                 b = b -> next;
               }
             }
 

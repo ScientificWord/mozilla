@@ -1,4 +1,3 @@
-
 \chardef\active=13
 
 \catcode`\{=1 % left brace is begin-group character
@@ -16,7 +15,9 @@
 
 %\def~{\nobreakspace{}}
 
-\def\@makeother#1{\catcode`#112\relax}
+\def\msi@newline{^^0a\ignorespaces}
+
+\def\@makeother#1{\catcode #1=12\relax}
 
 \catcode`\%=12
 \def\@percentchar{%}
@@ -37,7 +38,7 @@
 \def\msi@close@element</#1>{\msiclosetag{#1}{</#1>}}
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
-\def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
+\def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml">#1</texb>}}}
 
 %% \documentclass
 
@@ -75,23 +76,46 @@
 
 \def\@usepackagea[#1]#2{%
    \out@usepackageA[#1]{#2}%
+   \msi@inpreamble=0
    \advance\msi@output by 1\relax
    \@@usepackage[#1]{#2}%
    \advance\msi@output by -1\relax
+   \msi@inpreamble=1
 }
 
 \def\@usepackageb#1{%
    \out@usepackageB{#1}%
+   \msi@inpreamble=0
    \advance\msi@output by 1\relax
    \@@usepackage{#1}%
    \advance\msi@output by -1\relax
+   \msi@inpreamble=1
 }
 \def\@@usepackage{\@fileswithoptions\@pkgextension}
-\def\RequirePackage{\@fileswithoptions\@pkgextension}
+
+
+\def\RequirePackage{%
+  \@ifnextchar[{\@reqpackagea}{\@reqpackageb}}
+
+\def\@reqpackagea[#1]#2{%
+   \out@reqpackageA[#1]{#2}%
+   \advance\msi@output by 1\relax
+   \@@reqpackage[#1]{#2}%
+   \advance\msi@output by -1\relax
+}
+
+\def\@reqpackageb#1{%
+   \out@reqpackageB{#1}%
+   \advance\msi@output by 1\relax
+   \@@reqpackage{#1}%
+   \advance\msi@output by -1\relax
+}
+\def\@@reqpackage{\@fileswithoptions\@pkgextension}
 
 
 
 %% \begin{document}
+
 
 \def\msi@begin@document{%
    \global\msi@output=1\relax % prevent output of next line in premable
@@ -109,13 +133,18 @@
 
 \def\begin#1{%
    \begingroup
-   \msitag{^^0a}\csname msi@begin@#1\endcsname}
+   \msitag{^^0a}%
+   \@ifundefined{msi@begin@#1}%
+     {\msiopentag{environment}{<environment type="#1">}}%
+     {\csname msi@begin@#1\endcsname}}
+
 
 \def\end#1{%
-   \csname msi@end@#1\endcsname
-   \msitag{^^0a}%
-   \endgroup}
-
+   \@ifundefined{msi@begin@#1}%
+     {\msiclosetag{environment}{</environment>}}
+     {\csname msi@end@#1\endcsname}
+   \endgroup
+   \msi@newline}
 
 
 %%%%%%%%%%%%%%%%
@@ -716,27 +745,25 @@
 \set@typeset@protect
 
 \def\@ifundefined#1{%
-  \begingroup
-  \msi@output=1
+  \begingroup\msi@output=1
    \expandafter\ifx\csname#1\endcsname\relax
      \global\let\reserved@@a\@firstoftwo
   \else
      \global\let\reserved@@a\@secondoftwo
-  \fi
-  \endgroup
+  \fi\endgroup 
   \reserved@@a}
 
 \edef\@qend{\expandafter\@cdr\string\end\@nil}
 \edef\@qrelax{\expandafter\@cdr\string\relax\@nil}
 \long\def\@ifnextchar#1#2#3{%
-  {\msi@output=1
+  \begingroup\msi@output=1
    \global\let\reserved@d=#1%
    \gdef\reserved@a{#2}%
    \gdef\reserved@b{#3}%
-  }
+  \endgroup%
   \futurelet\@let@token\@ifnch}
 \def\@ifnch{%
- {\msi@output=1
+ \begingroup\msi@output=1
   \ifx\@let@token\@sptoken
     \global\let\reserved@c\@xifnch
   \else
@@ -745,7 +772,7 @@
     \else
       \global\let\reserved@c\reserved@b
     \fi
-  \fi}
+  \fi\endgroup%
   \reserved@c}
 \def\:{\let\@sptoken= } \:  % this makes \@sptoken a space token
 \def\:{\@xifnch} \expandafter\def\: {\futurelet\@let@token\@ifnch}
@@ -1035,26 +1062,6 @@
   \fi}
 
 
-\def\smallskip{
-   \ifmmode\string\smallskip
-   \else
-      \vspace\smallskipamount
-   \fi
-}
-
-\def\medskip{
-   \ifmmode\string\medskip
-   \else
-      \vspace\medskipamount
-   \fi
-}
-
-\def\bigskip{
-   \ifmmode\string\bigskip
-   \else
-      \vspace\bigskipamount
-   \fi
-}
 
 
 \newskip\smallskipamount \smallskipamount=3pt plus 1pt minus 1pt
@@ -1458,8 +1465,8 @@
 
 
 \def\newlength#1{\newskip#1}
-\def\setlength#1#2{}
-\def\addtolength#1#2{}
+%\def\setlength#1#2{}
+%\def\addtolength#1#2{}
 
 \msi@pass@newline{\@settodim}
 \msi@pass@newline{\settoheight}
@@ -3102,7 +3109,13 @@
               \mathversion{normal}}
 \def\math@version{normal}
 \def\newfont#1#2{\@ifdefinable#1{\font#1=#2\relax}}
-\def\symbol#1{\char #1\relax}
+\def\symbol#1{%
+   \ifmmode
+     \string\symbol{#1}%
+   \else
+     \char #1\relax
+   \fi}
+
 \def\@setfontsize#1#2#3{\@nomath#1%
     \ifx\protect\@typeset@protect
       \let\@currsize#1%
@@ -3350,7 +3363,7 @@
 
 \def\msi@begin@verbatim{%
    \@make@braces@other
-   \def\par{\char10}
+   \def\par{\char10\relax}
    \obeylines
    \obeyspaces
    \catcode`\\=12
@@ -3457,8 +3470,6 @@
 
 \def\*{\discretionary{\thinspace\the\textfont2\char2}{}{}}
 \let\:=\>
-\def\active@math@prime{^\bgroup\prim@s}
-{\catcode`\'=\active \global\let'\active@math@prime}
 \def\prim@s{%
   \prime\futurelet\@let@token\pr@m@s}
 
@@ -4158,27 +4169,6 @@
                     \if #1p3 \else \z@ \@preamerr 0\fi
   \fi  \fi  \fi  \fi  \fi  \fi
 \fi}
-\def\hline{%
-  \noalign{\ifnum0=`}\fi\hrule \@height \arrayrulewidth \futurelet
-   \reserved@a\@xhline}
-\def\@xhline{\ifx\reserved@a\hline
-               \vskip\doublerulesep
-               \vskip-\arrayrulewidth
-             \fi
-      \ifnum0=`{\fi}}
-\def\vline{\vrule \@width \arrayrulewidth}
-\def\cline#1{\@cline#1\@nil}
-\def\@cline#1-#2\@nil{%
-  \omit
-  \@multicnt#1%
-  \advance\@multispan\m@ne
-  \ifnum\@multicnt=\@ne\@firstofone{&\omit}\fi
-  \@multicnt#2%
-  \advance\@multicnt-#1%
-  \advance\@multispan\@ne
-  \leaders\hrule\@height\arrayrulewidth\hfill
-  \cr
-  \noalign{\vskip-\arrayrulewidth}}
 \def\multispan{\omit\@multispan}
 \def\@multispan#1{%
   \@multicnt#1\relax
@@ -4795,6 +4785,7 @@
 \dimen\footins=8in % maximum footnotes per page
 %%%\def\footnoterule{\kern-3\p@
 %%%  \hrule \@width 2in \kern 2.6\p@} % the \hrule is .4pt high
+
 \def\footnoterule{\msitag{\footnoterule}}
 \@definecounter{footnote}
 \def\thefootnote{\@arabic\c@footnote}
@@ -4842,6 +4833,7 @@
 
 \newcount\@idxlev
 \newtoks\@msi@toks
+\newtoks\temptoksc
 
 \def\appendtoks#1{\expandafter\expandafter\expandafter
    \@msi@toks\expandafter{\the\@msi@toks #1}}%
@@ -4879,6 +4871,11 @@
      \fi\fi\fi
 }
 
+
+\def\@process@idx@enc#1\@msi@end{%
+  \gdef\@idx@enc{#1}%
+}
+
 \def\@start@spec{%
      \@inspectrue
      \ifnum\@idxlev=0\relax       
@@ -4896,14 +4893,18 @@
 
 
 \def\@idx@#1{%
+   \let\next\relax
    \ifx#1!
      \@process@idx@ent
      \@inspecfalse
-   \else\ifx#1@
-     \@start@spec
-   \else 
-     \appendtoks{#1}%
-   \fi\fi}
+   \else
+     \ifx#1@
+       \@start@spec
+     \else
+       \appendtoks{#1}%
+     \fi
+   \fi
+   \next}
 
 
 \def\@split#1@#2\@msi@end{{#1}{#2}}
@@ -4912,14 +4913,18 @@
 
 \def\@stripat#1@{#1}
 
+\def\insert@enc#1{\msitag{ enc="#1"}}
+
 \def\index#1{%
   \@inspecfalse
+  \@idxlev=0
   \gdef\@idxentA{}%
   \gdef\@idxspecA{}%
   \gdef\@idxentB{}%
   \gdef\@idxspecB{}%
   \gdef\@idxentC{}%
   \gdef\@idxspecC{}%
+  \gdef\@idx@enc{}%
   \msihmode
   \msi@maptoks{#1}{\@idx@}%
   \ifx\@msi@toks\@empty
@@ -4951,9 +4956,13 @@
        \fi
      \fi
      \edef\@tempa{\the\temptoksa}
-     \ifx\@tempa\@emptytoks
+     \ifx\@tempa\@empty
      \else    
        \msitag{ specAppearance="}\the\temptoksa\msitag{"}%
+     \fi
+     \ifx\@idx@enc\@empty
+     \else
+       \expandafter\insert@enc\expandafter{\@idx@enc}%
      \fi
      \msitag{>}%
      \ifx\@idxspecA\@empty
@@ -4977,22 +4986,42 @@
 \def\@first#1#2{#1}
 \def\@second#1#2{#2}
 
+\def\process#1{%
+  \ifx#1##
+    \expandafter\temptoksa\expandafter{\the\temptoksa\@msi@end}
+    \let\next\relax
+  \else
+    \expandafter\temptoksa\expandafter{\the\temptoksa #1}
+    \let\next\stringA
+  \fi
+  \next
+}
+
+\def\stringA{\expandafter\process\string}
+
+\def\tostrings{%
+   \temptoksa{}%
+   \expandafter\stringA\the\temptoksb##}
+
+
 
 \def\msi@maptoks#1#2{%
   \def\msi@mapmacro{#2}%
-  \temptoksa{#1\@msi@end@}%
+  \temptoksa{#1\@msi@end}%
   \expandafter\msi@@map\the\temptoksa% 
 }
 
 \def\msi@@map#1{%
   \def\@tokstrA{#1}%
-  \def\@tokstrB{\@msi@end@}%
+  \def\@tokstrB{\@msi@end}%
   \ifx\@tokstrA\@tokstrB
     \let\map@next=\relax
+  \else\ifx#1|
+    \let\map@next\@process@idx@enc
   \else
     \msi@mapmacro{#1}%
     \let\map@next=\msi@@map
-  \fi
+  \fi\fi
   \map@next
 }
 
@@ -5019,7 +5048,7 @@
 \def\glossary{\@bsphack\begingroup\@sanitize\@index}
 
 
-\def\bibitem{\@ifnextchar[{\@lbibitem}{\begingroup\attrib@text\@bibitem}}
+\def\bibitem{\@ifnextchar[{\begingroup\attrib@text\@lbibitem}{\begingroup\attrib@text\@bibitem}}
 
 \def\@lbibitem[#1]#2{%
    \toks200{#1}%
@@ -5426,11 +5455,11 @@
 
 \begingroup
 \obeylines\obeyspaces%
-\catcode`\'\active%
+%\catcode`\'\active%
 \gdef\@resetactivechars{%
 \def^^M{\@activechar@info{EOL}\space}%
 \def {\@activechar@info{space}\space}%
-\let'\active@math@prime}%
+}%
 \endgroup
 
 \def\@outputpage{%
@@ -6169,11 +6198,13 @@
     \@makeother\/%
     \@makeother\&%
     \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
-\def\@pass@ptions#1#2#3{%
-  \expandafter\xdef\csname opt@#3.#1\endcsname{%
-    \@ifundefined{opt@#3.#1}\@empty
-      {\csname opt@#3.#1\endcsname,}%
-    \zap@space#2 \@empty}}
+
+\def\@pass@ptions#1#2#3{\relax}
+%\def\@pass@ptions#1#2#3{%
+%  \expandafter\xdef\csname opt@#3.#1\endcsname{%
+%    \@ifundefined{opt@#3.#1}\@empty
+%      {\csname opt@#3.#1\endcsname,}%
+%    \zap@space#2 \@empty}}
 \@onlypreamble\@pass@ptions
 \def\PassOptionsToPackage{\@pass@ptions\@pkgextension}
 \def\PassOptionsToClass{\@pass@ptions\@clsextension}
@@ -6644,7 +6675,7 @@
   \catcode`\"=\active
   \catcode`\;=\active
   \catcode`\:=\active
-  \catcode`\'=\active
+%  \catcode`\'=\active
   \catcode`\~=\active
 }
 
@@ -6654,7 +6685,7 @@
       \def"{\string"}%
       \def;{\string;}%
       \def:{\string:}%
-      \def'{\string'}%
+%      \def'{\string'}%
       \def~{\string~}%
       %\bbl@deactivate{"}%
       %\bbl@deactivate{;}%
@@ -6671,7 +6702,7 @@
 
 \begingroup
    \catcode`\&=13%
-   \gdef&{\ifmmode\char`\&\else\char`\&amp;\fi}
+   \gdef&{\ifmmode\char`\&\else&\fi}
 \endgroup
   
 \def\msihyperref#1#2#3{%

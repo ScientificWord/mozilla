@@ -67,6 +67,7 @@ SEMANTICS_NODE *MuAnalyzer::BuildSemanticsTree(MNODE * eng_tree, U32 cmd_ID,
   MNODE *e_tree = InfixToPrefix(eng_tree, "^");
   e_tree = InfixToPrefix(e_tree, "/");
   e_tree = InfixToPrefix(e_tree, "mnjoin");
+  e_tree = InfixToPrefix(e_tree, "|");  
 
   // Generate the semantics tree that is returned
   rv = GetSemanticsList(e_tree, NULL);
@@ -85,6 +86,7 @@ SEMANTICS_NODE *MuAnalyzer::BuildSemanticsTree(MNODE * eng_tree, U32 cmd_ID,
   case CCID_PLU_Decomposition:
   case CCID_QR_Decomposition:
   case CCID_Singular_Values:
+  case CCID_SVD:
   case CCID_Rational_Canonical_Form: 
     FixMapleCholesky(rv);
     break;
@@ -111,6 +113,9 @@ SEMANTICS_NODE *MuAnalyzer::BuildSemanticsTree(MNODE * eng_tree, U32 cmd_ID,
   case CCID_Quantile:
     rv = FixQuantileResult(rv);
     break;
+
+  case CCID_Definiteness_Tests:
+    rv = FixDefinitenessTests(rv);
 
   default:
     break;
@@ -250,6 +255,13 @@ void MuAnalyzer::SNodeFromOneMNode(SEMANTICS_NODE * snode,
           TCI_ASSERT(0);
     }
     break;
+
+  case 12: {
+    if (ElementNameIs(eng_node, "substitution")) {
+        AnalyzeSUBSTITUTION(eng_node, snode, local_nodes_done);
+    }
+    break;
+  }
 
   case 16:{
       if (ElementNameIs(eng_node, "precedence_group")) {
@@ -1790,8 +1802,6 @@ void MuAnalyzer::AnalyzeCONSTANT(MNODE * eng_node,
       if (!buffer[0]) {
         if (zln < 80)
           strcpy(buffer, c_str);
-        if (!IsEngineToken(c_str))
-          TCI_ASSERT(0);
       }
       size_t bln = strlen(buffer);
       char *tmp = new char[bln + 1];
@@ -1799,6 +1809,67 @@ void MuAnalyzer::AnalyzeCONSTANT(MNODE * eng_node,
       snode->contents = tmp;
     }
   }
+}
+
+void MuAnalyzer::AnalyzeSUBSTITUTION(MNODE* eng_node,
+                                SEMANTICS_NODE* snode,
+                                int& local_nodes_done)
+{
+   BUCKET_REC* main_bucket_list = NULL;
+
+   local_nodes_done = 1;
+
+   snode->semantic_type = SEM_TYP_SUBSTITUTION;
+   snode->contents = DuplicateString("substitution");
+   
+   MNODE* contents = eng_node->first_kid;
+   MNODE* subst = eng_node->first_kid->next;
+
+   // de-link the two parts
+   contents->next = NULL;
+   subst->prev = NULL;
+
+   // Deal with contents. 
+   //  1. Put the contents sem list into an unnamed bucket
+   //  2. Put that bucket into a fence
+   //  3. Put the fence into an unnamed bucket
+   BUCKET_REC* fence_item_bucket_list = NULL;
+   BUCKET_REC* fence_item_bucket = MakeBucketRec(MB_UNNAMED, NULL);
+   fence_item_bucket_list = AppendBucketRec(fence_item_bucket_list, fence_item_bucket);
+   SEMANTICS_NODE* element = GetSemanticsList(contents, fence_item_bucket);
+   fence_item_bucket->first_child = element;
+   element->parent = fence_item_bucket;
+
+   // Now put element bucket in a generic fence
+   SEMANTICS_NODE* fence = CreateSemanticsNode();
+   fence -> semantic_type = SEM_TYP_GENERIC_FENCE;  
+   fence->bucket_list = fence_item_bucket_list;
+
+   // Put the fence in an unnamed bucket
+   BUCKET_REC* fence_bucket = MakeBucketRec(MB_UNNAMED, NULL);
+   fence_bucket->first_child = fence;
+   main_bucket_list = AppendBucketRec(main_bucket_list, fence_bucket);
+
+   // Process subst
+   BUCKET_REC* item_bucket = MakeBucketRec(MB_SUBST_LOWER, NULL);
+   main_bucket_list = AppendBucketRec(main_bucket_list, item_bucket);
+
+   SEMANTICS_NODE* element2 = GetSemanticsList(subst, item_bucket);
+   item_bucket->first_child = element2;
+   element2->parent = item_bucket;
+   
+   snode->bucket_list = main_bucket_list;
+
+
+   //if (eng_node->p_chdata) {
+   // size_t zln = strlen(eng_node->p_chdata);
+   // char *tmp = new char[zln + 1];
+   // strcpy(tmp, eng_node->p_chdata);
+   // snode->contents = tmp;
+   //}
+
+
+
 }
 
 void MuAnalyzer::AnalyzeBOOLEAN(MNODE * eng_node,
@@ -2231,6 +2302,22 @@ SEMANTICS_NODE *MuAnalyzer::FixQuantileResult(SEMANTICS_NODE * s_list)
   return s_qresult;
 }
 
+
+
+SEMANTICS_NODE *MuAnalyzer::FixDefinitenessTests(SEMANTICS_NODE * s_list)
+{
+  char* cont  = s_list->contents;
+  if (cont){
+    if (0 == strcmp(cont, "indef")) {
+       s_list -> contents = DuplicateString("indefinite");
+    } else if (0 == strcmp(cont, "posdef")) {
+       s_list -> contents = DuplicateString("positive definite");
+    }
+  }
+  return s_list;
+}
+
+
 SEMANTICS_NODE* MuAnalyzer::RemoveParens(SEMANTICS_NODE * expr)
 {
   SEMANTICS_NODE *rv = expr;
@@ -2269,11 +2356,13 @@ MNODE *MuAnalyzer::InfixToPrefix(MNODE * eng_tree, char *z_op)
 
         MNODE *schemata = MakeTNode(0, 0, 0);
         if (rover->p_chdata[0] == '/')
-		  SetElementName(schemata, "fraction");
+		      SetElementName(schemata, "fraction");
         else if (rover->p_chdata[0] == '^')
           SetElementName(schemata, "power_form");
         else if (rover->p_chdata[0] == 'm')
           SetElementName(schemata, "mixed_num");
+        else if (rover->p_chdata[0] == '|')
+          SetElementName(schemata, "substitution");
         else
           TCI_ASSERT(0);
 

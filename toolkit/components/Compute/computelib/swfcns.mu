@@ -1037,6 +1037,8 @@ begin
     end_if;
   elif testtype(args(1),DOM_LIST) then
     stats::mean( args(1) );
+  elif testtype(args(1),DOM_SET) then
+    stats::mean( coerce(args(1),DOM_LIST) );
   else
     stats::mean( [args()] );
   end_if;
@@ -1059,6 +1061,8 @@ begin
     end_if;
   elif testtype(args(1),DOM_LIST) then
     stats::median( args(1) );
+  elif testtype(args(1),DOM_SET) then
+    stats::median( coerce(args(1),DOM_LIST) );
   else
     stats::median( [args()] );
   end_if;
@@ -1081,6 +1085,8 @@ begin
     end_if;
   elif testtype(args(1),DOM_LIST) then
     stats::modal( args(1) );
+  elif testtype(args(1),DOM_SET) then
+    stats::modal( coerce(args(1),DOM_LIST) );
   else
     stats::modal( [args()] );
   end_if;
@@ -1103,6 +1109,8 @@ begin
     end_if;
   elif testtype(args(1),DOM_LIST) then
     stats::geometricMean( args(1) );
+  elif testtype(args(1),DOM_SET) then
+    stats::geometricMean( coerce(args(1),DOM_LIST) );
   else
     stats::geometricMean( [args()] );
   end_if;
@@ -1125,6 +1133,8 @@ begin
     end_if;
   elif testtype(args(1),DOM_LIST) then
     stats::harmonicMean( args(1) );
+  elif testtype(args(1),DOM_SET) then
+    stats::harmonicMean( coerce(args(1),DOM_LIST) );
   else
     stats::harmonicMean( [args()] );
   end_if;
@@ -1147,6 +1157,8 @@ begin
     end_if;
   elif testtype(args(1),DOM_LIST) then
     stats::stdev( args(1), Sample );
+  elif testtype(args(1),DOM_SET) then
+    stats::stdev( coerce(args(1),DOM_LIST) );
   else
     stats::stdev( [args()], Sample );
   end_if;
@@ -1192,7 +1204,7 @@ end_proc:
 tcivariance := proc()
   local A;
 begin
-   if testtype(args(1),Dom::Matrix) then
+ if testtype(args(1),Dom::Matrix) then
     A := tcistatdata( args(1) );
     if linalg::ncols(A) = 1 then
       tcivariance1( A );
@@ -1201,6 +1213,8 @@ begin
     end_if;
   elif testtype(args(1),DOM_LIST) then
     stats::variance( args(1) );
+  elif testtype(args(1),DOM_SET) then
+    stats::variance( coerce(args(1),DOM_LIST) );
   else
     stats::variance( [args()] );
   end_if;

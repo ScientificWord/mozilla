@@ -116,7 +116,8 @@
     <xsl:param name="rowlines"/>
   
     <xsl:if test="$current-row &lt; $last-row">
-      <xsl:text xml:space="preserve"> \\</xsl:text>
+      <xsl:text> \\</xsl:text>
+      <xsl:value-of select="$newline"/>
 
       <xsl:if test="string-length($rowlines)&gt;0">
         <xsl:call-template name="script-hline">

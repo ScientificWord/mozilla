@@ -1,4 +1,4 @@
-# In the samples directory, there are two kinds of .xhtml files: hand constructed 
+# In the samples directory, there are two kinds of .xhtml files: hand constructed
 # files (e.g., DebugEvaluate) and files exported from ScientificWorkplace.
 # Most of the test files start as .tex source and are created/edited
 # using ScientificWorkplace. They are exported (File/Export) creating
@@ -8,11 +8,11 @@
 # a .xhtml file usable by Prince.
 #
 # To add (or modify) a test file:
-#   0. Create/modify .tex file 
+#   0. Create/modify .tex file
 #   1. Export Document (export settings: export math as MathML)
 #   2. Rename <file>.xhtml to <file>.xml
 #   3. For new files, add the file name to the SAMPLES list in this file
-#   4. Run make in  Prince/mozilla/obj-Prince/Prince/samples 
+#   4. Run make in  Prince/mozilla/obj-Prince/Prince/samples
 #
 DEPTH		= ../..
 topsrcdir	= @top_srcdir@
@@ -54,6 +54,9 @@ SAMPLES	:= \
 
 SWP_SAMPLES_SCI	:= \
 			$(srcdir)/OregonTrail.sci \
+			$(srcdir)/swpwelcome.sci \
+			$(srcdir)/swwelcome.sci \
+			$(srcdir)/snwelcome.sci \
 			$(NULL)
 
 

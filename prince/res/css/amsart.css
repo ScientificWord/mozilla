@@ -1,3 +1,9 @@
+/* amsart.css */
+
+/************************/
+/* Division header tags */
+/************************/
+
 part {
   display: block;
   counter-increment: part;
@@ -7,6 +13,7 @@ part sectiontitle {
   display: block;
   font-size: x-large;
   font-weight: bold;
+  color: rgb(9, 62, 125);
 }
 
 part>sectiontitle:before {
@@ -14,28 +21,14 @@ part>sectiontitle:before {
   display: block;
   font-size: large;
   font-weight: bold;
-}
-
-chapter {
-  display: block;
-/*  counter-increment: chapter;
-  counter-reset: subchapter;
-  counter-reset: theorem; */
-}
-
-chapter sectiontitle {
-  display: block;
-  margin: 10pt 10pt 0 0;
-  margin-left: 10pt;
-  font-size: 14pt;
-  font-weight: bold;
+  color: rgb(9, 62, 125);
 }
 
 section {
   display: block;
-/*    counter-increment: section;
+  counter-increment: section;
   counter-reset: subsection;
-  counter-reset: theorem; */
+/*  counter-reset: theorem; */
 }
 
 section sectiontitle {
@@ -44,18 +37,17 @@ section sectiontitle {
   margin-left: 0;
   font-size: large;
   font-weight: bold;
+  color: rgb(9, 62, 125);
 }
 
-/*
 section>sectiontitle:before {
   content: counter(section) ".  ";
 }
-*/
 
 subsection{
   display: block;
-/*    counter-increment: subsection;
-    counter-reset: subsubsection; */
+  counter-increment: subsection;
+  counter-reset: subsubsection;
 }
 
 subsection sectiontitle {
@@ -63,18 +55,17 @@ subsection sectiontitle {
   margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
+  color: rgb(9, 62, 125);
 }
 
-/*
 subsection>sectiontitle:before {
   content: counter(section) "." counter(subsection) ".  ";
 }
-*/
 
 subsubsection {
   display:block;
-/*    counter-increment: subsubsection;
-    counter-reset: paragraph; */
+  counter-increment: subsubsection;
+    counter-reset: paragraph;
 }
 
 subsubsection sectiontitle {
@@ -83,13 +74,12 @@ subsubsection sectiontitle {
   margin-left: 10pt;
   font-size: medium;
   font-weight: bold;
+  color: rgb(9, 62, 125);
 }
 
-/*
 subsubsection>sectiontitle:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
 }
-*/
 
 paragraph {
   display:block;
@@ -100,6 +90,7 @@ paragraph sectiontitle {
   font-size: medium;
   font-weight: normal;
   font-style: italic;
+  color: rgb(9, 62, 125);
 }
 
 /*
@@ -108,9 +99,243 @@ paragraph>sectiontitle:before {
 }
 */
 
+section defaulttitletag:after {
+  content: "Replace this section title";
+  color: red;
+}
+
+subsection defaulttitletag:after {
+  content: "Replace this subsection title";
+  color: red;
+}
+
+subsubsection defaulttitletag:after {
+  content: "Replace this subsubsection title";
+  color: red;
+}
+
+paragraph defaulttitletag:after {
+  content: "Replace this subsubsubsection title";
+  color: red;
+}
+
+subparagraph defaulttitletag:after {
+  content: "Replace this subsubsubsubsection title";
+  color: red;
+}
+
+/*************************/
+/* Front matter elements */
+/*************************/
+
+title {
+  font-size: x-large;
+  display: block;
+  color: rgb(9, 62, 125);
+  margin-top: 12pt;
+  text-align: center;
+}
+
+title > short {
+   display: inline;
+   padding: 0 0 0 20pt;
+   color: #E1EEFD;
+}
+
+body[showshort='true'] shortTitle {
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] shortTitle:before {
+  content: '[';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] shortTitle:after {
+  content: '] ';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+author {
+  text-align: center;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  display: block;
+  padding-top: 10pt;
+}
+
+authorid {
+  display: none;
+}
+
+body[showshort='true'] authorid {
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] authorid:before {
+  content: '[';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] authorid:after {
+  content: '] ';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+address {
+  display: block;
+  color: rgb(9, 62, 125);
+}
+
+curraddr {
+  text-align: center;
+  display: block;
+  color: rgb(9, 62, 125);
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-curraddr");
+  -moz-user-select: text;
+}
+
+email {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-email");
+  -moz-user-select: text;
+}
+
+urladdr {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-urladdr");
+  -moz-user-select: text;
+}
+
+thanks {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-thanks");
+  -moz-user-select: text;
+}
+
+date {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+}
+
+translator {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-translator");
+  -moz-user-select: text;
+}
+
+subjclass {
+  text-align: center;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  display: block;
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-subjclass");
+  -moz-user-select: text;
+}
+
+subjclassyear {
+  display: none;
+}
+
+body[showshort='true'] subjclassyear {
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] subjclassyear:before {
+  content: '[';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+body[showshort='true'] subjclassyear:after {
+  content: '] ';
+  display: inline;
+  color: rgb(128, 181, 247);
+}
+
+keywords {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-keywords");
+  -moz-user-select: text;
+}
+
+dedicatory {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  color: rgb(9, 62, 125);
+  padding-top: 2pt;
+  -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-dedicatory");
+  -moz-user-select: text;
+}
+
+abstract {
+  display: block;
+  margin-top: 10pt;
+  margin-left: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 10pt;
+  padding-left: 15pt;
+  padding-right: 15pt;
+  padding-top: 15pt;
+  padding-bottom: 15pt;
+  font-size: small;
+  border: thin solid black;
+  background-color: #E1EEFD;
+  -moz-border-radius: 5px;
+}
+
+abstract:before {
+  content: "Abstract";
+  display: block;
+  text-align: center;
+  font-size: 100%; font-weight: bold;
+  color: rgb(9, 62, 125);
+  -moz-user-select: -moz-none;
+}
+
+/**********************/
+/* Main text elements */
+/**********************/
+
 p {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
+}
+
+bodyText {
+  display: block;
+  margin: 10pt 0 5pt 0;
 }
 
 bodyMath {
@@ -118,35 +343,6 @@ bodyMath {
   margin: 0 10pt 0 5pt;
   color: rgb(0,128,64);
 }
-
-author {
-  text-align: center;
-  font-weight: normal;
-  display: block;
-  padding-top: 10pt;
-}
-
-date {
-  text-align: center;
-  font-weight: normal;
-  display: block;
-  padding-top: 2pt;
-}
-
-address {
-  display: block;
-}
-
-title {
-  font-size: x-large;
-  display: block;
-  margin-top: 12pt;
-  text-align: center;
-}
-
-title > short {
-   display: inline;
-   padding: 0 0 0 20pt;}
 
 /* Not in article.css (gp)
 pre, verbatim {
@@ -195,16 +391,20 @@ img {
 }
 */
 
+/****************/
+/* Environments */
+/****************/
+
 shortQuote {
   display: block;
-  margin-left: 20pt;
-  margin-right: 20pt;
+  margin-left: 40pt;
+  margin-right: 40pt;
 }
 
 longQuotation {
   display: block;
-  margin-left: 20pt;
-  margin-right: 20pt;
+  margin-left: 40pt;
+  margin-right: 40pt;
 }
 
 centered {
@@ -314,53 +514,240 @@ Huge {
   font-size: 183%
 }
 
-/*
-theorem {
-  display: block;
-  font-style: italic;
-  counter-increment: theorem;
+
+/*****************************/
+/* Theorem-like environments */
+/*****************************/
+
+theorem { counter-increment: theorem; }
+
+theorem > *:first-child:before {
+  content: 'Theorem ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
 }
 
-theorem:before {
-  content:  attr(type) " " counter(section) "."  counter(theorem) ". " ;
-} */
+acknowledgement { counter-increment: acknowledgement; }
 
-/* Not in article.css (gp)
-tabular {
-  display: table
+acknowledgement > *:first-child:before {
+  content: 'Acknowledgement ' counter(acknowledgement) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
 }
 
-tr {
-  display: table-row
+acknowledgment { counter-increment: acknowledgment; }
+
+acknowledgment > *:first-child:before {
+  content: 'Acknowledgment ' counter(acknowledgment) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
 }
 
-td {
-  display: table-cell
-}
-*/
+algorithm { counter-increment: algorithm; }
 
-section defaulttitletag:after {
-  content: "Replace this section title";
-  color: red;
+algorithm > *:first-child:before {
+  content: 'Algorithm ' counter(algorithm) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
 }
 
-subsection defaulttitletag:after {
-  content: "Replace this subsection title";
-  color: red;
+assertion { counter-increment: assertion; }
+
+assertion > *:first-child:before {
+  content: 'Assertion ' counter(assertion) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
 }
 
-subsubsection defaulttitletag:after {
-  content: "Replace this subsubsection title";
-  color: red;
+assumption { counter-increment: assumption; }
+
+assumption > *:first-child:before {
+  content: 'Assumption ' counter(assumption) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
 }
 
-paragraph defaulttitletag:after {
-  content: "Replace this subsubsubsection title";
-  color: red;
+axiom { counter-increment: axiom; }
+
+axiom > *:first-child:before {
+  content: 'Axiom ' counter(axiom) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
 }
 
-subparagraph defaulttitletag:after {
-  content: "Replace this subsubsubsubsection title";
-  color: red;
+case { counter-increment: case; }
+
+case > *:first-child:before {
+  content: 'Case ' counter(case) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+claim { counter-increment: claim; }
+
+claim > *:first-child:before {
+  content: 'Claim ' counter(claim) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+conclusion { counter-increment: conclusion; }
+
+conclusion > *:first-child:before {
+  content: 'Conclusion ' counter(conclusion) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+condition { counter-increment: condition; }
+
+condition > *:first-child:before {
+  content: 'Condition ' counter(condition) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+conjecture { counter-increment: conjecture; }
+
+conjecture > *:first-child:before {
+  content: 'Conjecture ' counter(conjecture) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+convention { counter-increment: convention; }
+
+convention > *:first-child:before {
+  content: 'Convention ' counter(convention) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+corollary { counter-increment: corollary; }
+
+corollary > *:first-child:before {
+  content: 'Corollary ' counter(corollary) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+criterion { counter-increment: criterion; }
+
+criterion > *:first-child:before {
+  content: 'Criterion ' counter(criterion) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+definition { counter-increment: definition; }
+
+definition > *:first-child:before {
+  content: 'Definition ' counter(definition) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+example { counter-increment: example; }
+
+example > *:first-child:before {
+  content: 'Example ' counter(example) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+exercise { counter-increment: exercise; }
+
+exercise > *:first-child:before {
+  content: 'Exercise ' counter(exercise) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+hypothesis { counter-increment: hypothesis; }
+
+hypothesis > *:first-child:before {
+  content: 'Hypothesis ' counter(hypothesis) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+lemma { counter-increment: lemma; }
+
+lemma > *:first-child:before {
+  content: 'Lemma ' counter(lemma) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+notation { counter-increment: notation; }
+
+notation > *:first-child:before {
+  content: 'Notation ' counter(notation) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+observation { counter-increment: observation; }
+
+observation > *:first-child:before {
+  content: 'Observation ' counter(observation) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+problem { counter-increment: problem; }
+
+problem > *:first-child:before {
+  content: 'Problem ' counter(problem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+property { counter-increment: property; }
+
+property > *:first-child:before {
+  content: 'Property ' counter(property) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+proposition { counter-increment: proposition; }
+
+proposition > *:first-child:before {
+  content: 'Proposition ' counter(proposition) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+question { counter-increment: question; }
+
+question > *:first-child:before {
+  content: 'Question ' counter(question) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+remark { counter-increment: remark; }
+
+remark > *:first-child:before {
+  content: 'Remark ' counter(remark) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+solution { counter-increment: solution; }
+
+solution > *:first-child:before {
+  content: 'Solution ' counter(solution) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+summary { counter-increment: summary; }
+
+summary > *:first-child:before {
+  content: 'Summary ' counter(summary) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
 }
 

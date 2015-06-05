@@ -292,6 +292,7 @@ MuPADPlot::REPTOKFN MuPADPlot::tokenfns[] = {
      "@textfontstr@",    MuPADPlot::PlotTextFontStr,
      "@axisfont@",       MuPADPlot::AxisFontStr,
      "@ticksfont@",      MuPADPlot::TicksFontStr,
+     "@tickcount@",      MuPADPlot::TicksCountStr,
      (char *)NULL,       NULL                
 };                                   
   
@@ -574,6 +575,7 @@ string MuPADPlot::GlobalParamsStr (MuPADPlot* T) {
   U32 plottype;                                                                                    
   string retstr   = "";                                                                           
   int titlecount  = 0;
+  int tickcountcount = 0;
   int cameracount = 0;
   for (int i=PID_GraphFirstParam; i<PID_PlotFirstParam; i++) {                                             
 	string val = T->psr->RetrievePlotParam (T->plotno, i, plottype);                                     
@@ -586,6 +588,13 @@ string MuPADPlot::GlobalParamsStr (MuPADPlot* T) {
             retstr += "@title@";
             titlecount++;
           }  
+          break;
+
+        case PID_GraphXTickCount:
+        case PID_GraphYTickCount:
+        case PID_GraphZTickCount:
+          if (retstr.find("@tickcount@")==string::npos)
+            retstr += "@tickcount@";
           break;
 
         case PID_GraphViewBoxXMin:
@@ -616,18 +625,12 @@ string MuPADPlot::GlobalParamsStr (MuPADPlot* T) {
 		  break;                                                                                
         case PID_GraphAxesScaling  :                                                            
           retstr += "@axesscaling@";
-		  break;                                                                                
+		    break;                                                                                
         case PID_GraphEqualScaling  :  
           retstr += "@equalscaling@";
           break;                                                                                
         case PID_GraphEnableTicks   :                                                           
-		  break;                                                                                
-        case PID_GraphXTickCount	   :                                                        
-		  break;                                                                                
-        case PID_GraphYTickCount	   :                                                        
-		  break;                                                                                
-        case PID_GraphZTickCount	   :                                                        
-		  break;                                                                                
+		    break;                                                                                
         case PID_GraphAxesTips	   : 
           retstr += "@axestips@";
 		  break;                                                                                
@@ -873,6 +876,16 @@ string MuPADPlot::LocalOptsStr (MuPADPlot* T) {
         case PID_textPlotBillboarding :
           retstr += "@billboarding@";
       break;
+        case PID_GraphXTickCount	   :
+          retstr += "@xticks@";                                                                  
+		    break;                                                                                
+        case PID_GraphYTickCount	   :
+          retstr += "@yticks@";                                                        
+		    break;                                                                                
+        case PID_GraphZTickCount	   :
+          retstr += "@zticks@";                                                        
+		    break;                                                                                
+
       } // end switch                                                                           
 	  } // end if                                                                                 
   } // end for                                                                                  
@@ -1465,6 +1478,43 @@ string MuPADPlot::UNIMPLEMENTED(MuPADPlot* T) {
   cout << "MuPADPlot:: A required transformation method is not yet implemented\n";
   return pstr;
 }
+
+string MuPADPlot::TicksCountStr(MuPADPlot* T) {
+  U32 plottype;
+  string v = "";
+  string val = T->psr->RetrievePlotParam (T->plotno, PID_GraphXTickCount, plottype);
+  if (val != "0" && val != ""){
+     if (val == "none") val = "None";
+     if (val == "low") val = "Low";
+     if (val == "normal") val = "Normal";
+     if (val == "high") val = "High";
+
+     v += ", XTicksNumber=";
+     v += val;
+  }
+  val = T->psr->RetrievePlotParam (T->plotno, PID_GraphYTickCount, plottype);
+  if (val != "0" && val != ""){
+     if (val == "none") val = "None";
+     if (val == "low") val = "Low";
+     if (val == "normal") val = "Normal";
+     if (val == "high") val = "High";
+
+     v += ", YTicksNumber=";
+     v += val;
+  }
+  val = T->psr->RetrievePlotParam (T->plotno, PID_GraphZTickCount, plottype);
+  if (val != "0" && val != ""){
+     if (val == "none") val = "None";
+     if (val == "low") val = "Low";
+     if (val == "normal") val = "Normal";
+     if (val == "high") val = "High";
+     v += ", ZTicksNumber=";
+     v += val;
+  }
+
+  return v;
+}
+
 
 string MuPADPlot::VarsStr (MuPADPlot* T) {
   string v = "";

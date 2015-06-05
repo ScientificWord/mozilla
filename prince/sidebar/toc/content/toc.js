@@ -88,7 +88,7 @@ function buildTOC()
   re = /##LOT##/g;
   stylestring = stylestring.replace(re, ""+(doLOT?"html:table":"html:xxxtable"));
   re = /##TAG##/g;
-  doTag=true;
+//  doTag=true;
   stylestring = stylestring.replace(re, ""+(doTag?"html:"+tagArr.join("|html:"):"html:xxx"));
 
   // dump( stylestring+"\n");
@@ -205,4 +205,7 @@ function setTOCLevel(level)
 function toggleChecked(item)
 {
   item.setAttribute("checked", (item.getAttribute("checked")=="true"?"false":"true"));
+  if (document.getElementById("TOC").getAttribute("checked") == 'false')
+    document.getElementById("Tag").setAttribute("checked","false");
+  // footnotes can be shown only in the context of a TOC
 }

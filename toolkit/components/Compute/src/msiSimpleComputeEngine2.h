@@ -31,7 +31,7 @@ private:
     bool       didInit;
     PRUint32   MuPAD_eng_ID;
     PRUint32   client_handle;
-
+    
     PRUnichar *sent_to_engine;
     PRUnichar *received_from_engine;
     PRUnichar *engine_errors;

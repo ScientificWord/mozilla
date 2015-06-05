@@ -1,0 +1,15 @@
+body {
+	font-family: sans-serif;
+	width: 4in;
+	overflow-y: hidden;
+}
+li {
+	list-style-image: none;
+}
+.former {
+	color: #909090;
+}
+html {
+	width: 4in;
+}
+/* a comment */

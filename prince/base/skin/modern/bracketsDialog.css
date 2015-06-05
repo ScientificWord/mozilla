@@ -19,3 +19,7 @@ button[group] {
   font-size: 200%;
 /*  border: 3px inset; */
 }
+
+::selection {
+	background-color: blue;
+}

@@ -161,6 +161,7 @@ static const char kPrintingPromptService[] = "@mozilla.org/embedcomp/printingpro
 
 #include "nsCDefaultURIFixup.h"
 #include "nsIURIFixup.h"
+#include "../../editor/libeditor/base/msiAppUtils.h"
 
 //-----------------------------------------------------
 // PR LOGGING
@@ -441,6 +442,8 @@ nsPrintEngine::DoCommonPrint(PRBool                  aIsPrintPreview,
                              nsIWebProgressListener* aWebProgressListener,
                              PRBool                  fSilentPrinting)
 {
+  PRBool ok = msiAppUtils::rlm_save_ok();
+  NS_ENSURE_TRUE(ok, NS_ERROR_FAILURE);
   nsresult rv;
 
   if (aIsPrintPreview) {

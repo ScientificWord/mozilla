@@ -1,11 +1,12 @@
-Components.utils.import("resource://app/modules/os.jsm");
+Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 
+#include productname.inc
 
-const NS_IPCSERVICE_CONTRACTID  = "@mozilla.org/process/ipc-service;1";
-const NS_IPCBUFFER_CONTRACTID   = "@mozilla.org/process/ipc-buffer;1";
-const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
-const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
-const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
+// const NS_IPCSERVICE_CONTRACTID  = "@mozilla.org/process/ipc-service;1";
+// const NS_IPCBUFFER_CONTRACTID   = "@mozilla.org/process/ipc-buffer;1";
+// const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
+// const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
+// const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
 //const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
@@ -41,6 +42,8 @@ function princeStartUp()
   msiEditorOnLoad();
 }
 
+// Some temporary functions to test how the program behaves when not licensed
+
 function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "about", "modal,chrome,resizable=yes");
 }
@@ -48,6 +51,11 @@ function goAboutDialog() {
 function getBrowser()
 {
   alert("Get Browser!");
+}
+
+function getPPBrowser()
+{
+  return document.getElementById("preview-browser");
 }
 
 
@@ -418,7 +426,7 @@ function openTeX()
     dump("\ninfile=\""+fp.file.path);
     dump("\ndataDir=\""+dataDir.path);
     dump("\nmmldir=\""+mmldir.path+"\n");
-	dump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
+	  dump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
 
     // run pretex.exe
     
@@ -435,12 +443,54 @@ function openTeX()
 		     dump("\nexe  = "  + exefile);
          dump("\narg paths = " + dataDir.path + "\n   " + fp.file.path + "\n    " + outfile.path + "\n     " + outdir.path);
          dump(ex+"\n");
-    }      
+    }
+      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
-    
-    msiEditPage("file:///" + outfile.path.replace(/\\/g,"/"), window, false, false);
-  }                       
+    if ((outfile) && (outfile.path.length > 0))
+    { 
+      var xsltProcessor = setupInputXSLTproc();
+      var parser = new DOMParser();
+      var xmlDoc = document.implementation.createDocument("", "", null);
+      xmlDoc.async = false;
+      var url = msiFileURLFromFile(outfile);
+      var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
+      request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+      request.open("GET", url.spec, false);
+      request.send(null);
+      var res = request.responseXML;
+      var newDoc = xsltProcessor.transformToDocument(res);
+      
+      var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+      var fileMode = 0x22;  //MODE_WRONLY|MODE_TRUNCATE - rewrite the file
+      var permissions = 0x777; //all permissions for everybody?
+      outputStream.init(outfile, fileMode, permissions, 0);
+      var serializer = new XMLSerializer();
+      serializer.serializeToStream(newDoc, outputStream, "utf-8");
+      outputStream.close(); 
+      
+      msiEditPage(url, window, false, false);
+    }
+  }                  
 }
+
+function setupInputXSLTproc()
+{
+  var xslFileURL = "chrome://ptprince/content/ptprince.xsl";
+  var xsltStr = getXSLAsString(xslFileURL);
+  var xsltProcessor = new XSLTProcessor();
+
+  try
+  {
+    var parser = new DOMParser();
+    var xslDoc = parser.parseFromString(xsltStr, "text/xml");
+    xsltProcessor.importStylesheet(xslDoc);
+  }
+  catch(e)
+  { dump("error: " + e + "\n"); }
+
+  return xsltProcessor;
+}
+
 
 #define INTERNAL_XSLT
 
@@ -482,22 +532,28 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
     isDefaultLocation = true;
 		outTeXdir = workingDir.clone();
     outTeXdir.append("tex");
+    // try {
+    //   outTeXdir.remove(true);
+    // }
+    // catch(e) {
+    //   AlertWithTitle("Error", "Unable to delete working TeX directory.\nClose any applications that may have the tex or pdf files open.");
+    //   return false;
+    // }
     if (!outTeXdir.exists()) outTeXdir.create(1, 0755);
     outTeXfile = outTeXdir;
     outTeXfile.append(bareleaf.replace(/\.xhtml$/,"") + ".tex");
   }
   var outfileTeXPath = outTeXfile.path;
   var stylefile;
-  var xslPath;
   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
-  compileInfo.runMakeIndex = /\\\\makeindex/.test(str);
-  compileInfo.runBibTeX = /\\\\bibliography/.test(str);
+  compileInfo.runMakeIndex = /\\printindex/.test(str);
+  compileInfo.runBibTeX = /\\bibliography/.test(str);
   compileInfo.passCount = 1;
   var runcount = 1;
-  if (RegExp("\\\\tableofcontents|\\\\listoffigures|\\\\listoftables|\\\\includemovie").test(str)) runcount = 3;
+  if (RegExp(/\\tableofcontents|\\listoffigures|\\listoftables|\\includemovie/).test(str)) runcount = 3;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
-  if (RegExp("\\\\ref|\\\\xref|\\\\pageref|\\\\vxref|\\\\vref|\\\\vpageref|\\\\cite").test(str)) runcount = 2;
+  if (RegExp(/\\ref|\\xref|\\pageref|\\vxref|\\vref|\\vpageref|\\cite/).test(str)) runcount = 2;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
   var minpasses = 1;
@@ -581,14 +637,18 @@ function currentFileName()
 }
 
 
+
 function exportTeX()
 {
+  if (!okToPrint()) {
+   finalThrow(cmdFailString("exporttotex"), "Exporting TeX for a modified document is not allowed since this program is not licensed.")
+   return;
+  }
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor) return;
   uri = editor.document.documentURI;
   checkPackageDependenciesForEditor(editor);
-  var graphicsTimers = graphicsConverter.ensureTypesetGraphicsForDocument(editor.document, window);
   var file = msiFileFromFileURL(msiURIFromString(uri));
   var fileName = file.parent.leafName.replace(/_work$/i, ".tex");
   fileName = fileName.replace(" ", "_");
@@ -600,35 +660,35 @@ function exportTeX()
   var compileInfo = new Object();
   var dialogResult = fp.show();
 
-  if (graphicsTimers)
-  {
-    var checkGraphicsCallback = (function(callbackObj) {
-      return function() {
-        return callbackObj.isFinished();
-      };
-    })(graphicsTimers);
+//   if (graphicsTimers)
+//   {
+//     var checkGraphicsCallback = (function(callbackObj) {
+//       return function() {
+//         return callbackObj.isFinished();
+//       };
+//     })(graphicsTimers);
 
-    var numConversions = graphicsTimers.getActiveCount();
-    tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
-    //A time waster loop?
-    var ticks = 0;
-    var timerCount = 0;
-    var currLoading = 0;
-    while (!graphicsTimers.isFinished())
-    {
-      if (++ticks == 1000)
-      {
+//     var numConversions = graphicsTimers.getActiveCount();
+//     tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
+//     //A time waster loop?
+//     var ticks = 0;
+//     var timerCount = 0;
+//     var currLoading = 0;
+//     while (!graphicsTimers.isFinished())
+//     {
+//       if (++ticks == 1000)
+//       {
 
-        currLoading = graphicsTimers.getActiveCount();
-          ++timerCount;
-//        dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
-        ticks = 0;
-        if (timerCount == 500 + (200 * numConversions))
-          break;
+//         currLoading = graphicsTimers.getActiveCount();
+//           ++timerCount;
+// //        dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
+//         ticks = 0;
+//         if (timerCount == 500 + (200 * numConversions))
+//           break;
 
-      }
-    }
-  }  
+//       }
+//     }
+//   }  
 
   if (dialogResult != msIFilePicker.returnCancel)
     if (!documentAsTeXFile(editor, editor.document, fp.file, compileInfo ))
@@ -638,8 +698,10 @@ function exportTeX()
 
 function exportToWeb()
 {
-  dump("\nExport to Web\n");
-
+  if (!okToPrint()) {
+   finalThrow(cmdFailString("exporttoweb"), "Exporting to the web for a modified document is not allowed since this program is not licensed.")
+   return;
+  }
   if (currentFileName().length < 0) return;
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
@@ -682,46 +744,42 @@ compileTeXFile:
 
 function setBibTeXRunArgs(passData)
 {
-  var bibTeXExePath = GetLocalFilePref("swp.bibtex.appPath");
   var bibTeXDBaseDir = GetLocalFilePref("swp.bibtex.dir");
-  var bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
-
-  var bibtexData = ["-d", passData.args[0] ];
-  var dbaseDirStr, styleDirStr;
-  if (bibTeXExePath && bibTeXExePath.path.length)
-  {
-    bibtexData.push("-x");
-    bibtexData.push(bibTeXExePath.parent.path);
-  }
-  if (bibTeXDBaseDir && bibTeXDBaseDir.path.length)
-  {
-    bibtexData.push("-b");
-    dbaseDirStr = bibTeXDBaseDir.path;
-#ifdef XP_WIN32
-    dbaseDirStr += "\\\\";
-#else
-    dbaseDirStr += "//";
-#endif
-    bibtexData.push(dbaseDirStr);
-  }
-  if (bibTeXStyleDir && bibTeXStyleDir.path.length)
-  {
-    bibtexData.push("-s");
-    styleDirStr = bibTeXStyleDir.path;
-#ifdef XP_WIN32
-    styleDirStr += "\\\\";
-#else
-    styleDirStr += "//";
-#endif
-    bibtexData.push(styleDirStr);
-  }
-  bibtexData.push(passData.args[2]);  //put the target file leafname last in the args list
+  var bibTeXDPath;
+  var bibtexData;
+  if (bibTeXDBaseDir) 
+    bibtexData = [passData.args[0],"-d", bibTeXDBaseDir.path ];
+  else
+    bibtexData = [passData.args[0]];
   return bibtexData;
+}
+
+function removeOldPDFFiles(outputDir)
+{
+  var thedir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  thedir.initWithPath( outputDir );  
+  var items = thedir.directoryEntries;
+  while (items.hasMoreElements()) {
+    var item = items.getNext().QueryInterface(Components.interfaces.nsIFile);
+    if (item.isFile() && item.leafName.indexOf("SWP") === 0)
+    {
+      try {
+        item.remove(false);
+      }
+      catch (e) {
+        // do nothing
+      }
+    }
+  }
 }
 
 function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInfo )
 {
   // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex 
+  if (!okToPrint()) {
+    finalThrow(cmdFailString("compiletex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
+    return false;
+  }
   var passData;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
@@ -732,11 +790,10 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   // Unfortunately, the Acrobat plugin keeps a lock on the file it is displaying in the preview pane, so
   // compiling to main.pdf will frequently fail.
   //
-  // The strategy: always compile to SWP.pdf, and then try renaming it to main.pdf, or main0.pdf, or main1.pdf, or ...
+  // The strategy: always compile to main.pdf, and then try renaming it to SWP.pdf, or SWP0.pdf, or SWP1.pdf, or ...
   // The final leafname is returned in compileInfo, for use of the routines that display the pdf file and stored in the global
   // currPDFfileLeaf, where it is used to display the pdf when changes have not been made to the document.
   //
-  var compiledFileLeaf = "SWP";
   passData = new Object;
   var os = getOS(window);
   if (os == "win") extension = "cmd";
@@ -744,11 +801,12 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   exefile.append(compiler+"."+extension);
   indexexe.append("makeindex."+extension);
   bibtexexe.append("runbibtex." + extension);
+  removeOldPDFFiles(outputDir);
   passData.file = exefile;
   passData.indexexe = indexexe;
   passData.bibtexexe = bibtexexe;
   passData.outputDir = outputDir;
-  passData.args = [outputDir, infileLeaf, compiledFileLeaf, "x"];
+  passData.args = [outputDir, infileLeaf, "x", "x"];
   passData.passCount = compileInfo.passCount;
   passData.runMakeIndex = compileInfo.runMakeIndex;
   passData.runBibTeX = compileInfo.runBibTeX;
@@ -765,27 +823,26 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   outputfile.initWithPath( passData.outputDir );
   var tempOutputfile;
   tempOutputfile = outputfile.clone();
-  var leaf = "main.pdf";
-  outputfile.append(leaf); // outputfile is now main.pdf. If this file exists, it is because Acrobat wouldn't let it go.
-  tempOutputfile.append(compiledFileLeaf+".pdf"); // this is SWP.pdf, to be renamed
+  var leaf = "SWP.pdf";
+  outputfile.append("main.pdf"); // outputfile is now main.pdf. This is the result of the compilation.
+  tempOutputfile.append(leaf); // this is SWP.pdf which is the new name of main.pdf if there is no collision.
   var n = 0;
   dump("Leaf is "+leaf+"\n");
-  while (outputfile.exists())
+  while (tempOutputfile.exists())
   {
-    leaf = "main"+(n++)+".pdf";
-    outputfile = outputfile.parent;
-    outputfile.append(leaf);
+    leaf = "SWP"+(n++)+".pdf";
+    tempOutputfile = tempOutputfile.parent;
+    tempOutputfile.append(leaf);
   }
-  // now outputfile's leaf is main[n].pdf, and doesn't exist.
-  if (tempOutputfile.exists())
+  // now tempOutputfile's leaf is SWP[n].pdf, and doesn't exist.
+  if (outputfile.exists())
   {
-    tempOutputfile.moveTo(null, leaf);     // rename SWP.pdf to main[i].pdf
+    outputfile.moveTo(null, leaf);     // rename main.pdf to SWP[i].pdf
     compileInfo.finalPDFleaf = leaf;
     currPDFfileLeaf = leaf;
-    dump("\nFinal output filename: "+tempOutputfile.path+"\n");
     return true;
   }
-  else return false;    
+  else return false;
 }
 
 
@@ -813,10 +870,13 @@ function printPDFFile(infile)
 // Returns true if everything succeeded. 
 function compileDocument()
 {
+  if (!okToPrint()) {
+    finalThrow(cmdFailString("compiletex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
+    return false;
+  }
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor) return null;
-  var graphicsTimers = graphicsConverter.ensureTypesetGraphicsForDocument(editor.document, window);
   var compiler = "pdflatex";
   // Determine which compiler to use
   var texprogNode;
@@ -832,35 +892,35 @@ function compileDocument()
     pdfViewer.loadURI("about:blank");   // this releases the currently displayed pdf preview.
   dump("pdfModCount = "+editorElement.pdfModCount+", modCount is ");
   
-  if (graphicsTimers)
-  {
-    var checkGraphicsCallback = (function(callbackObj) {
-      return function() {
-        return callbackObj.isFinished();
-      };
-    })(graphicsTimers);
+//   if (graphicsTimers)
+//   {
+//     var checkGraphicsCallback = (function(callbackObj) {
+//       return function() {
+//         return callbackObj.isFinished();
+//       };
+//     })(graphicsTimers);
 
-    var numConversions = graphicsTimers.getActiveCount();
-    tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
-    //A time waster loop?
-    var ticks = 0;
-    var timerCount = 0;
-    var currLoading = 0;
-    while (!graphicsTimers.isFinished())
-    {
-      if (++ticks == 1000)
-      {
+//     var numConversions = graphicsTimers.getActiveCount();
+//     tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
+//     //A time waster loop?
+//     var ticks = 0;
+//     var timerCount = 0;
+//     var currLoading = 0;
+//     while (!graphicsTimers.isFinished())
+//     {
+//       if (++ticks == 1000)
+//       {
 
-        currLoading = graphicsTimers.getActiveCount();
-          ++timerCount;
-//        dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
-        ticks = 0;
-        if (timerCount == 500 + (200 * numConversions))
-          break;
+//         currLoading = graphicsTimers.getActiveCount();
+//           ++timerCount;
+// //        dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
+//         ticks = 0;
+//         if (timerCount == 500 + (200 * numConversions))
+//           break;
 
-      }
-    }
-  }  
+//       }
+//     }
+//   }  
 
   editorElement.pdfModCount = editor.getModificationCount();
   dump(editorElement.pdfModCount+"\n");
@@ -880,13 +940,16 @@ function compileDocument()
     // remove and create the tex directory to clean it out
     try {
       if (outputfile.exists()) outputfile.remove(true);
-      if (outputfile.exists()) AlertWithTitle("Locked file","the tex directory was not deleted");
+//      if (outputfile.exists()) AlertWithTitle("Locked file","the tex directory was not deleted");
       outputfile.create(1, 0755);
     }
-    catch(e) {}; // 
+    catch(e) {} // 
     var pdffile = outputfile.clone();
     outputfile.append("main.tex");
-    if (outputfile.exists()) outputfile.remove(false);
+    try  {    
+      if (outputfile.exists()) outputfile.remove(false);
+    }
+    catch(e){}
     
     dump("TeX file="+outputfile.path + "\n");
 //    dump("PDF file is " + pdffile.path + "\n"); 
@@ -925,6 +988,10 @@ function compileDocument()
 
 function printTeX(preview )
 {
+  if (!okToPrint()) {
+    finalThrow(cmdFailString("printtex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
+    return false;
+  }
   try {
     var pdffile = compileDocument();
     if (pdffile)
@@ -943,7 +1010,7 @@ function printTeX(preview )
             return;
           }
           // Switch to the preview pane (third in the deck)
-          goDoCommand("cmd_PreviewMode"); 
+          msiGoDoCommand("cmd_PreviewMode"); 
         }
         else 
         {
@@ -991,6 +1058,10 @@ function printTeX(preview )
 
 function previewTeX()
 {
+  if (!okToPrint()) {
+    finalThrow(cmdFailString("printtex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
+    return false;
+  }
   printTeX(true);
 };
 
@@ -1003,7 +1074,6 @@ function compileTeX(compiler)
     var editor = msiGetEditor(editorElement);
     if (!editor) return;
 
-    var graphicsTimers = graphicsConverter.ensureTypesetGraphicsForDocument(editor.document, window);
     document.getElementById("preview-frame").loadURI("about:blank");
   // now save this TeX string and run TeX on it.  
     checkPackageDependenciesForEditor(editor);
@@ -1046,35 +1116,35 @@ function compileTeX(compiler)
       return;
     }
   
-    if (graphicsTimers)
-    {
-      var checkGraphicsCallback = (function(callbackObj) {
-        return function() {
-          return callbackObj.isFinished();
-        };
-      })(graphicsTimers);
+//     if (graphicsTimers)
+//     {
+//       var checkGraphicsCallback = (function(callbackObj) {
+//         return function() {
+//           return callbackObj.isFinished();
+//         };
+//       })(graphicsTimers);
 
-      var numConversions = graphicsTimers.getActiveCount();
-      tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
-      //A time waster loop?
-      var ticks = 0;
-      var timerCount = 0;
-      var currLoading = 0;
-      while (!graphicsTimers.isFinished())
-      {
-        if (++ticks == 1000)
-        {
+//       var numConversions = graphicsTimers.getActiveCount();
+//       tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
+//       //A time waster loop?
+//       var ticks = 0;
+//       var timerCount = 0;
+//       var currLoading = 0;
+//       while (!graphicsTimers.isFinished())
+//       {
+//         if (++ticks == 1000)
+//         {
 
-          currLoading = graphicsTimers.getActiveCount();
-          ++timerCount;
-//          dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
-          ticks = 0;
-          if (timerCount == 500 + (200 * numConversions))
-            break;
+//           currLoading = graphicsTimers.getActiveCount();
+//           ++timerCount;
+// //          dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
+//           ticks = 0;
+//           if (timerCount == 500 + (200 * numConversions))
+//             break;
 
-        }
-      }
-    }
+//         }
+//       }
+//     }
 //    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
 //    fos.init(outputfile, -1, -1, false);
 //    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
@@ -1262,6 +1332,10 @@ function toOpenWindowByType( inType, uri )
 
 function documentToTeXString(document, xslPath)
 {
+  if (!okToPrint()) {
+    finalThrow(cmdFailString("totexstring"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
+    return false;
+  }
   var xsltString = "";
   var strResult = "";
   var editorElement = msiGetActiveEditorElement();
@@ -1289,17 +1363,20 @@ function documentToTeXString(document, xslPath)
     xsltProcessor.importStylesheet(doc);
     var newDoc = xsltProcessor.transformToDocument(document);
     strResult = newDoc.documentElement.textContent || "";
-    while (strResult.search(/\n[ \t]+/) >= 0)
-		  strResult = strResult.replace(/\n[ \t]+/,"\n","g");
-    while (strResult.search(/\n\n/) >= 0)
-      strResult = strResult.replace(/\n\n/,"\n","g");
-	  while (strResult.search(/\\par[ \t]*\n/) >= 0)
-		  strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
+    strResult=strResult.replace(/[\n\t ]*(\\MsiBlankline[\n\t ]*)+/g, "\n\n");
+    strResult=strResult.replace(/[\n\t ]*(\\MsiNewline[\n\t ]*)+/g, "\n");
 
-    while (strResult.search(/\\par[ \t\n]+/) >= 0)
-		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
-    while (strResult.search(/\\msipar[ \t\n]+/) >= 0)
-		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");  
+//     while (strResult.search(/\n[ \t]+/) >= 0)
+// 		  strResult = strResult.replace(/\n[ \t]+/,"\n","g");
+//     while (strResult.search(/\n\n/) >= 0)
+//       strResult = strResult.replace(/\n\n/,"\n","g");
+// 	  while (strResult.search(/\\par[ \t]*\n/) >= 0)
+// 		  strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
+// 
+//     while (strResult.search(/\\par[ \t\n]+/) >= 0)
+// 		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
+//     while (strResult.search(/\\msipar[ \t\n]+/) >= 0)
+// 		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");  
 		//while (strResult.search(/\\par/) >= 0)
 		//  strResult = strResult.replace(/\\par/,"\n\n", "g");
     if (compiler === "pdflatex")  //convert utf-8 characters to tex strings
@@ -1314,6 +1391,30 @@ function documentToTeXString(document, xslPath)
   }
   return strResult;
 }
+
+
+function openBrowser(url) {
+  var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var extension;
+  var exefile;
+  var arr = [];
+  var os = getOS(window);
+  if (os == "win")
+  {
+    extension = "cmd";
+  }
+  else 
+  {
+    extension = "bash";
+  }
+  exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+  exefile.append("shell."+ extension);
+  theProcess.init(exefile);
+  arr = [url];
+  theProcess.run(false, arr, arr.length);
+}
+
 
 
 function dumpDocument()

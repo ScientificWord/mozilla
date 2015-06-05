@@ -225,22 +225,24 @@ function addOptionNames(arr, docclass)
   var optfile = request.responseText;
   var regex1 = new RegExp("\\["+docclass+"\\]([^\\[]*)"); // selects the [classname] block
   var match = regex1.exec(optfile);
-  if (match.length > 1) {
+  if (1 < match.length) {
     optfile = match[1];
+  } else {
+     return null; // document class not found
   }
-  else {return null;} // document class not found
+   
   var optNameMap = getOptionNameMap();
   counter=0;
   for (i = 0; i < arr.length; i++) {
     var regex2 = new RegExp("(^\\d+).*,\\s*"+arr[i]+"\\s*$","m");
     match = regex2.exec(optfile);
-    if (match.length > 1) {
+    if (match && match.length > 1) {
       n = match[1];
       // now look for header line: "n=<attribute name>"
     }
     var regex3 = new RegExp("^"+n+"=(.*)\s*$","m");
     match = regex3.exec(optfile);
-    if (match.length > 1) {
+    if (match && match.length > 1) {
       nm = (match[1].toLowerCase());
       if (optNameMap[nm]) {
         nm = optNameMap[nm];
@@ -1076,7 +1078,7 @@ function ReadInAnOptionSection(lineList, sectionData)
     }
     else if (foundChoice = optionRE.exec(foundLine[1]))
     {
-      if (currOption.mNumber != foundChoice[1])
+      if (currOption && (currOption.mNumber != foundChoice[1]) )
         currOption = FindOptionByNumber(optionSectionData, foundChoice[1]);
       if (currOption)
       {

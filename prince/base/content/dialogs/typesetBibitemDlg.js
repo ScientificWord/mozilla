@@ -1,19 +1,14 @@
-// Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved.
-
-
-//const mmlns    = "http://www.w3.org/1998/Math/MathML";
-//const xhtmlns  = "http://www.w3.org/1999/xhtml";
+// Copyright (c) 2010-13 MacKichan Software, Inc.  All Rights Reserved.
 
 var data;
 
-// dialog initialization code
 function Startup()
 {
-//  var editor = GetCurrentEditor();
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
+  var node;
   if (!editor) {
-    AlertWithTitle("Error", "No editor found in typesetBibItem Startup! Closing dialog window...");
+ //   AlertWithTitle("Error", "No editor found in typesetBibItem Startup! Closing dialog window...");
     window.close();
     return;
   }
@@ -21,12 +16,16 @@ function Startup()
   doSetOKCancel(onAccept, onCancel);
   data = window.arguments[0];
   data.Cancel = false;
-  gDialog.key = "";  //a string
-  gDialog.bibLabel = "";  //this should become arbitrary markup - a Document Fragment perhaps?
-  if ("reviseData" in data)
-  {
-    setDataFromReviseData(data.reviseData)
-    //set window title too!
+  gDialog.key = "";  
+  gDialog.bibLabel = ""; 
+
+  data.node = getSelectionParentByTag(editor, "bibitem");
+  if (!data.node) data.node = editor.createNode("bibitem", data.paragraphNode, data.offset);
+  if (data.node) {
+    node = getChildByTagName(data.node, "bibkey");
+    if (node) gDialog.key = node.textContent;
+    node = getChildByTagName(data.node,"biblabel");
+    if (node) gDialog.bibLabel = node.innerHTML;
   }
 
   InitDialog();
@@ -66,41 +65,52 @@ function InitDialog()
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
-function setDataFromReviseData(reviseData)
+function handleEmptyBibItem(editor, node)
 {
-  var bibItemNode = reviseData.getReferenceNode();
-  gDialog.key = bibItemNode.getAttribute("bibitemkey");
-  gDialog.bibLabel = "";
-  var labels = msiNavigationUtils.getSignificantContents(bibItemNode);
-  for (ix = 0; ix < labels.length; ++ix)
-  {
-    if (msiGetBaseNodeName(labels[ix]) == "biblabel")
-    {
-      var serializer = new XMLSerializer();
-      var labelKids = msiNavigationUtils.getSignificantContents(labels[ix]);
-      for (var jx = 0; jx < labelKids.length; ++jx)
-        gDialog.bibLabel += serializer.serializeToString(labelKids[jx]);
-      break;
-    }
+  if (!node) return false;
+  var pnode = node.parentNode;
+  var bibparent;
+  var offset;
+  if (!(pnode) || pnode.tagName !== "bibliography") return false;
+  var bibitems = msiNavigationUtils.getChildrenByTagName(pnode, "bibitem");
+  if (!bibitems) return false;
+  if (bibitems.length <= 1) {
+    bibparent = pnode.parentNode;
+    offset = msiNavigationUtils.offsetInParent(pnode);
+    editor.deleteNode(pnode);
+    editor.selection.collapse(bibparent, offset);
+    // BBM: maybe should check that bibparent is a paragraph type.
   }
+  else if (bibitems[bibitems.length - 1] == node) {
+    bibparent = pnode.parentNode;
+    offset = msiNavigationUtils.offsetInParent(pnode);
+    offset = offset + 1;
+    editor.deleteNode(node);
+    editor.selection.collapse(bibparent, offset);
+  }
+  SaveWindowLocation();
+  return true;
 }
+
 
 function onAccept()
 {
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   var keyList = document.getElementById("keysAutoCompleteBox");
   gDialog.key = document.getElementById("keysAutoCompleteBox").value;
-//  if (findInArray(keyList, gDialog.key) < 0)
-//    keyList.push(gDialog.key);
+  data.key = gDialog.key;
+  if (/^\s*$/.test(data.key)) {
+    // User has entered an empty (by our definition) bib entry.
+    // If it is the last one, we delete it and move the cursor past the <bibliography>
+    // If it is the only one, we remove the <bibliography>
+    if (handleEmptyBibItem(editor, data.node)) return true;
+  }
 
   var labelControl = document.getElementById("labelEditControl");
   var labelContentFilter = new msiDialogEditorContentFilter(labelControl);
   gDialog.bibLabel = labelContentFilter.getDocumentFragmentString();
 
-//  var serializer = new XMLSerializer();
-//  gDialog.remark = serializer.serializeToString(editorControl.contentDocument.documentElement);
-////  gDialog.remark = document.getElementById("remarkTextbox").value;
-
-  data.key = gDialog.key;
   if (data.bibLabel != gDialog.bibLabel)
   {
     data.bBibLabelChanged = true;
@@ -110,30 +120,61 @@ function onAccept()
 //  var listBox = document.getElementById('keysListbox');
 //  listBox.addEventListener('ValueChange', checkDisableControls, false);
 
-  var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
-  if ("reviseData" in data)
+  if (data.node)
   {
-    var bibitemNode = data.reviseData.getReferenceNode();
-    if (!theWindow || !("doReviseManualBibItem" in theWindow))
-      theWindow = msiGetTopLevelWindow();
-    if (theWindow && ("doReviseManualBibItem" in theWindow))
-      theWindow.doReviseManualBibItem(editorElement, bibitemNode, data);
+    var node;
+    var node2;
+    node = getChildByTagName(data.node, "bodyText");
+    if (!node) 
+    {
+      node = editor.createNode("bodyText", data.node, -1);
+    }
+    editor.selection.collapse(node,0);
+
+    node2 = getChildByTagName(data.node, "bibkey");
+    if (node2) node2.textContent = gDialog.key;
+    else {
+      node2 = editor.createNode("bibkey", data.node, 0);
+      node2.textContent = gDialog.key;
+    }
+    node2 = getChildByTagName(data.node, "biblabel");
+    if (node2) node2.innerHTML = gDialog.bibLabel;
+    else {
+      node2 = editor.createNode("biblabel", data.node, 0);
+      node2.innerHTML = gDialog.bibLabel;
+    }
   }
   else if ("paragraphNode" in data)
   {
-    if (!theWindow || !("msiDoTagBibItem" in theWindow))
-      theWindow = msiGetTopLevelWindow();
-    if (theWindow && ("msiDoTagBibItem" in theWindow))
-      theWindow.msiDoTagBibItem(data, data.paragraphNode, editorElement);
-  }
+    if (editor.tagListManager.getClassOfTag(data.paragraphNode.tagName, null) !== "listparenttag")
+    {
+      if (!theWindow || !("msiDoTagBibItem" in theWindow))
+        theWindow = msiGetTopLevelWindow();
+      if (theWindow && ("msiDoTagBibItem" in theWindow))
+        theWindow.msiDoTagBibItem(data, data.paragraphNode, editorElement);
+    }
 
+  }
+  editor.selection.collapse(node,0);
+  msiUpdateStructToolbar(editorElement);
   SaveWindowLocation();
   return true;
 }
 
 function onCancel()
-{
+{  
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+  gDialog.key = document.getElementById("keysAutoCompleteBox").value;
+  data.key = gDialog.key;
+  if (/^\s*$/.test(data.key)) {
+    // User has entered an empty (by our definition) bib entry.
+    // If it is the last one, we delete it and move the cursor past the <bibliography>
+    // If it is the only one, we remove the <bibliography>
+    if (handleEmptyBibItem(editor, data.node)) return true;
+  }
+
   data.Cancel = true;
 }
 

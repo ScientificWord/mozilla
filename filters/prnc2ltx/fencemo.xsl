@@ -335,7 +335,8 @@
       or $op-nom='&#x2191;'
       or $op-nom='&#x21D1;'
       or $op-nom='&#x2193;'
-      or $op-nom='&#x21D3;'">
+      or $op-nom='&#x21D3;'
+      or $op-nom='&#x250A;'">
 		<xsl:text>true</xsl:text>
       </xsl:when>
 	  <xsl:otherwise>

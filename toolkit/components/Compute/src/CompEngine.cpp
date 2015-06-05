@@ -565,6 +565,7 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
          //
          U32 ptype;
          const char* p_mupadname = msr.GetParam(PID_mupname, ptype);
+         const char* p_mupadnameloc = msr.GetParam(PID_mupnameloc, ptype);
          U32 engineID = msr.GetEngineID();
          DefStore* ds = msr.GetDefStore();
          const char* ASCII_src = msr.GetASCIIMarkupPtr();
@@ -598,7 +599,19 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
                            WIDE_src
                      );
 
-
+      
+            string fcnsPath(p_mupadnameloc);
+            size_t i = fcnsPath.find("\\");
+            while (i != string::npos){
+               fcnsPath[i] = '/';
+               i = fcnsPath.find("\\");
+            }
+            string packba = "fread(\"";
+            packba += fcnsPath;
+            packba += "\"):";
+            int res;
+            wrapper->Execute(packba.c_str(), &res);
+          
       } else if (UI_cmd_ID == CCID_Undefine) {
         def_canon_ID = ConvertTreeToUnDef(semantics_tree);
         if (!def_canon_ID) {

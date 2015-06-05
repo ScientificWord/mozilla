@@ -7,9 +7,10 @@
 
 %% Frontmatter commands
 
-\MSIEmptyElement{frontmatter}
-\MSIEmptyElement{tableofcontents}
-\MSIEmptyElement{maketitle}
+% Already covered by msi-latex-default.tex
+%\MSIEmptyElement{frontmatter}{T}
+%\MSIEmptyElement{tableofcontents}{T}
+%\MSIEmptyElement{maketitle}{T}
 
 % Use default \title 
 
@@ -21,52 +22,88 @@
     #2%
   \msiclosetag{author}{</author>}}
 
-\def\@authorb#1{\@authora[]{#1}}
+\def\@authorb#1{%
+  \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}}
 
 \def\address{\@ifnextchar[{\@addressa}{\@addressb}}
 
 \def\@addressa[#1]#2{%
-  \msitag{^^0a}%
   \msiopentag{address}{<address>}%
-     \msiopentag{authorid}{<authorid>}%
-     #1
-     \msiclosetag{authorid}{</authorid>}%
-  #2
+     \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+  #2%
   \msiclosetag{address}{</address>}%
 }
 
-\def\@addressb#1{\@addressa[]{#1}}
-
+\def\@addressb#1{
+  \msiopentag{address}{<address>}#1\msiclosetag{address}{</address>}}
 
 \def\curraddr{\@ifnextchar[{\@curraddra}{\@curraddrb}}
 
 \def\@curraddra[#1]#2{%
-  \msitag{<curraddr><authorid>#1</authorid>}#2\msitag{</curraddr>}%
+  \msiopentag{curraddr}{<curraddr>}%
+     \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+  #2%
+  \msiclosetag{curraddr}{</curraddr>}%
 }
 
-\def\@curraddrb#1{\@curraddra[]{#1}}
+\def\@curraddrb#1{
+  \msiopentag{curraddr}{<curraddr>}#1\msiclosetag{curraddr}{</curraddr>}}
 
 
 \def\email{\@ifnextchar[{\@emaila}{\@emailb}}
 
 \def\@emaila[#1]#2{%
-  \msitag{<email><authorid>#1</authorid>}#2\msitag{</email>}%
+  \msiopentag{email}{<email>}%
+     \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+  #2%
+  \msiclosetag{email}{</email>}%
 }
 
-\def\@emailb#1{\@emaila[]{#1}}
-
-
+\def\@emailb#1{
+  \msiopentag{email}{<email>}#1\msiclosetag{email}{</email>}}
 
 \def\urladdr{\@ifnextchar[{\@urladdra}{\@urladdrb}}
 
 \def\@urladdra[#1]#2{%
-  \msitag{<urladdr><authorid>#1</authorid>}#2\msitag{</urladdr>}%
+  \msiopentag{urladdr}{<urladdr>}%
+     \msiopentag{authorid}{<authorid>}#1\msiclosetag{authorid}{</authorid>}%
+  #2%
+  \msiclosetag{urladdr}{</urladdr>}%
 }
 
-\def\@urladdrb#1{\@urladdra[]{#1}}
+\def\@urladdrb#1{
+  \msiopentag{urladdr}{<urladdr>}#1\msiclosetag{urladdr}{</urladdr>}}
 
 
-\input amsmath.sty
+\def\thanks#1{\msitag{<thanks>}#1\msitag{</thanks>}}
+
+\def\dedicatory#1{
+  \msiopentag{dedicatory}{<dedicatory>}#1\msiclosetag{dedicatory}{</dedicatory>}}
+
+\def\translator#1{
+  \msiopentag{translator}{<translator>}#1\msiclosetag{translator}{</translator>}}
+
+\def\keywords#1{
+  \msiopentag{keywords}{<keywords>}#1\msiclosetag{keywords}{</keywords>}}
+
+\def\subjclass{\@ifnextchar[{\@subjclassa}{\@subjclassb}}
+
+\def\@subjclassa[#1]#2{%
+  \msiopentag{subjclass}{<subjclass>}%
+     \msiopentag{subjclassyear}{<subjclassyear>}#1\msiclosetag{subjclassyear}{</subjclassyear>}%
+  #2%
+  \msiclosetag{subjclass}{</subjclass>}%
+}
+
+\def\@subjclassb#1{
+  \msiopentag{subjclass}{<subjclass>}#1\msiclosetag{subjclass}{</subjclass>}}
+
+\input amsmath.tex
+
+\msi@extrapi{%
+  \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/amsclsdefs.xml" type="text/xml" ?>^^0a}
+  \msitag{<?sw-xslt href="amscls.xsl" type="text/xml" ?>^^0a}
+}
 
 \def\classcss{@import url("resource://app/res/css/amsbook.css");}
 \makeatother

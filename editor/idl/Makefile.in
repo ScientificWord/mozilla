@@ -79,7 +79,8 @@ XPIDLSRCS	= \
         msiIBigOpInfo.idl \
         msiIMouse.idl \
         msiIEditActionListenerExtension.idl \
-		$(NULL)
+        msiIAppUtils.idl \
+   		$(NULL)
 
 include $(topsrcdir)/config/rules.mk		
 
