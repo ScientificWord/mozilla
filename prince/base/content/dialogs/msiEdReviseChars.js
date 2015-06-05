@@ -203,6 +203,7 @@ function getStandAloneForm(aUniChar)
   {
     case "^":
     case "\u0302":
+    case "\uFE3F":
       retVal = "^";
     break;
     case "\u02c7":
@@ -394,6 +395,8 @@ function Apply()
     if (!theWindow || !("msiReviseChars" in theWindow))
       theWindow = msiGetTopLevelWindow();
     theWindow.msiReviseChars(data.reviseData, data, editorElement);
+    editorElement.focus();
+    //theWindow.document.commandDispatcher.focusedWindow.focus();
   }
     
 //  try {

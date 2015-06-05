@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+#include ../productname.inc
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/licensestatus.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/licensestatus.dtd">
+
+<dialog
+  xmlns   = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id      = "licensestatus"
+  title   = "&windowTitle.label;"
+  onload  = "startUp()"
+  buttons = "accept"
+  width="300px" height="300px"
+  persist="width height"
+>
+
+  <script type="application/x-javascript" src="chrome://prince/content/msieditorutilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/licensestatus.js"/>
+  <broadcaster id='prod'>
+#ifdef PROD_SW
+    &prodsw;
+#endif
+#ifdef PROD_SNB
+    &prodsnb;
+#endif
+#ifdef PROD_SWP
+    &prodswp;
+#endif
+  </broadcaster>
+
+
+  <description align="center" class="title">&dialog.title;</description>
+  <description align="center" class="subtitle" id="subtitle">&willexpiresoon;</description>
+  <description id="verb1">&verbiage1;</description>
+  <description id="verb1a" hidden="true">&verbiage1a;</description>
+
+  <spacer style="height: 20px;" />
+  <description id='verb2'>&verbiage2;</description>
+</dialog>

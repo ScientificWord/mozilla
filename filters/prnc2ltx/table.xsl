@@ -1,10 +1,9 @@
-<xsl:stylesheet version="1.1" 
+<xsl:stylesheet version="1.1"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
-    xmlns:exsl="http://exslt.org/common"
->
+    xmlns:exsl="http://exslt.org/common">
 
 <!-- xsl:variable name="tagsList" select="document('latexdefs.xml')//*[local-name()='tagproperties']/*[local-name()='tagclasses']"/ -->
 
@@ -19,22 +18,27 @@
 
 <xsl:template name="buildtable">
   <xsl:variable name="theTable" select="." />
+
   <xsl:variable name="topCaption">
     <xsl:choose>
-      <xsl:when test="html:caption[not(@align)]">1</xsl:when>
+      <xsl:when test="@captionloc='top'">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:variable name="bottomCaption">
     <xsl:choose>
-      <xsl:when test="html:caption[@align='bottom']">1</xsl:when>
+      <xsl:when test="@captionloc='bottom'">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:variable name="caption" select="html:caption"/>
- 
 
-  <xsl:variable name="embedded" select="count(ancestor::html:table)"/>
+  <xsl:variable name="caption" select="html:caption"/>
+
+
+  <xsl:variable name="embedded"
+    select="count(ancestor::html:table)"/>
+
   <xsl:variable name="tabularType">
     <xsl:choose>
       <xsl:when test="@width &gt; 0">
@@ -46,24 +50,36 @@
       <xsl:otherwise>tabular</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:variable name="mmWidth">
     <xsl:choose>
     <xsl:when test="@width &gt; 0">
       <xsl:call-template name="convertSizeSpecsToMM">
-        <xsl:with-param name="theSpec" select="@width" />
+        <xsl:with-param name="theSpec" select="concat(@width,@units)" />
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
+
   <xsl:variable name="cellData.tf">
     <xsl:call-template name="collectCellData" />
   </xsl:variable>
-  <xsl:variable name="cellData" select="exsl:node-set($cellData.tf)"/>
-  <xsl:text xml:space="preserve">
-</xsl:text><xsl:if test="$embedded!=0">{</xsl:if>
-<xsl:if test="$topCaption='1'"><xsl:apply-templates select="$caption"/></xsl:if>
-\begin{<xsl:value-of select="$tabularType"/>}<xsl:choose>
+
+  <xsl:variable name="cellData"
+    select="exsl:node-set($cellData.tf)"/>
+
+  <xsl:value-of select="$newline"/>
+  <xsl:if test="$embedded!=0">
+    <xsl:text>{</xsl:text>
+  </xsl:if>
+  <xsl:if test="$topCaption='1'">
+    <xsl:apply-templates select="$caption"/>
+  </xsl:if>
+  <xsl:text>\begin{</xsl:text>
+  <xsl:value-of select="$tabularType"/>
+  <xsl:text>}</xsl:text>
+  <xsl:choose>
     <xsl:when test="@width &gt; 0">{<xsl:value-of select="$mmWidth" />mm}</xsl:when>
     <xsl:otherwise></xsl:otherwise>
   </xsl:choose>
@@ -72,6 +88,7 @@
     <xsl:when test="@valign = 'top'"><xsl:text>[t]</xsl:text></xsl:when>
     <xsl:otherwise><xsl:text>[c]</xsl:text></xsl:otherwise>
   </xsl:choose>
+
   <xsl:variable name="lastCol">
     <xsl:for-each select="$cellData//cellData">
       <xsl:sort select="number(@col)" data-type="number" order="descending" />
@@ -80,6 +97,7 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:variable>
+
   <xsl:variable name="preambleData.tf">
     <xsl:call-template name="getTablePreambleData">
       <xsl:with-param name="theCellData" select="$cellData" />
@@ -87,6 +105,7 @@
       <xsl:with-param name="lastCol" select="$lastCol" />
     </xsl:call-template>
   </xsl:variable>
+
   <xsl:variable name="preambleData" select="exsl:node-set($preambleData.tf)" />
 
   <xsl:text>{</xsl:text>
@@ -99,14 +118,13 @@
   </xsl:for-each>
   <xsl:text>}</xsl:text>
 
-  <xsl:text xml:space="preserve">
-</xsl:text>
   <xsl:call-template name="getHLineString">
     <xsl:with-param name="theRowData" select="$cellData/rowData[1]" />
     <xsl:with-param name="whichLine" select="'top'" />
   </xsl:call-template>
-  <xsl:text xml:space="preserve">
-</xsl:text>
+
+  <!-- <xsl:value-of select="$newline"/>   see bug 3260 -->
+
   <xsl:for-each select="$cellData/rowData">
     <xsl:for-each select="./cellData[(@cellID and string-length(normalize-space(@cellID))) or (@continuation='row')]">
       <xsl:call-template name="outputCell">
@@ -128,68 +146,81 @@
         </xsl:variable>
         <xsl:choose>
           <xsl:when test="string-length(normalize-space($lastHLine))">
-            <xsl:text xml:space="preserve"> \\
-</xsl:text><xsl:value-of select="$lastHLine" />
+            <xsl:text> \\</xsl:text>
+            <xsl:value-of select="$newline"/>
+            <xsl:value-of select="$lastHLine" />
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text xml:space="preserve">
-</xsl:text>
+            <xsl:value-of select="$newline"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text xml:space="preserve"> \\
-</xsl:text>
-        <xsl:call-template name="getHLineString">
+        <xsl:text> \\</xsl:text>
+        <xsl:value-of select="$newline"/>
+         <xsl:call-template name="getHLineString">
           <xsl:with-param name="theRowData" select="." />
           <xsl:with-param name="whichLine" select="'bottom'" />
         </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
-\end{<xsl:value-of select="$tabularType"/>}
-<xsl:if test="$bottomCaption='1'"><xsl:apply-templates select="$caption"/></xsl:if>
-<xsl:if test="$embedded">}</xsl:if>
-</xsl:template>    
-
-<xsl:template match="html:table">
-  <xsl:choose>
-    <xsl:when test="@pos='display'">
-      \begin{center}
-      <xsl:call-template name="buildtable"/>
-      \end{center}
-    </xsl:when>
-    <xsl:when test="@pos='float' or html:caption"> 
-      \begin{wraptable}{
-      <xsl:choose>
-        <xsl:when test="not(substring(@placement,1,1))">O</xsl:when>
-        <xsl:otherwise><xsl:value-of select="substring(@placement,1,1)"/></xsl:otherwise>
-      </xsl:choose>}
-      {<xsl:choose><xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when><xsl:otherwise>0pt</xsl:otherwise></xsl:choose>}
-      <xsl:call-template name="buildtable"/>
-      \end{wraptable}
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:call-template name="buildtable"/>
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:text>\end{</xsl:text>
+  <xsl:value-of select="$tabularType"/>
+  <xsl:text>}</xsl:text>
+  <xsl:if test="$embedded">
+    <xsl:text>}</xsl:text>
+  </xsl:if>
 </xsl:template>
-		  
-<xsl:template match="html:td//html:br"><xsl:text xml:space="preserve">\msipar </xsl:text></xsl:template> <!-- don't allow \\ in table data-->
+
+<!--
+<xsl:template match="html:table/html:caption">
+  <xsl:text>\caption{</xsl:text><xsl:apply-templates/><xsl:text>}</xsl:text>
+  <xsl:if test="@key"><xsl:text>\label{</xsl:text><xsl:value-of select="@key"/><xsl:text>}</xsl:text></xsl:if>
+</xsl:template>
+-->
+
+
+<xsl:template match="html:table[@ltxfloat] | mml:table[@ltxfloat]">
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\begin{table}</xsl:text>
+  <xsl:if test="not(@ltxfloat = '')">
+     <xsl:text>[</xsl:text>
+     <xsl:value-of select="@ltxfloat"/>
+     <xsl:text>]</xsl:text>
+  </xsl:if>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\begin{center}</xsl:text>
+  <xsl:call-template name="buildtable"/>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\end{center}</xsl:text>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\end{table}</xsl:text>
+  <xsl:value-of select="$newline"/>
+</xsl:template>
+
+
+<xsl:template match="html:table|mml:table">
+    <xsl:call-template name="buildtable"/>
+</xsl:template>
+
+<xsl:template match="html:td//html:br">
+   <xsl:text xml:space="preserve">\par </xsl:text>
+</xsl:template> <!-- don't allow \\ in table data-->
 
 <xsl:template match="html:td//*[self::html:br and position()=last()]" />
 
 <xsl:template match="html:td//html:bodyText">
   <xsl:apply-templates/>
   <xsl:if test="following-sibling::*">
-    <xsl:text xml:space="preserve">\msipar </xsl:text>
+    <xsl:text xml:space="preserve">\par </xsl:text>
   </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:td//html:bodyMath">
   <xsl:apply-templates/>
   <xsl:if test="following-sibling::*">
-    <xsl:text xml:space="preserve">\msipar </xsl:text>
+    <xsl:text xml:space="preserve">\par </xsl:text>
   </xsl:if>
 </xsl:template>
 
@@ -197,7 +228,9 @@
 <xsl:variable name="dblBackslash"><xsl:text xml:space="preserve">\\ </xsl:text></xsl:variable>
 
 <xsl:template match="html:td|html:th" mode="parbox">
-  <xsl:variable name="normalOutput"><xsl:apply-templates/></xsl:variable>
+  <xsl:variable name="normalOutput">
+     <xsl:apply-templates/>
+  </xsl:variable>
   <xsl:call-template name="doReplaceMacro">
     <xsl:with-param name="targStr" select="$normalOutput"/>
     <xsl:with-param name="findStr" select="$msipar"/>
@@ -206,12 +239,20 @@
   </xsl:call-template>
 </xsl:template>
 
-<xsl:template match="html:td|html:th" mode="doOutput">
-  <xsl:if test="@ccolor">\cellcolor <xsl:choose
-      ><xsl:when test="substring(./@ccolor,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@ccolor,2,8),'abcdef','ABCDEF')"/>
+<xsl:template match="html:td|html:th|mml:td" mode="doOutput">
+  <xsl:if test="@ccolor">
+    <xsl:text>\cellcolor</xsl:text>
+    <xsl:choose>
+      <xsl:when test="substring(./@ccolor,1,1)='#'">
+	<xsl:text>[HTML]{</xsl:text>
+	<xsl:value-of select="translate(substring(./@ccolor,2,8),'abcdef','ABCDEF')"/>
       </xsl:when>
-      <xsl:otherwise>{<xsl:value-of select="./@ccolor"/></xsl:otherwise>
-    </xsl:choose>}
+      <xsl:otherwise>
+	<xsl:text>{</xsl:text>
+	<xsl:value-of select="./@ccolor"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>}</xsl:text>
   </xsl:if>
   <xsl:apply-templates/>
 </xsl:template>
@@ -384,7 +425,9 @@
     </xsl:choose>
   </xsl:if>
   <xsl:if test="string-length($columnData/@width)">
-    <xsl:text>{</xsl:text><xsl:value-of select="$columnData/@width" /><xsl:text>mm}</xsl:text>
+    <xsl:text>p{</xsl:text>
+    <xsl:value-of select="$columnData/@width" />
+    <xsl:text>mm}</xsl:text>
   </xsl:if>
   <xsl:if test="(normalize-space($columnData/@lineSpec) = 'single') or (normalize-space($columnData/@lineSpec) = 'double')">
     <xsl:text>|</xsl:text>
@@ -531,9 +574,11 @@
   <xsl:param name="colData" />
   <xsl:param name="positionInRow" select="1" />
   <xsl:param name="tabularType" select="$tabularType"/>
+
   <xsl:if test="$positionInRow &gt; 1">
     <xsl:text xml:space="preserve"> &amp; </xsl:text>
   </xsl:if>
+
   <xsl:if test="$theCell">
     <xsl:variable name="columnspan">
       <xsl:choose>
@@ -541,12 +586,14 @@
         <xsl:otherwise>1</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <xsl:variable name="needMultiRow">
       <xsl:choose>
         <xsl:when test="$theCell/@rowspan and (number($theCell/@rowspan) &gt; 1)" >1</xsl:when>
         <xsl:otherwise>0</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <xsl:variable name="needMultiCol">
       <xsl:choose>
         <xsl:when test="$columnspan &gt; 1" >1</xsl:when>
@@ -563,6 +610,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <xsl:variable name="needParbox">
       <xsl:choose>
         <xsl:when test="number($needMultiRow) or number($needMultiCol)">
@@ -573,6 +621,7 @@
         <xsl:otherwise>0</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <xsl:choose>
       <xsl:when test="number($needMultiCol)">
         <xsl:text>\multicolumn{</xsl:text><xsl:number value="$columnspan" /><xsl:text>}{</xsl:text>
@@ -593,6 +642,7 @@
         <xsl:if test="string-length($theCellData/@width)">
           <xsl:text>{</xsl:text><xsl:value-of select="$theCellData/@width" /><xsl:text>mm}</xsl:text>
         </xsl:if>
+
         <xsl:variable name="rightBorder">
           <xsl:choose>
             <xsl:when test="$columnspan &gt; 1">
@@ -601,6 +651,7 @@
             <xsl:otherwise><xsl:value-of select="$theCellData/@borderRight" /></xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
+
         <xsl:if test="($rightBorder = 'double') or ($rightBorder = 'single')">
             <xsl:text>|</xsl:text>
           <xsl:if test="$rightBorder = 'double'">
@@ -628,8 +679,10 @@
           <xsl:with-param name="theCell" select="$theCell"/>
           <xsl:with-param name="colData" select="$colData"/>
           <xsl:with-param name="whichCol" select="number($theCellData/@col)" />
-        </xsl:call-template><xsl:text>mm}{</xsl:text>
-        <xsl:apply-templates select="$theCell" mode="parbox" /><xsl:text>}</xsl:text>
+        </xsl:call-template>
+        <xsl:text>mm}{</xsl:text>
+        <xsl:apply-templates select="$theCell" mode="parbox" />
+        <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="$theCell" mode="doOutput" />
@@ -660,7 +713,7 @@
      then to find a way to compromise on the distribution of the rest of the width without computing the layout of the
      whole table. A max width and min width are decided on based on how much leeway there appears to be, and a crude
      guess as to the size needed (counting text length, and assuming images need their whole widths on one line) is
-     compared to the max and min, finally resulting in a number. --> 
+     compared to the max and min, finally resulting in a number. -->
 <xsl:template name="forceGetWidth">
   <xsl:param name="theCell" />
   <xsl:param name="colData" />
@@ -673,7 +726,7 @@
         <xsl:choose>
           <xsl:when test="$theTable/@width">
             <xsl:call-template name="convertSizeSpecsToMM">
-              <xsl:with-param name="theSpec" select="$theTable/@width" />
+              <xsl:with-param name="theSpec" select="concat($theTable/@width,$theTable/@unit)" />
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>0</xsl:otherwise>
@@ -774,7 +827,7 @@
               <xsl:sort select="number(@width)" data-type="number" order="descending" />
               <xsl:if test="position()=1">
                 <xsl:call-template name="convertSizeSpecsToMM">
-                  <xsl:with-param name="theSpec" select="number(@width) + 2" />
+                  <xsl:with-param name="theSpec" select="concat(@width,@unit)" />
                 </xsl:call-template>
               </xsl:if>
             </xsl:for-each>
@@ -818,7 +871,7 @@
 
 <!--The point of this is to resolve linestyle conflicts at shared edges and to translate line style specifiers from HTML form
     to "LaTeX" form (either 'none', 'single', or 'double'). -->
-    
+
 <xsl:template name="refineCellData">
   <xsl:param name="rawCellData" />
   <xsl:param name="rowList" />
@@ -938,11 +991,11 @@
         to collect it can't then be modified (and I can't see any viable way to concatenate it in general in order to construct
         "with-param" values). The only usable approach seems to be recursively calling a function from itself.
     iv) Results returned as nodes or node-sets wouldn't be able to be queried until the variables holding them were fully defined
-        (for instance, if you're still constructing an element named <cellsData>, you wouldn't be able to select 
+        (for instance, if you're still constructing an element named <cellsData>, you wouldn't be able to select
         "cellsData/tr/td[@rowspan &gt; 1]" while constructing the data for a later cell). This seems to force constructing the
-        information first as strings, which can be passed and queried. The semicolon-separated strings will take the form of 
-        "(2,3)(#ID)(L)(single,none,double,none)" for a normal cell or "(2,4)()()(single,none,single,single)" if the cell is a continuation cell; 
-        the first entry gives the (row,column), the second if not empty is the generate-id() of the relevant <td> or <th>, 
+        information first as strings, which can be passed and queried. The semicolon-separated strings will take the form of
+        "(2,3)(#ID)(L)(single,none,double,none)" for a normal cell or "(2,4)()()(single,none,single,single)" if the cell is a continuation cell;
+        the first entry gives the (row,column), the second if not empty is the generate-id() of the relevant <td> or <th>,
         the third gives the alignment specification, and the fourth gives the (top, right, bottom, left) line specifiers.
      -->
 

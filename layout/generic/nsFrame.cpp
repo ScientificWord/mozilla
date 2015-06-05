@@ -47,6 +47,7 @@
 #include "nsFrame.h"
 #include "nsMathMLFrame.h"
 #include "nsMathMLCursorMover.h"
+#include "nsMathCursorUtils.h"
 #include "nsFrameList.h"
 #include "nsLineLayout.h"
 #include "nsIContent.h"
@@ -77,6 +78,10 @@
 #endif
 
 #include "nsIDOMText.h"
+#include "nsIDOMDocument.h"
+#include "nsIDOMDocumentTraversal.h"
+#include "nsIDOMNodeFilter.h"
+#include "nsIDOMTreeWalker.h"
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsIDOMHTMLAreaElement.h"
 #include "nsIDOMHTMLImageElement.h"
@@ -84,6 +89,8 @@
 #include "nsIDOMHTMLInputElement.h"
 #include "nsIDeviceContext.h"
 #include "nsIEditorDocShell.h"
+#include "nsIEditor.h"
+#include "nsIHTMLEditor.h"
 #include "nsIEventStateManager.h"
 #include "nsISelection.h"
 #include "nsIDOMHTMLElement.h"
@@ -105,6 +112,9 @@
 #include "nsITextControlFrame.h"
 #include "nsINameSpaceManager.h"
 #include "nsIPercentHeightObserver.h"
+#include "msiITagListManager.h"
+#include "../../editor/libeditor/base/nsEditor.h"
+#include "../../editor/libeditor/base/nsEditorUtils.h"
 
 #ifdef IBMBIDI
 #include "nsBidiPresUtils.h"
@@ -125,7 +135,7 @@
 #include "nsBoxLayoutState.h"
 #include "nsBlockFrame.h"
 #include "nsDisplayList.h"
-
+#include "nsMathMLContainerCursorMover.h"
 #include "gfxContext.h"
 
 static NS_DEFINE_CID(kLookAndFeelCID,  NS_LOOKANDFEEL_CID);
@@ -155,6 +165,8 @@ struct nsContentAndOffset
   nsIContent* mContent;
   PRInt32 mOffset;
 };
+
+nsIMathMLCursorMover * GetMathCursorMover( nsIFrame * aFrame );
 
 // Some Misc #defines
 #define SELECTION_DEBUG        0
@@ -208,6 +220,9 @@ static PRLogModuleInfo* gLogModule;
 static PRLogModuleInfo* gFrameVerifyTreeLogModuleInfo;
 
 static PRBool gFrameVerifyTreeEnable = PRBool(0x55);
+
+
+
 
 PRBool
 nsIFrameDebug::GetVerifyTreeEnable()
@@ -320,6 +335,28 @@ nsFrame::operator new(size_t sz, nsIPresShell* aPresShell) CPP_THROW_NEW
   }
 
   return result;
+}
+
+nsresult
+GetEditor( nsFrame* frame, nsIHTMLEditor ** htmlEditor)
+{
+  nsresult res = NS_OK;
+  nsPresContext* presContext = frame->PresContext();
+  nsIPresShell *shell = presContext->GetPresShell();
+  nsCOMPtr<nsISupports> container = presContext->GetContainer();
+  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  PRBool isEditable;
+  if (!editorDocShell ||
+      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEd;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  htmlEd = do_QueryInterface(editor);
+  *htmlEditor =htmlEd;
+  NS_IF_ADDREF(*htmlEditor);
+  return res;
 }
 
 // Overridden to prevent the global delete from being called, since the memory
@@ -487,9 +524,9 @@ nsFrame::Destroy()
   nsPresContext* presContext = PresContext();
 
   nsIPresShell *shell = presContext->GetPresShell();
-  NS_ASSERTION(!(mState & NS_FRAME_OUT_OF_FLOW) ||
-               !shell->FrameManager()->GetPlaceholderFrameFor(this),
-                "Deleting out of flow without tearing down placeholder relationship; see comments in nsFrame.h" );
+  // NS_ASSERTION(!(mState & NS_FRAME_OUT_OF_FLOW) ||
+  //              !shell->FrameManager()->GetPlaceholderFrameFor(this),
+  //               "Deleting out of flow without tearing down placeholder relationship; see comments in nsFrame.h" );
 
   shell->NotifyDestroyingFrame(this);
 
@@ -1987,6 +2024,20 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
           delete details;
           fc->SetMouseDownState(PR_FALSE);
           fc->SetDelayedCaretData(me);
+          if (isEditor && (me->clickCount == 1)) {
+            nsCOMPtr<nsIHTMLEditor> htmlEditor;
+            nsCOMPtr<nsIEditor>editor;
+            rv = GetEditor(this, getter_AddRefs(htmlEditor));
+            if (htmlEditor) {
+              editor = do_QueryInterface(htmlEditor);
+              nsCOMPtr<nsISelection> sel;
+              editor->GetSelection(getter_AddRefs(sel));
+              // if (sel) {
+              //    nsEditorUtils::JiggleCursor(editor, sel, nsIEditor::ePrevious);
+              // }
+            }
+          }
+
           return NS_OK;
         }
 
@@ -2029,6 +2080,20 @@ nsFrame::HandlePress(nsPresContext* aPresContext,
     // Therefore, disable selection extension during mouse moves.
     // XXX This is a bit hacky; shouldn't editor be able to deal with this?
     fc->SetMouseDownState(PR_FALSE);
+  }
+
+  if (isEditor && me->clickCount==1) {
+    nsCOMPtr<nsIHTMLEditor> htmlEditor;
+    nsCOMPtr<nsIEditor>editor;
+    rv = GetEditor(this, getter_AddRefs(htmlEditor));
+    if (htmlEditor) {
+      editor = do_QueryInterface(htmlEditor);
+      nsCOMPtr<nsISelection> sel;
+      editor->GetSelection(getter_AddRefs(sel));
+      // if (sel) {
+      //    nsEditorUtils::JiggleCursor(editor, sel, nsIEditor::ePrevious);
+      // }
+    }
   }
 
   return rv;
@@ -4793,6 +4858,114 @@ static PRBool IsMovingInFrameDirection(nsIFrame* frame, nsDirection aDirection, 
 
 PRBool IsMathFrame( nsIFrame * aFrame );
 
+PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInFrameDirection, PRBool * math, PRBool * fBailing )
+{
+  nsIAtom * frameType;
+  PRInt32 ctr = 0;
+  nsresult res;
+  nsCOMPtr<nsIMathMLCursorMover> pMathCM;
+  PRInt32 count = 1;
+  nsIFrame * pBefore = nsnull;
+  nsIFrame * pAfter = nsnull;
+  PRUint32 textlength;
+
+  frameType = (*current)->GetType();
+  if (nsGkAtoms::textFrame == frameType) {
+    if (!movingInFrameDirection && *offset > 0) {
+      (*offset)--;
+      return PR_TRUE;
+    }
+    textlength = (*current)->GetContent()->TextLength();
+    if (movingInFrameDirection && *offset < textlength) {
+      (*offset)++;
+      return PR_TRUE;
+    }
+    pMathCM =  GetMathCursorMover(GetTopFrameForContent((*current)->GetParent()));
+    if (movingInFrameDirection) { //moving out of the text node.
+      if (pMathCM) {
+        pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
+        return (count == 0);
+      }
+      else return PR_FALSE;
+    }
+    if (*offset == 0 && !movingInFrameDirection)
+    {
+      if (pMathCM) {
+        pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &count);
+        return (count == 0);
+      }
+    }
+    return PR_FALSE;
+  }
+  // otherwise current is an element and offset points between children
+  // Find the nodes before and after offset.
+  pAfter = (*current)->GetFirstChild(nsnull);
+  if (pAfter && pAfter->GetType() == nsGkAtoms::textFrame) {
+    pBefore = pAfter;
+  }
+  else while (ctr < *offset && pAfter) {
+    pBefore = pAfter;
+    pAfter = pAfter->GetNextSibling();
+    (ctr)++;
+  }
+  if (movingInFrameDirection) {
+    if (pAfter) {
+      pMathCM =  do_QueryInterface(pAfter);
+      if (pMathCM) pMathCM->EnterFromLeft(nsnull, current, offset, count, fBailing, &count);
+      return (count == 0);
+    }
+    else { // ran off the end. Leave the parent node (*current)
+      pMathCM =  do_QueryInterface(*current);
+      if (pMathCM) pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
+      return (count == 0);
+    }
+  }
+  if (!movingInFrameDirection) {
+    if (pBefore) {
+      pMathCM =  do_QueryInterface(pBefore);
+      if (pMathCM) pMathCM->EnterFromRight(nsnull, current, offset, count, fBailing, &count);
+      return (count == 0);
+    }
+    else {
+      if (*offset == 0) {
+        pMathCM =  do_QueryInterface(*current);
+      }
+      else {
+        pMathCM =  do_QueryInterface(pAfter);
+      }
+      if (pMathCM) pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &count);
+      return (count == 0);
+    }
+    return PR_FALSE;
+  }
+}
+
+PRBool
+NonMathInMsiDisplay( nsIFrame * pFrame ) {
+  nsIFrame * pTemp = pFrame;
+  nsAutoString sTag;
+  nsCOMPtr<nsIContent>  pContent;
+  nsCOMPtr<nsIDOMElement> pElem;
+  nsIAtom * frameType = (pTemp)->GetType();
+  if (nsGkAtoms::textFrame == frameType) {
+    pTemp = pTemp->GetParent();
+  }
+  while (pTemp) {
+    if (IsMathFrame(pTemp)) return PR_FALSE;
+    pContent = pTemp->GetContent();
+    if (pContent) {
+      pElem = do_QueryInterface(pContent);
+      if (pElem) {
+        pElem->GetTagName(sTag);
+        if (sTag.EqualsLiteral("msidisplay"))
+          return PR_TRUE;
+      }
+    }
+    pTemp = pTemp->GetParent();
+  }
+  return PR_FALSE;
+}
+
 NS_IMETHODIMP
 nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
 {
@@ -4809,8 +4982,8 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
   if (aPos->mMath){
       offset = aPos->mStartOffset; // we do it differently for math -- BBM
       math = PR_TRUE;
-    }
-    else
+  }
+  else
   {
     // Translate content offset to be relative to frame
     offset = aPos->mStartOffset - range.start;
@@ -4827,20 +5000,46 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
         PRBool movingInFrameDirection =
           IsMovingInFrameDirection(current, aPos->mDirection, aPos->mVisual);
 
-        if (eatingNonRenderableWS)
-          done = current->PeekOffsetNoAmount(movingInFrameDirection, &offset);
+        if (eatingNonRenderableWS) {
+          nsIFrame * pNext;
+          nsIFrame * pPrevious;
+          nsIFrame * f;
+          // We have to avoid non-math material in an msidisplay tag.
+          if (NonMathInMsiDisplay(current))
+            done = PR_FALSE;
+          else
+            done = current->PeekOffsetNoAmount(movingInFrameDirection, &offset);
+          // PeekOffsetNoAmount returns true if there is a character for the cursor to sit beside. We also want to return
+          // true when the next frame is math
+          if (!done) {
+            if (movingInFrameDirection) {
+              pNext = current->GetNextSibling();
+              done = pNext && (IsMathFrame(pNext) || IsMathFrame(pNext->GetParent()));
+            }
+            else
+            {
+              // have to search for previous sibling.
+              pPrevious = current->GetParent()->GetFirstChild(nsnull);
+              while (pPrevious && pPrevious->GetNextSibling() != current) pPrevious = pPrevious->GetNextSibling();
+              if (pPrevious) done = (IsMathFrame(pPrevious) || IsMathFrame(pPrevious->GetParent()));
+            }
+          }
+        }
+        else if (math) {
+          done = InitiateMathMove(&current, &offset, movingInFrameDirection, &math, &fBailing );
+        }
         else
           done = current->PeekOffsetCharacter(movingInFrameDirection, &offset);
 
         if (!done) {
-          PRBool jumpedLine;
+          PRBool jumpedLine = PR_FALSE;
           result =
             current->GetFrameFromDirection(aPos->mDirection, aPos->mVisual,
                                            aPos->mJumpLines, aPos->mScrollViewStop,
                                            &current, &offset, &jumpedLine, &math, &fBailing);
           if (fBailing)
             done = PR_TRUE;
-
+//
           if (NS_FAILED(result))
             return result;
 
@@ -4857,6 +5056,7 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
   	  {
   	    aPos->mResultFrame = current;
   	    aPos->mResultContent = current?current->GetContent():nsnull;
+        if (!(aPos->mResultContent)) return NS_ERROR_FAILURE;
   			if (!current) printf("Got null node for the cursor, nsFrame:4844\n");
   	    aPos->mContentOffset = offset;
         // now check for the very special case of an input box.
@@ -5288,7 +5488,15 @@ PRBool IsMathFrame( nsIFrame * aFrame )
 nsIMathMLCursorMover * GetMathCursorMover( nsIFrame * aFrame )
 {
   nsCOMPtr<nsIMathMLCursorMover> pMathCM;
+  nsIMathMLCursorMover * pcm;
   pMathCM =  do_QueryInterface(aFrame);
+  if (!pMathCM && IsMathFrame(aFrame)) {
+    pMathCM = nsMathMLContainerCursorMover::Create(aFrame);
+    if (pMathCM) {
+      pcm = pMathCM;
+      NS_IF_ADDREF((nsMathMLCursorMover*)pcm);
+    }
+  }
   return pMathCM;
 }
 
@@ -5431,7 +5639,8 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   // Mozilla uses; that means it is a leaf. For mathematics, we need to check to see if we should instead
   // choose a parent of this frame.
   //  printf("Moving to a new frame; check to see if we are in math\n");
-  nsIFrame* pFrame = IsMathFrame(this) ? this : nsnull;  // will succeed if "this" is a math frame.
+//  nsIFrame* pFrame = IsMathFrame(this) ? this : nsnull;  // will succeed if "this" is a math frame. BBM: changed 2013-09-26
+  nsIFrame* pFrame = IsMathFrame(traversedFrame) ? traversedFrame : nsnull;  // will succeed if "traversedFrame" is a math frame.
   nsIFrame* pFrameChild;
   nsIFrame * pChild;
   nsIFrame * pLastChild = nsnull;
@@ -5439,6 +5648,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   nsIFrame* pMathChild;
   nsCOMPtr<nsIMathMLCursorMover> pMathCM;
   PRInt32 count = 1;
+  if (*aOutJumpedLine) count = 0;
   if (pFrame) // 'this' is a math frame
   {
 //    printf("Starting in a math frame\n");
@@ -5479,7 +5689,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
             pMathCM->MoveOutToRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
           else
             (*fBailing) = PR_TRUE;
-        } 
+        }
       }
     }
     else {
@@ -5499,13 +5709,13 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         nsString strcontent;
         nsContentUtils::GetNodeTextContent(node, PR_FALSE, strcontent);
         length = strcontent.Length();
-        if (length < count) 
+        if (length < count)
           length = count;
         *aOutOffset = length - count;
-        count = 0; 
-        *aOutFrame = pLastChild;        
+        count = 0;
+        *aOutFrame = pLastChild;
       }
-      else 
+      else
       {
         while (pMathCM == nsnull && pFrame) {
           pFrame = pFrame->GetParent();
@@ -5515,7 +5725,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
           pMathCM->MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
         else
           (*fBailing) = PR_TRUE;
-      }  
+      }
     }
     if (*fBailing) goto bailedOut;
     *aMath = PR_TRUE;
@@ -5524,9 +5734,21 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   }
   else
   {
-    pFrame = IsParentMathFrame(this)?GetParent():nsnull;
+//    pFrame = IsParentMathFrame(this)?GetParent():nsnull; // BBM: 2013-09-26
+    pFrame = IsParentMathFrame(traversedFrame)?traversedFrame->GetParent():nsnull;
     if (pFrame)
     {
+//      nsAutoString name;
+//      nsCOMPtr<nsIDOMElement> frameNode;
+      pFrame = GetTopFrameForContent(pFrame);
+//     frameNode = do_QueryInterface(pFrame->GetContent());
+//      if (frameNode) frameNode->GetNodeName(name);
+//
+//      while (!(name.EqualsLiteral("mo")) && !(name.EqualsLiteral("mi") && !(name.EqualsLiteral("mn")))) {
+//        pFrame = pFrame->GetParent();
+//        frameNode = do_QueryInterface(pFrame->GetContent());
+//        if (frameNode) frameNode->GetNodeName(name);
+//      }
       nsMathMLFrame::DumpMathFrameData(pFrame);
       // this is not a math frame, but a parent is. Probably this is a text frame.
       // Check if the next frame is a text frame. If so, bail and let the default code take care of it.
@@ -5537,9 +5759,9 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         pFrame = nsnull;
       }
       else if ((pMathCM = GetMathCursorMover(pFrame)) && (aDirection == eDirNext))
-        pMathCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailing, &count);
+        pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
       else if (pMathCM)
-        pMathCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailing, &count);
+        pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
     }
 //    if (*fBailing) goto bailedOut;
   }
@@ -6186,7 +6408,7 @@ PRBool nsFrame::IsMSIPlotOrGraphicContainer( nsIContent* aContent)
     aContent->Tag()->ToString(buf);
     if (buf.EqualsLiteral("plotwrapper") || buf.EqualsLiteral("graph"))
       return PR_TRUE;
-    
+
     pContentElement = do_QueryInterface(aContent);
     if (pContentElement)
     {
@@ -6205,13 +6427,13 @@ PRBool nsFrame::IsMSIPlotOrGraphicContainer( nsIContent* aContent)
 
     if (buf.EqualsLiteral("msiframe"))  //May contain, e.g., a <plotwrapper>, or an image <object>
     {
-      nsCOMPtr<nsIDOMNode> kid;    
-      nsCOMPtr<nsIDOMNodeList> childList;    
+      nsCOMPtr<nsIDOMNode> kid;
+      nsCOMPtr<nsIDOMNodeList> childList;
       PRUint32 len;
       PRBool rv = PR_FALSE;
       nsCOMPtr<nsIDOMNode> contentNode = do_QueryInterface(aContent);
 
-      contentNode->GetChildNodes(getter_AddRefs(childList));   
+      contentNode->GetChildNodes(getter_AddRefs(childList));
       //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
       //  as a direct DOM child, we'll answer PR_FALSE.
       childList->GetLength(&len);
@@ -6997,7 +7219,7 @@ nsFrame::TraceMsg(const char* aFormatString, ...)
 void
 nsFrame::VerifyDirtyBitSet(nsIFrame* aFrameList)
 {
-  for (nsIFrame*f = aFrameList; f; f = f->GetNextSibling()) {
+  for (nsIFrame* f = aFrameList; f; f = f->GetNextSibling()) {
     NS_ASSERTION(f->GetStateBits() & NS_FRAME_IS_DIRTY, "dirty bit not set");
   }
 }
@@ -7895,9 +8117,10 @@ void DR_cookie::Change() const
 #endif
 // End Display Reflow
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsFrame::MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index)
 {
+  printf("MoveRightAtDocEndFrame\n");
   PRUint32 offset;
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
@@ -7907,7 +8130,7 @@ nsFrame::MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index)
   if (htmlDoc) {
     nsCOMPtr<nsIDOMHTMLElement> bodyElement;
     htmlDoc->GetBody(getter_AddRefs(bodyElement));
-    nsCOMPtr<nsIDOMNodeList> nodeList;    
+    nsCOMPtr<nsIDOMNodeList> nodeList;
     bodyElement->GetChildNodes(getter_AddRefs(nodeList));
     nodeList->GetLength(&offset);
     nsCOMPtr<nsIContent> content = do_QueryInterface(bodyElement);
@@ -7921,6 +8144,7 @@ nsFrame::MoveRightAtDocEndFrame(nsIFrame ** node, PRInt32& index)
 
 NS_IMETHODIMP nsFrame::MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index)
 {
+  printf("MoveLeftAtDocStartFrame\n");
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
   nsIDocument *doc = shell->GetDocument();
@@ -7938,20 +8162,68 @@ NS_IMETHODIMP nsFrame::MoveLeftAtDocStartFrame(nsIFrame ** node, PRInt32& index)
 
 }
 
+
 NS_IMETHODIMP
-nsFrame::MoveLeftAtDocStart(nsISelection * sel)
+nsFrame::MoveLeftAtDocStart(nsISelection * selection)
 {
+  nsresult res;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<nsIDOMNode> startNode;
+  nsCOMPtr<nsIDOMNode> ancestorNode;
+  nsCOMPtr<nsISelection> sel(selection);
+  res = GetEditor(this, getter_AddRefs(htmlEditor));
+  NS_ENSURE_SUCCESS(res, res);
   nsPresContext* presContext = PresContext();
+  NS_ENSURE_TRUE(presContext, NS_ERROR_FAILURE);
   nsIPresShell *shell = presContext->GetPresShell();
+  NS_ENSURE_TRUE(shell, NS_ERROR_FAILURE);
+  PRBool fTakesText = PR_FALSE;
+  nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  htmlEditor->GetTagListManager(getter_AddRefs(tlm));
+  if (!sel) {
+    nsCOMPtr<nsIEditor> editor = do_QueryInterface(htmlEditor);
+    editor->GetSelection(getter_AddRefs(sel));
+  }
+  res = selection->GetAnchorNode(getter_AddRefs(startNode));
   nsIDocument *doc = shell->GetDocument();
+  nsIAtom * namespaceatom;
+  namespaceatom = nsnull;
   nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
     do_QueryInterface(doc);
   if (htmlDoc) {
+    NS_NAMED_LITERAL_STRING(strText,"#text");
     nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+
     htmlDoc->GetBody(getter_AddRefs(bodyElement));
-    sel->Collapse(bodyElement, 0);
+
+    // Now use a tree walker to find an element that can take text.
+
+    doctrav = do_QueryInterface(htmlDoc);
+    res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+    NS_ENSURE_SUCCESS(res, NS_ERROR_FAILURE);
+
+    nsCOMPtr<nsIDOMNode> currentNode;
+    tw->GetCurrentNode(getter_AddRefs(currentNode));
+    while (currentNode)
+    {
+      res = tlm->NodeCanContainTag( currentNode, strText, namespaceatom, &fTakesText);
+      NS_ENSURE_SUCCESS(res, NS_ERROR_FAILURE);
+      if (fTakesText) // this is where we want the cursor to go
+      {
+        nsContentUtils::GetCommonAncestor(startNode, currentNode, getter_AddRefs(ancestorNode));
+        if (currentNode == ancestorNode) {
+          sel->Collapse(currentNode, 0);
+        }
+        return NS_OK;
+      }
+      tw->NextNode(getter_AddRefs(currentNode));
+    }
+    sel->Collapse(bodyElement, 0);  // get executed only if there is nothing else found.
   }
   return NS_OK;
+}
 
 //  nsIFrame* parent = this;
 //  nsIAtom * frametype = parent->GetType();
@@ -7975,26 +8247,118 @@ nsFrame::MoveLeftAtDocStart(nsISelection * sel)
 //    return NS_OK;
 //  }
 //  return NS_ERROR_FAILURE;
-}
+
 
 NS_IMETHODIMP
-nsFrame::MoveRightAtDocEnd(nsISelection * sel)
+nsFrame::MoveRightAtDocEnd(nsISelection * selection)
 {
-  PRUint32 offset;
+  nsresult res;
+  nsCOMPtr<nsISelection> sel(selection);
   nsPresContext* presContext = PresContext();
   nsIPresShell *shell = presContext->GetPresShell();
+  nsCOMPtr<nsISupports> container = presContext->GetContainer();
+  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  nsCOMPtr<nsIDOMNode> ancestorNode;
+  PRBool isEditable;
+  PRBool fTakesText = PR_FALSE;
+  if (!editorDocShell ||
+      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  htmlEditor = do_QueryInterface(editor);
+  if (!sel) {
+    nsCOMPtr<nsIEditor> editor = do_QueryInterface(htmlEditor);
+    editor->GetSelection(getter_AddRefs(sel));
+  }
+  htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   nsIDocument *doc = shell->GetDocument();
+  nsIAtom * namespaceatom;
+  PRUint32 offset;
+  PRBool isPara;
+  namespaceatom = nsnull;
   nsCOMPtr<nsIDOMHTMLDocument> htmlDoc =
     do_QueryInterface(doc);
   if (htmlDoc) {
+    NS_NAMED_LITERAL_STRING(strText,"#text");
+    NS_NAMED_LITERAL_STRING(strPara,"paratag");
+
     nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+
     htmlDoc->GetBody(getter_AddRefs(bodyElement));
-    nsCOMPtr<nsIDOMNodeList> nodeList;    
-    bodyElement->GetChildNodes(getter_AddRefs(nodeList));
-    nodeList->GetLength(&offset);
-    sel->Collapse(bodyElement, offset);
+
+    // Now use a tree walker to find an element that can take text.
+
+    doctrav = do_QueryInterface(htmlDoc);
+    res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+    if (!(NS_SUCCEEDED(res) && tw)) return NS_ERROR_FAILURE;
+
+    nsCOMPtr<nsIDOMNode> currentNode;
+    nsCOMPtr<nsIDOMNode> startNode;
+    sel->GetAnchorNode(getter_AddRefs(startNode));
+    tw->GetCurrentNode(getter_AddRefs(currentNode));
+    nsCOMPtr<nsIDOMNode> lastElement;
+    nsString name;
+    res = currentNode->GetNodeName(name);
+    tlm->GetTagInClass(strPara, name, namespaceatom, &isPara);
+    while (currentNode && !isPara) {
+      // lastElement = currentNode;
+      tw->LastChild(getter_AddRefs(currentNode));
+      if (currentNode) {
+        res = currentNode->GetNodeName(name);
+        tlm->GetTagInClass(strPara, name, namespaceatom, &isPara);
+      }
+    }
+    if (!currentNode) return NS_OK;
+    // currentNode now should be the last paragraph-type object in the document
+    res = nsContentUtils::GetCommonAncestor(startNode, currentNode, getter_AddRefs(ancestorNode));
+    if (currentNode == ancestorNode)
+    {
+      // proceed only if the selection is contained in currentNode
+      nsCOMPtr<nsIDOMNodeList> childList;
+      PRUint32 len;
+      currentNode->GetChildNodes(getter_AddRefs(childList));
+      //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
+      //  as a direct DOM child, we'll answer PR_FALSE.
+      childList->GetLength(&len);
+      offset = len;
+      nsCOMPtr<nsIDOMNode> maybeBreak;
+      childList->Item(offset-1, getter_AddRefs(maybeBreak));
+      if (maybeBreak) {
+        maybeBreak->GetNodeName(name);
+        if (name.EqualsLiteral("br")) {
+          offset -= 1;
+        }
+      }
+      sel->Collapse(currentNode, offset);
+    }
   }
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsFrame::FrameJiggleCursor(PRBool fForward)
+{
+  nsresult res;
+  nsCOMPtr<nsISelection> sel;
+  nsPresContext* presContext = PresContext();
+  nsIPresShell *shell = presContext->GetPresShell();
+  nsCOMPtr<nsISupports> container = presContext->GetContainer();
+  nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+  PRBool isEditable;
+  PRBool fTakesText = PR_FALSE;
+  if (!editorDocShell ||
+      NS_FAILED(editorDocShell->GetEditable(&isEditable)) || !isEditable)
+    return NS_ERROR_FAILURE;
 
+  nsCOMPtr<nsIEditor> editor;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor;
+  editorDocShell->GetEditor(getter_AddRefs(editor));
+  editor->GetSelection(getter_AddRefs(sel));
+  return nsEditorUtils::JiggleCursor(editor, sel, fForward? nsIEditor::eNext: nsIEditor::ePrevious);
+}

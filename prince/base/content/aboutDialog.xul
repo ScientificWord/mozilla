@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 #include productname.inc
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?> 
+<?xml-stylesheet href="chrome://prince/skin/aboutDialog.css" type="text/css"?> 
+
 
 <!DOCTYPE dialog [
 <!ENTITY % aboutDialogDTD SYSTEM "chrome://prince/locale/aboutDialog.dtd" >
@@ -8,7 +10,7 @@
 <!ENTITY % brandDTD SYSTEM "chrome://prince/locale/branding/brand.dtd" >
 %brandDTD;
 ]>
-<!--JLF - Localization pass on 6/25/2012-->
+
 <dialog xmlns:html="http://www.w3.org/1999/xhtml"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         id="aboutDialog"
@@ -17,8 +19,7 @@
         title="&aboutDialog.title;"
         screenX="40"
         screenY="40"
-        persist="screenX screenY width height"
-        >
+        persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/about.js"/>
   <tabbox>
@@ -40,15 +41,16 @@
 #ifdef PROD_SWP
           src="chrome://prince/content/aboutSWP.png" 
 #endif
-          width="350" height="540"/>
+          width="350" height="600"/>
         <vbox flex="1"/></hbox>
         <description id="versionField" align="center"/> 
+        <description id="CopyRight" align="center"/>
       </tabpanel> 
       <tabpanel>
-        <iframe src="chrome://prince/content/licenses.xhtml"/>
+        <iframe src="chrome://prince/content/licenses.html"/>
       </tabpanel>     
       <tabpanel>
-        <iframe src="chrome://prince/content/credits.xhtml"/>
+        <iframe src="chrome://prince/content/credits.html"/>
       </tabpanel>     
     </tabpanels>
   </tabbox>

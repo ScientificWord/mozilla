@@ -73,6 +73,10 @@
     <menuitem id="menu_paste_cm"  label="&pasteCmd.label;"  accesskey="&paste.accesskey;" command="cmd_paste"/>
     <menuitem id="menu_pasteNoFormatting_cm" command="cmd_pasteNoFormatting"/>
     <menuitem id="menu_delete_cm" label="&deleteCmd.label;" accesskey="&delete.accesskey;" command="cmd_delete"/>
+#ifdef XP_MACOSX
+    <menuseparator id="edittools-separator"/>
+    <menuitem id="menudefine_cm" label="&define.label;" accesskey="&define.accesskey;" command="cmd_define" />
+#endif
     <menuitem id="menu_countWords_cm" label="&countWords.label;" accesskey="&countWords.accesskey;" command="cmd_countwords"/>
     <menuseparator id="edit-separator"/>
     <menuitem id="menu_selectAll_cm" label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
@@ -99,7 +103,9 @@
     </menu>
 
 
-    <menuitem id="editLink_cm" label="&editLinkCmd.label;" accesskey="&editlink.accesskey;" command="cmd_editLink"/>
+<!--     <menuitem id="editLink_cm" label="&editLinkCmd.label;" accesskey="&editlink.accesskey;" command="cmd_editLink"/>
+ -->
+    <menuitem id="followLink_cm" label="&followLinkCmd.label;" accesskey="&followlink.accesskey;" command="cmd_followLink"/>
     <menuseparator id="property-separator"/>
 
     <!-- Can't get submenus to load from a shared overlay -->
@@ -204,12 +210,14 @@
    <menuseparator/>
    <menuitem id="structRefreshTag" label="Refresh"
                                    oncommand="StructRefreshTag()"/>
+#ifdef DEBUG
    <menuitem id="structRemoveTag"  label="&structRemoveTag.label;"
                                    accesskey="&structRemoveTag.accesskey;"
                                    oncommand="StructRemoveTag()"/>
    <menuitem id="structChangeTag"  label="&structChangeTag.label;"
                                    accesskey="&structChangeTag.accesskey;"
                                    oncommand="StructChangeTag()"/>
+#endif
    <menuseparator/>
    <menuitem id="advancedPropsTag" label="&advancedPropertiesCmd.label;"
                                    accesskey="&advancedproperties.accesskey;"

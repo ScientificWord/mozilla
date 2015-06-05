@@ -26,26 +26,35 @@ function onAccept()
   var domdoc = editor.document;
   var gHTML;
   var gName;
+  var newNode = (node == null);
+  var error;
 
   gHTML  = document.getElementById("htmlbuttonTextbox");
   gName  = document.getElementById("name");
 
-  var htmlNode;
-  dump("\nhtmlfield onAccept()"); 
-  if (node == null) 
+  var htmlElement;
+  dump("\nhtmlfield onAccept()");
+  if (newNode)
   {
     dump("\nhtmlfield onAccept() newnode");
-    htmlNode = domdoc.createElement("htmlfield");
-    editor.insertElementAtSelection(htmlNode, true);
+    htmlElement = domdoc.createElement("htmlfield");
   }
-  else htmlNode = node;
-  
-  if (gName.value.length > 0) 
-    htmlNode.setAttribute("name", gName.value)
-  else 
-    htmlNode.removeAttribute("name");
-  htmlNode.innerHTML = gHTML.value;
-  
+  else {
+    htmlElement = node;
+    editor.deleteNode(node);
+  }
+
+  if (gName.value.length > 0)
+    htmlElement.setAttribute("name", gName.value)
+  else
+    htmlElement.removeAttribute("name");
+  try {
+    htmlElement.innerHTML = gHTML.value;
+    editor.insertElementAtSelection(htmlElement, true);
+  }
+  catch(e) {
+    finalThrow(cmdFailString('HTML field'), 'XHTML appears to be invalid');
+  }
   return true;
 }
 

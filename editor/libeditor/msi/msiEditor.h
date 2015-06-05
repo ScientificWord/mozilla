@@ -45,7 +45,7 @@ public:
   // End of nsIEditor overrides
   
   // nsEditor method
-  NS_IMETHOD DeleteSelectionImpl(EDirection aAction);
+//  NS_IMETHOD DeleteSelectionImpl(EDirection aAction);
 
 
 protected:
@@ -61,6 +61,9 @@ protected:
   static nsCOMPtr<nsIRangeUtils> m_rangeUtils;
   static nsCOMPtr<msiIAutosub> m_autosub;
   nsCOMPtr<nsIContentFilter> m_filter;
+  PRBool m_AutoSubEnabled;
+  static PRInt32 s_editorCount;   // for computation
+  PRInt32 m_editorID;
   
   friend class msiEditorMouseListener;
   friend class msiEditorMouseMotionListener;
@@ -133,6 +136,7 @@ nsresult CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
                                           EditAggregateTxn     *aTxn);
 nsresult GetNextCharacter( nsIDOMNode * nodeIn, PRUint32 offsetIn, nsIDOMNode ** pnodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar, PRInt32 & _result);
 nsresult CheckForAutoSubstitute(PRBool inmath);
+
 
 protected:
   virtual nsresult InsertReturnInMath( nsIDOMNode * splitpointNode, 

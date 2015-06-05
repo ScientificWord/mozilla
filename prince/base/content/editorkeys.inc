@@ -14,21 +14,23 @@
   <key id="msiFindKey" key="f" command="cmd_find" modifiers="accel"/>
   <key id="msiFindNextKey" keycode="VK_F3" keytext="F3" command="cmd_findNext" />
   <key id="msiFindPrevKey" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
-  <key id="msiGreekKeyboardKey" key="g" modifiers="accel"   command="cmd_oneshotGreek"/>
-  <key id="msiMacHelp" key="?" modifiers="accel,shift" command="cmd_showhelp"/>
+<!--   <key id="msiGreekKeyboardKey" key="g" modifiers="accel"   command="cmd_oneshotGreek"/> -->
+<!--   <key id="msiMacHelp" key="?" modifiers="accel,shift" command="cmd_showhelp"/>
+ -->  
   <key id="msiNewFileKey" key="n" modifiers="accel" oncommand="openNewDocument();"/>
   <key id="msiOpenFileKey" key="o" modifiers="accel" oncommand = "openDocument();" />
   <key id="msiPasteKey" key="v" command="cmd_paste" modifiers="accel"/>
   <key id="msiPasteKeyNoFormatting" key="v" command="cmd_pasteNoFormatting" modifiers="accel,shift"/>
   <key id="msiRedoKey" key="z" command="cmd_redo" modifiers="accel,shift" />
   <key id="msiSaveAsKey" key="s" command="cmd_saveAs" modifiers="accel,shift" />
+  <key id="msiSaveKey" key="s" command="cmd_save" modifiers="accel" />
   <key id="msiSelectAllKey" modifiers="accel" key="a" command="cmd_selectAll"/>
   <key id="msiSelectDownKey" keycode="VK_DOWN" command="cmd_selectLineNext" modifiers="shift"/>
   <key id="msiSelectMacroKey" key=" " modifiers="control,accel" command="cmd_macrofragment"/>
   <key id="msiSelectNextKey" keycode="VK_RIGHT" command="cmd_selectCharNext" modifiers="shift"/>
   <key id="msiSelectPrevKey" keycode="VK_LEFT" command="cmd_selectCharPrevious" modifiers="shift"/>
   <key id="msiSelectUpKey" keycode="VK_UP" command="cmd_selectLinePrevious" modifiers="shift"/>
-  <key id="msiSymbolKeyboardKey" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
+<!--   <key id="msiSymbolKeyboardKey" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/> -->
   <key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>
   <key id="msiTypesetPrintKey" key="p" oncommand="msiGoDoCommand('cmd_printPdf');" modifiers="accel,shift"/>
   <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand('cmd_texttag','underline');"/>

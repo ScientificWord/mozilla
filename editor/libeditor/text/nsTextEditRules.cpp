@@ -40,12 +40,17 @@
 #include "nsEditor.h"
 #include "nsTextEditUtils.h"
 #include "nsCRT.h"
+#include "msiUtils.h"
 
 #include "nsCOMPtr.h"
 #include "nsIServiceManager.h"
 #include "nsIDOMNode.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMText.h"
+#include "nsIDOMHTMLDocument.h"
+#include "nsIDOMDocumentTraversal.h"
+#include "nsIDOMNodeFilter.h"
+#include "nsIDOMTreeWalker.h"
 #include "nsIDOMNodeList.h"
 #include "nsISelection.h"
 #include "nsISelectionPrivate.h"
@@ -63,6 +68,11 @@
 #include "nsILookAndFeel.h"
 #include "nsWidgetsCID.h"
 #include "DeleteTextTxn.h"
+#include "nsIHTMLDocument.h"
+#include "nsIDOMHTMLElement.h"
+#include "nsIHTMLEditor.h"
+#include "nsIAtom.h"
+
 
 // for IBMBIDI
 #include "nsIPresShell.h"
@@ -464,7 +474,7 @@ nsTextEditRules::DidInsertBreak(nsISelection *aSelection, nsresult aResult)
   PRInt32 selOffset;
   nsCOMPtr<nsIDOMNode> selNode;
   nsresult res;
-  res = mEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
+  res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
   // confirm we are at end of document
   if (selOffset == 0) return NS_OK;  // can't be after a br if we are at offset 0
@@ -650,7 +660,7 @@ nsTextEditRules::WillInsertText(PRInt32          aAction,
   // get the (collapsed) selection location
   nsCOMPtr<nsIDOMNode> selNode;
   PRInt32 selOffset;
-  res = mEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
+  res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
 
   // don't put text in places that can't have it
@@ -908,7 +918,7 @@ nsTextEditRules::WillDeleteSelection(nsISelection *aSelection,
   {
     nsCOMPtr<nsIDOMNode> startNode;
     PRInt32 startOffset;
-    res = mEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+    res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
     if (NS_FAILED(res)) return res;
     if (!startNode) return NS_ERROR_FAILURE;
     
@@ -1009,6 +1019,18 @@ nsTextEditRules::WillDeleteSelection(nsISelection *aSelection,
   return res;
 }
 
+PRBool hasNonwhitespace(const nsAString& data) {
+  const PRUnichar* cur = data.BeginReading();
+  const PRUnichar* end = data.EndReading();
+
+  for (; cur < end; ++cur) {
+    if (32 < *cur)
+      return true;
+  }
+  return false;
+}
+
+
 nsresult
 nsTextEditRules::DidDeleteSelection(nsISelection *aSelection, 
                                     nsIEditor::EDirection aCollapsedAction, 
@@ -1016,25 +1038,21 @@ nsTextEditRules::DidDeleteSelection(nsISelection *aSelection,
 {
   nsCOMPtr<nsIDOMNode> startNode;
   PRInt32 startOffset;
-  nsresult res = mEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+  nsresult res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
   
   // delete empty text nodes at selection
-  if (mEditor->IsTextNode(startNode))
-  {
-    nsCOMPtr<nsIDOMText> textNode = do_QueryInterface(startNode);
-    PRUint32 strLength;
-    res = textNode->GetLength(&strLength);
-    if (NS_FAILED(res)) return res;
-    
-    // are we in an empty text node?
-    if (!strLength)
-    {
-      res = mEditor->DeleteNode(startNode);
-      if (NS_FAILED(res)) return res;
-    }
-  }
+//  if (mEditor->IsTextNode(startNode))
+//  {
+//    nsAutoString value;
+//    res = startNode->GetNodeValue(value);
+//    if (!hasNonwhitespace(value))
+//    {
+//      res = mEditor->DeleteNode(startNode);
+//      if (NS_FAILED(res)) return res;
+//    }
+//  }
   if (!mDidExplicitlySetInterline)
   {
     // We prevent the caret from sticking on the left of prior BR
@@ -1042,6 +1060,105 @@ nsTextEditRules::DidDeleteSelection(nsISelection *aSelection,
     nsCOMPtr<nsISelectionPrivate> selPriv = do_QueryInterface(aSelection);
     if (selPriv) res = selPriv->SetInterlinePosition(PR_TRUE);
   }
+  // Check that the cursor is in a place that can accept text.
+  PRBool retval;
+  nsCOMPtr<nsIEditor> editor = static_cast<nsEditor*>(mEditor);
+  retval = nsEditorUtils::JiggleCursor(editor, aSelection, aCollapsedAction);
+  if (retval) res = NS_OK;
+
+/*  
+  res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);  
+  nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  nsCOMPtr<nsIDOMDocument> doc;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  nsCOMPtr<nsIDOMNode> currentNode;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsCOMPtr<nsIDOMNode> startSearchNode;
+  nsCOMPtr<nsIDOMNodeList> childList;    
+  nsCOMPtr<nsIEditor> editor = static_cast<nsEditor*>(mEditor);
+  res = editor->GetDocument(getter_AddRefs(doc));
+  if (doc) doctrav = do_QueryInterface(doc);
+  else return NS_ERROR_FAILURE;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(editor);
+  PRBool canTakeText = PR_FALSE;
+  nsIAtom * nsatom = nsnull;
+  nsString text = NS_LITERAL_STRING("#text");
+  nsCOMPtr<nsIDOMHTMLElement> bodyElement;
+  nsCOMPtr<nsIDOMHTMLDocument> htmlDoc = do_QueryInterface(doc);
+  nsAutoString name;
+  PRBool forward = (aCollapsedAction == 1);
+  htmlDoc->GetBody(getter_AddRefs(bodyElement));
+  if (htmlEditor) {
+    htmlEditor -> GetTagListManager(getter_AddRefs(tlm));
+    if (mEditor->IsTextNode(startNode))
+      startNode->GetParentNode(getter_AddRefs(parentNode));
+    else
+      parentNode = startNode;
+
+    res = tlm -> NodeCanContainTag(parentNode, text, nsatom, &canTakeText);
+    if (!canTakeText) {
+      // we must move the cursor to a place that can accept text.
+      res = doctrav->CreateTreeWalker( bodyElement, nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
+      // find where to start the search
+      if (mEditor->IsTextNode(startNode)) startSearchNode = startNode;
+      else {
+        res = startNode->GetChildNodes(getter_AddRefs(childList)); 
+        childList->Item(startOffset  + (forward? 0 : -1), getter_AddRefs(startSearchNode));  
+      }
+      tw->SetCurrentNode(startSearchNode);
+      currentNode = startSearchNode;
+      while (currentNode)
+      {
+//          nsAutoString tagname;
+//          res = currentNode->GetNodeName(tagname);
+        if (mEditor->IsTextNode(currentNode)) {
+          res = currentNode->GetParentNode(getter_AddRefs(parentNode));
+          res = tlm->NodeCanContainTag( parentNode, text, nsatom, &canTakeText);
+        }
+        else
+          res = tlm->NodeCanContainTag( currentNode, text, nsatom, &canTakeText);
+        if (canTakeText) // this is where we want the cursor to go
+        {
+          if (mEditor->IsTextNode(currentNode)) {
+            if (forward) {
+              aSelection->Collapse(currentNode, 0);
+            } else {
+              nsAutoString nodeText;
+              currentNode->GetNodeValue(nodeText);
+              aSelection->Collapse(currentNode, nodeText.Length());
+            }
+            return NS_OK;
+          }
+          if (forward) {
+            startOffset = 0;
+          }
+          else {
+            PRUint32 len;
+            currentNode->GetChildNodes(getter_AddRefs(childList));   
+            //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
+            //  as a direct DOM child, we'll answer PR_FALSE.
+            childList->GetLength(&len);
+            startOffset = len;
+            nsCOMPtr<nsIDOMNode> maybeBreak;
+            childList->Item(startOffset-1, getter_AddRefs(maybeBreak));
+            if (maybeBreak) {
+              maybeBreak->GetNodeName(name);
+              if (name.EqualsLiteral("br")) {
+                startOffset -= 1;
+              }
+            }
+          }
+          aSelection->Collapse(currentNode, startOffset);
+          return NS_OK;
+        }
+        if (forward)
+          tw->NextNode(getter_AddRefs(currentNode));
+        else
+          tw->PreviousNode(getter_AddRefs(currentNode));
+      }
+    }
+  } */
   return res;
 }
 

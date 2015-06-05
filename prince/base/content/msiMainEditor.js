@@ -1,5 +1,7 @@
-// Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+#include productname.inc
 
+
+// Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 function msiShowHideToolbarSeparators(toolbar) {
   dump("===> msiShowHideToolbarSeparators\n");
 
@@ -31,7 +33,7 @@ function loadDocumentFromURI(pathString) {
   }
   else {
     // BBM: make this localizable
-    AlertWithTitle("Recent file has been deleted", "The file "+file.leafName+" has been moved or deletedBuild.");
+    AlertWithTitle("Recent file has been deleted", "The file "+file.leafName+" has been moved or deleted.");
     var popup = document.getElementById("menupopup_RecentFiles");
     if (popup){
       var items = popup.childNodes;
@@ -230,7 +232,9 @@ function msiEditorOnLoad()
 //    commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);
 //
     msiSetupMSIMathMenuCommands(editorElement);
-    msiSetupMSIComputeMenuCommands(editorElement);
+#ifndef PROD_SW
+    if (msiSetupMSIComputeMenuCommands) msiSetupMSIComputeMenuCommands(editorElement);
+#endif
     msiSetupMSITypesetMenuCommands(editorElement);
     msiSetupMSITypesetInsertMenuCommands(editorElement);
   } catch (e)
@@ -294,7 +298,8 @@ function msiUpdateWindowTitle()
 {
   try
   {
-   var editorElement = msiGetTopLevelEditorElement();
+    var editorElement = msiGetTopLevelEditorElement();
+    var fileName;
     if (editorElement.isShellFile) fileName = "not saved";
     else //if (!fileName)
     {
@@ -484,6 +489,7 @@ function msiEditorInitFileMenu()
       historyUrl = GetUnicharPref("editor.history_url_1");
   }
   SetElementEnabledById("menu_RecentFiles", historyUrl != "");
+  msiGoUpdateComposerMenuItems(document.getElementById("composerMenuItems"));
 }
 
 // --------------------------- Logging stuff ---------------------------

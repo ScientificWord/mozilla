@@ -102,7 +102,7 @@ interface msiISimpleComputeEngine : nsISupports
   void approxIntegral(in wstring expr, in wstring form, in wstring numintervals, in wstring lowerBound, in wstring upperBound, [retval] out wstring result);
   void iterate(in wstring expr, in wstring startval, in wstring count, [retval] out wstring result);
   void implicitDiff(in wstring expr, in wstring var, in wstring depvar, [retval] out wstring result);
-  void findExtrema(in wstring expr, in wstring var, in wstring depvar,[retval] out wstring result);
+  void findExtrema(in wstring expr, in wstring var, [retval] out wstring result);
   const unsigned long Calculus_Integrate_by_Parts   		 = CCID_Calculus_Integrate_by_Parts;   		
   const unsigned long Calculus_Change_Variable   		     = CCID_Calculus_Change_Variable;   		  
   const unsigned long Calculus_Partial_Fractions			   = CCID_Calculus_Partial_Fractions;			  
@@ -328,10 +328,16 @@ interface msiISimpleComputeEngine : nsISupports
    * Set the user pref.  Some prefs need string values, but we don't use those yet.
   */
   void setUserPref(in unsigned long attrID, in long value);
+  void setUserPrefByName(in string attrID, in long value);
+
+
   /**
    * Get the user pref.
   */
   long getUserPref(in unsigned long attrID);
+
+  void getEditorID([retval] out PRUint32 id);  
+  void setEditorID(in PRUint32 id);  
 
   /**
    * Perform the operation on the input.  Pass in command ID.

@@ -51,6 +51,7 @@
 <!ENTITY publishAsCmd.label "Publish As...">
 <!ENTITY publishas.accesskey "b">
 <!ENTITY exportToTextCmd.label "Export to Text...">
+<!ENTITY exportToTexCmd.label "Export to TeX...">
 <!ENTITY fileexporttotext.accesskey "T">
 <!ENTITY saveAndChangeEncodingCmd.label "Save and Change Character Encoding">
 <!ENTITY filesaveandchangeencoding.accesskey "h">
@@ -69,6 +70,8 @@
 <!ENTITY printButtonCmd.label "Print...">
 <!ENTITY fileprint.accesskey "p">
 <!ENTITY fileprint.keybinding "p">
+<!ENTITY define.label "Define">
+<!ENTITY define.accesskey "d">
 <!ENTITY closeCmd.label "Close">
 <!ENTITY fileclose.accesskey "c">
 #ifdef XP_MACOSX
@@ -113,7 +116,7 @@
 <!ENTITY copytexCmd.label					 "Copy as TeX">  
 <!ENTITY copypictureCmd.label			 "Copy as Picture">
 <!ENTITY copypictureCmd.accesskey	 "i">
-<!ENTITY savepictureCmd.label			"Export Selection as Picture">
+<!ENTITY savepictureCmd.label			"Export Selection as Picture…">
 <!ENTITY savepictureCmd.accesskey	"x">
 <!ENTITY pasteCmd.label						"Paste">  
 <!ENTITY pasteCmd.key						"V">  
@@ -145,6 +148,8 @@
 <!ENTITY viewShowHideMenu.accesskey "S" >
 <!ENTITY viewTeXLog.accesskey "L" >
 <!ENTITY viewTeXLog.label "TeX Log" >
+<!ENTITY viewBibTeXLog.accesskey "B" >
+<!ENTITY viewBibTeXLog.label "BibTeX Log" >
 <!ENTITY viewTeXFile.accesskey "F" >
 <!ENTITY viewTeXFile.label "TeX File" >
 <!ENTITY viewSidebars.label "Sidebars">
@@ -232,16 +237,20 @@
 <!ENTITY helpmenu.label    "Help">
 <!ENTITY helpMac.commandkey "?">
 <!ENTITY helpmenu.accesskey    "H">
-<!ENTITY helpmenuContents.label    "Contents...">
-<!ENTITY helpmenuContents.accesskey    "C">
-<!ENTITY helpmenuSearch.label    "Search...">
-<!ENTITY helpmenuSearch.accesskey    "S">
-<!ENTITY helpmenuIndex.label    "Index">
-<!ENTITY helpmenuIndex.accesskey    "I">
+#ifdef PROD_SWP
+<!ENTITY helpmenuSWP.label    "Scientific Workplace Help...">
+#endif
+#ifdef PROD_SW
+<!ENTITY helpmenuSW.label    "Scientific Word Help...">
+#endif
+#ifdef PROD_SNB
+<!ENTITY helpmenuSNB.label    "Scientific Notebook Help...">
+#endif
+<!ENTITY helpmenuProduct.accesskey    "S">
 <!ENTITY helpmenuWebsite.label    "MacKichan Software Website">
 <!ENTITY helpmenuWebsite.accesskey    "M">
-<!ENTITY helpmenuRegister.label    "Activate...">
-<!ENTITY helpmenuRegister.accesskey    "R">
+<!ENTITY helpmenuActivate.label    "Activate...">
+<!ENTITY helpmenuActivate.accesskey    "A">
 <!ENTITY helpmenuFeatures.label    "System Features...">
 <!ENTITY helpmenuFeatures.accesskey    "F">
 <!ENTITY helpmenuLicense.label    "License Information">
@@ -279,8 +288,8 @@
 <!ENTITY insertImageMapCmd.label "Image Map...">
 <!ENTITY insertLine.label "Line...">
 <!ENTITY insertline.accesskey "L">
-<!ENTITY insertMinipage.label "Minipage...">
-<!ENTITY insertMinipage.accesskey "F">
+<!ENTITY insertFrame.label "Frame...">
+<!ENTITY insertFrame.accesskey "F">
 <!ENTITY insertTableCmd.label "Table...">
 <!ENTITY inserttable.accesskey "a">
 <!ENTITY insertFormMenu.label "Form...">
@@ -326,8 +335,10 @@
 <!-- Used just in context popup. -->
 <!ENTITY createLinkCmd.label "Create Link...">
 <!ENTITY createlink.accesskey "k">
-<!ENTITY editLinkCmd.label "Edit Link in New Prince">
+<!ENTITY editLinkCmd.label "Edit Link">
 <!ENTITY editlink.accesskey "i">
+<!ENTITY followLinkCmd.label "Follow Link">
+<!ENTITY followlink.accesskey "f">
 <!-- (Toplevel Edit menu uses utilityOverlay) -->
 <!ENTITY undoCmd.label "Undo">
 <!ENTITY undo.accesskey "u">
@@ -343,7 +354,7 @@
 <!ENTITY delete.accesskey "d">
 <!ENTITY clearCmd.label "Clear">
 <!ENTITY clear.accesskey "l">
-<!ENTITY countWords.label "Count Words...">
+<!ENTITY countWords.label "Count Words…">
 <!ENTITY countWords.accesskey "w">
 <!ENTITY selectAllCmd.label "Select All">
 <!ENTITY selectall.accesskey "a">
@@ -484,6 +495,8 @@
 <!ENTITY listdefinition.accesskey "d">
 <!ENTITY listProps.label "List Properties...">
 <!ENTITY listprops.accesskey "l">
+<!ENTITY setalignment.accesskey "t">
+<!ENTITY setalignment.label "Set alignment">
 
 <!ENTITY ParagraphSelect.tooltip "Choose a Paragraph Format">
 <!-- Shared in Paragraph, and Toolbar menulist -->
@@ -664,8 +677,8 @@
 <!ENTITY matrixsplitcell.accesskey "c">
 <!ENTITY convertToMatrix.label "Create Matrix from Selection">
 <!ENTITY converttomatrix.accesskey "r">
-<!ENTITY matrixProperties.label "Matrix Properties...">
-<!ENTITY matrixProperties.accesskey "o">
+<!-- ENTITY matrixProperties.label "Matrix Properties..." -->
+<!-- ENTITY matrixProperties.accesskey "o" -->
 
 <!-- Tools menu -->
 <!ENTITY toolsmenu.label "Tools">

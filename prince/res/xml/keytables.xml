@@ -14,8 +14,8 @@
 	<key name="F10" vk="1" reserved="1"/>
 	<key name="F4" vk="1" >toggleTextTag('(normal)',false);</key>
 	<key name="F5" vk="1" >toggleTextTag('bold',false);</key>
-	<key name="F6" vk="1" >toggleTextTag('em',false);</key>
-	<key name="F9" vk="1" >toggleTextTag('tt',false);</key>
+	<key name="F6" vk="1" >toggleTextTag('emphasized',false);</key>
+	<key name="F9" vk="1" >toggleTextTag('typewriter',false);</key>
 	<key name="F11" vk="1" >insertSectionTag('section',false);</key>
 	<key name="F12" vk="1" >insertSectionTag('subsection',false);</key>
 	<key name="F12" alt="1" vk="1" >dumpMath();</key>
@@ -129,8 +129,8 @@
     <key name="z">insertMathSymbol("&Exists;");</key>
     <key name="x">insertMathSymbol("&times;");</key>
     <key name="X">insertMathSymbol("&divide;");</key>
-    <key name="m">msiGoDoCommand("cmd_MSIMatrixCmdLast");</key> 
-    <key name="M">msiGoDoCommand("cmd_MSIMatrixCmd22");</key>
+    <key name="M">msiGoDoCommand("cmd_MSIMatrixLastCmd");</key>
+    <key name="m">msiGoDoCommand("cmd_MSIMatrix22Cmd");</key>
     <key name="c">insertMathSymbol("&subset;");</key>
     <key name="C">insertMathSymbol("&#x22c5;");</key>
     <key name="v">insertMathSymbol("&vee;");</key>

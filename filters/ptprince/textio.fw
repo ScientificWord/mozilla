@@ -94,7 +94,9 @@ public:
    void    SkipToEnd();
    TeXChar operator[](int) const;
    void    StripTCIMEnd(bool bMiddle = false);
-   void    DumpStr();
+   //void    DumpStr();
+   std::string AsStdString() const;
+
 #ifdef LOGGING
    friend LogFile& operator<<(LogFile& f, const LineOfText& t);
 #endif
@@ -250,6 +252,17 @@ void LineOfText::StripTCIMEnd(bool bMiddle)
          ASSERT(false);
       }
    }
+}
+
+std::string LineOfText::AsStdString() const
+{
+   std::basic_string<TeXChar>& str = m_lineData -> m_line;
+   int n = str.length();
+   std::string realstring;
+   for (int i = 0; i < str.length(); ++i){
+      realstring += (char)str[i];
+   }
+   return realstring;
 }
 
 @}
@@ -422,8 +435,35 @@ TeXChar Latin_1_in::Get()
    ASSERT(!bEOS());
    Byte b = m_pInputByteStream -> Get();
    // We'll ignore 0D characters
-   if (b == 0x0d){
+   while (b == 0x0d){
      b = m_pInputByteStream -> Get();
+   }
+
+   if (false) { // utf-8
+     if (b >= 0xF0) { // 4-byte
+       Byte b2 = m_pInputByteStream -> Get();
+       Byte b3 = m_pInputByteStream -> Get();
+       Byte b4 = m_pInputByteStream -> Get();
+       unsigned int x = b;
+       x = (((((x << 8) | b2) << 8) | b3) << 8) | b4;
+       return x;
+     } else if (b >= 0xE0) { 
+       Byte b2 = m_pInputByteStream -> Get();
+       Byte b3 = m_pInputByteStream -> Get();
+       unsigned int x = b;
+       x = ((((x << 8) | b2) << 8) | b3) << 8;
+       return x;
+     } else  if (b >= 0xC0) {
+       Byte b2 = m_pInputByteStream -> Get();
+       unsigned int x = b;
+       x = ((x << 8) | b2) << 8;
+       return x;       
+     } else {
+       return b;
+     }
+    
+   } else {
+
    }
    return b;
 }
@@ -737,6 +777,8 @@ private:
    CharStream* m_pCharStream;
    TCIMState m_tcimState;
    LineOfText* m_held;
+   std::string m_codepage;
+   std::string m_outputfilter;
 
 public:
    LineSource(CharStream*);
@@ -745,6 +787,7 @@ public:
    bool GetLine(LineOfText* line);
    bool GetRawLine(LineOfText* pLine);
    bool ScanALine(LineOfText* pLine);
+   std::string Codepage() const { return m_codepage; }
 
 private:
    // Unimplemented
@@ -794,12 +837,15 @@ bool LineSource::ScanALine(LineOfText* pLine)
       if (ch == LINE_END){
          pLine -> Append('\x0d');
          break;
-      } else
+      } else if (ch != 0x0d) {
          pLine -> Append(ch);
+      } else {
+        int k = 12;
+        // ignore
+      }
 
       if (m_pCharStream -> bEOS())
          break;
-
    }
    // I think a line should be able to have
    // a line end character or not, so I'll
@@ -838,6 +884,7 @@ bool LineSource::GetLine(LineOfText* pLine)
         // scan ahead removing leading % until a line starts
         // with %BeginExpansion or a non %. Then remove
         // the preceeding brace-percent
+        //pLine -> StripTCIMEnd(true);
         LOG("\nLINE: " << *pLine);
         while (true){
             LineOfText* pNextLine = new LineOfText;
@@ -853,6 +900,7 @@ bool LineSource::GetLine(LineOfText* pLine)
                    break;
                 } else if ( pNextLine -> bPeek("%" )) {
                    pLine -> StripTCIMEnd(true);
+                   pLine -> Append(0x0A); // add a newline?
                    CopyLine (pNextLine, pLine);
                    LOG("\nINTER: " << *pLine);
                    delete pNextLine;
@@ -866,6 +914,31 @@ bool LineSource::GetLine(LineOfText* pLine)
             }
         }
         pLine -> Append(0x0d);
+   } else if (pLine -> bPeek("%TCIDATA{")){
+        std::string line = pLine->AsStdString();
+        size_t p = line.find("Codepage");
+        if (p != std::string::npos){
+          p = line.find("=", p);
+          size_t q = line.find("}");
+          m_codepage = line.substr(p+1, q-p-1);
+          if (m_codepage == "65001"){
+            // switch to a utf8 filter
+
+          }
+
+        }
+        p = line.find("OutputFilter");
+        if (p != std::string::npos){
+          p = line.find("=", p);
+          size_t q = line.find("}");
+          m_outputfilter = line.substr(p+1, q-p-1);
+          if (m_outputfilter == "latex2.dll"){
+            // portable filter was used
+
+
+          }
+        }
+        return GetLine(pLine);
    }
 
    return true;
@@ -948,6 +1021,7 @@ here is another line
    #include "platform.h"
 #endif
 
+#include <string>
 @<class LineOfText@>
 @<class CharStream@>
 @<class LineSource@>

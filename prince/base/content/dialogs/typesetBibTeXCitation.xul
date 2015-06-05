@@ -111,7 +111,7 @@
 		<hbox>
 			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accesskey;'/>
 			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
-      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="350" width="450"/>
+      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="150" width="400"/>
 		</hbox>
 		<checkbox id='bibEntryOnlyCheckbox' label='&bibEntryOnlyCheckbox.label;' accesskey='&bibEntryOnlyCheckbox.accesskey;'/>
 		<spacer flex='1'/>

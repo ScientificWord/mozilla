@@ -1,0 +1,24 @@
+DEPTH		= ../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+ifeq ($(OS_ARCH),WINNT)
+platform	= windows
+else
+ifeq ($(OS_ARCH),Darwin)
+platform	= mac
+else
+platform	= linux
+endif
+endif
+
+include $(topsrcdir)/config/rules.mk
+
+BIN_RESOURCES := $(wildcard $(srcdir)//$(platform)/*.*)
+
+
+libs::	$(BIN_RESOURCES)
+	$(INSTALL)	$(BIN_RESOURCES)	$(FINAL_TARGET)

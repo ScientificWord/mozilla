@@ -9,6 +9,25 @@
 
 <xsl:include href="latex.xsl"/>
 
+<xsl:template match="html:author[1]">
+ \author{<xsl:apply-templates mode="frontmatter"/>
+   <xsl:if test="../html:address">~\\</xsl:if>
+   <xsl:apply-templates select="../html:address" mode="frontmatter" />}</xsl:template>  
+ <!-- for the sake of the above template, -->
+ <xsl:template match="html:msibr" mode="frontmatter">~\\
+</xsl:template>
+
+<xsl:template match="html:author">
+ \author{<xsl:apply-templates mode="frontmatter"/>
+   <xsl:if test="../html:address">~\\</xsl:if>
+   <xsl:apply-templates select="../html:address" mode="frontmatter" />}</xsl:template>  
+ <!-- for the sake of the above template, -->
+ <xsl:template match="html:msibr" mode="frontmatter">~\\
+</xsl:template>
+
+<xsl:template match="html:author" mode="building-author">
+</xsl:template>  
+
 <xsl:template match="html:preprint">
 \preprint{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>

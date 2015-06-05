@@ -53,15 +53,15 @@ math {
   unicode-bidi: embed;
   display: inline;
   font-style: normal;
-  font-family: MathJax_Main, Asana Math, XITS math, Symbol, DejaVu Sans, Cambria Math, serif;
+  font-family: MathJax_Main, XITS math, Symbol, DejaVu Sans, Cambria Math, serif;
   text-rendering: optimizeLegibility;
   -moz-float-edge: margin-box;
 }
 
-math[mode="display"], math[display="block"] {
+/* math[mode="display"], math[display="block"] {
   display: block;
-  text-align: -moz-center;
-}
+ /* text-align: -moz-center;
+}*/
 
 math[display="inline"] {
   display: inline;
@@ -74,7 +74,7 @@ math[display="inline"] {
 /**************************************************************************/
 /* Style switching during frame construction depending on the context of <mi>:
    These rules are not used when mathvariant or fontstyle is specified
-   explicitly. 
+   explicitly.
 /**************************************************************************/
 
 /* If the textual content of an <mi> consists of a single character
@@ -93,7 +93,7 @@ math[display="inline"] {
    "In particular, inheritance of the mathvariant attribute does not follow
     the CSS model. The default value for this attribute is "normal"
     (non-slanted) for all tokens except mi. ... (The deprecated fontslant
-    attribute also behaves this way.)"   
+    attribute also behaves this way.)"
  */
 [-moz-math-font-style="normal"] {
   font-style: normal;
@@ -170,7 +170,7 @@ math[display="inline"] {
 [mathvariant="bold"] {
   font-weight: bold;
 }
-[mathvariant="italic"] { 
+[mathvariant="italic"] {
   font-style: italic;
 }
 [mathvariant="bold-italic"] {
@@ -432,7 +432,7 @@ mtd[-moz-math-columnline="dashed"] {
 
    if there is an annotation-xml[encoding="MathML-Presentation"]
      render that annotation, and ignore the first child of the
-     <semantics> element and all other annotations, 
+     <semantics> element and all other annotations,
    else
      render the first child of <semantics> and ignore all annotations
 

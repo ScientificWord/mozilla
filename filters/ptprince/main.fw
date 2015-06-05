@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
       }
    }
    LOG("\nReading format file " << format);
-   
+
    Filename fn0(format, true);
    InputByteFile* pbf0 = new InputByteFile;
    if (!pbf0 -> Open(fn0)){
@@ -173,7 +173,7 @@ int main(int argc, char* argv[])
       s_inputfilename = argv[argc-2];
 
       std::cout <<   "\nReading input file " << s_inputfilename;
-      
+
 //      __asm {int 3};
 
       LOG("\nReading input file " << s_inputfilename);
@@ -204,6 +204,8 @@ int main(int argc, char* argv[])
 
       s_bTapped = false;
       const char* filter = "latin1";
+      
+
       for (int i = 0; i < argc; ++i){
          if (argv[i][0] == '-'){
             if (strlen(argv[i]) > 2 && argv[i][1]=='c'){

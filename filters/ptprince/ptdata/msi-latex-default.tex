@@ -30,34 +30,38 @@
 % To   <italic-correction/>
 
 %\MSIEmptyElement[italic-correction]{/}
-\MSIEmptyElement{maketitle}
-\MSIEmptyElement[maketoc]{tableofcontents}
-\MSIEmptyElement[makelof]{listoffigures}
-\MSIEmptyElement[makelot]{listoftables}
-\MSIEmptyElement{frontmatter}
-\MSIEmptyElement{backmatter}
-\MSIEmptyElement{appendix}
-\MSIEmptyElement{mainmatter}
-\MSIEmptyElement[leftquote]{textquotedblleft}
-\MSIEmptyElement[rightquote]{textquotedblright}
-\MSIEmptyElement{textbackslash}
-\MSIEmptyElement[discretionaryhyphen]{-}
-\MSIEmptyElement[asterisk]{*}
-\MSIEmptyElement[hspace type="emSpace"]{quad}
-\MSIEmptyElement[hspace type="twoEmSpace"]{qquad}
-\MSIEmptyElement[hspace type="thinSpace"]{,}
-\MSIEmptyElement[hspace type="medSpace"]{:}
-\MSIEmptyElement[hspace type="thickSpace"]{;}
-\MSIEmptyElement[hspace type="italicCorrectionSpace"]{/}
-\MSIEmptyElement[hspace type="negativeThinSpace"]{!}
-\MSIEmptyElement[hspace type="noIndent"]{noindent}
-\MSIEmptyElement{qedhere}
+\MSIEmptyElement{maketitle}{T}
+\MSIEmptyElement[maketoc]{tableofcontents}{T}
+\MSIEmptyElement[makelof]{listoffigures}{T}
+\MSIEmptyElement[makelot]{listoftables}{T}
+\MSIEmptyElement{frontmatter}{T}
+\MSIEmptyElement{backmatter}{T}
+\MSIEmptyElement{appendix}{T}
+\MSIEmptyElement{mainmatter}{T}
+\MSIEmptyElement[leftquote]{textquotedblleft}{}
+\MSIEmptyElement[rightquote]{textquotedblright}{}
+\MSIEmptyElement{textbackslash}{}
+\MSIEmptyElement[msibr type="discretionaryHyphen" invisDisplay="-"]{-}{}
+\MSIEmptyElement[msibr type="noBreak" invisDisplay="~"]{nolinebreak}{}
+\MSIEmptyElement[asterisk]{*}{}
+\MSIEmptyElement[hspace type="emSpace"]{quad}{}
+\MSIEmptyElement[hspace type="twoEmSpace"]{qquad}{}
+\MSIEmptyElement[hspace type="thinSpace"]{,}{}
+%\MSIEmptyElement[hspace type="medSpace" dim="0.5em"]{:}{}
+\MSIEmptyElement[hspace type="thickSpace"]{;}{}
+\MSIEmptyElement[hspace type="italicCorrectionSpace"]{/}{}
+\MSIEmptyElement[hspace type="negativeThinSpace"]{!}{}
+\MSIEmptyElement[hspace type="noIndent"]{noindent}{}
+\MSIEmptyElement[vspace type="smallSkip" dim="3pt"]{smallskip}{T}
+\MSIEmptyElement[vspace type="mediumSkip" dim="6pt"]{medskip}{T}
+\MSIEmptyElement[vspace type="bigSkip" dim="12pt"]{bigskip}{T}
+
+\MSIEmptyElement{qedhere}{}
+
+\MSIEmptyElement[msibr type="allowBreak" invisDisplay="|"]{allowbreak}{}
 
 
-
-
-
-\MSIEmptyElement{nobreakspace}
+\MSIEmptyElement{nobreakspace}{}
 
 
 % Use MSISimpleEnvironment when you want to convert a
@@ -75,12 +79,12 @@
 \MSISimpleEnvironment[centeredEnv]{center}
 \MSISimpleEnvironment{flushleft}
 \MSISimpleEnvironment{flushright}
-\MSISimpleEnvironment{subequations}
+%%\MSISimpleEnvironment{subequations}
 
 \MSISimpleEnvironment{tabbing}
-\MSIEmptyElement[tab-gt]{>}%  these are used in tabbing environnment
-\MSIEmptyElement[tab-plus]{+}
-\MSIEmptyElement[tab-eq]{=}
+\MSIEmptyElement[tab-gt]{>}{}%  these are used in tabbing environnment
+\MSIEmptyElement[tab-plus]{+}{}
+\MSIEmptyElement[tab-eq]{=}{}
 
 
 \MSISimpleEnvironment{proof}
@@ -101,8 +105,9 @@
 \MSITextElement[emphasized]{emph}
 \MSITextElement{underline}
 \MSITextElement[upright]{textup}
+\MSITextElement[medium]{textmd}
 
-\MSITextElement{intertext}
+%\MSITextElement{intertext}
 
 
 
@@ -204,7 +209,7 @@
 \MSIUnicode{textexclamdown}{a1}
 \MSIUnicode{cents}{a2}
 \MSIUnicode{pounds}{a3}
-\MSIUnicode{textcurrency}{a4}
+%\MSIUnicode{textcurrency}{a4}
 \MSIUnicode{yen}{a5}
 \MSIUnicode{AA}{c5}
 \MSIUnicode{aa}{e5}
@@ -312,6 +317,7 @@
 \MSIUnicode{e-dot}{117}
 \MSIUnicode{G-ced}{122}
 \MSIUnicode{g-ced}{123}
+\MSIUnicode{dotlessj-caret}{135}
 \MSIUnicode{T-ced}{162}
 \MSIUnicode{t-ced}{163}
 \MSIUnicode{N-ced}{145}
@@ -431,6 +437,7 @@
 \MSIEqnarrayLikeEnvironment{eqnarray}
 \MSIEqnarrayLikeEnvironment{eqnarray*}
 \MSIEqnarrayLikeEnvironment{multline}
+\MSIEqnarrayLikeEnvironment{multline*}
 \MSIEqnarrayLikeEnvironment{alignat}
 \MSIEqnarrayLikeEnvironment{alignat*}
 \MSIEqnarrayLikeEnvironment{align}
@@ -453,7 +460,7 @@
 % pretex. 
 
 \MSIMathQuote{aleph}
-\MSIMathQuote{allowbreak}
+%(gp)%\MSIMathQuote{allowbreak}
 \MSIMathQuote{alpha}
 \MSIMathQuote{amalg}
 \MSIMathQuote{And}
@@ -563,6 +570,7 @@
 %\MSIMathQuote{ddagger}
 %\MSIMathQuote{ddag}
 %\MSIMathQuote{ddots}
+\MSIMathQuote{deg}
 \MSIMathQuote{Delta}
 \MSIMathQuote{delta}
 \MSIMathQuote{det}
@@ -576,6 +584,7 @@
 \MSIMathQuote{diiiint}
 \MSIMathQuote{diiint}
 \MSIMathQuote{diint}
+\MSIMathQuote{dim}
 \MSIMathQuote{dint}
 \MSIMathQuote{displaystyle}
 
@@ -638,6 +647,7 @@
 \MSIMathQuote{hat}
 %\MSIMathQuote{hbar}
 \MSIMathQuote{heartsuit}
+\MSIMathQuote{hom}
 \MSIMathQuote{hookleftarrow}
 \MSIMathQuote{hookrightarrow}
 \MSIMathQuote{hslash}
@@ -649,6 +659,7 @@
 \MSIMathQuote{impliedby}
 \MSIMathQuote{implies}
 \MSIMathQuote{Im}
+\MSIMathQuote{inf}
 \MSIMathQuote{infty}
 \MSIMathQuote{injlim}
 \MSIMathQuote{intercal}
@@ -657,6 +668,7 @@
 \MSIMathQuote{iota}
 \MSIMathQuote{Join}
 \MSIMathQuote{kappa}
+\MSIMathQuote{ker}
 %\MSIMathQuote{lambdabar}
 \MSIMathQuote{Lambda}
 \MSIMathQuote{lambda}
@@ -676,7 +688,6 @@
 \MSIMathQuote{leftrightharpoons}
 \MSIMathQuote{leftrightsquigarrow}
 \MSIMathQuote{leftthreetimes}
-\MSIMathQuote{left}
 \MSIMathQuote{leqq}
 \MSIMathQuote{leqslant}
 \MSIMathQuote{leq}
@@ -687,7 +698,10 @@
 \MSIMathQuote{lessgtr}
 \MSIMathQuote{lesssim}
 \MSIMathQuote{lfloor}
+\MSIMathQuote{lg}
 \MSIMathQuote{lhd}
+\MSIMathQuote{liminf}
+\MSIMathQuote{limsup}
 \MSIMathQuote{limits}
 \MSIMathQuote{lim}
 \MSIMathQuote{llcorner}
@@ -717,7 +731,7 @@
 \MSIMathQuote{lvertneqq}
 \MSIMathQuote{maltese}
 \MSIMathQuote{mapsto}
-\MSIMathQuote{mathstrut}
+%\MSIMathQuote{mathstrut}
 \MSIMathQuote{max}
 \MSIMathQuote{measuredangle}
 \MSIMathQuote{mho}
@@ -831,7 +845,6 @@
 \MSIMathQuote{rightrightarrows}
 \MSIMathQuote{rightsquigarrow}
 \MSIMathQuote{rightthreetimes}
-\MSIMathQuote{right}
 \MSIMathQuote{risingdotseq}
 \MSIMathQuote{Rrightarrow}
 \MSIMathQuote{Rsh}
@@ -879,6 +892,7 @@
 \MSIMathQuote{succsim}
 \MSIMathQuote{succ}
 \MSIMathQuote{sum}
+\MSIMathQuote{sup}
 \MSIMathQuote{supseteqq}
 \MSIMathQuote{supseteq}
 \MSIMathQuote{supsetneqq}
@@ -1007,5 +1021,6 @@
 \MSIMathQuote{tilde}
 \MSIMathQuote{bar}
 
-
+\MSIMathQuote{tag}
+\MSIMathQuote{TCItag}
 

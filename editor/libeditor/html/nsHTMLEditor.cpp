@@ -114,6 +114,7 @@
 #include "nsTextFragment.h"
 #include "nsTextFormatter.h"
 
+
 // netwerk
 #include "nsIURI.h"
 #include "nsNetUtil.h"
@@ -139,6 +140,7 @@
 #include "nsIWidget.h"
 #include "nsIParserService.h"
 #include "msiTagListManager.h"
+#include "msiAppUtils.h"
 #include "msiIKeyMap.h"
 #include "msiIScriptRunner.h"
 #include "nsIEventStateManager.h"
@@ -191,6 +193,7 @@ nsHTMLEditor::nsHTMLEditor()
 , mHaveNewPlots(PR_FALSE)
 {
   mHTMLCSSUtils = nsnull;
+  mAppUtils = new msiAppUtils;
   nsCOMPtr<msiTagListManager> manager;
   manager = new msiTagListManager;
   manager->SetEditor(this);
@@ -821,9 +824,15 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
     *aIsBlock = PR_TRUE;
     return NS_OK;
   }
+  if (strTagName.EqualsLiteral("msiframe"))
+  {
+    *aIsBlock = PR_FALSE;
+    return NS_OK;
+  }
   mtagListManager->GetRealClassOfTag(strTagName, namespaceAtom, strTagClass);
-  if (strTagClass.EqualsLiteral("paratag")||strTagClass.EqualsLiteral("structtag")||
-      strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")||strTagClass.EqualsLiteral("frontmtag"))
+  if (strTagClass.EqualsLiteral("paratag")
+    ||strTagClass.EqualsLiteral("structtag")||
+      strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")|| strTagClass.EqualsLiteral("listparenttag") || strTagClass.EqualsLiteral("frontmtag"))
   {
    *aIsBlock = PR_TRUE;
    return NS_OK;
@@ -1402,7 +1411,7 @@ NS_IMETHODIMP nsHTMLEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
         if (NS_FAILED(res)) return res;
         PRInt32 offset;
         nsCOMPtr<nsIDOMNode> node, blockParent;
-        res = GetStartNodeAndOffset(selection, address_of(node), &offset);
+        res = GetStartNodeAndOffset(selection, getter_AddRefs(node), &offset);
         if (NS_FAILED(res)) return res;
         if (!node) return NS_ERROR_FAILURE;
 
@@ -1851,7 +1860,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode)
   }
   nsCOMPtr<nsIDOMNode> selNode;
   PRInt32 selOffset;
-  res = GetStartNodeAndOffset(selection, address_of(selNode), &selOffset);
+  res = GetStartNodeAndOffset(selection, getter_AddRefs(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
 
   res = CreateMsiBR(selNode, selOffset, outBRNode);
@@ -2220,6 +2229,8 @@ nsHTMLEditor::InsertElementAtSelection(nsIDOMElement* aElement, PRBool aDeleteSe
       nsCOMPtr<nsIDOMNode> tempNode;
       PRInt32 tempOffset;
       nsresult result = DeleteSelectionAndPrepareToCreateNode(tempNode,tempOffset);
+      // This possibly split a text node, so tempNode would be the parent and tempOffset will the the offset of the new node
+      selection->Collapse(tempNode,tempOffset);
       if (NS_FAILED(result))
         return result;
     }
@@ -2477,7 +2488,7 @@ nsHTMLEditor::GetParentBlockTags(nsStringArray *aTagList, PRBool aGetLists)
     nsCOMPtr<nsIDOMNode> node, blockParent;
     PRInt32 offset;
 
-    res = GetStartNodeAndOffset(selection, address_of(node), &offset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(node), &offset);
     if (!node) res = NS_ERROR_FAILURE;
     if (NS_FAILED(res)) return res;
 
@@ -2643,7 +2654,7 @@ nsHTMLEditor::GetCSSBackgroundColorState(PRBool *aMixed, nsAString &aOutColor, P
   // get selection location
   nsCOMPtr<nsIDOMNode> parent;
   PRInt32 offset;
-  res = GetStartNodeAndOffset(selection, address_of(parent), &offset);
+  res = GetStartNodeAndOffset(selection, getter_AddRefs(parent), &offset);
   if (NS_FAILED(res)) return res;
 
   // is the selection collapsed?
@@ -2872,7 +2883,7 @@ nsHTMLEditor::MakeOrChangeList(const nsAString& aListType, PRBool entireList, co
     nsCOMPtr<nsIDOMNode> node;
     PRInt32 offset;
 
-    res = GetStartNodeAndOffset(selection, address_of(node), &offset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(node), &offset);
     if (!node) res = NS_ERROR_FAILURE;
     if (NS_FAILED(res)) return res;
 
@@ -2916,8 +2927,8 @@ nsHTMLEditor::MakeOrChangeList(const nsAString& aListType, PRBool entireList, co
         res = CreateNode(aListType, newList, 0, getter_AddRefs(newItem));
       }
       nsCOMPtr<nsIDOMElement> newElement = do_QueryInterface(newItem);
-			PRBool success;
-			if (newItem) res = SetCursorInNewHTML(newElement, &success);
+      PRBool success;
+      if (newItem) res = SetCursorInNewHTML(newElement, &success);
       if (NS_FAILED(res)) return res;
       if (!success)
         selection->Collapse(newItem, 0);
@@ -3020,7 +3031,7 @@ nsHTMLEditor::InsertBasicBlock(const nsAString& aBlockType)
     nsCOMPtr<nsIDOMNode> node;
     PRInt32 offset;
 
-    res = GetStartNodeAndOffset(selection, address_of(node), &offset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(node), &offset);
     if (!node) res = NS_ERROR_FAILURE;
     if (NS_FAILED(res)) return res;
 
@@ -3063,7 +3074,7 @@ nsHTMLEditor::InsertBasicBlock(const nsAString& aBlockType)
 
       // reposition selection to inside the block
       nsCOMPtr<nsIDOMElement> newElement(do_QueryInterface(newBlock));
-  		if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
+      if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
       if (NS_FAILED(res)) return res;
     }
   }
@@ -3106,7 +3117,7 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
     nsCOMPtr<nsIDOMNode> node;
     PRInt32 offset;
 
-    res = GetStartNodeAndOffset(selection, address_of(node), &offset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(node), &offset);
     if (!node) res = NS_ERROR_FAILURE;
     if (NS_FAILED(res)) return res;
 
@@ -3161,7 +3172,7 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
       if (NS_FAILED(res)) return res;
       // reposition selection to inside the block
       nsCOMPtr<nsIDOMElement> newElement(do_QueryInterface(newBlock));
-  		if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
+      if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
       if (NS_FAILED(res)) return res;
     }
   }
@@ -3250,7 +3261,7 @@ void AddStringToContents(nsAString& contents, nsAString& strToAdd)
 
   while (curStr < endStr) {
     if (nsCRT::IsAsciiSpace(*curStr)) {
-      if (!space) { // move the space over 
+      if (!space) { // move the space over
         (*curCont++) = ' ';
         ctr++;
       }
@@ -3300,7 +3311,7 @@ nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
   if (!aSelection) return NS_ERROR_NULL_POINTER;
   NS_NAMED_LITERAL_STRING(verbType, "verbatim");
 
-  nsCOMPtr<nsIDOMNode> tempNode; 
+  nsCOMPtr<nsIDOMNode> tempNode;
   PRUint16 nodeType;
   PRBool isCollapsed;
   nsresult res = aSelection->GetIsCollapsed(&isCollapsed);
@@ -3388,7 +3399,7 @@ nsHTMLEditor::InsertVerbatim(nsISelection *aSelection)
       }
     }
   }
-   
+
 
   // now look at the range
   nodeData(startParent, nodeNameOrContents);
@@ -3506,7 +3517,7 @@ nsHTMLEditor::InsertStructureNS(const nsAString& aStructType, nsIAtom * namespac
     nsCOMPtr<nsIDOMNode> node;
     PRInt32 offset;
 
-    res = GetStartNodeAndOffset(selection, address_of(node), &offset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(node), &offset);
     if (!node) res = NS_ERROR_FAILURE;
     if (NS_FAILED(res)) return res;
 
@@ -3561,7 +3572,7 @@ nsHTMLEditor::InsertStructureNS(const nsAString& aStructType, nsIAtom * namespac
       if (NS_FAILED(res)) return res;
       // reposition selection to inside the block
       nsCOMPtr<nsIDOMElement> newElement(do_QueryInterface(newBlock));
-  		if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
+      if (newBlock) res = SetCursorInNewHTML(newElement, (PRBool *) nsnull);
       if (NS_FAILED(res)) return res;
     }
   }
@@ -3617,7 +3628,7 @@ nsHTMLEditor::Indent(const nsAString& aIndent)
     res = selection->GetIsCollapsed(&isCollapsed);
     if (NS_FAILED(res)) return res;
 
-    res = GetStartNodeAndOffset(selection, address_of(node), &offset);
+    res = GetStartNodeAndOffset(selection, getter_AddRefs(node), &offset);
     if (!node) res = NS_ERROR_FAILURE;
     if (NS_FAILED(res)) return res;
 
@@ -3655,7 +3666,7 @@ nsHTMLEditor::Indent(const nsAString& aIndent)
         res = InsertText(NS_LITERAL_STRING(" "));
         if (NS_FAILED(res)) return res;
         // reposition selection to before the space character
-        res = GetStartNodeAndOffset(selection, address_of(node), &offset);
+        res = GetStartNodeAndOffset(selection, getter_AddRefs(node), &offset);
         if (NS_FAILED(res)) return res;
         res = selection->Collapse(node,0);
         if (NS_FAILED(res)) return res;
@@ -3802,6 +3813,104 @@ NODE_FOUND:
   if (bNodeFound)
   {
     nsCOMPtr<nsIDOMElement> currentElement = do_QueryInterface(currentNode);
+    if (currentElement)
+    {
+      *aReturn = currentElement;
+      // Getters must addref
+      NS_ADDREF(*aReturn);
+    }
+  }
+  else res = NS_EDITOR_ELEMENT_NOT_FOUND;
+
+  return res;
+}
+
+NS_IMETHODIMP
+nsHTMLEditor::GetElementOrParentByTagClass(const nsAString& aClassName, nsIDOMNode *aNode, nsIDOMElement** aReturn)
+{
+  if (aClassName.IsEmpty() || !aReturn )
+    return NS_ERROR_NULL_POINTER;
+
+  nsresult res = NS_OK;
+  nsCOMPtr<nsIAtom> namespaceAtom;
+  nsCOMPtr<nsIDOMNode> currentNode;
+  nsCOMPtr<msiITagListManager> tlm;
+  res = GetTagListManager(getter_AddRefs(tlm));
+  if (!tlm) return NS_ERROR_FAILURE;
+
+  if (aNode)
+    currentNode = aNode;
+  else
+  {
+    // If no node supplied, get it from anchor node of current selection
+    nsCOMPtr<nsISelection>selection;
+    res = GetSelection(getter_AddRefs(selection));
+    if (NS_FAILED(res)) return res;
+    if (!selection) return NS_ERROR_NULL_POINTER;
+
+    nsCOMPtr<nsIDOMNode> anchorNode;
+    res = selection->GetAnchorNode(getter_AddRefs(anchorNode));
+    if(NS_FAILED(res)) return res;
+    if (!anchorNode)  return NS_ERROR_FAILURE;
+
+    // Try to get the actual selected node
+    PRBool hasChildren = PR_FALSE;
+    anchorNode->HasChildNodes(&hasChildren);
+    if (hasChildren)
+    {
+      PRInt32 offset;
+      res = selection->GetAnchorOffset(&offset);
+      if(NS_FAILED(res)) return res;
+      currentNode = nsEditor::GetChildAt(anchorNode, offset);
+    }
+    // anchor node is probably a text node - just use that
+    if (!currentNode)
+      currentNode = anchorNode;
+  }
+
+  nsAutoString ClassName(aClassName);
+  nsAutoString tagName;
+  // default is null - no element found
+  *aReturn = nsnull;
+
+  nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMElement> currentElement;
+  PRBool bNodeFound = PR_FALSE;
+  nsAutoString currentClassName;
+  while (PR_TRUE)
+  {
+    currentElement = do_QueryInterface(currentNode);
+    if (currentElement) {
+      res = currentElement->GetTagName(tagName);
+      res = tlm->GetRealClassOfTag(tagName, namespaceAtom, currentClassName);
+      if (currentClassName.Equals(ClassName))
+      {
+  NODE_FOUND:
+        bNodeFound = PR_TRUE;
+        break;
+      }
+    }
+      // Search up the parent chain
+    // We should never fail because of root test below, but lets be safe
+    // XXX: ERROR_HANDLING error return code lost
+    if (NS_FAILED(currentNode->GetParentNode(getter_AddRefs(parent))) || !parent)
+      break;
+
+    // Stop searching if parent is a body tag
+    nsAutoString parentTagName;
+    parent->GetNodeName(parentTagName);
+    // Note: Originally used IsRoot to stop at table cells,
+    //  but that's too messy when you are trying to find the parent table
+    //PRBool isRoot;
+    //if (NS_FAILED(IsRootTag(parentTagName, isRoot)) || isRoot)
+    if(parentTagName.EqualsLiteral("body"))
+      break;
+
+    currentNode = parent;
+  }
+  if (bNodeFound)
+  {
+    currentElement = do_QueryInterface(currentNode);
     if (currentElement)
     {
       *aReturn = currentElement;
@@ -5238,22 +5347,24 @@ nsHTMLEditor::ContentInserted(nsIDocument *aDocument, nsIContent* aContainer,
       aGraph->SetAttribute(NS_LITERAL_STRING("needPreInit"), NS_LITERAL_STRING("true"));
     }
     nsCOMPtr<nsIDOMNode> childNode = do_QueryInterface(aChild);
-    if (!IsTextNode(childNode))
+    if (childNode && !IsTextNode(childNode))
     {
       nsCOMPtr<nsIDOMElement> childElem = do_QueryInterface(aChild);
-      PRUint32 length = 0;
-      nsCOMPtr<nsIDOMNodeList> graphList;
-      nsresult res = childElem->GetElementsByTagName(NS_LITERAL_STRING("graph"), getter_AddRefs(graphList));
-      if (NS_SUCCEEDED(res))
-        graphList->GetLength(&length);
-      if (length > 0)
-      {
-        mHaveNewPlots = PR_TRUE;
-        for (PRUint32 i = 0; i < length; ++i)
+      if (childElem) {
+        PRUint32 length = 0;
+        nsCOMPtr<nsIDOMNodeList> graphList;
+        nsresult res = childElem->GetElementsByTagName(NS_LITERAL_STRING("graph"), getter_AddRefs(graphList));
+        if (NS_SUCCEEDED(res))
+          graphList->GetLength(&length);
+        if (length > 0)
         {
-          res = graphList->Item(0, getter_AddRefs(childNode));
-          aGraph = do_QueryInterface(childNode);
-          aGraph->SetAttribute(NS_LITERAL_STRING("needPreInit"), NS_LITERAL_STRING("true"));
+          mHaveNewPlots = PR_TRUE;
+          for (PRUint32 i = 0; i < length; ++i)
+          {
+            res = graphList->Item(0, getter_AddRefs(childNode));
+            aGraph = do_QueryInterface(childNode);
+            aGraph->SetAttribute(NS_LITERAL_STRING("needPreInit"), NS_LITERAL_STRING("true"));
+          }
         }
       }
     }
@@ -6120,7 +6231,8 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
   nsresult res = NS_OK;
 
   // hack to allow non-empty description list labels to be considered empty.
-  if (nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("descriptionLabel"))) {
+  if (nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("descriptionLabel"))||nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("biblabel"))
+        ||nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("bibkey"))) {
     *outIsEmptyNode = PR_TRUE;
     return res;
   }
@@ -6893,6 +7005,13 @@ nsHTMLEditor::SetTagListManager( msiITagListManager * pTagListMan)
 }
 
 nsresult
+nsHTMLEditor::GetMAppUtils( msiIAppUtils ** _retval) {
+  NS_ADDREF(*_retval = mAppUtils);
+  return NS_OK;
+}
+
+
+nsresult
 nsHTMLEditor::AddTagInfo( const nsAString & strPath )
 {
   if (mtagListManager == nsnull)
@@ -6978,7 +7097,7 @@ void InitCharMap()
     charMap = new nsStringArray(250);
     charMap->AppendString(NS_LITERAL_STRING("~")); // a0
     charMap->AppendString(NS_LITERAL_STRING("\\textexclamdown"));
-    charMap->AppendString(NS_LITERAL_STRING("\\hbox{\\rm\\rlap/c}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\mbox{\\rm\\rlap/c}"));
     charMap->AppendString(NS_LITERAL_STRING("\\pounds "));
     charMap->AppendString(NS_LITERAL_STRING("\\textcurrency "));
     charMap->AppendString(NS_LITERAL_STRING("\\yen "));
@@ -7258,6 +7377,10 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
       _retval.Append(*(charMap->StringAt((int)(*cur) - 160)));
       }
     else switch ((int)(*cur)) {
+      case 0x01CD :
+         _retval.Append(NS_LITERAL_STRING("\\v{A}")); break;
+      case 0x0226 :
+         _retval.Append(NS_LITERAL_STRING("\\.{A}")); break;
       case 0x03BC :
         _retval.Append(NS_LITERAL_STRING("$\\mu$")); break;
       case 0x03A9 :
@@ -7266,6 +7389,8 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
         _retval.Append(NS_LITERAL_STRING("\\ ")); break;
       case 0x2003 :
         _retval.Append(NS_LITERAL_STRING("\\quad ")); break;
+      case 0x2004 :
+        _retval.Append(NS_LITERAL_STRING("\\ ")); break;
       case 0x2009 :
         _retval.Append(NS_LITERAL_STRING("\\thinspace ")); break;
       case 0x200B :
@@ -7310,6 +7435,8 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
         _retval.Append(NS_LITERAL_STRING("\\texttrademark")); break;
       case 0x22F1 :
         _retval.Append(NS_LITERAL_STRING("$\\ddots$")); break;
+      case 0x23DF :
+        _retval.Append(NS_LITERAL_STRING("$\\underbar$")); break;
       case 0xE2D4 :
         _retval.Append(NS_LITERAL_STRING("\\j")); break;
       case 0xE897 :
@@ -7322,12 +7449,16 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
             _retval.Append(NS_LITERAL_STRING("\\jmath")); break;
           default:
             tf->ssprintf(str, fmt.get(), *cur);
-            _retval.Append(str); break;
+            str.Cut(str.Length()-1,1);
+            _retval.Append(str);
+            break;
         }
         break;
       default :
         tf->ssprintf(str, fmt.get(), *cur);
-        _retval.Append(str); break;
+        str.Cut(str.Length()-1,1);
+        _retval.Append(str);
+        break;
     }
   }
   return res;
@@ -7351,16 +7482,42 @@ NS_IMETHODIMP nsHTMLEditor::ReadCursorClearedProps(nsAString & _retval)
 }
 
 NS_IMETHODIMP
-nsHTMLEditor::CreateDefaultParagraph(nsIDOMNode *inParent, PRInt32 inOffset, nsIDOMNode **outParaNode)
+nsHTMLEditor::CreateDefaultParagraph(nsIDOMNode *inParent, PRInt32 inOffset, PRBool markCursor, nsIDOMNode **outParaNode)
 {
   nsString defPara;
   nsIAtom * atomDummy;
   nsCOMPtr<msiITagListManager> tlm;
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  PRUint32 i;
   GetTagListManager(getter_AddRefs(tlm));
   tlm->GetDefaultParagraphTag(&atomDummy, defPara);
   // else insert the default paragraph
   nsCOMPtr<nsIDOMNode> para;
+  nsCOMPtr<nsIDOMElement> paraElem;
   CreateNode(defPara, inParent, inOffset, getter_AddRefs(para));
+  paraElem =do_QueryInterface(para);
+  if (!markCursor) {
+
+    if (paraElem == nsnull)
+      return NS_ERROR_NULL_POINTER;
+
+    paraElem->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
+    if (nodeList)
+    {
+      PRUint32 len;
+      nsCOMPtr<nsIDOMNode> node;
+      nsCOMPtr<nsIDOMNode> nodeReturn;
+      nsCOMPtr<nsIDOMNode> parent;
+      nodeList->GetLength(&len);
+      for (i = 0; i < len; i++) {
+        nodeList->Item(i, getter_AddRefs(node));
+        if (node) {
+          node->GetParentNode(getter_AddRefs(parent));
+          if (parent) parent->RemoveChild(node, getter_AddRefs(nodeReturn));
+        }
+      }
+    }
+  }
   *outParaNode = para;
   return NS_OK;
 }

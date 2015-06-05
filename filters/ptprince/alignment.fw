@@ -101,6 +101,9 @@ correct V-template followed by an ENDV token.
 bool xfcnTab(int, TeXToken*, SymbolData**)
 {
    LOG("\nAlignment --- found Tab");
+   if (s_alignTop < 0){
+      return true;
+   }
    if (s_alignState == AS_PEEKING){
       //InputStack::Putback(CurTok());
       s_alignState = AS_NORMAL;
@@ -449,7 +452,9 @@ case CMD_ENDR:
 
 @$@<Misc commands@>+=@{@-
 case CMD_ALIGN_TAB:
-  LOG("\nERROR----Align tab");
+  LOG("\nWARNING----Align tab");
+  Typesetter::AppendTag("&amp;");
+  LOG("\n----Character " << CurTok().ChrCode());
   break;
 @}
 

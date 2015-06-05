@@ -7,7 +7,7 @@ object[msigraph="true"] {display:none;}
 }
 
 @media screen {
-  plotwrapper object[msisnap] { display:none;}
+  object[msisnap] { display:none;}
 }
 
 /* This section gives the default colors for a range 
@@ -164,6 +164,18 @@ printindex {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#printindex");
 }
 
+mainmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#mainmatter");
+}
+
+backmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#backmatter");
+}
+
+frontmatter {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#frontmatter");
+}
+
 indexitem {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#indexitem");
 }
@@ -255,11 +267,10 @@ otfont {
 }
 
 /* show footnotes by default*/
-note[type="footnote"], node[type="footnote"][hide="false"] {
+note[type="footnote"], note[type="footnote"][hide="false"] {
   display: block;
-  float: left;
-  width: 100%;
-  clear: right;
+  float: none;
+  width: 90%;
 }
 
 /* never show footnotes marked 'hide'*/
@@ -532,12 +543,12 @@ msiframe[captionloc] > object {
   display: table-row;
 }
 
-msiframe[captionloc="above"] > imagecaption {
+msiframe[captionloc="above"] > caption {
   display: table-caption;
   caption-side: top;
 }
 
-msiframe[captionloc="below"] > imagecaption {
+msiframe[captionloc="below"] > caption {
   display: table-caption;
   caption-side: bottom;
 }

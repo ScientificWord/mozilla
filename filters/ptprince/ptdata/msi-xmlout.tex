@@ -3,20 +3,31 @@
 \newcounter{MaxMatrixCols}
 
 \msi@inpreamble = 0
+\msi@insubequations=0
 
 
-%%\def\msiToPreamble#1{\expandafter\preambleToks\expandafter{\the\preambleToks #1}}
 
 
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
-\def\href#1#2{%
+\begingroup\catcode`\"=\active\relax
+\gdef"{'}
+\endgroup
+
+\def\href{
+    \begingroup
+    \catcode`\"=\active    
+    \@href}
+
+
+\def\@href#1#2{%
    \ifmmode
       \msitag{\msipassthru{<a href="#1">#2</a>}}%
    \else
-      \msiopentag{a}{<a href="#1">}#2\msiclosetag{a}{</a>}%
-   \fi}
+      \msihmode\msiopentag{a}{<a href="}#1\msitag{">}#2\msiclosetag{a}{</a>}%
+   \fi
+   \endgroup}
 
 
 % This writes the css file my.css. 
@@ -25,10 +36,135 @@
 \def\msimakecss{
    \def\css{2}	  % the css output file
    \openout\css={css/my.css} %% the CSS style file for this document
+   \write\css{@import url("resource://app/res/css/latex_internal.css");}
    \write\css{@import url("resource://app/res/css/baselatex.css");}
    \write\css{@import url("resource://app/res/css/latex.css");}
-   \write\css{\classcss}
+   \ifx\classcss\@empty
+     \write\css{@import url("resource://app/res/css/article.css");}
+   \else
+     \write\css{\classcss}
+   \fi
    \write\css{\newtheorems}
+   \write\css{body{}}
+
+   \write\css{sectiontitle{}}
+   \write\css{part>sectiontitle{}}
+   \write\css{part>sectiontitle:before{}}
+   \write\css{chapter>sectiontitle{}}
+   \write\css{chapter>sectiontitle:before{}}
+   \write\css{section>sectiontitle{}}  
+   \write\css{section>sectiontitle:before{}}
+   \write\css{subsection>sectiontitle{}}
+   \write\css{subsection>sectiontitle:before{}}
+   \write\css{subsubsection>sectiontitle{}}
+   \write\css{subsubsection>sectiontitle:before{}}
+   \write\css{paragraph>sectiontitle{}}
+   \write\css{paragraph>sectiontitle:before{}}
+   \write\css{bodyMath{}}
+   \write\css{bodyText{}}
+   \write\css{caption{}}
+   \write\css{epigraph{}}
+   \write\css{flushleft{}}
+   \write\css{flushright{}}
+   \write\css{frontmatter{}}
+   \write\css{longQuotation{}}
+   \write\css{plotcaption{}}
+   \write\css{preface{}}
+   \write\css{rtlBodyText{}}
+   \write\css{shortQuote{}}
+   \write\css{table{}}
+   \write\css{verbatim{}}
+   \write\css{blackboardBold{}}
+   \write\css{bold{}}
+   \write\css{calligraphic{}}
+   \write\css{emphasized{}}
+   \write\css{footnotesize{}}
+   \write\css{fraktur{}}
+   \write\css{Huge{}}
+   \write\css{huge{}}
+   \write\css{italics{}}
+   \write\css{LARGE{}}
+   \write\css{Large{}}
+   \write\css{large{}}
+   \write\css{phantom{}}
+   \write\css{pre{}}
+   \write\css{roman{}}
+   \write\css{rtl{}}
+   \write\css{sansSerif{}}
+   \write\css{scriptsize{}}
+   \write\css{slanted{}}
+   \write\css{smallCaps{}}
+   \write\css{small{}}
+   \write\css{tiny{}}
+   \write\css{typewriter{}}
+   \write\css{bulletlist bulletlistItem{}}
+   \write\css{bulletlist bulletlist bulletlistItem{}}
+   \write\css{bulletlist bulletlist bulletlist bulletlistItem{}}
+   \write\css{bulletlist bulletlist bulletlist bulletlist bulletlistItem{}}
+   \write\css{numberedlist numberedlistItem{}}
+   \write\css{numberedlist numberedlist numberedlistItem{}}
+   \write\css{numberedlist numberedlist numberedlist numberedlistItem{}}
+   \write\css{numberedlist numberedlist numberedlist numberedlist bulletlistItem{}}
+   \write\css{numberedlist numberedlistItem:before{}}
+   \write\css{numberedlist numberedlist numberedlistItem:before{}}
+   \write\css{numberedlist numberedlist numberedlist numberedlistItem:before{}}
+   \write\css{numberedlist numberedlist numberedlist numberedlist numberedlistItem:before{}}
+   \write\css{address{}}
+   \write\css{author{}}
+   \write\css{date{}}
+   \write\css{title{}}
+   \write\css{acknowledgement{}}  
+   \write\css{algorithm{}}
+   \write\css{assertion{}}
+   \write\css{assumption{}}
+   \write\css{axiom{}}
+   \write\css{case{}}
+   \write\css{claim{}}
+   \write\css{conclusion{}}
+   \write\css{condition{}}
+   \write\css{conjecture{}}
+   \write\css{corollary{}}
+   \write\css{criterion{}}
+   \write\css{definition{}}
+   \write\css{example{}}
+   \write\css{exercise{}}
+   \write\css{hypothesis{}}
+   \write\css{lemma{}}
+   \write\css{notation{}}
+   \write\css{problem{}}
+   \write\css{proof{}}
+   \write\css{property{}}
+   \write\css{proposition{}}
+   \write\css{question{}}
+   \write\css{remark{}}
+   \write\css{summary{}}
+   \write\css{theorem{}}
+   \write\css{acknowledgement>*:first-child:before{}}  
+   \write\css{algorithm>*:first-child:before{}}
+   \write\css{assertion>*:first-child:before{}}
+   \write\css{assumption>*:first-child:before{}}
+   \write\css{axiom>*:first-child:before{}}
+   \write\css{case>*:first-child:before{}}
+   \write\css{claim>*:first-child:before{}}
+   \write\css{conclusion>*:first-child:before{}}
+   \write\css{condition>*:first-child:before{}}
+   \write\css{conjecture>*:first-child:before{}}
+   \write\css{corollary>*:first-child:before{}}
+   \write\css{criterion>*:first-child:before{}}
+   \write\css{definition>*:first-child:before{}}
+   \write\css{example>*:first-child:before{}}
+   \write\css{exercise>*:first-child:before{}}
+   \write\css{hypothesis>*:first-child:before{}}
+   \write\css{lemma>*:first-child:before{}}
+   \write\css{notation>*:first-child:before{}}
+   \write\css{problem>*:first-child:before{}}
+   \write\css{proof>*:first-child:before{}}
+   \write\css{property>*:first-child:before{}}
+   \write\css{proposition>*:first-child:before{}}
+   \write\css{question>*:first-child:before{}}
+   \write\css{remark>*:first-child:before{}}
+   \write\css{summary>*:first-child:before{}}
+   \write\css{theorem>*:first-child:before{}}
    \closeout\css
 }
 
@@ -37,8 +173,8 @@
 
 \msi@dollar=`\$
 
-\def\msi@pass#1{\def#1{\msitag{<texb>#1</texb>}}}
-\def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
+\def\msi@pass#1{\def#1{\msitag{<texb xmlns="http://www.w3.org/1999/xhtml">#1</texb>}}}
+\def\msi@pass@newline#1{\def#1{\msi@br\msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml">#1</texb>}}}
 
 \msi@pass@newline{\@settodim}
 \msi@pass@newline{\settoheight}
@@ -51,34 +187,44 @@
 
 
 \def\MSIMathQuote#1{%
-   %\expandafter\def\csname#1\endcsname{\char`\\#1\char32\relax}}
-   \expandafter\def\csname#1\endcsname{\expandafter\string\csname#1\endcsname\char32\relax}}
+   \expandafter\def\csname#1\endcsname{\expandafter\string\csname#1\endcsname\@ifnextchar*{}{\char32\relax}}}
+
+
+\def\left#1{\string\left#1}
+\def\right#1{\string\right#1}
+
 
 % \newcounter{#1}[#2]
 
-\newtoks\preambleToks
+%%\newtoks\preambleToks
 
 
 %% redefine these to produce output
 
 \def\newcounter#1{%
   \msihmode
-  \msiopentag{texb}{<texb enc="1" name="newcounter">}
+  \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="newcounter">}
        \msitag{<![CDATA[\newcounter{#1}]]>}%
-  \msiclosetag{texb}{</texb>}}
+  \msiclosetag{texb}{</texb>}%
 }
 
-\def\setcounter#1#2{%
-    \expandafter\global\csname c@#1\endcsname#2\relax
-    \msihmode
-    \msiopentag{texb}{<texb enc="1" name="setcounter">}
-       \msitag{<![CDATA[\setcounter{#1}{#2}]]>}%
-    \msiclosetag{texb}{</texb>}}
+\let\setcounter\msidefaultb
+
+%% \def\setcounter#1#2{%
+%%     \ifnum\msi@inpreamble
+%%        
+%%     \else
+%%        \expandafter\global\csname c@#1\endcsname#2\relax
+%%        \msihmode
+%%        \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="setcounter">}
+%%           \msitag{<![CDATA[\setcounter{#1}{#2}]]>}%
+%%        \msiclosetag{texb}{</texb>}%
+%%     \fi}
 
 \def\addtocounter#1#2{%
     \expandafter\global\advance\csname c@#1\endcsname #2\relax
     \msihmode
-    \msiopentag{texb}{<texb enc="1" name="addtocounter">}
+    \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="addtocounter">}
        \msitag{<![CDATA[\addtocounter{#1}{#2}]]>}%
     \msiclosetag{texb}{</texb>}}
 
@@ -104,12 +250,12 @@
    \fi
    \msiclosetag{td}{</td>}}
 
-\def\msi@stylesheets{\msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br}
+\def\msi@stylesheets{\msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>^^0a}}
 
 
 \def\@brace#1{\char123\relax#1\char125\relax}
 
-\def\br{\msitag{^^0a}}
+\def\msi@br{\ifvmode\msitag{^^0a}\fi}
 
 
 %% \documentclass.
@@ -177,74 +323,74 @@
    \msi@opendocument
    \temptoksa{#1}
    \ifx\temptoksa\relax
-     \br\msitag{<documentclass class="#2"/>}%
+     \msi@br\msitag{<documentclass class="#2"/>}%
    \else
-     \br\msitag{<documentclass class="#2" options="#1"/>}%
+     \msi@br\msitag{<documentclass class="#2" options="#1"/>}%
    \fi}
 
 \def\out@documentclassB#1{%
    \msi@opendocument
-   \br\msitag{<documentclass class="#1"/>}}
+   \msi@br\msitag{<documentclass class="#1"/>}}
 
 \newcount\preambleid
 
 \def\out@preamble@tex#1{%
    \advance\preambleid by 1
-   \msitag{<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[#1]]></preambleTeX>}%
-   \preambleToks={}}
+   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[^^0a%
+     \usepackage{bm}^^0a\usepackage{tabulary}}%
+   \msipreambleextra   
+   \msitag{]]> </preambleTeX>}%
+   \msi@preamble={}}
 
 
 %% \document and \enddocument
 
 \def\out@begin@document{%
-   %\br\msiopentag{docformat}{<docformat>}
-   %   \msitag{<colist }\colist\msitag{/>}
-   %\br\msiclosetag{docformat}{</docformat>}
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{bm}}%
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\usepackage{tabulary}}%
-%   \@ifundefined{@TCILATEX}
-%     {\relax}
-%     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\input{tcilatex}}}
-   \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
+   \expandafter\out@preamble@tex\expandafter{\the\msi@preamble}
    \msiclosetag{preamble}{</preamble>}%
    \msi@inpreamble = 0
-   \br\msitag{</head>}
-   \br\msiopentag{body}{<body>}
-   %%\msihmode\br\msiopentag{docbody}{<docbody>}%
-   \msipreambleextra
+   \msitag{</head>}\msitag{^^0a}%
+   \msiopentag{body}{<body showexpanders="true" showshort="true">}
    \@paragraphs
    \msivmode
 }
 
 \def\out@end@document{%
    %%\br\msiclosetag{docbody}{</docbody>}%
-   \br\msiclosetag{body}{</body>}%
-   \br\msitag{</html>}%
+   \msi@br\msiclosetag{body}{</body>}%
+   \msi@br\msitag{</html>}%
    \msimakecss
    \endinput}
 
 
 %% \usepackage
 \def\out@usepackageA[#1]#2{%
-   \br\msitag{<usepackage req="#2" options="#1"/>}}
+   \msitag{<usepackage req="#2" opt="}#1\msitag{"/>}}
 
 \def\out@usepackageB#1{%
-   \br\msitag{<usepackage req="#1"/>}}
+   \msitag{^^0a}\msitag{<usepackage req="#1"/>}}
+
+%% \RequirePackage
+\def\out@reqpackageA[#1]#2{%
+   \msitag{^^0a}\msitag{<usepackage requirepackage="true" req="#2" opt="}#1\msitag{"/>}}
+
+\def\out@reqpackageB#1{%
+   \msitag{^^0a}\msitag{<usepackage requirepackage="true"  req="#1"/>}}
+
 
 
 %% Frontmatter
 
 \def\title{%
+  \msitag{^^0a}%
   \@ifnextchar[{\@titlea}{\@titleb}}
 
 \def\@titlea[#1]#2{%
   \msiopentag{title}{<title>}%
-    \msiopentag{short}{<short>}%
+    \msiopentag{short}{<shortTitle>}%
       #1%
-    \msiclosetag{short}{</short>}%
-    \msiopentag{long}{<long>}%
+    \msiclosetag{short}{</shortTitle>}%
       #2%
-    \msiclosetag{long}{</long>}%
   \msiclosetag{title}{</title>}%
 }
 
@@ -267,29 +413,41 @@
 \def\out@title#1{%
    {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
 
+
 \def\out@thanks#1{%
-   \msitag{^^0a}\msiopentag{thanks}{<thanks>}#1\msiclosetag{thanks}{</thanks>}}
+   \msitag{%
+      <notewrapper type="footnote" markOrText="undefined">
+        <note style="padding: 10px;" type="footnote" hide="false">
+          <bodyText>}%
+   #1
+   \msitag{%
+          </bodyText>
+        </note>
+      </notewrapper>}}
 
 \def\out@and{\msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
 
 \def\out@author#1{%
   \begingroup
-   \def\\{\msitag{^^0a}%
-          \msiclosetag{author}{</author>}
+   \def\\{\msiclosetag{author}{</author>}%
           \msitag{^^0a}%
-          \msiopentag{address}{<address>}\ignorespaces}%
+          \msiopentag{address}{<address>}%
+          \msiopentag{bodyText}{<bodyText>}%
+          %\def\\{\par}%
+          \ignorespaces}
+          
    \def\and{\msiclosetag{address}{</address>}%
-            \msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
+            \msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}\msiopentag{bodyText}{<bodyText>}}%
    \msitag{^^0a}%
-   \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}\msiclosetag{address}{</address>}%
+   \msiopentag{author}{<author>}#1\msiclosetag{address}{</address>}\msiclosetag{author}{</author>}%
   \endgroup
 }
 
 \def\out@date#1{%
-   \msihmode\br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
+   \msihmode\msi@br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
 
 \def\out@dateA#1#2{%
-   \msihmode\br
+   \msihmode\msi@br
    \msiopentag{date}{<date>}%
       #2%
       \msiopentag{option}{<option>}%
@@ -300,13 +458,17 @@
 \def\MSIEmptyElement{%
   \@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
 
-\def\msi@empty@elmA[#1]#2{%
+\def\msi@empty@elmA[#1]#2#3{%
      \expandafter\def\csname #2\endcsname{%
         \ifmmode
            %\msitag{\msipassthru{<#1/>}}%
            \expandafter\msitag\expandafter{\csname#2\endcsname}%
         \else
-           \msihmode\br\msitag{<#1/>}%
+           \if#3T\relax%
+             ^^0a%
+           \else              
+           \fi           
+           \msitag{<#1/>}%
         \fi}}
 
 \def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
@@ -316,7 +478,7 @@
   \@ifnextchar[{\msi@simple@envA}{\msi@simple@envB}}
 
 \def\msi@simple@envA[#1]#2{%
-  \expandafter\def\csname msi@begin@#2\endcsname{\msiopentag{#1}{<#1>}\msihmode}%
+  \expandafter\def\csname msi@begin@#2\endcsname{\msiopentag{#1}{<#1>}\msihmode\ignorespaces}%
   \expandafter\def\csname msi@end@#2\endcsname{\msiclosetag{#1}{</#1>}}}
 
 \def\msi@simple@envB#1{\msi@simple@envA[#1]{#1}}
@@ -334,13 +496,11 @@
 % should check for second optional
 \def\out@newtheorema#1[#2]#3{%
   \endgroup% started in \newtheorem
-  %\msitag{^^0a<newtheorem }%
-  %\if@newtheoremstar\msitag{star="1" }\fi%
-  %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" counter="#2" label="#3"/>}%
-  \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
+%  \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}[#2]{#3}}
+  \msitopreambleextra{^^0a\newtheorem{#1}[#2]{#3}}
   \@ifundefined{msi@begin@#1}%
-    {\@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
-     \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
+    {\@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
+     \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
     {}}
 
 \def\out@newtheoremb#1#2{%
@@ -349,9 +509,10 @@
     {%\msitag{^^0a<newtheorem }%
      %\if@newtheoremstar\msitag{star="1" }\fi% 
      %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
-     \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
-     \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
-     \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
+%     \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}{#2}}
+     \msitopreambleextra{^^0a\newtheorem{#1}{#2}}
+     \@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
+     \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
     {}}
 
 %% recheck this one
@@ -360,10 +521,10 @@
   %\msitag{^^0a<newtheorem }
   %\if@newtheoremstar\msitag{star="1" }\fi% 
   %\msitag{name="#1" style = "}\msi@currentthmstyle\msitag{" label="#2"/>}%
-  \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}[#3]}}
+  \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}{#2}[#3]}%
   \@ifundefined{msi@begin@#1}%
-    {\@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msihmode}%
-     \@namedef{msi@end@#1}{\br\msiclosetag{#1}{</#1>}}}%
+    {\@namedef{msi@begin@#1}{\msi@br\msiopentag{#1}{<#1>}\msihmode}%
+     \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
     {}}
 
 
@@ -381,27 +542,71 @@
    \@ifnextchar[{\@newenv@b{#1}{#2}[#3]}{\@newenv@b{#1}{#2}[#3][]}}
 
 \def\@newenv@b#1#2[#3][#4]#5#6{%
-    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newenvironment{#2}[#3][#4]{#5}{#6}}%
+    %\expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newenvironment#1{#2}}%
+    \msitopreambleextra{^^0a\newenvironment#1{#2}}
+    \def\msi@tmp{#3}%
+    \ifx\msi@tmp\@empty
+    \else
+       %\expandafter\msi@preamble\expandafter{\the\msi@preamble[#3]}
+       \msitopreambleextra{[#3]}%
+    \fi
+    \def\msi@tmp{#4}%
+    \ifx\msi@tmp\@empty
+    \else
+       %\expandafter\msi@preamble\expandafter{\the\msi@preamble[#4]}
+       \msitopreambleextra{[#4]}%
+    \fi
+    %\expandafter\msi@preamble\expandafter{\the\msi@preamble{#5}{#6}}
+    \msitopreambleextra{{#5}{#6}}%
     \@ifundefined{msi@begin@#2}%
-      {\@namedef{msi@begin@#2}{\msi@open@element<#2>}}%
-      {\@namedef{msi@end@#2}{\msi@close@element</#2>}}}%
+      {\@namedef{msi@begin@#2}{\msi@open@element<#2>}%
+       \@namedef{msi@end@#2}{\msi@close@element</#2>}}
+      {}%
+}
 
 
+%%\def\numberwithin#1#2{\msitag{\numberwithin{#1}{#2}}}
 %% %% Newcommand and renewcommand
  
  \def\newcommand{\@ifnextchar*{\@newcommand}{\@newcommand{}}}
- \let\renewcommand\newcommand
+ \def\renewcommand{\@ifnextchar*{\@renewcommand}{\@renewcommand{}}}
  \let\providecommand\newcommand
  
  
  %%% #1 = optional star, #2 = command name
- \def\@newcommand#1#2{\@ifnextchar[{\@newcommandA{#1}{#2}}{\@newcommandA{#1}{#2}[1]}}
+ \def\@newcommand#1#2{\@ifnextchar[{\@newcommandA{#1}{#2}}{\@newcommandA{#1}{#2}[]}}
  
  \def\@newcommandA#1#2[#3]{\@ifnextchar[{\@newcommandB{#1}{#2}[#3]}{\@newcommandB{#1}{#2}[#3][]}}
 
  \def\@newcommandB#1#2[#3][#4]#5{%
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand#1{#2}[#3][#4]{#5}}%
-   \MSILocalDef{#2}}
+   \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newcommand#1{#2}}%
+   \if x#3x
+   \else
+     \expandafter\msi@preamble\expandafter{\the\msi@preamble[#3]}%
+   \fi
+   \if x#4x
+   \else
+     \expandafter\msi@preamble\expandafter{\the\msi@preamble[#4]}\fi
+   \expandafter\msi@preamble\expandafter{\the\msi@preamble{#5}}}%
+
+ %%% #1 = optional star, #2 = command name
+ \def\@renewcommand#1#2{\@ifnextchar[{\@renewcommandA{#1}{#2}}{\@renewcommandA{#1}{#2}[]}}
+ 
+ \def\@renewcommandA#1#2[#3]{\@ifnextchar[{\@renewcommandB{#1}{#2}[#3]}{\@renewcommandB{#1}{#2}[#3][]}}
+
+ \def\@renewcommandB#1#2[#3][#4]#5{%
+   \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\renewcommand#1{#2}}
+   \if x#3x
+   \else
+     \expandafter\msi@preamble\expandafter{\the\msi@preamble[#3]}%
+   \fi
+   \if x#4x
+   \else
+     \expandafter\msi@preamble\expandafter{\the\msi@preamble[#4]}\fi
+   \expandafter\msi@preamble\expandafter{\the\msi@preamble{#5}}}%
+ 
+
+%   \MSILocalDef{#2}}
 
 
 
@@ -414,7 +619,7 @@
 }
 
 \def\cite{%
-  \msihmode
+  \ifvmode\msihmode\fi
   \@ifnextchar[{\@tempswatrue\begingroup\attrib@text\out@citex}{\@tempswafalse\begingroup\attrib@text\out@citey}}
 
 
@@ -424,38 +629,48 @@
 
 
 \def\out@citex[#1]#2{%
-   \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
-                            citekey="}#2\msitag{" 
-                            hasRemark="true">}%
-        \msiopentag{biblabel}{<biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">}%
-            #1%
-        \msiclosetag{biblabel}{</biblabel>}%
-  \msiclosetag{citation}{</citation>}
+   \ifmmode
+     \msitag{\msipassthru{<citation xmlns="http://www.w3.org/1999/xhtml" citekey="#2"  hasRemark="true">
+                            <biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">#1</biblabel>
+                           </citation>}}%
+   \else
+     \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
+                              citekey="}#2\msitag{" 
+                              hasRemark="true">}%
+          \msiopentag{biblabel}{<biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">}%
+              #1%
+          \msiclosetag{biblabel}{</biblabel>}%
+     \msiclosetag{citation}{</citation>}%
+   \fi
   \endgroup}
 
 \def\out@citey#1{%
-  \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
-                                  citekey="}#1\msitag{" hasRemark="false">}%
-  \msiclosetag{citation}{</citation>}
+  \ifmmode
+    \msitag{\msipassthru{<citation xmlns="http://www.w3.org/1999/xhtml" citekey="#1" hasRemark="false"></citation>}}%
+  \else
+    \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
+                                    citekey="}#1\msitag{" hasRemark="false">}%
+    \msiclosetag{citation}{</citation>}%
+  \fi
   \endgroup}
 
 
 %\MSITextElement[a]{ref}
-%%<xref key="mykey" reftype="page" req="varioref"/>
+%%<xref key="mykey" reftype="page"/>
 %\MSITextElement{pageref}
 
 \def\ref#1{%
   \ifmmode
-    \msitag{\msipassthru{<xref key="#1" reftype="obj" req="varioref"/>}}%
+    \msitag{\msipassthru{<xref key="#1" href="#1" reftype="obj"/>}}%
   \else
-    \msitag{<xref key="#1" reftype="obj" req="varioref"/>}
+    \msihmode\msitag{<xref key="}#1\msitag{" href="}#1\msitag{" reftype="obj"/>}%
   \fi}
 
 \def\pageref#1{%
   \ifmmode
-    \msitag{\msipassthru{<xref key="#1" reftype="page" req="varioref"/>}}%
+    \msitag{\msipassthru{<xref key="#1" href="#1" reftype="page"/>}}%
   \else
-    \msitag{<xref key="#1" reftype="page" req="varioref"/>}
+    \msihmode\msitag{<xref key="}#1\msitag{" href="}#1\msitag{" reftype="page"/>}%
   \fi}
 
 
@@ -474,7 +689,7 @@
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
      \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
-   \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
+   \def\startitemtag##1{\msi@br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
    \expandafter\startitemtag\expandafter{\itemprefix}%
    \ifx\itemprefix\@descr
      \msitag{<descriptionLabel>}#1\msitag{</descriptionLabel>}%
@@ -498,33 +713,35 @@
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
      \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
-   \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
+   \def\startitemtag##1{\msi@br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
    \expandafter\startitemtag\expandafter{\itemprefix}%
 }
 
 
 \def\out@bibitemA[#1]#2{%
    \if@first@item
-     \@first@itemfalse
+     \global\@first@itemfalse
    \else
      \msiclosetag{bodyText}{</bodyText>}%
      \msiclosetag{bibitem}{</bibitem>}%
    \fi
-   \br\msihmode\msiopentag{bibitem}{}<bibitem bibtemkey="#2" hasLabel="true">%
+   \msi@br\msihmode\msiopentag{bibitem}{}<bibitem hasLabel="true">%
    \msitag{<biblabel class="bibitemlabel">}#1\msitag{</biblabel>}%
-   \br\msiopentag{bodyText}{<bodyText>}%
+   \msitag{<bibkey>}#2\msitag{</bibkey>}%
+   \msi@br\msiopentag{bodyText}{<bodyText>}%
    \endgroup
 }
 
 \def\out@bibitemB#1{%
    \if@first@item
-     \@first@itemfalse
+     \global\@first@itemfalse
    \else
      \msiclosetag{bodyText}{</bodyText>}%
      \msiclosetag{bibitem}{</bibitem>}%
    \fi
-   \br\msiopentag{bibitem}{<bibitem bibitemkey="}#1\msitag{" hasLabel="false">}%
-   \br\msiopentag{bodyText}{<bodyText>}
+   \msi@br\msiopentag{bibitem}{<bibitem hasLabel="false">}%
+   \msitag{<bibkey>}#1\msitag{</bibkey>}%
+   \msi@br\msiopentag{bodyText}{<bodyText>}%
    \endgroup%
 }
 
@@ -540,10 +757,10 @@
 \def\MSIListEnvironment#1#2#3{%
    \expandafter\def\csname msi@begin@#2\endcsname{%
       \def\itemprefix{#3}%
-      \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
+      \msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
 
    \expandafter\def\csname msi@end@#2\endcsname{%
-      \br\msiclosetag{#1}{</#1>}}
+      \msi@br\msiclosetag{#1}{</#1>}}
 }
 
 
@@ -555,7 +772,15 @@
   \msiopentag{bibliography}{<bibliography>}}
 
 \def\msi@end@thebibliography{%
-  \br\msiclosetag{bibliography}{</bibliography>}}
+  \msi@br\msiclosetag{bibliography}{</bibliography>}}
+
+
+\def\bibliographystyle#1{\def\the@style{#1}}
+\def\bibliography#1{%
+  \msihmode
+  \msitag{<bibtexbibliography xmlns="http://www.w3.org/1999/xhtml" databaseFile="#1" styleFile="}%
+  \the@style
+  \msitag{"></bibtexbibliography>}}
 
 
 \def\msi@thm@like#1{}
@@ -618,6 +843,7 @@
       \fi
       ##2%
       \msiclosetag{sectiontitle}{</sectiontitle>}%
+      \msitag{^^0a}%
      }%
      \par
   }%
@@ -657,9 +883,12 @@
 
 \def\rule{%
   \@ifnextchar[{\@rulea}{\@ruleb}}%
+
 \def\@rulea[#1]#2#3{%
   \ifmmode
-     \string\rule[#1]\char123#2\char125\char123#3\char125
+     %\string\rule[#1]\@brace{#2}\@brace{#3}%
+    \msitag{\msipassthru{<msirule lift="#1" width="#2" height="#3" %
+                     style="vertical-align: #1; width: #2; height: #3; background-color: rgb(0, 0, 0);"/>}}%
   \else
     \msitag{<msirule lift="#1" width="#2" height="#3" %
                      style="vertical-align: #1; width: #2; height: #3; background-color: rgb(0, 0, 0);"/>}%
@@ -667,9 +896,10 @@
 }
 \def\@ruleb#1#2{%
   \ifmmode
-    \string\rule\char123#1\char125\char123#2\char125
+    \msitag{\msipassthru{<msirule lift="0pt" width="#1" height="#2" %
+                     style="vertical-align: 0; width: #1; height: #2; background-color: rgb(0, 0, 0);"/>}}%
   \else
-    \msitag{<msirule lift="0" width="#1" height="#2" %
+    \msitag{<msirule lift="0pt" width="#1" height="#2" %
                      style="vertical-align: 0; width: #1; height: #2; background-color: rgb(0, 0, 0);"/>}%
   \fi
 }
@@ -677,35 +907,39 @@
 \def\hspace{%
    \@ifnextchar*{\@hspacestar}{\@hspace}}
 
-\def\@hspace#1{
+\def\@hspace#1{%
    \ifmmode
      \string\hspace\@brace{#1}%
    \else
-     \msitag{<hspace dim="#1" type="customSpace"></hspace>}%
+     \msitag{<hspace dim="#1" type="customSpace" atEnd="false"></hspace>}%
    \fi
 }
 
-\def\@hspacestar#1#2{
-   \@hspace{#2}%
+\def\@hspacestar#1#2{%
+   \ifmmode
+     \string\hspace\@brace{#2}%
+   \else
+     \msitag{<hspace dim="#2" type="customSpace" atEnd="true"></hspace>}%
+   \fi
 }
 
 \def\@paragraphs{%
   \let\@par\par
   \def\par{\msiclosetag{bodyText}{</bodyText>}\@par}%
-  \everypar{\msihmode\br\msiopentag{bodyText}{<bodyText>}}%
+  \everypar{^^0a\msihmode\msiopentag{bodyText}{<bodyText>}}%
 }
 
 
 \everymath{%
    %\catcode`\&=13 %
-   \catcode`\'=\active
+   %\catcode`\'=\active
    \aftergroup\endmath
 }
 \def\endmath{}
 
 \everydisplay{%
   %\catcode`\&=13 %
-  \catcode`\'=\active
+  %\catcode`\'=\active
   \aftergroup\enddisplay
 }
 \def\enddisplay{}
@@ -737,14 +971,14 @@
 %  }
 
 
-\def\linebreak{\msitag{<msibreak type="lineBreak" invisDisplay="&##x21b5;"><br/></msibreak>}}
+\def\linebreak{\msitag{<msibr type="lineBreak" invisDisplay="&##x21b5;"><br/></msibr>}}
 
 \def\newline{%
   \@ifnextchar[{\newlinea}{\newlineb}}
 
-\def\newlinea[#1]{\msitag{<msibreak type="newLine" invisDisplay="&##x21b5;"><br/></msibreak>}}
+\def\newlinea[#1]{\msitag{<msibr type="newLine" invisDisplay="&##x21b5;"><br/></msibr>}}
 
-\def\newlineb{\msitag{<msibreak type="newLine" invisDisplay="&##x21b5;"><br/></msibreak>}}
+\def\newlineb{\msitag{<msibr type="newLine" invisDisplay="&##x21b5;"><br/></msibr>}}
 
 \newtoks\temptoksa
 
@@ -769,19 +1003,6 @@
      \msiclosetag[mml][</mml:math>]
   ]
 
-  %\gdef\@scan@equation@star#1\end{equation*}[%
-  %   \egroup
-  %   \@make@braces@normal
-  %   \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
-  %   \msiextproc[jbm][\begin{equation*}#1\end{equation*}]%
-  %   \msiclosetag[mml][</mml:math>]
-  %]
-  %\gdef\@scan@array#1\end{array}[%
-  %   \egroup
-  %   \@make@braces@normal
-  %   \msitag[\begin{array}#1\end{array}]
-  %]
-  %\def\endarray[\cr\egroup\string\end`\{array\char`\}]
   \gdef\@scan@bmatrix#1\end{bmatrix}[%
      \egroup
      \@make@braces@normal
@@ -842,6 +1063,8 @@
 \def\msi@begin@math{\bgroup\msi@dollar=0\relax$\string\begin{math}}
 \def\msi@end@math{\string\end{math}$\egroup}
 
+\def\msi@begin@subequations{\msi@insubequations=1}
+\def\msi@end@subequations{\msi@insubequations=0}
 
 \def\msi@begin@equation{\bgroup\msi@dollar=0\relax$$\string\begin{equation}}
 \def\msi@end@equation{\string\end{equation}$$\egroup}
@@ -862,12 +1085,12 @@
 
 \def\MSIEqnarrayLikeEnvironment#1{%
   \@namedef{msi@begin@#1}{%
-     \bgroup
+     \begingroup
         \def\\{\char`\\\char`\\}%
 %        \let\label\@label
         \catcode`\&=12\msi@dollar=0\relax$$%
         \string\begin{#1}}%
-  \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}}
+  \@namedef{msi@end@#1}{\string\end{#1}$$\endgroup}}
 
 
 
@@ -919,6 +1142,7 @@
          \else
            \def\do@cr{\@ifnextchar[{\@cra}{\@crb}}%
          \fi
+         \advance\msirow by 1\relax
          \do@cr}
 
 
@@ -952,7 +1176,7 @@
         \mathtabularfalse
       \fi
       \msihmode\msiopentag{table}{<table opt="#2" _moz_resizing="true"  cellpadding="4" border="1">}%
-      \br\msiopentag{tbody}{<tbody>}%
+      \msi@br\msiopentag{tbody}{<tbody>}%
       \begingroup
         \aftergroup\msi@closetabular
         \let\\=\@cr
@@ -961,6 +1185,7 @@
 
 \def\msitabularstarB#1#2{%
    \begingroup
+      \msi@dollar=`\$%
       \ifmmode
         \string\msipassthru\char`\{% 
         \mathtabulartrue
@@ -987,9 +1212,11 @@
 
 \newif\ifmathtabular
 \mathtabulartrue
+\newcount\msirow=0
 
 \def\msi@begin@tabularA[#1]#2{%
    \begingroup
+      \msi@dollar=`\$%
       \ifmmode
         \string\msipassthru\char`\{% 
         \mathtabulartrue
@@ -1002,6 +1229,7 @@
       \msiopentag{table}{<table cols="#2" cellpadding="4" border="1" req="tabulary" _moz_resizing="true">}%
       \msiopentag{tbody}{<tbody>}%
       \begingroup
+        \msirow=1
         \aftergroup\msi@closetabular
         \let\\=\@cr
         \def\tabularnewline{\\}%
@@ -1011,10 +1239,11 @@
 \def\msi@closetabular{%
   \msiclosetag{tbody}{</tbody>}%
   \msiclosetag{table}{</table>}%
-  \msitag{<br type="_moz"/>}
-  \ifmathtabular
-    \msiclosetag{bodyText}{</bodyText>}%
-  \fi}
+}
+%  \msitag{<br type="_moz"/>}
+%  \ifmathtabular
+%    \msiclosetag{bodyText}{</bodyText>}%
+%  \fi}
 
 
 \def\msi@end@tabular{% 
@@ -1032,11 +1261,11 @@
   \endgroup}
 
 
-%\def\cline#1{\msitag{<cline/>}}
-%\def\hline{\msitag{<hline/>}}
+\def\cline#1{\msitag{<cline arg="#1"/>}}
+\def\hline{\msitag{<hline row="}\the\msirow\msitag{"/>}}
 
-\def\hline{}
-\def\cline#1{}
+%\def\hline{}
+%\def\cline#1{}
 
 
 %%\def\multicolumn#1#2#3{%
@@ -1069,10 +1298,15 @@
    \catcode`&=\active
    \gdef&{\ifmmode\char`\&\else\char`\&amp;\fi}%
 \egroup
+\bgroup
+   \catcode`#=\active
+   \gdef#{\char`\#}%
+\egroup
+
 
 
 \def\out@verbatim#1{%
-  \br\msihmode
+  \msi@br\msihmode
   \msiopentag{verbatim}{<verbatim>}%
   \msiopentag{bodyText}{<bodyText>}%
    #1%
@@ -1161,11 +1395,11 @@
 
 
 {\catcode`\$=11\relax
- \gdef\${\char`\${}}
+ \gdef\${\ifmmode\msitag{\$}\else\char`\${}\fi}
  \catcode`\_=11\relax
- \gdef\_{\char`\_{}}
+ \gdef\_{\ifmmode\msitag{\_}\else\char`\_{}\fi}
  \catcode`\%=11\relax
- \gdef\%{\char`\%{}}
+ \gdef\%{\ifmmode\msitag{\%}\else\char`\%{}\fi}
 }
 
 
@@ -1182,9 +1416,9 @@
     \if@inaccent
       \@@accent{#1}{#2}%
     \else
-      \@inaccenttrue
+      %\@inaccenttrue
       \expandafter\csname \@@accent{#1}{#2}\endcsname
-      \@inaccentfalse
+      %\@inaccentfalse
     \fi
 }
 
@@ -1234,7 +1468,7 @@
 
 %% \'{\^{e}}
 
-\def\MSIUnicode#1#2{\@namedef{#1}{\ifmmode\expandafter\string\csname#1\endcsname{}\else\@hex{#2}\fi}}
+\def\MSIUnicode#1#2{\@namedef{#1}{\ifmmode\expandafter\string\csname#1 \endcsname\else\@hex{#2}\fi}}
 
 
 %% Spacing
@@ -1245,7 +1479,7 @@
   \ifmmode
     \char`\\\char`\ %
   \else
-    \msihmode\msitag{<hspace type="requiredSpace" dim="1em"/>}%
+    \msihmode\msitag{<hspace type="requiredSpace">&nbsp;</hspace>}%
   \fi}
 
 \def~{%
@@ -1262,42 +1496,34 @@
     \msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}%
   \fi}
 
-
-
-
-
-
-\bgroup
-  \catcode`\%=12
-  \gdef\strut{\msitag{<vspace lineHt="100%" type="strut"/>}}
-\egroup
-
-
 \def\noindent{\par\msitag{<hspace dim="0.0em" type="noIndent"></hspace>}}
-
 
 \def\thinspace{%
    \ifmmode
       \string\thinspace
    \else
-      \msihmode\msitag{<hspace dim="0.17em" type="thinSpace">}\@hex{2009}\msitag{</hspace>}%
+      \msihmode\msitag{<hspace type="thinSpace"/>}%
    \fi
 }
+
+
 
 \def\thickspace{%
    \ifmmode
       \string\thickspace
    \else
-      \msihmode\msitag{<hspace dim="0.5em" type="thickSpace">}\@hex{2002}\msitag{</hspace>}%
+      \msihmode\msitag{<hspace type="thickSpace"/>}%
    \fi
 }
+
+\let\:\medspace
 
 
 \def\negthinspace{%
    \ifmmode
       \string\negthinspace
    \else
-      \msihmode\msitag{<hspace dim="0.0em" type="negativeThinSpace"></hspace>}%
+      \msihmode\msitag{<hspace type="negativeThinSpace" />}%
    \fi
 }
 
@@ -1308,9 +1534,10 @@
 
 
 
-\def\newpage{\msitag{<msibreak type="newPage"><newPageRule/></msibreak>}}
+\def\pagebreak{\msitag{<msibr type="pageBreak"><newPageRule/></msibr>}}
+\def\newpage{\msitag{<msibr type="newPage"><newPageRule/></msibr>}}
 
-\def\hfil{<hspace type="customSpace" class="stretchySpace"flex="1" atEnd="true"/>}
+\def\hfil{<hspace type="customSpace" class="stretchySpace" flex="1" atEnd="true"/>}
 \def\hfill{<hspace type="customSpace" class="stretchySpace" flex="2" atEnd="true"/>}
 
 %\msi@rfi{\msi@hook@hfil}{\hfil}
@@ -1327,11 +1554,12 @@
    \ifmmode
       \msitag{\label{#1}}%
    \else
-      \msihmode\msitag{<a name="#1" key="#1" id="#1"/>}%
+      \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
    \fi}
 
 \def\frac#1#2{\string\frac\@brace{#1}\@brace{#2}}
 \def\dfrac#1#2{\string\dfrac\@brace{#1}\@brace{#2}}
+\def\tfrac#1#2{\string\tfrac\@brace{#1}\@brace{#2}}
 
 \def\unit#1{\string\unit\@brace{#1}}
 
@@ -1403,7 +1631,9 @@
 
 
 
-\mathpass@arg{\tag}
+%\mathpass{\tag}
+%\mathpass{\TCItag}
+
 
 
 \mathpass@arg{\mathbb}
@@ -1468,25 +1698,34 @@
   \catcode`\$=3\relax}
 
 
+\bgroup
+  \catcode`\%=12
+  \gdef\strut{\msitag{<vspace type="strut" lineHt="100%"/>}}
+\egroup
+
+\bgroup
+  \catcode`\%=12
+  \gdef\mathstrut{\msitag{<vspace type="mathStrut" lineHt="100%"/>}}
+\egroup
+
 \def\vspace{%
-  \@ifnextchar*{\vspaceStar}{\vspaceB}}
+  \@ifnextchar*{\@vspacestar}{\@vspace}}
 
-\def\vspaceStar#1#2{%
-  \@starredtrue
-  \vspaceB{#2}}
-
-
-\def\vspaceB#1{%
+\def\@vspace#1{%
    \ifmmode
      \string\vspace\@brace{#1}%
    \else
-     \msitag{<vspace dim="#1" type="customSpace"></vspace>}%
+     \msitag{<vspace type="customSpace" dim="#1" atEnd="false"></vspace>}%
    \fi
 }
 
-
-
-
+\def\@vspacestar#1#2{%
+   \ifmmode
+     \string\vspace\@brace{#2}%
+   \else
+     \msitag{<vspace type="customSpace" dim="#2" atEnd="true"></vspace>}%
+   \fi
+}
 
 \def\MSICounter#1{%
   \expandafter\newcount\csname c@#1\endcsname}
@@ -1494,10 +1733,10 @@
 \def\&{\char`\&amp;}
 \def\|{\Vert}
 
-
+\def\textcurrency{\msitag{<textcurrency req="textcomp"/>}}
 
 \def\out@hyperref#1#2#3#4{%
-   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}\ignorespaces}
+   \msiopentag{a}{<a href="#4" req="hyperref">}#1\msiclosetag{a}{</a>}\ignorespaces}
 
 \newif\if@in@texttag
 \@in@texttagfalse
@@ -1542,13 +1781,21 @@
 \def\MSITextElement{%
   \@ifnextchar[{\msi@text@elmA}{\msi@text@elmB}}
 
+
 \def\msi@text@elmA[#1]#2{%
-  \expandafter\def\csname #2\endcsname##1{%
+  \expandafter\def\csname #2\endcsname{%
+     \let\@next\relax
      \ifmmode
-       \expandafter\string\csname #2\endcsname{##1}%
+       \expandafter\string\csname #2\endcsname%
      \else
-       \msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%
-     \fi}}
+       \msihmode\msiopentag{#1}{<#1>}%
+       \def\endelem{\msiclosetag{#1}{</#1>}}%
+       \bgroup
+          \aftergroup\endelem
+          \let\@next\@gobbleit
+     \fi
+     \@next}}
+
 
 \def\msi@text@elmB#1{\msi@text@elmA[#1]{#1}}
 
@@ -1569,7 +1816,13 @@
 
 
 
-
+\def\TeXButton#1#2{%
+   \ifmmode
+     %\string\TeXButton{#1}{#2}%
+     \msitag{\msipassthru{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}}
+   \else
+     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}\@wrap{#1}\msitag{"><![CDATA[#2]]></texb>}%
+   \fi}
 
 %% Create TeX Buttons
 
@@ -1580,9 +1833,13 @@
        \else
           \msihmode 
        \fi
-       \msitag{<texb enc="1" name="}#1\msitag{">}%
+       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" }
+         \ifnum\msi@inpreamble=1
+           pre="1"
+         \fi 
+         \msitag{enc="1" name="}#1\msitag{">}%
                 <![CDATA[\expandafter\string\csname#1\endcsname]]>%
-       \msitag{</texb>}%
+        \msitag{</texb>}%
        \ifmmode
          \char`\}%}
        \fi
@@ -1598,7 +1855,7 @@
        \else
          \msihmode
        \fi
-       \msitag{<texb enc="1" name="}#1\msitag{">}%
+       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{">}%
            <![CDATA[\expandafter\string\csname#1\endcsname
            \ifmmode{\else\{\fi\the\@temptokena\ifmmode}\else\}\fi]]>%
        \msitag{</texb>}%
@@ -1611,34 +1868,38 @@
        \@temptokena={\msitag{##1}}%
        \@temptokenb={\msitag{##2}}%
        \msihmode
-       \msitag{<texb enc="1" name="#1">}%
+       \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
           <![CDATA[\expandafter\string\csname#1\endcsname\{\the\@temptokena\}\{\the\@temptokenb\}]]>%
        \msitag{</texb>}}}
 
 
 \def\fbox#1{\ifmmode
-              \msitag{\msipassthru{<menclose notation='box'>}}%
+              \msitag{\msipassthru{<menclose notation='box' type='fbox'>}}%
               \msitag{\msipassthru}{\msihmode #1}%
               \msitag{\msipassthru{</menclose>}}%
             \else
-              \msiopentag{fbox}{<smallbox>}#1\msiclosetag{fbox}{</smallbox>}%
+              \msihmode\msiopentag{fbox}{<smallbox>}#1\msiclosetag{fbox}{</smallbox>}%
             \fi}
 
 \def\frame#1{\ifmmode
-               \msitag{\frame{#1}}%
+%               \msitag{\msipassthru{<smallbox>#1</smallbox>}}%
+              \msitag{\msipassthru{<menclose notation='box' type='frame'>}}%
+              \msitag{\msipassthru}{\msihmode #1}%
+              \msitag{\msipassthru{</menclose>}}%
              \else
-               \msiopentag{frame}{<frame>}#1\msiclosetag{frame}{</frame>}%
+               \msihmode\msiopentag{frame}{<smallbox>}#1\msiclosetag{frame}{</smallbox>}%
              \fi}
 
 
 
-\def\TCItag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
+%\def\TCItag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
+%\def\tag{\@ifnextchar*{\@TCItagstar}{\@TCItag}}
 
 \def\@TCItag#1{\msitag{\TCItag{#1}}}
-\def\@TCItagstar*#1{\msitag{\TCItag{#1}}}
+\def\@TCItagstar*#1{\string\TCItag\msitag{*{#1}}}
 
-{\catcode`\'=\active
- \gdef'{^{\prime}}}
+%{\catcode`\'=\active
+% \gdef'{^{\prime}}}
 
 
 %\def\@TCItag#1{%
@@ -1656,7 +1917,7 @@
 
 \def\msi@cdr#1#2xxxx{#2}
 
-\def\MSILocalDef#1{\def#1{\string #1}}
+%\def\MSILocalDef#1{\def#1{\string #1}}
 
 
 
@@ -1676,7 +1937,7 @@
                  |csname scan@#1|endcsname)
 
           |expandafter|gdef|csname scan@#1|endcsname##1\end{#1}%
-             (|msitag(<texb enc="1" name="#1">%
+             (|msitag(<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">%
                         <![CDATA[\begin{#1}##1\end{#1}]]>%
                       </texb>)%
               |egroup)
@@ -1688,7 +1949,7 @@
 %% Various note type things
 
 \def\@start@notewrapper{%
-    \msiopentag{notewrapper}{<notewrapper xmlns="http://www.w3.org/1999/xhtml">}}
+    \msiopentag{notewrapper}{<notewrapper xmlns="http://www.w3.org/1999/xhtml" type='footnote'>}}
 
 \def\@end@notewrapper{%
     \msiclosetag{notewrapper}{</notewrapper>}}
@@ -1696,27 +1957,64 @@
 \def\@end@footnote{\msiclosetag{note}{</note>}\@end@notewrapper}
 \def\@innote{\bgroup\aftergroup\@end@footnote}
 
-%%<note type="#2">
 
+\newif\ifmathfootnote
+\mathfootnotefalse
 
 \def\footnote{%
-    \br\@start@notewrapper
-    \msiopentag{note}{<note type="footnote">}%
-    \msiopentag{bodyText}{<bodyText>}%
-    % Next couple lines read the brace following \footnote and then does \footnoteb
-    \afterassignment\@footnoteb
-    \let\junk
-}
-\def\@footnoteb{%
-    \bgroup
-    \def\par{\msiclosetag{bodyText}{</bodyText>}\msiopentag{bodyText}{<bodyText>}}
-    \aftergroup\@footnotec
-}
+  \mathfootnotefalse
+  \ifmmode
+       \string\msipassthru\char`\{%
+       \mathfootnotetrue
+  \fi
+  \@ifnextchar[{\footnotex}{\footnotea}}
 
-\def\@footnotec{
+
+\def\footnotex[#1]{%
+  \msi@br\@start@notewrapper
+  \msiopentag{note}{<note type="footnote" footnoteNumber="#1">}%
+  \msiopentag{bodyText}{<bodyText>}%
+  % Next couple lines read the brace following \footnote and then does \footnoteb
+  \afterassignment\@footnoteb
+  \let\junk}
+
+
+\def\footnotea{%
+  \msi@br\@start@notewrapper
+  \msiopentag{note}{<note type="footnote">}%
+  \msiopentag{bodyText}{<bodyText>}%
+  % Next couple lines read the brace following \footnote and then does \footnoteb
+  \afterassignment\@footnoteb
+  \let\junk}
+
+\def\@footnoteb{%
+    \begingroup
+    \msihmode
+    \def\par{\msiclosetag{bodyText}{</bodyText>}\msiopentag{bodyText}{<bodyText>}}
+    \aftergroup\@footnotec}
+
+%% \def\@footnoteb{%
+%%     \msi@br
+%%     \msiopentag{notewrapper}{<notewrapper type='footnote'>}
+%%     \msiopentag{note}{<note type="footnote" hide='false'>}%
+%%     \msiopentag{bodyText}{<bodyText>}%
+%%     % Next couple lines read the brace following \footnote and then does \footnoteb
+%%     \afterassignment\@footnotec
+%%     \let\junk}
+
+%% \def\@footnotec{%
+%%     \bgroup
+%%     \def\par{\msiclosetag{bodyText}{</bodyText>}\msiopentag{bodyText}{<bodyText>}}
+%%     \aftergroup\@footnoted
+%% }
+
+\def\@footnotec{%
     \msiclosetag{bodyText}{</bodyText>}%
     \msiclosetag{note}{</note>}%
-    \@end@notewrapper}
+    \@end@notewrapper
+    \ifmathfootnote
+      \char`\}%
+    \fi}
 
 \def\out@CustomNoteA[#1]#2#3{%
     \msiopentag{notewrapper}{<notewrapper xmlns="http://www.w3.org/1999/xhtml">}%
@@ -1743,45 +2041,59 @@
 
 %\MSIMathQuote{\\} %% may need to hard-code this one:
 
-\def\\{\@ifnextchar[{\@linebrk}{\@linebrk[0pt]}}
+\def\\{\@ifnextchar*{\@linebrk}{\@linebrk+}}
 
 
-\def\@linebrk[#1]{\ifmmode\string\\\else\msitag{<br/>}\fi}
+\def\@linebrk#1{%
+   \@ifnextchar[{\@linebrkA{#1}}{\@linebrkB{#1}}}
+
+\def\@linebrkA#1[#2]{%
+  \ifmmode\string\\\else\msitag{<msibr type="customNewLine" dim="#2" style="vertical-align: -#2" depth="#2"/>}\fi}
+
+\def\@linebrkB#1{\ifmmode\string\\\else\msitag{<msibr type="newLine" invisDisplay="&##x21b5;"/>}\fi}
 
 %% Temporary until prince can read xml
 
 \newtoks\msi@extrapi
 
 \def\msi@opendocument{%
-   \msitag{<?xml version="1.0" encoding="UTF-8"?>}\br
-   \msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br
-   \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/latexdefs.xml" type="text/xml" ?>}\br
+   \msitag{<?xml version="1.0" encoding="UTF-8"?>^^0a}
+   \msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>^^0a}
+   \msitag{<?sw-tagdefs href="resource://app/res/tagdefs/latexdefs.xml" type="text/xml" ?>^^0a}
    \the\msi@extrapi
-   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}\br
-
+   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">}\msi@br
    \msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
              xmlns:mml="http://www.w3.org/1998/Math/MathML"
              xmlns:sw="http://www.sciword.com/namespaces/sciword">}
-
-   \br\msitag{<head>}
-   \br\msiopentag{preamble}{<preamble>}
-   \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
-   \msi@inpreamble=1
-
+   \msi@br\msitag{<head>}
+   \msi@br\msiopentag{preamble}{<preamble>}
    \def\makeatother{%
        \msihmode
-       \msitag{<texb enc="1" name="makeatother">}%
-           <![CDATA[\string\makeatother]]>%
-       \msitag{</texb>}%
+       \ifnum\msi@inpreamble=1
+         \ifnum\msi@output=0
+           \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\makeatother}
+         \fi
+       \else
+           \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatother">}%
+              <![CDATA[\string\makeatother]]>%
+           \msitag{</texb>}%
+       \fi
        \catcode`\@=12}
 
    \def\makeatletter{%
        \msihmode
-       \msitag{<texb enc="1" name="makeatletter">}%
+       \ifnum\msi@inpreamble=1
+          \ifnum\msi@output=0
+            \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\makeatletter}%
+          \fi
+       \else
+         \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="makeatletter">}%
            <![CDATA[\string\makeatletter]]>%
-       \msitag{</texb>}%
-       \catcode`\@=11}
+         \msitag{</texb>}%
+       \fi
+       \catcode`\@=11\relax}
 
+   \msi@inpreamble=1
 }
 
 
@@ -1806,7 +2118,7 @@
      \expandafter\msitopreambleextra\expandafter{\msi@rbrace}%
    \else
      \@temptokena={\msitag{#1}}%
-     \{\the\@temptokena\}
+     \msi@lbrace\the\@temptokena\msi@rbrace
    \fi
    \@gobbleargs}
 
@@ -1850,12 +2162,10 @@
 
 \def\msidefault#1{%
   \ifmmode
-    %\string#1%
     \msitag{\msipassthru}%
     \char`\{
-    \msiopentag{texb}{<texb enc="1" name="#1">}%
+    \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
        \msitag{<![CDATA[#1}
-    %\def\@next{\relax}%
     \let\@next\@gobbleargs
   \else
     \def\@next{\expandafter\msidefaulta\expandafter{\string #1}}%
@@ -1869,22 +2179,23 @@
 \def\msidefaultb#1{%
     \msihmode
     \ifnum\msi@inpreamble=1
-      \temptoksa={<texb enc="1" name="#1">}%
-      \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
-      \msiopentag{texb}{}%
-      \msitopreambleextra{<![CDATA[}
+      %%% \temptoksa={<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
+      %%% \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
+      %%% \msiopentag{texb}{}%
+      %%% \msitopreambleextra{<![CDATA[}
       \expandafter\temptoksa\expandafter{\csname#1\endcsname}
+      \msitopreambleextra{^^0a}%
       \expandafter\msitopreambleextra\expandafter{\the\temptoksa}
     \else
-      \msiopentag{texb}{<texb enc="1" name="#1">}%
+      \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1">}%
          \msitag{<![CDATA[}\expandafter\string\csname#1\endcsname
     \fi
     \@gobbleargs}
 
 \def\@endtexb{% 
     \ifnum\msi@inpreamble=1
-       \msitopreambleextra{]]></texb>}
-       \msiclosetag{texb}{}
+       %%% \msitopreambleextra{]]></texb>}
+       %%% \msiclosetag{texb}{}
     \else
          \msitag{]]>}%
          \msiclosetag{texb}{</texb>}%
@@ -1895,15 +2206,15 @@
 
 
 \def\msi@begin@figure{%
-  \@ifnextchar[{\msi@begin@figureA}{msi@begin@figureB}}
+  \@ifnextchar[{\msi@begin@figureA}{\msi@begin@figureB}}
 
 
 \def\msi@begin@figureA[#1]{%
-   \msiopentag{msiframe}{<msiframe opt="#1">}%
+   \msiopentag{msiframe}{<msiframe frametype="figure" pos="float" placement="f" ltxfloat="#1" >}%
 }
 
 \def\msi@begin@figureB{%
-   \msiopentag{msiframe}{<msiframe>}%
+   \msiopentag{msiframe}{<msiframe frametype="figure" pos="float" placement="f">}%
 }
 
 \def\msi@end@figure{%
@@ -1917,11 +2228,11 @@
 
 
 \def\msi@begin@tableA[#1]{%
-   \msiopentag{msiframe}{<msiframe kind="table" opt="#1">}%
+   \msiopentag{msiframe}{<msiframe frametype="table" pos="float" ltxfloat="#1">}%
 }
 
 \def\msi@begin@tableB{%
-   \msiopentag{msiframe}{<msiframe kind="table">}%
+   \msiopentag{msiframe}{<msiframe frametype="table" pos="float">}%
 }
 
 \def\msi@end@table{%
@@ -1933,9 +2244,7 @@
 
 \def\msi@caption#1{%
   \msiopentag{caption}{<caption align="bottom">}%
-  \msiopentag{bodyText}{<bodyText>}
   #1%
-  \msiclosetag{bodyText}{</bodyText>}
   \msiclosetag{caption}{</caption>}%
 }
 
@@ -1961,7 +2270,7 @@
   \msi@scan@filecontents}
 
 \def\out@filecontents#1{%
-   \expandafter\global\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\begin{filecontents}#1\end{filecontents}}}
+   \expandafter\global\expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\begin{filecontents}#1\end{filecontents}}}
 
 
 % A hack to fool the jbm filter into handling \dots gracefully
@@ -1971,7 +2280,14 @@
 %  \else
 %    }
 
-\input latex-default.tex
-%\input tcilatex.tex
 
+
+\input latex-default.tex
+\input tcilatex.tex
+\catcode`\<=\active
+%\catcode`\&=12
+
+
+\input latex-default.tex
+\input tcilatex.tex
 \catcode`\<=\active

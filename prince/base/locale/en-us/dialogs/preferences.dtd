@@ -349,7 +349,7 @@
 <!ENTITY axiscustom.label           "Custom">
 <!ENTITY axisnticks.label           "Number of X Ticks">
 <!ENTITY axisdisable.label          "Disable Tick Labeling">
-<!ENTITY axislabels.label           "Axis abels">
+<!ENTITY axislabels.label           "Axis labels">
 <!ENTITY axisxaxis.label            "X">
 <!ENTITY axisyaxis.label            "Y">
 <!ENTITY axiszaxis.label            "Z">
@@ -368,8 +368,8 @@
 <!ENTITY axisnormal.label           "Normal">
 <!ENTITY axisboxed.label            "Boxed">
 <!ENTITY axistickmark.label         "Axis Tick Marks">
-<!-- axisframed.label is also used on groupbox caption label -->
 <!ENTITY axisframed.label           "Frame">
+<!ENTITY frame.label                "Frame">
 <!ENTITY axisauto.label             "Automatic">
 
 <!ENTITY plotxrangehigh.label       "X High Range">
@@ -472,7 +472,7 @@
 <!ENTITY SpellChecking.label  "Spell checking">
 <!ENTITY PlotsTab.label "Plots">
 
-<!ENTITY LabellingTab.label "Labelling">
+<!ENTITY LabellingTab.label "Labeling">
 <!ENTITY ViewDefaults.label "View defaults">
 
 <!ENTITY TypesettingTab.label "Typesetting">
@@ -481,3 +481,39 @@
 <!ENTITY plotAIInfoApproxValue.label	  "Approximated value">
 <!ENTITY plotAIInfoApproxandExactValue.label "Approximated and exact value">
 <!ENTITY plotAIInfoBothValuesandError.label	"Both values and error">
+
+<!ENTITY  unspecified		"--unspecified">
+<!ENTITY  inline.label		"Inline">
+<!ENTITY  left.label		"Left">
+<!ENTITY  inside.label		"Inside">
+<!ENTITY  center.label		"Center">
+<!ENTITY  right.label		"Right">
+<!ENTITY  outside.label		"Outside">
+<!ENTITY  baseline.label 	"Baseline">
+<!ENTITY  placement.forceHere "Force here">
+<!ENTITY  placement.here "Here">
+<!ENTITY  placement.pageOfFloats "On a page of floats">
+<!ENTITY  placement.topPage "Top of page">
+<!ENTITY  placement.bottomPage "Bottom of page">
+<!ENTITY  placement.hereInside "Inside">
+<!ENTITY  placement.hereOutside "Outside">
+<!ENTITY  placement.hereFull "Full width">
+<!ENTITY  Placementtab.label "Placement">
+<!ENTITY  inner						"Inner margin">
+<!ENTITY  inline					"In line">
+<!ENTITY  inlineOffset    "Vertical offset within line">
+<!ENTITY  display.label					"Displayed">
+<!ENTITY  floating				"Floating">
+<!ENTITY  outer						"Outer margin">
+<!ENTITY  none						"None">
+<!ENTITY  baseline.label 	"Baseline">
+<!ENTITY  sameastoprow.label 	"Same as top row">
+<!ENTITY  atverticalcenter.label 	"Vertical center">
+<!ENTITY  sameasbottomrow.label 	"Same as bottom row">
+<!ENTITY  Key.label "Key for cross-references">
+<!ENTITY  EnterNewName.tooltip "Enter a key for cross-references if there is a caption">
+<!ENTITY  Caption.tooltip "Choose a caption location if 'Float' is not 'none'">
+<!ENTITY  above						"Above">
+<!ENTITY  below						"Below">
+
+

@@ -1,0 +1,17 @@
+label, description {
+	vertical-align: middle;
+}
+
+.title {
+	text-align: center;
+	font-size: 16pt;
+}
+
+.subtitle {
+	text-align: center;
+	font-size: 14pt;
+}
+
+textbox {
+	width: 200px;
+}

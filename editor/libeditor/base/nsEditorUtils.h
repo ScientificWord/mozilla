@@ -263,7 +263,10 @@ class nsEditorUtils
   public:
     static PRBool IsDescendantOf(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 *aOffset = 0);
     static PRBool IsLeafNode(nsIDOMNode *aNode);
+    static PRBool Acceptable(nsEditor * ed, msiITagListManager * tlm, nsIDOMNode * node);
+    static PRBool JiggleCursor(nsIEditor *aEditor, nsISelection * sel, nsIEditor::EDirection dir);
 };
+
 
 
 class nsIDragSession;

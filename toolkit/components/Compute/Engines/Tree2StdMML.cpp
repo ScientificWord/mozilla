@@ -67,6 +67,30 @@ Tree2StdMML::~Tree2StdMML()
   TCI_ASSERT(lt_stack == NULL);
 }
 
+void Tree2StdMML::FixColonEqual(MNODE* dMML_tree)
+{
+  if (dMML_tree == NULL)
+    return;
+
+  MNODE* rover = dMML_tree;
+  while (rover) {
+    MNODE* curr = rover;
+    rover = rover -> next;
+    if (ElementNameIs(curr, "mo") && ContentIs(curr, ":") &&
+        rover && ElementNameIs(rover, "mo") && ContentIs(rover, "=")) {
+       SetContent(curr, ":=");
+       curr->next = rover->next;
+       if (curr->next)
+         curr->next->prev = curr;
+       
+       DisposeTNode(rover);
+       rover = curr->next;
+    } else {
+       FixColonEqual(curr -> first_kid);
+    }
+  }
+
+}
 
 void Tree2StdMML::FixDotDotMN(MNODE* dMML_tree)
 {
@@ -187,6 +211,7 @@ MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
 MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
 {
   MNODE* rv = dMML_tree;
+  FixColonEqual(rv);
   FixDotDotMN(rv);
   RemoveMSTYLEs(rv);
   RemoveHSPACEs(rv);
@@ -988,9 +1013,10 @@ MNODE* Tree2StdMML::BindIntegral(MNODE* dMML_list)
         bool in_row;
         if (NodeIsDifferential(i_rover,in_row)) {
             PermuteDifferential(i_rover);
-            		  if (!in_row)
-            			  i_rover = i_rover->next;
+            if (!in_row)
+            	i_rover = i_rover->next;
             i_end = i_rover;
+            
 
             n_integrals--;
   	        while (i_rover && n_integrals) {
@@ -1002,8 +1028,8 @@ MNODE* Tree2StdMML::BindIntegral(MNODE* dMML_list)
               if (NodeIsDifferential(i_rover,in_row)) {
             	  PermuteDifferential(i_rover);
             	  if (!in_row)
-            		i_rover = i_rover->next;
-                  i_end = i_rover;
+            		  i_rover = i_rover->next;
+                i_end = i_rover;
             	  n_integrals--;
               }
             }
@@ -1015,7 +1041,7 @@ MNODE* Tree2StdMML::BindIntegral(MNODE* dMML_list)
   }
 
   // At this point, we've spanned \int ... dx
-  if (is_delimited) {		// we nest
+  if (is_delimited && i_end) {		// we nest
     MNODE* arg = dMML_list->next;
     MNODE* new_row = MakeMROW(arg, i_end);  // bind integrand
     if (new_row != arg) {
@@ -1049,12 +1075,20 @@ void Tree2StdMML::FixupSmalld(MNODE* dMML_list)
   MNODE* rover = dMML_list;
   while (rover) {
     if (ElementNameIs(rover, "mfrac")) {
-      if ( NodeIsDiffNumerator(rover->first_kid) )
+      if ( NodeIsDiffNumerator(rover->first_kid) ) {
         PermuteDiffNumerator(rover->first_kid);
+        // If we just had "d" in the numerator, the mfrac should be followed by applyfunc
+        if (!ElementNameIs(rover->first_kid, "mrow")) {
+          InsertAF(rover);
+          AddOperatorInfo(rover->next);
+        }
+      }
 
-	    if ( NodeIsDiffDenominator(rover->first_kid->next) )
+
+      if ( NodeIsDiffDenominator(rover->first_kid->next) )
         PermuteDiffDenominator(rover->first_kid->next);
       
+
     }
     rover = rover->next;
   }

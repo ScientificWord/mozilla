@@ -3,40 +3,42 @@ var theProcess;
 var theIndexProcess;
 var theBibTeXProcess;
 var passData;
-var sentinel;
+var sentinel = null;
+var blocking = false; // set whether blocking or not.
 var timer = Components.classes["@mozilla.org/timer;1"]
                     .createInstance(Components.interfaces.nsITimer);
 
-var timerCallback = 
-{  
+var timerCallback =
+{
   timercopy: timer,
   notify: function(timer)
-   { 
-     if (timer) timercopy = timer;
+   {
+     if (timer && (this.timercopy !== timer)) this.timercopy = timer;
      if (!sentinel)
      {
-        if (timercopy) timercopy.cancel();
+        if (this.timercopy) this.timercopy.cancel();
         return;
-     } 
+     }
      if (sentinel.exists())
      {
-       if (passData.passCounter++ < passData.passCount)
+       if (passData.passCounter < passData.passCount)
        {
          setProgressStatement(false);
          sentinel.remove(false);
          if (passData.runBibTeX)
          {
-           theBibTeXProcess.run(false, passData.bibtexArgs, passData.bibtexArgs.length);
+           theBibTeXProcess.run(blocking, passData.bibtexArgs, passData.bibtexArgs.length);
            passData.runBibTeX = false;
          }
          else if (passData.runMakeIndex)
          {
-           theIndexProcess.run(false, passData.args, passData.args.length);
+           theIndexProcess.run(blocking, passData.args, passData.args.length);
            passData.runMakeIndex = false;
          }
          else
          {
-           theProcess.run(false, passData.args, passData.args.length);
+           passData.passCounter++;
+           theProcess.run(blocking, passData.args, passData.args.length);
          }
        }
        else{
@@ -48,18 +50,18 @@ var timerCallback =
          var dlg = document.getElementById("passesDlg");
          dlg.getButton("accept").disabled = false;
          dlg.getButton("cancel").disabled = true;
-         top.document.commandDispatcher.focusedWindow.focus();  
+         top.document.commandDispatcher.focusedWindow.focus();
 //         window.opener.cancelSendMessage = true;
 //         window.close();
        }
      }
-   } 
+   }
  }
 
 
 function Init()
 {
-  
+
   passData = window.arguments[0];
   passData.passCounter = 1;
   document.getElementById("numpasses").value = passData.passCount;
@@ -85,7 +87,7 @@ function Init()
   dlg.getButton("cancel").disabled = false;
   // set up the first pass
   setProgressStatement(false);
-  theProcess.run(false, passData.args, passData.args.length);
+  theProcess.run(blocking, passData.args, passData.args.length);
   timer.initWithCallback( timerCallback, 250, 1);
 }
 
@@ -116,7 +118,7 @@ function onCancel()
   theProcess = null;
   Components.utils.reportError("in onCancel\n");
   SaveWindowLocation();
-  top.document.commandDispatcher.focusedWindow.focus();  
+  top.document.commandDispatcher.focusedWindow.focus();
   window.close();
   return true;
 }

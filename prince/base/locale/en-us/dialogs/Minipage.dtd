@@ -5,8 +5,8 @@
 <!--JLF Confirm use with BBM -->
 <!ENTITY  inner						"Inner margin">
 <!ENTITY  inline					"In line">
-<!ENTITY  inlineOffset    "Offset to Bottom of Minipage">
-<!ENTITY  display					"Displayed">
+<!ENTITY  inlineOffset    "Vertical offset within line">
+<!ENTITY  display.label					"Displayed">
 <!ENTITY  floating				"Floating">
 <!ENTITY  outer						"Outer margin">
 <!ENTITY  alignment.label	"Text alignment">
@@ -16,6 +16,8 @@
 <!ENTITY  outerAlign			"Outer side">
 <!ENTITY  borderstyle.label	"Border style">
 <!ENTITY  none						"None">
+<!ENTITY  above						"Above">
+<!ENTITY  below						"Below">
 <!ENTITY  solid						"Solid">
 <!ENTITY  dashed					"Dashed">
 <!ENTITY  width						"Width">
@@ -46,6 +48,22 @@
 <!ENTITY unitLabel.accesskey "U">
 <!ENTITY unitLabel.label "Units">
 <!ENTITY  SizePlacement.label  "Size &amp; Placement">
+<!ENTITY  unspecified		"--unspecified">
+<!ENTITY  inline.label		"Inline">
+<!ENTITY  left.label		"Left">
+<!ENTITY  inside.label		"Inside">
+<!ENTITY  center.label		"Center">
+<!ENTITY  right.label		"Right">
+<!ENTITY  outside.label		"Outside">
+<!ENTITY  baseline.label 	"Baseline">
+<!ENTITY  sameastoprow.label 	"Same as top row">
+<!ENTITY  atverticalcenter.label 	"Vertical center">
+<!ENTITY  sameasbottomrow.label 	"Same as bottom row">
+<!ENTITY  Key.label "Key for cross-references">
+<!ENTITY  EnterNewName.tooltip "Enter a key for cross-references if there is a caption">
+<!ENTITY  Caption.tooltip "Choose a caption location if 'Float' is not 'none'">
+
+
 
 <!ENTITY FrameTab.label "Frame">
 <!ENTITY Placementtab.label "Placement">
