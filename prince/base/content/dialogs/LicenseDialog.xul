@@ -22,7 +22,7 @@
 
   <script type="application/x-javascript" src="chrome://prince/content/licenseDialog.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <broadcaster id="licensed"/>
+  <broadcaster id="licensed" hidden="true"/>
   <broadcaster id="unlicensed"/>
   <broadcaster id="expired"/>
   <label id="prodname" hidden="true">&brandShortName;</label>
