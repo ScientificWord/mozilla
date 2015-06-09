@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
-<xsl:stylesheet 
+<xsl:stylesheet
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:exsl="http://exslt.org/common"
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
       version="1.1">
 
-<!-- 
+<!--
 
 -->
 
 
   <xsl:template match="mml:mi">
-  
+
     <xsl:variable name="LaTeX-symbols">
         <xsl:call-template name="chars-to-LaTeX-Math">
         <xsl:with-param name="unicode-cdata" select="normalize-space(string())"/>
@@ -35,7 +35,7 @@
 
     <xsl:choose>
 
-      <xsl:when test="string-length(normalize-space(string())) = 1">        
+      <xsl:when test="string-length(normalize-space(string())) = 1">
         <xsl:choose>
           <xsl:when test="$tag!='false'">
 
@@ -53,7 +53,7 @@
                           <xsl:with-param name="unicode-cdata" select="$LaTeX-symbols"/>
                        </xsl:call-template>
                     </xsl:variable>
-                
+
                     <xsl:choose>
                        <xsl:when test="$all-caps='true'">
                           <xsl:value-of select="$tag"/>
@@ -94,10 +94,10 @@
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
-        </xsl:choose>      
+        </xsl:choose>
       </xsl:when>
 
-      <xsl:when test="string-length(normalize-space(string())) = 2">        
+      <xsl:when test="string-length(normalize-space(string())) = 2">
         <xsl:if test="$tag!='false'">
           <xsl:value-of select="$tag"/>
         </xsl:if>
@@ -434,7 +434,7 @@
 
   <xsl:template name="get-tag">
     <xsl:param name="raw-LaTeX"/>
-  
+
     <xsl:choose>
       <xsl:when test="@mathvariant='bold'
       or              ancestor::mml:mstyle[@fontweight='bold']">
@@ -452,7 +452,8 @@
             <xsl:text>\mathit{</xsl:text>
         </xsl:if>
       </xsl:when>
-      <xsl:when test="ancestor::mml:mstyle[@fontweight='normal']">
+      <!-- <xsl:when test="ancestor::mml:mstyle[@fontweight='normal']"> -->
+      <xsl:when test="@mathvariant='normal'">
         <xsl:text>\mathrm{</xsl:text>
       </xsl:when>
       <xsl:when test="@mathvariant='sans-serif'">
@@ -512,7 +513,7 @@
 
 <!-- Note that LaTeX ignores size switches like \large in MATH.
   We script them because SW shows them on screen and NoteBook
-  uses them when it prints. --> 
+  uses them when it prints. -->
 
         <xsl:variable name="LaTeX-size-switch">
           <xsl:call-template name="get-LaTeX-size-from-attribs"/>

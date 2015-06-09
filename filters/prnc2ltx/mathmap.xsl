@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet 
+<xsl:stylesheet
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:exsl="http://exslt.org/common"
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
@@ -44,7 +44,7 @@
             <xsl:value-of select="$first-char"/>
          </xsl:when>
 
-         
+
           <xsl:when test="$char-info-lookup != ''">
            <xsl:call-template name="protect"/>
            <xsl:value-of select="$char-info-lookup"/>
@@ -199,13 +199,13 @@
       <xsl:when test="ms:string-compare($first-char,'&#x100') = -1">
         <xsl:choose>
 -->
-          <xsl:when test="$first-char='&#x00A0;'">                          
+          <xsl:when test="$first-char='&#x00A0;'">
             <xsl:text>~</xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x00A1;'">                          
+          <xsl:when test="$first-char='&#x00A1;'">
             <xsl:text>\text{\textexclamdown }</xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x00A2;'">                          
+          <xsl:when test="$first-char='&#x00A2;'">
             <xsl:text xml:space="preserve">\cents </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x00A3;'">
@@ -2501,8 +2501,8 @@
           <xsl:when test="$first-char='&#xE559;'">
             <xsl:text>\mathcal{z}</xsl:text>
           </xsl:when>
-    
-    
+
+
           <xsl:when test="$first-char='&#xE560;'">
             <xsl:text>\mathfrak{A}</xsl:text>
           </xsl:when>
@@ -2673,12 +2673,12 @@
           <xsl:when test="$first-char='&#xF74D;'">
             <xsl:text>e</xsl:text>
           </xsl:when>
-    
+
 <!-- ENTITY ii  ImaginaryI "&#xF74E;" -->
           <xsl:when test="$first-char='&#xF74E;'">
             <xsl:text>i</xsl:text>
           </xsl:when>
-    
+
           <xsl:when test="$first-char='&#xF57D;'">
             <xsl:text xml:space="preserve">\longmapsto </xsl:text>
           </xsl:when>
@@ -2688,59 +2688,60 @@
             <!-- <xsl:text xml:space="preserve"></xsl:text> -->
           </xsl:when>
 <!-- Some plane1 unicodes
-            <mml:mi>&#x1D400;</mml:mi> 
-            <mml:mi mathvariant='bold'>A</mml:mi> 
+            <mml:mi>&#x1D400;</mml:mi>
+            <mml:mi mathvariant='bold'>A</mml:mi>
 
-            <mml:mi>&#x1D434;</mml:mi> 
-            <mml:mi mathvariant='italic'>A</mml:mi> 
+If we use this, don't forget 'roman'
+            <mml:mi>&#x1D434;</mml:mi>
+            <mml:mi mathvariant='italic'>A</mml:mi>
 
-            <mml:mi>&#x1D468;</mml:mi> 
-            <mml:mi mathvariant='bold-italic'>A</mml:mi> 
+            <mml:mi>&#x1D468;</mml:mi>
+            <mml:mi mathvariant='bold-italic'>A</mml:mi>
 
-            <mml:mi>&#x1D538;</mml:mi> 
-            <mml:mi mathvariant='double-struck'>A</mml:mi> 
-            <mml:mi>&Aopf;</mml:mi> 
+            <mml:mi>&#x1D538;</mml:mi>
+            <mml:mi mathvariant='double-struck'>A</mml:mi>
+            <mml:mi>&Aopf;</mml:mi>
 
-            <mml:mi>&#x1D49C;</mml:mi> 
-            <mml:mi mathvariant='script'>A</mml:mi> 
-            <mml:mi>&Ascr;</mml:mi> 
+            <mml:mi>&#x1D49C;</mml:mi>
+            <mml:mi mathvariant='script'>A</mml:mi>
+            <mml:mi>&Ascr;</mml:mi>
 
-            <mml:mi>&#x1D4D0;</mml:mi> 
-            <mml:mi mathvariant='bold-script'>A</mml:mi> 
+            <mml:mi>&#x1D4D0;</mml:mi>
+            <mml:mi mathvariant='bold-script'>A</mml:mi>
 
-            <mml:mi>&#x1D504;</mml:mi> 
-            <mml:mi mathvariant='fraktur'>A</mml:mi> 
-            <mml:mi>&Afr;</mml:mi> 
+            <mml:mi>&#x1D504;</mml:mi>
+            <mml:mi mathvariant='fraktur'>A</mml:mi>
+            <mml:mi>&Afr;</mml:mi>
 
-            <mml:mi>&#x1D56C;</mml:mi> 
-            <mml:mi mathvariant='bold-fraktur'>A</mml:mi> 
+            <mml:mi>&#x1D56C;</mml:mi>
+            <mml:mi mathvariant='bold-fraktur'>A</mml:mi>
 
-            <mml:mi>&#x1D5A0;</mml:mi> 
-            <mml:mi mathvariant='sans-serif'>A</mml:mi> 
+            <mml:mi>&#x1D5A0;</mml:mi>
+            <mml:mi mathvariant='sans-serif'>A</mml:mi>
 
-            <mml:mi>&#x1D5D4;</mml:mi> 
-            <mml:mi mathvariant='bold-sans-serif'>A</mml:mi> 
+            <mml:mi>&#x1D5D4;</mml:mi>
+            <mml:mi mathvariant='bold-sans-serif'>A</mml:mi>
 
-            <mml:mi>&#x1D608;</mml:mi> 
-            <mml:mi mathvariant='sans-serif-italic'>A</mml:mi> 
+            <mml:mi>&#x1D608;</mml:mi>
+            <mml:mi mathvariant='sans-serif-italic'>A</mml:mi>
 
-            <mml:mi>&#x1D63D;</mml:mi> 
-            <mml:mi mathvariant='sans-serif-bold-italic'>A</mml:mi> 
+            <mml:mi>&#x1D63D;</mml:mi>
+            <mml:mi mathvariant='sans-serif-bold-italic'>A</mml:mi>
 
-            <mml:mi>&#x1D670;</mml:mi> 
-            <mml:mi mathvariant='monospace'>A</mml:mi> 
+            <mml:mi>&#x1D670;</mml:mi>
+            <mml:mi mathvariant='monospace'>A</mml:mi>
 -->
 
           <xsl:otherwise>
 <!-- BBM: we want to let unidentified unicodes through, since XeLaTeX can handle them, and for PDFLaTeX we post-process
--->          <!-- jcs - this may need a \mathop{} --> 
+-->          <!-- jcs - this may need a \mathop{} -->
              <xsl:text>\mathop{</xsl:text>
              <xsl:value-of select="$first-char"/>
              <xsl:text>}</xsl:text>
           </xsl:otherwise>
- 
+
         </xsl:choose>
-    
+
 <!--  The End
       </xsl:when>
     </xsl:choose>
