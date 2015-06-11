@@ -86,6 +86,26 @@ std::string simple_math_to_mathml(std::string str){
       TakeDownMathML();
       return mml;
 }
+
+std::string makexml(std::string str){
+  std::string::iterator it = str.begin();
+  std::string rv;
+
+  while (it != str.end()){
+    if (*it == '&'){
+      rv += "&amp;";
+    } else if (*it == '<'){
+      rv += "&lt;";
+    } else if (*it == '>'){
+      rv += "&gt;";
+    } else {
+      rv += *it;
+    }
+    ++it;
+  }
+  return rv;
+}
+
 @}
 
 @$@<Graphic file utility@>==@{
@@ -684,10 +704,10 @@ case CMD_MSISPECIAL: {
         std::string name = kvmap["VCamFile"];
         strip_quotes(name);
         std::string newname = MaybeCopyGraphicFile(name.c_str());
-        find_and_replace(result, "%ImageFile%", newname.c_str());
+        find_and_replace(result, "%ImageFile%", makexml(newname).c_str());
 
         std::string fullname = newname;
-        find_and_replace(result, "%ImageFileFull%", fullname.c_str());
+        find_and_replace(result, "%ImageFileFull%", makexml(fullname).c_str());
 
         find_and_replace(result, "%function%", kvmap["function"].c_str());
 
@@ -786,10 +806,10 @@ case CMD_MSISPECIAL: {
 
       strip_quotes(name);
       std::string newname = MaybeCopyGraphicFile(name.c_str());
-      find_and_replace(result, "%ImageFile%", newname.c_str());
+      find_and_replace(result, "%ImageFile%", makexml(newname).c_str());
     
       std::string fullname = std::string("file://") + s_docdir + SEP + name;
-      find_and_replace(result, "%ImageFileFull%", fullname.c_str());
+      find_and_replace(result, "%ImageFileFull%", makexml(fullname).c_str());
 
       if (kvmap.find("original-width") != kvmap.end()){
          find_and_replace(result, "%naturalWidth%",
