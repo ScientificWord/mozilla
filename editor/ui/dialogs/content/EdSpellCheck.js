@@ -111,12 +111,12 @@ function Startup()
   }
 
   InitLanguageMenu(curLang);
-  
+
   // Get the first misspelled word and setup all UI
   NextWord();
 
-  // When startup param is true, setup different UI when spell checking 
-  //   just before sending mail message  
+  // When startup param is true, setup different UI when spell checking
+  //   just before sending mail message
   if (sendMailMessageMode)
   {
     // If no misspelled words found, simply close dialog and send message
@@ -184,7 +184,7 @@ function InitLanguageMenu(aCurLang)
   // If we have a language string bundle, load the region string bundle.
   if (languageBundle)
     regionBundle = document.getElementById("regionBundle");
-  
+
   var menuStr2;
   var isoStrArray;
   var langId;
@@ -219,7 +219,7 @@ function InitLanguageMenu(aCurLang)
     }
     dictList[i] = [langLabel, langId];
   }
-  
+
   // sort by locale-aware collation
   dictList.sort(
     function compareFn(a, b)
@@ -230,13 +230,13 @@ function InitLanguageMenu(aCurLang)
 
   // Remove any languages from the list.
   var languageMenuPopup = null;
-  var defaultItem = null; 
+  var defaultItem = null;
   if (gDialog.LanguageMenulist) {
     languageMenuPopup = gDialog.LanguageMenulist.firstChild;
-    while (languageMenuPopup && anguageMenuPopup.firstChild.localName != "menuseparator")
+    while (languageMenuPopup && languageMenuPopup.firstChild && languageMenuPopup.firstChild.localName != "menuseparator")
       languageMenuPopup.removeChild(languageMenuPopup.firstChild);
 
-  
+
 
     for (i = 0; i < count; i++)
     {
@@ -245,7 +245,7 @@ function InitLanguageMenu(aCurLang)
         defaultItem = item;
     }
   }
- 
+
   // Now make sure the correct item in the menu list is selected.
   if (defaultItem)
   {
@@ -322,14 +322,14 @@ function SetWidgetsForMisspelledWord()
 function CheckWord()
 {
   var word = gDialog.ReplaceWordInput.value;
-  if (word) 
+  if (word)
   {
     if (gSpellChecker.CheckCurrentWord(word))
     {
       FillSuggestedList(word);
       SetReplaceEnable();
-    } 
-    else 
+    }
+    else
     {
       ClearListbox(gDialog.SuggestedList);
       var item = gDialog.SuggestedList.appendItem(GetString("CorrectSpelling"), "");
@@ -519,7 +519,7 @@ function FillSuggestedList(misspelledWord)
       // Initialize with first suggested list by selecting it
       gDialog.SuggestedList.selectedIndex = 0;
     }
-  } 
+  }
   else
   {
     item = list.appendItem("", "");
