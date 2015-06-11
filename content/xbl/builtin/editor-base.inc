@@ -18,14 +18,14 @@
       <handler event="keypress" key="1" action="focusOn('TextTagSelections')" modifiers="accel"/>
       <handler event="keypress" key="2" action="focusOn('ParaTagSelections')" modifiers="accel"/>
       <handler event="keypress" key="3" action="focusOn('StructTagSelections')" modifiers="accel"/>
-      <handler event="keypress" key="4" action="focusOn('FrontMTagSelections')" modifiers="accel"/>     
+      <handler event="keypress" key="4" action="focusOn('FrontMTagSelections')" modifiers="accel"/>
       <handler event="keypress" key="`" modifiers="accel"       action="msiRevCharQuick('&#x0300;');"/>
       <handler event="keypress" key="'" modifiers="accel"       action="msiRevCharQuick('&#x0301;');"/>
-      <handler event="keypress" key="^" modifiers="accel,shift" action="msiRevCharQuick('&#x0302;');"/>
-      <handler event="keypress" key="~" modifiers="accel,shift" action="msiRevCharQuick('&#x0303;');"/>
-      <handler event="keypress" key='_' modifiers="accel,shift" action="msiRevCharQuick('&#x0305;');"/>
+      <handler event="keypress" key="^" modifiers="accel" action="msiRevCharQuick('&#x0302;');"/>
+      <handler event="keypress" key="~" modifiers="accel" action="msiRevCharQuick('&#x0303;');"/>
+      <handler event="keypress" key='_' modifiers="accel" action="msiRevCharQuick('&#x0305;');"/>
       <handler event="keypress" key="." modifiers="accel"       action="msiRevCharQuick('&#x0307;');"/>
-      <handler event="keypress" key='"' modifiers="accel,shift" action="msiRevCharQuick('&#x0308;');"/>
-      <handler event="keypress" key='!' modifiers="accel,shift" action="msiRevCharQuick('&#x20d7;');"/>
+      <handler event="keypress" key='"' modifiers="accel" action="msiRevCharQuick('&#x0308;');"/>
+      <handler event="keypress" key='!' modifiers="accel" action="msiRevCharQuick('&#x20d7;');"/>
 
 
