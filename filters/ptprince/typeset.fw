@@ -44,6 +44,7 @@ static const bool s_bMathml = true;
 extern bool s_equation;
 extern bool s_nonumbering;
 extern bool s_eqnarray;
+extern std::string makexml(std::string str);
 
 @<Node declarations@>
 @<Semantic nest@>
@@ -782,9 +783,9 @@ void Typesetter::EndDisplay()
          }
          if (marker != ""){
            str += " marker=\"";
-           str += marker;
+           str += makexml(marker);
            str += "\" id=\"";
-           str += marker;
+           str += makexml(marker);
            str += "\"";
          }
          str += ">";
