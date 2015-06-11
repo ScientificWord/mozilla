@@ -129,11 +129,11 @@
 </xsl:template>
 
 <xsl:template match="*">
-  <xsl:text>%[[[What?? </xsl:text>
+<!--   <xsl:text>%[[[What?? </xsl:text>
   <xsl:value-of select="name()"/>
   <xsl:text>]]]</xsl:text>
   <xsl:value-of select="$newline"/>
-  <!-- Matches all elements. Make it visible for now
+ -->  <!-- Matches all elements. Make it visible for now
        so we can better catch lost cases. -->
 </xsl:template>
 
