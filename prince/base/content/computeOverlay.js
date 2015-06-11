@@ -1,81 +1,61 @@
-
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
-
-#include productname.inc
-
-#ifndef PROD_SW
-
+# include productname.inc
+# ifndef PROD_SW
 Components.utils.import("resource://app/modules/computelogger.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
-
 //-----------------------------------------------------------------------------------
 var msiEvaluateCommand = {
-  isCommandEnabled: function(aCommand, editorElement) {
+  isCommandEnabled: function (aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
     return (isLicensed() && theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
   },
-
-  getCommandStateParams: function(aCommand, aParams, editorElement) {},
-  doCommandParams: function(aCommand, aParams, editorElement) {},
-
-  doCommand: function(aCommand, editorElement) {
+  getCommandStateParams: function (aCommand, aParams, editorElement) {},
+  doCommandParams: function (aCommand, aParams, editorElement) {},
+  doCommand: function (aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    if (isLicensed())
-      doComputeCommand(aCommand, theEditorElement, this);
+    if (isLicensed()) doComputeCommand(aCommand, theEditorElement, this);
   }
 };
-
 var msiComputeStopCommand = {
-  isCommandEnabled: function(aCommand, editorElement) {
+  isCommandEnabled: function (aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
     return (isLicensed() && theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
   },
-  getCommandStateParams: function(aCommand, aParams, editorElement) {},
-  doCommandParams: function(aCommand, aParams, editorElement) {},
-
-  doCommand: function(aCommand, editorElement) {
+  getCommandStateParams: function (aCommand, aParams, editorElement) {},
+  doCommandParams: function (aCommand, aParams, editorElement) {},
+  doCommand: function (aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
     doComputeStopCommand();
   }
-
-
 };
-
 // var msiEvaluateCommandKeyboard = {
 //   isCommandEnabled: function(aCommand, editorElement) {
 //     var theEditorElement = msiGetActiveEditorElement();
 //     return (theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
 //   },
-
 //   getCommandStateParams: function(aCommand, aParams, editorElement) {},
 //   doCommandParams: function(aCommand, aParams, editorElement) {},
-
 //   doCommand: function(aCommand, editorElement) {
 //     var theEditorElement = msiGetActiveEditorElement();
 //     doComputeCommand(aCommand, theEditorElement, this, false);
 //   }
 // };
-
 var msiDefineCommand = {
-  isCommandEnabled: function(aCommand, dummy) {
+  isCommandEnabled: function (aCommand, dummy) {
     var editorElement = msiGetActiveEditorElement();
     return (isLicensed() && editorElement && msiGetEditor(editorElement) && msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement) && (isInMath(editorElement) || aCommand == "cmd_MSIComputeShowDefs" || aCommand == "cmd_MSIComputeMapMuPADName" ||
-    //aCommand == "cmd_MSI/ComputeUserSettings" ||
-    aCommand == "cmd_MSIComputeClearDefs" ||
-    //aCommand == "cmd_MSIComputeSettings" ||
-    aCommand == "cmd_MSIComputeSwitchEngines"));
-
+      //aCommand == "cmd_MSI/ComputeUserSettings" ||
+      aCommand == "cmd_MSIComputeClearDefs" ||
+      //aCommand == "cmd_MSIComputeSettings" ||
+      aCommand == "cmd_MSIComputeSwitchEngines"));
   },
-
-  getCommandStateParams: function(aCommand, aParams, editorElement) {},
-  doCommandParams: function(aCommand, aParams, editorElement) {},
-
-  doCommand: function(aCommand, editorElement) {
+  getCommandStateParams: function (aCommand, aParams, editorElement) {},
+  doCommandParams: function (aCommand, aParams, editorElement) {},
+  doCommand: function (aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    if (isLicensed())
-      doComputeCommand(aCommand, theEditorElement);
+    if (isLicensed()) doComputeCommand(aCommand, theEditorElement);
   }
 };
 
@@ -85,7 +65,6 @@ function SetupMSIComputeMenuCommands() {
   // note hokey use of shared command
   doSetupMSIComputeMenuCommands(commandTable);
 }
-
 
 function msiSetupMSIComputeMenuCommands(editorElement) {
   var commandTable = msiGetComposerCommandTable(editorElement);
@@ -316,10 +295,9 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement) {
       if (commandNode.hasAttribute("state")) msiGoUpdateCommandState(commandID, editorElement);
     }
   }
-// This next line has nothing to do with computation
-// setMathTextToggle(editorElement, null);
+  // This next line has nothing to do with computation
+  // setMathTextToggle(editorElement, null);
 }
-
 // const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 var gComputeStringBundle;
 
@@ -328,9 +306,7 @@ function GetComputeString(name) {
     try {
       var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService();
       strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
-
       gComputeStringBundle = strBundleService.createBundle("chrome://prince/locale/compute.properties");
-
     } catch (ex) {}
   }
   if (gComputeStringBundle) {
@@ -340,15 +316,11 @@ function GetComputeString(name) {
   }
   return null;
 }
-
 // used by computeDebug.js.  Need to consider scripting interface in more detail.
-
-
 function doComputeEvaluate(math, editorElement, inPlace) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   doEvalComputation(math, GetCurrentEngine().Evaluate, "<mo>=</mo>", "evaluate", editorElement, inPlace);
 }
-
 //var ctrlClick = false;
 var buttonPressed = -1;
 
@@ -376,12 +348,12 @@ function isSelectionMath(selection) {
 }
 
 function doComputeStopCommand() {
-   var eng = GetCurrentEngine();
-   eng.stopProcessor();
+  var eng = GetCurrentEngine();
+  eng.stopProcessor();
 }
 
 function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
-  inPlace = !! inPlace;
+  inPlace = !!inPlace;
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var selection = editor.selection;
@@ -708,7 +680,6 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
     case "cmd_MSIComputeTranspose":
       doLabeledComputation(element, "", eng.Transpose, "Transpose.fmt", editorElement);
       break;
-
     case "cmd_compute_SimplexDual":
       doLabeledComputation(element, "", eng.Simplex_Dual, "Dual.fmt", editorElement);
       break;
@@ -724,7 +695,6 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
     case "cmd_compute_SimplexStandardize":
       doLabeledComputation(element, "", eng.Simplex_Standardize, "Standardize.fmt", editorElement);
       break;
-
     case "cmd_compute_FitCurve":
       doComputeFitCurve(element, editorElement);
       break;
@@ -764,7 +734,6 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
     case "cmd_compute_Variance":
       doLabeledComputation(element, "", eng.Variance, "Variance.fmt", editorElement);
       break;
-
     case "cmd_compute_Plot2DRectangular":
       doComputePlot(element, 2, "rectangular", false, editorElement);
       break;
@@ -934,23 +903,20 @@ function doGlobalComputeCommand(cmd, editorElement) {
     return;
   }
 }
-
 var isRunning = false;
 
 function dontSetAnimationTime() {
   return;
 }
-
 var vcamlastId = 0;
-function findUnusedId( prefix ) {
+
+function findUnusedId(prefix) {
   vcamlastId += 1;
   var n = vcamlastId;
   var theId = prefix + n.toString();
   return theId;
 }
-
 /* End of VCam section */
-
 function initComputeLogger(engine) {
   var prefs = GetPrefs();
   var logMMLSent, logMMLReceived, logEngSent, logEngReceived;
@@ -977,7 +943,6 @@ function initComputeLogger(engine) {
   dump("call msiComputeLogger.Init\n");
   msiComputeLogger.Init(engine, logMMLSent, logMMLReceived, logEngSent, logEngReceived);
 }
-
 // our connection to the computation code
 var compsample;
 var compengine;
@@ -995,7 +960,6 @@ function GetCurrentEngine() {
       compengine = 2;
       initComputeLogger(compsample);
       initEnginePrefs(compsample);
-
     } catch (e) {
       var msg_key;
       if (e.result == Components.results.NS_ERROR_NOT_AVAILABLE) msg_key = "Error.notavailable";
@@ -1011,7 +975,7 @@ function GetCurrentEngine() {
     var editor = msiGetEditor(editorElement);
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var edID = mathmlEditor.EditorID;
-    if (edID === 0){
+    if (edID === 0) {
       mathmlEditor.EditorID = compsample.getEditorID();
       edID = mathmlEditor.EditorID;
     }
@@ -1019,7 +983,6 @@ function GetCurrentEngine() {
   }
   return compsample;
 }
-
 
 function postDialogTimerCallback(editorElement, obj) {
   dump("Hit postDialogTimerCallback!\n");
@@ -1031,44 +994,31 @@ function postDialogTimerCallback(editorElement, obj) {
   if (("afterDialog" in obj) && obj.afterDialog != null) obj.afterDialog(editorElement);
 }
 
-
-
-
-function initEnginePrefs(currEngine)
-{
+function initEnginePrefs(currEngine) {
   initializePrefMappersIfNeeded();
   var prefs = GetPrefs();
   var delimstyle = prefs.getCharPref("swp.user.matrix_delim");
   var val;
   if (delimstyle === "matrix_brackets") val = 1;
-    else if (delimstyle === "matrix_parens") val = 2;
-    else if (delimstyle === "matrix_braces") val = 3;
-    else val = 0;
+  else if (delimstyle === "matrix_parens") val = 2;
+  else if (delimstyle === "matrix_braces") val = 3;
+  else val = 0;
   var eng = GetCurrentEngine();
   eng.setUserPrefByName("Default_matrix_delims", val);
   // Do we need to set all the other engine settings. This is the only one that I
   // know of that needs translation from strings to integers. BBM
-
   // imagi
-//  var imagi = prefs.getCharPref("swp.user.imagi");
-//  if (imagi == "imagi_imagi") val = 1;
-//  else if (imagi == "imagi_imagj") val = 2;
-//  else  val = 3;
-
-//  eng.setUserPrefByName("Output_imaginaryi", imagi);
-
+  //  var imagi = prefs.getCharPref("swp.user.imagi");
+  //  if (imagi == "imagi_imagi") val = 1;
+  //  else if (imagi == "imagi_imagj") val = 2;
+  //  else  val = 3;
+  //  eng.setUserPrefByName("Output_imaginaryi", imagi);
   // expe
-    //var expe = prefs.getCharPref("swp.user.expe");
-    //if (expe === "expe_d") val = 0; else val = 1;
-    //eng.setUserPrefByName("Output_Euler_e", val);
-
-
+  //var expe = prefs.getCharPref("swp.user.expe");
+  //if (expe === "expe_d") val = 0; else val = 1;
+  //eng.setUserPrefByName("Output_Euler_e", val);
 }
-
-
 // cursor helpers
-
-
 function ComputeCursor(editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var theWin = msiGetWindowContainingEditor(editorElement);
@@ -1080,14 +1030,10 @@ function RestoreCursor(editorElement) {
   var theWin = msiGetWindowContainingEditor(editorElement);
   if (theWin) theWin.setCursor("default");
 }
-
 // return node on RHS of =, if structure is that simple
-
-
 function GetRHS(math) {
   var ch = last_child(math);
   var mathout = math.cloneNode(false);
-
   while (ch) {
     if (ch.nodeType == Node.ELEMENT_NODE && ch.localName == "mo") {
       var op = ch.firstChild;
@@ -1129,31 +1075,24 @@ function FindLeftEndOfSide(mathElement, node) {
   // find left end of mathElement containing the node
   var leftEnd = mathElement.firstChild;
   var m = leftEnd;
-
   while (m) {
     if (isAChildOf(node, m)) break;
-
     if (isEqualSign(m)) {
       leftEnd = m.nextSibling;
     }
-
     m = m.nextSibling;;
   }
-
   return leftEnd;
 }
 
 function FindRightEndOfSide(mathElement, leftEnd) {
   var rightEnd = leftEnd;
   var next = rightEnd;
-
   while (next) {
     if (isEqualSign(next)) break;
     else rightEnd = next;
-
     next = next.nextSibling;;
   }
-
   return rightEnd;
 }
 
@@ -1173,14 +1112,10 @@ function GetASide(mathElement, editorElement) {
   var anchor = msiGetEditor(editorElement).selection.anchorNode;
   var leftEnd = FindLeftEndOfSide(mathElement, anchor);
   var rightEnd = FindRightEndOfSide(mathElement, leftEnd);
-
   var mathOut = CloneTheSide(mathElement, leftEnd, rightEnd);
   return mathOut;
 }
-
 //SLS for unknown reasons, get parsing error if text is at outer level
-
-
 function insertLabeledXML(editor, text, node, offset) {
   editor.setCaretAfterElement(node);
   editor.insertHTML("<span>" + text + "</span>");
@@ -1189,9 +1124,7 @@ function insertLabeledXML(editor, text, node, offset) {
 function appendResult(result, sep, math, editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-
   var appendedResult = result.replace(fullmath, fullmath + sep);
-
   insertXML(editor, appendedResult, math, math.childNodes.length);
   coalescemath(editorElement);
 }
@@ -1209,11 +1142,8 @@ function GetOffset(math, node) {
 function insertResult(result, sep, mathElement, editorElement, rightEnd) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-
   var appendedResult = result.replace(fullmath, fullmath + sep);
-
   insertXML(editor, appendedResult, mathElement, GetOffset(mathElement, rightEnd));
-
   coalescemath(editorElement);
 }
 
@@ -1222,13 +1152,9 @@ function appendLabel(label, math, editorElement) {
   var editor = msiGetEditor(editorElement);
   insertXML(editor, label, math, math.childNodes.length);
 }
-
 // "label" is a format string like ", Solution: %result%"
-
-
 function appendLabeledResult(result, label, math, editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
-
   var editor = msiGetEditor(editorElement);
   var resultArray;
   var preStr;
@@ -1246,14 +1172,13 @@ function appendLabeledResult(result, label, math, editorElement) {
   }
   var temp;
   var space = "<hspace type='thinSpace' dim='0.17em'/>";
-
   if (-1 == resultLoc) {
     if (res1Loc == res2Loc == -1) {
       preStr = label;
       postStr = "";
-    }  else {  //res1 or res2 or both found
-      preStr  = label.substr(0, res1Loc);
-      midStr  =  label.substr(res1Loc + 6, res2Loc - (res1Loc + 6));
+    } else { //res1 or res2 or both found
+      preStr = label.substr(0, res1Loc);
+      midStr = label.substr(res1Loc + 6, res2Loc - (res1Loc + 6));
       postStr = label.substr(res2Loc + 6);
     }
   } else {
@@ -1261,24 +1186,17 @@ function appendLabeledResult(result, label, math, editorElement) {
     var match = "%result%";
     postStr = label.substr(resultLoc + match.length);
   }
-
   editor.setCaretAfterElement(math);
   if (res2Loc == -1 && res1Loc == -1) {
     editor.insertHTML(preStr + result + postStr);
-  }
-  else {
+  } else {
     resPre = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow>";
     resPost = "</mrow></math>";
     temp = result.replace(resPre, "");
-    temp = temp.replace(resPost,"");
+    temp = temp.replace(resPost, "");
     resultArray = temp.split("<mo>,</mo>");
     if (resultArray && resultArray.length > 1) {
-      var answer = preStr + space +
-                   resPre + resultArray[0] + resPost + space +
-                   midStr + space +
-                   resPre + resultArray[1] +
-                   resPost + space +
-                   postStr + space;
+      var answer = preStr + space + resPre + resultArray[0] + resPost + space + midStr + space + resPre + resultArray[1] + resPost + space + postStr + space;
       editor.insertHTML(answer);
     }
   }
@@ -1301,7 +1219,6 @@ function addResult(result, editorElement) {
   editor.insertHTMLWithContext(result, "", "", "", null, selection.focusNode, selection.focusOffset, false);
 }
 
-
 function runFixup(math) {
   try {
     var out = GetCurrentEngine().perform(math, GetCurrentEngine().Fixup);
@@ -1319,7 +1236,6 @@ function GetFixedMath(math) {
 function doLabeledComputation(math, vars, op, labelID, editorElement) {
   var mathstr = GetFixedMath(GetRHS(math));
   if (!vars) vars = "";
-
   msiComputeLogger.Sent("doing " + labelID + " after fixup", mathstr);
   ComputeCursor(editorElement);
   try {
@@ -1334,7 +1250,7 @@ function doLabeledComputation(math, vars, op, labelID, editorElement) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeSolveExact(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -1365,7 +1281,6 @@ function doScalarPotential(math, op, labelID, editorElement) {
   try {
     var out = GetCurrentEngine().perform(mathstr, op);
     msiComputeLogger.Received(out);
-
     if (out == "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>0</mn></mrow></math>") {
       var editor = msiGetEditor(editorElement);
       editor.setCaretAfterElement(math);
@@ -1393,10 +1308,7 @@ function CloneTheRange(mathElement, r, editorElement) {
   }
   return mathout;
 }
-
 // like above, but use operator instead of text between input and result
-
-
 function doEvalComputation(mathElement, op, joiner, remark, editorElement, inPlace) {
   // Get a side of the (possible) equations
   var sel = msiGetEditor(editorElement).selection;
@@ -1414,9 +1326,7 @@ function doEvalComputation(mathElement, op, joiner, remark, editorElement, inPla
     rightEnd = FindRightEndOfSide(mathElement, leftEnd);
     mathOut = CloneTheRange(mathElement, r, editorElement);
   }
-
   var mathstr = GetFixedMath(mathOut);
-
   msiComputeLogger.Sent(remark + " after fixup", mathstr);
   ComputeCursor(editorElement);
   try {
@@ -1427,7 +1337,6 @@ function doEvalComputation(mathElement, op, joiner, remark, editorElement, inPla
       insertResult(out, joiner, mathElement, editorElement, rightEnd);
     } else {
       if (!editorElement) editorElement = msiGetActiveEditorElement();
-
       var editor = msiGetEditor(editorElement);
       msiGoDoCommand('cmd_delete');
       //editor.deleteSelection(editor.eNone);
@@ -1448,10 +1357,7 @@ function doEvalComputation(mathElement, op, joiner, remark, editorElement, inPla
   }
   RestoreCursor(editorElement);
 }
-
 // like above, but make sure to run Fixup exactly once
-
-
 function doFixupComputation(math, op, joiner, remark, editorElement) {
   var mathstr = GetMathAsString(GetRHS(math));
   msiComputeLogger.Sent(remark, mathstr);
@@ -1465,10 +1371,7 @@ function doFixupComputation(math, op, joiner, remark, editorElement) {
   }
   RestoreCursor(editorElement);
 }
-
 // like above, but asks user for variable(s) first
-
-
 function doVarsComputation(math, label, func, title, editorElement, cmd, cmdHandler) {
   var o = {};
   o.title = title;
@@ -1476,7 +1379,7 @@ function doVarsComputation(math, label, func, title, editorElement, cmd, cmdHand
   o.theMath = math;
   o.theLabel = label;
   o.theFunc = func;
-  o.afterDialog = function(editorElement) {
+  o.afterDialog = function (editorElement) {
     this.mParentWin.finishVarsComputation(editorElement, this);
   };
   var theDialog = null;
@@ -1495,7 +1398,6 @@ function finishVarsComputation(editorElement, o) {
   var vars = o.vars;
   var mathstr = GetFixedMath(o.theMath);
   msiComputeLogger.Sent4(o.theLabel + " after fixup", mathstr, "specifying", vars);
-
   ComputeCursor(editorElement);
   try {
     var eng = GetCurrentEngine();
@@ -1513,10 +1415,7 @@ function finishVarsComputation(editorElement, o) {
   }
   RestoreCursor(editorElement);
 }
-
 // like above, but use operator instead of text between input and result
-
-
 function doVarsEvalComputation(math, func, joiner, title, label, editorElement, cmd, cmdHandler) {
   var o = {};
   o.title = title;
@@ -1525,13 +1424,12 @@ function doVarsEvalComputation(math, func, joiner, title, label, editorElement, 
   o.theFunc = func;
   o.theJoiner = joiner;
   o.mParentWin = this;
-  o.afterDialog = function(editorElement) {
+  o.afterDialog = function (editorElement) {
     this.mParentWin.finishVarsEvalComputation(editorElement, this);
   };
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   try {
     var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
-
   } catch (e) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsEvalComputation: [" + e + "]");
     return;
@@ -1540,12 +1438,10 @@ function doVarsEvalComputation(math, func, joiner, title, label, editorElement, 
 
 function finishVarsEvalComputation(editorElement, o) {
   if (o.Cancel) return;
-
   var vars = o.vars;
   var mathstr = GetFixedMath(o.theMath);
   //  vars = runFixup(vars);
   msiComputeLogger.Sent4(title + " after fixup", mathstr, "specifying", vars);
-
   ComputeCursor(editorElement);
   try {
     //var out = o.theFunc(mathstr,vars);
@@ -1558,7 +1454,6 @@ function finishVarsEvalComputation(editorElement, o) {
     } else if (o.theFunc == eng.Calculus_Change_Variable) {
       out = eng.changeVar(mathstr, vars);
     }
-
     msiComputeLogger.Received(out);
     appendResult(out, o.theJoiner, o.theMath, editorElement);
   } catch (e) {
@@ -1566,14 +1461,10 @@ function finishVarsEvalComputation(editorElement, o) {
   }
   RestoreCursor(editorElement);
 }
-
 // actual command handlers
-
 function doComputeCheckEquality(math, editorElement) {
   var mathstr = GetFixedMath(math);
-
   msiComputeLogger.Sent("doing " + "CheckEquality" + " after fixup", mathstr);
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().perform(mathstr, GetCurrentEngine().Check_Equality);
@@ -1583,7 +1474,6 @@ function doComputeCheckEquality(math, editorElement) {
     msiComputeLogger.Exception(e);
   }
   RestoreCursor(editorElement);
-
   //var out = GetCurrentEngine().checkEquality(mathstr,vars);
   //doLabeledComputation(math, eng.Check_Equality, "CheckEquality.fmt", editorElement);
 }
@@ -1611,7 +1501,7 @@ function doComputeFindExtrema(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeFindExtrema(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -1651,7 +1541,7 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeSolveExact(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -1677,11 +1567,8 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler) {
 function doComputeSolveInteger(math, vars, editorElement, cmd, cmdHandler) {
   var mathstr = GetFixedMath(math);
   if (!vars) vars = "";
-
   if (!editorElement) editorElement = msiGetActiveEditorElement();
-
   msiComputeLogger.Sent4("solve integer", mathstr, "specifying", vars);
-
   try {
     ComputeCursor(editorElement);
     var out = GetCurrentEngine().solveInteger(mathstr, vars);
@@ -1700,7 +1587,7 @@ function doComputeSolveInteger(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeSolveInteger(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -1720,7 +1607,6 @@ function doComputeSolveNumeric(math, editorElement) {
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent("solve numeric after fixup", mathstr);
   if (!editorElement) editorElement = msiGetActiveEditorElement();
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().perform(mathstr, GetCurrentEngine().Solve_Numeric);
@@ -1740,7 +1626,6 @@ function doComputeSolveRecursion(math, editorElement) {
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent("solve recursion after fixup", mathstr);
   if (!editorElement) editorElement = msiGetActiveEditorElement();
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().perform(mathstr, GetCurrentEngine().Solve_Recursion);
@@ -1780,7 +1665,7 @@ function doComputePartialFractions(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputePartialFractions(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -1800,7 +1685,6 @@ function doComputePartialFractions(math, vars, editorElement, cmd, cmdHandler) {
 function doComputeDivide(math, vars, editorElement, cmd, cmdHandler) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
-
   if (!vars) vars = "";
   msiComputeLogger.Sent4("divide", mathstr, "specifying", vars);
   try {
@@ -1820,7 +1704,7 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeDivide(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -1830,7 +1714,6 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeDivide: [" + e + "]");
         return;
       }
-
       if (o.Cancel) return;
       vars = runFixup(o.vars);
     } else {
@@ -1841,10 +1724,8 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler) {
 
 function doComputeRoots(math, vars, editorElement, cmd, cmdHandler) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
-
   var mathstr = GetFixedMath(math);
   if (!vars) vars = "";
-
   msiComputeLogger.Sent4("roots", mathstr, "specifying", vars);
   try {
     ComputeCursor(editorElement);
@@ -1863,7 +1744,7 @@ function doComputeRoots(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeRoots(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -1873,7 +1754,6 @@ function doComputeRoots(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeRoots: [" + e + "]");
         return;
       }
-
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -1901,7 +1781,7 @@ function doComputeSort(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeSort(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -1919,7 +1799,6 @@ function doComputeCompanionMatrix(math, vars, editorElement, cmd, cmdHandler) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
   if (!vars) vars = "";
-
   msiComputeLogger.Sent4("companion matrix", mathstr, "specifying", vars);
   try {
     ComputeCursor(editorElement);
@@ -1939,7 +1818,7 @@ function doComputeCompanionMatrix(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeCompanionMatrix(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -1962,7 +1841,6 @@ function doComputeApproxIntegral(math, editorElement) {
   o.form = 1;
   o.lowerBound = 0;
   o.upperBound = 5;
-
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   parentWin.openDialog("chrome://prince/content/ComputeApproxIntegral.xul", "approxint", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel) {
@@ -1973,7 +1851,6 @@ function doComputeApproxIntegral(math, editorElement) {
   var intervals = GetNumAsMathML(o.intervals);
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent4("approximate integral", mathstr, o.form, intervals);
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().approxIntegral(mathstr, o.form, intervals, o.lowerBound, o.upperBound);
@@ -1997,7 +1874,6 @@ function doComputeIterate(editorElement, cmdHandler) {
   o.initialvalue[1] = GetComputeString("Iterate.centerdefault");
   o.prompt[2] = GetComputeString("Iterate.terms");
   o.initialvalue[2] = GetComputeString("Iterate.termsdefault");
-
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   try {
     msiOpenModelessDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, "cmd_compute_Iterate", cmdHandler, o);
@@ -2009,13 +1885,11 @@ function doComputeIterate(editorElement, cmdHandler) {
 
 function finishComputeIterate(editorElement, o) {
   if (o.Cancel) return;
-
   ComputeCursor(editorElement);
   var fn = runFixup(o.mathresult[0]);
   var center = runFixup(o.mathresult[1]);
   var order = runFixup(o.mathresult[2]);
   msiComputeLogger.Sent4("iterate", fn, center, order);
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().iterate(fn, center, order);
@@ -2047,7 +1921,6 @@ function finishComputeImplicitDiff(math, editorElement, o) {
   if (o.Cancel) return;
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent4("implicit diff", mathstr, o.thevar, o.about);
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().implicitDiff(mathstr, o.thevar, o.about);
@@ -2087,7 +1960,7 @@ function doComputeSolveODEExact(math, labelID, titleID, vars, editorElement, cmd
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeSolveODEExact(this.theMath, this.theLabelID, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -2097,7 +1970,6 @@ function doComputeSolveODEExact(math, labelID, titleID, vars, editorElement, cmd
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveODEExact: [" + e + "]");
         return;
       }
-
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -2134,7 +2006,7 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeSolveODELaplace(this.theMath, this.theLabelID, this.theTitleID, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -2144,7 +2016,6 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveODE: [" + e + "]");
         return;
       }
-
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -2153,11 +2024,8 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
 
 function doComputeSolveODENumeric(math, labelID, titleID, vars, editorElement, cmd, cmdHandler) {
   var mathstr = GetFixedMath(math);
-
   if (!editorElement) editorElement = msiGetActiveEditorElement();
-
   if (!vars) vars = "";
-
   msiComputeLogger.Sent4(labelID, mathstr, "specifying", vars);
   try {
     ComputeCursor(editorElement);
@@ -2184,10 +2052,9 @@ function doComputeSolveODENumeric(math, labelID, titleID, vars, editorElement, c
       o.theEditorElement = editorElement;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
-        this.mParentWin.doComputeSolveODENumeric(this.theMath, this.theLabelID,
-                   this.theTitleID, this.vars, this.theEditorElement, this.theCommand, this.theCommandHandler);
+        this.mParentWin.doComputeSolveODENumeric(this.theMath, this.theLabelID, this.theTitleID, this.vars, this.theEditorElement, this.theCommand, this.theCommandHandler);
       };
       try {
         var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
@@ -2195,7 +2062,6 @@ function doComputeSolveODENumeric(math, labelID, titleID, vars, editorElement, c
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveODE: [" + e + "]");
         return;
       }
-
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -2218,7 +2084,6 @@ function doComputeSolveODESeries(math, editorElement) {
   o.initialvalue[2] = GetComputeString("PowerSeries.termsdefault");
   o.theMath = math;
   o.mathresult = new Array(3);
-
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel) return;
@@ -2226,14 +2091,11 @@ function doComputeSolveODESeries(math, editorElement) {
     msiGetEditor(editorElement).incrementModificationCount(1);
   }
   var mathstr = GetFixedMath(math);
-
   var variable = runFixup(o.mathresult[0]);
   var center = runFixup(o.mathresult[1]);
   var order = runFixup(o.mathresult[2]);
-
   ComputeCursor(editorElement);
   msiComputeLogger.Sent4("Solve ODE Power Series ", mathstr, variable + " @ " + center, order);
-
   try {
     var out = GetCurrentEngine().solveODESeries(mathstr, variable, center, order);
     msiComputeLogger.Received(out);
@@ -2259,31 +2121,23 @@ function doComputePowerSeries(math, editorElement, cmdHandler) {
   o.initialvalue[2] = GetComputeString("PowerSeries.termsdefault");
   o.theMath = math;
   o.mathresult = new Array(3);
-
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   try {
     parentWin = msiGetParentWindowForNewDialog(editorElement);
-
     parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,modal,resizable", o);
-
     if (o.Cancel) return;
     else {
       msiGetEditor(editorElement).incrementModificationCount(1);
     }
-
     finishComputePowerSeries(editorElement, o);
-
   } catch (e) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePowerSeries: [" + e + "]");
     return;
   }
-
 }
 
 function finishComputePowerSeries(editorElement, o) {
-
   var mathstr = runFixup(GetMathAsString(GetRHS(o.theMath)));
-
   ComputeCursor(editorElement);
   var variable = runFixup(o.mathresult[0]);
   var center = runFixup(o.mathresult[1]);
@@ -2298,10 +2152,7 @@ function finishComputePowerSeries(editorElement, o) {
   }
   RestoreCursor(editorElement);
 }
-
 // vector calculus
-
-
 function doComputeWronskian(math, vars, editorElement, cmd, cmdHandler) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
@@ -2323,7 +2174,7 @@ function doComputeWronskian(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeWronskian(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -2338,10 +2189,7 @@ function doComputeWronskian(math, vars, editorElement, cmd, cmdHandler) {
     }
   }
 }
-
 // matrix commands
-
-
 function doComputeCharPoly(math, vars, editorElement, cmd, cmdHandler) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
@@ -2363,7 +2211,7 @@ function doComputeCharPoly(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeCharPoly(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -2373,7 +2221,6 @@ function doComputeCharPoly(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeCharPoly: [" + e + "]");
         return;
       }
-
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -2399,7 +2246,7 @@ function doComputeMap(math, editorElement, cmd, cmdHandler) {
   o.label = GetComputeString("Map.label");
   o.mParentWin = this;
   o.theMath = math;
-  o.afterDialog = function(editorElement) {
+  o.afterDialog = function (editorElement) {
     if (this.Cancel) return;
     this.mParentWin.finishComputeMap(editorElement, this);
   };
@@ -2409,14 +2256,12 @@ function doComputeMap(math, editorElement, cmd, cmdHandler) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMap: [" + e + "]");
     return;
   }
-
 }
 
 function finishComputeMap(editorElement, o) {
   if (o.Cancel) return;
   var mathstr = GetFixedMath(GetRHS(o.theMath));
   msiComputeLogger.Sent4("Map ", mathstr, " @ ", o.vars);
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().map(mathstr, o.vars);
@@ -2450,7 +2295,7 @@ function doComputeMinPoly(math, vars, editorElement, cmd, cmdHandler) {
       o.vars = vars;
       o.theCommand = cmd;
       o.theCommandHandler = cmdHandler;
-      o.afterDialog = function(editorElement) {
+      o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeMinPoly(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
@@ -2484,7 +2329,6 @@ function doComputeRandomMatrix(editorElement) {
   var mMin = GetNumAsMathML(o.min);
   var mMax = GetNumAsMathML(o.max);
   msiComputeLogger.Sent4("random matrix", mRows + " by " + mCols, mMin + " to " + mMax, o.type);
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().matrixRandom(o.type, mRows, mCols, mMin, mMax);
@@ -2509,7 +2353,6 @@ function doComputeReshape(math, editorElement) {
   var mCols = GetNumAsMathML(o.ncols);
   var mathstr = GetFixedMath(GetRHS(math));
   msiComputeLogger.Sent4("reshape", mathstr, "with cols", mCols);
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().matrixReshape(mathstr, mCols);
@@ -2538,7 +2381,6 @@ function doComputeFitCurve(math, editorElement) {
   var label;
   if (o.code == 2) label = GetComputeString("FitCurvePolynomial.fmt");
   else label = GetComputeString("FitCurveRegression.fmt");
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().fitCurve(mathstr, o.code, o.column, o.degree);
@@ -2568,7 +2410,6 @@ function doComputeRandomNumbers(editorElement) {
   var mParam1 = GetNumAsMathML(o.param1);
   var mParam2 = GetNumAsMathML(o.param2);
   msiComputeLogger.Sent4("random numbers", o.dist, mTally, mParam1 + " to " + mParam2);
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().randomNumbers(o.dist, mTally, mParam1, mParam2);
@@ -2603,7 +2444,6 @@ function finishComputeMoment(editorElement, o) {
   var meanisorigin = o.meanisorigin;
   var mathstr = GetFixedMath(o.theMath);
   msiComputeLogger.Sent4("Moment ", mathstr, origin + " @ ", num + " / " + meanisorigin);
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().moment(mathstr, num, origin, meanisorigin);
@@ -2623,7 +2463,7 @@ function doComputeQuantile(math, editorElement, cmd, cmdHandler) {
   o.description = GetComputeString("Quantile.description");
   o.mParentWin = this;
   o.theMath = math;
-  o.afterDialog = function(editorElement) {
+  o.afterDialog = function (editorElement) {
     if (this.Cancel) return;
     this.mParentWin.finishComputeQuantile(editorElement, this);
   };
@@ -2640,7 +2480,6 @@ function finishComputeQuantile(editorElement, o) {
   var quantile = o.vars;
   var mathstr = GetFixedMath(o.theMath);
   msiComputeLogger.Sent4("Quantile", mathstr, "specifying", quantile);
-
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().quantile(mathstr, quantile);
@@ -2655,7 +2494,6 @@ function finishComputeQuantile(editorElement, o) {
 function doComputeDefine(math, editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
-
   var subscript = "";
   var done = false;
   while (!done) {
@@ -2684,7 +2522,6 @@ function doComputeDefine(math, editorElement) {
       }
     }
   }
-
   RestoreCursor(editorElement);
 }
 
@@ -2707,7 +2544,6 @@ function doComputeShowDefs(editorElement) {
   msiComputeLogger.Sent("show definitions", "");
   var out = GetCurrentEngine().getDefinitions();
   msiComputeLogger.Received(out);
-
   var o = {};
   o.val = out;
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
@@ -2721,43 +2557,33 @@ function doComputeClearDefs() {
 
 function doComputeMapMuPADName(editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
-
   msiComputeLogger.Sent("Define MuPAD Name", "");
-
   var o = {};
-
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   parentWin.openDialog("chrome://prince/content/MapMuPADName.xul", "showdefs", "modal,chrome,close,titlebar,resizable,dependent", o);
-
   if (o.Cancel) return;
   else {
     msiGetEditor(editorElement).incrementModificationCount(1);
   }
-
   var swpname = o.swpname;
   var mupname = o.mupadname;
   var infile = o.infile;
-
   var eng = GetCurrentEngine();
   var res = eng.defineMupadName(swpname, mupname, infile);
-
 }
 
 function doComputeSetBasisVars(editorElement, cmd) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var compsample = GetCurrentEngine();
-
   msiComputeLogger.Sent("vector basis", "queried");
-
   var o = {};
   o.vars = runFixup(compsample.getVectorBasis());
   o.mParentWin = this;
   o.theEngine = compsample;
-  o.afterDialog = function(editorElement) {
+  o.afterDialog = function (editorElement) {
     if (this.Cancel) return;
     this.mParentWin.finishComputeSetBasisVars(this.vars, this.theEngine);
   };
-
   try {
     var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVarList.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, null, o);
   } catch (e) {
@@ -2773,14 +2599,12 @@ function finishComputeSetBasisVars(vars, compsample) {
 
 function doComputePassthru(editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
-
   var str = "";
   var element = null;
   var first = 0;
   var last = 0;
   var anchor;
   var focus;
-
   try {
     var selection = msiGetEditor(editorElement).selection;
     if (!selection) {
@@ -2793,24 +2617,20 @@ function doComputePassthru(editorElement) {
       dump("\nanchor != focus in passtrhu\n");
       return;
     }
-
     var r = selection.getRangeAt(0);
     var editor = msiGetEditor(editorElement);
     var nodeArray = editor.nodesInRange(r);
     var enumerator = nodeArray.enumerate();
     var node = enumerator.getNext();
     var content = node.nodeValue;
-
     first = (selection.anchorOffset < selection.focusOffset) ? selection.anchorOffset : selection.focusOffset;
     last = (selection.anchorOffset < selection.focusOffset) ? selection.focusOffset : selection.anchorOffset;
     str = "<mtext>" + content.substr(first, last - first) + "</mtext>";
-
     msiComputeLogger.Sent("passthru", str);
   } catch (exc) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePassthru; exception is [" + exc + "].");
     return;
   }
-
   ComputeCursor(editorElement);
   var compsample = GetCurrentEngine();
   var out;
@@ -2820,34 +2640,25 @@ function doComputePassthru(editorElement) {
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-
   if (out) {
     appendTaggedResult(out, GetComputeString("Passthru.fmt"), anchor, last, editorElement);
   }
   RestoreCursor(editorElement);
 }
-
 // "math" is the expression to plot
 // "type" is the type from the menu.
-
-
 function doComputePlot(math, dimension, type, animate, editorElement) {
-  if (!editorElement)
-    editorElement = msiGetActiveEditorElement();
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var selection;
-  if (editor)
-    selection = editor.selection;
+  if (editor) selection = editor.selection;
   insertNewGraph(math, dimension, type, animate, editorElement, selection);
 }
 
 function doEditPlot() {
   graphObjectClickEvent();
 }
-
-
 // form a single run of math but don't put caret on end
-
 function coalescemath(editorElement, leaveCursorAsIs) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
@@ -2864,21 +2675,19 @@ function coalescemath(editorElement, leaveCursorAsIs) {
       }
     }
     var left = node_before(element);
-    while (left)
-    {
+    while (left) {
       if (left.localName != "math") {
         left = null;
       }
       if (left) {
         editor.joinNodes(left, element, element.parentNode);
         // joinNodes merges the nodes and deletes element
-        element = left;  // we do so so that element is the non-empty element.
+        element = left; // we do so so that element is the non-empty element.
         left = node_before(element);
       }
     }
     var right = node_after(element);
-    while (right)
-    {
+    while (right) {
       if (right.localName != "math") {
         right = null;
       }
@@ -2904,8 +2713,5 @@ function findmathparent(node) {
   return findtagparent(node, "math");
   // really, should check namespace, too
 }
-
 FixJS();
-
-
-#endif
+# endif
