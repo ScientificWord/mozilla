@@ -126,7 +126,7 @@ td[line-bottom="double"] {
 
 button[class="msi"]::-moz-selection{
   background: blue;
-} 
+}
 
 button[class="msi"]{
   position: relative;
@@ -145,7 +145,7 @@ hspace * {
 }
 
 body {
-   line-height: 1.3em; 
+   line-height: 1.3em;
 }
 
 body[showinvis="true"] hspace {
@@ -221,7 +221,7 @@ hspace[type="zeroSpace"] {
 
 hspace[type="noIndent"] {
   min-width: 0.0em;
-} 
+}
 
 vspace {
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#vspace"); */
@@ -758,7 +758,7 @@ bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epi
   -moz-user-select: text;
 }
 
-/* maketitle, maketoc, makelot, makelof { 
+/* maketitle, maketoc, makelot, makelof {
   -moz-appearance: button;
   margin: 1px 5px 2px 5px;
   min-width: 6.3em;
@@ -1602,7 +1602,7 @@ rawTeX {
  color: #6600cc;
 }
 
-htmlfield { 
+htmlfield {
   background-color: #ccccff;
 }
 
@@ -1635,6 +1635,7 @@ emphasized span.inlineMath {
 
 roman {
   font-family: Times New Roman, serif;
+  font-style: normal;
   color: rgb(0,0,255)
 }
 
