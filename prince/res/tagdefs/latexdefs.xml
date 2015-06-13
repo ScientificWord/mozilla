@@ -63,8 +63,7 @@
 				<tag nm="lower"><description>Lower case</description></tag>
 				<tag nm="normalsize"><description>normalsize</description></tag>
 				<tag nm="phantom"><description>phantom</description></tag>
-				<tag nm="roman"><description>Roman</description>
-          <mathonly/><mathvar>normal</mathvar></tag>
+				<tag nm="roman"><description>Roman</description></tag>
 				<tag nm="sansSerif"><description>Sans Serif</description>
           <mathvar>sans-serif</mathvar></tag>
 				<tag nm="scriptsize"><description>Scriptsize</description></tag>
