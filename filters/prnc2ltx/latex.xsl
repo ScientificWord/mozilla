@@ -731,9 +731,12 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-\begin{<xsl:value-of select="$tagnameToUse"/>}<xsl:apply-templates mode="envleadin"/>
-<xsl:apply-templates/>
-\end{<xsl:value-of select="$tagnameToUse"/>}
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\begin{</xsl:text><xsl:value-of select="$tagnameToUse"/><xsl:text>}</xsl:text>
+  <xsl:apply-templates mode="envleadin"/>
+     <xsl:value-of select="$newline"/>
+     <xsl:apply-templates/>
+  <xsl:text>\end{</xsl:text><xsl:value-of select="$tagnameToUse"/><xsl:text>}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:environment">

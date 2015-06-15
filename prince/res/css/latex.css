@@ -1419,7 +1419,8 @@ notation[leadInType="custom"],
 remark[leadInType="custom"],
 summary[leadInType="custom"],
 proof[leadInType="custom"] {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
+  /* -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin"); */
+  display: block;
 }
 
 assertion > envLeadIn,
@@ -1447,8 +1448,9 @@ claim > envLeadIn,
 conclusion > envLeadIn,
 notation > envLeadIn,
 remark > envLeadIn,
-summary > envLeadIn {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremLeadin");
+summary > envLeadIn:before {
+ /* -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremLeadin"); */
+ content: 'HELLO';
 }
 
 assertion[numbering="none"],
