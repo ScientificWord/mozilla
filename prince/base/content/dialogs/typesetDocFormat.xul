@@ -12,8 +12,8 @@
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
-<!-- <?xul-overlay href="chrome://prince/content/typesetsectionsoverlay.xul"?>
- -->
+<!-- <?xul-overlay href="chrome://prince/content/typesetsectionsoverlay.xul"?> -->
+
 <!DOCTYPE dialog [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
@@ -563,8 +563,8 @@
                   <vbox>
                     <vbox>
                       <label observes="pagelayoutok" value="&Columns.label;"/>
-                      <menulist observes="pagelayoutok" id="columncount" persist="value">
-                        <menupopup style="width: 8em" oncommand="broadcastColCount();">
+                      <menulist observes="pagelayoutok">
+                        <menupopup id="columncount" style="width: 8em" oncommand="broadcastColCount();">
                           <menuitem value="1" label="&one.label;"/>
                           <menuitem value="2" label="&two.label;"/>
                         </menupopup>
