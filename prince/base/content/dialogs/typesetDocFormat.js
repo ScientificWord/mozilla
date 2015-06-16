@@ -149,7 +149,7 @@ function startup()
 	dump ("initializing sectitleformat\n");
   sectitleformat = new Object();
 //  getNumStyles(preamble);
-  getSectionFormatting(sectitlenodelist, sectitleformat);
+//  getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
 	getLanguageSettings(preamble);
   enableDisableReformat(document.getElementById("enablereformat").checked);
@@ -283,15 +283,15 @@ function saveNumStyles(preambleNode)
   }
 }
 
-function setNumStyle(menulist)
-{
-  if ((menulist.value != null) && (menulist.value.length > 0))
-  {
-    var sectionmenu = document.getElementById("sections.name");
-    var sect = sectionmenu.selectedItem.id.replace("sections.","");
-    gNumStyles[sect] = menulist.value;
-  }
-}
+//function setNumStyle(menulist)
+//{
+//  if ((menulist.value != null) && (menulist.value.length > 0))
+//  {
+//    var sectionmenu = document.getElementById("sections.name");
+//    var sect = sectionmenu.selectedItem.id.replace("sections.","");
+//    gNumStyles[sect] = menulist.value;
+//  }
+//}
 
 function lineend(node, spacecount)
 {
@@ -339,6 +339,7 @@ function savePageLayout(docFormatNode)
   node.setAttribute('top', document.getElementById('tbtmargin').value+units);
   lineend(pfNode, 2);
   nodecounter++;
+  var cc = document.getElementById('columncount').value;
   if (document.getElementById('columncount').value && document.getElementById('columncount').value ==2)
   {
 		node = editor.createNode('columns',pfNode,nodecounter++);
@@ -780,7 +781,7 @@ function onAccept()
     saveCropMarks(newNode);
     savePageLayout(newNode);
     saveFontSpecs(newNode);
-    saveSectionFormatting(newNode, sectitleformat);
+    //saveSectionFormatting(newNode, sectitleformat);
     saveClassOptionsEtc(newNode);
     saveLanguageSettings(preamble);
 //    saveNumStyles(preamble);
