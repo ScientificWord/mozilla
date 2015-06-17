@@ -11,6 +11,7 @@ var dynAllTagsStyleSheet;
 var licenseWarningGiven = false;
 
 function aColorObj(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   this.mEditorElement = editorElement;
   this.LastTextColor = "";
   this.LastBackgroundColor = "";
@@ -29,6 +30,7 @@ function aColorObj(editorElement) {
 
 
 function msiAddToolbarPrefListener(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
     pbi.addObserver(kEditorToolbarPrefs, editorElement.mEditorToolbarPrefListener, false);
@@ -38,6 +40,7 @@ function msiAddToolbarPrefListener(editorElement) {
 }
 
 function msiRemoveToolbarPrefListener(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   if (!("mEditorToolbarPrefListener" in editorElement))
     return;
   try {
@@ -49,6 +52,7 @@ function msiRemoveToolbarPrefListener(editorElement) {
 }
 
 function msiEditorToolbarPrefListener(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   this.mEditorElement = editorElement;
   this.observe = function(subject, topic, prefName) {
     // verify that we're changing a button pref
@@ -65,6 +69,7 @@ function msiEditorToolbarPrefListener(editorElement) {
 }
 
 function msiButtonPrefListener(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   this.mEditorElement = editorElement;
   //}
 
@@ -317,6 +322,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
 
 //const gSourceTextListener =
 function msiSourceTextListener(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   this.mEditorElement = editorElement;
   this.NotifyDocumentCreated = function NotifyDocumentCreated() {
     msiDumpWithID("In msiSourceTextListener for editorElement [@], NotifyDocumentCreated.\n",
@@ -330,6 +336,7 @@ function msiSourceTextListener(editorElement) {
 
 //const gSourceTextObserver =
 function msiSourceTextObserver(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   this.mEditorElement = editorElement;
   this.observe = function observe(aSubject, aTopic, aData) {
     // we currently only use this to update undo
@@ -339,6 +346,7 @@ function msiSourceTextObserver(editorElement) {
 
 
 function aDocumentReloadListener(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   this.mEditorElement = editorElement;
   this.NotifyDocumentCreated = function() {};
   this.NotifyDocumentWillBeDestroyed = function() {};
@@ -360,6 +368,7 @@ function aDocumentReloadListener(editorElement) {
 
 
 function msiGetBodyElement(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     var editor = msiGetEditor(editorElement);
     return editor.rootElement;
@@ -371,6 +380,7 @@ function msiGetBodyElement(editorElement) {
 }
 
 function addClickEventListenerForEditor(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     var bodyelement = msiGetBodyElement(editorElement);
     if (bodyelement)
@@ -382,6 +392,7 @@ function addClickEventListenerForEditor(editorElement) {
 
 
 function addKeyDownEventListenerForEditor(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     editorElement.contentWindow.addEventListener("keydown", msiEditorKeyListener, true);
   } catch (ex) {
@@ -390,6 +401,7 @@ function addKeyDownEventListenerForEditor(editorElement) {
 }
 
 function addObjectResizeListenerForEditor(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     var editor = msiGetEditor(editorElement);
     editor instanceof Components.interfaces.nsIHTMLObjectResizer;
@@ -400,6 +412,7 @@ function addObjectResizeListenerForEditor(editorElement) {
 }
 
 function addFocusEventListenerForEditor(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     editorElement.contentWindow.addEventListener("focus", msiEditorOnFocus, true);
     editorElement.contentWindow.addEventListener("blur", msiEditorOnBlur, true);
@@ -660,6 +673,7 @@ function msiResizeListenerForEditor(editor) {
 msiResizeListenerForEditor.prototype = msiResizeListener;
 
 function addDOMEventListenerForEditor(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     editorElement.contentWindow.addEventListener("DOMNodeInserted", msiEditorDOMChangeListener,
       false);
@@ -816,6 +830,7 @@ function coalesceDocumentOptions(editor) {
 // implements nsIObserver
 //var gEditorDocumentObserver =
 function msiEditorDocumentObserver(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   this.mEditorElement = editorElement;
   //  this.mDumpMessage = 3;
   this.mbInsertInitialContents = true;
@@ -1310,6 +1325,7 @@ function msiEditorDocumentObserver(editorElement) {
 }
 
 function msiSetFocusOnStartup(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
     try {
       editorElement.contentWindow.focus();
     } catch (e) {}
@@ -1875,6 +1891,7 @@ function msiEditorLoadUrl(editorElement, url, markerStr) {
 
 // This should be called by all Composer types
 function SharedStartupForEditor(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   // Just for convenience
   //  gContentWindow = window.content;
 
@@ -1974,6 +1991,7 @@ function SharedStartupForEditor(editorElement) {
 
 // This method is only called by Message composer when recycling a compose window
 function msiEditorResetFontAndColorAttributes(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     document.getElementById("cmd_fontFace").setAttribute("state", "");
     msiEditorRemoveTextProperty(editorElement, "font", "color");
@@ -2006,6 +2024,7 @@ function msiEditorResetFontAndColorAttributes(editorElement) {
 
 
 function ShutdownAnEditor(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     SetUnicharPref("swp.zoom_factor", msiGetMarkupDocumentViewer(editorElement).textZoom);
   } catch (e) {
@@ -2059,6 +2078,7 @@ function SafeSetAttribute(theDocument, nodeID, attributeName, attributeValue) {
 }
 
 function msiDocumentHasBeenSaved(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var fileurl = "";
   try {
     fileurl = msiGetEditorURL(editorElement);
@@ -3900,6 +3920,7 @@ function msiEditorCheckEscape(event) {
 //}
 
 function msiGetObjectDataForProperties(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   //  var editor = msiGetEditor(editorElement);
   var nodeData = msiGetPropertiesObjectFromSelection(editorElement);
   return nodeData;
@@ -3923,6 +3944,7 @@ function msiGetObjectDataForProperties(editorElement) {
 //}
 
 function msiEditorGetObjectForProperties(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var element;
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -4035,6 +4057,7 @@ function msiCreatePropertiesObjectDataFromSelection(aSelection, editorElement) {
 }
 
 function msiGetPropertiesObjectFromSelection(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var retObj = null;
   var editor = msiGetEditor(editorElement);
   if (editor.selection.isCollapsed)
@@ -4233,6 +4256,7 @@ function msiCreatePropertiesObjectDataFromRange(aRange, editorElement) {
 //}
 
 function msiSelectPropertiesObjectFromCursor(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var currNode = editor.selection.anchorNode;
   var bindingParent = currNode ? currNode.ownerDocument.getBindingParent(currNode) : null;
@@ -4412,6 +4436,7 @@ function handleSourceParseError(errorMsg) // returns true if the user wants to g
   }
 
 function msiClearSource(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var sourceIframe = document.getElementById("content-source");
   var sourceEditor = sourceIframe.contentWindow.gEditor;
@@ -4774,6 +4799,7 @@ function msiSetEditMode(mode, editorElement) {
 
 
 function msiCancelHTMLSource(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   // Don't convert source text back into the DOM document
   msiClearSource(editorElement);
   editorElement.makeEditable("html");
@@ -4790,6 +4816,7 @@ function msiCancelHTMLSource(editorElement) {
 }
 
 function msiFinishHTMLSource(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   if (msiIsInHTMLSourceMode(editorElement)) {
     // Switch edit modes -- converts source back into DOM document
     msiSetEditMode(msiGetPreviousNonSourceDisplayMode(editorElement), editorElement);
@@ -4798,12 +4825,14 @@ function msiFinishHTMLSource(editorElement) {
 
 
 function msiGetPreviousNonSourceDisplayMode(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   if ("mPreviousNonSourceDisplayMode" in editorElement)
     return editorElement.mPreviousNonSourceDisplayMode;
   return kDisplayModeNormal;
 }
 
 function msiGetEditorDisplayMode(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   if ("mEditorDisplayMode" in editorElement)
     return editorElement.mEditorDisplayMode;
   if ("gEditorDisplayMode" in window)
@@ -5097,6 +5126,7 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings) {
 }
 
 function msiGetViewSettingsFromDocument(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var retVal = msiGetCurrViewSettings(editorElement);
   var editor = msiGetEditor(editorElement);
   var theBody = null;
@@ -9403,6 +9433,7 @@ function msiGetNumberOfContiguousSelectedColumns(editorElement) {
 
 
 function msiResetStructToolbar(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   //  editorElement.mLastFocusNode = null;
   msiUpdateStructToolbar(editorElement, true);
 }
@@ -10564,12 +10595,14 @@ function openGraphDialog(tagname, node, editorElement) {
 }
 
 function getMSIDocumentInfo(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var docInfo = new msiDocumentInfo(editorElement);
   docInfo.initializeDocInfo();
   return docInfo;
 }
 
 function getBibliographyScheme(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var docInfo = getMSIDocumentInfo(editorElement);
   if (docInfo && docInfo.generalSettings) {
     if (("bibliographyscheme" in docInfo.generalSettings) && ("contents" in docInfo.generalSettings
@@ -10880,6 +10913,7 @@ function msiEditPage(url, launchWindow, delay, isShell, windowName) {
 
 // returns file picker result
 function msiGetSaveLocationForImage(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var dialogResult = {};
   dialogResult.filepickerClick = msIFilePicker.returnCancel;
   //  dialogResult.resultingURI = "";
@@ -10941,6 +10975,7 @@ function msiGetSaveLocationForImage(editorElement) {
 }
 
 function msiCopyAsPicture(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   //  msiSaveAsPicture(editorElement);  //temp only!
 
   var editor = msiGetEditor(editorElement);
@@ -10952,6 +10987,7 @@ function msiCopyAsPicture(editorElement) {
 }
 
 function msiSaveAsPicture(editorElement) {
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   //  var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
   var selection = editor.selection;
