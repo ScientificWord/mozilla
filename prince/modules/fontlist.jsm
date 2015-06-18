@@ -181,6 +181,9 @@ function addOTFontsToMenu(menu)
 	  var popup = menu.menulist.getElementsByTagName("menupopup")[0];
     separator.setAttribute("id","startOpenType");
     popup.appendChild(separator);
+    if (!gSystemFonts.init) {
+      getSysFontList();
+    }
     for (var i = 0; i < gSystemFonts.count; ++i)
     {
       if (gSystemFonts.list[i] != "")
@@ -218,42 +221,3 @@ function getSysFontList()
   }
 }
 
-// var gPrefsService;
-// var gPrefsBranch;
-
-
-// function GetPrefsService()
-// {
-//   if (gPrefsService)
-//     return gPrefsService;
-
-//   try {
-//     gPrefsService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
-//   }
-//   catch(ex) {
-//     dump("failed to get prefs service!\n");
-//   }
-
-//   return gPrefsService;
-// }
-
-// function GetPrefs()
-// {
-//   if (gPrefsBranch)
-//     return gPrefsBranch;
-
-//   try {
-//     var prefService = GetPrefsService();
-//     if (prefService)
-//       gPrefsBranch = prefService.getBranch(null);
-
-//     if (gPrefsBranch)
-//       return gPrefsBranch;
-//     else
-//       dump("failed to get root prefs!\n");
-//   }
-//   catch(ex) {
-//     dump("failed to get root prefs!\n");
-//   }
-//   return null;
-// }
