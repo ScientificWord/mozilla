@@ -1416,15 +1416,17 @@ function openBrowser(url) {
   if (os == "win")
   {
     extension = "cmd";
+    arr.push('start');
   }
   else
   {
     extension = "bash";
+    // arr.push('open');
   }
   exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   exefile.append("shell."+ extension);
   theProcess.init(exefile);
-  arr = [url];
+  arr.push(url);
   theProcess.run(false, arr, arr.length);
 }
 
