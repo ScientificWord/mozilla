@@ -502,10 +502,9 @@
 % should check for second optional
 \def\out@newtheorema#1[#2]#3{%
   \endgroup% started in \newtheorem
-%  \expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\newtheorem{#1}[#2]{#3}}
   \msitopreambleextra{^^0a\newtheorem{#1}[#2]{#3}}
   \@ifundefined{msi@begin@#1}%
-    {\@namedef{msi@begin@#1}{\msi@br\@ifnextchar[{\msi@envWithLeadin{#1}}{\msi@envWithLeadin{#1}}}%
+    {\@namedef{msi@begin@#1}{\msi@br\@ifnextchar[{\msi@envWithLeadin{#1}}{\msi@envWithOutLeadin{#1}}}%
      \@namedef{msi@end@#1}{\msi@br\msiclosetag{#1}{</#1>}}}%
     {}}
 
@@ -638,11 +637,6 @@
 \def\cite{%
   \ifvmode\msihmode\fi
   \@ifnextchar[{\@tempswatrue\begingroup\attrib@text\out@citex}{\@tempswafalse\begingroup\attrib@text\out@citey}}
-
-
-%\def\@citey#1#{%
-%  \attrib@text\out@citey
-%}
 
 
 \def\out@citex[#1]#2{%
