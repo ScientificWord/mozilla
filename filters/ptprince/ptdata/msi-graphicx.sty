@@ -11,8 +11,7 @@
    \msitag{"/>}}
 
 \def\graphicspath#1{%
-  %\msitag{<texb enc="1" name="graphicspath"><![CDATA[\graphicspath{#1}]]></texb>}
-  \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\graphicspath{#1}}%
+  \msitopreambleextra{^^0a\graphicspath{#1}}%
   \begingroup\msi@inpreamble=0
     \msi@graphicspath{.}%
     \msi@collectpath#1!%
