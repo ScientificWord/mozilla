@@ -91,7 +91,7 @@
 <xsl:template match="html:msibr">
   <xsl:choose>
     <xsl:when test="@type='allowBreak'">\allowbreak </xsl:when>
-    <xsl:when test="@type='pageBreak'">\pagebreak\relax </xsl:when>
+    <xsl:when test="@type='pageBreak'">\par\pagebreak\relax </xsl:when>
     <xsl:when test="@type='newPage'">\newpage </xsl:when>
     <xsl:when test="@type='discretionaryHyphen'">\-</xsl:when>
     <xsl:when test="@type='lineBreak'">\linebreak\relax </xsl:when>
