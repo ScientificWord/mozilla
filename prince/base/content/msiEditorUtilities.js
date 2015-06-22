@@ -10181,27 +10181,32 @@ function getUserResourceFile(name, resdirname) {
   basedir = dsprops.get('ProfD', Components.interfaces.nsIFile);
   userAreaFile = basedir.clone();
   userAreaFile.append(name);
-  if (!userAreaFile.exists()) {
+  resdir = dsprops.get('resource:app', Components.interfaces.nsIFile);
+  if (resdir)
+    resdir.append('res');
+  if (resdir) {
+    file = resdir.clone();
+    if (resdirname && resdirname.length > 0)
+      file.append(resdirname);
+    file.append(name);
+  }
+  if (!userAreaFile.exists() || fileIsNewerThan(userAreaFile, file.path)) {
     // copy from resource area
-    resdir = dsprops.get('resource:app', Components.interfaces.nsIFile);
-    if (resdir)
-      resdir.append('res');
-    if (resdir) {
-      file = resdir.clone();
-      if (resdirname && resdirname.length > 0)
-        file.append(resdirname);
-      file.append(name);
-      try {
-        if (file.exists())
-          file.copyTo(basedir, '');
-      } catch (e) {
-        dump('failed to copy: ' + e.toString());
+    try {
+      if (file.exists()) {
+        if (userAreaFile.exists()) {
+          userAreaFile.remove(true);
+        }
+        file.copyTo(basedir, '');
       }
+    } catch (e) {
+      dump('failed to copy: ' + e.toString());
     }
     userAreaFile = file.clone();
   }
   return userAreaFile;
 }
+
 function getResourceFile(name, resdirname) {
   var dsprops, resfile;
   dsprops = Components.classes['@mozilla.org/file/directory_service;1'].getService(Components.interfaces.nsIProperties);
@@ -11142,6 +11147,31 @@ function checkPackageDependenciesForEditor(editor) {
     dump('Error in checkPackageDependenciesForEditor: ' + ex + '.\n');
   }
 }
+
+function fileIsNewerThan(baseFile, maybeNewerFilePath) {
+  var path;
+  var maybeNewerFile = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
+  if (maybeNewerFilePath.indexOf('chrome:') === 0) {
+    path = msiFileURLFromChromeURI(maybeNewerFilePath).path;
+  }
+  else {
+    path = maybeNewerFilePath;
+  }
+  var n = path.indexOf('.jar!');
+  if (n > 0) {
+    path = path.slice(0, n+4);
+  }
+  maybeNewerFile.initWithPath(path);
+  if (!baseFile || !maybeNewerFile) return false;
+  try {
+    return maybeNewerFile.lastModifiedTime > baseFile.lastModifiedTime;
+  }
+  catch(e) {
+    return false;
+  }
+}
+
+
 function getCachedXSLTString(xslRootFileURLString) {
   // we cache the xsl file as comp-???.xsl in the user's profile where ???
   // is the leaf of xslPath
@@ -11156,7 +11186,7 @@ function getCachedXSLTString(xslRootFileURLString) {
   var dsprops = Components.classes['@mozilla.org/file/directory_service;1'].createInstance(Components.interfaces.nsIProperties);
   var cachefile = dsprops.get('ProfD', Components.interfaces.nsILocalFile);
   cachefile.append('comp-' + leafname);
-  if (!cachefile.exists()) {
+  if (!cachefile.exists() || fileIsNewerThan(cachefile, xslPath)) {
     var stylesheetElement = /<xsl:stylesheet[^>]*>/;
     var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
     var myXMLHTTPRequest = new XMLHttpRequest();
