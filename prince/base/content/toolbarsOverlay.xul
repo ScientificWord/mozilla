@@ -98,7 +98,7 @@
       <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" label="&indexentryButton.label;" observes="cmd_MSIinsertIndexEntryCmd"/>
       <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" label="&xrefButton.label;" observes="cmd_MSIinsertCrossReferenceCmd"/>
       <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;" label="&texfieldButton.label;" observes="cmd_MSIinsertTeXFieldCmd"/>
-      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" label="&bibliographyButton.label;" 
+      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" label="&bibliographyButton.label;"
             observes="cmd_MSIinsertBibliographyCmd"/>
       <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" label="&citationButton.label;" observes="cmd_citation"/>
 #endif
@@ -407,7 +407,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
   <toolbarbutton id="importimageButton" class="toolbarbutton-1" observes="cmd_image"
                  tooltiptext="&importimageToolbarButton.tooltip;" label="&importimageToolbarButton.label;"/>
 
-  <toolbarbutton id="importtexButton" class="toolbarbutton-1" observes="cmd_openTeX"
+  <toolbarbutton id="importtexButton" class="toolbarbutton-1" observes="cmd_importTeX"
                  tooltiptext="&importtexToolbarButton.tooltip;" label="&importtexToolbarButton.label;"/>
 
 	<textbox id="TextTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
