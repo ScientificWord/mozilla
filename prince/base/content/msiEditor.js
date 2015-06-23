@@ -1263,10 +1263,12 @@ function msiEditorDocumentObserver(editorElement) {
       case "cmd_setDocumentModified":
         //        msiDumpWithID("Hit setDocumentModified observer in base msiEditorDocumentObserver, for editor [@].\n", this.mEditorElement);
         window.updateCommands("save");
-        if (msiPreviewCommand.isCommandEnabled()) {
-          document.getElementById('PreviewModeButton').removeAttribute('disabled');
-        } else {
-          document.getElementById('PreviewModeButton').setAttribute('disabled', 'true');
+        if (document.getElementById('PreviewModeButton')) {
+          if (msiPreviewCommand.isCommandEnabled()) {
+            document.getElementById('PreviewModeButton').removeAttribute('disabled');
+          } else {
+            document.getElementById('PreviewModeButton').setAttribute('disabled', 'true');
+          }
         }
         //        window.updateCommands("undo");
         //        msiDoUpdateCommands("undo", this.mEditorElement);
@@ -1499,7 +1501,6 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
       if (docurl != null) dump("Url in args is " + docurl.spec + "\n");
     };
     if (!docurl && bTopLevel) {
-      debugger;
       var prefs = GetPrefs();
       var fUseLastSavedFile;
       var firstRun;
