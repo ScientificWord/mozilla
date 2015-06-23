@@ -1411,7 +1411,7 @@ var msiImportTeXCommand =
     if (isLicensed())
     {
       try {
-        return OpenTeX();
+        return openTeX();
       }
       catch (e) {
         finalThrow(cmdFailString('importtex'), e.message);
