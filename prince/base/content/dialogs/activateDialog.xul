@@ -60,10 +60,14 @@
   			<label>&email.label;</label>
   			<textbox id="email"/>
   		</row>
-  		<row>
-  			<label>&phone.label;</label>
-  			<textbox id="phone"/>
-  		</row>
+      <row>
+        <label>&name.label;</label>
+        <textbox id="name"/>
+      </row>
+      <row>
+        <label>&phone.label;</label>
+        <textbox id="phone"/>
+      </row>
    	</rows>
   </grid>
 
