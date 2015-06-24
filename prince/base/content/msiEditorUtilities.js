@@ -11150,6 +11150,7 @@ function checkPackageDependenciesForEditor(editor) {
 
 function fileIsNewerThan(baseFile, maybeNewerFilePath) {
   var path;
+  var os;
   var maybeNewerFile = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
   if (maybeNewerFilePath.indexOf('chrome:') === 0) {
     path = msiFileURLFromChromeURI(maybeNewerFilePath).path;
@@ -11161,6 +11162,15 @@ function fileIsNewerThan(baseFile, maybeNewerFilePath) {
   if (n > 0) {
     path = path.slice(0, n+4);
   }
+  path = path.replace('//','/','g'); // Something is putting in '//' instead of '/'; I think it is the C++ part of msiFileURLFromChromeURI
+  os = getOS(window);
+  if (os === 'win') {
+    path = path.replace('/','\\', 'g');
+    if (path.indexOf('C:') > -1) {
+      path = path.slice(path.indexOf('C:'))
+    }
+  }
+  path = decodeURIComponent(path);
   maybeNewerFile.initWithPath(path);
   if (!baseFile || !maybeNewerFile) return false;
   try {
