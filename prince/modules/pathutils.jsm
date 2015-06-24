@@ -1,5 +1,5 @@
 var EXPORTED_SYMBOLS = ["msiPathFromFileURL", "msiFileURLFromAbsolutePath",
-	"msiFileURLFromChromeURI", "msiFileURLFromFile", "msiURIFromString", 
+	"msiFileURLFromChromeURI", "msiFileURLFromFile", "msiURIFromString",
 	"msiFileURLStringFromFile", "msiPathFromFileURL" , "msiFileFromFileURL"];
 
 // msiFileURLFromAbsolutePath
@@ -9,8 +9,8 @@ var EXPORTED_SYMBOLS = ["msiPathFromFileURL", "msiFileURLFromAbsolutePath",
 function msiFileURLFromAbsolutePath( absPath )
 {
   try {
-    var file = Components.classes["@mozilla.org/file/local;1"].  
-                         createInstance(Components.interfaces.nsILocalFile);  
+    var file = Components.classes["@mozilla.org/file/local;1"].
+                         createInstance(Components.interfaces.nsILocalFile);
     file.initWithPath( absPath );
     return msiFileURLFromFile( file );
   }
@@ -18,7 +18,7 @@ function msiFileURLFromAbsolutePath( absPath )
   {
     dump("//// error in msiFileURLFromAbsolutePath: "+e.message+"\n");
   }
-}                       
+}
 
 function msiFileURLFromChromeURI( chromePath )  //chromePath is a nsURI
 {
@@ -28,7 +28,7 @@ function msiFileURLFromChromeURI( chromePath )  //chromePath is a nsURI
     dump("In msiFileURLFromChrome, path [" + chromePath + "] isn't a chrome URL! Returning null.\n");
     return retPath;
   }
-   
+
   var ios = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
   var uri = ios.newURI(chromePath, "UTF-8", null);
   var cr = Components.classes['@mozilla.org/chrome/chrome-registry;1'].getService(Components.interfaces.nsIChromeRegistry);
@@ -41,26 +41,26 @@ function msiFileURLFromChromeURI( chromePath )  //chromePath is a nsURI
     pathStr = "file://" + pathStr;
   if (pathStr != retPath.spec)
     retPath = msiURIFromString(pathStr);
-  retPath = msiFileURLFromAbsolutePath(retPath.path);
+//  retPath = msiFileURLFromAbsolutePath(retPath.path);
 
   return retPath;
 }
 
 function msiFileURLFromFile( file )
 {
-  // file is nsIFile  
-  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
-                      getService(Components.interfaces.nsIIOService);  
-  return ios.newFileURI(file);  
+  // file is nsIFile
+  var ios = Components.classes["@mozilla.org/network/io-service;1"].
+                      getService(Components.interfaces.nsIIOService);
+  return ios.newFileURI(file);
 }
 
 function msiURIFromString(str)
 {
-  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
-                      getService(Components.interfaces.nsIIOService);  
-  return ios.newURI(str, null, null);  
+  var ios = Components.classes["@mozilla.org/network/io-service;1"].
+                      getService(Components.interfaces.nsIIOService);
+  return ios.newURI(str, null, null);
 }
-  
+
 function msiFileURLStringFromFile( file )
 {
   return  msiFileURLFromFile( file ).spec;
@@ -76,11 +76,11 @@ function msiFileFromFileURL(url)
     dump("Error in msiFileFromFileURL: url = "+url.spec+" "+e.message+"\n");
   }
 }
-  
+
 function msiPathFromFileURL( url )     // redundant BBM: remove instances of this or of GetFilePath
 {
   //return GetFilepath( url );
   // or
-  return decodeURI(msiFileFromFileURL(url).path); 
+  return decodeURI(msiFileFromFileURL(url).path);
 }
 
