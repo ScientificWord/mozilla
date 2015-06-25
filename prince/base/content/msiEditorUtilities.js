@@ -11166,9 +11166,12 @@ function fileIsNewerThan(baseFile, maybeNewerFilePath) {
   os = getOS(window);
   if (os === 'win') {
     path = path.replace('/','\\', 'g');
-    if (path.indexOf('C:') > -1) {
-      path = path.slice(path.indexOf('C:'))
-    }
+    pos = path.search(/^.?\w:/);
+    if (pos > -1)
+      path = path.slice(pos+1); 
+    //if (path.indexOf('C:') > -1) {
+    //  path = path.slice(path.indexOf('C:'))
+    //}
   }
   path = decodeURIComponent(path);
   maybeNewerFile.initWithPath(path);
