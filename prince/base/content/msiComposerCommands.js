@@ -257,6 +257,7 @@ function msiSetupComposerWindowCommands(editorElement)
   commandTable.registerCommand("cmd_saveAsDir",      msiSaveAsCommand);
   commandTable.registerCommand("cmd_saveCopyAs",     msiSaveCopyAsCommand);
   commandTable.registerCommand("cmd_saveCopyAsDir",  msiSaveCopyAsCommand);
+  commandTable.registerCommand("cmd_importTeX",      msiImportTeXCommand);
   commandTable.registerCommand("cmd_exportToText",   msiExportToTextCommand);
   commandTable.registerCommand("cmd_exportToTeX",    msiExportToTexCommand);
   commandTable.registerCommand("cmd_exportToWeb",    msiExportToWebCommand);
@@ -1377,13 +1378,13 @@ var msiSaveCopyAsCommand =
 var msiExportToTexCommand =
 {
   isCommandEnabled: function(aCommand, dummy) {
-    return okToPrint();
+    return isLicensed();
   },
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
   doCommand: function(aCommand) {
-    if (okToPrint())
+    if (isLicensed())
     {
       try {
         return exportTeX();
@@ -1398,16 +1399,40 @@ var msiExportToTexCommand =
   }
 }
 
-var msiExportToWebCommand =
+var msiImportTeXCommand =
 {
   isCommandEnabled: function(aCommand, dummy) {
-    return okToPrint();
+    return isLicensed();
   },
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
   doCommand: function(aCommand) {
-    if (okToPrint())
+    if (isLicensed())
+    {
+      try {
+        return openTeX();
+      }
+      catch (e) {
+        finalThrow(cmdFailString('importtex'), e.message);
+      }
+    }
+    else
+      finalThrow(cmdFailString("importtex"), "Importing a document is not allowed since his program is not licensed.")
+    return false;
+  }
+}
+
+var msiExportToWebCommand =
+{
+  isCommandEnabled: function(aCommand, dummy) {
+    return isLicensed();
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    if (isLicensed())
     {
       try {
         return exportToWeb();

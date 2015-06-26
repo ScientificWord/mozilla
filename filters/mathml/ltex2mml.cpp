@@ -5111,9 +5111,9 @@ TNODE* LaTeX2MMLTree::TranslateTeXDisplay( TNODE* tex_display_node,
         mml_cont  =  HandleOutOfFlowObjects( mml_cont, &local_oof_list, out_of_flow_list, 2 );
         
         if ( mml_cont ) {
-             tag =  FindObject( tex_cont, (U8*)"5.701.0", INVALID_LIST_POS );   // \TCITag, tag
+             tag =  FindObject( mml_cont, (U8*)"5.701.0", INVALID_LIST_POS );   // \TCITag, tag
              if ( !tag ) {
-               tag =  FindObject( tex_cont ,(U8*)"5.702.0", INVALID_LIST_POS );   // \TCITag*, tag*
+               tag =  FindObject( mml_cont ,(U8*)"5.702.0", INVALID_LIST_POS );   // \TCITag*, tag*
                suppressAnnotation = TRUE;
              }
         }
