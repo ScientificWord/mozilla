@@ -37,7 +37,8 @@ PRBool msiAppUtils::rlm_tex_ok() {
   char * prodname = getProd();
   if (!prodname) return PR_FALSE;
   return ((strcmp(prodname, "swp") == 0) ||
-  (strcmp(prodname, "sw") == 0));
+  (strcmp(prodname, "sw") == 0) ||
+  (strcmp(prodname, "snb") == 0));
 };
 
 PRBool msiAppUtils::rlm_save_ok () {
