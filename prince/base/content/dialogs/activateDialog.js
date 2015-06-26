@@ -28,6 +28,7 @@ function writeStringAsFile( str, file )
 
 function writeLicense(licenseText)
 {
+	var match;
 	var dsprops = Components.classes['@mozilla.org/file/directory_service;1'].getService(Components.interfaces.nsIProperties);
   var licenseFile = dsprops.get('ProfD', Components.interfaces.nsILocalFile);
   if (!licenseFile) return false;
@@ -55,6 +56,14 @@ function accept() {
 	var transferComplete = function() {
 		if (this.responseText.length === 0 || !(/LICENSE mackichn[ a-z]+6\.0/.test(this.responseText)))
 		{
+			if (/your site license administrator/.test(this.responseText)) {
+				match = /Your\slicense.*the site\./.exec(this.responseText);
+				if (match && match.length >= 1) {
+				  AlertWithTitle("Home Use License", match[0]);
+				  return;
+				}
+
+			}
 			AlertWithTitle("Activation Failure","Failed to get license: "+this.responseText);
 		}
 		else {
@@ -88,14 +97,18 @@ function accept() {
  		sComputerID: hostid,
  		sVersion: "6.0",
  		sEmail: document.getElementById('email').value,
- 		sPhone: document.getElementById('phone').value
+ 		sPhone: document.getElementById('phone').value,
+ 		sFirstName: document.getElementById('name').value,
+ 		sFamilyName: ""
  	};
  	var querystring = ['sSerial=' + query.sSerial,
  		'sProductName=' + query.sProductName,
  		'sComputerID=' + query.sComputerID,
  		'sVersion=' + query.sVersion,
  		'sEmail=' + query.sEmail,
- 		'sPhone=' + query.sPhone
+ 		'sPhone=' + query.sPhone,
+ 		'sFirstName=' + query.sFirstName,
+ 		'sFamilyName=' + query.sFamilyName
  		].join('\&');
 	try {
 		const {XMLHttpRequest} = Components.classes["@mozilla.org/appshell/appShellService;1"]
