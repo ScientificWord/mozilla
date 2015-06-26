@@ -11166,9 +11166,18 @@ function fileIsNewerThan(baseFile, maybeNewerFilePath) {
   os = getOS(window);
   if (os === 'win') {
     path = path.replace('/','\\', 'g');
-    pos = path.search(/^.?\w:/);
-    if (pos > -1)
-      path = path.slice(pos+1); 
+    var pos = path.search(/^.\w:/);
+    if (pos > -1){
+       path = path.replace(/^\\/,'', 'g');
+    }
+    // var pos = path.search(/^.?\w:/);
+    // dump("pos: " + pos);
+    // if (pos > -1) {
+    //   dump("path1: " + path);
+    //   path = path.slice();
+    //   dump("path2: " + path);
+    // }
+     
     //if (path.indexOf('C:') > -1) {
     //  path = path.slice(path.indexOf('C:'))
     //}
