@@ -1,4 +1,5 @@
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
+Components.utils.import("resource://app/modules/pathutils.jsm");
 
 #include productname.inc
 
@@ -38,7 +39,7 @@ function princeStartUp()
     if (menuitem = document.getElementById("venkmanName")) menuitem.hidden = false;
     if (menuitem = document.getElementById("menu_inspector")) menuitem.hidden = false;
   }
-  
+
   msiEditorOnLoad();
 }
 
@@ -66,8 +67,8 @@ function GetCurrentEditor() {
 	  editor = msiGetEditor(editorElement);
 //    editor instanceof Components.interfaces.nsIPlaintextEditor;
 //    editor instanceof Components.interfaces.nsIHTMLEditor;
-  } catch (e) { 
-		throw ("Failure in GetCurrentEditor: \n" + e.message); 
+  } catch (e) {
+		throw ("Failure in GetCurrentEditor: \n" + e.message);
 	}
   return editor;
 }
@@ -168,7 +169,7 @@ function runFixup(math)
   try {
     var out = GetCurrentEngine().perform(math,GetCurrentEngine().Fixup);
     return out;
-  } 
+  }
 	catch(e) {
 		throw("Failure in RunFixup():\n"+ e.message);
   }
@@ -194,13 +195,13 @@ function coalescemath() {
       f = f.previousSibling;
       element = findmathparent(f);
       if (!element) {
-	      dump("focus not in math!\n");
+	      msidump("focus not in math!\n");
         return;
       }
     }
     var last = node_before(element);
     if (!last || last.localName != "math") {
-      dump("previous is not math!\n");
+      msidump("previous is not math!\n");
       return;
     }
     var ch = element.firstChild;  // move children to previous math element
@@ -213,7 +214,7 @@ function coalescemath() {
     element.parentNode.removeChild(element);  // now empty
 
     editor.setCaretAfterElement(last_child(last));
-  } 
+  }
 }
 
 
@@ -310,58 +311,42 @@ function count_children( par )
   return res;
 }
 
+/*
+     Prepare to run pretex.exe. We need to send it some directories:                                       //
+      The input directory gives the location of the .cls and .tex files that pretex reads to               //
+        determine how to translate the TeX. This is usually prince/ptdata.                                 //
+      The MathML conversion directory. This is where the DLL used to convert math and its associated .gmr  //
+        files are. This is usually resource://app.                                                                  //
+      The input .tex file.                                                                                 //
+      The output directory where the auxiliary files that are generated (such as .css, etc.) go.           //
+      The output <filename>.sci file.
+      */
 
 function openTeX()
 {
-//  dump("Open TeX \n");
+  var filename, infile, docdir, prefs, prefdir, defdocdirstring, dirkey;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
-  fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);     
+  fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);
   fp.appendFilter(GetString("TeXFiles"), "*.tex; *.ltx; *.shl");
   fp.appendFilters(msIFilePicker.filterXML)
-
   msiSetFilePickerDirectory(fp, "tex");
-
-
   try {
     fp.show();
-    // need to handle cancel (uncaught exception at present) 
   }
   catch (ex) {
-    dump("filePicker.chooseInputFile threw an exception\n");
-    dump(e+"\n");
-    
   }
-
-  // This checks for already open window and activates it... 
-  // note that we have to test the native path length
-  // since file.URL will be "file:///" if no filename picked (Cancel button used)
-  dump("\nFile picked: " + fp.file.path);
-  if (fp.file && fp.file.path.length > 0) {
-      dump("Here!");
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//      Prepare to run pretex.exe. We need to send it some directories:                                       //
-//       The input directory gives the location of the .cls and .tex files that pretex reads to               //
-//         determine how to translate the TeX. This is usually prince/ptdata.                                 //
-//       The MathML conversion directory. This is where the DLL used to convert math and its associated .gmr  //
-//         files are. This is usually resource://app.                                                                  //
-//       The input .tex file.                                                                                 //
-//       The output directory where the auxiliary files that are generated (such as .css, etc.) go.           //
-//       The output <filename>.sci file.                                    
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+  if (fp.file && (fp.file.path.length > 0)) {
     msiSaveFilePickerDirectory(fp, "tex");
-    var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
-    var infile =  "\""+fp.file.path+"\"";
-    dump("Open Tex: " + infile+"\n");
-
+    filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
+    infile =  "\"" + fp.file.path + "\"";
 // Get the directory for the result from the preferences, or default to the SWPDocs directory
-    var docdir;
     try
     {
-      var prefs = GetPrefs();
-      var docdirname = prefs.getCharPref("swp.prefDocumentDir");
-      dump("swp.prefDcoumentDir is ", docdirname + "\n");
+      prefs = GetPrefs();
+      prefdir = prefs.getCharPref("swp.prefDocumentDir");
+      docdirname = prefdir;
+      // msidump("swp.prefDcoumentDir is ", prefdir + "\n");
       docdir = Components.classes["@mozilla.org/file/local;1"].
           createInstance(Components.interfaces.nsILocalFile);
       docdir.initWithPath(docdirname);
@@ -370,7 +355,6 @@ function openTeX()
     }
     catch (e)
     {
-      var dirkey;
       if (getOS(window) == "win")
         dirkey = "Pers";
       else
@@ -381,12 +365,22 @@ function openTeX()
       // if we can't find the one in the prefs, get the default
       docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
       if (!docdir.exists()) docdir.create(1,0755);
-      var defdocdirstring = GetStringPref("swp.prefDocumentDir");
-      if (defdocdirstring.length == 0) defdocdirstring = "SWPDocs";
+      if (prefdir.length == 0) {
+#ifdef PROD_SWP
+        prefdir = "SWPDocs";
+#endif
+#ifdef PROD_SW
+        prefdir = "SWDocs";
+#endif
+#ifdef PROD_SNB
+        prefdir = "SNBDocs";
+#endif
+      }
+      defdocdirstring = prefdir;
       docdir.append(defdocdirstring);
       if (!docdir.exists()) docdir.create(1,0755);
-      dump("default document directory is "+docdir.path+"\n");
-    }                                                                
+      msidump("default document directory is "+docdir.path+"\n");
+    }
 
     var outdir = docdir.clone();
     outdir.append(filename + "_work");
@@ -417,37 +411,37 @@ function openTeX()
     } else {
       exefile.append("pretex");
     }
-    
+
     var dataDir = dsprops.get("resource:app", Components.interfaces.nsIFile);
     dataDir.append("ptdata");
-    dump("\n\nExe="+exefile.path);
-    dump("\noutdir=\""+outdir.path);
-    dump("\noutfile=\""+outfile.path);
-    dump("\ninfile=\""+fp.file.path);
-    dump("\ndataDir=\""+dataDir.path);
-    dump("\nmmldir=\""+mmldir.path+"\n");
-	  dump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
+   //  msidump("\n\nExe="+exefile.path);
+   //  msidump("\noutdir=\""+outdir.path);
+   //  msidump("\noutfile=\""+outfile.path);
+   //  msidump("\ninfile=\""+fp.file.path);
+   //  msidump("\ndataDir=\""+dataDir.path);
+   //  msidump("\nmmldir=\""+mmldir.path+"\n");
+	  // msidump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
 
     // run pretex.exe
-    
-    try 
+
+    try
     {
       var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
       theProcess.init(exefile);
       var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, fp.file.path, outfile.path];
       theProcess.run(true, args, args.length);
-    } 
-    catch (ex) 
-    {
-         dump("\nUnable to open TeX:\n");
-		     dump("\nexe  = "  + exefile);
-         dump("\narg paths = " + dataDir.path + "\n   " + fp.file.path + "\n    " + outfile.path + "\n     " + outdir.path);
-         dump(ex+"\n");
     }
-      
+    catch (ex)
+    {
+       //   msidump("\nUnable to open TeX:\n");
+		     // msidump("\nexe  = "  + exefile);
+       //   msidump("\narg paths = " + dataDir.path + "\n   " + fp.file.path + "\n    " + outfile.path + "\n     " + outdir.path);
+       //   msidump(ex+"\n");
+    }
+
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
     if ((outfile) && (outfile.path.length > 0))
-    { 
+    {
       var xsltProcessor = setupInputXSLTproc();
       var parser = new DOMParser();
       var xmlDoc = document.implementation.createDocument("", "", null);
@@ -459,18 +453,18 @@ function openTeX()
       request.send(null);
       var res = request.responseXML;
       var newDoc = xsltProcessor.transformToDocument(res);
-      
+
       var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
       var fileMode = 0x22;  //MODE_WRONLY|MODE_TRUNCATE - rewrite the file
       var permissions = 0x777; //all permissions for everybody?
       outputStream.init(outfile, fileMode, permissions, 0);
       var serializer = new XMLSerializer();
       serializer.serializeToStream(newDoc, outputStream, "utf-8");
-      outputStream.close(); 
-      
+      outputStream.close();
+
       msiEditPage(url, window, false, false);
     }
-  }                  
+  }
 }
 
 function setupInputXSLTproc()
@@ -486,7 +480,7 @@ function setupInputXSLTproc()
     xsltProcessor.importStylesheet(xslDoc);
   }
   catch(e)
-  { dump("error: " + e + "\n"); }
+  { msidump("error: " + e + "\n"); }
 
   return xsltProcessor;
 }
@@ -500,7 +494,7 @@ function setupInputXSLTproc()
 
 function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
 {
-  dump("\nDocument as TeXFile\n");
+  msidump("\nDocument as TeXFile\n");
   if (!document) return false;
   // determine the compiler
   var compiler = "pdflatex";
@@ -512,14 +506,14 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
     texprogNode = texprogNodes[0];
     if (texprogNode.hasAttribute("prog")) compiler = texprogNode.getAttribute("prog");
   }
-  
+
   var xslfiles = processingInstructionsList(document, "sw-xslt", false);
   //  if nothing returned, use the default xlt
   if (xslfiles.length < 1) xslfiles = ["latex.xsl"];
   var xslSheet=xslfiles[0];
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var documentPath = document.documentURI;
-  var docurl = msiURIFromString(documentPath);                                      
+  var docurl = msiURIFromString(documentPath);
   var workingDir;
 	var parentDir;
   var outTeX;
@@ -557,7 +551,7 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
   var minpasses = 1;
-  if (matcharr && matcharr.length > 1) 
+  if (matcharr && matcharr.length > 1)
   {
     minpasses = matcharr[1];
   }
@@ -567,7 +561,7 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   if (compileInfo.passCount < minpasses) compileInfo.passCount = minpasses;
 
 
-//  dump("\n"+str);
+//  msidump("\n"+str);
   if (!str || str.length < 3) return false;
   // if isDefaultLocation is false, the graphics path in the TeX is incorrect. We need to adjust this.
   if (!isDefaultLocation)
@@ -578,11 +572,11 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
 		var k;
 		for (k = 0; k < specialDirs.length; k++)
 		{
-      str = str.replace("{../"+specialDirs[k]+"/", "{"+prefix+specialDirs[k]+"/", "g");		  
+      str = str.replace("{../"+specialDirs[k]+"/", "{"+prefix+specialDirs[k]+"/", "g");
 		}
 	}
-    
-  if (outTeXfile.exists()) 
+
+  if (outTeXfile.exists())
     outTeXfile.remove(false);
   outTeXfile.create(0, 0755);
   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
@@ -607,15 +601,15 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
 			if (s.exists())
 			{
 				// copy files from s to d
-				var entries = s.directoryEntries;  
+				var entries = s.directoryEntries;
 				if (entries.hasMoreElements())
 				{
 				  if (!d.exists())
 					  d.create(1,0755);
-  				while(entries.hasMoreElements())  
-  				{  
-  				  var entry = entries.getNext();  
-  				  entry.QueryInterface(Components.interfaces.nsIFile);  
+  				while(entries.hasMoreElements())
+  				{
+  				  var entry = entries.getNext();
+  				  entry.QueryInterface(Components.interfaces.nsIFile);
   				  entry.copyTo(d,"");
   				}
   			}
@@ -681,14 +675,14 @@ function exportTeX()
 
 //         currLoading = graphicsTimers.getActiveCount();
 //           ++timerCount;
-// //        dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
+// //        msidump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
 //         ticks = 0;
 //         if (timerCount == 500 + (200 * numConversions))
 //           break;
 
 //       }
 //     }
-//   }  
+//   }
 
   if (dialogResult != msIFilePicker.returnCancel)
     if (!documentAsTeXFile(editor, editor.document, fp.file, compileInfo ))
@@ -713,32 +707,32 @@ function exportToWeb()
    fp.appendFilter("Zip file with web refs for CSS", "*.zip");
    fp.appendFilter("Zip file with MathJax", "*.zip");
    fp.appendFilter("Zip file with web refs for CSS and MathJax", "*.zip");
-     try 
+     try
    {
      var dialogResult = fp.show();
      if (dialogResult != msIFilePicker.returnCancel)
        if (!saveforweb(editor.document, fp.filterIndex, fp.file ))
          AlertWithTitle("Export", "Web file not created.");
    }
-   catch (ex) 
+   catch (ex)
    {
-     dump("filePicker threw an exception in exportToWeb: "+ex.message+"\n");
+     msidump("filePicker threw an exception in exportToWeb: "+ex.message+"\n");
    }
 }
 
 
 /* ==== */
-/* = 
+/* =
 compileTeXFile:
   compiler -- a string, either 'pdflatex' or 'xelatex', giving which compiler to use.
-  infileLeaf -- the name of the input TeX file without '.tex' or the initial part of the path 
+  infileLeaf -- the name of the input TeX file without '.tex' or the initial part of the path
   infilePath -- the full name of the input TeX file, including the path and 'tex'
   outputDir -- the directory in which to put the resulting file
-  compileInfo -- an object for storing the required # of passes, whether makeindex needs 
+  compileInfo -- an object for storing the required # of passes, whether makeindex needs
        to be called, etc.
-  
+
   returns -- a boolean to indicate whether the expected file appears where it is supposed to
-  
+
  = */
 /* ==== */
 
@@ -747,7 +741,7 @@ function setBibTeXRunArgs(passData)
   var bibTeXDBaseDir = GetLocalFilePref("swp.bibtex.dir");
   var bibTeXDPath;
   var bibtexData;
-  if (bibTeXDBaseDir) 
+  if (bibTeXDBaseDir)
     bibtexData = [passData.args[0],"-d", bibTeXDBaseDir.path ];
   else
     bibtexData = [passData.args[0]];
@@ -757,7 +751,7 @@ function setBibTeXRunArgs(passData)
 function removeOldPDFFiles(outputDir)
 {
   var thedir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  thedir.initWithPath( outputDir );  
+  thedir.initWithPath( outputDir );
   var items = thedir.directoryEntries;
   while (items.hasMoreElements()) {
     var item = items.getNext().QueryInterface(Components.interfaces.nsIFile);
@@ -775,7 +769,7 @@ function removeOldPDFFiles(outputDir)
 
 function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInfo )
 {
-  // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex 
+  // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex
   if (!okToPrint()) {
     finalThrow(cmdFailString("compiletex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
     return false;
@@ -816,7 +810,7 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   var i;
   window.openDialog("chrome://prince/content/passes.xul","about", "chrome,modal=yes,resizable=yes,alwaysRaised=yes",
     passData);
-//    There was some commented code here for using the pipe-console object from the enigmail project. We are not 
+//    There was some commented code here for using the pipe-console object from the enigmail project. We are not
 //    using it in 6.0, and XulRunner is getting a better implementation, which we will use later.
 
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
@@ -827,7 +821,7 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   outputfile.append("main.pdf"); // outputfile is now main.pdf. This is the result of the compilation.
   tempOutputfile.append(leaf); // this is SWP.pdf which is the new name of main.pdf if there is no collision.
   var n = 0;
-  dump("Leaf is "+leaf+"\n");
+  msidump("Leaf is "+leaf+"\n");
   while (tempOutputfile.exists())
   {
     leaf = "SWP"+(n++)+".pdf";
@@ -848,26 +842,26 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
 
 function printPDFFile(infile)
 {
-  // the following requires that the printpdf batch file (or a hard link to it) be in xpi-stage/prince/TeX/bin/printpdf.cmd 
+  // the following requires that the printpdf batch file (or a hard link to it) be in xpi-stage/prince/TeX/bin/printpdf.cmd
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   exefile.append("printpdf.cmd");
-  dump("\nexecutable file: "+exefile.path+"\n");
-  try 
+  msidump("\nexecutable file: "+exefile.path+"\n");
+  try
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(exefile);
     var args = [infile.path];
     theProcess.run(true, args, args.length);
-  } 
+  }
   catch (ex) {
-    dump("\nUnable to run Acrobat: "+ex.message+"\n");
+    msidump("\nUnable to run Acrobat: "+ex.message+"\n");
     return false;
   }
 }
 
 // compileDocument compiles the current document of the current editor; it converts it to TeX and then PDF.
-// Returns true if everything succeeded. 
+// Returns true if everything succeeded.
 function compileDocument()
 {
   if (!okToPrint()) {
@@ -890,8 +884,8 @@ function compileDocument()
   var pdfViewer = document.getElementById("preview-frame");
   if (pdfViewer && (pdfViewer.src != "about:blank"))
     pdfViewer.loadURI("about:blank");   // this releases the currently displayed pdf preview.
-  dump("pdfModCount = "+editorElement.pdfModCount+", modCount is ");
-  
+  msidump("pdfModCount = "+editorElement.pdfModCount+", modCount is ");
+
 //   if (graphicsTimers)
 //   {
 //     var checkGraphicsCallback = (function(callbackObj) {
@@ -913,17 +907,17 @@ function compileDocument()
 
 //         currLoading = graphicsTimers.getActiveCount();
 //           ++timerCount;
-// //        dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
+// //        msidump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
 //         ticks = 0;
 //         if (timerCount == 500 + (200 * numConversions))
 //           break;
 
 //       }
 //     }
-//   }  
+//   }
 
   editorElement.pdfModCount = editor.getModificationCount();
-  dump(editorElement.pdfModCount+"\n");
+  msidump(editorElement.pdfModCount+"\n");
   try {
     var docUrl = msiGetEditorURL(editorElement);
     var docPath = GetFilepath(docUrl);
@@ -943,16 +937,16 @@ function compileDocument()
 //      if (outputfile.exists()) AlertWithTitle("Locked file","the tex directory was not deleted");
       outputfile.create(1, 0755);
     }
-    catch(e) {} // 
+    catch(e) {} //
     var pdffile = outputfile.clone();
     outputfile.append("main.tex");
-    try  {    
+    try  {
       if (outputfile.exists()) outputfile.remove(false);
     }
     catch(e){}
-    
-    dump("TeX file="+outputfile.path + "\n");
-//    dump("PDF file is " + pdffile.path + "\n"); 
+
+    msidump("TeX file="+outputfile.path + "\n");
+//    msidump("PDF file is " + pdffile.path + "\n");
     var compileInfo = new Object();  // an object to hold pass counts and whether makeindex needs to run.
     if (documentAsTeXFile(editor, editor.document, null, compileInfo ))
     {
@@ -960,19 +954,19 @@ function compileDocument()
       {
         pdffile.append(compileInfo.finalPDFleaf);
         if (!pdffile.exists())
-        {  
+        {
           AlertWithTitle("TeX Error", "Unable to create a PDF file.");
           goDoCommand("cmd_showTeXLog");
           return null;
         }
-        else 
+        else
         {
           return pdffile;
         }
       }
       else return null;
     }
-    else 
+    else
     {
       AlertWithTitle("XSLT Error", "Unable to create a TeX file");
       return null;
@@ -980,7 +974,7 @@ function compileDocument()
   }
   catch(e)
   {
-    dump("compileDocument failed: "+e.message+"\n");
+    msidump("compileDocument failed: "+e.message+"\n");
     return null;
   }
 }
@@ -1010,9 +1004,9 @@ function printTeX(preview )
             return;
           }
           // Switch to the preview pane (third in the deck)
-          msiGoDoCommand("cmd_PreviewMode"); 
+          msiGoDoCommand("cmd_PreviewMode");
         }
-        else 
+        else
         {
           var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
           var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
@@ -1026,7 +1020,7 @@ function printTeX(preview )
             {
               extension = "cmd";
             }
-            else 
+            else
             {
               extension = "bash";
             }
@@ -1043,16 +1037,16 @@ function printTeX(preview )
             exefile.initWithPath(pdfAction);
             arr=[pdffile.path];
             theProcess.init(exefile);
-            theProcess.run(false, arr, arr.length);             
+            theProcess.run(false, arr, arr.length);
           }
         }
-      } 
+      }
       else
         printPDFFile(pdffile);
     }
   }
   catch(e) {
-    dump("printTeX failed: "+e.message+"\n");
+    msidump("printTeX failed: "+e.message+"\n");
   }
 }
 
@@ -1075,7 +1069,7 @@ function compileTeX(compiler)
     if (!editor) return;
 
     document.getElementById("preview-frame").loadURI("about:blank");
-  // now save this TeX string and run TeX on it.  
+  // now save this TeX string and run TeX on it.
     checkPackageDependenciesForEditor(editor);
     var docUrl = msiGetEditorURL(editorElement);
     var docPath = GetFilepath(docUrl);
@@ -1097,25 +1091,25 @@ function compileTeX(compiler)
     if (outputfile.exists()) outputfile.remove(false);
     pdffile.append(outleaf + ".pdf");
     if (pdffile.exists()) pdffile.remove(false);
-    
-    dump("TeX file="+outputfile.path)+"\n";  
+
+    msidump("TeX file="+outputfile.path)+"\n";
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
     fp.init(window, "Save PDF file", msIFilePicker.modeSave);
 
     fp.appendFilter("Compiled files","*.pdf");
     fp.appendFilters(msIFilePicker.filterAll);
 
-    try 
+    try
     {
       fp.show();
-      // need to handle cancel (uncaught exception at present) 
+      // need to handle cancel (uncaught exception at present)
     }
-    catch (ex)                                                                      
+    catch (ex)
     {
-      dump("filePicker threw an exception\n");
+      msidump("filePicker threw an exception\n");
       return;
     }
-  
+
 //     if (graphicsTimers)
 //     {
 //       var checkGraphicsCallback = (function(callbackObj) {
@@ -1137,7 +1131,7 @@ function compileTeX(compiler)
 
 //           currLoading = graphicsTimers.getActiveCount();
 //           ++timerCount;
-// //          dump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
+// //          msidump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
 //           ticks = 0;
 //           if (timerCount == 500 + (200 * numConversions))
 //             break;
@@ -1169,38 +1163,38 @@ function compileTeX(compiler)
         }
         else
         // move the output result to the place indicated by fp.
-          pdffile.move(fp.file.parent, fp.file.leafName); 
-      } 
+          pdffile.move(fp.file.parent, fp.file.leafName);
+      }
     }
   }
   catch(e) {
-    dump(e+"\n");
+    msidump(e+"\n");
     return;
   }
 }
 
 function initializeAutoCompleteStringArray()
- 
-{ 
- dump("===> initializeAutoCompleteStringArray\n");
-                            
+
+{
+ msidump("===> initializeAutoCompleteStringArray\n");
+
 //   var stringArraySearch = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService(Components.interfaces.nsIAutoCompleteSearchStringArray);
-//   stringArraySearch.editor = GetCurrentEditor(); 
+//   stringArraySearch.editor = GetCurrentEditor();
 }
 
- 
- 
- 
-//In msiEditor.js // handle events on prince-specific elements here, or call the default goDoCommand() 
-//In msiEditor.js function goDoPrinceCommand (cmdstr, element) 
+
+
+
+//In msiEditor.js // handle events on prince-specific elements here, or call the default goDoCommand()
+//In msiEditor.js function goDoPrinceCommand (cmdstr, element)
 //In msiEditor.js {
 //In msiEditor.js    if ((element.localName.toLowerCase() == "img") && (element.getAttribute("msigraph") == "true"))
 //In msiEditor.js    {
 //In msiEditor.js       graphClickEvent(cmdstr);
 //In msiEditor.js    }
-//In msiEditor.js    else 
-//In msiEditor.js    { 
-//In msiEditor.js       goDoCommand(cmdstr);  
+//In msiEditor.js    else
+//In msiEditor.js    {
+//In msiEditor.js       goDoCommand(cmdstr);
 //In msiEditor.js    }
 //In msiEditor.js }
 
@@ -1363,8 +1357,9 @@ function documentToTeXString(document, xslPath)
     xsltProcessor.importStylesheet(doc);
     var newDoc = xsltProcessor.transformToDocument(document);
     strResult = newDoc.documentElement.textContent || "";
-    strResult=strResult.replace(/[\n\t ]*(\\MsiBlankline[\n\t ]*)+/g, "\n\n");
     strResult=strResult.replace(/[\n\t ]*(\\MsiNewline[\n\t ]*)+/g, "\n");
+    strResult=strResult.replace(/[\n\t ]*(\\MsiBlankline[\n\t ]*)+/g, "\n\n");
+
 
 //     while (strResult.search(/\n[ \t]+/) >= 0)
 // 		  strResult = strResult.replace(/\n[ \t]+/,"\n","g");
@@ -1372,11 +1367,11 @@ function documentToTeXString(document, xslPath)
 //       strResult = strResult.replace(/\n\n/,"\n","g");
 // 	  while (strResult.search(/\\par[ \t]*\n/) >= 0)
 // 		  strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
-// 
+//
 //     while (strResult.search(/\\par[ \t\n]+/) >= 0)
 // 		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
 //     while (strResult.search(/\\msipar[ \t\n]+/) >= 0)
-// 		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");  
+// 		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");
 		//while (strResult.search(/\\par/) >= 0)
 		//  strResult = strResult.replace(/\\par/,"\n\n", "g");
     if (compiler === "pdflatex")  //convert utf-8 characters to tex strings
@@ -1386,8 +1381,8 @@ function documentToTeXString(document, xslPath)
 
   }
   catch(e){
-    dump("error: "+e.message+"\n\n");
-  //  dump(resultString);
+    msidump("error: "+e.message+"\n\n");
+  //  msidump(resultString);
   }
   return strResult;
 }
@@ -1403,23 +1398,25 @@ function openBrowser(url) {
   if (os == "win")
   {
     extension = "cmd";
+    arr.push('start');
   }
-  else 
+  else
   {
     extension = "bash";
+    // arr.push('open');
   }
   exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   exefile.append("shell."+ extension);
   theProcess.init(exefile);
-  arr = [url];
+  arr.push(url);
   theProcess.run(false, arr, arr.length);
 }
 
 
 
-function dumpDocument()
+function msidumpDocument()
 {
   var ed= GetCurrentEditor();
   var root = ed.document.documentElement;
-  ed.debugDumpContent(root);
+  ed.debugmsidumpContent(root);
 }

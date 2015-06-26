@@ -433,7 +433,7 @@ unknown_op<uID3.5.7>infix,25
 &breve;<uID4.1.8>postfix,70,U002D8,accent="true"
 ;OverBar<uID4.1.9>postfix,70,U000AF,accent="true"
 &macr;<uID4.1.9>postfix,70,U000AF,accent="true"
-&#x20D7;<uID4.1.10>postfix,70,U020D7,accent="true"
+&#x2192;<uID4.1.10>postfix,70,U02192,accent="true"
 ;DiacriticalRightVector<uID4.1.10>postfix,70,,accent="true"
 ;&rarr;<uID4.1.10>postfix,70,U02192,accent="true"
 ;TripleDot<uID4.1.11>postfix,70,U020DB,accent="true"

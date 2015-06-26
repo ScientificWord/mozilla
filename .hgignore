@@ -10,7 +10,7 @@ glob:confdefs.h
 glob:config.cache
 glob:*.err
 glob:*.log
-glob:*.orig
+glob:*/*.orig
 glob:*/Thumbs.db
 glob:.cproject
 glob:.project
@@ -34,5 +34,10 @@ glob:*.xcscheme
 glob:*/xcschememanagement.plist
 glob:*.hmap
 glob:*.glue
+glob:*.css.map
+glob:*.scssc
+glob:*.scss
+
+
 
 
