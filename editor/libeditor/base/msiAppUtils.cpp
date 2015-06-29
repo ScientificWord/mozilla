@@ -4,7 +4,6 @@
 #include "nsDirectoryService.h"
 #include "msiAppUtils.h"
 
-PRUint32 msiAppUtils::licensedProd;
 char * msiAppUtils::pchProdName;
 char * msiAppUtils::pchExpDate;
 RLM_HANDLE msiAppUtils::rh;
@@ -22,7 +21,6 @@ msiAppUtils::~msiAppUtils()
 
 msiAppUtils::msiAppUtils()
 {
-  Hello();
 }
 
 
@@ -59,10 +57,18 @@ char * msiAppUtils::getProd() {
 
 
 /* [noscript] readonly attribute PRInt32 licensedApp; */
-NS_IMETHODIMP msiAppUtils::GetLicensedApp(PRInt32 *aLicensedApp)
+NS_IMETHODIMP msiAppUtils::LicensedApp(PRUint32 appNum, PRBool *_retval)
 {
-  *aLicensedApp = syzygy;
-  return NS_OK;
+  nsresult rv;
+  if (syzygy == appNum) {
+    *_retval  = PR_TRUE;
+    rv = NS_OK;
+  }
+  else {
+    rv = Hello(appNum);
+    *_retval = (rv == NS_OK);
+  }
+  return rv;
 }
 
 /* readonly attribute DOMString licensedUntil; */
@@ -87,18 +93,30 @@ NS_IMETHODIMP msiAppUtils::GetHostid(nsACString & aHostid)
 }
 
 /* void hello (); */
-NS_IMETHODIMP msiAppUtils::Hello()
+NS_IMETHODIMP msiAppUtils::Hello( PRUint32 appNum)
 {
   int stat;
-  char *product = "swp";
+  char *product;
   char *licensedProd;
   PRInt32 count = 1;
   PRInt32 days;
   const char * utf8Path;
   const char * ver = "6.0";
   nsString path1, path2;
-  PRBool done;
   PRUint32 prodnum;
+  switch (appNum) {
+    case 1:
+      product = "snb";
+      break;
+    case 2:
+      product = "sw";
+      break;
+    case 3:
+      product = "swp";
+      break;
+    default:
+      return NS_ERROR_INVALID_ARG;
+  }
 //  printf("1\n");
   if (lic == nsnull || rlm_license_stat(lic) != 0)
   {
@@ -128,42 +146,24 @@ NS_IMETHODIMP msiAppUtils::Hello()
     }
     else
     {
-//      printf("5\n");
-      syzygy = 0;
-      prodnum = 3;
-      done = PR_FALSE;
-      while (!done) {
-
-        lic = rlm_checkout(rh, product, ver, count);
+      lic = rlm_checkout(rh, product, ver, count);
 //        printf("Checking out %s, ver is %s, count is %d\n", product, ver, count);
-        stat = rlm_license_stat(lic);
+      stat = rlm_license_stat(lic);
 //        printf("stat %d\n", stat);
 //        printf("product %s\n", product);
-        if (! stat) {
+      if (! stat) {
 //          printf("License is valid\n");
-          days= rlm_license_exp_days(lic);
-          pchProdName = rlm_license_product(lic);
-          pchExpDate = rlm_license_exp(lic);
-          syzygy = prodnum;
-          done = PR_TRUE;
-        }
-        else {
-          if (strcmp(product,"swp") == 0) {
-            product = "sw";
-            prodnum = 2;
-          }
-          else if (strcmp(product, "sw") == 0) {
-            product = "snb";
-            prodnum = 1;
-          }
-          else {
+        days= rlm_license_exp_days(lic);
+        pchProdName = rlm_license_product(lic);
+        pchExpDate = rlm_license_exp(lic);
+        syzygy = prodnum;
+      }
+      else {
 //            printf("Invalid license\n");
-            days = -1;
-            pchProdName = "";
-            pchExpDate = "unlicensed";
-            done = PR_TRUE;
-          }
-        }
+        days = -1;
+        pchProdName = "";
+        pchExpDate = "unlicensed";
+        syzygy = 0;
       }
     }
   }
