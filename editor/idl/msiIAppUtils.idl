@@ -7,10 +7,10 @@
 [scriptable, uuid(45279470-a733-11e4-bcd8-0800200c9a66)]
 interface msiIAppUtils : nsISupports
 {
-	readonly attribute PRInt32 licensedApp; // 0=unlicensed, 1=SNB, 2=SW, 3=SWP
+	boolean licensedApp( in unsigned long appNum); // 0=unlicensed, 1=SNB, 2=SW, 3=SWP
 	readonly attribute AUTF8String licensedUntil;
 	readonly attribute AUTF8String  hostid;
 
-	void hello();
+	void hello(in unsigned long appNum);
 	void goodbye();
 };

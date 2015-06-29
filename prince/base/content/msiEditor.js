@@ -894,6 +894,7 @@ function msiEditorDocumentObserver(editorElement) {
         }
 
         if (!licenseWarningGiven && (this.mEditorElement.id === 'content-frame')) {
+          isLicensed(); // we call this, ignoring the return value, to force the license file to be read.
           licenseStatus = licenseTimeRemaining();
           if (licenseStatus === "unlicensed" ) {
             openDialog('chrome://prince/content/licensestatus.xul', 'License status',
