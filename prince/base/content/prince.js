@@ -366,15 +366,7 @@ function openTeX()
       docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
       if (!docdir.exists()) docdir.create(1,0755);
       if (prefdir.length == 0) {
-#ifdef PROD_SWP
-        prefdir = "SWPDocs";
-#endif
-#ifdef PROD_SW
-        prefdir = "SWDocs";
-#endif
-#ifdef PROD_SNB
-        prefdir = "SNBDocs";
-#endif
+        prefdir = GetString("DefaultDocDir");
       }
       defdocdirstring = prefdir;
       docdir.append(defdocdirstring);
