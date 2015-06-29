@@ -34,8 +34,8 @@ function msiAddToolbarPrefListener(editorElement) {
   try {
     var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
     pbi.addObserver(kEditorToolbarPrefs, editorElement.mEditorToolbarPrefListener, false);
-  } catch (ex) {
-    dump("Failed to observe prefs: " + ex + "\n");
+  } catch (e) {
+    throw new MsiException('msiAddToolbarPrefListener', e);
   }
 }
 
@@ -47,7 +47,7 @@ function msiRemoveToolbarPrefListener(editorElement) {
     var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
     pbi.removeObserver(kEditorToolbarPrefs, editorElement.mEditorToolbarPrefListener);
   } catch (ex) {
-    dump("Failed to remove pref observer: " + ex + "\n");
+    throw new MsiException('msiRemoveToolbarPrefListener', e);
   }
 }
 
@@ -81,8 +81,8 @@ function msiButtonPrefListener(editorElement) {
     try {
       var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
       pbi.addObserver(this.domain, this, false);
-    } catch (ex) {
-      dump("Failed to observe prefs (msiButtonPrefListener): " + ex + "\n");
+    } catch (e) {
+      throw new MsiException('msiButtonPrefListener-startup', e);
     }
   };
   this.shutdown = function() {
@@ -90,7 +90,7 @@ function msiButtonPrefListener(editorElement) {
       var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
       pbi.removeObserver(this.domain, this);
     } catch (ex) {
-      dump("Failed to remove pref observers: " + ex + "\n");
+      throw new MsiException('msiButtonPrefListener', e);
     }
   };
   this.observe = function(subject, topic, prefName) {
@@ -127,7 +127,9 @@ function initMetaData(doc) {
   if (node) return; // if the node exists, it has already been initialized.
   try {
     var headnode = doc.getElementsByTagName("head")[0];
-  } catch (e) {}
+  } catch (e) {
+    throw new MsiException('initMetaData', e);
+  }
   if (!node) {
     node = doc.createElement("sw-meta");
     node.setAttribute("id", "sw-meta");
@@ -310,12 +312,14 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
 #ifndef PROD_SW
     if (msiSetupMSIComputeMenuCommands) msiSetupMSIComputeMenuCommands(editorElement);
 #endif
-    if ("msiSetupMSITypesetMenuCommands" in window) {
+#ifndef PROD_SNB
+//   if ("msiSetupMSITypesetMenuCommands" in window) {
       msiSetupMSITypesetMenuCommands(editorElement);
       msiSetupMSITypesetInsertMenuCommands(editorElement);
-    }
+//  }
+#endif
   } catch (e) {
-    msiDumpWithID("msiInitializeEditorForElement [@] failed: " + e + "\n", editorElement);
+    throw new MsiException('msiInitializeEditorForElement', e);
   }
 }
 
@@ -362,7 +366,9 @@ function aDocumentReloadListener(editorElement) {
       // update the META charset with the current presentation charset
       editor.documentCharacterSet = charset;
 
-    } catch (e) {}
+    } catch (e) {
+      throw new MsiException('aDocumentReloadListener', e);
+    }
   };
 };
 
@@ -372,8 +378,8 @@ function msiGetBodyElement(editorElement) {
   try {
     var editor = msiGetEditor(editorElement);
     return editor.rootElement;
-  } catch (ex) {
-    dump("no body tag found?!\n");
+  } catch (e) {
+    throw new MsiException('msiGetBodyElement', e);
     //  better have one, how can we blow things up here?
   }
   return null;
@@ -386,7 +392,7 @@ function addClickEventListenerForEditor(editorElement) {
     if (bodyelement)
       bodyelement.addEventListener("click", EditorClick, false);
   } catch (e) {
-    dump("Unable to register click event listener; error [" + e + "].\n");
+    throw new MsiException('addClickEventListenerForEditor', e);
   }
 }
 
@@ -395,8 +401,8 @@ function addKeyDownEventListenerForEditor(editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     editorElement.contentWindow.addEventListener("keydown", msiEditorKeyListener, true);
-  } catch (ex) {
-    dump("Unable to register keydown event listener; error [" + ex + "].\n");
+  } catch (e) {
+    throw new MsiException('addKeyDownEventListenerForEditor', e);
   }
 }
 
@@ -406,8 +412,8 @@ function addObjectResizeListenerForEditor(editorElement) {
     var editor = msiGetEditor(editorElement);
     editor instanceof Components.interfaces.nsIHTMLObjectResizer;
     editor.addObjectResizeEventListener(new msiResizeListenerForEditor(editor));
-  } catch (ex) {
-    dump("Unable to register object resize event listener; error [" + ex + "].\n");
+  } catch (e) {
+    throw new MsiException('addObjectResizeListenerForEditor', e);
   }
 }
 
@@ -416,13 +422,14 @@ function addFocusEventListenerForEditor(editorElement) {
   try {
     editorElement.contentWindow.addEventListener("focus", msiEditorOnFocus, true);
     editorElement.contentWindow.addEventListener("blur", msiEditorOnBlur, true);
-  } catch (exc) {
-    var errMsg = "Problem registering focus event listeners for editor element [";
-    if (editorElement)
-      errMsg += editorElement.id;
-    errMsg += "]; error is";
-    errMsg += exc;
-    AlertWithTitle("Error", errMsg);
+  } catch (e) {
+    throw new MsiException('addFocusEventListenerForEditor', e);
+    // var errMsg = "Problem registering focus event listeners for editor element [";
+    // if (editorElement)
+    //   errMsg += editorElement.id;
+    // errMsg += "]; error is";
+    // errMsg += exc;
+    // AlertWithTitle("Error", errMsg);
   }
   //  }
 }
@@ -550,7 +557,7 @@ var msiResizeListener = {
         vcamObj.data = d;
 //        saveObj(vcamObj);
       } catch (e) {
-        dump('Error in resizeGraphic');
+        throw new MsiException('resizeGraphic', e);
       }
     } else {
       // recompute the cached bitmap if doing so will improve things; i.e., if the src is a vector graphic.
@@ -614,7 +621,7 @@ var msiResizeListener = {
         aVCamObject = new VCamObject(obj);
       }
     } catch (e) {
-      msidump(e.message);
+      throw new MsiException('resizePlot', e);
     }
   },
 
@@ -661,7 +668,7 @@ var msiResizeListener = {
         }
       }
     } catch (e) {
-      msidump(e.message);
+      throw new MsiException('resizeFrame', e);
     }
   },
 }
@@ -682,7 +689,7 @@ function addDOMEventListenerForEditor(editorElement) {
     editorElement.contentWindow.addEventListener("DOMSubtreeModified", msiEditorDOMChangeListener,
       true);
   } catch (ex) {
-    dump("Unable to register DOM change event listener; error [" + ex + "].\n");
+    throw new MsiException('addDOMEventListenerForEditor', e);
   }
 }
 
@@ -782,7 +789,7 @@ function ShutdownAllEditors() {
       }
     }
   } catch (e) {
-    msidump(e.message);
+    throw new MsiException('ShutdownAllEditors', e);
   }
   return !keepgoing;
 }
@@ -881,6 +888,7 @@ function msiEditorDocumentObserver(editorElement) {
     now = Date.now();
     switch (aTopic) {
       case "obs_documentCreated":
+      try{
         // Get state to see if document creation succeeded
         d = new Date( 1980, 1, 1 );
         timestamp = d.valueOf();
@@ -1258,8 +1266,13 @@ function msiEditorDocumentObserver(editorElement) {
         }
         if (bIsRealDocument)
           this.mEditorElement.mbInitializationCompleted = true;
+      }
+      catch(e) {
+        throw new MsiException('Doc load observer', e);
+      }
 
         break;
+
 
       case "cmd_setDocumentModified":
         //        msiDumpWithID("Hit setDocumentModified observer in base msiEditorDocumentObserver, for editor [@].\n", this.mEditorElement);
@@ -1380,7 +1393,7 @@ function copyAndLoadWelcomeDoc() {
     docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
     if (!docdir.exists()) docdir.create(1,0755);
     defdocdirstring = GetStringPref("swp.prefDocumentDir");
-    if (defdocdirstring.length == 0) defdocdirstring = "SWPDocs";
+    if (defdocdirstring.length == 0) defdocdirstring = GetString("DefaultDocDir");
     docdir.append(defdocdirstring);
     if (!docdir.exists()) docdir.create(1,0755);
     // Now we have docdir, so we can copy sourceFile
@@ -1623,7 +1636,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
     msiEditorLoadUrl(editorElement, docurl);
     msiUpdateWindowTitle();
   } catch (e) {
-    dump("Error in loading URL in msiLoadInitialDocument: [" + e + "]\n");
+    finalThrow(cmdFailString('Load initial document'), e.message);
   }
   //  msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
 }
@@ -10665,7 +10678,7 @@ function msiClickLink(event, theURI, targWinStr, editorElement) {
     targMarker = theURI.substr(sharpPos + 1);
     targURIStr = theURI.substr(0, sharpPos);
   }
-  // msiMakeAbsoluteUrl uses foo_work as the base. We want to use the parent directory (SWPDOCS) instead, so
+  // msiMakeAbsoluteUrl uses foo_work as the base. We want to use the parent directory (SWPDocs, SWDocs, SNBDocs) instead, so
   // BBM should be checking that these strings are relative
   targURIStr = '../' + targURIStr;
   theURI = '../' + theURI;
