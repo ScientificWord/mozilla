@@ -20,6 +20,7 @@ pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");
 
 /* default table prefs */
 /* for Prince */
+
 pref("browser.cache.disk.enable",           false);
 pref("browser.hiddenWindowChromeURL", "chrome://prince/content/hiddenwindow.xul");
 pref("browser.chromeURL", "chrome://prince/content/prince.xul");
@@ -172,7 +173,6 @@ pref("swp.plot.AnimMax", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mr
 pref("swp.plot.AnimMin", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>0</mn></mrow></math>");
 pref("swp.plot.AnimVar", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi>t</mi></mrow></math>");
 pref("swp.plot.TubeRadialPts", 9);
-pref("swp.prefDocumentDir","SWPDocs");
 #ifdef XP_MACOSX
 pref("swp.prefPDFPath","launch");
 #else
