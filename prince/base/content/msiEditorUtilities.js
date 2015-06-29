@@ -62,15 +62,14 @@ function isLicensed() {
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (editor) {
-    var licensedApp = editor.mAppUtils.licensedApp;
 #ifdef PROD_SWP
-      return (licensedApp == 3);
+      return editor.mAppUtils.licensedApp(3);
 #endif
 #ifdef PROD_SW
-      return (licensedApp == 2);
+      return editor.mAppUtils.licensedApp(2);
 #endif
 #ifdef PROD_SNB
-      return (licensedApp == 1);
+      return editor.mAppUtils.licensedApp(1);
 #endif
   }
   else return false;
@@ -805,8 +804,10 @@ function msiGetTopLevelEditorElement(currWindow)
     //  return msiGetActiveEditorElement(window);
     if (!editorElement)
       editorElement = msiGetPrimaryEditorElementForWindow(currWindow);
-    if (!editorElement)
+    if (!editorElement){
+      debugger;
       dump('\nmsiGetTopLevelEditorElement returning void or null');
+    }
     return editorElement;
   }
 
@@ -833,8 +834,10 @@ function msiGetCurrentEditorElementForWindow(theWindow) {
   if (!editorElement)
     editorElement = editorList[0];
   //just return the first one in the list
-  if (!editorElement)
+  if (!editorElement) {
+    debugger;
     dump('\nmsiGetCurrentEditorElementForWindow returning void or null');
+  }
   return editorElement;
 }
 
@@ -850,8 +853,10 @@ function msiGetPrimaryEditorElementForWindow(theWindow) {
     }
     if (!theEditor)
       theEditor = editorElements[0];
-    if (!theEditor)
+    if (!theEditor) {
+      debugger;
       dump('\nmsiGetPrimaryEditorElementForWindow returning void or null');
+    }
     return theEditor;
   } else {
     return msiGetEditorElement();
@@ -11177,7 +11182,7 @@ function fileIsNewerThan(baseFile, maybeNewerFilePath) {
     //   path = path.slice();
     //   dump("path2: " + path);
     // }
-     
+
     //if (path.indexOf('C:') > -1) {
     //  path = path.slice(path.indexOf('C:'))
     //}
