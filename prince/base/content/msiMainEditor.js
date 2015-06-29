@@ -235,8 +235,10 @@ function msiEditorOnLoad()
 #ifndef PROD_SW
     if (msiSetupMSIComputeMenuCommands) msiSetupMSIComputeMenuCommands(editorElement);
 #endif
+#ifndef PROD_SNB
     msiSetupMSITypesetMenuCommands(editorElement);
     msiSetupMSITypesetInsertMenuCommands(editorElement);
+#endif
   } catch (e)
   {
     dump("makeEditable failed: "+e+"\n");
