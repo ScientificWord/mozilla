@@ -69,6 +69,7 @@ function accept() {
 		else {
 			writeLicense(this.responseText);
 			AlertWithTitle("Activation Success", acceptMessage);
+			editor.mAppUtils.reset();
 		}
 	};
 
