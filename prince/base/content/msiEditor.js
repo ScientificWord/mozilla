@@ -833,47 +833,56 @@ function coalesceDocumentOptions(editor) {
   }
 }
 
-function checkLicenseStatus( licenseWarningGiven )
-{
-  var licenseStatus, daysleft, prefs, timestamp, date, d, prefs, now;
-  var elapsed = 0;
-  var day = 24*3600*1000; // one day in milliseconds
-  now = Date.now();
+var license_timercallback = {
+  notify: function(timer)
+  {
+    var licenseStatus, daysleft, prefs, timestamp, date, d, prefs, now;
+    var elapsed = 0;
+    var day = 24*3600*1000; // one day in milliseconds
+    now = Date.now();
 
-  d = new Date( 1980, 1, 1 );
-  timestamp = d.valueOf();
-  prefs = GetPrefs();
-  if (prefs) {
-    try {
-      timestamp = parseInt(prefs.getCharPref("swp.lastexpirationwarning"), 10);
+    d = new Date( 1980, 1, 1 );
+    timestamp = d.valueOf();
+    prefs = GetPrefs();
+    if (prefs) {
+      try {
+        timestamp = parseInt(prefs.getCharPref("swp.lastexpirationwarning"), 10);
+      }
+      catch(e){}
+      elapsed = now.valueOf() - timestamp;
     }
-    catch(e){}
-    elapsed = now.valueOf() - timestamp;
-  }
 
-  if (!licenseWarningGiven && (this.mEditorElement.id === 'content-frame')) {
-    licenseStatus = licenseTimeRemaining();
-    if (licenseStatus === "unlicensed" ) {
-      openDialog('chrome://prince/content/licensestatus.xul', 'License status',
-        'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
-    } else if (licenseStatus !== "permanent" && elapsed > day) {
-      // licenseStatus should be a number
-      daysleft = Number(licenseStatus);
-      if (!isNaN(daysleft)) {
-        if (daysleft <= 5 && daysleft >= 0) {
-          openDialog('chrome://prince/content/licensestatus.xul', 'License status',
-            'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', true, daysleft
-          );
-          prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
-        } else if (daysleft < 0) {
-          openDialog('chrome://prince/content/licensestatus.xul', 'License status',
-            'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
+    if (!licenseWarningGiven && (this.mEditorElement.id === 'content-frame')) {
+      licenseStatus = licenseTimeRemaining();
+      if (licenseStatus === "unlicensed" ) {
+        openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+          'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
+      } else if (licenseStatus !== "permanent" && elapsed > day) {
+        // licenseStatus should be a number
+        daysleft = Number(licenseStatus);
+        if (!isNaN(daysleft)) {
+          if (daysleft <= 5 && daysleft >= 0) {
+            openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+              'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', true, daysleft
+            );
+            prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
+          } else if (daysleft < 0) {
+            openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+              'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
+          }
         }
       }
+      licenseWarningGiven = true;
     }
-    return true;
   }
-  return licenseWarningGiven;
+};
+
+
+function queueLicenseCheck ()
+{
+  var timer = Components.classes["@mozilla.org/timer;1"]
+              .createInstance(Components.interfaces.nsITimer);
+  timer.initWithCallback(license_timercallback, 4000, nsITimer.TYPE_ONE_SHOT);
 }
 
 // implements nsIObserver
@@ -924,8 +933,7 @@ function msiEditorDocumentObserver(editorElement) {
       case "obs_documentCreated":
       try{
         // Get state to see if document creation succeeded
-        isLicensed(); // This call gets the license info loaded early.
-//        licenseWarningGiven = checkLicenseStatus(licenseWarningGiven);
+        queueLicenseCheck();
 
         setZoom();
         var params = newCommandParams();
@@ -970,7 +978,7 @@ function msiEditorDocumentObserver(editorElement) {
         }
         var seconds = GetIntPref("swp.saveintervalseconds");
         if (!seconds) seconds = 120;
-        if (is_topLevel && (seconds > 0) && isLicensed())
+        if (is_topLevel && (seconds > 0))
           this.mEditorElement.softsavetimer = new SS_Timer(seconds * 1000, editor, this.mEditorElement);
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;
@@ -1332,10 +1340,12 @@ function msiEditorDocumentObserver(editorElement) {
             value: null
           };
           editor.canUndo(enabled, can);
-          if (!isLicensed() && enabled.value && can.value) {
+#ifndef PROD_SNB
+          if (enabled.value && can.value) {
             document.getElementById("cmd_PreviewMode").setAttribute("disabled", true);
           } else
             document.getElementById("cmd_PreviewMode").removeAttribute("disabled");
+#endif
         }
         break;
     }

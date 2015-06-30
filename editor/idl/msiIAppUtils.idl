@@ -12,5 +12,6 @@ interface msiIAppUtils : nsISupports
 	readonly attribute AUTF8String  hostid;
 
 	void hello(in unsigned long appNum);
+	void reset();
 	void goodbye();
 };
