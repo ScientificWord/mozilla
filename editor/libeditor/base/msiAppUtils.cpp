@@ -8,7 +8,10 @@ char * msiAppUtils::pchProdName;
 char * msiAppUtils::pchExpDate;
 RLM_HANDLE msiAppUtils::rh;
 RLM_LICENSE msiAppUtils::lic;
-PRUint32 syzygy; // obscure name for licensed product number
+PRUint32 syzygy = 0; // obscure name for licensed product number. Values are
+// zero if we haven't read the license file.
+// -1 if we read the license file and we are not licensed.
+// 1,2,3 one of our products is licensed.
 /* Header file */
 
 /* Implementation file */
@@ -60,13 +63,30 @@ char * msiAppUtils::getProd() {
 NS_IMETHODIMP msiAppUtils::LicensedApp(PRUint32 appNum, PRBool *_retval)
 {
   nsresult rv;
+  if (appNum == 0) {
+    *_retval = PR_FALSE;
+    return NS_ERROR_INVALID_ARG;
+  }
   if (syzygy == appNum) {
     *_retval  = PR_TRUE;
     rv = NS_OK;
   }
-  else {
+  else if (syzygy == 0) {
     rv = Hello(appNum);
-    *_retval = (rv == NS_OK);
+    if (rv == NS_OK)
+    {
+      // licensed
+      syzygy = appNum;
+      *_retval = PR_TRUE;
+    }
+    else {
+      syzygy = -1;
+      *_retval = PR_FALSE;
+    }
+  }
+  if (syzygy < 0) {
+    *_retval  = PR_FALSE;
+    rv = NS_OK;
   }
   return rv;
 }
