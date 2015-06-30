@@ -20,7 +20,7 @@ pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");
 
 /* default table prefs */
 /* for Prince */
-
+// pref("nglayout.debug.disable_xul_fastload", true);
 pref("browser.cache.disk.enable",           false);
 pref("browser.hiddenWindowChromeURL", "chrome://prince/content/hiddenwindow.xul");
 pref("browser.chromeURL", "chrome://prince/content/prince.xul");

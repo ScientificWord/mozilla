@@ -833,6 +833,48 @@ function coalesceDocumentOptions(editor) {
   }
 }
 
+function checkLicenseStatus( licenseWarningGiven )
+{
+  var licenseStatus, daysleft, prefs, timestamp, date, d, prefs, now;
+  var elapsed = 0;
+  var day = 24*3600*1000; // one day in milliseconds
+  now = Date.now();
+
+  d = new Date( 1980, 1, 1 );
+  timestamp = d.valueOf();
+  prefs = GetPrefs();
+  if (prefs) {
+    try {
+      timestamp = parseInt(prefs.getCharPref("swp.lastexpirationwarning"), 10);
+    }
+    catch(e){}
+    elapsed = now.valueOf() - timestamp;
+  }
+
+  if (!licenseWarningGiven && (this.mEditorElement.id === 'content-frame')) {
+    licenseStatus = licenseTimeRemaining();
+    if (licenseStatus === "unlicensed" ) {
+      openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+        'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
+    } else if (licenseStatus !== "permanent" && elapsed > day) {
+      // licenseStatus should be a number
+      daysleft = Number(licenseStatus);
+      if (!isNaN(daysleft)) {
+        if (daysleft <= 5 && daysleft >= 0) {
+          openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+            'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', true, daysleft
+          );
+          prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
+        } else if (daysleft < 0) {
+          openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+            'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
+        }
+      }
+    }
+    return true;
+  }
+  return licenseWarningGiven;
+}
 
 // implements nsIObserver
 //var gEditorDocumentObserver =
@@ -875,55 +917,15 @@ function msiEditorDocumentObserver(editorElement) {
     }
 
     var edStr = "";
-    var licenseStatus;
-    var daysleft;
-    var prefs;
-    var timestamp;
-    var date;
-    var now;
-    var elapsed = 0;
-    var day = 24*3600*1000; // one day in milliseconds
+
     if (editor != null)
       edStr = "non-null";
-    now = Date.now();
     switch (aTopic) {
       case "obs_documentCreated":
       try{
         // Get state to see if document creation succeeded
-        d = new Date( 1980, 1, 1 );
-        timestamp = d.valueOf();
-        prefs = GetPrefs();
-        if (prefs) {
-          try {
-            timestamp = parseInt(prefs.getCharPref("swp.lastexpirationwarning"), 10);
-          }
-          catch(e){}
-          elapsed = now.valueOf() - timestamp;
-        }
-
-        if (!licenseWarningGiven && (this.mEditorElement.id === 'content-frame')) {
-          isLicensed(); // we call this, ignoring the return value, to force the license file to be read.
-          licenseStatus = licenseTimeRemaining();
-          if (licenseStatus === "unlicensed" ) {
-            openDialog('chrome://prince/content/licensestatus.xul', 'License status',
-              'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
-          } else if (licenseStatus !== "permanent" && elapsed > day) {
-            // licenseStatus should be a number
-            daysleft = Number(licenseStatus);
-            if (!isNaN(daysleft)) {
-              if (daysleft <= 5 && daysleft >= 0) {
-                openDialog('chrome://prince/content/licensestatus.xul', 'License status',
-                  'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', true, daysleft
-                );
-                prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
-              } else if (daysleft < 0) {
-                openDialog('chrome://prince/content/licensestatus.xul', 'License status',
-                  'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
-              }
-            }
-          }
-          licenseWarningGiven = true;
-        }
+        isLicensed(); // This call gets the license info loaded early.
+//        licenseWarningGiven = checkLicenseStatus(licenseWarningGiven);
 
         setZoom();
         var params = newCommandParams();
@@ -5293,12 +5295,14 @@ function msiEditorInitFormatMenu(event, theMenu) {
     return;
 
   var editorElement = msiGetActiveEditorElement();
-  try {
-    msiInitObjectPropertiesMenuitem(editorElement, "propertiesMenu");
-    msiInitRemoveStylesMenuitems(editorElement, "removeStylesMenuitem", "removeLinksMenuitem",
-      "removeNamedAnchorsMenuitem");
-  } catch (ex) {
-    dump("Exception in msiEditor.js, msiEditorInitFormatMenu: [" + ex + "].\n");
+  if (editorElement) {
+    try {
+      msiInitObjectPropertiesMenuitem(editorElement, "propertiesMenu");
+      msiInitRemoveStylesMenuitems(editorElement, "removeStylesMenuitem", "removeLinksMenuitem",
+        "removeNamedAnchorsMenuitem");
+    } catch (ex) {
+      dump("Exception in msiEditor.js, msiEditorInitFormatMenu: [" + ex + "].\n");
+    }
   }
 }
 
