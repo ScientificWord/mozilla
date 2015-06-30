@@ -805,7 +805,6 @@ function msiGetTopLevelEditorElement(currWindow)
     if (!editorElement)
       editorElement = msiGetPrimaryEditorElementForWindow(currWindow);
     if (!editorElement){
-      debugger;
       dump('\nmsiGetTopLevelEditorElement returning void or null');
     }
     return editorElement;
@@ -835,7 +834,6 @@ function msiGetCurrentEditorElementForWindow(theWindow) {
     editorElement = editorList[0];
   //just return the first one in the list
   if (!editorElement) {
-    debugger;
     dump('\nmsiGetCurrentEditorElementForWindow returning void or null');
   }
   return editorElement;
@@ -854,7 +852,6 @@ function msiGetPrimaryEditorElementForWindow(theWindow) {
     if (!theEditor)
       theEditor = editorElements[0];
     if (!theEditor) {
-      debugger;
       dump('\nmsiGetPrimaryEditorElementForWindow returning void or null');
     }
     return theEditor;
