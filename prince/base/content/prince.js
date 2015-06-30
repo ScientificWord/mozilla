@@ -345,13 +345,15 @@ function openTeX()
     {
       prefs = GetPrefs();
       prefdir = prefs.getCharPref("swp.prefDocumentDir");
-      docdirname = prefdir;
-      // msidump("swp.prefDcoumentDir is ", prefdir + "\n");
-      docdir = Components.classes["@mozilla.org/file/local;1"].
-          createInstance(Components.interfaces.nsILocalFile);
-      docdir.initWithPath(docdirname);
-      if (!valueOf(docdir.exists()))
-        docdir.create(1, 0755);
+      if (prefdir) {
+        docdirname = prefdir;
+        // msidump("swp.prefDocumentDir is ", prefdir + "\n");
+        docdir = Components.classes["@mozilla.org/file/local;1"].
+            createInstance(Components.interfaces.nsILocalFile);
+        docdir.initWithPath(docdirname);
+        if (!valueOf(docdir.exists()))
+          docdir.create(1, 0755);
+      }
     }
     catch (e)
     {
@@ -365,7 +367,7 @@ function openTeX()
       // if we can't find the one in the prefs, get the default
       docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
       if (!docdir.exists()) docdir.create(1,0755);
-      if (prefdir.length == 0) {
+      if (!prefdir || prefdir.length == 0) {
         prefdir = GetString("DefaultDocDir");
       }
       defdocdirstring = prefdir;
