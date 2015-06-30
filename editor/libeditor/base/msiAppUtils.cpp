@@ -8,7 +8,7 @@ char * msiAppUtils::pchProdName;
 char * msiAppUtils::pchExpDate;
 RLM_HANDLE msiAppUtils::rh;
 RLM_LICENSE msiAppUtils::lic;
-PRUint32 syzygy = 0; // obscure name for licensed product number. Values are
+PRInt32 syzygy = 0; // obscure name for licensed product number. Values are
 // zero if we haven't read the license file.
 // -1 if we read the license file and we are not licensed.
 // 1,2,3 one of our products is licensed.
@@ -160,6 +160,7 @@ NS_IMETHODIMP msiAppUtils::Hello( PRUint32 appNum)
     if (stat) {
 //      printf("6\n");
       char errstring[RLM_ERRSTRING_MAX];
+      return NS_ERROR_NOT_AVAILABLE;
 //      (void) printf("Error initializing license system\n");
 //      (void) printf("%s\n", rlm_errstring((RLM_LICENSE) nsnull, rh,
 //                  errstring));
@@ -177,17 +178,24 @@ NS_IMETHODIMP msiAppUtils::Hello( PRUint32 appNum)
         pchProdName = rlm_license_product(lic);
         pchExpDate = rlm_license_exp(lic);
         syzygy = prodnum;
+        return NS_OK;
       }
       else {
 //            printf("Invalid license\n");
         days = -1;
         pchProdName = "";
         pchExpDate = "unlicensed";
-        syzygy = 0;
+        syzygy = -1;
+        return NS_ERROR_NOT_AVAILABLE;
       }
     }
   }
-  return NS_OK;
+  return NS_ERROR_NOT_AVAILABLE;
+}
+
+NS_IMETHODIMP msiAppUtils::Reset()
+{
+  syzygy = 0;
 }
 
 /* void goodbye (); */
