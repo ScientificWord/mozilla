@@ -50,7 +50,8 @@ function Startup()
   gDialog.lineNumberBox.valueNumber = data.currLine;
   gDialog.enableSubeqNumberingCheckbox.checked = data.subEqnNumbersEnabled;
   gDialog.subequationContinuationCheckbox.checked = data.subEqnContinuation;
-  if (data.reviseData.mTableElement.hasAttribute('alignment'))
+  
+  if (data.reviseData.mTableElement && data.reviseData.mTableElement.hasAttribute('alignment'))
   {
     gDialog.enableAlignmentCheckbox.checked = true;
     gDialog.alignmentRadioGroup.value = data.reviseData.mTableElement.getAttribute('alignment');
@@ -238,11 +239,13 @@ function onAccept()
   data.enableAlignment = gDialog.enableAlignmentCheckbox.checked;
   data.alignment = gDialog.alignmentRadioGroup.value;
   // BBM
-  if (data.enableAlignment) {
-    data.reviseData.mTableElement.setAttribute('alignment', data.alignment);
-  }
-  else {
-    data.reviseData.mTableElement.removeAttribute('alignment');
+  if (data.reviseData.mTableElement){
+     if (data.enableAlignment) {
+       data.reviseData.mTableElement.setAttribute('alignment', data.alignment);
+     }
+     else {
+       data.reviseData.mTableElement.removeAttribute('alignment');
+     }
   }
   data.wholeMarker = gDialog.wholeDisplayKeyList.value;
   data.numbering = gDialog.lineNumberingRadioGroup.value;
