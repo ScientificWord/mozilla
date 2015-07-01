@@ -839,6 +839,7 @@ var license_timercallback = {
     var licenseStatus, daysleft, prefs, timestamp, date, d, prefs, now;
     var elapsed = 0;
     var day = 24*3600*1000; // one day in milliseconds
+    var editorElement = msiGetActiveEditorElement();
     now = Date.now();
 
     d = new Date( 1980, 1, 1 );
@@ -852,7 +853,7 @@ var license_timercallback = {
       elapsed = now.valueOf() - timestamp;
     }
 
-    if (!licenseWarningGiven && (this.mEditorElement.id === 'content-frame')) {
+    if (!licenseWarningGiven && (editorElement.id === 'content-frame')) {
       licenseStatus = licenseTimeRemaining();
       if (licenseStatus === "unlicensed" ) {
         openDialog('chrome://prince/content/licensestatus.xul', 'License status',
@@ -882,7 +883,7 @@ function queueLicenseCheck ()
 {
   var timer = Components.classes["@mozilla.org/timer;1"]
               .createInstance(Components.interfaces.nsITimer);
-  timer.initWithCallback(license_timercallback, 4000, nsITimer.TYPE_ONE_SHOT);
+  timer.initWithCallback(license_timercallback, 4000, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
 }
 
 // implements nsIObserver
