@@ -1342,7 +1342,7 @@ function msiEditorDocumentObserver(editorElement) {
           };
           editor.canUndo(enabled, can);
 #ifndef PROD_SNB
-          if (enabled.value && can.value) {
+          if (enabled.value && can.value && !isLicensed()) {
             document.getElementById("cmd_PreviewMode").setAttribute("disabled", true);
           } else
             document.getElementById("cmd_PreviewMode").removeAttribute("disabled");
