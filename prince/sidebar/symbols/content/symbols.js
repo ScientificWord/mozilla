@@ -192,7 +192,7 @@ function remove(event)
   var cachepanel = document.getElementById("cachepanel");
   var usersymbols = cachepanel.getAttribute("userlistofsymbols");
   var id = button.getAttribute("id");
-  if (id.indexOf("cache_") == 0) id=id.slice(5);
+  if (id.indexOf("cache_") == 0) id=id.slice(6);
   cachepanel.removeChild(button);
   if (usersymbols.indexOf(" "+ id + " ") >= 0)
   {
