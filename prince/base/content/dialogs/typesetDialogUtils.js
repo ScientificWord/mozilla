@@ -271,25 +271,30 @@ function lookUpBibTeXDirectories()
     createInstance(Components.interfaces.nsILocalFile);
 
   var bibPath = null;
-  try
-  {
-    bibPath = env.MSIBIBTEX;
-    if (bibPath) {
+
+  bibPath = env.MSIBIBTEX;
+  if (bibPath) {
+    try {
       bibDir.initWithPath(bibPath);
       bibDir.append("bib");
       bibDirs.push(bibDir);
     }
-    bibPath = env.MSITEX;
-    if (bibPath) {
+    catch(e) {
+
+    }
+  }
+  bibPath = env.MSITEX;
+  if (bibPath) {
+    try {
       bibDir2.initWithPath(bibPath);
       bibDir2.append("texmf-dist");
       bibDir2.append("bibtex");
       bibDir2.append("bib");
       bibDirs.push(bibDir2);
     }
-  }
-  catch(e) {
+    catch(e) {
 
+    }
   }
   return bibDirs;
 }
@@ -375,7 +380,7 @@ function convertStringToRegExp(stringExp)
   return regExp;
 }
 
-var baseBibTeXData = 
+var baseBibTeXData =
   {
     nativeEntryTypes : ["article", "book", "booklet", "inbook", "incollection",
                         "inproceedings", "manual", "mastersthesis", "misc",
