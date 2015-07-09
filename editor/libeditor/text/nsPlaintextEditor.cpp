@@ -47,8 +47,8 @@
 #include "nsIDOMNodeList.h"
 #include "nsIDOMDocument.h"
 #include "nsIDocument.h"
-#include "nsIDOMEventTarget.h" 
-#include "nsIDOM3EventTarget.h" 
+#include "nsIDOMEventTarget.h"
+#include "nsIDOM3EventTarget.h"
 #include "nsIDOMKeyEvent.h"
 #include "nsIDOMMouseListener.h"
 #include "nsISelection.h"
@@ -104,7 +104,7 @@ nsPlaintextEditor::nsPlaintextEditor()
 , mCaretStyle(0)
 #endif
 {
-} 
+}
 
 nsPlaintextEditor::~nsPlaintextEditor()
 {
@@ -112,7 +112,7 @@ nsPlaintextEditor::~nsPlaintextEditor()
   // it's ok if the rules aren't a listener; we ignore the error.
   nsCOMPtr<nsIEditActionListener> mListener = do_QueryInterface(mRules);
   RemoveEditActionListener(mListener);
-  
+
   // Remove event listeners. Note that if we had an HTML editor,
   //  it installed its own instead of these
   RemoveEventListeners();
@@ -127,20 +127,20 @@ NS_INTERFACE_MAP_BEGIN(nsPlaintextEditor)
 NS_INTERFACE_MAP_END_INHERITING(nsEditor)
 
 
-NS_IMETHODIMP nsPlaintextEditor::Init(nsIDOMDocument *aDoc, 
+NS_IMETHODIMP nsPlaintextEditor::Init(nsIDOMDocument *aDoc,
                                  nsIPresShell   *aPresShell, nsIContent *aRoot, nsISelectionController *aSelCon, PRUint32 aFlags)
 {
   NS_PRECONDITION(aDoc && aPresShell, "bad arg");
   if (!aDoc || !aPresShell)
     return NS_ERROR_NULL_POINTER;
-  
+
   nsresult res = NS_OK, rulesRes = NS_OK;
-  
+
   if (1)
   {
     // block to scope nsAutoEditInitRulesTrigger
     nsAutoEditInitRulesTrigger rulesTrigger(this, rulesRes);
-  
+
     // Init the base editor
     res = nsEditor::Init(aDoc, aPresShell, aRoot, aSelCon, aFlags);
   }
@@ -163,13 +163,13 @@ NS_IMETHODIMP nsPlaintextEditor::Init(nsIDOMDocument *aDoc,
   return res;
 }
 
-void 
+void
 nsPlaintextEditor::BeginEditorInit()
 {
   mInitTriggerCounter++;
 }
 
-nsresult 
+nsresult
 nsPlaintextEditor::EndEditorInit()
 {
   nsresult res = NS_OK;
@@ -178,7 +178,7 @@ nsPlaintextEditor::EndEditorInit()
   if (mInitTriggerCounter == 0)
   {
     res = InitRules();
-    if (NS_SUCCEEDED(res)) 
+    if (NS_SUCCEEDED(res))
       EnableUndo(PR_TRUE);
   }
   return res;
@@ -197,43 +197,43 @@ NS_IMETHODIMP nsPlaintextEditor::SetInComplexTransaction(PRBool aInComplexTransa
     return NS_OK;
 }
 
-NS_IMETHODIMP 
-nsPlaintextEditor::SetDocumentCharacterSet(const nsACString & characterSet) 
-{ 
-  nsresult result; 
+NS_IMETHODIMP
+nsPlaintextEditor::SetDocumentCharacterSet(const nsACString & characterSet)
+{
+  nsresult result;
 
-  result = nsEditor::SetDocumentCharacterSet(characterSet); 
+  result = nsEditor::SetDocumentCharacterSet(characterSet);
 
-  // update META charset tag 
-  if (NS_SUCCEEDED(result)) { 
-    nsCOMPtr<nsIDOMDocument>domdoc; 
-    result = GetDocument(getter_AddRefs(domdoc)); 
-    if (NS_SUCCEEDED(result) && domdoc) { 
-      nsCOMPtr<nsIDOMNodeList>metaList; 
-      nsCOMPtr<nsIDOMElement>metaElement; 
-      PRBool newMetaCharset = PR_TRUE; 
+  // update META charset tag
+  if (NS_SUCCEEDED(result)) {
+    nsCOMPtr<nsIDOMDocument>domdoc;
+    result = GetDocument(getter_AddRefs(domdoc));
+    if (NS_SUCCEEDED(result) && domdoc) {
+      nsCOMPtr<nsIDOMNodeList>metaList;
+      nsCOMPtr<nsIDOMElement>metaElement;
+      PRBool newMetaCharset = PR_TRUE;
 
-      // get a list of META tags 
-      result = domdoc->GetElementsByTagName(NS_LITERAL_STRING("meta"), getter_AddRefs(metaList)); 
-      if (NS_SUCCEEDED(result) && metaList) { 
-        PRUint32 listLength = 0; 
-        (void) metaList->GetLength(&listLength); 
+      // get a list of META tags
+      result = domdoc->GetElementsByTagName(NS_LITERAL_STRING("meta"), getter_AddRefs(metaList));
+      if (NS_SUCCEEDED(result) && metaList) {
+        PRUint32 listLength = 0;
+        (void) metaList->GetLength(&listLength);
 
-        nsCOMPtr<nsIDOMNode>metaNode; 
-        for (PRUint32 i = 0; i < listLength; i++) { 
-          metaList->Item(i, getter_AddRefs(metaNode)); 
-          if (!metaNode) continue; 
-          metaElement = do_QueryInterface(metaNode); 
-          if (!metaElement) continue; 
+        nsCOMPtr<nsIDOMNode>metaNode;
+        for (PRUint32 i = 0; i < listLength; i++) {
+          metaList->Item(i, getter_AddRefs(metaNode));
+          if (!metaNode) continue;
+          metaElement = do_QueryInterface(metaNode);
+          if (!metaElement) continue;
 
-          nsAutoString currentValue; 
-          if (NS_FAILED(metaElement->GetAttribute(NS_LITERAL_STRING("http-equiv"), currentValue))) continue; 
+          nsAutoString currentValue;
+          if (NS_FAILED(metaElement->GetAttribute(NS_LITERAL_STRING("http-equiv"), currentValue))) continue;
 
           if (FindInReadable(NS_LITERAL_STRING("content-type"),
                              currentValue,
-                             nsCaseInsensitiveStringComparator())) { 
+                             nsCaseInsensitiveStringComparator())) {
             NS_NAMED_LITERAL_STRING(content, "content");
-            if (NS_FAILED(metaElement->GetAttribute(content, currentValue))) continue; 
+            if (NS_FAILED(metaElement->GetAttribute(content, currentValue))) continue;
 
             NS_NAMED_LITERAL_STRING(charsetEquals, "charset=");
             nsAString::const_iterator originalStart, start, end;
@@ -245,49 +245,49 @@ nsPlaintextEditor::SetDocumentCharacterSet(const nsACString & characterSet)
               // set attribute to <original prefix> charset=text/html
               result = nsEditor::SetAttribute(metaElement, content,
                                               Substring(originalStart, start) +
-                                              charsetEquals + NS_ConvertASCIItoUTF16(characterSet)); 
-              if (NS_SUCCEEDED(result)) 
-                newMetaCharset = PR_FALSE; 
-              break; 
-            } 
-          } 
-        } 
-      } 
+                                              charsetEquals + NS_ConvertASCIItoUTF16(characterSet));
+              if (NS_SUCCEEDED(result))
+                newMetaCharset = PR_FALSE;
+              break;
+            }
+          }
+        }
+      }
 
-      if (newMetaCharset) { 
-        nsCOMPtr<nsIDOMNodeList>headList; 
-        result = domdoc->GetElementsByTagName(NS_LITERAL_STRING("head"),getter_AddRefs(headList)); 
-        if (NS_SUCCEEDED(result) && headList) { 
-          nsCOMPtr<nsIDOMNode>headNode; 
-          headList->Item(0, getter_AddRefs(headNode)); 
-          if (headNode) { 
-            nsCOMPtr<nsIDOMNode>resultNode; 
-            // Create a new meta charset tag 
-            result = CreateNode(NS_LITERAL_STRING("meta"), headNode, 0, getter_AddRefs(resultNode)); 
-            if (NS_FAILED(result)) 
-              return NS_ERROR_FAILURE; 
+      if (newMetaCharset) {
+        nsCOMPtr<nsIDOMNodeList>headList;
+        result = domdoc->GetElementsByTagName(NS_LITERAL_STRING("head"),getter_AddRefs(headList));
+        if (NS_SUCCEEDED(result) && headList) {
+          nsCOMPtr<nsIDOMNode>headNode;
+          headList->Item(0, getter_AddRefs(headNode));
+          if (headNode) {
+            nsCOMPtr<nsIDOMNode>resultNode;
+            // Create a new meta charset tag
+            result = CreateNode(NS_LITERAL_STRING("meta"), headNode, 0, getter_AddRefs(resultNode));
+            if (NS_FAILED(result))
+              return NS_ERROR_FAILURE;
 
-            // Set attributes to the created element 
-            if (resultNode && !characterSet.IsEmpty()) { 
-              metaElement = do_QueryInterface(resultNode); 
-              if (metaElement) { 
-                // not undoable, undo should undo CreateNode 
-                result = metaElement->SetAttribute(NS_LITERAL_STRING("http-equiv"), NS_LITERAL_STRING("Content-Type")); 
-                if (NS_SUCCEEDED(result)) { 
-                  // not undoable, undo should undo CreateNode 
+            // Set attributes to the created element
+            if (resultNode && !characterSet.IsEmpty()) {
+              metaElement = do_QueryInterface(resultNode);
+              if (metaElement) {
+                // not undoable, undo should undo CreateNode
+                result = metaElement->SetAttribute(NS_LITERAL_STRING("http-equiv"), NS_LITERAL_STRING("Content-Type"));
+                if (NS_SUCCEEDED(result)) {
+                  // not undoable, undo should undo CreateNode
                   result = metaElement->SetAttribute(NS_LITERAL_STRING("content"),
-                                                     NS_LITERAL_STRING("text/html;charset=") + NS_ConvertASCIItoUTF16(characterSet)); 
-                } 
-              } 
-            } 
-          } 
-        } 
-      } 
-    } 
-  } 
+                                                     NS_LITERAL_STRING("text/html;charset=") + NS_ConvertASCIItoUTF16(characterSet));
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
-  return result; 
-} 
+  return result;
+}
 
 nsresult
 nsPlaintextEditor::CreateEventListeners()
@@ -332,7 +332,7 @@ nsPlaintextEditor::CreateEventListeners()
   return rv;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsPlaintextEditor::GetFlags(PRUint32 *aFlags)
 {
   if (!mRules || !aFlags) { return NS_ERROR_NULL_POINTER; }
@@ -340,7 +340,7 @@ nsPlaintextEditor::GetFlags(PRUint32 *aFlags)
 }
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsPlaintextEditor::SetFlags(PRUint32 aFlags)
 {
   if (!mRules) { return NS_ERROR_NULL_POINTER; }
@@ -388,7 +388,7 @@ NS_IMETHODIMP nsPlaintextEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
 
   if (!aKeyEvent) return NS_ERROR_NULL_POINTER;
 
-  if (NS_SUCCEEDED(aKeyEvent->GetKeyCode(&keyCode)) && 
+  if (NS_SUCCEEDED(aKeyEvent->GetKeyCode(&keyCode)) &&
       NS_SUCCEEDED(aKeyEvent->GetCtrlKey(&ctrlKey)) &&
       NS_SUCCEEDED(aKeyEvent->GetAltKey(&altKey)) &&
       NS_SUCCEEDED(aKeyEvent->GetMetaKey(&metaKey)))
@@ -406,7 +406,7 @@ NS_IMETHODIMP nsPlaintextEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
       nsString empty;
       return TypedText(empty, eTypedText);
     }
-    
+
     if (character && !altKey && !ctrlKey && !metaKey)
     {
       aKeyEvent->PreventDefault();
@@ -437,9 +437,9 @@ NS_IMETHODIMP nsPlaintextEditor::TypedText(const nsAString& aString,
     case eTypedBreak:
       {
         return InsertLineBreak();
-      } 
-  } 
-  return NS_ERROR_FAILURE; 
+      }
+  }
+  return NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP nsPlaintextEditor::CreateBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent, PRInt32 *aInOutOffset, nsCOMPtr<nsIDOMNode> *outBRNode, EDirection aSelect)
@@ -447,14 +447,14 @@ NS_IMETHODIMP nsPlaintextEditor::CreateBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent
   if (!aInOutParent || !*aInOutParent || !aInOutOffset || !outBRNode) return NS_ERROR_NULL_POINTER;
   *outBRNode = nsnull;
   nsresult res;
-  
+
   // we need to insert a br.  unfortunately, we may have to split a text node to do it.
   nsCOMPtr<nsIDOMNode> node = *aInOutParent;
   PRInt32 theOffset = *aInOutOffset;
   nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
   NS_NAMED_LITERAL_STRING(brType, "br");
   nsCOMPtr<nsIDOMNode> brNode;
-  if (nodeAsText)  
+  if (nodeAsText)
   {
     nsCOMPtr<nsIDOMNode> tmp;
     PRInt32 offset;
@@ -551,10 +551,10 @@ NS_IMETHODIMP nsPlaintextEditor::InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode)
   PRInt32 selOffset;
   res = GetStartNodeAndOffset(selection, getter_AddRefs(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
-  
+
   res = CreateBR(selNode, selOffset, outBRNode);
   if (NS_FAILED(res)) return res;
-    
+
   // position selection after br
   res = GetNodeLocation(*outBRNode, address_of(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
@@ -565,7 +565,7 @@ NS_IMETHODIMP nsPlaintextEditor::InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode)
 
 nsresult
 nsPlaintextEditor::GetTextSelectionOffsets(nsISelection *aSelection,
-                                           PRUint32 &aOutStartOffset, 
+                                           PRUint32 &aOutStartOffset,
                                            PRUint32 &aOutEndOffset)
 {
   NS_ASSERTION(aSelection, "null selection");
@@ -587,7 +587,7 @@ nsPlaintextEditor::GetTextSelectionOffsets(nsISelection *aSelection,
   nsCOMPtr<nsIContentIterator> iter =
     do_CreateInstance("@mozilla.org/content/post-content-iterator;1", &rv);
   NS_ENSURE_SUCCESS(rv, rv);
-    
+
 #ifdef NS_DEBUG
   PRInt32 nodeCount = 0; // only needed for the assertions below
 #endif
@@ -652,8 +652,8 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   nsresult result;
 
   // delete placeholder txns merge.
-  nsAutoPlaceHolderBatch batch(this, gDeleteTxnName);
-  nsAutoRules beginRulesSniffing(this, kOpDeleteSelection, aAction);
+  // nsAutoPlaceHolderBatch batch(this, gDeleteTxnName);
+  // nsAutoRules beginRulesSniffing(this, kOpDeleteSelection, aAction);
 
   // pre-process
   nsCOMPtr<nsISelection> selection;
@@ -679,7 +679,7 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
       if (NS_FAILED(result)) return result;
     }
     else
-    { 
+    {
       aAction = eNone;
     }
 
@@ -738,10 +738,10 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   {
     result = DeleteSelectionImpl(aAction);
   }
-    
+
   if (!cancel)
   {
-    // post-process 
+    // post-process
     result = mRules->DidDoAction(selection, &ruleInfo, result);
   }
 
@@ -754,12 +754,12 @@ NS_IMETHODIMP nsPlaintextEditor::InsertText(const nsAString &aStringToInsert)
 
   PRInt32 theAction = nsTextEditRules::kInsertText;
   PRInt32 opID = kOpInsertText;
-  if (mInIMEMode) 
+  if (mInIMEMode)
   {
     theAction = nsTextEditRules::kInsertTextIME;
     opID = kOpInsertIMEText;
   }
-  nsAutoPlaceHolderBatch batch(this, nsnull); 
+  nsAutoPlaceHolderBatch batch(this, nsnull);
   nsAutoRules beginRulesSniffing(this, opID, nsIEditor::eNext);
 
   // pre-process
@@ -785,7 +785,7 @@ NS_IMETHODIMP nsPlaintextEditor::InsertText(const nsAString &aStringToInsert)
   }
   if (!cancel)
   {
-    // post-process 
+    // post-process
     result = mRules->DidDoAction(selection, &ruleInfo, result);
   }
   return result;
@@ -839,15 +839,15 @@ NS_IMETHODIMP nsPlaintextEditor::InsertLineBreak()
           if (!nextTextNode) {
             nextNode = do_QueryInterface(newNode); // is this QI needed?
           }
-          else { 
-            offsetInParent=0; 
+          else {
+            offsetInParent=0;
           }
         }
         else {
           nextNode = do_QueryInterface(newNode); // is this QI needed?
         }
 
-        if (-1==offsetInParent) 
+        if (-1==offsetInParent)
         {
           nextNode->GetParentNode(getter_AddRefs(parent));
           res = GetChildOffset(nextNode, parent, offsetInParent);
@@ -901,10 +901,10 @@ nsPlaintextEditor::GetDocumentIsEmpty(PRBool *aDocumentIsEmpty)
 {
   if (!aDocumentIsEmpty)
     return NS_ERROR_NULL_POINTER;
-  
+
   if (!mRules)
     return NS_ERROR_NOT_INITIALIZED;
-  
+
   return mRules->DocumentIsEmpty(aDocumentIsEmpty);
 }
 
@@ -915,7 +915,7 @@ nsPlaintextEditor::GetTextLength(PRInt32 *aCount)
 
   // initialize out params
   *aCount = 0;
-  
+
   // special-case for empty document, to account for the bogus node
   PRBool docEmpty;
   nsresult rv = GetDocumentIsEmpty(&docEmpty);
@@ -966,7 +966,7 @@ nsPlaintextEditor::GetMaxTextLength(PRInt32* aMaxTextLength)
 //
 // Get the wrap width
 //
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsPlaintextEditor::GetWrapWidth(PRInt32 *aWrapColumn)
 {
   if (! aWrapColumn)
@@ -996,8 +996,8 @@ static void CutStyle(const char* stylename, nsString& styleValue)
 
 //
 // Change the wrap width on the root of this document.
-// 
-NS_IMETHODIMP 
+//
+NS_IMETHODIMP
 nsPlaintextEditor::SetWrapWidth(PRInt32 aWrapColumn)
 {
   SetWrapColumn(aWrapColumn);
@@ -1069,7 +1069,7 @@ nsPlaintextEditor::SetWrapWidth(PRInt32 aWrapColumn)
   return rootElement->SetAttribute(styleName, styleValue);
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsPlaintextEditor::SetWrapColumn(PRInt32 aWrapColumn)
 {
   mWrapColumn = aWrapColumn;
@@ -1079,7 +1079,7 @@ nsPlaintextEditor::SetWrapColumn(PRInt32 aWrapColumn)
 //
 // Get the newline handling for this editor
 //
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsPlaintextEditor::GetNewlineHandling(PRInt32 *aNewlineHandling)
 {
   NS_ENSURE_ARG_POINTER(aNewlineHandling);
@@ -1090,17 +1090,17 @@ nsPlaintextEditor::GetNewlineHandling(PRInt32 *aNewlineHandling)
 
 //
 // Change the newline handling for this editor
-// 
-NS_IMETHODIMP 
+//
+NS_IMETHODIMP
 nsPlaintextEditor::SetNewlineHandling(PRInt32 aNewlineHandling)
 {
   mNewlineHandling = aNewlineHandling;
-  
+
   return NS_OK;
 }
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsPlaintextEditor::Undo(PRUint32 aCount)
 {
   nsAutoUpdateViewBatch beginViewBatching(this);
@@ -1114,18 +1114,18 @@ nsPlaintextEditor::Undo(PRUint32 aCount)
   GetSelection(getter_AddRefs(selection));
   PRBool cancel, handled;
   nsresult result = mRules->WillDoAction(selection, &ruleInfo, &cancel, &handled);
-  
+
   if (!cancel && NS_SUCCEEDED(result))
   {
     result = nsEditor::Undo(aCount);
     result = mRules->DidDoAction(selection, &ruleInfo, result);
     nsEditorUtils::JiggleCursor(this, selection, nsIEditor::eNext);
-  } 
-   
+  }
+
   return result;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsPlaintextEditor::Redo(PRUint32 aCount)
 {
   nsAutoUpdateViewBatch beginViewBatching(this);
@@ -1139,14 +1139,14 @@ nsPlaintextEditor::Redo(PRUint32 aCount)
   GetSelection(getter_AddRefs(selection));
   PRBool cancel, handled;
   nsresult result = mRules->WillDoAction(selection, &ruleInfo, &cancel, &handled);
-  
+
   if (!cancel && NS_SUCCEEDED(result))
   {
     result = nsEditor::Redo(aCount);
     result = mRules->DidDoAction(selection, &ruleInfo, result);
     nsEditorUtils::JiggleCursor(this, selection, nsIEditor::eNext);
-  } 
-   
+  }
+
   return result;
 }
 
@@ -1233,7 +1233,7 @@ NS_IMETHODIMP nsPlaintextEditor::CanCut(PRBool *aCanCut)
   nsCOMPtr<nsISelection> selection;
   nsresult rv = GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(rv)) return rv;
-    
+
   PRBool isCollapsed;
   rv = selection->GetIsCollapsed(&isCollapsed);
   if (NS_FAILED(rv)) return rv;
@@ -1262,7 +1262,7 @@ NS_IMETHODIMP nsPlaintextEditor::CanCopy(PRBool *aCanCopy)
   nsCOMPtr<nsISelection> selection;
   nsresult rv = GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(rv)) return rv;
-    
+
   PRBool isCollapsed;
   rv = selection->GetIsCollapsed(&isCollapsed);
   if (NS_FAILED(rv)) return rv;
@@ -1334,7 +1334,7 @@ nsPlaintextEditor::GetAndInitDocEncoder(const nsAString& aFormatType,
 }
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsPlaintextEditor::OutputToString(const nsAString& aFormatType,
                                   PRUint32 aFlags,
                                   nsAString& aOutputString)
@@ -1382,7 +1382,7 @@ nsPlaintextEditor::OutputToStream(nsIOutputStream* aOutputStream,
     PRBool docEmpty;
     rv = GetDocumentIsEmpty(&docEmpty);
     if (NS_FAILED(rv)) return rv;
-    
+
     if (docEmpty)
        return NS_OK;    // output nothing
   }
@@ -1470,7 +1470,7 @@ static nsICiter* MakeACiter()
 
   char *citationType = 0;
   rv = prefBranch->GetCharPref("mail.compose.citationType", &citationType);
-                          
+
   if (NS_SUCCEEDED(rv) && citationType[0] && !strncmp(citationType, "aol", 3))
     citer = new nsAOLCiter;
   else
@@ -1607,7 +1607,7 @@ nsPlaintextEditor::Rewrap(PRBool aRespectNewlines)
   return InsertTextWithQuotations(wrapped);
 }
 
-NS_IMETHODIMP    
+NS_IMETHODIMP
 nsPlaintextEditor::StripCites()
 {
 #ifdef DEBUG_akkana
@@ -1655,7 +1655,7 @@ nsPlaintextEditor::SetCompositionString(const nsAString& aCompositionString, nsI
   }
 
   nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
-  if (!ps) 
+  if (!ps)
     return NS_ERROR_NOT_INITIALIZED;
 
   nsCOMPtr<nsISelection> selection;
@@ -1751,7 +1751,7 @@ nsPlaintextEditor::SetCompositionString(const nsAString& aCompositionString, nsI
   return result;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsPlaintextEditor::GetReconversionString(nsReconversionEventReply* aReply)
 {
   nsCOMPtr<nsISelection> selection;
@@ -1760,19 +1760,19 @@ nsPlaintextEditor::GetReconversionString(nsReconversionEventReply* aReply)
   if (!selection) return NS_ERROR_FAILURE;
 
   // XXX get the first range in the selection.  Since it is
-  // unclear what to do if reconversion happens with a 
+  // unclear what to do if reconversion happens with a
   // multirange selection, we will ignore any additional ranges.
-  
+
   nsCOMPtr<nsIDOMRange> range;
   res = selection->GetRangeAt(0, getter_AddRefs(range));
   if (NS_FAILED(res)) return res;
   if (!range) return NS_ERROR_FAILURE;
-  
+
   nsAutoString textValue;
   res = range->ToString(textValue);
   if (NS_FAILED(res))
     return res;
-  
+
   aReply->mReconversionString = (PRUnichar*) nsMemory::Clone(textValue.get(),
                                                                 (textValue.Length() + 1) * sizeof(PRUnichar));
   if (!aReply->mReconversionString)
@@ -1807,10 +1807,10 @@ nsPlaintextEditor::EndOperation()
   if (mRules) res = mRules->AfterEdit(mAction, mDirection);
   nsEditor::EndOperation();  // will clear mAction, mDirection
   return res;
-}  
+}
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsPlaintextEditor::SelectEntireDocument(nsISelection *aSelection)
 {
   if (!aSelection || !mRules) { return NS_ERROR_NULL_POINTER; }
