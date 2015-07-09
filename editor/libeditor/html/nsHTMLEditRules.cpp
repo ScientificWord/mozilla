@@ -2057,8 +2057,8 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
   if (NS_FAILED(res)) return res;
 
 
-  nsAutoSelectionReset selectionResetter(aSelection, mHTMLEditor);
-  nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
+  // nsAutoSelectionReset selectionResetter(aSelection, mHTMLEditor);
+  // nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
 
   nsCOMPtr<nsIDOMNode> startNode, selNode;
   PRInt32 startOffset, selOffset;
@@ -2529,7 +2529,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
       // don't cross table boundaries
       PRBool bInDifTblElems;
-      res = InDifferentTableElements(leftNode, rightNode, &bInDifTblElems);
+      res =  InDifferentTableElements(leftNode, rightNode, &bInDifTblElems);
       if (NS_FAILED(res) || bInDifTblElems) return res;
 
       // find the relavent blocks
@@ -3801,7 +3801,7 @@ PRBool cleanUpTempInput(nsHTMLEditor * ed, nsCOMPtr<nsIDOMNode>& startNode, PRIn
   elt = do_QueryInterface(node);
   if (elt == nsnull) return PR_FALSE;
   elt->GetNodeName(name);
-  if (name.EqualsLiteral("mi")) {
+  if (name.EqualsLiteral("mi") || name.EqualsLiteral("mn")) {
     res = ed->GetAttributeValue(elt, NS_LITERAL_STRING("tempinput"), tempinput, &attResult);
     if (tempinput.EqualsLiteral("true")) {
       // we have a temp input box
@@ -3959,6 +3959,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       }
 
       res = node->GetNextSibling(getter_AddRefs(nextSiblingNode));
+      res = ed->GetNodeLocation(node, address_of(parentNode), &startOffset);
       ed->DeleteNode(node);
       node = parentNode;
       res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
@@ -3967,7 +3968,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       if (elt && IsSpecialMath(elt, isEmpty, nodecount, startOffset, ed)) {
         // we have deleted a child of node. If node is one of the
         // math nodes that has a fixed number of children, we must replace the
-        // child with an input box. If elt is an msup, msub, msubsup (mroot?), we neeed
+        // child with an input box. If we are deleting an input box and elt is an msup, msub, msubsup (mroot?), we need
         // to remove the tag (msup and msub) or convert msubsup to msub or msup.
         if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
         {
