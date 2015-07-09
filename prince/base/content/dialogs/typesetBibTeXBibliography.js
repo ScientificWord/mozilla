@@ -40,13 +40,13 @@ function Startup()
 function InitDialog()
 {
   var prefBranch = GetPrefs();
-  var fileDir = 
+  var fileDir =
     prefBranch.getComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile);
   if (fileDir != null)
     gDialog.userBibTeXDir = fileDir;
-  else gDialog.userBibTeXDir = nulll;
+  else gDialog.userBibTeXDir = null;
   fillDatabaseFileListbox(fileDir);
-  fillStyleFileListbox();
+  fillStyleFileListbox(fileDir);
 //  checkDisableControls();
 
 //  checkInaccessibleAcceleratorKeys(document.documentElement);
@@ -54,7 +54,7 @@ function InitDialog()
 //  gDialog.tabOrderArray = new Array( gDialog.positionSpecGroup,
 //                                       document.documentElement.getButton("accept"),
 //                                       document.documentElement.getButton("cancel") );
-  
+
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
@@ -180,7 +180,7 @@ function fillDatabaseFileListbox(fileDir)
   var bibDirs;
   for (var i = rowCount - 1; i >= 0; --i)
     gDialog.dbFileListbox.removeItemAt(i);
-  
+
   if (fileDir) {
     bibDirs = [fileDir];
   }
@@ -207,7 +207,7 @@ function fillDatabaseFileListbox(fileDir)
   }
 }
 
-function fillStyleFileListbox()
+function fillStyleFileListbox(fileDir)
 {
   var theListbox = document.getElementById("styleFileListbox");
   //Clear the listbox
@@ -216,7 +216,10 @@ function fillStyleFileListbox()
   for (var i = rowCount - 1; i >= 0; --i)
     theListbox.removeItemAt(i);
 
-  var bibDirs = getBibTeXStyleDirectories();  //returns an nsiLocalFile array
+  var bibDirs = [];  //getBibTeXStyleDirectories();  //returns an nsiLocalFile array
+  var dir = fileDir.clone();
+  dir.append('bst');
+  bibDirs.push(dir);
   for (j=bibDirs.length - 1; j >= 0; j--)
   {
     bibDir = bibDirs[j];
