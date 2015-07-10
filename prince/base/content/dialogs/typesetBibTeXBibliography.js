@@ -215,11 +215,12 @@ function fillStyleFileListbox(fileDir)
   var j;
   for (var i = rowCount - 1; i >= 0; --i)
     theListbox.removeItemAt(i);
-
-  var bibDirs = [];  //getBibTeXStyleDirectories();  //returns an nsiLocalFile array
-  var dir = fileDir.clone();
-  dir.append('bst');
-  bibDirs.push(dir);
+  var bibDirs;
+  if (fileDir) {
+    fileDir.append('bst');
+    bibDirs = [fileDir];
+  }
+  else bibDirs = getBibTeXStyleDirectories();  //returns an nsiLocalFile array
   for (j=bibDirs.length - 1; j >= 0; j--)
   {
     bibDir = bibDirs[j];
