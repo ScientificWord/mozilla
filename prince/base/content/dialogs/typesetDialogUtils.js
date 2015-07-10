@@ -1,5 +1,6 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/os.jsm");
+Components.utils.import("resource://app/modules/pathutils.jsm");
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
@@ -202,21 +203,20 @@ function getEnvObject()
 {
   try
   {
-    // var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    // var theFile = dsprops.get("Home", Components.interfaces.nsIFile);
-    // theFile.append(".mackichan");
-    // theFile.append("MSITeX.bash");
-
-    // var path = theFile.path;
     var extension;
     var os = getOS(window);
-    if (os == "win") {
-      extension = "cmd";
-    } else {
-      extension = "bash";
-    }
     var myXMLHTTPRequest = new XMLHttpRequest();
-    myXMLHTTPRequest.open("GET", "resource://app/MSITeX."+extension, false);
+    if (os == "win") {
+      myXMLHTTPRequest.open("GET", "resource://app/MSITeX.cmd", false);
+    } else {
+      var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+      var theFile = dsprops.get("Home", Components.interfaces.nsIFile);
+      theFile.append(".mackichan");
+      theFile.append("MSITeX.bash");
+      var spec = msiFileURLStringFromFile( theFile );
+      myXMLHTTPRequest.open("GET", spec, false);
+    }
+
     myXMLHTTPRequest.send(null);
     var text = myXMLHTTPRequest.responseText;
     var lines = text.split("\n");
@@ -230,7 +230,7 @@ function getEnvObject()
         line = lines[i];
         envitem = line.split(/\s+/);
         if (envitem[0] == 'setx') {
-          env[envitem[1]] = envitem[2];
+          env[envitem[1]] = envitem.slice(2).join(' ');
         }
       }
     }
@@ -238,7 +238,11 @@ function getEnvObject()
       for (i = 0; i < lines.length; i++)
       {
         line = lines[i];
-        envitem = line.split(/\s+/)[1].split("=");
+        if (line.indexOf('export') == 0)
+        {
+          line = line.replace(/export\s*/, '');
+          envitem = line.split("=");
+        }
         env[envitem[0]] = envitem[1];
       }
     }
@@ -258,6 +262,10 @@ function getEnvObject()
 //  env.set("MSIBIBTEX", "/Users/barry/library/texlive/TeXMF-var/");
 //}
 
+function cleanPath(path) {  // cleans up quotes and spaces from the bash or cmd file
+  var newPath = path.replace(/\"/g,"");
+  return newPath.replace(/\s*$/,"");
+}
 
 //Returns an array of two nsIFiles
 function lookUpBibTeXDirectories()
@@ -275,7 +283,7 @@ function lookUpBibTeXDirectories()
   bibPath = env.MSIBIBTEX;
   if (bibPath) {
     try {
-      bibDir.initWithPath(bibPath);
+      bibDir.initWithPath(cleanPath(bibPath));
       bibDir.append("bib");
       bibDirs.push(bibDir);
     }
@@ -286,7 +294,7 @@ function lookUpBibTeXDirectories()
   bibPath = env.MSITEX;
   if (bibPath) {
     try {
-      bibDir2.initWithPath(bibPath);
+      bibDir2.initWithPath(cleanPath(bibPath));
       bibDir2.append("texmf-dist");
       bibDir2.append("bibtex");
       bibDir2.append("bib");
@@ -316,13 +324,13 @@ function lookUpBibTeXStyleDirectories()
   {
     bibPath = env.MSIBIBTEX;
     if (bibPath) {
-      bibDir.initWithPath(bibPath);
+      bibDir.initWithPath(cleanPath(bibPath));
       bibDir.append("bst");
       bibDirs.push(bibDir);
     }
     bibPath = env.MSITEX;
     if (bibPath) {
-      bibDir2.initWithPath(bibPath);
+      bibDir2.initWithPath(cleanPath(bibPath));
       bibDir2.append("texmf-dist");
       bibDir2.append("bibtex");
       bibDir2.append("bst");
