@@ -34,7 +34,6 @@ chapter {
   display: block;
   counter-increment: chapter;
   counter-reset: section;
-  counter-reset: theorem;
 }
 
 chapter sectiontitle {
