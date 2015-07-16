@@ -445,6 +445,10 @@ mml|menclose[notation~="circle"] {
   border-style : none;
 }
 
+*[hideHelperLines="true"] msidisplay {
+  border-style : none;
+}
+
 mml|mtd {
   border-width: 0 1px 1px 0;
   border-style: solid;
