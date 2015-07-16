@@ -42,7 +42,9 @@
   <!-- Following scripts are needed specifically by this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/typesetManualCitation.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/>
-  
+  <script type="application/x-javascript" src="chrome://prince/content/typesetOverlay.js"/>
+
+
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
@@ -74,7 +76,7 @@
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
   <commandset id="MSImathMenuCommands"/>
-  
+
 #include ../keysfordialogs.inc
 
   <keyset>
@@ -90,21 +92,21 @@
     <broadcaster id="enableDecorationsAround" disabled="false"/>
     <broadcaster id="enableDecorationsAboveBelow" disabled="false"/>
   </broadcasterset -->
-	
+
 	<vbox>
 		<hbox>
 		  <label value="&keyCaption.label;" accesskey="&keyCaption.accesskey;" control="keysAutoCompleteBox"/>
       <textbox id="keysAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
         completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
         tooltiptext="&keyCaption.tooltip;"
-        onchange="checkDisableControls(event);" 
+        onchange="checkDisableControls(event);"
         ontextentered="checkDisableControls();" />
 		</hbox>
 		<spacer height='20px' flex='1'/>
 		<hbox>
 			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accesskey;'/>
 			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
-      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="100" width="450"/>
+      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="50" width="450"/>
 		</hbox>
 		<spacer flex='1'/>
 	</vbox>
