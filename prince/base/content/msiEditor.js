@@ -8333,7 +8333,6 @@ function msiFormatPropertiesMenuString(objectStringID) {
 }
 
 function msiCleanUpPropertiesMenu(event, theMenu, menuID) {
-  return
   var bRightOne = (event.target == theMenu) || ((event.target.nodeName == "menupopup") && (event.target
     .parentNode == theMenu));
   if (!bRightOne)
