@@ -11209,7 +11209,9 @@ function getCachedXSLTString(xslRootFileURLString) {
   leafname = matcharray[0];
   var dsprops = Components.classes['@mozilla.org/file/directory_service;1'].createInstance(Components.interfaces.nsIProperties);
   var cachefile = dsprops.get('ProfD', Components.interfaces.nsILocalFile);
+
   cachefile.append('comp-' + leafname);
+  packagesfile = getUserResourceFile("packages.xml","xml");
   if (!cachefile.exists() || fileIsNewerThan(cachefile, xslPath)) {
     var stylesheetElement = /<xsl:stylesheet[^>]*>/;
     var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
