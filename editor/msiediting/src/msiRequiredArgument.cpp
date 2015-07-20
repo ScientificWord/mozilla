@@ -15,11 +15,11 @@
 nsresult
 msiRequiredArgument::doInsertNodes(nsIEditor * editor,
                                    nsISelection * selection,
-                                   nsCOMPtr<nsIDOMNode> & parent, 
-                                   nsCOMPtr<nsIDOMNode> & requiredArg, 
+                                   nsCOMPtr<nsIDOMNode> & parent,
+                                   nsCOMPtr<nsIDOMNode> & requiredArg,
                                    PRBool atRight,
                                    nsIArray * nodeList,
-                                   PRBool  deleteExisting, 
+                                   PRBool  deleteExisting,
                                    PRUint32 flags)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -28,7 +28,7 @@ msiRequiredArgument::doInsertNodes(nsIEditor * editor,
   nsCOMPtr<nsIDOMNode> tobeDeleted;
   nsCOMPtr<msiIMathMLInsertion> mrowEditing;
   nsCOMPtr<nsIArray> nodeArray, listToParent;
-  
+
   if (nodeList)
     nodeList->GetLength(&numNodes);
   if (editor && selection && nodeList && parent, requiredArg && numNodes > 0)
@@ -38,20 +38,20 @@ msiRequiredArgument::doInsertNodes(nsIEditor * editor,
       deleteExisting = PR_TRUE;
     if (deleteExisting)
       tobeDeleted = requiredArg;
-    
+
     if (!deleteExisting && msiUtils::IsMrow(editor, requiredArg))
-    {  
+    {
       PRUint32 offset(0);
       if (atRight)
         msiUtils::GetNumberofChildren(requiredArg, offset);
       res = msiUtils::GetMathMLInsertionInterface(editor, requiredArg, offset, mrowEditing);
     }
-    
+
     // Act on action determined above
     if (mrowEditing)
       res = mrowEditing->InsertNodes(editor, selection, nodeList, PR_FALSE, flags);
     else
-    { 
+    {
       if (!tobeDeleted)
       {
         PRUint32 pfcFlags(msiIMathMLCoalesce::PFCflags_removeRedundantMrows);
@@ -70,24 +70,24 @@ msiRequiredArgument::doInsertNodes(nsIEditor * editor,
               res = msiCoalesceUtils::PrepareForCoalesceFromRight(editor, clone, pfcFlags, addToList);
               if (NS_SUCCEEDED(res) && addToList)
                  res = msiUtils::AppendToMutableList(mutableArray, addToList);
-            }    
+            }
             if (NS_SUCCEEDED(res))
                res = msiUtils::AppendToMutableList(mutableArray, inList);
-            
+
             if (!atRight)
             {
               res = msiCoalesceUtils::PrepareForCoalesceFromLeft(editor, clone, pfcFlags, addToList);
               if (NS_SUCCEEDED(res) && addToList)
                 res = msiUtils::AppendToMutableList(mutableArray, addToList);
-            }  
-            if (NS_SUCCEEDED(res))  
+            }
+            if (NS_SUCCEEDED(res))
               nodeArray = do_QueryInterface(mutableArray);
           }
-        }    
+        }
       }
       else
         nodeArray = nodeList;
-      
+
       if (nodeArray)
         res = msiCoalesceUtils::CoalesceArray(editor, nodeArray, coalescedArray);
       if (NS_SUCCEEDED(res) && coalescedArray)
@@ -102,7 +102,7 @@ msiRequiredArgument::doInsertNodes(nsIEditor * editor,
           {
             newNode = do_QueryInterface(mrow);
             caretNode = newNode;
-          }  
+          }
         }
         else if  (numNodes == 1)
         {
@@ -114,28 +114,28 @@ msiRequiredArgument::doInsertNodes(nsIEditor * editor,
             {
               newNode = do_QueryInterface(mrow);
               caretNode = newNode;
-            }  
+            }
           }
           else
-            caretNode = parent;    
+            caretNode = parent;
         }
         if (NS_SUCCEEDED(res) && newNode)
         {
           res = editor->ReplaceNode(newNode, tobeDeleted, parent);
-          if (NS_SUCCEEDED(res))
-            msiUtils::MarkCaretPosition(editor, caretNode, numNodes, flags, PR_FALSE, PR_FALSE);
+          // if (NS_SUCCEEDED(res))
+          //   msiUtils::MarkCaretPosition(editor, caretNode, numNodes, flags, PR_FALSE, PR_FALSE);
           msiUtils::doSetCaretPosition(editor, selection, caretNode);
-        }  
+        }
       }
     }
   }
-  return res;  
+  return res;
 }
 
 nsresult msiRequiredArgument::MakeRequiredArgument(nsIEditor * editor,
-                                                   nsIDOMNode * leftNode, 
-                                                   nsIDOMNode * rightNode, 
-                                                   nsCOMPtr<nsIDOMNode> & argument) 
+                                                   nsIDOMNode * leftNode,
+                                                   nsIDOMNode * rightNode,
+                                                   nsCOMPtr<nsIDOMNode> & argument)
 {
   nsresult res(NS_ERROR_FAILURE);
   if (leftNode || rightNode)
@@ -151,13 +151,13 @@ nsresult msiRequiredArgument::MakeRequiredArgument(nsIEditor * editor,
       if (NS_SUCCEEDED(res))
          res = msiUtils::AppendToMutableList(mutableArray, leftArray);
     }
-    if (NS_SUCCEEDED(res) && rightNode)  
+    if (NS_SUCCEEDED(res) && rightNode)
     {
       res = msiCoalesceUtils::PrepareForCoalesceFromLeft(editor, rightNode, pfcFlags, rightArray);
       if (NS_SUCCEEDED(res))
          res = msiUtils::AppendToMutableList(mutableArray, rightArray);
     }
-    if (NS_SUCCEEDED(res))  
+    if (NS_SUCCEEDED(res))
       tobe = do_QueryInterface(mutableArray);
     if (tobe)
       res = msiCoalesceUtils::CoalesceArray(editor, tobe, coalesced);
@@ -214,4 +214,4 @@ PRBool msiRequiredArgument::NestRequiredArgumentInMrow(nsIDOMNode * node)
 }
 
 
-                            
+

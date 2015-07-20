@@ -3325,6 +3325,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   PRUint32 offset = 0;
   nsAutoString theText;
   PRInt32 lookupResult;
+  PRBool complexTxn;
   nsAutoString data, pasteContext, pasteInfo, error;
   selection->GetAnchorNode((nsIDOMNode **) getter_AddRefs(originalNode));
   if (!originalNode) return res;
@@ -3340,6 +3341,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, inmath, ch, lookupResult);
   if (node)  // there was success somewhere
   {
+    GetInComplexTransaction(&complexTxn);
     SetInComplexTransaction(PR_TRUE);
     if (lookupResult == msiIAutosub::STATE_SPECIAL)
 		{
@@ -3374,7 +3376,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
 //      selection->Extend(originalNode, originalOffset);
 //      res = DeleteSelection(nsIEditor::eNone);
     }
-    SetInComplexTransaction(PR_FALSE);
+    SetInComplexTransaction(complexTxn);
   }
   return res;
 }

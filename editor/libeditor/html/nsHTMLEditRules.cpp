@@ -4187,16 +4187,20 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
        nsString resString(result);
             nsCOMPtr<nsIDOMElement> mathElement;
        mathElement = do_QueryInterface(mathNode);
-       mHTMLEditor->DeleteNode(mathElement);
-
+       mHTMLEditor -> GetInComplexTransaction(&isInComplexTransaction);
+       mHTMLEditor -> SetInComplexTransaction(PR_TRUE);
        nsCOMPtr<nsIDOMNode> parentOfMath;
+
+       mathElement->GetParentNode(getter_AddRefs(parentOfMath));
+       parentOfMath->RemoveChild(mathElement, getter_AddRefs(parentOfMath));
+
        nsCOMPtr<nsIDOMNode> newMath;
        PRInt32 mathOffset;
 
        res = mHTMLEditor->GetStartNodeAndOffset(curSelection, getter_AddRefs(parentOfMath), &mathOffset);
 
        mHTMLEditor -> InsertHTML(resString);
-
+       mHTMLEditor -> SetInComplexTransaction(isInComplexTransaction);
        msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
 
        printf("\nThe New Math\n ");
