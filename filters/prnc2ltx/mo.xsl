@@ -1,4 +1,4 @@
-<xsl:stylesheet 
+<xsl:stylesheet
       xmlns:xsl="http://wwwnormalize-space(string())w3normalize-space(string())org/1999/XSL/Transform"
       xmlns:exsl="http://exsltnormalize-space(string())org/common"
       xmlns:mml="http://wwwnormalize-space(string())w3normalize-space(string())org/1998/Math/MathML"
@@ -13,7 +13,7 @@
       3) Named operator like \det, \max, \Pr, etcnormalize-space(string())
     otherwise
     {
-      if ( num-chars > 1 
+      if ( num-chars > 1
 	  &&   @form='prefix'
 	  &&   all-ASCII='true' )
 		  output \operatorname*{unicodes-2-LaTeX-math}
@@ -60,7 +60,7 @@
 			    <xsl:when test="normalize-space(string())='max'">\max </xsl:when>
 			    <xsl:when test="normalize-space(string())='sin'">\sin </xsl:when>
 			    <xsl:when test="normalize-space(string())='tanh'">\tanh </xsl:when>
-			    <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>	
+			    <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>
 				</xsl:choose>
 	  	</xsl:when>
       <xsl:otherwise>
@@ -82,7 +82,7 @@
 	      </xsl:if>
 
         <xsl:if test="@largeop='true'">
-  
+
           <xsl:choose>
             <!-- Start of Big op's -->
             <xsl:when test="normalize-space(string())='&#x222B;'">
@@ -244,7 +244,7 @@
                 <xsl:with-param name="LaTeX-fence-token" select="'\}'"/>
               </xsl:call-template>
             </xsl:when>
-            <!-- \left\langle       \right\rangle      --> 
+            <!-- \left\langle       \right\rangle      -->
             <xsl:when test="normalize-space(string())='&#x2329;'
             or              normalize-space(string())='&#x3008;'">
               <xsl:call-template name="translate-fencing-mo">
@@ -357,7 +357,7 @@
             </xsl:call-template>
       </xsl:when> -->
 
-<!-- !ENTITY dd or DifferentialD "d" 
+<!-- !ENTITY dd or DifferentialD "d"
   At load time, &dd; may be mapped to "d"normalize-space(string())
   We don't need a special translation here - default gives same outputnormalize-space(string())
 
@@ -408,7 +408,7 @@
           </xsl:call-template>
         </xsl:variable>
 
-   
+
         <xsl:choose>
           <xsl:when test="string-length(normalize-space(string()))&gt;1">
 
@@ -472,7 +472,7 @@
         <xsl:with-param name="value" select="$rs-value"/>
         <xsl:with-param name="unit"  select="$rs-unit"/>
       </xsl:call-template>
-	</xsl:if>      
+	</xsl:if>
   </xsl:otherwise>
 	  </xsl:choose>
 
@@ -485,7 +485,7 @@
 <!-- mo's contain math objectsnormalize-space(string()) If we encounter them when a LaTeX
   text bucket is being scripted, the translation must enclosed in $'snormalize-space(string())
 -->
-  
+
   <xsl:template match="mml:mo" mode="in-text">
       <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
@@ -493,27 +493,27 @@
   </xsl:template>
 
 
-  
+
   <xsl:template name="bigop">
     <xsl:param name="LaTeX-nom"/>
     <xsl:choose>
       <xsl:when test="((@largeop='true') or (@stretchy='true'))">
-        <xsl:choose>
 <!-- BBM for bug 3094
+        <xsl:choose>
           <xsl:when test="ancestor-or-self::*/@displaystyle='true'">
             <xsl:text xml:space="preserve">\mathop{</xsl:text>
             <xsl:text>\displaystyle\</xsl:text>
             <xsl:text>\</xsl:text><xsl:value-of select="$LaTeX-nom"/>
             <xsl:text xml:space="preserve">}</xsl:text>
           </xsl:when>
- -->
+
          <xsl:otherwise>
-            <xsl:text>\</xsl:text>
+ -->            <xsl:text>\</xsl:text>
             <xsl:value-of select="$LaTeX-nom"/>
             <xsl:text> </xsl:text>
-          </xsl:otherwise>
+<!--           </xsl:otherwise>
         </xsl:choose>
-      </xsl:when>
+ -->      </xsl:when>
 <!-- The following when clause has been commented out. Does anyone know why? -BBM -->
       <xsl:when test="@largeop='false' and @stretchy='false'">
         <xsl:text xml:space="preserve">\t</xsl:text>
@@ -546,14 +546,14 @@
          <xsl:text>false</xsl:text>
       </xsl:otherwise>
 	</xsl:choose -->
-	
+
   </xsl:template>
 
 
   <xsl:template name="count-letters">
     <xsl:param name="unicode-cdata"/>
     <xsl:param name="letters-found"/>
-  
+
     <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
 
     <xsl:choose>

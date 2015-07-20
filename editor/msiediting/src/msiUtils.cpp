@@ -2540,7 +2540,7 @@ nsresult msiUtils::GetRightMostCaretPosition(nsIEditor* editor,
                                              nsIDOMNode * node,
                                              PRUint32  & number)
 {
-  //TODO -- need to worry about kruff nodes
+  //TODO -- need to worry about cruft nodes
   nsresult res(NS_ERROR_FAILURE);
   if (node)
   {

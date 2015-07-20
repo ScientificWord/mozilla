@@ -1558,7 +1558,7 @@ msiEditingManager::InsertMathmlElement(nsIEditor * editor,
           if (!transacting)
           {
             editor->BeginTransaction();
-            editor->SaveSelection(selection);
+//            editor->SaveSelection(selection);
             transacting = PR_TRUE;
           }
           res = mathmlEditing->InsertNode(editor, selection, newMathmlNode, flags);
