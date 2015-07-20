@@ -8,7 +8,6 @@
   <!-- Package handling. Packages are not inserted directly, but with requirespackage tags and other
   tags with the 'req' and 'opt' attributes. We collect them and remove
   duplicates, and then sort according to the pri attribute -->
-  <xsl:variable name="masterpackagelist" select="document('packages.xml')"/>
 
   <!-- xsl:variable name="requiredpackages.tf">
     <xsl:for-each select="//*[@req]">
@@ -31,6 +30,9 @@
     <xsl:param name="pkgString" />
     <xsl:param name="optString" />
     <xsl:param name="priString" />
+    <xsl:message>
+      <xsl:value-of select = "@priString"/>
+    </xsl:message>
     <xsl:variable name="ourPkg">
       <xsl:choose>
         <xsl:when test="contains($pkgString,';')">
@@ -108,17 +110,23 @@
 	  	          <xsl:value-of select="@priority"/>
 	  	        </xsl:when>
    	  		    <xsl:otherwise>
-                <xsl:variable name="pkg" select="@pkgname"/>
-                <xsl:variable name="pri" select="$masterpackagelist/packages/package[@name=$pkg]/@pri"/>
                 <xsl:choose>
-                  <xsl:when test="$pri"><xsl:value-of select="$pri"/></xsl:when>
+                  <xsl:when test="$currentpackage='titlesec'">100</xsl:when>
+                  <xsl:when test="$currentpackage='amsfonts'">010</xsl:when>
+                  <xsl:when test="$currentpackage='amsmath'">010</xsl:when>
+                  <xsl:when test="$currentpackage='xcolor'">200</xsl:when>
+                  <xsl:when test="$currentpackage='wrapfig'">100</xsl:when>
+                  <xsl:when test="$currentpackage='minipage'">200</xsl:when>
+                  <xsl:when test="$currentpackage='hyperref'">10000</xsl:when>
+                  <xsl:when test="$currentpackage='bidi'">10001</xsl:when>
+                  <xsl:when test="$currentpackage='tcibkpk'">200</xsl:when>
+                  <xsl:when test="$currentpackage='sw20orp1'">300</xsl:when>
                   <xsl:otherwise>100</xsl:otherwise>
                 </xsl:choose>
               </xsl:otherwise>
 	  	      </xsl:choose>
 	        </xsl:attribute>
         </xsl:element>
-	          <!-- xsl:copy-of select="."/ -->
       </xsl:if>
     </xsl:for-each>
   </xsl:variable>

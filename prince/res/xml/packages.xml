@@ -9,4 +9,5 @@
 	<package name="hyperref" pri="10000"/>
 	<package name="bidi" pri="10001"/>
 	<package name="tcibkpk" pri="200"/>
-</packages>													 
+	<package name="sw20orpl" pri="300"/>
+</packages>
