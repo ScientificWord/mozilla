@@ -654,7 +654,7 @@
   <xsl:text>\title</xsl:text>
   <xsl:apply-templates mode="shortTitle"/>
   <xsl:text>{</xsl:text>
-  <xsl:apply-templates/>
+  <xsl:apply-templates mode="frontmatter"/>
   <xsl:text>}</xsl:text>
 </xsl:template>
 
