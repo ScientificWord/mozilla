@@ -366,6 +366,9 @@
 \def\stripspecial#1{}
 
 \def\@FRAME#1#2#3#4#5#6#7#8{%
+   \let\QCBOptA\empty
+   \let\QCBOptB\empty
+   #5
    \def\reserved@@a{#7}
    \def\reserved@@b{Plot}
    \ifx\reserved@@a\reserved@@b
@@ -377,8 +380,10 @@
           \string\msipassthru\char`\{
           #8{#1}%
           \char`\}
-        \else 
+        \else
+          \QCBOptA 
           #8{#1}%
+          \QCBOptB
         \fi
       \endgroup
    \else
@@ -389,8 +394,10 @@
           \string\msipassthru\char`\{
           #8{#1}%
           \char`\}
-        \else 
+        \else
+          \QCBOptA 
           #8{#1}%
+          \QCBOptB
         \fi
       \endgroup
    \fi
