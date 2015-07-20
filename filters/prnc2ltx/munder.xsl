@@ -123,10 +123,12 @@
       <xsl:when test="./*[2][normalize-space(string())='&#x23DF;']">
         <xsl:text>true</xsl:text>
       </xsl:when>
-
-	  <xsl:otherwise>
+      <xsl:when test="./*[2][normalize-space(string())='&#xFE38;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+	    <xsl:otherwise>
         <xsl:text>false</xsl:text>
-	  </xsl:otherwise>
+	    </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
@@ -281,8 +283,9 @@
               <xsl:with-param name="LaTeX-acc" select="'\underleftrightarrow'"/>
             </xsl:call-template>
           </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x23DF;']">
-            <xsl:call-template name="under-struct">
+          <xsl:when test="./*[2][normalize-space(string())='&#x23DF;']
+          or              ./*[2][normalize-space(string())='&#xFE38;']">
+            <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\underbrace'"/>
             </xsl:call-template>
           </xsl:when>
