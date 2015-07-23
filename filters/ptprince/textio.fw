@@ -246,6 +246,8 @@ void LineOfText::StripTCIMEnd(bool bMiddle)
    } else {
       if ( (str[n-2] == (TeXChar)'%')  && (str[n-3] == (TeXChar)'}')){
          str.erase(n-3, 3);
+      } else if (str[n-2] == (TeXChar)'}'){
+         str.erase(n-2,2);
       } else {
          // Shouldn't happen normally
          LOG("\nStrip: ." << (char)str[n-3] << "." << (char)str[n-1]);
