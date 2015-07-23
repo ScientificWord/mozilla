@@ -765,7 +765,7 @@
 </xsl:template>
 
 <xsl:template match="html:envLeadIn"></xsl:template>
-<xsl:template match="*" mode="envleadin"></xsl:template>
+<xsl:template match="@*|node()" mode="envleadin"></xsl:template>
 <xsl:template match="html:envLeadIn" mode="envleadin">[<xsl:apply-templates/>]</xsl:template>
 
 <xsl:template match="html:drop">
