@@ -430,10 +430,11 @@
 \def\out@author#1{%
   \begingroup
    \def\\{\msiclosetag{author}{</author>}%
+          \msiclosetag{address}{</address>}
           \msitag{^^0a}%
           \msiopentag{address}{<address>}%
           \msiopentag{bodyText}{<bodyText>}%
-          %\def\\{\par}%
+          \def\\{\par}%
           \ignorespaces}
           
    \def\and{\msiclosetag{address}{</address>}%
