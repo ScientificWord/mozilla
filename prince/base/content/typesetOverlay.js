@@ -9,7 +9,7 @@ var gBibItemList = ["bibItem1", "bibItem2", "journalBibEntry", "bookBibEntry"];
 function msiSetupMSITypesetMenuCommands(editorElement)
 {
   var commandTable = msiGetComposerCommandTable(editorElement);
-  
+
   //dump("Registering msi math menu commands\n");
   commandTable.registerCommand("cmd_MSIDocFormatCmd",                   msiDocFormat);
   commandTable.registerCommand("cmd_MSIfrontMatterCmd",                 msiFrontMatter);
@@ -356,7 +356,7 @@ var msiRunMakeIndex =
 };
 
 
-var msiInsertIndexEntry = 
+var msiInsertIndexEntry =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -418,13 +418,13 @@ var msiInsertBibTeXBibliography =
     window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,modal,resizable", bibliographyData);
     if (!bibliographyData.Cancel)
     {
-      doInsertBibTeXBibliography(editorElement, bibliographyData);		  
+      doInsertBibTeXBibliography(editorElement, bibliographyData);
 			msiGetEditor(editorElement).incrementModificationCount(1);
     }
   }
 };
 
-var msiReviseBibTeXBibliography = 
+var msiReviseBibTeXBibliography =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -432,7 +432,7 @@ var msiReviseBibTeXBibliography =
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) 
+  doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
     var bibliographyReviseData = msiGetPropertiesDataFromCommandParams(aParams);
@@ -453,7 +453,7 @@ var msiReviseManualBibItemCmd =
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) 
+  doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
     var bibItemReviseData = msiGetPropertiesDataFromCommandParams(aParams);
@@ -508,14 +508,25 @@ var msiInsertSubdocument =
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 
-function doDocFormatDlg()
+function doDocFormatDlg(editorElement)
 {
-  var editorElement = document.getElementById("content-frame");
+  if (!editorElement) editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var sel = editor.selection;
+
+  var anchornode, anchoroffset, focusnode, focusoffset;
+  anchornode = sel.anchorNode;
+  anchoroffset = sel.anchorOffset;
+  focusnode = sel.focusNode;
+  focusoffset = sel.focusOffset;
+
   window.openDialog("chrome://prince/content/typesetDocFormat.xul", "docformat",
-    "chrome,close,resizable,titlebar,dependent", msiGetActiveEditorElement);
+    "chrome,close,resizable,titlebar,dependent, modal", msiGetActiveEditorElement);
   //if (!doDocFormatData.Cancel)
   {
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		editor.incrementModificationCount(1);
+    editor.selection.collapse(anchornode, anchoroffset);
+    editor.selection.extend(focusnode, focusoffset);
   }
 }
 
@@ -550,7 +561,7 @@ function doPreambleDlg()
   } else {
      preambleTeXNode = preambleTeXNodeSet[0];
   }
-  
+
 
   window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "resizable,chrome,close,titlebar,modal", preambleTeXNode);
 	msiGetEditor(editorElement).incrementModificationCount(1);
@@ -592,7 +603,7 @@ function doOptionsAndPackagesDlg(editorElement)
   window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,modal,resizable", options);
   if (!options.Cancel)
 	{
-		msiGetEditor(editorElement).incrementModificationCount(1); 
+		msiGetEditor(editorElement).incrementModificationCount(1);
 	}
 }
 
@@ -653,7 +664,7 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
             delNodes.push(nextNode);
           }
         break;
-        case "documentclass":  
+        case "documentclass":
           var colist = nextNode.parentNode.getElementsByTagName("colist");
           if (colist && colist.length > 0) {
             colist = colist[0];
@@ -707,7 +718,7 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
         insertParent = startNode;  //should be the preamble!
     }
   }
-  
+
   var isDocStyleOrPackage = {
     acceptNode: function(aNode)
     {
@@ -753,7 +764,7 @@ function doGenSettingsDlg()
 {
   var genSettingsData = getTypesetGenSettingsFromPrefs();
 
-  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,modal,resizable", 
+  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,modal,resizable",
                        genSettingsData);
   var editorElement = msiGetActiveEditorElement();
 	msiGetEditor(editorElement).incrementModificationCount(1);
@@ -929,7 +940,7 @@ function getEditorBibItemList(editor)
   return gBibItemList;
 }
 
-//These function, and the variable "gBibItemList" above,  are solely artificial, to allow simulating the behavior of an 
+//These function, and the variable "gBibItemList" above,  are solely artificial, to allow simulating the behavior of an
 //editor that would traverse its paragraphs looking for bibliography items. We'll clean this up shortly.
 function updateEditorBibItemList(editor, newList)
 {
@@ -1167,7 +1178,7 @@ function insertFrontMatter(editorElement, frontMatterData)
   var namespaceStr = "sw:";
   var editor = msiGetEditor(editorElement);
   var currFrontMatterWalker = editor.document.createTreeWalker(editor.document.documentElement, NodeFilter.SHOW_ELEMENT, nodeIsFrontMatterNode, true);
-                                                
+
   var firstNode = null;
   if (currFrontMatterWalker)
   {
@@ -1200,4 +1211,4 @@ function insertFrontMatter(editorElement, frontMatterData)
   }
 }
 
- 
+
