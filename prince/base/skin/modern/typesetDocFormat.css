@@ -62,7 +62,7 @@
 }
 
 
-*[hidden="true"] { fplay:none;}
+*[hidden="true"] { display:none;}
 
 *[role="mn"] {border-style:solid;
   border-top-width:1px;
@@ -78,17 +78,9 @@
   min-width: 300px;
 }
 
-#docformat {
-  overflow; scroll;
-}
-
-menulist[value="def"] > hbox > label {
-	color: gray;
-}
-
 
 #sectiontextarea {
-  min-height:20px; 
+  min-height:20px;
   min-width:200px;
   height: inherit !important;
   width: inherit !important;
@@ -112,3 +104,13 @@ msibutton[disabled="true"] label {
 textbox [disabled] {
 	color: gray;
 }
+
+#docformat {
+  overflow: scroll;
+}
+
+menulist[value="def"] > hbox > label {
+  color: gray;
+}
+
+
