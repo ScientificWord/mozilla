@@ -79,7 +79,7 @@
 }
 
 #sectiontextarea {
-  min-height:20px; 
+  min-height:20px;
   min-width:200px;
   height: inherit !important;
   width: inherit !important;
@@ -94,6 +94,21 @@
   display: none;
 }
 
+
+msibutton[disabled="true"] label {
+  color: gray;
+}
+
 textbox [disabled] {
 	color: gray;
 }
+
+#docformat {
+  overflow: scroll;
+}
+
+menulist[value="def"] > hbox > label {
+  color: gray;
+}
+
+
