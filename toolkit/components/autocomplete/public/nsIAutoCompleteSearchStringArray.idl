@@ -2,7 +2,7 @@
 [ptr] native nsNativeStringArray(nsStringArray);
 
 
-[scriptable, uuid(3A6BB324-512A-4d41-AC56-C8B8249A2E45)]                                             
+[scriptable, uuid(3A6BB324-512A-4d41-AC56-C8B8249A2E45)]
 interface nsIAutoCompleteSearchStringArray : nsIAutoCompleteSearch
 {
   boolean addStringEx( in AString strCategory, in AString strAdd, in AString strComment, in AString srtMathOnly);
@@ -14,7 +14,8 @@ interface nsIAutoCompleteSearchStringArray : nsIAutoCompleteSearch
   void resetArray( in AString strCategory );
   void resetAll();
   void sortArray( in AString strCategory );
-  void sortArrays(); 
+  void sortArrays();
+  void viewArray( in AString strCategory);
   void setImplementation( in nsIAutoCompleteSearchStringArray imp);
   nsIAutoCompleteSearchStringArray getNewImplementation();
   nsIAutoCompleteSearchStringArray getGlobalSearchStringArray();

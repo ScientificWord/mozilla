@@ -10844,38 +10844,27 @@ function getFileAsString(url) {
     return null;
 }
 function addLanguagesToTagDefs(lang1, lang2) {
+  var i, lang, hidden, langnum;
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  var babelTags = editor.tagListManager.getBabelTags();
-  var tagArray = babelTags.split(',');
-  var i;
-  var lang;
-  for (i = 0; i < tagArray.length; i++) {
-    var index = i + 1;
-    tag = tagArray[i];
-    hidden = editor.tagListManager.getStringPropertyForTag(tag, null, 'hidden');
-    if (index % 2 === 1)
-      lang = lang1;
-    else
-      lang = lang2;
+  var babelNode;
+  for (langnum = 1; langnum < 3; langnum++) {
+    if (langnum === 1) lang = lang1;
+    else lang = lang2;
     if (lang) {
-      needsResetting = true;
-      editor.tagListManager.setTagVisibility(tag, null, false);
-      if (index < 3) {
-        editor.tagListManager.setTagName(tag, null, 'text' + lang);
-      } else {
-        editor.tagListManager.setTagName(tag, null, lang === 'arabic' ? 'Arabic' : lang);
+      babelNode = editor.tagListManager.getBabelTagNode(true, langnum);
+      if (babelNode) {
+        babelNode.setAttribute('nm', 'text' + lang);
+        babelNode.removeAttribute('hidden');
       }
-    } else {
-      lang = '##lang' + (1 + index % 2).toString();
-      editor.tagListManager.setTagVisibility(tag, null, true);
-      if (index < 3) {
-        editor.tagListManager.setTagName(tag, null, 'text' + lang);
-      } else {
-        editor.tagListManager.setTagName(tag, null, lang);
+      babelNode = editor.tagListManager.getBabelTagNode(false, langnum);
+      if (babelNode) {
+        babelNode.setAttribute('nm', lang === 'arabic' ? 'Arabic' : lang);
+        babelNode.removeAttribute('hidden');
       }
     }
   }
+
   //if (needsResetting)
   editor.tagListManager.rebuildHash();
   buildAllTagsViewStylesheet(editor);
