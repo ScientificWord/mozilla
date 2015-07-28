@@ -38,7 +38,7 @@ NS_IMPL_RELEASE(msiTagListManager)
 
 #if DEBUG_barry || DEBUG_Barry
 void DebExamineNode(nsIDOMNode * aNode);
-#endif 
+#endif
 
 nsIAtom * msiTagListManager::htmlnsAtom = nsnull;
 
@@ -101,18 +101,18 @@ TagKeyList::~TagKeyList()
 TagKeyListHead::~TagKeyListHead()
 {
   if (pListHead) delete pListHead;
-  if (pNext) delete pNext;  
+  if (pNext) delete pNext;
 }
 
-NS_IMETHODIMP 
-msiTagListManager::Enable() 
+NS_IMETHODIMP
+msiTagListManager::Enable()
 {
   // find the nsIAutoCompleteSearchStringArray object and set its current pointer to ours
-  if (pACSSA) 
+  if (pACSSA)
   {
     pACSSA->SetImplementation(pACSSA);
     return NS_OK;
-  } 
+  }
   else return NS_ERROR_NOT_INITIALIZED;
 }
 
@@ -126,28 +126,28 @@ TagKey::TagKey(nsString akey)
 {
 // the key string looks like "sw:bold". If aKey is in the hyphen form ("bold - sw"), we change it to the standard form
   int hyphen = akey.FindChar('-');
-  if (hyphen>0 && (hyphen < (int)(akey.Length()) -1) && akey[hyphen-1] == ' ' 
+  if (hyphen>0 && (hyphen < (int)(akey.Length()) -1) && akey[hyphen-1] == ' '
     && akey[hyphen+1] == ' ')
   {
     nsString str;
     akey.Left(key,hyphen-1);
     akey.Right(str, (akey.Length() - hyphen +3));
-#ifdef USE_NAMESPACES 
+#ifdef USE_NAMESPACES
     if (str.Length() > 0) key = str +  NS_LITERAL_STRING(":") +key;
-#endif                                
-  } else 
+#endif
+  } else
   {
-#ifndef USE_NAMESPACES 
+#ifndef USE_NAMESPACES
     int colon = akey.FindChar(':');
     if (colon >= 0) akey.Right(key, (akey.Length() - (colon+1)));
-    else    
+    else
 #endif
     key = akey;
   }
 }
 
 
-nsString 
+nsString
 TagKey::prefix()
 {
   int colon = key.FindChar(':');
@@ -162,11 +162,11 @@ TagKey::localName()
 {
   int colon = key.FindChar(':');
   nsString str;
-  if (colon >= 0) 
+  if (colon >= 0)
   {
     key.Right(str,(key.Length())-(colon+1));
     return str;
-  } 
+  }
   else return key;
 }
 
@@ -175,7 +175,7 @@ TagKey::altForm()
 {
   int colon = key.FindChar(':');
   if (colon < 1) return localName();
-  else 
+  else
   {
     nsString str;
     key.Left(str,colon);
@@ -197,11 +197,11 @@ NS_IMETHODIMP msiTagListManager::NameSpaceAtomOfTagKey(const nsAString & key, ns
   while (pns && !(pns->namespaceAbbrev.Equals(str)))
     pns = pns->next;
   if (pns) *_retval = pns->nsAtom;
-  return NS_OK;  
+  return NS_OK;
 }
- 
+
 /* void reset (); */
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTagListManager::Reset(void)
 {
   mparentTags = nsnull;
@@ -221,15 +221,15 @@ msiTagListManager::Reset(void)
 static NS_DEFINE_CID( kXMLDocumentCID, NS_XMLDOCUMENT_CID );
 static NS_DEFINE_CID( kXMLHttpRequestCID, NS_XMLHTTPREQUEST_CID );
 
-NS_IMETHODIMP 
-msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval) 
+NS_IMETHODIMP
+msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
 {
   nsresult rv;
   nsAutoString str;
   nsCOMPtr<nsIDOMXMLDocument> docTagInfo;
   nsCOMPtr<nsIDOMDocument> domdocTagInfo;
-  
-  // load the XML tag info file 
+
+  // load the XML tag info file
 //***************************************
   *_retval = PR_FALSE;
   nsCOMPtr<nsIXMLHttpRequest> req;
@@ -286,8 +286,8 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
   nsString strNameSpace;
   nsString strAbbrev;
   PRUint32 nodeCount;
-  nsCOMPtr<nsIDOM3Node> textNode; 
-  nsCOMPtr<nsIDOMNode> node; 
+  nsCOMPtr<nsIDOM3Node> textNode;
+  nsCOMPtr<nsIDOMNode> node;
   namespaceLookup * pns;
   rv = docTagInfo->GetElementsByTagName(NS_LITERAL_STRING("ns"), getter_AddRefs(nodeList));
   if (nodeList) nodeList->GetLength(&nodeCount);
@@ -302,19 +302,19 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
       pns = plookup;
       while ((pns) && !(pns->namespaceAbbrev.Equals(strAbbrev)))
       {
-        pns = pns->next; 
-      }     
+        pns = pns->next;
+      }
       if (pns == nsnull) // strAbbrev was not found
       {
         pns = new namespaceLookup;
         textNode=do_QueryInterface(node);
         textNode->GetTextContent(strNameSpace);
         // TODO: trim leading and following spaces
-        
+
         pns->namespaceAbbrev = strAbbrev;
         pns->nsAtom = NS_NewAtom(strNameSpace);
-        pns->next = plookup; 
-        plookup = pns;      
+        pns->next = plookup;
+        plookup = pns;
       }
     }
   }
@@ -331,9 +331,9 @@ nsString msiTagListManager::GetStringProperty( const nsAString & str, nsIDOMElem
   nsCOMPtr<nsIDOMNodeList> nodeList;
   nsString strResult;
   PRUint32 nodeCount;
-  nsCOMPtr<nsIDOM3Node> textNode; 
-  nsCOMPtr<nsIDOMNode> node; 
- 
+  nsCOMPtr<nsIDOM3Node> textNode;
+  nsCOMPtr<nsIDOMNode> node;
+
   element->GetElementsByTagName(str, getter_AddRefs(nodeList));
   strResult = NS_LITERAL_STRING("");
   if (nodeList) nodeList->GetLength(&nodeCount);
@@ -358,13 +358,13 @@ nsIDOMElement * GetNodeProperty( const nsAString & str, nsIDOMElement * aElement
 {
   nsCOMPtr<nsIDOMNodeList> nodeList;
   PRUint32 nodeCount = 0;
-  nsCOMPtr<nsIDOMNode> node; 
-  nsCOMPtr<nsIDOMNode> child; 
-  nsCOMPtr<nsIDOMNode> element; 
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMNode> child;
+  nsCOMPtr<nsIDOMNode> element;
   nsCOMPtr<nsIDOMElement> elementResult = nsnull;
   PRUint16 nodeType;
-  
- 
+
+
   aElement->GetElementsByTagName(str, getter_AddRefs(nodeList));
   if (nodeList) nodeList->GetLength(&nodeCount);
   if (nodeCount > 0)
@@ -378,11 +378,10 @@ nsIDOMElement * GetNodeProperty( const nsAString & str, nsIDOMElement * aElement
       child->GetNextSibling(getter_AddRefs(child));
       if (child) child->GetNodeType(&nodeType);
     }
+    elementResult = do_QueryInterface(child);
   }
-  elementResult = do_QueryInterface(child);
   return elementResult;
 }
-
 
 // Build the contains list for an element
 
@@ -392,7 +391,7 @@ msiTagListManager::BuildContainsListForElement(nsIDOMElement * element, const ns
   nsresult rv;
   nsCOMPtr<nsIDOMNodeList> tagContains;
   PRUint32 tagContainsCount = 0;
-  nsCOMPtr<nsIDOMElement> tagCanContainElement;   
+  nsCOMPtr<nsIDOMElement> tagCanContainElement;
   nsCOMPtr<nsIDOM3Node> tagCanContainNode3;
   nsCOMPtr<nsIDOMNode> tagCanContain;
   nsAutoString strCanContain;
@@ -403,15 +402,15 @@ msiTagListManager::BuildContainsListForElement(nsIDOMElement * element, const ns
 
 
   nsCOMPtr<nsIDOMNodeList> nodeList;
-  PRUint32 nodeCount = 0; 
+  PRUint32 nodeCount = 0;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMElement> classcontainsElement;
- 
+
   element->GetElementsByTagName(NS_LITERAL_STRING("classcontains"), getter_AddRefs(nodeList));
-  
-  if (nodeList) 
+
+  if (nodeList)
     nodeList->GetLength(&nodeCount);
-  
+
   if (nodeCount > 0)
   {
     nodeList->Item(0, getter_AddRefs(node));
@@ -420,9 +419,9 @@ msiTagListManager::BuildContainsListForElement(nsIDOMElement * element, const ns
 	// it's not a class element; look for children of element
 		classcontainsElement = element;
 	}
-  
+
   rv = classcontainsElement->GetElementsByTagName(NS_LITERAL_STRING("contains"), getter_AddRefs(tagContains));
-  if (tagContains) 
+  if (tagContains)
   {
     rv = tagContains->GetLength(&tagContainsCount);
     for (PRUint32 j = 0; j < tagContainsCount; j++)
@@ -443,7 +442,7 @@ msiTagListManager::BuildContainsListForElement(nsIDOMElement * element, const ns
       // TODO: check for out of memory
       pTagKeyList = new TagKeyList;
       pTagKeyList->key.key.Assign(strCanContain);
-#ifndef USE_NAMESPACES 
+#ifndef USE_NAMESPACES
       pTagKeyList->key.key.Assign(pTagKeyList->key.localName());
 #endif
       if (pTagKeyListHead->pListTail)
@@ -452,7 +451,7 @@ msiTagListManager::BuildContainsListForElement(nsIDOMElement * element, const ns
                                                   // for hand optimizations
       if (!(pTagKeyListHead->pListHead)) pTagKeyListHead->pListHead = pTagKeyListHead->pListTail;
     }
-#define DEBUG_CONTAINMENT 1      
+#define DEBUG_CONTAINMENT 1
 #ifdef DEBUG_CONTAINMENT
     // Write out the list
     if (tagContainsCount >0)
@@ -463,15 +462,15 @@ msiTagListManager::BuildContainsListForElement(nsIDOMElement * element, const ns
       {
         printf("  can contain \"%S\n", ((nsString)pTagKeyList->key).BeginReading());
         pTagKeyList = pTagKeyList->pNext;
-      }                                    
+      }
     }
-#endif        
+#endif
   }
 }
 
 
 void
-msiTagListManager::BuildBabelList(nsIDOMXMLDocument * docTagInfo, TagKeyListHead ** ppBabelList)
+msiTagListManager::BuildBabelList(nsIDOMXMLDocument * docTagInfo)
 {
 	nsresult rv;
   nsCOMPtr<nsIDOMNodeList> tags;
@@ -479,8 +478,9 @@ msiTagListManager::BuildBabelList(nsIDOMXMLDocument * docTagInfo, TagKeyListHead
 	nsCOMPtr<nsIDOMElement> tagElement;
   PRUint32 tagCount = 0;
 	PRBool isBabel = PR_FALSE;
-	*ppBabelList = new TagKeyListHead;
-	TagKeyList * pTagKeyList;
+  NodeList * listItem;
+  pBabelList = nsnull;
+	// TagKeyList * pTagKeyList;
 	nsAutoString name;
 	rv = docTagInfo->GetElementsByTagName(NS_LITERAL_STRING("tag"), getter_AddRefs(tags));
   if (!tags) return;
@@ -490,15 +490,12 @@ msiTagListManager::BuildBabelList(nsIDOMXMLDocument * docTagInfo, TagKeyListHead
 		rv = tags->Item(i, getter_AddRefs(tag));
     tagElement = do_QueryInterface(tag);
 		rv = tagElement->HasAttribute(NS_LITERAL_STRING("babel"), &isBabel);
-		if (isBabel)	
+		if (isBabel)
 		{
-			pTagKeyList = new TagKeyList;
-			rv = tagElement->GetAttribute(NS_LITERAL_STRING("nm"), name);
-      pTagKeyList->key.key.Assign(name);
-			if ((*ppBabelList)->pListTail)
-				(*ppBabelList)->pListTail->pNext = pTagKeyList;
-			(*ppBabelList)->pListTail = pTagKeyList;
-			if (!((*ppBabelList)->pListHead)) (*ppBabelList)->pListHead = (*ppBabelList)->pListTail;
+      listItem = new NodeList;
+			listItem->element = tagElement;
+      listItem->pNext = pBabelList;
+      pBabelList = listItem;
 		}
 	}
 }
@@ -525,7 +522,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   nsIDOMXMLDocument * dti = docTagInfo;
   nsAutoString strName;
   nsAutoString strClassName;
-  nsCOMPtr<nsIDOMElement> tagNameElement;   
+  nsCOMPtr<nsIDOMElement> tagNameElement;
   TagKey key;
   rv = dti->GetElementsByTagName(NS_LITERAL_STRING("tagclass"), getter_AddRefs(tagClasses));
   if (tagClasses) tagClasses->GetLength(&tagClassCount);
@@ -544,10 +541,10 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
       // strClassName is the name of the class. Now find the <contains> tags
       ///////
       BuildContainsListForElement(tagClassElement, strClassName);
-      
+
       /////////
       rv = tagClassElement->GetElementsByTagName(NS_LITERAL_STRING("tag"), getter_AddRefs(tagNames));
-      if (tagNames) 
+      if (tagNames)
       {
         rv = tagNames->GetLength(&tagNameCount);
         for (PRUint32 j = 0; j < tagNameCount; j++)
@@ -555,11 +552,11 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           tagNames->Item(j, getter_AddRefs(tagName));
           tagNameElement = do_QueryInterface(tagName);
           rv = tagNameElement->GetAttribute(NS_LITERAL_STRING("nm"),strName);
-          
+
           BuildContainsListForElement(tagNameElement, strName);
           key = TagKey(strName);
-          TagData *pdata = new TagData; 
-          tagNameElement->HasAttribute(NS_LITERAL_STRING("hidden"),&(pdata->hidden));              
+          TagData *pdata = new TagData;
+          tagNameElement->HasAttribute(NS_LITERAL_STRING("hidden"),&(pdata->hidden));
           pdata->tagClass = strClassName;
           pdata->description = GetStringProperty(NS_LITERAL_STRING("description"), tagNameElement);
           pdata->mathonly = GetStringProperty(NS_LITERAL_STRING("mathonly"), tagNameElement);
@@ -577,7 +574,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
 					PRBool hasBabelAttribute;
 					tagNameElement->HasAttribute(NS_LITERAL_STRING("babel"), &hasBabelAttribute);
 					if (hasBabelAttribute)
-					  pdata->babel = GetStringProperty(NS_LITERAL_STRING("babel"), tagNameElement);					
+					  pdata->babel = GetStringProperty(NS_LITERAL_STRING("babel"), tagNameElement);
           pdata->level =
             GetStringProperty(NS_LITERAL_STRING("level"), tagNameElement);
           if (strClassName.EqualsLiteral("structtag"))
@@ -585,11 +582,11 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
             pdata->prefsub =
               GetStringProperty(NS_LITERAL_STRING("prefsub"), tagNameElement);
           }
-          pdata->discardEmptyBlock = 
+          pdata->discardEmptyBlock =
             GetStringProperty(NS_LITERAL_STRING("discardemptyblock"), tagNameElement)==NS_LITERAL_STRING("true");
-          pdata->inclusion = 
+          pdata->inclusion =
             GetStringProperty(NS_LITERAL_STRING("inclusion"), tagNameElement)==NS_LITERAL_STRING("true");
-          pdata->wrapper = 
+          pdata->wrapper =
             GetStringProperty(NS_LITERAL_STRING("wrapper"), tagNameElement)==NS_LITERAL_STRING("true");
           // save the key, data pair
           TagKey nextTagKey(GetStringProperty(NS_LITERAL_STRING("nexttag"), tagNameElement));
@@ -597,12 +594,14 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           if (pdata->nextTag.Length() == 0) pdata->nextTag = key.key;
           msiTagHashtable.Put(key.key, pdata);
 //		      printf("Added %s: %s %s\n", ToNewCString(key.key), ToNewCString(pdata->description), ToNewCString(pdata->tagClass));
-//          printf("hash table has %d entries\n",msiTagHashtable.Count()); 
+//          printf("hash table has %d entries\n",msiTagHashtable.Count());
         }
       }
     }
   }
+  BuildBabelList(docTagInfo);
   BuildStringArray(NS_LITERAL_STRING("texttag"));
+  // pACSSA->ViewArray(NS_LITERAL_STRING("texttag"));
   BuildStringArray(NS_LITERAL_STRING("paratag"));
   BuildStringArray(NS_LITERAL_STRING("listtag"));
   BuildStringArray(NS_LITERAL_STRING("structtag"));
@@ -610,10 +609,9 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   BuildStringArray(NS_LITERAL_STRING("frontmtag"));
   BuildStringArray(NS_LITERAL_STRING("othertag"));
   pACSSA->SortArrays();
-	BuildBabelList(docTagInfo, &pBabelList);
+  // pACSSA->ViewArray(NS_LITERAL_STRING("texttag"));
   return PR_TRUE;
 }
-
 
 struct userArgStruct {
 //  nsStringArray * stringArray;
@@ -622,8 +620,8 @@ struct userArgStruct {
 };
 
 PLDHashOperator
-nsDEnumRead(const nsAString_internal& aKey, TagData* aData, void* userArg) 
-{  // this is a callback to the hash table enumerator that adds to a string array all the data that 
+nsDEnumRead(const nsAString_internal& aKey, TagData* aData, void* userArg)
+{  // this is a callback to the hash table enumerator that adds to a string array all the data that
    // matches the ... part of *userArg
   TagKey tk;
   PRBool bres;
@@ -652,7 +650,7 @@ msiTagListManager::BuildStringArray(const nsAString & strTagClass)
   return NS_OK;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTagListManager::BuildParentTagList()
 {
   nsresult res;
@@ -670,7 +668,7 @@ msiTagListManager::BuildParentTagList()
  // BBM todo: put in error checking
   if (!meditor)
     return  NS_ERROR_FAILURE;;
-  nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
+  nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);
   nsCOMPtr<nsIDOMElement> element;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMNode> temp;
@@ -699,7 +697,7 @@ msiTagListManager::BuildParentTagList()
 
   strClearedTags.BeginReading(start);
   strClearedTags.EndReading(end);
-  
+
   res = editor->GetSelectionContainer(getter_AddRefs(element));
   node = element;
   while (node)
@@ -709,16 +707,16 @@ msiTagListManager::BuildParentTagList()
 //    node->GetNamespaceURI(strTempURI);
 //    if (strTempURI.Length() == 0) nsAtom = nsnull;
 //    else nsAtom = NS_NewAtom(strTempURI);
-//    if (nsAtom) 
+//    if (nsAtom)
 //    {
 //      strTemp2 = NS_LITERAL_STRING(" - ")+PrefixFromNameSpaceAtom(nsAtom);
 //      strQName = strTemp + strTemp2;
 //    }
-//    else 
-    strQName = strTemp; 
+//    else
+    strQName = strTemp;
     strClearedTags.BeginReading(start);
     strClearedTags.EndReading(end);
-    
+
     if (!FindInReadable(strQName, start, end) /*&& *(start-1)==';' */) {
       // end now points to the character after the pattern
   	  mparentTags->AppendString(strQName);
@@ -731,7 +729,7 @@ msiTagListManager::BuildParentTagList()
 }
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTagListManager::GetParentTagList(const nsAString & strSep, PRBool includeTypeInState, PRBool includeNS, nsAString & _retval)
 {
 // we ignore includeNS for now.
@@ -745,7 +743,7 @@ msiTagListManager::GetParentTagList(const nsAString & strSep, PRBool includeType
   PRUnichar semi = ';';
   PRUnichar comma = ',';
   if (includeTypeInState) {
-    nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
+    nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);
     editor->ReadCursorSetProps(strSetTags);
     length = strSetTags.Length();
     while (index < length) {
@@ -762,7 +760,7 @@ msiTagListManager::GetParentTagList(const nsAString & strSep, PRBool includeType
     }
   }
   length = mparentTags?mparentTags->Count():-1;
-  if (length > 0 && _retval.Length() > 0) { 
+  if (length > 0 && _retval.Length() > 0) {
     _retval += strSep;
     _retval += *(*mparentTags)[0];
   }
@@ -772,14 +770,14 @@ msiTagListManager::GetParentTagList(const nsAString & strSep, PRBool includeType
 }
 
 /* attribute nsIEditor editor; */
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTagListManager::GetEditor(nsEditor **aEditor)
 {
     *aEditor = meditor;
     return NS_OK;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTagListManager::SetEditor(nsEditor * aEditor)
 {
     if (mparentTags && (meditor != aEditor))
@@ -788,17 +786,17 @@ msiTagListManager::SetEditor(nsEditor * aEditor)
     return NS_OK;
 }
 
-nsCOMPtr<nsIDOMNode> 
+nsCOMPtr<nsIDOMNode>
 msiTagListManager::GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset)
 {
   nsCOMPtr<nsIDOMNode> resultNode;
   nsCOMPtr<nsIContent> parent = do_QueryInterface(aParent);
-  if (!parent) 
+  if (!parent)
     return resultNode;
   resultNode = do_QueryInterface(parent->GetChildAt(aOffset));
   return resultNode;
 }
-  
+
 
 /* AString currentValue (in AString strTagClass, out nsIAtom atomNS); */
 // return the nearest tag in the class given by strTagClass; that is, the first node of that class encountered in going up the tree
@@ -809,10 +807,10 @@ NS_IMETHODIMP msiTagListManager::CurrentValue(const nsAString & strTagClass, nsI
   nsAutoString strURI;
   nsString returnVal;
   PRBool isInList;
-  
+
   if (!meditor)
     return NS_ERROR_NULL_POINTER;
-  nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
+  nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);
   nsCOMPtr<nsIDOMElement> element;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMNode> node2;
@@ -827,7 +825,7 @@ NS_IMETHODIMP msiTagListManager::CurrentValue(const nsAString & strTagClass, nsI
   // if the selection is a node and its contents, GetSelectionContainer doesn't return the node, but the parent.
   // Thus we have the next few lines of code
   res = meditor->GetSelection(getter_AddRefs(selection));
-  if (NS_FAILED(res)) { return res; } 
+  if (NS_FAILED(res)) { return res; }
   PRInt32 rangeCount;
   res = selection->GetRangeCount(&rangeCount);
   if (NS_FAILED(res)) { return res; }
@@ -842,7 +840,7 @@ NS_IMETHODIMP msiTagListManager::CurrentValue(const nsAString & strTagClass, nsI
     res = range->GetEndContainer(getter_AddRefs(node2));
     res = range->GetEndOffset(&endoffset);
     node->GetNodeName(name);  // for debugging purposes only
-    if (node != node2) 
+    if (node != node2)
     {
       success = PR_FALSE;
       break;
@@ -856,7 +854,7 @@ NS_IMETHODIMP msiTagListManager::CurrentValue(const nsAString & strTagClass, nsI
     else success = PR_FALSE;
   }
 */
-  success = PR_FALSE;  
+  success = PR_FALSE;
   if (!success)
   {
     res = editor->GetSelectionContainer(getter_AddRefs(element));
@@ -894,7 +892,7 @@ nsString msiTagListManager::PrefixFromNameSpaceAtom(nsIAtom * atomNS)
       return pns->namespaceAbbrev;
     pns = pns->next;
   }
-  return NS_LITERAL_STRING(""); 
+  return NS_LITERAL_STRING("");
 }
 
 
@@ -907,16 +905,16 @@ NS_IMETHODIMP msiTagListManager::GetRealClassOfTag(const nsAString & strTag, nsI
   {
     _retval = rv;
     return NS_OK;
-  } 
+  }
   return GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("tagclass"), _retval);
-}  
- 
+}
+
 /* AString getClassOfTag (in AString strTag, in nsIAtom atomNS); */
 NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom *atomNS, nsAString & _retval)
 {
   return GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("tagclass"), _retval);
-}  
- 
+}
+
 
 
 /* PRBool getTagInClass (in AString strTagClass, in AString strTag, in nsIAtom atomNS); */
@@ -929,7 +927,7 @@ NS_IMETHODIMP msiTagListManager::GetTagInClass(const nsAString & strTagClass, co
     GetRealClassOfTag(strTag, atomNS, strClass);
     *_retval = strTagClass.Equals(strClass);
   }
-  return NS_OK;  
+  return NS_OK;
 }
 
 PRBool msiTagListManager::ContainsListForOuterIncludesInner( const nsAString & strOuter, const nsAString & strInner )
@@ -945,12 +943,12 @@ PRBool msiTagListManager::ContainsListForOuterIncludesInner( const nsAString & s
 	{
 		return PR_TRUE;
 	}
-	return PR_FALSE;	
+	return PR_FALSE;
 }
 
 
 /* PRBool tagCanContainTag (in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner); */
-NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter, 
+NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
   nsIAtom *atomNSOuter, const nsAString & strTagInner, nsIAtom *atomNSInner, PRBool *_retval)
 {
   if (!_retval) return NS_ERROR_INVALID_POINTER;
@@ -983,7 +981,7 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
 		foundit = ContainsListForOuterIncludesInner( strTagOuter, classInner);
 	if (!foundit)
 		foundit = ContainsListForOuterIncludesInner( strTagOuter, strTagInner);
-  if (!foundit)	  
+  if (!foundit)
 	{
 		return NS_OK; // *_retval is false;
 	}
@@ -1057,11 +1055,11 @@ PRInt32 IntFromString( nsAString & str)
 
 // Whether one structure tag can contain another depends on the levels. A tag with a * level
 // can be contained in any structure tag. A non-* tag cannot be contained in a * tag.
-// If both tags have numerical levels, then the tag with the lower level can contain the tag with the 
+// If both tags have numerical levels, then the tag with the lower level can contain the tag with the
 // higher level. Thus 'level' corresponds to the degree of indentation in outline form.
 
 /* PRBool levelCanContainLevel (in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner); */
-NS_IMETHODIMP msiTagListManager::LevelCanContainLevel(const nsAString & strTagOuter, nsIAtom *atomNSOuter, const nsAString & strTagInner, 
+NS_IMETHODIMP msiTagListManager::LevelCanContainLevel(const nsAString & strTagOuter, nsIAtom *atomNSOuter, const nsAString & strTagInner,
       nsIAtom *atomNSInner, PRBool *_retval)
 {
   nsresult rv;
@@ -1071,7 +1069,7 @@ NS_IMETHODIMP msiTagListManager::LevelCanContainLevel(const nsAString & strTagOu
   PRBool fInnerStar;
   PRInt32 nOuter;
   PRInt32 nInner;
-  
+
   rv = GetStringPropertyForTag(strTagOuter, atomNSOuter, NS_LITERAL_STRING("level"), strOuterLevel);
 //  strOuterLevel.StripWhiteSpace();
   rv = GetStringPropertyForTag(strTagInner, atomNSInner, NS_LITERAL_STRING("level"), strInnerLevel);
@@ -1122,7 +1120,7 @@ NS_IMETHODIMP msiTagListManager::GetTagOfNode(nsIDOMNode *node, nsIAtom ** atomN
   _retval = NS_LITERAL_STRING("");
   return NS_OK;
 }
- 
+
 /* AString GetStringPropertyForTag (in AString strTag, in nsIAtom atomNS, in AString propertyName); */
 NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTag, nsIAtom *atomNS, const nsAString & propertyName, nsAString & _retval)
 {
@@ -1131,18 +1129,18 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
   strAbbrev = PrefixFromNameSpaceAtom(atomNS);
   nsString strKey;
   nsString emptyString;
-#ifdef USE_NAMESPACES 
+#ifdef USE_NAMESPACES
   if (strAbbrev.Length() >0 )strKey = strAbbrev + NS_LITERAL_STRING(":") + strTag;
-  else 
+  else
 #endif
-    strKey = strTag; 
-  TagData * data;    
+    strKey = strTag;
+  TagData * data;
   PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
 //  printf("\nFound in hash table is %s, strKey = %S, data->tagClass is ", (fInHash?"true":"false"), strKey.BeginReading());
-//  if (fInHash) printf("%S\n", data->tagClass.BeginReading());  
-//  else printf("\n");         
+//  if (fInHash) printf("%S\n", data->tagClass.BeginReading());
+//  else printf("\n");
   if (fInHash)
-  { 
+  {
     if (propertyName.EqualsLiteral("description"))
       _retval = data->description;
     else if (propertyName.EqualsLiteral("tagclass"))
@@ -1182,24 +1180,33 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
 }
 
 
-// 
+//
 NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, nsIAtom *atomNS, nsIDOMDocument * doc, nsIDOMNode **_retval)
 {
   nsresult res = NS_OK;
-  nsString strKey;
   nsString emptyString;
-  strKey = strTag; 
-  TagData * data;    
-  nsCOMPtr<nsIDOMNode> retNode;
+  TagData * data;
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMNode> importedNode;
+  nsCOMPtr<nsIDOMElement> element;
   nsCOMPtr<nsIDOMNodeList> nodelist;
   PRBool setCursor = PR_FALSE;
-  
-  PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
+  nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);
+
+  PRInt32 offset = 0;
+
+
+  PRBool fInHash = msiTagHashtable.Get(strTag, (TagData **)&data);
   if (fInHash && data && doc && data->initialContents)
   {
-    res = data->initialContents->CloneNode( PR_TRUE, getter_AddRefs(retNode));
-    res = doc->ImportNode(retNode, PR_TRUE, _retval);
-    NS_ADDREF(retNode.get());
+    res = editor->CreateElementWithDefaults(strTag, getter_AddRefs(element));
+    res = data->initialContents->CloneNode( PR_TRUE, getter_AddRefs(node));
+    res = doc->ImportNode(node, PR_TRUE, getter_AddRefs(importedNode));
+    res = editor->InsertNodeAtPoint(importedNode, (nsIDOMNode **)address_of(element), &offset, PR_TRUE);
+
+    *_retval = element;
+
+    NS_ADDREF(element.get());
   }
   return NS_OK;
 }
@@ -1223,21 +1230,21 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   nsString emptyString2;
   nsString emptyString3;
   nsresult rv;
-  nsCOMPtr<nsIDOMNode> aNewNode; 
+  nsCOMPtr<nsIDOMNode> aNewNode;
   rv = GetTagOfNode(firstNode, &nsAtomFirst, firstNodeName);
   nsAutoString str;
   if (firstNodeName.Length()== 0) return NS_OK;
   nsIAtom * dummyatom = NS_NewAtom(NS_LITERAL_STRING(""));
   rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("nexttag"), str);
   PRBool isEmpty = PR_FALSE;
-  nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
+  nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);
   if (editor) editor->IsEmptyNode( *secondNode, &isEmpty, PR_TRUE, PR_FALSE);
 	if (isEmpty) isEmpty = HasNoSignificantTags( *secondNode, this);
   if (str.EqualsLiteral("none") && isEmpty)
   {
     meditor->DeleteNode(*secondNode);
   }
-  else 
+  else
   {
     if ((str.Length() > 0) && !str.EqualsLiteral("none")&&!(str.Equals(firstNodeName)))
     {
@@ -1252,9 +1259,9 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
     editor->IsEmptyNode( firstNode, &isEmpty, PR_FALSE, PR_TRUE);
     // check that there aren't significant tags in it, such as empty tables, etc.
 		if (isEmpty) isEmpty = HasNoSignificantTags(firstNode, this);
-		
+
     nsCOMPtr<nsIDOMDocument> doc;
-    editor->GetDocument(getter_AddRefs(doc));  
+    editor->GetDocument(getter_AddRefs(doc));
     if (isEmpty)
     {
       nsCOMPtr<nsIDOMNode> brNode;
@@ -1300,7 +1307,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
       if (theclass.EqualsLiteral("structtag"))
       {
         // insert a sectiontitle tag at the beginning of the second half of a split section.
-        rv = meditor->CreateNode(NS_LITERAL_STRING("sectiontitle"), *secondNode, 0, 
+        rv = meditor->CreateNode(NS_LITERAL_STRING("sectiontitle"), *secondNode, 0,
                                                    getter_AddRefs(secttitle));
         rv = editor->CreateBR(secttitle, 0, address_of(br));
         meditor->MarkNodeDirty(*secondNode);
@@ -1389,11 +1396,11 @@ NS_IMETHODIMP msiTagListManager::GetClearListTag(nsIAtom **atomNamespace, nsAStr
 }
 
 
-/* boolean selectionContainedInTag (in AString strTag, in nsIAtom atomNS); 
+/* boolean selectionContainedInTag (in AString strTag, in nsIAtom atomNS);
    This should return true if all the characters in the selection are affected the tag.
    This is certainly the case if all the nodes in the selection are descendents
    of a strTag node.
-   Another possibility is the the nodes in the selection are contained in two 
+   Another possibility is the the nodes in the selection are contained in two
    almost-adjacent strTag node.
    The final test is to iterate through all the text nodes in the selection. Each
    one must be either all white space or a descendent of a strTag node or (if the
@@ -1413,7 +1420,7 @@ PRBool isInTag(nsIDOMNode * node, const nsAString & strTag)
   return PR_FALSE;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *atomNS, PRBool *_retval)
 {
   nsAutoString str;
@@ -1509,7 +1516,7 @@ msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *at
       endOffset = count;
     rv = childNodes->Item(endOffset, getter_AddRefs(lastNode));
   }
-  // set up a treewalker to iterate through 
+  // set up a treewalker to iterate through
   nsCOMPtr<nsIDOMDocument> doc;
   rv = startContainer->GetOwnerDocument(getter_AddRefs(doc));
   nsCOMPtr<nsIDOMTreeWalker> tw;
@@ -1533,7 +1540,7 @@ msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *at
   PRBool done(PR_FALSE);
   while (currentNode && !done)
   {
-    
+
     if (currentNode == firstNode)
     {
       firstNode->GetNodeType(&nodeType);
@@ -1545,7 +1552,7 @@ msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *at
         *_retval = PR_TRUE;
         return NS_OK;
       }
-      if (!nodeIsWhiteSpace(currentNode, 0, 1000)) 
+      if (!nodeIsWhiteSpace(currentNode, 0, 1000))
         if (!isInTag(currentNode, strTag))  return NS_OK;
     }
     done = (!currentNode || currentNode == lastTextNode);
@@ -1553,41 +1560,47 @@ msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *at
   }
   // since we passed all the tests ...
 //	*_retval = done;
-  
+
   return NS_OK;
 }
 
 
 /* AString getTagsInClass (in AString strTag, in boolean includeNS); */
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTagListManager::GetTagsInClass(const nsAString & strTagClass, const nsAString & strSep, PRBool includeNS, nsAString & _retval)
 {
 // we ignore includeNS for now.
-  return pACSSA->ContentsofArray( strTagClass, strSep, _retval);  
+  return pACSSA->ContentsofArray( strTagClass, strSep, _retval);
 }
 
 /* Methods for changing the tag list at runtime, to support creating tags dynamically for Polyglossia/Babel
-   AString getTagsWithProperty( in AString propertyName, in nsIAtom atomNS);  */
+/* nsIDOMNode getBabelTagNode (in boolean textTag, in unsigned long oneOrTwo); */
 NS_IMETHODIMP
-msiTagListManager::GetBabelTags(nsAString & _retval)
+msiTagListManager::GetBabelTagNode(PRBool textTag, PRUint32 oneOrTwo, nsIDOMNode **_retval)
 {
-	nsAutoString returnString;
-	PRBool first = PR_TRUE;
-	TagKeyList * pTagKeyList = pBabelList->pListHead;
-	while (pTagKeyList)
+  BuildBabelList(mdocTagInfo);
+	NodeList * pList = pBabelList;
+  *_retval = nsnull;
+  // There are four Babel nodes. One and two are the font nodes for lang1 and lang2. Three and four are the
+  // environment nodes for lang1 and lang2.
+  PRUint32 num = oneOrTwo;
+  nsAutoString babelAtt;
+  if (!textTag) num += 2;
+	while (pList)
 	{
-		if (!first) returnString = returnString + NS_LITERAL_STRING(",");
-		first = PR_FALSE;
-		returnString = returnString + pTagKeyList->key.localName();
-		pTagKeyList = pTagKeyList->pNext;
+		pList->element->GetAttribute(NS_LITERAL_STRING("babel"), babelAtt);
+    if (babelAtt.CharAt(0) == num + 48) {
+      *_retval = pList->element;
+      return NS_OK;
+    }
+		pList = pList->pNext;
 	}
-	_retval = returnString;
 	return NS_OK;
 }
 
-		
 
-/*void    setTagVisibility( in AString strTag, in nsIAtom atomNS, in boolean hidden); 
+
+/*void    setTagVisibility( in AString strTag, in nsIAtom atomNS, in boolean hidden);
   We change the entries in the DOM tree, not the hash table. */
 NS_IMETHODIMP
 msiTagListManager::SetTagVisibility(const nsAString & strTag, nsIAtom *atomNS, PRBool hidden)
@@ -1599,7 +1612,7 @@ msiTagListManager::SetTagVisibility(const nsAString & strTag, nsIAtom *atomNS, P
 	PRUint32 count;
 	PRUint32 i;
 	nsAutoString name;
-	
+
 	rv = mdocTagInfo->GetElementsByTagName(NS_LITERAL_STRING("tag"), getter_AddRefs(taglist));
 	if (taglist)
 	{
@@ -1620,7 +1633,7 @@ msiTagListManager::SetTagVisibility(const nsAString & strTag, nsIAtom *atomNS, P
 					tagElement->RemoveAttribute(NS_LITERAL_STRING("hidden"));
 				}
 				return NS_OK;
-			}		
+			}
 		}
 	}
 	return NS_OK;
@@ -1639,7 +1652,7 @@ msiTagListManager::SetTagName(const nsAString & strCurrent, nsIAtom *atomNS, con
 	PRUint32 count;
 	PRUint32 i;
 	nsAutoString name;
-	
+
 	rv = mdocTagInfo->GetElementsByTagName(NS_LITERAL_STRING("tag"), getter_AddRefs(taglist));
 	if (taglist)
 	{
@@ -1652,8 +1665,8 @@ msiTagListManager::SetTagName(const nsAString & strCurrent, nsIAtom *atomNS, con
 			if (name.Equals(strCurrent))
 			{
 				tagElement->SetAttribute(NS_LITERAL_STRING("nm"), strNew);
-				return NS_OK;
-			}		
+        return NS_OK;
+      }
 		}
 	}
 	return NS_OK;
@@ -1664,12 +1677,13 @@ msiTagListManager::RebuildHash()
 {
 	PRBool retval;
 	nsresult rv;
+  msiTagHashtable.Init(30);
 	BuildHashTables(mdocTagInfo, &retval);
 	return NS_OK;
 }
 
 /* PRInt32 getMinDepth (); */
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTagListManager::GetMinDepth(PRInt32 *_retval)
 {
   nsCOMPtr<nsIDOMNodeList> taglist;
@@ -1686,8 +1700,8 @@ msiTagListManager::GetMinDepth(PRInt32 *_retval)
   {
     rv = taglist->Item(0, getter_AddRefs(tag));
     tagElement = do_QueryInterface(tag);
-    tagElement->GetAttribute(NS_LITERAL_STRING("value"), val); 
-    *_retval = val.ToInteger(&errorCode);   
+    tagElement->GetAttribute(NS_LITERAL_STRING("value"), val);
+    *_retval = val.ToInteger(&errorCode);
     return NS_OK;
   }
 }

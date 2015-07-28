@@ -55,6 +55,12 @@ struct TagKey // a class castable to and from strings that supports pulling out 
   nsString localName();
 };
 
+struct NodeList // Plain singly-linked list of nodes
+{
+  NodeList * pNext;
+  nsIDOMElement * element;
+};
+
 
 class msiTagListManager : public msiITagListManager
 {
@@ -67,7 +73,7 @@ public:
   nsString GetStringProperty( const nsAString & str, nsIDOMElement * element);
   PRBool BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retval);
   void BuildContainsListForElement(nsIDOMElement * element, const nsAString & name);
-  void BuildBabelList(nsIDOMXMLDocument * docTagInfo, TagKeyListHead ** ppBabelList);
+  void BuildBabelList(nsIDOMXMLDocument * docTagInfo);
   PRBool ContainsListForOuterIncludesInner( const nsAString & strOuter, const nsAString & strInner );
 
 
@@ -88,7 +94,7 @@ protected:
   TagKey mclearStructTag;
   TagKey mclearEnvTag;
   TagKey mclearListTag;
-  TagKeyListHead * pBabelList; // tags that Babel or Polyglossia need to change at run time.
+  NodeList * pBabelList; // tag elements that Babel or Polyglossia need to change at run time.
   TagKeyListHead * pContainsList;
 };
 

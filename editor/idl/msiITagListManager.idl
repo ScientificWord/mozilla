@@ -1,4 +1,4 @@
- 
+
 #include "nsISupports.idl"
 
 interface nsIAtom;
@@ -18,7 +18,7 @@ Since this information is document-dependent, there is one store per editor. The
 
 The store contains a string array for each class of tags (text, structure, paragraph, etc.) and allows for getting and setting
 these string arrays. We may make this read-only, since the tag data should be set from the tag info files only.
-*/   
+*/
 
 [scriptable, uuid(9BA9E685-EF5A-49b3-96DC-8D8EC355A690)]
 interface msiITagListManager : nsISupports
@@ -29,8 +29,8 @@ interface msiITagListManager : nsISupports
 	AString currentValue( in AString strTagClass, out nsIAtom atomNS );
 	void enable();
     void reset();  //initializes the store to an empty store
-    boolean AddTagInfo ( in AString strTagInfoPath );   
-	void buildStringArray( in  AString strTagClass ); 
+    boolean AddTagInfo ( in AString strTagInfoPath );
+	void buildStringArray( in  AString strTagClass );
 
 	boolean getTagInClass( in AString strTagClass, in AString strTag, in nsIAtom atomNS);
 	AString getClassOfTag( in AString strTag, in nsIAtom atomNS);
@@ -58,7 +58,7 @@ interface msiITagListManager : nsISupports
     AString getTagsInClass( in AString strTagClass, in AString strSep, in boolean includeNS );
     void    setTagVisibility( in AString strTag, in nsIAtom atomNS, in boolean hidden);
     void    setTagName( in AString strCurrent, in nsIAtom atomNS, in AString strNew);
-    AString getBabelTags();
-	void		rebuildHash();
+    nsIDOMNode getBabelTagNode( in boolean textTag, in unsigned long oneOrTwo);
+	void	rebuildHash();
 	PRInt32 getMinDepth();
 };
