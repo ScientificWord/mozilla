@@ -134,6 +134,10 @@ button[class="msi"]{
   bottom: 0.1em;
 }
 
+button[class="msi"][minpasses]:after {
+  content: "Minpasses: " attr(minpasses);
+}
+
 
 hspace {
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#hspace"); */
