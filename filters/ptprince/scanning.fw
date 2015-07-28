@@ -384,7 +384,11 @@ void DetermineCommandCode()
          SetCmdCode(CMD_SPACER);
          break;
       case TT_OTHER:
-         SetCmdCode(CMD_OTHER);
+         if (CurTok().ChrCode() == 10)
+           SetCmdCode(CMD_SPACER);
+         else
+           SetCmdCode(CMD_OTHER);
+
          break;
       case TT_LEFT_BRACE:
          SetCmdCode(CMD_LEFT_BRACE);
