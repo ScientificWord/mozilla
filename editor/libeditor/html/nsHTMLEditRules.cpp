@@ -3244,7 +3244,9 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
                         nsAString& chars)
 {
   nsAutoString str;
-  editor->DumpNode(node, 2*level, true);
+#ifdef NS_DEBUG
+  // editor->DumpNode(node, 2*level, true);
+#endif
 
   int count = 0;
   if (node == NULL){
@@ -3274,7 +3276,7 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
     PRUint32 numChildren;
     childList->GetLength(&numChildren);
 
-    if (node == caretNode) {
+    if (node == caretNode && caretOffset >= 0) {
        numChildren = caretOffset;   // we'll only have to look at this many
     }
 
@@ -3933,6 +3935,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
     if (node && isEmpty && !isInComplexTransaction) {
       // res = node->GetParentNode(getter_AddRefs(parentNode));
       nsEditor::GetNodeLocation(node, address_of(parentNode), &selOffset);
+      if (selOffset < 0) selOffset = 0;
       res = node->GetNodeName(name);
       if (parentNode) {
         PRBool isParagraph;
