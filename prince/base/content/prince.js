@@ -543,12 +543,18 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   if (RegExp(/\\ref|\\xref|\\pageref|\\vxref|\\vref|\\vpageref|\\cite/).test(str)) runcount = 2;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
-  var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
   var minpasses = 1;
-  if (matcharr && matcharr.length > 1)
-  {
-    minpasses = matcharr[1];
+  var index;
+  var minpassElements = document.getElementsByTagName("button");
+  if (minpassElements.length > 0) {
+    for (index = 0; index < minpassElements.length; index++) {
+      if (minpassElements[index].hasAttribute('minpasses')) {
+        minpasses = minpassElements[index].getAttribute('minpasses');
+        break;
+      }
+    }
   }
+
   if (compileInfo.runMakeIndex || compileInfo.runBibTeX) {
     if (compileInfo.passCount < 3) compileInfo.passCount = 3;
   }
