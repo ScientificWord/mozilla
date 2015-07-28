@@ -578,6 +578,24 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:template match="html:rtlBodyText|mml:rtlBodyText">
+  <xsl:text>\begin{RTL}</xsl:text>
+  <xsl:variable name="content">
+     <!-- xsl:value-of select="."/ -->
+     <xsl:apply-templates />
+   </xsl:variable>
+  <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
+    <xsl:call-template name="maketables" />
+  </xsl:if>
+  <xsl:if test="position()!=last or string-length($content) != '0'">
+    <xsl:apply-templates/>
+  </xsl:if>
+  <xsl:if test="position()!=last()">
+     <xsl:value-of select="$blankline"/>
+  </xsl:if>
+  <xsl:text>\end{RTL}</xsl:text>
+</xsl:template>
+
 <xsl:template match="html:bodyText" mode="inner">
   <xsl:if test="(position() = 1) and (starts-with($toclocation,'tocpara'))">
     <xsl:call-template name="maketables" />

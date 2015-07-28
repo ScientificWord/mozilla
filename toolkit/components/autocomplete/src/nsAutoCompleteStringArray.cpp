@@ -16,12 +16,12 @@ NS_IMPL_QUERY_INTERFACE2(nsAutoCompleteSearchStringArrayImp, nsIAutoCompleteSear
 // What's going on here?
 // Autocomplete text boxes select an autocomplete class by providing a string suffix to determine the class as in
 // "@mozilla.org/autocomplete/search;1?name=stringarray". Each text box also provides a string such as, in this case, 'texttag',
-// 'paratag', etc. 
-// 
-// Our problem is that we need this for each document. Each editor has attached to it a tag manager, which has the data to 
+// 'paratag', etc.
+//
+// Our problem is that we need this for each document. Each editor has attached to it a tag manager, which has the data to
 // provide a list of strings for each of the 'texttag', 'paratag', etc. specifiers. In order to make the original design work
-// in our case, we'd have to come up with a string id for each document and then use strings like 'doc1:texttag', etc. 
-// 
+// in our case, we'd have to come up with a string id for each document and then use strings like 'doc1:texttag', etc.
+//
 // Instead, we create a unique nsIAutoCompleteSearchStringArray implementation that forwards the implementation of its methods
 // to an internal ponsAutoCompleteSearchStringArrayImp pointer to an implementation of an interface for a single document only. When
 // the focus changes to another
@@ -29,7 +29,7 @@ NS_IMPL_QUERY_INTERFACE2(nsAutoCompleteSearchStringArrayImp, nsIAutoCompleteSear
 // and we switch between these as the focus of the user changes.
 //
 // There is in addition a unique global one for things such as macro names, autosubstitute, etc.
-// 
+//
 
 // IMPLEMENTATION OF nsAutoCompleteSearchStringArray
 NS_IMPL_QUERY_INTERFACE2(nsAutoCompleteSearchStringArray, nsIAutoCompleteSearchStringArray, nsIAutoCompleteSearch)
@@ -45,7 +45,7 @@ nsAutoCompleteSearchStringArray::nsAutoCompleteSearchStringArray()
 
 nsAutoCompleteSearchStringArray::~nsAutoCompleteSearchStringArray()
 {
-  
+
 }
 
 /* static */ nsAutoCompleteSearchStringArray*
@@ -139,7 +139,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::GetNewImplementation(nsIAutoCompl
     NS_ADDREF(*_retval);
    return NS_OK;
 }
-/* long sizeofArray (in AString strCategory); 
+/* long sizeofArray (in AString strCategory);
    returns size of the array or -1 if not found. */
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::SizeofArray(const nsAString & strCategory, PRInt32 *_retval)
 {
@@ -148,7 +148,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::SizeofArray(const nsAString & str
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
-/* AString contentsofArray (in AString strCategory, in AString strSep); 
+/* AString contentsofArray (in AString strCategory, in AString strSep);
    returns contents of the array concatenated with strSep as a separator */
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::ContentsofArray(const nsAString & strCategory, const nsAString & strSep, nsAString & _retval)
 {
@@ -156,6 +156,15 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::ContentsofArray(const nsAString &
     printf("nsAutoCompletSearchStringArray uninitialized\n");
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
+/* AString contentsofArray (in AString strCategory, in AString strSep);
+   returns contents of the array concatenated with strSep as a separator */
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::ViewArray(const nsAString & strCategory)
+{
+    if (m_imp) return m_imp->ViewArray(strCategory);
+    printf("nsAutoCompletSearchStringArray uninitialized\n");
+    return NS_OK; // is there an NS_UNINITIALIZED ??
+}
+
 
 /* void resetArray (in AString strCategory); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::ResetArray(const nsAString & strCategory)
@@ -235,11 +244,11 @@ stringStringArray * nsAutoCompleteSearchStringArrayImp::GetPssaForCategory(const
         if ((end == endsave) || (*end == ' '))
         {
           return pssa;
-        }                                                                       
+        }
       }
     }
     pssa = pssa->next;
-  }  
+  }
   return nsnull;
 }
 
@@ -249,7 +258,7 @@ nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( c
   stringStringArray * pssa = m_stringArrays;
   nsAString::const_iterator start, end;
   nsAString::const_iterator startsave, endsave;
-  PRInt32 i;  
+  PRInt32 i;
   while (pssa)
   {
     strCategory.BeginReading(start);
@@ -264,9 +273,9 @@ nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( c
       {
         if ((end == endsave) || (*end == ' '))
         {
-          if (psa == nsnull) 
+          if (psa == nsnull)
           {
-            if (doCopy) 
+            if (doCopy)
             {
               psa = new nsStringArray;
 		          for (i = 0; i < pssa->strArray->Count(); i++)
@@ -274,12 +283,12 @@ nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( c
             }
             else psa = pssa->strArray;
           }
-          else 
+          else
           {
 		        for (i = 0; i < pssa->strArray->Count(); i++)
   			      psa->AppendString(*(pssa->strArray->StringAt(i)));
           }
-        }                                                                       
+        }
       }
     }
     pssa = pssa->next;
@@ -295,7 +304,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & st
 }
 
 /* boolean AddStringEx (in AString strCategory, in AString strAdd, in AString strComment, in AString strMath); */
-NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddStringEx(const nsAString & strCategory, const nsAString & strAdd, 
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddStringEx(const nsAString & strCategory, const nsAString & strAdd,
   const nsAString & strComment, const nsAString & strMath, PRBool *_retval)
 {
   stringStringArray * pssa = m_stringArrays;
@@ -314,18 +323,20 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddStringEx(const nsAString & 
     m_stringArrays = pssa;
   }
   if (!psa) // unable to create new string array
-  { 
+  {
     *_retval = PR_FALSE;
     printf("out of memory in nsAutoCompleteSearchStringArrayImp::AddStringEx\n");
     return NS_OK;
   }
   if (psa && (psa->IndexOf(strAdd)==-1))  // should be true, unless there was a error creating a new one.
   {
-    psa->AppendString(strAdd); 
-    pssa->strComments->AppendString(strComment);
-    pssa->strMathOnly->AppendString(strMath);
+    psa->AppendString(strAdd);
+    if (strCategory.EqualsLiteral("texttags")) {
+      pssa->strComments->AppendString(strComment);
+      pssa->strMathOnly->AppendString(strMath);
+    }
     // Now read it back out to make sure
-//    printf(" added (%S)[%d] = %S\n", strCategory.BeginReading(), psa->IndexOf(strAdd), psa->StringAt(psa->IndexOf(strAdd))->BeginReading());
+    printf(" added (%S)[%d] = %S\n", strCategory.BeginReading(), psa->IndexOf(strAdd), psa->StringAt(psa->IndexOf(strAdd))->BeginReading());
   }
   else
   {
@@ -351,7 +362,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SortArrays(void)
 {
   // TODO: do a case-insensitive compare. Pass a comparator function to Sort.
   stringStringArray * pssa = m_stringArrays;
-  
+
   while (pssa)
   {
      if (pssa->strCategory.EqualsLiteral("texttag"))
@@ -372,9 +383,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SetMarkedStrings(nsStringArray
   if (!m_markedStrings) return PR_OUT_OF_MEMORY_ERROR;
   for (int i = 0; i < sa->Count(); i++) {
     sa->StringAt(i, str);
-    m_markedStrings->AppendString(str); 
-  } 
-  return res; 
+    m_markedStrings->AppendString(str);
+  }
+  return res;
 }
 
 
@@ -382,7 +393,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SetImplementation(nsIAutoCompl
 {
     // we delegate this one to the unique nsAutoCompleteSearchStringArray
     nsCOMPtr<nsAutoCompleteSearchStringArray> pACSSA = nsAutoCompleteSearchStringArray::GetInstance();
-    return pACSSA->SetImplementation(imp);    
+    return pACSSA->SetImplementation(imp);
 }
 
 
@@ -394,7 +405,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::GetNewImplementation(nsIAutoCo
   return NS_OK;
 }
 
-/* long sizeofArray (in AString strCategory); 
+/* long sizeofArray (in AString strCategory);
    returns size of the array or -1 if not found. */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SizeofArray(const nsAString & strCategory, PRInt32 *_retval)
 {
@@ -404,7 +415,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SizeofArray(const nsAString & 
 }
 
 
-/* AString contentsofArray (in AString strCategory, in AString strSep); 
+/* AString contentsofArray (in AString strCategory, in AString strSep);
    returns contents of the array concatenated with strSep as a separator */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ContentsofArray(const nsAString & strCategory, const nsAString & strSep, nsAString & _retval)
 {
@@ -417,6 +428,18 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ContentsofArray(const nsAStrin
     _retval += strSep + *(*psa)[i];
   return NS_OK;
 }
+
+NS_IMETHODIMP
+nsAutoCompleteSearchStringArrayImp::ViewArray(const nsAString & strCategory)
+{
+  nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
+  PRInt32 i;
+  PRInt32 length = psa?psa->Count():-1;
+  for (i = 0; i < length; i++) {
+    *(*psa)[i];
+  }
+}
+
 
 /* void resetArray (in AString strCategory); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ResetArray(const nsAString & strCategory)
@@ -440,13 +463,13 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ResetArray(const nsAString & s
   }
   return NS_OK;
 }
-  
+
 
 /* void resetAll (); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ResetAll()
 {
   stringStringArray * pssa = m_stringArrays;
-  
+
   while (pssa)
   {
     if (pssa->strArray)
@@ -475,24 +498,31 @@ void nsAutoCompleteSearchStringArrayImp::SortStringStringArray(stringStringArray
   PRUint32 i;
   PRUint32 count;
   PRUint32 length;
+  PRUint32 trunclength;
   PRUnichar ch;
   nsString space((PRUnichar)' ');
   if (pssa->strArray) {
     count = pssa->strArray->Count();
+    // the for loop puts space + the strMathOnly string which is '0' or '1'
     for (i = 0; i < count; i++) {
-      (*(pssa->strArray))[i]->Insert(space,length-1);
+      length = (pssa->strArray)->StringAt(i)->Length();
+      (pssa->strArray)->StringAt(i)->Insert(space,length);
       if (i < pssa->strMathOnly->Count() ){
-         (*(pssa->strArray))[i]->Insert((*(pssa->strMathOnly))[i]->CharAt(0), length);
+         (pssa->strArray)->StringAt(i)->Insert((pssa->strMathOnly)->StringAt(i)->CharAt(0), length + 1);
       }
     }
     pssa->strArray->Sort();
+    // Now unpack the above
     for (i = 0; i < count; i++) {
-      length = (*(pssa->strArray))[i]->Length();
-      ch = (*(pssa->strArray))[i]->CharAt(length-1);
+      // str = pssa->strArray[i];
+      length = (pssa->strArray)->StringAt(i)->Length();
+      ch = (pssa->strArray)->StringAt(i)->CharAt(length-1);
       if (i < pssa->strMathOnly->Count()){
-         (*(pssa->strMathOnly))[i]->SetCharAt(ch,0);
+         (pssa->strMathOnly)->StringAt(i)->SetCharAt(ch,0);
+         trunclength = 2;
       }
-      (*(pssa->strArray))[i]->Truncate(length - 2);
+      else trunclength = 1;
+      (pssa->strArray)->StringAt(i)->Truncate(length - trunclength);
     }
   }
 }
@@ -536,8 +566,8 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::GetGlobalSearchStringArray(nsI
 
 /* void startSearch (in AString searchString, in AString searchParam, in nsIAutoCompleteResult previousResult, in nsIAutoCompleteObserver listener); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StartSearch(
- const nsAString & searchString, const nsAString & searchParam, 
- nsIAutoCompleteResult *previousResult, 
+ const nsAString & searchString, const nsAString & searchParam,
+ nsIAutoCompleteResult *previousResult,
  nsIAutoCompleteObserver *listener)
 {
     // initially, ignore previousResult and searchParam
@@ -565,31 +595,31 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StartSearch(
       if (index >= 0) {
         pssa->strComments->StringAt(index,strcomment);
         pssa->strMathOnly->StringAt(index,strmathonly);
-        mResult->AppendString(str, strcomment, strmathonly); 
+        mResult->AppendString(str, strcomment, strmathonly);
       }
       else
-        mResult->AppendString(str, emptystring, emptystring); 
-        
+        mResult->AppendString(str, emptystring, emptystring);
+
       mResult->SetSearchResult(nsIAutoCompleteResult::RESULT_SUCCESS);
     }
-    else {      
+    else {
       str.BeginReading(start);
       originalStart = start;
       str.EndReading(end);
       if (FindInReadable(searchString,  start, end, nsDefaultStringComparator())) {
-        if (start==originalStart) { // pattern was found at the beginning of 
+        if (start==originalStart) { // pattern was found at the beginning of
                                     // the string
           index = pssa->strArray->IndexOf(str);
           if (index >= 0) {
             pssa->strComments->StringAt(index,strcomment);
             pssa->strMathOnly->StringAt(index,strmathonly);
-            mResult->AppendString(str, strcomment, strmathonly); 
+            mResult->AppendString(str, strcomment, strmathonly);
           }
           else
-            mResult->AppendString(str, emptystring, emptystring); 
-            
+            mResult->AppendString(str, emptystring, emptystring);
+
           mResult->SetSearchResult(nsIAutoCompleteResult::RESULT_SUCCESS);
-        } 
+        }
       }
     }
   }
@@ -603,7 +633,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StopSearch()
     return NS_OK;
 }
 
- 
+
 
 
 NS_INTERFACE_MAP_BEGIN(nsAutoCompleteResultStringArray)
@@ -786,7 +816,7 @@ NS_IMETHODIMP nsAutoCompleteResultStringArray::AppendString(const nsAString & aS
   mMathStrings->AppendString(aMathOnly);
   return NS_OK;
 }
-  
+
 NS_IMETHODIMP nsAutoCompleteResultStringArray::Clear()
 {
   mReturnStrings->Clear();
