@@ -431,13 +431,14 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ContentsofArray(const nsAStrin
 
 NS_IMETHODIMP
 nsAutoCompleteSearchStringArrayImp::ViewArray(const nsAString & strCategory)
-{
+{ // for debugging only—Barry
   nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
   PRInt32 i;
   PRInt32 length = psa?psa->Count():-1;
   for (i = 0; i < length; i++) {
     *(*psa)[i];
   }
+  return NS_OK;
 }
 
 
