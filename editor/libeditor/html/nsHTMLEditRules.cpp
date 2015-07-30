@@ -2812,7 +2812,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 *    If so, it inserts one.  Callers responsibility to only call with collapsed selection.
 *         nsISelection *aSelection      the collapsed selection
 */
-nsresult
+NS_IMETHODIMP
 nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
 {
   if (!aSelection)
@@ -2862,7 +2862,7 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
 *         nsIDOMNode *aNode                  the node
 *         nsIEditor::EDirection aAction      which edge to find: eNext indicates beginning, ePrevious ending
 *         nsCOMPtr<nsIDOMNode> *outSelNode   desired sel node
-*         PRInt32 *outSelOffset              desired sel offset
+*         PRInt32 *outSlOffset              desired sel offset
 */
 nsresult
 nsHTMLEditRules::GetGoodSelPointForNode(nsIDOMNode *aNode, nsIEditor::EDirection aAction,
