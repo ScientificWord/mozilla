@@ -49,7 +49,7 @@ class nsIHTMLEditRules : public nsISupports
 {
 public:
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_IHTMLEDITRULES_IID)
-  
+
   NS_IMETHOD GetListState(PRBool *aMixed, PRBool *aOL, PRBool *aUL, PRBool *aDL)=0;
   NS_IMETHOD GetListItemState(PRBool *aMixed, PRBool *aLI, PRBool *aDT, PRBool *aDD)=0;
   NS_IMETHOD GetIndentState(PRBool *aCanIndent, PRBool *aCanOutdent)=0;
@@ -60,8 +60,9 @@ public:
                                  PRInt32 operation,
                                  nsCOMArray<nsIDOMNode>& arrayOfNodes,
                                  PRBool aDontTouchContent=PR_FALSE)=0;
-  NS_IMETHOD InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode, 
+  NS_IMETHOD InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode,
                            const nsAString &aStructureType, nsIAtom * atomNamespace )=0;
+  NS_IMETHOD InsertBRIfNeeded(nsISelection *aSelection)=0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIHTMLEditRules, NS_IHTMLEDITRULES_IID)

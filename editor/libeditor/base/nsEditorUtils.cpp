@@ -57,6 +57,7 @@
 #include "nsIHTMLDocument.h"
 #include "nsIDOMHTMLElement.h"
 #include "nsIHTMLEditor.h"
+#include "msiEditor.h"
 #include "nsEditor.h"
 #include "nsIAtom.h"
 
@@ -68,10 +69,10 @@
  * nsAutoSelectionReset
  *****************************************************************************/
 
-nsAutoSelectionReset::nsAutoSelectionReset(nsISelection *aSel, nsEditor *aEd) : 
+nsAutoSelectionReset::nsAutoSelectionReset(nsISelection *aSel, nsEditor *aEd) :
 mSel(nsnull)
 ,mEd(nsnull)
-{ 
+{
   if (!aSel || !aEd) return;    // not much we can do, bail.
   if (aEd->ArePreservingSelection()) return;   // we already have initted mSavedSel, so this must be nested call.
   mSel = do_QueryInterface(aSel);
@@ -108,11 +109,11 @@ nsDOMIterator::nsDOMIterator() :
 mIter(nsnull)
 {
 }
-    
+
 nsDOMIterator::~nsDOMIterator()
 {
 }
-    
+
 nsresult
 nsDOMIterator::Init(nsIDOMRange* aRange)
 {
@@ -138,7 +139,7 @@ void
 nsDOMIterator::ForEach(nsDomIterFunctor& functor) const
 {
   nsCOMPtr<nsIDOMNode> node;
-  
+
   // iterate through dom
   while (!mIter->IsDone())
   {
@@ -156,7 +157,7 @@ nsDOMIterator::AppendList(nsBoolDomIterFunctor& functor,
                           nsCOMArray<nsIDOMNode>& arrayOfNodes) const
 {
   nsCOMPtr<nsIDOMNode> node;
-  
+
   // iterate through dom and build list
   while (!mIter->IsDone())
   {
@@ -176,11 +177,11 @@ nsDOMIterator::AppendList(nsBoolDomIterFunctor& functor,
 nsDOMSubtreeIterator::nsDOMSubtreeIterator()
 {
 }
-    
+
 nsDOMSubtreeIterator::~nsDOMSubtreeIterator()
 {
 }
-    
+
 nsresult
 nsDOMSubtreeIterator::Init(nsIDOMRange* aRange)
 {
@@ -206,21 +207,21 @@ nsDOMSubtreeIterator::Init(nsIDOMNode* aNode)
  * some general purpose editor utils
  *****************************************************************************/
 
-PRBool 
-nsEditorUtils::IsDescendantOf(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 *aOffset) 
+PRBool
+nsEditorUtils::IsDescendantOf(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 *aOffset)
 {
   if (!aNode && !aParent) return PR_FALSE;
   if (aNode == aParent) return PR_FALSE;
-  
+
   nsCOMPtr<nsIDOMNode> parent, node = do_QueryInterface(aNode);
   nsresult res;
-  
+
   do
   {
     if (!node) return PR_FALSE; // jcs
     res = node->GetParentNode(getter_AddRefs(parent));
     if (NS_FAILED(res)) return PR_FALSE;
-    if (parent == aParent) 
+    if (parent == aParent)
     {
       if (aOffset)
       {
@@ -235,7 +236,7 @@ nsEditorUtils::IsDescendantOf(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 *a
     }
     node = parent;
   } while (parent);
-  
+
   return PR_FALSE;
 }
 
@@ -287,7 +288,7 @@ PRBool skipThisTextNode( nsEditor * ed, msiITagListManager * tlm, nsIDOMNode * n
 
 PRBool LookForward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel, nsIDOMNode * nodeIn, nsIDOMNode ** nodeOut, PRInt32& offset)
 {
-  // do one step of a depth first forward traversal of the dom, looking for a node which accepts text. This includes paragraph tags, text tags, 
+  // do one step of a depth first forward traversal of the dom, looking for a node which accepts text. This includes paragraph tags, text tags,
   // math tags, and text nodes provided their parent accepts text.
   // Then recurse.
   nsCOMPtr<nsIDOMNode> newNode;
@@ -325,14 +326,14 @@ PRBool LookForward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel, 
     offset = offset + 1;
     return LookForward(ed, tlm, sel, nodeIn, nodeOut, offset);
   }
-  
+
   return LookForward(ed, tlm, sel, newNode, nodeOut, newOffset);
 }
 
 PRBool LookBackward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel, nsIDOMNode * nodeIn, nsIDOMNode ** node, PRInt32 offset)
 {
 
-  // do one step of a depth first forward traversal of the dom, looking for a node which accepts text. This includes paragraph tags, text tags, 
+  // do one step of a depth first forward traversal of the dom, looking for a node which accepts text. This includes paragraph tags, text tags,
   // math tags, and text nodes provided their parent accepts text.
   // Then recurse.
   nsCOMPtr<nsIDOMNode> newNode;
@@ -378,7 +379,7 @@ PRBool LookBackward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel,
   if (!newNode) { // went off the end of *node. Go back up the dom tree.
     return LookBackward(ed, tlm, sel, nodeIn, node, offset);
   }
-  
+
   return LookBackward(ed, tlm, sel, newNode, node, newOffset);
 }
 
@@ -412,13 +413,14 @@ nsEditorUtils::JiggleCursor(nsIEditor *aEditor, nsISelection * sel, nsIEditor::E
   }
 
 
+  nsCOMPtr<msiIMathMLEditor> msiEditor = do_QueryInterface(aEditor);
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
-  if (!htmlEditor) return PR_FALSE;
+  if (!msiEditor) return PR_FALSE;
   htmlEditor -> GetTagListManager(getter_AddRefs(tlm));
   if (!tlm) return PR_FALSE;
   ed = static_cast<nsEditor*>(aEditor);
 
-  ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset); 
+  ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset);
   if (nsEditorUtils::Acceptable(ed, tlm, startNode))
   {
     return PR_TRUE;  // current position is OK. Do nothing.
@@ -428,19 +430,28 @@ nsEditorUtils::JiggleCursor(nsIEditor *aEditor, nsISelection * sel, nsIEditor::E
 
   if (!success && forward) {
     success = LookForward(ed, tlm, sel, node, getter_AddRefs(nodeOut), offset);
-    if (success) return PR_TRUE;  // LookForward has set the selection
+    if (success) {
+      msiEditor->InsertHelperBR(sel);
+      return PR_TRUE;  // LookForward has set the selection
+    }
   }
 
   if (!success) {  // either forward is false, or LookForward failed. Now look backward.
 //    success = LookBackward(ed, tlm, sel, node, getter_AddRefs(nodeOut), offset);
     success = LookBackward(ed, tlm, sel, node, getter_AddRefs(nodeOut), offset);
-    if (success) return PR_TRUE; 
+    if (success) {
+      msiEditor->InsertHelperBR(sel);
+      return PR_TRUE;
+    }
   }
 
   if (!success && !forward)  // Looking backward failed, and we haven't tried looking forward yet
   {
     success = LookForward(ed, tlm, sel, node, getter_AddRefs(nodeOut), offset);
-    if (success) return PR_TRUE;
+    if (success) {
+      msiEditor->InsertHelperBR(sel);
+      return PR_TRUE;
+    }
   }
 
   //If we get here, we haven't found anything. What to do?  TODO: BBM
@@ -529,7 +540,7 @@ nsEditorHookUtils::DoDragHook(nsIDOMDocument *aDoc, nsIDOMEvent *aEvent,
 }
 
 PRBool
-nsEditorHookUtils::DoAllowDropHook(nsIDOMDocument *aDoc, nsIDOMEvent *aEvent,   
+nsEditorHookUtils::DoAllowDropHook(nsIDOMDocument *aDoc, nsIDOMEvent *aEvent,
                                    nsIDragSession *aSession)
 {
   nsCOMPtr<nsISimpleEnumerator> enumerator;
@@ -559,7 +570,7 @@ nsEditorHookUtils::DoAllowDropHook(nsIDOMDocument *aDoc, nsIDOMEvent *aEvent,
 }
 
 PRBool
-nsEditorHookUtils::DoInsertionHook(nsIDOMDocument *aDoc, nsIDOMEvent *aDropEvent,  
+nsEditorHookUtils::DoInsertionHook(nsIDOMDocument *aDoc, nsIDOMEvent *aDropEvent,
                                    nsITransferable *aTrans)
 {
   nsCOMPtr<nsISimpleEnumerator> enumerator;

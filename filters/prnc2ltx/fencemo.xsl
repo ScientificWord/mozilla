@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet 
+<xsl:stylesheet
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:exsl="http://exslt.org/common"
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
@@ -24,6 +24,9 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
+<!--     <xsl:text>
+      1. LaTeX-fence-token is </xsl:text><xsl:value-of select="$LaTeX-fence-token"/> -->
 
     <xsl:variable name="right-stretchy">
       <xsl:for-each select="following-sibling::mml:mo[1]">
@@ -86,28 +89,38 @@
       </xsl:choose>
     </xsl:variable>
 
+<!--     <xsl:text>2. left-mo1-is-fence is </xsl:text><xsl:value-of select="$left-mo1-is-fence"/>
+ -->
+
     <xsl:variable name="left-stretchy">
       <xsl:for-each select="preceding-sibling::mml:mo[1]">
         <xsl:value-of select="@stretchy"/>
       </xsl:for-each>
     </xsl:variable>
 
+<!--     <xsl:text>3. left-stretchy is </xsl:text><xsl:value-of select="$left-stretchy"/>
+ -->
     <xsl:variable name="left-mo-stretchy">
 	  <xsl:choose>
         <xsl:when test="string-length($left-stretchy)&gt;0">
           <xsl:value-of select="$left-stretchy"/>
         </xsl:when>
-        <xsl:when test="preceding-sibling::mml:mo[1]">
+<!--         <xsl:when test="preceding-sibling::mml:mo[1]">
           <xsl:call-template name="get-mo-attr-val">
             <xsl:with-param name="mo-nom"   select="normalize-space(preceding-sibling::mml:mo[1])"/>
             <xsl:with-param name="attr-nom" select="'stretchy'"/>
           </xsl:call-template>
-        </xsl:when>
+
+        </xsl:when> -->
 		<xsl:otherwise>
           <xsl:text>unknown</xsl:text>
 		</xsl:otherwise>
 	  </xsl:choose>
     </xsl:variable>
+
+<!--     <xsl:text>4. left-mo-stretchy is </xsl:text><xsl:value-of select="$left-mo-stretchy"/>
+ -->
+
 
     <xsl:variable name="left-form">
       <xsl:for-each select="preceding-sibling::mml:mo[1]">
@@ -115,6 +128,8 @@
       </xsl:for-each>
     </xsl:variable>
 
+<!--     <xsl:text>5. left-form is </xsl:text><xsl:value-of select="$left-form"/>
+ -->
     <xsl:variable name="left-mo-form">
 	  <xsl:choose>
         <xsl:when test="string-length($left-form) &gt; 0">
@@ -132,35 +147,43 @@
 	  </xsl:choose>
     </xsl:variable>
 
-
+<!--     <xsl:text>6. left-mo-form is </xsl:text><xsl:value-of select="$left-mo-form"/>
+ -->
     <xsl:variable name="curr-mo-stretchy">
 	  <xsl:choose>
         <xsl:when test="string-length(@stretchy) &gt; 0">
 		  <xsl:value-of select="@stretchy"/>
         </xsl:when>
 		<xsl:otherwise>
-          <xsl:call-template name="get-mo-attr-val">
+      <xsl:text>false</xsl:text>
+
+<!--           <xsl:call-template name="get-mo-attr-val">
             <xsl:with-param name="mo-nom"   select="normalize-space(string())"/>
             <xsl:with-param name="attr-nom" select="'stretchy'"/>
-          </xsl:call-template>
+          </xsl:call-template> -->
 		</xsl:otherwise>
 	  </xsl:choose>
     </xsl:variable>
 
+<!--     <xsl:text>7. curr-mo-stretchy is </xsl:text><xsl:value-of select="$curr-mo-stretchy"/>
+ -->
     <xsl:variable name="curr-mo-form">
 	  <xsl:choose>
         <xsl:when test="string-length(@form) &gt; 0">
 		  <xsl:value-of select="@form"/>
         </xsl:when>
 		<xsl:otherwise>
-          <xsl:call-template name="get-mo-attr-val">
+<!--           <xsl:call-template name="get-mo-attr-val">
             <xsl:with-param name="mo-nom"   select="normalize-space(string())"/>
             <xsl:with-param name="attr-nom" select="'form'"/>
-          </xsl:call-template>
+          </xsl:call-template> -->
+        <xsl:text>false</xsl:text>
 		</xsl:otherwise>
 	  </xsl:choose>
     </xsl:variable>
 
+<!--     <xsl:text>8. curr-mo-form is </xsl:text><xsl:value-of select="$curr-mo-form"/>
+ -->
 
 <!-- Diagnostics
 <xsl:text>AAA-</xsl:text>
@@ -177,7 +200,7 @@
 <xsl:value-of select="$right-form"/>
 <xsl:text>-CCC</xsl:text>
 -->
-  
+
 
     <xsl:choose>
 
@@ -268,12 +291,12 @@
 
         </xsl:variable>
         <xsl:variable name="fenced-content" select="exsl:node-set($fenced-content.tr)"/>
-																					 
+
         <xsl:choose>
           <xsl:when test="$fenced-content/is-right-absorbed='true'">
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text xml:space="preserve">\right</xsl:text>
+            <xsl:text xml:space="preserve">\right </xsl:text>
             <xsl:value-of select="$LaTeX-fence-token"/>
           </xsl:otherwise>
         </xsl:choose>

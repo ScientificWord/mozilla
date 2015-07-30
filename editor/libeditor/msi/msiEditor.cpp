@@ -113,6 +113,15 @@ msiEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRo
   return res;
 }
 
+/* void InsertHelperBR (in nsISelection selection); */
+NS_IMETHODIMP msiEditor::InsertHelperBR(nsISelection *selection)
+{
+  nsresult res;
+  nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+  if (!htmlRules) return NS_ERROR_FAILURE;
+  res = htmlRules->InsertBRIfNeeded(selection);
+}
+
 /* readonly attribute double cssPixelsPerInch; */
 NS_IMETHODIMP msiEditor::GetCssPixelsPerInch(double *_retval)
 {
