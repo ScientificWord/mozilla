@@ -106,6 +106,7 @@ public:
                                  PRBool aDontTouchContent=PR_FALSE);
   NS_IMETHOD InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode,
                            const nsAString &aStructureType, nsIAtom * atomNamespace );
+  NS_IMETHOD InsertBRIfNeeded(nsISelection *aSelection);
 //  NS_IMETHOD WillMakeVerbatim(nsISelection *aSelection,
 //                                    PRBool *aCancel,
 //                                    PRBool *aHandled);
@@ -169,7 +170,6 @@ protected:
   nsresult DidDeleteSelection(nsISelection *aSelection,
                               nsIEditor::EDirection aDir,
                               nsresult aResult);
-  nsresult InsertBRIfNeeded(nsISelection *aSelection);
   nsresult GetGoodSelPointForNode(nsIDOMNode *aNode, nsIEditor::EDirection aAction,
                                   nsCOMPtr<nsIDOMNode> *outSelNode, PRInt32 *outSelOffset);
   nsresult JoinBlocks(nsCOMPtr<nsIDOMNode> *aLeftBlock, nsCOMPtr<nsIDOMNode> *aRightBlock, PRBool *aCanceled);
