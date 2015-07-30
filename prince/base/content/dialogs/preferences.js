@@ -1,7 +1,7 @@
 "use strict";
 Components.utils.import("resource://app/modules/computelogger.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
-
+Components.utils.import("resource://app/modules/os.jsm");
 
 var placementIdsGraphics = {prefID : "defaultGraphicsPlacement", placementRadio : "placementRadioGroup",
                             hereRadioGroup : "herePlacementRadioGroup", placeForceHereCheckbox : "placeForceHereCheck",
@@ -176,12 +176,22 @@ function onShellSelect()
 {
   var i;
   var filename;
+  var pathsplitter;
+  var pathjoiner;
+  if (getOS(window) === 'osx') {
+    pathsplitter = /\//;
+    pathjoiner = '/';
+  } else {
+    pathsplitter = /\\/;
+    pathjoiner = '\\';
+  }
+
   filename = document.getElementById("dircontents").value;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   var shelldir = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   shelldir.append("shells");
-  var shelldirs = shelldir.path.split(/\//);
-  var filepathdirs = filename.split(/\//);
+  var shelldirs = shelldir.path.split(pathsplitter);
+  var filepathdirs = filename.split(pathsplitter);
   for (i = 0; i < shelldirs.length; i++)
   {
     if (shelldirs[i] != filepathdirs[i])
@@ -189,7 +199,7 @@ function onShellSelect()
       throw("Non-shell path");
     }
   }
-  var relpath = filepathdirs.slice(shelldirs.length).join("/");
+  var relpath = filepathdirs.slice(shelldirs.length).join(pathjoiner);
   var pref = document.getElementById("defaultshell");
   pref.value = relpath;
 }
