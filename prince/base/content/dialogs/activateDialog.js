@@ -106,7 +106,7 @@ function accept() {
  		'sProductName=' + query.sProductName,
  		'sComputerID=' + query.sComputerID,
  		'sVersion=' + query.sVersion,
- 		'sEmail=' + query.sEmail,
+ 		'sEMail=' + query.sEMail,
  		'sPhone=' + query.sPhone,
  		'sFirstName=' + query.sFirstName,
  		'sFamilyName=' + query.sFamilyName

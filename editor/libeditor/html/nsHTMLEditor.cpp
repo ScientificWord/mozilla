@@ -7068,19 +7068,18 @@ NS_IMETHODIMP nsHTMLEditor::RemoveEnvAboveSelection(nsISelection * selection)
   return res;
 }
 
-/* nsIDOMNodeList NodesFromSelection (in nsISelection selection); */
 //BBM: WTF?  This doesn't seem to get called from anywhere and it has nothing to do with converting math to text
 // That happens in the JavaScript.
-NS_IMETHODIMP nsHTMLEditor::MathToText(nsISelection *selection)
-{
-  nsCOMArray<nsIDOMNode> arrayOfNodes;
-  nsresult res;
-  nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
-  if (!htmlRules) return NS_ERROR_FAILURE;
+// NS_IMETHODIMP nsHTMLEditor::MathToText(nsISelection *selection)
+// {
+//   nsCOMArray<nsIDOMNode> arrayOfNodes;
+//   nsresult res;
+//   nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+//   if (!htmlRules) return NS_ERROR_FAILURE;
 
-  res = htmlRules->GetNodesFromSelection(selection, 0, arrayOfNodes, PR_TRUE);
-  PRInt32 length = arrayOfNodes.Count();
-}
+//   res = htmlRules->GetNodesFromSelection(selection, 0, arrayOfNodes, PR_TRUE);
+//   PRInt32 length = arrayOfNodes.Count();
+// }
 
 NS_IMETHODIMP nsHTMLEditor::SetEditorActive()
 {
