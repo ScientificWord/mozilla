@@ -69,7 +69,7 @@
 #include "nsIController.h"
 #include "nsIControllers.h"
 #include "nsIDOMXULCommandDispatcher.h"
-#include "nsIDOMXULElement.h" 
+#include "nsIDOMXULElement.h"
 #include "nsICSSLoader.h"
 #include "nsICSSStyleSheet.h"
 #include "nsIDocumentObserver.h"
@@ -398,7 +398,7 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     || tagName.EqualsLiteral("#text")))
   {
     // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
-    res = GetNodeLocation(parentNode, address_of(grandParent), &offsetOfNewNode);    
+    res = GetNodeLocation(parentNode, address_of(grandParent), &offsetOfNewNode);
     nsCOMPtr<nsIDOMElement> mrow;
     msiUtils::CreateMRow(this, insertedNode, mrow);
     res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(grandParent), &offsetOfNewNode, PR_TRUE);
@@ -468,7 +468,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   //DumpSelection(selection);
 
   if (NS_FAILED(res)) return res;
-  
+
   // create a dom document fragment that represents the structure to paste
   nsCOMPtr<nsIDOMNode> fragmentAsNode, streamStartParent, streamEndParent;
   PRInt32 streamStartOffset = 0, streamEndOffset = 0;
@@ -524,7 +524,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     PRBool hasOtherContent = PR_FALSE;
     nsCOMPtr<nsIDOMNodeList> kidNodes;
     res = fragmentAsNode->GetChildNodes(getter_AddRefs(kidNodes));
-    if (NS_SUCCEEDED(res) && kidNodes) 
+    if (NS_SUCCEEDED(res) && kidNodes)
       res = kidNodes->GetLength(&numKids);
     nsCOMPtr<nsIDOMNode> theKid;
     nsCOMPtr<nsINode> theKidNode;
@@ -808,7 +808,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 ////   printf("\nendNode before FixMath\n");
 ////   DumpNode(endNode, 0, true);
 //// #endif
-     
+
     FixMathematics(endNode, length > 1, PR_FALSE);
 //// #if DEBUG_barry || DEBUG_Barry
 ////   printf("\nendNode after FixMath\n");
@@ -932,7 +932,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
           curNode->GetFirstChild(getter_AddRefs(child));
         }
       }
-      else if ( (nsHTMLEditUtils::IsMath(curNode))  || 
+      else if ( (nsHTMLEditUtils::IsMath(curNode))  ||
                 (nsHTMLEditUtils::IsMath(parentNode)) )
       {
         if ( ! nsHTMLEditUtils::IsMath(curNode) ) {
@@ -951,7 +951,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 
            // curNode = mtextElement;
         }
-      
+
         //putting in math; check to see if it is going into math.
         PRBool parentIsMath = nsHTMLEditUtils::IsMath(parentNode);
         nsCOMPtr<nsIDOMNode> newParentNode;
@@ -1253,7 +1253,7 @@ PRBool HasNoSignificantTags(nsIDOMNode * node, msiITagListManager * tlm)
   nsAutoString tagname;
   nsAutoString classname;
 
-    
+
   while (child)
   {
     el = do_QueryInterface(child);
@@ -1263,7 +1263,7 @@ PRBool HasNoSignificantTags(nsIDOMNode * node, msiITagListManager * tlm)
       if (!(tagname.EqualsLiteral("#text") || tagname.EqualsLiteral("br")))
       {
         tlm->GetRealClassOfTag(tagname, nsnull, classname);
-        if (!(classname.EqualsLiteral("texttag") || classname.EqualsLiteral("paratag") 
+        if (!(classname.EqualsLiteral("texttag") || classname.EqualsLiteral("paratag")
             || classname.EqualsLiteral("structtag") || classname.EqualsLiteral("envtag") || classname.EqualsLiteral("listtag") || classname.EqualsLiteral("listparenttag")))
           return PR_FALSE;
       }
@@ -1559,7 +1559,7 @@ nsHTMLEditor::GetGraphicsDefaultsAsString( nsAString& retStr, PRBool bIsPlot )
       attribStr.AppendLiteral(" placeLocation=\"");
       attribStr.Append(floatPlacement);
       attribStr.Append(PRUnichar('\"'));
-      
+
       res = prefBranch->GetCharPref("swp.graph.floatPlacement", getter_Copies(prefString));
       if (NS_SUCCEEDED(res))
       {
@@ -1739,7 +1739,7 @@ PRBool StructureHasStructureAncestor( nsIDOMNode * node, msiITagListManager * pT
       pTlm->GetTagOfNode( node, &ns, tag);
     }
   }
-  return fIsStruct; 
+  return fIsStruct;
 }
 
 PRBool
@@ -1750,7 +1750,7 @@ nsHTMLEditor::InEmptyCell( nsIDOMNode * node) {
   nsAutoString tagName;
   node->GetNodeName(tagName);
   while (node && !(tagName.EqualsLiteral("td") || tagName.EqualsLiteral("mtd"))) {
-    res = GetNodeLocation(node, &parent, &offset); 
+    res = GetNodeLocation(node, &parent, &offset);
     node = parent;
     if (node) node->GetNodeName(tagName);
   }
@@ -1832,17 +1832,17 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     if (isEmpty) mtagListManager->GetDiscardEmptyBlockNode(splitNode, &fDiscardNode);
     // fDiscardNode tells if the this node should be discarded in this case. We don't want to delete it yet;
     // for example, it might be a sectiontitle and the section cannot be deleted because no enclosing section
-    // structure exists -- if the sectiontitle is for a section in an article, we can't go up to a chapter, 
-    // because articles don't have them.    
+    // structure exists -- if the sectiontitle is for a section in an article, we can't go up to a chapter,
+    // because articles don't have them.
     if (isEmpty && fDiscardNode)
     {
       nsEditor::GetNodeLocation(splitNode, address_of(newsplitpointNode), &newsplitpointOffset);
       mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("nextafteremptyblock"), sNewNodeName);
       mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), sInclusion);
       fInclusion = (sInclusion.EqualsLiteral("true"));
-      // fInclusion is true if the object represented by splitNode can just end. An example is a list of some 
-      // sort. When it ends, the enclosing object just continues. The opposite case is provided by sections 
-      // and subsections. When a subsection ends, it must be followed by another subsection or else the 
+      // fInclusion is true if the object represented by splitNode can just end. An example is a list of some
+      // sort. When it ends, the enclosing object just continues. The opposite case is provided by sections
+      // and subsections. When a subsection ends, it must be followed by another subsection or else the
       // section must end. In this case the block parent of splitNode has to be split.
       hasStructureAncestor = StructureHasStructureAncestor(splitNode, mtagListManager);
 
@@ -1883,7 +1883,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       mtagListManager->GetTagInClass(structClassname, strTmp, atomNS, &fIsStruct);
       mtagListManager->GetTagInClass(envClassname, strTmp, atomNS, &fIsEnv);
     if (!isEmpty || hasStructureAncestor || !(fIsStruct || fIsEnv));
-    {    
+    {
       splitpointNode->GetParentNode(getter_AddRefs(parent));
       res = GetWrapper(splitNode, getter_AddRefs(wrapperNode));
       res = SplitNodeDeep(wrapperNode,splitpointNode,splitpointOffset,
@@ -1906,14 +1906,14 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       PRInt32 offset = 0;
       outRightNode->GetOwnerDocument(getter_AddRefs(ownerDoc));
       NS_ENSURE_STATE(ownerDoc);
-    
+
       nsCOMPtr<nsIDOMDocumentView> docView = do_QueryInterface(ownerDoc);
       NS_ENSURE_STATE(docView);
-    
+
       nsCOMPtr<nsIDOMAbstractView> absView;
       docView->GetDefaultView(getter_AddRefs(absView));
       NS_ENSURE_STATE(absView);
-    
+
       nsCOMPtr<nsIDOMWindowInternal> win = do_QueryInterface(absView);
 
 
@@ -1966,6 +1966,9 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
         res = DeleteNode(rightNode);
         GetSelection(getter_AddRefs(selection));
         selection->Collapse(parent, offset+1);
+        nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+        if (!htmlRules) return NS_ERROR_FAILURE;
+        res = htmlRules->InsertBRIfNeeded(selection);
       }
       else {
         res = rightNode->GetOwnerDocument(getter_AddRefs(doc));
@@ -1977,13 +1980,13 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
           PRBool success = PR_FALSE;
           res = GetNodeLocation(rightNode, address_of(parent), &offset);
           res = InsertNode(newNode, parent, offset);
-          res = DeleteNode(rightNode);        
+          res = DeleteNode(rightNode);
           newElement = do_QueryInterface(newNode);
-          SetCursorInNewHTML(newElement, &success); 
+          SetCursorInNewHTML(newElement, &success);
         }
       }
     }
-  } 
+  }
   return res;
 }
 
@@ -2667,7 +2670,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
                 rv = fileURL->GetFileName(fileName);
                 if (NS_FAILED(rv))
                     return rv;
-                
+
                 nsCOMPtr<nsILocalFile> dir;
                 rv = GetDocumentGraphicsDir(getter_AddRefs(dir));
                 NS_ENSURE_SUCCESS(rv, rv);
@@ -3875,7 +3878,7 @@ NS_IMETHODIMP nsHTMLEditor::CopySelectionAsImage(PRBool* _retval)
 //rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
 //rwa12-19-12     rv = dataPtr->SetData(wmfPtr);
 //rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
-//rwa12-19-12 
+//rwa12-19-12
 //rwa12-19-12     // copy the image data onto the transferable
 //rwa12-19-12     rv = trans->SetTransferData(kWin32MetafilePict, dataPtr,
 //rwa12-19-12                                 sizeof(nsISupports*));
@@ -4537,7 +4540,7 @@ nsHTMLEditor::GetListAndTableParents(PRBool aEnd,
   nsCOMPtr<nsIDOMNode>  pNode = aListOfNodes[idx];
   while (pNode)
   {
-    if (nsHTMLEditUtils::IsList(pNode, mtagListManager) || nsHTMLEditUtils::IsTable(pNode, mtagListManager) 
+    if (nsHTMLEditUtils::IsList(pNode, mtagListManager) || nsHTMLEditUtils::IsTable(pNode, mtagListManager)
        )
       // ||
       // nsHTMLEditUtils::IsMath(pNode))
