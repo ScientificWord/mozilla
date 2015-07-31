@@ -33,7 +33,8 @@
        <char unicode="&#x03B2;" latex="\beta"/>
               <char unicode="&#x03B3;" latex="\gamma"/>
        <char unicode="&#x03B4;" latex="\delta"/>
-       <char unicode="&#x03B5;" latex="\epsilon"/>
+       <char unicode="&#x03F5;" latex="\epsilon"/>
+       <char unicode="&#x03B5;" latex="\varepsilon"/>
        <char unicode="&#x03B6;" latex="\zeta"/>
        <char unicode="&#x03B7;" latex="\eta"/>
        <char unicode="&#x03B8;" latex="\theta"/>
