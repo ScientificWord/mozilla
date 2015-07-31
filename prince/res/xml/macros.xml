@@ -146,7 +146,7 @@
   <m nm="diagdown"  tp="sc"><data><![CDATA[insertMathSymbol(]]></data></m>
   <m nm="diagup"  tp="sc"><data><![CDATA[insertMathSymbol(]]></data></m>
   <m nm="diamond"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&diam;<![CDATA[");]]></data></m>
-  <m nm="Diamond" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Diamond;<![CDATA[");]]></data></m>
+  <m nm="Diamond" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x25c7;<![CDATA[");]]></data></m>
   <m nm="diamondsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&diams;<![CDATA[");]]></data></m>
   <m nm="digamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x3dc;<![CDATA[");]]></data></m>
   <m nm="div"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&div;<![CDATA[");]]></data></m>
