@@ -2172,6 +2172,12 @@
           <xsl:when test="$first-char='&#x2A86;'">
             <xsl:text xml:space="preserve">\gtrapprox </xsl:text>
           </xsl:when>
+          <xsl:when test="$first-char='&#x2A87;'">
+            <xsl:text xml:space="preserve">\lneq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A88;'">
+            <xsl:text xml:space="preserve">\gneq </xsl:text>
+          </xsl:when>
           <xsl:when test="$first-char='&#x2A89;'">
             <xsl:text xml:space="preserve">\lnapprox </xsl:text>
           </xsl:when>
