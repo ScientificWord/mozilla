@@ -255,7 +255,7 @@
 <!ENTITY symbolunrhd.tooltip      "unrhd">
 <!ENTITY symbolbigtriangledown.tooltip    "bigtriangledown">
 <!ENTITY symbolbigtriangleup.tooltip      "bigtriangleup">
-<!ENTITY symbolsmalldiamond.tooltip     "smalldiamond">
+<!ENTITY symbolsmalldiamond.tooltip     "diamond">
 <!ENTITY symboldagger.tooltip      "dagger">
 <!ENTITY symbolddagger.tooltip    "ddagger">
 <!ENTITY symbolboxplus.tooltip    "boxplus">
