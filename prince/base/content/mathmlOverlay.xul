@@ -1380,9 +1380,9 @@
         <toolbarbutton id ="symbolngeqslant" label="&ngeqslant;" tooltiptext="&symbolngeqslant.tooltip;"              msivalue="&ngeqslant;"
            observes="cmd_MSIsymbolCmd">
           </toolbarbutton>
-        <toolbarbutton id ="symbollneq" label="&#x2268;" tooltiptext="&symbollneq.tooltip;"              msivalue="&#x2A87;"
+        <toolbarbutton id ="symbollneq" label="&#x2A87;" tooltiptext="&symbollneq.tooltip;"              msivalue="&#x2A87;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolgneq" label="&#x2269;" tooltiptext="&symbolgneq.tooltip;"              msivalue="&#x2A88;"
+        <toolbarbutton id ="symbolgneq" label="&#x2A88;" tooltiptext="&symbolgneq.tooltip;"              msivalue="&#x2A88;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolnpreceq" label="&#x2AAF;&#x0338;" tooltiptext="&symbolnpreceq.tooltip;"              msivalue="&#x2AAF;&#x0338;"
            observes="cmd_MSIsymbolCmd"/>
