@@ -1779,7 +1779,7 @@
           <xsl:when test="$first-char='&#x25C7;'">
             <xsl:text xml:space="preserve">\Diamond </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x25C7;'">
+          <xsl:when test="$first-char='&#x22C4;'">
             <xsl:text xml:space="preserve">\diamond </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x22C5;'">
