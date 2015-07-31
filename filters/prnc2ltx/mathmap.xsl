@@ -1345,7 +1345,7 @@
           <xsl:when test="$first-char='&#x2214;'">
             <xsl:text xml:space="preserve">\dotplus </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x2216;'">
+          <xsl:when test="$first-char='&#x29F5;'">
             <xsl:text xml:space="preserve">\setminus </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2216;'">
