@@ -2057,7 +2057,7 @@
             <xsl:text xml:space="preserve">\triangleleft </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x25CB;'">
-            <xsl:text xml:space="preserve">\circ </xsl:text>
+            <xsl:text xml:space="preserve">\bigcirc </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x25EF;'">
             <xsl:text xml:space="preserve">\bigcirc </xsl:text>
