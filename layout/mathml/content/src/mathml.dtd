@@ -882,7 +882,11 @@
 <!ENTITY vdash "&#x22A2;"><!ENTITY RightTee "&#x22A2;">
 <!ENTITY dashv "&#x22A3;"><!ENTITY LeftTee "&#x22A3;">
 <!ENTITY top "&#x22A4;"><!ENTITY DownTee "&#x22A4;">
-<!ENTITY perp "&#x22A5;"><!ENTITY bottom "&#x22A5;"><!ENTITY bot "&#x22A5;"><!ENTITY UpTee "&#x22A5;">
+<!-- Use 27C2 for prep MacKichan Software, Inc. 
+<!ENTITY perp "&#x22A5;">
+-->
+<!ENTITY perp "&#x27C2;">
+<!ENTITY bottom "&#x22A5;"><!ENTITY bot "&#x22A5;"><!ENTITY UpTee "&#x22A5;">
 <!ENTITY models "&#x22A7;">
 <!ENTITY vDash "&#x22A8;"><!ENTITY DoubleRightTee "&#x22A8;">
 <!ENTITY Vdash "&#x22A9;">
