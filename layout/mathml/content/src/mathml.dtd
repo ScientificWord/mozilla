@@ -972,7 +972,10 @@
 <!ENTITY nis "&#x22FC;">
 <!ENTITY notnivc "&#x22FD;">
 <!ENTITY notnivb "&#x22FE;">
+<!-- Use 22bc for barwedge MacKichan Software, Inc. 
 <!ENTITY barwed "&#x2305;"><!ENTITY barwedge "&#x2305;">
+-->
+<!ENTITY barwed "&#x22BC;"><!ENTITY barwedge "&#x22BC;">
 <!ENTITY Barwed "&#x2306;"><!ENTITY doublebarwedge "&#x2306;">
 <!ENTITY lceil "&#x2308;"><!ENTITY LeftCeiling "&#x2308;">
 <!ENTITY rceil "&#x2309;"><!ENTITY RightCeiling "&#x2309;">
