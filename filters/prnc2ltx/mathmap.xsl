@@ -1713,7 +1713,7 @@
           <xsl:when test="$first-char='&#x22A5;'">
             <xsl:text xml:space="preserve">\bot </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22A5;'">
+          <xsl:when test="$first-char='&#x27C2;'">
             <xsl:text xml:space="preserve">\perp </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x22A7;'">
