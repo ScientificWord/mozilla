@@ -164,6 +164,9 @@
             <xsl:when test="@subtype">
               <xsl:value-of select="@subtype"/>
             </xsl:when>
+            <xsl:when test="@type='eqnarray'">
+              <xsl:text>align</xsl:text>
+            </xsl:when>
             <xsl:when test="@type!=''">
               <xsl:value-of select="@type"/>
             </xsl:when>
@@ -252,7 +255,7 @@
     <xsl:variable name="eqn-info" select="exsl:node-set($eqn-info.tr)"/>
 
 <!-- begin scripting LaTeX output -->
-
+    <xsl:value-of select="$newline"/>
     <xsl:text>\begin{</xsl:text>
     <xsl:value-of select="$eqn-info/LaTeX-env"/>
     <xsl:if test="$eqn-info/is-starred='true'">
