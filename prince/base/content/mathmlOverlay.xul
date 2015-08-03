@@ -1193,12 +1193,7 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolparallel" label="&#x2225;" tooltiptext="&symbolparallel.tooltip;"              msivalue="&#x2225;"
            observes="cmd_MSIsymbolCmd"/>
-       <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
-
         <toolbarbutton id ="symbolperp" label="&#x27C2;" tooltiptext="&symbolperp.tooltip;"              msivalue="&#x27C2;"
-           observes="cmd_MSIsymbolCmd"/>
-           -->
-           <toolbarbutton id ="symbolperp" label="&#x22A5;" tooltiptext="&symbolperp.tooltip;"              msivalue="&#x22A5;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolcong" label="&#x2245;" tooltiptext="&symbolcong.tooltip;"              msivalue="&#x2245;"
            observes="cmd_MSIsymbolCmd"/>
