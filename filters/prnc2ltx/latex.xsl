@@ -50,7 +50,8 @@
        <char unicode="&#x03C3;" latex="\sigma"/>
        <char unicode="&#x03C4;" latex="\tau"/>
        <char unicode="&#x03C5;" latex="\upsilon"/>
-       <char unicode="&#x03C6;" latex="\phi"/>
+       <char unicode="&#x03D5;" latex="\phi"/>
+       <char unicode="&#x03C6;" latex="\varphi"/>
        <char unicode="&#x03C7;" latex="\chi"/>
        <char unicode="&#x03C8;" latex="\psi"/>
        <char unicode="&#x03C9;" latex="\omega"/>
