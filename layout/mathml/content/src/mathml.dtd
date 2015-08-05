@@ -722,7 +722,12 @@
 <!ENTITY minus "&#x2212;">
 <!ENTITY mnplus "&#x2213;"><!ENTITY MinusPlus "&#x2213;"><!ENTITY mp "&#x2213;">
 <!ENTITY plusdo "&#x2214;"><!ENTITY dotplus "&#x2214;">
-<!ENTITY setmn "&#x2216;"><!ENTITY ssetmn "&#x2216;"><!ENTITY Backslash "&#x2216;"><!ENTITY setminus "&#x2216;"><!ENTITY smallsetminus "&#x2216;">
+<!-- Set the characters for \setminus and \smallsetminus MacKichan Software Inc.
+<!ENTITY setmn "&#x2216;"><!ENTITY ssetmn "&#x2216;"><!ENTITY setminus "&#x2216;">
+-->
+<!ENTITY setmn "&#x29F5;"><!ENTITY setminus "&#x29F5;">
+<!ENTITY ssetmn "&#x2216;"><!ENTITY smallsetminus "&#x2216;">
+<!ENTITY Backslash "&#x2216;">
 <!ENTITY lowast "&#x2217;">
 <!ENTITY compfn "&#x2218;"><!ENTITY SmallCircle "&#x2218;">
 <!ENTITY radic "&#x221A;"><!ENTITY Sqrt "&#x221A;">
