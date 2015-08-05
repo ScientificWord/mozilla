@@ -416,8 +416,12 @@
 <!ENTITY upsih "&#x3D2;"><!ENTITY Upsi "&#x3D2;">
 <!ENTITY straightphi "&#x3D5;">
 <!ENTITY piv "&#x3D6;"><!ENTITY varpi "&#x3D6;">
+<!-- LaTeX uses x3DC for \digamma - MacKichan Software, Inc.
 <!ENTITY Gammad "&#x3DC;">
 <!ENTITY gammad "&#x3DD;"><!ENTITY digamma "&#x3DD;">
+-->
+<!ENTITY Gammad "&#x3DD;">
+<!ENTITY gammad "&#x3DC;"><!ENTITY digamma "&#x3DC;">
 <!ENTITY kappav "&#x3F0;"><!ENTITY varkappa "&#x3F0;">
 <!ENTITY rhov "&#x3F1;"><!ENTITY varrho "&#x3F1;">
 <!ENTITY epsi "&#x3F5;"><!ENTITY straightepsilon "&#x3F5;">
