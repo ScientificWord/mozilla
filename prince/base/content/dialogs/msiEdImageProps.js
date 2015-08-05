@@ -1851,7 +1851,8 @@ function onAccept()
       var gCaptionNode = GetCaptionNode(wrapperElement);
 
       if (isEnabled(gDialog.captionLocation)) captionloc = gDialog.captionLocation.value;
-      var bHasCaption = (captionloc && captionloc !== 'none');
+      if (captionloc === '') captionloc = 'none';
+      var bHasCaption = (captionloc.length > 0 && captionloc !== 'none');
       var tlm = gEditor.tagListManager;
 
       var i;
