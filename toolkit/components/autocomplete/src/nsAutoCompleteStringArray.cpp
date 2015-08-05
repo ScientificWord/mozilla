@@ -45,7 +45,6 @@ nsAutoCompleteSearchStringArray::nsAutoCompleteSearchStringArray()
 
 nsAutoCompleteSearchStringArray::~nsAutoCompleteSearchStringArray()
 {
-
 }
 
 /* static */ nsAutoCompleteSearchStringArray*
@@ -309,6 +308,9 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddStringEx(const nsAString & 
 {
   stringStringArray * pssa = m_stringArrays;
   nsString str;
+  NS_NAMED_LITERAL_STRING(zero, "0");
+  PRUint32 i;
+
   *_retval = PR_TRUE;
   nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
   if (!psa) // string category was not found, add a new one
@@ -317,8 +319,12 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddStringEx(const nsAString & 
     pssa = new stringStringArray;
     pssa->strCategory = strCategory;
     pssa->strArray = psa;
-    pssa->strComments = new nsStringArray;
+    pssa->strComments = new nsStringArray(100);
     pssa->strMathOnly = new nsStringArray;
+    for (i = 0; i < 100; i++) {
+      pssa->strMathOnly->AppendString(zero);
+    }
+
     pssa->next = m_stringArrays;
     m_stringArrays = pssa;
   }
@@ -330,11 +336,12 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddStringEx(const nsAString & 
   }
   if (psa && (psa->IndexOf(strAdd)==-1))  // should be true, unless there was a error creating a new one.
   {
+    i = psa->Count();
     psa->AppendString(strAdd);
-    if (strCategory.EqualsLiteral("texttags")) {
-      pssa->strComments->AppendString(strComment);
-      pssa->strMathOnly->AppendString(strMath);
-    }
+    if (strCategory.EqualsLiteral("texttag")) {
+ //    pssa->strComments->ReplaceStringAt(strComment, i);
+      pssa->strMathOnly->ReplaceStringAt(strMath, i);
+   }
     // Now read it back out to make sure
     printf(" added (%S)[%d] = %S\n", strCategory.BeginReading(), psa->IndexOf(strAdd), psa->StringAt(psa->IndexOf(strAdd))->BeginReading());
   }

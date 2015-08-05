@@ -2129,8 +2129,17 @@ nsresult msiUtils::MarkCaretPosition(nsIEditor * editor,
   {
     res = NS_OK;
     nsCOMPtr<nsISelection> sel;
+    nsCOMPtr<nsIDOMNode> startNode;
+    PRInt32 startOffset;
+    PRBool isCollapsed;
+
     res = editor->GetSelection(getter_AddRefs(sel));
-    sel->Collapse(node, pos);
+    sel->GetFocusNode(getter_AddRefs(startNode));
+    sel->GetFocusOffset(&startOffset);
+    sel->GetIsCollapsed(&isCollapsed);
+    if (!isCollapsed || startNode != node || pos != startOffset)
+    {}
+//      sel->Collapse(node, pos);
     PRBool caretMarked = (flags & msiIMathMLInsertion::FLAGS_CARET_MARKED) ? PR_TRUE : PR_FALSE;
     if (caretMarked && overwrite)
     {

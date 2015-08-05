@@ -641,6 +641,7 @@ NS_IMETHODIMP
 msiTagListManager::BuildStringArray(const nsAString & strTagClass)
 // All the work is done in the enumerator (above)
 {
+  pACSSA->ResetArray(strTagClass);
   userArgStruct ua;
   ua.tagClass = strTagClass;
   ua.ptlm = this;
@@ -722,7 +723,7 @@ msiTagListManager::BuildParentTagList()
   	  mparentTags->AppendString(strQName);
       markedTags->AppendString(strQName);
     }
-    node->GetParentNode((nsIDOMNode **)(&temp));
+    node->GetParentNode(getter_AddRefs(temp));
     node = temp;
   }
   return pACSSA->SetMarkedStrings(markedTags);
