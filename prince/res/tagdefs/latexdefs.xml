@@ -80,8 +80,8 @@
 				<tag nm="upper"><description>Upper case</description></tag>
         <tag nm="rawTeX" hidden="1"><description>Raw TeX tag</description></tag>
 				<tag nm="descriptionLabel" ><description>Description label</description></tag>
-				<tag nm="lang1font" babel="1" hidden="1"><description>Primary language font</description></tag>
-				<tag nm="lang2font" babel="2" hidden="1"><description>Secondary language font</description></tag>
+        <tag nm="lang1font" babel="1" hidden="1"><description>Primary language font</description></tag>
+        <tag nm="lang2font" babel="2" hidden="1"><description>Secondary language font</description></tag>
         <tag nm="drop"><description>Drop letter</description></tag>
         <!-- <tag nm="deleted"><description>Deleted text</description></tag>
         <tag nm="inserted"><description>Inserted text></description></tag> -->
@@ -133,21 +133,24 @@
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <br/>
+            <bodyText><cursor/><br/></bodyText>
           </initialcontents>
 				</tag>
 				<tag nm="rtlBodyText">
 					<description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <br/>
+            <rtlBodyText><cursor/><br/></rtlBodyText>
           </initialcontents>
 				</tag>
 				<tag nm="p">
 					<description>HTML paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
+            <p>
+              <cursor/>
               <br/>
+            </p>
           </initialcontents>
 				</tag>
 				<tag nm="bodyMath">
@@ -155,11 +158,14 @@
 					<nexttag>bodyMath</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
+            <bodyMath>
               <mml:math>
                 <mml:mi tempinput='true'>
                   <cursor/>&#x200A;
                 </mml:mi>
               </mml:math>
+              <br/>
+            </bodyMath>
           </initialcontents>
 				</tag>
 				<tag nm="sectiontitle">
@@ -167,14 +173,14 @@
 					<description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <br/>
+            <sectiontitle><cursor/></sectiontitle>
           </initialcontents>
 				</tag>
 				<tag nm="shortQuote">
 					<nexttag>shortQuote</nexttag>
 					<description>Quote</description>
           <initialcontents>
-            <br/>
+            <shortQuote><cursor/><br/></shortQuote>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -183,7 +189,7 @@
 					<nexttag>centered</nexttag>
 					<description>Centered paragraph</description>
           <initialcontents>
-            <br/>
+            <centered><cursor/><br/></centered>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -192,12 +198,16 @@
 					<nexttag>bodyText</nexttag>
 					<description>Hidden dialog base</description>
           <initialcontents>
-            <br/>
+            <dialogbase><cursor/><br/></dialogbase>
           </initialcontents>
 				</tag>
         <tag nm="verbatim">
           <description>Verbatim text 'paragraph'</description>
           <discardemptyblock>true</discardemptyblock>
+          <initialcontents>
+            <verbatim>
+            </verbatim>
+          </initialcontents>
           <nexttag>bodyText</nexttag>
         </tag>
         <tag nm="caption">
@@ -230,7 +240,7 @@
           <description>Numbered list</description>
 					<nexttag>none</nexttag>
           <htmllist>ol</htmllist>
-          <initialcontents><br/></initialcontents>
+          <initialcontents> <![CDATA[<cursor/><br/>]]></initialcontents>
           <discardemptyblock>true</discardemptyblock>
 	  		  <inclusion>true</inclusion>
 			    <contains>numberedListItem</contains>
@@ -239,7 +249,6 @@
           <description>Description list</description>
 					<nexttag>none</nexttag>
           <htmllist>dl</htmllist>
-          <initialcontents><br/></initialcontents>
           <discardemptyblock>true</discardemptyblock>
 	  		  <inclusion>true</inclusion>
 					<nexttag/>
@@ -269,7 +278,9 @@
 <!--           <inclusion>true</inclusion> -->
           <htmllist>ul</htmllist>
           <initialcontents>
+            <bulletListItem>
               <bodyText><cursor/><br/></bodyText>
+            </bulletListItem>
           </initialcontents>
         </tag>
 				<tag nm="numberedListItem">
@@ -277,7 +288,9 @@
           <htmllistparent>numberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
+            <numberedListItem>
               <bodyText><cursor/><br/></bodyText>
+            </numberedListItem>
           </initialcontents>
         </tag>
 				<tag nm="descriptionListItem">
@@ -285,10 +298,12 @@
           <htmllistparent>descriptionlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
+            <descriptionListItem>
               <bodyText>
                 <descriptionLabel><cursor/></descriptionLabel>
                 <br/>
               </bodyText>
+            </descriptionListItem>
           </initialcontents>
         </tag>
 				<tag nm="bibitem">
@@ -297,11 +312,13 @@
           <discardemptyblock>true</discardemptyblock>
 <!--           <inclusion>true</inclusion> -->
           <initialcontents>
+            <bibitem>
               <biblabel></biblabel>
               <bibkey></bibkey>
               <bodyText>
                 <br/>
               </bodyText>
+            </bibitem>
           </initialcontents>
           <contains>biblabel</contains>
           <contains>bibkey</contains>
@@ -347,7 +364,9 @@
           <titletag>sectiontitle</titletag>
           <discardemptyblock>false</discardemptyblock>
           <initialcontents>
+            <chapter>
               <sectiontitle><cursor/><br/></sectiontitle>
+            </chapter>
           </initialcontents>
           <prefsub>section</prefsub>
         </tag>
@@ -357,7 +376,9 @@
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
-               <sectiontitle><br/></sectiontitle>
+             <section>
+               <sectiontitle><cursor/><br/></sectiontitle>
+             </section>
            </initialcontents>
           <nextafteremptyblock></nextafteremptyblock>
           <prefsub>subsection</prefsub>
@@ -368,7 +389,9 @@
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
+             <subsection>
                <sectiontitle><cursor/><br/></sectiontitle>
+             </subsection>
            </initialcontents>
           <nextafteremptyblock>section</nextafteremptyblock>
           <prefsub>subsubsection</prefsub>
@@ -379,7 +402,9 @@
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
+             <subsubsection>
                <sectiontitle><cursor/><br/></sectiontitle>
+             </subsubsection>
            </initialcontents>
           <nextafteremptyblock>subsection</nextafteremptyblock>
           <prefsub>paragraph</prefsub>
@@ -390,7 +415,9 @@
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
+            <paragraph>
               <sectiontitle><cursor/><br/></sectiontitle>
+            </paragraph>
           </initialcontents>
           <nextafteremptyblock>subsubsection</nextafteremptyblock>
           <prefsub>subparagraph</prefsub>
@@ -401,7 +428,9 @@
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
+            <subparagraph>
               <sectiontitle><cursor/><br/></sectiontitle>
+            </subparagraph>
           </initialcontents>
           <nextafteremptyblock>paragraph</nextafteremptyblock>
         </tag>
@@ -421,7 +450,9 @@
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
+            <longQuotation>
               <bodyText><cursor/><br/></bodyText>
+            </longQuotation>
           </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
 				</tag>
@@ -450,7 +481,9 @@
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
+            <dedication>
               <bodyText><cursor/><br/></bodyText>
+            </dedication>
           </initialcontents>
         </tag>
 				<tag nm="centeredEnv">
@@ -461,7 +494,9 @@
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
+            <centeredEnv>
               <bodyText><cursor/><br/></bodyText>
+            </centeredEnv>
           </initialcontents>
         </tag>
 				<tag nm="preface">
@@ -470,7 +505,9 @@
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
+            <preface>
               <bodyText><cursor/><br/></bodyText>
+            </preface>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
         </tag>
@@ -480,7 +517,9 @@
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
+            <glossary>
               <bodyText><cursor/><br/></bodyText>
+            </glossary>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
         </tag>
@@ -490,7 +529,9 @@
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
+            <note style="padding: 10px;">
               <bodyText><cursor/><br/></bodyText>
+            </note>
           </initialcontents>
         </tag>
 				<tag nm="assertion">
@@ -502,7 +543,9 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
+            <assertion>
               <bodyText><cursor/><br/></bodyText>
+            </assertion>
           </initialcontents>
         </tag>
 <!-- Begin standard set of theorem-like environments used in Version 5.5 shells -->
@@ -514,6 +557,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <theorem/>
+          </initialcontents>
         </tag>
 				<tag nm="algorithm">
           <level>*</level>
@@ -522,6 +568,9 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <algorithm/>
+          </initialcontents>
           <inclusion>true</inclusion>
        </tag>
 				<tag nm="axiom">
@@ -531,6 +580,9 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <axiom/>
+           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
 				<tag nm="case">
@@ -540,6 +592,9 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <case/>
+           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
 				<tag nm="claim">
@@ -550,6 +605,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <claim/>
+           </initialcontents>
         </tag>
 				<tag nm="conclusion">
           <level>*</level>
@@ -559,6 +617,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <conclusion/>
+           </initialcontents>
         </tag>
 				<tag nm="condition">
           <level>*</level>
@@ -568,6 +629,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <condition/>
+           </initialcontents>
         </tag>
 				<tag nm="conjecture">
           <level>*</level>
@@ -577,6 +641,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <conjecture/>
+          </initialcontents>
         </tag>
 				<tag nm="corollary">
           <level>*</level>
@@ -586,6 +653,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <corollary/>
+           </initialcontents>
         </tag>
 				<tag nm="criterion">
           <level>*</level>
@@ -595,6 +665,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <criterion/>
+           </initialcontents>
         </tag>
 				<tag nm="definition">
           <level>*</level>
@@ -604,6 +677,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <definition/>
+           </initialcontents>
         </tag>
 				<tag nm="example">
           <level>*</level>
@@ -613,6 +689,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <example/>
+           </initialcontents>
         </tag>
 				<tag nm="exercise">
           <level>*</level>
@@ -622,6 +701,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <exercise/>
+           </initialcontents>
         </tag>
 				<tag nm="lemma">
           <level>*</level>
@@ -631,6 +713,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <lemma/>
+           </initialcontents>
         </tag>
 				<tag nm="notation">
           <level>*</level>
@@ -640,6 +725,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <notation/>
+          </initialcontents>
         </tag>
 				<tag nm="problem">
           <level>*</level>
@@ -649,6 +737,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <problem/>
+           </initialcontents>
         </tag>
 				<tag nm="proposition">
           <level>*</level>
@@ -658,6 +749,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <proposition/>
+           </initialcontents>
         </tag>
 				<tag nm="remark">
           <level>*</level>
@@ -667,6 +761,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <remark/>
+          </initialcontents>
         </tag>
 				<tag nm="solution">
           <level>*</level>
@@ -676,6 +773,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <solution/>
+          </initialcontents>
         </tag>
 				<tag nm="summary">
           <level>*</level>
@@ -685,6 +785,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <summary/>
+          </initialcontents>
         </tag>
 				<tag nm="proof">
           <level>*</level>
@@ -694,6 +797,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <proof/>
+          </initialcontents>
         </tag>
 <!-- End standard set of theorem-like environments used in Version 5.5 shells -->
 				<tag nm="assumption">
@@ -704,6 +810,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <assumption/>
+           </initialcontents>
         </tag>
 				<tag nm="hypothesis">
           <level>*</level>
@@ -713,6 +822,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <hypothesis/>
+           </initialcontents>
         </tag>
 				<tag nm="property">
           <level>*</level>
@@ -722,6 +834,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <property/>
+           </initialcontents>
         </tag>
 				<tag nm="question">
           <level>*</level>
@@ -731,6 +846,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+             <question/>
+           </initialcontents>
         </tag>
         <!-- The "acknowledgment" tag isn't intended to be added to the interface, as the non-front-matter version induces only confusion among TeX users. -->
 				<tag nm="acknowledgment" hidden="1">
@@ -741,6 +859,9 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <acknowledgment/>
+          </initialcontents>
         </tag>
   		  <tag nm="msiframe">
           <contains>envtag</contains>
@@ -752,7 +873,9 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
+            <msiframe style="border: thin solid black; padding: 10px;">
               <bodyText><cursor/><br/></bodyText>
+            </msiframe>
           </initialcontents>
 	  		  <!--inclusion>true</inclusion-->
         </tag>
@@ -778,29 +901,33 @@
           <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
-				<tag nm="lang1" babel="3" hidden="1">
+				<tag nm="##lang1##" hidden="1" babel="3">
           <level>*</level>
-          <description>Primary language environment</description>
+          <description>First language environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <initialcontents>
+          <!--initialcontents>
+            <##lang1##>
               <bodyText>
                 <cursor/>
                 <br/>
               </bodyText>
-          </initialcontents>
+            </##lang1##>
+          </initialcontents -->
         </tag>
-				<tag nm="lang2" babel="4" hidden="1">
+				<tag nm="##lang2##" hidden="1" babel="4">
           <level>*</level>
-          <description>Secondary language environment</description>
+          <description>Second language environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <initialcontents>
+          <!-- initialcontents>
+            <##lang2##>
               <bodyText>
                 <cursor/>
                 <br/>
               </bodyText>
-          </initialcontents>
+            </##lang2##>
+          </initialcontents -->
         </tag>
    		</tags>
 		</tagclass>
@@ -814,7 +941,9 @@
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
+            <abstract>
               <bodyText><cursor/><br type="_moz"/></bodyText>
+            </abstract>
           </initialcontents>
         </tag>
         <tag nm="address"><description>Address</description>
@@ -824,7 +953,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-            <br type="_moz"/>
+            <address><cursor/><br type="_moz"/></address>
           </initialcontents>
         </tag>
         <tag nm="author"><description>Author</description>
@@ -834,7 +963,7 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <br type="_moz"/>
+            <author><cursor/><br type="_moz"/></author>
           </initialcontents>
         </tag>
         <tag nm="date"><description>Date</description>
@@ -842,7 +971,7 @@
 					<nexttag>bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <br type="_moz"/>
+            <date><cursor/><br type="_moz"/></date>
           </initialcontents>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
@@ -862,7 +991,7 @@
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <br type="_moz"/>
+            <title type="ours"><cursor/><br type="_moz"/></title>
           </initialcontents>
         </tag>
 			</tags>
