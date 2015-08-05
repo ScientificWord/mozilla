@@ -556,7 +556,7 @@
   <m nm="smallblacktriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtrif;<![CDATA[");]]></data></m>
   <m nm="smalldiamond"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&diam;<![CDATA[");]]></data></m>
   <m nm="smallint"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&int;<![CDATA[");]]></data></m>
-<!--   <m nm="smallsetminus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ssetmn;<![CDATA[");]]></data></m> -->
+  <m nm="smallsetminus"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ssetmn;<![CDATA[");]]></data></m>
   <m nm="smalltriangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ltri;<![CDATA[");]]></data></m>
   <m nm="smalltriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtri;<![CDATA[");]]></data></m>
   <m nm="smblksquare" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&squarf;<![CDATA[");]]></data></m>		    
