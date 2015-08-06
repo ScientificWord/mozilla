@@ -211,16 +211,51 @@ function onCancel () {
 function onAccept(){
   try {
     writeGraphicLayoutPreferences("graphics");
+  }
+  catch(e) {
+    dump(e.message);
+  }
+  try {
     writeGraphicLayoutPreferences("plot");
+  }
+  catch(e) {
+    dump(e.message);
+  }
+  try {
     document.getElementById("prefGeneral").writePreferences(true);
+  }
+  catch(e) {
+    dump(e.message);
+  }
+  try {
     document.getElementById("prefEdit").writePreferences(true);
+  }
+  catch(e) {
+    dump(e.message);
+  }
+  try {
     writeComputePreferences();
+  }
+  catch(e) {
+    dump(e.message);
+  }
+  try {
     document.getElementById("prefPlots").writePreferences(true);
+  }
+  catch(e) {
+    dump(e.message);
+  }
+  try {
     getTypesetFilePrefs();
+  }
+  catch(e) {
+    dump(e.message);
+  }
+  try {
     document.getElementById("prefTypesetting").writePreferences(true);
   }
   catch(e) {
-    dump(e.toString());
+    dump(e.message);
   }
 }
 
