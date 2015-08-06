@@ -187,7 +187,7 @@ function onShellSelect()
   // }
 
   filename = document.getElementById("dircontents").value;
-  var dsprops = Component s.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   var shelldir = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   shelldir.append("shells");
   var shelldirs = shelldir.path.split(pathsplitter);
