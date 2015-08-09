@@ -1611,15 +1611,15 @@
 <!ENTITY yopf "&#x1D56A;">
 <!ENTITY zopf "&#x1D56B;">
 <!-- Additions from MacKichan Software -->
-<!ENTITY Join '&#x2A1D;'>
-<!ENTITY Game '&#x2141;'>
-<!ENTITY Ebreve '&#x0114;'>
-<!ENTITY ebreve '&#x0115;'>
-<!ENTITY Ibreve '&#x012C;'>
-<!ENTITY ibreve '&#x012D;'>
-<!ENTITY Obreve '&#x014E;'>
-<!ENTITY obreve '&#x014F;'>
-<!ENTITY Finv '&#x2132;'>
-<!ENTITY lambdabar '&#x019B;'>
-<!ENTITY ampersand '&#x0026;'>
-<!ENTITY stigma '&#x03DB;'> 
+<!ENTITY Join "&#x2A1D;">
+<!ENTITY Game "&#x2141;">
+<!ENTITY Ebreve "&#x0114;">
+<!ENTITY ebreve "&#x0115;">
+<!ENTITY Ibreve "&#x012C;">
+<!ENTITY ibreve "&#x012D;">
+<!ENTITY Obreve "&#x014E;">
+<!ENTITY obreve "&#x014F;">
+<!ENTITY Finv "&#x2132;">
+<!ENTITY lambdabar "&#x019B;">
+<!ENTITY ampersand "&#x0026;">
+<!ENTITY stigma "&#x03DB;"> 
