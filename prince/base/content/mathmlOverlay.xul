@@ -286,7 +286,7 @@
         <toolbarbutton id ="symbolsqcap" />
         <toolbarbutton id ="symbolbigcirc" />
         <toolbarbutton id ="symbolsetminus" />
-<!--        <toolbarbutton id ="symbolsmallsetminus" /> -->
+        <toolbarbutton id ="symbolsmallsetminus" />
         <toolbarbutton id ="symboloplus" />
         <toolbarbutton id ="symbolominus" />
         <toolbarbutton id ="symbolotimes" />
@@ -1037,10 +1037,10 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolbigcirc" label="&#x25EF;" tooltiptext="&symbolbigcirc.tooltip;"         msivalue="&#x25EF;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolsetminus" label="&#x2216;" tooltiptext="&symbolsetminus.tooltip;"         msivalue="&#x2216;"
+        <toolbarbutton id ="symbolsetminus" label="&#x29F5;" tooltiptext="&symbolsetminus.tooltip;"         msivalue="&#x29F5;"
            observes="cmd_MSIsymbolCmd"/>
- <!--        <toolbarbutton id ="symbolsmallsetminus" label="&#x2216;" tooltiptext="&symbolsmallsetminus.tooltip;"    msivalue="&#x2216;"
-           observes="cmd_MSIsymbolCmd"/> -->
+        <toolbarbutton id ="symbolsmallsetminus" label="&#x2216;" tooltiptext="&symbolsmallsetminus.tooltip;"    msivalue="&#x2216;"
+           observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symboloplus" label="&#x2295;" tooltiptext="&symboloplus.tooltip;"            msivalue="&#x2295;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolominus" label="&#x2296;" tooltiptext="&symbolominus.tooltip;"           msivalue="&#x2296;"
