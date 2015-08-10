@@ -232,7 +232,7 @@
 <!ENTITY symbolsqcap.tooltip      "sqcap">
 <!ENTITY symbolbigcirc.tooltip    "bigcirc">
 <!ENTITY symbolsetminus.tooltip   "setminus">
-<!-- ENTITY symbolsmallsetminus.tooltip   "smallsetminus" -->
+<!ENTITY symbolsmallsetminus.tooltip   "smallsetminus">
 <!ENTITY symboloplus.tooltip      "oplus">
 <!ENTITY symbolominus.tooltip     "ominus">
 <!ENTITY symbolotimes.tooltip     "otimes">
