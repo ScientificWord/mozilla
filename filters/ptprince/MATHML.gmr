@@ -661,7 +661,7 @@ unknown_op<uID3.5.7>infix,25
 ;Union<uID3.13.31>infix,27,U0222A
 &cap;<uID3.13.32>infix,28,U02229,lspace="mediummathspace" rspace="mediummathspace"
 ;Intersection<uID3.13.32>infix,28,U02229
-&setmn;<uID3.13.33>infix,30,U02216,lspace="mediummathspace" rspace="mediummathspace"
+&setmn;<uID3.13.33>infix,30,U029F5,lspace="mediummathspace" rspace="mediummathspace"
 &sqcup;<uID3.13.34>infix,27,U02294,lspace="mediummathspace" rspace="mediummathspace"
 ;SquareUnion<uID3.13.34>infix,27,U02294
 &sqcap;<uID3.13.35>infix,28,U02293,lspace="mediummathspace" rspace="mediummathspace"
@@ -751,6 +751,7 @@ unknown_op<uID3.5.7>infix,25
 &prop;<uID3.14.35>infix,26,U0221D,lspace="thickmathspace" rspace="thickmathspace"
 &models;<uID3.14.36>infix,26,U022A7,lspace="thickmathspace" rspace="thickmathspace"
 &esdot;<uID3.14.37>infix,26,U02250,lspace="thickmathspace" rspace="thickmathspace"
+;;\Join<uID3.14.38>infix,26,U02A1D,lspace="thickmathspace" rspace="thickmathspace"
 &Join;<uID3.14.38>infix,26,U022C8,lspace="thickmathspace" rspace="thickmathspace"
 &Vdash;<uID3.14.39>infix,26,U022A9,lspace="thickmathspace" rspace="thickmathspace"
 &Vvdash;<uID3.14.40>infix,26,U022AA,lspace="thickmathspace" rspace="thickmathspace"
