@@ -1121,13 +1121,20 @@ string MuPADPlot::StringToColorArrayStr (string val) {
   PRBool bHasAlpha = PR_FALSE;
   if (val.length() > 8)
     bHasAlpha = ishexdigit(val[7]) && ishexdigit(val[8]);
+
   if (bHasAlpha)
   {
     double a = ((double) (hexval(val[7])*16+hexval(val[8])))/256.0;
+    setlocale(LC_NUMERIC,"C");
     sprintf (str, "[%0.3f, %0.3f, %0.3f, %0.3f]", r, g, b, a);
+    setlocale(LC_NUMERIC,"");
   }
-  else
+  else {
+    //std::locale::classic();
+    setlocale(LC_NUMERIC,"C");
     sprintf (str, "[%0.3f, %0.3f, %0.3f]", r, g, b);
+    setlocale(LC_NUMERIC,"");
+  }
   string ret = str;
   return ret;                                              
 }
