@@ -140,7 +140,7 @@
               <toolbarbutton id="symbolsqcap" />
               <toolbarbutton id="symbolbigcirc"/>
               <toolbarbutton id="symbolsetminus" /> 
-     <!--         <toolbarbutton id="symbolsmallsetminus" /> -->
+              <toolbarbutton id="symbolsmallsetminus" />
               <toolbarbutton id="symboloplus" />
               <toolbarbutton id="symbolominus" />
               <toolbarbutton id="symbolotimes" />
