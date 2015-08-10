@@ -7378,6 +7378,8 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
     else switch ((int)(*cur)) {
       case 0x01CD :
          _retval.Append(NS_LITERAL_STRING("\\v{A}")); break;
+      case 0x03C6:
+         _retval.Append(NS_LITERAL_STRING("\\varphi ")); break;
       case 0x0226 :
          _retval.Append(NS_LITERAL_STRING("\\.{A}")); break;
       case 0x03BC :
