@@ -11247,6 +11247,15 @@ function getCachedXSLTString(xslRootFileURLString) {
   }
   return resultString;
 }
+
+function getTextFileAsString( url ) {
+  var myXMLHTTPRequest = new XMLHttpRequest();
+  myXMLHTTPRequest.open('GET', url, false);
+  myXMLHTTPRequest.send(null);
+  return myXMLHTTPRequest.responseText;
+}
+
+
 function getXSLAsString(xslPath) {
   var resultString = '';
   if (xslPath.length == 0)
