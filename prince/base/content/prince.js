@@ -311,6 +311,28 @@ function count_children( par )
   return res;
 }
 
+// quickly check if this file is a 5.5 subdocument. If so, there will be a line like
+// %TCIDATA{LaTeXparent=0,0,masterfile.tex} in it.
+function useMasterDocIfNeeded(file) {
+  var url = msiGetIOService().newFileURI(file);
+  var fileURL = url.spec;
+  var str = getTextFileAsString(fileURL);
+  var regexp = /%TCIDATA{LaTeXparent=[0-9, ]*,([^}]*)}/;
+  var match;
+  var newfile;
+  var newpath;
+  if (str.length > 0) {
+    match = regexp.exec(str);
+    if (match && match.length > 1 && match[1].length > 0) {
+      newfile = Components.classes["@mozilla.org/file/local;1"].
+            createInstance(Components.interfaces.nsILocalFile);
+      newpath = file.path.replace(/\/[^/]+$/, '/' + match[1]);
+      newfile.initWithPath(newpath);
+      return newfile;
+    }
+  }
+  return file;
+}
 /*
      Prepare to run pretex.exe. We need to send it some directories:                                       //
       The input directory gives the location of the .cls and .tex files that pretex reads to               //
@@ -324,7 +346,7 @@ function count_children( par )
 
 function openTeX()
 {
-  var filename, infile, docdir, prefs, prefdir, defdocdirstring, dirkey;
+  var filename, infile, docdir, prefs, prefdir, defdocdirstring, dirkey, file;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
   fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);
@@ -338,8 +360,9 @@ function openTeX()
   }
   if (fp.file && (fp.file.path.length > 0)) {
     msiSaveFilePickerDirectory(fp, "tex");
-    filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
-    infile =  "\"" + fp.file.path + "\"";
+    file = useMasterDocIfNeeded(fp.file);
+    filename = file.leafName.substring(0,file.leafName.lastIndexOf("."));
+    infile =  "\"" + file.path + "\"";
 // Get the directory for the result from the preferences, or default to the SWPDocs directory
     try
     {
@@ -411,10 +434,10 @@ function openTeX()
    //  msidump("\n\nExe="+exefile.path);
    //  msidump("\noutdir=\""+outdir.path);
    //  msidump("\noutfile=\""+outfile.path);
-   //  msidump("\ninfile=\""+fp.file.path);
+   //  msidump("\ninfile=\""+file.path);
    //  msidump("\ndataDir=\""+dataDir.path);
    //  msidump("\nmmldir=\""+mmldir.path+"\n");
-	  // msidump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
+	  // msidump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+file.path+", "+outfile.path);
 
     // run pretex.exe
 
@@ -422,14 +445,14 @@ function openTeX()
     {
       var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
       theProcess.init(exefile);
-      var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, fp.file.path, outfile.path];
+      var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, file.path, outfile.path];
       theProcess.run(true, args, args.length);
     }
     catch (ex)
     {
        //   msidump("\nUnable to open TeX:\n");
 		     // msidump("\nexe  = "  + exefile);
-       //   msidump("\narg paths = " + dataDir.path + "\n   " + fp.file.path + "\n    " + outfile.path + "\n     " + outdir.path);
+       //   msidump("\narg paths = " + dataDir.path + "\n   " + file.path + "\n    " + outfile.path + "\n     " + outdir.path);
        //   msidump(ex+"\n");
     }
 
