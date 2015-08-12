@@ -398,14 +398,14 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     || tagName.EqualsLiteral("#text")))
   {
     // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
-    res = GetNodeLocation(parentNode, address_of(grandParent), &offsetOfNewNode);
+    // res = GetNodeLocation(parentNode, address_of(grandParent), &offsetOfNewNode);
     nsCOMPtr<nsIDOMElement> mrow;
     msiUtils::CreateMRow(this, insertedNode, mrow);
-    res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(grandParent), &offsetOfNewNode, PR_TRUE);
-    res = MoveNode(parentNode, mrow, savedOffset > 0 ? 0 : 1);
+    res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(newParentNode), &offsetOfNewNode, PR_TRUE);
+    // res = MoveNode(parentNode, mrow, savedOffset > 0 ? 0 : 1);
     parentNode = mrow;
     newParentNode = mrow;
-    offsetOfNewNode = 2;
+    offsetOfNewNode = 0;
     if (NS_SUCCEEDED(res))
     {
       bDidInsert = PR_TRUE;
@@ -684,9 +684,14 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 
   if (!cellSelectionMode)
   {
+    PRBool inComplexTransaction;
+    GetInComplexTransaction(&inComplexTransaction);
+    SetInComplexTransaction(PR_TRUE);
     res = DeleteSelectionAndPrepareToCreateNode(parentNode, offsetOfNewNode);
-    selection->Collapse(parentNode, offsetOfNewNode);
+  //  selection->Collapse(parentNode, offsetOfNewNode);
     NS_ENSURE_SUCCESS(res, res);
+    SetInComplexTransaction(inComplexTransaction);
+
 
     // pasting does not inherit local inline styles
     res = RemoveAllInlineProperties();
