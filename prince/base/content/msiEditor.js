@@ -5853,34 +5853,36 @@ function msiGetEnclosingTableOrMatrixDimensions(editorElement, nodeInTable) {
     retDims.nRows = nRowObj.value;
     retDims.nCols = nColObj.value;
   } else if (theMatrix) {
-    for (var ix = 0; ix < theMatrix.childNodes.length; ++ix) {
-      switch (msiGetBaseNodeName(theMatrix.childNodes[ix])) {
-        case "mtr":
-        case "mlabeledtr":
-          ++nRow;
-          currRow = theMatrix.childNodes[ix];
-          nCol = 0;
-          for (var jx = 0; jx < currRow.childNodes.length; ++jx) {
-            switch (msiGetBaseNodeName(currRow.childNodes[jx])) {
-              case "mtd":
-                if (currRow.childNodes[jx].hasAttribute("colspan"))
-                  nCol += Number(currRow.childNodes[jx].getAttribute("colspan"));
-                else
+      for (var ix = 0; ix < theMatrix.childNodes.length; ++ix) {
+      if (theMatrix.childNodes[ix].textContent.length > 0) {
+        switch (msiGetBaseNodeName(theMatrix.childNodes[ix])) {
+          case "mtr":
+          case "mlabeledtr":
+            ++nRow;
+            currRow = theMatrix.childNodes[ix];
+            nCol = 0;
+            for (var jx = 0; jx < currRow.childNodes.length; ++jx) {
+              switch (msiGetBaseNodeName(currRow.childNodes[jx])) {
+                case "mtd":
+                  if (currRow.childNodes[jx].hasAttribute("colspan"))
+                    nCol += Number(currRow.childNodes[jx].getAttribute("colspan"));
+                  else
+                    ++nCol;
+                  break;
+
+                case "#text":
+                  break;
+
+                default:
                   ++nCol;
-                break;
-
-              case "#text":
-                break;
-
-              default:
-                ++nCol;
-                break;
+                  break;
+              }
             }
-          }
-          break;
-        default:
-          nCol = 1;
-          break;
+            break;
+          default:
+            nCol = 1;
+            break;
+        }
       }
       if (nCol > retDims.nCols)
         retDims.nCols = nCol;
