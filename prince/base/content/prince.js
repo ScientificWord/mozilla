@@ -318,16 +318,25 @@ function useMasterDocIfNeeded(file) {
   var fileURL = url.spec;
   var str = getTextFileAsString(fileURL);
   var regexp = /%TCIDATA{LaTeXparent=[0-9, ]*,([^}]*)}/;
+  var pathseparator;
   var match;
   var newfile;
   var newpath;
+  var re;
+  var os = getOS(window);
+  if (os === 'win') {
+    pathseparator = '\\';
+    re = new RegExp('[\\][^\\]+$');
+  }
+  else {
+    pathseparator = '\/';
+    re = new RegExp('[/][^/]+$');
+  }
   if (str.length > 0) {
     match = regexp.exec(str);
     if (match && match.length > 1 && match[1].length > 0) {
-      newfile = Components.classes["@mozilla.org/file/local;1"].
-            createInstance(Components.interfaces.nsILocalFile);
-      newpath = file.path.replace(/\/[^/]+$/, '/' + match[1]);
-      newfile.initWithPath(newpath);
+      newfile = file.parent;
+      newfile.append(match[1]);
       return newfile;
     }
   }
