@@ -1184,34 +1184,26 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
 //
 NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, nsIAtom *atomNS, nsIDOMDocument * doc, nsIDOMNode **_retval)
 {
+
   nsresult res = NS_OK;
   nsString emptyString;
   TagData * data;
   nsCOMPtr<nsIDOMNode> node;
-  nsCOMPtr<nsIDOMNode> child;
-  nsCOMPtr<nsIDOMNode> importedNode;
+  nsCOMPtr<nsIDOMNode> retNode;
   nsCOMPtr<nsIDOMElement> element;
   nsCOMPtr<nsIDOMNodeList> nodelist;
   PRBool setCursor = PR_FALSE;
   nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);
 
   PRInt32 offset = 0;
-  PRUint32 length;
+
 
   PRBool fInHash = msiTagHashtable.Get(strTag, (TagData **)&data);
   if (fInHash && data && doc && data->initialContents)
   {
-    res = editor->CreateElementWithDefaults(strTag, getter_AddRefs(element));
-    node = do_QueryInterface(element);
-    res = data->initialContents->GetChildNodes(getter_AddRefs(nodelist));
-    res = nodelist->GetLength(&length);
-    for (offset = 0; offset < length; offset++) {
-      nodelist->Item(offset, getter_AddRefs(child));
-      node->AppendChild(child, getter_AddRefs(child));
-    }
-    *_retval = element;
-
-    NS_ADDREF(element.get());
+    res = data->initialContents->CloneNode( PR_TRUE, getter_AddRefs(retNode));
+    res = doc->ImportNode(retNode, PR_TRUE, _retval);
+    NS_ADDREF(retNode.get());
   }
   return NS_OK;
 }
