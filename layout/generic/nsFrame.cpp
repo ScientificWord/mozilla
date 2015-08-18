@@ -8321,6 +8321,7 @@ nsFrame::MoveRightAtDocEnd(nsISelection * selection)
     {
       // proceed only if the selection is contained in currentNode
       nsCOMPtr<nsIDOMNodeList> childList;
+      nsCOMPtr<nsIDOMElement> brElem;
       PRUint32 len;
       currentNode->GetChildNodes(getter_AddRefs(childList));
       //Want to explicitly check the DOM children (rather than the frame ones); if we don't have an image or plot
@@ -8333,6 +8334,10 @@ nsFrame::MoveRightAtDocEnd(nsISelection * selection)
         maybeBreak->GetNodeName(name);
         if (name.EqualsLiteral("br")) {
           offset -= 1;
+        }
+        else {
+          res = htmlDoc->CreateElement(NS_LITERAL_STRING("br"), getter_AddRefs(brElem));
+          currentNode->InsertBefore(brElem, nsnull, getter_AddRefs(currentNode));
         }
       }
       sel->Collapse(currentNode, offset);
