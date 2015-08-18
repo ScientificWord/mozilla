@@ -15,13 +15,13 @@
   \textfrench{<xsl:apply-templates />}
 </xsl:template>
 
-<xsl:template match="html:USEnglish">
+<xsl:template match="html:USenglish">
   \begin{USEnglish}
   <xsl:apply-templates />
   \end{USEnglish}
 </xsl:template>
 
-<xsl:template match="html:textUSEnglish">
+<xsl:template match="html:textUSenglish">
   \textUSEnglish{<xsl:apply-templates />}
 </xsl:template>
 
