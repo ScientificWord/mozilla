@@ -479,7 +479,7 @@ msiTagListManager::BuildBabelList(nsIDOMXMLDocument * docTagInfo)
   PRUint32 tagCount = 0;
 	PRBool isBabel = PR_FALSE;
   NodeList * listItem;
-  pBabelList = nsnull;
+  delete pBabelList;
 	// TagKeyList * pTagKeyList;
 	nsAutoString name;
 	rv = docTagInfo->GetElementsByTagName(NS_LITERAL_STRING("tag"), getter_AddRefs(tags));
@@ -1187,6 +1187,8 @@ NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, 
 
   nsresult res = NS_OK;
   nsString emptyString;
+  nsAutoString nodeName;
+  nsIAtom * atom;
   TagData * data;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMNode> retNode;
@@ -1205,6 +1207,12 @@ NS_IMETHODIMP msiTagListManager::GetNewInstanceOfNode(const nsAString & strTag, 
     res = doc->ImportNode(retNode, PR_TRUE, _retval);
     NS_ADDREF(retNode.get());
   }
+  // if strTag != the tag of retNode, then we need to do a replaceContainer for the Babel and Polyglossia packages
+  res = GetTagOfNode( retNode, &atom, nodeName);
+  // BBM if (!nodeName.Equals(strTag)) // This is a case where the tag name has been changed to correspond to a Babel or Polyglossia language.
+  // {
+  //   meditor->ReplaceContainer(retNode, address_of(retNode), strTag, this, nsnull, nsnull, PR_TRUE);
+  // }
   return NS_OK;
 }
 
@@ -1575,7 +1583,7 @@ msiTagListManager::GetTagsInClass(const nsAString & strTagClass, const nsAString
 NS_IMETHODIMP
 msiTagListManager::GetBabelTagNode(PRBool textTag, PRUint32 oneOrTwo, nsIDOMNode **_retval)
 {
-  BuildBabelList(mdocTagInfo);
+  if (!pBabelList) BuildBabelList(mdocTagInfo);
 	NodeList * pList = pBabelList;
   *_retval = nsnull;
   // There are four Babel nodes. One and two are the font nodes for lang1 and lang2. Three and four are the

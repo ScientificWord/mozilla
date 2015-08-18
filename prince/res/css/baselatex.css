@@ -238,8 +238,8 @@ bulletLabel {
 /* show footnotes by default*/
 note[type="footnote"], note[type="footnote"][hide="false"] {
   display: block;
-  float: none;
-  width: 90%;
+  float: right;
+  width: 100%;
   font-size: small;
 }
 
