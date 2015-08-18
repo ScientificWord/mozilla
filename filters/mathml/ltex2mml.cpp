@@ -9327,7 +9327,7 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
 
 
     if ( in_mml_grammar ) {
-    U8 zuID[32];
+      U8 zuID[32];
       U16 uID =  is_text ? 1 : 0;
       UidsTozuID( 5,tag_ilk,uID,(U8*)zuID );
       U8* dest_zname;
@@ -9340,10 +9340,10 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
     }
 
 
-  TCI_BOOL tag_each_node  =  TRUE;
+    TCI_BOOL tag_each_node  =  TRUE;
     if ( attr_str[0] )    // nest in <mstyle>
       if ( !TeX_tag_node->next && !TeX_tag_node->prev )
-      tag_each_node =  FALSE;
+        tag_each_node =  FALSE;
 
   if ( tag_each_node ) {
 
@@ -9371,47 +9371,48 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
       TNODE* mml_rover  =  mml_cont;
     while ( mml_rover ) {
 
-        TNODE* mml_next =  mml_rover->next;
+      TNODE* mml_next =  mml_rover->next;
       mml_rover->next =  NULL;
       mml_rover->prev =  NULL;
       mml_rover->sublist_owner =  NULL;
 
-        TNODE* curr_tagged_node =  NULL;
+      TNODE* curr_tagged_node =  NULL;
       TCI_BOOL nest_in_mstyle =  TRUE;
 
-        U16 uobj,usub,id;
-        GetUids( mml_rover->zuID,uobj,usub,id );
+      U16 uobj,usub,id;
+      GetUids( mml_rover->zuID,uobj,usub,id );
       if ( uobj==3 ) {
-          U8 buffer[64];
-          buffer[0] =  0;
+        U8 buffer[64];
+        buffer[0] =  0;
         if ( mml_rover->var_value ) {
           if ( mml_rover->v_len==1 ) {
-          U8 ch =  mml_rover->var_value[0];
+            U8 ch =  mml_rover->var_value[0];
 
-          if ( ch=='{' || ch=='}' || ch=='[' || ch==']'
-              ||   ch=='(' || ch==')' || ch=='|' ) {
+            if ( ch=='{' || ch=='}' || ch=='[' || ch==']'
+                ||   ch=='(' || ch==')' || ch=='|' ) {
 
-              nest_in_mstyle =  FALSE;
+                nest_in_mstyle =  FALSE;
 
-              } if ( (ch>='A' && ch<='Z') || (ch>='a' && ch<='z') ) {
+            } 
+            if ( (ch>='A' && ch<='Z') || (ch>='a' && ch<='z') ) {
 
-                if ( mathvariant ) {
-                  if ( mml_version >= 200 ) {
-                    SetNodeAttrib( mml_rover,(U8*)"mathvariant",mathvariant );
+              if ( mathvariant ) {
+                if ( mml_version >= 200 ) {
+                  SetNodeAttrib( mml_rover,(U8*)"mathvariant",mathvariant );
                   nest_in_mstyle =  FALSE;
-            } else if ( entity_suffix ) {
-                    strcpy( (char*)buffer,"&" );
-                    strcat( (char*)buffer,(char*)mml_rover->var_value );
-              delete mml_rover->var_value;
-              mml_rover->var_value  =  NULL;
-                    strcat( (char*)buffer,(char*)entity_suffix );
-                    strcat( (char*)buffer,";" );
-                    SetChData( mml_rover,buffer,NULL );
+                } else if ( entity_suffix ) {
+                  strcpy( (char*)buffer,"&" );
+                  strcat( (char*)buffer,(char*)mml_rover->var_value );
+                  delete mml_rover->var_value;
+                  mml_rover->var_value  =  NULL;
+                  strcat( (char*)buffer,(char*)entity_suffix );
+                  strcat( (char*)buffer,";" );
+                  SetChData( mml_rover,buffer,NULL );
                   nest_in_mstyle =  FALSE;
-                    SetNodeAttrib( mml_rover,(U8*)"fontstyle",(U8*)"upright" );
+                  SetNodeAttrib( mml_rover,(U8*)"fontstyle",(U8*)"upright" );
+                }
+              }
             }
-          }
-          }
 
 
           } else if ( mml_rover->v_len==4 ) {
@@ -9425,12 +9426,15 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
               nest_in_mstyle =  FALSE;
 
           }
+        }   // if ( entity_suffix )
+      } else if (uobj == 5 && usub == 54) {   // need to check for accented chars
+        TNODE* charBucket =  FindObject( mml_rover->parts, (U8*)"5.54.3",INVALID_LIST_POS );
+        SetNodeAttrib( charBucket->contents,(U8*)"mathvariant", mathvariant );
+        TNODE* accBucket =  FindObject( mml_rover->parts, (U8*)"5.54.5",INVALID_LIST_POS );
 
-
-      }   // if ( entity_suffix )
-
+        nest_in_mstyle =  FALSE;
       } else
-        nest_in_mstyle =  TRUE;
+        nest_in_mstyle =  TRUE;                           
 
       if ( nest_in_mstyle ) {
           if ( attr_str[0] ) {    // nest in <mstyle>
@@ -9446,7 +9450,7 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
 
             curr_tagged_node  =  CreateElemWithBucketAndContents( 5,750,1,2,mstyle );
           } else
-          curr_tagged_node  =  mml_rover;
+            curr_tagged_node  =  mml_rover;
         } else
           curr_tagged_node  =  mml_rover;
 
