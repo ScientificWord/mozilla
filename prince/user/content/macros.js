@@ -42,15 +42,12 @@ function insertMathSymbol( s, delSelection )
 
 function insertMathunit( unit, delSelection )
 {
-  if (delSelection) deleteSelection();
   var editorElement = getCurrentEditorElement();
   insertmathunit(unit, editorElement);
 }
 
 function insertMathname( name, delSelection )
 {
-  dump("\ninsertMathname();\n");
-  if (delSelection) deleteSelection();
   var editorElement = getCurrentEditorElement();
   doInsertMathName(name, editorElement);
 }
