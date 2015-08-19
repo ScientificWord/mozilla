@@ -84,6 +84,7 @@
 #include "nsIWidget.h"
 #include "nsIPlaintextEditor.h"
 #include "nsIHTMLEditor.h"
+#include "../html/nsHTMLEditor.h"
 #include "nsTextEditUtils.h"
 #include "nsGUIEvent.h"  // nsTextEventReply
 
@@ -4642,6 +4643,7 @@ nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
     nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(nodeToSplit);
     PRUint32 len;
     PRBool bDoSplit = PR_FALSE;
+    PRBool isEmpty = false;
     res = GetLengthOfDOMNode(nodeToSplit, len);
     if (NS_FAILED(res)) return res;
 
@@ -4650,13 +4652,22 @@ nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
       bDoSplit = PR_TRUE;
       res = SplitNode(nodeToSplit, offset, getter_AddRefs(tempNode));
       if (NS_FAILED(res)) return res;
+      // nsCOMPtr<nsIHTMLEditor> editor = do_QueryInterface(static_cast<nsIEditor *>(this));
+      // if (editor) {
+      //   res = editor->IsEmptyNode( nodeToSplit, &isEmpty, PR_TRUE, PR_FALSE, PR_TRUE);
+      // }
+      res = nodeToSplit->GetParentNode(getter_AddRefs(parentNode));
+      // if (isEmpty && aNoEmptyContainers) {
+      //   RemoveContainer(nodeToSplit);
+      // }
       if (outRightNode) *outRightNode = nodeToSplit;
       if (outLeftNode)  *outLeftNode  = tempNode;
+    } else {
+      res = nodeToSplit->GetParentNode(getter_AddRefs(parentNode));
     }
-
-    res = nodeToSplit->GetParentNode(getter_AddRefs(parentNode));
     if (NS_FAILED(res)) return res;
     if (!parentNode) return NS_ERROR_FAILURE;
+
 
     if (!bDoSplit && offset)  // must be "end of text node" case, we didn't split it, just move past it
     {
