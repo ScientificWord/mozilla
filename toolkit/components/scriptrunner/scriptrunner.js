@@ -20,7 +20,7 @@ function ScriptRunner()
 
 ScriptRunner.prototype = {
   ctx: null,
-  Eval: function( toExecute ) { 
+  Eval: function( toExecute ) {
     try {
       eval( toExecute, this.ctx );
       return '';
@@ -30,15 +30,15 @@ ScriptRunner.prototype = {
       return e.toString();
     }
   },
-  
+
   setContext: function( newctx ) {
-    dump("set ctx to " + newctx + "\n");
+    // dump("set ctx to " + newctx + "\n");
     this.ctx = newctx;
   },
-    
+
   QueryInterface: function(aIID)
   {
-    dump("ScriptRunner queryinterface\n");
+    // dump("ScriptRunner queryinterface\n");
     if (!aIID.equals(msiIScriptRunner) &&
       !aIID.equals(nsISupports))
       throw Components.results.NS_ERROR_NO_INTERFACE;
@@ -50,14 +50,14 @@ ScriptRunner.prototype = {
 
 //MyScriptRunner = Components.classes["@mackichan.com/scriptrunner;1"].
 //  createInstance(Components.interfaces.msiIScriptRunner);
-  
+
 var ScriptRunnerFactory = {
   createInstance: function (aOuter, aIID)
   {
-    dump("ScriptRunnerFactory createInstance\n");
+    // dump("ScriptRunnerFactory createInstance\n");
     if (aOuter != null)
       throw Components.results.NS_ERROR_NO_AGGREGATION;
-    dump("ScriptRunnerFactory createInstance returning valid object\n");
+    // dump("ScriptRunnerFactory createInstance returning valid object\n");
     return (new ScriptRunner()).QueryInterface(aIID);
   }
 };
@@ -65,24 +65,24 @@ var ScriptRunnerFactory = {
 var ScriptRunnerModule = {
   registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
   {
-    dump("Registering ScriptRunnerModule\n");
+    // dump("Registering ScriptRunnerModule\n");
     aCompMgr = aCompMgr.
         QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, 
+    aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME,
         CONTRACT_ID, aFileSpec, aLocation, aType);
   },
 
   unregisterSelf: function(aCompMgr, aLocation, aType)
   {
-    dump("Unregistering ScriptRunnerModule\n");
+    // dump("Unregistering ScriptRunnerModule\n");
     aCompMgr = aCompMgr.
         QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
+    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);
   },
-  
+
   getClassObject: function(aCompMgr, aCID, aIID)
   {
-    dump("GetClassObject for ScriptRunnerModule\n");
+    // dump("GetClassObject for ScriptRunnerModule\n");
     if (!aIID.equals(Components.interfaces.nsIFactory))
       throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
@@ -103,8 +103,8 @@ is called.
 ***********************************************************/
 function NSGetModule(aCompMgr, aFileSpec) { return ScriptRunnerModule; }
 
-  
-  
-  
-  
-  
+
+
+
+
+
