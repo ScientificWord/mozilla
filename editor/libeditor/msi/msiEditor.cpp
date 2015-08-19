@@ -608,25 +608,29 @@ msiEditor::InsertMathname(const nsAString & mathname)
       //   firstNode->GetParentNode(getter_AddRefs(firstNode));
       // }
       // res = GetNodeLocation(firstNode, address_of(parent), &offset);
-      nsCOMPtr<nsIDOMNode> theNode;
-      PRInt32 theOffset(0);
-      if (!bCollapsed)
-      {
-        res = DeleteSelection(nsIEditor::eNone);
-        // TODO add stuff so that selected stuff is changed to become the base  or the script ?
-        // current SWP behavoir is to make it the script, but this may not be correct in light
-        // of the fact that sub and sup have a well defined base in mathml.
-        // Also need to deal with the case where we are not in math, or part of the selection is not
-        // in math.
-      }
-      res = GetNSSelectionData(selection, startNode, startOffset, endNode,
-                             endOffset, bCollapsed);
-      theNode = startNode;
-      theOffset = startOffset;
-      selection->Collapse(theNode, theOffset);
+      res = InsertMathnameEx(selection, startNode, startOffset, mathname);
+      selection->Collapse(startNode, startOffset+1);
+      selection->Extend(endNode, endOffset + (startNode==endNode? +1: 0));
+      res = DeleteSelection(nsIEditor::eNone);
+      // nsCOMPtr<nsIDOMNode> theNode;
+      // PRInt32 theOffset(0);
+      // if (!bCollapsed)
+      // {
+      //   res = DeleteSelection(nsIEditor::eNone);
+      //   // TODO add stuff so that selected stuff is changed to become the base  or the script ?
+      //   // current SWP behavoir is to make it the script, but this may not be correct in light
+      //   // of the fact that sub and sup have a well defined base in mathml.
+      //   // Also need to deal with the case where we are not in math, or part of the selection is not
+      //   // in math.
+      // }
+      // res = GetNSSelectionData(selection, startNode, startOffset, endNode,
+      //                        endOffset, bCollapsed);
+      // theNode = startNode;
+      // theOffset = startOffset;
+      // selection->Collapse(theNode, theOffset);
 
-      if (NS_SUCCEEDED(res))
-        res = InsertMathnameEx(selection, theNode, theOffset, mathname); // BBM: Why does Larry pass post selection and (node,offset)?
+      // if (NS_SUCCEEDED(res))
+      //   res = InsertMathnameEx(selection, theNode, theOffset, mathname); // BBM: Why does Larry pass post selection and (node,offset)?
     }
   }
   else if (mathname.Length() == 0)
@@ -656,6 +660,9 @@ msiEditor::InsertMathunit(const nsAString & mathunit)
       theOffset = startOffset;
       if (NS_SUCCEEDED(res))
         res = InsertMathunitEx(selection, theNode, theOffset, mathunit);
+      selection->Collapse(startNode, startOffset+1);
+      selection->Extend(endNode, endOffset + (startNode==endNode? 1: 0));
+      res = DeleteSelection(nsIEditor::eNone);
     }
   }
   else if (mathunit.Length() == 0)
@@ -3376,9 +3383,6 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
         {
           sr->SetCtx(m_window);
           sr->Eval(data, error);
-#ifdef DEBUG_Barry
-          if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
-#endif
         }
       }
 //      selection->Collapse(node, offset);
