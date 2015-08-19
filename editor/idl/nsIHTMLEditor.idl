@@ -505,6 +505,8 @@ interface nsIHTMLEditor : nsISupports
 
   nsIDOMElement getElementOrParentByTagClass(in AString aClassName, in nsIDOMNode aNode);
 
+  void IsEmptyNode( in nsIDOMNode aNode, out boolean outIsEmptyNode, in boolean aSingleBRDoesntCount, in boolean aListOrCellNotEmpty, in boolean aSafeToAskFrames);
+
   /**
    * Return an element only if it is the only node selected,
    *    such as an image, horizontal rule, etc.

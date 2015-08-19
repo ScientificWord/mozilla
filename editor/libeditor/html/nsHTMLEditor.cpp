@@ -596,7 +596,7 @@ nsHTMLEditor::BeginningOfDocument()
       else
       {
         PRBool isEmptyBlock;
-        if (NS_SUCCEEDED(IsEmptyNode(visNode, &isEmptyBlock)) &&
+        if (NS_SUCCEEDED(IsEmptyNode(visNode, &isEmptyBlock, PR_TRUE, PR_FALSE, PR_TRUE)) &&
             isEmptyBlock)
         {
           // skip the empty block
@@ -6202,7 +6202,7 @@ nsHTMLEditor::IsVisTextNode( nsIDOMNode *aNode,
 //               A block can have children and still be considered empty,
 //               if the children are empty or non-editable.
 //
-nsresult
+NS_IMETHODIMP
 nsHTMLEditor::IsEmptyNode( nsIDOMNode *aNode,
                            PRBool *outIsEmptyNode,
                            PRBool aSingleBRDoesntCount,
