@@ -890,7 +890,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             if (nsHTMLEditUtils::IsListItem(parentNode, mtagListManager))
             {
               PRBool isEmpty;
-              res = IsEmptyNode(parentNode, &isEmpty, PR_TRUE);
+              res = IsEmptyNode(parentNode, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
               if ((NS_SUCCEEDED(res)) && isEmpty)
               {
                 nsCOMPtr<nsIDOMNode> listNode;
