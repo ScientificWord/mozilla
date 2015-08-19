@@ -193,7 +193,7 @@ class nsEmptyEditableFunctor : public nsBoolDomIterFunctor
         nsHTMLEditUtils::IsTableCellOrCaption(aNode, mtagListManager)))
       {
         PRBool bIsEmptyNode;
-        nsresult res = mHTMLEditor->IsEmptyNode(aNode, &bIsEmptyNode, PR_FALSE, PR_FALSE);
+        nsresult res = mHTMLEditor->IsEmptyNode(aNode, &bIsEmptyNode, PR_FALSE, PR_FALSE, PR_FALSE);
         if (NS_FAILED(res)) return PR_FALSE;
         if (bIsEmptyNode)
           return PR_TRUE;
@@ -1953,14 +1953,14 @@ nsHTMLEditRules::SplitMailCites(nsISelection *aSelection, PRBool aPlaintext, PRB
     PRBool bEmptyCite = PR_FALSE;
     if (leftCite)
     {
-      res = mHTMLEditor->IsEmptyNode(leftCite, &bEmptyCite, PR_TRUE, PR_FALSE);
+      res = mHTMLEditor->IsEmptyNode(leftCite, &bEmptyCite, PR_TRUE, PR_FALSE, PR_FALSE);
       if (NS_SUCCEEDED(res) && bEmptyCite)
         res = mHTMLEditor->DeleteNode(leftCite);
       if (NS_FAILED(res)) return res;
     }
     if (rightCite)
     {
-      res = mHTMLEditor->IsEmptyNode(rightCite, &bEmptyCite, PR_TRUE, PR_FALSE);
+      res = mHTMLEditor->IsEmptyNode(rightCite, &bEmptyCite, PR_TRUE, PR_FALSE, PR_FALSE);
       if (NS_SUCCEEDED(res) && bEmptyCite)
         res = mHTMLEditor->DeleteNode(rightCite);
       if (NS_FAILED(res)) return res;
@@ -5917,7 +5917,7 @@ nsHTMLEditRules::CreateStyleForInsertText(nsISelection *aSelection, nsIDOMDocume
     PRBool bIsEmptyNode;
     if (leftNode)
     {
-      mHTMLEditor->IsEmptyNode(leftNode, &bIsEmptyNode, PR_FALSE, PR_TRUE);
+      mHTMLEditor->IsEmptyNode(leftNode, &bIsEmptyNode, PR_FALSE, PR_TRUE, PR_FALSE);
       if (bIsEmptyNode)
       {
         // delete leftNode if it became empty
@@ -5952,7 +5952,7 @@ nsHTMLEditRules::CreateStyleForInsertText(nsISelection *aSelection, nsIDOMDocume
         res = mEditor->MoveNode(savedBR, newSelParent, 0);
         NS_ENSURE_SUCCESS(res, res);
       }
-      mHTMLEditor->IsEmptyNode(rightNode, &bIsEmptyNode, PR_FALSE, PR_TRUE);
+      mHTMLEditor->IsEmptyNode(rightNode, &bIsEmptyNode, PR_FALSE, PR_TRUE, PR_FALSE);
       if (bIsEmptyNode)
       {
         // delete rightNode if it became empty
@@ -6057,7 +6057,7 @@ nsHTMLEditRules::IsEmptyBlock(nsIDOMNode *aNode,
 
   if (!nodeToTest) return NS_ERROR_NULL_POINTER;
   return mHTMLEditor->IsEmptyNode(nodeToTest, outIsEmptyBlock,
-                     aMozBRDoesntCount, aListItemsNotEmpty);
+                     aMozBRDoesntCount, aListItemsNotEmpty, PR_FALSE);
 }
 
 
@@ -6457,7 +6457,7 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
   PRBool bIsEmptyNode;
   if (block != aBodyNode)  // efficiency hack. avoiding IsEmptyNode() call when in body
   {
-    res = mHTMLEditor->IsEmptyNode(block, &bIsEmptyNode, PR_TRUE, PR_FALSE);
+    res = mHTMLEditor->IsEmptyNode(block, &bIsEmptyNode, PR_TRUE, PR_FALSE, PR_FALSE);
     //If aStartNode returns true from ShouldSelectWholeObject, we want to go up its parent chain as long as they do too
     bIndivisibleNode = bIndivisibleNode && mHTMLEditor->ShouldSelectWholeObject(block);
     if (NS_FAILED(res)) return res;
@@ -6471,7 +6471,7 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
       else
       {
         block = mHTMLEditor->GetBlockNodeParent(emptyBlock);
-        res = mHTMLEditor->IsEmptyNode(block, &bIsEmptyNode, PR_TRUE, PR_FALSE);
+        res = mHTMLEditor->IsEmptyNode(block, &bIsEmptyNode, PR_TRUE, PR_FALSE, PR_FALSE);
         if (NS_FAILED(res)) return res;
       }
     }
@@ -6527,7 +6527,7 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
       {
         // BBM: this keeps us from deleting children of math structures that require a fixed number of children.
         // BBM: We should really replace the emptyBlock with an input box.
-        res = mHTMLEditor->IsEmptyNode(parent, &bIsEmptyNode, PR_TRUE, PR_FALSE);
+        res = mHTMLEditor->IsEmptyNode(parent, &bIsEmptyNode, PR_TRUE, PR_FALSE, PR_FALSE);
         if (bIsEmptyNode) {
           nsCOMPtr<nsIDOMNode> grandparent;
           res = parent->GetParentNode(getter_AddRefs(grandparent));
@@ -6555,7 +6555,7 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
       nsCOMPtr<nsIDOMDocument>doc;
       res = mHTMLEditor->GetDocument(getter_AddRefs(doc));
       if (NS_FAILED(res)) return res;
-      res = mHTMLEditor->IsEmptyNode(aBodyNode, &bodyIsEmpty, PR_TRUE, PR_FALSE);
+      res = mHTMLEditor->IsEmptyNode(aBodyNode, &bodyIsEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
       if (bodyIsEmpty)
       {
         PRInt32 offset;
@@ -7331,7 +7331,7 @@ nsHTMLEditRules::PromoteRange(nsIDOMRange *inRange,
       if (block != rootNode)
       {
         // ok, not body, check if empty
-        res = mHTMLEditor->IsEmptyNode(block, &bIsEmptyNode, PR_TRUE, PR_FALSE);
+        res = mHTMLEditor->IsEmptyNode(block, &bIsEmptyNode, PR_TRUE, PR_FALSE, PR_FALSE);
       }
       if (bIsEmptyNode)
       {
@@ -8097,7 +8097,7 @@ nsHTMLEditRules::ReturnInHeader(nsISelection *aSelection,
   if (prevItem && nsHTMLEditUtils::IsHeader(prevItem, mtagListManager))
   {
     PRBool bIsEmptyNode;
-    res = mHTMLEditor->IsEmptyNode(prevItem, &bIsEmptyNode);
+    res = mHTMLEditor->IsEmptyNode(prevItem, &bIsEmptyNode, PR_FALSE, PR_FALSE, PR_FALSE);
     if (NS_FAILED(res)) return res;
     if (bIsEmptyNode)
     {
@@ -8392,7 +8392,7 @@ nsHTMLEditRules::ReturnInListItem(nsISelection *aSelection,
   if (prevItem && nsHTMLEditUtils::IsListItem(prevItem, mtagListManager))
   {
     PRBool bIsEmptyNode;
-    res = mHTMLEditor->IsEmptyNode(prevItem, &bIsEmptyNode);
+    res = mHTMLEditor->IsEmptyNode(prevItem, &bIsEmptyNode, PR_FALSE, PR_FALSE, PR_FALSE);
     if (NS_FAILED(res)) return res;
     if (bIsEmptyNode)
     {
@@ -8402,7 +8402,7 @@ nsHTMLEditRules::ReturnInListItem(nsISelection *aSelection,
     }
     else
     {
-      res = mHTMLEditor->IsEmptyNode(aListItem, &bIsEmptyNode, PR_TRUE);
+      res = mHTMLEditor->IsEmptyNode(aListItem, &bIsEmptyNode, PR_TRUE, PR_FALSE, PR_FALSE);
       if (NS_FAILED(res)) return res;
       if (bIsEmptyNode)
       {
@@ -9197,7 +9197,7 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
             if (tagName.EqualsLiteral("sectiontitle")) {
               // replace it with a paragraph
               // maybe delete it if it is empty
-              res = mHTMLEditor->IsEmptyNode(curNode, &isEmpty, PR_TRUE);
+              res = mHTMLEditor->IsEmptyNode(curNode, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
               if (isEmpty) {
                 res = mHTMLEditor->DeleteNode(curNode);
               }
@@ -9598,9 +9598,6 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     }
     currentNode = parent;
     res = currentNode->GetParentNode(getter_AddRefs(parent));
-#if DEBUG_BarryNo || DEBUG_BarryNo
-    DebExamineNode(parent);
-#endif
     NS_ENSURE_SUCCESS(res, res);
   }
   if (topSplitNode != sourceNode) {
@@ -9620,6 +9617,35 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   {
     newStructureNode = outRightNode;
     *outNode = newStructureNode;
+    // In this case we may have also split sub-structures, which we will remove -- the initial paragraph we originally clicked on
+    // should be just under the new structure, not in any sub-structures.
+    nsCOMPtr<nsIDOMNode> child;
+    PRUint16 type;
+    nsIAtom * nsatom;
+    nsAutoString className;
+    nsAutoString tagName;
+    res = newStructureNode->GetFirstChild(getter_AddRefs(child));
+    res = child->GetNodeType(&type);
+    while (child && (type == nsIDOMNode::TEXT_NODE)) {
+      res = child -> GetNextSibling(getter_AddRefs(child));
+    }
+    while (child) {
+      res = child->GetNodeName(tagName);
+      res = mtagListManager->GetClassOfTag(tagName, nsatom, className);
+      if (className.EqualsLiteral("paratag")) {
+        child = nsnull;
+      } else
+      {
+        if (className.EqualsLiteral("structtag")) {
+          mHTMLEditor->RemoveContainer(child);
+        }
+        res = newStructureNode->GetFirstChild(getter_AddRefs(child));
+        res = child->GetNodeType(&type);
+        while (child && (type == nsIDOMNode::TEXT_NODE)) {
+          res = child -> GetNextSibling(getter_AddRefs(child));
+        }
+      }
+    }
     return NS_OK;
   }
   else
@@ -10217,7 +10243,7 @@ nsHTMLEditRules::AdjustSelection(nsISelection *aSelection, nsIEditor::EDirection
   if (IsBlockNode(selNode)) theblock = selNode;
   else theblock = mHTMLEditor->GetBlockNodeParent(selNode);
   PRBool bIsEmptyNode;
-  res = mHTMLEditor->IsEmptyNode(theblock, &bIsEmptyNode, PR_FALSE, PR_FALSE);
+  res = mHTMLEditor->IsEmptyNode(theblock, &bIsEmptyNode, PR_FALSE, PR_FALSE, PR_FALSE);
   if (NS_FAILED(res)) return res;
   // check if br can go into the destination node
   if (bIsEmptyNode && mHTMLEditor->CanContainTag(selNode, NS_LITERAL_STRING("br")))
@@ -10531,9 +10557,9 @@ nsHTMLEditRules::RemoveEmptyNodes()
       if (bIsCandidate)
       {
         if (bIsMailCite)  // we delete mailcites even if they have a solo br in them
-          res = mHTMLEditor->IsEmptyNode(node, &bIsEmptyNode, PR_TRUE, PR_TRUE);
+          res = mHTMLEditor->IsEmptyNode(node, &bIsEmptyNode, PR_TRUE, PR_TRUE, PR_FALSE);
         else  // other nodes we require to be empty
-          res = mHTMLEditor->IsEmptyNode(node, &bIsEmptyNode, PR_FALSE, PR_TRUE);
+          res = mHTMLEditor->IsEmptyNode(node, &bIsEmptyNode, PR_FALSE, PR_TRUE, PR_FALSE);
         if (NS_FAILED(res)) return res;
         if (bIsEmptyNode)
         {
@@ -10576,7 +10602,7 @@ nsHTMLEditRules::RemoveEmptyNodes()
     nsCOMPtr<nsIDOMNode> delNode = arrayOfEmptyCites[0];
     arrayOfEmptyCites.RemoveObjectAt(0);
     PRBool bIsEmptyNode;
-    res = mHTMLEditor->IsEmptyNode(delNode, &bIsEmptyNode, PR_FALSE, PR_TRUE);
+    res = mHTMLEditor->IsEmptyNode(delNode, &bIsEmptyNode, PR_FALSE, PR_TRUE, PR_FALSE);
     if (NS_FAILED(res)) return res;
     if (!bIsEmptyNode)
     {
@@ -10665,7 +10691,7 @@ nsHTMLEditRules::IsEmptyInline(nsIDOMNode *aNode)
   if (aNode && IsInlineNode(aNode) && mHTMLEditor->IsContainer(aNode))
   {
     PRBool bEmpty;
-    mHTMLEditor->IsEmptyNode(aNode, &bEmpty);
+    mHTMLEditor->IsEmptyNode(aNode, &bEmpty, PR_FALSE, PR_FALSE, PR_FALSE);
     return bEmpty;
   }
   return PR_FALSE;
@@ -10938,7 +10964,7 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
 
   PRBool isEmpty;
   nsCOMPtr<nsIDOMNode> brNode;
-  nsresult res = mHTMLEditor->IsEmptyNode(aNode, &isEmpty);
+  nsresult res = mHTMLEditor->IsEmptyNode(aNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE);
   nsCOMPtr<msiITagListManager> taglistManager;
   mHTMLEditor->GetTagListManager( getter_AddRefs(taglistManager));
 	if (isEmpty) isEmpty = HasNoSignificantTags(aNode, taglistManager);
