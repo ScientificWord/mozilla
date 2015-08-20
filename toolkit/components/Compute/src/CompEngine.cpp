@@ -153,7 +153,7 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
   else
     TCI_ASSERT(!"Failed to lookup ENGINFO/wrapperDLL");
 
-  printf("\n\n  jcs Loading enigne wrapper %s\n", path);
+  // printf("\n\n  jcs Loading enigne wrapper %s\n", path);
 
   if (LoadEngWrapperDLL(path)) {
 
@@ -207,7 +207,7 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
         //vcampath =
         //  "C:\\Program Files\\SciFace\\MuPAD Pro 3.1\\bin\\VCamNG.exe";
       }
-      printf("\n\n  jcs Calling wrapper->Initialize\n");
+      // printf("\n\n  jcs Calling wrapper->Initialize\n");
       res = wrapper->Initialize(libFile, baseDir, vcamFile, &inner_rv);
       if (NS_SUCCEEDED(res) && inner_rv) {
         rv = true;
