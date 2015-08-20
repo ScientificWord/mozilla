@@ -36,7 +36,7 @@
   <sub ctx="text" tp="sc"><pattern>.Lg.</pattern><data>toggleTextTag('Large',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.LG.</pattern><data>toggleTextTag('LARGE',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.sec.</pattern><data>insertSectionTag('section',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.sub.></pattern><data>deleteSelection();goDoCommand('cmd_insertSubstructure');></data></sub>
+  <sub ctx="text" tp="sc"><pattern>.sub.</pattern><data>deleteSelection(); msiGoDoCommand('cmd_insertSubstructure');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ttl.</pattern><data>insertFrontMatterItem('title',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.addr.</pattern><data>insertParaTag('address',true);</data></sub>
