@@ -123,7 +123,7 @@ nsComposerCmdLineHandler.prototype = {
     }
     var wwatch = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
                                .getService(nsIWindowWatcher);
-    dump("+++ Opening prince window with args = '" + args.data + "' and features = '" + features + "'\n");
+//    dump("+++ Opening prince window with args = '" + args.data + "' and features = '" + features + "'\n");
     wwatch.openWindow(null, "chrome://prince/content/prince.xul", "_blank",
                       features, args);
     cmdLine.preventDefault = true;
