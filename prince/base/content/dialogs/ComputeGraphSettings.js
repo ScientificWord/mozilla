@@ -4,6 +4,8 @@
 // window.arguments[1]: commandStr
 // window.arguments[2]: DOMGraph, the DOM element that should be replaced
 
+#include ../productname.inc //
+
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 var gFrameModeImage = true;
 var gFrameModeTextFrame = false;
@@ -72,7 +74,9 @@ function Startup(){
       frame.setAttribute("units") = units;
     }
     setHasNaturalSize(false);
+#ifndef PROD_SNB
     setCanRotate(false);
+#endif
     document.getElementById("role-image").setAttribute("hidden",(gFrameModeImage?"false":"true"));
 
     alist = graph.graphAttributeList();
