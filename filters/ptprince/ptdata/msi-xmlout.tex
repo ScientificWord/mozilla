@@ -1543,7 +1543,11 @@
 
 
 \def\hrulefill{%
-   <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>}
+   \ifmmode
+     \string\hrulefill
+   \else
+     <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>
+   \fi}
 
 
 
