@@ -466,7 +466,7 @@
            \expandafter\msitag\expandafter{\csname#2\endcsname}%
         \else
            \if#3T\relax%
-             ^^0a%
+             ^^0a\msihmode%
            \else              
            \fi           
            \msitag{<#1/>}%
@@ -1742,7 +1742,7 @@
 \def\MSICounter#1{%
   \expandafter\newcount\csname c@#1\endcsname}
 
-\def\&{\char`\&amp;}
+\def\&{\ifmmode\char`\\\char`\&\else\char`\&amp;\fi}
 \def\|{\Vert}
 
 \def\textcurrency{\msitag{<textcurrency req="textcomp"/>}}
