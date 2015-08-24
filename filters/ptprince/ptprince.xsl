@@ -29,6 +29,7 @@
                     parent::mml:munder or
                     parent::mml:mover or
                     parent::mml:munderover or
+                    parent::mml:mroot or
                     preceding-sibling::mml:mo[1][@fence='true']">
       <mml:mrow><xsl:apply-templates/></mml:mrow>
     </xsl:when>
