@@ -457,7 +457,7 @@
    \msiclosetag{date}{</date>}}
 
 \def\MSIEmptyElement{%
-  \@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
+  \msihmode\@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
 
 \def\msi@empty@elmA[#1]#2#3{%
      \expandafter\def\csname #2\endcsname{%
@@ -466,8 +466,9 @@
            \expandafter\msitag\expandafter{\csname#2\endcsname}%
         \else
            \if#3T\relax%
-             ^^0a\msihmode%
-           \else              
+             ^^0a%
+           \else
+             \msihmode              
            \fi           
            \msitag{<#1/>}%
         \fi}}
