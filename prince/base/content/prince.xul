@@ -35,13 +35,13 @@
   sizemode="normal"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-#if PROD_SWP
+#ifdef PROD_SWP
   <!-- product is swp-->
 #endif
-#if PROD_SW
+#ifdef PROD_SW
   <!-- product is sw-->
 #endif
-#if PROD_SNB
+#ifdef PROD_SNB
   <!-- product is snb-->
 #endif
 
