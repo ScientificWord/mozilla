@@ -1,6 +1,6 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 #include productname.inc
-#ifndef PROD_SW
+
 
 function GetMathAsString(math)
 {
@@ -50,6 +50,7 @@ function CleanMathString(mathstr)
   // remove _moz_dirty=""
   mathstr = mathstr.replace (/_moz_dirty=\"\"/g, "");
 
+
   return mathstr;
 }
 
@@ -82,4 +83,4 @@ function HasEmptyMath(element)
   return (expr.indexOf("tempinput=\"true\"") > -1);
 }
 
-#endif
+
