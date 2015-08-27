@@ -1047,7 +1047,7 @@ function printTeX(preview )
             exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
             exefile.append("shell."+ extension);
             theProcess.init(exefile);
-            arr = [pdffile.path];
+            arr = [pdffile.parent.path, pdffile.leafName];
             theProcess.run(false, arr, arr.length);
           }
           else // pdfAction == complete path to viewer
