@@ -141,7 +141,7 @@
 #ifndef PROD_SNB
       <preference id="genTeXonsave"
                   name="swp.generateTeXonsave"
-                  type="int"/>
+                  type="bool"/>
 #endif
       <preference id="fastcursor.enabled"
                   name="fastcursor.enabled"
@@ -1820,12 +1820,11 @@
       <preference id="bibTeXDatabaseDir"
                   name="swp.bibtex.dir"
                   onchange="setTextboxValue(this);"
-                  type="file"/>
-<!--       <preference id="bibTeXStyleDir"
+                  type="string"/>
+      <preference id="bibTeXStyleDir"
                   name="swp.bibtex.styledir"
                   onchange="setTextboxValue(this);"
-                  type="file"/>
- -->
+                  type="string"/>
       <preference id="bibchoice"
                   name="swp.bibchoice"
                   type="string" />
@@ -1874,17 +1873,19 @@
                     <radio name="bibRadioGroup" id="BibTeX" label="BibTeX" value="bibtex"  preference="bibchoice"/>
                   </radiogroup>
                 </hbox>
+                <spacer class="spacer" flex="1"/>
                 <label value="&bibTeXDatabaseDir.label;" accesskey="&bibTeXDatabaseDir.accesskey;" control="bibTeXDatabaseDirTextbox"/>
+                <spacer class="spacer" flex="1"/>
                 <hbox align="center">
-                  <textbox id="bibTeXDatabaseDirTextbox" style="width: 18em" />
+                  <textbox id="bibTeXDatabaseDirTextbox" style="width: 30em" preference="bibTeXDatabaseDir"/>
   			          <msibutton id="browseBibTeXDatabaseDir" label="&browseBibTeXDatabaseDir.label;" accesskey="&browseBibTeXDatabaseDir.accesskey;" oncommand="onBrowseBibTeXDatabaseDir();"/>
                 </hbox>
-                <!-- <spacer class="spacer" flex="0"/>
+                <spacer class="spacer" flex="0"/>
                 <label value="&bibTeXStyleDir.label;" accesskey="&bibTeXStyleDir.accesskey;" control="bibTeXStyleDirTextbox"/>
                 <hbox align="center">
-                  <textbox id="bibTeXStyleDirTextbox" style="width: 18em" />
+                  <textbox id="bibTeXStyleDirTextbox" style="width: 30em" preference="bibTeXStyleDir" />
   			          <msibutton id="browseBibTeXStyleDir" label="&browseBibTeXStyleDir.label;" accesskey="&browseBibTeXStyleDir.accesskey;" oncommand="onBrowseBibTeXStyleDir();"/>
-                </hbox> -->
+                </hbox>
               </groupbox>
             </vbox>
           </hbox>
