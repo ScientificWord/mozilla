@@ -561,12 +561,17 @@ function onBrowseBibTeXDatabaseDir()
   dirPicker.init(window, msiGetDialogString("filePicker.selectBibDBDir"), Components.interfaces.nsIFilePicker.modeGetFolder);
   var thePref = document.getElementById("bibTeXDatabaseDir");
   setFilePrefFromTextbox(thePref);
-  if (thePref.value && thePref.value.path && thePref.value.path.length)
-    dirPicker.displayDirectory = thePref.value;
+  var dir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  try {
+    dir.initWithPath(thePref.value);
+  }
+  catch (e) {
+    e.message;
+  }  dirPicker.displayDirectory = dir;
   var res = dirPicker.show();
   if (res == Components.interfaces.nsIFilePicker.returnOK)
   {
-    thePref.value = dirPicker.file;
+    thePref.value = dirPicker.file.path;
 //    thePref.updateElements();
 //    document.getElementById("bibTeXDatabaseDirTextbox").value = gDialog.bibTeXDBDir.path;
   }
@@ -576,14 +581,21 @@ function onBrowseBibTeXStyleDir()
 {
   var dirPicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
   dirPicker.init(window, msiGetDialogString("filePicker.selectBibDBDir"), Components.interfaces.nsIFilePicker.modeGetFolder);
+  var dir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   var thePref = document.getElementById("bibTeXStyleDir");
+  try {
+    dir.initWithPath(thePref.value);
+  }
+  catch(e) {
+    e.message;
+  }
   setFilePrefFromTextbox(thePref);
-  if (thePref.value && thePref.value.path && thePref.value.path.length)
-    dirPicker.displayDirectory = thePref.value;
+  if (dir)
+     dirPicker.displayDirectory = dir;
   var res = dirPicker.show();
   if (res == Components.interfaces.nsIFilePicker.returnOK)
   {
-    thePref.value = dirPicker.file;
+    thePref.value = dirPicker.file.path;
 //    thePref.updateElements();
 //    document.getElementById("bibTeXDatabaseDirTextbox").value = gDialog.bibTeXDBDir.path;
   }
@@ -609,7 +621,7 @@ function setTextboxValue(aPref)
     break;
   }
   if (theTextbox)
-    theTextbox.value = (aPref.value && ("path" in aPref.value)) ? aPref.value.path : "";
+    theTextbox.value = aPref.value;
 }
 
 function setFilePrefFromTextbox(aPref)
@@ -631,7 +643,7 @@ function setFilePrefFromTextbox(aPref)
   }
   if (theTextbox && theTextbox.value)
   {
-    try { aPref.value.initWithPath(theTextbox.value); }
+    try { aPref.value = theTextbox.value; }
     catch(exc) {dump("Error in preferences.js setFilePrefFromTextbox for pref [" + aPref.id + "]: [" + exc + "].\n");}
   }
 }
