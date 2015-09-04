@@ -213,15 +213,6 @@
         <tag nm="caption">
           <description>Caption for image, plot, or table</description>
         </tag>
-        <tag nm="msidisplay" hidden="1">
-          <level>*</level>
-        <!--    <contains>mml:math</contains> -->
-          <description>Display</description>
-          <discardemptyblock>true</discardemptyblock>
-        <!--   <nextafteremptyblock>bodyText</nextafteremptyblock> -->
-          <inclusion>true</inclusion>
-        </tag>
-
 			</tags>
 		</tagclass>
     <tagclass>
@@ -1025,6 +1016,13 @@
 	  		  <inclusion>true</inclusion>
 			    <contains>note</contains>
 			    <wrapper>true</wrapper>
+        </tag>
+        <tag nm="msidisplay" hidden="1">
+          <level>*</level>
+          <description>Display</description>
+          <discardemptyblock>true</discardemptyblock>
+
+          <inclusion>true</inclusion>
         </tag>
         <tag nm="citation">
           <description>Citation</description>
