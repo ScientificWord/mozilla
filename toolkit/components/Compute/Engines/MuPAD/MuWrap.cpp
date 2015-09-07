@@ -1336,34 +1336,36 @@ char *MuPADWrapper::FUNCTIONtoEstr(SEMANTICS_NODE * s_func, int& error_code)
   char *base_str = NULL;
   char *args_str = NULL;
 
-  // logs are a special case - carry a log base
-  BUCKET_REC *lb_bucket = FindBucketRec(s_func->bucket_list,
-                                        MB_LOG_BASE);
+  // logs are a special case - carry a log base, so do bessel
+  BUCKET_REC *lb_bucket = FindBucketRec(s_func->bucket_list, MB_LOG_BASE);
   if (lb_bucket && lb_bucket->first_child) {
-    SEMANTICS_NODE *s_log_base = lb_bucket->first_child;
-    if (s_log_base->semantic_type != SEM_TYP_UCONSTANT) {
-      const char *db_production = NULL;
-      U32 ID, subID;
-      if (GetdBaseNamedRecord
-          ("FUNCTIONS", "logwithbase", &db_production, ID, subID)) {
-        // logwithbase<uID8023.1>tcilog(%base%,%arg_list%)
-        delete[] new_production;
-        new_production = NULL;
+      SEMANTICS_NODE *s_log_base = lb_bucket->first_child;
+      if (s_log_base->semantic_type != SEM_TYP_UCONSTANT) {
+        const char *db_production = NULL;
+        U32 ID, subID;
+        if (!strcmp("log", s_func->contents)){
+          if (GetdBaseNamedRecord("FUNCTIONS", "logwithbase", &db_production, ID, subID)) {
+          // logwithbase<uID8023.1>tcilog(%base%,%arg_list%)
+          delete[] new_production;
+          new_production = NULL;
+          }
+        }
         np_ln = 0;
         new_production =
-          AppendStr2HeapStr(new_production, np_ln, db_production);
+            AppendStr2HeapStr(new_production, np_ln, db_production);
 
-        SEMANTICS_NODE *curr_handle = lb_bucket->first_child;
-        base_str = ProcessSemList(curr_handle, NULL, error_code);
-        if (error_code) {
-          delete[] base_str;
-          return rv;
+          SEMANTICS_NODE *curr_handle = lb_bucket->first_child;
+          base_str = ProcessSemList(curr_handle, NULL, error_code);
+          if (error_code) {
+            delete[] base_str;
+            return rv;
+          }
+        //} else {
+        //  TCI_ASSERT(0);
         }
-      } else {
-        TCI_ASSERT(0);
       }
-    }
-  }
+    
+  
 
   char *p2 = strstr(new_production, "%arg_list%");
   if (p2 && context_cmdtype != CC_UNDEFINE) {

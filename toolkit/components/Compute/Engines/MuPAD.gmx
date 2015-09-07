@@ -488,10 +488,10 @@ Ai<uID8128.0>airyAi%arg_list%
 AiryAi<uID8128.1>airyAi%arg_list%
 Bi<uID8129.0>airyBi%arg_list%
 AiryBi<uID8129.1>airyBi%arg_list%
-BesselI<uID8130.0>besselI%arg_list%
-BesselK<uID8131.0>besselK%arg_list%
-BesselJ<uID8132.0>besselJ%arg_list%
-BesselY<uID8133.0>besselY%arg_list%
+BesselI<uID8130.0>besselI(%base,%arg_list%)
+BesselK<uID8131.0>besselK(%base,%arg_list%)
+BesselJ<uID8132.0>besselJ(%base,%arg_list%)
+BesselY<uID8133.0>besselY(%base,%arg_list%)
 ;; The following don't appear to be implemented by MuPAD
 ;Fresnelf<uID8134.0>Fresnelf%arg_list%
 ;Fresnelg<uID8135.0>Fresnelg%arg_list%
