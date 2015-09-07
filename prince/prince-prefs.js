@@ -191,7 +191,7 @@ pref("swp.zoom_factor",            "1.0");
 pref("swp.defaultTableUnits", "in");
 pref("swp.bibchoice", "manual");
 pref("swp.bibtex.dir", "");
-pref("swp.bibtex.styledir", "");
+pref("swp.bibtexstyle.dir", "");
 
 pref("toolkit.defaultChromeURI", "chrome://prince/content/prince.xul");
 pref("toolkit.scrollbar.clickToScroll.scrollDelay", 100);
