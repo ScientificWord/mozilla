@@ -1,7 +1,7 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
 #ifndef ANALYZER_H
-#define ANALYZER_H
+#define ANA LYZER_H
 
 #include "CmpTypes.h"
 #include "MRequest.h"
