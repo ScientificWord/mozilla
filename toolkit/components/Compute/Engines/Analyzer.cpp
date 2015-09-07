@@ -1673,10 +1673,10 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
     return;
   }
 
-  if (IsBesselFunc(mml_msub_node)) {
-    AnalyzeBesselFunc(mml_msub_node, snode, nodes_done, pAnalyzer);
-    return;
-  }
+  //if (IsBesselFunc(mml_msub_node)) {
+  //  AnalyzeBesselFunc(mml_msub_node, snode, nodes_done, pAnalyzer);
+  //  return;
+  //}
 
   if (base) {
     BaseType bt = GetBaseType(mml_msub_node, isLHSofDef, pAnalyzer-> GetAnalyzerData(), pAnalyzer-> GetAnalyzerData() -> GetGrammar());
@@ -1692,7 +1692,7 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
 
     case BT_FUNCTION:{
         // Note that \log_{n} is handled below
-        if (sub_type == ET_NUMBER || sub_type == ET_DECORATION  || sub_type == ET_VARIABLE) {
+        if (sub_type == ET_NUMBER || sub_type == ET_DECORATION  || sub_type == ET_VARIABLE ||  sub_type == ET_EXPRESSION) {
           char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
           if (!mml_canonical_name) {
             snode->error_flag = 1;
@@ -1706,7 +1706,7 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
           //                             mml_canonical_name, mml_msub_node,
           //                             pAnalyzer -> ScrStr()) );
 		  // 
-		  pAnalyzer -> AppendIDList(mml_canonical_name, mml_msub_node);
+		      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msub_node);
           AnalyzeSubscriptedFunc(mml_msub_node, snode, nodes_done, pAnalyzer);
         } else {
           TCI_ASSERT(0);
@@ -3607,7 +3607,11 @@ void AnalyzeSubscriptedFunc(MNODE * mml_msub_node,
   snode->contents = DuplicateString(base->p_chdata);
   snode->semantic_type = SEM_TYP_FUNCTION;
 
-  if (base->p_chdata && !strcmp(base->p_chdata, "log")) {
+  if (base->p_chdata && (!strcmp(base->p_chdata, "log") || 
+                         !strcmp(base->p_chdata, "BesselI") ||
+                         !strcmp(base->p_chdata, "BesselJ") ||
+                         !strcmp(base->p_chdata, "BesselK") ||
+                         !strcmp(base->p_chdata, "BesselY"))) {
     if (base->next) {
       
       // BUCKET_REC *bucket = MakeBucketRec(MB_LOG_BASE, NULL);
@@ -4000,9 +4004,16 @@ void CreatePowerForm(MNODE* mml_base, MNODE* mml_power, SEMANTICS_NODE* snode, A
 
 
 
-void AnalyzeBesselFunc(MNODE * mml_msub_node,
-                                 SEMANTICS_NODE * snode, int& nodes_done, Analyzer* pAnalyzer)
+void AnalyzeBesselFunc(MNODE* mml_msub_node,
+                       SEMANTICS_NODE* snode, 
+                       int& nodes_done, 
+                       Analyzer* pAnalyzer)
 {
+
+  AnalyzeSubscriptedArgFunc(mml_msub_node, snode, pAnalyzer);
+
+  return;
+
   nodes_done = 1;
   char *mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
 
