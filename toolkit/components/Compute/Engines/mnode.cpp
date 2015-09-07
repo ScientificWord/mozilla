@@ -574,7 +574,7 @@ bool IsBesselFunc(MNODE * mml_msub_node)
     MNODE *sub = base->next;
     if (sub) {
       const char *base_elem = base->src_tok;
-      if (!strcmp(base_elem, "mi")) {
+      if (!strcmp(base_elem, "mi") || !strcmp(base_elem, "mo")) {
         const char *ptr = base->p_chdata;
         if (ptr && !strncmp(ptr, "Bessel", 6)) {
           rv = true;
@@ -1021,6 +1021,7 @@ MNODE* LocateOperator(MNODE* mml_list, OpIlk &op_ilk, int& advance)
       rv = rover;
       if (embellished && op_ilk != OP_prefix)
         TCI_ASSERT(0);
+      advance++;
       break;
     }
     advance++;
