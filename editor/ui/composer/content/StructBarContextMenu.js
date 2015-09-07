@@ -96,9 +96,9 @@ function StructRemoveTag()
   if (!editor) return;
 
   var element = gContextMenuFiringDocumentElement;
+  var parent = element.parentNode;
+  var childNodes = parent.childNodes;
   var offset = 0;
-  var childNodes = element.parentNode.childNodes;
-
   while (childNodes[offset] != element) {
     ++offset;
   }
