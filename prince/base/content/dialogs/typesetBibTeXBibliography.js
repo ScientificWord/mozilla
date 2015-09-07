@@ -1,5 +1,5 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
-
+Components.utils.import("resource://app/modules/pathutils.jsm");
 
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
@@ -40,21 +40,45 @@ function Startup()
 function InitDialog()
 {
   var prefBranch = GetPrefs();
-  var fileDir =
-    prefBranch.getComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile);
-  if (fileDir != null)
+  var fileDir;
+  fileDir = getPreferredBibTeXDir();
+  // try {
+  //   fileDir = prefBranch.getComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile);
+  //   if (fileDir) {  //old style pref used files. We've switched to paths
+  //     fileDir = fileDir.path;
+  //     prefBranch.setCharPref("swp.bibtex.dir", fileDir);
+  //   }
+  // }
+  // catch(e) {
+  //   fileDir = prefBranch.getCharPref("swp.bibtex.dir");
+  // }
+  if (fileDir != null) {
     gDialog.userBibTeXDir = fileDir;
-  else gDialog.userBibTeXDir = null;
-  fillDatabaseFileListbox(fileDir);
-  fillStyleFileListbox(fileDir);
-//  checkDisableControls();
+    fillDatabaseFileListbox(fileDir.path);
+  }
+  else {
+    gDialog.userBibTeXDir = null;
+  }
 
-//  checkInaccessibleAcceleratorKeys(document.documentElement);
+  var styleDir;
 
-//  gDialog.tabOrderArray = new Array( gDialog.positionSpecGroup,
-//                                       document.documentElement.getButton("accept"),
-//                                       document.documentElement.getButton("cancel") );
-
+  styleDir = getPreferredBibTeXStyleDir();
+  //   styleDir = prefBranch.getComplexValue("swp.bibtexstyle.dir", Components.interfaces.nsILocalFile);
+  //   if (styleDir) {  //old style pref used files. We've switched to paths
+  //     styleDir = styleDir.path;
+  //     prefBranch.setCharPref("swp.bibtexstyle.dir", styleDir);
+  //   }
+  // }
+  // catch(e) {
+  //   styleDir = prefBranch.getCharPref("swp.bibtexstyle.dir");
+  // }
+  if (styleDir != null) {
+    gDialog.userBibTeXStyleDir = styleDir;
+    fillStyleFileListbox(styleDir.path);
+  }
+  else {
+    gDialog.userBibTeXStyleDir = null;
+  }
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
@@ -172,16 +196,17 @@ function getBibTeXStyleDirectories()
 }
 
 
-function fillDatabaseFileListbox(fileDir)
+function fillDatabaseFileListbox(fileDirPath)
 {
 //  var theListbox = document.getElementById("databaseFileListbox");
   //Clear the listbox
   var rowCount = gDialog.dbFileListbox.getRowCount();
+  var fileDir = msiFileFromAbsolutePath( fileDirPath );
   var bibDirs;
   for (var i = rowCount - 1; i >= 0; --i)
     gDialog.dbFileListbox.removeItemAt(i);
 
-  if (fileDir) {
+  if (fileDirPath) {
     bibDirs = [fileDir];
   }
   else bibDirs= getBibTeXDirectories();  //returns an array of 2 nsILocalFiles
@@ -207,20 +232,27 @@ function fillDatabaseFileListbox(fileDir)
   }
 }
 
-function fillStyleFileListbox(fileDir)
+function fillStyleFileListbox(filePath)
 {
   var theListbox = document.getElementById("styleFileListbox");
   //Clear the listbox
   var rowCount = theListbox.getRowCount();
+  var fileDir;
+  var bibDir;
+  var sortedDirList;
+
   var j;
   for (var i = rowCount - 1; i >= 0; --i)
     theListbox.removeItemAt(i);
-  var bibDirs;
-  if (fileDir) {
-    fileDir.append('bst');
+  var bibDirs = [];
+  if (filePath) {
+    fileDir = msiFileFromAbsolutePath(filePath);
+    // fileDir && fileDir.append('bst');
     bibDirs = [fileDir];
   }
-  else bibDirs = getBibTeXStyleDirectories();  //returns an nsiLocalFile array
+  else {
+    bibDirs = getBibTeXStyleDirectories();  //returns an nsiLocalFile array
+  }
   for (j=bibDirs.length - 1; j >= 0; j--)
   {
     bibDir = bibDirs[j];

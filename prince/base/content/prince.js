@@ -756,17 +756,17 @@ compileTeXFile:
  = */
 /* ==== */
 
-function setBibTeXRunArgs(passData)
-{
-  var bibTeXDBaseDir = GetLocalFilePref("swp.bibtex.dir");
-  var bibTeXDPath;
-  var bibtexData;
-  if (bibTeXDBaseDir)
-    bibtexData = [passData.args[0],"-d", bibTeXDBaseDir.path ];
-  else
-    bibtexData = [passData.args[0]];
-  return bibtexData;
-}
+// function setBibTeXRunArgs(passData)
+// {
+//   var bibTeXDBaseDir = GetLocalFilePref("swp.bibtex.dir");
+//   var bibTeXDPath;
+//   var bibtexData;
+//   if (bibTeXDBaseDir)
+//     bibtexData = [passData.args[0],"-d", bibTeXDBaseDir.path ];
+//   else
+//     bibtexData = [passData.args[0]];
+//   return bibtexData;
+// }
 
 function removeOldPDFFiles(outputDir)
 {
@@ -824,8 +824,8 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   passData.passCount = compileInfo.passCount;
   passData.runMakeIndex = compileInfo.runMakeIndex;
   passData.runBibTeX = compileInfo.runBibTeX;
-  if (passData.runBibTeX)
-    passData.bibtexArgs = setBibTeXRunArgs(passData);
+  // if (passData.runBibTeX)
+  //   passData.bibtexArgs = setBibTeXRunArgs(passData);
 
   var i;
   window.openDialog("chrome://prince/content/passes.xul","about", "chrome,modal=yes,resizable=yes,alwaysRaised=yes",

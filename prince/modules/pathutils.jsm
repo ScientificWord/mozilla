@@ -1,18 +1,28 @@
 var EXPORTED_SYMBOLS = ["msiPathFromFileURL", "msiFileURLFromAbsolutePath",
 	"msiFileURLFromChromeURI", "msiFileURLFromFile", "msiURIFromString",
-	"msiFileURLStringFromFile", "msiPathFromFileURL" , "msiFileFromFileURL"];
+	"msiFileURLStringFromFile", "msiPathFromFileURL" , "msiFileFromFileURL", "msiFileFromAbsolutePath"];
 
 // msiFileURLFromAbsolutePath
 // Takes an absolute path (the direction of the slashes is OS-dependent) and
 // produces a file URL
 
-function msiFileURLFromAbsolutePath( absPath )
-{
+function msiFileFromAbsolutePath( absPath ) {
   try {
     var file = Components.classes["@mozilla.org/file/local;1"].
                          createInstance(Components.interfaces.nsILocalFile);
     file.initWithPath( absPath );
-    return msiFileURLFromFile( file );
+    return file;
+  }
+  catch (e)
+  {
+    dump("//// error in msiFileFromAbsolutePath: "+e.message+"\n");
+  }
+}
+
+function msiFileURLFromAbsolutePath( absPath )
+{
+  try {
+    return msiFileURLFromFile( msiFileFromAbsolutePath( absPath ));
   }
   catch (e)
   {

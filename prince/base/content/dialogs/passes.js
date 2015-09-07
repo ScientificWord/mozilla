@@ -27,7 +27,7 @@ var timerCallback =
          sentinel.remove(false);
          if (passData.runBibTeX)
          {
-           theBibTeXProcess.run(blocking, passData.bibtexArgs, passData.bibtexArgs.length);
+           theBibTeXProcess.run(blocking, passData.args, passData.args.length);
            passData.runBibTeX = false;
          }
          else if (passData.runMakeIndex)
@@ -61,7 +61,9 @@ var timerCallback =
 
 function Init()
 {
-
+  var prefs = GetPrefs();
+  var bibinputs;
+  var bstinputs;
   passData = window.arguments[0];
   passData.passCounter = 1;
   document.getElementById("numpasses").value = passData.passCount;
@@ -80,6 +82,11 @@ function Init()
   {
     theBibTeXProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theBibTeXProcess.init(passData.bibtexexe);
+    bibinputs = prefs.getCharPref("swp.bibtex.dir");
+    if (bibinputs.length > 0) {
+      passData.args.push('-d');
+      passData.args.push(bibinputs);
+    }
   }
   Components.utils.reportError("in Init\n");
   var dlg = document.getElementById("passesDlg");
