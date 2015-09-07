@@ -116,7 +116,7 @@ function licenseTimeRemaining() {
 function licenseExpDate() {
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  var prefs = GetPrefs();
+  // var prefs = GetPrefs();
   var expDate, remaining;
   var day = new Date(2000,0,1) - new Date(2000,0,0);
   var licenseDateStr = editor.mAppUtils.licensedUntil;
@@ -11390,4 +11390,44 @@ function makeRelPathAbsolute(relpath, editorElement) {
     dump('Error: ' + e + '\n');
   }
   return longfilename;
+}
+
+function getPreferredBibTeXDir()
+{
+  var bibDir;
+  var prefs = GetPrefs();
+  var bibDirPath = prefs.getCharPref('swp.bibtex.dir');
+  if (bibDirPath && bibDirPath.length > 0) {
+    bibDir = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
+    bibDir.initWithPath(bibDirPath);
+    return bibDir;
+  }
+  var env = getEnvObject();
+  bibDir = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
+  bibDir.initWithPath(env["MSITEX"]);
+  if (!bibDir) return null;
+  bibDir.append('texmf-dist');
+  bibDir.append('bibtex');
+  bibDir.append('bib');
+  return bibDir;
+}
+
+function getPreferredBibTeXStyleDir()
+{
+  var bibDir;
+  var prefs = GetPrefs();
+  var bibDirPath = prefs.getCharPref('swp.bibtexstyle.dir');
+  if (bibDirPath && bibDirPath.length > 0) {
+    bibDir = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
+    bibDir.initWithPath(bibDirPath);
+    return bibDir;
+  }
+  var env = getEnvObject();
+  bibDir = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
+  bibDir.initWithPath(env["MSITEX"]);
+  if (!bibDir) return null;
+  bibDir.append('texmf-dist');
+  bibDir.append('bibtex');
+  bibDir.append('bst');
+  return bibDir;
 }
