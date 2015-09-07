@@ -49,11 +49,10 @@ function InitDialog()
   var editorControl = document.getElementById("remarkEditControl");
   msiInitializeEditorForElement(editorControl, gDialog.remark);
   var prefBranch = GetPrefs();
-  var fileDir = 
-    prefBranch.getComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile);
-  if (fileDir != null)
+  var fileDir = getPreferredBibTeXDir();
+  if (fileDir)
     gDialog.userBibTeXDir = fileDir;
-  else gDialog.userBibTeXDir = nulll;
+  else gDialog.userBibTeXDir = null;
   fillDatabaseFileListbox(fileDir);
   checkDisableControls();
 
@@ -62,7 +61,7 @@ function InitDialog()
 //  gDialog.tabOrderArray = new Array( gDialog.positionSpecGroup,
 //                                       document.documentElement.getButton("accept"),
 //                                       document.documentElement.getButton("cancel") );
-  
+
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
@@ -116,15 +115,15 @@ function onAccept()
     data.databaseFile = null;
   data.bBibEntryOnly = document.getElementById("bibEntryOnlyCheckbox").checked;
 
-  if (gDialog.userBibTeXDir && gDialog.userBibTeXDir.exists())
-  {
-    var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-    try
-    {
-      prefs.setComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile, gDialog.userBibTeXDir);
-    }
-    catch(exception) {}
-  }   
+  // if (gDialog.userBibTeXDir && gDialog.userBibTeXDir.exists())
+  // {
+  //   var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+  //   try
+  //   {
+  //     prefs.setComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile, gDialog.userBibTeXDir);
+  //   }
+  //   catch(exception) {}
+  // }
 //  else prefs.setComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile, null);
 
   var parentEditorElement = msiGetParentEditorElementForDialog(window);

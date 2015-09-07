@@ -60,7 +60,10 @@
 <!ENTITY bibTeXExecutable.accesskey "B">
 <!ENTITY browseBibTeXExecutable.label "Browse">
 <!ENTITY browseBibTeXExecutable.accesskey "r">
+<!ENTITY defBibChoice "Default bibliography choice">
+<!ENTITY bibDirInstructions "To use the TeX defaults, leave the next two items blank.">
 <!ENTITY bibTeXDatabaseDir.label "BibTeX database directory">
+<!ENTITY bibTeXDirs.label "BibTeX database directory">
 <!ENTITY bibTeXDatabaseDir.accesskey "d">
 <!ENTITY browseBibTeXDatabaseDir.label "Browse">
 <!ENTITY browseBibTeXDatabaseDir.accesskey "o">
