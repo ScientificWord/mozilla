@@ -13,6 +13,7 @@
 <!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/typesetOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 

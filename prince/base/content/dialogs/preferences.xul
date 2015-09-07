@@ -1822,7 +1822,7 @@
                   onchange="setTextboxValue(this);"
                   type="string"/>
       <preference id="bibTeXStyleDir"
-                  name="swp.bibtex.styledir"
+                  name="swp.bibtexstyle.dir"
                   onchange="setTextboxValue(this);"
                   type="string"/>
       <preference id="bibchoice"
@@ -1866,7 +1866,7 @@
   			          <msibutton id="browseBibTeXExecutable" label="&browseBibTeXExecutable.label;" accesskey="&browseBibTeXExecutable.accesskey;" oncommand="onBrowseBibTeXExecutable();"/>
                 </hbox>
                 <spacer class="spacer" flex="0"/> -->
-                <label>Default bibliography choice</label>
+                <label>&defBibChoice;</label>
                 <hbox>
                   <radiogroup id="bibRadioGroup" orient="horizontal" preference="bibchoice"     oncommand="">
                     <radio name="bibRadioGroup" id="manual" label="Manual" value="manual"  preference="bibchoice"/>
@@ -1874,11 +1874,14 @@
                   </radiogroup>
                 </hbox>
                 <spacer class="spacer" flex="1"/>
+                <description>
+                  &bibDirInstructions;
+                </description>
                 <label value="&bibTeXDatabaseDir.label;" accesskey="&bibTeXDatabaseDir.accesskey;" control="bibTeXDatabaseDirTextbox"/>
                 <spacer class="spacer" flex="1"/>
                 <hbox align="center">
                   <textbox id="bibTeXDatabaseDirTextbox" style="width: 30em" preference="bibTeXDatabaseDir"/>
-  			          <msibutton id="browseBibTeXDatabaseDir" label="&browseBibTeXDatabaseDir.label;" accesskey="&browseBibTeXDatabaseDir.accesskey;" oncommand="onBrowseBibTeXDatabaseDir();"/>
+	          <msibutton id="browseBibTeXDatabaseDir" label="&browseBibTeXDatabaseDir.label;" accesskey="&browseBibTeXDatabaseDir.accesskey;" oncommand="onBrowseBibTeXDatabaseDir();"/>
                 </hbox>
                 <spacer class="spacer" flex="0"/>
                 <label value="&bibTeXStyleDir.label;" accesskey="&bibTeXStyleDir.accesskey;" control="bibTeXStyleDirTextbox"/>
