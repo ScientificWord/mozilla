@@ -230,7 +230,7 @@ function getEnvObject()
         line = lines[i];
         envitem = line.split(/\s+/);
         if (envitem[0] == 'setx') {
-          env[envitem[1]] = envitem.slice(2).join(' ');
+          env[envitem[1]] = envitem.slice(2).join(' ').replace(/\s+$/,'');
         }
       }
     }
@@ -243,7 +243,7 @@ function getEnvObject()
           line = line.replace(/export\s*/, '');
           envitem = line.split("=");
         }
-        env[envitem[0]] = envitem[1];
+        env[envitem[0]] = envitem[1].replace(/\s+$/,'');
       }
     }
   }
