@@ -1257,7 +1257,7 @@ bool InputByteFile::Open(const Filename& fullpath){
       path = SearchFor(filepath.c_str());
       if (path == 0){
          //LOG("\nFailed to locate " << filepath.c_str());
-         std::cout << "\nNo coverage: " << filepath.c_str();
+         std::cout << "\nNo special treatment: " << filepath.c_str();
          return false;
       } else {
          //LOG("\nFound file"<< filepath.c_str());
