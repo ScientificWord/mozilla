@@ -456,11 +456,11 @@ msiTagListManager::BuildContainsListForElement(nsIDOMElement * element, const ns
     // Write out the list
     if (tagContainsCount >0)
     {
-      printf("\nContains list for tag %S:\n", pContainsList->name.BeginReading());
+      // printf("\nContains list for tag %S:\n", pContainsList->name.BeginReading());
       pTagKeyList = pContainsList->pListHead;
       while (pTagKeyList)
       {
-        printf("  can contain \"%S\n", ((nsString)pTagKeyList->key).BeginReading());
+        // printf("  can contain \"%S\n", ((nsString)pTagKeyList->key).BeginReading());
         pTagKeyList = pTagKeyList->pNext;
       }
     }
@@ -1222,11 +1222,11 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
 #if DEBUG_barryNo || DEBUG_BarryNo
   DebExamineNode(firstNode);
   DebExamineNode(*secondNode);
-  printf("=====FixTagsAfterSplit=============================================\n");
-  printf("==firstNode:\n");
-  meditor->DumpNode(firstNode);
-  printf("==*secondNode:\n");
-  meditor->DumpNode(*secondNode);
+  // printf("=====FixTagsAfterSplit=============================================\n");
+  // printf("==firstNode:\n");
+  // meditor->DumpNode(firstNode);
+  // printf("==*secondNode:\n");
+  // meditor->DumpNode(*secondNode);
 #endif
 // find out what the second node should be
   nsString firstNodeName;
@@ -1332,11 +1332,11 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   }
 // diagnostics:
 #if DEBUG_barry || DEBUG_Barry
-  printf("==Leaving: firstNode: \n");
-  editor->DumpNode(firstNode);
-  printf("==*secondNode:\n");
-  editor->DumpNode(*secondNode);
-  printf("===================================================================\n");
+  // printf("==Leaving: firstNode: \n");
+  // editor->DumpNode(firstNode);
+  // printf("==*secondNode:\n");
+  // editor->DumpNode(*secondNode);
+  // printf("===================================================================\n");
 #endif
   return NS_OK;
 }
