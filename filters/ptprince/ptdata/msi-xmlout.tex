@@ -1780,14 +1780,18 @@
         %%\char`\\\msitag{#2}%
       \else
         \msihmode
-        \if@in@texttag
-           \expandafter\@ttclose\expandafter{\@lasttexttag}%
+        \ifnum\msi@inpreamble=1
+           \msihmode\expandafter\msitopreambleextra\expandafter{\csname #2\endcsname}%
         \else
-           \@in@texttagtrue
+           \if@in@texttag
+              \expandafter\@ttclose\expandafter{\@lasttexttag}%
+           \else
+              \@in@texttagtrue
+           \fi
+           \gdef\@lasttexttag{#1}%
+           \msiopentag{#1}{<#1>}%
+           \aftergroup\@closelasttexttag
         \fi
-        \gdef\@lasttexttag{#1}%
-        \msiopentag{#1}{<#1>}%
-        \aftergroup\@closelasttexttag
       \fi
    }
 }
@@ -1805,11 +1809,11 @@
      \ifmmode
        \expandafter\string\csname #2\endcsname%
      \else
-       \msihmode\msiopentag{#1}{<#1>}%
-       \def\endelem{\msiclosetag{#1}{</#1>}}%
-       \bgroup
-          \aftergroup\endelem
-          \let\@next\@gobbleit
+          \msihmode\msiopentag{#1}{<#1>}%
+          \def\endelem{\msiclosetag{#1}{</#1>}}%
+          \bgroup
+             \aftergroup\endelem
+             \let\@next\@gobbleit
      \fi
      \@next}}
 
