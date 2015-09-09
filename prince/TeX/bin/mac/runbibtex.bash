@@ -17,7 +17,7 @@ do
   shift
 done
 
-export TEXMF_HOME=$MSITEXMF_HOME/
+export TEXMF_HOME=$MSITEXMF_HOME
 echo BIBINPUTS=$BIBINPUTS > ~/log
 bibtex main
 echo done > sentinel
