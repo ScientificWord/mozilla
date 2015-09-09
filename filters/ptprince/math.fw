@@ -125,7 +125,7 @@ void ScanMath()
         LOG("\n----" << CurTok()
                      << " ERROR -- no command code.");
 
-        std::cout << "\n-- Undefined " ;
+        std::cout << "\n-- Passing through: " ;
         String s = Symbols::GetName(CurTok().Symbol());
         std::cout << "\\";
         for (int i = 0; i < s.Size(); ++i){
