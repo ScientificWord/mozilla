@@ -277,10 +277,12 @@ var graphicsConverter = {
   {
     var theText = this.getFileAsString(epsFile);
     var dimensions = {width: 0, height: 0};
-    var regex = /%%BoundingBox: (\d+) (\d+) (\d+) (\d+)/;
+    var regex = /%%BoundingBox:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
     var match = regex.exec(theText);
-    dimensions.width = match[3] - match[1];
-    dimensions.height = match[4] - match[2];
+    if (match){
+      dimensions.width = match[3] - match[1];
+      dimensions.height = match[4] - match[2];
+    }
     return dimensions;
 
   },
@@ -735,7 +737,7 @@ var graphicsConverter = {
     }
     var graphicURI = msiURIFromString(gfxFileStr);
     var graphicFile = msiFileFromFileURL(graphicURI);
-    var importName = this.copyAndConvert(graphicFile, false, theWidth, theHeight);
+    var importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
 
     if (importName){
       objElement.setAttribute("src", importName);
