@@ -1720,10 +1720,10 @@
   \gdef\strut{\msitag{<vspace type="strut" lineHt="100%"/>}}
 \egroup
 
-\bgroup
-  \catcode`\%=12
-  \gdef\mathstrut{\msitag{<vspace type="mathStrut" lineHt="100%"/>}}
-\egroup
+%\bgroup
+%  \catcode`\%=12
+%  \gdef\mathstrut{\ifmmode\string\mathstrut\else\msitag{<vspace type="mathStrut" lineHt="100%"/>\fi}}
+%\egroup
 
 \def\vspace{%
   \@ifnextchar*{\@vspacestar}{\@vspace}}
