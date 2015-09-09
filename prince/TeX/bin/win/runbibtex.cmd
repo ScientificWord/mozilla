@@ -1,9 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
-# $1 is the tex directory we are working in
-# optional "-d <directory>" for a non-standard BIBINPUTS
+REM $1 is the tex directory we are working in
+REM optional "-d <directory>" for a non-standard BIBINPUTS
 
-setx BIBINPUTS=
+echo runbibtex
+
+set BIBINPUTS=
 cd %1
 shift
 
@@ -18,12 +20,16 @@ GOTO Loop
 goto doIt
 :setInputDir
 shift
-setx BIBINPUTS=%1
+set BIBINPUTS=%1
 
 :doIt
 
-setx TEXMF_HOME=%MSITEXMF_HOME%
+set TEXMF_HOME=%MSITEXMF_HOME%
 set path="%MSITEXBIN%":%path%
+
+echo BIBINPUTS=%BIBINPUTS%
+echo PATH=%PATH%
 bibtex main
 echo done > sentinel
+set /p name= Press return to continue
 endlocal
