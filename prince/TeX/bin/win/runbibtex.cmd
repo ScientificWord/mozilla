@@ -24,9 +24,6 @@ set BIBINPUTS=%1
 
 set TEXMF_HOME=%MSITEXMF_HOME%
 set path="%MSITEXBIN%":%path%
-
-echo BIBINPUTS=%BIBINPUTS%
-echo PATH=%PATH%
 bibtex main
 echo done > sentinel
 endlocal
