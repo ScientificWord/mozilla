@@ -221,16 +221,19 @@ function getEnvObject()
     var text = myXMLHTTPRequest.responseText;
     var lines = text.split("\n");
     var line;
-    var envitem;
+    var envitems;
+    var item;
     var env = {};
     var i;
     if (os == "win") {
       for (i = 0; i < lines.length; i++)
       {
         line = lines[i];
-        envitem = line.split(/\s+/);
-        if (envitem[0] == 'setx') {
-          env[envitem[1]] = envitem.slice(2).join(' ').replace(/\s+$/,'');
+        envitems = line.split(/\s+/);
+        if (envitems[0] == 'setx') {
+          item = envitems.slice(2).join(' ');
+          item = item.replace(/["']/g, '');
+          env[envitems[1]] = item.replace(/\s+$/,'');
         }
       }
     }
@@ -241,9 +244,11 @@ function getEnvObject()
         if (line.indexOf('export') == 0)
         {
           line = line.replace(/export\s*/, '');
-          envitem = line.split("=");
+          envitems = line.split("=");
         }
-        env[envitem[0]] = envitem[1].replace(/\s+$/,'');
+        item = envitems[1];
+        item = item.replace(/["']/g, '');
+        env[envitems[0]] = envitems[1].replace(/\s+$/,'');
       }
     }
   }
