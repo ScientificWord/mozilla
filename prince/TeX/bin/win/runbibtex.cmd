@@ -29,5 +29,4 @@ echo BIBINPUTS=%BIBINPUTS%
 echo PATH=%PATH%
 bibtex main
 echo done > sentinel
-set /p name= Press return to continue
 endlocal
