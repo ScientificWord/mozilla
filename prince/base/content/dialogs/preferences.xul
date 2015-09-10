@@ -60,6 +60,9 @@
       <preference id="defaultshell"
                   name="swp.defaultShell"
                   type="string"/>
+      <preference id="defaultDocDir"
+                  name="swp.prefDocumentDir"
+                  type="string"/>
       <preference id="openLastFile"
                   name="swp.openlastfile"
                   type="bool" />
@@ -483,8 +486,14 @@
               </vbox>
             </hbox>
           </groupbox>
+          <groupbox>
+            <caption>&initialDocDir.label;</caption>
+            <hbox align="center">
+              <textbox id="prefDocDir" style="width: 30em" preference="prefDocumentDir"/>
+              <msibutton id="browseDir" label="&browseDir.label;" accesskey="&browseDir.accesskey;" oncommand="onBrowseDir("prefDocDir");"/>                 
+            </hbox>
         </tabpanel>
-        <tabpanel orient="vertical">
+        <tabpanel orient="vertical">goho
           <hbox style="height: 3in">
             <vbox style="width:2in" >
               <label value="&ShellDirectories.label;"/>
