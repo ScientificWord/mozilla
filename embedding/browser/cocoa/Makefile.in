@@ -59,7 +59,7 @@ export::
 endif
 
 libs::
-	pbxbuild -buildstyle $(BUILDSTYLE) build
+	pbxbuild -configuration $(BUILDSTYLE) build
 
 clean clobber::
 	rm -rf build
