@@ -17,6 +17,9 @@
 <!ENTITY Middle.label "Middle">
 <!ENTITY Best.label "Best">
 <!ENTITY webfiles.label "web files">
+<!ENTITY initialDocDir.label "Default directory for documents">
+<!ENTITY browseDir.label "Browse">
+<!ENTITY browseDir.accesskey "b">
 <!ENTITY ShellDirectories.label "Shell Directories">
 <!ENTITY Name.label "Name">
 <!ENTITY Date.label "Date">

@@ -365,7 +365,7 @@ function openTeX()
     {
       prefs = GetPrefs();
       prefdir = prefs.getCharPref("swp.prefDocumentDir");
-      if (prefdir) {
+      if (prefdir && prefdir.length > 0) {
         docdirname = prefdir;
         // msidump("swp.prefDocumentDir is ", prefdir + "\n");
         docdir = Components.classes["@mozilla.org/file/local;1"].
