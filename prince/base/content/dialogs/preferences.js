@@ -555,6 +555,27 @@ function onBrowseBibTeXExecutable()
   }
 }
 
+function onBrowseDir( textid )
+{
+  var filePicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+  filePicker.init(window, msiGetDialogString("filePicker.selectDir"), Components.interfaces.nsIFilePicker.modeOpen);
+  filePicker.appendFilters(Components.interfaces.nsIFilePicker.filterApps);
+  var thePref = document.getElementById(textid);
+  setFilePrefFromTextbox(thePref);
+  if (thePref.value && thePref.value.path && thePref.value.path.length)
+  {
+    filePicker.defaultString = thePref.value.leafName;
+    filePicker.displayDirectory = thePref.value.parent;
+  }
+  var res = filePicker.show();
+  if (res == Components.interfaces.nsIFilePicker.returnOK)
+  {
+    thePref.value = filePicker.file;
+//    thePref.updateElements();
+//    document.getElementById("bibTeXExecutableTextbox").value = gDialog.bibTeXExe.path;
+  }
+}
+
 function onBrowseBibTeXDatabaseDir()
 {
   var dirPicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
