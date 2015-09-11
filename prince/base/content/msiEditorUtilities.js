@@ -11392,11 +11392,15 @@ function makeRelPathAbsolute(relpath, editorElement) {
   return longfilename;
 }
 
-function getPreferredBibTeXDir()
+function getPreferredBibTeXDir(leaf)
 {
   var bibDir;
   var prefs = GetPrefs();
-  var bibDirPath = prefs.getCharPref('swp.bibtex.dir');
+  var bibDirPath;
+  if (leaf === "bib")
+    bibDirPath = prefs.getCharPref('swp.bibtex.dir');
+  else
+    bibDirPath =  prefs.getCharPref('swp.bibtexstyle.dir');
   if (bibDirPath && bibDirPath.length > 0) {
     bibDir = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
     bibDir.initWithPath(bibDirPath);
@@ -11408,7 +11412,7 @@ function getPreferredBibTeXDir()
   if (!bibDir) return null;
   bibDir.append('texmf-dist');
   bibDir.append('bibtex');
-  bibDir.append('bib');
+  bibDir.append(leaf);
   return bibDir;
 }
 
