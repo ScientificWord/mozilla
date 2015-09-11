@@ -27,6 +27,9 @@
             persist="height width xpos ypos"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+<script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+
+
 #ifndef PROD_SW
 #include ../keysfordialogs.inc
 
@@ -59,6 +62,9 @@
     <preferences>
       <preference id="defaultshell"
                   name="swp.defaultShell"
+                  type="string"/>
+      <preference id="defaultDocDir"
+                  name="swp.prefDocumentDir"
                   type="string"/>
       <preference id="openLastFile"
                   name="swp.openlastfile"
@@ -483,8 +489,15 @@
               </vbox>
             </hbox>
           </groupbox>
+          <groupbox>
+            <caption>&initialDocDir.label;</caption>
+            <hbox align="center">
+              <textbox id="prefDocDir" style="width: 30em" preference="defaultDocDir"/>
+              <msibutton id="browseDir" label="&browseDir.label;" accesskey="&browseDir.accesskey;" oncommand="onBrowseDir('prefDocDir');"/>                 
+            </hbox>
+          </groupbox>
         </tabpanel>
-        <tabpanel orient="vertical">
+        <tabpanel orient="vertical">goho
           <hbox style="height: 3in">
             <vbox style="width:2in" >
               <label value="&ShellDirectories.label;"/>
