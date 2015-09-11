@@ -35,8 +35,14 @@ function initialize()
   showShellsInDir(tree);
   setGraphicLayoutPreferences("graphics");
   setGraphicLayoutPreferences("plot");
-  initPlotItemPreferences();
-  setTypesetFilePrefTestboxes();
+#ifndef PROD_SW
+  try {
+    initPlotItemPreferences();
+  }
+  catch(e) {}
+#endif
+  setTypesetFilePrefTextboxes();
+
 }
 
 function locationChanged()
@@ -549,9 +555,36 @@ function onBrowseBibTeXExecutable()
   var res = filePicker.show();
   if (res == Components.interfaces.nsIFilePicker.returnOK)
   {
-    thePref.value = filePicker.file;
+    thePref.value = filePicker.file.path;
 //    thePref.updateElements();
 //    document.getElementById("bibTeXExecutableTextbox").value = gDialog.bibTeXExe.path;
+  }
+}
+
+function onBrowseDir( textid )
+{
+  var filePicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+  filePicker.init(window, msiGetDialogString("filePicker.selectDir"), Components.interfaces.nsIFilePicker.modeGetFolder);
+  filePicker.appendFilters(Components.interfaces.nsIFilePicker.filterApps);
+  var textbox = document.getElementById(textid);
+  var file;
+  var thePref = document.getElementById(textbox.getAttribute("preference"));
+  if (textbox.value && textbox.value.path && textbox.value.path.length)
+  {
+    try {
+      file = msiFileFromPath(textbox.value);
+    }
+    catch(e) {
+
+    }
+    filePicker.defaultString = file.leafName;
+    filePicker.displayDirectory = file.parent;
+  }
+  var res = filePicker.show();
+  if (res == Components.interfaces.nsIFilePicker.returnOK)
+  {
+    thePref.value = filePicker.file.path;
+    textbox.value = filePicker.file.path;
   }
 }
 
@@ -601,6 +634,28 @@ function onBrowseBibTeXStyleDir()
   }
 }
 
+
+function systemDocDir()
+{
+  var dirkey;
+  var docdir;
+  var prefdir;
+  if (getOS(window) == "win")
+    dirkey = "Pers";
+  else
+  if (getOS(window) =="osx")
+    dirkey = "UsrDocs";
+  else
+    dirkey = "Home";
+  // if we can't find the one in the prefs, get the default
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
+  prefdir = GetString("DefaultDocDir");
+  docdir.append(prefdir);
+  return docdir.path;
+}
+
+
 function setTextboxValue(aPref)
 {
   if (!aPref)
@@ -617,11 +672,25 @@ function setTextboxValue(aPref)
     case "bibTeXStyleDir":
       theTextbox = document.getElementById("bibTeXStyleDirTextbox");
     break;
+    case "defaultDocDir":
+      theTextbox = document.getElementById("prefDocDir");
+    break;
     default:
     break;
   }
   if (theTextbox)
-    theTextbox.value = aPref.value;
+    if (aPref.id === 'defaultDocDir')
+    {
+      if (aPref.value && aPref.value.length > 0)
+      {
+        theTextBox.value = aPref.value;
+      }
+      else {
+        theTextbox.value = systemDocDir(); // The value if the pref has never been set.
+      }
+    }
+    else
+      theTextbox.value = aPref.value;
 }
 
 function setFilePrefFromTextbox(aPref)
@@ -638,6 +707,8 @@ function setFilePrefFromTextbox(aPref)
     case "bibTeXStyleDir":
       theTextbox = document.getElementById("bibTeXStyleDirTextbox");
     break;
+    case "defaultDocDir":
+      theTextbox = document.getElementById("")
     default:
     break;
   }
@@ -648,18 +719,24 @@ function setFilePrefFromTextbox(aPref)
   }
 }
 
-function setTypesetFilePrefTestboxes()
+function setTypesetFilePrefTextboxes()
 {
+#ifndef PROD_SNB
   setTextboxValue(document.getElementById("bibTeXExecutable"));
   setTextboxValue(document.getElementById("bibTeXDatabaseDir"));
   setTextboxValue(document.getElementById("bibTeXStyleDir"));
+#endif
+  setTextboxValue(document.getElementById("defaultDocDir"));
 }
 
 function getTypesetFilePrefs()
 {
+#ifndef PROD_SNB
   setFilePrefFromTextbox(document.getElementById("bibTeXExecutable"));
   setFilePrefFromTextbox(document.getElementById("bibTeXDatabaseDir"));
   setFilePrefFromTextbox(document.getElementById("bibTeXStyleDir"));
+#endif
+  setFilePrefFromTextBox(document.getElementById('defaultDocDir'));
 }
 
 function initUnitsControl(unitBox, pref, controlArray)
