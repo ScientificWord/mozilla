@@ -3,8 +3,6 @@ setlocal enabledelayedexpansion
 REM $1 is the tex directory we are working in
 REM optional "-d <directory>" for a non-standard BIBINPUTS
 
-echo runbibtex
-
 set BIBINPUTS=
 cd %1
 shift
@@ -25,7 +23,7 @@ set BIBINPUTS=%1
 :doIt
 
 set TEXMF_HOME=%MSITEXMF_HOME%
-set path="%MSITEXBIN%":%path%
+set path=%MSITEXBIN%
 
 echo BIBINPUTS=%BIBINPUTS%
 echo PATH=%PATH%
