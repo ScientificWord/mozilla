@@ -41,7 +41,7 @@ function InitDialog()
 {
   var prefBranch = GetPrefs();
   var fileDir;
-  fileDir = getPreferredBibTeXDir();
+  fileDir = getPreferredBibTeXDir("bib");
   // try {
   //   fileDir = prefBranch.getComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile);
   //   if (fileDir) {  //old style pref used files. We've switched to paths
@@ -62,7 +62,7 @@ function InitDialog()
 
   var styleDir;
 
-  styleDir = getPreferredBibTeXStyleDir();
+  styleDir = getPreferredBibTeXDir("bst");
   //   styleDir = prefBranch.getComplexValue("swp.bibtexstyle.dir", Components.interfaces.nsILocalFile);
   //   if (styleDir) {  //old style pref used files. We've switched to paths
   //     styleDir = styleDir.path;

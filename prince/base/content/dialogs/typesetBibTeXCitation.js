@@ -5,6 +5,7 @@
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 var data;
+var gDialog;
 
 // dialog initialization code
 function Startup()
@@ -49,7 +50,7 @@ function InitDialog()
   var editorControl = document.getElementById("remarkEditControl");
   msiInitializeEditorForElement(editorControl, gDialog.remark);
   var prefBranch = GetPrefs();
-  var fileDir = getPreferredBibTeXDir();
+  var fileDir = getPreferredBibTeXDir("bib");
   if (fileDir)
     gDialog.userBibTeXDir = fileDir;
   else gDialog.userBibTeXDir = null;
