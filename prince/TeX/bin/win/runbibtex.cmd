@@ -23,7 +23,7 @@ set BIBINPUTS=%1
 :doIt
 
 set TEXMF_HOME=%MSITEXMF_HOME%
-set path="%MSITEXBIN%":%path%
+set path="%MSITEXBIN%";%path%
 bibtex main
 echo done > sentinel
 endlocal
