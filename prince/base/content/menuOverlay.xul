@@ -311,21 +311,8 @@
     <menupopup id="helpPopup" >
       <menuitem
           key="keyhelpcontents"
-#ifdef PROD_SWP
-                label="&helpmenuSWP.label;"
-                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/swp.rdf');"
-                id="helpmenuSWP"
-#endif
-#ifdef PROD_SW
-                label="&helpmenuSW.label;"
-                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/sw.rdf');"
-                id="helpmenuSW"
-#endif
-#ifdef PROD_SNB
-                label="&helpmenuSNB.label;"
-                oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/snb.rdf');"
-                id="helpmenuSNB"
-#endif
+          observes="cmd_help_contents"
+          id="helpmenuContents"
       />
       <menuseparator/>
       <menuitem id="helpmenuWebsite"
@@ -516,6 +503,17 @@
     <command id="cmd_newDocument"  oncommand="msiGoDoCommand('cmd_new');"/>
     <command id="cmd_open"         oncommand="msiOpenCommand.doCommand('cmd_open');"/>
     <command id="cmd_close"        label="&closeCmd.label;"         oncommand="msiGoDoCommand('cmd_close')"/>
+    <command id="cmd_help_contents" 
+#ifdef PROD_SWP
+      label="&helpmenuSWP.label;"
+#endif
+#ifdef PROD_SW
+      label="&helpmenuSW.label;"
+#endif
+#ifdef PROD_SNB
+      label="&helpmenuSNB.label;"
+#endif
+      oncommand="msiGoDoCommand('cmd_help_contents')" />
     <command id="cmd_printSetup"   oncommand="msiGoDoCommand('cmd_printSetup')"/>
 <!--
     <command id="cmd_printPreview" label="printPreviewCmd.label;"  oncommand="msiGoDoCommand('cmd_printPreview')"/>
