@@ -41,5 +41,7 @@
 #ifdef XP_MACOSX
   <key id="keyhelpcontents" keycode="/" modifiers="accel,shift" observes="cmd_help_contents"/>
 #endif
+
+
 </keyset>
 <keyset id="mainKeyset"/> <!-- for extensions-->
