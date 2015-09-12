@@ -201,6 +201,7 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_oneshotSymbol", msiOneShotSymbol);
   commandTable.registerCommand("cmd_fontcolor", msiFontColor);
   commandTable.registerCommand("cmd_copytex", msiCopyTeX);
+  commandTable.registerCommand("cmd_help_contents", msiHelpContents);
 }
 
 function msiSetupComposerWindowCommands(editorElement)
@@ -4237,6 +4238,42 @@ var msiCopyTeX =
     }
   }
 };
+
+var msiHelpContents = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    var product;
+    try {
+#ifdef PROD_SWP
+      product = 'swp';
+#endif
+#ifdef PROD_SW
+      product = 'sw';
+#endif
+#ifdef PROD_SNB
+      product = 'snb';
+#endif
+      openHelp('swp-doc','chrome://prince/locale/helpfiles/' + product + '.rdf');
+    }
+    catch(e){
+      msidump('failure in msiHelpContents');
+    }
+  }
+};
+
+
 //--------
 var msiFontColor =
 {
