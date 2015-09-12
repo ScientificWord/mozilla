@@ -36,10 +36,10 @@
   <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
   <key id="key_quit"       key="&filequit.keybinding;"  observes="cmd_quit" modifiers="accel"/>
 #ifndef XP_MACOSX
-  <key id="keyhelpcontents" keycode="&helpmenuContents.keybinding;"/>
+  <key id="keyhelpcontents" keycode="&helpmenuContents.keybinding;" observes="cmd_help_contents"/>
 #endif
 #ifdef XP_MACOSX
-<key id="keyhelpcontents" keycode="/" modifiers="accel,shift"/>
+  <key id="keyhelpcontents" keycode="/" modifiers="accel,shift" observes="cmd_help_contents"/>
 #endif
 </keyset>
 <keyset id="mainKeyset"/> <!-- for extensions-->
