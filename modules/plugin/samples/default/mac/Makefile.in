@@ -54,7 +54,6 @@ endif
 PROJECT=DefaultPlugin.xcodeproj
 PROJECT_ARG=-project $(PROJECT)
 PBBUILD_ARG=$(PBBUILD_SETTINGS)
-
 TARGET		= "Default Plugin"
 
 PACKAGE_FILE = npnul.pkg
@@ -92,5 +91,5 @@ install-plugin: build-plugin
 	$(INSTALL) "$(XCODE_PRODUCT_DIR)/Default Plugin.plugin" $(DIST)/bin/plugins
 
 build-plugin:
-	$(PBBUILD) $(PROJECT_ARG) -target $(TARGET) -configuration $(BUILDSTYLE) $(PBBUILD_ARG)
+	$(PBBUILD) $(PROJECT_ARG) -target $(TARGET) -buildstyle $(BUILDSTYLE) $(PBBUILD_ARG)
 	echo -n NSPLMOSS > "$(XCODE_PRODUCT_DIR)/Default Plugin.plugin/Contents/PkgInfo"
