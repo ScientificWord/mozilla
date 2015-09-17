@@ -797,16 +797,13 @@ void DefAssignment(CommandCode curcmd, int prefixes){
    TokenList* pTL = 0;
    MacroDef* pMD = 0;
 
-   //TokenList* pTap = new TokenList();
    bool tapping = false;
    if (Global::msiinpreamble) {
      InputStack::Clean();
      tapping = InputStack::StartTap(&Global::msipreamble);
    }
      
-   //bool tapping = false;
    if (tapping){
-     //InputStack::StartTap(pTap);
      if (bGlobal){
        // push back \global
        Global::msipreamble.AppendSymbol("global");
