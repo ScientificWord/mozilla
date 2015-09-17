@@ -338,7 +338,7 @@
 \toksdef\toks@=0
 
 \def\newcount{\alloc@0\count\countdef\insc@unt}
-\def\newdimen{\alloc@1\dimen\dimendef\insc@unt}
+\def\newdimen#1{\ifnum\msi@inpreamble=1\msitopreambleextra{^^0a\newdimen #1}\fi\alloc@1\dimen\dimendef\insc@unt #1}
 \def\newskip{\alloc@2\skip\skipdef\insc@unt}
 \def\newmuskip{\alloc@3\muskip\muskipdef\@cclvi}
 \def\newbox{\alloc@4\box\chardef\insc@unt}
