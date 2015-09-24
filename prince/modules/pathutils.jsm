@@ -79,6 +79,10 @@ function msiFileURLStringFromFile( file )
 function msiFileFromFileURL(url)
 {
   try {
+    // check for a possible chrome URL
+    if (/^chrome:/.test(url.spec)) {
+      return msiFileURLFromChromeURI(url.spec).QueryInterface(Components.interfaces.nsIFileURL).file;
+    }
     return url.QueryInterface(Components.interfaces.nsIFileURL).file;
   }
   catch (e)

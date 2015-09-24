@@ -2,116 +2,198 @@
 <!DOCTYPE tagproperties [
 <!ATTLIST tag id ID #IMPLIED> ]>
 <tagproperties xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML">
-	<namespaces>
+  <namespaces>
     <!-- currently white space in the namespace declarations will be kept, so these declarations
       should be on one line with no white space -->
-	  <!--ns abbrev="sw">http://www.sciword.com/namespaces/sciword</ns>
-    <ns abbrev="html">http://www.w3.org/1999/xhtml</ns>
-	  <ns abbrev="mml">http://www.w3.org/1998/Math/MathML</ns -->
-	</namespaces>
-  <mindepth value="2" />
-	<tagclasses>
-		<tagclass>
-			<tagclassname>hidden</tagclassname>
-      <classcontains/>  <!--if there are no contains records for a class, we still need to put in an empty classcontains tag -->
-			<tags>
-				<tag nm="body"><description>Body</description>
-  			  <contains>paratag</contains>
-  			  <contains>structtag</contains>
+    <!--ns abbrev="sw">http://www.sciword.com/namespaces/sciword</ns><ns abbrev="html">http://www.w3.org/1999/xhtml</ns><ns abbrev="mml">http://www.w3.org/1998/Math/MathML</ns -->
+  </namespaces>
+  <mindepth value="2"/>
+  <tagclasses>
+    <tagclass>
+      <tagclassname>hidden</tagclassname>
+      <classcontains/>
+      <!--if there are no contains records for a class, we still need to put in an empty classcontains tag -->
+      <tags>
+        <tag nm="body">
+          <description>Body</description>
+          <contains>paratag</contains>
+          <contains>structtag</contains>
           <contains>listtag</contains>
-  			  <!-- contains>othertag</contains -->
+          <!-- contains>othertag</contains -->
           <contains>envtag</contains>
         </tag>
-				<tag nm="docbody"><description>DocBody</description></tag>
-        <tag nm="img"><description>Image</description></tag>
-			</tags>
-		</tagclass>
-		<tagclass>
-			<tagclassname>texttag</tagclassname>
+        <tag nm="docbody">
+          <description>DocBody</description>
+        </tag>
+        <tag nm="img">
+          <description>Image</description>
+        </tag>
+      </tags>
+    </tagclass>
+    <tagclass>
+      <tagclassname>texttag</tagclassname>
       <classcontains>
         <contains>#text</contains>
-			  <contains>texttag</contains>
+        <contains>texttag</contains>
         <contains>mml:math</contains>
         <contains>texlogo</contains>
       </classcontains>
-			<tags>
-				<tag nm="(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
-				<tag nm="alt"><description>Stylistic alternate</description></tag>
-        <tag nm="bold"><description>Bold</description>
-          <mathvar>bold</mathvar></tag>
-				<tag nm="boldsymbol"><description>Bold symbol</description>
-          <mathonly>bold</mathonly></tag>
-				<tag nm="blackboardBold"><description>Blackboard Bold</description>
-          <mathonly/><mathvar>double-struck</mathvar></tag>
-				<tag nm="calligraphic"><description>Calligraphic</description>
-          <mathonly/><mathvar>script</mathvar></tag>
-				<tag nm="emphasized"><description>Emphasized</description></tag>
-				<tag nm="footnotesize"><description>Footnote size</description></tag>
-				<tag nm="otfont" hidden="1"><description>Open TypeFont</description></tag>
-				<tag nm="fontsize" hidden="1"><description>Font size</description></tag>
-				<tag nm="fontcolor" hidden="1"><description>Font color</description></tag>
-				<tag nm="fraktur"><description>Fraktur</description>
-          <mathonly/><mathvar>fraktur</mathvar></tag>
-        <tag nm="ltxframe"><description>Frame</description></tag>
-				<tag nm="rtl"><description>Right-to-left font</description></tag>
-				<tag nm="Huge"><description>Huge</description></tag>
-				<tag nm="huge"><description>huge</description></tag>
-				<tag nm="italics"><description>Italics</description></tag>
-				<tag nm="LARGE"><description>LARGE</description></tag>
-				<tag nm="Large"><description>Large</description></tag>
-				<tag nm="large"><description>large</description></tag>
-				<tag nm="lower"><description>Lower case</description></tag>
-				<tag nm="normalsize"><description>normalsize</description></tag>
-				<tag nm="phantom"><description>phantom</description></tag>
-				<tag nm="roman"><description>Roman</description></tag>
-				<tag nm="sansSerif"><description>Sans Serif</description>
-          <mathvar>sans-serif</mathvar></tag>
-				<tag nm="scriptsize"><description>Scriptsize</description></tag>
-				<tag nm="slanted"><description>Slanted</description></tag>
-				<tag nm="small"><description>Small</description></tag>
-				<tag nm="smallbox"><description>Small frame</description></tag>
-				<tag nm="smallCaps"><description>Small Caps</description></tag>
-				<tag nm="sub"><description>Text subscript</description></tag>
-				<tag nm="sup"><description>Text superscript</description></tag>
-				<tag nm="tiny"><description>Tiny</description></tag>
-				<tag nm="typewriter"><description>Typewriter font</description>
-          <mathvar>monospace</mathvar></tag>
-				<tag nm="underline"><description>Underline</description></tag>
-				<tag nm="upper"><description>Upper case</description></tag>
-        <tag nm="rawTeX" hidden="1"><description>Raw TeX tag</description></tag>
-				<tag nm="descriptionLabel" ><description>Description label</description></tag>
-        <tag nm="lang1font" babel="1" hidden="1"><description>Primary language font</description></tag>
-        <tag nm="lang2font" babel="2" hidden="1"><description>Secondary language font</description></tag>
-        <tag nm="drop"><description>Drop letter</description></tag>
-        <!-- <tag nm="deleted"><description>Deleted text</description></tag>
-        <tag nm="inserted"><description>Inserted text></description></tag> -->
-		<!-- comment out the ulem tags
-				<tag nm="uline"><description>Underline (ulem)</description></tag>
-				<tag nm="uuline"><description>Double underline (ulem)</description></tag>
-				<tag nm="uwave"><description>Wavy underline (ulem)</description></tag>
-				<tag nm="sout"><description>Strikeout (ulem)</description></tag>
-				<tag nm="xout"><description>X-ed out (ulem)</description></tag>
-				<tag nm="dashuline"><description>Dash underline (ulem)</description></tag>
-				<tag nm="dotuline"><description>Dot underline (ulem)</description></tag> -->
-			</tags>
-		</tagclass>
-		<tagclass>
-			<tagclassname>paratag</tagclassname>
+      <tags>
+        <tag id="cleartexttag" nm="(normal)">
+          <description>Clear text tags</description>
+        </tag>
+        <tag nm="alt">
+          <description>Stylistic alternate</description>
+        </tag>
+        <tag nm="bold">
+          <description>Bold</description>
+          <mathvar>bold</mathvar>
+        </tag>
+        <tag nm="boldsymbol">
+          <description>Bold symbol</description>
+          <mathonly>bold</mathonly>
+        </tag>
+        <tag nm="blackboardBold">
+          <description>Blackboard Bold</description>
+          <mathonly/>
+          <mathvar>double-struck</mathvar>
+        </tag>
+        <tag nm="calligraphic">
+          <description>Calligraphic</description>
+          <mathonly/>
+          <mathvar>script</mathvar>
+        </tag>
+        <tag nm="emphasized">
+          <description>Emphasized</description>
+        </tag>
+        <tag nm="footnotesize">
+          <description>Footnote size</description>
+        </tag>
+        <tag hidden="1" nm="otfont">
+          <description>Open TypeFont</description>
+        </tag>
+        <tag hidden="1" nm="fontsize">
+          <description>Font size</description>
+        </tag>
+        <tag hidden="1" nm="fontcolor">
+          <description>Font color</description>
+        </tag>
+        <tag nm="fraktur">
+          <description>Fraktur</description>
+          <mathonly/>
+          <mathvar>fraktur</mathvar>
+        </tag>
+        <tag nm="ltxframe">
+          <description>Frame</description>
+        </tag>
+        <tag nm="rtl">
+          <description>Right-to-left font</description>
+        </tag>
+        <tag nm="Huge">
+          <description>Huge</description>
+        </tag>
+        <tag nm="huge">
+          <description>huge</description>
+        </tag>
+        <tag nm="italics">
+          <description>Italics</description>
+        </tag>
+        <tag nm="LARGE">
+          <description>LARGE</description>
+        </tag>
+        <tag nm="Large">
+          <description>Large</description>
+        </tag>
+        <tag nm="large">
+          <description>large</description>
+        </tag>
+        <tag nm="lower">
+          <description>Lower case</description>
+        </tag>
+        <tag nm="normalsize">
+          <description>normalsize</description>
+        </tag>
+        <tag nm="phantom">
+          <description>phantom</description>
+        </tag>
+        <tag nm="roman">
+          <description>Roman</description>
+        </tag>
+        <tag nm="sansSerif">
+          <description>Sans Serif</description>
+          <mathvar>sans-serif</mathvar>
+        </tag>
+        <tag nm="scriptsize">
+          <description>Scriptsize</description>
+        </tag>
+        <tag nm="slanted">
+          <description>Slanted</description>
+        </tag>
+        <tag nm="small">
+          <description>Small</description>
+        </tag>
+        <tag nm="smallbox">
+          <description>Small frame</description>
+        </tag>
+        <tag nm="smallCaps">
+          <description>Small Caps</description>
+        </tag>
+        <tag nm="sub">
+          <description>Text subscript</description>
+        </tag>
+        <tag nm="sup">
+          <description>Text superscript</description>
+        </tag>
+        <tag nm="tiny">
+          <description>Tiny</description>
+        </tag>
+        <tag nm="typewriter">
+          <description>Typewriter font</description>
+          <mathvar>monospace</mathvar>
+        </tag>
+        <tag nm="underline">
+          <description>Underline</description>
+        </tag>
+        <tag nm="upper">
+          <description>Upper case</description>
+        </tag>
+        <tag hidden="1" nm="rawTeX">
+          <description>Raw TeX tag</description>
+        </tag>
+        <tag nm="descriptionLabel">
+          <description>Description label</description>
+        </tag>
+        <tag babel="1" hidden="1" nm="lang1font">
+          <description>Primary language font</description>
+        </tag>
+        <tag babel="2" hidden="1" nm="lang2font">
+          <description>Secondary language font</description>
+        </tag>
+        <tag nm="drop">
+          <description>Drop letter</description>
+        </tag>
+        <!-- <tag nm="deleted"><description>Deleted text</description></tag><tag nm="inserted"><description>Inserted text></description></tag>-->
+        <!-- comment out the ulem tags
+        <tag nm="uline"><description>Underline (ulem)</description></tag><tag nm="uuline"><description>Double underline (ulem)</description></tag><tag nm="uwave"><description>Wavy underline (ulem)</description></tag><tag nm="sout"><description>Strikeout (ulem)</description></tag><tag nm="xout"><description>X-ed out (ulem)</description></tag><tag nm="dashuline"><description>Dash underline (ulem)</description></tag><tag nm="dotuline"><description>Dot underline (ulem)</description></tag>-->
+      </tags>
+    </tagclass>
+    <tagclass>
+      <tagclassname>paratag</tagclassname>
       <classcontains>
         <contains>#text</contains>
-			  <contains>texttag</contains>
+        <contains>texttag</contains>
         <contains>table</contains>
-			  <contains>listparenttag</contains>
-			  <contains>listtag</contains>
-			  <contains>shortQuote</contains>
-			  <contains>othertag</contains>
-			  <contains>mml:math</contains>
+        <contains>listparenttag</contains>
+        <contains>listtag</contains>
+        <contains>shortQuote</contains>
+        <contains>othertag</contains>
+        <contains>mml:math</contains>
         <contains>msidisplay</contains>
-			  <contains>br</contains>
-			  <contains>cursor</contains>
-			  <contains>defaulttitletag</contains>
-			  <contains>img</contains>
-			  <contains>object</contains>
+        <contains>br</contains>
+        <contains>cursor</contains>
+        <contains>defaulttitletag</contains>
+        <contains>img</contains>
+        <contains>object</contains>
         <contains>a</contains>
         <contains>note</contains>
         <contains>notewrapper</contains>
@@ -128,23 +210,29 @@
         <contains>printindex</contains>
         <contains>appendix</contains>
       </classcontains>
-			<tags>
-				<tag id="defaultparagraph" nm="bodyText">
-					<description>Default body text paragraph</description>
+      <tags>
+        <tag id="defaultparagraph" nm="bodyText">
+          <description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <bodyText><cursor/><br/></bodyText>
+            <bodyText>
+              <cursor/>
+              <br/>
+            </bodyText>
           </initialcontents>
-				</tag>
-				<tag nm="rtlBodyText">
-					<description>Right to left body text paragraph</description>
+        </tag>
+        <tag nm="rtlBodyText">
+          <description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <rtlBodyText><cursor/><br/></rtlBodyText>
+            <rtlBodyText>
+              <cursor/>
+              <br/>
+            </rtlBodyText>
           </initialcontents>
-				</tag>
-				<tag nm="p">
-					<description>HTML paragraph</description>
+        </tag>
+        <tag nm="p">
+          <description>HTML paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <p>
@@ -152,160 +240,183 @@
               <br/>
             </p>
           </initialcontents>
-				</tag>
-				<tag nm="bodyMath">
-					<description>Body math paragraph</description>
-					<nexttag>bodyMath</nexttag>
+        </tag>
+        <tag nm="bodyMath">
+          <description>Body math paragraph</description>
+          <nexttag>bodyMath</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <bodyMath>
               <mml:math>
-                <mml:mi tempinput='true'>
-                  <cursor/>&#x200A;
+                <mml:mi tempinput="true">
+                  <cursor/>
+                   
+                
                 </mml:mi>
               </mml:math>
               <br/>
             </bodyMath>
           </initialcontents>
-				</tag>
-				<tag nm="sectiontitle">
-					<nexttag>bodyText</nexttag>
-					<description>Title of section</description>
+        </tag>
+        <tag nm="sectiontitle">
+          <nexttag>bodyText</nexttag>
+          <description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <sectiontitle><cursor/></sectiontitle>
+            <sectiontitle>
+              <cursor/>
+            </sectiontitle>
           </initialcontents>
-				</tag>
-				<tag nm="shortQuote">
-					<nexttag>shortQuote</nexttag>
-					<description>Quote</description>
+        </tag>
+        <tag nm="shortQuote">
+          <nexttag>shortQuote</nexttag>
+          <description>Quote</description>
           <initialcontents>
-            <shortQuote><cursor/><br/></shortQuote>
-          </initialcontents>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-			  </tag>
-				<tag nm="centered">
-					<nexttag>centered</nexttag>
-					<description>Centered paragraph</description>
-          <initialcontents>
-            <centered><cursor/><br/></centered>
+            <shortQuote>
+              <cursor/>
+              <br/>
+            </shortQuote>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
-				</tag>
-				<tag nm="dialogbase" hidden="1">
-					<nexttag>bodyText</nexttag>
-					<description>Hidden dialog base</description>
+        </tag>
+        <tag nm="centered">
+          <nexttag>centered</nexttag>
+          <description>Centered paragraph</description>
           <initialcontents>
-            <dialogbase><cursor/><br/></dialogbase>
+            <centered>
+              <cursor/>
+              <br/>
+            </centered>
           </initialcontents>
-				</tag>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag hidden="1" nm="dialogbase">
+          <nexttag>bodyText</nexttag>
+          <description>Hidden dialog base</description>
+          <initialcontents>
+            <dialogbase>
+              <cursor/>
+              <br/>
+            </dialogbase>
+          </initialcontents>
+        </tag>
         <tag nm="verbatim">
           <description>Verbatim text 'paragraph'</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <verbatim>
-            </verbatim>
+            <verbatim/>
           </initialcontents>
           <nexttag>bodyText</nexttag>
         </tag>
         <tag nm="caption">
           <description>Caption for image, plot, or table</description>
         </tag>
-			</tags>
-		</tagclass>
+      </tags>
+    </tagclass>
     <tagclass>
-			<tagclassname>listparenttag</tagclassname>
-      <classcontains></classcontains>
-			<tags>
-				<tag nm="bulletlist" hidden="1">
+      <tagclassname>listparenttag</tagclassname>
+      <classcontains/>
+      <tags>
+        <tag hidden="1" nm="bulletlist">
           <description>Bullet list</description>
-					<nexttag>none</nexttag>
+          <nexttag>none</nexttag>
           <inclusion>true</inclusion>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
-			    <contains>bulletListItem</contains>
+          <contains>bulletListItem</contains>
         </tag>
-				<tag nm="numberedlist" hidden="1">
+        <tag hidden="1" nm="numberedlist">
           <description>Numbered list</description>
-					<nexttag>none</nexttag>
+          <nexttag>none</nexttag>
           <htmllist>ol</htmllist>
-          <initialcontents> <![CDATA[<cursor/><br/>]]></initialcontents>
+          <initialcontents><![CDATA[
+            <cursor/>
+            <br/>
+            ]]></initialcontents>
           <discardemptyblock>true</discardemptyblock>
-	  		  <inclusion>true</inclusion>
-			    <contains>numberedListItem</contains>
+          <inclusion>true</inclusion>
+          <contains>numberedListItem</contains>
         </tag>
-				<tag nm="descriptionlist" hidden="1">
+        <tag hidden="1" nm="descriptionlist">
           <description>Description list</description>
-					<nexttag>none</nexttag>
+          <nexttag>none</nexttag>
           <htmllist>dl</htmllist>
           <discardemptyblock>true</discardemptyblock>
-	  		  <inclusion>true</inclusion>
-					<nexttag/>
-			    <contains>descriptionListItem</contains>
+          <inclusion>true</inclusion>
+          <nexttag/>
+          <contains>descriptionListItem</contains>
         </tag>
-				<tag nm="bibliography" hidden="1">
+        <tag hidden="1" nm="bibliography">
           <level>0</level>
           <description>Bibliography</description>
           <nexttag>none</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
-	  		  <inclusion>true</inclusion>
-			    <contains>bibitem</contains>
+          <inclusion>true</inclusion>
+          <contains>bibitem</contains>
         </tag>
       </tags>
     </tagclass>
-		<tagclass>
-			<tagclassname>listtag</tagclassname>
+    <tagclass>
+      <tagclassname>listtag</tagclassname>
       <classcontains>
-  			<contains>bodyText</contains>
+        <contains>bodyText</contains>
       </classcontains>
-			<tags>
-				<tag nm="bulletListItem">
+      <tags>
+        <tag nm="bulletListItem">
           <description>Bullet list item</description>
           <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-<!--           <inclusion>true</inclusion> -->
+          <!--           <inclusion>true</inclusion>-->
           <htmllist>ul</htmllist>
           <initialcontents>
             <bulletListItem>
-              <bodyText><cursor/><br/></bodyText>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
             </bulletListItem>
           </initialcontents>
         </tag>
-				<tag nm="numberedListItem">
+        <tag nm="numberedListItem">
           <description>Numbered list item</description>
           <htmllistparent>numberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <numberedListItem>
-              <bodyText><cursor/><br/></bodyText>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
             </numberedListItem>
           </initialcontents>
         </tag>
-				<tag nm="descriptionListItem">
+        <tag nm="descriptionListItem">
           <description>Description list item</description>
           <htmllistparent>descriptionlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <descriptionListItem>
               <bodyText>
-                <descriptionLabel><cursor/></descriptionLabel>
+                <descriptionLabel>
+                  <cursor/>
+                </descriptionLabel>
                 <br/>
               </bodyText>
             </descriptionListItem>
           </initialcontents>
         </tag>
-				<tag nm="bibitem">
+        <tag nm="bibitem">
           <description>Bibliography entry</description>
           <htmllistparent>bibliography</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
-<!--           <inclusion>true</inclusion> -->
+          <!--           <inclusion>true</inclusion>-->
           <initialcontents>
             <bibitem>
-              <biblabel></biblabel>
-              <bibkey></bibkey>
+              <biblabel/>
+              <bibkey/>
               <bodyText>
                 <br/>
               </bodyText>
@@ -314,218 +425,240 @@
           <contains>biblabel</contains>
           <contains>bibkey</contains>
         </tag>
-	  </tags>
-		</tagclass>
-		<tagclass>
-			<tagclassname>structtag</tagclassname>
+      </tags>
+    </tagclass>
+    <tagclass>
+      <tagclassname>structtag</tagclassname>
       <classcontains>
-			  <contains>paratag</contains>
-			  <contains>structtag</contains>
-			  <contains>br</contains>
+        <contains>paratag</contains>
+        <contains>structtag</contains>
+        <contains>br</contains>
         <contains>shortTitle</contains>
       </classcontains>
-			<tags>
-				<tag nm="(removesection)" id="clearsectiontag" >
+      <tags>
+        <tag id="clearsectiontag" nm="(removesection)">
           <description>Remove innermost section-like tag</description>
         </tag>
-				<tag nm="set">
-        	<level>-3</level>
+        <tag nm="set">
+          <level>-3</level>
           <description>Set of books</description>
           <discardemptyblock>true</discardemptyblock>
-	  		  <inclusion>true</inclusion>
-			    <contains>bulletListItem</contains>
+          <inclusion>true</inclusion>
+          <contains>bulletListItem</contains>
         </tag>
-				<tag nm="book">
+        <tag nm="book">
           <level>-2</level>
           <description>Book</description>
           <titletag>sectiontitle</titletag>
           <discardemptyblock>false</discardemptyblock>
           <prefsub>part</prefsub>
         </tag>
-				<tag nm="part">
+        <tag nm="part">
           <level>-1</level>
           <description>Part of a book</description>
           <titletag>sectiontitle</titletag>
           <discardemptyblock>false</discardemptyblock>
           <prefsub>chapter</prefsub>
         </tag>
-				<tag nm="chapter">
+        <tag nm="chapter">
           <level>1</level>
           <description>Chapter</description>
           <titletag>sectiontitle</titletag>
           <discardemptyblock>false</discardemptyblock>
           <initialcontents>
             <chapter>
-              <sectiontitle><cursor/><br/></sectiontitle>
+              <sectiontitle>
+                <cursor/>
+                <br/>
+              </sectiontitle>
             </chapter>
           </initialcontents>
           <prefsub>section</prefsub>
         </tag>
-				<tag nm="section">
+        <tag nm="section">
           <level>2</level>
           <description>Section</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
-             <section>
-               <sectiontitle><cursor/><br/></sectiontitle>
-             </section>
-           </initialcontents>
-          <nextafteremptyblock></nextafteremptyblock>
+            <section>
+              <sectiontitle>
+                <cursor/>
+                <br/>
+              </sectiontitle>
+            </section>
+          </initialcontents>
+          <nextafteremptyblock/>
           <prefsub>subsection</prefsub>
         </tag>
-				<tag nm="subsection">
+        <tag nm="subsection">
           <level>3</level>
           <description>Subsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
-             <subsection>
-               <sectiontitle><cursor/><br/></sectiontitle>
-             </subsection>
-           </initialcontents>
+            <subsection>
+              <sectiontitle>
+                <cursor/>
+                <br/>
+              </sectiontitle>
+            </subsection>
+          </initialcontents>
           <nextafteremptyblock>section</nextafteremptyblock>
           <prefsub>subsubsection</prefsub>
         </tag>
-				<tag nm="subsubsection">
+        <tag nm="subsubsection">
           <level>4</level>
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
-             <subsubsection>
-               <sectiontitle><cursor/><br/></sectiontitle>
-             </subsubsection>
-           </initialcontents>
+            <subsubsection>
+              <sectiontitle>
+                <cursor/>
+                <br/>
+              </sectiontitle>
+            </subsubsection>
+          </initialcontents>
           <nextafteremptyblock>subsection</nextafteremptyblock>
           <prefsub>paragraph</prefsub>
         </tag>
-				<tag nm="paragraph">
+        <tag nm="paragraph">
           <level>5</level>
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
             <paragraph>
-              <sectiontitle><cursor/><br/></sectiontitle>
+              <sectiontitle>
+                <cursor/>
+                <br/>
+              </sectiontitle>
             </paragraph>
           </initialcontents>
           <nextafteremptyblock>subsubsection</nextafteremptyblock>
           <prefsub>subparagraph</prefsub>
         </tag>
-				<tag nm="subparagraph">
+        <tag nm="subparagraph">
           <level>6</level>
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents>
             <subparagraph>
-              <sectiontitle><cursor/><br/></sectiontitle>
+              <sectiontitle>
+                <cursor/>
+                <br/>
+              </sectiontitle>
             </subparagraph>
           </initialcontents>
           <nextafteremptyblock>paragraph</nextafteremptyblock>
         </tag>
-			</tags>
-		</tagclass>
-		<tagclass>
-			<tagclassname>envtag</tagclassname>
+      </tags>
+    </tagclass>
+    <tagclass>
+      <tagclassname>envtag</tagclassname>
       <classcontains>
-			  <contains>paratag</contains>
-			  <contains>structtag</contains>
-			  <contains>envtag</contains>
+        <contains>paratag</contains>
+        <contains>structtag</contains>
+        <contains>envtag</contains>
       </classcontains>
-			<tags>
-				<tag nm="(remove environment)" id="clearenvironmenttag" ><description>Remove innermost environment tag</description></tag>
-				<tag nm="longQuotation">
-					<description>Long quotation</description>
+      <tags>
+        <tag id="clearenvironmenttag" nm="(remove environment)">
+          <description>Remove innermost environment tag</description>
+        </tag>
+        <tag nm="longQuotation">
+          <description>Long quotation</description>
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <longQuotation>
-              <bodyText><cursor/><br/></bodyText>
-            </longQuotation>
-          </initialcontents>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-				</tag>
-<!-- 				<tag nm="frontmatter">
-          <contains>frontmtag</contains>
-          <level>*</level>
-					<nexttag/>
-	  		  <inclusion>true</inclusion>
-          <description>Front Matter</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nexttag>bodyText</nexttag>
-          <initialcontents>
-            <frontmatter>
               <bodyText>
                 <cursor/>
                 <br/>
               </bodyText>
-            </frontmatter>
+            </longQuotation>
           </initialcontents>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
- -->				<tag nm="dedication">
+        <!--        <tag nm="frontmatter"><contains>frontmtag</contains><level>*</level><nexttag/><inclusion>true</inclusion><description>Front Matter</description><discardemptyblock>true</discardemptyblock><nexttag>bodyText</nexttag><initialcontents><frontmatter><bodyText><cursor/><br/></bodyText></frontmatter></initialcontents></tag>-->
+        <tag nm="dedication">
           <level>*</level>
           <description>Dedication</description>
-					<nexttag/>
-	  		  <inclusion>true</inclusion>
+          <nexttag/>
+          <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <dedication>
-              <bodyText><cursor/><br/></bodyText>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
             </dedication>
           </initialcontents>
         </tag>
-				<tag nm="centeredEnv">
+        <tag nm="centeredEnv">
           <level>*</level>
           <description>Centered</description>
-	  		  <inclusion>true</inclusion>
+          <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <centeredEnv>
-              <bodyText><cursor/><br/></bodyText>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
             </centeredEnv>
           </initialcontents>
         </tag>
-				<tag nm="preface">
+        <tag nm="preface">
           <level>0</level>
           <description>Preface</description>
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <preface>
-              <bodyText><cursor/><br/></bodyText>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
             </preface>
           </initialcontents>
-	  		  <inclusion>true</inclusion>
+          <inclusion>true</inclusion>
         </tag>
-				<tag nm="glossary">
+        <tag nm="glossary">
           <level>0</level>
           <description>Glossary</description>
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <glossary>
-              <bodyText><cursor/><br/></bodyText>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
             </glossary>
           </initialcontents>
-	  		  <inclusion>true</inclusion>
+          <inclusion>true</inclusion>
         </tag>
-  		  <tag nm="note">
+        <tag nm="note">
           <level>*</level>
           <description>Note</description>
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <note style="padding: 10px;">
-              <bodyText><cursor/><br/></bodyText>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
             </note>
           </initialcontents>
         </tag>
-				<tag nm="assertion">
+        <tag nm="assertion">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Assertion</description>
@@ -535,12 +668,15 @@
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <assertion>
-              <bodyText><cursor/><br/></bodyText>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
             </assertion>
           </initialcontents>
         </tag>
-<!-- Begin standard set of theorem-like environments used in Version 5.5 shells -->
-				<tag nm="theorem">
+        <!-- Begin standard set of theorem-like environments used in Version 5.5 shells -->
+        <tag nm="theorem">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Theorem</description>
@@ -549,10 +685,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <theorem/>
+            <theorem/>
           </initialcontents>
         </tag>
-				<tag nm="algorithm">
+        <tag nm="algorithm">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Algorithm</description>
@@ -560,11 +696,11 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <algorithm/>
+            <algorithm/>
           </initialcontents>
           <inclusion>true</inclusion>
-       </tag>
-				<tag nm="axiom">
+        </tag>
+        <tag nm="axiom">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Axiom</description>
@@ -572,11 +708,11 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <axiom/>
-           </initialcontents>
+            <axiom/>
+          </initialcontents>
           <inclusion>true</inclusion>
         </tag>
-				<tag nm="case">
+        <tag nm="case">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Case</description>
@@ -584,11 +720,11 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <case/>
-           </initialcontents>
+            <case/>
+          </initialcontents>
           <inclusion>true</inclusion>
         </tag>
-				<tag nm="claim">
+        <tag nm="claim">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Claim</description>
@@ -597,10 +733,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <claim/>
-           </initialcontents>
+            <claim/>
+          </initialcontents>
         </tag>
-				<tag nm="conclusion">
+        <tag nm="conclusion">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Conclusion</description>
@@ -609,10 +745,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <conclusion/>
-           </initialcontents>
+            <conclusion/>
+          </initialcontents>
         </tag>
-				<tag nm="condition">
+        <tag nm="condition">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Condition</description>
@@ -621,10 +757,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <condition/>
-           </initialcontents>
+            <condition/>
+          </initialcontents>
         </tag>
-				<tag nm="conjecture">
+        <tag nm="conjecture">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Conjecture</description>
@@ -636,7 +772,7 @@
             <conjecture/>
           </initialcontents>
         </tag>
-				<tag nm="corollary">
+        <tag nm="corollary">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Corollary</description>
@@ -645,10 +781,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <corollary/>
-           </initialcontents>
+            <corollary/>
+          </initialcontents>
         </tag>
-				<tag nm="criterion">
+        <tag nm="criterion">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Criterion</description>
@@ -657,10 +793,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <criterion/>
-           </initialcontents>
+            <criterion/>
+          </initialcontents>
         </tag>
-				<tag nm="definition">
+        <tag nm="definition">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Definition</description>
@@ -669,10 +805,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <definition/>
-           </initialcontents>
+            <definition/>
+          </initialcontents>
         </tag>
-				<tag nm="example">
+        <tag nm="example">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Example</description>
@@ -681,10 +817,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <example/>
-           </initialcontents>
+            <example/>
+          </initialcontents>
         </tag>
-				<tag nm="exercise">
+        <tag nm="exercise">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Exercise</description>
@@ -693,10 +829,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <exercise/>
-           </initialcontents>
+            <exercise/>
+          </initialcontents>
         </tag>
-				<tag nm="lemma">
+        <tag nm="lemma">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Lemma</description>
@@ -705,10 +841,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <lemma/>
-           </initialcontents>
+            <lemma/>
+          </initialcontents>
         </tag>
-				<tag nm="notation">
+        <tag nm="notation">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Notation</description>
@@ -720,7 +856,7 @@
             <notation/>
           </initialcontents>
         </tag>
-				<tag nm="problem">
+        <tag nm="problem">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Problem</description>
@@ -729,10 +865,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <problem/>
-           </initialcontents>
+            <problem/>
+          </initialcontents>
         </tag>
-				<tag nm="proposition">
+        <tag nm="proposition">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Proposition</description>
@@ -741,10 +877,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <proposition/>
-           </initialcontents>
+            <proposition/>
+          </initialcontents>
         </tag>
-				<tag nm="remark">
+        <tag nm="remark">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Remark</description>
@@ -756,7 +892,7 @@
             <remark/>
           </initialcontents>
         </tag>
-				<tag nm="solution">
+        <tag nm="solution">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Solution</description>
@@ -768,7 +904,7 @@
             <solution/>
           </initialcontents>
         </tag>
-				<tag nm="summary">
+        <tag nm="summary">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Summary</description>
@@ -780,7 +916,7 @@
             <summary/>
           </initialcontents>
         </tag>
-				<tag nm="proof">
+        <tag nm="proof">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Proof</description>
@@ -792,8 +928,8 @@
             <proof/>
           </initialcontents>
         </tag>
-<!-- End standard set of theorem-like environments used in Version 5.5 shells -->
-				<tag nm="assumption">
+        <!-- End standard set of theorem-like environments used in Version 5.5 shells -->
+        <tag nm="assumption">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Assumption</description>
@@ -802,10 +938,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <assumption/>
-           </initialcontents>
+            <assumption/>
+          </initialcontents>
         </tag>
-				<tag nm="hypothesis">
+        <tag nm="hypothesis">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Hypothesis</description>
@@ -814,10 +950,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <hypothesis/>
-           </initialcontents>
+            <hypothesis/>
+          </initialcontents>
         </tag>
-				<tag nm="property">
+        <tag nm="property">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Property</description>
@@ -826,10 +962,10 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <property/>
-           </initialcontents>
+            <property/>
+          </initialcontents>
         </tag>
-				<tag nm="question">
+        <tag nm="question">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Question</description>
@@ -838,11 +974,11 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-             <question/>
-           </initialcontents>
+            <question/>
+          </initialcontents>
         </tag>
         <!-- The "acknowledgment" tag isn't intended to be added to the interface, as the non-front-matter version induces only confusion among TeX users. -->
-				<tag nm="acknowledgment" hidden="1">
+        <tag hidden="1" nm="acknowledgment">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Acknowledgment</description>
@@ -854,23 +990,26 @@
             <acknowledgment/>
           </initialcontents>
         </tag>
-  		  <tag nm="msiframe">
+        <tag nm="msiframe">
           <contains>envtag</contains>
           <level>*</level>
           <description>Frame</description>
-	  		  <inclusion>true</inclusion>
+          <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <msiframe style="border: thin solid black; padding: 10px;">
-              <bodyText><cursor/><br/></bodyText>
+              <bodyText>
+                <cursor/>
+                <br/>
+              </bodyText>
             </msiframe>
           </initialcontents>
-	  		  <!--inclusion>true</inclusion-->
+          <!--inclusion>true</inclusion-->
         </tag>
-        <tag nm="imagecaption" hidden="1">
+        <tag hidden="1" nm="imagecaption">
           <description>Image caption</description>
           <contains>#text</contains>
           <contains>texttag</contains>
@@ -892,136 +1031,145 @@
           <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
-				<tag nm="##lang1##" hidden="1" babel="3">
+        <tag babel="3" hidden="1" nm="##lang1##">
           <level>*</level>
           <description>First language environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <!--initialcontents>
-            <##lang1##>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
-            </##lang1##>
-          </initialcontents -->
+          <!--initialcontents><##lang1##><bodyText><cursor/><br/></bodyText></##lang1##></initialcontents -->
         </tag>
-				<tag nm="##lang2##" hidden="1" babel="4">
+        <tag babel="4" hidden="1" nm="##lang2##">
           <level>*</level>
           <description>Second language environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <!-- initialcontents>
-            <##lang2##>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
-            </##lang2##>
-          </initialcontents -->
+          <!-- initialcontents><##lang2##><bodyText><cursor/><br/></bodyText></##lang2##></initialcontents -->
         </tag>
-   		</tags>
-		</tagclass>
-		<tagclass>
-			<tagclassname>frontmtag</tagclassname>
+      </tags>
+    </tagclass>
+    <tagclass>
+      <tagclassname>frontmtag</tagclassname>
       <classcontains/>
-			<tags>
-				<tag nm="abstract"><description>Abstract</description>
+      <tags>
+        <tag nm="abstract">
+          <description>Abstract</description>
           <realtagclass>envtag</realtagclass>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <abstract>
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText>
+                <cursor/>
+                <br type="_moz"/>
+              </bodyText>
             </abstract>
           </initialcontents>
         </tag>
-        <tag nm="address"><description>Address</description>
+        <tag nm="address">
+          <description>Address</description>
           <realtagclass>paratag</realtagclass>
-	  		  <inclusion>true</inclusion>
+          <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-            <address><cursor/><br type="_moz"/></address>
+            <address>
+              <cursor/>
+              <br type="_moz"/>
+            </address>
           </initialcontents>
         </tag>
-        <tag nm="author"><description>Author</description>
+        <tag nm="author">
+          <description>Author</description>
           <realtagclass>paratag</realtagclass>
-	  		  <inclusion>true</inclusion>
-					<nexttag>bodyText</nexttag>
+          <inclusion>true</inclusion>
+          <nexttag>bodyText</nexttag>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <author><cursor/><br type="_moz"/></author>
+            <author>
+              <cursor/>
+              <br type="_moz"/>
+            </author>
           </initialcontents>
         </tag>
-        <tag nm="date"><description>Date</description>
+        <tag nm="date">
+          <description>Date</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>bodyText</nexttag>
+          <nexttag>bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <date><cursor/><br type="_moz"/></date>
+            <date>
+              <cursor/>
+              <br type="_moz"/>
+            </date>
           </initialcontents>
-					<nexttag/>
-	  		  <inclusion>true</inclusion>
+          <nexttag/>
+          <inclusion>true</inclusion>
         </tag>
-<!--         <tag nm="makelof"><description>Make list of figures</description>
-        </tag>
-        <tag nm="makelot"><description>Make list of tables</description>
-        </tag>
-        <tag nm="maketitle"><description>Make title</description>
-        </tag>
-        <tag nm="maketoc"><description>Make table of contents</description>
-        </tag>
- -->        <tag nm="title"><description>Title</description>
+        <!--         <tag nm="makelof"><description>Make list of figures</description></tag><tag nm="makelot"><description>Make list of tables</description></tag><tag nm="maketitle"><description>Make title</description></tag><tag nm="maketoc"><description>Make table of contents</description></tag>-->
+        <tag nm="title">
+          <description>Title</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>bodyText</nexttag>
+          <nexttag>bodyText</nexttag>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
-	  		  <inclusion>true</inclusion>
+          <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <title type="ours"><cursor/><br type="_moz"/></title>
+            <title type="ours">
+              <cursor/>
+              <br type="_moz"/>
+            </title>
           </initialcontents>
         </tag>
-			</tags>
-		</tagclass>
-		<tagclass>
-			<tagclassname>othertag</tagclassname>
+      </tags>
+    </tagclass>
+    <tagclass>
+      <tagclassname>othertag</tagclassname>
       <classcontains/>
-			<tags>
-        <tag nm="mi"><description>mi</description>
+      <tags>
+        <tag nm="mi">
+          <description>mi</description>
           <contains>#text</contains>
         </tag>
-        <tag nm="mo"><description>mo</description>
+        <tag nm="mo">
+          <description>mo</description>
           <contains>#text</contains>
         </tag>
-        <tag nm="mn"><description>mo</description>
+        <tag nm="mn">
+          <description>mo</description>
           <contains>#text</contains>
         </tag>
-        <tag nm="#text"><description>text</description>
+        <tag nm="#text">
+          <description>text</description>
           <contains>#text</contains>
         </tag>
-        <tag nm="hspace"><description>hspace</description></tag>
-        <tag nm="object"><description>Object</description></tag>
-				<tag nm="graph"><description>Graph</description></tag>
-				<tag nm="td"><description>Table cell</description>
-				  <contains>paratag</contains>
-				</tag>
-				<tag nm="notewrapper" hidden="1">
+        <tag nm="hspace">
+          <description>hspace</description>
+        </tag>
+        <tag nm="object">
+          <description>Object</description>
+        </tag>
+        <tag nm="graph">
+          <description>Graph</description>
+        </tag>
+        <tag nm="td">
+          <description>Table cell</description>
+          <contains>paratag</contains>
+        </tag>
+        <tag hidden="1" nm="notewrapper">
           <description>Note wrapper</description>
-					<nexttag>none</nexttag>
+          <nexttag>none</nexttag>
           <discardemptyblock>true</discardemptyblock>
-	  		  <inclusion>true</inclusion>
-			    <contains>note</contains>
-			    <wrapper>true</wrapper>
+          <inclusion>true</inclusion>
+          <contains>note</contains>
+          <wrapper>true</wrapper>
         </tag>
-        <tag nm="msidisplay" hidden="1">
+        <tag hidden="1" nm="msidisplay">
           <level>*</level>
           <description>Display</description>
           <discardemptyblock>true</discardemptyblock>
-
           <inclusion>true</inclusion>
         </tag>
         <tag nm="citation">
@@ -1031,42 +1179,42 @@
         </tag>
         <tag nm="biblabel">
           <description>Bibliography label</description>
-            <contains>#text</contains>
-            <contains>texttag</contains>
-            <contains>othertag</contains>
-            <contains>table</contains>
-            <contains>mml:math</contains>
-            <contains>img</contains>
-            <contains>a</contains>
-            <contains>note</contains>
-            <contains>object</contains>
-            <contains>notewrapper</contains>
+          <contains>#text</contains>
+          <contains>texttag</contains>
+          <contains>othertag</contains>
+          <contains>table</contains>
+          <contains>mml:math</contains>
+          <contains>img</contains>
+          <contains>a</contains>
+          <contains>note</contains>
+          <contains>object</contains>
+          <contains>notewrapper</contains>
         </tag>
         <tag nm="bibkey">
           <description>Bibliography key</description>
-            <contains>#text</contains>
+          <contains>#text</contains>
         </tag>
         <tag nm="shortTitle">
           <description>Short section title</description>
-            <contains>#text</contains>
-			      <contains>texttag</contains>
-			      <contains>othertag</contains>
-            <contains>table</contains>
-			      <contains>mml:math</contains>
-			      <contains>img</contains>
-            <contains>a</contains>
-            <contains>note</contains>
-            <contains>object</contains>
-            <contains>notewrapper</contains>
+          <contains>#text</contains>
+          <contains>texttag</contains>
+          <contains>othertag</contains>
+          <contains>table</contains>
+          <contains>mml:math</contains>
+          <contains>img</contains>
+          <contains>a</contains>
+          <contains>note</contains>
+          <contains>object</contains>
+          <contains>notewrapper</contains>
         </tag>
-			  <tag nm="envLeadIn">
+        <tag nm="envLeadIn">
           <description>Environment lead-in</description>
           <contains>#text</contains>
-			    <contains>texttag</contains>
-			    <contains>othertag</contains>
+          <contains>texttag</contains>
+          <contains>othertag</contains>
           <contains>table</contains>
-			    <contains>mml:math</contains>
-			    <contains>img</contains>
+          <contains>mml:math</contains>
+          <contains>img</contains>
           <contains>a</contains>
           <contains>note</contains>
           <contains>object</contains>
@@ -1085,8 +1233,8 @@
           <contains>hspace</contains>
           <contains>table</contains>
           <contains>mml:math</contains>
-			    <contains>img</contains>
-			    <contains>object</contains>
+          <contains>img</contains>
+          <contains>object</contains>
           <contains>a</contains>
           <contains>msiframe</contains>
           <contains>msibr</contains>
@@ -1099,8 +1247,8 @@
           <contains>hspace</contains>
           <contains>table</contains>
           <contains>mml:math</contains>
-			    <contains>img</contains>
-			    <contains>object</contains>
+          <contains>img</contains>
+          <contains>object</contains>
           <contains>a</contains>
           <contains>msiframe</contains>
           <contains>msibr</contains>
@@ -1113,20 +1261,20 @@
           <contains>hspace</contains>
           <contains>table</contains>
           <contains>math</contains>
-			    <contains>img</contains>
-			    <contains>object</contains>
+          <contains>img</contains>
+          <contains>object</contains>
           <contains>a</contains>
           <contains>msiframe</contains>
           <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
-<!-- most math editing is done outside this framework, but a few math tags are needed here -->
-        <tag nm = "math">
+        <!-- most math editing is done outside this framework, but a few math tags are needed here -->
+        <tag nm="math">
           <contains>mspace</contains>
           <contains>mstyle</contains>
           <contains>bold</contains>
         </tag>
-        <tag nm = "mtext">
+        <tag nm="mtext">
           <contains>#text</contains>
           <contains>texttag</contains>
         </tag>
@@ -1136,7 +1284,6 @@
           <contains>mstyle</contains>
         </tag>
       </tags>
-		</tagclass>
-	</tagclasses>
+    </tagclass>
+  </tagclasses>
 </tagproperties>
-
