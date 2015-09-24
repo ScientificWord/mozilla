@@ -51,6 +51,11 @@ else
 BUILDSTYLE	= Deployment
 endif
 
+# Next two lines added by BBM to get this to compile on Yosemite and beyond
+XCODE_PRODUCT_DIR=build/$(BUILDSTYLE)
+PBBUILD=/Developer/usr/bin/xcodebuild
+
+
 PROJECT=DefaultPlugin.xcodeproj
 PROJECT_ARG=-project $(PROJECT)
 PBBUILD_ARG=$(PBBUILD_SETTINGS)

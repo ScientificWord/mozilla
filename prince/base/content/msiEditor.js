@@ -313,10 +313,10 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
     if (msiSetupMSIComputeMenuCommands) msiSetupMSIComputeMenuCommands(editorElement);
 #endif
 #ifndef PROD_SNB
-//   if ("msiSetupMSITypesetMenuCommands" in window) {
+   if ("msiSetupMSITypesetMenuCommands" in window) {
       msiSetupMSITypesetMenuCommands(editorElement);
       msiSetupMSITypesetInsertMenuCommands(editorElement);
-//  }
+  }
 #endif
   } catch (e) {
     throw new MsiException('msiInitializeEditorForElement', e);
