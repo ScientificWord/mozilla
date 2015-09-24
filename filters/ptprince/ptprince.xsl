@@ -219,7 +219,7 @@
 
 
 
-<xsl:template match="html:table">
+<xsl:template match="html:table|mml:table">
    
    <xsl:variable name="colspec">
      <xsl:value-of select="./@cols"/>
@@ -259,9 +259,9 @@
 
 </xsl:template>
 
-<xsl:template match="html:tbody">
+<xsl:template match="html:tbody|mml:tbody">
   <xsl:param name="the-spec"/>
-  <xsl:variable name = "nrows" select="count(./html:tr)"/>
+  <xsl:variable name = "nrows" select="count(./html:tr|./mml:tr)"/>
   <xsl:copy>
     <xsl:apply-templates select="@*|node()">
        <xsl:with-param name="the-spec" select="$the-spec"/>
@@ -289,7 +289,7 @@
 
 
 
-<xsl:template match="html:td">
+<xsl:template match="html:td|mml:td">
    <xsl:param name="the-spec"/>
    <xsl:variable name="pos">
      <xsl:value-of select='position()'/>
