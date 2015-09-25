@@ -895,7 +895,7 @@
 \bibliography{<xsl:value-of select="@databaseFile"/>}
 </xsl:template>
 
-<xsl:template match="html:xref">
+<xsl:template match="html:xref|mml:xref">
   <xsl:choose>
     <xsl:when test="@req='varioref'">
       <xsl:choose>
