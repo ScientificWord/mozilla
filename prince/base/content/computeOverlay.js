@@ -282,22 +282,24 @@ function goUpdateMSIcomputeMenuItems(commandset) {
   // }
 }
 
-function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement) {
-  var commandNode;
-  var commandID;
-  var controller;
-  var computeEnabled;
-  for (var i = 0; i < commandset.childNodes.length; i++) {
-    commandNode = commandset.childNodes[i];
-    commandID = commandNode.id;
-    if (commandID) {
-      msiGoUpdateCommand(commandID, editorElement);
-      if (commandNode.hasAttribute("state")) msiGoUpdateCommandState(commandID, editorElement);
-    }
-  }
-  // This next line has nothing to do with computation
-  // setMathTextToggle(editorElement, null);
-}
+//
+//  The following function is never called.
+//function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement) //{
+//  var commandNode;
+//  var commandID;
+//  var controller;
+//  var computeEnabled;
+//  for (var i = 0; i < commandset.childNodes.length; i++) {
+//    commandNode = commandset.childNodes[i];
+//    commandID = commandNode.id;
+//    if (commandID) {
+//      msiGoUpdateCommand(commandID, editorElement);
+//      if (commandNode.hasAttribute("state")) msiGoUpdateCommandState(commandID, editorElement);
+//    }
+//  }
+//  // This next line has nothing to do with computation
+//  // setMathTextToggle(editorElement, null);
+//}
 // const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 var gComputeStringBundle;
 
