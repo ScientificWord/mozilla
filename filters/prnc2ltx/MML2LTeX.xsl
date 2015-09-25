@@ -542,6 +542,9 @@ no indent - disregarded completely
           <xsl:when test="@linebreak='goodbreak'">
             <xsl:text xml:space="preserve">\allowbreak </xsl:text>
           </xsl:when>
+          <xsl:when test="@width">
+            <xsl:text>\hspace{</xsl:text><xsl:value-of select="@width"/><xsl:text>}</xsl:text>
+          </xsl:when>
           <xsl:otherwise>
             <xsl:text>?mspace?</xsl:text>
           </xsl:otherwise>
