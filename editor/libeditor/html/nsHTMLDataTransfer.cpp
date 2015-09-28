@@ -659,6 +659,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   // node and offset for insertion
   nsCOMPtr<nsIDOMNode> parentNode;
   PRInt32 offsetOfNewNode;
+  res = GetStartNodeAndOffset(selection, getter_AddRefs(parentNode), &offsetOfNewNode);
 
   // check for table cell selection mode
   PRBool cellSelectionMode = PR_FALSE;
