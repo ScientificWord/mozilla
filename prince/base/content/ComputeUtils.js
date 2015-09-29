@@ -1,4 +1,5 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
+// BBM: This file is misnamed since these functions can get called from Scientific Word
 #include productname.inc
 
 
