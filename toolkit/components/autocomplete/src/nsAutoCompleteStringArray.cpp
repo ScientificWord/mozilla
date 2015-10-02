@@ -343,7 +343,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddStringEx(const nsAString & 
       pssa->strMathOnly->ReplaceStringAt(strMath, i);
    }
     // Now read it back out to make sure
-    printf(" added (%S)[%d] = %S\n", strCategory.BeginReading(), psa->IndexOf(strAdd), psa->StringAt(psa->IndexOf(strAdd))->BeginReading());
+//    printf(" added (%S)[%d] = %S\n", strCategory.BeginReading(), psa->IndexOf(strAdd), psa->StringAt(psa->IndexOf(strAdd))->BeginReading());
   }
   else
   {

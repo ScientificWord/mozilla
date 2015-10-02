@@ -534,13 +534,7 @@ VCamObject.prototype = {
         if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
         this.obj.makeSnapshot(abspath, res);
         if (getOS(window) == "win") {
-          if (this.threedplot) {
-            abspath = convertBMPtoPNG(oldsnapshot);
-          } else {
-            graphicsConverter.init(window, snapshotDir.parent);
-            // oldsnapshot is an nsIFile pointing to the .bmp file
-            abspath = graphicsConverter.copyAndConvert(oldsnapshot, false);
-          }
+          abspath = convertBMPtoPNG(oldsnapshot, this.threedplot);
         }
         this.insertSnapshot(abspath);
       } catch (e) {
@@ -787,22 +781,33 @@ function doVCamClose() {
 }
 
 // oldsnapshot is an nsIFile pointing to the .bmp file
-function convertBMPtoPNG( aFile ) {
+function convertBMPtoPNG( aFile, is3d ) {
   // used only for converting BMP 3-D snapshots to PNG on Windows.
   var leaf = aFile.leafName;
   var basename = leaf.replace(/\.bmp$/,'');
   var workDirectory = aFile.parent.parent.clone();
   var utilityDir;
+  var wscript;
+  var invisscript;
   var process;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   var codeFile = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+  wscript = dsprops.get("WinD", Components.interfaces.nsIFile);
+  wscript.append('system32');
+  wscript.append('WScript.exe');
+  workDirectory.append('gcache');
+  if (! workDirectory.exists()) workDirectory.create(1, 0775);
+  workDirectory = workDirectory.parent;
+  codeFile.append('invis.vbs');
+  invisscript = codeFile.path;
+  codeFile = codeFile.parent;
   codeFile.append("utilities");
   utilityDir = codeFile.path;
   codeFile = codeFile.parent;
   codeFile.append('fixbmp.cmd');
   process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-  process.init(codeFile);
-  process.run(true, [workDirectory.path, utilityDir, basename], 3);
+  process.init(wscript);
+  process.run(true, [invisscript, codeFile.path, workDirectory.path, utilityDir, basename, (is3d? 1 : 0 )], 6);
   var outfile = workDirectory.clone();
   outfile.append('gcache');
   outfile.append(basename+'.png');
