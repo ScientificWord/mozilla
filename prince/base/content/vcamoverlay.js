@@ -22,6 +22,12 @@ var vcamObjArray = [];
 var vcamIdArray = [];
 var vcamWrapperArray = [];
 
+// Dizzy array of objects:
+//
+// We hold onto html vcam plugin objects to get around security problems
+// A VCamObject contains cached state values of a plugin object, and contains the 
+// plugin object itself.
+
 var currentVCamObjectNum = -1;
 
 function setCurrentVCamObject(obj) {
@@ -32,34 +38,35 @@ function setCurrentVCamObject(obj) {
   return currentVCamObjectNum;
 }
 
-function saveObj(obj) {
+// stores a pblugin object; returns its index
+function saveObj(pluginobj) {
   var index;
   try {
-    index = vcamIdArray.indexOf(obj.id); // if the id exists, overwrite it.
+    index = vcamIdArray.indexOf(pluginobj.id); // if the id exists, overwrite it.
     if (index === -1) {
       index = vcamIdArray.length;         // we will do the equivalent of a push
     }
-    vcamWrapperArray[index] = new VCamObject(obj);
-    vcamObjArray[index] = obj;
-    vcamIdArray[index] = obj.id;
+    vcamWrapperArray[index] = new VCamObject(pluginobj);
+    vcamObjArray[index] = pluginobj;
+    vcamIdArray[index] = pluginobj.id;
   } catch (e) {
     msidump(e.message);
   }
   return index;
 }
 
-function VCamObject(vcampluginObject) {
+function VCamObject(vcamObject) {
   var index = -1;
-  var id = vcampluginObject.id;
+  var id = vcamObject.id;
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect'); // BBM: test to see if this is necessary
   index = vcamIdArray.indexOf(id);
   if (index >= 0) {
     this.obj = vcamObjArray[index];
   } else {
-    if (vcampluginObject.wrappedJSObject) {
-      this.obj = vcampluginObject.wrappedJSObject;
+    if (vcamObject.wrappedJSObject) {
+      this.obj = vcamObject.wrappedJSObject;
     } else {
-      this.obj = vcampluginObject;
+      this.obj = vcamObject;
     }
     // saveObj(this.obj);
   }

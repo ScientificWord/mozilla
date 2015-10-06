@@ -285,8 +285,8 @@ Graph.prototype = {
     catch (e) {
       status = "ERROR";
       this.errStr = eng.getEngineErrors();
-      dump("Computation Error", "Query Graph: " + this.errStr + "\n");
-      msiComputeLogger.Exception(e);chrome://prince/content/GraphOverlay.js
+      dump("Computation Error: " +  "Query Graph: " + this.errStr + "\n");
+      msiComputeLogger.Exception(e);  
     }
     finally {
       if (plot) {
@@ -1932,7 +1932,7 @@ Frame.prototype = {
             editor.setAttribute(DOMFrame, "ltx_height", height);
             heightinpx = unitHandler.getValueAs(height, "px");
             editor.setAttribute(DOMFrame, "height", height);
-            if (heightinpx) setStyleAttributeOnNode(DOMObj, "height", heightinpx + "px", null);
+            setStyleAttributeOnNode(DOMObj, "height", height + units, null);
             // dimensions of outer msiframe need to be adjusted for border and padding
             x = this.getFrameAttribute("border");
             if (x)
