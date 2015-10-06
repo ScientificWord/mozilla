@@ -658,9 +658,13 @@ function exportTeX()
    finalThrow(cmdFailString("exporttotex"), "Exporting TeX for a modified document is not allowed since this program is not licensed.")
    return;
   }
+
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor) return;
+#ifndef PROD_SW
+  rebuildSnapshots(editor.document);
+#endif
   uri = editor.document.documentURI;
   checkPackageDependenciesForEditor(editor);
   var file = msiFileFromFileURL(msiURIFromString(uri));
@@ -888,9 +892,13 @@ function compileDocument()
     finalThrow(cmdFailString("compiletex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
     return false;
   }
+
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor) return null;
+#ifndef PROD_SW
+  rebuildSnapshots(editor.document);
+#endif
   var compiler = "pdflatex";
   // Determine which compiler to use
   var texprogNode;
@@ -1355,9 +1363,6 @@ function documentToTeXString(document, xslPath)
   var editorElement = msiGetActiveEditorElement();
   editor = msiGetEditor(editorElement);
   xsltString = getXSLAsString(xslPath);
-#ifndef PROD_SW
-  rebuildSnapshots(document);
-#endif
   var compiler = "pdflatex";
   // Determine which compiler to use
   var texprogNode;

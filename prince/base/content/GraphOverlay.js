@@ -286,7 +286,7 @@ Graph.prototype = {
       status = "ERROR";
       this.errStr = eng.getEngineErrors();
       dump("Computation Error", "Query Graph: " + this.errStr + "\n");
-      msiComputeLogger.Exception(e);
+      msiComputeLogger.Exception(e);chrome://prince/content/GraphOverlay.js
     }
     finally {
       if (plot) {
