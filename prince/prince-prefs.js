@@ -10,8 +10,7 @@ pref("nglayout.debug.disable_xul_fastload", true); */
 pref("swp.tex.bindir","%programfiles%\\texlive\\2010\\bin\\win32");
 pref("swp.bibtex.dir","%programfiles%\\texlive\\2010\\texmf-dist\\BibTeX\\bib");
 #elifdef XP_MACOSX
-pref("swp.tex.bindir","/usr/texbin");
-pref("swp.bibtex.dir","/usr/texbin");
+
 #else
 pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");
 pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");
