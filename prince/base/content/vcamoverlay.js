@@ -532,9 +532,14 @@ VCamObject.prototype = {
         if (oldsnapshot.exists()) oldsnapshot.remove(true);
         snapshotDir = snapshotDir.parent;
         if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
+        netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect'); // BBM: test to see if this is necessary
+
+        if (typeof this.obj.makeSnapshot !== 'function') {
+          this.obj = new VCamObject(this.obj);
+        }
         this.obj.makeSnapshot(abspath, res);
         if (getOS(window) == "win") {
-          abspath = convertBMPtoPNG(oldsnapshot, this.threedplot);
+          abspath = convertBMPtoPNG(oldsnapshot, this.obj.dimension == 3);
         }
         this.insertSnapshot(abspath);
       } catch (e) {
@@ -783,7 +788,11 @@ function doVCamClose() {
 // oldsnapshot is an nsIFile pointing to the .bmp file
 function convertBMPtoPNG( aFile, is3d ) {
   // used only for converting BMP 3-D snapshots to PNG on Windows.
-  var leaf = aFile.leafName;
+  var leaf = aFile.leafName;  
+  var x;
+  if (!is3d) {
+    x=3;  // something to break onsq
+  }
   var basename = leaf.replace(/\.bmp$/,'');
   var workDirectory = aFile.parent.parent.clone();
   var utilityDir;
@@ -807,7 +816,7 @@ function convertBMPtoPNG( aFile, is3d ) {
   codeFile.append('fixbmp.cmd');
   process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
   process.init(wscript);
-  process.run(true, [invisscript, codeFile.path, workDirectory.path, utilityDir, basename, (is3d? 1 : 0 )], 6);
+  process.run(true, [invisscript, codeFile.path, workDirectory.path, utilityDir, basename, (is3d ? 1 : 0 )], 6);
   var outfile = workDirectory.clone();
   outfile.append('gcache');
   outfile.append(basename+'.png');
