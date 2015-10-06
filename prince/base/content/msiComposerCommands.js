@@ -2758,9 +2758,7 @@ function msiSoftSave( editor, editorElement, noTeX)
     aMimeType = "text/plain";
   else if (GetBoolPref("swp.generateTeXonsave") && !noTeX)
   {
-   var file = currentFile.parent;
-   file.append("tex");
-   file.append("main.tex");
+   var file = null;
     documentAsTeXFile(editor, editorDoc, file, compileInfo);
   }
   var success;
