@@ -46,6 +46,7 @@
 var gDialog;
 var gEditorElement;
 var gEditor;
+var gGlobalElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 var imageElement;
@@ -340,8 +341,8 @@ function Startup()
     //wrapperElement.appendChild(gCaptionNode);
     //msiEditorEnsureElementAttribute(wrapperElement, "captionloc", captionloc, null);
     wrapperElement.appendChild(imageElement);
-
   }
+  gGlobalElement = imageElement;
 
   initFrameTab(gDialog, wrapperElement||imageElement, gInsertNewImage, imageElement);
 
