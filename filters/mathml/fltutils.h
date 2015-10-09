@@ -270,6 +270,7 @@ typedef struct tagTILE { // Struct to carry translated fragments
 #define IM_LBRACE	11
 #define IM_DFLOAT	12
 #define IM_HYPHENATION	13
+#define IM_PASSTHRU 14
 
 
 
