@@ -17,6 +17,7 @@
 
 \def\href{
     \begingroup
+    \catcode`\~=\other
     \catcode`\"=\active    
     \@href}
 
@@ -25,7 +26,7 @@
    \ifmmode
       \msitag{\msipassthru{<a href="#1">#2</a>}}%
    \else
-      \msihmode\msiopentag{a}{<a href="}#1\msitag{">}#2\msiclosetag{a}{</a>}%
+      \msihmode\msiopentag{a}{<a href="#1">}#2\msiclosetag{a}{</a>}%
    \fi
    \endgroup}
 
