@@ -290,6 +290,9 @@ JBMLine( zzz );
       rv  =  LocateVerbatimToken( src,end_ptr,src_off,s_off,e_off,
       								is_chdata );
     break;
+    case IM_PASSTHRU  :
+      rv  =  LocatePassthruToken( src, end_ptr, s_off, e_off, is_chdata, is_comment);
+    break;
 	default :
       done  =  FALSE;
     break;
@@ -1579,8 +1582,8 @@ U16 TeXtokenizer::LocateVerbatimToken( U8* src,U8* end_ptr,
 //  eolns that mean space may occur.
 
 U16 TeXtokenizer::LocateNonLaTeXToken( U8* src,U8* end_ptr,
-    									U16& s_off,U16& e_off,
-                                   		  TCI_BOOL& is_chdata,
+    									                 U16& s_off, U16& e_off,
+                                   		 TCI_BOOL& is_chdata,
                                     	    TCI_BOOL& is_comment ) {
 //JBMLine( "LocateNonLaTeXToken\n" );
 
@@ -1644,6 +1647,41 @@ U16 TeXtokenizer::LocateNonLaTeXToken( U8* src,U8* end_ptr,
 
   return rv;
 }
+
+
+U16 TeXtokenizer::LocatePassthruToken( U8* src, U8* end_ptr,
+    									                 U16& s_off, U16& e_off,
+                                   		  TCI_BOOL& is_chdata,
+                                    	    TCI_BOOL& is_comment ) {
+    U16 rv    =  0;		// assumed end of input buffer data
+    U8* rover =  src;
+    
+    if ( strchr("{}[]",*rover) ) {
+       e_off++;
+       rv  =  2;					// token
+       return rv;
+    }
+
+    is_chdata = true;
+    is_comment = false;
+    int depth = 0;
+    while (*rover){
+      if ( *rover == '{' ) {
+        ++depth;
+      } else if (*rover == '}' ){
+        --depth;
+        if (depth == -1)
+          break;
+      } else if (*rover == '\\'){
+         ++rover;
+      }
+      ++rover;
+    }
+    s_off = 0;
+    e_off = rover - src;
+    return 2;
+}
+
 
 
 U16 TeXtokenizer::ParseTeXUnit( U8* p_unit ) {
