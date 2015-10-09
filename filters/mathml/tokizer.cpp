@@ -919,6 +919,12 @@ TNODE* Tokizer::GetToken( U8* zcurr_env,U32 src_off,
           usubtype  =  10;
 		}
 		break;
+    case  IM_PASSTHRU : {
+          uobjtype  =  888;
+          usubtype  =  11;
+		}
+		break;
+
 		default :
 		  TCI_ASSERT(0);
 		break;
