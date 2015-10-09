@@ -108,6 +108,12 @@ private:
 							  TCI_BOOL& is_chdata,
                            	    TCI_BOOL& is_comment );
 
+  U16 LocatePassthruToken( U8* src,U8* end_ptr,
+      						U16& s_off,U16& e_off,
+							  TCI_BOOL& is_chdata,
+                           	    TCI_BOOL& is_comment );
+
+
   U16 ParseTeXUnit( U8* p_unit );
 
   U8        last_token_output[64];  
