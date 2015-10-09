@@ -275,7 +275,8 @@ VCamObject.prototype = {
     // alert("left mouse up in plugin!");
   },
 
-  onVCamLeftMouseDown: function onVCamLeftMouseDown(screenX, screenY) {
+  onVCamLeftMouseDown: function onVCamLeftMouseDown(evt, screenX, screenY) {
+    return;
     try {
       if (msiGetActiveEditorElement != null) {
         var editorElement = msiGetActiveEditorElement();
@@ -319,6 +320,7 @@ VCamObject.prototype = {
 
   onVCamRightMouseUp: function onVCamRightMouseUp(screenX, screenY) // BBM: ???
     {
+      return;
       try {
         if (msiGetActiveEditorElement != null) {
           var editorElement = msiGetActiveEditorElement();
@@ -421,16 +423,18 @@ VCamObject.prototype = {
           break;
         case "cmd_vcRotateUp":
           if (this.obj.horizontalAction == 1) {
-            this.obj.rotateHorizontalAction = this.horizontalAction == 0;
+            this.obj.rotateHorizontalAction = 0;
+            this.horizontalAction = 0;
           } else {
-            this.obj.rotateHorizontalAction = this.horizontalAction == 1;
+            this.obj.rotateHorizontalAction =1;
+            this.horizontalAction = 1;
           }
           break;
         case "cmd_vcRotateDown":
           if (this.horizontalAction == 2) {
-            this.obj.rotateHorizontalAction = this.horizontalAction == 0;
+            this.obj.rotateHorizontalAction = this.horizontalAction = 0;
           } else {
-            this.obj.rotateHorizontalAction = this.horizontalAction == 2;
+            this.obj.rotateHorizontalAction = this.horizontalAction = 2;
           }
           break;
         case "cmd_vcRotateScene":
@@ -508,7 +512,7 @@ VCamObject.prototype = {
     } catch (e) {
       return;
     }
-    // msiRequirePackage(editorElement, "wrapfig", "");
+    msiRequirePackage(editorElement, "wrapfig", "");
     var doc = editorElement.contentDocument;
     var ready = this.obj.readyState;
     if (ready > 1) {
