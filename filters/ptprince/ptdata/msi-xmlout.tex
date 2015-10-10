@@ -1545,7 +1545,8 @@
 
 \def\hrulefill{%
    \ifmmode
-     \string\hrulefill
+     %\string\hrulefill
+     \msitag{\msipassthru{<mspace width="thickmathspace" type="customSpace" class="stretchySpace" flex="3" fillWith="line" atEnd="true"/>}}%
    \else
      <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>
    \fi}
