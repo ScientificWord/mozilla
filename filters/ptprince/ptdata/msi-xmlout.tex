@@ -1729,13 +1729,14 @@
 %\egroup
 
 \def\vspace{%
-  \@ifnextchar*{\@vspacestar}{\@vspace}}
+   \leavevmode
+   \@ifnextchar*{\@vspacestar}{\@vspace}}
 
 \def\@vspace#1{%
    \ifmmode
      \string\vspace\@brace{#1}%
    \else
-     \msihmode\msitag{<vspace type="customSpace" dim="#1" atEnd="false"></vspace>}%
+     \msitag{<vspace type="customSpace" dim="#1" atEnd="false"></vspace>}%
    \fi
 }
 
