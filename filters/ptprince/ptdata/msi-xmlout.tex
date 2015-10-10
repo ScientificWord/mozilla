@@ -1610,6 +1610,7 @@
 
 \def\func#1{\string\func\@brace{#1}}
 \def\limfunc#1{\string\limfunc\@brace{#1}}
+\def\operatorname{\@ifnextchar*{\limfunc}{\func}}
 
 
 \def\sqrt{%
