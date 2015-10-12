@@ -22,7 +22,7 @@ var gConstrainWidth = 0;
 var gConstrainHeight = 0;
 var gActualWidth = 0;
 var gActualHeight = 0;
-var gDefaultPlacement = "center";
+var gDefaultPlacement = "inline";
 var gDefaultInlineOffset = "";
 var hasNaturalSize;
 var gCaptionLoc;
