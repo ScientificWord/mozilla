@@ -8,4 +8,4 @@ if "%4x" == "1x" goto :threed
   goto :theend
 :threed
   "%~2\convert.exe" graphics\%3.bmp -crop 66.67%%x+0+0! gcache\%3.png
-:theend:
+:theend
