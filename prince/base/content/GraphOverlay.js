@@ -1905,7 +1905,7 @@ Frame.prototype = {
 
   reviseFrameDOMElement: function (DOMFrame, forComp, editorElement) {
     var editor = msiGetEditor(editorElement);
-    var attributes, i, j, att, graph, units, height, width, heightinpx, widthinpx, pos, placeLocation, captionlocation, x;
+    var attributes, i, j, att, graph, units, height, width, pos, placeLocation, captionlocation, x;
     var DOMObj = DOMFrame.getElementsByTagName("object")[0];
     var unitHandler = new UnitHandler(editor);
     var needsWrapfig = false;
@@ -1930,7 +1930,6 @@ Frame.prototype = {
           case "Height":
             height = Number(graph.getValue(att));
             editor.setAttribute(DOMFrame, "ltx_height", height);
-            heightinpx = unitHandler.getValueAs(height, "px");
             editor.setAttribute(DOMFrame, "height", height);
             setStyleAttributeOnNode(DOMObj, "height", height + units, null);
             // dimensions of outer msiframe need to be adjusted for border and padding
@@ -1944,14 +1943,12 @@ Frame.prototype = {
             {
   //            height += 2*(x-0);
             }
-            editor.setAttribute(DOMFrame, "height", height);
-            heightinpx = unitHandler.getValueAs(height, "px");
+            // editor.setAttribute(DOMFrame, "height", height);
             setStyleAttributeOnNode( DOMFrame, "height", height + units, null);
             break;
           case "Width":
             width = Number(graph.getValue(att));
             editor.setAttribute(DOMFrame, "ltx_width", width);
-            widthinpx = unitHandler.getValueAs(width, "px");
             setStyleAttributeOnNode(DOMObj, "width", width + units, null);
 
             x = this.getFrameAttribute("border");
@@ -1963,7 +1960,6 @@ Frame.prototype = {
   //            width += 2*(x-0);
             }
             editor.setAttribute(DOMFrame, "width", width);
-            widthinpx = unitHandler.getValueAs(width, "px");
             setStyleAttributeOnNode( DOMFrame, "width", width + units, null);
             break;
           case "border":
@@ -2308,14 +2304,6 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   var frmFloatLocation_topPage = GetBoolPref("swp.graph.floatlocation.toppage");
   var frmFloatLocation_bottomPage = GetBoolPref("swp.graph.floatlocation.bottompage");
 
-
-
-
-
-
-
-
-
 //  var frmFloatPlacement = GetStringPref("swp.graph.floatplacement");
 
 
@@ -2335,17 +2323,22 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   if (frmBorder) frame.setFrameAttribute("borderw", frmBorder);
   if (frmHMargin) frame.setFrameAttribute("HMargin", frmHMargin);
   if (frmVMargin) frame.setFrameAttribute("VMargin", frmVMargin);
-  if (frmPadding) frame.setFrameAttribute("paddadding", frmPadding);
+  if (frmPadding) frame.setFrameAttribute("padding", frmPadding);
   if (frmBGColor) frame.setFrameAttribute("BGColor", frmBGColor);
   if (frmBorderColor) frame.setFrameAttribute("borderColor", frmBorderColor);
   if (frmPlacement) frame.setFrameAttribute("placement", frmPlacement);
   var floatLoc = "";
-  if (frmFloatLocation_forceHere) floatLoc += "H";
-  if (frmFloatLocation_here) floatLoc += "h";
-  if (frmFloatLocation_pageFloats) floatLoc += "p";
-  if (frmFloatLocation_topPage) floatLoc += "t";
-  if (frmFloatLocation_bottomPage) floatLoc += "b";
-  if (floatLoc !== "") frame.setFrameAttribute(floatPlacement, floatLoc);
+  if (frmPlacement === "float") {
+    if (frmFloatLocation_forceHere) floatLoc += "H";
+    if (frmFloatLocation_here) floatLoc += "h";
+    if (frmFloatLocation_pageFloats) floatLoc += "p";
+    if (frmFloatLocation_topPage) floatLoc += "t";
+    if (frmFloatLocation_bottomPage) floatLoc += "b";
+    if (floatLoc !== "") frame.setFrameAttribute(floatPlacement, floatLoc);    
+  }
+
+  // BBM
+  // setStyleAttributeOnNode(frame, "padding-top", "1.4em", null);
 
 
   var plot = new Plot(dimension, plottype);
@@ -2358,7 +2351,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   }
   plot.computeQuery();
   insertGraph(math, graph, editorElement);
-  // var frame = math.nextSibling.getElementsByTagName("msiframe")[0];
+  setStyleAttribute(math.nextSibling.getElementsByTagName("msiframe")[0], "padding-top", "1.4em", null);
   // if (frame) {
   //   if (frmBorder) frame.setAttribute("borderw", frmBorder);
   //   if (frmHMargin) frame.setAttribute("sidemargin", frmHMargin);
