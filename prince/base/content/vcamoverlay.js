@@ -276,7 +276,9 @@ VCamObject.prototype = {
   },
 
   onVCamLeftMouseDown: function onVCamLeftMouseDown(evt, screenX, screenY) {
+#ifdef XP_MACOSX
     return;
+#endif
     try {
       if (msiGetActiveEditorElement != null) {
         var editorElement = msiGetActiveEditorElement();
