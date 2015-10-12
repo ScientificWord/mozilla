@@ -1471,6 +1471,8 @@ void TeXParser::PushContext( U8* new_env,U8* start_toks,
         new_input_mode  =  IM_NONLATEX;
       else if ( !strcmp((char*)new_env,"HYPHENATION") )
         new_input_mode  =  IM_HYPHENATION;
+      else if ( !strcmp((char*)new_env,"PASSTHRU") )
+        new_input_mode  =  IM_PASSTHRU;
 	}
     tokizer->SetInputMode( new_input_mode );
     context_stack[context_sp].inputmode =  new_input_mode;
@@ -2100,7 +2102,7 @@ TCI_BOOL TeXParser::IsTokenInList( U8* ztok_uID,TOKEN_INFO* list ) {
 
   TOKEN_INFO* rover =  list;
   while ( rover ) {
-    if ( !strcmp((char*)ztok_uID,(char*)rover->ztuID) ) {
+    if (rover->ztuID && !strcmp((char*)ztok_uID,(char*)rover->ztuID) ) {
       rv  =  TRUE;
       break;
     }
@@ -2247,7 +2249,19 @@ JBMLine( zzz );
           comment  =  tokizer->GetComments();
 		  if ( comment )
 		    newnode =  JoinTLists( newnode,comment );
-		}
+		 }
+
+    } else if ( pENV && !strcmp((char*)pENV,"PASSTHRU") ) {
+          src_off +=  1;
+          DisposeTNode( nt );
+
+          TNODE* comment  =  tokizer->GetComments();
+
+          U8* nest_toks =  tmpl->MakeTokenList( (U8*)"{",1 );
+          U8* end_toks  =  tmpl->MakeTokenList( (U8*)"}",1 );
+		      TCI_BOOL include_endtok =  TRUE;
+          newnode =  DoNonTeXBucket( tmpl,pENV,nest_toks,end_toks,
+        						include_endtok,src_off,error_flag );
 
 	  } else {			// here we do a full recursive parse
 
@@ -2509,9 +2523,15 @@ JBMLine( zzz );
     char* verb_ptr  =  (char*)tokizer->GetSrcPtr( newnode->src_offset1 );
     strncpy( tmp,verb_ptr,zln );
     tmp[zln]  =  0;
-	U8* fixed =  FixNonLaTeX( (U8*)tmp );
+    U8* fixed = 0;
+    if (strcmp((char*)the_ENV, "PASSTHRU")) {
+	     fixed =  FixNonLaTeX( (U8*)tmp );
+    } else {
+       fixed = (U8*)tmp;
+    }
     cont->var_value  =  fixed;
     cont->v_len  =  strlen( (char*)fixed );
+   
   }
 
 //char zzz[80];

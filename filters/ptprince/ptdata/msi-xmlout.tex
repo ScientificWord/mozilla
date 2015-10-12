@@ -17,6 +17,7 @@
 
 \def\href{
     \begingroup
+    \catcode`\~=\other
     \catcode`\"=\active    
     \@href}
 
@@ -25,7 +26,7 @@
    \ifmmode
       \msitag{\msipassthru{<a href="#1">#2</a>}}%
    \else
-      \msihmode\msiopentag{a}{<a href="}#1\msitag{">}#2\msiclosetag{a}{</a>}%
+      \msihmode\msiopentag{a}{<a href="#1">}#2\msiclosetag{a}{</a>}%
    \fi
    \endgroup}
 
@@ -1544,7 +1545,8 @@
 
 \def\hrulefill{%
    \ifmmode
-     \string\hrulefill
+     %\string\hrulefill
+     \msitag{\msipassthru{<mspace width="thickmathspace" type="customSpace" class="stretchySpace" flex="3" fillWith="line" atEnd="true"/>}}%
    \else
      <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>
    \fi}
@@ -1608,6 +1610,7 @@
 
 \def\func#1{\string\func\@brace{#1}}
 \def\limfunc#1{\string\limfunc\@brace{#1}}
+\def\operatorname{\@ifnextchar*{\limfunc}{\func}}
 
 
 \def\sqrt{%
@@ -1726,13 +1729,14 @@
 %\egroup
 
 \def\vspace{%
-  \@ifnextchar*{\@vspacestar}{\@vspace}}
+   \leavevmode
+   \@ifnextchar*{\@vspacestar}{\@vspace}}
 
 \def\@vspace#1{%
    \ifmmode
      \string\vspace\@brace{#1}%
    \else
-     \msihmode\msitag{<vspace type="customSpace" dim="#1" atEnd="false"></vspace>}%
+     \msitag{<vspace type="customSpace" dim="#1" atEnd="false"></vspace>}%
    \fi
 }
 

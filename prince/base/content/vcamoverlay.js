@@ -59,6 +59,7 @@ function VCamObject(vcamObject) {
   var index = -1;
   var id = vcamObject.id;
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect'); // BBM: test to see if this is necessary
+  vcamObject.wrapper = this;
   index = vcamIdArray.indexOf(id);
   if (index >= 0) {
     this.obj = vcamObjArray[index];
@@ -118,6 +119,7 @@ VCamObject.prototype = {
       this.horizontalAction = this.obj.rotateHorizontalAction;
       this.actionSpeed = this.obj.actionSpeed;
       this.animationSpeed = this.obj.animationSpeed;
+//      this.makeSnapshot();
 
       this.initEventHandlers();
       this.initialized = true;
@@ -273,15 +275,18 @@ VCamObject.prototype = {
     // alert("left mouse up in plugin!");
   },
 
-  onVCamLeftMouseDown: function onVCamLeftMouseDown(screenX, screenY) {
+  onVCamLeftMouseDown: function onVCamLeftMouseDown(evt, screenX, screenY) {
+#ifdef XP_MACOSX
+    return;
+#endif
     try {
       if (msiGetActiveEditorElement != null) {
         var editorElement = msiGetActiveEditorElement();
         var editor = msiGetEditor(editorElement);
-        editor.selection.collapse(this.obj.parentNode, 0);
-        editor.selection.extend(this.obj.parentNode, 1);
+        editor.selection.collapse(this.parentNode, 0);
+        editor.selection.extend(this.parentNode, 1);
         editor.checkSelectionStateForAnonymousButtons(editor.selection);
-        this.initUI();
+        this.wrapper.setupUI();
       }
     } catch (e) {}
   },
@@ -295,7 +300,7 @@ VCamObject.prototype = {
     try {
       if (msiGetActiveEditorElement != null) {
         var editorElement = msiGetActiveEditorElement();
-        goDoPrinceCommand("cmd_objectProperties", this.obj.parentNode.parentNode, editorElement); // go up to the graph object
+        goDoPrinceCommand("cmd_objectProperties", This.parentNode.parentNode, editorElement); // go up to the graph object
       }
     } catch (e) {}
   },
@@ -317,6 +322,7 @@ VCamObject.prototype = {
 
   onVCamRightMouseUp: function onVCamRightMouseUp(screenX, screenY) // BBM: ???
     {
+      return;
       try {
         if (msiGetActiveEditorElement != null) {
           var editorElement = msiGetActiveEditorElement();
@@ -419,16 +425,18 @@ VCamObject.prototype = {
           break;
         case "cmd_vcRotateUp":
           if (this.obj.horizontalAction == 1) {
-            this.obj.rotateHorizontalAction = this.horizontalAction == 0;
+            this.obj.rotateHorizontalAction = 0;
+            this.horizontalAction = 0;
           } else {
-            this.obj.rotateHorizontalAction = this.horizontalAction == 1;
+            this.obj.rotateHorizontalAction =1;
+            this.horizontalAction = 1;
           }
           break;
         case "cmd_vcRotateDown":
           if (this.horizontalAction == 2) {
-            this.obj.rotateHorizontalAction = this.horizontalAction == 0;
+            this.obj.rotateHorizontalAction = this.horizontalAction = 0;
           } else {
-            this.obj.rotateHorizontalAction = this.horizontalAction == 2;
+            this.obj.rotateHorizontalAction = this.horizontalAction = 2;
           }
           break;
         case "cmd_vcRotateScene":
@@ -541,9 +549,9 @@ VCamObject.prototype = {
         if (!snapshotDir.exists()) snapshotDir.create(1, 0755);
         netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect'); // BBM: test to see if this is necessary
 
-        if (typeof this.obj.makeSnapshot !== 'function') {
-          this.obj = new VCamObject(this.obj);
-        }
+        // if (typeof this.obj.makeSnapshot !== 'function') {
+        //   this.obj = new VCamObject(this.obj);
+        // }
         this.obj.makeSnapshot(abspath, res);
         if (getOS(window) == "win") {
           abspath = convertBMPtoPNG(oldsnapshot, this.obj.dimension == 3);
@@ -623,9 +631,6 @@ VCamObject.prototype = {
       }
       h = gslist.getAttribute("Height")+units;
       if (h) {
-        ssobj.setAttribute("naturalHeight", h);
-        ssobj.setAttribute("ltx_height", h);
-        setStyleAttributeOnNode(ssobj, "height", h, editor)
       }
       ssobj.setAttribute("units", units);
     }
@@ -639,9 +644,6 @@ function initVCamObjects(doc) {
   var wrapperlist, length, i, obj;
   var obj = null;
   vcamlastId = 0;
-  vcamObjArray = [];
-  vcamIdArray = [];
-  vcamWrapperArray = [];
   wrapperlist = doc.documentElement.getElementsByTagName("msiframe");
   length = wrapperlist.length;
   for (i = 0; i < length; i++) {
@@ -650,6 +652,7 @@ function initVCamObjects(doc) {
       if (obj && obj.nodeName === "object") {
         vcamlastId++;
         saveObj(obj);
+        var x=3; // for debugger
       }
     }
   }
