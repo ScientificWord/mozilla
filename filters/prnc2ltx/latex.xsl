@@ -756,10 +756,13 @@
   <xsl:apply-templates mode="envleadin"/>
      <xsl:value-of select="$newline"/>
      <xsl:apply-templates/>
+  <xsl:value-of select="$newline"/>
   <xsl:text>\end{</xsl:text><xsl:value-of select="$tagnameToUse"/><xsl:text>}</xsl:text>
+  <xsl:value-of select="$blankline"/>
 </xsl:template>
 
 <xsl:template match="html:environment">
+  <xsl:value-of select="$newline"/>
   <xsl:text>\begin{</xsl:text>
   <xsl:value-of select="@type"/>
   <xsl:text>}</xsl:text>
@@ -770,16 +773,21 @@
   </xsl:if>
   <xsl:apply-templates mode="envleadin"/>
   <xsl:apply-templates/>
+  <xsl:value-of select="$newline"/>
   <xsl:text>\end{</xsl:text>
   <xsl:value-of select="@type"/>
   <xsl:text>}</xsl:text>
+  <xsl:value-of select="$newline"/>
 </xsl:template>
 
 
 <xsl:template match="html:proof">
+  <xsl:value-of select="$newline"/>
   <xsl:text>\begin{proof}</xsl:text>
+  <xsl:value-of select="$newline"/>
   <xsl:apply-templates mode="envleadin"/>
   <xsl:apply-templates/>
+  <xsl:value-of select="$newline"/>
   <xsl:text>\end{proof}</xsl:text>
   <xsl:value-of select="$blankline"/>
 </xsl:template>
