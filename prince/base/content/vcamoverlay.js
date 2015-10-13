@@ -88,7 +88,7 @@ VCamObject.prototype = {
   animationSpeed: null,
 
   setupUI: function() {
-    this.init();
+    if (!this.initialized) this.init();
     if (this.initialized) {
       this.initToolbar();
       document.getElementById("vcamactive").setAttribute("hidden", "false");
@@ -97,7 +97,11 @@ VCamObject.prototype = {
   },
 
   init: function() {
-    var editorElement, o, editor;
+    var editorElement, o, editor
+    // Tuning constants
+    var interval = 100;
+    var count = 20;
+    var _this = this;
     netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect'); // BBM: test to see if this is necessary
     if (!this.obj.readyState || !this.obj.cursorTool) {
       editorElement = msiGetActiveEditorElement();
@@ -109,20 +113,29 @@ VCamObject.prototype = {
         this.obj = o;
       }
     }
-    if (this.obj.readyState === 2 && !this.initialized) {
-      this.cursorTool = this.obj.cursorTool;
-      this.twodplot = (2 === this.obj.dimension);
-      this.threedplot = !this.twodplot;
-      this.animplot = this.obj.isAnimated;
-      this.zoomAction = this.obj.zoomAction;
-      this.verticalAction = this.obj.rotateVerticalAction;
-      this.horizontalAction = this.obj.rotateHorizontalAction;
-      this.actionSpeed = this.obj.actionSpeed;
-      this.animationSpeed = this.obj.animationSpeed;
-//      this.makeSnapshot();
-
-      this.initEventHandlers();
-      this.initialized = true;
+    var timeoutId;
+    if (!this.initialized) {
+      timeoutId = window.setInterval(function (_this) {
+        if (count-- === 0) {
+          window.clearInterval(timeoutId);
+        }
+        else {
+          if (_this.obj.readyState && _this.obj.readyState === 2) {
+            _this.cursorTool = _this.obj.cursorTool;
+            _this.twodplot = (2 === _this.obj.dimension);
+            _this.threedplot = !_this.twodplot;
+            _this.animplot = _this.obj.isAnimated;
+            _this.zoomAction = _this.obj.zoomAction;
+            _this.verticalAction = _this.obj.rotateVerticalAction;
+            _this.horizontalAction = _this.obj.rotateHorizontalAction;
+            _this.actionSpeed = _this.obj.actionSpeed;
+            _this.animationSpeed = _this.obj.animationSpeed;
+            _this.initEventHandlers();
+            _this.initialized = true;
+            window.clearInterval(timeoutId);
+          }
+        }
+      }, interval, _this);
     }
   },
 
@@ -275,7 +288,7 @@ VCamObject.prototype = {
     // alert("left mouse up in plugin!");
   },
 
-  onVCamLeftMouseDown: function onVCamLeftMouseDown(evt, screenX, screenY) {
+  onVCamLeftMouseDown: function onVCamLeftMouseDown(screenX, screenY) {
 #ifdef XP_MACOSX
     return;
 #endif
@@ -322,7 +335,9 @@ VCamObject.prototype = {
 
   onVCamRightMouseUp: function onVCamRightMouseUp(screenX, screenY) // BBM: ???
     {
-      return;
+#ifdef XP_MACOSX
+    return;
+#endif
       try {
         if (msiGetActiveEditorElement != null) {
           var editorElement = msiGetActiveEditorElement();
