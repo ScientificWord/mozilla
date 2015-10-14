@@ -841,7 +841,8 @@ function convertBMPtoPNG( aFile, is3d ) {
   codeFile.append('fixbmp.bat');
   process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
   process.init(wscript);
-  process.run(true, [invisscript, codeFile.path, workDirectory.path, utilityDir, basename, (is3d ? 1 : 0 )], 6);
+  // process.run(true, [invisscript, codeFile.path, workDirectory.path, utilityDir, basename, (is3d ? 1 : 0 )], 6);
+  process.run(true, [invisscript, codeFile.path, workDirectory.path, utilityDir, basename, 1], 6);
   var outfile = workDirectory.clone();
   outfile.append('gcache');
   outfile.append(basename+'.png');
