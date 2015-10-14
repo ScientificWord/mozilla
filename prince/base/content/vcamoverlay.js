@@ -816,7 +816,7 @@ function convertBMPtoPNG( aFile, is3d ) {
   var leaf = aFile.leafName;  
   var x;
   if (!is3d) {
-    x=3;  // something to break onsq
+    x=3;  // something to break on
   }
   var basename = leaf.replace(/\.bmp$/,'');
   var workDirectory = aFile.parent.parent.clone();
@@ -838,7 +838,7 @@ function convertBMPtoPNG( aFile, is3d ) {
   codeFile.append("utilities");
   utilityDir = codeFile.path;
   codeFile = codeFile.parent;
-  codeFile.append('fixbmp.cmd');
+  codeFile.append('fixbmp.bat');
   process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
   process.init(wscript);
   process.run(true, [invisscript, codeFile.path, workDirectory.path, utilityDir, basename, (is3d ? 1 : 0 )], 6);
