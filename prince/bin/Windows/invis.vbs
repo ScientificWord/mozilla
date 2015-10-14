@@ -1,21 +1,6 @@
-
 set args = WScript.Arguments
 num = args.Count
 
-if num = 0 then
-    WScript.Echo "Usage: [CScript | WScript] invis.vbs aScript.bat <some script arguments>"
-    WScript.Quit 1
-end if
-
-sargs = ""
-if num > 1 then
-    sargs = " "
-    for k = 1 to num - 1
-    	anArg = args.Item(k)
-    	sargs = sargs & anArg & " "
-    next
-end if
-
 Set WshShell = WScript.CreateObject("WScript.Shell")
 
-WshShell.Run """" & WScript.Arguments(0) & """" & sargs, 0, False
+WshShell.Run """" & args.Item(2) & "\\convert.exe" & """ " & args.Item(1) & "\\graphics\\" & args.Item(3) & ".bmp " & " -crop 66.67%%x+0+0! " & args.Item(1) & "\\gcache\\" & args.Item(3) & ".png", 0, False
