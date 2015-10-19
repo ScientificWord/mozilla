@@ -168,9 +168,9 @@ MNODE *MuPAD2Tree::GetElementList(const char *z_src,
           if (args->first_kid && args->first_kid->next){
             varbucket = args->first_kid;
             funcbucket = args->first_kid -> next;
-            MNODE *varblist  = varbucket->first_kid;
+            //varblist  = varbucket->first_kid;
           } else {
-            MNODE *funcbucket = args->first_kid;
+            funcbucket = args->first_kid;
           }
           MNODE *func = funcbucket->first_kid;
 
