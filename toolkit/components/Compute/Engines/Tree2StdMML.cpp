@@ -3052,8 +3052,8 @@ void Tree2StdMML::MoveAttrsToChildren(MNODE* mml_list)
 
         MNODE* num = rover->first_kid;
         if (num) {
-          RemoveMSTYLEs(num);
           MNODE* den = num->next;
+          RemoveMSTYLEs(num);         
           if (den)
             RemoveMSTYLEs(den);
         }
