@@ -43,12 +43,14 @@ function insertMathSymbol( s, delSelection )
 function insertMathunit( unit, delSelection )
 {
   var editorElement = getCurrentEditorElement();
+  if (delSelection) deleteSelection();
   insertmathunit(unit, editorElement);
 }
 
 function insertMathname( name, delSelection )
 {
   var editorElement = getCurrentEditorElement();
+  if (delSelection) deleteSelection();
   doInsertMathName(name, editorElement);
 }
 
@@ -177,8 +179,7 @@ function softSave(delSelection)
 function insertIntegral(delSelection)
 {
   dump("\ninsertIntegeral\n");
-  if (delSelection)
-    deleteSelection();
+  if (delSelection) deleteSelection();
   insertMathSymbol("\u222B");
   insertMathSymbol("\u2146");
   insertText('x');
