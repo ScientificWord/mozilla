@@ -1167,6 +1167,7 @@
           <wrapper>true</wrapper>
         </tag>
         <tag hidden="1" nm="msidisplay">
+          <contains>math</contains>
           <level>*</level>
           <description>Display</description>
           <discardemptyblock>true</discardemptyblock>
