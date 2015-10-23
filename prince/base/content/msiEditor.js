@@ -481,7 +481,11 @@ var msiResizeListener = {
       case "msiframe":
         child = getChildByTagName(anElement, 'object');
         if (child)
-          this.resizeGraphic(child, oldWidth, oldHeight, newWidth, newHeight);
+          if (child.getAttribute('msigraph') === 'true') {
+            this.resizePlot(child, oldWidth, oldHeight, newWidth, newHeight);
+          } else {
+            this.resizeGraphic(child, oldWidth, oldHeight, newWidth, newHeight);
+          }
         else
           this.resizeFrame(anElement, oldWidth, oldHeight, newWidth, newHeight);
         break;
