@@ -829,6 +829,11 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
     *aIsBlock = PR_FALSE;
     return NS_OK;
   }
+  if (strTagName.EqualsLiteral("msidisplay"))
+  {
+    *aIsBlock = PR_TRUE;
+    return NS_OK;
+  }
   mtagListManager->GetRealClassOfTag(strTagName, namespaceAtom, strTagClass);
   if (strTagClass.EqualsLiteral("paratag")
     ||strTagClass.EqualsLiteral("structtag")||
