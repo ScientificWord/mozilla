@@ -3646,7 +3646,7 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
 
   if (isMath) {
     node->GetTagName(name);
-    while (node && (name.EqualsLiteral("mi") || name.EqualsLiteral("mo") || (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle")) && empty)) {
+    while (node && (name.EqualsLiteral("mi") || name.EqualsLiteral("mo") || name.EqualsLiteral("mn") || (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle")) && empty)) {
       editor->GetNodeLocation(node, &parent, &offset);
       node2 = do_QueryInterface(parent);
       if (empty) editor->DeleteNode(node);
@@ -4193,9 +4193,10 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
        mHTMLEditor -> GetInComplexTransaction(&isInComplexTransaction);
        mHTMLEditor -> SetInComplexTransaction(PR_TRUE);
        nsCOMPtr<nsIDOMNode> parentOfMath;
+       nsCOMPtr<nsIDOMNode> dummy;
 
        mathElement->GetParentNode(getter_AddRefs(parentOfMath));
-       parentOfMath->RemoveChild(mathElement, getter_AddRefs(parentOfMath));
+       parentOfMath->RemoveChild(mathElement, getter_AddRefs(dummy));
 
        nsCOMPtr<nsIDOMNode> newMath;
        PRInt32 mathOffset;
