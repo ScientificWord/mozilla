@@ -160,9 +160,6 @@
         <tag hidden="1" nm="rawTeX">
           <description>Raw TeX tag</description>
         </tag>
-        <tag nm="descriptionLabel">
-          <description>Description label</description>
-        </tag>
         <tag babel="1" hidden="1" nm="lang1font">
           <description>Primary language font</description>
         </tag>
@@ -172,6 +169,10 @@
         <tag nm="drop">
           <description>Drop letter</description>
         </tag>
+        <tag nm="descriptionLabel">
+          <description>Description label</description>
+        </tag>
+
         <!-- <tag nm="deleted"><description>Deleted text</description></tag><tag nm="inserted"><description>Inserted text></description></tag>-->
         <!-- comment out the ulem tags
         <tag nm="uline"><description>Underline (ulem)</description></tag><tag nm="uuline"><description>Double underline (ulem)</description></tag><tag nm="uwave"><description>Wavy underline (ulem)</description></tag><tag nm="sout"><description>Strikeout (ulem)</description></tag><tag nm="xout"><description>X-ed out (ulem)</description></tag><tag nm="dashuline"><description>Dash underline (ulem)</description></tag><tag nm="dotuline"><description>Dot underline (ulem)</description></tag>-->
