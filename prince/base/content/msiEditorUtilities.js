@@ -10635,9 +10635,11 @@ function newline(output, currentline, indent, state) {
     for (var i = 0; i < indent; i++)
       currentline.s += indentIncrement;
 }
+
 var nonInlineTags = '.math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX.' +
 'msidisplay.pagelayout.page.textregion.columns.header.footer.plot.verbatim.' +
-'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.';
+'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.descriptionLabel.';
+
 function isInlineElement(editor, element) {
   if (nonInlineTags.search('.' + element.localName + '.') >= 0)
     return false;
@@ -10767,7 +10769,7 @@ function prettyprint(editor) {
   var serializer = new XMLSerializer();
   var doc = editor.document;
   var prettyString = serializer.serializeToString(doc);
-  return prettyString;
+//  return prettyString;
   /* The above code is replacing the following until the following is modified to handle namespaces
   correctly, even when the namespaces are not included as an attribute. */
   var output = {};
