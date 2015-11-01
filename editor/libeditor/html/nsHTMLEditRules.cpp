@@ -3296,7 +3296,7 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
        done = true;
     }
 
-    printf("\nReturn sum %d", count);
+//    printf("\nReturn sum %d", count);
     return count;
   }
 }
