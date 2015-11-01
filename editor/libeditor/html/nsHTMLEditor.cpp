@@ -6235,11 +6235,11 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
   if (!aNode || !outIsEmptyNode || !aSeenBR) return NS_ERROR_NULL_POINTER;
   nsresult res = NS_OK;
 
-  if (/*nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("descriptionLabel"))|| */nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("biblabel"))
-        ||nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("bibkey"))) {
-    *outIsEmptyNode = PR_TRUE;
-    return res;
-  }
+  // if (nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("descriptionLabel"))|| nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("biblabel"))
+  //       ||nsEditor::NodeIsTypeString(aNode, NS_LITERAL_STRING("bibkey"))) {
+  //   *outIsEmptyNode = PR_TRUE;
+  //   return res;
+  // }
   if (ShouldSelectWholeObject(aNode)) {
     *outIsEmptyNode = PR_FALSE;
     return res;
