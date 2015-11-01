@@ -378,6 +378,7 @@ msiEditor::InsertInlineMath()
 NS_IMETHODIMP
 msiEditor::InsertDisplay()
 {
+  nsresult res;
   nsCOMPtr<nsIDOMNode> mathnode;
   nsCOMPtr<nsIDOMNode> parent;
   nsCOMPtr<nsIDOMNode> msidisplay;
@@ -386,6 +387,8 @@ msiEditor::InsertDisplay()
   nsString currentVal;
   nsString parentName;
   nsString strmsidisplay = NS_LITERAL_STRING("msidisplay");
+  nsAutoTxnsConserveSelection dontSpazMySelection(this);
+  nsCOMPtr<nsISelection>selection;
   SelectionInMath(getter_AddRefs(mathnode));
   if (mathnode)
   {
@@ -402,8 +405,13 @@ msiEditor::InsertDisplay()
     if (parentName.Equals(strmsidisplay)) return NS_OK;
     // otherwise insert an msidisplay node above
     InsertContainerAbove(mathnode, address_of(msidisplay), strmsidisplay , nsnull, nsnull);
+//  insert a <br/> at the end of the display.
+    res = GetSelection(getter_AddRefs(selection));
+    if (NS_FAILED(res)) return res;
+    selection->Collapse(msidisplay, -1);
+    InsertHelperBR(selection);    
 //    NS_IF_ADDREF((nsIDOMNode*)msidisplay);
-     return NS_OK;
+    return NS_OK;
     // find the math node and set the display attribute
   }
   else
