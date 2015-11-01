@@ -401,9 +401,9 @@
           <initialcontents>
             <descriptionListItem>
               <bodyText>
-                <descriptionLabel>
+                <descriptionLabel>&#x20;
                   <cursor/>
-                </descriptionLabel>
+                </descriptionLabel>&#x20;
                 <br/>
               </bodyText>
             </descriptionListItem>
@@ -1168,7 +1168,8 @@
           <wrapper>true</wrapper>
         </tag>
         <tag hidden="1" nm="msidisplay">
-          <contains>math</contains>
+          <contains>mml:math</contains>
+          <contains>#text</contains>
           <level>*</level>
           <description>Display</description>
           <discardemptyblock>true</discardemptyblock>
@@ -1262,7 +1263,7 @@
           <contains>texttag</contains>
           <contains>hspace</contains>
           <contains>table</contains>
-          <contains>math</contains>
+          <contains>mml:math</contains>
           <contains>img</contains>
           <contains>object</contains>
           <contains>a</contains>
