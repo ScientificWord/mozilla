@@ -683,7 +683,7 @@ function setTextboxValue(aPref)
     {
       if (aPref.value && aPref.value.length > 0)
       {
-        theTextBox.value = aPref.value;
+        theTextbox.value = aPref.value;
       }
       else {
         theTextbox.value = systemDocDir(); // The value if the pref has never been set.
