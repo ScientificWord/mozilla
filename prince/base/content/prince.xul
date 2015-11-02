@@ -131,8 +131,9 @@
           autocompletesearchparam="macros fragments"
 		      tooltiptext="&macro.tooltip;"
           onfocus="this.select();"
+          onkeypress="doMacroKeyCommand(event);"
           enablehistory="false"
-          ontextentered="dump('hello\n');onMacroOrFragmentEntered(this.value);" />
+          ontextentered="onMacroOrFragmentEntered(this.value);" />
       </toolbar>
     </statusbarpanel>
     <statusbarpanel id="fastCursorPanel" hidden="true">
