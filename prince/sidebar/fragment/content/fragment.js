@@ -397,6 +397,14 @@ function insertDataAtCursor( arrayElement )
   } catch(e) {dump("Error in insertDataAtCursor: "+e); }
 }
 
+function doMacroKeyCommand(event) {
+  if (event.keyCode == KeyEvent.DOM_VK_ESCAPE) {
+    msiGetActiveEditorElement().contentWindow.focus();
+    var macrofragmentStatusPanel = document.getElementById('macroEntryPanel');
+    if (macrofragmentStatusPanel)
+      macrofragmentStatusPanel.setAttribute("hidden", "true");
+  }
+}
 
 function onMacroOrFragmentEntered( aString )
 {
