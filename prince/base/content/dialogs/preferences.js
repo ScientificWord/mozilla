@@ -184,13 +184,13 @@ function onShellSelect()
   var filename;
   var pathsplitter;
   var pathjoiner;
-  // if (getOS(window) === 'osx') {
+  if (getOS(window) === 'osx') {
     pathsplitter = /\//;
     pathjoiner = '/';
-  // } else {
-  //   pathsplitter = /\\/;
-  //   pathjoiner = '\\';
-  // }
+  } else {
+    pathsplitter = /\\/;
+    pathjoiner = '\\';
+  }
 
   filename = document.getElementById("dircontents").value;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
