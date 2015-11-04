@@ -1010,6 +1010,18 @@ function compileTeX(compiler)
   }
 }
 
+function copyToExternalLocation( pdffile ) {
+// 
+  var destdirectory = pdffile.parent.parent.parent;
+  var leafname = pdffile.parent.parent.leafName;
+  leafname = leafname.replace(/_work$/,'');
+  var newfile = destdirectory.clone();
+  newfile.append(leafname+'.pdf');
+  if (newfile.exists()) {
+    newfile.remove(false);
+  }
+  pdffile.copyTo(destdirectory, newfile.leafName);
+}
 
 function previewPDFFile( pdffile ) {
   previewOrPrintPDFFile( pdffile, true );
@@ -1030,6 +1042,7 @@ function previewOrPrintPDFFile( pdffile, preview ) {
   }
   else
   {
+    copyToExternalLocation(pdffile);
     currPDFfileLeaf = pdffile.leafName;
     if (preview)
     {
