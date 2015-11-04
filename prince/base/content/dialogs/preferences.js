@@ -193,21 +193,23 @@ function onShellSelect()
   }
 
   filename = document.getElementById("dircontents").value;
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  var shelldir = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-  shelldir.append("shells");
-  var shelldirs = shelldir.path.split(pathsplitter);
-  var filepathdirs = filename.split(pathsplitter);
-  for (i = 0; i < shelldirs.length; i++)
-  {
-    if (shelldirs[i] != filepathdirs[i])
+  if (filename && filename.length > 0) {
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+    var shelldir = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+    shelldir.append("shells");
+    var shelldirs = shelldir.path.split(pathsplitter);
+    var filepathdirs = filename.split(pathsplitter);
+    for (i = 0; i < shelldirs.length; i++)
     {
-      throw("Non-shell path");
+      if (shelldirs[i] != filepathdirs[i])
+      {
+        throw("Non-shell path");
+      }
     }
+    var relpath = filepathdirs.slice(shelldirs.length).join(pathjoiner);
+    var pref = document.getElementById("defaultshell");
+    pref.value = relpath;
   }
-  var relpath = filepathdirs.slice(shelldirs.length).join(pathjoiner);
-  var pref = document.getElementById("defaultshell");
-  pref.value = relpath;
 }
 
 function onCancel () {
