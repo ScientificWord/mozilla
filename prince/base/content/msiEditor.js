@@ -4903,7 +4903,7 @@ function msiSetDisplayMode(editorElement, mode) {
 
   if ((mode == kDisplayModeSource) || (mode == kDisplayModePreview)) {
     if (mode == kDisplayModePreview) {
-      if (editorElement.pdfModCount != editor.getModificationCount() || pdfAction != "default") {
+      if (editorElement.pdfModCount != editor.getModificationCount() /* || pdfAction != "default" */) {
         dump("Document changed, recompiling\n");
         printTeX(true, true);
       } else {
@@ -4915,8 +4915,10 @@ function msiSetDisplayMode(editorElement, mode) {
         pdffile.append(currPDFfileLeaf);
         dump("Trying to display current PDF file " + pdffile.path + "\n");
         if (pdffile.exists()) {
-          dump("Displaying PDF file\n");
-          document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
+          previewPDFFile(pdffile);
+          
+          // dump("Displaying PDF file\n");
+          // document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
         } else {
           dump("PDF file not found\n");
           printTeX(true, true);
@@ -9775,17 +9777,6 @@ function FillInHTMLTooltip(tooltip) {
   }
   return false;
 }
-
-
-
-//function initializeAutoCompleteStringArrayForEditor(theEditor)
-//{
-//  dump("===> initializeAutoCompleteStringArray\n");
-//
-////  var stringArraySearch = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService(Components.interfaces.nsIAutoCompleteSearchStringArray);
-////  stringArraySearch.editor = theEditor;
-//}
-
 
 
 // handle events on prince-specific elements here, or call the default goDoCommand()
