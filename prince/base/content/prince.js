@@ -680,36 +680,6 @@ function exportTeX()
   var compileInfo = new Object();
   var dialogResult = fp.show();
 
-//   if (graphicsTimers)
-//   {
-//     var checkGraphicsCallback = (function(callbackObj) {
-//       return function() {
-//         return callbackObj.isFinished();
-//       };
-//     })(graphicsTimers);
-
-//     var numConversions = graphicsTimers.getActiveCount();
-//     tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
-//     //A time waster loop?
-//     var ticks = 0;
-//     var timerCount = 0;
-//     var currLoading = 0;
-//     while (!graphicsTimers.isFinished())
-//     {
-//       if (++ticks == 1000)
-//       {
-
-//         currLoading = graphicsTimers.getActiveCount();
-//           ++timerCount;
-// //        msidump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
-//         ticks = 0;
-//         if (timerCount == 500 + (200 * numConversions))
-//           break;
-
-//       }
-//     }
-//   }
-
   if (dialogResult != msIFilePicker.returnCancel)
     if (!documentAsTeXFile(editor, editor.document, fp.file, compileInfo ))
       throw("TeX file not created");
@@ -793,7 +763,7 @@ function removeOldPDFFiles(outputDir)
   }
 }
 
-function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInfo )
+function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInfo, callbackFn )
 {
   // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex
   if (!okToPrint()) {
@@ -834,35 +804,12 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   //   passData.bibtexArgs = setBibTeXRunArgs(passData);
 
   var i;
+  // initForSilentCompile(passData, compileInfo, false, callbackFn);
   window.openDialog("chrome://prince/content/passes.xul","about", "chrome,modal=yes,resizable=yes,alwaysRaised=yes",
-    passData);
+    passData, compileInfo, true, callbackFn);
 //    There was some commented code here for using the pipe-console object from the enigmail project. We are not
 //    using it in 6.0, and XulRunner is getting a better implementation, which we will use later.
 
-  var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  outputfile.initWithPath( passData.outputDir );
-  var tempOutputfile;
-  tempOutputfile = outputfile.clone();
-  var leaf = "SWP.pdf";
-  outputfile.append("main.pdf"); // outputfile is now main.pdf. This is the result of the compilation.
-  tempOutputfile.append(leaf); // this is SWP.pdf which is the new name of main.pdf if there is no collision.
-  var n = 0;
-  msidump("Leaf is "+leaf+"\n");
-  while (tempOutputfile.exists())
-  {
-    leaf = "SWP"+(n++)+".pdf";
-    tempOutputfile = tempOutputfile.parent;
-    tempOutputfile.append(leaf);
-  }
-  // now tempOutputfile's leaf is SWP[n].pdf, and doesn't exist.
-  if (outputfile.exists())
-  {
-    outputfile.moveTo(null, leaf);     // rename main.pdf to SWP[i].pdf
-    compileInfo.finalPDFleaf = leaf;
-    currPDFfileLeaf = leaf;
-    return true;
-  }
-  else return false;
 }
 
 
@@ -888,7 +835,7 @@ function printPDFFile(infile)
 
 // compileDocument compiles the current document of the current editor; it converts it to TeX and then PDF.
 // Returns true if everything succeeded.
-function compileDocument()
+function compileDocument(preview)
 {
   if (!okToPrint()) {
     finalThrow(cmdFailString("compiletex"), "Compiling a modified TeX file is not permitted since this program is not licensed.");
@@ -915,36 +862,6 @@ function compileDocument()
   if (pdfViewer && (pdfViewer.src != "about:blank"))
     pdfViewer.loadURI("about:blank");   // this releases the currently displayed pdf preview.
   msidump("pdfModCount = "+editorElement.pdfModCount+", modCount is ");
-
-//   if (graphicsTimers)
-//   {
-//     var checkGraphicsCallback = (function(callbackObj) {
-//       return function() {
-//         return callbackObj.isFinished();
-//       };
-//     })(graphicsTimers);
-
-//     var numConversions = graphicsTimers.getActiveCount();
-//     tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
-//     //A time waster loop?
-//     var ticks = 0;
-//     var timerCount = 0;
-//     var currLoading = 0;
-//     while (!graphicsTimers.isFinished())
-//     {
-//       if (++ticks == 1000)
-//       {
-
-//         currLoading = graphicsTimers.getActiveCount();
-//           ++timerCount;
-// //        msidump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
-//         ticks = 0;
-//         if (timerCount == 500 + (200 * numConversions))
-//           break;
-
-//       }
-//     }
-//   }
 
   editorElement.pdfModCount = editor.getModificationCount();
   msidump(editorElement.pdfModCount+"\n");
@@ -979,23 +896,7 @@ function compileDocument()
 //    msidump("PDF file is " + pdffile.path + "\n");
     var compileInfo = new Object();  // an object to hold pass counts and whether makeindex needs to run.
     if (documentAsTeXFile(editor, editor.document, null, compileInfo ))
-    {
-      if (compileTeXFile(compiler, "main", outputfile.path, pdffile.path, compileInfo))
-      {
-        pdffile.append(compileInfo.finalPDFleaf);
-        if (!pdffile.exists())
-        {
-          AlertWithTitle("TeX Error", "Unable to create a PDF file.");
-          goDoCommand("cmd_showTeXLog");
-          return null;
-        }
-        else
-        {
-          return pdffile;
-        }
-      }
-      else return null;
-    }
+      compileTeXFile(compiler, "main", outputfile.path, pdffile.path, compileInfo, preview ? previewPDFFile : printPDFFile);
     else
     {
       AlertWithTitle("XSLT Error", "Unable to create a TeX file");
@@ -1017,63 +918,7 @@ function printTeX(preview )
     return false;
   }
   try {
-    var pdffile = compileDocument();
-    if (pdffile)
-    {
-      if (preview)
-      {
-      // get prefs for viewing pdf files
-        var prefs = GetPrefs();
-        var pdfAction = prefs.getCharPref("swp.prefPDFPath");
-        if (pdfAction == "default")
-        {
-          try {
-            document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
-          }
-          catch (e) {
-            return;
-          }
-          // Switch to the preview pane (third in the deck)
-          msiGoDoCommand("cmd_PreviewMode");
-        }
-        else
-        {
-          var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-          var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-          var extension;
-          var exefile;
-          var arr = new Array();
-          if (pdfAction == "launch")
-          {
-            var os = getOS(window);
-            if (os == "win")
-            {
-              extension = "cmd";
-            }
-            else
-            {
-              extension = "bash";
-            }
-            exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-            exefile.append("shell."+ extension);
-            theProcess.init(exefile);
-            arr = [pdffile.parent.path, pdffile.leafName];
-            theProcess.run(false, arr, arr.length);
-          }
-          else // pdfAction == complete path to viewer
-          {
-            exefile = Components.classes["@mozilla.org/file/local;1"].
-                    createInstance(Components.interfaces.nsILocalFile);
-            exefile.initWithPath(pdfAction);
-            arr=[pdffile.path];
-            theProcess.init(exefile);
-            theProcess.run(false, arr, arr.length);
-          }
-        }
-      }
-      else
-        printPDFFile(pdffile);
-    }
+    compileDocument(preview);
   }
   catch(e) {
     msidump("printTeX failed: "+e.message+"\n");
@@ -1140,52 +985,14 @@ function compileTeX(compiler)
       return;
     }
 
-//     if (graphicsTimers)
-//     {
-//       var checkGraphicsCallback = (function(callbackObj) {
-//         return function() {
-//           return callbackObj.isFinished();
-//         };
-//       })(graphicsTimers);
-
-//       var numConversions = graphicsTimers.getActiveCount();
-//       tryUntilSuccessful(200, 50 + (25 * numConversions), checkGraphicsCallback);
-//       //A time waster loop?
-//       var ticks = 0;
-//       var timerCount = 0;
-//       var currLoading = 0;
-//       while (!graphicsTimers.isFinished())
-//       {
-//         if (++ticks == 1000)
-//         {
-
-//           currLoading = graphicsTimers.getActiveCount();
-//           ++timerCount;
-// //          msidump("Waiting for graphics conversion " + String(timerCount) + "; " + currLoading + " conversions still active.\n");
-//           ticks = 0;
-//           if (timerCount == 500 + (200 * numConversions))
-//             break;
-
-//         }
-//       }
-//     }
-//    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-//    fos.init(outputfile, -1, -1, false);
-//    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-//      .createInstance(Components.interfaces.nsIConverterOutputStream);
-//    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-//    os.writeString(str);
-//    os.close();
-  //   fos.close();
     var compileInfo = new Object();
-    documentAsTeXFile(editor, editor.document, null, compileInfo );
+    documentAsTeXFile(editor, editor.document, null, compileInfo);
     if (!outputfile.exists())
     {
       AlertWithTitle("XSLT Error", "Unable to generate TeX file");
     } else
     {
-      if (compileTeXFile(compiler, outleaf, outputfile.path, pdffile.parent.path, compileInfo))
-      {
+      compileTeXFile(compiler, outleaf, outputfile.path, pdffile.parent.path, compileInfo, function (pdffile) {
         if (!pdffile.exists())
         {
           AlertWithTitle("TeX Error", "Need to offer to show log");
@@ -1194,7 +1001,7 @@ function compileTeX(compiler)
         else
         // move the output result to the place indicated by fp.
           pdffile.move(fp.file.parent, fp.file.leafName);
-      }
+      });
     }
   }
   catch(e) {
@@ -1203,31 +1010,82 @@ function compileTeX(compiler)
   }
 }
 
-function initializeAutoCompleteStringArray()
 
-{
- msidump("===> initializeAutoCompleteStringArray\n");
+function previewPDFFile( pdffile ) {
+  previewOrPrintPDFFile( pdffile, true );
+}
 
-//   var stringArraySearch = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService(Components.interfaces.nsIAutoCompleteSearchStringArray);
-//   stringArraySearch.editor = GetCurrentEditor();
+function printPDFFile( pdffile ) {
+  previewOrPrintPDFFile( pdffile, false );
 }
 
 
 
 
-//In msiEditor.js // handle events on prince-specific elements here, or call the default goDoCommand()
-//In msiEditor.js function goDoPrinceCommand (cmdstr, element)
-//In msiEditor.js {
-//In msiEditor.js    if ((element.localName.toLowerCase() == "img") && (element.getAttribute("msigraph") == "true"))
-//In msiEditor.js    {
-//In msiEditor.js       graphClickEvent(cmdstr);
-//In msiEditor.js    }
-//In msiEditor.js    else
-//In msiEditor.js    {
-//In msiEditor.js       goDoCommand(cmdstr);
-//In msiEditor.js    }
-//In msiEditor.js }
-
+function previewOrPrintPDFFile( pdffile, preview ) {
+  if (!pdffile.exists())
+  {
+    AlertWithTitle("TeX Error", "Unable to create a PDF file.");
+    goDoCommand("cmd_showTeXLog");
+  }
+  else
+  {
+    currPDFfileLeaf = pdffile.leafName;
+    if (preview)
+    {
+    // get prefs for viewing pdf files
+      var prefs = GetPrefs();
+      var pdfAction = prefs.getCharPref("swp.prefPDFPath");
+      if (pdfAction == "default")
+      {
+        try {
+          document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
+        }
+        catch (e) {
+          return;
+        }
+        // Switch to the preview pane (third in the deck)
+        msiGoDoCommand("cmd_PreviewMode");
+      }
+      else
+      {
+        var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+        var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+        var extension;
+        var exefile;
+        var arr = new Array();
+        if (pdfAction == "launch")
+        {
+          var os = getOS(window);
+          if (os == "win")
+          {
+            extension = "cmd";
+          }
+          else
+          {
+            extension = "bash";
+          }
+          exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+          exefile.append("shell."+ extension);
+          theProcess.init(exefile);
+          arr = [pdffile.parent.path, pdffile.leafName];
+          theProcess.run(false, arr, arr.length);
+        }
+        else // pdfAction == complete path to viewer
+        {
+          exefile = Components.classes["@mozilla.org/file/local;1"].
+                  createInstance(Components.interfaces.nsILocalFile);
+          exefile.initWithPath(pdfAction);
+          arr=[pdffile.path];
+          theProcess.init(exefile);
+          theProcess.run(false, arr, arr.length);
+        }
+      }
+    }
+    else
+      printPDFFile(pdffile);
+  }
+}
 
 // |forceOpen| is a bool that indicates that the sidebar should be forced open.  In other words
 // the toggle won't be allowed to close the sidebar.

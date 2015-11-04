@@ -13,12 +13,11 @@
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&LaTeXPasses;" 
     id="passesDlg"
-    buttons="accept,cancel"
+    buttons="cancel"
     ondialogcancel="onCancel();"
     ondialogaccept="onAccept();"
     buttonlabelcancel="&cancel.label;"
     buttonlabelclose="&close.label;"
-    buttonlabelaccept="&continue.label;"
     onload="Init();"
     width="300"
     height="400"
@@ -41,8 +40,6 @@
       <label control="numpasses" accesskey="&passes.accesskey;" value="&newnumpass;"/>
       <textbox id="numpasses" type="number" persist="width" style="width:25px;" value="3" onchange="newPasses();"/>
       <separator/>
-      <description id="oktocontinue" value="&oktocontinue.label;" hidden="true"/>
     </vbox>
-    <vbox flex="1"/>
   </hbox>
 </dialog>
