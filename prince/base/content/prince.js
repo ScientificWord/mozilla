@@ -805,7 +805,7 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
 
   var i;
   // initForSilentCompile(passData, compileInfo, false, callbackFn);
-  window.openDialog("chrome://prince/content/passes.xul","about", "chrome,modal=yes,resizable=yes,alwaysRaised=yes",
+  window.openDialog("chrome://prince/content/passes.xul","about", "chrome,resizable=yes,alwaysRaised=yes",
     passData, compileInfo, true, callbackFn);
 //    There was some commented code here for using the pipe-console object from the enigmail project. We are not
 //    using it in 6.0, and XulRunner is getting a better implementation, which we will use later.
