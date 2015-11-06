@@ -1520,14 +1520,9 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
     var initMarker = "";
     var isShell = false;
     var pathsplitter;
-    var pathjoiner;
-    if (getOS(window) === 'osx') {
-      pathsplitter = /\//;
-      pathjoiner = '/';
-    } else {
-      pathsplitter = /\\/;
-      pathjoiner = '\\';
-    }
+    var winpathsplitter;
+    pathsplitter = /\//;
+    winpathsplitter = /\\/;
 
     if (theArgs) {
       charset = theArgs.getAttribute("charset");
@@ -1604,6 +1599,9 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
         var doc = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
         doc.append("shells");
         var dirs = docurlstring.split(pathsplitter);
+        if (dirs.length <= 1) {
+          dirs = docurlstring.split(winpathsplitter);
+        }
         var i;
         for (i = 0; i < dirs.length; i++)
           if (dirs[i].length > 0) doc.append(dirs[i]);
