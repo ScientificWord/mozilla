@@ -1292,6 +1292,7 @@ function openBrowser(url) {
   var extension;
   var exefile;
   var arr = [];
+  arr.push('.');
   var os = getOS(window);
   if (os == "win")
   {
