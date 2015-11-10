@@ -24,6 +24,7 @@
 #include "nsComponentManagerUtils.h"
 #include "jcsDumpNode.h"
 #include "msiEditingAtoms.h"
+#include "../../../libeditor/html/nsHTMLEditUtils.h"
 
 msiMCaretBase::msiMCaretBase(nsIDOMNode* mathmlNode, 
                              PRUint32 offset,
@@ -170,7 +171,7 @@ msiMCaretBase::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRU
       PRUint32 index = flags & FROM_RIGHT ? m_offset-1 : m_offset;
       msiUtils::GetChildNode(m_mathmlNode, index, child);
       NS_ASSERTION(child, "Null child node");
-      if (child)
+      if (child && nsHTMLEditUtils::IsMath(child))
       {
         PRUint32 newPos = flags & FROM_RIGHT ? RIGHT_MOST : 0;
         nsCOMPtr<msiIMathMLCaret> mathmlEditing;
@@ -192,6 +193,8 @@ msiMCaretBase::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRU
             } 
           } 
         } 
+      } else {
+        return NS_ERROR_INVALID_ARG;
       }
     }
   }
