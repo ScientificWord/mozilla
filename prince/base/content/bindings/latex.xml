@@ -14,6 +14,7 @@
 	<xbl:binding id="msidisplay">
 		<xbl:resources>
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+			<xbl:stylesheet   src="resource://app/res/css/latex.css"/>
 		</xbl:resources>
 		<xbl:content>
 			<!-- html:button type="button" xbl:inherits="xbl:text=id" class="eqnnum" onclick="this.init()"/ -->
