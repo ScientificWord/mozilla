@@ -1591,7 +1591,7 @@ msiTagListManager::GetBabelTagNode(PRBool textTag, PRUint32 oneOrTwo, nsIDOMNode
   PRUint32 num = oneOrTwo;
   nsAutoString babelAtt;
   if (!textTag) num += 2;
-	while (pList)
+	while (pList && pList->element)
 	{
 		pList->element->GetAttribute(NS_LITERAL_STRING("babel"), babelAtt);
     if (babelAtt.CharAt(0) == num + 48) {

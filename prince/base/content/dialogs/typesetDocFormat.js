@@ -2836,7 +2836,8 @@ function saveLanguageSettings(preambleNode)
     if (lang2)
     	node.setAttribute("lang2", lang2);
 	}
-  addLanguagesToTagDefs(lang1, lang2)
+  addLanguageTagsFromBabelTag(doc);
+  addLanguagesToTagDefs(lang1, lang2);
 }
 
 function setMenulistSelection(menulist, value)
