@@ -90,6 +90,7 @@ var timerCallback =
 
 function initForSilentCompile(aPassData, aCompileInfo, aShowdialog, callbackFn) // an alternative to using the dialog
 {
+  var prefs = GetPrefs();
   passData = aPassData;
   showdialog = aShowdialog;
   compileInfo = aCompileInfo;
