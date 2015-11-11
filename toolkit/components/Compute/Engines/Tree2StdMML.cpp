@@ -705,10 +705,10 @@ MNODE* Tree2StdMML::BindByOpPrecedence(MNODE* dMML_list, int high, int low)
                     } else {
                       break;
                     }
-                  } else if (inner->form != OP_none) {
+                  } else if (inner->form == OP_none) {
                     break;
                   } else {
-                    inner = inner->next;
+                    inner = end = inner->next;
                   }
                 }
                 the_next = end;
