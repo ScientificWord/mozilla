@@ -1,5 +1,10 @@
 #!/bin/sh
-source ~/.mackichan/MSITeX.bash
+if [ -f ~/.mackichan/MSITeX.bash ]
+then
+	source ~/.mackichan/MSITeX.bash
+else
+	source /Applications/MacKichan/MSITeX.bash
+fi
 # $1 is the tex directory we are working in
 # optional "-d <directory>" for a non-standard BIBINPUTS
 
