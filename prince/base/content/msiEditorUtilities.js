@@ -10846,6 +10846,7 @@ function getFileAsString(url) {
     return null;
 }
 function addLanguagesToTagDefs(lang1, lang2) {
+  return;
   var i, lang, hidden, langnum;
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
@@ -10868,15 +10869,17 @@ function addLanguagesToTagDefs(lang1, lang2) {
   }
 
   //if (needsResetting)
-  editor.tagListManager.rebuildHash();
-  buildAllTagsViewStylesheet(editor);
+  // editor.tagListManager.rebuildHash();
+  // buildAllTagsViewStylesheet(editor);
 }
+
 function addLanguageTagsFromBabelTag(doc) {
+  return;
   var babeltags = doc.getElementsByTagName('babel');
   var babeltag;
+  var lang1;
+  var lang2;
   if (babeltags && babeltags.length > 0) {
-    var lang1;
-    var lang2;
     babeltag = babeltags[0];
     lang1 = babeltag.getAttribute('lang1');
     lang2 = babeltag.getAttribute('lang2');
