@@ -10638,8 +10638,8 @@ function newline(output, currentline, indent, state) {
 
 var nonInlineTags = '.math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX.' +
 'msidisplay.pagelayout.page.textregion.columns.header.footer.plot.verbatim.' +
-'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.descriptionLabel.';
-
+'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.descriptionLabel.Expression.XMax.XMin.YMax.YMin.XVar.YVar.ZVar.XMin.XMax.YMin.YMax.ZMin.ZMax.' +
+'XPts.YPts.ZPts.object.';
 function isInlineElement(editor, element) {
   if (nonInlineTags.search('.' + element.localName + '.') >= 0)
     return false;
