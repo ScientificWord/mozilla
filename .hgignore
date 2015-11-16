@@ -38,6 +38,7 @@ glob:*.glue
 glob:*.css.map
 glob:*.scssc
 glob:*.scss
+glob:*/application.ini
 
 
 
