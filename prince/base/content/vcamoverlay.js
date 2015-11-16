@@ -815,6 +815,7 @@ function convertBMPtoPNG( aFile, is3d ) {
   // used only for converting BMP 3-D snapshots to PNG on Windows.
   var leaf = aFile.leafName;  
   var x;
+  
   if (!is3d) {
     x=3;  // something to break on
   }
