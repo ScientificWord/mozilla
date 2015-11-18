@@ -114,8 +114,8 @@ msiMnCoalesce::Coalesce(nsIEditor * editor,
             PRBool nodeHasMark = msiUtils::NodeHasCaretMark(node, caretPos, onText);
             PRUint32 oldRtMostPos(0);
             msiUtils::GetRightMostCaretPosition(editor, m_mathmlNode, oldRtMostPos);
-            if (nodeHasMark && caretPos <= msiIMathMLEditingBC::LAST_VALID && caretPos > m_offset)
-                newCaretPos += newTextLen;
+            if (nodeHasMark && caretPos <= msiIMathMLEditingBC::LAST_VALID)
+                newCaretPos = caretPos + m_offset;
             else if (nodeHasMark)
             {
               if (caretPos == msiIMathMLEditingBC::TO_LEFT)
@@ -132,7 +132,10 @@ msiMnCoalesce::Coalesce(nsIEditor * editor,
             }
             else {
               nodeHasMark = msiUtils::NodeHasCaretMark(m_mathmlNode, caretPos, onText);
-              newCaretPos = caretPos; //+ newTextLen; The caret is on the left node, so the pos doesn't get incremented
+              newCaretPos = caretPos;
+              if (caretPos > m_offset) {
+                newCaretPos += newTextLen;
+              }
             }
             if (newCaretPos <= msiIMathMLEditingBC::LAST_VALID ||
                 newCaretPos <= msiIMathMLEditingBC::TO_LEFT    ||
