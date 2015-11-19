@@ -748,7 +748,7 @@ body {
   counter-reset: eqnnumber subeqnnumber chapter part section ftnotectr;
   display: block;
   position: relative;
-  font-family: Georgia;
+  font-family: 'Lucida Grande', 'Lucida Sans Unicode', Cambria;
   font-size: 12pt;
   line-height: 14pt;
   margin-left: 10px;
