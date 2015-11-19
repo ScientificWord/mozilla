@@ -8198,6 +8198,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id) {
         item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "');" +
           scriptString);
       }
+/* Removed temporarily because when the properties menu is accessed via Edit, the hilite is not getting cleared 
       if (propData.mNode && propData.mNode.setAttribute) {
         item.addEventListener("DOMMenuItemActive", function(event) {
           event.target.propertiesData.mNode.setAttribute("hilite", "1");
@@ -8206,6 +8207,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id) {
           event.target.propertiesData.mNode.removeAttribute("hilite");
         }, false);
       }
+*/
       item.setAttribute("label", menuString);
       item.refElement = propData.getReferenceNode();
       item.refEditor = editorElement;
