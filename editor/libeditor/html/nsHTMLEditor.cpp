@@ -7322,41 +7322,113 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("\\v{Z}"));
     charMap->AppendString(NS_LITERAL_STRING("\\v{z}"));
     charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING("")); // 180
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING("")); // 180
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING("")); // 190 -- put info for combining diacritics (0300-036F) here. Subtract 0x170 from index first
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
+    // charMap->AppendString(NS_LITERAL_STRING(""));
   }
 }
+
+PRUnichar combiningLookahead( const PRUnichar* cur) {
+  PRUnichar c = *(cur+1);
+  if (c >= 0x0300 && c <= 0x0338) {
+    return c;
+  }
+  return nsnull;
+}
+
+void handleCombiningChars( const PRUnichar** pCur, PRUnichar combiningChar, nsAString & thisChar ) {
+  const nsString cbrace = NS_LITERAL_STRING("}");
+  nsAutoString str;
+  switch ((int)combiningChar) {
+    case 0x0300 :
+      thisChar = NS_LITERAL_STRING("\\`{") + thisChar + cbrace;
+      break;
+    case 0x0301 :
+      thisChar = NS_LITERAL_STRING("\\'{") + thisChar + cbrace;
+      break;
+    case 0x0302 :
+      thisChar = NS_LITERAL_STRING("\\^{") + thisChar + cbrace;
+      break;
+    case 0x0303 :
+      thisChar = NS_LITERAL_STRING("\\~{") + thisChar + cbrace;
+      break;
+    case 0x0304 :
+      thisChar = NS_LITERAL_STRING("\\={") + thisChar + cbrace;
+      break;
+    case 0x0306 :
+      thisChar = NS_LITERAL_STRING("\\u{") + thisChar + cbrace;
+      break;
+    case 0x0307 :
+      thisChar = NS_LITERAL_STRING("\\.{") + thisChar + cbrace;
+      break;
+    case 0x0308 :
+      thisChar = NS_LITERAL_STRING("\\\"{") + thisChar + cbrace;
+      break;
+    case 0x030a :
+      thisChar = NS_LITERAL_STRING("\\r{") + thisChar + cbrace;
+      break;
+    case 0x030b :
+      thisChar = NS_LITERAL_STRING("\\H{") + thisChar + cbrace;
+      break;
+    case 0x030c :
+      thisChar = NS_LITERAL_STRING("\\v{") + thisChar + cbrace;
+      break;
+    case 0x0323 :
+      thisChar = NS_LITERAL_STRING("\\d{") + thisChar + cbrace;
+      break;
+    case 0x0327 :
+      thisChar = NS_LITERAL_STRING("\\c{") + thisChar + cbrace;
+      break;
+    case 0x0328 :
+      thisChar = NS_LITERAL_STRING("\\k{") + thisChar + cbrace;
+      break;
+    case 0x0331 :
+      thisChar = NS_LITERAL_STRING("\\b{") + thisChar + cbrace;
+      break;
+    case 0x0338 :
+      thisChar = NS_LITERAL_STRING("$\\;\\not ") + thisChar + NS_LITERAL_STRING("\\;$");
+      break;
+    default :
+      break;
+  }
+  (*pCur)++;
+  combiningChar = combiningLookahead( *pCur);
+  if (combiningChar) {
+    handleCombiningChars( pCur, combiningChar, thisChar);
+  }
+}
+
+
 
 /* string FilterCharsForLaTeX (in DOMString orig); */
 NS_IMETHODIMP
@@ -7366,105 +7438,113 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
   nsTextFormatter * tf = new nsTextFormatter();
   const PRUnichar*  cur;
   const PRUnichar*  end;
+  PRUnichar comb;
   cur = orig.BeginReading();
   end = orig.EndReading();
   nsAutoString str;
+  nsAutoString thisChar;
   nsString fmt = NS_LITERAL_STRING("{\\small\\fbox{%X}} ");
   InitCharMap();
   for (; cur < end; ++cur) {
+    thisChar.Truncate(0);
     if (*cur < 0xA0)
     {
-       _retval.Append(*cur);
+       thisChar.Append(*cur);
     }
     else if (*cur <0x179) {
-      _retval.Append(*(charMap->StringAt((int)(*cur) - 160)));
+      thisChar.Append(*(charMap->StringAt((int)(*cur) - 160)));
       }
     else switch ((int)(*cur)) {
       case 0x01CD :
-         _retval.Append(NS_LITERAL_STRING("\\v{A}")); break;
+         thisChar.Append(NS_LITERAL_STRING("\\v{A}")); break;
       case 0x03C6:
-         _retval.Append(NS_LITERAL_STRING("\\varphi ")); break;
+         thisChar.Append(NS_LITERAL_STRING("\\varphi ")); break;
       case 0x0226 :
-         _retval.Append(NS_LITERAL_STRING("\\.{A}")); break;
+         thisChar.Append(NS_LITERAL_STRING("\\.{A}")); break;
       case 0x03BC :
-        _retval.Append(NS_LITERAL_STRING("$\\mu$")); break;
+        thisChar.Append(NS_LITERAL_STRING("$\\mu$")); break;
       case 0x03A9 :
-        _retval.Append(NS_LITERAL_STRING("$\\Omega$")); break;
+        thisChar.Append(NS_LITERAL_STRING("$\\Omega$")); break;
       case 0x2002 :
-        _retval.Append(NS_LITERAL_STRING("\\ ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
       case 0x2003 :
-        _retval.Append(NS_LITERAL_STRING("\\quad ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\quad ")); break;
       case 0x2004 :
-        _retval.Append(NS_LITERAL_STRING("\\ ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
       case 0x2009 :
-        _retval.Append(NS_LITERAL_STRING("\\thinspace ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\thinspace ")); break;
       case 0x200B :
-        _retval.Append(NS_LITERAL_STRING("{}")); break;
+        thisChar.Append(NS_LITERAL_STRING("{}")); break;
       case 0x2018 :
-        _retval.Append(NS_LITERAL_STRING("`")); break;
+        thisChar.Append(NS_LITERAL_STRING("`")); break;
       case 0x2019 :
-        _retval.Append(NS_LITERAL_STRING("'")); break;
+        thisChar.Append(NS_LITERAL_STRING("'")); break;
       case 0x201A :
-        _retval.Append(NS_LITERAL_STRING("\\quotesinglbase ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\quotesinglbase ")); break;
       case 0x201E :
-        _retval.Append(NS_LITERAL_STRING("\\quotedblbase ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\quotedblbase ")); break;
       case 0x2020 :
-        _retval.Append(NS_LITERAL_STRING("\\dag ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\dag ")); break;
       case 0x2021 :
-        _retval.Append(NS_LITERAL_STRING("\\ddag ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\ddag ")); break;
       case 0x2032 :
-        _retval.Append(NS_LITERAL_STRING("${}^{\\prime}$")); break;
+        thisChar.Append(NS_LITERAL_STRING("${}^{\\prime}$")); break;
       case 0x2033 :
-        _retval.Append(NS_LITERAL_STRING("${}^{\\prime\\prime}$")); break;
+        thisChar.Append(NS_LITERAL_STRING("${}^{\\prime\\prime}$")); break;
       case 0x2039 :
-        _retval.Append(NS_LITERAL_STRING("\\guilsinglleft ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\guilsinglleft ")); break;
       case 0x203A :
-        _retval.Append(NS_LITERAL_STRING("\\guilsinglright ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\guilsinglright ")); break;
       case 0x20A0 :
-        _retval.Append(NS_LITERAL_STRING("\\texteuro ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\texteuro ")); break;
       case 0x20A3 :
-        _retval.Append(NS_LITERAL_STRING("\\textfranc ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\textfranc ")); break;
       case 0x20A4 :
-        _retval.Append(NS_LITERAL_STRING("\\textlira ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\textlira ")); break;
       case 0x20A7 :
-        _retval.Append(NS_LITERAL_STRING("\\textpeseta ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\textpeseta ")); break;
       case 0x2103 :
-        _retval.Append(NS_LITERAL_STRING("${{}^\\circ}$C")); break;
+        thisChar.Append(NS_LITERAL_STRING("${{}^\\circ}$C")); break;
       case 0x2109 :
-        _retval.Append(NS_LITERAL_STRING("${{}^\\circ}$F")); break;
+        thisChar.Append(NS_LITERAL_STRING("${{}^\\circ}$F")); break;
       case 0x212B :
-        _retval.Append(NS_LITERAL_STRING("\\AA ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\AA ")); break;
       case 0x20EE :
-        _retval.Append(NS_LITERAL_STRING("$\\vdots$")); break;
+        thisChar.Append(NS_LITERAL_STRING("$\\vdots$")); break;
       case 0x2122 :
-        _retval.Append(NS_LITERAL_STRING("\\texttrademark")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\texttrademark")); break;
       case 0x22F1 :
-        _retval.Append(NS_LITERAL_STRING("$\\ddots$")); break;
+        thisChar.Append(NS_LITERAL_STRING("$\\ddots$")); break;
       case 0x23DF :
-        _retval.Append(NS_LITERAL_STRING("$\\underbar$")); break;
+        thisChar.Append(NS_LITERAL_STRING("$\\underbar$")); break;
       case 0xE2D4 :
-        _retval.Append(NS_LITERAL_STRING("\\j")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\j")); break;
       case 0xE897 :
-        _retval.Append(NS_LITERAL_STRING("\\ ")); break;
+        thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
       case 0xD835 : // upper plane character coming
         switch ((int)(*(++cur))) {
           case 0xDEA4 :
-            _retval.Append(NS_LITERAL_STRING("\\imath")); break;
+            thisChar.Append(NS_LITERAL_STRING("\\imath")); break;
           case 0xDEA5 :
-            _retval.Append(NS_LITERAL_STRING("\\jmath")); break;
+            thisChar.Append(NS_LITERAL_STRING("\\jmath")); break;
           default:
             tf->ssprintf(str, fmt.get(), *cur);
             str.Cut(str.Length()-1,1);
-            _retval.Append(str);
+            thisChar.Append(str);
             break;
         }
         break;
       default :
         tf->ssprintf(str, fmt.get(), *cur);
         str.Cut(str.Length()-1,1);
-        _retval.Append(str);
+        thisChar.Append(str);
         break;
     }
+    comb = combiningLookahead(cur);
+    if (comb) {
+      handleCombiningChars(&cur, comb, thisChar);
+    }
+    _retval.Append(thisChar);
   }
   return res;
 }
