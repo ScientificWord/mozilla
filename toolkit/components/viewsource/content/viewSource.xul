@@ -202,7 +202,7 @@
   <vbox id="appcontent" flex="1"
        ondragdrop="nsDragAndDrop.drop(event, contentAreaDNDObserver);">
 
-    <browser id="content" type="content-primary" name="content" src="about:blank" flex="1"
+    <browser id="content" type="content-targetable" name="content" src="about:blank" flex="1"
              disablehistory="true" context="viewSourceContextMenu" showcaret="true"/>
     <findbar id="FindToolbar" browserid="content"/>
   </vbox> 
