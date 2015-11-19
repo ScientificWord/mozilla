@@ -10840,7 +10840,7 @@ var msiShowTeXFileCommand =
           openDialog("chrome://global/content/viewSource.xul",
                  "_blank",
                  "all,dialog=no",
-                 resurl, null, null);
+                 resurl, 'charset=UTF-8', null);
         }
       }
     }
