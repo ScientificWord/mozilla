@@ -206,7 +206,6 @@
     <!-- command id="cmd_MSIComputeUserSettings"             oncommand="doGlobalComputeCommand('cmd_compute_UserSettings')"/>
     <command id="cmd_MSIComputeSettings"                 oncommand="doGlobalComputeCommand('cmd_compute_Settings')"/>
     <command id="cmd_MSIComputeSwitchEngines"            oncommand="doGlobalComputeCommand('cmd_compute_SwitchEngines')"/ -->
-    <command id="cmd_MSIComputeDefine"                   oncommand="doComputeCommand('cmd_compute_Define')"/>
     <command id="cmd_MSIComputeInterpret"                oncommand="doComputeCommand('cmd_compute_Interpret')"/>
     <command id="cmd_MSIComputeFixup"                    oncommand="doComputeCommand('cmd_compute_Fixup')"/>
     <command id="cmd_MSIComputePassthru"                 oncommand="doGlobalComputeCommand('cmd_compute_Passthru')"/>

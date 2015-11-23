@@ -12,8 +12,6 @@
   <command id="cmd_print" oncommand="msiGoDoCommand('cmd_print')"/>
   <command id="cmd_quit" oncommand="doQuit()"/>
   <command id="cmd_save" oncommand="msiGoDoCommand('cmd_save')"/>
-  <!-- and id="cmd_MSIComputeEval" oncommand="doComputeCommand2(event, 'cmd_compute_Evaluate')"/>
-  <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/> -->
 </commandset>
 
 <broadcasterset id="broadcasterset"/>
