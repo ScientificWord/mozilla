@@ -49,7 +49,7 @@
 
 
 # All sets except for popupsets (commands, keys, stringbundles and broadcasters) *must* go into the
-# browser-sets.inc file for sharing with hiddenWindow.xul.
+# prince-sets.inc file for sharing with hiddenWindow.xul.
 #include prince-sets.inc
 
   <popupset id="msiEditorContentContextSet"/>

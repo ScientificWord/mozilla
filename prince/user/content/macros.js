@@ -31,7 +31,10 @@ function refreshVCam()
   initVCamObjects(editor.document);
 }
 
-
+function define()
+{
+  doComputeCommand('cmd_compute_Define');
+}
 
 function insertMathSymbol( s, delSelection )
 {
