@@ -35,7 +35,7 @@
   <key id="msiTypesetPrintKey" key="p" oncommand="msiGoDoCommand('cmd_printPdf');" modifiers="accel,shift"/>
   <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand('cmd_texttag','underline');"/>
   <key id="msiUndoKey" key="z" command="cmd_undo" modifiers="accel"/>
-  <key id="msiZoomInKey" key="+" command="cmd_zoomin" modifiers="accel"/>
+  <key id="msiZoomInKey" key="+" command="cmd_zoomin" modifiers="accel,shift"/>
   <key id="msiZoomOutKey" key="-" command="cmd_zoomout" modifiers="accel"/>
   <key id="msiZoomReset" key="0" command="cmd_zoomreset" modifiers="accel"/>
       <key event="keypress" key="`" modifiers="accel"       oncommand="msiRevCharQuick('&#x0300;');"/>
