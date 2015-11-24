@@ -146,7 +146,7 @@
       <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
       <handler event="keypress" key="g" modifiers="accel"   command="cmd_oneshotGreek"/>
       <handler event="keypress" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
-      <handler event="keypress" key="+" action="ZoomManager.enlarge();" modifiers="accel"/>
+      <handler event="keypress" key="+" action="ZoomManager.enlarge();" modifiers="accel,shift"/>
       <handler event="keypress" key="-" action="ZoomManager.reduce();" modifiers="accel"/>
       <handler event="keypress" key="0" action="ZoomManager.reset();" modifiers="accel"/>
       <handler event="keypress" keycode="VK_F4" modifiers="alt" oncommand="doQuit();"/>
