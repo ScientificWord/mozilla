@@ -2741,9 +2741,9 @@ If we use this, don't forget 'roman'
           <xsl:otherwise>
 <!-- BBM: we want to let unidentified unicodes through, since XeLaTeX can handle them, and for PDFLaTeX we post-process
 -->          <!-- jcs - this may need a \mathop{} -->
-             <xsl:text>\mathop{</xsl:text>
+<!--              <xsl:text>\mathop{</xsl:text> -->
              <xsl:value-of select="$first-char"/>
-             <xsl:text>}</xsl:text>
+<!--              <xsl:text>}</xsl:text> -->
           </xsl:otherwise>
 
         </xsl:choose>
