@@ -1,8 +1,9 @@
 <xsl:stylesheet
-      xmlns:xsl="http://wwwnormalize-space(string())w3normalize-space(string())org/1999/XSL/Transform"
-      xmlns:exsl="http://exsltnormalize-space(string())org/common"
-      xmlns:mml="http://wwwnormalize-space(string())w3normalize-space(string())org/1998/Math/MathML"
-      version="1normalize-space(string())1">
+      xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+      xmlns:exsl="http://exslt.org/common"
+      xmlns:regexp="http://exslt.org/regular-expressions"
+      xmlns:mml="http://www.w3.org/1998/Math/MathML"
+      version="1.1">
 
 <!-- Algorithm
   if lspace exists, script LaTeX space as required
@@ -538,14 +539,16 @@
 
   <xsl:template name="is-ASCII">
     <xsl:param name="unicode-cdata"/>
-      <!--xsl:choose>
-      <xsl:when test="regexp:test(normalize-space(string($unicode-cdata)),'[\x01-\xFF]+','g')"-->
+    <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
+
+    <xsl:choose>
+      <xsl:when test="$first-char &lt; 256" >
          <xsl:text>true</xsl:text>
-      <!--/xsl:when>
+      </xsl:when>
       <xsl:otherwise>
          <xsl:text>false</xsl:text>
       </xsl:otherwise>
-	</xsl:choose -->
+  	</xsl:choose >
 
   </xsl:template>
 
