@@ -262,7 +262,7 @@ interface nsIHTMLEditor : nsISupports
    */
   void insertReturnFancy();
 
-  DOMString filterCharsForLaTeX(in DOMString orig);
+  DOMString filterCharsForLaTeX(in boolean isXeTeX, in DOMString orig);
 
   void insertNodeAtPoint(in nsIDOMNode aNode,
                          inout nsIDOMNode parent,
