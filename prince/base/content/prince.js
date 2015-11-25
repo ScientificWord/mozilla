@@ -1271,11 +1271,8 @@ function documentToTeXString(document, xslPath)
 //     while (strResult.search(/\\msipar[ \t\n]+/) >= 0)
 // 		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");
 		//while (strResult.search(/\\par/) >= 0)
-		//  strResult = strResult.replace(/\\par/,"\n\n", "g");
-    if (compiler === "pdflatex")  //convert utf-8 characters to tex strings
-    {
-      strResult = editor.filterCharsForLaTeX(strResult);
-    }
+	//  strResult = strResult.replace(/\\par/,"\n\n", "g");    {
+      strResult = editor.filterCharsForLaTeX(compiler !== 'pdflatex', strResult);
 
   }
   catch(e){
