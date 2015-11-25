@@ -7430,9 +7430,9 @@ void handleCombiningChars( const PRUnichar** pCur, PRUnichar combiningChar, nsAS
 
 
 
-/* string FilterCharsForLaTeX (in DOMString orig); */
+/* string FilterCharsForLaTeX (in boolean isXeTeX, in DOMString orig); */
 NS_IMETHODIMP
-nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
+nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAString & _retval)
 {
   nsresult res = NS_OK;
   nsTextFormatter * tf = new nsTextFormatter();
@@ -7454,95 +7454,103 @@ nsHTMLEditor::FilterCharsForLaTeX(const nsAString & orig, nsAString & _retval)
     else if (*cur <0x179) {
       thisChar.Append(*(charMap->StringAt((int)(*cur) - 160)));
       }
-    else switch ((int)(*cur)) {
-      case 0x01CD :
-         thisChar.Append(NS_LITERAL_STRING("\\v{A}")); break;
-      case 0x03C6:
-         thisChar.Append(NS_LITERAL_STRING("\\varphi ")); break;
-      case 0x0226 :
-         thisChar.Append(NS_LITERAL_STRING("\\.{A}")); break;
-      case 0x03BC :
-        thisChar.Append(NS_LITERAL_STRING("$\\mu$")); break;
-      case 0x03A9 :
-        thisChar.Append(NS_LITERAL_STRING("$\\Omega$")); break;
-      case 0x2002 :
-        thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
-      case 0x2003 :
-        thisChar.Append(NS_LITERAL_STRING("\\quad ")); break;
-      case 0x2004 :
-        thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
-      case 0x2009 :
-        thisChar.Append(NS_LITERAL_STRING("\\thinspace ")); break;
-      case 0x200B :
-        thisChar.Append(NS_LITERAL_STRING("{}")); break;
-      case 0x2018 :
-        thisChar.Append(NS_LITERAL_STRING("`")); break;
-      case 0x2019 :
-        thisChar.Append(NS_LITERAL_STRING("'")); break;
-      case 0x201A :
-        thisChar.Append(NS_LITERAL_STRING("\\quotesinglbase ")); break;
-      case 0x201E :
-        thisChar.Append(NS_LITERAL_STRING("\\quotedblbase ")); break;
-      case 0x2020 :
-        thisChar.Append(NS_LITERAL_STRING("\\dag ")); break;
-      case 0x2021 :
-        thisChar.Append(NS_LITERAL_STRING("\\ddag ")); break;
-      case 0x2032 :
-        thisChar.Append(NS_LITERAL_STRING("${}^{\\prime}$")); break;
-      case 0x2033 :
-        thisChar.Append(NS_LITERAL_STRING("${}^{\\prime\\prime}$")); break;
-      case 0x2039 :
-        thisChar.Append(NS_LITERAL_STRING("\\guilsinglleft ")); break;
-      case 0x203A :
-        thisChar.Append(NS_LITERAL_STRING("\\guilsinglright ")); break;
-      case 0x20A0 :
-        thisChar.Append(NS_LITERAL_STRING("\\texteuro ")); break;
-      case 0x20A3 :
-        thisChar.Append(NS_LITERAL_STRING("\\textfranc ")); break;
-      case 0x20A4 :
-        thisChar.Append(NS_LITERAL_STRING("\\textlira ")); break;
-      case 0x20A7 :
-        thisChar.Append(NS_LITERAL_STRING("\\textpeseta ")); break;
-      case 0x2103 :
-        thisChar.Append(NS_LITERAL_STRING("${{}^\\circ}$C")); break;
-      case 0x2109 :
-        thisChar.Append(NS_LITERAL_STRING("${{}^\\circ}$F")); break;
-      case 0x212B :
-        thisChar.Append(NS_LITERAL_STRING("\\AA ")); break;
-      case 0x20EE :
-        thisChar.Append(NS_LITERAL_STRING("$\\vdots$")); break;
-      case 0x2122 :
-        thisChar.Append(NS_LITERAL_STRING("\\texttrademark")); break;
-      case 0x22F1 :
-        thisChar.Append(NS_LITERAL_STRING("$\\ddots$")); break;
-      case 0x23DF :
-        thisChar.Append(NS_LITERAL_STRING("$\\underbar$")); break;
-      case 0xE2D4 :
-        thisChar.Append(NS_LITERAL_STRING("\\j")); break;
-      case 0xE897 :
-        thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
-      case 0xD835 : // upper plane character coming
-        switch ((int)(*(++cur))) {
+    else {
+      if (isXeTeX) {
+        switch ((int)(*cur)) {  
+          case 0xD835 : break;  // upper plane character coming 
           case 0xDEA4 :
             thisChar.Append(NS_LITERAL_STRING("\\imath")); break;
           case 0xDEA5 :
             thisChar.Append(NS_LITERAL_STRING("\\jmath")); break;
-          default:
+          default : thisChar.Append(*cur);
+        }
+      } else {        
+        switch ((int)(*cur)) {
+          
+          case 0x01CD :
+             thisChar.Append(NS_LITERAL_STRING("\\v{A}")); break;
+          case 0x03C6:
+             thisChar.Append(NS_LITERAL_STRING("\\varphi ")); break;
+          case 0x0226 :
+             thisChar.Append(NS_LITERAL_STRING("\\.{A}")); break;
+          case 0x03BC :
+            thisChar.Append(NS_LITERAL_STRING("$\\mu$")); break;
+          case 0x03A9 :
+            thisChar.Append(NS_LITERAL_STRING("$\\Omega$")); break;
+          case 0x2002 :
+            thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
+          case 0x2003 :
+            thisChar.Append(NS_LITERAL_STRING("\\quad ")); break;
+          case 0x2004 :
+            thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
+          case 0x2009 :
+            thisChar.Append(NS_LITERAL_STRING("\\thinspace ")); break;
+          case 0x200B :
+            thisChar.Append(NS_LITERAL_STRING("{}")); break;
+          case 0x2018 :
+            thisChar.Append(NS_LITERAL_STRING("`")); break;
+          case 0x2019 :
+            thisChar.Append(NS_LITERAL_STRING("'")); break;
+          case 0x201A :
+            thisChar.Append(NS_LITERAL_STRING("\\quotesinglbase ")); break;
+          case 0x201E :
+            thisChar.Append(NS_LITERAL_STRING("\\quotedblbase ")); break;
+          case 0x2020 :
+            thisChar.Append(NS_LITERAL_STRING("\\dag ")); break;
+          case 0x2021 :
+            thisChar.Append(NS_LITERAL_STRING("\\ddag ")); break;
+          case 0x2032 :
+            thisChar.Append(NS_LITERAL_STRING("${}^{\\prime}$")); break;
+          case 0x2033 :
+            thisChar.Append(NS_LITERAL_STRING("${}^{\\prime\\prime}$")); break;
+          case 0x2039 :
+            thisChar.Append(NS_LITERAL_STRING("\\guilsinglleft ")); break;
+          case 0x203A :
+            thisChar.Append(NS_LITERAL_STRING("\\guilsinglright ")); break;
+          case 0x20A0 :
+            thisChar.Append(NS_LITERAL_STRING("\\texteuro ")); break;
+          case 0x20A3 :
+            thisChar.Append(NS_LITERAL_STRING("\\textfranc ")); break;
+          case 0x20A4 :
+            thisChar.Append(NS_LITERAL_STRING("\\textlira ")); break;
+          case 0x20A7 :
+            thisChar.Append(NS_LITERAL_STRING("\\textpeseta ")); break;
+          case 0x2103 :
+            thisChar.Append(NS_LITERAL_STRING("${{}^\\circ}$C")); break;
+          case 0x2109 :
+            thisChar.Append(NS_LITERAL_STRING("${{}^\\circ}$F")); break;
+          case 0x212B :
+            thisChar.Append(NS_LITERAL_STRING("\\AA ")); break;
+          case 0x20EE :
+            thisChar.Append(NS_LITERAL_STRING("$\\vdots$")); break;
+          case 0x2122 :
+            thisChar.Append(NS_LITERAL_STRING("\\texttrademark")); break;
+          case 0x22F1 :
+            thisChar.Append(NS_LITERAL_STRING("$\\ddots$")); break;
+          case 0x23DF :
+            thisChar.Append(NS_LITERAL_STRING("$\\underbar$")); break;
+          case 0xE2D4 :
+            thisChar.Append(NS_LITERAL_STRING("\\j")); break;
+          case 0xE897 :
+            thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
+          case 0xD835 : break;  // upper plane character coming 
+          case 0xDEA4 :
+            thisChar.Append(NS_LITERAL_STRING("\\imath")); break;
+          case 0xDEA5 :
+            thisChar.Append(NS_LITERAL_STRING("\\jmath")); break;
+          default :
             tf->ssprintf(str, fmt.get(), *cur);
             str.Cut(str.Length()-1,1);
             thisChar.Append(str);
             break;
         }
-        break;
-      default :
-        tf->ssprintf(str, fmt.get(), *cur);
-        str.Cut(str.Length()-1,1);
-        thisChar.Append(str);
-        break;
+      }
     }
-    comb = combiningLookahead(cur);
-    if (comb) {
-      handleCombiningChars(&cur, comb, thisChar);
+    if (!isXeTeX) {
+      comb = combiningLookahead(cur);
+      if (comb) {
+        handleCombiningChars(&cur, comb, thisChar);
+      }
     }
     _retval.Append(thisChar);
   }

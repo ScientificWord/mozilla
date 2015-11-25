@@ -11339,7 +11339,7 @@ function xmlFragToTeX(intermediateString) {
   var retStr;
   var editor = msiGetCurrentEditor();
   retStr = processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString);
-  retStr = editor.filterCharsForLaTeX(retStr);
+  retStr = editor.filterCharsForLaTeX(false, retStr);
   return retStr;
 }
 function getChildByTagName(anElement, tagName) {
