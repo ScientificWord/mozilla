@@ -7462,6 +7462,8 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
             thisChar.Append(NS_LITERAL_STRING("\\imath")); break;
           case 0xDEA5 :
             thisChar.Append(NS_LITERAL_STRING("\\jmath")); break;
+          case 0xDD5C :
+            thisChar.Append(NS_LITERAL_STRING("\\Bbbk")); break;
           default : thisChar.Append(*cur);
         }
       } else {        
@@ -7538,6 +7540,8 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
             thisChar.Append(NS_LITERAL_STRING("\\imath")); break;
           case 0xDEA5 :
             thisChar.Append(NS_LITERAL_STRING("\\jmath")); break;
+          case 0xDD5C :
+            thisChar.Append(NS_LITERAL_STRING("\\Bbbk")); break;
           default :
             tf->ssprintf(str, fmt.get(), *cur);
             str.Cut(str.Length()-1,1);
