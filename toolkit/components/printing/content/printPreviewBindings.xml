@@ -53,7 +53,6 @@
   <binding id="printpreviewtoolbar" 
            extends="chrome://global/content/bindings/toolbar.xml#toolbar">
     <resources>
-      <stylesheet src="chrome://global/skin/printPreview.css"/>
       <stylesheet src="chrome://global/skin/toolbar.css"/>
       <stylesheet src="chrome://global/skin/menulist.css"/>
       <stylesheet src="chrome://prince/skin/toolbarsOverlay.css"/>
