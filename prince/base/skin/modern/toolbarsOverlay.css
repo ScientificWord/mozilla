@@ -2829,6 +2829,35 @@ toolbox[iconsize="small"] #javascriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_snapshot-disabled-sm.png");
 }
 
+.home-arrow{
+  list-style-image: url("chrome://prince/skin/icons/btn-top.gif");
+}
+*[iconsize="small"] .home-arrow{
+  list-style-image: url("chrome://prince/skin/icons/btn-top-sm.gif");
+}
+
+.end-arrow{
+  list-style-image: url("chrome://prince/skin/icons/btn-end.gif");
+}
+*[iconsize="small"] .end-arrow{
+  list-style-image: url("chrome://prince/skin/icons/btn-end-sm.gif");
+}
+
+.left-arrow{
+  list-style-image: url("chrome://prince/skin/icons/btn-left.gif");
+}
+*[iconsize="small"] .left-arrow{
+  list-style-image: url("chrome://prince/skin/icons/btn-left-sm.gif");
+}
+
+.right-arrow{
+  list-style-image: url("chrome://prince/skin/icons/btn-right.gif");
+}
+*[iconsize="small"] .right-arrow{
+  list-style-image: url("chrome://prince/skin/icons/btn-right-sm.gif");
+}
+
+
 toolbox textbox { 
   -moz-appearance: none;
   min-height : 25px;
