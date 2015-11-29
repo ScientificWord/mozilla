@@ -20,6 +20,7 @@ pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");
 /* default table prefs */
 /* for Prince */
 // pref("nglayout.debug.disable_xul_fastload", true);
+pref("ui.-moz-dialog", "#F3F3F3F3");
 pref("browser.cache.disk.enable",           false);
 pref("browser.hiddenWindowChromeURL", "chrome://prince/content/hiddenwindow.xul");
 pref("browser.chromeURL", "chrome://prince/content/prince.xul");
@@ -45,7 +46,7 @@ pref("editor.lastFileLocation.html",         "");
 pref("editor.lastFileLocation.image",        "");
 pref("editor.link_color",                   "#0000FF");
 pref("editor.positioning.offset",            0);
-pref("editor.prettyprint", true);
+pref("editor.prettyprint", 					 true);
 pref("editor.publish.",                      "");
 pref("editor.resizing.preserve_ratio",       true);
 pref("editor.save_associated_files",         true);
