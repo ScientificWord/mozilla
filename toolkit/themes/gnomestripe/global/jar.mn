@@ -20,7 +20,6 @@ classic.jar:
 +  skin/classic/global/filepicker.css
 +  skin/classic/global/netError.css
 +  skin/classic/global/notification.css
-+  skin/classic/global/printPreview.css
 +  skin/classic/global/printPageSetup.css
 +  skin/classic/global/preferences.css
 +  skin/classic/global/console/console.png                     (console/console.png)
