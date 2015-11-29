@@ -222,8 +222,6 @@ classic.jar:
         skin/classic/aero/global/printPageSetup.css
 *       skin/classic/luna/global/scale.css
 *       skin/classic/aero/global/scale.css
-        skin/classic/luna/global/printPreview.css
-        skin/classic/aero/global/printPreview.css
         skin/classic/luna/global/alerts/alert.css                        (alerts/alert.css)
         skin/classic/aero/global/alerts/alert.css                        (alerts/alert.css)
         skin/classic/luna/global/console/console.css                     (console/console.css)
