@@ -1601,17 +1601,28 @@ var msiPreviewDirectCommand =
   doCommand: function(aCommand)
   {
     if (okToPrint()) {
-      try {
-        var editorElement = msiGetActiveEditorElement();
-        var doc = editorElement.contentDocument;
+      var editorElement = msiGetActiveEditorElement();
+      var doc = editorElement.contentDocument;
+      // var enterPP = window.onEnterPP;
+      // var exitPP = window.exitPP;
 #ifndef PROD_SW
-        rebuildSnapshots(doc);
-#endif
-        PrintUtils.printPreview(onEnterPP, onExitPP);
+      rebuildSnapshots(doc);
+      window.setTimeout(function() {
+        try {
+          PrintUtils.printPreview(onEnterPP, onExitPP);
+        }
+        catch (e) {
+          finalThrow(cmdFailString('directprintpreview'), e.message);
+        }
+      },1000);
+#else
+      try { 
+        PrintUtils.printPreview(enterPP, exitPP);
       }
       catch (e) {
         finalThrow(cmdFailString('directprintpreview'), e.message);
       }
+#endif
     }
     else {
       finalThrow(cmdFailString("directprintpreview"), "Printing and previewing are not allowed for modified documents since this program is not licensed.");
