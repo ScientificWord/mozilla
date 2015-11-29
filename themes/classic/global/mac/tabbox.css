@@ -70,7 +70,7 @@ tab[selected="true"]:hover:active > .tab-image-left {
 
 tab[selected="true"] > .tab-image-middle,
 tab[selected="true"]:hover:active > .tab-image-middle {
-  background-color: #EEEEEE;
+  background-color: #F3F3F3;
   -moz-border-top-colors: #000000 #CCCCCC #FFFFFF;
   -moz-border-bottom-colors: #EEEEEE;
 }
@@ -255,5 +255,5 @@ tabpanels {
   border-left: 2px groove #000000;
   border-right: 2px ridge #000000;
   padding: 5px;
-  background-color		: #EEEEEE;
+  background-color		: #F3F3F3;
 }
