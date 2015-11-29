@@ -62,7 +62,7 @@ tabpanels {
   -moz-border-bottom-colors: #000000 #BAC2CD #C1C9D3;
   -moz-border-left-colors: #000000 #DFE2E6 #D0D7DD;
   padding: 5px;
-  background-color: #C7D0D9;
+  background-color:rgb(243,243,243);
 }
 
 /* ::::: tab ::::: */
