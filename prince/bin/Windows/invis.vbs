@@ -13,4 +13,4 @@ Select Case Err
     cropping = 100
 End Select
 
-WshShell.Run """" & args.Item(1) & "\\convert.exe" & """ " & args.Item(0) & "\\graphics\\" & args.Item(2) & ".bmp " & " -crop " & cropping & "%%x+0+0! " & args.Item(0) & "\\gcache\\" & args.Item(2) & ".png", 0, False
+WshShell.Run """" & args.Item(1) & "\\convert.exe" & """ " & args.Item(0) & "\\graphics\\" & args.Item(2) & ".bmp " & " -crop " & cropping & "%%x+0+0! " & args.Item(0) & "\\gcache\\" & args.Item(2) & ".png", 0, true
