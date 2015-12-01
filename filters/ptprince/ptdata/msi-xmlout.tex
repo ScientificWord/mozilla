@@ -446,16 +446,24 @@
 }
 
 \def\out@date#1{%
-   \msihmode\msi@br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
+   \ifnum\msi@inpreamble=1
+      \msitopreambleextra{^^0a\date{#1}}%
+   \else
+      \msihmode\msi@br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}%
+   \fi}
 
 \def\out@dateA#1#2{%
-   \msihmode\msi@br
-   \msiopentag{date}{<date>}%
+   \ifnum\msi@inpreamble=1
+     \msitopreambleextra{^^0a\date[#1]{#2}}%
+   \else
+     \msihmode\msi@br
+     \msiopentag{date}{<date>}%
       #2%
-      \msiopentag{option}{<option>}%
+     \msiopentag{option}{<option>}%
          #1%
-      \msiclosetag{option}{</option>}%
-   \msiclosetag{date}{</date>}}
+     \msiclosetag{option}{</option>}%
+     \msiclosetag{date}{</date>}%
+   \fi}
 
 \def\MSIEmptyElement{%
   \msihmode\@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
