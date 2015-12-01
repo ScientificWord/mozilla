@@ -2,7 +2,6 @@
 /// This comment fixes a syntax highlighting glitch on my laptop -- BBM
 
 var req;
-// var server='licensing.mackichan.com';
 var server='licensing.mackichan.com';
 
 
@@ -106,7 +105,7 @@ function accept() {
  		'sProductName=' + query.sProductName,
  		'sComputerID=' + query.sComputerID,
  		'sVersion=' + query.sVersion,
- 		'sEMail=' + query.sEMail,
+ 		'sEMail=' + query.sEmail,
  		'sPhone=' + query.sPhone,
  		'sFirstName=' + query.sFirstName,
  		'sFamilyName=' + query.sFamilyName
