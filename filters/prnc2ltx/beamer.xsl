@@ -67,7 +67,7 @@
 </xsl:template>
 
 <xsl:template match="html:alertstepnumberedlist">
-\begin{stepenumeratewithalert}[&lt;+-| alert@+&gt;]
+\begin{stepenumeratewithalert}
 <xsl:apply-templates/>
 \end{stepenumeratewithalert}
 </xsl:template>
