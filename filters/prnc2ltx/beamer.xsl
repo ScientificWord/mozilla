@@ -69,7 +69,7 @@
 <xsl:template match="html:alertstepnumberedlist">
 \begin{stepenumeratewithalert}[&lt;+-| alert@+&gt;]
 <xsl:apply-templates/>
-\end{enumerate}
+\end{stepenumeratewithalert}
 </xsl:template>
 
 <xsl:template match="html:alertstepbulletlist">
