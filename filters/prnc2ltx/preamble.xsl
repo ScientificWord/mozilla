@@ -119,7 +119,7 @@
                   <xsl:when test="$currentpackage='minipage'">200</xsl:when>
                   <xsl:when test="$currentpackage='hyperref'">10000</xsl:when>
                   <xsl:when test="$currentpackage='bidi'">10001</xsl:when>
-                  <xsl:when test="$currentpackage='tcibkpk'">200</xsl:when>
+                  <xsl:when test="$currentpackage='tcibkpk'">080</xsl:when>
                   <xsl:when test="$currentpackage='sw20orp1'">300</xsl:when>
                   <xsl:otherwise>100</xsl:otherwise>
                 </xsl:choose>
