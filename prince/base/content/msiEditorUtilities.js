@@ -61,7 +61,7 @@ function FixJS() {
 function isLicensed() {
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  if (editor) {
+  if (editor && editor.mAppUtils && editor.mAppUtils.licensedApp) {
 #ifdef PROD_SWP
       return editor.mAppUtils.licensedApp(3);
 #endif
@@ -72,7 +72,7 @@ function isLicensed() {
       return editor.mAppUtils.licensedApp(1);
 #endif
   }
-  else return false;
+  else return true;
 }
 
 function okToPrint()
@@ -11439,4 +11439,81 @@ function getPreferredBibTeXStyleDir()
   bibDir.append('bibtex');
   bibDir.append('bst');
   return bibDir;
+}
+
+function writeStringAsFile( str, file )
+{
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  fos.init(file, -1, -1, false);
+  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+    .createInstance(Components.interfaces.nsIConverterOutputStream);
+  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+  os.writeString(str);
+  os.close();
+  fos.close();
+}
+
+function writeLicense(licenseText)
+{
+  var match;
+  var dsprops = Components.classes['@mozilla.org/file/directory_service;1'].getService(Components.interfaces.nsIProperties);
+  var licenseFile = dsprops.get('ProfD', Components.interfaces.nsILocalFile);
+  if (!licenseFile) return false;
+  licenseFile.append("license.lic");
+  if (licenseFile.exists())
+    licenseFile.remove(false);
+  writeStringAsFile(licenseText, licenseFile);
+  return true;
+}
+
+
+
+function detectLicenseInText(someText) {
+  var regexFixed = /\*{1,4}\n(LICENSE mackichn ([a-z_-]+) [a-zA-Z0-9._= \s]+\s*[a-z0-9_= ]+\"[^"]+\"\s+##\s*([0-9IEJG-]+)\s*##)\s*\*{1,4}/;
+  var regexSite =  /\*{1,4}\n(HOST .*\sUSE_SERVER)\s*\*{1,4}/;
+  var product, serial, licenseString;
+  var match = someText.match(regexFixed);  // returns license with asterisks, license part only, product, serial number
+  var fContinue = false;
+  var isSite = false;
+  try {
+    if (match && match.length > 3) {
+      licenseString = match[1];
+      product = match[2];
+      serial = match[3];
+#ifdef PROD_SWP
+      if (product.indexOf('swp') === 0) {
+        product = 'swp';
+        fContinue = true;
+      }
+#endif
+#ifdef PROD_SW
+      if (product.indexOf('sw') === 0 || product.indexOf('swp') < 0) {
+        product = 'sw';
+        fContinue = true;
+      }
+#endif
+#ifdef PROD_SNB
+      if (product.indexOf('snb') === 0) {
+        product = 'snb';
+        fContinue = true;
+      }
+#endif
+    }  
+    if (!fContinue) {  // Didn't find fixed license. Look for a site client license
+      match = someText.match(regexSite); // returns license with asterisks and license part only
+      if (match.length > 1 && match[1].length > 0) {
+        licenseString = match[1];
+        fContinue = true;
+        isSite = true;
+      }
+    }
+    if (fContinue) {
+      // To be added -- a yes/no dialog saying we have found a license and asking if it is OK to save it.
+      // Assuming yes...
+      writeLicense(LicenseString);
+    }
+  }
+  catch(e) {
+    // if exception, ignore it
+  }
 }
