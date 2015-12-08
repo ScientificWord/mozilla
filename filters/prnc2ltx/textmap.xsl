@@ -238,7 +238,8 @@
           <xsl:text>\U{b0}</xsl:text>
         </xsl:if>
         <xsl:if test="$output-mode='Portable-LaTeX'">
-          <xsl:text>${{}^\circ}$</xsl:text>
+          <xsl:text>{}^\circ</xsl:text>
+<!--           <xsl:text>${{}^\circ}$</xsl:text> -->
         </xsl:if>
       </xsl:when>
 
