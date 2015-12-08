@@ -1087,16 +1087,10 @@
 <xsl:template match="html:underline">\underline {<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:sub">
-  <xsl:choose>
-    <xsl:when test="$compiler!='xelatex'">\textsubscript {<xsl:apply-templates/>} </xsl:when>
-    <xsl:otherwise>{\ensuremath{_{\textrm{<xsl:apply-templates/>}}}}</xsl:otherwise>
-  </xsl:choose>
+  \textsubscript {<xsl:apply-templates/>}
 </xsl:template>
 <xsl:template match="html:sup">
-  <xsl:choose>
-    <xsl:when test="$compiler='xelatex'">\textsuperscript {<xsl:apply-templates/>} </xsl:when>
-    <xsl:otherwise>{\ensuremath{^{\textrm{<xsl:apply-templates/>}}}}</xsl:otherwise>
-  </xsl:choose>
+  \textsuperscript {<xsl:apply-templates/>}
 </xsl:template>
 <xsl:template match="mml:mi[@msimathname='true']">
 	<xsl:choose>
@@ -1136,8 +1130,11 @@
 	</xsl:choose>
 </xsl:template>
 <xsl:template match="mml:mi[@msiunit='true']">
-  \ensuremath{\operatorname{<xsl:apply-templates/>}}
+  <xsl:apply-templates/>
 </xsl:template>
+<!-- <xsl:template match="mml:mi[@msiunit='true']">
+  \ensuremath{\operatorname{<xsl:apply-templates/>}}
+</xsl:template> -->
 <xsl:template match="html:large">{\large <xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:Large">{\Large <xsl:apply-templates
