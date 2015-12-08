@@ -940,7 +940,7 @@ function msiEditorDocumentObserver(editorElement) {
       try{
         // Get state to see if document creation succeeded
         detectLicenseInText(someText)
-        queueLicenseCheck();
+//        queueLicenseCheck();
 
         setZoom();
         var params = newCommandParams();
