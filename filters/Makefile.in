@@ -6,9 +6,11 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS		=   prnc2ltx mathml 
+DIRS		=   prnc2ltx mathml ptprince
 
-DIRS		+= ptprince libtci
+ifneq (,$(filter OS2 WINNT WINCE,$(OS_ARCH)))
+DIRS	+= libtci
+endif
 
 
 include $(topsrcdir)/config/rules.mk
