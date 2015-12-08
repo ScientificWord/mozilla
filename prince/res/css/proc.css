@@ -203,6 +203,12 @@ paragraph defaulttitletag:after {
   color: gray;
 }
 
+subparagraph>*:first-child {
+  font-size: medium;
+  font-weight: normal;
+  font-style: italic;
+}
+
 subparagraph defaulttitletag:after {
   content: "Replace this subsubsubsubsection title"; 
   color: gray;
