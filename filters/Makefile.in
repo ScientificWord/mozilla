@@ -6,9 +6,9 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS		=   prnc2ltx mathml
+DIRS		=   prnc2ltx mathml 
 
-DIRS		+= ptprince
+DIRS		+= ptprince libtci
 
 
 include $(topsrcdir)/config/rules.mk
