@@ -98,12 +98,14 @@ function buildTOC()
   // dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
   try {gProcessor.importStylesheet(dom.documentElement);}
   catch(e){
-    // dump("Error importing xsl sheet: "+e.message+"\n");
+    dump("Error importing xsl sheet: "+e.message+"\n");
   }
   var newFragment;
-  if (editor) newFragment = gProcessor.transformToFragment(editor.document, document);
-  document.getElementById("table-of-contents").appendChild(newFragment);
-  setTOCLevel(document.getElementById("toc-level-scale").value);
+  if (editor) {
+    newFragment = gProcessor.transformToFragment(editor.document, document);
+    document.getElementById("table-of-contents").appendChild(newFragment);
+    setTOCLevel(document.getElementById("toc-level-scale").value);
+  }
 }
 
 // //validates given XPath, returns nsXPathExpression if valid, null otherwise
