@@ -120,15 +120,15 @@
                     <contains>paratag</contains>
                     <contains>br</contains>
                 </tag>
-                <tag nm="alertstepnumberedlistItem">
+                <tag nm="alertstepnumberedListItem">
                     <description>Alert step number list item</description>
                     <htmllistparent>alertstepnumberedlist</htmllistparent>
                     <discardemptyblock>true</discardemptyblock>
                     <initialcontents> 
-                        <alertstepnumberedlistItem>
+                        <alertstepnumberedListItem>
                             <bodyText><cursor/><br/>
                             </bodyText>
-                        </alertstepnumberedlistItem>
+                        </alertstepnumberedListItem>
                     </initialcontents>
                     <contains>paratag</contains>
                     <contains>br</contains>

@@ -674,7 +674,7 @@
                           oncommand="changefinishpageSize(this);onWindowSizeReset(false);">
                           <menupopup style="width: 7em;" persist="value">
                            <menuitem id="docformat.letter" label="&docformatLetter;" value="letter" selected="true"/>
-                           <menuitem id="docformat.a4" label="A4Size.label;" value="a4"/>
+                           <menuitem id="docformat.a4" label="&A4Size.label;" value="a4"/>
                            <menuitem id="docformat.screen" label="&docformatScreen;" value="screen"/>
                            <menuitem id="docformat.other" label="&docformatOther;" value="other"/>
                            <menuitem id="docformat.a0" label="&A0Size.label;" value="a0"/>
