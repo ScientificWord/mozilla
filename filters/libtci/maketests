@@ -1,0 +1,53 @@
+!if $(NO_SMARTHEAP) == TRUE
+LIBTCI_OBJS_DIR = $(TCILIBDIR)\tlobj\testing\win
+LIBTCI_LIB = $(TCILIBDIR)\tllib\tci_twin.lib
+!else
+LIBTCI_OBJS_DIR = $(TCILIBDIR)\tlobj\testing\smrtheap
+LIBTCI_LIB = $(TCILIBDIR)\tllib\tci_tsh.lib
+!endif
+
+TEST_OBJ = %TCIDIR%\unitobj\$(.TARGET).t.obj
+TEST_SRC = $(TCILIBDIR)\tlsrc\$(.TARGET).t.cpp
+TESTEE_OBJ = $(LIBTCI_OBJS_DIR)\$(.TARGET).obj
+
+OTHER_OBJS = oldnames.lib $(LIBC) user32.lib kernel32.lib $(LIBTCI_OBJS_DIR)\assert.obj $(LIBTCI_OBJS_DIR)\TCI_new.obj 
+TCISTRING_OBJ = $(LIBTCI_OBJS_DIR)\TCIStrin.obj
+
+
+
+all: tcistrin filespec filesys strutil bautil scalar MSIRegExp
+
+tcistrin:
+  cl /c /Zi /Fo$(TEST_OBJ) /Fd$(.TARGET).t.pdb $(TEST_SRC)  
+  link /NODEFAULTLIB /OUT:$(.TARGET).t.exe /DEBUG /PDB:$(.TARGET).t.pdb $(OTHER_OBJS) $(TEST_OBJ) $(TESTEE_OBJ)
+  copy $(.TARGET).t.exe %TCIDIR%\unitexe
+
+filespec:
+  cl /c /Zi /Fo$(TEST_OBJ) /Fd$(.TARGET).t.pdb $(TEST_SRC)  
+  link /NODEFAULTLIB /OUT:$(.TARGET).t.exe /DEBUG /PDB:$(.TARGET).t.pdb $(OTHER_OBJS) $(TEST_OBJ) $(TESTEE_OBJ) $(TCISTRING_OBJ)
+  copy $(.TARGET).t.exe %TCIDIR%\unitexe
+
+filesys:
+  cl /c /Zi /Fo$(TEST_OBJ) /Fd$(.TARGET).t.pdb $(TEST_SRC)  
+  link /NODEFAULTLIB /OUT:$(.TARGET).t.exe /DEBUG /PDB:$(.TARGET).t.pdb $(OTHER_OBJS) $(TEST_OBJ) $(TESTEE_OBJ) $(LIBTCI_LIB) mpr.lib
+  copy $(.TARGET).t.exe %TCIDIR%\unitexe
+
+strutil:
+  cl /c /Zi /Fo$(TEST_OBJ) /Fd$(.TARGET).t.pdb $(TEST_SRC)  
+  link /NODEFAULTLIB /OUT:$(.TARGET).t.exe /DEBUG /PDB:$(.TARGET).t.pdb $(OTHER_OBJS) $(TEST_OBJ) $(TESTEE_OBJ) $(LIBTCI_LIB) mpr.lib
+  copy $(.TARGET).t.exe %TCIDIR%\unitexe
+
+bautil:
+  cl /c /Zi /Fo$(TEST_OBJ) /Fd$(.TARGET).t.pdb $(TEST_SRC)  
+  link /NODEFAULTLIB /OUT:$(.TARGET).t.exe /DEBUG /PDB:$(.TARGET).t.pdb $(OTHER_OBJS) $(TEST_OBJ) $(TESTEE_OBJ) $(LIBTCI_LIB)
+  copy $(.TARGET).t.exe %TCIDIR%\unitexe
+
+scalar:
+  cl /c /Zi /Fo$(TEST_OBJ) /Fd$(.TARGET).t.pdb $(TEST_SRC)  
+  link /NODEFAULTLIB /OUT:$(.TARGET).t.exe /DEBUG /PDB:$(.TARGET).t.pdb $(OTHER_OBJS) $(TEST_OBJ) $(TESTEE_OBJ)
+  copy $(.TARGET).t.exe %TCIDIR%\unitexe
+
+MSIRegExp:
+  cl /c /Zi /Fo$(TEST_OBJ) /Fd$(.TARGET).t.pdb $(TEST_SRC)  
+  link /NODEFAULTLIB /OUT:$(.TARGET).t.exe /DEBUG /PDB:$(.TARGET).t.pdb $(OTHER_OBJS) $(TEST_OBJ) $(LIBTCI_LIB)
+  copy $(.TARGET).t.exe %TCIDIR%\unitexe
