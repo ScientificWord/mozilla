@@ -931,6 +931,7 @@ function msiEditorDocumentObserver(editorElement) {
     }
 
     var edStr = "";
+    var someText = "";
 
     if (editor != null)
       edStr = "non-null";
@@ -938,6 +939,7 @@ function msiEditorDocumentObserver(editorElement) {
       case "obs_documentCreated":
       try{
         // Get state to see if document creation succeeded
+        detectLicenseInText(someText)
         queueLicenseCheck();
 
         setZoom();
