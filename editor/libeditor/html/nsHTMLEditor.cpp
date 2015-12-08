@@ -7114,7 +7114,7 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("-"));
     charMap->AppendString(NS_LITERAL_STRING("\\textregistered"));
     charMap->AppendString(NS_LITERAL_STRING("\\={}"));
-    charMap->AppendString(NS_LITERAL_STRING("${{}^\\circ}$"));  // b0
+    charMap->AppendString(NS_LITERAL_STRING("\\ensuremath{{}^\\circ}"));  // b0
     charMap->AppendString(NS_LITERAL_STRING("$\\pm$"));
     charMap->AppendString(NS_LITERAL_STRING("${{}^2}$"));
     charMap->AppendString(NS_LITERAL_STRING("${{}^3}$"));
