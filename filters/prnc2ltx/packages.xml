@@ -9,6 +9,12 @@
 	<package name="minipage" pri="200"/>
 	<package name="hyperref" pri="10000"/>
 	<package name="bidi" pri="10001"/>
-	<package name="tcibkpk" pri="200"/>
+	<package name="tcibkpk" pri="080"/>
+	<package name="sw20obk1" pri="300"/>
+	<package name="sw20obk2" pri="300"/>
+	<package name="sw20obk3" pri="300"/>
+	<package name="sw20obk4" pri="300"/>
+	<package name="sw20obk5" pri="300"/>
+	<package name="sw20obk6" pri="300"/>
 	<package name="sw20orpl" pri="300"/>
 </packages>
