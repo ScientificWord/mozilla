@@ -272,7 +272,8 @@
               <xsl:text>\U{b0}</xsl:text>
             </xsl:if>
             <xsl:if test="$output-mode='Portable-LaTeX'">
-              <xsl:text>{{}^\circ}</xsl:text>
+<!--               <xsl:text>{{}^\circ}</xsl:text>  -->
+              <xsl:text>\ensuremath{{}^\circ}</xsl:text>
             </xsl:if>
           </xsl:when>
           <xsl:when test="$first-char='&#x00B1;'">

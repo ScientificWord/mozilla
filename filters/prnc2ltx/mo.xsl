@@ -61,6 +61,7 @@
 			    <xsl:when test="normalize-space(string())='max'">\max </xsl:when>
 			    <xsl:when test="normalize-space(string())='sin'">\sin </xsl:when>
 			    <xsl:when test="normalize-space(string())='tanh'">\tanh </xsl:when>
+<!--           <xsl:otherwise><xsl:apply-templates/></xsl:otherwise> -->
 			    <xsl:otherwise>\ensuremath{\operatorname*{<xsl:apply-templates/>}}</xsl:otherwise>
 				</xsl:choose>
 	  	</xsl:when>
