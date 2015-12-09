@@ -7469,6 +7469,18 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
       } else {        
         switch ((int)(*cur)) {
           
+          case 0x0179 :
+             thisChar.Append(NS_LITERAL_STRING("\\'{Z}")); break;
+          case 0x017A :
+             thisChar.Append(NS_LITERAL_STRING("\\'{z}")); break;
+          case 0x017B :
+             thisChar.Append(NS_LITERAL_STRING("\\.{Z}")); break;
+          case 0x017C :
+             thisChar.Append(NS_LITERAL_STRING("\\.{z}")); break;
+          case 0x017D :
+             thisChar.Append(NS_LITERAL_STRING("\\v{Z}")); break;
+          case 0x017E :
+             thisChar.Append(NS_LITERAL_STRING("\\v{z}")); break;
           case 0x01CD :
              thisChar.Append(NS_LITERAL_STRING("\\v{A}")); break;
           case 0x03C6:
