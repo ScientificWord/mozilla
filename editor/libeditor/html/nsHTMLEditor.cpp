@@ -7436,11 +7436,18 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
 {
   nsresult res = NS_OK;
   nsTextFormatter * tf = new nsTextFormatter();
-  const PRUnichar*  cur;
-  const PRUnichar*  end;
+  nsAString::const_iterator cur2, end2;
+  const PRUnichar * cur;
+  const PRUnichar * end;
+  NS_NAMED_LITERAL_STRING(search, "usepackage[utf8]{inputenc}");
   PRUnichar comb;
+  orig.BeginReading(cur2);
+  orig.EndReading(end2);
+  PRBool usingUTF;
+  usingUTF = FindInReadable(search, cur2, end2);
   cur = orig.BeginReading();
   end = orig.EndReading();
+
   nsAutoString str;
   nsAutoString thisChar;
   nsString fmt = NS_LITERAL_STRING("{\\small\\fbox{%X}} ");
@@ -7455,7 +7462,7 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
       thisChar.Append(*(charMap->StringAt((int)(*cur) - 160)));
       }
     else {
-      if (isXeTeX) {
+      if (isXeTeX || usingUTF) {
         switch ((int)(*cur)) {  
           case 0xD835 : break;  // upper plane character coming 
           case 0xDEA4 :
