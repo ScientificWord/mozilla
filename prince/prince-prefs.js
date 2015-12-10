@@ -230,4 +230,4 @@ pref("swp.savetoweb.cssurl", "http://www.mackichan.com/supportfiles/6.0/css/");
 pref("swp.openlastfile", false);
 pref("swp.lastfilesaved", "");
 pref("swp.firstrun", true);
-pref("font.mathfont-family", "MathJax_Main, XITS Math, Symbol, DejaVu Sans, Cambria Math, Asana Math");
+pref("font.mathfont-family", "MathJax_Math, XITS Math, Symbol, DejaVu Sans, Cambria Math, Asana Math");
