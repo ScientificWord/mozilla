@@ -7099,101 +7099,101 @@ void InitCharMap()
   if (charMap == nsnull) {
     charMap = new nsStringArray(250);
     charMap->AppendString(NS_LITERAL_STRING("~")); // a0
-    charMap->AppendString(NS_LITERAL_STRING("\\textexclamdown"));
-    charMap->AppendString(NS_LITERAL_STRING("\\mbox{\\rm\\rlap/c}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\pounds "));
-    charMap->AppendString(NS_LITERAL_STRING("\\textcurrency "));
-    charMap->AppendString(NS_LITERAL_STRING("\\yen "));
-    charMap->AppendString(NS_LITERAL_STRING("$\\vert$"));
-    charMap->AppendString(NS_LITERAL_STRING("\\S "));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\copyright "));
-    charMap->AppendString(NS_LITERAL_STRING("${{}^a}$"));
-    charMap->AppendString(NS_LITERAL_STRING("\\guillemotleft "));
-    charMap->AppendString(NS_LITERAL_STRING("$\\lnot$"));
-    charMap->AppendString(NS_LITERAL_STRING("-"));
-    charMap->AppendString(NS_LITERAL_STRING("\\textregistered"));
-    charMap->AppendString(NS_LITERAL_STRING("\\={}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\ensuremath{{}^\\circ}"));  // b0
-    charMap->AppendString(NS_LITERAL_STRING("$\\pm$"));
-    charMap->AppendString(NS_LITERAL_STRING("${{}^2}$"));
-    charMap->AppendString(NS_LITERAL_STRING("${{}^3}$"));
-    charMap->AppendString(NS_LITERAL_STRING("\'{}"));
-    charMap->AppendString(NS_LITERAL_STRING("$\\mu$"));
-    charMap->AppendString(NS_LITERAL_STRING("\\P "));
-    charMap->AppendString(NS_LITERAL_STRING("\\textperiodcentered "));
-    charMap->AppendString(NS_LITERAL_STRING("\\c{}"));
-    charMap->AppendString(NS_LITERAL_STRING("${{}^1}$"));
-    charMap->AppendString(NS_LITERAL_STRING("${{}^o}$"));
-    charMap->AppendString(NS_LITERAL_STRING("\\guillemotright "));
-    charMap->AppendString(NS_LITERAL_STRING("$\\frac14$"));
-    charMap->AppendString(NS_LITERAL_STRING("$\\frac12$"));
-    charMap->AppendString(NS_LITERAL_STRING("$\\frac34$"));
-    charMap->AppendString(NS_LITERAL_STRING("\\textquestiondown "));
-    charMap->AppendString(NS_LITERAL_STRING("\\`{A}"));  // c0
-    charMap->AppendString(NS_LITERAL_STRING("\\'{A}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\^{A}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\~{A}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{A}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\AA "));
-    charMap->AppendString(NS_LITERAL_STRING("\\AE "));
-    charMap->AppendString(NS_LITERAL_STRING("\\c{C}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\`{E}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\'{E}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\^{E}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{E}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\`{I}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\'{I}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\^{I}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{I}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\DH "));  // d0
-    charMap->AppendString(NS_LITERAL_STRING("\\~{N}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\`{O}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\'{O}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\^{O}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\~{O}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{O}"));
-    charMap->AppendString(NS_LITERAL_STRING("$\\times$"));
-    charMap->AppendString(NS_LITERAL_STRING("\\O "));
-    charMap->AppendString(NS_LITERAL_STRING("\\`{U}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\'{U}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\^{U}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{U}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\'{Y}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\TH "));
-    charMap->AppendString(NS_LITERAL_STRING("\\ss "));
-    charMap->AppendString(NS_LITERAL_STRING("\\`{a}"));  // e0
-    charMap->AppendString(NS_LITERAL_STRING("\\'{a}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\^{a}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\~{a}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{a}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\aa "));
-    charMap->AppendString(NS_LITERAL_STRING("\\ae "));
-    charMap->AppendString(NS_LITERAL_STRING("\\c{c}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\`{e}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\'{e}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\^{e}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{e}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\`{\\i}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\'{\\i}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\^{\\i}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{\\i}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\dh "));  // f0
-    charMap->AppendString(NS_LITERAL_STRING("\\~{n}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\`{o}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\'{o}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\^{o}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\~{o}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{o}"));
-    charMap->AppendString(NS_LITERAL_STRING("$\\div$"));
-    charMap->AppendString(NS_LITERAL_STRING("\\o "));
-    charMap->AppendString(NS_LITERAL_STRING("\\`{u}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\'{u}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\^{u}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{u}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\'{y}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\th "));
-    charMap->AppendString(NS_LITERAL_STRING("\\\"{y}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textexclamdown}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textcent}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textsterling}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textcurrency}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textyen}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textbrokenbar}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textsection}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textasciidieresis}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textcopyright}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textordfeminine}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\guillemotleft}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textlnot}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\-}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textregistered}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textasciimacron}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\ensuremath{{}^\\circ}}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textpm}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\texttwosuperior}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textthreesuperior}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textasciiacute}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textmu}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textparagraph}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textperiodcentered}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\c\\ }"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textonesuperior}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textordmasculine}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\guillemotright}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textonequarter}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textonehalf}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textthreequarters}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textquestiondown}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`A}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'A}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\^A}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\~A}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"A}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\r A}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\AE}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\c C}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`E}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'E}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\^E}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"E}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`I}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'I}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\^I}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"I}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\DH}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\~N}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`O}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'O}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\^O}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\~O}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"O}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\texttimes}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\O}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`U}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'U}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\^U}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"U}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'Y}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\TH}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\ss}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`a}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'a}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\^a}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\~a}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"a}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\r a}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\ae}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\c c}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`e}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'e}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\^e}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"e}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\^\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"\\i}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\dh}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\~n}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`o}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'o}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\^o}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\~o}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"o}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\textdiv}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\o}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`u}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'u}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\^u}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"u}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\'y}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\th}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"y}"));
     charMap->AppendString(NS_LITERAL_STRING("\\={A}"));  // 100
     charMap->AppendString(NS_LITERAL_STRING("\\={a}"));
     charMap->AppendString(NS_LITERAL_STRING("\\u{A}"));
@@ -7244,8 +7244,8 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("\\k{i}"));
     charMap->AppendString(NS_LITERAL_STRING("\\.{I}"));  // 130
     charMap->AppendString(NS_LITERAL_STRING("\\i "));
-    charMap->AppendString(NS_LITERAL_STRING("\\symbol{156}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\symbol{188}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\IJ}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\ij}"));
     charMap->AppendString(NS_LITERAL_STRING("\\^{J}"));
     charMap->AppendString(NS_LITERAL_STRING("\\^{\\j}"));
     charMap->AppendString(NS_LITERAL_STRING("\\c{K}"));
@@ -7321,40 +7321,6 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("\\.{z}"));
     charMap->AppendString(NS_LITERAL_STRING("\\v{Z}"));
     charMap->AppendString(NS_LITERAL_STRING("\\v{z}"));
-    charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING("")); // 180
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING("")); // 190 -- put info for combining diacritics (0300-036F) here. Subtract 0x170 from index first
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
-    // charMap->AppendString(NS_LITERAL_STRING(""));
   }
 }
 
@@ -7458,11 +7424,12 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
     {
        thisChar.Append(*cur);
     }
-    else if (*cur <0x179) {
-      thisChar.Append(*(charMap->StringAt((int)(*cur) - 160)));
-      }
+    else if (*cur < 0x17F) {
+      if (usingUTF) thisChar.Append(*cur);
+      else thisChar.Append(*(charMap->StringAt((int)(*cur) - 160)));
+    }
     else {
-      if (isXeTeX || usingUTF) {
+      if (isXeTeX) {
         switch ((int)(*cur)) {  
           case 0xD835 : break;  // upper plane character coming 
           case 0xDEA4 :
@@ -7476,20 +7443,28 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
       } else {        
         switch ((int)(*cur)) {
           
-          case 0x0179 :
-             thisChar.Append(NS_LITERAL_STRING("\\'{Z}")); break;
-          case 0x017A :
-             thisChar.Append(NS_LITERAL_STRING("\\'{z}")); break;
-          case 0x017B :
-             thisChar.Append(NS_LITERAL_STRING("\\.{Z}")); break;
-          case 0x017C :
-             thisChar.Append(NS_LITERAL_STRING("\\.{z}")); break;
-          case 0x017D :
-             thisChar.Append(NS_LITERAL_STRING("\\v{Z}")); break;
-          case 0x017E :
-             thisChar.Append(NS_LITERAL_STRING("\\v{z}")); break;
+          case 0x0192:
+            thisChar.Append(NS_LITERAL_STRING("{\\textflorin}")); break;
           case 0x01CD :
-             thisChar.Append(NS_LITERAL_STRING("\\v{A}")); break;
+            thisChar.Append(NS_LITERAL_STRING("\\v{A}")); break;
+          case 0x0218:
+            thisChar.Append(NS_LITERAL_STRING("{\\textcommabelow S}")); break;
+          case 0x0219:
+            thisChar.Append(NS_LITERAL_STRING("{\\textcommabelow s}")); break;
+          case 0x021A:
+            thisChar.Append(NS_LITERAL_STRING("{\\textcommabelow T}")); break;
+          case 0x021B:
+            thisChar.Append(NS_LITERAL_STRING("{\\textcommabelow t}")); break;
+          case 0x02C6:
+            thisChar.Append(NS_LITERAL_STRING("{\\textasciicircum}")); break;
+          case 0x02C7:
+            thisChar.Append(NS_LITERAL_STRING("{\\textasciicaron}")); break;
+          case 0x02DC:
+            thisChar.Append(NS_LITERAL_STRING("{\\textasciitilde}")); break;
+          case 0x02D8:
+            thisChar.Append(NS_LITERAL_STRING("{\\textasciibreve}")); break;
+          case 0x02DD:
+            thisChar.Append(NS_LITERAL_STRING("{\\textacutedbl}")); break;
           case 0x03C6:
              thisChar.Append(NS_LITERAL_STRING("\\varphi ")); break;
           case 0x0226 :
@@ -7498,6 +7473,8 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
             thisChar.Append(NS_LITERAL_STRING("$\\mu$")); break;
           case 0x03A9 :
             thisChar.Append(NS_LITERAL_STRING("$\\Omega$")); break;
+          case 0x0E3F:
+            thisChar.Append(NS_LITERAL_STRING("{\\textbaht}")); break;
           case 0x2002 :
             thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
           case 0x2003 :
@@ -7508,18 +7485,38 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
             thisChar.Append(NS_LITERAL_STRING("\\thinspace ")); break;
           case 0x200B :
             thisChar.Append(NS_LITERAL_STRING("{}")); break;
+          case 0x200C:
+            thisChar.Append(NS_LITERAL_STRING("{\\textcompwordmark}")); break;
+          case 0x2013:
+            thisChar.Append(NS_LITERAL_STRING("{\\textendash}")); break;
+          case 0x2014:
+            thisChar.Append(NS_LITERAL_STRING("{\\textemdash}")); break;
+          case 0x2016:
+            thisChar.Append(NS_LITERAL_STRING("{\\textbardbl}")); break; 
           case 0x2018 :
             thisChar.Append(NS_LITERAL_STRING("`")); break;
           case 0x2019 :
             thisChar.Append(NS_LITERAL_STRING("'")); break;
           case 0x201A :
             thisChar.Append(NS_LITERAL_STRING("\\quotesinglbase ")); break;
+          case 0x201C:
+            thisChar.Append(NS_LITERAL_STRING("{\\textquotedblleft}")); break;
+          case 0x201D:
+            thisChar.Append(NS_LITERAL_STRING("{\\textquotedblright}")); break;
           case 0x201E :
             thisChar.Append(NS_LITERAL_STRING("\\quotedblbase ")); break;
           case 0x2020 :
             thisChar.Append(NS_LITERAL_STRING("\\dag ")); break;
           case 0x2021 :
             thisChar.Append(NS_LITERAL_STRING("\\ddag ")); break;
+          case 0x2022:
+            thisChar.Append(NS_LITERAL_STRING("{\\textbullet}")); break;
+          case 0x2026:
+            thisChar.Append(NS_LITERAL_STRING("{\\textellipsis}")); break;
+          case 0x2030:
+            thisChar.Append(NS_LITERAL_STRING("{\\textperthousand}")); break;
+          case 0x2031:
+            thisChar.Append(NS_LITERAL_STRING("{\\textpertenthousand}")); break;          
           case 0x2032 :
             thisChar.Append(NS_LITERAL_STRING("${}^{\\prime}$")); break;
           case 0x2033 :
@@ -7528,28 +7525,88 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
             thisChar.Append(NS_LITERAL_STRING("\\guilsinglleft ")); break;
           case 0x203A :
             thisChar.Append(NS_LITERAL_STRING("\\guilsinglright ")); break;
+          case 0x203B:
+            thisChar.Append(NS_LITERAL_STRING("{\\textreferencemark}")); break;
+          case 0x203D:
+            thisChar.Append(NS_LITERAL_STRING("{\\textinterrobang}")); break;
+          case 0x2044:
+            thisChar.Append(NS_LITERAL_STRING("{\\textfractionsolidus}")); break;
+          case 0x204E:
+            thisChar.Append(NS_LITERAL_STRING("{\\textasteriskcentered}")); break;
+          case 0x2052:
+            thisChar.Append(NS_LITERAL_STRING("{\\textdiscount}")); break;            
           case 0x20A0 :
             thisChar.Append(NS_LITERAL_STRING("\\texteuro ")); break;
+          case 0x20A1:
+            thisChar.Append(NS_LITERAL_STRING("{\\textcolonmonetary}")); break;
           case 0x20A3 :
             thisChar.Append(NS_LITERAL_STRING("\\textfranc ")); break;
           case 0x20A4 :
             thisChar.Append(NS_LITERAL_STRING("\\textlira ")); break;
+          case 0x20A6:
+            thisChar.Append(NS_LITERAL_STRING("{\\textnaira}")); break;
           case 0x20A7 :
             thisChar.Append(NS_LITERAL_STRING("\\textpeseta ")); break;
-          case 0x2103 :
-            thisChar.Append(NS_LITERAL_STRING("${{}^\\circ}$C")); break;
-          case 0x2109 :
-            thisChar.Append(NS_LITERAL_STRING("${{}^\\circ}$F")); break;
-          case 0x212B :
-            thisChar.Append(NS_LITERAL_STRING("\\AA ")); break;
+          case 0x20A9:
+            thisChar.Append(NS_LITERAL_STRING("{\\textwon}")); break;
+          case 0x20AB:
+            thisChar.Append(NS_LITERAL_STRING("{\\textdong}")); break;
+          case 0x20AC:
+            thisChar.Append(NS_LITERAL_STRING("{\\texteuro}")); break;
+          case 0x20B1:
+            thisChar.Append(NS_LITERAL_STRING("{\\textpeso}")); break;
           case 0x20EE :
             thisChar.Append(NS_LITERAL_STRING("$\\vdots$")); break;
-          case 0x2122 :
-            thisChar.Append(NS_LITERAL_STRING("\\texttrademark")); break;
+          case 0x2103:
+            thisChar.Append(NS_LITERAL_STRING("{\\textcelsius}")); break;
+          case 0x2109 :
+            thisChar.Append(NS_LITERAL_STRING("{\ensuremath{{}^\\circ}F}")); break;
+          case 0x2116:
+            thisChar.Append(NS_LITERAL_STRING("{\\textnumero}")); break;
+          case 0x2117:
+            thisChar.Append(NS_LITERAL_STRING("{\\textcircledP}")); break;
+          case 0x211E:
+            thisChar.Append(NS_LITERAL_STRING("{\\textrecipe}")); break;
+          case 0x2120:
+            thisChar.Append(NS_LITERAL_STRING("{\\textservicemark}")); break;
+          case 0x2122:
+            thisChar.Append(NS_LITERAL_STRING("{\\texttrademark}")); break;
+          case 0x2126:
+            thisChar.Append(NS_LITERAL_STRING("{\\textohm}")); break;
+          case 0x2127:
+            thisChar.Append(NS_LITERAL_STRING("{\\textmho}")); break;
+          case 0x212B :
+            thisChar.Append(NS_LITERAL_STRING("{\\AA}")); break;
+          case 0x212E:
+            thisChar.Append(NS_LITERAL_STRING("{\\textestimated}")); break;
+          case 0x2190:
+            thisChar.Append(NS_LITERAL_STRING("{\\textleftarrow}")); break;
+          case 0x2191:
+            thisChar.Append(NS_LITERAL_STRING("{\\textuparrow}")); break;
+          case 0x2192:
+            thisChar.Append(NS_LITERAL_STRING("{\\textrightarrow}")); break;
+          case 0x2193:
+            thisChar.Append(NS_LITERAL_STRING("{\\textdownarrow}")); break;
           case 0x22F1 :
             thisChar.Append(NS_LITERAL_STRING("$\\ddots$")); break;
+          case 0x2329:
+            thisChar.Append(NS_LITERAL_STRING("{\\textlangle}")); break;
+          case 0x232A:
+            thisChar.Append(NS_LITERAL_STRING("{\\textrangle}")); break;
           case 0x23DF :
             thisChar.Append(NS_LITERAL_STRING("$\\underbar$")); break;
+          case 0x2422:
+            thisChar.Append(NS_LITERAL_STRING("{\\textblank}")); break;
+          case 0x2423:
+            thisChar.Append(NS_LITERAL_STRING("{\\textvisiblespace}")); break;
+          case 0x24C8:
+            thisChar.Append(NS_LITERAL_STRING("{\\text}")); break;
+          case 0x25E6:
+            thisChar.Append(NS_LITERAL_STRING("{\\textopenbullet}")); break;
+          case 0x25EF:
+            thisChar.Append(NS_LITERAL_STRING("{\\textbigcircle}")); break;
+          case 0x266A:
+            thisChar.Append(NS_LITERAL_STRING("{\\textmusicalnote}")); break;            
           case 0xE2D4 :
             thisChar.Append(NS_LITERAL_STRING("\\j")); break;
           case 0xE897 :
