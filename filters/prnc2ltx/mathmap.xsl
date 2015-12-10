@@ -720,9 +720,6 @@
           <xsl:when test="$first-char='&#x03C6;'">
             <xsl:text xml:space="preserve">\varphi </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x03C6;'">
-            <xsl:text xml:space="preserve">\straightphi </xsl:text>
-          </xsl:when>
           <xsl:when test="$first-char='&#x03C7;'">
             <xsl:text xml:space="preserve">\chi </xsl:text>
           </xsl:when>
