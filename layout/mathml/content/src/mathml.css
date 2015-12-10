@@ -53,7 +53,7 @@ math {
   unicode-bidi: embed;
   display: inline;
   font-style: normal;
-  font-family: MathJax_Main, XITS math, Symbol, DejaVu Sans, Cambria Math, serif;
+  font-family: MathJax_Math, XITS math, Symbol, DejaVu Sans, Cambria Math, serif;
   text-rendering: optimizeLegibility;
   -moz-float-edge: margin-box;
 }
@@ -154,7 +154,7 @@ math[display="inline"] {
 */
 [mathvariant] { /* shared and same as [mathvariant="normal"] */
   /* reset all font properties except those that affect the size */
-  font-family: MathJax_Main, STIXGeneral, DejaVu Serif, DejaVu Sans, Cambria, Cambria Math, Times, Lucida Sans Unicode, OpenSymbol, Standard Symbols L, serif;
+  font-family: MathJax_Math, STIXGeneral, DejaVu Serif, DejaVu Sans, Cambria, Cambria Math, Times, Lucida Sans Unicode, OpenSymbol, Standard Symbols L, serif;
   font-style: normal;
   font-variant: normal;
   font-weight: normal;
@@ -420,7 +420,7 @@ mtd[-moz-math-columnline="dashed"] {
 
 ::-moz-math-stretchy {
   font-style: normal;
-  font-family: MathJax_Main; /* an empty family is ignored as an error and behaves like inherit */
+  font-family: MathJax_Math; /* an empty family is ignored as an error and behaves like inherit */
 /*  background-color: #3C6; */
 }
 ::-moz-math-anonymous {

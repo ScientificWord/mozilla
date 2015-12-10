@@ -38,7 +38,7 @@ function define()
 
 function insertMathSymbol( s, delSelection )
 {
-  if (delSelection) deleteSelection();
+//  if (delSelection) deleteSelection();
   dump("\ninsertMathSymbol(" + s + ")");
   doParamCommand('cmd_MSIsymbolCmd',s);
 }
@@ -46,21 +46,21 @@ function insertMathSymbol( s, delSelection )
 function insertMathunit( unit, delSelection )
 {
   var editorElement = getCurrentEditorElement();
-  if (delSelection) deleteSelection();
+//  if (delSelection) deleteSelection();
   insertmathunit(unit, editorElement);
 }
 
 function insertMathname( name, delSelection )
 {
   var editorElement = getCurrentEditorElement();
-  if (delSelection) deleteSelection();
+//  if (delSelection) deleteSelection();
   doInsertMathName(name, editorElement);
 }
 
 function insertMathOperator( name, limitPlacement, size, delSelection)
 {
   dump("\ninsertMathOperator(j);\n");
-  if (delSelection) deleteSelection();
+//  if (delSelection) deleteSelection();
   var editorElement = getCurrentEditorElement();
   doInsertMathOperator(name, limitPlacement, size, editorElement);
 }
@@ -182,7 +182,7 @@ function softSave(delSelection)
 function insertIntegral(delSelection)
 {
   dump("\ninsertIntegeral\n");
-  if (delSelection) deleteSelection();
+//  if (delSelection) deleteSelection();
   insertMathSymbol("\u222B");
   insertMathSymbol("\u2146");
   insertText('x');
