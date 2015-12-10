@@ -748,7 +748,11 @@ body {
   counter-reset: eqnnumber subeqnnumber chapter part section ftnotectr;
   display: block;
   position: relative;
+#ifdef XP_WIN32
+  font-family: Cambria, 'Lucida Grande', 'Lucida Sans Unicode';
+#else
   font-family: 'Lucida Grande', 'Lucida Sans Unicode', Cambria;
+#endf
   font-size: 12pt;
   line-height: 14pt;
   margin-left: 10px;
