@@ -53,7 +53,11 @@ math {
   unicode-bidi: embed;
   display: inline;
   font-style: normal;
+#ifdef XP_WIN32
+  font-family: Cambria Math, MathJax_Math, XITS math, Symbol, DejaVu Sans, serif;
+#else
   font-family: MathJax_Math, XITS math, Symbol, DejaVu Sans, Cambria Math, serif;
+#endif
   text-rendering: optimizeLegibility;
   -moz-float-edge: margin-box;
 }
