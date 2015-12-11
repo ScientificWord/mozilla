@@ -1086,12 +1086,10 @@
   />}</xsl:template>
 <xsl:template match="html:underline">\underline {<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:sub">
-  \textsubscript {<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:sup">
-  \textsuperscript {<xsl:apply-templates/>}
-</xsl:template>
+<xsl:template match="html:sub">\textsubscript {<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:sup">\textsuperscript {<xsl:apply-templates
+  />}</xsl:template>
 <xsl:template match="mml:mi[@msimathname='true']">
 	<xsl:choose>
 		<xsl:when test=".='arccos'">\arccos </xsl:when>
