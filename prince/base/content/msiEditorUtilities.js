@@ -11475,6 +11475,7 @@ function detectLicenseInText(someText) {
   var match = someText.match(regexFixed);  // returns license with asterisks, license part only, product, serial number
   var fContinue = false;
   var isSite = false;
+  var clip;
   var prompts;
   try {
     if (match && match.length > 3) {
@@ -11483,19 +11484,19 @@ function detectLicenseInText(someText) {
       serial = match[3];
 #ifdef PROD_SWP
       if (product.indexOf('swp') === 0) {
-        product = 'swp';
+        product = 'Scientific WorkPlace';
         fContinue = true;
       }
 #endif
 #ifdef PROD_SW
       if (product.indexOf('sw') === 0 || product.indexOf('swp') < 0) {
-        product = 'sw';
+        product = 'Scientific Word';
         fContinue = true;
       }
 #endif
 #ifdef PROD_SNB
       if (product.indexOf('snb') === 0) {
-        product = 'snb';
+        product = 'Scientific Notebook';
         fContinue = true;
       }
 #endif
@@ -11510,8 +11511,13 @@ function detectLicenseInText(someText) {
     }
     if (fContinue) {
       prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-      if (prompts.confirm(null, "License detected on the clipboard", "Save this license?"))
+      if (prompts.confirm(null, "License detected on the clipboard", 'There is a license for ' + product + ' on the clipboard. Do you want to save this license?\n' +
+        'If you do, you will need to restart ' + product + '.')) {
         writeLicense(licenseString);
+        clip = Components.classes["@mozilla.org/widget/clipboard;1"].
+          getService(Components.interfaces.nsIClipboard);
+        clip.emptyClipboard(clip.kGlobalClipboard); 
+      }
     }
   }
   catch(e) {
