@@ -844,6 +844,9 @@ var license_timercallback = {
     var elapsed = 0;
     var day = 24*3600*1000; // one day in milliseconds
     var editorElement = msiGetActiveEditorElement();
+    if (!isLicensed())
+      detectLicenseOnClipboard();
+
     now = Date.now();
 
     d = new Date( 1980, 1, 1 );
@@ -931,7 +934,6 @@ function msiEditorDocumentObserver(editorElement) {
     }
 
     var edStr = "";
-    var someText = "";
 
     if (editor != null)
       edStr = "non-null";
@@ -939,8 +941,7 @@ function msiEditorDocumentObserver(editorElement) {
       case "obs_documentCreated":
       try{
         // Get state to see if document creation succeeded
-        detectLicenseInText(someText)
-//        queueLicenseCheck();
+        queueLicenseCheck();
 
         setZoom();
         var params = newCommandParams();

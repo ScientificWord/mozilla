@@ -11475,6 +11475,7 @@ function detectLicenseInText(someText) {
   var match = someText.match(regexFixed);  // returns license with asterisks, license part only, product, serial number
   var fContinue = false;
   var isSite = false;
+  var prompts;
   try {
     if (match && match.length > 3) {
       licenseString = match[1];
@@ -11508,12 +11509,42 @@ function detectLicenseInText(someText) {
       }
     }
     if (fContinue) {
-      // To be added -- a yes/no dialog saying we have found a license and asking if it is OK to save it.
-      // Assuming yes...
-      writeLicense(LicenseString);
+      prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+      if (prompts.confirm(null, "License detected on the clipboard", "Save this license?"))
+        writeLicense(licenseString);
     }
   }
   catch(e) {
     // if exception, ignore it
   }
+}
+
+function readTextOnClipboard() {
+  var retval = '';
+  var clip = Components.classes["@mozilla.org/widget/clipboard;1"].
+    getService(Components.interfaces.nsIClipboard); 
+  if (!clip) return false; 
+  var trans = Components.classes["@mozilla.org/widget/transferable;1"].
+    createInstance(Components.interfaces.nsITransferable); 
+  if (!trans) return false; 
+  trans.addDataFlavor("text/unicode");
+  clip.getData(trans,clip.kGlobalClipboard); 
+  var str = new Object(); 
+  var strLength = new Object();
+  try
+  {
+    trans.getTransferData("text/unicode",str,strLength);
+    if (str) str = str.value.QueryInterface(Components.interfaces.nsISupportsString); 
+    if (str) retval = str.data.substring(0,strLength.value / 2);
+  }
+  catch (e)
+  {
+    dump("text/unicode not supported\n\n");
+  }
+  trans.removeDataFlavor("text/unicode");
+  return retval;
+}
+
+function detectLicenseOnClipboard() {
+  detectLicenseInText(readTextOnClipboard());
 }
