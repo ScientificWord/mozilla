@@ -350,6 +350,20 @@ centeredEnv, centered {
   -moz-user-select: text;
 }
 
+flushright {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: right;
+  -moz-user-select: text;
+}
+
+flushleft {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: left;
+  -moz-user-select: text;
+}
+
 newPageRule {
 	display: inline-block;
 	position: absolute;
