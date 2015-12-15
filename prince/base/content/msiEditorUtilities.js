@@ -11515,16 +11515,18 @@ function detectLicenseInText(someText, editor) {
     }
     if (fContinue) {
       prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-      if (prompts.confirm(null, "License detected on the clipboard", 'There is a license for ' + product + ' on the clipboard. Do you want to save this license?\n' +
-        'If you do, you will need to restart ' + product + '.')) {
+      if (prompts.confirm(null, "License detected on the clipboard", 'There is a license for ' + product + ' on the clipboard. Do you want to save this license?\n'
+        ))
+      {
         writeLicense(licenseString);
-        editor.mAppUtils.reset();
-        editor.mAppUtils.licensedApp(prodnum);
-
-        clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
-                        getService(Components.interfaces.nsIClipboardHelper);
-        clipboard.copyString('');
+        window.setTimeout(function() {
+            editor.mAppUtils.reset();
+            editor.mAppUtils.licensedApp(prodnum);
+          }, 500);
       }
+      clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
+                      getService(Components.interfaces.nsIClipboardHelper);
+      clipboard.copyString('');
     }
   }
   catch(e) {
