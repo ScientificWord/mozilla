@@ -11475,7 +11475,7 @@ function detectLicenseInText(someText) {
   var match = someText.match(regexFixed);  // returns license with asterisks, license part only, product, serial number
   var fContinue = false;
   var isSite = false;
-  var clip;
+  var clipboard;
   var prompts;
   try {
     if (match && match.length > 3) {
@@ -11514,14 +11514,14 @@ function detectLicenseInText(someText) {
       if (prompts.confirm(null, "License detected on the clipboard", 'There is a license for ' + product + ' on the clipboard. Do you want to save this license?\n' +
         'If you do, you will need to restart ' + product + '.')) {
         writeLicense(licenseString);
-        clip = Components.classes["@mozilla.org/widget/clipboard;1"].
-          getService(Components.interfaces.nsIClipboard);
-        clip.emptyClipboard(clip.kGlobalClipboard); 
+        clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
+                        getService(Components.interfaces.nsIClipboardHelper);
+        clipboard.copyString('');
       }
     }
   }
   catch(e) {
-    // if exception, ignore it
+    dump('if exception, ignore it');
   }
 }
 
