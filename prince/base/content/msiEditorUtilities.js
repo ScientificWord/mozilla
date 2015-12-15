@@ -11468,7 +11468,7 @@ function writeLicense(licenseText)
 
 
 
-function detectLicenseInText(someText) {
+function detectLicenseInText(someText, editor) {
   var regexFixed = /\*{1,4}\n(LICENSE mackichn ([a-z_-]+) [a-zA-Z0-9._= \s]+\s*[a-z0-9_= ]+\"[^"]+\"\s+##\s*([0-9IEJG-]+)\s*##)\s*\*{1,4}/;
   var regexSite =  /\*{1,4}\n(HOST .*\sUSE_SERVER)\s*\*{1,4}/;
   var product, serial, licenseString;
@@ -11476,6 +11476,7 @@ function detectLicenseInText(someText) {
   var fContinue = false;
   var isSite = false;
   var clipboard;
+  var prodnum = 0;
   var prompts;
   try {
     if (match && match.length > 3) {
@@ -11485,18 +11486,21 @@ function detectLicenseInText(someText) {
 #ifdef PROD_SWP
       if (product.indexOf('swp') === 0) {
         product = 'Scientific WorkPlace';
+        prodnum = 3;
         fContinue = true;
       }
 #endif
 #ifdef PROD_SW
       if (product.indexOf('sw') === 0 || product.indexOf('swp') < 0) {
         product = 'Scientific Word';
+        prodnum =2;
         fContinue = true;
       }
 #endif
 #ifdef PROD_SNB
       if (product.indexOf('snb') === 0) {
         product = 'Scientific Notebook';
+        prodnum = 1;
         fContinue = true;
       }
 #endif
@@ -11514,6 +11518,9 @@ function detectLicenseInText(someText) {
       if (prompts.confirm(null, "License detected on the clipboard", 'There is a license for ' + product + ' on the clipboard. Do you want to save this license?\n' +
         'If you do, you will need to restart ' + product + '.')) {
         writeLicense(licenseString);
+        editor.mAppUtils.reset();
+        editor.mAppUtils.licensedApp(prodnum);
+
         clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
                         getService(Components.interfaces.nsIClipboardHelper);
         clipboard.copyString('');
@@ -11552,5 +11559,7 @@ function readTextOnClipboard() {
 }
 
 function detectLicenseOnClipboard() {
-  detectLicenseInText(readTextOnClipboard());
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  detectLicenseInText(readTextOnClipboard(), editor);
 }

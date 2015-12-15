@@ -15,15 +15,19 @@ function startUp() {
 
 function accept() {
 	var acceptMessage = "Your license has been installed. Thank you for supporting ";
+	var prodnum = 0;
 	acceptMessage = acceptMessage +
 #ifdef PROD_SW
 	"Scientific Word.";
+	prodnum = 2;
 #endif
 #ifdef PROD_SNB
 	"Scientific Notebook.";
+	prodnum = 1;
 #endif
 #ifdef PROD_SWP
 	"Scientific WorkPlace.";
+	prodnum = 3;
 #endif
 
 
@@ -44,6 +48,7 @@ function accept() {
 			writeLicense(this.responseText);
 			AlertWithTitle("Activation Success", acceptMessage);
 			editor.mAppUtils.reset();
+			editor.mAppUtils.licensedApp(prodnum);
 		}
 	};
 
