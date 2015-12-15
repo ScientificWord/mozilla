@@ -1040,6 +1040,14 @@
 \begin{center}<xsl:apply-templates/>\end{center}\par
 </xsl:template>
 
+<xsl:template match="html:flushleft">
+\begin{flushleft}<xsl:apply-templates/>\end{flushleft}\par
+</xsl:template>
+
+<xsl:template match="html:flushright">
+\begin{flushright}<xsl:apply-templates/>\end{flushright}\par
+</xsl:template>
+
 <xsl:template match="html:pre">
 \begin{verbatim}
 <xsl:value-of select="."/>
