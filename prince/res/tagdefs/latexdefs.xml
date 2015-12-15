@@ -293,6 +293,30 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="flushleft">
+          <nexttag>flushleft</nexttag>
+          <description>Flush left paragraph</description>
+          <initialcontents>
+            <flushleft>
+              <cursor/>
+              <br/>
+            </flushleft>
+          </initialcontents>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="flushright">
+          <nexttag>flushright</nexttag>
+          <description>Flush right paragraph</description>
+          <initialcontents>
+            <flushright>
+              <cursor/>
+              <br/>
+            </flushright>
+          </initialcontents>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag hidden="1" nm="dialogbase">
           <nexttag>bodyText</nexttag>
           <description>Hidden dialog base</description>
