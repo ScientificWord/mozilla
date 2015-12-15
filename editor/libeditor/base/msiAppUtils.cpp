@@ -196,6 +196,7 @@ NS_IMETHODIMP msiAppUtils::Hello( PRUint32 appNum)
 NS_IMETHODIMP msiAppUtils::Reset()
 {
   syzygy = 0;
+  lic = nsnull;
   return NS_OK;
 }
 
