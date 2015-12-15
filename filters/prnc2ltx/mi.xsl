@@ -453,7 +453,8 @@
         </xsl:if>
       </xsl:when>
       <!-- <xsl:when test="ancestor::mml:mstyle[@fontweight='normal']"> -->
-      <xsl:when test="@mathvariant='normal'">
+      <xsl:when test="@mathvariant='normal'
+		or              ancestor::mml:mstyle[@fontweight='upright']">
         <xsl:text>\mathrm{</xsl:text>
       </xsl:when>
       <xsl:when test="@mathvariant='sans-serif'">
