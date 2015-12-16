@@ -11469,8 +11469,8 @@ function writeLicense(licenseText)
 
 
 function detectLicenseInText(someText, editor) {
-  var regexFixed = /\*{1,4}\n(LICENSE mackichn ([a-z_-]+) [a-zA-Z0-9._= \s]+\s*[a-z0-9_= ]+\"[^"]+\"\s+##\s*([0-9IEJG-]+)\s*##)\s*\*{1,4}/;
-  var regexSite =  /\*{1,4}\n(HOST .*\sUSE_SERVER)\s*\*{1,4}/;
+  var regexFixed = /(LICENSE mackichn ([a-z_-]+) [a-zA-Z0-9._= \s]+\s*[a-z0-9_= ]+\"[^"]+\"\s+##\s*([0-9IEJG-]+)\s*##)/;
+  var regexSite =  /(HOST .*\sUSE_SERVER)/;
   var product, serial, licenseString;
   var match = someText.match(regexFixed);  // returns license with asterisks, license part only, product, serial number
   var fContinue = false;
@@ -11534,7 +11534,7 @@ function detectLicenseInText(someText, editor) {
   }
 }
 
-function readTextOnClipboard() {
+function readTextOnClipboard() {                                                  
   var retval = '';
   var clip = Components.classes["@mozilla.org/widget/clipboard;1"].
     getService(Components.interfaces.nsIClipboard); 
