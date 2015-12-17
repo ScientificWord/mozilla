@@ -1812,6 +1812,8 @@ function msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement)
 function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocumentURLString, editorElement, aUseDirectory)
 {
   var dialogResult = {};
+  var forbiddenNames = /^untitled\d+(\.sci)?$/i;
+  prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
   dialogResult.filepickerClick = msIFilePicker.returnCancel;
   dialogResult.resultingURI = "";
   dialogResult.resultingLocalFile = null;
@@ -1897,6 +1899,11 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
   dialogResult.filepickerClick = fp.show();
   if (dialogResult.filepickerClick != msIFilePicker.returnCancel)
   {
+    // Check that the user did not leave the name as 'untitlednnn'
+    while (forbiddenNames.test(fp.file.leafName) && dialogResult.filepickerClick != msIFilePicker.returnCancel) {
+      prompts.alert(null, "Reserved name", 'File names of "Untitled" followed by a number are reserved. Please choose another name.\n');
+      dialogResult.filepickerClick = fp.show()      
+    }
     // reset urlstring to new save location
     dialogResult.resultingURIString = fileHandler.getURLSpecFromFile(fp.file);
     dialogResult.resultingLocalFile = fp.file;
