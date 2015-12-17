@@ -3766,9 +3766,18 @@ function createWorkingDirectory(documentfile) {
           zr.open(documentfile);
         } catch (e) {
           AlertWithTitle('Unable to open zip file', 'The file ' + documentfile.leafName + ' cannot be opened');
+          try {
+            documentfile.close();
+          }
+          catch(e) {}
           return null;
         }
         extractZipTree(zr, dir);
+        try {
+          documentfile.close();
+        }
+        catch(e) {}
+
       } catch (e) {
         dump('Error in createWorkingDirectory: ' + e.toString() + '\n');
         return null;
