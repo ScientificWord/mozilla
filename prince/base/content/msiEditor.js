@@ -2067,6 +2067,10 @@ function msiEditorResetFontAndColorAttributes(editorElement) {
 
 
 function ShutdownAnEditor(editorElement) {
+  var sciFile;
+  var leafName;
+  var untitledName =  /^untitled\d+_work$/i;
+
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
     SetUnicharPref("swp.zoom_factor", msiGetMarkupDocumentViewer(editorElement).textZoom);
@@ -2088,7 +2092,16 @@ function ShutdownAnEditor(editorElement) {
   }
 
   try {
-    if (msiIsTopLevelEditor(editorElement)) deleteWorkingDirectory(editorElement);
+    if (msiIsTopLevelEditor(editorElement)) {
+      sciFile = getWorkingDirectory(editorElement);
+      leafName = sciFile.leafName;
+      if (untitledName.test(leafName)) { // need to delete sci file also.
+        sciFile = sciFile.parent;
+        sciFile.append(leafName.replace('_work','') + '.sci');
+        if (sciFile.exists()) sciFile.remove(false);
+      }
+      deleteWorkingDirectory(editorElement);
+    }
     var commandManager = msiGetCommandManager(editorElement);
     if ("mEditorDocumentObserver" in editorElement) {
       commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver,
