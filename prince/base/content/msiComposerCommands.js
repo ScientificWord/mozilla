@@ -3060,9 +3060,17 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
           // rename A.sci to A.bak
         tempfile = tempfile.parent;
         tempfile.append(leafname+".sci");
-        if (tempfile.exists()) tempfile.moveTo(null, leafname+".bak");
+        try {
+          if (tempfile.exists()) tempfile.copyTo(null, leafname + ".bak");
+        }
+        catch(e) {
+        }
           // rename A.tempsci to A.sci
-        zipfile.moveTo(null, leafname+".sci");
+        try {
+          zipfile.moveTo(null, leafname+".sci");
+        }
+        catch(e) {
+        }
           // delete A.tempbak
         tempfile = tempfile.parent;
         tempfile.append(leafname+".tempbak");
