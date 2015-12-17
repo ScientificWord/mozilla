@@ -245,16 +245,12 @@
             return a.ordinal - b.ordinal;
           }
 
-          // early way out if no sidebaritems
-          if (!this.mSidebarItems)
-            return;
-
           // find all sidebarcontents in the current sidebar
           var contents = this.mContents;
-          if (!contents || !contents.length)
+          if (!this.mSidebarItems || !contents || !contents.length)
           {
             // none, zilch, nada... Make that persist and leave
-            this.setAttribute("sidebaritems", "");
+            this.setAttribute("sidebaritems", "--");
             document.persist(this, "sidebaritems");
             return;
           }
