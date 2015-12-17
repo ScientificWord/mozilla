@@ -11478,8 +11478,8 @@ function writeLicense(licenseText)
 
 
 function detectLicenseInText(someText, editor) {
-  var regexFixed = /\*{1,4}\n(LICENSE mackichn ([a-z_-]+) [a-zA-Z0-9._= \s]+\s*[a-z0-9_= ]+\"[^"]+\"\s+##\s*([0-9IEJG-]+)\s*##)\s*\*{1,4}/;
-  var regexSite =  /\*{1,4}\n(HOST .*\sUSE_SERVER)\s*\*{1,4}/;
+  var regexFixed = /(LICENSE mackichn ([a-z_-]+) [a-zA-Z0-9._= \s]+\s*[a-z0-9_= ]+\"[^"]+\"\s+##\s*([0-9IEJG-]+)\s*##)/;
+  var regexSite =  /(HOST .*\sUSE_SERVER)/;
   var product, serial, licenseString;
   var match = someText.match(regexFixed);  // returns license with asterisks, license part only, product, serial number
   var fContinue = false;
@@ -11524,16 +11524,18 @@ function detectLicenseInText(someText, editor) {
     }
     if (fContinue) {
       prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-      if (prompts.confirm(null, "License detected on the clipboard", 'There is a license for ' + product + ' on the clipboard. Do you want to save this license?\n' +
-        'If you do, you will need to restart ' + product + '.')) {
+      if (prompts.confirm(null, "License detected on the clipboard", 'There is a license for ' + product + ' on the clipboard. Do you want to save this license?\n'
+        ))
+      {
         writeLicense(licenseString);
-        editor.mAppUtils.reset();
-        editor.mAppUtils.licensedApp(prodnum);
-
-        clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
-                        getService(Components.interfaces.nsIClipboardHelper);
-        clipboard.copyString('');
+        window.setTimeout(function() {
+            editor.mAppUtils.reset();
+            editor.mAppUtils.licensedApp(prodnum);
+          }, 500);
       }
+      clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
+                      getService(Components.interfaces.nsIClipboardHelper);
+      clipboard.copyString('');
     }
   }
   catch(e) {
@@ -11541,7 +11543,7 @@ function detectLicenseInText(someText, editor) {
   }
 }
 
-function readTextOnClipboard() {
+function readTextOnClipboard() {                                                  
   var retval = '';
   var clip = Components.classes["@mozilla.org/widget/clipboard;1"].
     getService(Components.interfaces.nsIClipboard); 
