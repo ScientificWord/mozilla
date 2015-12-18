@@ -435,7 +435,7 @@
 </xsl:template>
 
 <xsl:template match="html:address" mode="frontmatter">
-   <xsl:apply-templates  mode="frontmatter"/>
+   <xsl:apply-templates/>
 </xsl:template>
 
 
@@ -446,9 +446,9 @@
 </xsl:template>
 
 <xsl:template match="html:author" mode="building-author">
- \and <xsl:apply-templates mode="frontmatter"/>
+ \and <xsl:apply-templates/>
   <xsl:if test="name(following-sibling::*[1])='address'">~\\
-    <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
+    <xsl:apply-templates select="following-sibling::*[1]"/>
   </xsl:if>
 </xsl:template>
 
@@ -674,16 +674,15 @@
   <xsl:text>\title</xsl:text>
   <xsl:apply-templates mode="shortTitle"/>
   <xsl:text>{</xsl:text>
-  <xsl:apply-templates mode="frontmatter"/>
+  <xsl:apply-templates/>
   <xsl:text>}</xsl:text>
 </xsl:template>
 
-<xsl:template match="html:sectiontitle/html:shortTitle"></xsl:template>
-<xsl:template match="html:sectiontitle//text()" mode="shortTitle"></xsl:template>
-<xsl:template match="html:title/html:shortTitle"></xsl:template>
-<xsl:template match="html:title//text()" mode="shortTitle"></xsl:template>
-<xsl:template match="html:shortTitle" mode="shortTitle">[<xsl:apply-templates/>]</xsl:template>
 
+<xsl:template match="*" mode="shortTitle"></xsl:template>
+<xsl:template match="*/text()" mode="shortTitle"></xsl:template>
+<xsl:template match="html:shortTitle"></xsl:template>
+<xsl:template match="html:shortTitle" mode="shortTitle">[<xsl:apply-templates/>]</xsl:template>
 
 <xsl:template match="html:assertion|html:lemma|html:conjecture|html:corollary|html:criterion|html:proposition|html:theorem|html:algorithm|html:assumption|html:axiom|html:condition|html:definition|html:example|html:exercise|html:hypothesis|html:problem|html:property|html:question|html:acknowledgment|html:acknowledgement|html:case|html:claim|html:conclusion|html:notation|html:remark|html:summary">
 <xsl:call-template name="processThmEnvironment">
