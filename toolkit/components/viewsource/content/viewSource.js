@@ -206,7 +206,7 @@ function viewSource(url)
     document.getElementById("menu_highlightSyntax").setAttribute("hidden", "true");
   }
 
-  window._content.focus();
+  document.getElementById('content').contentWindow.focus();
 
   return true;
 }
@@ -223,7 +223,7 @@ function onLoadContent()
   document.getElementById('cmd_goToLine').removeAttribute('disabled');
 
   // Register a listener so that we can show the caret position on the status bar.
-  window._content.getSelection()
+  document.getElementById('content').contentWindow.getSelection()
    .QueryInterface(nsISelectionPrivate)
    .addSelectionListener(gSelectionListener);
 }
@@ -333,7 +333,7 @@ function ViewSourceGoToLine()
 
 function goToLine(line)
 {
-  var viewsource = window._content.document.body;
+  var viewsource = document.getElementById('content').contentWindow.document.body;
 
   //
   // The source document is made up of a number of pre elements with
@@ -366,7 +366,7 @@ function goToLine(line)
     return false;
   }
 
-  var selection = window._content.getSelection();
+  var selection = document.getElementById('content').contentWindow.getSelection();
   selection.removeAllRanges();
 
   // In our case, the range's startOffset is after "\n" on the previous line.
@@ -422,7 +422,7 @@ function updateStatusBar()
 
   var statusBarField = document.getElementById("statusbar-line-col");
 
-  var selection = window._content.getSelection();
+  var selection = document.getElementById('content').contentWindow.getSelection();
   if (!selection.focusNode) {
     statusBarField.label = '';
     return;
@@ -476,7 +476,7 @@ function findLocation(pre, line, node, offset, interlinePosition, result)
   //
   // Walk through each of the text nodes and count newlines.
   //
-  var treewalker = window._content.document
+  var treewalker = document.getElementById('content').contentWindow.document
       .createTreeWalker(pre, NodeFilter.SHOW_TEXT, null, false);
 
   //
@@ -568,7 +568,7 @@ function findLocation(pre, line, node, offset, interlinePosition, result)
 //pref to persist the last state
 function wrapLongLines()
 {
-  var myWrap = window._content.document.body;
+  var myWrap = document.getElementById('content').contentWindow.document.body;
 
   if (myWrap.className == '')
     myWrap.className = 'wrap';
