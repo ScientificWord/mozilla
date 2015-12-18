@@ -10833,8 +10833,7 @@ var msiShowTeXFileCommand =
       {
         var resurl = match[1]+"/tex/main.tex";
         var thefile = msiFileFromFileURL(msiURIFromString(resurl));
-        result = thefile &&
-        thefile.exists();
+        result = thefile && thefile.exists();
       }
     }
     return result;

@@ -458,6 +458,7 @@ function openTeX()
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
     if ((outfile) && (outfile.path.length > 0))
     {
+      if (!outfile.exists()) finalThrow(cmdFailString('Import TeX'),'Conversion program did not produce a file');
       var xsltProcessor = setupInputXSLTproc();
       var parser = new DOMParser();
       var xmlDoc = document.implementation.createDocument("", "", null);
