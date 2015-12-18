@@ -748,11 +748,11 @@
   </xsl:choose>
 </xsl:template>
 
-<xsl:template match="html:title">
+<!-- <xsl:template match="html:title">
   \hypersetup{pdftitle=
   <xsl:value-of select="."/>
   }
-</xsl:template>
+</xsl:template> -->
 
 <xsl:template name="metadata">
   <xsl:if test="html:sw-meta/@product">
