@@ -191,6 +191,9 @@
           <xsl:when test="$first-char='}'">
             <xsl:text xml:space="preserve">\}</xsl:text>
           </xsl:when>
+          <xsl:when test="$first-char='~'">
+            <xsl:text xml:space="preserve">\sim  </xsl:text>
+          </xsl:when>
 <!--  End Basic Latin  -  Start Latin-1
           <xsl:otherwise>
           </xsl:otherwise>
