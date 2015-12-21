@@ -653,7 +653,7 @@ function msiEditorWindowOnFocus(event)
 //  if (!isLicensed()) {
     detectLicenseOnClipboard();
 
-  }
+//  }
 
 //  //Finally call "EditorOnFocus" on our containing window - for the time being anyway.
 //  //This resets all the "InsertCharWindow" stuff. TO DO: redo it.
