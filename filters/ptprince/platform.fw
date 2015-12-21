@@ -10,7 +10,6 @@ don't seem particularly TeX-ish, for example the symbol table.
 The platform module consisists of an object file @{platform.o@}
 and a test jig @{platform.t@}.
 
-
 @B@<Exceptions@>
 
 Here is a base class for all exceptions in our project.  Outsiders
@@ -1114,6 +1113,7 @@ bool FileExists(const char* file)
      f.close();
      return true;
    } else {
+
      return false;
    }
 }
@@ -1234,8 +1234,25 @@ const char* SearchFor(const char* searchfile)
 
 
 @$@<InputByteFile implementation@>+=@{@-
-bool InputByteFile::Open(const Filename& fullpath){
+#ifdef _MSC_VER
+std::wstring ToUtf16(std::string str)
+{
+    std::wstring ret;
+    int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), 
+                    str.length(), NULL, 0);
+    if (len > 0)
+    {
+        ret.resize(len);
+        MultiByteToWideChar(CP_UTF8, 0, str.c_str(), 
+                    str.length(), &ret[0], len);
+    }
+    return ret;
+}
+#endif
 
+
+bool InputByteFile::Open(const Filename& fullpath){
+   bool rv = false;
    m_byteFileData -> m_filename = fullpath.GetFullName();
    m_byteFileData -> m_lineno = 1;
 
@@ -1245,8 +1262,10 @@ bool InputByteFile::Open(const Filename& fullpath){
    if (strcmp(ext,"") == 0){
      ext = "tex";
    }
+ 
 
    std::string filepath = CatFilename(area, name, ext, true);
+   
    //std::cout << "\nsearch for filepath = " << filepath << "\n";
    const char* path = SearchFor(filepath.c_str());
 
@@ -1258,7 +1277,7 @@ bool InputByteFile::Open(const Filename& fullpath){
       if (path == 0){
          //LOG("\nFailed to locate " << filepath.c_str());
          std::cout << "\nNo special treatment: " << filepath.c_str();
-         return false;
+         // return false;
       } else {
          //LOG("\nFound file"<< filepath.c_str());
       }
@@ -1266,11 +1285,30 @@ bool InputByteFile::Open(const Filename& fullpath){
       //std::cout << "\nfound path = " << path << "\n";
       //LOG("\nFound substitute file" << filepath.c_str());
    }
-   m_byteFileData -> m_file.open(path, std::ios::in | std::ios::binary);
+   #ifdef _WINDOWS
+      //std::cout << "\nHere";
+      std::wstring wfilepath;
+      if (path != 0)
+         wfilepath = ToUtf16(path);
+      else{
+         std::cout << "\nHereB";
+         wfilepath = ToUtf16(filepath);
+         std::wcout << wfilepath;
+         std::cout << "\nHereC";
+      }
+
+      m_byteFileData -> m_file.open(wfilepath.c_str(), 
+                           std::ios::in | std::ios::binary);
+      LOG("\nHereD");
+   #else
+      m_byteFileData -> m_file.open(path, 
+                           std::ios::in | std::ios::binary);
+   #endif
    if ( ! m_byteFileData -> m_file.is_open() ){
-      //LOG("\nFailed to open " << path);
+      LOG("\nFailed to open " << path);
       return false;
    }
+   rv = true;
    LOG("\nOpened for reading: " << filepath.c_str());
    // // Read the first line and look for codepage
    // char firstLine[200]
@@ -1521,6 +1559,8 @@ computations.  The necessary routines are described here.
 #define PLATFORM_H
 
 
+
+
 //#define _CRTDBG_MAP_ALLOC
 //#include <stdlib.h>
 //#include <crtdbg.h>
@@ -1566,6 +1606,10 @@ computations.  The necessary routines are described here.
 //#include <direct.h>
 #include <cstring>
 #include <stdlib.h>
+#ifdef _WINDOWS
+  #include <Windows.h>
+#endif
+
 
 
 extern const char* s_docdir;

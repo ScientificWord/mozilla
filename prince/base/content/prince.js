@@ -430,21 +430,23 @@ function openTeX()
 
     var dataDir = dsprops.get("resource:app", Components.interfaces.nsIFile);
     dataDir.append("ptdata");
-   //  msidump("\n\nExe="+exefile.path);
-   //  msidump("\noutdir=\""+outdir.path);
-   //  msidump("\noutfile=\""+outfile.path);
-   //  msidump("\ninfile=\""+file.path);
-   //  msidump("\ndataDir=\""+dataDir.path);
-   //  msidump("\nmmldir=\""+mmldir.path+"\n");
-	  // msidump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+file.path+", "+outfile.path);
+    msidump("\n\nExe="+exefile.path);
+    msidump("\noutdir=\""+outdir.path);
+    msidump("\noutfile=\""+outfile.path);
+    msidump("\ninfile=\""+file.path);
+    msidump("\ndataDir=\""+dataDir.path);
+    msidump("\nmmldir=\""+mmldir.path+"\n");
+    msidump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+file.path+", "+outfile.path);
 
     // run pretex.exe
-
+      dump("+++ Running");
     try
     {
-      var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-      theProcess.init(exefile);
-      var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, file.path, outfile.path];
+	var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+	theProcess.init(exefile);
+	var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, file.path, outfile.path];
+	
+	dump("+++" + args);
       theProcess.run(true, args, args.length);
     }
     catch (ex)
