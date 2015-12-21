@@ -650,7 +650,7 @@ function msiEditorWindowOnFocus(event)
   {
     msiResetActiveEditorElement(this.document.defaultView);
   }
-  if (!isLicensed()) {
+//  if (!isLicensed()) {
     detectLicenseOnClipboard();
 
   }
