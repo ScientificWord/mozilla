@@ -844,7 +844,7 @@ var license_timercallback = {
     var elapsed = 0;
     var day = 24*3600*1000; // one day in milliseconds
     var editorElement = msiGetActiveEditorElement();
-    if (!isLicensed())
+//    if (!isLicensed())
       detectLicenseOnClipboard();
 
     now = Date.now();
