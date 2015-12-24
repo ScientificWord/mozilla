@@ -248,7 +248,7 @@ function addOptionNames(arr, docclass)
         nm = optNameMap[nm];
       }
       else {
-        nm = "option" + count++;
+        nm = "option" + counter++;
       }
       returnArray.push(nm+"="+arr[i]); 
     }
