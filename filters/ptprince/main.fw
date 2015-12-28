@@ -146,6 +146,7 @@ int main(int argc, char* argv[])
          }
       }
    }
+   std::cout << "\nOpening format file " << format;
    LOG("\nReading format file " << format);
 
    Filename fn0(format, true);
@@ -163,6 +164,7 @@ int main(int argc, char* argv[])
    //char* test = new char[5];
    //test[0]='M';test[1]='A';test[2]='R';test[3]='K';test[4]='0';
 
+   std::cout << "\nReading format file " << format;
    Interpretter::MainLoop();
 
    //delete plineSource0;

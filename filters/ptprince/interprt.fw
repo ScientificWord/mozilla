@@ -511,6 +511,7 @@ CMD_MSIPREAMBLEEXTRA,
 CMD_MSITOPREAMBLEEXTRA,
 CMD_MSISPECIAL,
 CMD_MSISPECIALVALUE,
+CMD_MSIPREAMBLE,
 @}
 
 
@@ -524,6 +525,7 @@ NewPrimitive("msipreambleextra", CMD_MSIPREAMBLEEXTRA);
 NewPrimitive("msitopreambleextra", CMD_MSITOPREAMBLEEXTRA);
 NewPrimitive("msispecial", CMD_MSISPECIAL);
 NewPrimitive("msispecialvalue", CMD_MSISPECIALVALUE);
+NewPrimitive("msipreamble", CMD_MSIPREAMBLE);
 @}
 
 
@@ -577,6 +579,82 @@ case CMD_MSITOPREAMBLEEXTRA:{
 
   delete tl;
   break;
+}
+
+case CMD_MSIPREAMBLE: {
+  TokenList* tl = new TokenList;
+  ScanTokenList(tl, false);
+  StringUtils::AppendToks(*tl);
+  String str = StringBuilder::Create();
+  std::string preamble;
+  int i = 0;
+  while (i < str.Size()){
+     preamble += (char) str[i];
+     ++i;
+  }
+  StringBuilder::Discard(str);
+  delete tl;
+  size_t q = std::string::npos;
+  size_t p = preamble.find("\\usepackage");
+  
+  while (p != std::string::npos){
+    q = p;
+    p = preamble.find("\\usepackage", p+11);
+  }
+  // now q points at last usepackage
+  // look for next command
+  q = preamble.find("\\", q+11);
+  std::string usepackages = preamble.substr(0, q-1);
+  std::string rest = preamble.substr(q);
+
+  // Convert <usepackage>
+  q = std::string::npos;
+  p = usepackages.find("\\usepackage");
+  while (p != std::string::npos){
+    q = p+11;
+    p = usepackages.find("\\usepackage", p+11);
+    std::string opt;
+    std::string req;
+    if (usepackages[q] == ' ')
+      q++;
+    if (usepackages[q] == '[') {
+      q++;
+      while (usepackages[q] != ']'){
+        opt += usepackages[q];
+        ++q;
+      }
+      ++q;
+    }
+    if (usepackages[q] == ' ')
+      q++;
+    if (usepackages[q] == '{') {
+      q++;
+      while (usepackages[q] != '}'){
+        req += usepackages[q];
+        ++q;
+      }
+      ++q;
+     
+    }
+    std::string up = "<usepackage req=\"";
+    up += req;
+    up += "\"";
+    if (opt != ""){
+      up += " opt=\"";
+      up += opt;
+      up += "\"";
+    }
+    up += "/>";
+    Typesetter::AppendTag(up.c_str());
+  }
+
+  std::string preambletex =
+     "<preambleTeX><![CDATA[\n";
+  preambletex += rest;
+  preambletex +="]]></preambleTeX>\n";
+  Typesetter::AppendTag(preambletex.c_str());
+  break;
+
 }
 
 case CMD_MSISPECIAL: {

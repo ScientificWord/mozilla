@@ -1266,13 +1266,13 @@ bool InputByteFile::Open(const Filename& fullpath){
 
    std::string filepath = CatFilename(area, name, ext, true);
    
-   //std::cout << "\nsearch for filepath = " << filepath << "\n";
+   std::cout << "\nsearch for filepath = " << filepath << "\n";
    const char* path = SearchFor(filepath.c_str());
 
    if (path == 0){
       //std::cout << "\nNot found";
       filepath = CatFilename(area, name, ext, false);
-      //std::cout << "\nsearch for filepath = " << filepath << "\n";
+      std::cout << "\nsearch for filepath = " << filepath << "\n";
       path = SearchFor(filepath.c_str());
       if (path == 0){
          //LOG("\nFailed to locate " << filepath.c_str());
@@ -1291,21 +1291,21 @@ bool InputByteFile::Open(const Filename& fullpath){
       if (path != 0)
          wfilepath = ToUtf16(path);
       else{
-         std::cout << "\nHereB";
+         //std::cout << "\nHereB";
          wfilepath = ToUtf16(filepath);
-         std::wcout << wfilepath;
-         std::cout << "\nHereC";
+         //std::wcout << wfilepath;
+         //std::cout << "\nHereC";
       }
 
       m_byteFileData -> m_file.open(wfilepath.c_str(), 
                            std::ios::in | std::ios::binary);
-      LOG("\nHereD");
+      //LOG("\nHereD");
    #else
       m_byteFileData -> m_file.open(path, 
                            std::ios::in | std::ios::binary);
    #endif
    if ( ! m_byteFileData -> m_file.is_open() ){
-      LOG("\nFailed to open " << path);
+      LOG("\nFailed to open " << filepath.c_str());
       return false;
    }
    rv = true;
