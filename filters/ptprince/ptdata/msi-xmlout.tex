@@ -6,6 +6,11 @@
 \msi@insubequations=0
 
 
+\def\out@preamble#1{}
+%   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[^^0a%
+%   \usepackage{bm}^^0a\usepackage{tabulary}}%  
+%   \msitag{#1]]> </preambleTeX>}%
+%   \msi@preamble={}}
 
 
 
@@ -336,18 +341,18 @@
 \newcount\preambleid
 
 \def\out@preamble@tex#1{%
-   \advance\preambleid by 1
-   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[^^0a%
-     \usepackage{bm}^^0a\usepackage{tabulary}}%
-   \msipreambleextra   
-   \msitag{]]> </preambleTeX>}%
+   %\advance\preambleid by 1
+   %\msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[^^0a%
+   %  \usepackage{bm}^^0a\usepackage{tabulary}}%
+   %\msipreambleextra   
+   %\msitag{]]> </preambleTeX>}%
    \msi@preamble={}}
 
 
 %% \document and \enddocument
 
 \def\out@begin@document{%
-   \expandafter\out@preamble@tex\expandafter{\the\msi@preamble}
+   %\expandafter\out@preamble@tex\expandafter{\the\msi@preamble}
    \msiclosetag{preamble}{</preamble>}%
    \msi@inpreamble = 0
    \msitag{</head>}\msitag{^^0a}%
