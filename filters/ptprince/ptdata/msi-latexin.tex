@@ -1,5 +1,5 @@
 \chardef\active=13
-
+\msitraceon
 \catcode`\{=1 % left brace is begin-group character
 \catcode`\}=2 % right brace is end-group character
 \catcode`\$=3 % dollar sign is math shift
@@ -46,22 +46,23 @@
    \@ifnextchar[{\@docclassA}{\@docclassB}
 }
 
+
    
 \def\@docclassA[#1]#2{%
    \msi@output=1\relax
    \@@documentclass[#1]{#2}%
    \msi@output=0\relax
    \global\msi@dobraces=0%
-   \out@documentclassA[#1]{#2}
-}
+   \out@documentclassA[#1]{#2}%
+   \@scan@preamble}
 
 \def\@docclassB#1{%
    \msi@output=1\relax
    \@@documentclass{#1}%
    \msi@output=0\relax
    \global\msi@dobraces=0%
-   \out@documentclassB{#1}
-}
+   \out@documentclassB{#1}%
+   \@scan@preamble}
 
 
 \def\@@documentclass{%
@@ -154,7 +155,7 @@
 
 \chardef\@inputcheck0
 \chardef\sixt@@n=16
-\newlinechar`\^^J
+\newlinechar`\^^J       
 
 
 \def\typeout#1{\relax}
@@ -3348,7 +3349,16 @@
   |gdef|@scan@verbatim#1\end{verbatim}[|out@verbatim[#1]%
      |end[verbatim]%
      |@make@braces@normal%
-  ] 
+  ]
+  |gdef|@scan@preamble[|@make@braces@other|catcode`|\=12|relax|catcode`|^^M=12|catcode`|^^J=12|relax
+     |@@scan@preamble]
+  |gdef|@@scan@preamble#1\begin{document}[|out@preamble[#1]%
+     |catcode`|\=0|relax
+     |catcode`|^^M=5|relax
+     |msipreamble[#1]
+     |begin[document]
+     |@make@braces@normal%
+  ]
 |egroup
 
 \bgroup
@@ -4547,10 +4557,11 @@
   \endgroup}
 \def\addcontentsline#1#2#3{%
   \addtocontents{#1}{\protect\contentsline{#2}{#3}{\thepage}}}
+  
 \long\def\addtocontents#1#2{%
-  \protected@write\@auxout
-      {\let\label\@gobble \let\index\@gobble \let\glossary\@gobble}%
-      {\string\@writefile{#1}{#2}}}
+   \string\addtocontents{#1}{#2}%
+}
+
 \def\contentsline#1{\csname l@#1\endcsname}
 \def\@dottedtocline#1#2#3#4#5{%
   \ifnum #1>\c@tocdepth \else
