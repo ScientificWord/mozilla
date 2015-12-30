@@ -3355,9 +3355,9 @@
   |gdef|@@scan@preamble#1\begin{document}[|out@preamble[#1]%
      |catcode`|\=0|relax
      |catcode`|^^M=5|relax
+     |@make@braces@normal%
      |msipreamble[#1]
      |begin[document]
-     |@make@braces@normal%
   ]
 |egroup
 
@@ -4555,12 +4555,12 @@
     \fi
     \@nobreakfalse
   \endgroup}
-\def\addcontentsline#1#2#3{%
-  \addtocontents{#1}{\protect\contentsline{#2}{#3}{\thepage}}}
+%\def\addcontentsline#1#2#3{%
+%  \addtocontents{#1}{\protect\contentsline{#2}{#3}{\thepage}}}
   
-\long\def\addtocontents#1#2{%
-   \string\addtocontents{#1}{#2}%
-}
+%\long\def\addtocontents#1#2{%
+%   \string\addtocontents{#1}{#2}%
+%}
 
 \def\contentsline#1{\csname l@#1\endcsname}
 \def\@dottedtocline#1#2#3#4#5{%
