@@ -9,6 +9,7 @@ NewExpandable("input", xfcnInput, 0);
 
 @$@<Expandable declarations@>+=@{@-
 bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**);
+bool ProcessFile(Filename& fn);
 @}
 
 
@@ -43,6 +44,20 @@ if (braced){
 
 @$@<Misc functions@>+=@{@-
 
+bool ProcessFile(Filename& fn){
+   InputByteFile* pbf = new InputByteFile;
+   pbf -> Open(fn);
+   Latin_1_in*  platin1filt = new Latin_1_in(pbf);
+
+   LineSource* plineSource = new LineSource(platin1filt);
+   Tokenizer* ts = new Tokenizer(plineSource);
+
+   InputStack::Push(ts);
+
+   return true;
+}
+
+
 extern std::string s_preambleExtra;
 
 bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
@@ -52,17 +67,13 @@ bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
    @<Scan filename@>
    const char* name = fn.GetNameString();
    const char* ext = fn.GetExtString();
-   if (Global::msioutput == 0 && Global::msiinpreamble) {
-     std::string strTemp;
-     //strTemp = "\n<texb pre=\"1\" enc=\"1\" name=\"Input\">";
-     //strTemp +="<![CDATA[";
-     strTemp += "\n\\input{";
-     strTemp += name;
-     strTemp += "}";
-     //strTemp += "]]></texb>";
-     s_preambleExtra += strTemp;
-     //Typesetter::AppendTag(strTemp.c_str());
-   }
+//   if (Global::msioutput == 0 && Global::msiinpreamble) {
+//     std::string strTemp;
+//     strTemp += "\n\\input{";
+//     strTemp += name;
+//     strTemp += "}";
+//     s_preambleExtra += strTemp;
+//   }
    if (ext == 0)
      ext = "tex";
 
