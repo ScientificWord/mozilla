@@ -497,12 +497,19 @@
 
 \def\@wrap#1{\msitag{#1}}
 
-\def\TeXButton#1#2{%
+\def\TeXButton{%
+  \ifmmode
+  \else
+  \catcode`\&=\active
+  \fi
+  \@TeXButton}
+
+\def\@TeXButton#1#2{%
    \ifmmode
      %\string\TeXButton{#1}{#2}%
      \msitag{\msipassthru{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}}
    \else
-     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}\@wrap{#1}\msitag{"><![CDATA[#2]]></texb>}%
+     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{"><![CDATA[#2]]></texb>}%
    \fi}
 
 
