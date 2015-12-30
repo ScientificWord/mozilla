@@ -594,16 +594,17 @@ case CMD_MSIPREAMBLE: {
   }
   StringBuilder::Discard(str);
   delete tl;
-  size_t q = std::string::npos;
+  size_t q = 0;
   size_t p = preamble.find("\\usepackage");
   
   while (p != std::string::npos){
-    q = p;
+    q = p+11;
     p = preamble.find("\\usepackage", p+11);
   }
   // now q points at last usepackage
   // look for next command
-  q = preamble.find("\\", q+11);
+  q = preamble.find("\\", q);
+  
   std::string usepackages = preamble.substr(0, q-1);
   std::string rest = preamble.substr(q);
 
