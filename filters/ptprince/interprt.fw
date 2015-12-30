@@ -647,6 +647,9 @@ case CMD_MSIPREAMBLE: {
     }
     up += "/>";
     Typesetter::AppendTag(up.c_str());
+    req += ".sty";
+    Filename fn(req.c_str());
+    ProcessFile(fn);
   }
 
   std::string preambletex =
