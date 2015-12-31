@@ -57,11 +57,11 @@ math {
   text-rendering: optimizeLegibility;
   -moz-float-edge: margin-box;
 }
-
-/* math[mode="display"], math[display="block"] {
+ 
+math[mode="display"], math[display="block"] {
   display: block;
- /* text-align: -moz-center;
-}*/
+  text-align: -moz-center;
+}
 
 math[display="inline"] {
   display: inline;
