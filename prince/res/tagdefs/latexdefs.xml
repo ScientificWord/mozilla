@@ -1193,7 +1193,6 @@
         </tag>
         <tag hidden="1" nm="msidisplay">
           <contains>mml:math</contains>
-          <contains>#text</contains>
           <level>*</level>
           <description>Display</description>
           <discardemptyblock>true</discardemptyblock>
