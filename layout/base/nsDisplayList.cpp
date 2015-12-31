@@ -599,6 +599,7 @@ PRBool IsMathNodeForCaret(nsIContent * aNode)
   pNode->GetNodeType(&nodeType);
   while (nodeType == nsIDOMNode::TEXT_NODE) {
     pNode->GetParentNode(getter_AddRefs(pNode));
+    if (!pNode) return PR_FALSE;
     pNode->GetNodeType(&nodeType);
   }
   nsresult res;
