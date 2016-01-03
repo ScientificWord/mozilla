@@ -409,8 +409,8 @@ msiEditor::InsertDisplay()
     res = GetSelection(getter_AddRefs(selection));
     if (NS_FAILED(res)) return res;
     selection->Collapse(msidisplay, -1);
-    InsertHelperBR(selection);    
-//    NS_IF_ADDREF((nsIDOMNode*)msidisplay);
+    // InsertHelperBR(selection);    
+    //    NS_IF_ADDREF((nsIDOMNode*)msidisplay);
     return NS_OK;
     // find the math node and set the display attribute
   }
