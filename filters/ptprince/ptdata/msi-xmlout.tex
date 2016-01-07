@@ -1581,13 +1581,20 @@
 \def\msi@hook@hss{\msitag{\hss}}
 \def\msi@hook@vss{\msitag{\vss}}
 
+\def\label{%
+   \begingroup\attrib@text
+   \@label}
 
-\def\label#1{%
+\def\@label#1{%
    \ifmmode
-      \msitag{\label{#1}}%
+      \msitag{\msipassthru}\char`\{%
+      \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{"id="}#1\msitag{"/>}%
+      \char`\}%
+      %\msitag{\label}\char`{#1\char`\}%
    \else
       \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
-   \fi}
+   \fi
+   \endgroup}
 
 \def\frac#1#2{\string\frac\@brace{#1}\@brace{#2}}
 \def\dfrac#1#2{\string\dfrac\@brace{#1}\@brace{#2}}

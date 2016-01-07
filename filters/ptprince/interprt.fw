@@ -612,7 +612,7 @@ case CMD_MSIPREAMBLE: {
      usepackages = preamble.substr(0);
      rest = "";
   } else {
-     usepackages = preamble.substr(0, q-1);
+     usepackages = preamble.substr(0, q);
      rest = preamble.substr(q);
   }
  
