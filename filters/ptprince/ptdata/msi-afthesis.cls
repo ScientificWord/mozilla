@@ -7,15 +7,15 @@
 \def\school#1{\out@school{#1}}
 \def\committee#1{\out@committee{#1}}
 \def\abbreviation#1{\out@abbreviation{#1}}
-\def\numberbychapter{<numberbychapter/>}
-\def\flyleaf{<flyleaf/>}
-\def\disclaimerpage{<disclaimerpage/>}
-\def\titlepage{<titlepage/>}
-\def\approvalpage{<approvalpage/>}
-\def\listoffigures{<listoffigures/>}
-\def\listoftables{<listoftables/>}
-\def\listofsymbols{<listofsymbols/>}
-\def\listofabbreviations{<listofabbreviations/>}
+%\def\numberbychapter{<numberbychapter/>}
+%\def\flyleaf{<flyleaf/>}
+%\def\disclaimerpage{<disclaimerpage/>}
+%\def\titlepage{<titlepage/>}
+%\def\approvalpage{<approvalpage/>}
+%\def\listoffigures{<listoffigures/>}
+%\def\listoftables{<listoftables/>}
+%\def\listofsymbols{<listofsymbols/>}
+%\def\listofabbreviations{<listofabbreviations/>}
 
 
 \def\out@address#1{%
