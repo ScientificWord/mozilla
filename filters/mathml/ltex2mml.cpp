@@ -9215,6 +9215,7 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
 // \mathrm<uID5.81.0>!\mathrm!REQPARAM(5.81.1,MATH)
       case 81 :
         in_mml_grammar  =  TRUE;
+	mathvariant = (U8*)"normal";
     break;
 // \mathbf<uID5.82.0>!\mathbf!REQPARAM(5.82.1,MATH)
       case TR_Mbf :
@@ -9398,8 +9399,12 @@ TNODE* LaTeX2MMLTree::TaggedMath2MML( TNODE* TeX_tag_node,
 
               if ( mathvariant ) {
                 if ( mml_version >= 200 ) {
-                  SetNodeAttrib( mml_rover,(U8*)"mathvariant",mathvariant );
+                  SetNodeAttrib( mml_rover,(U8*)"mathvariant", mathvariant );
                   nest_in_mstyle =  FALSE;
+		  if (strcmp((const char*)mathvariant, "normal") == 0){
+		    SetNodeAttrib( mml_rover,(U8*)"mathcolor", (U8*)"blue" );
+		  }
+		  
                 } else if ( entity_suffix ) {
                   strcpy( (char*)buffer,"&" );
                   strcat( (char*)buffer,(char*)mml_rover->var_value );
