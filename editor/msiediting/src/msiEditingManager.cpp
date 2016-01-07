@@ -719,7 +719,7 @@ msiEditingManager::InsertMath(nsIEditor * editor,
   else // not in math
   {
     nsString strmsidisplay = NS_LITERAL_STRING("msidisplay");
-    nsString strmbrNode = NS_LITERAL_STRING("br");
+    // nsString strmbrNode = NS_LITERAL_STRING("br");
     res = DetermineParentLeftRight(node, offset, flags, parent, left, right);
     if (NS_SUCCEEDED(res) && parent)
     {
@@ -758,13 +758,13 @@ msiEditingManager::InsertMath(nsIEditor * editor,
           if (isDisplay)
           {
             nsCOMPtr<nsIDOMElement> msidisplay;
-            nsCOMPtr<nsIDOMElement> brElement;
+            // nsCOMPtr<nsIDOMElement> brElement;
             nsCOMPtr<nsIDOMNode> inserted;
             htmlEditor->CreateElementWithDefaults(strmsidisplay, getter_AddRefs(msidisplay));
-            htmlEditor->CreateElementWithDefaults(strmbrNode, getter_AddRefs(brElement));
+            // htmlEditor->CreateElementWithDefaults(strmbrNode, getter_AddRefs(brElement));
 
             res = msidisplay->AppendChild(mathNode, getter_AddRefs(inserted)); // put node in msidisplay
-            res = msidisplay->AppendChild(brElement, getter_AddRefs(inserted)); // put node in msidisplay
+            // res = msidisplay->AppendChild(brElement, getter_AddRefs(inserted)); // put node in msidisplay
             // and now put display in place of node
             mathNode = msidisplay;
           }
