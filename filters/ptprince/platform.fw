@@ -455,7 +455,7 @@ There may be up to 10000 @{Strings@}, and 50000 @{TeXChar@}'s comprising
 those strings.
 
 @$@<String implementation@>+=@{@-
-static const int STRING_AREA_SIZE = 50000;
+static const int STRING_AREA_SIZE = 100000;
 static const int MAX_STRINGS = 10000;
 static TeXChar s_stringArea[STRING_AREA_SIZE];
 static int s_stringAreaTop = 0;
