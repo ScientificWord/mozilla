@@ -23,7 +23,8 @@
 \def\href{
     \begingroup
     \catcode`\~=\other
-    \catcode`\"=\active    
+    \catcode`\"=\active
+    \attrib@text
     \@href}
 
 
@@ -31,7 +32,7 @@
    \ifmmode
       \msitag{\msipassthru{<a href="#1">#2</a>}}%
    \else
-      \msihmode\msiopentag{a}{<a href="#1">}#2\msiclosetag{a}{</a>}%
+      \msihmode\msiopentag{a}{<a href="}#1\msitag{">}#2\msiclosetag{a}{</a>}%
    \fi
    \endgroup}
 
@@ -1588,7 +1589,7 @@
 \def\@label#1{%
    \ifmmode
       \msitag{\msipassthru}\char`\{%
-      \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{"id="}#1\msitag{"/>}%
+      \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
       \char`\}%
       %\msitag{\label}\char`{#1\char`\}%
    \else
