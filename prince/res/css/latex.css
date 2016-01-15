@@ -758,11 +758,11 @@ button[class="frontmattertag"] {
 /* Selection rules */
 
 body {
-  -moz-user-select: -moz-none; /* -moz-none can be overridden */
+  -moz-user-select: -moz-text; /* -moz-none can be overridden */
   counter-reset: eqnnumber subeqnnumber chapter part section ftnotectr;
   display: block;
   position: relative;
-  font-family: Cambria, 'Lucida Grande', 'Lucida Sans Unicode';
+  font-family: Arial;
   font-size: 12pt;
   line-height: 14pt;
   margin-left: 10px;
