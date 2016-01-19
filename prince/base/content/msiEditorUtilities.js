@@ -10552,6 +10552,91 @@ function replacer(str, p1, p2, offset, s) {
     break;
   }
 }
+
+function newline(output, currentline, indent, state) {
+  if (state.preserveSpacing)
+    return;
+  if (/\S/.test(currentline.s)) {
+    writeLineInPieces(output, currentline);
+  }
+  currentline.s = '';
+  if (indent)
+    for (var i = 0; i < indent; i++)
+      currentline.s += indentIncrement;
+}
+
+var nonInlineTags = '.math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX.' +
+'msidisplay.pagelayout.page.textregion.columns.header.footer.plot.verbatim.' +
+'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.descriptionLabel.Expression.XMax.XMin.YMax.YMin.XVar.YVar.ZVar.XMin.XMax.YMin.YMax.ZMin.ZMax.' +
+'XPts.YPts.ZPts.object.graph.graphSpec.msibr.';
+function isInlineElement(editor, element) {
+  if (nonInlineTags.search('.' + element.localName + '.') >= 0)
+    return false;
+  if (msiNavigationUtils.isMathNode(element))
+    return false;
+  var tagclass = editor.tagListManager.getRealClassOfTag(element.localName, null);
+  if (tagclass === 'texttag' || tagclass === 'othertag' || tagclass.length === 0)
+    return true;
+  return false;
+}
+
+function writeLineInPieces(output, currentline) {
+  var lastLength = 10000000;
+  var curlen = currentline.s.length;
+  var index;
+  var firstLine;
+  msidump('A: ' + curlen + '\n');
+  while (curlen > 0) {
+    msidump('B: ' + curlen + '\n');
+    msidump('output length = ' + output.s.length + '\n');
+    msidump('currentline length = ' + currentline.s.length + '\n');
+    if (curlen < maxLength || curlen >= lastLength)
+      // this assures us we get out of the while loop
+      {
+        output.s += trimend(currentline.s.replace('\n', ' ', 'g')) + '\n';
+        currentline.s = '';
+      }
+    else
+
+    lastLength = curlen;
+    // minLength and maxLength are global
+    index = currentline.s.indexOf('\n', minLength);
+    if (index < 0 || index > maxLength) {
+      // no linebreaks where we want. Look harder at shorter lines
+      index = currentline.s.indexOf('\n', reallyMinLength);
+    }
+    if (index >= 0 && index <= maxLength) {
+      firstLine = currentline.s.substr(0, index);
+      if (/\S/.test(firstLine)) {
+        output.s += trimend(firstLine.replace('\n', ' ', 'g')) + '\n';          
+      } 
+      firstLine = currentline.s.substr(index + 1);
+      currentline.s = trimend(firstLine);
+    } else {
+      // no convenient linebreaks, look for spaces
+      index = currentline.s.lastIndexOf(' ', maxLength);
+      var forced = false;
+      if (index < 0 || index > maxLength) {
+        // no spaces? Japanese? force a linebreak at maxLength -5
+        forced = true;
+        // we can't break text in a tag. Try to find previous '<'
+        index = currentline.s.lastIndexOf('<', maxLength);
+        if (index === -1)
+          index = maxLength - 5;
+      }
+      firstLine = currentline.s.substr(0, index);
+      if (/\S/.test(firstLine)) {
+        output.s += trimend(firstLine) + '\n';
+      }
+      if (!forced)
+        index++;
+      firstLine = currentline.s.substr(index).replace(/\s+$/,'');
+      currentline.s = trimend(firstLine);
+    }
+    curlen = currentline.s.length;
+  }
+}
+
 function reversereplacer(str, p1, p2, offset, s) {
   switch (str) {
   case '&quot;':
@@ -10583,82 +10668,11 @@ function decodeEntities(instring) {
 function isEmptyText(textnode) {
   return !/\S/.test(textnode.textContent);
 }
-function writeLineInPieces(output, currentline) {
-  var lastLength = 10000000;
-  var L;
-  while (currentline.s.length > 0) {
-    L = currentline.s.length;
-    if (L < maxLength || L >= lastLength)
-      // this assures us we get out of the while loop
-      {
-        output.s += currentline.s.replace('\n', ' ', 'g') + '\n';
-        currentline.s = '';
-      }
-    else
-      // see if there is an existing linebreak between minLength and maxLength
-      {
-        lastLength = L;
-        var index = currentline.s.indexOf('\n', minLength);
-        var firstLine;
-        if (index < 0 || index > maxLength) {
-          // no linebreaks where we want. Look harder at shorter lines
-          index = currentline.s.indexOf('\n', reallyMinLength);
-        }
-        if (index >= 0 && index <= maxLength) {
-          firstLine = currentline.s.substr(0, index);
-          output.s += firstLine.replace('\n', ' ', 'g') + '\n';
-          firstLine = currentline.s.substr(index + 1);
-          currentline.s = firstLine;
-        } else
-          // no convenient linebreaks, look for spaces
-          {
-            index = currentline.s.lastIndexOf(' ', maxLength);
-            var forced = false;
-            if (index < 0 || index > maxLength)
-              // no spaces? Japanese? force a linebreak at maxLength -5
-              {
-                forced = true;
-                // we can't break text in a tag. Try to find previous '<'
-                index = currentline.s.lastIndexOf('<', maxLength);
-                if (index === -1)
-                  index = maxLength - 5;
-              }
-            firstLine = currentline.s.substr(0, index);
-            output.s += firstLine + '\n';
-            if (!forced)
-              index++;
-            firstLine = currentline.s.substr(index);
-            currentline.s = firstLine;
-          }
-      }
-  }
-}
-function newline(output, currentline, indent, state) {
-  if (state.preserveSpacing)
-    return;
-  if (/\S/.test(currentline.s)) {
-    writeLineInPieces(output, currentline);
-  }
-  currentline.s = '';
-  if (indent)
-    for (var i = 0; i < indent; i++)
-      currentline.s += indentIncrement;
+
+function trimend(str) {
+  return str.replace(/\s+$/,'');
 }
 
-var nonInlineTags = '.math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX.' +
-'msidisplay.pagelayout.page.textregion.columns.header.footer.plot.verbatim.' +
-'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.descriptionLabel.Expression.XMax.XMin.YMax.YMin.XVar.YVar.ZVar.XMin.XMax.YMin.YMax.ZMin.ZMax.' +
-'XPts.YPts.ZPts.object.graph.graphSpec.msibr.';
-function isInlineElement(editor, element) {
-  if (nonInlineTags.search('.' + element.localName + '.') >= 0)
-    return false;
-  if (msiNavigationUtils.isMathNode(element))
-    return false;
-  var tagclass = editor.tagListManager.getRealClassOfTag(element.localName, null);
-  if (tagclass === 'texttag' || tagclass === 'othertag' || tagclass.length === 0)
-    return true;
-  return false;
-}
 /* ELEMENT_NODE =1 */
 function processElement(editor, node, treeWalker, output, currentline, indent, state) {
   //  dump("ProcessElement, indent = "+indent+"\n");
