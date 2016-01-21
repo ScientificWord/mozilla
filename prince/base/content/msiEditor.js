@@ -5318,7 +5318,7 @@ function msiInitPasteAsMenu(editorElement) {
 
 function msiEditorInitViewMenu() {
   var i;
-  var logcommands = ['cmd_showTeXLog', msiShowTeXLogCommand, 'cmd_showBibTeXLog',
+  var logcommands = ['cmd_showTeXLog', msiShowTeXLogCommand, 'cmd_showTeXErrors', msiShowTeXErrorsCommand, 'cmd_showBibTeXLog',
     msiShowBibTeXLogCommand, 'cmd_showTeXFile', msiShowTeXFileCommand
   ];
   for (i = 0; i < logcommands.length; i += 2) {

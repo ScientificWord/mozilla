@@ -998,8 +998,8 @@ function compileTeX(compiler)
       compileTeXFile(compiler, outleaf, outputfile.path, pdffile.parent.path, compileInfo, function (pdffile) {
         if (!pdffile.exists())
         {
-          AlertWithTitle("TeX Error", "Need to offer to show log");
-          goDoCommand("cmd_showTeXLog");
+          AlertWithTitle("TeX Error", "No PDF file was created because of errors");
+          msiGoDoCommand("cmd_showTeXErrors");
         }
         else
         // move the output result to the place indicated by fp.
@@ -1041,7 +1041,7 @@ function previewOrPrintPDFFile( pdffile, preview ) {
   if (!pdffile.exists())
   {
     AlertWithTitle("TeX Error", "Unable to create a PDF file.");
-    goDoCommand("cmd_showTeXLog");
+    msiGoDoCommand("cmd_showTeXErrors");
   }
   else
   {
