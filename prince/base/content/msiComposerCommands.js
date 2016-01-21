@@ -157,6 +157,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_citation", msiCitationCommand);
   commandTable.registerCommand("cmd_reviseCitation", msiReviseCitationCommand);
   commandTable.registerCommand("cmd_showTeXLog", msiShowTeXLogCommand);
+  commandTable.registerCommand("cmd_showTeXErrors", msiShowTeXErrorsCommand);
   commandTable.registerCommand("cmd_showBibTeXLog", msiShowBibTeXLogCommand);
   commandTable.registerCommand("cmd_showTeXFile", msiShowTeXFileCommand);
   commandTable.registerCommand("cmd_showXSLTLog", msiShowXSLTLogCommand);
@@ -10808,6 +10809,81 @@ var msiShowTeXLogCommand =
     }
     catch (e) {
       finalThrow(cmdFailString('showtexlog'), e.message);
+    }
+    return result;
+  }
+}
+
+var msiShowTeXErrorsCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    // possibly temp implementation
+    return msiShowTeXLogCommand.isCommandEnabled(aCommand, dummy);
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var result;
+    var errstring;
+    var resurl;
+    var message;
+    var match;
+    var re;
+    var url;
+    var editor;
+    var editorElement;
+    var texErrorRE = /(\n!(?:.*\n){1,8})|(\n.*[^`]\?.*\n(?:.*\n){1,5})/g;
+    var logContents='';
+    var i, thefile;
+    try
+    {
+      result = true;
+      editorElement = msiGetActiveEditorElement();
+      if (!msiIsTopLevelEditor(editorElement))
+        return result;
+
+      editor = msiGetEditor(editorElement);
+      if (editor)
+      {
+        message = "No log file";
+        url = msiGetEditorURL(editorElement);
+  //      re = /\/([a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+$/i;
+        re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+        match = re.exec(url);
+        if (match)
+        {
+          resurl = match[1]+"/tex/main.log";
+          errstring = '';
+          thefile = msiFileFromFileURL(msiURIFromString(resurl));
+          if (thefile && thefile.exists()) {
+            logContents = getTextFileAsString(resurl);
+            message = '';
+            match = texErrorRE.exec(logContents);
+            while (match && match.length > 1) {
+              for (i = 1; i < match.length; i++) {
+                if (match[i] && /\S/.test(match[i])) {
+                  message += match[i] + '---\n\n';                  
+                }
+              }
+              match = texErrorRE.exec(logContents);
+            }
+            if (message.length == 0) {
+              message = "No errors";
+            }
+          }
+        }
+        openDialog("chrome://prince/content/texErrorsDialog.xul",
+               "_blank",
+               "all",
+               message);
+      }
+    }
+    catch (e) {
+      finalThrow(cmdFailString('showtexerrors'), e.message);
     }
     return result;
   }
