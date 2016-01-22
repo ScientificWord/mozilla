@@ -370,6 +370,10 @@
                 accesskey="&viewTeXLog.accesskey;"
                 observes="cmd_showTeXLog"
                 label="&viewTeXLog.label;"/>
+      <menuitem id="viewTeXErrors"
+                accesskey="&viewTeXErrors.accesskey;"
+                observes="cmd_showTeXErrors"
+                label="&viewTeXErrors.label;"/>
       <menuitem id="viewBibTeXLog"
                 accesskey="&viewBibTeXLog.accesskey;"
                 observes="cmd_showBibTeXLog"

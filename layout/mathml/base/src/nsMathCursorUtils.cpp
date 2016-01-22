@@ -126,11 +126,18 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
         pElem->GetTagName(tag);
         if (tag.EqualsLiteral("msidisplay")) {
           pFrame = pParent;
+          pSiblingFrame = pFrame->GetNextSibling();
+          if (pSiblingFrame) {
+            *aOutFrame = pSiblingFrame;
+            *aOutOffset = 0;
+            return PR_TRUE;
+          }
         }
       }
 
       pSiblingFrame = pFrame->GetNextSibling();
       // Whoa! We must check that the cursor can go into this tag -- it sometimes is a <br/>
+        // Do we need to skip over whitespace nodes?
       if (pSiblingFrame) {
         pSiblingFrame->IsSelectable( &fSelectable, nsnull);
       }
