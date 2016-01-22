@@ -1588,10 +1588,10 @@
 
 \def\@label#1{%
    \ifmmode
-      \msitag{\msipassthru}\char`\{%
-      \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
-      \char`\}%
-      %\msitag{\label}\char`{#1\char`\}%
+      %\msitag{\msipassthru}\char`\{%
+      %\msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
+      %\char`\}%
+      \msitag{\label}\char`\{#1\char`\}%
    \else
       \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
    \fi
