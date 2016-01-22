@@ -7,6 +7,7 @@ en-US.jar:
 * locale/licenseDialog.dtd                  (dialogs/licenseDialog.dtd)
 * locale/activate.dtd                  (dialogs/activate.dtd)
 * locale/licensestatus.dtd                  (dialogs/licensestatus.dtd)
+* locale/texErrorsDialog.dtd                  (dialogs/texErrorsDialog.dtd)
 * locale/toolbarsOverlay.dtd              (toolbarsOverlay.dtd)
 * locale/menuOverlay.dtd                  (menuOverlay.dtd)
   locale/mathmlOverlay.dtd                (mathmlOverlay.dtd)
