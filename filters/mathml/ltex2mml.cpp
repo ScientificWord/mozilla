@@ -14316,8 +14316,39 @@ ATTRIB_REC* LaTeX2MMLTree::ExtractAttrs( char* zattrs ) {
 void LaTeX2MMLTree::SetNodeAttrib( TNODE* mml_node,
                   U8* a_nom,U8* a_val ) {
 
+  
+  
   if ( a_nom && a_val && a_nom[0] ) {
     U16 vln =  strlen( (char*)a_val );
+    U8* b_val = TCI_NEW(U8[vln + 1000]);
+    U8* p = a_val;
+    U8* q = b_val;
+    while (*p != '\0'){
+      if (*p == '&'){
+	p++;
+	*q++ = '&';
+	*q++ = 'a';
+	*q++ = 'm';
+	*q++ = 'p';
+	*q++ = ';';
+      } else if (*p == '<'){
+	p++;
+	*q++ = '&';
+	*q++ = 'l';
+	*q++ = 't';
+	*q++ = ';';
+      } else if (*p == '>'){
+	p++;
+	*q++ = '&';
+	*q++ = 'g';
+	*q++ = 't';
+	*q++ = ';';
+      } else {
+	*q++ = *p++;
+      }	
+    }
+    *q = '\0';
+    vln = strlen( (char*)b_val );
 
 // Search for this attrib in the node's current attrib list.
 
@@ -14330,7 +14361,7 @@ void LaTeX2MMLTree::SetNodeAttrib( TNODE* mml_node,
       if ( rover->z_val )
         delete rover->z_val;
       char* tmp =  TCI_NEW( char[vln+1] );
-        strcpy( tmp,(char*)a_val );
+        strcpy( tmp,(char*)b_val );
       rover->z_val  =  (U8*)tmp;
         new_attrib    =  FALSE;
         break;
@@ -14340,7 +14371,7 @@ void LaTeX2MMLTree::SetNodeAttrib( TNODE* mml_node,
     }
 
     if ( new_attrib ) {   // Not a reset
-      ATTRIB_REC* arp =  MakeATTRIBNode( a_nom,7,0,a_val,vln,0 );
+      ATTRIB_REC* arp =  MakeATTRIBNode( a_nom,7,0,b_val,vln,0 );
       if ( mml_node->attrib_list ) {
         tail->next =  arp;
         arp->prev  =  tail;
