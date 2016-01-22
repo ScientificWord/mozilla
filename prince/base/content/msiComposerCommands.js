@@ -10751,29 +10751,36 @@ var msiShowBibTeXLogCommand =
   }
 }
 
+function getLogFile(aCommand) {
+  var editorElement = msiGetActiveEditorElement();
+  if (!msiIsTopLevelEditor(editorElement))
+    return result;
+
+  var editor = msiGetEditor(editorElement);
+  if (editor)
+  {
+    var url = msiGetEditorURL(editorElement);
+    var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+    var match = re.exec(url);
+    if (match)
+    {
+      var resurl = match[1]+"/tex/main.log";
+      var thefile = msiFileFromFileURL(msiURIFromString(resurl));
+      return thefile;
+    }
+  }
+  return null;
+}
+
 var msiShowTeXLogCommand =
 {
+
   isCommandEnabled: function(aCommand, dummy)
   {
     var result = false;
-    var editorElement = msiGetActiveEditorElement();
-    if (!msiIsTopLevelEditor(editorElement))
-      return result;
-
-    var editor = msiGetEditor(editorElement);
-    if (editor)
-    {
-      var url = msiGetEditorURL(editorElement);
-      var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
-      var match = re.exec(url);
-      if (match)
-      {
-        var resurl = match[1]+"/tex/main.log";
-        var thefile = msiFileFromFileURL(msiURIFromString(resurl));
-        result = thefile &&
+    var thefile = getLogFile(aCommand);
+    result = thefile &&
         thefile.exists();
-      }
-    }
     return result;
   },
 
@@ -10818,8 +10825,14 @@ var msiShowTeXErrorsCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    // possibly temp implementation
-    return msiShowTeXLogCommand.isCommandEnabled(aCommand, dummy);
+    var thefile = getLogFile(aCommand);
+    var texErrorRE = /(\n)(!.*|.*[^`]\?.*|\*\*\*.*)/g;
+    var logContents='';
+    if (thefile && thefile.exists()) {
+      logContents = getTextFileAsString(msiFileURLFromFile(thefile).spec);
+      return texErrorRE.test(logContents);
+    }
+    return false;
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -10836,9 +10849,10 @@ var msiShowTeXErrorsCommand =
     var url;
     var editor;
     var editorElement;
-    var texErrorRE = /(\n!(?:.*\n){1,8})|(\n.*[^`]\?.*\n(?:.*\n){1,5})/g;
+    var texErrorRE = /(\n)(!.*|.*[^`]\?.*|\*\*\*.*)/g;
     var logContents='';
     var i, thefile;
+    var lines;
     try
     {
       result = true;
@@ -10863,12 +10877,17 @@ var msiShowTeXErrorsCommand =
             logContents = getTextFileAsString(resurl);
             message = '';
             match = texErrorRE.exec(logContents);
-            while (match && match.length > 1) {
-              for (i = 1; i < match.length; i++) {
-                if (match[i] && /\S/.test(match[i])) {
-                  message += match[i] + '---\n\n';                  
+            while (match && match.length > 2) {
+              message += match[2] + '\n';
+              lines = logContents.substr(texErrorRE.lastIndex, 500).split('\n');
+              // start with i=1 since the above text always starts with line break
+              for (i = 1; i < lines.length; i++) {
+                if (/\S/.test(lines[i])) {
+                  message += lines[i] + '\n';                  
                 }
+                else break;
               }
+              message += '\n';
               match = texErrorRE.exec(logContents);
             }
             if (message.length == 0) {
