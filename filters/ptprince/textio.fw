@@ -895,10 +895,26 @@ bool LineSource::GetLine(LineOfText* pLine)
                    LOG("\nFound BeginExpansion");
                    pLine -> StripTCIMEnd();
                    LOG("\nFINAL A: " << *pLine);
-                   do{
-                     GetRawLine(pNextLine);
-                   } while (!pNextLine -> bPeek("%EndExpansion"));
-                   delete pNextLine;
+                   // Look for FRAME with emf/wmf
+                   std::string line = pLine->AsStdString();
+                   std::transform(line.begin(), line.end(),
+                      line.begin(), ::tolower);
+                   size_t p1 = line.find("\\frame");
+                   size_t p2 = line.find(".emf");
+                   size_t p3 = line.find(".wnf");
+
+                   if ((p1 != std::string::npos) &&
+                       ((p2 != std::string::npos) ||
+                        (p3 != std::string::npos)))
+                   {
+                     delete pNextLine;
+                     GetRawLine(pLine);
+                   } else {
+                     do{
+                       GetRawLine(pNextLine);
+                     } while (!pNextLine -> bPeek("%EndExpansion"));
+                     delete pNextLine;
+                   }
                    break;
                 } else if ( pNextLine -> bPeek("%" )) {
                    pLine -> StripTCIMEnd(true);
@@ -1024,6 +1040,7 @@ here is another line
 #endif
 
 #include <string>
+#include <algorithm>
 @<class LineOfText@>
 @<class CharStream@>
 @<class LineSource@>
