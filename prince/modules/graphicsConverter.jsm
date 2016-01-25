@@ -116,7 +116,7 @@ var graphicsConverter = {
     var extension;
     var paramArray;
     var paramArray1 = [];
-    var paramArray2 = [];
+    // var paramArray2 = [];
     var param;
     var temp;
     var bRunSynchronously = true;
@@ -143,17 +143,17 @@ var graphicsConverter = {
       var regex2=/\$2/;
       for (i = 0; i < commandlist.length; i++) {
         if (i === 0) paramArray=paramArray1;
-        else paramArray=paramArray2;
+        else paramArray=[];
         ithCommand = commandlist[i];
         ithCommand = ithCommand.replace(/^\s*/,'');  // aka 'trim'
         ithCommand = ithCommand.replace(/\s*$/,'');
-        if (ithCommand.indexOf('epstopdf') == 0) {
-          this.handleEpsToPdfConversion(ithCommand, graphicsFile);
-          continue;
-        }
+        // if (ithCommand.indexOf('epstopdf') == 0) {
+        //   this.handleEpsToPdfConversion(ithCommand, graphicsFile);
+        //   continue;
+        // }
         commandparts = commandlist[i].split(',');
         progname = commandparts[0];
-        if (this.OS === "win") progname += ".exe";
+        // if (this.OS === "win") progname += ".exe";
         theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
         // use progname unchanged if it contains a '/', otherwise assume it is in the utilties dir.
         if (!regex0.test(progname) && !regex1.test(progname))
