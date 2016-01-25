@@ -1,4 +1,4 @@
 rem @echo off
 setlocal enabledelayedexpansion
 set path="%MSITEXBIN%";%PATH%
-gswin32c -sDEVICE=pdfwrite -o %2 %1
+gswin32c -dEPSCrop -sDEVICE=pdfwrite -o %2 %1
