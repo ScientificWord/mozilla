@@ -265,7 +265,7 @@ var graphicsConverter = {
       w = this.handler.getValueOf(origDimension.width, 'bp');
       h = this.handler.getValueOf(origDimension.height, 'bp');
       pixelsPerInch = this.handler.getValueOf(1, 'in');
-      resolutionParameter = "-l:gs=-r"+Math.round((pixelsPerInch*newWidth)/w)+"x"+
+      resolutionParameter = "-r"+Math.round((pixelsPerInch*newWidth)/w)+"x"+
         Math.round((pixelsPerInch*newHeight)/h);
       return resolutionParameter;
     }
