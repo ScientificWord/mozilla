@@ -1,0 +1,57 @@
+; W7Print.INF 
+; thanks to
+; http://www.rumborak.de/forum/viewtopic.php?TopicID=1271
+;
+
+[Version]
+Signature="$Windows NT$"
+Provider=WMF2EPS
+LayoutFile=layout.inf
+ClassGUID={4D36E979-E325-11CE-BFC1-08002BE10318}
+Class=Printer
+
+DriverVer=04/04/2010, 1.0
+
+;
+; Manufacturer section.
+;
+; This section lists all of the manufacturers 
+; that we will display in the Dialog box
+;
+[MANUFACTURER]
+%OEM% = OemSection, NTamd64
+
+[OemSection]
+%MODEL1%=WPD1,%PNPIDSTR1%
+
+[OemSection.NTamd64]
+%MODEL1%=WPD1,%PNPIDSTR1%
+;
+
+[WPD1]
+CopyFiles=@WMF2EPS2.PPD, PSCRIPT
+DataFile=WMF2EPS2.PPD
+DataSection=PSCRIPT_DATA
+Include=ntprint.inf
+Needs=PSCRIPT.OEM, PSCRIPT_DATA
+
+;
+; Call SetupSetDirectoryId with 66000 to set the target directory at runtime
+; (depending on which environment drivers are getting installed)
+;
+
+[DestinationDirs]
+DefaultDestDir=66000
+
+;
+; Control Flags
+;
+[ControlFlags]
+ExcludeFromSelect = 2369
+;
+; Localizable Strings
+;
+[Strings]
+OEM="WMF2EPS"
+MODEL1="WMF2EPS Color PS L2"
+
