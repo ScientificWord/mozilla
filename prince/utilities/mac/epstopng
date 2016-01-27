@@ -1,6 +1,6 @@
 #!/bin/sh
 source ~/.mackichan/MSITeX.bash
-export PATH=$MSITEXBIN:$PATH
+export  PATH=$MSITEXBIN:$PATH
 
 gs  -dEPSCrop -sDEVICE=pngalpha  -o $2 $1
 
