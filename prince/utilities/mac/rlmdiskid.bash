@@ -1,4 +1,4 @@
-echo rlmutil rlmhostid -q disksn 	   > mackichndiskid.txt
+echo  rlmutil rlmhostid -q disksn 	   > mackichndiskid.txt
 ./rlmutil rlmhostid -q disksn 	  >> mackichndiskid.txt
 echo rlmutil rlmhostid -q ether	  >> mackichndiskid.txt
 ./rlmutil rlmhostid -q ether	  >> mackichndiskid.txt
