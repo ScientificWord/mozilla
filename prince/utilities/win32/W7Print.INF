@@ -7,6 +7,8 @@
 Signature="$Windows NT$"
 Provider=WMF2EPS
 LayoutFile=layout.inf
+CatalogFile.NTx86 = W7Print86.cat
+CatalogFile.NTamd64 = W7Print64.cat
 ClassGUID={4D36E979-E325-11CE-BFC1-08002BE10318}
 Class=Printer
 
