@@ -2861,6 +2861,8 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     throw Components.results.NS_ERROR_UNEXPECTED;
   }
 
+  document.getElementById("preview-frame").loadURI("about:blank");  // This should cause Acrobat to loosen its grip on our pdf file.
+
   // The making of B.tempsci:
   // Say the file being edited is /somepath/DocName_work/main.xhtml
   // Then
@@ -2893,6 +2895,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var fileurl = msiURIFromString(sciurlstring);
   currentSciFile = msiFileFromFileURL(fileurl);
   currentSciFilePath = msiPathFromFileURL(fileurl);
+  var deletedSentinel;
 
   var regEx = /_work\/main.[a-z]?html?$/i;  // BBM: localize this
   isSciFile = regEx.test(htmlurlstring);
@@ -3151,14 +3154,34 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
                 AlertWithTitle("Unable to remove old working directory", "Cannot remove old working directory. Does another program have one of the directory's files (pdf, tex) open?", window);
               }
             }
-            workingDir.moveTo(null, leafname+"_work");
+            try {
+             workingDir.moveTo(null, leafname+"_work");
+            }
+            catch(e) {
+              msidump(e.message);
+              if (workingDir.exists()) {
+                deletedSentinel = workingDir.clone();
+                deletedSentinel.append('deleted');
+                deletedSentinel.create(0, 493); // = 0755
+              }
+            }
           }
           newMainfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
           newMainfile.initWithPath(destLocalFile.path.replace(".sci","")+"_work");
         }
         else
         {
-          workingDir.moveTo(destLocalFile.parent, leafname + "_work");
+          try {
+            workingDir.moveTo(destLocalFile.parent, leafname + "_work");
+          }
+          catch(e) {
+            msidump(e.message);
+            if (workingDir.exists()) {
+              deletedSentinel = workingDir.clone();
+              deletedSentinel.append('deleted');
+              deletedSentinel.create(0, 493); // = 0755
+            }
+          }
           newWorkingDir = destLocalFile.parent.clone();
           newWorkingDir.append(leafname + "_work");
           newMainfile = newWorkingDir.clone();
