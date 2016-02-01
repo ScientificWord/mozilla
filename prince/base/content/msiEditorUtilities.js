@@ -3663,6 +3663,7 @@ function createWorkingDirectory(documentfile) {
   var i;
   var dir;
   var destfile;
+  var deletedSentinel;
   var str;
   var baseLeafName;
   var extension;
@@ -3746,8 +3747,10 @@ function createWorkingDirectory(documentfile) {
             return null;
           }
           var mainfile = dir.clone();
+          deletedSentinel = dir.clone();
+          deletedSentinel.append('deleted');
           mainfile.append('main' + extension);
-          if (mainfile.exists()) {
+          if (mainfile.exists() && !deletedSentinel.exists()) {
             var data = { value: false };
             var result = window.openDialog('chrome://prince/content/useWorkInProgress.xul', 'workinprogress', 'chrome,titlebar,resizable,modal,centerscreen', data);
             if (data.value) {
