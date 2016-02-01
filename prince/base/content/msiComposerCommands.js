@@ -3116,6 +3116,11 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
           }
           count++;
         }
+        if (workingDir.exists()) {
+          deletedSentinel = workingDir.clone();
+          deletedSentinel.append('deleted');
+          deletedSentinel.create(0, 493); // = 0755
+        }
       }
     }
     else
