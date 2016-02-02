@@ -1,3 +1,4 @@
+
     <handler event="keypress" keycode="VK_LEFT"  command="cmd_charPrevious"/>
     <handler event="keypress" keycode="VK_RIGHT" command="cmd_charNext"/>
     <handler event="keypress" keycode="VK_LEFT"  modifiers="shift"  command="cmd_selectCharPrevious"/>
