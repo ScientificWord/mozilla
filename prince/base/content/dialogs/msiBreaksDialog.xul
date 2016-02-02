@@ -61,8 +61,8 @@
 				    </column>
 				    <column>
               <radio label="&newPage.label;" accesskey="&newPage.accesskey;" value="newPage" group="breaksRadioGroup"/>
-              <radio label="&lineBreak.label;" accesskey="&lineBreak.accesskey;" value="lineBreak" group="breaksRadioGroup"/>
               <radio label="&newLine.label;" accesskey="&newLine.accesskey;" value="newLine" group="breaksRadioGroup"/>
+              <radio label="&lineBreak.label;" accesskey="&lineBreak.accesskey;" value="lineBreak" group="breaksRadioGroup"/>
               <radio label="&customNewLine.label;" accesskey="&customNewLine.accesskey;" value="customNewLine" group="breaksRadioGroup"/>
 					  </column>
 				  </columns>
