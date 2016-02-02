@@ -27,5 +27,8 @@
       <handler event="keypress" key="." modifiers="accel"       action="msiRevCharQuick('&#x0307;');"/>
       <handler event="keypress" key='"' modifiers="accel" action="msiRevCharQuick('&#x0308;');"/>
       <handler event="keypress" key='!' modifiers="accel" action="msiRevCharQuick('&#x20d7;');"/>
+      <handler event="keypress" keycode="VK_ENTER" modifiers="shift" command="cmd_insertBreakCommand"/>
+      <handler event="keypress" keycode="VK_RETURN" modifiers="shift" command="cmd_insertBreakCommand"/>
+
 
 
