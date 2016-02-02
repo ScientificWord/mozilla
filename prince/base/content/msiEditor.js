@@ -445,6 +445,12 @@ function msiEditorKeyListener(event) {
         event.preventDefault();
         event.stopPropagation();
       }
+      // BBM: We really shouldn't be doing this here
+      if (event.shiftKey) {
+        msiGoDoCommand('cmd_insertBreak');
+        event.preventDefault();
+        event.stopPropagation();
+      }
       break;
     case event.DOM_VK_TAB:
       if (msiEditorDoTab(event)) {
@@ -5367,7 +5373,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
   //  if (nodeData)
   //    element = nodeData.theNode;
 
-  if (!element.ownerDocument)
+  if (!element.ownerDocument) 
     return null;
   if (bindingParent = element.ownerDocument.getBindingParent(element))
     return msiCreatePropertiesObjectDataFromNode(bindingParent, editorElement,
@@ -8175,7 +8181,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id) {
     var editor = msiGetEditor(editorElement);
     if ((id != "propertiesMenu") && (id != "propertiesMenu_cm"))
       dump(
-        "Problem in msiEditor.js, msiInitObjectPropertiesMenuitem() - id passed in isn't correct (it's " +
+        "Problem in msiEditor.js, msiInitObjectPropertiesMenuitemmsiInitObjectPropertiesMenuitem() - id passed in isn't correct (it's " +
         id + ").\n");
 
     var menuItem;

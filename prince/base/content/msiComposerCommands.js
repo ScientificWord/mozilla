@@ -5791,7 +5791,7 @@ var msiInsertBreakCommand =
   {
     try {
       var editorElement = msiGetActiveEditorElement();
-      msiGetEditor(editorElement).insertHTML("<msibr/>");
+      msiInsertLinebreak(editorElement);
     }
     catch (e) {
       finalThrow(cmdFailString('insertbreak'), e.message);
@@ -6579,6 +6579,16 @@ var msiReviseBreaksCommand =
 
   doCommand: function(aCommand, dummy)  {}
 };
+
+function msiInsertLinebreak(editorElement) {
+  var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
+  var node = editor.document.createElement('msibr',true);
+  node.setAttribute('invisDisplay','&#x21b5;');
+  node.setAttribute('type','newLine');
+  editor.insertElementAtSelection(node,true);
+  editor.endTransaction();
+}
 
 function msiInsertBreaks(dialogData, editorElement)
 {
