@@ -458,10 +458,13 @@ plotwrapper {
 }
 */
 
+/*
+mml|mi [msimathname="true"] {
+  color: gray; 
+  font-style: normal;
+}
 
-mml|mi [msimathname="true"] {color: gray; }
-
-
+*/
 
 mml|mi[tempinput="true"]::before
 {
