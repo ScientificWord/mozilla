@@ -154,7 +154,7 @@ math[display="inline"] {
 */
 [mathvariant] { /* shared and same as [mathvariant="normal"] */
   /* reset all font properties except those that affect the size */
-  font-family: MathJax_Math, STIXGeneral, DejaVu Serif, DejaVu Sans, Cambria, Cambria Math, Times, Lucida Sans Unicode, OpenSymbol, Standard Symbols L, serif;
+  font-family: Times new roman, MathJax_Math, STIXGeneral, DejaVu Serif, DejaVu Sans, Cambria, Cambria Math, Times, Lucida Sans Unicode, OpenSymbol, Standard Symbols L, serif;
   font-style: normal;
   font-variant: normal;
   font-weight: normal;

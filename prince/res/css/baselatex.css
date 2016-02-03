@@ -22,9 +22,11 @@ In that case in internal style sheet will rewrite these rules. */
 
 mml|math { color: red;}
 [msimathname="true"] { color: gray;
-	font-style: normal;}
+	font-style: normal;
+  font-family: Times roman; }
 mml|* [msiunit="true"] {color: green;
-	font-style: normal;}
+	font-style: normal;
+  font-family: Times roman; }
 mml|mtd {border-color: green; }
 msidisplay {border-color: green;
   text-align: center;
