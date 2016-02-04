@@ -1047,6 +1047,8 @@ function previewOrPrintPDFFile( pdffile, preview ) {
   {
     copyToExternalLocation(pdffile);
     currPDFfileLeaf = pdffile.leafName;
+    pdffile = copyFileToTmp( pdffile );
+
     if (preview)
     {
     // get prefs for viewing pdf files
