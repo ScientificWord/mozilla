@@ -11591,3 +11591,44 @@ function detectLicenseOnClipboard() {
   var editor = msiGetEditor(editorElement);
   detectLicenseInText(readTextOnClipboard(), editor);
 }
+
+function clearDir( aDirectory, extension) {
+  var regex = new RegExp('\\.' + extension + '$', 'i');
+  var items = aDirectory.directoryEntries;
+  while (items.hasMoreElements()) {
+    var item = items.getNext().QueryInterface(Components.interfaces.nsIFile);
+    if (item.isFile() && regex.test(item.leafName)) {
+      item.remove(false);
+    }
+  }
+}
+
+function copyFileToTmp( aFile ) {
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  var tmpdir = dsprops.get("TmpD", Components.interfaces.nsIFile);
+  var leafbase = 'swp';
+  var leaf;
+  var n = 0;
+  var i;
+  var testfile;
+  var extension = '';
+  i = aFile.leafName.lastIndexOf(".");
+  if (i > 0) extension = aFile.leafName.substr(i+1);
+  tmpdir.append("SWP");
+  if (tmpdir.exists()) {
+    clearDir( tmpdir, extension );
+  }
+  else tmpdir.create(1, 493); // = 0755
+  testfile = tmpdir.clone();
+  leaf = leafbase + '.' + extension;
+  testfile.append(leaf);
+  while (testfile.exists()) {
+    n++;
+    testfile = tmpdir.clone();
+    leaf = leafbase + n + '.' + extension;
+    testfile.append(leaf);
+  }
+  // testfile doesn't exist
+  aFile.copyTo( tmpdir, leaf );
+  return testfile;
+}
