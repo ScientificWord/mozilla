@@ -7,10 +7,10 @@ else
 fi
 
 date > ~/msi.log
-echo MacKichan Software PDF compile log
+echo MacKichan Software PDF compile log >> ~/msi.log
 export PATH=$MSITEXBIN:$PATH
 echo PATH: $PATH >> ~/msi.log
-cd $1
+cd \"$1\"
 echo pdflatex location: >> ~/msi.log
 which pdflatex >> ~/msi.log
 echo Current working directory: >> ~/msi.log
