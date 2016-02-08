@@ -2860,8 +2860,9 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     AlertWithTitle(saveDocStr, failedStr);
     throw Components.results.NS_ERROR_UNEXPECTED;
   }
-
+#ifndef PROD_SNB
   document.getElementById("preview-frame").loadURI("about:blank");  // This should cause Acrobat to loosen its grip on our pdf file.
+#endif
 
   // The making of B.tempsci:
   // Say the file being edited is /somepath/DocName_work/main.xhtml
