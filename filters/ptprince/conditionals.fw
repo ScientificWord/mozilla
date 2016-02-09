@@ -424,9 +424,14 @@ bool xfcnIf(int testfcnaddr, TeXToken*, SymbolData**)
 void PassText()
 {
    int level = 0;
+   int bracelevel = 0;
    while (true) {
       GetRawToken();
-      if (TT_SYMBOL == CurTok().Type()){
+      if (TT_LEFT_BRACE == CurTok().Type()){
+        ++bracelevel;
+      } else if (TT_RIGHT_BRACE == CurTok().Type()){
+        --bracelevel;
+      } else if ((bracelevel == 0) &&(TT_SYMBOL == CurTok().Type())){
          SymbolData* pDef = 0;
          Symbols::GetDef(CurTok().Symbol(), &pDef);
          const Expandable* exp = dynamic_cast<const Expandable*>(pDef);
