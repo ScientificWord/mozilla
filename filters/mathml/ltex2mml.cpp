@@ -3075,7 +3075,8 @@ TNODE* LaTeX2MMLTree::MBox2MML( TNODE* tex_box_node,
                                         out_of_flow_list,3 );
   } else
     TCI_ASSERT(0);
-
+  if ( !contents )
+      contents  =  MakeSmallmspace();
   if ( contents->next ) // mrow<uID5.750.1>!mrow!BUCKET(5.750.2,
     mml_rv  =  CreateElemWithBucketAndContents( 5,750,1,2,contents );
   else
