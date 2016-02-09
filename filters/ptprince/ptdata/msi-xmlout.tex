@@ -1860,15 +1860,23 @@
 \def\msi@simple@elmB#1{\msi@simple@elmA[#1]{#1}}
 
 
+\def\TeXButton{%
+  \ifmmode
+  \else
+  \catcode`\&=\active
+  \fi
+  \@TeXButton}
 
+\def\CDATA#1{#1}
 
-\def\TeXButton#1#2{%
+\def\@TeXButton#1#2{%
    \ifmmode
-     %\string\TeXButton{#1}{#2}%
      \msitag{\msipassthru{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}}
    \else
      \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{"><![CDATA[#2]]></texb>}%
    \fi}
+
+
 
 %% Create TeX Buttons
 
