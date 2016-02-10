@@ -6,4 +6,4 @@ set path="%MSITEXBIN%";%path%
 pdflatex -interaction=batchmode -shell-escape %2
 echo done > sentinel
 popd
-if defined %SWPDEBUG% pause
+if defined SWPDEBUG pause
