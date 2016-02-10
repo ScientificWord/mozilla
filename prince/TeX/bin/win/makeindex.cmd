@@ -5,4 +5,4 @@ set path="%MSITEXBIN%";%PATH%
 makeindex main
 echo done > sentinel
 popd
-if defined %SWPDEBUG% pause
+if defined SWPDEBUG pause
