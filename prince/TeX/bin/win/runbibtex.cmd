@@ -29,4 +29,4 @@ set path="%MSITEXBIN%";%path%
 bibtex main
 echo done > sentinel
 endlocal
-if defined %SWPDEBUG% pause
+if defined SWPDEBUG pause
