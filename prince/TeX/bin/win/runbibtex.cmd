@@ -1,4 +1,6 @@
 @echo off
+call %MSIPATHS%
+
 setlocal enabledelayedexpansion
 REM $1 is the tex directory we are working in
 REM optional "-d <directory>" for a non-standard BIBINPUTS
@@ -27,3 +29,4 @@ set path="%MSITEXBIN%";%path%
 bibtex main
 echo done > sentinel
 endlocal
+if defined %SWPDEBUG% pause
