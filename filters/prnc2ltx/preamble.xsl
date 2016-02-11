@@ -229,7 +229,7 @@
         <xsl:value-of select="$newline"/>
         <xsl:text>}{</xsl:text>
         <xsl:value-of select="$newline"/>
-        <xsl:text>\newcommand{\Inkscape}{"C:/Program Files/Inkscape/inkscape.exe" }%</xsl:text>
+        <xsl:text>\newcommand{\Inkscape}{"%programfiles%/Inkscape/inkscape.exe" }%</xsl:text>
         <xsl:value-of select="$newline"/>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="$newline"/>
