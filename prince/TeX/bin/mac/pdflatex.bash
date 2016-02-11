@@ -1,11 +1,5 @@
 #!/bin/sh
-if [ -f ~/.mackichan/MSITeX.bash ]
-then
-	source ~/.mackichan/MSITeX.bash
-else
-	source /Applications/MacKichan/MSITeX.bash
-fi
-
+source /Applications/MacKichan/MSITeX.bash
 date > ~/msi.log
 echo MacKichan Software PDF compile log >> ~/msi.log
 export PATH=$MSITEXBIN:$PATH
@@ -26,5 +20,5 @@ echo pdflatex output: >> ~/msi.log
 pdflatex -interaction=batchmode -shell-escape $2 >> ~/msi.log 2>&1
 echo done > sentinel
 echo Working directory files: >> ~/msi.log
-ls -l $1 >> ~/msi.log
+ls -l "$1" >> ~/msi.log
 echo done >> ~/msi.log
