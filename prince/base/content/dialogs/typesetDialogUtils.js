@@ -209,12 +209,7 @@ function getEnvObject()
     if (os == "win") {
       myXMLHTTPRequest.open("GET", "resource://app/MSITeX.cmd", false);
     } else {
-      var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-      var theFile = dsprops.get("Home", Components.interfaces.nsIFile);
-      theFile.append(".mackichan");
-      theFile.append("MSITeX.bash");
-      var spec = msiFileURLStringFromFile( theFile );
-      myXMLHTTPRequest.open("GET", spec, false);
+      myXMLHTTPRequest.open("GET", "resource://app/MSITeX.bash", false);
     }
 
     myXMLHTTPRequest.send(null);
@@ -243,12 +238,13 @@ function getEnvObject()
         line = lines[i];
         if (line.indexOf('export') == 0)
         {
-          line = line.replace(/export\s*/, '');
+          line = line.replace(/export\s+/, '');
+          line = line.replace(/\s+$/,'');
           envitems = line.split("=");
         }
         item = envitems[1];
         item = item.replace(/["']/g, '');
-        env[envitems[0]] = envitems[1].replace(/\s+$/,'');
+        env[envitems[0]] = item.replace(/\s+$/,'');
       }
     }
   }
