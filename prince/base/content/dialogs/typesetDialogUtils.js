@@ -229,11 +229,11 @@ function getEnvObject()
       for (i = 0; i < lines.length; i++)
       {
         line = lines[i];
-        envitems = line.split(/\s+/);
-        if (envitems[0] == 'setx') {
-          item = envitems.slice(2).join(' ');
-          item = item.replace(/["']/g, '');
-          env[envitems[1]] = item.replace(/\s+$/,'');
+        if (/^set/.test(line)) {
+          line = line.replace(/^set\s+/,'');
+          line = line.replace(/\s+$/,'');
+          envitems = line.split('=');
+          env[envitems[0]] = envitems[1].replace(/\//g,'\\');
         }
       }
     }
