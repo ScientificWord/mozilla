@@ -1,5 +1,5 @@
 rem @echo off
-call %MSIPATHS%
+call "%MSIPATHS%"
 setlocal enabledelayedexpansion
 pushd %1
 set path="%MSITEXBIN%";%path%
