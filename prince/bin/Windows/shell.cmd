@@ -1,6 +1,6 @@
 
 echo off
-call %MSIPATHS%
+call "%MSIPATHS%"
 set T=%MSITEXBIN%
 if %T%x==x set T=c:\texlive\2014msi\bin\win32
 path=%T%;%windir%\system32
