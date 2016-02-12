@@ -1,5 +1,5 @@
 @echo off
-call %MSIPATHS%
+call "%MSIPATHS%"
 
 setlocal enabledelayedexpansion
 REM $1 is the tex directory we are working in
