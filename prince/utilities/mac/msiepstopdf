@@ -1,5 +1,4 @@
 #!/bin/sh
-source ~/.mackichan/MSITeX.bash
-export  PATH=$MSITEXBIN:$PATH
+source "$1"
 
-gs -dEPSCrop -sDEVICE=pdfwrite  -o $2 $1
+gs -dEPSCrop -sDEVICE=pdfwrite  -o $3 $2
