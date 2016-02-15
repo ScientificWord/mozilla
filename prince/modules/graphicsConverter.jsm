@@ -54,6 +54,14 @@ var graphicsConverter = {
     var returnPath;
     var copiedFile;
     extension = chunks[chunks.length - 1].toLowerCase();
+    if ((this.OS !== 'win') && (extension === 'wmf' || extension === 'emf')) {
+      var promptService = Components.classes['@mozilla.org/embedcomp/prompt-service;1'].getService();
+      promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
+      if (promptService) {
+        promptService.alert(null, 'Warning','Windows metafiles cannot be read on this operating system');
+      }
+      return "";
+    } 
     chunks.length = chunks.length - 1;
     baseName = chunks.join('.');
     try {
@@ -103,9 +111,11 @@ var graphicsConverter = {
     var commandlist = command.split(';');
     var progname;
     var commandparts;
-    var toolsDir;
     var paramOffset = 0;
-    toolsDir = this.converterDir.clone();
+    var toolsDir = this.converterDir.clone();
+    var pathsfile = this.codeDir.clone(); 
+    var leaf = 'MSITeX.' + (this.OS==='win'?'cmd':'bash');
+    pathsfile.append(leaf); // corresponds to $M in graphicsConversions.ini
     var regex0 = /\\/;  // look for slash or backslash
     var regex1 = /\//;
     var dollar1;
@@ -176,6 +186,7 @@ var graphicsConverter = {
         for (j = 1; j < commandparts.length; j++) {
           param = commandparts[j];
        //   if (j==0 && param != "sam2p") continue;
+          param = param.replace('$M', pathsfile.path);
           param = param.replace("$1", dollar1);
           if (regex2.test(param)) {
             param = param.replace("$2", dollar2);
@@ -737,11 +748,11 @@ var graphicsConverter = {
     }
     var graphicURI = msiURIFromString(gfxFileStr);
     var graphicFile = msiFileFromFileURL(graphicURI);
+    var importName;
     // Test to see if any derived graphics files are missing
     {
       // The following code is a kludge because we wanted all information about graphics conversion procedures to be in graphicsConversions.ini. It's not that bad, though,
       // because the following tests depend on the graphics type, but not on the conversion programs.
-      var os = getOS(window);
       var extension = getExtension(graphicFile.path).toLowerCase();
       var extensionRE = /\.([^\.]+)$/;
       var bareLeaf = graphicFile.leafName.replace(extensionRE,'');
@@ -749,11 +760,74 @@ var graphicsConverter = {
       switch (extension) {
         case 'wmf':
         case 'emf':
+          targetDir.append('graphics');
+          targetDir.append(graphicFile.leafName);
+          if (targetDir.exists()) {
+            targetDir = targetDir.parent;
+            targetDir.append(bareLeaf + '.eps');
+            if (targetDir.exists()) {
+              targetDir = targetDir.parent.parent;
+              targetDir.append('gcache');
+              targetDir.append(bareLeaf + '.png');
+              if (targetDir.exists()) {
+                targetDir = targetDir.parent.parent;
+                targetDir.append('tcache');
+                targetDir.append(bareLeaf + '.pdf');
+                if (targetDir.exists()) return true;
+              }
+            }
+          }
+          break;
 
+        case 'pdf':
+          targetDir.append('graphics');
+          targetDir.append(graphicFile.leafName);
+          if (targetDir.exists()) {
+            targetDir = targetDir.parent.parent;
+            targetDir.append('gcache');
+            targetDir.append(bareLeaf + '.png');
+            if (targetDir.exists())  return true;
+          }
+          break;
 
+        case 'eps':
+        case 'ps':
+          targetDir.append('graphics');
+          targetDir.append(graphicFile.leafName);
+          if (targetDir.exists()) {
+            targetDir = targetDir.parent.parent;
+            targetDir.append('gcache');
+            targetDir.append(bareLeaf + '.png');
+            if (targetDir.exists()) {
+              targetDir = targetDir.parent.parent;
+              targetDir.append('tcache');
+              targetDir.append(bareLeaf + '.pdf');
+              if (targetDir.exists()) return true;
+            }
+          }
+          break;
+
+        case 'gif':
+        case 'tif':
+        case 'tiff':
+          targetDir.append('graphics');
+          targetDir.append(graphicFile.leafName);
+          if (targetDir.exists()) {
+            targetDir = targetDir.parent.parent;
+            targetDir.append('gcache');
+            targetDir.append(bareLeaf + '.png');
+            if (targetDir.exists()) return true;
+          }
+          break;
+
+        default:
+          targetDir.append('graphics');
+          targetDir.append(graphicFile.leafName);
+          if (targetDir.exists()) return true;
+          break;
       }
     }
-    var importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
+    importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
 
     if (importName){
       objElement.setAttribute("src", importName);
