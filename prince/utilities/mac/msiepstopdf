@@ -2,4 +2,4 @@
 source ~/.mackichan/MSITeX.bash
 export  PATH=$MSITEXBIN:$PATH
 
-gs  -dEPSCrop -sDEVICE=pdfwrite  -o $2 $1
+gs -dEPSCrop -sDEVICE=pdfwrite  -o $2 $1

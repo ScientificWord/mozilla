@@ -98,3 +98,13 @@ function msiPathFromFileURL( url )     // redundant BBM: remove instances of thi
   return decodeURI(msiFileFromFileURL(url).path);
 }
 
+var extensionRE = /\.([^\.]+)$/;
+
+function getExtension(aFilename)
+{
+  var extArray = extensionRE.exec(aFilename);
+  var extension = "";
+  if (extArray && extArray[1])
+    extension = extArray[1];
+  return extension;
+}
