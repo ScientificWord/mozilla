@@ -1284,7 +1284,6 @@ function msiEditorDocumentObserver(editorElement) {
           var baseDir = msiFileFromFileURL(url);
           baseDir = baseDir.parent; // and now it points to the working directory
 
-          // Temporarily skipping this -- the call comes too early.
           graphicsConverter.init(win, baseDir);
           graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
         }

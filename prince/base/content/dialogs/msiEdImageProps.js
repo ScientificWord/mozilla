@@ -43,6 +43,8 @@
 #include ../productname.inc
 ///
 
+Components.utils.import("resource://app/modules/pathutils.jsm"); 
+
 var gDialog;
 var gEditorElement;
 var gEditor;
@@ -1612,16 +1614,6 @@ function addParamChild(imageNode, name, val)
   imageNode.appendChild(param);
 }
 
-var extensionRE = /\.([^\.]+)$/;
-
-function getExtension(aFilename)
-{
-  var extArray = extensionRE.exec(aFilename);
-  var extension = "";
-  if (extArray && extArray[1])
-    extension = extArray[1];
-  return extension;
-}
 
 function readTotalExtraWidth(unit)
 {

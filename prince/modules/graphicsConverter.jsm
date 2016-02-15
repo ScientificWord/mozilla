@@ -64,7 +64,7 @@ var graphicsConverter = {
     }
     if (command != null) {
       try {
-        if (copyToGraphics) {
+        if (copyToGraphics) {  // as of 2016-02-13, this is always true
           this.assureSubdir("graphics");
           destDir = this.baseDir.clone();
           destDir.append("graphics");
@@ -737,6 +737,22 @@ var graphicsConverter = {
     }
     var graphicURI = msiURIFromString(gfxFileStr);
     var graphicFile = msiFileFromFileURL(graphicURI);
+    // Test to see if any derived graphics files are missing
+    {
+      // The following code is a kludge because we wanted all information about graphics conversion procedures to be in graphicsConversions.ini. It's not that bad, though,
+      // because the following tests depend on the graphics type, but not on the conversion programs.
+      var os = getOS(window);
+      var extension = getExtension(graphicFile.path).toLowerCase();
+      var extensionRE = /\.([^\.]+)$/;
+      var bareLeaf = graphicFile.leafName.replace(extensionRE,'');
+      var targetDir = documentDir.clone();
+      switch (extension) {
+        case 'wmf':
+        case 'emf':
+
+
+      }
+    }
     var importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
 
     if (importName){
@@ -744,72 +760,6 @@ var graphicsConverter = {
       objElement.setAttribute("data", importName);
     }
     return true;
-
-//     var typesetFile = objElement.getAttribute("typesetSource");
-//     if (typesetFile && typesetFile.length) {
-//       var typesetNSFile = this.resolveRelativeFilePath(documentDir, typesetFile);
-//       if (typesetNSFile && typsetNSFile.exists())
-//         return false;
-//     }
-//     dump("In graphicsConverter.ensureTypesetGraphicForElement, 2\n");
-//     var gfxFile = this.resolveRelativeFilePath(documentDir, gfxFileStr);
-//     dump("In graphicsConverter.ensureTypesetGraphicForElement, 3\n");
-//     gfxFileStr = gfxFile.leafName;
-//     var nameAndExt = this.splitExtension(gfxFileStr);
-//     if (this.canUseFormatForTypeset(nameAndExt.ext))
-//       return false;
-//
-//     var bChanged = false;
-//     var graphicsDirNames = ["tcache", "graphics", "gcache"];
-//     var targetDir, dirEntries;
-//     var aFile, fName, fNameAndExt;
-//     for (var jj = 0; jj < graphicsDirNames.length; ++jj) {
-//       dump("In graphicsConverter.ensureTypesetGraphicForElement, " + String(jj + 4) + "\n");
-//       targetDir = documentDir.clone();
-//       targetDir.append(graphicsDirNames[jj]);
-//       if (!targetDir.exists())
-//         continue;
-//       dirEntries = targetDir.directoryEntries;
-//       while (dirEntries.hasMoreElements()) {
-//         aFile = dirEntries.getNext().QueryInterface(Components.interfaces.nsILocalFile);
-//         fNameAndExt = this.splitExtension(aFile.leafName);
-//         if ((fNameAndExt.name == nameAndExt.name) && this.canUseFormatForTypeset(nameAndExt.ext))
-//           return false; //no action needed
-//       }
-//     }
-//
-//
-//     //if we get here, we need to generate a typesettable graphic file
-//     targetDir = documentDir.clone();
-//     targetDir.append("tcache");
-//     if (!targetDir.exists())
-//       targetDir.create(1, 0755);
-//     dump("In graphicsConverter.ensureTypesetGraphicForElement, 7\n");
-//     var targExtArray = this.getTargetFileExtensions(gfxFile, targetDir, "tex", aWindow);
-//     var targetFile;
-//     dump("In graphicsConverter.ensureTypesetGraphicForElement, 8\n");
-//     if (targExtArray && targExtArray.length) {
-//       fName = nameAndExt.name + targExtArray[targExtArray.length - 1];
-//       targetFile = targetDir.clone();
-//       targetFile.append(fName);
-//       this.doImportGraphicsToTarget(gfxFile, targetFile, "tex", aWindow, callbackObject);
-//       var newGraphic = documentDir.clone();
-//       newGraphic.append("tcache");
-//       newGraphic.append(nameAndExt.name + '.png');
-//
-//       var newGraphicPath = msiMakeUrlRelativeTo(newGraphic, documentDir);
-//
-//       if (objElement.hasAttribute("src"))
-//          objElement.removeAttribute("src");
-//       objElement.setAttribute("src", newGraphicPath);
-//       if (objElement.hasAttribute("data"))
-//          objElement.removeAttribute("data");
-//       objElement.setAttribute("data", newGraphicPath);
-//       bChanged = true;
-//       objElement.setAttribute("-moz_dirty","true");
-//     }
-//     dump("In graphicsConverter.ensureTypesetGraphicForElement, 9\n");
-//     return bChanged;
   },
 
   ensureTypesetGraphicsForDocument: function(aDocument, aWindow) {
