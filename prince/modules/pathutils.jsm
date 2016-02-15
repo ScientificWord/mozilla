@@ -1,6 +1,6 @@
 var EXPORTED_SYMBOLS = ["msiPathFromFileURL", "msiFileURLFromAbsolutePath",
 	"msiFileURLFromChromeURI", "msiFileURLFromFile", "msiURIFromString",
-	"msiFileURLStringFromFile", "msiPathFromFileURL" , "msiFileFromFileURL", "msiFileFromAbsolutePath"];
+	"msiFileURLStringFromFile", "msiPathFromFileURL" , "msiFileFromFileURL", "msiFileFromAbsolutePath", "getExtension"];
 
 // msiFileURLFromAbsolutePath
 // Takes an absolute path (the direction of the slashes is OS-dependent) and
@@ -66,6 +66,7 @@ function msiFileURLFromFile( file )
 
 function msiURIFromString(str)
 {
+  str = str.replace(/\\/g,'/');
   var ios = Components.classes["@mozilla.org/network/io-service;1"].
                       getService(Components.interfaces.nsIIOService);
   return ios.newURI(str, null, null);
