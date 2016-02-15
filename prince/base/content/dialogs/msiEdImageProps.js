@@ -44,13 +44,13 @@
 ///
 
 Components.utils.import("resource://app/modules/pathutils.jsm"); 
+Components.utils.import("resource://app/modules/unitHandler.jsm");
+Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 
 var gDialog;
 var gEditorElement;
 var gEditor;
 var gGlobalElement;
-Components.utils.import("resource://app/modules/unitHandler.jsm");
-Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 var imageElement;
 var wrapperElement;
 var gDefaultWidth = 200;
@@ -972,6 +972,7 @@ function chooseImgFile(fBrowsing)
     {
       displayImportErrorMessage(fileName)
       fileName = "";
+      return;
     }
     else {
       gCopiedSrcUrl = internalName;
