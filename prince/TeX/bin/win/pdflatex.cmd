@@ -1,9 +1,9 @@
 rem @echo off
-call "%MSIPATHS%"
+call "%1"
 setlocal enabledelayedexpansion
-pushd %1
+pushd "%2"
 set path="%MSITEXBIN%";%path%
-pdflatex -interaction=batchmode -shell-escape %2
+pdflatex -interaction=batchmode -shell-escape %3
 echo done > sentinel
 popd
 if defined SWPDEBUG pause

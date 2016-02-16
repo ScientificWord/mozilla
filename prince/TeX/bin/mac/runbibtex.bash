@@ -1,21 +1,17 @@
 #!/bin/sh
-if [ -f ~/.mackichan/MSITeX.bash ]
-then
-	source ~/.mackichan/MSITeX.bash
-else
-	source /Applications/MacKichan/MSITeX.bash
-fi
-# $1 is the tex directory we are working in
+
+source "$1"
+# $2 is the tex directory we are working in
 # optional "-d <directory>" for a non-standard BIBINPUTS
 
 export BIBINPUTS=
-eval cd "'"$1"'"
+cd "$2"
 shift
 while [ $# -gt 0 ]
 do
-  case "$1" in
+  case "$2" in
     "-d")
-	  export BIBINPUTS=$2
+	  export BIBINPUTS=$3
 	  shift
 	  ;;
   esac
