@@ -191,7 +191,7 @@ hspace[type="italicCorrectionSpace"] {
 }
 
 hspace[type="requiredSpace"] {
-  min-width: 0.5em;
+  width: 0.2em;
   /*display: inline;*/
 }
 
