@@ -27,7 +27,7 @@ var graphicsConverter = {
   handler: null,
 
 
-  init: function(aWindow, baseDirIn) {
+  init: function(aWindow, baseDirIn, product) {
     this.handler = new UnitHandler(null);
     this.OS = getOS(aWindow);
     this.baseDir = baseDirIn;
@@ -39,6 +39,7 @@ var graphicsConverter = {
     this.iniParser = createINIParser(iniFile);
     this.converterDir.append("utilities");
     this.handler.initCurrentUnit('bp');
+    this.product = product;
     // This next line will probably need to be removed when the utilities directory is reorganized.
     // this.converterDir.append("bin");
   },
@@ -54,16 +55,26 @@ var graphicsConverter = {
     var returnPath;
     var copiedFile;
     extension = chunks[chunks.length - 1].toLowerCase();
-    if ((this.OS !== 'win') && (extension === 'wmf' || extension === 'emf')) {
-      var promptService = Components.classes['@mozilla.org/embedcomp/prompt-service;1'].getService();
-      promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
-      if (promptService) {
-        promptService.alert(null, 'Warning','Windows metafiles cannot be read on this operating system');
-      }
-      return "";
-    } 
     chunks.length = chunks.length - 1;
     baseName = chunks.join('.');
+    if ((this.OS !== 'win') && (extension === 'wmf' || extension === 'emf')) {
+      // this is OK if .eps files have already been generated
+      destDir = this.baseDir.clone();
+      destDir.append("graphics");
+      destFile = destDir.clone();
+      destFile.append(basename + '.eps');
+
+      if (!destfile.exists()) {
+        var promptService = Components.classes['@mozilla.org/embedcomp/prompt-service;1'].getService();
+        promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
+        if (promptService) {
+          promptService.alert(null, 'Warning','Windows metafiles cannot be read on this operating system');
+        }
+        return "";
+      } else {
+
+      }
+    } 
     try {
       command = this.iniParser.getString("Converters", extension);
     }
@@ -211,9 +222,7 @@ var graphicsConverter = {
           // }
         }
         if (resolutionParameter) {
-          temp = paramArray.shift();
-          paramArray.unshift(resolutionParameter);
-          paramArray.unshift(temp);
+          paramArray.push(resolutionParameter);
         }
         theProcess.run(bRunSynchronously, paramArray, paramArray.length);
       }
@@ -250,16 +259,19 @@ var graphicsConverter = {
     // should we be saving the old dimensions in the node attributes, to skip this
     // function when possible?
     // newWidth and newHeight are in pixels?
+    if (!newWidth || !newHeight || newWidth==0 || newHeight == 0 || isNaN(newWidth) || isNaN(newHeight)) return null;
     var originalUrl = graphicsFile.path;
     var pathParts = originalUrl.split('.');
     var extension = pathParts[pathParts.length-1];
     if (!extension || extension.length === 0) extension = pathParts[pathParts.length-2];
     if (!extension || extension.length === 0) return;
+    extension = extension.toLowerCase();
     var origDimension = null;
     var resolutionParameter;
     var intermediate;
     var w, h;
     var pixelsPerInch;
+    if (this.OS !== 'win' && (extension === 'wmf' || extension === 'emf')) extension = 'eps';
 
     switch (extension) {
       case "eps": origDimension = this.readSizeFromEPSFile(graphicsFile);
@@ -276,8 +288,8 @@ var graphicsConverter = {
       w = this.handler.getValueOf(origDimension.width, 'bp');
       h = this.handler.getValueOf(origDimension.height, 'bp');
       pixelsPerInch = this.handler.getValueOf(1, 'in');
-      resolutionParameter = "-r"+Math.round((pixelsPerInch*newWidth)/w)+"x"+
-        Math.round((pixelsPerInch*newHeight)/h);
+      resolutionParameter = "-r"+Math.round(pixelsPerInch*(w/origDimension.width))+"x"+
+        Math.round(pixelsPerInch*(w/origDimension.width));
       return resolutionParameter;
     }
     return null;
@@ -704,6 +716,96 @@ var graphicsConverter = {
     return (this.typesetGraphicTypes.indexOf(extension.toLowerCase()) >= 0);
   },
 
+  allDerivedGraphicsExist: function(documentDir, graphicFile, objElement) 
+  {
+    // The following code is a kludge because we wanted all information about graphics conversion procedures to be in graphicsConversions.ini. It's not that bad, though,
+    // because the following tests depend on the graphics type, but not on the conversion programs.
+    var extension = getExtension(graphicFile.path).toLowerCase();
+    var extensionRE = /\.([^\.]+)$/;
+    var bareLeaf = graphicFile.leafName.replace(extensionRE,'');
+    var testFile = documentDir.clone();
+    switch (extension) {
+      case 'wmf':
+      case 'emf':
+        testFile.append('graphics');
+        testFile.append(graphicFile.leafName);
+        if (testFile.exists()) {
+          testFile = testFile.parent;
+          testFile.append(bareLeaf + '.eps');
+          if (testFile.exists()) {
+            if (this.OS !== 'win') {
+              objElement.setAttribute("copiedSrcUrl", 'graphics/' + bareLeaf + '.eps');
+            }              
+            testFile = testFile.parent.parent;
+            testFile.append('gcache');
+            testFile.append(bareLeaf + '.png');
+            if (testFile.exists()) {
+              if (this.product === 'snb') return true;
+              else 
+              {
+                testFile = testFile.parent.parent;
+                testFile.append('tcache');
+                testFile.append(bareLeaf + '.pdf');
+                if (testFile.exists()) return true;
+              }
+            }
+          }
+        }
+        break;
+
+      case 'pdf':
+        testFile.append('graphics');
+        testFile.append(graphicFile.leafName);
+        if (testFile.exists()) {
+          testFile = testFile.parent.parent;
+          testFile.append('gcache');
+          testFile.append(bareLeaf + '.png');
+          if (testFile.exists())  return true;
+        }
+        break;
+
+      case 'eps':
+      case 'ps':
+        testFile.append('graphics');
+        testFile.append(graphicFile.leafName);
+        if (testFile.exists()) {
+          testFile = testFile.parent.parent;
+          testFile.append('gcache');
+          testFile.append(bareLeaf + '.png');
+          if (testFile.exists()) {
+            if (this.product === 'snb') return true;
+            else 
+            {
+              testFile = testFile.parent.parent;
+              testFile.append('tcache');
+              testFile.append(bareLeaf + '.pdf');
+              if (testFile.exists()) return true;
+            }
+          }
+        }
+        break;
+
+      case 'gif':
+      case 'tif':
+      case 'tiff':
+        testFile.append('graphics');
+        testFile.append(graphicFile.leafName);
+        if (testFile.exists()) {
+          testFile = testFile.parent.parent;
+          testFile.append('gcache');
+          testFile.append(bareLeaf + '.png');
+          if (testFile.exists()) return true;
+        }
+        break;
+
+      default:
+        testFile.append('graphics');
+        testFile.append(graphicFile.leafName);
+        if (testFile.exists()) return true;
+        break;
+    }
+  },
+  
   //Note: documentDir should be an nsILocalFile
   ensureTypesetGraphicForElement: function(objElement, documentDir, aWindow, callbackObject) {
     dump("In graphicsConverter.ensureTypesetGraphicForElement, 1\n");
@@ -724,20 +826,19 @@ var graphicsConverter = {
     var theUnits = objElement.getAttribute("units");
     if (!theUnits || !theUnits.length)
       theUnits = "in";
-    var theWidth = objElement.getAttribute("imageWidth") || objElement.getAttribute("width") || objElement.getAttribute("naturalWidth");
-    var theHeight = objElement.getAttribute("imageHeight") || objElement.getAttribute("height") || objElement.getAttribute("naturalHeight");
-    if (!theWidth || !theHeight) {
+    var theWidth =  objElement.getAttribute('ltx_width') || objElement.getAttribute("imageWidth") || objElement.getAttribute("width") || objElement.getAttribute("naturalWidth");
+    var theHeight =  objElement.getAttribute('ltx_height') || objElement.getAttribute("imageHeight") || objElement.getAttribute("height") || objElement.getAttribute("naturalHeight");
+    if (!theWidth || theWidth == 0 || isNaN(theWidth) || !theHeight || theHeight == 0 || isNaN(theHeight)) {
       var pixWidth, pixHeight;
       try {
         if (!theWidth) {
-          pixWidth = objElement.offsetWidth;
-          this.handler.initCurrentUnit(theUnits);
+          pixWidth = objElement.getAttribute('ltx_width');
           var attrValStr = String(this.handler.getValueOf(pixWidth, "px"));
           objElement.setAttribute("imageWidth", attrValStr);
           objElement.setAttribute("naturalWidth", attrValStr);
         }
         if (!theHeight) {
-          pixHeight = objElement.offsetHeight;
+          pixHeight = objElement.getAttribute('ltx_height');
           attrValStr = String(this.handler.getValueOf(pixHeight, "px"));
           objElement.setAttribute("imageHeight", attrValStr);
           objElement.setAttribute("naturalHeight", attrValStr);
@@ -749,85 +850,25 @@ var graphicsConverter = {
     var graphicURI = msiURIFromString(gfxFileStr);
     var graphicFile = msiFileFromFileURL(graphicURI);
     var importName;
+    var extension = getExtension(graphicFile.path).toLowerCase();
+
     // Test to see if any derived graphics files are missing
-    {
-      // The following code is a kludge because we wanted all information about graphics conversion procedures to be in graphicsConversions.ini. It's not that bad, though,
-      // because the following tests depend on the graphics type, but not on the conversion programs.
-      var extension = getExtension(graphicFile.path).toLowerCase();
+    if (this.allDerivedGraphicsExist(documentDir, graphicFile, objElement)) return true;
+    if (extension === 'wmf' || extension === 'emf') {
       var extensionRE = /\.([^\.]+)$/;
       var bareLeaf = graphicFile.leafName.replace(extensionRE,'');
-      var targetDir = documentDir.clone();
-      switch (extension) {
-        case 'wmf':
-        case 'emf':
-          targetDir.append('graphics');
-          targetDir.append(graphicFile.leafName);
-          if (targetDir.exists()) {
-            targetDir = targetDir.parent;
-            targetDir.append(bareLeaf + '.eps');
-            if (targetDir.exists()) {
-              targetDir = targetDir.parent.parent;
-              targetDir.append('gcache');
-              targetDir.append(bareLeaf + '.png');
-              if (targetDir.exists()) {
-                targetDir = targetDir.parent.parent;
-                targetDir.append('tcache');
-                targetDir.append(bareLeaf + '.pdf');
-                if (targetDir.exists()) return true;
-              }
-            }
-          }
-          break;
-
-        case 'pdf':
-          targetDir.append('graphics');
-          targetDir.append(graphicFile.leafName);
-          if (targetDir.exists()) {
-            targetDir = targetDir.parent.parent;
-            targetDir.append('gcache');
-            targetDir.append(bareLeaf + '.png');
-            if (targetDir.exists())  return true;
-          }
-          break;
-
-        case 'eps':
-        case 'ps':
-          targetDir.append('graphics');
-          targetDir.append(graphicFile.leafName);
-          if (targetDir.exists()) {
-            targetDir = targetDir.parent.parent;
-            targetDir.append('gcache');
-            targetDir.append(bareLeaf + '.png');
-            if (targetDir.exists()) {
-              targetDir = targetDir.parent.parent;
-              targetDir.append('tcache');
-              targetDir.append(bareLeaf + '.pdf');
-              if (targetDir.exists()) return true;
-            }
-          }
-          break;
-
-        case 'gif':
-        case 'tif':
-        case 'tiff':
-          targetDir.append('graphics');
-          targetDir.append(graphicFile.leafName);
-          if (targetDir.exists()) {
-            targetDir = targetDir.parent.parent;
-            targetDir.append('gcache');
-            targetDir.append(bareLeaf + '.png');
-            if (targetDir.exists()) return true;
-          }
-          break;
-
-        default:
-          targetDir.append('graphics');
-          targetDir.append(graphicFile.leafName);
-          if (targetDir.exists()) return true;
-          break;
+      var testFile = documentDir.clone();
+      if (testFile) {
+        testFile.append('graphics');
+        testFile.append(bareLeaf + '.eps');
+        if (testFile.exists()) {
+          importName = this.copyAndConvert(testFile, false, theWidth, theHeight);
+        }        
       }
+    } else {
+      importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
     }
-    importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
+
 
     if (importName){
       objElement.setAttribute("src", importName);
