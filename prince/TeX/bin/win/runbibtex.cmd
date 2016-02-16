@@ -1,17 +1,17 @@
 @echo off
-call "%MSIPATHS%"
+call "%1"
 
 setlocal enabledelayedexpansion
 REM $1 is the tex directory we are working in
 REM optional "-d <directory>" for a non-standard BIBINPUTS
 
 set BIBINPUTS=
-cd %1
+cd %2
 shift
 
 :Loop
-IF "%1"=="" GOTO Continue
-if "%1"=="-d" goto setInputDir
+IF "%2"=="" GOTO Continue
+if "%2"=="-d" goto setInputDir
 SHIFT
 GOTO Loop
 :Continue
@@ -20,7 +20,7 @@ GOTO Loop
 goto doIt
 :setInputDir
 shift
-set BIBINPUTS=%1
+set BIBINPUTS="%2"
 
 :doIt
 
