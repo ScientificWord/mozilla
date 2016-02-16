@@ -1,6 +1,6 @@
 rem @echo off
-call "%MSIPATHS%"
-pushd %1
+call "%1"
+pushd "%2"
 set path="%MSITEXBIN%";%PATH%
 makeindex main
 echo done > sentinel

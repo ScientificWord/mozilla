@@ -778,6 +778,7 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   var indexexe = exefile.clone();
   var bibtexexe = exefile.clone();
+  var msitexpaths = exefile.clone();
   var extension;
   // A word on file names. Essentially what we want to do is to compile main.tex to main.pdf.
   // Unfortunately, the Acrobat plugin keeps a lock on the file it is displaying in the preview pane, so
@@ -794,12 +795,13 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   exefile.append(compiler+"."+extension);
   indexexe.append("makeindex."+extension);
   bibtexexe.append("runbibtex." + extension);
+  msitexpaths.append("MSITeX." + extension);
   removeOldPDFFiles(outputDir);
   passData.file = exefile;
   passData.indexexe = indexexe;
   passData.bibtexexe = bibtexexe;
   passData.outputDir = outputDir;
-  passData.args = [outputDir, infileLeaf, "x", "x"];
+  passData.args = [msitexpaths.path, outputDir, infileLeaf, "x", "x"];
   passData.passCount = compileInfo.passCount;
   passData.runMakeIndex = compileInfo.runMakeIndex;
   passData.runBibTeX = compileInfo.runBibTeX;
