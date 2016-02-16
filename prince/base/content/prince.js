@@ -1019,11 +1019,21 @@ function copyToExternalLocation( pdffile ) {
 // 
   var destdirectory = pdffile.parent.parent.parent;
   var leafname = pdffile.parent.parent.leafName;
+  var n = 2;
   leafname = leafname.replace(/_work$/,'');
   var newfile = destdirectory.clone();
   newfile.append(leafname+'.pdf');
-  if (newfile.exists()) {
-    newfile.remove(false);
+  try {
+    if (newfile.exists()) {
+      newfile.remove(false);
+    }
+  }
+  catch (e) {
+    while (newfile.exists()) {
+      newfile = newfile.parent;
+      newfile.append(leafname + '_' + n + '.pdf');
+      n++;
+    }
   }
   pdffile.copyTo(destdirectory, newfile.leafName);
 }
