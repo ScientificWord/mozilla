@@ -9582,7 +9582,7 @@ var msiSpaceUtils = {
     //requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
     //requiredSpace :         {charContent: " "},  //MEDIUM MATHEMATICAL SPACE in Unicode?
     requiredSpace: {
-      dimensions: '1em',
+      dimensions: '.2em',
       charContent: '&#x205f;'
     },
     //nonBreakingSpace :      {charContent: "&#x00a0;"},
