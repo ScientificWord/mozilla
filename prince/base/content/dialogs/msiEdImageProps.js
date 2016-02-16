@@ -961,11 +961,22 @@ function chooseImgFile(fBrowsing)
     var internalFile;
     var internalName;
     var graphicDir = getDocumentGraphicsDir();
+    var product;
+#ifdef PROD_SWP
+      product = "swp";
+#endif
+#ifdef PROD_SW
+      product = "sw";
+#endif
+#ifdef PROD_SNB
+      product = "snb";
+#endif
+
     internalFile = graphicDir.clone(false);
     internalFile.append(leafname);
     if (!file) file = internalFile;
     internalName = graphicDir.leafName + "/" + internalFile.leafName;
-    graphicsConverter.init(window, graphicDir.parent);
+    graphicsConverter.init(window, graphicDir.parent, product);
     importName = graphicsConverter.copyAndConvert(file, true);
     gSrcUrl = importName;
     if (!importName || !importName.length)
@@ -1302,12 +1313,22 @@ function launchConvertingDialog(importData)
 
 function getGraphicsImportTargets(inputFile, mode)
 {
+  var product;
+#ifdef PROD_SWP
+  product = "swp";
+#endif
+#ifdef PROD_SW
+  product = "sw";
+#endif
+#ifdef PROD_SNB
+  product = "snb";
+#endif
   if (!mode || !mode.length)
     mode = "import";
   var graphicDir = getDocumentGraphicsDir(mode);
   if (!graphicDir.exists())
     graphicDir.create(1, 0755);
-  graphicsConverter.init(window, graphicDir.parent);
+  graphicsConverter.init(window, graphicDir.parent, product);
   return graphicsConverter.copyAndConvert(inputFile);
 //  return graphicsConverter.getTargetFilesForImport(inputFile, graphicDir, mode, window);
 }
@@ -1820,7 +1841,18 @@ function onAccept()
   {
     //var editorElement = msiGetParentEditorElementForDialog(window);
     //var editor = msiGetEditor(gEditorElement);
-    graphicsConverter.init(window, getDocumentGraphicsDir('').parent);
+    var product;
+#ifdef PROD_SWP
+    product = "swp";
+#endif
+#ifdef PROD_SW
+    product = "sw";
+#endif
+#ifdef PROD_SNB
+    product = "snb";
+#endif
+
+    graphicsConverter.init(window, getDocumentGraphicsDir('').parent, product);
     var unit = document.getElementById("unitList").value;
     var width = 0;
     var height = 0;
