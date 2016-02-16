@@ -574,6 +574,17 @@ var msiResizeListener = {
       var copiedSrcUrl = anElement.getAttribute('copiedSrcUrl');
 
       if (copiedSrcUrl) {
+        var product;
+#ifdef PROD_SWP
+          product = "swp";
+#endif
+#ifdef PROD_SW
+          product = "sw";
+#endif
+#ifdef PROD_SNB
+          product = "snb";
+#endif
+
         var ext = /\....$/.exec(copiedSrcUrl)[0];
         if (ext == '.eps' || ext == '.pdf' || ext == '.ps') { // recompute bit map image
           editorElement = msiGetActiveEditorElement();
@@ -581,7 +592,7 @@ var msiResizeListener = {
           var url = msiURIFromString(docUrlString);
           var baseDir = msiFileFromFileURL(url);
           baseDir = baseDir.parent; // and now it points to the working directory
-          graphicsConverter.init(window, baseDir);
+          graphicsConverter.init(window, baseDir, product);
           var decomposedRelativePath = copiedSrcUrl.split('/');
           var graphicsDir = baseDir.clone(false);
           while (decomposedRelativePath[0] && decomposedRelativePath[0].length > 0) {
@@ -1276,6 +1287,17 @@ function msiEditorDocumentObserver(editorElement) {
         }
         if (bIsRealDocument) {
           // Convert graphics
+          var product;
+#ifdef PROD_SWP
+            product = "swp";
+#endif
+#ifdef PROD_SW
+            product = "sw";
+#endif
+#ifdef PROD_SNB
+            product = "snb";
+#endif
+
           var doc = msiGetEditor(this.mEditorElement).document;
           var win = this.mEditorElement.contentWindow;
           var editorElement = msiGetActiveEditorElement();
@@ -1284,7 +1306,7 @@ function msiEditorDocumentObserver(editorElement) {
           var baseDir = msiFileFromFileURL(url);
           baseDir = baseDir.parent; // and now it points to the working directory
 
-          graphicsConverter.init(win, baseDir);
+          graphicsConverter.init(win, baseDir, product);
           graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
         }
         if (bIsRealDocument)
