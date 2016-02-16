@@ -2,5 +2,7 @@
 source "$1"
 export  PATH=$MSITEXBIN:$PATH
 
-gs -dEPSCrop -sDEVICE=pngalpha -o $3 $2
+gs -dEPSCrop -sDEVICE=pngalpha $4 -o $3 $2
+
+chmod u+rw $3
 
