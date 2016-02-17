@@ -869,8 +869,8 @@ case CMD_MSISPECIAL: {
  aspect=\"false\">";
 
       result += "<object alt=\"\" \
- src=\"%ImageFile%\" \
- data=\"%ImageFile%\" \
+ src=\"\" \
+ data=\"\" \
  req=\"graphics\" \
  naturalWidth=\"%naturalWidth%\" \
  naturalHeight=\"%naturalHeight%\" \
