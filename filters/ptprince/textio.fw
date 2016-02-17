@@ -901,14 +901,61 @@ bool LineSource::GetLine(LineOfText* pLine)
                       line.begin(), ::tolower);
                    size_t p1 = line.find("\\frame");
                    size_t p2 = line.find(".emf");
-                   size_t p3 = line.find(".wnf");
+                   size_t p3 = line.find(".wmf");
 
                    if ((p1 != std::string::npos) &&
                        ((p2 != std::string::npos) ||
                         (p3 != std::string::npos)))
                    {
+                     // pLine needs to be adjusted to use the pdf inside the
+                     // begin...end expansion
+
+                     // ... gather up the expansion
+                     LineOfText* pExp = new LineOfText;
+                     do{
+                       GetRawLine(pNextLine);
+                       if (pNextLine -> bPeek("%EndExpansion"))
+                         break;
+                       //std::string line1 = pNextLine->AsStdString();
+                       CopyLine (pNextLine, pExp);
+                       //std::string line2 = pExp->AsStdString();
+                     } while (true);
                      delete pNextLine;
-                     GetRawLine(pLine);
+
+                     std::string line = pExp->AsStdString();
+
+                     // ... find the pdf file name
+                     int pos = line.find("\\includegraphics");
+                     if (pos == std::string::npos)
+                        break;
+                     if (line.find("[", pos) != std::string::npos){
+                        pos = line.find("]", pos);
+                     }
+                     int pos1 = line.find("{", pos);
+                     int pos2 = line.find("}", pos1);
+                     int len = pos2-pos1;
+                     std::string pdfFilename = line.substr(pos1+1, len-1);
+                     int pos3 = pdfFilename.find("graphics/");
+                     pdfFilename = pdfFilename.substr(pos3);
+                     // ... patch back into TCIMACRO
+                     line = pLine -> AsStdString();
+                     
+                     pos = line.find("filename '");
+                     pos1 = line.find("'", pos+strlen("filename '"));
+                     std::string newLine = line.substr(0,pos);
+                     newLine += "filename '";
+                     
+                     newLine += pdfFilename;
+                     newLine += line.substr(pos1);
+
+                     pLine->Clear();
+
+                     for (int k = 0; k < newLine.length(); ++k){
+                       pLine -> Append(newLine[k]);
+                     }
+                     (pLine -> bPeek("%TCIMACRO{%\x0D") ||
+                     pLine -> bPeek("%TCIMACRO{"));
+                     LOG("\nFINAL B: " << *pLine);
                    } else {
                      do{
                        GetRawLine(pNextLine);
