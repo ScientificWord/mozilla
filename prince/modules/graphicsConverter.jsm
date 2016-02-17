@@ -83,7 +83,7 @@ var graphicsConverter = {
     }
     if (command != null) {
       try {
-        if (copyToGraphics) {  // as of 2016-02-13, this is always true
+        if (copyToGraphics) {
           this.assureSubdir("graphics");
           destDir = this.baseDir.clone();
           destDir.append("graphics");
@@ -804,6 +804,7 @@ var graphicsConverter = {
         if (testFile.exists()) return true;
         break;
     }
+    return false;
   },
   
   //Note: documentDir should be an nsILocalFile
