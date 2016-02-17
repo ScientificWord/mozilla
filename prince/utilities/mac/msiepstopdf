@@ -1,6 +1,6 @@
 #!/bin/sh
 source "$1"
 
-gs -dEPSCrop -sDEVICE=pdfwrite  -o $3 $2
+/usr/local/bin/gs -dEPSCrop -sDEVICE=pdfwrite  -o $3 $2
 
 chmod u+rw $3
