@@ -813,9 +813,11 @@ var graphicsConverter = {
     if (objElement.getAttribute("msigraph") == "true")
       return false;
 
-    var gfxFileStr = objElement.getAttribute("originalSrcUrl");
-    if (!gfxFileStr || !gfxFileStr.length)
-      gfxFileStr = objElement.getAttribute("src");
+    var gfxFileStr = objElement.getAttribute("copiedSrcUrl");
+    if (gfxFileStr && gfxFileStr.length > 0) {
+      gfxFileStr = documentDir.path + '/' + gfxFileStr;
+    }
+    if (!gfxFileStr || !gfxFileStr.length) gfxFileStr = objElement.getAttribute("originalSrcUrl");
     if (!gfxFileStr || !gfxFileStr.length) {
       dump("Error in graphicsConverter.ensureTypesetGraphicForElement! No data or src for " + objElement.nodeName + " element.\n");
       return false;
@@ -848,8 +850,7 @@ var graphicsConverter = {
         dump("In graphicsConverter.ensureTypesetGraphicForElement, error [" + exc + "] trying to get offsetWidth or offsetHeight for graphic [" + gfxFileStr + "]\n");
       }
     }
-    var graphicURI = msiURIFromString(gfxFileStr);
-    var graphicFile = msiFileFromFileURL(graphicURI);
+    var graphicFile = msiFileFromAbsolutePath(gfxFileStr);
     var importName;
     var extension = getExtension(graphicFile.path).toLowerCase();
 
