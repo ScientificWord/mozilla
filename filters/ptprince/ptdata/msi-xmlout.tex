@@ -687,19 +687,32 @@
 %%<xref key="mykey" reftype="page"/>
 %\MSITextElement{pageref}
 
-\def\ref#1{%
+\def\ref{%
+  \begingroup\attrib@text\@ref}
+  
+\def\@ref#1{%
   \ifmmode
-    \msitag{\msipassthru{<xref key="#1" href="#1" reftype="obj"/>}}%
+    \begingroup\msihmode
+    \msitag{\msipassthru}
+    \char`\{
+    \msitag{<xref key="}#1\msitag{" href="}#1\msitag{" reftype="obj"/>}
+    \char`\}
+    \endgroup
   \else
-    \msihmode\msitag{<xref key="}#1\msitag{" href="}#1\msitag{" reftype="obj"/>}%
-  \fi}
+    \msihmode\msitag{<xref key="#1" href="#1" reftype="obj"/>}%
+  \fi
+  \endgroup}
 
-\def\pageref#1{%
+\def\pageref{%
+  \begingroup\attrib@text\@pageref}
+
+\def\@pageref#1{%
   \ifmmode
     \msitag{\msipassthru{<xref key="#1" href="#1" reftype="page"/>}}%
   \else
     \msihmode\msitag{<xref key="}#1\msitag{" href="}#1\msitag{" reftype="page"/>}%
-  \fi}
+  \fi
+  \endgroup}
 
 
 
@@ -803,12 +816,11 @@
   \msi@br\msiclosetag{bibliography}{</bibliography>}}
 
 
-\def\bibliographystyle#1{\def\the@style{#1}}
+%\def\bibliographystyle#1{\def\the@style{#1}}
+\def\bibliographystyle#1{<bibliographystyle>#1</bibliographystyle>}
 \def\bibliography#1{%
   \msihmode
-  \msitag{<bibtexbibliography xmlns="http://www.w3.org/1999/xhtml" databaseFile="#1" styleFile="}%
-  \the@style
-  \msitag{"></bibtexbibliography>}}
+  \msitag{<bibtexbibliography xmlns="http://www.w3.org/1999/xhtml" databaseFile="#1"></bibtexbibliography>}}
 
 
 \def\msi@thm@like#1{}
@@ -1593,7 +1605,7 @@
       %\char`\}%
       \msitag{\label}\char`\{#1\char`\}%
    \else
-      \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
+      \msihmode\msitag{<a name="#1" key="#1" id="#1"/>}%
    \fi
    \endgroup}
 
@@ -1873,7 +1885,7 @@
    \ifmmode
      \msitag{\msipassthru{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}}
    \else
-     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{"><![CDATA[#2]]></texb>}%
+     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}%
    \fi}
 
 
