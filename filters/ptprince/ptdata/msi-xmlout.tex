@@ -1724,28 +1724,29 @@
       \@mathintextfalse
       \msitag{\msipassthru}%
       \char`\{
-      \msiopentag{mtext}{<mtext>}
+      \msiopentag{mtext}{<mml:mtext>}
    \else
       \@mathintexttrue
-      \msiclosetag{mtext}{</mtext>}%
+      \msiclosetag{mtext}{</mml:mtext>}%
       \char`\}%
    \fi}
 }
 
 
-\def\text{\@mathintextfalse\catcode`\$=\active\@text}
+\def\text{\@mathintextfalse\@text}
 
 \def\@text#1{%
   \begingroup
+    \msi@dollar=`\$%
     \msitag{\msipassthru}%
     \char`\{%
-    \msitag{<mrow>}%
-    \msitag{<mspace width="thickmathspace"/>}%
-    \msiopentag{mtext}{<mtext>}%
+    \msiopentag{mrow}{<mml:mrow>}%
+    \msitag{<mml:mspace width="thickmathspace"/>}%
+    \msiopentag{mtext}{<mml:mtext>}%
     \begingroup \msihmode #1\endgroup%
-    \msiclosetag{mtext}{</mtext>}%
-    \msitag{<mspace width="thickmathspace"/>}%
-    \msitag{</mrow>}%
+    \msiclosetag{mtext}{</mml:mtext>}%
+    \msitag{<mml:mspace width="thickmathspace"/>}%
+    \msiclosetag{mrow}{</mml:mrow>}%
     \char`\}
   \endgroup
   \catcode`\$=3\relax}
