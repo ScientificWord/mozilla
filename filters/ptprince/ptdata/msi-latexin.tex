@@ -4926,6 +4926,7 @@
 
 \def\insert@enc#1{\msitag{ enc="#1"}}
 
+  
 \def\index#1{%
   \@inspecfalse
   \@idxlev=0
@@ -5022,17 +5023,24 @@
   \expandafter\msi@@map\the\temptoksa% 
 }
 
-\def\msi@@map#1{%
+\let\lbrace@tok{ % }
+\let\rbrace@tok} 
+\def\msi@@map{%
+  \futurelet\let@tok\msi@@m@p}
+  
+\def\msi@@m@p#1{%
   \def\@tokstrA{#1}%
   \def\@tokstrB{\@msi@end}%
   \ifx\@tokstrA\@tokstrB
     \let\map@next=\relax
-  \else\ifx#1|
+  \else\ifx\let@tok|
     \let\map@next\@process@idx@enc
+  \else\ifx\let@tok\lbrace@tok
+    \appendtoks{{#1}}
   \else
     \msi@mapmacro{#1}%
     \let\map@next=\msi@@map
-  \fi\fi
+  \fi\fi\fi
   \map@next
 }
 
