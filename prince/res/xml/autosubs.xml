@@ -17,6 +17,16 @@
   <sub ctx="text" tp="subst"><pattern>&lt;&#x2013;#</pattern><data>&#x2190;</data><context/><info>0,0</info></sub>
   <sub ctx="both" tp="subst"><pattern>|^#</pattern><data>&#x2191;</data><context/><info>0,0</info></sub>
   <sub ctx="both" tp="subst"><pattern>|v#</pattern><data>&#x2193;</data><context/><info>0,0</info></sub>
+  <sub ctx="both" tp="subst"><pattern><![CDATA[->]]></pattern><data><![CDATA[→]]></data><context/><info></info></sub>
+
+  <!-- There is a subtle point here. Unlike in the above, what appears to be a hyphen in the next pattern is actually a Unicode minus symbol. Since in mathematics,
+  hyphens are automatically converted to minuses, we need the next entry for making short arrows in math
+  -->
+  <sub ctx="math" tp="subst"><pattern><![CDATA[−>]]></pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">→</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
+  
+  <sub ctx="text" tp="subst"><pattern><![CDATA[&#x2013;>]]></pattern><data><![CDATA[⟶]]></data><context/><info></info></sub>
+  <sub ctx="math" tp="subst"><pattern><![CDATA[−−>]]></pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">⟶</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
+
   <sub ctx="text" tp="subst"><pattern>...</pattern><data>&#x2026;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="sc"><pattern>.yell.</pattern><data>yell('Hey!',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>intx</pattern><data>insertIntegral(true);</data><context/><info>0,0</info></sub>
