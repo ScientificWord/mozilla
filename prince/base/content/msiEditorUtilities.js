@@ -161,6 +161,24 @@ function getStyleAttributeOnNode(node, att, editor) {
   return null;
 }
 
+function removeStyleAttributeOnNode(node, att, editor) {
+  if (!node) {
+    return;
+  }
+  var style = '';
+  if (node.hasAttribute('style'))
+    style = node.getAttribute('style');
+  style.replace('null', '');
+  var re = new RegExp('(^|\\s|:)' + att + '[^;]+;', 'g');
+  if (re.test(style)) {
+    style = style.replace(re, '');
+    if (editor)
+      msiEditorEnsureElementAttribute(node, 'style', style, editor);
+    else
+      node.setAttribute('style', style);
+  }
+}
+
 function removeStyleAttributeFamilyOnNode(node, att, editor) {
   if (!node) {
     return;
@@ -169,7 +187,7 @@ function removeStyleAttributeFamilyOnNode(node, att, editor) {
   if (node.hasAttribute('style'))
     style = node.getAttribute('style');
   style.replace('null', '');
-  var re = new RegExp('^|[^-]' + att + '[-a-zA-Z]*:[^;]*;', 'g');
+  var re = new RegExp('(^|[^-])' + att + '[-a-zA-Z]*:[^;]*;', 'g');
   if (re.test(style)) {
     style = style.replace(re, '');
     if (editor)
@@ -11136,7 +11154,7 @@ function tryUntilSuccessful(interval, timeout, funct)
 //      msidump("A try failed in 'tryUntilSuccessfulWithHandlers");
 //    }
 //  },interval);
- msidump("intervalId in tryUntilSuccessfulWithHandlers is [" + intervalId + "\n");
+ // msidump("intervalId in tryUntilSuccessfulWithHandlers is [" + intervalId + "\n");
 //}
 function checkPackageDependenciesForEditor(editor) {
   var aDocument = editor.document;
