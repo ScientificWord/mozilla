@@ -14642,7 +14642,9 @@ TNODE* LaTeX2MMLTree::PassThru2MML( TNODE* TeX_node, TNODE** out_of_flow_list )
 {
   //JBMLine("PassThru\n");
   TNODE* node =  FindObject(TeX_node->parts, (U8*)"5.476.1",INVALID_LIST_POS);
-  const char* theText =  (const char*)(node->contents->var_value);
+  const char* theText =  "";
+  if (node && node->contents)
+    theText = (const char*)(node->contents->var_value);
   
   //JBMLine(theText);
 
