@@ -649,13 +649,14 @@ var msiResizeListener = {
   resizeFrame: function(anElement, oldWidth, oldHeight, newWidth, newHeight) {
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
+    var frametype;
     if (anElement.nodeName === 'table') {
       anElement = anElement.parentNode;
       if (anElement.nodeName !== 'msiframe') {
         return;
       }
     }
-
+    frametype = anElement.getAttribute('frametype');
     // dimensions are given in pixels.
     if (oldWidth === newWidth && oldHeight === newHeight) {
       return;
@@ -672,8 +673,14 @@ var msiResizeListener = {
       var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
       anElement.setAttribute("width", String(newWidthInUnits));
       anElement.setAttribute("height", String(newHeightInUnits));
-      setStyleAttributeOnNode(anElement, "width", newWidth + "px", this.mEditor);
-      setStyleAttributeOnNode(anElement, "height", newHeight + "px", this.mEditor);
+      if (frametype === 'table') {
+        removeStyleAttributeOnNode(anElement, "width");
+        removeStyleAttributeOnNode(anElement, "height");
+      }
+      else {
+        setStyleAttributeOnNode(anElement, "width", newWidth + "px", this.mEditor);
+        setStyleAttributeOnNode(anElement, "height", newHeight + "px", this.mEditor);        
+      }
       var parent = anElement.parentNode;
       if (parent.nodeName === 'graph') {
         // the frame is part of a graph
