@@ -1060,7 +1060,9 @@ PRBool SpacesAtEndOfMathAddsSpace()
 
 NS_IMETHODIMP
 msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
-{
+{    
+  PRUint32 keyCode(0), symbol(0);
+
   if (! aKeyEvent)
     return NS_ERROR_NULL_POINTER;
   nsresult res(NS_OK);
@@ -1068,7 +1070,6 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
-    PRUint32 keyCode(0), symbol(0);
     PRBool isShift(PR_FALSE), ctrlKey(PR_FALSE), altKey(PR_FALSE), metaKey(PR_FALSE);
     res = ExtractDataFromKeyEvent(aKeyEvent, keyCode, symbol, isShift, ctrlKey,
                                   altKey, metaKey);
@@ -1250,7 +1251,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
             *start = symbol;
             res = InsertSymbol(str);
             preventDefault = PR_TRUE;
-            if (NS_SUCCEEDED(res))
+            if (NS_SUCCEEDED(res) && keyCode != 13)
 		          res = CheckForAutoSubstitute(PR_TRUE);
             // res = nsEditor::EndUpdateViewBatch();
           }
@@ -1277,7 +1278,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     else
       // res = nsEditor::BeginUpdateViewBatch();
       res = nsHTMLEditor::HandleKeyPress(aKeyEvent);
-      if (NS_SUCCEEDED(res) &&(!(mFlags & eEditorPlaintextMask)))
+      if (NS_SUCCEEDED(res) && keyCode != 13 &&(!(mFlags & eEditorPlaintextMask)))
 		    res = CheckForAutoSubstitute(PR_FALSE);
       // res = nsEditor::EndUpdateViewBatch();
       return res;
@@ -3198,10 +3199,10 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       pnode = nsnull;
       if (TwoSpacesSwitchesToMath())
       {
-  			if (!inMath && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == 160))
+  			if (!inMath && (offset > 0) && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == ' ' || theText[offset - 1] == 160))
   			{
 					*nodeOut = nodeIn;
-					offsetOut = offset - 1;
+					offsetOut = offset - 1 ;
 					_result = msiIAutosub::STATE_SPECIAL;
 					return NS_OK;
 				}
@@ -3260,17 +3261,23 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   }
   node2 = nsnull;
   nsCOMPtr<nsIDOMNode> tempnode;
+  nsCOMPtr<nsIDOMNode> tempnode2;
   nsCOMPtr<nsIDOMNode> parentNode;
   tempnode = nodeIn;
   PRBool validNode = PR_TRUE;
   while (node2 == nsnull)
   {
-    tempnode->GetPreviousSibling(getter_AddRefs(node2));
-
+    rv = tempnode->GetPreviousSibling(getter_AddRefs(node2));
+    while (NS_SUCCEEDED(rv) && node2 && msiUtils::IsWhitespace(node2))
+    {
+      rv = node2->GetPreviousSibling(getter_AddRefs(tempnode2));
+      node2 = tempnode2;
+    }
     // if no previous sibling under this node, go up one level and try again
     if (!node2)
     {
       tempnode->GetParentNode(getter_AddRefs(node2));
+
       if (!node2)
       {
         _result = msiIAutosub::STATE_FAIL;
