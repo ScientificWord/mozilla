@@ -161,6 +161,24 @@ function getStyleAttributeOnNode(node, att, editor) {
   return null;
 }
 
+function removeStyleAttributeOnNode(node, att, editor) {
+  if (!node) {
+    return;
+  }
+  var style = '';
+  if (node.hasAttribute('style'))
+    style = node.getAttribute('style');
+  style.replace('null', '');
+  var re = new RegExp('(^|\\s|:)' + att + '[^;]+;', 'g');
+  if (re.test(style)) {
+    style = style.replace(re, '');
+    if (editor)
+      msiEditorEnsureElementAttribute(node, 'style', style, editor);
+    else
+      node.setAttribute('style', style);
+  }
+}
+
 function removeStyleAttributeFamilyOnNode(node, att, editor) {
   if (!node) {
     return;
@@ -169,7 +187,7 @@ function removeStyleAttributeFamilyOnNode(node, att, editor) {
   if (node.hasAttribute('style'))
     style = node.getAttribute('style');
   style.replace('null', '');
-  var re = new RegExp('^|[^-]' + att + '[-a-zA-Z]*:[^;]*;', 'g');
+  var re = new RegExp('(^|[^-])' + att + '[-a-zA-Z]*:[^;]*;', 'g');
   if (re.test(style)) {
     style = style.replace(re, '');
     if (editor)
@@ -2594,10 +2612,10 @@ function msiEnableEditorControl(editorElement, bEnable) {
     editorElement.removeAttribute('disabled');
     editorElement.allowevents = true;
     if (internalEditor !== null) {
-      msiDumpWithID('Got HTML editor for element [@] in msiEnableEditorControl; editor flags are [' + internalEditor.flags + '].\n', editorElement);
+      // msiDumpWithID('Got HTML editor for element [@] in msiEnableEditorControl; editor flags are [' + internalEditor.flags + '].\n', editorElement);
       internalEditor.flags &= ~(Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
     } else
-      msiDumpWithID('Unable to get HTML editor for element [@] in msiEnableEditorControl.\n', editorElement);
+      // msiDumpWithID('Unable to get HTML editor for element [@] in msiEnableEditorControl.\n', editorElement);
     if (elementStyle !== null) {
       //      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
       elementStyle.setProperty('-moz-user-focus', 'normal', '');
@@ -2607,10 +2625,10 @@ function msiEnableEditorControl(editorElement, bEnable) {
     editorElement.setAttribute('disabled', 'true');
     editorElement.allowevents = false;
     if (internalEditor !== null) {
-      msiDumpWithID('Got HTML editor for element [@] in msiEnableEditorControl; editor flags are [' + internalEditor.flags + '].\n', editorElement);
+      // msiDumpWithID('Got HTML editor for element [@] in msiEnableEditorControl; editor flags are [' + internalEditor.flags + '].\n', editorElement);
       internalEditor.flags |= Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask;
     } else
-      msiDumpWithID('Unable to get HTML editor for element [@] in msiEnableEditorControl.\n', editorElement);
+      // msiDumpWithID('Unable to get HTML editor for element [@] in msiEnableEditorControl.\n', editorElement);
     if (elementStyle !== null) {
       //      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
       elementStyle.setProperty('-moz-user-focus', 'ignore', '');
@@ -10588,11 +10606,11 @@ function writeLineInPieces(output, currentline) {
   var curlen = currentline.s.length;
   var index;
   var firstLine;
-  msidump('A: ' + curlen + '\n');
+  // msidump('A: ' + curlen + '\n');
   while (curlen > 0) {
-    msidump('B: ' + curlen + '\n');
-    msidump('output length = ' + output.s.length + '\n');
-    msidump('currentline length = ' + currentline.s.length + '\n');
+    // msidump('B: ' + curlen + '\n');
+    // msidump('output length = ' + output.s.length + '\n');
+    // msidump('currentline length = ' + currentline.s.length + '\n');
     if (curlen < maxLength || curlen >= lastLength)
       // this assures us we get out of the while loop
       {
@@ -11099,7 +11117,7 @@ function tryUntilSuccessful(interval, timeout, funct)
         clearInterval(intervalId);
       } else {
         count++;
-        msidump('A try failed in \'tryUntilSuccessful');
+        // msidump('A try failed in \'tryUntilSuccessful');
       }
     }, interval);
   }
@@ -11136,7 +11154,7 @@ function tryUntilSuccessful(interval, timeout, funct)
 //      msidump("A try failed in 'tryUntilSuccessfulWithHandlers");
 //    }
 //  },interval);
-//  msidump("intervalId in tryUntilSuccessfulWithHandlers is [" + intervalId + "\n");
+ // msidump("intervalId in tryUntilSuccessfulWithHandlers is [" + intervalId + "\n");
 //}
 function checkPackageDependenciesForEditor(editor) {
   var aDocument = editor.document;
