@@ -1131,6 +1131,7 @@ this is the case for images in an msiframe
 */
 {
   var rotation;
+  var frametype;
   var w, h;
   var rowCountObj = { value: 0 };
   var colCountObj = { value: 0 };
@@ -1146,8 +1147,16 @@ this is the case for images in an msiframe
         dump( e.message);
       }
     }
-    setStyleAttributeOnNode(frameNode, "width", w, editor);
-    setStyleAttributeOnNode(frameNode, "height", h, editor);
+    frametype = frameNode.getAttribute('frametype')
+    if (frametype == 'table') {
+      removeStyleAttributeOnNode(frameNode, "width");
+      removeStyleAttributeOnNode(frameNode, "height");
+    } 
+    else
+    {    
+      setStyleAttributeOnNode(frameNode, "width", w, editor);
+      setStyleAttributeOnNode(frameNode, "height", h, editor);
+    }
     sizeState.width = frameUnitHandler.getValueFromString(w, "px");
     sizeState.height = frameUnitHandler.getValueFromString(h, "px");
   }
@@ -1391,8 +1400,10 @@ this is the case for images in an msiframe
   style = "height: " + frameUnitHandler.getValueAs(sizeState.height,"px") + "px; " +
     "width: " + frameUnitHandler.getValueAs(sizeState.width,"px") + "px;";
   contentsNode.setAttribute("style", style);
-  setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(sizeState.width,"px") + "px", editor);
-  setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(sizeState.height,"px") + "px", editor);
+  if (frametype !== 'table') {
+    setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(sizeState.width,"px") + "px", editor);
+    setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(sizeState.height,"px") + "px", editor);
+  }
   frameNode.setAttribute("width", sizeState.width);
   frameNode.setAttribute("height", sizeState.height);
   contentsNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
