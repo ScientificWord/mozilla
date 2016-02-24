@@ -317,7 +317,7 @@
       <menuseparator/>
       <menuitem id="helpmenuWebsite"
                 label="&helpmenuWebsite.label;"
-                oncommand="openBrowser('https://www.mackichan.com');"/>
+                oncommand="openBrowser('http://www.mackichan.com');"/>
       <menuseparator/>
       <menuitem id="helpmenuActivate"
                 label="&helpmenuActivate.label;"
