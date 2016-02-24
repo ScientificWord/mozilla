@@ -259,7 +259,8 @@ function msiSetupComposerWindowCommands(editorElement)
   commandTable.registerCommand("cmd_saveAsDir",      msiSaveAsCommand);
   commandTable.registerCommand("cmd_saveCopyAs",     msiSaveCopyAsCommand);
   commandTable.registerCommand("cmd_saveCopyAsDir",  msiSaveCopyAsCommand);
-  commandTable.registerCommand("cmd_importTeX",      msiImportTeXCommand);
+    commandTable.registerCommand("cmd_importTeX",      msiImportTeXCommand);
+    commandTable.registerCommand("cmd_testFilter",      msiTestFilterCommand);
   commandTable.registerCommand("cmd_exportToText",   msiExportToTextCommand);
   commandTable.registerCommand("cmd_exportToTeX",    msiExportToTexCommand);
   commandTable.registerCommand("cmd_exportToWeb",    msiExportToWebCommand);
@@ -1424,6 +1425,31 @@ var msiImportTeXCommand =
     return false;
   }
 }
+
+var msiTestFilterCommand =
+{
+  isCommandEnabled: function(aCommand, dummy) {
+    return isLicensed();
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand) {
+    if (isLicensed())
+    {
+      try {
+        return runTests();
+      }
+      catch (e) {
+        finalThrow(cmdFailString('runtests'), e.message);
+      }
+    }
+    else
+      finalThrow(cmdFailString("runtests"), "Importing a document is not allowed since his program is not licensed.")
+    return false;
+  }
+}
+
 
 var msiExportToWebCommand =
 {
