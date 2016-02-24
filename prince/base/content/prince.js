@@ -439,7 +439,7 @@ function openTeX()
     msidump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+file.path+", "+outfile.path);
 
     // run pretex.exe
-      dump("+++ Running");
+    dump("+++ Running");
     try
     {
 	var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
@@ -485,6 +485,127 @@ function openTeX()
     }
   }
 }
+
+function openTeXbyName(fn)
+{
+    var filename, infile, docdir, prefs, prefdir, defdocdirstring, dirkey, file;
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+    var inputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+    var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+
+    inputfile.initWithPath( fn ); // outputfile now points to our document file
+     
+    inputfile = useMasterDocIfNeeded(inputfile);
+
+    msidump("Input file is " + inputfile);
+    filename = inputfile.leafName.substring(0,inputfile.leafName.lastIndexOf("."));
+
+    var outdir = inputfile.parent;
+    outdir.append(filename + "_work");
+    try {
+	msidump("Output dir is " + outdir);
+	if (outdir.exists()){
+	    msidump("Output dir exists");
+	    outdir.remove(true);
+	    msidump("Output dir removed")
+	}
+	outdir.create(1 , 0755);
+	msidump("Output dir created");
+    }
+    catch(e){
+	msidump("Could not remove output directory " + outdir);
+	msidump(e);
+    }
+    
+    
+    var outfile = outdir.clone();
+    outfile.append("main.xhtml");
+    msidump("Output file is " + outfile);
+    var css = outdir.clone();
+    css.append("css");
+    css.create(1 , 0755);
+    var graphics = outdir.clone();
+    graphics.append("graphics");
+    graphics.create(1 , 0755);
+    var plots = outdir.clone();
+    plots.append("plots");
+    plots.create(1 , 0755);
+    var mmldir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    var exefile=dsprops.get("resource:app", Components.interfaces.nsIFile);
+    var os = getOS(window);
+    if (os == "win") {
+      exefile.append("pretex.exe");
+    } else {
+      exefile.append("pretex");
+    }
+
+    var dataDir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    dataDir.append("ptdata");
+    msidump("\n\nExe="+exefile.path);
+    msidump("\noutdir=\""+outdir.path);
+    msidump("\noutfile=\""+outfile.path);
+    msidump("\ninfile=\""+inputfile.path);
+    msidump("\ndataDir=\""+dataDir.path);
+    msidump("\nmmldir=\""+mmldir.path+"\n");
+    msidump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+inputfile.path+", "+outfile.path);
+
+    // run pretex.exe
+
+    try
+    {
+	msidump("Running pretex");
+	var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+	theProcess.init(exefile);
+	var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, inputfile.path, outfile.path];
+	
+	msidump("+++" + args);
+        theProcess.run(true, args, args.length);
+    }
+    catch (ex)
+    {
+	msidump("Could not run pretex. " + ex);
+    }
+    if ((outfile) && (outfile.path.length > 0))
+    {
+	if (!outfile.exists())
+	    finalThrow(cmdFailString('Import TeX'),
+		       'Conversion program did not produce a file');
+    }
+    var xsltProcessor = setupInputXSLTproc();
+    var parser = new DOMParser();
+    var xmlDoc = document.implementation.createDocument("", "", null);
+    xmlDoc.async = false;
+    var url = msiFileURLFromFile(outfile);
+    var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
+    request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+    request.open("GET", url.spec, false);
+    request.send(null);
+    var res = request.responseXML;
+    var newDoc = xsltProcessor.transformToDocument(res);
+    var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+    var fileMode = 0x22;  //MODE_WRONLY|MODE_TRUNCATE - rewrite the file
+    var permissions = 0x777; //all permissions for everybody?
+    outputStream.init(outfile, fileMode, permissions, 0);
+    var serializer = new XMLSerializer();
+    serializer.serializeToStream(newDoc, outputStream, "utf-8");
+    outputStream.close();
+
+    //msiEditPage(url, window, false, false);
+    var editorElement = msiGetTopLevelEditorElement();
+    var outTeXfile = outdir.append("main.tex");
+    var compileInfo = new Object();
+    documentAsTeXFile( editorElement, newDoc, outTeXfile, compileInfo );
+
+    
+  }
+
+
+
+function runTests()
+{
+    openTeXbyName("C:\\Users\\Jon\\tester\\docs\\checkout.tex");
+}
+
 
 function setupInputXSLTproc()
 {

@@ -30,7 +30,9 @@
       <menuitem id="openMenuitem" accesskey="&fileopen.accesskey;"
                   key="msiOpenFileKey" oncommand="openDocument();"
                   label="&openFileCmd.label;"/>
-      <menuitem observes="cmd_importTeX" label="&importTeXCmd.label;" accesskey="&importTeX.accesskey;"/>
+      <menuitem observes="cmd_importTeX" label="&importTeXCmd.label;"
+		accesskey="&importTeX.accesskey;"/>
+      
       <menuitem observes="cmd_exportToTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
       <menuitem observes="cmd_exportToWeb" label="&exporttowebCmd.label;" accesskey="&exporttoweb.accesskey;"/>
       <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
@@ -546,7 +548,10 @@
     <command id="cmd_frontmatter"  oncommand="msiGoDoCommand('cmd_frontmatter')" />
     <command id="cmd_printindex" oncommand="msiGoDoCommand('cmd_printindex')" />
     <command id="cmd_cleanup"        label="&cleanupCmd.label;"         oncommand="msiGoDoCommand('cmd_cleanup')"/>
-    <command id="cmd_importTeX" oncommand="msiGoDoCommand('cmd_importTeX');" />
+    <command id="cmd_importTeX"
+	     oncommand="msiGoDoCommand('cmd_importTeX');" />
+     <command id="cmd_testFilter"
+	     oncommand="msiGoDoCommand('cmd_testFilter');" />
     <command id="cmd_exportToTeX" oncommand="msiGoDoCommand('cmd_exportToTeX');" />
     <command id="cmd_exportToWeb" oncommand="msiGoDoCommand('cmd_exportToWeb');" />
 
@@ -940,7 +945,10 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
       "chrome,close,titlebar,resizable,modal=false");' />
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
     <menuitem label="Test XPath Find" oncommand="msiTestSearch();"/ -->
-    <menuitem label="&OpenAllSubdocs.label;" accesskey="&OpenAllSubdocs.accesskey;" oncommand="openAllSubdocs();"/>
+    <menuitem label="&OpenAllSubdocs.label;"
+	      accesskey="&OpenAllSubdocs.accesskey;"
+	      oncommand="openAllSubdocs();"/>
+    <menuitem observes="cmd_testFilter" label="Test" accesskey="Z"/>
     <!-- menuitem label="Prettyprint" oncommand="prettyprint();"/ -->
     </menupopup>
   </menu>
