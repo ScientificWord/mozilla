@@ -649,6 +649,7 @@
   \catcode`\&=\active
   \catcode`\<=\active
   \catcode`\>=\active
+  \catcode`\ =\active
 }
 
 \def\cite{%
@@ -1342,6 +1343,15 @@
    \catcode`#=\active
    \gdef#{\char`\#}%
 \egroup
+\bgroup
+   \catcode` =\active
+   \gdef {\char`\ }%
+\egroup
+
+\begingroup
+  \catcode`\<=\active
+  \gdef<{\ifmmode\char`\<\else\char`\&lt;\fi}
+\endgroup
 
 
 
@@ -1352,11 +1362,6 @@
    #1%
   \msiclosetag{bodyText}{</bodyText>}
   \msiclosetag{verbatim}{</verbatim>}}%
-
-\begingroup
-  \catcode`\<=\active
-  \gdef<{\ifmmode\char`\<\else\char`\&lt;\fi}
-\endgroup
 
 \def\verb{%
    \msihmode
