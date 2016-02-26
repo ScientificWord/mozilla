@@ -1212,6 +1212,7 @@ function msiGetEditorURL(editorElement) {
   }
   return '';
 }
+
 function msiRequirePackage(editorElement, packagename, options) {
   try {
     if (!editorElement) editorElement = msiGetParentEditorElementForDialog(window);
@@ -1222,18 +1223,19 @@ function msiRequirePackage(editorElement, packagename, options) {
     var i;
     var req;
     var opt;
-    if (options && options.length === 0) {
-      options = null;
+    var newOpt = options;
+    if (!newOpt || newOpt.length === 0) {
+      newOpt = null;
     }
     for (i = 0; i < currentReq.length; i++) {
       req = currentReq[i].getAttribute('req');
       if (req === packagename) {
         opt = currentReq[i].getAttribute('opt');
-        if (opt && opt.length === 0) opt = null;
-        if (opt && options && opt === options)
+        if (!opt || opt.length === 0) opt = null;
+        if (opt && newOpt && opt === newOpt)
           return;
         // already there
-        if ((opt == null || opt.length === 0) && (options == null))
+        if (opt === null  && newOpt === null)
           return;  // both are void or null
       }
     }
