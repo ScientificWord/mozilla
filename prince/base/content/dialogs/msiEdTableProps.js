@@ -38,7 +38,7 @@ var gColCount = 1;
 var gLastRowIndex;
 var gLastColIndex;
 var gNewRowCount;
-var frameUnitHandler;
+// var frameUnitHandler;  provided by msiFrameOverlay
 var newTable;
 var gSelectedCellsType = 1;
 const SELECT_CELL = 1;
@@ -227,6 +227,7 @@ function setVariablesForControls()
   gDialog.tableRowHeight =  document.getElementById("tableRowHeight");
   gDialog.tableWidthInput =  document.getElementById("tableWidthInput");
   gDialog.autoWidthCheckbox = document.getElementById("autoWidthCheckbox");
+  gDialog.unitMenulist = document.getElementById("unitMenulist");
 
   // gDialog.tableBackgroundCW =  document.getElementById("tableBackgroundCW");
 
@@ -458,12 +459,15 @@ function translateSelectionTypeString(selTypeStr)
   return SELECT_CELL;  //put it out here just for redundancy's sake
 }
 
+function unitChangeCallback( unit ) {
+  document.getElementById('currentunits').setAttribute('value', unit);
+}
+
 function Startup()
 {
 
   gActiveEditorElement = msiGetParentEditorElementForDialog(window);
   gActiveEditor = msiGetTableEditor(gActiveEditorElement);
-  frameUnitHandler = new UnitHandler(gActiveEditor);
 
   if (!gActiveEditor)
   {
@@ -502,11 +506,7 @@ function Startup()
     document.getElementById("mainTabBox").selectedTab = document.getElementById("TableTab");
   }
 
-  if (gWrapperElement.hasAttribute("units")) {
-     frameUnitHandler.initCurrentUnit(gWrapperElement.getAttribute("units"));
-  } else {
-     frameUnitHandler.initCurrentUnit("in");
-  }
+  //document.getElementById('currentunits').setAttribute('value', frameUnitHandler.getCurrentUnit());
 
   var theCommand = "cmd_editTable";
   if (data)
@@ -587,12 +587,12 @@ function initframeUnitHandler(unit)
   fieldList.push(gDialog.tableWidthInput);
   frameUnitHandler.setEditFieldList(fieldList);
   if (!unit && gPrefs)
-    initUnit = gPrefs.getCharPref("swp.defaultTableUnits");
+    initUnit = gPrefs.getCharPref("swp.table.units");
 //  gDialog.frameUnitMenulist.setAttribute("value", initUnit);
   try {
     frameUnitHandler.buildUnitMenu(gDialog.unitMenulist, initUnit);
     frameUnitHandler.initCurrentUnit(initUnit);
-  document.getElementById("currentunits").setAttribute("value", frameUnitHandler.getDisplayString(initUnit));  }
+  }
   catch(e) {
     dump(e.message);
   }
@@ -607,16 +607,40 @@ function initTablePanel()
   var heightVal = 0;
   var re;
   var match;
+  var i;
   var wrapperNode;
+  var frameUnitMenulist;
   if (gTableElement.parentNode.nodeName === "msiframe") {
     wrapperNode = gTableElement.parentNode;
   }
   else {
     wrapperNode = gTableElement;
   }
-  var currUnit = wrapperNode.getAttribute("unit");
-  currUnit = currUnit || "pt";
-  initframeUnitHandler(currUnit);
+  frameUnitHandler.setUnitChangeCallback(unitChangeCallback);
+  frameUnitHandler.addEditFieldList([document.getElementById('tableWidthInput')]);
+
+  if (gWrapperElement.hasAttribute("units")) {
+    frameUnitHandler.initCurrentUnit(gWrapperElement.getAttribute("units"));
+  } else {
+    frameUnitHandler.initCurrentUnit(gPrefs.getCharPref('swp.table.units'));
+  }
+  try
+  {
+    frameUnitMenulist = document.getElementById('frameUnitMenulist');
+    for (i = 0; i < frameUnitMenulist.itemCount; i++)
+    {
+      if (frameUnitMenulist.getItemAtIndex(i).value === frameUnitHandler.currentUnit)
+      {
+        frameUnitMenulist.selectedIndex = i;
+        break;
+      }
+    }
+  }
+  catch(e)
+  {
+    msidump(e.message);
+  }
+
   var tableStyle = gTableElement.getAttribute("style");
   // The next 30 lines seem superfluous, but maybe harmless. Leave them for now.
   if (wrapperNode.hasAttribute("width"))
@@ -710,7 +734,7 @@ function onChangeTableUnits()
 {
   var val = gDialog.unitMenulist.value
   frameUnitHandler.setCurrentUnit(val);
-  document.getElementById("currentunits").setAttribute("value", frameUnitHandler.getDisplayString(val));
+  // document.getElementById("currentunits").setAttribute("value", frameUnitHandler.getDisplayString(val));
 }
 
 
@@ -728,33 +752,22 @@ function setCurrSide(newSide)
 //  SetColor("borderCW", cellBorderColor);
 }
 
-
-var cellUnitsHandler;
-
-// function onChangeCellUnits()
-// {
-//   cellUnitsHandler.setCurrentUnit(gDialog.cellUnitsList.value);
-// }
-
 function initCellsPanel()
 {
-//  var previousValue = gDialog.CellWidthInput.value;
-  cellUnitsHandler = frameUnitHandler;
-//  cellUnitsHandler.setEditFieldList([gDialog.CellWidthInput,gDialog.CellHeightInput]);
-//  cellUnitsHandler.initCurrentUnit(gCellWidthUnit);
-//  cellUnitsHandler.buildUnitMenu(gDialog.cellUnitsList, gCellWidthUnit);
-//
-
-//  var theUnitsList = new msiCSSWithFontUnitsList(gCellFontSize, "pt");
-//  gWidthUnitsController = new msiUnitsListbox(gDialog.CellWidthUnits, [gDialog.CellWidthInput], theUnitsList);
-//  gHeightUnitsController = new msiUnitsListbox(gDialog.CellHeightUnits, [gDialog.CellHeightInput], theUnitsList);
-  // var widthStr = String(gCollatedCellData.size.width) + gCellWidthUnit;
-  // var heightStr = String(gCollatedCellData.size.height) + gCellHeightUnit;
-
+  var wrap = gPrefs.getCharPref("swp.table.wrapping");
+  var wrapvalue;
+  // BBM: need to compute this from the selection
   gDialog.CellHeightInput.value = 0;
-  gDialog.CellHeightUnits = frameUnitHandler.getCurrentUnit();
   gDialog.CellWidthInput.value = 0;
-  gDialog.textwrapchoice.value = true;
+  gDialog.CellHeightUnits = frameUnitHandler.getCurrentUnit();
+  switch (wrap) {
+    case 'wrap': wrapvalue = 'true';
+            break;
+    case 'nowrap': wrapvalue = 'false';
+            break;
+    default: wrapvalue = '';
+  }
+  gDialog.textwrapchoice.value = wrapvalue;
 
 }
 
@@ -1886,9 +1899,9 @@ function ApplyAttributesToOneCell(destElement, newLineObject)
   if (Number(gDialog.CellWidthInput.value) !== 0)
   {
     aVal = frameUnitHandler.getValueString(gDialog.CellWidthInput.value);
-    SetAnAttribute(destElement, "xtracellwidth", aVal);
+    SetAnAttribute(destElement, "cellwidth", aVal);
   }
-  else gActiveEditor.removeAttribute(destElement,"xtracellwidth");
+  else gActiveEditor.removeAttribute(destElement,"cellwidth");
 
 
 //  for (ix = 0; ix < gCellChangeData.border.style.length; ++ix)
@@ -1995,28 +2008,6 @@ function doHelpButton()
 function onAcceptNewTable()
 {
     var color;
-
-    try
-    {
-      var wrapping = (gDialog.textwrapchoice.value == "true");  // values are '','true','false'
-      // if (wrapping.length > 0) {
-      //   gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
-      // }
-
-      var align = gDialog.hAlignChoices.value;
-      if (align.length > 0) {
-        gPrefs.setCharPref("editor.table.default_align", align);
-      }
-
-      var valign = gDialog.vAlignChoices.value;
-      if (valign.length > 0) {
-        gPrefs.setCharPref("editor.table.default_valign", valign);
-      }
-    }
-    catch (e) {
-      dump(e);
-    }
-
 
 // This is code for creating a new table, not for revising
 

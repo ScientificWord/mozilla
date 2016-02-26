@@ -329,8 +329,10 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   var prefBranch = GetPrefs();
   var isFloat = false;
   var prefprefix;
-  if (contentsElement && contentsElement.getAttribute("type") && contentsElement.getAttribute("type").indexOf("mupad") >= 0)
+  if (contentsElement && (contentsElement.nodeName == 'graph' || (contentsElement.getAttribute("type") && contentsElement.getAttribute("type").indexOf("mupad") >= 0)))
     prefprefix = "swp.graph.";
+  else if (contentsElement && (contentsElement.nodeName == 'table' || (contentsElement.getAttribute("type") && contentsElement.getAttribute("type").indexOf("table") >= 0)))
+    prefprefix = "swp.table.";
   else
     prefprefix = "swp.graphics.";
 
@@ -478,7 +480,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   v = null;
   v = ((!newElement && element.getAttribute("borderw")) || prefBranch.getCharPref(prefprefix + "border"));
   if (v != null && dg.borderInput && dg.borderInput.left && dg.borderInput.right && dg.borderInput.top && dg.borderInput.bottom)
-    dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit);
+    dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.bottom.value = dg.borderInput.top.value = frameUnitHandler.getValueOf(v, prefUnit);
   v = (!newElement && element.getAttribute("sidemargin") || prefBranch.getCharPref(prefprefix + "hmargin"));
   if (v != null && dg.marginInput && dg.marginInput.left && dg.marginInput.right ) dg.marginInput.left.value = dg.marginInput.right.value = frameUnitHandler.getValueOf(v, prefUnit);
   v = null;
@@ -1140,8 +1142,10 @@ this is the case for images in an msiframe
     h = getStyleAttributeOnNode( contentsNode, "height", editor);
     if (!w) {
       try {
-        w = 15 * Number(Dg.columnsInput.value);
-        h = Number(Dg.rowsInput.value) * 30;
+        sizeState.autoWidth = true;
+        sizeState.autoHeight = true;
+        sizeState.width = 0;
+        sizeState.height = 0;
       }
       catch(e){
         dump( e.message);
@@ -1157,8 +1161,10 @@ this is the case for images in an msiframe
       setStyleAttributeOnNode(frameNode, "width", w, editor);
       setStyleAttributeOnNode(frameNode, "height", h, editor);
     }
-    sizeState.width = frameUnitHandler.getValueFromString(w, "px");
-    sizeState.height = frameUnitHandler.getValueFromString(h, "px");
+    if (!sizeState.autoWidth)
+      sizeState.width = frameUnitHandler.getValueFromString(w, "px");
+    if (!sizeState.autoHeight)
+      sizeState.height = frameUnitHandler.getValueFromString(h, "px");
   }
   metrics.unit = sizeState.sizeUnit;
   if (metrics.unit == "px") // switch to pts
