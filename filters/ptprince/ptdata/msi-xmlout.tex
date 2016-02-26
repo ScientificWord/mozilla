@@ -1874,9 +1874,12 @@
 
 
 \def\TeXButton{%
+  \begingroup
   \ifmmode
   \else
   \catcode`\&=\active
+  \catcode`\<=\active
+  \catcode`\>=\active
   \fi
   \@TeXButton}
 
@@ -1887,7 +1890,8 @@
      \msitag{\msipassthru{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}}
    \else
      \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{"><![CDATA[#2]]></texb>}%
-   \fi}
+   \fi
+   \endgroup}
 
 
 
