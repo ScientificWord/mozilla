@@ -44,50 +44,7 @@ function Startup()
 //  gDialog.widthPixelOrPercentMenulist = document.getElementById("widthPixelOrPercentMenulist");
   gDialog.OkButton = document.documentElement.getButton("accept");
   gDialog.sizeLabel = document.getElementById("sizeLabel");
-
-//  gTableElement.setAttribute("border", gDialog.borderInput.value);
-//  if (gDialog.widthInput.value)
-//    gTableElement.setAttribute("width", Number(gDialog.widthInput.value) +
-//                                        (gDialog.widthPixelOrPercentMenulist.value == "pc" ? "%" : ""));
-
-  // Make a copy to use for AdvancedEdit
-//  globalElement = gTableElement.cloneNode(false);
-//  try {
-//    gPrefs = GetPrefs();
-//    if (IsHTMLEditor()
-//        && !(gActiveEditor.flags & Components.interfaces.nsIPlaintextEditor.eEditorMailMask))
-//    {
-//      if (gPrefs.getBoolPref("editor.use_css"))
-//      {
-//        // only for Composer and not for htmlmail
-//        globalElement.setAttribute("style", "text-align: left;");
-//      }
-//
-//      var hAlign = gPrefs.getCharPref("editor.table.default_align");
-//      var vAlign = gPrefs.getCharPref("editor.table.default_valign");
-//      var wrapping = gPrefs.getCharPref("editor.table.default_wrapping");
-//
-//      var cellSpacing = gPrefs.getCharPref("editor.table.default_cellspacing");
-//      if (cellSpacing)
-//      {
-//        // only for Composer and not for htmlmail
-//        globalElement.setAttribute("cellspacing", cellSpacing);
-//      }
-//
-//      var cellPadding= gPrefs.getCharPref("editor.table.default_cellpadding");
-//      if (cellPadding)
-//      {
-//        // only for Composer and not for htmlmail
-//        globalElement.setAttribute("cellpadding", cellPadding);
-//      }
-//    }
-//  } catch (e) {}
-
-  // Initialize all widgets with image attributes
- // InitDialog(hAlign, vAlign, wrapping);
-
   SetTextboxFocusById("rowsInput");
-
   SetWindowLocation();
 }
 
@@ -175,20 +132,10 @@ function onAccept()
           && !(gActiveEditor.flags & Components.interfaces.nsIPlaintextEditor.eEditorMailMask))
       {
         var wrapping = gDialog.textWrapping.selectedItem.value;
-        gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
-
         var align = gDialog.horizAlignment.value;
-        gPrefs.setCharPref("editor.table.default_align", align);
-
         var valign = gDialog.vertAlignment.value;
-        gPrefs.setCharPref("editor.table.default_valign", valign);
-
         var cellSpacing = globalElement.getAttribute("cellspacing");
-        gPrefs.setCharPref("editor.table.default_cellspacing", cellSpacing);
-
         var cellPadding = globalElement.getAttribute("cellpadding");
-        gPrefs.setCharPref("editor.table.default_cellpadding", cellPadding);
-
       }
     }
     catch (e) {};
