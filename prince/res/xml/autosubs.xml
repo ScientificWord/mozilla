@@ -22,10 +22,18 @@
   <!-- There is a subtle point here. Unlike in the above, what appears to be a hyphen in the next pattern is actually a Unicode minus symbol. Since in mathematics,
   hyphens are automatically converted to minuses, we need the next entry for making short arrows in math
   -->
-  <sub ctx="math" tp="subst"><pattern><![CDATA[−>]]></pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">→</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
+  <sub ctx="math" tp="subst"><pattern>−></pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">→</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
   
-  <sub ctx="text" tp="subst"><pattern><![CDATA[&#x2013;>]]></pattern><data><![CDATA[⟶]]></data><context/><info></info></sub>
+  <sub ctx="text" tp="subst"><pattern>–></pattern><data><![CDATA[⟶]]></data><context/><info></info></sub>
   <sub ctx="math" tp="subst"><pattern><![CDATA[−−>]]></pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">⟶</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
+
+  <sub ctx="both" tp="subst"><pattern><![CDATA[<-]]></pattern><data><![CDATA[←]]></data><context/><info></info></sub>
+
+  <sub ctx="both" tp="subst"><pattern>&lt;-</pattern><data>←</data><context/><info></info></sub>
+  <sub ctx="math" tp="subst"><pattern>&lt;−</pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">←</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
+  
+  <sub ctx="text" tp="subst"><pattern>←-</pattern><data>⟵</data><context/><info></info></sub>
+  <sub ctx="math" tp="subst"><pattern>←−</pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">⟵</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
 
   <sub ctx="text" tp="subst"><pattern>...</pattern><data>&#x2026;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="sc"><pattern>.yell.</pattern><data>yell('Hey!',true);</data></sub>
