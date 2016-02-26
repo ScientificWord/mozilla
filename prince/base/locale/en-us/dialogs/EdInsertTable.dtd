@@ -74,7 +74,7 @@
 
 <!ENTITY tableRowHeight.label             "Extra row height">
 <!ENTITY tableRowHeight.accesskey         "H">
-<!ENTITY tableColumnWidth.label           "Extra column width">
+<!ENTITY tableColumnWidth.label           "Column width">
 <!ENTITY tableColumnWidth.accesskey       "W">
 
 <!-- !ENTITY tableBorderSpacing.label         "Spacing">
@@ -245,7 +245,7 @@
 <!ENTITY belowtable.label "Below table">
 <!ENTITY Basecolor.label  "Base color">
 <!ENTITY Rowheight.label  "Extra row height">
-<!ENTITY Columnwidth.label  "Extra column width">
+<!ENTITY Columnwidth.label  "Column width">
 <!ENTITY Cellcolor.label  "Cell color">
 <!ENTITY inherit.label  "Inherit">
 
