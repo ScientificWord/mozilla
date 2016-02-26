@@ -72,7 +72,7 @@
   </xsl:variable>
   <xsl:variable name="usecolor">
     <xsl:choose>
-      <xsl:when test="@border-color or @background-color">1</xsl:when>
+      <xsl:when test="((@border-color and not (@border-color='#ffffff')) or (@background-color and not (@border-color='#ffffff')))">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -107,7 +107,10 @@
 
   <xsl:choose>
     <xsl:when test="$framePosType='ft-wrapped'">
-      <xsl:text>\begin{wrapfigure}</xsl:text>
+      <xsl:choose>
+        <xsl:when test="@frametype='table'">\begin{wraptable}</xsl:when>
+        <xsl:otherwise>\begin{wrapfigure}</xsl:otherwise>
+      </xsl:choose>
       <xsl:if test="@nlines">[<xsl:value-of select="@nlines"/>]</xsl:if>
       <xsl:choose>
         <xsl:when test="@pos='I'">{i}</xsl:when>
@@ -290,7 +293,12 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
-    <xsl:when test="$framePosType='ft-wrapped'">\end{wrapfigure}</xsl:when>
+    <xsl:when test="$framePosType='ft-wrapped'">
+      <xsl:choose>
+        <xsl:when test="@frametype='table'">\end{wraptable}</xsl:when>
+        <xsl:otherwise>\end{wrapfigure}</xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
   </xsl:choose>
     <xsl:if test="($inlineOffset and string-length($inlineOffset))">}</xsl:if>
 </xsl:template>
