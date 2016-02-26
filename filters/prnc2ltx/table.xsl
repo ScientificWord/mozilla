@@ -205,7 +205,7 @@
 </xsl:template>
 
 <xsl:template match="html:td//html:br">
-   <xsl:text xml:space="preserve">\par </xsl:text>
+   <xsl:text xml:space="preserve"></xsl:text>
 </xsl:template> <!-- don't allow \\ in table data-->
 
 <xsl:template match="html:td//*[self::html:br and position()=last()]" />
@@ -425,7 +425,7 @@
     </xsl:choose>
   </xsl:if>
   <xsl:if test="string-length($columnData/@width)">
-    <xsl:text>p{</xsl:text>
+    <xsl:text>{</xsl:text>
     <xsl:value-of select="$columnData/@width" />
     <xsl:text>mm}</xsl:text>
   </xsl:if>
