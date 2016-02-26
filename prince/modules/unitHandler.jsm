@@ -32,6 +32,12 @@ function UnitHandler( editor )
   }
 
   this.currentUnit = null;
+  this.callback = function(unit) {
+                  };
+
+  this.setUnitChangeCallback = function( unitCallback ) {
+    this.callback = unitCallback;
+  }
 
   this.getValueAs = function( value, unit )  // given a measurement that is 'value' in the current unit, provide it in the new unit.
   {
@@ -105,6 +111,7 @@ function UnitHandler( editor )
       this.editFieldList[i].value *= factor;
     }
     this.currentUnit = unit;
+    this.callback(unit);
     return prev;
   };
 
@@ -120,6 +127,7 @@ function UnitHandler( editor )
       this.editFieldList[i].value *= 1; // force a redisplay
     }
     this.currentUnit = unit;
+    this.callback(unit);
   }
 
   this.getCurrentUnit = function()
