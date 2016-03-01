@@ -1698,7 +1698,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
     msiEditorLoadUrl(editorElement, docurl);
     msiUpdateWindowTitle();
   } catch (e) {
-    finalThrow(cmdFailString('Load initial document'), e.message);
+//    finalThrow(cmdFailString('Load initial document'), e.message);
   }
   //  msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
 }
