@@ -29,14 +29,14 @@
 
 
 
-    <xsl:choose>
+<!--     <xsl:choose>
       <xsl:when test="@isSVG">
         <xsl:text>\includesvg[</xsl:text>
       </xsl:when>
-      <xsl:otherwise>
+      <xsl:otherwise> -->
         <xsl:text>\includegraphics[</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
+<!--       </xsl:otherwise>
+    </xsl:choose> -->
     <xsl:if test="@rotation">
       <xsl:text> angle=</xsl:text>
       <xsl:if test="@rotation='rot90'">

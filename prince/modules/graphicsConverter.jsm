@@ -57,24 +57,24 @@ var graphicsConverter = {
     extension = chunks[chunks.length - 1].toLowerCase();
     chunks.length = chunks.length - 1;
     baseName = chunks.join('.');
-    if ((this.OS !== 'win') && (extension === 'wmf' || extension === 'emf')) {
-      // this is OK if .eps files have already been generated
-      destDir = this.baseDir.clone();
-      destDir.append("graphics");
-      destFile = destDir.clone();
-      destFile.append(basename + '.eps');
+    // if ((this.OS !== 'win') && (extension === 'wmf' || extension === 'emf')) {
+    //   // this is OK if .eps files have already been generated
+    //   destDir = this.baseDir.clone();
+    //   destDir.append("graphics");
+    //   destFile = destDir.clone();
+    //   destFile.append(basename + '.eps');
 
-      if (!destfile.exists()) {
-        var promptService = Components.classes['@mozilla.org/embedcomp/prompt-service;1'].getService();
-        promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
-        if (promptService) {
-          promptService.alert(null, 'Warning','Windows metafiles cannot be read on this operating system');
-        }
-        return "";
-      } else {
+    //   if (!destfile.exists()) {
+    //     var promptService = Components.classes['@mozilla.org/embedcomp/prompt-service;1'].getService();
+    //     promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
+    //     if (promptService) {
+    //       promptService.alert(null, 'Warning','Windows metafiles cannot be read on this operating system');
+    //     }
+    //     return "";
+    //   } else {
 
-      }
-    } 
+    //   }
+    // } 
     try {
       command = this.iniParser.getString("Converters", extension);
     }
@@ -143,6 +143,7 @@ var graphicsConverter = {
     var bRunSynchronously = true;
     var resolutionParameter = null;
     var returnPath; // the path of the file to display, relative to baseDir
+    returnPath = 'graphics/' + graphicsFile.leafName;
     var pathParts = graphicsFile.path.split('.');
     if (regex0.test(pathParts[pathParts.length - 1]) || regex1.test(pathParts[pathParts.length - 1])) { // there is a '/' past the last '.', so there is no useful extension -- shouldn't happen
       return;
@@ -204,7 +205,9 @@ var graphicsConverter = {
             param = param.replace(/^\s*/,'');  // aka 'trim'
             param = param.replace(/\s*$/,'');
 
-            returnPath = param.replace(/\"/g, '');
+            if (!/tcache/.test(param)) {
+              returnPath = param.replace(/\"/g, '');
+            } 
             if (/tcache/.test(param)) this.assureSubdir('tcache');
             if (/gcache/.test(param)) this.assureSubdir('gcache');
             if (/graphics/.test(param)) this.assureSubdir('graphics');
@@ -271,17 +274,17 @@ var graphicsConverter = {
     var intermediate;
     var w, h;
     var pixelsPerInch;
-    if (this.OS !== 'win' && (extension === 'wmf' || extension === 'emf')) extension = 'eps';
+    // if (this.OS !== 'win' && (extension === 'wmf' || extension === 'emf')) extension = 'eps';
 
-    switch (extension) {
-      case "eps": origDimension = this.readSizeFromEPSFile(graphicsFile);
-        break;
-      case "pdf": origDimension = this.readSizeFromPDFFile(graphicsFile);
-        break;
-      default:
-        return null;
-        break;
-    }
+    // switch (extension) {
+    //   case "eps": origDimension = this.readSizeFromEPSFile(graphicsFile);
+    //     break;
+    //   case "pdf": origDimension = this.readSizeFromPDFFile(graphicsFile);
+    //     break;
+    //   default:
+    //     return null;
+    //     break;
+    // }
     if (origDimension && origDimension.width > 0) {
       // origDimension is in big points, 'bp'
       this.handler.setCurrentUnit('px');
@@ -730,26 +733,26 @@ var graphicsConverter = {
         testFile.append('graphics');
         testFile.append(graphicFile.leafName);
         if (testFile.exists()) {
-          testFile = testFile.parent;
-          testFile.append(bareLeaf + '.eps');
+          // testFile = testFile.parent;
+          // testFile.append(bareLeaf + '.eps');
+          // if (testFile.exists()) {
+          //   if (this.OS !== 'win') {
+          //     objElement.setAttribute("copiedSrcUrl", 'graphics/' + bareLeaf + '.eps');
+          //   }              
+          testFile = testFile.parent.parent;
+          testFile.append('gcache');
+          testFile.append(bareLeaf + '.png');
           if (testFile.exists()) {
-            if (this.OS !== 'win') {
-              objElement.setAttribute("copiedSrcUrl", 'graphics/' + bareLeaf + '.eps');
-            }              
-            testFile = testFile.parent.parent;
-            testFile.append('gcache');
-            testFile.append(bareLeaf + '.png');
-            if (testFile.exists()) {
-              if (this.product === 'snb') return true;
-              else 
-              {
-                testFile = testFile.parent.parent;
-                testFile.append('tcache');
-                testFile.append(bareLeaf + '.pdf');
-                if (testFile.exists()) return true;
-              }
+            if (this.product === 'snb') return true;
+            else 
+            {
+              testFile = testFile.parent.parent;
+              testFile.append('tcache');
+              testFile.append(bareLeaf + '.pdf');
+              if (testFile.exists()) return true;
             }
           }
+          
         }
         break;
 
@@ -782,6 +785,17 @@ var graphicsConverter = {
               if (testFile.exists()) return true;
             }
           }
+        }
+        break;
+
+      case 'svg':
+        testFile.append('graphics');
+        testFile.append(graphicFile.leafName);
+        if (testFile.exists()) {
+          testFile = testFile.parent.parent;
+          testFile.append('tcache');
+          testFile.append(bareLeaf + '.pdf');
+          if (testFile.exists()) return true;
         }
         break;
 
@@ -856,20 +870,20 @@ var graphicsConverter = {
 
     // Test to see if any derived graphics files are missing
     if (this.allDerivedGraphicsExist(documentDir, graphicFile, objElement)) return true;
-    if (extension === 'wmf' || extension === 'emf') {
-      var extensionRE = /\.([^\.]+)$/;
-      var bareLeaf = graphicFile.leafName.replace(extensionRE,'');
-      var testFile = documentDir.clone();
-      if (testFile) {
-        testFile.append('graphics');
-        testFile.append(bareLeaf + '.eps');
-        if (testFile.exists()) {
-          importName = this.copyAndConvert(testFile, false, theWidth, theHeight);
-        }        
-      }
-    } else {
+    // if (extension === 'wmf' || extension === 'emf') {
+    //   var extensionRE = /\.([^\.]+)$/;
+    //   var bareLeaf = graphicFile.leafName.replace(extensionRE,'');
+    //   var testFile = documentDir.clone();
+    //   if (testFile) {
+    //     testFile.append('graphics');
+    //     testFile.append(bareLeaf + '.eps');
+    //     if (testFile.exists()) {
+    //       importName = this.copyAndConvert(testFile, false, theWidth, theHeight);
+    //     }        
+    //   }
+    // } else {
       importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
-    }
+    // }
 
 
     if (importName){
@@ -891,19 +905,21 @@ var graphicsConverter = {
 
     var objList = aDocument.getElementsByTagName("object");
     var imgList = aDocument.getElementsByTagName("img");
-    var multiCallbackHandler = new graphicsMultipleTimerHandler();
-    var timerHandler;
-    var bChanged = false;
+   //  var multiCallbackHandler = new graphicsMultipleTimerHandler();
+   //  var timerHandler;
+   //  var bChanged = false;
 
     for (var ii = 0; ii < objList.length; ++ii) {
-      timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
-      bChanged = this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null) || bChanged;
+      // timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
+      // bChanged = 
+      this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null) || bChanged;
     }
     for (ii = 0; ii < imgList.length; ++ii) {
-      timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
-      bChanged = this.ensureTypesetGraphicForElement(imgList[ii], documentDir, aWindow, timerHandler) || bChanged;
+      // timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
+      // bChanged = 
+      this.ensureTypesetGraphicForElement(imgList[ii], documentDir, aWindow, null) || bChanged;
     }
-    return (bChanged ? multiCallbackHandler : null);
+//    return (bChanged ? multiCallbackHandler : null);
   }
 };
 

@@ -1913,7 +1913,7 @@ function onAccept()
       //  src = checkSourceAndImportSetting(src, gDialog.isImport);
       if (/\.svg$/.test(src)) {
         imageElement.setAttribute("isSVG", "1");
-        msiRequirePackage(gEditorElement,"svg","");
+        // msiRequirePackage(gEditorElement,"svg","");   We make the pdf file ourselves.
       }
       else
       {
