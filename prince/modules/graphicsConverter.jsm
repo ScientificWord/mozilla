@@ -89,7 +89,13 @@ var graphicsConverter = {
           destDir.append("graphics");
           destFile = destDir.clone();
           destFile.append(leaf);
-          returnPath = "graphics/" + leaf;
+          if (this.OS === "win") {
+            returnPath = "graphics\\" + leaf;
+          }
+          else {
+            returnPath = "graphics/" + leaf;
+          }
+
           if (graphicsFile.path !== destFile.path) {
             if (destFile.exists()) destFile.remove(false);
             graphicsFile.copyTo(destDir, leaf);
