@@ -4146,6 +4146,7 @@ nsEditor::CanContainTag(nsIDOMNode* aParent, const nsAString &aChildTag)
   nsCOMPtr<nsIDOMElement> grandParentElement;
   if (!parentElement) return PR_FALSE;
   nsAutoString parentTag;
+  PRBool result;
   parentElement->GetTagName(parentTag);
   if (parentTag.EqualsLiteral("#text")) {
     // we want to guard against giving permission to put real text into an empty white space node
@@ -4173,6 +4174,12 @@ nsEditor::CanContainTag(nsIDOMNode* aParent, const nsAString &aChildTag)
   }
   else
   {
+    if (parentTag.EqualsLiteral("msiframe")) {
+      NS_NAMED_LITERAL_STRING(frameType, "frameType");
+      nsAutoString type;
+      GetAttributeValue(parentElement, frameType, type, &result);
+      if (result && type.Length() > 0) return PR_FALSE;
+    }
     return TagCanContainTag(parentTag, aChildTag);
   }
 }
