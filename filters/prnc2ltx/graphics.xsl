@@ -442,7 +442,7 @@
       <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>} </xsl:if>
-    <xsl:if test="@border-color or @background-color">
+    <xsl:if test="((@border-color and not (@border-color='#ffffff')) or (@background-color and not (@border-color='#ffffff')))">
       <xsl:text>\fcolorbox</xsl:text>
       <xsl:if test="@border-color">
         <xsl:choose>
@@ -479,7 +479,7 @@
       <xsl:apply-templates/>
       <xsl:text>}</xsl:text>
     </xsl:if>
-    <xsl:if test="not (@border-color or @background-color)">
+    <xsl:if test="not((@border-color and not (@border-color='#ffffff')) or (@background-color and not (@border-color='#ffffff')))">
       <xsl:apply-templates/>
     </xsl:if>
   </xsl:template>
