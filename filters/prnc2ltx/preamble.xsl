@@ -222,7 +222,9 @@
       <xsl:value-of select="@package"/>
       <xsl:text>}  %% </xsl:text>
       <xsl:value-of select="@pri"/>
-      <xsl:if test="@package='svg'">
+      <xsl:text>
+      </xsl:text>
+<!--       <xsl:if test="@package='svg'">
         <xsl:text>\IfFileExists{/dev/null}{%</xsl:text>
         <xsl:value-of select="$newline"/>
         <xsl:text>\newcommand{\Inkscape}{/Applications/Inkscape.app/Contents/Resources/bin/inkscape }%</xsl:text>
@@ -239,7 +241,7 @@
         <xsl:value-of select="$newline"/>
         <xsl:text>}</xsl:text>
         <xsl:value-of select="$newline"/>
-      </xsl:if>
+      </xsl:if> -->
     </xsl:for-each>
 
 
@@ -252,7 +254,7 @@
     <xsl:value-of select="$newline"/>
     <xsl:text>\graphicspath{{../graphics/}{../tcache/}{../gcache/}}</xsl:text>
     <xsl:value-of select="$newline"/>
-    <xsl:text>\DeclareGraphicsExtensions{.pdf,.svg,.eps,.ps,.png,.jpg,.jpeg}</xsl:text>
+    <xsl:text>\DeclareGraphicsExtensions{.pdf,.eps,.ps,.png,.jpg,.jpeg}</xsl:text>
 
 
 
