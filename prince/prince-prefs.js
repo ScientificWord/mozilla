@@ -92,7 +92,7 @@ pref("swp.graphics.hmargin", "0.1");
 pref("swp.graphics.vmargin", "0.1");
 pref("swp.graphics.paddingwidth", "0.1");
 pref("swp.graphics.bgcolor", "#ffffff");
-pref("swp.graphics.bordercolor", "#000000");
+pref("swp.graphics.bordercolor", "#ffffff");
 pref("swp.graphics.usedefaultwidth", false);
 pref("swp.graphics.usedefaultheight", false);
 
@@ -149,7 +149,7 @@ pref("swp.graph.VMargin", "0.1");
 pref("swp.graph.paddingwidth", "0.0");
 pref("swp.graph.paddingcolor", "#FFFFFF");
 pref("swp.graph.bgcolor", "#FFFFFF");
-pref("swp.graph.bordercolor", "#000000");
+pref("swp.graph.bordercolor", "#ffffff");
 pref("swp.graph.captionplacement", "none");
 pref("swp.graph.snapshotres", 600);
 pref("swp.matrix.cols", 3);
