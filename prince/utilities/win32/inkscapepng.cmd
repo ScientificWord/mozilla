@@ -1,8 +1,4 @@
-
-
-call "%1"
-set  PATH=%MSITEXBIN%:%PATH%
-
-"%INKSCAPE%" -z --export-png="%3" --file "%2"
+call %1
+INKSCAPE -z --export-png="%3" --file "%2"
 
 
