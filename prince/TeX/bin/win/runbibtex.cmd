@@ -1,5 +1,5 @@
 @echo off
-call "%1"
+call %1
 
 setlocal enabledelayedexpansion
 REM $1 is the tex directory we are working in
