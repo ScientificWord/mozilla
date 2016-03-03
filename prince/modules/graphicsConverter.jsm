@@ -175,13 +175,8 @@ var graphicsConverter = {
         ithCommand = commandlist[i];
         ithCommand = ithCommand.replace(/^\s*/,'');  // aka 'trim'
         ithCommand = ithCommand.replace(/\s*$/,'');
-        // if (ithCommand.indexOf('epstopdf') == 0) {
-        //   this.handleEpsToPdfConversion(ithCommand, graphicsFile);
-        //   continue;
-        // }
         commandparts = commandlist[i].split(',');
         progname = commandparts[0];
-        // if (this.OS === "win") progname += ".exe";
         theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
         // use progname unchanged if it contains a '/', otherwise assume it is in the utilties dir.
         if (!regex0.test(progname) && !regex1.test(progname))
@@ -280,17 +275,6 @@ var graphicsConverter = {
     var intermediate;
     var w, h;
     var pixelsPerInch;
-    // if (this.OS !== 'win' && (extension === 'wmf' || extension === 'emf')) extension = 'eps';
-
-    // switch (extension) {
-    //   case "eps": origDimension = this.readSizeFromEPSFile(graphicsFile);
-    //     break;
-    //   case "pdf": origDimension = this.readSizeFromPDFFile(graphicsFile);
-    //     break;
-    //   default:
-    //     return null;
-    //     break;
-    // }
     if (origDimension && origDimension.width > 0) {
       // origDimension is in big points, 'bp'
       this.handler.setCurrentUnit('px');
