@@ -1393,8 +1393,10 @@ function documentToTeXString(document, xslPath)
     xsltProcessor.importStylesheet(doc);
     var newDoc = xsltProcessor.transformToDocument(document);
     strResult = newDoc.documentElement.textContent || "";
-    strResult=strResult.replace(/[\n\t ]*(\\MsiNewline[\n\t ]*)+/g, "\n");
-    strResult=strResult.replace(/[\n\t ]*(\\MsiBlankline[\n\t ]*)+/g, "\n\n");
+
+    strResult=strResult.replace(/(\s*)\n(\s*)/g,'\n');
+    strResult=strResult.replace(/(\\MsiNewline)+/g, "\n");
+    strResult=strResult.replace(/(\\MsiBlankline)+/g, "\n\n");
 
 
 //     while (strResult.search(/\n[ \t]+/) >= 0)
