@@ -5,9 +5,11 @@
   <sub ctx="text" tp="subst"><pattern>&#x2013;-</pattern><data>&#x2014;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>``</pattern><data>&#x201C;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>'</pattern><data>&#x2019;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern> '</pattern><data> &#x2018;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>&#x2019;'</pattern><data>&#x201D;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>''</pattern><data>&#x201D;</data><context/><info>0,0</info></sub>
-  <sub ctx="text" tp="subst"><pattern>"</pattern><data>&#x201C;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>"</pattern><data>&#x201D;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern> "</pattern><data> &#x201C;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>&#x201C;&#x00A0;</pattern><data>&#x201D; </data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>."</pattern><data>.&#x201D;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>,"</pattern><data>,&#x201D;</data><context/><info>0,0</info></sub>
