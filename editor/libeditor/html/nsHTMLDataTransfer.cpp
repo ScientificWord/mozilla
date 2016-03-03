@@ -695,8 +695,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 
 
     // pasting does not inherit local inline styles
-    res = RemoveAllInlineProperties();
-    NS_ENSURE_SUCCESS(res, res);
+    // res = RemoveAllInlineProperties();
+    // NS_ENSURE_SUCCESS(res, res);
   }
   else
   {
