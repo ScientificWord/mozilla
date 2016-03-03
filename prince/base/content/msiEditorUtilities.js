@@ -11615,10 +11615,15 @@ function detectLicenseOnClipboard() {
 function clearDir( aDirectory, extension) {
   var regex = new RegExp('\\.' + extension + '$', 'i');
   var items = aDirectory.directoryEntries;
-  while (items.hasMoreElements()) {
+  while (items && items.hasMoreElements()) {
     var item = items.getNext().QueryInterface(Components.interfaces.nsIFile);
-    if (item.isFile() && regex.test(item.leafName)) {
-      item.remove(false);
+    if (item && item.isFile() && regex.test(item.leafName)) {
+      try {
+        item.remove(false);
+      }
+      catch(e) {
+
+      }
     }
   }
 }
