@@ -79,7 +79,7 @@ function msiEditorChangeObserver(editorElement)
         var bIsRealDocument = false;
         var currentURL = msiGetEditorURL(this.mEditorElement);
         msiDumpWithID("In msiEdReplace documentCreated observer for editor element [@], currentURL is " + currentURL + "].\n", this.mEditorElement);
-        if (currentURL != null)
+        if (currentURL !== null)
         {
           var fileName = GetFilename(currentURL);
           bIsRealDocument = (fileName != null && fileName.length > 0);
@@ -112,7 +112,7 @@ function loadDialog()
 
   var theStringSource = (gFindInst.searchString ? gFindInst.searchString
                                                 : gFindService.searchString);
-  if (theStringSource != null && theStringSource.length == 0)
+  if (theStringSource != null && theStringSource.length === 0)
     theStringSource = null;
 
   gReplaceDialog.bEditorReady = false;
@@ -261,12 +261,8 @@ function onFindNext()
   return result;
 }
 
-function onReplace()
-{
-  clearMessages();
-  // Does the current selection match the find string?
-  var selection = gEditor.selection;
 
+function selectionMatchesFindString() {
   var selStr = selection.toString();
   var specStr = gFindInst.searchString;
   if (!gReplaceDialog.caseSensitive.checked)
@@ -277,41 +273,41 @@ function onReplace()
   // Unfortunately, because of whitespace we can't just check
   // whether (selStr == specStr), but have to loop ourselves.
   // N chars of whitespace in specStr can match any M >= N in selStr.
-  var matches = true;
   var specLen = specStr.length;
   var selLen = selStr.length;
   if (selLen < specLen)
-    matches = false;
-  else
+    return false;
+  var specArray = specStr.match(/\S+|\s+/g);
+  var selArray = selStr.match(/\S+|\s+/g);
+  if ( specArray.length != selArray.length)
+    return false;
+  for (var i=0; i<selArray.length; i++)
   {
-    var specArray = specStr.match(/\S+|\s+/g);
-    var selArray = selStr.match(/\S+|\s+/g);
-    if ( specArray.length != selArray.length)
-      matches = false;
-    else
+    if (selArray[i] != specArray[i])
     {
-      for (var i=0; i<selArray.length; i++)
+      if ( /\S/.test(selArray[i][0]) || /\S/.test(specArray[i][0]) )
       {
-        if (selArray[i] != specArray[i])
-        {
-          if ( /\S/.test(selArray[i][0]) || /\S/.test(specArray[i][0]) )
-          {
-            // not a space chunk -- match fails
-            matches = false;
-            break;
-          }
-          else if ( selArray[i].length < specArray[i].length )
-          {
-            // if it''s a space chunk then we only care that sel be
-            // at least as long as spec
-            matches = false;
-            break;
-          }
-        }
+        // not a space chunk -- match fails
+        return false;
+      }
+      else if ( selArray[i].length < specArray[i].length )
+      {
+        // if it''s a space chunk then we only care that sel be
+        // at least as long as spec
+        return false;
       }
     }
   }
+  return true;
+}
 
+
+function onReplace()
+{
+  var matches = true;
+  clearMessages();
+  // Does the current selection match the find string?
+  matches = selectionMatchesFindString();
   // If the current selection doesn''t match the pattern,
   // then we want to find the next match, but not do the replace.
   // That''s what most other apps seem to do.
@@ -323,11 +319,11 @@ function onReplace()
   // so make that a special case:
   var ed = msiGetEditor(gReplaceDialog.replaceInput);
   var str = ed.outputToString("text/xml",2);
-  var re = /.*dialogbase>(.*)<\/dialogbase.*/
+  var re = /.*dialogbase>(.*)<\/dialogbase.*/;
   var arr = re.exec(str);
   if (arr && arr.length > 1) replStr = arr[1];
   else return false;
-  if (replStr == "")
+  if (replStr === "")
     gEditor.deleteSelection(0);
   else
     gEditor.insertHTMLWithContext(replStr, "", "0,0", "", null, null, 0, true, true );
@@ -340,7 +336,7 @@ function onReplace()
 function clearMessages()
 {
   document.getElementById("notfound").setAttribute('hidden', 'true');
-  document.getElementById("replaceallResults").setAttribute('hidden','true')
+  document.getElementById("replaceallResults").setAttribute('hidden','true');
 }
 
 function showNotFound()
@@ -351,9 +347,8 @@ function showNotFound()
 function showReplacedCount(count)
 {
   document.getElementById("replacemessage").textContent =
-    gStringBundle.GetStringFromName("Replaced") + " "
-      + count +
-      " " + gStringBundle.GetStringFromName("occurrences");
+    gStringBundle.GetStringFromName("Replaced") + " " + 
+      count + " " + gStringBundle.GetStringFromName("occurrences");
   document.getElementById("replaceallResults").removeAttribute("hidden");
 }
 
