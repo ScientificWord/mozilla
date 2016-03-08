@@ -263,6 +263,7 @@ function onFindNext()
 
 
 function selectionMatchesFindString() {
+  var selection = gEditor.selection;
   var selStr = selection.toString();
   var specStr = gFindInst.searchString;
   if (!gReplaceDialog.caseSensitive.checked)
