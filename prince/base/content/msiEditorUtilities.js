@@ -11576,7 +11576,7 @@ function detectLicenseInText(someText, editor) {
     }
   }
   catch(e) {
-    dump('if exception, ignore it');
+    dump('if exception, ignore it: ' + e.messaget);
   }
 }
 
