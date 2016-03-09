@@ -40,6 +40,19 @@ function OK(){
   return true;
 }
 
+
+function doPostDialogFunction()
+{
+  var editorElement = msiGetParentEditorElementForDialog(window);
+//  dump("Hit postdialog function in ComputeVariables dialog.\n");
+  ShutdownEditorsForWindow();
+  if (data.mParentWin && ("postDialogTimerCallback" in data.mParentWin))
+    data.mDialogTimer = data.mParentWin.setTimeout(data.mParentWin.postDialogTimerCallback, 0, editorElement, data);
+//  if (data!=null && ("afterDialog" in data) && data.afterDialog != null)
+//    data.afterDialog(editorElement);
+}
+
+
 function Cancel(){
   data.Cancel = true;
   return true;
