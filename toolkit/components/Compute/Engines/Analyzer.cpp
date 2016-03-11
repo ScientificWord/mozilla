@@ -194,8 +194,8 @@ SEMANTICS_NODE* AppendNewBucketRecord(U32 which_bucket, SEMANTICS_NODE* sem_chil
       SEMANTICS_NODE* contents = NULL;
       if (fromNode)
          contents = GetSemanticsFromNode(base, bucket, pAnalyzer);
-	    else
-	       contents = GetSemanticsList(base, bucket, false, pAnalyzer);
+            else
+               contents = GetSemanticsList(base, bucket, false, pAnalyzer);
 
 
       bucket->first_child = contents;
@@ -379,11 +379,11 @@ LOG_MSG_REC* Analyzer::GetMsgs()
 
 
 void Analyzer::AppendIDList(char* mml_canonical_name, MNODE* mml_node){
-	 SetNodeIDsList (AppendIDRec(NodeIDsList(),
-	                             GetAnalyzerData() -> CurrClientID(),
-								 mml_canonical_name,
- 								 mml_node,
-								 ScrStr()));
+         SetNodeIDsList (AppendIDRec(NodeIDsList(),
+                                     GetAnalyzerData() -> CurrClientID(),
+                                                                 mml_canonical_name,
+                                                                 mml_node,
+                                                                 ScrStr()));
 }
 
 
@@ -646,7 +646,7 @@ void AnalyzeMI(MNODE* mml_mi_node,
         snode->semantic_type = SEM_TYP_UCONSTANT;
 
     } else if (mi_ilk == MI_Laplace || mi_ilk == MI_Fourier || mi_ilk == MI_function) {
-    	
+        
         snode->contents = DuplicateString(mml_mi_node->p_chdata);;
         if (mi_ilk == MI_Laplace || mi_ilk == MI_Fourier)
           snode->semantic_type = SEM_TYP_TRANSFORM;
@@ -700,10 +700,10 @@ void AnalyzeMI(MNODE* mml_mi_node,
 
         if (!mml_mi_node->prev && mml_mi_node->parent) {
 
-		  MNODE* parent = mml_mi_node->parent;
+                  MNODE* parent = mml_mi_node->parent;
 
           if (ElementNameIs(parent,  "msub") ||
-              ElementNameIs(parent, "msup")	 ||
+              ElementNameIs(parent, "msup")      ||
               ElementNameIs(parent, "msubsup") ||
               ElementNameIs(parent, "munder") ||
               ElementNameIs(parent, "mover")  ||
@@ -827,7 +827,7 @@ void AnalyzeMTEXT(MNODE* mml_mtext_node,
         // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData() -> CurrClientID(),
         //                             mml_canonical_name, mml_mtext_node,
         //                             pAnalyzer -> ScrStr()) );
-		pAnalyzer -> AppendIDList(mml_canonical_name, mml_mtext_node);
+                pAnalyzer -> AppendIDList(mml_canonical_name, mml_mtext_node);
         snode->semantic_type = SEM_TYP_TEXT;
       }
     }
@@ -1027,7 +1027,7 @@ void AnalyzeMN(MNODE* mml_mn_node, SEMANTICS_NODE* snode, Analyzer* pAnalyzer)
       // Store a name-to-node back mapping record for this object.
       // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData() -> CurrClientID(),
       //                             mml_canonical_name, mml_mn_node, pAnalyzer -> ScrStr()) );
-	  pAnalyzer -> AppendIDList(mml_canonical_name, mml_mn_node);
+          pAnalyzer -> AppendIDList(mml_canonical_name, mml_mn_node);
     }
     snode->contents = num_str;
   } else
@@ -1099,12 +1099,12 @@ void AnalyzeMFRAC(MNODE* mml_mfrac, SEMANTICS_NODE* snode, int& nodes_done, Anal
   MNODE* rover = mml_mfrac->first_kid;
   
   if (rover) {
-	  AppendNewBucketRecord(MB_NUMERATOR, NULL, s_target, rover, true, pAnalyzer);
+          AppendNewBucketRecord(MB_NUMERATOR, NULL, s_target, rover, true, pAnalyzer);
 
       rover = rover->next;
 
       if (rover) {
-	    AppendNewBucketRecord(MB_DENOMINATOR, NULL, s_target, rover, true, pAnalyzer);
+            AppendNewBucketRecord(MB_DENOMINATOR, NULL, s_target, rover, true, pAnalyzer);
       }
   }
 
@@ -1125,11 +1125,11 @@ void AnalyzeMSQRT(MNODE* mml_msqrt_node,
                   Analyzer* pAnalyzer)
 {
     nodes_done = 1;
-	snode->semantic_type = SEM_TYP_SQRT;
+        snode->semantic_type = SEM_TYP_SQRT;
 
     MNODE* rover = mml_msqrt_node->first_kid;
     if (rover) {
-	  AppendNewBucketRecord(MB_ROOT_BASE, NULL, snode, rover, false, pAnalyzer);
+          AppendNewBucketRecord(MB_ROOT_BASE, NULL, snode, rover, false, pAnalyzer);
     }    
 }
 
@@ -1151,7 +1151,7 @@ void AnalyzeMROOT(MNODE* mml_mroot_node,
     rover = rover->next;
 
     if (rover) {
-	  AppendNewBucketRecord(MB_ROOT_EXPONENT, NULL, snode, rover, true, pAnalyzer); 
+          AppendNewBucketRecord(MB_ROOT_EXPONENT, NULL, snode, rover, true, pAnalyzer); 
     }
   }
 
@@ -1228,7 +1228,7 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
 
     if (key) {
       delete[] snode->contents;
-	  snode->contents = DuplicateString(key);
+          snode->contents = DuplicateString(key);
     }
   } else {
     TCI_ASSERT(!"No attribute list.");
@@ -1237,7 +1237,7 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
   int num_children = 0;
   MNODE* rover = mml_mfenced_node->first_kid;
   while (rover) {
-	AppendNewBucketRecord(MB_UNNAMED, NULL, snode, rover, true, pAnalyzer);
+        AppendNewBucketRecord(MB_UNNAMED, NULL, snode, rover, true, pAnalyzer);
 
     num_children++;
     rover = rover->next;
@@ -1393,8 +1393,8 @@ void AnalyzeMSUP(MNODE* mml_msup_node,
     break;
 
     case ET_CONJUGATE_INDICATOR:{
-	    snode->semantic_type = SEM_TYP_CONJUGATE;
-		  SEMANTICS_NODE* new_content = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+            snode->semantic_type = SEM_TYP_CONJUGATE;
+                  SEMANTICS_NODE* new_content = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
         
       if (new_content->semantic_type == SEM_TYP_GENERIC_FENCE)
           new_content->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
@@ -1404,14 +1404,14 @@ void AnalyzeMSUP(MNODE* mml_msup_node,
     break;
 
     case ET_TRANSPOSE_INDICATOR:{
-		   AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+                   AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
        snode->semantic_type = SEM_TYP_MTRANSPOSE;
        done = true;
     }
     break;
 
     case ET_HTRANSPOSE_INDICATOR: {
-		   AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+                   AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
        snode->semantic_type = SEM_TYP_HTRANSPOSE;
        done = true;
       }
@@ -1477,7 +1477,7 @@ void AnalyzeMSUP(MNODE* mml_msup_node,
             // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
             //                             mml_canonical_name, mml_msup_node,
             //                             pAnalyzer -> ScrStr()) );
-			      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
+                              pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
             int local_nodes_done;
             BUCKET_REC* br = ArgsToBucket(mml_msup_node, local_nodes_done, pAnalyzer);
             nodes_done += local_nodes_done;
@@ -1559,7 +1559,7 @@ void AnalyzeMSUP(MNODE* mml_msup_node,
             //                             mml_canonical_name, mml_msup_node,
             //                             pAnalyzer -> ScrStr()) );
 
-			      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
+                              pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
             snode->semantic_type = SEM_TYP_VARIABLE;
           } else
             TCI_ASSERT(0);
@@ -1594,7 +1594,7 @@ void AnalyzeMSUP(MNODE* mml_msup_node,
             // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
             //                             mml_canonical_name, mml_msup_node,
             //                             pAnalyzer -> ScrStr()) );
-			      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
+                              pAnalyzer -> AppendIDList(mml_canonical_name, mml_msup_node);
             int local_nodes_done;
             BUCKET_REC *br = ArgsToBucket(mml_msup_node, local_nodes_done, pAnalyzer);
             nodes_done += local_nodes_done;
@@ -1626,7 +1626,7 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
 
   MNODE* base = mml_msub_node->first_kid;
   if (IsSUBSTITUTION(mml_msub_node)) {
-   	AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+        AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
 
     MNODE *subst = base->next;
     CreateSubstBucket(subst, snode, true, pAnalyzer);
@@ -1705,8 +1705,8 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
           // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
           //                             mml_canonical_name, mml_msub_node,
           //                             pAnalyzer -> ScrStr()) );
-		  // 
-		      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msub_node);
+                  // 
+                      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msub_node);
           AnalyzeSubscriptedFunc(mml_msub_node, snode, nodes_done, pAnalyzer);
         } else {
           TCI_ASSERT(0);
@@ -1726,8 +1726,8 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
         // Store a name-to-node back mapping record for this object.
         // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
         //                             mml_canonical_name, base, pAnalyzer -> ScrStr()) );
-		// 
-		pAnalyzer -> AppendIDList(mml_canonical_name, base);
+                // 
+                pAnalyzer -> AppendIDList(mml_canonical_name, base);
         AnalyzeSubscriptedArgFunc(mml_msub_node, snode, pAnalyzer);
       }
       break;
@@ -1744,7 +1744,7 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
           // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer->GetAnalyzerData() -> CurrClientID(),
           //                             mml_canonical_name, mml_msub_node,
           //                             pAnalyzer -> ScrStr()) );
-		  pAnalyzer -> AppendIDList(mml_canonical_name, mml_msub_node);
+                  pAnalyzer -> AppendIDList(mml_canonical_name, mml_msub_node);
           snode->semantic_type = SEM_TYP_VARIABLE;
         } else if (sub_type == ET_VARIABLE || sub_type == ET_NUMBER ||
                    sub_type == ET_EXPRESSION) {
@@ -1798,7 +1798,7 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
   if (IsSUBSTITUTION(mml_msubsup_node)) {
 
 
-	SEMANTICS_NODE* s_base = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+        SEMANTICS_NODE* s_base = AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
 
     if (s_base->semantic_type == SEM_TYP_GENERIC_FENCE || s_base->semantic_type == SEM_TYP_BRACKETED_LIST)
       s_base->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
@@ -1881,7 +1881,7 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
             // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
             //                             mml_canonical_name, mml_msubsup_node,
             //                             pAnalyzer -> ScrStr()) );
-			      pAnalyzer -> AppendIDList(mml_canonical_name, mml_msubsup_node);
+                              pAnalyzer -> AppendIDList(mml_canonical_name, mml_msubsup_node);
             AnalyzeSubscriptedFunc(mml_msubsup_node, s_func, nodes_done, pAnalyzer);
             
             BUCKET_REC* base_bucket = MakeParentBucketRec(MB_UNNAMED, s_func);
@@ -2031,8 +2031,8 @@ void AnalyzeMOVER(MNODE* mml_mover_node,
     AccentType top_type = GetAboveType(bt, base->next, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
 
     if (top_type == OT_BAR && base->p_chdata && !strcmp(base->p_chdata, "lim")) {
-     	TranslateEmbellishedOp(mml_mover_node, snode, nodes_done, pAnalyzer);
-     	return;
+        TranslateEmbellishedOp(mml_mover_node, snode, nodes_done, pAnalyzer);
+        return;
     }
 
     bool done = false;
@@ -2055,7 +2055,7 @@ void AnalyzeMOVER(MNODE* mml_mover_node,
 
     case OT_BAR:
       if (pAnalyzer -> Get_overbar_conj()) {
-	    AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
+            AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
 
         snode->semantic_type = SEM_TYP_CONJUGATE;
         if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
@@ -2121,7 +2121,7 @@ void AnalyzeMOVER(MNODE* mml_mover_node,
         // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
         //                             mml_canonical_name, mml_mover_node,
         //                             pAnalyzer -> ScrStr()) );
-		pAnalyzer -> AppendIDList(mml_canonical_name, mml_mover_node);
+                pAnalyzer -> AppendIDList(mml_canonical_name, mml_mover_node);
         snode->semantic_type = SEM_TYP_VARIABLE;
       }
     }
@@ -2149,9 +2149,9 @@ void AnalyzeMUNDER(MNODE * mml_munder_node, SEMANTICS_NODE * snode,
     /*
         AccentType under_type = GetUnderType(bt, base->next);
         switch ( under_type ) {
-	      case  UT_WHATEVER :
-	      default :
-	      break;
+              case  UT_WHATEVER :
+              default :
+              break;
         }
     */
     // Look for a base/decoration pair that dictates semantics
@@ -2205,7 +2205,7 @@ void AnalyzeMUNDER(MNODE * mml_munder_node, SEMANTICS_NODE * snode,
         // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
         //                             mml_canonical_name, mml_munder_node,
         //                             pAnalyzer -> ScrStr()) );
-		pAnalyzer -> AppendIDList(mml_canonical_name, mml_munder_node);
+                pAnalyzer -> AppendIDList(mml_canonical_name, mml_munder_node);
         snode->semantic_type = SEM_TYP_VARIABLE;
       }
     }
@@ -2586,7 +2586,7 @@ SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
               rover = rover->next;
               l_nodes_done--;
             }
-		} else {
+                } else {
           if (ContentIs(mo, "&#x2062;")) {
              int break_here = 14;
           }
@@ -2892,7 +2892,7 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE* mml_node,
 
             rv->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
             if (mml_node->first_kid) {
-			  AppendNewBucketRecord(MB_UNNAMED, NULL, rv, mml_node->first_kid, false, pAnalyzer);
+                          AppendNewBucketRecord(MB_UNNAMED, NULL, rv, mml_node->first_kid, false, pAnalyzer);
             }
 
         } else {
@@ -3166,7 +3166,7 @@ void TranslateEmbellishedOp(MNODE* mml_embellop_node,
 
 /*
 SEM_TYP_INTEGRAL
-			MB_LOWERLIMIT	MB_UPPERLIMIT	MB_OPERAND	 MB_INTEG_VAR
+                        MB_LOWERLIMIT   MB_UPPERLIMIT   MB_OPERAND       MB_INTEG_VAR
 
          <mml:msubsup>
 BIGOP
@@ -3208,7 +3208,7 @@ void OperandToBucketList(MNODE * big_op_node, SemanticType bigop_type,
   int local_nodes_done = 0;
   if (big_op_node && big_op_node->next) {
     MNODE *mml_operand = big_op_node->next;
-	  TCI_ASSERT(CheckLinks(mml_operand));
+          TCI_ASSERT(CheckLinks(mml_operand));
 
     // step over any whitespace
     while (IsWhiteSpace(mml_operand)) {
@@ -3619,7 +3619,7 @@ void AnalyzeSubscriptedFunc(MNODE * mml_msub_node,
       // SEMANTICS_NODE *log_base = GetSemanticsFromNode(base->next, bucket, pAnalyzer);
       // bucket->first_child = log_base;
       // log_base->parent = bucket;
-	  AppendNewBucketRecord(MB_LOG_BASE, NULL, snode, base->next, true, pAnalyzer);
+          AppendNewBucketRecord(MB_LOG_BASE, NULL, snode, base->next, true, pAnalyzer);
 
     } else
       TCI_ASSERT(0);
@@ -3690,7 +3690,7 @@ void AnalyzeSubscriptedFence(MNODE* mml_msub_node,
         // SEMANTICS_NODE* norm_num = GetSemanticsFromNode(base->next, bucket, pAnalyzer);
         // bucket->first_child = norm_num;
         // norm_num->parent = bucket;
-		AppendNewBucketRecord(MB_NORM_NUMBER, NULL, snode, base->next, true, pAnalyzer);
+                AppendNewBucketRecord(MB_NORM_NUMBER, NULL, snode, base->next, true, pAnalyzer);
 
       } else {
         TCI_ASSERT(!"The subscript is missing? - bad MathML");
@@ -3880,14 +3880,14 @@ SEMANTICS_NODE* ExtractIndepVar(MNODE * rover, Analyzer* pAnalyzer)
 
       MNODE* base = rover->first_kid;
       s_local = CreateSemanticsNode(SEM_TYP_POWERFORM);
-	  //s_local->semantic_type = SEM_TYP_POWERFORM;
+          //s_local->semantic_type = SEM_TYP_POWERFORM;
       
       // BUCKET_REC* base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
       // AppendBucketRecord(s_local->bucket_list, base_bucket);
       // SEMANTICS_NODE* s_base = GetSemanticsFromNode(base, base_bucket, pAnalyzer);
       // base_bucket->first_child = s_base;
       // s_base->parent = base_bucket;
-	  AppendNewBucketRecord(MB_SCRIPT_BASE, NULL, s_local, base, true, pAnalyzer);
+          AppendNewBucketRecord(MB_SCRIPT_BASE, NULL, s_local, base, true, pAnalyzer);
 
       // BUCKET_REC* power_bucket = MakeBucketRec(MB_SCRIPT_UPPER, NULL);
       // AppendBucketRecord(s_local->bucket_list, power_bucket);
@@ -3932,7 +3932,7 @@ void CreateSubscriptedVar(MNODE* mml_msub_node,
         }
       }
     }
-	mml_canonical_name = DuplicateString(buffer);
+        mml_canonical_name = DuplicateString(buffer);
   } else
     mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
   if (!mml_canonical_name) {
@@ -4035,7 +4035,7 @@ void AnalyzeBesselFunc(MNODE* mml_msub_node,
 
     MNODE *sub = base->next;
     if (sub) {
-	  AppendNewBucketRecord(MB_UNNAMED, NULL, snode, sub, true, pAnalyzer);
+          AppendNewBucketRecord(MB_UNNAMED, NULL, snode, sub, true, pAnalyzer);
       // BUCKET_REC *sub_bucket = MakeBucketRec(MB_UNNAMED, NULL);
       // AppendBucketRecord(snode->bucket_list, sub_bucket);
       // SEMANTICS_NODE *s_sub = GetSemanticsFromNode(sub, sub_bucket, pAnalyzer);
@@ -4131,26 +4131,62 @@ void FixInvisibleTimesAfterFunction(MNODE* dMML_tree, AnalyzerData* pData)
          
          char* mml_canonical_name = GetCanonicalIDforMathNode(rover, pData -> GetGrammar());
 
-		 if (LocateFuncRec(pData -> DE_FuncNames(), mml_canonical_name, NULL)) {
+         if (LocateFuncRec(pData -> DE_FuncNames(), mml_canonical_name, NULL)) {
              
              // Look ahead in the MML list for an operator.
              OpIlk op_ilk;
              int advance;
-             rover = LocateOperator(rover, op_ilk, advance);
-	        
-			 if ( ContentIs(rover,"&#x2062;") ){
-                delete rover->p_chdata;
-                rover->p_chdata = DuplicateString("&#x2061;"); // ApplyFunction
-			 }
-			 
-		 }
-	  } else if (rover->first_kid) {
-	     // recursive descent
-		 FixInvisibleTimesAfterFunction(rover->first_kid, pData);
-	  }
+             
+             MNODE* oper = LocateOperator(rover, op_ilk, advance);
+             if (oper == NULL){
+               // check for y', dy/dx
+               MNODE* n = rover->next;
+               if (n && ElementNameIs(n, "mo") && ContentIs(n, "&#x2032;")){ // y'
+                  MNODE* p = rover->parent;
+                  if (p && ElementNameIs(p, "mrow" )){
+                    MNODE* pp = p->parent;
+                    if (pp && ElementNameIs(pp, "msup")){
+                      rover=pp;
+                      oper = LocateOperator(rover, op_ilk, advance);
+                    }
+                  }
+                  
+               } else {
+                 MNODE* p = rover->parent;
+                 if (p && ElementNameIs(p, "mrow" )){
+                   MNODE* pp = p->parent;
+                   MNODE *m_num;
+                   MNODE *m_den;
+ 
+                   if (pp && ElementNameIs(pp, "mfrac") && IsDIFFOP (pp, &m_num, &m_den)){
+                     rover=pp;
+                     oper = LocateOperator(rover, op_ilk, advance);
+                   }
+                 }
+               }
+             } else if (ContentIs(oper, "&#x2032;")){
+               MNODE* p = rover->parent;
+               
+               if (p && (ElementNameIs(p, "msup")||ElementNameIs(p, "msubsup"))){
+                 rover=p;
+                 oper = LocateOperator(rover, op_ilk, advance);
+               }
+             }
+         
+	     if (oper != NULL &&  ContentIs(oper,"&#x2062;") ){
+                 delete oper->p_chdata;
+                 oper->p_chdata = DuplicateString("&#x2061;"); // ApplyFunction
+                 rover = oper;
+               }
+             }           
+         
+      } else if (rover->first_kid) {
+        // recursive descent
+        FixInvisibleTimesAfterFunction(rover->first_kid, pData);
+      }
 
       if (rover) 
-	     rover = rover -> next;
+        rover = rover -> next;
    }
 
 }
@@ -4172,27 +4208,27 @@ void FixInvisibleTimesAfterFunction2(MNODE* dMML_tree, AnalyzerData* pData)
          
          char* mml_canonical_name = GetCanonicalIDforMathNode(rover, pData -> GetGrammar());
 
-		     if ( (LocateFuncRec(pData -> DE_FuncNames(), mml_canonical_name, NULL)) || 
-		          (pData -> IsDefinedFunction(rover) ) ) {
+                     if ( (LocateFuncRec(pData -> DE_FuncNames(), mml_canonical_name, NULL)) || 
+                          (pData -> IsDefinedFunction(rover) ) ) {
              
              // Look ahead in the MML list for an operator.
              OpIlk op_ilk;
              int advance;
              rover = LocateOperator(rover, op_ilk, advance);
-	        
-			 if ( ContentIs(rover,"&#x2062;") ){
+                
+                         if ( ContentIs(rover,"&#x2062;") ){
              delete rover->p_chdata;
              rover->p_chdata = DuplicateString("&#x2061;"); // ApplyFunction
-			 }
-			 
-		 }
-	  } else if (rover->first_kid) {
-	     // recursive descent
-		 FixInvisibleTimesAfterFunction(rover->first_kid, pData);
-	  }
+                         }
+                         
+                 }
+          } else if (rover->first_kid) {
+             // recursive descent
+                 FixInvisibleTimesAfterFunction(rover->first_kid, pData);
+          }
 
       if (rover) 
-	     rover = rover -> next;
+             rover = rover -> next;
    }
 
 }
