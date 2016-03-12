@@ -291,11 +291,13 @@ msibr[type="newLine"]:before {
 *[showinvis="true"] msibr[type="lineBreak"]:before {
   content: "\AC\A";
   color: green;
+  -moz-user-select: -moz-none;
 }
 
 *[showinvis="true"] msibr[type="newLine"]:before {
   content: "\AC\A";
   color: green;
+  -moz-user-select: -moz-none;
 }
 
 
