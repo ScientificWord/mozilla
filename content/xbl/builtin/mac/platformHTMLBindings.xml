@@ -175,7 +175,7 @@
 
       <handler event="keypress" key="v" command="cmd_pasteNoFormatting" modifiers="accel,alt,shift"/>
       <!-- Prince commands -->
-      <handler event="keypress" key=">" command="cmd_insertSubstructure" modifiers="accel"/>
+      <handler event="keypress" key=">" command="cmd_insertSubstructure" modifiers="shift any accel"/>
       <handler event="keypress" keycode="VK_F3" command="cmd_findNext" />
       <handler event="keypress" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
       <handler event="keypress" key=" " modifiers="control" command="cmd_macrofragment"/>
