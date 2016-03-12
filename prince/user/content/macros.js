@@ -189,3 +189,9 @@ function insertIntegral(delSelection)
   //msiGoDoCommand('cmd_charPrevious');
   //msiGoDoCommand('cmd_charPrevious');
 }
+
+function insertSubstructure(delSelection)
+{
+  if (delSelection) deleteSelection();
+  msiGoDoCommand('cmd_insertSubstructure');
+}
