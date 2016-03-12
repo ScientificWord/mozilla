@@ -26,20 +26,11 @@
 
 <keyset id="editorKeys">
   <keyset id="tasksKeys"/>
-  <keyset id="MSIEditorKeys"/>
   <key id="showHideSidebar"/>
   <key id="key_newDocument" key="&filenew.keybinding;" observes="cmd_newDocument"  modifiers="accel"/>
   <key id="openeditorkb"   key="&fileopen.keybinding;"  observes="cmd_open"  modifiers="accel"/>
   <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
   <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
   <key id="key_quit"       key="&filequit.keybinding;"  observes="cmd_quit" modifiers="accel"/>
-#ifndef XP_MACOSX
-  <key id="keyhelpcontents" keycode="&helpmenuContents.keybinding;" observes="cmd_help_contents"/>
-#endif
-#ifdef XP_MACOSX
-  <key id="keyhelpcontents" keycode="/" modifiers="accel,shift" observes="cmd_help_contents"/>
-#endif
-
-
 </keyset>
 <keyset id="mainKeyset"/> <!-- for extensions-->
