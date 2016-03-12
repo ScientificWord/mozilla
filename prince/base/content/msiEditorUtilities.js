@@ -11301,9 +11301,11 @@ function getCachedXSLTString(xslRootFileURLString) {
 
 function getTextFileAsString( url ) {
   var myXMLHTTPRequest = new XMLHttpRequest();
+  var str;
   myXMLHTTPRequest.open('GET', url, false);
   myXMLHTTPRequest.send(null);
-  return myXMLHTTPRequest.responseText;
+  str = myXMLHTTPRequest.responseText;
+  return str;
 }
 
 
@@ -11313,6 +11315,7 @@ function getXSLAsString(xslPath) {
     return resultString;
   return getCachedXSLTString(xslPath);
 }
+
 function setupXMLToTeXProcessor() {
   var xslFileURL = 'chrome://prnc2ltx/content/latex.xsl';
   var xsltStr = getXSLAsString(xslFileURL);
@@ -11417,6 +11420,7 @@ function needRefresh(sourceFilePath, derivedFilePath) {
   } else
     return true;
 }
+
 function makeRelPathAbsolute(relpath, editorElement) {
   var longfilename;
   var leaf;
@@ -11576,7 +11580,7 @@ function detectLicenseInText(someText, editor) {
     }
   }
   catch(e) {
-    dump('if exception, ignore it: ' + e.messaget);
+//    dump('if exception, ignore it: ' + e.message);
   }
 }
 
@@ -11655,5 +11659,46 @@ function copyFileToTmp( aFile ) {
   }
   // testfile doesn't exist
   aFile.copyTo( tmpdir, leaf );
+  return testfile;
+}
+
+function convertToUTFIfNecessary(aFile, inputFileAsString) {
+  var charset = 'Shift_JIS';
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  var tmpdir = dsprops.get("TmpD", Components.interfaces.nsIFile);
+  var leafbase = 'swp';
+  var leaf;
+  var n = 0;
+  var i;
+  var testfile;
+  var extension = '';
+  var str;
+  i = aFile.leafName.lastIndexOf(".");
+  if (i > 0) extension = aFile.leafName.substr(i+1);
+  tmpdir.append("SWP");
+  if (tmpdir.exists()) {
+    clearDir( tmpdir, extension );
+  }
+  else tmpdir.create(1, 493); // = 0755
+  testfile = tmpdir.clone();
+  leaf = leafbase + '.' + extension;
+  testfile.append(leaf);
+  while (testfile.exists()) {
+    n++;
+    testfile = tmpdir.clone();
+    leaf = leafbase + n + '.' + extension;
+    testfile.append(leaf);
+  }
+  try {
+    var unicodeConverter = Components
+       .classes["@mozilla.org/intl/scriptableunicodeconverter"]
+       .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+    unicodeConverter.charset = charset;
+    inputFileAsString = unicodeConverter.ConvertToUnicode(inputFileAsString);
+    inputFileAsString + unicodeConverter.Finish();
+  } catch(ex) {
+    return aFile; 
+  }
+  writeStringAsFile(inputFileAsString, testfile);
   return testfile;
 }
