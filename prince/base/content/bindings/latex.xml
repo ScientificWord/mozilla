@@ -542,9 +542,8 @@
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
 		<xbl:content>
-			<html:button type="button" class="frontmattertag" nopr="1" oncommand=""
-				>&title;</html:button>
 			<xbl:children/>
+			<html:button type="button" class="frontmattertag" nopr="1" oncommand="">&title;</html:button>
 		</xbl:content>
 	</xbl:binding>
 
@@ -553,8 +552,8 @@
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
 		<xbl:content>
-			<html:button type="button" class="frontmattertag" nopr="1" onclick="">&author;</html:button>
 			<xbl:children/>
+			<html:button type="button" class="frontmattertag" nopr="1" onclick="">&author;</html:button>
 		</xbl:content>
 	</xbl:binding>
 
@@ -563,8 +562,8 @@
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
 		<xbl:content>
-			<html:button type="button" class="frontmattertag" nopr="1" onclick="">&address;</html:button>
 			<xbl:children/>
+			<html:button type="button" class="frontmattertag" nopr="1" onclick="">&address;</html:button>
 		</xbl:content>
 	</xbl:binding>
 
@@ -573,8 +572,8 @@
 			<xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 		</xbl:resources>
 		<xbl:content>
-			<html:button type="button" class="frontmattertag" nopr="1" onclick="">&date;</html:button>
 			<xbl:children/>
+			<html:button type="button" class="frontmattertag" nopr="1" onclick="">&date;</html:button>
 		</xbl:content>
 	</xbl:binding>
 
