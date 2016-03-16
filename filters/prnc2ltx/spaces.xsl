@@ -110,5 +110,9 @@
  </xsl:choose>
 </xsl:template>
 
+<xsl:template match="html:mspace|mml:mspace">
+	<xsl:text>\ </xsl:text>
+</xsl:template>
+
 
 </xsl:stylesheet>
