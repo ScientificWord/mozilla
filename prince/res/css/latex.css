@@ -139,12 +139,12 @@ button[class="msi"][minpasses]:after {
 }
 
 
-hspace {
+hspace, mspace{
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#hspace"); */
   display: inline-block;
 }
 
-hspace * {
+hspace *, mspace * {
   visibility: hidden;
 }
 
@@ -196,6 +196,36 @@ hspace[type="requiredSpace"] {
 }
 
 hspace[type="nonBreakingSpace"] {
+  display: inline;
+  white-space: nowrap;
+}
+
+mspace[type="emSpace"] {
+  min-width: 1em;
+}
+
+mspace[type="twoEmSpace"] {
+  min-width: 2em;
+}
+
+mspace[type="thinSpace"] {
+  min-width: 0.17em;
+}
+
+mspace[type="thickSpace"] {
+  min-width: 0.5em;
+}
+
+mspace[type="italicCorrectionSpace"] {
+  min-width: 0.083em;
+}
+
+mspace[type="requiredSpace"] {
+  width: 0.2em;
+  /*display: inline;*/
+}
+
+mspace[type="nonBreakingSpace"] {
   display: inline;
   white-space: nowrap;
 }
