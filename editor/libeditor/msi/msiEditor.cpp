@@ -1263,7 +1263,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
             nsCOMPtr<nsIDOMElement> reqspace;
             res = CreateElementWithDefaults(NS_LITERAL_STRING("hspace"), getter_AddRefs(reqspace));
             reqspace->SetAttribute(NS_LITERAL_STRING("dim"), NS_LITERAL_STRING(".2em"));
-            reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("requiredSpace"));
+            reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("nonBreakingSpace"));
             res = InsertElementAtSelection(reqspace, true);
             preventDefault = PR_TRUE;
           }
