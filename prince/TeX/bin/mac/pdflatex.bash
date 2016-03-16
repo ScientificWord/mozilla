@@ -19,5 +19,5 @@ echo pdflatex output: >> ~/msi.log
 pdflatex -interaction=batchmode -shell-escape $3 >> ~/msi.log 2>&1
 echo done > sentinel
 echo Working directory files: >> ~/msi.log
-ls -l "$2" >> ~/msi.log
+ls -l  >> ~/msi.log
 echo done >> ~/msi.log
