@@ -191,12 +191,12 @@ hspace[type="italicCorrectionSpace"] {
 }
 
 hspace[type="requiredSpace"] {
-  width: 0.2em;
+  min-width: 0.2em;
   /*display: inline;*/
 }
 
 hspace[type="nonBreakingSpace"] {
-  display: inline;
+  min-width: 0.2em;
   white-space: nowrap;
 }
 
@@ -222,10 +222,10 @@ mspace[type="italicCorrectionSpace"] {
 
 mspace[type="requiredSpace"] {
   width: 0.2em;
-  /*display: inline;*/
 }
 
 mspace[type="nonBreakingSpace"] {
+  width: 0.2em;
   display: inline;
   white-space: nowrap;
 }
