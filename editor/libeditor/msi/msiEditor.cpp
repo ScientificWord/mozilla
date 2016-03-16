@@ -1062,7 +1062,7 @@ NS_IMETHODIMP
 msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 {    
   PRUint32 keyCode(0), symbol(0);
-
+  PRBool preventDefault(PR_FALSE);
   if (! aKeyEvent)
     return NS_ERROR_NULL_POINTER;
   nsresult res(NS_OK);
@@ -1078,23 +1078,22 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 // (since preventDefault is not called) the Mozilla cursor handling
 // Please note: the horizontal arrow handling is commented out for a reason
     if (//keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  ||  keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ||
-    keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
-   {
-     PRBool preventDefault(PR_FALSE);
-     if (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
-     {
-       res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault);
-       if (NS_SUCCEEDED(res) && preventDefault)
-         aKeyEvent->PreventDefault();
-       if (preventDefault) return NS_OK;
-     }
-   }
-   // Check that the selection does not include table cells
-   nsCOMPtr<nsIDOMElement> tableOrCellElement;
-   res = GetFirstSelectedCell(nsnull, getter_AddRefs(tableOrCellElement));
-   if (tableOrCellElement) {
-     return res;
-   }
+      keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
+    {
+      if (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
+      {
+        res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault);
+        if (NS_SUCCEEDED(res) && preventDefault)
+          aKeyEvent->PreventDefault();
+        if (preventDefault) return NS_OK;
+      }
+    }
+    // Check that the selection does not include table cells
+    nsCOMPtr<nsIDOMElement> tableOrCellElement;
+    res = GetFirstSelectedCell(nsnull, getter_AddRefs(tableOrCellElement));
+    if (tableOrCellElement) {
+      return res;
+    }
 
     // Check for mapped characters -- function keys or one-shot mapping
 
@@ -1190,23 +1189,22 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIDOMNode> currFocusNode;
-				nsCOMPtr<nsIDOMElement> currFocusElement;
+  			nsCOMPtr<nsIDOMElement> currFocusElement;
         res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
-				nsAutoString name;
-				nsCOMPtr<nsIDOMNode> tempNode = currFocusNode;
-				PRUint16 type;
-				res = tempNode->GetNodeType(& type);
-				if (type == 3)
-					currFocusNode->GetParentNode(getter_AddRefs(tempNode));
-				currFocusElement = do_QueryInterface(tempNode);
-				if (currFocusElement) res = currFocusElement->GetTagName(name);
-				if (!name.EqualsLiteral("mtext"))
-				{
-	        res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
-				}
+  			nsAutoString name;
+  			nsCOMPtr<nsIDOMNode> tempNode = currFocusNode;
+  			PRUint16 type;
+  			res = tempNode->GetNodeType(& type);
+  			if (type == 3)
+  				currFocusNode->GetParentNode(getter_AddRefs(tempNode));
+  			currFocusElement = do_QueryInterface(tempNode);
+  			if (currFocusElement) res = currFocusElement->GetTagName(name);
+  			if (!name.EqualsLiteral("mtext"))
+  			{
+          res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
+  			}
         if (NS_SUCCEEDED(res) && currFocusNode && mathnode)
         {
-          PRBool preventDefault(PR_FALSE);
           PRBool prefset(PR_FALSE);
           if (symbol == ' ')
           {
@@ -1214,7 +1212,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
             prefset = SpacesAtEndOfMathAddsSpace();
             if (!isShift) {
               res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault);
-              // if preference is set, and we are now out of math, type a space
+              preventDefault = PR_TRUE;              // if preference is set, and we are now out of math, type a space
               if (prefset)
               {
                  res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
@@ -1225,10 +1223,13 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
             }
             else
             {
-              // No shift space in math
-              if (preventDefault)
-                aKeyEvent->PreventDefault();
-              return NS_OK;
+              nsCOMPtr<nsIDOMElement> reqspace;
+              res = CreateElementWithDefaults(NS_LITERAL_STRING("mspace"), getter_AddRefs(reqspace));
+              reqspace->SetAttribute(NS_LITERAL_STRING("width"), NS_LITERAL_STRING("thickmathspace"));
+              reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("requiredSpace"));
+              reqspace->SetAttribute(NS_LITERAL_STRING("dim"), NS_LITERAL_STRING(".2em"));
+              res = InsertElementAtSelection(reqspace, true);
+              preventDefault = PR_TRUE;
             }
           }
           else if (symbol == '\t')
@@ -1252,40 +1253,45 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
             res = InsertSymbol(str);
             preventDefault = PR_TRUE;
             if (NS_SUCCEEDED(res) && keyCode != 13)
-		          res = CheckForAutoSubstitute(PR_TRUE);
+  	          res = CheckForAutoSubstitute(PR_TRUE);
             // res = nsEditor::EndUpdateViewBatch();
           }
-          if (preventDefault)
-            aKeyEvent->PreventDefault();
         }
+        else if (NS_SUCCEEDED(res) && currFocusNode)  { // but not in math
+          if (symbol == ' ' && isShift)
+          {
+            nsCOMPtr<nsIDOMElement> reqspace;
+            res = CreateElementWithDefaults(NS_LITERAL_STRING("hspace"), getter_AddRefs(reqspace));
+            reqspace->SetAttribute(NS_LITERAL_STRING("dim"), NS_LITERAL_STRING(".2em"));
+            reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("requiredSpace"));
+            res = InsertElementAtSelection(reqspace, true);
+            preventDefault = PR_TRUE;
+          }
+        }
+
       }
     }
-  }
-  // Check that the selection does not include table cells
-  nsCOMPtr<nsIDOMElement> tableOrCellElement;
-  res = GetFirstSelectedCell(nsnull, getter_AddRefs(tableOrCellElement));
-  if (tableOrCellElement) {
-    return res;
-  }
-  // if not handled then pass along to nsHTMLEditor
-  nsCOMPtr<nsIDOMNSUIEvent> nsUIEvent = do_QueryInterface(aKeyEvent);
-  if(nsUIEvent)
-  {
-    PRBool defaultPrevented;
-    nsUIEvent->GetPreventDefault(&defaultPrevented);
-    if (defaultPrevented)
-      return res;
+   // if not handled then pass along to nsHTMLEditor
+    nsCOMPtr<nsIDOMNSUIEvent> nsUIEvent = do_QueryInterface(aKeyEvent);
+    if(nsUIEvent && !preventDefault)
+    {
+      PRBool defaultPrevented;
+      nsUIEvent->GetPreventDefault(&defaultPrevented);
+      if (defaultPrevented)
+        return res;
+      else {
+            // res = nsEditor::BeginUpdateViewBatch();
+        res = nsHTMLEditor::HandleKeyPress(aKeyEvent);
+        if (NS_SUCCEEDED(res) && keyCode != 13 &&(!(mFlags & eEditorPlaintextMask)))
+          res = CheckForAutoSubstitute(PR_FALSE);
+        // res = nsEditor::EndUpdateViewBatch();
+        return res;
+      }
+    }
     else
-      // res = nsEditor::BeginUpdateViewBatch();
-      res = nsHTMLEditor::HandleKeyPress(aKeyEvent);
-      if (NS_SUCCEEDED(res) && keyCode != 13 &&(!(mFlags & eEditorPlaintextMask)))
-		    res = CheckForAutoSubstitute(PR_FALSE);
-      // res = nsEditor::EndUpdateViewBatch();
-      return res;
-
+      return NS_ERROR_FAILURE;
+    
   }
-  else
-    return NS_ERROR_FAILURE;
 }
 
 // nsresult
