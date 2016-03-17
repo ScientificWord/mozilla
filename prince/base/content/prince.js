@@ -315,15 +315,12 @@ function count_children( par )
 
 // quickly check if this file is a 5.5 subdocument. If so, there will be a line like
 // %TCIDATA{LaTeXparent=0,0,masterfile.tex} in it.
-function useMasterDocIfNeeded(file) {
-  var url = msiGetIOService().newFileURI(file);
-  var fileURL = url.spec;
-  var str = getTextFileAsString(fileURL);
+function useMasterDocIfNeeded(file, strContents) {
   var regexp = /%TCIDATA{LaTeXparent=[0-9, ]*,([^}]*)}/;
   var match;
   var newfile;
-  if (str.length > 0) {
-    match = regexp.exec(str);
+  if (strContents && (strContents.length > 0)) {
+    match = regexp.exec(strContents);
     if (match && match.length > 1 && match[1].length > 0) {
       newfile = file.parent;
       newfile.append(match[1]);
@@ -348,9 +345,12 @@ function openTeX()
   var filename, infile, docdir, prefs, prefdir, defdocdirstring, dirkey, file;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+  var url;
+  var fileURL;
+  var str;
   fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);
   fp.appendFilter(GetString("TeXFiles"), "*.tex; *.ltx; *.shl");
-  fp.appendFilters(msIFilePicker.filterXML)
+  fp.appendFilters(msIFilePicker.filterXML);
   msiSetFilePickerDirectory(fp, "tex");
   try {
     fp.show();
@@ -359,7 +359,17 @@ function openTeX()
   }
   if (fp.file && (fp.file.path.length > 0)) {
     msiSaveFilePickerDirectory(fp, "tex");
-    file = useMasterDocIfNeeded(fp.file);
+    url = msiGetIOService().newFileURI(fp.file);
+    fileURL = url.spec;
+    str = getTextFileAsString(fileURL);
+    file = useMasterDocIfNeeded(fp.file, str);
+    if (file !== fp.file) {
+      url = msiGetIOService().newFileURI(file);
+      fileURL = url.spec;
+      str = getTextFileAsString(fileURL);
+    }
+    var pTeX = false;
+    if (pTeX) file = convertToUTFIfNecessary(file, str);
     filename = file.leafName.substring(0,file.leafName.lastIndexOf("."));
     infile =  "\"" + file.path + "\"";
 // Get the directory for the result from the preferences, or default to the SWPDocs directory
@@ -389,7 +399,7 @@ function openTeX()
       // if we can't find the one in the prefs, get the default
       docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
       if (!docdir.exists()) docdir.create(1,0755);
-      if (!prefdir || prefdir.length == 0) {
+      if (!prefdir || prefdir.length === 0) {
         prefdir = GetString("DefaultDocDir");
       }
       defdocdirstring = prefdir;
@@ -681,6 +691,20 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   var stylefile;
   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
+  var pTeX = false;
+  if (pTeX) {
+    try {
+      var charset = 'Shift_JIS';
+      var unicodeConverter = Components
+           .classes["@mozilla.org/intl/scriptableunicodeconverter"]
+           .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+      unicodeConverter.charset = charset;
+      str = unicodeConverter.ConvertFromUnicode(str);
+      str + unicodeConverter.Finish();
+    } catch(ex) {
+        return null; 
+    }   
+  }
   compileInfo.runMakeIndex = /\\printindex/.test(str);
   compileInfo.runBibTeX = /\\bibliography/.test(str);
   compileInfo.passCount = 1;
@@ -1395,6 +1419,8 @@ function documentToTeXString(document, xslPath)
     strResult = newDoc.documentElement.textContent || "";
 
     strResult=strResult.replace(/(\s*)\n(\s*)/g,'\n');
+    strResult=strResult.replace(/\n{2,}/g, '\n');
+    strResult=strResult.replace(/\n*(\\MsiNewline)\n*/g, '\\MsiNewline');
     strResult=strResult.replace(/(\\MsiNewline)+/g, "\n");
     strResult=strResult.replace(/(\\MsiBlankline)+/g, "\n\n");
 
