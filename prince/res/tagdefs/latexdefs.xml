@@ -1091,26 +1091,25 @@
             </abstract>
           </initialcontents>
         </tag>
-        <tag nm="address">
+ <!--        <tag nm="address">
           <description>Address</description>
-          <realtagclass>paratag</realtagclass>
+          <realtagclass>texttag</realtagclass>
           <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
-          <nexttag>bodyText</nexttag>
+          <nexttag>address</nexttag>
           <initialcontents>
             <address>
               <cursor/>
               <br type="_moz"/>
             </address>
           </initialcontents>
-        </tag>
+        </tag> -->
         <tag nm="author">
           <description>Author</description>
           <realtagclass>paratag</realtagclass>
-          <inclusion>true</inclusion>
+          <!-- <nextafteremptyblock>bodyText</nextafteremptyblock> -->
           <nexttag>bodyText</nexttag>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <author>
@@ -1130,7 +1129,6 @@
               <br type="_moz"/>
             </date>
           </initialcontents>
-          <nexttag/>
           <inclusion>true</inclusion>
         </tag>
         <!--         <tag nm="makelof"><description>Make list of figures</description></tag><tag nm="makelot"><description>Make list of tables</description></tag><tag nm="maketitle"><description>Make title</description></tag><tag nm="maketoc"><description>Make table of contents</description></tag>-->
