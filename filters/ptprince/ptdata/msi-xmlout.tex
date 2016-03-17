@@ -1933,7 +1933,11 @@
        \fi
        \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{">}%
            <![CDATA[\expandafter\string\csname#1\endcsname
-           \ifmmode{\else\{\fi\the\@temptokena\ifmmode}\else\}\fi]]>%
+           \ifmmode
+             {\the\@temptokena}]]>%
+           \else
+             \{\the\@temptokena\}]]>%
+           \fi
        \msitag{</texb>}%
        \ifmmode
          \char`\}%}
