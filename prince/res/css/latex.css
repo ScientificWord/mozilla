@@ -139,12 +139,12 @@ button[class="msi"][minpasses]:after {
 }
 
 
-hspace {
+hspace, mspace{
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#hspace"); */
   display: inline-block;
 }
 
-hspace * {
+hspace *, mspace * {
   visibility: hidden;
 }
 
@@ -191,11 +191,41 @@ hspace[type="italicCorrectionSpace"] {
 }
 
 hspace[type="requiredSpace"] {
-  width: 0.2em;
+  min-width: 0.2em;
   /*display: inline;*/
 }
 
 hspace[type="nonBreakingSpace"] {
+  min-width: 0.2em;
+  white-space: nowrap;
+}
+
+mspace[type="emSpace"] {
+  min-width: 1em;
+}
+
+mspace[type="twoEmSpace"] {
+  min-width: 2em;
+}
+
+mspace[type="thinSpace"] {
+  min-width: 0.17em;
+}
+
+mspace[type="thickSpace"] {
+  min-width: 0.5em;
+}
+
+mspace[type="italicCorrectionSpace"] {
+  min-width: 0.083em;
+}
+
+mspace[type="requiredSpace"] {
+  width: 0.2em;
+}
+
+mspace[type="nonBreakingSpace"] {
+  width: 0.2em;
   display: inline;
   white-space: nowrap;
 }
@@ -291,11 +321,13 @@ msibr[type="newLine"]:before {
 *[showinvis="true"] msibr[type="lineBreak"]:before {
   content: "\AC\A";
   color: green;
+  -moz-user-select: -moz-none;
 }
 
 *[showinvis="true"] msibr[type="newLine"]:before {
   content: "\AC\A";
   color: green;
+  -moz-user-select: -moz-none;
 }
 
 

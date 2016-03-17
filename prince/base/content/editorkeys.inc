@@ -38,13 +38,13 @@
   <key id="msiZoomInKey" key="+" command="cmd_zoomin" modifiers="accel,shift"/>
   <key id="msiZoomOutKey" key="-" command="cmd_zoomout" modifiers="accel"/>
   <key id="msiZoomReset" key="0" command="cmd_zoomreset" modifiers="accel"/>
-      <key event="keypress" key="`" modifiers="accel"       oncommand="msiRevCharQuick('&#x0300;');"/>
-      <key event="keypress" key="'" modifiers="accel"       oncommand="msiRevCharQuick('&#x0301;');"/>
-      <key event="keypress" key="^" modifiers="accel" oncommand="msiRevCharQuick('&#x0302;');"/>
-      <key event="keypress" key="~" modifiers="accel" oncommand="msiRevCharQuick('&#x0303;');"/>
-      <key event="keypress" key='_' modifiers="accel" oncommand="msiRevCharQuick('&#x0305;');"/>
-      <key event="keypress" key="." modifiers="accel"       oncommand="msiRevCharQuick('&#x0307;');"/>
-      <key event="keypress" key='"' modifiers="accel" oncommand="msiRevCharQuick('&#x0308;');"/>
-      <key event="keypress" key='!' modifiers="accel" oncommand="msiRevCharQuick('&#x20d7;');"/>
+  <key id="msiquickbacktick" event="keypress" key="`" modifiers="accel"       oncommand="msiRevCharQuick('&#x0300;');"/>
+  <key id="msiquicksquote" event="keypress" key="'" modifiers="accel"       oncommand="msiRevCharQuick('&#x0301;');"/>
+  <key id="msiquickcaret" event="keypress" key="^" modifiers="accel" oncommand="msiRevCharQuick('&#x0302;');"/>
+  <key id="msiquicktilde" event="keypress" key="~" modifiers="accel" oncommand="msiRevCharQuick('&#x0303;');"/>
+  <key id="msiquickunderscore" event="keypress" key='_' modifiers="accel" oncommand="msiRevCharQuick('&#x0305;');"/>
+  <key id="msiquickperiod" event="keypress" key="." modifiers="accel"       oncommand="msiRevCharQuick('&#x0307;');"/>
+  <key id="msiquickdquote" event="keypress" key='"' modifiers="accel" oncommand="msiRevCharQuick('&#x0308;');"/>
+  <key id="msiquickexclam" event="keypress" key='!' modifiers="accel" oncommand="msiRevCharQuick('&#x20d7;');"/>
 </keyset>
 
