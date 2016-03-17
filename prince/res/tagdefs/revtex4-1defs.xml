@@ -129,6 +129,17 @@
                         <noaffiliation><cursor/><br type="_moz"/></noaffiliation>
                     </initialcontents>
                 </tag>
+                <tag nm="collaboration">
+                    <description>Collaboration</description>
+                    <realtagclass>paratag</realtagclass>
+                    <inclusion>true</inclusion>
+                    <nexttag>bodyText</nexttag>
+                    <nextafteremptyblock>bodyText</nextafteremptyblock>
+                    <discardemptyblock>true</discardemptyblock>
+                    <initialcontents>
+                        <collaboration><cursor/><br type="_moz"/></collaboration>
+                    </initialcontents>
+                </tag>
                 <tag nm="email">
                     <description>Email</description>
                     <realtagclass>paratag</realtagclass>
