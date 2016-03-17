@@ -5924,43 +5924,43 @@
 \newinsert \@kludgeins
 \global\dimen\@kludgeins \maxdimen
 \global\count\@kludgeins 1000
-\gdef \enlargethispage {%
-   \@ifstar
-     {%
-      \@enlargepage{\hbox{\kern\p@}}}%
-     {%
-      \@enlargepage\@empty}%
-}
-\gdef\@enlargepage#1#2{%
-   \@tempskipa#2\relax
-   \ifdim \@tempskipa>.5\maxdimen
-     \@latexerr{Suggested\space extra\space height\space
-                (\the\@tempskipa)\space dangerously\space
-                large}\@eha
-   \else
-     \ifdim \vsize<.5\maxdimen
-       \@bsphack
-         \insert\@kludgeins{#1\vskip-\@tempskipa}%
-       \@esphack
-     \else
-       \@latexerr{Page\space height\space already\space
-                  too\space large}\@eha
-     \fi
-   \fi
-}
-\def \suppressfloats {%
-   \@ifnextchar [%
-     \@flstop
-    {\global \@colnum \z@}%
-}
-\def \@flstop [#1]{%
-   \if t#1%
-     \global \@topnum \z@
-   \fi
-   \if b#1%
-     \global \@botnum \z@
-   \fi
-}
+%\gdef \enlargethispage {%
+%   \@ifstar
+%     {%
+%      \@enlargepage{\hbox{\kern\p@}}}%
+%     {%
+%      \@enlargepage\@empty}%
+%}
+%\gdef\@enlargepage#1#2{%
+%   \@tempskipa#2\relax
+%   \ifdim \@tempskipa>.5\maxdimen
+%     \@latexerr{Suggested\space extra\space height\space
+%                (\the\@tempskipa)\space dangerously\space
+%                large}\@eha
+%   \else
+%     \ifdim \vsize<.5\maxdimen
+%       \@bsphack
+%         \insert\@kludgeins{#1\vskip-\@tempskipa}%
+%       \@esphack
+%     \else
+%       \@latexerr{Page\space height\space already\space
+%                  too\space large}\@eha
+%     \fi
+%   \fi
+%}
+%\def \suppressfloats {%
+%   \@ifnextchar [%
+%     \@flstop
+%    {\global \@colnum \z@}%
+%}
+%\def \@flstop [#1]{%
+%   \if t#1%
+%     \global \@topnum \z@
+%   \fi
+%   \if b#1%
+%     \global \@botnum \z@
+%   \fi
+%}
 \newcount \@fpstype
 \newdimen \@reqcolroom
 \newdimen \@textfloatsheight
