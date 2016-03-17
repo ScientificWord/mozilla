@@ -436,18 +436,19 @@
 
 \def\out@author#1{%
   \begingroup
-   \def\\{\msiclosetag{author}{</author>}%
-          \msiclosetag{address}{</address>}
-          \msitag{^^0a}%
-          \msiopentag{address}{<address>}%
-          \msiopentag{bodyText}{<bodyText>}%
-          \def\\{\par}%
+   \def\\{%%\msiclosetag{author}{</author>}%
+          %%\msiclosetag{address}{</address>}
+          %\msitag{^^0a^^0a}%
+          \msitag{<msibr invisDisplay="&}\char`\#\msitag{x21b5;" type="newLine"/>}
+          %\msiopentag{address}{<address>}%
+          %\msiopentag{bodyText}{<bodyText>}%
+          %\def\\{\par}%
           \ignorespaces}
           
-   \def\and{\msiclosetag{address}{</address>}%
+   \def\and{%\msiclosetag{address}{</address>}%
             \msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}\msiopentag{bodyText}{<bodyText>}}%
    \msitag{^^0a}%
-   \msiopentag{author}{<author>}#1\msiclosetag{address}{</address>}\msiclosetag{author}{</author>}%
+   \msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}%
   \endgroup
 }
 
