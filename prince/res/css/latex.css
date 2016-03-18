@@ -226,7 +226,6 @@ mspace[type="requiredSpace"] {
 
 mspace[type="nonBreakingSpace"] {
   width: 0.2em;
-  display: inline;
   white-space: nowrap;
 }
 
