@@ -219,6 +219,7 @@
 
 
 
+
 <xsl:template match="html:table|mml:table">
    
    <xsl:variable name="colspec">
@@ -406,5 +407,24 @@
 </xsl:template>
 
 
+<xsl:template match="html:msidisplay"> 
+  <xsl:choose>     
+    <xsl:when test="./mml:math/mml:table and count(././*)=1">
+       <msiframe frametype="table" units="cm" sidemargin="0" topmargin="0" overhang="0"
+style="border-color: rgb(255, 255, 255); border-width: 0px; margin: 0px; padding: 0px;
+background-color: rgb(255, 255, 255); text-align: left;" borderw="0" padding="0" pos="center"
+border-color="#ffffff" background-color="#ffffff" textalignment="left" width="0" height="0"
+aspect="false">
+	 <xsl:apply-templates select="./mml:math/mml:table"/>
+       </msiframe>
+    </xsl:when>
+    
+    <xsl:otherwise>
+      <xsl:copy>
+        <xsl:apply-templates select="@*|node()"/>
+      </xsl:copy>
+    </xsl:otherwise>
+  </xsl:choose>  
+</xsl:template>
 
 </xsl:stylesheet>
