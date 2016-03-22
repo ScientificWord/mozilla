@@ -1,3 +1,6 @@
+@p maximum_input_line_length = 150
+@p maximum_output_line_length = 150
+
 
 @A@<The Command Interpreter@>
 
@@ -108,7 +111,23 @@ std::string makexml(std::string str){
 
 @}
 
-@$@<Graphic file utility@>==@{
+@$@<Graphic file utility@>+=@{
+std::string NormalizeSlashes(const char* str)
+{
+   char* strcopy = new char[strlen(str) + 1];
+   for (int i = 0; i < strlen(str) + 1; ++i)
+   {
+      if (str[i] == '\\' || str[i] == '/'){
+        strcopy[i] = SEP;
+      } else {
+        strcopy[i] = str[i];
+      }
+   }
+   return std::string(strcopy);
+}
+@}
+
+@$@<Graphic file utility@>+=@{
 std::string MaybeCopyGraphicFile(const char* fullname)
 {
    // 1. Get the search paths
@@ -791,10 +810,10 @@ case CMD_MSISPECIAL: {
         std::string name = kvmap["VCamFile"];
         strip_quotes(name);
         std::string newname = MaybeCopyGraphicFile(name.c_str());
-        find_and_replace(result, "%ImageFile%", makexml(newname).c_str());
+        find_and_replace(result, "%ImageFile%", NormalizeSlashes(makexml(newname).c_str()).c_str());
 
         std::string fullname = newname;
-        find_and_replace(result, "%ImageFileFull%", makexml(fullname).c_str());
+        find_and_replace(result, "%ImageFileFull%", NormalizeSlashes(makexml(fullname).c_str()).c_str());
 
         find_and_replace(result, "%function%", kvmap["function"].c_str());
 
@@ -893,10 +912,10 @@ case CMD_MSISPECIAL: {
 
       strip_quotes(name);
       std::string newname = MaybeCopyGraphicFile(name.c_str());
-      find_and_replace(result, "%ImageFile%", makexml(newname).c_str());
+      find_and_replace(result, "%ImageFile%", NormalizeSlashes(makexml(newname).c_str()).c_str());
     
       std::string fullname = std::string("file://") + s_docdir + SEP + name;
-      find_and_replace(result, "%ImageFileFull%", makexml(fullname).c_str());
+      find_and_replace(result, "%ImageFileFull%", NormalizeSlashes(makexml(fullname).c_str()).c_str());
 
       if (kvmap.find("original-width") != kvmap.end()){
          find_and_replace(result, "%naturalWidth%",
