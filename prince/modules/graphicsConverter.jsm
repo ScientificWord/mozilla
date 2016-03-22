@@ -819,7 +819,12 @@ var graphicsConverter = {
 
     var gfxFileStr = objElement.getAttribute("copiedSrcUrl");
     if (gfxFileStr && gfxFileStr.length > 0) {
-      gfxFileStr = documentDir.path + '/' + gfxFileStr;
+      if (this.OS === "win") {
+        gfxFileStr = documentDir.path + '\\' + gfxFileStr;
+      } else {
+        gfxFileStr = documentDir.path + '/' + gfxFileStr;
+      }
+      
     }
     if (!gfxFileStr || !gfxFileStr.length) gfxFileStr = objElement.getAttribute("originalSrcUrl");
     if (!gfxFileStr || !gfxFileStr.length) {
