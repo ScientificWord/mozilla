@@ -32,9 +32,16 @@
  -->
   <xsl:template name="chars-to-LaTeX-Math">
       <xsl:param name="unicode-cdata"/>
-      <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
-      <xsl:variable name="second-char" select="substring($unicode-cdata,2,1)"/>
+      <xsl:variable name="first-char"
+		    select="substring($unicode-cdata,1,1)"/>
 
+
+      <xsl:variable name="next-char">
+	<xsl:if test="string-length($unicode-cdata)&gt;1">
+	  <xsl:value-of select="substring($unicode-cdata,2,1)"/>
+	</xsl:if>
+      </xsl:variable>
+      
       <xsl:variable name="char-info-lookup"
 		    select="$char-info/char-table/char[@unicode=$first-char][1]/@latex"/>
 
@@ -1507,15 +1514,27 @@
             <xsl:text xml:space="preserve">\geq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2266;'">
-            <xsl:text xml:space="preserve">\leqq </xsl:text>
+	    <xsl:choose>
+	      <xsl:when test="$next-char='&#x0338;'">
+		<xsl:text>\nleqq </xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:text>\leqq </xsl:text>
+	      </xsl:otherwise>
+	    </xsl:choose>
           </xsl:when>
           <xsl:when test="$first-char='&#x2267;'">
-            <xsl:text xml:space="preserve">\geqq </xsl:text>
+	    <xsl:choose>
+	      <xsl:when test="$next-char='&#x0338;'">
+		<xsl:text>\ngeqq </xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:text>\geqq </xsl:text>
+	      </xsl:otherwise>
+	    </xsl:choose>
           </xsl:when>
           <xsl:when test="$first-char='&#x2268;'">
-            <xsl:if test="$second-char='&FE00;'">
-              <xsl:text xml:space="preserve">\lvertneqq </xsl:text>
-            </xsl:if>
+            <xsl:text xml:space="preserve">\lvertneqq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2269;'">
             <xsl:text xml:space="preserve">\gvertneqq </xsl:text>
@@ -1873,16 +1892,10 @@
           <xsl:when test="$first-char='&#x22E7;'">
             <xsl:text xml:space="preserve">\gnsim </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x2AB9;'">
-            <xsl:text xml:space="preserve">\precnapprox </xsl:text>
-          </xsl:when>
           <xsl:when test="$first-char='&#x22E8;'">
             <xsl:text xml:space="preserve">\precnsim </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x2ABA;'">
-            <xsl:text xml:space="preserve">\succnapprox </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x22E9;'">
+	            <xsl:when test="$first-char='&#x22E9;'">
             <xsl:text xml:space="preserve">\succnsim </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x22EA;'">
@@ -1905,6 +1918,18 @@
           </xsl:when>
           <xsl:when test="$first-char='&#x22F1;'">
             <xsl:text xml:space="preserve">\ddots </xsl:text>
+          </xsl:when>
+	  <xsl:when test="$first-char='&#x2AB9;'">
+            <xsl:text xml:space="preserve">\precnapprox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ABA;'">
+            <xsl:text xml:space="preserve">\succnapprox </xsl:text>
+          </xsl:when>
+	  <xsl:when test="$first-char='&#x2ACB;'">
+            <xsl:text xml:space="preserve">\subsetneqq </xsl:text>
+          </xsl:when>
+	  <xsl:when test="$first-char='&#x2ACC;'">
+            <xsl:text xml:space="preserve">\supsetneqq </xsl:text>
           </xsl:when>
 
 <!--  Miscellaneous Technical
@@ -2165,10 +2190,24 @@
             <xsl:text xml:space="preserve">\amalg </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2A7D;'">
-            <xsl:text xml:space="preserve">\leqslant </xsl:text>
+	    <xsl:choose>
+	      <xsl:when test="$next-char='&#x0338;'">
+		<xsl:text>\nleqslant </xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:text>\leqslant </xsl:text>
+	      </xsl:otherwise>
+	    </xsl:choose>
           </xsl:when>
           <xsl:when test="$first-char='&#x2A7E;'">
-            <xsl:text xml:space="preserve">\geqslant </xsl:text>
+	    <xsl:choose>
+	      <xsl:when test="$next-char='&#x0338;'">
+		<xsl:text>\ngeqslant </xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:text>\geqslant </xsl:text>
+	      </xsl:otherwise>
+	    </xsl:choose>
           </xsl:when>
           <xsl:when test="$first-char='&#x2A85;'">
             <xsl:text xml:space="preserve">\lessapprox </xsl:text>
@@ -2194,11 +2233,26 @@
           <xsl:when test="$first-char='&#x2A8C;'">
             <xsl:text xml:space="preserve">\gtreqqless </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x2AAF;'">
-            <xsl:text xml:space="preserve">\preceq </xsl:text>
-          </xsl:when>
+	  <xsl:when test="$first-char='&#x2AAF;'">
+	    <xsl:choose>
+	      <xsl:when test="$next-char='&#x0338;'">
+		<xsl:text>\npreceq </xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:text>\preceq </xsl:text>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	  </xsl:when>
+          
           <xsl:when test="$first-char='&#x2AB0;'">
-            <xsl:text xml:space="preserve">\succeq </xsl:text>
+	    <xsl:choose>
+	      <xsl:when test="$next-char='&#x0338;'">
+		<xsl:text>\nsucceq </xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:text>\succeq </xsl:text>
+	      </xsl:otherwise>
+	    </xsl:choose>
           </xsl:when>
           <xsl:when test="$first-char='&#x2AB5;'">
             <xsl:text xml:space="preserve">\precneqq </xsl:text>
@@ -2213,10 +2267,24 @@
             <xsl:text xml:space="preserve">\succapprox </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2AC5;'">
-            <xsl:text xml:space="preserve">\subseteqq </xsl:text>
+	    <xsl:choose>
+	      <xsl:when test="$next-char='&#x0338;'">
+		<xsl:text>\nsubseteqq </xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:text>\subseteqq </xsl:text>
+	      </xsl:otherwise>
+	    </xsl:choose>
           </xsl:when>
           <xsl:when test="$first-char='&#x2AC6;'">
-            <xsl:text xml:space="preserve">\supseteqq </xsl:text>
+	    <xsl:choose>
+	      <xsl:when test="$next-char='&#x0338;'">
+		<xsl:text>\nsupseteqq </xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:text>\supseteqq </xsl:text>
+	      </xsl:otherwise>
+	    </xsl:choose>
           </xsl:when>
 
           <xsl:when test="$first-char='&#xE200;'">
