@@ -359,10 +359,18 @@
    \msitag{/>}
 }
 
-\def\FRAME{\begingroup
-             \msihmode
-             \catcode`\&=13
-             \catcode`\~=11\relax\@FRAME}
+\newif\ifm@thframe
+\m@thframefalse
+\def\FRAME{%
+   \m@thframefalse
+   \begingroup
+     \ifmmode
+       \string\msipassthru\char`\{
+       \m@thframetrue
+     \fi 
+     \msihmode
+     \catcode`\&=13
+     \catcode`\~=11\relax\@FRAME}
 
 \def\stripspecial#1{}
 
@@ -401,6 +409,9 @@
           \QCBOptB
         \fi
       \endgroup
+   \fi
+   \ifm@thframe
+      \char`\}
    \fi
    \endgroup
 }%
