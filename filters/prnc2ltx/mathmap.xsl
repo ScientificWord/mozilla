@@ -1513,7 +1513,7 @@
             <xsl:text xml:space="preserve">\geqq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2268;'">
-            <xsl:if test="$second-char='&FE00;'">
+            <xsl:if test="$second-char='&#xFE00;'">
               <xsl:text xml:space="preserve">\lvertneqq </xsl:text>
             </xsl:if>
           </xsl:when>
