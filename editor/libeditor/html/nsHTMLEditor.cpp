@@ -7382,7 +7382,11 @@ void handleCombiningChars( const PRUnichar** pCur, PRUnichar combiningChar, nsAS
       thisChar = NS_LITERAL_STRING("\\b{") + thisChar + cbrace;
       break;
     case 0x0338 :
-      thisChar = NS_LITERAL_STRING("$\\;\\not ") + thisChar + NS_LITERAL_STRING("\\;$");
+      if (thisChar == NS_LITERAL_STRING(" ")){
+	  // ignore the combining neg
+      } else {
+         thisChar = NS_LITERAL_STRING("$\\;\\not ") + thisChar + NS_LITERAL_STRING("\\;$");
+      }
       break;
     default :
       break;
