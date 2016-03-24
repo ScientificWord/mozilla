@@ -418,6 +418,9 @@ aspect="false">
 	 <xsl:apply-templates select="./mml:math/mml:table"/>
        </msiframe>
     </xsl:when>
+    <xsl:when test="./mml:math/mml:msiframe and count(././*)=1">
+       <xsl:apply-templates select="./mml:math/mml:msiframe"/>
+    </xsl:when>
     
     <xsl:otherwise>
       <xsl:copy>
