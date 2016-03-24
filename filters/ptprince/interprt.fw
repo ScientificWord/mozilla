@@ -869,9 +869,6 @@ case CMD_MSISPECIAL: {
      result = "<msiframe frametype=\"image\" \
  units=\"in\" \
  sidemargin=\"0.3\" topmargin=\"0.15\" overhang=\"0.3\" \
- style=\"border-color: rgb(0, 0, 0); border-width: 2.88px; \
- margin: 14.4px 0px 14.4px 28.8px; padding: 19.2px; \
- background-color: rgb(255, 255, 255); text-align: left;\" \
  borderw=\"0.03\" \
  padding=\"0.2\" \
  captionloc=\"\" \
@@ -881,6 +878,9 @@ case CMD_MSISPECIAL: {
  textalignment=\"left\" \
  width=\"%width%\" \
  height=\"%height%\" \
+ style=\"border-color: rgb(0, 0, 0); border-width: 2.88px; \
+ margin: 14.4px 0px 14.4px 28.8px; padding: 19.2px; \
+ background-color: rgb(255, 255, 255); text-align: left;\" \
  aspect=\"false\">";
 
       result += "<object alt=\"\" \
@@ -894,6 +894,7 @@ case CMD_MSISPECIAL: {
  originalSrcUrl=\"%ImageFileFull%\" \
  copiedSrcUrl=\"%ImageFile%\" \
  msi_resize=\"true\" \
+ style=\"height: %height%; width: %width%;\" \
  aspect=\"false\" />";
       result += "</msiframe>";
 
