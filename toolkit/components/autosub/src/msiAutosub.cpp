@@ -40,7 +40,6 @@ autosubentry::operator< ( autosubentry& b )
 } 
 
 
-
 PRBool
 autosubentry::operator== ( nsString & b )
 {
