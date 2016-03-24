@@ -33,6 +33,7 @@
   <xsl:template name="chars-to-LaTeX-Math">
       <xsl:param name="unicode-cdata"/>
       <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
+      <xsl:variable name="second-char" select="substring($unicode-cdata,2,1)"/>
 
       <xsl:variable name="char-info-lookup"
 		    select="$char-info/char-table/char[@unicode=$first-char][1]/@latex"/>
@@ -1512,7 +1513,9 @@
             <xsl:text xml:space="preserve">\geqq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2268;'">
-            <xsl:text xml:space="preserve">\lvertneqq </xsl:text>
+            <xsl:if test="$second-char='&FE00;'">
+              <xsl:text xml:space="preserve">\lvertneqq </xsl:text>
+            </xsl:if>
           </xsl:when>
           <xsl:when test="$first-char='&#x2269;'">
             <xsl:text xml:space="preserve">\gneq </xsl:text>
