@@ -1515,7 +1515,7 @@
             <xsl:text xml:space="preserve">\lvertneqq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2269;'">
-            <xsl:text xml:space="preserve">\gneq </xsl:text>
+            <xsl:text xml:space="preserve">\gvertneqq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2269;'">
             <xsl:text xml:space="preserve">\gneqq </xsl:text>
