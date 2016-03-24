@@ -8,6 +8,8 @@
 
 @! Set the typesetter to be TeX. This allows us to enter TeX commands
 @! directly into the funnelweb source.
+@p maximum_input_line_length = 150
+@p maximum_output_line_length = 150
 
 @p typesetter = tex
 \input docmacros
