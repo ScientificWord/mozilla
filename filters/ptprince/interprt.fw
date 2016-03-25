@@ -894,7 +894,7 @@ case CMD_MSISPECIAL: {
  originalSrcUrl=\"%ImageFileFull%\" \
  copiedSrcUrl=\"%ImageFile%\" \
  msi_resize=\"true\" \
- style=\"height: %height%; width: %width%;\" \
+ style=\"height: %height%%units%; width: %width%%units%;\" \
  aspect=\"false\" />";
       result += "</msiframe>";
 
@@ -923,9 +923,13 @@ case CMD_MSISPECIAL: {
                     get_number(kvmap["original-width"]).c_str());
          find_and_replace(result, "%units%",
                     get_units(kvmap["original-width"]).c_str());
+      } else {  
+         find_and_replace(result, "%naturalWidth%",
+                    get_number(kvmap["width"]).c_str());
+         find_and_replace(result, "%units%",
+                    get_units(kvmap["width"]).c_str());
+
       }
-
-
       
       find_and_replace(result, "%naturalHeight%",
                get_number(kvmap["original-height"]).c_str());

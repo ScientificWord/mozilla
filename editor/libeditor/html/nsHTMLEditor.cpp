@@ -7245,7 +7245,7 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("\\.{I}"));  // 130
     charMap->AppendString(NS_LITERAL_STRING("\\i "));
     charMap->AppendString(NS_LITERAL_STRING("{\\IJ}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\ij}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\ij}"));
     charMap->AppendString(NS_LITERAL_STRING("\\^{J}"));
     charMap->AppendString(NS_LITERAL_STRING("\\^{\\j}"));
     charMap->AppendString(NS_LITERAL_STRING("\\c{K}"));
