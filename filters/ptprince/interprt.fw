@@ -867,7 +867,7 @@ case CMD_MSISPECIAL: {
    } else {
      // a graphic
      result = "<msiframe frametype=\"image\" \
- units=\"in\" \
+ units=\"%units%\" \
  sidemargin=\"0.3\" topmargin=\"0.15\" overhang=\"0.3\" \
  borderw=\"0.03\" \
  padding=\"0.2\" \
@@ -918,25 +918,28 @@ case CMD_MSISPECIAL: {
       std::string fullname = std::string("file://") + s_docdir + SEP + name;
       find_and_replace(result, "%ImageFileFull%", NormalizeSlashes(makexml(fullname).c_str()).c_str());
 
-      if (kvmap.find("original-width") != kvmap.end()){
-         find_and_replace(result, "%naturalWidth%",
-                    get_number(kvmap["original-width"]).c_str());
-         find_and_replace(result, "%units%",
-                    get_units(kvmap["original-width"]).c_str());
-      } else {  
-         find_and_replace(result, "%naturalWidth%",
-                    get_number(kvmap["width"]).c_str());
-         find_and_replace(result, "%units%",
-                    get_units(kvmap["width"]).c_str());
-
-      }
-      
-      find_and_replace(result, "%naturalHeight%",
-               get_number(kvmap["original-height"]).c_str());
+               
       find_and_replace(result, "%width%",
                get_number(kvmap["width"]).c_str());
       find_and_replace(result, "%height%",
                get_number(kvmap["height"]).c_str());
+      find_and_replace(result, "%units%",
+               get_units(kvmap["width"]).c_str());
+               
+      if (kvmap.find("original-width") != kvmap.end()){
+         find_and_replace(result, "%naturalWidth%",
+                    get_number(kvmap["original-width"]).c_str());
+         //find_and_replace(result, "%origunits%",
+         //           get_units(kvmap["original-width"]).c_str());
+      } else {  
+         find_and_replace(result, "%naturalWidth%",
+                    get_number(kvmap["width"]).c_str());
+         //find_and_replace(result, "%origunits%",
+         //           get_units(kvmap["width"]).c_str());
+      }
+      
+      find_and_replace(result, "%naturalHeight%",
+               get_number(kvmap["original-height"]).c_str());
    }
    Typesetter::AppendTag(result.c_str()) ;
   
