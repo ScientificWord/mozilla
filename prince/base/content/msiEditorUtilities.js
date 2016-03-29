@@ -10461,12 +10461,6 @@ function msiPathFromFileURL(url)
     // or
     return msiFileFromFileURL(url).path;
   }
-
-
-function msiPathForOS(path) {
-  
-} 
-
 //The purpose of this function is to remove elements of "theArray" which aren't in "otherArray". In particular,
 //it leaves the order of elements in "theArray" unchanged.
 function intersectArrayWith(theArray, otherArray) {
