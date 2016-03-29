@@ -1342,6 +1342,9 @@
           <xsl:when test="$first-char='&#x220B;'">
             <xsl:text xml:space="preserve">\ni </xsl:text>
           </xsl:when>
+	  <xsl:when test="$first-char='&#x2210;'">
+            <xsl:text>\tcoprod </xsl:text>
+          </xsl:when>
           <xsl:when test="$first-char='&#x2211;'">
             <xsl:text xml:space="preserve">\sum </xsl:text>
           </xsl:when>
@@ -1422,6 +1425,15 @@
           </xsl:when>
           <xsl:when test="$first-char='&#x222B;'">
             <xsl:text xml:space="preserve">\smallint </xsl:text>
+          </xsl:when>
+	  <xsl:when test="$first-char='&#x222C;'">
+            <xsl:text>\iiint </xsl:text>
+          </xsl:when>
+	  <xsl:when test="$first-char='&#x222D;'">
+            <xsl:text>\iiiint </xsl:text>
+          </xsl:when>
+	  <xsl:when test="$first-char='&#x222E;'">
+            <xsl:text>\toint </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2234;'">
             <xsl:text xml:space="preserve">\therefore </xsl:text>
@@ -1799,6 +1811,9 @@
           <xsl:when test="$first-char='&#x22BC;'">
             <xsl:text xml:space="preserve">\barwedge </xsl:text>
           </xsl:when>
+	   <xsl:when test="$first-char='&#x22C0;'">
+            <xsl:text>\tbigwedge </xsl:text>
+          </xsl:when>
           <xsl:when test="$first-char='&#x25C7;'">
             <xsl:text xml:space="preserve">\Diamond </xsl:text>
           </xsl:when>
@@ -1820,6 +1835,7 @@
           <xsl:when test="$first-char='&#x22C9;'">
             <xsl:text xml:space="preserve">\ltimes </xsl:text>
           </xsl:when>
+	  
           <xsl:when test="$first-char='&#x22CA;'">
             <xsl:text xml:space="preserve">\rtimes </xsl:text>
           </xsl:when>
@@ -1870,6 +1886,9 @@
           </xsl:when>
           <xsl:when test="$first-char='&#x22DB;'">
             <xsl:text xml:space="preserve">\gtreqless </xsl:text>
+          </xsl:when>
+  	  <xsl:when test="$first-char='&#x2A01;'">
+            <xsl:text>\tbigoplus </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2A95;'">
             <xsl:text xml:space="preserve">\eqslantless </xsl:text>
