@@ -10,6 +10,8 @@ const nsIINIParserFactory = Components.interfaces.nsIINIParserFactory;
 const nsILocalFile = Components.interfaces.nsILocalFile;
 const nsISupports = Components.interfaces.nsISupports;
 
+
+
 function createINIParser(aFile) {
     return Components.manager.
       getClassObjectByContractID("@mozilla.org/xpcom/ini-parser-factory;1",
@@ -43,6 +45,24 @@ var graphicsConverter = {
     // This next line will probably need to be removed when the utilities directory is reorganized.
     // this.converterDir.append("bin");
   },
+
+// pathForOS takes a string path and converts all slashes to forward or backward slashes depending on the OS.
+// Use this for paths going out to the OS, as, for example, when sending file parameters to graphics conversions.
+
+  pathForOS: function(path) {
+    if (this.OS === 'win')
+      path = path.replace(/\//g, '\\');
+    else
+      path = path.replace(/\\/g, '/');
+    return path;
+  }, 
+
+// pathForBrowser guarantees that all slashes are forward slashes, as required by most browsers and SWP.
+// Use this when the path goes into a documents, as a data attributer for an <object>, for example.
+  pathForBrowser: function(path) {
+    return path.replace(/\\/g, '/');
+  },
+
 
   copyAndConvert: function(graphicsFile,  copyToGraphics, width, height) {
     var baseName;
@@ -89,12 +109,12 @@ var graphicsConverter = {
           destDir.append("graphics");
           destFile = destDir.clone();
           destFile.append(leaf);
-          if (this.OS === "win") {
-            returnPath = "graphics\\" + leaf;
-          }
-          else {
+          // if (this.OS === "win") {
+          //   returnPath = "graphics\\" + leaf;
+          // }
+          // else {
             returnPath = "graphics/" + leaf;
-          }
+          // }
 
           if (graphicsFile.path !== destFile.path) {
             if (destFile.exists()) destFile.remove(false);
@@ -113,7 +133,7 @@ var graphicsConverter = {
         //msidump(e.message);
       }
     }
-    return returnPath;
+    return this.pathForBrowser(returnPath);
   },
 
   assureSubdir: function(leafname) {
@@ -222,7 +242,7 @@ var graphicsConverter = {
           }
           param = param.replace(/\"/g,'');
           // if (param.length > 0) {
-            paramArray.push(param);
+            paramArray.push(this.pathForOS(param));
           // }
         }
         if (resolutionParameter) {
@@ -252,8 +272,8 @@ var graphicsConverter = {
     programFile = this.converterDir.clone();
     programFile.append(progname);
     theProcess.init(programFile);
-    paramArray.push(dollar2);
-    paramArray.push(this.baseDir.path);
+    paramArray.push(this.pathForOS(dollar2));
+    paramArray.push(this.pathForOS(this.baseDir.path));
     theProcess.run(true, paramArray, paramArray.length);
   },
 
@@ -733,6 +753,8 @@ var graphicsConverter = {
           testFile.append('gcache');
           testFile.append(bareLeaf + '.png');
           if (testFile.exists()) {
+            objElement.setAttribute('data','gcache/'+bareLeaf+'.png');
+            objElement.setAttribute('src','gcache/'+bareLeaf+'.png');
             if (this.product === 'snb') return true;
             else 
             {
@@ -753,7 +775,11 @@ var graphicsConverter = {
           testFile = testFile.parent.parent;
           testFile.append('gcache');
           testFile.append(bareLeaf + '.png');
-          if (testFile.exists())  return true;
+          if (testFile.exists()) {
+            objElement.setAttribute('data','gcache/'+bareLeaf+'.png');
+            objElement.setAttribute('src','gcache/'+bareLeaf+'.png');
+            return true;
+          }
         }
         break;
 
@@ -766,6 +792,8 @@ var graphicsConverter = {
           testFile.append('gcache');
           testFile.append(bareLeaf + '.png');
           if (testFile.exists()) {
+            objElement.setAttribute('data','gcache/'+bareLeaf+'.png');
+            objElement.setAttribute('src','gcache/'+bareLeaf+'.png');
             if (this.product === 'snb') return true;
             else 
             {
@@ -783,9 +811,20 @@ var graphicsConverter = {
         testFile.append(graphicFile.leafName);
         if (testFile.exists()) {
           testFile = testFile.parent.parent;
-          testFile.append('tcache');
-          testFile.append(bareLeaf + '.pdf');
-          if (testFile.exists()) return true;
+          testFile.append('gcache');
+          testFile.append(bareLeaf + '.png');
+          if (testFile.exists()) {
+            objElement.setAttribute('data','gcache/'+bareLeaf+'.png');
+            objElement.setAttribute('src','gcache/'+bareLeaf+'.png');
+            if (this.product === 'snb') return true;
+            else 
+            {
+              testFile = testFile.parent.parent;
+              testFile.append('tcache');
+              testFile.append(bareLeaf + '.pdf');
+              if (testFile.exists()) return true;
+            }
+          }
         }
         break;
 
@@ -798,7 +837,11 @@ var graphicsConverter = {
           testFile = testFile.parent.parent;
           testFile.append('gcache');
           testFile.append(bareLeaf + '.png');
-          if (testFile.exists()) return true;
+          if (testFile.exists()) {
+            objElement.setAttribute('data','gcache/'+bareLeaf+'.png');
+            objElement.setAttribute('src','gcache/'+bareLeaf+'.png');
+            return true;
+          }
         }
         break;
 
