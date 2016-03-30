@@ -497,7 +497,7 @@
             </hbox>
           </groupbox>
         </tabpanel>
-        <tabpanel orient="vertical">goho
+        <tabpanel orient="vertical">
           <hbox style="height: 3in">
             <vbox style="width:2in" >
               <label value="&ShellDirectories.label;"/>
@@ -539,6 +539,7 @@
               <listbox preference="defaultshell" flex = "1" onselect="onShellSelect();" id="dircontents"/>
             </vbox>
           </hbox>
+          <spacer flex="1"/>
           <checkbox label="&openLastFile.label;" preference="openLastFile" id="openLastSaved" />
         </tabpanel>
         <tabpanel orient="vertical">
@@ -750,12 +751,12 @@
   <prefpane id="prefComp" label="&Computation.label;">
     <tabbox id="outer-box" flex="1" persist="selectedIndex" selectedIndex="0">
 	    <tabs class="tabs-top">
-	     <tab label="&tabbar.input;"       selected="1" />
-	     <tab label="&tabbar.output;"      selected="0" />
-	     <tab label="&tabbar.matrices;"      selected="0" />
-	     <tab label="&tabbar.derivatives;" selected="0" />
-	     <tab label="&tabbar.entities;"    selected="0" />
-       <tab label="&tabbar.engine;" selected="0" />
+            <tab label="&tabbar.input;"       selected="1" />
+            <tab label="&tabbar.output;"      selected="0" />
+            <tab label="&tabbar.matrices;"      selected="0" />
+            <tab label="&tabbar.derivatives;" selected="0" />
+            <tab label="&tabbar.entities;"    selected="0" />
+            <tab label="&tabbar.engine;" selected="0" />
 	    </tabs>
 
       <tabpanels>
@@ -949,7 +950,7 @@
           <vbox>
             <groupbox>
               <caption label="&Scope.label;"/>
-              <radiogroup id ="scope" preference="scopepref">
+              <radiogroup id ="scope" > <!-- preference="scopepref"> -->
                 <radio label="&Default.label;" id="default_scope" selected="true"/>
                 <radio label="&ThisDocOnly.label;" id="this_scope" selected="false"/>
               </radiogroup>
