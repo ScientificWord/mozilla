@@ -117,8 +117,14 @@ var graphicsConverter = {
           // }
 
           if (graphicsFile.path !== destFile.path) {
-            if (destFile.exists()) destFile.remove(false);
-            graphicsFile.copyTo(destDir, leaf);
+            try {
+              if (destFile.exists()) destFile.remove(false);
+            }
+            catch(e) {}
+            try {
+              graphicsFile.copyTo(destDir, leaf);
+            }
+            catch(e) {}
           }
         }
         copiedFile = this.baseDir.clone();
@@ -257,25 +263,25 @@ var graphicsConverter = {
     return returnPath.replace("\\","/", 'g');
   },
 
-  handleEpsToPdfConversion: function(ithCommand, graphicsFile) {
-    var commandparts;
-    var progname;
-    var programFile;
-    var theProcess;
-    var paramArray = [];
-    var dollar1 = graphicsFile.path;
-    var dollar2 = graphicsFile.leafName.replace(/\.eps$/,'');
-    commandparts = ithCommand.split(',');
-    progname = commandparts[0];  // this will be epstopdf
-    if (this.OS === "win" && !(/\.cmd$/.test(progname))) progname += ".cmd";
-    theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-    programFile = this.converterDir.clone();
-    programFile.append(progname);
-    theProcess.init(programFile);
-    paramArray.push(this.pathForOS(dollar2));
-    paramArray.push(this.pathForOS(this.baseDir.path));
-    theProcess.run(true, paramArray, paramArray.length);
-  },
+  // handleEpsToPdfConversion: function(ithCommand, graphicsFile) {
+  //   var commandparts;
+  //   var progname;
+  //   var programFile;
+  //   var theProcess;
+  //   var paramArray = [];
+  //   var dollar1 = graphicsFile.path;
+  //   var dollar2 = graphicsFile.leafName.replace(/\.eps$/,'');
+  //   commandparts = ithCommand.split(',');
+  //   progname = commandparts[0];  // this will be epstopdf
+  //   if (this.OS === "win" && !(/\.cmd$/.test(progname))) progname += ".cmd";
+  //   theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+  //   programFile = this.converterDir.clone();
+  //   programFile.append(progname);
+  //   theProcess.init(programFile);
+  //   paramArray.push(this.pathForOS(dollar2));
+  //   paramArray.push(this.pathForOS(this.baseDir.path));
+  //   theProcess.run(true, paramArray, paramArray.length);
+  // },
 
   // A function to call when an existing graphics object changes dimensions, requiring
   // a new preview file optimized for those dimensions.
@@ -848,6 +854,8 @@ var graphicsConverter = {
       default:
         testFile.append('graphics');
         testFile.append(graphicFile.leafName);
+        objElement.setAttribute('data','graphics/'+bareLeaf+'.'+extension);
+        objElement.setAttribute('src','graphics/'+bareLeaf+'.'+extension);
         if (testFile.exists()) return true;
         break;
     }
