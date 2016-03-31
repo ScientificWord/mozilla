@@ -337,7 +337,6 @@ public:
 
   static PRBool hasMMLType(nsIEditor * editor,	nsIDOMNode * node, 	unsigned short mmlType);
 
-
   static PRBool IsMrow(nsIEditor* editor,
                        nsIDOMNode * node);
 
@@ -351,9 +350,6 @@ public:
                         PRBool allowInputbox);
 
   static PRBool IsEmpty(nsIDOMNode* pNode);
-
-
-
 
   static nsresult GetMathmlNodeType(nsIEditor * editor,
                                     nsIDOMNode * node,
