@@ -3143,172 +3143,203 @@ PRBool TwoSpacesSwitchesToMath()
 	return PR_FALSE;
 }
 
-
-PRBool isTextNode(nsIDOMNode *node) {
-  PRUint16 nodeType;
-  node->GetNodeType(&nodeType);
-  return (nodeType == nsIDOMNode::TEXT_NODE);
-}
-
-
 nsresult
 msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar,
- PRInt32& _result)
+ PRInt32 & _result)
 {
-  // Returns the next character in the backward direction starting from nodeIn and offsetIn. If offsetIn > 0 the result is easy. If
-  // we have to jump to another node, we have to check if the character is valid.
-
-  if (!nodeIn || !nodeOut) return NS_ERROR_NULL_POINTER;
-  NS_PRECONDITION(IsTextContentNode(nodeIn), "node in GetNextCharacter should be a text node");
+  if (!nodeIn) return NS_ERROR_NULL_POINTER;
   nsCOMPtr<nsIDOM3Node> textNode;
-  nsCOMPtr<nsIDOMNode> node, node2, node3, parentnode;
-  PRUint32 offset, offset2, nodeType;
+  nsCOMPtr<nsIDOMNode> node2;
+  nsCOMPtr<nsIDOMNode> node3;
+  nsCOMPtr<nsIDOMNode> pnode;
+  PRUint32 offset, offset2;
   PRUint32 length = 0;
   PRBool fCanEndHere = PR_TRUE;
-  PRBool fValidChar, isTextTag;
-  PRBool done = PR_FALSE;
-  PRUnichar nextChar;
-  nsAutoString theText, tag, parentTag;
+  PRBool fValidChar;
+  nsAutoString theText;
+  nsAutoString tag;
+  nsAutoString parentTag;
   nsIAtom * atomNS;
   nsresult rv;
-  textNode = do_QueryInterface(nodeIn);
-  textNode->GetTextContent(theText);
-  if (theText.Length() < offsetIn) {
-    nodeIn->GetNextSibling(getter_AddRefs(node));
-    offset = theText.Length() - offsetIn - 1;
-  } else {
-    if (offsetIn > 0)
-      offset = offsetIn-1;
-    node = nodeIn;
+  offset = offsetIn;
+  if (IsTextContentNode(nodeIn))
+  {
+    textNode = do_QueryInterface(nodeIn);
+    textNode->GetTextContent(theText);
+    if (offset > theText.Length()) offset = theText.Length();
+    while ((offset > 0) && (PRInt32)(--offset) >= 0)
+    {
+//      while (prevChar == ' ' && theText[offset] == ' ') --offset;
+      nodeIn->GetParentNode(getter_AddRefs(pnode));
+      rv = mtagListManager->GetTagOfNode(pnode, &atomNS, tag);
+      fValidChar = PR_TRUE;
+      fCanEndHere = PR_TRUE;
+      if (tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) {
+        fCanEndHere = (offset==0);
+        nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(pnode);
+        nsAutoString val;
+        if (nodeElement) {
+          // rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
+          // if (val.EqualsLiteral("true"))
+          // {
+          //   fValidChar = PR_FALSE;
+          // }
+          if (fValidChar) {
+            rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msiunit"), val);
+            if (val.EqualsLiteral("true")) {
+              fValidChar = PR_FALSE;
+            }
+          }
+          if (!fValidChar) {
+            _result = msiIAutosub::STATE_FAIL;
+            if (*nodeOut) // we did find a match earlier
+            {
+              // *nodeOut and offsetOut should still be valid
+              NS_ADDREF(*nodeOut);
+            }
+            return NS_OK;
+          }
+        }
+      }
+      // check for double spaces in text mode; possible to convert to math
+      pnode = nsnull;
+      if (TwoSpacesSwitchesToMath())
+      {
+  			if (!inMath && (offset > 0) && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == ' ' || theText[offset - 1] == 160))
+  			{
+					*nodeOut = nodeIn;
+					offsetOut = offset - 1 ;
+					_result = msiIAutosub::STATE_SPECIAL;
+					return NS_OK;
+				}
+			}
+			prevChar = theText[offset];
+      m_autosub->NextChar(inMath, prevChar, & _result);
+      if (_result == msiIAutosub::STATE_SUCCESS)
+      {
+        if (fCanEndHere)
+        {
+          *nodeOut = nodeIn;
+          offsetOut = offset;
+        }
+        else
+        {
+          //The autosub code thought it saw a match, but here we are overriding that decision
+          //We do not update nodeOut or offsetOut
+          _result = msiIAutosub::STATE_FAIL;
+        }
+      }
+      if (_result == msiIAutosub::STATE_FAIL)
+      {
+        if (*nodeOut) // we did find a match earlier
+        {
+          // *nodeOut and offsetOut should still be valid
+          NS_ADDREF(*nodeOut);
+        }
+        return NS_OK;
+      }
+    }
   }
+  // nodeIn is not a text node, or we have already gone through it
+  PRBool fHasChildren;
+  if (!nodeIn) return NS_OK;
+  nodeIn->HasChildNodes(&fHasChildren);
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  if (fHasChildren)  // in particular *pNode is not a text node
+  {
+    nodeIn->GetChildNodes( getter_AddRefs(nodeList));
+    nodeList->GetLength(&length);
+    offset2 = (PRUint32)(-1);
+    while (length > 0 && --length >= 0)
+    {
+      nodeList->Item(length, getter_AddRefs(node2));
+      GetNextCharacter(node2, offset2, nodeOut, offsetOut, inMath, prevChar,  _result);
+      if (_result == msiIAutosub::STATE_FAIL)
+      {
+        if (*nodeOut) // we did find a match earlier
+        {
+          // *nodeOut and offsetOut should still be valid
+          NS_ADDREF(*nodeOut);
+        }
+        return NS_OK;
+      }
+    }
+  }
+  node2 = nsnull;
+  nsCOMPtr<nsIDOMNode> tempnode;
+  nsCOMPtr<nsIDOMNode> tempnode2;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  tempnode = nodeIn;
+  PRBool validNode = PR_TRUE;
+  while (node2 == nsnull)
+  {
+    rv = tempnode->GetPreviousSibling(getter_AddRefs(node2));
+    while (NS_SUCCEEDED(rv) && node2 && msiUtils::IsWhitespace(node2))
+    {
+      rv = node2->GetPreviousSibling(getter_AddRefs(tempnode2));
+      node2 = tempnode2;
+    }
+    // if no previous sibling under this node, go up one level and try again
+    if (!node2)
+    {
+      tempnode->GetParentNode(getter_AddRefs(node2));
 
-
-
-  if (offsetIn == 0) {
-  // offsetIn is zero so no preceding character
-  // We have to find the first real (non-white-space) text node to the left in document order, and set the offset to its length.
-    // while (node) {
-    rv = node->GetPreviousSibling(getter_AddRefs(node2));
-    if (!node2) {// we can go up to the parent iff it is an mi, and mo, or a text tag.
-      rv = node->GetParentNode(getter_AddRefs(node2));  // offset of node in node2 is 0 since there was no prev sibling. Node2 can't be text.
-      node = node2;
-      rv = mtagListManager->GetTagOfNode(node, &atomNS, tag);
-      rv = mtagListManager->GetTagInClass(tag, NS_LITERAL_STRING("texttag"), atomNS, &isTextTag);
-      if (isTextTag || (inMath && (tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")))) {
-        rv = node->GetPreviousSibling(getter_AddRefs(node2));
-        if (!isTextNode(node2)) {
-          rv = mtagListManager->GetTagOfNode(node2, &atomNS, tag);
-          rv = mtagListManager->GetTagInClass(tag, NS_LITERAL_STRING("texttag"), atomNS, &isTextTag);
-          if (isTextTag || (inMath && (tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")))) {
-            rv = node2->GetFirstChild(getter_AddRefs(node3));
-            while (node3) {
-              node2 = node3;
-              rv = node2->GetNextSibling(getter_AddRefs(node3));
+      if (!node2)
+      {
+        _result = msiIAutosub::STATE_FAIL;
+        if (*nodeOut) // we did find a match earlier
+        {
+          // *nodeOut and offsetOut should still be valid
+          NS_ADDREF(*nodeOut);
+        }
+         return NS_OK; // no more nodes available. return _result.
+      }
+      else
+      {
+        // there are cases where we can't use the previous sibling, such as when the nodes are children of elements where
+        // the children correspond to visually distinct entities, as in fractions, subscripts, superscripts, etc.
+        node2->GetParentNode(getter_AddRefs(parentNode));
+        rv = mtagListManager->GetTagOfNode(parentNode, &atomNS, parentTag);
+        rv = mtagListManager->GetTagOfNode(node2, &atomNS, tag);
+        if (tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) {
+          if (!(parentTag.EqualsLiteral("mrow") || parentTag.EqualsLiteral("math") || parentTag.EqualsLiteral("mtd") ||
+            parentTag.EqualsLiteral("msqrt") )) {
+            validNode = PR_FALSE;
+          }
+          nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(node2);
+          nsAutoString val;
+          // rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msimathname"), val);
+          // if (val.EqualsLiteral("true"))
+          // {
+          //   validNode = PR_FALSE;
+          // }
+          if (validNode) {
+            rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msiunit"), val);
+            if (val.EqualsLiteral("true")) {
+              validNode = PR_FALSE;
             }
           }
         }
-      }
-    }
-    if (node2 && isTextNode(node2)) {
-      if (msiUtils::IsWhitespace(node2)) { // we return a space
-        nextChar = ' ';
-//        *nodeOut = node2;
-        offset = 0; //next time we'll check the next text node
-      } else {
-//        *nodeOut = node2;
-        rv = GetLengthOfDOMNode(node2, offset);
-        textNode = do_QueryInterface(node2);
-        textNode->GetTextContent(theText);
-        nextChar = theText[offset-1];
-      }
-    } else {
-      // nothing found
-      nextChar = 0;
-    }
-    if (nextChar) node = node2;
-  } else {
-    textNode = do_QueryInterface(node);
-    textNode->GetTextContent(theText);
-    nextChar = theText[offset];
-  }
-
-// Now we have to check validity if in math
-
-    // We don't do autosub in mathematics unless the text node is in an <mi> or an <mo>
-  if (inMath) {
-    node->GetParentNode(getter_AddRefs(parentnode));
-    rv = mtagListManager->GetTagOfNode(parentnode, &atomNS, tag);
-    fValidChar = PR_FALSE;
-    fCanEndHere = PR_TRUE;
-    if (tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) {
-      // these characters might be acceptable, but not if the mi is a mathname or a msiunit
-      fCanEndHere = (offset==0);
-      fValidChar = PR_TRUE;
-      nsCOMPtr<nsIDOMElement> nodeElement = do_QueryInterface(parentnode);
-      nsAutoString val;
-      if (nodeElement) {
-        if (fValidChar) {
-          rv = nodeElement->GetAttribute(NS_LITERAL_STRING("msiunit"), val);
-          if (val.EqualsLiteral("true")) {
-            fValidChar = PR_FALSE;
+        PRBool fTagIsTextTag;
+        rv =  mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"),tag,atomNS, &fTagIsTextTag);
+        if (!(fTagIsTextTag || ((tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo")) && validNode) || tag.EqualsLiteral("mo") || tag.EqualsLiteral("mn")))
+        {
+          _result = msiIAutosub::STATE_FAIL;
+          if (*nodeOut) // we did find a match earlier
+          {
+            // *nodeOut and offsetOut should still be valid
+            NS_ADDREF(*nodeOut);
           }
+          return NS_OK;
         }
       }
-    }
-    // fValidChar is false for math unless in <mi> or <mo> without mathname or a msiunit
-    if (!fValidChar) {
-      _result = msiIAutosub::STATE_FAIL;
-      if (*nodeOut) // we did find a match earlier
-      {
-        // *nodeOut andoffsetOut should still be valid
-        NS_ADDREF(*nodeOut);
-      }
-      return NS_OK;
-    }
-  }  // end of math checks
-
-  // check for double spaces in text mode; possible to convert to math
-  parentnode = nsnull;
-  if (TwoSpacesSwitchesToMath())
-  {
-    if (!inMath && (offset > 0) && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == ' ' || theText[offset - 1] == 160))
-    {
-      *nodeOut = nodeIn;
-      offsetOut = offset - 1 ;
-      _result = msiIAutosub::STATE_SPECIAL;
-      return NS_OK;
+      tempnode = node2;
+      node2 = nsnull; // go around again to get the previous sibling
     }
   }
-
-  // The easy case
-  if (nextChar == 0) {
-    _result = msiIAutosub::STATE_FAIL;
-  } else {
-    m_autosub->NextChar(inMath, nextChar, & _result);
-  }
-  if (_result == msiIAutosub::STATE_SUCCESS)
-  {
-    if (!fCanEndHere)
-    {
-      //The autosub code thought it saw a match, but here we are overriding that decision
-      //We do not update nodeOut oroffsetOut
-      _result = msiIAutosub::STATE_FAIL;
-    } else {
-      *nodeOut = node;
-      offsetOut = offset;
-    }
-  }
-  if (_result == msiIAutosub::STATE_FAIL)
-  {
-    if (*nodeOut) // we did find a match earlier
-    {
-      // *nodeOut and offsetOut should still be valid
-      NS_ADDREF(*nodeOut);
-    }
-    return NS_OK;
-  }
-  else
-    GetNextCharacter( node, offset, nodeOut, offsetOut, inMath, nextChar, _result);
+  offset2 = (PRUint32)(-1);
+  if (node2) GetNextCharacter(node2, offset2, nodeOut, offsetOut, inMath, prevChar, _result);
+  return NS_OK;
 }
 
 
@@ -3338,9 +3369,12 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   selection->GetAnchorOffset( &intOffset );
   offset = (PRUint32)intOffset;
   m_autosub->Reset();
-
+//  if (IsTextContentNode(node))
+//  {
+//    textNode = do_QueryInterface(node);
+//    textNode->GetTextContent(theText);
+//  }
   PRUint32 originalOffset = offset;
-  // (originalNode, originalOffset) points to just past the inserted character.
   GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, inmath, ch, lookupResult);
   if (node)  // there was success somewhere
   {
@@ -3359,14 +3393,10 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
     if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath ||
       inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
     {
-      SetInComplexTransaction(complexTxn);
       selection->Collapse(node, offset);
       selection->Extend(originalNode,originalOffset);
-      if (action == msiIAutosub::ACTION_SUBSTITUTE) {
-        nsCOMPtr<nsIDOMDocument> domDoc;
-        GetDocument(getter_AddRefs(domDoc));        
-        InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/xhtml"), domDoc, nsnull, 0, PR_TRUE);
-      }
+      if (action == msiIAutosub::ACTION_SUBSTITUTE)
+        InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE);
       else if (action == msiIAutosub::ACTION_EXECUTE)
       {
         nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
@@ -3380,9 +3410,58 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
 //      selection->Extend(originalNode, originalOffset);
 //      res = DeleteSelection(nsIEditor::eNone);
     }
+    SetInComplexTransaction(complexTxn);
   }
   return res;
 }
+
+//nsresult
+//msiEditor::CheckForUnicodeNumber(PRBool inmath)
+//{
+//  nsresult res = NS_OK;
+//  nsCOMPtr<nsISelection> selection;
+//  GetSelection(getter_AddRefs(selection));
+//  if (!selection) return res;
+//  nsCOMPtr<nsIDOMNode> node;
+//  nsCOMPtr<nsIDOM3Node> textNode;
+//  nsCOMPtr<nsIDOMNode> originalNode;
+//  PRUnichar ch = 0;
+//  PRInt32 ctx, action;
+//  PRInt32 intOffset;
+//  PRUint32 offset;
+//  nsAutoString theText;
+//  PRInt32 lookupResult;
+//  nsAutoString data, pasteContext, pasteInfo, error;
+//  selection->GetFocusNode((nsIDOMNode **) getter_AddRefs(originalNode));
+//  if (!originalNode) return res;
+//  selection->GetFocusOffset( &intOffset );
+//  offset = (PRUint32)intOffset;
+//  PRUint32 originalOffset =ffset;
+//  GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, ch, lookupResult);
+//  if (node)  // there was success somewhere
+//  {
+//    m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
+//    if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath ||
+//      inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
+//    {
+//      selection->Collapse(node, offset);
+//      selection->Extend(originalNode,originalOffset);
+//      if (action == msiIAutosub::ACTION_SUBSTITUTE)
+//        InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE);
+//      else if (action == msiIAutosub::ACTION_EXECUTE)
+//      {
+//        nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
+//        if (res == NS_OK)
+//        {
+//          sr->SetCtx(m_window);
+//          sr->Eval(data, error);
+//          if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
+//        }
+//      }
+//    }
+//  }
+//  return res;
+//}
 
 NS_IMETHODIMP
 msiEditor::InitRules()
