@@ -5,6 +5,8 @@ set MSITEXMF=@@TeXmf_Local@@
 set MSITEXMF_HOME=%MSITEX%\texmf-dist
 set PATH=@@TeX_Bindir@@;@@GSPATH@@;%PATH%
 set TEXMFLOCAL=%MSITEXMF%
-if exist %programfiles(x86)%\Inkscape set PATH=%programfiles(x86)%\Inkscape;%PATH%
-if exist %programfiles%\Inkscape set PATH=%programfiles%\Inkscape;%PATH%
-set INKSCAPE=inkscape.com
+if EXIST %programfiles(x86)%\Inkscape (
+	 set INKSCAPE=%programfiles(x86)%\Inkscape\inkscape.com
+) ELSE (
+	if EXIST %programfiles%\Inkscape (set INKSCAPE=%programfiles%\Inkscape\inkscape.com)
+)
