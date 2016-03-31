@@ -997,12 +997,18 @@ NS_IMETHODIMP msiTagListManager::NodeCanContainTag(nsIDOMNode *node, const nsASt
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
   if (!element) return PR_FALSE;
   nsresult res = NS_OK;
+  PRBool hasAttribute;
   nsAutoString stringTag;
   element->GetLocalName(stringTag);
   nsAutoString strNS;
   element->GetNamespaceURI(strNS);
   nsCOMPtr<nsIAtom> atomNS = NS_NewAtom(strNS);
   res = TagCanContainTag(stringTag, atomNS, strTagInner, atomNSInner, _retval);
+  // special code for various msiframes
+  if (*_retval && stringTag.EqualsLiteral("msiframe")) {
+    res = element->HasAttribute(NS_LITERAL_STRING("frametype"), &hasAttribute);
+    *_retval = !hasAttribute;  // special msiframes have the frametype attribute
+  }
   return res;
 }
 
