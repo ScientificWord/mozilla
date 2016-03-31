@@ -497,7 +497,7 @@
             </hbox>
           </groupbox>
         </tabpanel>
-        <tabpanel orient="vertical">goho
+        <tabpanel orient="vertical">
           <hbox style="height: 3in">
             <vbox style="width:2in" >
               <label value="&ShellDirectories.label;"/>
