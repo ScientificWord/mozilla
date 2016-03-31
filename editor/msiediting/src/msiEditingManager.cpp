@@ -2085,7 +2085,7 @@ nsresult msiEditingManager::AddMatrixRows(nsIEditor * editor, nsIDOMNode *aMatri
     {
       res = nextRow->GetParentNode(getter_AddRefs(insertParent));
       msiUtils::GetIndexOfChildInParent(nextRow, insertPos);
-//       insertPos = editor->GetIndexOf(insertParent, nextRow);
+//      insertPos = editor->GetIndexOf(insertParent, nextRow);
     }
     else
     {
