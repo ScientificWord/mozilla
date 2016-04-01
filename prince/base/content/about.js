@@ -2,7 +2,7 @@
 function onLoad() {
   var versionField = document.getElementById("versionField");
   var brandShortNameEl = document.getElementById("brandShortName");
-  versionField.value = brandShortNameEl.firstChild.nodeValue + ' ' + navigator.vendorSub + ' (6.0.13 03/31/2016)';
+  versionField.value = brandShortNameEl.firstChild.nodeValue + ' ' + navigator.vendorSub + ' (6.0.13 04/01/2016)';
   var CopyRight = document.getElementById("CopyRight");
   var currentTime = new Date();
   var year = currentTime.getFullYear();
