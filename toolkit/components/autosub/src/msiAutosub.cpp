@@ -216,13 +216,13 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
     NS_QuickSort(autosubarray, arraylength, sizeof(autosubentry), compare, nsnull);
     isInitialized = PR_TRUE;
   }
-  autosubentry entry;
-  for (PRUint32 i = 0; i < autosubCount; i++)
-  {
-    entry = autosubarray[i];
-      // printf("hello, world\n");
-    printf("%u: %u %s %s\n", i, entry.context, NS_ConvertUTF16toUTF8(entry.pattern).get(), NS_ConvertUTF16toUTF8(entry.data).get());
-  } 
+  // autosubentry entry;
+  // for (PRUint32 i = 0; i < autosubCount; i++)
+  // {
+  //   entry = autosubarray[i];
+  //     // printf("hello, world\n");
+  //   printf("%u: %u %s %s\n", i, entry.context, NS_ConvertUTF16toUTF8(entry.pattern).get(), NS_ConvertUTF16toUTF8(entry.data).get());
+  // } 
   return NS_OK;
 }
 
