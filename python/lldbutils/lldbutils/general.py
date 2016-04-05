@@ -42,6 +42,7 @@ def prefcnt(debugger, command, result, dict):
     thread = process.GetSelectedThread()
     frame = thread.GetSelectedFrame()
     obj = frame.EvaluateExpression(command)
+    print(obj)
     if obj.GetError().Fail():
         print "could not evaluate expression"
         return
