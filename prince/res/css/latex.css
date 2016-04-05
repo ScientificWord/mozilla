@@ -787,6 +787,7 @@ button[class="frontmattertag"] {
   font-style: normal;
   opacity: 0.7;
   display: inline;
+  -moz-user-select: all;
 }
 
 /* Selection rules */
