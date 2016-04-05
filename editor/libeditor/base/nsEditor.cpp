@@ -262,6 +262,40 @@ NS_IMPL_ISUPPORTS5(nsEditor, nsIEditor, nsIEditorIMESupport,
 
 
 //#ifdef DEBUG_Barry||DEBUG_barry
+
+const char * 
+nsEditor::DumpTagName(nsIDOMNode *aNode)
+{
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+  nsCOMPtr<nsIDOMAttr> item;
+  nsCOMPtr<nsIDOMNode> itemNode;
+  nsAutoString tag;
+  nsString *attributes = new nsString();
+  nsAutoString name, value;
+  NS_NAMED_LITERAL_STRING(quote,"\"");
+  NS_NAMED_LITERAL_STRING(equals,"=");
+  NS_NAMED_LITERAL_STRING(space," ");
+  PRUint32 length, i;
+  element->GetTagName(*attributes);
+  nsCOMPtr<nsIDOMNamedNodeMap> map;
+  element->GetAttributes(getter_AddRefs(map));
+  map->GetLength(&length);
+  for ( i = 0; i < length; i++) 
+  {
+    map->Item(i, getter_AddRefs(itemNode));
+    if (itemNode) {
+      item = do_QueryInterface(itemNode);
+      item -> GetName(name);
+      item -> GetValue(value);
+      *attributes += space + name + equals + quote + value + quote;
+    }
+  }
+
+  return NS_LossyConvertUTF16toASCII(*LLattributes).get();
+  // printf("%s %s\n",NS_LossyConvertUTF16toASCII(tag).get(),NS_LossyConvertUTF16toASCII(attributes).get());
+}
+
+
 void
 nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */)
 {
