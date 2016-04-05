@@ -291,7 +291,7 @@ nsEditor::DumpTagName(nsIDOMNode *aNode)
     }
   }
 
-  return NS_LossyConvertUTF16toASCII(*LLattributes).get();
+  return NS_LossyConvertUTF16toASCII(*attributes).get();
   // printf("%s %s\n",NS_LossyConvertUTF16toASCII(tag).get(),NS_LossyConvertUTF16toASCII(attributes).get());
 }
 
