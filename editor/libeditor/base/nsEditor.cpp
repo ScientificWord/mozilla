@@ -263,20 +263,19 @@ NS_IMPL_ISUPPORTS5(nsEditor, nsIEditor, nsIEditorIMESupport,
 
 //#ifdef DEBUG_Barry||DEBUG_barry
 
-const char * 
-nsEditor::DumpTagName(nsIDOMNode *aNode)
+void
+nsEditor::DumpTagName(nsIDOMNode *aNode, nsAString & nodeInfo)
 {
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
   nsCOMPtr<nsIDOMAttr> item;
   nsCOMPtr<nsIDOMNode> itemNode;
   nsAutoString tag;
-  nsString *attributes = new nsString();
   nsAutoString name, value;
   NS_NAMED_LITERAL_STRING(quote,"\"");
   NS_NAMED_LITERAL_STRING(equals,"=");
   NS_NAMED_LITERAL_STRING(space," ");
   PRUint32 length, i;
-  element->GetTagName(*attributes);
+  element->GetTagName(nodeInfo);
   nsCOMPtr<nsIDOMNamedNodeMap> map;
   element->GetAttributes(getter_AddRefs(map));
   map->GetLength(&length);
@@ -287,11 +286,9 @@ nsEditor::DumpTagName(nsIDOMNode *aNode)
       item = do_QueryInterface(itemNode);
       item -> GetName(name);
       item -> GetValue(value);
-      *attributes += space + name + equals + quote + value + quote;
+      nodeInfo += space + name + equals + quote + value + quote;
     }
   }
-
-  return NS_LossyConvertUTF16toASCII(*attributes).get();
   // printf("%s %s\n",NS_LossyConvertUTF16toASCII(tag).get(),NS_LossyConvertUTF16toASCII(attributes).get());
 }
 
