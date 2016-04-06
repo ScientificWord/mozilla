@@ -23,26 +23,73 @@ def ptag(debugger, command, result, dict):
 #     debugger.HandleCommand("expression nsEditor::DumpTagName(" + command + ")")
     
 
-def mtag(debugger, command, result, dict):
-    """Displays tag name and attributes of a content element."""
+def modcommand(debugger, command, result, dict):
+    """Adds .mRawPtr to a dom node name if necessary."""
     target = debugger.GetSelectedTarget()
     process = target.GetProcess()
     thread = process.GetSelectedThread()
     frame = thread.GetSelectedFrame()
     obj = frame.EvaluateExpression(command)
+    newcommand = ''
     if obj.TypeIsPointerType():
-        debugger.HandleCommand("expression nsEditor::DumpTagName(" + command + ")")
+        newcommand = command
     else:
         name = obj.GetType().GetUnqualifiedType().GetName()
         if name.startswith("nsCOMPtr<") or name.startswith("nsRefPtr>") or name.startswith("nsAutoPtr<") or name.startswith("already_addRefed<"):
-            debugger.HandleCommand("expression nsEditor::DumpTagName(" + command + ".mRawPtr)")
+            newcommand = command + '.mRawPtr'
+        else:
+            if name.startswith("mozilla:RefPtr<"):
+                newcommand = command + '.ptr'
+    return newcommand
+
+
+def mnode(debugger, command, result, dict):
+    """Displays tag name and attributes of a content element."""
+    newcommand = modcommand(debugger, command, result, dict)
+    if len(newcommand) > 0:
+        # print("expression " + istextnodefragment(newcommand) + "nsEditor::DumpTagName(" + newcommand + ", text),text)")
+        debugger.HandleCommand("expression " + istextnodefragment(newcommand) + "(nsEditor::DumpTagName(" + newcommand + ", text),text))")
         # else:
         #     if name.startswith("mozilla:RefPtr<"):
         #         debugger.HandleCommand("expression nsEditor::DumpTagName(" + command + ".ptr)")
+
+def istextnodefragment(newcommand):
+    return 'PRUint16 nodeType; nsString text; '+ newcommand + '->GetNodeType(&nodeType); (nodeType == 3 ? (' + newcommand + '->GetNodeValue(text),text) : '
+
+def mparent(debugger, command, result, dict):
+    """Displays parent of a content element."""
+    newcommand = modcommand(debugger, command, result, dict)
+    if len(newcommand) > 0:
+        debugger.HandleCommand("expression nsIDOMNode* parent; " + newcommand + "->GetParentNode(&parent),parent;")
+
+
+def mfirstchild(debugger, command, result, dict):
+    """Displays first child of a content element."""
+    newcommand = modcommand(debugger, command, result, dict)
+    if len(newcommand) > 0:
+        debugger.HandleCommand("expression nsIDOMNode* child; " + newcommand + "->GetFirstChild(&child),child;")
+
+def mnext(debugger, command, result, dict):
+    """Displays next sibling of a content element."""
+    newcommand = modcommand(debugger, command, result, dict)
+    if len(newcommand) > 0:
+        debugger.HandleCommand("expression nsIDOMNode* child; " + newcommand + "->GetNextSibling(&child),child;")
+
+def mprev(debugger, command, result, dict):
+    """Displays previous sibling of a content element."""
+    newcommand = modcommand(debugger, command, result, dict)
+    if len(newcommand) > 0:
+        debugger.HandleCommand("expression nsIDOMNode* child; " + newcommand + "->GetPrevSibling(&child),child;")
+
+
 
 
 def init(debugger):
     debugger.HandleCommand("type summary add nsTextFragment -F lldbutils.content.summarize_text_fragment")
     # debugger.HandleCommand("type summary add nsIDOMElement -F libdutils.content.summarize_node")
     debugger.HandleCommand("command script add -f lldbutils.content.ptag ptag")
-    debugger.HandleCommand("command script add -f lldbutils.content.mtag mtag")
+    debugger.HandleCommand("command script add -f lldbutils.content.mnode mnode")
+    debugger.HandleCommand("command script add -f lldbutils.content.mparent mparent")
+    debugger.HandleCommand("command script add -f lldbutils.content.mfirstchild mfirstchild")
+    debugger.HandleCommand("command script add -f lldbutils.content.mnext mnext")
+    debugger.HandleCommand("command script add -f lldbutils.content.mprev mprev")
