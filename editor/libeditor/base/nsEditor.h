@@ -559,7 +559,7 @@ public:
   static nsresult GetEndNodeAndOffset(nsISelection *aSelection, nsIDOMNode **outEndNode, PRInt32 *outEndOffset);
 #if 1
   static void DumpNode(nsIDOMNode *aNode, PRInt32 indent=0, bool recurse = false);
-  static const char * DumpTagName(nsIDOMNode *aNode);
+  static void DumpTagName(nsIDOMNode *aNode, nsAString& nodeInfo);
 #endif
 
   // Helpers to add a node to the selection. 
