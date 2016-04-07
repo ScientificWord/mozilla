@@ -68,7 +68,7 @@ function onAddItem()
   else
   {
 //    var theLabel = new PlotLabel(dim);
-    newNum = graph.AddNewPlotLabel() + 1;
+    newNum = graph.addNewPlotLabel() + 1;
   }
   itemNumberControl.max = newNum;
   itemNumberControl.valueNumber = newNum;
@@ -235,7 +235,7 @@ function setValuesToDialog(attrArray)
     if (ctrl && !ctrl.hidden)
     {
       value = theLabel.getPlotLabelAttribute(attrArray[ii]);
-      if (value)
+      // if (value)
         putValueToControl(ctrl, value);
       if (attrArray[ii] == "OrientationType")
         isCartesian = (value == "cartesian");
