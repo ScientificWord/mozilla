@@ -20,7 +20,7 @@
     buttons="accept,cancel"
     screenX="40"
     screenY="40"
-    width="450"
+    width="200"
     height="500"
     persist="screenX screenY width height">
 
@@ -52,12 +52,12 @@
 	  </columns>
 	  <rows>
       <row>
-        <label value="&labelText.label;" control="Text" accesskey="&labelText.accesskey;" observes="hasLabels" />
         <label value="&labelItemNumber.label;" control="labelItemNumber" accesskey="&labelItemNumber.accesskey;" />
+        <label value="&labelText.label;" control="Text" accesskey="&labelText.accesskey;" observes="hasLabels" />
       </row>
       <row align="start">
-        <textbox id="Text" multiline="true" cols="60" rows="4" observes="hasLabels" />
-        <textbox id="labelItemNumber" type="number" min="0" max="1" />
+        <textbox id="labelItemNumber" cols="3" type="number" min="0"/>
+        <textbox id="Text" multiline="true" cols="25" rows="2" observes="hasLabels" />
       </row>
     </rows>
   </grid>
