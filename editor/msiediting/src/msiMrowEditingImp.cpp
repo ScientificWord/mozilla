@@ -74,12 +74,23 @@ msiMrowEditingImp::IsRedundant(nsIEditor * editor, PRBool offsetOnBoundary, PRBo
     if (*isRedundant)
     {
       nsCOMPtr<nsIDOMNode> parent;
+      nsCOMPtr<nsIDOMNode> child;
+      nsCOMPtr<nsIDOMElement> childElement;
       m_mathmlNode->GetParentNode(getter_AddRefs(parent));
       nsString localName;
+      nsAutoString fenced;
       if (parent)
         parent->GetLocalName(localName);
       if (localName.EqualsLiteral("mfenced"))
         *isRedundant = PR_FALSE;
+      if (localName.EqualsLiteral("mrow")) {
+        parent->GetFirstChild(getter_AddRefs(child));
+        if (child) {
+          childElement = do_QueryInterface(child);
+          if (childElement) childElement->GetAttribute(NS_LITERAL_STRING("fence"), fenced);
+          if (fenced.EqualsLiteral("true")) *isRedundant = PR_FALSE;
+        }
+      }
     } 
   }
   return NS_OK;
