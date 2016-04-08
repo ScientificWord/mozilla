@@ -813,7 +813,7 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
     nsAutoString newSymbol(symbol);
 
-    if (symbol.EqualsLiteral("-")) {
+    if (symbol.EqualsLiteral("-")) {  // replace ASCII hyphen by math minus
       newSymbol.Assign(0x2212);
     }
     res = msiUtils::CreateMathMLLeafElement(editor, newSymbol, 1, flags, mathmlElement);
