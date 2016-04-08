@@ -189,7 +189,15 @@ nsMathMLmspaceFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFram
     PRBool* fBailingOut, PRInt32 *_retval)
 {
   printf("mspace MoveOutToRight, count = %d\n", count);
-  
+
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
+  {
+    pMCM = GetMathCursorMover(pParent);
+    if (pMCM)
+      pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+  }
   return NS_OK;  
 }
 
@@ -198,7 +206,13 @@ nsMathMLmspaceFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame
     PRBool* fBailingOut, PRInt32 *_retval)
 {                
   printf("mspace MoveOutToLeft, count = %d\n", count);
-
-  return NS_OK;  
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
+  {
+    pMCM = GetMathCursorMover(pParent);
+    if (pMCM)
+      pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+  }  return NS_OK;  
 }  
 
