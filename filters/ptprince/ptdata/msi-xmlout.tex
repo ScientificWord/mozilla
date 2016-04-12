@@ -646,7 +646,7 @@
 
 %% Citations and cross refs
 
-\def\attrib@text{
+\def\attrib@text{%
   \catcode`\&=\active
   \catcode`\<=\active
   \catcode`\>=\active
@@ -690,18 +690,18 @@
 %\MSITextElement{pageref}
 
 \def\ref{%
-  \begingroup\attrib@text\@ref}
+\begingroup\attrib@text\@ref}
   
 \def\@ref#1{%
-  \ifmmode
+  \ifmmode%
     \begingroup\msihmode
     \msitag{\msipassthru}
     \char`\{
     \msitag{<xref key="}#1\msitag{" href="}#1\msitag{" reftype="obj"/>}
     \char`\}
     \endgroup
-  \else
-    \msihmode\msitag{<xref key="#1" href="#1" reftype="obj"/>}%
+  \else%
+\msihmode\msitag{<xref key="#1" href="#1" reftype="obj"/>}%
   \fi
   \endgroup}
 
