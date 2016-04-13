@@ -650,7 +650,10 @@
   \catcode`\&=\active
   \catcode`\<=\active
   \catcode`\>=\active
-  \catcode`\ =\active
+  \catcode`\ =10
+  \catcode`\_=\other
+  \catcode`\$=\other
+  \catcode`\#=\other
 }
 
 \def\cite{%
@@ -690,7 +693,7 @@
 %\MSITextElement{pageref}
 
 \def\ref{%
-\begingroup\attrib@text\@ref}
+  \begingroup\attrib@text\@ref}
   
 \def\@ref#1{%
   \ifmmode%
@@ -701,7 +704,7 @@
     \char`\}
     \endgroup
   \else%
-\msihmode\msitag{<xref key="#1" href="#1" reftype="obj"/>}%
+    \msihmode\msitag{<xref key="}#1\msitag{" href="}#1\msitag{" reftype="obj"/>}%
   \fi
   \endgroup}
 
@@ -1895,7 +1898,7 @@
    \ifmmode
      \msitag{\msipassthru{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}}
    \else
-     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{"><![CDATA[#2]]></texb>}%
+     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}%
    \fi
    \endgroup}
 
