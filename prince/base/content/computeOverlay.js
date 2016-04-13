@@ -75,7 +75,7 @@ function msiSetupMSIComputeMenuCommands(editorElement) {
 function doSetupMSIComputeMenuCommands(commandTable) {
   // note hokey use of shared command
   commandTable.registerCommand("cmd_MSIComputeEval", msiEvaluateCommand);
-  commandTable.registerCommand("cmd_MSIComputeEvalKeyboard", msiEvaluateCommand);
+  // commandTable.registerCommand("cmd_MSIComputeEvalKeyboard", msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputeEvalNum", msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputeSimplify", msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputeCombineExponentials", msiEvaluateCommand);
@@ -326,8 +326,12 @@ function doComputeEvaluate(math, editorElement, inPlace) {
 //var ctrlClick = false;
 var buttonPressed = -1;
 
-function doComputeCommand2(event, cmd, editorElement, cmdHandler) {
-  var inPlace = (getOS(window) == "osx") ? (event.metaKey) : (event.ctrlKey);
+function doComputeCommand2(event, cmd, editorElement, cmdHandler ) {
+  if (!editorElement) editorElement=msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var inPlace = false;
+  if (editor)
+    inPlace = (getOS(window) == "osx") ? (editor.isMetaDown) : (editor.isCtrlDown);
   doComputeCommand(cmd, editorElement, cmdHandler, inPlace);
 }
 
@@ -358,7 +362,9 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
   inPlace = !!inPlace;
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
+  var joiner = "<mo>=</mo>";
   var selection = editor.selection;
+  if (!selection.isCollapsed) joiner = " : ";
   if (selection) {
     var element = isSelectionMath(selection);
     if (!element) {
@@ -373,94 +379,94 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
     var eng = GetCurrentEngine();
     switch (cmd) {
     case "cmd_compute_Evaluate":
-      doEvalComputation(element, eng.Evaluate, "<mo>=</mo>", "evaluate", editorElement, inPlace);
+      doEvalComputation(element, eng.Evaluate, joiner, "evaluate", editorElement, inPlace);
       break;
     case "cmd_compute_EvaluateNumeric":
       doEvalComputation(element, eng.Evaluate_Numerically, "<mo>" + String.fromCharCode(0x2248) + "</mo>", "evaluate numeric", editorElement, inPlace);
       break;
     case "cmd_compute_Simplify":
-      doEvalComputation(element, eng.Simplify, "<mo>=</mo>", "simplify", editorElement, inPlace);
+      doEvalComputation(element, eng.Simplify, joiner, "simplify", editorElement, inPlace);
       break;
     case "cmd_compute_CombineExponentials":
-      doEvalComputation(element, eng.Combine_Exponentials, "<mo>=</mo>", "combine exp", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Exponentials, joiner, "combine exp", editorElement, inPlace);
       break;
     case "cmd_compute_CombineLogs":
-      doEvalComputation(element, eng.Combine_Logs, "<mo>=</mo>", "combine log", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Logs, joiner, "combine log", editorElement, inPlace);
       break;
     case "cmd_compute_CombinePowers":
-      doEvalComputation(element, eng.Combine_Powers, "<mo>=</mo>", "combine pow", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Powers, joiner, "combine pow", editorElement, inPlace);
       break;
     case "cmd_compute_CombineTrig":
-      doEvalComputation(element, eng.Combine_Trig_Functions, "<mo>=</mo>", "combine trig", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Trig_Functions, joiner, "combine trig", editorElement, inPlace);
       break;
     case "cmd_compute_CombineArctan":
-      doEvalComputation(element, eng.Combine_Arctan, "<mo>=</mo>", "combine arctan", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Arctan, joiner, "combine arctan", editorElement, inPlace);
       break;
     case "cmd_compute_CombineHyperbolics":
-      doEvalComputation(element, eng.Combine_Hyperbolic_Functions, "<mo>=</mo>", "combine hyperbolic", editorElement, inPlace);
+      doEvalComputation(element, eng.Combine_Hyperbolic_Functions, joiner, "combine hyperbolic", editorElement, inPlace);
       break;
     case "cmd_compute_Expand":
-      doEvalComputation(element, eng.Expand, "<mo>=</mo>", "expand", editorElement, inPlace);
+      doEvalComputation(element, eng.Expand, joiner, "expand", editorElement, inPlace);
       break;
     case "cmd_compute_Factor":
-      doEvalComputation(element, eng.Factor, "<mo>=</mo>", "factor", editorElement, inPlace);
+      doEvalComputation(element, eng.Factor, joiner, "factor", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteRational":
-      doEvalComputation(element, eng.Rewrite_Rational, "<mo>=</mo>", "rewrite rational", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_Rational, joiner, "rewrite rational", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteFloat":
-      doEvalComputation(element, eng.Rewrite_Float, "<mo>=</mo>", "rewrite float", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_Float, joiner, "rewrite float", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteMixed":
-      doEvalComputation(element, eng.Rewrite_Mixed, "<mo>=</mo>", "rewrite mixed", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_Mixed, joiner, "rewrite mixed", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteExponential":
-      doEvalComputation(element, eng.Rewrite_Exponential, "<mo>=</mo>", "rewrite exponential", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_Exponential, joiner, "rewrite exponential", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteFactorial":
-      doEvalComputation(element, eng.Rewrite_Factorial, "<mo>=</mo>", "rewrite factorial", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_Factorial, joiner, "rewrite factorial", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteGamma":
-      doEvalComputation(element, eng.Rewrite_Gamma, "<mo>=</mo>", "rewrite gamma", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_Gamma, joiner, "rewrite gamma", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteLogarithm":
-      doEvalComputation(element, eng.Rewrite_Logarithm, "<mo>=</mo>", "rewrite logarithm", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_Logarithm, joiner, "rewrite logarithm", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteSinAndCos":
-      doEvalComputation(element, eng.Rewrite_sin_and_cos, "<mo>=</mo>", "rewrite sincos", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_sin_and_cos, joiner, "rewrite sincos", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteSinhAndCosh":
-      doEvalComputation(element, eng.Rewrite_sinh_and_cosh, "<mo>=</mo>", "rewrite sinhcosh", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_sinh_and_cosh, joiner, "rewrite sinhcosh", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteSin":
-      doEvalComputation(element, eng.Rewrite_sin, "<mo>=</mo>", "rewrite sin", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_sin, joiner, "rewrite sin", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteCos":
-      doEvalComputation(element, eng.Rewrite_cos, "<mo>=</mo>", "rewrite cos", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_cos, joiner, "rewrite cos", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteTan":
-      doEvalComputation(element, eng.Rewrite_tan, "<mo>=</mo>", "rewrite tan", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_tan, joiner, "rewrite tan", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteArcsin":
-      doEvalComputation(element, eng.Rewrite_arcsin, "<mo>=</mo>", "rewrite arcsin", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_arcsin, joiner, "rewrite arcsin", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteArccos":
-      doEvalComputation(element, eng.Rewrite_arccos, "<mo>=</mo>", "rewrite arccos", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_arccos, joiner, "rewrite arccos", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteArctan":
-      doEvalComputation(element, eng.Rewrite_arctan, "<mo>=</mo>", "rewrite arctan", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_arctan, joiner, "rewrite arctan", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteArccot":
-      doEvalComputation(element, eng.Rewrite_arccot, "<mo>=</mo>", "rewrite arccot", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_arccot, joiner, "rewrite arccot", editorElement, inPlace);
       break;
     case "cmd_compute_RewritePolar":
-      doEvalComputation(element, eng.Rewrite_Polar, "<mo>=</mo>", "rewrite polar", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_Polar, joiner, "rewrite polar", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteRectangular":
-      doEvalComputation(element, eng.Rewrite_Rectangular, "<mo>=</mo>", "rewrite rectangular", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_Rectangular, joiner, "rewrite rectangular", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteNormal":
-      doEvalComputation(element, eng.Rewrite_Normal_Form, "<mo>=</mo>", "rewrite normal", editorElement, inPlace);
+      doEvalComputation(element, eng.Rewrite_Normal_Form, joiner, "rewrite normal", editorElement, inPlace);
       break;
     case "cmd_compute_RewriteEquationsAsMatrix":
       doVarsComputation(element, ", Corresponding matrix: ", eng.Rewrite_Equations_as_Matrix, GetComputeString("EqnsAsMatrix.title"), editorElement, cmd, cmdHandler);
@@ -484,7 +490,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
       doComputeSolveInteger(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_Collect":
-      doVarsEvalComputation(element, eng.Polynomial_Collect, "<mo>=</mo>", GetComputeString("Collect.title"), "", editorElement, cmd, cmdHandler);
+      doVarsEvalComputation(element, eng.Polynomial_Collect, joiner, GetComputeString("Collect.title"), "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_Divide":
       doComputeDivide(element, "", editorElement, cmd, cmdHandler);
@@ -503,13 +509,13 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
       doComputeCompanionMatrix(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ByParts":
-      doVarsEvalComputation(element, eng.Calculus_Integrate_by_Parts, "<mo>=</mo>", GetComputeString("ByParts.title"), GetComputeString("ByParts.remark"), editorElement, cmd, cmdHandler);
+      doVarsEvalComputation(element, eng.Calculus_Integrate_by_Parts, joiner, GetComputeString("ByParts.title"), GetComputeString("ByParts.remark"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_FindExtrema":
       doComputeFindExtrema(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ChangeVariable":
-      doVarsEvalComputation(element, eng.Calculus_Change_Variable, "<mo>=</mo>", GetComputeString("ChangeVar.title"), GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
+      doVarsEvalComputation(element, eng.Calculus_Change_Variable, joiner, GetComputeString("ChangeVar.title"), GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ApproxIntegral":
       doComputeApproxIntegral(element, editorElement);
@@ -619,7 +625,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
       break;
     case "cmd_MSIComputeJordan":
       //doLabeledComputation(element,eng.Jordan_Form,"Jordan.fmt", editorElement);
-      doEvalComputation(element, "", eng.Jordan_Form, "<mo>=</mo>", "evaluate jordan", editorElement, inPlace);
+      doEvalComputation(element, "", eng.Jordan_Form, joiner, "evaluate jordan", editorElement, inPlace);
       break;
     case "cmd_MSIComputeMap":
       doComputeMap(element, editorElement, cmd, cmdHandler);
@@ -665,7 +671,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
       break;
     case "cmd_MSIComputeSVD":
       doLabeledComputation(element, "", eng.SVD, "SVD.fmt", editorElement);
-      //doEvalComputation(element,"",eng.SVD,"<mo>=</mo>", "evaluate SVD", editorElement, inPlace);
+      //doEvalComputation(element,"",eng.SVD,joiner, "evaluate SVD", editorElement, inPlace);
       break;
     case "cmd_MSIComputeSmith":
       doLabeledComputation(element, "", eng.Smith_Normal_Form, "Smith.fmt", editorElement);
@@ -854,7 +860,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
       doComputeUndefine(element);
       break;
     case "cmd_compute_Interpret":
-      doEvalComputation(element, eng.Interpret, "<mo>=</mo>", "interpret", editorElement);
+      doEvalComputation(element, eng.Interpret, joiner, "interpret", editorElement);
       break;
     case "cmd_compute_Fixup":
       doFixupComputation(element, eng.Fixup, "<mo>=</mo>", "fixup", editorElement);
@@ -1144,9 +1150,20 @@ function GetOffset(math, node) {
 function insertResult(result, sep, mathElement, editorElement, rightEnd) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  var appendedResult = result.replace(fullmath, fullmath + sep);
-  insertXML(editor, appendedResult, mathElement, GetOffset(mathElement, rightEnd));
-  coalescemath(editorElement);
+  var appendedResult;
+  var parent;
+  var index;
+  if (sep === ' : ') {
+    index = offsetOfChild(mathElement.parentNode, mathElement) + 1;
+    editor.insertNode(document.createTextNode(sep), mathElement.parentNode, index);
+    appendedResult = fullmath + result + '</math>';
+    insertXML(editor, appendedResult, mathElement.parentNode, index+1);
+  }
+  else {
+    appendedResult = result.replace(fullmath, fullmath + sep);
+    insertXML(editor, appendedResult, mathElement, GetOffset(mathElement, rightEnd));
+    coalescemath(editorElement);
+  }
 }
 
 function appendLabel(label, math, editorElement) {
