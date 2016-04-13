@@ -425,6 +425,9 @@ void Typesetter::StartProcess(const char* name)
 
 
 @$@<Typesetter implementation@>+=@{@-
+
+void find_and_replace(std::string& str, const char* srch, const char*repl);
+
 void Typesetter::EndProcess()
 {
    TeXNodeList* plist = s_pList;
@@ -449,7 +452,10 @@ void Typesetter::EndProcess()
          std::string s_mathml;
          std::string s_anom;
          ProcessMathML(theCStr, s_mathml, s_anom);
-
+         // the braces are changed here in case the xml is sent
+         // back inside tex (via \msipassthru)
+         find_and_replace(s_mathml, "{", "&#x7b;");
+         find_and_replace(s_mathml, "}", "&#x7d;");
          LOG("\nGot back " << s_mathml.c_str());
          AppendTag(s_mathml.c_str());
          s_mathml = "";
@@ -634,6 +640,10 @@ void Typesetter::EndInline()
          std::string s_mathml;
          std::string s_anom;
          ProcessMathML(theCStr, s_mathml, s_anom);
+         // the braces are changed here in case the xml is sent
+         // back inside tex (via \msipassthru)
+         find_and_replace(s_mathml, "{", "&#x7b;");
+         find_and_replace(s_mathml, "}", "&#x7d;");
          LOG("\nGot back " << s_mathml.c_str());
          std::string str;
          str +=  "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">";
@@ -716,6 +726,10 @@ void Typesetter::EndDisplay()
          s_equation = false;
          ProcessMathML(theCStr, s_mathml, s_anom);
          LOG("\nGot back " << s_mathml.c_str());
+         // the braces are changed here in case the xml is sent
+         // back inside tex (via \msipassthru)
+         find_and_replace(s_mathml, "{", "&#x7b;");
+         find_and_replace(s_mathml, "}", "&#x7d;");
 
          std::string customLabel = "";
          bool suppressAnnotation = false;
