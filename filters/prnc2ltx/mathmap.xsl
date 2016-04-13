@@ -1342,6 +1342,9 @@
           <xsl:when test="$first-char='&#x220B;'">
             <xsl:text xml:space="preserve">\ni </xsl:text>
           </xsl:when>
+	   <xsl:when test="$first-char='&#x220F;'">
+            <xsl:text>\tprod </xsl:text>
+          </xsl:when>
 	  <xsl:when test="$first-char='&#x2210;'">
             <xsl:text>\tcoprod </xsl:text>
           </xsl:when>
@@ -1811,8 +1814,14 @@
           <xsl:when test="$first-char='&#x22BC;'">
             <xsl:text xml:space="preserve">\barwedge </xsl:text>
           </xsl:when>
-	   <xsl:when test="$first-char='&#x22C0;'">
+	  <xsl:when test="$first-char='&#x22C0;'">
             <xsl:text>\tbigwedge </xsl:text>
+          </xsl:when>
+	  <xsl:when test="$first-char='&#x22C1;'">
+            <xsl:text>\tbigvee </xsl:text>
+          </xsl:when>
+	  <xsl:when test="$first-char='&#x22C2;'">
+            <xsl:text>\tbigcap </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x25C7;'">
             <xsl:text xml:space="preserve">\Diamond </xsl:text>
@@ -1935,8 +1944,11 @@
           <xsl:when test="$first-char='&#x22EF;'">
             <xsl:text xml:space="preserve">\cdots </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x22F1;'">
+	   <xsl:when test="$first-char='&#x22F0;'">
             <xsl:text xml:space="preserve">\ddots </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22F1;'">
+            <xsl:text xml:space="preserve">\diagdown </xsl:text>
           </xsl:when>
 	  <xsl:when test="$first-char='&#x2AB9;'">
             <xsl:text xml:space="preserve">\precnapprox </xsl:text>
@@ -2126,13 +2138,13 @@
           <xsl:when test="$first-char='&#x2660;'">
             <xsl:text xml:space="preserve">\spadesuit </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x2661;'">
-            <xsl:text xml:space="preserve">\heartsuit </xsl:text>
-          </xsl:when>
           <xsl:when test="$first-char='&#x2663;'">
             <xsl:text xml:space="preserve">\clubsuit </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x2662;'">
+	  <xsl:when test="$first-char='&#x2665;'">
+            <xsl:text xml:space="preserve">\heartsuit </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2666;'">
             <xsl:text xml:space="preserve">\diamondsuit </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x266D;'">
