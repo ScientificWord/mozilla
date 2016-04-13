@@ -576,6 +576,12 @@ interface nsIEditor  : nsISupports
   void simpleDeleteNode( in nsIDOMNode aNode);
   long insertBufferNodeIfNeeded(in nsIDOMNode node, out nsIDOMNode outNode, in nsIDOMNode parent, out nsIDOMNode outParent, in long aPosition);
 
+  
+  attribute boolean isCtrlDown;
+  attribute boolean isAltDown;
+  attribute boolean isMetaDown;
+  attribute boolean isShiftDown;
+
   /* ------------ Debug methods -------------- */
 
   /**
