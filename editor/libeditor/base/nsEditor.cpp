@@ -199,6 +199,10 @@ nsEditor::nsEditor()
 ,  mDocDirtyState(-1)
 ,  mDocWeak(nsnull)
 ,  mPhonetic(nsnull)
+,  ctrlDown(PR_FALSE)
+,  metaDown(PR_FALSE)
+,  altDown(PR_FALSE)
+,  shiftDown(PR_FALSE)
 {
   //initialize member variables here
   if (!gTypingTxnName)
@@ -5915,3 +5919,59 @@ nsEditor::SimpleDeleteNode( nsIDOMNode *aNode)
   }
   return res;
 }
+
+  /* readonly attribute boolean isCtrlDown; */
+NS_IMETHODIMP
+nsEditor::GetIsCtrlDown(PRBool *aIsCtrlDown) {
+  *aIsCtrlDown = ctrlDown;
+  return NS_OK;
+}
+
+  /* readonly attribute boolean isAltDown; */
+NS_IMETHODIMP
+nsEditor::GetIsAltDown(PRBool *aIsAltDown) {
+  *aIsAltDown = altDown;
+  return NS_OK;
+}
+
+  /* readonly attribute boolean isMetaDown; */
+NS_IMETHODIMP
+nsEditor::GetIsMetaDown(PRBool *aIsMetaDown) {
+  *aIsMetaDown = metaDown;
+  return NS_OK;
+}
+
+  /* readonly attribute boolean isShiftDown; */
+NS_IMETHODIMP
+nsEditor::GetIsShiftDown(PRBool *aIsShiftDown) {
+  *aIsShiftDown = shiftDown;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsEditor::SetIsCtrlDown(PRBool aIsCtrlDown) {
+  ctrlDown = aIsCtrlDown;
+  return NS_OK;
+}
+
+  /* readonly attribute boolean isAltDown; */
+NS_IMETHODIMP
+nsEditor::SetIsAltDown(PRBool aIsAltDown) {
+  altDown = aIsAltDown;
+  return NS_OK;
+}
+
+  /* readonly attribute boolean isMetaDown; */
+NS_IMETHODIMP
+nsEditor::SetIsMetaDown(PRBool aIsMetaDown) {
+  metaDown = aIsMetaDown;
+  return NS_OK;
+}
+
+  /* readonly attribute boolean isShiftDown; */
+NS_IMETHODIMP
+nsEditor::SetIsShiftDown(PRBool aIsShiftDown) {
+  shiftDown = aIsShiftDown;
+  return NS_OK;
+}
+

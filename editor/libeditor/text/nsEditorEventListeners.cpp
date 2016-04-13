@@ -135,6 +135,23 @@ nsTextEditorKeyListener::HandleEvent(nsIDOMEvent* aEvent)
 nsresult
 nsTextEditorKeyListener::KeyDown(nsIDOMEvent* aKeyEvent)
 {
+  PRBool b;
+   nsCOMPtr<nsIDOMKeyEvent>keyEvent = do_QueryInterface(aKeyEvent);
+  if (!keyEvent) 
+  {
+    //non-key event passed to keypress.  bad things.
+    return NS_OK;
+  }
+  if (mEditor) {
+    keyEvent->GetShiftKey(&b);
+    mEditor->SetIsShiftDown(b);
+    keyEvent->GetCtrlKey(&b);
+    mEditor->SetIsCtrlDown(b);
+    keyEvent->GetAltKey(&b);
+    mEditor->SetIsAltDown(b);
+    keyEvent->GetMetaKey(&b);
+    mEditor->SetIsMetaDown(b);
+  }
   return NS_OK;
 }
 
@@ -142,6 +159,23 @@ nsTextEditorKeyListener::KeyDown(nsIDOMEvent* aKeyEvent)
 nsresult
 nsTextEditorKeyListener::KeyUp(nsIDOMEvent* aKeyEvent)
 {
+  PRBool b;
+  nsCOMPtr<nsIDOMKeyEvent>keyEvent = do_QueryInterface(aKeyEvent);
+  if (!keyEvent) 
+  {
+    //non-key event passed to keypress.  bad things.
+    return NS_OK;
+  }
+  if (mEditor) {
+    keyEvent->GetShiftKey(&b);
+    mEditor->SetIsShiftDown(b);
+    keyEvent->GetCtrlKey(&b);
+    mEditor->SetIsCtrlDown(b);
+    keyEvent->GetAltKey(&b);
+    mEditor->SetIsAltDown(b);
+    keyEvent->GetMetaKey(&b);
+    mEditor->SetIsMetaDown(b);
+  }
   return NS_OK;
 }
 
