@@ -674,6 +674,12 @@ protected:
   nsCOMPtr<nsIDOMEventListener> mFocusListenerP;
   nsCOMPtr<nsIDOMWindow> m_window;
 
+  PRBool  ctrlDown;
+  PRBool  metaDown;
+  PRBool  altDown;
+  PRBool  shiftDown;
+
+
   friend PRBool NSCanUnload(nsISupports* serviceMgr);
   friend class nsAutoTxnsConserveSelection;
   friend class nsAutoSelectionReset;
