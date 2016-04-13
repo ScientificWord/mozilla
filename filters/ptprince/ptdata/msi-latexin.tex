@@ -12,16 +12,12 @@
 \catcode`\^^L=\active \outer\def^^L{\par}% ascii form-feed is \outer\par
 \catcode`@=11
 
-
-%\def~{\nobreakspace{}}
+\catcode`\%=14
 
 \def\msi@newline{^^0a\ignorespaces}
 
 \def\@makeother#1{\catcode #1=12\relax}
 
-\catcode`\%=12
-\def\@percentchar{%}
-\catcode`\%=14
 \countdef\count@=255
 
 \let\bgroup={ \let\egroup=}
@@ -45,8 +41,6 @@
 \def\documentclass{%
    \@ifnextchar[{\@docclassA}{\@docclassB}
 }
-
-
    
 \def\@docclassA[#1]#2{%
    \msi@output=1\relax
@@ -66,8 +60,7 @@
 
 
 \def\@@documentclass{%
-  \@fileswithoptions\@clsextension
-}
+  \@fileswithoptions\@clsextension}
 
 
 %% \usepackage and \RequirePackage
@@ -290,17 +283,6 @@
 \else
 \fi
 
-%% jcs\ifx\@TeXversion\@undefined
-%% jcs  \ifx\@undefined\inputlineno
-%% jcs    \def\@TeXversion{2}
-%% jcs  \else
-%% jcs   {\catcode`\^^J=\active
-%% jcs     \def\reserved@a#1#2\@@{\if#1\string^3\fi}
-%% jcs     \edef\reserved@a{\expandafter\reserved@a\string^^J\@@}
-%% jcs     \ifx\reserved@a\@empty\else\gdef\@TeXversion{3}\fi}
-%% jcs  \fi
-%% jcs\fi
-
 
 \def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
   \do\#\do\^\do\_\do\%\do\~}
@@ -483,16 +465,16 @@
     \char`\#
   \fi}
 
-\def\leavevmode{\unhbox\voidb@x}
-\def\mathhexbox#1#2#3{\mbox{$\m@th \mathchar"#1#2#3$}}
-\def\ialign{\everycr{}\tabskip\z@skip\halign} % initialized \halign
-\def\oalign#1{\leavevmode\vtop{\baselineskip\z@skip \lineskip.25ex%
-  \ialign{##\crcr#1\crcr}}}
-\def\o@lign{\lineskiplimit\z@ \oalign}
-\def\ooalign{\lineskiplimit-\maxdimen \oalign}
-\def\sh@ft#1{\dimen@.00#1ex\multiply\dimen@\fontdimen1\font
-  \kern-.0156\dimen@} % compensate for slant in lowered accents
-%%\def\hrulefill{\leavevmode\leaders\hrule\hfill\kern\z@}
+%% \def\leavevmode{\unhbox\voidb@x}
+%% \def\mathhexbox#1#2#3{\mbox{$\m@th \mathchar"#1#2#3$}}
+%% \def\ialign{\everycr{}\tabskip\z@skip\halign} % initialized \halign
+%% \def\oalign#1{\leavevmode\vtop{\baselineskip\z@skip \lineskip.25ex%
+%%  \ialign{##\crcr#1\crcr}}}
+%% \def\o@lign{\lineskiplimit\z@ \oalign}
+%% \def\ooalign{\lineskiplimit-\maxdimen \oalign}
+%% \def\sh@ft#1{\dimen@.00#1ex\multiply\dimen@\fontdimen1\font
+%%  \kern-.0156\dimen@} % compensate for slant in lowered accents
+
 
 \sfcode`\)=0 \sfcode`\'=0 \sfcode`\]=0
 \def\showoverfull{\tracingonline\@ne}
@@ -551,7 +533,7 @@
 
 \let\l@ngrel@x\relax
 
-%\def\newcommand{\@star@or@long\new@command}
+
 \def\new@command#1{%
   \@testopt{\@newcommand#1}0}
 
@@ -623,7 +605,7 @@
   \let\@ifdefinable\@@ifdefinable
   #2}
 
-%\def\renewenvironment{\@star@or@long\renew@environment}
+
 \def\renew@environment#1{%
   \@ifundefined{#1}%
      {\@latex@error{Environment #1 undefined}\@ehc
@@ -1070,21 +1052,10 @@
 \newskip\bigskipamount   \bigskipamount =12pt plus 4pt minus 4pt
 
 
-
-%\DeclareRobustCommand{\nobreakspace}{%
-%   \leavevmode\nobreak\ }
-
 \expandafter\let\expandafter\@xobeysp\csname nobreakspace \endcsname
 
-%\DeclareRobustCommand{\,}{%
-%   \relax\ifmmode\mskip\thinmuskip\else\thinspace\fi
-%}
 
 \def\@{\spacefactor\@m}
-%\DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
-%\def\@hspace#1{\hskip #1\relax}
-%\def\@hspacer#1{\vrule \@width\z@\nobreak
-%                \hskip #1\hskip \z@skip}
 
 \newskip\fill
 \fill = 0pt plus 1fill
@@ -1677,16 +1648,9 @@
         \let\cf@encoding\f@encoding
 }
 \let\enc@update\relax
-%\DeclareRobustCommand\fontfamily[1]{\edef\f@family{#1}}
-%\DeclareRobustCommand\fontseries[1]{\edef\f@series{#1}}
-%\DeclareRobustCommand\fontshape [1]{\edef\f@shape{#1}}
 \def\usefont#1#2#3#4{\fontencoding{#1}\fontfamily{#2}%
              \fontseries{#3}\fontshape{#4}\selectfont
              \ignorespaces}
-%\DeclareRobustCommand\linespread[1]
-%   {\set@fontsize{#1}\f@size\f@baselineskip}
-%\DeclareRobustCommand\fontsize[2]
-%   {\set@fontsize\baselinestretch{#1}{#2}}
 \let\f@family\@empty
 \let\f@series\@empty
 \let\f@shape\@empty
@@ -1705,8 +1669,6 @@
   \expandafter\endgroup\x
 \def\strip@pt{\expandafter\rem@pt\the}
 
-%\newtoks\everymath
-%\newtoks\everydisplay
 
 \let\frozen@everymath\everymath
 \let\frozen@everydisplay\everydisplay
@@ -3055,38 +3017,6 @@
    \fi
 }
 \@onlypreamble\DeclareSymbolFontAlphabet@
-%\DeclareMathVersion{normal}
-%\DeclareMathVersion{bold}
-%\DeclareRobustCommand\rmfamily
-%        {\not@math@alphabet\rmfamily\mathrm
-%         \fontfamily\rmdefault\selectfont}
-%\DeclareRobustCommand\sffamily
-%        {\not@math@alphabet\sffamily\mathsf
-%         \fontfamily\sfdefault\selectfont}
-%\DeclareRobustCommand\ttfamily
-%        {\not@math@alphabet\ttfamily\mathtt
-%         \fontfamily\ttdefault\selectfont}
-%\DeclareRobustCommand\bfseries
-%        {\not@math@alphabet\bfseries\mathbf
-%         \fontseries\bfdefault\selectfont}
-%\DeclareRobustCommand\mdseries
-%        {\not@math@alphabet\mdseries\relax
-%         \fontseries\mddefault\selectfont}
-%\DeclareRobustCommand\upshape
-%        {\not@math@alphabet\upshape\relax
-%         \fontshape\updefault\selectfont}
-%\DeclareRobustCommand\slshape
-%        {\not@math@alphabet\slshape\relax
-%         \fontshape\sldefault\selectfont}
-%\DeclareRobustCommand\scshape
-%        {\not@math@alphabet\scshape\relax
-%         \fontshape\scdefault\selectfont}
-%\DeclareRobustCommand\itshape
-%        {\not@math@alphabet\itshape\mathit
-%         \fontshape\itdefault\selectfont}
-%\DeclareRobustCommand\em
-%        {\@nomath\em \ifdim \fontdimen\@ne\font >\z@
-%                       \upshape \else \itshape \fi}
 
 \def\not@math@alphabet#1#2{%
    \relax
@@ -3551,8 +3481,6 @@
      \reserved@a \if@eqnsw\@eqnnum\stepcounter{equation}\fi
      \global\@eqnswtrue\global\@eqcnt\z@\cr}
 \let\@seqncr=\@eqncr
-%\@namedef{eqnarray*}{\def\@eqncr{\nonumber\@seqncr}\eqnarray}
-%\@namedef{endeqnarray*}{\nonumber\endeqnarray}
 
 
 \DeclareRobustCommand{\ensuremath}{%
@@ -3598,28 +3526,6 @@
 \newif\if@noitemarg \@noitemargfalse
 \newif\if@nmbrlist  \@nmbrlistfalse
 
-%% jcs\def\list#1#2{%
-%% jcs  \ifnum \@listdepth >5\relax
-%% jcs    \@toodeep
-%% jcs  \else
-%% jcs    \global\advance\@listdepth\@ne
-%% jcs  \fi
-%% jcs  \rightmargin\z@
-%% jcs  \listparindent\z@
-%% jcs  \itemindent\z@
-%% jcs  \csname @list\romannumeral\the\@listdepth\endcsname
-%% jcs  \def\@itemlabel{#1}%
-%% jcs  \let\makelabel\@mklab
-%% jcs  \@nmbrlistfalse
-%% jcs  #2\relax
-%% jcs  \@trivlist
-%% jcs  \parskip\parsep
-%% jcs  \parindent\listparindent
-%% jcs  \advance\linewidth -\rightmargin
-%% jcs  \advance\linewidth -\leftmargin
-%% jcs  \advance\@totalleftmargin \leftmargin
-%% jcs  \parshape \@ne \@totalleftmargin \linewidth
-%% jcs  \ignorespaces}
 \newcount\par@deathcycles
 \def\@trivlist{%
   \if@noskipsec \leavevmode \fi
@@ -3798,11 +3704,6 @@
 
 %%% From File: ltboxes.dtx
 \message{boxes,}
-%% jcs\def\makebox{%
-%% jcs  \leavevmode
-%% jcs  \@ifnextchar(%)
-%% jcs    \@makepicbox
-%% jcs    {\@ifnextchar[{\@makebox}{\mbox}}}
 
 \long\def\mbox#1{%
   \ifmmode
@@ -4473,16 +4374,6 @@
 \def\@nthm#1#2{%
   \@ifnextchar[{\out@newtheoremc{#1}{#2}}{\out@newtheoremb{#1}{#2}}}
   
-%% jcs\def\@xnthm#1#2[#3]{%
-%% jcs  \expandafter\@ifdefinable\csname #1\endcsname
-%% jcs    {\@definecounter{#1}\@newctr{#1}[#3]%
-%% jcs     \expandafter\xdef\csname the#1\endcsname{%
-%% jcs       \expandafter\noexpand\csname the#3\endcsname \@thmcountersep
-%% jcs          \@thmcounter{#1}}%
-%% jcs     \global\@namedef{#1}{\@thm{#1}{#2}}%
-%% jcs     \global\@namedef{end#1}{\@endtheorem}}}
-
-
 
 \def\@thm#1#2{%
   \refstepcounter{#1}%
@@ -4501,11 +4392,9 @@
 
 
 \message{sectioning,}
-%\newcount\@secpenalty
-%\@secpenalty = -300
 
 \newif\if@noskipsec \@noskipsectrue
-%\def\@seccntformat#1{\csname the#1\endcsname\quad}
+
 \def\@ssect#1#2#3#4#5{%
   \@tempskipa #3\relax
   \ifdim \@tempskipa>\z@
@@ -4555,14 +4444,8 @@
     \fi
     \@nobreakfalse
   \endgroup}
-%\def\addcontentsline#1#2#3{%
-%  \addtocontents{#1}{\protect\contentsline{#2}{#3}{\thepage}}}
-  
-%\long\def\addtocontents#1#2{%
-%   \string\addtocontents{#1}{#2}%
-%}
 
-\def\contentsline#1{\csname l@#1\endcsname}
+%% \def\contentsline#1{\csname l@#1\endcsname}
 \def\@dottedtocline#1#2#3#4#5{%
   \ifnum #1>\c@tocdepth \else
     \vskip \z@ \@plus.2\p@
@@ -4580,84 +4463,85 @@
      \hb@xt@\@pnumwidth{\hfil\normalfont \normalcolor #5}%
      \par}%
   \fi}
-\def\numberline#1{\hb@xt@\@tempdima{#1\hfil}}
+  
+%%\def\numberline#1{\hb@xt@\@tempdima{#1\hfil}}
 
-\newcount\@floatpenalty
-\def\@float#1{%
-  \@ifnextchar[%
-    {\@xfloat{#1}}%
-    {\edef\reserved@a{\noexpand\@xfloat{#1}[\csname fps@#1\endcsname]}%
-     \reserved@a}}
+%%\newcount\@floatpenalty
+%%\def\@float#1{%
+%%  \@ifnextchar[%
+%%    {\@xfloat{#1}}%
+%%    {\edef\reserved@a{\noexpand\@xfloat{#1}[\csname fps@#1\endcsname]}%
+%%     \reserved@a}}
 
-\def\@dblfloat{%
-  \if@twocolumn\let\reserved@a\@dbflt\else\let\reserved@a\@float\fi
-  \reserved@a}
-\def\@xfloat #1[#2]{%
-  \@nodocument
-  \def \@captype {#1}%
-   \def \@fps {#2}%
-   \@onelevel@sanitize \@fps
-   \def \reserved@b {!}%
-   \ifx \reserved@b \@fps
-     \@fpsadddefault
-   \else
-     \ifx \@fps \@empty
-       \@fpsadddefault
-     \fi
-   \fi
-   \ifhmode
-     \@bsphack
-     \@floatpenalty -\@Mii
-   \else
-     \@floatpenalty-\@Miii
-   \fi
-  \ifinner
-     \@parmoderr\@floatpenalty\z@
-  \else
-    \@next\@currbox\@freelist
-      {%
-       \@tempcnta \sixt@@n
-       \expandafter \@tfor \expandafter \reserved@a
-         \expandafter :\expandafter =\@fps
-         \do
-          {%
-           \if \reserved@a h%
-             \ifodd \@tempcnta
-             \else
-               \advance \@tempcnta \@ne
-             \fi
-           \fi
-           \if \reserved@a t%
-             \@setfpsbit \tw@
-           \fi
-           \if \reserved@a b%
-
-             \@setfpsbit 4%
-           \fi
-           \if \reserved@a p%
-             \@setfpsbit 8%
-           \fi
-           \if \reserved@a !%
-             \ifnum \@tempcnta>15
-               \advance\@tempcnta -\sixt@@n\relax
-             \fi
-           \fi
-           }%
-       \@tempcntb \csname ftype@\@captype \endcsname
-       \multiply \@tempcntb \@xxxii
-       \advance \@tempcnta \@tempcntb
-       \global \count\@currbox \@tempcnta
-       }%
-    \@fltovf
-  \fi
-  \global \setbox\@currbox
-    \color@vbox
-      \normalcolor
-      \vbox \bgroup
-        \hsize\columnwidth
-        \@parboxrestore
-        \@floatboxreset
-}
+%%\def\@dblfloat{%
+%%  \if@twocolumn\let\reserved@a\@dbflt\else\let\reserved@a\@float\fi
+%%  \reserved@a}
+%%\def\@xfloat #1[#2]{%
+%%  \@nodocument
+%%  \def \@captype {#1}%
+%%   \def \@fps {#2}%
+%%   \@onelevel@sanitize \@fps
+%%   \def \reserved@b {!}%
+%%   \ifx \reserved@b \@fps
+%%     \@fpsadddefault
+%%   \else
+%%     \ifx \@fps \@empty
+%%       \@fpsadddefault
+%%     \fi
+%%   \fi
+%%   \ifhmode
+%%     \@bsphack
+%%     \@floatpenalty -\@Mii
+%%   \else
+%%     \@floatpenalty-\@Miii
+%%   \fi
+%%  \ifinner
+%%     \@parmoderr\@floatpenalty\z@
+%%  \else
+%%    \@next\@currbox\@freelist
+%%      {%
+%%       \@tempcnta \sixt@@n
+%%       \expandafter \@tfor \expandafter \reserved@a
+%%         \expandafter :\expandafter =\@fps
+%%         \do
+%%          {%
+%%           \if \reserved@a h%
+%%             \ifodd \@tempcnta
+%%             \else
+%%               \advance \@tempcnta \@ne
+%%             \fi
+%%           \fi
+%%           \if \reserved@a t%
+%%             \@setfpsbit \tw@
+%%           \fi
+%%           \if \reserved@a b%
+%%
+%%             \@setfpsbit 4%
+%%           \fi
+%%           \if \reserved@a p%
+%%             \@setfpsbit 8%
+%%           \fi
+%%           \if \reserved@a !%
+%%             \ifnum \@tempcnta>15
+%%               \advance\@tempcnta -\sixt@@n\relax
+%%             \fi
+%%           \fi
+%%           }%
+%%       \@tempcntb \csname ftype@\@captype \endcsname
+%%       \multiply \@tempcntb \@xxxii
+%%       \advance \@tempcnta \@tempcntb
+%%       \global \count\@currbox \@tempcnta
+%%       }%
+%%    \@fltovf
+%%  \fi
+%%  \global \setbox\@currbox
+%%    \color@vbox
+%%      \normalcolor
+%%      \vbox \bgroup
+%%        \hsize\columnwidth
+%%        \@parboxrestore
+%%        \@floatboxreset
+%% }
 \def \@floatboxreset {%
         \reset@font
         \normalsize
@@ -4794,8 +4678,6 @@
 \skip\footins=\bigskipamount % space added when footnote is present
 \count\footins=1000 % footnote magnification factor (1 to 1)
 \dimen\footins=8in % maximum footnotes per page
-%%%\def\footnoterule{\kern-3\p@
-%%%  \hrule \@width 2in \kern 2.6\p@} % the \hrule is .4pt high
 
 \def\footnoterule{\msitag{\footnoterule}}
 \@definecounter{footnote}
@@ -4831,7 +4713,7 @@
  \@esphack}
 
 
-%<indexitem req="varioref" pri="asdf" sec="fff"/>
+
  
 
 
@@ -5924,43 +5806,7 @@
 \newinsert \@kludgeins
 \global\dimen\@kludgeins \maxdimen
 \global\count\@kludgeins 1000
-%\gdef \enlargethispage {%
-%   \@ifstar
-%     {%
-%      \@enlargepage{\hbox{\kern\p@}}}%
-%     {%
-%      \@enlargepage\@empty}%
-%}
-%\gdef\@enlargepage#1#2{%
-%   \@tempskipa#2\relax
-%   \ifdim \@tempskipa>.5\maxdimen
-%     \@latexerr{Suggested\space extra\space height\space
-%                (\the\@tempskipa)\space dangerously\space
-%                large}\@eha
-%   \else
-%     \ifdim \vsize<.5\maxdimen
-%       \@bsphack
-%         \insert\@kludgeins{#1\vskip-\@tempskipa}%
-%       \@esphack
-%     \else
-%       \@latexerr{Page\space height\space already\space
-%                  too\space large}\@eha
-%     \fi
-%   \fi
-%}
-%\def \suppressfloats {%
-%   \@ifnextchar [%
-%     \@flstop
-%    {\global \@colnum \z@}%
-%}
-%\def \@flstop [#1]{%
-%   \if t#1%
-%     \global \@topnum \z@
-%   \fi
-%   \if b#1%
-%     \global \@botnum \z@
-%   \fi
-%}
+
 \newcount \@fpstype
 \newdimen \@reqcolroom
 \newdimen \@textfloatsheight
@@ -6219,18 +6065,13 @@
     \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
 
 \def\@pass@ptions#1#2#3{\relax}
-%\def\@pass@ptions#1#2#3{%
-%  \expandafter\xdef\csname opt@#3.#1\endcsname{%
-%    \@ifundefined{opt@#3.#1}\@empty
-%      {\csname opt@#3.#1\endcsname,}%
-%    \zap@space#2 \@empty}}
+
 \@onlypreamble\@pass@ptions
 \def\PassOptionsToPackage{\@pass@ptions\@pkgextension}
 \def\PassOptionsToClass{\@pass@ptions\@clsextension}
 \@onlypreamble\PassOptionsToPackage
 \@onlypreamble\PassOptionsToClass
 \def\DeclareOption{%
-  %\let\@fileswith@pti@ns\@badrequireerror
   \@ifstar\@defdefault@ds\@declareoption}
 \long\def\@declareoption#1#2{%
    \xdef\@declaredoptions{\@declaredoptions,#1}%
