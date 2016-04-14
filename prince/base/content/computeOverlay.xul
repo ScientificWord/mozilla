@@ -34,16 +34,16 @@
     <!-- since Eval is bound to meta+E, we do not want to confuse it with in-place eval, so we
         use a different command -->
     <command id="cmd_MSIComputeEvalKeyboard" key="e" modifiers="accel" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
-    <command id="cmd_MSIComputeEvalNum"                  oncommand="doComputeCommand2('cmd_compute_EvaluateNumeric')"/>
-    <command id="cmd_MSIComputeSimplify"                 oncommand="doComputeCommand2('cmd_compute_Simplify')"/>
+    <command id="cmd_MSIComputeEvalNum"                  oncommand="doComputeCommand2(event, 'cmd_compute_EvaluateNumeric')"/>
+    <command id="cmd_MSIComputeSimplify"                 oncommand="doComputeCommand2(event, 'cmd_compute_Simplify')"/>
     <command id="cmd_MSIComputeCombineExponentials"      oncommand="doComputeCommand('cmd_compute_CombineExponentials')"/>
     <command id="cmd_MSIComputeCombineLogs"              oncommand="doComputeCommand('cmd_compute_CombineLogs')"/>
     <command id="cmd_MSIComputeCombinePowers"            oncommand="doComputeCommand('cmd_compute_CombinePowers')"/>
     <command id="cmd_MSIComputeCombineTrig"              oncommand="doComputeCommand('cmd_compute_CombineTrig')"/>
     <command id="cmd_MSIComputeCombineArctan"            oncommand="doComputeCommand('cmd_compute_CombineArctan')"/>
     <command id="cmd_MSIComputeCombineHyperbolics"       oncommand="doComputeCommand('cmd_compute_CombineHyperbolics')"/>
-    <command id="cmd_MSIComputeExpand"                   oncommand="doComputeCommand2('cmd_compute_Expand')"/>
-    <command id="cmd_MSIComputeFactor"                   oncommand="doComputeCommand2('cmd_compute_Factor')"/>      
+    <command id="cmd_MSIComputeExpand"                   oncommand="doComputeCommand2(event, 'cmd_compute_Expand')"/>
+    <command id="cmd_MSIComputeFactor"                   oncommand="doComputeCommand2(event, 'cmd_compute_Factor')"/>      
     <command id="cmd_MSIComputeRewriteRational"          oncommand="doComputeCommand('cmd_compute_RewriteRational')"/>
     <command id="cmd_MSIComputeRewriteFloat"             oncommand="doComputeCommand('cmd_compute_RewriteFloat')"/>
     <command id="cmd_MSIComputeRewriteMixed"             oncommand="doComputeCommand('cmd_compute_RewriteMixed')"/>
