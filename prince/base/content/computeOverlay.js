@@ -326,7 +326,7 @@ function doComputeEvaluate(math, editorElement, inPlace) {
 //var ctrlClick = false;
 var buttonPressed = -1;
 
-function doComputeCommand2(cmd, editorElement, cmdHandler ) {
+function doComputeCommand2(event, cmd, editorElement, cmdHandler ) {
   if (!editorElement) editorElement=msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var inPlace = false;
@@ -1363,12 +1363,14 @@ function doEvalComputation(mathElement, op, joiner, remark, editorElement, inPla
       sel.collapseToStart();
       var destNode = sel.anchorNode;
       var destOffset = sel.anchorOffset;
-      if (!msiNavigationUtils.isMathNode(sel.anchorNode)) {
+      if (!(msiNavigationUtils.isMathNode(sel.anchorNode)||msiNavigationUtils.isMathNode(sel.anchorNode.parentNode))) {
         destNode = editor.document.createElementNS("http://www.w3.org/1998/Math/MathML", "math");
         editor.insertNode(destNode, sel.anchorNode, sel.anchorOffset);
         destOffset = 0;
       }
       insertXML(editor, out, destNode, destOffset);
+      if (destNode.nodeName==='mi') destNode.removeAttribute("tempinput");
+      if (destNode.parentNode.nodeName==='mi') destNode.parentNode.removeAttribute("tempinput");
     }
     coalescemath(editorElement);
   } catch (e) {
