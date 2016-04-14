@@ -326,7 +326,7 @@ function doComputeEvaluate(math, editorElement, inPlace) {
 //var ctrlClick = false;
 var buttonPressed = -1;
 
-function doComputeCommand2(event, cmd, editorElement, cmdHandler ) {
+function doComputeCommand2(cmd, editorElement, cmdHandler ) {
   if (!editorElement) editorElement=msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var inPlace = false;
