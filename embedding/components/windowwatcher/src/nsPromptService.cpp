@@ -842,7 +842,7 @@ nsPromptService::DoDialog(nsIDOMWindow *aParent,
   nsCOMPtr<nsISupports> arguments(do_QueryInterface(aParamBlock));
   nsCOMPtr<nsIDOMWindow> dialog;
   rv = mWatcher->OpenWindow(aParent, aChromeURL, "_blank",
-                            "centerscreen,chrome,modal,titlebar", arguments,
+                            "centerscreen,chrome,modal,titlebar,resizable", arguments,
                             getter_AddRefs(dialog));
 
   return rv;
