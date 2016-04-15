@@ -3747,6 +3747,8 @@ function createWorkingDirectory(documentfile) {
     // remaining case is the main one, a .sci file
     {
       var doc = documentfile.clone();
+      var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                        .getService(Components.interfaces.nsIPromptService);
       extension = '.xhtml';
       var zr;
       zr = Components.classes['@mozilla.org/libjar/zip-reader;1'].createInstance(Components.interfaces.nsIZipReader);
@@ -3771,9 +3773,9 @@ function createWorkingDirectory(documentfile) {
           deletedSentinel.append('deleted');
           mainfile.append('main' + extension);
           if (mainfile.exists() && !deletedSentinel.exists()) {
-            var data = { value: false };
-            var result = window.openDialog('chrome://prince/content/useWorkInProgress.xul', 'workinprogress', 'chrome,titlebar,resizable,modal,centerscreen', data);
-            if (data.value) {
+            var result;
+            result = prompts.confirm(null, GetString("useWIP.title"), GetString("useWIP.description"));
+            if (!result) {
               return mainfile;
             }
           }
