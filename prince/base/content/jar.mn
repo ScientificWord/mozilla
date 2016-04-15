@@ -223,7 +223,6 @@ prince.jar:
   content/radicalProperties.js       (dialogs/radicalProperties.js)
   content/standaloneSidebar.js       (dialogs/standaloneSidebar.js)
   content/standaloneSidebar.xul      (dialogs/standaloneSidebar.xul)
-  content/useWorkInProgress.xul      (dialogs/useWorkInProgress.xul)
   content/paragraphproperties.xul    (dialogs/paragraphProperties.xul)
   content/paragraphproperties.js     (dialogs/paragraphProperties.js)
 *  content/titleProperties.xul       (dialogs/titleProperties.xul)
