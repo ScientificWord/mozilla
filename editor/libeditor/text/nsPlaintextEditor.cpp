@@ -571,6 +571,7 @@ nsPlaintextEditor::GetTextSelectionOffsets(nsISelection *aSelection,
   NS_ASSERTION(aSelection, "null selection");
 
   nsresult rv;
+
   nsCOMPtr<nsIDOMNode> startNode, endNode;
   PRInt32 startNodeOffset, endNodeOffset;
   aSelection->GetAnchorNode(getter_AddRefs(startNode));
@@ -650,6 +651,7 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   if (!mRules) { return NS_ERROR_NOT_INITIALIZED; }
 
   nsresult result;
+  nsAutoTxnsConserveSelection dontSpazMySelection(this);
 
   // delete placeholder txns merge.
   // nsAutoPlaceHolderBatch batch(this, gDeleteTxnName);
