@@ -69,7 +69,7 @@ function msiURIFromString(str)
   str = str.replace(/\\/g,'/');
   var ios = Components.classes["@mozilla.org/network/io-service;1"].
                       getService(Components.interfaces.nsIIOService);
-  return ios.newURI(str, null, null);
+  return ios.newURI(decodeURI(str), null, null);
 }
 
 function msiFileURLStringFromFile( file )
