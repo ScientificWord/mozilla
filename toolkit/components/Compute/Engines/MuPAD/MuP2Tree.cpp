@@ -698,7 +698,7 @@ MNODE *MuPAD2Tree::BindOperators(MNODE * src_list, int targ_prec, OpIlk op_type)
   rover = src_list;
   while (rover) {
     if (!strcmp(rover->src_tok, "operator")) {
-      if (op_tally > 1 && highest_prec != lowest_prec) {
+      if (op_tally > 1  && highest_prec != lowest_prec ) {
         int curr_prec = GetPrecedence(rover->p_chdata);
         if (curr_prec == targ_prec) {
           bool fix_rv = false;
@@ -938,9 +938,8 @@ MNODE *MuPAD2Tree::DoPrecedenceBinds(MNODE * src_list)
   // Operator precedence bindings
   rv = BindOperators(rv, 30, OP_postfix);  //"!"
   rv = BindOperators(rv, 29, OP_infix);  //"^" "**" "@@" 
-  rv = BindUnits(rv);
   rv = BindOperators(rv, 28, OP_infix);  //"*" "&*" "/" "@" "intersect"
-
+  //  rv = BindUnits(rv);
   rv = BindOperators(rv, 27, OP_infix);  //"+" "-" "union" "minus"
   rv = BindOperators(rv, 26, OP_infix);  //"mod"
   rv = BindOperators(rv, 25, OP_infix);  //".."
