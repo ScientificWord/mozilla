@@ -491,7 +491,8 @@ function openTeX()
       serializer.serializeToStream(newDoc, outputStream, "utf-8");
       outputStream.close();
 
-      msiEditPage(url, window, false, false);
+      msiEditPage(url, window, false, false, null, false
+        );
     }
   }
 }
