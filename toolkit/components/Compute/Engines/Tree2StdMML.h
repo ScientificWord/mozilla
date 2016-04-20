@@ -56,8 +56,10 @@ protected:
   void InsertInvisibleAddSigns(MNODE* dMML_list);
   void InsertApplyFunction(MNODE* dMML_list);
   void InsertInvisibleTimes(MNODE* dMML_list);
+  void InsertUnitInvisibleTimes(MNODE* dMML_list); 
   void InsertAF(MNODE* dMML_list);
   void InsertIT(MNODE* dMML_list);
+  void InsertUnitIT(MNODE* dMML_list);
   MNODE *FixMFENCEDs(MNODE* dMML_tree);
   void FixInvisibleFences(MNODE* dMML_tree);
   MNODE *FixAdjacentMNs(MNODE* dMML_tree);
@@ -111,7 +113,7 @@ protected:
   bool NodeIsNumber(MNODE * mml_node);
   bool NodeIsTrueNumber(MNODE * mml_node);
   bool NodeIsRationalFraction(MNODE * mml_node);
-  
+  bool NodeIsUnit(MNODE * mml_node);
   MNODE *GetBaseFunction(MNODE * mml_node);
   bool NodeIsOperator(MNODE * mml_node);
   bool NodeIsIntegral(MNODE * mml_node);
