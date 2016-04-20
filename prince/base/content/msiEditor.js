@@ -10973,6 +10973,7 @@ function msiEditPage(url, launchWindow, delay, isShell, windowName, forceNewWind
     }
 
     if (useEditorElement && forceNewWindow) {
+      useEditorElement.softsavetimer.cancel();
       setTimeout(function() {
         msiCloseWindow(window, useEditorElement, true);
       }, 3000);
