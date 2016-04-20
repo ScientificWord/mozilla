@@ -39,7 +39,7 @@ function msiEditDocument(aDocument)
   if (!aDocument)
     aDocument = window.content.document;
 
-  msiEditPage(aDocument.URL, window, false, false); 
+  msiEditPage(aDocument.URL, window, false, false, null, false); 
 }
 
 function msiEditPageOrFrame()
@@ -49,7 +49,7 @@ function msiEditPageOrFrame()
   // if the uri is a specific frame, grab it, else use the frameset uri 
   // and let Composer handle error if necessary
   var url = getContentFrameURI(focusedWindow);
-  msiEditPage(url, window, false, false);
+  msiEditPage(url, window, false, false, null, false);
 }
 
 

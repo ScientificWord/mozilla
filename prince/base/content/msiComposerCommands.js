@@ -293,7 +293,7 @@ function msiSetupComposerWindowCommands(editorElement)
       commandTable.registerCommand("cmd_HTMLSourceMode",     msiHTMLSourceModeCommand);
       commandTable.registerCommand("cmd_PreviewMode",        msiPreviewModeCommand);
       commandTable.registerCommand("cmd_FinishHTMLSource",   msiFinishHTMLSourceCmd);
-      commandTable.registerCommand("cmd_CancelHTMLSource",   msiCancelHTMLSource);
+      commandTable.registerCommand("cmd_CancelHTMLSource",   msiCancelHTMLSourceCmd);
 //    }
   }
 
@@ -1118,7 +1118,7 @@ function openDocument()
       var newdocumentfile;
       newdocumentfile = createWorkingDirectory(fp.file);
 
-      msiEditPage(msiFileURLFromFile(newdocumentfile), window, false, false);
+      msiEditPage(msiFileURLFromFile(newdocumentfile), window, false, false, null, false);
       msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
     }
   }
@@ -1169,7 +1169,7 @@ function openNewDocument()
         thefile.initWithPath(data.filename);
         newdocumentfile = createWorkingDirectory(thefile);
         var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
-        msiEditPage( url, window, false, true);
+        msiEditPage( url, window, false, true, null, false);
       } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
 
     }
@@ -3613,11 +3613,13 @@ var msiRevertCommand =
       {
         // Put the page title in the message string
         var editorElement = msiGetActiveEditorElement();
-        var title = msiGetDocumentTitle(editorElement);
-        if (!title)
-          title = GetString("untitled");
+        var htmlurlstring = msiGetEditorURL(editorElement);
+        var sciurlstring = msiFindOriginalDocname(htmlurlstring); // this is the uri of A.sci
+        var fileurl = msiURIFromString(sciurlstring);
+        var currentSciFile = msiFileFromFileURL(fileurl);
+        var title = currentSciFile.leafName;
 
-        var msg = GetString("AbandonChanges").replace(/%title%/,title);
+        var msg = GetString("AbandonChanges").replace(/%title%/,'"'+title+'"');
 
         var result = promptService.confirmEx(window, GetString("RevertCaption"), msg,
                       (promptService.BUTTON_TITLE_REVERT * promptService.BUTTON_POS_0) +
@@ -3629,15 +3631,17 @@ var msiRevertCommand =
         {
           msiCancelHTMLSource(editorElement);
           var urlstring = msiGetEditorURL(editorElement);
-          var url = msiGetURIFromString(urlstring);
+          var url = msiURIFromString(urlstring);
           var documentfile = msiFileFromFileURL(url);
           var currFilePath = GetFilepath(urlstring);
           var scifileUrlString = msiFindOriginalDocname(currFilePath);
-          var scifileurl = msiURIFromString(scifileUrlString);
+          var scifileurl = msiFileURLFromAbsolutePath(scifileUrlString);
           var scifile = msiFileFromFileURL(scifileurl);;
           msiRevertFile( true, documentfile, false );
-          createWorkingDirectory(scifile);
-          msiEditorLoadUrl(editorElement, msiGetEditorURL(editorElement));
+//          msiGoDoCommand('cmd_close');
+          var newdoc;
+          newdoc = createWorkingDirectory(scifile);
+          msiEditPage(msiFileURLFromFile(newdoc), window, false, false, null, true);
         }
       }
     }
@@ -3905,14 +3909,17 @@ function deleteOrphanedPlots( basedirectory, document)
   }
 }
 
-function msiCloseWindow(theWindow)
+function msiCloseWindow(theWindow, editorElement, nosave)
 {
-  if (!theWindow)
+  if (!theWindow) {
     theWindow = window;
+  }
+  if (!editorElement) {
+    editorElement = msiGetPrimaryEditorElementForWindow(theWindow);
+  }
   // Check to make sure document is saved. "true" means allow "Don't Save" button,
   //   so user can choose to close without saving
-  var editorElement = msiGetPrimaryEditorElementForWindow(theWindow);
-  if (msiCheckAndSaveDocument(editorElement, "cmd_close", true))
+  if (nosave || msiCheckAndSaveDocument(editorElement, "cmd_close", true))
   {
     ShutdownAnEditor(editorElement);
     try {
@@ -10322,7 +10329,7 @@ var msiFinishHTMLSourceCmd =
   }
 };
 
-var msiCancelHTMLSource =
+var msiCancelHTMLSourceCmd =
 {
   isCommandEnabled: function(aCommand, dummy)
   {

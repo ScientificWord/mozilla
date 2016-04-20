@@ -29,7 +29,7 @@ function loadDocumentFromURI(pathString) {
   file = msiFileFromFileURL(url);
   if (file && file.exists()){
     newdocumentfile = createWorkingDirectory(file);
-    msiEditPage(msiFileURLFromFile(newdocumentfile), window, false, false);
+    msiEditPage(msiFileURLFromFile(newdocumentfile), window, false, false, null, false);
   }
   else {
     // BBM: make this localizable
