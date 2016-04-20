@@ -631,7 +631,6 @@ void Tree2StdMML::InsertInvisibleTimes(MNODE* dMML_list)
     MNODE* candidate = rover;
     rover = rover->next;
           
-   
     if (NodeIsNumber(candidate) || NodeIsFactor(candidate)) {
       if (!rover)
         break;
@@ -1095,6 +1094,53 @@ void Tree2StdMML::FixupSmalld(MNODE* dMML_list)
 }
 
 
+// Recognize 12s as a single item
+
+void Tree2StdMML::InsertUnitInvisibleTimes(MNODE* dMML_list)
+{
+  MNODE* rover = dMML_list;
+  if (rover && rover->parent) {
+      if (ElementNameIs(rover->parent, "mfenced") ||
+          ElementNameIs(rover->parent, "mtable") ||
+          HasRequiredChildren(rover->parent))
+    return;
+  }
+
+  while (rover) {
+    bool do_insert = false;
+    MNODE* candidate = rover;
+    rover = rover->next;
+    if (rover){      
+      do_insert = (NodeIsUnit(rover)) && (NodeIsNumber(candidate) || NodeIsFactor(candidate));
+    
+      if (do_insert) {
+	InsertUnitIT(candidate);
+	// InsertUnitInvisibleTimes(candidate->next);
+      }
+    }
+  }
+}
+
+
+//void Tree2StdMML::FixupUnits(MNODE* dMML_list)
+//{
+//  MNODE* rover = dMML_list;
+//  while (rover) {
+//    
+//    if (ElementNameIs(rover, "mi")){
+//      
+//      const char* isU = GetATTRIBvalue(rover->attrib_list, "msiutint");
+//      if (strcmp(isU, "true"){
+//	  if (
+//      }
+//
+//
+//    }
+//    rover = rover->next;
+//  }
+//}
+
+
 
 // finish MathML bindings
 MNODE* Tree2StdMML::FinishFixup(MNODE* dMML_tree)
@@ -1136,6 +1182,7 @@ MNODE* Tree2StdMML::FinishFixup(MNODE* dMML_tree)
   InsertApplyFunction(rv);  //65
   rv = BindApplyFunction(rv);
   rv = BindByOpPrecedence(rv, 64, 54);
+  InsertUnitInvisibleTimes(rv); 
   rv = BindByOpPrecedence(rv, 53, 40);
   InsertInvisibleTimes(rv);  // 39
   rv = BindByOpPrecedence(rv, 39, 39);
@@ -1790,6 +1837,19 @@ bool Tree2StdMML::NodeIsRationalFraction(MNODE* mml_node)
   return false;
 }
 
+
+bool Tree2StdMML::NodeIsUnit(MNODE* mml_node)
+{
+  bool rv = false;
+  
+  if (ElementNameIs(mml_node, "mi")){
+    const char* isU = GetATTRIBvalue(mml_node->attrib_list, "msiunit");
+    rv = (isU && (0 == strcmp(isU, "true")));
+  }
+  
+
+  return rv;
+}
 
 
 
@@ -3194,7 +3254,21 @@ void Tree2StdMML::InsertIT(MNODE* term)
   MNODE* it = MakeTNode(term->src_start_offset, 0, term->src_linenum);
   SetElementName(it, "mo");
   SetContent(it, "&#x2062;");  // InvisibleTimes
+  it->prev = term;
+  it->next = term->next;
+  term->next = it;
+  if (it->next)
+    it->next->prev = it;
+  it->parent = term->parent;
+}
 
+void Tree2StdMML::InsertUnitIT(MNODE* term)
+{
+  MNODE* it = MakeTNode(term->src_start_offset, 0, term->src_linenum);
+  SetElementName(it, "mo");
+  SetContent(it, "&#x2062;");  // InvisibleTimes
+  it->precedence = 47;
+  it->form = OP_infix;
   it->prev = term;
   it->next = term->next;
   term->next = it;
