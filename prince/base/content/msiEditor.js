@@ -10753,8 +10753,8 @@ function msiClickLink(event, theURI, targWinStr, editorElement) {
   // BBM should be checking that these strings are relative
   targURIStr = '../' + targURIStr;
   theURI = '../' + theURI;
-  var targURI = msiCreateURI(msiMakeAbsoluteUrl(targURIStr, editorElement));
-  var fullTargURI = msiCreateURI(msiMakeAbsoluteUrl(theURI, editorElement));
+  var targURI = msiURIFromString(msiMakeAbsoluteUrl(targURIStr, editorElement));
+  var fullTargURI = msiURIFromString(msiMakeAbsoluteUrl(theURI, editorElement));
 
   //  if (!targWinStr || (targWinStr == "_blank"))  //RWA Commenting this out for now! Don't try to re-use editors until we know how...
   targWinStr = "";
@@ -10789,7 +10789,7 @@ function msiClickLink(event, theURI, targWinStr, editorElement) {
   //  }
 
   if (!targEditor)
-    targEditor = msiEditPage(fullTargURI, theWindow, false, false, winNameToUse);
+    targEditor = msiEditPage(fullTargURI, theWindow, false, false, winNameToUse, false);
   else if (targURI) {
     msiCheckAndSaveDocument(targEditor, "cmd_close", true);
     var isSciRegEx = /\.sci$/i;
@@ -10863,15 +10863,6 @@ function msiGoToMarker(editorElement, markerStr, bPreferKey) {
   }
 }
 
-function msiCreateURI(urlstring) {
-  try {
-    var ioserv = Components.classes["@mozilla.org/network/io-service;1"]
-      .getService(Components.interfaces.nsIIOService);
-    return ioserv.newURI(urlstring, null, null);
-  } catch (e) {}
-
-  return null;
-}
 
 function msiCheckOpenWindowForURIMatch(uri, win) {
   var editorList = win.document.getElementsByTagName("editor");
@@ -10881,7 +10872,7 @@ function msiCheckOpenWindowForURIMatch(uri, win) {
       //      var contentWindow = win.content;  // need to QI win to nsIDOMWindowInternal?
       //      var contentDoc = contentWindow.document;
       var htmlDoc = contentDoc.QueryInterface(Components.interfaces.nsIDOMHTMLDocument);
-      var winuri = msiCreateURI(htmlDoc.URL);
+      var winuri = msiURIFromString(htmlDoc.URL);
       if (winuri.equals(uri))
         return editorList[i];
     } catch (e) {}
@@ -10894,8 +10885,9 @@ function msiCheckOpenWindowForURIMatch(uri, win) {
 //  We must always find an existing window with requested URL
 // (When calling from a dialog, "launchWindow" is dialog's "opener"
 //   and we need a delay to let dialog close)
-function msiEditPage(url, launchWindow, delay, isShell, windowName) {
-  // Always strip off "view-source:" and #anchors; kludge: accept string url or nsIURI url.
+function msiEditPage(url, launchWindow, delay, isShell, windowName, forceNewWindow) {
+  // Always strip off "view-source:" and #anchors; kludge: accept string url or nsIURI url.;
+  var editor;
   if (!url.spec) url = msiURIFromString(url); //some url's are passed as strings
   var urlstring, fullUrlstring;
   try {
@@ -10932,7 +10924,7 @@ function msiEditPage(url, launchWindow, delay, isShell, windowName) {
     charsetArg = "charset=" + launchWindow.content.document.characterSet;
 
   try {
-    var uri = msiCreateURI(urlstring, null, null);
+    var uri = msiURIFromString(urlstring);
 
     var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
     var windowManagerInterface = windowManager.QueryInterface(Components.interfaces.nsIWindowMediator);
@@ -10943,7 +10935,7 @@ function msiEditPage(url, launchWindow, delay, isShell, windowName) {
       win = enumerator.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
       if (win && msiIsWebComposer(win)) {
         useEditorElement = msiCheckOpenWindowForURIMatch(uri, win);
-        if (useEditorElement != null) {
+        if (useEditorElement != null && !forceNewWindow) {
           // We found an editor with our url
           useEditorElement.focus();
           useEditorElement.isShellFile = isShell;
@@ -10964,7 +10956,7 @@ function msiEditPage(url, launchWindow, delay, isShell, windowName) {
     }
 
     //    if (emptyWindow)
-    if (useEditorElement != null) {
+    if (useEditorElement != null && !forceNewWindow) {
       // we have an empty editor we can use
       if (msiIsInHTMLSourceMode(useEditorElement))
         msiSetEditMode(msiGetPreviousNonSourceDisplayMode(useEditorElement), useEditorElement);
@@ -10972,8 +10964,6 @@ function msiEditPage(url, launchWindow, delay, isShell, windowName) {
       useEditorElement.focus();
       useEditorElement.isShellFile = isShell;
       msiSetSaveAndPublishUI(uri.spec, useEditorElement);
-
-
       //      if (emptyWindow.IsInHTMLSourceMode())
       //        emptyWindow.SetEditMode(emptyWindow.PreviousNonSourceDisplayMode);
       //      emptyWindow.EditorLoadUrl(url);
@@ -10982,18 +10972,28 @@ function msiEditPage(url, launchWindow, delay, isShell, windowName) {
       return useEditorElement;
     }
 
+    if (useEditorElement && forceNewWindow) {
+      setTimeout(function() {
+        msiCloseWindow(window, useEditorElement, true);
+      }, 3000);
+    }
+
+
+
     // Create new Composer window
     if (!windowName || !windowName.length)
       windowName = "_blank";
-    if (delay) {
-      win = launchWindow.delayedOpenWindow("chrome://prince/content", null,
-        "chrome,all,dialog=no", url, null, null, isShell);
-    } else
+    // if (delay) {
+    //   win = launchWindow.delayedOpenWindow("chrome://prince/content", null,
+    //     "chrome,all,dialog=no", url, null, null, isShell);
+    // } else {
       win = launchWindow.openDialog("chrome://prince/content", windowName, "chrome,all,dialog=no",
         uri.spec, charsetArg, markerArg, isShell);
+    // }
 
     return useEditorElement;
-  } catch (e) {}
+  } catch (e) {
+  }
   return null;
 }
 

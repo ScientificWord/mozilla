@@ -2217,8 +2217,8 @@ function nonmodalRecreateGraph(graph, DOMGraph, editorElement) {
 }
 
 function isDifferentPlotFile(oldpath, newpath, editorElement) {
-  var oldURI = msiCreateURI(msiMakeAbsoluteUrl(oldpath, editorElement));
-  var newURI = msiCreateURI(msiMakeAbsoluteUrl(newpath, editorElement));
+  var oldURI = msiURIFromString(msiMakeAbsoluteUrl(oldpath, editorElement));
+  var newURI = msiURIFromString(msiMakeAbsoluteUrl(newpath, editorElement));
   return (!oldURI.equals(newURI));
 }
 
