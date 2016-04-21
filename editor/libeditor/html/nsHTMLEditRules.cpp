@@ -3869,6 +3869,10 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   PRBool deletingInputbox = cleanUpTempInput( ed, startNode, startOffset );
   nsCOMPtr<nsIDOMNode> node = startNode;
   node->GetNodeName(name);
+  if (name.EqualsLiteral("#text")) {
+    node->GetParentNode(getter_AddRefs(node));
+    node->GetNodeName(name);
+  }
   if (name.EqualsLiteral("mo")) {
     elt = do_QueryInterface(node);
     DeleteMatchingFence(ed, elt);
