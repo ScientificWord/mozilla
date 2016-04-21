@@ -179,6 +179,9 @@ NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
   if (NS_FAILED(result)) return result;
   
   // only set selection to deletion point if editor gives permission
+  //
+  // Commented out by BBM 2016-04-21, perhaps temporarily.
+  
   PRBool bAdjustSelection;
   mEditor->ShouldTxnSetSelection(&bAdjustSelection);
   if (bAdjustSelection)
@@ -187,7 +190,7 @@ NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
     result = mEditor->GetSelection(getter_AddRefs(selection));
     if (NS_FAILED(result)) return result;
     if (!selection) return NS_ERROR_NULL_POINTER;
-    result = selection->Collapse(mStartParent, mStartOffset);
+  //   result = selection->Collapse(mStartParent, mStartOffset);
   }
   else
   {
