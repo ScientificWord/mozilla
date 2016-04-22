@@ -289,7 +289,7 @@ var graphicsConverter = {
     // should we be saving the old dimensions in the node attributes, to skip this
     // function when possible?
     // newWidth and newHeight are in pixels?
-    if (!newWidth || !newHeight || newWidth==0 || newHeight == 0 || isNaN(newWidth) || isNaN(newHeight)) return null;
+    if (!newWidth || !newHeight || newWidth===0 || newHeight === 0 || isNaN(newWidth) || isNaN(newHeight)) return null;
     var originalUrl = graphicsFile.path;
     var pathParts = originalUrl.split('.');
     var extension = pathParts[pathParts.length-1];

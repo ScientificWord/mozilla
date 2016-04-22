@@ -367,7 +367,7 @@ Graph.prototype = {
     for (i = 0; i < alist.length; i++) {
       attr = alist[i];
       value = this.getValue(attr);
-      if (value == null || value === "unspecified" || value === "undefined")
+      if (value === null || value === "unspecified" || value === "undefined")
       {
         if (forComp && (attr === "TicksFontSize"))  //if we've set axis font size but not tick font size, want to make tick font size proportional
         {
@@ -745,7 +745,7 @@ Graph.prototype = {
     }
   },
   setCameraValsFromVCam : function(cameraVals, domGraph, bUserSetIfChanged) {
-    if (cameraVals != null)
+    if (cameraVals !== null)
     {
       msidump("Got camera vals from VCam:\n");
       var attrName;
@@ -780,7 +780,7 @@ Graph.prototype = {
     }
   },
   setAnimationValsFromVCam : function(animVals, domGraph, bUserSetIfChanged) {
-    if (animVals != null)
+    if (animVals !== null)
     {
       msidump("Got camera vals from VCam:\n");
       var attrName;
@@ -815,7 +815,7 @@ Graph.prototype = {
     }
   },
   setCoordSysValsFromVCam : function(coordSysVals, domGraph, bUserSetIfChanged) {
-    if (coordSysVals != null)
+    if (coordSysVals !== null)
     {
       msidump("Got coord sys vals from VCam:\n");
       var attrName;
@@ -1263,7 +1263,7 @@ Plot.prototype =
       value = this.attributes[key];
     else if (key in this.element)
       value = this.element[key];
-    if ((value != null) && (value !== "")) {
+    if ((value !== null) && (value !== "")) {
       return value;
     }
     switch(key)
@@ -1544,8 +1544,8 @@ PlotLabel.prototype =
   {
     var theList = this.PLOTLABELATTRIBUTES;
     var dim = this.getDimension();
-    var bNonCartesianOrientation = ((this.getPlotLabelAttribute("OrientationType") === "angle")
-                                    || (this.getPlotLabelAttribute("OrientationType") === "tiltAndTurn"));
+    var bNonCartesianOrientation = ((this.getPlotLabelAttribute("OrientationType") === "angle") ||
+      (this.getPlotLabelAttribute("OrientationType") === "tiltAndTurn"));
     var bNeedNonCartesianOrientation = bNonCartesianOrientation;
     if (this.isHeaderOrFooter())
     {
@@ -1649,8 +1649,8 @@ PlotLabel.prototype =
   },
   setPlotLabelAttribute : function(key, value)
   {
-    var bConvertOrientation = ( (key === "OrientationType") && (this.attributes.OrientationType !== value)
-                                && ((value === "cartesian") || (this.attributes.OrientationType === "cartesian")) );
+    var bConvertOrientation = ( (key === "OrientationType") && (this.attributes.OrientationType !== value) &&
+      ((value === "cartesian") || (this.attributes.OrientationType === "cartesian")) );
     if (this.PLOTLABELATTRIBUTES.indexOf(key) >= 0)
     {
       if (!value || !value.length)
@@ -2144,7 +2144,7 @@ function graphObjectClickEvent(cmdstr, element, editorElement) {
   // Handle a mouse double click on a <graph> <object> element. This is bound in msiEditor.js.
   dump("SMR In graphObjectClickEvent\n");
   try {
-    if (element == null) {
+    if (element === null) {
       var selection = msiGetEditor(editorElement).selection;
       if (selection) element = selection.focusNode;
     }
@@ -2172,7 +2172,7 @@ function addGraphElementToDocument(DOMGraphNode, siblingNode, editorElement) {
     if (!editorElement) editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     for (idx = 0;
-    (editor != null) && idx < parent.childNodes.length && siblingNode !== parent.childNodes[idx]; idx++);
+    (editor !== null) && idx < parent.childNodes.length && siblingNode !== parent.childNodes[idx]; idx++);
     editor.insertNode(DOMGraphNode, parent, idx + 1);
   }
 }
@@ -2228,7 +2228,7 @@ function insertGraph(siblingElement, graph, editorElement) {
   var filetype = graph.getDefaultValue("filetype");
   // May want to ensure file type is compatible with animated here
   //  var editorElement = null;
-  if (!editorElement || editorElement == null) editorElement = findEditorElementForDocument(siblingElement.ownerDocument);
+  if (!editorElement || editorElement === null) editorElement = findEditorElementForDocument(siblingElement.ownerDocument);
   var longfilename;
   var file;
   var leaf;
@@ -2363,11 +2363,11 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   //     frame.setAttribute("placement", frmPlacement);
   //     frame.setAttribute("pos", frmPlacement);
   //   }
-  //   if (frmFloatLocation_forceHere != null && frmFloatLocation_forceHere) frame.setAttribute("placeLocation", frmFloatLocation_forceHere);
-  //   if (frmFloatLocation_here != null && frmFloatLocation_here) frame.setAttribute("placeLocation", frmFloatLocation_here);
-  //   if (frmFloatLocation_pageFloats != null && frmFloatLocation_pageFloats) frame.setAttribute("placeLocation", frmFloatLocation_pageFloats);
-  //   if (frmFloatLocation_topPage != null && frmFloatLocation_topPage) frame.setAttribute("placeLocation", frmFloatLocation_topPage);
-  //   if (frmFloatLocation_bottomPage != null && frmFloatLocation_bottomPage) frame.setAttribute("placeLocation", frmFloatLocation_bottomPage);
+  //   if (frmFloatLocation_forceHere !== null && frmFloatLocation_forceHere) frame.setAttribute("placeLocation", frmFloatLocation_forceHere);
+  //   if (frmFloatLocation_here !== null && frmFloatLocation_here) frame.setAttribute("placeLocation", frmFloatLocation_here);
+  //   if (frmFloatLocation_pageFloats !== null && frmFloatLocation_pageFloats) frame.setAttribute("placeLocation", frmFloatLocation_pageFloats);
+  //   if (frmFloatLocation_topPage !== null && frmFloatLocation_topPage) frame.setAttribute("placeLocation", frmFloatLocation_topPage);
+  //   if (frmFloatLocation_bottomPage !== null && frmFloatLocation_bottomPage) frame.setAttribute("placeLocation", frmFloatLocation_bottomPage);
   //   if (frmPlacement === "unspecified" && frmFloatPlacement) frame.setAttribute("placement", frmFloatPlacement);
   //   if (plotcaptionpref && plotcaptionpref !== "none") {
   //     frame.setAttribute("captionloc", plotcaptionpref);
@@ -2378,7 +2378,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   //   removeStyleAttributeFamilyOnNode( frame, "background", null);
   //   removeStyleAttributeFamilyOnNode( frame, "padding", null);
   //   removeStyleAttributeFamilyOnNode( frame, "caption-side", null);
-  //   if ((frmHMargin != null) || (frmVMargin != null)) {
+  //   if ((frmHMargin !== null) || (frmVMargin !== null)) {
   //     setStyleAttributeOnNode(frame, "margin", (frmVMargin || "") + " " + (frmHMargin || ""), null);
   //   }
   //   if (frmPlacement === "display") {
@@ -2392,10 +2392,10 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   //     setStyleAttributeOnNode(frame, "background-color", frmBGColor, null);
   //   if (frmPadding)
   //     setStyleAttributeOnNode(frame, "padding", frmPadding, null);
-  //   if (width != null) {
+  //   if (width !== null) {
   //     setStyleAttributeOnNode(frame, "width", width+unit, null);
   //   }
-  //   if (height != null) {
+  //   if (height !== null) {
   //     setStyleAttributeOnNode(frame, "height", height+unit, null);
   //   }
   //   // Handle the caption node
@@ -3109,7 +3109,7 @@ function atomizeMTable(tableNode)
   }
 //  function checkNonVector()
 //  {
-//    if ((nRow == 2) && (retArray.length > 1))  //more than one row and the first row had more than one cell - not a vector
+//    if ((nRow === 2) && (retArray.length > 1))  //more than one row and the first row had more than one cell - not a vector
 //      return true;
 //    if ((nRow > 1) && (cellList.length > 1))  //more than one row and the row has more than one cell - not a vector
 //      return true;
@@ -3266,8 +3266,8 @@ var plotVarDataBase =
       var rawVars = GetCurrentEngine().getVariables(this.mPlot.element.Expression);
       var foundVarList = splitMathMLList(rawVars);
       //special check for returning the empty set symbol
-      if ( (foundVarList.length === 1) && (msiGetBaseNodeName(foundVarList[0]) === "mi")
-            && (foundVarList[0].textContent === "\u2205") )
+      if ( (foundVarList.length === 1) && (msiGetBaseNodeName(foundVarList[0]) === "mi") &&
+        (foundVarList[0].textContent === "\u2205") )
         foundVarList = [];
       foundVarList.sort(orderMathNodes);
       this.mFoundVars = [];
@@ -3941,7 +3941,7 @@ function doAnalyzeVars(graphVarData, plot)
 //  try
 //  {
 //    expComponents = splitMathMLList(plotExp, true);
-//    retObj.bParametric = (expComponents && expComponents.length == dim);
+//    retObj.bParametric = (expComponents && expComponents.length === dim);
 //    expectedVarLists = plot.expectedVariableLists(plottype, dim, retObj.bParametric);
 //    nVarsNeeded = expectedVarLists[0].length;
 //    if (animated)
