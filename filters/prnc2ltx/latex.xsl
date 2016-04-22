@@ -1135,7 +1135,7 @@
 	</xsl:choose>
 </xsl:template>
 <xsl:template match="mml:mi[@msiunit='true']">
-  <xsl:apply-templates/>
+  <xsl:text>\mbox{</xsl:text><xsl:apply-templates/><xsl:text>}</xsl:text>
 </xsl:template>
 <!-- <xsl:template match="mml:mi[@msiunit='true']">
   \ensuremath{\operatorname{<xsl:apply-templates/>}}
