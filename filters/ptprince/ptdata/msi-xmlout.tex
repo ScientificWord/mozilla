@@ -650,10 +650,11 @@
   \catcode`\&=\active
   \catcode`\<=\active
   \catcode`\>=\active
-  \catcode`\ =10
+  \catcode`\ =\other
   \catcode`\_=\other
   \catcode`\$=\other
   \catcode`\#=\other
+  \def\ {\char`\&nbsp;}%
 }
 
 \def\cite{%
