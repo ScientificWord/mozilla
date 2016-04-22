@@ -3727,8 +3727,8 @@ PRBool HandledScripts(nsHTMLEditor * ed,
   // replace it with an msub or msup, depending on whether siblingNode is null or not.
   // Offset gives the offset of the part that was deleted.
   PRBool retval = PR_FALSE;
-  if (!deletingInputbox)
-    return retval;
+  // if (!deletingInputbox)
+  //   return retval;
   nsresult res;
   nsAutoString name;
   nsAutoString form;
