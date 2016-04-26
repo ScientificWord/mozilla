@@ -3727,8 +3727,8 @@ PRBool HandledScripts(nsHTMLEditor * ed,
   // replace it with an msub or msup, depending on whether siblingNode is null or not.
   // Offset gives the offset of the part that was deleted.
   PRBool retval = PR_FALSE;
-  // if (!deletingInputbox)
-  //   return retval;
+  if (!deletingInputbox)
+    return retval;
   nsresult res;
   nsAutoString name;
   nsAutoString form;
@@ -3869,10 +3869,10 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   PRBool deletingInputbox = cleanUpTempInput( ed, startNode, startOffset );
   nsCOMPtr<nsIDOMNode> node = startNode;
   node->GetNodeName(name);
-  if (name.EqualsLiteral("#text")) {
-    node->GetParentNode(getter_AddRefs(node));
-    node->GetNodeName(name);
-  }
+  // if (name.EqualsLiteral("#text")) {
+  //   node->GetParentNode(getter_AddRefs(node));
+  //   node->GetNodeName(name);
+  // }
   if (name.EqualsLiteral("mo")) {
     elt = do_QueryInterface(node);
     DeleteMatchingFence(ed, elt);
