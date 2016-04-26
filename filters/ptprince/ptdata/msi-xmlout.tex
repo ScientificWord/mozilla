@@ -1652,7 +1652,7 @@
 
 
 \def\func#1{\string\func\@brace{#1}}
-\def\limfunc#1{\string\limfunc\@brace{#1}}
+\def\limfunc#1#2{\string\limfunc\@brace{#2}}
 \def\operatorname{\@ifnextchar*{\limfunc}{\func}}
 
 
