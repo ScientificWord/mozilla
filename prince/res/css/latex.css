@@ -942,6 +942,7 @@ mtd[class="eqnmarker"],mml|mtd[class="eqnmarker"]
 {
   padding-left: 50px;
   text-align: right;
+  vertical-align: bottom;
   border-top-style:  hidden;
   border-right-style: hidden;
   border-bottom-style: hidden;
