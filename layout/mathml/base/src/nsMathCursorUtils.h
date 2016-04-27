@@ -48,6 +48,11 @@ nsIFrame * GetSignificantParent( nsIFrame * pFrame);
 
 nsIFrame * GetTopFrameForContent(nsIFrame * pFrame);
 
+nsIFrame * GetPrevSib(nsIFrame * pFrame);
+
+nsIFrame * GetLastChild(nsIFrame * pFrame);
+
+
 // DOM tree navigation routines that pass over ignorable white space.
 // See the "Whitespace in the DOM" article on the MDC
 
