@@ -113,9 +113,9 @@
 
 <xsl:output method="text" encoding="UTF-8"/>
 
-<xsl:strip-space elements="*"/>
+<xsl:preserve-space elements="*"/>
 
-<xsl:preserve-space elements="pre html:bodyText"/>
+<!-- <xsl:preserve-space elements="pre html:verbatim html:bodyText"/> -->
 
 <xsl:include href="table.xsl"/>
 <xsl:include href="graphics.xsl"/>
