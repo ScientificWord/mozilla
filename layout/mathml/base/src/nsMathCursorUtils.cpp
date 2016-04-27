@@ -318,7 +318,7 @@ nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
 
 nsIFrame * GetPrevSib(nsIFrame * pFrame)
 {
-  nsIFrame * pTemp = GetSignificantParent(pFrame)->GetFirstChild(nsnull);
+  nsIFrame * pTemp = (pFrame->GetParent())->GetFirstChild(nsnull);
   while (pTemp && (pTemp->GetNextSibling() != pFrame))
     pTemp = pTemp->GetNextSibling();
   return pTemp;
