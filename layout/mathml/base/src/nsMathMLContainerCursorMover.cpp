@@ -9,6 +9,7 @@
 
 NS_IMPL_ISUPPORTS1(nsMathMLContainerCursorMover, nsIMathMLCursorMover)
 
+
 NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
     nsIFrame *leavingFrame,
     nsIFrame **aOutFrame,
@@ -104,16 +105,7 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (leavingFrame)
   {
-//    NS_ASSERTION(m_pMyFrame == GetTopFrameForContent(GetSignificantParent(leavingFrame)), "In MoveOutToLeft, leavingFrame must be a child!");
-    // awkward getprevioussibling
-    pTempFrame = pFrame->GetFirstChild(nsnull);
-    if (pTempFrame == leavingFrame)
-      pTempFrame = nsnull; //there is no predecessor to leavingFrame
-    pTempFrame = GetTopFrameForContent(pTempFrame);
-    while (pTempFrame && (pTempFrame->GetNextSibling() != leavingFrame))
-    // while (pTempFrame && (pTempFrame->GetNextSibling()->GetContent() != leavingFrame->GetContent()))
-      pTempFrame = pTempFrame->GetNextSibling();
-
+    pTempFrame = GetPrevSib(leavingFrame);
     if (pTempFrame)
     {
       pMCM = GetMathCursorMover(pTempFrame);
@@ -166,6 +158,11 @@ PRBool IsTempInput(nsIContent * pContent)
   return fResult;
 }
 
+PRBool IsSelectable(nsIFrame * pFrame) {
+  return !(pFrame->IsGeneratedContentFrame() ||
+           pFrame->GetStyleUIReset()->mUserSelect == NS_STYLE_USER_SELECT_NONE);
+}
+
 NS_IMETHODIMP
 nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
@@ -187,7 +184,7 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
     pTempFrame = pTempFrame->GetFirstChild(nsnull);
     if (pTempFrame) frametype = pTempFrame->GetType();
   }
-  if (pTempFrame)
+  if (pTempFrame && IsSelectable(pFrame))
   { // either pMCM is not null, or frametype == textframe
     if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else
@@ -257,9 +254,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
   nsIAtom * frametype = nsnull;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   // get last child
-  pTempFrame = pFrame->GetFirstChild(nsnull);
-  while (pTempFrame && (pTempFrame->GetNextSibling()))
-    pTempFrame = pTempFrame->GetNextSibling();
+  pTempFrame = GetLastChild(pFrame);
   if (pTempFrame) frametype = pTempFrame->GetType();
   while (pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
   {
@@ -273,7 +268,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
       frametype = pTempFrame->GetType();
     }
   }
-  if (pTempFrame)
+  if (pTempFrame && IsSelectable(pFrame))
   {
     frametype = pTempFrame->GetType();
     if (pMCM) {
