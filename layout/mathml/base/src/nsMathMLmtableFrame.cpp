@@ -703,6 +703,7 @@ nsMathMLmtableFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
     pFrame = pFrame->GetFirstChild(nsnull);
   }
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  count = *_retval = 0;
   if (pFrame)
   {
     pMCM = GetMathCursorMover(pFrame);
@@ -714,10 +715,6 @@ nsMathMLmtableFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
       return NS_OK;
     }
   }
-  else 
-  {
-    printf("Found mtable frame with no mtr children\n");
-  }
   return NS_OK;  
 }
 
@@ -726,66 +723,44 @@ nsMathMLmtableFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame
     PRBool* fBailingOut, PRInt32 *_retval)
 {
   printf("mtable EnterFromRight, count = %d\n", count);
-  if (count > 0)
-  {
-    nsIFrame * pFrame = this;
-    while (pFrame && pFrame->GetContent()->Tag() != nsGkAtoms::mtr_)
-      pFrame = pFrame->GetFirstChild(nsnull);
+  count = *_retval = 0;
+  nsIFrame * pFrame = this;
+  while (pFrame && pFrame->GetContent()->Tag() != nsGkAtoms::mtr_)
+    pFrame = pFrame->GetFirstChild(nsnull);
 
-    nsCOMPtr<nsIMathMLCursorMover> pMCM;
-    if (pFrame)
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pFrame)
+  {
+    pMCM = GetMathCursorMover(pFrame);
+    count = 0;
+    if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     {
-      pMCM = GetMathCursorMover(pFrame);
-      count = 0;
-      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
-      {
-        // This should never happen
-        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-        *_retval = 0;
-        return NS_OK;
-      }
-    }
-    else 
-    {
-      printf("Found mtable frame with no rows\n");
+      // This should never happen
+      PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+      *_retval = 0;
+      return NS_OK;
     }
   }
-  else
+  else 
   {
-    printf("mtable EnterFromRight called with count == 0\n");
-    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    printf("Found mtable frame with no rows\n");
   }
   return NS_OK;  
 }
 
                             
-nsresult
+NS_IMETHODIMP
 nsMathMLmtableFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
   printf("mtable MoveOutToRight, count = %d\n", count);
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
-  nsIFrame * pChild = GetFirstChild(nsnull);
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  if (leavingFrame != pChild)
-  {
-    // leaving mtable. Count = 0
-    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
-    *_retval = 0;
-    return NS_OK;
-  }
-  else
-  {
-    // leaving a cell 
-    count= 0;
-    pChild = pChild->GetNextSibling();
-    pMCM = GetMathCursorMover(pChild);
-    if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-    else printf("mtable MoveOutToRight: n\n");
-   *_retval = 0;
-  }
-  return NS_OK;  
+  
+  count = *_retval = 0;
+  PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+  *_retval = 0;
+  return NS_OK;
 }
 
 nsresult
@@ -794,27 +769,15 @@ nsMathMLmtableFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame
 {                
   printf("mtable MoveOutToLeft, count = %d\n", count);
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
-  nsIFrame * pChild = GetFirstChild(nsnull);
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  if (leavingFrame == nsnull || leavingFrame == pChild)
+  count = *_retval = 0;
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM = GetMathCursorMover(pParent);
+  if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+  else  // parent isn't math??? shouldn't happen
   {
-    nsIFrame * pParent = GetParent();
-    pMCM = GetMathCursorMover(pParent);
-    if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-    else  // parent isn't math??? shouldn't happen
-    {
-      *_retval = count;
-      *aOutFrame = nsnull;  // should allow default Mozilla code to take over
-      return NS_OK;
-    }
-  }
-  else
-  {
-    // leaving superscript. Place the cursor just after the base.
-    count= 0;
-    pMCM = GetMathCursorMover(pChild);
-    if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-   *_retval = 0;
+    *_retval = count;
+    *aOutFrame = nsnull;  // should allow default Mozilla code to take over
+    return NS_OK;
   }
   return NS_OK;  
 }  
@@ -1025,3 +988,4 @@ nsMathMLmtdInnerFrame::Reflow(nsPresContext*          aPresContext,
   // ...
   return rv;
 }
+
