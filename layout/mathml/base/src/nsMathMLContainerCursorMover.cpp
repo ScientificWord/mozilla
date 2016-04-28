@@ -52,7 +52,7 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
     }
   }
   // if we get here, leavingFrame is null or there is no child after leavingFrame. Leave this frame.
-  pTempFrame = GetSignificantParent(pFrame);
+  pTempFrame = GetTopFrameForContent(GetSignificantParent(pFrame));
   whoAmI = (pTempFrame->GetContent())->Tag();
   // Hack alert. Most MathML tags have corresponding frames, but the menclose tag has a mathmlrowframe, and so
   //  uses this code. When the cursor leaves an menclose tag, that counts as a visible motion, so count must be decremented.
