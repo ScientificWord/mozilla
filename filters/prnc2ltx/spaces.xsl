@@ -8,17 +8,17 @@
 
 <xsl:template match="html:hspace" mode="verb">
   <xsl:choose>
-    <xsl:when test="@type='normal'"><xsl:text> </xsl:text></xsl:when>
-	  <xsl:when test="@type='requiredSpace'"><xsl:text> </xsl:text></xsl:when>
-	  <xsl:when test="@type='emSpace'"><xsl:text>  </xsl:text></xsl:when>
-	  <xsl:when test="@type='twoEmSpace'"><xsl:text>    </xsl:text></xsl:when>
-	  <xsl:when test="@type='nonBreakingSpace'"><xsl:text> </xsl:text></xsl:when>
-	  <xsl:when test="@type='thickSpace'"><xsl:text>  </xsl:text></xsl:when>
-	  <xsl:when test="@type='thinSpace'"><xsl:text> </xsl:text></xsl:when>
-	  <xsl:when test="@type='italicCorrectionSpace'"><xsl:text></xsl:text></xsl:when>
-	  <xsl:when test="@type='negativeThinSpace'"><xsl:text></xsl:text></xsl:when>
-	  <xsl:when test="@type='zeroSpace'"><xsl:text></xsl:text></xsl:when>
-	  <xsl:when test="@type='noIndent'"><xsl:text></xsl:text></xsl:when>
+    <xsl:when test="@type='normal'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
+	  <xsl:when test="@type='requiredSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
+	  <xsl:when test="@type='emSpace'"><xsl:text  xml:space="preserve">  </xsl:text></xsl:when>
+	  <xsl:when test="@type='twoEmSpace'"><xsl:text  xml:space="preserve">    </xsl:text></xsl:when>
+	  <xsl:when test="@type='nonBreakingSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
+	  <xsl:when test="@type='thickSpace'"><xsl:text  xml:space="preserve">  </xsl:text></xsl:when>
+	  <xsl:when test="@type='thinSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
+	  <xsl:when test="@type='italicCorrectionSpace'"><xsl:text  xml:space="preserve"></xsl:text></xsl:when>
+	  <xsl:when test="@type='negativeThinSpace'"><xsl:text  xml:space="preserve"></xsl:text></xsl:when>
+	  <xsl:when test="@type='zeroSpace'"><xsl:text  xml:space="preserve"></xsl:text></xsl:when>
+	  <xsl:when test="@type='noIndent'"><xsl:text  xml:space="preserve"></xsl:text></xsl:when>
 	  <xsl:otherwise/>
 	</xsl:choose>
 </xsl:template>
