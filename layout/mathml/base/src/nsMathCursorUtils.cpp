@@ -440,7 +440,6 @@ nsIFrame * GetTopFrameForContent(nsIFrame * pFrame)
   pParent = pFrame->GetParent();
   while (pParent->GetContent() == pContent) {
   	rval = pParent;
-    if (pParent->GetType() == nsGkAtoms::tableFrame) return rval;
     pParent = pParent->GetParent();
   }
   return rval;
