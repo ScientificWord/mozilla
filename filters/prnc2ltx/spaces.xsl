@@ -6,6 +6,23 @@
     xmlns:exsl="http://exslt.org/common"
 >
 
+<xsl:template match="html:hspace" mode="verb">
+  <xsl:choose>
+    <xsl:when test="@type='normal'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
+	  <xsl:when test="@type='requiredSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
+	  <xsl:when test="@type='emSpace'"><xsl:text  xml:space="preserve">  </xsl:text></xsl:when>
+	  <xsl:when test="@type='twoEmSpace'"><xsl:text  xml:space="preserve">    </xsl:text></xsl:when>
+	  <xsl:when test="@type='nonBreakingSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
+	  <xsl:when test="@type='thickSpace'"><xsl:text  xml:space="preserve">  </xsl:text></xsl:when>
+	  <xsl:when test="@type='thinSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
+	  <xsl:when test="@type='italicCorrectionSpace'"><xsl:text  xml:space="preserve"></xsl:text></xsl:when>
+	  <xsl:when test="@type='negativeThinSpace'"><xsl:text  xml:space="preserve"></xsl:text></xsl:when>
+	  <xsl:when test="@type='zeroSpace'"><xsl:text  xml:space="preserve"></xsl:text></xsl:when>
+	  <xsl:when test="@type='noIndent'"><xsl:text  xml:space="preserve"></xsl:text></xsl:when>
+	  <xsl:otherwise/>
+	</xsl:choose>
+</xsl:template>
+		  
 <xsl:template match="html:hspace">
   <xsl:choose>
     <xsl:when test="@type='normal'"> </xsl:when>
@@ -30,7 +47,7 @@
 		<xsl:otherwise/>
 	</xsl:choose>
 </xsl:template>
-		  
+
 <xsl:template match="mml:hspace">
   <xsl:choose>
     <xsl:when test="@type='normal'"> </xsl:when>
