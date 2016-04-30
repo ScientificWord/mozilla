@@ -184,7 +184,7 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
     pTempFrame = pTempFrame->GetFirstChild(nsnull);
     if (pTempFrame) frametype = pTempFrame->GetType();
   }
-  if (pTempFrame && IsSelectable(pFrame))
+  if (pTempFrame) // && IsSelectable(pFrame))
   { // either pMCM is not null, or frametype == textframe
     if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else
@@ -268,7 +268,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
       frametype = pTempFrame->GetType();
     }
   }
-  if (pTempFrame && IsSelectable(pFrame))
+  if (pTempFrame) // && IsSelectable(pFrame))
   {
     frametype = pTempFrame->GetType();
     if (pMCM) {
