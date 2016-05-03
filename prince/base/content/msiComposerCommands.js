@@ -2779,10 +2779,13 @@ function msiSoftSave( editor, editorElement, noTeX)
       range.setStart(s.anchorNode, s.anchorOffset);
       range.setEnd(s.focusNode, s.focusOffset);
       defnListString = defnListString.replace(/<p>/,"<bodyText>", "g");
-      defnListString = defnListString.replace(/<\/p>/,"</bodyText>", "g")
+      defnListString = defnListString.replace(/<\/p>/,"</bodyText>", "g");
       defnListString = "<doc>" + defnListString + "</doc>";
       var defnList = editorDoc.createElement("definitionlist");
-      insertXML(editor, defnListString, defnList, 0, true);
+	// insertXML(editor, defnListString, defnList, 0, true);
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(defnListString, 'application/xhtml+xml');
+      var nodeList = doc.documentElement.childNodes;
       preamble.appendChild(defnList);
       if(s.rangeCount > 0) s.removeAllRanges();
       s.addRange(range);
