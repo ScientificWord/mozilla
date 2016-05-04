@@ -832,7 +832,7 @@ unknown_op<uID3.5.7>infix,25
 
 &equest;<uID3.14.103>infix,26,U0225F,lspace="thickmathspace" rspace="thickmathspace"
 \defineas<uID3.14.104>infix,26,U0xxxx,lspace="thickmathspace" rspace="thickmathspace"
-&SuchThat;<uID3.14.105>infix,16,U0213C,lspace="thickmathspace" rspace="thickmathspace"
+&SuchThat;<uID3.14.27>infix,24,U0220B,lspace="thickmathspace" rspace="thickmathspace"
 
 ; proportion, as in 1:2::4:8
 &Colon;<uID3.14.106>infix,10,U02237,lspace="thickmathspace" rspace="thickmathspace"
