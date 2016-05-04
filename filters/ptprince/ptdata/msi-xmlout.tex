@@ -1112,15 +1112,15 @@
 \def\msi@begin@subequations{\msi@insubequations=1}
 \def\msi@end@subequations{\msi@insubequations=0}
 
-\def\msi@begin@equation{\bgroup\msi@dollar=0\relax$$\string\begin{equation}}
-\def\msi@end@equation{\string\end{equation}$$\egroup}
+\def\msi@begin@equation{\begingroup\msi@dollar=0$$\msi@dollar=`\$\string\begin{equation}}
+\def\msi@end@equation{\string\end{equation}\msi@dollar=0$$\msi@dollar=`\$\endgroup}
 
 
-\@namedef{msi@begin@equation*}{\bgroup\msi@dollar=0\relax$$\string\begin{equation*}}
-\@namedef{msi@end@equation*}{\string\end{equation*}$$\egroup}
+\@namedef{msi@begin@equation*}{\bgroup\msi@dollar=0\relax$$\msi@dollar=`\$\string\begin{equation*}}
+\@namedef{msi@end@equation*}{\string\end{equation*}\msi@dollar=0$$\msi@dollar=`\$\egroup}
 
-\@namedef{msi@begin@displaymath}{\bgroup\msi@dollar=0\relax$$\string\begin{equation*}}
-\@namedef{msi@end@displaymath}{\string\end{equation*}$$\egroup}
+\@namedef{msi@begin@displaymath}{\bgroup\msi@dollar=0\relax$$\msi@dollar=`\$\string\begin{equation*}}
+\@namedef{msi@end@displaymath}{\string\end{equation*}\msi@dollar=0$$\msi@dollar=`\$\egroup}
 
 
 \def\msi@begin@array{\begingroup\def\\{\char`\\\char`\\}\catcode`\&=12\string\begin{array}}
@@ -1960,7 +1960,7 @@
 
 \def\fbox#1{\ifmmode
               \msitag{\msipassthru{<menclose notation='box' type='fbox'>}}%
-              \msitag{\msipassthru}{\msihmode #1}%
+              \msitag{\msipassthru}\char`\{\begingroup \msihmode #1\endgroup\char`\}%
               \msitag{\msipassthru{</menclose>}}%
             \else
               \msihmode\msiopentag{fbox}{<smallbox>}#1\msiclosetag{fbox}{</smallbox>}%
