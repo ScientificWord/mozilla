@@ -475,6 +475,8 @@ unknown_op<uID3.5.7>infix,25
 &epsiv;<uID3.10.5>,U003B5
 ;; straight epsilon OR \epsilon<uID3.10.6> - I don't know the unicode
 &epsi;<uID3.10.6>,U003F5
+; \backepsilon
+&bepsi;<uID3.14.105>,U003F6
 &zeta;<uID3.10.7>,U003B6
 &eta;<uID3.10.8>,U003B7
 &theta;<uID3.10.9>,U003B8
@@ -830,7 +832,6 @@ unknown_op<uID3.5.7>infix,25
 
 &equest;<uID3.14.103>infix,26,U0225F,lspace="thickmathspace" rspace="thickmathspace"
 \defineas<uID3.14.104>infix,26,U0xxxx,lspace="thickmathspace" rspace="thickmathspace"
-;bepsi<uID3.14.105>infix,16,U0213C
 &SuchThat;<uID3.14.105>infix,16,U0213C,lspace="thickmathspace" rspace="thickmathspace"
 
 ; proportion, as in 1:2::4:8
