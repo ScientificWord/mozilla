@@ -233,6 +233,30 @@ public:
     }
   }
 
+  NS_IMETHOD 
+  MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval) {
+    count = 0;
+    return nsMathMLContainerCursorMover::MoveOutToRight(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
+  }
+
+  NS_IMETHOD 
+  MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval) {
+    count = 0;
+    return nsMathMLContainerCursorMover::MoveOutToLeft(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
+  }
+
+  NS_IMETHOD 
+  EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval) {
+    return nsMathMLContainerCursorMover::EnterFromLeft(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
+  }
+
+  NS_IMETHOD 
+  EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+  {
+    return nsMathMLContainerCursorMover::EnterFromRight(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);    
+  }
+
+
 protected:
   nsMathMLmtrFrame(nsStyleContext* aContext) : nsTableRowFrame(aContext),nsMathMLContainerCursorMover(this) {}
   virtual ~nsMathMLmtrFrame();
