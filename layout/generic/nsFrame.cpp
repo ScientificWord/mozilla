@@ -5758,10 +5758,16 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       {
         pFrame = nsnull;
       }
-      else if ((pMathCM = GetMathCursorMover(pFrame)) && (aDirection == eDirNext))
-        pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
-      else if (pMathCM)
-        pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
+      else {
+        // We should enter mathematics at the top   BBM: 2016-05-03 Not yet ready for prime time
+        
+        // while (IsMathFrame(pFrame->GetParent())) pFrame = pFrame->GetParent();
+        // count = 0;
+        if ((pMathCM = GetMathCursorMover(pFrame)) && (aDirection == eDirNext))
+          pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
+        else if (pMathCM)
+          pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
+      }
     }
 //    if (*fBailing) goto bailedOut;
   }
