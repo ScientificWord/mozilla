@@ -1200,8 +1200,19 @@ nsHTMLCopyEncoder::SetSelection(nsISelection* aSelection)
     NS_ENSURE_TRUE(myRange, NS_ERROR_FAILURE);
 
     // adjust range to include any ancestors who's children are entirely selected
-    rv = PromoteRange(myRange);
-    NS_ENSURE_SUCCESS(rv, rv);
+    // We don't want to do this in math BBM: 2016-05-05
+
+    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(commonParent);
+    nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
+    nsString tagNamespace;
+    element->GetNamespaceURI(tagNamespace);
+    PRBool isMathNode = tagNamespace.Equals(strMathMLNs);
+
+
+    if (!isMathNode) {
+      rv = PromoteRange(myRange);
+      NS_ENSURE_SUCCESS(rv, rv);   
+    }
     
     rv = mSelection->AddRange(myRange);
     NS_ENSURE_SUCCESS(rv, rv);
