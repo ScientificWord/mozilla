@@ -812,11 +812,11 @@ z<uID3.24.26>127.0xf199!0x7a
 \Downarrow<uID3.12.15>134.0x21d3!0xdf
 \updownarrow<uID3.12.16>139.0x2195!0x62
 \longleftarrow<uID3.12.17>134.0x2190!0xac
-\Longleftarrow<uID3.12.18>134.0x21d0!0xdc
+\Longleftarrow<uID3.12.18>134.0x27f8!0xdc
 \longrightarrow<uID3.12.19>134.0x2192!0xae
-\Longrightarrow<uID3.12.20>134.0x21d2!0xde
+\Longrightarrow<uID3.12.20>134.0x27f9!0xde
 \longleftrightarrow<uID3.12.21>134.0x2194!0xab
-\Longleftrightarrow<uID3.12.22>134.0x21d4!0xdb
+\Longleftrightarrow<uID3.12.22>134.0x27fa!0xdb
 \longmapsto<uID3.12.23>139.0x21a6!0x61
 \hookrightarrow<uID3.12.24>uArrows.0x21AA
 \rightharpoonup<uID3.12.25>EuclidMath1Plain.0x21C0!0xb6
@@ -1057,9 +1057,9 @@ z<uID3.24.26>127.0xf199!0x7a
 ><uID3.14.109>134.0x003e!0x3e
 \vartriangle<uID3.14.110>139.0x25b3!0x56
 
-\implies<uID3.14.111>134.0x21D2!0xde;18,18
-\impliedby<uID3.14.112>134.0x21D0!0xdc;18,18
-\iff<uID3.14.113>134.0x21D4!0xdb;18,18
+\implies<uID3.14.111>134.0x27f9!0xde;18,18
+\impliedby<uID3.14.112>134.0x27f8!0xdc;18,18
+\iff<uID3.14.113>134.0x27fa!0xdb;18,18
 
 ; corners or delimiters
 
