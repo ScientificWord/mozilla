@@ -1252,25 +1252,16 @@
             <xsl:text xml:space="preserve">\nRightarrow </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x21D0;'">
-            <xsl:text xml:space="preserve">\impliedby </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x21D0;'">
             <xsl:text xml:space="preserve">\Leftarrow </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x21D1;'">
             <xsl:text xml:space="preserve">\Uparrow </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x21D2;'">
-            <xsl:text xml:space="preserve">\implies </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x21D2;'">
             <xsl:text xml:space="preserve">\Rightarrow </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x21D3;'">
             <xsl:text xml:space="preserve">\Downarrow </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x21D4;'">
-            <xsl:text xml:space="preserve">\iff </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x21D4;'">
             <xsl:text xml:space="preserve">\Leftrightarrow </xsl:text>
