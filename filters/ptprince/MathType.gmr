@@ -578,11 +578,11 @@ Z<uID3.2.26>131.0x5a
 \Downarrow<uID3.12.15>134.0x21d3
 \updownarrow<uID3.12.16>139.0x2195
 \longleftarrow<uID3.12.17>134.0x2190
-\Longleftarrow<uID3.12.18>134.0x21d0
+\Longleftarrow<uID3.12.18>134.0x27f8
 \longrightarrow<uID3.12.19>134.0x2192
-\Longrightarrow<uID3.12.20>134.0x21d2
+\Longrightarrow<uID3.12.20>134.0x27f9
 \longleftrightarrow<uID3.12.21>134.0x2194
-\Longleftrightarrow<uID3.12.22>134.0x21d4
+\Longleftrightarrow<uID3.12.22>134.0x27fa
 \longmapsto<uID3.12.23>139.0x21a6
 \hookrightarrow<uID3.12.24>uArrows.0x21AA
 \rightharpoonup<uID3.12.25>uArrows.0x21C0
@@ -821,9 +821,9 @@ Z<uID3.2.26>131.0x5a
 ><uID3.14.109>134.0x3e
 \vartriangle<uID3.14.110>uMathOp.0x22B2
 
-\implies<uID3.14.111>134.0x21D2;18,18
-\impliedby<uID3.14.112>134.0x21D0;18,18
-\iff<uID3.14.113>134.0x21D4;18,18
+\implies<uID3.14.111>134.0x27f9;18,18
+\impliedby<uID3.14.112>134.0x27f8;18,18
+\iff<uID3.14.113>134.0x27fa;18,18
 
 ; corners or delimiters
 

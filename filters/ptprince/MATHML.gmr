@@ -554,11 +554,11 @@ unknown_op<uID3.5.7>infix,25
 
 ;;long arrows as stretched versions of their shorter counterparts
 &larr;<uID3.12.17>infix,25,U02190,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
-&lArr;<uID3.12.18>infix,25,U021D0,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
+&lArr;<uID3.12.18>infix,25,U027f8,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
 &rarr;<uID3.12.19>infix,25,U02192,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
-&rArr;<uID3.12.20>infix,25,U021D2,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
+&rArr;<uID3.12.20>infix,25,U027f9,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
 &harr;<uID3.12.21>infix,25,U02194,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
-&hArr;<uID3.12.22>infix,25,U021D4,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
+&hArr;<uID3.12.22>infix,25,U027fa,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
 &map;<uID3.12.23>infix,25,U021A6,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
 
 ;; Note that a second set of productions for long arrows is in DEPOPS section
@@ -843,9 +843,9 @@ unknown_op<uID3.5.7>infix,25
 ;CHAR_var_triangle_relation    0xe015
 ;;\vartriangle<uID3.14.110>infix,26,U0E015,lspace="thickmathspace" rspace="thickmathspace"
 &utri;<uID3.14.110>infix,26,U025B5,lspace="thickmathspace" rspace="thickmathspace"
-&Implies;<uID3.14.111>infix,18,U021D2,lspace="0.8em" rspace="0.8em"
-;\impliedby<uID3.14.112>infix,18,U021D0
-&lArr;<uID3.14.112>infix,18,U021D0,lspace="0.8em" rspace="0.8em"
+&Implies;<uID3.14.111>infix,18,U027f9,lspace="0.8em" rspace="0.8em"
+;\impliedby<uID3.14.112>infix,18,U027f8
+&lArr;<uID3.14.112>infix,18,U027f8,lspace="0.8em" rspace="0.8em"
 &iff;<uID3.14.113>infix,18,U0E365,lspace="0.8em" rspace="0.8em"
 
 
