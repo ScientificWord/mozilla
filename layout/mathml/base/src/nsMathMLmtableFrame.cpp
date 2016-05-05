@@ -749,18 +749,36 @@ nsMathMLmtableFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame
   return NS_OK;  
 }
 
+PRBool IsEqnArray(nsIFrame* pFrame) {
+  nsCOMPtr<nsIContent> content;
+  nsCOMPtr<nsIDOMElement> el;
+  nsAutoString attribute;
+  content = pFrame->GetContent();
+  el = do_QueryInterface(content);
+  el->GetAttribute(NS_LITERAL_STRING("type"), attribute);
+  return attribute.EqualsLiteral("eqnarray");
+}
                             
 NS_IMETHODIMP
 nsMathMLmtableFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
-  printf("mtable MoveOutToRight, count = %d\n", count);
-  // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
-  
-  count = *_retval = 0;
-  PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
-  *_retval = 0;
-  return NS_OK;
+  if (IsEqnArray(this)) {
+    *_retval = count = 1;
+  }
+  else {
+    count = *_retval = 0;
+  }
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM = GetMathCursorMover(pParent);
+  if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+  else  // parent isn't math??? shouldn't happen
+  {
+    *_retval = count;
+    *aOutFrame = nsnull;  // should allow default Mozilla code to take over
+    return NS_OK;
+  }
+  return NS_OK;  
 }
 
 nsresult
@@ -769,7 +787,12 @@ nsMathMLmtableFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame
 {                
   printf("mtable MoveOutToLeft, count = %d\n", count);
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
-  count = *_retval = 0;
+  if (IsEqnArray(this)) {
+    *_retval = count = 1;
+  }
+  else {
+    count = *_retval = 0;
+  }
   nsIFrame * pParent = GetParent();
   nsCOMPtr<nsIMathMLCursorMover> pMCM = GetMathCursorMover(pParent);
   if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
