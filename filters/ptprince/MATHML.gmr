@@ -843,10 +843,10 @@ unknown_op<uID3.5.7>infix,25
 ;CHAR_var_triangle_relation    0xe015
 ;;\vartriangle<uID3.14.110>infix,26,U0E015,lspace="thickmathspace" rspace="thickmathspace"
 &utri;<uID3.14.110>infix,26,U025B5,lspace="thickmathspace" rspace="thickmathspace"
-&Implies;<uID3.14.111>infix,18,U027f9,lspace="0.8em" rspace="0.8em"
+&xrArr;<uID3.14.111>infix,18,U027f9,lspace="0.8em" rspace="0.8em"
 ;\impliedby<uID3.14.112>infix,18,U027f8
-&lArr;<uID3.14.112>infix,18,U027f8,lspace="0.8em" rspace="0.8em"
-&iff;<uID3.14.113>infix,18,U0E365,lspace="0.8em" rspace="0.8em"
+&xlArr;<uID3.14.112>infix,18,U027f8,lspace="0.8em" rspace="0.8em"
+&xhArr;<uID3.14.113>infix,18,U027fa,lspace="0.8em" rspace="0.8em"
 
 
 ;TCI corners and delimiters

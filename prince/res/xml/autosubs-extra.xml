@@ -316,9 +316,9 @@
   <sub ctx="math" tp="subst"><pattern>curvearrowright</pattern><data>&#x21B7;</data><context/><info>0,0</info></sub>
   <sub ctx="math" tp="subst"><pattern>dbkarrow</pattern><data>&#x290F;</data><context/><info>0,0</info></sub>
   <sub ctx="math" tp="subst"><pattern>leftdbkarrow</pattern><data>&#x290E;</data><context/><info>0,0</info></sub>
-  <sub ctx="math" tp="subst"><pattern>implies</pattern><data>&#x21D2;</data><context/><info>0,0</info></sub>
-  <sub ctx="math" tp="subst"><pattern>impliedby</pattern><data>&#x21D0;</data><context/><info>0,0</info></sub>
-  <sub ctx="math" tp="subst"><pattern>iff</pattern><data>&#x21D4;</data><context/><info>0,0</info></sub>
+  <sub ctx="math" tp="subst"><pattern>implies</pattern><data>&#x27F9;</data><context/><info>0,0</info></sub>
+  <sub ctx="math" tp="subst"><pattern>impliedby</pattern><data>&#x27F8;</data><context/><info>0,0</info></sub>
+  <sub ctx="math" tp="subst"><pattern>iff</pattern><data>&#x27FA;</data><context/><info>0,0</info></sub>
   <sub ctx="math" tp="subst"><pattern>infty</pattern><data>&#x221E;</data><context/><info>0,0</info></sub>
   <sub ctx="math" tp="subst"><pattern>partial</pattern><data>&#x2202;</data><context/><info>0,0</info></sub>
   <sub ctx="math" tp="subst"><pattern>dots</pattern><data>&#x2026;</data><context/><info>0,0</info></sub>
