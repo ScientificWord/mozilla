@@ -133,7 +133,7 @@
       <handler event="keypress" keycode="VK_PAGE_UP" modifiers="shift" command="cmd_selectPageUp"/>
       <handler event="keypress" keycode="VK_PAGE_DOWN" modifiers="shift" command="cmd_selectPageDown"/>
       <!-- Prince commands -->
-      <handler event="keypress" key=">" command="cmd_insertSubstructure" modifiers="accel"/>
+      <handler event="keypress" key=">" command="cmd_insertSubstructure" modifiers="shift any accel"/>
       <handler event="keypress" keycode="VK_F3" command="cmd_findNext" />
       <handler event="keypress" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
       <handler event="keypress" key=" " modifiers="control" command="cmd_macrofragment"/>
@@ -146,8 +146,8 @@
       <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
       <handler event="keypress" key="g" modifiers="accel"   command="cmd_oneshotGreek"/>
       <handler event="keypress" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
-      <handler event="keypress" key="+" action="ZoomManager.enlarge();" modifiers="accel,shift"/>
-      <handler event="keypress" key="-" action="ZoomManager.reduce();" modifiers="accel"/>
+      <handler event="keypress" key="+" action="ZoomManager.enlarge();" modifiers="shift any accel"/>
+      <handler event="keypress" key="-" action="ZoomManager.reduce();" modifiers="shift any accel"/>
       <handler event="keypress" key="0" action="ZoomManager.reset();" modifiers="accel"/>
       <handler event="keypress" keycode="VK_F4" modifiers="alt" oncommand="doQuit();"/>
       <handler event="keypress" keycode="VK_F4" modifiers="accel" command="cmd_close"/>
