@@ -516,10 +516,10 @@ D<uID3.2.4>prefix,55,U00044
 ;CHAR_var_triangle_relation    0xe015
 ;;\vartriangle<uID3.14.112>infix,26,U0E015
 &utri;<uID3.14.112>infix,26,U025B5
-&Implies;<uID3.14.113>infix,18,U021D2
+&xrArr;<uID3.14.113>infix,18,U027F9
 ;\impliedby<uID3.14.114>infix,18,U021D0
-&lArr;<uID3.14.114>infix,18,U021D0
-&iff;<uID3.14.115>infix,18,U0E365
+&xlArr;<uID3.14.114>infix,18,U027F8
+&xhArr;<uID3.14.115>infix,18,U027FA
 
 
 ;TCI corners and delimiters
