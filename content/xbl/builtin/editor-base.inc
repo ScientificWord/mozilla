@@ -18,14 +18,14 @@
       <handler event="keypress" key="2" action="focusOn('ParaTagSelections')" modifiers="accel"/>
       <handler event="keypress" key="3" action="focusOn('StructTagSelections')" modifiers="accel"/>
       <handler event="keypress" key="4" action="focusOn('FrontMTagSelections')" modifiers="accel"/>
-      <handler id="msiquickbacktick" event="keypress" key="`" modifiers="accel"       action="msiRevCharQuick('&#x0300;');"/>
-      <handler id="msiquicksquote" event="keypress" key="'" modifiers="accel"       oncommand="msiRevCharQuick('&#x0301;');"/>
+      <handler id="msiquickbacktick" event="keypress" key="`" modifiers="shift any accel"       action="msiRevCharQuick('&#x0300;');"/>
+      <handler id="msiquicksquote" event="keypress" key="'" modifiers="shift any accel"       oncommand="msiRevCharQuick('&#x0301;');"/>
       <handler id="msiquickcaret" event="keypress" key="^" modifiers="shift any accel" action="msiRevCharQuick('&#x0302;');"/>
-      <handler id="msiquicktilde" event="keypress" key="~" modifiers="accel,shift" action="msiRevCharQuick('&#x0303;');"/>
-      <handler id="msiquickunderscore" event="keypress" key='_' modifiers="accel,shift" action="msiRevCharQuick('&#x0305;');"/>
-      <handler id="msiquickperiod" event="keypress" key="." modifiers="accel"       action="msiRevCharQuick('&#x0307;');"/>
-      <handler id="msiquickdquote" event="keypress" key='"' modifiers="accel,shift" action="msiRevCharQuick('&#x0308;');"/>
-      <handler id="msiquickexclam" event="keypress" key='!' modifiers="accel,shift" action="msiRevCharQuick('&#x20d7;');"/>
+      <handler id="msiquicktilde" event="keypress" key="~" modifiers="shift any accel" action="msiRevCharQuick('&#x0303;');"/>
+      <handler id="msiquickunderscore" event="keypress" key='_' modifiers="shift any accel" action="msiRevCharQuick('&#x0305;');"/>
+      <handler id="msiquickperiod" event="keypress" key="." modifiers="shift any accel"       action="msiRevCharQuick('&#x0307;');"/>
+      <handler id="msiquickdquote" event="keypress" key='"' modifiers="shift any accel" action="msiRevCharQuick('&#x0308;');"/>
+      <handler id="msiquickexclam" event="keypress" key='!' modifiers="shift any accel" action="msiRevCharQuick('&#x20d7;');"/>
       <handler event="keypress" keycode="VK_ENTER" modifiers="shift" command="cmd_insertBreakCommand"/>
       <handler event="keypress" keycode="VK_RETURN" modifiers="shift" command="cmd_insertBreakCommand"/>
 
