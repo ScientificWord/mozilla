@@ -1923,11 +1923,13 @@
           <xsl:when test="$first-char='&#x22EF;'">
             <xsl:text xml:space="preserve">\cdots </xsl:text>
           </xsl:when>
+<!-- Actually, no LaTeX for this character
 	   <xsl:when test="$first-char='&#x22F0;'">
             <xsl:text xml:space="preserve">\ddots </xsl:text>
           </xsl:when>
+-->
           <xsl:when test="$first-char='&#x22F1;'">
-            <xsl:text xml:space="preserve">\diagdown </xsl:text>
+            <xsl:text xml:space="preserve">\ddots </xsl:text>
           </xsl:when>
 	  <xsl:when test="$first-char='&#x2AB9;'">
             <xsl:text xml:space="preserve">\precnapprox </xsl:text>
