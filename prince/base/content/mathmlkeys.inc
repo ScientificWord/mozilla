@@ -2,7 +2,7 @@
 	  <key id="MSIinlineMathKey" modifiers="accel" key="m" command="cmd_MSImathtext"/>
 	  <key id="MSIinlineTextKey" modifiers="accel" key="t" command="cmd_MSItextmath"/>
 	  <key id="MSIdisplayKey"    modifiers="accel" key="d" command="cmd_MSIdisplayMathCmd"/>
-	  <key id="MSIfractionKey"   modifiers="accel" key="/" command="cmd_MSIfractionCmd"/>
+	  <key id="MSIfractionKey"   modifiers="shift any accel" key="/" command="cmd_MSIfractionCmd"/>
   	  <key id="MSIIntegralKey"   modifiers="accel" key="i" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>
       <key id="MSIIntegralKey2"  modifiers="accel" key="8" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>
       <key id="MSISummationKey"  modifiers="accel" key="7" oncommand="insertOperator('&#x03A3;', 'auto', 'auto');"/>
@@ -13,13 +13,13 @@
 	  <key id="MSISubKey"        modifiers="accel" keycode="VK_DOWN"                   command="cmd_MSIsubCmd"/>
 	  <key id="MSIparenKey9"     modifiers="accel" key="9" command="cmd_MSIparenCmd"/>
 	  <key id="MSIparenKey0"     modifiers="accel" key="0" command="cmd_MSIparenCmd"/>
-	  <key id="MSIparenKey("     modifiers="accel" key="(" command="cmd_MSIparenCmd"/>
-	  <key id="MSIparenKey)"     modifiers="accel" key=")" command="cmd_MSIparenCmd"/>
-	  <key id="MSIbracketKey"    modifiers="accel" key="&MSIbracketCmd.keybinding;"     command="cmd_MSIbracketCmd"/>
-	  <key id="MSIbraceKey"      modifiers="accel shift" key="&MSIbraceCmd.keybinding;" command="cmd_MSIbraceCmd"/>
-	  <key id="MSIabsvalueKey"   modifiers="accel" key="&MSIabsvalueCmd.keybinding;"    command="cmd_MSIabsvalueCmd"/>
-	  <key id="MSInormKey"       modifiers="accel shift" key="&MSInormCmd.keybinding;"  command="cmd_MSInormCmd"/>
-	  <key id="MSIanglebracketsKey" modifiers="accel shift" key="&lt;" 				    command="cmd_MSIanglebracketCmd"/>
+	  <key id="MSIparenKey("     modifiers="shift any accel" key="(" command="cmd_MSIparenCmd"/>
+	  <key id="MSIparenKey)"     modifiers="shift any accel" key=")" command="cmd_MSIparenCmd"/>
+	  <key id="MSIbracketKey"    modifiers="shift any accel" key="&MSIbracketCmd.keybinding;"     command="cmd_MSIbracketCmd"/>
+	  <key id="MSIbraceKey"      modifiers="shift any accel shift" key="&MSIbraceCmd.keybinding;" command="cmd_MSIbraceCmd"/>
+	  <key id="MSIabsvalueKey"   modifiers="shift any accel" key="&MSIabsvalueCmd.keybinding;"    command="cmd_MSIabsvalueCmd"/>
+	  <key id="MSInormKey"       modifiers="shift any accel" key="&MSInormCmd.keybinding;"  command="cmd_MSInormCmd"/>
+	  <key id="MSIanglebracketsKey" modifiers="shift any accel" key="&lt;" 				    command="cmd_MSIanglebracketCmd"/>
 	  <key id="MSIGreekKey"      modifiers="accel" key="g"                              command="cmd_oneshotGreek"/>
 	  <key id="MSISymbolKey"     modifiers="accel" key="k"                              command="cmd_oneshotSymbol"/>
 	</keyset>
