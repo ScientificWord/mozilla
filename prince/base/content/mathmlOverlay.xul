@@ -1626,11 +1626,11 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolleftdbkarrow" label="&#x290E;" tooltiptext="&symbolleftdbkarrow.tooltip;"       msivalue="&#x290E;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolimplies" label="&#x21D2;" tooltiptext="&symbolimplies.tooltip;"       msivalue="&#x21D2;"
+        <toolbarbutton id ="symbolimplies" label="&#x27F9;" tooltiptext="&symbolimplies.tooltip;"       msivalue="&#x27F9;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolimpliedby" label="&#x21D0;" tooltiptext="&symbolimpliedby.tooltip;"       msivalue="&#x21D0;"
+        <toolbarbutton id ="symbolimpliedby" label="&#x27F8;" tooltiptext="&symbolimpliedby.tooltip;"       msivalue="&#x27F8;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symboliff" label="&#x21D4;" tooltiptext="&symboliff.tooltip;"       msivalue="&#x21D4;"
+        <toolbarbutton id ="symboliff" label="&#x27FA;" tooltiptext="&symboliff.tooltip;"       msivalue="&#x27FA;"
            observes="cmd_MSIsymbolCmd"/>
 
 <!-- MISCELLANEOUS SYMBOLS -->
