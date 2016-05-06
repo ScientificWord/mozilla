@@ -264,7 +264,7 @@
   <m nm="idieresis" fm="0"><data>&#x00EF;</data><context/><info>0,0</info></m>
   <m nm="Idot" fm="0"><data>&#x0130;</data><context/><info>0,0</info></m>
   <m nm="idotsint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&int;&ctdot;&int;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="iff"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&iff;<![CDATA[");]]></data></m>
+  <m nm="iff"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xhArr;<![CDATA[");]]></data></m>
   <m nm="Igrave" fm="0"><data>&#x00CC;</data><context/><info>0,0</info></m>
   <m nm="igrave" fm="0"><data>&#x00EC;</data><context/><info>0,0</info></m>
   <m nm="iiiint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&qint;<![CDATA[", "", "", false);]]></data></m>
@@ -276,8 +276,8 @@
   <m nm="Imacr" fm="0"><data>&#x012A;</data><context/><info>0,0</info></m>
   <m nm="imacr" fm="0"><data>&#x012B;</data><context/><info>0,0</info></m>
   <m nm="imath"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&imath;<![CDATA[");]]></data></m>
-  <m nm="impliedby"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lArr;<![CDATA[");]]></data></m>
-  <m nm="implies"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Implies;<![CDATA[");]]></data></m>
+  <m nm="impliedby"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xlArr;<![CDATA[");]]></data></m>
+  <m nm="implies"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xrArr;<![CDATA[");]]></data></m>
   <m nm="in"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Element;<![CDATA[");]]></data></m>
   <m nm="infty" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&infin;<![CDATA[");]]></data></m>
   <m nm="int"  tp="sc"><data><![CDATA[insertMathOperator("]]>&int;<![CDATA[", "", "", false);]]></data></m>
