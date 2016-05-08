@@ -1925,9 +1925,15 @@
           </xsl:when>
 <!-- Actually, no LaTeX for this character
 	   <xsl:when test="$first-char='&#x22F0;'">
-            <xsl:text xml:space="preserve">\ddots </xsl:text>
+            <xsl:text xml:space="preserve">\relax </xsl:text>
           </xsl:when>
 -->
+	   <xsl:when test="$first-char='&#x27CB;'">
+            <xsl:text xml:space="preserve">\diagup </xsl:text>
+          </xsl:when>
+	   <xsl:when test="$first-char='&#x27CD;'">
+            <xsl:text xml:space="preserve">\diagdown </xsl:text>
+          </xsl:when>
           <xsl:when test="$first-char='&#x22F1;'">
             <xsl:text xml:space="preserve">\ddots </xsl:text>
           </xsl:when>
