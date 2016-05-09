@@ -387,6 +387,8 @@ CharStream::~CharStream()
 @}
 
 
+
+
 Here is a derived class that converts ISO-Latin-1 encoded files to
 Unicode. We'll have other derived classes for Latin-2, ..., UTF-8,
 UTF-7, and so forth.
@@ -440,7 +442,7 @@ TeXChar Latin_1_in::Get()
    while (b == 0x0d){
      b = m_pInputByteStream -> Get();
    }
-
+       
    if (false) { // utf-8
      if (b >= 0xF0) { // 4-byte
        Byte b2 = m_pInputByteStream -> Get();
@@ -1107,6 +1109,7 @@ here is another line
 #include "textio.h"
 #include <string>
 #include <cstring>
+@<UTF8 utility@>
 @<static data@>
 @<LineOfText implementation@>
 @<CharStream implementation@>
@@ -1117,6 +1120,66 @@ here is another line
 @<Codepage949_in implementation@>
 @<Codepage950_in implementation@>
 
+@}
+
+@$@<UTF8 utility@>==@{@-
+
+// Code point to utf-8
+//  c is a code point
+//  b is a char*
+
+bool CodepointToUTF8(TeXChar c, char* b) {
+  if (c<0x80)
+    *b++=c;
+  else if (c<0x800)
+    *b++=192+c/64, *b++=128+c%64;
+  else if (c-0xd800u<0x800)
+    return false;
+  else if (c<0x10000)
+    *b++=224+c/4096, *b++=128+c/64%64, *b++=128+c%64;
+  else if (c<0x110000)
+    *b++=240+c/262144, *b++=128+c/4096%64, *b++=128+c/64%64, *b++=128+c%64;
+  else
+    return false;
+  return true;
+}
+
+
+
+// utf-8 to code point
+
+int codepoint(const std::string &u)
+{
+    int l = u.length();
+    if (l<1)
+      return -1;
+    unsigned char u0 = u[0];
+    if (u0>=0   && u0<=127)
+      return u0;
+    if (l<2)
+      return -1;
+    unsigned char u1 = u[1];
+    if (u0>=192 && u0<=223)
+      return (u0-192)*64 + (u1-128);
+    if (u[0]==0xed && (u[1] & 0xa0) == 0xa0)
+      return -1; //code points, 0xd800 to 0xdfff
+    if (l<3)
+      return -1;
+    unsigned char u2 = u[2];
+    if (u0>=224 && u0<=239)
+      return (u0-224)*4096 + (u1-128)*64 + (u2-128);
+    if (l<4)
+      return -1;
+    unsigned char u3 = u[3];
+    if (u0>=240 && u0<=247)
+      return (u0-240)*262144 + (u1-128)*4096 + (u2-128)*64 + (u3-128);
+    return -1;
+}
+
+//TeXChar GetCodePoint(InputByteStream& ibs)
+//{
+//  
+//}
 @}
 
 @o@<textio.t.cpp@>==@{@-
