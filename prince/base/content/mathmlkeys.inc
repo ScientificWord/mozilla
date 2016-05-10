@@ -16,7 +16,7 @@
 	  <key id="MSIparenKey("     modifiers="shift any accel" key="(" command="cmd_MSIparenCmd"/>
 	  <key id="MSIparenKey)"     modifiers="shift any accel" key=")" command="cmd_MSIparenCmd"/>
 	  <key id="MSIbracketKey"    modifiers="shift any accel" key="&MSIbracketCmd.keybinding;"     command="cmd_MSIbracketCmd"/>
-	  <key id="MSIbraceKey"      modifiers="shift any accel shift" key="&MSIbraceCmd.keybinding;" command="cmd_MSIbraceCmd"/>
+	  <key id="MSIbraceKey"      modifiers="shift any accel" key="&MSIbraceCmd.keybinding;" command="cmd_MSIbraceCmd"/>
 	  <key id="MSIabsvalueKey"   modifiers="shift any accel" key="&MSIabsvalueCmd.keybinding;"    command="cmd_MSIabsvalueCmd"/>
 	  <key id="MSInormKey"       modifiers="shift any accel" key="&MSInormCmd.keybinding;"  command="cmd_MSInormCmd"/>
 	  <key id="MSIanglebracketsKey" modifiers="shift any accel" key="&lt;" 				    command="cmd_MSIanglebracketCmd"/>
