@@ -43,7 +43,7 @@ OutputStream& OutputStream::operator<<(const char* str)
       while (*p != 0){
          if (*p != '\n'){
             m_str += *p;
-         } else {
+         } else {// j
             m_stream << m_str.c_str() << "\n";
             m_str = "";
          }
@@ -191,17 +191,46 @@ public:
 @}
 
 @$@<Typesetter implementation@>+=@{@-
+
+// Code point to utf-8
+//  c is a code point
+//  b is a char*
+
+bool CodepointToUTF8(TeXChar c, char* b) {
+  if (c<0x80)
+    *b++=c;
+  else if (c<0x800)
+    *b++=192+c/64, *b++=128+c%64;
+  else if (c-0xd800u<0x800)
+    return false;
+  else if (c<0x10000)
+    *b++=224+c/4096, *b++=128+c/64%64, *b++=128+c%64;
+  else if (c<0x110000)
+    *b++=240+c/262144, *b++=128+c/4096%64, *b++=128+c/64%64, *b++=128+c%64;
+  else
+    return false;
+  *b++ = '\0';
+  return true;
+}
+
+
+
 void CharNode::Print(OutputStream& out)
 {
-  if (0 < m_char && m_char <= 126)
+  if (0 < m_char && m_char <= 126) {
      out << (char) m_char;
-  else if (127 < m_char && m_char <= 255){
+  } else {
+     char buf[5];
+     bool b = CodepointToUTF8(m_char, buf);
+     out << buf;
+  }   
+    //if (127 < m_char && m_char <= 255){
      //char buf[10];
      //sprintf(buf, "%d", m_char);
      //out <<  "&#" << buf << ";";
-     out << (char) m_char;
-  } else {
-  }
+     //out << (char) m_char;
+  //} else {
+  //}
 }
 @}
 
