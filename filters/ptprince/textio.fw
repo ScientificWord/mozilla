@@ -437,39 +437,22 @@ bool Latin_1_in::bEOS()
 TeXChar Latin_1_in::Get()
 {
    ASSERT(!bEOS());
-   Byte b = m_pInputByteStream -> Get();
+   TeXChar c = m_pInputByteStream -> Get();
    // We'll ignore 0D characters
-   while (b == 0x0d){
-     b = m_pInputByteStream -> Get();
+   while (c == 0x0d){
+     c = m_pInputByteStream -> Get();
    }
-       
-   if (false) { // utf-8
-     if (b >= 0xF0) { // 4-byte
-       Byte b2 = m_pInputByteStream -> Get();
-       Byte b3 = m_pInputByteStream -> Get();
-       Byte b4 = m_pInputByteStream -> Get();
-       unsigned int x = b;
-       x = (((((x << 8) | b2) << 8) | b3) << 8) | b4;
-       return x;
-     } else if (b >= 0xE0) { 
-       Byte b2 = m_pInputByteStream -> Get();
-       Byte b3 = m_pInputByteStream -> Get();
-       unsigned int x = b;
-       x = ((((x << 8) | b2) << 8) | b3) << 8;
-       return x;
-     } else  if (b >= 0xC0) {
-       Byte b2 = m_pInputByteStream -> Get();
-       unsigned int x = b;
-       x = ((x << 8) | b2) << 8;
-       return x;       
-     } else {
-       return b;
-     }
-    
-   } else {
+   if (c < 0x80)
+     return c;
 
+   switch (c) {
+   case 0x80 : c = 0x20AC; break;
+   case 0x82 : c = 0x201A; break;
+   case 0x83 : c = 0x0192; break;
+   
    }
-   return b;
+   return c;
+   
 }
 
 
@@ -1124,27 +1107,6 @@ here is another line
 
 @$@<UTF8 utility@>==@{@-
 
-// Code point to utf-8
-//  c is a code point
-//  b is a char*
-
-bool CodepointToUTF8(TeXChar c, char* b) {
-  if (c<0x80)
-    *b++=c;
-  else if (c<0x800)
-    *b++=192+c/64, *b++=128+c%64;
-  else if (c-0xd800u<0x800)
-    return false;
-  else if (c<0x10000)
-    *b++=224+c/4096, *b++=128+c/64%64, *b++=128+c%64;
-  else if (c<0x110000)
-    *b++=240+c/262144, *b++=128+c/4096%64, *b++=128+c/64%64, *b++=128+c%64;
-  else
-    return false;
-  return true;
-}
-
-
 
 // utf-8 to code point
 
@@ -1176,10 +1138,28 @@ int codepoint(const std::string &u)
     return -1;
 }
 
-//TeXChar GetCodePoint(InputByteStream& ibs)
-//{
-//  
-//}
+TeXChar GetCodePoint(InputByteStream& ibs)
+{
+    Byte b = ibs.Get();
+    if (b < 0x80)
+      return b;
+    std::string s;
+    s += (char) b;
+    if ((b & 0xD0) == 0xC0){
+      b = ibs.Get();
+      s += (char) b;
+      return codepoint(s);
+    }  
+    return 0;
+}
+
+   // Use like this:
+   // TeXChar c = GetCodePoint(*m_pInputByteStream);
+   // // We'll ignore 0D characters
+   // while (c == 0x0d){
+   //  c = GetCodePoint(*m_pInputByteStream);
+   // }
+
 @}
 
 @o@<textio.t.cpp@>==@{@-
