@@ -63,6 +63,7 @@
 #include "msiMunderover.h"
 #include "msiEditingAtoms.h"
 #include "msiNameSpaceUtils.h"
+#include "../../libeditor/html/nsHTMLEditUtils.h"
 
 static PRBool initalized = PR_FALSE;
 
@@ -2898,4 +2899,45 @@ nsresult msiUtils::Refresh(nsIEditor * editor)
   if (nodeType == nsIDOMNode::TEXT_NODE)
     startNode->GetParentNode(getter_AddRefs(startNode));
   editor->MarkNodeDirty(startNode);
- }
+}
+
+
+// preliminary implementations
+PRBool atStartOfNode( nsIDOMNode * node, PRInt32 & offset) {
+  return offset == 0;
+}
+
+PRBool atEndOfNode( nsIDOMNode * node, PRInt32 & offset) {
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
+  PRInt32 length = msiGetNodeLength(node);
+  return offset == length;
+}
+
+nsresult msiUtils::CanonicalizeMathSelection(nsIEditor * editor)
+{
+  nsresult res = NS_OK;
+  nsCOMPtr<nsISelection> sel;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsCOMPtr<nsIDOMNode> startNode;
+  nsCOMPtr<nsIDOMNode> endNode;
+  PRInt32 startOffset, endOffset;
+  PRInt32 offset;
+  nsEditor* ed = static_cast<nsEditor*>(editor);
+
+  ed->GetSelection(getter_AddRefs(sel));
+  res = ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset);
+  res = ed->GetEndNodeAndOffset(sel, getter_AddRefs(endNode), &endOffset);
+  while (nsHTMLEditUtils::IsMath(startNode) && atStartOfNode(startNode, startOffset)) {
+    res = ed->GetNodeLocation(startNode, &parentNode, &offset);
+    startNode = parentNode;
+    startOffset = offset;
+  }
+  while (nsHTMLEditUtils::IsMath(endNode) && atEndOfNode(endNode, endOffset)) {
+    res = ed->GetNodeLocation(endNode, &parentNode, &offset);
+    endNode = parentNode;
+    endOffset = offset + 1;
+  }
+  sel->Collapse(startNode, startOffset);
+  sel->Extend(endNode, endOffset);
+  return res;
+}

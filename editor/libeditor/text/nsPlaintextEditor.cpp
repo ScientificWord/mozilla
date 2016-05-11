@@ -84,6 +84,7 @@
 #include "nsIClipboard.h"
 #include "nsITransferable.h"
 #include "nsCopySupport.h"
+#include "msiUtils.h"
 
 void DumpSelection( nsISelection * sel);
 // prototype for rules creation shortcut
@@ -1252,6 +1253,7 @@ NS_IMETHODIMP nsPlaintextEditor::Copy()
 
   // ps should be guaranteed by FireClipboardEvent not failing
   nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
+  msiUtils::CanonicalizeMathSelection(this);
   return ps->DoCopy();
 }
 
