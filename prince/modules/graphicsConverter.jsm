@@ -864,8 +864,9 @@ var graphicsConverter = {
   
   //Note: documentDir should be an nsILocalFile
   ensureTypesetGraphicForElement: function(objElement, documentDir, aWindow, callbackObject) {
+    var attrValStr;
     dump("In graphicsConverter.ensureTypesetGraphicForElement, 1\n");
-    if (objElement.getAttribute("msigraph") == "true")
+    if (objElement.getAttribute("msigraph") === "true")
       return false;
 
     var gfxFileStr = objElement.getAttribute("copiedSrcUrl");
@@ -891,12 +892,12 @@ var graphicsConverter = {
       theUnits = "in";
     var theWidth =  objElement.getAttribute('ltx_width') || objElement.getAttribute("imageWidth") || objElement.getAttribute("width") || objElement.getAttribute("naturalWidth");
     var theHeight =  objElement.getAttribute('ltx_height') || objElement.getAttribute("imageHeight") || objElement.getAttribute("height") || objElement.getAttribute("naturalHeight");
-    if (!theWidth || theWidth == 0 || isNaN(theWidth) || !theHeight || theHeight == 0 || isNaN(theHeight)) {
+    if (!theWidth || theWidth === 0 || isNaN(theWidth) || !theHeight || theHeight === 0 || isNaN(theHeight)) {
       var pixWidth, pixHeight;
       try {
         if (!theWidth) {
           pixWidth = objElement.getAttribute('ltx_width');
-          var attrValStr = String(this.handler.getValueOf(pixWidth, "px"));
+          attrValStr = String(this.handler.getValueOf(pixWidth, "px"));
           objElement.setAttribute("imageWidth", attrValStr);
           objElement.setAttribute("naturalWidth", attrValStr);
         }
@@ -940,32 +941,21 @@ var graphicsConverter = {
   },
 
   ensureTypesetGraphicsForDocument: function(aDocument, aWindow) {
-    //dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 1\n");
     var docURI = msiURIFromString(aDocument.documentURI);
     var filePath = msiPathFromFileURL(docURI);
     var documentDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    //    dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 2\n  with documentURI=[" + aDocument.documentURI + "]\n");
     documentDir.initWithPath(filePath);
-    //dump("In graphicsConverter.ensureTypesetGraphicsForDocument, 3\n");
     documentDir = documentDir.parent;
 
     var objList = aDocument.getElementsByTagName("object");
     var imgList = aDocument.getElementsByTagName("img");
-   //  var multiCallbackHandler = new graphicsMultipleTimerHandler();
-   //  var timerHandler;
-   //  var bChanged = false;
 
     for (var ii = 0; ii < objList.length; ++ii) {
-      // timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
-      // bChanged = 
-      this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null) || bChanged;
+      this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null);
     }
     for (ii = 0; ii < imgList.length; ++ii) {
-      // timerHandler = multiCallbackHandler.addNewTimerHandler(60000); //set time limit of 60 seconds for conversion to finish?
-      // bChanged = 
-      this.ensureTypesetGraphicForElement(imgList[ii], documentDir, aWindow, null) || bChanged;
+      this.ensureTypesetGraphicForElement(imgList[ii], documentDir, aWindow, null);
     }
-//    return (bChanged ? multiCallbackHandler : null);
   }
 };
 
