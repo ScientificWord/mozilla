@@ -350,18 +350,16 @@ nsresult msiUtils::CreateMathMLElement(nsIEditor* editor, nsIAtom* type,
   NS_ASSERTION(domDoc, "Editor GetDocument return Null DOMDocument!");
   nsAutoString name;
   type->ToString(name);
-  nsString kXMLNS = NS_LITERAL_STRING("xmlns");
+  NS_NAMED_LITERAL_STRING(xmlns,"xmlns");
   if (domDoc && !name.IsEmpty())
   {
-    nsAutoString mmlnsURI;
-    PRBool hasNSAttribute;
+    nsAutoString xmlnsURI, mmlnsURI;
     msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_MathML, mmlnsURI);
+    msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_XMLNS, xmlnsURI);
     res = domDoc->CreateElementNS(mmlnsURI, name, getter_AddRefs(mmlElement));
-    // if (mmlElement && name.EqualsLiteral("math")) {
-    //   res = mmlElement->HasAttribute(kXMLNS, &hasNSAttribute);
-    //   if (!(hasNSAttribute)) {
-    //     mmlElement->SetAttribute(kXMLNS, mmlnsURI);
-    //   }
+    if (mmlElement && name.EqualsLiteral("math")) {
+      mmlElement->SetAttributeNS(xmlnsURI, xmlns, mmlnsURI);
+    }
   }
   return res;
 }
@@ -376,15 +374,10 @@ nsresult msiUtils::CreateMathElement(nsIEditor * editor,
   res = CreateMathMLElement(editor, msiEditingAtoms::math, mathElement);
   if (NS_SUCCEEDED(res) && mathElement)
   {
-    nsAutoString xmlnsURI, mmlnsURI;
     PRBool nestInMrow = MROW_PURGE_NONE == GetMrowPurgeMode() ? PR_TRUE : PR_FALSE;
-    msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_MathML, mmlnsURI);
-    msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_XMLNS, xmlnsURI);
-    nsAutoString xmlns, display, block;
-    xmlns = NS_LITERAL_STRING("xmlns");
+    nsAutoString display, block;
     msiEditingAtoms::display->ToString(display);
     msiEditingAtoms::block->ToString(block);
-    mathElement->SetAttributeNS(xmlnsURI, xmlns, mmlnsURI);
     if (isDisplay)
       mathElement->SetAttribute(display, block);
     nsCOMPtr<nsIDOMElement> inputbox;
