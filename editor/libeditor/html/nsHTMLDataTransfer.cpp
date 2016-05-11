@@ -509,7 +509,9 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                 (nsIDOMNode **)address_of(targetNode),
                                 &targetOffset, &doContinue);
 
+#ifdef DEBUG
   printf("Out of DoContentFilterCallback\n");
+#endif  
   NS_ENSURE_SUCCESS(res, res);
   if (!doContinue)
     return NS_OK;
@@ -993,6 +995,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                 offsetOfNewNode,
                 bDidInsert,
                 getter_AddRefs(lastInsertNode));
+              offsetOfNewNode++;
             }
           }
           else
@@ -4209,7 +4212,8 @@ void nsHTMLEditor::FixMathematics( nsIDOMNode * nodelistNode, PRBool fLeftOnly, 
       // count the children of element. If there are too few, delete element
       nodelistNode->GetChildNodes(getter_AddRefs(pNodeList));
       pNodeList->GetLength(&length);
-      if ((length < 2)||((length==2)&&(tagName.EqualsLiteral("msubsup"))))
+      if ((length < 2)
+          ||((length==2)&&(tagName.EqualsLiteral("msubsup"))))
         RemoveNode(nodelistNode);
 
     }
