@@ -182,12 +182,12 @@ D<uID3.2.4>prefix,55,U00044
 
 ;;long arrows as stretched versions of their shorter counterparts
 &larr;<uID3.12.17>infix,25,U02190
-&lArr;<uID3.12.18>infix,25,U021D0
+&xlArr;<uID3.12.18>infix,25,U027f8
 &rarr;<uID3.12.19>infix,25,U027F6
 &#x27F6;<uID3.12.19>infix,25,U027F6
-&rArr;<uID3.12.20>infix,25,U021D2
+&xrArr;<uID3.12.20>infix,25,U027f9
 &harr;<uID3.12.21>infix,25,U02194
-&hArr;<uID3.12.22>infix,25,U021D4
+&xhArr;<uID3.12.22>infix,25,U027fa
 &map;<uID3.12.23>infix,25,U021A6
 
 ;; Note that a second set of productions for long arrows is in DEPOPS section
@@ -517,7 +517,7 @@ D<uID3.2.4>prefix,55,U00044
 ;;\vartriangle<uID3.14.112>infix,26,U0E015
 &utri;<uID3.14.112>infix,26,U025B5
 &xrArr;<uID3.14.113>infix,18,U027F9
-;\impliedby<uID3.14.114>infix,18,U021D0
+;\impliedby<uID3.14.114>infix,18,U027F8
 &xlArr;<uID3.14.114>infix,18,U027F8
 &xhArr;<uID3.14.115>infix,18,U027FA
 
