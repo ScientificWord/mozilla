@@ -4809,9 +4809,10 @@
 \def\insert@enc#1{\msitag{ enc="#1"}}
 
 
-\def\index{\attrib@text\@index}
+\def\index{\begingroup\attrib@text\@index}
 
 \def\@index#1{%
+  \endgroup
   \@inspecfalse
   \@idxlev=0
   \gdef\@idxentA{}%
