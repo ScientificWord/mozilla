@@ -964,8 +964,8 @@ unknown_op<uID3.5.7>infix,25
 &daleth;<uID3.17.51>,U02138
 ;&plankv;<uID3.17.52>,U0210F
 &#x210F;<uID3.17.52>,U0210F
-&#x22F0;<uID3.17.53>
-&#x22F1;<uID3.17.54>
+&#x22F0;<uID3.17.53>,U022F0
+&#x22F1;<uID3.17.54>,U022F1
 \Finv<uID3.17.55>0x2132
 \Game<uID3.17.56>0xe049
 ;&kopf;<uID3.17.57>,U1D55C
