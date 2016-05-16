@@ -143,8 +143,8 @@
   <m nm="DH" fm="0"><data>&#xd0;</data><context/><info>0,0</info></m>
   <m nm="dh" fm="0"><data>&#xf0;</data><context/><info>0,0</info></m>
   <m nm="dh" fm="0"><data>&eth;</data><context/><info>0,0</info></m>
-  <m nm="diagdown"  tp="sc"><data><![CDATA[insertMathSymbol(]]>&#x27cd;</data></m>
-  <m nm="diagup"    tp="sc"><data><![CDATA[insertMathSymbol(]]>&#x27cb;</data></m>
+  <m nm="diagdown"  fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x2216;<![CDATA[");]]></data></m>
+  <m nm="diagup"    fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x2215;<![CDATA[");]]></data></m>
   <m nm="diamond"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&diam;<![CDATA[");]]></data></m>
   <m nm="Diamond" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x25c7;<![CDATA[");]]></data></m>
   <m nm="diamondsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&diams;<![CDATA[");]]></data></m>
