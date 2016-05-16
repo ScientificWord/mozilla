@@ -165,6 +165,19 @@ function onsaveMetaData(doc) {
   var dt = new Date();
   var datetime = dt.toString();
   node.setAttribute("lastrevised", datetime);
+  // Also set product and version being used to save this document
+  var product = "Scientific WorkPlace";
+#ifdef PROD_SWP
+  product = "Scientific WorkPlace";
+#endif
+#ifdef PROD_SW
+  product = "Scientific Word";
+#endif
+#ifdef PROD_SNB
+  product = "Scientific Notebook";
+#endif
+  node.setAttribute("product", product);
+  node.setAttribute("version", navigator.productSub);
 }
 
 function updateMetaData(doc, updateObject) {
