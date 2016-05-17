@@ -840,4 +840,5 @@ classic.jar:
   skin/classic/aboutDialog.css      (aboutDialog.css)
   skin/classic/licenseDialog.css      (licenseDialog.css)
   skin/classic/activate.css     (activate.css)
-  skin/classic/licensestatus.css	    (licensestatus.css)
+  skin/classic/licensestatus.css      (licensestatus.css)
+  skin/classic/ace.css	             (ace.css)
