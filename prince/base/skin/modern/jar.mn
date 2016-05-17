@@ -27,6 +27,7 @@ modern.jar:
   skin/modern/licenseDialog.css         (licenseDialog.css)
   skin/modern/activate.css              (activate.css)
   skin/modern/licensestatus.css         (licensestatus.css)
+  skin/modern/ace.css                   (ace.css)
   skin/modern/icons/background.png      (icons/background.png)
   skin/modern/icons/background-sm.png   (icons/background-sm.png)
   skin/modern/icons/copy.png            (icons/copy.png)

@@ -229,6 +229,8 @@ prince.jar:
 *  content/titleproperties.js        (dialogs/titleproperties.js)
 * content/structureproperties.xul    (dialogs/structureProperties.xul)
   content/structureproperties.js     (dialogs/structureproperties.js)
+  content/viewTeXSource.js           (dialogs/viewTeXSource.js)
+*  content/viewTeXSource.xul         (dialogs/viewTeXSource.xul)
   content/wordcount.xul              (dialogs/wordcount.xul)
   content/bindings/sidebar.css       (bindings/sidebar.css)
   content/bindings/sidebar.xml       (bindings/sidebar.xml)
