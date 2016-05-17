@@ -11032,7 +11032,7 @@ var msiShowTeXFileCommand =
         if (match)
         {
           var resurl = match[1]+"/tex/main.tex";
-          openDialog("chrome://global/content/viewSource.xul",
+          openDialog("chrome://prince/content/viewTeXSource.xul",
                  "_blank",
                  "all,dialog=no",
                  resurl, 'charset=UTF-8', null);
