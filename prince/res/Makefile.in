@@ -38,7 +38,7 @@ ifdef MOZ_MSI_TEX
 endif
 	$(INSTALL)  $(CM2_RESOURCES) 	$(FINAL_TARGET)/res/cm2
 	$(INSTALL)  $(ACE_RESOURCES) 	$(FINAL_TARGET)/res/ace
-	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css
+	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css/src
 				  
 
 
