@@ -17,7 +17,7 @@ CONSTANTS1_RESOURCES := $(wildcard $(srcdir)/fragments/Constants1/*.frg)
 CONSTANTS2_RESOURCES := $(wildcard $(srcdir)/fragments/Constants2/*.frg)
 CONSTANTS3_RESOURCES := $(wildcard $(srcdir)/fragments/Constants3/*.frg)
 CM2_RESOURCES := $(wildcard $(srcdir)/cm2/*)
-ACE_RESOURCES := $(wildcard $(srcdir)/ace/*)
+ACE_RESOURCES := $(wildcard $(srcdir)/ace/src/*)
 
 
 libs::	$(CSS_RESOURCES) $(XBL_RESOURCES) $(CM2_RESOURCES) $(ACE_RESOURCES)
