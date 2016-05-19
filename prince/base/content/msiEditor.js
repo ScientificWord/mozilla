@@ -1427,15 +1427,36 @@ function isShell(filename) {
   return foundit;
 }
 
+function defaultDocDir() {
+  var dirkey;
+  var docdir;
+  var defdocdirstring;
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  if (getOS(window) == "win")
+    dirkey = "Pers";
+  else
+  if (getOS(window) =="osx")
+    dirkey = "UsrDocs";
+  else
+    dirkey = "Home";
+  // if we can't find the one in the prefs, get the default
+  docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
+  if (!docdir.exists()) docdir.create(1,0755);
+  defdocdirstring = GetStringPref("swp.prefDocumentDir");
+  if (defdocdirstring.length == 0) defdocdirstring = GetString("DefaultDocDir");
+  docdir.append(defdocdirstring);
+  if (!docdir.exists()) docdir.create(1,0755);
+  return docdir;
+}
+
+
 function copyAndLoadWelcomeDoc() {
   var welcomeLeaf;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var sourceFile = dsprops.get("resource:app", Components.interfaces.nsIFile);
   var newdoc;
   var doc;
-  var dirkey;
   var docdir;
-  var defdocdirstring;
 
   sourceFile.append("samples");
 #ifdef PROD_SWP
@@ -1449,20 +1470,7 @@ function copyAndLoadWelcomeDoc() {
 #endif
   sourceFile.append(welcomeLeaf);
   if (sourceFile.exists()) {
-    if (getOS(window) == "win")
-      dirkey = "Pers";
-    else
-    if (getOS(window) =="osx")
-      dirkey = "UsrDocs";
-    else
-      dirkey = "Home";
-    // if we can't find the one in the prefs, get the default
-    docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
-    if (!docdir.exists()) docdir.create(1,0755);
-    defdocdirstring = GetStringPref("swp.prefDocumentDir");
-    if (defdocdirstring.length == 0) defdocdirstring = GetString("DefaultDocDir");
-    docdir.append(defdocdirstring);
-    if (!docdir.exists()) docdir.create(1,0755);
+    docdir = defaultDocDir();
     // Now we have docdir, so we can copy sourceFile
     doc = docdir.clone();
     doc.append(welcomeLeaf);
@@ -2353,26 +2361,6 @@ function msiEditorNewPlaintext() {
   }
 }
 
-//// Check for changes to document and allow saving before closing
-//// This is hooked up to the OS's window close widget (e.g., "X" for Windows)
-//function msiEditorCanClose(editorElement)
-//{
-//  // Returns FALSE only if user cancels save action
-//  if (!editorElement)
-//    editorElement = GetCurrentEditorElement();
-//
-//  // "true" means allow "Don't Save" button
-//  var canClose = msiCheckAndSaveDocument(editorElement, "cmd_close", true);
-//
-//  // This is our only hook into closing via the "X" in the caption
-//  //   or "Quit" (or other paths?)
-//  //   so we must shift association to another
-//  //   editor or close any non-modal windows now
-//  if (canClose && "InsertCharWindow" in window && window.InsertCharWindow)
-//    SwitchInsertCharToAnotherEditorOrClose();
-//
-//  return canClose;
-//}
 
 // --------------------------- View menu ---------------------------
 
