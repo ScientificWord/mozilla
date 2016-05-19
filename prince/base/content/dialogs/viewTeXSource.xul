@@ -23,10 +23,9 @@
         screenX="10" screenY="10"
         persist="screenX screenY width height sizemode">
   <script type="application/javascript" src="chrome://prince/content/viewTeXSource.js"/>
-  <script type="application/javascript" src="resource://app/res/ace/src/ace.js"/>
-  <script type="application/javascript" src="resource://app/res/ace/src/mode-latex.js"/>
-  <script type="application/javascript" src="resource://app/res/ace/src/theme-dawn.js"/>
-  <script type="application/javascript" src="resource://app/res/ace/src/ext_keybinding_menu.js"/>
+  <script type="application/javascript" src="resource://app/res/ace/ace.js"/>
+  <script type="application/javascript" src="resource://app/res/ace/mode-latex.js"/>
+  <script type="application/javascript" src="resource://app/res/ace/theme-dawn.js"/>
   <script type="application/javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
 
   <html:div id="texeditor" flex="1" >This is some text</html:div>
