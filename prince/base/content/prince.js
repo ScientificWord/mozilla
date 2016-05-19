@@ -373,41 +373,7 @@ function openTeX()
     filename = file.leafName.substring(0,file.leafName.lastIndexOf("."));
     infile =  "\"" + file.path + "\"";
 // Get the directory for the result from the preferences, or default to the SWPDocs directory
-    try
-    {
-      prefs = GetPrefs();
-      prefdir = prefs.getCharPref("swp.prefDocumentDir");
-      if (prefdir && prefdir.length > 0) {
-        docdirname = prefdir;
-        // msidump("swp.prefDocumentDir is ", prefdir + "\n");
-        docdir = Components.classes["@mozilla.org/file/local;1"].
-            createInstance(Components.interfaces.nsILocalFile);
-        docdir.initWithPath(docdirname);
-        if (!valueOf(docdir.exists()))
-          docdir.create(1, 0755);
-      }
-    }
-    catch (e)
-    {
-      if (getOS(window) == "win")
-        dirkey = "Pers";
-      else
-      if (getOS(window) =="osx")
-        dirkey = "UsrDocs";
-      else
-        dirkey = "Home";
-      // if we can't find the one in the prefs, get the default
-      docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
-      if (!docdir.exists()) docdir.create(1,0755);
-      if (!prefdir || prefdir.length === 0) {
-        prefdir = GetString("DefaultDocDir");
-      }
-      defdocdirstring = prefdir;
-      docdir.append(defdocdirstring);
-      if (!docdir.exists()) docdir.create(1,0755);
-      msidump("default document directory is "+docdir.path+"\n");
-    }
-
+    docdir = defaultDocDir();
     var outdir = docdir.clone();
     outdir.append(filename + "_work");
     var outfile = outdir.clone();
@@ -432,7 +398,7 @@ function openTeX()
     var mmldir = dsprops.get("resource:app", Components.interfaces.nsIFile);
     var exefile=dsprops.get("resource:app", Components.interfaces.nsIFile);
     var os = getOS(window);
-    if (os == "win") {
+    if (os === "win") {
       exefile.append("pretex.exe");
     } else {
       exefile.append("pretex");
