@@ -9747,7 +9747,7 @@ var EditSession = function(text, mode) {
             var wrapRow = this.$wrapData[foldStartRow];
             if (wrapRow) {
                 var screenRowOffset = 0;
-                while (textLine.length >= wrapRow[screenRowOffset]) {
+                while (wrapRow[screenRowOffset] && textLine.length >= wrapRow[screenRowOffset]) {
                     screenRow ++;
                     screenRowOffset++;
                 }
