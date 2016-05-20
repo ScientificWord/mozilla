@@ -2,7 +2,7 @@
 	  <key id="MSIinlineMathKey" modifiers="accel" key="m" command="cmd_MSImathtext"/>
 	  <key id="MSIinlineTextKey" modifiers="accel" key="t" command="cmd_MSItextmath"/>
 	  <key id="MSIdisplayKey"    modifiers="accel" key="d" command="cmd_MSIdisplayMathCmd"/>
-	  <key id="MSIfractionKey"   modifiers="shift any accel" key="/" command="cmd_MSIfractionCmd"/>
+	  <key id="MSIfractionKey"   modifiers="shift any accel" key="/" oncommand="msiGoDoCommand('cmd_MSIfractionCmd')"/>
   	  <key id="MSIIntegralKey"   modifiers="accel" key="i" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>
       <key id="MSIIntegralKey2"  modifiers="accel" key="8" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>
       <key id="MSISummationKey"  modifiers="accel" key="7" oncommand="insertOperator('&#x03A3;', 'auto', 'auto');"/>
