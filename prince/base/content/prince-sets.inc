@@ -26,7 +26,6 @@
 
 <keyset id="editorKeys">
   <keyset id="tasksKeys"/>
-  <key id="showHideSidebar"/>
   <key id="key_newDocument" key="&filenew.keybinding;" observes="cmd_newDocument"  modifiers="accel"/>
   <key id="openeditorkb"   key="&fileopen.keybinding;"  observes="cmd_open"  modifiers="accel"/>
   <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
