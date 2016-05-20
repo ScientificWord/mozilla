@@ -527,9 +527,9 @@
     <command id="cmd_documentInfo" oncommand="msiGoDoCommand('cmd_documentInfo')"/>
     <command id="cmd_documentStyle" oncommand="msiGoDoCommand('cmd_documentStyle')"/>
     <command id="cmd_quit"        oncommand="msiGoDoCommand('cmd_quit')"/>
-    <command id="cmd_textZoomReduce" oncommand="msiDoCommand('cmd_zoomout')"/>
-    <command id="cmd_textZoomEnlarge" oncommand="msiDoCommand('cmd_zoomin')"/>
-    <command id="cmd_textZoomReset" oncommand="msiDoCommand('cmd_zoomreset')"/>
+    <command id="cmd_textZoomReduce" oncommand="msiGoDoCommand('cmd_zoomout')"/>
+    <command id="cmd_textZoomEnlarge" oncommand="msiGoDoCommand('cmd_zoomin')"/>
+    <command id="cmd_textZoomReset" oncommand="msiGoDoCommand('cmd_zoomreset')"/>
   </commandset>
 
   <commandset id="composerMenuItems"
