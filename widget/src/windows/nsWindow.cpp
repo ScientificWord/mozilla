@@ -3269,7 +3269,8 @@ BOOL nsWindow::OnKeyDown(UINT aVirtualKeyCode, UINT aScanCode, LPARAM aKeyData)
         // This is required to make sure that all shortcut keys (e.g. Ctrl+c, Ctrl+1, Alt+f)
         // work the same way no matter what keyboard layout you are using.
 
-        if ((NS_VK_0 <= DOMKeyCode && DOMKeyCode <= NS_VK_9) ||
+        if ( 
+          // (NS_VK_0 <= DOMKeyCode && DOMKeyCode <= NS_VK_9) ||
             (NS_VK_A <= DOMKeyCode && DOMKeyCode <= NS_VK_Z))
         {
           uniChars [0] = DOMKeyCode;
