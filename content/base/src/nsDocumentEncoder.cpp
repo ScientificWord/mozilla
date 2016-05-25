@@ -1112,7 +1112,7 @@ nsHTMLCopyEncoder::SetSelection(nsISelection* aSelection)
   nsCOMPtr<nsIDOMRange> range;
   nsCOMPtr<nsIDOMNode> commonParent;
   PRInt32 count = 0;
-
+  PRBool isMathNode = PR_FALSE;
   nsresult rv = aSelection->GetRangeCount(&count);
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -1200,14 +1200,15 @@ nsHTMLCopyEncoder::SetSelection(nsISelection* aSelection)
     NS_ENSURE_TRUE(myRange, NS_ERROR_FAILURE);
 
     // adjust range to include any ancestors who's children are entirely selected
-    // We don't want to do this in math BBM: 2016-05-05
+    // We don't want to do this in math BBM: 2016-05-0cc5
 
     nsCOMPtr<nsIDOMElement> element = do_QueryInterface(commonParent);
-    nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
-    nsString tagNamespace;
-    element->GetNamespaceURI(tagNamespace);
-    PRBool isMathNode = tagNamespace.Equals(strMathMLNs);
-
+    if (element) {
+      nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
+      nsString tagNamespace;
+      element->GetNamespaceURI(tagNamespace);
+      isMathNode = tagNamespace.Equals(strMathMLNs);
+    }
 
     if (!isMathNode) {
       rv = PromoteRange(myRange);
