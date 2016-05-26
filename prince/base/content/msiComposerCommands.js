@@ -11015,6 +11015,7 @@ var msiShowTeXFileCommand =
   doCommand: function(aCommand)
   {
     var result;
+    var os = getOS(window);
     try
     {
       result = true;
@@ -11032,10 +11033,20 @@ var msiShowTeXFileCommand =
         if (match)
         {
           var resurl = match[1]+"/tex/main.tex";
-          openDialog("chrome://prince/content/viewTeXSource.xul",
-                 "_blank",
-                 "status,dependent,minimizable,resizable,scrollbars=1,dialog=1,close=1,",
-                 resurl, 'charset=UTF-8', null);
+          if (os == "win")
+          {
+ -          openDialog("chrome://global/content/viewSource.xul",
+                        "_blank",
+                        "status,dependent,minimizable,resizable,scrollbars=1,dialog=1,close=1,",
+                        resurl, 'charset=UTF-8', null);
+          }
+          else
+          {
+            openDialog("chrome://prince/content/viewTeXSource.xul",
+                         "_blank",
+                         "status,dependent,minimizable,resizable,scrollbars=1,dialog=1,close=1,",
+                         resurl, 'charset=UTF-8', null);
+          }  
         }
       }
     }
