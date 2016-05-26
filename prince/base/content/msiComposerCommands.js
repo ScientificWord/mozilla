@@ -11034,7 +11034,7 @@ var msiShowTeXFileCommand =
           var resurl = match[1]+"/tex/main.tex";
           openDialog("chrome://prince/content/viewTeXSource.xul",
                  "_blank",
-                 "all,dialog=no",
+                 "status,dependent,minimizable,resizable,scrollbars=1,dialog=1,close=1,",
                  resurl, 'charset=UTF-8', null);
         }
       }
