@@ -10,5 +10,4 @@ function onLoadViewSource()
   editor.setValue(getTextFileAsString(window.arguments[0]), -1);
   editor.getSession().setUseWrapMode("free");
   editor.setReadOnly(true);
- }
-
+}
