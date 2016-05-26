@@ -1,32 +1,31 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0"?> 
 
 <?xml-stylesheet href="chrome://global/content/viewSource.css" type="text/css"?> 
 <?xml-stylesheet href="chrome://prince/skin/ace.css" type="text/css"?> 
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
-
-<!DOCTYPE window [
-<!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd" >
-%brandDTD;
+<!DOCTYPE dialog [
 <!ENTITY % sourceDTD SYSTEM "chrome://global/locale/viewSource.dtd" >
-%sourceDTD;
+  %sourceDTD;
 ]>
-
-<window id="viewTeXSource"
+<!-- JLF to verify if this is used-->
+<dialog id="viewTeXSource"
         title="TeX source"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         xmlns:html="http://www.w3.org/1999/xhtml"
-        onload="onLoadViewSource();"
         buttons="cancel"
         buttonlabelcancel="Cancel"
+        onload="onLoadViewSource();"
         width="640" height="480"
         screenX="10" screenY="10"
         persist="screenX screenY width height sizemode">
-  <script type="application/javascript" src="chrome://prince/content/viewTeXSource.js"/>
-  <script type="application/javascript" src="resource://app/res/ace/ace.js"/>
-  <script type="application/javascript" src="resource://app/res/ace/mode-latex.js"/>
-  <script type="application/javascript" src="resource://app/res/ace/theme-dawn.js"/>
-  <script type="application/javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+
 
   <html:div id="texeditor" flex="1" >This is some text</html:div>
-</window>
+  <script type="application/javascript" src="chrome://prince/content/viewTeXSource.js"/>
+  <script type="application/javascript" src="resource://app/res/ace/ace.js"/>
+  <script type="application/javascript" src="resource://app/res/ace/theme-dawn.js"/>
+  <script type="application/javascript" src="resource://app/res/ace/mode-latex.js"/>
+
+  <script type="application/javascript" src="chrome://prince/content/msiEditorUtilities.js"/>        
+</dialog>
