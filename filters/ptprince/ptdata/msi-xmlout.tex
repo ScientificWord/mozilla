@@ -643,8 +643,11 @@
 %   \MSILocalDef{#2}}
 
 
-
 %% Citations and cross refs
+
+{\catcode`\"=\active
+ \gdef"{\char`\&##x22;}}
+
 
 \def\attrib@text{%
   \catcode`\&=\active
@@ -654,6 +657,7 @@
   \catcode`\_=\other
   \catcode`\$=\other
   \catcode`\#=\other
+  \catcode`\"=\active
   \def\ {\char`\&nbsp;}%
 }
 
@@ -1883,25 +1887,26 @@
 \def\msi@simple@elmB#1{\msi@simple@elmA[#1]{#1}}
 
 
-\def\TeXButton{%
-  \begingroup
-  \ifmmode
-  \else
-  \catcode`\&=\active
-  \catcode`\<=\active
-  \catcode`\>=\active
-  \fi
-  \@TeXButton}
 
 \def\HTMLButton#1#2{\msitag{<htmlfield name="#1">#2</htmlfield>}}
 
 \def\CDATA#1{#1}
 
-\def\@TeXButton#1#2{%
+\def\TeXButton{%
+  \begingroup
+  \begingroup
+  \attrib@text
+  \@TeXButton}
+
+\def\@TeXButton#1{
+    \endgroup
+    \@@TeXButton{#1}}
+    
+\def\@@TeXButton#1#2{%
    \ifmmode
-     \msitag{\msipassthru{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}}
+     \msitag{\msipassthru\char`\{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{\char`\}"><![CDATA[#2]]></texb>}
    \else
-     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}%
+     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{"><![CDATA[#2]]></texb>}%
    \fi
    \endgroup}
 
