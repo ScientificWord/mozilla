@@ -1396,19 +1396,19 @@ nsWebShell::CanCopyImageContents(PRBool* aResult)
 NS_IMETHODIMP
 nsWebShell::CanPaste(PRBool* aResult)
 {
-  return IsCommandEnabled ( "cmd_paste", aResult );
+  return IsCommandEnabled ( "cmd_MSIpaste", aResult );
 }
 
 NS_IMETHODIMP
 nsWebShell::CutSelection(void)
 {
-  return DoCommand ( "cmd_cut" );
+  return DoCommand ( "cmd_MSIcut" );
 }
 
 NS_IMETHODIMP
 nsWebShell::CopySelection(void)
 {
-  return DoCommand ( "cmd_copy" );
+  return DoCommand ( "cmd_MSIMSIcopy" );
 }
 
 NS_IMETHODIMP
@@ -1432,13 +1432,13 @@ nsWebShell::CopyImageContents(void)
 NS_IMETHODIMP
 nsWebShell::Paste(void)
 {
-  return DoCommand ( "cmd_paste" );
+  return DoCommand ( "cmd_MSIpaste" );
 }
 
 NS_IMETHODIMP
 nsWebShell::SelectAll(void)
 {
-  return DoCommand ( "cmd_selectAll" );
+  return DoCommand ( "cmd_MSIselectAll" );
 }
 
 
