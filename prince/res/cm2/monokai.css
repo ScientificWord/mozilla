@@ -26,3 +26,5 @@
   text-decoration: underline;
   color: white !important;
 }
+
+.cm-s-monokai .activeline {background: #383833 !important;}

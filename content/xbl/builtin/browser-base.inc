@@ -6,9 +6,9 @@
       <handler event="keypress" keycode="VK_LEFT" command="cmd_charPrevious" />
       <handler event="keypress" keycode="VK_RIGHT" command="cmd_charNext" />
 
-      <handler event="keypress" key="x" command="cmd_cut" modifiers="accel"/>
-      <handler event="keypress" key="c" command="cmd_copy" modifiers="accel"/>
-      <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
-      <handler event="keypress" key="z" command="cmd_undo" modifiers="accel"/>
-      <handler event="keypress" key="z" command="cmd_redo" modifiers="accel,shift" />
-      <handler event="keypress" key="a" command="cmd_selectAll" modifiers="accel"/>
+      <handler event="keypress" key="x" command="cmd_MSIcut" modifiers="accel"/>
+      <handler event="keypress" key="c" command="cmd_MSIcopy" modifiers="accel"/>
+      <handler event="keypress" key="v" command="cmd_MSIpaste" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIundo" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIredo" modifiers="accel,shift" />
+      <handler event="keypress" key="a" command="cmd_MSIselectAll" modifiers="accel"/>
