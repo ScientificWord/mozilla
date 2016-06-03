@@ -49,15 +49,15 @@
 <popupset id="editorContentContextSet">
  <popup id="editorContentContext"   
    onpopupshowing="EditorFillContextMenu(event, this);"> 
-    <menuitem id="menu_undo_cm"   label="&undoCmd.label;" accesskey="&undo.accesskey;" command="cmd_undo"/>
-    <menuitem id="menu_redo_cm"   label="&redoCmd.label;" accesskey="&redo.accesskey;" command="cmd_redo"/>
+    <menuitem id="menu_undo_cm"   label="&undoCmd.label;" accesskey="&undo.accesskey;" command="cmd_MSIundo"/>
+    <menuitem id="menu_redo_cm"   label="&redoCmd.label;" accesskey="&redo.accesskey;" command="cmd_MSIredo"/>
     <menuseparator id="undoredo-separator"/>
     
-    <menuitem id="menu_cut_cm"    label="&cutCmd.label;"    accesskey="&cut.accesskey;" command="cmd_cut"/>
-    <menuitem id="menu_copy_cm"   label="&copyCmd.label;"   accesskey="&copy.accesskey;" command="cmd_copy"/>
-    <menuitem id="menu_paste_cm"  label="&pasteCmd.label;"  accesskey="&paste.accesskey;" command="cmd_paste"/>
+    <menuitem id="menu_cut_cm"    label="&cutCmd.label;"    accesskey="&cut.accesskey;" command="cmd_MSIcut"/>
+    <menuitem id="menu_copy_cm"   label="&copyCmd.label;"   accesskey="&copy.accesskey;" command="cmd_MSIcopy"/>
+    <menuitem id="menu_paste_cm"  label="&pasteCmd.label;"  accesskey="&paste.accesskey;" command="cmd_MSIpaste"/>
     <menuitem id="menu_pasteNoFormatting_cm" command="cmd_pasteNoFormatting"/>
-    <menuitem id="menu_delete_cm" label="&deleteCmd.label;" accesskey="&delete.accesskey;" command="cmd_delete"/>
+    <menuitem id="menu_delete_cm" label="&deleteCmd.label;" accesskey="&delete.accesskey;" command="cmd_MSIdelete"/>
     <menuitem id="menu_countWords_cm" label="&countWords.label;" accesskey="&countWords.accesskey;" command="cmd_countwords"/>
     <menuseparator id="edit-separator"/>
     <menuitem id="menu_selectAll_cm" label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>

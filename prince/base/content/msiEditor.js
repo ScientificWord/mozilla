@@ -4757,6 +4757,72 @@ function RebuildFromSource(aDoc, editorElement, aContext) {
   editorElement.focus();
 }
 
+function ChangeCallback()
+{
+
+}
+
+function ActivityCallback()
+{
+  msiGoUpdateCommand("cmd_MSIundo");
+  msiGoUpdateCommand("cmd_MSIredo");
+  msiGoUpdateCommand("cmd_MSIcopy");
+  msiGoUpdateCommand("cmd_MSIcut");
+  msiGoUpdateCommand("cmd_MSIpaste");
+  msiGoUpdateCommand("cmd_MSIselectAll");
+//  msiGoUpdateCommand("cmd_MSIpasteNoFormatting");
+  msiGoUpdateCommand("cmd_MSIdelete");
+}
+
+function KeyPressCallback(aEvent)
+{
+#ifdef XP_MACOSX
+  if (aEvent.metaKey &&
+      !aEvent.ctrlKey &&
+      !aEvent.altKey) {
+#else
+  if (!aEvent.metaKey &&
+      aEvent.ctrlKey &&
+      !aEvent.altKey) {
+#endif
+    switch (aEvent.which) {
+      case 102: // meta-f
+      case 114: // meta-r
+        aEvent.preventDefault();
+        break;
+      case 103:
+        aEvent.preventDefault();
+        break;
+      case 108: // meta-l
+        aEvent.preventDefault();
+
+        break;
+      case 99: // meta-c XXX Workaround for Copy horked in Bespin0.9+Gecko2
+      case 120: // meta-x XXX
+        {
+          aEvent.preventDefault();
+          var sourceIframe = document.getElementById("content-source");
+          var sourceEditor = sourceIframe.contentWindow.gEditor;
+          var selection = sourceEditor.getSelection();
+          var clipboardSvc = Components.classes["@mozilla.org/widget/clipboard;1"].
+                             getService(Components.interfaces.nsIClipboard);
+          var xferable = Components.classes["@mozilla.org/widget/transferable;1"].
+                         createInstance(Components.interfaces.nsITransferable);
+          xferable.addDataFlavor("text/unicode");
+          var s = Components.classes["@mozilla.org/supports-string;1"].
+                  createInstance(Components.interfaces.nsISupportsString);
+          s.data = selection;
+          xferable.setTransferData("text/unicode", s, selection.length * 2);
+          clipboardSvc.setData(xferable, null, Components.interfaces.nsIClipboard.kGlobalClipboard);
+        }
+        if (aEvent.which == 120)
+          sourceEditor.selectedText = "";
+        break;
+      default:
+        break;
+    }
+  }
+}
 //function escaped (source) {
 //  return source.replace(/>/g,'&gt;').replace(/</g, '&lt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
 //}
@@ -4789,11 +4855,6 @@ function msiSetEditMode(mode, editorElement) {
     // Get the entire document's source string
     MarkSelection(editor);
     var source = prettyprint(editor);
-    // const nsIDE = Components.interfaces.nsIDocumentEncoder;
-    // var encoder = Components.classes["@mozilla.org/layout/documentEncoder;1?type=" + mimeType]
-    //                .createInstance(nsIDE);
-    // var source = encoder.encodeToString();
-    // source = escaped(source);
     UnmarkSelection(editor);
     // replace the following with proper selection tracking
     var start = 0;
@@ -4815,7 +4876,7 @@ function msiSetEditMode(mode, editorElement) {
       tagManager.getTagsInClass('envtag', ',', false).split(','),
       tagManager.getTagsInClass('frontmtag', ',', false).split(','));
 
-    sourceIframe.contentWindow. /*wrappedJSObject.*/ installCodeMirror(onBrowserKeyDown,
+    sourceIframe.contentWindow./*wrappedJSObject.*/installCodeMirror(KeyPressCallback, ChangeCallback, ActivityCallback,
       theme,
       tagsArray,
       null);
@@ -10019,22 +10080,26 @@ var msiCommandUpdater = {
       if (bIsEnabled)
         return controller;
     } catch (e) {}
-    var controllerCount = window.controllers.getControllerCount();
-    for (var i = 0; i < controllerCount; ++i) {
-      var current = window.controllers.getControllerAt(i);
-      try {
-        if (current.supportsCommand(command) && current.isCommandEnabled(command))
-          return current;
-      } catch (e) {
-        var dumpingStr =
-          "Error in msiEditor.js, in msiCommandUpdater._getControllerForCommand, command is [" +
-          command + "], controller is [";
-        if (current != null)
-          dumpingStr += "non-null";
-        dumpingStr += "], error is [" + e + "].\n";
-        dump(dumpingStr);
+    try {
+      var controllerCount = window.controllers.getControllerCount();
+      for (var i = 0; i < controllerCount; ++i) {
+        var current = window.controllers.getControllerAt(i);
+        try {
+          if (current.supportsCommand(command) && current.isCommandEnabled(command))
+            return current;
+        } catch (e) {
+          var dumpingStr =
+            "Error in msiEditor.js, in msiCommandUpdater._getControllerForCommand, command is [" +
+            command + "], controller is [";
+          if (current != null)
+            dumpingStr += "non-null";
+          dumpingStr += "], error is [" + e + "].\n";
+          dump(dumpingStr);
+        }
       }
     }
+    catch(e) {
+    } 
     return controller || window.controllers.getControllerForCommand(command);
   },
 

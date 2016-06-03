@@ -40,12 +40,12 @@
       <handler event="keypress" key="w" modifiers="control" command="cmd_deleteWordBackward"/>
       <handler event="keypress" key="v" modifiers="control" command="cmd_scrollPageDown"/>
       <handler event="keypress" key="f" command="cmd_find" modifiers="accel"/>
-      <handler event="keypress" key="z" command="cmd_undo" modifiers="accel"/>
-      <handler event="keypress" key="z" command="cmd_redo" modifiers="accel,shift" />
-      <handler event="keypress" key="y" command="cmd_redo" modifiers="accel" />
-      <handler event="keypress" key="x" command="cmd_cut" modifiers="accel"/>
-      <handler event="keypress" key="c" command="cmd_copy" modifiers="accel"/>
-      <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIundo" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIredo" modifiers="accel,shift" />
+      <handler event="keypress" key="y" command="cmd_MSIredo" modifiers="accel" />
+      <handler event="keypress" key="x" command="cmd_MSIcut" modifiers="accel"/>
+      <handler event="keypress" key="c" command="cmd_MSIcopy" modifiers="accel"/>
+      <handler event="keypress" key="v" command="cmd_MSIpaste" modifiers="accel"/>
     </handlers>
   </binding>
 
@@ -95,12 +95,12 @@
       <handler event="keypress" key="w" modifiers="control" command="cmd_deleteWordBackward"/>
       <handler event="keypress" key="v" modifiers="control" command="cmd_scrollPageDown"/>
       <handler event="keypress" key="f" command="cmd_find" modifiers="accel"/>
-      <handler event="keypress" key="z" command="cmd_undo" modifiers="accel"/>
-      <handler event="keypress" key="z" command="cmd_redo" modifiers="accel,shift" />
-      <handler event="keypress" key="y" command="cmd_redo" modifiers="accel" />
-      <handler event="keypress" key="x" command="cmd_cut" modifiers="accel"/>
-      <handler event="keypress" key="c" command="cmd_copy" modifiers="accel"/>
-      <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIundo" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIredo" modifiers="accel,shift" />
+      <handler event="keypress" key="y" command="cmd_MSIredo" modifiers="accel" />
+      <handler event="keypress" key="x" command="cmd_MSIcut" modifiers="accel"/>
+      <handler event="keypress" key="c" command="cmd_MSIcopy" modifiers="accel"/>
+      <handler event="keypress" key="v" command="cmd_MSIpaste" modifiers="accel"/>
     </handlers>
   </binding>
 
@@ -183,12 +183,12 @@
       <handler event="keypress" key=" " modifiers="accel,control,alt" command="cmd_macrofragment"/>
       <handler event="keypress" key=" " modifiers="accel,control,alt,shift" command="cmd_macrofragment"/>
       <handler event="keypress" key="f" command="cmd_find" modifiers="accel"/>
-      <handler event="keypress" key="z" command="cmd_undo" modifiers="accel"/>
-      <handler event="keypress" key="z" command="cmd_redo" modifiers="accel,shift" />
-      <handler event="keypress" key="y" command="cmd_redo" modifiers="accel" />
-      <handler event="keypress" key="x" command="cmd_cut" modifiers="accel"/>
-      <handler event="keypress" key="c" command="cmd_copy" modifiers="accel"/>
-      <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIundo" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIredo" modifiers="accel,shift" />
+      <handler event="keypress" key="y" command="cmd_MSIredo" modifiers="accel" />
+      <handler event="keypress" key="x" command="cmd_MSIcut" modifiers="accel"/>
+      <handler event="keypress" key="c" command="cmd_MSIcopy" modifiers="accel"/>
+      <handler event="keypress" key="v" command="cmd_MSIpaste" modifiers="accel"/>
       <handler event="keypress" key="g" modifiers="accel"   command="cmd_oneshotGreek"/>
       <handler event="keypress" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
       <handler event="keypress" key="+" action="ZoomManager.enlarge();" modifiers="shift any accel"/>

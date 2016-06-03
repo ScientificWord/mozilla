@@ -7,13 +7,13 @@
   <binding id="inputFields">
     <handlers>
     <handler event="keypress" key="a" modifiers="accel"
-        command="cmd_selectAll"/>
+        command="cmd_MSIselectAll"/>
     <handler event="keypress" key="y" modifiers="accel"
-        command="cmd_redo"/>
-    <handler event="keypress" key="z" modifiers="accel,shift" command="cmd_redo"/>
-    <handler event="keypress" key="z" modifiers="accel" command="cmd_undo"/>
-    <handler event="keypress" keycode="v" modifiers="accel" command="cmd_paste" />
-    <handler event="keypress" keycode="c" modifiers="accel" command="cmd_copy" />
+        command="cmd_MSIredo"/>
+    <handler event="keypress" key="z" modifiers="accel,shift" command="cmd_MSIredo"/>
+    <handler event="keypress" key="z" modifiers="accel" command="cmd_MSIundo"/>
+    <handler event="keypress" keycode="v" modifiers="accel" command="cmd_MSIpaste" />
+    <handler event="keypress" keycode="c" modifiers="accel" command="cmd_MSIcopy" />
     </handlers>
   </binding>
 
@@ -69,14 +69,14 @@
 
   <binding id="editor">
     <handlers>
-      <handler event="keypress" key="z" modifiers="accel" command="cmd_undo"/>
-      <handler event="keypress" key="z" modifiers="accel,shift" command="cmd_redo"/>
-      <handler event="keypress" key="y" modifiers="accel"   command="cmd_redo"/>
-      <handler event="keypress" key="a" modifiers="alt" command="cmd_selectAll"/>
-      <handler event="keypress" keycode="VK_F20" command="cmd_cut" />
-      <handler event="keypress" keycode="VK_F16" command="cmd_copy" />
-      <handler event="keypress" keycode="VK_F18" command="cmd_paste" />
-      <handler event="keypress" keycode="VK_F14" command="cmd_undo" />
+      <handler event="keypress" key="z" modifiers="accel" command="cmd_MSIundo"/>
+      <handler event="keypress" key="z" modifiers="accel,shift" command="cmd_MSIredo"/>
+      <handler event="keypress" key="y" modifiers="accel"   command="cmd_MSIredo"/>
+      <handler event="keypress" key="a" modifiers="alt" command="cmd_MSIselectAll"/>
+      <handler event="keypress" keycode="VK_F20" command="cmd_MSIcut" />
+      <handler event="keypress" keycode="VK_F16" command="cmd_MSIcopy" />
+      <handler event="keypress" keycode="VK_F18" command="cmd_MSIpaste" />
+      <handler event="keypress" keycode="VK_F14" command="cmd_MSIundo" />
     </handlers>
   </binding>
 </bindings>
