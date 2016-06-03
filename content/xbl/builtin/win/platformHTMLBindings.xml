@@ -20,13 +20,13 @@
       <handler event="keypress" keycode="VK_RIGHT" modifiers="control" command="cmd_wordNext"/>
       <handler event="keypress" keycode="VK_LEFT" modifiers="shift,control" command="cmd_selectWordPrevious"/>
       <handler event="keypress" keycode="VK_RIGHT" modifiers="shift,control" command="cmd_selectWordNext"/>
-      <handler event="keypress" key="y" modifiers="accel" command="cmd_redo"/>
+      <handler event="keypress" key="y" modifiers="accel" command="cmd_MSIredo"/>
       <handler event="keypress" keycode="VK_DELETE" modifiers="shift" command="cmd_cutOrDelete"/>
       <handler event="keypress" keycode="VK_DELETE" modifiers="control" command="cmd_deleteWordForward"/>
-      <handler event="keypress" keycode="VK_INSERT" modifiers="control" command="cmd_copy"/>
-      <handler event="keypress" keycode="VK_INSERT" modifiers="shift" command="cmd_paste"/>
-      <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_undo"/>
-      <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_redo"/>
+      <handler event="keypress" keycode="VK_INSERT" modifiers="control" command="cmd_MSIcopy"/>
+      <handler event="keypress" keycode="VK_INSERT" modifiers="shift" command="cmd_MSIpaste"/>
+      <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_MSIundo"/>
+      <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_MSIredo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="control" command="cmd_deleteWordBackward"/>
     </handlers>
   </binding>
@@ -58,14 +58,14 @@
       <handler event="keypress" keycode="VK_PAGE_DOWN" command="cmd_movePageDown"/>
       <handler event="keypress" keycode="VK_PAGE_UP" modifiers="shift" command="cmd_selectPageUp"/>
       <handler event="keypress" keycode="VK_PAGE_DOWN" modifiers="shift" command="cmd_selectPageDown"/>
-      <handler event="keypress" key="y" modifiers="accel" command="cmd_redo"/>
+      <handler event="keypress" key="y" modifiers="accel" command="cmd_MSIredo"/>
 
       <handler event="keypress" keycode="VK_DELETE" modifiers="shift" command="cmd_cutOrDelete"/>
       <handler event="keypress" keycode="VK_DELETE" modifiers="control" command="cmd_deleteWordForward"/>
-      <handler event="keypress" keycode="VK_INSERT" modifiers="control" command="cmd_copy"/>
-      <handler event="keypress" keycode="VK_INSERT" modifiers="shift" command="cmd_paste"/>
-      <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_undo"/>
-      <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_redo"/>
+      <handler event="keypress" keycode="VK_INSERT" modifiers="control" command="cmd_MSIcopy"/>
+      <handler event="keypress" keycode="VK_INSERT" modifiers="shift" command="cmd_MSIpaste"/>
+      <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_MSIundo"/>
+      <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_MSIredo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="control"
         command="cmd_deleteWordBackward"/>
      </handlers>
@@ -79,9 +79,9 @@
       <handler event="keypress" keycode="VK_PAGE_UP" modifiers="shift" command="cmd_selectPageUp"/>
       <handler event="keypress" keycode="VK_PAGE_DOWN" modifiers="shift" command="cmd_selectPageDown"/>
 
-      <handler event="keypress" keycode="VK_DELETE" modifiers="shift" command="cmd_cut"/>
+      <handler event="keypress" keycode="VK_DELETE" modifiers="shift" command="cmd_MSIcut"/>
       <handler event="keypress" keycode="VK_DELETE" modifiers="control" command="cmd_deleteWordForward"/>
-      <handler event="keypress" keycode="VK_INSERT" modifiers="control" command="cmd_copy"/>
+      <handler event="keypress" keycode="VK_INSERT" modifiers="control" command="cmd_MSIcopy"/>
       <handler event="keypress" keycode="VK_HOME" command="cmd_beginLine"/>
       <handler event="keypress" keycode="VK_END" command="cmd_endLine"/>
       <handler event="keypress" keycode="VK_HOME" modifiers="control" command="cmd_moveTop"/>
@@ -109,10 +109,10 @@
       <handler event="keypress" key="a" command="cmd_selectAll" modifiers="accel"/>
       <handler event="keypress" keycode="VK_DELETE" modifiers="shift" command="cmd_cutOrDelete"/>
       <handler event="keypress" keycode="VK_DELETE" modifiers="control" command="cmd_deleteWordForward"/>
-      <handler event="keypress" keycode="VK_INSERT" modifiers="control" command="cmd_copy"/>
-      <handler event="keypress" keycode="VK_INSERT" modifiers="shift" command="cmd_paste"/>
-      <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_undo"/>
-      <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_redo"/>
+      <handler event="keypress" keycode="VK_INSERT" modifiers="control" command="cmd_MSIcopy"/>
+      <handler event="keypress" keycode="VK_INSERT" modifiers="shift" command="cmd_MSIpaste"/>
+      <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_MSIundo"/>
+      <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_MSIredo"/>
       <handler event="keypress" keycode="VK_LEFT" modifiers="accel" command="cmd_wordPrevious"/>
       <handler event="keypress" keycode="VK_RIGHT" modifiers="accel" command="cmd_wordNext"/>
       <handler event="keypress" keycode="VK_LEFT" modifiers="shift,accel" command="cmd_selectWordPrevious"/>
@@ -138,12 +138,12 @@
       <handler event="keypress" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
       <handler event="keypress" key=" " modifiers="control" command="cmd_macrofragment"/>
       <handler event="keypress" key="f" command="cmd_find" modifiers="accel"/>
-      <handler event="keypress" key="z" command="cmd_undo" modifiers="accel"/>
-      <handler event="keypress" key="z" command="cmd_redo" modifiers="accel,shift" />
-      <handler event="keypress" key="y" command="cmd_redo" modifiers="accel" />
-      <handler event="keypress" key="x" command="cmd_cut" modifiers="accel"/>
-      <handler event="keypress" key="c" command="cmd_copy" modifiers="accel"/>
-      <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIundo" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIredo" modifiers="accel,shift" />
+      <handler event="keypress" key="y" command="cmd_MSIredo" modifiers="accel" />
+      <handler event="keypress" key="x" command="cmd_MSIcut" modifiers="accel"/>
+      <handler event="keypress" key="c" command="cmd_MSIcopy" modifiers="accel"/>
+      <handler event="keypress" key="v" command="cmd_MSIpaste" modifiers="accel"/>
       <handler event="keypress" key="g" modifiers="accel"   command="cmd_oneshotGreek"/>
       <handler event="keypress" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
       <handler event="keypress" key="+" action="ZoomManager.enlarge();" modifiers="shift any accel"/>

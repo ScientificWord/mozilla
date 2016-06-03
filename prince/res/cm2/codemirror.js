@@ -231,6 +231,9 @@ var CodeMirror = (function() {
       setSelection: operation(function(from, to, user) {
         (user ? setSelectionUser : setSelection)(clipPos(from), clipPos(to || from));
       }),
+      selectAll: operation(function() {
+        setSelection({line: 0, ch: 0}, {line: doc.size - 1});
+      }),
       getLine: function(line) {if (isLine(line)) return getLine(line).text;},
       getLineHandle: function(line) {if (isLine(line)) return getLine(line);},
       setLine: operation(function(line, text) {
@@ -1721,7 +1724,7 @@ var CodeMirror = (function() {
     extraGutterSize: 0,
     electricChars: true,
     onKeyEvent: null,
-    lineWrapping: true,
+    lineWrapping: false,
     lineNumbers: false,
     gutter: false,
     fixedGutter: false,

@@ -190,6 +190,15 @@ function msiSetupTextEditorCommands(editorElement)
 
   //dump("Registering plain text editor commands\n");
 
+  commandTable.registerCommand("cmd_MSIcopy",       cmdMSICopyCommand);
+  commandTable.registerCommand("cmd_MSIcut",        cmdMSICutCommand);
+  commandTable.registerCommand("cmd_MSIpaste",      cmdMSIPasteCommand);
+  commandTable.registerCommand("cmd_MSIundo",       cmdMSIUndoCommand);
+  commandTable.registerCommand("cmd_MSIredo",       cmdMSIRedoCommand);
+  commandTable.registerCommand("cmd_MSIselectAll",  cmdMSIselectAllCommand);
+  // commandTable.registerCommand("cmd_MSIpasteNoFormatting",  cmdMSIpasteNoFormattingCommand);
+  commandTable.registerCommand("cmd_MSIdelete",     cmdMSIdeleteCommand);
+
   commandTable.registerCommand("cmd_find",       msiFindCommand);
   commandTable.registerCommand("cmd_findNext",   msiFindAgainCommand);
   commandTable.registerCommand("cmd_findPrev",   msiFindAgainCommand);
@@ -4453,6 +4462,271 @@ var msiAutoSubDlgCommand =
 //are ready to be used as they are.
 
 //-----------------------------------------------------------------------------------
+
+var cmdMSICopyCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy) {
+    if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      return sourceEditor.somethingSelected();
+    }
+    var editor = msiGetCurrentEditor();
+    editor instanceof Components.interfaces.nsIEditor;
+    return editor.canCut();
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+   if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      var text = sourceEditor.getSelection();
+
+      var clipboardSvc = Components.classes["@mozilla.org/widget/clipboard;1"]
+                           .getService(Components.interfaces.nsIClipboard);
+      var xferable = Components.classes["@mozilla.org/widget/transferable;1"]
+                       .createInstance(Components.interfaces.nsITransferable);
+      xferable.addDataFlavor("text/unicode");
+      var s = Components.classes["@mozilla.org/supports-string;1"]
+                .createInstance(Components.interfaces.nsISupportsString);
+      s.data = text;
+      xferable.setTransferData("text/unicode", s, text.length * 2);
+      clipboardSvc.setData(xferable, null, Components.interfaces.nsIClipboard.kGlobalClipboard);
+    }
+    else
+      msiGoDoCommand('cmd_copy');
+  }
+};
+
+var cmdMSICutCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy) {
+    if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      return sourceEditor.somethingSelected();
+    }
+    var editor = msiGetCurrentEditor();
+    editor instanceof Components.interfaces.nsIEditor;
+    return editor.canCut();
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+   if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      var text = sourceEditor.getSelection();
+
+      var clipboardSvc = Components.classes["@mozilla.org/widget/clipboard;1"]
+                           .getService(Components.interfaces.nsIClipboard);
+      var xferable = Components.classes["@mozilla.org/widget/transferable;1"]
+                       .createInstance(Components.interfaces.nsITransferable);
+      xferable.addDataFlavor("text/unicode");
+      var s = Components.classes["@mozilla.org/supports-string;1"]
+                .createInstance(Components.interfaces.nsISupportsString);
+      s.data = text;
+      xferable.setTransferData("text/unicode", s, text.length * 2);
+      clipboardSvc.setData(xferable, null, Components.interfaces.nsIClipboard.kGlobalClipboard);
+      sourceEditor.replaceSelection("");
+    }
+    else
+      msiGoDoCommand('cmd_cut');
+  }
+};
+
+
+var cmdMSIPasteCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy) {
+    var editor = msiGetCurrentEditor();
+    editor instanceof Components.interfaces.nsIEditor;
+    return editor.canPaste(Components.interfaces.nsIClipboard.kGlobalClipboard);
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+   if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      var clipboardSvc = Components.classes["@mozilla.org/widget/clipboard;1"]
+                           .getService(Components.interfaces.nsIClipboard);
+      var xferable = Components.classes["@mozilla.org/widget/transferable;1"]
+                       .createInstance(Components.interfaces.nsITransferable);
+      xferable.addDataFlavor("text/unicode");
+      clipboardSvc.getData(xferable, Components.interfaces.nsIClipboard.kGlobalClipboard);
+      var data = {};
+      var dataLen = {};
+      xferable.getTransferData("text/unicode", data, dataLen);
+      var text = ""
+      if (data) {
+        data = data.value.QueryInterface(Components.interfaces.nsISupportsString);
+        text = data.data.substring(0, dataLen.value / 2);
+      }
+      sourceEditor.replaceSelection(text, "end");    }
+    else
+      msiGoDoCommand('cmd_paste');
+  }
+};
+
+var cmdMSIUndoCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy) {
+    if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      return (0 < sourceEditor.historySize().undo);
+    }
+    var editor = msiGetCurrentEditor();
+    editor instanceof Components.interfaces.nsIEditor;
+    var isEnabled = {}, canUndo = {};
+    editor.canUndo(isEnabled, canUndo);
+    return isEnabled.value && canUndo.value;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      sourceEditor.undo();
+    }
+    else {
+      var editor = msiGetCurrentEditor();
+      editor instanceof Components.interfaces.nsIEditor;
+      editor.undo(1);
+    }
+  }
+};
+
+var cmdMSIRedoCommand = 
+{
+ isCommandEnabled: function(aCommand, dummy) {
+    if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      return (0 < sourceEditor.historySize().undo);
+    }
+    var editor = msiGetCurrentEditor();
+    editor instanceof Components.interfaces.nsIEditor;
+    var isEnabled = {}, canRedo = {};
+    editor.canRedo(isEnabled, canRedo);
+    return isEnabled.value && canRedo.value;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      sourceEditor.redo();
+    }
+    else {
+      var editor = msiGetCurrentEditor();
+      editor instanceof Components.interfaces.nsIEditor;
+      editor.redo(1);
+    }
+  }
+};
+
+
+var cmdMSIselectAllCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy) {
+    return true;  
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {
+    var canRedo = this.isCommandEnabled();
+    aParams.setBooleanValue("state_enabled", canRedo);
+  },
+
+  doCommandParams: function(aCommand, aParams, aRefCon) {
+    this.doCommand();
+  },
+
+  doCommand: function(aCommand)
+  {
+    if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      sourceEditor.execCommand("selectAll");
+    }
+    else {
+      var editor = msiGetCurrentEditor();
+      editor instanceof Components.interfaces.nsIEditor;
+      editor.selectAll();
+    }
+  }
+};
+
+// var cmdMSIpasteNoFormattingCommand = 
+// {
+//   isCommandEnabled: function(aCommand, dummy) {
+//     if (getCurrentViewMode() == kDisplayModeSource) {
+//       var sourceIframe = document.getElementById('content-source');
+//       var sourceEditor = sourceIframe.contentWindow.gEditor;
+//       return sourceEditor.somethingSelected();
+//     }
+//     var editor = EditorUtils.msiGetCurrentEditor();
+//     editor instanceof Components.interfaces.nsIEditor;
+//     return editor.canCut();
+//   }
+//   return false;
+  
+//   }
+// };
+
+var cmdMSIdeleteCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy) {
+    if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+      if (aCommand === 'cmd_MSIdelete') {
+        return sourceEditor.somethingSelected();
+      }
+      return false;
+    }
+    var editor = msiGetCurrentEditor();
+    editor instanceof Components.interfaces.nsIEditor;
+    return nsDeleteCommand::IsCommandEnabled(aCommand, dummy);
+  },
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {
+    var canDelete = this.isCommandEnabled();
+    aParams.setBooleanValue("state_enabled", canDelete);
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) {
+    this.doCommand();
+  },
+
+  doCommand: function(aCommand)
+  {
+    if (getCurrentViewMode() == kDisplayModeSource) {
+      var sourceIframe = document.getElementById('content-source');
+      var sourceEditor = sourceIframe.contentWindow.gEditor;
+
+      sourceEditor.replaceSelection("");
+    }
+  }  
+};
+
 var msiFindCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
