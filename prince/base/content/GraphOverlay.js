@@ -307,10 +307,10 @@ Graph.prototype = {
     // untested support for ctrl+V
     var graphController = {
       supportsCommand: function (cmd) {
-        return (cmd === "cmd_paste");
+        return (cmd === "cmd_MSIpaste");
       },
       isCommandEnabled: function (cmd) {
-        if (cmd === "cmd_paste") {
+        if (cmd === "cmd_MSIpaste") {
           return true;
         }
         return false;

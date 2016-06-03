@@ -37,6 +37,7 @@ ifdef MOZ_MSI_TEX
 	- cp $(srcdir)/fragments/dingbats/*.frg $(FINAL_TARGET)/res/fragments/dingbats
 endif
 	$(INSTALL)  $(CM2_RESOURCES) 	$(FINAL_TARGET)/res/cm2
+	$(INSTALL)  $(srcdir)/cm2.html  $(FINAL_TARGET)/res/
 	$(INSTALL)  $(ACE_RESOURCES) 	$(FINAL_TARGET)/res/ace/
 	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css/
 				  
