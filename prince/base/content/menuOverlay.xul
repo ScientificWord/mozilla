@@ -86,12 +86,12 @@
                 label="&undoCmd.label;"
                 key="msiUndoKey"
                 accesskey="&undoCmd.accesskey;"
-                observes="cmd_undo"/>
+                observes="cmd_MSIundo"/>
       <menuitem id="menu_redo"
                 label="&redoCmd.label;"
                 key="msiRedoKey"
                 accesskey="&redoCmd.accesskey;"
-                observes="cmd_redo"/>
+                observes="cmd_MSIredo"/>
       <menuseparator id="edEditMenuSep1" />
       <menu id="propertiesMenu" label="&propertiesMenu.label;" accesskey="&propertiesMenu.accesskey;" oncommand="msiSelectPropertiesMenu(event, this);">
         <menupopup id="propertiesMenuPopup" onpopuphidden="msiPropMenuCloseup(event, this);">
@@ -102,12 +102,12 @@
                 label="&cutCmd.label;"
                 key="msiCutKey"
                 accesskey="&cutCmd.accesskey;"
-                observes="cmd_cut"/>
+                observes="cmd_MSIcut"/>
       <menuitem id="menu_copy"
                 label="&copyCmd.label;"
                 key="msiCopyKey"
                 accesskey="&copy.accesskey;"
-                observes="cmd_copy"/>
+                observes="cmd_MSIcopy"/>
       <menuitem id="menu_copytex"
                 label="&copytexCmd.label;"
                 observes="cmd_copytex"/>
@@ -123,7 +123,7 @@
                 label="&pasteCmd.label;"
                 key="msiPasteKey"
                 accesskey="&pasteCmd.accesskey;"
-                observes="cmd_paste"/>
+                observes="cmd_MSIpaste"/>
       <menuitem id="menu_pastenoformatting"
                 label="&pasteNoFormattingCmd.label;"
                 key="msiPasteKeyNoFormatting"
@@ -133,13 +133,13 @@
                 label="&deleteCmd.label;"
                 key="msiDeleteKey"
                 accesskey="&deleteCmd.accesskey;"
-                observes="cmd_delete"/>
+                observes="cmd_MSIdelete"/>
       <menuseparator id="edEditMenuSep2" />
       <menuitem id="menu_selectAll"
                 label="&selectAllCmd.label;"
                 key="msiSelectAllKey"
                 accesskey="&selectAllCmd.accesskey;"
-                observes="cmd_selectAll"/>
+                observes="cmd_MSIselectAll"/>
       <menuseparator id="sep_find"/>
       <menuitem id="menu_find"
                 label="&findCmd.label;"
@@ -683,51 +683,51 @@
           events="create, mode_switch, undo"
           oncommandupdate="msiGoUpdateComposerMenuItems(this)"
   >
-    <command id="cmd_undo"
-             oncommand="msiGoDoCommand('cmd_undo')"
+    <command id="cmd_MSIundo"
+             oncommand="msiGoDoCommand('cmd_MSIundo');"
              acceltext="&undoCmd.acceltext;"
              disabled="true"/>
-    <command id="cmd_redo"
-             oncommand="msiGoDoCommand('cmd_redo')"
+    <command id="cmd_MSIredo"
+             oncommand="msiGoDoCommand('cmd_MSIredo');"
              acceltext="&redoCmd.acceltext;"
              disabled="true"/>
-    <command id="cmd_cut"
-             oncommand="msiGoDoCommand('cmd_cut')"
+    <command id="cmd_MSIcut"
+             oncommand="msiGoDoCommand('cmd_MSIcut')"
              acceltext="&cutCmd.acceltext;"
              />
-    <command id="cmd_copy"
-            oncommand="msiGoDoCommand('cmd_copy')"
+    <command id="cmd_MSIcopy"
+            oncommand="msiGoDoCommand('cmd_MSIcopy');"
             acceltext="&copyCmd.acceltext;"
             disabled="true"/>
     <command id="cmd_copytex"
              oncommand="msiGoDoCommand('cmd_copytex')"
              disabled="true">
-      <observes element="cmd_copy" attribute="disabled" />
+      <observes element="cmd_MSIcopy" attribute="disabled" />
     </command>
     <command id="cmd_copypicture"
             oncommand="msiGoDoCommand('cmd_copypicture')">
-      <observes element="cmd_copy" attribute="disabled" />
+      <observes element="cmd_MSIcopy" attribute="disabled" />
     </command>
     <command id="cmd_savepicture"
             oncommand="msiGoDoCommand('cmd_savepicture')">
-      <observes element="cmd_copy" attribute="disabled" />
+      <observes element="cmd_MSIcopy" attribute="disabled" />
     </command>
-    <command id="cmd_paste"
-             oncommand="msiGoDoCommand('cmd_paste')"
+    <command id="cmd_MSIpaste"
+             oncommand="msiGoDoCommand('cmd_MSIpaste');"
              acceltext="&pasteCmd.acceltext;"/>
     <command id="cmd_define"
              oncommand="defineSelection()"
              accesskey="&define.accesskey;"/>
     <command id="cmd_pasteNoFormatting" oncommand="msiGoDoCommand('cmd_pasteNoFormatting')"
                label="&pasteNoFormattingCmd.label;" accesskey="&pasteNoFormattingCmd.accesskey;"/>
-    <command id="cmd_delete"
-             oncommand="msiGoDoCommand('cmd_delete')"
+    <command id="cmd_MSIdelete"
+             oncommand="msiGoDoCommand('cmd_MSIdelete')"
              valueDefault="&deleteCmd.label;"
              valueDefaultAccessKey="&deleteCmd.accesskey;"
              acceltext="&deleteCmd.acceltext;"
              disabled="true"/>
-    <command id="cmd_selectAll"
-             oncommand="msiGoDoCommand('cmd_selectAll')"
+    <command id="cmd_MSIselectAll"
+             oncommand="msiGoDoCommand('cmd_MSIselectAll')"
              acceltext="&selectAllCmd.acceltext;"
              disabled="true"/>
     <command id="cmd_preferences"   oncommand="msiGoDoCommand('cmd_preferences')"/>

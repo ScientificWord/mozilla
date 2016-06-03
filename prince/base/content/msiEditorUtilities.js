@@ -790,6 +790,13 @@ function msiGetCurrentEditor(theWindow) {
   return msiGetEditor(editorElement);  //  return GetCurrentEditor();  //punt - this functionality should be handled by the above calls.
 }
 
+function getCurrentViewMode() {
+  var editorElement = msiGetActiveEditorElement();
+  var mode = msiGetEditorDisplayMode(editorElement);
+  return mode;
+}
+
+
 function msiGetActiveEditorElement(currWindow) {
   var editorElement;
   if (!currWindow)

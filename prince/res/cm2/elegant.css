@@ -8,3 +8,5 @@
 .cm-s-elegant span.cm-builtin {color: #30a;}
 .cm-s-elegant span.cm-error {background-color: #fdd;}
 .cm-s-elegant span.cm-link {color: #762;}
+
+.cm-s-elegant .activeline {background: #f0fcff !important;}
