@@ -28,6 +28,12 @@
       <handler event="keypress" keycode="VK_BACK" modifiers="alt" command="cmd_MSIundo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_MSIredo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="control" command="cmd_deleteWordBackward"/>
+      <handler event="keypress" key="z" command="cmd_MSIundo" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIredo" modifiers="accel,shift" />
+      <handler event="keypress" key="y" command="cmd_MSIredo" modifiers="accel" />
+      <handler event="keypress" key="x" command="cmd_MSIcut" modifiers="accel"/>
+      <handler event="keypress" key="c" command="cmd_MSIcopy" modifiers="accel"/>
+      <handler event="keypress" key="v" command="cmd_MSIpaste" modifiers="accel"/>
     </handlers>
   </binding>
 
@@ -68,6 +74,12 @@
       <handler event="keypress" keycode="VK_BACK" modifiers="alt,shift" command="cmd_MSIredo"/>
       <handler event="keypress" keycode="VK_BACK" modifiers="control"
         command="cmd_deleteWordBackward"/>
+      <handler event="keypress" key="z" command="cmd_MSIundo" modifiers="accel"/>
+      <handler event="keypress" key="z" command="cmd_MSIredo" modifiers="accel,shift" />
+      <handler event="keypress" key="y" command="cmd_MSIredo" modifiers="accel" />
+      <handler event="keypress" key="x" command="cmd_MSIcut" modifiers="accel"/>
+      <handler event="keypress" key="c" command="cmd_MSIcopy" modifiers="accel"/>
+      <handler event="keypress" key="v" command="cmd_MSIpaste" modifiers="accel"/>        
      </handlers>
   </binding>
 
