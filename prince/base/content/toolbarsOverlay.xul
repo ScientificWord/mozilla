@@ -371,23 +371,23 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
   <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/>
 #endif
   <toolbarbutton id="cutButton" class="toolbarbutton-1"
-                 label="&cutCmd.label;" disabled="true" observes="cmd_cut"
+                 label="&cutCmd.label;" disabled="true" observes="cmd_MSIcut"
                  tooltiptext="&cutCmd.label;"/>
 
   <toolbarbutton id="copyButton" class="toolbarbutton-1"
-                 label="&copyCmd.label;" disabled="true" observes="cmd_copy"
+                 label="&copyCmd.label;" disabled="true" observes="cmd_MSIcopy"
                  tooltiptext="&copyCmd.tooltip;"/>
 
   <toolbarbutton id="pasteButton" class="toolbarbutton-1"
-                 label="&pasteCmd.label;" observes="cmd_paste"
+                 label="&pasteCmd.label;" observes="cmd_MSIpaste"
                  tooltiptext="&pasteCmd.label;"/>
 
   <toolbarbutton id="undoButton" class="toolbarbutton-1"
-                 label="&undoCmd.label;" observes="cmd_undo"
+                 label="&undoCmd.label;" observes="cmd_MSIundo"
                  tooltiptext="&undoCmd.label;"/>
 
   <toolbarbutton id="redoButton" class="toolbarbutton-1"
-                 label="&redoCmd.label;" observes="cmd_redo"
+                 label="&redoCmd.label;" observes="cmd_MSIredo"
                  tooltiptext="&redoCmd.label;"/>
 
   <toolbarbutton id="findButton" class="toolbarbutton-1"
