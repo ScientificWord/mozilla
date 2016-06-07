@@ -724,8 +724,7 @@
              oncommand="msiGoDoCommand('cmd_MSIdelete')"
              valueDefault="&deleteCmd.label;"
              valueDefaultAccessKey="&deleteCmd.accesskey;"
-             acceltext="&deleteCmd.acceltext;"
-             disabled="true"/>
+             acceltext="&deleteCmd.acceltext;"/>
     <command id="cmd_MSIselectAll"
              oncommand="msiGoDoCommand('cmd_MSIselectAll')"
              acceltext="&selectAllCmd.acceltext;"
