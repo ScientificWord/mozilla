@@ -197,7 +197,7 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_MSIredo",       cmdMSIRedoCommand);
   commandTable.registerCommand("cmd_MSIselectAll",  cmdMSIselectAllCommand);
   // commandTable.registerCommand("cmd_MSIpasteNoFormatting",  cmdMSIpasteNoFormattingCommand);
-  commandTable.registerCommand("cmd_MSIdelete",     cmdMSIdeleteCommand);
+  commandTable.registerCommand("cmd_MSIdelete",     cmdMSIDeleteCommand);
 
   commandTable.registerCommand("cmd_find",       msiFindCommand);
   commandTable.registerCommand("cmd_findNext",   msiFindAgainCommand);
@@ -4693,7 +4693,7 @@ var cmdMSIselectAllCommand =
 //   }
 // };
 
-var cmdMSIdeleteCommand = 
+var cmdMSIDeleteCommand = 
 {
   isCommandEnabled: function(aCommand, dummy) {
     if (getCurrentViewMode() == kDisplayModeSource) {
@@ -4706,7 +4706,7 @@ var cmdMSIdeleteCommand =
     }
     var editor = msiGetCurrentEditor();
     editor instanceof Components.interfaces.nsIEditor;
-    return nsDeleteCommand::IsCommandEnabled(aCommand, dummy);
+    return editor.canCut();
   },
   getCommandStateParams: function(aCommand, aParams, aRefCon) {
     var canDelete = this.isCommandEnabled();
