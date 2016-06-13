@@ -54,5 +54,5 @@
       </tabpanel>     
     </tabpanels>
   </tabbox>
-  <string id="brandShortName">&brandShortName;</string>
+  <string id="brandShortName" hidden="true">&brandShortName;</string>
 </dialog>
