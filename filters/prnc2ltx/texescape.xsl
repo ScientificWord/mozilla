@@ -185,7 +185,7 @@
     <xsl:call-template name="replace-substring">
       <xsl:with-param name="original" select="$sub20"/>
       <xsl:with-param name="substring" select="'&#xA0;'"/>
-      <xsl:with-param name="replacement" select="'~'"/>
+      <xsl:with-param name="replacement" select="' '"/>
     </xsl:call-template>
   </xsl:variable>
 
