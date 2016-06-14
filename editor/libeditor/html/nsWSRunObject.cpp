@@ -354,92 +354,90 @@ nsWSRunObject::InsertText(const nsAString& aStringToInsert,
   // first the head:
   // there are a variety of circumstances that would require us to convert a 
   // leading ws char into an nbsp:
-
-  // BBM: We do not want to convert spaces to nbsp automatically in any circumstances
   
-  // if (nsCRT::IsAsciiSpace(theString[0]))
-  // {
-  //   // we have a leading space
-  //   if (beforeRun)
-  //   {
-  //     if (beforeRun->mType & eLeadingWS) 
-  //     {
-  //       theString.SetCharAt(nbsp, 0);
-  //     }
-  //     else if (beforeRun->mType & eNormalWS) 
-  //     {
-  //       WSPoint wspoint;
-  //       res = GetCharBefore(*aInOutParent, *aInOutOffset, &wspoint);
-  //       if (NS_SUCCEEDED(res) && wspoint.mTextNode && nsCRT::IsAsciiSpace(wspoint.mChar))
-  //       {
-  //         theString.SetCharAt(nbsp, 0);
-  //       }
-  //     }
-  //   }
-  //   else
-  //   {
-  //     if ((mStartReason & eBlock) || (mStartReason == eBreak))
-  //     {
-  //       theString.SetCharAt(nbsp, 0);
-  //     }
-  //   }
-  // }
+  if (nsCRT::IsAsciiSpace(theString[0]))
+  {
+    // we have a leading space
+    if (beforeRun)
+    {
+      if (beforeRun->mType & eLeadingWS) 
+      {
+        theString.SetCharAt(nbsp, 0);
+      }
+      else if (beforeRun->mType & eNormalWS) 
+      {
+        WSPoint wspoint;
+        res = GetCharBefore(*aInOutParent, *aInOutOffset, &wspoint);
+        if (NS_SUCCEEDED(res) && wspoint.mTextNode && nsCRT::IsAsciiSpace(wspoint.mChar))
+        {
+          theString.SetCharAt(nbsp, 0);
+        }
+      }
+    }
+    else
+    {
+      if ((mStartReason & eBlock) || (mStartReason == eBreak))
+      {
+        theString.SetCharAt(nbsp, 0);
+      }
+    }
+  }
 
-  // // then the tail
-  // PRUint32 lastCharIndex = theString.Length()-1;
+  // then the tail
+  PRUint32 lastCharIndex = theString.Length()-1;
 
-  // if (nsCRT::IsAsciiSpace(theString[lastCharIndex]))
-  // {
-  //   // we have a leading space
-  //   if (afterRun)
-  //   {
-  //     if (afterRun->mType & eTrailingWS)
-  //     {
-  //       theString.SetCharAt(nbsp, lastCharIndex);
-  //     }
-  //     else if (afterRun->mType & eNormalWS) 
-  //     {
-  //       WSPoint wspoint;
-  //       res = GetCharAfter(*aInOutParent, *aInOutOffset, &wspoint);
-  //       if (NS_SUCCEEDED(res) && wspoint.mTextNode && nsCRT::IsAsciiSpace(wspoint.mChar))
-  //       {
-  //         theString.SetCharAt(nbsp, lastCharIndex);
-  //       }
-  //     }
-  //   }
-  //   else
-  //   {
-  //     if ((mEndReason & eBlock))
-  //     {
-  //       theString.SetCharAt(nbsp, lastCharIndex);
-  //     }
-  //   }
-  // }
+  if (nsCRT::IsAsciiSpace(theString[lastCharIndex]))
+  {
+    // we have a leading space
+    if (afterRun)
+    {
+      if (afterRun->mType & eTrailingWS)
+      {
+        theString.SetCharAt(nbsp, lastCharIndex);
+      }
+      else if (afterRun->mType & eNormalWS) 
+      {
+        WSPoint wspoint;
+        res = GetCharAfter(*aInOutParent, *aInOutOffset, &wspoint);
+        if (NS_SUCCEEDED(res) && wspoint.mTextNode && nsCRT::IsAsciiSpace(wspoint.mChar))
+        {
+          theString.SetCharAt(nbsp, lastCharIndex);
+        }
+      }
+    }
+    else
+    {
+      if ((mEndReason & eBlock))
+      {
+        theString.SetCharAt(nbsp, lastCharIndex);
+      }
+    }
+  }
   
-  // // next scan string for adjacent ws and convert to nbsp/space combos
-  // // MOOSE: don't need to convert tabs here since that is done by WillInsertText() 
-  // // before we are called.  Eventually, all that logic will be pushed down into
-  // // here and made more efficient.
-  // PRUint32 j;
-  // PRBool prevWS = PR_FALSE;
-  // for (j=0; j<=lastCharIndex; j++)
-  // {
-  //   if (nsCRT::IsAsciiSpace(theString[j]))
-  //   {
-  //     if (prevWS)
-  //     {
-  //       theString.SetCharAt(nbsp, j-1);  // j-1 can't be negative because prevWS starts out false
-  //     }
-  //     else
-  //     {
-  //       prevWS = PR_TRUE;
-  //     }
-  //   }
-  //   else
-  //   {
-  //     prevWS = PR_FALSE;
-  //   }
-  // }
+  // next scan string for adjacent ws and convert to nbsp/space combos
+  // MOOSE: don't need to convert tabs here since that is done by WillInsertText() 
+  // before we are called.  Eventually, all that logic will be pushed down into
+  // here and made more efficient.
+  PRUint32 j;
+  PRBool prevWS = PR_FALSE;
+  for (j=0; j<=lastCharIndex; j++)
+  {
+    if (nsCRT::IsAsciiSpace(theString[j]))
+    {
+      if (prevWS)
+      {
+        theString.SetCharAt(nbsp, j-1);  // j-1 can't be negative because prevWS starts out false
+      }
+      else
+      {
+        prevWS = PR_TRUE;
+      }
+    }
+    else
+    {
+      prevWS = PR_FALSE;
+    }
+  }
   
   // ready, aim, fire!
   res = mHTMLEditor->InsertTextImpl(theString, aInOutParent, aInOutOffset, aDoc);
