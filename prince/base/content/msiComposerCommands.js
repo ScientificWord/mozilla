@@ -9510,7 +9510,7 @@ var msiPreviewModeCommand =
         msiSetEditMode(kDisplayModePreview, editorElement);
       }
       catch (e) {
-        finalThrow(cmdFailString('pdfpreviewmode'), e.message);
+//        finalThrow(cmdFailString('pdfpreviewmode'), e.message);
       }
     }
     else
