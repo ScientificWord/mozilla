@@ -211,7 +211,7 @@
         <xsl:choose>
 -->
           <xsl:when test="$first-char='&#x00A0;'">
-            <xsl:text>~</xsl:text>
+            <xsl:text> </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x00A1;'">
             <xsl:text>\text{\textexclamdown }</xsl:text>
