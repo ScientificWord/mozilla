@@ -880,6 +880,9 @@ bool LineSource::GetLine(LineOfText* pLine)
                    LOG("\nFound BeginExpansion");
                    pLine -> StripTCIMEnd();
                    LOG("\nFINAL A: " << *pLine);
+                   break;
+                   // Skip all this stuff which may not be
+                   // needed if inkscape installed on mac
                    // Look for FRAME with emf/wmf
                    std::string line = pLine->AsStdString();
                    std::transform(line.begin(), line.end(),
