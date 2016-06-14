@@ -1147,7 +1147,11 @@ function copyToExternalLocation( pdffile ) {
       n++;
     }
   }
-  pdffile.copyTo(destdirectory, newfile.leafName);
+  try {
+    pdffile.copyTo(destdirectory, newfile.leafName);
+  }
+  catch(e) {
+  }
 }
 
 function previewPDFFile( pdffile ) {
@@ -1173,7 +1177,7 @@ function previewOrPrintPDFFile( pdffile, preview ) {
     currPDFfileLeaf = pdffile.leafName;
     pdffile = copyFileToTmp( pdffile );
 
-    if (preview)
+    if (preview && pdffile.exists())
     {
     // get prefs for viewing pdf files
       var prefs = GetPrefs();
