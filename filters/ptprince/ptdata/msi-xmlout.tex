@@ -1465,13 +1465,31 @@
 \newif\if@inaccent
 \@inaccentfalse
 
+\def\@cdced@{\@hex{327}} % combining cedilla
+\def\@cdk@{\@hex{328}}   % combining ogonek
+\def\@cdd@{\@hex{323}}   % combining dot below
+\def\@cdb@{\@hex{331}}   % combining macron below
+\def\@cdr@{\@hex{30A}}   % combining ring above
+\def\@cdcaret@{\@hex{302}} % combining circumflex
+\def\@cdv@{\@hex{30C}}   % combining caron
+\def\@cdacute@{\@hex{301}} % combining acute
+\def\@cdgrave@{\@hex{300}} % combining grave
+\def\@cdtilde@{\@hex{303}} % ~
+\def\@cdbreve@{\@hex{306}} % breve
+
+
 
 \def\@accent#1#2{%
     \if@inaccent
       \@@accent{#1}{#2}%
     \else
       %\@inaccenttrue
-      \expandafter\csname \@@accent{#1}{#2}\endcsname
+      \edef\@acc{\csname\@@accent{#1}{#2}\endcsname}
+      \expandafter\ifx\@acc\relax
+        #1\csname @cd#2@\endcsname
+      \else
+        \@acc
+      \fi
       %\@inaccentfalse
     \fi
 }
