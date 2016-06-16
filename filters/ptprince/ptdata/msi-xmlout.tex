@@ -228,13 +228,13 @@
 %%        \msiclosetag{texb}{</texb>}%
 %%     \fi}
 
-\def\addtocounter#1#2{%
-    \expandafter\global\advance\csname c@#1\endcsname #2\relax
-    \msihmode
-    \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="addtocounter">}
-       \msitag{<![CDATA[\addtocounter{#1}{#2}]]>}%
-    \msiclosetag{texb}{</texb>}}
-
+%\def\addtocounter#1#2{%
+%    %\expandafter\global\advance\csname c@#1\endcsname #2\relax
+%    %\msihmode
+%    \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="addtocounter">}
+%       \msitag{<![CDATA[\addtocounter{#1}{#2}]]>}%
+%    \msiclosetag{texb}{</texb>}}
+\let\addtocounter\msidefaultb
 
 \msi@inline@proc={jbm}
 \msi@display@proc{jbm}
@@ -827,10 +827,11 @@
 
 
 %\def\bibliographystyle#1{\def\the@style{#1}}
-\def\bibliographystyle#1{<bibliographystyle>#1</bibliographystyle>}
+\def\bibliographystyle#1{\def\@bibstyle{#1}}
 \def\bibliography#1{%
   \msihmode
-  \msitag{<bibtexbibliography xmlns="http://www.w3.org/1999/xhtml" databaseFile="#1"></bibtexbibliography>}}
+  \msitag{<bibtexbibliography xmlns="http://www.w3.org/1999/xhtml"
+  databaseFile="#1" styleFile="}\@bibstyle\msitag{"></bibtexbibliography>}}
 
 
 \def\msi@thm@like#1{}
@@ -1465,13 +1466,36 @@
 \newif\if@inaccent
 \@inaccentfalse
 
+\def\@cdced@{\@hex{327}} % combining cedilla
+\def\@cdk@{\@hex{328}}   % combining ogonek
+\def\@cdd@{\@hex{323}}   % combining dot below
+\def\@cdb@{\@hex{331}}   % combining macron below
+\def\@cdr@{\@hex{30A}}   % combining ring above
+\def\@cdcaret@{\@hex{302}} % combining circumflex
+\def\@cdv@{\@hex{30C}}   % combining caron
+\def\@cdacute@{\@hex{301}} % combining acute
+\def\@cdgrave@{\@hex{300}} % combining grave
+\def\@cdtilde@{\@hex{303}} % ~
+\def\@cdu@{\@hex{306}} % breve
+\def\@cdbar@{\@hex{304}}   % combining macron bar
+\def\@cdH@{\@hex{30B}}     % double acute
+\def\@cddot@{\@hex{307}}   % combining dot above
+\def\@cdumlat@{\@hex{308}} % umlat
+
+
+
 
 \def\@accent#1#2{%
     \if@inaccent
       \@@accent{#1}{#2}%
     \else
       %\@inaccenttrue
-      \expandafter\csname \@@accent{#1}{#2}\endcsname
+      \edef\@acc{\csname\@@accent{#1}{#2}\endcsname}
+      \expandafter\ifx\@acc\relax
+        #1\csname @cd#2@\endcsname
+      \else
+        \@acc
+      \fi
       %\@inaccentfalse
     \fi
 }
@@ -1613,15 +1637,15 @@
    \@label}
 
 \def\@label#1{%
+  \endgroup
    \ifmmode
       %\msitag{\msipassthru}\char`\{%
       %\msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
       %\char`\}%
       \msitag{\label}\char`\{#1\char`\}%
    \else
-      \msihmode\msitag{<a name="#1" key="#1" id="#1"/>}%
-   \fi
-   \endgroup}
+      \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
+   \fi}
 
 \def\frac#1#2{\string\frac\@brace{#1}\@brace{#2}}
 \def\dfrac#1#2{\string\dfrac\@brace{#1}\@brace{#2}}
@@ -1700,6 +1724,7 @@
 
 %\mathpass{\tag}
 %\mathpass{\TCItag}
+\let\tag\msidefaultb
 
 
 
