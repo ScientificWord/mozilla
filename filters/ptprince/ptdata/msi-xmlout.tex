@@ -827,10 +827,11 @@
 
 
 %\def\bibliographystyle#1{\def\the@style{#1}}
-\def\bibliographystyle#1{<bibliographystyle>#1</bibliographystyle>}
+\def\bibliographystyle#1{\def\@bibstyle{#1}}
 \def\bibliography#1{%
   \msihmode
-  \msitag{<bibtexbibliography xmlns="http://www.w3.org/1999/xhtml" databaseFile="#1"></bibtexbibliography>}}
+  \msitag{<bibtexbibliography xmlns="http://www.w3.org/1999/xhtml"
+  databaseFile="#1" styleFile="}\@bibstyle\msitag{"></bibtexbibliography>}}
 
 
 \def\msi@thm@like#1{}
