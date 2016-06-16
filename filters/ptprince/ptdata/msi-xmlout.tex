@@ -228,13 +228,13 @@
 %%        \msiclosetag{texb}{</texb>}%
 %%     \fi}
 
-\def\addtocounter#1#2{%
-    \expandafter\global\advance\csname c@#1\endcsname #2\relax
-    \msihmode
-    \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="addtocounter">}
-       \msitag{<![CDATA[\addtocounter{#1}{#2}]]>}%
-    \msiclosetag{texb}{</texb>}}
-
+%\def\addtocounter#1#2{%
+%    %\expandafter\global\advance\csname c@#1\endcsname #2\relax
+%    %\msihmode
+%    \msiopentag{texb}{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="addtocounter">}
+%       \msitag{<![CDATA[\addtocounter{#1}{#2}]]>}%
+%    \msiclosetag{texb}{</texb>}}
+\let\addtocounter\msidefaultb
 
 \msi@inline@proc={jbm}
 \msi@display@proc{jbm}
@@ -1724,6 +1724,7 @@
 
 %\mathpass{\tag}
 %\mathpass{\TCItag}
+\let\tag\msidefaultb
 
 
 
