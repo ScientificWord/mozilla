@@ -145,7 +145,7 @@
     <xsl:call-template name="replace-substring">
       <xsl:with-param name="original" select="$sub15"/>
       <xsl:with-param name="substring" select="'&#x2192;'"/>
-      <xsl:with-param name="replacement" select="'\textrightarrow'"/>
+      <xsl:with-param name="replacement" select="'\textrightarrow{}'"/>
     </xsl:call-template>
   </xsl:variable>
 
@@ -153,7 +153,7 @@
     <xsl:call-template name="replace-substring">
       <xsl:with-param name="original" select="$sub16"/>
       <xsl:with-param name="substring" select="'&#x2190;'"/>
-      <xsl:with-param name="replacement" select="'\textleftarrow'"/>
+      <xsl:with-param name="replacement" select="'\textleftarrow{}'"/>
     </xsl:call-template>
   </xsl:variable>
 
@@ -161,7 +161,7 @@
     <xsl:call-template name="replace-substring">
       <xsl:with-param name="original" select="$sub17"/>
       <xsl:with-param name="substring" select="'&#x2191;'"/>
-      <xsl:with-param name="replacement" select="'\textuparrow'"/>
+      <xsl:with-param name="replacement" select="'\textuparrow{}'"/>
     </xsl:call-template>
   </xsl:variable>
 
@@ -169,7 +169,7 @@
     <xsl:call-template name="replace-substring">
       <xsl:with-param name="original" select="$sub18"/>
       <xsl:with-param name="substring" select="'&#x2193;'"/>
-      <xsl:with-param name="replacement" select="'\textdownarrow'"/>
+      <xsl:with-param name="replacement" select="'\textdownarrow{}'"/>
     </xsl:call-template>
   </xsl:variable>
 
@@ -185,19 +185,43 @@
     <xsl:call-template name="replace-substring">
       <xsl:with-param name="original" select="$sub20"/>
       <xsl:with-param name="substring" select="'&#xA0;'"/>
-      <xsl:with-param name="replacement" select="'~'"/>
+      <xsl:with-param name="replacement" select="' '"/>
     </xsl:call-template>
   </xsl:variable>
 
   <xsl:variable name="sub22">
     <xsl:call-template name="replace-substring">
-	    <xsl:with-param name="original" select="$sub21"/>
+      <xsl:with-param name="original" select="$sub21"/>
       <xsl:with-param name="substring" select="'&#x20AC;'"/>
-      <xsl:with-param name="replacement" select="'\euro'"/>
+      <xsl:with-param name="replacement" select="'\euro{}'"/>
+    </xsl:call-template>
+  </xsl:variable>
+
+  <xsl:variable name="sub23">
+    <xsl:call-template name="replace-substring">
+      <xsl:with-param name="original" select="$sub22"/>
+      <xsl:with-param name="substring" select="'|'"/>
+      <xsl:with-param name="replacement" select="'\textbar{}'"/>
+    </xsl:call-template>
+  </xsl:variable>
+
+  <xsl:variable name="sub24">
+    <xsl:call-template name="replace-substring">
+      <xsl:with-param name="original" select="$sub23"/>
+      <xsl:with-param name="substring" select="'&lt;'"/>
+      <xsl:with-param name="replacement" select="'\textless{}'"/>
     </xsl:call-template>
   </xsl:variable>
   
-  <xsl:value-of select="$sub22"/>
+  <xsl:variable name="sub25">
+    <xsl:call-template name="replace-substring">
+	    <xsl:with-param name="original" select="$sub24"/>
+      <xsl:with-param name="substring" select="'&gt;'"/>
+      <xsl:with-param name="replacement" select="'\textgreater{}'"/>
+    </xsl:call-template>
+  </xsl:variable>
+  
+  <xsl:value-of select="$sub25"/>
 </xsl:template>
 
 <xsl:template name="replace-substring">
