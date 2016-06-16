@@ -450,7 +450,7 @@
 
 <!-- mspace is a leaf node - not finished -->
 
-  <xsl:template match="mml:mspace">
+  <xsl:template match="mml:mspace|html:mspace">
   
 <!--
 $ab\ c~d\quad e\qquad f\,g\;h$\/$i\!j{}k$\noindent $l\hspace{1in}mnop$
