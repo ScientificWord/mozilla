@@ -113,9 +113,9 @@
     <xsl:when test="@type='discretionaryHyphen'">\-</xsl:when>
     <xsl:when test="@type='lineBreak'">\linebreak\relax </xsl:when>
     <xsl:when test="@type='noBreak'">\nolinebreak\relax </xsl:when>
-    <xsl:when test="@type='newLine'">~\\\relax </xsl:when>
+    <xsl:when test="@type='newLine'"> \\\relax </xsl:when>
 	  <xsl:when test="@type='customNewLine'">
-	    <xsl:text>~\\[</xsl:text>
+	    <xsl:text> \\[</xsl:text>
       <xsl:value-of select="@dim"/>
       <xsl:text>]</xsl:text>
       <xsl:value-of select="$newline"/> 
