@@ -11630,13 +11630,12 @@ function clearDir( aDirectory, extension) {
   var items = aDirectory.directoryEntries;
   while (items && items.hasMoreElements()) {
     var item = items.getNext().QueryInterface(Components.interfaces.nsIFile);
-    if (item && item.isFile() && regex.test(item.leafName)) {
-      try {
+    try {
+      if (item && item.isFile() && regex.test(item.leafName)) {
         item.remove(false);
       }
-      catch(e) {
-
-      }
+    }
+    catch(e) {
     }
   }
 }

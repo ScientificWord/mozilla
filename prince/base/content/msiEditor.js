@@ -5030,6 +5030,7 @@ function msiSetDisplayMode(editorElement, mode) {
         var docUrlString = msiGetEditorURL(editorElement);
         var url = msiURIFromString(docUrlString);
         var pdffile = msiFileFromFileURL(url);
+        if (!pdffile) return false;
         pdffile = pdffile.parent; // and now it points to the working directory
         pdffile.append("tex");
         pdffile.append(currPDFfileLeaf);

@@ -1759,6 +1759,22 @@ endif
 
 endif # SDK_BINARY
 
+
+####################
+# Make sure application.ini is preprocessed
+
+libs:: $(PREPROCESS_FILES)
+ifndef NO_DIST_INSTALL
+	@$(EXIT_ON_ERROR) \
+	for f in $(PREPROCESS_FILES); do \
+	  dest=$(FINAL_TARGET)/`basename $$f`; \
+	  $(RM) -f $$dest; \
+	  $(PYTHON) $(MOZILLA_DIR)/config/Preprocessor.py \
+	    $(XULAPP_DEFINES) $(DEFINES) $(ACDEFINES) $(XULPPFLAGS) \
+	    $(srcdir)/$$f > $$dest; \
+	done
+endif
+
 ################################################################################
 # CHROME PACKAGING
 
