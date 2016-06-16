@@ -1,0 +1,393 @@
+%2multibyte Version: 5.50.0.2960 CodePage: 1252
+\documentclass[12pt]{book}%
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{geometry}%
+\setcounter{MaxMatrixCols}{30}
+%TCIDATA{OutputFilter=latex2.dll}
+%TCIDATA{Version=5.50.0.2960}
+%TCIDATA{Codepage=1252}
+%TCIDATA{LastRevised=Thursday, June 16, 2016 16:03:00}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%BeginMSIPreambleData
+\providecommand{\U}[1]{\protect\rule{.1in}{.1in}}
+%EndMSIPreambleData
+\def\tb{\begin{center}\rule{1.5in}{0.5pt}\end{center}}
+\renewcommand{\thechapter}{\Roman{chapter}}
+\setcounter{chapter}{14}
+\geometry{margin=1in}
+\begin{document}
+\chapter[SINES AND COSINES]{How to deal with Sines and
+Cosines\footnote{Derived from
+\textit{\href{http://www.gutenberg.org/3/3/2/8/33283/}{\textit{Calculus Made
+Easy, 2nd Edition} by Silvanus Thompson}}, from
+\href{http://www.gutenberg.org/}{Project Gutenberg}.}}
+
+GREEK letters being usual to denote angles, we will take as the usual letter
+for any variable angle the letter~$\theta$ (``theta'').
+
+Let us consider the function
+\[
+y= \sin\theta.
+\]
+%
+
+%TCIMACRO{\FRAME{dtbpF}{2.7233in}{2.5278in}{0pt}{}{}{calculusmadeeasyfig43.jpg}%
+%{\special{ language "Scientific Word";  type "GRAPHIC";
+%maintain-aspect-ratio TRUE;  display "USEDEF";  valid_file "F";
+%width 2.7233in;  height 2.5278in;  depth 0pt;  original-width 2.6809in;
+%original-height 2.4863in;  cropleft "0";  croptop "1";  cropright "1";
+%cropbottom "0";
+%filename 'CalculusMadeEasyFig43.jpg';file-properties "XNPEU";}}}%
+%BeginExpansion
+\begin{center}
+\includegraphics[
+natheight=2.486300in,
+natwidth=2.680900in,
+height=2.5278in,
+width=2.7233in
+]%
+{CalculusMadeEasyFig43.jpg}%
+\end{center}
+%EndExpansion
+
+
+What we have to investigate is the value of $\dfrac{d(\sin\theta)}{d \theta}$;
+or, in other words, if the angle~$\theta$ varies, we have to find the relation
+between the increment of the sine and the increment of the angle, both
+increments being indefinitely small in themselves. Examine Fig 43, wherein, if
+the radius of the circle is unity, the height of~$y$ is the sine, and $\theta$
+is the angle. Now, if $\theta$ is supposed to increase by the addition to it
+of the small angle $d \theta$---an element of angle---the height of~$y$, the
+sine, will be increased by a small element~$dy$. The new height~$y + dy$ will
+be the sine of the new angle $\theta+ d \theta$, or, stating it as an
+equation,
+\[
+y+dy = \sin(\theta+ d \theta);
+\]
+and subtracting from this the first equation gives
+\[
+dy = \sin(\theta+ d \theta)- \sin\theta.
+\]
+
+
+The quantity on the right-hand side is the difference between two sines, and
+books on trigonometry tell us how to work this out. For they tell us that if
+$M$ and~$N$ are two different angles,
+\[
+\sin M - \sin N = 2 \cos\frac{M+N}{2}\cdot\sin\frac{M-N}{2}.
+\]
+
+
+If, then, we put $M= \theta+ d \theta$ for one angle, and $N= \theta$ for the
+other, we may write
+\begin{align*}
+dy  &  =2\cos\frac{\theta+d\theta+\theta}{2}\textperiodcentered\sin
+\frac{\theta+d\theta-\theta}{2},\\
+\text{or,\qquad\qquad}dy  &  =2\cos(\theta+\tfrac{1}{2}d\theta
+)\textperiodcentered\sin\tfrac{1}{2}d\theta.
+\end{align*}
+
+
+But if we regard $d \theta$ as indefinitely small, then in the limit we may
+neglect~$\frac{1}{2} d \theta$ by comparison with~$\theta$, and may also take
+$\sin\frac{1}{2} d \theta$ as being the same as~$\frac{1}{2} d \theta$. The
+equation then becomes:
+\begin{align*}
+dy  &  = 2 \cos\theta\times\tfrac{1}{2} d \theta;\\
+dy  &  = \cos\theta\cdot d \theta,\\
+\text{and, finally,\qquad\qquad}\dfrac{dy}{d \theta}  &  = \cos\theta.
+\end{align*}
+
+
+The accompanying curves, Figs 44 and 45, show, plotted to scale, the values of
+$y=\sin\theta$, and $\dfrac{dy}{d\theta}=\cos\theta$, for the corresponding
+values of~$\theta$.%
+
+%TCIMACRO{\FRAME{dtbpF}{4.6207in}{2.5261in}{0pt}{}{}{calculusmadeeasyfig44.wmf}%
+%{\special{ language "Scientific Word";  type "GRAPHIC";
+%maintain-aspect-ratio TRUE;  display "USEDEF";  valid_file "F";
+%width 4.6207in;  height 2.5261in;  depth 0pt;  original-width 4.5688in;
+%original-height 2.4855in;  cropleft "0";  croptop "1";  cropright "1";
+%cropbottom "0";
+%filename 'CalculusMadeEasyFig44.wmf';file-properties "XNPEU";}}}%
+%BeginExpansion
+\begin{center}
+\includegraphics[
+natheight=2.485500in,
+natwidth=4.568800in,
+height=2.5261in,
+width=4.6207in
+]%
+{CalculusMadeEasyFig44.wmf}%
+\end{center}
+%EndExpansion
+%
+
+%TCIMACRO{\FRAME{dtbpF}{4.619in}{2.5175in}{0pt}{}{}{calculusmadeeasyfig45.eps}%
+%{\special{ language "Scientific Word";  type "GRAPHIC";
+%maintain-aspect-ratio TRUE;  display "USEDEF";  valid_file "F";
+%width 4.619in;  height 2.5175in;  depth 0pt;  original-width 4.5671in;
+%original-height 2.4768in;  cropleft "0";  croptop "1";  cropright "1";
+%cropbottom "0";
+%filename 'CalculusMadeEasyFig45.eps';file-properties "XNPEU";}}}%
+%BeginExpansion
+\begin{center}
+\includegraphics[
+height=2.5175in,
+width=4.619in
+]%
+{CalculusMadeEasyFig45.eps}%
+\end{center}
+%EndExpansion
+
+
+\begin{center}
+\rule{1.5in}{0.5pt}
+\end{center}
+
+Take next the cosine.
+
+Let $y=\cos\theta$.
+
+Now $\cos\theta=\sin\left(  \dfrac{\pi}{2}-\theta\right)  $.
+
+Therefore%
+\begin{align*}
+&
+\begin{array}
+[c]{r}%
+dy=d\left(  \sin\left(  \frac{\pi}{2}-\theta\right)  \right)  =\cos\left(
+\frac{\pi}{2}-\theta\right)  \times d(-\theta),\\
+=\cos\left(  \frac{\pi}{2}-\theta\right)  \times(-d\theta),
+\end{array}
+\\
+&  \frac{dy}{d\theta}=-\cos\left(  \frac{\pi}{2}-\theta\right)  .
+\end{align*}
+
+
+And it follows that%
+\[
+\frac{dy}{d\theta}=-\sin\theta.
+\]
+
+
+\begin{center}
+\rule{1.5in}{0.5pt}
+\end{center}
+
+Lastly, take the tangent.
+\begin{align*}
+\text{Let\qquad\qquad\qquad\qquad\qquad}y  &  =\tan\theta,\\
+dy  &  =\tan(\theta+d\theta)-\tan\theta.
+\end{align*}
+
+
+Expanding, as shown in books on trigonometry%
+
+\begin{align*}
+\tan(\theta+d\theta)  &  =\frac{\tan\theta+\tan d\theta}{1-\tan\theta\cdot\tan
+d\theta};\\
+\text{whence\qquad\qquad\qquad}dy  &  =\frac{\tan\theta+\tan d\theta}%
+{1-\tan\theta\cdot\tan d\theta}-\tan\theta\\
+&  =\frac{(1+\tan^{2}\theta)\tan d\theta}{1-\tan\theta\cdot\tan d\theta}.
+\end{align*}
+
+
+Now remember that if $d\theta$ is indefinitely diminished, the value of~$\tan
+d\theta$ becomes identical with~$d\theta$, and $\tan\theta\cdot d\theta$ is
+negligibly small compared with~$1$, so that the expression reduces to
+\begin{align*}
+dy  &  = \frac{(1+\tan^{2} \theta)\, d\theta}{1},\\
+\text{so that\qquad\qquad} \frac{dy}{d\theta}  &  = 1 + \tan^{2}\theta,\\
+\text{or\qquad\qquad} \frac{dy}{d\theta}  &  = \sec^{2} \theta.
+\end{align*}
+
+
+Collecting these results, we have:
+
+\begin{center}%
+\begin{tabular}
+[c]{|c|c|}\hline
+$\rule[-12pt]{0pt}{32pt}y$ & $\dfrac{dy}{d\theta}$\\\hline
+$\sin\theta$ & $\cos\theta$\\
+$\cos\theta$ & $-\sin\theta$\\
+$\tan\theta$ & $\sec^{2}\theta$\\\hline
+\end{tabular}
+
+\end{center}
+
+Sometimes, in mechanical and physical questions, as, for example, in simple
+harmonic motion and in wave-motions, we have to deal with angles that increase
+in proportion to the time. Thus, if $T$ be the time of one complete
+\emph{period}, or movement round the circle, then, since the angle all round
+the circle is $2\pi$~radians, or~$360%
+%TCIMACRO{\U{b0}}%
+%BeginExpansion
+{{}^\circ}%
+%EndExpansion
+$, the amount of angle moved through in time~$t$, will be
+\begin{align*}
+\theta &  = 2\pi\frac{t}{T},\quad\text{in radians,}\\
+\text{or\qquad\qquad} \theta &  = 360\frac{t}{T},\quad\text{in degrees.}%
+\end{align*}
+
+
+If the \emph{frequency}, or number of periods per second, be denoted by~$n$,
+then $n = \dfrac{1}{T}$, and we may then write:
+\[
+\theta=2\pi nt.
+\]
+Then we shall have
+\[
+y = \sin2\pi nt.
+\]
+
+
+If, now, we wish to know how the sine varies with respect to time, we must
+differentiate with respect, not to~$\theta$, but to~$t$. For this we must
+resort to the artifice explained in Chapter~IX., and put
+\[
+\frac{dy}{dt} = \frac{dy}{d\theta} \cdot\frac{d\theta}{dt}.
+\]
+
+
+Now $\dfrac{d\theta}{dt}$ will obviously be~$2\pi n$; so that
+\begin{align*}
+\frac{dy}{dt}  &  =\cos\theta\times2\pi n\\
+&  =2\pi n\cdot\cos2\pi nt.
+\end{align*}
+Similarly, it follows that%
+\[
+\frac{d(\cos2\pi nt)}{dt}=-2\pi n\cdot\sin2\pi nt.
+\]
+
+
+\section*{Second Differential Coefficient of Sine or Cosine.}
+
+We have seen that when $\sin\theta$ is differentiated with respect to~$\theta$
+it becomes $\cos\theta$; and that when $\cos\theta$ is differentiated with
+respect to~$\theta$ it becomes $-\sin\theta$; or, in symbols,
+\[
+\frac{d^{2}(\sin\theta)}{d\theta^{2}} = -\sin\theta.
+\]
+
+
+So we have this curious result that we have found a function such that if we
+differentiate it twice over, we get the same thing from which we started, but
+with the sign changed from $+$~to~$-$.
+
+The same thing is true for the cosine; for differentiating $\cos\theta$ gives
+us $-\sin\theta$, and differentiating $-\sin\theta$ gives us $-\cos\theta$; or
+thus:
+\[
+\frac{d^{2}(\cos\theta)}{d\theta^{2}} = -\cos\theta.
+\]
+
+
+\emph{Sines and cosines are the only functions of which the second
+differential coefficient is equal \emph{(and of opposite sign to)} the
+original function.}
+
+\begin{center}
+\rule{1.5in}{0.5pt}
+\end{center}
+
+\subsection*{Examples.}
+
+With what we have so far learned we can now differentiate expressions of a
+more complex nature.
+
+(1) $y=\arcsin x$.
+
+If $y$ is the arc whose sine is~$x$, then $x = \sin y$.
+\[
+\frac{dx}{dy}=\cos y.
+\]
+
+
+Passing now from the inverse function to the original one, we get
+\begin{align*}
+\frac{dy}{dx}  &  = \frac{1}{\;\dfrac{dx}{dy}\;} = \frac{1}{\cos y}.\\
+\text{Now\qquad\qquad} \cos y  &  = \sqrt{1-\sin^{2} y}=\sqrt{1-x^{2}};\\
+\text{hence\qquad\qquad\qquad\qquad} \frac{dy}{dx}  &  = \frac{1}%
+{\sqrt{1-x^{2}}},
+\end{align*}
+a rather unexpected result.
+
+(2) $y=\cos^{3} \theta$.
+
+This is the same thing as $y=(\cos\theta)^{3}$.
+
+Let $\cos\theta=v$;\quad then $y=v^{3}$;\quad$\dfrac{dy}{dv}=3v^{2}$.
+\begin{align*}
+\frac{dv}{d\theta}  &  = -\sin\theta.\\
+\frac{dy}{d\theta}  &  = \frac{dy}{dv} \times\frac{dv}{d\theta} = -3 \cos^{2}
+\theta\sin\theta.
+\end{align*}
+
+
+(3) $y=\sin(x+a)$.
+
+Let $x+a=v$;\quad then $y=\sin v$.
+\[
+\frac{dy}{dv}=\cos v;\qquad\frac{dv}{dx}=1 \quad\text{and}\quad\frac{dy}%
+{dx}=\cos(x+a).
+\]
+
+
+(4) $y=\log_{\epsilon}\sin\theta$.
+
+Let $\sin\theta=v$;\quad$y=\log_{\epsilon}v$.
+\begin{align*}
+\frac{dy}{dv}  &  = \frac{1}{v};\quad\frac{dv}{d\theta}=\cos\theta;\\
+\frac{dy}{d\theta}  &  = \frac{1}{\sin\theta} \times\cos\theta= \cot\theta.
+\end{align*}
+
+
+(5) $y=\cot\theta=\dfrac{\cos\theta}{\sin\theta}$.
+\begin{align*}
+\frac{dy}{d\theta}  &  = \frac{-\sin^{2}\theta- \cos^{2} \theta}{\sin^{2}
+\theta}\\
+&  = -(1+\cot^{2} \theta) = -\csc^{2} \theta.
+\end{align*}
+
+
+(6) $y=\tan3\theta$.
+
+Let $3\theta=v$;\quad$y=\tan v$;\quad$\dfrac{dy}{dv}=\sec^{2} v$.
+\[
+\frac{dv}{d\theta}=3;\quad\frac{dy}{d\theta}=3 \sec^{2} 3\theta.
+\]
+
+
+(7) $y = \sqrt{1+3\tan^{2}\theta}$;\quad$y=(1+3 \tan^{2} \theta)^{\frac{1}{2}%
+}$.
+
+Let $3\tan^{2}\theta=v$.
+\begin{align*}
+y  &  = (1+v)^{\frac{1}{2}};\quad\frac{dy}{dv} = \frac{1}{2\sqrt{1+v}}\\
+\frac{dv}{d\theta}  &  = 6\tan\theta\sec^{2} \theta\\
+\text{(for, if $\tan\theta= u$,\qquad\qquad} v  &  = 3u^{2};\quad\frac{dv}{du}
+= 6u;\quad\frac{du}{d\theta} = \sec^{2} \theta;\\
+\text{hence\qquad\qquad} \frac{dv}{d\theta}  &  = 6 (\tan\theta\sec^{2}
+\theta)\\
+\text{hence\qquad\qquad} \frac{dy}{d\theta}  &  = \frac{6\tan\theta\sec
+^{2}\theta}{2\sqrt{1 + 3\tan^{2}\theta}}.
+\end{align*}
+
+
+(8) $y=\sin x \cos x$.
+\begin{align*}
+\frac{dy}{dx}  &  = \sin x(-\sin x) + \cos x \times\cos x\\
+&  = \cos^{2} x - \sin^{2} x.
+\end{align*}
+
+
+
+\end{document}
