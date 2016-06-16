@@ -403,11 +403,11 @@
 \printindex
 </xsl:template>
 
-<xsl:template match="html:br[@hard='1']">~\\
+<xsl:template match="html:br[@hard='1']"> \\
 </xsl:template>
 
 <!-- use version in spaces.xsl
-<xsl:template match="html:msibr">~\\
+<xsl:template match="html:msibr"> \\
 </xsl:template>
 -->
 
@@ -425,7 +425,7 @@
      <xsl:text>\author{</xsl:text>
      <xsl:apply-templates/>
      <xsl:if test="name(following-sibling::*[1])='address'">
-       <xsl:text>~\\</xsl:text>
+       <xsl:text> \\</xsl:text>
        <xsl:value-of select="$newline"/>
        <xsl:apply-templates select="following-sibling::*[1]" mode="frontmatter" />
      </xsl:if>
@@ -441,13 +441,13 @@
 
 <!-- for the sake of the above template, -->
 <xsl:template match="html:msibr" mode="frontmatter">
-  <xsl:text>~\\</xsl:text>
+  <xsl:text> \\</xsl:text>
   <xsl:value-of select="$newline"/>
 </xsl:template>
 
 <xsl:template match="html:author" mode="building-author">
  \and <xsl:apply-templates/>
-  <xsl:if test="name(following-sibling::*[1])='address'">~\\
+  <xsl:if test="name(following-sibling::*[1])='address'"> \\
     <xsl:apply-templates select="following-sibling::*[1]"/>
   </xsl:if>
 </xsl:template>
