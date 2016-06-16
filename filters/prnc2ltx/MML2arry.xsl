@@ -138,7 +138,7 @@ columnlines="none solid solid solid" columnalign="center right left center cente
 
 
     <xsl:if test="@frame='solid'">
-       <xsl:text>~\\ \hline </xsl:text>
+       <xsl:text> \\ \hline </xsl:text>
     </xsl:if>
 
     <xsl:text>\end{</xsl:text>

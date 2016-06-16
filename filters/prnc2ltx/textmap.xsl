@@ -163,7 +163,7 @@
 <!-- Latin 1 -->
 
       <xsl:when test="$first-char='&#xa0;'">
-        <xsl:text xml:space="preserve">~</xsl:text>
+        <xsl:text xml:space="preserve">&#x20;</xsl:text>
       </xsl:when>
       <xsl:when test="$first-char='&#xa1;'">
         <xsl:text xml:space="preserve">\textexclamdown </xsl:text>
