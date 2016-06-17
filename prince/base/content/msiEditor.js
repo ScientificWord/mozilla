@@ -4101,7 +4101,7 @@ function msiEditorGetObjectForProperties(editorElement) {
 function msiCreatePropertiesObjectDataFromSelection(aSelection, editorElement) {
   var retObj = null;
   var editor = msiGetEditor(editorElement);
-  var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+  var container = msiNavigationUtils.getSelectedNodeOrCommonAncestor(editor.selection);
   //  var containerData = msiGetSelectionContainer(editorElement);
   //  var container = containerData.node;
   var theRange = null;
@@ -5536,7 +5536,10 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         objStr = GetString("HLine");
         commandStr = "cmd_reviseLine";
         break;
-
+      case "texb":
+        objStr = GetString("Texb");
+        scriptStr = "openTeXButtonDialog('texb', event.target.refElement);";
+        break;
       case "table":
         objStr = GetString("Table");
         //        scriptStr = "msiEditorInsertOrEditTable(false, editorElement, 'cmd_objectProperties', this)";
