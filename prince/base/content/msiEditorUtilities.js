@@ -8395,6 +8395,14 @@ var msiNavigationUtils = {
     }
     return retNode;
   },
+  getSelectedNodeOrCommonAncestor: function (selection) {
+    var isSingleNode = (selection.anchorNode === selection.focusNode) &&
+      Math.abs(selection.anchorOffset - selection.focusOffset);
+    if (isSingleNode) {
+      return selection.anchorNode.childNodes[Math.min(selection.anchorOffset, selection.focusOffset)];
+    }
+    return selection.getRangeAt(0).commonAncestorContainer;
+  },
   significantOffsetInParent: function (aNode) {
     var siblings = this.getSignificantContents(aNode.parentNode);
     var retVal = -1;
@@ -9513,8 +9521,10 @@ var msiNavigationUtils = {
   getCommonAncestorForSelection: function (aSelection) {
     var topNode = null;
     var parentNodes = [];
-    if (aSelection.rangeCount === 1)
+    if (aSelection.rangeCount === 1) {
       return aSelection.getRangeAt(0).commonAncestorContainer;
+    }
+    // BBM: Revisit this. I don't think this is what we want for multiple selections.
     for (var ix = 0; ix < aSelection.rangeCount; ++ix)
       parentNodes.push(aSelection.getRangeAt(ix).commonAncestorContainer);
     return this.findCommonAncestor(parentNodes);
