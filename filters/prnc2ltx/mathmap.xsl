@@ -181,7 +181,7 @@
           <xsl:when test="$first-char='&#x002A;'">
             <xsl:text xml:space="preserve">\ast </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x005C;'">
+<!--      <xsl:when test="$first-char='&#x005C;'">
             <xsl:text xml:space="preserve">\backslash </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x005E;'">
@@ -198,7 +198,7 @@
           </xsl:when>
           <xsl:when test="$first-char='}'">
             <xsl:text xml:space="preserve">\}</xsl:text>
-          </xsl:when>
+          </xsl:when> -->
           <xsl:when test="$first-char='~'">
             <xsl:text xml:space="preserve">\sim  </xsl:text>
           </xsl:when>
