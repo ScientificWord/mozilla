@@ -865,7 +865,6 @@ var graphicsConverter = {
   //Note: documentDir should be an nsILocalFile
   ensureTypesetGraphicForElement: function(objElement, documentDir, aWindow, callbackObject) {
     var attrValStr;
-    dump("In graphicsConverter.ensureTypesetGraphicForElement, 1\n");
     if (objElement.getAttribute("msigraph") === "true")
       return false;
 
@@ -914,30 +913,17 @@ var graphicsConverter = {
     var graphicFile = msiFileFromAbsolutePath(gfxFileStr);
     var importName;
     var extension = getExtension(graphicFile.path).toLowerCase();
-
-    // Test to see if any derived graphics files are missing
-    if (this.allDerivedGraphicsExist(documentDir, graphicFile, objElement)) return true;
-    // if (extension === 'wmf' || extension === 'emf') {
-    //   var extensionRE = /\.([^\.]+)$/;
-    //   var bareLeaf = graphicFile.leafName.replace(extensionRE,'');
-    //   var testFile = documentDir.clone();
-    //   if (testFile) {
-    //     testFile.append('graphics');
-    //     testFile.append(bareLeaf + '.eps');
-    //     if (testFile.exists()) {
-    //       importName = this.copyAndConvert(testFile, false, theWidth, theHeight);
-    //     }        
-    //   }
-    // } else {
-      importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
-    // }
-
-
-    if (importName){
-      objElement.setAttribute("src", importName);
-      objElement.setAttribute("data", importName);
+    if (graphicFile.exists()) {
+      // Test to see if any derived graphics files are missing
+      if (this.allDerivedGraphicsExist(documentDir, graphicFile, objElement)) return true;
+        importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
+      if (importName){
+        objElement.setAttribute("src", importName);
+        objElement.setAttribute("data", importName);
+      }
+      return true;
     }
-    return true;
+    return false;
   },
 
   ensureTypesetGraphicsForDocument: function(aDocument, aWindow) {
@@ -949,13 +935,17 @@ var graphicsConverter = {
 
     var objList = aDocument.getElementsByTagName("object");
     var imgList = aDocument.getElementsByTagName("img");
+    if (objList.length>0 || imgList.length>0)
+    {
+      for (ii = 0; ii < imgList.length; ++ii) {
+        this.ensureTypesetGraphicForElement(imgList[ii], documentDir, aWindow, null);
+      }      
+      for (var ii = 0; ii < objList.length; ++ii) {
+        this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null);
+      }
+    }
 
-    for (var ii = 0; ii < objList.length; ++ii) {
-      this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null);
-    }
-    for (ii = 0; ii < imgList.length; ++ii) {
-      this.ensureTypesetGraphicForElement(imgList[ii], documentDir, aWindow, null);
-    }
+
   }
 };
 
