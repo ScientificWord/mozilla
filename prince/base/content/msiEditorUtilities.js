@@ -11720,3 +11720,11 @@ function convertToUTFIfNecessary(aFile, inputFileAsString) {
   writeStringAsFile(inputFileAsString, testfile);
   return testfile;
 }
+
+function writeStatusMessage(message) {
+  document.getElementById("status-message").value=message;
+}
+
+function clearStatusMessage() {
+  document.getElementById("status-message").value="";
+}
