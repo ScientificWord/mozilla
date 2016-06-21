@@ -170,7 +170,9 @@
     <statusbarpanel id="structToolbar" flex="100" pack="end">
     <label id="structSpacer" value="" flex="100"/>
     </statusbarpanel>
-    <statusbarpanel class="statusbarpanel-iconic" id="offline-status"/>
+    <statusbarpanel class="statusbarpanel-iconic" id="statusbar-message" flex="50">
+      <description id="status-message" value="" flex="50"/>
+    </statusbarpanel>
   </statusbar>
 
 <!-- command sets -->
