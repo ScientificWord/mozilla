@@ -1327,7 +1327,9 @@ function msiEditorDocumentObserver(editorElement) {
           baseDir = baseDir.parent; // and now it points to the working directory
 
           graphicsConverter.init(win, baseDir, product);
-          graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
+          writeStatusMessage('Converting graphics if necessary');
+          graphicsConverter.ensureTypesetGraphicsForDocument(document, doc, win);
+          clearStatusMessage();
         }
         if (bIsRealDocument)
           this.mEditorElement.mbInitializationCompleted = true;
