@@ -1328,7 +1328,7 @@ function msiEditorDocumentObserver(editorElement) {
 
           graphicsConverter.init(win, baseDir, product);
           writeStatusMessage('Converting graphics if necessary');
-          graphicsConverter.ensureTypesetGraphicsForDocument(document, doc, win);
+          graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
           clearStatusMessage();
         }
         if (bIsRealDocument)
