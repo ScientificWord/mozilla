@@ -1193,7 +1193,7 @@ GK_ATOM(zoomAndPan, "zoomAndPan")
 GK_ATOM(MOZcolumnalign, "-moz-math-columnalign")
 GK_ATOM(MOZcolumnline, "-moz-math-columnline") // different from columnlines_
 GK_ATOM(MOZfontsize, "-moz-math-font-size") // different from fontsize_
-GK_ATOM(MOZfontstyle, "-moz-math-font-style") // different from fontstyle_
+GK_ATOM(MOZfontstyle, "_moz-math-font-style") // different from fontstyle_
 GK_ATOM(MOZrowalign, "-moz-math-rowalign")
 GK_ATOM(MOZrowline, "-moz-math-rowline") // different from rowlines_
 GK_ATOM(abs_, "abs")

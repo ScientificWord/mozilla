@@ -23,7 +23,7 @@ var msiSearchUtils =
     {
       case '_moz-dirty':
       case '_moz_dirty':
-      case '-moz-math-font-style':
+      case '_moz-math-font-style':
         returnVal = false;
       break;
       case "limitPlacement":
