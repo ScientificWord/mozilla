@@ -1872,7 +1872,7 @@ function msiCopyElementAttributesExcluding(newElement, oldElement, editor, exclu
       continue;
     switch (attrName) {
     case '_moz-dirty':
-    case '-moz-math-font-style':
+    case '_moz-math-font-style':
       break;
     default:
       if (msiElementCanHaveAttribute(newElement, attrName)) {
@@ -10727,7 +10727,7 @@ function processElement(editor, node, treeWalker, output, currentline, indent, s
     var attrs = node.attributes;
     var len = attrs.length;
     for (var i = 0; i < len; i++) {
-      if (attrs[i].name.indexOf('-moz-') === -1 && attrs[i].name !== '_moz_dirty' && attrs[i].name !== 'msiSelectionManagerID')
+      // if (attrs[i].name.indexOf('-moz-') === -1 && attrs[i].name !== '_moz_dirty' && attrs[i].name !== 'msiSelectionManagerID')
         currentline.s += ' ' + attrs[i].name + '="' + attrs[i].value + '"';
     }
   }
