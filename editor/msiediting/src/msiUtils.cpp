@@ -2887,7 +2887,7 @@ nsresult msiUtils::GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
 
 nsresult msiUtils::Refresh(nsIEditor * editor)
 {
-  return NS_OK;
+  // return NS_OK;
   nsCOMPtr<nsISelection> sel;
   nsCOMPtr<nsIDOMNode> startNode;
   PRUint32 startOffset;

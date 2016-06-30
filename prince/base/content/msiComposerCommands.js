@@ -4599,15 +4599,30 @@ var cmdMSIUndoCommand =
 
   doCommand: function(aCommand)
   {
+    var saveTxnSetsSelection;
     if (getCurrentViewMode() == kDisplayModeSource) {
       var sourceIframe = document.getElementById('content-source');
       var sourceEditor = sourceIframe.contentWindow.gEditor;
       sourceEditor.undo();
     }
     else {
+      var editorElement = msiGetActiveEditorElement();
       var editor = msiGetCurrentEditor();
+      var isEnabled = {}, canUndo = {};
       editor instanceof Components.interfaces.nsIEditor;
-      editor.undo(1);
+      if (isInMath(editorElement)) {
+        saveTxnSetsSelection = editor.shouldTxnSetSelection();
+        editor.setShouldTxnSetSelection(false);
+        editor.undo(1);
+        editor.canUndo(isEnabled, canUndo);
+        if (isEnabled.value && canUndo.value) {
+          editor.undo(1);
+          editor.redo(1);
+        }
+        editor.setShouldTxnSetSelection(saveTxnSetsSelection);
+      }
+      else
+        editor.undo(1);
     }
   }
 };
