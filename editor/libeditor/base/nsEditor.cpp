@@ -5245,8 +5245,8 @@ NS_IMETHODIMP nsEditor::CreateTxnForInsertElement(nsIDOMNode * aNode,
     result = TransactionFactory::GetNewTransaction(InsertElementTxn::GetCID(), (EditTxn **)aTxn);
     if (NS_SUCCEEDED(result)) {
       // BBM: Temporary stuff
-      NS_IF_ADDREF(aNode);
-      NS_IF_ADDREF(aParent);
+      // NS_IF_ADDREF(aNode);
+      // NS_IF_ADDREF(aParent);
       result = (*aTxn)->Init(aNode, aParent, aPosition, this);
     }
   }
