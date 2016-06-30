@@ -80,7 +80,7 @@ math[display="inline"] {
 /* If the textual content of an <mi> consists of a single character
    with a corresponding mathematical italic alphanumeric character,
    then try to emulate that character */
-[-moz-math-font-style="italic"] {
+[_moz-math-font-style="italic"] {
   font-style: italic;
   font-weight: normal;
 }
@@ -95,11 +95,11 @@ math[display="inline"] {
     (non-slanted) for all tokens except mi. ... (The deprecated fontslant
     attribute also behaves this way.)"
  */
-[-moz-math-font-style="normal"] {
+[_moz-math-font-style="normal"] {
   font-style: normal;
 }
 /* A style-invariant character preserves its own style */
-[-moz-math-font-style="invariant"] {
+[_moz-math-font-style="invariant"] {
   font-style: normal;
   font-weight: normal;
 }
