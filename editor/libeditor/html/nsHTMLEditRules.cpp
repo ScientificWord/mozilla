@@ -4200,7 +4200,8 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
        nsCOMPtr<nsIDOMNode> dummy;
 
        mathElement->GetParentNode(getter_AddRefs(parentOfMath));
-       parentOfMath->RemoveChild(mathElement, getter_AddRefs(dummy));
+       // parentOfMath->RemoveChild(mathElement, getter_AddRefs(dummy));
+       mHTMLEditor -> DeleteNode(mathElement);
 
        nsCOMPtr<nsIDOMNode> newMath;
        PRInt32 mathOffset;
