@@ -126,7 +126,7 @@ function StructRemoveTag()
     }
     editor.deleteNode(element);
   }
-  catch (e) {};
+  catch (e) {}
 
   editor.endTransaction();
 }
@@ -135,9 +135,9 @@ function StructRefreshTag()
 {
   var editor = GetCurrentEditor();
   if (!editor) return;
-  var element = gContextMenuFiringDocumentElement;
+  // var element = gContextMenuFiringDocumentElement;
 
-//  editor.markNodeDirty(element);
+  // editor.markNodeDirty(element);
   StructRemoveTag();
   editor.undo(1);
 }
