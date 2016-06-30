@@ -651,6 +651,7 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   if (!mRules) { return NS_ERROR_NOT_INITIALIZED; }
 
   nsresult result;
+  nsAutoEditBatch beginBatching(this);
 
   // delete placeholder txns merge.
   // nsAutoPlaceHolderBatch batch(this, gDeleteTxnName);

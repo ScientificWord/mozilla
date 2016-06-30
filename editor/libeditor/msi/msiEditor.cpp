@@ -317,6 +317,7 @@ msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
   nsCOMPtr<nsIDOMNode> startNode, endNode;
   PRInt32 startOffset(0), endOffset(0);
   PRBool bCollapsed(PR_FALSE);
+  nsAutoEditBatch beginBatching(this);
   res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                          endOffset, bCollapsed);
   if (bCollapsed)
@@ -328,6 +329,7 @@ msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
 
 nsresult msiEditor::InsertMath(PRBool isDisplay)
 {
+  nsAutoEditBatch beginBatching(this);
   nsresult res(NS_OK);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
@@ -355,13 +357,9 @@ nsresult msiEditor::InsertMath(PRBool isDisplay)
         theOffset = startOffset;
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
-        BeginTransaction();
         PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-        SaveSelection(selection);
         if (m_msiEditingMan)
           res = m_msiEditingMan->InsertMath(editor, selection, theNode, theOffset, flags, isDisplay);
-
-        EndTransaction();
       }
     }
   }
@@ -382,6 +380,7 @@ msiEditor::InsertDisplay()
   nsCOMPtr<nsIDOMNode> mathnode;
   nsCOMPtr<nsIDOMNode> parent;
   nsCOMPtr<nsIDOMNode> msidisplay;
+  nsAutoEditBatch beginBatching(this);
   nsString attr = NS_LITERAL_STRING("display");
   nsString val = NS_LITERAL_STRING("block");
   nsString currentVal;
@@ -435,6 +434,7 @@ NS_IMETHODIMP
 msiEditor::InsertFraction(const nsAString& lineThickness, PRUint32 attrFlags)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask))
   {
     nsCOMPtr<nsISelection> selection;
@@ -465,6 +465,7 @@ msiEditor::InsertBinomial(const nsAString& opening, const nsAString& closing,
                           const nsAString& lineThickness, PRUint32 attrFlags)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
     nsCOMPtr<nsISelection> selection;
@@ -494,6 +495,7 @@ NS_IMETHODIMP
 msiEditor::InsertSqRoot()
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
     nsCOMPtr<nsISelection> selection;
@@ -523,6 +525,7 @@ NS_IMETHODIMP
 msiEditor::InsertRoot()
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
     nsCOMPtr<nsISelection> selection;
@@ -552,6 +555,7 @@ NS_IMETHODIMP
 msiEditor::InsertSymbol(const nsAString & symbol)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   if (symbol.CharAt(0) == ' ') return res;
   PRBool bCollapsed(PR_FALSE);
   if (!(mFlags & eEditorPlaintextMask))
@@ -588,6 +592,7 @@ NS_IMETHODIMP
 msiEditor::InsertMathname(const nsAString & mathname)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   NS_ASSERTION(mathname.Length() > 0, "Mathname must be at least a single character.");
   if (mathname.Length() > 0 && !(mFlags & eEditorPlaintextMask))
   {
@@ -651,6 +656,7 @@ NS_IMETHODIMP
 msiEditor::InsertMathunit(const nsAString & mathunit)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   NS_ASSERTION(mathunit.Length() > 0, "Mathunit must be at least a single character.");
   if (mathunit.Length() > 0 && !(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
@@ -682,6 +688,7 @@ NS_IMETHODIMP
 msiEditor::InsertEngineFunction(const nsAString & mathname)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   NS_ASSERTION(mathname.Length() > 0, "Function name must be at least a single character.");
   if (mathname.Length() > 0 && !(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
@@ -720,6 +727,7 @@ NS_IMETHODIMP
 msiEditor::InsertFence(const nsAString & open, const nsAString & close)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask))
   {
     nsCOMPtr<nsISelection> selection;
@@ -756,6 +764,7 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
   const nsAString & delim)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
     nsCOMPtr<nsISelection> selection;
@@ -799,6 +808,7 @@ msiEditor::InsertOperator(const nsAString & symbol, PRUint32 attrFlags,
                           const nsAString & minsize, const nsAString & maxsize)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
     nsCOMPtr<nsISelection> selection;
@@ -844,6 +854,7 @@ msiEditor::InsertDecoration(const nsAString & above, const nsAString & below,
                             const nsAString & aroundNotation, const nsAString & aroundType)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
     nsCOMPtr<nsISelection> selection;
@@ -1582,6 +1593,7 @@ msiEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
 
 NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
 {
+  nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
     nsresult res(NS_OK);
@@ -1832,6 +1844,7 @@ nsresult
 msiEditor::InsertSubOrSup(PRBool isSup)
 {
   nsresult res(NS_OK);
+  nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
     nsCOMPtr<nsISelection> selection;
@@ -1888,6 +1901,7 @@ msiEditor::InsertSymbolEx(nsISelection * aSelection, nsIDOMNode * aNode,
                           PRInt32 aOffset, const nsAString & aSymbol)
 {
   nsresult res(NS_OK);
+  nsAutoEditBatch beginBatching(this);
   nsCOMPtr<nsIEditor> editor;
   QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
   res = m_msiEditingMan->InsertSymbol(editor, aSelection, aNode, aOffset, aSymbol);
@@ -1899,6 +1913,7 @@ msiEditor::InsertMathnameEx(nsISelection * aSelection, nsIDOMNode * aNode,
                            PRInt32 aOffset, const nsAString & aMathname)
 {
   nsresult res(NS_OK);
+  nsAutoEditBatch beginBatching(this);
   nsCOMPtr<nsIEditor> editor;
   QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
   res = m_msiEditingMan->InsertMathname(editor, aSelection, aNode, aOffset, aMathname);
@@ -1910,6 +1925,7 @@ msiEditor::InsertMathunitEx(nsISelection * aSelection, nsIDOMNode * aNode,
                            PRInt32 aOffset, const nsAString & aMathunit)
 {
   nsresult res(NS_OK);
+  nsAutoEditBatch beginBatching(this);
   nsCOMPtr<nsIEditor> editor;
   QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
   res = m_msiEditingMan->InsertMathunit(editor, aSelection, aNode, aOffset, aMathunit);
@@ -1922,6 +1938,7 @@ msiEditor::InsertEngineFunctionEx(nsISelection * aSelection, nsIDOMNode * aNode,
                                   PRInt32 aOffset, const nsAString & aName)
 {
   nsresult res(NS_OK);
+  nsAutoEditBatch beginBatching(this);
   nsCOMPtr<nsIEditor> editor;
   QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
   res = m_msiEditingMan->InsertEngineFunction(editor, aSelection, aNode, aOffset, aName);
@@ -2067,6 +2084,7 @@ nsresult msiEditor::ComparePoints(nsIDOMNode * node1, PRUint32 offset1,
 nsresult msiEditor::AddMatrixRows(nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany)
 {
   nsresult res(NS_OK);
+  nsAutoEditBatch beginBatching(this);
   nsCOMPtr<nsIEditor> editor;
   QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
   res = m_msiEditingMan->AddMatrixRows(editor, aMatrix, insertAt, howMany);
@@ -2077,6 +2095,7 @@ nsresult msiEditor::AddMatrixRows(nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint
 nsresult msiEditor::AddMatrixColumns(nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany)
 {
   nsresult res(NS_OK);
+  nsAutoEditBatch beginBatching(this);
   nsCOMPtr<nsIEditor> editor;
   QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
   res = m_msiEditingMan->AddMatrixColumns(editor, aMatrix, insertAt, howMany);
@@ -2192,12 +2211,13 @@ msiEditor::RemoveDisplay( nsIDOMNode * focusNode, nsIDOMNode * anchorNode) {
   nsCOMPtr<nsIDOMElement> displayNode;
   nsresult rv(NS_OK);
   PRUint32 i;
+  nsAutoEditBatch beginBatching(this);
   GetElementOrParentByTagName(NS_LITERAL_STRING("msidisplay"), focusNode, getter_AddRefs(displayNode));
   if (!displayNode) {
     GetElementOrParentByTagName(NS_LITERAL_STRING("msidisplay"), anchorNode, getter_AddRefs(displayNode));
   }
   if (displayNode) {
-    BeginTransaction();
+    // BeginTransaction();
     nsCOMPtr<nsIDOMNodeList> nodeList;
     displayNode->GetElementsByTagName(NS_LITERAL_STRING("math"), getter_AddRefs(nodeList));
     PRUint32 listCount = 0;
@@ -2212,7 +2232,7 @@ msiEditor::RemoveDisplay( nsIDOMNode * focusNode, nsIDOMNode * anchorNode) {
       }
     }
     RemoveContainer(displayNode);
-    EndTransaction();
+    // EndTransaction();
   }
   return rv;
 }
@@ -3415,53 +3435,6 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   return res;
 }
 
-//nsresult
-//msiEditor::CheckForUnicodeNumber(PRBool inmath)
-//{
-//  nsresult res = NS_OK;
-//  nsCOMPtr<nsISelection> selection;
-//  GetSelection(getter_AddRefs(selection));
-//  if (!selection) return res;
-//  nsCOMPtr<nsIDOMNode> node;
-//  nsCOMPtr<nsIDOM3Node> textNode;
-//  nsCOMPtr<nsIDOMNode> originalNode;
-//  PRUnichar ch = 0;
-//  PRInt32 ctx, action;
-//  PRInt32 intOffset;
-//  PRUint32 offset;
-//  nsAutoString theText;
-//  PRInt32 lookupResult;
-//  nsAutoString data, pasteContext, pasteInfo, error;
-//  selection->GetFocusNode((nsIDOMNode **) getter_AddRefs(originalNode));
-//  if (!originalNode) return res;
-//  selection->GetFocusOffset( &intOffset );
-//  offset = (PRUint32)intOffset;
-//  PRUint32 originalOffset =ffset;
-//  GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, ch, lookupResult);
-//  if (node)  // there was success somewhere
-//  {
-//    m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
-//    if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath ||
-//      inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
-//    {
-//      selection->Collapse(node, offset);
-//      selection->Extend(originalNode,originalOffset);
-//      if (action == msiIAutosub::ACTION_SUBSTITUTE)
-//        InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE);
-//      else if (action == msiIAutosub::ACTION_EXECUTE)
-//      {
-//        nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
-//        if (res == NS_OK)
-//        {
-//          sr->SetCtx(m_window);
-//          sr->Eval(data, error);
-//          if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
-//        }
-//      }
-//    }
-//  }
-//  return res;
-//}
 
 NS_IMETHODIMP
 msiEditor::InitRules()
@@ -3584,11 +3557,11 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
 {
   nsCOMPtr<nsIDOMNode> topMathNode;
   *bHandled = PR_FALSE;
+  nsAutoEditBatch beginBatching(this);
   GetMathParent(splitpointNode, topMathNode);
   if (!topMathNode)
     return NS_OK;  //return this without setting bHandled - insertion should proceed as usual, since we're not in Math
 
-  BeginTransaction();
   PRInt32 nInsertPos(-1);
   PRInt32 nMatrixRowLeft(-1), nMatrixRowRight(-1);
   nsCOMPtr<nsIEditor> editor;
@@ -3606,7 +3579,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
   PRInt32 doSplitAt(-1), splitOffset(0);
   nsCOMPtr<nsIDOMNode> splittable, splitParent, splitChild;
   nsCOMPtr<nsIDOMNode> nextNode, nextParent, prevChild, matrixContainer, tempNode, displayContainer;
-//  nsCOMPtr<nsIDOMElement> asElement;
+  //  nsCOMPtr<nsIDOMElement> asElement;
   nsCOMPtr<nsIDOMNode> leftNode, rightNode;  //To be filled in by the split, if it occurs
   nsAutoString tagName;
   nsresult dontcare;
@@ -3643,9 +3616,9 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         else
           toLeftRight = 1;
       }
-//        currPos = GetIndexOf(nextNode, nextParent);
-//        if (prevPos > 0)
-//          ++currPos;
+       // currPos = GetIndexOf(nextNode, nextParent);
+       // if (prevPos > 0)
+       //   ++currPos;
     }
     else if ( tagName.EqualsLiteral("math") )
     {
@@ -3705,7 +3678,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
           leftNode = GetChildAt(splitParent, currPos);
         bSplitDone = PR_TRUE;
       }
-//      break;
+     // break;
     }
     else if ( tagName.EqualsLiteral("mtd") || tagName.EqualsLiteral("maction") || tagName.EqualsLiteral("menclose") || tagName.EqualsLiteral("mphantom")
          || tagName.EqualsLiteral("msqrt") )  //The one-child "templates"
@@ -3715,7 +3688,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       if (!splittable)
       {
         doSplitAt = currPos;
-//        if ((toLeftRight < 0) && (currPos > 0))
+       // if ((toLeftRight < 0) && (currPos > 0))
         if (toLeftRight < 0)
           ++doSplitAt;
       }
@@ -3757,12 +3730,12 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
             if (!splittable)
             {
               doSplitAt = currPos;
-//            if ( (toLeftRight < 0) && (doSplitAt > 0) )
+           // if ( (toLeftRight < 0) && (doSplitAt > 0) )
               if (toLeftRight < 0)
                 ++doSplitAt;  //Means the split should be to the right of current child node's (that is, "prevChild") position.
             }
-//            specialInsertPos = 1;
-//            skipAtEnd = 1;
+           // specialInsertPos = 1;
+           // skipAtEnd = 1;
           break;
           case msiIMathMLEditingBC::MATHML_MROWFENCE:
           {
@@ -3779,7 +3752,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
               if (!splittable)
               {
                 doSplitAt = currPos;
-//              if ( (toLeftRight < 0) && (doSplitAt > 0) )
+             // if ( (toLeftRight < 0) && (doSplitAt > 0) )
                 if (toLeftRight < 0)
                   ++doSplitAt;  //Means the split should be to the right of current child node's (that is, "prevChild") position.
               }
@@ -3857,7 +3830,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       splittable = nextNode;
       toLeftRight = 0;
     }
-//    }
+   // }
     prevPos = currPos;
     if (splittable && !splitChild)
     {
@@ -3961,8 +3934,6 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         if (leftNode && (newLeftContainer != splitParent))
         {
           PRInt32 insertAt(-1);
-          editor->BeginTransaction();
-          editor->SaveSelection(selection);
           //insert leftNode in newLeftContainer
           res = DeleteNode(leftNode);
           if (NS_SUCCEEDED(res))
@@ -3983,17 +3954,16 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
           }
           if (NS_SUCCEEDED(res))
             res = InsertNode(leftNode, newLeftContainer, insertAt);
-  //        res = MoveNode(leftNode, newLeftContainer, 0); //at position 0??? Maybe should be at the end
-  //        //else put an input box there - but shouldn't that already be there? And does MoveNode get rid of it??
-  //      else if (leftInsert)
-  //      {
-  //        nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
-  //        GetMathMLInsertionInterface(newLeftContainer, 0, getter_AddRefs(mathmlEditing));
-  //        if (mathmlEditing)
-  //        {
-  //          res = mathmlEditing->InsertNode(editor, selection, leftNode, flags);
-  //        }
-          editor->EndTransaction();
+       //   res = MoveNode(leftNode, newLeftContainer, 0); //at position 0??? Maybe should be at the end
+       //   //else put an input box there - but shouldn't that already be there? And does MoveNode get rid of it??
+       // else if (leftInsert)
+       // {
+       //   nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
+       //   GetMathMLInsertionInterface(newLeftContainer, 0, getter_AddRefs(mathmlEditing));
+       //   if (mathmlEditing)
+       //   {
+       //     res = mathmlEditing->InsertNode(editor, selection, leftNode, flags);
+       //   }
         }
         flags = 0;
         if (rightNode && (newRightContainer != splitParent))
@@ -4020,17 +3990,16 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
           if (NS_SUCCEEDED(res))
             res = InsertNode(rightNode, newRightContainer, 0);
           //insert rightNode in newRightContainer
-  //        res = MoveNode(rightNode, newRightContainer, 0); //at position 0??? Probably
-  //        //else put an input box there - but shouldn't that already be there? And does MoveNode get rid of it??
-  //      else if (rightInsert)
-  //      {
-  //        nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
-  //        GetMathMLInsertionInterface(newRightContainer, 0, getter_AddRefs(mathmlEditing));
-  //        if (mathmlEditing)
-  //        {
-  //          res = mathmlEditing->InsertNode(editor, selection, rightNode, flags);
-  //        }
-          editor->EndTransaction();
+       //   res = MoveNode(rightNode, newRightContainer, 0); //at position 0??? Probably
+       //   //else put an input box there - but shouldn't that already be there? And does MoveNode get rid of it??
+       // else if (rightInsert)
+       // {
+       //   nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
+       //   GetMathMLInsertionInterface(newRightContainer, 0, getter_AddRefs(mathmlEditing));
+       //   if (mathmlEditing)
+       //   {
+       //     res = mathmlEditing->InsertNode(editor, selection, rightNode, flags);
+       //   }
         }
       }
       else if (splitParent)        //in this case we'll insert the matrix at, but the previous contents of splitParent should be divvied up
@@ -4154,16 +4123,16 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       if (specialInsertPos > 0)
         realInsertPos = specialInsertPos;
       res = InsertNode(matrixContainer, splitParent, realInsertPos);
-//  //      if (nInsertPos < 0 || !bReplaceNode)
-//  //      {
-//      nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
-//      PRUint32 flags(0);
-//      GetMathMLInsertionInterface(splitParent, realInsertPos, getter_AddRefs(mathmlEditing));
-//      if (mathmlEditing)
-//      {
-//  //          editor->BeginTransaction();
-//  //          editor->SaveSelection(selection);
-//        res = mathmlEditing->InsertNode(editor, selection, matrixContainer, flags);
+     // //      if (nInsertPos < 0 || !bReplaceNode)
+     // //      {
+     //     nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
+     //     PRUint32 flags(0);
+     //     GetMathMLInsertionInterface(splitParent, realInsertPos, getter_AddRefs(mathmlEditing));
+     //     if (mathmlEditing)
+     //     {
+     // //          editor->BeginTransaction();
+     // //          editor->SaveSelection(selection);
+     //       res = mathmlEditing->InsertNode(editor, selection, matrixContainer, flags);
       if (NS_SUCCEEDED(res))
         *bHandled = PR_TRUE;
     }
@@ -4176,7 +4145,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       SetAttribute(asElement, typeStr, eqnArrayStr);
       if (bDisplayNeedsMSIDisplay)
       {
-//        nsCOMPtr<nsIDOMNode> msiDisplayNode;
+       // nsCOMPtr<nsIDOMNode> msiDisplayNode;
         nsAutoString msidisplayStr;
         msidisplayStr.AssignASCII("msidisplay");
         dontcare = InsertContainerAbove( topMathNode, address_of(displayContainer), msidisplayStr, nsnull, nsnull);
@@ -4218,7 +4187,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
             }
           }
           newRange->SetStart(caretNode, caretPos);
-//          newRange->SetStartOffset(caretPos);
+         // newRange->SetStartOffset(caretPos);
           newRange->Collapse(PR_TRUE);
           selection->RemoveAllRanges();
           selection->AddRange(newRange);
