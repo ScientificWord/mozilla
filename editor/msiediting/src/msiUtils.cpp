@@ -2899,6 +2899,7 @@ nsresult msiUtils::Refresh(nsIEditor * editor)
   if (nodeType == nsIDOMNode::TEXT_NODE)
     startNode->GetParentNode(getter_AddRefs(startNode));
   editor->MarkNodeDirty(startNode);
+  return NS_OK;
 }
 
 
