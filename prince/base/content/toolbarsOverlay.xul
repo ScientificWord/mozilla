@@ -291,9 +291,9 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
                   label="&saveToolbarCmd.label;" />
 #ifdef PROD_SNB
   <toolbarbutton id="printPreviewButton"  class="toolbarbutton-1"
-        oncommand="msiGoDoCommand('cmd_preview');"/>
+        observes="cmd_previewDirect"/>
   <toolbarbutton id="printButton"  class="toolbarbutton-1"
-        oncommand="msiGoDoCommand('cmd_print');"/>
+        observes="cmd_printDirect"/>
         <!-- label="&printPreviewCmd.label;"
         tooltiptext="&printPreviewToolbarCmd.tooltip;"
         label="&printCmd.label;"
