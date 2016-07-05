@@ -1432,7 +1432,20 @@ function isShell(filename) {
 function defaultDocDir() {
   var dirkey;
   var docdir;
-  var defdocdirstring;
+  var prefdocdirstring;
+  prefdocdirstring = GetStringPref("swp.prefDocumentDir");
+  if (prefdocdirstring && prefdocdirstring.length > 0) {
+    try {
+      docdir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+      docdir.initWithPath(prefdocdirstring);  
+      if (!docdir.exists()) docdir.create(1,0755);     
+      if (docdir.exists()) return docdir;    
+    }
+    catch(e) {
+      msidump(e.message);
+    }
+  }
+  // if we are here, we did not find docdir from the preferences. Now try the default.
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   if (getOS(window) == "win")
     dirkey = "Pers";
@@ -1441,14 +1454,13 @@ function defaultDocDir() {
     dirkey = "UsrDocs";
   else
     dirkey = "Home";
-  // if we can't find the one in the prefs, get the default
   docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
-  if (!docdir.exists()) docdir.create(1,0755);
-  defdocdirstring = GetStringPref("swp.prefDocumentDir");
-  if (defdocdirstring.length == 0) defdocdirstring = GetString("DefaultDocDir");
-  docdir.append(defdocdirstring);
-  if (!docdir.exists()) docdir.create(1,0755);
-  return docdir;
+  if (docdir) {
+    docdir.append(GetString('DefaultDocDir'));
+    if (!docdir.exists()) docdir.create(1,0755);
+    return docdir;
+  }
+  return null;
 }
 
 
