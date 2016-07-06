@@ -677,7 +677,7 @@ function rebuildSnapshots(doc) {
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
   // BBM: test to see if this is necessary
 
-  var wrapperlist, objlist, length, objlength, i, obj, snapshot;
+  var wrapperlist, objlist, length, i, obj;
   var obj = null;
   var doRefresh = false;
   var aVCamObjectNum;
@@ -685,12 +685,12 @@ function rebuildSnapshots(doc) {
   length = wrapperlist.length;
   for (i = 0; i < length; i++) {
     if (wrapperlist[i].parentNode.tagName === "graph") {
-      obj = wrapperlist[i].firstChild;
+      objlist = wrapperlist[i].getElementsByTagName('object');
+      obj = objlist[0];
       if (obj) {
-        img = obj.nextSibling;
-      } else continue;
-      aVCamObjectNum = setCurrentVCamObject(obj);
-      vcamWrapperArray[aVCamObjectNum].makeSnapshot();
+        aVCamObjectNum = setCurrentVCamObject(obj);
+        vcamWrapperArray[aVCamObjectNum].makeSnapshot();
+      }
     }
   }
 }
