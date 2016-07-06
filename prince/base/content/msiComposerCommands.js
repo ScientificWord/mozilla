@@ -6747,26 +6747,30 @@ function msiInsertRules(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
   var unitHandler = new UnitHandler(editor);
-	unitHandler.initCurrentUnit(dialogData.height.units);
+  var halfMinDim;  // half of min(width,height) in pixels
+  if (!dialogData.height.units) dialogData.height.units='px';
+  var unit = dialogData.height.units;
+	unitHandler.initCurrentUnit(unit);
 
   var node = editor.document.createElement('msirule');
   var styleStr = "";
   var colorStr;
-  var liftStr = String(dialogData.lift.size) + dialogData.lift.units;
-  var widthStr = String(dialogData.width.size) + dialogData.width.units;
-  var heightStr = String(dialogData.height.size) + dialogData.height.units;
+  var liftStr = String(dialogData.lift.size) + unit;
+  var widthStr = String(dialogData.width.size) + unit;
+  var heightStr = String(dialogData.height.size) + unit;
+  halfMinDim = 0.5*(Math.min(dialogData.width.size,dialogData.height.size));
   node.setAttribute('lift', liftStr);
   node.setAttribute("req", "xcolor");
-  styleStr += "vertical-align: " + unitHandler.getValueAs(dialogData.lift.size,"px")+"px";
+  styleStr += "vertical-align: " + liftStr;
   node.setAttribute("width", widthStr);
-  styleStr += "; width: " + Math.max(1,unitHandler.getValueAs(dialogData.width.size,"px"))+"px";
+  styleStr += "; width: " + String(dialogData.width.size - 2*halfMinDim)+ unit;
   node.setAttribute("height", heightStr);
-  styleStr += "; height: " + Math.max(1,unitHandler.getValueAs(dialogData.height.size,"px"))+"px";
+  styleStr += "; height: " + String(dialogData.height.size - 2*halfMinDim) + unit;
   colorStr = dialogData.ruleColor;
   if (colorStr.indexOf("rgb") == 0) colorStr = ConvertRGBColorIntoHEXColor(color);
   else if (colorStr.indexOf("#") == -1) colorStr = textColorToHex(colorStr);
   node.setAttribute("color",colorStr);
-  styleStr += "; background-color: " + colorStr + ";";
+  styleStr += "; border: solid " + halfMinDim + unit + ' ' + colorStr + ";";
   node.setAttribute('style',styleStr);
   editor.insertElementAtSelection(node,true);
 }
@@ -6774,10 +6778,16 @@ function msiInsertRules(dialogData, editorElement)
 function msiReviseRules(reviseData, dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
+  var unitHandler = new UnitHandler(editor);
+  var halfMinDim;  // half of min(width,height) in pixels
+  if (!dialogData.height.units) dialogData.height.units='px';
+  var unit = dialogData.height.units;
+  unitHandler.initCurrentUnit(unit);
+  halfMinDim = 0.5*(Math.min(unitHandler.getValueAs(dialogData.width.size,unit),unitHandler.getValueAs(dialogData.height.size,unit)));
   try {
     editor.beginTransaction();
-//  var parentNode = editor.selection.anchorNode;
-//  var insertPos = editor.selection.anchorOffset;
+ // var parentNode = editor.selection.anchorNode;
+ // var insertPos = editor.selection.anchorOffset;
 
     var currentNode = reviseData.getReferenceNode();
     var aParentNode = currentNode.parentNode;;
@@ -6786,63 +6796,28 @@ function msiReviseRules(reviseData, dialogData, editorElement)
     var vAlignExpr = /vertical-align:\s*[^;]+;?/;
     var htExpr = /height:\s*[^;]+;?/;
     var wdthExpr = /width:\s*[^;]+;?/;
-    var bkExpr = /background\-color:\s*[^;]+;?/;
-  //      msiKludgeLogString("Inside the custom newline breakType clause; customType is [" + dialogData.customBreakData.customType + "].\n", ["spaces"]);
+    var bkExpr = /border: solid\S+[^ ]+\S+[^;];?/;
+       // msiKludgeLogString("Inside the custom newline breakType clause; customType is [" + dialogData.customBreakData.customType + "].\n", ["spaces"]);
 
-    var styleStr = ourNode.getAttribute("style");
+    var styleStr = '';
     var liftStr = String(dialogData.lift.size) + dialogData.lift.units;
     var widthStr = String(dialogData.width.size) + dialogData.width.units;
     var heightStr = String(dialogData.height.size) + dialogData.height.units;
-    var bSetStyle = false;
     var colorStr;
-  //      msiKludgeLogString("Inside the custom NewLine clause, dimsStr is [" + dimsStr + "].\n", ["spaces"]);
-  editor.setAttribute(ourNode, "req", "xcolor");
-  if (ourNode.getAttribute("lift") != liftStr)
-    {
-      editor.setAttribute(ourNode, "lift", liftStr);
-      if (!styleStr)
-        styleStr = "";
-      if (styleStr.match(vAlignExpr))
-        styleStr = styleStr.replace(vAlignExpr, "vertical-align: " + liftStr + ";");
-      else
-        styleStr += "vertical-align: " + liftStr + ";";
-      bSetStyle = true;
-    }
-    if (ourNode.getAttribute("width") != widthStr)
-    {
-      editor.setAttribute(ourNode, "width", widthStr);
-      if (!styleStr)
-        styleStr = "";
-      if (styleStr.match(wdthExpr))
-        styleStr = styleStr.replace(wdthExpr, "width: " + widthStr + ";");
-      else
-        styleStr += "width: " + widthStr + ";";
-      bSetStyle = true;
-    }
-    if (ourNode.getAttribute("height") != heightStr)
-    {
-      editor.setAttribute(ourNode, "height", heightStr);
-      if (styleStr.match(htExpr))
-        styleStr = styleStr.replace(htExpr, "height: " + heightStr + ";");
-      else
-        styleStr += "height: " + heightStr + ";";
-      bSetStyle = true;
-    }
+       // msiKludgeLogString("Inside the custom NewLine clause, dimsStr is [" + dimsStr + "].\n", ["spaces"]);
+    editor.setAttribute(ourNode, "req", "xcolor");
+    editor.setAttribute(ourNode, "lift", liftStr);
+    styleStr += "vertical-align: " + liftStr + ";";
+    editor.setAttribute(ourNode, "width", widthStr);
+    styleStr += "width: " + String(dialogData.width.size - 2*halfMinDim) + unit + ";";
+    editor.setAttribute(ourNode, "height", heightStr);
+    styleStr += "height: " + String(dialogData.height.size - 2*halfMinDim) + unit + ";";
     colorStr=dialogData.ruleColor;
     if (colorStr.indexOf("rgb") == 0) colorStr = ConvertRGBColorIntoHEXColor(color);
     else if (colorStr.indexOf("#") == -1) colorStr = textColorToHex(colorStr);
-    if (ourNode.getAttribute("color") != colorStr)
-    {
-      editor.setAttribute(ourNode, "color", colorStr);
-      if (styleStr.match(bkExpr))
-        styleStr = styleStr.replace(bkExpr, "background-color: " + colorStr + ";");
-      else
-        styleStr += "background-color: " + colorStr + ";";
-      bSetStyle = true;
-    }
-    if (bSetStyle)
-      editor.setAttribute(ourNode, "style", styleStr);
-
+    editor.setAttribute(ourNode, "color", colorStr);
+    styleStr += "border: solid " + halfMinDim + unit + ' ' + colorStr + ";";
+    editor.setAttribute(ourNode, "style", styleStr);
     editor.endTransaction();
   }
   catch(e)
