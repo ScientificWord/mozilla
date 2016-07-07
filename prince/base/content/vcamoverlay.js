@@ -38,7 +38,7 @@ function setCurrentVCamObject(obj) {
   return currentVCamObjectNum;
 }
 
-// stores a pblugin object; returns its index
+// stores a plugin object; returns its index
 function saveObj(pluginobj) {
   var index;
   try {
