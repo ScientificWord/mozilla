@@ -2168,7 +2168,7 @@ function addGraphElementToDocument(DOMGraphNode, siblingNode, editorElement) {
   if (siblingNode) {
     var idx;
     var parent = siblingNode.parentNode;
-    if (!editorElement) editorElement = findEditorElementForDocument(element.ownerDocument);
+    if (!editorElement) editorElement = findEditorElementForDocument(DOMGraphNode.ownerDocument);
     if (!editorElement) editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     for (idx = 0;
@@ -2238,6 +2238,8 @@ function insertGraph(siblingElement, graph, editorElement) {
   var plotfile;
   var docauxdirectory;
   var currdocdirectory;
+  var editor;
+  var editorDoc;
   try {
     leaf = createUniqueFileName("plot", filetype);
     plotfile = documentfile.clone();
@@ -2264,7 +2266,9 @@ function insertGraph(siblingElement, graph, editorElement) {
   var parentWindow = editorElement.ownerDocument.defaultView;
 //  parentWindow.ensureVCamPreinitForPlot(gDomElement, editorElement);
   if (!obj.id) {
-    obj.id = findUnusedId("plot");
+    editor = msiGetEditor(editorElement);
+    editorDoc = editor.document;
+    obj.id = findUnusedId(editorDoc, "plot");
     obj.setAttribute("id", obj.id); // BBM: unnecessary??
   }
   saveObj(obj);
