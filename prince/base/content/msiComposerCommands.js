@@ -1653,7 +1653,7 @@ var msiPreviewDirectCommand =
       },1000);
 #else
       try { 
-        PrintUtils.printPreview(enterPP, exitPP);
+        PrintUtils.printPreview(window.onEnterPP, window.onExitPP);
       }
       catch (e) {
         finalThrow(cmdFailString('directprintpreview'), e.message);
