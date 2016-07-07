@@ -3721,6 +3721,30 @@ var msiCleanupCommand =
 };
 
 
+function ensurePlotIdsAreUnique(document) { 
+  var framelist, framecount, objlist, obj, i, id;
+  var idlist=[];
+  framelist = document.getElementsByTagName('msiframe');
+  framecount = framelist.length;
+  for (i = 0; i < framecount; i++) {
+    if (framelist[i].parentNode.nodeName === 'graph') {
+      objlist = framelist[i].getElementsByTagName('object');
+      obj = objlist[0];
+      if (obj) {
+        id = obj.id;
+        if (idlist.indexOf(id) > -1)
+        {
+          id = findUnusedId(document, 'plot');
+          obj.setAttribute('id', id);
+        }
+        idlist.push(id);
+      }
+
+
+    }
+  }
+}
+
 function cleanupWorkDirectory( document, directory, cleanupOptions )
 /* CleanupOptions is an array consisting of 0 or more of these strings:
 auxfiles
@@ -3753,6 +3777,8 @@ backupfiles */
   {
     cleanupOptions.forEach(function(val){cleanup(directory, document, val);})
   }
+  // stuck in here since there is no real reason for the user not to choose it
+  ensurePlotIdsAreUnique(document); 
 }
 
 function cleanup(directory, document, option)
