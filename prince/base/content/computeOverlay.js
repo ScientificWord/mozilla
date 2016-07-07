@@ -918,10 +918,15 @@ function dontSetAnimationTime() {
 }
 var vcamlastId = 0;
 
-function findUnusedId(prefix) {
+function findUnusedId(doc, prefix) {
   vcamlastId += 1;
   var n = vcamlastId;
   var theId = prefix + n.toString();
+  while (doc.getElementById(theId)) {
+    n = ++vcamlastId;
+    theId = prefix + n.toString();var editor = msiGetEditor(editorElement);
+      var editorDoc = editor.document;
+  }
   return theId;
 }
 /* End of VCam section */
