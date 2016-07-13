@@ -1490,7 +1490,7 @@
       \@@accent{#1}{#2}%
     \else
       %\@inaccenttrue
-      \edef\@acc{\csname\@@accent{#1}{#2}\endcsname}
+      \edef\@acc{\csname\@@accent{#1}{#2}\endcsname}%
       \expandafter\ifx\@acc\relax
         #1\csname @cd#2@\endcsname
       \else
