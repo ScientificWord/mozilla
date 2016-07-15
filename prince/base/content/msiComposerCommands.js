@@ -2765,6 +2765,7 @@ function msiSoftSave( editor, editorElement, noTeX)
 
   //Check the my.css file to see if changes need to be written to it.
   saveCSSFileIfChanged(editorDoc);
+  ensurePlotIdsAreUnique(editorDoc);
 
   // Get the current definitions from compute engine and place in preamble.
   var defnListString = "";
