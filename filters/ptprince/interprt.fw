@@ -670,7 +670,7 @@ case CMD_MSIPREAMBLE: {
     up += "\"";
     if (opt != ""){
       up += " opt=\"";
-      up += opt;
+      up += makexml(opt);
       up += "\"";
     }
     up += "/>";
