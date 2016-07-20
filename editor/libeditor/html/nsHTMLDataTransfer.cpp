@@ -1,4 +1,5 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-831
+basic-offset: 2 -*- */
 /* vim: set ts=2 sw=2 et tw=78: */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -661,6 +662,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   // node and offset for insertion
   nsCOMPtr<nsIDOMNode> parentNode;
   PRInt32 offsetOfNewNode;
+  // BBM: Why are we not using targetNode and targetOffset? What about when the position is passed in?
   res = GetStartNodeAndOffset(selection, getter_AddRefs(parentNode), &offsetOfNewNode);
 
   // check for table cell selection mode
@@ -823,15 +825,42 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 ////   DumpNode(endNode, 0, true);
 //// #endif
 //
+    nsCOMPtr<nsIDOMNode> grandParent = parentNode;
+    PRInt32 parentOffset = offsetOfNewNode;  // use these values if we don't have to go up to the parent
+    nsCOMPtr<nsIDOMNode> parentBlock, lastInsertNode, insertedContextParent;
+
     if (length > 1)
     {
+
       endNode = nodeList[length-1];
       FixMathematics(endNode, PR_FALSE, PR_TRUE);
+    } // Loop over the node list and paste the nodes: 
+      // However, if we are pasting into mathematics, we need put our entire list into an mrow.
+      // We are not allowed to increase the number of children in the parent if the parent is
+      // one of a list of nodes including mfrac, mroot, msqrt, sub, sup, subsup, etc. and we cannot
+      // put general math into nodes such as mo, mi, etc.
+    if (nsHTMLEditUtils::IsMath(parentNode)) {
+      nsCOMPtr<nsIDOMElement> mrow;
+      nsCOMPtr<nsIDOMElement>  parentElement;
+      nsAutoString name;
+      parentNode->GetNodeName(name);
+      msiUtils::CreateMRow(this, (nsIDOMNode *)nsnull, mrow);
+      PRBool bDidInsert;
+      PRBool isTempInput;
+      parentElement = do_QueryInterface(parentNode);
+      res = parentElement->HasAttribute(NS_LITERAL_STRING("tempinput"), &isTempInput);
+      if (name.EqualsLiteral("mo") || (name.EqualsLiteral("mi") && !isTempInput)) {
+        GetNodeLocation(parentNode, address_of(grandParent), &parentOffset);
+        res = MoveNode(parentNode, mrow, 0);
+
+      }
+      res = InsertMathNode( mrow, (nsIDOMNode **)address_of(grandParent), parentOffset, bDidInsert, getter_AddRefs(lastInsertNode));
+      parentNode = mrow;
+      if (offsetOfNewNode > 0) offsetOfNewNode = 1;
+      else offsetOfNewNode = 0;
     }
     listCount = nodeList.Count();
-    // Loop over the node list and paste the nodes:
     PRBool bDidInsert = PR_FALSE;
-    nsCOMPtr<nsIDOMNode> parentBlock, lastInsertNode, insertedContextParent;
     if (IsBlockNode(parentNode))
       parentBlock = parentNode;
     else
