@@ -849,7 +849,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
       PRBool isTempInput;
       parentElement = do_QueryInterface(parentNode);
       res = parentElement->HasAttribute(NS_LITERAL_STRING("tempinput"), &isTempInput);
-      if (name.EqualsLiteral("mo") || (name.EqualsLiteral("mi") && !isTempInput)) {
+      if (name.EqualsLiteral("mo") || name.EqualsLiteral("mn") || (name.EqualsLiteral("mi") && !isTempInput)) {
         GetNodeLocation(parentNode, address_of(grandParent), &parentOffset);
         res = MoveNode(parentNode, mrow, 0);
 
