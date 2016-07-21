@@ -13,5 +13,5 @@ set TEXMFLOCAL=%MSITEXMF%
 if EXIST %programfiles(x86)%\Inkscape (
 	 set INKSCAPE=%programfiles(x86)%\Inkscape\inkscape.com
 ) ELSE (
-	if EXIST %programfiles%\Inkscape (set INKSCAPE=%programfiles%\Inkscape\inkscape.com)
+	if EXIST "%programfiles%"\Inkscape (set INKSCAPE=%programfiles%\Inkscape\inkscape.com)
 )
