@@ -6,6 +6,16 @@
 <!ENTITY  fragmentname.description          "Fragment Description">
 <!ENTITY  fragmentname.folderdescription    "Folder Description">
 <!ENTITY  fragmentname.descriptionprompt    "Enter a short description of what the fragment or folder does.">
+<!ENTITY paste.label 						"Create fragment from clipboard">
+<!ENTITY paste.accesskey 					"F">
+<!ENTITY delete.label 						"Delete">
+<!ENTITY delete.barelabel 					"Delete">
+<!ENTITY delete.accesskey 					"D">
+<!ENTITY rename.label 						"Change name/description of">
+<!ENTITY rename.barelabel 					"Change name/description">
+<!ENTITY rename.accesskey 					"C">
+<!ENTITY new.label 					        "New folder">
+<!ENTITY new.accesskey 					    "N">
 
 <!ENTITY  executejs.label	"Enter JavaScript to execute">
 <!ENTITY  executejs.title	"Execute JavaScript">

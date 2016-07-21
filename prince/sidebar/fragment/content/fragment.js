@@ -1,3 +1,4 @@
+
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 
 
@@ -323,15 +324,66 @@ function renameFragment(tree)
 
 function fixFragmentContextMenu()
 {
+  var emptyClipboard = true;
   var tree = document.getElementById("frag-tree");
   var namecol = tree.columns.getNamedColumn('Name');
   var i = tree.currentIndex;
   if (i < 0) return;
+  var clip = Components.classes["@mozilla.org/widget/clipboard;1"].
+    getService(Components.interfaces.nsIClipboard); 
+  var trans = Components.classes["@mozilla.org/widget/transferable;1"].
+    createInstance(Components.interfaces.nsITransferable); 
+  if (clip && trans) {
+
+    trans.addDataFlavor("text/html");
+    clip.getData(trans,1); 
+    var str = new Object();
+    var strLength = new Object();
+    try
+    {
+      trans.getTransferData("text/html",str,strLength);
+      emptyClipboard = strLength.value === 0;
+    }
+    catch (e)
+    {
+      dump("  "+"text/html"+" not supported\n\n");
+    }
+    trans.removeDataFlavor("text/html");
+  }
+  // The following is commented out because hasDataMatchingFlavors seems to 
+  // var j;
+  // var clip = Components.classes["@mozilla.org/widget/clipboard;1"].
+  //   getService(Components.interfaces.nsIClipboard); 
+  // if (clip) {
+  //   const kSuppArrayContractID = "@mozilla.org/supports-array;1";
+  //   const kSuppArrayIID = Components.interfaces.nsISupportsArray;
+  //   var flavourArray = Components.classes[kSuppArrayContractID].createInstance(kSuppArrayIID);
+  //   const kSuppStringContractID = "@mozilla.org/supports-cstring;1";
+  //   const kSuppStringIID = Components.interfaces.nsISupportsCString;
+  //   const kClipboardIID = Components.interfaces.nsIClipboard;
+
+    
+  //   var flavours = ["text/html"];
+  //   for (j = 0; j < flavours.length; ++j) {
+  //     const kSuppString = Components.classes[kSuppStringContractID].createInstance(kSuppStringIID);
+  //     kSuppString.data = flavours[j];
+  //     flavourArray.AppendElement(kSuppString);
+  //   }
+  //   try {
+  //     var hasFlavours = clip.hasDataMatchingFlavors(flavourArray, flavours.length, kClipboardIID.kGlobalClipboard);  
+  //   }
+  //   catch( e ) {
+  //     j = 0;
+  //   }
+  // }
+
   var s = tree.view.getCellText( i,namecol);
   var menu = document.getElementById("fragment_delete");
   menu.setAttribute("label", menu.getAttribute("label")+" "+s);
-  var menu = document.getElementById("fragment_rename");
+  menu = document.getElementById("fragment_rename");
   menu.setAttribute("label", menu.getAttribute("label")+" "+s);
+  menu = document.getElementById("fragment_paste");
+  menu.disabled = emptyClipboard;
 }
 
 function restoreFragmentContextMenu()
