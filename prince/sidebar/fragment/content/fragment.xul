@@ -2,6 +2,8 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <!DOCTYPE page [
+<!ENTITY % DTD SYSTEM "chrome://prince/locale/fragmentname.dtd">
+%DTD;
 ]>
 
 <page id       = "fragments"
@@ -19,10 +21,10 @@
  <popup id="fragmentContext"
    onpopupshowing="fixFragmentContextMenu()"
    onpopuphiding="restoreFragmentContextMenu()"> 
-    <menuitem id="fragment_paste" label="Paste" accesskey="P" oncommand="createFragmentFromClip();"/>
-    <menuitem id="fragment_delete"   label="Delete" barelabel="Delete" accesskey="D" oncommand="deleteFragment();"/>
-    <menuitem id="fragment_rename"   label="Change name/description of" barelabel = "Change name/description" accesskey="R" oncommand="renameFragment();"/>
-    <menuitem id="fragment_newfolder"   label="New folder" accesskey="N" oncommand="newFragmentFolder();"/>
+    <menuitem id="fragment_paste" label="&paste.label;" accesskey="&paste.accesskey;" oncommand="createFragmentFromClip();"/>
+    <menuitem id="fragment_delete"   label="&delete.label;" barelabel="&delete.label;" accesskey="&delete.accesskey;" oncommand="deleteFragment();"/>
+    <menuitem id="fragment_rename"   label="&rename.label;" barelabel = "&rename.barelabel;" accesskey="&rename.accesskey;" oncommand="renameFragment();"/>
+    <menuitem id="fragment_newfolder"   label="&new.label;" accesskey="&new.accesskey;" oncommand="newFragmentFolder();"/>
  </popup>
  <tooltip id="fragmentDescription"
    onpopupshowing="return showDescription(event,this);"/>
