@@ -30,11 +30,6 @@
       <menuitem id="openMenuitem" accesskey="&fileopen.accesskey;"
                   key="msiOpenFileKey" oncommand="openDocument();"
                   label="&openFileCmd.label;"/>
-      <menuitem observes="cmd_importTeX" label="&importTeXCmd.label;"
-		accesskey="&importTeX.accesskey;"/>
-      
-      <menuitem observes="cmd_exportToTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
-      <menuitem observes="cmd_exportToWeb" label="&exporttowebCmd.label;" accesskey="&exporttoweb.accesskey;"/>
       <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
             onpopupshowing="BuildRecentFilesMenu();">
         <menupopup id="menupopup_RecentFiles"
@@ -42,6 +37,9 @@
             false, false);"/>
           <!-- menuitems appended at runtime -->
       </menu>
+      <menuitem observes="cmd_importTeX" label="&importTeXCmd.label;" accesskey="&importTeX.accesskey;"/>
+      <menuitem observes="cmd_exportToTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
+      <menuitem observes="cmd_exportToWeb" label="&exporttowebCmd.label;" accesskey="&exporttoweb.accesskey;"/>
       <menuitem accesskey="&filecleanup.accesskey;" key="cleanupkb" observes="cmd_cleanup"
           label="&cleanupCmd.label;"/>
       <menuitem accesskey="&fileclose.accesskey;" key="msiCloseFileKey" observes="cmd_close" label="&closeCmd.label;"/>
