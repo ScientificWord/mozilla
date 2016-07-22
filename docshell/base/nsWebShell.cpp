@@ -1408,7 +1408,7 @@ nsWebShell::CutSelection(void)
 NS_IMETHODIMP
 nsWebShell::CopySelection(void)
 {
-  return DoCommand ( "cmd_MSIMSIcopy" );
+  return DoCommand ( "cmd_MSIcopy" );
 }
 
 NS_IMETHODIMP
