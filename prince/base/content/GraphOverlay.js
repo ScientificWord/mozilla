@@ -2151,9 +2151,6 @@ function graphObjectClickEvent(cmdstr, element, editorElement) {
     var graphelement = findtagparent(element, "graph");
     if (graphelement) {
       msidump("SMR found a <graph> element\n");
-      // only open one dialog per graph element
-//      var graph = new Graph();
-//      graph.extractGraphAttributes(graphelement);
       // non-modal dialog, the return is immediate
       window.openDialog("chrome://prince/content/ComputeVcamSettings.xul", "vcamsettings", "chrome,close,titlebar,resizable, dependent", null, graphelement, null, element);
     }
@@ -2967,6 +2964,7 @@ function splitMathMLList(expr, bFenced)
     }
   }
   var theNodes = msiNavigationUtils.getSignificantContents(topNode);
+  if (theNodes.length === 0) return retArray;
   var topName = msiGetBaseNodeName(topNode);
   if (topName === "mfenced")
     return theNodes;
