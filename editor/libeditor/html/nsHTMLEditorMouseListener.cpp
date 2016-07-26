@@ -129,14 +129,14 @@ nsHTMLEditorMouseListener::MouseDown(nsIDOMEvent* aMouseEvent)
     if (NS_FAILED(res)) return res;
 
     PRBool isContextClick;
+    isContextClick = buttonNumber == 2;
 
 #if defined(XP_MACOSX)
     // Ctrl+Click for context menu
-    res = mouseEvent->GetCtrlKey(&isContextClick);
-    if (NS_FAILED(res)) return res;
-#else
-    // Right mouse button for Windows, UNIX
-    isContextClick = buttonNumber == 2;
+    if (!isContextClick) {
+      res = mouseEvent->GetCtrlKey(&isContextClick);
+      if (NS_FAILED(res)) return res;
+    }
 #endif
     
     PRInt32 clickCount;
