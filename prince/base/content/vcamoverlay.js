@@ -304,10 +304,6 @@ VCamObject.prototype = {
     } catch (e) {}
   },
 
-  onVCamRightMouseUp: function onVCamRightMouseUp() {
-    // alert("right mouse up in plugin!");
-  },
-
   onVCamLeftDblClick: function onVCamLeftDblClick(screenX, screenY) {
     // alert('double click');
     try {
