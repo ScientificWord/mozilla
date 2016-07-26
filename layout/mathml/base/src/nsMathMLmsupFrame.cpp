@@ -329,12 +329,12 @@ nsMathMLmsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (leavingFrame != pChild)
   {
-	  // leavingFrame is the superscript. We are leaving the structure.
+	  // leavingFrame is the superscript. We are leaving the structure. Put the cursor just after the msup
     count = 0;
-      pParent = this->GetParent();
-      pMCM = GetMathCursorMover(pParent);
-      if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-      *_retval = 0; }
+    *aOutFrame = this->GetParent();
+    *aOutOffset = 1 + mmlFrameGetIndexInParent(this, *aOutFrame);
+    *_retval = 0; 
+  }
   else
   {
     // leaving base
