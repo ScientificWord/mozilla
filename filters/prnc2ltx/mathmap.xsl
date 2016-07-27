@@ -1067,6 +1067,9 @@
           <xsl:when test="$first-char='&#x2138;'">
             <xsl:text xml:space="preserve">\daleth </xsl:text>
           </xsl:when>
+	  <xsl:when test="$first-char='&#x2145;'">
+            <xsl:text xml:space="preserve">\mathbb{D} </xsl:text>
+          </xsl:when>
           <xsl:when test="$first-char='&#x03F6;'">
             <xsl:text xml:space="preserve">\backepsilon </xsl:text>
           </xsl:when>
