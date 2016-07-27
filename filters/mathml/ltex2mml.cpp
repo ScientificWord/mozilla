@@ -13744,6 +13744,9 @@ TCI_BOOL LaTeX2MMLTree::IsDifferentiald( TNODE* tex_d_node,
                                             TNODE* LaTeX_list ) {
 
   TCI_BOOL rv =  FALSE;
+  
+  return rv;
+  // I don't think we should convert to differential op here
 
   TNODE* next_right =  tex_d_node->next;
   if ( next_right ) {
@@ -13796,6 +13799,8 @@ TCI_BOOL LaTeX2MMLTree::IsDifferentialD( TNODE* tex_D_node,
 
   TCI_BOOL rv =  FALSE;
 
+  return rv;
+  // I don't think we should convert to differential op here
   TNODE* next_right =  tex_D_node->next;
   if ( next_right ) {
     U16 uobjtype,usubtype,uID;
