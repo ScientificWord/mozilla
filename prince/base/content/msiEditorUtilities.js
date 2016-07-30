@@ -11471,6 +11471,8 @@ function getPreferredBibTeXDir(leaf)
   var bibDir;
   var prefs = GetPrefs();
   var bibDirPath;
+  var texmfPath;
+  var os = getOS(window);
   if (leaf === "bib")
     bibDirPath = prefs.getCharPref('swp.bibtex.dir');
   else
@@ -11480,11 +11482,10 @@ function getPreferredBibTeXDir(leaf)
     bibDir.initWithPath(bibDirPath);
     return bibDir;
   }
-  var env = getEnvObject();
   bibDir = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
-  bibDir.initWithPath(env["MSITEX"]);
+  texmfPath = getTEXMF(os);
+  bibDir.initWithPath(texmfPath);
   if (!bibDir) return null;
-  bibDir.append('texmf-dist');
   bibDir.append('bibtex');
   bibDir.append(leaf);
   return bibDir;
@@ -11495,16 +11496,17 @@ function getPreferredBibTeXStyleDir()
   var bibDir;
   var prefs = GetPrefs();
   var bibDirPath = prefs.getCharPref('swp.bibtexstyle.dir');
+  var os = getOS(window);
+  var texmfPath;
   if (bibDirPath && bibDirPath.length > 0) {
     bibDir = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
     bibDir.initWithPath(bibDirPath);
     return bibDir;
   }
-  var env = getEnvObject();
   bibDir = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
-  bibDir.initWithPath(env["MSITEX"]);
+  texmfPath = getTEXMF(os);
+  bibDir.initWithPath(texmfPath);
   if (!bibDir) return null;
-  bibDir.append('texmf-dist');
   bibDir.append('bibtex');
   bibDir.append('bst');
   return bibDir;
@@ -11727,4 +11729,71 @@ function writeStatusMessage(message) {
 
 function clearStatusMessage() {
   document.getElementById("status-message").value="";
+}
+
+var getTEXMF = initTEXMF();
+
+
+function initTEXMF() {
+  var texmfString = null;
+  function compileMinimalTeX(os) {
+    if (texmfString) return texmfString;
+    const nsIFile = Components.interfaces.nsIFile;
+    const nsILocalFile = Components.interfaces.nsILocalFile;
+    const nsISupports = Components.interfaces.nsISupports;
+    const nsIProperties = Components.interfaces.nsIProperties;
+    // To find the location of critical TeX locations at run-time without the benefit of bash or command files,,
+    // we run TeX on a small file, open the log file, and extract the information we need.
+    var minimalTeXFile = '\\documentclass{minimal}\n\\begin{document}\n\\end{document}\n'
+    var dsprops = Components.classes['@mozilla.org/file/directory_service;1'].getService(nsIProperties);
+    var tmpdir = dsprops.get('TmpD', nsIFile);
+    var pdflatex = dsprops.get('resource:app', nsILocalFile);
+    var msitex = pdflatex.clone(0);
+    var extension;
+    var parameters;
+    var theProcess;
+    var logstring;
+
+    try {
+      tmpdir.append('SWP')
+      var leaf = 'minimal.tex';
+      var texfile = tmpdir.clone(0);
+      texfile.append(leaf);
+      var logfile = tmpdir.clone();
+      logfile.append('minimal.log');
+      if (tmpdir.exists()) {
+        if (texfile.exists()) texfile.remove(false);
+      }
+      else tmpdir.create(1, 493); // = 0755
+      var fos = Components.classes['@mozilla.org/network/file-output-stream;1'].createInstance(Components.interfaces.nsIFileOutputStream);
+      fos.init(texfile, -1, -1, false);
+      var ostream = Components.classes['@mozilla.org/intl/converter-output-stream;1']
+        .createInstance(Components.interfaces.nsIConverterOutputStream);
+      ostream.init(fos, 'UTF-8', 4096, '?'.charCodeAt(0));
+      ostream.writeString(minimalTeXFile);
+      ostream.close();
+      fos.close();
+      extension = os === 'win' ? 'cmd' : 'bash';
+      msitex.append('msitex.' + extension);
+      pdflatex.append('pdflatex.' + extension);
+      parameters = [msitex.path, tmpdir.path, texfile.path];
+
+      theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+      theProcess.init(pdflatex);
+      theProcess.run(true, parameters, parameters.length);
+
+    // Now minimal.tex has been processed and minimal.log has the info we want
+
+      logstring = getFileAsString('file://'+logfile.path);
+      var regexp = /^.?([a-zA-Z0-9/\\-]+)[\/\\]tex[\/\\]latex[\/\\]base[\/\\]minimal.cls/gm;
+      var match = regexp.exec(logstring);
+      texmfString = match[1];
+      return texmfString;
+    }
+    catch(e) {
+      return null;
+    }
+  }
+
+  return compileMinimalTeX;
 }
