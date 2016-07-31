@@ -891,8 +891,10 @@ function doInsertBibTeXCitation(editorElement, dlgData)
 function doReviseBibTeXCitation(editorElement, reviseData, dlgData)
 {
   var editor = msiGetEditor(editorElement);
-  editor.endTransaction();
+  editor.beginTransaction();
   var citeNode = reviseData.getReferenceNode();
+  var remarkNode;
+  var textNode;
   msiEditorEnsureElementAttribute(citeNode, "citekey", dlgData.key, editor);
   msiEditorEnsureElementAttribute(citeNode, "nocite", dlgData.bBibEntryOnly, editor);
   if (dlgData.bRemarkChanged)
@@ -923,12 +925,24 @@ function doReviseBibTeXCitation(editorElement, reviseData, dlgData)
     }
     if (dlgData.remark.length)
     {
+      try {
 //      for (ix = 0; ix < currRemNode.childNodes.length; ++ix)
 //        editor.deleteNode(currRemNode.childNodes[ix]);
 //      editor.insertHTMLWithContext(dlgData.remark, "", "", "", null, currRemNode, 0, false);
-      editor.insertHTMLWithContext("<biblabel class=\"remark\" xmlns=\"" + xhtmlns + "\">" + dlgData.remark + "</biblabel>", "", "", "", null, citeNode, 0, false);
-      msiEditorEnsureElementAttribute(citeNode, "hasRemark", "true", editor);
-      msiKludgeLogNodeContentsAndAllAttributes(citeNode, ["bibliography"], "In doReviseBibTeXCitation after insertHTMLWithContext, citeNode", true);
+        remarkNode = editor.createElementWithDefaults('biblabel');
+        remarkNode.setAttribute('class','remark');
+        textNode = editor.document.createTextNode(dlgData.remark);
+        editor.insertNode(textNode, remarkNode, 0);
+        editor.insertNode(remarkNode, citeNode, 0);
+
+
+        // editor.insertHTMLWithContext("<biblabel class=\"remark\" xmlns=\"" + xhtmlns + "\">" + dlgData.remark + "</biblabel>", "", "", "", null, citeNode, 0, false);
+        msiEditorEnsureElementAttribute(citeNode, "hasRemark", "true", editor);
+        // msiKludgeLogNodeContentsAndAllAttributes(citeNode, ["bibliography"], "In doReviseBibTeXCitation after insertHTMLWithContext, citeNode", true);
+      }
+      catch (e) {
+        currRemNode = null;
+      }
     }
     else
       msiEditorEnsureElementAttribute(citeNode, "hasRemark", "false", editor);
