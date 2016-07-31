@@ -98,6 +98,7 @@ function setDataFromReviseData(reviseData)
 
 function changeDatabaseSelection()
 {
+  return;
   var selItems = gDialog.dbFileListbox.selectedItems;
   var addedItems = [];
   var deletedItems = [];
@@ -127,11 +128,15 @@ function onAccept()
 //    data.databaseFile = databaseItem.label;
 //    data.databaseFile = databaseItem.value;
 
+
+  var selItems = gDialog.dbFileListbox.selectedItems;
   var styleItem = document.getElementById("styleFileListbox").getSelectedItem(0);
   if (styleItem)
     data.styleFile = styleItem.label;
-  data.dbFileList.splice(0, data.dbFileList.length);
-  data.dbFileList = data.dbFileList.concat(gDialog.databaseFileList);
+  // data.dbFileList.splice(0, data.dbFileList.length);
+  // data.dbFileList = data.dbFileList.concat(gDialog.databaseFileList);
+  data.dbFileList = [];
+  selItems.forEach( function ( value ) {data.dbFileList.push(value.label);});
   dump("In typesetBibTeXBibliography.js, onAccept(), data.dbFileList has [" + data.dbFileList.length + "] items.\n");
   data.databaseFile = data.dbFileList.join(",");
   var theWindow = window.opener;
@@ -225,8 +230,10 @@ function fillDatabaseFileListbox(fileDirPath)
       for (var i = 0; i < sortedDirList.length; ++i)
       {
         newItem = gDialog.dbFileListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
-        if (gDialog.databaseFileList.indexOf(sortedDirList[i].fileName) >= 0)
+        if (data.dbFileList.indexOf(sortedDirList[i].fileName) >= 0) {
           gDialog.dbFileListbox.addItemToSelection(newItem);
+          newItem.setAttribute("selected", "true");
+        }
       }
     }
   }
