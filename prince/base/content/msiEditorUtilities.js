@@ -11785,7 +11785,7 @@ function initTEXMF() {
     // Now minimal.tex has been processed and minimal.log has the info we want
 
       logstring = getFileAsString('file://'+logfile.path);
-      var regexp = /^.?([a-zA-Z0-9/\\-]+)[\/\\]tex[\/\\]latex[\/\\]base[\/\\]minimal.cls/gm;
+      var regexp = /^.?(([a-zA-Z]:)?([a-zA-Z0-9/\\-]+)[\/\\]tex[\/\\]latex[\/\\]base[\/\\]minimal.cls/gm;
       var match = regexp.exec(logstring);
       texmfString = match[1];
       return texmfString;
