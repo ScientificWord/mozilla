@@ -7,26 +7,27 @@ REM optional "-d <directory>" for a non-standard BIBINPUTS
 
 set BIBINPUTS=
 cd %2
-shift
 
 :Loop
-IF "%2"=="" GOTO Continue
-if "%2"=="-d" goto setInputDir
-SHIFT
+shift
+IF "%~2"=="" GOTO Continue
+IF "%~2"=="-d" goto setBIBDir
+IF "%~2"=="-s" goto setBSTDir
+GOTO Loop
+:setBIBDir
+shift
+set BIBINPUTS=%~2
+GOTO Loop
+:setBSTDir
+shift
+set BSTINPUTS=%~2
 GOTO Loop
 :Continue
-
-
-goto doIt
-:setInputDir
-shift
-set BIBINPUTS="%2"
-
-:doIt
 
 set TEXMF_HOME=%MSITEXMF_HOME%
 set path="%MSITEXBIN%";%path%
 bibtex main
 echo done > sentinel
+echo TEXMF_HOME=%TEXMF_HOME% BIBINPUTS=%BIBINPUTS% > trace
 endlocal
 if defined SWPDEBUG pause
