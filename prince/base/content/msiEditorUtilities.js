@@ -11482,12 +11482,19 @@ function getPreferredBibTeXDir(leaf)
     bibDir.initWithPath(bibDirPath);
     return bibDir;
   }
-  bibDir = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
-  texmfPath = getTEXMF(os);
-  bibDir.initWithPath(texmfPath);
-  if (!bibDir) return null;
-  bibDir.append('bibtex');
-  bibDir.append(leaf);
+  try {
+    bibDir = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
+    texmfPath = getTEXMF(os);
+    if (os === 'win') {
+      texmfPath = texmfPath.replace(/\//g,'\\');
+    }
+    bibDir.initWithPath(texmfPath);
+    if (!bibDir) return null;
+    bibDir.append('bibtex');
+    bibDir.append(leaf);
+  }
+  catch(e) {
+  }
   return bibDir;
 }
 

@@ -1,3 +1,4 @@
+Components.utils.import('resource://app/modules/os.jsm');
 
 var theProcess;
 var theIndexProcess;
@@ -6,6 +7,7 @@ var passData;
 var compileInfo;
 var showdialog;
 var previewPDF;
+var os = getOS(window);
 var sentinel = null;
 var blocking = false; // set whether blocking or not.
 var timer = Components.classes["@mozilla.org/timer;1"]
@@ -50,12 +52,7 @@ var timerCallback =
           if (showdialog) {
             SaveWindowLocation();
             setProgressStatement(true);
-    //        document.getElementById("oktocontinue").hidden = false;
             var dlg = document.getElementById("passesDlg");
-    //        dlg.getButton("cancel").disabled = true;
-    //        top.document.commandDispatcher.focusedWindow.focus();
-    //         window.opener.cancelSendMessage = true;
-    //         window.close();
           }
           var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
           outputfile.initWithPath( passData.outputDir );
@@ -91,6 +88,8 @@ var timerCallback =
 function initForSilentCompile(aPassData, aCompileInfo, aShowdialog, callbackFn) // an alternative to using the dialog
 {
   var prefs = GetPrefs();
+  var bibinputs;
+  var bstinputs;
   passData = aPassData;
   showdialog = aShowdialog;
   compileInfo = aCompileInfo;
@@ -125,8 +124,6 @@ function initForSilentCompile(aPassData, aCompileInfo, aShowdialog, callbackFn) 
 function Init()
 {
   var prefs = GetPrefs();
-  var bibinputs;
-  var bstinputs;
   passData = window.arguments[0];
   passData.passCounter = 1;
   compileInfo = window.arguments[1];
