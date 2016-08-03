@@ -878,14 +878,31 @@ function doReviseManualCitation(editorElement, reviseData, dlgData)
 function doInsertBibTeXCitation(editorElement, dlgData)
 {
   var editor = msiGetEditor(editorElement);
-  var theText = "<citation xmlns=\"" + xhtmlns + "\" type=\"bibtex\" citekey=\"" + dlgData.key + "\"";
-  if (dlgData.bBibEntryOnly)
-    theText += " nocite=\"true\"";
-  if (dlgData.remark && dlgData.remark.length)
-    theText += " hasRemark=\"true\"><biblabel xmlns=\"" + xhtmlns + "\" class=\"remark\">" + dlgData.remark + "</biblabel></citation>";
-  else
-    theText += "/>"
-  editor.insertHTMLWithContext(theText, "", "", "text/html", null, null, 0, true);
+  var remarkNode;
+  var textNode;
+  var citeNode;
+  editor.beginTransaction();
+  citeNode = editor.createElementWithDefaults('citation');
+  citeNode.setAttribute('type','bibtex');
+  citeNode.setAttribute('citekey',dlgData.key);
+  if (dlgData.bBibEntryOnly) {
+    citeNode.setAttribute('nocite','true');
+  }
+  if  (dlgData.remark && dlgData.remark.length) {
+    citeNode.setAttribute('hasRemark', 'true');
+    remarkNode = editor.createElementWithDefaults('biblabel');
+    remarkNode.setAttribute('class','remark');
+    textNode = editor.document.createTextNode(dlgData.remark);
+    editor.insertNode(textNode, remarkNode, 0);
+    editor.insertNode(remarkNode, citeNode, 0);
+  }
+
+  try {
+    editor.insertElementAtSelection(citeNode, true);
+  }
+  catch(e) {
+  }
+  editor.endTransaction();
 }
 
 function doReviseBibTeXCitation(editorElement, reviseData, dlgData)
