@@ -3251,11 +3251,12 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var path = destLocalFile.path;
   if (!(/\.sci$/.test(path))) path += ".sci";
   prefs.setCharPref("swp.lastfilesaved", path);
-  if (!aSaveCopy)
-  {
-    pdfModCount = -1;
-    editor.resetModificationCount();
-  }
+  // BBM: Removed the following because saving should not reset the modification count; only reparsing should reset it.
+  // if (!aSaveCopy)
+  // {
+  //   pdfModCount = -1;
+  //   editor.resetModificationCount();
+  // }
   // this should cause notification to listeners that document has changed
 
   // Set UI based on whether we're editing a remote or local url
