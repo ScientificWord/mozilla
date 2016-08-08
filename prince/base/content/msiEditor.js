@@ -1181,6 +1181,8 @@ function msiEditorDocumentObserver(editorElement) {
           //          addDOMEventListenerForEditor(editorElement);
 
           this.mEditorElement.pdfModCount = -1;
+          editor.resetModificationCount();
+          editor.incrementModificationCount(1);
 
           // Force color widgets to update
           msiOnFontColorChange();
