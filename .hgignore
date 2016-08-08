@@ -39,6 +39,8 @@ glob:*.css.map
 glob:*.scssc
 glob:*.scss
 glob:*/application.ini
+glob:*/dgph
+
 
 
 
