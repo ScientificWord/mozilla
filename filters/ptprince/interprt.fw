@@ -531,6 +531,7 @@ CMD_MSITOPREAMBLEEXTRA,
 CMD_MSISPECIAL,
 CMD_MSISPECIALVALUE,
 CMD_MSIPREAMBLE,
+CMD_MSIATTRIB,
 @}
 
 
@@ -545,6 +546,7 @@ NewPrimitive("msitopreambleextra", CMD_MSITOPREAMBLEEXTRA);
 NewPrimitive("msispecial", CMD_MSISPECIAL);
 NewPrimitive("msispecialvalue", CMD_MSISPECIALVALUE);
 NewPrimitive("msipreamble", CMD_MSIPREAMBLE);
+NewPrimitive("msiattrib", CMD_MSIATTRIB);
 @}
 
 
@@ -561,6 +563,24 @@ case CMD_CHECKOUTER: {
      ASSERT(false);
    }
    break;
+}
+
+case CMD_MSIATTRIB: {
+  TokenList* tl = new TokenList;
+  ScanTokenList(tl, false);
+  StringUtils::AppendToks(*tl);
+  String str = StringBuilder::Create();
+  std::string attrib;
+  int i = 0;
+  while (i < str.Size()){
+     attrib += (char) str[i];
+     ++i;
+  }
+  StringBuilder::Discard(str);
+  delete tl;
+  std::string new_attrib = makexml(attrib);
+  Typesetter::AppendTag(new_attrib.c_str());
+  break;
 }
 
 case CMD_MSITRACEON:{
