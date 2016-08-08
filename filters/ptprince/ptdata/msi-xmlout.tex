@@ -1982,10 +1982,14 @@
    \ifmmode
      \msitag{\msipassthru\char`\{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{\char`\}"><![CDATA[#2]]></texb>}
    \else
-     \msihmode\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{"><![CDATA[#2]]></texb>}%
+     \msihmode
+     \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" }\msiattrib{name="#1"}\msitag{><![CDATA[#2]]></texb>}%
    \fi
    \endgroup}
 
+\def\ensure@attrib#1{%
+   
+}
 
 
 %% Create TeX Buttons
