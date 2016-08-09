@@ -1183,6 +1183,7 @@ function msiEditorDocumentObserver(editorElement) {
           this.mEditorElement.pdfModCount = -1;
           editor.resetModificationCount();
           editor.incrementModificationCount(1);
+          this.mEditorElement.saveModCount = editor.getModificationCount();
 
           // Force color widgets to update
           msiOnFontColorChange();
@@ -1391,6 +1392,7 @@ function msiEditorDocumentObserver(editorElement) {
         // cmd_bold is a proxy; see EditorSharedStartup (above) for details
         window.updateCommands("style");
         window.updateCommands("undo");
+        window.updateCommands("save");  //BBM shouldn't be necessary, but cmd_setDocumentModified is not getting call -- revisit this.
         if (editor) {
           var enabled = {
             value: null
