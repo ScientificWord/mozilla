@@ -560,8 +560,9 @@ bool Grammar::GetRecordFromName(const char* zcurr_env,
   } else {
     return rv;
   }
-  HASH_TABLE* start_table = LastTableHit() ? LastTableHit() : HashTables() -> next;
+  HASH_TABLE* start_table = LastTableHit() ? LastTableHit() : (HashTables() ? HashTables() -> next : NULL);
   HASH_TABLE* curr_table = start_table;
+  if (!start_table) return rv;
 
   U32 hash = HashzNom(ztoken);
 
