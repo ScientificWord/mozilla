@@ -708,11 +708,6 @@ var graphicsConverter = {
     };
   },
 
-  isDisplayableGraphicFile: function(fileName) {
-    var pathAndExt = this.splitExtension(fileName);
-    return this.nativeGraphicTypes.indexOf(pathAndExt.ext);
-  },
-
   //baseDir is an nsIFile
   //return an nsILocalFile
   resolveRelativeFilePath: function(baseDir, relPathStr) {
@@ -837,6 +832,7 @@ var graphicsConverter = {
       case 'gif':
       case 'tif':
       case 'tiff':
+      case 'bmp':
         testFile.append('graphics');
         testFile.append(graphicFile.leafName);
         if (testFile.exists()) {
@@ -882,8 +878,6 @@ var graphicsConverter = {
       dump("Error in graphicsConverter.ensureTypesetGraphicForElement! No data or src for " + objElement.nodeName + " element.\n");
       return false;
     }
-    if (!this.isDisplayableGraphicFile(gfxFileStr))
-      return false;
 
 
     var theUnits = objElement.getAttribute("units");
