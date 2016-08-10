@@ -70,13 +70,13 @@
       <xsl:value-of select="@ltx_height"/>
       <xsl:value-of select="$theUnit"/>
       <xsl:text>,</xsl:text>
-    </xsl:if -->
+    </xsl:if> 
     <xsl:if test="@naturalWidth and @naturalHeight and (number(@naturalWidth) != 0) and (number(@naturalHeight) != 0)">
       <xsl:text> natwidth=</xsl:text>
       <xsl:value-of select="@naturalWidth"/>
       <xsl:text>, natheight=</xsl:text>
       <xsl:value-of select="@naturalHeight"/>
-    </xsl:if>
+    </xsl:if> -->
     <xsl:text>]{</xsl:text>
     <xsl:call-template name="getSourceName"/>
     <xsl:text>}</xsl:text>
