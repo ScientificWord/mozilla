@@ -101,6 +101,8 @@ std::string makexml(std::string str){
       rv += "&lt;";
     } else if (*it == '>'){
       rv += "&gt;";
+    } else if (*it == '"'){
+      rv += "'";
     } else {
       rv += *it;
     }
