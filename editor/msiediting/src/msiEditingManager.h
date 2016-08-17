@@ -63,7 +63,8 @@ PRUint32 GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 rawOffset,
 //static nsresult FindMatrixCell(nsIDOMNode* aMatrix, nsIDOMNode *aCell, PRInt32* whichRow, PRInt32* whichCol);
 //static nsresult GetCellAt(nsIDOMNode* aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsCOMPtr<nsIDOMNode> *pCell);
 
-
+  PRBool   NodeInMath(nsIDOMNode* node);
+  
 protected:
 
 PRBool NodeSupportsMathChild(nsIDOMNode * node, PRBool displayed);
@@ -92,7 +93,6 @@ void SetMathmlNodeAndOffsetForMrowFence(const nsAString & localName,
                                         nsCOMPtr<nsIDOMNode> & mathmlNode,
                                         PRUint32 & offset);
 
-PRBool   NodeInMath(nsIDOMNode* node);
 nsresult EnsureMathWithSelectionCollapsed(nsIDOMNode * node);
 
 nsresult GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PRInt32& nCol, 
