@@ -132,7 +132,7 @@ msiEditingManager::~msiEditingManager()
 nsresult MoveNodeTo(msiEditingManager * aThis, nsIEditor* editor, nsIDOMNode * nodeToMove, nsIDOMNode *node, PRUint32& offset, nsIDOMNode *destNode = nsnull) {
   // destNode is where node will be inserted eventually. We need to be careful that we do not move it into node, since that would create circular containment
   PRBool inMath = PR_FALSE;
-  nsresult rv;
+  nsresult rv = NS_OK;
   nsCOMPtr<nsIDOMNode> outnode;
   if (destNode) inMath = aThis->NodeInMath(destNode);
   nsAutoString name;
@@ -169,12 +169,13 @@ nsresult MoveNodeTo(msiEditingManager * aThis, nsIEditor* editor, nsIDOMNode * n
           rv = children->Item(i, getter_AddRefs(currChild));
           if (NS_SUCCEEDED(rv))
           {
-            MoveNodeTo(aThis, editor, currChild, node, offset, destNode);
+            rv = MoveNodeTo(aThis, editor, currChild, node, offset, destNode);
           }
         }
       }
     }
   }
+  return rv;
 }
 
 
