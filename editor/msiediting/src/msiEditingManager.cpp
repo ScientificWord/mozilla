@@ -13,7 +13,12 @@
 #include "nsISimpleEnumerator.h"
 #include "nsIHTMLEditor.h"
 #include "nsIDOMRange.h"
+#include "nsIDOMNodeList.h"
 #include "nsEditor.h"
+// #include "../../libeditor/text/nsPlaintextEditor.h"
+#include "../../libeditor/base/nsEditor.h"
+// #include "../../libeditor/base/nsEditorUtils.h"
+
 
 #include "msiEditingManager.h"
 #include "msiIMathMLEditor.h"
@@ -124,7 +129,57 @@ msiEditingManager::~msiEditingManager()
    msiNameSpaceUtils::Shutdown();
 }
 
-nsresult MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, nsIDOMNode *node, PRUint32 offset)
+nsresult MoveNodeTo(msiEditingManager * aThis, nsIEditor* editor, nsIDOMNode * nodeToMove, nsIDOMNode *node, PRUint32& offset, nsIDOMNode *destNode = nsnull) {
+  // destNode is where node will be inserted eventually. We need to be careful that we do not move it into node, since that would create circular containment
+  PRBool inMath = PR_FALSE;
+  nsresult rv;
+  nsCOMPtr<nsIDOMNode> outnode;
+  if (destNode) inMath = aThis->NodeInMath(destNode);
+  nsAutoString name;
+  nsString s1(NS_LITERAL_STRING(""));
+  nsString s2 = s1;
+  if (inMath ) {
+
+    nsCOMPtr<nsIHTMLEditor> htmleditor = do_QueryInterface(editor);
+    nodeToMove->GetNodeName(name);
+    if (name.EqualsLiteral("math")) {
+      nsCOMPtr<msiITagListManager> TagListManager;
+      nsEditor * ed = static_cast<nsEditor *> (editor);
+      htmleditor->GetTagListManager(getter_AddRefs(TagListManager));
+      rv = ed->ReplaceContainer( nodeToMove, address_of(outnode), NS_LITERAL_STRING("mrow"), TagListManager, &s1, &s2, PR_FALSE);
+      if (NS_SUCCEEDED(rv)) nodeToMove = outnode;
+    }
+  }
+  if (destNode != nodeToMove) {
+    editor->DeleteNode(nodeToMove);
+    editor->InsertNode(nodeToMove, node, offset);
+  }
+  else {
+    nsCOMPtr<nsIDOMNodeList> children;
+    rv = nodeToMove->GetChildNodes(getter_AddRefs(children));
+    if (NS_SUCCEEDED(rv) && children)
+    {
+      PRUint32 i, count;
+      rv = children->GetLength(&count);
+      if (NS_SUCCEEDED(rv))
+      {
+        for (i=0; i < count; i++)
+        {
+          nsCOMPtr<nsIDOMNode> currChild;
+          rv = children->Item(i, getter_AddRefs(currChild));
+          if (NS_SUCCEEDED(rv))
+          {
+            MoveNodeTo(aThis, editor, currChild, node, offset, destNode);
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+nsresult msiEditingManager::MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, nsIDOMNode *node, PRUint32 offset, nsIDOMNode *destNode = nsnull)
 {
   nsCOMPtr<nsIArray> arrayOfNodes;
   nsCOMPtr<nsIDOMNode> currentNode;
@@ -165,9 +220,7 @@ nsresult MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, nsIDOMNode *node, P
       parentElement = do_QueryInterface(parentNode);
       parentElement->GetNodeName(name);
     }
-
-    editor->DeleteNode(currentNode);
-    editor->InsertNode(currentNode, node, offset);//past the mo
+    MoveNodeTo(this, editor, currentNode, node, offset, destNode);
   }
   editor->EndTransaction();
   return NS_OK;
@@ -899,7 +952,7 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
     {
       res = selection->GetAnchorNode(getter_AddRefs(anchorNode));
       res = selection->GetAnchorOffset(&anchorOffset);
-      MoveRangeTo(editor, range, numerator, 0);
+      MoveRangeTo(editor, range, numerator, 0, selStartNode);
     }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
@@ -955,7 +1008,7 @@ msiEditingManager::InsertBinomial(nsIEditor * editor,
     res = mathmlElement->GetFirstChild(getter_AddRefs(top));
     if (!bCollapsed && inMath)
     {
-      MoveRangeTo(editor, range, top, 0);
+      MoveRangeTo(editor, range, top, 0, selStartNode);
     }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
@@ -1002,7 +1055,7 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
       res = mathmlElement->GetFirstChild(getter_AddRefs(radNode));
       if (!radNode) radicand = mathmlElement;
       else radicand = do_QueryInterface(radNode);
-      MoveRangeTo(editor, range, radicand, 0);
+      MoveRangeTo(editor, range, radicand, 0, selStartNode);
     }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
@@ -1049,7 +1102,7 @@ msiEditingManager::InsertRoot(nsIEditor * editor,
       res = mathmlElement->GetFirstChild(getter_AddRefs(radNode));
       if (!radNode) radicand = mathmlElement;
       else radicand = do_QueryInterface(radNode);
-      MoveRangeTo(editor, range, radicand, 0);
+      MoveRangeTo(editor, range, radicand, 0, selStartNode);
     }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
@@ -1072,7 +1125,6 @@ msiEditingManager::InsertFence(nsIEditor* editor,
   //check that we are entirely in one math object
   nsCOMPtr<nsIDOMNode> selStartNode;
   PRInt32 selStartOffset;
-  // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
 //  selection->Collapse(selStartNode, selStartOffset);
@@ -1096,7 +1148,7 @@ msiEditingManager::InsertFence(nsIEditor* editor,
     res = msiUtils::CreateMRowFence(editor, nsnull, bCollapsed, open, close, PR_TRUE, flags, attrFlags, mathmlElement);
     if (!bCollapsed)
     {
-      MoveRangeTo(editor, range, mathmlElement, 1);
+      MoveRangeTo(editor, range, mathmlElement, 1, selStartNode);
     }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
@@ -1351,7 +1403,7 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
         nsCOMPtr<nsIDOMNode> tempparent = base;
         res = tempparent->GetFirstChild(getter_AddRefs(base));
       }
-      MoveRangeTo(editor, range, base, 0);
+      MoveRangeTo(editor, range, base, 0, selStartNode);
     }
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
