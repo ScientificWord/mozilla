@@ -3,14 +3,14 @@
 
 <START_CONTEXT_MATH>
 
-;&DifferentialD;<uID3.1.4>prefix,55,U02146
-;&CapitalDifferentialD;<uID3.2.4>prefix,55,U02145
-&dd;<uID3.1.4>prefix,55,U02146
-&#x2146;<uID3.1.4>prefix,55,U02146
-d<uID3.1.4>prefix,55,U00064
-&DD;<uID3.2.4>prefix,55,U02145
-&#x2145;<uID3.2.4>prefix,55,U02145
-D<uID3.2.4>prefix,55,U00044
+;&DifferentialD;<uID3.1.4>prefix,33,U02146
+;&CapitalDifferentialD;<uID3.2.4>prefix,33,U02145
+&dd;<uID3.1.4>prefix,33,U02146
+&#x2146;<uID3.1.4>prefix,33,U02146
+d<uID3.1.4>prefix,33,U00064
+&DD;<uID3.2.4>prefix,33,U02145
+&#x2145;<uID3.2.4>prefix,33,U02145
+D<uID3.2.4>prefix,33,U00044
 
 
 ;Latin (upper ansi) symbols
@@ -616,7 +616,7 @@ D<uID3.2.4>prefix,55,U00044
 ;;&prime;<uID3.17.23>postfix,66,U002B9
 &empty;<uID3.17.24>
 &#x2205;<uID3.17.24>
-&nabla;<uID3.17.25>prefix,54,U02207
+&nabla;<uID3.17.25>prefix,53,U02207
 &#x2207;<uID3.17.25>prefix,54,U02207
 &#x2207;&#x22c5;<uID3.17.25>prefix,54,U02207U022c5
 &#x2207;&#xd7;<uID3.17.25>prefix,54,U02207U0d7
