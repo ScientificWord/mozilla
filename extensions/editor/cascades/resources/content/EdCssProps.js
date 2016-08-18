@@ -532,7 +532,7 @@ function onSelectCSSTreeItem(tab)
   var cssObject = gDialog.selectedObject;
   // Let's update the buttons depending on what kind of object is
   // selected in the tree
-  UpdateButtons(!external, !external, true, true, !external, (!external || (type == SHEET)) );
+  UpdateButtons(!external, !external, true, true, !external && type !== STYLE_RULE, (!external || (type == SHEET)) );
 
   if (gDialog.selectedType != STYLE_RULE) {
     // user did not select a CSSStyleRule, let's fallback to Info tab
@@ -544,30 +544,39 @@ function onSelectCSSTreeItem(tab)
     // Info tab
     tab = gDialog.selectedTab ? gDialog.selectedTab : GENERAL_TAB;
   }
-  switch (tab) {
-    case TEXT_TAB:
+
       // we have to update the text preview, let's remove its style attribute
       gDialog.brownFoxLabel.removeAttribute("style");      
       InitTextTabPanel();
-      return;
-      break;
-    case BACKGROUND_TAB:
       InitBackgroundTabPanel();
-      return;
-      break;
-    case BORDER_TAB:
       InitBorderTabPanel();
-      return;
-      break;
-    case BOX_TAB:
       InitBoxTabPanel();
-      return;
-      break;
-    case AURAL_TAB:
-      InitAuralTabPanel();
-      return;
-      break;
-  }
+//      InitAuralTabPanel();
+  
+  //  switch (tab) {
+  //   case TEXT_TAB:
+  //     // we have to update the text preview, let's remove its style attribute
+  //     gDialog.brownFoxLabel.removeAttribute("style");      
+  //     InitTextTabPanel();
+  //     return;
+  //     break;
+  //   case BACKGROUND_TAB:
+  //     InitBackgroundTabPanel();
+  //     return;
+  //     break;
+  //   case BORDER_TAB:
+  //     InitBorderTabPanel();
+  //     return;
+  //     break;
+  //   case BOX_TAB:
+  //     InitBoxTabPanel();
+  //     return;
+  //     break;
+  //   case AURAL_TAB:
+  //     InitAuralTabPanel();
+  //     return;
+  //     break;
+  // }
 
   // if we are here, the Info tab is our choice
   gDialog.selectedTab = GENERAL_TAB;
