@@ -1216,13 +1216,14 @@ var msiSaveCommand =
     //  otherwise the document modified state would prevent that
     //  when you first open a remote file.
     var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
     if (!msiIsTopLevelEditor(editorElement))
       return false;
     try
     {
       var docUrl = msiGetEditorURL(editorElement);
       return msiIsDocumentEditable(editorElement) && isLicensed() &&
-        (msiIsDocumentModified(editorElement) || msiIsHTMLSourceChanged(editorElement) ||
+        (editorElement.saveModCount < editor.getModificationCount() || msiIsHTMLSourceChanged(editorElement) ||
          IsUrlAboutBlank(docUrl) || IsUrlUntitled(docUrl) || GetScheme(docUrl) != "file");
     }
     catch (e) {
@@ -2298,8 +2299,8 @@ function msiEditorOutputProgressListener(editorElement)
             UpdateWindowTitle();
 
             // this should cause notification to listeners that doc has changed
-            editor.resetModificationCount();
-            editor.pdfModCount = -1;
+            // editor.resetModificationCount();
+            editorElement.saveModCount = editor.getModificationCount();
 
             // Set UI based on whether we're editing a remote or local url
             SetSaveAndPublishUI(urlstring);
@@ -3251,13 +3252,11 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var path = destLocalFile.path;
   if (!(/\.sci$/.test(path))) path += ".sci";
   prefs.setCharPref("swp.lastfilesaved", path);
-  // BBM: Removed the following because saving should not reset the modification count; only reparsing should reset it.
-  // if (!aSaveCopy)
-  // {
-  //   pdfModCount = -1;
-  //   editor.resetModificationCount();
-  // }
-  // this should cause notification to listeners that document has changed
+  if (!aSaveCopy)
+  {
+    editorElement.saveModCount = editor.getModificationCount();
+    // editor.resetModificationCount();
+  }
 
   // Set UI based on whether we're editing a remote or local url
   if (!aSaveCopy)

@@ -653,8 +653,9 @@
 %%\def\numberwithin#1#2{\msitag{\numberwithin{#1}{#2}}}
 %% %% Newcommand and renewcommand
  
- \def\newcommand{\@ifnextchar*{\@newcommand}{\@newcommand{}}}
- \def\renewcommand{\@ifnextchar*{\@renewcommand}{\@renewcommand{}}}
+% \def\newcommand{\@ifnextchar*{\@newcommand}{\@newcommand{}}}
+% \def\renewcommand{\@ifnextchar*{\@renewcommand}{\@renewcommand{}}}
+
  \let\providecommand\newcommand
  
  
@@ -1684,6 +1685,7 @@
 \def\msi@hook@vss{\msitag{\vss}}
 
 \def\label{%
+   \ifmmode\else\msihmode\fi
    \begingroup\attrib@text
    \@label}
 
@@ -1983,7 +1985,7 @@
      \msitag{\msipassthru\char`\{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{\char`\}"><![CDATA[#2]]></texb>}
    \else
      \msihmode
-     \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" }\msiattrib{name="#1"}\msitag{><![CDATA[#2]]></texb>}%
+     \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}\msiattrib{#1}\msitag{"><![CDATA[#2]]></texb>}%
    \fi
    \endgroup}
 
@@ -2376,6 +2378,8 @@
          \fi
     \fi}
 
+
+%\let\renewcommand\msidefault   
 
 \def\msi@begin@figure{%
   \msihmode\@ifnextchar[{\msi@begin@figureA}{\msi@begin@figureB}}

@@ -67,6 +67,8 @@
   <sub ctx="text" tp="sc"><pattern>.tex.</pattern><data>insertFragmentOrMacro('tex');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.xetex.</pattern><data>insertFragmentOrMacro('xetex');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.xelatex.</pattern><data>insertFragmentOrMacro('xelatex');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.nonum.</pattern><data>unnumberSection();</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.renum.</pattern><data>renumberSection();</data></sub>
   <sub ctx="math" tp="sc"><pattern>+-</pattern><data>insertMathSymbol('±',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>about</pattern><data>insertMathname('about',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>additionally</pattern><data>insertMathname('additionally',true);</data></sub>

@@ -318,6 +318,8 @@ msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
   PRInt32 startOffset(0), endOffset(0);
   PRBool bCollapsed(PR_FALSE);
   nsAutoEditBatch beginBatching(this);
+  msiUtils::CanonicalizeMathSelection(this);  // BBM 2016-08-16
+
   res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                          endOffset, bCollapsed);
   if (bCollapsed)
@@ -502,6 +504,7 @@ msiEditor::InsertSqRoot()
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
+    msiUtils::CanonicalizeMathSelection(this); // BBM 2016-08-16
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res))
@@ -532,6 +535,8 @@ msiEditor::InsertRoot()
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
+    msiUtils::CanonicalizeMathSelection(this); // BBM 2016-08-16
+
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res))
@@ -741,6 +746,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
 		{
 			SelectTable();
 		}
+    msiUtils::CanonicalizeMathSelection(this);
 
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
@@ -771,6 +777,8 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
+    msiUtils::CanonicalizeMathSelection(this); // BBM 2016-08-16
+
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res))
@@ -781,11 +789,7 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
       {
         //res = NS_ERROR_FAILURE;
         res = DeleteSelection(nsIEditor::eNone);
-        // TODO add stuff so that selected stuff is changed to become the base  or the script ?
-        // current SWP behavoir is to make it the script, but this may not be correct in light
-        // of the fact that sub and sup have a well defined base in mathml.
-        // Also need to deal with the case where we are not in math, or part of the selection is not
-        // in math.
+
       }
       theNode = startNode;
       theOffset = startOffset;
@@ -861,6 +865,8 @@ msiEditor::InsertDecoration(const nsAString & above, const nsAString & below,
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
+    msiUtils::CanonicalizeMathSelection(this); // BBM 2016-08-16
+
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res))
