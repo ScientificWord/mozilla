@@ -1081,7 +1081,7 @@ function Restart()
   for (var i=0; i<l; i++) {
     delete objectsArray[i];
   }
-  delete objectsArray;
+  objectsArray = [];
 
   // now, let's clear the tree
   var gridrows = gDialog.sheetInfoTabGridRows;
