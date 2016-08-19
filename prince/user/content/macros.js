@@ -195,3 +195,31 @@ function insertSubstructure(delSelection)
   if (delSelection) deleteSelection();
   msiGoDoCommand('cmd_insertSubstructure');
 }
+
+function unnumberSection()
+{
+  deleteSelection();
+  var editorElement = getCurrentEditorElement();
+  var editor = msiGetEditor(editorElement);
+  
+  var section = editor.selection.anchorNode;
+  while (section && section.nodeName != 'section' && section.nodeName != 'subsection' && section.nodeName != 'subsubsection') {
+    section = section.parentNode;
+  }
+//  alert(section.nodeName);
+  if (section) section.setAttribute("nonum","true");
+}
+
+function renumberSection()
+{
+  deleteSelection();
+  var editorElement = getCurrentEditorElement();
+  var editor = msiGetEditor(editorElement);
+  
+  var section = editor.selection.anchorNode;
+  while (section && section.nodeName != 'section' && section.nodeName != 'subsection' && section.nodeName != 'subsubsection') {
+    section = section.parentNode;
+  }
+//  alert(section.nodeName);
+  if (section) section.removeAttribute("nonum");
+}

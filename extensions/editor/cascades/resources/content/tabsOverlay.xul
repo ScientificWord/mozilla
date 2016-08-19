@@ -81,7 +81,8 @@
                   editable="true"
                   disabled="true"
                   class="big-left-margin"
-                  oninput="ChangeValueOnInput(this, 'font-family', 'brownFoxLabel');">
+                  oninput="ChangeValueOnInput(this, 'font-family', 'brownFoxLabel');"
+                  oncommand="ChangeValueOnInput(this, 'font-family', 'brownFoxLabel');">
           <menupopup onpopupshowing="initLocalFontFaceMenu(this)">
           <!-- Local font face items added at by initLocalFontFaceMenu() -->
           </menupopup>
