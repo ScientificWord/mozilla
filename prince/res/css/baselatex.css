@@ -27,6 +27,7 @@ In that case in internal style sheet will rewrite these rules. */
 @media screen {
   mml|math { color: red;}
   mml|mi[msimathname="true"] { color: gray; }
+  mml|mo[msimathname="true"] { color: gray; }
   mml|mi[msiunit="true"] {color: green;}
   mml|mtd {border-color: green; }
   msidisplay {border-color: green; }
@@ -34,7 +35,7 @@ In that case in internal style sheet will rewrite these rules. */
   [msiclass="msi_passthrough"] {color: orange; }
 }
 
-mml|mi[msimathname="true"] {
+mml|mi[msimathname="true"], mml|mo[msimathname="true"] {
   font-style: normal;
   font-family: Times roman; }
 mml|mi[msiunit="true"] {
