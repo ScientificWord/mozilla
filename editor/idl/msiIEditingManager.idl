@@ -40,6 +40,14 @@ interface msiIEditingManager : nsISupports
   void getMathMLInsertionInterface(in nsIDOMNode aNode,
                                    in unsigned long offset,
                                    out msiIMathMLInsertion mathml);
+
+
+  void moveRangeTo( in nsIEditor editor, 
+                    in nsIDOMRange range, 
+                    in nsIDOMNode node, 
+                    in unsigned long offset, 
+                    in nsIDOMNode destNode);
+
                                  
   /**
    * Call supportsMathMLInsertionInterface to determine if a node can be associated to a msiMathML 
