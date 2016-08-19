@@ -101,6 +101,8 @@ std::string makexml(std::string str){
       rv += "&lt;";
     } else if (*it == '>'){
       rv += "&gt;";
+    } else if (*it == '"'){
+      rv += "'";
     } else {
       rv += *it;
     }
@@ -636,54 +638,37 @@ case CMD_MSIPREAMBLE: {
   
   std::string usepackages;
   std::string rest;
-
   size_t q = 0;
-  size_t p = preamble.find("\\usepackage");
-  
-  while (p != std::string::npos){
-    q = p+11;
-    p = preamble.find("\\usepackage", p+11);
-  }
-  // now q points at last usepackage
-  // look for next command
-  q = preamble.find("\\", q);
-  if (q == std::string::npos){
-     usepackages = preamble.substr(0);
-     rest = "";
-  } else {
-     usepackages = preamble.substr(0, q);
-     rest = preamble.substr(q);
-  }
- 
+  size_t p = preamble.find("\\usepackage", q);
 
-  // Convert <usepackage>
-  q = std::string::npos;
-  p = usepackages.find("\\usepackage");
   while (p != std::string::npos){
+    // q = end of last usepackage
+    // p = start of next
+    // Copy non-usepackage stuff to rest
+    rest += preamble.substr(q, p-q);
+    // Convert <usepackage>    
     q = p+11;
-    p = usepackages.find("\\usepackage", p+11);
     std::string opt;
     std::string req;
-    if (usepackages[q] == ' ')
-      q++;
-    if (usepackages[q] == '[') {
-      q++;
-      while (usepackages[q] != ']'){
-        opt += usepackages[q];
-        ++q;
+    if (preamble[q] == ' ')
+        q++;
+      if (preamble[q] == '[') {
+        q++;
+        while (preamble[q] != ']'){
+          opt += preamble[q];
+          ++q;
       }
       ++q;
     }
-    if (usepackages[q] == ' ')
+    if (preamble[q] == ' ')
       q++;
-    if (usepackages[q] == '{') {
+    if (preamble[q] == '{') {
       q++;
-      while (usepackages[q] != '}'){
-        req += usepackages[q];
+      while (preamble[q] != '}'){
+        req += preamble[q];
         ++q;
       }
       ++q;
-     
     }
     std::string up = "<usepackage req=\"";
     up += req;
@@ -699,8 +684,10 @@ case CMD_MSIPREAMBLE: {
     req += ".sty";
     Filename fn(req.c_str());
     ProcessFile(fn);
+    p = preamble.find("\\usepackage", q);
+    
   }
-
+  rest += preamble.substr(q);
   std::string preambletex =
      "<preambleTeX><![CDATA[\n";
   preambletex += rest;
