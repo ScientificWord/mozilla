@@ -1313,7 +1313,6 @@ function initLocalFontFaceMenu(menuPopup)
           {
             var itemNode = document.createElement("menuitem");
             itemNode.setAttribute("label", gLocalFonts[i]);
-            //itemNode.value = gLocalFonts[i];
             itemNode.setAttribute("value", gLocalFonts[i]);
             menuPopup.appendChild(itemNode);
           }

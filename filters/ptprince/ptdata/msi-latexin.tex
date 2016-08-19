@@ -542,10 +542,10 @@
 }
 \long\def\@reargdef#1[#2]{%
   \@yargdef#1\@ne{#2}}
-\def\renewcommand{\@star@or@long\renew@command}
-\def\renew@command#1{%
-  \begingroup \escapechar\m@ne\xdef\@gtempa{{\string#1}}\endgroup
-  \new@command#1}
+%\def\renewcommand{\@star@or@long\renew@command}
+%\def\renew@command#1{%
+%  \begingroup \escapechar\m@ne\xdef\@gtempa{{\string#1}}\endgroup
+%  \new@command#1}
 \long\def\@ifdefinable #1#2{%
       \edef\reserved@a{\expandafter\@gobble\string #1}%
      \@ifundefined\reserved@a
