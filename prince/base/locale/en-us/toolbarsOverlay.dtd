@@ -255,3 +255,7 @@
 <!ENTITY spellToolbarCmd.label "Spell">
 
 
+<!ENTITY texttags.emptytext "Text formatting tags">
+<!ENTITY paratags.emptytext "Paragraph/list tags">
+<!ENTITY structtags.emptytext "Structure/environment tags">
+<!ENTITY frontmatter.emptytext "Frontmatter tags">
