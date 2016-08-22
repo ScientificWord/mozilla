@@ -9771,10 +9771,10 @@ function setTagFieldContents(editor, propertyStack) // probably should be rename
     pt = document.getElementById("ParaTagSelections");
     st = document.getElementById("StructTagSelections");
     ft = document.getElementById("FrontMTagSelections");
-    if (tt) tt.value = "";
-    if (pt) pt.value = "";
-    if (st) st.value = "";
-    if (ft) ft.value = "";
+    // if (tt) tt.value = "";
+    // if (pt) pt.value = "";
+    // if (st) st.value = "";
+    // if (ft) ft.value = "";
     try {
       document.getElementById("cmd_textBold").removeAttribute("checked");
       document.getElementById("cmd_textItalic").removeAttribute("checked");
