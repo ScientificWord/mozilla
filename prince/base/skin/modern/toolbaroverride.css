@@ -9,6 +9,10 @@ toolbox
   background-repeat: repeat;  */
 }
 
+textbox[empty="true"] {
+  color: gray;
+}
+
 toolbar
 {
   background-color: transparent;
