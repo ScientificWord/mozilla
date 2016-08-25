@@ -9,7 +9,9 @@
 #include "nsFrame.h"
 #include "msiITagListManager.h"
 #include "nsIEditor.h"
+#include "nsIHTMLEditor.h"
 #include "nsIDOMText.h"
+#include "nsIEditorDocShell.h"
 #include "../../editor/libeditor/base/nsEditor.h"
 #include "../../editor/libeditor/base/nsEditorUtils.h"
 
@@ -265,18 +267,9 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
         // We don't want to go to a text frame. Suppose the math is the
         // first item in a paragraph. We want the cursor before the math, but
         // in the paragraph.
-        // pChild = GetLastTextFrameBeforeFrame(pFrame);
-        // if (pChild)
-        // {
-        //   *aOutFrame = pChild;
-        //   nsIAtom*  frameType = pChild->GetType();
-        //   if (nsGkAtoms::textFrame == frameType)
-        //     *aOutOffset = (pChild->GetContent())->TextLength() - count;
-        //   else
-        //     *aOutOffset = 0;
-        // }
-        // else
-        //   pFrame->MoveLeftAtDocStart( nsnull);
+      
+        nsCOMPtr<nsIEditor> ed;
+
         nsCOMPtr<nsIDOMNode> parentNode = do_QueryInterface(pParent->GetContent());
         nsCOMPtr<nsIDOMNode> frameNode = do_QueryInterface(pFrame->GetContent());
         nsCOMPtr<nsIDOMNode> dummy;
@@ -288,6 +281,15 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
         parentNode->InsertBefore( textNode, frameNode, getter_AddRefs(dummy));
         *aOutFrame = pFrame->GetPrevSibling();
         *aOutOffset = 0;
+        if (!*aOutFrame) {
+           nsPresContext* presContext = pFrame->PresContext();
+           nsIPresShell *shell = presContext->GetPresShell();
+           nsCOMPtr<nsISupports> container = presContext->GetContainer();
+           nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+           editorDocShell->GetEditor(getter_AddRefs(ed));
+           nsEditor * editor = static_cast<nsEditor*>((nsIEditor*)ed);
+           editor->BeginningOfDocument();
+        }
       }
     }
   }
