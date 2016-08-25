@@ -338,7 +338,7 @@ nsFrame::operator new(size_t sz, nsIPresShell* aPresShell) CPP_THROW_NEW
 }
 
 nsresult
-GetEditor( nsFrame* frame, nsIHTMLEditor ** htmlEditor)
+GetEditor( nsIFrame* frame, nsIHTMLEditor ** htmlEditor)
 {
   nsresult res = NS_OK;
   nsPresContext* presContext = frame->PresContext();
@@ -2240,14 +2240,16 @@ nsFrame::PeekBackwardAndForward(nsSelectionAmount aAmountBack,
   // Keep frameSelection alive.
   nsRefPtr<nsFrameSelection> frameSelection = GetFrameSelection();
   nsCOMPtr<nsISelection> selection;
-  if (NS_SUCCEEDED(selcon->GetSelection(nsISelectionController::SELECTION_NORMAL,
-                                        getter_AddRefs(selection)))){
-    rv = selection->Collapse(startNode,startpos.mContentOffset);
-    if (NS_FAILED(rv))
-      return rv;
-    rv = selection->Extend(endNode,endpos.mContentOffset);
-    if (NS_FAILED(rv))
-      return rv;
+  if (startNode && endNode) {
+    if (NS_SUCCEEDED(selcon->GetSelection(nsISelectionController::SELECTION_NORMAL,
+                                          getter_AddRefs(selection)))){
+      rv = selection->Collapse(startNode,startpos.mContentOffset);
+      if (NS_FAILED(rv))
+        return rv;
+      rv = selection->Extend(endNode,endpos.mContentOffset);
+      if (NS_FAILED(rv))
+        return rv;
+    }
   }
   //no release
 
@@ -8322,9 +8324,9 @@ nsFrame::MoveRightAtDocEnd(nsISelection * selection)
     }
     if (!currentNode) return NS_OK;
     // currentNode now should be the last paragraph-type object in the document
-    res = nsContentUtils::GetCommonAncestor(startNode, currentNode, getter_AddRefs(ancestorNode));
-    if (currentNode == ancestorNode)
-    {
+    // res = nsContentUtils::GetCommonAncestor(startNode, currentNode, getter_AddRefs(ancestorNode));
+//    if (currentNode == ancestorNode)
+    { 
       // proceed only if the selection is contained in currentNode
       nsCOMPtr<nsIDOMNodeList> childList;
       nsCOMPtr<nsIDOMElement> brElem;
