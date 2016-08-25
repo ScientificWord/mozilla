@@ -161,6 +161,7 @@ public:
   NS_IMETHODIMP HandleKeyPress(nsIDOMKeyEvent* aKeyEvent);
   NS_IMETHOD GetIsDocumentEditable(PRBool *aIsDocumentEditable);
   NS_IMETHODIMP BeginningOfDocument();
+  NS_IMETHODIMP EndOfDocument();
 
   /* ------------ nsIHTMLEditor methods -------------- */
 
