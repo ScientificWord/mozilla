@@ -69,6 +69,8 @@
 #include "nsTArray.h"
 #include "nsMathMLFrame.h"
 #include "nsMathMLCursorMover.h"
+#include "nsIEditorDocShell.h"
+
 
 
 #include "nsISelectionListener.h"
@@ -111,6 +113,7 @@ static NS_DEFINE_CID(kFrameTraversalCID, NS_FRAMETRAVERSAL_CID);
 #include "nsAutoCopyListener.h"
 #include "nsCopySupport.h"
 #include "nsIClipboard.h"
+#include "../../editor/libeditor/base/nsEditor.h"
 
 #ifdef IBMBIDI
 #include "nsIBidiKeyboard.h"
@@ -1607,14 +1610,22 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
   }
   else
   {
+    nsCOMPtr<nsIEditor> ed;
+
+    nsPresContext* presContext = frame->PresContext();
+    nsIPresShell *shell = presContext->GetPresShell();
+    nsCOMPtr<nsISupports> container = presContext->GetContainer();
+    nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+    editorDocShell->GetEditor(getter_AddRefs(ed));
+    nsEditor * editor = static_cast<nsEditor*>((nsIEditor*)ed);
+
     if (pos.mDirection == eDirPrevious)
     {
-      frame->MoveLeftAtDocStart(mDomSelections[index]);
+      editor->BeginningOfDocument();      
     }
     else
     {
-      frame->MoveRightAtDocEnd(mDomSelections[index]);
-
+      editor->EndOfDocument();
     }
   }
   result = mDomSelections[index]->
