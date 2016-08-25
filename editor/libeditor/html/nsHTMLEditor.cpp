@@ -546,82 +546,74 @@ nsHTMLEditor::BeginningOfDocument()
   // get the root element
   nsIDOMElement *rootElement = GetRoot();
   if (!rootElement)   return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  nsCOMPtr<nsIDOMDocument> domdoc;
+  GetDocument(getter_AddRefs(domdoc));
+  if (!domdoc)
+    return NS_ERROR_UNEXPECTED;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  doctrav = do_QueryInterface(domdoc); 
 
-  // find first editable thingy
-  PRBool done = PR_FALSE;
-  nsCOMPtr<nsIDOMNode> curNode(rootElement), selNode;
-  PRInt32 curOffset = 0, selOffset;
-  while (!done)
-  {
-    nsWSRunObject wsObj(this, curNode, curOffset);
-    nsCOMPtr<nsIDOMNode> visNode;
-    PRInt32 visOffset=0;
-    PRInt16 visType=0;
-    wsObj.NextVisibleNode(curNode, curOffset, address_of(visNode), &visOffset, &visType);
-    if ((visType==nsWSRunObject::eNormalWS) ||
-        (visType==nsWSRunObject::eText))
-    {
-      selNode = visNode;
-      selOffset = visOffset;
-      done = PR_TRUE;
-    }
-    else if ((visType==nsWSRunObject::eBreak)    ||
-             (visType==nsWSRunObject::eSpecial))
-    {
-      res = GetNodeLocation(visNode, address_of(selNode), &selOffset);
-      if (NS_FAILED(res)) return res;
-      done = PR_TRUE;
-    }
-    else if (visType==nsWSRunObject::eOtherBlock)
-    {
-      // By definition of nsWSRunObject, a block element terminates
-      // a whitespace run. That is, although we are calling a method
-      // that is named "NextVisibleNode", the node returned
-      // might not be visible/editable!
-      // If the given block does not contain any visible/editable items,
-      // we want to skip it and continue our search.
-
-      if (!IsContainer(visNode))
-      {
-        // However, we were given a block that is not a container.
-        // Since the block can not contain anything that's visible,
-        // such a block only makes sense if it is visible by itself,
-        // like a <hr>
-        // We want to place the caret in front of that block.
-
-        res = GetNodeLocation(visNode, address_of(selNode), &selOffset);
-        if (NS_FAILED(res)) return res;
-        done = PR_TRUE;
-      }
-      else
-      {
-        PRBool isEmptyBlock;
-        if (NS_SUCCEEDED(IsEmptyNode(visNode, &isEmptyBlock, PR_TRUE, PR_FALSE, PR_TRUE)) &&
-            isEmptyBlock)
-        {
-          // skip the empty block
-          res = GetNodeLocation(visNode, address_of(curNode), &curOffset);
-          if (NS_FAILED(res)) return res;
-          ++curOffset;
-        }
-        else
-        {
-          curNode = visNode;
-          curOffset = 0;
-        }
-        // keep looping
-      }
-    }
-    else
-    {
-      // else we found nothing useful
-      selNode = curNode;
-      selOffset = curOffset;
-      done = PR_TRUE;
-    }
+  res = doctrav->CreateTreeWalker(rootElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+  nsCOMPtr<nsIDOMNode> currNode;
+  tw->NextNode(getter_AddRefs(currNode));
+  while (currNode) {
+    nsAutoString tagname;
+    nsAutoString classname;
+    currNode->GetLocalName(tagname);
+    mtagListManager->GetRealClassOfTag(tagname, nsnull, classname);
+    if (classname.EqualsLiteral("paratag")) {
+      selection->Collapse(currNode, 0);
+      return NS_OK;
+    }    
+    tw->NextNode(getter_AddRefs(currNode));
   }
-  return selection->Collapse(selNode, selOffset);
+  selection->Collapse(rootElement, 0);
+  return NS_OK;
 }
+
+NS_IMETHODIMP
+nsHTMLEditor::EndOfDocument()
+{
+  if (!mDocWeak || !mPresShellWeak) { return NS_ERROR_NOT_INITIALIZED; }
+
+  // get the selection
+  nsCOMPtr<nsISelection> selection;
+  nsresult res = GetSelection(getter_AddRefs(selection));
+  if (NS_FAILED(res))
+    return res;
+  if (!selection)
+    return NS_ERROR_NOT_INITIALIZED;
+
+  // get the root element
+  nsIDOMElement *rootElement = GetRoot();
+  if (!rootElement)   return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  nsCOMPtr<nsIDOMDocument> domdoc;
+  GetDocument(getter_AddRefs(domdoc));
+  if (!domdoc)
+    return NS_ERROR_UNEXPECTED;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  doctrav = do_QueryInterface(domdoc); 
+
+  res = doctrav->CreateTreeWalker(rootElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+  nsCOMPtr<nsIDOMNode> currNode;
+  tw->PreviousNode(getter_AddRefs(currNode));
+  while (currNode) {
+    nsAutoString tagname;
+    nsAutoString classname;
+    currNode->GetLocalName(tagname);
+    mtagListManager->GetRealClassOfTag(tagname, nsnull, classname);
+    if (classname.EqualsLiteral("paratag")) {
+      selection->Collapse(currNode, 0);
+      return NS_OK;
+    }    
+    tw->PreviousNode(getter_AddRefs(currNode));
+  }
+  selection->Collapse(rootElement, 0);
+  return NS_OK;
+}
+
 
 /**
  * Returns true if the id represents an element of block type.

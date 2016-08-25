@@ -741,25 +741,52 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
 		PRBool allSelected(PR_FALSE);
+    GetSelection(getter_AddRefs(selection));
 		res = GetAllCellsSelected(getter_AddRefs(mtable), &allSelected);
 		if (allSelected && mtable)
 		{
 			SelectTable();
 		}
-    msiUtils::CanonicalizeMathSelection(this);
+//    msiUtils::CanonicalizeMathSelection(this);
 
+    nsCOMPtr<nsIDOMRange> range;
+    selection->GetRangeAt(0, getter_AddRefs(range)); 
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res))
     {
-      nsCOMPtr<nsIDOMNode> theNode;
-      PRInt32 theOffset(0);
-      theNode = startNode;
-      theOffset = startOffset;
-      nsCOMPtr<nsIEditor> editor;
-      QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
-      res = m_msiEditingMan->InsertFence(editor, selection, theNode,
-                                         theOffset, open, close);
+      nsCOMPtr<nsIDOMNode> theNode = startNode;
+      PRInt32 theOffset = startOffset;
+      nsCOMPtr<nsIDOMNode> mathnode;
+      res = RangeInMath(range, getter_AddRefs(mathnode));
+      PRBool inMath = (nsnull != mathnode);
+    //  if (!inMath) return NS_OK;
+      NS_ASSERTION(theNode, "Null node passed to msiEditor::InsertFence");
+      if (theNode)
+      {
+        BeginTransaction();
+        PRBool bCollapsed(PR_FALSE);
+        nsRangeStore * store = new nsRangeStore();
+        if (!store) return NS_ERROR_NULL_POINTER;
+        store->StoreRange(range);
+        mRangeUpdater.RegisterRangeItem(store);
+        
+        res = selection->GetIsCollapsed(&bCollapsed);
+        nsCOMPtr<nsIDOMElement> mathmlElement;
+        PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+        PRUint32 attrFlags(msiIMathMLInsertion::FLAGS_NONE);
+        res = msiUtils::CreateMRowFence(this, nsnull, bCollapsed, open, close, PR_TRUE, flags, attrFlags, mathmlElement);
+        if (NS_SUCCEEDED(res) && mathmlElement) {
+          res = InsertNodeAtPoint((nsIDOMNode *)mathmlElement, (nsIDOMNode **)address_of(startNode), &startOffset, PR_TRUE);
+        }
+        res = store->GetRange(range);
+        mRangeUpdater.DropRangeItem(store);
+        if (!bCollapsed)
+        {
+          m_msiEditingMan->MoveRangeTo(this, range, mathmlElement, 1, mathnode);
+        }
+        EndTransaction();
+      }
     }
   }
   return res;
@@ -1188,38 +1215,46 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
         }
       }
     }
+    PRBool collapsed(PR_FALSE);
+    PRBool mathSpace(PR_FALSE);
+    nsCOMPtr<msiISelection> msiSelection;
+    nsCOMPtr<nsIDOMNode> mathnode;
+    res = GetMSISelection(msiSelection);
+    if (!msiSelection)
+      return NS_ERROR_FAILURE;
+    nsCOMPtr<nsISelection> nsSelection(do_QueryInterface(msiSelection));
+    if (!nsSelection)
+      return NS_ERROR_FAILURE;
+    res = nsSelection->GetIsCollapsed(&collapsed);
+    nsCOMPtr<nsIDOMNode> currFocusNode;
+    nsCOMPtr<nsIDOMElement> currFocusElement;
+    res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
+    nsAutoString name;
+    nsCOMPtr<nsIDOMNode> tempNode = currFocusNode;
+    PRUint16 type;
+    res = tempNode->GetNodeType(& type);
+    if (type == 3)
+      currFocusNode->GetParentNode(getter_AddRefs(tempNode));
+    currFocusElement = do_QueryInterface(tempNode);
+
+
+    if (currFocusElement) res = currFocusElement->GetTagName(name);
+    if (!name.EqualsLiteral("mtext"))
+    {
+      res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
+    }
+    if (mathnode && (symbol == ' ') && !isShift) {
+      nsCOMPtr<nsISelectionController> selcon;
+      res = GetSelectionController(getter_AddRefs(selcon));  
+      selcon->CharacterMove(PR_TRUE, PR_FALSE);
+    }
     if (symbol && !ctrlKey && !altKey && !metaKey)
     {
-      PRBool collapsed(PR_FALSE);
-      nsCOMPtr<msiISelection> msiSelection;
-      nsCOMPtr<nsIDOMNode> mathnode;
-      res = GetMSISelection(msiSelection);
-      if (!msiSelection)
-        return NS_ERROR_FAILURE;
-      nsCOMPtr<nsISelection> nsSelection(do_QueryInterface(msiSelection));
-      if (!nsSelection)
-        return NS_ERROR_FAILURE;
-      if (NS_SUCCEEDED(res))
-        res = nsSelection->GetIsCollapsed(&collapsed);
       if (!collapsed)
         res = DeleteSelection(nsIEditor::eNone); // TODO
       if (NS_SUCCEEDED(res))
       {
-        nsCOMPtr<nsIDOMNode> currFocusNode;
-  			nsCOMPtr<nsIDOMElement> currFocusElement;
-        res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
-  			nsAutoString name;
-  			nsCOMPtr<nsIDOMNode> tempNode = currFocusNode;
-  			PRUint16 type;
-  			res = tempNode->GetNodeType(& type);
-  			if (type == 3)
-  				currFocusNode->GetParentNode(getter_AddRefs(tempNode));
-  			currFocusElement = do_QueryInterface(tempNode);
-  			if (currFocusElement) res = currFocusElement->GetTagName(name);
-  			if (!name.EqualsLiteral("mtext"))
-  			{
-          res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
-  			}
+
         if (NS_SUCCEEDED(res) && currFocusNode && mathnode)
         {
           PRBool prefset(PR_FALSE);
@@ -1228,7 +1263,6 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
             // SWP actually has some special behavior if you're at the end of math
             prefset = SpacesAtEndOfMathAddsSpace();
             if (!isShift) {
-              res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault);
               preventDefault = PR_TRUE;              // if preference is set, and we are now out of math, type a space
               if (prefset)
               {
