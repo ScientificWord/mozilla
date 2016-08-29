@@ -11731,11 +11731,15 @@ function convertToUTFIfNecessary(aFile, inputFileAsString) {
 }
 
 function writeStatusMessage(message) {
-  document.getElementById("status-message").value=message;
+  if (document.getElementById("status-message")) {
+    document.getElementById("status-message").value=message;
+  }
 }
 
 function clearStatusMessage() {
-  document.getElementById("status-message").value="";
+  if (document.getElementById("status-message")) {
+    document.getElementById("status-message").value="";
+  }
 }
 
 var getTEXMF = initTEXMF();
