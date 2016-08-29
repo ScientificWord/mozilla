@@ -98,13 +98,13 @@ var ZoomManager = {
   get zoomValues ZoomManager_get_zoomValues() {
     var zoomValues = this._prefBranch.getCharPref("toolkit.zoomManager.zoomValues")
                                      .split(",").map(parseFloat);
-    zoomValues.sort();
+    // zoomValues.sort();
 
-    while (zoomValues[0] < this.MIN)
-      zoomValues.shift();
+    // while (zoomValues[0] < this.MIN)
+    //   zoomValues.shift();
 
-    while (zoomValues[zoomValues.length - 1] > this.MAX)
-      zoomValues.pop();
+    // while (zoomValues[zoomValues.length - 1] > this.MAX)
+    //   zoomValues.pop();
 
     delete this.zoomValues;
     return this.zoomValues = zoomValues;

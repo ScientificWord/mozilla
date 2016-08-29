@@ -24,6 +24,11 @@ pref("ui.-moz-dialog", "#F3F3F3F3");
 pref("browser.cache.disk.enable",           false);
 pref("browser.hiddenWindowChromeURL", "chrome://prince/content/hiddenwindow.xul");
 pref("browser.chromeURL", "chrome://prince/content/prince.xul");
+// extend the default range of zooming; max and min percent should agree with the zoomvalue limits
+pref("zoom.minPercent", 35);
+pref("zoom.maxPercent", 1600);
+pref("toolkit.zoomManager.zoomValues", "0.35,0.5,0.75,1.0,1.25,1.5,2.0,2.8,4.0,5.6,8.0,11.0,16.0");
+
 pref("editor.active_link_color",            "#000088");
 pref("editor.always_show_publish_dialog",    false);
 pref("editor.author",                      "");
