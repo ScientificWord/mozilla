@@ -992,6 +992,55 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         //putting in math; check to see if it is going into math.
         PRBool parentIsMath = nsHTMLEditUtils::IsMath(parentNode);
         nsCOMPtr<nsIDOMNode> newParentNode;
+        nsCOMPtr<nsIDOMNode> sibling;
+        nsCOMPtr<nsIDOMNodeList> children;
+        nsAutoString name;
+        PRUint32 unsignedOffsetOfNewNode;
+        PRUint16 type;
+        if (!parentIsMath) {
+          if (offsetOfNewNode > 0) {
+            parentNode->GetChildNodes(getter_AddRefs(children));
+            children->Item(offsetOfNewNode - 1, getter_AddRefs(sibling));
+          }
+          if (sibling) sibling->GetNodeType(&type);
+          while (sibling && type == nsIDOMNode::TEXT_NODE && nodeIsWhiteSpace(sibling, -1, -1)) {
+            sibling->GetPreviousSibling(getter_AddRefs(sibling));
+            sibling->GetNodeType(&type);
+          }
+          if (sibling) {
+            if (type == nsIDOMNode::ELEMENT_NODE) {
+              sibling->GetLocalName(name);
+              if (name.EqualsLiteral("math")) {
+                parentNode = sibling;
+                parentIsMath = PR_TRUE;
+                sibling->GetChildNodes(getter_AddRefs(children));
+                unsignedOffsetOfNewNode = (PRUint32) offsetOfNewNode;
+                children->GetLength(&unsignedOffsetOfNewNode);
+                offsetOfNewNode = (PRInt32) unsignedOffsetOfNewNode;
+              }
+            }
+          }
+        }
+        if (!parentIsMath) {
+          if (offsetOfNewNode > 0) {
+            parentNode->GetChildNodes(getter_AddRefs(children));
+            children->Item(offsetOfNewNode - 1, getter_AddRefs(sibling));
+          }
+          else parentNode->GetFirstChild(getter_AddRefs(sibling));
+          while (sibling && nodeIsWhiteSpace(sibling, -1, -1)) sibling->GetNextSibling(getter_AddRefs(sibling));
+          if (sibling) {
+            sibling->GetNodeType(&type);
+            if (type == nsIDOMNode::ELEMENT_NODE) {
+              sibling->GetLocalName(name);
+              if (name.EqualsLiteral("math")) {
+                parentNode = sibling;
+                parentIsMath = PR_TRUE;
+                offsetOfNewNode = 0;
+              }
+            }
+          }
+        }
+
         if (parentIsMath)
         {
           nsAutoString name;
