@@ -2655,9 +2655,9 @@ static FrameTarget GetSelectionClosestFrameForLine(
     // XXX Do we need more elaborate handling here?
     return FrameTarget::Null();
   }
-  if (closestFromLeft &&
-      (!closestFromRight ||
-       (abs(aPoint.x - closestLeft) <= abs(aPoint.x - closestRight)))) {
+  if (closestFromLeft && !closestFromRight) 
+    return FrameTarget::FrameTarget(closestFromLeft, PR_TRUE, PR_TRUE);
+  else if (closestFromLeft && (abs(aPoint.x - closestLeft) <= abs(aPoint.x - closestRight))) {
     return GetSelectionClosestFrameForChild(closestFromLeft, aPoint);
   }
   return GetSelectionClosestFrameForChild(closestFromRight, aPoint);
@@ -4918,8 +4918,15 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
     }
     else { // ran off the end. Leave the parent node (*current)
       pMathCM =  do_QueryInterface(*current);
-      if (pMathCM) pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
-      return (count == 0);
+      if (pMathCM) {
+        pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
+        return (count == 0);
+      } 
+      else {
+        count = 0;
+        PlaceCursorAfter(*current, PR_FALSE, current, offset, count);
+        return PR_TRUE;
+      }
     }
   }
   if (!movingInFrameDirection) {
@@ -4935,8 +4942,15 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
       else {
         pMathCM =  do_QueryInterface(pAfter);
       }
-      if (pMathCM) pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &count);
-      return (count == 0);
+      if (pMathCM) {
+        pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &count);
+        return (count == 0);
+      }
+      else {
+        count = 0;
+        PlaceCursorBefore(*current, PR_FALSE, current, offset, count);
+        return (count == 0);
+      }
     }
     return PR_FALSE;
   }
