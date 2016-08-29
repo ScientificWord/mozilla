@@ -72,7 +72,7 @@ function descriptionOfItem( row )
   }
   s = decodeURIComponent(tree.getAttribute("ref")+s);
   // s is now the path of the clicked file relative to the fragment root.
-  dump("showDescription: pathname = "+s+"\n");
+  // dump("showDescription: pathname = "+s+"\n");
   try 
   {
     var request = new XMLHttpRequest();
@@ -115,7 +115,7 @@ function writeDescriptionOfItem(row, desc)
   var j;
   for (j = 0; j < pieces.length; j++) outfile.append(pieces[j]);
   s = tree.getAttribute("ref") +s;
-  dump("showDescription: pathname = "+s+"\n");
+  // dump("showDescription: pathname = "+s+"\n");
   try 
   {
     var request = Components.
