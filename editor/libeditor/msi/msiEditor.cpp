@@ -1230,99 +1230,99 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     nsCOMPtr<nsIDOMElement> currFocusElement;
     res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
     nsAutoString name;
-    nsCOMPtr<nsIDOMNode> tempNode = currFocusNode;
-    PRUint16 type;
-    res = tempNode->GetNodeType(& type);
-    if (type == 3)
-      currFocusNode->GetParentNode(getter_AddRefs(tempNode));
-    currFocusElement = do_QueryInterface(tempNode);
+    if (currFocusNode) {
+      nsCOMPtr<nsIDOMNode> tempNode = currFocusNode;
+      PRUint16 type;
+      res = tempNode->GetNodeType(& type);
+      if (type == 3)
+        currFocusNode->GetParentNode(getter_AddRefs(tempNode));
+      currFocusElement = do_QueryInterface(tempNode);
 
 
-    if (currFocusElement) res = currFocusElement->GetTagName(name);
-    if (!name.EqualsLiteral("mtext"))
-    {
-      res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
-    }
-    if (mathnode && (symbol == ' ') && !isShift) {
-      nsCOMPtr<nsISelectionController> selcon;
-      res = GetSelectionController(getter_AddRefs(selcon));  
-      selcon->CharacterMove(PR_TRUE, PR_FALSE);
-    }
-    if (symbol && !ctrlKey && !altKey && !metaKey)
-    {
-      if (!collapsed)
-        res = DeleteSelection(nsIEditor::eNone); // TODO
-      if (NS_SUCCEEDED(res))
+      if (currFocusElement) res = currFocusElement->GetTagName(name);
+      if (!name.EqualsLiteral("mtext"))
       {
-
-        if (NS_SUCCEEDED(res) && currFocusNode && mathnode)
+        res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
+      }
+      if (mathnode && (symbol == ' ') && !isShift) {
+        nsCOMPtr<nsISelectionController> selcon;
+        res = GetSelectionController(getter_AddRefs(selcon));  
+        selcon->CharacterMove(PR_TRUE, PR_FALSE);
+      }
+      if (symbol && !ctrlKey && !altKey && !metaKey)
+      {
+        if (!collapsed)
+          res = DeleteSelection(nsIEditor::eNone); // TODO
+        if (NS_SUCCEEDED(res))
         {
-          PRBool prefset(PR_FALSE);
-          if (symbol == ' ')
+          if (NS_SUCCEEDED(res) && currFocusNode && mathnode)
           {
-            // SWP actually has some special behavior if you're at the end of math
-            prefset = SpacesAtEndOfMathAddsSpace();
-            if (!isShift) {
-              preventDefault = PR_TRUE;              // if preference is set, and we are now out of math, type a space
-              if (prefset)
+            PRBool prefset(PR_FALSE);
+            if (symbol == ' ')
+            {
+              // SWP actually has some special behavior if you're at the end of math
+              prefset = SpacesAtEndOfMathAddsSpace();
+              if (!isShift) {
+                preventDefault = PR_TRUE;              // if preference is set, and we are now out of math, type a space
+                if (prefset)
+                {
+                   res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
+                   res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
+                   if (!mathnode)
+                     HandleKeyPress(aKeyEvent);
+                }
+              }
+              else
               {
-                 res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
-                 res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
-                 if (!mathnode)
-                   HandleKeyPress(aKeyEvent);
+                nsCOMPtr<nsIDOMElement> reqspace;
+                res = CreateElementWithDefaults(NS_LITERAL_STRING("mspace"), getter_AddRefs(reqspace));
+                reqspace->SetAttribute(NS_LITERAL_STRING("width"), NS_LITERAL_STRING("thickmathspace"));
+                reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("requiredSpace"));
+                reqspace->SetAttribute(NS_LITERAL_STRING("dim"), NS_LITERAL_STRING(".2em"));
+                res = InsertElementAtSelection(reqspace, true);
+                preventDefault = PR_TRUE;
               }
             }
-            else
+            else if (symbol == '\t')
+            {
+              res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_TAB, isShift, ctrlKey, altKey, metaKey, preventDefault);
+            }
+            else if (symbol == '\'')
+            {
+              NS_NAMED_LITERAL_STRING(bigprime,"\x2032");
+              res = InsertSuperscript();
+              res = InsertSymbol(bigprime);  // need 'big prime'
+              res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault);
+              preventDefault = PR_TRUE;
+            }
+            else {
+              // res = nsEditor::BeginUpdateViewBatch();
+              NS_NAMED_LITERAL_STRING(symbolStr," ");
+              nsString str(symbolStr);
+              PRUnichar * start = str.BeginWriting();
+              *start = symbol;
+              res = InsertSymbol(str);
+              preventDefault = PR_TRUE;
+              if (NS_SUCCEEDED(res) && keyCode != 13)
+                res = CheckForAutoSubstitute(PR_TRUE);
+              // res = nsEditor::EndUpdateViewBatch();
+            }
+          }
+          else if (NS_SUCCEEDED(res) && currFocusNode)  { // but not in math
+            if (symbol == ' ' && isShift)
             {
               nsCOMPtr<nsIDOMElement> reqspace;
-              res = CreateElementWithDefaults(NS_LITERAL_STRING("mspace"), getter_AddRefs(reqspace));
-              reqspace->SetAttribute(NS_LITERAL_STRING("width"), NS_LITERAL_STRING("thickmathspace"));
-              reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("requiredSpace"));
+              res = CreateElementWithDefaults(NS_LITERAL_STRING("hspace"), getter_AddRefs(reqspace));
               reqspace->SetAttribute(NS_LITERAL_STRING("dim"), NS_LITERAL_STRING(".2em"));
+              reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("nonBreakingSpace"));
               res = InsertElementAtSelection(reqspace, true);
               preventDefault = PR_TRUE;
             }
           }
-          else if (symbol == '\t')
-          {
-            res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_TAB, isShift, ctrlKey, altKey, metaKey, preventDefault);
-          }
-          else if (symbol == '\'')
-          {
-            NS_NAMED_LITERAL_STRING(bigprime,"\x2032");
-            res = InsertSuperscript();
-            res = InsertSymbol(bigprime);  // need 'big prime'
-            res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault);
-            preventDefault = PR_TRUE;
-          }
-          else {
-            // res = nsEditor::BeginUpdateViewBatch();
-            NS_NAMED_LITERAL_STRING(symbolStr," ");
-            nsString str(symbolStr);
-            PRUnichar * start = str.BeginWriting();
-            *start = symbol;
-            res = InsertSymbol(str);
-            preventDefault = PR_TRUE;
-            if (NS_SUCCEEDED(res) && keyCode != 13)
-  	          res = CheckForAutoSubstitute(PR_TRUE);
-            // res = nsEditor::EndUpdateViewBatch();
-          }
         }
-        else if (NS_SUCCEEDED(res) && currFocusNode)  { // but not in math
-          if (symbol == ' ' && isShift)
-          {
-            nsCOMPtr<nsIDOMElement> reqspace;
-            res = CreateElementWithDefaults(NS_LITERAL_STRING("hspace"), getter_AddRefs(reqspace));
-            reqspace->SetAttribute(NS_LITERAL_STRING("dim"), NS_LITERAL_STRING(".2em"));
-            reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("nonBreakingSpace"));
-            res = InsertElementAtSelection(reqspace, true);
-            preventDefault = PR_TRUE;
-          }
-        }
-
       }
-    }
    // if not handled then pass along to nsHTMLEditor
+    }
     nsCOMPtr<nsIDOMNSUIEvent> nsUIEvent = do_QueryInterface(aKeyEvent);
     if(nsUIEvent && !preventDefault)
     {
