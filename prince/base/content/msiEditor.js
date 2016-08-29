@@ -1334,6 +1334,7 @@ function msiEditorDocumentObserver(editorElement) {
           graphicsConverter.ensureTypesetGraphicsForDocument(doc, win);
           clearStatusMessage();
         }
+        editor.beginningOfDocument();
         if (bIsRealDocument)
           this.mEditorElement.mbInitializationCompleted = true;
       }
