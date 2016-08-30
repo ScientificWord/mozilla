@@ -1077,10 +1077,10 @@ void Tree2StdMML::FixupSmalld(MNODE* dMML_list)
       if ( NodeIsDiffNumerator(rover->first_kid) ) {
         PermuteDiffNumerator(rover->first_kid);
         // If we just had "d" in the numerator, the mfrac should be followed by applyfunc
-        if (!ElementNameIs(rover->first_kid, "mrow")) {
-          InsertAF(rover);
-          AddOperatorInfo(rover->next);
-        }
+        //if (!ElementNameIs(rover->first_kid, "mrow")) {
+        //  InsertAF(rover);
+        //  AddOperatorInfo(rover->next);
+        //}
       }
 
 
