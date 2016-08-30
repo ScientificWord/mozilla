@@ -1002,12 +1002,13 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             parentNode->GetChildNodes(getter_AddRefs(children));
             children->Item(offsetOfNewNode - 1, getter_AddRefs(sibling));
           }
-          if (sibling) sibling->GetNodeType(&type);
-          while (sibling && type == nsIDOMNode::TEXT_NODE && nodeIsWhiteSpace(sibling, -1, -1)) {
-            sibling->GetPreviousSibling(getter_AddRefs(sibling));
+          while (sibling) { 
             sibling->GetNodeType(&type);
+            if (type != nsIDOMNode::TEXT_NODE || !nodeIsWhiteSpace(sibling, -1, -1)) break;
+            sibling->GetPreviousSibling(getter_AddRefs(sibling));
           }
           if (sibling) {
+            sibling->GetNodeType(&type);
             if (type == nsIDOMNode::ELEMENT_NODE) {
               sibling->GetLocalName(name);
               if (name.EqualsLiteral("math")) {
