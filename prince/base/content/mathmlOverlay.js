@@ -534,6 +534,10 @@ function makeMathIfNeeded(editorElement)
         return false;
       }
     }
+    else {
+      var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+      mathmlEditor.InsertInlineMath();
+    }
   }
   return true;
 }

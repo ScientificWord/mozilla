@@ -152,6 +152,10 @@ body {
    line-height: 1.3em;
 }
 
+*[blackmath] math {
+  color: black;
+}
+
 body[showinvis="true"] hspace {
   visibility: visible;
   color: green;
