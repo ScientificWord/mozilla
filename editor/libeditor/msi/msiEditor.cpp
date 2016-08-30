@@ -613,43 +613,12 @@ msiEditor::InsertMathname(const nsAString & mathname)
 
     if (NS_SUCCEEDED(res))
     {
-      // PRInt32 comparison;
-      // PRInt32 offset;
-      // PRUint16 nodeType;
-      // nsCOMPtr<nsIDOMNode> firstNode;
-      // nsCOMPtr<nsIDOMNode> parent;
-      // ComparePoints(startNode, startOffset, endNode, endOffset, &comparison);
-      // if (comparison > 0) firstNode = endNode;
-      // else firstNode = startNode;
-      // firstNode->GetNodeType(&nodeType);
-      // if (nodeType == nsIDOMNode::TEXT_NODE) {
-      //   firstNode->GetParentNode(getter_AddRefs(firstNode));
-      // }
-      // res = GetNodeLocation(firstNode, address_of(parent), &offset);
       res = InsertMathnameEx(selection, startNode, startOffset, mathname);
       selection->Collapse(startNode, startOffset+1);
       selection->Extend(endNode, endOffset + (startNode==endNode? +1: 0));
       res = DeleteSelection(nsIEditor::eNone);
-      // nsCOMPtr<nsIDOMNode> theNode;
-      // PRInt32 theOffset(0);
-      // if (!bCollapsed)
-      // {
-      //   res = DeleteSelection(nsIEditor::eNone);
-      //   // TODO add stuff so that selected stuff is changed to become the base  or the script ?
-      //   // current SWP behavoir is to make it the script, but this may not be correct in light
-      //   // of the fact that sub and sup have a well defined base in mathml.
-      //   // Also need to deal with the case where we are not in math, or part of the selection is not
-      //   // in math.
-      // }
-      // res = GetNSSelectionData(selection, startNode, startOffset, endNode,
-      //                        endOffset, bCollapsed);
-      // theNode = startNode;
-      // theOffset = startOffset;
-      // selection->Collapse(theNode, theOffset);
-
-      // if (NS_SUCCEEDED(res))
-      //   res = InsertMathnameEx(selection, theNode, theOffset, mathname); // BBM: Why does Larry pass post selection and (node,offset)?
-    }
+      selection->Collapse(startNode, startOffset+1);
+     }
   }
   else if (mathname.Length() == 0)
     res = NS_OK;
@@ -758,6 +727,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
       nsCOMPtr<nsIDOMNode> theNode = startNode;
       PRInt32 theOffset = startOffset;
       nsCOMPtr<nsIDOMNode> mathnode;
+      nsCOMPtr<nsIDOMNode> elt;
       res = RangeInMath(range, getter_AddRefs(mathnode));
       PRBool inMath = (nsnull != mathnode);
     //  if (!inMath) return NS_OK;
@@ -778,6 +748,9 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
         res = msiUtils::CreateMRowFence(this, nsnull, bCollapsed, open, close, PR_TRUE, flags, attrFlags, mathmlElement);
         if (NS_SUCCEEDED(res) && mathmlElement) {
           res = InsertNodeAtPoint((nsIDOMNode *)mathmlElement, (nsIDOMNode **)address_of(startNode), &startOffset, PR_TRUE);
+          res = mathmlElement->GetFirstChild(getter_AddRefs(elt));  // elt is left fence
+          res = elt->GetNextSibling(getter_AddRefs(elt)); // elt is tempinput mi
+          selection->Collapse(elt, 0);
         }
         res = store->GetRange(range);
         mRangeUpdater.DropRangeItem(store);
