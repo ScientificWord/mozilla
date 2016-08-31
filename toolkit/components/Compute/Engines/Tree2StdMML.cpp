@@ -2458,23 +2458,23 @@ MNODE* Tree2StdMML::RemoveEmptyTags(MNODE* MML_list)
               DisposeTNode(rover);
             } else {
               // Replace with the node with a tempinput mi
-              MNODE* inputbox = MakeTNode(0,0,0);
-              SetElementName(inputbox, "mi");
+              //MNODE* inputbox = MakeTNode(0,0,0);
+              SetElementName(rover, "mi");
               ATTRIB_REC* ar = new ATTRIB_REC("tempinput", "true");
-              inputbox->attrib_list = ar;
+              rover->attrib_list = ar;
 
-              inputbox->next = rover->next;
-              inputbox->prev = rover->prev;
-              inputbox->parent = rover->parent;
+              //inputbox->next = rover->next;
+              //inputbox->prev = rover->prev;
+              //inputbox->parent = rover->parent;
 
-              inputbox->p_chdata = DuplicateString("&#x200B;"); 
+              rover->p_chdata = DuplicateString("&#x200B;"); 
 
-              if (rover -> prev)
-                rover->prev->next = inputbox;
-              if (rover -> next)
-                rover->next->prev = inputbox;
+              //if (rover -> prev)
+              //  rover->prev->next = inputbox;
+              //if (rover -> next)
+              //  rover->next->prev = inputbox;
               //DelinkTNode(rover);
-              DisposeTNode(rover);
+              //DisposeTNode(rover);
             }
           }
         }
