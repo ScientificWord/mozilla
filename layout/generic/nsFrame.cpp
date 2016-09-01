@@ -8371,6 +8371,7 @@ nsFrame::MoveRightAtDocEnd(nsISelection * selection)
 NS_IMETHODIMP
 nsFrame::FrameJiggleCursor(PRBool fForward)
 {
+  return NS_OK;
   nsresult res;
   nsCOMPtr<nsISelection> sel;
   nsPresContext* presContext = PresContext();
