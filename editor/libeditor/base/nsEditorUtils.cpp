@@ -388,6 +388,7 @@ PRBool LookBackward(nsEditor * ed, msiITagListManager * tlm, nsISelection * sel,
 PRBool
 nsEditorUtils::JiggleCursor(nsIEditor *aEditor, nsISelection * sel, nsIEditor::EDirection dir)
 {
+  return true;
   PRBool forward;
   PRBool success = PR_FALSE;
   PRInt32 startOffset;
