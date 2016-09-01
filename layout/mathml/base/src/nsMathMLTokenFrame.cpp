@@ -565,7 +565,7 @@ nsresult
 nsMathMLTokenFrame::MoveOutToRight(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
    PRBool* fBailingOut, PRInt32* fRetValue)
 {
-  printf("tokenfrinsame: moveouttoright, count = %d\n", count);
+  printf("tokenframe: moveouttoright, count = %d\n", count);
   nsIFrame * pParent = GetParent();
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
@@ -613,9 +613,10 @@ nsresult
 nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset,
    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
 {
-  if (IsInvisibleOp())
+  if (IsInvisibleOp()) {
     return MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-  else
+  }
+  else if (!PutCursorInTempInput(aOutFrame, aOutOffset))
   {
     if (count == 0) {
       PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
@@ -625,10 +626,7 @@ nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
       count = 0;
       *_retval = 0;
       // MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-      if (!PutCursorInTempInput(aOutFrame, aOutOffset))
-      {
-        PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
-      }
+      PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
     }
   }
  return NS_OK;
@@ -640,17 +638,14 @@ nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, 
    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
 {
   if (IsInvisibleOp()) return MoveOutToRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-  else
+  else if (!PutCursorInTempInput(aOutFrame, aOutOffset))
   {
     if (count == 0) PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
     else
     {
       count = 0;
       *_retval = 0;
-      if (!PutCursorInTempInput(aOutFrame, aOutOffset))
-      {
         PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
-      }
     }
   }
   return NS_OK;
