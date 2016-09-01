@@ -561,6 +561,10 @@ msiEditor::InsertSymbol(const nsAString & symbol)
 {
   nsresult res(NS_ERROR_FAILURE);
   nsAutoEditBatch beginBatching(this);
+  PRUint16 nodeType;
+  nsAutoString nodeName;
+  nsCOMPtr<nsIDOMNode> finalNode;
+  PRInt32 finalOffset;
   if (symbol.CharAt(0) == ' ') return res;
   PRBool bCollapsed(PR_FALSE);
   if (!(mFlags & eEditorPlaintextMask))
@@ -586,8 +590,19 @@ msiEditor::InsertSymbol(const nsAString & symbol)
                              endOffset, bCollapsed);
       theNode = startNode;
       theOffset = startOffset;
-      if (NS_SUCCEEDED(res))
+      if (NS_SUCCEEDED(res)) {
         res = InsertSymbolEx(selection, theNode, theOffset, symbol);
+        selection->GetAnchorNode(getter_AddRefs(startNode)); // the new selection start, right after the symbol
+        startNode->GetNodeType(&nodeType);
+        if (nodeType == nsIDOMNode::TEXT_NODE) {
+          startNode->GetParentNode(getter_AddRefs(startNode));
+        }
+        startNode->GetLocalName(nodeName);
+        if (nodeName.EqualsLiteral("mo") || nodeName.EqualsLiteral("mi")) {
+          GetNodeLocation(startNode, address_of(finalNode), &finalOffset);
+          selection->Collapse(finalNode, finalOffset+1);
+        }
+      }
     }
   }
   return res;
