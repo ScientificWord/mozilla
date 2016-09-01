@@ -523,6 +523,141 @@ PRBool nodeIsWhiteSpace2( nsIDOMNode * node, PRUint32 firstindex, PRUint32 lasti
 }
 
 
+bool
+nsMathMLTokenFrame::PutCursorInTempInput( nsIFrame** aOutFrame, PRInt32* aOutOffset) {
+  nsIContent * pContent = GetContent();
+  nsCOMPtr<nsIDOMElement> el = do_QueryInterface(pContent);
+  NS_NAMED_LITERAL_STRING(tempinput,"tempinput");
+  PRBool isTempinput;
+  if (el) {
+    el -> HasAttribute(tempinput, &isTempinput);
+    if (isTempinput) {
+      *aOutFrame = this;
+      *aOutOffset = 0;
+      return PR_TRUE;
+    }
+  }
+  return PR_FALSE;
+}
+
+
+bool
+nsMathMLTokenFrame::IsInvisibleOp()
+{
+  nsIContent * pContent = GetContent();
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMCharacterData> cd;
+  node=do_QueryInterface(pContent);
+  if (!node) return PR_TRUE;
+  nsString strContents;
+  nsresult res;
+  res = node->GetFirstChild((nsIDOMNode **)&node);
+  cd = do_QueryInterface(node);
+  if (cd) res = cd->GetData(strContents);
+  else return PR_TRUE;
+  if ((strContents.Length()==1)&&(strContents[0]==0x2061 || strContents[0]==0x2062)) return PR_TRUE;
+  return PR_FALSE;
+}
+
+
+
+nsresult
+nsMathMLTokenFrame::MoveOutToRight(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+   PRBool* fBailingOut, PRInt32* fRetValue)
+{
+  printf("tokenfrinsame: moveouttoright, count = %d\n", count);
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
+  {
+    pMCM = GetMathCursorMover(pParent);
+    if (pMCM)
+    {
+      if (IsInvisibleOp())
+      {
+        pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
+        return NS_OK;
+      }
+      pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
+    }
+  }
+  return NS_OK;
+}
+
+nsresult
+nsMathMLTokenFrame::MoveOutToLeft(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+   PRBool* fBailingOut, PRInt32* fRetValue)
+{
+  printf("tokenframe: moveouttoleft, count = %d\n", count);
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
+  {
+    pMCM = GetMathCursorMover(pParent);
+    if (pMCM)
+    {
+      if (IsInvisibleOp())
+      {
+        pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
+        return NS_OK;
+      }
+      pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
+    }
+  }
+  return NS_OK;
+}
+
+
+
+nsresult
+nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset,
+   PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
+{
+  if (IsInvisibleOp())
+    return MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+  else
+  {
+    if (count == 0) {
+      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    }
+    else
+    {
+      count = 0;
+      *_retval = 0;
+      // MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+      if (!PutCursorInTempInput(aOutFrame, aOutOffset))
+      {
+        PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+      }
+    }
+  }
+ return NS_OK;
+}
+
+
+nsresult
+nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset,
+   PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
+{
+  if (IsInvisibleOp()) return MoveOutToRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+  else
+  {
+    if (count == 0) PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    else
+    {
+      count = 0;
+      *_retval = 0;
+      if (!PutCursorInTempInput(aOutFrame, aOutOffset))
+      {
+        PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+      }
+    }
+  }
+  return NS_OK;
+}
+
+
+
 /* long enterFromRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
 // NS_IMETHODIMP 
 // nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
