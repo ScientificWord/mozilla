@@ -1282,6 +1282,8 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
 
   nsCOMPtr<nsIDOMNode> weakNodeUsed;
   PRInt32 offsetused = 0;
+  PRBool isMath = PR_FALSE;
+
 
   PRBool isCollapsed;
   nscoord desiredX = 0; //we must keep this around and revalidate it when its just UP/DOWN
@@ -1356,10 +1358,28 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
   // DumpSelection(mDomSelections[index]);
   nsIFrame *frame;
   nsIFrame *leavingFrame;
-  result = mDomSelections[index]->GetPrimaryFrameForFocusNode(&frame, &offsetused, visualMovement);
-  PRBool isMath = PR_FALSE;
+  nsCOMPtr<nsIContent> weakContentUsed;
+  isMath = isMathNode(weakNodeUsed);
+  nsCOMPtr<nsIDOMNode> node(do_QueryInterface(weakNodeUsed));
+  nsCOMPtr<nsIDOMNode> parentnode;
+  if (isMath) { 
+    while (node) {  // get rid of junk white space
+      node->GetParentNode(getter_AddRefs(parentnode));
+      if (!isMathNode(parentnode)){
+        node->Normalize();
+        break;
+      }
+      node = parentnode;
+    }
+    weakContentUsed = do_QueryInterface(weakNodeUsed);
+    frame = mShell->GetPrimaryFrameFor(weakContentUsed);
+  }
+  else {
+    result = mDomSelections[index]->GetPrimaryFrameForFocusNode(&frame, &offsetused, visualMovement);
+  }
+  result = NS_OK;
   // in mathml we don't want the changes given by the above line.
-  if (aAmount==eSelectCharacter && isMathNode(weakNodeUsed)) {
+  if (aAmount==eSelectCharacter && isMath) {
     if (NS_SUCCEEDED(result) && frame)
     {
       nsIFrame *tempFrame;
@@ -1368,7 +1388,6 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
 
       if (IsMathFrame(frame) || IsParentMathFrame(frame)) // the returned frame was math or contained in math (a text frame), so undo the GetPrimaryFrameForFocusNode.
       {
-        isMath = PR_TRUE;
         tempFrame = frame;
         leavingFrame = frame;
         tempContent = do_QueryInterface(weakNodeUsed);
@@ -1449,7 +1468,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
           }
         }
 
-        if (tempFrame)
+        if (PR_FALSE) //(tempFrame)
         {
           frame = tempFrame;
           // adjust offset to account for ignorable whitespace nodes.

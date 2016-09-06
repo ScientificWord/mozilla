@@ -1920,7 +1920,8 @@ nsGenericElement::Normalize()
         case nsIDOMNode::TEXT_NODE:
 
           // ensure that if the text node is empty, it is removed
-          if (0 == child->TextLength()) {
+          // if (0 == child->TextLength()) {
+          if (child->TextIsOnlyWhitespace()) {
             result = RemoveChildAt(index, PR_TRUE);
             if (NS_FAILED(result)) {
               return result;
