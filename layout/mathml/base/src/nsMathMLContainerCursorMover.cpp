@@ -22,6 +22,7 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
   printf("nsMathMLContainerCursorMover MoveOutToRight, count = %d\n", count);
 #endif
   // get the frame we are part of
+  if (m_fVisDistinct) count = *_retval = 0;
   nsIFrame* pFrame;
   pFrame = m_pMyFrame;
   nsIAtom* whoAmI;
@@ -53,7 +54,8 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
   }
   // if we get here, leavingFrame is null or there is no child after leavingFrame. Leave this frame.
   pTempFrame = GetTopFrameForContent(GetSignificantParent(pFrame));
-  whoAmI = (pTempFrame->GetContent())->Tag();
+  whoAmI =
+    (pTempFrame->GetContent())->Tag();
   // Hack alert. Most MathML tags have corresponding frames, but the menclose tag has a mathmlrowframe, and so
   //  uses this code. When the cursor leaves an menclose tag, that counts as a visible motion, so count must be decremented.
   //  This accounts for the next few lines
@@ -84,7 +86,7 @@ NS_IMETHODIMP nsMathMLContainerCursorMover::MoveOutToRight(
         PlaceCursorAfter(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
          //*fBailingOut = PR_TRUE;
       }
-      *_retval = 0;
+      count = *_retval = 0;
     }
   }
   return NS_OK;
@@ -99,6 +101,7 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
   printf("nsMathMLContainerCursorMover MoveOutToLeft, count = %d\n", count);
 #endif
   // get the frame we are part of
+  if (m_fVisDistinct) count = *_retval = 0;
   nsIFrame* pFrame;
   pFrame = m_pMyFrame;
   nsIFrame* pTempFrame;
@@ -142,7 +145,7 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
       PlaceCursorBefore(pFrame, PR_FALSE, aOutFrame, aOutOffset, count);
 //      *fBailingOut = PR_TRUE;
     }
-    *_retval = 0;
+    count = *_retval = 0;
   }
   return NS_OK;
 }
@@ -258,7 +261,10 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   // get last child
   pTempFrame = GetLastChild(pFrame);
-  if (pTempFrame) frametype = pTempFrame->GetType();
+  while (pTempFrame && (nsGkAtoms::brFrame == pTempFrame->GetType())) {
+    pTempFrame = GetPrevSib(pTempFrame);
+  }
+
   while (pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
   {
     pTempFrame = pTempFrame->GetFirstChild(nsnull);
