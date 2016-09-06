@@ -235,13 +235,13 @@ public:
 
   NS_IMETHOD 
   MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval) {
-    count = 0;
+    count = *_retval = 0;
     return nsMathMLContainerCursorMover::MoveOutToRight(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
   }
 
   NS_IMETHOD 
   MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval) {
-    count = 0;
+    count = *_retval = 0;
     return nsMathMLContainerCursorMover::MoveOutToLeft(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
   }
 
@@ -287,15 +287,8 @@ public:
     return nsTableCellFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
 
-
-  NS_IMETHOD 
-  MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval);
-
-  NS_IMETHOD 
-  MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval);
-
 protected:
-  nsMathMLmtdFrame(nsStyleContext* aContext) : nsTableCellFrame(aContext),nsMathMLContainerCursorMover(this) {}
+  nsMathMLmtdFrame(nsStyleContext* aContext) : nsTableCellFrame(aContext),nsMathMLContainerCursorMover(this, PR_TRUE) {}
   virtual ~nsMathMLmtdFrame();
 }; // class nsMathMLmtdFrame
 
@@ -343,7 +336,7 @@ public:
 
 
 protected:
-  nsMathMLmtdInnerFrame(nsStyleContext* aContext) : nsBlockFrame(aContext),nsMathMLContainerCursorMover(this)  {}
+  nsMathMLmtdInnerFrame(nsStyleContext* aContext) : nsBlockFrame(aContext),nsMathMLContainerCursorMover(this, PR_TRUE)  {}
   virtual ~nsMathMLmtdInnerFrame();
 
   virtual PRIntn GetSkipSides() const { return 0; }

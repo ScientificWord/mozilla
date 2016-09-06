@@ -26,17 +26,19 @@ public:
   NS_IMETHOD 
   EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
 
-  nsMathMLContainerCursorMover(nsIFrame * pFrame) : m_pMyFrame(pFrame) {};
+  nsMathMLContainerCursorMover(nsIFrame * pFrame, PRBool visDistinct = PR_FALSE) : m_pMyFrame(pFrame), m_fVisDistinct(visDistinct) {};
 
   static nsMathMLContainerCursorMover* 
-  Create(nsIFrame * pFrame) {
-    nsMathMLContainerCursorMover * pcm = new nsMathMLContainerCursorMover(pFrame);
+  Create(nsIFrame * pFrame, PRBool visDistinct = PR_FALSE) {
+    nsMathMLContainerCursorMover * pcm = new nsMathMLContainerCursorMover(pFrame, visDistinct);
   //  if (pcm) pcm->AddRef();
     return pcm;
   }
 
 private:
   nsIFrame * m_pMyFrame;
+  PRBool m_fVisDistinct;  // If true, the container is visually distinct so that the count of movements should decrement when the cursor leaves the container.
+  // Examples: false for mrow and mi and mo, true for fraction numerators, table cells, table rows, etc.
 };
 
 

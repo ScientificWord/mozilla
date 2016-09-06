@@ -732,7 +732,7 @@ nsMathMLmtableFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame
   if (pFrame)
   {
     pMCM = GetMathCursorMover(pFrame);
-    count = 0;
+    count = *_retval = 0;
     if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     {
@@ -951,22 +951,6 @@ nsMathMLmtdFrame::AttributeChanged(PRInt32  aNameSpaceID,
 
   return NS_OK;
 }
-
-  NS_IMETHODIMP 
-  nsMathMLmtdFrame::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
-  {
-    //count = 0;
-    return nsMathMLContainerCursorMover::MoveOutToRight(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
-  }
-
-  NS_IMETHODIMP 
-  nsMathMLmtdFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
-  {
-    //count = 0;
-    return nsMathMLContainerCursorMover::MoveOutToLeft(leavingFrame, aOutFrame, aOutOffset, count, fBailing, _retval);
-  }
-
-
 
 // --------
 // implementation of nsMathMLmtdInnerFrame
