@@ -42,17 +42,6 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   nsCOMPtr<nsIDOMDocument> doc;
   pParent = GetSignificantParent(pFrame);
 
-  // BBM provisional code
-  // Cursor doesn't show up if it is inside an mo tag
-  // if (pFrame->GetContent()->Tag() == nsGkAtoms::mo_) {
-  //   fInside = PR_FALSE;
-  // }
-  // else if ( GetSignificantParent(pFrame)->GetContent()->Tag() == nsGkAtoms::mo_)
-  // {
-  //   fInside = PR_FALSE;
-  //   pFrame = GetSignificantParent(pFrame);
-  // }
-
   // nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {

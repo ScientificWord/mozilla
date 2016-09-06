@@ -343,7 +343,7 @@ nsMathMLmsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
     pMCM = GetMathCursorMover(pChild);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else printf("msup MoveOutToRight: no superscript\n");
-   *_retval = 0;
+    *_retval = 0;
   }
   return NS_OK;
 }

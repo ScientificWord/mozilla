@@ -391,6 +391,7 @@ nsMathMLmsqrtFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
   {
     printf("Found msqrt frame with no children\n");
   }
+  *_retval = count;
   return NS_OK;  
 }
 
@@ -405,7 +406,7 @@ nsMathMLmsqrtFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
     *_retval = 0;
     return NS_OK;
   }
-  count = 0;
+  count = *_retval = 0;
   nsIFrame * pBaseFrame = GetFirstChild(nsnull); 
   nsIFrame * pTempFrame;
   nsCOMPtr<nsIMathMLCursorMover> pMCM;

@@ -444,7 +444,7 @@ nsMathMLmsubsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFra
   else
   {
     // leaving base 
-    count= 0;
+    count = 0;
     pMCM = GetMathCursorMover(pSup);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else printf("msup MoveOutToRight: no superscript\n");

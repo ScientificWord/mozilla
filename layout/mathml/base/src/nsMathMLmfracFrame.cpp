@@ -564,7 +564,7 @@ nsMathMLmfracFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
     *_retval = 0;
     return NS_OK;
   }
-  count = 0;
+  count = *_retval = 0;
   nsIFrame * pFrame = GetFirstChild(nsnull);
   // if base is a mi with tempinput then we need to add 1 to count
 
@@ -580,7 +580,7 @@ nsMathMLmfracFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
     if (tagName.EqualsLiteral("mi")){
       res = element->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
       if (strTempInput.EqualsLiteral("true")){
-         count = 1;
+         count = *_retval = 1;
       }
     }
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
@@ -614,7 +614,7 @@ nsMathMLmfracFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
     *_retval = 0;
     return NS_OK;
   }
-  count = 0;
+  count = *_retval = 0;
   nsIFrame * pFrame = GetFirstChild(nsnull); // the numerator
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)

@@ -442,7 +442,7 @@ nsMathMLmunderFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFram
   else
   {
     // leaving base 
-    count= 0;
+    count = *_retval = 0;
     pChild = pChild->GetNextSibling();
     pMCM = GetMathCursorMover(pChild);
     if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);

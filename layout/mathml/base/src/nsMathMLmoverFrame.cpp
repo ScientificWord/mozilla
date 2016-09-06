@@ -447,7 +447,7 @@ nsMathMLmoverFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
     if (pFrame)
     {
       pMCM = GetMathCursorMover(pFrame);
-      count--;
+      count = *_retval = 0;
       if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       else // child frame is not a math frame. Probably a text frame. We'll assume this for now
       {
@@ -502,7 +502,7 @@ nsresult
 nsMathMLmoverFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {    
-  count = 0;            
+  count = *_retval = 0;            
   printf("mover MoveOutToLeft, count = %d\n", count);
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild = GetFirstChild(nsnull);
@@ -525,7 +525,7 @@ nsMathMLmoverFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame,
     count= 0;
     pMCM = GetMathCursorMover(pChild);
     if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-   *_retval = 0;
+    *_retval = 0;
   }
   return NS_OK;  
 }  

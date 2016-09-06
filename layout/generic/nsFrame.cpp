@@ -4860,6 +4860,20 @@ static PRBool IsMovingInFrameDirection(nsIFrame* frame, nsDirection aDirection, 
 
 PRBool IsMathFrame( nsIFrame * aFrame );
 
+PRUint32
+msiGetIndexInParent( nsIFrame * pF, nsIFrame * pParent)
+{
+  nsIFrame * pF2 = pParent->GetFirstChild(nsnull);
+  PRUint32 index = 0;
+  while (pF2 && pF != pF2)
+  {
+    index++;
+    pF2 = pF2->GetNextSibling();
+  }
+  if (!pF2) return -1;
+  return index;
+}
+
 PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInFrameDirection, PRBool * math, PRBool * fBailing )
 {
   nsIAtom * frameType;
@@ -4869,11 +4883,28 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
   PRInt32 count = 1;
   nsIFrame * pBefore = nsnull;
   nsIFrame * pAfter = nsnull;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsIFrame* parentFrame;
+  nsIFrame* grandParentFrame;
+  nsCOMPtr<nsIDOMNode> contentNode;
+  nsCOMPtr<nsIDOMNode> parent;
+  nsAutoString name;
   PRUint32 textlength;
 
   frameType = (*current)->GetType();
   if (nsGkAtoms::textFrame == frameType) {
-    if (!movingInFrameDirection && *offset > 0) {
+    contentNode = do_QueryInterface((*current)->GetContent());
+    contentNode->GetParentNode(getter_AddRefs(parent));
+    parent->GetLocalName(name);
+    if (name.EqualsLiteral("mi") || name.EqualsLiteral("mo")) {
+      parentFrame = (*current)->GetParent();
+      grandParentFrame = parentFrame->GetParent();
+      *offset = msiGetIndexInParent(parentFrame, grandParentFrame);
+      if (movingInFrameDirection) (*offset)++;
+      *current = grandParentFrame;
+      return PR_TRUE;
+    }
+    if (!movingInFrameDirection && *offset > 0)  {
       (*offset)--;
       return PR_TRUE;
     }
@@ -4908,7 +4939,9 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
   else while (ctr < *offset && pAfter) {
     pBefore = pAfter;
     pAfter = pAfter->GetNextSibling();
-    (ctr)++;
+    if (pAfter) {
+      ctr = (*current)->GetContent()->IndexOf(pAfter->GetContent());
+    }
   }
   if (movingInFrameDirection) {
     if (pAfter) {
