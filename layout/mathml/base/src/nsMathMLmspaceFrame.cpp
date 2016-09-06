@@ -179,7 +179,7 @@ nsMathMLmspaceFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame
   else {
     PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, count);
   }
-  *_retval = count;
+  *_retval = 0;
   return NS_OK;  
 }
 

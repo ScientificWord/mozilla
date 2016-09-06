@@ -248,6 +248,7 @@ nsMathMLmsubFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
     PRBool* fBailingOut, PRInt32 *_retval)
 {
   printf("msup EnterFromRight, count = %d\n", count);
+  *_retval = 0;
   if (count > 0)
   {
     nsIFrame * pFrame = GetFirstChild(nsnull); // the base
@@ -316,7 +317,7 @@ nsresult
 nsMathMLmsubFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
     PRBool* fBailingOut, PRInt32 *_retval)
 {
-  printf("msup MoveOutToLeft, count = %d\n", count);
+  printf("msub MoveOutToLeft, count = %d\n", count);
   // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
   nsIFrame * pChild = GetFirstChild(nsnull);
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
@@ -334,9 +335,9 @@ nsMathMLmsubFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, 
   }
   else
   {
-    // leaving superscript. Place the cursor just after the base.
+    // leaving subscript. Place the cursor just after the base.
     count= 0;
-    PlaceCursorAfter(pChild, PR_TRUE, aOutFrame, aOutOffset, count);
+    PlaceCursorAfter(pChild, PR_FALSE, aOutFrame, aOutOffset, count);
     //pMCM = GetMathCursorMover(pChild);
     //if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
    *_retval = 0;
