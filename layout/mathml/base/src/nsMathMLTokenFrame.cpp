@@ -555,7 +555,7 @@ nsMathMLTokenFrame::IsInvisibleOp()
   cd = do_QueryInterface(node);
   if (cd) res = cd->GetData(strContents);
   else return PR_TRUE;
-  if ((strContents.Length()==1)&&(strContents[0]==0x2061 || strContents[0]==0x2062)) return PR_TRUE;
+  if ((strContents.Length()==1)&&(strContents[0]==0x2061 || strContents[0]==0x2062 || strContents[0]==0x2063)) return PR_TRUE;
   return PR_FALSE;
 }
 
@@ -623,8 +623,7 @@ nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
     }
     else
     {
-      count = 0;
-      *_retval = 0;
+      count = *_retval = 0;
       // MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
       PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
     }
@@ -643,9 +642,8 @@ nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, 
     if (count == 0) PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
     else
     {
-      count = 0;
-      *_retval = 0;
-        PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+      count = *_retval = 0;
+      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
     }
   }
   return NS_OK;
