@@ -2937,8 +2937,13 @@ nsresult msiUtils::CanonicalizeMathSelection(nsIEditor * editor)
   PRInt32 startOffset, endOffset;
   PRInt32 offset;
   nsEditor* ed = static_cast<nsEditor*>(editor);
+  PRBool isCollapsed;
 
   ed->GetSelection(getter_AddRefs(sel));
+  sel->GetIsCollapsed(&isCollapsed);
+  if (isCollapsed) {
+    return NS_OK;
+  }
   res = ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset);
   res = ed->GetEndNodeAndOffset(sel, getter_AddRefs(endNode), &endOffset);
   while (nsHTMLEditUtils::IsMath(startNode) && atStartOfNode(startNode, startOffset)) {
