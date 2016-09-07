@@ -40,7 +40,9 @@ function initSidebar()
   // fragmentsBaseDirectory to a FILE:// url.
   try {
     var dir1;
-    dir1 = getUserResourceFile("fragments","");
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+    dir1 = dsprops.get('ProfD', Components.interfaces.nsIFile);
+    dir1.append('fragments');
     var dirspec = msiFileURLFromFile(dir1).spec;
     var tree = document.getElementById("frag-tree");
     dump("Setting 'ref' attribute to "+dirspec+"\n");
