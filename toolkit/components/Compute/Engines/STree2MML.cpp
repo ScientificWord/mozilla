@@ -4357,14 +4357,14 @@ char *STree2MML::ComposeTerm(FACTOR_REC * num_factors,
             delete[] z_body;
             n_num_factors = n_factors + 1;
           } else {
-            char *it = MOfromSTRING("&#x2062;", up_clr_math_attr);
-            size_t zln = strlen(mfrac) + strlen(it) + strlen(z_body);
+            // char *it = MOfromSTRING("&#x2062;", up_clr_math_attr);
+            size_t zln = strlen(mfrac) /*+ strlen(it)*/ + strlen(z_body);
             rv1 = new char[zln + 1];
             strcpy(rv1, mfrac);
             delete[] mfrac;
-            strcat(rv1, it);
+            // strcat(rv1, it);
             strcat(rv1, z_body);
-            delete[] it;
+            // delete[] it;
             delete[] z_body;
             n_num_factors = n_factors + 2;
           }
