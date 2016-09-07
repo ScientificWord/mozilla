@@ -43,11 +43,11 @@ mml|mi[msiunit="true"] {
   font-style: normal;
   font-family: Times roman;
 }
-
+/*
 mi, mo {
   -moz-user-select: all;
 }
-
+*/
 msidisplay {
   text-align: center;
   border-width: 1px;
