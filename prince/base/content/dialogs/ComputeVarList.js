@@ -36,42 +36,9 @@ function Startup(){
   try
   {
     var editorControl = document.getElementById("varList-frame");
-    msiInitializeEditorForElement(editorControl, theStringSource, true);
+    msiInitializeEditorForElement(editorControl, theStringSource, true, null, true);
   }
   catch(exc) {dump("In Startup for ComputeVarLists dialog, error initializing editor varList-frame: [" + exc + "].\n");}
-////SLS the following copied from editor.js
-//  gSourceContentWindow = document.getElementById("content-frame");
-//  gSourceContentWindow.makeEditable("html", false);
-//
-//  EditorStartup();
-//
-//  // Initialize our source text <editor>
-//  try {
-//    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
-////SLS don't know why this doesn't work here...doesn't really matter since we have no source view.
-////    gSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-////    gSourceTextEditor.enableUndo(false);
-////    gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
-////    gSourceTextEditor.rootElement.style.whiteSpace = "pre";
-////    gSourceTextEditor.rootElement.style.margin = 0;
-//    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
-//                               .createInstance(Components.interfaces.nsIControllerContext);
-//    controller.init(null);
-//    controller.setCommandContext(gSourceContentWindow);
-//    gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
-//    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-//                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
-//    commandTable.registerCommand("cmd_find",        nsFindCommand);
-//    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
-//    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
-//    
-//    SetupMSIMathMenuCommands();
-//
-//  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
-//  
-//  // see EditorSharedStartup() in editor.js
-//  var commandManager = GetCurrentCommandManager();
-//  commandManager.addCommandObserver(msiEditorDocumentObserver, "obs_documentCreated");
 }
 
 function OK(){
