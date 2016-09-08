@@ -118,19 +118,7 @@ function loadDialog()
 
   gTestFindDialog.findInput.mInitialDocObserver = [commandSetModifiedObserverData, editorDocLoadedObserverData, commandBoldObserverData];
 
-  msiInitializeEditorForElement(gTestFindDialog.findInput, theStringSource, true);
-
-//  var theStringSource2 = gFindService.replaceString;
-//  if (theStringSource2 != null && theStringSource2.length == 0)
-//    theStringSource2 = null;
-////  msiInitializeEditorForElement(gTestFindDialog.replaceInput, theStringSource2, true);
-//  var editorInitializer = new msiEditorArrayInitializer();
-//  editorInitializer.addEditorInfo(gTestFindDialog.findInput, theStringSource, true);
-//  editorInitializer.addEditorInfo(gTestFindDialog.replaceInput, theStringSource2, true);
-//  editorInitializer.doInitialize();
-
-//  gTestFindDialog.replaceInput.makeEditable("html", false);
-
+  msiInitializeEditorForElement(gTestFindDialog.findInput, theStringSource, null, true);
 
   gTestFindDialog.caseSensitive.checked   = (gFindInst.matchCase
                                             ? gFindInst.matchCase
