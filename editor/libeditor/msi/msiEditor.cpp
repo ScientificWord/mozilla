@@ -592,16 +592,16 @@ msiEditor::InsertSymbol(const nsAString & symbol)
       theOffset = startOffset;
       if (NS_SUCCEEDED(res)) {
         res = InsertSymbolEx(selection, theNode, theOffset, symbol);
-        selection->GetAnchorNode(getter_AddRefs(startNode)); // the new selection start, right after the symbol
-        startNode->GetNodeType(&nodeType);
-        if (nodeType == nsIDOMNode::TEXT_NODE) {
-          startNode->GetParentNode(getter_AddRefs(startNode));
-        }
-        startNode->GetLocalName(nodeName);
-        if (nodeName.EqualsLiteral("mo") || nodeName.EqualsLiteral("mi")) {
-          GetNodeLocation(startNode, address_of(finalNode), &finalOffset);
-          selection->Collapse(finalNode, finalOffset+1);
-        }
+        // selection->GetAnchorNode(getter_AddRefs(startNode)); // the new selection start, right after the symbol
+        // startNode->GetNodeType(&nodeType);
+        // if (nodeType == nsIDOMNode::TEXT_NODE) {
+        //   startNode->GetParentNode(getter_AddRefs(startNode));
+        // }
+        // startNode->GetLocalName(nodeName);
+        // if (nodeName.EqualsLiteral("mo") || nodeName.EqualsLiteral("mi")) {
+        //   GetNodeLocation(startNode, address_of(finalNode), &finalOffset);
+        //   selection->Collapse(finalNode, finalOffset+1);
+        // }
       }
     }
   }
