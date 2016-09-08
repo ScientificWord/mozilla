@@ -144,8 +144,6 @@ function startup()
   else
     sectitlenodelist = docFormatNodeList[0].getElementsByTagName('sectitleformat');
 
-//  var editElement = document.getElementById("sectiontitle-frame");
-//  msiInitializeEditorForElement(editElement, "");
 	dump ("initializing sectitleformat\n");
   sectitleformat = new Object();
 //  getNumStyles(preamble);
