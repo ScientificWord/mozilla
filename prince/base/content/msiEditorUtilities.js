@@ -3695,7 +3695,7 @@ function createWorkingDirectory(documentfile) {
   var baseLeafName;
   var extension;
   var skipBackup;
-  var theCase;  = 0;
+  var theCase = 0;
   var name;
   if (!(documentfile.isFile() || documentfile.isDirectory()))
     return null;
