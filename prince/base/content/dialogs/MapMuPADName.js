@@ -9,7 +9,7 @@ function Startup(){
   {
     var theStringSource = GetComputeString("Math.emptyForInput");
     var editorControl = document.getElementById("swpname.input");
-    msiInitializeEditorForElement(editorControl, theStringSource, true);
+    msiInitializeEditorForElement(editorControl, theStringSource, true, null, true);
   }
   catch(exc) 
   {
