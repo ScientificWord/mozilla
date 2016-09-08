@@ -58,17 +58,12 @@ function Startup(){
 //  }
 
   var theStringSource1 = GetComputeString("Moment.defaultDegree");
-//  try
-//  {
+
   var degreeEditorControl = document.getElementById("degree-frame");
-//    msiInitializeEditorForElement(degreeEditorControl, theStringSource, true);
-//  }
-//  catch(exc) {dump("In Startup for ComputeMoment dialog, error initializing editor degree-frame: [" + exc + "].\n");}
+
   var degreeObserver = new computeMomentEditorDocumentObserver(degreeEditorControl);
   degreeEditorControl.mInitialDocObserver = [ {mCommand: "obs_documentCreated", mObserver : degreeObserver},
                                               {mCommand : "cmd_setDocumentModified", mObserver : degreeObserver} ];
-//  try
-//  {
   var theStringSource2 = GetComputeString("Moment.defaultOrigin");
   var originEditorControl = document.getElementById("origin-frame");
   var originObserver = new computeMomentEditorDocumentObserver(originEditorControl);
@@ -80,8 +75,8 @@ function Startup(){
 //  catch(exc) {dump("In Startup for ComputeMoment dialog, error initializing editor origin-frame: [" + exc + "].\n");}
 
   var editorInitializer = new msiEditorArrayInitializer();
-  editorInitializer.addEditorInfo(degreeEditorControl, theStringSource1, true);
-  editorInitializer.addEditorInfo(originEditorControl, theStringSource2, true);
+  editorInitializer.addEditorInfo(degreeEditorControl, theStringSource1, true, true);
+  editorInitializer.addEditorInfo(originEditorControl, theStringSource2, true, true);
   editorInitializer.doInitialize();
 
 //  checkEnableControls();

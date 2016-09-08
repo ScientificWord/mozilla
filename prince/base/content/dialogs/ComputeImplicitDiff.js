@@ -20,18 +20,14 @@ function Startup(){
 
   var theStringSource = GetComputeString("Math.emptyForInput");
   var indEditor = document.getElementById("indVarFrame");
-//  msiInitializeEditorForElement(indEditor, theStringSource, true);
   var depEditor = document.getElementById("depVarFrame");
-//  msiInitializeEditorForElement(depEditor, theStringSource, true);
   indEditor.mbSinglePara = true;
   depEditor.mbSinglePara = true;
 
   var editorInitializer = new msiEditorArrayInitializer();
-  editorInitializer.addEditorInfo(indEditor, theStringSource, true);
-  editorInitializer.addEditorInfo(depEditor, theStringSource, true);
+  editorInitializer.addEditorInfo(indEditor, theStringSource, true, true);
+  editorInitializer.addEditorInfo(depEditor, theStringSource, true, true);
   editorInitializer.doInitialize();
-//  msiSetEditorSinglePara(indEditor, true);
-//  msiSetEditorSinglePara(depEditor, true);
   dump("After setting up, depEditor has mbSinglePara [");
   if ("mbSinglePara" in depEditor)
     dump( depEditor.mbSinglePara ? "true]\n" : "false]\n" );
