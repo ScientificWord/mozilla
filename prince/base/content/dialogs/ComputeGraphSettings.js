@@ -127,9 +127,7 @@ function Startup(){
     graphEditorControl.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : msiEditorDocumentObserverG}];
     graphEditorControl.mbSinglePara = true;
     graphEditorControl.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
-//    graphEditorControl.overrideStyleSheets = ["chrome://prince/skin/MathVarsDialog.css"];
     theStringSource = graph.plots[firstActivePlot].element["Expression"];
-//    msiInitializeEditorForElement(editorControl, theStringSource, true);
     var editorInitializer = new msiEditorArrayInitializer();
     editorInitializer.addEditorInfo(graphEditorControl, theStringSource, true);
 
@@ -143,13 +141,10 @@ function Startup(){
       theStringSource = graph.plots[firstActivePlot].getPlotValue("TubeRadius");
       if (!theStringSource || theStringSource.length === 0) {
         theStringSource = GetComputeString("Math.emptyForInput");
-//        theStringSource = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math>";
       }
     } else {
       theStringSource = GetComputeString("Math.emptyForInput");
-//      theStringSource = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math>";
     }
-//    msiInitializeEditorForElement(editorControl, theStringSource, true);
     editorInitializer.addEditorInfo(radiusEditorControl, theStringSource, true);
 
     editorInitializer.doInitialize();

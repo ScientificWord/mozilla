@@ -199,10 +199,13 @@ function updateMetaData(doc, updateObject) {
 
 function msiEditorArrayInitializer() {
   this.mInfoList = new Array();
-  this.addEditorInfo = function(anEditorElement, anInitialText, bIsMultiPara) {
+  this.addEditorInfo = function(anEditorElement, anInitialText, bIsMultiPara, startInMath) {
     if (this.findEditorInfo(anEditorElement) < 0) {
       var newInfo = new Object();
       newInfo.mEditorElement = anEditorElement;
+      if (startInMath) {
+        newInfo.mEditorElement.startInMath = true;
+      }
       newInfo.mInitialText = anInitialText;
       if (bIsMultiPara == null)
         newInfo.mbWithContainingHTML = false;
@@ -263,60 +266,40 @@ function msiEditorArrayInitializer() {
   };
 }
 
+function moveCursorToFirstMathInput(editorElement) {
+  var editor = msiGetEditor(editorElement);
+  var domdoc = editor.document;
+  var sel = editor.selection;
+  var root = domdoc.documentElement;
+  var miList = root.getElementsByTagName('mi');
+  var i;
+  var inputElement;
+  length = miList.length;
+  for (i = 0; i < length; i++) {
+    if (miList[i].hasAttribute('tempinput')) {
+      inputElement = miList[i];
+      break;
+    }
+  }
+  if (inputElement) {
+    sel.collapse(inputElement,0);
+  }
+}
 
-function msiInitializeEditorForElement(editorElement, initialText, bWithContainingHTML, topwindow) {
-  //  // See if argument was passed.
-  //  if ( window.arguments && window.arguments[0] )
-  //  {
-  //      // Opened via window.openDialog with URL as argument.
-  //      // Put argument where EditorStartup expects it.
-  //    document.getElementById( "args" ).setAttribute( "value", window.arguments[0] );
-  //  }
+function msiInitializeEditorForElement(editorElement, initialText, bWithContainingHTML, topwindow, startInMath) {
 
-  //  // get default character set if provided
-  //  if ("arguments" in window && window.arguments.length > 1 && window.arguments[1])
-  //  {
-  //    if (window.arguments[1].indexOf("charset=") != -1)
-  //    {
-  //      var arrayArgComponents = window.arguments[1].split("=");
-  //      if (arrayArgComponents)
-  //      {
-  //        // Put argument where EditorStartup expects it.
-  //        document.getElementById( "args" ).setAttribute("charset", arrayArgComponents[1]);
-  //      }
-  //    }
-  //  }
-
-  //  window.tryToClose = msiEditorCanClose;
-  //  window.addEventListener("mousedown", msiMainWindowMouseDownListener, true);
-
-  // Continue with normal startup.
-  //  var editorElement = document.getElementById("content-frame");
-  //  msiDumpWithID("Entering msiInitializeEditorForElement for element [@].\n", editorElement);
   var startText;
-  //  if ( ((initialText != null) && (initialText.length > 0)) || bWithContainingHTML )
   if ((initialText != null) && (initialText.length > 0)) {
-    //    if (bWithContainingHTML && ((initialText==null) || !initialText.length))
-    //    {
-    //      if (editorElement.mbInitialContentsMultiPara)
-    //        startText = "<body></body>";
-    ////        startText = "<body>" + initialText + "</body>";
-    //      else
-    //        startText = "<para></para>";
-    ////        startText = "<para>" + initialText + "</para>";
-    ////      startText = "<html><head></head><BODY><para>" + initialText + "</para></BODY></html>";
-    //    }
-    //    else
     startText = initialText;
     editorElement.initialEditorContents = startText;
   }
   EditorStartupForEditorElement(editorElement, topwindow);
-  msiDumpWithID(
-    "In msiInitializeEditorForElement for element [@], back from EditorStartupForEditorElement call.\n",
-    editorElement);
-
   try {
-    var commandTable = msiGetComposerCommandTable(editorElement);
+    var commandTable;
+    if (startInMath) {
+      editorElement.startInMath = true;
+    }
+    commandTable = msiGetComposerCommandTable(editorElement);
     commandTable.registerCommand("cmd_find", msiFindCommand);
     commandTable.registerCommand("cmd_findNext", msiFindAgainCommand);
     commandTable.registerCommand("cmd_findPrev", msiFindAgainCommand);
@@ -1335,6 +1318,9 @@ function msiEditorDocumentObserver(editorElement) {
           clearStatusMessage();
         }
         editor.beginningOfDocument();
+        if (this.mEditorElement.startInMath)
+          moveCursorToFirstMathInput(this.mEditorElement);
+
         if (bIsRealDocument)
           this.mEditorElement.mbInitializationCompleted = true;
       }

@@ -116,22 +116,6 @@ function loadDialog()
     theStringSource = null;
 
   gReplaceDialog.bEditorReady = false;
-//  var substitutionControlObserver = new msiEditorChangeObserver(gReplaceDialog.findInput);
-//  var commandBoldObserverData = new Object();
-//  commandBoldObserverData.mCommand = "cmd_bold";
-  //commandBoldObserverData.mObserver = substitutionControlObserver;
-  //var commandSetModifiedObserverData = new Object();
-  //commandSetModifiedObserverData.mCommand = "cmd_setDocumentModified";
-  //commandSetModifiedObserverData.mObserver = substitutionControlObserver;
-  //var editorDocLoadedObserverData = new Object();
-  //editorDocLoadedObserverData.mCommand = "obs_documentCreated";
-  //editorDocLoadedObserverData.mObserver = substitutionControlObserver;
-//
-  //gReplaceDialog.findInput.mInitialDocObserver = [commandSetModifiedObserverData, editorDocLoadedObserverData, commandBoldObserverData];
-  // gReplaceDialog.findInput.mbSinglePara = true;
-  // gReplaceDialog.replaceInput.mbSinglePara = true;
-
-//  msiInitializeEditorForElement(gReplaceDialog.findInput, theStringSource, true);
 
   var theStringSource2 = gFindService.replaceString;
   if (theStringSource2 != null && theStringSource2.length == 0)
@@ -139,8 +123,8 @@ function loadDialog()
 //  msiInitializeEditorForElement(gReplaceDialog.replaceInput, theStringSource2, true);
 //RWA now replaced  gReplaceDialog.findInput.mbSetFocusOnStartup = true;
   var editorInitializer = new msiEditorArrayInitializer();
-  editorInitializer.addEditorInfo(gReplaceDialog.findInput, theStringSource, true);
-  editorInitializer.addEditorInfo(gReplaceDialog.replaceInput, theStringSource2, true);
+  editorInitializer.addEditorInfo(gReplaceDialog.findInput, theStringSource, true, true);
+  editorInitializer.addEditorInfo(gReplaceDialog.replaceInput, theStringSource2, true, true);
   editorInitializer.doInitialize();
 
 //  gReplaceDialog.replaceInput.makeEditable("html", false);

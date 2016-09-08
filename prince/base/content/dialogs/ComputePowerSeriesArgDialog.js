@@ -33,37 +33,18 @@ function Startup(){
 
   // Initialize our source text <editor>s
   var theStringSource1 = data.initialvalue[0];
-//  theStringSource1 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi tempinput=\"true\">&#x2039;&#x203a;</mi></math>";
-//that is, by default, theStringSource1 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi tempinput=\"true\">&#x2039;&#x203a;</mi></mrow></math>";
-//  try
-//  {
   var varEditorControl = document.getElementById("mmlArg-var-frame");
-//  editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
-//    msiInitializeEditorForElement(varEditorControl, theStringSource, true);
-//  }
-//  catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-var-frame: [" + exc + "].\n");}
-//  try
-//  {
   var theStringSource2 = data.initialvalue[1];
   var initEditorControl = document.getElementById("mmlArg-initVal-frame");
-//    msiInitializeEditorForElement(initEditorControl, theStringSource, true);
-//  }
-//  catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-initVal-frame: [" + exc + "].\n");}
-//  try
-//  {
+
   var theStringSource3 = data.initialvalue[2];
   var termsEditorControl = document.getElementById("mmlArg-numTerms-frame");
-//    msiInitializeEditorForElement(termsEditorControl, theStringSource, true);
-//  }
-//  catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-numTerms-frame: [" + exc + "].\n");}
 
   var editorInitializer = new msiEditorArrayInitializer();
-  editorInitializer.addEditorInfo(varEditorControl, theStringSource1, true);
-  editorInitializer.addEditorInfo(initEditorControl, theStringSource2, true);
-  editorInitializer.addEditorInfo(termsEditorControl, theStringSource3, true);
+  editorInitializer.addEditorInfo(varEditorControl, theStringSource1, true, true);
+  editorInitializer.addEditorInfo(initEditorControl, theStringSource2, true, true);
+  editorInitializer.addEditorInfo(termsEditorControl, theStringSource3, true, true);
   editorInitializer.doInitialize();
-
-//  varEditorControl.focus();
   msiSetInitialDialogFocus(varEditorControl);
 }
 

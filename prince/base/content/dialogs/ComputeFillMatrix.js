@@ -59,7 +59,7 @@ function Startup(){
   docObserver.mObserver = msiFillMatrixEditorDocumentObserver;
   docObserver.mCommand = "obs_documentCreated";
   editorControl.mInitialDocObserver = new Array(docObserver);
-  msiInitializeEditorForElement(editorControl, theStringSource, true);
+  msiInitializeEditorForElement(editorControl, theStringSource, true, null, true);
 
 //  try {
 //    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);

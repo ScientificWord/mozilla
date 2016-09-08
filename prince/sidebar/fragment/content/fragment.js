@@ -222,9 +222,14 @@ function insertFragmentContents( fileurl )
         infoString =  decodeURIComponent(node.textContent);
       }
       focusOnEditor();
+      try {
       editor.insertHTMLWithContext(dataString,
                                    contextString, infoString, "text/html",
                                    null,null,0,true);
+      }
+      catch(e) {
+        1;
+      }
     }
   }
   catch(e)
