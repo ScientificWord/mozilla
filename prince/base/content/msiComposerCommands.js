@@ -7086,11 +7086,10 @@ function msiReviseBreaks(reviseData, dialogData, editorElement)
 
 function setAlignmentOK(editorElement) {
   var editor = msiGetEditor(editorElement);
-  var selection = editor.selection;
   var isMath;
   var selNode;
-  if (selection.isCollapsed) {
-    selNode = selection.anchorNode;
+  if (editor.selection.isCollapsed) {
+    selNode = editor.selection.anchorNode;
     ismath = msiNavigationUtils.isMathNode(selNode);
     if (!ismath) selNode = selNode.parentNode;
     ismath = msiNavigationUtils.isMathNode(selNode);
@@ -7098,6 +7097,7 @@ function setAlignmentOK(editorElement) {
       if (selNode.tagName != 'mrow' &&
         selNode.tagName != 'mi' &&
         selNode.tagName != 'mo' &&
+        selNode.tagName != 'mn' &&
         selNode.tagName != 'mstyle' &&
         selNode.tagName != 'mphantom') {
         return false;
