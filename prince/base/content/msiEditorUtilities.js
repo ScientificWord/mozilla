@@ -3695,7 +3695,7 @@ function createWorkingDirectory(documentfile) {
   var baseLeafName;
   var extension;
   var skipBackup;
-  var theCase;
+  var theCase;  = 0;
   var name;
   if (!(documentfile.isFile() || documentfile.isDirectory()))
     return null;
@@ -3712,8 +3712,9 @@ function createWorkingDirectory(documentfile) {
       theCase = 1;
       extension = '.xhtml';
     } else {
+      return null;
       // other file, not .sci
-      theCase = 2;
+      // theCase = 2;
     }
   } else
     // must be a directory
@@ -3733,7 +3734,7 @@ function createWorkingDirectory(documentfile) {
   } else if (theCase === 3) {
     documentfile.copyTo(documentfile.parent, dir.leafName);
   }
-  if (theCase === 2) {
+  if (theCase === 2) {  // not used now.
     var done = false;
     var index = 0;
     name = 'main' + extension;
