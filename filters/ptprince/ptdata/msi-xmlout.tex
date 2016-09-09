@@ -299,6 +299,19 @@
 
 \expandafter\def\csname fleqnAttrib\endcsname{eqnpos="fleqn"}
 
+
+\def\documentstyle{%
+  \msitag{%
+<?xml version="1.0" encoding="UTF-8"?>
+<?sw-tagdefs href="resource://app/res/tagdefs/latexdefs.xml" type="text/xml" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:sw="http://www.sciword.com/namespaces/sciword">
+<head></head>
+<body>
+  Please convert your document to LaTeX2e.
+</body></html>}
+   \endinput}
+
 \newtoks\temptoksb
 
 \def\msiappend#1MSIXYZZY{%
