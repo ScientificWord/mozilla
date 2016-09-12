@@ -142,10 +142,11 @@ nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
     bool isSelected = false;
     nsRect selectedRect;
   // BBM: experiment
+    
     firstChild = mFrames.FirstChild();
-//    while (firstChild->GetFirstChild(nsnull)) firstChild = firstChild->GetFirstChild(nsnull);
-//    // drill down to the text child
-//
+   while (firstChild->GetFirstChild(nsnull)) firstChild = firstChild->GetFirstChild(nsnull);
+   // drill down to the text child
+
     if (IsFrameInSelection(firstChild)) {
       selectedRect = firstChild->GetRect();
       isSelected = true;
@@ -157,10 +158,11 @@ nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
     // for visual debug
     rv = DisplayBoundingMetrics(aBuilder, this, mReference, mBoundingMetrics, aLists);
 #endif
-   // if (firstChild == aBuilder->GetCaretFrame())
-   // {
-   //   this->DisplayCaret(aBuilder, aDirtyRect, aLists);
-   // }
+
+   if (firstChild == aBuilder->GetCaretFrame())
+   {
+     this->DisplayCaret(aBuilder, aDirtyRect, aLists);
+   }
 
   }
 //BBM
