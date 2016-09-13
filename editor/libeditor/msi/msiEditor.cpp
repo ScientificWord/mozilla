@@ -746,6 +746,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
       res = RangeInMath(range, getter_AddRefs(mathnode));
       PRBool inMath = (nsnull != mathnode);
     //  if (!inMath) return NS_OK;
+
       NS_ASSERTION(theNode, "Null node passed to msiEditor::InsertFence");
       if (theNode)
       {
@@ -758,11 +759,15 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
         
         res = selection->GetIsCollapsed(&bCollapsed);
         nsCOMPtr<nsIDOMElement> mathmlElement;
+        nsCOMPtr<nsIDOMNode> mathmlNode;
+        nsCOMPtr<nsIDOMNode> newNode;
+        PRBool bInserted = PR_TRUE;
         PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
         PRUint32 attrFlags(msiIMathMLInsertion::FLAGS_NONE);
         res = msiUtils::CreateMRowFence(this, nsnull, bCollapsed, open, close, PR_TRUE, flags, attrFlags, mathmlElement);
         if (NS_SUCCEEDED(res) && mathmlElement) {
-          res = InsertNodeAtPoint((nsIDOMNode *)mathmlElement, (nsIDOMNode **)address_of(startNode), &startOffset, PR_TRUE);
+          mathmlNode = do_QueryInterface(mathmlElement);
+          res = InsertMathNode(mathmlNode, (nsIDOMNode **)address_of(startNode), startOffset, bInserted, getter_AddRefs(newNode));
           res = mathmlElement->GetFirstChild(getter_AddRefs(elt));  // elt is left fence
           res = elt->GetNextSibling(getter_AddRefs(elt)); // elt is tempinput mi
           selection->Collapse(elt, 0);

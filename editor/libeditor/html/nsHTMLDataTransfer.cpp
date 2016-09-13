@@ -354,6 +354,7 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
   nsresult res;
   nsAutoString strTempInput;
   nsAutoString tagName;
+  nsAutoString parentTagName;
   nsCOMPtr<nsIDOMElement> pNode;
   nsCOMPtr<nsIDOMNode> textNode;
   nsCOMPtr<nsIDOMNode> parentNode(*ioParent);
@@ -374,6 +375,17 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
   pNode = do_QueryInterface(parentNode);
   GetTagString(parentNode, tagName);
   // check for input box
+  if (tagName.EqualsLiteral("#text")) {
+    nsCOMPtr<nsIDOMNode> textParent;
+    res = (*ioParent)->GetParentNode(getter_AddRefs(textParent));
+    GetTagString(textParent, parentTagName);
+    if (parentTagName.EqualsLiteral("mi") || parentTagName.EqualsLiteral("mo")) {
+      res = GetNodeLocation(parentNode, address_of(parentNode), &offsetOfNewNode);
+      tagName = parentTagName;
+      newParentNode = *ioParent = parentNode;
+      pNode = do_QueryInterface(parentNode);
+    }
+  }
   if (tagName.EqualsLiteral("mi"))
   {
     res = pNode->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
