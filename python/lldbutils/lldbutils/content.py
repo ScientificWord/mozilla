@@ -86,7 +86,8 @@ def mprev(debugger, command, result, dict):
 
 def init(debugger):
     debugger.HandleCommand("type summary add nsTextFragment -F lldbutils.content.summarize_text_fragment")
-    # debugger.HandleCommand("type summary add nsIDOMElement -F libdutils.content.summarize_node")
+    debugger.HandleCommand("type summary add nsIDOMElement -F libdutils.content.mnode")
+    debugger.HandleCommand("type summary add nsIDOMNode -F libdutils.content.mnode")
     debugger.HandleCommand("command script add -f lldbutils.content.ptag ptag")
     debugger.HandleCommand("command script add -f lldbutils.content.mnode mnode")
     debugger.HandleCommand("command script add -f lldbutils.content.mparent mparent")
