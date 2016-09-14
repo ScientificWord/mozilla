@@ -1165,8 +1165,10 @@ function msiEditorDocumentObserver(editorElement) {
 
           this.mEditorElement.pdfModCount = -1;
           editor.resetModificationCount();
-          editor.incrementModificationCount(1);
-          this.mEditorElement.saveModCount = editor.getModificationCount();
+          // saveModCount == 0 if we have just reconstructed the document for source view.
+          // In that case, leave it negative to show that saving is required.
+          if (!this.mEditorElement.saveModCount || this.mEditorElement.saveModCount > 0)
+            this.mEditorElement.saveModCount = editor.getModificationCount();
 
           // Force color widgets to update
           msiOnFontColorChange();
@@ -2234,7 +2236,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave) {
     var scifileExists = file.exists();
     var prefs = GetPrefs();
     var newfileisdirty = prefs.getBoolPref("swp.newFileConsideredDirty");
-    if ((!editor.documentModified) && (!msiIsHTMLSourceChanged(editorElement)) && (scifileExists ||
+    if ((editorElement.saveModCount >= editor.getModificationCount()) && (!msiIsHTMLSourceChanged(editorElement)) && (scifileExists ||
         !newfileisdirty)) {
       if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
       // if the document is a shell and has never been saved, it will be deleted by Revert
@@ -4758,6 +4760,7 @@ function RebuildFromSource(aDoc, editorElement, aContext) {
   // from vcamoverlay
   initVCamObjects(editor.document);
   //  NotifierUtils.notify("afterLeavingSourceMode");
+  editorElement.saveModCount = -1;
   window.content.focus();
   editorElement.focus();
 }
