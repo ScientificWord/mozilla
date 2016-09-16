@@ -613,6 +613,8 @@ nsresult
 nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset,
    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
 {
+  nsIFrame * childFrame;
+  nsCOMPtr<nsIDOMNode> child;
   if (IsInvisibleOp()) {
     return MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
   }
@@ -623,9 +625,34 @@ nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
     }
     else
     {
-      count = *_retval = 0;
-      // MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, count);
+      nsCOMPtr<nsIContent> pcontent = GetContent();
+      if (pcontent && pcontent->Tag() != nsGkAtoms::mn_) {
+        count = *_retval = 0;
+        PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, count);
+      }
+      else {
+        childFrame = GetFirstChild(nsnull);
+        while(childFrame)
+        {
+          if (nsGkAtoms::textFrame == childFrame->GetType())
+          {
+            nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
+            child = do_QueryInterface(childContent);
+            if (!nodeIsWhiteSpace2(child, 0, 20))
+            {
+              *aOutFrame = childFrame;
+              nsAutoString theText;
+              child->GetNodeValue(theText);
+              PRUint32 length = theText.Length();
+              *aOutOffset = length - 1;
+              *_retval = 0;
+              return NS_OK;
+            }
+            childFrame = childFrame->GetNextSibling();
+          }
+          childFrame = childFrame->GetFirstChild(nsnull);
+        }
+      }
     }
   }
  return NS_OK;
@@ -636,14 +663,39 @@ nsresult
 nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset,
    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
 {
+  nsIFrame * childFrame;
+  nsCOMPtr<nsIDOMNode> child;
   if (IsInvisibleOp()) return MoveOutToRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
   else if (!PutCursorInTempInput(aOutFrame, aOutOffset))
   {
     if (count == 0) PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, count);
     else
     {
-      count = *_retval = 0;
-      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, count);
+      nsCOMPtr<nsIContent> pcontent = GetContent();
+      if (pcontent && pcontent->Tag() != nsGkAtoms::mn_) {
+        count = *_retval = 0;
+        PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, count);
+      }
+      else {
+        childFrame = GetFirstChild(nsnull);
+        while(childFrame)
+        {
+          if (nsGkAtoms::textFrame == childFrame->GetType())
+          {
+            nsCOMPtr<nsIContent> childContent = childFrame->GetContent();
+            child = do_QueryInterface(childContent);
+            if (!nodeIsWhiteSpace2(child, 0, 20))
+            {
+              *aOutFrame = childFrame;
+              *aOutOffset = count;
+              *_retval = 0;
+              return NS_OK;
+            }
+            childFrame = childFrame->GetNextSibling();
+          }
+          childFrame = childFrame->GetFirstChild(nsnull);
+        }
+      }
     }
   }
   return NS_OK;
