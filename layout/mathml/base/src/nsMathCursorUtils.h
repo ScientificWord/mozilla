@@ -46,6 +46,8 @@ nsIFrame * GetLastChild(nsIFrame * pFrame);
  */
 nsIFrame * GetSignificantParent( nsIFrame * pFrame);
 
+nsIFrame * GetNextSignificantSibling( nsIFrame * pFrame);
+
 nsIFrame * GetTopFrameForContent(nsIFrame * pFrame);
 
 nsIFrame * GetPrevSib(nsIFrame * pFrame);
