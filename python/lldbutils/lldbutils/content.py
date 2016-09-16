@@ -81,6 +81,11 @@ def mprev(debugger, command, result, dict):
     if len(newcommand) > 0:
         debugger.HandleCommand("expression nsIDOMNode* child; " + newcommand + "->GetPrevSibling(&child),child;")
 
+def mframe(debugger, command, result, dict):
+    """Displays the tag name of the frame contents"""
+    newcommand = modcommand(debugger, command, result, dict)
+    if len(newcommand) > 0:
+        debugger.HandleCommand("expression nsString $name; (" + newcommand + "->mContent->mNodeInfo.mRawPtr->mInner.mName->ToString($name), $name)")
 
 
 
@@ -94,3 +99,4 @@ def init(debugger):
     debugger.HandleCommand("command script add -f lldbutils.content.mfirstchild mfirstchild")
     debugger.HandleCommand("command script add -f lldbutils.content.mnext mnext")
     debugger.HandleCommand("command script add -f lldbutils.content.mprev mprev")
+    debugger.HandleCommand('command script add -f lldbutils.content.mframe mframe')
