@@ -731,9 +731,9 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
 		{
 			SelectTable();
 		}
-//    msiUtils::CanonicalizeMathSelection(this);
 
     nsCOMPtr<nsIDOMRange> range;
+    msiUtils::CanonicalizeMathSelection(this);
     selection->GetRangeAt(0, getter_AddRefs(range)); 
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
@@ -762,6 +762,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
         nsCOMPtr<nsIDOMNode> mathmlNode;
         nsCOMPtr<nsIDOMNode> newNode;
         PRBool bInserted = PR_TRUE;
+        PRBool bIsTempInput = PR_FALSE;
         PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
         PRUint32 attrFlags(msiIMathMLInsertion::FLAGS_NONE);
         res = msiUtils::CreateMRowFence(this, nsnull, bCollapsed, open, close, PR_TRUE, flags, attrFlags, mathmlElement);
@@ -770,7 +771,10 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
           res = InsertMathNode(mathmlNode, (nsIDOMNode **)address_of(startNode), startOffset, bInserted, getter_AddRefs(newNode));
           res = mathmlElement->GetFirstChild(getter_AddRefs(elt));  // elt is left fence
           res = elt->GetNextSibling(getter_AddRefs(elt)); // elt is tempinput mi
-          selection->Collapse(elt, 0);
+          nsCOMPtr<nsIDOMElement> eltelt = do_QueryInterface(elt);
+          eltelt->HasAttribute(NS_LITERAL_STRING("tempinput"), &bIsTempInput);
+          if (bIsTempInput) selection->Collapse(elt,0);
+          else selection->Collapse(mathmlNode, 1); // just after left fence
         }
         res = store->GetRange(range);
         mRangeUpdater.DropRangeItem(store);
