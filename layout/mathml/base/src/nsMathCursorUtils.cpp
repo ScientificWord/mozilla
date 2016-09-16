@@ -91,7 +91,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
       *aOutOffset = 1+pContent->IndexOf(pFrame->GetContent());
       *aOutFrame = pParent;
       //check to see if next frame is a temp input
-      pSiblingFrame = pFrame->GetNextSibling();
+      pSiblingFrame = GetNextSignificantSibling(pFrame);
       if (pSiblingFrame) {
         pContent = pSiblingFrame->GetContent();
         nsCOMPtr<nsIDOMElement> pElem = do_QueryInterface(pContent);
@@ -117,7 +117,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
         pElem->GetTagName(tag);
         if (tag.EqualsLiteral("msidisplay")) {
           pFrame = pParent;
-          pSiblingFrame = pFrame->GetNextSibling();
+          pSiblingFrame = GetNextSignificantSibling(pFrame);
           if (pSiblingFrame) {
             *aOutFrame = pSiblingFrame;
             *aOutOffset = 0;
@@ -125,43 +125,18 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
           }
         }
       }
+      nsCOMPtr<nsIDOMNode> parentNode = do_QueryInterface(pParent->GetContent());
+      nsCOMPtr<nsIDOMNode> frameNode = do_QueryInterface(pFrame->GetContent());
+      *aOutOffset = nsEditor::GetIndexOf(parentNode, frameNode)+ 1;
 
-      pSiblingFrame = pFrame->GetNextSibling();
-      // Whoa! We must check that the cursor can go into this tag -- it sometimes is a <br/>
-        // Do we need to skip over whitespace nodes?
-      if (pSiblingFrame) {
-        pSiblingFrame->IsSelectable( &fSelectable, nsnull);
-      }
-      if (pSiblingFrame && fSelectable) {
-        *aOutFrame = pParent;
-        pChild = pParent->GetFirstChild(nsnull);
-        *aOutOffset = 1;
-        while (pChild && (pChild != pFrame))
-        {
-          pChild = pChild->GetNextSibling();
-          (*aOutOffset)++;
-        }
-      } else if (pSiblingFrame) {
-        *aOutFrame = pSiblingFrame;
-        *aOutOffset = 0;
-      }
-      else
-      {
+      *aOutFrame = pParent;
+
+      if (!(*aOutOffset)) {
         *aOutFrame = GetFirstTextFramePastFrame(pFrame);
         *aOutOffset = count;
         if (*aOutFrame == nsnull) {
           pFrame->MoveRightAtDocEnd( nsnull );
         }
-        // nsCOMPtr<nsIDOMNode> frameNode = do_QueryInterface(pFrame->GetContent());
-        // nsCOMPtr<nsIDOMNode> dummy;
-        // parentNode->GetOwnerDocument(getter_AddRefs(doc));
-        // nsCOMPtr<nsIDOMText>text;
-        // doc->CreateTextNode(NS_LITERAL_STRING(" "), getter_AddRefs(text));
-        // nsCOMPtr<nsIContent> textContent = do_QueryInterface(text);
-        // nsCOMPtr<nsIDOMNode> textNode = do_QueryInterface(text);
-        // parentNode->InsertAfter( textNode, frameNode, getter_AddRefs(dummy));
-        // *aOutFrame = pFrame->GeNextSibling();
-        // *aOutOffset = 0;
       }
     }
   }
@@ -301,7 +276,7 @@ nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
   pChild = pFrame->GetFirstChild(nsnull);
   while (pChild && !(pRet = GetFirstTextFrame(pChild)))
   {
-    pChild = pChild->GetNextSibling();
+    pChild = GetNextSignificantSibling(pChild);
     pRet = GetFirstTextFrame( pChild);
   }
   return pRet;
@@ -310,8 +285,8 @@ nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
 nsIFrame * GetPrevSib(nsIFrame * pFrame)
 {
   nsIFrame * pTemp = (pFrame->GetParent())->GetFirstChild(nsnull);
-  while (pTemp && (pTemp->GetNextSibling() != pFrame))
-    pTemp = pTemp->GetNextSibling();
+  while (pTemp && (GetNextSignificantSibling(pTemp) != pFrame))
+    pTemp = GetNextSignificantSibling(pTemp);
   return pTemp;
 }
 
@@ -319,7 +294,7 @@ nsIFrame * GetLastChild(nsIFrame * pFrame)
 {
   if (!pFrame) return nsnull;
   nsIFrame * pTemp = pFrame->GetFirstChild(nsnull);
-  while (pTemp && pTemp->GetNextSibling()) pTemp = pTemp->GetNextSibling();
+  while (pTemp && GetNextSignificantSibling(pTemp)) pTemp = GetNextSignificantSibling(pTemp);
   return pTemp;
 }
 
@@ -329,11 +304,11 @@ nsIFrame * GetFirstTextFramePastFrame( nsIFrame * pFrame )
   nsIFrame *pTextFrame = nsnull;
   while (!pTextFrame && pTemp)
   {
-    while (pTemp && !pTemp->GetNextSibling())
+    while (pTemp && !GetNextSignificantSibling(pTemp))
     {
       pTemp = GetSignificantParent(pTemp);
     }
-    if (pTemp) pTemp = pTemp->GetNextSibling();
+    if (pTemp) pTemp = GetNextSignificantSibling(pTemp);
     if (pTemp) pTextFrame = GetFirstTextFrame(pTemp);
     else return nsnull;  // TODO: BBM can't return null without caller checking. Check this out.
   }
@@ -415,6 +390,24 @@ nsIFrame * GetSignificantParent(nsIFrame * pFrame)
   }
   while (rval && (pContentNew == pContent)) {
     rval = rval->GetParent();
+    if (rval) {
+      pContentNew = rval->GetContent();
+    }
+  }
+  return rval;
+}
+
+nsIFrame * GetNextSignificantSibling(nsIFrame * pFrame)
+// Finds the first ancestor that has different content from pFrame
+{
+  nsCOMPtr<nsIContent> pContent = pFrame->GetContent();
+  nsCOMPtr<nsIContent> pContentNew;
+  nsIFrame * rval = pFrame->GetNextSibling();
+  if (rval) {
+    pContentNew = rval->GetContent();
+  }
+  while (rval && (pContentNew == pContent)) {
+    rval = rval->GetNextSibling();
     if (rval) {
       pContentNew = rval->GetContent();
     }
