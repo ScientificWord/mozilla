@@ -212,14 +212,16 @@ nsresult msiEditingManager::MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, 
       currentNode->GetParentNode(getter_AddRefs(currentNode));
     currentNode->GetParentNode(getter_AddRefs(parentNode));
     parentElement = do_QueryInterface(parentNode);
-    parentElement->GetNodeName(name);
-    while (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("msubsup") || name.EqualsLiteral("mfrac")
-      || name.EqualsLiteral("mroot")) {
-      currentNode = parentNode;
-      topNode = currentNode;
-      currentNode->GetParentNode(getter_AddRefs(parentNode));
-      parentElement = do_QueryInterface(parentNode);
+    if (parentElement) {
       parentElement->GetNodeName(name);
+      while (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("msubsup") || name.EqualsLiteral("mfrac")
+        || name.EqualsLiteral("mroot")) {
+        currentNode = parentNode;
+        topNode = currentNode;
+        currentNode->GetParentNode(getter_AddRefs(parentNode));
+        parentElement = do_QueryInterface(parentNode);
+        parentElement->GetNodeName(name);
+      }
     }
     MoveNodeTo(this, editor, currentNode, node, offset, destNode);
   }
