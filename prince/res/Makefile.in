@@ -35,6 +35,10 @@ ifdef MOZ_MSI_TEX
 	- cp $(srcdir)/fragments/Beamer/*.frg $(FINAL_TARGET)/res/fragments/Beamer
 	- mkdir $(FINAL_TARGET)/res/fragments/dingbats
 	- cp $(srcdir)/fragments/dingbats/*.frg $(FINAL_TARGET)/res/fragments/dingbats
+	- mkdir $(FINAL_TARGET)/res/fragments/LaTeXhelpers
+	- cp $(srcdir)/fragments/LaTeXhelpers/*.frg $(FINAL_TARGET)/res/fragments/LaTeXhelpers
+	- mkdir $(FINAL_TARGET)/res/fragments/XeTeXonly
+	- cp $(srcdir)/fragments/XeTeXonly/*.frg $(FINAL_TARGET)/res/fragments/XeTeXonly
 endif
 	$(INSTALL)  $(CM2_RESOURCES) 	$(FINAL_TARGET)/res/cm2
 	$(INSTALL)  $(srcdir)/cm2.html  $(FINAL_TARGET)/res/
