@@ -381,6 +381,7 @@ nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
     GetTagString(textParent, parentTagName);
     if (parentTagName.EqualsLiteral("mi") || parentTagName.EqualsLiteral("mo")) {
       res = GetNodeLocation(parentNode, address_of(parentNode), &offsetOfNewNode);
+      if (savedOffset > 0) offsetOfNewNode++;
       tagName = parentTagName;
       newParentNode = *ioParent = parentNode;
       pNode = do_QueryInterface(parentNode);
