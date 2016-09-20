@@ -11806,6 +11806,35 @@ function initTEXMF() {
       return null;
     }
   }
-
   return compileMinimalTeX;
 }
+
+function copyFileOrDirectory( srcFile, destDir ) {
+ var fileIterator;
+ var destSubdir;
+ var nextFile;
+ if (srcFile.isFile()) {
+   srcFile.copyTo( destDir, "");
+ }
+ else if (srcFile.isDirectory()) {
+   try {
+
+     fileIterator = srcFile.directoryEntries;
+     destSubdir = destDir.clone();
+     destSubdir.append(srcFile.leafName);
+     if (!destSubdir.exists()) destSubdir.create(1,0664);
+     if (!destSubdir.isDirectory()) return;
+
+     while (fileIterator.hasMoreElements()) {
+       nextFile = fileIterator.getNext();
+       nextFile.QueryInterface(Components.interfaces.nsIFile);
+       if (!nextFile) return;
+       copyFileOrDirectory(nextFile, destSubdir);
+     }
+   }
+   catch(e) {
+     dump(e.message);
+   }
+ }
+}
+ 
