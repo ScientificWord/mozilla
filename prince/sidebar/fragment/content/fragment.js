@@ -39,9 +39,16 @@ function initSidebar()
   // Since RDF file trees can't take RESOURCE:// path names, we need to convert the
   // fragmentsBaseDirectory to a FILE:// url.
   try {
-    var dir1;
+    var dir1, file;
     var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+    var resdir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    if (resdir) resdir.append("res");
+    if (resdir) {
+      file = resdir.clone();
+      file.append('fragments');
+    }
     dir1 = dsprops.get('ProfD', Components.interfaces.nsIFile);
+    copyFileOrDirectory(file, dir1);
     dir1.append('fragments');
     var dirspec = msiFileURLFromFile(dir1).spec;
     var tree = document.getElementById("frag-tree");
