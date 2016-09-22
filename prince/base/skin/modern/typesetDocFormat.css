@@ -113,4 +113,9 @@ menulist[value="def"] > hbox > label {
   color: gray;
 }
 
+column[wid="generalLayout"] {
+  width: 1em;
+}
+
+
 

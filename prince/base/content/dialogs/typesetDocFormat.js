@@ -164,7 +164,7 @@ function startup()
   }
   var prog = document.getElementById("texprogram").value;
   setCompiler(prog);
-  e  = document.getElementById('columncount');
+  e  = document.getElementById('columns');
   var savedval;
   if (e && (e.value > 1))
   {
@@ -940,17 +940,18 @@ function getPageDimensions( obj)
 	}
 	else // default to letter
 	{
-	  obj.width = 215.9;
-	  obj.height = 279.4;
+    // obj.width = 215.9;
+    // obj.height = 279.4;
+    return false;
   }
   return true;
 }
 
 function setPageDimensions()
 {
-//  finishpage = "letter";
-//  currentUnit ="in";
-//  landscape = false;
+  finishpage = finishpage || "letter";
+//  currentUnit = currentUnit || "in";
+  landscape =  landscape || false;
   var obj = new Object();
   obj.pagename = finishpage;
 
@@ -989,11 +990,11 @@ function changepaperSize(menu)
   if (papertype == "other")
   {
     //enable setting finishpage size
-    document.getElementById("bc.papersize").removeAttribute("disabled");
+    document.getElementById("bc.papersize").hidden=false;
   }
   else
   {
-    document.getElementById("bc.papersize").setAttribute("disabled","true");
+    document.getElementById("bc.papersize").hidden = true;
   }
   setPaperDimensions();
 }
@@ -1063,15 +1064,16 @@ function setPaperDimensions()
     paperwidth = unitHandler.getValueAs(paperwidth, "mm");
     paperheight = unitHandler.getValueAs(paperheight, "mm");
   }
-  if (papertype != "other")
+  // if (papertype != "other")
   {
     document.getElementById("tbpaperwidth").value = unitRound(paperwidth);
     document.getElementById("tbpaperheight").value = unitRound(paperheight);
     document.getElementById("bc.papersize").setAttribute("disabled","true");
   }
-  else document.getElementById("bc.papersize").removeAttribute("disabled");
+  if (papertype === "other")
+   document.getElementById("bc.papersize").removeAttribute("disabled");
 }
-
+k
 function unitRound( size )
 {
   var places;
@@ -1359,6 +1361,7 @@ function handleBodyMouseClick(event)
 // the value of the text box
 function updateTextNumber(textelement, keycode, charcode)
 {
+  return;
   var val = textelement.value;
   var selStart = textelement.selectionStart;
   var selEnd = textelement.selectionEnd;
@@ -1399,17 +1402,19 @@ function updateTextNumber(textelement, keycode, charcode)
 
 function handleChar(keyCode, charCode, id, tbid)
 {
+  return;
   var element = document.getElementById(tbid);
   if (keyCode == KeyEvent.DOM_VK_UP)
     goUp(tbid);
   else if (keyCode == KeyEvent.DOM_VK_DOWN)
     goDown(tbid);
-  else
-    updateTextNumber(element, keyCode, charCode);
+  // else
+  //   updateTextNumber(element, keyCode, charCode);
 }
 
 function geomHandleChar(event, id, tbid)
 {
+  return;
   // We want vertical arrows when id is 'bodyWidth' to switch focus to bodyHeight, and vice versa.
   var kc = event.keyCode;
   var vertArrow = kc == event.DOM_VK_UP || kc == event.DOM_VK_DOWN;
@@ -1429,8 +1434,8 @@ function geomHandleChar(event, id, tbid)
     thetbid = 'tbbodywidth';
     theid = 'bodywidth';
   }
-  if (kc == event.DOM_VK_LEFT) kc = event.DOM_VK_DOWN;
-  else if (kc == event.DOM_VK_RIGHT) kc = event.DOM_VK_UP;
+  // if (kc == event.DOM_VK_LEFT) kc = event.DOM_VK_DOWN;
+  // else if (kc == event.DOM_VK_RIGHT) kc = event.DOM_VK_UP;
   handleChar(kc, charCode, theid, thetbid);
   geomInputChar(event, theid, thetbid);
 }
@@ -1484,7 +1489,7 @@ function goDown(id)
 
 function broadcastColCount()
 {
-  var multicolumns = document.getElementById("columncount").value > 1;
+  var multicolumns = document.getElementById("columncount").value !== "1";
   document.getElementById("multicolumn").hidden=!multicolumns;
   document.getElementById("singlecolumn").hidden=multicolumns;
 }
