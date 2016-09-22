@@ -46,7 +46,7 @@ function princeStartUp()
 // Some temporary functions to test how the program behaves when not licensed
 
 function goAboutDialog() {
-  window.openDialog("chrome://prince/content/aboutDialog.xul", "about", "modal,chrome,resizable=yes");
+  window.openDialog("chrome://prince/content/aboutDialog.xul", "about", "chrome,resizable=yes");
 }
 
 function getBrowser()
