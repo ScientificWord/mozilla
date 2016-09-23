@@ -6,9 +6,9 @@
 <?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="resource://res/css/latex.css" type="text/css"?>
-
-
 <?xml-stylesheet href="chrome://prince/skin/typesetDocFormat.css" type="text/css"?>
+
+
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
@@ -646,9 +646,15 @@
                         <hbox id="heddsep" style="height:.2cm;" onclick="document.getElementById('tbheddsep').focus();"/>
 
                         <hbox id="bodyheight" >
-                          <hbox id="bodyleft" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="&bodytextarea.tooltip;" flex="1"/>
-                          <hbox id="colsep" observes="multicolumn" role="columnwidth" onclick="document.getElementById('tbcolsep').focus();" />
-                          <hbox id="bodyright" observes="multicolumn" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="&bodytextarea.tooltip;" flex="1" />
+                          <vbox id="bodyleft" role="textarea" tooltip="&bodytextarea.tooltip;" flex="1">
+                            <hbox id="bodylefttop" role="textarea" onclick="handleBodyMouseClick(event, true);" tooltip="&bodytextarea.tooltip;" flex="1" style ="border-bottom-width: 0;"/>
+                            <hbox id="bodyleftbottom" role="textarea" onclick="handleBodyMouseClick(event,false);" tooltip="&bodytextarea.tooltip;" flex="1" style ="border-top-width: 0;"/>
+                          </vbox>
+                          <vbox id="colsep" observes="multicolumn" role="columnwidth" onclick="document.getElementById('tbcolsep').focus();" />
+                          <vbox id="bodyright" observes="multicolumn" role="textarea" tooltip="&bodytextarea.tooltip;" flex="1" >
+                            <hbox id="bodyrighttop" role="textarea" onclick="handleBodyMouseClick(event,true);" tooltip="&bodytextarea.tooltip;" flex="1" style ="border-bottom-width: 0;"/>
+                            <hbox id="bodyrightbottom" role="textarea" onclick="handleBodyMouseClick(event,false);" tooltip="&bodytextarea.tooltip;" flex="1" style ="border-top-width: 0;"/>
+                          </vbox>
                         </hbox>
 
                         <hbox id="footersep" onclick="document.getElementById('tbfootersep').focus();"/>
@@ -702,7 +708,7 @@
                         </caption>
                         <label observes="pagelayoutok">&docformatfinishpageSize;</label>
                         <menulist observes="pagelayoutok" id="docformat.finishpagesize"
-                          oncommand="onPaperChange(this);onWindowSizeReset(false);">
+                          oncommand="onPaperChange(this);setPageDimensions();onWindowSizeReset(false);">
                           <menupopup style="width: 12em;" persist="value">
                            <menuitem id="docformat.letter" label="&docformatLetter;" value="letter" selected="true"/>
                            <menuitem id="docformat.a4" label="&A4Size.label;" value="a4paper"/>
@@ -850,15 +856,15 @@
                      <label observes="pagelayoutok" value="&docformatTextBodyWidth;"/>
                      <textbox id="tbbodywidth" type="number" increment="0.1" decimalplaces="2" style="width: 6em" persist="value" value="8.5"
                        onchange="layoutPage('bodywidth');"
-                       onfocus="activate('bodyleft');activate('bodyright');" onblur="deactivate('bodyleft');deactivate('bodyright');"
+                       onfocus="activate('bodylefttop');activate('bodyrighttop');" onblur="deactivate('bodylefttop');deactivate('bodyrighttop');"
                        tooltip="&maintextwidth.tooltip;">
                        <observes element="pagelayoutok" attribute="disabled"/>
                      </textbox>
                      <label observes="pagelayoutok" value="&docformatTextBodyHeight;"/>
                      <textbox id="tbbodyheight" type="number" increment="0.1" decimalplaces="2" style="width: 6em" oninput="layoutPage('bodyheight');"
                        onchange="layoutPage('bodyheight');" value="11.0"
-                       onfocus="activate('bodyleft');activate('bodyright');"
-                       onblur="deactivate('bodyleft');deactivate('bodyright');"
+                       onfocus="activate('bodyleftbottom');activate('bodyrightbottom');"
+                       onblur="deactivate('bodyleftbottom');deactivate('bodyrightbottom');"
                        tooltip="&tbbodyheight.tooltip;" persist="value">
                        <observes element="pagelayoutok" attribute="disabled"/>
                      </textbox>
