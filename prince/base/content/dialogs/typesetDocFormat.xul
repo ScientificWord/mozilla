@@ -71,10 +71,19 @@
       <tab label="&docformatAdvancedtab;"/-->
     </tabs>
     <tabpanels>
+
+   <!--    Several items appear on more than one panel. Currently these are:
+        Page orientation, Paper size, Sides, and Columns on the general tab correspond to 
+        Orientation, Finished page size, Two-sided, nad Columns on the Page layout tab.
+      We keep these in sync using a set of broadcasters. -->
+      <broadcasterset id="sharedbetweentabs">
+        <broadcaster id="shared.orientation" sharedval="port"/> <!-- sharedval is 'port' or 'landscape' -->
+        <broadcaster id="shared.paper" sharedval="letter"/> <!-- sharedval is from the menu id=docformat.finishpagesize -->
+        <broadcaster id="shared.sides" sharedval="1"/> <!-- sharedval is 1 or 2 -->
+        <broadcaster id="shared.columns" sharedval=""/> <!-- sharedval is '' or 'twocolumns' -->
+        </broadcasterset>
+
       <tabpanel id="docformatgeneralpanel" orient="vertical">
-       <!-- 12/10/2010 commented out by JLF per BBM
-       <button onAccept();"  />
-       -->
         <vbox flex="1">
           <label class="heading" value="&GenDocOptions.label;"/>
           <label>&warning.label1;</label>
@@ -110,42 +119,59 @@
             <rows>
               <row align="end" style="height: 3em">
                 <vbox>
-                  <label observes="reformatok" value="&PageOrientation.label;"/>
-                  <menulist observes="reformatok" id="pgorient" persist="value" >
+                  <label observes="reformatok" value="&PageOrientation.label;" />
+                  <menulist id="pgorient" persist="value" oncommand="onOrientationChange(this);">
                     <menupopup style="width: 12em" >
                       <menuitem label="&default.label;" def="1"/>
                       <menuitem value="port" label="&Portrait.label;"/>
                       <menuitem value="landscape" label="&Landscape.label;"/>
                     </menupopup>
+                    <observes element="shared.orientation" attribute="value" onbroadcast="onOrientationBroadcast(this.parentNode);"/>
+                    <observes element="reformatok" /> 
                   </menulist>
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="&PaperSize.label;"/>
-                  <menulist observes="reformatok" id="papersize" persist="value" >
+                  <menulist observes="reformatok" id="papersize" persist="value" oncommand="onPaperChange(this);">
                     <menupopup style="width: 12em" >
                       <menuitem label="&default.label;" def="1"/>
+                      <menuitem id="docformat.a4" label="&A4Size.label;" value="a4paper"/>
                       <menuitem value="letter" label="&LetterSize.label;"/>
-                      <menuitem value="a4paper" label="&A4Size.label;"/>
-                      <menuitem value="a5paper" label="&A5Size.label;"/>
-                      <menuitem value="b5paper" label="&B5Size.label;"/>
-                      <menuitem value="legalpaper" label="&LegalSize.label;"/>
-                      <menuitem value="executivepaper" label="&ExecutiveSize.label;"/>
+                      <menuitem id="docformat.a0" label="&A0Size.label;" value="a0paper"/>
+                      <menuitem id="docformat.a1" label="&A1Size.label;" value="a1paper"/>
+                      <menuitem id="docformat.a2" label="&A2Size.label;" value="a2paper"/>
+                      <menuitem id="docformat.a3" label="&A3Size.label;" value="a3paper"/>
+                      <menuitem id="docformat.a5" label="&A5Size.label;" value="a5paper"/>
+                      <menuitem id="docformat.a6" label="&A6Size.label;" value="a6paper"/>
+                      <menuitem id="docformat.b0" label="&B0Size.label;" value="b0paper"/>
+                      <menuitem id="docformat.b1" label="&B1Size.label;" value="b1paper"/>
+                      <menuitem id="docformat.b2" label="&B2Size.label;" value="b2paper"/>
+                      <menuitem id="docformat.b3" label="&B3Size.label;" value="b3paper"/>
+                      <menuitem id="docformat.b4" label="&B4Size.label;" value="b4paper"/>
+                      <menuitem id="docformat.b5" label="&B5Size.label;" value="b5paper"/>
+                      <menuitem id="docformat.b6" label="&B6Size.label;" value="b6paper"/>
+                      <menuitem id="docformat.executive" label="&docformatExecutive;" value="executivepaper"/>
+                      <menuitem id="docformat.legal" label="&docformatLegal;" value="legalpaper"/>
                     </menupopup>
+                    <observes element="shared.paper" attribute="value" onbroadcast="onPaperBroadcast(this.parentNode);"/>
+                    <observes element="reformatok"/> 
                   </menulist>
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="&Sides.label;"/>
-                  <menulist observes="reformatok" id="sides" persist="value" >
+                  <menulist id="sides" persist="value" oncommand="onSidesChange(this);">
                     <menupopup style="width: 12em" >
                       <menuitem label="&default.label;" def="1"/>
                       <menuitem value="oneside" label="&one.label;"/>
                       <menuitem value="twoside" label="&two.label;"/>
                     </menupopup>
+                    <observes element="shared.sides" attribute="value" onbroadcast="onSidesBroadcast(this.parentNode);"/>
+                    <observes element="reformatok"/> 
                   </menulist>
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="&Quality.label;"/>
-                  <menulist observes="reformatok" id="qual" style="width: 12em" persist="value" >
+                  <menulist id="qual" style="width: 12em" persist="value" >
                     <menupopup>
                       <menuitem label="&default.label;" def="1"/>
                       <menuitem value="final" label="&Final.label;"/>
@@ -157,12 +183,14 @@
               <row align="end" style="height: 3em">
                 <vbox>
                   <label observes="reformatok" value="&Columns.label;"/>
-                  <menulist observes="reformatok" id="columns"  persist="value" >
-                    <menupopup style="width: 12em" oncommand="broadcastColCount();" >
+                  <menulist id="columns"  persist="value"  oncommand="onCCountChange(this);broadcastColCount();">
+                    <menupopup style="width: 12em" >
                       <menuitem label="&default.label;" def="1"/>
-                      <menuitem value="1" label="&one.label;"/>
-                      <menuitem value="2" label="&two.label;"/>
+                      <menuitem value="onecolumn" label="&one.label;"/>
+                      <menuitem value="twocolumn" label="&two.label;"/>
                     </menupopup>
+                    <observes element="reformatok" />
+                    <observes element="shared.columns" attribute="value" onbroadcast="onCCountChange(this.parentNode);"/>
                   </menulist>
                 </vbox>
                 <vbox>
@@ -528,17 +556,23 @@
                 <hbox maxheight="5em" minheight="3em" flex="1">
                   <vbox align="start">
                     <label observes="pagelayoutok" >&docformatTwosided;</label>
-                    <checkbox observes="pagelayoutok" id="twosides" checked="false" oncommand="setTwosidedState(this);" persist="checked"/>
+                    <checkbox observes="pagelayoutok" id="twosides" checked="false" oncommand=
+                      "setTwosidedState(this);onSidesChange(this)" persist="checked">
+                      <observes element="shared.sides" attribute="value" onbroadcast="onSidesBroadcast(this.parentNode);"/>
+                      <observes element="pagelayoutok"/> 
+                    </checkbox>
                     <broadcaster id="oneside" hidden="false" persist="hidden"/>
                     <broadcaster id="twoside" hidden="true"  persist="hidden"/>
                   </vbox>
                   <vbox>
                     <label observes="pagelayoutok" value="&Orientation.label;" accesskey="&Orientation.accesskey;" control="landscape"/>
-                    <menulist observes="pagelayoutok" id="landscape" persist="value">
+                    <menulist id="landscape" persist="value" oncommand="onOrientationChange(this)">
                       <menupopup style="width: 12em" >
                         <menuitem value="port" label="&Portrait.label;"/>
-                        <menuitem value="land" label="&Landscape.label;"/>
+                        <menuitem value="landscape" label="&Landscape.label;"/>
                       </menupopup>
+                      <observes element="shared.orientation" attribute="value" onbroadcast="onOrientationBroadcast(this.parentNode);"/>
+                      <observes element="pagelayoutok" />
                     </menulist>
                   </vbox>
                   <vbox align="start">
@@ -564,11 +598,13 @@
                   <vbox>
                     <vbox>
                       <label observes="pagelayoutok" value="&Columns.label;"/>
-                      <menulist observes="pagelayoutok">
-                        <menupopup id="columncount" style="width: 8em" oncommand="broadcastColCount();">
-                          <menuitem value="1" label="&one.label;"/>
-                          <menuitem value="2" label="&two.label;"/>
+                      <menulist id="columncount" oncommand="onCCountChange(this); broadcastColCount();">
+                        <menupopup style="width: 8em" >
+                          <menuitem value="onecolumn" label="&one.label;"/>
+                          <menuitem value="twocolumn" label="&two.label;"/>
                         </menupopup>
+                        <observes element="pagelayoutok"/>
+                        <observes element="shared.columns" attribute="value" onbroadcast="onCCountChange(this.parentNode);"/>
                       </menulist>
                     </vbox>
                   </vbox>
@@ -589,7 +625,7 @@
                   <hbox style="width:1em" />
                   <!-- beginning of layout diagram -->
                   <vbox id="pageh" >
-                    <hbox  id="page" role="page" >
+                    <hbox  id="page" role="page"  style="overflow: auto;">
                       <vbox id="lmargin">
                         <hbox>
                           <observes element="tmargin" attribute="style" />
@@ -666,29 +702,30 @@
                         </caption>
                         <label observes="pagelayoutok">&docformatfinishpageSize;</label>
                         <menulist observes="pagelayoutok" id="docformat.finishpagesize"
-                          oncommand="changefinishpageSize(this);onWindowSizeReset(false);">
+                          oncommand="onPaperChange(this);onWindowSizeReset(false);">
                           <menupopup style="width: 12em;" persist="value">
                            <menuitem id="docformat.letter" label="&docformatLetter;" value="letter" selected="true"/>
-                           <menuitem id="do
-                            .cformat.a4" label="&A4Size.label;" value="a4"/>
+                           <menuitem id="docformat.a4" label="&A4Size.label;" value="a4paper"/>
                            <menuitem id="docformat.screen" label="&docformatScreen;" value="screen"/>
                            <menuitem id="docformat.other" label="&docformatOther;" value="other"/>
-                           <menuitem id="docformat.a0" label="&A0Size.label;" value="a0"/>
-                           <menuitem id="docformat.a1" label="&A1Size.label;" value="a1"/>
-                           <menuitem id="docformat.a2" label="&A2Size.label;" value="a2"/>
-                           <menuitem id="docformat.a3" label="&A3Size.label;" value="a3"/>
-                           <menuitem id="docformat.a5" label="&A5Size.label;" value="a5"/>
-                           <menuitem id="docformat.a6" label="&A6Size.label;" value="a6"/>
-                           <menuitem id="docformat.b0" label="&B0Size.label;" value="b0"/>
-                           <menuitem id="docformat.b1" label="&B1Size.label;" value="b1"/>
-                           <menuitem id="docformat.b2" label="&B2Size.label;" value="b2"/>
-                           <menuitem id="docformat.b3" label="&B3Size.label;" value="b3"/>
-                           <menuitem id="docformat.b4" label="&B4Size.label;" value="b4"/>
-                           <menuitem id="docformat.b5" label="&B5Size.label;" value="b5"/>
-                           <menuitem id="docformat.b6" label="&B6Size.label;" value="b6"/>
-                           <menuitem id="docformat.executive" label="&docformatExecutive;" value="executive"/>
-                           <menuitem id="docformat.legal" label="&docformatLegal;" value="legal"/>
+                           <menuitem id="docformat.a0" label="&A0Size.label;" value="a0paper"/>
+                           <menuitem id="docformat.a1" label="&A1Size.label;" value="a1paper"/>
+                           <menuitem id="docformat.a2" label="&A2Size.label;" value="a2paper"/>
+                           <menuitem id="docformat.a3" label="&A3Size.label;" value="a3paper"/>
+                           <menuitem id="docformat.a5" label="&A5Size.label;" value="a5paper"/>
+                           <menuitem id="docformat.a6" label="&A6Size.label;" value="a6paper"/>
+                           <menuitem id="docformat.b0" label="&B0Size.label;" value="b0paper"/>
+                           <menuitem id="docformat.b1" label="&B1Size.label;" value="b1paper"/>
+                           <menuitem id="docformat.b2" label="&B2Size.label;" value="b2paper"/>
+                           <menuitem id="docformat.b3" label="&B3Size.label;" value="b3paper"/>
+                           <menuitem id="docformat.b4" label="&B4Size.label;" value="b4paper"/>
+                           <menuitem id="docformat.b5" label="&B5Size.label;" value="b5paper"/>
+                           <menuitem id="docformat.b6" label="&B6Size.label;" value="b6paper"/>
+                           <menuitem id="docformat.executive" label="&docformatExecutive;" value="executivepaper"/>
+                           <menuitem id="docformat.legal" label="&docformatLegal;" value="legalpaper"/>
                           </menupopup>
+                          <observes element="shared.paper" attribute="value" onbroadcast="onPaperBroadcast(this.parentNode);"/>
+                          <observes element="pagelayoutok"/> 
                         </menulist>
                         <hbox>
                           <broadcaster id="bc.finishpagesize" />
