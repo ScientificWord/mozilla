@@ -29,6 +29,100 @@ var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
                      useUni: false,//currently same as useOTF
                      fontsOK: false };// OK to choose fonts
 
+
+//Functions for keeping Page orientation, Paper size, Sides, and Columns in sync on the first two panels.
+
+function onOrientationChange(thismenu) {
+  var value, bcaster;
+  if (!thismenu.selectedItem.hasAttribute('def')) {
+    bcaster = document.getElementById('shared.orientation');
+    value = thismenu.value;
+    if (bcaster) bcaster.setAttribute('value', value);
+  }
+}
+
+function onOrientationBroadcast(thismenu)
+{
+  var value, bcaster;
+  bcaster = document.getElementById('shared.orientation');
+  value = bcaster.getAttribute('value');
+  if (value)
+    thismenu.value = value;
+}
+
+function onPaperChange(thismenu) {
+  var value, bcaster;
+  if (!thismenu.selectedItem.hasAttribute('def')) {
+    changefinishpageSize(thismenu);
+    bcaster = document.getElementById('shared.paper');
+    value = thismenu.value;
+    if (bcaster) bcaster.setAttribute('value', value);
+  }
+}
+
+function onPaperBroadcast(thismenu)
+{
+  var value, bcaster;
+  changefinishpageSize(thismenu);
+  bcaster = document.getElementById('shared.paper');
+  value = bcaster.getAttribute('value');
+  if (value)
+    thismenu.value = value;
+}
+
+
+function onSidesChange(thismenu) {
+  var value, bcaster;
+  bcaster = document.getElementById('shared.sides');
+  if (thismenu.nodeName === 'checkbox') {
+    value = thismenu.checked ? 'twoside' : 'oneside';
+  }
+  else {  // a menu
+    if (!thismenu.selectedItem.hasAttribute('def'))
+      value = thismenu.value;
+  }
+  if (bcaster) bcaster.setAttribute('value', value);
+  setTwosidedState(thismenu);
+}
+
+function onSidesBroadcast(thismenu)
+{
+  var value, bcaster;
+  bcaster = document.getElementById('shared.sides');
+  value = bcaster.getAttribute('value');
+  if (thismenu.nodeName === 'checkbox') {
+    thismenu.checked = value==='twoside';
+  }
+  else {
+    if (value)
+      thismenu.value = value;
+  }
+  setTwosidedState(thismenu);
+}
+
+
+function onCCountChange(thismenu) {
+  var value, bcaster;
+  broadcastColCount();
+  if (!thismenu.selectedItem.hasAttribute('def')) {
+    bcaster = document.getElementById('shared.columns');
+    value = thismenu.value;
+    if (bcaster) bcaster.setAttribute('value', value);
+  }
+}
+
+function onCCountBroadcast(thismenu)
+{
+  var value, bcaster;
+  broadcastColCount();
+  bcaster = document.getElementById('shared.columns');
+  value = bcaster.getAttribute('value');
+  if (value) {
+    thismenu.value = value;
+  }
+}
+
+
 function enable(checkbox)
 {
 	var control = document.getElementById(checkbox.getAttribute("control"));
@@ -117,7 +211,7 @@ function startup()
     node=null;
   else
     node = docFormatNodeList[0].getElementsByTagName('pagelayout')[0];
-
+  getClassOptionsEtc();
   getMisc(docformatnode);
   getPageLayout(node);
   if (!(docFormatNodeList && docFormatNodeList.length>=1))
@@ -148,7 +242,6 @@ function startup()
   sectitleformat = new Object();
 //  getNumStyles(preamble);
 //  getSectionFormatting(sectitlenodelist, sectitleformat);
-  getClassOptionsEtc();
 	getLanguageSettings(preamble);
   enableDisableReformat(document.getElementById("enablereformat").checked);
   enableDisableFonts(document.getElementById("allowfontchoice").checked);
@@ -166,14 +259,9 @@ function startup()
   setCompiler(prog);
   e  = document.getElementById('columns');
   var savedval;
-  if (e && (e.value > 1))
+  if (e && (e.value == 'twocolumn'))
   {
-		savedval = e.value;
-		e.value = 1;
-  	broadcastColCount();
-// hack to get the diagram to show columns
-		e.value = savedval;
-		broadcastColCount();
+
 	}
 }
 
@@ -337,11 +425,11 @@ function savePageLayout(docFormatNode)
   node.setAttribute('top', document.getElementById('tbtmargin').value+units);
   lineend(pfNode, 2);
   nodecounter++;
-  var cc = document.getElementById('columncount').value;
-  if (document.getElementById('columncount').value && document.getElementById('columncount').value ==2)
+  var cc = document.getElementById('columns').value;
+  if (document.getElementById('columns').value && document.getElementById('columns').value =="twocolumn")
   {
 		node = editor.createNode('columns',pfNode,nodecounter++);
-	  node.setAttribute('count',(document.getElementById('columncount').value));
+	  node.setAttribute('count',(document.getElementById('columns').value));
 	  node.setAttribute('sep',document.getElementById('tbcolsep').value+units);
 	}
   lineend(pfNode, 2);
@@ -925,10 +1013,10 @@ function changePageDim(textbox)
 // and obj.height. If the pagename is 'other', it does not set the heightand width and returns
 // false. Otherwise it returns true.
 
-var stdPageDimensions = {   letter: {w: 215.9, h: 279.4},	a4: {w: 210, h: 297},   screen: {w: 225, h: 180},  a0: {w: 841, h: 1189},
-	a1: {w: 594, h: 841},     a2: {w: 420, h: 594},         a3: {w: 297, h: 420}, 	a5: {w: 148, h: 210},      a6: {w: 105, h: 148},
-	b0: {w: 1000, h: 1414},   b1: {w: 707, h: 1000},     	  b2: {w: 500, h: 707},   b3: {w: 353, h: 500},      b4: {w: 250, h: 353},
-	b5: {w: 176, h: 250},     b6: {w: 125, h: 176},         executive: {w: 184, h: 267},                       legal: {w: 216, h: 356} };
+var stdPageDimensions = {   letter: {w: 215.9, h: 279.4},	a4paper: {w: 210, h: 297},   screen: {w: 225, h: 180},  a0paper: {w: 841, h: 1189},
+	a1paper: {w: 594, h: 841},     a2paper: {w: 420, h: 594},         a3paper: {w: 297, h: 420}, 	a5paper: {w: 148, h: 210},      a6paper: {w: 105, h: 148},
+	b0paper: {w: 1000, h: 1414},   b1paper: {w: 707, h: 1000},     	  b2paper: {w: 500, h: 707},   b3paper: {w: 353, h: 500},      b4paper: {w: 250, h: 353},
+	b5paper: {w: 176, h: 250},     b6paper: {w: 125, h: 176},         executivepaper: {w: 184, h: 267},                       legalpaper: {w: 216, h: 356} };
 
 function getPageDimensions( obj)
 {
@@ -1073,7 +1161,7 @@ function setPaperDimensions()
   if (papertype === "other")
    document.getElementById("bc.papersize").removeAttribute("disabled");
 }
-k
+
 function unitRound( size )
 {
   var places;
@@ -1164,9 +1252,9 @@ function setDecimalPlaces()
     elt.setAttribute("increment", increment);
     elt.setAttribute("decimalplaces", places);
   }
-  u = secUnitHandler.units[secUnitHandler.getCurrentUnit()];
-  increment = u.increment;
-  places = u.places;
+  // u = secUnitHandler.units[secUnitHandler.getCurrentUnit()];
+  // increment = u.increment;
+  // places = u.places;
   // for (i=0; i<sectionElements.length; i++)
   // {
   //   s=sectionElements[i];
@@ -1255,7 +1343,7 @@ function layoutPage(which)
     h = Math.round(pageheight*scale)+2; // +2 accounts for two 1-pixel borders
     w = Math.round(pagewidth*scale)+2;
     elt.setAttribute("style","height:"+h+"px;width:"+w+"px;"+
-      "max-height:"+h+"px;max-width:"+w+"px;");
+      "max-height:"+h+"px;max-width:"+w+"px;overflow:auto;");
     elt.setAttribute("maxwidth",w);
     elt.setAttribute("maxheight",h);
     for (i=0; i<widthElements.length; i++)
@@ -1489,14 +1577,16 @@ function goDown(id)
 
 function broadcastColCount()
 {
-  var multicolumns = document.getElementById("columncount").value !== "1";
+  var multicolumns = document.getElementById("columncount").value !== "onecolumn";
   document.getElementById("multicolumn").hidden=!multicolumns;
   document.getElementById("singlecolumn").hidden=multicolumns;
 }
 
 function setTwosidedState(elt)
 {
+  var notchecked = true;
   document.getElementById('oneside').hidden = elt.checked;
+  if (elt) notchecked = !elt.checked;
   document.getElementById('twoside').hidden = !elt.checked;
 }
 
@@ -2889,9 +2979,11 @@ function getClassOptionsEtc()
     // leaves all values at the defaults, as defined in the XUL file
 
   var colist = nodelist[0];
+  var property;
   for each (s in valuetypes) {
     if (colist.hasAttribute(s)){
-       setMenulistSelection(document.getElementById(s), colist.getAttribute(s));
+      property = colist.getAttribute(s);
+      setMenulistSelection(document.getElementById(s), property);
     }
   }
 
