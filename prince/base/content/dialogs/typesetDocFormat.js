@@ -48,6 +48,7 @@ function onOrientationBroadcast(thismenu)
   value = bcaster.getAttribute('value');
   if (value)
     thismenu.value = value;
+  onPageBroadcast();
 }
 
 function onPaperChange(thismenu) {
@@ -63,7 +64,7 @@ function onPaperChange(thismenu) {
 function onPaperBroadcast(thismenu)
 {
   var value, bcaster;
-  changefinishpageSize(thismenu);
+//  changefinishpageSize(thismenu);
   bcaster = document.getElementById('shared.paper');
   value = bcaster.getAttribute('value');
   if (value)
@@ -122,29 +123,36 @@ function onCCountBroadcast(thismenu)
   }
 }
 
+function onPageBroadcast()
+{
+  changePageDim(document.getElementById('tbpagewidth'));
+  changePageDim(document.getElementById('tbpageheight'));
+  onWindowSizeReset(false);
+}
+
 
 function enable(checkbox)
 {
-	var control = document.getElementById(checkbox.getAttribute("control"));
-	if (!control) return;
-	if (checkbox.checked)
-	{
-	  control.removeAttribute("disabled");
-	  if (control.id != "reformatok")
-		{
-	    control.setAttribute("type", "number");
-	    control.setAttribute("value", control.getAttribute("default"));
-		}
-	}
-	else
-	{
-	  control.setAttribute("disabled", "true");
-	  if (control.id != "reformatok")
-		{
-	    control.removeAttribute("type");
-			control.setAttribute("value", "-default-");
-		}
-	}
+  var control = document.getElementById(checkbox.getAttribute("control"));
+  if (!control) return;
+  if (checkbox.checked)
+  {
+    control.removeAttribute("disabled");
+    if (control.id != "reformatok")
+    {
+      control.setAttribute("type", "number");
+      control.setAttribute("value", control.getAttribute("default"));
+    }
+  }
+  else
+  {
+    control.setAttribute("disabled", "true");
+    if (control.id != "reformatok")
+    {
+      control.removeAttribute("type");
+      control.setAttribute("value", "-default-");
+    }
+  }
 }
 
 function initializeunits()
@@ -238,21 +246,21 @@ function startup()
   else
     sectitlenodelist = docFormatNodeList[0].getElementsByTagName('sectitleformat');
 
-	dump ("initializing sectitleformat\n");
+  dump ("initializing sectitleformat\n");
   sectitleformat = new Object();
 //  getNumStyles(preamble);
 //  getSectionFormatting(sectitlenodelist, sectitleformat);
-	getLanguageSettings(preamble);
+  getLanguageSettings(preamble);
   enableDisableReformat(document.getElementById("enablereformat").checked);
   enableDisableFonts(document.getElementById("allowfontchoice").checked);
   var formatPageOK = document.getElementById("enablepagelayout").checked;
   var e = document.getElementById('pagelayoutok');
   if (formatPageOK)
-	{
+  {
      e.removeAttribute('disabled');
   }
-	else
-	{
+  else
+  {
      e.setAttribute('disabled', "true");
   }
   var prog = document.getElementById("texprogram").value;
@@ -262,7 +270,7 @@ function startup()
   if (e && (e.value == 'twocolumn'))
   {
 
-	}
+  }
 }
 
 function getEnableFlags(doc)
@@ -275,7 +283,7 @@ function getEnableFlags(doc)
     value = progNode.getAttribute("prog");
     setCompiler(value);
     compilerInfo.useOTF = value == "xelatex";
-		compilerInfo.useUni = compilerInfo.useOTF;
+    compilerInfo.useUni = compilerInfo.useOTF;
     document.getElementById("texprogram").value = value;
     var canSetFormat = progNode.getAttribute("formatOK") == "true";
     document.getElementById("enablereformat").checked = canSetFormat;
@@ -393,10 +401,15 @@ function lineend(node, spacecount)
   node.appendChild(node.ownerDocument.createTextNode(spacer));
 }
 
+function isLandscape() {
+  return document.getElementById('landscape').value !== 'port';
+}
+
+
 function savePageLayout(docFormatNode)
 {
   lineend(docFormatNode, 1);
-	removeExistingPreambleNodes('pagelayout', docFormatNode);
+  removeExistingPreambleNodes('pagelayout', docFormatNode);
   var pfNode = editor.createNode('pagelayout', docFormatNode,0);
   var nodecounter = 0;
   var units;
@@ -411,7 +424,7 @@ function savePageLayout(docFormatNode)
   node.setAttribute('paper',document.getElementById('docformat.finishpagesize').value);
   node.setAttribute('width',pagewidth+units);
   node.setAttribute('height',pageheight+units);
-  if(document.getElementById('landscape').checked)
+  if (isLandscape())
     node.setAttribute('landscape',true);
   lineend(pfNode, 2);
   nodecounter++;
@@ -428,10 +441,10 @@ function savePageLayout(docFormatNode)
   var cc = document.getElementById('columns').value;
   if (document.getElementById('columns').value && document.getElementById('columns').value =="twocolumn")
   {
-		node = editor.createNode('columns',pfNode,nodecounter++);
-	  node.setAttribute('count',(document.getElementById('columns').value));
-	  node.setAttribute('sep',document.getElementById('tbcolsep').value+units);
-	}
+    node = editor.createNode('columns',pfNode,nodecounter++);
+    node.setAttribute('count',(document.getElementById('columns').value));
+    node.setAttribute('sep',document.getElementById('tbcolsep').value+units);
+  }
   lineend(pfNode, 2);
   nodecounter++;
   node = editor.createNode('marginnote',pfNode,nodecounter++);
@@ -480,13 +493,13 @@ function centerCropmarks(value)
 {
   var broadcaster = document.getElementById("pageonpapercentered");
   if (value="center")
-	{
-		broadcaster.removeAttribute("hidden");
-	}
-	else
-	{
-	  broadcaster.setAttribute("hidden", "true");
-	}
+  {
+    broadcaster.removeAttribute("hidden");
+  }
+  else
+  {
+    broadcaster.setAttribute("hidden", "true");
+  }
 }
 
 function getNumberValue(numberwithunit)
@@ -729,58 +742,58 @@ function saveMisc(newNode)
 {
   try {
     var packagecheckboxes = ["showkeys","showidx"];
-  	var len;
-  	var node;
-  	var name;
-  	for (i = 0, len = packagecheckboxes.length; i < len; i++)
-  	{
-  		name = packagecheckboxes[i];
-  	  if (document.getElementById(name).checked)
-  	  {
-  		  lineend(newNode, 1);
-  			removeExistingPreambleNodes(name, newNode);
-  	    node = editor.createNode(name, newNode, 0);
-  	    node.setAttribute("req", name);
-  		}
+    var len;
+    var node;
+    var name;
+    for (i = 0, len = packagecheckboxes.length; i < len; i++)
+    {
+      name = packagecheckboxes[i];
+      if (document.getElementById(name).checked)
+      {
+        lineend(newNode, 1);
+        removeExistingPreambleNodes(name, newNode);
+        node = editor.createNode(name, newNode, 0);
+        node.setAttribute("req", name);
+      }
     }
-  	// footnotes or endnotes?
-  	var fnvalue;
-  	fnvalue = document.getElementById("footnoteorendnote").value;
-  	if (fnvalue == "end" || fnvalue == "foot")
-  	{
-  	  lineend(newNode, 1);
-  		removeExistingPreambleNodes('endnotes', newNode);
+    // footnotes or endnotes?
+    var fnvalue;
+    fnvalue = document.getElementById("footnoteorendnote").value;
+    if (fnvalue == "end" || fnvalue == "foot")
+    {
+      lineend(newNode, 1);
+      removeExistingPreambleNodes('endnotes', newNode);
       node = editor.createNode("endnotes", newNode, 0);
-  		node.setAttribute("req","endnotes");
-  		node.setAttribute("val", fnvalue);
-  	}
-  	// leading
-  	if (document.getElementById("leadingcontrol").checked)
-  	{
-  		var leading = document.getElementById("leading").value;
-  		if (leading)
-  		{
-  			var val = parseFloat(leading);
-  			if (!isNaN(val))
-  			{
-  			  lineend(newNode, 1);
-  				removeExistingPreambleNodes('leading', newNode);
-  		    node = editor.createNode("leading", newNode, 0);
-  				node.setAttribute("req","leading");
-  			  node.setAttribute("val",val.toString()+"pt");
-  			}
-  		}
-  	}
-  	var linespacing;
-  	linespacing = document.getElementById("linespacing").value;
-  	if (linespacing != "def")
-  	{
-  	  lineend(newNode, 1);
-  		removeExistingPreambleNodes('setspacing', newNode);
+      node.setAttribute("req","endnotes");
+      node.setAttribute("val", fnvalue);
+    }
+    // leading
+    if (document.getElementById("leadingcontrol").checked)
+    {
+      var leading = document.getElementById("leading").value;
+      if (leading)
+      {
+        var val = parseFloat(leading);
+        if (!isNaN(val))
+        {
+          lineend(newNode, 1);
+          removeExistingPreambleNodes('leading', newNode);
+          node = editor.createNode("leading", newNode, 0);
+          node.setAttribute("req","leading");
+          node.setAttribute("val",val.toString()+"pt");
+        }
+      }
+    }
+    var linespacing;
+    linespacing = document.getElementById("linespacing").value;
+    if (linespacing != "def")
+    {
+      lineend(newNode, 1);
+      removeExistingPreambleNodes('setspacing', newNode);
       node = editor.createNode("setspacing", newNode, 0);
-  		node.setAttribute("req","setspace");
-  		node.setAttribute("opt", linespacing)
-  	}
+      node.setAttribute("req","setspace");
+      node.setAttribute("opt", linespacing)
+    }
   }
   catch (e)
   {
@@ -792,53 +805,53 @@ function getMisc(docformat)
 {
   if (docformat == null) return;
   var packagecheckboxes = ["showkeys","showidx"];
-	var pos;
-	var len;
-	var list;
-	var node;
-	var val;
+  var pos;
+  var len;
+  var list;
+  var node;
+  var val;
   var i;
-	for (i = 0, len = packagecheckboxes.length; i < len; i++)
-	{
-		var name = packagecheckboxes[i];
-		list = docformat.getElementsByTagName(name);
-		if (list == null || list.length === 0) continue;
-		document.getElementById(name).checked = true;
+  for (i = 0, len = packagecheckboxes.length; i < len; i++)
+  {
+    var name = packagecheckboxes[i];
+    list = docformat.getElementsByTagName(name);
+    if (list == null || list.length === 0) continue;
+    document.getElementById(name).checked = true;
   }
-	var contentlistings = ["toc","lof","lot"];
-	for (i = 0, len = contentlistings.length; i < len; i++)
-	{
-		var name = contentlistings[i];
-		list = docformat.getElementsByTagName(name);
-		if (list == null || list.length === 0) continue;
-		document.getElementById(name).checked = true;
+  var contentlistings = ["toc","lof","lot"];
+  for (i = 0, len = contentlistings.length; i < len; i++)
+  {
+    var name = contentlistings[i];
+    list = docformat.getElementsByTagName(name);
+    if (list == null || list.length === 0) continue;
+    document.getElementById(name).checked = true;
   }
 // endnotes
-	list = docformat.getElementsByTagName("endnotes");
-	if (list != null && list.length > 0)
-	{
-		node = list[0];
-		val = node.getAttribute("val");
-		if (val == "foot" || val == "end")
-			document.getElementById("footnoteorendnote").value = val;
-	}
-	// leading
-	list = docformat.getElementsByTagName("leading");
-	if (list != null && list.length > 0)
-	{
-		node  = list[0];
-		val = node.getAttribute("val");
-		document.getElementById("leadingcontrol").checked = true;
-		document.getElementById("leading").removeAttribute("disabled");
-		document.getElementById("leading").value = parseFloat(val);
-	}
-	list = docformat.getElementsByTagName("setspacing");
-	if (list != null && list.length > 0)
-	{
-		node  = list[0];
-		val = node.getAttribute("opt");
-		document.getElementById("linespacing").value = val;
-	}
+  list = docformat.getElementsByTagName("endnotes");
+  if (list != null && list.length > 0)
+  {
+    node = list[0];
+    val = node.getAttribute("val");
+    if (val == "foot" || val == "end")
+      document.getElementById("footnoteorendnote").value = val;
+  }
+  // leading
+  list = docformat.getElementsByTagName("leading");
+  if (list != null && list.length > 0)
+  {
+    node  = list[0];
+    val = node.getAttribute("val");
+    document.getElementById("leadingcontrol").checked = true;
+    document.getElementById("leading").removeAttribute("disabled");
+    document.getElementById("leading").value = parseFloat(val);
+  }
+  list = docformat.getElementsByTagName("setspacing");
+  if (list != null && list.length > 0)
+  {
+    node  = list[0];
+    val = node.getAttribute("opt");
+    document.getElementById("linespacing").value = val;
+  }
 }
 
 function onAccept()
@@ -861,8 +874,8 @@ function onAccept()
 // should check that the user wants to use geometry package.
   if (newNode)
   {
-	  try {
-		saveMisc(newNode);
+    try {
+    saveMisc(newNode);
     saveEnableFlags(doc, newNode);
     saveCropMarks(newNode);
     savePageLayout(newNode);
@@ -871,10 +884,10 @@ function onAccept()
     saveClassOptionsEtc(newNode);
     saveLanguageSettings(preamble);
 //    saveNumStyles(preamble);
-	}
-	catch(e) {
-		dump("Help! "+e.message+"\n");
-		}
+  }
+  catch(e) {
+    dump("Help! "+e.message+"\n");
+    }
   }
   return true;
 }
@@ -882,7 +895,7 @@ function onAccept()
 function saveEnableFlags(doc, docformatnode)
 {
   var progNode;
-	removeExistingPreambleNodes('texprogram', docformatnode);
+  removeExistingPreambleNodes('texprogram', docformatnode);
   progNode = editor.createNode("texprogram", docformatnode, 0);
   // handle compiler choice, whether to allow formatting changes, etc.
   progNode.setAttribute("prog", compilerInfo.prog);
@@ -918,7 +931,7 @@ function disableMarginNotes()
 
 function unitConversions(unitName)
 {
-	return unitHandler.units[unitName].size;
+  return unitHandler.units[unitName].size;
 }
 
 function convert(invalue, inunit, outunit)
@@ -1003,9 +1016,16 @@ function changefinishpageSize(menu)
 // Page layout stuff
 function changePageDim(textbox)
 {
+  var landscape = isLandscape();
   var value = unitHandler.getValueAs(Number(textbox.value),"mm");
-  if (textbox.id == "tbpageheight") pageheight = value;
-  else pagewidth = value;
+  if (landscape) {
+    if (textbox.id == "tbpageheight") pagewidth = value;
+    else pageheight = value;   
+  }
+  else {
+    if (textbox.id == "tbpageheight") pageheight = value;
+    else pagewidth = value;
+  }
   setPageDimensions();
 }
 
@@ -1013,23 +1033,27 @@ function changePageDim(textbox)
 // and obj.height. If the pagename is 'other', it does not set the heightand width and returns
 // false. Otherwise it returns true.
 
-var stdPageDimensions = {   letter: {w: 215.9, h: 279.4},	a4paper: {w: 210, h: 297},   screen: {w: 225, h: 180},  a0paper: {w: 841, h: 1189},
-	a1paper: {w: 594, h: 841},     a2paper: {w: 420, h: 594},         a3paper: {w: 297, h: 420}, 	a5paper: {w: 148, h: 210},      a6paper: {w: 105, h: 148},
-	b0paper: {w: 1000, h: 1414},   b1paper: {w: 707, h: 1000},     	  b2paper: {w: 500, h: 707},   b3paper: {w: 353, h: 500},      b4paper: {w: 250, h: 353},
-	b5paper: {w: 176, h: 250},     b6paper: {w: 125, h: 176},         executivepaper: {w: 184, h: 267},                       legalpaper: {w: 216, h: 356} };
+var stdPageDimensions = {   letter: {w: 215.9, h: 279.4}, a4paper: {w: 210, h: 297},   screen: {w: 225, h: 180},  a0paper: {w: 841, h: 1189},
+  a1paper: {w: 594, h: 841},     a2paper: {w: 420, h: 594},         a3paper: {w: 297, h: 420},  a5paper: {w: 148, h: 210},      a6paper: {w: 105, h: 148},
+  b0paper: {w: 1000, h: 1414},   b1paper: {w: 707, h: 1000},        b2paper: {w: 500, h: 707},   b3paper: {w: 353, h: 500},      b4paper: {w: 250, h: 353},
+  b5paper: {w: 176, h: 250},     b6paper: {w: 125, h: 176},         executivepaper: {w: 184, h: 267},                       legalpaper: {w: 216, h: 356} };
 
 function getPageDimensions( obj)
 {
   if (obj.pagename in stdPageDimensions)
-	{
-		var o = stdPageDimensions[obj.pagename];
-		obj.width = o.w;
-		obj.height = o.h;
-	}
-	else // default to letter
-	{
-    // obj.width = 215.9;
-    // obj.height = 279.4;
+  {
+    var o = stdPageDimensions[obj.pagename];
+    if (!isLandscape()) {    
+      obj.width = o.w;
+      obj.height = o.h;
+    }
+    else {
+      obj.width = o.h;
+      obj.height = o.w;    
+    }
+  }
+  else // default to letter
+  {
     return false;
   }
   return true;
@@ -1039,7 +1063,7 @@ function setPageDimensions()
 {
   finishpage = finishpage || "letter";
 //  currentUnit = currentUnit || "in";
-  landscape =  landscape || false;
+  landscape =  isLandscape();
   var obj = new Object();
   obj.pagename = finishpage;
 
@@ -1051,11 +1075,6 @@ function setPageDimensions()
   {
     pagewidth = obj.width;
     pageheight = obj.height;
-  }
-  if (landscape) {
-    var temp = pageheight;
-    pageheight = pagewidth;
-    pagewidth = temp;
   }
   if (unitHandler.currentUnit != "mm") {
     pagewidth = unitHandler.getValueOf(pagewidth, "mm");
@@ -1143,7 +1162,7 @@ function setPaperDimensions()
     paperwidth = obj.width;
     paperheight = obj.height;
   }
-  if (landscape) {
+  if (isLandscape()) {
     var temp = pageheight;
     paperheight = paperwidth;
     paperwidth = temp;
@@ -1174,7 +1193,7 @@ function unitRound( size )
     case "pt" : places = 10;
       break;
     case "in" : places = 100;
-      break;
+      break; 
     default   : places = 100;
   }
   return Math.round(size*places)/places;
@@ -1183,16 +1202,9 @@ function unitRound( size )
 function onWindowSizeReset(initial)
 {
   var twomargins = 60; //20 pixels per margin for the layout page
-  //var oldscale = scale;
   var width = 1.8*document.getElementById("gb.dimension").boxObject.width;
-//  if (!initial) {
-//    var winwidth = document.getElementById("docformat.dialog").boxObject.width-20;
-//    if (winwidth < width) width = winwidth;
-//  }
-//  if (width < 2*twomargins) return;
   scale = width/pagewidth;
-  //if (oldscale != scale)
-    layoutPage("all");
+  layoutPage("all");
 }
 
 function setWidth(id, units, scale)
@@ -1237,7 +1249,7 @@ function setDecimalPlaces()
   var s;
   var u = unitHandler.units[unitHandler.getCurrentUnit()];
   var increment = u.increment;
-	var places = u.places;
+  var places = u.places;
   for (i=0; i<widthElements.length; i++)
   {
     s=widthElements[i];
@@ -1395,10 +1407,10 @@ function switchUnits()
   var newUnit = document.getElementById("docformat.units").selectedItem.value;
   var currentUnit = unitHandler.currentUnit;
   if (newUnit !== unitHandler.currentUnit)
-	{
-		unitHandler.setCurrentUnit(newUnit);
-	}
-	else return;
+  {
+    unitHandler.setCurrentUnit(newUnit);
+  }
+  else return;
   var factor = convert(1, currentUnit, newUnit);
   pagewidth *= factor;
   pageheight *= factor;
@@ -1435,13 +1447,13 @@ function cropmarkRequest(checkbox)
   }
 }
 
-function handleBodyMouseClick(event)
+function handleBodyMouseClick(event, isTop)
 {
   var element = event.target;
   // if (event.clientY - element.boxObject.y < element.boxObject.height/2)
-  document.getElementById("tbbodyheight").focus();
+  if (isTop) document.getElementById("tbbodywidth").focus();
+  else document.getElementById("tbbodyheight").focus();
   // else
-  //   document.getElementById("tbbodyheight").focus();
 }
 
 // since the onkeypress event gets called *before* the value of a text box is updated,
@@ -1596,7 +1608,7 @@ function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
 {
   if (fontname && fontname.length>0) {
     var options;
-		removeExistingPreambleNodes(menuId, fontNode);
+    removeExistingPreambleNodes(menuId, fontNode);
     var node = editor.createNode(menuId, fontNode, nodecounter++);
     if (/{/.test(fontname))
     { // fontname in this case is something like "[options]{packagename} [options2]{package2}
@@ -2164,13 +2176,13 @@ function switchSectionTypeImp(from, to, settingSecRedefOk)
 //       sec = sectitleformat[from];
 //       sec.enabled = enabled;
 //       if (sec.enabled)
-// 			{
-// 			  document.getElementById("secredefok").removeAttribute("disabled");
-// 			}
-// 			else
-// 			{
-// 				document.getElementById("secredefok").setAttribute("disabled", "true");
-// 			}
+//      {
+//        document.getElementById("secredefok").removeAttribute("disabled");
+//      }
+//      else
+//      {
+//        document.getElementById("secredefok").setAttribute("disabled", "true");
+//      }
 //       sec.newPage = document.getElementById("sectionstartnewpage").checked;
 //       sec.sectStyle = document.getElementById("sections.style").value;
 //       sec.align = document.getElementById("sections.align").value;
@@ -2312,7 +2324,7 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
   var sectiondata;
   var bRequiresPackage = true;
   var reqpackageNode;
-	removeExistingPreambleNodes('sectitleformat', docFormatNode);
+  removeExistingPreambleNodes('sectitleformat', docFormatNode);
   switchSectionTypeImp(currentSectionType,null);
   for (var i = 0; i < itemlist.length; i++)
   {
@@ -2349,7 +2361,7 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       stNode.setAttribute('rhindent', sectiondata.rhindent);
       lineend(stNode, 2);
       var i;
-			removeExistingPreambleNodes("titleprototype", stNode);
+      removeExistingPreambleNodes("titleprototype", stNode);
       var proto = editor.createNode('titleprototype', stNode, 0);
       var fragment = sectiondata.proto;
       if (fragment)
@@ -2474,32 +2486,32 @@ function displayTextForSectionHeader(name)
   //   if (name && name.length > 0) secname = name;
   //   else secname = document.getElementById("sections.name").label.toLowerCase();
   //   var basepara;
-  // //	var width;
-	 //  var height;
+  // // var width;
+   //  var height;
   //   basepara = getBaseNodeForIFrame();
   //   var strContents;
   //   if (sectitleformat[secname]) strContents = sectitleformat[secname].proto;
-	 //  if (strContents && strContents.length > 0)
-	 //  {
-	 //    var parser = new DOMParser();
-	 //    var doc = parser.parseFromString(strContents,"application/xhtml+xml");
-	 //    basepara.parentNode.replaceChild(doc.documentElement, basepara);
-		//   basepara = getBaseNodeForIFrame();
-		//   var boxObject=basepara.getBoundingClientRect();
-		//   height = boxObject.bottom - boxObject.top;
+   //  if (strContents && strContents.length > 0)
+   //  {
+   //    var parser = new DOMParser();
+   //    var doc = parser.parseFromString(strContents,"application/xhtml+xml");
+   //    basepara.parentNode.replaceChild(doc.documentElement, basepara);
+    //   basepara = getBaseNodeForIFrame();
+    //   var boxObject=basepara.getBoundingClientRect();
+    //   height = boxObject.bottom - boxObject.top;
   //     document.getElementById("tso_template").setAttribute("selectedIndex","1");
-	 //  }
-	 //  else
-	 //  {
-	 //    height = 20;
+   //  }
+   //  else
+   //  {
+   //    height = 20;
   //     document.getElementById("tso_template").setAttribute("selectedIndex","0");
-  // //		width = 200;
+  // //   width = 200;
   //   }
-	 //  var iframecontainer = document.getElementById("sectiontextareacontainer");
-  // //	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
-  // //	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
-	 //  setStyleAttribute(iframecontainer,"height",Number(height)+"px");
-	 //  setStyleAttribute(iframecontainer,"scale",0.33);
+   //  var iframecontainer = document.getElementById("sectiontextareacontainer");
+  // // setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
+  // // setStyleAttribute(iframecontainer,"width",width+sectionUnit);
+   //  setStyleAttribute(iframecontainer,"height",Number(height)+"px");
+   //  setStyleAttribute(iframecontainer,"scale",0.33);
   // }
   // catch(e) {
   //   dump("displayTextForSectionHeader exception: "+e.message+"\n");
@@ -2512,7 +2524,7 @@ function refresh()
 //  var strContents = sectitleformat[sectitleformat.currentLevel];
 //  var parser = new DOMParser();
 //  var doc = parser.parseFromString(strContents,"application/xhtml+xml");
-//	sectitleformat.destNode.parentNode.replaceChild(doc.documentElement, sectitleformat.destNode);
+//  sectitleformat.destNode.parentNode.replaceChild(doc.documentElement, sectitleformat.destNode);
 //  sectitleformat.destNode = null;
 }
 
@@ -2537,17 +2549,17 @@ function setalign(which)
   // {
   //   sectionparts.setAttribute("pack","center");
   //   document.getElementById("leftalignment").setAttribute("msicollapsed","true");
-		// document.getElementById("leftalignment").setAttribute("width","1px");
+    // document.getElementById("leftalignment").setAttribute("width","1px");
   //   document.getElementById("rightalignment").setAttribute("msicollapsed","true");
-		// document.getElementById("rightalignment").setAttribute("width","1px");
+    // document.getElementById("rightalignment").setAttribute("width","1px");
   //   document.getElementById("notcenteralignment").setAttribute("msicollapsed","true");
   //   element = document.getElementById("sectleftheadingmargin");
   //   otherelement = document.getElementById('sectrightheadingmargin');
   //   //element.setAttribute("role", "spacer");
   //   document.getElementById("sectleftmargin").setAttribute("flex", "1");
   //   document.getElementById("sectleftmargin").setAttribute("width", "40px");
-		// document.getElementById("sectrightmargin").setAttribute("flex", "1");
-		// document.getElementById("sectrightmargin").setAttribute("width", "40px");
+    // document.getElementById("sectrightmargin").setAttribute("flex", "1");
+    // document.getElementById("sectrightmargin").setAttribute("width", "40px");
   // }
   // else
   // {
@@ -2556,34 +2568,34 @@ function setalign(which)
   //   {
   //     sectionparts.setAttribute("pack", "start");
   //     var width = document.getElementById("tbsectleftheadingmargin").value;
-		// 	if (Number(width) ==  NaN) width=30;
+    //  if (Number(width) ==  NaN) width=30;
   //     document.getElementById("leftalignment").setAttribute("msicollapsed","false");
   //     document.getElementById("leftalignment").setAttribute("width",width+"px");
   //     document.getElementById("rightalignment").setAttribute("msicollapsed","true");
-		//   document.getElementById("rightalignment").setAttribute("width","1px");
+    //   document.getElementById("rightalignment").setAttribute("width","1px");
   //     element = document.getElementById("sectleftheadingmargin");
   //     otherelement = document.getElementById('sectrightheadingmargin');
-	 //    document.getElementById("sectleftmargin").setAttribute("flex", "0");
-	 //    document.getElementById("sectleftmargin").setAttribute("width", "40px");
-		// 	document.getElementById("sectrightmargin").setAttribute("flex", "1");
-		// 	document.getElementById("sectrightmargin").setAttribute("width", "40px");
+   //    document.getElementById("sectleftmargin").setAttribute("flex", "0");
+   //    document.getElementById("sectleftmargin").setAttribute("width", "40px");
+    //  document.getElementById("sectrightmargin").setAttribute("flex", "1");
+    //  document.getElementById("sectrightmargin").setAttribute("width", "40px");
   //     element.setAttribute("role", "sectionmargin");
   //   }
   //   else if (which == "r")
   //   {
   //     sectionparts.setAttribute("pack", "end");
   //     var rwidth = document.getElementById("tbsectrightheadingmargin").value;
-		// 	if (Number(rwidth) ==  NaN) width=30;
+    //  if (Number(rwidth) ==  NaN) width=30;
   //     document.getElementById("leftalignment").setAttribute("msicollapsed","true");
-		//   document.getElementById("leftalignment").setAttribute("width","1px");
+    //   document.getElementById("leftalignment").setAttribute("width","1px");
   //     document.getElementById("rightalignment").setAttribute("msicollapsed","false");
   //     document.getElementById("rightalignment").setAttribute("width",rwidth+"px");
   //     element = document.getElementById("sectrightheadingmargin");
   //     otherelement = document.getElementById('sectleftheadingmargin');
-		// 	document.getElementById("sectrightmargin").setAttribute("flex","0");
-	 //    document.getElementById("sectleftmargin").setAttribute("flex","1");
-	 //    document.getElementById("sectleftmargin").setAttribute("width", "40px");
-		// 	document.getElementById("sectrightmargin").setAttribute("width", "40px");
+    //  document.getElementById("sectrightmargin").setAttribute("flex","0");
+   //    document.getElementById("sectleftmargin").setAttribute("flex","1");
+   //    document.getElementById("sectleftmargin").setAttribute("width", "40px");
+    //  document.getElementById("sectrightmargin").setAttribute("width", "40px");
   //     element.setAttribute("role", "sectionmargin");
   //   }
   // }
@@ -2653,32 +2665,32 @@ function sectLayout(id, tbid)
 function secSetWidth(box, dim)
 {
   // dim is in the current units -- add conversion to pixels
-	// var theotherbox;
-	// if (box.id == "sectleftheadingmargin")
-	// {
-	//   theotherbox = document.getElementById("sectleftmargin");
-	//   if (dim < 0) {
-	//     box.setAttribute("width", "0");
-	// 		theotherbox.setAttribute("width",40-Number(-dim));
-	// 	}
-	// 	else
-	// 	{
-	// 		box.setAttribute("width",Number(dim));
-	// 		theotherbox.setAttribute("width",40);
-	// 	}
+  // var theotherbox;
+  // if (box.id == "sectleftheadingmargin")
+  // {
+  //   theotherbox = document.getElementById("sectleftmargin");
+  //   if (dim < 0) {
+  //     box.setAttribute("width", "0");
+  //    theotherbox.setAttribute("width",40-Number(-dim));
+  //  }
+  //  else
+  //  {
+  //    box.setAttribute("width",Number(dim));
+  //    theotherbox.setAttribute("width",40);
+  //  }
  //  }
-	// else
-	// {
-	//   theotherbox = document.getElementById("sectrightmargin");
-	//   if (dim < 0) {
-	//     box.setAttribute("width", "0");
-	// 		theotherbox.setAttribute("width",40-Number(-dim));
-	// 	}
-	// 	else
-	// 	{
-	// 		box.setAttribute("width",Number(dim));
-	// 		theotherbox.setAttribute("width",40);
-	// 	}
+  // else
+  // {
+  //   theotherbox = document.getElementById("sectrightmargin");
+  //   if (dim < 0) {
+  //     box.setAttribute("width", "0");
+  //    theotherbox.setAttribute("width",40-Number(-dim));
+  //  }
+  //  else
+  //  {
+  //    box.setAttribute("width",Number(dim));
+  //    theotherbox.setAttribute("width",40);
+  //  }
  //  }
 }
 
@@ -2724,8 +2736,8 @@ function secSetWidth(box, dim)
 //   nextbox.setAttribute("role","vspace");
 //   nextbox.hidden=false;
 //   nextbox.setAttribute("style","height:6px;background-color:silver;");
-// 	window.openDialog("chrome://prince/content/vspaceforsection.xul",
-// 	  "vspaceforsection", "resizable=yes, chrome,close,titlebar,alwaysRaised",nextbox, secUnitHandler.currentUnit);
+//  window.openDialog("chrome://prince/content/vspaceforsection.xul",
+//    "vspaceforsection", "resizable=yes, chrome,close,titlebar,alwaysRaised",nextbox, secUnitHandler.currentUnit);
 // }
 
 // function removeruleorspace()
@@ -2857,9 +2869,9 @@ function deleteOTFontsFromMenu(menuID)
 
 function saveClassOptionsEtc(docformatnode)
 {
-	var optionNode;
+  var optionNode;
   var i;
-	var doc = editor.document;
+  var doc = editor.document;
   var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
   if (!documentclass) {
     throw("No document class in document");
@@ -2868,67 +2880,67 @@ function saveClassOptionsEtc(docformatnode)
   if (!preamble) {
     throw("No preamble in document");
   }
-	removeExistingPreambleNodes("colist", doc);
+  removeExistingPreambleNodes("colist", doc);
   var optionNode;
   // convention: default menuitems have a def attribute
   var optionnames = ["pgorient", "papersize", "sides", "qual", "columns", "titlepage", "textsize", "eqnnopos", "eqnpos", "bibstyle"];
   var widget;
-	var name;
+  var name;
   for (var i = 0, len = optionnames.length; i < len; i++)
-	{
-	  name = optionnames[i];
-	  widget = document.getElementById(name).selectedItem;
-	  if (!widget.hasAttribute("def"))
-		{
-			if (optionNode == null)
-			  optionNode = editor.createNode("colist", docformatnode, 0);
-	    optionNode.setAttribute(name, widget.value);
-		}
+  {
+    name = optionnames[i];
+    widget = document.getElementById(name).selectedItem;
+    if (!widget.hasAttribute("def"))
+    {
+      if (optionNode == null)
+        optionNode = editor.createNode("colist", docformatnode, 0);
+      optionNode.setAttribute(name, widget.value);
+    }
   }
 }
 
 function getLanguageSettings(preambleNode)
 {
-	var babelnodes = preambleNode.getElementsByTagName("babel");
-	var babelnode;
-	var lang1;
-	var lang2;
-	if (babelnodes && babelnodes.length > 0)
-	{
-		babelnode = babelnodes[0];
-		if (babelnode)
-		{
-			lang1 = babelnode.getAttribute("lang1");
-			lang2 = babelnode.getAttribute("lang2");
-			if (lang1) document.getElementById("babelLang1").value = lang1;
-			if (lang2) document.getElementById("babelLang2").value = lang2;
-		}
-	}
+  var babelnodes = preambleNode.getElementsByTagName("babel");
+  var babelnode;
+  var lang1;
+  var lang2;
+  if (babelnodes && babelnodes.length > 0)
+  {
+    babelnode = babelnodes[0];
+    if (babelnode)
+    {
+      lang1 = babelnode.getAttribute("lang1");
+      lang2 = babelnode.getAttribute("lang2");
+      if (lang1) document.getElementById("babelLang1").value = lang1;
+      if (lang2) document.getElementById("babelLang2").value = lang2;
+    }
+  }
 }
 
 function saveLanguageSettings(preambleNode)
 {
-	// clear any old settings if there are any
-	var i, tag, tagclass, hidden, lang1, lang2;
+  // clear any old settings if there are any
+  var i, tag, tagclass, hidden, lang1, lang2;
   var doc = editor.document;
   var texprogram = compilerInfo.prog;
-	var isPolyglossia = (texprogram == "xelatex");
-	var needsResetting = true;
-	lang1 = document.getElementById("babelLang1").value;
-	if (lang1 === "def") lang1=null;
-	lang2 = document.getElementById("babelLang2").value;
-	if (lang2 === "def") lang2=null;
-	if (lang1 || lang2)
-	{
-		var babelnode;
-		removeExistingPreambleNodes("babel", preambleNode);
+  var isPolyglossia = (texprogram == "xelatex");
+  var needsResetting = true;
+  lang1 = document.getElementById("babelLang1").value;
+  if (lang1 === "def") lang1=null;
+  lang2 = document.getElementById("babelLang2").value;
+  if (lang2 === "def") lang2=null;
+  if (lang1 || lang2)
+  {
+    var babelnode;
+    removeExistingPreambleNodes("babel", preambleNode);
     var node = editor.createNode("babel",preambleNode,0);
-		node.setAttribute("pkg", isPolyglossia ? "polyglossia" : "babel");
+    node.setAttribute("pkg", isPolyglossia ? "polyglossia" : "babel");
     if (lang1)
-    	node.setAttribute("lang1", lang1);
+      node.setAttribute("lang1", lang1);
     if (lang2)
-    	node.setAttribute("lang2", lang2);
-	}
+      node.setAttribute("lang2", lang2);
+  }
   addLanguageTagsFromBabelTag(doc);
   addLanguagesToTagDefs(lang1, lang2);
 }
@@ -3004,22 +3016,22 @@ function getClassOptionsEtc()
 
 function setCompiler(compilername)
 {
-	compilerInfo.prog = compilername;
-	if (compilername=="xelatex")
-	{
+  compilerInfo.prog = compilername;
+  if (compilername=="xelatex")
+  {
     initializeFontFamilyList(false);
-	  document.getElementById("xelatex").hidden=false;
-	  document.getElementById("pdflatex").hidden=true;
-	  changeOpenType(true);
-		compilerInfo.useUni = true;
-	}
-	else
-	{
-	  document.getElementById("xelatex").hidden=true;
-	  document.getElementById("pdflatex").hidden=false;
-	  changeOpenType(false);
-	  compilerInfo.useUni = false;
-	}
+    document.getElementById("xelatex").hidden=false;
+    document.getElementById("pdflatex").hidden=true;
+    changeOpenType(true);
+    compilerInfo.useUni = true;
+  }
+  else
+  {
+    document.getElementById("xelatex").hidden=true;
+    document.getElementById("pdflatex").hidden=false;
+    changeOpenType(false);
+    compilerInfo.useUni = false;
+  }
 }
 
 function enableDisableReformat(enable)
@@ -3067,17 +3079,17 @@ function enableDisableFonts(enabled)
 
 function compileInfoChanged(widget)
 {
-	var useXelatex;
-	if (widget.id ==="xelatex")
-	{
-		useXelatex = !(widget.hidden);
-		compilerInfo.prog = "xelatex";
-	}
-	if (widget.id==="pdflatex")
-	{
-		useXelatex = (widget.hidden);
-		compilerInfo.prog = "pdflatex";
-	}
-	compilerInfo.useOTF = useXelatex;
-	compilerInfo.useUni = useXelatex;
+  var useXelatex;
+  if (widget.id ==="xelatex")
+  {
+    useXelatex = !(widget.hidden);
+    compilerInfo.prog = "xelatex";
+  }
+  if (widget.id==="pdflatex")
+  {
+    useXelatex = (widget.hidden);
+    compilerInfo.prog = "pdflatex";
+  }
+  compilerInfo.useOTF = useXelatex;
+  compilerInfo.useUni = useXelatex;
 }
