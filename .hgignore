@@ -39,17 +39,5 @@ glob:*.css.map
 glob:*.scssc
 glob:*.scss
 glob:*/application.ini
-glob:*/dgph
+glob:toolkit/crashreporter/*
 
-
-
-
-
-syntax: glob
-toolkit/crashreporter/google-breakpad/src/client/mac/handler/build/minidump_test.build/Debug/generator_test.build/dgph~
-toolkit/crashreporter/google-breakpad/src/client/mac/handler/build/minidump_test.build/Debug/handler_test.build/dgph~
-toolkit/crashreporter/google-breakpad/src/client/mac/handler/build/minidump_test.build/Debug/unit_test.build/dgph~
-toolkit/crashreporter/google-breakpad/src/tools/mac/crash_report/build/crash_report.build/Debug/crash_report.build/dgph~
-toolkit/crashreporter/google-breakpad/src/tools/mac/dump_syms/build/dump_syms.build/Debug/dump_syms.build/dgph~
-toolkit/crashreporter/google-breakpad/src/tools/mac/symupload/build/symupload.build/Debug/minidump_upload.build/dgph~
-toolkit/crashreporter/google-breakpad/src/tools/mac/symupload/build/symupload.build/Debug/symupload.build/dgph~

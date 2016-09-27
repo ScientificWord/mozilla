@@ -87,6 +87,13 @@ def mframe(debugger, command, result, dict):
     if len(newcommand) > 0:
         debugger.HandleCommand("expression nsString $name; (" + newcommand + "->mContent->mNodeInfo.mRawPtr->mInner.mName->ToString($name), $name)")
 
+def mnodetree(debugger, command, result, dict):
+   """Displays name and attributes for a node and all its descendents"""
+   newcommand = modcommand(debugger, command, result, dict)
+   if len(newcommand) > 0:
+       debugger.HandleCommand("expression nsEditor::DumpNode(" + newcommand + ", 0, 1)")
+
+
 
 
 def init(debugger):
@@ -95,8 +102,11 @@ def init(debugger):
     debugger.HandleCommand("type summary add nsIDOMNode -F libdutils.content.mnode")
     debugger.HandleCommand("command script add -f lldbutils.content.ptag ptag")
     debugger.HandleCommand("command script add -f lldbutils.content.mnode mnode")
+    debugger.HandleCommand("command script add -f lldbutils.content.mnodetree mnodetree")
     debugger.HandleCommand("command script add -f lldbutils.content.mparent mparent")
     debugger.HandleCommand("command script add -f lldbutils.content.mfirstchild mfirstchild")
     debugger.HandleCommand("command script add -f lldbutils.content.mnext mnext")
     debugger.HandleCommand("command script add -f lldbutils.content.mprev mprev")
     debugger.HandleCommand('command script add -f lldbutils.content.mframe mframe')
+
+ 

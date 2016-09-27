@@ -301,6 +301,8 @@ void
 nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */)
 {
   PRInt32 i;
+  nsAutoString tag;
+  nsAutoString tagWithAttributes;
   for (i=0; i<indent; i++)
     printf("  ");
 
@@ -316,15 +318,15 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
   {
     if (element)
     {
-      nsAutoString tag;
       element->GetTagName(tag);
-      printf("<%s>    %x\n", NS_LossyConvertUTF16toASCII(tag).get(), aNode);
+      DumpTagName(element, tagWithAttributes);
+      printf("<%s>    0x%x\n", NS_LossyConvertUTF16toASCII(tagWithAttributes).get(), aNode);
     }
     else
     {
       printf("<document fragment>\n");
     }
-	if (recurse){
+	  if (recurse){
        nsCOMPtr<nsIDOMNodeList> childList;
        aNode->GetChildNodes(getter_AddRefs(childList));
        if (!childList) return; // NS_ERROR_NULL_POINTER;
@@ -334,11 +336,15 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
        aNode->GetFirstChild(getter_AddRefs(child));
        for (i=0; i<numChildren; i++)
        {
-         DumpNode(child, indent+2, true);
+         DumpNode(child, indent+1, true);
          child->GetNextSibling(getter_AddRefs(tmp));
          child = tmp;
        }
-	}
+	  }
+    for (i=0; i<indent; i++) {
+      printf("  ");
+    }
+    printf("</%s>\n", NS_LossyConvertUTF16toASCII(tag).get());
   }
   else if (IsTextNode(aNode))
   {
@@ -347,8 +353,8 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
     textNode->GetData(str);
     nsCAutoString cstr;
     LossyCopyUTF16toASCII(str, cstr);
-    cstr.ReplaceChar('\n', ' ');
-    printf("<textnode> %s     %x\n", cstr.get(), aNode);
+    // cstr.ReplaceChar('\n', ' ');
+    printf("#text \'%s\'     0x%x\n", cstr.get(), aNode);
   }
 }
 //#endif
