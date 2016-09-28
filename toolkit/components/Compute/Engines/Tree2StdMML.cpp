@@ -1074,20 +1074,15 @@ void Tree2StdMML::FixupSmalld(MNODE* dMML_list)
   MNODE* rover = dMML_list;
   while (rover) {
     if (ElementNameIs(rover, "mfrac")) {
-      if ( NodeIsDiffNumerator(rover->first_kid) ) {
+      if ( NodeIsDiffNumerator(rover->first_kid) && NodeIsDiffDenominator(rover->first_kid->next)) {
         PermuteDiffNumerator(rover->first_kid);
+		PermuteDiffDenominator(rover->first_kid->next);
         // If we just had "d" in the numerator, the mfrac should be followed by applyfunc
         //if (!ElementNameIs(rover->first_kid, "mrow")) {
         //  InsertAF(rover);
         //  AddOperatorInfo(rover->next);
         //}
       }
-
-
-      if ( NodeIsDiffDenominator(rover->first_kid->next) )
-        PermuteDiffDenominator(rover->first_kid->next);
-      
-
     }
     rover = rover->next;
   }
@@ -2381,6 +2376,68 @@ bool Tree2StdMML::NodeInTrigargList(MNODE* mml_node, bool& is_op)
 }
 
 
+MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
+{
+  
+  MNODE* rv = MML_list;
+  MNODE* rover = MML_list;
+  while (rover) {
+    bool remove = false;
+    MNODE* the_next = rover->next;
+    MNODE* parent = rover->parent;
+    MNODE* firstkid = rover->first_kid;
+    MNODE* lastkid = firstkid;
+    while (lastkid->next != NULL){
+      lastkid = lastkid->next;
+    }
+    if (ElementNameIs(rover, "mrow")) {
+      if (!HasRequiredChildren(parent)){
+        remove = true; 
+      } else if (firstkid && !(firstkid->next)){ // one item only
+	remove = true;
+      }
+
+
+      // to remove an mrow splice the content into its parent
+      if (remove){
+	
+        MNODE* left_anchor = rover->prev;
+        MNODE* right_anchor = rover->next;
+
+        rover->first_kid = NULL;
+        DelinkTNode(rover);
+        DisposeTNode(rover);
+
+        if (firstkid) {
+          firstkid->parent = parent;
+          if (left_anchor) {
+            left_anchor->next = firstkid;
+            firstkid->prev = left_anchor;
+          } else {
+            parent->first_kid = firstkid;
+          }
+          if (right_anchor) {
+            right_anchor->prev = lastkid;
+            lastkid->next = right_anchor;
+          }
+          the_next = firstkid;
+        } else {
+          if (left_anchor) {
+            left_anchor->next = right_anchor;
+            if (right_anchor)
+              right_anchor->prev = left_anchor;
+          } else {
+            parent->first_kid = right_anchor;
+          }
+          the_next = right_anchor;
+        }
+      }
+    }
+    
+    return NULL;
+  }
+  
+}
 
 MNODE* Tree2StdMML::RemoveRedundantMROWs(MNODE* MML_list)
 {
