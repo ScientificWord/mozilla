@@ -69,7 +69,7 @@ protected:
   MNODE* FinishFixup(MNODE* dMML_tree);
   MNODE* InfixDivideToMFRAC(MNODE * dMML_tree);
   MNODE* RemoveRedundantMROWs(MNODE * MML_list);
-
+  MNODE* RemoveRedundantMROWs2(MNODE * MML_list);
   MNODE* RemoveEmptyTags(MNODE * MML_list);
   MNODE* RemoveMPADDEDs(MNODE * MML_list);
   MNODE* RemoveMatrixDelims(MNODE * MML_list,
