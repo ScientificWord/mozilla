@@ -196,7 +196,8 @@ public:
 //  c is a code point
 //  b is a char*
 
-bool CodepointToUTF8(TeXChar c, char* b) {
+extern bool CodepointToUTF8(TeXChar c, char* b) {
+
   if (c<0x80)
     *b++=c;
   else if (c<0x800)
