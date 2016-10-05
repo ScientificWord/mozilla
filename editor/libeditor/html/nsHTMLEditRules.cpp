@@ -4211,15 +4211,11 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
        mHTMLEditor -> InsertHTML(resString);
        mHTMLEditor -> SetInComplexTransaction(isInComplexTransaction);
        msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
-
-       printf("\nThe New Math\n ");
-       mHTMLEditor->DumpNode(newMath, 0, true);
-       printf("\nCursor idx = %d\n", idx);
-
        if (newMath != NULL){
-
-
-          //DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
+       // printf("\nThe New Math\n ");
+       // if (newMath) nsEditor::DumpNode(newMath, 0, PR_TRUE);
+       // printf("\nCursor idx = %d\n", idx);
+       //    DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
 
           nsCOMPtr<nsIDOMNode> theNode = 0;
           PRInt32 theOffset = 0;

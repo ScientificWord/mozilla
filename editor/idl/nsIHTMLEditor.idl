@@ -672,6 +672,9 @@ interface nsIHTMLEditor : nsISupports
 	boolean setCursorInNewHTML(in nsIDOMElement newElement);
   AString readCursorSetProps();
   AString readCursorClearedProps();
+  void InsertMathNode(in nsIDOMNode insertThisNode, in nsIDOMNode parent,
+                      in long offsetOfNewNode, in boolean bDidInsert,
+                      out nsIDOMNode lastInsertNode);
 
   /**
    * This function will be called from JavaScript when an editor gains
