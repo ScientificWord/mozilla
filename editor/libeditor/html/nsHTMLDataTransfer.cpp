@@ -345,114 +345,114 @@ nsresult nsHTMLEditor::NodeContainsOnlyMn(nsIDOMNode * curNode, nsIDOMNode ** te
   return NS_OK;
 }
 
-nsresult nsHTMLEditor::InsertMathNode( nsIDOMNode * cNode,
-  nsIDOMNode ** ioParent,
-  PRInt32& offsetOfNewNode,
-  PRBool& bDidInsert,
+/**
+ * @brief      InsertMathNode. This function does the checking required for inserting a math node (the complicated case is when inserting math in math.)
+ *             Some of the rules are: text can't be inserted directly; it must be in an mi, mo, or mn. Nothing but text can go in the mi, mo, or mn. Some
+ *             tags have a fixed number of children, so adding a node may require constructing an mrow, etc.
+ *             
+ * @param      insertThisNode   The node to insert
+ * @param      dstNode          The parent          This need not be in the current document. We call this function to fill out a subtree before adding
+ *                                                   it to the document
+ * @param      dstOffset        The offset at which to insert. 
+ * @param      bDidInsert       Did we insert?      Possibly deprecated
+ * @param      lastInsertNode   The last insert node  ""
+ *
+ * @return     { description_of_the_return_value }
+ */
+
+NS_IMETHODIMP 
+nsHTMLEditor::InsertMathNode
+( nsIDOMNode * insertThisNode,
+  nsIDOMNode * dstNode,
+  PRInt32 dstOffset,
+  PRBool bDidInsert,
   nsIDOMNode ** lastInsertNode)
 {
   nsresult res;
-  nsAutoString strTempInput;
+
+  nsAutoString strTempTarget;
   nsAutoString tagName;
-  nsAutoString parentTagName;
-  nsCOMPtr<nsIDOMElement> pNode;
+  nsAutoString nameOfInsert;
+  nsAutoString nameOfTarget;
+  nsAutoString nameOfParent;
+  nsCOMPtr<nsISelection> sel;
   nsCOMPtr<nsIDOMNode> textNode;
-  nsCOMPtr<nsIDOMNode> parentNode(*ioParent);
+  nsCOMPtr<nsIDOMNode> parentNode(dstNode);
   nsCOMPtr<nsIDOMNode> newParentNode = parentNode;
-  nsCOMPtr<nsIDOMNode> insertedNode;
+  nsCOMPtr<nsIDOMNode> nodeToInsert;
+  nsCOMPtr<nsIDOMNode> nodeTarget;
+  nsCOMPtr<nsIDOMNode> nodeParent;
+  nsCOMPtr<nsIDOMNode> nodeToSplit;
+  nsCOMPtr<nsIDOMElement> elementTarget;
+
+  PRBool isMi;
   nsCOMPtr<nsIDOMNode> grandParent;
   nsCOMPtr<nsIDOMCharacterData> characterNode;
   PRUint16 nodeType;
-  PRInt32 savedOffset = offsetOfNewNode;
-  res = cNode->GetNodeType(&nodeType);
+  PRInt32 savedOffset = dstOffset;
+  PRInt32 offsetTarget;
+  PRInt32 offsetParent;
+  PRInt32 newOffset;
+
+  res = insertThisNode->GetNodeType(&nodeType);
   if (nodeType == nsIDOMNode::TEXT_NODE) {
-    // We can't insert plain text, only an mi, an mn, or an mo. This should happen only when pasting, so cNode should
+    // We can't insert plain text, only an mi, an mn, an mo or a mtext. This should happen only when pasting, so insertThisNode should
     // have a parent
-    res = cNode->GetParentNode(getter_AddRefs(insertedNode));
-    if (!insertedNode) return NS_ERROR_INVALID_ARG;
+    res = insertThisNode->GetParentNode(getter_AddRefs(nodeToInsert));
+    if (!nodeToInsert) return NS_ERROR_INVALID_ARG;
   }
-  else insertedNode = cNode;
-  pNode = do_QueryInterface(parentNode);
-  GetTagString(parentNode, tagName);
-  // check for input box
-  if (tagName.EqualsLiteral("#text")) {
-    nsCOMPtr<nsIDOMNode> textParent;
-    res = (*ioParent)->GetParentNode(getter_AddRefs(textParent));
-    GetTagString(textParent, parentTagName);
-    if (parentTagName.EqualsLiteral("mi") || parentTagName.EqualsLiteral("mo")) {
-      res = GetNodeLocation(parentNode, address_of(parentNode), &offsetOfNewNode);
-      if (savedOffset > 0) offsetOfNewNode++;
-      tagName = parentTagName;
-      newParentNode = *ioParent = parentNode;
-      pNode = do_QueryInterface(parentNode);
-    }
+  else {
+    nodeToInsert = insertThisNode;
   }
-  if (tagName.EqualsLiteral("mi"))
+  // nodeToInsert is now the node we are inserting
+  nodeTarget = dstNode;
+  offsetTarget = dstOffset;
+  elementTarget = do_QueryInterface(nodeTarget);
+  res = GetTagString(nodeToInsert, nameOfInsert);
+  res = GetTagString(nodeTarget, nameOfTarget);
+
+  // We need to see if nodeToInsert can go into nodeTarget. Perhaps this should be a function in TagListManager
+
+  if ((isMi = nameOfTarget.EqualsLiteral("mi")) || nameOfTarget.EqualsLiteral("#text") || nameOfTarget.EqualsLiteral("mo") || nameOfTarget.EqualsLiteral("mn") || 
+      nameOfTarget.EqualsLiteral("mtext")) 
   {
-    res = pNode->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
-    if (strTempInput.EqualsLiteral("true"))
-    {
-      // delete the tempinput mi, reset parentNode and offsetOfNewNode, and start again
-      res = GetNodeLocation(parentNode, address_of(grandParent), &offsetOfNewNode);
-      res = DeleteNode(parentNode);
-      parentNode = grandParent;
-      newParentNode = parentNode;
-      GetTagString(parentNode, tagName);
+    if (isMi) {   // check for tempinput
+      res = elementTarget->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempTarget);
+      if (strTempTarget.EqualsLiteral("true"))
+      {
+        // delete the tempinput mi, reset nodeTarget and offsetTarget, and start again
+        res = GetNodeLocation(nodeTarget, address_of(nodeParent), &offsetParent);
+        res = DeleteNode(nodeTarget);
+        nodeTarget = nodeParent;
+        offsetTarget = offsetParent;
+        elementTarget = do_QueryInterface(nodeTarget);
+        res = GetTagString(nodeTarget, nameOfTarget);
+      }
     }
+    nodeParent = nodeTarget;
+    res = GetTagString(nodeParent, nameOfParent);
+    
+    while (nameOfParent.EqualsLiteral("mi") || nameOfParent.EqualsLiteral("#text") || nameOfParent.EqualsLiteral("mo") || nameOfParent.EqualsLiteral("mn") || nameOfParent.EqualsLiteral("mtext")) 
+    {
+      nodeToSplit = nodeParent;
+      nodeToSplit->GetParentNode(getter_AddRefs(nodeParent));
+      res = GetTagString(nodeParent, nameOfParent);
+    }
+    // if nodeParent != nodeTarget, then we need to split some tags to put our new node where it can go
+     
+    if (nodeToSplit != nodeTarget) {
+      res = SplitNodeDeep(nodeToSplit, nodeTarget, offsetTarget, &newOffset, PR_TRUE);
+      // now we know we can insert at nodeParent, newOffset, so we update stuff:
+      nodeTarget = nodeParent;
+      offsetTarget = newOffset;
+      elementTarget = do_QueryInterface(nodeTarget);
+      res = GetTagString(nodeTarget, nameOfTarget);
+    }
+    // For now ignore merging of mrows
+    // 
+    // remember to set out parameters.
   }
-  if (tagName.EqualsLiteral("mn") && (NodeContainsOnlyMn(insertedNode, getter_AddRefs(textNode)),textNode))
-  {
-    // don't put mn into an mn, but put the contents into the mn, which has had its text node split
-    res = InsertNodeAtPoint(textNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
-    offsetOfNewNode++;
-    newParentNode = parentNode;
-    *lastInsertNode = textNode;
-  }
-  else if (!(tagName.EqualsLiteral("math") || tagName.EqualsLiteral("mrow")
-    || tagName.EqualsLiteral("#text")))
-  {
-    // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
-    // res = GetNodeLocation(parentNode, address_of(grandParent), &offsetOfNewNode);
-    nsCOMPtr<nsIDOMElement> mrow;
-    msiUtils::CreateMRow(this, insertedNode, mrow);
-    res = InsertNodeAtPoint(mrow, (nsIDOMNode **)address_of(newParentNode), &offsetOfNewNode, PR_TRUE);
-    // res = MoveNode(parentNode, mrow, savedOffset > 0 ? 0 : 1);
-    parentNode = mrow;
-    newParentNode = mrow;
-    offsetOfNewNode = 0;
-    if (NS_SUCCEEDED(res))
-    {
-      bDidInsert = PR_TRUE;
-      *lastInsertNode = insertedNode;
-    }
-  }
-  else
-  {
-    PRUint16 nodeType1;
-    PRUint16 nodeType2;
-    cNode->GetNodeType(&nodeType1);
-    parentNode->GetNodeType(&nodeType2);
-    if (nodeType1 == 3 && nodeType2 == 3)
-    {
-      nsAutoString textContent;
-      cNode->GetNodeValue(textContent);
-      characterNode = do_QueryInterface(parentNode);
-      newParentNode = parentNode;
-      res = InsertTextIntoTextNodeImpl(textContent, (nsIDOMCharacterData*)characterNode, offsetOfNewNode, PR_TRUE);
-    }
-    else
-    {
-      res = InsertNodeAtPoint(cNode, (nsIDOMNode **)(address_of(newParentNode)), &offsetOfNewNode, PR_TRUE);
-      offsetOfNewNode++;
-    }
-    if (NS_SUCCEEDED(res))
-    {
-      bDidInsert = PR_TRUE;
-      *lastInsertNode = cNode;
-    }
-  }
-  *ioParent = newParentNode;
-  NS_ADDREF(*lastInsertNode);
+  res = InsertNodeAtPoint(nodeToInsert, (nsIDOMNode **)address_of(nodeTarget), &offsetTarget, PR_TRUE);
   return res;
 }
 
@@ -839,7 +839,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 //// #endif
 //
     nsCOMPtr<nsIDOMNode> grandParent = parentNode;
-    PRInt32 parentOffset = offsetOfNewNode;  // use these values if we don't have to go up to the parent
+    PRInt32 parentOffset = offsetOfNewNode;  // use these values if we don't have to go up to the dstNode
     nsCOMPtr<nsIDOMNode> parentBlock, lastInsertNode, insertedContextParent;
 
     if (length > 1)
@@ -849,7 +849,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
       FixMathematics(endNode, PR_FALSE, PR_TRUE);
     } // Loop over the node list and paste the nodes: 
       // However, if we are pasting into mathematics, we need put our entire list into an mrow.
-      // We are not allowed to increase the number of children in the parent if the parent is
+      // We are not allowed to increase the number of children in the dstNode if the dstNode is
       // one of a list of nodes including mfrac, mroot, msqrt, sub, sup, subsup, etc. and we cannot
       // put general math into nodes such as mo, mi, etc.
     if (nsHTMLEditUtils::IsMath(parentNode)) {
@@ -867,7 +867,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         res = MoveNode(parentNode, mrow, 0);
 
       }
-      res = InsertMathNode( mrow, (nsIDOMNode **)address_of(grandParent), parentOffset, bDidInsert, getter_AddRefs(lastInsertNode));
+      res = InsertMathNode( mrow, grandParent, parentOffset, bDidInsert, getter_AddRefs(lastInsertNode));
       parentNode = mrow;
       if (offsetOfNewNode > 0) offsetOfNewNode = 1;
       else offsetOfNewNode = 0;
@@ -931,7 +931,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
           if (nsHTMLEditUtils::IsListItem(child, mtagListManager) || nsHTMLEditUtils::IsList(child, mtagListManager))
           {
             // check if we are pasting into empty list item. If so
-            // delete it and paste into parent list instead.
+            // delete it and paste into dstNode list instead.
             if (nsHTMLEditUtils::IsListItem(parentNode, mtagListManager))
             {
               PRBool isEmpty;
@@ -1083,7 +1083,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
               dom3tempnode->GetTextContent(s);
               NS_ADDREF(cNode.get());
               res = InsertMathNode( cNode,
-                (nsIDOMNode **)address_of(parentNode),
+                 parentNode,
                 offsetOfNewNode,
                 bDidInsert,
                 getter_AddRefs(lastInsertNode));
@@ -1093,7 +1093,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
           else
           {
             res = InsertMathNode( curNode,
-              (nsIDOMNode **)address_of(parentNode),
+              parentNode,
               offsetOfNewNode,
               bDidInsert,
               getter_AddRefs(lastInsertNode));
@@ -1902,8 +1902,6 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   {
     nsCOMPtr<nsIDOMNode> para;
     return CreateDefaultParagraph(splitNode, splitpointOffset, PR_TRUE, getter_AddRefs(para));
-    // nsCOMPtr<nsIDOMNode> brNode;
-    // return InsertBR(address_of(brNode));  // only inserts a br node
   }
   else
   // and if we are in verbatim, put in a newline rather than split
@@ -3957,34 +3955,6 @@ NS_IMETHODIMP nsHTMLEditor::CopySelectionAsImage(PRBool* _retval)
                                 sizeof(nsISupports*));
     NS_ENSURE_SUCCESS(rv, rv);
   }
-
-//rwa12-19-12  Removing the WMF code, as I can't get it to work. The automatic conversion produced by the clipboard
-//rwa12-19-12    from EMF to WMF is certainly no worse than anything I was able to do, and it seems better not to
-//rwa12-19-12    do the extra work, or to advertise a WMF format explicitly.
-//rwa12-19-12   //Put an old-fashioned metafile image on clipboard
-//rwa12-19-12   void* oldMetafile;
-//rwa12-19-12   //enhMetafile is actually a Windows handle (HENHMETAFILE), so it doesn't understand add_ref. Just pass the pointer to fill in.
-//rwa12-19-12   res = presShell->RenderSelectionToNativeMetafile(selection, &oldMetafile, PR_TRUE);
-//rwa12-19-12   if (NS_SUCCEEDED(res))
-//rwa12-19-12   {
-//rwa12-19-12     //Wrap it in nsISupportsVoid
-//rwa12-19-12     nsCOMPtr<nsISupportsVoid>
-//rwa12-19-12       wmfPtr(do_CreateInstance(NS_SUPPORTS_VOID_CONTRACTID, &rv));
-//rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
-//rwa12-19-12     rv = wmfPtr->SetData(oldMetafile);
-//rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
-//rwa12-19-12     //Then wrap it in nsISupportsInterfacePointer
-//rwa12-19-12     nsCOMPtr<nsISupportsInterfacePointer>
-//rwa12-19-12       dataPtr(do_CreateInstance(NS_SUPPORTS_INTERFACE_POINTER_CONTRACTID, &rv));
-//rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
-//rwa12-19-12     rv = dataPtr->SetData(wmfPtr);
-//rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
-//rwa12-19-12
-//rwa12-19-12     // copy the image data onto the transferable
-//rwa12-19-12     rv = trans->SetTransferData(kWin32MetafilePict, dataPtr,
-//rwa12-19-12                                 sizeof(nsISupports*));
-//rwa12-19-12     NS_ENSURE_SUCCESS(rv, rv);
-//rwa12-19-12   }
 #endif
 
   //then put a JPEG image (actually, this puts a native bitmap image)
@@ -4423,12 +4393,6 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
 
   *outStartOffset = 0;
 
-// #if DEBUG_barry || DEBUG_Barry
-//   printf("outEndNode: ------------\n");
-//   DumpNode(*outEndNode,0,true);
-// #endif
-
-
   // get the infoString contents
   nsAutoString numstr1, numstr2;
   if (!aInfoStr.IsEmpty())
@@ -4457,11 +4421,6 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
       tmp.swap(*outEndNode);
     }
   }
-// #if DEBUG_barry || DEBUG_Barry
-//   printf("outEndNode: ------------\n");
-//   DumpNode(*outEndNode,0,true);
-// #endif
-
   GetLengthOfDOMNode(*outEndNode, (PRUint32&)*outEndOffset);
   return res;
 }
