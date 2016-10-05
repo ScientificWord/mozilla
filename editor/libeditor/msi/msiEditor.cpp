@@ -782,6 +782,14 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
           // if (bIsTempInput) selection->Collapse(elt,0);
           // else 
           // selection->Collapse(mathmlNode, 1); // just after left fence
+          //         }
+          if (bCollapsed) {
+            nsCOMPtr<nsIDOMNode> child;
+            mathmlElement->GetFirstChild(getter_AddRefs(child));
+            if (child) child->GetNextSibling(getter_AddRefs(child));
+            if (child) child->GetFirstChild(getter_AddRefs(child));
+            selection->Collapse(child,0);
+          }
         }
         EndTransaction();
       }
