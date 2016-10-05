@@ -768,19 +768,20 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
         res = msiUtils::CreateMRowFence(this, nsnull, bCollapsed, open, close, PR_TRUE, flags, attrFlags, mathmlElement);
         if (NS_SUCCEEDED(res) && mathmlElement) {
           mathmlNode = do_QueryInterface(mathmlElement);
-          res = InsertMathNode(mathmlNode, (nsIDOMNode **)address_of(startNode), startOffset, bInserted, getter_AddRefs(newNode));
-          res = mathmlElement->GetFirstChild(getter_AddRefs(elt));  // elt is left fence
-          res = elt->GetNextSibling(getter_AddRefs(elt)); // elt is tempinput mi
-          nsCOMPtr<nsIDOMElement> eltelt = do_QueryInterface(elt);
-          eltelt->HasAttribute(NS_LITERAL_STRING("tempinput"), &bIsTempInput);
-          if (bIsTempInput) selection->Collapse(elt,0);
-          else selection->Collapse(mathmlNode, 1); // just after left fence
-        }
-        res = store->GetRange(range);
-        mRangeUpdater.DropRangeItem(store);
-        if (!bCollapsed)
-        {
-          m_msiEditingMan->MoveRangeTo(this, range, mathmlElement, 1, mathnode);
+          res = store->GetRange(range);
+          mRangeUpdater.DropRangeItem(store);
+          if (!bCollapsed)
+          {
+            m_msiEditingMan->MoveRangeTo(this, range, mathmlElement, 1, mathnode);
+          }
+          res = InsertMathNode(mathmlNode, startNode, startOffset, bInserted, getter_AddRefs(newNode));
+          // res = mathmlElement->GetFirstChild(getter_AddRefs(elt));  // elt is left fence
+          // res = elt->GetNextSibling(getter_AddRefs(elt)); // elt is tempinput mi
+          // nsCOMPtr<nsIDOMElement> eltelt = do_QueryInterface(elt);
+          // eltelt->HasAttribute(NS_LITERAL_STRING("tempinput"), &bIsTempInput);
+          // if (bIsTempInput) selection->Collapse(elt,0);
+          // else 
+          // selection->Collapse(mathmlNode, 1); // just after left fence
         }
         EndTransaction();
       }
