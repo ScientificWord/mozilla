@@ -320,11 +320,11 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
     {
       element->GetTagName(tag);
       DumpTagName(element, tagWithAttributes);
-      printf("<%s>    0x%x\n", NS_LossyConvertUTF16toASCII(tagWithAttributes).get(), aNode);
+      printf("<%s>    0x%x\n", NS_LossyConvertUTF16toASCII(tagWithAttributes).get(), (nsIDOMElement*)element);
     }
     else
     {
-      printf("<document fragment>\n");
+      printf("<document fragment>       0x%x\n", (nsIDOMDocumentFragment*)docfrag);
     }
 	  if (recurse){
        nsCOMPtr<nsIDOMNodeList> childList;
