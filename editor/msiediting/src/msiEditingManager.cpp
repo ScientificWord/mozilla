@@ -14,6 +14,7 @@
 #include "nsIHTMLEditor.h"
 #include "nsIDOMRange.h"
 #include "nsIDOMNodeList.h"
+#include "nsIDOM3Node.h"
 #include "nsEditor.h"
 // #include "../../libeditor/text/nsPlaintextEditor.h"
 #include "../../libeditor/base/nsEditor.h"
@@ -180,18 +181,47 @@ nsresult MoveNodeTo(msiEditingManager * aThis, nsIEditor* editor, nsIDOMNode * n
 
 
 
-nsresult msiEditingManager::MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, nsIDOMNode *node, PRUint32 offset, nsIDOMNode *destNode = nsnull)
+nsresult msiEditingManager::MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, nsIDOMNode *dstNode, PRUint32 dstOffset, nsIDOMNode *destNode = nsnull)
 {
   nsCOMPtr<nsIArray> arrayOfNodes;
   nsCOMPtr<nsIDOMNode> currentNode;
   nsCOMPtr<nsIDOMNode> parentNode;
-  nsCOMPtr<nsIDOMNode> topNode = nsnull;
-  nsCOMPtr<nsIDOMNode> tempNode;
   nsCOMPtr<nsIDOMNode> parentElement;
-  nsAutoString name;
-  PRUint16 nodeType;
-  PRUint32 length;
+  nsCOMPtr<nsIDOMNode> startNode;
+  nsCOMPtr<nsIDOMNode> endNode;
+  PRInt32 startOffset;
+  PRInt32 endOffset;
+
+  nsAutoString srcName;
+  nsAutoString dstName;
+  nsAutoString parentName;
+  PRUint16 srcNodeType;
+  PRUint16 dstNodeType;
+  PRUint16 currentNodeType;
+  nsCOMPtr<nsIDOM3Node> srcTextNode;
+  nsCOMPtr<nsIDOM3Node> dstTextNode;
+  nsCOMPtr<nsIDOM3Node> currentTextNode;
+  nsAutoString srcText;
+  nsAutoString dstText;
+  nsAutoString currentText;
+  nsAutoString theText;
+  nsAutoString tempText;
+
+  PRUint32 length, sOffset, eOffset;
+
   nsCOMPtr<nsIHTMLEditor> htmlEditor(do_QueryInterface(editor));
+  // get info on dstNode (the destination)
+  dstNode->GetNodeType(&dstNodeType);
+  dstNode->GetNodeName(dstName);
+  dstTextNode = do_QueryInterface(dstNode);
+  if (dstTextNode)
+    dstTextNode->GetTextContent(dstText);
+  // and range
+  range->GetStartContainer(getter_AddRefs(startNode));
+  range->GetEndContainer(getter_AddRefs(endNode));
+  range->GetStartOffset(&startOffset);
+  range->GetEndOffset(&endOffset);
+
   htmlEditor->NodesInRange(range, getter_AddRefs(arrayOfNodes));
   arrayOfNodes->GetLength(&length);
 
@@ -199,31 +229,54 @@ nsresult msiEditingManager::MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, 
   for (PRInt32 i = (length-1); i>=0; i--)
   {
     currentNode = do_QueryElementAt(arrayOfNodes, i);
-    // put inNode in new parent, outNode
-    tempNode = currentNode;
-    while (tempNode && (tempNode != topNode)) {
-      tempNode->GetParentNode(getter_AddRefs(tempNode));
-    }
-    if (tempNode && (tempNode == topNode)) continue;  // this node has already been included when we walked up the tree with a following node.
-    currentNode->GetNodeType(&nodeType);
+    currentNode->GetNodeType(&currentNodeType);
+    currentNode->GetNodeName(srcName);
+  
+    if (currentNodeType==3) // #text
+    {
+      sOffset = startOffset;
+      eOffset = endOffset;
+      currentTextNode = do_QueryInterface(currentNode);
+      if (currentTextNode)
+        currentTextNode->GetTextContent(currentText);
+      theText = currentText;
 
-    //  jcs -- what is this supposed to do?
-    if (nodeType==3) // Means a #text ?
-      currentNode->GetParentNode(getter_AddRefs(currentNode));
-    currentNode->GetParentNode(getter_AddRefs(parentNode));
-    parentElement = do_QueryInterface(parentNode);
-    if (parentElement) {
-      parentElement->GetNodeName(name);
-      while (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("msubsup") || name.EqualsLiteral("mfrac")
-        || name.EqualsLiteral("mroot")) {
-        currentNode = parentNode;
-        topNode = currentNode;
-        currentNode->GetParentNode(getter_AddRefs(parentNode));
-        parentElement = do_QueryInterface(parentNode);
-        parentElement->GetNodeName(name);
+      if (currentNode == endNode && endOffset > 0) { // there is text at the end of the range to move
+        theText = Substring(theText, 0, endOffset);
+      } else eOffset = 0;
+      if (currentNode == startNode && startOffset < theText.Length()) {
+        theText = Substring(theText, startOffset, theText.Length() - startOffset);
+      } else sOffset = 0;
+      if (eOffset > sOffset) {
+        tempText = Substring(currentText, 0, sOffset) + Substring(currentText, eOffset, currentText.Length()-eOffset);
+        currentTextNode->SetTextContent(tempText);
+      }
+      if (theText.Length() > 0) {
+        if (dstNodeType == 3) {
+          dstTextNode->SetTextContent(Substring(dstText, 0, dstOffset) + theText + Substring(dstText, dstOffset + dstText.Length() - dstOffset));
+        }
+        else {
+          nsCOMPtr<nsIDOMText> textNode;
+          nsCOMPtr<nsIDOMDocument> doc;
+          editor->GetDocument(getter_AddRefs(doc));
+          currentNode->GetParentNode(getter_AddRefs(parentNode));
+          parentNode->GetNodeName(parentName);
+          if (!parentName.Equals(dstName)) {
+            nsCOMPtr<nsIDOMNode> parent;
+            editor->CreateNode(parentName, dstNode, dstOffset, getter_AddRefs(parent));
+            doc->CreateTextNode(theText, getter_AddRefs(textNode));      
+            editor->InsertNode(textNode, parent, 0);
+          }
+          else {
+            doc->CreateTextNode(theText, getter_AddRefs(textNode));      
+            editor->InsertNode(textNode, dstNode, dstOffset);
+          }
+        }
       }
     }
-    MoveNodeTo(this, editor, currentNode, node, offset, destNode);
+    else {
+      MoveNodeTo(this, editor, currentNode, dstNode, dstOffset, destNode);
+    }
   }
   editor->EndTransaction();
   return NS_OK;
@@ -1127,6 +1180,7 @@ msiEditingManager::InsertFence(nsIEditor* editor,
   nsresult res(NS_ERROR_FAILURE);
   //check that we are entirely in one math object
   nsCOMPtr<nsIDOMNode> selStartNode;
+  nsCOMPtr<nsIDOMNode> mathmlNode;
   PRInt32 selStartOffset;
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
@@ -1134,6 +1188,7 @@ msiEditingManager::InsertFence(nsIEditor* editor,
   nsCOMPtr<nsIDOMRange> range;
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
+  nsCOMPtr<nsIHTMLEditor> htmlEditor(do_QueryInterface(editor));
   nsCOMPtr<nsIDOMNode> mathnode;
   res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
   PRBool inMath = (nsnull != mathnode);
@@ -1143,6 +1198,7 @@ msiEditingManager::InsertFence(nsIEditor* editor,
   {
     editor->BeginTransaction();
     PRBool bCollapsed(PR_FALSE);
+    PRBool didInsert(PR_FALSE);
     nsCOMPtr<nsIHTMLEditor> htmlEditor(do_QueryInterface(editor));
     res = selection->GetIsCollapsed(&bCollapsed);
     nsCOMPtr<nsIDOMElement> mathmlElement;
@@ -1153,8 +1209,10 @@ msiEditingManager::InsertFence(nsIEditor* editor,
     {
       MoveRangeTo(editor, range, mathmlElement, 1, selStartNode);
     }
-    if (NS_SUCCEEDED(res) && mathmlElement)
-      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement) {
+      mathmlNode = do_QueryInterface(mathmlElement);
+      res = htmlEditor->InsertMathNode(mathmlNode, node, (PRInt32)offset, didInsert, (nsIDOMNode**)address_of(mathmlNode));
+    }
 //        editor->InsertNode(mathmlElement, node, offset);
     //selection->Collapse(node,offset+1);
     editor->EndTransaction();
