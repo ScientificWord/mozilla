@@ -3914,6 +3914,8 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       }
       return;
     }
+    node = do_QueryInterface(elt);
+
     PRBool isInComplexTransaction;
     ed->GetInComplexTransaction(&isInComplexTransaction);
 // Some special handling when node is in math, and the next character in the math is in an <mo>.
