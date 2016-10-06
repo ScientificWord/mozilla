@@ -779,7 +779,8 @@ msiEditingManager::InsertMath(nsIEditor * editor,
                               PRBool   isDisplay)
 {
   nsresult res(NS_ERROR_FAILURE);
-  nsCOMPtr<nsIDOMNode> mathParent, parent, left, right, mtextParent;
+  nsCOMPtr<nsIDOMNode> mathParent, parent, left, right, mtextParent, tempInput;
+  nsCOMPtr<nsIDOMElement> tempInputEl;
   nsCOMPtr<nsIHTMLEditor> htmlEditor;
   PRInt32 outOffset;
   htmlEditor = do_QueryInterface(editor);
@@ -889,9 +890,18 @@ msiEditingManager::InsertMath(nsIEditor * editor,
               msiUtils::MergeMathTags(mathNode, 0, PR_FALSE, PR_TRUE, editor);
             }
           }
+          mathNode->GetFirstChild(getter_AddRefs(tempInput));
+          if (tempInput) {
+            PRBool hasTemp;
+            tempInputEl = do_QueryInterface(tempInput);
+            tempInputEl->HasAttribute(NS_LITERAL_STRING("tempinput"), &hasTemp);
+            if (hasTemp) {
+              selection->Collapse(tempInput, 0);
+            }
+          }
 
-          if (NS_SUCCEEDED(res))
-            msiUtils::doSetCaretPosition(editor, selection, mathNode);
+          // if (NS_SUCCEEDED(res))
+          //   msiUtils::doSetCaretPosition(editor, selection, mathNode);
         }
       }
     }
