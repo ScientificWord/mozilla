@@ -3611,7 +3611,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
   PRInt32 nInsertPos(-1);
   PRInt32 nMatrixRowLeft(-1), nMatrixRowRight(-1);
   nsCOMPtr<nsIEditor> editor;
-  QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
+  QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));  // ??
 
   //Code here should say something like:
 
@@ -3883,8 +3883,12 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       splitChild = splittable;
       splitOffset = currPos;
     }
-    if (nextParent)
-      currPos = GetIndexOf(nextParent, nextNode);
+    if (nextParent) {
+      if (currPos > 0) currPos = 1;
+      else currPos = 0;
+      currPos += GetIndexOf(nextParent, nextNode);
+
+    }
     prevChild = nextNode;
     nextNode = nextParent;
   }
