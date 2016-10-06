@@ -320,11 +320,11 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
     {
       element->GetTagName(tag);
       DumpTagName(element, tagWithAttributes);
-      printf("<%s>    0x%x\n", NS_LossyConvertUTF16toASCII(tagWithAttributes).get(), (nsIDOMElement*)element);
+      printf("<%s>    0x%x\n", NS_LossyConvertUTF16toASCII(tagWithAttributes).get(), ((nsIDOMElement*)element)-28);
     }
     else
     {
-      printf("<document fragment>       0x%x\n", (nsIDOMDocumentFragment*)docfrag);
+      printf("<document fragment>       0x%x\n", ((nsIDOMDocumentFragment*)docfrag)-28);
     }
 	  if (recurse){
        nsCOMPtr<nsIDOMNodeList> childList;
@@ -354,7 +354,7 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
     nsCAutoString cstr;
     LossyCopyUTF16toASCII(str, cstr);
     // cstr.ReplaceChar('\n', ' ');
-    printf("#text \'%s\'     0x%x\n", cstr.get(), aNode);
+    printf("#text \'%s\'     0x%x\n", cstr.get(), aNode-28);
   }
 }
 //#endif
