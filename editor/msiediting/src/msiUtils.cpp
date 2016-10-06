@@ -2946,22 +2946,22 @@ nsresult msiUtils::CanonicalizeMathSelection(nsIEditor * editor)
   }
   res = ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset);
   res = ed->GetEndNodeAndOffset(sel, getter_AddRefs(endNode), &endOffset);
-  while (nsHTMLEditUtils::IsMath(startNode) && atStartOfNode(startNode, startOffset)) {
-    res = ed->GetNodeLocation(startNode, &parentNode, &offset);
-    if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
-      break;
-    }
-    startNode = parentNode;
-    startOffset = offset;
-  }
-  while (nsHTMLEditUtils::IsMath(endNode) && atEndOfNode(endNode, endOffset)) {
-    res = ed->GetNodeLocation(endNode, &parentNode, &offset);
-    if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
-      break;
-    }
-    endNode = parentNode;
-    endOffset = offset + 1;
-  }
+  // while (nsHTMLEditUtils::IsMath(startNode) && atStartOfNode(startNode, startOffset)) {
+  //   res = ed->GetNodeLocation(startNode, &parentNode, &offset);
+  //   if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
+  //     break;
+  //   }
+  //   startNode = parentNode;
+  //   startOffset = offset;
+  // }
+  // while (nsHTMLEditUtils::IsMath(endNode) && atEndOfNode(endNode, endOffset)) {
+  //   res = ed->GetNodeLocation(endNode, &parentNode, &offset);
+  //   if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
+  //     break;
+  //   }
+  //   endNode = parentNode;
+  //   endOffset = offset + 1;
+  // }
   sel->Collapse(startNode, startOffset);
   sel->Extend(endNode, endOffset);
   return res;
