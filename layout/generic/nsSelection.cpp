@@ -1355,6 +1355,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
 
   offsetused = mDomSelections[index]->FetchFocusOffset();
   weakNodeUsed = mDomSelections[index]->FetchFocusNode();
+  if (!weakNodeUsed) return NS_OK;
   // DumpSelection(mDomSelections[index]);
   nsIFrame *frame;
   nsIFrame *leavingFrame;
