@@ -91,7 +91,7 @@ def mnodetree(debugger, command, result, dict):
    """Displays name and attributes for a node and all its descendents"""
    newcommand = modcommand(debugger, command, result, dict)
    if len(newcommand) > 0:
-       debugger.HandleCommand("expression nsEditor::DumpNode(" + newcommand + ", 0, 1)")
+       debugger.HandleCommand("expression -i 0 -- nsEditor::DumpNode(" + newcommand + ", 0, 1)")
 
 
 
