@@ -383,6 +383,8 @@ nsHTMLEditor::InsertMathNode
   nsCOMPtr<nsIDOMNode> nodeTarget;
   nsCOMPtr<nsIDOMNode> nodeParent;
   nsCOMPtr<nsIDOMNode> nodeToSplit;
+  nsCOMPtr<nsIDOMNode> nodeSplitLeft;
+  nsCOMPtr<nsIDOMNode> nodeSplitRight;
   nsCOMPtr<nsIDOMElement> elementTarget;
 
   PRBool isMi;
@@ -440,11 +442,32 @@ nsHTMLEditor::InsertMathNode
     }
     // if nodeParent != nodeTarget, then we need to split some tags to put our new node where it can go
      
-    if (nodeToSplit != nodeTarget) {
-      res = SplitNodeDeep(nodeToSplit, nodeTarget, offsetTarget, &newOffset, PR_TRUE);
+    if (nodeToSplit && (nodeToSplit != nodeTarget)) {
+      res = SplitNodeDeep(nodeToSplit, nodeTarget, offsetTarget, &newOffset, PR_TRUE, address_of(nodeSplitLeft), address_of(nodeSplitRight));
       // now we know we can insert at nodeParent, newOffset, so we update stuff:
       nodeTarget = nodeParent;
       offsetTarget = newOffset;
+      // Check to see if we need to put in mrow to keep the number of children of nodeTarget the same; check by name
+      nsAutoString name;
+      nsCOMPtr<nsIDOMElement> mrow;
+      PRInt32 offs = 0;
+      GetTagString(nodeTarget, name);
+      if ((name.EqualsLiteral("mfrac") || name.EqualsLiteral("mover") || name.EqualsLiteral("mprescripts") || name.EqualsLiteral("mroot")
+       || name.EqualsLiteral("msqrt") || name.EqualsLiteral("msub") || name.EqualsLiteral("msubsup") || name.EqualsLiteral("msup")
+       || name.EqualsLiteral("munder") || name.EqualsLiteral("munderover")) && (nodeSplitLeft || nodeSplitRight)) 
+      {
+        GetTagString(nodeToInsert, name);
+        if (!name.EqualsLiteral("mrow")) { // make an mrow to hold the new stuff 
+          msiUtils::CreateMRow(this, nodeToInsert, mrow);
+          nodeToInsert = mrow;
+        }
+        if (nodeSplitLeft) InsertNodeAtPoint(nodeSplitLeft, (nsIDOMNode **)address_of(nodeToInsert), &offs, PR_TRUE);
+        if (nodeSplitRight) {
+          nsCOMPtr<nsINode> node = do_QueryInterface(nodeToInsert);
+          offs = node->GetChildCount();
+          InsertNodeAtPoint(nodeSplitRight, (nsIDOMNode **)address_of(nodeToInsert), &offs, PR_TRUE);
+        }
+      }
       elementTarget = do_QueryInterface(nodeTarget);
       res = GetTagString(nodeTarget, nameOfTarget);
     }
