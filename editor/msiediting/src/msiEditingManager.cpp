@@ -1102,9 +1102,12 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
 //  selection->Collapse(selStartNode, selStartOffset);
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
+  nsCOMPtr<nsIHTMLEditor> htmlEditor(do_QueryInterface(editor));
   nsCOMPtr<nsIDOMNode> mathnode;
+  nsCOMPtr<nsIDOMNode> mathmlNode;
   res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
   PRBool inMath = (nsnull != mathnode);
+  PRBool didInsert = PR_FALSE;
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSqRoot");
   if (editor && selection && node)
   {
@@ -1123,10 +1126,15 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
       else radicand = do_QueryInterface(radNode);
       MoveRangeTo(editor, range, radicand, 0, selStartNode);
     }
-    if (NS_SUCCEEDED(res) && mathmlElement)
-      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
-//        editor->InsertNode(mathmlElement, node, offset);
-    //selection->Collapse(node,offset+1);
+    if (NS_SUCCEEDED(res) && mathmlElement) {
+      mathmlNode = do_QueryInterface(mathmlElement);
+      res = htmlEditor->InsertMathNode(mathmlNode, node, offset, didInsert, (nsIDOMNode**)address_of(mathmlNode));
+    }
+    if (bCollapsed) {
+      nsCOMPtr<nsIDOMNode> child;
+      mathmlNode->GetFirstChild(getter_AddRefs(child));
+      selection->Collapse(child,0);
+    }
     editor->EndTransaction();
   }
   return res;
@@ -1223,8 +1231,6 @@ msiEditingManager::InsertFence(nsIEditor* editor,
       mathmlNode = do_QueryInterface(mathmlElement);
       res = htmlEditor->InsertMathNode(mathmlNode, node, (PRInt32)offset, didInsert, (nsIDOMNode**)address_of(mathmlNode));
     }
-//        editor->InsertNode(mathmlElement, node, offset);
-    //selection->Collapse(node,offset+1);
     editor->EndTransaction();
   }
   return res;
