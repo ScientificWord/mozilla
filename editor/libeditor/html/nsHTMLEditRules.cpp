@@ -3855,6 +3855,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   PRBool done =  PR_FALSE;
   PRBool isEmpty = PR_FALSE;
   PRBool fSeenBR = PR_FALSE;
+  PRBool isInComplexTransaction;
   nsCOMPtr<nsIDOMElement> elt;
   nsCOMPtr<nsIDOMNode> parentNode;
   nsCOMPtr<nsIDOMNode> nextSiblingNode;
@@ -3891,25 +3892,28 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
     if (elt && IsSpecialMath(elt, isEmpty, nodecount, startOffset, ed)) {
       if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
       {
-        done = PR_TRUE;
-        // Insert an input box at node, offset
-        res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_FALSE, PR_TRUE, dummy, inputbox);
-        if (NS_FAILED(res) || !inputbox) return;
-        res = ed->InsertNode(inputbox, elt, startOffset);
-        // Put the cursor in the input box BBM: is there a method for this?
-        res = inputbox->GetFirstChild(getter_AddRefs(node));
-        startNode = node;
-        startOffset = 1;
-        tempnode = inputbox;
-        while (tempnode && (elementCount(elt) > nodecount)) {
-          res = tempnode->GetNextSibling(getter_AddRefs(nextSiblingNode));
-          if (nextSiblingNode) {
-            res = ed->IsEmptyNode(nextSiblingNode, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
-            if (isEmpty) {
-              ed->DeleteNode(nextSiblingNode);
+        ed->GetInComplexTransaction(&isInComplexTransaction);
+        if (!isInComplexTransaction) {
+          done = PR_TRUE;
+          // Insert an input box at node, offset
+          res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_FALSE, PR_TRUE, dummy, inputbox);
+          if (NS_FAILED(res) || !inputbox) return;
+          res = ed->InsertNode(inputbox, elt, startOffset);
+          // Put the cursor in the input box BBM: is there a method for this?
+          res = inputbox->GetFirstChild(getter_AddRefs(node));
+          startNode = node;
+          startOffset = 1;
+          tempnode = inputbox;
+          while (tempnode && (elementCount(elt) > nodecount)) {
+            res = tempnode->GetNextSibling(getter_AddRefs(nextSiblingNode));
+            if (nextSiblingNode) {
+              res = ed->IsEmptyNode(nextSiblingNode, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
+              if (isEmpty) {
+                ed->DeleteNode(nextSiblingNode);
+              }
             }
+            tempnode = nextSiblingNode;
           }
-          tempnode = nextSiblingNode;
         }
       }
       return;
