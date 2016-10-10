@@ -262,8 +262,11 @@ nsresult msiEditingManager::MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, 
           currentNode->GetParentNode(getter_AddRefs(parentNode));
           parentNode->GetNodeName(parentName);
           if (!parentName.Equals(dstName)) {
-            nsCOMPtr<nsIDOMNode> parent;
-            editor->CreateNode(parentName, dstNode, dstOffset, getter_AddRefs(parent));
+            nsCOMPtr<nsIAtom> name = do_GetAtom(parentName);
+            nsCOMPtr<nsIDOMElement> parent;
+            nsCOMPtr<nsIDOMNode> GetParentNode;
+            msiUtils::CreateMathMLElement(editor, name, parent);
+            editor->InsertNode(parent, dstNode, dstOffset);
             doc->CreateTextNode(theText, getter_AddRefs(textNode));      
             editor->InsertNode(textNode, parent, 0);
           }
