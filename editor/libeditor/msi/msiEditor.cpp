@@ -712,6 +712,19 @@ msiEditor::InsertEngineFunction(const nsAString & mathname)
   return res;
 }
 
+
+PRBool IsTempInput(nsIDOMElement * pElement)
+{
+  PRBool fResult = PR_FALSE;
+  nsAutoString name;
+  pElement->GetTagName(name);
+  if ( name.EqualsLiteral("mi")) {
+    pElement->HasAttribute(NS_LITERAL_STRING("tempinput"), &fResult);
+  }
+  return fResult;
+}
+
+
 NS_IMETHODIMP
 msiEditor::InsertFence(const nsAString & open, const nsAString & close)
 {
@@ -785,10 +798,18 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
           //         }
           if (bCollapsed) {
             nsCOMPtr<nsIDOMNode> child;
+            nsCOMPtr<nsIDOMElement> childElem;
             mathmlElement->GetFirstChild(getter_AddRefs(child));
-            if (child) child->GetNextSibling(getter_AddRefs(child));
-            if (child) child->GetFirstChild(getter_AddRefs(child));
-            selection->Collapse(child,0);
+            childElem = do_QueryInterface(child);
+            while (child && !IsTempInput(childElem)) {  // we have to move over any nodes that may have been moved to the beginning of the mrow (to preserve node counts if the parent
+                             // requires it.
+              child->GetNextSibling(getter_AddRefs(child));
+              childElem = do_QueryInterface(child);
+            }
+            if (child) {
+              child->GetFirstChild(getter_AddRefs(child));
+              selection->Collapse(child,0);
+            }
           }
         }
         EndTransaction();
@@ -3461,6 +3482,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
     {
       selection->Collapse(node, offset);
       selection->Extend(originalNode,originalOffset);
+      res = DeleteSelection(nsIEditor::eNone);
       if (action == msiIAutosub::ACTION_SUBSTITUTE)
         InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE);
       else if (action == msiIAutosub::ACTION_EXECUTE)
@@ -3472,9 +3494,6 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
           sr->Eval(data, error);
         }
       }
-//      selection->Collapse(node, offset);
-//      selection->Extend(originalNode, originalOffset);
-//      res = DeleteSelection(nsIEditor::eNone);
     }
     SetInComplexTransaction(complexTxn);
   }
