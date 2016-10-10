@@ -385,6 +385,7 @@ nsHTMLEditor::InsertMathNode
   nsCOMPtr<nsIDOMNode> nodeToSplit;
   nsCOMPtr<nsIDOMNode> nodeSplitLeft;
   nsCOMPtr<nsIDOMNode> nodeSplitRight;
+  nsCOMPtr<nsIDOMNode> cursorNode;
   nsCOMPtr<nsIDOMElement> elementTarget;
 
   PRBool isMi;
@@ -395,6 +396,7 @@ nsHTMLEditor::InsertMathNode
   PRInt32 offsetTarget;
   PRInt32 offsetParent;
   PRInt32 newOffset;
+  PRInt32 cursorOffset;
 
   res = insertThisNode->GetNodeType(&nodeType);
   if (nodeType == nsIDOMNode::TEXT_NODE) {
@@ -407,6 +409,10 @@ nsHTMLEditor::InsertMathNode
     nodeToInsert = insertThisNode;
   }
   // nodeToInsert is now the node we are inserting
+  cursorNode = nodeToInsert;
+  nsCOMPtr<nsINode> node = do_QueryInterface(nodeToInsert);
+  cursorOffset = node->GetChildCount();
+ 
   nodeTarget = dstNode;
   offsetTarget = dstOffset;
   elementTarget = do_QueryInterface(nodeTarget);
@@ -460,22 +466,22 @@ nsHTMLEditor::InsertMathNode
         if (!name.EqualsLiteral("mrow")) { // make an mrow to hold the new stuff 
           msiUtils::CreateMRow(this, nodeToInsert, mrow);
           nodeToInsert = mrow;
+          cursorNode = mrow;
         }
         if (nodeSplitLeft) InsertNodeAtPoint(nodeSplitLeft, (nsIDOMNode **)address_of(nodeToInsert), &offs, PR_TRUE);
+        node = do_QueryInterface(nodeToInsert);
+        cursorOffset = node->GetChildCount();
         if (nodeSplitRight) {
-          nsCOMPtr<nsINode> node = do_QueryInterface(nodeToInsert);
-          offs = node->GetChildCount();
           InsertNodeAtPoint(nodeSplitRight, (nsIDOMNode **)address_of(nodeToInsert), &offs, PR_TRUE);
         }
       }
       elementTarget = do_QueryInterface(nodeTarget);
       res = GetTagString(nodeTarget, nameOfTarget);
     }
-    // For now ignore merging of mrows
-    // 
-    // remember to set out parameters.
   }
   res = InsertNodeAtPoint(nodeToInsert, (nsIDOMNode **)address_of(nodeTarget), &offsetTarget, PR_TRUE);
+  res = GetSelection(getter_AddRefs(sel));
+  sel->Collapse(cursorNode, cursorOffset);
   return res;
 }
 
