@@ -1452,8 +1452,9 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
                                     const nsAString & aroundType)
 {
   nsresult res(NS_ERROR_FAILURE);
-  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFence");
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertDecoration");
   nsCOMPtr<nsIDOMNode> selStartNode;
+  nsCOMPtr<nsIDOMNode> mathmlNode;
   PRInt32 selStartOffset;
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
@@ -1462,9 +1463,11 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
   // selection->Collapse(selStartNode, selStartOffset);
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
+  nsCOMPtr<nsIHTMLEditor> htmlEditor(do_QueryInterface(editor));
   nsCOMPtr<nsIDOMNode> mathnode;
   res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
   PRBool inMath = (nsnull != mathnode);
+  PRBool didInsert = PR_FALSE;
   if (editor && selection && node)
   {
     editor->BeginTransaction();
@@ -1485,10 +1488,10 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
       }
       MoveRangeTo(editor, range, base, 0, selStartNode);
     }
-    if (NS_SUCCEEDED(res) && mathmlElement)
-      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
-        //editor->InsertNode(mathmlElement, node, offset);
-    //selection->Collapse(node,offset+1);
+    if (NS_SUCCEEDED(res) && mathmlElement) {
+      mathmlNode = do_QueryInterface(mathmlElement);
+      res = htmlEditor->InsertMathNode(mathmlNode, node, offset, didInsert, (nsIDOMNode**)address_of(mathmlNode));
+    }
     editor->EndTransaction();
   }
   return res;
