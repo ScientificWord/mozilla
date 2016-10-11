@@ -265,17 +265,17 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
     pTempFrame = GetPrevSib(pTempFrame);
   }
 
-  while (pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != frametype))
+  while (pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != pTempFrame->GetType()))
   {
     pTempFrame = pTempFrame->GetFirstChild(nsnull);
     while (pTempFrame && (pTempFrame->GetNextSibling()))
     {
       pTempFrame = pTempFrame->GetNextSibling();
     }
-    if (pTempFrame)
-    {
-      frametype = pTempFrame->GetType();
-    }
+    // if (pTempFrame)
+    // {
+    //   frametype = pTempFrame->GetType();
+    // }
   }
   if ((pTempFrame) && IsSelectable(pFrame))
   {
