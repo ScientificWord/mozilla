@@ -1441,6 +1441,17 @@ msiEditingManager::InsertScript(nsIEditor * editor,
   return res;
 }
 
+PRBool IsTempInput2(nsIDOMElement * pElement)
+{
+  PRBool fResult = PR_FALSE;
+  nsAutoString name;
+  pElement->GetTagName(name);
+  if ( name.EqualsLiteral("mi")) {
+    pElement->HasAttribute(NS_LITERAL_STRING("tempinput"), &fResult);
+  }
+  return fResult;
+}
+
 NS_IMETHODIMP
 msiEditingManager::InsertDecoration(nsIEditor* editor,
                                     nsISelection * selection,
@@ -1455,6 +1466,9 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertDecoration");
   nsCOMPtr<nsIDOMNode> selStartNode;
   nsCOMPtr<nsIDOMNode> mathmlNode;
+  nsCOMPtr<nsIDOMNode> child;
+  nsCOMPtr<nsIDOMElement> childElem;
+
   PRInt32 selStartOffset;
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
@@ -1491,6 +1505,35 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
     if (NS_SUCCEEDED(res) && mathmlElement) {
       mathmlNode = do_QueryInterface(mathmlElement);
       res = htmlEditor->InsertMathNode(mathmlNode, node, offset, didInsert, (nsIDOMNode**)address_of(mathmlNode));
+      if (bCollapsed) {
+        mathmlElement->GetFirstChild(getter_AddRefs(child));
+        childElem = do_QueryInterface(child);
+        while (child && !IsTempInput2(childElem)) {  // we have to move over any nodes that may have been moved to the beginning of the mrow (to preserve node counts if the parent
+                         // requires it.
+          child->GetNextSibling(getter_AddRefs(child));
+          childElem = do_QueryInterface(child);
+        }
+        if (child) {
+          child->GetFirstChild(getter_AddRefs(child));
+          selection->Collapse(child,0);
+        }
+      }
+      else { // check to see if an input box is over or under
+        mathmlElement->GetFirstChild(getter_AddRefs(child));
+        if (child) child->GetNextSibling(getter_AddRefs(child));
+        if (child)
+          childElem = do_QueryInterface(child);
+        while (child && !IsTempInput2(childElem)) {  // we have to move over any nodes that may have been moved to the beginning of the mrow (to preserve node counts if the parent
+                         // requires it.
+          child->GetNextSibling(getter_AddRefs(child));
+          childElem = do_QueryInterface(child);
+        }
+        if (child) {
+          child->GetFirstChild(getter_AddRefs(child));
+          selection->Collapse(child,0);
+        }
+
+      }
     }
     editor->EndTransaction();
   }
