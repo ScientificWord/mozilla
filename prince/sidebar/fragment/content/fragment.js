@@ -467,13 +467,19 @@ function doMacroKeyCommand(event) {
   if (event.keyCode == KeyEvent.DOM_VK_ESCAPE) {
     msiGetActiveEditorElement().contentWindow.focus();
     var macrofragmentStatusPanel = document.getElementById('macroEntryPanel');
-    if (macrofragmentStatusPanel)
+  if (macrofragmentStatusPanel) {}
       macrofragmentStatusPanel.setAttribute("hidden", "true");
+      focusOnEditor();
   }
 }
 
 function onMacroOrFragmentEntered( aString )
 {
+  var macrofragmentStatusPanel = document.getElementById('macroEntryPanel');
+  if (macrofragmentStatusPanel) {
+    macrofragmentStatusPanel.setAttribute("hidden", "true");
+    focusOnEditor();
+  }
   dump('onMacroOrFragmentEntered: '+aString+'\n');
   var s = getMacro(aString);
   if (s) 
@@ -494,10 +500,6 @@ function onMacroOrFragmentEntered( aString )
       insertFragmentContents( url );
     }
   }
-  var macrofragmentStatusPanel = document.getElementById('macroEntryPanel');
-  if (macrofragmentStatusPanel)
-    macrofragmentStatusPanel.setAttribute("hidden", "true");
-  focusOnEditor();
 }
 
 
