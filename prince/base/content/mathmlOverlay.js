@@ -249,6 +249,7 @@ var msiRoot =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
+    makeMathIfNeeded(editorElement);
     insertroot(editorElement);
   }
 };
@@ -266,6 +267,7 @@ var msiRadical =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
+    makeMathIfNeeded(editorElement);
     insertradical(editorElement);
   }
 };
@@ -662,6 +664,8 @@ var msiSymbol =
 
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
+    var editorElement = msiGetActiveEditorElement(window);
+    makeMathIfNeeded(editorElement);
     insertsymbol( aParams.getStringValue("value") );
   },
 
@@ -702,7 +706,8 @@ var msiMatrix22 =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    insertmatrix(2,2,"",editorElement);
+    makeMathIfNeeded(editorElement);
+    matrix(2,2,"",editorElement);
   }
 };
 
@@ -719,6 +724,7 @@ var msiMatrixLast =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
+    makeMathIfNeeded(editorElement);
     insertmatrix(null,null,"",editorElement);
   }
 };
