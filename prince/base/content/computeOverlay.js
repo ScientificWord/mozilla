@@ -1008,6 +1008,7 @@ function postDialogTimerCallback(editorElement, obj) {
 }
 
 function initEnginePrefs(currEngine) {
+  dump("Init engine prefs");
   initializePrefMappersIfNeeded();
   var prefs = GetPrefs();
   var delimstyle = prefs.getCharPref("swp.user.matrix_delim");
@@ -1018,6 +1019,10 @@ function initEnginePrefs(currEngine) {
   else val = 0;
   var eng = GetCurrentEngine();
   eng.setUserPrefByName("Default_matrix_delims", val);
+  
+  val = prefs.getBoolPref("swp.user.loge");
+  eng.setUserPrefByName("log_is_base_e", val);
+
   // Do we need to set all the other engine settings. This is the only one that I
   // know of that needs translation from strings to integers. BBM
   // imagi
