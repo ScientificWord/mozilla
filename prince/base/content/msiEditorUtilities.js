@@ -3771,16 +3771,18 @@ function createWorkingDirectory(documentfile) {
         }
         if (dir.exists()) {
           // Possibly there is only an orphaned working directory, but first we should chck that we are
-          // not about tdo edit the same file in two different editors.
+          // not about to edit the same file in two different editors.
           if (isPathBeingEdited(doc.path)) {
             AlertWithTitle(GetString('OnlyOneEditorPerFile'), doc.leafname);
             return null;
           }
           var mainfile = dir.clone();
+          var cssdir = dir.clone();
+          cssdir.append('css');
           deletedSentinel = dir.clone();
           deletedSentinel.append('deleted');
           mainfile.append('main' + extension);
-          if (mainfile.exists() && !deletedSentinel.exists()) {
+          if (mainfile.exists() && cssdir.exists() && !deletedSentinel.exists()) {
             var result;
             result = prompts.confirm(null, GetString("useWIP.title"), GetString("useWIP.description"));
             if (!result) {
