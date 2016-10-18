@@ -224,7 +224,7 @@ function OK() {
   var editorElement, changed, theWindow;
   editorElement = msiGetParentEditorElementForDialog(window);
   GetValuesFromDialog();
-  graph.recomputeVCamImage(editorElement);
+  graph.recomputeVCamImage(editorElement, graphnode);
   graph.reviseGraphDOMElement(graphnode, false, editorElement);
   graph.setGraphAttribute("returnvalue", "true");
   //  var editor = msiGetEditor(editorElement);
