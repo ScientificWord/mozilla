@@ -86,6 +86,7 @@ VCamObject.prototype = {
   horizontalAction: null,
   actionSpeed: null,
   animationSpeed: null,
+  wrappedJSObject: this,
 
   setupUI: function() {
     if (!this.initialized) this.init();
