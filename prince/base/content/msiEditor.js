@@ -3177,8 +3177,9 @@ function EditorClick(event) {
       if (graphnode) {
         var obj = graphnode.getElementsByTagName("object")[0];
         if (obj) {
+          if (obj.wrappedJSObject) obj=obj.wrappedJSObject;
           aVCamObjectNum = setCurrentVCamObject(obj);
-          vcamWrapperArray[aVCamObjectNum].setupUI();
+          vcamWrapperArray[aVCamObjectNum].setupUI(obj);
         }
         //        if (obj.wrappedJSObject) obj = obj.wrappedJSObject;  // not necessary here
       } else if (linkNode && (objName == "xref")) {

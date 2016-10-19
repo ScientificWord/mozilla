@@ -71,7 +71,7 @@ function VCamObject(vcamObject) {
     }
     // saveObj(this.obj);
   }
-  if (this.obj) this.init();
+  if (this.obj) this.init(vcamObject);
 }
 
 VCamObject.prototype = {
@@ -88,8 +88,8 @@ VCamObject.prototype = {
   animationSpeed: null,
   wrappedJSObject: this,
 
-  setupUI: function() {
-    if (!this.initialized) this.init();
+  setupUI: function(obj) {
+    if (!this.initialized) this.init(obj);
     if (this.initialized) {
       this.initToolbar();
       document.getElementById("vcamactive").setAttribute("hidden", "false");
@@ -300,7 +300,7 @@ VCamObject.prototype = {
         editor.selection.collapse(this.parentNode, 0);
         editor.selection.extend(this.parentNode, 1);
         editor.checkSelectionStateForAnonymousButtons(editor.selection);
-        this.wrapper.setupUI();
+        this.wrapper.setupUI(this.obj);
       }
     } catch (e) {}
   },
@@ -363,6 +363,7 @@ VCamObject.prototype = {
     } catch (exc) {
       msidump("Got exception in onVCamTreeChange: " + exc + "\n");
     }
+
   },
 
   onVCamDragLeave: function onVCamDragLeave(x, y) {},
