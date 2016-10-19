@@ -1064,19 +1064,21 @@ function msiEditorDocumentObserver(editorElement) {
           }
 
           try {
-            initVCamObjects(editor.document);
-            var elemList = editor.document.getElementsByTagName("definitionlist");
-            var defnList = null;
-            var n = 0;
-            if (elemList && elemList.length)
-              defnList = elemList[0].getElementsByTagName("math");
-            if (defnList)
-              n = defnList.length;
+            if (is_topLevel) {
+              initVCamObjects(editor.document);
+              var elemList = editor.document.getElementsByTagName("definitionlist");
+              var defnList = null;
+              var n = 0;
+              if (elemList && elemList.length)
+                defnList = elemList[0].getElementsByTagName("math");
+              if (defnList)
+                n = defnList.length;
 
-            var defn;
-            for (var ix = 0; ix < n; ++ix) {
-              defn = defnList[ix];
-              doComputeDefine(defn)
+              var defn;
+              for (var ix = 0; ix < n; ++ix) {
+                defn = defnList[ix];
+                doComputeDefine(defn)
+            }
             }
           } catch (e) {
             dump("Problem restoring compute definitions. Exception: " + e + "\n");
