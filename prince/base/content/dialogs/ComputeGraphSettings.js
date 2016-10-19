@@ -223,10 +223,12 @@ function mapPlotID(plotAttribute, plotnum)
 function OK() {
   var editorElement, changed, theWindow;
   editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   GetValuesFromDialog();
   graph.recomputeVCamImage(editorElement, graphnode);
   graph.reviseGraphDOMElement(graphnode, false, editorElement);
   graph.setGraphAttribute("returnvalue", "true");
+  initVCamObjects(editor.document);
   //  var editor = msiGetEditor(editorElement);
 //   changed = true;
 //   if (changed) {
