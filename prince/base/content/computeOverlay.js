@@ -1020,9 +1020,22 @@ function initEnginePrefs(currEngine) {
   var eng = GetCurrentEngine();
   eng.setUserPrefByName("Default_matrix_delims", val);
   
-  val = prefs.getBoolPref("swp.user.loge");
-  eng.setUserPrefByName("log_is_base_e", val);
+    val = prefs.getBoolPref("swp.user.loge");
+    eng.setUserPrefByName("log_is_base_e", val);
 
+    
+    var derivformat = prefs.getCharPref("swp.user.derivformat");
+    val = 0;
+    if (derivformat = "derivformat_d") val = 1;  // d/dx
+    else if (derivformat = "derivformat_D") val = 2;
+    else if (derivformat = "derivformat_primes") val = 3;
+    else if (derivformat = "derivformat_dots") val = 4; 
+    eng.setUserPrefByName("Default_derivative_format", val);
+
+
+    
+
+    
   // Do we need to set all the other engine settings. This is the only one that I
   // know of that needs translation from strings to integers. BBM
   // imagi
