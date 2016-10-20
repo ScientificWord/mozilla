@@ -64,6 +64,7 @@
 #include "msiEditingAtoms.h"
 #include "msiNameSpaceUtils.h"
 #include "../../libeditor/html/nsHTMLEditUtils.h"
+#include "jcsDumpNode.h"
 
 static PRBool initalized = PR_FALSE;
 
@@ -2536,6 +2537,44 @@ msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRB
       res = siblingNode->GetNextSibling(getter_AddRefs(siblingNode));
     }
   }
+}
+
+
+nsresult
+msiUtils::MergeMNTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRBool lookRight, nsIEditor * editor)
+
+// Scan the node, which should be <math>, and look for <ms>s that are adjacent modulo whitespace. Merge the <mn>s.
+
+{
+  nsresult res;
+  PRUint16 nodetype;
+  nsCOMPtr<nsIDOMNode> child;
+  nsCOMPtr<nsIDOMNode> next;
+  
+  nsAutoString nodeName;
+  node->GetFirstChild(getter_AddRefs(child));
+  while (child) {
+     res = child->GetNodeType(&nodetype);
+     if (nodetype = nsIDOMNode::ELEMENT_NODE) {
+        res = child->GetLocalName(nodeName);
+        if (nodeName.EqualsLiteral("mn")) {
+	  res = child->GetNextSibling(getter_AddRefs(next));
+	  if (next != nsnull){
+	     res = next->GetNodeType(&nodetype);
+	     if (nodetype = nsIDOMNode::ELEMENT_NODE) {	  
+	        DumpNode(child, 0, true);
+		DumpNode(next, 0, true);
+	     }
+	  }
+	} else {
+          MergeMNTags(child, 0, PR_FALSE, PR_TRUE, editor);
+	}
+     }
+     res = child->GetNextSibling(getter_AddRefs(next));
+    child = next;
+  } 
+  return NS_OK;
+  
 }
 
 
