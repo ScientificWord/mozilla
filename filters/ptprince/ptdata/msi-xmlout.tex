@@ -1452,6 +1452,15 @@
       \@sverb
 }
 
+\def\out@boxedverbatim#1{%
+  \msi@br\msihmode
+  \msiopentag{boxedverbatim}{<boxedverbatim>}%
+  \msiopentag{bodyText}{<bodyText>}%
+   #1%
+  \msiclosetag{bodyText}{</bodyText>}
+  \msiclosetag{boxedverbatim}{</boxedverbatim>}}%
+
+
 \def\verb@egroup{\msiclosetag{verb}{</verb>}\egroup}
 \def\@sverb#1{%
   \catcode`#1\active

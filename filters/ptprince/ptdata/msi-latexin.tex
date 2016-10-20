@@ -3236,6 +3236,10 @@
      |end[verbatim]%
      |@make@braces@normal%
   ]
+  |gdef|@scan@boxedverbatim#1\end{boxedverbatim}[|out@boxedverbatim[#1]%
+     |end[boxedverbatim]%
+     |@make@braces@normal%
+  ]
   |gdef|@scan@preamble[|@make@braces@other|catcode`|\=12|relax|catcode`|^^M=12|catcode`|^^J=12|relax
      |@@scan@preamble]
   |gdef|@@scan@preamble#1\begin{document}[|out@preamble[#1]%
@@ -3275,6 +3279,26 @@
    \relax\@scan@verbatim}
    
 \def\msi@end@verbatim{}
+
+
+\def\msi@begin@boxedverbatim{%
+   \@make@braces@other
+   \def\par{\char10\relax}
+   \obeylines
+   \obeyspaces
+   \catcode`\\=12
+   \catcode`\%=12
+   \catcode`\#=12
+   \catcode`\$=12
+   \catcode`\^=12
+   \catcode`\~=12
+   \catcode`\_=12
+   \catcode`\&=\active
+   \catcode`\<=\active
+   \catcode`\>=\active
+   \relax\@scan@boxedverbatim}
+   
+\def\msi@end@boxedverbatim{}
 
 
 \@namedef{verbatim*}{\@verbatim\@sxverbatim}
