@@ -4778,7 +4778,6 @@
   \gdef\@idxentC{}%
   \gdef\@idxspecC{}%
   \gdef\@idx@enc{}%
-  \msihmode
   \msi@maptoks{#1}{\@idx@}%
   \ifx\@msi@toks\@empty
   \else 
@@ -4787,6 +4786,11 @@
   \temptoksa={}%
   \ifx\@idxentA\@empty
   \else
+     \ifmmode
+       \string\msipassthru\char`\{%
+     \else
+       \msihmode
+     \fi
      \msitag{<indexitem req="varioref" pri="}\@idxentA\msitag{"}%
      \ifx\@idxspecA\@empty
      \else
@@ -4831,6 +4835,9 @@
         \msitag{<terspec>}\@idxspecC\msitag{</terspec>}%
      \fi
      \msitag{</indexitem>}%
+     \ifmmode 
+       \char`\}%
+     \fi
   \fi
   }%
 
