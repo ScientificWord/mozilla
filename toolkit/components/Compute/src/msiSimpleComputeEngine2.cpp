@@ -840,6 +840,8 @@ NS_IMETHODIMP msiSimpleComputeEngine2::SetUserPrefByName(char const* prefName, P
     rv = SetUserPref(CLPF_Output_Euler_e, value);
   } else if (0 == strcmp("log_is_base_e", prefName)) {
     rv = SetUserPref(CLPF_log_is_base_e, value);
+  }else if (0 == strcmp("Default_derivative_format", prefName)) {
+    rv = SetUserPref(CLPF_Default_derivative_format, value);
   }
 
   return rv;

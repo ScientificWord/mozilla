@@ -365,6 +365,7 @@ public:
                                 nsCOMPtr<nsIDOMNode> & mathParent);
 
   static nsresult MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool pLookLeft, PRBool pLookRight, nsIEditor * editor);
+  static nsresult MergeMNTags(nsIDOMNode * node, PRUint32 offset, PRBool pLookLeft, PRBool pLookRight, nsIEditor * editor);
 
   static nsresult GetTableCell(nsIEditor* editor,
                                nsIDOMNode * node,
