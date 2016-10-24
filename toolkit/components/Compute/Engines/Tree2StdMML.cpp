@@ -211,6 +211,7 @@ MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
 MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
 {
   MNODE* rv = dMML_tree;
+  RemoveRedundantMROWs2(rv);
   FixColonEqual(rv);
   FixDotDotMN(rv);
   RemoveMSTYLEs(rv);
@@ -2386,10 +2387,6 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
     MNODE* the_next = rover->next;
     MNODE* parent = rover->parent;
     MNODE* firstkid = rover->first_kid;
-    MNODE* lastkid = firstkid;
-    while (lastkid->next != NULL){
-      lastkid = lastkid->next;
-    }
     if (ElementNameIs(rover, "mrow")) {
       if (!HasRequiredChildren(parent)){
         remove = true; 
@@ -2400,6 +2397,12 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
 
       // to remove an mrow splice the content into its parent
       if (remove){
+
+	
+        MNODE* lastkid = firstkid;
+        while (lastkid->next != NULL){
+          lastkid = lastkid->next;
+        }
 	
         MNODE* left_anchor = rover->prev;
         MNODE* right_anchor = rover->next;
@@ -2408,8 +2411,13 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
         DelinkTNode(rover);
         DisposeTNode(rover);
 
+	MNODE* k = firstkid;
+	while (k) {
+	  k->parent = parent;
+	  k = k->next;
+	}
         if (firstkid) {
-          firstkid->parent = parent;
+          //firstkid->parent = parent;
           if (left_anchor) {
             left_anchor->next = firstkid;
             firstkid->prev = left_anchor;
@@ -2432,11 +2440,13 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
           the_next = right_anchor;
         }
       }
+    } else {
+      RemoveRedundantMROWs2(rover->first_kid);
     }
+    rover = the_next;
     
-    return NULL;
   }
-  
+  return rv;
 }
 
 MNODE* Tree2StdMML::RemoveRedundantMROWs(MNODE* MML_list)
