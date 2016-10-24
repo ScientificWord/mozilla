@@ -1585,6 +1585,12 @@ char *MuPADWrapper::LIMFUNCtoEstr(SEMANTICS_NODE * limfunc_info,
         }
       } else {                  // lower limit is like "n->0"
         BUCKET_REC *expr_bucket = FindBucketRec(l_bucket->parts, MB_LL_EXPR);
+	if (!expr_bucket){
+	  delete[] lim_exp_str;
+          delete[] var_str;
+          delete[] arg_str;
+	  return NULL;
+	}
 
         if (p_lim_exp) {
           int direction = 0;    // non-directional limit
