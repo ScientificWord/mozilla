@@ -849,7 +849,7 @@ Graph.prototype = {
       }
     }
   },
-  recomputeVCamImage: function (editorElement) {
+  recomputeVCamImage: function (editorElement, graphNode) {
     var filename = this.getGraphAttribute("ImageFile"); // the old name
     var file, match, filetype, newfilename, longnewfilename;
     match = /[a-zA-Z0-9]+\.(xv[cz]$)/.exec(filename);
@@ -878,6 +878,15 @@ Graph.prototype = {
         {
         }
       }
+      var obj = graphNode.getElementsByTagName("object")[0];
+      var parentWindow = editorElement.ownerDocument.defaultView;
+      if (!obj.id) {
+        editor = msiGetEditor(editorElement);
+        editorDoc = editor.document;
+        obj.id = findUnusedId(editorDoc, "plot");
+        obj.setAttribute("id", obj.id); // BBM: unnecessary??
+      }
+      saveObj(obj);
     }
     catch(exc) {msidump("In GraphOverlay.js, recomputeVCamImage(), exception: " + exc + "\n");}
     this.setGraphAttribute("ImageFile", newfilename);
@@ -2062,17 +2071,17 @@ Frame.prototype = {
           {
             msidump("In reviseDOMFrameElement, changing data attribute to [" + vcamUri + "]\n");
             DOMObj.setAttribute( "data", vcamUri );
+            //NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
+      //  the scriptable vcam interface to work!
+            var filetype = graph.getDefaultValue("filetype");
+            msidump("SMR file type is " + filetype + "\n");
+            if (filetype === "xvz") {
+              DOMObj.setAttribute("type", "application/x-mupad-graphics+gzip");
+            } else if (filetype === "xvc") {
+              DOMObj.setAttribute("type", "application/x-mupad-graphics+xml");
+            }
           }
         }
-      }
-//NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
-//  the scriptable vcam interface to work!
-      var filetype = graph.getDefaultValue("filetype");
-      msidump("SMR file type is " + filetype + "\n");
-      if (filetype === "xvz") {
-        DOMObj.setAttribute("type", "application/x-mupad-graphics+gzip");
-      } else if (filetype === "xvc") {
-        DOMObj.setAttribute("type", "application/x-mupad-graphics+xml");
       }
       if (needsWrapfig) {
         editor.setAttribute(DOMFrame, "req", "wrapfig");
@@ -2110,7 +2119,7 @@ function newPlotFromText(currentNode, expression, editorElement, selection) {
     plot.element.Expression = fixedExpr;
 //    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
     graph.computeQuery(plot);
-    graph.recomputeVCamImage(editorElement);
+    graph.recomputeVCamImage(editorElement, currentNode);
     graph.reviseGraphDOMElement(currentNode, false, editorElement);
 //    ensureVCamPreinitForPlot(currentNode, editorElement);
     nonmodalRecreateGraph(graph, currentNode, editorElement);
