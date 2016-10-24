@@ -2071,17 +2071,17 @@ Frame.prototype = {
           {
             msidump("In reviseDOMFrameElement, changing data attribute to [" + vcamUri + "]\n");
             DOMObj.setAttribute( "data", vcamUri );
+            //NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
+      //  the scriptable vcam interface to work!
+            var filetype = graph.getDefaultValue("filetype");
+            msidump("SMR file type is " + filetype + "\n");
+            if (filetype === "xvz") {
+              DOMObj.setAttribute("type", "application/x-mupad-graphics+gzip");
+            } else if (filetype === "xvc") {
+              DOMObj.setAttribute("type", "application/x-mupad-graphics+xml");
+            }
           }
         }
-      }
-//NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
-//  the scriptable vcam interface to work!
-      var filetype = graph.getDefaultValue("filetype");
-      msidump("SMR file type is " + filetype + "\n");
-      if (filetype === "xvz") {
-        DOMObj.setAttribute("type", "application/x-mupad-graphics+gzip");
-      } else if (filetype === "xvc") {
-        DOMObj.setAttribute("type", "application/x-mupad-graphics+xml");
       }
       if (needsWrapfig) {
         editor.setAttribute(DOMFrame, "req", "wrapfig");
