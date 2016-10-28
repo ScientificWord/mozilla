@@ -85,6 +85,7 @@
 #include "msiUtils.h"
 #include "nsIDOM3Node.h"
 #include "nsIDOMSerializer.h"
+#include "nsIDOMParser.h"
 #include "msiISimpleComputeEngine.h"
 #include "msiEditingManager.h"
 #include "jcsDumpNode.h"
@@ -4106,6 +4107,8 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
                                     nsIEditor::EDirection aDir,
                                     nsresult aResult)
 {
+  nsCOMPtr<nsIDOMParser> parser;
+
 //  return NS_OK;
   if (!aSelection) { return NS_ERROR_NULL_POINTER; }
 
@@ -4187,7 +4190,6 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
 
      nsString text = SerializeMathNode(mathNode);
      nsCOMPtr<msiISimpleComputeEngine>  pEngine = GetEngine();
-
      PRUnichar* result;
      if (pEngine) {
        const PRUnichar* inp;
@@ -4204,6 +4206,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
        mHTMLEditor -> SetInComplexTransaction(PR_TRUE);
        nsCOMPtr<nsIDOMNode> parentOfMath;
        nsCOMPtr<nsIDOMNode> dummy;
+       nsCOMPtr<nsIDOMDocument> mathdoc;
 
        mathElement->GetParentNode(getter_AddRefs(parentOfMath));
        // parentOfMath->RemoveChild(mathElement, getter_AddRefs(dummy));
@@ -4213,10 +4216,14 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
        PRInt32 mathOffset;
 
        res = mHTMLEditor->GetStartNodeAndOffset(curSelection, getter_AddRefs(parentOfMath), &mathOffset);
-
-       mHTMLEditor -> InsertHTML(resString);
+       parser = do_CreateInstance("@mozilla.org/xmlextras/domparser;1");
+       NS_ENSURE_STATE(parser);
+       parser->ParseFromString(resString.get(), "text/xml", getter_AddRefs(mathdoc));
+       mathdoc->GetFirstChild(getter_AddRefs(newMath));
+       mHTMLEditor -> InsertNode(newMath, parentOfMath, mathOffset);
+      // mHTMLEditor -> InsertHTML(resString);
        mHTMLEditor -> SetInComplexTransaction(isInComplexTransaction);
-       msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
+       // msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
        if (newMath != NULL){
        // printf("\nThe New Math\n ");
        // if (newMath) nsEditor::DumpNode(newMath, 0, PR_TRUE);
