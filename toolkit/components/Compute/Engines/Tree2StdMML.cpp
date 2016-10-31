@@ -1280,6 +1280,8 @@ bool Tree2StdMML::FunctionHasArg(MNODE* mml_func_node, int& n_arg_nodes, bool& i
   } else if (do_trigargs && FuncTakesTrigArgs(base_node)) {
     n_arg_nodes = CountTrigargNodes(mml_func_node->next);
     return true;
+  } else if (ElementNameIs(arg, "mtable")) {
+    return true;
   }
 
   return rv;
