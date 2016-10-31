@@ -10653,8 +10653,8 @@ function writeLineInPieces(output, currentline) {
     if (index >= 0 && index <= maxLength) {
       firstLine = currentline.s.substr(0, index);
       if (/\S/.test(firstLine)) {
-        output.s += trimend(firstLine.replace('\n', ' ', 'g')) + '\n';          
-      } 
+        output.s += trimend(firstLine.replace('\n', ' ', 'g')) + '\n';
+      }
       firstLine = currentline.s.substr(index + 1);
       currentline.s = trimend(firstLine);
     } else {
@@ -11551,7 +11551,7 @@ function writeLicense(licenseText)
 
 function detectLicenseInText(someText, editor) {
   var regexFixed = /(LICENSE mackichn ([a-z_-]+) [a-zA-Z0-9._= \s]+\s*[a-z0-9_= ]+\"[^"]+\"\s+##\s*([0-9IEJG-]+)\s*##)/;
-  var regexTimed = /(LICENSE mackichn ([a-z_-]+) (.*\n){4}\s*##\s*([0-9IEJG-]+)\s*##)/;
+  var regexTimed = /(LICENSE mackichn ([a-z_-]+) (?:.*\n){4}\s*##\s*([0-9IEJG-]+)\s*##)/;
   var regexSite =  /(HOST .*\sUSE_SERVER)/;
 
 
@@ -11590,7 +11590,7 @@ function detectLicenseInText(someText, editor) {
         fContinue = true;
       }
 #endif
-    }  
+    }
     if (!fContinue) {  // Didn't find fixed license. Look for a site client license
       match = someText.match(regexSite); // returns license with asterisks and license part only
       if (match.length > 1 && match[1].length > 0) {
@@ -11620,22 +11620,22 @@ function detectLicenseInText(someText, editor) {
   }
 }
 
-function readTextOnClipboard() {                                                  
+function readTextOnClipboard() {
   var retval = '';
   var clip = Components.classes["@mozilla.org/widget/clipboard;1"].
-    getService(Components.interfaces.nsIClipboard); 
-  if (!clip) return false; 
+    getService(Components.interfaces.nsIClipboard);
+  if (!clip) return false;
   var trans = Components.classes["@mozilla.org/widget/transferable;1"].
-    createInstance(Components.interfaces.nsITransferable); 
-  if (!trans) return false; 
+    createInstance(Components.interfaces.nsITransferable);
+  if (!trans) return false;
   trans.addDataFlavor("text/unicode");
-  clip.getData(trans,clip.kGlobalClipboard); 
-  var str = new Object(); 
+  clip.getData(trans,clip.kGlobalClipboard);
+  var str = new Object();
   var strLength = new Object();
   try
   {
     trans.getTransferData("text/unicode",str,strLength);
-    if (str) str = str.value.QueryInterface(Components.interfaces.nsISupportsString); 
+    if (str) str = str.value.QueryInterface(Components.interfaces.nsISupportsString);
     if (str) retval = str.data.substring(0,strLength.value / 2);
   }
   catch (e)
@@ -11732,7 +11732,7 @@ function convertToUTFIfNecessary(aFile, inputFileAsString) {
     inputFileAsString = unicodeConverter.ConvertToUnicode(inputFileAsString);
     inputFileAsString + unicodeConverter.Finish();
   } catch(ex) {
-    return aFile; 
+    return aFile;
   }
   writeStringAsFile(inputFileAsString, testfile);
   return testfile;
@@ -11844,4 +11844,4 @@ function copyFileOrDirectory( srcFile, destDir ) {
    }
  }
 }
- 
+
