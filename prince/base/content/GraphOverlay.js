@@ -851,7 +851,7 @@ Graph.prototype = {
   },
   recomputeVCamImage: function (editorElement, graphNode) {
     var filename = this.getGraphAttribute("ImageFile"); // the old name
-    var file, match, filetype, newfilename, longnewfilename;
+    var file, newfile, oldfilename, match, filetype, newfilename, longnewfilename, obj;
     match = /[a-zA-Z0-9]+\.(xv[cz]$)/.exec(filename);
     if (match.length > 0)
     {
@@ -865,20 +865,34 @@ Graph.prototype = {
       GetCurrentEngine().clearEngineStrings();  //clear errors before starting a plot
       // the filename that computeGraph uses is the one in the graph structure
       this.computeGraph(editorElement);
-      // if the new file exists, delete the old one
-      file = Components.classes["@mozilla.org/file/local;1"].
+      obj = graphNode.getElementsByTagName("object")[0];
+
+      // if the new file exists, delete the old 
+      newfile = Components.classes["@mozilla.org/file/local;1"].
                            createInstance(Components.interfaces.nsILocalFile);
-      file.initWithPath( makeRelPathAbsolute(filename, editorElement)) ;
-      if (file.exists())
+      newfile.initWithPath(longnewfilename) ;
+      if (newfile.exists())
       {
-        try {
-          file.remove(false);
-        }
-        catch (e)
+        oldfilename = msiMakeRelativeUrl(obj.data);
+        file = Components.classes["@mozilla.org/file/local;1"].
+                             createInstance(Components.interfaces.nsILocalFile);
+        file.initWithPath( makeRelPathAbsolute(oldfilename, editorElement)) ;
+        if (file.exists())
         {
+          try {
+            file.remove(false);
+          }
+          catch (e)
+          {
+          }
         }
+        newfile.moveTo(null, oldfilename.replace(/plots\//,''));
       }
-      var obj = graphNode.getElementsByTagName("object")[0];
+
+      if (obj.load) {
+        obj.load(oldfilename);
+      }
+
       var parentWindow = editorElement.ownerDocument.defaultView;
       if (!obj.id) {
         editor = msiGetEditor(editorElement);
@@ -888,7 +902,9 @@ Graph.prototype = {
       }
       saveObj(obj);
     }
-    catch(exc) {msidump("In GraphOverlay.js, recomputeVCamImage(), exception: " + exc + "\n");}
+    catch(exc) {
+      msidump("In GraphOverlay.js, recomputeVCamImage(), exception: " + exc + "\n");
+    }
     this.setGraphAttribute("ImageFile", newfilename);
     //  reset ImageFile property to relative path
   },
@@ -1927,9 +1943,9 @@ Frame.prototype = {
         att = attributes[j];
         if (!att) continue;
         switch (att) {
-          case "ImageFile":
-            editor.setAttribute(DOMObj, "data", graph.getValue("ImageFile"));
-            break;
+          // case "ImageFile":
+          //   editor.setAttribute(DOMObj, "data", graph.getValue("ImageFile"));
+          //   break;
           case "HMargin":
             editor.setAttribute(DOMFrame, "sidemargin", this.getFrameAttribute(att));
             break;
@@ -2073,13 +2089,13 @@ Frame.prototype = {
             DOMObj.setAttribute( "data", vcamUri );
             //NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
       //  the scriptable vcam interface to work!
-            var filetype = graph.getDefaultValue("filetype");
-            msidump("SMR file type is " + filetype + "\n");
-            if (filetype === "xvz") {
-              DOMObj.setAttribute("type", "application/x-mupad-graphics+gzip");
-            } else if (filetype === "xvc") {
-              DOMObj.setAttribute("type", "application/x-mupad-graphics+xml");
-            }
+            // var filetype = graph.getDefaultValue("filetype");
+            // msidump("SMR file type is " + filetype + "\n");
+            // if (filetype === "xvz") {
+            //   DOMObj.setAttribute("type", "application/x-mupad-graphics+gzip");
+            // } else if (filetype === "xvc") {
+            //   DOMObj.setAttribute("type", "application/x-mupad-graphics+xml");
+            // }
           }
         }
       }
