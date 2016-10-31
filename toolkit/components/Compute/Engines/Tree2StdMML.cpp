@@ -2400,7 +2400,7 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
 
 	
         MNODE* lastkid = firstkid;
-        while (lastkid->next != NULL){
+        while (lastkid != NULL && lastkid->next != NULL){
           lastkid = lastkid->next;
         }
 	
