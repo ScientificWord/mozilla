@@ -315,7 +315,7 @@ function GetValuesFromDialog(){
     tempFrame = tempFrame[0];
   }
   var f = tempFrame;  //.cloneNode(true);
-  setFrameAttributes(tempFrame, tempFrame.firstChild, editor);  // reuse code in msiFrameOverlay.
+  setFrameAttributes(tempFrame, msiNavigationUtils.getFirstSignificantChild(tempFrame), editor);  // reuse code in msiFrameOverlay.
   frame.extractFrameAttributes(tempFrame);
   var oldpt = plot.attributes["PlotType"];
   var newpt;
