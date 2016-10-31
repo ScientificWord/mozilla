@@ -11551,9 +11551,14 @@ function writeLicense(licenseText)
 
 function detectLicenseInText(someText, editor) {
   var regexFixed = /(LICENSE mackichn ([a-z_-]+) [a-zA-Z0-9._= \s]+\s*[a-z0-9_= ]+\"[^"]+\"\s+##\s*([0-9IEJG-]+)\s*##)/;
+  var regexTimed = /(LICENSE mackichn ([a-z_-]+) (.*\n){4}\s*##\s*([0-9IEJG-]+)\s*##)/;
   var regexSite =  /(HOST .*\sUSE_SERVER)/;
+
+
+
   var product, serial, licenseString;
   var match = someText.match(regexFixed);  // returns license with asterisks, license part only, product, serial number
+  if (!match) match = someText.match(regexTimed);
   var fContinue = false;
   var isSite = false;
   var clipboard;
