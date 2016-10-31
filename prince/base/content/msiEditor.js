@@ -555,6 +555,7 @@ var msiResizeListener = {
         graph.setGraphAttribute("Height", String(newHeightInUnits));
         graph.reviseGraphDOMElement(DOMGraph, false, editorElement);
         vcamObj = frame.getElementsByTagName('object')[0];
+        // BBM: Following is suspect
         t = vcamObj.type;
         d = vcamObj.data;
         vcamObj.type = "";
