@@ -11593,7 +11593,7 @@ function detectLicenseInText(someText, editor) {
     }
     if (!fContinue) {  // Didn't find fixed license. Look for a site client license
       match = someText.match(regexSite); // returns license with asterisks and license part only
-      if (match.length > 1 && match[1].length > 0) {
+      if (match && match.length > 1 && match[1].length > 0) {
         licenseString = match[1];
         fContinue = true;
         isSite = true;
