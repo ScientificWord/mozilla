@@ -1633,12 +1633,15 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
     nsCOMPtr<nsIEditor> ed;
 
     nsPresContext* presContext = frame->PresContext();
-    nsIPresShell *shell = presContext->GetPresShell();
+    if (!presContext) return NS_ERROR_NULL_POINTER;
     nsCOMPtr<nsISupports> container = presContext->GetContainer();
+    if (!container) return NS_ERROR_NULL_POINTER;
     nsCOMPtr<nsIEditorDocShell> editorDocShell(do_QueryInterface(container));
+    if (!editorDocShell) return NS_ERROR_NULL_POINTER;
     editorDocShell->GetEditor(getter_AddRefs(ed));
+    if (!ed) return NS_ERROR_NULL_POINTER;
     nsEditor * editor = static_cast<nsEditor*>((nsIEditor*)ed);
-
+    if (!editor) return NS_ERROR_NULL_POINTER;
     if (pos.mDirection == eDirPrevious)
     {
       editor->BeginningOfDocument();      
