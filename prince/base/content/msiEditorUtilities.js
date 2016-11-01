@@ -593,15 +593,20 @@ function msiGetTableEditor(editorElement) {
 //}
 //
 function msiPageIsEmptyAndUntouched(editorElement) {
-  if (!editorElement)
-    editorElement = msiGetActiveEditorElement();
-  return msiIsDocumentEmpty(editorElement) && !msiIsDocumentModified(editorElement) && !msiIsHTMLSourceChanged(editorElement);
+    if (!editorElement)
+	editorElement = msiGetActiveEditorElement();
+
+    var empty = msiIsDocumentEmpty(editorElement);
+    var unmodified = !msiIsDocumentModified(editorElement);
+    var htmlunchanged = !msiIsHTMLSourceChanged(editorElement);
+    return  empty && unmodified && htmlunchanged ;
 }
 function msiIsWebComposer(theWindow) {
   //  return document.documentElement.id === "editorWindow";
   if (!theWindow)
-    theWindow = window;
-  if (theWindow.document && theWindow.document.documentElement)
+      theWindow = window;
+    dump('\n*** The window = ' + theWindow);
+  if (theWindow && theWindow.document && theWindow.document.documentElement)
     return theWindow.document.documentElement.id === 'prince';
   return false;
 }
