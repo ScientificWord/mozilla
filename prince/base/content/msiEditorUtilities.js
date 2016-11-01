@@ -593,15 +593,20 @@ function msiGetTableEditor(editorElement) {
 //}
 //
 function msiPageIsEmptyAndUntouched(editorElement) {
-  if (!editorElement)
-    editorElement = msiGetActiveEditorElement();
-  return msiIsDocumentEmpty(editorElement) && !msiIsDocumentModified(editorElement) && !msiIsHTMLSourceChanged(editorElement);
+    if (!editorElement)
+	editorElement = msiGetActiveEditorElement();
+
+    var empty = msiIsDocumentEmpty(editorElement);
+    var unmodified = !msiIsDocumentModified(editorElement);
+    var htmlunchanged = !msiIsHTMLSourceChanged(editorElement);
+    return  empty && unmodified && htmlunchanged ;
 }
 function msiIsWebComposer(theWindow) {
   //  return document.documentElement.id === "editorWindow";
   if (!theWindow)
-    theWindow = window;
-  if (theWindow.document && theWindow.document.documentElement)
+      theWindow = window;
+    dump('\n*** The window = ' + theWindow);
+  if (theWindow && theWindow.document && theWindow.document.documentElement)
     return theWindow.document.documentElement.id === 'prince';
   return false;
 }
@@ -11593,7 +11598,7 @@ function detectLicenseInText(someText, editor) {
     }
     if (!fContinue) {  // Didn't find fixed license. Look for a site client license
       match = someText.match(regexSite); // returns license with asterisks and license part only
-      if (match.length > 1 && match[1].length > 0) {
+      if (match && match.length > 1 && match[1].length > 0) {
         licenseString = match[1];
         fContinue = true;
         isSite = true;
