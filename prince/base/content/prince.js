@@ -43,7 +43,6 @@ function princeStartUp()
   msiEditorOnLoad();
 }
 
-// Some temporary functions to test how the program behaves when not licensed
 
 function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "about", "chrome,resizable=yes");
