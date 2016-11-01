@@ -1008,21 +1008,21 @@ function postDialogTimerCallback(editorElement, obj) {
 }
 
 function initEnginePrefs(currEngine) {
-  dump("Init engine prefs");
-  initializePrefMappersIfNeeded();
-  var prefs = GetPrefs();
-  var delimstyle = prefs.getCharPref("swp.user.matrix_delim");
-  var val;
-  if (delimstyle === "matrix_brackets") val = 1;
-  else if (delimstyle === "matrix_parens") val = 2;
-  else if (delimstyle === "matrix_braces") val = 3;
-  else val = 0;
-  var eng = GetCurrentEngine();
-  eng.setUserPrefByName("Default_matrix_delims", val);
+
+    dump("Init engine prefs");
+    initializePrefMappersIfNeeded();
+    var prefs = GetPrefs();
+    var delimstyle = prefs.getCharPref("swp.user.matrix_delim");
+    var val;
+    if (delimstyle === "matrix_brackets") val = 1;
+    else if (delimstyle === "matrix_parens") val = 2;
+    else if (delimstyle === "matrix_braces") val = 3;
+    else val = 0;
+    var eng = GetCurrentEngine();
+    eng.setUserPrefByName("Default_matrix_delims", val);
   
     val = prefs.getBoolPref("swp.user.loge");
     eng.setUserPrefByName("log_is_base_e", val);
-
     
     var derivformat = prefs.getCharPref("swp.user.derivformat");
     val = 0;
@@ -1031,8 +1031,18 @@ function initEnginePrefs(currEngine) {
     else if (derivformat = "derivformat_primes") val = 3;
     else if (derivformat = "derivformat_dots") val = 4; 
     eng.setUserPrefByName("Default_derivative_format", val);
+    
+    val =  prefs.getBoolPref("swp.user.mixednum");
+    eng.setUserPrefByName("Output_Mixed_Numbers", val);
 
+    val = prefs.getBoolPref("swp.user.trigargs");
+    eng.setUserPrefByName("Parens_on_trigargs", val);
 
+    val = prefs.getBoolPref("swp.user.usearc");
+    eng.setUserPrefByName("Output_InvTrigFuncs_1", val);
+
+    val = prefs.getIntPref("swp.user.lowerthreshold");
+    eng.setUserPrefByName("SciNote_lower_thresh", val);
     
 
     
@@ -2757,5 +2767,7 @@ function findmathparent(node) {
   return findtagparent(node, "math");
   // really, should check namespace, too
 }
-FixJS();
+
+// What is this? jcs
+// FixJS();  
 # endif

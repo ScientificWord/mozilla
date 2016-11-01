@@ -301,6 +301,7 @@ function getColorAndUpdatePref(id)
 
 function writeComputePreferences()
 {
+  initializePrefMappersIfNeeded();
   document.getElementById("prefComp").writePreferences(true);
   // the compute preferences have to be sent to the engine as well as saved
   var prefId;
