@@ -241,7 +241,7 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
 MNODE* Tree2StdMML::TreeToCleanupForm(MNODE* dMML_tree)
 {
   TCI_ASSERT( ElementNameIs(dMML_tree, "math") );
-
+  RemoveRedundantMROWs2(dMML_tree);
   RemoveEmptyTags(dMML_tree);
   FixAdjacentMNs(dMML_tree);
   RemoveRedundantMROWs(dMML_tree);
