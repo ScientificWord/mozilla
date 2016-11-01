@@ -840,9 +840,20 @@ NS_IMETHODIMP msiSimpleComputeEngine2::SetUserPrefByName(char const* prefName, P
     rv = SetUserPref(CLPF_Output_Euler_e, value);
   } else if (0 == strcmp("log_is_base_e", prefName)) {
     rv = SetUserPref(CLPF_log_is_base_e, value);
-  }else if (0 == strcmp("Default_derivative_format", prefName)) {
+  } else if (0 == strcmp("Default_derivative_format", prefName)) {
     rv = SetUserPref(CLPF_Default_derivative_format, value);
+  } else if (0 == strcmp("Output_Mixed_Numbers", prefName)) {
+    rv = SetUserPref(CLPF_Output_Mixed_Numbers, value);
+  } else if (0 == strcmp("Parens_on_trigargs", prefName)) {
+    rv = SetUserPref(CLPF_Parens_on_trigargs, value);
+  } else if (0 == strcmp("Output_InvTrigFuncs_1", prefName)) {
+    // For some reason this value is reversed coming in. Correct for it here.
+    rv = SetUserPref(CLPF_Output_InvTrigFuncs_1, (0 == value)?1:0);
+  } else if (0 == strcmp("SciNote_lower_thresh", prefName)) {
+    rv = SetUserPref(CLPF_SciNote_lower_thresh, value);
   }
+
+  
 
   return rv;
 }
