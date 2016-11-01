@@ -11600,6 +11600,9 @@ function detectLicenseInText(someText, editor) {
       }
     }
     if (fContinue) {
+      clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
+                      getService(Components.interfaces.nsIClipboardHelper);
+      clipboard.copyString('');
       prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
       if (prompts.confirm(null, "License detected on the clipboard", 'There is a license for ' + product + ' on the clipboard. Do you want to save this license?\n'
         ))
@@ -11610,9 +11613,6 @@ function detectLicenseInText(someText, editor) {
             editor.mAppUtils.licensedApp(prodnum);
           }, 500);
       }
-      clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
-                      getService(Components.interfaces.nsIClipboardHelper);
-      clipboard.copyString('');
     }
   }
   catch(e) {
