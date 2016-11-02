@@ -78,8 +78,8 @@
       <preference id="pdf.viewer"
                   name="swp.prefPDFPath"
                   type="string"/>
-      <preference id="GraphicsSnapshopRes"
-                  name="swp.graphics.snapshopres"
+      <preference id="GraphicsSnapshotRes"
+                  name="swp.graphics.snapshotres"
                   type="int"/>
       <preference id="defaultGraphicsHSize"
                   name="swp.graphics.hsize"
@@ -1802,7 +1802,7 @@
             </hbox>
           </groupbox>
           <groupbox>
-            <menulist id="plotresolutions" preference="swp.graphics.snapshopres">
+            <menulist id="plotresolutions" preference="swp.graphics.snapshotres">
               <menupopup>
                 <menuitem value="72" label="72"/>
                 <menuitem value="100" label="100"/>
