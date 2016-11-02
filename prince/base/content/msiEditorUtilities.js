@@ -605,7 +605,7 @@ function msiIsWebComposer(theWindow) {
   //  return document.documentElement.id === "editorWindow";
   if (!theWindow)
       theWindow = window;
-    dump('\n*** The window = ' + theWindow);
+    
   if (theWindow && theWindow.document && theWindow.document.documentElement)
     return theWindow.document.documentElement.id === 'prince';
   return false;
