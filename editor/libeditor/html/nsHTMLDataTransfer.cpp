@@ -349,18 +349,18 @@ nsresult nsHTMLEditor::NodeContainsOnlyMn(nsIDOMNode * curNode, nsIDOMNode ** te
  * @brief      InsertMathNode. This function does the checking required for inserting a math node (the complicated case is when inserting math in math.)
  *             Some of the rules are: text can't be inserted directly; it must be in an mi, mo, or mn. Nothing but text can go in the mi, mo, or mn. Some
  *             tags have a fixed number of children, so adding a node may require constructing an mrow, etc.
- *             
+ *
  * @param      insertThisNode   The node to insert
  * @param      dstNode          The parent          This need not be in the current document. We call this function to fill out a subtree before adding
  *                                                   it to the document
- * @param      dstOffset        The offset at which to insert. 
+ * @param      dstOffset        The offset at which to insert.
  * @param      bDidInsert       Did we insert?      Possibly deprecated
  * @param      lastInsertNode   The last insert node  ""
  *
  * @return     { description_of_the_return_value }
  */
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsHTMLEditor::InsertMathNode
 ( nsIDOMNode * insertThisNode,
   nsIDOMNode * dstNode,
@@ -388,7 +388,8 @@ nsHTMLEditor::InsertMathNode
   nsCOMPtr<nsIDOMNode> cursorNode;
   nsCOMPtr<nsIDOMElement> elementTarget;
 
-  PRBool isMi;
+  PRBool isTempInput = PR_FALSE;
+  PRBool isMi = PR_FALSE;
   nsCOMPtr<nsIDOMNode> grandParent;
   nsCOMPtr<nsIDOMCharacterData> characterNode;
   PRUint16 nodeType;
@@ -420,9 +421,19 @@ nsHTMLEditor::InsertMathNode
   if (nameOfTarget.EqualsLiteral("#text")) {
     res = GetNodeLocation(nodeTarget, address_of(nodeTarget), &offsetTarget);
     res = GetTagString(nodeTarget, nameOfTarget);
+    if (nameOfTarget.EqualsLiteral("mi")) {
+      elementTarget = do_QueryInterface(nodeTarget);
+      res = elementTarget->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempTarget);
+      if (strTempTarget.EqualsLiteral("true")) {
+        isTempInput = PR_TRUE;
+      }
+    }
   }
-  elementTarget = do_QueryInterface(nodeTarget);
-
+  if (!isTempInput) {
+    nodeTarget = dstNode;
+    offsetTarget = dstOffset;
+    res = GetTagString(nodeTarget, nameOfTarget);
+  }
   // We need to see if nodeToInsert can go into nodeTarget. Perhaps this should be a function in TagListManager
 
   if ((isMi = nameOfTarget.EqualsLiteral("mi")) || nameOfTarget.EqualsLiteral("#text") || nameOfTarget.EqualsLiteral("mo") || nameOfTarget.EqualsLiteral("mn") ||
@@ -443,15 +454,15 @@ nsHTMLEditor::InsertMathNode
     }
     nodeParent = nodeTarget;
     res = GetTagString(nodeParent, nameOfParent);
-    
-    while (nameOfParent.EqualsLiteral("mi") || nameOfParent.EqualsLiteral("#text") || nameOfParent.EqualsLiteral("mo") || nameOfParent.EqualsLiteral("mn") || nameOfParent.EqualsLiteral("mtext")) 
+
+    while (nameOfParent.EqualsLiteral("mi") || nameOfParent.EqualsLiteral("#text") || nameOfParent.EqualsLiteral("mo") || nameOfParent.EqualsLiteral("mn") || nameOfParent.EqualsLiteral("mtext"))
     {
       nodeToSplit = nodeParent;
       nodeToSplit->GetParentNode(getter_AddRefs(nodeParent));
       res = GetTagString(nodeParent, nameOfParent);
     }
     // if nodeParent != nodeTarget, then we need to split some tags to put our new node where it can go
-     
+
     if (nodeToSplit && (nodeToSplit != nodeTarget)) {
       res = SplitNodeDeep(nodeToSplit, nodeTarget, offsetTarget, &newOffset, PR_TRUE, address_of(nodeSplitLeft), address_of(nodeSplitRight));
       // now we know we can insert at nodeParent, newOffset, so we update stuff:
@@ -464,15 +475,18 @@ nsHTMLEditor::InsertMathNode
       GetTagString(nodeTarget, name);
       if ((name.EqualsLiteral("mfrac") || name.EqualsLiteral("mover") || name.EqualsLiteral("mprescripts") || name.EqualsLiteral("mroot")
        || name.EqualsLiteral("msqrt") || name.EqualsLiteral("msub") || name.EqualsLiteral("msubsup") || name.EqualsLiteral("msup")
-       || name.EqualsLiteral("munder") || name.EqualsLiteral("munderover")) && (nodeSplitLeft || nodeSplitRight)) 
+       || name.EqualsLiteral("munder") || name.EqualsLiteral("munderover")) && (nodeSplitLeft || nodeSplitRight))
       {
         GetTagString(nodeToInsert, name);
-        if (!name.EqualsLiteral("mrow")) { // make an mrow to hold the new stuff 
+        if (!name.EqualsLiteral("mrow")) { // make an mrow to hold the new stuff
           msiUtils::CreateMRow(this, nodeToInsert, mrow);
           nodeToInsert = mrow;
           cursorNode = mrow;
         }
-        if (nodeSplitLeft) InsertNodeAtPoint(nodeSplitLeft, (nsIDOMNode **)address_of(nodeToInsert), &offs, PR_TRUE);
+        if (nodeSplitLeft) {
+          InsertNodeAtPoint(nodeSplitLeft, (nsIDOMNode **)address_of(nodeToInsert), &offs, PR_TRUE);
+          offsetTarget--; // we have moved a direct descendent of nodeTarget
+        }
         node = do_QueryInterface(nodeToInsert);
         cursorOffset = node->GetChildCount();
         if (nodeSplitRight) {
@@ -558,7 +572,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 
 #ifdef DEBUG
   printf("Out of DoContentFilterCallback\n");
-#endif  
+#endif
   NS_ENSURE_SUCCESS(res, res);
   if (!doContinue)
     return NS_OK;
@@ -880,7 +894,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 
       endNode = nodeList[length-1];
       FixMathematics(endNode, PR_FALSE, PR_TRUE);
-    } // Loop over the node list and paste the nodes: 
+    } // Loop over the node list and paste the nodes:
       // However, if we are pasting into mathematics, we need put our entire list into an mrow.
       // We are not allowed to increase the number of children in the dstNode if the dstNode is
       // one of a list of nodes including mfrac, mroot, msqrt, sub, sup, subsup, etc. and we cannot
@@ -1048,7 +1062,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             parentNode->GetChildNodes(getter_AddRefs(children));
             children->Item(offsetOfNewNode - 1, getter_AddRefs(sibling));
           }
-          while (sibling) { 
+          while (sibling) {
             sibling->GetNodeType(&type);
             if (type != nsIDOMNode::TEXT_NODE || !nodeIsWhiteSpace(sibling, -1, -1)) break;
             sibling->GetPreviousSibling(getter_AddRefs(sibling));
