@@ -412,17 +412,21 @@ nsHTMLEditor::InsertMathNode
   cursorNode = nodeToInsert;
   nsCOMPtr<nsINode> node = do_QueryInterface(nodeToInsert);
   cursorOffset = node->GetChildCount();
- 
+
   nodeTarget = dstNode;
   offsetTarget = dstOffset;
-  elementTarget = do_QueryInterface(nodeTarget);
   res = GetTagString(nodeToInsert, nameOfInsert);
   res = GetTagString(nodeTarget, nameOfTarget);
+  if (nameOfTarget.EqualsLiteral("#text")) {
+    res = GetNodeLocation(nodeTarget, address_of(nodeTarget), &offsetTarget);
+    res = GetTagString(nodeTarget, nameOfTarget);
+  }
+  elementTarget = do_QueryInterface(nodeTarget);
 
   // We need to see if nodeToInsert can go into nodeTarget. Perhaps this should be a function in TagListManager
 
-  if ((isMi = nameOfTarget.EqualsLiteral("mi")) || nameOfTarget.EqualsLiteral("#text") || nameOfTarget.EqualsLiteral("mo") || nameOfTarget.EqualsLiteral("mn") || 
-      nameOfTarget.EqualsLiteral("mtext")) 
+  if ((isMi = nameOfTarget.EqualsLiteral("mi")) || nameOfTarget.EqualsLiteral("#text") || nameOfTarget.EqualsLiteral("mo") || nameOfTarget.EqualsLiteral("mn") ||
+      nameOfTarget.EqualsLiteral("mtext"))
   {
     if (isMi) {   // check for tempinput
       res = elementTarget->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempTarget);
