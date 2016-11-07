@@ -3482,7 +3482,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
     {
       selection->Collapse(node, offset);
       selection->Extend(originalNode,originalOffset);
-      res = DeleteSelection(nsIEditor::eNone);
+      // res = DeleteSelection(nsIEditor::eNone);
       if (action == msiIAutosub::ACTION_SUBSTITUTE)
         InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE);
       else if (action == msiIAutosub::ACTION_EXECUTE)
@@ -3903,9 +3903,10 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       splitOffset = currPos;
     }
     if (nextParent) {
-      if (currPos > 0) currPos = 1;
-      else currPos = 0;
-      currPos += GetIndexOf(nextParent, nextNode);
+      // if (currPos > 0) currPos = 1;
+      // else currPos = 0;
+      // currPos += GetIndexOf(nextParent, nextNode);
+      currPos = GetIndexOf(nextParent, nextNode);
 
     }
     prevChild = nextNode;
