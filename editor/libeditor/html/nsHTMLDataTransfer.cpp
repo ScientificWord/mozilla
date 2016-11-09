@@ -432,6 +432,7 @@ nsHTMLEditor::InsertMathNode
   if (!isTempInput) {
     nodeTarget = dstNode;
     offsetTarget = dstOffset;
+    elementTarget = do_QueryInterface(nodeTarget);
     res = GetTagString(nodeTarget, nameOfTarget);
   }
   // We need to see if nodeToInsert can go into nodeTarget. Perhaps this should be a function in TagListManager
