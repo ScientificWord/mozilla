@@ -21,7 +21,7 @@ def ptag(debugger, command, result, dict):
 #     command = valobj.GetName()
 #     print(valobj.TypeIsPointerType())
 #     debugger.HandleCommand("expression nsEditor::DumpTagName(" + command + ")")
-    
+
 
 def modcommand(debugger, command, result, dict):
     """Adds .mRawPtr to a dom node name if necessary."""
@@ -79,7 +79,7 @@ def mprev(debugger, command, result, dict):
     """Displays previous sibling of a content element."""
     newcommand = modcommand(debugger, command, result, dict)
     if len(newcommand) > 0:
-        debugger.HandleCommand("expression nsIDOMNode* child; " + newcommand + "->GetPrevSibling(&child),child;")
+        debugger.HandleCommand("expression nsIDOMNode* child; " + newcommand + "->GetPreviousSibling(&child),child;")
 
 def mframe(debugger, command, result, dict):
     """Displays the tag name of the frame contents"""
@@ -109,4 +109,4 @@ def init(debugger):
     debugger.HandleCommand("command script add -f lldbutils.content.mprev mprev")
     debugger.HandleCommand('command script add -f lldbutils.content.mframe mframe')
 
- 
+
