@@ -3920,8 +3920,8 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       return;
     }
     node = do_QueryInterface(elt);
-
-    PRBool isInComplexTransaction;
+    res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
+    PRBool isInComplexTransaction = PR_FALSE;
     ed->GetInComplexTransaction(&isInComplexTransaction);
 // Some special handling when node is in math, and the next character in the math is in an <mo>.
 // The cursor isn't really where we'd like it because of problems with cursor display in mo's.
@@ -4129,14 +4129,14 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   PRUint16 nodeType;
   res = startNode->GetNodeType(&nodeType);
   // BBM: WTF?
-  // if (nodeType == nsIDOMNode::TEXT_NODE) {
-  //   nsCOMPtr<nsIDOMNode> parent;
-  //   if (startOffset > 0) deltaOffset = 1;
-  //   nsEditor * editor = static_cast<nsEditor*>(mHTMLEditor);
-  //   editor->GetNodeLocation(startNode, &parent, &startOffset);
-  //   startNode = parent;
-  //   startOffset += deltaOffset;
-  // }
+  if (nodeType == nsIDOMNode::TEXT_NODE) {
+    nsCOMPtr<nsIDOMNode> parent;
+    if (startOffset > 0) deltaOffset = 1;
+    nsEditor * editor = static_cast<nsEditor*>(mHTMLEditor);
+    editor->GetNodeLocation(startNode, &parent, &startOffset);
+    startNode = parent;
+    startOffset += deltaOffset;
+  }
   hackSelectionCorrection(mHTMLEditor, startNode, startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
