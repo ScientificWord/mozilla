@@ -1,2 +1,2 @@
-BuildID=6.0.21
-Version=6.0.21
+BuildID=6.0.22
+Version=6.0.22
