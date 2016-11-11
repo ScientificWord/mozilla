@@ -3871,10 +3871,10 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   PRBool deletingInputbox = cleanUpTempInput( ed, startNode, startOffset );
   nsCOMPtr<nsIDOMNode> node = startNode;
   node->GetNodeName(name);
-  if (name.EqualsLiteral("#text")) {
-    node->GetParentNode(getter_AddRefs(node));
-    node->GetNodeName(name);
-  }
+  // if (name.EqualsLiteral("#text")) {
+  //   node->GetParentNode(getter_AddRefs(node));
+  //   node->GetNodeName(name);
+  // }
   if (name.EqualsLiteral("mo")) {
     elt = do_QueryInterface(node);
     DeleteMatchingFence(ed, elt);
@@ -4129,7 +4129,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   PRUint16 nodeType;
   res = startNode->GetNodeType(&nodeType);
   // BBM: WTF?
-  if (nodeType == nsIDOMNode::TEXT_NODE) {
+  if (nodeType == nsIDOMNode::TEXT_NODE && TextNodeLength(startNode) == 0) {
     nsCOMPtr<nsIDOMNode> parent;
     if (startOffset > 0) deltaOffset = 1;
     nsEditor * editor = static_cast<nsEditor*>(mHTMLEditor);
