@@ -499,6 +499,7 @@ nsHTMLEditor::InsertMathNode
     }
   }
   res = InsertNodeAtPoint(nodeToInsert, (nsIDOMNode **)address_of(nodeTarget), &offsetTarget, PR_TRUE);
+  *lastInsertNode = nodeToInsert;
   res = GetSelection(getter_AddRefs(sel));
   sel->Collapse(cursorNode, cursorOffset);
   return res;
