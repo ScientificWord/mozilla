@@ -54,9 +54,12 @@ msidisplay {
   border-style: solid;
   min-height: 12px;}
 
+environment {
+  display: block;
+}
 
 /*The following rules keep the cursor limited to the math in an msidisplay, and if there is an eqnarray, to the array in the display
-It assumes that Ron's code always keeps the 'numbering' attribute up to date. The cursor can go outside of the eqnarray, but still in the 
+It assumes that Ron's code always keeps the 'numbering' attribute up to date. The cursor can go outside of the eqnarray, but still in the
 math, if there is no numbering for an eqnarray. What we really need is an attribute in the msidisplay for whether there is an eqnarray or not
 */
 
