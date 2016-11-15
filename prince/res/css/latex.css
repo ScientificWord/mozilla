@@ -194,9 +194,12 @@ hspace[type="italicCorrectionSpace"] {
   min-width: 0.083em;
 }
 
-hspace[type="requiredSpace"] {
+hspace[type="requiredSpace"][dim] {
   min-width: 0.2em;
-  /*display: inline;*/
+}
+
+hspace[type="requiredSpace"] {
+  display: inline;
 }
 
 hspace[type="nonBreakingSpace"] {
@@ -224,8 +227,12 @@ mspace[type="italicCorrectionSpace"] {
   min-width: 0.083em;
 }
 
+/*mspace[type="requiredSpace"]:after {
+  content: " ";
+}*/
+
 mspace[type="requiredSpace"] {
-  width: 0.2em;
+  display: inline;
 }
 
 mspace[type="nonBreakingSpace"] {
