@@ -182,14 +182,14 @@
     <xsl:value-of select="$blankline"/>
     <xsl:text>%% preamble</xsl:text>
     <xsl:value-of select="$blankline"/>
-    <xsl:text>\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl,textcomp, rotating} % ,revsymb4-1}</xsl:text>
+    <xsl:text>\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl,rotating} % ,revsymb4-1}</xsl:text>
 
-    <xsl:if test="$compiler='xelatex'">
+    <xsl:if test="$compiler!='pdflatex'">
        <xsl:value-of select="$newline"/>
        <xsl:text>\usepackage{xltxtra,xkeyval}</xsl:text>
        <xsl:value-of select="$newline"/>
-       <xsl:text>\TeXXeTstate=1</xsl:text>
-       <xsl:value-of select="$newline"/>
+<!--        <xsl:text>\TeXXeTstate=1</xsl:text>
+       <xsl:value-of select="$newline"/> -->
        <xsl:text>\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}</xsl:text>
     </xsl:if>
 <!--     <xsl:if test="not($compiler='xelatex')">
@@ -198,7 +198,7 @@
     </xsl:if>
  -->
 
-    <xsl:if test="$compiler!='xelatex'">
+    <xsl:if test="$compiler='pdflatex'">
       <xsl:value-of select="$newline"/>
       <xsl:text>\usepackage{textcomp}</xsl:text>
     </xsl:if>
@@ -426,7 +426,7 @@
 
 <xsl:template match="html:fontchoices">
   <xsl:if test="$fontchoiceok">
-    <xsl:if test="$compiler='xelatex'">
+    <xsl:if test="$compiler!='pdflatex'">
       <xsl:apply-templates/>
     </xsl:if>
   </xsl:if>
