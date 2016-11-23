@@ -25,7 +25,7 @@ var vcamWrapperArray = [];
 // Dizzy array of objects:
 //
 // We hold onto html vcam plugin objects to get around security problems
-// A VCamObject contains cached state values of a plugin object, and contains the 
+// A VCamObject contains cached state values of a plugin object, and contains the
 // plugin object itself.
 
 var currentVCamObjectNum = -1;
@@ -310,7 +310,8 @@ VCamObject.prototype = {
     try {
       if (msiGetActiveEditorElement != null) {
         var editorElement = msiGetActiveEditorElement();
-        goDoPrinceCommand("cmd_objectProperties", This.parentNode.parentNode, editorElement); // go up to the graph object
+        if (this.cursorTool !== "zoomIn" && this.cursorTool !== "zoomOut")
+          goDoPrinceCommand("cmd_objectProperties", This.parentNode.parentNode, editorElement); // go up to the graph object
       }
     } catch (e) {}
   },
@@ -386,18 +387,20 @@ VCamObject.prototype = {
     return 0;
   },
 
-  onVCamDrop: function(x, y) {
+  onVCamDrop: function(event) {
     var data;
+    var graphNode;
+    var string;
+    var editorElement = msiGetActiveEditorElement();
     const kHTMLMime = "text/html";
 
     try {
-      if (this.editorElement) {
-        if (DNDUtils.checkCanDrop([kHTMLMime])) {
-          data = DNDUtils.getData(kHTMLMime, 0);
-          if (/<math/.test(data)) {
-            alert("Dropped " + data);
-          }
-        }
+      if (DNDUtils.checkCanDrop([kHTMLMime])) {
+        data = DNDUtils.getData(kHTMLMime, 0);
+        string = data.QueryInterface(Components.interfaces["nsISupportsString"]);
+        graphNode = this.parentNode.parentNode;
+        newPlotFromText(graphNode, string.data, editorElement);
+        // alert("Dropped " + string.data);
       }
     } catch (e) {
       throw new MsiException('in VCam drop', e);
@@ -811,9 +814,9 @@ function doVCamClose() {
 // oldsnapshot is an nsIFile pointing to the .bmp file
 function convertBMPtoPNG( aFile, is3d ) {
   // used only for converting BMP 3-D snapshots to PNG on Windows.
-  var leaf = aFile.leafName;  
+  var leaf = aFile.leafName;
   var x;
-  
+
   if (!is3d) {
     x=3;  // something to break on
   }
