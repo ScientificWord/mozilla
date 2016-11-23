@@ -1,4 +1,3 @@
-
 /* debugging prefs
 pref("browser.dom.window.dump.enabled", true);
 pref("javascript.options.showInConsole", true);
@@ -211,7 +210,7 @@ pref("swp.sci.compression", 0);
 pref("swp.sourceview.indentincrement",       2);
 pref("swp.sourceview.maxlinelength",        100);
 pref("swp.sourceview.minlinelength",         60);
-pref("swp.space.after.space", false); // true means space space -> math
+pref("swp.space.after.space", "nil");
 pref("swp.spellchecker.enablerealtimespell", true);
 pref("swp.viewPDF","default");
 pref("swp.webzip.compression", 9);
