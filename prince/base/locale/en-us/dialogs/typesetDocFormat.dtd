@@ -63,7 +63,7 @@
 <!ENTITY cross.accesskey	"s">
 <!ENTITY frame.label	" Frame ">
 <!ENTITY frame.accesskey	"F">
-					
+
 <!ENTITY docformatUseOpenType "Use OpenType fonts (may make your document not portable)?">
 <!ENTITY mainFontsGroup "Main Document Fonts">
 <!ENTITY docformatDefault "Default">
@@ -98,6 +98,8 @@
 <!ENTITY pdfLaTeXClassic.accesskey "p">
 <!ENTITY XeLaTeX.label "XeLaTeX -- a unicode ehancement of LaTeX for non-western languages, uses opentype fonts">
 <!ENTITY XeLaTeX.accesskey  "X">
+<!ENTITY LuaLaTeX.label "LuaLaTeX -- another unicode ehancement of LaTeX, uses opentype fonts">
+<!ENTITY LuaLaTeX.accesskey  "L">
 
 <!ENTITY BasicLayout.label  "Basic Layout">
 <!ENTITY BasicLayout.accesskey  "B">
@@ -261,7 +263,7 @@
 <!ENTITY naustrian.label "NAustrian">
 <!ENTITY german.label "German">
 <!ENTITY germanb.label "Germanb">
-<!ENTITY ngerman.label "NGerman"> 
+<!ENTITY ngerman.label "NGerman">
 <!ENTITY monogreek.label "Monotonic Greek">
 <!ENTITY polygreek.label "Polytonic Greeks">
 <!ENTITY polutonikogreek.label "Polytonic Greek">

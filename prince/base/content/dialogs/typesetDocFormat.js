@@ -282,7 +282,7 @@ function getEnableFlags(doc)
     var progNode =  nodelist[0]
     value = progNode.getAttribute("prog");
     setCompiler(value);
-    compilerInfo.useOTF = value == "xelatex";
+    compilerInfo.useOTF = (value == "xelatex" || (value == "lualatex"));
     compilerInfo.useUni = compilerInfo.useOTF;
     document.getElementById("texprogram").value = value;
     var canSetFormat = progNode.getAttribute("formatOK") == "true";
@@ -1020,7 +1020,7 @@ function changePageDim(textbox)
   var value = unitHandler.getValueAs(Number(textbox.value),"mm");
   if (landscape) {
     if (textbox.id == "tbpageheight") pagewidth = value;
-    else pageheight = value;   
+    else pageheight = value;
   }
   else {
     if (textbox.id == "tbpageheight") pageheight = value;
@@ -1043,13 +1043,13 @@ function getPageDimensions( obj)
   if (obj.pagename in stdPageDimensions)
   {
     var o = stdPageDimensions[obj.pagename];
-    if (!isLandscape()) {    
+    if (!isLandscape()) {
       obj.width = o.w;
       obj.height = o.h;
     }
     else {
       obj.width = o.h;
-      obj.height = o.w;    
+      obj.height = o.w;
     }
   }
   else // default to letter
@@ -1193,7 +1193,7 @@ function unitRound( size )
     case "pt" : places = 10;
       break;
     case "in" : places = 100;
-      break; 
+      break;
     default   : places = 100;
   }
   return Math.round(size*places)/places;
@@ -1683,34 +1683,40 @@ function saveFontSpecs(docFormatNode)
   internalname = document.getElementById('f1name').value;
   if (fontname.length > 0 && internalname.length > 0)
   {
+    try{
     node = editor.createNode('x1font', fontNode, nodecounter++);
     node.setAttribute('internalname', internalname);
     node.setAttribute('name', fontname);
     options = document.getElementById('x1native').value;
     node.setAttribute('options',options);
     node.setAttribute('ot',"1");
+    } catch(e) {}
   }
   fontname = fontchoices[5];
   internalname = document.getElementById('f2name').value;
   if (fontname.length > 0 && internalname.length > 0)
   {
-    node = editor.createNode('x2font', fontNode, nodecounter++);
+    try{
+      node = editor.createNode('x2font', fontNode, nodecounter++);
     node.setAttribute('internalname', internalname);
     node.setAttribute('name', fontname);
     options = document.getElementById('x2native').value;
     node.setAttribute('options',options);
     node.setAttribute('ot',"1");
+    } catch(e) {}
   }
   fontname = fontchoices[6];
   internalname = document.getElementById('f3name').value;
   if (fontname.length > 0 && internalname.length > 0)
   {
+   try{
     node = editor.createNode('x3font', fontNode, nodecounter++);
     node.setAttribute('internalname', internalname);
     node.setAttribute('name', fontname);
     options = document.getElementById('x3native').value;
     node.setAttribute('options',options);
     node.setAttribute('ot',"1");
+    } catch(e) {}
   }
 }
 
@@ -2880,7 +2886,7 @@ function saveClassOptionsEtc(docformatnode)
   if (!preamble) {
     throw("No preamble in document");
   }
-  removeExistingPreambleNodes("colist", doc);
+//  removeExistingPreambleNodes("colist", doc);
   var optionNode;
   // convention: default menuitems have a def attribute
   var optionnames = ["pgorient", "papersize", "sides", "qual", "columns", "titlepage", "textsize", "eqnnopos", "eqnpos", "bibstyle"];
@@ -2921,28 +2927,61 @@ function getLanguageSettings(preambleNode)
 function saveLanguageSettings(preambleNode)
 {
   // clear any old settings if there are any
-  var i, tag, tagclass, hidden, lang1, lang2;
-  var doc = editor.document;
+  var i, tag, tagclass, hidden, lang, lang1, lang2;
   var texprogram = compilerInfo.prog;
-  var isPolyglossia = (texprogram == "xelatex");
-  var needsResetting = true;
+  var isPolyglossia = (texprogram == "xelatex" || texprogram == "lualatex");
+  var currLanguages = [];
   lang1 = document.getElementById("babelLang1").value;
-  if (lang1 === "def") lang1=null;
+  if (lang1 === "def") {
+    lang1=null;
+  }
   lang2 = document.getElementById("babelLang2").value;
-  if (lang2 === "def") lang2=null;
+  if (lang2 === "def"){
+    lang2=null;
+  }
+  currLanguages = getBabelLangsFromPreamble(preambleNode);
+  // We don't do anything unless one of the languages is non-null and different from the current language choice.
+
+  if (currLanguages) {
+    lang = currLanguages[0];
+    if (lang){
+      editor.tagListManager.setTagVisibility('text'+lang, null, true); // hidden = true
+      editor.tagListManager.setTagVisibility(lang, null, true); // hidden = true
+    }
+    lang = currLanguages[1];
+    if (lang){
+      editor.tagListManager.setTagVisibility('text'+lang, null, true); // hidden = true
+      editor.tagListManager.setTagVisibility(lang, null, true); // hidden = true
+    }
+  }
+  removeExistingPreambleNodes("babel", preambleNode);
   if (lang1 || lang2)
   {
-    var babelnode;
-    removeExistingPreambleNodes("babel", preambleNode);
     var node = editor.createNode("babel",preambleNode,0);
     node.setAttribute("pkg", isPolyglossia ? "polyglossia" : "babel");
     if (lang1)
       node.setAttribute("lang1", lang1);
     if (lang2)
       node.setAttribute("lang2", lang2);
+    addLanguageTagsFromBabelTag(preambleNode);
   }
-  addLanguageTagsFromBabelTag(doc);
-  addLanguagesToTagDefs(lang1, lang2);
+}
+
+function getBabelLangsFromPreamble(preambleNode) {
+  if (!preambleNode) return [];
+  var babeltags = preambleNode.getElementsByTagName('babel');
+  var babeltag;
+  var lang1;
+  var lang2;
+  if (babeltags && babeltags.length > 0) {
+    babeltag = babeltags[0];
+    lang1 = babeltag.getAttribute('lang1');
+    lang2 = babeltag.getAttribute('lang2');
+    if (lang1 || lang2) {
+      return [lang1 || null, lang2 || null];
+    }
+  }
+  return [];
 }
 
 function setMenulistSelection(menulist, value)
@@ -3021,13 +3060,28 @@ function setCompiler(compilername)
   {
     initializeFontFamilyList(false);
     document.getElementById("xelatex").hidden=false;
+    document.getElementById("unicodetex").hidden=false;
+    document.getElementById("lualatex").hidden=true;
+    document.getElementById("pdflatex").hidden=true;
+    changeOpenType(true);
+    compilerInfo.useUni = true;
+  }
+  else
+  if (compilername=="lualatex")
+  {
+    initializeFontFamilyList(false);
+    document.getElementById("lualatex").hidden=false;
+    document.getElementById("unicodetex").hidden=false;
+    document.getElementById("xelatex").hidden=true;
     document.getElementById("pdflatex").hidden=true;
     changeOpenType(true);
     compilerInfo.useUni = true;
   }
   else
   {
+    document.getElementById("lualatex").hidden=true;
     document.getElementById("xelatex").hidden=true;
+    document.getElementById("unicodetex").hidden=true;
     document.getElementById("pdflatex").hidden=false;
     changeOpenType(false);
     compilerInfo.useUni = false;
@@ -3079,17 +3133,17 @@ function enableDisableFonts(enabled)
 
 function compileInfoChanged(widget)
 {
-  var useXelatex;
-  if (widget.id ==="xelatex")
+  var useModern;
+  compilerInfo.prog = widget.id;
+  useModern = true;
+  if (widget.id ==="xelatex" || widget.id === "lualatex")
   {
-    useXelatex = !(widget.hidden);
-    compilerInfo.prog = "xelatex";
+    useModern = !(widget.hidden);
   }
   if (widget.id==="pdflatex")
   {
-    useXelatex = (widget.hidden);
-    compilerInfo.prog = "pdflatex";
+    useModern = (widget.hidden);
   }
-  compilerInfo.useOTF = useXelatex;
-  compilerInfo.useUni = useXelatex;
+  compilerInfo.useOTF = useModern;
+  compilerInfo.useUni = useModern;
 }
