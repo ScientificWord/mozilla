@@ -565,7 +565,7 @@ nsHTMLEditor::BeginningOfDocument()
     if (classname.EqualsLiteral("paratag")) {
       selection->Collapse(currNode, 0);
       return NS_OK;
-    }    
+    }
     tw->NextNode(getter_AddRefs(currNode));
   }
   selection->Collapse(rootElement, 0);
@@ -594,7 +594,7 @@ nsHTMLEditor::EndOfDocument()
   if (!domdoc)
     return NS_ERROR_UNEXPECTED;
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
-  doctrav = do_QueryInterface(domdoc); 
+  doctrav = do_QueryInterface(domdoc);
 
   res = doctrav->CreateTreeWalker(rootElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
   nsCOMPtr<nsIDOMNode> currNode;
@@ -607,7 +607,7 @@ nsHTMLEditor::EndOfDocument()
     if (classname.EqualsLiteral("paratag")) {
       selection->Collapse(currNode, 0);
       return NS_OK;
-    }    
+    }
     tw->PreviousNode(getter_AddRefs(currNode));
   }
   selection->Collapse(rootElement, 0);
@@ -7393,9 +7393,9 @@ void handleCombiningChars( const PRUnichar** pCur, PRUnichar combiningChar, nsAS
 
 
 
-/* string FilterCharsForLaTeX (in boolean isXeTeX, in DOMString orig); */
+/* string FilterCharsForLaTeX (in boolean isUnicode, in DOMString orig); */
 NS_IMETHODIMP
-nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAString & _retval)
+nsHTMLEditor::FilterCharsForLaTeX(PRBool isUnicode, const nsAString & orig, nsAString & _retval)
 {
   nsresult res = NS_OK;
   nsTextFormatter * tf = new nsTextFormatter();
@@ -7426,9 +7426,9 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
       else thisChar.Append(*(charMap->StringAt((int)(*cur) - 160)));
     }
     else {
-      if (isXeTeX) {
-        switch ((int)(*cur)) {  
-          case 0xD835 : break;  // upper plane character coming 
+      if (isUnicode) {
+        switch ((int)(*cur)) {
+          case 0xD835 : break;  // upper plane character coming
           case 0xDEA4 :
             thisChar.Append(NS_LITERAL_STRING("\\imath")); break;
           case 0xDEA5 :
@@ -7437,9 +7437,9 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
             thisChar.Append(NS_LITERAL_STRING("\\Bbbk")); break;
           default : thisChar.Append(*cur);
         }
-      } else {        
+      } else {
         switch ((int)(*cur)) {
-          
+
           case 0x0192:
             thisChar.Append(NS_LITERAL_STRING("{\\textflorin}")); break;
           case 0x01CD :
@@ -7489,7 +7489,7 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
           case 0x2014:
             thisChar.Append(NS_LITERAL_STRING("{\\textemdash}")); break;
           case 0x2016:
-            thisChar.Append(NS_LITERAL_STRING("{\\textbardbl}")); break; 
+            thisChar.Append(NS_LITERAL_STRING("{\\textbardbl}")); break;
           case 0x2018 :
             thisChar.Append(NS_LITERAL_STRING("`")); break;
           case 0x2019 :
@@ -7513,7 +7513,7 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
           case 0x2030:
             thisChar.Append(NS_LITERAL_STRING("{\\textperthousand}")); break;
           case 0x2031:
-            thisChar.Append(NS_LITERAL_STRING("{\\textpertenthousand}")); break;          
+            thisChar.Append(NS_LITERAL_STRING("{\\textpertenthousand}")); break;
           case 0x2032 :
             thisChar.Append(NS_LITERAL_STRING("${}^{\\prime}$")); break;
           case 0x2033 :
@@ -7531,7 +7531,7 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
           case 0x204E:
             thisChar.Append(NS_LITERAL_STRING("{\\textasteriskcentered}")); break;
           case 0x2052:
-            thisChar.Append(NS_LITERAL_STRING("{\\textdiscount}")); break;            
+            thisChar.Append(NS_LITERAL_STRING("{\\textdiscount}")); break;
           case 0x20A0 :
             thisChar.Append(NS_LITERAL_STRING("\\texteuro ")); break;
           case 0x20A1:
@@ -7603,12 +7603,12 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
           case 0x25EF:
             thisChar.Append(NS_LITERAL_STRING("{\\textbigcircle}")); break;
           case 0x266A:
-            thisChar.Append(NS_LITERAL_STRING("{\\textmusicalnote}")); break;            
+            thisChar.Append(NS_LITERAL_STRING("{\\textmusicalnote}")); break;
           case 0xE2D4 :
             thisChar.Append(NS_LITERAL_STRING("\\j")); break;
           case 0xE897 :
             thisChar.Append(NS_LITERAL_STRING("\\ ")); break;
-          case 0xD835 : break;  // upper plane character coming 
+          case 0xD835 : break;  // upper plane character coming
           case 0xDEA4 :
             thisChar.Append(NS_LITERAL_STRING("\\imath")); break;
           case 0xDEA5 :
@@ -7626,7 +7626,7 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isXeTeX, const nsAString & orig, nsAStr
         }
       }
     }
-    if (!isXeTeX) {
+    if (!isUnicode) {
       comb = combiningLookahead(cur);
       if (comb) {
         handleCombiningChars(&cur, comb, thisChar);

@@ -1228,11 +1228,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
 #if DEBUG_barryNo || DEBUG_BarryNo
   DebExamineNode(firstNode);
   DebExamineNode(*secondNode);
-  // printf("=====FixTagsAfterSplit=============================================\n");
-  // printf("==firstNode:\n");
-  // meditor->DumpNode(firstNode);
-  // printf("==*secondNode:\n");
-  // meditor->DumpNode(*secondNode);
+
 #endif
 // find out what the second node should be
   nsString firstNodeName;
@@ -1585,30 +1581,6 @@ msiTagListManager::GetTagsInClass(const nsAString & strTagClass, const nsAString
 }
 
 /* Methods for changing the tag list at runtime, to support creating tags dynamically for Polyglossia/Babel
-/* nsIDOMNode getBabelTagNode (in boolean textTag, in unsigned long oneOrTwo); */
-NS_IMETHODIMP
-msiTagListManager::GetBabelTagNode(PRBool textTag, PRUint32 oneOrTwo, nsIDOMNode **_retval)
-{
-  if (!pBabelList) BuildBabelList(mdocTagInfo);
-	NodeList * pList = pBabelList;
-  *_retval = nsnull;
-  // There are four Babel nodes. One and two are the font nodes for lang1 and lang2. Three and four are the
-  // environment nodes for lang1 and lang2.
-  PRUint32 num = oneOrTwo;
-  nsAutoString babelAtt;
-  if (!textTag) num += 2;
-	while (pList && pList->element)
-	{
-		pList->element->GetAttribute(NS_LITERAL_STRING("babel"), babelAtt);
-    if (babelAtt.CharAt(0) == num + 48) {
-      *_retval = pList->element;
-      return NS_OK;
-    }
-		pList = pList->pNext;
-	}
-	return NS_OK;
-}
-
 
 
 /*void    setTagVisibility( in AString strTag, in nsIAtom atomNS, in boolean hidden);
