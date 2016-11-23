@@ -605,7 +605,7 @@ function msiIsWebComposer(theWindow) {
   //  return document.documentElement.id === "editorWindow";
   if (!theWindow)
       theWindow = window;
-    
+
   if (theWindow && theWindow.document && theWindow.document.documentElement)
     return theWindow.document.documentElement.id === 'prince';
   return false;
@@ -3374,7 +3374,7 @@ function PrefHasValue(name) {
   try {
     return GetPrefs().prefHasUserValue(name);
   } catch (exc) {
-    dump('Exception trying to query whether pref ' + name + ' is set: [' + exc + '].\n');
+    dump('in PrefHasValue, exception trying to query whether pref ' + name + ' is set: [' + exc + '].\n');
   }
   return false;
 }
@@ -10918,9 +10918,10 @@ function getFileAsString(url) {
   else
     return null;
 }
+
 function addLanguagesToTagDefs(lang1, lang2) {
-  return;
   var i, lang, hidden, langnum;
+  var needsResetting = true;
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var babelNode;
@@ -10928,27 +10929,17 @@ function addLanguagesToTagDefs(lang1, lang2) {
     if (langnum === 1) lang = lang1;
     else lang = lang2;
     if (lang) {
-      babelNode = editor.tagListManager.getBabelTagNode(true, langnum);
-      if (babelNode) {
-        babelNode.setAttribute('nm', 'text' + lang);
-        babelNode.removeAttribute('hidden');
-      }
-      babelNode = editor.tagListManager.getBabelTagNode(false, langnum);
-      if (babelNode) {
-        babelNode.setAttribute('nm', lang === 'arabic' ? 'Arabic' : lang);
-        babelNode.removeAttribute('hidden');
-      }
+      editor.tagListManager.setTagVisibility('text'+lang, null, false); // hidden == false
+      editor.tagListManager.setTagVisibility(lang, null, false); // hidden == false
     }
   }
+  editor.tagListManager.rebuildHash();
+  buildAllTagsViewStylesheet(editor);
 
-  //if (needsResetting)
-  // editor.tagListManager.rebuildHash();
-  // buildAllTagsViewStylesheet(editor);
 }
 
-function addLanguageTagsFromBabelTag(doc) {
-  return;
-  var babeltags = doc.getElementsByTagName('babel');
+function addLanguageTagsFromBabelTag(preambleNode) {
+  var babeltags = preambleNode.getElementsByTagName('babel');
   var babeltag;
   var lang1;
   var lang2;
@@ -10961,6 +10952,7 @@ function addLanguageTagsFromBabelTag(doc) {
     }
   }
 }
+
 function buildAllTagsViewStylesheet(editor) {
   var templatefile = msiFileFromFileURL(msiURIFromString('resource://app/res/css/tagtemplate.css'));
   var data = '';

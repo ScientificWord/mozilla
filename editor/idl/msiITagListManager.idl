@@ -58,7 +58,6 @@ interface msiITagListManager : nsISupports
     AString getTagsInClass( in AString strTagClass, in AString strSep, in boolean includeNS );
     void    setTagVisibility( in AString strTag, in nsIAtom atomNS, in boolean hidden);
     void    setTagName( in AString strCurrent, in nsIAtom atomNS, in AString strNew);
-    nsIDOMNode getBabelTagNode( in boolean textTag, in unsigned long oneOrTwo);
 	void	rebuildHash();
 	PRInt32 getMinDepth();
 };

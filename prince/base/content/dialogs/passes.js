@@ -19,7 +19,7 @@ var timerCallback =
   notify: function(timer)
     {
       if (timer && (this.timercopy !== timer)) this.timercopy = timer;
-      if (!sentinel)
+      if (sentinel == null)
       {
          if (this.timercopy) this.timercopy.cancel();
          return;
