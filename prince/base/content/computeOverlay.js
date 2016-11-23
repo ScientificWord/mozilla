@@ -924,8 +924,7 @@ function findUnusedId(doc, prefix) {
   var theId = prefix + n.toString();
   while (doc.getElementById(theId)) {
     n = ++vcamlastId;
-    theId = prefix + n.toString();var editor = msiGetEditor(editorElement);
-      var editorDoc = editor.document;
+    theId = prefix + n.toString();
   }
   return theId;
 }

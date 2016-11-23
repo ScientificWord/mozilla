@@ -86,7 +86,7 @@
         <hbox>
           <description>&desc.EngRec;</description>
         <spacer flex="1"/>
-          <checkbox id="engReceived"/>
+          <checkbox id="engReceived" color="#FFFFFF" />
         </hbox>
       </groupbox>
     </vbox>
