@@ -34,8 +34,11 @@
 <!ENTITY XMLSourceIndent.label  "XML source indent">
 <!ENTITY XMLSourceMaxLineLength.label  "XML source max line length">
 <!ENTITY XMLSourceMinLineLength.label "XML source min line length">
-<!ENTITY Spacebar.label "Spacebar">
-<!ENTITY AfterSpaceSwitchesToMath.label "After space switches to math">
+<!ENTITY Spacebar.label "Spacebar after space">
+<!ENTITY AfterSpaceSwitchesToMath.label "Switches to math">
+<!ENTITY DoesNothing.label "Does nothing">
+<!ENTITY AddsSpace.label "Adds another space">
+<!ENTITY AddReqSpace.label "Adds a required space">
 <!ENTITY SpaceExits.label "Space at end of math exits math">
 <!ENTITY SpaceAfterMath.label "..and types a space">
 <!ENTITY CtrlT.label  "Ctrl + T">

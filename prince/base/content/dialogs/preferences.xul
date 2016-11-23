@@ -406,7 +406,7 @@
                   onchange = "onComputeSettingChange(this, true)"/>
       <preference id ="doublespacepref"
                   name="swp.space.after.space"
-                  type="bool"/>
+                  type="string"/>
       <preference id ="spaceinmathaddsspace"
                   name="swp.spaces.after.math"
                   type="bool"/>
@@ -490,7 +490,7 @@
             <caption>&initialDocDir.label;</caption>
             <hbox align="center">
               <textbox id="prefDocDir" style="width: 30em" preference="defaultDocDir"/>
-              <msibutton id="browseDir" label="&browseDir.label;" accesskey="&browseDir.accesskey;" oncommand="onBrowseDir('prefDocDir');"/>                 
+              <msibutton id="browseDir" label="&browseDir.label;" accesskey="&browseDir.accesskey;" oncommand="onBrowseDir('prefDocDir');"/>
             </hbox>
           </groupbox>
         </tabpanel>
@@ -713,13 +713,17 @@
               </rows>
             </grid>
           </groupbox>
+          <groupbox orient="vertical">
+            <caption>&Spacebar.label;</caption>
+            <radiogroup id="doublespace" preference="doublespacepref">
+              <radio label="&AfterSpaceSwitchesToMath.label;" value="tomath"/>
+              <radio label="&DoesNothing.label;" value="nil"/>
+              <radio label="&AddReqSpace.label;" value="reqspace"/>
+            </radiogroup>
+          </groupbox>
         </tabpanel>
 				<tabpanel id="prefMathEdit" orient="vertical">
 					<separator flex="1"/>
-          <groupbox orient="vertical">
-            <caption>&Spacebar.label;</caption>
-            <checkbox id="doublespace" preference="doublespacepref" label="&AfterSpaceSwitchesToMath.label;"/>
-          </groupbox>
 					<groupbox orient="vertical">
             <caption>&SpaceExits.label;</caption>
             <checkbox id="spaceinmathaddsspaceCheckbox" preference="spaceinmathaddsspace" label="&SpaceAfterMath.label;" />
