@@ -410,7 +410,7 @@ msiEditor::InsertDisplay()
     res = GetSelection(getter_AddRefs(selection));
     if (NS_FAILED(res)) return res;
     selection->Collapse(msidisplay, -1);
-    // InsertHelperBR(selection);    
+    // InsertHelperBR(selection);
     //    NS_IF_ADDREF((nsIDOMNode*)msidisplay);
     return NS_OK;
     // find the math node and set the display attribute
@@ -747,7 +747,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
 
     nsCOMPtr<nsIDOMRange> range;
     msiUtils::CanonicalizeMathSelection(this);
-    selection->GetRangeAt(0, getter_AddRefs(range)); 
+    selection->GetRangeAt(0, getter_AddRefs(range));
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res))
@@ -769,7 +769,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
         if (!store) return NS_ERROR_NULL_POINTER;
         store->StoreRange(range);
         mRangeUpdater.RegisterRangeItem(store);
-        
+
         res = selection->GetIsCollapsed(&bCollapsed);
         nsCOMPtr<nsIDOMElement> mathmlElement;
         nsCOMPtr<nsIDOMNode> mathmlNode;
@@ -793,7 +793,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
           // nsCOMPtr<nsIDOMElement> eltelt = do_QueryInterface(elt);
           // eltelt->HasAttribute(NS_LITERAL_STRING("tempinput"), &bIsTempInput);
           // if (bIsTempInput) selection->Collapse(elt,0);
-          // else 
+          // else
           // selection->Collapse(mathmlNode, 1); // just after left fence
           //         }
           if (bCollapsed) {
@@ -1131,7 +1131,7 @@ PRBool SpacesAtEndOfMathAddsSpace()
 
 NS_IMETHODIMP
 msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
-{    
+{
   PRUint32 keyCode(0), symbol(0);
   PRBool preventDefault(PR_FALSE);
   if (! aKeyEvent)
@@ -1273,7 +1273,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
       }
       if (mathnode && (symbol == ' ') && !isShift) {
         nsCOMPtr<nsISelectionController> selcon;
-        res = GetSelectionController(getter_AddRefs(selcon));  
+        res = GetSelectionController(getter_AddRefs(selcon));
         selcon->CharacterMove(PR_TRUE, PR_FALSE);
       }
       if (symbol && !ctrlKey && !altKey && !metaKey)
@@ -1368,7 +1368,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     }
     else
       return NS_ERROR_FAILURE;
-    
+
   }
 }
 
@@ -3216,18 +3216,30 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //
 //  If we return STATE_SUCCESS, the node and offset of the last checked character have to be returned.
 
-PRBool TwoSpacesSwitchesToMath()
+
+// TwoSpacesBehavior returns 0 if we do nothing for a space after space,
+// returns 1 if we switch to math, and
+// returns 2 if we insert a requiredspace.
+PRInt32 TwoSpacesBehavior()
 {
-	nsresult rv;
-	PRBool thePref;
+	PRInt32 behavior = 0;
+  nsresult rv;
+  nsXPIDLCString thePref;
+  nsAutoString prefString;
 	nsCOMPtr<nsIPrefBranch> prefBranch =
     do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
 
   if (NS_SUCCEEDED(rv) && prefBranch) {
-		rv = prefBranch->GetBoolPref("swp.space.after.space", &thePref);
-		return thePref;
+		rv = prefBranch->GetCharPref("swp.space.after.space", getter_Copies(thePref));
+    if (NS_SUCCEEDED(rv))
+    {
+      CopyASCIItoUTF16(thePref, prefString);
+
+    }
+    if (prefString.EqualsLiteral("tomath")) behavior = 1;
+    else if (prefString.EqualsLiteral("reqspace")) behavior = 2;
   }
-	return PR_FALSE;
+	return behavior;
 }
 
 nsresult
@@ -3290,7 +3302,8 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       }
       // check for double spaces in text mode; possible to convert to math
       pnode = nsnull;
-      if (TwoSpacesSwitchesToMath())
+      PRInt32 twospacebehavior = TwoSpacesBehavior();
+      if (twospacebehavior == 1)
       {
   			if (!inMath && (offset > 0) && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == ' ' || theText[offset - 1] == 160))
   			{
@@ -3300,6 +3313,12 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
 					return NS_OK;
 				}
 			}
+      else if (twospacebehavior == 2) {
+
+      }
+      else {
+
+      }
 			prevChar = theText[offset];
       m_autosub->NextChar(inMath, prevChar, & _result);
       if (_result == msiIAutosub::STATE_SUCCESS)
