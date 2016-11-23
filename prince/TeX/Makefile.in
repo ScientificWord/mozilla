@@ -31,9 +31,5 @@ CMD_RESOURCES := $(wildcard	$(srcdir)/bin/$(PLATFORM)/*.bash)
 endif
 
 
-ifeq ($(OS_ARCH),Darwin)
-CMD_RESOURCES += $(wildcard	$(srcdir)/bin/mac/*.scpt)
-endif
-
 libs::	$(CMD_RESOURCES)
 	$(INSTALL)	$(CMD_RESOURCES)	$(FINAL_TARGET)
