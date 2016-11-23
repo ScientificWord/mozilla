@@ -420,7 +420,7 @@ function openTeX()
 	var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
 	theProcess.init(exefile);
 	var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, file.path, outfile.path];
-	
+
 	dump("+++" + args);
       theProcess.run(true, args, args.length);
     }
@@ -470,7 +470,7 @@ function openTeXbyName(fn)
     var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
 
     inputfile.initWithPath( fn ); // outputfile now points to our document file
-     
+
     inputfile = useMasterDocIfNeeded(inputfile);
 
     msidump("Input file is " + inputfile);
@@ -492,8 +492,8 @@ function openTeXbyName(fn)
 	msidump("Could not remove output directory " + outdir);
 	msidump(e);
     }
-    
-    
+
+
     var outfile = outdir.clone();
     outfile.append("main.xhtml");
     msidump("Output file is " + outfile);
@@ -533,7 +533,7 @@ function openTeXbyName(fn)
 	var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
 	theProcess.init(exefile);
 	var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, inputfile.path, outfile.path];
-	
+
 	msidump("+++" + args);
         theProcess.run(true, args, args.length);
     }
@@ -572,7 +572,7 @@ function openTeXbyName(fn)
     var compileInfo = new Object();
     documentAsTeXFile( editorElement, newDoc, outTeXfile, compileInfo );
 
-    
+
   }
 
 
@@ -668,8 +668,8 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
       str = unicodeConverter.ConvertFromUnicode(str);
       str + unicodeConverter.Finish();
     } catch(ex) {
-        return null; 
-    }   
+        return null;
+    }
   }
   compileInfo.runMakeIndex = /\\printindex/.test(str);
   compileInfo.runBibTeX = /\\bibliography/.test(str);
@@ -834,7 +834,7 @@ function exportToWeb()
 /* ==== */
 /* =
 compileTeXFile:
-  compiler -- a string, either 'pdflatex' or 'xelatex', giving which compiler to use.
+  compiler -- a string, either 'pdflatex', 'lualatex' or 'xelatex', giving which compiler to use.
   infileLeaf -- the name of the input TeX file without '.tex' or the initial part of the path
   infilePath -- the full name of the input TeX file, including the path and 'tex'
   outputDir -- the directory in which to put the resulting file
@@ -1127,7 +1127,7 @@ function compileTeX(compiler)
 }
 
 function copyToExternalLocation( pdffile ) {
-// 
+//
   var destdirectory = pdffile.parent.parent.parent;
   var leafname = pdffile.parent.parent.leafName;
   var n = 2;
