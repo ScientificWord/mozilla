@@ -286,7 +286,7 @@ Graph.prototype = {
       status = "ERROR";
       this.errStr = eng.getEngineErrors();
       dump("Computation Error: " +  "Query Graph: " + this.errStr + "\n");
-      msiComputeLogger.Exception(e);  
+      msiComputeLogger.Exception(e);
     }
     finally {
       if (plot) {
@@ -867,7 +867,7 @@ Graph.prototype = {
       this.computeGraph(editorElement);
       obj = graphNode.getElementsByTagName("object")[0];
 
-      // if the new file exists, delete the old 
+      // if the new file exists, delete the old
       newfile = Components.classes["@mozilla.org/file/local;1"].
                            createInstance(Components.interfaces.nsILocalFile);
       newfile.initWithPath(longnewfilename) ;
@@ -1530,7 +1530,7 @@ Plot.prototype =
   copyPlotAttributes : function(otherPlot, attrArray)
   {
     for (var jj = 0; jj < attrArray.length; ++jj)
-      this.setPlotValue( otherPlot.getPlotValue(attrArray[jj]) );
+      this.setPlotValue( attrArray[jj], otherPlot.getPlotValue(attrArray[jj]) );
   },
   computeQuery: function () {
     // call the compute engine to guess at graph attributes
@@ -2113,10 +2113,13 @@ Frame.prototype = {
   }
 };
 
-function newPlotFromText(currentNode, expression, editorElement, selection) {
+function newPlotFromText(currentNode, expression, editorElement) {
   try {
     var editor = msiGetEditor(editorElement);
+    var doc = editor.contentDocument;
     var graph = new Graph();
+    var graphData;
+    var DOMGs = currentNode.getElementsByTagName('graphSpec')[0];
     graph.extractGraphAttributes(currentNode);
     var firstplot = graph.plots[0];
     var plottype;
@@ -2133,13 +2136,16 @@ function newPlotFromText(currentNode, expression, editorElement, selection) {
     var plot = new Plot(graph.getDimension(), plottype);
     graph.addPlot(plot);
     plot.element.Expression = fixedExpr;
-//    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
-    graph.computeQuery(plot);
+    plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
+    graphData = new graphVarData(graph);
+
+    DOMGs.appendChild(plot.createPlotDOMElement(document, true, graphData));
+
+//    graph.computeQuery(plot);
     graph.recomputeVCamImage(editorElement, currentNode);
-    graph.reviseGraphDOMElement(currentNode, false, editorElement);
-//    ensureVCamPreinitForPlot(currentNode, editorElement);
-    nonmodalRecreateGraph(graph, currentNode, editorElement);
-    //    editor.replaceNode(domGraph, currentNode, currentNode.parentNode);
+    // graph.reviseGraphDOMElement(currentNode, false, editorElement);
+    // ensureVCamPreinitForPlot(currentNode, editorElement);
+    // nonmodalRecreateGraph(graph, currentNode, editorElement);
   }
   catch (e) {
     var m = e.message;
@@ -2360,7 +2366,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
     if (frmFloatLocation_pageFloats) floatLoc += "p";
     if (frmFloatLocation_topPage) floatLoc += "t";
     if (frmFloatLocation_bottomPage) floatLoc += "b";
-    if (floatLoc !== "") frame.setFrameAttribute(floatPlacement, floatLoc);    
+    if (floatLoc !== "") frame.setFrameAttribute(floatPlacement, floatLoc);
   }
 
   // BBM

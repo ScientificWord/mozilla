@@ -7,15 +7,15 @@ function GetMathAsString(math)
 {
   var ser = new XMLSerializer();
   var mathstr = ser.serializeToString(math);
-  if (math.localName != "math")
+  if (math.localName !== "math")
     mathstr = "<math>" + mathstr + "</math>";
   // risky string surgery, but it works in simple cases
   mathstr = mathstr.replace(/ _moz_dirty=\"\"/g,"");
-  mathstr = mathstr.replace(/\<mi\/\>/g,"");
+  mathstr = mathstr.replace(/<mi\/\>/g,"");
   // the following namespace problems happen with inserted computation results...need a better solution
   mathstr = mathstr.replace(/ xmlns:a0=\"http:\/\/www.w3.org\/1998\/Math\/MathML\"/g,"");
-  mathstr = mathstr.replace(/\<a0:/g,"\<");
-  mathstr = mathstr.replace(/\<\/a0:/g,"\<\/");
+  mathstr = mathstr.replace(/<a0:/g,"\<");
+  mathstr = mathstr.replace(/<\/a0:/g,"\<\/");
   return mathstr;
 }
 
@@ -60,7 +60,7 @@ function GetNumAsMathML(num)
   var res;
   var base = num.toString();
   res  = '<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow>';
-  if (base.substr(0,1) == "-") {
+  if (base.substr(0,1) === "-") {
     res += '<mo form="prefix">-</mo>';
     base = base.substr(1);
   }
