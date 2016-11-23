@@ -225,9 +225,9 @@ function OK() {
   editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   GetValuesFromDialog();
-  graph.recomputeVCamImage(editorElement, graphnode);
   graph.reviseGraphDOMElement(graphnode, false, editorElement);
   graph.setGraphAttribute("returnvalue", "true");
+  graph.recomputeVCamImage(editorElement, graphnode);
   initVCamObjects(editor.document);
   //  var editor = msiGetEditor(editorElement);
 //   changed = true;
@@ -711,6 +711,8 @@ function populateDialog (plotno) {
     {
       anID = mapPlotID(alist[i], plotno);
       if (document.getElementById(anID)) {
+        if (oldplotno >= 0)
+          graph.setPlotValue(alist[i], oldplotno, getValueFromControlByID(anID))
         theVal = graph.getPlotValue (alist[i], plotno);
         putValueToControlByID(anID, theVal);
 //        document.getElementById(anID).value = theVal;
