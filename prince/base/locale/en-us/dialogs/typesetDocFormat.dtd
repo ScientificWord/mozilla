@@ -1,3 +1,4 @@
+
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!ENTITY windowTitle.label "Document Format">
@@ -163,6 +164,7 @@
 <!ENTITY DraftTools.accesskey "d">
 <!ENTITY ShowKeys.label "Show Keys">
 <!ENTITY ShowIndexEntries.label "Show Index Entries">
+<!ENTITY UseHyperref.label "Use Hyperref package">
 <!ENTITY LineSpacing.label  "Line Spacing">
 <!ENTITY OneHalf.label  "One and a half">
 
