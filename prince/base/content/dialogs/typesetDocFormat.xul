@@ -527,7 +527,11 @@
                 </vbox -->
                 <vbox align="center">
                   <label observes="reformatok" value="&ShowIndexEntries.label;"/>
-                  <checkbox id="showidx" observes="reformatok" align="center" checked="false"  persist="checked" />
+                  <checkbox id="showidx" observes="reformatok" align="center" checked="false"  persist="checked"  oncommand="checkHRCompat(this);"/>
+                </vbox>
+                <vbox align="center">
+                  <label observes="reformatok" value="&UseHyperref.label;"/>
+                  <checkbox id="hyperref" observes="reformatok" align="center" checked="false"  persist="checked" oncommand="checkHRCompat(this);"/>
                 </vbox>
                 <vbox align="center">
                   <label value="&LineSpacing.label;"  observes="reformatok"/>

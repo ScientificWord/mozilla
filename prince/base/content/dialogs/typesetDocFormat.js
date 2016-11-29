@@ -130,6 +130,15 @@ function onPageBroadcast()
   onWindowSizeReset(false);
 }
 
+function checkHRCompat(element) {
+  var other;
+  if (element.id === 'hyperref') other = document.getElementById('showidx');
+  else if (element.id === 'showidx') other = document.getElementById('hyperref');
+  if (element.checked && other.checked) {
+    other.checked = false;
+    AlertWithTitle("Warning", GetString("ShowIdxAndHyperrefIncompatible"));
+  }
+}
 
 function enable(checkbox)
 {
@@ -741,17 +750,17 @@ function getPageLayout(node)
 function saveMisc(newNode)
 {
   try {
-    var packagecheckboxes = ["showkeys","showidx"];
+    var packagecheckboxes = ["showkeys","showidx","hyperref"];
     var len;
     var node;
     var name;
     for (i = 0, len = packagecheckboxes.length; i < len; i++)
     {
       name = packagecheckboxes[i];
+      removeExistingPreambleNodes(name, newNode);
       if (document.getElementById(name).checked)
       {
         lineend(newNode, 1);
-        removeExistingPreambleNodes(name, newNode);
         node = editor.createNode(name, newNode, 0);
         node.setAttribute("req", name);
       }
@@ -759,15 +768,16 @@ function saveMisc(newNode)
     // footnotes or endnotes?
     var fnvalue;
     fnvalue = document.getElementById("footnoteorendnote").value;
-    if (fnvalue == "end" || fnvalue == "foot")
+    removeExistingPreambleNodes('endnotes', newNode);
+    if (fnvalue == "end")
     {
       lineend(newNode, 1);
-      removeExistingPreambleNodes('endnotes', newNode);
       node = editor.createNode("endnotes", newNode, 0);
       node.setAttribute("req","endnotes");
       node.setAttribute("val", fnvalue);
     }
     // leading
+    removeExistingPreambleNodes('leading', newNode);
     if (document.getElementById("leadingcontrol").checked)
     {
       var leading = document.getElementById("leading").value;
@@ -777,7 +787,6 @@ function saveMisc(newNode)
         if (!isNaN(val))
         {
           lineend(newNode, 1);
-          removeExistingPreambleNodes('leading', newNode);
           node = editor.createNode("leading", newNode, 0);
           node.setAttribute("req","leading");
           node.setAttribute("val",val.toString()+"pt");
@@ -786,10 +795,10 @@ function saveMisc(newNode)
     }
     var linespacing;
     linespacing = document.getElementById("linespacing").value;
+    removeExistingPreambleNodes('setspacing', newNode);
     if (linespacing != "def")
     {
       lineend(newNode, 1);
-      removeExistingPreambleNodes('setspacing', newNode);
       node = editor.createNode("setspacing", newNode, 0);
       node.setAttribute("req","setspace");
       node.setAttribute("opt", linespacing)
