@@ -521,7 +521,7 @@ function doDocFormatDlg(editorElement)
   focusoffset = sel.focusOffset;
 
   window.openDialog("chrome://prince/content/typesetDocFormat.xul", "docformat",
-    "chrome,close,resizable,titlebar,dependent", msiGetActiveEditorElement);
+    "chrome,close,resizable,titlebar,dependent,alwaysraised", msiGetActiveEditorElement);
   //if (!doDocFormatData.Cancel)
   {
 		editor.incrementModificationCount(1);
