@@ -676,7 +676,7 @@ var msiResizeListener = {
       }
       else {
         setStyleAttributeOnNode(anElement, "width", newWidth + "px", this.mEditor);
-        setStyleAttributeOnNode(anElement, "height", newHeight + "px", this.mEditor);        
+        setStyleAttributeOnNode(anElement, "height", newHeight + "px", this.mEditor);
       }
       var parent = anElement.parentNode;
       if (parent.nodeName === 'graph') {
@@ -1040,7 +1040,7 @@ function msiEditorDocumentObserver(editorElement) {
 
           UpdateWindowTitle();
           // Add language tags if there is a <babel> tag
-          addLanguageTagsFromBabelTag(editor.document)
+          if (is_topLevel) addLanguageTagsFromBabelTag(editor.document)
           var htmlurlstring = editor.document.documentURI;;
           var htmlurl = msiURIFromString(htmlurlstring);
           var htmlFile = msiFileFromFileURL(htmlurl);
@@ -1433,9 +1433,9 @@ function defaultDocDir() {
   if (prefdocdirstring && prefdocdirstring.length > 0) {
     try {
       docdir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-      docdir.initWithPath(prefdocdirstring);  
-      if (!docdir.exists()) docdir.create(1,0755);     
-      if (docdir.exists()) return docdir;    
+      docdir.initWithPath(prefdocdirstring);
+      if (!docdir.exists()) docdir.create(1,0755);
+      if (docdir.exists()) return docdir;
     }
     catch(e) {
       msidump(e.message);
@@ -5049,7 +5049,7 @@ function msiSetDisplayMode(editorElement, mode) {
         dump("Trying to display current PDF file " + pdffile.path + "\n");
         if (pdffile.exists()) {
           previewPDFFile(pdffile);
-          
+
           // dump("Displaying PDF file\n");
           // document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
         } else {
@@ -5476,7 +5476,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
   //  if (nodeData)
   //    element = nodeData.theNode;
 
-  if (!element.ownerDocument) 
+  if (!element.ownerDocument)
     return null;
   if (bindingParent = element.ownerDocument.getBindingParent(element))
     return msiCreatePropertiesObjectDataFromNode(bindingParent, editorElement,
@@ -8326,7 +8326,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id) {
         item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "');" +
           scriptString);
       }
-/* Removed temporarily because when the properties menu is accessed via Edit, the hilite is not getting cleared 
+/* Removed temporarily because when the properties menu is accessed via Edit, the hilite is not getting cleared
       if (propData.mNode && propData.mNode.setAttribute) {
         item.addEventListener("DOMMenuItemActive", function(event) {
           event.target.propertiesData.mNode.setAttribute("hilite", "1");
@@ -10115,7 +10115,7 @@ var msiCommandUpdater = {
       }
     }
     catch(e) {
-    } 
+    }
     return controller || window.controllers.getControllerForCommand(command);
   },
 
@@ -10754,7 +10754,7 @@ function openHTMLField(node) {
 function openGraphDialog(tagname, node, editorElement) {
   // non-modal dialog, the return is immediate
   var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot Dialog",
-    "chrome,close,resizable,titlebar,dependent",
+    "chrome,close,resizable,titlebar,dependent,alwaysraised",
     editorElement, "cmd_objectProperties", node);
   // why find it again???  var editorElement = msiGetActiveEditorElement();
   document.getElementById("vcamactive").setAttribute("hidden", "true");
