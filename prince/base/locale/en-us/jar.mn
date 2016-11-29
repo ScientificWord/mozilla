@@ -60,7 +60,6 @@ en-US.jar:
   locale/EditorPersonalDictionary.dtd     (dialogs/EditorPersonalDictionary.dtd)
   locale/indexentry.dtd                   (dialogs/indexentry.dtd)
   locale/intervalsAndAnimation.dtd        (dialogs/intervalsAndAnimation.dtd)
-  locale/latexcontentsline.dtd            (dialogs/latexcontentsline.dtd)
   locale/latexheaders.dtd                 (dialogs/latexheaders.dtd)
   locale/latexpagenumberstyle.dtd         (dialogs/latexpagenumberstyle.dtd)
   locale/MapMuPADName.dtd                 (dialogs/MapMuPADName.dtd)
