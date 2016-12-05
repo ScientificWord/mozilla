@@ -886,7 +886,7 @@ function msiGetPrimaryEditorElementForWindow(theWindow) {
     }
     return theEditor;
   } else {
-    return msiGetEditorElement();
+    return null; // msiGetEditorElement();<--- doesn't exist!
   }
 }
 function msiIsTopLevelEditor(editorElement) {
@@ -898,7 +898,7 @@ function msiGetTopLevelWindow(currWindow)
   {
     if (!currWindow)
       currWindow = window.document.defaultView;
-    if ('ownerDocument' in currWindow)
+    if ('ownerDocument' in currWindow && currWindow.ownerDocument)
       currWindow = currWindow.ownerDocument.defaultView;
     if (currWindow.parent && currWindow.parent !== currWindow)
       return msiGetTopLevelWindow(currWindow.parent);
@@ -11412,7 +11412,9 @@ function xmlFragToTeX(intermediateString) {
   return retStr;
 }
 function getChildByTagName(anElement, tagName) {
-  var elements = anElement.getElementsByTagName(tagName);
+  var elements;
+  if (!anElement || !(anElement.getElementsByTagName))
+    elements = anElement.getElementsByTagName(tagName);
   if (elements && elements.length > 0)
     return elements[0];
   return null;
