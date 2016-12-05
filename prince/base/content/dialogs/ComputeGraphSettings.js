@@ -97,7 +97,7 @@ function Startup(){
     plotNumControl.max = numPlots;
     plotNumControl.valueNumber = 1;
     firstActivePlot = getPlotInternalNum(1);  //get first active plot
-    graph["plotnumber"] = firstActivePlot.toString();
+    graph.plotnumber = firstActivePlot.toString();
     plot = graph.plots[firstActivePlot];
     graph.currentDisplayedPlot = -1;  //initialize to -1 so that populateDialog will execute (so that currentDisplayedPlot != plotnum)
     // some attributes can't be found as values of dialog elements
@@ -116,38 +116,14 @@ function Startup(){
       }
     }
     catch(e) {
-      msidump(e.messsage);
+      msidump(e.message);
     }
     document.getElementById("defaultCameraCheckbox").checked = !graph.cameraValuesUserSet();
     document.getElementById("defaultviewintervals").checked = !graph.viewRangesUserSet();
 
-    initKeyList();
-
-    graphEditorControl = document.getElementById("plotDlg-content-frame");
-    graphEditorControl.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : msiEditorDocumentObserverG}];
-    graphEditorControl.mbSinglePara = true;
-    graphEditorControl.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
-    theStringSource = graph.plots[firstActivePlot].element["Expression"];
-    var editorInitializer = new msiEditorArrayInitializer();
-    editorInitializer.addEditorInfo(graphEditorControl, theStringSource, true);
-
+    // initKeyList();
+    initializePlotEditors(firstActivePlot);
     captionnode = getFirstElementByTagName(graphnode,"caption");
-
-    radiusEditorControl = document.getElementById("plotDlg-tube-radius");
-    radiusEditorControl.mbSinglePara = true;
-    radiusEditorControl.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
-    var ptype = graph.getPlotValue ("PlotType", firstActivePlot);
-    if (ptype == "tube") {
-      theStringSource = graph.plots[firstActivePlot].getPlotValue("TubeRadius");
-      if (!theStringSource || theStringSource.length === 0) {
-        theStringSource = GetComputeString("Math.emptyForInput");
-      }
-    } else {
-      theStringSource = GetComputeString("Math.emptyForInput");
-    }
-    editorInitializer.addEditorInfo(radiusEditorControl, theStringSource, true);
-
-    editorInitializer.doInitialize();
 
     testUseSignificantDigits();
     // Caption placement
@@ -159,12 +135,41 @@ function Startup(){
   }
 }
 
+function initializePlotEditors(plotnum, contentsOnly) {
+  var theStringSource, graphEditorControl, radiusEditorControl, editorInitializer, ptype, editorInitializer;
+  graphEditorControl = document.getElementById("plotDlg-content-frame");
+  graphEditorControl.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : msiEditorDocumentObserverG}];
+  graphEditorControl.mbSinglePara = true;
+  graphEditorControl.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
+  theStringSource = graph.plots[plotnum].element.Expression;
+  editorInitializer = new msiEditorArrayInitializer();
+  editorInitializer.addEditorInfo(graphEditorControl, theStringSource, true);
+
+
+  radiusEditorControl = document.getElementById("plotDlg-tube-radius");
+  radiusEditorControl.mbSinglePara = true;
+  radiusEditorControl.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
+  ptype = graph.getPlotValue ("PlotType", plotnum);
+  if (ptype === "tube") {
+    theStringSource = graph.plots[plotnum].getPlotValue("TubeRadius");
+    if (!theStringSource || theStringSource.length === 0) {
+      theStringSource = GetComputeString("Math.emptyForInput");
+    }
+  } else {
+    theStringSource = GetComputeString("Math.emptyForInput");
+  }
+  editorInitializer.addEditorInfo(radiusEditorControl, theStringSource, true);
+  editorInitializer.doInitialize();
+}
+
+
 // This part pastes data into the editor after the editor has started.
 // implements nsIObserver
 var msiEditorDocumentObserverG = {
   observe: function (aSubject, aTopic, aData) {
+    var plotno;
     if (aTopic === "obs_documentCreated") {
-      var plotno = Number(graph["plotnumber"]);
+       plotno = Number(graph.plotnumber);
       //      var editor = GetCurrentEditor();
       //      editor.addOverrideStyleSheet("chrome://editor/content/MathVarsDialog.css");
       populateDialog(plotno);
@@ -294,8 +299,8 @@ function GetValuesFromDialog(){
   // already saved.
   var plotno = Number(graph.getGraphAttribute("plotnumber"));
   var plot = graph.plots[plotno];
-  var alist  = plot.plotAttributeList();
   if (!plot) return;
+  var alist  = plot.plotAttributeList();
   var dim    = graph.getDimension();
   for (var i=0; i<alist.length; i++) {
     anID = mapPlotID(alist[i], plotno);
@@ -488,17 +493,108 @@ function addPlotDialogContents () {
   populateDialog (plotnum);
 }
 
-//// This is the callback for the command button to edit a plot
-//// on entry, the "plotnumber" widget has the plot number of the items to be edited.
-//// on exit, the ComputePlotSettings.xul dialog has saved the new data
-//function formatPlot () {
-//  // only open one dialog per window
-//  var count = document.getElementById("plotnumber").valueNumber;
-//  graph.setGraphAttribute("plotnumber", getPlotInternalNum(count));
-//  window.openDialog("chrome://prince/content/ComputePlotSettings.xul",
-//                    "Plot_Settings", "chrome,close,titlebar,dependent,resizable",
-//                    graph, window, window.arguments[2]);
-//}
+function fromDialogToPlot( plotnum ) {
+  var editorControl = document.getElementById("plotDlg-content-frame"),
+    doc = editorControl.contentDocument,
+    math = doc.getElementsByTagName("math")[0],
+    radiusControl = document.getElementById("plotDlg-tube-radius"),
+    radiusStringSource, radiusMath, radiusEditor,
+    editor = msiGetEditor(editorControl),
+    theStringSource = graph.ser.serializeToString(math),
+    doit = true,
+    ptype="Unknown",
+    alist = graph.plotAttributeList(plotnum),
+    anID, theVal, str;
+
+  ptype = graph.getPlotValue ("PlotType", plotnum);
+  for (var i = 0; i < alist.length; ++i)
+  {
+    anID = mapPlotID(alist[i], plotnum);
+    if (document.getElementById(anID)) {
+      graph.setPlotValue(alist[i], plotnum, getValueFromControlByID(anID));
+    }
+  }
+
+  graph.plots[plotnum].element["Expression"]=theStringSource;
+  radiusEditor = msiGetEditor(radiusControl);
+  radiusMath = radiusControl.contentDocument.getElementsByTagName("math")[0];
+  if (ptype === "tube")
+  {
+    radiusStringSource = graph.ser.serializeToString(radiusMath);
+    graph.plots[plotnum].element["TubeRadius"] = radiusStringSource;
+  }
+
+}
+
+
+function replaceMathNodeWithText(editor, math, source) {
+  if (!math) return;
+  var mathParent = math.parentNode, mathOffset
+  if (mathParent) {
+    mathOffset = offsetOfChild(mathParent, math);
+    mathParent.removeChild(math);
+    insertXML( editor, '<dummy>'+source+'</dummy>', mathParent, mathOffset, false);
+  }
+}
+
+// plotnum is the number of an *existing* plot
+function fromPlotToDialog( plotnum ) {
+  var ptype = graph.getPlotValue ("PlotType", plotnum),
+    editorControl = document.getElementById("plotDlg-content-frame"),
+    doc = editorControl.contentDocument,
+    editor = msiGetEditor(editorControl),
+    math = doc.getElementsByTagName("math")[0], // math is presumably just an input box initially.
+    dim = graph.getDimension(),
+    animatevalue = graph.getPlotValue ("Animate",plotnum),
+    ptype = graph.getPlotValue ("PlotType", plotnum),
+    aiMethod = (ptype === "approximateIntegral") ? graph.getPlotValue("AIMethod", plotnum) : "",
+    plotml = document.getElementById("plotnumber"),
+    alist = graph.plotAttributeList(plotnum),
+    anID, theVal, i, math, mathparent, mathoffset, theStringSource,
+    radiusControl = document.getElementById("plotDlg-tube-radius"),
+    radiusStringSource, radiusMath, radiusEditor;
+
+  graph.currentDisplayedPlot = plotnum;
+  graph["plotnumber"] = String(plotnum);
+  theStringSource = graph.plots[plotnum].element["Expression"];
+  replaceMathNodeWithText(editor, math, theStringSource);
+   // Still need to do this for tube plot radius
+
+  if (ptype == "tube")
+  {
+    radiusStringSource = graph.plots[plotnum].getPlotValue("TubeRadius");
+    if (!radiusStringSource || radiusStringSource.length === 0) {
+      radiusStringSource = GetComputeString("Math.emptyForInput");
+    }
+    radiusEditor = msiGetEditor(radiusControl);
+  }
+  try
+  {
+    // handle the top descriptor
+    populateDescription ("dimension", String(dim));
+    hideShowControls(dim, ptype, graph.isAnimated(), aiMethod)
+
+    if (dim === 3) {
+      populatePopupMenu ("pt3d", ptype);
+    } else {
+      populatePopupMenu ("pt2d", ptype);
+    }
+    document.getElementById("animate").checked = (animatevalue === "true");
+    plotml.valueNumber = getActivePlotNumber(plotnum);
+    for (i = 0; i < alist.length; ++i)
+    {
+      anID = mapPlotID(alist[i], plotnum);
+      if (document.getElementById(anID)) {
+        theVal = graph.getPlotValue (alist[i], plotnum);
+        putValueToControlByID(anID, theVal);
+      }
+    }
+  }
+  catch (e)
+  {
+    msidump("fromPlotToDialog: " + e.message + "\n");
+  }
+}
 
 // Delete a plot and set the dialog to the next available plot
 function deletePlot () {
@@ -604,202 +700,13 @@ function populateDialog (plotno) {
   {
     var oldplotno = graph.currentDisplayedPlot;
     if ((plotno == oldplotno) || (plotno < 0) || plotno >= graph.getNumPlots()) return;
-    var editorControl = document.getElementById("plotDlg-content-frame");
-    var doc = editorControl.contentDocument;
-    var math = doc.getElementsByTagName("math")[0];
-    var str;
-    var radiusControl = document.getElementById("plotDlg-tube-radius");
-    var radiusStringSource, radiusMath, radiusEditor;
-    var editor = msiGetEditor(editorControl);
-    var theStringSource = graph.ser.serializeToString(math);
-//    editorControl.contentDocument.documentElement = null;
-    var doit = true;
-    var oldptype="Unknown";
-    if (oldplotno >= 0)
-    {
-      oldptype = graph.getPlotValue ("PlotType", oldplotno);
-      graph.plots[oldplotno].element["Expression"]=theStringSource;
+    if (oldplotno >= 0) {
+      fromDialogToPlot(oldplotno);
     }
-    var ptype = graph.getPlotValue ("PlotType", plotno);
-    radiusEditor = msiGetEditor(radiusControl);
-    radiusMath = radiusControl.contentDocument.getElementsByTagName("math")[0];
-    if (oldptype == "tube")
-    {
-      radiusStringSource = graph.ser.serializeToString(radiusMath);
-      if (oldplotno >= 0)
-        graph.plots[oldplotno].element["TubeRadius"] = radiusStringSource;
-    }
-    graph["plotnumber"] = String(plotno);
-    theStringSource = graph.plots[plotno].element["Expression"];
-    if (!theStringSource || (theStringSource.length === 0))
-    {
-      theStringSource = GetComputeString("Math.emptyForInput");
-    }
-    while (math.firstChild)
-    {
-      math.removeChild(math.firstChild);
-    }
-//    insertXML(editor, theStringSource, math, 0, false);
-    editor.addInsertionListener(invisibleMathOpFilter);   //in plotDlgUtils.js
-    editor.insertHTMLWithContext(theStringSource, "", "", "", null, math, 0, false);
-    editor.removeInsertionListener(invisibleMathOpFilter);
-    graph.currentDisplayedPlot = plotno;
-    if (ptype == "tube")
-    {
-      radiusStringSource = graph.plots[plotno].getPlotValue("TubeRadius");
-      if (!radiusStringSource || radiusStringSource.length === 0)
-        radiusStringSource = GetComputeString("Math.emptyForInput");
-      while (radiusMath.firstChild)
-        radiusMath.removeChild(radiusMath.firstChild);
-      radiusEditor.addInsertionListener(invisibleMathOpFilter);   //in plotDlgUtils.js
-      radiusEditor.insertHTMLWithContext(radiusStringSource, "", "", "", null, radiusMath, 0, false);
-      radiusEditor.removeInsertionListener(invisibleMathOpFilter);   //in plotDlgUtils.js
-    }
+    fromPlotToDialog(plotno);
   }
-  catch (e)
-  {
-    msidump("populateDialog: " + e.message + "\n");
-  }
-
-  try
-  {
-    // handle the top descriptor
-    var dim = graph.getDimension();
-    populateDescription ("dimension", String(dim));
-    var ptype = graph.getPlotValue ("PlotType", plotno);
-    var aiMethod = (ptype === "approximateIntegral") ? graph.getPlotValue("AIMethod", plotno) : "";
-    hideShowControls(dim, ptype, graph.isAnimated(), aiMethod)
-
-    if (dim == 3) {
-//      document.getElementById("plotcs3d").collapsed = false;
-//      document.getElementById("plotcs2d").collapsed = true;
-      populatePopupMenu ("pt3d", ptype);
-    } else {
-//      document.getElementById("plotcs2d").collapsed = false;
-//      document.getElementById("plotcs3d").collapsed = true;
-      populatePopupMenu ("pt2d", ptype);
-    }
-//    if (ptype == "tube")
-//    {
-//      document.getElementById("tubeControls").collapsed = false;
-//      document.getElementById("lineAndPointLabels").collapsed = true;
-//      document.getElementById("lineAndPointControls").collapsed = true;
-//    }
-//    else
-//    {
-//      document.getElementById("tubeControls").collapsed = true;
-//      document.getElementById("lineAndPointLabels").collapsed = false;
-//      document.getElementById("lineAndPointControls").collapsed = false;
-//    }
-    var animatevalue = graph.getPlotValue ("Animate",plotno);
-    document.getElementById("animate").checked = (animatevalue == "true")?true:false;
-    //populateDescription ("animate", graph.getPlotValue ("Animate",plotno));
-
-    // put the current plot number into the dialog box
-    var plotml = document.getElementById("plotnumber");
-    plotml.valueNumber = getActivePlotNumber(plotno);
-//This happens automatically with number-type textboxes.
-//    for (var idx=0; idx<plotml.childNodes.length; idx++) {
-//      if (plotml.childNodes[idx].getAttribute("value") == plotno) {
-//        document.getElementById("plotnumber").selectedItem = plotml.childNodes[idx];
-//      }
-//    }
-
-    var alist = graph.plotAttributeList(plotno);
-    var anID, theVal;
-    for (var i = 0; i < alist.length; ++i)
-    {
-      anID = mapPlotID(alist[i], plotno);
-      if (document.getElementById(anID)) {
-        if (oldplotno >= 0)
-          graph.setPlotValue(alist[i], oldplotno, getValueFromControlByID(anID))
-        theVal = graph.getPlotValue (alist[i], plotno);
-        putValueToControlByID(anID, theVal);
-//        document.getElementById(anID).value = theVal;
-      }
-    }
-//    setColorWell("baseColorWell", makeColorVal(graph.getPlotValue("BaseColor", plotno)));
-//    setColorWell("secondColorWell", makeColorVal(graph.getPlotValue("SecondaryColor", plotno)));
-//    setColorWell("lineColorWell", makeColorVal(graph.getPlotValue("LineColor", plotno)));
-
-//**rwa - these should already have been taken carae of, during the loop through the graph's attributes***//
-//    // AXES TAB
-//    // GraphAxesScale
-//    var oldval = graph.getValue ("AxisScale");
-//    radioGroupSetCurrent ("AxisScale", oldval);
-//    // GraphEqualScaling
-//    if (document.getElementById("equalscale")) {
-//      var oldval = graph.getValue ("EqualScaling");
-//      if (oldval == "true") {
-//         document.getElementById("equalscale").checked = true;
-//      }
-//    }
-//    // GraphAxesTips
-//    if (document.getElementById("AxesTips")) {
-//      var oldval = graph.getValue ("AxesTips");
-//      if (oldval == "true") {
-//         document.getElementById("AxesTips").checked = true;
-//      }
-//    }
-//    // GraphGridLines
-//    if (document.getElementById("GridLines")) {
-//      var oldval = graph.getValue ("GridLines");
-//      if (oldval == "true") {
-//         document.getElementById("GridLines").checked = true;
-//      }
-//    }
-//    // GraphAxesType
-//    var oldval = graph.getValue ("AxesType");
-//    radioGroupSetCurrent ("axistype", oldval);
-
-    // Layout Tab
-    // printAttribute
-    var oldval = graph.getValue ("PrintAttribute");
-    radioGroupSetCurrent ("printattr", oldval);
-    // ScreenDisplay
-    var oldval = graph.getValue ("PrintFrame");
-    radioGroupSetCurrent ("screendisplayattr", oldval);
-    // GraphAxesType
-    var oldval = graph.getValue ("Placement");
-    radioGroupSetCurrent ("placement", oldval);
-
-    // Labelling Tab
-    // Captionplace
-    document.getElementById("CaptionPlace").value = graph.getValue ("CaptionPlace");
-
-//**rwa - these should already have been taken carae of, during the loop through the graph's attributes***//
-//    // View tab
-//    var camLocX = graph.getValue ("CameraLocationX");
-//    var camLocY = graph.getValue ("CameraLocationY");
-//    var camLocZ = graph.getValue ("CameraLocationZ");
-//    populateDescription ("CameraLocationX", camLocX);
-//    populateDescription ("CameraLocationY", camLocY);
-//    populateDescription ("CameraLocationZ", camLocZ);
-//
-//    var focalPtX = graph.getValue ("FocalPointX");
-//    var focalPtY = graph.getValue ("FocalPointY");
-//    var focalPtZ = graph.getValue ("FocalPointZ");
-//    populateDescription ("FocalPointX", focalPtX);
-//    populateDescription ("FocalPointY", focalPtY);
-//    populateDescription ("FocalPointZ", focalPtZ);
-//
-//    var upVecX = graph.getValue ("UpVectorX");
-//    var upVecY = graph.getValue ("UpVectorY");
-//    var upVecZ = graph.getValue ("UpVectorZ");
-//    populateDescription ("UpVectorX", upVecX);
-//    populateDescription ("UpVectorY", upVecY);
-//    populateDescription ("UpVectorZ", upVecZ);
-//
-//    var va = graph.getValue ("ViewingAngle");
-//    var op = graph.getValue ("OrthogonalProjection");
-//    var ku = graph.getValue ("KeepUp");
-//    populateDescription ("ViewingAngle", va);
-//    document.getElementById("OrthogonalProjection").checked = (op == "true")?true:false;
-//    document.getElementById("KeepUp").checked = (ku == "true")?true:false;
-  }
-  catch (e)
-  {
-    msidump("populateDialog: " + e.message + "\n");
+  catch(e) {
+    msidump(e.message);
   }
 }
 
@@ -834,38 +741,6 @@ function radioGroupSetCurrent (elemID, oldval) {
     }
   }
 }
-
-//function needTwoVars (plotno) {
-//  var dim  = graph.getValue ("Dimension");
-//  var pt   = graph.getPlotValue ("PlotType", plotno);
-//  var anim = graph.getPlotValue ("Animate",plotno);
-//  var nvars = PlotVarsNeeded (dim, pt, anim);
-//  return (nvars > 1);
-///*                                                                                               */
-///*                                                                                               */
-///*   if (anim == "true") return true;                                                            */
-///*   if (pt == "curve") return false;                                                            */
-///*   if (dim[0] == "3") return true;                                                             */
-///*   if ((pt == "rectangular") || (pt == "parametric") || (pt == "conformal") || (pt == "polar") */
-///*       || (pt == "approximateIntegral"))                                                       */
-///*     return false;                                                                             */
-///*   return true;                                                                                */
-//}
-//
-//function needThreeVars (plotno) {
-//  var dim  = graph.getValue ("Dimension");
-//  var pt   = graph.getPlotValue ("PlotType", plotno);
-//  var anim = graph.getPlotValue ("Animate", plotno);
-//  var nvars = PlotVarsNeeded (dim, pt, anim);
-//  return (nvars > 2);
-///*                                                                         */
-///*   if ((dim[0] == "2") && (anim != "true")) return false;                */
-///*   if ((pt == "rectangular") || (pt == "parametric") || (pt == "tube")   */
-///*      || (pt == "spherical") || (pt == "cylindrical")|| (pt == "curve")) */
-///*     return false;                                                       */
-///*   return true;                                                          */
-//
-//}
 
 
 function initKeyList()

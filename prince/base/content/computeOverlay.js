@@ -1,7 +1,7 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
-# include productname.inc
-# ifndef PROD_SW
+#include productname.inc
+#ifndef PROD_SW
 Components.utils.import("resource://app/modules/computelogger.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
@@ -9,7 +9,11 @@ Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 var msiEvaluateCommand = {
   isCommandEnabled: function (aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    return (isLicensed() && theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
+    return (isLicensed() && theEditorElement && msiGetEditor(theEditorElement) &&
+      msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) &&
+      (isInMath(theEditorElement) || aCommand === "cmd_MSIComputeFillMatrix" || aCommand === "cmd_MSIComputeRandomMatrix" ||
+      aCommand === "cmd_MSIComputeRandomNumbers" || (aCommand === "cmd_MSIComputePassthru" &&
+      msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
   },
   getCommandStateParams: function (aCommand, aParams, editorElement) {},
   doCommandParams: function (aCommand, aParams, editorElement) {},
@@ -21,7 +25,11 @@ var msiEvaluateCommand = {
 var msiComputeStopCommand = {
   isCommandEnabled: function (aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    return (isLicensed() && theEditorElement && msiGetEditor(theEditorElement) && msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) || aCommand == "cmd_MSIComputeFillMatrix" || aCommand == "cmd_MSIComputeRandomMatrix" || aCommand == "cmd_MSIComputeRandomNumbers" || (aCommand == "cmd_MSIComputePassthru" && msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
+    return (isLicensed() && theEditorElement && msiGetEditor(theEditorElement) &&
+      msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) && (isInMath(theEditorElement) ||
+      aCommand === "cmd_MSIComputeFillMatrix" || aCommand === "cmd_MSIComputeRandomMatrix" ||
+      aCommand === "cmd_MSIComputeRandomNumbers" || (aCommand === "cmd_MSIComputePassthru" &&
+      msiGetEditor(theEditorElement).selection && (!msiGetEditor(theEditorElement).selection.isCollapsed))));
   },
   getCommandStateParams: function (aCommand, aParams, editorElement) {},
   doCommandParams: function (aCommand, aParams, editorElement) {},
@@ -45,11 +53,13 @@ var msiComputeStopCommand = {
 var msiDefineCommand = {
   isCommandEnabled: function (aCommand, dummy) {
     var editorElement = msiGetActiveEditorElement();
-    return (isLicensed() && editorElement && msiGetEditor(editorElement) && msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement) && (isInMath(editorElement) || aCommand == "cmd_MSIComputeShowDefs" || aCommand == "cmd_MSIComputeMapMuPADName" ||
+    return (isLicensed() && editorElement && msiGetEditor(editorElement) && msiIsDocumentEditable(editorElement) &&
+      msiIsEditingRenderedHTML(editorElement) && (isInMath(editorElement) || aCommand === "cmd_MSIComputeShowDefs" ||
+      aCommand === "cmd_MSIComputeMapMuPADName" ||
       //aCommand == "cmd_MSI/ComputeUserSettings" ||
-      aCommand == "cmd_MSIComputeClearDefs" ||
+      aCommand === "cmd_MSIComputeClearDefs" ||
       //aCommand == "cmd_MSIComputeSettings" ||
-      aCommand == "cmd_MSIComputeSwitchEngines"));
+      aCommand === "cmd_MSIComputeSwitchEngines"));
   },
   getCommandStateParams: function (aCommand, aParams, editorElement) {},
   doCommandParams: function (aCommand, aParams, editorElement) {},
@@ -331,7 +341,7 @@ function doComputeCommand2(event, cmd, editorElement, cmdHandler ) {
   var editor = msiGetEditor(editorElement);
   var inPlace = false;
   if (editor)
-    inPlace = (getOS(window) == "osx") ? (editor.isMetaDown) : (editor.isCtrlDown);
+    inPlace = (getOS(window) === "osx") ? (editor.isMetaDown) : (editor.isCtrlDown);
   doComputeCommand(cmd, editorElement, cmdHandler, inPlace);
 }
 
@@ -974,10 +984,10 @@ function GetCurrentEngine() {
       initEnginePrefs(compsample);
     } catch (e) {
       var msg_key;
-      if (e.result == Components.results.NS_ERROR_NOT_AVAILABLE) msg_key = "Error.notavailable";
-      else if (e.result == Components.results.NS_ERROR_FILE_NOT_FOUND) msg_key = "Error.notfound";
-      else if (e.result == Components.results.NS_ERROR_NOT_INITIALIZED) msg_key = "Error.notinitialized";
-      else if (e.result == Components.results.NS_ERROR_FAILURE) msg_key = "Error.failure";
+      if (e.result === Components.results.NS_ERROR_NOT_AVAILABLE) msg_key = "Error.notavailable";
+      else if (e.result === Components.results.NS_ERROR_FILE_NOT_FOUND) msg_key = "Error.notfound";
+      else if (e.result === Components.results.NS_ERROR_NOT_INITIALIZED) msg_key = "Error.notinitialized";
+      else if (e.result === Components.results.NS_ERROR_FAILURE) msg_key = "Error.failure";
       else throw e;
       AlertWithTitle(GetComputeString("Error.title"), GetComputeString(msg_key));
     }
@@ -998,7 +1008,7 @@ function GetCurrentEngine() {
 
 function postDialogTimerCallback(editorElement, obj) {
   dump("Hit postDialogTimerCallback!\n");
-  if (obj == null) {
+  if (obj === null) {
     dump("No object passed in to postDialogTimerCallback!\n");
     return;
   }
@@ -1019,18 +1029,18 @@ function initEnginePrefs(currEngine) {
     else val = 0;
     var eng = GetCurrentEngine();
     eng.setUserPrefByName("Default_matrix_delims", val);
-  
+
     val = prefs.getBoolPref("swp.user.loge");
     eng.setUserPrefByName("log_is_base_e", val);
-    
+
     var derivformat = prefs.getCharPref("swp.user.derivformat");
     val = 0;
-    if (derivformat = "derivformat_d") val = 1;  // d/dx
-    else if (derivformat = "derivformat_D") val = 2;
-    else if (derivformat = "derivformat_primes") val = 3;
-    else if (derivformat = "derivformat_dots") val = 4; 
+    if (derivformat === "derivformat_d") val = 1;  // d/dx
+    else if (derivformat === "derivformat_D") val = 2;
+    else if (derivformat === "derivformat_primes") val = 3;
+    else if (derivformat === "derivformat_dots") val = 4;
     eng.setUserPrefByName("Default_derivative_format", val);
-    
+
     val =  prefs.getBoolPref("swp.user.mixednum");
     eng.setUserPrefByName("Output_Mixed_Numbers", val);
 
@@ -1042,9 +1052,9 @@ function initEnginePrefs(currEngine) {
 
     val = prefs.getIntPref("swp.user.lowerthreshold");
     eng.setUserPrefByName("SciNote_lower_thresh", val);
-    
 
-    
+
+
   // Do we need to set all the other engine settings. This is the only one that I
   // know of that needs translation from strings to integers. BBM
   // imagi
@@ -1075,9 +1085,9 @@ function GetRHS(math) {
   var ch = last_child(math);
   var mathout = math.cloneNode(false);
   while (ch) {
-    if (ch.nodeType == Node.ELEMENT_NODE && ch.localName == "mo") {
+    if (ch.nodeType === Node.ELEMENT_NODE && ch.localName === "mo") {
       var op = ch.firstChild;
-      if (op.nodeType == Node.TEXT_NODE && op.data == "=") {
+      if (op.nodeType === Node.TEXT_NODE && op.data === "=") {
         var m = node_after(ch);
         while (m) {
           var cpy = m.cloneNode(true);
@@ -1094,7 +1104,7 @@ function GetRHS(math) {
 
 function isAChildOf(node, parent) {
   while (node) {
-    if (node == parent) {
+    if (node === parent) {
       return true;
     } else {
       node = node.parentNode;
@@ -1104,12 +1114,13 @@ function isAChildOf(node, parent) {
 }
 
 function isEqualSign(node) {
-  if (node != null && node.nodeType == Node.ELEMENT_NODE && node.localName == "mo") {
+  if (node != null && node.nodeType === Node.ELEMENT_NODE && node.localName === "mo") {
     var op = node.firstChild;
-    if (op != null && op.nodeType == Node.TEXT_NODE && op.data == "=") return true;
+    if (op != null && op.nodeType === Node.TEXT_NODE && op.data === "=") return true;
   }
   return false;
 }
+
 
 function FindLeftEndOfSide(mathElement, node) {
   // find left end of mathElement containing the node
@@ -1120,7 +1131,7 @@ function FindLeftEndOfSide(mathElement, node) {
     if (isEqualSign(m)) {
       leftEnd = m.nextSibling;
     }
-    m = m.nextSibling;;
+    m = m.nextSibling;
   }
   return leftEnd;
 }
@@ -1131,7 +1142,7 @@ function FindRightEndOfSide(mathElement, leftEnd) {
   while (next) {
     if (isEqualSign(next)) break;
     else rightEnd = next;
-    next = next.nextSibling;;
+    next = next.nextSibling;
   }
   return rightEnd;
 }
@@ -1142,7 +1153,7 @@ function CloneTheSide(mathElement, leftEnd, rightEnd) {
   while (m) {
     var cpy = m.cloneNode(true);
     mathout.appendChild(cpy);
-    if (m == rightEnd) break;
+    if (m === rightEnd) break;
     m = node_after(m);
   }
   return mathout;
@@ -1172,7 +1183,7 @@ function appendResult(result, sep, math, editorElement) {
 function GetOffset(math, node) {
   var i = 1;
   var n = math.firstChild;
-  while (n != node) {
+  while (n !== node) {
     n = n.nextSibling;
     ++i;
   }
@@ -1217,14 +1228,14 @@ function appendLabeledResult(result, label, math, editorElement) {
   var res2Loc = -1;
   var resPre;
   var resPost;
-  if (resultLoc == -1) {
+  if (resultLoc === -1) {
     res1Loc = label.search(/%res1%/);
     res2Loc = label.search(/%res2%/);
   }
   var temp;
   var space = "<hspace type='thinSpace' dim='0.17em'/>";
-  if (-1 == resultLoc) {
-    if (res1Loc == res2Loc == -1) {
+  if (-1 === resultLoc) {
+    if (res1Loc === res2Loc === -1) {
       preStr = label;
       postStr = "";
     } else { //res1 or res2 or both found
@@ -1238,7 +1249,7 @@ function appendLabeledResult(result, label, math, editorElement) {
     postStr = label.substr(resultLoc + match.length);
   }
   editor.setCaretAfterElement(math);
-  if (res2Loc == -1 && res1Loc == -1) {
+  if (res2Loc === -1 && res1Loc === -1) {
     editor.insertHTML(preStr + result + postStr);
   } else {
     resPre = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow>";
@@ -1294,7 +1305,7 @@ function doLabeledComputation(math, vars, op, labelID, editorElement) {
     msiComputeLogger.Received(out);
     appendLabeledResult(out, GetComputeString(labelID), math, editorElement);
   } catch (ex) {
-    if (ex.result == compsample.needvars) {
+    if (ex.result === compsample.needvars) {
       var o = {};
       o.mParentWin = this;
       o.theMath = math;
@@ -1332,7 +1343,7 @@ function doScalarPotential(math, op, labelID, editorElement) {
   try {
     var out = GetCurrentEngine().perform(mathstr, op);
     msiComputeLogger.Received(out);
-    if (out == "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>0</mn></mrow></math>") {
+    if (out === "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>0</mn></mrow></math>") {
       var editor = msiGetEditor(editorElement);
       editor.setCaretAfterElement(math);
       editor.insertHTML(GetComputeString("DoesNotExist"));
@@ -1454,9 +1465,9 @@ function finishVarsComputation(editorElement, o) {
   ComputeCursor(editorElement);
   try {
     var eng = GetCurrentEngine();
-    if (o.theFunc == eng.Rewrite_Equations_as_Matrix) {
+    if (o.theFunc === eng.Rewrite_Equations_as_Matrix) {
       out = eng.equationsAsMatrix(mathstr, vars);
-    } else if (o.theFunc == eng.Rewrite_Matrix_as_Equations) {
+    } else if (o.theFunc === eng.Rewrite_Matrix_as_Equations) {
       out = eng.matrixAsEquations(mathstr, vars);
     } else {
       out = eng.perform(mathstr, o.theFunc);
@@ -1500,11 +1511,11 @@ function finishVarsEvalComputation(editorElement, o) {
     //var out = o.theFunc(mathstr,vars);
     var out = "";
     var eng = GetCurrentEngine();
-    if (o.theFunc == eng.Polynomial_Collect) {
+    if (o.theFunc === eng.Polynomial_Collect) {
       out = eng.collect(mathstr, vars);
-    } else if (o.theFunc == eng.Calculus_Integrate_by_Parts) {
+    } else if (o.theFunc === eng.Calculus_Integrate_by_Parts) {
       out = eng.byParts(mathstr, vars);
-    } else if (o.theFunc == eng.Calculus_Change_Variable) {
+    } else if (o.theFunc === eng.Calculus_Change_Variable) {
       out = eng.changeVar(mathstr, vars);
     }
     msiComputeLogger.Received(out);
@@ -1544,10 +1555,10 @@ function doComputeFindExtrema(math, vars, editorElement, cmd, cmdHandler) {
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.nosol) {
+    if (ex.result === compsample.nosol) {
       appendLabel(GetComputeString("NoSolution"), math, editorElement);
       done = true;
-    } else if (ex.result == compsample.needvars) {
+    } else if (ex.result === compsample.needvars) {
       var o = {};
       o.mParentWin = this;
       o.theMath = math;
@@ -1584,10 +1595,10 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler) {
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.nosol) {
+    if (ex.result === compsample.nosol) {
       appendLabel(GetComputeString("NoSolution"), math, editorElement);
       done = true;
-    } else if (ex.result == compsample.needvars) {
+    } else if (ex.result === compsample.needvars) {
       var o = {};
       o.mParentWin = this;
       o.theMath = math;
@@ -1630,10 +1641,10 @@ function doComputeSolveInteger(math, vars, editorElement, cmd, cmdHandler) {
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.nosol) {
+    if (ex.result === compsample.nosol) {
       appendLabel(GetComputeString("NoSolution"), math, editorElement);
       done = true;
-    } else if (ex.result == compsample.needvars) {
+    } else if (ex.result === compsample.needvars) {
       var o = {};
       o.mParentWin = this;
       o.theMath = math;
@@ -1666,7 +1677,7 @@ function doComputeSolveNumeric(math, editorElement) {
     msiComputeLogger.Received(out);
     appendLabeledResult(out, GetComputeString("Solution.fmt"), math, editorElement);
   } catch (ex) {
-    if (ex.result == compsample.nosol) {
+    if (ex.result === compsample.nosol) {
       appendLabel(GetComputeString("NoSolution"), math, editorElement);
     } else {
       msiComputeLogger.Exception(ex);
@@ -1685,7 +1696,7 @@ function doComputeSolveRecursion(math, editorElement) {
     msiComputeLogger.Received(out);
     appendLabeledResult(out, GetComputeString("Solution.fmt"), math, editorElement);
   } catch (ex) {
-    if (ex.result == compsample.nosol) {
+    if (ex.result === compsample.nosol) {
       appendLabel(GetComputeString("NoSolution"), math, editorElement);
     } else {
       msiComputeLogger.Exception(ex);
@@ -1710,7 +1721,7 @@ function doComputePartialFractions(math, vars, editorElement, cmd, cmdHandler) {
     //      done = true;
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.needvars) {
+    if (ex.result === compsample.needvars) {
       var o = {};
       o.title = GetComputeString("ParFrac.title");
       o.mParentWin = this;
@@ -1749,7 +1760,7 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler) {
     //      done = true;
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.needvars) {
+    if (ex.result === compsample.needvars) {
       var o = {};
       o.title = GetComputeString("Divide.title");
       o.mParentWin = this;
@@ -1789,7 +1800,7 @@ function doComputeRoots(math, vars, editorElement, cmd, cmdHandler) {
     done = true;
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.needvars) {
+    if (ex.result === compsample.needvars) {
       var o = {};
       o.title = GetComputeString("Companion.title");
       o.mParentWin = this;
@@ -1826,7 +1837,7 @@ function doComputeSort(math, vars, editorElement, cmd, cmdHandler) {
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.needvars) {
+    if (ex.result === compsample.needvars) {
       var o = {};
       o.title = GetComputeString("Sort.title");
       o.mParentWin = this;
@@ -1863,7 +1874,7 @@ function doComputeCompanionMatrix(math, vars, editorElement, cmd, cmdHandler) {
     done = true;
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.needvars) {
+    if (ex.result === compsample.needvars) {
       var o = {};
       o.title = GetComputeString("Companion.title");
       o.mParentWin = this;
@@ -1999,10 +2010,10 @@ function doComputeSolveODEExact(math, labelID, titleID, vars, editorElement, cmd
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.nosol) {
+    if (ex.result === compsample.nosol) {
       appendLabel(GetComputeString("NoSolution"), math, editorElement);
       done = true;
-    } else if (ex.result == compsample.needivars) {
+    } else if (ex.result === compsample.needivars) {
       var o = {};
       o.title = GetComputeString(titleID);
       o.label = GetComputeString("ODE.label");
@@ -2045,10 +2056,10 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.nosol) {
+    if (ex.result === compsample.nosol) {
       appendLabel(GetComputeString("NoSolution"), math, editorElement);
       done = true;
-    } else if (ex.result == compsample.needivars) {
+    } else if (ex.result === compsample.needivars) {
       var o = {};
       o.title = GetComputeString(titleID);
       o.label = GetComputeString("ODE.label");
@@ -2089,10 +2100,10 @@ function doComputeSolveODENumeric(math, labelID, titleID, vars, editorElement, c
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.nosol) {
+    if (ex.result === compsample.nosol) {
       appendLabel(GetComputeString("NoSolution"), math, editorElement);
       done = true;
-    } else if (ex.result == compsample.needivars) {
+    } else if (ex.result === compsample.needivars) {
       var o = {};
       o.title = GetComputeString(titleID);
       o.label = GetComputeString("ODE.label");
@@ -2219,7 +2230,7 @@ function doComputeWronskian(math, vars, editorElement, cmd, cmdHandler) {
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.needvars) {
+    if (ex.result === compsample.needvars) {
       var o = {};
       o.title = GetComputeString("Wronskian.title");
       o.mParentWin = this;
@@ -2256,7 +2267,7 @@ function doComputeCharPoly(math, vars, editorElement, cmd, cmdHandler) {
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.needvars) {
+    if (ex.result === compsample.needvars) {
       var o = {};
       o.title = GetComputeString("Charpoly.title");
       o.mParentWin = this;
@@ -2340,7 +2351,7 @@ function doComputeMinPoly(math, vars, editorElement, cmd, cmdHandler) {
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
-    if (ex.result == compsample.needvars) {
+    if (ex.result === compsample.needvars) {
       var o = {};
       o.title = GetComputeString("Minpoly.title");
       o.mParentWin = this;
@@ -2432,7 +2443,7 @@ function doComputeFitCurve(math, editorElement) {
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent4("Fit Curve @ ", mathstr, o.code, o.column + "/" + o.degree);
   var label;
-  if (o.code == 2) label = GetComputeString("FitCurvePolynomial.fmt");
+  if (o.code === 2) label = GetComputeString("FitCurvePolynomial.fmt");
   else label = GetComputeString("FitCurveRegression.fmt");
   ComputeCursor(editorElement);
   try {
@@ -2559,7 +2570,7 @@ function doComputeDefine(math, editorElement) {
       done = true;
     } catch (ex) {
       RestoreCursor(editorElement);
-      if (ex.result == compsample.needsubinterp) {
+      if (ex.result === compsample.needsubinterp) {
         var o = {};
         var parentWin = msiGetParentWindowForNewDialog(editorElement);
         parentWin.openDialog("chrome://prince/content/ComputeInterpretSubscript.xul", "interpretsub", "chrome,close,titlebar,modal,resizable", o);
@@ -2666,7 +2677,7 @@ function doComputePassthru(editorElement) {
     }
     anchor = selection.anchorNode;
     focus = selection.focusNode;
-    if (anchor != focus) {
+    if (anchor !== focus) {
       dump("\nanchor != focus in passtrhu\n");
       return;
     }
@@ -2716,9 +2727,10 @@ function coalescemath(editorElement, leaveCursorAsIs) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var selection = editor.selection;
+  var element;
   if (selection) {
     var f = selection.focusNode;
-    var element = findmathparent(f);
+    element = findmathparent(f);
     if (!element) {
       f = f.previousSibling;
       element = findmathparent(f);
@@ -2729,7 +2741,7 @@ function coalescemath(editorElement, leaveCursorAsIs) {
     }
     var left = node_before(element);
     while (left) {
-      if (left.localName != "math") {
+      if (left.localName !== "math") {
         left = null;
       }
       if (left) {
@@ -2741,7 +2753,7 @@ function coalescemath(editorElement, leaveCursorAsIs) {
     }
     var right = node_after(element);
     while (right) {
-      if (right.localName != "math") {
+      if (right.localName !== "math") {
         right = null;
       }
       if (right) {
@@ -2758,7 +2770,7 @@ function coalescemath(editorElement, leaveCursorAsIs) {
 }
 
 function findtagparent(node, tag) {
-  if (!node || node.localName == tag) return node;
+  if (!node || node.localName === tag) return node;
   else return findtagparent(node.parentNode, tag);
 }
 
@@ -2768,5 +2780,5 @@ function findmathparent(node) {
 }
 
 // What is this? jcs
-// FixJS();  
+// FixJS();
 # endif
