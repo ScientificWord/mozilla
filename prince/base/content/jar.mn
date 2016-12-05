@@ -100,8 +100,6 @@ prince.jar:
   content/htmlfield.js              (dialogs/htmlfield.js)
 *  content/indexentry.xul           (dialogs/indexentry.xul)
 *  content/indexentry.js            (dialogs/indexentry.js)
-* content/latexheaders.js           (dialogs/latexheaders.js)
-* content/latexheaders.xul          (dialogs/latexheaders.xul)
 * content/latexpagenumberstyle.js   (dialogs/latexpagenumberstyle.js)
 * content/latexpagenumberstyle.xul  (dialogs/latexpagenumberstyle.xul)
 * content/MapMuPADName.xul          (dialogs/MapMuPADName.xul)
