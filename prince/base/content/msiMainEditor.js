@@ -316,9 +316,12 @@ function msiUpdateWindowTitle()
 //    SaveRecentFilesPrefs();
     // Set window title with " - Scientific WorkPlace/Word/Notebook" appended
     var xulWin = document.getElementById('prince');
-    if (!leaf) leaf="untitled";
-    document.title = leaf + xulWin.getAttribute("titlemodifierseparator") +
-                   xulWin.getAttribute("title");
+    if (xulWin) {
+
+      if (!leaf) leaf="untitled";
+      document.title = leaf + xulWin.getAttribute("titlemodifierseparator") +
+                     xulWin.getAttribute("title");
+    }
   } catch (e)
   {
     dump(e+"\n");
