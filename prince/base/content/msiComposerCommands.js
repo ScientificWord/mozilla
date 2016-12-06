@@ -1653,7 +1653,7 @@ var msiPreviewDirectCommand =
         }
       },1000);
 #else
-      try { 
+      try {
         PrintUtils.printPreview(window.onEnterPP, window.exitPP);
       }
       catch (e) {
@@ -1939,7 +1939,7 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
     // Check that the user did not leave the name as 'untitlednnn'
     while (forbiddenNames.test(fp.file.leafName) && dialogResult.filepickerClick != msIFilePicker.returnCancel) {
       prompts.alert(null, "Reserved name", 'File names of "Untitled" followed by a number are reserved. Please choose another name.\n');
-      dialogResult.filepickerClick = fp.show()      
+      dialogResult.filepickerClick = fp.show()
     }
     // reset urlstring to new save location
     dialogResult.resultingURIString = fileHandler.getURLSpecFromFile(fp.file);
@@ -3722,7 +3722,7 @@ var msiCleanupCommand =
 };
 
 
-function ensurePlotIdsAreUnique(document) { 
+function ensurePlotIdsAreUnique(document) {
   var framelist, framecount, objlist, obj, i, id;
   var idlist=[];
   framelist = document.getElementsByTagName('msiframe');
@@ -3779,7 +3779,7 @@ backupfiles */
     cleanupOptions.forEach(function(val){cleanup(directory, document, val);})
   }
   // stuck in here since there is no real reason for the user not to choose it
-  ensurePlotIdsAreUnique(document); 
+  ensurePlotIdsAreUnique(document);
 }
 
 function cleanup(directory, document, option)
@@ -4365,7 +4365,7 @@ var msiCopyTeX =
   }
 };
 
-var msiHelpContents = 
+var msiHelpContents =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -4490,7 +4490,7 @@ var msiAutoSubDlgCommand =
 
 //-----------------------------------------------------------------------------------
 
-var cmdMSICopyCommand = 
+var cmdMSICopyCommand =
 {
   isCommandEnabled: function(aCommand, dummy) {
     if (getCurrentViewMode() == kDisplayModeSource) {
@@ -4529,7 +4529,7 @@ var cmdMSICopyCommand =
   }
 };
 
-var cmdMSICutCommand = 
+var cmdMSICutCommand =
 {
   isCommandEnabled: function(aCommand, dummy) {
     if (getCurrentViewMode() == kDisplayModeSource) {
@@ -4570,7 +4570,7 @@ var cmdMSICutCommand =
 };
 
 
-var cmdMSIPasteCommand = 
+var cmdMSIPasteCommand =
 {
   isCommandEnabled: function(aCommand, dummy) {
     var editor = msiGetCurrentEditor();
@@ -4606,7 +4606,7 @@ var cmdMSIPasteCommand =
   }
 };
 
-var cmdMSIUndoCommand = 
+var cmdMSIUndoCommand =
 {
   isCommandEnabled: function(aCommand, dummy) {
     if (getCurrentViewMode() == kDisplayModeSource) {
@@ -4654,7 +4654,7 @@ var cmdMSIUndoCommand =
   }
 };
 
-var cmdMSIRedoCommand = 
+var cmdMSIRedoCommand =
 {
  isCommandEnabled: function(aCommand, dummy) {
     if (getCurrentViewMode() == kDisplayModeSource) {
@@ -4688,10 +4688,10 @@ var cmdMSIRedoCommand =
 };
 
 
-var cmdMSIselectAllCommand = 
+var cmdMSIselectAllCommand =
 {
   isCommandEnabled: function(aCommand, dummy) {
-    return true;  
+    return true;
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {
@@ -4718,7 +4718,7 @@ var cmdMSIselectAllCommand =
   }
 };
 
-// var cmdMSIpasteNoFormattingCommand = 
+// var cmdMSIpasteNoFormattingCommand =
 // {
 //   isCommandEnabled: function(aCommand, dummy) {
 //     if (getCurrentViewMode() == kDisplayModeSource) {
@@ -4731,11 +4731,11 @@ var cmdMSIselectAllCommand =
 //     return editor.canCut();
 //   }
 //   return false;
-  
+
 //   }
 // };
 
-var cmdMSIDeleteCommand = 
+var cmdMSIDeleteCommand =
 {
   isCommandEnabled: function(aCommand, dummy) {
     if (getCurrentViewMode() == kDisplayModeSource) {
@@ -4766,7 +4766,7 @@ var cmdMSIDeleteCommand =
 
       sourceEditor.replaceSelection("");
     }
-  }  
+  }
 };
 
 var msiFindCommand =
@@ -6259,44 +6259,21 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
   var dimsStr, contentStr;
-  if (dialogData.spaceType == "normalSpace") editor.insertText(" ");
-//  var dimensionsFromSpaceType =
-//  {
-////    requiredSpace:
-////    nonBreakingSpace:
-//    emSpace:        "1em",
-//    twoEmSpace:       "2em",
-//    thinSpace:      "0.17em",
-//    thickSpace:     "0.5em",
-//    italicCorrectionSpace: "0.083en",
-//    negativeThinSpace:   "0.0em",
-//    zeroSpace:           "0.0em",
-//    noIndent:            "0.0em"
-//  };
-//  var contentFromSpaceType =
-//  {
-//    requiredSpace:     "&#x205f;",  //MEDIUM MATHEMATICAL SPACE in Unicode?
-//    nonBreakingSpace:  "&#x00a0;",
-//    emSpace:           "&#x2003;",
-//    twoEmSpace:          "&#x2001;",  //EM QUAD
-//    thinSpace:         "&#x2009;",
-//    thickSpace:        "&#x2002;",  //"EN SPACE" in Unicode?
-//    italicCorrectionSpace:  "&#x200a;",  //the "HAIR SPACE" in Unicode?
-//    zeroSpace:          "&#x200b;"
-////    negativeThinSpace:
-////    noIndent:
-//  };
-//  var specialShowInvisibleChars =
-//  {
-//    noIndent:          "&#x2190;"  //left arrow
-//  };
-
- // editor.deleteSelection(1);
   var parent = editor.selection.focusNode;
   var offset = editor.selection.focusOffset;
   var node = null;
 
-  try {
+  if (dialogData.spaceType === "normalSpace") {
+    editor.insertText(" ");
+    return;
+  }
+  else if (dialogData.spaceType === "nonBreakingSpace") {
+    node = editor.document.createElement('nbspace');
+    editor.insertElementAtSelection(node, true);
+    node.appendChild(editor.document.createTextNode("~"));
+    return;
+  }
+ try {
     if (isInMath(editorElement)) {
        node = editor.document.createElementNS(mmlns, 'mspace');
        node.setAttribute('width', "thickmathspace");
@@ -11249,7 +11226,7 @@ var msiShowTeXErrorsCommand =
               // start with i=1 since the above text always starts with line break
               for (i = 1; i < lines.length; i++) {
                 if (/\S/.test(lines[i])) {
-                  message += lines[i] + '\n';                  
+                  message += lines[i] + '\n';
                 }
                 else break;
               }
@@ -11337,7 +11314,7 @@ var msiShowTeXFileCommand =
                          "_blank",
                          "status,dependent,minimizable,resizable,scrollbars=1,dialog=1,close=1,",
                          resurl, 'charset=UTF-8', null);
-          }  
+          }
         }
       }
     }

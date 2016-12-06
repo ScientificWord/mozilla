@@ -1,4 +1,4 @@
-<xsl:stylesheet version="1.1" 
+<xsl:stylesheet version="1.1"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
@@ -22,14 +22,21 @@
 	  <xsl:otherwise/>
 	</xsl:choose>
 </xsl:template>
-		  
+
+<xsl:template match="html:nbspace" mode="verb">
+	<xsl:text  xml:space="preserve">&#xA0;</xsl:text>
+</xsl:template>
+
+<xsl:template match="html:nbspace">
+	<xsl:text>~</xsl:text>
+</xsl:template>
+
 <xsl:template match="html:hspace">
   <xsl:choose>
     <xsl:when test="@type='normal'"> </xsl:when>
 	  <xsl:when test="@type='requiredSpace'">\ </xsl:when>
 	  <xsl:when test="@type='emSpace'">\quad </xsl:when>
 	  <xsl:when test="@type='twoEmSpace'">\qquad </xsl:when>
-	  <xsl:when test="@type='nonBreakingSpace'">~</xsl:when>
 	  <xsl:when test="@type='thickSpace'">\thickspace </xsl:when>
 	  <xsl:when test="@type='thinSpace'">\thinspace </xsl:when>
 	  <xsl:when test="@type='italicCorrectionSpace'">\/</xsl:when>
@@ -73,7 +80,7 @@
 	</xsl:choose>
 </xsl:template>
 
-		 
+
 <xsl:template match="html:vspace">
   	<xsl:choose>
 	  <xsl:when test="@type='smallSkip'">\smallskip </xsl:when>
@@ -118,7 +125,7 @@
 	    <xsl:text> \\[</xsl:text>
       <xsl:value-of select="@dim"/>
       <xsl:text>]</xsl:text>
-      <xsl:value-of select="$newline"/> 
+      <xsl:value-of select="$newline"/>
     </xsl:when>
 	  <xsl:otherwise>
       <xsl:text>\\</xsl:text>

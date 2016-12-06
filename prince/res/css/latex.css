@@ -162,6 +162,16 @@ body[showinvis="true"] hspace {
   border-bottom: thin solid;
 }
 
+nbspace {
+  color: white;
+}
+
+body[showinvis="true"] nbspace {
+  color: green;
+  content: "~";
+}
+
+
 body[showinvis="true"] hspace[type="noIndent"]:before {
   border-bottom-style: none;
   content: "☒";
@@ -195,16 +205,11 @@ hspace[type="italicCorrectionSpace"] {
 }
 
 hspace[type="requiredSpace"][dim] {
-  min-width: 0.2em;
+  min-width: 0.1em;
 }
 
 hspace[type="requiredSpace"] {
   display: inline;
-}
-
-hspace[type="nonBreakingSpace"] {
-  min-width: 0.2em;
-  white-space: nowrap;
 }
 
 mspace[type="emSpace"] {
@@ -502,7 +507,7 @@ plotwrapper {
 
 /*
 mml|mi [msimathname="true"] {
-  color: gray; 
+  color: gray;
   font-style: normal;
 }
 
