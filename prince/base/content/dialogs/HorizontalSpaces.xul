@@ -59,7 +59,9 @@
 				  </rows>
 				  <columns>
 				    <column>
+              <!-- normalspace seems redundant -->
               <radio label="&normalSpace.label;" accesskey="&normalSpace.accesskey;" value="normalSpace" group="spacesRadioGroup"/>
+              <!-- normalspace about to be removed -->
               <radio label="&requiredSpace.label;" accesskey="&requiredSpace.accesskey;" value="requiredSpace" group="spacesRadioGroup"/>
               <radio label="&nonBreakingSpace.label;" accesskey="&nonBreakingSpace.accesskey;" value="nonBreakingSpace" group="spacesRadioGroup"/>
               <radio label="&emSpace.label;" accesskey="&emSpace.accesskey;" value="emSpace" group="spacesRadioGroup"/>
