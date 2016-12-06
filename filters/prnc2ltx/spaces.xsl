@@ -10,6 +10,7 @@
   <xsl:choose>
     <xsl:when test="@type='normal'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
 	  <xsl:when test="@type='requiredSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
+	  <xsl:when test="@type='nonBreakingSpace'">~</xsl:when>
 	  <xsl:when test="@type='emSpace'"><xsl:text  xml:space="preserve">  </xsl:text></xsl:when>
 	  <xsl:when test="@type='twoEmSpace'"><xsl:text  xml:space="preserve">    </xsl:text></xsl:when>
 	  <xsl:when test="@type='nonBreakingSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
