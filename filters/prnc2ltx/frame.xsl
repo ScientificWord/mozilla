@@ -162,7 +162,7 @@
        <xsl:text>\centering </xsl:text>
     </xsl:when>
     <xsl:when test="$framePosType='ft-centered'">
-      <xsl:text>\begin{center}</xsl:text>
+      <xsl:text>\newline \begin{center}</xsl:text>
     </xsl:when>
     <!-- xsl:when test="($framePosType='ft-inline') and (@frametype='image')">
        <xsl:text>\parbox[b]{</xsl:text>
