@@ -790,7 +790,7 @@ nsEventStateManager::PreHandleEvent(nsPresContext* aPresContext,
 #ifndef XP_OS2
       BeginTrackingDragGesture ( aPresContext, (nsMouseEvent*)aEvent, aTargetFrame );
 #endif
-      mLClickCount = ((nsMouseEvent*)aEvent)->clickCount;
+      mClickCount = ((nsMouseEvent*)aEvent)->clickCount;
       SetClickCount(aPresContext, (nsMouseEvent*)aEvent, aStatus);
       mNormalLMouseEventInProcess = PR_TRUE;
       break;
