@@ -687,7 +687,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   res = selection->GetIsCollapsed(&collapsed);
   if (aDestNode)
   {
-    if (aDeleteSelection && collapsed)
+    if (aDeleteSelection && !collapsed)
     {
       // Use an auto tracker so that our drop point is correctly
       // positioned after the delete.
@@ -3069,6 +3069,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromDrop(nsIDOMEvent* aDropEvent)
 
       nsCOMPtr<nsISelection> selection;
       rv = GetSelection(getter_AddRefs(selection));
+      // This selection is the *source* selection
       if (NS_FAILED(rv)) return rv;
       if (!selection) return NS_ERROR_FAILURE;
 
