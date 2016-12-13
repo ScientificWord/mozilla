@@ -1,7 +1,7 @@
 #include "msiISelection.h"
 #include "nsIPrivateDOMEvent.h"
 #include "msiIMathMLEditor.h"
-#include "../../../editor/libeditor/base/jcsDumpNode.h"
+// #include "../../../editor/libeditor/base/jcsDumpNode.h"
 
 class msiTypedSelection : public nsTypedSelection,
                           public msiISelection
@@ -10,7 +10,7 @@ public:
   msiTypedSelection();
   msiTypedSelection(nsFrameSelection *aList);
   virtual ~msiTypedSelection();
-  
+
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_MSIISELECTION
   // override nsISelection
@@ -29,20 +29,20 @@ public:
 protected:
   PRBool IsVoidOfContent(nsIDOMNode * start, PRUint32 startOff, nsIDOMNode* end, PRUint32 endOff);
   PRBool IsMouseEventActive();
-  
+
 protected:
   //nsCOMPtr<nsIDOMNode>  m_msiFocusNode;
   //nsCOMPtr<nsIDOMNode>  m_msiAnchorNode;
   //PRUint32              m_msiFocusOffset;
   //PRUint32              m_msiAnchorOffset;
-  msiAdjustCaretCB      m_adjustCaretCB; 
+  msiAdjustCaretCB      m_adjustCaretCB;
   msiSetSelectionCB     m_setSelectionCB;
   void *                m_msiEditor;
   nsCOMPtr<nsIDOMEvent> m_mouseEvent;
 };
 
 
-msiTypedSelection::msiTypedSelection() 
+msiTypedSelection::msiTypedSelection()
 : nsTypedSelection(), // m_msiFocusOffset(INVALID_OFFSET), m_msiAnchorOffset(INVALID_OFFSET),
 m_adjustCaretCB(nsnull), m_setSelectionCB(nsnull), m_msiEditor(nsnull)
 {
@@ -63,7 +63,7 @@ NS_IMPL_ISUPPORTS_INHERITED1(msiTypedSelection, nsTypedSelection, msiISelection)
 
 
 // msiISelection interface
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::GetMsiAnchorNode(nsIDOMNode* *anAnchorNode)
 {
   if (!anAnchorNode)
@@ -79,16 +79,16 @@ msiTypedSelection::GetMsiAnchorNode(nsIDOMNode* *anAnchorNode)
   return NS_OK;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::GetMsiAnchorOffset(PRUint32 *msiAnchorOffset)
 {
   if (!msiAnchorOffset)
     return NS_ERROR_NULL_POINTER;
   *msiAnchorOffset = FetchAnchorOffset();
-  return NS_OK;  
+  return NS_OK;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::GetMsiFocusNode(nsIDOMNode* *aFocusNode)
 {
   if (!aFocusNode)
@@ -101,23 +101,23 @@ msiTypedSelection::GetMsiFocusNode(nsIDOMNode* *aFocusNode)
     *aFocusNode = myFocusNode;
     NS_ADDREF(*aFocusNode);
   }
-  return NS_OK;  
+  return NS_OK;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::GetMsiFocusOffset(PRUint32 *msiFocusOffset)
 {
   if (!msiFocusOffset)
     return NS_ERROR_NULL_POINTER;
   *msiFocusOffset = FetchFocusOffset();
 
-  return NS_OK;  
+  return NS_OK;
 }
 
-NS_IMETHODIMP 
-msiTypedSelection::Set(nsIDOMNode *startNode, PRUint32 startOffset, 
-                       nsIDOMNode *endNode, PRUint32 endOffset, 
-                       nsIDOMNode *focusNode, PRUint32 focusOffset, 
+NS_IMETHODIMP
+msiTypedSelection::Set(nsIDOMNode *startNode, PRUint32 startOffset,
+                       nsIDOMNode *endNode, PRUint32 endOffset,
+                       nsIDOMNode *focusNode, PRUint32 focusOffset,
                        nsIDOMNode *anchorNode, PRUint32 anchorOffset)
 {
   if (!startNode || !endNode || !focusNode || !anchorNode)
@@ -130,14 +130,14 @@ msiTypedSelection::Set(nsIDOMNode *startNode, PRUint32 startOffset,
     return Collapse(anchorNode, anchorOffset);
   if (IsVoidOfContent(startNode, startOffset, endNode, endOffset))
     return Collapse(anchorNode, anchorOffset);
-  nsIDOMNode * newNSAnchor = nsnull;  
+  nsIDOMNode * newNSAnchor = nsnull;
   nsIDOMNode * newNSFocus = nsnull;
   PRUint32 newNSAnchorOffset(INVALID_OFFSET), newNSFocusOffset(INVALID_OFFSET);
   nsCOMPtr<nsIRangeUtils> ru;
   NS_NewRangeUtils(getter_AddRefs(ru));
   PRBool focusBeforeAnchor = ru->ComparePoints(focusNode, focusOffset, anchorNode, anchorOffset) < 0;
   if (focusBeforeAnchor)
-  { 
+  {
     newNSAnchor = endNode;
     newNSFocus = startNode;
     newNSAnchorOffset = endOffset;
@@ -166,17 +166,17 @@ msiTypedSelection::Set(nsIDOMNode *startNode, PRUint32 startOffset,
         nsDirection direction = GetDirection();
         direction = eDirNext == direction ? eDirPrevious : eDirNext;
         SetDirection(direction); //this will cause newNSAnchor to be viewed as the anchor.
-      }  
+      }
     }
      if (NS_SUCCEEDED(res))
      {
         if (FetchFocusNode() ==  newNSFocus && FetchFocusOffset() == newNSFocusOffset) // nothing to do
           res = NS_OK; //ljh 6/06: Extend returns an error in this case which seems wrong -- I don't want to change it's behavior because of other clients.
-        else  
+        else
           res =  nsTypedSelection::Extend(newNSFocus, newNSFocusOffset);
-     } 
+     }
   }
-  else 
+  else
     res = NS_ERROR_FAILURE;
   if (NS_SUCCEEDED(res))
   {
@@ -190,19 +190,19 @@ msiTypedSelection::Set(nsIDOMNode *startNode, PRUint32 startOffset,
     else
       SyncMSIwithNS();
   }
-  return res;  
+  return res;
 }
 
 NS_IMETHODIMP
-msiTypedSelection::InitalizeCallbackFunctions(msiAdjustCaretCB adjustCaretCB, 
-                                              msiSetSelectionCB setSelectionCB, 
+msiTypedSelection::InitalizeCallbackFunctions(msiAdjustCaretCB adjustCaretCB,
+                                              msiSetSelectionCB setSelectionCB,
                                               void * msiEditor)
 {
   m_msiEditor = msiEditor;
   m_adjustCaretCB = adjustCaretCB;
   m_setSelectionCB = setSelectionCB;
   return NS_OK;
-}  
+}
 
 NS_IMETHODIMP
 msiTypedSelection::SetDOMEvent(nsIDOMEvent * mouseEvent)
@@ -217,22 +217,22 @@ msiTypedSelection::SetDOMEvent(nsIDOMEvent * mouseEvent)
 // end msiISelection interface
 
 // overwrite of nsISelection
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::Collapse(nsIDOMNode *parentNode, PRInt32 offset)
-{ 
+{
   nsresult res(NS_OK);
   nsCOMPtr<nsIDOMNode> adjustNode(parentNode);
   PRInt32 adjustOffset(offset);
   if (m_adjustCaretCB && IsMouseEventActive() && m_msiEditor)
     res = m_adjustCaretCB(m_msiEditor, m_mouseEvent, adjustNode, adjustOffset);
-  if (NS_SUCCEEDED(res))  
+  if (NS_SUCCEEDED(res))
     res =  nsTypedSelection::Collapse(adjustNode, adjustOffset);
   SyncMSIwithNS();
   SetDOMEvent(nsnull); // only use a mouse event once
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::Extend(nsIDOMNode *parentNode, PRInt32 offset)
 {
   //printf("\njcs --- msiTypedSelection::Extend\n");
@@ -249,7 +249,7 @@ msiTypedSelection::Extend(nsIDOMNode *parentNode, PRInt32 offset)
   if (NS_SUCCEEDED(res) && m_setSelectionCB && m_msiEditor)
     res = m_setSelectionCB(m_msiEditor, adjustNode, adjustOffset, PR_TRUE, preventDefault);
   if (!preventDefault)
-  {    
+  {
     res =  nsTypedSelection::Extend(adjustNode, adjustOffset);
     SyncMSIwithNS();
   }
@@ -259,39 +259,39 @@ msiTypedSelection::Extend(nsIDOMNode *parentNode, PRInt32 offset)
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::CollapseToStart(void)
-{ 
+{
   nsresult res =  nsTypedSelection::CollapseToStart();
   SyncMSIwithNS();
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::CollapseToEnd(void)
-{ 
+{
   nsresult res =  nsTypedSelection::CollapseToEnd();
   SyncMSIwithNS();
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::AddRange(nsIDOMRange *range)
-{ 
+{
   nsresult res =  nsTypedSelection::AddRange(range);
   SyncMSIwithNS();
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::RemoveRange(nsIDOMRange *range)
-{ 
+{
   nsresult res =  nsTypedSelection::RemoveRange(range);
   SyncMSIwithNS();
   return res;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::RemoveAllRanges(void)
 {
   nsresult res =  nsTypedSelection::RemoveAllRanges();
@@ -343,9 +343,9 @@ PRBool msiTypedSelection::IsVoidOfContent(nsIDOMNode* start, PRUint32 startOff, 
       if (rv)
       {
         if (start == commonAncestor)
-          startRelativeOff = startOff;  
-        else 
-        {  
+          startRelativeOff = startOff;
+        else
+        {
           nsCOMPtr<nsIDOMNode> currTop, currNode;
           start->GetParentNode(getter_AddRefs(currTop));
           currNode = start;
@@ -382,9 +382,9 @@ PRBool msiTypedSelection::IsVoidOfContent(nsIDOMNode* start, PRUint32 startOff, 
       if (rv)
       {
         if (end == commonAncestor)
-          endRelativeOff = startOff;  
-        else 
-        {  
+          endRelativeOff = startOff;
+        else
+        {
           nsCOMPtr<nsIDOMNode> currTop, currNode;
           end->GetParentNode(getter_AddRefs(currTop));
           currNode = end;
@@ -419,14 +419,14 @@ PRBool msiTypedSelection::IsVoidOfContent(nsIDOMNode* start, PRUint32 startOff, 
         }
       }
       if (rv)
-      { 
+      {
         if (start == commonAncestor && startRelativeOff < endRelativeOff)
           rv = PR_FALSE;
         else if (start != commonAncestor && startRelativeOff+1 < endRelativeOff)
           rv = PR_FALSE;
-      }    
+      }
     }
-  }  
+  }
   return rv;
 }
 
@@ -440,7 +440,7 @@ PRBool  msiTypedSelection::IsMouseEventActive()
     {
         nsEvent* innerEvent;
         privateEvent->GetInternalNSEvent(&innerEvent);
-        if (innerEvent) 
+        if (innerEvent)
           rv = !(innerEvent->flags & NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY);
     }
   }
@@ -448,7 +448,7 @@ PRBool  msiTypedSelection::IsMouseEventActive()
 }
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiTypedSelection::Adjust()
 {
   nsresult res = NS_OK;

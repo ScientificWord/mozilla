@@ -94,11 +94,12 @@ class nsIDOMEventTarget;
 #define kMOZEditorBogusNodeAttr NS_LITERAL_STRING("_moz_editor_bogus_node")
 #define kMOZEditorBogusNodeValue NS_LITERAL_STRING("TRUE")
 
-void DumpDocumentNode( nsIDOMNode * pNode);
+  void DumpDocumentNode( nsIDOMNode * pNode);
 
-/** implementation of an editor object.  it will be the controller/focal point 
- *  for the main editor services. i.e. the GUIManager, publishing, transaction 
- *  manager, event interfaces. the idea for the event interfaces is to have them 
+
+/** implementation of an editor object.  it will be the controller/focal point
+ *  for the main editor services. i.e. the GUIManager, publishing, transaction
+ *  manager, event interfaces. the idea for the event interfaces is to have them
  *  delegate the actual commands to the editor independent of the XPFE implementation.
  */
 class nsEditor : public nsIEditor,
@@ -135,11 +136,12 @@ public:
     kOpDeleteText     = 1003
   };
 
+
   /** The default constructor. This should suffice. the setting of the interfaces is done
    *  after the construction of the editor class.
    */
   nsEditor();
-  /** The default destructor. This should suffice. Should this be pure virtual 
+  /** The default destructor. This should suffice. Should this be pure virtual
    *  for someone to derive from the nsEditor later? I don't believe so.
    */
   virtual ~nsEditor();
@@ -156,7 +158,7 @@ public:
   NS_DECL_NSIEDITOR
   /* ------------ nsIEditorIMESupport methods -------------- */
   NS_DECL_NSIEDITORIMESUPPORT
-  
+
   // nsIPhonetic
   NS_DECL_NSIPHONETIC
 
@@ -166,21 +168,21 @@ public:
 
 public:
 
-  
-  NS_IMETHOD InsertTextImpl(const nsAString& aStringToInsert, 
-                               nsCOMPtr<nsIDOMNode> *aInOutNode, 
+
+  NS_IMETHOD InsertTextImpl(const nsAString& aStringToInsert,
+                               nsCOMPtr<nsIDOMNode> *aInOutNode,
                                PRInt32 *aInOutOffset,
                                nsIDOMDocument *aDoc);
-  NS_IMETHOD InsertTextIntoTextNodeImpl(const nsAString& aStringToInsert, 
-                                           nsIDOMCharacterData *aTextNode, 
+  NS_IMETHOD InsertTextIntoTextNodeImpl(const nsAString& aStringToInsert,
+                                           nsIDOMCharacterData *aTextNode,
                                            PRInt32 aOffset, PRBool suppressIME=PR_FALSE);
   NS_IMETHOD DeleteSelectionImpl(EDirection aAction);
   NS_IMETHOD DeleteSelectionAndCreateNode(const nsAString& aTag,
                                            nsIDOMNode ** aNewNode);
 
   /* helper routines for node/parent manipulations */
-  nsresult ReplaceContainer(nsIDOMNode *inNode, 
-                            nsCOMPtr<nsIDOMNode> *outNode, 
+  nsresult ReplaceContainer(nsIDOMNode *inNode,
+                            nsCOMPtr<nsIDOMNode> *outNode,
                             const nsAString &aNodeType,
                             nsCOMPtr<msiITagListManager> manager,
                             const nsAString *aAttribute = nsnull,
@@ -188,13 +190,13 @@ public:
                             PRBool aCloneAttributes = PR_FALSE);
 
   nsresult RemoveContainer(nsIDOMNode *inNode);
-  nsresult InsertContainerAbove(nsIDOMNode *inNode, 
-                                nsCOMPtr<nsIDOMNode> *outNode, 
+  nsresult InsertContainerAbove(nsIDOMNode *inNode,
+                                nsCOMPtr<nsIDOMNode> *outNode,
                                 const nsAString &aNodeType,
                                 const nsAString *aAttribute = nsnull,
                                 const nsAString *aValue = nsnull);
-  nsresult InsertContainerAboveNS(nsIDOMNode *inNode, 
-                                nsCOMPtr<nsIDOMNode> *outNode, 
+  nsresult InsertContainerAboveNS(nsIDOMNode *inNode,
+                                nsCOMPtr<nsIDOMNode> *outNode,
                                 const nsAString &aNodeType,
                                 nsIAtom * atomNS,
                                 const nsAString *aAttribute = nsnull,
@@ -202,7 +204,7 @@ public:
                                 );
   nsresult MoveNode(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 aOffset);
 
-  /* Method to replace certain CreateElementNS() calls. 
+  /* Method to replace certain CreateElementNS() calls.
      Arguments:
       nsString& aTag          - tag you want
       nsIContent** aContent   - returned Content that was created with above namespace.
@@ -215,14 +217,14 @@ protected:
 
   /** create a transaction for setting aAttribute to aValue on aElement
     */
-  NS_IMETHOD CreateTxnForSetAttribute(nsIDOMElement *aElement, 
-                                      const nsAString &  aAttribute, 
+  NS_IMETHOD CreateTxnForSetAttribute(nsIDOMElement *aElement,
+                                      const nsAString &  aAttribute,
                                       const nsAString &  aValue,
                                       ChangeAttributeTxn ** aTxn);
 
   /** create a transaction for removing aAttribute on aElement
     */
-  NS_IMETHOD CreateTxnForRemoveAttribute(nsIDOMElement *aElement, 
+  NS_IMETHOD CreateTxnForRemoveAttribute(nsIDOMElement *aElement,
                                          const nsAString &  aAttribute,
                                          ChangeAttributeTxn ** aTxn);
 
@@ -251,7 +253,7 @@ protected:
     */
   NS_IMETHOD CreateTxnForSaveSelection(nsISelection * selection,
                                         PlaceholderTxn ** aTxn);
-                                        
+
   /** create a transaction for removing aElement from its parent.
     */
   NS_IMETHOD CreateTxnForDeleteElement(nsIDOMNode * aElement,
@@ -264,8 +266,8 @@ protected:
                                          PRInt32 *aOffset,
                                          PRInt32 *aLength);
 
-  NS_IMETHOD CreateTxnForDeleteInsertionPoint(nsIDOMRange         *aRange, 
-                                              EDirection aAction, 
+  NS_IMETHOD CreateTxnForDeleteInsertionPoint(nsIDOMRange         *aRange,
+                                              EDirection aAction,
                                               EditAggregateTxn *aTxn,
                                               nsIDOMNode ** aNode,
                                               PRInt32 *aOffset,
@@ -290,7 +292,7 @@ protected:
   /** create a transaction for removing a style sheet
     */
   NS_IMETHOD CreateTxnForRemoveStyleSheet(nsICSSStyleSheet* aSheet, RemoveStyleSheetTxn* *aTxn);
-  
+
   NS_IMETHOD DeleteText(nsIDOMCharacterData *aElement,
                         PRUint32             aOffset,
                         PRUint32             aLength);
@@ -306,7 +308,7 @@ protected:
                                        PRUint32              aOffset,
                                        nsIEditor::EDirection aDirection,
                                        DeleteTextTxn       **aTxn);
-	
+
   NS_IMETHOD CreateTxnForSplitNode(nsIDOMNode *aNode,
                                    PRUint32    aOffset,
                                    SplitElementTxn **aTxn);
@@ -315,7 +317,7 @@ protected:
                                   nsIDOMNode  *aRightNode,
                                   JoinElementTxn **aTxn);
 
-  NS_IMETHOD DeleteSelectionAndPrepareToCreateNode(nsCOMPtr<nsIDOMNode> &parentSelectedNode, 
+  NS_IMETHOD DeleteSelectionAndPrepareToCreateNode(nsCOMPtr<nsIDOMNode> &parentSelectedNode,
                                                    PRInt32& offsetOfNewNode);
 
   // called after a transaction is done successfully
@@ -330,10 +332,10 @@ protected:
     eDocumentToBeDestroyed,
     eDocumentStateChanged
   } TDocumentListenerNotification;
-  
+
   // tell the doc state listeners that the doc state has changed
   NS_IMETHOD NotifyDocumentListeners(TDocumentListenerNotification aNotificationType);
-  
+
   /** make the given selection span the entire document */
   NS_IMETHOD SelectEntireDocument(nsISelection *aSelection);
 
@@ -352,17 +354,17 @@ protected:
    */
   NS_IMETHOD ScrollSelectionIntoView(PRBool aScrollToAnchor);
 
-  // stub.  see comment in source.                     
+  // stub.  see comment in source.
   virtual PRBool IsBlockNode(nsIDOMNode *aNode);
-  
+
   // helper for GetPriorNode
-  nsresult GetPriorNodeImpl(nsIDOMNode  *aCurrentNode, 
+  nsresult GetPriorNodeImpl(nsIDOMNode  *aCurrentNode,
                             PRBool       aEditableNode,
                             nsCOMPtr<nsIDOMNode> *aResultNode,
                             PRBool       bNoBlockCrossing = PR_FALSE);
 
   // helper for GetNextNode
-  nsresult GetNextNodeImpl(nsIDOMNode  *aCurrentNode, 
+  nsresult GetNextNodeImpl(nsIDOMNode  *aCurrentNode,
                            PRBool       aEditableNode,
                            nsCOMPtr<nsIDOMNode> *aResultNode,
                            PRBool       bNoBlockCrossing = PR_FALSE);
@@ -371,7 +373,7 @@ protected:
   nsresult GetKBStateControl(nsIKBStateControl **aKBSC);
 
 
-  // install the event listeners for the editor 
+  // install the event listeners for the editor
   virtual nsresult InstallEventListeners();
 
   virtual nsresult CreateEventListeners() = 0;
@@ -396,14 +398,14 @@ public:
    *  with a call to EndOperation */
   NS_IMETHOD EndOperation();
 
-  /** routines for managing the preservation of selection across 
+  /** routines for managing the preservation of selection across
    *  various editor actions */
   PRBool   ArePreservingSelection();
   nsresult PreserveSelectionAcrossActions(nsISelection *aSel);
   nsresult RestorePreservedSelection(nsISelection *aSel);
   void     StopPreservingSelection();
 
-  /** 
+  /**
    * SplitNode() creates a new node identical to an existing node, and split the contents between the two nodes
    * @param aExistingRightNode   the node to split.  It will become the new node's next sibling.
    * @param aOffset              the offset of aExistingRightNode's content|children to do the split at
@@ -415,7 +417,7 @@ public:
                          nsIDOMNode *aNewLeftNode,
                          nsIDOMNode *aParent);
 
-  /** 
+  /**
    * JoinNodes() takes 2 nodes and merge their content|children.
    * @param aNodeToKeep   The node that will remain after the join.
    * @param aNodeToJoin   The node that will be joined with aNodeToKeep.
@@ -430,24 +432,24 @@ public:
                          PRBool      aNodeToKeepIsFirst);
 
   /**
-   *  Set aOffset to the offset of aChild in aParent.  
+   *  Set aOffset to the offset of aChild in aParent.
    *  Returns an error if aChild is not an immediate child of aParent.
    */
-  static nsresult GetChildOffset(nsIDOMNode *aChild, 
-                                 nsIDOMNode *aParent, 
+  static nsresult GetChildOffset(nsIDOMNode *aChild,
+                                 nsIDOMNode *aParent,
                                  PRInt32    &aOffset);
 
   /**
    *  Set aParent to the parent of aChild.
-   *  Set aOffset to the offset of aChild in aParent.  
+   *  Set aOffset to the offset of aChild in aParent.
    */
-  static nsresult GetNodeLocation(nsIDOMNode *aChild, 
-                                 nsCOMPtr<nsIDOMNode> *aParent, 
+  static nsresult GetNodeLocation(nsIDOMNode *aChild,
+                                 nsCOMPtr<nsIDOMNode> *aParent,
                                  PRInt32    *aOffset);
 
-  /** returns the number of things inside aNode in the out-param aCount.  
-    * @param  aNode is the node to get the length of.  
-    *         If aNode is text, returns number of characters. 
+  /** returns the number of things inside aNode in the out-param aCount.
+    * @param  aNode is the node to get the length of.
+    *         If aNode is text, returns number of characters.
     *         If not, returns number of children nodes.
     * @param  aCount [OUT] the result of the above calculation.
     */
@@ -460,18 +462,18 @@ public:
     *                       skipping non-editable nodes if aEditableNode is PR_TRUE.
     *                       If there is no prior node, aResultNode will be nsnull.
     */
-  nsresult GetPriorNode(nsIDOMNode  *aCurrentNode, 
+  nsresult GetPriorNode(nsIDOMNode  *aCurrentNode,
                         PRBool       aEditableNode,
                         nsCOMPtr<nsIDOMNode> *aResultNode,
                         PRBool       bNoBlockCrossing = PR_FALSE);
 
   // and another version that takes a {parent,offset} pair rather than a node
-  nsresult GetPriorNode(nsIDOMNode  *aParentNode, 
-                        PRInt32      aOffset, 
-                        PRBool       aEditableNode, 
+  nsresult GetPriorNode(nsIDOMNode  *aParentNode,
+                        PRInt32      aOffset,
+                        PRBool       aEditableNode,
                         nsCOMPtr<nsIDOMNode> *aResultNode,
                         PRBool       bNoBlockCrossing = PR_FALSE);
-                       
+
   /** get the node immediately after to aCurrentNode
     * @param aCurrentNode   the node from which we start the search
     * @param aEditableNode  if PR_TRUE, only return an editable node
@@ -479,28 +481,28 @@ public:
     *                       skipping non-editable nodes if aEditableNode is PR_TRUE.
     *                       If there is no prior node, aResultNode will be nsnull.
     */
-  nsresult GetNextNode(nsIDOMNode  *aCurrentNode, 
+  nsresult GetNextNode(nsIDOMNode  *aCurrentNode,
                        PRBool       aEditableNode,
                        nsCOMPtr<nsIDOMNode> *aResultNode,
                        PRBool       bNoBlockCrossing = PR_FALSE);
 
   // and another version that takes a {parent,offset} pair rather than a node
-  nsresult GetNextNode(nsIDOMNode  *aParentNode, 
-                       PRInt32      aOffset, 
-                       PRBool       aEditableNode, 
+  nsresult GetNextNode(nsIDOMNode  *aParentNode,
+                       PRInt32      aOffset,
+                       PRBool       aEditableNode,
                        nsCOMPtr<nsIDOMNode> *aResultNode,
                        PRBool       bNoBlockCrossing = PR_FALSE);
 
   /** Get the rightmost child of aCurrentNode;
     * return nsnull if aCurrentNode has no children.
     */
-  nsCOMPtr<nsIDOMNode> GetRightmostChild(nsIDOMNode *aCurrentNode, 
+  nsCOMPtr<nsIDOMNode> GetRightmostChild(nsIDOMNode *aCurrentNode,
                                          PRBool      bNoBlockCrossing = PR_FALSE);
 
   /** Get the leftmost child of aCurrentNode;
     * return nsnull if aCurrentNode has no children.
     */
-  nsCOMPtr<nsIDOMNode> GetLeftmostChild(nsIDOMNode  *aCurrentNode, 
+  nsCOMPtr<nsIDOMNode> GetLeftmostChild(nsIDOMNode  *aCurrentNode,
                                          PRBool      bNoBlockCrossing = PR_FALSE);
   /** returns PR_TRUE if aNode is of the type implied by aTag */
   static PRBool NodeIsType(nsIDOMNode *aNode, nsIAtom *aTag, msiITagListManager * manager = nsnull);
@@ -534,7 +536,7 @@ public:
 
   /** counts number of editable child nodes */
   nsresult CountEditableChildren(nsIDOMNode *aNode, PRUint32 &outCount);
-  
+
   /** Find the deep first and last children. Returned nodes are AddReffed */
   nsresult GetFirstEditableNode(nsIDOMNode *aRoot, nsCOMPtr<nsIDOMNode> *outFirstNode);
 #ifdef XXX_DEAD_CODE
@@ -551,18 +553,18 @@ public:
   virtual PRBool NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2);
   static PRBool IsTextOrElementNode(nsIDOMNode *aNode);
   static PRBool IsTextNode(nsIDOMNode *aNode);
-  
+
   static PRInt32 GetIndexOf(nsIDOMNode *aParent, nsIDOMNode *aChild);
   static nsCOMPtr<nsIDOMNode> GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset);
-  
+
   static nsresult GetStartNodeAndOffset(nsISelection *aSelection, nsIDOMNode **outStartNode, PRInt32 *outStartOffset);
   static nsresult GetEndNodeAndOffset(nsISelection *aSelection, nsIDOMNode **outEndNode, PRInt32 *outEndOffset);
 #if 1
-  static void DumpNode(nsIDOMNode *aNode, PRInt32 indent=0, bool recurse = false);
+  // static nsString DumpNodeS(nsIDOMNode *aNode, PRInt32 indent=0, bool recurse = false);
   static void DumpTagName(nsIDOMNode *aNode, nsAString& nodeInfo);
 #endif
 
-  // Helpers to add a node to the selection. 
+  // Helpers to add a node to the selection.
   // Used by table cell selection methods
   nsresult CreateRange(nsIDOMNode *aStartParent, PRInt32 aStartOffset,
                        nsIDOMNode *aEndParent, PRInt32 aEndOffset,
@@ -575,15 +577,15 @@ public:
 
   nsresult IsPreformatted(nsIDOMNode *aNode, PRBool *aResult);
 
-  nsresult SplitNodeDeep(nsIDOMNode *aNode, 
-                         nsIDOMNode *aSplitPointParent, 
+  nsresult SplitNodeDeep(nsIDOMNode *aNode,
+                         nsIDOMNode *aSplitPointParent,
                          PRInt32 aSplitPointOffset,
                          PRInt32 *outOffset,
                          PRBool  aNoEmptyContainers = PR_FALSE,
                          nsCOMPtr<nsIDOMNode> *outLeftNode = 0,
                          nsCOMPtr<nsIDOMNode> *outRightNode = 0);
-                         
-  nsresult JoinNodeDeep(nsIDOMNode *aLeftNode, nsIDOMNode *aRightNode, nsCOMPtr<nsIDOMNode> *aOutJoinNode, PRInt32 *outOffset); 
+
+  nsresult JoinNodeDeep(nsIDOMNode *aLeftNode, nsIDOMNode *aRightNode, nsCOMPtr<nsIDOMNode> *aOutJoinNode, PRInt32 *outOffset);
 
   nsresult GetString(const nsAString& name, nsAString& value);
 
@@ -617,7 +619,7 @@ protected:
 
   PRUint32        mModCount;		// number of modifications (for undo/redo stack)
   PRUint32        mFlags;		// behavior flags. See nsIPlaintextEditor.idl for the flags we use.
-  
+
   nsWeakPtr       mPresShellWeak;   // weak reference to the nsIPresShell
   nsWeakPtr       mSelConWeak;   // weak reference to the nsISelectionController
   nsIViewManager *mViewManager;
@@ -642,7 +644,7 @@ protected:
   nsCOMPtr<nsIDOMElement> mRootElement;    // cached root node
   PRInt32           mAction;             // the current editor action
   EDirection        mDirection;          // the current direction of editor action
-  
+
   // data necessary to build IME transactions
   nsCOMPtr<nsIPrivateTextRangeList> mIMETextRangeList; // IME special selection ranges
   nsCOMPtr<nsIDOMCharacterData>     mIMETextNode;      // current IME text node

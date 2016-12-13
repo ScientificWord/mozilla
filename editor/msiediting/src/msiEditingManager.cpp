@@ -114,7 +114,7 @@
 #include "msiUtils.h"
 #include "msiNameSpaceUtils.h"
 #include "msiIBigOpInfo.h"
-#include "jcsDumpNode.h"
+// #include "jcsDumpNode.h"
 
 NS_IMPL_ISUPPORTS1(msiEditingManager, msiIEditingManager)
 
@@ -231,7 +231,7 @@ nsresult msiEditingManager::MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, 
     currentNode = do_QueryElementAt(arrayOfNodes, i);
     currentNode->GetNodeType(&currentNodeType);
     currentNode->GetNodeName(srcName);
-  
+
     if (currentNodeType==3) // #text
     {
       sOffset = startOffset;
@@ -267,11 +267,11 @@ nsresult msiEditingManager::MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, 
             nsCOMPtr<nsIDOMNode> GetParentNode;
             msiUtils::CreateMathMLElement(editor, name, parent);
             editor->InsertNode(parent, dstNode, dstOffset);
-            doc->CreateTextNode(theText, getter_AddRefs(textNode));      
+            doc->CreateTextNode(theText, getter_AddRefs(textNode));
             editor->InsertNode(textNode, parent, 0);
           }
           else {
-            doc->CreateTextNode(theText, getter_AddRefs(textNode));      
+            doc->CreateTextNode(theText, getter_AddRefs(textNode));
             editor->InsertNode(textNode, dstNode, dstOffset);
           }
         }

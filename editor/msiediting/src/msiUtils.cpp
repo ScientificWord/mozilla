@@ -1,3 +1,4 @@
+
 // Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
 
 #include "nsIEditor.h"
@@ -64,7 +65,7 @@
 #include "msiEditingAtoms.h"
 #include "msiNameSpaceUtils.h"
 #include "../../libeditor/html/nsHTMLEditUtils.h"
-#include "jcsDumpNode.h"
+// #include "jcsDumpNode.h"
 
 static PRBool initalized = PR_FALSE;
 
@@ -2550,7 +2551,7 @@ msiUtils::MergeMNTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRBoo
   PRUint16 nodetype;
   nsCOMPtr<nsIDOMNode> child;
   nsCOMPtr<nsIDOMNode> next;
-  
+
   nsAutoString nodeName;
   node->GetFirstChild(getter_AddRefs(child));
   while (child) {
@@ -2561,9 +2562,9 @@ msiUtils::MergeMNTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRBoo
 	  res = child->GetNextSibling(getter_AddRefs(next));
 	  if (next != nsnull){
 	     res = next->GetNodeType(&nodetype);
-	     if (nodetype = nsIDOMNode::ELEMENT_NODE) {	  
-	        DumpNode(child, 0, true);
-		DumpNode(next, 0, true);
+	     if (nodetype = nsIDOMNode::ELEMENT_NODE) {
+	       //  DumpNode(child, 0, true);
+      		// DumpNode(next, 0, true);
 	     }
 	  }
 	} else {
@@ -2572,9 +2573,9 @@ msiUtils::MergeMNTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRBoo
      }
      res = child->GetNextSibling(getter_AddRefs(next));
     child = next;
-  } 
+  }
   return NS_OK;
-  
+
 }
 
 
@@ -2962,7 +2963,7 @@ PRBool isBaseMathNode (nsIDOMNode * node) {
 PRBool isInputBox (nsIDOMNode * node) {
   PRBool isInputBox = PR_FALSE;
   nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(node);
-  elem->HasAttribute(NS_LITERAL_STRING("tempinput"), &isInputBox); 
+  elem->HasAttribute(NS_LITERAL_STRING("tempinput"), &isInputBox);
   return isInputBox;
 }
 
@@ -2985,22 +2986,24 @@ nsresult msiUtils::CanonicalizeMathSelection(nsIEditor * editor)
   }
   res = ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset);
   res = ed->GetEndNodeAndOffset(sel, getter_AddRefs(endNode), &endOffset);
-  // while (nsHTMLEditUtils::IsMath(startNode) && atStartOfNode(startNode, startOffset)) {
-  //   res = ed->GetNodeLocation(startNode, &parentNode, &offset);
-  //   if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
-  //     break;
-  //   }
-  //   startNode = parentNode;
-  //   startOffset = offset;
-  // }
-  // while (nsHTMLEditUtils::IsMath(endNode) && atEndOfNode(endNode, endOffset)) {
-  //   res = ed->GetNodeLocation(endNode, &parentNode, &offset);
-  //   if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
-  //     break;
-  //   }
-  //   endNode = parentNode;
-  //   endOffset = offset + 1;
-  // }
+  // ---
+  while (nsHTMLEditUtils::IsMath(startNode) && atEndOfNode(startNode, startOffset)) {
+    res = ed->GetNodeLocation(startNode, &parentNode, &offset);
+    if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
+      break;
+    }
+    startNode = parentNode;
+    startOffset = offset + 1;
+  }
+  while (nsHTMLEditUtils::IsMath(endNode) && atStartOfNode(endNode, endOffset)) {
+    res = ed->GetNodeLocation(endNode, &parentNode, &offset);
+    if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
+      break;
+    }
+    endNode = parentNode;
+    endOffset = offset;
+  }
+  // ---
   sel->Collapse(startNode, startOffset);
   sel->Extend(endNode, endOffset);
   return res;
