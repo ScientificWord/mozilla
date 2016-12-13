@@ -1148,7 +1148,7 @@ Plot.prototype =
           if ((attr === "Expression") && forComp)
             textval = this.adjustExpressionForComputation(plotData);
           if ((textval !== "") && (textval !== "unspecified")) {
-            textval = runFixup(runFixup(textval));
+              // textval = runFixup(textval); // runFixup(runFixup(textval));
             tNode = (new DOMParser()).parseFromString (textval, "text/xml");
             DOMEnode.appendChild (tNode.documentElement);
             DOMPlot.appendChild (DOMEnode);
@@ -1830,8 +1830,12 @@ Frame.prototype = {
   frameAttributeList: function () {
     return (this.FRAMEATTRIBUTES.concat(this.FLOATLOCATIONS));
   },
-  getFrameAttribute: function (name) {
-      return (this.attributes[name]);
+    getFrameAttribute: function (name) {
+	if (name in this.attributes){
+	    return (this.attributes[name]);
+        } else {
+	    return null;
+	}
   },
   setFrameAttribute: function (name, value) {
     this.attributes[name] = value;
@@ -2310,7 +2314,8 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var checkedExpr = preParsePlotExpression(math, plottype, selection, editorElement);
-  var expr = runFixup(GetFixedMath(checkedExpr));
+  var expr = GetFixedMath(checkedExpr); //runFixup(GetFixedMath(checkedExpr));
+
   var graph = new Graph();
   var frame = graph.frame;
   var width = GetStringPref("swp.graph.hsize");
