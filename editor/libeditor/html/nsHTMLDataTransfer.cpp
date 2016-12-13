@@ -151,11 +151,13 @@ basic-offset: 2 -*- */
 #include "../../../content/base/src/nsAttrName.h"
 #include "../../msiediting/src/msiEditingAtoms.h"
 #include "msiIMathMLEditor.h"
-#include "jcsDumpNode.h"
+// #include "jcsDumpNode.h"
 
 
 #define DEBUG_barry 1
-
+extern "C" {
+void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output);
+}
 const PRUnichar nbsp = 160;
 
 static NS_DEFINE_CID(kCParserCID,     NS_PARSER_CID);
@@ -522,6 +524,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   nsAutoEditBatch beginBatching(this);
   nsAutoRules beginRulesSniffing(this, kOpHTMLPaste, nsIEditor::eNext);
   nsAutoString tagName;
+  nsAutoString output;
 
   // Get selection
   nsresult res;
@@ -561,6 +564,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     targetOffset = aDestOffset;
   }
 
+
   PRBool doContinue = PR_TRUE;
 
   res = DoContentFilterCallback(aFlavor, aSourceDoc, aDeleteSelection,
@@ -575,6 +579,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 #ifdef DEBUG
   printf("Out of DoContentFilterCallback\n");
 #endif
+  DumpNode((nsIDOMNode*)fragmentAsNode, 2, 1, output);
+  printf(NS_ConvertUTF16toUTF8(output).get());
   NS_ENSURE_SUCCESS(res, res);
   if (!doContinue)
     return NS_OK;
@@ -4366,7 +4372,7 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
     res = ParseFragment(aContextStr, tagStack, doc, address_of(contextAsNode));
 #if DEBUG_barry || DEBUG_Barry
     dumpTagStack(tagStack);
-    DumpNode(contextAsNode);
+    // DumpNode(contextAsNode);
 #endif
     NS_ENSURE_SUCCESS(res, res);
     NS_ENSURE_TRUE(contextAsNode, NS_ERROR_FAILURE);

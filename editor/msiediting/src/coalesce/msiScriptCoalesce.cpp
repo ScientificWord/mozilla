@@ -12,19 +12,19 @@
 #include "msiEditingAtoms.h"
 #include "nsComponentManagerUtils.h"
 #include "msiIMathMLEditor.h"
-#include "jcsDumpNode.h"
+// #include "jcsDumpNode.h"
 
-msiScriptCoalesce::msiScriptCoalesce(nsIDOMNode* mathmlNode, 
+msiScriptCoalesce::msiScriptCoalesce(nsIDOMNode* mathmlNode,
                                       PRUint32 offset,
-                                      PRUint32 mathmlType) 
+                                      PRUint32 mathmlType)
 : msiMCoalesceBase(mathmlNode, offset, mathmlType)
 {
   if (mathmlType == MATHML_MSUBSUP)
     m_maxOffset = 3;
   else
-    m_maxOffset = 2;  
+    m_maxOffset = 2;
 }
-  
+
 msiScriptCoalesce::~msiScriptCoalesce()
 {
 }
@@ -32,7 +32,7 @@ msiScriptCoalesce::~msiScriptCoalesce()
 NS_IMETHODIMP
 msiScriptCoalesce::Coalesce(nsIEditor * editor,
                         nsIDOMNode * node,
-                        nsIArray ** coalesced)                
+                        nsIArray ** coalesced)
 {
   nsresult res(NS_ERROR_FAILURE);
   *coalesced = nsnull;
@@ -49,8 +49,8 @@ msiScriptCoalesce::Coalesce(nsIEditor * editor,
 NS_IMETHODIMP
 msiScriptCoalesce::PrepareForCoalesce(nsIEditor * editor,
                                       PRUint32    pfcFlags,
-                                      nsIArray ** beforeOffset,                
-                                      nsIArray ** afterOffset)                
+                                      nsIArray ** beforeOffset,
+                                      nsIArray ** afterOffset)
 {
   *beforeOffset = nsnull;
   *afterOffset = nsnull;
@@ -58,7 +58,7 @@ msiScriptCoalesce::PrepareForCoalesce(nsIEditor * editor,
   nsCOMPtr<nsIMutableArray> mutableArray1, mutableArray2;
   if (m_offset == 1)
     mutableArray2 = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
-  if (NS_SUCCEEDED(res))  
+  if (NS_SUCCEEDED(res))
     mutableArray1 = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
   if (NS_SUCCEEDED(res) && m_mathmlNode)
   {
@@ -95,12 +95,12 @@ msiScriptCoalesce::PrepareForCoalesce(nsIEditor * editor,
                   appendto = mutableArray1;
               }
               if (NS_SUCCEEDED(res) && appendto && baseArray)
-                res = msiUtils::AppendToMutableList(appendto, baseArray);  
+                res = msiUtils::AppendToMutableList(appendto, baseArray);
             }
           }
           else
             res = NS_ERROR_FAILURE;
-        }      
+        }
         if (NS_SUCCEEDED(res))
           res = mutableArray1->AppendElement(m_mathmlNode, PR_FALSE);
         if (NS_SUCCEEDED(res))
@@ -114,7 +114,7 @@ msiScriptCoalesce::PrepareForCoalesce(nsIEditor * editor,
           {
             *afterOffset = mutableArray1;
             NS_ADDREF(*afterOffset);
-            PRUint32 numNodes(0);  
+            PRUint32 numNodes(0);
             if (mutableArray2)
               mutableArray2->GetLength(&numNodes);
             if (numNodes > 0)
@@ -135,19 +135,19 @@ msiScriptCoalesce::PrepareForCoalesce(nsIEditor * editor,
       {
         *beforeOffset = mutableArray1;
         NS_ADDREF(*beforeOffset);
-      }   
-    }  
+      }
+    }
   }
-  else 
+  else
    res = NS_ERROR_FAILURE;
-    
+
   return res;
 }
 
 NS_IMETHODIMP
 msiScriptCoalesce::CoalesceTxn(nsIEditor * editor,
                                nsIDOMNode * node,
-                               nsITransaction ** txn)                
+                               nsITransaction ** txn)
 {
   nsresult res(NS_ERROR_FAILURE);
   *txn = nsnull;
@@ -160,7 +160,7 @@ msiScriptCoalesce::CoalesceTxn(nsIEditor * editor,
       NS_ASSERTION(PR_FALSE, "Currently not implemented");
       //TODO 12/06 ljh -- currently this should not occur since this method is only used for deletion
       //res = CoalesceRight(editor, node, txn);
-    }  
+    }
   }
   return res;
 }
@@ -190,18 +190,18 @@ nsresult msiScriptCoalesce::CoalesceLeft(nsIEditor * editor, nsIDOMNode * node, 
     }
   }
   return res;
-}    
+}
 
 nsresult msiScriptCoalesce::CoalesceRight(nsIEditor* editor, nsIDOMNode* node, nsIArray** coalesced)
 {
   //ljh m_offset == m_maxOffset
    printf("\njcs -- msiScriptCoalesce::CoalesceRight\n");
- 
+
    printf("\nm_mathmlNode\n");
-   DumpNode(m_mathmlNode, 0, true);
- 
+   // DumpNode(m_mathmlNode, 0, true);
+
    printf("\nnode:\n");
-   DumpNode(node, 0, true);
+   // DumpNode(node, 0, true);
 
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> currSup, currSub, inSup, inSub, newSup, newSub, base, inBase;
@@ -215,21 +215,21 @@ nsresult msiScriptCoalesce::CoalesceRight(nsIEditor* editor, nsIDOMNode* node, n
     if (!msiUtils::IsInputbox(editor, inBase)){
        return NS_OK;
     }
-    
+
     if (NS_SUCCEEDED(res) && (mmltype == MATHML_MSUB || mmltype == MATHML_MSUBSUP))
       res = msiUtils::GetChildNode(node, 1, inSub);
     else if (mmltype == MATHML_MSUP)
       res = msiUtils::GetChildNode(node, 1, inSup);
     if (NS_SUCCEEDED(res) && mmltype == MATHML_MSUBSUP)
       res = msiUtils::GetChildNode(node, 2, inSup);
-    
+
     if (m_mathmlType == MATHML_MSUB || m_mathmlType == MATHML_MSUBSUP)
       res = msiUtils::GetChildNode(m_mathmlNode, 1, currSub);
     else if (m_mathmlType == MATHML_MSUP)
       res = msiUtils::GetChildNode(m_mathmlNode, 1, currSup);
     if (NS_SUCCEEDED(res) && m_mathmlType == MATHML_MSUBSUP)
       res = msiUtils::GetChildNode(m_mathmlNode, 2, currSup);
-      
+
     if (NS_SUCCEEDED(res) && (currSup || inSup))
       res = msiRequiredArgument::MakeRequiredArgument(editor, currSup, inSup, newSup);
 
@@ -253,12 +253,12 @@ nsresult msiScriptCoalesce::CoalesceRight(nsIEditor* editor, nsIDOMNode* node, n
       nsCOMPtr<nsIDOMElement> newElement;
       if (newSub && newSup)
         res = msiUtils::CreateMSubSup(editor, base, newSub, newSup, PR_FALSE, PR_FALSE, PR_FALSE,
-                                      dummyflags, subShift, supShift, newElement); 
+                                      dummyflags, subShift, supShift, newElement);
       else if (newSub)
-        res = msiUtils::CreateMSubOrMSup(editor, PR_FALSE, base, newSub, PR_FALSE, PR_FALSE, 
+        res = msiUtils::CreateMSubOrMSup(editor, PR_FALSE, base, newSub, PR_FALSE, PR_FALSE,
                                          dummyflags, subShift, newElement);
       else //newSup
-        res = msiUtils::CreateMSubOrMSup(editor, PR_TRUE, base, newSup, PR_FALSE, PR_FALSE, 
+        res = msiUtils::CreateMSubOrMSup(editor, PR_TRUE, base, newSup, PR_FALSE, PR_FALSE,
                                          dummyflags, supShift, newElement);
       if (NS_SUCCEEDED(res) && newElement)
       {
@@ -275,17 +275,17 @@ nsresult msiScriptCoalesce::CoalesceRight(nsIEditor* editor, nsIDOMNode* node, n
             NS_ADDREF(*coalesced);
           }
         }
-      }  
+      }
     }
   }
   return res;
-}  
+}
 
 nsresult msiScriptCoalesce::CoalesceLeft(nsIEditor * editor, nsIDOMNode * node, nsITransaction** txn)
 {
   //ljh m_offset == 0
   nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
-  if (!msiEditor)  
+  if (!msiEditor)
     return NS_ERROR_FAILURE;
   nsresult res(NS_OK);
   nsCOMPtr<nsIDOMNode> currbase;
@@ -307,7 +307,7 @@ nsresult msiScriptCoalesce::CoalesceLeft(nsIEditor * editor, nsIDOMNode * node, 
     //TODO try to coalese node into currbase but not currbase into node
   }
   return res;
-}    
+}
 
 void msiScriptCoalesce::DetermineScriptShiftAttributes(nsIDOMNode * node, nsAString & subShift, nsAString & supShift)
 {
@@ -331,5 +331,5 @@ void msiScriptCoalesce::DetermineScriptShiftAttributes(nsIDOMNode * node, nsAStr
       newElement->GetAttribute(superscriptshift, supShift);
   }
   return;
-}  
+}
 

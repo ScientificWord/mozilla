@@ -84,8 +84,8 @@ CPPSRCS		=                           \
 		nsEditorUtils.cpp           \
 		nsSelectionState.cpp        \
 		msiTagListManager.cpp       \
-    	jcsDumpNode.cpp \
 		$(NULL)
+#    	jcsDumpNode.cpp \
 
 # Transactions: we'd like to split these off,
 # but currently they and nsEditor are too intertwined!

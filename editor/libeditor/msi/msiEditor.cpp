@@ -47,7 +47,7 @@
 //The following may go away if we move the right things to the right interfaces, but for now:
 #include "msiUtils.h"
 #include "msiEditingAtoms.h"
-#include "jcsDumpNode.h"
+//  #include "jcsDumpNode.h"
 #include "nsEscape.h"
 #include "nsIURI.h"
 #include "nsIURL.h"
