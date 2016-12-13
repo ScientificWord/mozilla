@@ -131,6 +131,70 @@
 static PRBool gNoisy = PR_FALSE;
 #endif
 
+
+extern "C" {
+void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output)
+{
+  PRInt32 i;
+  nsAutoString tag;
+  nsAutoString nodeName;
+  nsAutoString tagWithAttributes;
+  for (i=0; i<indent; i++)
+    output.Append(NS_LITERAL_STRING("  "));
+
+  if (aNode == 0){
+    output = NS_LITERAL_STRING("!NULL!\n");
+    return;
+  }
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+  nsCOMPtr<nsIDOMDocumentFragment> docfrag = do_QueryInterface(aNode);
+
+  if (element || docfrag)
+  {
+    if (element)
+    {
+      element->GetTagName(tag);
+      nsEditor::DumpTagName(element, tagWithAttributes);
+      output.Append(NS_LITERAL_STRING("<") + tagWithAttributes);
+      output.Append(NS_LITERAL_STRING(">\n"));
+  }
+    else
+    {
+      output.Append(NS_LITERAL_STRING("<document fragment>\n"));//, ((nsIDOMDocumentFragment*)docfrag)-28));
+    }
+    if (recurse){
+       nsCOMPtr<nsIDOMNodeList> childList;
+       aNode->GetChildNodes(getter_AddRefs(childList));
+       if (!childList) return; // NS_ERROR_NULL_POINTER;
+       PRUint32 numChildren;
+       childList->GetLength(&numChildren);
+       nsCOMPtr<nsIDOMNode> child, tmp;
+       aNode->GetFirstChild(getter_AddRefs(child));
+       for (i=0; i<numChildren; i++)
+       {
+         DumpNode(child, indent+1, true, output);
+         child->GetNextSibling(getter_AddRefs(tmp));
+         child = tmp;
+       }
+    }
+    for (i=0; i<indent; i++) {
+      output.Append(NS_LITERAL_STRING("  "));
+    }
+    output.Append(NS_LITERAL_STRING("</") + tag + NS_LITERAL_STRING(">\n"));
+  }
+  else {
+    aNode->GetNodeName(nodeName);
+    if (nodeName.EqualsLiteral("#text"))
+    {
+      nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
+      nsAutoString str;
+      textNode->GetData(str);
+      output.Append(NS_LITERAL_STRING("#text \'") + str + NS_LITERAL_STRING("'\n"));
+    }
+  }
+}
+}
+
 #ifdef DEBUG_Barry
 void DumpDocumentNodeImpl( nsIDOMNode * pNode, PRUint32 indent)
 {
@@ -153,8 +217,6 @@ void DumpDocumentNodeImpl( nsIDOMNode * pNode, PRUint32 indent)
     DumpDocumentNodeImpl(node, indent + 1);
   }
 }
-
-
 
 
 void DumpDocumentNode( nsIDOMNode * pNode)
@@ -283,7 +345,7 @@ nsEditor::DumpTagName(nsIDOMNode *aNode, nsAString & nodeInfo)
   nsCOMPtr<nsIDOMNamedNodeMap> map;
   element->GetAttributes(getter_AddRefs(map));
   map->GetLength(&length);
-  for ( i = 0; i < length; i++) 
+  for ( i = 0; i < length; i++)
   {
     map->Item(i, getter_AddRefs(itemNode));
     if (itemNode) {
@@ -297,18 +359,20 @@ nsEditor::DumpTagName(nsIDOMNode *aNode, nsAString & nodeInfo)
 }
 
 
-void
-nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */)
+#if 0
+nsString
+nsEditor::DumpNodeS(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */)
 {
   PRInt32 i;
+  nsAutoString sret;
   nsAutoString tag;
   nsAutoString tagWithAttributes;
   for (i=0; i<indent; i++)
-    printf("  ");
+    sret.Append("  ");
 
   if (aNode == 0){
-    printf("!NULL!\n");
-	  return;
+    sret.Append("!NULL!\n");
+	  return sret;
   }
 
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
@@ -320,16 +384,16 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
     {
       element->GetTagName(tag);
       DumpTagName(element, tagWithAttributes);
-      printf("<%s>    0x%x\n", NS_LossyConvertUTF16toASCII(tagWithAttributes).get(), ((nsIDOMElement*)element)-28);
+      sret.Append("<%s>    0x%x\n", NS_LossyConvertUTF16toASCII(tagWithAttributes).get(), ((nsIDOMElement*)element)-28);
     }
     else
     {
-      printf("<document fragment>       0x%x\n", ((nsIDOMDocumentFragment*)docfrag)-28);
+      sret.Append("<document fragment>       0x%x\n", ((nsIDOMDocumentFragment*)docfrag)-28);
     }
 	  if (recurse){
        nsCOMPtr<nsIDOMNodeList> childList;
        aNode->GetChildNodes(getter_AddRefs(childList));
-       if (!childList) return; // NS_ERROR_NULL_POINTER;
+       if (!childList) return sret; // NS_ERROR_NULL_POINTER;
        PRUint32 numChildren;
        childList->GetLength(&numChildren);
        nsCOMPtr<nsIDOMNode> child, tmp;
@@ -342,9 +406,9 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
        }
 	  }
     for (i=0; i<indent; i++) {
-      printf("  ");
+      sret.Append("  ");
     }
-    printf("</%s>\n", NS_LossyConvertUTF16toASCII(tag).get());
+    sret.Append("</%s>\n", NS_LossyConvertUTF16toASCII(tag).get());
   }
   else if (IsTextNode(aNode))
   {
@@ -354,10 +418,11 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
     nsCAutoString cstr;
     LossyCopyUTF16toASCII(str, cstr);
     // cstr.ReplaceChar('\n', ' ');
-    printf("#text \'%s\'     0x%x\n", cstr.get(), aNode-28);
+    sret.Append("#text \'%s\'     0x%x\n", cstr.get(), aNode-28);
   }
+  return sret;
 }
-//#endif
+#endif
 
 /** returns PR_TRUE if aNode is of the type implied by aTag */
 PRBool nsEditor::NodeIsType(nsIDOMNode *aNode, nsIAtom *aTag, msiITagListManager * manager)
@@ -5980,4 +6045,5 @@ nsEditor::SetIsShiftDown(PRBool aIsShiftDown) {
   shiftDown = aIsShiftDown;
   return NS_OK;
 }
+
 

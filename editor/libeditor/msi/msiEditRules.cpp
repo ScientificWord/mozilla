@@ -23,7 +23,7 @@ void DebExamineNode(nsIDOMNode * aNode);
 //nsCOMPtr<msiISimpleComputeEngine> GetEngine();
 //nsString SerializeMathNode(nsCOMPtr<nsIDOMNode> mathNode);
 
-PRBool bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection); 
+PRBool bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection);
 
 
 
@@ -49,7 +49,7 @@ NS_NewMSIEditRules(nsIEditRules** aInstancePtrResult)
 
 
 /********************************************************
- *  Constructor/Destructor 
+ *  Constructor/Destructor
  ********************************************************/
 
 msiEditRules::msiEditRules() :
@@ -89,7 +89,7 @@ msiEditRules::WillInsert(nsISelection *aSelection, PRBool *aCancel)
           mEditor->DeleteNode(mBogusNode);
           mBogusNode = nsnull;
         }
-  
+
   nsresult res = nsHTMLEditRules::WillInsert(aSelection, aCancel);
   if (NS_FAILED(res)) return res;
 
@@ -97,12 +97,12 @@ msiEditRules::WillInsert(nsISelection *aSelection, PRBool *aCancel)
 
   return res;
 
-} 
+}
 
 
 nsresult
-msiEditRules::WillDeleteSelection(nsISelection *aSelection, 
-                                  nsIEditor::EDirection aAction, 
+msiEditRules::WillDeleteSelection(nsISelection *aSelection,
+                                  nsIEditor::EDirection aAction,
                                   PRBool *aCancel,
                                   PRBool *aHandled)
 {
@@ -116,7 +116,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   *aCancel = PR_FALSE;
   *aHandled = PR_FALSE;
 
-  
+
   nsCOMPtr<nsIDOMNode> startNode, endNode;
   nsIDOMNode * sn;
   nsIDOMNode * en;
@@ -133,7 +133,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   nsIAtom * pAtom = nsnull;
 
   nsresult res;
-  
+
   // If the selection consists of a single node which is a front matter node, and
   // if the node is not empty, change the selection to the contents of that node.
   mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
@@ -148,7 +148,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
     msiUtils::GetChildNode(endNode, startOffset, theNode);
     if (! msiUtils::IsEmpty(theNode))
     {
-      { 
+      {
         mHTMLEditor->GetTagListManager((msiITagListManager**)getter_AddRefs(tlmgr));
         tlmgr->GetTagOfNode(theNode,&pAtom, name);
         tlmgr->GetClassOfTag(name, pAtom, className);
@@ -186,25 +186,25 @@ void DebDisplaySelection(const char* str, nsISelection *aSelection, msiEditor* e
   nsCOMPtr<nsIDOMNode> startParent;
 
   PRInt32 startOffset, endOffset;
-  
+
   editor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
   editor->GetEndNodeAndOffset(aSelection, getter_AddRefs(endNode), &endOffset);
   startNode->GetParentNode(getter_AddRefs(startParent));
   endNode->GetParentNode(getter_AddRefs(endParent));
 
   printf("===start parent node: ");
-  editor->DumpNode(startParent);
-  
+  // editor->DumpNode(startParent);
+
   printf("===startNode: ");
-  editor->DumpNode(startNode, 0, recurse);
+  // editor->DumpNode(startNode, 0, recurse);
   printf("   start offset = %d", startOffset);
 
   if (startNode != endNode) {
      printf("===end parent node: ");
-     editor->DumpNode(endParent);
+     // editor->DumpNode(endParent);
 
      printf("===endNode: ");
-     editor->DumpNode(endNode);
+     // editor->DumpNode(endNode);
   }
   printf("   end offset = %d\n", endOffset);
 
@@ -212,8 +212,8 @@ void DebDisplaySelection(const char* str, nsISelection *aSelection, msiEditor* e
 
 /*
 
-nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection, 
-                                 nsIEditor::EDirection aAction, 
+nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
+                                 nsIEditor::EDirection aAction,
                                  PRBool *aCancel,
                                  PRBool *aHandled)
 {
@@ -231,7 +231,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   nsCOMPtr<nsIDOMElement> mathElement;
   PRInt32 startOffset, endOffset;
   PRBool bDeleteEntireMath = false;
-  
+
   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
@@ -247,11 +247,11 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
 
   if (bCollapsed) {
-      
-    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+
+    nsCOMPtr<msiIMathMLEditingBC> editingBC;
     PRUint32 dontcare(0);
     PRUint32 mathmltype;
-    
+
     printf("\nPoint of deletion:\n");
     mHTMLEditor -> DumpNode(endNode, 0, true);
 
@@ -261,7 +261,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
     if (editingBC) {
       mathmltype = msiUtils::GetMathmlNodeType(editingBC);
     }
-    
+
     if (mathmltype ==  msiIMathMLEditingBC::MATHML_MATH){
        if (! msiUtils::IsEmpty(endNode)){
            nsCOMPtr<nsIDOMNodeList> children;
@@ -271,7 +271,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
            msiUtils::GetNumberofChildren(endNode, number);
            msiUtils::GetChildNode(endNode, number-1, rightmostChild);
 
-           endNode = rightmostChild;             
+           endNode = rightmostChild;
 
            msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
            if (editingBC) {
@@ -283,7 +283,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
      if (mathmltype ==  msiIMathMLEditingBC::MATHML_MROWFENCE){
        // This case can also be reached if the node is a <mo> that bounds the mrow.
-        
+
        // Remove the first and last children of the mrow -- they should be fences.
        nsCOMPtr<nsIDOMNodeList> children;
        PRUint32 number;
@@ -296,44 +296,44 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
           endNode = parent;
           msiUtils::GetNumberofChildren(endNode, number);
        }
-       
-       			 
+
+
        nsCOMPtr<nsIDOMNode>  removedChild;
        res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, number-1, removedChild);
        res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 0, removedChild);
 
        if (NS_FAILED(res)) return res;
-       
-       // Remove the mrow container 
+
+       // Remove the mrow container
        res = mHTMLEditor->RemoveContainer(endNode);
-       
+
        if (NS_FAILED(res)) return res;
 
        *aHandled = PR_TRUE;
 
-      
+
 
     } else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSQRT ) {
-       // Remove the msqrt container 
+       // Remove the msqrt container
        res = mHTMLEditor->RemoveContainer(endNode);
        *aHandled = PR_TRUE;
-       
+
 
     } else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSUP || mathmltype == msiIMathMLEditingBC::MATHML_MSUB) {
        // remove the superscript	or subscript
        nsCOMPtr<nsIDOMNode>  removedChild;
        res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 1, removedChild);
-       
-       // Remove the msup (or msub) container 
+
+       // Remove the msup (or msub) container
        res = mHTMLEditor->RemoveContainer(endNode);
        *aHandled = PR_TRUE;
-       
+
     }  else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSUBSUP ) {
        // remove the superscript	and subscript
        nsCOMPtr<nsIDOMNode>  removedChild;
        res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 2, removedChild);
        res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 1, removedChild);
-       // Remove the msubsup container 
+       // Remove the msubsup container
        res = mHTMLEditor->RemoveContainer(endNode);
        *aHandled = PR_TRUE;
     } else if (mathmltype ==  msiIMathMLEditingBC::MSI_INPUTBOX){
@@ -341,22 +341,22 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
        endNode->GetParentNode(getter_AddRefs(parent));
        res = mHTMLEditor->RemoveContainer(parent);
        *aHandled = PR_TRUE;
-       
+
 
     } else {
        aSelection->Extend( endNode, endOffset-1 );
     }
   }
 
-   
+
   if (!*aHandled){
      bDeleteEntireMath = PR_FALSE;  // if true, this function will not be called.
 //     bDeleteEntireMath = bSelectionContainsTheEntireMathNode(mathNode, aSelection);
-   
+
      DebDisplaySelection("\nDeletion not handled yet. Extend selection to:" , aSelection, mMSIEditor, true);
 
 //     mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction); Done just before call; selection has not changed since then
-   
+
      DebDisplaySelection("\nSelection before calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
 
      nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
@@ -368,15 +368,15 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
      if (bDeleteEntireMath)
         return NS_OK;
 
-  }                          
-  
-   
+  }
+
+
   mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 
   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
-  
+
   res = mHTMLEditor->GetEndNodeAndOffset(aSelection, getter_AddRefs(endNode), &endOffset);
   if (NS_FAILED(res)) return res;
   if (!endNode) return NS_ERROR_FAILURE;
@@ -387,11 +387,11 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   int idx = FindCursorIndex(mMSIEditor, startMathNode, endNode, endOffset, b, 0);
 
   printf("\nidx is %d\n", idx);
-  
+
   nsString text = SerializeMathNode(startMathNode);
-    
+
   nsCOMPtr<msiISimpleComputeEngine>  pEngine = GetEngine();
-  
+
   PRUnichar* result;
   const PRUnichar* inp;
   text.GetData(&inp);
@@ -401,7 +401,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   printf("\nBack from cleanup: %ls\n", result);
 
   nsString resString(result);
-  
+
   mathElement = do_QueryInterface(startMathNode);
   mHTMLEditor->DeleteNode(mathElement);
 
@@ -412,21 +412,21 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   PRInt32 mathOffset;
 
   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(parentOfMath), &mathOffset);
-  
+
   //mMSIEditor -> InsertHTML(nsString(result, resString.Length()));
   mMSIEditor -> InsertHTML(resString);
 
   msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
- 
+
   printf("\nThe New Math\n ");
   mHTMLEditor->DumpNode(newMath, 0, true);
   printf("\nCursor idx = %d\n", idx);
 
   if (newMath != NULL){
- 
+
 
      DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
-  
+
      nsCOMPtr<nsIDOMNode> theNode = 0;
      PRInt32 theOffset = 0;
      FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset);
@@ -446,7 +446,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
      range->SetStart(theNode, theOffset);
      aSelection->CollapseToStart();
-     
+
      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 
      DebDisplaySelection("\nFinal selection", aSelection, mMSIEditor, true);
@@ -460,7 +460,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 */
 
 PRBool
-bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection) 
+bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection)
 {
    nsCOMPtr<nsIDOMElement> mathElement;
      nsCOMPtr<nsIDOMNode> firstChildNode;
@@ -469,7 +469,7 @@ bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection)
      PRBool partlyContained = PR_FALSE;
      PRBool containsNode;
 
-     mathElement = do_QueryInterface(aNode);	
+     mathElement = do_QueryInterface(aNode);
      mathElement->GetFirstChild(getter_AddRefs(firstChildNode));
      mathElement->GetLastChild(getter_AddRefs(lastChildNode));
      aSelection->ContainsNode(firstChildNode, partlyContained, &containsNode);
@@ -487,40 +487,40 @@ bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection)
    return PR_FALSE;
 }
 
-        
+
 
 
 //ljh TODO -- determine what if any functionality is needed for these two functions.
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditRules::WillReplaceNode(nsIDOMNode *aNewNode, nsIDOMNode *aOldChild, nsIDOMNode *aParent)
 {
-  return NS_OK;  
+  return NS_OK;
 }
 
 
-NS_IMETHODIMP 
-msiEditRules::DidReplaceNode(nsIDOMNode *aNewNode, 
-                             nsIDOMNode *aOldNode, 
-                             nsIDOMNode *aParent, 
+NS_IMETHODIMP
+msiEditRules::DidReplaceNode(nsIDOMNode *aNewNode,
+                             nsIDOMNode *aOldNode,
+                             nsIDOMNode *aParent,
                              nsresult    aResult)
 {
  return NS_OK; //nsHTMLEditRules::DidReplaceNode(aNewNode,aOldNode,aParent,aResult);
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 msiEditRules::DidDeleteNode(nsIDOMNode *aChild, nsresult aResult)
 {
-  return nsHTMLEditRules::DidDeleteNode(aChild, aResult);  
+  return nsHTMLEditRules::DidDeleteNode(aChild, aResult);
   nsCOMPtr<nsIDOMNode> parent;
   aChild->GetParentNode(getter_AddRefs(parent));
   nsHTMLEditRules::InsertMozBRIfNeeded(parent);
 }
 
 
-NS_IMETHODIMP 
-msiEditRules::DidSplitNode(nsIDOMNode *aExistingRightNode, 
-                              PRInt32 aOffset, 
-                              nsIDOMNode *aNewLeftNode, 
+NS_IMETHODIMP
+msiEditRules::DidSplitNode(nsIDOMNode *aExistingRightNode,
+                              PRInt32 aOffset,
+                              nsIDOMNode *aNewLeftNode,
                               nsresult aResult)
 {
 //  printf("msiEditRules:DidSplitNode\n");
@@ -528,13 +528,13 @@ msiEditRules::DidSplitNode(nsIDOMNode *aExistingRightNode,
 }
 
 
-NS_IMETHODIMP 
-msiEditRules::DidDeleteText(nsIDOMCharacterData *aTextNode, 
-                                  PRInt32 aOffset, 
-                                  PRInt32 aLength, 
+NS_IMETHODIMP
+msiEditRules::DidDeleteText(nsIDOMCharacterData *aTextNode,
+                                  PRInt32 aOffset,
+                                  PRInt32 aLength,
                                   nsresult aResult)
 {
-  return nsHTMLEditRules::DidDeleteText(aTextNode, aOffset, aLength, aResult);  
+  return nsHTMLEditRules::DidDeleteText(aTextNode, aOffset, aLength, aResult);
 }
 
 

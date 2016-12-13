@@ -88,7 +88,7 @@
 #include "nsIDOMParser.h"
 #include "msiISimpleComputeEngine.h"
 #include "msiEditingManager.h"
-#include "jcsDumpNode.h"
+// #include "jcsDumpNode.h"
 #include "../base/nsEditorUtils.h"
 #include "../../../content/base/src/nsContentList.h"
 
@@ -4235,7 +4235,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
           FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset, chars, array);
 
           printf("\nThe indicated node\n ");
-          mHTMLEditor->DumpNode(theNode, 0, true);
+          // DumpNode(theNode, 0, true);
           printf("\nOffset = %d\n", theOffset);
 
           nsIDOMRange* range;
