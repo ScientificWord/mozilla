@@ -310,10 +310,12 @@
                       <menuitem value="spanish" label="&spanish.label;"/>
                       <menuitem value="swedish" label="&swedish.label;"/>
                       <menuitem value="syriac" observes="unicodetex" label="&syriac.label;" />
+                      <menuitem value="thai" label="&thai.label;"/>
                       <menuitem value="turkish" label="&turkish.label;"/>
                       <menuitem value="ukrainian" label="&ukrainian.label;"/>
                       <menuitem value="uppersorbian" label="&uppersorbian.label;"/>
                       <menuitem value="urdu" label="&urdu.label;" observes="unicodetex" />
+                      <menuitem value="vietnamese" label="&vietnamese.label;" observes="unicodetex" />
                       <menuitem value="welsh" label="&welsh.label;"/>
                     </menupopup>
                   </menulist>
@@ -401,10 +403,12 @@
                       <menuitem value="spanish" label="&spanish.label;"/>
                       <menuitem value="swedish" label="&swedish.label;"/>
                       <menuitem value="syriac" observes="unicodetex" label="&syriac.label;" />
+                      <menuitem value="thai" label="&thai.label;"/>
                       <menuitem value="turkish" label="&turkish.label;"/>
                       <menuitem value="ukrainian" label="&ukrainian.label;"/>
                       <menuitem value="uppersorbian" label="&uppersorbian.label;"/>
                       <menuitem value="urdu" label="&urdu.label;" observes="unicodetex" />
+                      <menuitem value="vietnamese" label="&vietnamese.label;" observes="unicodetex" />
                       <menuitem value="welsh" label="&welsh.label;"/>
                      </menupopup>
                  </menulist>
