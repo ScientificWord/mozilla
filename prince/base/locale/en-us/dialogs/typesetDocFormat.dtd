@@ -326,10 +326,12 @@
 <!ENTITY spanish.label "Spanish">
 <!ENTITY swedish.label "Swedish">
 <!ENTITY syriac.label "Syriac">
+<!ENTITY thai.label "Thai">
 <!ENTITY turkish.label "Turkish">
 <!ENTITY ukrainian.label "Ukrainian">
 <!ENTITY uppersorbian.label "Upper Sorbian">
 <!ENTITY urdu.label "Urdu">
+<!ENTITY vietnamese.label "Vietnamese">
 <!ENTITY welsh.label "Welsh">
 
 <!ENTITY Enableoverridingheaderformats.label "Enable overriding ## header formats">
