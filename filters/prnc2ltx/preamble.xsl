@@ -399,13 +399,13 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="html:columns[@count='2']">
+  <xsl:template match="html:columns[@count='twocolumn']">
     <xsl:text>twocolumn=true, columnsep=</xsl:text>
     <xsl:value-of select="@sep"/>
     <xsl:text>,</xsl:text>
   </xsl:template>
 
-  <xsl:template match="html:columns[@count!='2']"></xsl:template>
+  <xsl:template match="html:columns[@count!='twocolumn']"></xsl:template>
 
   <xsl:template match="html:marginnote[@hidden='false']">
     <xsl:if test="$pagelayoutok">
