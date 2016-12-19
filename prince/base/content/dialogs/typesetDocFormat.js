@@ -33,21 +33,32 @@ var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
 //Functions for keeping Page orientation, Paper size, Sides, and Columns in sync on the first two panels.
 
 function onOrientationChange(thismenu) {
-  var value, bcaster;
-  if (!thismenu.selectedItem.hasAttribute('def')) {
-    bcaster = document.getElementById('shared.orientation');
-    value = thismenu.value;
-    if (bcaster) bcaster.setAttribute('value', value);
+  var value, bcaster, swap;
+  bcaster = document.getElementById('shared.orientation');
+  value = thismenu.value;
+  if (value !== 'port' && value !== 'landscape') return;
+  if (bcaster) {
+    if ((value === 'port' && bcaster.getAttribute('value') === 'landscape')
+      || (value === 'landscape' && bcaster.getAttribute('value') === 'port')) {
+      swap = document.getElementById('tbbodywidth').value;
+      document.getElementById('tbbodywidth').value = document.getElementById('tbbodyheight').value;
+      document.getElementById('tbbodyheight').value = swap;
+    }
+    bcaster.setAttribute('value', value);
+    onOrientationBroadcast();
   }
 }
 
-function onOrientationBroadcast(thismenu)
+function onOrientationBroadcast()
 {
   var value, bcaster;
+
   bcaster = document.getElementById('shared.orientation');
   value = bcaster.getAttribute('value');
-  if (value)
-    thismenu.value = value;
+  if (value) {
+    document.getElementById('pgorient').value = value;
+    document.getElementById('landscape').value = value;
+  }
   onPageBroadcast();
 }
 
@@ -58,6 +69,7 @@ function onPaperChange(thismenu) {
     bcaster = document.getElementById('shared.paper');
     value = thismenu.value;
     if (bcaster) bcaster.setAttribute('value', value);
+    onPageBroadcast();
   }
 }
 
@@ -104,22 +116,11 @@ function onSidesBroadcast(thismenu)
 
 function onCCountChange(thismenu) {
   var value, bcaster;
-  broadcastColCount();
   if (!thismenu.selectedItem.hasAttribute('def')) {
     bcaster = document.getElementById('shared.columns');
     value = thismenu.value;
     if (bcaster) bcaster.setAttribute('value', value);
-  }
-}
-
-function onCCountBroadcast(thismenu)
-{
-  var value, bcaster;
-  broadcastColCount();
-  bcaster = document.getElementById('shared.columns');
-  value = bcaster.getAttribute('value');
-  if (value) {
-    thismenu.value = value;
+    broadcastColCount();
   }
 }
 
@@ -221,6 +222,9 @@ function startup()
   }
   getEnableFlags(doc);
   initializeunits();
+  document.getElementById('shared.orientation').setAttribute('value', 'port'); // maybe get this from preferences
+  onOrientationBroadcast();
+
   var docFormatNodeList = preamble.getElementsByTagName('docformat');
   var docformatnode = docFormatNodeList[0];
   var node;
@@ -228,9 +232,9 @@ function startup()
     node=null;
   else
     node = docFormatNodeList[0].getElementsByTagName('pagelayout')[0];
-  getClassOptionsEtc();
   getMisc(docformatnode);
   getPageLayout(node);
+  getClassOptionsEtc();
   if (!(docFormatNodeList && docFormatNodeList.length>=1))
     node=null;
   else
@@ -274,12 +278,6 @@ function startup()
   }
   var prog = document.getElementById("texprogram").value;
   setCompiler(prog);
-  e  = document.getElementById('columns');
-  var savedval;
-  if (e && (e.value == 'twocolumn'))
-  {
-
-  }
 }
 
 function getEnableFlags(doc)
@@ -411,7 +409,7 @@ function lineend(node, spacecount)
 }
 
 function isLandscape() {
-  return document.getElementById('landscape').value !== 'port';
+  return document.getElementById('landscape').value === 'landscape';
 }
 
 
@@ -448,7 +446,7 @@ function savePageLayout(docFormatNode)
   lineend(pfNode, 2);
   nodecounter++;
   var cc = document.getElementById('columns').value;
-  if (document.getElementById('columns').value && document.getElementById('columns').value =="twocolumn")
+  if (document.getElementById('columns').value && document.getElementById('columns').value ==="twocolumn")
   {
     node = editor.createNode('columns',pfNode,nodecounter++);
     node.setAttribute('count',(document.getElementById('columns').value));
@@ -658,9 +656,9 @@ function getPageLayout(node)
     if (subnode)
     {
       value = subnode.getAttribute('count');
-      e  = document.getElementById('columncount');
+      e  = document.getElementById('shared.columns');
       if (e) {
-        e.value = value;
+        e.setAttribute('value',value);
       }
       broadcastColCount();
       value = subnode.getAttribute('sep');
@@ -976,6 +974,9 @@ function setDefaults()
   var bodywidth = .7*pagewidth;
   document.getElementById("tbbodyheight").value = unitRound(bodyheight);
   document.getElementById("tbbodywidth").value = unitRound(bodywidth);
+  document.getElementById('shared.columns').setAttribute('value', 'onecolumn'); // maybe get this from preferences
+  document.getElementById('shared.orientation').setAttribute('value', 'port'); // maybe get this from preferences
+  onOrientationBroadcast();
   var bighmargin; // total (left+right) margin space assuming no margin notes
   var bigvmargin; // total (top+bottom) margin space assuming no header/footer
   bighmargin = pagewidth - bodywidth;
@@ -1005,6 +1006,7 @@ function setDefaults()
   // the margin note text is just for show, but it needs to be a reasonable size
   setHeight("topmarginnote", bodyheight*0.15, scale);
   setHeight("bottommarginnote", bodyheight*.1, scale);
+  broadcastColCount();
 }
 
 function changefinishpageSize(menu)
@@ -1598,9 +1600,12 @@ function goDown(id)
 
 function broadcastColCount()
 {
-  var multicolumns = document.getElementById("columncount").value !== "onecolumn";
+  var value = document.getElementById("shared.columns").getAttribute('value');
+  var multicolumns = value !== "onecolumn";
   document.getElementById("multicolumn").hidden=!multicolumns;
   document.getElementById("singlecolumn").hidden=multicolumns;
+  document.getElementById('columns').value = value;
+  document.getElementById('columncount').value = value;
 }
 
 function setTwosidedState(elt)
@@ -3044,6 +3049,19 @@ function getClassOptionsEtc()
     if (colist.hasAttribute(s)){
       property = colist.getAttribute(s);
       setMenulistSelection(document.getElementById(s), property);
+      if ( s === "pgorient") {
+        document.getElementById("shared.orientation").setAttribute('value', property);
+        onOrientationBroadcast();
+      }
+      else if ( s === "papersize") {
+        document.getElementById("shared.paper").setAttribute('value', property);
+      }
+      else if ( s === "sides") {
+        document.getElementById("shared.sides").setAttribute('value', property);
+      }
+      else if ( s === "columns") {
+        document.getElementById("shared.columns").setAttribute('value', property);
+      }
     }
   }
 
