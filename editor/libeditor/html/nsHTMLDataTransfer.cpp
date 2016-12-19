@@ -579,7 +579,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 #ifdef DEBUG
   printf("Out of DoContentFilterCallback\n");
 #endif
-  DumpNode((nsIDOMNode*)fragmentAsNode, 2, 1, output);
+  // DumpNode((nsIDOMNode*)fragmentAsNode, 2, 1, output);
   printf(NS_ConvertUTF16toUTF8(output).get());
   NS_ENSURE_SUCCESS(res, res);
   if (!doContinue)
@@ -4451,30 +4451,44 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
 
   // get the infoString contents
   nsAutoString numstr1, numstr2;
-  if (!aInfoStr.IsEmpty())
-  {
-    PRInt32 err, sep, num;
-    sep = aInfoStr.FindChar((PRUnichar)',');
-    numstr1 = Substring(aInfoStr, 0, sep);
-    numstr2 = Substring(aInfoStr, sep+1, aInfoStr.Length() - (sep+1));
+  PRBool useNumStr = PR_TRUE;
+  if (useNumStr) {
 
-    // Move the start and end children.
-    num = numstr1.ToInteger(&err);
-    while (num--)
+    if (!aInfoStr.IsEmpty())
     {
-      (*outStartNode)->GetFirstChild(getter_AddRefs(tmp));
-      if (!tmp)
-        return NS_ERROR_FAILURE;
-      tmp.swap(*outStartNode);
-    }
+      PRInt32 err, sep, num;
+      sep = aInfoStr.FindChar((PRUnichar)',');
+      numstr1 = Substring(aInfoStr, 0, sep);
+      numstr2 = Substring(aInfoStr, sep+1, aInfoStr.Length() - (sep+1));
 
-    num = numstr2.ToInteger(&err);
-    while (num--)
-    {
-      (*outEndNode)->GetLastChild(getter_AddRefs(tmp));
-      if (!tmp)
-        return NS_ERROR_FAILURE;
-      tmp.swap(*outEndNode);
+      // Move the start and end children.
+      num = numstr1.ToInteger(&err);
+      while (num--)
+      {
+        (*outStartNode)->GetFirstChild(getter_AddRefs(tmp));
+        if (!tmp)
+          return NS_ERROR_FAILURE;
+        if (nsHTMLEditUtils::IsMath(*outStartNode) || nsHTMLEditUtils::IsMath(tmp)) {
+          num = 0;
+        }
+        else {
+          tmp.swap(*outStartNode);
+        }
+      }
+
+      num = numstr2.ToInteger(&err);
+      while (num--)
+      {
+        (*outEndNode)->GetLastChild(getter_AddRefs(tmp));
+        if (!tmp)
+          return NS_ERROR_FAILURE;
+        if (nsHTMLEditUtils::IsMath(*outStartNode) || nsHTMLEditUtils::IsMath(tmp)) {
+          num = 0;
+        }
+        else {
+          tmp.swap(*outEndNode);
+        }
+      }
     }
   }
   GetLengthOfDOMNode(*outEndNode, (PRUint32&)*outEndOffset);
