@@ -150,7 +150,7 @@ basic-offset: 2 -*- */
 #include "../../msiediting/src/msiUtils.h"
 #include "../../../content/base/src/nsAttrName.h"
 #include "../../msiediting/src/msiEditingAtoms.h"
-#include "msiIMathMLEditor.h"
+#include "msiIMathMLEditor.h "
 // #include "jcsDumpNode.h"
 
 
