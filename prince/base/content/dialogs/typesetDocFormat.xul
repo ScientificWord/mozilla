@@ -77,10 +77,10 @@
         Orientation, Finished page size, Two-sided, nad Columns on the Page layout tab.
       We keep these in sync using a set of broadcasters. -->
       <broadcasterset id="sharedbetweentabs">
-        <broadcaster id="shared.orientation" sharedval="port"/> <!-- sharedval is 'port' or 'landscape' -->
-        <broadcaster id="shared.paper" sharedval="letter"/> <!-- sharedval is from the menu id=docformat.finishpagesize -->
-        <broadcaster id="shared.sides" sharedval="1"/> <!-- sharedval is 1 or 2 -->
-        <broadcaster id="shared.columns" sharedval=""/> <!-- sharedval is '' or 'twocolumns' -->
+        <broadcaster id="shared.orientation" value="port"/> <!-- value is 'port' or 'landscape' -->
+        <broadcaster id="shared.paper" value="letter"/> <!-- value is from the menu id=docformat.finishpagesize -->
+        <broadcaster id="shared.sides" value="1"/> <!-- value is 1 or 2 -->
+        <broadcaster id="shared.columns" value="onecolumn" onbroadcast="broadcastColCount();"/> <!-- value is 'onecolumn' or 'twocolumn' -->
         </broadcasterset>
 
       <tabpanel id="docformatgeneralpanel" orient="vertical">
@@ -90,9 +90,9 @@
           <separator/>
           <label>&warning.label2;</label>
         </vbox>
-        <checkbox id="enablereformat" label="&EnableDocStyleOverride.label;" accesskey="&EnableDocStyleOverride.accesskey;" checked="false" control="reformatok"
+        <checkbox id="enablereformat" label="&EnableDocStyleOverride.label;" accesskey="&EnableDocStyleOverride.accesskey;" checked="true" control="reformatok"
           oncommand="enableDisableReformat(this.checked);enable(this);"/>
-        <broadcaster id="reformatok" disabled="true" persist="disabled"/>
+        <broadcaster id="reformatok" disabled="true"/>
         <groupbox>
           <caption>
             <label  observes="reformatok">&TeXImplementation.label;</label>
@@ -122,14 +122,13 @@
             <rows>
               <row align="end" style="height: 3em">
                 <vbox>
-                  <label observes="reformatok" value="&PageOrientation.label;" />
-                  <menulist id="pgorient" observes="reformatok" oncommand="onOrientationChange(this);">
+                  <label value="&PageOrientation.label;" />
+                  <menulist id="pgorient" oncommand="onOrientationChange(this);">
                     <menupopup style="width: 12em" >
-                      <menuitem label="&default.label;" def="1"/>
                       <menuitem value="port" label="&Portrait.label;"/>
                       <menuitem value="landscape" label="&Landscape.label;"/>
                     </menupopup>
-                    <observes element="shared.orientation" attribute="value" onbroadcast="onOrientationBroadcast(this.parentNode);"/>
+                    <observes element="shared.orientation" attribute="value"/>
                   </menulist>
                 </vbox>
                 <vbox>
@@ -138,7 +137,7 @@
                     <menupopup style="width: 12em" >
                       <menuitem label="&default.label;" def="1"/>
                       <menuitem id="docformat.a4" label="&A4Size.label;" value="a4paper"/>
-                      <menuitem value="letter" label="&LetterSize.label;"/>
+                      <menuitem value="letterpaper" label="&LetterSize.label;"/>
                       <menuitem id="docformat.a0" label="&A0Size.label;" value="a0paper"/>
                       <menuitem id="docformat.a1" label="&A1Size.label;" value="a1paper"/>
                       <menuitem id="docformat.a2" label="&A2Size.label;" value="a2paper"/>
@@ -183,13 +182,13 @@
               <row align="end" style="height: 3em">
                 <vbox>
                   <label observes="reformatok" value="&Columns.label;"/>
-                  <menulist id="columns"  observes="reformatok"  oncommand="onCCountChange(this);broadcastColCount();">
+                  <menulist id="columns"  observes="reformatok"  oncommand="onCCountChange(this);">
                     <menupopup style="width: 12em" >
                       <menuitem label="&default.label;" def="1"/>
                       <menuitem value="onecolumn" label="&one.label;"/>
                       <menuitem value="twocolumn" label="&two.label;"/>
                     </menupopup>
-                    <observes element="shared.columns" attribute="value" onbroadcast="onCCountChange(this.parentNode);"/>
+                    <observes element="shared.columns" attribute="value" onbroadcast="broadcastColCount();"/>
                   </menulist>
                 </vbox>
                 <vbox>
@@ -432,18 +431,18 @@
             <rows>
               <row align="end" style="height: 3em">
                 <vbox>
-                  <label observes="reformatok" value="&EqnNumberPosition.label;"/>
-                  <menulist observes="reformatok" id="eqnnopos"  >
-                    <menupopup style="width: 12em" >
-                      <menuitem label="&default.label;" def="1"/>
-                      <menuitem value="reqno" label="&OnTheRight.label;"/>
-                      <menuitem value="leqno" label="&OnTheLeft.label;"/>
-                    </menupopup>
-                  </menulist>
-                </vbox>
-                <vbox>
-                  <label observes="reformatok" value="&DisplayedEqnPosition.label;"/>
-                  <menulist observes="reformatok" id="eqnpos"  >
+                    <label observes="reformatok" value="&EqnNumberPosition.label;"/>
+                    <menulist observes="reformatok" id="eqnnopos"  >
+                      <menupopup style="width: 12em" >
+                        <menuitem label="&default.label;" def="1"/>
+                        <menuitem value="reqno" label="&OnTheRight.label;"/>
+                        <menuitem value="leqno" label="&OnTheLeft.label;"/>
+                      </menupopup>
+                    </menulist>
+                  </vbox>
+                  <vbox>
+                    <label observes="reformatok" value="&DisplayedEqnPosition.label;"/>
+                    <menulist observes="reformatok" id="eqnpos"  >
                     <menupopup style="width: 12em" >
                       <menuitem label="-default-" def="1"/>
                       <menuitem value="ceqn" label="&DisplayedEqnCentered.label;"/>
@@ -556,7 +555,7 @@
         <tabpanel id="docformatPageLayoutPanel" style="overflow:auto">
           <vbox>
             <checkbox id="enablepagelayout" label="&EnableOverridePageLayout.label;" accesskey="&EnableOverridePageLayout.accesskey;" oncommand="enableDisablePageLayout(this.checked);"/>
-            <broadcaster id="pagelayoutok" disabled="true" persist="disabled"/>
+            <broadcaster id="pagelayoutok" disabled="false"/>
             <hbox>
               <vbox flex="1">
                 <hbox maxheight="5em" minheight="3em" flex="1">
@@ -577,7 +576,7 @@
                         <menuitem value="port" label="&Portrait.label;"/>
                         <menuitem value="landscape" label="&Landscape.label;"/>
                       </menupopup>
-                      <observes element="shared.orientation" attribute="value" onbroadcast="onOrientationBroadcast(this.parentNode);"/>
+                      <observes element="shared.orientation" attribute="value"/>
                       <observes element="pagelayoutok" />
                     </menulist>
                   </vbox>
@@ -604,13 +603,13 @@
                   <vbox>
                     <vbox>
                       <label observes="pagelayoutok" value="&Columns.label;"/>
-                      <menulist id="columncount" oncommand="onCCountChange(this); broadcastColCount();">
+                      <menulist id="columncount" oncommand="onCCountChange(this);">
                         <menupopup style="width: 8em" >
                           <menuitem value="onecolumn" label="&one.label;"/>
                           <menuitem value="twocolumn" label="&two.label;"/>
                         </menupopup>
                         <observes element="pagelayoutok"/>
-                        <observes element="shared.columns" attribute="value" onbroadcast="onCCountChange(this.parentNode);"/>
+                        <observes element="shared.columns" attribute="value" onbroadcast="broadcastColCount();"/>
                       </menulist>
                     </vbox>
                   </vbox>
