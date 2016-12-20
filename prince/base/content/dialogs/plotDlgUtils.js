@@ -306,8 +306,8 @@ function mathNodeToNumericText(aNode, bNumberType)
   var jj;
   var retval = null;
   var kid = msiNavigationUtils.getSingleWrappedChild(aNode);
-  if (kid)
-    retval = mathNodeToControlText(kid);
+  if (kid && kid.nodeName==='mn')
+    retval = kid.textContent;
   else
   {
     switch( msiGetBaseNodeName(aNode) )
