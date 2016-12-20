@@ -118,6 +118,12 @@ function startup(){
     rowObj = rowData[aRowId];
     minVal = plot.getPlotValue(rowObj.whichVar + "Min");
     maxVal = plot.getPlotValue(rowObj.whichVar + "Max");
+    rowObj.startEdit.mbSinglePara = true;
+    rowObj.startEdit.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
+    rowObj.endEdit.mbSinglePara = true;
+    rowObj.endEdit.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
+    editorInitializer.addEditorInfo(rowObj.startEdit, minVal, true);
+    editorInitializer.addEditorInfo(rowObj.endEdit, maxVal, true);
     rowObj.startEdit.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : minMaxDocumentObserver(rowObj.startEdit)}];
     rowObj.endEdit.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : minMaxDocumentObserver(rowObj.endEdit)}];
     editorInitializer.addEditorInfo(rowObj.startEdit, minVal, true);
@@ -136,9 +142,16 @@ function startup(){
     }
     else
     {
-      ptsVal = plot.getPlotValue(rowObj.whichVar + "Pts");
-      putMathMLExpressionToControl(rowObj.numPtsTextbox, ptsVal);
-      rowObj.bDefaultNumPoints = isDefaulted(ptsVal, rowObj.whichVar, "Pts");
+      try {
+        ptsVal = plot.getPlotValue(rowObj.whichVar + "Pts");
+        // putMathMLExpressionToControl(rowObj.numPtsTextbox, ptsVal);
+        // rowObj.bDefaultNumPoints = isDefaulted(ptsVal, rowObj.whichVar, "Pts");
+        // added by BBM
+        rowObj.numPtsTextbox.value = '30';
+      }
+      catch(e) {
+        msiDump(e.message);
+      }
     }
   }
   editorInitializer.doInitialize();
