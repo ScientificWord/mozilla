@@ -144,10 +144,8 @@ function startup(){
     {
       try {
         ptsVal = plot.getPlotValue(rowObj.whichVar + "Pts");
-        // putMathMLExpressionToControl(rowObj.numPtsTextbox, ptsVal);
-        // rowObj.bDefaultNumPoints = isDefaulted(ptsVal, rowObj.whichVar, "Pts");
-        // added by BBM
-        rowObj.numPtsTextbox.value = '30';
+        putMathMLExpressionToControl(rowObj.numPtsTextbox, ptsVal);
+        rowObj.bDefaultNumPoints = isDefaulted(ptsVal, rowObj.whichVar, "Pts");
       }
       catch(e) {
         msiDump(e.message);
