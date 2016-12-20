@@ -167,10 +167,12 @@
        <xsl:text>[</xsl:text>
        <xsl:for-each select="//html:colist/@*">
           <xsl:if test="name()!='enabled'">
-             <xsl:value-of select="."/>
-             <xsl:if test="(position()!=last()) and (string-length(normalize-space(.)) > 0)">
-               <xsl:text>, </xsl:text>
-             </xsl:if>
+            <xsl:if test=". !='port'">
+              <xsl:value-of select="."/>
+              <xsl:if test="(position()!=last()) and (string-length(normalize-space(.)) > 0)">
+                <xsl:text>, </xsl:text>
+              </xsl:if>
+            </xsl:if>
           </xsl:if>
        </xsl:for-each>
        <xsl:text>]</xsl:text>
