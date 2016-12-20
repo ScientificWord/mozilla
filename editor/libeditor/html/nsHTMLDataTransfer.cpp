@@ -150,7 +150,7 @@ basic-offset: 2 -*- */
 #include "../../msiediting/src/msiUtils.h"
 #include "../../../content/base/src/nsAttrName.h"
 #include "../../msiediting/src/msiEditingAtoms.h"
-#include "msiIMathMLEditor.h "
+#include "msiIMathMLEditor.h"
 // #include "jcsDumpNode.h"
 
 
@@ -501,7 +501,7 @@ nsHTMLEditor::InsertMathNode
     }
   }
   res = InsertNodeAtPoint(nodeToInsert, (nsIDOMNode **)address_of(nodeTarget), &offsetTarget, PR_TRUE);
-  *lastInsertNode = nodeToInsert;
+  if (lastInsertNode) *lastInsertNode = nodeToInsert;
   res = GetSelection(getter_AddRefs(sel));
   sel->Collapse(cursorNode, cursorOffset);
   return res;
@@ -1152,6 +1152,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
               offsetOfNewNode,
               bDidInsert,
               getter_AddRefs(lastInsertNode));
+            offsetOfNewNode++;
           }
         }
         else
