@@ -239,7 +239,7 @@ function onChangeRole(whichControl)
     return;
   inRoleChange = true;
 
-  var jj, currVar, menulist;
+  var jj, currVar, menulist, menuId;
   var whichVariable = whichControl.id;
   var newVal = whichControl.value;
   var oldVal = rowData[whichVariable].whichVar;
@@ -252,7 +252,7 @@ function onChangeRole(whichControl)
   {
     if (newIndex < oldIndex)  //e.g. changing current YVar to XVar, so we need to shift to get YVar replaced
     {
-      for (var jj = newIndex; jj <= oldIndex; ++jj)
+      for (jj = newIndex; jj <= oldIndex; ++jj)
         cycleVals.push(whichVars[jj]);  //so it should look like [XVar, YVar] or [XVar, YVar, ZVar]
       cycleVals.push(newVal);
     }
@@ -262,7 +262,7 @@ function onChangeRole(whichControl)
         cycleVals.push(whichVars[jj]);
       cycleVals.push(newVal);     //so it should look like [AnimVar, YVar, XVar, AnimVar]
     }
-    for (var menuId in rowData)
+    for (menuId in rowData)
     {
       currVar = rowData[menuId].whichVar;
       foundIndex = cycleVals.indexOf(currVar);
