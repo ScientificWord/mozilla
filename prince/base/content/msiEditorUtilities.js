@@ -7353,10 +7353,9 @@ var msiMarkerListPrototype = {
   }
 };
 function msiKeyMarkerList(aControl) {
-  if (aControl === window) this.mControl = window.document;
-  else this.mControl = aControl;
+  this.mControl = aControl;
   this.mKeyListManager = msiKeyListManager;
-  this.mKeyListManagerRecord = msiKeyListManager.getSearchStringArrayRecordForControl(this.mControl);
+  this.mKeyListManagerRecord = msiKeyListManager.getSearchStringArrayRecordForControl(aControl);
   this.mbInitialized = msiKeyListManager.initMarkerList(this.mKeyListManagerRecord);
   this.mAddedElements = [];
   this.mDeletedElements = [];
