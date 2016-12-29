@@ -1150,6 +1150,8 @@ Plot.prototype =
           if ((textval !== "") && (textval !== "unspecified")) {
               // textval = runFixup(textval); // runFixup(runFixup(textval));
             tNode = (new DOMParser()).parseFromString (textval, "text/xml");
+            textval = GetFixedMath(tNode);
+            tNode = (new DOMParser()).parseFromString (textval, "text/xml");
             DOMEnode.appendChild (tNode.documentElement);
             DOMPlot.appendChild (DOMEnode);
           }
