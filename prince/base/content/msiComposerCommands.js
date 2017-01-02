@@ -6229,51 +6229,68 @@ var msiReviseHorizontalSpacesCommand =
   doCommand: function(aCommand, dummy)  {}
 };
 
-function msiInsertStockSpace(spacename)
-{
-	var editorElement = msiGetActiveEditorElement();
-  var editor = msiGetEditor(editorElement);
-  if (spacename === "normalSpace")
-	{
-		editor.insertText(" ");
-		return;
-  }
-  var node;
-  try {
-    node = editor.document.createElement('hspace');
-  }
-  catch (e) {
-    dump("Unable to create node in msiInsertHorizontalSpace: "+e.message+"\n");
-  }
-  node.setAttribute('type',spacename);
-  var dimsStr = msiSpaceUtils.getHSpaceDims(spacename);
-  if (dimsStr)
-    node.setAttribute('dim',dimsStr);
-  contentStr = msiSpaceUtils.getHSpaceDisplayableContent(spacename);
-  if (contentStr)
-    node.textContent=contentStr;
-  editor.insertElementAtSelection(node,true);
-}
+// function msiInsertStockSpace(spacename)
+// {
+// 	var editorElement = msiGetActiveEditorElement();
+//   var editor = msiGetEditor(editorElement);
+//   var contentStr;
+//   if (spacename === "normalSpace")
+// 	{
+// 		editor.insertText(" ");
+// 		return;
+//   }
+//   var node;
+//   if (spacename === "nonBreakingSpace")
 
-function msiInsertHorizontalSpace(dialogData, editorElement)
+//     try {
+//       node = editor.document.createElement('nbspace');
+//     }
+//     catch (e) {
+//       dump("Unable to create node in msiInsertHorizontalSpace: "+e.message+"\n");
+//     }
+//     contentStr='~';
+//   }
+//   else {
+
+//     try {
+//       node = editor.document.createElement('hspace');
+//     }
+//     catch (e) {
+//       dump("Unable to create node in msiInsertHorizontalSpace: "+e.message+"\n");
+//     }
+//     node.setAttribute('type',spacename);
+//     var dimsStr = msiSpaceUtils.getHSpaceDims(spacename);
+//     if (dimsStr)
+//       node.setAttribute('dim',dimsStr);
+//     contentStr = msiSpaceUtils.getHSpaceDisplayableContent(spacename);
+//   }
+//   if (contentStr)
+//     node.textContent=contentStr;
+//   editor.insertElementAtSelection(node,true);
+// }
+
+function msiInsertHorizontalSpace(spaceType, customSpaceData, editorElement)
 {
+  if (!editorElement) {
+    editorElement = msiGetActiveEditorElement();
+  }
   var editor = msiGetEditor(editorElement);
   var dimsStr, contentStr;
   var parent = editor.selection.focusNode;
   var offset = editor.selection.focusOffset;
   var node = null;
 
-  if (dialogData.spaceType === "normalSpace") {
+  if (spaceType === "normalSpace") {
     editor.insertText(" ");
     return;
   }
-  else if (dialogData.spaceType === "nonBreakingSpace") {
+  else if (spaceType === "nonBreakingSpace") {
     node = editor.document.createElement('nbspace');
     editor.insertElementAtSelection(node, true);
     node.appendChild(editor.document.createTextNode("~"));
     return;
   }
- try {
+  try {
     if (isInMath(editorElement)) {
        node = editor.document.createElementNS(mmlns, 'mspace');
        node.setAttribute('width', "thickmathspace");
@@ -6286,10 +6303,10 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
   }
 
   var invisContent = null;
-  if (dialogData.spaceType != "customSpace")
+  if (spaceType != "customSpace")
   {
-    node.setAttribute('type',dialogData.spaceType);
-    dimsStr = msiSpaceUtils.getHSpaceDims(dialogData.spaceType);
+    node.setAttribute('type',spaceType);
+    dimsStr = msiSpaceUtils.getHSpaceDims(spaceType);
     if (dimsStr)
       node.setAttribute('dim',dimsStr);
   }
@@ -6312,7 +6329,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
       node.setAttribute('fillWith','dots');
     node.setAttribute('atEnd',(dialogData.customSpaceData.typesetChoice=='always'?'true':'false'));
   }
-  contentStr = msiSpaceUtils.getHSpaceDisplayableContent(dialogData.spaceType);
+  contentStr = msiSpaceUtils.getHSpaceDisplayableContent(spaceType);
   if (contentStr)
     node.textContent=contentStr;
   editor.insertElementAtSelection(node,true);
@@ -6320,6 +6337,8 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 
 function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
 {
+  if (!editorElement)
+    editorElement  = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
   var spaceInfo = reviseData.getSpaceInfo();

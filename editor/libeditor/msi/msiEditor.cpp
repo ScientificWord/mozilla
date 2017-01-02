@@ -1144,6 +1144,13 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     PRBool isShift(PR_FALSE), ctrlKey(PR_FALSE), altKey(PR_FALSE), metaKey(PR_FALSE);
     res = ExtractDataFromKeyEvent(aKeyEvent, keyCode, symbol, isShift, ctrlKey,
                                   altKey, metaKey);
+    if (symbol == ' ' && (ctrlKey || altKey || metaKey || isShift)) {
+      nsCOMPtr<nsIDOMNSUIEvent> nsUIEvent = do_QueryInterface(aKeyEvent);
+      nsUIEvent->GetPreventDefault(&preventDefault);
+
+      return NS_OK; //  let Gecko key handling map it.
+    }
+
 // BBM
 // Commenting the next block of code removes Larry's cursor handling code and restores
 // (since preventDefault is not called) the Mozilla cursor handling
@@ -1299,16 +1306,16 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
                      HandleKeyPress(aKeyEvent);
                 }
               }
-              else
-              {
-                nsCOMPtr<nsIDOMElement> reqspace;
-                res = CreateElementWithDefaults(NS_LITERAL_STRING("mspace"), getter_AddRefs(reqspace));
-                reqspace->SetAttribute(NS_LITERAL_STRING("width"), NS_LITERAL_STRING("thickmathspace"));
-                reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("requiredSpace"));
-                reqspace->SetAttribute(NS_LITERAL_STRING("dim"), NS_LITERAL_STRING(".2em"));
-                res = InsertElementAtSelection(reqspace, true);
-                preventDefault = PR_TRUE;
-              }
+              // else
+              // {
+              //   nsCOMPtr<nsIDOMElement> reqspace;
+              //   res = CreateElementWithDefaults(NS_LITERAL_STRING("mspace"), getter_AddRefs(reqspace));
+              //   reqspace->SetAttribute(NS_LITERAL_STRING("width"), NS_LITERAL_STRING("thickmathspace"));
+              //   reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("requiredSpace"));
+              //   reqspace->SetAttribute(NS_LITERAL_STRING("dim"), NS_LITERAL_STRING(".2em"));
+              //   res = InsertElementAtSelection(reqspace, true);
+              //   preventDefault = PR_TRUE;
+              // }
             }
             else if (symbol == '\t')
             {
@@ -1335,17 +1342,18 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
               // res = nsEditor::EndUpdateViewBatch();
             }
           }
-          else if (NS_SUCCEEDED(res) && currFocusNode)  { // but not in math
-            if (symbol == ' ' && isShift)
-            {
-              nsCOMPtr<nsIDOMElement> reqspace;
-              res = CreateElementWithDefaults(NS_LITERAL_STRING("hspace"), getter_AddRefs(reqspace));
-              reqspace->SetAttribute(NS_LITERAL_STRING("dim"), NS_LITERAL_STRING(".2em"));
-              reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("nonBreakingSpace"));
-              res = InsertElementAtSelection(reqspace, true);
-              preventDefault = PR_TRUE;
-            }
-          }
+          // Following is handled by XUL hot-key assignments
+          // else if (NS_SUCCEEDED(res) && currFocusNode)  { // but not in math
+          //   if (symbol == ' ' && isShift)
+          //   {
+          //     nsCOMPtr<nsIDOMElement> reqspace;
+          //     res = CreateElementWithDefaults(NS_LITERAL_STRING("hspace"), getter_AddRefs(reqspace));
+          //     reqspace->SetAttribute(NS_LITERAL_STRING("dim"), NS_LITERAL_STRING(".277778em"));
+          //     reqspace->SetAttribute(NS_LITERAL_STRING("type"), NS_LITERAL_STRING("requiredSpace"));
+          //     res = InsertElementAtSelection(reqspace, true);
+          //     preventDefault = PR_TRUE;
+          //   }
+          // }
         }
       }
    // if not handled then pass along to nsHTMLEditor

@@ -31,7 +31,6 @@
   <key id="msiSelectPrevKey" keycode="VK_LEFT" command="cmd_selectCharPrevious" modifiers="shift"/>
   <key id="msiSelectUpKey" keycode="VK_UP" command="cmd_selectLinePrevious" modifiers="shift"/>
 <!--   <key id="msiSymbolKeyboardKey" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/> -->
-  <key id="msiThinspaceKey" modifiers="accel" key="," oncommand="msiInsertStockSpace('thinSpace');"/>
   <key id="msiTypesetPrintKey" key="p" oncommand="msiGoDoCommand('cmd_printPdf');" modifiers="accel,shift"/>
   <key id="msiUnderlineKey" modifiers="accel" key="u" oncommand="msiDoStatefulCommand('cmd_texttag','underline');"/>
   <key id="msiUndoKey" key="z" command="cmd_MSIundo" modifiers="accel"/>
@@ -46,5 +45,18 @@
   <key id="msiquickperiod" event="keypress" key="." modifiers="accel"       oncommand="msiRevCharQuick('&#x0307;');"/>
   <key id="msiquickdquote" event="keypress" key='"' modifiers="accel" oncommand="msiRevCharQuick('&#x0308;');"/>
   <key id="msiquickexclam" event="keypress" key='!' modifiers="accel" oncommand="msiRevCharQuick('&#x20d7;');"/>
+  <!-- Space key section -->
+  <key id="msiThinSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('thinSpace',{}, null);"/>
+  <key id="msiRequiredSpaceKey" modifiers="shift" key=" " oncommand="msiInsertHorizontalSpace('requiredSpace',{}, null);"/>
+  <key id="msiNonBreakingSpaceKey" modifiers="accel" key=" " oncommand="msiInsertHorizontalSpace('nonBreakingSpace',{}, null);"/>
+<!--   <key id="msiEmSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('emSpace',{}, null);"/>
+  <key id="msiTwoEmSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('twoEmSpace',{}, null);"/>
+  <key id="msiThickSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('thickSpace',{}, null);"/>
+
+  <key id="msiItalicCorrectionSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('italicCorrectionSpace',{}, null);"/>
+  <key id="msiNegativeThinSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('negativeThinSpace',{}, null);"/>
+  <key id="msiZeroSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('zeroSpace',{}, null);"/>
+  <key id="msiNoIndentKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('noIndent',{}, null);"/> -->
+
 </keyset>
 
