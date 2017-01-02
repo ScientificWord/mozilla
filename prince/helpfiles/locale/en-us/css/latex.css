@@ -3,7 +3,7 @@
 
 texlogo {
   font-family: Times, "Times New Roman", serif;
-  font-variant: small-caps;	
+  font-variant: small-caps;
   letter-spacing: 1px;
 }
 
@@ -33,7 +33,7 @@ caption {
 }
 
 table {
-  margin: 0px;  
+  margin: 0px;
 }
 
 /*table {
@@ -81,7 +81,6 @@ hspace[type="italicCorrectionSpace"] {
 
 hspace[type="requiredSpace"] {
   min-width: 0.2em;
-  /*display: inline;*/
 }
 
 hspace[type="nonBreakingSpace"] {
@@ -225,7 +224,7 @@ img {
 }*/
 
 /*graph {
-  display:block;  
+  display:block;
   cursor: pointer;
 }*/
 
@@ -254,46 +253,46 @@ plotwrapper {
 */
 
 
-mml|mfrac mml|mi[tempinput="true"]::before, 
-mml|msup mml|mi + mml|mi[tempinput="true"]::before, 
-mml|msub mml|mi + mml|mi[tempinput="true"]::before, 
-mml|mroot mml|mi[tempinput="true"]::before, 
-mml|msqrt mml|mi[tempinput="true"]::before, 
-mml|munder mml|mi[tempinput="true"]::before, 
-mml|mover mml|mi[tempinput="true"]::before, 
-mml|munderover mml|mi[tempinput="true"]::before, 
-mml|msub mml|mi[tempinput="true"]::before, 
-mml|msup mml|mi[tempinput="true"]::before, 
-mml|msubsup mml|mi[tempinput="true"]::before, 
+mml|mfrac mml|mi[tempinput="true"]::before,
+mml|msup mml|mi + mml|mi[tempinput="true"]::before,
+mml|msub mml|mi + mml|mi[tempinput="true"]::before,
+mml|mroot mml|mi[tempinput="true"]::before,
+mml|msqrt mml|mi[tempinput="true"]::before,
+mml|munder mml|mi[tempinput="true"]::before,
+mml|mover mml|mi[tempinput="true"]::before,
+mml|munderover mml|mi[tempinput="true"]::before,
+mml|msub mml|mi[tempinput="true"]::before,
+mml|msup mml|mi[tempinput="true"]::before,
+mml|msubsup mml|mi[tempinput="true"]::before,
 mml|msidisplay mml|mi[tempinput="true"]::before,
-mml|menclose mml|mi[tempinput="true"]::before 
+mml|menclose mml|mi[tempinput="true"]::before
 {
   content: "[";
   color: green;
 }
 
 
-mml|mfrac mml|mi[tempinput="true"]::after, 
-mml|msup mml|mi + mml|mi[tempinput="true"]::after, 
-mml|msub mml|mi + mml|mi[tempinput="true"]::after, 
-mml|mroot mml|mi[tempinput="true"]::after, 
-mml|msqrt mml|mi[tempinput="true"]::after, 
-mml|munder mml|mi[tempinput="true"]::after, 
-mml|mover mml|mi[tempinput="true"]::after, 
-mml|munderover mml|mi[tempinput="true"]::after, 
-mml|msub mml|mi[tempinput="true"]::after, 
-mml|msup mml|mi[tempinput="true"]::after, 
-mml|msubsup mml|mi[tempinput="true"]::after, 
+mml|mfrac mml|mi[tempinput="true"]::after,
+mml|msup mml|mi + mml|mi[tempinput="true"]::after,
+mml|msub mml|mi + mml|mi[tempinput="true"]::after,
+mml|mroot mml|mi[tempinput="true"]::after,
+mml|msqrt mml|mi[tempinput="true"]::after,
+mml|munder mml|mi[tempinput="true"]::after,
+mml|mover mml|mi[tempinput="true"]::after,
+mml|munderover mml|mi[tempinput="true"]::after,
+mml|msub mml|mi[tempinput="true"]::after,
+mml|msup mml|mi[tempinput="true"]::after,
+mml|msubsup mml|mi[tempinput="true"]::after,
 mml|msidisplay mml|mi[tempinput="true"]::after,
-mml|msienclose mml|mi[tempinput="true"]::after 
+mml|msienclose mml|mi[tempinput="true"]::after
 {
   content: "]";
   color: green;
 }
 
 mml|mfrac mml|mi[tempinput="true"],
-mml|msup mml|mi + mml|mi[tempinput="true"], 
-mml|msub mml|mi + mml|mi[tempinput="true"], 
+mml|msup mml|mi + mml|mi[tempinput="true"],
+mml|msub mml|mi + mml|mi[tempinput="true"],
 mml|mroot mml|mi[tempinput="true"],
 mml|msqrt mml|mi[tempinput="true"],
 mml|msidisplay mml|mi[tempinput="true"],
@@ -309,8 +308,8 @@ mml|menclose mml|mi[tempinput="true"]
 }
 
 mml|mrow[id] {
-  position: fixed;  
-  top: auto; 
+  position: fixed;
+  top: auto;
   left: 0;
   right: 0;
   margin-left: auto;
@@ -320,18 +319,18 @@ mml|mrow[id] {
 }
 mml|mrow[id]:after {
   content: "[#" attr(id) "]" ;
-  position: fixed;  
-  top: auto; 
+  position: fixed;
+  top: auto;
   right: 0em;
   margin-right: 0em;
   z-index: 1;
-  left: auto; 
+  left: auto;
   color: black;
   background-color:rgb(180,180,180);
   -moz-user-select: -moz-none;
 }
 
- 
+
 
 /* ordinary breaks -- emulate behavior of <br/>*/
 
@@ -339,7 +338,7 @@ msibr:before {
   content: "\A";
   white-space: pre;
   -moz-user-select: -moz-none;
-} 
+}
 
 *[showinvis="true"] msibr:before {
   content: "\AC\A";
@@ -363,7 +362,7 @@ body {
 
 /* selection is possible in paragraph and front matter tags */
 
-bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epigraph, title, line, 
+bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epigraph, title, line,
   dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
   abstract, address, author, date, title {
   -moz-user-select: text;
@@ -492,7 +491,7 @@ button[class="eqnnum"]{
   position: absolute;
   right: 0px;
   top: 0px;
-  font-style: normal; 
+  font-style: normal;
   color: red;
   -moz-user-select: -moz-none ! important;
 }
@@ -502,7 +501,7 @@ button[class="subeqnnum"]{
   counter-reset: none;
   position: absolute;
   right: 20px;
-  font-style: normal; 
+  font-style: normal;
   color: blue;
   -moz-user-select: -moz-none ! important;
 }
@@ -510,7 +509,7 @@ button[class="subeqnnum"]{
 button[class="eqnmarker"]{
   position: absolute;
   right: 0px;
-  font-style: normal; 
+  font-style: normal;
   color: red;
   -moz-user-select: -moz-none ! important;
 }
@@ -558,7 +557,7 @@ date {
 
 maketitle {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-maketitle");
-} 
+}
 
 maketoc {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-maketoc");
@@ -570,43 +569,43 @@ makelof {
 
 makelot {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelot");
-} 
+}
 
 line {
   display: block;
 }
 
-/* 
+/*
 *[showinvis="true"] numberedlist {
   padding: 10px;
-  border: 2px solid rgb(220,220,220); 
+  border: 2px solid rgb(220,220,220);
   -moz-border-radius: 8px;
 }
 
 *[showinvis="true"] bulletlist {
   padding: 10px;
-  border: 2px solid rgb(220,220,220); 
+  border: 2px solid rgb(220,220,220);
   -moz-border-radius: 8px;
 }
 
 *[showinvis="true"] descriptionlist {
   padding: 10px;
-  border: 2px solid rgb(220,220,220); 
+  border: 2px solid rgb(220,220,220);
   -moz-border-radius: 8px;
 }  */
 
 *[showinvis="true"] numberedListItem {
-  border: 2px solid rgb(220,210,220); 
+  border: 2px solid rgb(220,210,220);
   -moz-border-radius: 8px;
 }
 
 *[showinvis="true"] bulletListItem {
-  border: 2px solid rgb(220,210,220); 
+  border: 2px solid rgb(220,210,220);
   -moz-border-radius: 8px;
 }
 
 *[showinvis="true"] descriptionListItem {
-  border: 2px solid rgb(220,210,220); 
+  border: 2px solid rgb(220,210,220);
   -moz-border-radius: 8px;
 }
 
@@ -618,8 +617,8 @@ line {
     Plain      - assertion, conjecture, corollary, criterion, lemma, proposition, theorem
     Definition - algorithm, assumption, axiom, condition, definition, example,
                  exercise, hypothesis, problem, property, question
-    Remark     - acknowledgment (not encouraged), case, claim, conclusion, notation, 
-                 note (we would use the tag "texnote", but no support currently), 
+    Remark     - acknowledgment (not encouraged), case, claim, conclusion, notation,
+                 note (we would use the tag "texnote", but no support currently),
                  remark, summary
   The CSS properties for these should be:
     Plain lead-in      - normal bold
@@ -631,7 +630,7 @@ line {
 */
 
 assertion > *:first-child::before, conjecture > *:first-child::before,
-corollary > *:first-child::before, criterion > *:first-child::before, 
+corollary > *:first-child::before, criterion > *:first-child::before,
 lemma > *:first-child::before, proposition > *:first-child::before, theorem > *:first-child::before
 {
   font-style: normal;
@@ -709,13 +708,13 @@ theorem > *:first-child::before {
   content: 'Theorem ' counter(section) "." counter(theorem) ' ';
   -moz-user-modify: read-only;
 }
- 
+
 theorem[numbering="none"] > *:first-child::before {
   content: 'Theorem ';
   -moz-user-modify: read-only;
 }
 
-algorithm > *:first-child::before, assumption > *:first-child::before, 
+algorithm > *:first-child::before, assumption > *:first-child::before,
 axiom > *:first-child::before, condition > *:first-child::before,
 definition > *:first-child::before, example > *:first-child::before,
 exercise > *:first-child::before, hypothesis > *:first-child::before,
@@ -852,7 +851,7 @@ remark > *:first-child::before, summary > *:first-child::before
   font-weight: bold;
   -moz-user-modify: read-only;
 }
-  
+
 acknowledgment, case, claim, conclusion, notation, remark, summary {
   display: block;
   font-style: normal;
@@ -960,7 +959,7 @@ claim[leadInType="custom"],
 conclusion[leadInType="custom"],
 notation[leadInType="custom"],
 remark[leadInType="custom"],
-summary[leadInType="custom"], 
+summary[leadInType="custom"],
 proof[leadInType="custom"] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
 }
@@ -1086,7 +1085,7 @@ smallbox {
 
 /* These are the tags that polyglossia introduces for right-to-left languages */
 Arabic, textarabic, coptic, textcoptic, divehi, textdivehi, farsi, textfarsi, hebrew, texthebrew, syriac, textsyriac, urdu, texturdu
-{ 
-	direction: rtl; 
+{
+	direction: rtl;
 	text-align: right; }
-	
+
