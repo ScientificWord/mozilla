@@ -16,6 +16,70 @@ var prefEngineMapper;
 var prefLogMapper;
 /*
 JavaScript enhancements
+*/
+if (!String.fromCodePoint) {
+  (function() {
+    var defineProperty = (function() {
+      // IE 8 only supports `Object.defineProperty` on DOM elements
+      try {
+        var object = {};
+        var $defineProperty = Object.defineProperty;
+        var result = $defineProperty(object, object, object) && $defineProperty;
+      } catch(error) {}
+      return result;
+    }());
+    var stringFromCharCode = String.fromCharCode;
+    var floor = Math.floor;
+    var fromCodePoint = function() {
+      var MAX_SIZE = 0x4000;
+      var codeUnits = [];
+      var highSurrogate;
+      var lowSurrogate;
+      var index = -1;
+      var length = arguments.length;
+      if (!length) {
+        return '';
+      }
+      var result = '';
+      while (++index < length) {
+        var codePoint = Number(arguments[index]);
+        if (
+          !isFinite(codePoint) ||       // `NaN`, `+Infinity`, or `-Infinity`
+          codePoint < 0 ||              // not a valid Unicode code point
+          codePoint > 0x10FFFF ||       // not a valid Unicode code point
+          floor(codePoint) != codePoint // not an integer
+        ) {
+          throw RangeError('Invalid code point: ' + codePoint);
+        }
+        if (codePoint <= 0xFFFF) { // BMP code point
+          codeUnits.push(codePoint);
+        } else { // Astral code point; split in surrogate halves
+          // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+          codePoint -= 0x10000;
+          highSurrogate = (codePoint >> 10) + 0xD800;
+          lowSurrogate = (codePoint % 0x400) + 0xDC00;
+          codeUnits.push(highSurrogate, lowSurrogate);
+        }
+        if (index + 1 == length || codeUnits.length > MAX_SIZE) {
+          result += stringFromCharCode.apply(null, codeUnits);
+          codeUnits.length = 0;
+        }
+      }
+      return result;
+    };
+    if (defineProperty) {
+      defineProperty(String, 'fromCodePoint', {
+        'value': fromCodePoint,
+        'configurable': true,
+        'writable': true
+      });
+    } else {
+      String.fromCodePoint = fromCodePoint;
+    }
+  }());
+}
+
+/*
 Until we sync with Mozilla again, we need to define our own Object.create and
 bind functions.
 */
@@ -9629,38 +9693,38 @@ var msiSpaceUtils = {
     //requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
     //requiredSpace :         {charContent: " "},  //MEDIUM MATHEMATICAL SPACE in Unicode?
     requiredSpace: {
-      dimensions: '.2em',
-      charContent: '&#x205f;'
+      dimensions: null,
+      charCode:0x2002
     },
-    //nonBreakingSpace :      {charContent: "&#x00a0;"},
-    nonBreakingSpace: { charContent: ' ' },
+    //nonBreakingSpace :      {charCode: "&#x00a0;"},
+    nonBreakingSpace: { charCode: '~' },
     emSpace: {
-      dimensions: '1em',
-      charContent: '&#x2003;'
+      dimensions: null,
+      charCode: 0x2003
     },
     twoEmSpace: {
       dimensions: '2em',
-      charContent: '&#x2001;'
+      charCode: 0x2001
     },
     //EM QUAD
     thinSpace: {
       dimensions: '0.17em',
-      charContent: '&#x2009;'
+      charCode: 0x2009
     },
     thickSpace: {
       dimensions: '0.5em',
-      charContent: '&#x2002;'
+      charCode: 0x2002
     },
     //"EN SPACE" in Unicode?
     italicCorrectionSpace: {
       dimensions: '0.083en',
-      charContent: '&#x200a;'
+      charCode: 0x200a
     },
     //the "HAIR SPACE" in Unicode?
     negativeThinSpace: { dimensions: '0.0em' },
     zeroSpace: {
       dimensions: '0.1em',
-      charContent: '&#x200b;'
+      charCode: 0x200b
     },
     noIndent: {
       dimensions: '0.0em',
@@ -9677,16 +9741,16 @@ var msiSpaceUtils = {
   },
   breaksInfo: {
     allowBreak: {
-      charContent: '&#x00ad;',
+      charCode: 0x00ad,
       showInvisibleChars: '|'
     },
     //this is the zero-width space  -   showInvisibleChars:  "|"?
     discretionaryHyphen: {
-      charContent: '&#x00ad;',
+      charCode: 0x00ad,
       showInvisibleChars: '-'
     },
     noBreak: {
-      charContent: '&#x2060;',
+      charCode: 0x2060,
       showInvisibleChars: '~'
     },
     pageBreak: { charContent: '<newPageRule></newPageRule>' },
@@ -9822,6 +9886,8 @@ var msiSpaceUtils = {
     var theContent = null;
     if (spaceName in this.hSpaceInfo && 'charContent' in this.hSpaceInfo[spaceName])
       theContent = this.hSpaceInfo[spaceName].charContent;
+    else if (spaceName in this.hSpaceInfo && 'charCode' in this.hSpaceInfo[spaceName])
+      theContent = String.fromCodePoint(this.hSpaceInfo[spaceName].charCode);
     return theContent;
   },
   getHSpaceDisplayableContent: function (spaceName) {

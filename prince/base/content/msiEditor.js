@@ -3955,9 +3955,7 @@ function msiEditorDoTab(event) {
   {
     editor.beginTransaction();
     if (!editor.selection.isCollapsed) editor.deleteSelection(editor.eNone);
-    var wrapper = new Object();
-    wrapper.spaceType = "twoEmSpace";
-    msiInsertHorizontalSpace(wrapper, editorElement);
+    msiInsertHorizontalSpace('twoEmSpace', empty, editorElement);
     editor.endTransaction();
     bHandled = true;
   }
