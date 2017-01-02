@@ -142,6 +142,7 @@ button[class="msi"][minpasses]:after {
 hspace, mspace{
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#hspace"); */
   display: inline-block;
+  white-space: pre;
 }
 
 hspace *, mspace * {
