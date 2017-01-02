@@ -171,7 +171,7 @@ function setCustomControls()
 //  gDialog.tabOrderArray = new Array( gDialog.limitsSpecGroup, gDialog.sizeSpecGroup, gDialog.OperatorsGroup,
 //                                       document.documentElement.getButton("accept"),
 //                                       document.documentElement.getButton("cancel") );
-  
+
 //  document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
@@ -267,7 +267,7 @@ function onAccept()
   {
     if (!theWindow || !("msiInsertHorizontalSpace" in theWindow))
       theWindow = msiGetTopLevelWindow();
-    theWindow.msiInsertHorizontalSpace(data, editorElement);
+    theWindow.msiInsertHorizontalSpace(data.spaceType, data.customSpaceData, editorElement);
   }
 
   SaveWindowLocation();
