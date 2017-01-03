@@ -26,7 +26,7 @@
   hyphens are automatically converted to minuses, we need the next entry for making short arrows in math
   -->
   <sub ctx="math" tp="subst"><pattern>−></pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">→</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
-  
+
   <sub ctx="text" tp="subst"><pattern>–></pattern><data><![CDATA[⟶]]></data><context/><info></info></sub>
   <sub ctx="math" tp="subst"><pattern><![CDATA[−−>]]></pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">⟶</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
 
@@ -34,7 +34,7 @@
 
   <sub ctx="both" tp="subst"><pattern>&lt;-</pattern><data>←</data><context/><info></info></sub>
   <sub ctx="math" tp="subst"><pattern>&lt;−</pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">←</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
-  
+
   <sub ctx="text" tp="subst"><pattern>←-</pattern><data>⟵</data><context/><info></info></sub>
   <sub ctx="math" tp="subst"><pattern>←−</pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">⟵</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
 
@@ -69,6 +69,15 @@
   <sub ctx="text" tp="sc"><pattern>.xelatex.</pattern><data>insertFragmentOrMacro('xelatex');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.nonum.</pattern><data>unnumberSection();</data></sub>
   <sub ctx="text" tp="sc"><pattern>.renum.</pattern><data>renumberSection();</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.nbsp.</pattern><data>msiInsertHorizontalSpace('nonBreakingSpace',{}, null);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.ngsp.</pattern><data>msiInsertHorizontalSpace('negativeThinSpace',{}, null);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.thksp.</pattern><data>msiInsertHorizontalSpace('thickSpace',{}, null);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.2msp.</pattern><data>msiInsertHorizontalSpace('twoEmSpace',{}, null);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.emsp.</pattern><data>msiInsertHorizontalSpace('emSpace',{}, null);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.zrsp.</pattern><data>msiInsertHorizontalSpace('zeroSpace',{}, null);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.itsp.</pattern><data>msiInsertHorizontalSpace('italicCorrectionSpace',{}, null);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.noind.</pattern><data>msiInsertHorizontalSpace('noIndent',{}, null);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.ftn.</pattern><data>insertFootnote();</data></sub>
   <sub ctx="math" tp="sc"><pattern>+-</pattern><data>insertMathSymbol('±',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>about</pattern><data>insertMathname('about',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>additionally</pattern><data>insertMathname('additionally',true);</data></sub>
