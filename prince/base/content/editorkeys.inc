@@ -49,9 +49,9 @@
   <key id="msiThinSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('thinSpace',{}, null);"/>
   <key id="msiRequiredSpaceKey" modifiers="shift" key=" " oncommand="msiInsertHorizontalSpace('requiredSpace',{}, null);"/>
   <key id="msiNonBreakingSpaceKey" modifiers="accel" key=" " oncommand="msiInsertHorizontalSpace('nonBreakingSpace',{}, null);"/>
+  <key id="msiThickSpaceKey" modifiers="accel,shift" key=" " oncommand="msiInsertHorizontalSpace('thickSpace',{}, null);"/>
 <!--   <key id="msiEmSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('emSpace',{}, null);"/>
   <key id="msiTwoEmSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('twoEmSpace',{}, null);"/>
-  <key id="msiThickSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('thickSpace',{}, null);"/>
 
   <key id="msiItalicCorrectionSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('italicCorrectionSpace',{}, null);"/>
   <key id="msiNegativeThinSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('negativeThinSpace',{}, null);"/>
