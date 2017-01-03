@@ -6310,24 +6310,24 @@ function msiInsertHorizontalSpace(spaceType, customSpaceData, editorElement)
     if (dimsStr)
       node.setAttribute('dim',dimsStr);
   }
-  else if (dialogData.customSpaceData.customType == "fixed")
+  else if (customSpaceData.customType == "fixed")
   {
     node.setAttribute('type','customSpace');
-    dimsStr = String(dialogData.customSpaceData.fixedData.size) + dialogData.customSpaceData.fixedData.units;
+    dimsStr = String(customSpaceData.fixedData.size) + customSpaceData.fixedData.units;
     node.setAttribute('dim',dimsStr);
-    node.setAttribute('atEnd',(dialogData.customSpaceData.typesetChoice=='always'?'true':'false'));
+    node.setAttribute('atEnd',(customSpaceData.typesetChoice=='always'?'true':'false'));
     node.setAttribute('style','min-width: ' + dimsStr);
   }
-  else if (dialogData.customSpaceData.customType == "stretchy")
+  else if (customSpaceData.customType == "stretchy")
   {
     node.setAttribute('type','customSpace');
     node.setAttribute('class','stretchySpace');
-    node.setAttribute('flex', String(dialogData.customSpaceData.stretchData.factor));
-    if (dialogData.customSpaceData.stretchData.fillWith == "fillLine")
+    node.setAttribute('flex', String(customSpaceData.stretchData.factor));
+    if (customSpaceData.stretchData.fillWith == "fillLine")
       node.setAttribute('fillWith','line');
-    else if (dialogData.customSpaceData.stretchData.fillWith == "fillDots")
+    else if (customSpaceData.stretchData.fillWith == "fillDots")
       node.setAttribute('fillWith','dots');
-    node.setAttribute('atEnd',(dialogData.customSpaceData.typesetChoice=='always'?'true':'false'));
+    node.setAttribute('atEnd',(customSpaceData.typesetChoice=='always'?'true':'false'));
   }
   contentStr = msiSpaceUtils.getHSpaceDisplayableContent(spaceType);
   if (contentStr)

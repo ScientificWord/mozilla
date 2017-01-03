@@ -49,8 +49,8 @@ function InitDialog()
   if (!data.spaceType || !data.spaceType.length)
     theSpaceType = "normalSpace";
   document.getElementById("spacesRadioGroup").value = theSpaceType;
-  if (document.getElementById("customControls").getAttribute("collapsed") != "true")
-    bStartUpWithCustomControls = true;
+  // if (document.getElementById("customControls").getAttribute("collapsed") != "true")
+  //   bStartUpWithCustomControls = true;
   setCustomControls();
   checkEnableControls();
 }
