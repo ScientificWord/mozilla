@@ -233,7 +233,7 @@ function Startup() {
   document.getElementById("disableSubsInText").checked = !enableText;
   var enableMath = gDialog.subsList.isAutoSubstitutionEnabled( true );
   document.getElementById("disableSubsInMath").checked = !enableMath;
-  
+
   var editElement = document.getElementById("subst-frame");
   var substitutionControlObserver = new msiEditorChangeObserver(editElement);
   var commandBoldObserverData = new Object();
@@ -272,13 +272,13 @@ function Startup() {
 //    dump("Unable to load autosubstitution file \"" + autosubsFile.path + "\"; aborting Auto Substitution dialog.\n");
 //    return false;
 //  }
-//  
+//
 //  var retVal = false;  //until we get something in the list
 //  // We need to prebuild these so that the keyboard shortcut works
 //  // ACSA = autocomplete string array
 //  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
 //  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-//  
+//
 ////  gDialog.subsList = new Object();
 //  var rootElementList = subsDoc.getElementsByTagName("subs");
 //  dump("In autoSubstituteDialog.js, in createSubstitutionList(), subsDoc loaded, rootElementList has length [" + rootElementList.length + "].\n");
@@ -511,7 +511,7 @@ function setControlsForSubstitution()
   msiEnableEditorControl(document.getElementById("subst-frame"), true);
 //  document.getElementById("subst-frame").disabled = false;
   document.getElementById("thedeck").selectedIndex=0;
-  
+
 //  var labelToShow = document.getElementById("substitutionLabel");
 //  var theCaption = document.getElementById("replacementLabel");
 //  theCaption.label = labelToShow.value;
@@ -584,6 +584,9 @@ function setSubstitutionControlFromSub(autoSubName)
       {
 //        msiDeleteBodyContents(theEditor);
         var theText = gDialog.subsList.names[autoSubName].theData;
+        if (theText == null) {
+          theText = '';
+        }
         var contextMarkup = gDialog.subsList.names[autoSubName].theContext;
         if (contextMarkup == null)
           contextMarkup = "";
@@ -709,10 +712,11 @@ function checkSubstitutionControl(editControl)
 function checkScriptControl(scriptControl)
 {
   var currName = document.getElementById("keystrokesBox").value;
-  var currData = "";
+  var currData = '';
   var controlData = scriptControl.value;
   if ((currName != null) && (currName in gDialog.subsList.names))
     currData = gDialog.subsList.names[currName].theData;
+  if (!currData) currData = '';
   var bModified = (!currData.length) || (currData != controlData);
   var bNonEmpty = (controlData != null) && (controlData.length > 0);
   if (bModified != gDialog.bDataModified || bNonEmpty != gDialog.bDataNonEmpty)
@@ -872,7 +876,7 @@ function getEditControlContentNodes(editorElement, bMathOnly)
 //    return returnlist;
 //  }
 //  else
-//  
+//
 //    return null;
 }
 
