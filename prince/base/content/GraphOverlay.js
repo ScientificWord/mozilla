@@ -1,3 +1,4 @@
+
 // Copyright (c) 2004-2013 MacFKichan Software, Inc. All rights reserved
 /* jshint ignore:start */
 // For JSHint documentation see  http://www.jshint.com/docs/
@@ -354,7 +355,7 @@ Graph.prototype = {
     var editor = msiGetEditor(editorElement);
     var DOMGs = DOMgraph.getElementsByTagName("graphSpec")[0];
     var DOMFrame = DOMgraph.getElementsByTagName("msiframe")[0];
-    var DOMCaption = DOMFrame.getElementsByTagName("caption")[0];
+    var DOMCaption = DOMFrame.getElementsByTagName("imagecaption")[0];
     var attr, value, alist, i, domPlots, plot, domPlotLabels, status, caption, captionloc, child, optnum;
     var graphData = new graphVarData(this);
     var unitHandler = new UnitHandler(editor);
@@ -510,14 +511,14 @@ Graph.prototype = {
   },
   extractCaption: function (DOMGraph) {
     var DOMCaption, basenode, serialized;
-    DOMCaption = DOMGraph.getElementsByTagName("caption");
+    DOMCaption = DOMGraph.getElementsByTagName("imagecaption");
     if (DOMCaption.length > 0) {
       DOMCaption = DOMCaption[0];
     }
     else {
       return;
     }
-    basenode = DOMCaption.getElementsByTagName("caption");
+    basenode = DOMCaption.getElementsByTagName("imagecaption");
     if (basenode.length > 0) {
       basenode = basenode[0];
     }
@@ -1150,8 +1151,8 @@ Plot.prototype =
           if ((textval !== "") && (textval !== "unspecified")) {
               // textval = runFixup(textval); // runFixup(runFixup(textval));
             tNode = (new DOMParser()).parseFromString (textval, "text/xml");
-            textval = GetFixedMath(tNode);
-            tNode = (new DOMParser()).parseFromString (textval, "text/xml");
+            //textval = GetFixedMath(tNode);
+            //tNode = (new DOMParser()).parseFromString (textval, "text/xml");
             DOMEnode.appendChild (tNode.documentElement);
             DOMPlot.appendChild (DOMEnode);
           }
@@ -1935,7 +1936,7 @@ Frame.prototype = {
   },
 
   reviseFrameDOMElement: function (DOMFrame, forComp, editorElement) {
-    var editor = msiGetEditor(editorElement);
+    var  editor = msiGetEditor(editorElement);
     var attributes, i, j, att, graph, units, height, width, pos, placeLocation, captionlocation, x;
     var DOMObj = DOMFrame.getElementsByTagName("object")[0];
     var unitHandler = new UnitHandler(editor);
@@ -2108,8 +2109,10 @@ Frame.prototype = {
       if (needsWrapfig) {
         editor.setAttribute(DOMFrame, "req", "wrapfig");
       }
-      DOMObj.setAttribute("alt", "Generated Plot");
-      DOMObj.setAttribute("msigraph", "true");
+	if (DOMObj){
+	    DOMObj.setAttribute("alt", "Generated Plot");
+	    DOMObj.setAttribute("msigraph", "true");
+	}
 //      DOMObj.setAttribute("data", graph.getValue("ImageFile"));
       return (DOMFrame);
     }
