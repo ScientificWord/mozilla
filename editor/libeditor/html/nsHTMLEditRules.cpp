@@ -3890,6 +3890,12 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
 
   while (!done) {
     res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
+    if (isEmpty && (name.EqualsLiteral("hspace") || name.EqualsLiteral("nbspace"))) {
+      ed->DeleteNode(node);
+      done = PR_TRUE;
+      break;
+    }
+
     elt = do_QueryInterface(node);
     if (elt && IsSpecialMath(elt, isEmpty, nodecount, startOffset, ed)) {
       if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
