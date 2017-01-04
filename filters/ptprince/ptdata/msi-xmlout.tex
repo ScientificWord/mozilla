@@ -1638,7 +1638,7 @@
   \ifmmode
     \char`\~
   \else
-    \msihmode\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}%
+    \msihmode\msitag{<nbspace>~</nbspace>}%
   \fi}
 
 \def\/{%
@@ -2463,7 +2463,8 @@
   \msi@scan@filecontents}
 
 \def\out@filecontents#1{%
-   \expandafter\global\expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\begin{filecontents}#1\end{filecontents}}}
+ % \msitag{<environment type="filecontents">}#1\msitag{</environment>}}
+  \expandafter\global\expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\begin{filecontents}#1\end{filecontents}}}
 
 
 % A hack to fool the jbm filter into handling \dots gracefully
