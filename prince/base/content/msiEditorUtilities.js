@@ -9669,7 +9669,28 @@ var msiNavigationUtils = {
       return false;
     return true;
   }
-};
+ };
+
+ function removeInvisibles(mathnode) {
+  try {
+     if (mathnode.nodeName === "#document") mathnode = mathnode.firstChild;
+     var doc = mathnode.ownerDocument;
+     var currNode;
+     var treeWalker = doc.createTreeWalker(mathnode, NodeFilter.SHOW_ELEMENT, { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } }, true);
+     if (treeWalker)
+     {
+       for (currNode = treeWalker.nextNode(); currNode != null; currNode = treeWalker.nextNode())
+       {
+         if ((currNode.nodeName === 'mo') && (currNode.textContent === '\u2062' || currNode.textContent === '\u2061'))
+           currNode.parentNode.removeChild(currNode);
+       }
+     }
+   }
+   catch(e) {
+     msiDump(e.message);
+   }
+ }
+
 /**************************More general utilities**********************/
 // Clone simple JS objects
 //function Clone(obj)
