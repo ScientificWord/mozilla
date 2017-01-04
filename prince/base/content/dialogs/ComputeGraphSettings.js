@@ -500,12 +500,14 @@ function fromDialogToPlot( plotnum ) {
     radiusControl = document.getElementById("plotDlg-tube-radius"),
     radiusStringSource, radiusMath, radiusEditor,
     editor = msiGetEditor(editorControl),
-    theStringSource = graph.ser.serializeToString(math),
     doit = true,
     ptype="Unknown",
     alist = graph.plotAttributeList(plotnum),
     anID, theVal, str;
 
+  removeInvisibles(math);
+
+  var theStringSource = graph.ser.serializeToString(math),
   ptype = graph.getPlotValue ("PlotType", plotnum);
   for (var i = 0; i < alist.length; ++i)
   {
@@ -515,7 +517,9 @@ function fromDialogToPlot( plotnum ) {
     }
   }
 
-  graph.plots[plotnum].element["Expression"]=theStringSource;
+
+
+  graph.plots[plotnum].element["Expression"]= runFixup(theStringSource);
   radiusEditor = msiGetEditor(radiusControl);
   radiusMath = radiusControl.contentDocument.getElementsByTagName("math")[0];
   if (ptype === "tube")
