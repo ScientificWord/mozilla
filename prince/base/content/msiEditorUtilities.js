@@ -3125,7 +3125,7 @@ function propertyDialogList(theWindow) {
   this.closingObserver = function (event) {
     //    msiKludgeLogString("singleDialogList closingObserver called.\n");
     var topWin = msiGetTopLevelWindow();
-    if (topWin.msiPropertiesDialogList) {
+    if (topwin && topWin.msiPropertiesDialogList) {
       var theTarget = event.origTarget;
       if (!theTarget)
         theTarget = event.target;
