@@ -47,6 +47,7 @@ function InitStructBarContextMenu(button, docElement)
 
   var structRemoveTag = document.getElementById("structRemoveTag");
   var structSelect = document.getElementById("structSelect");
+  var structRefreshTag = document.getElementById("structRefreshTag");
   var structChangeTag = document.getElementById("structChangeTag");
   var enableRemove;
 
@@ -70,6 +71,7 @@ function InitStructBarContextMenu(button, docElement)
       break;
   }
   SetElementEnabled(structRemoveTag, enableRemove);
+  SetElementEnabled(structRefreshTag, enableRemove);
   SetElementEnabled(structSelect, tag != "body" && tag != "html");
   SetElementEnabled(structChangeTag, (tag != "body"));
 }
@@ -135,13 +137,12 @@ function StructRefreshTag()
 {
   var editor = GetCurrentEditor();
   if (!editor) return;
-  // var element = gContextMenuFiringDocumentElement;
-
-  // editor.markNodeDirty(element);
-  StructRemoveTag();
-  editor.undo(1);
+  var element = gContextMenuFiringDocumentElement;
+  if (element.nodeName !== 'body') {
+    StructRemoveTag();
+    editor.undo(1);
+  }
 }
-
 
 
 function MoveChildNodesAfterElement(editor, element, targetElement, targetOffset)
