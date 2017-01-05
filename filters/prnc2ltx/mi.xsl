@@ -438,7 +438,7 @@
     <xsl:choose>
       <xsl:when test="@mathvariant='bold'
       or              ancestor::mml:mstyle[@fontweight='bold']">
-        <xsl:text>\boldsymbol{</xsl:text>
+        <xsl:text>\mathbf{</xsl:text>
       </xsl:when>
       <xsl:when test="@mathvariant='italic'
       or              ancestor::mml:mstyle[@fontstyle='italic']">
