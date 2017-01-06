@@ -253,15 +253,15 @@ function startup()
 
   getFontSpecs(node);
 
-  var sectitlenodelist;
-  if (!(docFormatNodeList && docFormatNodeList.length>=1))
-    sectitlenodelist=null;
-  else
-    sectitlenodelist = docFormatNodeList[0].getElementsByTagName('sectitleformat');
+//   var sectitlenodelist;
+//   if (!(docFormatNodeList && docFormatNodeList.length>=1))
+//     sectitlenodelist=null;
+//   else
+//     sectitlenodelist = docFormatNodeList[0].getElementsByTagName('sectitleformat');
 
-  dump ("initializing sectitleformat\n");
-  sectitleformat = new Object();
-//  getNumStyles(preamble);
+//   dump ("initializing sectitleformat\n");
+//   sectitleformat = new Object();
+// //  getNumStyles(preamble);
 //  getSectionFormatting(sectitlenodelist, sectitleformat);
   getLanguageSettings(preamble);
   enableDisableReformat(document.getElementById("enablereformat").checked);
@@ -282,37 +282,47 @@ function startup()
 
 function getEnableFlags(doc)
 {
+
+  var overwriteStyle, overwritePageFormat, overwriteFonts, prog, progNode,
+    useUni, useOTF,
+    // overwriteSecFormat,
+    e;
+
   var nodelist = doc.getElementsByTagName("texprogram");
   if (nodelist.length > 0)
-  {
-    var value;
-    var progNode =  nodelist[0]
-    value = progNode.getAttribute("prog");
-    setCompiler(value);
-    compilerInfo.useOTF = (value == "xelatex" || (value == "lualatex"));
+  { progNode =  nodelist[0];
+    prog = progNode.getAttribute("prog");
+    setCompiler(prog);
+    compilerInfo.useOTF = (prog === "xelatex" || (prog === "lualatex"));
     compilerInfo.useUni = compilerInfo.useOTF;
-    document.getElementById("texprogram").value = value;
-    var canSetFormat = progNode.getAttribute("formatOK") == "true";
-    document.getElementById("enablereformat").checked = canSetFormat;
-    var fontsOK = progNode.getAttribute("fontsOK") == "true";
-    enableDisableFonts(fontsOK);
-    document.getElementById("allowfontchoice").checked = fontsOK;
-    var formatPageOK = progNode.getAttribute("pageFormatOK") == "true";
-    document.getElementById("enablepagelayout").checked = formatPageOK;
-    var secFormatOK = progNode.getAttribute("secFormatOK") == "true";
-//    document.getElementById("allowsectionheaders").checked = secFormatOK;
-//    enableDisableSectFormat(document.getElementById("allowsectionheaders"));
+    overwriteStyle = progNode.getAttribute("formatOK") === "true";
+    document.getElementById("enablereformat").checked = overwriteStyle;
+    overwriteFonts = progNode.getAttribute("fontsOK") == "true";
+    enableDisableFonts(overwriteFonts);
+    document.getElementById("allowfontchoice").checked = overwriteFonts;
+    overwritePageFormat = progNode.getAttribute("pageFormatOK") == "true";
+    document.getElementById("enablepagelayout").checked = overwritePageFormat;
+    // overwriteSecFormat = progNode.getAttribute("secFormatOK") == "true";
+    // document.getElementById("allowsectionheaders").checked = secFormatOK;
+    // enableDisableSectFormat(document.getElementById("allowsectionheaders"));
 
 
-    var e = document.getElementById('reformatok');
-    if (canSetFormat){ // checked. enable.
+    e = document.getElementById('reformatok');
+    if (overwriteStyle){ // checked. enable.
        e.removeAttribute('disabled');
     }else{
        e.setAttribute('disabled', "true");
     }
 
-    var e = document.getElementById('pagelayoutok');
-    if (formatPageOK){ // checked. enable.
+    e = document.getElementById('pagelayoutok');
+    if (overwritePageFormat){ // checked. enable.
+       e.removeAttribute('disabled');
+    }else{
+       e.setAttribute('disabled', "true");
+    }
+
+    e = document.getElementById('fontdefok');
+    if (overwritePageFormat){ // checked. enable.
        e.removeAttribute('disabled');
     }else{
        e.setAttribute('disabled', "true");
@@ -1743,16 +1753,19 @@ function getFontSpecs(node)
   if (node)
   {
     subnode = node.getElementsByTagName('mainfont')[0];
-    document.getElementById('mainfontlist').value = subnode.getAttribute('name');
-    options = subnode.getAttribute('options');
-    if (options)
+    if (subnode)
     {
-      options = trimBlanks(options);
-      if (options.length > 0)
+      document.getElementById('mainfontlist').value = subnode.getAttribute('name');
+      options = subnode.getAttribute('options');
+      if (options)
       {
-        textbox = document.getElementById('romannative');
-        textbox.value = options;
-        onOptionTextChanged( textbox );
+        options = trimBlanks(options);
+        if (options.length > 0)
+        {
+          textbox = document.getElementById('romannative');
+          textbox.value = options;
+          onOptionTextChanged( textbox );
+        }
       }
     }
     subnode = node.getElementsByTagName('sansfont')[0];
