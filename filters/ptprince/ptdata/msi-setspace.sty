@@ -7,6 +7,6 @@
 
 % spacing environment ?
 \makeatletter
-\def\msi@begin@spacing#1{\msitag{<environment type="spacing" param="#1">}}
-\def\msi@end@spacing{\msitag{</environment>}}
+\def\msi@begin@spacing#1{\msiopentag{environment}{<environment type="spacing" param="#1">}}
+\def\msi@end@spacing{\msiclosetag{environment}{</environment>}}
 \makeatother
