@@ -5,6 +5,14 @@
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
     xmlns:exsl="http://exslt.org/common">
 
+
+  <xsl:template name="filecontents">
+    <xsl:if test="html:preamble">
+      <xsl:value-of select="//html:filecontents"/>
+    </xsl:if>
+  </xsl:template>
+
+
   <!-- Package handling. Packages are not inserted directly, but with requirespackage tags and other
   tags with the 'req' and 'opt' attributes. We collect them and remove
   duplicates, and then sort according to the pri attribute -->
