@@ -2451,8 +2451,8 @@
   |gdef|msi@scan@filecontents#1\end{filecontents}[%
      |out@filecontents[#1]%
      |end[filecontents]%
-     |@make@braces@normal%
-  ]%
+     |@make@braces@normal
+     |ignorespaces]%
 |egroup
 
 \def\msi@begin@filecontents{%
@@ -2464,7 +2464,7 @@
   \msi@scan@filecontents}
 
 \def\out@filecontents#1{%
-\global\msi@preamble{<filecontents><![CDATA[\begin{filecontents}#1\end{filecontents}]]></filecontents>}}
+  \global\msi@preamble{<filecontents><![CDATA[#1]]></filecontents>}}
 
 
 
