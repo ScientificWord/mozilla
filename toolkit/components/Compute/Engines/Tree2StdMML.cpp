@@ -2390,8 +2390,11 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
     MNODE* parent = rover->parent;
     MNODE* firstkid = rover->first_kid;
     if (ElementNameIs(rover, "mrow")) {
-      if (!HasRequiredChildren(parent)){
-        remove = true; 
+      if (firstkid && ElementNameIs(firstkid, "mo")){
+	// should check for fence attribute?
+	remove = (0 == GetATTRIBvalue(firstkid->attrib_list, "fence"));
+      } else if (!HasRequiredChildren(parent)){
+          remove = true; 
       } else if (firstkid && !(firstkid->next)){ // one item only
 	remove = true;
       }
