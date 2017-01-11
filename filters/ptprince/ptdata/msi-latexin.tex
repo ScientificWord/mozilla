@@ -92,9 +92,8 @@
 \def\end#1{%
    \@ifundefined{msi@begin@#1}%
      {\msiclosetag{environment}{</environment>}}
-     {\csname msi@end@#1\endcsname}
-   \endgroup
-   \msi@newline}
+     {\csname msi@end@#1\endcsname}%
+   \endgroup}
 
 
 %%%%%%%%%%%%%%%%
