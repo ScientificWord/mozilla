@@ -162,6 +162,8 @@
 <xsl:template match="html:head">
   <xsl:call-template name="metadata"/>
   <xsl:value-of select="$blankline"/>
+  <xsl:call-template name="filecontents"/>
+  <xsl:value-of select="$blankline"/>
   <xsl:text>\documentclass</xsl:text>
     <xsl:if test="//html:colist/@*">
        <xsl:text>[</xsl:text>

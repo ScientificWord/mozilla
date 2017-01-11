@@ -4,7 +4,7 @@
 
 \msi@inpreamble = 0
 \msi@insubequations=0
-
+\msi@preamble={}
 
 \def\out@preamble#1{}
 %   \msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[^^0a%
@@ -354,13 +354,13 @@
 
 \newcount\preambleid
 
-\def\out@preamble@tex#1{%
+\def\out@preamble@tex#1{}
    %\advance\preambleid by 1
    %\msitag{^^0a<preambleTeX id="}\the\preambleid\msitag{"><![CDATA[^^0a%
    %  \usepackage{bm}^^0a\usepackage{tabulary}}%
    %\msipreambleextra   
    %\msitag{]]> </preambleTeX>}%
-   \msi@preamble={}}
+   %\msi@preamble={}}
 
 
 %% \document and \enddocument
@@ -2263,6 +2263,7 @@
              xmlns:sw="http://www.sciword.com/namespaces/sciword">}
    \msi@br\msitag{<head>}
    \msi@br\msiopentag{preamble}{<preamble>}
+   \expandafter\msitag\expandafter{\the\msi@preamble}
    \def\makeatother{%
        \msihmode
        \ifnum\msi@inpreamble=1
@@ -2451,7 +2452,7 @@
      |out@filecontents[#1]%
      |end[filecontents]%
      |@make@braces@normal%
-  ] 
+  ]%
 |egroup
 
 \def\msi@begin@filecontents{%
@@ -2463,16 +2464,8 @@
   \msi@scan@filecontents}
 
 \def\out@filecontents#1{%
- % \msitag{<environment type="filecontents">}#1\msitag{</environment>}}
-  \expandafter\global\expandafter\msi@preamble\expandafter{\the\msi@preamble^^0a\begin{filecontents}#1\end{filecontents}}}
+\global\msi@preamble{<filecontents><![CDATA[\begin{filecontents}#1\end{filecontents}]]></filecontents>}}
 
-
-% A hack to fool the jbm filter into handling \dots gracefully
-%\def\dots{%
-%  \ifmmode
-%    \msitag{\U{2026}}%
-%  \else
-%    }
 
 
 
