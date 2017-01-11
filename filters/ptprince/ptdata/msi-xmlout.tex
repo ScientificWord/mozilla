@@ -2448,7 +2448,8 @@
   \catcode`\[=1
   \catcode`\]=2
   \catcode`\\=12
-  |gdef|msi@scan@filecontents#1\end{filecontents}[%
+  |gdef|msi@scan@filecontents[|catcode`|^^M=12|catcode`|^^J=12|relax|msi@@scan@filecontents]
+  |gdef|msi@@scan@filecontents#1\end{filecontents}[%
      |out@filecontents[#1]%
      |end[filecontents]%
      |@make@braces@normal
