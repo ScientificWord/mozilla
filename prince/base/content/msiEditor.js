@@ -3892,6 +3892,7 @@ function msiEditorCheckEnter(event) {
 }
 
 function msiEditorDoTab(event) {
+  var empty = '';
   function doTabWithSelectionInNode(aNode, totalRange, anEditor) {
     var rv = false;
     switch (msiGetBaseNodeName(aNode)) {
