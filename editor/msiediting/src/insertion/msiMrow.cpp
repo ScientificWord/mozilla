@@ -4,11 +4,11 @@
 #include "nsIDOMNode.h"
 #include "nsIDOMNodeList.h"
 #include "nsCOMPtr.h"
-#include "msiUtils.h"   
-#include "msiCoalesceUtils.h"   
-#include "msiMrowEditingImp.h"   
+#include "msiUtils.h"
+#include "msiCoalesceUtils.h"
+#include "msiMrowEditingImp.h"
 
-msiMrow::msiMrow(nsIDOMNode* mathmlNode, PRUint32 offset) 
+msiMrow::msiMrow(nsIDOMNode* mathmlNode, PRUint32 offset)
 :  msiMContainer(mathmlNode, offset, MATHML_MROW)
 {
   MSI_NewMrowEditingImp(mathmlNode, getter_AddRefs(m_mrowEditingImp));
@@ -20,7 +20,7 @@ NS_IMPL_ISUPPORTS_INHERITED1(msiMrow, msiMContainer, msiIMrowEditing)
 
 NS_IMETHODIMP
 msiMrow::InsertMath(nsIEditor * editor,
-                    nsISelection * selection, 
+                    nsISelection * selection,
                     PRBool isDisplay,
                     nsIDOMNode * inleft,
                     nsIDOMNode * inright,
@@ -29,26 +29,26 @@ msiMrow::InsertMath(nsIEditor * editor,
   nsresult res(NS_ERROR_FAILURE);
   if (editor && m_mathmlNode)
   {
-    if (inleft || inright) 
+    if (inleft || inright)
     {// the node at m_offset has been split into left and right. Replace it with left and right and set m_offset to point between them.
       nsCOMPtr<nsIDOMNodeList> children;
       nsCOMPtr<nsIDOMNode> childToReplace;
       m_mathmlNode->GetChildNodes(getter_AddRefs(children));
-      if (children) 
+      if (children)
         children->Item(m_offset, getter_AddRefs(childToReplace));
       if (childToReplace)
       {
         if (inleft && inright)
         {
           editor->ReplaceNode(inleft, childToReplace, m_mathmlNode);
-          m_offset += 1; 
+          m_offset += 1;
           editor->InsertNode(inright, m_mathmlNode, m_offset);
         }
         else if (inleft)
         {
-          m_offset += 1; 
+          m_offset += 1;
         }
-      }  
+      }
     }
     nsCOMPtr<nsIDOMNode> left, right;
     res = Split(left, right);
@@ -65,9 +65,9 @@ msiMrow::InsertMath(nsIEditor * editor,
 
 NS_IMETHODIMP
 msiMrow::InsertNodes(nsIEditor * editor,
-                     nsISelection * selection, 
+                     nsISelection * selection,
                      nsIArray * nodeList,
-                     PRBool  deleteExisting, 
+                     PRBool  deleteExisting,
                      PRUint32 flags)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -82,15 +82,30 @@ msiMrow::InsertNodes(nsIEditor * editor,
     if (NS_SUCCEEDED(res) && msiEditing)
     {
       msiEditing->Inquiry(editor, IS_MROW_REDUNDANT, &isRedundant);
+      if (isRedundant) { // Hold on! we don't consider a row redundant if it is the parent of fences.
+        nsCOMPtr<nsIDOMNode> firstChild;
+        nsCOMPtr<nsIDOMElement> firstElement;
+        PRBool hasFence = PR_FALSE;
+        res = m_mathmlNode->GetFirstChild(getter_AddRefs(firstChild));
+        if (firstChild) {
+          firstElement = do_QueryInterface(firstChild);
+          if (firstElement)
+            firstElement->HasAttribute(NS_LITERAL_STRING("fence"), &hasFence);
+          if (hasFence) {
+            isRedundant = PR_FALSE;
+          }
+        }
+      }
       if (isRedundant)
       {
         PRBool offsetOnBoundary = (insertPos == 0 || insertPos == numKids);
         IsRedundant(editor, offsetOnBoundary, &isRedundant);
-      }  
+      }
     }
     if (isRedundant)
     {
       nsCOMPtr<nsIDOMNode> clone;
+
       nsCOMPtr<nsIArray> addToFront, addToEnd;
       nsCOMPtr<nsIArray> nodeArray;
       PRUint32 numNewNodes(0);
@@ -109,7 +124,7 @@ msiMrow::InsertNodes(nsIEditor * editor,
             {
               insertPos -= 1;
               deleteExisting = PR_TRUE;
-            } 
+            }
           }
           if (!deleteExisting && insertPos < numKids)
           {
@@ -118,7 +133,7 @@ msiMrow::InsertNodes(nsIEditor * editor,
             if (NS_SUCCEEDED(res) && node && msiUtils::IsInputbox(editor, node))
               deleteExisting = PR_TRUE;
           }
-        }                                                      
+        }
         if (NS_SUCCEEDED(res) && deleteExisting)
         {
           nsCOMPtr<nsIDOMNode> dontcare;
@@ -130,13 +145,13 @@ msiMrow::InsertNodes(nsIEditor * editor,
           PRUint32 pfcFlags(msiIMathMLCoalesce::PFCflags_removeRedundantMrows);
           res = msiCoalesceUtils::PrepareForCoalesce(editor, clone, insertPos, pfcFlags, addToFront, addToEnd);
           if (NS_SUCCEEDED(res))
-          { 
+          {
             PRUint32 len(0);
             if (addToFront)
               addToFront->GetLength(&len);
 //TODO ljh 9/06: I not sure if setting coalese switch is good, for example the mrow may contain
 // scripts which were split and then may not be put back together.
-// I am not sure why I added this code in the first place (back in 3/06)              
+// I am not sure why I added this code in the first place (back in 3/06)
 //            if (len >= 2)
 //            {
 //              msiCoalesceUtils::SetCoalesceSwitch(addToFront, 0, PR_FALSE);
@@ -144,7 +159,7 @@ msiMrow::InsertNodes(nsIEditor * editor,
 //            }
 //            if (numNewNodes >= 2)
 //              msiCoalesceUtils::SetCoalesceSwitch(nodeList, numNewNodes-1, PR_TRUE);
-            len = 0;  
+            len = 0;
             if (addToEnd)
               addToEnd->GetLength(&len);
 //            if (len >= 2)
@@ -160,8 +175,8 @@ msiMrow::InsertNodes(nsIEditor * editor,
           }
         } else {
           res = msiMContainer::InsertNodes(editor, selection, nodeList, deleteExisting, flags);
-        }      
-      }    
+        }
+      }
     }
     else
       res = msiMContainer::InsertNodes(editor, selection, nodeList, deleteExisting, flags);
