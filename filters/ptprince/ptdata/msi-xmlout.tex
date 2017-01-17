@@ -1330,7 +1330,8 @@
 \mathtabulartrue
 \newcount\msirow=0
 
-\def\msi@begin@tabularA[#1]#2{%
+\bgroup\catcode`\&=4
+\gdef\msi@begin@tabularA[#1]#2{%
    \begingroup
       \msi@dollar=`\$%
       \ifmmode
@@ -1341,6 +1342,7 @@
       \else
         \mathtabularfalse
         \msihmode
+        \catcode`\&=4%
       \fi
       \msiopentag{table}{<table cols="#2" cellpadding="4" border="1" req="tabulary" _moz_resizing="true">}%
       \msiopentag{tbody}{<tbody>}%
@@ -1350,6 +1352,7 @@
         \let\\=\@cr
         \def\tabularnewline{\\}%
         \halign\bgroup&##\cr}
+\egroup
 
 
 \def\msi@closetabular{%
@@ -1719,7 +1722,7 @@
       %\char`\}%
       \msitag{\label}\char`\{#1\char`\}%
    \else
-      \msihmode\msitag{<a name="}#1\msitag{" key="}#1\msitag{" id="}#1\msitag{"/>}%
+      \msihmode\msitag{<a name="}\msitoxml{#1}\msitag{" key="}\msitoxml{#1}\msitag{" id="}\msitoxml{#1}\msitag{"/>}%
    \fi}
 
 \def\frac#1#2{\string\frac\@brace{#1}\@brace{#2}}
