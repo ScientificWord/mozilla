@@ -3,7 +3,7 @@
 \catcode`\{=1 % left brace is begin-group character
 \catcode`\}=2 % right brace is end-group character
 \catcode`\$=3 % dollar sign is math shift
-\catcode`\&=4 % ampersand is alignment tab
+\catcode`\&=12 % ampersand is alignment tab
 \catcode`\#=6 % hash mark is macro parameter character
 \catcode`\^=7 % circumflex and uparrow are for superscripts
 \catcode`\_=8 % underline and downarrow are for subscripts
@@ -420,16 +420,6 @@
     \char`\#
   \fi}
 
-%% \def\leavevmode{\unhbox\voidb@x}
-%% \def\mathhexbox#1#2#3{\mbox{$\m@th \mathchar"#1#2#3$}}
-%% \def\ialign{\everycr{}\tabskip\z@skip\halign} % initialized \halign
-%% \def\oalign#1{\leavevmode\vtop{\baselineskip\z@skip \lineskip.25ex%
-%%  \ialign{##\crcr#1\crcr}}}
-%% \def\o@lign{\lineskiplimit\z@ \oalign}
-%% \def\ooalign{\lineskiplimit-\maxdimen \oalign}
-%% \def\sh@ft#1{\dimen@.00#1ex\multiply\dimen@\fontdimen1\font
-%%  \kern-.0156\dimen@} % compensate for slant in lowered accents
-
 
 \sfcode`\)=0 \sfcode`\'=0 \sfcode`\]=0
 \def\showoverfull{\tracingonline\@ne}
@@ -446,8 +436,6 @@
 \edef\fmtversion{2001/06/01}
 
 \def\two@digits#1{\ifnum#1<10 0\fi\number#1}
-%\def\typeout#1{\begingroup\set@display@protect
-%    \immediate\write\@unused{#1}\endgroup}
 \newlinechar`\^^J
 \let\@@par=\par
 \let\@@hyph=\-        % Save original primitive definition
@@ -541,10 +529,6 @@
 }
 \long\def\@reargdef#1[#2]{%
   \@yargdef#1\@ne{#2}}
-%\def\renewcommand{\@star@or@long\renew@command}
-%\def\renew@command#1{%
-%  \begingroup \escapechar\m@ne\xdef\@gtempa{{\string#1}}\endgroup
-%  \new@command#1}
 \long\def\@ifdefinable #1#2{%
       \edef\reserved@a{\expandafter\@gobble\string #1}%
      \@ifundefined\reserved@a
@@ -3254,7 +3238,7 @@
    \catcode`\&=\active
    \catcode`\<=\active
    \catcode`\>=\active
-   \gdef&{\msitag{<amp/>}}
+   \gdef&{\msitag{&amp;}}
    \gdef<{\msitag{&lt;}}
    \gdef>{\msitag{&gt;}}
 \egroup
@@ -5352,62 +5336,62 @@
 }%
 \endgroup
 
-\def\@outputpage{%
-\begingroup           % the \endgroup is put in by \aftergroup
-  \let \protect \noexpand
-  \@resetactivechars
-  \global\let\@@if@newlist\if@newlist
-  \global\@newlistfalse
-  \@parboxrestore
-  \shipout \vbox{%
-    \set@typeset@protect
-    \aftergroup \endgroup
-    \aftergroup \set@typeset@protect
-                                % correct? or just restore by ending
-                                % the group?
-  \if@specialpage
-    \global\@specialpagefalse\@nameuse{ps@\@specialstyle}%
-  \fi
-  \if@twoside
-    \ifodd\count\z@ \let\@thehead\@oddhead \let\@thefoot\@oddfoot
-         \let\@themargin\oddsidemargin
-    \else \let\@thehead\@evenhead
-       \let\@thefoot\@evenfoot \let\@themargin\evensidemargin
-    \fi
-  \fi
-  \reset@font
-  \normalsize
-  \normalsfcodes
-  \let\label\@gobble
-  \let\index\@gobble
-  \let\glossary\@gobble
-  \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
-    \@begindvi
-    \vskip \topmargin
-    \moveright\@themargin \vbox {%
-      \setbox\@tempboxa \vbox to\headheight{%
-        \vfil
-        \color@hbox
-          \normalcolor
-          \hb@xt@\textwidth{\@thehead}%
-        \color@endbox
-        }%                        %% 22 Feb 87
-      \dp\@tempboxa \z@
-      \box\@tempboxa
-      \vskip \headsep
-      \box\@outputbox
-      \baselineskip \footskip
-      \color@hbox
-        \normalcolor
-        \hb@xt@\textwidth{\@thefoot}%
-      \color@endbox
-      }%
-    }%
-  \global\let\if@newlist\@@if@newlist
-  \global \@colht \textheight
-  \stepcounter{page}%
-  \let\firstmark\botmark
-}
+%\def\@outputpage{%
+%\begingroup           % the \endgroup is put in by \aftergroup
+%  \let \protect \noexpand
+%  \@resetactivechars
+%  \global\let\@@if@newlist\if@newlist
+%  \global\@newlistfalse
+%  \@parboxrestore
+%  \shipout \vbox{%
+%    \set@typeset@protect
+%    \aftergroup \endgroup
+%    \aftergroup \set@typeset@protect
+%                                % correct? or just restore by ending
+%                                % the group?
+%  \if@specialpage
+%    \global\@specialpagefalse\@nameuse{ps@\@specialstyle}%
+%  \fi
+%  \if@twoside
+%    \ifodd\count\z@ \let\@thehead\@oddhead \let\@thefoot\@oddfoot
+%         \let\@themargin\oddsidemargin
+%    \else \let\@thehead\@evenhead
+%       \let\@thefoot\@evenfoot \let\@themargin\evensidemargin
+%    \fi
+%  \fi
+%  \reset@font
+%  \normalsize
+%  \normalsfcodes
+%  \let\label\@gobble
+%  \let\index\@gobble
+%  \let\glossary\@gobble
+%  \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
+%    \@begindvi
+%    \vskip \topmargin
+%    \moveright\@themargin \vbox {%
+%      \setbox\@tempboxa \vbox to\headheight{%
+%        \vfil
+%        \color@hbox
+%          \normalcolor
+%          \hb@xt@\textwidth{\@thehead}%
+%        \color@endbox
+%        }%                        %% 22 Feb 87
+%      \dp\@tempboxa \z@
+%      \box\@tempboxa
+%      \vskip \headsep
+%      \box\@outputbox
+%      \baselineskip \footskip
+%      \color@hbox
+%        \normalcolor
+%        \hb@xt@\textwidth{\@thefoot}%
+%      \color@endbox
+%      }%
+%    }%
+%  \global\let\if@newlist\@@if@newlist
+%  \global \@colht \textheight
+%  \stepcounter{page}%
+%  \let\firstmark\botmark
+%}
 \def \@begindvi{%
   \unvbox \@begindvibox
   \global\let \@begindvi \@empty
@@ -5890,34 +5874,34 @@
     \@tryfcolumn #1%
   \endgroup
 }
-\def\@outputdblcol{%
-  \if@firstcolumn
-    \global \@firstcolumnfalse
-    \global \setbox\@leftcolumn \box\@outputbox
-  \else
-    \global \@firstcolumntrue
-    \setbox\@outputbox \vbox {%
-                         \hb@xt@\textwidth {%
-                           \hb@xt@\columnwidth {%
-                             \box\@leftcolumn \hss}%
-                           \hfil
-                           {\normalcolor\vrule \@width\columnseprule}%
-                           \hfil
-                           \hb@xt@\columnwidth {%
-                             \box\@outputbox \hss}%
-                                             }%
-                              }%
-    \@combinedblfloats
-    \@outputpage
-    \begingroup
-      \@dblfloatplacement
-      \@startdblcolumn
-      \@whilesw\if@fcolmade \fi
-        {\@outputpage
-         \@startdblcolumn}%
-    \endgroup
-  \fi
-}
+%\def\@outputdblcol{%
+%  \if@firstcolumn
+%    \global \@firstcolumnfalse
+%    \global \setbox\@leftcolumn \box\@outputbox
+%  \else
+%    \global \@firstcolumntrue
+%    \setbox\@outputbox \vbox {%
+%                         \hb@xt@\textwidth {%
+%                           \hb@xt@\columnwidth {%
+%                             \box\@leftcolumn \hss}%
+%                           \hfil
+%                           {\normalcolor\vrule \@width\columnseprule}%
+%                           \hfil
+%                           \hb@xt@\columnwidth {%
+%                             \box\@outputbox \hss}%
+%                                             }%
+%                              }%
+%    \@combinedblfloats
+%    \@outputpage
+%    \begingroup
+%      \@dblfloatplacement
+%      \@startdblcolumn
+%      \@whilesw\if@fcolmade \fi
+%        {\@outputpage
+%         \@startdblcolumn}%
+%    \endgroup
+%  \fi
+%}
 \newcount\c@topnumber
 \setcounter{topnumber}{2}
 \def\topfraction{.7}
@@ -6412,7 +6396,7 @@
 \catcode`\#=6
 \catcode`\$=3
 \catcode`\%=14
-\catcode`\&=4
+\catcode`\&=12
 \catcode`\\=0
 \catcode`\^=7
 \catcode`\_=8
