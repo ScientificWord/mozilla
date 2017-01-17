@@ -1485,6 +1485,7 @@ case CMD_END: {
 @C@<Tag creating commands@>
 @$@<Command Codes@>+=@{@-
 CMD_TAG,
+CMD_TOXML,
 CMD_MSIHMODE,
 CMD_MSIVMODE,
 CMD_OPENTAG,
@@ -1495,6 +1496,7 @@ CMD_KILLLASTTAG,
 
 @$@<Create symbols@>+=@{@-
 NewPrimitive("msitag", CMD_TAG);
+NewPrimitive("msitoxml", CMD_TOXML);
 NewPrimitive("msihmode", CMD_MSIHMODE);
 NewPrimitive("msivmode", CMD_MSIVMODE);
 NewPrimitive("msiopentag", CMD_OPENTAG);
@@ -1515,9 +1517,43 @@ case CMD_TAG : {
    TokenList* pTL = new TokenList;
    ScanTokenList(pTL, false);
    LOG("\n----Create tag " << *pTL);
+   //StringUtils::AppendToks(*pTL);
+   //String str = StringBuilder::Create();
+   //std::string strTemp;
+   //int i = 0;
+   //while (i < str.Size()){
+   //   strTemp += (char) str[i];
+   //   ++i;
+   //} 
+   //StringBuilder::Discard(str);
+   //strTemp = makexml(strTemp);
+   //LOG("\n----xml: " << strTemp.c_str());
    Typesetter::AppendTag(pTL);
    delete pTL;
    break;
+}
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_TOXML : {
+   TokenList* pTL = new TokenList;
+   ScanTokenList(pTL, false);
+   LOG("\n----Create tag " << *pTL);
+   StringUtils::AppendToks(*pTL);
+   String str = StringBuilder::Create();
+   delete pTL;
+
+   std::string strTemp;
+   int i = 0;
+   while (i < str.Size()){
+      strTemp += (char) str[i];
+      ++i;
+   } 
+   StringBuilder::Discard(str);
+   strTemp = makexml(strTemp);
+   LOG("\n----xml: " << strTemp.c_str());
+   Typesetter::AppendTag(strTemp.c_str());
+  
 }
 @}
 
