@@ -3630,7 +3630,7 @@ GetEngine() {
 }
 
 
-PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& nodecount, PRInt32& offset, nsHTMLEditor * ed)
+PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& nodecount, PRInt32& offset, PRBool deletingInputBox, nsHTMLEditor * ed)
 {
   nsresult res;
   PRBool retval = PR_FALSE;
@@ -3682,24 +3682,36 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
       nodecount = 3;
       retval = PR_TRUE;
     }
-    else {
-      if ((name.EqualsLiteral("mtd") && empty) || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
-        // Search up and see if the enclosing table has the attribute 'type="eqnarray"'. If so,
-        // don't try to preserve the table cells.
-        parentEl = node;
-        while (parentEl && !name.EqualsLiteral("mtable") && !name.EqualsLiteral("body"))
-        {
-          parentEl->GetParentNode(getter_AddRefs(parent));
-          if (parent) {
-            parentEl = do_QueryInterface(parent);
-            parentEl->GetTagName(name);
-          }
+    else if ((name.EqualsLiteral("mtd") && empty) || name.EqualsLiteral("mtr") || name.EqualsLiteral("mtable")) {
+      // Search up and see if the enclosing table has the attribute 'type="eqnarray"'. If so,
+      // don't try to preserve the table cells.
+      parentEl = node;
+      while (parentEl && !name.EqualsLiteral("mtable") && !name.EqualsLiteral("body"))
+      {
+        parentEl->GetParentNode(getter_AddRefs(parent));
+        if (parent) {
+          parentEl = do_QueryInterface(parent);
+          parentEl->GetTagName(name);
         }
-        // parent is null, or mtable or body
-        if (parentEl && name.EqualsLiteral("mtable")) {
-          nsAutoString attr;
-          parentEl->GetAttribute(NS_LITERAL_STRING("type"), attr);
-          if (!attr.EqualsLiteral("eqnarray")) retval = PR_TRUE;
+      }
+      // parent is null, or mtable or body
+      if (parentEl && name.EqualsLiteral("mtable")) {
+        nsAutoString attr;
+        parentEl->GetAttribute(NS_LITERAL_STRING("type"), attr);
+        if (!attr.EqualsLiteral("eqnarray")) retval = PR_TRUE;
+      }
+    }
+    else if (name.EqualsLiteral("mrow")) {
+      nsCOMPtr<nsIDOMNode> childNode;
+      nsCOMPtr<nsIDOMElement> child;
+      res = node->GetFirstChild(getter_AddRefs(childNode));
+      if (childNode) {
+        PRBool isFence = PR_FALSE;
+        child = do_QueryInterface(childNode);
+        child->HasAttribute(NS_LITERAL_STRING("fence"), &isFence);
+        if (isFence && !deletingInputBox) {
+          retval = PR_TRUE;
+          nodecount = 1000;
         }
       }
     }
@@ -3897,7 +3909,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
     }
 
     elt = do_QueryInterface(node);
-    if (elt && IsSpecialMath(elt, isEmpty, nodecount, startOffset, ed)) {
+    if (elt && IsSpecialMath(elt, isEmpty, nodecount, startOffset, deletingInputbox, ed)) {
       if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
       {
         ed->GetInComplexTransaction(&isInComplexTransaction);
@@ -3986,7 +3998,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       res = ed->IsEmptyNode(node, &isEmpty, PR_TRUE, PR_FALSE, PR_FALSE);
       done = !isEmpty;
       elt = do_QueryInterface(node);
-      if (elt && IsSpecialMath(elt, isEmpty, nodecount, startOffset, ed)) {
+      if (elt && IsSpecialMath(elt, isEmpty, nodecount, startOffset, deletingInputbox, ed)) {
         // we have deleted a child of node. If node is one of the
         // math nodes that has a fixed number of children, we must replace the
         // child with an input box. If we are deleting an input box and elt is an msup, msub, msubsup (mroot?), we need
