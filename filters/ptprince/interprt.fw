@@ -708,8 +708,10 @@ case CMD_MSISPECIAL: {
   std::map<std::string,std::string> kvmap;
   TokenList* tlpos = new TokenList;
   TokenList* tl = new TokenList;
+  TokenList* tlcap = new TokenList;
   ScanTokenList(tl, false);
   ScanTokenList(tlpos, false);
+  ScanTokenList(tlcap, false);
   StringUtils::AppendToks(*tl);
   String str = StringBuilder::Create();
   std::string strTemp;
@@ -730,6 +732,15 @@ case CMD_MSISPECIAL: {
   }
   StringBuilder::Discard(str);
   
+  StringUtils::AppendToks(*tlcap);
+  str = StringBuilder::Create();
+  std::string strTempCap;
+  i = 0;
+  while (i < str.Size()){
+      strTempCap += (char) str[i];
+      ++i;
+  }
+  StringBuilder::Discard(str);
 
   // Break the content of special into name, value pairs
   i=0;
@@ -911,8 +922,11 @@ case CMD_MSISPECIAL: {
  msi_resize=\"true\" \
  style=\"height: %height%%units%; width: %width%%units%;\" \
  aspect=\"false\" />";
+      result += "<caption>";
+      result += strTempCap;
+      result += "</caption>";
       result += "</msiframe>";
-
+      
       if (strTemppos[0] == 'd'){
         find_and_replace(result, "%pos%", "center");
       } else if (strTemppos[0] == 'i'){
