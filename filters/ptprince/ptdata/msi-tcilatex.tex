@@ -374,6 +374,9 @@
 
 \def\stripspecial#1{}
 
+\def\applyspec#1#2#3{%
+     #2{#3}{#1}
+   }
 \def\@FRAME#1#2#3#4#5#6#7#8{%
    \let\QCBOptA\empty
    \let\QCBOptB\empty
@@ -401,12 +404,14 @@
         %% #8 will be a special with a graphic file
         \ifmmode
           \string\msipassthru\char`\{
-          #8{#1}%
+          #8{#1}{\QCBOptA\QCBOptB}%
           \char`\}
         \else
-          \QCBOptA 
-          #8{#1}%
-          \QCBOptB
+          %\msiopentag{caption}{<caption>}%
+          %\QCBOptA
+          %\msiclosetag{caption}{</caption>}%
+          \expandafter\applyspec\expandafter{\QCBOptA}{#8}{#1}
+          %#8{#1}{\QCBOptA\QCBOptB}%          
         \fi
       \endgroup
    \fi
