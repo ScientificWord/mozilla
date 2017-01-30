@@ -276,8 +276,6 @@ function startup()
   {
      e.setAttribute('disabled', "true");
   }
-  var prog = document.getElementById("texprogram").value;
-  setCompiler(prog);
 }
 
 function getEnableFlags(doc)
@@ -289,45 +287,48 @@ function getEnableFlags(doc)
     e;
 
   var nodelist = doc.getElementsByTagName("texprogram");
-  if (nodelist.length > 0)
-  { progNode =  nodelist[0];
-    prog = progNode.getAttribute("prog");
-    setCompiler(prog);
-    compilerInfo.useOTF = (prog === "xelatex" || (prog === "lualatex"));
-    compilerInfo.useUni = compilerInfo.useOTF;
-    overwriteStyle = progNode.getAttribute("formatOK") === "true";
-    document.getElementById("enablereformat").checked = overwriteStyle;
-    overwriteFonts = progNode.getAttribute("fontsOK") == "true";
-    enableDisableFonts(overwriteFonts);
-    document.getElementById("allowfontchoice").checked = overwriteFonts;
-    overwritePageFormat = progNode.getAttribute("pageFormatOK") == "true";
-    document.getElementById("enablepagelayout").checked = overwritePageFormat;
-    // overwriteSecFormat = progNode.getAttribute("secFormatOK") == "true";
-    // document.getElementById("allowsectionheaders").checked = secFormatOK;
-    // enableDisableSectFormat(document.getElementById("allowsectionheaders"));
+  try {
+    if (nodelist.length > 0)
+    { progNode =  nodelist[0];
+      prog = progNode.getAttribute("prog");
+      setCompiler(prog);
+      overwriteStyle = progNode.getAttribute("formatOK") === "true";
+      document.getElementById("enablereformat").checked = overwriteStyle;
+      overwriteFonts = progNode.getAttribute("fontsOK") == "true";
+      enableDisableFonts(overwriteFonts);
+      document.getElementById("allowfontchoice").checked = overwriteFonts;
+      overwritePageFormat = progNode.getAttribute("pageFormatOK") == "true";
+      document.getElementById("enablepagelayout").checked = overwritePageFormat;
+      // overwriteSecFormat = progNode.getAttribute("secFormatOK") == "true";
+      // document.getElementById("allowsectionheaders").checked = secFormatOK;
+      // enableDisableSectFormat(document.getElementById("allowsectionheaders"));
 
 
-    e = document.getElementById('reformatok');
-    if (overwriteStyle){ // checked. enable.
-       e.removeAttribute('disabled');
-    }else{
-       e.setAttribute('disabled', "true");
+      e = document.getElementById('reformatok');
+      if (overwriteStyle){ // checked. enable.
+         e.removeAttribute('disabled');
+      }else{
+         e.setAttribute('disabled', "true");
+      }
+
+      e = document.getElementById('pagelayoutok');
+      if (overwritePageFormat){ // checked. enable.
+         e.removeAttribute('disabled');
+      }else{
+         e.setAttribute('disabled', "true");
+      }
+
+      e = document.getElementById('fontdefok');
+      if (overwritePageFormat){ // checked. enable.
+         e.removeAttribute('disabled');
+      }else{
+         e.setAttribute('disabled', "true");
+      }
+
     }
-
-    e = document.getElementById('pagelayoutok');
-    if (overwritePageFormat){ // checked. enable.
-       e.removeAttribute('disabled');
-    }else{
-       e.setAttribute('disabled', "true");
-    }
-
-    e = document.getElementById('fontdefok');
-    if (overwritePageFormat){ // checked. enable.
-       e.removeAttribute('disabled');
-    }else{
-       e.setAttribute('disabled', "true");
-    }
-
+  }
+  catch(e) {
+    dump(e.message);
   }
 }
 
@@ -851,6 +852,15 @@ function getMisc(docformat)
     val = node.getAttribute("val");
     if (val == "foot" || val == "end")
       document.getElementById("footnoteorendnote").value = val;
+  }
+// compiler
+  list = docformat.getElementsByTagName("texprogram");
+  if (list != null && list.length > 0)
+  {
+    node = list[0];
+    val = node.getAttribute("prog");
+    compilerInfo.prog = val;
+    document.getElementById ("texprogram").value=val;
   }
   // leading
   list = docformat.getElementsByTagName("leading");
