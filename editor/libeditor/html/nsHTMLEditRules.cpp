@@ -3884,10 +3884,10 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   PRBool deletingInputbox = cleanUpTempInput( ed, startNode, startOffset );
   nsCOMPtr<nsIDOMNode> node = startNode;
   node->GetNodeName(name);
-  // if (name.EqualsLiteral("#text")) {
-  //   node->GetParentNode(getter_AddRefs(node));
-  //   node->GetNodeName(name);
-  // }
+  if (name.EqualsLiteral("#text")) {
+    node->GetParentNode(getter_AddRefs(node));
+    node->GetNodeName(name);
+  }
   if (name.EqualsLiteral("mo")) {
     elt = do_QueryInterface(node);
     DeleteMatchingFence(ed, elt);
@@ -4209,17 +4209,17 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
 
      nsString text = SerializeMathNode(mathNode);
      nsCOMPtr<msiISimpleComputeEngine>  pEngine = GetEngine();
-     PRUnichar* result;
+     // PRUnichar* result;
      if (pEngine) {
        const PRUnichar* inp;
        text.GetData(&inp);
 
-       printf("\nSending for cleanup: %ls\n" , inp);
-       res = pEngine->Perform(inp, 152, &result); // Cleanup function
-       printf("\nBack from cleanup: %ls\n", result);
+       // printf("\nSending for cleanup: %ls\n" , inp);
+       // res = pEngine->Perform(inp, 152, &result); // Cleanup function
+       // printf("\nBack from cleanup: %ls\n", result);
 
-       nsString resString(result);
-            nsCOMPtr<nsIDOMElement> mathElement;
+       nsString resString(inp);
+       nsCOMPtr<nsIDOMElement> mathElement;
        mathElement = do_QueryInterface(mathNode);
        mHTMLEditor -> GetInComplexTransaction(&isInComplexTransaction);
        mHTMLEditor -> SetInComplexTransaction(PR_TRUE);
