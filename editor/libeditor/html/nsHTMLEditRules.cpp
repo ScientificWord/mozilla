@@ -4169,111 +4169,111 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   nsCOMPtr<nsIDOMNode> node;
   res = msiUtils::GetMathParent(startNode, mathNode);
   if (NS_FAILED(res)) return res;
-  if (mathNode && !isInComplexTransaction) {
-    // PRBool emptyMath;
-    // PRBool emptyParent = PR_FALSE;
-    // res = mHTMLEditor->IsEmptyNode(mathNode, &emptyMath, PR_TRUE, PR_TRUE, PR_TRUE);
-    // if (emptyMath) {
-    //   mathNode -> GetParentNode(getter_AddRefs(parentNode));
-    //   mHTMLEditor->DeleteNode(mathNode);
-    //   nsAutoString sTag;
-    //   if (parentNode) {
-    //     parentElement = do_QueryInterface(parentNode);
-    //     parentElement->GetTagName(sTag);
-    //     if (sTag.EqualsLiteral("msidisplay")) {
-    //       mHTMLEditor->IsEmptyNode(parentNode, &emptyParent, PR_TRUE, PR_TRUE, PR_TRUE);
-    //       // delete the node and leave
-    //       if (emptyParent) {
-    //         mHTMLEditor->DeleteNode(parentNode); // take the math node with it.
-    //       }
-    //       return NS_OK;
-    //     }
-    //   }
-    // }
-     bool b = false;
-     nsCOMArray<nsIDOMNode> array;
-     BuildAncestorArray( startNode, mathNode, array);
-     PRUint32 flags = 0;
-     PRUint16 type;
-     res = startNode->GetNodeType(&type);
-     PRBool onText = (type == nsIDOMNode::TEXT_NODE);
-     if (onText)
-       startNode->GetParentNode(getter_AddRefs(node));
-     else
-       node = startNode;
+  // if (mathNode && !isInComplexTransaction) {
+  //   // PRBool emptyMath;
+  //   // PRBool emptyParent = PR_FALSE;
+  //   // res = mHTMLEditor->IsEmptyNode(mathNode, &emptyMath, PR_TRUE, PR_TRUE, PR_TRUE);
+  //   // if (emptyMath) {
+  //   //   mathNode -> GetParentNode(getter_AddRefs(parentNode));
+  //   //   mHTMLEditor->DeleteNode(mathNode);
+  //   //   nsAutoString sTag;
+  //   //   if (parentNode) {
+  //   //     parentElement = do_QueryInterface(parentNode);
+  //   //     parentElement->GetTagName(sTag);
+  //   //     if (sTag.EqualsLiteral("msidisplay")) {
+  //   //       mHTMLEditor->IsEmptyNode(parentNode, &emptyParent, PR_TRUE, PR_TRUE, PR_TRUE);
+  //   //       // delete the node and leave
+  //   //       if (emptyParent) {
+  //   //         mHTMLEditor->DeleteNode(parentNode); // take the math node with it.
+  //   //       }
+  //   //       return NS_OK;
+  //   //     }
+  //   //   }
+  //   // }
+  //    bool b = false;
+  //    nsCOMArray<nsIDOMNode> array;
+  //    BuildAncestorArray( startNode, mathNode, array);
+  //    PRUint32 flags = 0;
+  //    PRUint16 type;
+  //    res = startNode->GetNodeType(&type);
+  //    PRBool onText = (type == nsIDOMNode::TEXT_NODE);
+  //    if (onText)
+  //      startNode->GetParentNode(getter_AddRefs(node));
+  //    else
+  //      node = startNode;
 
-     msiUtils::MarkCaretPosition(ed, node.get(), (PRUint32&)startOffset, flags, onText, PR_TRUE);
+  //    msiUtils::MarkCaretPosition(ed, node.get(), (PRUint32&)startOffset, flags, onText, PR_TRUE);
 
-     PRInt32 idx = FindCursorIndex(mHTMLEditor, mathNode, startNode, startOffset, b, 0, chars);
-     printf("\nidx is %d\n", idx);
+  //    PRInt32 idx = FindCursorIndex(mHTMLEditor, mathNode, startNode, startOffset, b, 0, chars);
+  //    printf("\nidx is %d\n", idx);
 
-     nsString text = SerializeMathNode(mathNode);
-     nsCOMPtr<msiISimpleComputeEngine>  pEngine = GetEngine();
-     // PRUnichar* result;
-     if (pEngine) {
-       const PRUnichar* inp;
-       text.GetData(&inp);
+  //    nsString text = SerializeMathNode(mathNode);
+  //    nsCOMPtr<msiISimpleComputeEngine>  pEngine = GetEngine();
+  //    // PRUnichar* result;
+  //    if (pEngine) {
+  //      const PRUnichar* inp;
+  //      text.GetData(&inp);
 
-       // printf("\nSending for cleanup: %ls\n" , inp);
-       // res = pEngine->Perform(inp, 152, &result); // Cleanup function
-       // printf("\nBack from cleanup: %ls\n", result);
+  //      // printf("\nSending for cleanup: %ls\n" , inp);
+  //      // res = pEngine->Perform(inp, 152, &result); // Cleanup function
+  //      // printf("\nBack from cleanup: %ls\n", result);
 
-       nsString resString(inp);
-       nsCOMPtr<nsIDOMElement> mathElement;
-       mathElement = do_QueryInterface(mathNode);
-       mHTMLEditor -> GetInComplexTransaction(&isInComplexTransaction);
-       mHTMLEditor -> SetInComplexTransaction(PR_TRUE);
-       nsCOMPtr<nsIDOMNode> parentOfMath;
-       nsCOMPtr<nsIDOMNode> dummy;
-       nsCOMPtr<nsIDOMDocument> mathdoc;
+  //      nsString resString(inp);
+  //      nsCOMPtr<nsIDOMElement> mathElement;
+  //      mathElement = do_QueryInterface(mathNode);
+  //      mHTMLEditor -> GetInComplexTransaction(&isInComplexTransaction);
+  //      mHTMLEditor -> SetInComplexTransaction(PR_TRUE);
+  //      nsCOMPtr<nsIDOMNode> parentOfMath;
+  //      nsCOMPtr<nsIDOMNode> dummy;
+  //      nsCOMPtr<nsIDOMDocument> mathdoc;
 
-       mathElement->GetParentNode(getter_AddRefs(parentOfMath));
-       // parentOfMath->RemoveChild(mathElement, getter_AddRefs(dummy));
-       mHTMLEditor -> DeleteNode(mathElement);
+  //      mathElement->GetParentNode(getter_AddRefs(parentOfMath));
+  //      // parentOfMath->RemoveChild(mathElement, getter_AddRefs(dummy));
+  //      mHTMLEditor -> DeleteNode(mathElement);
 
-       nsCOMPtr<nsIDOMNode> newMath;
-       PRInt32 mathOffset;
+  //      nsCOMPtr<nsIDOMNode> newMath;
+  //      PRInt32 mathOffset;
 
-       res = mHTMLEditor->GetStartNodeAndOffset(curSelection, getter_AddRefs(parentOfMath), &mathOffset);
-       parser = do_CreateInstance("@mozilla.org/xmlextras/domparser;1");
-       NS_ENSURE_STATE(parser);
-       parser->ParseFromString(resString.get(), "text/xml", getter_AddRefs(mathdoc));
-       mathdoc->GetFirstChild(getter_AddRefs(newMath));
-       mHTMLEditor -> InsertNode(newMath, parentOfMath, mathOffset);
-      // mHTMLEditor -> InsertHTML(resString);
-       mHTMLEditor -> SetInComplexTransaction(isInComplexTransaction);
-       // msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
-       if (newMath != NULL){
-       // printf("\nThe New Math\n ");
-       // if (newMath) nsEditor::DumpNode(newMath, 0, PR_TRUE);
-       // printf("\nCursor idx = %d\n", idx);
-       //    DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
+  //      res = mHTMLEditor->GetStartNodeAndOffset(curSelection, getter_AddRefs(parentOfMath), &mathOffset);
+  //      parser = do_CreateInstance("@mozilla.org/xmlextras/domparser;1");
+  //      NS_ENSURE_STATE(parser);
+  //      parser->ParseFromString(resString.get(), "text/xml", getter_AddRefs(mathdoc));
+  //      mathdoc->GetFirstChild(getter_AddRefs(newMath));
+  //      mHTMLEditor -> InsertNode(newMath, parentOfMath, mathOffset);
+  //     // mHTMLEditor -> InsertHTML(resString);
+  //      mHTMLEditor -> SetInComplexTransaction(isInComplexTransaction);
+  //      // msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
+  //      if (newMath != NULL){
+  //      // printf("\nThe New Math\n ");
+  //      // if (newMath) nsEditor::DumpNode(newMath, 0, PR_TRUE);
+  //      // printf("\nCursor idx = %d\n", idx);
+  //      //    DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
 
-          nsCOMPtr<nsIDOMNode> theNode = 0;
-          PRInt32 theOffset = 0;
-          FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset, chars, array);
+  //         nsCOMPtr<nsIDOMNode> theNode = 0;
+  //         PRInt32 theOffset = 0;
+  //         FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset, chars, array);
 
-          printf("\nThe indicated node\n ");
-          // DumpNode(theNode, 0, true);
-          printf("\nOffset = %d\n", theOffset);
+  //         printf("\nThe indicated node\n ");
+  //         // DumpNode(theNode, 0, true);
+  //         printf("\nOffset = %d\n", theOffset);
 
-          nsIDOMRange* range;
-          curSelection->GetRangeAt(0, &range);
+  //         nsIDOMRange* range;
+  //         curSelection->GetRangeAt(0, &range);
 
 
-          range->SetStart(theNode, theOffset);
-          curSelection->CollapseToStart();
+  //         range->SetStart(theNode, theOffset);
+  //         curSelection->CollapseToStart();
 
-          msiUtils::ClearCaretPositionMark(ed, newMath, true);
+  //         msiUtils::ClearCaretPositionMark(ed, newMath, true);
 
-          //mHTMLEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+  //         //mHTMLEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 
-          //DebDisplaySelection("\nFinal selection", aSelection, mMSIEditor, true);
-       }
-       return res;
-    }
+  //         //DebDisplaySelection("\nFinal selection", aSelection, mMSIEditor, true);
+  //      }
+  //      return res;
+  //   }
 
-  }
+  // }
   // find any enclosing mailcite
   nsCOMPtr<nsIDOMNode> citeNode;
   res = GetTopEnclosingMailCite(startNode, address_of(citeNode),
