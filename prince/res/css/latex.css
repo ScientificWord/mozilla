@@ -900,6 +900,10 @@ abstract {
          track whether previous display has "subEquationContinuation=true" and "subEquationNumbers=true".
 */
 
+mstyle {
+  -moz-user-select: all;
+}
+
 msidisplay {
  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaynumbered");
   position: relative;
