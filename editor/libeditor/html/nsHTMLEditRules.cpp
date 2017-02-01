@@ -3875,6 +3875,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsIDOMNode> nextSiblingNode;
   nsCOMPtr<nsIDOMNode> resultNode;
   nsCOMPtr<nsIDOMElement> inputbox;
+  nsCOMPtr<nsISelection> sel;
   PRUint32 dummy = 0;
   nsAutoString name;
   nsCOMPtr<nsIEditor> editor = do_QueryInterface((nsIHTMLEditor *)ed);
@@ -3923,6 +3924,9 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           res = inputbox->GetFirstChild(getter_AddRefs(node));
           startNode = node;
           startOffset = 1;
+          ed->GetSelection(getter_AddRefs(sel));
+          sel->Collapse(startNode, 1);
+          
           tempnode = inputbox;
           while (tempnode && (elementCount(elt) > nodecount)) {
             res = tempnode->GetNextSibling(getter_AddRefs(nextSiblingNode));
@@ -4021,6 +4025,8 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           res = inputbox->GetFirstChild(getter_AddRefs(node));
           startNode = node;
           startOffset = 1;
+          ed->GetSelection(getter_AddRefs(sel));
+          sel->Collapse(startNode, 1);
         }
       }
       else {
