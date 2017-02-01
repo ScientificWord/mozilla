@@ -244,7 +244,7 @@ MNODE* Tree2StdMML::TreeToCleanupForm(MNODE* dMML_tree)
   RemoveRedundantMROWs2(dMML_tree);
   RemoveEmptyTags(dMML_tree);
   FixAdjacentMNs(dMML_tree);
-  RemoveRedundantMROWs(dMML_tree);
+  RemoveRedundantMROWs2(dMML_tree);
 
   return dMML_tree;
 }
@@ -2392,7 +2392,7 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
     if (ElementNameIs(rover, "mrow")) {
       if (firstkid && ElementNameIs(firstkid, "mo")){
 	// should check for fence attribute?
-	remove = (0 == GetATTRIBvalue(firstkid->attrib_list, "fence"));
+	remove = (0 != GetATTRIBvalue(firstkid->attrib_list, "fence"));
       } else if (!HasRequiredChildren(parent)){
           remove = true; 
       } else if (firstkid && !(firstkid->next)){ // one item only
