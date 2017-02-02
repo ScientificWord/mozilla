@@ -2385,20 +2385,28 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
   MNODE* rv = MML_list;
   MNODE* rover = MML_list;
   while (rover) {
-    bool remove = false;
+    bool remove = true;
     MNODE* the_next = rover->next;
     MNODE* parent = rover->parent;
     MNODE* firstkid = rover->first_kid;
     if (ElementNameIs(rover, "mrow")) {
-      if (firstkid && ElementNameIs(firstkid, "mo")){
-	// should check for fence attribute?
-	remove = (0 != GetATTRIBvalue(firstkid->attrib_list, "fence"));
-      } else if (!HasRequiredChildren(parent)){
-          remove = true; 
-      } else if (firstkid && !(firstkid->next)){ // one item only
-	remove = true;
+      
+      if (HasRequiredChildren(parent)){
+	  if (firstkid && (firstkid->next)){ // more than one item
+      	    remove = false;
+	  } else {
+	    remove = true;
+	  }
       }
-
+      //else if (firstkid && (firstkid->next)){ // more than one item
+      //	  remove = false;
+      //}
+      
+      if (firstkid && ElementNameIs(firstkid, "mo")){
+	const char* fence_attrib = GetATTRIBvalue(firstkid->attrib_list, "fence");
+	if (fence_attrib && strcmp(fence_attrib, "true") == 0)
+	  remove = false;
+      }
 
       // to remove an mrow splice the content into its parent
       if (remove){
