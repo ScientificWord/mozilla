@@ -3651,13 +3651,18 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
         name.EqualsLiteral("msqrt") || name.EqualsLiteral("mroot") || (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle")) && empty)) {
       editor->GetNodeLocation(node, &parent, &offset);
       node2 = do_QueryInterface(parent);
-      if (empty) editor->DeleteNode(node);
-      node = node2;
-      if (node) {
-        node->GetTagName(name);
-        ed->IsEmptyNode(node, &empty, PR_TRUE, PR_FALSE, PR_FALSE);
-      } else
-        empty = PR_FALSE;  // get out of the loop
+      if (empty) {
+        editor->DeleteNode(node);
+        node = node2;
+        if (node) {
+          node->GetTagName(name);
+          ed->IsEmptyNode(node, &empty, PR_TRUE, PR_FALSE, PR_FALSE);
+        } else
+          empty = PR_FALSE;  // get out of the loop
+      } else {
+        retval = PR_FALSE;
+        return retval;
+      }
     }
     if (name.EqualsLiteral("math") && empty)
     {
