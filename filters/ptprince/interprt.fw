@@ -897,7 +897,7 @@ case CMD_MSISPECIAL: {
  sidemargin=\"0.3\" topmargin=\"0.15\" overhang=\"0.3\" \
  borderw=\"0.03\" \
  padding=\"0.2\" \
- captionloc=\"\" \
+ captionloc=\"bottom\" \
  pos=\"%pos%\" \
  border-color=\"#000000\" \
  background-color=\"#ffffff\" \
@@ -922,10 +922,13 @@ case CMD_MSISPECIAL: {
  msi_resize=\"true\" \
  style=\"height: %height%%units%; width: %width%%units%;\" \
  aspect=\"false\" />";
-      result += "<caption>";
-      result += strTempCap;
-      result += "</caption>";
+      if (strTempCap != ""){
+        result += "<imagecaption>";
+        result += strTempCap;
+        result += "</imagecaption>";
+      }
       result += "</msiframe>";
+      
       
       if (strTemppos[0] == 'd'){
         find_and_replace(result, "%pos%", "center");
