@@ -3218,7 +3218,7 @@ function EditorClick(event) {
         Components.interfaces.nsIDOMElement);
       var name = element.localName.toLowerCase();
       if (name != "body" && name != "table" &&
-        name != "td" && name != "th" && name != "caption" && name != "tr") {
+        name != "td" && name != "th" && name != "imagecaption" && name != "tr") {
 
         msiGetEditor(editorElement).selectElement(event.explicitOriginalTarget);
         event.preventDefault();
@@ -6110,7 +6110,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement) {
           }
           break;
 
-        case "caption":
+        case "imagecaption":
           break;
 
         case "th":

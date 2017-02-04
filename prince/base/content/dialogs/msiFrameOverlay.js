@@ -600,7 +600,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
         setColorInDialog("bgcolorWell", theColor);
       }
       var key = "";
-      var captionNodes = element.getElementsByTagName("caption");
+      var captionNodes = element.getElementsByTagName("imagecaption");
       var captionNode;
       if (captionNodes && captionNodes.length > 0) captionNode = captionNodes[0];
       if (captionNode) {
