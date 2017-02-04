@@ -123,7 +123,7 @@ function Startup(){
 
     // initKeyList();
     initializePlotEditors(firstActivePlot);
-    captionnode = getFirstElementByTagName(graphnode,"caption");
+    captionnode = getFirstElementByTagName(graphnode,"imagecaption");
 
     testUseSignificantDigits();
     // Caption placement
