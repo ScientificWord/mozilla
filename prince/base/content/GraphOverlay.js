@@ -451,7 +451,7 @@ Graph.prototype = {
       setStyleAttributeOnNode(DOMFrame, "caption-side", captionloc || "", editor);
       // if there is no caption node, create an empty one.
       if (!captionNode) {
-         captionNode = editor.createElementWithDefaults("caption");
+         captionNode = editor.createElementWithDefaults("imagecaption");
          var namespace = { value: null };
          captionNode.appendChild(tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, captionNode.ownerDocument));
          DOMFrame.appendChild(captionNode);
@@ -464,7 +464,7 @@ Graph.prototype = {
         editor.deleteNode(captionNode);
       }
     }
-    caption="<caption>"+ (caption || "") +"</caption>";
+    caption="<imagecaption>"+ (caption || "") +"</imagecaption>";
     insertXML(editor, caption, DOMCaption, 0);
   },
 
@@ -2442,7 +2442,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   //     setStyleAttributeOnNode(frame, "height", height+unit, null);
   //   }
   //   // Handle the caption node
-  //   var captionNodes = frame.getElementsByTagName("caption");
+  //   var captionNodes = frame.getElementsByTagName("imagecaption");
   //   var captionNode = null;
   //   if (captionNodes.length > 0) {
   //     captionNode = captionNodes[0];
@@ -2453,7 +2453,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   //     setStyleAttributeOnNode(frame, "caption-side", plotcaptionpref, null);
   //     // if there is no caption node, create an empty one.
   //     if (!captionNode) {
-  //        captionNode = editor.createElementWithDefaults("caption");
+  //        captionNode = editor.createElementWithDefaults("imagecaption");
   //        frame.appendChild(captionNode);
   //     }
   //   } else
