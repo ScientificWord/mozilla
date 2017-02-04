@@ -790,7 +790,7 @@ function GetCaptionNode(parentNode)
 {
   var nodes;
   if (parentNode) {
-    nodes = parentNode.getElementsByTagName('caption');
+    nodes = parentNode.getElementsByTagName('imagecaption');
     if (nodes.length >= 1) {
       return nodes[0];
     }
@@ -1888,7 +1888,7 @@ function onAccept()
         gCaptionNode = null;
       }
       else if (!gCaptionNode && captionloc !== 'none') {
-        gCaptionNode = gEditor.createElementWithDefaults('caption');
+        gCaptionNode = gEditor.createElementWithDefaults('imagecaption');
         var namespace = { value: null };
         gCaptionNode.appendChild(tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, gCaptionNode.ownerDocument));
       }
