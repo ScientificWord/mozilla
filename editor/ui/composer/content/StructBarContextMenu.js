@@ -63,7 +63,7 @@ function InitStructBarContextMenu(button, docElement)
     case "tr":
     case "th":
     case "td":
-    case "caption":
+    case "imagecaption":
       enableRemove = false;
       break;
     default:
@@ -82,7 +82,7 @@ function TableCellFilter(node)
     {
     case "td":
     case "th":
-    case "caption":
+    case "imagecaption":
       return NodeFilter.FILTER_ACCEPT;
       break;
     default:

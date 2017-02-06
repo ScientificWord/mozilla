@@ -7,9 +7,9 @@
 >
 <xsl:template match="html:graph"><xsl:apply-templates /></xsl:template>
 
-<xsl:template match="html:caption" mode="doit"><xsl:apply-templates /></xsl:template>
+<xsl:template match="html:imagecaption" mode="doit"><xsl:apply-templates /></xsl:template>
 
-<xsl:template match="html:caption"></xsl:template>
+<xsl:template match="html:imagecaption"></xsl:template>
 
 <xsl:template match="html:msiframe">
   <xsl:variable name="framePosType">
@@ -65,8 +65,8 @@
   </xsl:variable>
   <xsl:variable name="captionloc">
     <xsl:choose>
-      <xsl:when test="(html:caption[1]) and (@captionloc='top')">1</xsl:when>
-      <xsl:when test="(html:caption[1]) and (@captionloc='bottom')">2</xsl:when>
+      <xsl:when test="(html:imagecaption[1]) and (@captionloc='top')">1</xsl:when>
+      <xsl:when test="(html:imagecaption[1]) and (@captionloc='bottom')">2</xsl:when>
       <!-- <xsl:otherwise></xsl:otherwise> -->
     </xsl:choose>
   </xsl:variable>
@@ -177,7 +177,7 @@
     <xsl:if test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
       <xsl:text>\caption{</xsl:text>
     </xsl:if>
-    <xsl:apply-templates select="html:caption" mode="doit"/>
+    <xsl:apply-templates select="html:imagecaption" mode="doit"/>
     <xsl:choose>
       <xsl:when test="$framePosType='ft-floating' or ($framePosType='ft-wrapped')">
         <xsl:text>}</xsl:text>
@@ -264,7 +264,7 @@
         <xsl:text>\\ </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:apply-templates select="html:caption" mode="doit"/>
+    <xsl:apply-templates select="html:imagecaption" mode="doit"/>
     <xsl:choose>
       <xsl:when test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
         <xsl:text>}</xsl:text>

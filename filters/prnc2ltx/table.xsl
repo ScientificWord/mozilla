@@ -33,7 +33,7 @@
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:variable name="caption" select="html:caption"/>
+  <xsl:variable name="caption" select="html:imagecaption"/>
 
 
   <xsl:variable name="embedded"
@@ -174,7 +174,7 @@
 </xsl:template>
 
 <!--
-<xsl:template match="html:table/html:caption">
+<xsl:template match="html:table/html:imagecaption">
   <xsl:text>\caption{</xsl:text><xsl:apply-templates/><xsl:text>}</xsl:text>
   <xsl:if test="@key"><xsl:text>\label{</xsl:text><xsl:value-of select="@key"/><xsl:text>}</xsl:text></xsl:if>
 </xsl:template>

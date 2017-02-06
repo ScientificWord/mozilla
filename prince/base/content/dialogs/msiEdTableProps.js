@@ -1262,7 +1262,7 @@ function insertColElementsInTable(tableElement, numCols)
   {
     switch(tableElement.childNodes[ix].nodeName)
     {
-      case "caption":  //in this case just continue on
+      case "imagecaption":  //in this case just continue on
       break;
 
       case "colgroup":
@@ -1953,14 +1953,14 @@ function Apply()
     var captiontext;
     var cap;
     var i;
-    var caps = gWrapperElement.getElementsByTagName('caption');
+    var caps = gWrapperElement.getElementsByTagName('imagecaption');
 
     if (captionloc !== 'none') {
       if (caps.length > 0) {
         cap = caps[0];
       }
-      else {  //create new caption node
-        cap = gActiveEditor.createElementWithDefaults('caption');
+      else {  //create new imagecaption node
+        cap = gActiveEditor.createElementWithDefaults('imagecaption');
         gWrapperElement.appendChild(cap);
         msiEditorEnsureElementAttribute(gWrapperElement, "captionloc", captionloc, null);
         var namespace = { value: null };
@@ -1979,7 +1979,7 @@ function Apply()
       } else
           cap.removeAttribute("key");
     }
-    else if (caps.length > 0) { // remove caption(s)
+    else if (caps.length > 0) { // remove imagecaption(s)
       for (i = caps.length -1; i >= 0; i--) {
         gActiveEditor.deleteNode(caps[i]);
       }
@@ -2021,7 +2021,7 @@ function onAcceptNewTable()
       var captionloc = gDialog.captionLocation.value;
       var captiontext;
       if (captionloc !== 'none') {
-        var cap = gActiveEditor.createElementWithDefaults('caption');
+        var cap = gActiveEditor.createElementWithDefaults('imagecaption');
         var namespace = { value: null };
         var tlm = gActiveEditor.tagListManager;
         gWrapperElement.appendChild(cap);
