@@ -647,6 +647,16 @@ msiframe[captionloc="below"] > imagecaption {
   caption-side: bottom;
 }
 
+msiframe[captionloc="above"] > caption {
+  display: table-caption;
+  caption-side: top;
+}
+
+msiframe[captionloc="below"] > caption {
+  display: table-caption;
+  caption-side: bottom;
+}
+
 a:link, xref, xref button {
   cursor: pointer !important;
 }
