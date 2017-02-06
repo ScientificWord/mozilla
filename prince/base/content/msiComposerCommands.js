@@ -10667,7 +10667,7 @@ var msiConvertToTable =
           var name = element.nodeName.toLowerCase();
           if (name == "td" ||
               name == "th" ||
-              name == "caption" ||
+              name == "imagecaption" ||
               name == "table")
             return false;
         }

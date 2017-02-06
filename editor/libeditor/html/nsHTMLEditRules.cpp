@@ -3988,7 +3988,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
           mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), name, nsnull, &isTextTag);
           mtagListManager->GetTagInClass(NS_LITERAL_STRING("istag"), name, nsnull, &isFrontMatterTag);
-          if (isParagraph || isTextTag || /*isFrontMatterTag ||*/ name.EqualsLiteral("td") || name.EqualsLiteral("caption"))
+          if (isParagraph || isTextTag || /*isFrontMatterTag ||*/ name.EqualsLiteral("td") || name.EqualsLiteral("imagecaption"))
           {
             done = PR_TRUE;
             break;
