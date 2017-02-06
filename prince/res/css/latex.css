@@ -30,6 +30,14 @@ caption {
   margin-bottom: 3pt;
 }
 
+imagecaption, imagecaption > bodyText {
+  background-color: rgb(250,240,240);
+  margin-top: 3pt;
+  margin-bottom: 3pt;
+  text-indent: 0;
+  text-align: center;
+}
+
 table {
   margin: 0px 5px;
   border-collapse: collapse;
@@ -44,11 +52,7 @@ table:focus {
   border-collapse: separate;
 }
 
-caption bodyText {
-  margin: 0;
-  padding: 0;
-  text-indent: 0;
-}
+
 
 /*table {
   border-collapse: collapse;
