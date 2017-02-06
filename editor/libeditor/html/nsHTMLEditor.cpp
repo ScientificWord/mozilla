@@ -5439,7 +5439,7 @@ nsHTMLEditor::IsRootTag(nsString &aTag, PRBool &aIsTag)
   static char bodyTag[] = "body";
   static char tdTag[] = "td";
   static char thTag[] = "th";
-  static char captionTag[] = "caption";
+  static char captionTag[] = "imagecaption";
   if (aTag.EqualsIgnoreCase(bodyTag) ||
       aTag.EqualsIgnoreCase(tdTag) ||
       aTag.EqualsIgnoreCase(thTag) ||
