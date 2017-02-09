@@ -30,6 +30,10 @@ caption {
   margin-bottom: 3pt;
 }
 
+imagecaption {
+  display: table-caption;
+}
+
 imagecaption, imagecaption > bodyText {
   background-color: rgb(250,240,240);
   margin-top: 3pt;
