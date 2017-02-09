@@ -36,6 +36,7 @@ Here are some variables global to the interpreter
 extern const char* s_outputdir;
 extern const char* s_docdir;
 extern std::string s_preambleExtra;
+extern TeXNodeList* s_hold;
 @}
 
 @$@<A string function that should go elsewhere@>==@{@-
@@ -366,6 +367,7 @@ enum GroupType {
        INLINE_GROUP,  // for $...$
        DISPLAY_GROUP, // for $$...$$
        MATH_GROUP,    // for {...} inside math
+       FULLEXPAND_GROUP, 
        PROCESS_GROUP
      };
 @}
@@ -407,6 +409,8 @@ void ShowGroupStack()
          LOG("align ");
       } else if (type == PROCESS_GROUP){
          LOG("process ");
+      } else if (type == FULLEXPAND_GROUP){
+         LOG("expansion group ");
       } else {
          LOG("ERROR");
       }
@@ -442,11 +446,12 @@ void NewLevel(GroupType type)
          LOG("\n----Begin group: align");
       } else if (type == PROCESS_GROUP){
          LOG("\n----Begin group: process");
+      } else if (type == FULLEXPAND_GROUP){
+         LOG("\n----Begin group: expansion");
       } else {
          LOG("\nERROR -- begin unknown group type");
       }
       ShowGroupStack();
-
    } else {
       ASSERT(false);
    }
@@ -481,7 +486,7 @@ void EndLevel()
          LOG("\n----End group: inline");
          Typesetter::EndInline();
       } else if (bCurrentLevelType(DISPLAY_GROUP)){
-         LOG("\n----End group: dispaly");
+         LOG("\n----End group: display");
          Typesetter::EndDisplay();
       } else if (bCurrentLevelType(MATH_GROUP)){
          Typesetter::EndSubformula();
@@ -491,6 +496,9 @@ void EndLevel()
       } else if (bCurrentLevelType(PROCESS_GROUP)){
          Typesetter::EndProcess();
          LOG("\n----End group: process");
+      } else if (bCurrentLevelType(FULLEXPAND_GROUP)){
+         LOG("\n----End group: expansion");
+         Typesetter::EndExpansion();
       } else {
          LOG("\n----End unknown group type");
          ASSERT(false);
@@ -534,6 +542,8 @@ CMD_MSISPECIAL,
 CMD_MSISPECIALVALUE,
 CMD_MSIPREAMBLE,
 CMD_MSIATTRIB,
+CMD_MSIEXPAND,
+CMD_MSIHELD,
 @}
 
 
@@ -549,6 +559,8 @@ NewPrimitive("msispecial", CMD_MSISPECIAL);
 NewPrimitive("msispecialvalue", CMD_MSISPECIALVALUE);
 NewPrimitive("msipreamble", CMD_MSIPREAMBLE);
 NewPrimitive("msiattrib", CMD_MSIATTRIB);
+NewPrimitive("msiexpand", CMD_MSIEXPAND);
+NewPrimitive("msiheld", CMD_MSIHELD);
 @}
 
 
@@ -582,6 +594,38 @@ case CMD_MSIATTRIB: {
   delete tl;
   std::string new_attrib = makexml(attrib);
   Typesetter::AppendTag(new_attrib.c_str());
+  break;
+}
+
+case CMD_MSIEXPAND: {
+
+  TokenList* tl = new TokenList;
+  ScanTokenList(tl, false);
+  StringUtils::AppendToks(*tl);
+  String str = StringBuilder::Create();
+  std::string arg;
+  int i = 0;
+  while (i < str.Size()){
+     arg += (char) str[i];
+     ++i;
+  }
+  StringBuilder::Discard(str);
+  LOG("\nexpand arg: " << arg.c_str());
+
+  NewLevel(FULLEXPAND_GROUP);
+  Typesetter::StartExpansion();
+  TeXToken lbrace(TT_LEFT_BRACE, '{', 0);
+  TeXToken rbrace(TT_RIGHT_BRACE, '}', 0);
+ 
+  TokenList* pTL = new TokenList;
+  InputStack::Putback(rbrace);
+  InputStack::Putback(*tl);
+  //InputStack::Putback(lbrace);
+  break;
+}
+
+case CMD_MSIHELD: {
+  Typesetter::InsertHold();
   break;
 }
 
@@ -708,10 +752,21 @@ case CMD_MSISPECIAL: {
   std::map<std::string,std::string> kvmap;
   TokenList* tlpos = new TokenList;
   TokenList* tl = new TokenList;
-  TokenList* tlcap = new TokenList;
+  //TokenList* tlcap = new TokenList;
+  std::strstream strout;
+  OutputStream out(strout);
+  if (s_hold){
+     s_hold -> Print(out);
+     delete s_hold;
+     s_hold = NULL;
+  }
+  out.Flush();
+  strout.put(0);
+  const char* theCap = strout.str();
+  
   ScanTokenList(tl, false);
   ScanTokenList(tlpos, false);
-  ScanTokenList(tlcap, false);
+  //ScanTokenList(tlcap, false);
   StringUtils::AppendToks(*tl);
   String str = StringBuilder::Create();
   std::string strTemp;
@@ -732,15 +787,7 @@ case CMD_MSISPECIAL: {
   }
   StringBuilder::Discard(str);
   
-  StringUtils::AppendToks(*tlcap);
-  str = StringBuilder::Create();
-  std::string strTempCap;
-  i = 0;
-  while (i < str.Size()){
-      strTempCap += (char) str[i];
-      ++i;
-  }
-  StringBuilder::Discard(str);
+  
 
   // Break the content of special into name, value pairs
   i=0;
@@ -922,10 +969,8 @@ case CMD_MSISPECIAL: {
  msi_resize=\"true\" \
  style=\"height: %height%%units%; width: %width%%units%;\" \
  aspect=\"false\" />";
-      if (strTempCap != ""){
-        result += "<imagecaption>";
-        result += strTempCap;
-        result += "</imagecaption>";
+      if (theCap != ""){
+        result += theCap;
       }
       result += "</msiframe>";
       
@@ -2610,6 +2655,7 @@ case CMD_AFTERGROUP:{
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <strstream>
 #include <string>
 #include <list>
 #include <map>
