@@ -720,7 +720,8 @@ function createFragmentFromClip()
     row.value = 0;
     var column = new Object;
     var part = new Object;
-    var i = row.value;
+    //var i = row.value;
+    var i = tree.view.selection.currentIndex;
     if (i >= 0)
     {
       if (tree.view.isContainer(i)) 
