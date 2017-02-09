@@ -334,6 +334,9 @@ case CMD_SETBOX: {
    ScanInt(&m);
    ScanOptionalEquals();
    ScanBox();
+   int* loc = &Global::BoxReg[m];
+   *loc = m;
+   LOG("\n----Set \\box" << m << " = " << m);
    break;
 }
 @}
