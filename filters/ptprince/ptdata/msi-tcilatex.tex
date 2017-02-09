@@ -142,54 +142,61 @@
 % macros for graphics
 %
 \def\FILENAME#1{#1}%
+
+\def\captpos{below}
 %
 \def\QCTOpt[#1]#2{%
-  \def\QCTOptB{#1}
-  \def\QCTOptA{#2}
+  \def\QCTOptB{#1} % the short caption
+  \def\QCTOptA{#2} % the long caption
 }
 \def\QCTNOpt#1{%
-  \def\QCTOptA{#1}
+  \def\QCTOptA{#1} % the long caption
   \let\QCTOptB\empty
 }
-\def\Qct{%
-  \@ifnextchar[{%
-    \QCTOpt}{\QCTNOpt}
+\def\Qct{% caption top (above)
+  \def\captpos{above}
+  \@ifnextchar[{\QCTOpt}{\QCTNOpt}
 }
+
 \def\QCBOpt[#1]#2{%
-  \def\QCBOptB{#1}%
-  \def\QCBOptA{#2}%
+  \edef\QCBOptB{#1}%
+  \edef\QCBOptA{#2}%
 }
 \def\QCBNOpt#1{%
-  \def\QCBOptA{#1}%
+  \msiexpand{%
+    \msiopentag{imagecaption}{<imagecaption>}
+    #1
+    \msiclosetag{imagecaption}{</imagecaption>}}
   \let\QCBOptB\empty
 }
 \def\Qcb{%
   \@ifnextchar[{%
     \QCBOpt}{\QCBNOpt}%
 }
-\def\PrepCapArgs{%
-  \ifx\QCBOptA\empty
-    \ifx\QCTOptA\empty
-      {}%
-    \else
-      \ifx\QCTOptB\empty
-        {\QCTOptA}%
-      \else
-        [\QCTOptB]{\QCTOptA}%
-      \fi
-    \fi
-  \else
-    \ifx\QCBOptA\empty
-      {}%
-    \else
-      \ifx\QCBOptB\empty
-        {\QCBOptA}%
-      \else
-        [\QCBOptB]{\QCBOptA}%
-      \fi
-    \fi
-  \fi
-}
+
+%\def\PrepCapArgs{%
+%  \ifx\QCBOptA\empty
+%    \ifx\QCTOptA\empty
+%      {}%
+%    \else
+%      \ifx\QCTOptB\empty
+%        {\QCTOptA}%
+%      \else
+%        [\QCTOptB]{\QCTOptA}%
+%      \fi
+%    \fi
+%  \else
+%    \ifx\QCBOptA\empty
+%      {}%
+%    \else
+%      \ifx\QCBOptB\empty
+%        {\QCBOptA}%
+%      \else
+%        [\QCBOptB]{\QCBOptA}%
+%      \fi
+%    \fi
+%  \fi
+%}
 \newcount\GRAPHICSTYPE
 %\GRAPHICSTYPE 0 is for TurboTeX
 %\GRAPHICSTYPE 1 is for DVIWindo (PostScript)
@@ -221,7 +228,7 @@
   %Following for all others
   % JCS - added BOXTHEFRAME, see below
     \bgroup
-	   \@inlabelfalse
+       \@inlabelfalse
        \leavevmode
        \@ifundefined{bbl@deactivate}{\def~{\string~}}{\activesoff}%
         \raise -#4 \BOXTHEFRAME{%
@@ -374,13 +381,22 @@
 
 \def\stripspecial#1{}
 
-\def\applyspec#1#2#3{%
-     #2{#3}{#1}
-   }
+\def\applyspec#1#2{% #1 = special, #2 = placement opts
+     #1{#2}
+}
+
+\newtoks\captiontoks{}
+
+
 \def\@FRAME#1#2#3#4#5#6#7#8{%
    \let\QCBOptA\empty
    \let\QCBOptB\empty
-   #5
+   \let\QCTOptA\empty
+   \let\QCTOptB\empty
+   #5 % something like \Qct{the caption text}
+      
+   %\expandafter\thecaption\expandafter{\QCBOptA}
+   %\expandafter\captiontoks\expandafter{\thecaption}
    \def\reserved@@a{#7}
    \def\reserved@@b{Plot}
    \ifx\reserved@@a\reserved@@b
@@ -404,13 +420,14 @@
         %% #8 will be a special with a graphic file
         \ifmmode
           \string\msipassthru\char`\{
-          #8{#1}{\QCBOptA\QCBOptB}%
+          #8{#1}{\the\thecaption}%
           \char`\}
         \else
           %\msiopentag{caption}{<caption>}%
           %\QCBOptA
           %\msiclosetag{caption}{</caption>}%
-          \expandafter\applyspec\expandafter{\QCBOptA}{#8}{#1}
+          
+          \applyspec{#8}{#1}
           %#8{#1}{\QCBOptA\QCBOptB}%          
         \fi
       \endgroup
