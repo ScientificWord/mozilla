@@ -38,6 +38,7 @@ static bool s_priveledged;
 static FieldTarget s_target;
 static TeXNodeList* s_pList = new TeXNodeList;
 static char* s_processor;
+TeXNodeList* s_hold = NULL;
 
 
 static const bool s_bMathml = true;
@@ -104,6 +105,10 @@ public:
 
    static void StartProcess(const char*);
    static void EndProcess();
+
+   static void StartExpansion();
+   static void EndExpansion();
+   static void InsertHold();
 
    static void StartAlignment();
    static void EndAlignment();
@@ -441,6 +446,24 @@ void find_and_replace_1(std::string& str, const char* srch, const char*repl)
       find_and_replace(str, srch, repl);
     }
     
+}
+
+void Typesetter::StartExpansion()
+{
+  PushSemanticLevel();
+}
+
+
+
+void Typesetter::EndExpansion()
+{
+   s_hold = s_pList;
+   PopSemanticLevel();
+}
+
+void Typesetter::InsertHold()
+{
+   //s_pList->push_back(s_hold);
 }
 
 void Typesetter::EndProcess()
