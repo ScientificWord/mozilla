@@ -143,7 +143,7 @@
 %
 \def\FILENAME#1{#1}%
 
-\def\captpos{below}
+
 %
 \def\QCTOpt[#1]#2{%
   \def\QCTOptB{#1} % the short caption
@@ -154,7 +154,7 @@
   \let\QCTOptB\empty
 }
 \def\Qct{% caption top (above)
-  \def\captpos{above}
+  \gdef\captpos{top}
   \@ifnextchar[{\QCTOpt}{\QCTNOpt}
 }
 
@@ -163,13 +163,11 @@
   \edef\QCBOptA{#2}%
 }
 \def\QCBNOpt#1{%
-  \msiexpand{%
-    \msiopentag{imagecaption}{<imagecaption>}
-    #1
-    \msiclosetag{imagecaption}{</imagecaption>}}
+  \def\QCBOptA{#1}
   \let\QCBOptB\empty
 }
 \def\Qcb{%
+  \gdef\captpos{bottom}
   \@ifnextchar[{%
     \QCBOpt}{\QCBNOpt}%
 }
@@ -394,7 +392,13 @@
    \let\QCTOptA\empty
    \let\QCTOptB\empty
    #5 % something like \Qct{the caption text}
-      
+   \msiexpand{%
+    \msiopentag{imagecaption}{<imagecaption>}%
+    \msiopentag{bodyText}{<bodyText>}%
+    \QCBOptA\QCTOptA%
+    \msiclosetag{bodyText}{</bodyText>}%
+    \msiclosetag{imagecaption}{</imagecaption>}}%
+
    %\expandafter\thecaption\expandafter{\QCBOptA}
    %\expandafter\captiontoks\expandafter{\thecaption}
    \def\reserved@@a{#7}
