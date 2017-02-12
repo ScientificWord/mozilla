@@ -144,71 +144,83 @@
     <xsl:param name="n-labeledrows"/>
     <xsl:param name="n-aligns"/>
     <xsl:param name="theAlignment"/>
-
+<!-- 
+    <xsl:text> n-rows=</xsl:text><xsl:value-of select="$n-rows"/>
+    <xsl:text> n-labeledrows=</xsl:text><xsl:value-of select="$n-labeledrows"/>
+    <xsl:text> n-aligns=</xsl:text><xsl:value-of select="$n-aligns"/>
+    <xsl:text> theAlignment=</xsl:text><xsl:value-of select="$theAlignment"/>
+ -->
     <xsl:variable name="eqn-info.tr">
       <xsl:choose>
 <!-- multline or gather -->
         <xsl:when test="$n-aligns=0">
 
-        <LaTeX-env>
-          <xsl:choose>
-            <xsl:when test="$theAlignment='alignCentered'">
-              <xsl:text>gather</xsl:text>
-            </xsl:when>
-            <xsl:when test="$theAlignment='alignSingleEqn'">
-              <xsl:text>multline</xsl:text>
-            </xsl:when>
-            <xsl:when test="$n-labeledrows=1">
-              <xsl:text>multline</xsl:text>
-            </xsl:when>
-            <xsl:when test="@subtype">
-              <xsl:value-of select="@subtype"/>
-            </xsl:when>
-            <xsl:when test="@type='eqnarray'">
-              <xsl:text>align</xsl:text>
-            </xsl:when>
-            <xsl:when test="@type!=''">
-              <xsl:value-of select="@type"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>gather</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
-        </LaTeX-env>
+          <LaTeX-env>
+            <xsl:choose>
+              <xsl:when test="$theAlignment='alignCentered'">
+                <xsl:text>gather</xsl:text>
+              </xsl:when>
+              <xsl:when test="$theAlignment='alignSingleEqn'">
+                <xsl:text>multline</xsl:text>
+              </xsl:when>
+              <xsl:when test="$n-labeledrows=1">
+                <xsl:text>multline</xsl:text>
+              </xsl:when>
+              <xsl:when test="@subtype">
+                <xsl:value-of select="@subtype"/>
+              </xsl:when>
+              <xsl:when test="@type='eqnarray'">
+                <xsl:text>align</xsl:text>
+              </xsl:when>
+              <xsl:when test="@type!=''">
+                <xsl:value-of select="@type"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>gather</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </LaTeX-env>
 
-        <is-starred>
-          <xsl:choose>
-            <xsl:when test="@subtype">
-              <xsl:text>false</xsl:text>
-            </xsl:when>
-            <xsl:when test="$n-labeledrows=0">
-              <xsl:text>true</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>false</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
-        </is-starred>
+          <is-starred>
+            <xsl:choose>
+              <xsl:when test="@subtype">
+                <xsl:text>false</xsl:text>
+              </xsl:when>
+              <xsl:when test="$n-labeledrows=0">
+                <xsl:text>true</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>false</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </is-starred>
 
         </xsl:when>
 <!-- align -->
-        <xsl:when test="$n-aligns=1">
-        <LaTeX-env>
-            <xsl:text>align</xsl:text>
-        </LaTeX-env>
-        <is-starred>
-          <xsl:choose>
-            <xsl:when test="$n-labeledrows=0">
-              <xsl:text>true</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>false</xsl:text>
-            </xsl:otherwise>
-          </xsl:choose>
-        </is-starred>
+        <xsl:when test="$n-aligns &gt; 0">
+          <LaTeX-env>
+            <xsl:choose>
+              <xsl:when test="$theAlignment='alignCentered'">
+                <xsl:text>gather</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>align</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </LaTeX-env>
+          <is-starred>
+            <xsl:choose>
+              <xsl:when test="$n-labeledrows=0">
+                <xsl:text>true</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>false</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </is-starred>
         </xsl:when>
-<!-- eqnarray -->
-        <xsl:when test="$n-aligns=2">
+<!-- eqnarray
+        <xsl:when test="$n-aligns &gt; 1">
         <LaTeX-env>
             <xsl:text>eqnarray</xsl:text>
         </LaTeX-env>
@@ -222,9 +234,9 @@
             </xsl:otherwise>
           </xsl:choose>
         </is-starred>
-        </xsl:when>
+        </xsl:when>  -->
 <!-- alignat -->
-        <xsl:when test="$n-aligns=4">
+<!--         <xsl:when test="$n-aligns=4">
         <LaTeX-env>
             <xsl:text>alignat</xsl:text>
         </LaTeX-env>
@@ -238,10 +250,10 @@
             </xsl:otherwise>
           </xsl:choose>
         </is-starred>
-        </xsl:when>
+        </xsl:when> -->
 
         <xsl:otherwise>
-          <xsl:text>mtable -> ?eqnarray?</xsl:text>
+          <xsl:text>mtable -&gt; ?eqnarray?</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
 
@@ -291,28 +303,37 @@
             <!-- xsl:when test="position()=1
             and             name()='mml:maligngroup'">
             </xsl:when -->
+
             <xsl:when test="name()='mml:maligngroup' or name()='maligngroup'">
-              <xsl:text xml:space="preserve"> &amp; </xsl:text>
-            </xsl:when>
-            <xsl:when test="self::mml:mo and $insertedAlignmark and (generate-id(.)=$insertedAlignmark)">
-              <xsl:text xml:space="preserve"> &amp; </xsl:text>
-              <xsl:apply-templates select="."/>
-              <xsl:if test="$n-aligns &gt; 1">
+              <xsl:if test="not($eqn-info/LaTeX-env='gather')">
                 <xsl:text xml:space="preserve"> &amp; </xsl:text>
               </xsl:if>
             </xsl:when>
+            <xsl:when test="self::mml:mo and $insertedAlignmark and (generate-id(.)=$insertedAlignmark)">
+              <xsl:if test="not($eqn-info/LaTeX-env='gather')">
+                <xsl:text xml:space="preserve"> &amp; </xsl:text>
+                <xsl:apply-templates select="."/>
+                <xsl:if test="$n-aligns &gt; 1">
+                  <xsl:text xml:space="preserve"> &amp; </xsl:text>
+                </xsl:if>
+              </xsl:if>
+              </xsl:when>
             <xsl:when test="name()='mml:mrow'">
 
               <xsl:for-each select="*">
                 <xsl:choose>
                   <xsl:when test="name()='mml:maligngroup' or name()='maligngroup'">
+                    <xsl:if test="not($eqn-info/LaTeX-env='gather')">
                     <xsl:text xml:space="preserve"> &amp; </xsl:text>
+                  </xsl:if>
                   </xsl:when>
                   <xsl:when test="self::mml:mo and $insertedAlignmark and (generate-id(.)=$insertedAlignmark)">
-                    <xsl:text xml:space="preserve"> &amp; </xsl:text>
-                    <xsl:apply-templates select="."/>
-                    <xsl:if test="$n-aligns &gt; 1">
-                      <xsl:text xml:space="preserve"> &amp; </xsl:text>
+                    <xsl:if test="not($eqn-info/LaTeX-env='gather')">
+                      <xsl:text xml:space="preserve"> &amp; 5</xsl:text>
+                      <xsl:apply-templates select="."/>
+                      <xsl:if test="$n-aligns &gt; 1">
+                        <xsl:text xml:space="preserve"> &amp; 6</xsl:text>
+                      </xsl:if>
                     </xsl:if>
                   </xsl:when>
                   <xsl:otherwise>
