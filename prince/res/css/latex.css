@@ -909,7 +909,7 @@ abstract {
 */
 
 mstyle {
-  -moz-user-select: all;
+  -moz-user-select: text;
 }
 
 msidisplay {
