@@ -457,6 +457,14 @@ nsHTMLEditor::InsertMathNode
     }
     nodeParent = nodeTarget;
     res = GetTagString(nodeParent, nameOfParent);
+    if (nameOfParent.EqualsLiteral("mo") || nameOfParent.EqualsLiteral("mi")) {
+      res = GetNodeLocation(nodeTarget, address_of(nodeParent), &offsetParent);
+      nodeTarget = nodeParent;
+      if (offsetTarget > 0) offsetTarget = 1;
+      else offsetTarget = 0;
+      offsetTarget += offsetParent;
+      res = GetTagString(nodeTarget, nameOfTarget);   
+    }
 
     while (nameOfParent.EqualsLiteral("mi") || nameOfParent.EqualsLiteral("#text") || nameOfParent.EqualsLiteral("mo") || nameOfParent.EqualsLiteral("mn") || nameOfParent.EqualsLiteral("mtext"))
     {
