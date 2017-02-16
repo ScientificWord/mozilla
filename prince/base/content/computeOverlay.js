@@ -2780,5 +2780,5 @@ function findmathparent(node) {
 }
 
 // What is this? jcs
-// FixJS();
+FixJS();
 # endif
