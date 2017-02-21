@@ -219,7 +219,7 @@
             </xsl:choose>
           </is-starred>
         </xsl:when>
-<!-- eqnarray
+<!-- eqnarray -->
         <xsl:when test="$n-aligns &gt; 1">
         <LaTeX-env>
             <xsl:text>eqnarray</xsl:text>
@@ -234,9 +234,9 @@
             </xsl:otherwise>
           </xsl:choose>
         </is-starred>
-        </xsl:when>  -->
+        </xsl:when> 
 <!-- alignat -->
-<!--         <xsl:when test="$n-aligns=4">
+        <xsl:when test="$n-aligns=4">
         <LaTeX-env>
             <xsl:text>alignat</xsl:text>
         </LaTeX-env>
@@ -250,7 +250,7 @@
             </xsl:otherwise>
           </xsl:choose>
         </is-starred>
-        </xsl:when> -->
+        </xsl:when>
 
         <xsl:otherwise>
           <xsl:text>mtable -&gt; ?eqnarray?</xsl:text>
