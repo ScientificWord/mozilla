@@ -6239,27 +6239,27 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
   }
 
   aNode->GetNodeName(name);
-  if (name && name.Length > 0) {
-    if (name.EqualsLiteral('hspace') ||
-        name.EqualsLiteral('object') ||
-        name.EqualsLiteral('vspace') ||
-        name.EqualsLiteral('citation') ||
-        name.EqualsLiteral('biblabel') ||
-        name.EqualsLiteral('bibkey') ||
-        name.EqualsLiteral('indexentry') ||
-        name.EqualsLiteral('prispec') ||
-        name.EqualsLiteral('secspec') ||
-        name.EqualsLiteral('terspec') ||
-        name.EqualsLiteral('texb') ||
-        name.EqualsLiteral('a') ||
-        name.EqualsLiteral('maketitle') ||
-        name.EqualsLiteral('maketoc') ||
-        name.EqualsLiteral('makelof') ||
-        name.EqualsLiteral('frontmatter') ||
-        name.EqualsLiteral('backmatter') ||
-        name.EqualsLiteral('mainmatter') ||
-        name.EqualsLiteral('printindex') ||
-        name.EqualsLiteral('appendix')) {
+  if (name.Length() > 0) {
+    if (name.EqualsLiteral("hspace") ||
+        name.EqualsLiteral("object") ||
+        name.EqualsLiteral("vspace") ||
+        name.EqualsLiteral("citation") ||
+        name.EqualsLiteral("biblabel") ||
+        name.EqualsLiteral("bibkey") ||
+        name.EqualsLiteral("indexentry") ||
+        name.EqualsLiteral("prispec") ||
+        name.EqualsLiteral("secspec") ||
+        name.EqualsLiteral("terspec") ||
+        name.EqualsLiteral("texb") ||
+        name.EqualsLiteral("a") ||
+        name.EqualsLiteral("maketitle") ||
+        name.EqualsLiteral("maketoc") ||
+        name.EqualsLiteral("makelof") ||
+        name.EqualsLiteral("frontmatter") ||
+        name.EqualsLiteral("backmatter") ||
+        name.EqualsLiteral("mainmatter") ||
+        name.EqualsLiteral("printindex") ||
+        name.EqualsLiteral("appendix")) {
       *outIsEmptyNode = PR_FALSE;
       return NS_OK;
     }
