@@ -4789,7 +4789,7 @@ nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
     }
     else
     {
-      offset = GetIndexOf(parentNode, nodeToSplit);
+      offset = 0;
       if (outRightNode) *outRightNode = nodeToSplit;
     }
 
