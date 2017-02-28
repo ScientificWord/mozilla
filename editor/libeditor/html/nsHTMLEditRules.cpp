@@ -2506,7 +2506,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         return NS_OK;
       }
 
-      // first find the relavent nodes
+      // first find the relevant nodes
       nsCOMPtr<nsIDOMNode> leftNode, rightNode, leftParent, rightParent;
       if (aAction == nsIEditor::ePrevious)
       {
@@ -2533,7 +2533,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       res =  InDifferentTableElements(leftNode, rightNode, &bInDifTblElems);
       if (NS_FAILED(res) || bInDifTblElems) return res;
 
-      // find the relavent blocks
+      // find the relevant blocks
       if (IsBlockNode(leftNode))
         leftParent = leftNode;
       else
@@ -9897,7 +9897,7 @@ nsHTMLEditRules::JoinNodesSmart( nsIDOMNode *aNodeLeft,
   }
   else
   {
-    // remember the last left child, and firt right child
+    // remember the last left child, and first right child
     nsCOMPtr<nsIDOMNode> lastLeft, firstRight;
     res = mHTMLEditor->GetLastEditableChild(aNodeLeft, address_of(lastLeft));
     if (NS_FAILED(res)) return res;
