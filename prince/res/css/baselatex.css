@@ -10,10 +10,13 @@
   object[msisnap="true"] { display:block;}
 
   button[class="frontmattertag"] {
-    display: none; }
+    display: none; 
+  }
+
   *[showexpanders="true"] .expander {
     display: none;
   }
+
   mml|math, mml|mi[msimathname="true"], mml|mtext, mml|mi[msiunit="true"],[msiclass="msi_passthrough"] 
     { color: black; }
   msidisplay {border-color: black;}
