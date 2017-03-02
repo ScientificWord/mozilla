@@ -33,7 +33,9 @@ void DoAssignment(int prefixes)
    switch (CurCmdCode()){
       @<Assignments@>
       default:
-         ASSERT(false); // can't use prefix ...
+         // Ignore the prefix, try again without it
+         InputStack::Putback(CurTok());
+         // ASSERT(false); // can't use prefix ...
    }
    // insert the afterassignment token
    if (s_afterAssignment !=  s_illegal){
