@@ -457,6 +457,14 @@ nsHTMLEditor::InsertMathNode
     }
     nodeParent = nodeTarget;
     res = GetTagString(nodeParent, nameOfParent);
+    if (nameOfParent.EqualsLiteral("mo") || nameOfParent.EqualsLiteral("mi")) {
+      res = GetNodeLocation(nodeTarget, address_of(nodeParent), &offsetParent);
+      nodeTarget = nodeParent;
+      if (offsetTarget > 0) offsetTarget = 1;
+      else offsetTarget = 0;
+      offsetTarget += offsetParent;
+      res = GetTagString(nodeTarget, nameOfTarget);   
+    }
 
     while (nameOfParent.EqualsLiteral("mi") || nameOfParent.EqualsLiteral("#text") || nameOfParent.EqualsLiteral("mo") || nameOfParent.EqualsLiteral("mn") || nameOfParent.EqualsLiteral("mtext"))
     {
@@ -1939,6 +1947,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   PRBool fIsStruct = PR_FALSE;
   PRBool fIsEnv = PR_FALSE;
   NS_PRECONDITION(splitpointNode, "null arg");
+  res = GetSelection(getter_AddRefs(selection));
 
   // With the cursor at splitpointNode and splitpointOffset, we want to split the enclosing paragraph
   // (or block). First if splitpointNode is not a block, move up to the first block.
@@ -2043,6 +2052,8 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       res = GetWrapper(splitNode, getter_AddRefs(wrapperNode));
       res = SplitNodeDeep(wrapperNode,splitpointNode,splitpointOffset,
          &outOffset, PR_FALSE, &outLeftNode, &outRightNode);
+      selection->Collapse(outRightNode, offset);
+
     }
   }
   FixMathematics(outLeftNode, PR_FALSE, PR_FALSE);
@@ -2077,8 +2088,6 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       nsCOMPtr<nsIController> controller;
       const char * command = "cmd_reviseManualBibItemCmd";
       res = controllers->GetControllerForCommand(command, getter_AddRefs(controller));
-      nsCOMPtr<nsISelection>selection;
-      nsresult res = GetSelection(getter_AddRefs(selection));
       if (NS_FAILED(res)) return res;
 //      res = nsEditor::GetNodeLocation(outRightNode, address_of(parent), &offset);
 //      if (NS_FAILED(res)) return res;
