@@ -4549,6 +4549,11 @@ nsTextFrame::PeekOffsetNoAmount(PRBool aForward, PRInt32* aOffset)
 {
   NS_ASSERTION(aOffset && *aOffset <= GetContentLength(), "aOffset out of range");
 
+  PRBool selectable;
+  PRUint8 selectStyle;
+  IsSelectable(&selectable, &selectStyle);
+  if (selectStyle == NS_STYLE_USER_SELECT_ALL)
+    return PR_FALSE;
   gfxSkipCharsIterator iter = EnsureTextRun();
   if (!mTextRun)
     return PR_FALSE;

@@ -1273,9 +1273,11 @@ function toggleSidebar(aCommandID, forceOpen) {
   var i;
   var deckpaneltoshow;
   var nodelist = sidebar.childNodes;
-  for (i = 0; i < nodelist.length; i++)
-    if (nodelist.item(i).id == url)
+  for (i = 0; i < nodelist.length; i++) {
+    if (nodelist.item(i).id == url) {
       sidebar.selectedIndex = i;
+    }
+  }
   sidebarBox.setAttribute("sidebarcommand", elt.id);
   sidebarTitle.setAttribute("label", title);
 }
