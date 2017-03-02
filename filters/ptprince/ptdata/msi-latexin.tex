@@ -1,3 +1,4 @@
+
 \chardef\active=13
 
 \catcode`\{=1 % left brace is begin-group character
@@ -1134,23 +1135,23 @@
 %       \ifx\reserved@c\reserved@d
 %         \edef\filename@area{ \filename@area}%
 %       \fi}}%
-  \def\@dofilelist{%
-     \typeout{^^J *File List*}%
-     \@for\@currname:=\@filelist\do{%
-       \filename@parse\@currname
-       \edef\reserved@a{%
-          \filename@base.%
-          \ifx\filename@ext\relax tex\else\filename@ext\fi}%
-       \expandafter\let\expandafter\reserved@b
-                              \csname ver@\reserved@a\endcsname
-       \expandafter\expandafter\expandafter\@listfiles\expandafter
-             \filename@area\filename@base\\\\\\\\\\\\\\\\\\\@@
-       \typeout{%
-         \filename@area\reserved@a
-         \ifx\reserved@b\relax\else\@spaces\reserved@b\fi}}%
-     \typeout{ ***********^^J}}}
-\@onlypreamble\listfiles
-\let\@dofilelist\relax
+%  \def\@dofilelist{%
+%     \typeout{^^J *File List*}%
+%     \@for\@currname:=\@filelist\do{%
+%       \filename@parse\@currname
+%       \edef\reserved@a{%
+%          \filename@base.%
+%          \ifx\filename@ext\relax tex\else\filename@ext\fi}%
+%       \expandafter\let\expandafter\reserved@b
+%                              \csname ver@\reserved@a\endcsname
+%       \expandafter\expandafter\expandafter\@listfiles\expandafter
+%             \filename@area\filename@base\\\\\\\\\\\\\\\\\\\@@
+%       \typeout{%
+%         \filename@area\reserved@a
+%         \ifx\reserved@b\relax\else\@spaces\reserved@b\fi}}%
+%     \typeout{ ***********^^J}}}
+%\@onlypreamble\listfiles
+%\let\@dofilelist\relax
 %%% From File: ltoutenc.dtx
 \message{font encodings,}
 \def\DeclareTextCommand{%
@@ -3362,9 +3363,9 @@
       \vskip-\lineskiplimit \vskip\normallineskiplimit \fi
       \else \penalty\interdisplaylinepenalty \fi}}}
 \def\@lign{\tabskip\z@skip\everycr{}} % restore inside \displ@y
-\def\displaylines#1{\displ@y \tabskip\z@skip
-  \halign{\hb@xt@\displaywidth{$\@lign\hfil\displaystyle##\hfil$}\crcr
-    #1\crcr}}
+%\def\displaylines#1{\displ@y \tabskip\z@skip
+%  \halign{\hb@xt@\displaywidth{$\@lign\hfil\displaystyle##\hfil$}\crcr
+%    #1\crcr}}
 \let\sp=^
 \let\sb=_
 \def\>{\mskip\medmuskip}
@@ -3914,9 +3915,9 @@
   \@contfield}
 \newdimen\tabbingsep
 \def\extracolsep#1{\tabskip #1\relax}
-\def\array{\let\@acol\@arrayacol \let\@classz\@arrayclassz
- \let\@classiv\@arrayclassiv
- \let\\\@arraycr\let\@halignto\@empty\@tabarray}
+%\def\array{\let\@acol\@arrayacol \let\@classz\@arrayclassz
+% \let\@classiv\@arrayclassiv
+% \let\\\@arraycr\let\@halignto\@empty\@tabarray}
 
 \long\def\multicolumn#1#2#3{\multispan{#1}\begingroup
   \@mkpream{#2}%

@@ -539,10 +539,13 @@
 \def\MSIEmptyElement{%
   \msihmode\@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
 
+
+
+
 \def\msi@empty@elmA[#1]#2#3{%
      \expandafter\def\csname #2\endcsname{%
         \ifmmode
-           %\msitag{\msipassthru{<#1/>}}%
+           %\msitag{\msipassthru{<mspace width="thickmathspace" type="#2"/>}}%
            \expandafter\msitag\expandafter{\csname#2\endcsname}%
         \else
            \if#3T\relax%
@@ -1267,6 +1270,8 @@
 
 
 \def\tabularnewline{\\}
+\let\@halign\halign
+\let\halign\msidefaulta
 
 
 \def\MSITabularStarEnvironment#1{%
@@ -1296,7 +1301,7 @@
       \begingroup
         \aftergroup\msi@closetabular
         \let\\=\@cr
-        \halign\bgroup&##\cr
+        \@halign\bgroup&##\cr
 }
 
 \def\msitabularstarB#1#2{%
@@ -1316,7 +1321,7 @@
       \begingroup
         \aftergroup\msi@closetabular
         \let\\=\@cr
-        \halign\bgroup&##\cr
+        \@halign\bgroup&##\cr
 }
  
 \def\msi@begin@tabular{%
@@ -1351,7 +1356,7 @@
         \aftergroup\msi@closetabular
         \let\\=\@cr
         \def\tabularnewline{\\}%
-        \halign\bgroup&##\cr}
+        \@halign\bgroup&##\cr}
 \egroup
 
 
