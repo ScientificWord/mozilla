@@ -4624,15 +4624,15 @@
 \def\@process@idx@ent{%
      \ifnum\@idxlev=0\relax
        \if@inspec
-         \expandafter\gdef\expandafter\@idxspecA\expandafter{\the\@msi@toks}
+         \expandafter\gdef\expandafter\@idxspecA\expandafter{\the\@msi@toks}%
        \else
-         \expandafter\gdef\expandafter\@idxentA\expandafter{\the\@msi@toks} 
+         \expandafter\gdef\expandafter\@idxentA\expandafter{\the\@msi@toks}% 
        \fi
        \advance\@idxlev by 1\relax
        \@msi@toks={}%
      \else\ifnum\@idxlev=1
        \if@inspec
-         \expandafter\gdef\expandafter\@idxspecB\expandafter{\the\@msi@toks}
+         \expandafter\gdef\expandafter\@idxspecB\expandafter{\the\@msi@toks}%
        \else
          \expandafter\gdef\expandafter\@idxentB\expandafter{\the\@msi@toks}%
        \fi
@@ -4640,7 +4640,7 @@
        \@msi@toks={}%
      \else\ifnum\@idxlev=2\relax
        \if@inspec
-         \expandafter\gdef\expandafter\@idxspecC\expandafter{\the\@msi@toks}
+         \expandafter\gdef\expandafter\@idxspecC\expandafter{\the\@msi@toks}%
        \else
          \expandafter\gdef\expandafter\@idxentC\expandafter{\the\@msi@toks}%
        \fi
@@ -4699,7 +4699,7 @@
 \def\@index#1{%
   %\endgroup
   \@inspecfalse
-  \@idxlev=0
+  \@idxlev=0%
   \gdef\@idxentA{}%
   \gdef\@idxspecA{}%
   \gdef\@idxentB{}%
@@ -4709,7 +4709,7 @@
   \gdef\@idx@enc{}%
   \msi@maptoks{#1}{\@idx@}%
   \ifx\@msi@toks\@empty
-  \else 
+  \else
     \@process@idx@ent
   \fi
   \temptoksa={}%
