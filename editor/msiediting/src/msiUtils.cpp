@@ -165,6 +165,18 @@ nsresult msiUtils::SetupPassOffCaretToParent(nsIEditor * editor,
   return res;
 }
 
+PRBool msiUtils::NodeHasFixedNumberOfChildren( nsIDOMNode * aNode) 
+{
+  nsAutoString name;
+  aNode->GetNodeName(name);
+  if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") ||
+           name.EqualsLiteral("mover") || name.EqualsLiteral("mfrac")  || name.EqualsLiteral("mroot") || name.EqualsLiteral("msqrt") ||
+           name.EqualsLiteral("munderover") || name.EqualsLiteral("msubsup")
+           ) {
+    return PR_TRUE;
+  }
+  return PR_FALSE;
+}
 
 // Unicode characters we think should be operators.
 // See section 4.9 of Unicode 3.0 spec. and DerivedCoreProperties.txt
