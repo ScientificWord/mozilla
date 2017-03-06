@@ -4697,7 +4697,7 @@
 \def\index{\begingroup\attrib@text\@index}
 
 \def\@index#1{%
-  \endgroup
+  %\endgroup
   \@inspecfalse
   \@idxlev=0
   \gdef\@idxentA{}%
@@ -4768,6 +4768,7 @@
        \char`\}%
      \fi
   \fi
+  \endgroup
   }%
 
 
