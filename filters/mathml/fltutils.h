@@ -56,7 +56,7 @@ typedef struct tagANOMALY_REC {	// Struct to
 #define ANOMALY_AUTONUMBERING (1010)
 #define ANOMALY_NONUMBERING (1011)
 #define ANOMALY_EQUATIONARRAY (1012) // signal that we have eqnarray, align, etc
-
+#define ANOMALY_NOMATH (1013) // eg $\,$
 
 
 typedef struct tagATTRIB_REC {	// Struct to define an attribute node.
