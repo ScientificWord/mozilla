@@ -2773,7 +2773,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       break;
 
       case 409  :       // \FRAME in MATH
-        RecordAnomaly( 1002,NULL,obj_node->src_offset1,
+        RecordAnomaly( ANOMALY_FRAME ,NULL,obj_node->src_offset1,
                                 obj_node->src_offset2 );
         tex_nodes_done  =  1;
       break;
@@ -2808,7 +2808,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       case 423  :       // \endnote
       case 424  :       // \marginpar
       case 426  :       // \FOOTNOTE
-        RecordAnomaly( 1001,NULL,obj_node->src_offset1,
+        RecordAnomaly( ANOMALY_NOTE, NULL,obj_node->src_offset1,
                             obj_node->src_offset2 );
         tex_nodes_done  =  1;
       break;
@@ -2819,7 +2819,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
 // REQPARAM(5.425.5,TEXT)
 
       case 425  : {     // \CustomNote
-        RecordAnomaly( 1001,NULL,obj_node->src_offset1,
+        RecordAnomaly( ANOMALY_NOTE, NULL,obj_node->src_offset1,
                             obj_node->src_offset2 );
         tex_nodes_done  =  1;
 
@@ -5120,7 +5120,7 @@ TNODE* LaTeX2MMLTree::TranslateTeXDisplay( TNODE* tex_display_node,
         }
       
       } else {          // MATH display contains no math
-        U16 ilk   =  1010;
+        U16 ilk   =  ANOMALY_NOMATH;
         U8* ztext =  NULL;
         U32 off1  =  0;
         U32 off2  =  0;
@@ -15730,7 +15730,8 @@ TCI_BOOL LaTeX2MMLTree::BucketContainsMath( TNODE* contents ) {
 
   if ( n_math_objects == 0
   &&   n_text_runs    == 0
-  &&   n_tabulars     == 0 ) {  // Run contains no math!!
+  &&   n_tabulars     == 0
+  &&   n_spaces == 0) {  // Run contains no math!!
     //TCI_ASSERT(0);
     rv  =  FALSE;
   }

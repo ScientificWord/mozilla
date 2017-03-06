@@ -84,6 +84,8 @@ bool mathmlHandler(U32 type, const char* data)
     s_nonumbering = true;
   } else if ( type == 1012 ) {
     s_eqnarray = true;
+  } else if ( type == 1013 ) { // no math
+    s_anomaly = data;
   }
   return true;
 }
