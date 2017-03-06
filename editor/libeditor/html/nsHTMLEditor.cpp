@@ -598,19 +598,18 @@ nsHTMLEditor::EndOfDocument()
 
   res = doctrav->CreateTreeWalker(rootElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
   nsCOMPtr<nsIDOMNode> currNode;
-  tw->PreviousNode(getter_AddRefs(currNode));
+  tw->LastChild(getter_AddRefs(currNode));
   while (currNode) {
     nsAutoString tagname;
     nsAutoString classname;
     currNode->GetLocalName(tagname);
     mtagListManager->GetRealClassOfTag(tagname, nsnull, classname);
     if (classname.EqualsLiteral("paratag")) {
-      selection->Collapse(currNode, 0);
+      selection->Collapse(currNode, -1);
       return NS_OK;
     }
-    tw->PreviousNode(getter_AddRefs(currNode));
+    tw->LastChild(getter_AddRefs(currNode));
   }
-  selection->Collapse(rootElement, 0);
   return NS_OK;
 }
 
