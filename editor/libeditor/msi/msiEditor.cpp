@@ -591,6 +591,7 @@ msiEditor::InsertSymbol(const nsAString & symbol)
       theNode = startNode;
       theOffset = startOffset;
       if (NS_SUCCEEDED(res)) {
+        nsCOMPtr<nsIDOMElement> rowElement;
         res = InsertSymbolEx(selection, theNode, theOffset, symbol);
         selection->GetAnchorNode(getter_AddRefs(startNode)); // the new selection start, right after the symbol
         startNode->GetNodeType(&nodeType);
@@ -600,6 +601,13 @@ msiEditor::InsertSymbol(const nsAString & symbol)
         startNode->GetLocalName(nodeName);
         if (nodeName.EqualsLiteral("mo") || nodeName.EqualsLiteral("mi")) {
           GetNodeLocation(startNode, address_of(finalNode), &finalOffset);
+          if (msiUtils::NodeHasFixedNumberOfChildren(finalNode)) {
+             res = msiUtils::CreateMRow(this, startNode, rowElement);
+             MoveNode(startNode, rowElement, 0);
+             InsertNode(rowElement, finalNode, finalOffset);
+             finalNode = rowElement;
+             finalOffset = 0;
+          }
           selection->Collapse(finalNode, finalOffset+1);
         }
       }
@@ -4664,3 +4672,4 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
 
 
 
+''

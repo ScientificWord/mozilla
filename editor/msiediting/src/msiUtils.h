@@ -52,6 +52,8 @@ public:
                                             PRBool incrementOffset,
                                             nsCOMPtr<msiIMathMLCaret> & msiEditing);
 
+  static PRBool NodeHasFixedNumberOfChildren( nsIDOMNode * aNode);
+
   static nsresult CreateMathElement(nsIEditor *editor,
                                     PRBool isDisplay,
                                     PRBool markCaret,
