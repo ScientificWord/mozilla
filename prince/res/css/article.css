@@ -158,6 +158,7 @@ subsubsection>sectiontitle:first-child {
 
 subsubsection>sectiontitle:first-child:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
+  -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
 }
 subsubsection[nonum="true"]>sectiontitle:first-child:before {
@@ -185,6 +186,7 @@ paragraph>sectiontitle:first-child {
 
 paragraph>sectiontitle:first-child:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
+  -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
 }
 
@@ -548,7 +550,11 @@ enumerate>item { display: block ;
                  margin: 0 0 0 0;
                  padding: 10pt 0 0 20pt }
 
-enumerate>item:before { content: counter(item-number) ". "; counter-increment: item-number }
+enumerate>item:before { content: counter(item-number) ". "; 
+  counter-increment: item-number;
+  -moz-user-modify: read-only;
+  -moz-user-select: -moz-none;
+}
 
 description {
   counter-reset: item;
