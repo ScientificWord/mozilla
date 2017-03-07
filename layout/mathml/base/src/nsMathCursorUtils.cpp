@@ -266,7 +266,9 @@ nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
   nsIAtom* type = pFrame->GetType();
   nsIFrame * pRet = nsnull;
   nsIFrame * pChild = nsnull;
-  if (type == nsGkAtoms::textFrame )
+  PRBool selectable = PR_FALSE;
+  pFrame->IsSelectable(&selectable, nsnull);
+  if (type == nsGkAtoms::textFrame  && selectable)
   {
     if (!(pFrame->GetContent()->TextIsOnlyWhitespace()))
       return pFrame;
