@@ -40,6 +40,62 @@
 </xsl:template>
 
 
+<xsl:template match="mml:mi ">
+  <xsl:choose>
+    <xsl:when test="parent::mml:mfrac  or 
+                    parent::mml:msub or 
+                    parent::mml:msup or
+                    parent::mml:msubsup or
+                    parent::mml:munder or
+                    parent::mml:mover or
+                    parent::mml:munderover or
+                    parent::mml:mroot">
+      <mml:mrow><mml:mi><xsl:apply-templates/></mml:mi></mml:mrow>
+    </xsl:when>
+    <xsl:otherwise>
+      <mml:mi><xsl:apply-templates/></mml:mi>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+
+<xsl:template match="mml:mn">
+  <xsl:choose>
+    <xsl:when test="parent::mml:mfrac  or 
+                    parent::mml:msub or 
+                    parent::mml:msup or
+                    parent::mml:msubsup or
+                    parent::mml:munder or
+                    parent::mml:mover or
+                    parent::mml:munderover or
+                    parent::mml:mroot">
+      <mml:mrow><mml:mn><xsl:apply-templates/></mml:mn></mml:mrow>
+    </xsl:when>
+    <xsl:otherwise>
+      <mml:mn><xsl:apply-templates/></mml:mn>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+
+<xsl:template match="mml:mo">
+  <xsl:choose>
+    <xsl:when test="parent::mml:mfrac  or 
+                    parent::mml:msub or 
+                    parent::mml:msup or
+                    parent::mml:msubsup or
+                    parent::mml:munder or
+                    parent::mml:mover or
+                    parent::mml:munderover or
+                    parent::mml:mroot">
+      <mml:mrow><mml:mo><xsl:apply-templates/></mml:mo></mml:mrow>
+    </xsl:when>
+    <xsl:otherwise>
+      <mml:mo><xsl:apply-templates/></mml:mo>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 
 <xsl:template name="get-spec">
    <xsl:param name="col">
