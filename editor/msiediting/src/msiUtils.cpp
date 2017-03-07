@@ -170,7 +170,7 @@ PRBool msiUtils::NodeHasFixedNumberOfChildren( nsIDOMNode * aNode)
   nsAutoString name;
   aNode->GetNodeName(name);
   if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") ||
-           name.EqualsLiteral("mover") || name.EqualsLiteral("mfrac")  || name.EqualsLiteral("mroot") || name.EqualsLiteral("msqrt") ||
+           name.EqualsLiteral("mover") || name.EqualsLiteral("mfrac")  || name.EqualsLiteral("mroot") ||
            name.EqualsLiteral("munderover") || name.EqualsLiteral("msubsup")
            ) {
     return PR_TRUE;
