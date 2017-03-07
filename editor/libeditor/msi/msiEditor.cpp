@@ -4672,4 +4672,3 @@ NS_IMETHODIMP msiContentFilter::NotifyOfInsertion(
 
 
 
-''
