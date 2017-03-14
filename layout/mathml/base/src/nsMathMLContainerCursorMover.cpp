@@ -216,6 +216,7 @@ nsMathMLContainerCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **a
         }
         else {
           *aOutOffset = count;
+          count--;
           *aOutFrame = pTempFrame;
           *_retval = count;
         }
