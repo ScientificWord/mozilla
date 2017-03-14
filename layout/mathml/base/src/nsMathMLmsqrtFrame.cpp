@@ -352,6 +352,7 @@ nsMathMLmsqrtFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
     PRInt32 *_retval)
 {
   printf("msqrt EnterFromLeft, count = %d\n", count);
+  count = 0;  // Just entering a radical uses up one count.
   nsIFrame * pBaseFrame = GetFirstChild(nsnull);
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pBaseFrame)
