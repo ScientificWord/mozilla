@@ -809,13 +809,13 @@
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
      \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
-   \def\startitemtag##1{\msi@br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
+   \def\startitemtag##1{\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
    \expandafter\startitemtag\expandafter{\itemprefix}%
    \ifx\itemprefix\@descr
      \msitag{<descriptionLabel>}#1\msitag{</descriptionLabel>}%
    \else
      \ifx\itemprefix\@enumerate
-       \msitag{<numberedLabel>}#1\msitag{</numberedLabel>}%
+       \msiopentag{numberedLabel}{<numberedLabel>}#1\msiclosetag{numberedLabel}{</numberedLabel>}%
 	 \else
        \ifx\itemprefix\@bullet
          \msitag{<bulletLabel>}#1\msitag{</bulletLabel>}%
