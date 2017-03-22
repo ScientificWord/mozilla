@@ -36,8 +36,8 @@
    - ***** END LICENSE BLOCK ***** -->
 
 <!ENTITY windowTitle.label "Hyperlink">
-<!ENTITY LinkTextBox.label "Link Text">
-<!ENTITY LinkURLBox.label "Link Location">
+<!ENTITY LinkTextBox.label "Link text">
+<!ENTITY LinkURLBox.label "Link location">
 <!ENTITY LinkTextMessage.label "Enter text to display for the link:">
 <!ENTITY makeLinkTextMessage.accessKey  "t">
 <!ENTITY LinkURLEditField.label "Enter a web page location, a local file or select a marker from the popup list:">
@@ -45,9 +45,9 @@
 <!ENTITY makeUrlRelative.label "URL is relative to document location">
 <!ENTITY makeUrlRelative.accessKey "r">
 <!ENTITY makeUrlRelative.tooltip "Change between relative and absolute URL">
-<!ENTITY chooseButton.label "Choose File...">
+<!ENTITY chooseButton.label "Choose file...">
 <!ENTITY chooseFileLink.accessKey "o">
-<!ENTITY MarkerorAnchor "Marker or Anchor">
+<!ENTITY MarkerorAnchor "Marker or anchor">
 <!ENTITY EnterExistingKeyName "Enter an existing key name">
 
 

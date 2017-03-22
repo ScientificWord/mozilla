@@ -21,7 +21,7 @@
   -->
 
 <!-- Window title -->
-<!ENTITY windowTitle.label "Insert Table">
+<!ENTITY windowTitle.label "Insert table">
 
 <!ENTITY size.label "Size">
 <!ENTITY numRowsEditField.label "Rows">
@@ -59,7 +59,7 @@
 
 <!ENTITY cellSpacing.label "Cellspacing">
 <!ENTITY cellPadding.label "Cellpadding">
-<!ENTITY tableWindow.title                "Table Properties">
+<!ENTITY tableWindow.title                "Table properties">
 <!ENTITY applyButton.label                "Apply">
 <!ENTITY applyButton.accesskey            "A">
 <!ENTITY closeButton.label                "Close">
@@ -100,9 +100,9 @@
 <!ENTITY location.label                   "Location">
 <!ENTITY location.accesskey               "L">
 <!ENTITY floatLocation.label              "Float">
-<!ENTITY rowAlignment.label               "Row Alignment">
+<!ENTITY rowAlignment.label               "Row alignment">
 <!ENTITY rowAlignment.accesskey           "R">
-<!ENTITY tableBaseline.label              "Table Baseline">
+<!ENTITY tableBaseline.label              "Table baseline">
 <!ENTITY tableBaseline.accesskey          "B">
 <!ENTITY BaselineTopRow.label             "Same as top row">
 <!ENTITY BaselineTopRow.accesskey         "T">
@@ -113,8 +113,8 @@
 
 <!ENTITY tableCaption.label               "Caption">
 <!ENTITY tableCaption.accesskey           "N">
-<!ENTITY tableCaptionAbove.label          "Above Table">
-<!ENTITY tableCaptionBelow.label          "Below Table">
+<!ENTITY tableCaptionAbove.label          "Above table">
+<!ENTITY tableCaptionBelow.label          "Below table">
 <!ENTITY tableCaptionNone.label           "None">
 <!ENTITY backgroundInheritColor.label     "(Let page color show through)">
 
@@ -168,21 +168,21 @@
 <!-- LOCALIZATION NOTE Next 2 form 1 sentence (we don't want to use HTML tag to wrap) -->
 <!-- !ENTITY applyBeforeChange1.label         "Current changes will be applied">
 <!ENTITY applyBeforeChange2.label         "before changing the selection.">
-<!ENTITY cellRowSpan.label                "Row Span">
-<!ENTITY cellColSpan.label                "Column Span">
-<!ENTITY cellContentAlignment.label       "Cell Alignment">
+<!ENTITY cellRowSpan.label                "Row span">
+<!ENTITY cellColSpan.label                "Column span">
+<!ENTITY cellContentAlignment.label       "Cell alignment">
 <!ENTITY cellHorizontal.label             "Horizontal">
 <!ENTITY cellHorizontal.accesskey         "Z">
 <!ENTITY cellVertical.label               "Vertical">
 <!ENTITY cellVertical.accesskey           "V" -->
 
-<!ENTITY cellStyle.label                  "Cell Style">
+<!ENTITY cellStyle.label                  "Cell style">
 <!ENTITY cellStyle.accesskey              "C">
 <!ENTITY cellNormal.label                 "Normal">
 <!ENTITY cellHeader.label                 "Header">
-<!-- !ENTITY cellTextWrap.label               "Text Wrap">
+<!-- !ENTITY cellTextWrap.label               "Text wrap">
 <!ENTITY cellTextWrap.accesskey           "T" -->
-<!ENTITY cellWrap.label                   "Wrap Text">
+<!ENTITY cellWrap.label                   "Wrap text">
 <!ENTITY cellWrap.accesskey               "W">
 <!-- !ENTITY cellNoWrap.label                 "Don't wrap" -->
 
@@ -193,7 +193,7 @@
 <!ENTITY AlignBottom.label                "Bottom">
 <!ENTITY AlignBottom.accesskey            "B">
 <!ENTITY cellAlignJustify.label           "Justify">
-<!ENTITY cellAlignAtChar.label            "At Character">
+<!ENTITY cellAlignAtChar.label            "At character">
 <!ENTITY cellInheritColor.label           "(Let table color show through)">
 <!-- !ENTITY cellUseCheckboxHelp.label        "Use checkboxes to determine which properties are applied to all selected cells" -->
 
@@ -206,11 +206,11 @@
 <!ENTITY borderWidthThick.label           "Thick">
 <!ENTITY size.label                       "Size">
 <!ENTITY pixels.label                     "pixels">
-<!ENTITY backgroundColor.label            "Background Color">
+<!ENTITY backgroundColor.label            "Background color">
 <!ENTITY backgroundColor.accesskey        "B">
-<!ENTITY BackgroundSelectionWholeTable.label        "Whole Table">
+<!ENTITY BackgroundSelectionWholeTable.label        "Whole table">
 <!ENTITY BackgroundSelectionWholeTable.accesskey    "W">
-<!ENTITY BackgroundSelectionSelectedCells.label     "Selected Cells">
+<!ENTITY BackgroundSelectionSelectedCells.label     "Selected cells">
 <!ENTITY BackgroundSelectionSelectedCells.accesskey "S">
 <!ENTITY AlignLeft.label                  "Left">
 <!ENTITY AlignLeft.accesskey              "L">
@@ -235,7 +235,7 @@
 <!ENTITY onpageoffloats.label "On page of floats">
 <!ENTITY topofpage.label  "Top of page">
 <!ENTITY bottomofpage.label "Bottom of page">
-<!ENTITY Tablebaseline.label  "Table Baseline">
+<!ENTITY Tablebaseline.label  "Table baseline">
 <!ENTITY baseline.label "Baseline">
 <!ENTITY sameastoprow.label "Same as top row">
 <!ENTITY atverticalcenter.label "At vertical center">
@@ -254,13 +254,13 @@
 
 <!ENTITY tableLabelingTab.label "Labeling" >
 <!ENTITY tableKey.label "Key">
-<!ENTITY captionPlacement.label "Caption Placement">
+<!ENTITY captionPlacement.label "Caption placement">
 <!ENTITY EnterNewName.tooltip "Enter a new key name">
 <!ENTITY None.label  "None">
 <!ENTITY Above.label  "Above">
 <!ENTITY Below.label  "Below">
-<!ENTITY CaptionText.label  "Caption Text">
-<!ENTITY AltText.label  "Alt Text">
+<!ENTITY CaptionText.label  "Caption text">
+<!ENTITY AltText.label  "Alt text">
 <!ENTITY NewKeyOrDocName.tooltip  "Enter a new key name or a document name">
 <!ENTITY MakeRelativeCheckbox.label  "Make reference relative">
 <!ENTITY EnterDocOrMarker.label "Enter a document location, a local document, or select a marker or heading from the popup list:">
@@ -268,7 +268,7 @@
 <!ENTITY  Placementtab.label "Placement">
 <!ENTITY  inner						"Inner margin">
 <!ENTITY  inline					"In line">
-<!ENTITY  inlineOffset    "Offset to Bottom of Minipage">
+<!ENTITY  inlineOffset    "Offset to bottom of minipage">
 <!ENTITY  display					"Displayed">
 <!ENTITY  floating				"Floating">
 <!ENTITY  outer						"Outer margin">

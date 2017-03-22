@@ -15,7 +15,7 @@
 <!ENTITY aboutCmd.label ".About">
 
 <!-- Display Mode Toolbar -->
-<!ENTITY editMode.label "Edit Mode:">
+<!ENTITY editMode.label "Edit mode:">
 
 <!ENTITY statusText.label "Done loading document">
 

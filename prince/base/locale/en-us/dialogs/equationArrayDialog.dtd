@@ -37,13 +37,13 @@
 
 
 <!-- Window title -->
-<!ENTITY eqnArrayDialog.title "Display Properties">
-<!ENTITY lineNumber.label "Line Number:">
+<!ENTITY eqnArrayDialog.title "Display properties">
+<!ENTITY lineNumber.label "Line number:">
 <!ENTITY lineNumber.accesskey "L">
 <!ENTITY advancedButton.label "Advanced&gt;&gt;">
 <!ENTITY advancedButton.closelabel "Advanced&lt;&lt;">
 <!ENTITY advancedButton.accesskey "v">
-<!ENTITY keyForLine.label "Key for this Line">
+<!ENTITY keyForLine.label "Key for this line">
 <!ENTITY keyForLine.accesskey "e">
 <!ENTITY EnterNewKeyName.tooltip  "Enter a new key name">
 <!ENTITY numberingGroupbox.label "Number">
@@ -53,21 +53,21 @@
 <!ENTITY numberingAuto.accesskey "A">
 <!ENTITY numberingCustom.label "Custom">
 <!ENTITY numberingCustom.accesskey "C">
-<!ENTITY suppressAnnotationCheckbox.label "Suppress Annotation">
+<!ENTITY suppressAnnotationCheckbox.label "Suppress annotation">
 <!ENTITY suppressAnnotationCheckbox.accesskey "u">
-<!ENTITY spaceAfterLine.label "Space After this Line">
+<!ENTITY spaceAfterLine.label "Space after this line">
 <!ENTITY spaceAfterLine.accesskey "p">
-<!ENTITY enableSubeqNumberingCheckbox.label "Enable Subequation Numbering">
+<!ENTITY enableSubeqNumberingCheckbox.label "Enable subequation numbering">
 <!ENTITY enableSubeqNumberingCheckbox.accesskey "b">
-<!ENTITY subequationContinuationCheckbox.label "Subequation Continuation">
+<!ENTITY subequationContinuationCheckbox.label "Subequation continuation">
 <!ENTITY subequationContinuationCheckbox.accesskey "o">
-<!ENTITY keyForWholeDisplay.label "Key for Whole Display">
+<!ENTITY keyForWholeDisplay.label "Key for whole display">
 <!ENTITY keyForWholeDisplay.accesskey "K">
-<!ENTITY enableAlignmentCheckbox.label "Enable Alignment">
+<!ENTITY enableAlignmentCheckbox.label "Enable alignment">
 <!ENTITY enableAlignmentCheckbox.accesskey "m">
 <!ENTITY alignStandard.label "Standard">
 <!ENTITY alignStandard.accesskey "S">
-<!ENTITY alignSingleEqn.label "Single Equation on Multiple Lines">
+<!ENTITY alignSingleEqn.label "Single equation on multiple lines">
 <!ENTITY alignSingleEqn.accesskey "i">
-<!ENTITY alignCentered.label "Each Line Centered">
+<!ENTITY alignCentered.label "Each line centered">
 <!ENTITY alignCentered.accesskey "h">

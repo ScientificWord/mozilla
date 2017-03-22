@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved. -->
 <!ENTITY GeneralTab.label "General">
-<!ENTITY StartUpShellTab.label  "Start-up Shell">
+<!ENTITY StartUpShellTab.label  "Start-up shell">
 <!ENTITY GraphicsTab.label  "Graphics">
 <!ENTITY SaveIntervalSeconds.label "Save interval in seconds (0 for no automatic saving)">
 <!ENTITY GenerateTeXonAutoSave.label  "Generate TeX on automatic save (for latexmk)">
@@ -10,7 +10,7 @@
 <!ENTITY EnableCharFindwithArrow.label  "Enable character find with arrow keys">
 <!ENTITY EnableCharFindwithArrow.accesskey  "c">
 <!ENTITY NumTapsforArrowAutorepeat.label  "Number of taps for arrow to autorepeat">
-<!ENTITY FileCompression.label  "File Compression">
+<!ENTITY FileCompression.label  "File compression">
 <!ENTITY SciCompression.label ".sci files">
 <!ENTITY None.label "None">
 <!ENTITY Fastest.label  "Fastest">
@@ -20,17 +20,17 @@
 <!ENTITY initialDocDir.label "Default directory for documents">
 <!ENTITY browseDir.label "Browse">
 <!ENTITY browseDir.accesskey "b">
-<!ENTITY ShellDirectories.label "Shell Directories">
+<!ENTITY ShellDirectories.label "Shell directories">
 <!ENTITY Name.label "Name">
 <!ENTITY Date.label "Date">
 <!ENTITY Size.label "Size">
-<!ENTITY ShellFiles.label "Shell Files">
-<!ENTITY EditingParameters.label  "Editing Parameters">
+<!ENTITY ShellFiles.label "Shell files">
+<!ENTITY EditingParameters.label  "Editing parameters">
 <!ENTITY Math.label "Math">
-<!ENTITY SpellChecking.label  "Spell Checking">
+<!ENTITY SpellChecking.label  "Spell checking">
 <!ENTITY EnableRTSpellCheck.label "Enable realtime spell checking">
 <!ENTITY EnableRTSpellCheck.accesskey "E">
-<!ENTITY SourceEditing.label "Source Editing">
+<!ENTITY SourceEditing.label "Source editing">
 <!ENTITY XMLSourceIndent.label  "XML source indent">
 <!ENTITY XMLSourceMaxLineLength.label  "XML source max line length">
 <!ENTITY XMLSourceMinLineLength.label "XML source min line length">
@@ -50,18 +50,18 @@
 <!ENTITY DefaultBGColor.label "Default background color ">
 <!ENTITY OrthogonalProjection.label  "Orthogonal projection">
 <!ENTITY KeepUpVector.label "Keep up vector">
-<!ENTITY InitialViewIntervals.label  "Initial View Intervals">
+<!ENTITY InitialViewIntervals.label  "Initial view intervals">
 <!ENTITY General.label  "General">
 <!ENTITY Expert.label "Expert">
 <!ENTITY openLastFile.label "Open the last file saved, if it is present">
 
 
-<!ENTITY miscellaneousOptions.label "Miscellaneous Options">
+<!ENTITY miscellaneousOptions.label "Miscellaneous options">
 <!ENTITY warnNonPortableFilenamesCheckbox.label "Warn about non-portable filenames">
 <!ENTITY warnNonPortableFilenamesCheckbox.accesskey "W">
 <!ENTITY useOldAuxFilesCheckbox.label "Use old .aux files if possible">
 <!ENTITY useOldAuxFilesCheckbox.accesskey "a">
-<!ENTITY bibTexOptions.label "BibTeX Options">
+<!ENTITY bibTexOptions.label "BibTeX options">
 <!ENTITY bibTeXExecutable.label "Path to BibTeX program">
 <!ENTITY bibTeXExecutable.accesskey "B">
 <!ENTITY browseBibTeXExecutable.label "Browse">
@@ -77,13 +77,13 @@
 <!ENTITY bibTeXStyleDir.accesskey "s">
 <!ENTITY browseBibTeXStyleDir.label "Browse">
 <!ENTITY browseBibTeXStyleDir.accesskey "w">
-<!ENTITY PDFOptions.label "PDF Options">
-<!ENTITY pdfGraphicsSettings.label "PDF Graphics Settings">
+<!ENTITY PDFOptions.label "PDF options">
+<!ENTITY pdfGraphicsSettings.label "PDF graphics settings">
 <!ENTITY pdfGraphicsSettings.accesskey "P">
 <!ENTITY convertTeXLinksToPDF.label "Convert .tex link targets to .pdf">
 <!ENTITY convertTeXLinksToPDF.accesskey "C">
-<!ENTITY portableLaTeXOptions.label "Portable LaTeX Options">
-<!ENTITY portableLaTeXGraphicsSettings.label "Portable laTeX Graphics Settings">
+<!ENTITY portableLaTeXOptions.label "Portable LaTeX options">
+<!ENTITY portableLaTeXGraphicsSettings.label "Portable LaTeX graphics settings">
 <!ENTITY portableLaTeXGraphicsSettings.accesskey "G">
 <!ENTITY passThroughUnicodeMacro.label "Pass through Unicode macro">
 <!ENTITY passThroughUnicodeMacro.accesskey "U">
@@ -96,13 +96,13 @@
 <!ENTITY tabbar.engine  "Engine">
 
 
-<!ENTITY scinotation.label        "Scientific Notation Output">
+<!ENTITY scinotation.label        "Scientific notation output">
 
-<!ENTITY mixednum.label           "Rational Numbers">
+<!ENTITY mixednum.label           "Rational numbers">
 
-<!ENTITY trigargs.label           "Trigonometric Functions">
+<!ENTITY trigargs.label           "Trigonometric functions">
 
-<!ENTITY fences.label             "Fence Output">
+<!ENTITY fences.label             "Fence output">
 <!ENTITY mfenced.label              "mfenced">
 <!ENTITY chars.label                "matched characters (), {}, []">
 
@@ -112,34 +112,34 @@
 <!ENTITY matrix_parens.label        "( )">
 <!ENTITY matrix_braces.label        "{ }">
 
-<!ENTITY logs.label               "Base of Log">
-<!ENTITY dots.label               "Dot Accent">
-<!ENTITY bar.label                "Bar Accent">
+<!ENTITY logs.label               "Base of log">
+<!ENTITY dots.label               "Dot accent">
+<!ENTITY bar.label                "Bar accent">
 
-<!ENTITY deriv.label              "Derivative Output Notation">
+<!ENTITY deriv.label              "Derivative output notation">
 <!ENTITY derivformat_input.label    "input notation">
 <!ENTITY derivformat_d.label        "d/dx">
 <!ENTITY derivformat_D.label        "D">
 <!ENTITY derivformat_primes.label   "primes">
 <!ENTITY derivformat_dots.label     "dots">
 
-<!ENTITY primeasn.label           "Derivatives as Primes">
-<!ENTITY primederiv.label         "Prime Notation">
+<!ENTITY primeasn.label           "Derivatives as primes">
+<!ENTITY primederiv.label         "Prime notation">
 
-<!ENTITY imagi_output.label       "Imaginary i Output">
+<!ENTITY imagi_output.label       "Imaginary i output">
 <!ENTITY imagi_i.label              "i">
 <!ENTITY imagi_j.label              "j">
 <!ENTITY imagi_imagi.label          "ImaginaryI">
 
-<!ENTITY diffD_output.label       "Differential D Output">
+<!ENTITY diffD_output.label       "Differential D output">
 <!ENTITY diffD_D.label              "D">
 <!ENTITY diffD_diffD.label          "CapitalDifferentialD">
 
-<!ENTITY diffd_output.label       "Differential d Output">
+<!ENTITY diffd_output.label       "Differential d output">
 <!ENTITY diffd_d.label              "d">
 <!ENTITY diffd_diffd.label          "DifferentialD">
 
-<!ENTITY expe_output.label        "Exponential e Output">
+<!ENTITY expe_output.label        "Exponential e output">
 <!ENTITY expe_e.label               "e">
 <!ENTITY expe_expe.label            "ExponentialE">
 
@@ -157,19 +157,19 @@
 <!ENTITY Lowerthreshold.label  "Lower threshold">
 <!ENTITY ZerosRightofDecimal.label  "(zeros to right of decimal before switching)">
 <!ENTITY OutputMixedNum.label  "Output fractions as mixed numbers">
-<!ENTITY ParenthesesforTrig.label "Use Parentheses for Trig Functions">
-<!ENTITY UseArc.label "Use 'arc' prefix for inverse Trig Functions">
+<!ENTITY ParenthesesforTrig.label "Use parentheses for trig functions">
+<!ENTITY UseArc.label "Use 'arc' prefix for inverse trig functions">
 <!ENTITY DefaultMatrixDelimiter.label "Default matrix delimiter">
 <!ENTITY SwitchfromPrimestoN.label  "switch from primes to (n)">
 <!ENTITY PrimeMeansDerivative.label "Prime means derivative">
 
-<!ENTITY solve.label "Solve Options">
+<!ENTITY solve.label "Solve options">
 <!ENTITY debug.label "Debugging">
 
 <!ENTITY desc.Digits    "Digits">
-<!ENTITY desc.Max       "Maximum Degree">
-<!ENTITY desc.Principal "Principal Value Only">
-<!ENTITY desc.Ignore    "Ignore Special Cases">
+<!ENTITY desc.Max       "Maximum degree">
+<!ENTITY desc.Principal "Principal value only">
+<!ENTITY desc.Ignore    "Ignore special cases">
 <!ENTITY desc.MMLSent   "Log MathML commands sent">
 <!ENTITY desc.MMLRec    "Log MathML content received">
 <!ENTITY desc.EngSent   "Log engine strings sent">
@@ -177,26 +177,26 @@
 <!ENTITY Scope.label  "Scope">
 <!ENTITY Default.label  "Default">
 <!ENTITY ThisDocOnly.label  "This document only">
-<!ENTITY EngineOn.label "Engine On">
+<!ENTITY EngineOn.label "Engine on">
 
-<!ENTITY windowTitleP.label  "Plot User Settings">
-<!ENTITY plotarguments.label  "Plot Arguments">
+<!ENTITY windowTitleP.label  "Plot user settings">
+<!ENTITY plotarguments.label  "Plot arguments">
 
 <!ENTITY tabbar.layout            "Layout">
 <!ENTITY tabbar.axes              "Axes">
-<!ENTITY tabbar.items             "Items Plotted">
+<!ENTITY tabbar.items             "Items plotted">
 <!ENTITY tabbar.labeling         "Labeling">
 <!ENTITY tabbar.view              "View">
 
 <!ENTITY command.delete           "Delete">
 
-<!ENTITY tabbar.plotItems         "Plot Items">
-<!ENTITY plotstyles.label         "Plot Style Options">
-<!ENTITY plotcs.label             "Coordinate System">
+<!ENTITY tabbar.plotItems         "Plot items">
+<!ENTITY plotstyles.label         "Plot style options">
+<!ENTITY plotcs.label             "Coordinate system">
 
 <!ENTITY plotAppliesTo.label        "Setting for plot type:">
 <!ENTITY plottypeGeneric.label      "All plots">
-<!ENTITY plottype2dRect.label       "2D Rectangular">
+<!ENTITY plottype2dRect.label       "2D rectangular">
 <!ENTITY plottype2dParametric.label "2D parametric">
 <!ENTITY plottypePolar.label        "Polar">
 <!ENTITY plottype2dPointList.label  "2D point plot">
@@ -204,11 +204,11 @@
 <!ENTITY plottypeInequality.label   "Inequality">
 <!ENTITY plottypeConformal.label    "Conformal">
 <!ENTITY plottypeOde.label          "ODE">
-<!ENTITY plottypeAI.label           "Approximate Integral">
+<!ENTITY plottypeAI.label           "Approximate integral">
 <!ENTITY plottype2dVector.label     "2D vector">
 <!ENTITY plottype2dGradient.label   "2D gradient">
 
-<!ENTITY plottype3dRect.label       "3D Rectangular">
+<!ENTITY plottype3dRect.label       "3D rectangular">
 <!ENTITY plottype3dParametric.label "3D parametric">
 <!ENTITY plottypeCurve.label        "Curve in space">
 <!ENTITY plottypeCylindrical.label  "Cylindrical">
@@ -222,7 +222,7 @@
 <!ENTITY plottype.label           "Plot type">
 <!ENTITY plottypeexpression.label "Expression">
 
-<!ENTITY plotItemColoring.label   "Plot Color">
+<!ENTITY plotItemColoring.label   "Plot color">
 <!ENTITY plotColor.label "Line color">
 <!ENTITY plotBaseColor.label     "Base color">
 <!ENTITY plotColor2.label        "Secondary color">
@@ -240,11 +240,11 @@
 <!ENTITY plotShadingZGreyscale.label "Z greyscale">
 <!ENTITY plotShadingFlat.label   "Flat">
 
-<!ENTITY plotstyle.label          "Plot Style">
+<!ENTITY plotstyle.label          "Plot style">
 <!ENTITY plotstyleline.label      "Line">
 <!ENTITY plotstylepoint.label     "Point">
 
-<!ENTITY plotLineStyle.label        "Line Style">
+<!ENTITY plotLineStyle.label        "Line style">
 <!ENTITY plotLineStyleSolid.label   "Solid">
 <!ENTITY plotLineStyleDash.label    "Dash">
 <!ENTITY plotLineStyleDots.label    "Dots">
@@ -252,21 +252,21 @@
 <!ENTITY plotlinedotdash.label      "DotDash">
 <!ENTITY plotlinedotdotdash.label   "DotDotDash">
 
-<!ENTITY plotPointMarker.label      "Point Marker">
+<!ENTITY plotPointMarker.label      "Point marker">
 <!ENTITY plotPointDot.label			"Dots">
 <!ENTITY plotPointCircle.label      "Circles">
-<!ENTITY plotPointFilledSquares.label  "Filled Squares">
+<!ENTITY plotPointFilledSquares.label  "Filled squares">
 <!ENTITY plotPointBox.label			"Boxes">
 <!ENTITY plotPointDiamond.label     "Diamonds">
-<!ENTITY plotPointFilledDiamonds.label "Filled Diamonds">
-<!ENTITY plotPointXcrosses.label    "X Crosses">
+<!ENTITY plotPointFilledDiamonds.label "Filled diamonds">
+<!ENTITY plotPointXcrosses.label    "X crosses">
 <!ENTITY plotPointStars.label       "Stars">
 
 <!ENTITY plotPointCross.label       "Crosses">
 <!ENTITY plotpointsquares.label     "Squares">
-<!ENTITY plotpointfilledcircles.label  "Filled Circles">
+<!ENTITY plotpointfilledcircles.label  "Filled circles">
 
-<!ENTITY plotAreaFillStyle.label      "Area Fill Style">
+<!ENTITY plotAreaFillStyle.label      "Area fill style">
 <!ENTITY plotFillPatternSolid.label   "Solid">
 <!ENTITY plotFillPatternCrossedLines.label  "Crossed lines">
 <!ENTITY plotFillPatternDiaglLines.label    "Diagonal lines">
@@ -275,7 +275,7 @@
 <!ENTITY plotFillPatternVertLines.label     "Vertical lines">
 <!ENTITY plotFillPatternCrossedDiagLines.label  "Crossed diagonal lines">
 
-<!ENTITY plotLineThickness.label  "Line Thickness">
+<!ENTITY plotLineThickness.label  "Line thickness">
 <!ENTITY plotLineVeryThin.label	  "Very thin">
 <!ENTITY plotLineThin.label       "Thin">
 <!ENTITY plotLineMedium.label     "Medium">
@@ -283,7 +283,7 @@
 <!ENTITY plotLineVeryThick.label  "Very thick">
 
 <!ENTITY plotadjust.label         "Adjust for discontinuities">
-<!ENTITY plotasymptote.label      "Show Asymptotes">
+<!ENTITY plotasymptote.label      "Show asymptotes">
 <!ENTITY plotnoadjust.label       "Don't adjust">
 
 <!ENTITY plotAINumberofIntervals.desc  "Number of intervals">
@@ -302,8 +302,8 @@
 <!ENTITY plotAIMethodTrapezoidal.label	"Trapezoidal">
 <!ENTITY plotAIMethodSimpson.label		"Simpson">
 
-<!ENTITY plotexprnrel.label       "Expressions and Relations">
-<!ENTITY plotVariablesTitle.label "Variable Intervals and Sampling Points">
+<!ENTITY plotexprnrel.label       "Expressions and relations">
+<!ENTITY plotVariablesTitle.label "Variable intervals and sampling points">
 <!ENTITY plotVariable.label       "Variable">
 <!ENTITY plotInterval.label       "Interval">
 <!ENTITY plotPointsSampled.label  "Points sampled">
@@ -325,39 +325,39 @@
 <!ENTITY unitsmm.label            "Millimeters">
 <!ENTITY unitspoints.label        "Points">
 
-<!ENTITY layoutscreendisp.label    "Screen Display Attributes">
-<!ENTITY layoutmodel.label         "Use Model Screen Attributes">
+<!ENTITY layoutscreendisp.label    "Screen display attributes">
+<!ENTITY layoutmodel.label         "Use model screen attributes">
 
-<!ENTITY layoutprintattr.label     "Print Attributes">
-<!ENTITY layoutscreendisp.label    "Screen Display Attributes">
+<!ENTITY layoutprintattr.label     "Print attributes">
+<!ENTITY layoutscreendisp.label    "Screen display attributes">
 
-<!ENTITY layoutprintframe.label     "Plot in Frame">
-<!ENTITY layoutprintplot.label      "Plot Only">
-<!ENTITY layoutprintframeonly.label "Frame Only">
+<!ENTITY layoutprintframe.label     "Plot in frame">
+<!ENTITY layoutprintplot.label      "Plot only">
+<!ENTITY layoutprintframeonly.label "Frame only">
 <!ENTITY layoutprinticon.label      "Iconified">
 
 <!ENTITY layoutplacement.label      "Placement">
-<!ENTITY layoutplaceinline.label    "In Line">
+<!ENTITY layoutplaceinline.label    "In line">
 <!ENTITY layoutplacedisplayed.label "Displayed">
 <!ENTITY layoutplacefloat.label     "Floating">
 
 <!ENTITY labelingkey.label          "Key">
 <!ENTITY labelingname.label         "Name">
-<!ENTITY labelingcaption.label      "Default Caption Location">
+<!ENTITY labelingcaption.label      "Default caption location">
 
 <!ENTITY labelingabove.label        "Above">
 <!ENTITY labelingbelow.label        "Below">
-<!ENTITY labelingcaptiontext.label  "Caption Text">
+<!ENTITY labelingcaptiontext.label  "Caption text">
 
-<!ENTITY axisxlabel.label           "X Axis">
-<!ENTITY axisylabel.label           "Y Axis">
-<!ENTITY axiszlabel.label           "Z Axis">
-<!ENTITY axistickmarks.label        "Tick Marks">
+<!ENTITY axisxlabel.label           "X axis">
+<!ENTITY axisylabel.label           "Y axis">
+<!ENTITY axiszlabel.label           "Z axis">
+<!ENTITY axistickmarks.label        "Tick marks">
 <!ENTITY axisdefault.label          "Default">
 <!ENTITY axisnone.label             "None">
 <!ENTITY axiscustom.label           "Custom">
-<!ENTITY axisnticks.label           "Number of X Ticks">
-<!ENTITY axisdisable.label          "Disable Tick Labeling">
+<!ENTITY axisnticks.label           "Number of X ticks">
+<!ENTITY axisdisable.label          "Disable tick labeling">
 <!ENTITY axislabels.label           "Axis labels">
 <!ENTITY axisxaxis.label            "X">
 <!ENTITY axisyaxis.label            "Y">
@@ -365,78 +365,78 @@
 <!ENTITY axisxrange.label           "X axis">
 <!ENTITY axisyrange.label           "Y axis">
 <!ENTITY axiszrange.label           "Z axis">
-<!ENTITY axisaxesscale.label        "Axes Scaling">
+<!ENTITY axisaxesscale.label        "Axes scaling">
 <!ENTITY axislinear.label           "Linear">
-<!ENTITY axislinlog.label           "Lin Log">
-<!ENTITY axisloglin.label           "Log Lin">
-<!ENTITY axisloglog.label           "Log Log">
-<!ENTITY axisequal.label            "Equal Scaling Along Each Axis">
-<!ENTITY axistype.label             "Axes Type">
+<!ENTITY axislinlog.label           "Lin log">
+<!ENTITY axisloglin.label           "Log lin">
+<!ENTITY axisloglog.label           "Log log">
+<!ENTITY axisequal.label            "Equal scaling along each axis">
+<!ENTITY axistype.label             "Axes type">
 <!ENTITY axistips.label             "Axes tips on">
 <!ENTITY axisgridlines.label        "Grid lines on">
 <!ENTITY axisnormal.label           "Normal">
 <!ENTITY axisboxed.label            "Boxed">
-<!ENTITY axistickmark.label         "Axis Tick Marks">
+<!ENTITY axistickmark.label         "Axis tick marks">
 <!ENTITY axisframed.label           "Frame">
 <!ENTITY frame.label                "Frame">
 <!ENTITY axisauto.label             "Automatic">
 
-<!ENTITY plotxrangehigh.label       "X High Range">
-<!ENTITY plotxrangelow.label        "X Low Range">
-<!ENTITY plotyrangehigh.label       "Y High Range">
-<!ENTITY plotyrangelow.label        "Y Low Range">
-<!ENTITY plotzrangehigh.label       "Z High Range">
-<!ENTITY plotzrangelow.label        "Z Low Range">
+<!ENTITY plotxrangehigh.label       "X high range">
+<!ENTITY plotxrangelow.label        "X low range">
+<!ENTITY plotyrangehigh.label       "Y high range">
+<!ENTITY plotyrangelow.label        "Y low range">
+<!ENTITY plotzrangehigh.label       "Z high range">
+<!ENTITY plotzrangelow.label        "Z low range">
 <!ENTITY plot2d.label               "2D">
 <!ENTITY plot3d.label               "3D">
 <!ENTITY plotexpr.label             "Expression to be plotted">
 <!ENTITY animate.label              "Animate">
 <!ENTITY dimensions.label           "Dimensions">
 <!ENTITY editplotitem.label         "Plot item ">
-<!ENTITY editplot.label             "Edit Plot">
+<!ENTITY editplot.label             "Edit plot">
 <!ENTITY newplot.label              "New ">
 <!ENTITY plot2dmenu.label           "Plot 2D">
 <!ENTITY plot3dmenu.label           "Plot 3D">
-<!ENTITY plot2damenu.label          "Plot 2D Animated">
-<!ENTITY plot3damenu.label          "Plot 3D Animated">
+<!ENTITY plot2damenu.label          "Plot 2D animated">
+<!ENTITY plot3damenu.label          "Plot 3D animated">
 
-<!ENTITY screendisplay.label        "Screen Display Layout">
-<!ENTITY orientationturn.label      "Orientation: Turn">
-<!ENTITY orientationtilt.label      "Orientation: Tilt">
+<!ENTITY screendisplay.label        "Screen display layout">
+<!ENTITY orientationturn.label      "Orientation: turn">
+<!ENTITY orientationtilt.label      "Orientation: tilt">
 <!ENTITY viewinterval.label         "Use default view intervals">
 
-<!ENTITY plotSurfaceStyle.label         "Surface Style">
-<!ENTITY plotSurfaceColorpatch.label    "Color Patch">
-<!ENTITY plotSurfaceHidden.label        "Hidden Line">
-<!ENTITY plotSurfaceWire.label          "Wire Frame">
+<!ENTITY plotSurfaceStyle.label         "Surface style">
+<!ENTITY plotSurfaceColorpatch.label    "Color patch">
+<!ENTITY plotSurfaceHidden.label        "Hidden line">
+<!ENTITY plotSurfaceWire.label          "Wire frame">
 <!ENTITY plotSurfacePoint.label         "Point">
 
-<!ENTITY plotSurfaceMesh.label          "Surface Mesh">
-<!ENTITY plotSurfaceMeshUlines.label     "U Lines">
-<!ENTITY plotSurfaceMeshVlines.label     "V Lines">
+<!ENTITY plotSurfaceMesh.label          "Surface mesh">
+<!ENTITY plotSurfaceMeshUlines.label     "U lines">
+<!ENTITY plotSurfaceMeshVlines.label     "V lines">
 <!ENTITY plotSurfaceMeshContour.label    "Contour">
 <!ENTITY plotSurfaceMeshMesh.label       "Mesh">
 <!ENTITY plotSurfaceMeshNone.label		 "None">
 
-<!ENTITY includepoints.label        "Include Points">
-<!ENTITY includelines.label         "Include Lines">
+<!ENTITY includepoints.label        "Include points">
+<!ENTITY includelines.label         "Include lines">
 
 <!ENTITY low.label                  "Low">
 <!ENTITY none.label                 "None">
 <!ENTITY normal.label               "Normal">
 <!ENTITY high.label                 "High">
 
-<!ENTITY unspecified.label          "Not Specified">
-<!ENTITY AutomaticSaving.label  "Automatic Saving">
+<!ENTITY unspecified.label          "Not specified">
+<!ENTITY AutomaticSaving.label  "Automatic saving">
 <!ENTITY EnableSilentAutoSave.label "Enable silent automatic saving">
 <!ENTITY EnableSilentAutoSave.accesskey  "E">
-<!ENTITY CursorAdvanceChar.label  "Cursor Advance to Character">
-<!ENTITY DefaultSizeNewGraphics.label "Default Size for New Graphics">
+<!ENTITY CursorAdvanceChar.label  "Cursor advance to character">
+<!ENTITY DefaultSizeNewGraphics.label "Default size for new graphics">
 <!ENTITY DefaultSizeNewGraphicsWidth.label "Width">
 <!ENTITY DefaultSizeNewGraphicsHeight.label "Height">
-<!ENTITY useDefaultWidthCheck.label "Use Default Width for New Graphic">
-<!ENTITY useDefaultHeightCheck.label "Use Default Height for New Graphic">
-<!ENTITY DefaultPlacementNewGraphics.label "Default Placement for New Graphics">
+<!ENTITY useDefaultWidthCheck.label "Use default width for new graphic">
+<!ENTITY useDefaultHeightCheck.label "Use default height for new graphic">
+<!ENTITY DefaultPlacementNewGraphics.label "Default placement for new graphics">
 <!ENTITY DefaultPlacementNewGraphicsInline.label  "In line">
 <!ENTITY DefaultPlacementNewGraphicsDisplayed.label "Displayed">
 <!ENTITY DefaultPlacementNewGraphicsFloating.label  "Floating">
@@ -452,31 +452,31 @@
 <!ENTITY  hereOutsideRadio.label  "Outside">
 <!ENTITY  hereFullWidthRadio.label  "Full width">
 
-<!ENTITY DefaultSizeNewPlots.label "Default Size for New Plots">
+<!ENTITY DefaultSizeNewPlots.label "Default size for new plots">
 <!ENTITY DefaultSizeNewPlotsWidth.label "Width">
 <!ENTITY DefaultSizeNewPlotsHeight.label  "Height">
-<!ENTITY DefaultPlacementNewPlots.label "Default Placement for New Plots">
+<!ENTITY DefaultPlacementNewPlots.label "Default placement for new plots">
 <!ENTITY DefaultPlacementNewPlotsInline.label  "In line">
-<!ENTITY DefaultNewGraphicsInlineOffset.label "Default Vertical Offset for Inline Graphics">
+<!ENTITY DefaultNewGraphicsInlineOffset.label "Default vertical offset for inline graphics">
 <!ENTITY DefaultPlacementNewPlotsDisplayed.label "Displayed">
 <!ENTITY DefaultPlacementNewPlotsFloating.label  "Floating">
 
 <!ENTITY PreferredPDFViewer.label  "Preferred PDF viewer">
-<!ENTITY pdf.viewerUseCurrentPDFPlugin.label  "Use current PDF Plugin">
+<!ENTITY pdf.viewerUseCurrentPDFPlugin.label  "Use current PDF plugin">
 <!ENTITY pdf.viewerUseDefaultProgramViewPDFFiles.label  "Use the default program for viewing PDF files">
-<!ENTITY AdvancedPreferences.label "Advanced Preferences">
+<!ENTITY AdvancedPreferences.label "Advanced preferences">
 <!ENTITY prefAdvanced.label "Advanced">
-<!ENTITY prefAdvancedPrefs.label  "Advanced Preferences">
+<!ENTITY prefAdvancedPrefs.label  "Advanced preferences">
 <!ENTITY prefAdvancedPlugins.label  "Plugins">
 <!ENTITY InstalledPlugins.label "Installed plugins">
 
 <!ENTITY FrameTab.label  "Frame">
-<!ENTITY SideMargin.label "Side Margin">
-<!ENTITY TopBottomMargin.label  "Top/Bottom Margin">
+<!ENTITY SideMargin.label "Side margin">
+<!ENTITY TopBottomMargin.label  "Top/Bottom margin">
 <!ENTITY Padding.label  "Padding">
-<!ENTITY PaddingColor.label "Padding Color">
-<!ENTITY BorderWidth.label  "Border Width">
-<!ENTITY BorderColor.label  "Border Color">
+<!ENTITY PaddingColor.label "Padding color">
+<!ENTITY BorderWidth.label  "Border width">
+<!ENTITY BorderColor.label  "Border color">
 <!ENTITY EditorTab.label  "Editor">
 <!ENTITY SpellChecking.label  "Spell checking">
 <!ENTITY PlotsTab.label "Plots">
