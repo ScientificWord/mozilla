@@ -1,13 +1,13 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Compute Engine Settings">
-<!ENTITY solve.label "Solve Options">
+<!ENTITY windowTitle.label "Compute engine settings">
+<!ENTITY solve.label "Solve options">
 <!ENTITY debug.label "Debugging">
 
 <!ENTITY desc.Digits    "Digits">
-<!ENTITY desc.Max       "Maximum Degree">
-<!ENTITY desc.Principal "Principal Value Only">
-<!ENTITY desc.Ignore    "Ignore Special Cases">
+<!ENTITY desc.Max       "Maximum degree">
+<!ENTITY desc.Principal "Principal value only">
+<!ENTITY desc.Ignore    "Ignore special cases">
 <!ENTITY desc.MMLSent   "Log MathML commands sent">
 <!ENTITY desc.MMLRec    "Log MathML content received">
 <!ENTITY desc.EngSent   "Log engine strings sent">
@@ -15,5 +15,5 @@
 <!ENTITY Scope.label  "Scope">
 <!ENTITY Default.label  "Default">
 <!ENTITY ThisDocOnly.label  "This document only">
-<!ENTITY EngineOn.label "Engine On">
+<!ENTITY EngineOn.label "Engine on">
 

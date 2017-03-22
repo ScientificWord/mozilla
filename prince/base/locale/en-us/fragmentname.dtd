@@ -1,10 +1,10 @@
-<!ENTITY  fragmentname.title                "Fragment Name and Description">
-<!ENTITY  fragmentname.fragmentname         "Fragment Name">
-<!ENTITY  fragmentname.renamefragment       "Rename Fragment to">
-<!ENTITY  fragmentname.renamefolder         "Rename Folder to">
-<!ENTITY  fragmentname.foldername           "New Folder Name">
-<!ENTITY  fragmentname.description          "Fragment Description">
-<!ENTITY  fragmentname.folderdescription    "Folder Description">
+<!ENTITY  fragmentname.title                "Fragment name and description">
+<!ENTITY  fragmentname.fragmentname         "Fragment name">
+<!ENTITY  fragmentname.renamefragment       "Rename fragment to">
+<!ENTITY  fragmentname.renamefolder         "Rename folder to">
+<!ENTITY  fragmentname.foldername           "New folder name">
+<!ENTITY  fragmentname.description          "Fragment description">
+<!ENTITY  fragmentname.folderdescription    "Folder description">
 <!ENTITY  fragmentname.descriptionprompt    "Enter a short description of what the fragment or folder does.">
 <!ENTITY paste.label 						"Create fragment from clipboard">
 <!ENTITY paste.accesskey 					"F">

@@ -2,23 +2,23 @@
 
 <!ENTITY insertmenuLTP.label "LaTeX position mark" >
 <!ENTITY insertmenuLTP.accesskey "X" >
-<!ENTITY LTPmakeTOC.label "Make Table of Contents" >
+<!ENTITY LTPmakeTOC.label "Make table of contents" >
 <!ENTITY LTPmakeTOC.accesskey "C" >
-<!ENTITY LTPmakeLOT.label "Make List of Tables" >
+<!ENTITY LTPmakeLOT.label "Make list of tables" >
 <!ENTITY LTPmakeLOT.accesskey "T" >
-<!ENTITY LTPmakeLOF.label "Make List of Figures" >
+<!ENTITY LTPmakeLOF.label "Make list of figures" >
 <!ENTITY LTPmakeLOF.accesskey "F" >
-<!ENTITY LTPappendix.label "Start Appendices" >
+<!ENTITY LTPappendix.label "Start appendices" >
 <!ENTITY LTPappendix.accesskey "S" >
-<!ENTITY LTPmakeTitle.label "Make Title" >
+<!ENTITY LTPmakeTitle.label "Make title" >
 <!ENTITY LTPmakeTitle.accesskey "M" >
-<!ENTITY LTPmainMatter.label "Main Matter" >
+<!ENTITY LTPmainMatter.label "Main matter" >
 <!ENTITY LTPmainMatter.accesskey "N" >
-<!ENTITY LTPfrontMatter.label "Front Matter" >
+<!ENTITY LTPfrontMatter.label "Front matter" >
 <!ENTITY LTPfrontMatter.accesskey "F" >
-<!ENTITY LTPbackMatter.label "Back Matter" >
+<!ENTITY LTPbackMatter.label "Back matter" >
 <!ENTITY LTPbackMatter.accesskey "B" >
-<!ENTITY LTPprintIndex.label "Print Index" >
+<!ENTITY LTPprintIndex.label "Print index" >
 <!ENTITY LTPprintIndex.accesskey "P" >
 <!ENTITY MSIInsertMenu.label  "Insert">
 <!ENTITY MSIMathMenu.label "Math">
@@ -33,7 +33,7 @@
 <!ENTITY MSItextCmd.label "Text">
 <!ENTITY MSItextCmd.accesskey "T">
 <!ENTITY MSItextCmd.keybinding "T">
-<!ENTITY MSImathObjectsMenu.label "Math Objects">
+<!ENTITY MSImathObjectsMenu.label "Math objects">
 <!ENTITY MSImathObjectsMenu.accesskey "o">
 <!ENTITY MSIfractionCmd.label "Fraction">
 <!ENTITY MSIfractionCmd.accesskey "F">
@@ -54,7 +54,7 @@
 <!ENTITY MSItensorCmd.label "Tensor">
 <!ENTITY MSItensorCmd.accesskey "e">
 
-<!ENTITY MSImathnameMenu.label "Math Name...">
+<!ENTITY MSImathnameMenu.label "Math name...">
 <!ENTITY MSImathnameMenu.accesskey "N">
 
 <!ENTITY MSIsinCmd.label  "sin">
@@ -69,7 +69,7 @@
 <!ENTITY MSIlogCmd.accesskey "o" >
 <!ENTITY MSIexpCmd.label  "exp">
 <!ENTITY MSIexpCmd.accesskey "e" >
-<!ENTITY MSImathnameCmd.label  "Math Name...">
+<!ENTITY MSImathnameCmd.label  "Math name...">
 <!ENTITY MSImathnameCmd.accesskey "N" >
 
 <!ENTITY MSIfenceMenu.label "Fence">
@@ -108,16 +108,16 @@
 <!ENTITY MSIdecorationsCmd.label "Decoration...">
 <!ENTITY MSIdecorationsCmd.accesskey "c">
 
-<!ENTITY MSIColorsCmd.label "Math Colors...">
+<!ENTITY MSIColorsCmd.label "Math colors...">
 <!ENTITY MSIColorsCmd.accesskey "C">
 
 <!ENTITY insertmenu.label "Insert">
 <!ENTITY insertmenu.accesskey "I">
 <!ENTITY insertSpacingObjects.label "Spacing">
 <!ENTITY insertSpacingObjects.accesskey "S">
-<!ENTITY insertHorizontalSpaces.label "Horizontal Space...">
+<!ENTITY insertHorizontalSpaces.label "Horizontal space...">
 <!ENTITY insertHorizontalSpaces.accesskey "H">
-<!ENTITY insertVerticalSpaces.label "Vertical Space...">
+<!ENTITY insertVerticalSpaces.label "Vertical space...">
 <!ENTITY insertVerticalSpaces.accesskey "V">
 <!ENTITY insertRules.label "Rule...">
 <!ENTITY insertRules.accesskey "R">
@@ -133,28 +133,28 @@
 <!ENTITY insertmenuFormula.accesskey "M">
 <!ENTITY insertmenuMarker.label "Marker...">
 <!ENTITY insertmenuMarker.accesskey "K">
-<!ENTITY insertmenuHTMLField.label "XHTML Field...">
+<!ENTITY insertmenuHTMLField.label "XHTML field...">
 <!ENTITY insertmenuHTMLField.accesskey "X">
-<!ENTITY insertmenuUnitNames.label "Unit Name...">
+<!ENTITY insertmenuUnitNames.label "Unit name...">
 <!ENTITY insertmenuUnitNames.accesskey "U">
-<!ENTITY insertmenuTSO.label "Typeset Object">
+<!ENTITY insertmenuTSO.label "Typeset object">
 <!ENTITY insertmenuTSO.accesskey "y">
 <!ENTITY insertmenuHyperlink.label "Hyperlink...">
 <!ENTITY insertmenuHyperlink.accesskey "P">
 <!ENTITY insertmenuCitation.label "Citation...">
 <!ENTITY insertmenuCitation.accesskey "c">
-<!ENTITY MSIInsertTypesetObjectMenu.label "Typeset Object">
+<!ENTITY MSIInsertTypesetObjectMenu.label "Typeset object">
 <!ENTITY MSIInsertTypesetObjectMenu.accesskey "y">
 
-<!ENTITY MSIinsertIndexEntry.label "Index Entry...">
+<!ENTITY MSIinsertIndexEntry.label "Index entry...">
 <!ENTITY MSIinsertIndexEntry.accesskey "I">
-<!ENTITY MSIinsertCrossReference.label "Cross Reference...">
+<!ENTITY MSIinsertCrossReference.label "Cross reference...">
 <!ENTITY MSIinsertCrossReference.accesskey "R">
 <!ENTITY MSIinsertCitation.label "Citation...">
 <!ENTITY MSIinsertCitation.accesskey "C">
 <!ENTITY MSIinsertBibliography.label "Bibliography...">
 <!ENTITY MSIinsertBibliography.accesskey "B">
-<!ENTITY MSIinsertTeXField.label "TeX Field...">
+<!ENTITY MSIinsertTeXField.label "Tex field...">
 <!ENTITY MSIinsertTeXField.accesskey "T">
 
 <!ENTITY MSISymbolTabLCGreek     "Lowercase Greek">
@@ -175,7 +175,7 @@
 <!ENTITY symbolbeta.tooltip        "beta">
 <!ENTITY symbolgamma.tooltip       "gamma">
 <!ENTITY symboldelta.tooltip       "delta">
-<!ENTITY symbolvarepsilon.tooltip     "varepsilon">
+<!ENTITY symbolvarepsilon.tooltip  "varepsilon">
 <!ENTITY symbolzeta.tooltip        "zeta">
 <!ENTITY symboleta.tooltip         "eta">
 <!ENTITY symboltheta.tooltip       "theta">
@@ -188,21 +188,21 @@
 <!ENTITY symbolomicron.tooltip     "omicron">
 <!ENTITY symbolpi.tooltip          "pi">
 <!ENTITY symbolrho.tooltip         "rho">
-<!ENTITY symbolvarsigma.tooltip  "varsigma">
+<!ENTITY symbolvarsigma.tooltip    "varsigma">
 <!ENTITY symbolsigma.tooltip       "sigma">
 <!ENTITY symboltau.tooltip         "tau">
 <!ENTITY symbolupsilon.tooltip     "upsilon">
-<!ENTITY symbolvarphi.tooltip         "varphi">
-<!ENTITY symboltextchi.tooltip         "chi">
+<!ENTITY symbolvarphi.tooltip      "varphi">
+<!ENTITY symboltextchi.tooltip     "chi">
 <!ENTITY symbolpsi.tooltip         "psi">
 <!ENTITY symbolomega.tooltip       "omega">
-<!ENTITY symbolvartheta.tooltip      "vartheta">
-<!ENTITY symbolphi.tooltip      "phi">
-<!ENTITY symbolvarpi.tooltip         "varpi">
+<!ENTITY symbolvartheta.tooltip    "vartheta">
+<!ENTITY symbolphi.tooltip         "phi">
+<!ENTITY symbolvarpi.tooltip       "varpi">
 <!ENTITY symbolstigma.tooltip      "stigma">
-<!ENTITY symbolvarkappa.tooltip      "varkappa">
-<!ENTITY symbolvarrho.tooltip        "varrho">
-<!ENTITY symbolepsilon.tooltip    "epsilon">
+<!ENTITY symbolvarkappa.tooltip    "varkappa">
+<!ENTITY symbolvarrho.tooltip      "varrho">
+<!ENTITY symbolepsilon.tooltip     "epsilon">
 <!ENTITY symbolbackepsilon.tooltip "backepsilon">
 
 <!ENTITY symbolGamma.tooltip   "Gamma">

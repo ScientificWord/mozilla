@@ -1,29 +1,29 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Options and Packages">
+<!ENTITY windowTitle.label "Options and packages">
 
-<!ENTITY classOptionsTab.label "Class Options">
-<!ENTITY packageOptionsTab.label "Package Options">
+<!ENTITY classOptionsTab.label "Class options">
+<!ENTITY packageOptionsTab.label "Package options">
 <!ENTITY classDescription.label "LaTeX documentclass is __classname__.">
 <!ENTITY classDescription.templateStr "__classname__">
 <!ENTITY classOptions.label "Options are:">
-<!ENTITY packagesInUse.label "Packages in Use:">
+<!ENTITY packagesInUse.label "Packages in use:">
 <!ENTITY packagesInUse.accesskey "P">
-<!ENTITY moveUpButton.label "Move Up">
+<!ENTITY moveUpButton.label "Move up">
 <!ENTITY moveUpButton.accesskey "U">
-<!ENTITY moveDownButton.label "Move Down">
+<!ENTITY moveDownButton.label "Move down">
 <!ENTITY moveDownButton.accesskey "D">
-<!ENTITY addPackageButton.label "Add Package...">
+<!ENTITY addPackageButton.label "Add package...">
 <!ENTITY addPackageButton.accesskey "A">
-<!ENTITY removePackageButton.label "Remove Package...">
+<!ENTITY removePackageButton.label "Remove package...">
 <!ENTITY removePackageButton.accesskey "R">
-<!ENTITY goNativeButton.label "Go Native...">
+<!ENTITY goNativeButton.label "Go native...">
 <!ENTITY goNativeButton.accesskey "N">
-<!ENTITY modifyPackageButton.label "Modify Package...">
+<!ENTITY modifyPackageButton.label "Modify package...">
 <!ENTITY modifyPackageButton.accesskey "M">
 <!ENTITY modifyClassOptionsButton.label "Modify...">
 <!ENTITY modifyClassOptionsButton.accesskey "M">
-<!ENTITY currentPackageDescription.label "Currently Selected Options for the Package __packagename__">
+<!ENTITY currentPackageDescription.label "Currently selected options for the package __packagename__">
 <!ENTITY currentPackageDescription.templateStr "__packagename__">
 <!ENTITY redpackagesarerequired "Packages in bold red have been added because they are needed by some document component. If you delete one of these, it may be added back automatically.">
    

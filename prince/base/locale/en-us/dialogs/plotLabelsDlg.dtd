@@ -1,9 +1,9 @@
 <!-- Copyright (c) 2013 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Plot Labels">
-<!ENTITY labelText.label "Label Text">
+<!ENTITY windowTitle.label "Plot labels">
+<!ENTITY labelText.label "Label text">
 <!ENTITY labelText.accesskey "L">
-<!ENTITY labelItemNumber.label "Label Number">
+<!ENTITY labelItemNumber.label "Label number">
 <!ENTITY labelItemNumber.accesskey "N">
 <!ENTITY alignment.label "Alignment">
 <!ENTITY horizontalAlignment.label "Horizontal">
@@ -16,13 +16,13 @@
 <!ENTITY alignBottom.label "Bottom">
 <!ENTITY alignTop.label "Top">
 <!ENTITY verticalAlignment.accesskey "V">
-<!ENTITY addItem.label "Add Item">
+<!ENTITY addItem.label "Add item">
 <!ENTITY addItem.accesskey "A">
-<!ENTITY deleteItem.label "Delete Item">
+<!ENTITY deleteItem.label "Delete item">
 <!ENTITY deleteItem.accesskey "D">
 <!ENTITY font.label "Font">
 <!ENTITY font.accesskey "F">
-<!ENTITY textPosition.label "Text Position">
+<!ENTITY textPosition.label "Text position">
 <!ENTITY positionedAt.label "Position at">
 <!ENTITY positionedAt.accesskey "P">
 <!ENTITY header.label "Header">
@@ -35,14 +35,14 @@
 <!ENTITY positionY.accesskey "Y">
 <!ENTITY positionZ.label "Z">
 <!ENTITY positionZ.accesskey "Z">
-<!ENTITY textOrientation.label "Text Orientation">
+<!ENTITY textOrientation.label "Text orientation">
 <!ENTITY billboarding.label "Keep oriented toward camera">
 <!ENTITY billboarding.accesskey "K">
-<!ENTITY cartesian.label "Use Cartesian">
+<!ENTITY cartesian.label "Use cartesian">
 <!ENTITY cartesian.accesskey "C">
-<!ENTITY angle.label "Use Angle">
+<!ENTITY angle.label "Use angle">
 <!ENTITY angle.accesskey "g">
-<!ENTITY tiltAndTurn.label "Use Tilt and Turn">
+<!ENTITY tiltAndTurn.label "Use tilt and turn">
 <!ENTITY tiltAndTurn.accesskey "U">
 <!ENTITY turn.label "Degrees turn">
 <!ENTITY turn.accesskey "u">

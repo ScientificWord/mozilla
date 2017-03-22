@@ -36,32 +36,32 @@
    - ***** END LICENSE BLOCK ***** -->
 
 <!-- Window title -->
-<!ENTITY windowTitle.label "Check Spelling">
+<!ENTITY windowTitle.label "Check spelling">
 
 <!ENTITY misspelledWord.label "Misspelled word:">
 <!ENTITY wordEditField.label "Replace with:">
 <!ENTITY wordEditField.accesskey "w">
-<!ENTITY checkwordButton.label "Check Word">
+<!ENTITY checkwordButton.label "Check word">
 <!ENTITY checkwordButton.accesskey "k">
 <!ENTITY suggestions.label "Suggestions">
 <!ENTITY suggestions.accesskey "u">
 <!ENTITY ignoreButton.label "Ignore">
 <!ENTITY ignoreButton.accesskey "I">
-<!ENTITY ignoreAllButton.label "Ignore All">
+<!ENTITY ignoreAllButton.label "Ignore all">
 <!ENTITY ignoreAllButton.accesskey "n">
 <!ENTITY replaceButton.label "Replace">
 <!ENTITY replaceButton.accesskey "R">
-<!ENTITY replaceAllButton.label "Replace All">
+<!ENTITY replaceAllButton.label "Replace all">
 <!ENTITY replaceAllButton.accesskey "A">
 <!ENTITY stopButton.label "Stop">
 <!ENTITY stopButton.accesskey "t">
-<!ENTITY userDictionary.label "Personal Dictionary:">
+<!ENTITY userDictionary.label "Personal dictionary:">
 <!ENTITY moreDictionaries.label "Download more dictionaries...">
-<!ENTITY addToUserDictionaryButton.label "Add Word">
+<!ENTITY addToUserDictionaryButton.label "Add word">
 <!ENTITY addToUserDictionaryButton.accesskey "d">
 <!ENTITY editUserDictionaryButton.label "Edit...">
 <!ENTITY editUserDictionaryButton.accesskey "E">
-<!ENTITY recheckButton.label "Recheck Page">
+<!ENTITY recheckButton.label "Recheck page">
 <!ENTITY recheckButton.accesskey "P">
 <!ENTITY closeButton.label "Close">
 <!ENTITY closeButton.accesskey "C">

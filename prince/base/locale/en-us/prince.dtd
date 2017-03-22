@@ -17,7 +17,7 @@
 <!ENTITY fileMenu.label    "File">
 <!ENTITY fileMenu.accesskey    "F">
 
-<!ENTITY newBlankPage.label    "New Blank Page">
+<!ENTITY newBlankPage.label    "New blank page">
 <!ENTITY newBlankPage.accesskey    "N">
 <!ENTITY fileopen.label    "Open">
 <!ENTITY fileopen.accesskey    "O">
@@ -38,21 +38,21 @@
 <!ENTITY filequit.keybinding    "Q">
 
 <!ENTITY NormalMode.label "Normal">
-<!ENTITY NormalMode.tooltip "Normal Mode">
+<!ENTITY NormalMode.tooltip "Normal mode">
 <!ENTITY NormalMode.accesskey "n">
 <!ENTITY TagModeTab.label "Tag">
-<!ENTITY TagMode.tooltip "Tag Tab">
-<!ENTITY TagsMode.label "XML Tags">
+<!ENTITY TagMode.tooltip "Tag tab">
+<!ENTITY TagsMode.label "XML tags">
 <!ENTITY TagsMode.accesskey "T">
 <!ENTITY TagsMode.tooltip "Display icons for tags">
 <!ENTITY SourceMode.label "Source">
-<!ENTITY SourceMode.tooltip "Source Tab">
+<!ENTITY SourceMode.tooltip "Source tab">
 <!ENTITY SourceMode.accesskey "s">
-<!ENTITY PreviewMode.label "PDF Preview">
-<!ENTITY PreviewMode.tooltip "PDF Preview Tab">
+<!ENTITY PreviewMode.label "PDF preview">
+<!ENTITY PreviewMode.tooltip "PDF preview tab">
 <!ENTITY PreviewMode.accesskey "p">
-<!ENTITY DirectPreviewMode.label "Direct Preview">
-<!ENTITY DirectPreviewMode.tooltip "Direct Preview Tab">
+<!ENTITY DirectPreviewMode.label "Direct preview">
+<!ENTITY DirectPreviewMode.tooltip "Direct preview tab">
 <!ENTITY DirectPreviewMode.accesskey "d">
 <!ENTITY SourceTabDirection "ltr">
 <!ENTITY macro.label        "Macro:">
@@ -61,6 +61,6 @@
 
 <!ENTITY FragmentsSidebar.title  "Fragments">
 <!ENTITY BookmarksSidebar.title "Bookmarks">
-<!ENTITY EnginelogSidebar.title "Engine Log">
+<!ENTITY EnginelogSidebar.title "Engine log">
 <!ENTITY SymbolsSidebar.title "Symbols">
 <!ENTITY NewsSidebar.title  "MSI What's New">

@@ -1,8 +1,8 @@
-<!ENTITY windowTitle.label "Paragraph Properties">
-<!ENTITY tab.indents.spacing "Indents &amp; Spacing">
+<!ENTITY windowTitle.label "Paragraph properties">
+<!ENTITY tab.indents.spacing "Indents &amp; spacing">
 <!ENTITY tab.alignment "Alignment">
 <!ENTITY tab.numbering "Numbering">
-<!ENTITY tab.drop.caps "Drop Caps">
+<!ENTITY tab.drop.caps "Drop caps">
 <!ENTITY tab.borders "Borders">
 <!ENTITY tab.background "Background">
 <!ENTITY caption.indent "Indent">

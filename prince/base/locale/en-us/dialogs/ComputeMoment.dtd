@@ -1,11 +1,11 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Statistics Moment">
+<!ENTITY windowTitle.label "Statistics moment">
 
-<!ENTITY center.label "Moment Number">
+<!ENTITY center.label "Moment number">
 <!ENTITY math.label   "Enter moment number and value to calculate moment about, separated by a bit of text.">
 
-<!ENTITY origin.label "Choose Origin">
+<!ENTITY origin.label "Choose origin">
 <!ENTITY giveorigin.label "Give origin:">
 <!ENTITY giveorigin.label.accesskey "G">
 <!ENTITY mean.label "Compute moment about the mean.">

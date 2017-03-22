@@ -1,19 +1,19 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Fill Matrix">
+<!ENTITY windowTitle.label "Fill matrix">
 <!ENTITY dimensions.label  "Dimensions">
-<!ENTITY range.label       "Range of Random Entries">
-<!ENTITY types.label       "Matrix Types">
+<!ENTITY range.label       "Range of random entries">
+<!ENTITY types.label       "Matrix types">
 
 <!ENTITY zero.label     "Zero">
-<!ENTITY  zero.accesskey  "Z">
+<!ENTITY zero.accesskey  "Z">
 <!ENTITY Identity.label "Identity">
-<!ENTITY  Identity.accesskey  "I">
+<!ENTITY Identity.accesskey  "I">
 <!ENTITY random.label   "Random">
 <!ENTITY  random.accesskey  "A">
-<!ENTITY Jordan.label   "Jordan Block">
+<!ENTITY Jordan.label   "Jordan block">
 <!ENTITY  Jordan.accesskey  "J">
-<!ENTITY function.label "Defined by Function">
+<!ENTITY function.label "Defined by function">
 <!ENTITY  function.accesskey  "F">
 <!ENTITY band.label     "Band">
 <!ENTITY  band.accesskey  "B">

@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "BibTeX Database Entry">
+<!ENTITY windowTitle.label "BibTeX database entry">
 
 <!ENTITY dataField.label "Data">
 <!ENTITY dataField.accesskey "D">

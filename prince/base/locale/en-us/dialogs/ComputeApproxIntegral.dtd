@@ -1,14 +1,14 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Approximate Integral">
-<!ENTITY many.label        "How Many?">
+<!ENTITY windowTitle.label "Approximate integral">
+<!ENTITY many.label        "How many?">
 <!ENTITY parameters.label  "Parameters">
 
 <!ENTITY Formula.label  "Formula">
 <!ENTITY Formula.accesskey  "F">
-<!ENTITY LeftBoxes.label  "Left Boxes">
+<!ENTITY LeftBoxes.label  "Left boxes">
 <!ENTITY Midpoint.label "Midpoint">
-<!ENTITY RightBoxes.label  "Right Boxes">
+<!ENTITY RightBoxes.label  "Right boxes">
 <!ENTITY Simpson.label  "Simpson">
 <!ENTITY Trapezoid.label  "Trapezoid">
 
@@ -16,11 +16,11 @@
 <!-- Subintervals.accesskey is not currently used, but may be in the future. -->
 <!-- <!ENTITY Subintervals.accesskey "S"> -->
 
-<!ENTITY LowerBound.label "Lower Bound">
+<!ENTITY LowerBound.label "Lower bound">
 <!-- LowerBound.accesskey is not currently used, but may be in the future. -->
 <!-- <!ENTITY LowerBound.accesskey "l"> -->
 
-<!ENTITY UpperBound.label "Upper Bound"> 
+<!ENTITY UpperBound.label "Upper bound"> 
 <!-- UpperBound.accesskey is not currently used, but may be in the future. -->
 <!-- <!entity UpperBound.accesskey "U">-->
 

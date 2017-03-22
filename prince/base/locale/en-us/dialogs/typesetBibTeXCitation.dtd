@@ -1,18 +1,18 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "BibTeX Citation">
+<!ENTITY windowTitle.label "BibTeX citation">
 
-<!ENTITY databaseFileListbox.label "Database File">
+<!ENTITY databaseFileListbox.label "Database file">
 <!ENTITY databaseFileListbox.accesskey "D">
-<!ENTITY viewKeysButton.label "View Keys">
+<!ENTITY viewKeysButton.label "View keys">
 <!ENTITY viewKeysButton.accesskey "V">
-<!ENTITY selectDirectoryButton.label "Select BibTeX Directory">
+<!ENTITY selectDirectoryButton.label "Select BibTeX directory">
 <!ENTITY selectDirectoryButton.accesskey "S">
 <!ENTITY keyCaption.label "Key:">
 <!ENTITY keyCaption.accesskey "K">
 <!ENTITY remarkCaption.label "Remark:">
 <!ENTITY remarkCaption.accesskey "R">
-<!ENTITY bibEntryOnlyCheckbox.label "Bibliography Entry Only - No Citation">
+<!ENTITY bibEntryOnlyCheckbox.label "Bibliography entry only - No citation">
 <!ENTITY bibEntryOnlyCheckbox.accesskey "B">
 
 <!-- <!ENTITY .tooltip "">  -->
