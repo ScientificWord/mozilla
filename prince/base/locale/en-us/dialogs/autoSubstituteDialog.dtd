@@ -1,34 +1,34 @@
 <!-- Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label	"Automatic Substitution">
+<!ENTITY windowTitle.label	"Automatic substitution">
 
 <!ENTITY keystrokesBox.label "Keystrokes">
 <!ENTITY keystrokesBox.accesskey "K">
 <!ENTITY keystrokesBox.tooltip "Enter the keystroke sequence to be recognized.">
-<!ENTITY autosubType.label "Type of Substitution">
+<!ENTITY autosubType.label "Type of substitution">
 <!ENTITY typeSubstitution.label "Simple substitution">
 <!ENTITY typeSubstitution.accesskey "b">
 <!ENTITY typeExecuteScript.label "Script to execute">
 <!ENTITY typeExecuteScript.accesskey "x">
-<!ENTITY autosubContext.label "Context for Substitution">
-<!ENTITY contextMath.label "In Math">
+<!ENTITY autosubContext.label "Context for substitution">
+<!ENTITY contextMath.label "In math">
 <!ENTITY contextMath.accesskey "M">
-<!ENTITY contextText.label "In Text">
+<!ENTITY contextText.label "In text">
 <!ENTITY contextText.accesskey "T">
-<!ENTITY contextMathOrText.label "In Math or Text">
+<!ENTITY contextMathOrText.label "In math or text">
 <!ENTITY contextMathOrText.accesskey "o">
 <!ENTITY substitution.label "Substitution">
 <!ENTITY substitution.accesskey "S">
 <!ENTITY script.label "Javascript to execute">
 <!ENTITY script.accesskey "J">
-<!ENTITY disableAutosubs.label "Disable Auto Substitution">
-<!ENTITY disableSubsInMath.label "In Math">
+<!ENTITY disableAutosubs.label "Disable auto substitution">
+<!ENTITY disableSubsInMath.label "In math">
 <!ENTITY disableSubsInMath.accesskey "h">
-<!ENTITY disableSubsInText.label "In Text">
+<!ENTITY disableSubsInText.label "In text">
 <!ENTITY disableSubsInText.accesskey "e">
 <!ENTITY disableUnitSubs.label "Units">
 <!ENTITY disableUnitSubs.accesskey "i">
-<!ENTITY enableMathNameSubs.label "Math Names">
+<!ENTITY enableMathNameSubs.label "Math names">
 <!ENTITY enableMathNameSubs.accesskey "M">
 <!ENTITY saveButton.label "Save">
 <!ENTITY saveButton.accesskey "S">

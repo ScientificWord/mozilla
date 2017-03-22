@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Native LaTeX Options">
+<!ENTITY windowTitle.label "Native LaTeX options">
 
 <!ENTITY warning.label "WARNING!">
 <!ENTITY warningText.label "Entries from this dialog are passed directly to LaTeX.">

@@ -1,25 +1,25 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label	"Math Name">
-<!ENTITY windowPropertiesTitle.label "Math Name Properties">
+<!ENTITY windowTitle.label	"Math name">
+<!ENTITY windowPropertiesTitle.label "Math name properties">
 
 <!ENTITY mathNamesBox.label "Name">
 <!ENTITY mathNamesBox.accesskey  "N">
 <!ENTITY mathNamesBox.tooltip "Enter a math name or select from the list.">
 <!ENTITY mathAppearance.label "Appearance">
-<!ENTITY nameType.label "Name Type">
+<!ENTITY nameType.label "Name type">
 <!ENTITY typeOperator.label "Operator">
 <!ENTITY typeOperator.accesskey "O">
 <!ENTITY typeFunction.label "Function">
 <!ENTITY typeFunction.accesskey "F">
 <!ENTITY typeVariable.label "Variable">
 <!ENTITY typeVariable.accesskey "V">
-<!ENTITY operatorLimitPlacement.label "Operator Limit Placement">
+<!ENTITY operatorLimitPlacement.label "Operator limit placement">
 <!ENTITY limitPlacementAuto.label "Auto">
 <!ENTITY limitPlacementAuto.accesskey "u">
 <!ENTITY limitPlacementAboveBelow.label "Above/Below">
 <!ENTITY limitPlacementAboveBelow.accesskey "b">
-<!ENTITY limitPlacementAtRight.label "At Right">
+<!ENTITY limitPlacementAtRight.label "At right">
 <!ENTITY limitPlacementAtRight.accesskey "r">
 <!ENTITY addAutoSubstitution.label "Add automatic substitution">
 <!ENTITY addAutoSubstitution.accesskey "s">

@@ -1,10 +1,10 @@
 
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Document Format">
+<!ENTITY windowTitle.label "Document format">
 
 <!ENTITY docformatGeneraltab "General">
-<!ENTITY docformatPageLayouttab "Page Layout">
+<!ENTITY docformatPageLayouttab "Page layout">
 <!ENTITY docformatFontstab "Fonts">
 <!ENTITY docformatSectionstab "Sections">
 <!ENTITY docformatHeaderstab "Headers/Footers">
@@ -12,9 +12,9 @@
 <!ENTITY docformatAdvancedtab "Advanced">
 
 <!ENTITY docformatTwosided "Two-sided ">
-<!ENTITY docformatTwoColumns "2 Columns">
-<!ENTITY docformatUnits	" Units">
-<!ENTITY docformatfinishpageSize	"Finished Page Size">
+<!ENTITY docformatTwoColumns "2 columns">
+<!ENTITY docformatUnits	"Units">
+<!ENTITY docformatfinishpageSize	"Finished page size">
 <!ENTITY docformatLandscape "Landscape">
 <!ENTITY docformatCentered "Center">
 <!ENTITY docformatInch "in">
@@ -38,8 +38,8 @@
 <!ENTITY docformatLeftMargin "Left">
 <!ENTITY docformatInsideMargin "Inside">
 <!ENTITY docformatTopMargin  "Top">
-<!ENTITY docformatComputedMargins "Computed Margins:">
-<!ENTITY docformatPageDimensions	"Page Dimensions:">
+<!ENTITY docformatComputedMargins "Computed margins:">
+<!ENTITY docformatPageDimensions	"Page dimensions:">
 <!ENTITY docformatHeader "Header">
 <!ENTITY docformatHeaderSeparation "Separation">
 <!ENTITY docformatHeaderHeight  "Height">
@@ -51,30 +51,30 @@
 <!ENTITY docformatFooterHeight "Height">
 <!ENTITY docformatBottomMargin  "Bottom">
 <!ENTITY docformatPageHeight "Height">
-<!ENTITY docformatMarginNotes "Margin Notes">
+<!ENTITY docformatMarginNotes "Margin notes">
 <!ENTITY docformatMNWidth "Width">
 <!ENTITY docformatMNSeparation "Separation">
 <!ENTITY docformatMNPush  "Push">
 <!ENTITY docformatHideNotes "Hide notes">
 <!ENTITY docformatTwoPageMessage	"You are laying out the right page. The left page is a mirror image of this.">
-<!ENTITY docformatpaperSize	"Paper Size">
+<!ENTITY docformatpaperSize	"Paper size">
 <!ENTITY camera.label	"Camera ">
 <!ENTITY camera.accesskey	"C">
-<!ENTITY cross.label	" Cross ">
+<!ENTITY cross.label	"Cross ">
 <!ENTITY cross.accesskey	"s">
-<!ENTITY frame.label	" Frame ">
+<!ENTITY frame.label	"Frame ">
 <!ENTITY frame.accesskey	"F">
 
 <!ENTITY docformatUseOpenType "Use OpenType fonts (may make your document not portable)?">
-<!ENTITY mainFontsGroup "Main Document Fonts">
+<!ENTITY mainFontsGroup "Main document fonts">
 <!ENTITY docformatDefault "Default">
 <!ENTITY docformatMath	"Math (entries marked with * require commercial fonts)">
 <!ENTITY docformatRoman "Main">
-<!ENTITY docformatSans "Sans Serif">
-<!ENTITY docformatFixed "Fixed Width">
+<!ENTITY docformatSans "Sans serif">
+<!ENTITY docformatFixed "Fixed width">
 
 <!ENTITY pageonpaper.label "Place of page on paper">
-<!ENTITY pageonpapercenter.label " Centered">
+<!ENTITY pageonpapercenter.label "Centered">
 <!ENTITY popcenter.accesskey "d">
 <!ENTITY pageonpaperupperleft.label "Upper left ">
 <!ENTITY popupperleft.accesskey "U">
@@ -104,10 +104,10 @@
 
 <!ENTITY BasicLayout.label  "Basic Layout">
 <!ENTITY BasicLayout.accesskey  "B">
-<!ENTITY PageOrientation.label  "Page Orientation">
+<!ENTITY PageOrientation.label  "Page orientation">
 <!ENTITY Portrait.label "Portrait">
 <!ENTITY Landscape.label  "Landscape">
-<!ENTITY PaperSize.label  "Paper Size">
+<!ENTITY PaperSize.label  "Paper size">
 <!-- Note that default.label is used in multiple places -->
 <!ENTITY default.label  "-default-">
 <!ENTITY LetterSize.label "8.5x11 in.">
@@ -135,43 +135,43 @@
 <!ENTITY Final.label  "Final">
 <!ENTITY Draft.label  "Draft">
 <!ENTITY Columns.label  "Columns">
-<!ENTITY TitlePage.label  "Title Page">
-<!ENTITY BodyTextFontSize.label "Body Text Font Size">
+<!ENTITY TitlePage.label  "Title page">
+<!ENTITY BodyTextFontSize.label "Body text font size">
 <!ENTITY PtSize10.label "10 pt">
 <!ENTITY PtSize11.label "11 pt">
 <!ENTITY PtSize12.label "12 pt">
-<!ENTITY LeadingInPoints.label  "Leading in Points">
+<!ENTITY LeadingInPoints.label  "Leading in points">
 <!ENTITY LeadingInPoints.accesskey  "l">
-<!ENTITY MathematicsDisplay.label  "Mathematics Display">
+<!ENTITY MathematicsDisplay.label  "Mathematics display">
 <!ENTITY MathematicsDisplay.accesskey  "M">
-<!ENTITY EqnNumberPosition.label "Eqn Number Position">
+<!ENTITY EqnNumberPosition.label "Eqn number position">
 <!ENTITY OnTheRight.label  "On the right">
 <!ENTITY OnTheLeft.label "On the left">
-<!ENTITY DisplayedEqnPosition.label "Displayed Eqn Position">
+<!ENTITY DisplayedEqnPosition.label "Displayed eqn position">
 <!ENTITY DisplayedEqnCentered.label "Centered">
 <!ENTITY DisplayedEqnFlushLeft.label  "Flush left">
-<!ENTITY FrontBackMatter.label  "Front and Back Matter">
+<!ENTITY FrontBackMatter.label  "Front and back matter">
 <!ENTITY FrontBackMatter.accesskey  "f">
-<!ENTITY TableofContents.label  "Table of Contents">
-<!ENTITY ListofFigures.label  "List of Figures">
-<!ENTITY ListofTables.label "List of Tables">
+<!ENTITY TableofContents.label  "Table of contents">
+<!ENTITY ListofFigures.label  "List of figures">
+<!ENTITY ListofTables.label "List of tables">
 <!ENTITY Footnotes.label   "Footnotes">
 <!ENTITY Endnotes.label "Endnotes">
-<!ENTITY BibliographyStyle.label  "Bibliography Style">
+<!ENTITY BibliographyStyle.label  "Bibliography style">
 <!ENTITY Compressed.label "Compressed">
 <!ENTITY Open.label "Open">
-<!ENTITY DraftTools.label  "Draft Tools">
+<!ENTITY DraftTools.label  "Draft tools">
 <!ENTITY DraftTools.accesskey "d">
-<!ENTITY ShowKeys.label "Show Keys">
-<!ENTITY ShowIndexEntries.label "Show Index Entries">
+<!ENTITY ShowKeys.label "Show keys">
+<!ENTITY ShowIndexEntries.label "Show index entries">
 <!ENTITY UseHyperref.label "Use Hyperref package">
-<!ENTITY LineSpacing.label  "Line Spacing">
+<!ENTITY LineSpacing.label  "Line spacing">
 <!ENTITY OneHalf.label  "One and a half">
 
 <!-- For Page Layout Tab -->
 <!ENTITY EnableOverridePageLayout.label "Enable overriding page layout">
 <!ENTITY EnableOverridePageLayout.accesskey "E">
-<!ENTITY Orientation.label  " Orientation">
+<!ENTITY Orientation.label  "Orientation">
 <!ENTITY Orientation.accesskey  "O">
 <!ENTITY PageHeight.label "Page height">
 <!ENTITY PageWidth.label  "Page width">
@@ -181,7 +181,7 @@
 <!-- For Font Tab -->
 <!ENTITY EnableOverridingFontSelection.label "Enable overriding font selection">
 <!ENTITY EnableOverridingFontSelection.accesskey  "E">
-<!ENTITY RefreshFontList.label "Refresh Font List">
+<!ENTITY RefreshFontList.label "Refresh font list">
 <!-- Note GoNative is used in multiple places -->
 <!ENTITY GoNative "Click to go native">
 <!ENTITY GoNativeMainDocMain.accesskey  "g">
@@ -192,8 +192,8 @@
 <!ENTITY GoNativeAddlFontsExtra3.accesskey  "v">
 <!--  Note: OldStyleNums.label and Swash.label are used in multiple places -->
 <!ENTITY OldStyleNums.label  "Old style nums ">
-<!ENTITY Swash.label  " Swash">
-<!ENTITY AdditionalFonts.label  "Additional Fonts">
+<!ENTITY Swash.label  "Swash">
+<!ENTITY AdditionalFonts.label  "Additional fonts">
 <!-- Note: InternalFontName.label is used in multiple places -->
 <!ENTITY InternalFontName.label  "Internal font name">
 <!ENTITY ExtraFont1.label "Extra font 1">
@@ -201,8 +201,8 @@
 <!ENTITY ExtraFont3.label "Extra font 3">
 
 <!-- For Sections Tab -->
-<!ENTITY SectionType.label  "Section Type">
-<!ENTITY NumberStyle.label  "Number Style">
+<!ENTITY SectionType.label  "Section type">
+<!ENTITY NumberStyle.label  "Number style">
 <!ENTITY Part.label "Part">
 <!ENTITY Chapter.label  "Chapter">
 <!ENTITY Section.label  "Section">
@@ -217,8 +217,8 @@
 <!ENTITY UppercaseRoman.label "Uppercase Roman">
 <!ENTITY UppercaseLetters.label "Uppercase letters">
 <!ENTITY LowercaseLetters.label "Lowercase letters">
-<!ENTITY StartNewPage.label "Start New Page  ">
-<!ENTITY HeaderStyle.label  "Header Style">
+<!ENTITY StartNewPage.label "Start new page  ">
+<!ENTITY HeaderStyle.label  "Header style">
 <!ENTITY Hang.label "Hang">
 <!ENTITY Runin.label  "Runin">
 <!ENTITY Display.label  "Display">
@@ -243,17 +243,17 @@
 <!ENTITY bottomheadingmargin.tooltip "Set the space to set below the header">
 
 <!ENTITY RulesBelowHeading.label  "Click here to enter rules below the heading">
-<!ENTITY LeftHeadingIndent.label  "Left Heading Indent">
-<!ENTITY RightHeadingIndent.label "Right Heading Indent">
-<!ENTITY AddRule.label  "Add Rule">
-<!ENTITY AddVerticalSpace.label "Add Vertical Space">
-<!ENTITY RemoveTopRuleOrSpace.label "Remove Top Rule or Space">
-<!ENTITY InsertText.label "Insert Text">
+<!ENTITY LeftHeadingIndent.label  "Left heading indent">
+<!ENTITY RightHeadingIndent.label "Right heading indent">
+<!ENTITY AddRule.label  "Add rule">
+<!ENTITY AddVerticalSpace.label "Add vertical space">
+<!ENTITY RemoveTopRuleOrSpace.label "Remove top rule or space">
+<!ENTITY InsertText.label "Insert text">
 <!ENTITY UseNegToOutdent "(Use negative width to outdent)">
 
-<!ENTITY PolyglossiaLanguage.label  "Polyglossia Language">
-<!ENTITY BabelLanguage.label  "Babel Language">
-<!ENTITY SecondLanguage.label "Second Language">
+<!ENTITY PolyglossiaLanguage.label  "Polyglossia language">
+<!ENTITY BabelLanguage.label  "Babel language">
+<!ENTITY SecondLanguage.label "Second language">
 
 <!-- Language List -->
 <!ENTITY USenglish.label "US English">
