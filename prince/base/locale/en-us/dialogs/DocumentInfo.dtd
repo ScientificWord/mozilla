@@ -1,14 +1,14 @@
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Document Info">
+<!ENTITY windowTitle.label "Document info">
 
 <!ENTITY tabbar.general "General">
 <!ENTITY tabbar.comments "Comments">
-<!ENTITY tabbar.printOptions "Print Options">
-<!ENTITY tabbar.metadata "Document Links and Metadata">
-<!ENTITY tabbar.saveOptions "Save Options">
+<!ENTITY tabbar.printOptions "Print options">
+<!ENTITY tabbar.metadata "Document links and metadata">
+<!ENTITY tabbar.saveOptions "Save options">
 
-<!ENTITY filename.label "File Name:">
+<!ENTITY filename.label "File name:">
 <!ENTITY directory.label "Directory:">
 <!ENTITY created.label "Created:">
 <!ENTITY lastRevised.label "Last revised:">
@@ -26,9 +26,9 @@
 
 <!ENTITY defaultPrintOptions.label "Use default print options">
 <!ENTITY defaultPrintOptions.accesskey "d">
-<!ENTITY makePrintOptionsDefault.label "Make Default">
+<!ENTITY makePrintOptionsDefault.label "Make default">
 <!ENTITY makePrintOptionsDefault.accesskey "d">
-<!ENTITY printUseCurrViewSettings.label "Use Current View Settings">
+<!ENTITY printUseCurrViewSettings.label "Use current view settings">
 <!ENTITY printUseCurrViewSettings.accesskey "U">
 <!ENTITY printInvisibles.label "Invisibles">
 <!ENTITY printInvisibles.accesskey "I">
@@ -51,14 +51,14 @@
 <!ENTITY printGrayButtonsTransparent.accesskey "G">
 <!ENTITY printSuppressGrayBoxes.label "Suppress gray boxes (except markers)">
 <!ENTITY printSuppressGrayBoxes.accesskey "S">
-<!ENTITY printUseCurrViewZoom.label "Use Current View Zoom Settings">
+<!ENTITY printUseCurrViewZoom.label "Use current view zoom settings">
 <!ENTITY printUseCurrViewZoom.accesskey "z">
 <!ENTITY zoomPercentage.label "Zoom percentage">
 <!ENTITY zoomPercentage.accesskey "p">
 
 <!ENTITY metadataRelation.label "Relation">
 <!ENTITY metadataRelation.accesskey "R">
-<!ENTITY metadataValue.label "Metadata Value or Link Target">
+<!ENTITY metadataValue.label "Metadata value or link target">
 <!ENTITY metadataValueBox.accesskey "v">
 <!ENTITY linksFileSelection.label "Link target:">
 <!ENTITY linksFileSelectionBox.accesskey "t">

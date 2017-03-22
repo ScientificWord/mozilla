@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "TeX Field Contents">
+<!ENTITY windowTitle.label "TeX field contents">
 
 <!ENTITY warning.label "WARNING!">
 <!ENTITY warningText.label "LaTeX commands entered here will be inserted at the location of the TeX field in your document. Be sure you know what you are doing, because you have the potential to cause damage to your document.">
@@ -8,14 +8,14 @@
 <!-- <!ENTITY .tooltip "">  -->
 
 <!-- The following are used in htmlfield.xul -->
-<!ENTITY HTMLField.title  "XHTML Field">
+<!ENTITY HTMLField.title  "XHTML field">
 <!ENTITY name.label "Name">
 <!ENTITY name.accesskey "N">
 <!ENTITY Encapsulated.label "Encapsulated">
 <!ENTITY Encapsulated.accesskey "E">
 <!ENTITY Preamble.label "Put in preamble">
 <!ENTITY Preamble.accesskey "I">
-<!ENTITY RequiresPackage.label  "Requires Package">
+<!ENTITY RequiresPackage.label  "Requires package">
 <!ENTITY RequiresPackage.accesskey  "P">
 <!ENTITY Ordinal.label  "Priority">
 <!ENTITY Ordinal.accesskey  "r">

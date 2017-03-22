@@ -1,13 +1,13 @@
 <!-- Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY typesetGenSettingsDialog.title	"General Settings">
+<!ENTITY typesetGenSettingsDialog.title	"General settings">
 
-<!ENTITY miscellaneousOptions.label "Miscellaneous Options">
+<!ENTITY miscellaneousOptions.label "Miscellaneous options">
 <!ENTITY warnNonPortableFilenamesCheckbox.label "Warn about non-portable filenames">
 <!ENTITY warnNonPortableFilenamesCheckbox.accesskey "W">
 <!ENTITY useOldAuxFilesCheckbox.label "Use old .aux files if possible">
 <!ENTITY useOldAuxFilesCheckbox.accesskey "a">
-<!ENTITY bibTexOptions.label "BibTeX Options">
+<!ENTITY bibTexOptions.label "BibTeX options">
 <!ENTITY bibTeXExecutable.label "Path to BibTeX program">
 <!ENTITY bibTeXExecutable.accesskey "B">
 <!ENTITY browseBibTeXExecutable.label "Browse">
@@ -20,13 +20,13 @@
 <!ENTITY bibTeXStyleDir.accesskey "s">
 <!ENTITY browseBibTeXStyleDir.label "Browse">
 <!ENTITY browseBibTeXStyleDir.accesskey "w">
-<!ENTITY PDFOptions.label "PDF Options">
-<!ENTITY pdfGraphicsSettings.label "PDF Graphics Settings">
+<!ENTITY PDFOptions.label "PDF options">
+<!ENTITY pdfGraphicsSettings.label "PDF graphics settings">
 <!ENTITY pdfGraphicsSettings.accesskey "P">
 <!ENTITY convertTeXLinksToPDF.label "Convert .tex link targets to .pdf">
 <!ENTITY convertTeXLinksToPDF.accesskey "C">
-<!ENTITY portableLaTeXOptions.label "Portable LaTeX Options">
-<!ENTITY portableLaTeXGraphicsSettings.label "Portable laTeX Graphics Settings">
+<!ENTITY portableLaTeXOptions.label "Portable LaTeX options">
+<!ENTITY portableLaTeXGraphicsSettings.label "Portable LaTeX graphics settings">
 <!ENTITY portableLaTeXGraphicsSettings.accesskey "G">
 <!ENTITY passThroughUnicodeMacro.label "Pass through Unicode macro">
 <!ENTITY passThroughUnicodeMacro.accesskey "U">

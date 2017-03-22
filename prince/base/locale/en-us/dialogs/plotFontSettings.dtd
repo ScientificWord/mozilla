@@ -1,5 +1,5 @@
 
-<!ENTITY windowTitle.label "Plot Label Font Settings">
+<!ENTITY windowTitle.label "Plot label font settings">
 <!ENTITY faceUseDefault.label "Use axes font face">
 <!ENTITY faceUseDefault.accesskey "a">
 <!ENTITY fontface.label "Font face">

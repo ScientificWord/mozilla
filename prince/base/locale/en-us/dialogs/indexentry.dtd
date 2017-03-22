@@ -1,13 +1,13 @@
 <!-- Copyright (c) 2011 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label  "Index Entry">
-<!ENTITY primary.label "Primary Index Entry">
+<!ENTITY windowTitle.label  "Index entry">
+<!ENTITY primary.label "Primary index entry">
 <!ENTITY primary.accesskey  "P">
 <!ENTITY prispeccheckbox.label "Use special appearance for primary entry">
-<!ENTITY secondary.label  "Secondary Index Entry">
+<!ENTITY secondary.label  "Secondary index entry">
 <!ENTITY secondary.accesskey  "S">
 <!ENTITY secspeccheckbox.label "Use special appearance for secondary entry">
-<!ENTITY tertiary.label "Tertiary Index Entry">
+<!ENTITY tertiary.label "Tertiary index entry">
 <!ENTITY tertiary.accesskey "T">
 <!ENTITY tertspeccheckbox.label "Use special appearance for tertiary entry">
 <!ENTITY locatorCaption.label "Locator">

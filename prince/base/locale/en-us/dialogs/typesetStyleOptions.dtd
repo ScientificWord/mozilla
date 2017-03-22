@@ -6,10 +6,10 @@
 <!ENTITY categoryDescription.accesskey "C">
 <!ENTITY optionsDescription.label "Options">
 <!ENTITY optionsDescription.accesskey "O">
-<!ENTITY currentOptionsDescription.label "Currently Selected Options">
+<!ENTITY currentOptionsDescription.label "Currently selected options">
 <!-- currentOptionsDescription.accesskey not currently used, but may be in the future-->
 <!-- <!ENTITY currentOptionsDescription.accesskey  "S"> -->
-<!ENTITY goNativeButton.label "Go Native...">
+<!ENTITY goNativeButton.label "Go native...">
 <!ENTITY goNativeButton.accesskey "N">
    
 

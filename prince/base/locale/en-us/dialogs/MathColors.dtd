@@ -1,13 +1,13 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Math Editing Colors">
+<!ENTITY windowTitle.label "Math editing colors">
 <!ENTITY colors.desc "You can override the page colors to make editing certain math objects easier.">
 
 <!ENTITY mathColor.label "Math">
 <!ENTITY mathnameColor.label "Mathnames">
 <!ENTITY unitColor.label "Units">
 <!ENTITY mtextColor.label "Text">
-<!ENTITY matrixlinesColor.label "Matrix Lines">
+<!ENTITY matrixlinesColor.label "Matrix lines">
 
 <!ENTITY defaultColorsRadio.label "Reader's default color (Don't override colors in page)">
 <!ENTITY defaultColorsRadio.accesskey "D">
@@ -22,9 +22,9 @@
 <!ENTITY mathnameText.accesskey "n">
 <!ENTITY unitText.label "Unit">
 <!ENTITY unitText.accesskey "U">
-<!ENTITY mtextText.label "Text in Math">
+<!ENTITY mtextText.label "Text in math">
 <!ENTITY mtextText.accesskey "T">
-<!ENTITY matrixLines.label "Matrix Helper Lines">
+<!ENTITY matrixLines.label "Matrix helper lines">
 <!ENTITY matrixLines.accesskey "x">
 
 <!ENTITY colon.character ":">

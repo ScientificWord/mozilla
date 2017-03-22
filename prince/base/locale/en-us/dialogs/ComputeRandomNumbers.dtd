@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Random Numbers">
-<!ENTITY many.label        "How Many?">
+<!ENTITY windowTitle.label "Random numbers">
+<!ENTITY many.label        "How many?">
 <!ENTITY many.accesskey "m">
 
 <!ENTITY Beta.label "Beta">

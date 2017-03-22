@@ -1,11 +1,11 @@
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label	"Add Rule">
-<!ENTITY rule.label	"Rule Dimensions">
+<!ENTITY windowTitle.label	"Add rule">
+<!ENTITY rule.label	"Rule dimensions">
 <!ENTITY rule.accesskey	"R">
-<!ENTITY ruleHeight.label	"Rule Height">
+<!ENTITY ruleHeight.label	"Rule height">
 <!ENTITY ruleHeight.accesskey	"H">
-<!ENTITY ruleWidth.label	"Rule Width">
+<!ENTITY ruleWidth.label	"Rule width">
 <!ENTITY ruleWidth.accesskey	"H">
 <!ENTITY left.label "Left">
 <!ENTITY center.label "Center">
@@ -25,5 +25,5 @@
 <!ENTITY spaceHeight.label	"Vertical space height">
 <!ENTITY spaceHeight.accesskey	"H">
 <!ENTITY ruleColor.accesskey	"C">
-<!ENTITY vspaceWindowTitle.label	"Add Vertical Space">
+<!ENTITY vspaceWindowTitle.label	"Add vertical space">
 <!ENTITY UnitsAre.label  "Units are:">

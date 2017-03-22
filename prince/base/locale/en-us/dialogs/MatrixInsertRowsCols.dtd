@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Insert Matrix Rows">
-<!ENTITY altWindowTitle.label "Insert Matrix Columns">
+<!ENTITY windowTitle.label "Insert matrix rows">
+<!ENTITY altWindowTitle.label "Insert matrix columns">
 
 <!ENTITY numberToInsert.label "Number to insert:">
 <!ENTITY numberToInsert.accesskey "N">

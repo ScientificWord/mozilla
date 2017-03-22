@@ -1,12 +1,12 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Native LaTeX Packages">
+<!ENTITY windowTitle.label "Native LaTeX packages">
 
 <!ENTITY warning.label "WARNING!">
 <!ENTITY warningText.label "Entries from this dialog are passed directly to LaTeX.">
 <!ENTITY packagesCaption.label "Packages:      (e.g. [german]{babel} )">
 <!ENTITY packagesCaption.accesskey "P">
-<!ENTITY suppressManagement.label "Suppress Package Management">
+<!ENTITY suppressManagement.label "Suppress package management">
 <!ENTITY suppressManagement.accesskey "S">
 
 <!-- <!ENTITY .tooltip "">  -->

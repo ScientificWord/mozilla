@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Fraction Properties">
+<!ENTITY windowTitle.label "Fraction properties">
 <!-- <!ENTITY colors.desc "You can override the page colors to make editing certain math objects easier."> -->
 
 <!ENTITY lineRadioGroup.label "Line">
