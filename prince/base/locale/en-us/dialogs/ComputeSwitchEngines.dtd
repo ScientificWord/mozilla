@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Choose Computation Engine">
+<!ENTITY windowTitle.label "Choose computation engine">
 
 <!ENTITY MuPAD.label   "MuPAD 4">
 <!ENTITY MuPAD.accesskey  "P">

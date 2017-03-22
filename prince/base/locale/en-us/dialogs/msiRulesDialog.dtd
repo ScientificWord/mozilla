@@ -2,7 +2,7 @@
 
 <!ENTITY windowTitle.label "Line">
 
-<!ENTITY sizeGroupbox.label "Size and Position">
+<!ENTITY sizeGroupbox.label "Size and position">
 
 <!ENTITY liftSize.label "Lift">
 <!ENTITY liftSize.accesskey "L">

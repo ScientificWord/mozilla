@@ -49,7 +49,7 @@
 <!ENTITY importButton.accesskey "I">
 <!ENTITY referenceButton.label "Reference external image">
 <!ENTITY referenceButton.accesskey "R">
-<!ENTITY locationEditField.label "Image File">
+<!ENTITY locationEditField.label "Image file">
 <!ENTITY locationEditField.accesskey "F">
 <!ENTITY locationEditField.tooltip "Type the image's filename or location">
 <!ENTITY title.label "Caption">
@@ -59,20 +59,20 @@
 <!ENTITY altText.accesskey "A">
 <!ENTITY altTextEditField.tooltip "Type text to display in place of the image">
 
-<!ENTITY previewBox.label "Image Preview">
+<!ENTITY previewBox.label "Image preview">
 <!ENTITY MoreFewerButton.tooltip "Display more or fewer properties to edit">
-<!ENTITY chooseButton.label "Choose File...">
+<!ENTITY chooseButton.label "Choose file...">
 <!ENTITY chooseFile.accesskey "F">
 <!-- These controls are in the Dimensions tab panel -->
 <!-- actualSize.label should be same as actualSizeRadio.label + ":" -->
-<!ENTITY actualSize.label "Actual Size:">
-<!ENTITY actualSizeRadio.label "Actual Size">
+<!ENTITY actualSize.label "Actual size:">
+<!ENTITY actualSizeRadio.label "Actual size">
 <!ENTITY actualSizeRadio.accesskey "A">
 <!ENTITY actualSizeRadio.tooltip "Revert to the image's actual size">
 <!ENTITY iconicImageRadio.label "Icon">
 <!ENTITY iconicImageRadio.accesskey "I">
 <!ENTITY iconicImageRadio.tooltip "Use an icon to mark the image's location">
-<!ENTITY customSizeRadio.label "Custom Size">
+<!ENTITY customSizeRadio.label "Custom size">
 <!ENTITY customSizeRadio.accesskey "S">
 <!ENTITY customSizeRadio.tooltip "Change the image's size as displayed in the page">
 <!ENTITY heightEditField.label "Height:">
@@ -86,14 +86,14 @@
 <!ENTITY unitLabel.label "Units">
 
 <!-- These controls are in the Image Map box of the expanded area -->
-<!ENTITY imagemapBox.label "Image Map">
+<!ENTITY imagemapBox.label "Image map">
 <!ENTITY removeImageMapButton.label "Remove">
 <!ENTITY removeImageMapButton.accesskey "R">
 <!ENTITY editImageMapButton.label "Edit...">
 <!ENTITY editImageMapButton.tooltip "Create clickable hotspots for this image">
 
 <!-- These are the options for image alignment -->
-<!ENTITY alignment.label "Align Text to Image">
+<!ENTITY alignment.label "Align text to image">
 <!ENTITY bottomPopup.value "At the bottom">
 <!ENTITY topPopup.value "At the top">
 <!ENTITY centerPopup.value "In the center">
@@ -103,11 +103,11 @@
 <!-- These controls are in the Spacing Box -->
 <!ENTITY spacingBox.label "Spacing">
 <!ENTITY spacingBox.tooltip "Type a number for the amount of space around image">
-<!ENTITY leftRightEditField.label "Left and Right:">
+<!ENTITY leftRightEditField.label "Left and right:">
 <!ENTITY leftRightEditField.accesskey "L">
-<!ENTITY topBottomEditField.label "Top and Bottom:">
+<!ENTITY topBottomEditField.label "Top and bottom:">
 <!ENTITY topBottomEditField.accesskey "T">
-<!ENTITY borderEditField.label "Solid Border:">
+<!ENTITY borderEditField.label "Solid border:">
 <!ENTITY borderEditField.accesskey "B">
 
 <!-- These controls are in the Link Box -->
@@ -115,9 +115,9 @@
 <!ENTITY showImageLinkBorder.accesskey "B">
 
 <!-- These controls may be added some day; currently not used -->
-<!ENTITY makePageBackgroundCheckbox.label "Make Page Background">
+<!ENTITY makePageBackgroundCheckbox.label "Make page background">
 <!ENTITY makePageBackgroundCheckbox.tooltip "Use image as background for your page">
-<!ENTITY editImageButton.label "Edit Image">
+<!ENTITY editImageButton.label "Edit image">
 <!ENTITY editImageButton.tooltip "Edit image file in another program">
 
 <!-- These tabs are currently used in the image input dialog -->
@@ -132,13 +132,13 @@
 <!ENTITY None.label  "None">
 <!ENTITY Above.label  "Top">
 <!ENTITY Below.label  "Bottom">
-<!ENTITY AltText.label  "Alt Text">
+<!ENTITY AltText.label  "Alt text">
 <!ENTITY NewKeyOrDocName.tooltip  "Enter a new key name or a document name">
 <!ENTITY MakeRelativeCheckbox.label  "Make reference relative">
 <!ENTITY EnterDocOrMarker.label "Enter a document location, a local document, or select a marker or heading from the popup list:">
 
 <!ENTITY imageKey.label "Key">
-<!ENTITY captionPlacement.label "Caption Placement">
+<!ENTITY captionPlacement.label "Caption placement">
 
 <!ENTITY videoTab.label "Video properties">
 <!ENTITY videoShowControls.label "Show video controls">

@@ -4,17 +4,17 @@
 <!ENTITY MSITypesetMenu.label "Typeset">
 <!ENTITY MSITypesetMenu.accesskey "p">
 
-<!ENTITY MSIDocFormatCmd.label "Document Format...">
+<!ENTITY MSIDocFormatCmd.label "Document format...">
 <!ENTITY MSIDocFormatCmd.accesskey "D">
-<!ENTITY MSIfrontMatterCmd.label "Front Matter...">
+<!ENTITY MSIfrontMatterCmd.label "Front matter...">
 <!ENTITY MSIfrontMatterCmd.accesskey "F">
 <!ENTITY MSIpreambleCmd.label "Preamble...">
 <!ENTITY MSIpreambleCmd.accesskey "P">
-<!ENTITY MSIbibChoiceCmd.label "Bibliography Choice...">
+<!ENTITY MSIbibChoiceCmd.label "Bibliography choice...">
 <!ENTITY MSIbibChoiceCmd.accesskey "B">
-<!ENTITY MSItypesetOptionsAndPackagesCmd.label "Options and Packages...">
+<!ENTITY MSItypesetOptionsAndPackagesCmd.label "Options and packages...">
 <!ENTITY MSItypesetOptionsAndPackagesCmd.accesskey "O">
-<!ENTITY MSItypesetOutputChoiceCmd.label "Output Choice...">
+<!ENTITY MSItypesetOutputChoiceCmd.label "Output choice...">
 <!ENTITY MSItypesetOutputChoiceCmd.accesskey "u">
 <!ENTITY MSItypesetPreviewCmd.label "Preview...">
 <!ENTITY MSItypesetPreviewCmd.accesskey "w">
@@ -22,15 +22,15 @@
 <!ENTITY MSItypesetPrintCmd.accesskey "P">
 <!ENTITY MSItypesetCompileCmd.label "Compile...">
 <!ENTITY MSItypesetCompileCmd.accesskey "C">
-<!ENTITY MSItypesetPDFPreviewCmd.label "PDF Preview...">
+<!ENTITY MSItypesetPDFPreviewCmd.label "PDF preview...">
 <!ENTITY MSItypesetPDFPreviewCmd.accesskey "v">
-<!ENTITY MSItypesetPDFPrintCmd.label "PDF Print...">
+<!ENTITY MSItypesetPDFPrintCmd.label "PDF print...">
 <!ENTITY MSItypesetPDFPrintCmd.accesskey "n">
-<!ENTITY MSItypesetPDFCompileCmd.label "PDF Compile...">
+<!ENTITY MSItypesetPDFCompileCmd.label "PDF compile...">
 <!ENTITY MSItypesetPDFCompileCmd.accesskey "m">
-<!ENTITY MSItypesetGenSettingsCmd.label "General Settings...">
+<!ENTITY MSItypesetGenSettingsCmd.label "General settings...">
 <!ENTITY MSItypesetGenSettingsCmd.accesskey "G">
-<!ENTITY MSItypesetExpertSettingsCmd.label "Expert Settings...">
+<!ENTITY MSItypesetExpertSettingsCmd.label "Expert settings...">
 <!ENTITY MSItypesetExpertSettingsCmd.accesskey "E">
 
 <!ENTITY MSIrunBibTeXCmd.label "Run BibTeX">

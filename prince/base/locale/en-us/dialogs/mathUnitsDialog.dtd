@@ -1,11 +1,11 @@
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Unit Name">
-<!ENTITY windowPropertiesTitle.label "Unit Properties">
+<!ENTITY windowTitle.label "Unit name">
+<!ENTITY windowPropertiesTitle.label "Unit properties">
 
-<!ENTITY unitTypesListbox.label "Physical Quantity">
+<!ENTITY unitTypesListbox.label "Physical quantity">
 <!ENTITY unitTypesListbox.accesskey "P">
-<!ENTITY unitNamesListbox.label "Unit Name">
+<!ENTITY unitNamesListbox.label "Unit name">
 <!ENTITY unitNamesListbox.accesskey "U">
 <!ENTITY insertButton.label "Insert">
 <!ENTITY insertButton.accesskey "I">
