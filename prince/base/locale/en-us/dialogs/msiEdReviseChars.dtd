@@ -37,10 +37,10 @@
 
 
 <!-- Window title -->
-<!ENTITY windowTitle.label "Revise Character">
-<!ENTITY accentAbove.label "Accent Above">
+<!ENTITY windowTitle.label "Revise character">
+<!ENTITY accentAbove.label "Accent above">
 <!ENTITY accentAbove.accesskey "A">
-<!ENTITY accentBelow.label "Accent Below">
+<!ENTITY accentBelow.label "Accent below">
 <!ENTITY accentBelow.accesskey "B">
 <!ENTITY negateCheck.label "Negate">
 <!ENTITY negateCheck.accesskey "N">

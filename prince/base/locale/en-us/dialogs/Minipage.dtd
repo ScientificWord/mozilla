@@ -47,7 +47,7 @@
 <!ENTITY  units						"Units">
 <!ENTITY unitLabel.accesskey "U">
 <!ENTITY unitLabel.label "Units">
-<!ENTITY  SizePlacement.label  "Size &amp; Placement">
+<!ENTITY  SizePlacement.label  "Size &amp; placement">
 <!ENTITY  unspecified		"--unspecified">
 <!ENTITY  inline.label		"Inline">
 <!ENTITY  left.label		"Left">

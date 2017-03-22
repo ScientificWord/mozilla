@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Add Package">
+<!ENTITY windowTitle.label "Add package">
 
 <!ENTITY classLabel.label "Class:">
 <!ENTITY packagesLabel.label "Packages:">

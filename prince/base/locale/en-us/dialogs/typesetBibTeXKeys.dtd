@@ -8,9 +8,9 @@
 
 <!ENTITY filtersDescription.label "Filters:">
 <!ENTITY matchExpressionDescription.label "Field '__fieldName__' matches: '__matchExpression__'">
-<!ENTITY keyFiltersButton.label "Key Filters...">
+<!ENTITY keyFiltersButton.label "Key filters...">
 <!ENTITY keyFiltersButton.accesskey "F">
-<!ENTITY viewEntryButton.label "View Entry...">
+<!ENTITY viewEntryButton.label "View entry...">
 <!ENTITY viewEntryButton.accesskey "V">
 
 <!-- <!ENTITY .tooltip "">  -->

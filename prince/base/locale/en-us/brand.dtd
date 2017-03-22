@@ -1,6 +1,6 @@
 #include ../../content/productname.inc
 #expand <!ENTITY  lang.version          "__MOZILLA_LOCALE_VERSION__">
-<!ENTITY EnginelogSidebar.title "Engine Log">
+<!ENTITY EnginelogSidebar.title "Engine log">
 #ifdef PROD_SWP
 <!ENTITY  brandFullName         "Scientific WorkPlace">
 <!ENTITY  brandShortName        "Scientific WorkPlace">

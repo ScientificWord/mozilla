@@ -1,8 +1,8 @@
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Vertical Spaces">
+<!ENTITY windowTitle.label "Vertical spaces">
 
-<!ENTITY spacesRadioGroupbox.label "Spacing Types">
+<!ENTITY spacesRadioGroupbox.label "Spacing types">
 
 <!ENTITY smallSkip.label "Small skip">
 <!ENTITY smallSkip.accesskey "S">

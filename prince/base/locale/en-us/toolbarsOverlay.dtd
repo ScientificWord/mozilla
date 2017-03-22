@@ -1,6 +1,6 @@
 <!ENTITY customizeComputeToolbar.label "Customize the compute toolbar">
 
-<!ENTITY CustomizeToolbars.label  "Customize Toolbars">
+<!ENTITY CustomizeToolbars.label  "Customize toolbars">
 <!ENTITY SmallSymbols.label "Small symbols">
 <!ENTITY MediumSymbols.label  "Medium symbols">
 <!ENTITY LargeSymbols.label "Large symbols">
@@ -10,21 +10,21 @@
 <!ENTITY customizeStandardToolbar.label "Customize the main toolbar">
 <!ENTITY customizeSymbolToolbar.label "Customize the symbol toolbar">
 
-<!ENTITY mathToolbar.tooltip     "Math Toolbar">
-<!ENTITY ViewMathToolbar.label "Math Toolbar">
+<!ENTITY mathToolbar.tooltip     "Math toolbar">
+<!ENTITY ViewMathToolbar.label "Math toolbar">
 <!ENTITY ViewMathToolbar.accesskey "U">
 
-<!ENTITY standardToolbar.tooltip     "Standard Toolbar">
-<!ENTITY ViewStandardToolbar.label "Standard Toolbar">
+<!ENTITY standardToolbar.tooltip     "Standard toolbar">
+<!ENTITY ViewStandardToolbar.label "Standard toolbar">
 <!ENTITY ViewStandardToolbar.accesskey "U">
 
-<!ENTITY ViewSymbolToolbar.label     "Symbol Palette Toolbar" >
+<!ENTITY ViewSymbolToolbar.label     "Symbol palette toolbar" >
 <!ENTITY ViewSymbolToolbar.accesskey "S">
 
-<!ENTITY ViewTagSelectToolbar.label     "Tag Select Toolbar" >
+<!ENTITY ViewTagSelectToolbar.label     "Tag select toolbar" >
 <!ENTITY ViewTagSelectToolbar.accesskey "S">
 
-<!ENTITY ViewEditingToolbar.label     "Editing Toolbar" >
+<!ENTITY ViewEditingToolbar.label     "Editing toolbar" >
 <!ENTITY ViewEditingToolbar.accesskey "X">
 
 <!ENTITY texttagselect.tooltip "Apply a text tag" >
@@ -85,7 +85,7 @@
 <!ENTITY bracketsButton.label "Brackets" >
 
 <!ENTITY genBracketsButton.tooltip "Generalized brackets" >
-<!ENTITY genBracketsButton.label "Generalized Brackets" >
+<!ENTITY genBracketsButton.label "Generalized brackets" >
 
 <!ENTITY matrixButton.tooltip "Matrix" >
 <!ENTITY matrixButton.label "Matrix" >
@@ -99,7 +99,7 @@
 <!ENTITY labelButton.tooltip "Label" >
 <!ENTITY labelButton.label "Label" >
 
-<!ENTITY decorationButton.tooltip "Decoration or Label" >
+<!ENTITY decorationButton.tooltip "Decoration or label" >
 <!ENTITY decorationButton.label "Decoration/Label" >
 
 <!ENTITY noteButton.tooltip "Note" >
@@ -199,10 +199,10 @@
 <!ENTITY MSIComputePlot3D.label "Plot 3D">
 
 <!ENTITY MSIComputeDefine.tooltip "New definition">      
-<!ENTITY MSIComputeDefine.label "New Def">      
+<!ENTITY MSIComputeDefine.label "New def">      
 
 <!ENTITY MSIComputeShowDefs.tooltip "Show definitions">
-<!ENTITY MSIComputeShowDefs.label "Show Defs">
+<!ENTITY MSIComputeShowDefs.label "Show defs">
 
 <!ENTITY gifsAnimatedButton.tooltip "Start/stop GIF animations">
 <!ENTITY gifsAnimatedButton.label "Animations">
@@ -225,7 +225,7 @@
 <!ENTITY boldToolbarButton.label "Bold">
 <!ENTITY italicToolbarButton.tooltip "Toggle italic">
 <!ENTITY italicToolbarButton.label "Italic">
-<!ENTITY chooseDefPrinter.label "Select Default">
+<!ENTITY chooseDefPrinter.label "Select default">
 <!ENTITY direct "Direct">
 <!ENTITY pdf "PDF">
 <!ENTITY dvi "DVI">
@@ -249,8 +249,8 @@
 <!ENTITY undoCmd.label "Undo">
 <!ENTITY redoCmd.tooltip "Redo">
 <!ENTITY redoCmd.label "Redo">
-<!ENTITY findToolbarCmd.tooltip "Find and Replace">
-<!ENTITY findToolbarCmd.label "Find and Replace">
+<!ENTITY findToolbarCmd.tooltip "Find and replace">
+<!ENTITY findToolbarCmd.label "Find and replace">
 <!ENTITY spellToolbarCmd.tooltip "Check spelling">
 <!ENTITY spellToolbarCmd.label "Spell">
 

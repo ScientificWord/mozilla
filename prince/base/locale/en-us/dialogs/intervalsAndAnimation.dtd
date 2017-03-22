@@ -1,18 +1,18 @@
 <!-- Copyright (c) 2012 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Plot Variables and Animation">
-<!ENTITY VariablesTitle.label  "Variables and Sampling Points">
+<!ENTITY windowTitle.label "Plot variables and animation">
+<!ENTITY VariablesTitle.label  "Variables and sampling points">
 <!ENTITY Variable.label "Variable">
 <!ENTITY Interval.label "Interval">
-<!ENTITY PointsSampled.label  "Points Sampled">
-<!ENTITY AnimationVariable.label  "Animation Variable">
+<!ENTITY PointsSampled.label  "Points sampled">
+<!ENTITY AnimationVariable.label  "Animation variable">
 <!ENTITY x.label  "x">
 <!ENTITY y.label  "y">
 <!ENTITY z.label  "z">
 <!ENTITY t.label  "t">
-<!ENTITY SwitchVariables.label  "Switch Variables">
-<!ENTITY AnimationTimeSettings.label  "Animation Time Settings">
-<!ENTITY TubeRadialPoints.label "Tube Radial Points">
+<!ENTITY SwitchVariables.label  "Switch variables">
+<!ENTITY AnimationTimeSettings.label  "Animation time settings">
+<!ENTITY TubeRadialPoints.label "Tube radial points">
 <!ENTITY animUseCommonSettings.label "Use plot animation settings">
 <!ENTITY animUseCustomSettings.label "Make settings for this item">
 <!ENTITY animStartSeconds.label "Animation start time (seconds)">

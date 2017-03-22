@@ -2,11 +2,11 @@
 
 <!ENTITY enter.label "Enter the web location (URL), or specify the local file you would like to open:">  
 <!ENTITY enter.accesskey "E">
-<!ENTITY chooseFile.label "Choose File...">
+<!ENTITY chooseFile.label "Choose file...">
 <!ENTITY chooseFile.accesskey "C">
 <!ENTITY editWindow.label "New Scientific WorkPlace window">
 <!ENTITY topWindow.label "Current Scientific WorkPlace window">
 <!ENTITY open.label "Open">
-<!ENTITY caption.label "Open Web Location">
+<!ENTITY caption.label "Open web location">
 <!ENTITY openWhere.label "Open in:">
 <!ENTITY openWhere.accesskey "O">

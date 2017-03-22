@@ -38,7 +38,7 @@
 
 <!-- extracted from EdReplace.xul -->
 
-<!ENTITY replaceDialog.title "Test XPath Find">
+<!ENTITY replaceDialog.title "Test XPath find">
 <!ENTITY findField.label "Find text:">
 <!ENTITY findField.accesskey "n">
 <!ENTITY XPathInput.label "XPath expression:">
@@ -52,7 +52,7 @@
 <!ENTITY wrapCheckbox.accesskey "W">
 <!ENTITY backwardsCheckbox.label "Search backwards">
 <!ENTITY backwardsCheckbox.accesskey "b">
-<!ENTITY findNextButton.label "Find Next">
+<!ENTITY findNextButton.label "Find next">
 <!ENTITY findNextButton.accesskey "F">
 <!ENTITY checkXPathButton.label "View XPath expression:">
 <!ENTITY checkXPathButton.accesskey "v">
