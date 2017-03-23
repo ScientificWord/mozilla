@@ -20,11 +20,12 @@ JavaScript enhancements
 if (!String.fromCodePoint) {
   (function() {
     var defineProperty = (function() {
+      var result;
       // IE 8 only supports `Object.defineProperty` on DOM elements
       try {
         var object = {};
         var $defineProperty = Object.defineProperty;
-        var result = $defineProperty(object, object, object) && $defineProperty;
+        result = $defineProperty(object, object, object) && $defineProperty;
       } catch(error) {}
       return result;
     }());
@@ -3125,7 +3126,7 @@ function propertyDialogList(theWindow) {
   this.closingObserver = function (event) {
     //    msiKludgeLogString("singleDialogList closingObserver called.\n");
     var topWin = msiGetTopLevelWindow();
-    if (topwin && topWin.msiPropertiesDialogList) {
+    if (topWin && topWin.msiPropertiesDialogList) {
       var theTarget = event.origTarget;
       if (!theTarget)
         theTarget = event.target;
