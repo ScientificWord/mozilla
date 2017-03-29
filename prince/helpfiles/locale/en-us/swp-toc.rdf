@@ -104,7 +104,26 @@
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
- 
+
+<!-- Menus subsections -->
+  <rdf:Description about="#cd-basics_menus">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="basics_menus_file"     nc:name="File"     nc:link="cd02-01-basics.xhtml#file"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basics_menus_edit"     nc:name="Edit"     nc:link="cd02-01-basics.xhtml#edit"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basics_menus_insert"   nc:name="Insert"   nc:link="cd02-01-basics.xhtml#insert"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basics_menus_view"     nc:name="View"     nc:link="cd02-01-basics.xhtml#view"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basics_menus_go"       nc:name="Go"       nc:link="cd02-01-basics.xhtml#go"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basics_menus_tag"      nc:name="Tag"      nc:link="cd02-01-basics.xhtml#tag"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basics_menus_typeset"  nc:name="Typeset"  nc:link="cd02-01-basics.xhtml#typeset"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basics_menus_tools"    nc:name="Tools"    nc:link="cd02-01-basics.xhtml#tools"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basics_menus_compute"  nc:name="Compute"  nc:link="cd02-01-basics.xhtml#compute"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basics_menus_window"   nc:name="Window"   nc:link="cd02-01-basics.xhtml#window"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="basics_menus_help"     nc:name="Help"     nc:link="cd02-01-basics.xhtml#help"/> </rdf:li>
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+   
 
   <rdf:Description about="#doing-math">
     <nc:subheadings>
