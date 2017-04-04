@@ -122,7 +122,7 @@ section>*:first-child {
   font-size: 140%;
   font-weight: bold;
   margin: 1em 0 0.2em 0;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 8px solid #ccc;
   font-family: arial, verdana, sans-serif;
 }
 
@@ -163,7 +163,7 @@ subsection>*:first-child {
   font-size: 110%;
   font-weight: bold;
   margin: 1em 0 0.2em 0;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 4px solid #ccc;
   font-family: arial, verdana, sans-serif;
 }
 
