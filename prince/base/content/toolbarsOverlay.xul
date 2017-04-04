@@ -120,7 +120,7 @@
     </toolbarpalette>
     <toolbar
       id="StandardToolbar"
-      toolbarname="Standard Toolbar"
+      toolbarname="Standard toolbar"
       class="chromeclass-toolbar"
       persist="collapsed"
       flex = "1"
@@ -136,7 +136,7 @@ defaultset=
       customizable="true" />
     <toolbar
       id="EditingToolbar"
-      toolbarname="Editing Toolbar"
+      toolbarname="Editing toolbar"
       class="chromeclass-toolbar"
       persist="collapsed"
       flex = "1"
@@ -153,7 +153,7 @@ defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicB
       customizable="true" />
     <toolbar
       id="MathToolbar"
-      toolbarname="Math Toolbar"
+      toolbarname="Math toolbar"
       class="chromeclass-toolbar"
       persist="collapsed"
       flex = "1"
@@ -169,7 +169,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
     <toolbarset context="toolbar-context-menu"/>
     <toolbar
       id="SymbolToolbar"
-      toolbarname="Symbol Toolbar"
+      toolbarname="Symbol toolbar"
       class="chromeclass-toolbar"
       persist="collapsed"
       flex = "1"
