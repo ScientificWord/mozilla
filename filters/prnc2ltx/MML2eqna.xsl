@@ -154,7 +154,6 @@
       <xsl:choose>
 <!-- multline or gather -->
         <xsl:when test="$n-aligns=0">
-
           <LaTeX-env>
             <xsl:choose>
               <xsl:when test="$theAlignment='alignCentered'">
@@ -196,6 +195,23 @@
           </is-starred>
 
         </xsl:when>
+<!-- eqnarray -->
+	<xsl:when test="($n-aligns = 2) and (@type='eqnarray')">
+          <LaTeX-env>
+            <xsl:text>eqnarray</xsl:text>
+          </LaTeX-env>
+          <is-starred>
+            <xsl:choose>
+              <xsl:when test="$n-labeledrows=0">
+                <xsl:text>true</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>false</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
+          </is-starred>
+        </xsl:when> 
+
 <!-- align -->
         <xsl:when test="$n-aligns &gt; 0">
           <LaTeX-env>
