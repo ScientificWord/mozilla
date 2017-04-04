@@ -378,8 +378,8 @@
                 accesskey="&viewBibTeXLog.accesskey;"
                 observes="cmd_showBibTeXLog"
                 label="&viewBibTeXLog.label;"/>
-      <menuseparator/>
 #endif
+      <menuseparator/>
       <menu id="sidebar-menu" label="&viewSidebars.label;" accesskey="&viewsidebars.accesskey;" >
         <menupopup>
           <menuitem id="viewsidebarleft"
