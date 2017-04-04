@@ -166,24 +166,24 @@ specifications for use in direct printing. The Format and <indexitem req="varior
 tab controls page orientation and the scale at which to print. The Margins
 &amp; Header/Footer tab controls the overall margins on top, bottom, left
 and right and also lets you determine the placement of headers and footers.
-<centeredEnv><bodyText><object data="graphicscd/page_setup.png" id="tsid_3141705"/></bodyText></centeredEnv>
-</bodyText></subsubsection>
+<centeredEnv><bodyText><object data="graphicscd/page_setup.png" id="tsid_3141705"/></bodyText></centeredEnv></bodyText></subsubsection><subsubsection>
+              <sectiontitle>
+                Typeset PDF preview</sectiontitle><bodyText>
+              Choose to preview what your document will look like when printed with typesetting. This is a Typeset menu item and does not appear when using SNB.<br/>
+            </bodyText>
+            </subsubsection>
 <subsubsection id="tsid_3141625">
-<sectiontitle>Print preview</sectiontitle>
+<sectiontitle>Direct print preview</sectiontitle>
 
 <bodyText><indexitem req="varioref"><prisec>Preview!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>PDF files!print!on File menu</prisec></indexitem>Choose
-to preview what your document will look like when printed. You may choose
-Direct Print or Typeset <smallCaps>pdf</smallCaps> previews. You may also
-select a default print preview choice from among the two. When you choose
-one of these commands, the preview version of your document is displayed
-in the program window. Click Close to return to editing. 
+to preview what your document will look like when printed without typesetting. Click Close to return to editing. 
 <centeredEnv><bodyText><object data="graphicscd/print_preview.png" id="tsid_3141706"/></bodyText></centeredEnv>
  </bodyText></subsubsection>
 <subsubsection id="tsid_3141626">
-<sectiontitle>Print</sectiontitle> 
+<sectiontitle>Direct print</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Print!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>documents!print</prisec></indexitem>Choose
 to print
-your document via Direct Print or Typeset <smallCaps>pdf</smallCaps>. Doing
+your document without typesetting. Doing
 so opens the Print dialog box in which you may specify print options such
 as the page range to print, the number of copies, whether to print to a
 file, and how to handle frames. </bodyText>
@@ -260,7 +260,18 @@ This command is unavailable if there is no current selection. </bodyText></subsu
 <bodyText><indexitem req="varioref"><prisec>Copy!on Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>copying</prisec></indexitem>Copy
 the current selection and place it on the clipboard. From here it may be
 replicated elsewhere in the current document or other documents. This command
-is unavailable if there is no current selection. </bodyText></subsubsection>
+is unavailable if there is no current selection. </bodyText></subsubsection><subsubsection>
+              <sectiontitle>
+                Copy as TeX</sectiontitle><bodyText>
+              Copy the current selection and place it on the clipboard, using the TeX mark up language. This command is unavailable if there is no current selection.</bodyText></subsubsection><subsubsection>
+              <sectiontitle>
+                Copy as picture</sectiontitle><bodyText>
+              Copy the current selection and place it on the clipboard as a picture. This command is unavailable if there is no current selection.</bodyText></subsubsection><subsubsection>
+              <sectiontitle>
+                Export selection as picture…</sectiontitle><bodyText>
+              Save the current selection as a picture. This menu item opens a dialog that allows you to select the file name of the picture file to be created, the location, and the type of picture. This command is unavailable if there is no current selection.<br/>
+            </bodyText>
+            </subsubsection>
 <subsubsection id="tsid_3141635">
 <sectiontitle>Paste</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Paste!on Edit menu</prisec></indexitem>Place
@@ -320,7 +331,11 @@ at the number of sequences of characters separated by spaces, returns, tabs,
 and the like. (Some word counts are obtained by taking the whole number
 of characters in a document and dividing by five, which is the average number
 of characters in an English word.) Click OK to dismiss it. </bodyText>
-<centeredEnv><bodyText><object data="graphicscd/count_words.png" id="tsid_3141712"/></bodyText></centeredEnv>
+<centeredEnv><bodyText><object data="graphicscd/count_words.png" id="tsid_3141712"/></bodyText></centeredEnv></subsubsection><subsubsection>
+              <sectiontitle>
+                Set alignment</sectiontitle><bodyText>
+              This menu item sets an alignment point in a multi-line math display. This command is unavailable unless the cursor is in a valid location for an alignment point.<br/>
+            </bodyText>
 </subsubsection>
 <subsubsection id="tsid_3141644">
 <sectiontitle>Special Characters</sectiontitle> 
@@ -410,19 +425,17 @@ or amount of vertical space to add at the insertion point. </bodyText>
 </subsubsection>
 <subsubsection id="tsid_3141651">
 <sectiontitle>Math</sectiontitle> 
-<bodyText><indexitem req="varioref"><prisec>Math!on Insert menu</prisec></indexitem>Toggles
-text entry mode to Math entry. Subsequent editing will enter math objects.
-</bodyText></subsubsection>
+<bodyText><indexitem req="varioref"><prisec>Math!on Insert menu</prisec></indexitem>Sets
+text entry mode to Math entry. Subsequent editing will enter math objects. This command is available only when in Text entry mode.<br/></bodyText></subsubsection>
 <subsubsection id="tsid_3141652">
 <sectiontitle>Text</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Text!on Insert menu</prisec></indexitem>Toggles
-entry mode to Text entry. Subsequent editing will enter text objects. </bodyText></subsubsection>
+entry mode to Text entry. Subsequent editing will enter text objects. This command is available only when in Math entry mode.<br/></bodyText></subsubsection>
 <subsubsection id="tsid_3141653">
 <sectiontitle>Math objects</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Math Objects!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>math objects</prisec></indexitem><indexitem req="varioref"><prisec>entering mathematics!math objects</prisec></indexitem>Insert
 one of the specified Math objects at the insertion point. There are a number
-of math objects you may enter; see Chapter <xref key="chap:WorkingwithMathematics" reftype="obj" req="varioref"/>
- for information on working with them and other mathematical entities. </bodyText></subsubsection>
+of math objects you may enter:  Fraction, Radical, Superscript, Subscript, Display, Operator, Brackets, Matrix, Math name, Binomial, Decoration, and Unit name. See <a href="cd05-00-workwithmath.xhtml">Working with Mathematics</a> for information on working with them and other mathematical entities. </bodyText></subsubsection>
 <subsubsection id="tsid_3141654">
 <sectiontitle>Marker...</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Marker!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>markers</prisec></indexitem>A
@@ -448,12 +461,12 @@ information on the type of notes you may insert and how to work with them.
 <subsubsection id="tsid_3141657">
 <sectiontitle>Typeset object</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Typeset Object!on Insert menu</prisec></indexitem>A
-typeset object contains information about the typeset form of the document,
-such as citations, index locations, cross-references, <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
-fields, and bibliographic references. This command brings up one of several
+typeset object contains information about the typeset form of the document.
+There are a number
+of math objects you may enter:  Index entry, Cross reference, Citation, Bibliography, and <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+field. This command brings up one of several
 dialog boxes with which you may customize one of these objects to place
-at the insertion point. Consult Chapter <xref key="chap:DocProduction" reftype="obj" req="varioref"/>
- for more information about various typeset objects. </bodyText>
+at the insertion point. Consult <a href="cd06-00-finaltouch.xhtml">Final Touches: Document Production</a> for more information about various typeset objects. </bodyText>
 </subsubsection>
 <subsubsection id="tsid_3141658">
 <sectiontitle>Hyperlink...</sectiontitle> 
@@ -464,7 +477,7 @@ the current document.
 <centeredEnv><bodyText><object data="graphicscd/hyperlink.png" id="tsid_3141722"/></bodyText></centeredEnv>
  </bodyText></subsubsection>
 <subsubsection id="tsid_3141659">
-<sectiontitle>HTML field...</sectiontitle> 
+<sectiontitle>XHTML field...</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>HTML!on Insert menu</prisec></indexitem>Insert
 the contents of a named <smallCaps>html</smallCaps> field at the insertion point. </bodyText>
 <centeredEnv><bodyText><object data="graphicscd/html_field.png" id="tsid_3141723"/></bodyText></centeredEnv>
@@ -476,8 +489,7 @@ the contents of a named <smallCaps>html</smallCaps> field at the insertion point
 <bodyText><indexitem req="varioref"><prisec>View menu</prisec></indexitem><indexitem req="varioref"><prisec>menus!descriptions</prisec></indexitem>The
 View menu has commands to adjust how you see the current document and the
 program window itself. </bodyText>
-<bodyText>The first four commands in
-the View menu replicate the action of the tabs along the bottom of the document
+<bodyText>On the View menu, the first four commands when using SWP or SW and the first three commands when using SNB replicate the action of the tabs along the bottom of the document
 pane. </bodyText>
 <subsubsection id="tsid_3141660">
 <sectiontitle>Normal</sectiontitle> 
@@ -495,31 +507,33 @@ the XML source code for the
 current document. </bodyText></subsubsection>
 <subsubsection id="tsid_3141663">
 <sectiontitle>PDF preview</sectiontitle> 
-<bodyText><indexitem req="varioref"><prisec>Preview!on View menu</prisec></indexitem>Display
-a print preview of the current document. The exact preview shown (Direct,
-<smallCaps>pdf</smallCaps>) depends on the default preview method chosen
-using the File &#8594; Print Preview &#8594; Select Default command. </bodyText>
-<bodyText>The
-next two commands in the View menu apply to <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>.
-</bodyText></subsubsection>
-<subsubsection id="tsid_3141664">
-<sectiontitle>TeX log</sectiontitle>
-
-<bodyText><indexitem req="varioref"><prisec>TeX Log!on View menu</prisec></indexitem>Display
-the most recent <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
-processing log. The log shows results of running <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
-on your document and may provide information to aid in troubleshooting should
-you have difficulties. </bodyText></subsubsection>
-<subsubsection id="tsid_3141665">
+<bodyText><indexitem req="varioref"><prisec>Preview!on View menu</prisec></indexitem>Show the typeset preview for the current document. This is a Typeset menu item and does not appear when using SNB.</bodyText>
+<bodyText><emphasized>The
+next four commands in the View menu apply to <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo> and do not appear when using SNB.
+</emphasized></bodyText><bodyText>
+              </bodyText><subsubsection xmlns="http://www.w3.org/1999/xhtml" id="tsid_3141665">
 <sectiontitle>TeX file</sectiontitle>
 
 <bodyText><indexitem req="varioref"><prisec>TeX File!on View menu</prisec></indexitem>Show
 the <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
 file for the current document. A separate window opens containing the <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
-code for the document on which you're working. </bodyText>
-<bodyText>The
+code for the document on which you're working. </bodyText></subsubsection><bodyText>
+              
+</bodyText></subsubsection>
+<subsubsection id="tsid_3141664">
+<sectiontitle>TeX log</sectiontitle>
+
+<bodyText><indexitem req="varioref"><prisec>TeX Log!on View menu</prisec></indexitem>Show the most recent <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+processing log. The log shows results of running <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+on your document and may provide information to aid in troubleshooting should
+you have difficulties. </bodyText></subsubsection>
+<subsubsection id="tsid_3141665"><sectiontitle>TeX errors</sectiontitle><bodyText>
+              Show only the error portion of the most recent <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+processing log.</bodyText></subsubsection><subsubsection id="tsid_3141665"><sectiontitle>BibTeX log<br/>
+              <cursor/>
+            </sectiontitle><bodyText>Show the most recent BiB<texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo> processing log. This will be available only for documents that include a BiB<texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo> bibliography.</bodyText><bodyText><emphasized>The
 next two sets of commands in the View menu let you select which sidebars
-and toolbars you wish to see in the program window. </bodyText></subsubsection>
+and toolbars you wish to see in the program window. </emphasized></bodyText></subsubsection>
 <subsubsection id="tsid_3141666">
 <sectiontitle>Sidebars</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Sidebars!on View menu</prisec></indexitem>Toggle
@@ -529,9 +543,9 @@ display of the left and right program sidebars. </bodyText></subsubsection>
 <bodyText><indexitem req="varioref"><prisec>Toolbars!on View menu</prisec></indexitem>Toggle
 display of the Standard, Editing, Math, and Symbol toolbars that appear
 at the top of the program window, just below the menus. </bodyText>
-<bodyText>The
+<bodyText><emphasized>The
 next set of commands in the View menu toggle the display of various special
-objects. </bodyText></subsubsection>
+objects. </emphasized></bodyText></subsubsection>
 <subsubsection id="tsid_3141668">
 <sectiontitle>Footnotes</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Footnotes!on View menu</prisec></indexitem>Choose
@@ -544,7 +558,15 @@ whether to show other notes at their document locations. </bodyText></subsubsect
 <sectiontitle>Invisibles</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Invisibles!on View menu</prisec></indexitem>Toggles
 display of generally hidden items such as spaces, returns, discretionary
-hyphens, frames around lists, list items, environments, and the like. </bodyText></subsubsection>
+hyphens, frames around lists, list items, environments, and the like. </bodyText></subsubsection><subsubsection>
+              <sectiontitle>
+                Section expanders</sectiontitle><bodyText>
+              Toggles display of the section header expanders. They can be used to hide or display the text in a give section.</bodyText></subsubsection><subsubsection>
+              <sectiontitle>
+                Short titles</sectiontitle><bodyText>
+              Toggles display of the short text, when present, used when typesetting table of content entries and sometimes running headers for the section titles.<br/>
+            </bodyText>
+            </subsubsection>
 <subsubsection id="tsid_3141671">
 <sectiontitle>Helper lines</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Helper Lines!on View menu</prisec></indexitem>Toggles
@@ -555,16 +577,14 @@ display of guide lines. </bodyText></subsubsection>
 display of input boxes. </bodyText></subsubsection>
 <subsubsection id="tsid_3141673">
 <sectiontitle>Index entries</sectiontitle> 
-<bodyText><indexitem req="varioref"><prisec>Index Entries!on View menu</prisec></indexitem>Choose
-whether to show index entries at their document locations. </bodyText>
+<bodyText><indexitem req="varioref"><prisec>Index Entries!on View menu</prisec></indexitem>Toggles display of index entries.</bodyText>
 </subsubsection>
 <subsubsection id="tsid_3141674">
 <sectiontitle>Markers</sectiontitle> 
-<bodyText><indexitem req="varioref"><prisec>Markers!on View menu</prisec></indexitem><indexitem req="varioref"><prisec>markers</prisec></indexitem>Choose
-whether to show markers at their document locations. </bodyText>
-<bodyText>The
+<bodyText><indexitem req="varioref"><prisec>Markers!on View menu</prisec></indexitem><indexitem req="varioref"><prisec>markers</prisec></indexitem>Toggles display of markers. </bodyText>
+<bodyText><emphasized>The
 final command in the View menu adjusts the size at which you view the current
-document. </bodyText></subsubsection>
+document. </emphasized></bodyText></subsubsection>
 <subsubsection id="tsid_3141675">
 <sectiontitle>Zoom</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Zoom!on View menu</prisec></indexitem><indexitem req="varioref"><prisec>zoom</prisec></indexitem>Choose
@@ -622,17 +642,16 @@ font styles, etc.) </bodyText>
 
 <bodyText><indexitem req="varioref"><prisec>Typeset menu</prisec></indexitem><indexitem req="varioref"><prisec>menus!descriptions</prisec></indexitem>The
 Typeset menu contains commands for determining the typeset appearance of
-a document. </bodyText>
+a document. This menu item and does not appear when using SNB.</bodyText>
 <subsubsection id="tsid_3141681">
 <sectiontitle>Document format...</sectiontitle> 
 <bodyText><indexitem req="varioref"><prisec>Document Format!on Typeset menu</prisec></indexitem><indexitem req="varioref"><prisec>documents!formatting</prisec></indexitem>Accesses
 the Document Format dialog box, giving you a wide range of choices for altering or overriding
 document appearance options specified by the document shell (page formatting,
 font choice, number of <indexitem req="varioref"><prisec>columns</prisec></indexitem>columns,
-section styles, and so on.) If you leave the first checkbox blank (on the
+section styles, and so on). If you leave the first checkbox blank (on the
 General tab it's labeled 
-Enable overriding the document style
-), all the options on the dialog box will be grayed out. </bodyText>
+Enable overriding the document style), all the options on the dialog box will be grayed out. </bodyText>
 <centeredEnv><bodyText><object data="graphicscd/document_format.png" id="tsid_3141725"/></bodyText></centeredEnv>
 </subsubsection>
 <subsubsection id="tsid_3141682">
@@ -702,7 +721,7 @@ through the SWP (Application) menu.
 Compute menu contains a wide variety of <indexitem req="varioref"><prisec>computation!commands</prisec></indexitem>commands
 for evaluating mathematical expressions. The <indexitem req="varioref"><prisec>MuPAD commands!on Compute menu</prisec></indexitem>commands
 in the Compute menu are not documented in this book. Learn about them and their use in 
-Doing Mathematics with Scientific WorkPlace and Scientific Notebook, Version 6.</bodyText>
+Doing Mathematics with Scientific WorkPlace and Scientific Notebook, Version 6. The Compute menu does not appear when using SW.<br/></bodyText>
 </subsection>
 <subsection id="tsid_3141610">
 <sectiontitle><shortTitle>Window Menu</shortTitle>WINDOW Menu<a id="window"/></sectiontitle>
@@ -747,7 +766,7 @@ dialog box with a few specifics on the currently installed MacKichan product.
 This includes information about the software version with which you are
 working. On the Macintosh, <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141762"><bodyText><QTR type="QQQMarginheading">Macintosh
 Users Note</QTR></bodyText></note></notewrapper>this command is available
-through the SWP (Application) menu. </bodyText>
+through the SWP/SW/SNB (Application) menu. </bodyText>
 </subsubsection>
 <bodyText>[ <a href="cd02-00-basics.xhtml">Return to prior section</a> ]</bodyText>
 </subsection>
