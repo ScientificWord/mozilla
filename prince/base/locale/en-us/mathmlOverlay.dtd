@@ -154,7 +154,7 @@
 <!ENTITY MSIinsertCitation.accesskey "C">
 <!ENTITY MSIinsertBibliography.label "Bibliography...">
 <!ENTITY MSIinsertBibliography.accesskey "B">
-<!ENTITY MSIinsertTeXField.label "Tex field...">
+<!ENTITY MSIinsertTeXField.label "TeX field...">
 <!ENTITY MSIinsertTeXField.accesskey "T">
 
 <!ENTITY MSISymbolTabLCGreek     "Lowercase Greek">
