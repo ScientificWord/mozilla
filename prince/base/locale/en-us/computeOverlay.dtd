@@ -148,11 +148,11 @@
 <!ENTITY MSITransformsMenu.accesskey "T">
 <!ENTITY MSIComputeFourierCmd.label       "Fourier">
 <!ENTITY MSIComputeFourierCmd.accesskey   "F">
-<!ENTITY MSIComputeInverseFourierCmd.label       "Inverse fourier">
+<!ENTITY MSIComputeInverseFourierCmd.label       "Inverse Fourier">
 <!ENTITY MSIComputeInverseFourierCmd.accesskey   "I">
 <!ENTITY MSIComputeLaplaceCmd.label       "Laplace">
 <!ENTITY MSIComputeLaplaceCmd.accesskey   "L">
-<!ENTITY MSIComputeInverseLaplaceCmd.label       "Inverse laplace">
+<!ENTITY MSIComputeInverseLaplaceCmd.label       "Inverse Laplace">
 <!ENTITY MSIComputeInverseLaplaceCmd.accesskey   "n">
 
 <!ENTITY MSIVecCalcMenu.label "Vector calculus">
