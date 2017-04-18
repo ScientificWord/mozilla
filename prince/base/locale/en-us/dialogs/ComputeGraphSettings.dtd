@@ -156,8 +156,8 @@
 <!ENTITY newplot.label              "New ">
 <!ENTITY plot2dmenu.label           "Plot 2D">
 <!ENTITY plot3dmenu.label           "Plot 3D">
-<!ENTITY plot2damenu.label          "Plot 2d animated">
-<!ENTITY plot3damenu.label          "Plot 3d animated">
+<!ENTITY plot2damenu.label          "Plot 2D animated">
+<!ENTITY plot3damenu.label          "Plot 3D animated">
 
 <!ENTITY screendisplay.label        "Screen display layout">
 <!ENTITY orientationturn.label      "Orientation: turn">
