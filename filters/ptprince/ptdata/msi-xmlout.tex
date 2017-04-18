@@ -2013,7 +2013,7 @@
     
 \def\@@TeXButton#1#2{%
    \ifmmode
-     \msitag{\msipassthru\char`\{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}#1\msitag{\char`\}"><![CDATA[#2]]></texb>}
+     \msitag{\msipassthru}\char`\{\msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="#1"><![CDATA[#2]]></texb>}\char`\}
    \else
      \msihmode
      \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}\msiattrib{#1}\msitag{"><![CDATA[#2]]></texb>}%
