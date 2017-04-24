@@ -15,6 +15,16 @@
   \textfrench{<xsl:apply-templates />}
 </xsl:template>
 
+<xsl:template match="html:english">
+  \begin{english}
+  <xsl:apply-templates />
+  \end{english}
+</xsl:template>
+
+<xsl:template match="html:textenglish">
+  \textenglish{<xsl:apply-templates />}
+</xsl:template>
+
 <xsl:template match="html:USenglish">
   \begin{USEnglish}
   <xsl:apply-templates />
@@ -215,6 +225,17 @@
   \textafrikaans{<xsl:apply-templates />}
 </xsl:template>
 
+<xsl:template match="html:amharic">
+  \begin{amharic}
+  <xsl:apply-templates />
+  \end{amharic}
+</xsl:template>
+
+<xsl:template match="html:textamharic">
+  \textamharic{<xsl:apply-templates />}
+</xsl:template>
+
+
 <xsl:template match="html:Arabic">
   \begin{Arabic}
   <xsl:apply-templates />
@@ -223,6 +244,26 @@
 
 <xsl:template match="html:textarabic">
   \textarabic{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:armenian">
+  \begin{armenian}
+  <xsl:apply-templates />
+  \end{armenian}
+</xsl:template>
+
+<xsl:template match="html:textarmenian">
+  \textarmenian{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:asturian">
+  \begin{asturian}
+  <xsl:apply-templates />
+  \end{asturian}
+</xsl:template>
+
+<xsl:template match="html:textasturian">
+  \textasturian{<xsl:apply-templates />}
 </xsl:template>
 
 <xsl:template match="html:bahasa">
@@ -283,6 +324,16 @@
 
 <xsl:template match="html:textbasque">
   \textbasque{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:bengali">
+  \begin{bengali}
+  <xsl:apply-templates />
+  \end{bengali}
+</xsl:template>
+
+<xsl:template match="html:textbengali">
+  \textbengali{<xsl:apply-templates />}
 </xsl:template>
 
 <xsl:template match="html:brazil">
@@ -405,6 +456,17 @@
   \textdutch{<xsl:apply-templates />}
 </xsl:template>
 
+
+<xsl:template match="html:english">
+  \begin{english}
+  <xsl:apply-templates />
+  \end{english}
+</xsl:template>
+
+<xsl:template match="html:textenglish">
+  \textenglish{<xsl:apply-templates />}
+</xsl:template>
+
 <xsl:template match="html:esperanto">
   \begin{esperanto}
   <xsl:apply-templates />
@@ -445,6 +507,16 @@
   \textfinnish{<xsl:apply-templates />}
 </xsl:template>
 
+<xsl:template match="html:friulan">
+  \begin{friulan}
+  <xsl:apply-templates />
+  \end{friulan}
+</xsl:template>
+
+<xsl:template match="html:textfriulan">
+  \textfriulan{<xsl:apply-templates />}
+</xsl:template>
+
 <xsl:template match="html:galician">
   \begin{galician}
   <xsl:apply-templates />
@@ -453,6 +525,16 @@
 
 <xsl:template match="html:textgalician">
   \textgalician{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:greek">
+  \begin{greek}
+  <xsl:apply-templates />
+  \end{greek}
+</xsl:template>
+
+<xsl:template match="html:textgreek">
+  \textgreek{<xsl:apply-templates />}
 </xsl:template>
 
 <xsl:template match="html:hebrew">
@@ -465,14 +547,14 @@
   \texthebrew{<xsl:apply-templates />}
 </xsl:template>
 
-<xsl:template match="html:hungarian">
-  \begin{hungarian}
+<xsl:template match="html:hindi">
+  \begin{hindi}
   <xsl:apply-templates />
-  \end{hungarian}
+  \end{hindi}
 </xsl:template>
 
-<xsl:template match="html:texthungarian">
-  \texthungarian{<xsl:apply-templates />}
+<xsl:template match="html:texthindi">
+  \texthindi{<xsl:apply-templates />}
 </xsl:template>
 
 <xsl:template match="html:icelandic">
@@ -515,6 +597,46 @@
   \textitalian{<xsl:apply-templates />}
 </xsl:template>
 
+<xsl:template match="html:kannada">
+  \begin{kannada}
+  <xsl:apply-templates />
+  \end{kannada}
+</xsl:template>
+
+<xsl:template match="html:textkannada">
+  \textkannada{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:khmer">
+  \begin{khmer}
+  <xsl:apply-templates />
+  \end{khmer}
+</xsl:template>
+
+<xsl:template match="html:textkhmer">
+  \textkhmer{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:korean">
+  \begin{korean}
+  <xsl:apply-templates />
+  \end{korean}
+</xsl:template>
+
+<xsl:template match="html:textkorean">
+  \textkorean{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:lao">
+  \begin{lao}
+  <xsl:apply-templates />
+  \end{lao}
+</xsl:template>
+
+<xsl:template match="html:textlao">
+  \textlao{<xsl:apply-templates />}
+</xsl:template>
+
 <xsl:template match="html:latin">
   \begin{latin}
   <xsl:apply-templates />
@@ -523,6 +645,36 @@
 
 <xsl:template match="html:textlatin">
   \textlatin{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:latvian">
+  \begin{latvian}
+  <xsl:apply-templates />
+  \end{latvian}
+</xsl:template>
+
+<xsl:template match="html:textlatvian">
+  \textlatvian{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:lithuanian">
+  \begin{lithuanian}
+  <xsl:apply-templates />
+  \end{lithuanian}
+</xsl:template>
+
+<xsl:template match="html:textlithuanian">
+  \textlithuanian{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:lsorbian">
+  \begin{lsorbian}
+  <xsl:apply-templates />
+  \end{lsorbian}
+</xsl:template>
+
+<xsl:template match="html:textlsorbian">
+  \textlsorbian{<xsl:apply-templates />}
 </xsl:template>
 
 <xsl:template match="html:lowersorbian">
@@ -553,6 +705,36 @@
 
 <xsl:template match="html:textmalay">
   \textmalay{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:malayalam">
+  \begin{malayalam}
+  <xsl:apply-templates />
+  \end{malayalam}
+</xsl:template>
+
+<xsl:template match="html:textmalayalam">
+  \textmalayalam{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:marathi">
+  \begin{marathi}
+  <xsl:apply-templates />
+  \end{marathi}
+</xsl:template>
+
+<xsl:template match="html:textmarathi">
+  \textmarathi{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:nko">
+  \begin{nko}
+  <xsl:apply-templates />
+  \end{nko}
+</xsl:template>
+
+<xsl:template match="html:textnko">
+  \textnko{<xsl:apply-templates />}
 </xsl:template>
 
 <xsl:template match="html:meyalu">
@@ -595,6 +777,26 @@
   \textnynorsk{<xsl:apply-templates />}
 </xsl:template>
 
+<xsl:template match="html:occitan">
+  \begin{occitan}
+  <xsl:apply-templates />
+  \end{occitan}
+</xsl:template>
+
+<xsl:template match="html:textoccitan">
+  \textoccitan{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:piedmontese">
+  \begin{piedmontese}
+  <xsl:apply-templates />
+  \end{piedmontese}
+</xsl:template>
+
+<xsl:template match="html:textpiedmontese">
+  \textpiedmontese{<xsl:apply-templates />}
+</xsl:template>
+
 <xsl:template match="html:polish">
   \begin{polish}
   <xsl:apply-templates />
@@ -635,6 +837,16 @@
   \textromanian{<xsl:apply-templates />}
 </xsl:template>
 
+<xsl:template match="html:romansh">
+  \begin{romansh}
+  <xsl:apply-templates />
+  \end{romansh}
+</xsl:template>
+
+<xsl:template match="html:textromansh">
+  \textromansh{<xsl:apply-templates />}
+</xsl:template>
+
 <xsl:template match="html:russian">
   \begin{russian}
   <xsl:apply-templates />
@@ -643,6 +855,16 @@
 
 <xsl:template match="html:textrussian">
   \textrussian{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:sanskrit">
+  \begin{sanskrit}
+  <xsl:apply-templates />
+  \end{sanskrit}
+</xsl:template>
+
+<xsl:template match="html:textsanskrit">
+  \textsanskrit{<xsl:apply-templates />}
 </xsl:template>
 
 <xsl:template match="html:scottish">
@@ -685,6 +907,16 @@
   \textslovene{<xsl:apply-templates />}
 </xsl:template>
 
+<xsl:template match="html:slovenian">
+  \begin{slovenian}
+  <xsl:apply-templates />
+  \end{slovenian}
+</xsl:template>
+
+<xsl:template match="html:textslovenian">
+  \textslovenian{<xsl:apply-templates />}
+</xsl:template>
+
 <xsl:template match="html:spanish">
   \begin{spanish}
   <xsl:apply-templates />
@@ -715,6 +947,36 @@
   \textsyriac{<xsl:apply-templates />}
 </xsl:template>
 
+<xsl:template match="html:telugu">
+  \begin{telugu}
+  <xsl:apply-templates />
+  \end{telugu}
+</xsl:template>
+
+<xsl:template match="html:texttelugu">
+  \texttelugu{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:thai">
+  \begin{thai}
+  <xsl:apply-templates />
+  \end{thai}
+</xsl:template>
+
+<xsl:template match="html:textthai">
+  \textthai{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:tibetan">
+  \begin{tibetan}
+  <xsl:apply-templates />
+  \end{tibetan}
+</xsl:template>
+
+<xsl:template match="html:texttibetan">
+  \texttibetan{<xsl:apply-templates />}
+</xsl:template>
+
 <xsl:template match="html:turkish">
   \begin{turkish}
   <xsl:apply-templates />
@@ -723,6 +985,16 @@
 
 <xsl:template match="html:textturkish">
   \textturkish{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:turkmen">
+  \begin{turkmen}
+  <xsl:apply-templates />
+  \end{turkmen}
+</xsl:template>
+
+<xsl:template match="html:textturkmen">
+  \textturkmen{<xsl:apply-templates />}
 </xsl:template>
 
 <xsl:template match="html:ukrainian">
@@ -745,6 +1017,16 @@
   \textuppersorbian{<xsl:apply-templates />}
 </xsl:template>
 
+<xsl:template match="html:usorbian">
+  \begin{usorbian}
+  <xsl:apply-templates />
+  \end{usorbian}
+</xsl:template>
+
+<xsl:template match="html:textusorbian">
+  \textusorbian{<xsl:apply-templates />}
+</xsl:template>
+
 <xsl:template match="html:urdu">
   \begin{urdu}
   <xsl:apply-templates />
@@ -753,6 +1035,16 @@
 
 <xsl:template match="html:texturdu">
   \texturdu{<xsl:apply-templates />}
+</xsl:template>
+
+<xsl:template match="html:vietnamese">
+  \begin{vietnamese}
+  <xsl:apply-templates />
+  \end{vietnamese}
+</xsl:template>
+
+<xsl:template match="html:textvietnamese">
+  \textvietnamese{<xsl:apply-templates />}
 </xsl:template>
 
 <xsl:template match="html:welsh">
