@@ -1026,19 +1026,6 @@
 \end{center}\par
 </xsl:template>
 
-<xsl:template match="html:hebrew">
-
-\begin{hebrew}
-<xsl:apply-templates/>
-\end{hebrew}
-</xsl:template>
-
-<xsl:template match="html:Arabic">
-\begin{Arabic}
-<xsl:apply-templates/>
-\end{Arabic}
-</xsl:template>
-
 <xsl:template match="html:centered">
 \begin{center}<xsl:apply-templates/>\end{center}\par
 </xsl:template>

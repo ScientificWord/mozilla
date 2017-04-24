@@ -257,6 +257,7 @@
 
 <!-- Language List -->
 <!ENTITY USenglish.label "US English">
+<!ENTITY english.label "English">
 <!ENTITY UKenglish.label "UK English">
 <!ENTITY australian.label "Australian English">
 <!ENTITY canadian.label "Canadian English">
@@ -277,12 +278,17 @@
 <!ENTITY albanian.label "Albanian">
 <!ENTITY afrikaans.label "Afrikaans">
 
+
 <!ENTITY bahasa.label "Bahasa">
+<!ENTITY amharic.label "Amharic">
+<!ENTITY armenian.label "Armenian">
+<!ENTITY asturian.label "Asturian">
 <!ENTITY indonesian.label "Indonesian">
 <!ENTITY indon.label "indon">
 <!ENTITY bahasai.label "Bahasa Indonesian">
 <!ENTITY bahasam.label "Bahasa Malaysia">
 <!ENTITY basque.label "Basque">
+<!ENTITY bengali.label "Bengali">
 <!ENTITY brazil.label "Brazil">
 <!ENTITY brazilian.label "Brazilian">
 <!ENTITY breton.label "Breton">
@@ -299,26 +305,41 @@
 <!ENTITY estonian.label "Estonian">
 <!ENTITY farsi.label "Farsi">
 <!ENTITY finnish.label "Finnish">
+<!ENTITY friulan.label "Friulan">
 <!ENTITY galician.label "Galician">
+<!ENTITY greek.label "Greek">
 <!ENTITY hebrew.label "Hebrew">
+<!ENTITY hindi.label "Hindi">
 <!ENTITY hungarian.label "Hungarian">
 <!ENTITY icelandic.label "Icelandic">
 <!ENTITY interlingua.label "Interlingua">
 <!ENTITY irish.label "Irish">
 <!ENTITY italian.label "Italian">
+<!ENTITY kannada.label "Kannada">
+<!ENTITY khmer.label "Khmer">
+<!ENTITY korean.label "Korean">
+<!ENTITY lao.label "Lao">
 <!ENTITY latin.label "Latin">
+<!ENTITY latvian.label "Latvian">
+<!ENTITY lithuanian.label "Lithuanian">
 <!ENTITY lowersorbian.label "Lower Sorbian">
 <!ENTITY magyar.label "Magyar">
 <!ENTITY malay.label "Malay">
+<!ENTITY marathi.label "Marathi">
 <!ENTITY meyalu.label "Meyalu">
+<!ENTITY nko.label "Nko">
 <!ENTITY norsk.label "Norsk">
 <!ENTITY samin.label "Samin">
 <!ENTITY nynorsk.label "Nynorsk">
+<!ENTITY occitan.label "Occitan">
+<!ENTITY piedmontese.label "Piedmontese">
 <!ENTITY polish.label "Polish">
 <!ENTITY portuges.label "Portuges">
 <!ENTITY portuguese.label "Portuguese">
 <!ENTITY romanian.label "Romanian">
+<!ENTITY romansh.label "Romansh">
 <!ENTITY russian.label "Russian">
+<!ENTITY sanskrit.label "Sanskrit">
 <!ENTITY scottish.label "Scottish">
 <!ENTITY serbian.label "Serbian">
 <!ENTITY slovak.label "Slovak">
@@ -327,7 +348,10 @@
 <!ENTITY swedish.label "Swedish">
 <!ENTITY syriac.label "Syriac">
 <!ENTITY thai.label "Thai">
+<!ENTITY telugu.label "Telugu">
+<!ENTITY tibetan.label "Tibetan">
 <!ENTITY turkish.label "Turkish">
+<!ENTITY turkmen.label "Turkmen">
 <!ENTITY ukrainian.label "Ukrainian">
 <!ENTITY uppersorbian.label "Upper Sorbian">
 <!ENTITY urdu.label "Urdu">
