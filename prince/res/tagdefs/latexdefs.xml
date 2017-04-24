@@ -170,14 +170,18 @@
         <tag nm="textacadian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textafrikaans" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textalbanian" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textamharic" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textancientgreek" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textarabic" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textarmenian" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textasturian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textaustralian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textaustrian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textbahasa" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textbahasai" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textbahasam" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textbasque" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textbengali" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textbrazil" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textbrazilian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textbreton" hidden="1" babel="0"><description>Babel support</description></tag>
@@ -191,6 +195,7 @@
         <tag nm="textdanish" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textdivehi" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textdutch" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textenglish" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textesperanto" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textestonian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textfarsi" hidden="1" babel="0"><description>Babel support</description></tag>
@@ -198,51 +203,73 @@
         <tag nm="textfrancais" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textfrench" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textfrenchb" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textfriulan" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textgalician" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textgerman" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textgermanb" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textgreek" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="texthebrew" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="texthungarian" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="texthindi" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="texticelandic" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textindon" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textindonesian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textinterlingua" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textirish" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textitalian" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textkannada" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textkhmer" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textkorean" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textlao" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textlatin" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textlatvian" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textlithuanian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textlowersorbian" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textlsorbian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textmagyar" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textmalay" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textmalayalam" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textmarathi" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textmeyalu" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textmonogreek" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textnaustrian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textnewzealand" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textngerman" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textnko" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textnorsk" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textnynorsk" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textoccitan" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textpiedmontese" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textpolish" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textpolutonikogreek" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textpolygreek" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textportuges" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textportuguese" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textromanian" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textromansh" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textrussian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textsamin" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textsanskrit" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textscottish" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textserbian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textslovak" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textslovene" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textslovenian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textspanish" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textswedish" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textsyriac" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textelugu" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textthai" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="texttibetan" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textturkish" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textturkmen" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textUKenglish" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textukrainian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textuppersorbian" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textusorbian" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="texturdu" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textUSenglish" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textvietnamese" hidden="1" babel="0"><description>Babel support</description></tag>
         <tag nm="textwelsh" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="turkish" hidden="1" babel="0"><description>Babel support</description></tag>
 
         <!-- <tag nm="deleted"><description>Deleted text</description></tag><tag nm="inserted"><description>Inserted text></description></tag>-->
         <!-- comment out the ulem tags
@@ -1143,12 +1170,22 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="amharic" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag nm="ancientgreek" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="Arabic" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="asturian" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -1179,6 +1216,11 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="basque" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="bengali" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -1248,6 +1290,11 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="english" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag nm="esperanto" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
@@ -1283,6 +1330,11 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="friulan" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag nm="galician" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
@@ -1298,12 +1350,17 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="greek" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag nm="hebrew" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
-        <tag nm="hungarian" hidden="1" babel="0">
+        <tag nm="hindi" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -1338,12 +1395,47 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="kannada" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="khmer" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="korean" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="lao" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag nm="latin" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="latvian" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="lithuanian" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag nm="lowersorbian" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="lsorbian" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -1354,6 +1446,21 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="malay" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="malayalam" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="marathi" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="nko" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -1393,6 +1500,16 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="occitan" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="piedmontese" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag nm="polish" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
@@ -1423,12 +1540,22 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="romansh" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag nm="russian" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="samin" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="sanskrit" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -1453,6 +1580,11 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="slovenian" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag nm="spanish" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
@@ -1464,6 +1596,31 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="syriac" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="telugu" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="thai" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="tibetan" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="turkish" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="turkmen" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -1483,7 +1640,17 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        <tag nm="usorbian" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
         <tag nm="urdu" hidden="1" babel="0">
+          <description>Babel environment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+        </tag>
+        <tag nm="vietnamese" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -1695,7 +1862,7 @@
         <tag nm="secspec">
           <description>Special appearance of secondary index entry</description>
           <contains>#text</contains>
-          <contains>texttag</contains>
+          <contains>texttag</contains> 
           <contains>hspace</contains>
           <contains>table</contains>
           <contains>mml:math</contains>
