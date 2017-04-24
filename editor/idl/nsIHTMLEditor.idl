@@ -564,6 +564,19 @@ interface nsIHTMLEditor : nsISupports
    */
   void insertLinkAroundSelection(in nsIDOMElement aAnchorElement);
 
+  /** 
+   * Create a new msiframe with attributes gotten from the preferences 
+   */
+
+  nsIDOMElement createFrameWithDefaults(in AString frametype, in nsIDOMNode parent, in long position);
+
+  /** 
+   * Copy a graphics file to the graphics directory and convert it if necessary. Return the path to 
+   * put in the document 
+   */
+
+  AString copyAndConvert(in AString filename, in long width, in long height, in AString units);
+
   /**
    * Set the value of the "bgcolor" attribute on the document's <body> element
    *
