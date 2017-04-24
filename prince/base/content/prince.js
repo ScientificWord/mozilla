@@ -1454,3 +1454,36 @@ function msidumpDocument()
   var root = ed.document.documentElement;
   ed.debugmsidumpContent(root);
 }
+
+var dragObserver = 
+{ 
+  canHandleMultipleItems: function ()
+  {
+    return true;
+  },
+  
+  onDragStart: function (evt, transferData, action)
+  {
+
+  },
+  
+  canDrop: function(evt, session)
+  {
+    return true;
+  },
+  
+  onDrop: function(evt, dropData, session)
+  {
+    alert("onDrop!");
+  },
+  
+  onDragOver: function(evt, flavour, session) 
+  {
+  },
+  
+  getSupportedFlavours: function()
+  {
+    return null;
+  }
+};  
+
