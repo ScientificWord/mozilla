@@ -89,7 +89,8 @@
   <vbox id="appcontent" flex="1">
     <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
       <editor id="content-frame" type="content-primary" context="msiEditorContentContext"
-                editortype="html" flex="1" spellcheck="true" tooltip="aHTMLTooltip"/>
+                editortype="html" flex="1" spellcheck="true" tooltip="aHTMLTooltip" ondragdrop = 
+                "nsDragAndDrop.drop(event, fragObserver);"/>
       <vbox>
         <label id="doctype-text" crop="right"></label>
         <iframe id="content-source"

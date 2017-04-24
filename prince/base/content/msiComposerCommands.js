@@ -1455,7 +1455,7 @@ var msiTestFilterCommand =
       }
     }
     else
-      finalThrow(cmdFailString("runtests"), "Importing a document is not allowed since his program is not licensed.")
+      finalThrow(cmdFailString("runtests"), "Importing a document is not allowed since this program is not licensed.")
     return false;
   }
 }
@@ -7084,6 +7084,7 @@ function setAlignmentOK(editorElement) {
   var editor = msiGetEditor(editorElement);
   var isMath;
   var selNode;
+  var retval = false;;
   if (editor.selection.isCollapsed) {
     selNode = editor.selection.anchorNode;
     ismath = msiNavigationUtils.isMathNode(selNode);
@@ -7094,16 +7095,31 @@ function setAlignmentOK(editorElement) {
         selNode.tagName != 'mi' &&
         selNode.tagName != 'mo' &&
         selNode.tagName != 'mn' &&
+        selNode.tagName != 'menclose' &&
+        selNode.tagName != 'mfrac' &&
+        selNode.tagName != 'mmultiscripts' &&
+        selNode.tagName != 'mover' &&
+        selNode.tagName != 'mprescripts' &&
+        selNode.tagName != 'mroot' &&
+        selNode.tagName != 'mspace' &&
+        selNode.tagName != 'msqrt' &&
         selNode.tagName != 'mstyle' &&
+        selNode.tagName != 'msub' &&
+        selNode.tagName != 'msubsup' &&
+        selNode.tagName != 'msup' &&
+        selNode.tagName != 'mtext' &&
+        selNode.tagName != 'munder' &&
+        selNode.tagName != 'munderover' &&
         selNode.tagName != 'mphantom') {
-        return false;
+        retval = false;
+        return retval;
       }
       selNode = selNode.parentNode;
       ismath = msiNavigationUtils.isMathNode(selNode);
     }
-    if (selNode && selNode.tagName == 'mtd') return true;
+    if (selNode && selNode.tagName == 'mtd') retval = true;
   }
-  return false;
+  return retval;
 }
 
 function positionInParent(aNode)
