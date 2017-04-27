@@ -1,8 +1,9 @@
 /* @flow */
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+#include productname.inc
+Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
-#include productname.inc
 
 
 /* Implementations of nsIControllerCommand for composer commands */
@@ -212,6 +213,7 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_fontcolor", msiFontColor);
   commandTable.registerCommand("cmd_copytex", msiCopyTeX);
   commandTable.registerCommand("cmd_help_contents", msiHelpContents);
+  commandTable.registerCommand("convert_graphics_at_selection", msiConvertGraphics);
 }
 
 function msiSetupComposerWindowCommands(editorElement)
@@ -4341,26 +4343,126 @@ var msiCopyTeX =
   },
   doCommand: function(aCommand)
   {
+    try {
+      var editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);
+      if (!editor) {
+        throw("No editor in msiCopyTeX");
+      }
+      var selection = editor.selection;
+      if (!selection)
+      {
+        throw("No selection in msiCopyTeX!");
+      }
+      var intermediateText;
+      intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
+      var output = xmlFragToTeX(intermediateText);
+      const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
+      getService(Components.interfaces.nsIClipboardHelper);
+      gClipboardHelper.copyString(output);
+    }
+    catch (e) {
+      finalThrow(cmdFailString('copyTeX'), e.message);
+    }
+  }
+};
+
+var msiConvertGraphics =
+{
+  isCommandEnabled: function(aCommand, aRefCon)
+  {
+    //var editor = aRefCon.QueryInterface(Components.interfaces.nsIEditor);
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    var nsed = editor.QueryInterface(Components.interfaces.nsIEditor);
+    if (nsed)
+      return true;
+    return false;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommand: function(aCommand)
+  {
 		try {
   	  var editorElement = msiGetActiveEditorElement();
   	  var editor = msiGetEditor(editorElement);
+      var product;
+      var outernode, objectnode;
+      var data;
+      var importName;
+      var internalFile;
+      var internalName;
+      var graphicDir;
+      var docUrlString = msiGetDocumentBaseUrl();
+      var docurl = msiURIFromString(docUrlString);
+      var leafname, extension, width, height;
+      var re, match;
+      graphicDir = msiFileFromFileURL(docurl);
+      graphicDir = graphicDir.parent;
+      graphicDir.append("graphics");
+#ifdef PROD_SWP
+      product = "swp";
+#endif
+#ifdef PROD_SW
+      product = "sw";
+#endif
+#ifdef PROD_SNB
+      product = "snb";
+#endif
+
   	  if (!editor) {
-  			throw("No editor in msiCopyTeX");
+  			throw("No editor in msiConvertGraphics");
   		}
   	  var selection = editor.selection;
   	  if (!selection)
   	  {
-  	    throw("No selection in msiCopyTeX!");
+  	    throw("No selection in msiConvertGraphics!");
   	  }
-  	  var intermediateText;
-  	  intermediateText = editor.outputToString("text/xml", kOutputFormatted | kOutputSelectionOnly);
-  	  var output = xmlFragToTeX(intermediateText);
-  		const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
-  		getService(Components.interfaces.nsIClipboardHelper);
-  		gClipboardHelper.copyString(output);
+      outernode = selection.anchorNode;
+      if (outernode.tagName == "object") objectnode = outernode;
+      else
+        objectnode = outernode.getElementsByTagNameNS(xhtmlns, "object")[0];
+  // BBM: This needs work. If objectnode is a paragraph, there could be several 
+  // graphics in it.    
+      if (objectnode) {
+        data = objectnode.getAttribute("data");
+        re = /[a-z0-9._-]+$/i;
+        match = re.exec(data);
+        if (match) {
+          leafname = match[0];
+          match = leafname.split('.');
+          extension = match[1];
+          if (extension == 'pdf') {
+
+          }
+          else {
+            width = objectnode.offsetWidth;
+            height = objectnode.offsetHeight;
+          }
+          internalFile = graphicDir.clone(false);
+          internalFile.append(leafname);
+          internalName = graphicDir.leafName + "/" + internalFile.leafName;
+          graphicsConverter.init(window, graphicDir.parent, product);
+          importName = graphicsConverter.copyAndConvert(internalFile, true, width, height);
+          if (importName && importName.length > 0) {
+            objectnode.setAttribute("data", importName);
+            width = objectnode.offsetWidth;
+            height = objectnode.offsetHeight;
+          }
+          objectnode.setAttribute("width", width + 'px');  // need to convert to better units
+          objectnode.setAttribute("height", height + 'px');
+          objectnode.setAttribute("msi_resize", true);
+          objectnode.setAttribute("style", "height: "+height+"px; width: "+width+"px;");
+        }
+      }
 		}
     catch (e) {
-      finalThrow(cmdFailString('copyTeX'), e.message);
+      finalThrow(cmdFailString(aCommand, e.message));
     }
   }
 };

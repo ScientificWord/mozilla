@@ -702,6 +702,11 @@
              disabled="true">
       <observes element="cmd_MSIcopy" attribute="disabled" />
     </command>
+    <command id="convert_graphics_at_selection"
+             oncommand="msiGoDoCommand('convert_graphics_at_selection')"
+             disabled="false">
+    </command>
+
     <command id="cmd_copypicture"
             oncommand="msiGoDoCommand('cmd_copypicture')">
       <observes element="cmd_MSIcopy" attribute="disabled" />
