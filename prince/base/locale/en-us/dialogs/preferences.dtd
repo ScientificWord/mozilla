@@ -460,6 +460,7 @@
 <!ENTITY DefaultNewGraphicsInlineOffset.label "Default vertical offset for inline graphics">
 <!ENTITY DefaultPlacementNewPlotsDisplayed.label "Displayed">
 <!ENTITY DefaultPlacementNewPlotsFloating.label  "Floating">
+<!ENTITY KeepAspect.label "Keep aspect ratio">
 
 <!ENTITY PreferredPDFViewer.label  "Preferred PDF viewer">
 <!ENTITY pdf.viewerUseCurrentPDFPlugin.label  "Use current PDF plugin">
@@ -477,6 +478,7 @@
 <!ENTITY PaddingColor.label "Padding color">
 <!ENTITY BorderWidth.label  "Border width">
 <!ENTITY BorderColor.label  "Border color">
+<!ENTITY BackgroundColor.label "Background color">
 <!ENTITY EditorTab.label  "Editor">
 <!ENTITY SpellChecking.label  "Spell checking">
 <!ENTITY PlotsTab.label "Plots">
