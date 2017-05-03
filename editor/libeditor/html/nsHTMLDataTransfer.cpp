@@ -23,7 +23,7 @@ basic-offset: 2 -*- */
  * Contributor(s):
  *
  * Alternatively, the contents of this file may be used under the terms of
- * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * either of the GNU CreateEldddddddddddddddGeneral Public License Version 2 or later (the "GPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
@@ -1531,33 +1531,35 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
     else
       setPrefString = NS_LITERAL_STRING("inline");
     SetAttribute(frame, NS_LITERAL_STRING("pos"), setPrefString);
-    prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.forcehere" : "swp.graphics.floatlocation.forcehere");
-    res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
-    if (NS_SUCCEEDED(res) && prefBool)
-      floatPlacement.Append(PRUnichar('H'));
-    prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.here" : "swp.graphics.floatlocation.here");
-    res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
-    if (NS_SUCCEEDED(res) && prefBool)
-      floatPlacement.Append(PRUnichar('h'));
-    prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.pagefloats" : "swp.graphics.floatlocation.pagefloats");
-    res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
-    if (NS_SUCCEEDED(res) && prefBool)
-      floatPlacement.Append(PRUnichar('p'));
-    prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.toppage" : "swp.graphics.floatlocation.toppage");
-    res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
-    if (NS_SUCCEEDED(res) && prefBool)
-      floatPlacement.Append(PRUnichar('t'));
-    prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.bottompage" : "swp.graphics.floatlocation.bottompage");
-    res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
-    if (NS_SUCCEEDED(res) && prefBool)
-      floatPlacement.Append(PRUnichar('b'));
-    SetAttribute(frame, NS_LITERAL_STRING("placeLocation"), floatPlacement);
-    prefName = (char *) (!bIsImage ? "swp.graph.floatplacement" : "swp.graphics.floatplacement");
-    res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
-    if (NS_SUCCEEDED(res))
-    {
-      CopyASCIItoUTF16(prefString, setPrefString);
-      SetAttribute(frame, NS_LITERAL_STRING("placement"), setPrefString);
+    if (setPrefString.EqualsLiteral("float")) { 
+      prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.forcehere" : "swp.graphics.floatlocation.forcehere");
+      res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('H'));
+      prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.here" : "swp.graphics.floatlocation.here");
+      res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('h'));
+      prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.pagefloats" : "swp.graphics.floatlocation.pagefloats");
+      res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('p'));
+      prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.toppage" : "swp.graphics.floatlocation.toppage");
+      res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('t'));
+      prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.bottompage" : "swp.graphics.floatlocation.bottompage");
+      res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
+      if (NS_SUCCEEDED(res) && prefBool)
+        floatPlacement.Append(PRUnichar('b'));
+      SetAttribute(frame, NS_LITERAL_STRING("placeLocation"), floatPlacement);
+      prefName = (char *) (!bIsImage ? "swp.graph.floatplacement" : "swp.graphics.floatplacement");
+      res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
+      if (NS_SUCCEEDED(res))
+      {
+        CopyASCIItoUTF16(prefString, setPrefString);
+        SetAttribute(frame, NS_LITERAL_STRING("placement"), setPrefString);
+      }
     }
     prefName = (char *) (!bIsImage ? "swp.graph.units" : "swp.graphics.units");
     res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(unitString));
@@ -1566,45 +1568,7 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
     else
       setUnitString = NS_LITERAL_STRING("in");
     SetAttribute(frame, NS_LITERAL_STRING("units"), setUnitString);
-    
-    prefName = (char *) (!bIsImage ? "swp.graph.hsize" : "swp.graphics.hsize");
-    res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
-    if (NS_SUCCEEDED(res))
-    {
-      CopyASCIItoUTF16(prefString, setPrefString);
-      setPrefString += setUnitString;
-      SetAttribute(frame, NS_LITERAL_STRING("imageWidth"), setPrefString);
-      SetAttribute(frame, NS_LITERAL_STRING("width"), setPrefString);
-    }
-    prefName = (char *) (!bIsImage ? "swp.graph.vsize" : "swp.graphics.vsize");
 
-    res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
-    if (NS_SUCCEEDED(res))
-    {
-      CopyASCIItoUTF16(prefString, setPrefString);
-      setPrefString += setUnitString;
-      SetAttribute(frame, NS_LITERAL_STRING("imageHeight"), setPrefString);
-      SetAttribute(frame, NS_LITERAL_STRING("height"), setPrefString);
-    }
-
-    // res = prefBranch->GetCharPref("swp.defaultGraphicsInlineOffset", getter_Copies(prefString));
-    // if (NS_SUCCEEDED(res))
-    // {
-    //   CopyASCIItoUTF16(prefString, setPrefString);
-    //   lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
-    //   if (lengthVal)
-    //   {
-    //     nsAutoString newValue;
-    //     if (lengthVal > 0)
-    //       newValue = NS_LITERAL_STRING("-");
-    //     newValue.AppendFloat(lengthVal);
-    //     setPrefString = EmptyString();
-    //     setPrefString.AppendFloat(origVal);
-    //     SetAttribute(frame, NS_LITERAL_STRING("inlineOffset"), setPrefString);
-    //     mHTMLCSSUtils->SetCSSProperty(frame, nsEditProperty::cssPosition, NS_LITERAL_STRING("relative"), PR_TRUE);
-    //     mHTMLCSSUtils->SetCSSProperty(frame, nsEditProperty::cssBottom, newValue, PR_TRUE);
-    //   }
-    // }
 
     prefName = (char *) (!bIsImage ? "swp.graph.usedefaultwidth" : "swp.graphics.usedefaultwidth");
 
@@ -1617,7 +1581,6 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
       if (NS_SUCCEEDED(res))
       {
         CopyASCIItoUTF16(prefString, setPrefString);
-        setPrefString += setUnitString;
         SetAttribute(frame, NS_LITERAL_STRING("imageWidth"), setPrefString);
         SetAttribute(frame, NS_LITERAL_STRING("width"), setPrefString);
       }
@@ -1632,13 +1595,209 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
       if (NS_SUCCEEDED(res))
       {
         CopyASCIItoUTF16(prefString, setPrefString);
-        setPrefString += setUnitString;
         SetAttribute(frame, NS_LITERAL_STRING("imageHeight"), setPrefString);
         SetAttribute(frame, NS_LITERAL_STRING("height"), setPrefString);
       }
     }
+    // Margins
+    // hmargin
+    prefName = (char *) (!bIsImage ? "swp.graph.hmargin" : "swp.graphics.hmargin");
+
+    res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
+    if (NS_SUCCEEDED(res))
+    {
+      CopyASCIItoUTF16(prefString, setPrefString);
+      SetAttribute(frame, NS_LITERAL_STRING("sidemargin"), setPrefString);
+    }
+
+    // vmargin
+    prefName = (char *) (!bIsImage ? "swp.graph.vmargin" : "swp.graphics.vmargin");
+
+    res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
+    if (NS_SUCCEEDED(res))
+    {
+      CopyASCIItoUTF16(prefString, setPrefString);
+      SetAttribute(frame, NS_LITERAL_STRING("topmargin"), setPrefString);
+    }
+
+    // borderwidth
+    prefName = (char *) (!bIsImage ? "swp.graph.borderwidth" : "swp.graphics.borderwidth");
+
+    res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
+    if (NS_SUCCEEDED(res))
+    {
+      CopyASCIItoUTF16(prefString, setPrefString);
+      SetAttribute(frame, NS_LITERAL_STRING("borderw"), setPrefString);
+    }
+
+    // paddingwidth
+    prefName = (char *) (!bIsImage ? "swp.graph.paddingwidth" : "swp.graphics.paddingwidth");
+
+    res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
+    if (NS_SUCCEEDED(res))
+    {
+      CopyASCIItoUTF16(prefString, setPrefString);
+      SetAttribute(frame, NS_LITERAL_STRING("padding"), setPrefString);
+    }
+
+   // border-color
+    prefName = (char *) (!bIsImage ? "swp.graph.bordercolor" : "swp.graphics.bordercolor");
+
+    res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
+    if (NS_SUCCEEDED(res))
+    {
+      CopyASCIItoUTF16(prefString, setPrefString);
+      SetAttribute(frame, NS_LITERAL_STRING("border-color"), setPrefString);
+    }
+
+    // bgcolor
+    prefName = (char *) (!bIsImage ? "swp.graph.bgcolor" : "swp.graphics.bgcolor");
+
+    res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
+    if (NS_SUCCEEDED(res))
+    {
+      CopyASCIItoUTF16(prefString, setPrefString);
+      SetAttribute(frame, NS_LITERAL_STRING("background-color"), setPrefString);
+    }
   }
   return res;
+}
+
+NS_IMETHODIMP
+nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
+{
+  nsresult res = NS_OK;
+  PRBool left = PR_FALSE;
+  PRBool right = PR_FALSE;
+  nsAutoString topmarginStr, sidemarginStr;
+  nsAutoString leftmargin, rightmargin;
+  // frame attributes
+  NS_NAMED_LITERAL_STRING(borderw,"borderw");
+  NS_NAMED_LITERAL_STRING(padding,"padding");
+  NS_NAMED_LITERAL_STRING(captionloc,"captionloc");
+  NS_NAMED_LITERAL_STRING(units,"units");
+  NS_NAMED_LITERAL_STRING(sidemargin,"sidemargin");
+  NS_NAMED_LITERAL_STRING(topmargin,"topmargin");
+  NS_NAMED_LITERAL_STRING(overhang,"overhang");
+  NS_NAMED_LITERAL_STRING(pos,"pos");
+  NS_NAMED_LITERAL_STRING(ltxfloat,"ltxfloat");
+  NS_NAMED_LITERAL_STRING(bordercolor,"border-color");
+  NS_NAMED_LITERAL_STRING(backgroundcolor,"background-color");
+  NS_NAMED_LITERAL_STRING(textalignment,"textalignment");
+  NS_NAMED_LITERAL_STRING(width,"width");
+  NS_NAMED_LITERAL_STRING(height,"height");
+  NS_NAMED_LITERAL_STRING(aspect, "aspect");
+  // style keywords
+  NS_NAMED_LITERAL_STRING(border,"border");
+  NS_NAMED_LITERAL_STRING(borderwidth,"border-width");
+  NS_NAMED_LITERAL_STRING(margin,"margin");
+  NS_NAMED_LITERAL_STRING(textalign,"text-align");
+  NS_NAMED_LITERAL_STRING(floatatt,"float");
+  NS_NAMED_LITERAL_STRING(captionside,"caption-side");
+  NS_NAMED_LITERAL_STRING(colon,": ");
+  NS_NAMED_LITERAL_STRING(semicolon,"; ");
+  NS_NAMED_LITERAL_STRING(space," ");
+  NS_NAMED_LITERAL_STRING(defaultunit,"in");
+  NS_NAMED_LITERAL_STRING(zero, "0");
+
+  // other strings
+  nsAutoString style, attrStr, posStr, unitStr, borderwStr, bordercolorStr;
+  res = frame->GetAttribute(units, unitStr);
+  if (unitStr.Length() == 0) unitStr.Assign(defaultunit);
+  res = frame->GetAttribute(borderw, borderwStr);
+  res = frame->GetAttribute(bordercolor, bordercolorStr);
+  if (borderwStr.Length() > 0 && bordercolorStr.Length() > 0) {
+    style += border + colon + borderwStr + unitStr + space + NS_LITERAL_STRING("solid") +
+      space + bordercolorStr + semicolon;
+  }
+  else {
+    if (borderwStr.Length() > 0) 
+      style += borderwidth + colon + borderwStr + unitStr + semicolon;
+    if (bordercolorStr.Length() > 0)
+      style += bordercolor + colon + bordercolorStr + semicolon;
+  }
+  res = frame->GetAttribute(width, attrStr);
+  if (attrStr.Length() > 0) {
+    style += width + colon + attrStr + unitStr + semicolon;
+  }
+
+  res = frame->GetAttribute(height, attrStr);
+  if (attrStr.Length() > 0) {
+    style += height + colon + attrStr + unitStr + semicolon;
+  }
+
+  res = frame->GetAttribute(pos, posStr);
+  if (posStr.Length() > 0) {
+    left = (posStr.EqualsLiteral("L") || posStr.EqualsLiteral("I"));
+    right = (posStr.EqualsLiteral("R") || posStr.EqualsLiteral("O"));
+    if (left) {
+      style += floatatt + colon + NS_LITERAL_STRING("left") + semicolon;
+    }
+    else if (right) {
+      style += floatatt + colon + NS_LITERAL_STRING("right") + semicolon;
+    }
+  }
+  // find topmargin, sidemargin
+  res = frame->GetAttribute(topmargin, topmarginStr);
+  res = frame->GetAttribute(sidemargin, sidemarginStr);
+  if (topmarginStr.Length() == 0) topmarginStr = zero;
+  if (sidemarginStr.Length() == 0) sidemarginStr = zero;
+  leftmargin = sidemarginStr;
+  rightmargin = sidemarginStr;
+  if (left) {
+    leftmargin = zero;
+  }
+  else if (right) {
+    rightmargin = zero;
+  }
+  style += margin + colon + topmarginStr + unitStr + space + rightmargin +
+    unitStr + space + topmarginStr + unitStr + space + leftmargin + unitStr +
+    semicolon;
+// Overhang
+    // come back to this.
+  res = frame->GetAttribute(padding, attrStr);
+  if (attrStr.Length() > 0) {
+    style += padding + colon + attrStr + unitStr + semicolon;
+  }
+  res = frame->GetAttribute(backgroundcolor, attrStr);
+  if (attrStr.Length() > 0) {
+    style += backgroundcolor + colon + attrStr + semicolon;
+  }
+  res = frame->GetAttribute(textalignment, attrStr);
+  if (attrStr.Length() > 0) {
+    style += textalignment + colon + attrStr + semicolon;
+  }
+  res = frame->GetAttribute(captionloc, attrStr);
+  if (attrStr.Length() > 0) {
+    style += captionside + colon + attrStr + semicolon;
+  }
+  res = frame->SetAttribute(NS_LITERAL_STRING("style"), style);
+  return res;
+}
+
+
+NS_IMETHODIMP 
+nsHTMLEditor::GetGraphicsAttributesFromFrame(nsIDOMElement *frame, nsIDOMElement *object)
+{
+  nsresult res = NS_OK;
+  nsAutoString width, height, ltx_width, ltx_height, naturalWidth, naturalHeight,
+    originalSrcUrl, aspect, units;
+  nsAutoString style(EmptyString());
+  object->SetAttribute(NS_LITERAL_STRING("_moz-resizing"), NS_LITERAL_STRING("true"));
+  object->SetAttribute(NS_LITERAL_STRING("msi-resize"), NS_LITERAL_STRING("true"));
+  res = frame->GetAttribute(NS_LITERAL_STRING("units"), units);
+  res = frame->GetAttribute(NS_LITERAL_STRING("height"),height);
+  res = frame->GetAttribute(NS_LITERAL_STRING("width"),width);
+  style += NS_LITERAL_STRING("height: ") + height + units + NS_LITERAL_STRING("; width: ") + width + units + NS_LITERAL_STRING("; ");
+  res = object->SetAttribute(NS_LITERAL_STRING("width"), width);
+  res = object->SetAttribute(NS_LITERAL_STRING("height"), height);
+  res = object->SetAttribute(NS_LITERAL_STRING("units"), units);
+  res = object->SetAttribute(NS_LITERAL_STRING("ltx_width"), width);
+  res = object->SetAttribute(NS_LITERAL_STRING("naturalWidth"), width);
+  res = object->SetAttribute(NS_LITERAL_STRING("ltx_height"), height);
+  res = object->SetAttribute(NS_LITERAL_STRING("naturalHeight"), height);
+  res = object->SetAttribute(NS_LITERAL_STRING("style"), style);
+  return res; 
 }
 
 nsresult
@@ -2682,6 +2841,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
   PRBool fExists;
   nsCAutoString dirPath;
   nsXPIDLCString bestFlavor;
+  nsCOMPtr<nsISelection> sel;
   nsCOMPtr<nsISupports> genericDataObj;
   PRUint32 len = 0;
   if ( NS_SUCCEEDED(transferable->GetAnyTransferData(getter_Copies(bestFlavor), getter_AddRefs(genericDataObj), &len)) )
@@ -2805,8 +2965,8 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
               {
                 nsCOMPtr<nsIDOMElement> frame;
                 nsCOMPtr<nsIDOMElement> obj;
-                nsCOMPtr<nsIDOMNode> framenode = do_QueryInterface(frame);
-                nsCOMPtr<nsIDOMNode> objnode = do_QueryInterface(obj);
+                nsCOMPtr<nsIDOMNode> framenode;
+                nsCOMPtr<nsIDOMNode> objnode;
                 nsCOMPtr<nsIDOMText> text;
                 nsCOMPtr<nsIDOMText> text2;
                 PRInt32 index;
@@ -2840,30 +3000,41 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
 
                 CreateFrameWithDefaults(NS_LITERAL_STRING("image"), aDestinationNode, aDestOffset, getter_AddRefs(frame));
                 if (frame == nsnull) return NS_ERROR_FAILURE;
+                GetFrameStyleFromAttributes(frame);
                 frame->GetParentNode(getter_AddRefs(parent));
                 if (parent == nsnull) return NS_ERROR_FAILURE;
                 CreateNode(NS_LITERAL_STRING("object"), frame, 0, getter_AddRefs(objnode));
                 obj = do_QueryInterface(objnode);
-
-
-//                stuffToPaste.AssignLiteral("<object xmlns=\"http://www.w3.org/1999/xhtml\" data=\"");
-                
-
+                InsertNodeAtPoint(objnode, getter_AddRefs(framenode), 0, PR_FALSE);
+                GetSelection(getter_AddRefs(sel));
+                if (sel) {
+                  sel->Collapse(frame, 0);
+                }
+                // obj = do_QueryInterface(objnode);
                 obj->SetAttribute(NS_LITERAL_STRING("data"), NS_LITERAL_STRING("graphics/") + NS_ConvertUTF8toUTF16(fileName));
-                // stuffToPaste.AssignLiteral("<object data=\"");
-                // stuffToPaste.AppendLiteral("graphics/");
-                // char * unescaped = strdup(fileName.get());
-                // nsUnescape(unescaped);
-                // AppendUTF8toUTF16(unescaped, stuffToPaste);
-                // stuffToPaste.AppendLiteral("\" alt=\"\"");
-                // nsAutoString attributeStr;
-                // rv = GetGraphicsDefaultsAsString( attributeStr);
-                // if (NS_SUCCEEDED(rv) && attributeStr.Length())
-                // {
-                //   stuffToPaste.Append(PRUnichar(' '));
-                //   stuffToPaste += attributeStr;
-                // }
-                // stuffToPaste.AppendLiteral("></object>");
+                GetGraphicsAttributesFromFrame(frame, obj);
+
+                // call a command implemented in JavaScript
+                nsCOMPtr<nsIDOMDocument> ownerDoc;
+                aDestinationNode->GetOwnerDocument(getter_AddRefs(ownerDoc));
+                NS_ENSURE_STATE(ownerDoc);
+
+                nsCOMPtr<nsIDOMDocumentView> docView = do_QueryInterface(ownerDoc);
+                NS_ENSURE_STATE(docView);
+
+                nsCOMPtr<nsIDOMAbstractView> absView;
+                docView->GetDefaultView(getter_AddRefs(absView));
+                NS_ENSURE_STATE(absView);
+
+                nsCOMPtr<nsIDOMWindowInternal> win = do_QueryInterface(absView);
+
+                nsCOMPtr<nsIControllers> controllers;
+                rv = win->GetControllers(getter_AddRefs(controllers));
+                nsCOMPtr<nsIController> controller;
+                const char * command = "convert_graphics_at_selection";
+                rv = controllers->GetControllerForCommand(command, getter_AddRefs(controller));
+                if (NS_FAILED(rv)) return rv;
+                controller->DoCommand(command);
               }
               else // insertAsLink
               {

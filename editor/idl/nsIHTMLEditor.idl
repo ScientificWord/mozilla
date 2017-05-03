@@ -570,6 +570,14 @@ interface nsIHTMLEditor : nsISupports
 
   nsIDOMElement createFrameWithDefaults(in AString frametype, in nsIDOMNode parent, in long position);
 
+/*  All style attributes for a frame are attributes of the frame since this is the 
+  easiest way for the XSLT code to find them. The XSLT code ignores the style attribute.
+  This function constructs the style attribute from the other attributes so that the
+  on-screen appearance of the frame closely approximates that of the generated PDF frame.
+*/  
+  void getFrameStyleFromAttributes(in nsIDOMElement frame);
+
+  void getGraphicsAttributesFromFrame(in nsIDOMElement frame, in nsIDOMElement object);
   /** 
    * Copy a graphics file to the graphics directory and convert it if necessary. Return the path to 
    * put in the document 

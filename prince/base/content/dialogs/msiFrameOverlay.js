@@ -218,29 +218,17 @@ function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
   var graphspec;
   var unitHandler;
   if (!wrapperNode) return;
-  // Cope with different capitalization in plots.
-  if (contentsNode.getAttribute("msigraph") !== "true") {
-    sizeState.width = contentsNode.getAttribute(widthAtt);
-    sizeState.height = contentsNode.getAttribute(heightAtt);
-    sizeState.sizeUnit = sizeState.actualSize.unit = contentsNode.getAttribute("units");
-    sizeState.preserveAspectRatio = (contentsNode.getAttribute("aspect") === "true") ||
-      (wrapperNode.getAttribute("aspect") == "true");
-    sizeState.actualSize.width = contentsNode.getAttribute("naturalWidth");
-    sizeState.actualSize.height = contentsNode.getAttribute("naturalHeight");
-  }
-  sizeState.sizeUnit = contentsNode.getAttribute("units") || wrapperNode.getAttribute("units") || wrapperNode.getAttribute("Units");
-
-  if (wrapperNode.parentNode.nodeName === "graph") {
-    graphspec = wrapperNode.parentNode.firstChild;
-    sizeState.actualSize.width = graphspec.getAttribute("Width");
-    sizeState.actualSize.height = graphspec.getAttribute("Height");
-    sizeState.sizeUnit = sizeState.actualSize.unit = graphspec.getAttribute("Units");
-    sizeState.preserveAspectRatio = graphspec.getAttribute("Aspect") === "true";
-    unitHandler = new UnitHandler(editor);
-    unitHandler.initCurrentUnit(sizeState.actualSize.unit);
-    sizeState.width = unitHandler.getValueAs(sizeState.actualSize.width, sizeState.sizeUnit);
-    sizeState.height = unitHandler.getValueAs(sizeState.actualSize.height, sizeState.sizeUnit);
-  }
+  sizeState.width = wrapperNode.getAttribute(widthAtt);
+  sizeState.height = wrapperNode.getAttribute(heightAtt);
+  sizeState.sizeUnit = sizeState.actualSize.unit = wrapperNode.getAttribute("units");
+  sizeState.preserveAspectRatio = (wrapperNode.getAttribute("aspect") === "true");
+  sizeState.actualSize.width = wrapperNode.getAttribute("naturalWidth");
+  sizeState.actualSize.height = wrapperNode.getAttribute("naturalHeight");
+  sizeState.sizeUnit = wrapperNode.getAttribute("units");
+  unitHandler = new UnitHandler(editor);
+  unitHandler.initCurrentUnit(sizeState.sizeUnit);
+  sizeState.width = unitHandler.getValueAs(sizeState.width, sizeState.sizeUnit);
+  sizeState.height = unitHandler.getValueAs(sizeState.height, sizeState.sizeUnit);
   sizeState.update(dg);
   setHasNaturalSize();
 }
@@ -321,29 +309,33 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   var len2;
   var values;
   var width = 0;
-  var prefUnit;
-  var currUnit;
+  var pos;
+//  var currUnit;
   var placement;
   Dg = dg;
   initUnitHandler();
-  var prefBranch = GetPrefs();
-  var isFloat = false;
-  var prefprefix;
-  if (contentsElement && (contentsElement.nodeName == 'graph' || (contentsElement.getAttribute("type") && contentsElement.getAttribute("type").indexOf("mupad") >= 0)))
-    prefprefix = "swp.graph.";
-  else if (contentsElement && (contentsElement.nodeName == 'table' || (contentsElement.getAttribute("type") && contentsElement.getAttribute("type").indexOf("table") >= 0)))
-    prefprefix = "swp.table.";
-  else
-    prefprefix = "swp.graphics.";
+  // var prefBranch = GetPrefs();
+  // var isFloat = false;
+  // var prefprefix;
+  // if (contentsElement && (contentsElement.nodeName == 'graph' || (contentsElement.getAttribute("type") && contentsElement.getAttribute("type").indexOf("mupad") >= 0)))
+  //   prefprefix = "swp.graph.";
+  // else if (contentsElement && (contentsElement.nodeName == 'table' || (contentsElement.getAttribute("type") && contentsElement.getAttribute("type").indexOf("table") >= 0)))
+  //   prefprefix = "swp.table.";
+  // else
+  //   prefprefix = "swp.graphics.";
 
-  prefUnit = prefBranch.getCharPref(prefprefix + "units");
-  if (newElement) {
-    currUnit = prefUnit;
-  }
-  else {
-    currUnit = element.getAttribute("units");
-  }
+  // prefUnit = prefBranch.getCharPref(prefprefix + "units");
+  // if (newElement) {
+  //   currUnit = prefUnit;
+  // }
+  // else {
+  //   currUnit = element.getAttribute("units");
+  // }
+  currUnit = element.getAttribute("units");
   frameUnitHandler.initCurrentUnit(currUnit);
+  gConstrainHeight = element.getAttribute("aspect"); // BBM: Fix this
+  gConstrainWidth = element.getAttribute("aspect");  // "   "
+  gFrameModeImage = (element.getAttribute("frametype") === "image");
 
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
   scale = 0.25;
@@ -358,7 +350,11 @@ function initFrameTab(dg, element, newElement,  contentsElement)
     if (!gConstrainWidth)
       gConstrainWidth = scaledWidthDefault;
   }
+
+  pos = element.getAttribute("pos");
   position = 0;  // left = 1, right = 2, neither = 0
+  if (pos === "L" || pos === "I") position = 1;
+  else if (pos === "R" || pos === "O") position = 2;
 
   dg.editorElement = msiGetParentEditorElementForDialog(window);
   dg.editor = msiGetEditor(dg.editorElement);
@@ -417,6 +413,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   var attrs = ["margin","border","padding"];
   var name;
   var side;
+  var b;
   try {
     for (i=0, len = sides.length; i<len; i++)
     {
@@ -440,67 +437,40 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   frameUnitHandler.setEditFieldList(fieldList);
 // The defaults for the document are set by the XUL document, modified by persist attributes.
 // These are then overwritten by preference settings, if they exist
-  v = null;
-  v = (!newElement && element.getAttribute("placement") || prefBranch.getCharPref(prefprefix + "placement"));
+  v = element.getAttribute("placement");
   if (v != null && dg.locationList) dg.locationList.value = v;
-  if (!newElement) {
-    v = element.getAttribute("placeLocation");
-    isFloat = (v != null) && v.length > 0;
-  }
-  else {
-    v = prefBranch.getBoolPref(prefprefix + "floatlocation.forcehere");
-    if (v != null) {
-      checkMenuItem(document.getElementById("placement_forceHere"),v);
-      isFloat  = isFloat | v;
-    }
-    v = prefBranch.getBoolPref(prefprefix + "floatlocation.here");
-    if (v != null) {
-      checkMenuItem(document.getElementById("placement_here"),v);
-      isFloat  = isFloat | v;
-    }
-    v = prefBranch.getBoolPref(prefprefix + "floatlocation.pagefloats");
-    if (v != null) {
-      checkMenuItem(document.getElementById("placement_pageOfFloats"),v);
-      isFloat  = isFloat | v;
-    }
-    v = prefBranch.getBoolPref(prefprefix + "floatlocation.toppage");
-    if (v != null) {
-      checkMenuItem(document.getElementById("placement_topPage"),v);
-      isFloat  = isFloat | v;
-    }
-    v = prefBranch.getBoolPref(prefprefix + "floatlocation.bottompage");
-    if (v != null) {
-      checkMenuItem(document.getElementById("placement_bottomPage"),v);
-      isFloat  = isFloat | v;
-    }
+  v = element.getAttribute("ltx_float");
+  isFloat = (v != null) && v.length > 0;
+  if (isFloat) {
+    b = (v.search("H") >= 0);
+    checkMenuItem(document.getElementById("placement_forceHere"), b);
+    b = (v.search("h") >= 0);
+    checkMenuItem(document.getElementById("placement_here"), b);
+    b = (v.search("p") >= 0);
+    checkMenuItem(document.getElementById("placement_pageOfFloats"), b);
+    b = (v.search("t") >= 0);
+    checkMenuItem(document.getElementById("placement_topPage"), b);
+    b = (v.search("b") >= 0);
+    checkMenuItem(document.getElementById("placement_bottomPage"), b);
   }
   if (!isFloat) checkMenuItem(document.getElementById("floatlistNone"), true);
-  v = prefBranch.getCharPref(prefprefix + "floatplacement");
-//  if (v != null) dg.wrapOptionRadioGroup.value = frameUnitHandler.getValueOf(v, prefUnit)
-  v = null;
-  v = ((!newElement && element.getAttribute("borderw")) || prefBranch.getCharPref(prefprefix + "border"));
+  v =  element.getAttribute("borderw");
   if (v != null && dg.borderInput && dg.borderInput.left && dg.borderInput.right && dg.borderInput.top && dg.borderInput.bottom)
-    dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.bottom.value = dg.borderInput.top.value = frameUnitHandler.getValueOf(v, prefUnit);
-  v = (!newElement && element.getAttribute("sidemargin") || prefBranch.getCharPref(prefprefix + "hmargin"));
-  if (v != null && dg.marginInput && dg.marginInput.left && dg.marginInput.right ) dg.marginInput.left.value = dg.marginInput.right.value = frameUnitHandler.getValueOf(v, prefUnit);
-  v = null;
-  v = (!newElement && element.getAttribute("topmargin") ||  prefBranch.getCharPref(prefprefix + "vmargin"));
-  if (v != null && dg.marginInput && dg.marginInput.top && dg.marginInput.bottom) dg.marginInput.top.value = dg.marginInput.bottom.value = frameUnitHandler.getValueOf(v, prefUnit);
-  v = null;
-  v = (!newElement && element.getAttribute("padding") || prefBranch.getCharPref(prefprefix + "paddingwidth"));
-  if (v != null && dg.paddingInput && dg.paddingInput.left && dg.paddingInput.right) dg.paddingInput.left.value = dg.paddingInput.right.value = dg.paddingInput.top.value = dg.paddingInput.bottom .value= frameUnitHandler.getValueOf(v, prefUnit);
-  v = null;
-  v = (!newElement && element.getAttribute("background-color") || prefBranch.getCharPref(prefprefix + "bgcolor"));
+    dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.bottom.value = dg.borderInput.top.value = v;
+  v =  element.getAttribute("sidemargin");
+  if (v != null && dg.marginInput && dg.marginInput.left && dg.marginInput.right ) dg.marginInput.left.value = dg.marginInput.right.value = v;
+  v =  element.getAttribute("topmargin");
+  if (v != null && dg.marginInput && dg.marginInput.top && dg.marginInput.bottom) dg.marginInput.top.value = dg.marginInput.bottom.value = v;
+  v =  element.getAttribute("padding");
+  if (v != null && dg.paddingInput && dg.paddingInput.left && dg.paddingInput.right) dg.paddingInput.left.value = dg.paddingInput.right.value = dg.paddingInput.top.value = dg.paddingInput.bottom .value = v;
+  v =  element.getAttribute("background-color");
   if (v != null && dg.bgcolorWell) dg.bgcolorWell.setAttribute("style","background-color: " + v + ";");
-  v = null;
-  v = (!newElement && element.getAttribute("border-color") || prefBranch.getCharPref(prefprefix + "bordercolor"));
+  v =  element.getAttribute("border-color");
   if (v != null && dg.colorWell) dg.colorWell.setAttribute("style","background-color: " + v + ";");
 
   var floatLocation, posStr, pos;
   var inlineOffset = 0;
   try {
-    if (!newElement)
-    {   // we need to initialize the dg from the frame element
       if (! contentsElement)
          contentsElement = element;
       setFrameSizeFromExisting(dg, element, contentsElement);
@@ -525,68 +495,10 @@ function initFrameTab(dg, element, newElement,  contentsElement)
         pos = "center";
       dg.locationList.value = pos;
       if ((pos=="inline") && element.hasAttribute("inlineOffset"))
-        inlineOffset = frameUnitHandler.getValueFromString( element.getAttribute("inlineOffset"), frameUnitHandler.currentUnit );
-
-      // if (gFrameModeImage)
-      {
-        if (pos === "L" || pos ==='left')
-        {
-          position = 1;  // left = 1, right = 2, neither = 0
-        }
-        else if (pos === "R" || pos === 'right')
-        {
-          position = 2;
-        }
-        var overhang = element.getAttribute("overhang");
-        if (overhang === null) overhang = 0;
-        dg.marginInput.right.value = overhang;
-        // var sidemargin = element.getAttribute("sidemargin");
-        // if (sidemargin == null) sidemargin = 0;
-        // dg.marginInput.left.value = sidemargin;
-        // var topmargin = element.getAttribute("topmargin");
-        // if (topmargin == null) topmargin = 0;
-        // dg.marginInput.top.value = topmargin;
-        // var borderwidth = element.getAttribute("borderw");
-        // if (borderwidth == null) borderwidth = 0;
-        // dg.borderInput.left.value = borderwidth;
-        // var padding = element.getAttribute("padding");
-        // if (padding == null) padding = 0;
-        // dg.paddingInput.left.value = padding;
-      }
-      floatLocation = element.getAttribute("ltxfloat");
-      if (!floatLocation || floatLocation === "")
-        floatLocation = "";
-      dg.floatList.value = floatLocation;
-
-      isFloat = false;
-      v = (floatLocation.indexOf("H") >= 0);
-      checkMenuItem(document.getElementById("ltxfloat_forceHere"),v);
-      // if (v && !isFloat) dg.floatList.label = document.getElementById("ltxfloat_forceHere").getAttribute("label");
-      isFloat  = isFloat | v;
-
-      v = (floatLocation.indexOf("h") >= 0);
-      checkMenuItem(document.getElementById("ltxfloat_here"),v);
-      // if (v && !isFloat) dg.floatList.label = document.getElementById("ltxfloat_here").getAttribute("label");
-      isFloat  = isFloat | v;
-
-      v = (floatLocation.indexOf("p") >= 0);
-      checkMenuItem(document.getElementById("ltxfloat_pageOfFloats"),v);
-      // if (v && !isFloat) dg.floatList.label = document.getElementById("ltxfloat_pageOfFloats").getAttribute("label");
-      isFloat  = isFloat | v;
-
-      v = (floatLocation.indexOf("t") >= 0);
-      checkMenuItem(document.getElementById("ltxfloat_topPage"),v);
-      // if (v && !isFloat) dg.floatList.selectedIndex = 4;(document.getElementById("ltxfloat_topPage"));
-      isFloat  = isFloat | v;
-
-      v = (floatLocation.indexOf("b") >= 0);
-      checkMenuItem(document.getElementById("ltxfloat_bottomPage"),v);
-      // if (v && !isFloat) dg.floatList.label = document.getElementById("ltxfloat_bottomPage").getAttribute("label");
-      isFloat  = isFloat | v;
-
-      checkMenuItem(document.getElementById("floatlistNone"), !isFloat);
-  //
-  //    if (!isFloat) dg.floatList.label = document.getElementById("floatlistNone").getAttribute("label");
+        inlineOffset = element.getAttribute("inlineOffset");
+      var overhang = element.getAttribute("overhang");
+      if (overhang === null) overhang = 0;
+      dg.marginInput.right.value = overhang;
 
       var theColor;
       if (element.hasAttribute("border-color"))
@@ -599,6 +511,12 @@ function initFrameTab(dg, element, newElement,  contentsElement)
         theColor = hexcolor(element.getAttribute("background-color"));
         setColorInDialog("bgcolorWell", theColor);
       }
+      // if (element.hasAttribute("padding-color"))
+      // {
+      //   theColor = hexcolor(element.getAttribute("background-color"));
+      //   setColorInDialog("paddingcolorWell", theColor);
+      // }
+
       var key = "";
       var captionNodes = element.getElementsByTagName("imagecaption");
       var captionNode;
@@ -615,56 +533,37 @@ function initFrameTab(dg, element, newElement,  contentsElement)
       dg.captionLocation.value = captionLoc;
       gCaptionLoc = captionLoc;
     }
-    else  //so it is a new element
-    {
-      if (gDefaultPlacement.length)
-      {
-        var defPlacementArray = gDefaultPlacement.split(",");
-        if (defPlacementArray.length)
-        {
-          pos = TrimString(defPlacementArray[0]);
-          if (defPlacementArray.length > 1)
-          {
-            floatLocation = TrimString(defPlacementArray[1]);
-            if (defPlacementArray.length > 2)
-              floatLocation = TrimString(defPlacementArray[2]);
-          }
-        }
-      }
-      if (gDefaultInlineOffset.length)
-        inlineOffset = frameUnitHandler.getValueFromString( gDefaultInlineOffset );
-    }
-  }
+
   catch(e) {
-    //msidump(e.message);
+    dump(e.message);
   }
 
   try {
-    if (!newElement || gDefaultPlacement.length)
-    {
-      try
-      {
-        if (dg.locationList) {
-          dg.locationList.value = pos;
-        }
-        if (pos == "inline")
-        {
-          dg.frameInlineOffsetInput.value= inlineOffset;
-        }
-      }
-      catch(e)
-      {
-        msidump(e.message);
-      }
-    }
+  //   if (!newElement || gDefaultPlacement.length)
+  //   {
+  //     try
+  //     {
+  //       if (dg.locationList) {
+  //         dg.locationList.value = pos;
+  //       }
+  //       if (pos == "inline")
+  //       {
+  //         dg.frameInlineOffsetInput.value= inlineOffset;
+  //       }
+  //     }
+  //     catch(e)
+  //     {
+  //       msidump(e.message);
+  //     }
+  //   }
 
-    if (dg.locationList) {
-      placement = 0;
-      var placementLetter = document.getElementById("locationList").value;
-      if (/l|i/i.test(placementLetter)) placement=1;
-      else if (/r|o/i.test(placementLetter)) placement = 2;
-  //    enableFloatOptions(dg.wrapOptionRadioGroup);
-    }
+  //   if (dg.locationList) {
+  //     placement = 0;
+  //     var placementLetter = document.getElementById("locationList").value;
+  //     if (/l|i/i.test(placementLetter)) placement=1;
+  //     else if (/r|o/i.test(placementLetter)) placement = 2;
+  // //    enableFloatOptions(dg.wrapOptionRadioGroup);
+  //   }
     Dg = dg;
     setAlignment(placement);
   //  enableFloatOptions(dg.wrapOptionRadioGroup);

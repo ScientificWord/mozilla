@@ -687,7 +687,7 @@
         <contains>envtag</contains>
       </classcontains>
       <tags>
-        <tag id="clearenvironmenttag" nm="(remove environment)">
+        <tag id="clearenvironmenttag" nm="(removeEnvironment)">
           <description>Remove innermost environment tag</description>
         </tag>
         <tag nm="longQuotation">
@@ -1123,7 +1123,7 @@
           <inclusion>true</inclusion>
           <nexttag>bodyText</nexttag>
           <initialcontents>
-            <msiframe style="border: thin solid black; padding: 10px;">
+            <msiframe>
               <bodyText>
                 <cursor/>
                 <br/>
