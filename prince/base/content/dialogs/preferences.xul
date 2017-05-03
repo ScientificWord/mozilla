@@ -90,6 +90,9 @@
       <preference id="defaultGraphicsSizeUnits"
                   name="swp.graphics.units"
                   type="string"/>
+      <preference id="keepAspectRatio"
+                  name="swp.graphics.keepaspect"
+                  type="bool"/>
       <preference id="graphicUseDefaultWidth"
                   name="swp.graphics.usedefaultwidth"
                   type="bool"/>
@@ -547,35 +550,36 @@
                 <columns>
                   <column flex="0"/>
                   <column flex="0"/>
+                  <column flex="0"/>
+                  <column flex="0"/>
                 </columns>
                 <rows>
                   <row align="center">
                     <label value="&DefaultSizeNewGraphicsWidth.label;"/>
                     <textbox id="graphicsWidth" type="number" decimalplaces="2" preference="defaultGraphicsHSize" class="medwidth"/>
+                    <hbox>
+                      <label value="&units.label;" />
+                      <menulist id="graphicsUnitsList" value="pt" selectedIndex="2" preference="defaultGraphicsSizeUnits" oncommand="onChangeUnits(this);">
+                        <menupopup id = "graphicsUnitPopup">
+                          <menuitem value="in" label="&unitsinches.label;"/>
+                          <menuitem value="cm" label="&unitscm.label;"/>
+                          <menuitem value="mm" label="&unitsmm.label;"/>
+                          <menuitem value="pt" label="&unitspoints.label;"/>
+                        </menupopup>
+                      </menulist>
+                    </hbox>
+                    <checkbox id="useDefaultWidthCheck" label="&useDefaultWidthCheck.label;"
+                      preference="graphicUseDefaultWidth"/>
                   </row>
                   <row align="center">
                     <label value="&DefaultSizeNewGraphicsHeight.label;"/>
                     <textbox type="number" decimalplaces="2" preference="defaultGraphicsVSize" id="graphicsHeight" class="medwidth"/>
+                    <checkbox id="aspectratio" label="&KeepAspect.label;" preference="keepAspectRatio"/>
+                    <checkbox id="useDefaultHeightCheck" label="&useDefaultHeightCheck.label;"
+                      preference="graphicUseDefaultHeight"/>
                   </row>
                 </rows>
               </grid>
-              <vbox align="center">
-                  <label value="&units.label;"/>
-                  <menulist id="graphicsUnitsList" value="pt" selectedIndex="2" preference="defaultGraphicsSizeUnits" oncommand="onChangeUnits(this);">
-                  <menupopup id = "graphicsUnitPopup">
-                    <menuitem value="in" label="&unitsinches.label;"/>
-                    <menuitem value="cm" label="&unitscm.label;"/>
-                    <menuitem value="mm" label="&unitsmm.label;"/>
-                    <menuitem value="pt" label="&unitspoints.label;"/>
-                  </menupopup>
-                </menulist>
-              </vbox>
-              <vbox>
-                <checkbox id="useDefaultWidthCheck" label="&useDefaultWidthCheck.label;"
-                  preference="graphicUseDefaultWidth"/>
-                <checkbox id="useDefaultHeightCheck" label="&useDefaultHeightCheck.label;"
-                  preference="graphicUseDefaultHeight"/>
-              </vbox>
             </hbox>
           </groupbox>
           <groupbox>
@@ -583,12 +587,18 @@
             <radiogroup id="placementRadioGroup" preference="defaultGraphicsPlacement">
             <hbox flex="1">
               <vbox>
-                <radio id="inline" value="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
                 <label value="&DefaultNewGraphicsInlineOffset.label;"/>
                 <textbox id="graphicsInlineOffset" type="number" decimalplaces="2" preference="defaultGraphicsInlineOffset" class="medwidth"/>
               </vbox>
+              <separator/>
               <vbox>
-                <radio id="display" value="display" label="&DefaultPlacementNewGraphicsDisplayed.label;" radioGroup="placementRadioGroup"/>
+               <radio id="inline" value="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
+               <radio id="hereLeftRadio" label="&hereLeftRadio.label;" value="L" radioGroup="herePlacementRadioGroup" />
+                <radio id="hereRightRadio" label="&hereRightRadio.label;" value="R" radioGroup="herePlacementRadioGroup" />
+                <radio id="hereInsideRadio" label="&hereInsideRadio.label;" value="I" radioGroup="herePlacementRadioGroup" />
+                <radio id="hereOutsideRadio" label="&hereOutsideRadio.label;" value="O" radioGroup="herePlacementRadioGroup" />
+                <radio id="hereFullWidthRadio" label="&hereFullWidthRadio.label;" value="full" radioGroup="herePlacementRadioGroup" />
+
               </vbox>
               <vbox>
                 <radio id="float" value="float" label="&DefaultPlacementNewGraphicsFloating.label;" radioGroup="placementRadioGroup" />
@@ -605,15 +615,6 @@
                     preference="defaultGraphicsFloatLocation.bottomPage"/>
                 </vbox>
               </vbox>
-              <vbox>
-                <radiogroup id="herePlacementRadioGroup" align="vertical" value="full" preference="defaultGraphicsFloatPlacement">
-                  <radio id="hereLeftRadio" label="&hereLeftRadio.label;" value="L" radioGroup="herePlacementRadioGroup" />
-                  <radio id="hereRightRadio" label="&hereRightRadio.label;" value="R" radioGroup="herePlacementRadioGroup" />
-                  <radio id="hereInsideRadio" label="&hereInsideRadio.label;" value="I" radioGroup="herePlacementRadioGroup" />
-                  <radio id="hereOutsideRadio" label="&hereOutsideRadio.label;" value="O" radioGroup="herePlacementRadioGroup" />
-                  <radio id="hereFullWidthRadio" label="&hereFullWidthRadio.label;" value="full" radioGroup="herePlacementRadioGroup" />
-                </radiogroup>
-              </vbox>
             </hbox>
             </radiogroup>
           </groupbox>
@@ -621,6 +622,8 @@
             <caption label="&FrameTab.label;"/>
             <grid>
               <columns>
+                <column/>
+                <column/>
                 <column/>
                 <column/>
                 <column/>
@@ -634,11 +637,17 @@
                   <label value="&TopBottomMargin.label;"/>
                   <textbox id="graphicsVMargin" type="number" decimalplaces="2"
                     preference="defaultGraphicsVMargin" class="medwidth"/>
+                  <label value="&BackgroundColor.label;"/>
+                  <msibutton id="graphics.background.colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graphics.background.CW');">
+                    <spacer id="graphics.background.CW" class="color-well" preference="graphics.BackgroundColor"/>
+                  </msibutton>
                 </row>
                 <row align="center">
                   <label value="&Padding.label;"/>
                   <textbox id="graphicsPadding" type="number" decimalplaces="2"
                     preference="defaultGraphicsPadding" class="medwidth"/>
+                  <hbox/>
+                  <hbox/>
                   <label value="&PaddingColor.label;"/>
                   <msibutton id="graphics.padding,colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graphics.padding.CW');">
                     <spacer id="graphics.padding.CW" class="color-well" preference="graphics.paddingColor"/>
@@ -648,6 +657,8 @@
                   <label value="&BorderWidth.label;"/>
                   <textbox id="graphicsBorder" type="number" decimalplaces="2"
                     preference="defaultGraphicsBorderWidth" class="medwidth"/>
+                  <hbox/>
+                  <hbox/>
                   <label value="&BorderColor.label;"/>
                   <msibutton id="graphics.border,colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graphics.border.CW');">
                     <spacer id="graphics.border.CW" class="color-well" preference="graphics.borderColor"/>

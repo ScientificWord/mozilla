@@ -50,7 +50,6 @@ Components.utils.import("resource://app/modules/graphicsConverter.jsm");
 var gDialog;
 var gEditorElement;
 var gEditor;
-var gGlobalElement;
 var imageElement;
 var wrapperElement;
 var gDefaultWidth = 200;
@@ -97,36 +96,6 @@ An image can be inserted as an <object> or as an <object> wrapped in a frame <ms
 imageElement: this is passed as a parameter in the revision case; in the new image case, it is null until it is assigned in onAccept.
 wrapperElement: if imageElement is passed, and has an <msiframe> parent, the parent is assigned to wrapperElement. Otherwise it is null until it is assigned in onAccept.
 */
-
-/* Finding the initial graphics size and other properties can be rather complex.
-The input, in order of increasing usefulness, is:
-
-1. Base defaults built into the program. These are used only if no other information is available. It makes sense for this to be null -- there is nothing in any of the fields.
-
-2. The preferences allow the user to set default width and/or default height, and a boolean for each of these to determine if the default is to be used.
-
-3. Once an image has been chosen, we can find the width, height, and aspect ratio.
-
-4. If we are revising an <img> or <object>, then we an read the width and/or height if they have been set, and if we should preserve the aspect ratio. Also, frame characteristics are then known.
-
-For finding the custom width and height and auto- checkboxes and the preserve-aspect-ratio checkbox, proceed as follows.
-
-Case I. New image.
-  1. Set all of these to blank. This step is skipped in the drag-drop case.
-  2. Once an image is chosen and its size is known
-    a. Set size to 'Custom'. If the preferences height and width are both given and enabled, then set those, turn off Auto for each, and set Preserve aspect ratio to false.
-    b, One of height or width is given and enabled, then fill that field and set the other to Auto, and set Preserve aspect ratio to true. Compute the missing height or width using the actual image's aspect ratio and the given width or height.
-    c. If neither height nor width is given and enabled, then set Actual size to true.
-
-    The user can now change any of these settings.
-Case II. Revising an image.
-  1. In this case current settings for the object trump the defaults.
-  2. If only one of the width or height is given as an attribute, follow step 2 above.
-  3. If both are given, set the size to 'Custom' and fill in the width and height and set auto to false for both. The preserve aspect ration should be set if there is an attribute for it.
-
-For the frame properties, the values should come from the defaults in the preferences, unless we are revising, in which case they come from the object being revised.
-*/
-
 
 function setImageSizeFields(imageWidth, imageHeight, dialogUnits)
 {
@@ -199,6 +168,8 @@ function Startup()
   unitHandler = new UnitHandler(gEditor);
 
   var existingImage = false;
+  var selection = gEditor.selection;
+  var parent;
 
   gDialog = {};
   gDialog.isImport          = true;
@@ -234,14 +205,34 @@ function Startup()
          existingImage = true;
          imageElement = selectedElement;
          if (imageElement.parentNode.nodeName !== "msiframe"){
-             wrapperElement = gEditor.createElementWithDefaults("msiframe");
-             wrapperElement.setAttribute("frametype", "image");
+             wrapperElement = gEditor.createFrameWithDefaults("image");
              wrapperElement.appendChild(imageElement);
          }
          else {
           wrapperElement = selectedElement.parentNode;
          }
       }
+    } else {
+      try {
+        if (selection.anchorNode.nodeType == Node.TEXT_NODE) {
+          selection.collapse(selection.anchorNode.parentNode, 0);
+        }
+        wrapperElement = gEditor.createFrameWithDefaults("image", selection.anchorNode, selection.anchorOffset);
+        if (wrapperElement == null) return; // should throw exception
+        gEditor.getFrameStyleFromAttributes(wrapperElement);
+        parent = wrapperElement.parentNode;
+        if (parent == null) return; // should throw exception
+        imageElement = gEditor.createNode("object", wrapperElement, 0);
+        gEditor.getGraphicsAttributesFromFrame(wrapperElement, imageElement);
+        gEditor.insertNodeAtPoint(imageElement, {value: wrapperElement}, {value: 0}, false);
+        if (selection) {
+          selection.collapse(wrapperElement, 0);
+        }
+      }
+      catch(e) {
+        dump(e);
+      }
+      
     }
 
     if (gVideo)
@@ -254,66 +245,15 @@ function Startup()
 
   var tagName = gVideo ? "embed" : "object";
 
-//   if (wrapperElement)
-//   {
-//     if (wrapperElement.nodeName !== "msiframe")
-//     {
-//       if (imageElement.parentNode.nodeName === "msiframe")
-//       {
-//         wrapperElement = imageElement.parentNode;
-//       }
-//       else {
-//         //wrapperElement = null;  // no frame
-//         wrapperElement = gEditor.createElementWithDefaults("msiframe");
-//         wrapperElement.setAttribute("frametype", "image");
-//         wrapperElement.appendChild(gCaptionNode);
-//         msiEditorEnsureElementAttribute(wrapperElement, "captionloc", captionloc, null);
-//         wrapperElement.appendChild(imageElement);
-//       }
-//     }
-//     else
-//     {
-//       var tagsToTry = gVideo ? ["embed", "object"] : ["object", "img", "embed"];
-//       //wrapperElement = imageElement;
-//       var imgList = null;
-//       for (var iii = 0; (!imgList || !imgList.length) && (iii < tagsToTry.length); ++iii)
-//       {
-//         imgList = msiNavigationUtils.getChildrenByTagName(wrapperElement, tagsToTry[iii]);
-//       }
-//       if (!imgList || !imgList.length)
-//       {
-//         for (iii = 0; (!imgList || !imgList.length) && (iii < tagsToTry.length); ++iii)
-//         {
-//           imgList = wrapperElement.getElementsByTagName(tagsToTry[iii]);
-//         }
-//       }
-//       if (imgList && imgList.length)
-//         imageElement = imgList[0];
-//     }
-//   }
-
-  if (!gVideo && !imageElement)
+    // if a graphics file has been assigned, execute this
+  if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
   {
-    try {
-      imageElement = getSelectionParentByTag(gEditor,"input");
-      if (!imageElement || imageElement.getAttribute("type") != "image") {
-        // Get a single selected image element
-        imageElement = getSelectionParentByTag(gEditor,tagName);
-      }
-    } catch (e) {}
-  }
-  if (imageElement)
-  {
-    // We found an element and don't need to insert one
-    if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
-    {
-      gInsertNewImage = false;
-      tagName = msiGetBaseNodeName(imageElement);
-      if (imageElement.hasAttribute("src")) {
-        gSrcUrl  = imageElement.getAttribute("src");
-      } else {
-        gDialog.srcInput.value = imageElement.getAttribute("data");
-      }
+    gInsertNewImage = false;
+    tagName = imageElement.nodeName;
+    if (imageElement.hasAttribute("src")) {
+      gSrcUrl  = imageElement.getAttribute("src");
+    } else {
+      gDialog.srcInput.value = imageElement.getAttribute("data");
     }
     if (imageElement.hasAttribute("originalSrcUrl"))
       gOriginalSrcUrl = imageElement.getAttribute("originalSrcUrl");
@@ -328,34 +268,19 @@ function Startup()
   {
     gInsertNewImage = true;
   }
-  if (imageElement !== null  && imageElement.hasAttribute("units")) {
-     unitHandler.initCurrentUnit(imageElement.getAttribute("units"));
-  } else {
-     unitHandler.initCurrentUnit("in");
-  }
-
+  if (wrapperElement.hasAttribute("units")) {
+     unitHandler.initCurrentUnit(wrapperElement.getAttribute("units"));
+  } 
   // if inserting a new image, create elements now.
-
-  if (imageElement == null) {
-    imageElement = gEditor.createElementWithDefaults(tagName);
-    wrapperElement = gEditor.createElementWithDefaults("msiframe");
-    wrapperElement.setAttribute("frametype", "image");
-    //wrapperElement.appendChild(gCaptionNode);
-    //msiEditorEnsureElementAttribute(wrapperElement, "captionloc", captionloc, null);
-    wrapperElement.appendChild(imageElement);
-  }
-  gGlobalElement = imageElement;
 
   initFrameTab(gDialog, wrapperElement||imageElement, gInsertNewImage, imageElement);
 
   initKeyList();
 
-
-
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
-  InitDialog();
+  InitDialog(wrapperElement, imageElement);
   if (!existingImage)
     setImageSizeFields(null,null, unitHandler.currentUnit);
   // Save initial source URL
@@ -372,9 +297,9 @@ function Startup()
   SetWindowLocation();
 }
 
-function InitDialog()
+function InitDialog(wrapperElement, imageElement)
 {
-  InitImage();
+  InitImage(wrapperElement, imageElement);
 }
 
 function stripPx(s, index, array) // strip "px" from a string if it is there
@@ -555,125 +480,88 @@ function readVideoStartEndControls(bStart)
   return attrStr;
 }
 
-function InitImage()
+function InitImage(wrapperElement, imageElement)
 {
-  gDialog.srcInput.value = gCopiedSrcUrl || "";
-  var width = 0;
-  var height = 0;
-  var pixelWidth = 0;
-  var pixelHeight = 0;
-  var unitHandler = new UnitHandler(gEditor);
+  try {
+  if (gCopiedSrcUrl && gCopiedSrcUrl.length > 0)
+    gDialog.srcInput.value = gCopiedSrcUrl;
 
-  loadDefaultsFromPrefs();
+//  loadDefaultsFromPrefs();
 
-  if (!gInsertNewImage)
+  // We found an element and don't need to insert one
+  //trim off units at end
+  var re = /[a-z]*/gi;
+  var widthStr = "";
+  var heightStr = "";
+  gDialog.frameUnitMenulist.value = wrapperElement.getAttribute("units");
+  if (wrapperElement.hasAttribute('width'))
   {
-    // We found an element and don't need to insert one
-    //trim off units at end
-    var re = /[a-z]*/gi;
-    var widthStr = "";
-    var heightStr = "";
-    if (imageElement.hasAttribute("units"))
-    {
-      var unit = imageElement.getAttribute("units");
-      unitHandler.initCurrentUnit(unit);
-      gDialog.frameUnitMenulist.value = unit;
-    }
-    if (imageElement.hasAttribute(widthAtt))
-    {
-      width = imageElement.getAttribute(widthAtt);
-      // pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
-      // width = unitRound(width);
-    }
-    // if (!width)
-    // {
-    //   widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
-    //   width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
-    //   widthStr = widthStr.replace(re,"");
-    //   pixelWidth = Math.round(Number(widthStr));
-    // }
-    if (imageElement.hasAttribute(heightAtt))
-    {
-      height = imageElement.getAttribute(heightAtt);
-    }
-    //  if (!height)
-    // {
-    //   heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
-    //   height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
-    //   heightStr = heightStr.replace(re,"");
-    //   pixelHeight = Math.round(Number(heightStr));
-    // }
-    // else return;
-    // if (imageElement.hasAttribute(widthAtt))
-    // {
-    //   widthStr = imageElement.getAttribute(widthAtt);
-    //   width = unitHandler.getValueFromString(widthStr);
-    //   pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
-    //   width = unitRound(width);
-    // }
-    // if (!width)
-    // {
-    //   widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
-    //   width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
-    //   widthStr = widthStr.replace(re,"");
-    //   pixelWidth = Math.round(Number(widthStr));
-    // }
-    // if (imageElement.hasAttribute(heightAtt))
-    // {
-    //   heightStr = imageElement.getAttribute(heightAtt);
-    //   height = unitHandler.getValueFromString(heightStr);
-    //   pixelHeight = Math.round(unitHandler.getValueAs(height,"px"));
-    //   height = unitRound(height);
-    // }
-    // if (!height)
-    // {
-    //   heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
-    //   height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
-    //   heightStr = heightStr.replace(re,"");
-    //   pixelHeight = Math.round(Number(heightStr));
-    // }
-    if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
-    {
-      gPreviewImageNeeded = true;
-      // The next two lines were done in setting up the frame tab
-      // sizeState.actualSize.width = imageElement.getAttribute("naturalWidth");
-      // sizeState.actualSize.height = imageElement.getAttribute("naturalHeight");
-      gActualWidth = gConstrainWidth = Math.round(unitHandler.getValueAs(sizeState.width, "px"));
-      if (!gActualWidth) {
-        gActualWidth  = gConstrainWidth = imageElement.offsetWidth - Math.round(readTotalExtraWidth("px"));
-        gActualHeight = gConstrainHeight = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(sizeState.actualSize.height+ sizeState.sizeUnit), "px"));
-        gActualHeight = gConstrainHeight = imageElement.offsetHeight - Math.round(readTotalExtraHeight("px"));
-      }
-    }
+    width = wrapperElement.getAttribute('width');
+    // pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
+    // width = unitRound(width);
   }
-  else  // existing image
+  // if (!width)
+  // {
+  //   widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, wrapperElement, "width", "width");
+  //   width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
+  //   widthStr = widthStr.replace(re,"");
+  //   pixelWidth = Math.round(Number(widthStr));
+  // }
+  if (wrapperElement.hasAttribute('height'))
   {
-    // var defaultUnitStr, defaultWidthStr, defaultHeightStr;
-    // try
-    // {defaultUnitStr = GetStringPref("swp.graphics.units");}
-    // catch(ex) {defaultUnitStr = ""; dump("Exception getting pref swp.graphics.units: " + ex + "\n");}
-    // if (defaultUnitStr.length)
-    // {
-    //   gDefaultUnit = defaultUnitStr;
-    //   unitHandler.setCurrentUnit(gDefaultUnit);
-    //   gDialog.frameUnitMenulist.value = gDefaultUnit;
-    // }
-
-    // try
-    // {defaultWidthStr = GetStringPref("swp.graphics.hsize");}
-    // catch(ex) {defaultWidthStr = ""; dump("Exception getting pref swp.graphics.hsize: " + ex + "\n");}
-    // if (defaultWidthStr.length)
-    //   width = unitHandler.getValueFromString( defaultWidthStr, gDefaultUnit );
-    // gDefaultWidth = Math.round(unitHandler.getValueAs(width, "px"));
-
-    // try
-    // {defaultHeightStr = GetStringPref("swp.graphics.vsize");}
-    // catch(ex) {defaultHeightStr = ""; dump("Exception getting pref swp.graphics.vsize: " + ex + "\n");}
-    // if (defaultHeightStr.length)
-    //   height = unitHandler.getValueFromString( defaultHeightStr, gDefaultUnit );
-    // gDefaultHeight = Math.round(unitHandler.getValueAs(height,"px"));
-
+    height = wrapperElement.getAttribute('height');
   }
+  //  if (!height)
+  // {
+  //   heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, wrapperElement, "height", "height");
+  //   height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
+  //   heightStr = heightStr.replace(re,"");
+  //   pixelHeight = Math.round(Number(heightStr));
+  // }
+  // else return;
+  // if (wrapperElement.hasAttribute(widthAtt))
+  // {
+  //   widthStr = imageElement.getAttribute(widthAtt);
+  //   width = unitHandler.getValueFromString(widthStr);
+  //   pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
+  //   width = unitRound(width);
+  // }
+  // if (!width)
+  // {
+  //   widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
+  //   width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
+  //   widthStr = widthStr.replace(re,"");
+  //   pixelWidth = Math.round(Number(widthStr));
+  // }
+  // if (imageElement.hasAttribute(heightAtt))
+  // {
+  //   heightStr = imageElement.getAttribute(heightAtt);
+  //   height = unitHandler.getValueFromString(heightStr);
+  //   pixelHeight = Math.round(unitHandler.getValueAs(height,"px"));
+  //   height = unitRound(height);
+  // }
+  // if (!height)
+  // {
+  //   heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
+  //   height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
+  //   heightStr = heightStr.replace(re,"");
+  //   pixelHeight = Math.round(Number(heightStr));
+  // }
+  // if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
+  // {
+  //   gPreviewImageNeeded = true;
+  //   // The next two lines were done in setting up the frame tab
+  //   // sizeState.actualSize.width = imageElement.getAttribute("naturalWidth");
+  //   // sizeState.actualSize.height = imageElement.getAttribute("naturalHeight");
+  //   gActualWidth = gConstrainWidth = Math.round(unitHandler.getValueAs(sizeState.width, "px"));
+  //   if (!gActualWidth) {
+  //     gActualWidth  = gConstrainWidth = imageElement.offsetWidth - Math.round(readTotalExtraWidth("px"));
+  //     gActualHeight = gConstrainHeight = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(sizeState.actualSize.height+ sizeState.sizeUnit), "px"));
+  //     gActualHeight = gConstrainHeight = imageElement.offsetHeight - Math.round(readTotalExtraHeight("px"));
+  //   }
+  // }
+
+
 
   setWidthAndHeight(sizeState.width, sizeState.height, null);
   // else if ((gActualHeight > 0)||(gActualWidth > 0))
@@ -685,14 +573,14 @@ function InitImage()
 
   LoadPreviewImage(null);
   // caption and key info comes from frameOverlay
-  document.getElementById("captionLocation").value = gCaptionLoc;
+  document.getElementById("captionLocation").value = wrapperElement.getAttribute('captionloc');
 
 
-  var hasAltText = imageElement.hasAttribute("alt");
+  var hasAltText = wrapperElement.hasAttribute("alt");
   var altText;
   if (hasAltText)
   {
-    altText = imageElement.getAttribute("alt");
+    altText = wrapperElementInit.getAttribute("alt");
     gDialog.altTextInput.value = altText;
   }
 
@@ -728,6 +616,10 @@ function InitImage()
   else bordervalues = [0,0,0,0];
   bordervalues.forEach(fillInValue);
   bordervalues.forEach(stripPx);
+}
+catch(e) {
+  dump(e.message);
+}
 }
 
 
@@ -1925,7 +1817,7 @@ function onAccept()
       imageElement.setAttribute("src", src);
       imageElement.setAttribute("data", src);
       if (wrapperElement == null) {
-        wrapperElement = gEditor.createElementWithDefaults("msiframe");
+        wrapperElement = gEditor.createFrameWithDefaults("image", sel.anchorNode, sel.anchorOffset);
       }
 
       //wrapperElement.setAttribute("frametype", "image");
