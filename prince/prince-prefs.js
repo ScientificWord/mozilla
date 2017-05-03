@@ -82,6 +82,7 @@ pref("swp.graphics.snapshotres", 300);
 pref("swp.debugtools", false);
 pref("swp.graphics.vsize", "2.8");
 pref("swp.graphics.hsize", "3.5");
+pref("swp.graphics.keepaspect", true);
 pref("swp.graphics.inlineoffset", "0.0");
 pref("swp.graphics.units", "in");
 pref("swp.graphics.placement", "center");
@@ -136,6 +137,8 @@ pref("swp.graph.Dimension",  "2");
 pref("swp.graph.hsize", "3.5");
 pref("swp.graph.vsize", "2.8");
 pref("swp.graph.units", "in");
+pref("swp.graph.keepaspect", true);
+
 pref("swp.graph.placement", "center");
 pref("swp.graph.placeLocation", "h");  // other choices from LaTeX: subsets of hHptb
 pref("swp.graph.floatplacement", "I");

@@ -4454,10 +4454,10 @@ var msiConvertGraphics =
             width = objectnode.offsetWidth;
             height = objectnode.offsetHeight;
           }
-          objectnode.setAttribute("width", width + 'px');  // need to convert to better units
-          objectnode.setAttribute("height", height + 'px');
+          // objectnode.setAttribute("width", width + 'px');  // need to convert to better units
+          // objectnode.setAttribute("height", height + 'px');
           objectnode.setAttribute("msi_resize", true);
-          objectnode.setAttribute("style", "height: "+height+"px; width: "+width+"px;");
+          // objectnode.setAttribute("style", "height: "+height+"px; width: "+width+"px;");
         }
       }
 		}
