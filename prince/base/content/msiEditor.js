@@ -513,7 +513,7 @@ var msiResizeListener = {
     var pixelsPerUnit;
     var elemWidth = anElement.getAttribute("ltx_width");
     var elemHeight = anElement.getAttribute("ltx_height");
-
+    editor.beginTransaction();
     unitHandler.initCurrentUnit('px'); //the unit for resize callbacks
     if (!(theUnits || elemWidth || elemHeight)) return;
     pixelsPerUnit = unitHandler.getValueOf(1, theUnits);
@@ -602,6 +602,7 @@ var msiResizeListener = {
         }
       }
     }
+    editor.endTransaction();
   },
 
   resizePlot: function(anElement, oldWidth, oldHeight, newWidth, newHeight) {
@@ -647,6 +648,7 @@ var msiResizeListener = {
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     var frametype;
+    editor.beginTransaction();
     if (anElement.nodeName === 'table') {
       anElement = anElement.parentNode;
       if (anElement.nodeName !== 'msiframe') {
@@ -695,6 +697,7 @@ var msiResizeListener = {
     } catch (e) {
       throw new MsiException('resizeFrame', e);
     }
+    editor.endTransaction();
   },
 }
 

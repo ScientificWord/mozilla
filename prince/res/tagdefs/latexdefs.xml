@@ -435,6 +435,14 @@
         </tag>
         <tag nm="imagecaption">
           <description>Caption for image, plot, or table</description>
+          <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <imagecaption>
+              <br/>
+            </imagecaption>
+          </initialcontents>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
       </tags>
     </tagclass>

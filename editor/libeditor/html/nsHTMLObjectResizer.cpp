@@ -521,6 +521,7 @@ nsHTMLEditor::HideShadowAndInfo()
 nsresult
 nsHTMLEditor::StartResizing(nsIDOMElement *aHandle)
 {
+  nsresult result;
   // First notify the listeners if any
   PRInt32 listenersCount = objectResizeEventListeners.Count();
   if (listenersCount) {
@@ -537,27 +538,17 @@ nsHTMLEditor::StartResizing(nsIDOMElement *aHandle)
   mActivatedHandle->SetAttribute(NS_LITERAL_STRING("_moz_activated"), NS_LITERAL_STRING("true"));
 
   // do we want to preserve ratio or not?
-  PRBool preserveRatio = nsHTMLEditUtils::IsImage(mResizedObject, mtagListManager);
-  if (!preserveRatio) {
-     nsAutoString aspect;
-    mResizedObject->GetAttribute(NS_LITERAL_STRING("aspect"), aspect);
-    if (aspect.EqualsLiteral("true")) {
-      preserveRatio = PR_TRUE;
-    }
+  // This used to check preferences. Now we check for 'aspect' attribute
+  // PRBool preserveRatio = nsHTMLEditUtils::IsImage(mResizedObject, mtagListManager);
+  
+  nsAutoString aspect;
+  PRBool preserveRatio = PR_FALSE;
+  mResizedObject->GetAttribute(NS_LITERAL_STRING("aspect"), aspect);
+  if (aspect.EqualsLiteral("true")) {
+    preserveRatio = PR_TRUE;
   }
-  nsresult result;
-  nsCOMPtr<nsIPrefBranch> prefBranch =
-    do_GetService(NS_PREFSERVICE_CONTRACTID, &result);
-  if (NS_SUCCEEDED(result) && prefBranch && preserveRatio) {
-    result = prefBranch->GetBoolPref("editor.resizing.preserve_ratio", &preserveRatio);
-    if (NS_FAILED(result)) {
-      // just in case Anvil does not update its prefs file
-      // and because it really does not make sense to me to allow free
-      // resizing on corners without a modifier key
-      preserveRatio = PR_TRUE;
-    }
-  }
-
+  
+  
   // the way we change the position/size of the shadow depends on
   // the handle
   nsAutoString locationStr;
@@ -566,22 +557,22 @@ nsHTMLEditor::StartResizing(nsIDOMElement *aHandle)
     SetResizeIncrements(1, 1, -1, -1, preserveRatio);
   }
   else if (locationStr.Equals(kTop)) {
-    SetResizeIncrements(0, 1, 0, -1, PR_FALSE);
+    SetResizeIncrements(0, 1, 0, -1, preserveRatio);
   }
   else if (locationStr.Equals(kTopRight)) {
     SetResizeIncrements(0, 1, 1, -1, preserveRatio);
   }
   else if (locationStr.Equals(kLeft)) {
-    SetResizeIncrements(1, 0, -1, 0, PR_FALSE);
+    SetResizeIncrements(1, 0, -1, 0, preserveRatio);
   }
   else if (locationStr.Equals(kRight)) {
-    SetResizeIncrements(0, 0, 1, 0, PR_FALSE);
+    SetResizeIncrements(0, 0, 1, 0, preserveRatio);
   }
   else if (locationStr.Equals(kBottomLeft)) {
     SetResizeIncrements(1, 0, -1, 1, preserveRatio);
   }
   else if (locationStr.Equals(kBottom)) {
-    SetResizeIncrements(0, 0, 0, 1, PR_FALSE);
+    SetResizeIncrements(0, 0, 0, 1, preserveRatio);
   }
   else if (locationStr.Equals(kBottomRight)) {
     SetResizeIncrements(0, 0, 1, 1, preserveRatio);
