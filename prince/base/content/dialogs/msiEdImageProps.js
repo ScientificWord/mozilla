@@ -253,8 +253,9 @@ function Startup()
     if (imageElement.hasAttribute("src")) {
       gSrcUrl  = imageElement.getAttribute("src");
     } else {
-      gDialog.srcInput.value = imageElement.getAttribute("data");
+      gSrcUrl = imageElement.getAttribute("data");
     }
+    gDialog.srcInput.value = gSrcUrl;
     if (imageElement.hasAttribute("originalSrcUrl"))
       gOriginalSrcUrl = imageElement.getAttribute("originalSrcUrl");
     if (imageElement.hasAttribute("copiedSrcUrl"))
@@ -511,59 +512,8 @@ function InitImage(wrapperElement, imageElement)
   {
     height = wrapperElement.getAttribute('height');
   }
-  //  if (!height)
-  // {
-  //   heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, wrapperElement, "height", "height");
-  //   height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
-  //   heightStr = heightStr.replace(re,"");
-  //   pixelHeight = Math.round(Number(heightStr));
-  // }
-  // else return;
-  // if (wrapperElement.hasAttribute(widthAtt))
-  // {
-  //   widthStr = imageElement.getAttribute(widthAtt);
-  //   width = unitHandler.getValueFromString(widthStr);
-  //   pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
-  //   width = unitRound(width);
-  // }
-  // if (!width)
-  // {
-  //   widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "width", "width");
-  //   width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
-  //   widthStr = widthStr.replace(re,"");
-  //   pixelWidth = Math.round(Number(widthStr));
-  // }
-  // if (imageElement.hasAttribute(heightAtt))
-  // {
-  //   heightStr = imageElement.getAttribute(heightAtt);
-  //   height = unitHandler.getValueFromString(heightStr);
-  //   pixelHeight = Math.round(unitHandler.getValueAs(height,"px"));
-  //   height = unitRound(height);
-  // }
-  // if (!height)
-  // {
-  //   heightStr = msiGetHTMLOrCSSStyleValue(gEditorElement, imageElement, "height", "height");
-  //   height = unitRound(unitHandler.getValueFromString(heightStr, "px"));
-  //   heightStr = heightStr.replace(re,"");
-  //   pixelHeight = Math.round(Number(heightStr));
-  // }
-  // if (imageElement.hasAttribute("src") || imageElement.hasAttribute("data"))
-  // {
-  //   gPreviewImageNeeded = true;
-  //   // The next two lines were done in setting up the frame tab
-  //   // sizeState.actualSize.width = imageElement.getAttribute("naturalWidth");
-  //   // sizeState.actualSize.height = imageElement.getAttribute("naturalHeight");
-  //   gActualWidth = gConstrainWidth = Math.round(unitHandler.getValueAs(sizeState.width, "px"));
-  //   if (!gActualWidth) {
-  //     gActualWidth  = gConstrainWidth = imageElement.offsetWidth - Math.round(readTotalExtraWidth("px"));
-  //     gActualHeight = gConstrainHeight = Math.round(unitHandler.getValueAs(unitHandler.getValueFromString(sizeState.actualSize.height+ sizeState.sizeUnit), "px"));
-  //     gActualHeight = gConstrainHeight = imageElement.offsetHeight - Math.round(readTotalExtraHeight("px"));
-  //   }
-  // }
 
-
-
-  setWidthAndHeight(sizeState.width, sizeState.height, null);
+  setWidthAndHeight(width, height, null);
   // else if ((gActualHeight > 0)||(gActualWidth > 0))
   //   setWidthAndHeight(unitRound(unitHandler.getValueOf(gActualWidth,"px")),
   //                     unitRound(unitHandler.getValueOf(gActualHeight,"px")), null);
@@ -576,11 +526,11 @@ function InitImage(wrapperElement, imageElement)
   document.getElementById("captionLocation").value = wrapperElement.getAttribute('captionloc');
 
 
-  var hasAltText = wrapperElement.hasAttribute("alt");
+  var hasAltText = imageElement.hasAttribute("alt");
   var altText;
   if (hasAltText)
   {
-    altText = wrapperElementInit.getAttribute("alt");
+    altText = imageElement.getAttribute("alt");
     gDialog.altTextInput.value = altText;
   }
 
@@ -1260,12 +1210,10 @@ function PreviewImageLoaded()
     // Image loading has completed -- we can get actual width
     previewActualWidth  = gDialog.PreviewImage.offsetWidth;
     previewActualHeight = gDialog.PreviewImage.offsetHeight;
-    sizeState.actualSize.width = previewActualWidth;
-    sizeState.actualSize.height = previewActualHeight;
-    sizeState.actualSize.unit = 'px';
-    unitHandler.initCurrentUnit('px');
-    sizeState.width = sizeState.width || unitHandler.getValueAs(previewActualWidth, sizeState.sizeUnit);
-    sizeState.height = sizeState.height || unitHandler.getValueAs(previewActualHeight, sizeState.sizeUnit);
+    sizeState.actualSize.width = unitHandler.getValueAs(previewActualWidth, sizeState.sizeUnit);
+    sizeState.actualSize.height = unitHandler.getValueAs(previewActualHeight, sizeState.sizeUnit);
+    sizeState.width = sizeState.width || sizeState.actualSize.width;
+    sizeState.height = sizeState.height || sizeState.actualSize.height;
     sizeState.isCustomSize = false;
     sizeState.update();
 //    setImageSizeFields(previewActualWidth, previewActualHeight, unitHandler.currentUnit);
