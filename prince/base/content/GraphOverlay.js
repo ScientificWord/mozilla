@@ -1913,7 +1913,7 @@ Frame.prototype = {
             graph.setGraphAttribute("CaptionPlace", DOMFrame.getAttribute(att));
             break;
           case "ltxfloat":
-            if (DOMFrame.getAttribute("pos") === "float") {
+            if (DOMFrame.getAttribute("pos") === "floating") {
               this.setFrameAttribute("ltxfloat", DOMFrame.getAttribute(att));
             }
             break;
@@ -2371,7 +2371,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   if (frmBorderColor) frame.setFrameAttribute("borderColor", frmBorderColor);
   if (frmPlacement) frame.setFrameAttribute("placement", frmPlacement);
   var floatLoc = "";
-  if (frmPlacement === "float") {
+  if (frmPlacement === "floating") {
     if (frmFloatLocation_forceHere) floatLoc += "H";
     if (frmFloatLocation_here) floatLoc += "h";
     if (frmFloatLocation_pageFloats) floatLoc += "p";

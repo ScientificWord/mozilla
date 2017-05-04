@@ -53,26 +53,25 @@ SizeState.prototype = {
     autoHeight: false
   },
   actualSize: {
-    width: null,
-    height: null,
-    aspectRatio: null,
+    width: 0,
+    height: 0,
+    aspectRatio: true,
     unit: ""
   },
   sizeUnit: null,
 
   selectActualSize: function() {
-    var unitHandler = new UnitHandler(editor);
-    unitHandler.initCurrentUnit(this.actualSize.unit);
     this.isCustomSize = false;
-    this.preserveAspectRatio = false;
-    this.width = unitHandler.getValueAs(this.actualSize.width, this.sizeUnit);
-    this.height = unitHandler.getValueAs(this.actualSize.height, this.sizeUnit);
+    // this.preserveAspectRatio = false;
+    this.width = this.actualSize.width;
+    this.height = this.actualSize.height;
     this.update(this.dialog);
   },
 
   selectCustomSize: function() {
     this.isCustomSize = true;
     this.update(this.dialog);
+    if (this.preserveAspectRatio) selectAutoHeight();
   },
 
   setPreserveAspectRatio: function(val) {
@@ -108,7 +107,7 @@ SizeState.prototype = {
   },
 
 
-  applySizes: function() {  // dg is a dialog
+  applySizes: function() {  
     if (this.dialog.frameWidthInput) this.dialog.frameWidthInput.disabled = !this.enabledState.width;
     if (this.dialog.frameHeightInput) this.dialog.frameHeightInput.disabled = !this.enabledState.height;
     if (this.dialog.autoWidth) this.dialog.autoWidth.disabled = !this.enabledState.autoWidth;
@@ -160,8 +159,8 @@ SizeState.prototype = {
   },
 
   computeConstraints: function() {
-    this.enabledState.preserveAspectRatio = (this.actualSize.aspectRatio != null) &&
-      this.isCustomSize;
+    this.enabledState.preserveAspectRatio = (this.actualSize.aspectRatio != null);
+     // && this.isCustomSize;
     this.enabledState.autoWidth = this.enabledState.autoHeight = (this.actualSize.aspectRatio != null) &&
       this.preserveAspectRatio;
     this.enabledState.height = (this.isCustomSize) && (!this.enabledState.autoHeight || !this.autoHeight);
@@ -218,17 +217,13 @@ function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
   var graphspec;
   var unitHandler;
   if (!wrapperNode) return;
-  sizeState.width = wrapperNode.getAttribute(widthAtt);
-  sizeState.height = wrapperNode.getAttribute(heightAtt);
+  sizeState.width = wrapperNode.getAttribute("width");
+  sizeState.height = wrapperNode.getAttribute("height");
   sizeState.sizeUnit = sizeState.actualSize.unit = wrapperNode.getAttribute("units");
   sizeState.preserveAspectRatio = (wrapperNode.getAttribute("aspect") === "true");
-  sizeState.actualSize.width = wrapperNode.getAttribute("naturalWidth");
-  sizeState.actualSize.height = wrapperNode.getAttribute("naturalHeight");
+  sizeState.actualSize.width = wrapperNode.getAttribute("imageWidth");
+  sizeState.actualSize.height = wrapperNode.getAttribute("imageHeight");
   sizeState.sizeUnit = wrapperNode.getAttribute("units");
-  unitHandler = new UnitHandler(editor);
-  unitHandler.initCurrentUnit(sizeState.sizeUnit);
-  sizeState.width = unitHandler.getValueAs(sizeState.width, sizeState.sizeUnit);
-  sizeState.height = unitHandler.getValueAs(sizeState.height, sizeState.sizeUnit);
   sizeState.update(dg);
   setHasNaturalSize();
 }
@@ -300,6 +295,17 @@ function initUnitHandler()
   // this is so some functions can use setFrameAttributes without having called initFrameTab.
   frameUnitHandler = new UnitHandler(editor);
 }
+function posCodeToLocationValue ( posCode ) {
+  var ret = '';
+  if (posCode === 'inline' || posCode === 'center' || posCode === 'floating'  || posCode === 'left' ||
+    posCode === 'right' || posCode === 'inside' || posCode === 'outside') ret = posCode;
+  else if (posCode === "L") ret = 'left';
+  else if (posCode === "R") ret = 'right';
+  else if (posCode === "I") ret = 'inside';
+  else if (posCode === "O") ret = 'outside';
+  return ret;
+}
+
 
 function initFrameTab(dg, element, newElement,  contentsElement)
 {
@@ -310,27 +316,11 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   var values;
   var width = 0;
   var pos;
+  var ret;
 //  var currUnit;
   var placement;
   Dg = dg;
   initUnitHandler();
-  // var prefBranch = GetPrefs();
-  // var isFloat = false;
-  // var prefprefix;
-  // if (contentsElement && (contentsElement.nodeName == 'graph' || (contentsElement.getAttribute("type") && contentsElement.getAttribute("type").indexOf("mupad") >= 0)))
-  //   prefprefix = "swp.graph.";
-  // else if (contentsElement && (contentsElement.nodeName == 'table' || (contentsElement.getAttribute("type") && contentsElement.getAttribute("type").indexOf("table") >= 0)))
-  //   prefprefix = "swp.table.";
-  // else
-  //   prefprefix = "swp.graphics.";
-
-  // prefUnit = prefBranch.getCharPref(prefprefix + "units");
-  // if (newElement) {
-  //   currUnit = prefUnit;
-  // }
-  // else {
-  //   currUnit = element.getAttribute("units");
-  // }
   currUnit = element.getAttribute("units");
   frameUnitHandler.initCurrentUnit(currUnit);
   gConstrainHeight = element.getAttribute("aspect"); // BBM: Fix this
@@ -435,13 +425,17 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   if (dg.truewidth) fieldList.push(dg.truewidth);
   if (dg.trueheight) fieldList.push(dg.trueheight);
   frameUnitHandler.setEditFieldList(fieldList);
-// The defaults for the document are set by the XUL document, modified by persist attributes.
-// These are then overwritten by preference settings, if they exist
-  v = element.getAttribute("placement");
-  if (v != null && dg.locationList) dg.locationList.value = v;
+// The defaults for the image frame are set by the input frame, or the one just generated using the
+// preferences.
+  pos = element.getAttribute("pos");
+  if (pos != null) ret = posCodeToLocationValue(pos);
+  if (pos != null && ret.length > 0 && dg.locationList) dg.locationList.selectedItem = document.getElementById(ret);
+  if ((pos === "inline") && element.hasAttribute("inlineOffset"))
+    inlineOffset = element.getAttribute("inlineOffset");
+
+  isFloat = (pos != null) && pos === 'float';
   v = element.getAttribute("ltx_float");
-  isFloat = (v != null) && v.length > 0;
-  if (isFloat) {
+  if (isFloat && v && v.length > 0) {
     b = (v.search("H") >= 0);
     checkMenuItem(document.getElementById("placement_forceHere"), b);
     b = (v.search("h") >= 0);
@@ -490,12 +484,6 @@ function initFrameTab(dg, element, newElement,  contentsElement)
         msidump(e.message);
       }
 
-      pos = element.getAttribute("pos");
-      if (!pos)
-        pos = "center";
-      dg.locationList.value = pos;
-      if ((pos=="inline") && element.hasAttribute("inlineOffset"))
-        inlineOffset = element.getAttribute("inlineOffset");
       var overhang = element.getAttribute("overhang");
       if (overhang === null) overhang = 0;
       dg.marginInput.right.value = overhang;
@@ -539,40 +527,12 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   }
 
   try {
-  //   if (!newElement || gDefaultPlacement.length)
-  //   {
-  //     try
-  //     {
-  //       if (dg.locationList) {
-  //         dg.locationList.value = pos;
-  //       }
-  //       if (pos == "inline")
-  //       {
-  //         dg.frameInlineOffsetInput.value= inlineOffset;
-  //       }
-  //     }
-  //     catch(e)
-  //     {
-  //       msidump(e.message);
-  //     }
-  //   }
-
-  //   if (dg.locationList) {
-  //     placement = 0;
-  //     var placementLetter = document.getElementById("locationList").value;
-  //     if (/l|i/i.test(placementLetter)) placement=1;
-  //     else if (/r|o/i.test(placementLetter)) placement = 2;
-  // //    enableFloatOptions(dg.wrapOptionRadioGroup);
-  //   }
     Dg = dg;
     setAlignment(placement);
-  //  enableFloatOptions(dg.wrapOptionRadioGroup);
-  //  enableFloating();
 
   // The following will figure out what is enabled in the current state.
     locationChanged();
     floatPropertyChanged();
-  //  TablePropertyChanged('TableBaselineRadioGroup');
     captionPropertyChanged();
     doDimensionEnabling();
     updateMetrics();
@@ -580,10 +540,10 @@ function initFrameTab(dg, element, newElement,  contentsElement)
     updateDiagram(borderAtt);
     updateDiagram(paddingAtt);
     var broadcaster = document.getElementById("role-image");
-    var hiddenAttr = broadcaster.getAttribute("hidden");
+    var hiddenAttr = broadcaster. gute("hidden");
     if ( hiddenAttr === true )
       role = "textframe";
-    else role = "image";
+    else role = "image"; 
     return dg;
   }
   catch(e) {
@@ -1036,42 +996,51 @@ this is the case for images in an msiframe
   var w, h;
   var rowCountObj = { value: 0 };
   var colCountObj = { value: 0 };
-  if (!setTextValueAttributes()) { // width and height didn't get set because those input fields don't exist
-    w = getStyleAttributeOnNode( contentsNode, "width", editor);
-    h = getStyleAttributeOnNode( contentsNode, "height", editor);
-    if (!w) {
-      try {
-        sizeState.autoWidth = true;
-        sizeState.autoHeight = true;
-        sizeState.width = 0;
-        sizeState.height = 0;
-      }
-      catch(e){
-        dump( e.message);
-      }
-    }
-    frametype = frameNode.getAttribute('frametype')
-    if (frametype == 'table') {
-      removeStyleAttributeOnNode(frameNode, "width");
-      removeStyleAttributeOnNode(frameNode, "height");
-    } 
-    else
-    {    
-      setStyleAttributeOnNode(frameNode, "width", w, editor);
-      setStyleAttributeOnNode(frameNode, "height", h, editor);
-    }
-    if (!sizeState.autoWidth)
-      sizeState.width = frameUnitHandler.getValueFromString(w, "px");
-    if (!sizeState.autoHeight)
-      sizeState.height = frameUnitHandler.getValueFromString(h, "px");
+  var editorElement;
+
+  if (editor == null) {
+    editorElement = msiGetParentEditorElementForDialog(window);
+    editor = msiGetEditor(editorElement);
+
   }
-  metrics.unit = sizeState.sizeUnit;
-  if (metrics.unit == "px") // switch to pts
-  {
-    var el = {value: "pt"};
-    setNewUnit(el);
-    metrics.unit = "pt";
-  }
+  // if (!setTextValueAttributes()) { // width and height didn't get set because those input fields don't exist
+  //   w = getStyleAttributeOnNode( contentsNode, "width", editor);
+  //   h = getStyleAttributeOnNode( contentsNode, "height", editor);
+  //   if (!w) {
+  //     try {
+  //       sizeState.autoWidth = true;
+  //       sizeState.autoHeight = true;
+  //       sizeState.width = 0;
+  //       sizeState.height = 0;
+  //     }
+  //     catch(e){
+  //       dump( e.message);
+  //     }
+  //   }
+  //   frametype = frameNode.getAttribute('frametype')
+  //   if (frametype == 'table') {
+  //     removeStyleAttributeOnNode(frameNode, "width");
+  //     removeStyleAttributeOnNode(frameNode, "height");
+  //   } 
+  //   else
+  //   {    
+  //     setStyleAttributeOnNode(frameNode, "width", w, editor);
+  //     setStyleAttributeOnNode(frameNode, "height", h, editor);
+  //   }
+  //   if (!sizeState.autoWidth)
+  //     // sizeState.width = frameUnitHandler.getValueFromString(w, "px");
+  //     sizeState.width = w;
+  //   if (!sizeState.autoHeight)
+  //     // sizeState.height = frameUnitHandler.getValueFromString(h, "px");
+  //     sizeState.height = h;
+  // }
+  // metrics.unit = sizeState.sizeUnit;
+  // if (metrics.unit == "px") // switch to pts
+  // {
+  //   var el = {value: "pt"};
+  //   setNewUnit(el);
+  //   metrics.unit = "pt";
+  // }
 
   msiEditorEnsureElementAttribute(frameNode, "units",metrics.unit, editor);
   // if (contentsNode) {
@@ -1101,33 +1070,34 @@ this is the case for images in an msiframe
   var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
    msiEditorEnsureElementAttribute(frameNode, "overhang", overhang, editor);
   var marginArray = [];
-  marginArray[0] = frameUnitHandler.getValueAs(topmargin,"px");
+  // marginArray[0] = frameUnitHandler.getValueAs(topmargin,"px");
+  marginArray[0] = topmargin;
   marginArray[2] = marginArray[0];
   if (inlineOffsetNum > 0)
     marginArray[2] += inlineOffsetNum;
   if (position == 1) //left
   {
-    if (overhang < 0) marginArray[3] = -frameUnitHandler.getValueAs(overhang,"px");
+    if (overhang < 0) marginArray[3] = overhang;
     else
     {
       marginArray[3] = 0;
     }
-    marginArray[1] = frameUnitHandler.getValueAs(sidemargin,"px");
+    marginArray[1] = sidemargin;
   }
   else if (position == 2) // right
   {
-    if (overhang < 0) marginArray[1] = -frameUnitHandler.getValueAs(overhang,"px");
+    if (overhang < 0) marginArray[1] = -overhang;
     else
     {
       marginArray[1] = 0;
     }
-    marginArray[3] = frameUnitHandler.getValueAs(sidemargin,"px");
+    marginArray[3] = sidemargin;
   }
   else
   {
     marginArray[1] = marginArray[3] = 0;
   }
-  setStyleAttributeOnNode(frameNode, "margin", marginArray.join("px ")+"px", editor);
+  // setStyleAttributeOnNode(frameNode, "margin", marginArray.join("px ")+"px", editor);
   // gFrameModeImage = true;
   if (gFrameModeImage) {
     var borderwidth = getSingleMeasurement(borderAtt, "Left", metrics.unit, false);
@@ -1143,16 +1113,16 @@ this is the case for images in an msiframe
   else {
     msiEditorEnsureElementAttribute(frameNode, "padding", getCompositeMeasurement("padding",metrics.unit, false), editor);
   }
-  msiEditorEnsureElementAttribute(contentsNode, heightAtt, sizeState.height, editor);
-  msiEditorEnsureElementAttribute(contentsNode, widthAtt, sizeState.width, editor);
+  // msiEditorEnsureElementAttribute(contentsNode, heightAtt, sizeState.height, editor);
+  // msiEditorEnsureElementAttribute(contentsNode, widthAtt, sizeState.width, editor);
 
   var captionLoc = document.getElementById("captionLocation").value;
   if (captionLoc === "none") {
     frameNode.removeAttribute("captionloc");
-    removeStyleAttributeFamilyOnNode(frameNode, "caption-side");
+    // removeStyleAttributeFamilyOnNode(frameNode, "caption-side");
   } else {
     frameNode.setAttribute("captionloc", captionLoc);
-    setStyleAttributeOnNode(frameNode, "caption-side", captionLoc);
+    // setStyleAttributeOnNode(frameNode, "caption-side", captionLoc);
   }
 
   var posItem = null;
@@ -1168,16 +1138,16 @@ this is the case for images in an msiframe
   var bgcolor = Dg.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   var theColor = (arr && arr.length > 1) ? arr[1] : "";
-  setStyleAttributeOnNode(frameNode, "border-color", theColor, editor);
+  // setStyleAttributeOnNode(frameNode, "border-color", theColor, editor);
   msiEditorEnsureElementAttribute(frameNode, "border-color", hexcolor(theColor), editor);
   bgcolor = Dg.bgcolorWell.getAttribute("style");
   arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   theColor = (arr && arr.length > 1) ? arr[1] : "";
-  setStyleAttributeOnNode(frameNode, "background-color", theColor, editor);
+  // setStyleAttributeOnNode(frameNode, "background-color", theColor, editor);
   msiEditorEnsureElementAttribute(frameNode, "background-color", hexcolor(theColor), editor);
   msiRequirePackage(Dg.editorElement, "xcolor", "");
   msiEditorEnsureElementAttribute(frameNode, "textalignment", Dg.textAlignment.value, editor);
-  setStyleAttributeOnNode(frameNode, "text-align", Dg.textAlignment.value, editor);
+  // setStyleAttributeOnNode(frameNode, "text-align", Dg.textAlignment.value, editor);
 //RWA - The display attribute should be set by a CSS rule rather than on the individual item's style. (So that, for instance,
 //      the override for graphics with captions will take effect. See baselatex.css.)
   if (posid && posid !== "inline") {
@@ -1191,14 +1161,14 @@ this is the case for images in an msiframe
       var inlineOffsetStr = String(inlineOffset);
       msiEditorEnsureElementAttribute(frameNode, "inlineOffset", inlineOffsetStr, editor);
       inlineOffsetStr = String(-inlineOffset) + frameUnitHandler.currentUnit;
-      setStyleAttributeOnNode(frameNode, "position", "relative", editor);
-      setStyleAttributeOnNode(frameNode, "bottom", inlineOffsetStr, editor);
+      // setStyleAttributeOnNode(frameNode, "position", "relative", editor);
+      // setStyleAttributeOnNode(frameNode, "bottom", inlineOffsetStr, editor);
     }
     else
     {
       msiEditorEnsureElementAttribute(frameNode, "inlineOffset", null, editor);
-      removeStyleAttributeFamilyOnNode(frameNode, "position", editor);
-      removeStyleAttributeFamilyOnNode(frameNode, "bottom", editor);
+      // removeStyleAttributeFamilyOnNode(frameNode, "position", editor);
+      // removeStyleAttributeFamilyOnNode(frameNode, "bottom", editor);
     }
   }
   var needsWrapfig = false;
@@ -1253,68 +1223,70 @@ this is the case for images in an msiframe
     //   needsWrapfig = true;
     // }
     needsWrapfig = true;
-    if (locationParam === "right" || locationParam === "inside")
-       setStyleAttributeOnNode(frameNode, "float", "right", editor);
-    else if (locationParam === "left" || locationParam === "outside")
-       setStyleAttributeOnNode(frameNode, "float", "left", editor);
-    else {
-       removeStyleAttributeFamilyOnNode(frameNode, "float", editor);
-       needsWrapfig = false;
-    }
+    // if (locationParam === "right" || locationParam === "inside")
+    //    setStyleAttributeOnNode(frameNode, "float", "right", editor);
+    // else if (locationParam === "left" || locationParam === "outside")
+    //    setStyleAttributeOnNode(frameNode, "float", "left", editor);
+    // else {
+    //    removeStyleAttributeFamilyOnNode(frameNode, "float", editor);
+    //    needsWrapfig = false;
+    // }
 
     //setStyleAttributeOnNode(frameNode, "float", locationParam, editor);
     if (needsWrapfig) {
       msiEditorEnsureElementAttribute(frameNode, "req", "wrapfig", "");
     }
-    if (!gFrameModeImage)
-    {
-      if (locationParam == "right") side = "Right";
-      else if (locationParam == "left") side = "Left";
-      else side = null;
+    // if (!gFrameModeImage)
+    // {
+    //   if (locationParam == "right") side = "Right";
+    //   else if (locationParam == "left") side = "Left";
+    //   else side = null;
 
-      if (side){
-        msiEditorEnsureElementAttribute(frameNode, "overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false), editor);
-      }
-    }
+    //   if (side){
+    //     msiEditorEnsureElementAttribute(frameNode, "overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false), editor);
+    //   }
+    // }
   }
   else
   {
-    removeStyleAttributeFamilyOnNode(frameNode, "float", editor);
-    if (posid == "ll_center")
-    {
-      setStyleAttributeOnNode(frameNode, "margin-left","auto", editor);
-      setStyleAttributeOnNode(frameNode, "margin-right","auto", editor);
-    }
+    // removeStyleAttributeFamilyOnNode(frameNode, "float", editor);
+    // if (posid == "ll_center")
+    // {
+    //   setStyleAttributeOnNode(frameNode, "margin-left","auto", editor);
+    //   setStyleAttributeOnNode(frameNode, "margin-right","auto", editor);
+    // }
   }
   // now set measurements in the style for frameNode
-  if (gFrameModeImage)
-  {
-    style = getSingleMeasurement("padding","Left", "px", true);
-    setStyleAttributeOnNode(frameNode, "padding", style, editor);
-    style = getSingleMeasurement("border","Left","px", true);
-    setStyleAttributeOnNode(frameNode, "border-width", style, editor);
-  }
-  else
-  {
-    style = getCompositeMeasurement("padding","px", true);
-    setStyleAttributeOnNode(frameNode, "padding", style, editor);
-    style = getCompositeMeasurement("border","px", true);
-    setStyleAttributeOnNode(frameNode, "border-width", style, editor);
-  }
+  // if (gFrameModeImage)
+  // {
+  //   style = getSingleMeasurement("padding","Left", "px", true);
+  //   setStyleAttributeOnNode(frameNode, "padding", style, editor);
+  //   style = getSingleMeasurement("border","Left","px", true);
+  //   setStyleAttributeOnNode(frameNode, "border-width", style, editor);
+  // }
+  // else
+  // {
+  //   style = getCompositeMeasurement("padding","px", true);
+  //   setStyleAttributeOnNode(frameNode, "padding", style, editor);
+  //   style = getCompositeMeasurement("border","px", true);
+  //   setStyleAttributeOnNode(frameNode, "border-width", style, editor);
+  // }
 
-  style = "height: " + frameUnitHandler.getValueAs(sizeState.height,"px") + "px; " +
-    "width: " + frameUnitHandler.getValueAs(sizeState.width,"px") + "px;";
-  contentsNode.setAttribute("style", style);
-  if (frametype !== 'table') {
-    setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(sizeState.width,"px") + "px", editor);
-    setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(sizeState.height,"px") + "px", editor);
-  }
+  // style = "height: " + frameUnitHandler.getValueAs(sizeState.height,"px") + "px; " +
+  //   "width: " + frameUnitHandler.getValueAs(sizeState.width,"px") + "px;";
+  // contentsNode.setAttribute("style", style);
+  // if (frametype !== 'table') {
+  //   setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(sizeState.width,"px") + "px", editor);
+  //   setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(sizeState.height,"px") + "px", editor);
+  // }
   frameNode.setAttribute("width", sizeState.width);
   frameNode.setAttribute("height", sizeState.height);
   contentsNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
   frameNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
   // if (style !== "0px")
   //   setStyleAttributeOnNode( frameNode, "border-style", "solid", editor );
+  editor.getFrameStyleFromAttributes(frameNode);
+  editor.getGraphicsAttributesFromFrame(frameNode, contentsNode);
 }
 
 function frameHeightChanged(input, event)
@@ -1345,7 +1317,7 @@ function getInlineOffset(whichUnit)
   if (!whichUnit)
     whichUnit = frameUnitHandler.currentUnit;
   if (Dg.locationList.value === "inline")
-    return frameUnitHandler.getValueAs(Dg.frameInlineOffsetInput.value, whichUnit);
+    return Dg.frameInlineOffsetInput.value;
   return 0;
 }
 
@@ -1427,7 +1399,7 @@ function constrainProportions( srcID, destID, event )
     // else
     //   destElement.value = unitRound( srcElement.value * gConstrainWidth / gConstrainHeight );
   }
-  setContentSize(frameUnitHandler.getValueAs(Dg.frameWidthInput.value,"px"), frameUnitHandler.getValueAs(Dg.frameHeightInput.value,"px"));
+  setContentSize(Dg.frameWidthInput.value, Dg.frameHeightInput.value);
 }
 
 function doDimensionEnabling()

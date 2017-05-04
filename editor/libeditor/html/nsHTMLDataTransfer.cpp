@@ -1524,14 +1524,14 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
   // SetAttribute(frame, NS_LITERAL_STRING("xmlns"), NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
   if (NS_SUCCEEDED(res) && prefBranch)
   {
-    prefName = (char *)(!bIsImage ? "swp.graph.floatplacement" : "swp.graphics.floatplacement");
+    prefName = (char *)(!bIsImage ? "swp.graph.placement" : "swp.graphics.placement");
     res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
     if (NS_SUCCEEDED(res))
       CopyASCIItoUTF16(prefString, setPrefString);
     else
       setPrefString = NS_LITERAL_STRING("inline");
     SetAttribute(frame, NS_LITERAL_STRING("pos"), setPrefString);
-    if (setPrefString.EqualsLiteral("float")) { 
+    if (setPrefString.EqualsLiteral("floating")) { 
       prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.forcehere" : "swp.graphics.floatlocation.forcehere");
       res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
       if (NS_SUCCEEDED(res) && prefBool)
@@ -1553,13 +1553,13 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
       if (NS_SUCCEEDED(res) && prefBool)
         floatPlacement.Append(PRUnichar('b'));
       SetAttribute(frame, NS_LITERAL_STRING("placeLocation"), floatPlacement);
-      prefName = (char *) (!bIsImage ? "swp.graph.floatplacement" : "swp.graphics.floatplacement");
-      res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
-      if (NS_SUCCEEDED(res))
-      {
-        CopyASCIItoUTF16(prefString, setPrefString);
-        SetAttribute(frame, NS_LITERAL_STRING("placement"), setPrefString);
-      }
+      // prefName = (char *) (!bIsImage ? "swp.graph.floatplacement" : "swp.graphics.floatplacement");
+      // res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
+      // if (NS_SUCCEEDED(res))
+      // {
+      //   CopyASCIItoUTF16(prefString, setPrefString);
+      //   SetAttribute(frame, NS_LITERAL_STRING("placement"), setPrefString);
+      // }
     }
     prefName = (char *) (!bIsImage ? "swp.graph.units" : "swp.graphics.units");
     res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(unitString));
@@ -1699,6 +1699,7 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
   NS_NAMED_LITERAL_STRING(space," ");
   NS_NAMED_LITERAL_STRING(defaultunit,"in");
   NS_NAMED_LITERAL_STRING(zero, "0");
+  NS_NAMED_LITERAL_STRING(autoStr, "auto");
 
   // other strings
   nsAutoString style, attrStr, posStr, unitStr, borderwStr, bordercolorStr;
@@ -1728,8 +1729,8 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
 
   res = frame->GetAttribute(pos, posStr);
   if (posStr.Length() > 0) {
-    left = (posStr.EqualsLiteral("L") || posStr.EqualsLiteral("I"));
-    right = (posStr.EqualsLiteral("R") || posStr.EqualsLiteral("O"));
+    left = (posStr.EqualsLiteral("L") || posStr.EqualsLiteral("I") || posStr.EqualsLiteral("left") || posStr.EqualsLiteral("inside"));
+    right = (posStr.EqualsLiteral("R") || posStr.EqualsLiteral("O") || posStr.EqualsLiteral("right") || posStr.EqualsLiteral("outside"));
     if (left) {
       style += floatatt + colon + NS_LITERAL_STRING("left") + semicolon;
     }
@@ -1738,20 +1739,25 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
     }
   }
   // find topmargin, sidemargin
-  res = frame->GetAttribute(topmargin, topmarginStr);
   res = frame->GetAttribute(sidemargin, sidemarginStr);
   if (topmarginStr.Length() == 0) topmarginStr = zero;
   if (sidemarginStr.Length() == 0) sidemarginStr = zero;
-  leftmargin = sidemarginStr;
-  rightmargin = sidemarginStr;
+  if (posStr.EqualsLiteral("center") || posStr.EqualsLiteral("floating")) {
+    leftmargin.Assign(autoStr);
+    rightmargin.Assign(autoStr);
+  }
+  else {
+    leftmargin = sidemarginStr + unitStr;
+    rightmargin = sidemarginStr + unitStr;    
+  }
   if (left) {
-    leftmargin = zero;
+    leftmargin = zero + unitStr;
   }
   else if (right) {
-    rightmargin = zero;
+    rightmargin = zero + unitStr;
   }
-  style += margin + colon + topmarginStr + unitStr + space + rightmargin +
-    unitStr + space + topmarginStr + unitStr + space + leftmargin + unitStr +
+  style += margin + colon + topmarginStr + unitStr + space + rightmargin + 
+  space + topmarginStr + unitStr + space + leftmargin +
     semicolon;
 // Overhang
     // come back to this.
@@ -5086,23 +5092,13 @@ nsHTMLEditor::CreateFrameWithDefaults(const nsAString & frametype, nsIDOMNode * 
   CreateNode(NS_LITERAL_STRING("msiframe"), parent, offset, getter_AddRefs(framenode));
   frame = do_QueryInterface(framenode);
   if (!frame) return NS_ERROR_FAILURE;
+  frame->SetAttribute(NS_LITERAL_STRING("frametype"), frametype);
   ApplyGraphicsDefaults( frame, (frametype.EqualsLiteral("image")), (frametype.EqualsLiteral("plot")));
   frame->SetAttribute(NS_LITERAL_STRING("aspect"), NS_LITERAL_STRING("true"));
   frame->SetAttribute(NS_LITERAL_STRING("textalignment"), NS_LITERAL_STRING("left"));
   *_retval = frame;
   return rv;
 }
-
-
-/* AString copyAndConvert (in AString filename, in long width, in long height, in AString units); */
-NS_IMETHODIMP 
-nsHTMLEditor::CopyAndConvert(const nsAString & filename, PRInt32 width, PRInt32 height, const nsAString & units, nsAString & _retval)
-{
-  nsAutoString ext;
-  return NS_OK;
-}
-
-
 
 
 
