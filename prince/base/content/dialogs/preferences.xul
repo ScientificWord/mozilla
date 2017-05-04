@@ -592,8 +592,8 @@
               </vbox>
               <separator/>
               <vbox>
-               <radio id="inline" value="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
-               <radio id="hereLeftRadio" label="&hereLeftRadio.label;" value="L" radioGroup="herePlacementRadioGroup" />
+                <radio id="inline" value="inline" label="&DefaultPlacementNewGraphicsInline.label;" radioGroup="placementRadioGroup"/>
+                <radio id="hereLeftRadio" label="&hereLeftRadio.label;" value="L" radioGroup="herePlacementRadioGroup" />
                 <radio id="hereRightRadio" label="&hereRightRadio.label;" value="R" radioGroup="herePlacementRadioGroup" />
                 <radio id="hereInsideRadio" label="&hereInsideRadio.label;" value="I" radioGroup="herePlacementRadioGroup" />
                 <radio id="hereOutsideRadio" label="&hereOutsideRadio.label;" value="O" radioGroup="herePlacementRadioGroup" />
@@ -601,7 +601,7 @@
 
               </vbox>
               <vbox>
-                <radio id="float" value="float" label="&DefaultPlacementNewGraphicsFloating.label;" radioGroup="placementRadioGroup" />
+                <radio id="float" value="floating" label="&DefaultPlacementNewGraphicsFloating.label;" radioGroup="placementRadioGroup" />
                 <vbox>
                   <checkbox id="placeForceHereCheck" label="&placeForceHereCheck.label;"
                     preference="defaultGraphicsFloatLocation.forceHere"/>
