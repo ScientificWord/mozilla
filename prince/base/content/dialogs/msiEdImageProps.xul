@@ -104,7 +104,7 @@
 #include ../keysfordialogs.inc
 
   <label id="videoTitle" value="&videoTitle.label;" style="display:none;" />
-  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <spacer id="location" offsetY="50" />
   <broadcaster id="args" value=""/>
   <broadcasterset id="bcasters">
     <broadcaster id="role-image" style="display:block"/>
@@ -143,8 +143,8 @@
       </vbox>
       <vbox id="msiFrame"/>
       <vbox id="videoProperties" observes="isVideo">
-        <checkbox id="vidAutoplayCheckbox" label="&videoAutoplay.label;" checked="false" persist="checked"/>
-        <checkbox id="vidShowControlsCheckbox" label="&videoShowControls.label;" checked="false" persist="checked"/>
+        <checkbox id="vidAutoplayCheckbox" label="&videoAutoplay.label;" checked="false" />
+        <checkbox id="vidShowControlsCheckbox" label="&videoShowControls.label;" checked="false" />
         <label value="&videoLooping.label;"/>
         <menulist id = "vidLoopingList" value="False" persist="value">
           <menupopup id = "vidLoopingPopup">
