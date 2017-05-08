@@ -648,30 +648,7 @@ function GetCaptionLoc(parentNode)
     return "none";
 }
 
-// function findCaptionNodes(parentNode)
-// {
-//   var retData = {belowCaption : null, aboveCaption : null};
-//   var theChildren = msiNavigationUtils.getSignificantContents(parentNode);
-//   var position;
-//   var parentPos = "below";
-//   if (parentNode.hasAttribute("captionloc"))
-//     parentPos = parentNode.getAttribute("captionloc");
-//   for (var ii = 0; ii < theChildren.length; ++ii)
-//   {
-//     if (msiGetBaseNodeName(theChildren[ii]) == "imagecaption")
-//     {
-//       if (theChildren[ii].hasAttribute("position"))
-//         position = theChildren[ii].getAttribute("position");
-//       else
-//         position = parentPos;
-//       if (!position || (position != "above"))
-//         position = parentPos;
-//       position += "Caption";
-//       retData[position] = theChildren[ii];
-//     }
-//   }
-//   return retData;
-// }
+
 
 function getNodeChildrenAsString(aNode)
 {
@@ -683,48 +660,6 @@ function getNodeChildrenAsString(aNode)
   return retStr;
 }
 
-// function syncCaptionAndExisting(dlgCaptionStr, editor, imageObj, positionStr)
-// {
-//   var bChange = false;
-//   var existingStr = "";
-//   var currCaptionNode;
-//   var currLoc = imageObj.getAttribute("captionloc");
-//   if (!currLoc || !currLoc.length)
-//     currLoc = "below";
-//   var captionNodes = imageObj.getElementsByTagName("imagecaption");
-//    if (captionNodes && captionNodes.length)
-//     currCaptionNode = captionNodes[0];
-//   if (currCaptionNode)
-//     existingStr = getNodeChildrenAsString(currCaptionNode);
-//   if (dlgCaptionStr.length)
-//     msiEditorEnsureElementAttribute(imageObj, "captionloc", positionStr, editor);
-//   else
-//     msiEditorEnsureElementAttribute(imageObj, "captionloc", null, editor);  //This will remove the captionLoc attribute
-
-//   bChange = (existingStr != dlgCaptionStr);
-//   if (!bChange)
-//   {
-//     return;
-//   }
-//   if (dlgCaptionStr.length)
-//   {
-//     if (!currCaptionNode)
-//     {
-//       currCaptionNode = editor.document.createElementNS(xhtmlns, "imagecaption");
-// //      currCaptionNode.setAttribute("position", positionStr);
-//       editor.insertNode(currCaptionNode, imageObj, imageObj.childNodes.length);
-//     }
-//     else if (existingStr.length)
-//     {
-//       for (var jx = currCaptionNode.childNodes.length - 1; jx >= 0; --jx)
-//         editor.deleteNode(currCaptionNode.childNodes[jx]);
-//     }
-//     editor.insertHTMLWithContext(dlgCaptionStr, "", "", "", null, currCaptionNode, 0, false);
-//     msiEditorEnsureElementAttribute(imageObj, "captionloc", positionStr, editor);
-//   }
-//   else if (currCaptionNode)
-//     editor.deleteNode(currCaptionNode);
-// }
 
 // Get data from widgets, validate, and set for the global element
 //   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
@@ -1725,12 +1660,11 @@ function onAccept()
 
       // caption dance: If there was a caption and the user specifies none, delete the caption
       if (gCaptionNode && captionloc === 'none') {
+        gEditor.deleteNode(gCaptionNode);
         gCaptionNode = null;
       }
       else if (!gCaptionNode && captionloc !== 'none') {
         gCaptionNode = gEditor.createElementWithDefaults('imagecaption');
-        var namespace = { value: null };
-        gCaptionNode.appendChild(tlm.getNewInstanceOfNode(tlm.getDefaultParagraphTag(namespace), null, gCaptionNode.ownerDocument));
       }
       if (gCaptionNode && isEnabled(document.getElementById("keyInput"))) {
         if (document.getElementById("keyInput").value != "")
