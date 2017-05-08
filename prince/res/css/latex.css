@@ -26,25 +26,21 @@ texlogo sub {
 
 caption {
   background-color: rgb(250,240,240);
-  margin-top: 3pt;
-  margin-bottom: 3pt;
-}
-msiframe bodyText {
-  background-color: rgb(250,240,240);
-  margin-top: 3pt;
-  margin-bottom: 3pt;
+  margin: 3pt auto 3pt auto;
 }
 
-imagecaption {
+msiframe imagecaption {
   display: table-caption;
-}
-
-imagecaption, imagecaption > bodyText {
   background-color: rgb(250,240,240);
   margin-top: 3pt;
   margin-bottom: 3pt;
-  text-indent: 0;
-  text-align: center;
+}
+
+msiframe caption {
+  display: table-caption;
+  background-color: rgb(250,240,240);
+  margin-top: 3pt;
+  margin-bottom: 3pt;
 }
 
 table {

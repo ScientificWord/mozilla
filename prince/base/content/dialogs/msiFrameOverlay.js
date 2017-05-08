@@ -286,6 +286,7 @@ function checkMenuItem( item, checkit ) {
   if (item === null) return;
   if (checkit) {
     item.setAttribute("checked", true);
+    document.getElementById("floatlistNone").removeAttribute('checked');
   }
   else item.removeAttribute("checked");
 }
@@ -432,27 +433,29 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   if (pos != null && ret.length > 0 && dg.locationList) dg.locationList.selectedItem = document.getElementById(ret);
   if ((pos === "inline") && element.hasAttribute("inlineOffset"))
     inlineOffset = element.getAttribute("inlineOffset");
-
-  isFloat = (pos != null) && pos === 'float';
-  v = element.getAttribute("ltx_float");
+  isFloat = (pos != null) && pos === 'floating';
+  v = element.getAttribute("ltxfloat");
   if (isFloat && v && v.length > 0) {
     b = (v.search("H") >= 0);
-    checkMenuItem(document.getElementById("placement_forceHere"), b);
+    checkMenuItem(document.getElementById("ltxfloat_forceHere"), b);
     b = (v.search("h") >= 0);
-    checkMenuItem(document.getElementById("placement_here"), b);
+    checkMenuItem(document.getElementById("ltxfloat_here"), b);
     b = (v.search("p") >= 0);
-    checkMenuItem(document.getElementById("placement_pageOfFloats"), b);
+    checkMenuItem(document.getElementById("ltxfloat_pageOfFloats"), b);
     b = (v.search("t") >= 0);
-    checkMenuItem(document.getElementById("placement_topPage"), b);
+    checkMenuItem(document.getElementById("ltxfloat_topPage"), b);
     b = (v.search("b") >= 0);
-    checkMenuItem(document.getElementById("placement_bottomPage"), b);
+    checkMenuItem(document.getElementById("ltxfloat_bottomPage"), b);
   }
   if (!isFloat) checkMenuItem(document.getElementById("floatlistNone"), true);
   v =  element.getAttribute("borderw");
   if (v != null && dg.borderInput && dg.borderInput.left && dg.borderInput.right && dg.borderInput.top && dg.borderInput.bottom)
     dg.borderInput.left.value = dg.borderInput.right.value = dg.borderInput.bottom.value = dg.borderInput.top.value = v;
   v =  element.getAttribute("sidemargin");
-  if (v != null && dg.marginInput && dg.marginInput.left && dg.marginInput.right ) dg.marginInput.left.value = dg.marginInput.right.value = v;
+  if (v != null && dg.marginInput) {
+    if (dg.marginInput.left) dg.marginInput.left.value = v;
+    if (dg.marginInput.right) dg.marginInput.right.value = v;
+  }
   v =  element.getAttribute("topmargin");
   if (v != null && dg.marginInput && dg.marginInput.top && dg.marginInput.bottom) dg.marginInput.top.value = dg.marginInput.bottom.value = v;
   v =  element.getAttribute("padding");
@@ -486,6 +489,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
 
       var overhang = element.getAttribute("overhang");
       if (overhang === null) overhang = 0;
+      // ??
       dg.marginInput.right.value = overhang;
 
       var theColor;
@@ -926,7 +930,7 @@ function setContentBGColor(color)
 function setAlignment(alignment )
 {
   position = alignment;
-  if (position ==1|| position ==2)
+  if (position ==1 || position ==2)
   {
     Dg.marginInput.left.removeAttribute("disabled");
     Dg.marginInput.right.removeAttribute("disabled");

@@ -132,6 +132,7 @@ function floatPropertyChanged() {
   }
 }
 
+// caption for graphs
 function captionPropertyChanged() {
   var captionLoc = document.getElementById("captionLocation").value;
   if (captionLoc === "none") {
