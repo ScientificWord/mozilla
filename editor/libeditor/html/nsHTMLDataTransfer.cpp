@@ -1520,6 +1520,11 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
   PRBool prefBool = PR_FALSE;
   float lengthVal, origVal;
   char * prefName;
+  nsCOMPtr<nsIDOMNode> child;
+  nsCOMPtr<nsIDOMNode> captionElement;
+  nsCOMPtr<nsIDOMNode> dummy;
+  nsCOMPtr<nsIDOMDocument> doc;
+
 
   // SetAttribute(frame, NS_LITERAL_STRING("xmlns"), NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
   if (NS_SUCCEEDED(res) && prefBranch)
@@ -1552,14 +1557,7 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
       res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
       if (NS_SUCCEEDED(res) && prefBool)
         floatPlacement.Append(PRUnichar('b'));
-      SetAttribute(frame, NS_LITERAL_STRING("placeLocation"), floatPlacement);
-      // prefName = (char *) (!bIsImage ? "swp.graph.floatplacement" : "swp.graphics.floatplacement");
-      // res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
-      // if (NS_SUCCEEDED(res))
-      // {
-      //   CopyASCIItoUTF16(prefString, setPrefString);
-      //   SetAttribute(frame, NS_LITERAL_STRING("placement"), setPrefString);
-      // }
+      SetAttribute(frame, NS_LITERAL_STRING("ltxfloat"), floatPlacement);
     }
     prefName = (char *) (!bIsImage ? "swp.graph.units" : "swp.graphics.units");
     res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(unitString));
@@ -1659,6 +1657,33 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
       CopyASCIItoUTF16(prefString, setPrefString);
       SetAttribute(frame, NS_LITERAL_STRING("background-color"), setPrefString);
     }
+    // caption or not, caption location
+    prefName = (char *) (!bIsImage ? "swp.graph.captionplacement" : "swp.graphics.captionplacement");
+
+    res = prefBranch->GetCharPref((const char *)prefName, getter_Copies(prefString));
+    if (NS_SUCCEEDED(res))
+    {
+      CopyASCIItoUTF16(prefString, setPrefString);
+      nsAutoString childName;
+      if (setPrefString.Length() > 0 && !setPrefString.EqualsLiteral("none"))
+      {
+        SetAttribute(frame, NS_LITERAL_STRING("captionloc"), setPrefString);
+        GetDocument(getter_AddRefs(doc));
+        res = frame->GetFirstChild(getter_AddRefs(child));
+        if (child != nsnull) child->GetNodeName(childName);
+        // the default msiframe contains a bodyText. For graphics and plots we want to replace this
+        // with an imagecaption
+        while (child && !childName.EqualsLiteral("bodyText")) {
+          child->GetNextSibling(getter_AddRefs(child));
+          if (child) child->GetNodeName(childName);
+        }
+        if (child) {
+          res = mtagListManager->GetNewInstanceOfNode(NS_LITERAL_STRING("imagecaption"), nsnull, doc, getter_AddRefs(captionElement));
+          frame->ReplaceChild(captionElement, child, getter_AddRefs(dummy));
+        }
+      }
+    }
+
   }
   return res;
 }
