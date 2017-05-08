@@ -86,6 +86,7 @@ pref("swp.graphics.keepaspect", true);
 pref("swp.graphics.inlineoffset", "0.0");
 pref("swp.graphics.units", "in");
 pref("swp.graphics.placement", "center");
+pref("swp.graphics.captionplacement", "none");
 pref("swp.graphics.floatlocation.forcehere", false);
 pref("swp.graphics.floatlocation.here", true);
 pref("swp.graphics.floatlocation.pagefloats", false);

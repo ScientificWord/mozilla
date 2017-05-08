@@ -141,6 +141,9 @@
       <preference id="graphics.borderColor"
                   name="swp.graphics.bordercolor"
                   type="string"/>
+      <preference id = "graphics.captionplacement"
+                   name="swp.graphics.captionplacement"
+                   type = "string" />
       <preference id="saveintervalseconds"
                   name="swp.saveintervalseconds"
                   type="int"/>
@@ -657,8 +660,14 @@
                   <label value="&BorderWidth.label;"/>
                   <textbox id="graphicsBorder" type="number" decimalplaces="2"
                     preference="defaultGraphicsBorderWidth" class="medwidth"/>
-                  <hbox/>
-                  <hbox/>
+                  <label value="&captionplacement.label;" />
+                  <menulist id="captionplacement" value="none" selectedIndex="0" preference="graphics.captionplacement" >
+                    <menupopup id = "graphics.captionplacementPopup">
+                      <menuitem value="none" label="&None.label;"/>
+                      <menuitem value="top" label="&above;"/>
+                      <menuitem value="bottom" label="&below;"/>
+                    </menupopup>
+                  </menulist>
                   <label value="&BorderColor.label;"/>
                   <msibutton id="graphics.border,colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graphics.border.CW');">
                     <spacer id="graphics.border.CW" class="color-well" preference="graphics.borderColor"/>
