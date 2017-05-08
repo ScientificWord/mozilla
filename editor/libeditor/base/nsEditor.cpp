@@ -1683,16 +1683,33 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   nsresult res = NS_OK;
   nsAutoString tagName;
   nsAutoString tagclass;
+  nsAutoString frametype;
   nsCOMPtr<nsIDOMNode> topChild = do_QueryInterface(parent);
   nsCOMPtr<nsIDOMNode> tmp;
   nsCOMPtr<nsIDOMNode> ptr = do_QueryInterface(parent);
+  nsCOMPtr<nsIDOMElement> parentElt;
   *outNode = node;
   NS_ADDREF(node);
   *outParent = parent;
   NS_ADDREF(parent);
+  // We want to keep from doing this for frames of graphs and graphics, so we check for that here. This should someday be moved to the node defs mechanism
+  parent->GetNodeName(tagName);
+  if (tagName.EqualsLiteral("msiframe")) {
+    parentElt = do_QueryInterface(parent);
+    if (parentElt) {
+      parentElt->GetAttribute(NS_LITERAL_STRING("frametype"), frametype);
+      if (frametype.EqualsLiteral("image") || frametype.EqualsLiteral("msigraph")) {
+        *_retval = -1;
+        return NS_ERROR_FAILURE;
+      }
+    }
+  }
   PRInt32 offsetOfInsert = aPosition;
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface((nsIEditor*)this);
-  if (!htmlEditor) return -1;
+  if (!htmlEditor){
+    *_retval = -1;
+    return NS_ERROR_FAILURE;
+  }
   nsCOMPtr<msiITagListManager> tlm;
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   node->GetNodeName(tagName);

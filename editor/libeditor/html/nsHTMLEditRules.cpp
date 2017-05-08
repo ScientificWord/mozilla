@@ -2061,7 +2061,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
   // nsAutoSelectionReset selectionResetter(aSelection, mHTMLEditor);
   // nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
 
-  nsCOMPtr<nsIDOMNode> startNode, selNode;
+  nsCOMPtr<nsIDOMNode> startNode, selNode, tempParent;
   PRInt32 startOffset, selOffset;
 
   // first check for table selection mode.  If so,
@@ -2088,7 +2088,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
   if (bCollapsed)
   {
-    // if we are inside an empty block, delete unless it is a child of <body> and there is no paragraph preceding it
+    // if we are inside an empty block, delete unless it is a child of <body> and there is no paragraph preceding it, or if it is an imagecaption
     res = startNode->GetParentNode(getter_AddRefs(pnode));
     if (pnode == rootNode) {  // Check to see if there is real content before this node
       *aHandled = PR_TRUE;
@@ -2558,13 +2558,25 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         mathmlEd->CheckListItems(leftParent, rightParent, (nsIDOMNode**)address_of(leftParent), (nsIDOMNode**)address_of(rightParent));
         // Checklistitems may replace leftParent and rightParent with list or listitem ancestors.
       }
+      nsAutoString name;
+      NS_NAMED_LITERAL_STRING(imgcap, "imagecaption");
+      leftParent->GetNodeName(name);
+      if (name == imgcap) {
+        *aHandled = PR_TRUE;
+        return NS_OK;
+      }
+      rightParent->GetNodeName(name);
+      if (name == imgcap) {
+        *aHandled = PR_TRUE;
+        return NS_OK;
+      }
 
       // now join them
       nsCOMPtr<nsIDOMNode> selPointNode = startNode;
       PRInt32 selPointOffset = startOffset;
       // nsCOMPtr<nsIDOMNode> selPointNode = rightParent;
       // PRInt32 selPointOffset = 0;
-
+        
       {
         nsAutoTrackDOMPoint tracker(mHTMLEditor->mRangeUpdater, address_of(selPointNode), &selPointOffset);
         res = JoinBlocks(address_of(leftParent), address_of(rightParent), aCancel);
@@ -3883,6 +3895,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsISelection> sel;
   PRUint32 dummy = 0;
   nsAutoString name;
+  nsAutoString parentName;
   nsCOMPtr<nsIEditor> editor = do_QueryInterface((nsIHTMLEditor *)ed);
   PRInt32 selOffset ;
   PRUint32 nodecount  = 0;
@@ -3982,13 +3995,13 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
         PRBool isFrontMatterTag;
         nsCOMPtr<msiITagListManager> mtagListManager;
         ed->GetTagListManager(getter_AddRefs(mtagListManager));
-         res = parentNode->GetNodeName(name);
-        if (name.EqualsLiteral("html")) return;
-        if (!name.EqualsLiteral("body")){
-          mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), name, nsnull, &isParagraph);
-          mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), name, nsnull, &isTextTag);
-          mtagListManager->GetTagInClass(NS_LITERAL_STRING("istag"), name, nsnull, &isFrontMatterTag);
-          if (isParagraph || isTextTag || /*isFrontMatterTag ||*/ name.EqualsLiteral("td") || name.EqualsLiteral("imagecaption"))
+         res = parentNode->GetNodeName(parentName);
+        if (parentName.EqualsLiteral("html") || (name.EqualsLiteral("imagecaption") && parentName.EqualsLiteral("msiframe"))) return;
+        if (!parentName.EqualsLiteral("body")){
+          mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), parentName, nsnull, &isParagraph);
+          mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"), parentName, nsnull, &isTextTag);
+          mtagListManager->GetTagInClass(NS_LITERAL_STRING("istag"), parentName, nsnull, &isFrontMatterTag);
+          if (isParagraph || isTextTag || /*isFrontMatterTag ||*/ parentName.EqualsLiteral("td"))
           {
             done = PR_TRUE;
             break;
@@ -6591,6 +6604,11 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
       // adjust selection to be right after it
       res = aSelection->Collapse(blockParent, offset+1);
       if (NS_FAILED(res)) return res;
+    }
+    nsAutoString name;
+    emptyBlock->GetNodeName(name);
+    if (name.EqualsLiteral("imagecaption")) {
+      return NS_OK;
     }
     res = mHTMLEditor->DeleteNode(emptyBlock);
     // If there is no paragraph left and we are in the body, put in a new default paragraph
