@@ -526,5 +526,6 @@
 <!ENTITY  Caption.tooltip "Choose a caption location if 'Float' is not 'none'">
 <!ENTITY  above						"Above">
 <!ENTITY  below						"Below">
+<!ENTITY  captionplacement.label	"Caption location">
 
 

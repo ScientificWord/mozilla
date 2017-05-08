@@ -433,9 +433,19 @@
           </initialcontents>
           <nexttag>bodyText</nexttag>
         </tag>
-        <tag nm="imagecaption">
-          <description>Caption for image, plot, or table</description>
-          <nexttag>bodyText</nexttag>
+        <tag hidden="1" nm="imagecaption">
+          <description>Image caption</description>
+          <contains>#text</contains>
+          <contains>texttag</contains>
+          <contains>othertag</contains>
+          <contains>mml:math</contains>
+          <contains>br</contains>
+          <contains>cursor</contains>
+          <contains>object</contains>
+          <contains>a</contains>
+          <contains>msibr</contains>
+          <contains>texb</contains>
+          <nexttag>none</nexttag>
           <initialcontents>
             <imagecaption>
               <br/>
@@ -1140,29 +1150,6 @@
           </initialcontents>
           <!--inclusion>true</inclusion-->
         </tag>
-        <tag hidden="1" nm="imagecaption">
-          <description>Image caption</description>
-          <contains>#text</contains>
-          <contains>texttag</contains>
-          <contains>table</contains>
-          <contains>listparenttag</contains>
-          <contains>listtag</contains>
-          <contains>shortQuote</contains>
-          <contains>othertag</contains>
-          <contains>mml:math</contains>
-          <contains>br</contains>
-          <contains>cursor</contains>
-          <contains>defaulttitletag</contains>
-          <contains>img</contains>
-          <contains>object</contains>
-          <contains>a</contains>
-          <contains>note</contains>
-          <contains>notewrapper</contains>
-          <contains>msiframe</contains>
-          <contains>msibr</contains>
-          <contains>texb</contains>
-        </tag>
-
         <tag nm="acadian" hidden="1" babel="0">
           <description>Babel environment</description>
           <discardemptyblock>true</discardemptyblock>
