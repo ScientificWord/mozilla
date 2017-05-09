@@ -2453,6 +2453,8 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
           }
           the_next = right_anchor;
         }
+      } else {
+	RemoveRedundantMROWs2(rover->first_kid);
       }
     } else {
       RemoveRedundantMROWs2(rover->first_kid);
