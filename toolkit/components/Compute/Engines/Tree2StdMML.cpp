@@ -211,6 +211,7 @@ MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
 MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
 {
   MNODE* rv = dMML_tree;
+  RemoveEmptyTags(dMML_tree);
   RemoveRedundantMROWs2(rv);
   FixColonEqual(rv);
   FixDotDotMN(rv);
