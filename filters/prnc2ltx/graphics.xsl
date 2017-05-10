@@ -292,8 +292,8 @@
     <xsl:variable name="theUnit">
       <xsl:call-template name="unit"/>
     </xsl:variable>
-    <xsl:if test="@border">
-    \setlength\fboxrule{<xsl:value-of select="@border"/>
+    <xsl:if test="@borderw">
+    \setlength\fboxrule{<xsl:value-of select="@borderw"/>
       <xsl:value-of select="$theUnit"/>}
       <xsl:if test="@padding"> \setlength\fboxsep{<xsl:value-of select="@padding"/>
         <xsl:value-of select="$theUnit"/>}</xsl:if>
@@ -311,7 +311,7 @@
         <xsl:call-template name="buildincludegraphics"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:if test="@border"><xsl:if test="@border-color">}</xsl:if>}</xsl:if>
+    <xsl:if test="@borderw"><xsl:if test="@border-color">}</xsl:if>}</xsl:if>
   </xsl:template>
 
     <xsl:template match="html:object|html:embed">
@@ -436,7 +436,7 @@
     </xsl:variable>
     <xsl:variable name="border">
       <xsl:choose>
-        <xsl:when test="$objNode/@border">
+        <xsl:when test="$objNode/@borderw">
           <xsl:value-of select="2*number($objNode/@border)"/>
         </xsl:when>
         <xsl:otherwise>0</xsl:otherwise>
