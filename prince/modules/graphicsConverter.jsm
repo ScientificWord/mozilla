@@ -910,7 +910,7 @@ var graphicsConverter = {
     if (graphicFile.exists()) {
       // Test to see if any derived graphics files are missing
       if (this.allDerivedGraphicsExist(documentDir, graphicFile, objElement)) return true;
-        importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
+      importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
       if (importName){
         objElement.setAttribute("src", importName);
         objElement.setAttribute("data", importName);
@@ -938,8 +938,6 @@ var graphicsConverter = {
         this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null);
       }
     }
-
-
   }
 };
 

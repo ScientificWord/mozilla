@@ -3004,21 +3004,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
                                    aDoDeleteSelection);
       }
     }
-    else if (0 == nsCRT::strcmp(bestFlavor, kUnicodeMime))
-    {
-      nsCOMPtr<nsISupportsString> textDataObj(do_QueryInterface(genericDataObj));
-      if (textDataObj && len > 0)
-      {
-        nsAutoString text;
-        textDataObj->GetData(text);
-        NS_ASSERTION(text.Length() <= (len/2), "Invalid length!");
-        stuffToPaste.Assign(text.get(), len / 2);
-        nsAutoEditBatch beginBatching(this);
-        // need to provide a hook from this point
-        rv = InsertTextAt(stuffToPaste, aDestinationNode, aDestOffset, aDoDeleteSelection);
-      }
-    }
-    else if (0 == nsCRT::strcmp(bestFlavor, kFileMime))
+   else if (0 == nsCRT::strcmp(bestFlavor, kFileMime))
     {
       nsCOMPtr<nsIFile> fileObj(do_QueryInterface(genericDataObj));
       if (fileObj && len > 0)
@@ -3130,10 +3116,33 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
         }
       }
     }
-    else if (0 == nsCRT::strcmp(bestFlavor, kJPEGImageMime))
+
+
+ 
+    #define kPNGImageMime               "image/png"
+    #define kJPEGImageMime              "image/jpg"
+    #define kGIFImageMime               "image/gif"
+    #define kFileMime                   "application/x-moz-file"
+    #define kSVGImageMime               "image/svg+xml"
+    #define kWin32EnhMetafile           "application/x-moz-win32-enhMetafile"
+    #define kWin32MetafilePict          "application/x-moz-win32-metafilePict"
+
+    else if (0 == nsCRT::strcmp(bestFlavor, kJPEGImageMime) ||
+             0 == nsCRT::strcmp(bestFlavor, kPNGImageMime) ||      
+             0 == nsCRT::strcmp(bestFlavor, kGIFImageMime) ||      
+             0 == nsCRT::strcmp(bestFlavor, kSVGImageMime) ||      
+             0 == nsCRT::strcmp(bestFlavor, kWin32EnhMetafile) ||  
+             0 == nsCRT::strcmp(bestFlavor, kWin32MetafilePict))
     {
       nsAutoString leaf;
-      leaf = NS_LITERAL_STRING("copied.jpg");
+      nsAutoString ext;
+      if (0 == nsCRT::strcmp(bestFlavor, kJPEGImageMime)) ext = NS_LITERAL_STRING("jpg");
+      else if (0 == nsCRT::strcmp(bestFlavor, kPNGImageMime)) ext = NS_LITERAL_STRING("png");
+      else if (0 == nsCRT::strcmp(bestFlavor, kGIFImageMime)) ext = NS_LITERAL_STRING("gif");
+      else if (0 == nsCRT::strcmp(bestFlavor, kSVGImageMime)) ext = NS_LITERAL_STRING("svg");
+      else if (0 == nsCRT::strcmp(bestFlavor, kWin32EnhMetafile)) ext = NS_LITERAL_STRING("emf");
+      else if (0 == nsCRT::strcmp(bestFlavor, kWin32MetafilePict)) ext = NS_LITERAL_STRING("wmf");
+      leaf = NS_LITERAL_STRING("copied.") + ext;
       nsCOMPtr<nsIInputStream> imageStream(do_QueryInterface(genericDataObj));
       NS_ENSURE_TRUE(imageStream, NS_ERROR_FAILURE);
 
@@ -3200,6 +3209,20 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
 //                                    aDestinationNode, aDestOffset,
 //                                    aDoDeleteSelection);
 //       }
+    }
+    else if (0 == nsCRT::strcmp(bestFlavor, kUnicodeMime))
+    {
+      nsCOMPtr<nsISupportsString> textDataObj(do_QueryInterface(genericDataObj));
+      if (textDataObj && len > 0)
+      {
+        nsAutoString text;
+        textDataObj->GetData(text);
+        NS_ASSERTION(text.Length() <= (len/2), "Invalid length!");
+        stuffToPaste.Assign(text.get(), len / 2);
+        nsAutoEditBatch beginBatching(this);
+        // need to provide a hook from this point
+        rv = InsertTextAt(stuffToPaste, aDestinationNode, aDestOffset, aDoDeleteSelection);
+      }
     }
   }
 
