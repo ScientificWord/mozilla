@@ -17,7 +17,7 @@
       <xsl:when test="@pos='inline'">ft-inline</xsl:when>
       <xsl:when test="@pos='center'">ft-centered</xsl:when>
       <xsl:when test="@pos='floating'">ft-floating</xsl:when>
-      <xsl:when test="@pos='display'">ft-centered</xsl:when>
+      <xsl:when test="@pos='displayed'">ft-centered</xsl:when>
       <xsl:when test="@pos='d'">ft-centered</xsl:when>
       <xsl:when test="@ltxfloat">ft-floating</xsl:when>
       <xsl:otherwise>ft-wrapped</xsl:otherwise>
@@ -73,7 +73,7 @@
   </xsl:variable>
   <xsl:variable name="usecolor">
     <xsl:choose>
-      <xsl:when test="((@border-color and not (@border-color='#ffffff')) or (@background-color and not (@border-color='#ffffff')))">1</xsl:when>
+      <xsl:when test="((@border-color and not (@border-color='#ffffff')) or (@background-color and not (@background-color='#ffffff')))">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -132,7 +132,7 @@
       <xsl:text>{</xsl:text>
       <xsl:choose>
         <xsl:when test="not(@rotation) or (@rotation='rot0')">
-          <xsl:value-of select="$width"/><xsl:value-of select="$units"/>
+          <xsl:value-of select="$width"/>a<xsl:value-of select="$units"/>
 <!--             \dimexpr </xsl:text><xsl:value-of select="$width"/><xsl:value-of select="$units"/> +2\fboxsep +2\fboxrule + .1in
  -->
         </xsl:when>
@@ -199,6 +199,21 @@
     <xsl:otherwise></xsl:otherwise>
   </xsl:choose>
   <xsl:if test="$usecolor=1">
+  <xsl:choose>
+    <xsl:when test="@borderw">
+      <xsl:value-of select="$newline"/>
+      <xsl:text>\setlength\fboxrule{</xsl:text>
+      <xsl:value-of select="@borderw"/><xsl:value-of select="$units"/>
+      <xsl:text>}</xsl:text>
+      <xsl:if test="@padding">
+        <xsl:text>\setlength\fboxsep{</xsl:text>
+        <xsl:value-of select="@padding"/><xsl:value-of select="$units"/>
+        <xsl:text>}</xsl:text>
+      </xsl:if>
+    </xsl:when>
+    <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
+  </xsl:choose>
+
     <xsl:text>\fcolorbox</xsl:text>
     <xsl:if test="@border-color">
       <xsl:choose>

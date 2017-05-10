@@ -2860,6 +2860,86 @@ nsHTMLEditor::ParseCFHTML(nsCString & aCfhtml, PRUnichar **aStuffToPaste, PRUnic
   return NS_OK;
 }
 
+
+// When this function is called, the graphics file has already been copied to the graphics directory, but it has not been converted.
+nsresult 
+nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
+                                        nsIDOMNode *aDestinationNode,
+                                        PRInt32 aDestOffset,
+                                        PRBool aDoDeleteSelection)
+{
+  nsCOMPtr<nsIDOMElement> frame;
+  nsCOMPtr<nsIDOMElement> obj;
+  nsCOMPtr<nsIDOMNode> framenode;
+  nsCOMPtr<nsIDOMNode> objnode;
+  nsCOMPtr<nsIDOMNode> destnode;
+  nsCOMPtr<nsIDOMText> text;
+  nsCOMPtr<nsIDOMText> text2;
+  nsCOMPtr<nsISelection> sel;
+  PRInt32 index;
+  nsCOMPtr<nsIDOMNode> parent;
+  nsresult rv;
+  PRUint16 nodetype;
+  
+  if (fileLeaf.Length() == 0) return NS_ERROR_FAILURE;
+  GetSelection(getter_AddRefs(sel));
+  if (aDestinationNode) destnode = aDestinationNode;
+  else {
+    sel->GetAnchorNode(getter_AddRefs(destnode));
+    sel->GetAnchorOffset(&aDestOffset);
+  }
+
+  // The following doesn't work if destnode is a text node, so split if necessary
+  destnode->GetNodeType(&nodetype);
+  if (nodetype == 3 ) { //NODETYPE_TEXT
+    text = do_QueryInterface(destnode);
+    if (text) {
+      destnode->GetParentNode(getter_AddRefs(parent));
+      index = GetIndexOf(parent, destnode);
+      text->SplitText( aDestOffset, getter_AddRefs(text2) );
+      destnode = parent;
+      aDestOffset = index+1;
+    }
+  }
+
+  CreateFrameWithDefaults(NS_LITERAL_STRING("image"), destnode, aDestOffset, getter_AddRefs(frame));
+  if (frame == nsnull) return NS_ERROR_FAILURE;
+  GetFrameStyleFromAttributes(frame);
+  frame->GetParentNode(getter_AddRefs(parent));
+  if (parent == nsnull) return NS_ERROR_FAILURE;
+  CreateNode(NS_LITERAL_STRING("object"), frame, 0, getter_AddRefs(objnode));
+  obj = do_QueryInterface(objnode);
+  obj->SetAttribute(NS_LITERAL_STRING("data"), NS_LITERAL_STRING("graphics/") + fileLeaf);
+  InsertNodeAtPoint(objnode, getter_AddRefs(framenode), 0, PR_FALSE);
+  if (sel) {
+    sel->Collapse(frame, 0);
+  }
+  // obj = do_QueryInterface(objnode);
+  GetGraphicsAttributesFromFrame(frame, obj);
+
+  // call a command implemented in JavaScript
+  nsCOMPtr<nsIDOMDocument> ownerDoc;
+  destnode->GetOwnerDocument(getter_AddRefs(ownerDoc));
+  NS_ENSURE_STATE(ownerDoc);
+
+  nsCOMPtr<nsIDOMDocumentView> docView = do_QueryInterface(ownerDoc);
+  NS_ENSURE_STATE(docView);
+
+  nsCOMPtr<nsIDOMAbstractView> absView;
+  docView->GetDefaultView(getter_AddRefs(absView));
+  NS_ENSURE_STATE(absView);
+
+  nsCOMPtr<nsIDOMWindowInternal> win = do_QueryInterface(absView);
+
+  nsCOMPtr<nsIControllers> controllers;
+  rv = win->GetControllers(getter_AddRefs(controllers));
+  nsCOMPtr<nsIController> controller;
+  const char * command = "convert_graphics_at_selection";
+  rv = controllers->GetControllerForCommand(command, getter_AddRefs(controller));
+  if (NS_FAILED(rv)) return rv;
+  controller->DoCommand(command);
+}
+
 NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable,
                                                    nsIDOMDocument *aSourceDoc,
                                                    const nsAString & aContextStr,
@@ -2949,7 +3029,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
         if (NS_FAILED(rv))
           return rv;
 
-        nsCOMPtr<nsIURL> fileURL(do_QueryInterface(uri));
+        nsCOMPtr<nsIFileURL> fileURL(do_QueryInterface(uri));
         if (fileURL)
         {
           PRBool insertAsImage = PR_FALSE;
@@ -2994,78 +3074,25 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
             {
               if (insertAsImage)
               {
-                nsCOMPtr<nsIDOMElement> frame;
-                nsCOMPtr<nsIDOMElement> obj;
-                nsCOMPtr<nsIDOMNode> framenode;
-                nsCOMPtr<nsIDOMNode> objnode;
-                nsCOMPtr<nsIDOMText> text;
-                nsCOMPtr<nsIDOMText> text2;
-                PRInt32 index;
-                nsCOMPtr<nsIDOMNode> parent;
-                // copy file to graphics directory. Insert image with path "graphics/imagename.xxx"
+                // nsCOMPtr<nsIDOMElement> frame;
+                // nsCOMPtr<nsIDOMElement> obj;
+                // nsCOMPtr<nsIDOMNode> framenode;
+                // nsCOMPtr<nsIDOMNode> objnode;
+                // nsCOMPtr<nsIDOMText> text;
+                // nsCOMPtr<nsIDOMText> text2;
+                // PRInt32 index;
+                // nsCOMPtr<nsIDOMNode> parent;
+                // // copy file to graphics directory. Insert image with path "graphics/imagename.xxx"
                 nsresult rv;
-                nsCAutoString fileName;
+                nsAutoString fileLeaf;
                 PRUint16 nodetype;
-                rv = fileURL->GetFileName(fileName);
-                if (fileName.Length() == 0) return NS_ERROR_FAILURE;
-
-                if (NS_FAILED(rv))
-                    return rv;
-
                 nsCOMPtr<nsILocalFile> dir;
+                fileObj->GetLeafName(fileLeaf);
                 rv = GetDocumentGraphicsDir(getter_AddRefs(dir));
                 NS_ENSURE_SUCCESS(rv, rv);
                 fileObj->CopyTo(dir, NS_LITERAL_STRING(""));
-                // The following doesn't work for text nodes, so split if necessary
-                aDestinationNode->GetNodeType(&nodetype);
-                if (nodetype == 3 ) { //NODETYPE_TEXT
-                  text = do_QueryInterface(aDestinationNode);
-                  if (text) {
-                    aDestinationNode->GetParentNode(getter_AddRefs(parent));
-                    index = GetIndexOf(parent, aDestinationNode);
-                    text->SplitText( aDestOffset, getter_AddRefs(text2) );
-                    aDestinationNode = parent;
-                    aDestOffset = index+1;
-                  }
-                }
 
-                CreateFrameWithDefaults(NS_LITERAL_STRING("image"), aDestinationNode, aDestOffset, getter_AddRefs(frame));
-                if (frame == nsnull) return NS_ERROR_FAILURE;
-                GetFrameStyleFromAttributes(frame);
-                frame->GetParentNode(getter_AddRefs(parent));
-                if (parent == nsnull) return NS_ERROR_FAILURE;
-                CreateNode(NS_LITERAL_STRING("object"), frame, 0, getter_AddRefs(objnode));
-                obj = do_QueryInterface(objnode);
-                InsertNodeAtPoint(objnode, getter_AddRefs(framenode), 0, PR_FALSE);
-                GetSelection(getter_AddRefs(sel));
-                if (sel) {
-                  sel->Collapse(frame, 0);
-                }
-                // obj = do_QueryInterface(objnode);
-                obj->SetAttribute(NS_LITERAL_STRING("data"), NS_LITERAL_STRING("graphics/") + NS_ConvertUTF8toUTF16(fileName));
-                GetGraphicsAttributesFromFrame(frame, obj);
-
-                // call a command implemented in JavaScript
-                nsCOMPtr<nsIDOMDocument> ownerDoc;
-                aDestinationNode->GetOwnerDocument(getter_AddRefs(ownerDoc));
-                NS_ENSURE_STATE(ownerDoc);
-
-                nsCOMPtr<nsIDOMDocumentView> docView = do_QueryInterface(ownerDoc);
-                NS_ENSURE_STATE(docView);
-
-                nsCOMPtr<nsIDOMAbstractView> absView;
-                docView->GetDefaultView(getter_AddRefs(absView));
-                NS_ENSURE_STATE(absView);
-
-                nsCOMPtr<nsIDOMWindowInternal> win = do_QueryInterface(absView);
-
-                nsCOMPtr<nsIControllers> controllers;
-                rv = win->GetControllers(getter_AddRefs(controllers));
-                nsCOMPtr<nsIController> controller;
-                const char * command = "convert_graphics_at_selection";
-                rv = controllers->GetControllerForCommand(command, getter_AddRefs(controller));
-                if (NS_FAILED(rv)) return rv;
-                controller->DoCommand(command);
+                InsertGraphicsFileAsImage( fileLeaf, aDestinationNode, aDestOffset, PR_FALSE);
               }
               else // insertAsLink
               {
@@ -3105,6 +3132,8 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
     }
     else if (0 == nsCRT::strcmp(bestFlavor, kJPEGImageMime))
     {
+      nsAutoString leaf;
+      leaf = NS_LITERAL_STRING("copied.jpg");
       nsCOMPtr<nsIInputStream> imageStream(do_QueryInterface(genericDataObj));
       NS_ENSURE_TRUE(imageStream, NS_ERROR_FAILURE);
 
@@ -3112,7 +3141,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       rv = GetDocumentGraphicsDir(getter_AddRefs(fileToUse));
       NS_ENSURE_SUCCESS(rv, rv);
 
-      fileToUse->Append(NS_LITERAL_STRING("msi-screenshot.jpg"));
+      fileToUse->Append(leaf);
       nsCOMPtr<nsILocalFile> path = do_QueryInterface(fileToUse);
       path->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0755);
 
@@ -3135,36 +3164,42 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       // into the document.
       rv = bufferedOutputStream->Close();
       NS_ENSURE_SUCCESS(rv, rv);
+      // at this point the jpeg data has been written to the graphics directory and is ready to embed.
+      fileToUse->GetLeafName(leaf);
+      // the filename may have been modified to something like 'clipboard_copy-1.jpg'
+     
+      InsertGraphicsFileAsImage(leaf, aDestinationNode, aDestOffset, PR_FALSE);
+      
 
-      nsAutoString urltext;
-      urltext.Append(NS_LITERAL_STRING("graphics/"));
-      nsAutoString leafname;
-      fileToUse->GetLeafName(leafname);
-      urltext.Append(leafname);
-      if (NS_SUCCEEDED(rv) && !urltext.IsEmpty())
-      {
-//        stuffToPaste.AssignLiteral("<object xmlns=\"http://www.w3.org/1999/xhtml\" data=\"");
-        stuffToPaste.AssignLiteral("<object data=\"");
-        stuffToPaste.Append(urltext);
-        stuffToPaste.AppendLiteral("\" alt=\"\"");
-        nsAutoString attributeStr;
-        rv = GetGraphicsDefaultsAsString( attributeStr);
-        if (NS_SUCCEEDED(rv) && attributeStr.Length())
-        {
-          stuffToPaste.Append(PRUnichar(' '));
-          stuffToPaste += attributeStr;
-        }
-        stuffToPaste.AppendLiteral(" />");
-        nsAutoEditBatch beginBatching(this);
-        nsCOMPtr<nsIDOMDocument> domDoc;
-        GetDocument(getter_AddRefs(domDoc));
+//       nsAutoString urltext;
+//       urltext.Append(NS_LITERAL_STRING("graphics/"));
+//       nsAutoString leafname;
+//       fileToUse->GetLeafName(leafname);
+//       urltext.Append(leafname);
+//       if (NS_SUCCEEDED(rv) && !urltext.IsEmpty())
+//       {
+// //        stuffToPaste.AssignLiteral("<object xmlns=\"http://www.w3.org/1999/xhtml\" data=\"");
+//         stuffToPaste.AssignLiteral("<object data=\"");
+//         stuffToPaste.Append(urltext);
+//         stuffToPaste.AppendLiteral("\" alt=\"\"");
+//         nsAutoString attributeStr;
+//         rv = GetGraphicsDefaultsAsString( attributeStr);
+//         if (NS_SUCCEEDED(rv) && attributeStr.Length())
+//         {
+//           stuffToPaste.Append(PRUnichar(' '));
+//           stuffToPaste += attributeStr;
+//         }
+//         stuffToPaste.AppendLiteral(" />");
+//         nsAutoEditBatch beginBatching(this);
+//         nsCOMPtr<nsIDOMDocument> domDoc;
+//         GetDocument(getter_AddRefs(domDoc));
 
-        rv = InsertHTMLWithContext(stuffToPaste, EmptyString(), EmptyString(),
-                                   NS_LITERAL_STRING(kNativeHTMLMime),
-                                   domDoc, // this says the graphics file is already in this document and doesn't need to be copied.
-                                   aDestinationNode, aDestOffset,
-                                   aDoDeleteSelection);
-      }
+//         rv = InsertHTMLWithContext(stuffToPaste, EmptyString(), EmptyString(),
+//                                    NS_LITERAL_STRING(kNativeHTMLMime),
+//                                    domDoc, // this says the graphics file is already in this document and doesn't need to be copied.
+//                                    aDestinationNode, aDestOffset,
+//                                    aDoDeleteSelection);
+//       }
     }
   }
 

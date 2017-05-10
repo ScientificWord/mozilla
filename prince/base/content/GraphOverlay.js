@@ -2051,7 +2051,7 @@ Frame.prototype = {
       var isdisplay = this.getFrameAttribute("pos") === "center";
       var lmargin;
       var rmargin;
-      if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="full")) {
+      if (isdisplay || (isfloat && this.getFrameAttribute("floatPlacement")==="center")) {
         lmargin = rmargin = "auto";
         removeStyleAttributeFamilyOnNode(DOMFrame, "float");
       }

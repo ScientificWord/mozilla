@@ -831,6 +831,10 @@ protected:
                                nsCOMPtr<nsIDOMNode> *inOutParent,
                                PRInt32 *inOutOffset);
   nsresult InsertVerbatim(nsISelection *aSelection);
+  nsresult InsertGraphicsFileAsImage(nsAString& fileLeaf,
+                                     nsIDOMNode *aDestinationNode,
+                                     PRInt32 aDestOffset,
+                                     PRBool aDoDeleteSelection);
 
 
 // Data members
