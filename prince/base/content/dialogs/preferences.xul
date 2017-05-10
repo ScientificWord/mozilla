@@ -600,7 +600,7 @@
                 <radio id="hereRightRadio" label="&hereRightRadio.label;" value="R" radioGroup="herePlacementRadioGroup" />
                 <radio id="hereInsideRadio" label="&hereInsideRadio.label;" value="I" radioGroup="herePlacementRadioGroup" />
                 <radio id="hereOutsideRadio" label="&hereOutsideRadio.label;" value="O" radioGroup="herePlacementRadioGroup" />
-                <radio id="hereFullWidthRadio" label="&hereFullWidthRadio.label;" value="full" radioGroup="herePlacementRadioGroup" />
+                <radio id="hereFullWidthRadio" label="&hereFullWidthRadio.label;" value="displayed" radioGroup="herePlacementRadioGroup" />
 
               </vbox>
               <vbox>
