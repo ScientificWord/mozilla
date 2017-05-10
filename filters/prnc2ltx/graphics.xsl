@@ -320,13 +320,13 @@
           <xsl:when test="@pos='inline'">
             <xsl:apply-templates select="." mode="contents"/>
           </xsl:when>
-          <xsl:when test="@pos='center'">
+          <xsl:when test="@pos='center' or @pos='display'">
             <xsl:value-of select="$newline"/>
             <xsl:text>\begin{center}</xsl:text>
             <xsl:apply-templates select="." mode="contents"/>
             <xsl:text>\end{center}</xsl:text>
           </xsl:when>
-          <xsl:when test="@pos='l' or @pos='L' or @pos='r' or @pos='R' or @pos='i' or @pos='I' or @pos='o' or @pos='O' or @pos='center'">
+          <xsl:when test="@pos='l' or @pos='L' or @pos='r' or @pos='R' or @pos='i' or @pos='I' or @pos='o' or @pos='O' or @pos='center' or @pos='display'">
             <xsl:choose>
               <xsl:when test="@pos='center'">
                  <xsl:value-of select="$newline"/>
@@ -367,7 +367,7 @@
             </xsl:if>
           <!-- xsl:if test="@captionabove"><xsl:apply-templates/> </xsl:if -->
           <xsl:apply-templates select="." mode="contents"/><xsl:choose>
-            <xsl:when test="@pos='center'">
+            <xsl:when test="@pos='center' or @pos='display'">
                <xsl:text>\end{center}\end{figure}</xsl:text>
             </xsl:when>
             <xsl:otherwise>
