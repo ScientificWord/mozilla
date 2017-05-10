@@ -10,7 +10,7 @@
 %TCIDATA{OutputFilter=latex2.dll}
 %TCIDATA{Version=5.50.0.2960}
 %TCIDATA{Codepage=1252}
-%TCIDATA{LastRevised=Wednesday, August 10, 2016 12:02:22}
+%TCIDATA{LastRevised=Wednesday, May 10, 2017 14:52:02}
 %TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
 %TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
 %TCIDATA{BibliographyScheme=Manual}
@@ -79,7 +79,9 @@ width=5.0548in
 {\large ST. MARTIN'S STREET, LONDON}\medskip
 
 {\large 1914}
-\end{center}%
+\end{center}
+
+%
 
 %TCIMACRO{\TeXButton{E titlepage}{\end{titlepage}}}%
 %BeginExpansion
@@ -100,15 +102,16 @@ y= \sin\theta.
 \]
 %
 
-%TCIMACRO{\FRAME{dtbpF}{2.7233in}{2.5278in}{0pt}{}{}{calculusmadeeasyfig43.jpg}%
+%TCIMACRO{\FRAME{fhF}{2.7233in}{2.5278in}{0pt}{}{}{calculusmadeeasyfig43.jpg}%
 %{\special{ language "Scientific Word";  type "GRAPHIC";
 %maintain-aspect-ratio TRUE;  display "USEDEF";  valid_file "F";
 %width 2.7233in;  height 2.5278in;  depth 0pt;  original-width 2.6809in;
 %original-height 2.4863in;  cropleft "0";  croptop "1";  cropright "1";
 %cropbottom "0";
-%filename 'CalculusMadeEasyFig43.jpg';file-properties "XNPEU";}}}%
+%filename 'CalculusMadeEasyFig43.jpg';file-properties "XNPEU";}} }%
 %BeginExpansion
-\begin{center}
+\begin{figure}[h]%
+\centering
 \includegraphics[
 natheight=2.486300in,
 natwidth=2.680900in,
@@ -116,26 +119,25 @@ height=2.5278in,
 width=2.7233in
 ]%
 {CalculusMadeEasyFig43.jpg}%
-\end{center}
+\end{figure}
 %EndExpansion
 
 
-What we have to investigate is the value of $\dfrac{d(\sin\theta)}{d \theta}$;
+What we have to investigate is the value of $\dfrac{d(\sin\theta)}{d\theta}$;
 or, in other words, if the angle~$\theta$ varies, we have to find the relation
 between the increment of the sine and the increment of the angle, both
 increments being indefinitely small in themselves. Examine Fig 43, wherein, if
 the radius of the circle is unity, the height of~$y$ is the sine, and $\theta$
 is the angle. Now, if $\theta$ is supposed to increase by the addition to it
-of the small angle $d \theta$---an element of angle---the height of~$y$, the
-sine, will be increased by a small element~$dy$. The new height~$y + dy$ will
-be the sine of the new angle $\theta+ d \theta$, or, stating it as an
-equation,
+of the small angle $d\theta$---an element of angle---the height of~$y$, the
+sine, will be increased by a small element~$dy$. The new height~$y+dy$ will be
+the sine of the new angle $\theta+d\theta$, or, stating it as an equation,
 \[
-y+dy = \sin(\theta+ d \theta);
+y+dy=\sin(\theta+d\theta);
 \]
 and subtracting from this the first equation gives
 \[
-dy = \sin(\theta+ d \theta)- \sin\theta.
+dy=\sin(\theta+d\theta)-\sin\theta.
 \]
 
 
@@ -449,14 +451,14 @@ y  &  = (1+v)^{\frac{1}{2}};\quad\frac{dy}{dv} = \frac{1}{2\sqrt{1+v}}\\
 
 (8) $y=\sin x\cos x$.
 \begin{align*}
-\frac{dy}{dx} &  =\sin x(-\sin x)+\cos x\times\cos x\\
+\frac{dy}{dx}  &  =\sin x(-\sin x)+\cos x\times\cos x\\
 &  =\cos^{2}x-\sin^{2}x.
 \end{align*}
 
 
 \newpage%
 
-%TCIMACRO{\FRAME{dtbpF}{2.8202in}{2.2623in}{0pt}{}{}{project_gutenberg-1.bmp}%
+%TCIMACRO{\FRAME{dtbpFX}{2.8202in}{2.2623in}{0pt}{}{}{project_gutenberg-1.bmp}%
 %{\special{ language "Scientific Word";  type "GRAPHIC";
 %maintain-aspect-ratio TRUE;  display "USEDEF";  valid_file "F";
 %width 2.8202in;  height 2.2623in;  depth 0pt;  original-width 2.7778in;
@@ -465,13 +467,14 @@ y  &  = (1+v)^{\frac{1}{2}};\quad\frac{dy}{dv} = \frac{1}{2\sqrt{1+v}}\\
 %}}%
 %BeginExpansion
 \begin{center}
-\includegraphics[
+\fbox{\includegraphics[
 natheight=2.222600in,
 natwidth=2.777800in,
 height=2.2623in,
 width=2.8202in
 ]%
 {C:/George/Prince2/mozilla/prince/samples/CalculusMadeEasyChapXV__3.jpg}%
+}
 \end{center}
 %EndExpansion
 This sample document was derived from
@@ -486,15 +489,16 @@ This document demonstrates typical mathematical text, plus shows graphics
 using five different formats:
 
 \begin{enumerate}
-\item .png, the logo on the first page
+\item .png, the logo on the first page using in line placement
 
-\item .jpg, Fig. 43
+\item .jpg, Fig. 43 using floating placement with only the here placement option
 
-\item .wmf, Fig. 44
+\item .wmf, Fig. 44 using displayed placement
 
-\item .eps, Fig 45
+\item .eps, Fig 45 using displayed placement
 
-\item .bmp, the logo on the last page
+\item .bmp, the logo on the last page using displayed placement with a frame
+around the graphic
 \end{enumerate}
 
 
