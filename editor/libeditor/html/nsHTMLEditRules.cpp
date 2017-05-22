@@ -3905,7 +3905,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   node->GetNodeName(name);
   if (name.EqualsLiteral("#text")) {
     node->GetParentNode(getter_AddRefs(node));
-    node->GetNodeName(name);
+    if (node) node->GetNodeName(name);
   }
   if (name.EqualsLiteral("mo")) {
     elt = do_QueryInterface(node);

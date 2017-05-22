@@ -66,7 +66,7 @@ function startup()
   var docclass = editordoc.getElementsByTagName("documentclass");
   var classfile;
   if (docclass) classfile = docclass[0].getAttribute("class");
-  document.getElementById("stylefile").setAttribute("class", classfile);
+  document.getElementById("clsfile").value = classfile;
 }
 
 
@@ -171,7 +171,7 @@ function add(listboxid, textboxid, extension)
 }
 
 
-function browse( extension )// extension is 'css', 'js', 'xml', 'xsl' or something for tex styles
+function browse( extension )// extension is 'css', 'js', 'xml', 'xsl' or 'cls'
 {
   const msIFilePicker = Components.interfaces.nsIFilePicker;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
@@ -198,26 +198,29 @@ function browse( extension )// extension is 'css', 'js', 'xml', 'xsl' or somethi
   }
   var chosenURL;
   if (fp.file == null) return;
-  if (basedir.contains(fp.file, true)) // we need to change the uri to use "resource://app/"
-  {
-    chosenURL = "resource://app";
-    var dirarray =[];
-    var f = fp.file.clone();
-    while (basedir.contains(f, true))
+  if (extension === 'cls') {
+    chosenURL = fp.file.leafName;
+    if (chosenURL) chosenURL = chosenURL.replace(/\.cls$/,'');
+  } else {
+    if (basedir.contains(fp.file, true)) // we need to change the uri to use "resource://app/"
     {
-      dirarray.push(f.leafName);
-      f = f.parent;
+      chosenURL = "resource://app";
+      var dirarray =[];
+      var f = fp.file.clone();
+      while (basedir.contains(f, true))
+      {
+        dirarray.push(f.leafName);
+        f = f.parent;
+      }
+      while (dirarray.length > 0) chosenURL += "/" + dirarray.pop();
     }
-    while (dirarray.length > 0) chosenURL += "/" + dirarray.pop();
+    else 
+    {
+      chosenURL = "file://" + fp.file.target;
+      chosenURL = chosenURL.replace("\\","/","g");
+    }
   }
-  else 
-  {
-    chosenURL = "file://" + fp.file.target;
-    chosenURL = chosenURL.replace("\\","/","g");
-  }
-  dump("a\n");
   document.getElementById(extension+"file").value = chosenURL;
-  dump("b\n");
 }
 
 
@@ -225,10 +228,14 @@ function onAccept()
 {
   // save css PI's
   // out with the old. Can't use editordoc.styleSheets because it is read-only
-  deleteProcessingInstructions(editordoc,"xml-stylesheet");
   var xmlList;
   var i;
+  var ltxclass;
+
   var listbox = document.getElementById("csslist");
+  if (listbox.itemCount > 0) {
+    deleteProcessingInstructions(editordoc,"xml-stylesheet");
+  }
   for (i=0; i<listbox.itemCount; i++)
   {
     addProcessingInstruction(editordoc, "xml-stylesheet", listbox.getItemAtIndex(i).label, "text/css");
@@ -236,16 +243,25 @@ function onAccept()
   // out with the old.
   deleteProcessingInstructions(editordoc,"sw-tagdefs");
   xmlList =  document.getElementById("xmllist");
+  if (xmlList.itemCount > 0) {
+    deleteProcessingInstructions(editordoc,"sw-tagdefs");
+  }
   for (i=0; i < xmlList.itemCount; i++)
   {
     addProcessingInstruction(editordoc, "sw-tagdefs", xmlList.getItemAtIndex(i).label,"text/xml");
   }
   // out with the old.
-  deleteProcessingInstructions(editordoc,"sw-xslt");
-  xmlList =  document.getElementById("xsllist");
+  xmlList =  document.getElementById("xsltlist");
+  if (xmlList.itemCount > 0) {
+    deleteProcessingInstructions(editordoc,"sw-xslt");
+  }
   for (i=0; i < xmlList.itemCount; i++)
   {
     addProcessingInstruction(editordoc, "sw-xslt", xmlList.getItemAtIndex(i).label,"text/xml");
+  }
+  ltxclass = document.getElementById('clsfile').value;
+  if (ltxclass.length > 0) {
+    editordoc.getElementsByTagName('documentclass')[0].setAttribute('class', ltxclass);
   }
 } 
 
