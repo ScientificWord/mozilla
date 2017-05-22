@@ -375,7 +375,7 @@ nsLayoutUtils::DoCompareTreePosition(nsIContent* aContent1,
 
   // content1Ancestor != content2Ancestor, so they must be siblings with the same parent
   nsINode* parent = content1Ancestor->GetNodeParent();
-  NS_ASSERTION(parent, "no common ancestor at all???");
+//  NS_ASSERTION(parent, "no common ancestor at all???");
   if (!parent) { // different documents??
     return 0;
   }
