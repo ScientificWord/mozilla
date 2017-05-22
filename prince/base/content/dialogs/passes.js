@@ -123,7 +123,7 @@ function initForSilentCompile(aPassData, aCompileInfo, aShowdialog, callbackFn) 
 
 function Init()
 {
-  var prefs = GetPrefs();
+//  var prefs = GetPrefs();
   passData = window.arguments[0];
   passData.passCounter = 1;
   compileInfo = window.arguments[1];
