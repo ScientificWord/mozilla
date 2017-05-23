@@ -213,7 +213,7 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_fontcolor", msiFontColor);
   commandTable.registerCommand("cmd_copytex", msiCopyTeX);
   commandTable.registerCommand("cmd_help_contents", msiHelpContents);
-  commandTable.registerCommand("convert_graphics_at_selection", msiConvertGraphics);
+  commandTable.registerCommand("cmd_convert_graphics_at_selection", msiConvertGraphics);
 }
 
 function msiSetupComposerWindowCommands(editorElement)

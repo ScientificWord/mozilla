@@ -77,24 +77,7 @@ var graphicsConverter = {
     extension = chunks[chunks.length - 1].toLowerCase();
     chunks.length = chunks.length - 1;
     baseName = chunks.join('.');
-    // if ((this.OS !== 'win') && (extension === 'wmf' || extension === 'emf')) {
-    //   // this is OK if .eps files have already been generated
-    //   destDir = this.baseDir.clone();
-    //   destDir.append("graphics");
-    //   destFile = destDir.clone();
-    //   destFile.append(basename + '.eps');
-
-    //   if (!destfile.exists()) {
-    //     var promptService = Components.classes['@mozilla.org/embedcomp/prompt-service;1'].getService();
-    //     promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
-    //     if (promptService) {
-    //       promptService.alert(null, 'Warning','Windows metafiles cannot be read on this operating system');
-    //     }
-    //     return "";
-    //   } else {
-
-    //   }
-    // } 
+ 
     try {
       command = this.iniParser.getString("Converters", extension);
     }
@@ -263,25 +246,6 @@ var graphicsConverter = {
     return returnPath.replace("\\","/", 'g');
   },
 
-  // handleEpsToPdfConversion: function(ithCommand, graphicsFile) {
-  //   var commandparts;
-  //   var progname;
-  //   var programFile;
-  //   var theProcess;
-  //   var paramArray = [];
-  //   var dollar1 = graphicsFile.path;
-  //   var dollar2 = graphicsFile.leafName.replace(/\.eps$/,'');
-  //   commandparts = ithCommand.split(',');
-  //   progname = commandparts[0];  // this will be epstopdf
-  //   if (this.OS === "win" && !(/\.cmd$/.test(progname))) progname += ".cmd";
-  //   theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-  //   programFile = this.converterDir.clone();
-  //   programFile.append(progname);
-  //   theProcess.init(programFile);
-  //   paramArray.push(this.pathForOS(dollar2));
-  //   paramArray.push(this.pathForOS(this.baseDir.path));
-  //   theProcess.run(true, paramArray, paramArray.length);
-  // },
 
   // A function to call when an existing graphics object changes dimensions, requiring
   // a new preview file optimized for those dimensions.
@@ -314,6 +278,23 @@ var graphicsConverter = {
     return null;
   },
 
+  readSizeFromSVGFile: function(svgFile)
+  {
+    var theText = this.getFileAsString(svgFile);
+    var dimensions = {width: 0, height: 0};
+    var regexw = /width\s*=\"\s+(\d+)([a-z]+)\"/;
+    var regexh = /height\s*=\"\s+(\d+)([a-z]+)\"/;
+    var match = regexw.exec(theText);
+    if (match)
+      dimensions.width = match[1];
+    match = regexh.exec(theText);
+    if (match) {
+      dimensions.height = match[1];
+      dimensions.unit = match[2];
+    }
+    return dimensions;
+
+  },
 
   readSizeFromEPSFile: function(epsFile)
   {
@@ -332,106 +313,44 @@ var graphicsConverter = {
   readSizeFromPDFFile: function(pdfFile)
   {
     var theText = this.getFileAsString(pdfFile);
-    var dimensions = {width: 0, height: 0};
 
-  //  var wdthRE = /(\/Width)\s+([0-9]+)/i;
-  //  var htRE = /(\/Height\s+([0-9]+)/i;
-    var BBRE = /\/BBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
-    var mediaBoxRE = /\/MediaBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
+//    var BBRE = /\/BBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
+    var mediaBoxRE = /\/MediaBox\s+\[\s+([.0-9]+)\s+([.0-9]+)\s+([.0-9]+)\s+([.0-9]+)/;
 
-    function checkBoundingBox( objString )
-    {
-      var res = null;
-      var bbArray = BBRE.exec(objString);
-      if (bbArray && bbArray[1] && bbArray[2])
-      {
-        if (bbArray[3] && bbArray[4])
-        {
-          res = {wdth : Math.round(9.6 * (Number(bbArray[3]) - Number(bbArray[1]))),
-                 ht : Math.round(9.6 * (Number(bbArray[4]) - Number(bbArray[2]))) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
-        }
-        else  //this shouldn't happen, though
-        {
-          res = {wdth : Math.round(9.6 * Number(bbArray[1])),
-                 ht : Math.round(9.6 * Number(bbArray[2])) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
-        }
-      }
-      return res;
-    }
+    // function checkBoundingBox( objString )
+    // {
+    //   var res = null;
+    //   var bbArray = BBRE.exec(objString);
+    //   if (bbArray && bbArray[1] && bbArray[2])
+    //   {
+    //     if (bbArray[3] && bbArray[4])
+    //     {
+    //       res = {wdth : Math.round(9.6 * (Number(bbArray[3]) - Number(bbArray[1]))),
+    //              ht : Math.round(9.6 * (Number(bbArray[4]) - Number(bbArray[2]))) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
+    //     }
+    //     else  //this shouldn't happen, though
+    //     {
+    //       res = {wdth : Math.round(9.6 * Number(bbArray[1])),
+    //              ht : Math.round(9.6 * Number(bbArray[2])) };   //9.6 here is 96 pts- 
+    //   }
+    //   return res;
+    // }
 
     function checkMediaBox( objString )
     {
       var res = null;
       var dimsArray = mediaBoxRE.exec(objString);
-      if (dimsArray && dimsArray[1] && dimsArray[2])
+      if (dimsArray && dimsArray.length > 4)
       {
-        if (dimsArray[3] && dimsArray[4])
-        {
-          res = { wdth : Math.round(Number(dimsArray[3]) - Number(dimsArray[1])),
-                  ht : Math.round(Number(dimsArray[4]) - Number(dimsArray[2])) };
-        }
-        else  //this shouldn't happen, though
-        {
-          res = { wdth : Math.round(Number(dimsArray[1])),
-                  ht : Math.round(Number(dimsArray[2])) };
-        }
+          res = { width : Math.round(Number(dimsArray[3]) - Number(dimsArray[1])),
+                  height : Math.round(Number(dimsArray[4]) - Number(dimsArray[2])) };
       }
       return res;
     }
-
-    var htWdth = null;
-    var pdfStart = theText.indexOf("%PDF");
-    if (pdfStart < 0)
-      return;
-    var xObj = theText.indexOf("/XObject", pdfStart);
-    var objEnd = pdfStart;
-    while (!htWdth && (xObj > 0))  //look for /XObject spec first
-    {
-      objEnd = theText.indexOf("endobj", xObj);
-      htWdth = checkBoundingBox( theText.substring(xObj, objEnd) );
-      if (!htWdth)
-        xObj = theText.indexOf("/XObject", objEnd);
-    }
-    if (!htWdth)
-    {
-      var pageDesc = theText.indexOf("/Page", pdfStart);
-      objEnd = pdfStart;
-      while (!htWdth && (pageDesc > 0))  //look for /XObject spec first
-      {
-        objEnd = theText.indexOf("endobj", pageDesc);
-        htWdth = checkMediaBox( theText.substring(pageDesc, objEnd) );
-        if (!htWdth)
-          pageDesc = theText.indexOf("/Page", objEnd);
-      }
-    }
-
-    if (htWdth)
-    {
-      var bReset = false;
-      // htWdth fields are in Adobe Big Points
-      dimensions.width  = htWdth.wdth;
-      dimensions.height = htWdth.ht;
-      dimensions.unit = 'bp';
-      // bReset = true;
-      // if (frameTabDlg.actual.selected || bReset)
-      //   setActualOrDefaultSize();
-
-      // SetSizeWidgets( Math.round(this.handler.getValueAs(frameTabDlg.widthInput.value,"px")),
-      //                 Math.round(this.handler.getValueAs(frameTabDlg.heightInput.value,"px")) );
-    }
-    return dimensions;
+    return checkMediaBox(theText);
   },
 
-  // getFileAsString: function(fileUrl) {
-  //   var req = new XMLHttpRequest();
-  //   req.overrideMimeType("text/plain");
-  //   req.open('GET', fileUrl, false);
-  //   req.send(null);
-  //   if (req.status === 0)
-  //     return req.responseText;
-  //   else
-  //     return null;
-  // },
+
 
 
   getGraphicsFilterDirPath: function(filterName) {
