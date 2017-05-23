@@ -132,7 +132,7 @@
       <xsl:text>{</xsl:text>
       <xsl:choose>
         <xsl:when test="not(@rotation) or (@rotation='rot0')">
-          <xsl:value-of select="$width"/>a<xsl:value-of select="$units"/>
+          <xsl:value-of select="$width"/><xsl:value-of select="$units"/>
 <!--             \dimexpr </xsl:text><xsl:value-of select="$width"/><xsl:value-of select="$units"/> +2\fboxsep +2\fboxrule + .1in
  -->
         </xsl:when>
