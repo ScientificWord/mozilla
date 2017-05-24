@@ -302,16 +302,16 @@ function msiUpdateWindowTitle()
   {
     var editorElement = msiGetTopLevelEditorElement();
     var fileName;
-    if (editorElement.isShellFile) fileName = "not saved";
-    else //if (!fileName)
-    {
+    // if (editorElement.isShellFile) fileName = "not saved";
+    // else //if (!fileName)
+    // {
 //      filename = editorElement.fileLeafName;
 			var htmlurlstring = msiGetEditorURL(editorElement);
 		  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
 		  var fileURL = msiURIFromString(sciurlstring);
 			var file = msiFileFromFileURL(fileURL);
 			var leaf = file.leafName;
-    }
+    // }
 //    else filename = fileName;
 //    SaveRecentFilesPrefs();
     // Set window title with " - Scientific WorkPlace/Word/Notebook" appended

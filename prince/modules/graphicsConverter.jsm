@@ -115,7 +115,12 @@ var graphicsConverter = {
         copiedFile.append(leaf);
 
         if (command != "") {
-          returnPath = this.execCommands(copiedFile, command, width, height);
+          if (width && height) {      
+            returnPath = this.execCommands(copiedFile, command, width, height);
+          }
+          else {
+            returnPath = this.execCommands(copiedFile, command);
+          }
         }
       }
       catch(e) {
@@ -349,6 +354,91 @@ var graphicsConverter = {
     }
     return checkMediaBox(theText);
   },
+
+  readSizeFromVectorFile: function(vecGraphics, extension) {
+     if (extension === 'pdf')
+       return this.readSizeFromPDFFile(vecGraphics);
+     if (extension === 'eps')
+       return this.readSizeFromEPSFile(vecGraphics);
+     if (extension === 'ps')
+       return this.readSizeFromEPSFile(vecGraphics);
+     if (extension ==='svg')
+       return this.readSizeFromSVGFile(vecGraphics);
+     return null;
+   },
+
+   setInitialWidthAndHeight: function(objectnode) {
+     // This function looks at the naturalwidth and naturalheight, whether
+     // the prefs initial width and height are supposed to be used, and sorts
+     // it out to set usedims and the width and height.
+     var useWidth = false;
+     var useHeight = false;
+     var autoWidth, autoHeight; // booleans, all
+     var prefs = null;
+     var prefWidth, prefHeight, prefunit;
+     var theUnits;
+     var naturalheight, naturalwidth;
+     var usedims; // = useWidth + 2*useHeight where usexxx is 0 or 1
+     // get as much as we can out of the objectnode. It may have been through
+     // this function before.
+     var prefService = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
+
+     if (prefService)
+       prefs = prefService.getBranch(null);
+
+
+     var unitHandler = new UnitHandler(null);
+
+     theUnits = objectnode.getAttribute('units');
+     if (theUnits == null) finalThrow('No units given in object node');
+     unitHandler.initCurrentUnit(theUnits);
+     naturalheight = objectnode.getAttribute('naturalheight');
+     naturalwidth = objectnode.getAttribute('naturalwidth');
+
+     usedims = objectnode.getAttribute('usedims');
+     if (usedims) {
+       if (usedims > 1) {
+         useHeight = true;
+         usedims = usedims - 2;
+       }
+       if (usedims > 0) {
+         useWidth = true;
+       }
+     } else {
+       if (prefs == null) prefs = GetPrefs();
+       useWidth = prefs.getBoolPref('swp.graphics.usedefaultwidth');
+       useHeight = prefs.getBoolPref('swp.graphics.usedefaultheight');
+       usedims = 0;
+       if (useHeight) usedims = 2;
+       if (useWidth) usedims++;
+     }
+     if (useWidth || useHeight) {
+       prefUnit=prefs.getCharPref('swp.graphics.units'); 
+     }
+     prefWidth = prefs.getCharPref('swp.graphics.hsize');
+     prefHeight = prefs.getCharPref('swp.graphics.vsize');
+     if (useWidth) {
+       width = unitHandler.getValueOf(prefWidth, prefUnit);
+       if (useHeight) {
+         height = unitHandler.getValueOf(prefHeight, prefUnit);
+       } else {
+         height = Number(width)*(Number(naturalheight)/Number(naturalwidth));
+       }
+     } else {
+       if (useHeight) {
+         height = unitHandler.getValueOf(prefHeight, prefUnit); 
+       } else { // if we are here, useWidth is false
+         width = Number(height)*(Number(naturalwidth)/Number(naturalheight));
+       }
+       // autoWidth = useHeight && (!useWidth);
+       // autoHeight = useWidth && (!useHeight);
+     }
+     // Now save the results in the object node
+     objectnode.setAttribute('usedims',usedims);
+     objectnode.setAttribute('width',width);
+     objectnode.setAttribute('height',height);
+     objectnode.setAttribute('style', 'height: '+height+theUnits+'; width: '+width +theUnits + ';');
+   },
 
 
 

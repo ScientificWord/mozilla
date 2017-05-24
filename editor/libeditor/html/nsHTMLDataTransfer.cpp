@@ -2864,6 +2864,7 @@ nsHTMLEditor::ParseCFHTML(nsCString & aCfhtml, PRUnichar **aStuffToPaste, PRUnic
 // When this function is called, the graphics file has already been copied to the graphics directory, but it has not been converted.
 nsresult 
 nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
+                                        nsAString& path,
                                         nsIDOMNode *aDestinationNode,
                                         PRInt32 aDestOffset,
                                         PRBool aDoDeleteSelection)
@@ -2914,6 +2915,10 @@ nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
   if (sel) {
     sel->Collapse(frame, 0);
   }
+  obj = do_QueryInterface(objnode);
+  obj->SetAttribute(NS_LITERAL_STRING("originalSrcUrl"), path);
+  obj->SetAttribute(NS_LITERAL_STRING("copiedSrcUrl"), NS_LITERAL_STRING("graphics/") + fileLeaf);
+
   // obj = do_QueryInterface(objnode);
   GetGraphicsAttributesFromFrame(frame, obj);
 
@@ -2934,7 +2939,7 @@ nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
   nsCOMPtr<nsIControllers> controllers;
   rv = win->GetControllers(getter_AddRefs(controllers));
   nsCOMPtr<nsIController> controller;
-  const char * command = "convert_graphics_at_selection";
+  const char * command = "cmd_convert_graphics_at_selection";
   rv = controllers->GetControllerForCommand(command, getter_AddRefs(controller));
   if (NS_FAILED(rv)) return rv;
   controller->DoCommand(command);
@@ -2951,6 +2956,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
   nsresult rv = NS_OK;
   PRBool fExists;
   nsCAutoString dirPath;
+  nsAutoString path;
   nsXPIDLCString bestFlavor;
   nsCOMPtr<nsISelection> sel;
   nsCOMPtr<nsISupports> genericDataObj;
@@ -3077,12 +3083,13 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
                 rv = GetDocumentGraphicsDir(getter_AddRefs(dir));
                 NS_ENSURE_SUCCESS(rv, rv);
                 fileObj->CopyTo(dir, NS_LITERAL_STRING(""));
+                fileObj->GetPath(path);
 
-                InsertGraphicsFileAsImage( fileLeaf, aDestinationNode, aDestOffset, PR_FALSE);
+                InsertGraphicsFileAsImage( fileLeaf, path, aDestinationNode, aDestOffset, PR_FALSE);
               }
               else // insertAsLink
               {
-                                                                                stuffToPaste.AssignLiteral("<a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"");
+                stuffToPaste.AssignLiteral("<a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"");
                 AppendUTF8toUTF16(urltext, stuffToPaste);
                 stuffToPaste.AppendLiteral("\">");
                 AppendUTF8toUTF16(urltext, stuffToPaste);
@@ -3151,8 +3158,8 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       NS_ENSURE_SUCCESS(rv, rv);
 
       fileToUse->Append(leaf);
-      nsCOMPtr<nsILocalFile> path = do_QueryInterface(fileToUse);
-      path->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0755);
+      nsCOMPtr<nsILocalFile> pathpath = do_QueryInterface(fileToUse);
+      pathpath->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0755);
 
       nsCOMPtr<nsIOutputStream> outputStream;
       rv = NS_NewLocalFileOutputStream(getter_AddRefs(outputStream), fileToUse);
@@ -3175,9 +3182,10 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       NS_ENSURE_SUCCESS(rv, rv);
       // at this point the jpeg data has been written to the graphics directory and is ready to embed.
       fileToUse->GetLeafName(leaf);
+      fileToUse->GetPath(path);
       // the filename may have been modified to something like 'clipboard_copy-1.jpg'
      
-      InsertGraphicsFileAsImage(leaf, aDestinationNode, aDestOffset, PR_FALSE);
+      InsertGraphicsFileAsImage(leaf, path, aDestinationNode, aDestOffset, PR_FALSE);
       
 
 //       nsAutoString urltext;
@@ -5176,6 +5184,7 @@ nsHTMLEditor::CreateFrameWithDefaults(const nsAString & frametype, nsIDOMNode * 
   frame = do_QueryInterface(framenode);
   if (!frame) return NS_ERROR_FAILURE;
   frame->SetAttribute(NS_LITERAL_STRING("frametype"), frametype);
+  frame->SetAttribute(NS_LITERAL_STRING("req"), NS_LITERAL_STRING("wrapfig"));
   ApplyGraphicsDefaults( frame, (frametype.EqualsLiteral("image")), (frametype.EqualsLiteral("plot")));
   frame->SetAttribute(NS_LITERAL_STRING("aspect"), NS_LITERAL_STRING("true"));
   frame->SetAttribute(NS_LITERAL_STRING("textalignment"), NS_LITERAL_STRING("left"));
