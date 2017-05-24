@@ -832,6 +832,7 @@ protected:
                                PRInt32 *inOutOffset);
   nsresult InsertVerbatim(nsISelection *aSelection);
   nsresult InsertGraphicsFileAsImage(nsAString& fileLeaf,
+                                     nsAString& path,
                                      nsIDOMNode *aDestinationNode,
                                      PRInt32 aDestOffset,
                                      PRBool aDoDeleteSelection);

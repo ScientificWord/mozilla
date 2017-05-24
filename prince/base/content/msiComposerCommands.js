@@ -4389,7 +4389,8 @@ var msiConvertGraphics =
   },
   doCommand: function(aCommand)
   {
-		try {
+
+		// try {
   	  var editorElement = msiGetActiveEditorElement();
   	  var editor = msiGetEditor(editorElement);
       var product;
@@ -4399,10 +4400,13 @@ var msiConvertGraphics =
       var internalFile;
       var internalName;
       var graphicDir;
+      var width, height;
+      var dimension;
       var docUrlString = msiGetDocumentBaseUrl();
       var docurl = msiURIFromString(docUrlString);
-      var leafname, extension, width, height;
-      var re, match;
+      var leafname, ext, match;
+      var eventStr = "load";
+
       graphicDir = msiFileFromFileURL(docurl);
       graphicDir = graphicDir.parent;
       graphicDir.append("graphics");
@@ -4431,41 +4435,42 @@ var msiConvertGraphics =
   // BBM: This needs work. If objectnode is a paragraph, there could be several 
   // graphics in it.    
       if (objectnode) {
-        data = objectnode.getAttribute("data");
-        re = /[a-z0-9._-]+$/i;
-        match = re.exec(data);
-        if (match) {
-          leafname = match[0];
-          match = leafname.split('.');
-          extension = match[1];
-          if (extension == 'pdf') {
-
-          }
-          else {
-            width = objectnode.offsetWidth;
-            height = objectnode.offsetHeight;
-          }
-          internalFile = graphicDir.clone(false);
-          internalFile.append(leafname);
-          internalName = graphicDir.leafName + "/" + internalFile.leafName;
-          graphicsConverter.init(window, graphicDir.parent, product);
-          importName = graphicsConverter.copyAndConvert(internalFile, true, width, height);
-          if (importName && importName.length > 0) {
-            objectnode.setAttribute("data", importName);
-            width = objectnode.offsetWidth;
-            height = objectnode.offsetHeight;
-          }
-          // objectnode.setAttribute("width", width + 'px');  // need to convert to better units
-          // objectnode.setAttribute("height", height + 'px');
-          objectnode.setAttribute("msi_resize", true);
-          // objectnode.setAttribute("style", "height: "+height+"px; width: "+width+"px;");
+        data = objectnode.getAttribute("copiedSrcUrl");
+        leafname = data.replace('graphics/','');
+        internalFile = graphicDir.clone(false);
+        internalFile.append(leafname);
+        match = /\.([a-zA-Z0-9]+)$/.exec(data);
+        ext = match[1];
+        dimensions = graphicsConverter.readSizeFromVectorFile(internalFile, ext);
+        if (dimensions == null) { 
+          width = null;
+          height = null;
         }
+        else {
+          width = dimensions.width;
+          height = dimensions.height;
+        }
+
+        graphicsConverter.init(window, graphicDir.parent, product);
+        objectnode.setAttribute("msi_resize", true);
+        // objectnode.setAttribute("style", "height: "+height+"px; width: "+width+"px;");
+  //      objectnode.addEventListener(eventStr, getdimensions, true);
+        objectnode.setAttribute("data", internalName);
+
+        objectnode.setAttribute("naturalwidth", width);
+        objectnode.setAttribute("naturalheight", height);
+        graphicsConverter.setInitialWidthAndHeight(objectnode);
+        objectnode.removeEventListener("load", this, true);
+        importName = graphicsConverter.copyAndConvert(internalFile, true, 
+          width, height);
+        objectnode.setAttribute("data", importName);
       }
-		}
-    catch (e) {
-      finalThrow(cmdFailString(aCommand, e.message));
-    }
+		// }
+    // catch (e) {
+    //   finalThrow(cmdFailString(aCommand, e.message));
+    // }
   }
+
 };
 
 var msiHelpContents =
