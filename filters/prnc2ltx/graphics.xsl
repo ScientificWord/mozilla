@@ -326,7 +326,7 @@
             <xsl:apply-templates select="." mode="contents"/>
             <xsl:text>\end{center}</xsl:text>
           </xsl:when>
-          <xsl:when test="@pos='l' or @pos='L' or @pos='r' or @pos='R' or @pos='i' or @pos='I' or @pos='o' or @pos='O' or @pos='center' or @pos='display'">
+          <xsl:when test="@pos='l' or @pos='L' or @pos='r' or @pos='R' or @pos='i' or @pos='I' or @pos='o' or @pos='O' or @pos='center' or @pos='d' or @pos='display'">
             <xsl:choose>
               <xsl:when test="@pos='center'">
                  <xsl:value-of select="$newline"/>
