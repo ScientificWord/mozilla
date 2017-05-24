@@ -25,11 +25,11 @@
   </xsl:variable>
   <xsl:variable name="width">
     <xsl:choose>
-      <xsl:when test="@frametype='image'">
+ <!-- <xsl:when test="@frametype='image'">
         <xsl:call-template name="getObjectWidth">
           <xsl:with-param name="objNode" select="(./html:object|./html:embed)[1]"/>
         </xsl:call-template>
-      </xsl:when>
+      </xsl:when> -->
       <xsl:when test="@ltx_width"><xsl:value-of select="@ltx_width"/></xsl:when>
       <xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when>
       <xsl:otherwise><xsl:text>0</xsl:text></xsl:otherwise>

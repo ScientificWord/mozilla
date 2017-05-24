@@ -276,13 +276,13 @@
       <radiogroup id="sizeRadio">
         <hbox flex="1" visibility = "hidden">
           <vbox >
-            <radio id="actual" value="actual" observes="hasNaturalSize" label="&sizeTab.actualSize;" oncommand="sizeState.selectActualSize();" radioGroup="sizeRadio"/>
+            <radio id="actual" value="actual" label="&sizeTab.actualSize;" oncommand="sizeState.selectActualSize();" radioGroup="sizeRadio"/>
           </vbox>
           <vbox >
-            <radio id="custom" value="custom" observes="hasNaturalSize" label="&sizeTab.custom;" oncommand="sizeState.selectCustomSize();" radioGroup="sizeRadio"/>
+            <radio id="custom" value="custom" label="&sizeTab.custom;" oncommand="sizeState.selectCustomSize();" radioGroup="sizeRadio"/>
           </vbox>
           <vbox >
-            <checkbox observes="hasNaturalSize" id="constrainCheckbox"    oncommand ="sizeState.setPreserveAspectRatio(this.checked);"
+            <checkbox id="constrainCheckbox"    oncommand ="sizeState.setPreserveAspectRatio(this.checked);"
                 checked="false" persist = "checked" label="Preserve aspect ratio"/>
           </vbox>
         </hbox>
@@ -301,15 +301,15 @@
             <row>
               <label value="&width;" id="frameWidthLabel"/>
               <hbox>
-                <label id="autoWidthLabel" observes="hasNaturalSize" value="&sizeTab.auto;" control="autoWidth"/>
+                <label id="autoWidthLabel" value="&sizeTab.auto;" control="autoWidth"/>
               </hbox>
               <spacer/>
               <label value="&height;" id="frameHeightLabel"/>
               <hbox>
-                <label observes="hasNaturalSize" value="&sizeTab.auto;" control="autoHeight"/>
+                <label ovalue="&sizeTab.auto;" control="autoHeight"/>
               </hbox>
             </row>
-            <row observes="customSize">
+            <row>
               <textbox
                 id        = "frameWidthInput"
                 type      = "number"
@@ -320,7 +320,7 @@
                 value     = ""
                 style     = "width: 1.0in;"/>
               <hbox>
-                <radio id="autoWidth" observes="hasNaturalSize" oncommand = "sizeState.selectAutoWidth();" group="autoDims"/>
+                <radio id="autoWidth" oncommand = "sizeState.selectAutoWidth();" group="autoDims"/>
               </hbox>
               <spacer/>
               <textbox
@@ -334,7 +334,6 @@
                 style     = "width: 1.0in;"/>
               <hbox>
                 <radio id="autoHeight"
-                  observes="hasNaturalSize"
                   oncommand="sizeState.selectAutoHeight();" group="autoDims"/>
               </hbox>
             </row>
@@ -447,7 +446,6 @@
     <broadcaster id="sidemargin" width="8"/>
     <broadcaster id="topmargin" height="8"/>
     <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>
-    <broadcaster id="hasNaturalSize"/>
     <broadcaster id="role-image" hidden="false"/>
     <broadcaster id="customSize" disabled="true"/>
   </broadcasterset>
