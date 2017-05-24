@@ -178,24 +178,25 @@ SizeState.prototype = {
 }
 
 
-function setHasNaturalSize()
-// images frequently have a natural size
-{
-  var bcaster = document.getElementById("hasNaturalSize");
-  if (!bcaster) {
-    hasNaturalSize = false;
-    return;
-  }
-  hasNaturalSize = (sizeState.actualSize.width != null) && (sizeState.actualSize.height != null);
-  if (hasNaturalSize)
-  {
-    bcaster.removeAttribute("hidden");
-  }
-  else
-  {
-    bcaster.setAttribute("hidden", "true");
-  }
-}
+// function setHasNaturalSize()
+// // images frequently have a natural size
+// {
+//   var bcaster = document.getElementById("hasNaturalSize");
+//   if (!bcaster) {
+//     hasNaturalSize = false;
+//     return;
+//   }
+//   hasNaturalSize = (sizeState.actualSize.width != null) && (sizeState.actualSize.height != null);
+//   hasNaturalSize = true;
+//   if (hasNaturalSize)
+//   {
+//     bcaster.removeAttribute("hidden");
+//   }
+//   else
+//   {
+//     bcaster.setAttribute("hidden", "true");
+//   }
+// }
 
 function setCanRotate(istrue)
 {
@@ -225,7 +226,7 @@ function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
   sizeState.actualSize.height = wrapperNode.getAttribute("imageHeight");
   sizeState.sizeUnit = wrapperNode.getAttribute("units");
   sizeState.update(dg);
-  setHasNaturalSize();
+  // setHasNaturalSize();
 }
 
 function updateMetrics()
