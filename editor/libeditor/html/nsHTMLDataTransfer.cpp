@@ -1810,24 +1810,33 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
 NS_IMETHODIMP 
 nsHTMLEditor::GetGraphicsAttributesFromFrame(nsIDOMElement *frame, nsIDOMElement *object)
 {
+  // height and width on the frame are given in the units specified.
+  // height and width on the object are given in CSS pixels; we can use other units in the style
   nsresult res = NS_OK;
   nsAutoString width, height, ltx_width, ltx_height, naturalWidth, naturalHeight,
     originalSrcUrl, aspect, units;
   nsAutoString style(EmptyString());
+  NS_NAMED_LITERAL_STRING(semi, "; ");
   object->SetAttribute(NS_LITERAL_STRING("_moz-resizing"), NS_LITERAL_STRING("true"));
   object->SetAttribute(NS_LITERAL_STRING("msi-resize"), NS_LITERAL_STRING("true"));
   res = frame->GetAttribute(NS_LITERAL_STRING("units"), units);
   res = frame->GetAttribute(NS_LITERAL_STRING("height"),height);
   res = frame->GetAttribute(NS_LITERAL_STRING("width"),width);
   style += NS_LITERAL_STRING("height: ") + height + units + NS_LITERAL_STRING("; width: ") + width + units + NS_LITERAL_STRING("; ");
-  res = object->SetAttribute(NS_LITERAL_STRING("width"), width);
-  res = object->SetAttribute(NS_LITERAL_STRING("height"), height);
-  res = object->SetAttribute(NS_LITERAL_STRING("units"), units);
-  res = object->SetAttribute(NS_LITERAL_STRING("ltx_width"), width);
-  res = object->SetAttribute(NS_LITERAL_STRING("naturalWidth"), width);
-  res = object->SetAttribute(NS_LITERAL_STRING("ltx_height"), height);
-  res = object->SetAttribute(NS_LITERAL_STRING("naturalHeight"), height);
+  if (height.Length() > 0) {
+     style += NS_LITERAL_STRING("height: ") + height + units + semi;
+//     res = object->SetAttribute(NS_LITERAL_STRING("height"), height);
+     res = frame->SetAttribute(NS_LITERAL_STRING("ltx_height"), height);
+     res = frame->SetAttribute(NS_LITERAL_STRING("naturalheight"), height);
+   }
+   if (width.Length() > 0) {
+     style += NS_LITERAL_STRING("width: ") + width + units + semi;
+//     res = frame->SetAttribute(NS_LITERAL_STRING("width"), width);
+     res = frame->SetAttribute(NS_LITERAL_STRING("ltx_width"), width);
+     res = frame->SetAttribute(NS_LITERAL_STRING("naturalwidth"), width);
+   }
   res = object->SetAttribute(NS_LITERAL_STRING("style"), style);
+  res = object->SetAttribute(NS_LITERAL_STRING("units"), units);
   return res; 
 }
 
