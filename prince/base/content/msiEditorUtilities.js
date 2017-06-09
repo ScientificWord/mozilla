@@ -211,10 +211,7 @@ function setStyleAttributeOnNode(node, att, value, editor) {
     style = node.getAttribute('style');
   style.replace('null', '');
   style = style + ' ' + att + ': ' + value + '; ';
-  if (editor)
-    msiEditorEnsureElementAttribute(node, 'style', style, editor);
-  else
-    node.setAttribute('style', style);
+  node.setAttribute('style', style);
 }
 function getStyleAttributeOnNode(node, att, editor) {
   var style = node.getAttribute('style');
@@ -237,10 +234,7 @@ function removeStyleAttributeOnNode(node, att, editor) {
   var re = new RegExp('(^|\\s|:)' + att + '[^;]+;', 'g');
   if (re.test(style)) {
     style = style.replace(re, '');
-    if (editor)
-      msiEditorEnsureElementAttribute(node, 'style', style, editor);
-    else
-      node.setAttribute('style', style);
+    node.setAttribute('style', style);
   }
 }
 
@@ -255,10 +249,7 @@ function removeStyleAttributeFamilyOnNode(node, att, editor) {
   var re = new RegExp('(^|[^-])' + att + '[-a-zA-Z]*:[^;]*;', 'g');
   if (re.test(style)) {
     style = style.replace(re, '');
-    if (editor)
-      msiEditorEnsureElementAttribute(node, 'style', style, editor);
-    else
-      node.setAttribute('style', style);
+    node.setAttribute('style', style);
   }
 }
 function setStyleAttributeByID(id, att, value) {

@@ -11,6 +11,13 @@ const nsILocalFile = Components.interfaces.nsILocalFile;
 const nsISupports = Components.interfaces.nsISupports;
 
 
+function x_setStyleAttributeOnNode(node, attr, value) {
+  var style = node.getAttribute('style');
+  if (style.indexOf(attr+':') < 0) {
+    style += '; ' + attr + ': ' + value;
+  }
+  node.setAttribute('style', style);
+}
 
 function createINIParser(aFile) {
     return Components.manager.
@@ -286,16 +293,18 @@ var graphicsConverter = {
   readSizeFromSVGFile: function(svgFile)
   {
     var theText = this.getFileAsString(svgFile);
-    var dimensions = {width: 0, height: 0};
-    var regexw = /width\s*=\"\s+(\d+)([a-z]+)\"/;
-    var regexh = /height\s*=\"\s+(\d+)([a-z]+)\"/;
+    var dimensions = {width: 0, height: 0, unit: 'px'};
+    var regexw = /width\s*=\"\s*(\d+)([a-z]*)\"/;
+    var regexh = /height\s*=\"\s*(\d+)([a-z]*)\"/;
     var match = regexw.exec(theText);
-    if (match)
+    if (match) {
       dimensions.width = match[1];
+      if (match.length > 2) dimensions.unit = match[2];
+    }
     match = regexh.exec(theText);
     if (match) {
       dimensions.height = match[1];
-      dimensions.unit = match[2];
+      if (match.length > 2) dimensions.unit = match[2];
     }
     return dimensions;
 
@@ -304,8 +313,8 @@ var graphicsConverter = {
   readSizeFromEPSFile: function(epsFile)
   {
     var theText = this.getFileAsString(epsFile);
-    var dimensions = {width: 0, height: 0};
-    var regex = /%%BoundingBox:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
+    var dimensions = {width: 0, height: 0, unit: 'pt'};
+    var regex = /%%BoundingBox:\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/;
     var match = regex.exec(theText);
     if (match){
       dimensions.width = match[3] - match[1];
@@ -348,7 +357,8 @@ var graphicsConverter = {
       if (dimsArray && dimsArray.length > 4)
       {
           res = { width : Math.round(Number(dimsArray[3]) - Number(dimsArray[1])),
-                  height : Math.round(Number(dimsArray[4]) - Number(dimsArray[2])) };
+                  height : Math.round(Number(dimsArray[4]) - Number(dimsArray[2])),
+                  unit: 'pt' };
       }
       return res;
     }
@@ -378,6 +388,9 @@ var graphicsConverter = {
      var prefWidth, prefHeight, prefunit;
      var theUnits;
      var naturalheight, naturalwidth;
+     var framenode;
+     var unitHandler = new UnitHandler(null);
+
      var usedims; // = useWidth + 2*useHeight where usexxx is 0 or 1
      // get as much as we can out of the objectnode. It may have been through
      // this function before.
@@ -387,16 +400,22 @@ var graphicsConverter = {
        prefs = prefService.getBranch(null);
 
 
-     var unitHandler = new UnitHandler(null);
+    try {
+      framenode = objectnode.parentNode;
+      theUnits = objectnode.getAttribute('units');
+      if (framenode == null || framenode.nodeName != 'msiframe') {
+        framenode = objectnode;
+      }
+      if (theUnits == null) theUnits =framenode.getAttribute('units');
+      if (theUnits == null) finalThrow('No units given in object node');
+      unitHandler.initCurrentUnit(theUnits);
+      naturalheight = framenode.getAttribute('naturalheight');
+      naturalwidth = framenode.getAttribute('naturalwidth');
+      width = naturalwidth;
+      height = naturalheight;
 
-     theUnits = objectnode.getAttribute('units');
-     if (theUnits == null) finalThrow('No units given in object node');
-     unitHandler.initCurrentUnit(theUnits);
-     naturalheight = objectnode.getAttribute('naturalheight');
-     naturalwidth = objectnode.getAttribute('naturalwidth');
-
-     usedims = objectnode.getAttribute('usedims');
-     if (usedims) {
+      usedims = framenode.getAttribute('usedims');
+      if (usedims) {
        if (usedims > 1) {
          useHeight = true;
          usedims = usedims - 2;
@@ -404,41 +423,47 @@ var graphicsConverter = {
        if (usedims > 0) {
          useWidth = true;
        }
-     } else {
+      } else {
        if (prefs == null) prefs = GetPrefs();
        useWidth = prefs.getBoolPref('swp.graphics.usedefaultwidth');
        useHeight = prefs.getBoolPref('swp.graphics.usedefaultheight');
        usedims = 0;
+       // encoding both useWidth and useHeight in a small integer
        if (useHeight) usedims = 2;
        if (useWidth) usedims++;
-     }
-     if (useWidth || useHeight) {
+      }
+      if (useWidth || useHeight) {
        prefUnit=prefs.getCharPref('swp.graphics.units'); 
-     }
-     prefWidth = prefs.getCharPref('swp.graphics.hsize');
-     prefHeight = prefs.getCharPref('swp.graphics.vsize');
-     if (useWidth) {
-       width = unitHandler.getValueOf(prefWidth, prefUnit);
-       if (useHeight) {
-         height = unitHandler.getValueOf(prefHeight, prefUnit);
-       } else {
-         height = Number(width)*(Number(naturalheight)/Number(naturalwidth));
-       }
-     } else {
-       if (useHeight) {
-         height = unitHandler.getValueOf(prefHeight, prefUnit); 
-       } else { // if we are here, useWidth is false
-         width = Number(height)*(Number(naturalwidth)/Number(naturalheight));
-       }
-       // autoWidth = useHeight && (!useWidth);
-       // autoHeight = useWidth && (!useHeight);
-     }
-     // Now save the results in the object node
-     objectnode.setAttribute('usedims',usedims);
-     objectnode.setAttribute('width',width);
-     objectnode.setAttribute('height',height);
-     objectnode.setAttribute('style', 'height: '+height+theUnits+'; width: '+width +theUnits + ';');
-   },
+      }
+      prefWidth = prefs.getCharPref('swp.graphics.hsize');
+      prefHeight = prefs.getCharPref('swp.graphics.vsize');
+      if (useWidth) {
+        width = unitHandler.getValueOf(prefWidth, prefUnit);
+        if (useHeight) {
+          height = unitHandler.getValueOf(prefHeight, prefUnit);
+        } else {
+          height = Number(width)*(Number(naturalheight)/Number(naturalwidth));
+        }
+      } else if (useHeight) {  // useWidth is already false
+        height = unitHandler.getValueOf(prefHeight, prefUnit); 
+        width = Number(height) * (Number(naturalwidth)/Number(naturalheight));  // use pref ht, compute width
+      } // else use neither pref, so leave height and width alone.
+      // Now save the results in the object node
+      objectnode.setAttribute('usedims',usedims);
+      framenode.setAttribute('usedims',usedims);
+      objectnode.setAttribute('width',Math.round(Number(unitHandler.getValueAs(width,'px'))));
+      framenode.setAttribute('width',width);
+      objectnode.setAttribute('height',Math.round(Number(unitHandler.getValueAs(height,'px'))));
+      framenode.setAttribute('height',height);
+      x_setStyleAttributeOnNode(objectnode, 'height', height+theUnits); 
+      x_setStyleAttributeOnNode(objectnode, 'width', width+theUnits); 
+      x_setStyleAttributeOnNode(framenode, 'height', height+theUnits);
+      x_setStyleAttributeOnNode(framenode, 'width', width+theUnits);
+    }
+    catch(e) {
+      msidump(e.message);
+    }
+  },
 
 
 
