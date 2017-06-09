@@ -577,7 +577,7 @@
                   <row align="center">
                     <label value="&DefaultSizeNewGraphicsHeight.label;"/>
                     <textbox type="number" decimalplaces="2" preference="defaultGraphicsVSize" id="graphicsHeight" class="medwidth"/>
-                    <checkbox id="aspectratio" label="&KeepAspect.label;" preference="keepAspectRatio"/>
+                    <checkbox id="aspectRatio" label="&KeepAspect.label;" preference="keepAspectRatio"/>
                     <checkbox id="useDefaultHeightCheck" label="&useDefaultHeightCheck.label;"
                       preference="graphicUseDefaultHeight"/>
                   </row>
