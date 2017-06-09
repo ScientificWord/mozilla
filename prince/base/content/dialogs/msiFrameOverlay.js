@@ -30,11 +30,12 @@ var editorElement = msiGetActiveEditorElement();
 var editor = msiGetEditor(editorElement);
 
 
-var sizeState = null;
+var gSizeState;
 
 function SizeState(dialog) {
   this.dialog = dialog;
 }
+
 
 SizeState.prototype = {
   dialog: null,
@@ -44,14 +45,6 @@ SizeState.prototype = {
   autoWidth: false,
   height: 0,
   autoHeight: false,
-  enabledState: {
-    isActualSize: true,
-    preserveAspectRatio: true,
-    width: true,
-    autoWidth: false,
-    height: true,
-    autoHeight: false
-  },
   actualSize: {
     width: 0,
     height: 0,
@@ -71,54 +64,37 @@ SizeState.prototype = {
   selectCustomSize: function() {
     this.isCustomSize = true;
     this.update(this.dialog);
-    if (this.preserveAspectRatio) selectAutoHeight();
+    if (this.preserveAspectRatio) this.selectAutoHeight();
   },
 
   setPreserveAspectRatio: function(val) {
     this.preserveAspectRatio = val;
-    if (val) {
-      this.enabledState.autoWidth = this.enabledState.autoHeight = true;
-      this.autoWidth = this.dialog.autoWidth.selected;
-      this.autoHeight = this.dialog.autoHeight.selected;
-      this.enabledState.width = !this.autoWidth;
-      this.enabledState.height = !this.autoHeight;
-    }
-    else {
-      this.enabledState.autoWidth = this.enabledState.autoHeight = false;
-      this.enabledState.width = this.enabledState.height = true;
-    }
     this.update(this.dialog);
   },
 
   selectAutoHeight: function() {
-    this.autoHeight = true;
-    this.autoWidth = false;
-    this.enabledState.width = true;
-    this.enabledState.height = false;
     this.update(this.dialog);
   },
 
   selectAutoWidth: function() {
-    this.autoHeight = false;
-    this.autoWidth = true;
-    this.enabledState.width = false;
-    this.enabledState.height = true;
     this.update(this.dialog);
   },
 
 
   applySizes: function() {  
-    if (this.dialog.frameWidthInput) this.dialog.frameWidthInput.disabled = !this.enabledState.width;
-    if (this.dialog.frameHeightInput) this.dialog.frameHeightInput.disabled = !this.enabledState.height;
-    if (this.dialog.autoWidth) this.dialog.autoWidth.disabled = !this.enabledState.autoWidth;
-    if (this.dialog.autoHeight) this.dialog.autoHeight.disabled = !this.enabledState.autoHeight;
-    if (this.dialog.constrainCheckbox) this.dialog.constrainCheckbox.disabled = !this.enabledState.preserveAspectRatio;
+    // if (this.dialog.frameWidthInput) this.dialog.frameWidthInput.disabled = !this.enabledState.width;
+    // if (this.dialog.frameHeightInput) this.dialog.frameHeightInput.disabled = !this.enabledState.height;
+    // if (this.dialog.autoWidth) this.dialog.autoWidth.disabled = !this.enabledState.autoWidth;
+    // if (this.dialog.autoHeight) this.dialog.autoHeight.disabled = !this.enabledState.autoHeight;
+    // if (this.dialog.constrainCheckbox) this.dialog.constrainCheckbox.disabled = !this.enabledState.preserveAspectRatio;
     //this.dialog.actual.disabled = !this.enabledState.isActualSize;
 
     // now for the values
     if (this.dialog.unitList) this.dialog.unitList.value = this.sizeUnit;
-    if (this.dialog.frameWidthInput) this.dialog.frameWidthInput.value = this.width;
-    if (this.dialog.frameHeightInput) this.dialog.frameHeightInput.value = this.height;
+    if (this.dialog.frameWidthInput) {
+      this.dialog.frameWidthInput.value = this.isCustomSize ? this.width : this.actualSize.width;
+    }
+    if (this.dialog.frameHeightInput) this.dialog.frameHeightInput.value = this.isCustomSize ? this.height : this.actualSize.height;
     if (this.autoWidth) {
       this.dialog.autoDims.selectedItem = this.dialog.autoWidth;
     }
@@ -131,7 +107,7 @@ SizeState.prototype = {
 
   computeDerivedQuantities: function() {
     if (this.actualSize.width && this.actualSize.height && this.actualSize.width > 0) {
-      this.actualSize.aspectRatio = this.actualSize.height/this.actualSize.width;
+      this.actualSize.aspectRatio = this.actualSize.width/this.actualSize.height;
     }
     else {
       this.actualSize.aspectRatio = null;
@@ -146,25 +122,18 @@ SizeState.prototype = {
       unitHandler.initCurrentUnit(this.actualSize.unit);
       if (this.width == 0) this.width = unitHandler.getValueAs(this.actualSize.width, this.sizeUnit);
       if (this.height == 0) this.height = unitHandler.getValueAs(this.actualSize.height, this.sizeUnit);
-      this.enabledState.height = this.enabledState.width = false;
     }
     if (this.preserveAspectRatio && this.isCustomSize) {
       if (this.autoHeight) {
-        this.height = this.width * this.actualSize.aspectRatio;
+        this.height = this.width / this.actualSize.aspectRatio;
       }
       if (this.autoWidth && this.actualSize.aspectRatio > 0) {
-        this.width = this.height/this.actualSize.aspectRatio;
+        this.width = this.height * this.actualSize.aspectRatio;
       }
     }
   },
 
   computeConstraints: function() {
-    this.enabledState.preserveAspectRatio = (this.actualSize.aspectRatio != null);
-     // && this.isCustomSize;
-    this.enabledState.autoWidth = this.enabledState.autoHeight = (this.actualSize.aspectRatio != null) &&
-      this.preserveAspectRatio;
-    this.enabledState.height = (this.isCustomSize) && (!this.enabledState.autoHeight || !this.autoHeight);
-    this.enabledState.width = (this.isCustomSize) && (!this.enabledState.autoWidth || !this.autoWidth);
   },
 
   update: function() {
@@ -186,7 +155,7 @@ SizeState.prototype = {
 //     hasNaturalSize = false;
 //     return;
 //   }
-//   hasNaturalSize = (sizeState.actualSize.width != null) && (sizeState.actualSize.height != null);
+//   hasNaturalSize = (gSizeState.actualSize.width != null) && (gSizeState.actualSize.height != null);
 //   hasNaturalSize = true;
 //   if (hasNaturalSize)
 //   {
@@ -211,22 +180,42 @@ function setCanRotate(istrue)
   }
 }
 
-function setFrameSizeFromExisting(dg, wrapperNode, contentsNode)
+function setFrameSizeFromExisting(dg, wrapperNode)
 {
-  var border = 0, padding = 0;
-  var node;
-  var graphspec;
-  var unitHandler;
+  var border = 0;
+  var padding = 0;
+  var width;
+  var height;
+  var aspectRatio;
+  var objectnode;
   if (!wrapperNode) return;
-  sizeState.width = wrapperNode.getAttribute("width");
-  sizeState.height = wrapperNode.getAttribute("height");
-  sizeState.sizeUnit = sizeState.actualSize.unit = wrapperNode.getAttribute("units");
-  sizeState.preserveAspectRatio = (wrapperNode.getAttribute("aspect") === "true");
-  sizeState.actualSize.width = wrapperNode.getAttribute("imageWidth");
-  sizeState.actualSize.height = wrapperNode.getAttribute("imageHeight");
-  sizeState.sizeUnit = wrapperNode.getAttribute("units");
-  sizeState.update(dg);
-  // setHasNaturalSize();
+  try {
+ 
+    gSizeState.sizeUnit = gSizeState.actualSize.unit = wrapperNode.getAttribute("units");
+    msidump("gSizeState.sizeUnit: "+gSizeState.sizeUnit);
+    gSizeState.width = frameUnitHandler.getValueOf(wrapperNode.getAttribute("width"), gSizeState.sizeUnit);
+    msidump("gSizeState.width: "+gSizeState.width);
+    gSizeState.height = frameUnitHandler.getValueOf(wrapperNode.getAttribute("height"), gSizeState.sizeUnit);
+    msidump("gSizeState.height: "+gSizeState.height);
+    gSizeState.preserveAspectRatio = (wrapperNode.getAttribute("aspect") === "true");
+    msidump("gSizeState.preserveAspectRatio: "+gSizeState.preserveAspectRatio);
+    width = frameUnitHandler.getValueOf(wrapperNode.getAttribute("naturalwidth"), gSizeState.sizeUnit);
+    msidump("width: "+width);
+    height = frameUnitHandler.getValueOf(wrapperNode.getAttribute("naturalheight"), gSizeState.sizeUnit);
+    msidump("height: "+height);
+    if (Number(height) > 0) aspectRatio = width/height;
+    gSizeState.actualSize.aspectRatio = aspectRatio;
+    msidump("gSizeState.actualSize.aspectRatio: "+gSizeState.actualSize.aspectRatio);
+    gSizeState.actualSize.width = width;
+    msidump("gSizeState.actualSize.width: "+gSizeState.actualSize.width);
+    gSizeState.actualSize.height = height;  
+    msidump("gSizeState.actualSize.height: "+gSizeState.actualSize.height);
+
+    gSizeState.update(dg);
+  }
+  catch(e) {
+    msidump(e.message);
+  }
 }
 
 function updateMetrics()
@@ -278,8 +267,8 @@ function rescaleMetrics(width, height) // width and height in current unit.
     scale = Math.min (scale*(100/toPixels(totalWidth)), scale*(64/toPixels(totalHeight)));
   if (scale > 0.25) scale = 0.25;
   if (oldScale != scale) {
-    scaledWidth = toPixels(Dg.truewidth.value);
-    scaledHeight = toPixels(Dg.trueheight.value);
+    scaledWidth = toPixels(Dg.naturalwidth.value);
+    scaledHeight = toPixels(Dg.naturalheight.value);
   }
 }
 
@@ -316,17 +305,22 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   var j;
   var len2;
   var values;
-  var width = 0;
+  var width;
+  var height;
   var pos;
   var ret;
+  var currUnit;
+  var isFloat;
 //  var currUnit;
   var placement;
   Dg = dg;
+  gSizeState = new SizeState(dg);
+
   initUnitHandler();
   currUnit = element.getAttribute("units");
   frameUnitHandler.initCurrentUnit(currUnit);
-  gConstrainHeight = element.getAttribute("aspect"); // BBM: Fix this
-  gConstrainWidth = element.getAttribute("aspect");  // "   "
+  gConstrainHeight = element.getAttribute("aspect"); 
+  gConstrainWidth = element.getAttribute("aspect");  
   gFrameModeImage = (element.getAttribute("frametype") === "image");
 
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
@@ -377,8 +371,8 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   dg.frameInlineOffsetInput    = document.getElementById("frameInlineOffsetInput");
   dg.floatList            = document.getElementById("floatList");
   dg.OkButton             = document.documentElement.getButton("accept");
-  dg.truewidth            = document.getElementById( "truewidth" );
-  dg.trueheight           = document.getElementById( "trueheight" );
+  dg.naturalWidth         = document.getElementById( "truewidth" );
+  dg.naturalHeight        = document.getElementById( "trueheight" );
   dg.frameHeightInput     = document.getElementById("frameHeightInput");
   dg.frameWidthInput      = document.getElementById("frameWidthInput");
   dg.autoDims             = document.getElementById("autoDims");
@@ -398,8 +392,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   dg.custom               = document.getElementById( "custom" );
   dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
   dg.sizeRadio            = document.getElementById( "sizeRadio" );
-  sizeState = new SizeState(dg);
-  sizeState.sizeUnit = currUnit;
+  gSizeState.sizeUnit = currUnit;
 
   var fieldList = [];
   var attrs = ["margin","border","padding"];
@@ -424,8 +417,8 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   if (dg.frameHeightInput) fieldList.push(dg.frameHeightInput);
   if (dg.frameWidthInput) fieldList.push(dg.frameWidthInput);
   if (dg.frameInlineOffsetInput) fieldList.push(dg.frameInlineOffsetInput);
-  if (dg.truewidth) fieldList.push(dg.truewidth);
-  if (dg.trueheight) fieldList.push(dg.trueheight);
+  if (dg.naturalwidth) fieldList.push(dg.naturalwidth);
+  if (dg.naturalheight) fieldList.push(dg.naturalheight);
   frameUnitHandler.setEditFieldList(fieldList);
 // The defaults for the image frame are set by the input frame, or the one just generated using the
 // preferences.
@@ -471,7 +464,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   try {
       if (! contentsElement)
          contentsElement = element;
-      setFrameSizeFromExisting(dg, element, contentsElement);
+      setFrameSizeFromExisting(dg, element);
       try
       {
         for (i = 0; i < dg.frameUnitMenulist.itemCount; i++)
@@ -532,7 +525,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   }
 
   try {
-    Dg = dg;
+ //   Dg = dg;
     setAlignment(placement);
 
   // The following will figure out what is enabled in the current state.
@@ -545,7 +538,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
     updateDiagram(borderAtt);
     updateDiagram(paddingAtt);
     var broadcaster = document.getElementById("role-image");
-    var hiddenAttr = broadcaster. gute("hidden");
+    var hiddenAttr = broadcaster.getAttribute("hidden");
     if ( hiddenAttr === true )
       role = "textframe";
     else role = "image"; 
@@ -706,7 +699,7 @@ function updateDiagram( attribute )
   var i;
   var values = [];
   updateMetrics();
-  rescaleMetrics(Dg.truewidth.value,Dg.trueheight.value);
+  rescaleMetrics(Dg.naturalWidth.value,Dg.naturalHeight.value);
    for (i = 0; i<4; i++)
      { values.push( Math.max(0,toPixels(metrics[attribute][sides[i].toLowerCase()]  )));}
    if (values[1] == values[3])
@@ -893,24 +886,22 @@ function setConstrainDimensions(width, height)
 {
   // gConstrainWidth = width;
   // gConstrainHeight = height;
-  sizeState.actualSize.width = width;
-  sizeState.actualSize.height = height;
-  sizeState.computeDerivedQuantities();
+  gSizeState.actualSize.width = width;
+  gSizeState.actualSize.height = height;
+  gSizeState.computeDerivedQuantities();
 }
 
 function setWidthAndHeight(width, height, event)
 {
-  sizeState.width = width;
-  sizeState.height = height;
-  sizeState.computeConstraints();
+  gSizeState.width = width;
+  gSizeState.height = height;
+  gSizeState.computeConstraints();
 }
 
 function setContentSize(width, height)
 // width and height are the size of the image in pixels
 {
-  Dg.truewidth.value = frameUnitHandler.getValueOf(width,"px");
-  Dg.trueheight.value = frameUnitHandler.getValueOf(height,"px");
-
+ƒ
   scaledWidth = Math.round(scale*width);
   if (scaledWidth === 0) scaledWidth = 40;
 //  gConstrainWidth = scaledWidth;
@@ -1013,10 +1004,10 @@ this is the case for images in an msiframe
   //   h = getStyleAttributeOnNode( contentsNode, "height", editor);
   //   if (!w) {
   //     try {
-  //       sizeState.autoWidth = true;
-  //       sizeState.autoHeight = true;
-  //       sizeState.width = 0;
-  //       sizeState.height = 0;
+  //       gSizeState.autoWidth = true;
+  //       gSizeState.autoHeight = true;
+  //       gSizeState.width = 0;
+  //       gSizeState.height = 0;
   //     }
   //     catch(e){
   //       dump( e.message);
@@ -1032,14 +1023,14 @@ this is the case for images in an msiframe
   //     setStyleAttributeOnNode(frameNode, "width", w, editor);
   //     setStyleAttributeOnNode(frameNode, "height", h, editor);
   //   }
-  //   if (!sizeState.autoWidth)
-  //     // sizeState.width = frameUnitHandler.getValueFromString(w, "px");
-  //     sizeState.width = w;
-  //   if (!sizeState.autoHeight)
-  //     // sizeState.height = frameUnitHandler.getValueFromString(h, "px");
-  //     sizeState.height = h;
+  //   if (!gSizeState.autoWidth)
+  //     // gSizeState.width = frameUnitHandler.getValueFromString(w, "px");
+  //     gSizeState.width = w;
+  //   if (!gSizeState.autoHeight)
+  //     // gSizeState.height = frameUnitHandler.getValueFromString(h, "px");
+  //     gSizeState.height = h;
   // }
-  // metrics.unit = sizeState.sizeUnit;
+  // metrics.unit = gSizeState.sizeUnit;
   // if (metrics.unit == "px") // switch to pts
   // {
   //   var el = {value: "pt"};
@@ -1118,8 +1109,8 @@ this is the case for images in an msiframe
   else {
     msiEditorEnsureElementAttribute(frameNode, "padding", getCompositeMeasurement("padding",metrics.unit, false), editor);
   }
-  // msiEditorEnsureElementAttribute(contentsNode, heightAtt, sizeState.height, editor);
-  // msiEditorEnsureElementAttribute(contentsNode, widthAtt, sizeState.width, editor);
+  // msiEditorEnsureElementAttribute(contentsNode, heightAtt, gSizeState.height, editor);
+  // msiEditorEnsureElementAttribute(contentsNode, widthAtt, gSizeState.width, editor);
 
   var captionLoc = document.getElementById("captionLocation").value;
   if (captionLoc === "none") {
@@ -1277,44 +1268,93 @@ this is the case for images in an msiframe
   //   setStyleAttributeOnNode(frameNode, "border-width", style, editor);
   // }
 
-  // style = "height: " + frameUnitHandler.getValueAs(sizeState.height,"px") + "px; " +
-  //   "width: " + frameUnitHandler.getValueAs(sizeState.width,"px") + "px;";
+  // style = "height: " + frameUnitHandler.getValueAs(gSizeState.height,"px") + "px; " +
+  //   "width: " + frameUnitHandler.getValueAs(gSizeState.width,"px") + "px;";
   // contentsNode.setAttribute("style", style);
   // if (frametype !== 'table') {
-  //   setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(sizeState.width,"px") + "px", editor);
-  //   setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(sizeState.height,"px") + "px", editor);
+  //   setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(gSizeState.width,"px") + "px", editor);
+  //   setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(gSizeState.height,"px") + "px", editor);
   // }
-  frameNode.setAttribute("width", sizeState.width);
-  frameNode.setAttribute("height", sizeState.height);
-  contentsNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
-  frameNode.setAttribute("aspect", sizeState.preserveAspectRatio ? "true" : "false");
+  frameNode.setAttribute("width", gSizeState.width);
+  frameNode.setAttribute("height", gSizeState.height);
+  contentsNode.setAttribute("aspect", gSizeState.preserveAspectRatio ? "true" : "false");
+  frameNode.setAttribute("aspect", gSizeState.preserveAspectRatio ? "true" : "false");
   // if (style !== "0px")
   //   setStyleAttributeOnNode( frameNode, "border-style", "solid", editor );
   editor.getFrameStyleFromAttributes(frameNode);
   editor.getGraphicsAttributesFromFrame(frameNode, contentsNode);
 }
 
+// When the height changes and the aspect ratio is preserved, we have to change the width, and vice versa. The next two variables prevent potentially endless
+// cycling.
+
+var changingHeight = false;
+var changingWidth = false;
+
+function approxEqual(a, b) { // a and b are measurements in the current units. They are approximately equal if |a-b| < 2 pixels.
+  return ((Math.abs(Number(frameUnitHandler.getValueAs(a, 'px') - Number(frameUnitHandler.getValueAs(b, 'px'))))) < 2);
+}
+
+function setActualSizeFromSizes(gSizeState) {
+  if (approxEqual(gSizeState.width, gSizeState.actualSize.width) && approxEqual(gSizeState.height, gSizeState.actualSize.height)) {
+    setActualSize(true);
+  } else {
+    setActualSize(false);
+  }
+}
+
+
 function frameHeightChanged(input, event)
 {
+  var newWidth;
+  if (changingWidth) return;
+  changingHeight = true;
   if (input.value > 0)
   {
      scaledHeight = toPixels(input.value);
   }
   else scaledHeight = scaledHeightDefault;
   setStyleAttributeByID("content", "height", scaledHeight + "px");
-  sizeState.height = input.value;
+  gSizeState.height = input.value;
+  if (gSizeState.preserveAspectRatio) {
+    if (gSizeState.actualSize.aspectRatio > 0) {
+      newWidth = gSizeState.height*gSizeState.actualSize.aspectRatio;
+      if (newWidth > 0) {
+        scaledWidth = toPixels(newWidth);
+      } else scaledWidth = scaledWidthDefault;
+      setStyleAttributeByID("content", "width", scaledWidth + "px");
+      gSizeState.width = newWidth;
+    }
+  }
+  setActualSizeFromSizes(gSizeState);
+  gSizeState.update();
   redrawDiagram();
-  sizeState.update();
+  changingHeight = false;
 }
 
 function frameWidthChanged(input, event)
 {
+  var newHeight;
+  if (changingHeight) return;
+  changingWidth = true;
   if (input.value > 0) scaledWidth = toPixels(input.value);
     else scaledWidth = scaledWidthDefault;
   setStyleAttributeByID("content", "width", scaledWidth + "px");
-  sizeState.width = input.value;
-  sizeState.update(Dg);
+  gSizeState.width = input.value;
+  if (gSizeState.preserveAspectRatio) {
+    if (gSizeState.actualSize.aspectRatio > 0) {
+      newHeight = gSizeState.width/gSizeState.actualSize.aspectRatio;
+      if (newHeight > 0) {
+        scaledHeight = toPixels(newHeight);
+      } else scaledHeight = scaledHeightDefault;
+      setStyleAttributeByID("content", "height", scaledHeight + "px");
+      gSizeState.height = newHeight;
+    }
+  }
+  setActualSizeFromSizes(gSizeState);
+  gSizeState.update(Dg);
   redrawDiagram();
+  changingWidth = false;
 }
 
 function getInlineOffset(whichUnit)
@@ -1342,26 +1382,26 @@ function setDisabled(checkbox,id)
 
 function checkAutoDimens(radio, textboxId)
 {
-  if (radio.id === "autoWidth") {
-    sizeState.autoWidth = radio.selected;
-    sizeState.autoHeight = !radio.selected;
-    sizeState.enabledState.width = !radio.selected;
-    sizeState.enabledState.height = radio.selected;
-  }
-  else {
-    sizeState.autoHeight = radio.selected;
-    sizeState.autoWidth = !radio.selected;
-    sizeState.enabledState.height = !radio.selected;
-    sizeState.enabledState.width = radio.selected;
-  }
-  sizeState.update(Dg);
+  // if (radio.id === "autoWidth") {
+  //   gSizeState.autoWidth = radio.selected;
+  //   gSizeState.autoHeight = !radio.selected;
+  //   gSizeState.enabledState.width = !radio.selected;
+  //   gSizeState.enabledState.height = radio.selected;
+  // }
+  // else {
+  //   gSizeState.autoHeight = radio.selected;
+  //   gSizeState.autoWidth = !radio.selected;
+  //   gSizeState.enabledState.height = !radio.selected;
+  //   gSizeState.enabledState.width = radio.selected;
+  // }
+  gSizeState.update(Dg);
 }
 
 function ToggleConstrain()
 {
   // If just turned on, save the current width and height as basis for constrain ratio
-  sizeState.preserveAspectRatio = !sizeState.preserveAspectRatio;
-  sizeState.update(Dg);
+  gSizeState.preserveAspectRatio = !gSizeState.preserveAspectRatio;
+  gSizeState.update(Dg);
 }
 
 function constrainProportions( srcID, destID, event )
@@ -1438,8 +1478,8 @@ function doDimensionEnabling()
 
 function setActualSize(val)
 {
-  sizeState.isCustomSize = !val;
-  sizeState.update(Dg);
+  gSizeState.isCustomSize = !val;
+  gSizeState.update(Dg);
 //   var width, height;
 //   if (gActualWidth && gActualHeight)
 //   {
