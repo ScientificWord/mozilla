@@ -276,14 +276,14 @@
       <radiogroup id="sizeRadio">
         <hbox flex="1" visibility = "hidden">
           <vbox >
-            <radio id="actual" value="actual" label="&sizeTab.actualSize;" oncommand="sizeState.selectActualSize();" radioGroup="sizeRadio"/>
+            <radio id="actual" value="actual" label="&sizeTab.actualSize;" oncommand="gSizeState.selectActualSize();" radioGroup="sizeRadio"/>
           </vbox>
           <vbox >
-            <radio id="custom" value="custom" label="&sizeTab.custom;" oncommand="sizeState.selectCustomSize();" radioGroup="sizeRadio"/>
+            <radio id="custom" value="custom" label="&sizeTab.custom;" oncommand="gSizeState.selectCustomSize();" radioGroup="sizeRadio"/>
           </vbox>
           <vbox >
-            <checkbox id="constrainCheckbox"    oncommand ="sizeState.setPreserveAspectRatio(this.checked);"
-                checked="false" persist = "checked" label="Preserve aspect ratio"/>
+            <checkbox id="constrainCheckbox"    oncommand ="gSizeState.setPreserveAspectRatio(this.checked);"
+                checked="false" label="Preserve aspect ratio"/>
           </vbox>
         </hbox>
       </radiogroup>
@@ -293,50 +293,30 @@
           <columns>
             <column/>
             <column/>
-            <column width="16px"/>
-            <column/>
-            <column/>
           </columns>
           <rows>
             <row>
               <label value="&width;" id="frameWidthLabel"/>
-              <hbox>
-                <label id="autoWidthLabel" value="&sizeTab.auto;" control="autoWidth"/>
-              </hbox>
-              <spacer/>
               <label value="&height;" id="frameHeightLabel"/>
-              <hbox>
-                <label ovalue="&sizeTab.auto;" control="autoHeight"/>
-              </hbox>
-            </row>
+             </row>
             <row>
               <textbox
                 id        = "frameWidthInput"
                 type      = "number"
                 decimalplaces = "2"
-                onkeypress= ""
-                onchange  = "frameWidthChanged(this, event);"
+                onchange= "frameWidthChanged(this, event);"
                 onload    = "frameWidthChanged(this, event);"
                 value     = ""
                 style     = "width: 1.0in;"/>
-              <hbox>
-                <radio id="autoWidth" oncommand = "sizeState.selectAutoWidth();" group="autoDims"/>
-              </hbox>
-              <spacer/>
               <textbox
                 id        = "frameHeightInput"
                 type      = "number"
                 decimalplaces = "2"
-                onkeypress= ""
-                onchange  = "frameHeightChanged(this, event);"
+                onchange = "frameHeightChanged(this, event);"
                 onload    = "frameHeightChanged(this, event);"
                 value     = ""
                 style     = "width: 1.0in;"/>
-              <hbox>
-                <radio id="autoHeight"
-                  oncommand="sizeState.selectAutoHeight();" group="autoDims"/>
-              </hbox>
-            </row>
+           </row>
           </rows>
         </grid>
       </hbox>
