@@ -110,7 +110,15 @@
     <xsl:when test="$framePosType='ft-wrapped'">
       <xsl:choose>
         <xsl:when test="@frametype='table'">\begin{wraptable}</xsl:when>
-        <xsl:otherwise>\begin{wrapfigure}</xsl:otherwise>
+        <xsl:otherwise>
+          <xsl:if test="@sidemargin &gt; 0">
+            <xsl:text>\setlength\columnsep{</xsl:text>
+            <xsl:value-of select="@sidemargin"/>
+            <xsl:call-template name="unit"/>
+            <xsl:text>} </xsl:text>
+          </xsl:if>
+          \begin{wrapfigure}
+        </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="@nlines">[<xsl:value-of select="@nlines"/>]</xsl:if>
       <xsl:choose>
@@ -144,7 +152,7 @@
         </xsl:otherwise>
       </xsl:choose>}
     </xsl:when>
-  <!-- <xsl:when test="@pos='float' and ((@placement='full') or (@frametype='image') or ((@placeLocation !='h') and (@placeLocation !='H')))">\begin{figure}[<xsl:value-of select="@placeLocation"></xsl:value-of>]<xsl:if test="@pos='float' and  (not(@placement) or (@placement='full'))">\begin{center}</xsl:if></xsl:when> -->
+  
    <xsl:when test="$framePosType='ft-floating'">
        <xsl:value-of select="$newline"/>
        <xsl:choose>
@@ -213,7 +221,6 @@
     </xsl:when>
     <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
   </xsl:choose>
-
     <xsl:text>\fcolorbox</xsl:text>
     <xsl:if test="@border-color">
       <xsl:choose>

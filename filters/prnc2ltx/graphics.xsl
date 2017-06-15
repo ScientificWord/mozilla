@@ -20,7 +20,7 @@
         <xsl:with-param name="objNode" select=".."/>   <!-- .. means get from msiframe -->
       </xsl:call-template>
     </xsl:variable>
-        <xsl:variable name="imageHeight">
+    <xsl:variable name="imageHeight">
       <xsl:call-template name="getImageHeight">
         <xsl:with-param name="objNode" select=".."/>   <!-- .. means get from msiframe -->
       </xsl:call-template>
@@ -333,6 +333,12 @@
                  <xsl:text>\begin{figure}\begin{center}</xsl:text>
               </xsl:when>
               <xsl:otherwise>
+                <xsl:if test="@sidemargin &gt; 0">
+                  <xsl:text>\setlength\columnsep{</xsl:text>
+                  <xsl:value-of select="@sidemargin"/>
+                  <xsl:call-template name="unit"/>
+                  <xsl:text>} </xsl:text>
+                </xsl:if>
                 <xsl:value-of select="$newline"/>
                 <xsl:text>\begin{wrapfigure}{</xsl:text>
                 <xsl:choose>
@@ -353,12 +359,6 @@
                 <xsl:text>{0pt}</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
-            <xsl:if test="@sidemargin &gt; 0">
-              <xsl:text>\columnsep=</xsl:text>
-              <xsl:value-of select="@sidemargin"/>
-              <xsl:call-template name="unit"/>
-              <xsl:text> </xsl:text>
-            </xsl:if>
             <xsl:if test="@topmargin &gt; 0">
               <xsl:text>\intextsep=</xsl:text>
               <xsl:value-of select="@topmargin"/>
@@ -452,6 +452,8 @@
       <xsl:when test="@borderw">\setlength\fboxrule{<xsl:value-of select="@borderw"/><xsl:value-of select="@units"/>} </xsl:when>
       <xsl:otherwise>\setlength\fboxrule{0pt} </xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="@sidemargin">\setlength\columnsep{<xsl:value-of select="@sidemargin"/>
+      <xsl:value-of select="@units"/>} </xsl:if>
     <xsl:if test="@padding">\setlength\fboxsep{<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>} </xsl:if>
     <xsl:if test="((@border-color and not (@border-color='#ffffff')) or (@background-color and not (@border-color='#ffffff')))">
       <xsl:text>\fcolorbox</xsl:text>
