@@ -4452,34 +4452,37 @@ var msiConvertGraphics =
         internalFile.append(leafname);
         match = /\.([a-zA-Z0-9]+)$/.exec(data);
         ext = match[1];
-        dimensions = graphicsConverter.readSizeFromVectorFile(internalFile, ext);
-        if (dimensions == null) { 
-          width = null;
-          height = null;
-        }
-        else {
-          width = unithandler.getValueOf(dimensions.width, dimensions.unit);
-          height = unithandler.getValueOf(dimensions.height, dimensions.unit);;
-        }
+        // width = unithandler.getValueOf(dimensions.width, dimensions.unit);
+        // height = unithandler.getValueOf(dimensions.height, dimensions.unit);;
 
         graphicsConverter.init(window, graphicDir.parent, product);
         objectnode.setAttribute("msi_resize", true);
         // objectnode.setAttribute("style", "height: "+height+"px; width: "+width+"px;");
   //      objectnode.addEventListener(eventStr, getdimensions, true);
 
-        outernode.setAttribute("naturalwidth", width);
-        outernode.setAttribute("naturalheight", height);
         graphicsConverter.setInitialWidthAndHeight(objectnode);
         objectnode.removeEventListener("load", this, true);
         importName = graphicsConverter.copyAndConvert(internalFile, true, 
           width, height);
+        dimensions = graphicsConverter.readSizeFromVectorFile(internalFile, ext);
+        if (dimensions == null) { 
+          if (ext === 'wmf' || ext === 'emf') {
+            internalFile = internalFile.parent.parent;
+            internalFile.append('tcache');
+            internalFile.append(leafname.replace(ext,'pdf'));
+            dimensions == graphicsConverter.readSizeFromVectorFile(internalFile, 'pdf');
+          }
+          if (dimensions == null) {
+            dimensions = {width : objectnode.offsetWidth, height : objectnode.offsetHeight, units : 'px'};
+          }
+        }
+      // Now we can get the natural size of the image, if any.
+
+        outernode.setAttribute('naturalwidth', unithandler.getValueOf(dimensions.width, dimensions.unit));
+        outernode.setAttribute('naturalheight', unithandler.getValueOf(dimensions.height, dimensions.unit));
         objectnode.setAttribute("data", importName);
         objectnode.setAttribute("src", importName);
       }
-		// }
-    // catch (e) {
-    //   finalThrow(cmdFailString(aCommand, e.message));
-    // }
   }
 
 };
@@ -5555,7 +5558,8 @@ var msiImageCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    var imageData = {isVideo : false, mNode : null};
+    var editor = msiGetEditor(editorElement);
+    var imageData = {isVideo : false, mNode : null, editor : editor};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome, resizable, close,titlebar,dependent,resizable",
                                                                                                      editorElement, "cmd_image", this, imageData);
   },
@@ -5584,10 +5588,11 @@ var msiReviseImageCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
     var imageNode = msiGetReviseObjectFromCommandParams(aParams);
     if (imageNode != null && editorElement != null)
     {
-      var imageData = {isVideo : false, mNode : imageNode};
+      var imageData = {isVideo : false, mNode : imageNode, editor : editor};
       var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
                                                      editorElement, "cmd_reviseImage", imageNode, imageData);
     }
@@ -5614,7 +5619,8 @@ var msiVideoCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    var imageData = {isVideo : true, mNode : null};
+    var editor = msiGetEditor(editorElement);
+    var imageData = {isVideo : true, mNode : null, editor : editor};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "", "chrome, resizable, close,titlebar,dependent,resizable",
                                                                                                      editorElement, "cmd_video", this, imageData);
 //    window.openDialog("chrome://editor/content/EdImageProps.xul","imageprops", "chrome,close,titlebar,modal");
@@ -5645,10 +5651,12 @@ var msiReviseVideoCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+
     var videoNode = msiGetReviseObjectFromCommandParams(aParams);
     if (videoNode != null && editorElement != null)
     {
-      var imageData = {isVideo : true, mNode : videoNode};
+      var imageData = {isVideo : true, mNode : videoNode, editor : editor};
       var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome,close,titlebar,resizable, dependent",
                                                      editorElement, "cmd_reviseVideo", videoNode, imageData);
     }
@@ -5750,10 +5758,12 @@ var msiLinkCommand =
     // If selected element is an image, launch that dialog instead
     // since last tab panel handles
     var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+
     var element = msiGetObjectDataForProperties(editorElement);
     if (element && msiGetBaseNodeName(element) == "img")
     {
-      var imageData = {isVideo : false, mNode : element};
+      var imageData = {isVideo : false, mNode : element, editor : editor};
       msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome,close,titlebar,resizable, dependent",
                                                      editorElement, "cmd_reviseImage", element, imageData);
 //      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "resizable,chrome,close,titlebar,dependent", imageData);
