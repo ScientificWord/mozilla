@@ -568,7 +568,7 @@ interface nsIHTMLEditor : nsISupports
    * Create a new msiframe with attributes gotten from the preferences 
    */
 
-  nsIDOMElement createFrameWithDefaults(in AString frametype, in nsIDOMNode parent, in long position);
+  nsIDOMElement createFrameWithDefaults(in AString frametype, in boolean insertImmediately, in nsIDOMNode parent, in long position);
 
 /*  All style attributes for a frame are attributes of the frame since this is the 
   easiest way for the XSLT code to find them. The XSLT code ignores the style attribute.
