@@ -23,7 +23,7 @@ basic-offset: 2 -*- */
  * Contributor(s):
  *
  * Alternatively, the contents of this file may be used under the terms of
- * either of the GNU CreateEldddddddddddddddGeneral Public License Version 2 or later (the "GPL"),
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
@@ -1581,6 +1581,7 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
         CopyASCIItoUTF16(prefString, setPrefString);
         SetAttribute(frame, NS_LITERAL_STRING("imageWidth"), setPrefString);
         SetAttribute(frame, NS_LITERAL_STRING("width"), setPrefString);
+        SetAttribute(frame, NS_LITERAL_STRING("ltx_width"), setPrefString);
       }
     }
     prefName = (char *) (!bIsImage ? "swp.graph.usedefaultheight" : "swp.graphics.usedefaultheight");
@@ -1595,6 +1596,7 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
         CopyASCIItoUTF16(prefString, setPrefString);
         SetAttribute(frame, NS_LITERAL_STRING("imageHeight"), setPrefString);
         SetAttribute(frame, NS_LITERAL_STRING("height"), setPrefString);
+        SetAttribute(frame, NS_LITERAL_STRING("ltx_height"), setPrefString);
       }
     }
     // Margins
@@ -1762,14 +1764,17 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
     else if (right) {
       style += floatatt + colon + NS_LITERAL_STRING("right") + semicolon;
     }
+
   }
   // find topmargin, sidemargin
   res = frame->GetAttribute(sidemargin, sidemarginStr);
   if (topmarginStr.Length() == 0) topmarginStr = zero;
   if (sidemarginStr.Length() == 0) sidemarginStr = zero;
-  if (posStr.EqualsLiteral("center") || posStr.EqualsLiteral("floating")) {
+  if (posStr.EqualsLiteral("center") || posStr.EqualsLiteral("floating") || posStr.EqualsLiteral("displayed")) {
     leftmargin.Assign(autoStr);
     rightmargin.Assign(autoStr);
+    left = PR_FALSE;
+    right = PR_FALSE;
   }
   else {
     leftmargin = sidemarginStr + unitStr;
@@ -1796,7 +1801,7 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
   }
   res = frame->GetAttribute(textalignment, attrStr);
   if (attrStr.Length() > 0) {
-    style += textalignment + colon + attrStr + semicolon;
+    style += textalign + colon + attrStr + semicolon;
   }
   res = frame->GetAttribute(captionloc, attrStr);
   if (attrStr.Length() > 0) {
@@ -1822,6 +1827,7 @@ nsHTMLEditor::GetGraphicsAttributesFromFrame(nsIDOMElement *frame, nsIDOMElement
   res = frame->GetAttribute(NS_LITERAL_STRING("units"), units);
   res = frame->GetAttribute(NS_LITERAL_STRING("height"),height);
   res = frame->GetAttribute(NS_LITERAL_STRING("width"),width);
+ 
   style += NS_LITERAL_STRING("height: ") + height + units + NS_LITERAL_STRING("; width: ") + width + units + NS_LITERAL_STRING("; ");
   if (height.Length() > 0) {
      style += NS_LITERAL_STRING("height: ") + height + units + semi;
@@ -2912,7 +2918,7 @@ nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
     }
   }
 
-  CreateFrameWithDefaults(NS_LITERAL_STRING("image"), destnode, aDestOffset, getter_AddRefs(frame));
+  CreateFrameWithDefaults(NS_LITERAL_STRING("image"), PR_TRUE, destnode, aDestOffset, getter_AddRefs(frame));
   if (frame == nsnull) return NS_ERROR_FAILURE;
   GetFrameStyleFromAttributes(frame);
   frame->GetParentNode(getter_AddRefs(parent));
@@ -5184,12 +5190,18 @@ nsIDOMNode* nsHTMLEditor::GetArrayEndpoint(PRBool aEnd,
 }
 
 nsresult 
-nsHTMLEditor::CreateFrameWithDefaults(const nsAString & frametype, nsIDOMNode * parent, PRInt32 offset, nsIDOMElement **_retval)
+nsHTMLEditor::CreateFrameWithDefaults(const nsAString & frametype, PRBool insertImmediately, nsIDOMNode * parent, PRInt32 offset, nsIDOMElement **_retval)
 {
   nsCOMPtr<nsIDOMNode> framenode;
   nsCOMPtr<nsIDOMElement> frame;
+  nsCOMPtr<nsIDOMDocument> domDoc;
   nsresult rv = NS_OK;
-  CreateNode(NS_LITERAL_STRING("msiframe"), parent, offset, getter_AddRefs(framenode));
+  if (insertImmediately) {
+    CreateNode(NS_LITERAL_STRING("msiframe"), parent, offset, getter_AddRefs(framenode));
+  } else {
+    GetDocument(getter_AddRefs(domDoc));
+    domDoc->CreateElement(NS_LITERAL_STRING("msiframe"),getter_AddRefs(frame));
+  }
   frame = do_QueryInterface(framenode);
   if (!frame) return NS_ERROR_FAILURE;
   frame->SetAttribute(NS_LITERAL_STRING("frametype"), frametype);
