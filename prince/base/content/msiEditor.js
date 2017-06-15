@@ -10012,7 +10012,7 @@ function msiSetGraphicFrameAttrsFromGraphic(imageObj, editor) {
   var theUnits = imageObj.getAttribute("units") || frameObj.getAttribute("units") || "px";
   var unitHandler = new UnitHandler(editor);
   unitHandler.initCurrentUnit(theUnits);
-  var width = Number(imageObj.getAttribute("imageWidth"));
+  var width = Number(imageObj.getAttribute("width"));
   if (!width) {
     width = unitHandler.getValueOf(parseFloat(getStyleAttributeOnNode(imageObj, "width")), "px");
   }
@@ -10030,7 +10030,7 @@ function msiSetGraphicFrameAttrsFromGraphic(imageObj, editor) {
       editor);
     frameObj.setAttribute("units", theUnits);
   }
-  var height = Number(imageObj.getAttribute("imageHeight"));
+  var height = Number(imageObj.getAttribute("height"));
   if (!height) {
     height = unitHandler.getValueOf(parseFloat(getStyleAttributeOnNode(imageObj, "height")), "px");
   }
