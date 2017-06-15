@@ -1551,7 +1551,12 @@ function doComputeFindExtrema(math, vars, editorElement, cmd, cmdHandler) {
     ComputeCursor(editorElement);
     var out = GetCurrentEngine().findExtrema(mathstr, vars);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out, GetComputeString("Solution.fmt"), math, editorElement);
+    if (out.length === 80){ // just the string "at" with surrounding mathml
+	appendLabel(GetComputeString("NoSolution"), math, editorElement);
+	done = true;
+    } else {
+        appendLabeledResult(out, GetComputeString("Solution.fmt"), math, editorElement);
+    }
     RestoreCursor(editorElement);
   } catch (ex) {
     RestoreCursor(editorElement);
