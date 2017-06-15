@@ -60,7 +60,7 @@ var graphicsConverter = {
     if (this.OS === 'win')
       path = path.replace(/\//g, '\\');
     else
-      path = path.replace(/\\/g, '/');
+      path = path.replace(/\\/g, '/'); // '
     return path;
   }, 
 
@@ -167,7 +167,7 @@ var graphicsConverter = {
     // var paramArray2 = [];
     var param;
     var temp;
-    var bRunSynchronously = true;
+//    var bRunSynchronously = true;
     var resolutionParameter = null;
     var returnPath; // the path of the file to display, relative to baseDir
     returnPath = 'graphics/' + graphicsFile.leafName;
@@ -249,7 +249,7 @@ var graphicsConverter = {
         if (resolutionParameter) {
           paramArray.push(resolutionParameter);
         }
-        theProcess.run(bRunSynchronously, paramArray, paramArray.length);
+        theProcess.run(true, paramArray, paramArray.length);
       }
     }
     catch(e) {
