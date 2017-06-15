@@ -181,7 +181,7 @@ function Startup()
          existingImage = true;
          imageElement = selectedElement;
          if (imageElement.parentNode.nodeName !== "msiframe"){
-             wrapperElement = gEditor.createFrameWithDefaults("image");
+             wrapperElement = gEditor.createFrameWithDefaults("image", false);
              wrapperElement.appendChild(imageElement);
          }
          else {
@@ -193,7 +193,7 @@ function Startup()
         if (selection.anchorNode.nodeType == Node.TEXT_NODE) {
           selection.collapse(selection.anchorNode.parentNode, 0);
         }
-        wrapperElement = gEditor.createFrameWithDefaults("image", selection.anchorNode, selection.anchorOffset);
+        wrapperElement = gEditor.createFrameWithDefaults("image", false, selection.anchorNode, selection.anchorOffset);
         if (wrapperElement == null) return; // should throw exception
         gEditor.getFrameStyleFromAttributes(wrapperElement);
         parent = wrapperElement.parentNode;
@@ -1269,14 +1269,28 @@ function LoadPreviewImage(importName, srcName)
     var extension = getExtension(srcName);
     var dimensions;
     var intermediate;
-    if (extension == "pdf") {
-      dimensions = graphicsConverter.readSizeFromPDFFile(msiFileFromFileURL(msiURIFromString(msiMakeAbsoluteUrl(srcName))));
-      // convert bp to px
-      intermediate = unitHandler.getValueOf(dimensions.width, 'bp');
-      gConstrainWidth = gActualWidth = unitHandler.getValueAs(intermediate, 'px');
-      intermediate = unitHandler.getValueOf(dimensions.height, 'bp');
-      gConstrainHeight = gActualHeight = unitHandler.getValueAs(intermediate, 'px');
+    var internalFile = msiFileFromFileURL(msiURIFromString(msiMakeAbsoluteUrl(srcName)));
+    var leafname = internalFile.leafName;
+    dimensions = graphicsConverter.readSizeFromVectorFile(internalFile, extension);
+    if (dimensions == null) { 
+      if (extension === 'wmf' || extension === 'emf') {
+        internalFile = internalFile.parent.parent;
+        internalFile.append('tcache');
+        internalFile.append((leafname.replace(extension,'pdf')));
+        dimensions == graphicsConverter.readSizeFromVectorFile(internalFile, 'pdf');
+      }
+      if (dimensions == null) {
+        dimensions = {width : gDialog.PreviewImage.offsetWidth, height : gDialog.PreviewImage.offsetHeight, units : 'px'};
+      }
     }
+    width = unitHandler.getValueOf(dimensions.width, dimensions.unit);
+    height = unitHandler.getValueOf(dimensions.height, dimensions.unit);;
+
+  
+    intermediate = unitHandler.getValueOf(dimensions.width, dimensions.unit);
+    gConstrainWidth = gActualWidth = unitHandler.getValueAs(intermediate, 'px');
+    intermediate = unitHandler.getValueOf(dimensions.height, dimensions.unit);
+    gConstrainHeight = gActualHeight = unitHandler.getValueAs(intermediate, 'px');
     adjustObjectForFileType(gDialog.PreviewImage, extension);
     if (gVideo)
     {
@@ -1586,11 +1600,18 @@ function isEnabled(element)
 function onAccept()
 {
 
-  /* The variables imageElement and wrapperElement point to the image element we are revising, and possibly the wrapper element if there was one. We want to preserve these in the revising case because they might contain attributes the user added. We can tell if we are in the revising case because then gInsertNewImage is false. That there was a wrapper element originally does not imply that there will or will not be one now, since the user may have added or deleted a caption.
+  /* The variables imageElement and wrapperElement point to the image element 
+    we are revising, and possibly the wrapper element if there was one. We want 
+    to preserve these in the revising case because they might contain attributes 
+    the user added. We can tell if we are in the revising case because then 
+    gInsertNewImage is false. That there was a wrapper element originally does 
+    not imply that there will or will not be one now, since the user may have 
+    added or deleted a caption.
   */
   // Use this now (default = false) so Advanced Edit button dialog doesn't trigger error message
   gIsGoingAway = true;
   importTimerHandler.stopLoading();
+
 
   gDoAltTextError = true;
   if (ValidateData())
@@ -1680,7 +1701,7 @@ function onAccept()
       imageElement.setAttribute("src", src);
       imageElement.setAttribute("data", src);
       if (wrapperElement == null) {
-        wrapperElement = gEditor.createFrameWithDefaults("image", sel.anchorNode, sel.anchorOffset);
+        wrapperElement = gEditor.createFrameWithDefaults("image", true, sel.anchorNode, sel.anchorOffset);
       }
 
       //wrapperElement.setAttribute("frametype", "image");
@@ -1791,6 +1812,8 @@ function onAccept()
 function onCancel()
 {
   gIsGoingAway = true;
+  // if (imageElement != null) imageElement.remove();
+  // if (wrapperElement != null) wrapperElement.remove();
   importTimerHandler.stopLoading();
   SaveWindowLocation();
   return true;
