@@ -290,6 +290,7 @@ function posCodeToLocationValue ( posCode ) {
   var ret = '';
   if (posCode === 'inline' || posCode === 'center' || posCode === 'floating'  || posCode === 'left' ||
     posCode === 'right' || posCode === 'inside' || posCode === 'outside') ret = posCode;
+  else if (posCode === 'displayed') ret = 'center';
   else if (posCode === "L") ret = 'left';
   else if (posCode === "R") ret = 'right';
   else if (posCode === "I") ret = 'inside';
@@ -330,6 +331,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   scaledHeight = scaledHeightDefault;
   scaledWidth = scaledWidthDefault;
 
+// BBM: the following is bogus. gConstrainXXX is a boolean
   if (gFrameModeImage) {
     if (!gConstrainHeight)
       gConstrainHeight = scaledHeightDefault;
@@ -338,9 +340,10 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   }
 
   pos = element.getAttribute("pos");
-  position = 0;  // left = 1, right = 2, neither = 0
+  position = 0;  // left = 1, right = 2, displayed/center = 3, inline = 0
   if (pos === "L" || pos === "I") position = 1;
   else if (pos === "R" || pos === "O") position = 2;
+  else if (pos === 'displayed' || pos === 'center') position = 3;
 
   dg.editorElement = msiGetParentEditorElementForDialog(window);
   dg.editor = msiGetEditor(dg.editorElement);
@@ -378,7 +381,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   dg.autoDims             = document.getElementById("autoDims");
   dg.autoHeight           = document.getElementById("autoHeight");
   dg.autoWidth            = document.getElementById("autoWidth");
-  dg.captionLocation      = document.getElementById( "captionLocation");
+  dg.captionLocation      = document.getElementById("captionLocation");
   dg.floatlistNone        = document.getElementById("floatlistNone");
   dg.ltxfloat_forceHere   = document.getElementById("ltxfloat_forceHere");
   dg.ltxfloat_here        = document.getElementById("ltxfloat_here");
@@ -918,7 +921,7 @@ function setContentBGColor(color)
   setStyleAttributeByID("content", "background-color", color);
 }
 
-// alignment = 1 for left, 2 for right, 0 for neither
+// alignment = 1 for left, 2 for right, 3 for displayed/center, 0 for inline
 function setAlignment(alignment )
 {
   position = alignment;
@@ -927,13 +930,18 @@ function setAlignment(alignment )
     Dg.marginInput.left.removeAttribute("disabled");
     Dg.marginInput.right.removeAttribute("disabled");
   }
-  else
+  else if (position == 3)
   {
     Dg.marginInput.left.setAttribute("disabled", "true");
     Dg.marginInput.left.setAttribute("value", "0.00");
     Dg.marginInput.right.setAttribute("disabled", "true");
     Dg.marginInput.right.setAttribute("value", "0.00");
   }
+  else 
+  {
+    Dg.marginInput.left.removeAttribute("disabled");
+    Dg.marginInput.right.removeAttribute("disabled");
+  }    
 }
 
 function setTextValueAttributes()
