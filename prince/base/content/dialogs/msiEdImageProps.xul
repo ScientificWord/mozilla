@@ -227,7 +227,7 @@
       </vbox>
     </groupbox>
     <!-- from EdDialogOverlay -->
-    <vbox id="AdvancedEdit"/>
+<!--     <vbox id="AdvancedEdit"/> -->
   </hbox>
   <spacer class="spacer" flex="1"/>
 </dialog>
