@@ -1123,6 +1123,12 @@
      \msiclosetag[mml][</mml:math>]
   ]
 
+  \gdef\@scan@matrix#1\end{matrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{matrix}#1\end{matrix}]
+  ]
+  
   \gdef\@scan@bmatrix#1\end{bmatrix}[%
      \egroup
      \@make@braces@normal
@@ -1238,7 +1244,7 @@
 \@namedef{msi@begin@align}{\ \@make@braces@other\relax\@scan@align}
 
 
-
+\def\msi@begin@matrix{\@make@braces@other\relax\@scan@matrix} 
 \def\msi@begin@bmatrix{\@make@braces@other\relax\@scan@bmatrix} 
 \def\msi@begin@Bmatrix{\@make@braces@other\relax\@scan@Bmatrix} 
 \def\msi@begin@smallmatrix{\@make@braces@other\relax\@scan@smallmatrix} 
