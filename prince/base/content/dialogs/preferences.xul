@@ -642,7 +642,7 @@
                     preference="defaultGraphicsVMargin" class="medwidth"/>
                   <label value="&BackgroundColor.label;"/>
                   <msibutton id="graphics.background.colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graphics.background.CW');">
-                    <spacer id="graphics.background.CW" class="color-well" preference="graphics.BackgroundColor"/>
+                    <spacer id="graphics.background.CW" class="color-well" preference="graphics.BGColor"/>
                   </msibutton>
                 </row>
                 <row align="center">
