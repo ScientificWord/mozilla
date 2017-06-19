@@ -1580,7 +1580,7 @@ msiTagListManager::GetTagsInClass(const nsAString & strTagClass, const nsAString
   return pACSSA->ContentsofArray( strTagClass, strSep, _retval);
 }
 
-/* Methods for changing the tag list at runtime, to support creating tags dynamically for Polyglossia/Babel
+/* Methods for changing the tag list at runtime, to support creating tags dynamically for Polyglossia/Babel */
 
 
 /*void    setTagVisibility( in AString strTag, in nsIAtom atomNS, in boolean hidden);
