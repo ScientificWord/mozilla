@@ -141,7 +141,7 @@ function Startup()
     return;
   }
 
-  unitHandler = new UnitHandler(gEditor);
+  var unitHandler = new UnitHandler(gEditor);
 
   var existingImage = false;
   var selection = gEditor.selection;
@@ -1283,9 +1283,6 @@ function LoadPreviewImage(importName, srcName)
         dimensions = {width : gDialog.PreviewImage.offsetWidth, height : gDialog.PreviewImage.offsetHeight, units : 'px'};
       }
     }
-    width = unitHandler.getValueOf(dimensions.width, dimensions.unit);
-    height = unitHandler.getValueOf(dimensions.height, dimensions.unit);;
-
   
     intermediate = unitHandler.getValueOf(dimensions.width, dimensions.unit);
     gConstrainWidth = gActualWidth = unitHandler.getValueAs(intermediate, 'px');
