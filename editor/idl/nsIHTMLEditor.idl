@@ -577,6 +577,8 @@ interface nsIHTMLEditor : nsISupports
 */  
   void getFrameStyleFromAttributes(in nsIDOMElement frame);
 
+  void applyGraphicsDefaults(in nsIDOMElement frame, in AString frametype );
+  
   void getGraphicsAttributesFromFrame(in nsIDOMElement frame, in nsIDOMElement object);
   
   /**
