@@ -77,7 +77,12 @@
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:variable name="needminipage" select="0"/>
+  <xsl:variable name="needminipage">
+    <xsl:choose>
+      <xsl:when test="@frametype='textframe'">1</xsl:when>
+      <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <xsl:if test="$inlineOffset and string-length($inlineOffset)">\raisebox{<xsl:value-of select="$inlineOffset"/>}{</xsl:if>
 <!--
 	<xsl:if test="$limitframemetrics=1">
@@ -159,6 +164,7 @@
          <xsl:when test="@frametype='table'">
             <xsl:text>\begin{table}</xsl:text>
          </xsl:when>
+         <xsl:when test="@frametype='textframe'">\begin{minipage}</xsl:when>
          <xsl:otherwise>
             <xsl:text>\begin{figure}</xsl:text>
          </xsl:otherwise>
@@ -206,7 +212,6 @@
     <xsl:when test="@rotation='rot270'">\begin{turn}{90}</xsl:when>
     <xsl:otherwise></xsl:otherwise>
   </xsl:choose>
-  <xsl:if test="$usecolor=1">
   <xsl:choose>
     <xsl:when test="@borderw">
       <xsl:value-of select="$newline"/>
@@ -251,16 +256,20 @@
       <xsl:text>{FFFFFF}</xsl:text>
     </xsl:if>
     <xsl:text>{</xsl:text>
-  </xsl:if>
-
+ <!--    <xsl:if test="@needminipage=1">
+      <xsl:text>\setlength\fboxsep{</xsl:text>
+      <xsl:value-of select="@padding"/><xsl:value-of select="$units"/>
+      <xsl:text>}</xsl:text>
+    </xsl:if> -->
+<!--   </xsl:if>
+ -->
   <xsl:if test="$needminipage=1">
-    \begin{<xsl:if test="@kind='table'">table}[t]</xsl:if>
-      <xsl:if test="not(@kind='table')">minipage}[t]<xsl:if test="$height > 0">[<xsl:value-of select="$height"/><xsl:value-of select="$units"/>]</xsl:if></xsl:if>
-    <xsl:if test="not(@kind='table')">
-    <xsl:choose>
-      <xsl:when test="not(@rotation) or (@rotation='rot0')">{<xsl:value-of select="$width"/></xsl:when>
-      <xsl:otherwise>{<xsl:value-of select="$width"/></xsl:otherwise>
-    </xsl:choose><xsl:value-of select="$units"/>} %
+    \begin{minipage}[t] <xsl:if test="$width > 0">{<xsl:value-of select="$width"/><xsl:value-of select="$units"/>}</xsl:if>
+    <xsl:if test="not(@frametype='textframe')">
+      <xsl:choose>
+        <xsl:when test="not(@rotation) or (@rotation='rot0')">{<xsl:value-of select="$width"/></xsl:when>
+        <xsl:otherwise>{<xsl:value-of select="$width"/></xsl:otherwise>
+      </xsl:choose><xsl:value-of select="$units"/>} %
     </xsl:if>
   </xsl:if>
 
@@ -274,7 +283,7 @@
   </xsl:choose>
   <!-- Now back out putting in \end{environment} or } as necessary -->
   <xsl:if test="$needminipage=1">
-  \end{<xsl:if test="@kind='table'">table</xsl:if><xsl:if test="not(@kind='table')">minipage</xsl:if>}
+    \end{minipage}
   </xsl:if>
   <xsl:if test="$usecolor=1">}</xsl:if>
   <xsl:if test="@rotation='rot90' or @rotation='rot270'">\end{turn}</xsl:if>
@@ -310,6 +319,9 @@
       <xsl:choose>
         <xsl:when test="@frametype='table'">
           <xsl:text>\end{table}</xsl:text>
+        </xsl:when>
+        <xsl:when test="@frametype='textframe'">
+          <xsl:text>\end{minipage}</xsl:text>
         </xsl:when>
         <xsl:otherwise>
           <xsl:text>\end{figure}</xsl:text>
