@@ -25,6 +25,7 @@ var gActualHeight = 0;
 var gDefaultPlacement = "inline";
 var gDefaultInlineOffset = "";
 var hasNaturalSize;
+var gFrameModeImage;
 var gCaptionLoc;
 var editorElement = msiGetActiveEditorElement();
 var editor = msiGetEditor(editorElement);
