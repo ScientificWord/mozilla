@@ -77,6 +77,7 @@ function onOK() {
 		}
 	}
   setFrameAttributes(msiframe, msiframe, editor);
+  msiframe.setAttribute('frametype', 'textframe');
 	editor.endTransaction();
 //	if (isNewNode)
 //	{
