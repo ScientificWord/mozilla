@@ -33,7 +33,7 @@ function UnitHandler( editor )
 
   this.currentUnit = null;
   this.callback = function(unit) {
-                  };
+   };
 
   this.setUnitChangeCallback = function( unitCallback ) {
     this.callback = unitCallback;
@@ -94,7 +94,14 @@ function UnitHandler( editor )
     {
       return prev;
     }
-    var factor = this.units[this.currentUnit].size/this.units[unit].size;
+
+    var factor;
+    try {
+      factor = this.units[this.currentUnit].size/this.units[unit].size;
+    } 
+    catch (e) {
+      msidump(e.message);
+    }
     var limAttr;
     var i;
     var len = this.editFieldList.length;
