@@ -1606,6 +1606,7 @@ function onAccept()
     added or deleted a caption.
   */
   // Use this now (default = false) so Advanced Edit button dialog doesn't trigger error message
+  var unitHandler = new UnitHandler();
   gIsGoingAway = true;
   importTimerHandler.stopLoading();
 
@@ -1635,7 +1636,7 @@ function onAccept()
     // The next elements are from msiFrameOverlay
     if (!wInput.hasAttribute('disabled')) width = wInput.value;
     if (!hInput.hasAttribute('disabled')) height = hInput.value;
-    unitHandler.setCurrentUnit(unit);
+    unitHandler.initCurrentUnit(unit);
     // srcurl is for debugging purposes
     // BBM: use gOriginalSrcUrl or gCopiedSrcUrl
     // var srcurl = graphicsConverter.copyAndConvert(msiFileFromFileURL(msiURIFromString(gOriginalSrcUrl)), false,

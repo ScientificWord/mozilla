@@ -34,7 +34,9 @@ var graphicsConverter = {
   codeDir: null,
   OS: "",
   handler: null,
-
+  inkscapeScriptState: 0,
+  inkscapeScript: null,
+  inkscapeBatching: false,
 
   init: function(aWindow, baseDirIn, product) {
     this.handler = new UnitHandler(null);
@@ -895,6 +897,7 @@ var graphicsConverter = {
   //Note: documentDir should be an nsILocalFile
   ensureTypesetGraphicForElement: function(objElement, documentDir, aWindow, callbackObject) {
     var attrValStr;
+    var inkscapeCmd;
     if (objElement.getAttribute("msigraph") === "true")
       return false;
 
@@ -939,12 +942,50 @@ var graphicsConverter = {
       }
     }
     var graphicFile = msiFileFromAbsolutePath(gfxFileStr);
+    var thefile = graphicFile.clone();
     var importName;
+    var pngName;
+    var pngFile;
+    var pdfName;
+    var pdfFild;
+    var leafname = graphicFile.leafName;
     var extension = getExtension(graphicFile.path).toLowerCase();
     if (graphicFile.exists()) {
       // Test to see if any derived graphics files are missing
       if (this.allDerivedGraphicsExist(documentDir, graphicFile, objElement)) return true;
-      importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
+      if (extension === 'wmf' || extension === 'emf') {
+        // we will be using inkscape. It is much faster if we batch the operations 
+        var pathsfile = this.codeDir.clone(); 
+        var leaf = 'MSITeX.' + (this.OS==='win'?'cmd':'bash');
+        pathsfile.append(leaf); // corresponds to $M in graphicsConversions.ini
+        if (this.inkscapeScriptState === 0) { // do initialization
+          this.inkscapeScriptState = 1;
+          this.inkscapeScript = '';
+          if (this.OS === 'win') {
+            this.inkscapeScript += 'call ' + pathsfile.path +'\n"%INKSCAPE%" -z --shell <<listoffiles\n';
+          } else {
+            this.inkscapeScript += '#!/bin/sh\nsource ' + pathsfile.path +'\n"$INKSCAPE" -z --shell <<listoffiles\n';
+          }
+        } 
+        leafname = leafname.replace(/\.[ew]mf$/,'');
+        pngName = leafname + '.png';
+        pngFile = documentDir.clone();
+        pngFile.append('gcache');
+        pngFile.append(pngName);
+        this.assureSubdir("gcache");
+        importName = 'gcache' + (this.OS==='win' ? '\\' : '/') + pngName;
+        inkscapeCmd = '-z -e "'+ pngFile.path +'" "' + graphicFile.path + '"';
+        this.inkscapeScript += inkscapeCmd + '\n';
+
+        pdfName = leafname + '.pdf';
+        pdfFile = documentDir.clone();
+        pdfFile.append('tcache');
+        pdfFile.append(pdfName);
+        this.assureSubdir("tcache");
+        inkscapeCmd = '-z -A "'+ pdfFile.path +'" "' + graphicFile.path + '"';
+        this.inkscapeScript += inkscapeCmd + '\n';
+      } else 
+        importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
       if (importName){
         objElement.setAttribute("src", importName);
         objElement.setAttribute("data", importName);
@@ -965,13 +1006,68 @@ var graphicsConverter = {
     var imgList = aDocument.getElementsByTagName("img");
     if (objList.length>0 || imgList.length>0)
     {
+      this.beginBatchProcessing();
       for (ii = 0; ii < imgList.length; ++ii) {
         this.ensureTypesetGraphicForElement(imgList[ii], documentDir, aWindow, null);
       }      
       for (var ii = 0; ii < objList.length; ++ii) {
         this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null);
       }
+      this.endBatchProcessing();
+      for (ii = 0; ii < objList.length; ++ii) {
+        if (/[ew]mf$/.test(objList[ii].getAttribute('copiedSrcUrl')))
+          objList[ii].setAttribute('data', objList[ii].getAttribute('data'));
+      }
     }
+  },
+
+  beginBatchProcessing: function () {
+    this.inkscapeBatching = true;
+    this.inkscapeScriptState = 0; // file not yet created.
+  },
+
+  endBatchProcessing: function () {
+    var urlstring;
+    var filepath; 
+    var file;
+    var strm;
+    var theProcess;
+    var dsprops;
+    var inkscapeops = 'inkscapeops.';
+    if (this.OS == "win")
+      inkscapeops += 'cmd';
+    else
+      inkscapeops += 'bash';
+
+    if (this.inkscapeScriptState === 1) {
+      var dsprops = Components.classes['@mozilla.org/file/directory_service;1'].createInstance(Components.interfaces.nsIProperties);
+      var file = dsprops.get('ProfD', Components.interfaces.nsILocalFile);
+
+      try
+      {
+        file.append(inkscapeops);
+        file.QueryInterface(Components.interfaces.nsIFile);
+        if( file.exists() == true ) file.remove( false );
+        strm = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+        strm.QueryInterface(Components.interfaces.nsIOutputStream);
+        strm.QueryInterface(Components.interfaces.nsISeekableStream);
+        strm.init( file, 0x04 | 0x08, 0700, 0 );
+        strm.write( this.inkscapeScript, this.inkscapeScript.length );
+        strm.write('quit\n', 'quit\nlistoffiles\n'.length);
+        strm.flush();
+        strm.close();
+
+        theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+        theProcess.init(file);
+        theProcess.run(true, [], 0);
+      }
+      catch(ex)
+      {
+        window.alert(ex.message);
+      } 
+    }
+    this.inkscapeScriptState = 0;
+    this.inkscapeScript = '';
   }
 };
 
