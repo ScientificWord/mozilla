@@ -905,6 +905,7 @@ var graphicsConverter = {
     if (gfxFileStr && gfxFileStr.length > 0) {
       if (this.OS === "win") {
         gfxFileStr = documentDir.path + '\\' + gfxFileStr;
+        gfxFileStr = gfxFileStr.replace("/", "\\"); // fix the separator after 'graphics'
       } else {
         gfxFileStr = documentDir.path + '/' + gfxFileStr;
       }
@@ -918,6 +919,9 @@ var graphicsConverter = {
 
 
     var theUnits = objElement.getAttribute("units");
+    if (!theUnits || !theUnits.length) {
+      theUnits = objElement.parentNode.getAttribute("units");
+    }
     if (!theUnits || !theUnits.length)
       theUnits = "in";
     var theWidth =  objElement.getAttribute('ltx_width') || objElement.getAttribute("imageWidth") || objElement.getAttribute("width") || objElement.getAttribute("naturalWidth");
@@ -928,7 +932,7 @@ var graphicsConverter = {
         if (!theWidth) {
           pixWidth = objElement.getAttribute('ltx_width');
           attrValStr = String(this.handler.getValueOf(pixWidth, "px"));
-          objElement.setAttribute("imageWidth", attrValStr);
+          objElement.setAttrnbute("imageWidth", attrValStr);
           objElement.setAttribute("naturalWidth", attrValStr);
         }
         if (!theHeight) {
