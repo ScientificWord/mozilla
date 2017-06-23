@@ -1,8 +1,7 @@
-#!/bin/sh
+rem @echo off
+call "%~1"
 
-cd "$2"
-call "$1"
-dir=`dirname $INKSCAPE`
-export  PATH="$dir":$PATH
+cd "%~2"
+rem export  PATH="%INKSCAPE"\..:$PATH
 
 "$INKSCAPE" -z --shell < wmflist
