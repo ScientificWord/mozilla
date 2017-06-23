@@ -35,7 +35,7 @@ var graphicsConverter = {
   OS: "",
   handler: null,
   inkscapeScriptState: 0,
-  inkscapeScript: null,
+  inkscapeFileList: null,
   inkscapeBatching: false,
 
   init: function(aWindow, baseDirIn, product) {
@@ -943,7 +943,7 @@ var graphicsConverter = {
     }
     var graphicFile = msiFileFromAbsolutePath(gfxFileStr);
     var thefile = graphicFile.clone();
-    var importName;
+    var importName = null;
     var pngName;
     var pngFile;
     var pdfName;
@@ -955,17 +955,9 @@ var graphicsConverter = {
       if (this.allDerivedGraphicsExist(documentDir, graphicFile, objElement)) return true;
       if (extension === 'wmf' || extension === 'emf') {
         // we will be using inkscape. It is much faster if we batch the operations 
-        var pathsfile = this.codeDir.clone(); 
-        var leaf = 'MSITeX.' + (this.OS==='win'?'cmd':'bash');
-        pathsfile.append(leaf); // corresponds to $M in graphicsConversions.ini
-        if (this.inkscapeScriptState === 0) { // do initialization
+         if (this.inkscapeScriptState === 0) { // do initialization
           this.inkscapeScriptState = 1;
-          this.inkscapeScript = '';
-          if (this.OS === 'win') {
-            this.inkscapeScript += 'call ' + pathsfile.path +'\n"%INKSCAPE%" -z --shell <<listoffiles\n';
-          } else {
-            this.inkscapeScript += '#!/bin/sh\nsource ' + pathsfile.path +'\n"$INKSCAPE" -z --shell <<listoffiles\n';
-          }
+          this.inkscapeFileList = '';
         } 
         leafname = leafname.replace(/\.[ew]mf$/,'');
         pngName = leafname + '.png';
@@ -973,17 +965,16 @@ var graphicsConverter = {
         pngFile.append('gcache');
         pngFile.append(pngName);
         this.assureSubdir("gcache");
-        importName = 'gcache' + (this.OS==='win' ? '\\' : '/') + pngName;
-        inkscapeCmd = '-z -e "'+ pngFile.path +'" "' + graphicFile.path + '"';
-        this.inkscapeScript += inkscapeCmd + '\n';
+        inkscapeCmd = '-e "'+ pngFile.path +'" "' + graphicFile.path + '"';
+        this.inkscapeFileList += inkscapeCmd + '\n';
 
         pdfName = leafname + '.pdf';
         pdfFile = documentDir.clone();
         pdfFile.append('tcache');
         pdfFile.append(pdfName);
         this.assureSubdir("tcache");
-        inkscapeCmd = '-z -A "'+ pdfFile.path +'" "' + graphicFile.path + '"';
-        this.inkscapeScript += inkscapeCmd + '\n';
+        inkscapeCmd = '-A "'+ pdfFile.path +'" "' + graphicFile.path + '"';
+        this.inkscapeFileList += inkscapeCmd + '\n';
       } else 
         importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
       if (importName){
@@ -998,12 +989,14 @@ var graphicsConverter = {
   ensureTypesetGraphicsForDocument: function(aDocument, aWindow) {
     var docURI = msiURIFromString(aDocument.documentURI);
     var filePath = msiPathFromFileURL(docURI);
+    var timer;
     var documentDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
     documentDir.initWithPath(filePath);
     documentDir = documentDir.parent;
 
     var objList = aDocument.getElementsByTagName("object");
     var imgList = aDocument.getElementsByTagName("img");
+    var pngPath;
     if (objList.length>0 || imgList.length>0)
     {
       this.beginBatchProcessing();
@@ -1013,61 +1006,77 @@ var graphicsConverter = {
       for (var ii = 0; ii < objList.length; ++ii) {
         this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null);
       }
-      this.endBatchProcessing();
+      this.endBatchProcessing(aDocument);
       for (ii = 0; ii < objList.length; ++ii) {
-        if (/[ew]mf$/.test(objList[ii].getAttribute('copiedSrcUrl')))
-          objList[ii].setAttribute('data', objList[ii].getAttribute('data'));
+        copiedSrcUrl = objList[ii].getAttribute('copiedSrcUrl')
+        if (/[ew]mf$/.test(copiedSrcUrl)) {
+          copiedSrcUrl = copiedSrcUrl.replace('graphics', 'gcache');
+          copiedSrcUrl = copiedSrcUrl.replace(/[ew]mf$/, 'png');
+          objList[ii].setAttribute('data', copiedSrcUrl);
+          objList[ii].setAttribute('src', copiedSrcUrl);
+        }
       }
     }
   },
+
 
   beginBatchProcessing: function () {
     this.inkscapeBatching = true;
     this.inkscapeScriptState = 0; // file not yet created.
   },
 
-  endBatchProcessing: function () {
+  endBatchProcessing: function (theDoc) {
     var urlstring;
     var filepath; 
     var file;
+    var batchfile;
     var strm;
+    var quit = 'quit\n';
     var theProcess;
-    var dsprops;
-    var inkscapeops = 'inkscapeops.';
+    var pathsfile;
+    var leaf;
+    var ext;
+    var args;
+    var copiedSrcUrl;
+    var filelist = 'wmflist';
     if (this.OS == "win")
-      inkscapeops += 'cmd';
+      ext = 'cmd';
     else
-      inkscapeops += 'bash';
+      ext = 'bash';
 
     if (this.inkscapeScriptState === 1) {
-      var dsprops = Components.classes['@mozilla.org/file/directory_service;1'].createInstance(Components.interfaces.nsIProperties);
-      var file = dsprops.get('ProfD', Components.interfaces.nsILocalFile);
+      file = this.baseDir.clone();
 
       try
       {
-        file.append(inkscapeops);
+        file.append(filelist);
         file.QueryInterface(Components.interfaces.nsIFile);
         if( file.exists() == true ) file.remove( false );
         strm = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
         strm.QueryInterface(Components.interfaces.nsIOutputStream);
         strm.QueryInterface(Components.interfaces.nsISeekableStream);
         strm.init( file, 0x04 | 0x08, 0700, 0 );
-        strm.write( this.inkscapeScript, this.inkscapeScript.length );
-        strm.write('quit\n', 'quit\nlistoffiles\n'.length);
+        strm.write( this.inkscapeFileList, this.inkscapeFileList.length );
+        strm.write(quit, quit.length);
         strm.flush();
         strm.close();
-
+        pathsfile = this.codeDir.clone(); 
+        leaf = 'MSITeX.' + ext;
+        pathsfile.append(leaf); // corresponds to $M in graphicsConversions.ini
+        args = [pathsfile.path, this.baseDir.path];
+        batchfile = this.codeDir.clone(); 
+        batchfile.append('inkscapebatch.' + ext); 
         theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-        theProcess.init(file);
-        theProcess.run(true, [], 0);
+        theProcess.init(batchfile);
+        theProcess.run(true, args, args.length);
       }
       catch(ex)
       {
-        window.alert(ex.message);
+        dump(ex.message);
       } 
     }
     this.inkscapeScriptState = 0;
-    this.inkscapeScript = '';
+    this.inkscapeFileList = '';
   }
 };
 
