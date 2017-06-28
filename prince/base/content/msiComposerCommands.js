@@ -4438,8 +4438,6 @@ var msiConvertGraphics =
       } else {
         objectnode = outernode.getElementsByTagNameNS(xhtmlns, "object")[0];
       }
-  // BBM: This needs work. If objectnode is a paragraph, there could be several 
-  // graphics in it.    
       if (objectnode) {
         data = objectnode.getAttribute("copiedSrcUrl");
         units = objectnode.getAttribute("units");
@@ -7346,7 +7344,7 @@ var msiMarkerCommand =
 		try{
       var editorElement = msiGetActiveEditorElement();
       // more goes here
-      window.openDialog("chrome://prince/content/marker.xul", "Insert marker", "resizable=yes,dependent=yes,chrome,close,titlebar");
+      window.openDialog("chrome://prince/content/marker.xul", "insertmarker", "resizable=yes,dependent=yes,chrome,close,titlebar");
   		msiGetEditor(editorElement).incrementModificationCount(1);
 		}
     catch (e) {
@@ -7371,7 +7369,7 @@ var msiInsertHTMLFieldCommand =
     var editorElement = msiGetActiveEditorElement();
     try {
       // more goes here
-      window.openDialog("chrome://prince/content/htmlfield.xul", "HTML field", "resizable=yes,chrome,close,titlebar,dependent");
+      window.openDialog("chrome://prince/content/htmlfield.xul", "htmlfield", "resizable=yes,chrome,close,titlebar,dependent");
 			msiGetEditor(editorElement).incrementModificationCount(1);
     } catch (e) {}
   }
@@ -11467,7 +11465,7 @@ var msiShowTeXFileCommand =
           var resurl = match[1]+"/tex/main.tex";
           if (os == "win")
           {
- -          openDialog("chrome://global/content/viewSource.xul",
+            openDialog("chrome://global/content/viewSource.xul",
                         "_blank",
                         "status,dependent,minimizable,resizable,scrollbars=1,dialog=1,close=1,",
                         resurl, 'charset=UTF-8', null);
