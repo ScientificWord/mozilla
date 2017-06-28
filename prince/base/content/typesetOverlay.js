@@ -397,7 +397,7 @@ var msiInsertCrossReference =
     var xrefData = {key: "", refType : "obj"};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/xref.xul", "Cross Reference", "chrome, resizable=yes, close, titlebar, dependent",
                                                                                 editorElement, "cmd_MSIinsertCrossReferenceCmd", this, xrefData);
-//  window.openDialog("chrome://prince/content/xref.xul", "Cross reference", "chrome, resizable=yes, close, titlebar", xref);
+//  window.openDialog("chrome://prince/content/xref.xul", "crossreference", "chrome, resizable=yes, close, titlebar", xref);
   }
 };
 
@@ -764,7 +764,7 @@ function doGenSettingsDlg()
 {
   var genSettingsData = getTypesetGenSettingsFromPrefs();
 
-  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,modal,resizable",
+  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "generaltypesetsettings", "chrome,close,titlebar,modal,resizable",
                        genSettingsData);
   var editorElement = msiGetActiveEditorElement();
 	msiGetEditor(editorElement).incrementModificationCount(1);
@@ -819,7 +819,7 @@ function doInsertIndexEntry(editorElement, indexNode)
   }
   if (!indexNode)
     indexNode = gActiveEditor.getSelectedElement("indexitem");
-  window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar,dependent", indexNode);
+  window.openDialog("chrome://prince/content/indexentry.xul", "indexentry", "chrome,resizable=yes, close,titlebar,dependent", indexNode);
 }
 
 function doInsertManualCitation(editorElement, dlgData)
@@ -1058,7 +1058,7 @@ function doInsertTeXField()
   }
   var tbutton = gActiveEditor.getSelectedElement("texb");
   if (!tbutton) tbutton = gActiveEditor.getSelectedElement("texbutton");
-  window.openDialog("chrome://prince/content/texbuttoncontents.xul", "TeX field", "resizable=yes,chrome,close,titlebar,dependent", tbutton);
+  window.openDialog("chrome://prince/content/texbuttoncontents.xul", "texfield", "resizable=yes,chrome,close,titlebar,dependent", tbutton);
 	msiGetEditor(editorElement).incrementModificationCount(1);
 }
 
