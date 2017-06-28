@@ -423,7 +423,7 @@ function openAboutDialog() {
 #else
   var features = "chrome,centerscreen,dependent";
 #endif
-  window.openDialog("chrome://browser/content/aboutDialog.xul", "", features);
+  window.openDialog("chrome://browser/content/aboutDialog.xul", "about", features);
 }
 
 function openPreferences(paneID, extraArgs)
@@ -448,7 +448,7 @@ function openPreferences(paneID, extraArgs)
   }
 
   return openDialog("chrome://browser/content/preferences/preferences.xul",
-                    "Preferences", features, paneID, extraArgs);
+                    "preferences", features, paneID, extraArgs);
 }
 
 function openAdvancedPreferences(tabID)
