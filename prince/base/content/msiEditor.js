@@ -887,19 +887,19 @@ var license_timercallback = {
     if (!licenseWarningGiven && (editorElement.id === 'content-frame')) {
       licenseStatus = licenseTimeRemaining();
       if (licenseStatus === "unlicensed" ) {
-        openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+        openDialog('chrome://prince/content/licensestatus.xul', 'licensestatus',
           'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
       } else if (licenseStatus !== "permanent" && elapsed > day) {
         // licenseStatus should be a number
         daysleft = Number(licenseStatus);
         if (!isNaN(daysleft)) {
           if (daysleft <= 5 && daysleft >= 0) {
-            openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+            openDialog('chrome://prince/content/licensestatus.xul', 'licensestatus',
               'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', true, daysleft
             );
             prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
           } else if (daysleft < 0) {
-            openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+            openDialog('chrome://prince/content/licensestatus.xul', 'licensestatus',
               'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
           }
         }
@@ -10632,7 +10632,7 @@ function OpenExtensions(aOpenMode) {
   if (needToOpen) {
     const EMURL = "chrome://mozapps/content/extensions/extensions.xul?type=" + aOpenMode;
     const EMFEATURES = "chrome,dialog=no,resizable";
-    window.openDialog(EMURL, "", EMFEATURES);
+    window.openDialog(EMURL, "extensions", EMFEATURES);
   }
 }
 
@@ -10755,7 +10755,7 @@ function openHTMLField(node) {
 
 function openGraphDialog(tagname, node, editorElement) {
   // non-modal dialog, the return is immediate
-  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot Dialog",
+  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "plotdialog",
     "chrome,close,resizable,titlebar,dependent,alwaysraised",
     editorElement, "cmd_objectProperties", node);
   // why find it again???  var editorElement = msiGetActiveEditorElement();
