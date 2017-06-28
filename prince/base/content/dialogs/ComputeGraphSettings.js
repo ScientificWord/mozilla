@@ -853,12 +853,12 @@ function hideShowControls(dim, ptype, graphAnimated, aiMethod)
 function openVariablesAndIntervalsDlg()
 {
   var graphData = new graphVarData(graph);
-  openDialog('chrome://prince/content/intervalsAndAnimation.xul', 'Plot Intervals and Animation', 'chrome,close,titlebar,modal,resizable', graphData);
+  openDialog('chrome://prince/content/intervalsAndAnimation.xul', 'plotintervalsandanimation', 'chrome,close,titlebar,modal,resizable', graphData);
 }
 
 function openAnimationSettingsDlg()
 {
-  openDialog('chrome://prince/content/plotAnimationSettings.xul', 'Animation Settings', 'chrome,close,titlebar,modal,resizable', graph);
+  openDialog('chrome://prince/content/plotAnimationSettings.xul', 'animationsettings', 'chrome,close,titlebar,modal,resizable', graph);
 }
 
 function openAxisFontSettingsDlg()
@@ -874,7 +874,7 @@ function openAxisFontSettingsDlg()
     if (!graph.omitAttributeIfDefault(attrName) || graph.isUserSet(attrName))
       fontObj[attr] = graph.getGraphAttribute(attrName);
   }
-  openDialog('chrome://prince/content/plotFontSettings.xul', 'Axis Tick Font Settings', 'chrome,close,titlebar,modal,resizable', fontObj);
+  openDialog('chrome://prince/content/plotFontSettings.xul', 'axistickfontsettings', 'chrome,close,titlebar,modal,resizable', fontObj);
 
   if (!fontObj.Canceled)
   {
@@ -919,7 +919,7 @@ function openAxisTickFontSettingsDlg()
                      bold : graph.getValue("AxisFontBold"),
                      italic : graph.getValue("AxisFontItalic"),
                      color : graph.getValue("AxisFontColor")};
-  openDialog('chrome://prince/content/plotFontSettings.xul', 'Axis Tick Font Settings', 'chrome,close,titlebar,modal,resizable', fontObj, defaultFont);
+  openDialog('chrome://prince/content/plotFontSettings.xul', 'axistickfontsettings', 'chrome,close,titlebar,modal,resizable', fontObj, defaultFont);
   if (!fontObj.Canceled)
   {
     for (attr in mapAttrs)
@@ -942,7 +942,7 @@ function openAxisTickFontSettingsDlg()
 
 function openPlotLabelsDlg()
 {
-  openDialog('chrome://prince/content/plotLabelsDlg.xul', 'Plot Labels', 'chrome,close,titlebar,modal,resizable', graph);
+  openDialog('chrome://prince/content/plotLabelsDlg.xul', 'plotlabels', 'chrome,close,titlebar,modal,resizable', graph);
 }
 
 function makeAxisLabelCustom(control)
