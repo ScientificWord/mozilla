@@ -2236,7 +2236,7 @@ function formatRecreateGraph(DOMGraph, commandStr, editorElement) {
   // var extraArgsArray = new Array(DOMGraph);
   //  msiOpenModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul",
   //                     "", "chrome,close,titlebar,dependent", editorElement, commandStr, DOMGraph, extraArgsArray);
-  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot dialog", "chrome,close,titlebar,resizable,dependent,alwaysraised", editorElement, commandStr, DOMGraph);
+  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "plotdialog", "chrome,close,titlebar,resizable,dependent,alwaysraised", editorElement, commandStr, DOMGraph);
   document.getElementById("vcamactive").setAttribute("hidden", "true");
   return;
 }
