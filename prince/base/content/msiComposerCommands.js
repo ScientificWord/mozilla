@@ -2953,6 +2953,8 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     tempdir.append(leaf+".sci");
     var url = msiFileURLFromFile(tempdir);
     sciurlstring = url.spec;
+  } else {
+    msiException("")
   }
 
   if (mustShowFileDialog)
@@ -4391,28 +4393,32 @@ var msiConvertGraphics =
   {
 
 		// try {
-  	  var editorElement = msiGetActiveEditorElement();
-  	  var editor = msiGetEditor(editorElement);
-      var product;
-      var outernode, objectnode;
-      var data;
-      var importName;
-      var internalFile;
-      var internalName;
-      var graphicDir;
-      var width, height;
-      var units;
-      var dimensions             ;
-      var docUrlString = msiGetDocumentBaseUrl();
-      var docurl = msiURIFromString(docUrlString);
-      var leafname, ext, match;
-      var eventStr = "load";
-      var unithandler = new UnitHandler(editor);
+	  var editorElement = msiGetActiveEditorElement();
+	  var editor = msiGetEditor(editorElement);
+    var product;
+    var frame, objectnode;
+    var data;
+    var importName;
+    var internalFile;
+    var internalName;
+    var graphicDir;
+    var width, height;
+    var units;
+    var dimensions;
+    var docUrlString = msiGetDocumentBaseUrl();
+    var docurl = msiURIFromString(docUrlString);
+    var leafname, ext, match;
+    var eventStr = "load";
+    var unithandler = new UnitHandler(editor);
+    var datafile;
+    var data;
+    var basename;
 
 
-      graphicDir = msiFileFromFileURL(docurl);
-      graphicDir = graphicDir.parent;
-      graphicDir.append("graphics");
+    graphicDir = msiFileFromFileURL(docurl);
+    graphicDir = graphicDir.parent;
+    documentDir = graphicDir.clone();
+    graphicDir.append("graphics");
 #ifdef PROD_SWP
       product = "swp";
 #endif
@@ -4423,64 +4429,55 @@ var msiConvertGraphics =
       product = "snb";
 #endif
 
-  	  if (!editor) {
-  			throw("No editor in msiConvertGraphics");
-  		}
-  	  var selection = editor.selection;
-  	  if (!selection)
-  	  {
-  	    throw("No selection in msiConvertGraphics!");
-  	  }
-      outernode = selection.anchorNode;
-      if (outernode.tagName == "object") {
-        objectnode = outernode;
-        outernode = objectnode.nodeParent;
-      } else {
-        objectnode = outernode.getElementsByTagNameNS(xhtmlns, "object")[0];
-      }
-      if (objectnode) {
-        data = objectnode.getAttribute("copiedSrcUrl");
-        units = objectnode.getAttribute("units");
-        if (units == null) units = objectnode.parentNode.getAttribute("units");
-        if (units) {
-          unithandler.initCurrentUnit(units);
+	  if (!editor) {
+			throw("No editor in msiConvertGraphics");
+		}
+	  var selection = editor.selection;
+	  if (!selection)
+	  {
+	    throw("No selection in msiConvertGraphics!");
+	  }
+    frame = selection.anchorNode;
+    if (frame.tagName == "object") {
+      objectnode = frame;
+    } else {
+      objectnode = frame.getElementsByTagNameNS(xhtmlns, "object")[0];
+    }
+
+    if (objectnode) {
+
+      frame = objectnode.nodeParent;
+      graphicsConverter.init(window, graphicDir.parent, product);
+// The next line creates TeX-compatible and browser-compatible versions if necessary.
+      graphicsConverter.ensureTypesetGraphicForElement(objectnode, documentDir)
+      objectnode.setAttribute("msi_resize", true);
+      graphicsConverter.setInitialWidthAndHeight(objectnode);
+      // objectnode.removeEventListener("load", this, true);
+      // ensureTypesetGraphicForElement put in a value for the data attribute. We will get that file.
+      data = objectnode.getAttribute('data');
+      basename = data.replace(/^(graphics|gcache|tcache)[\///]/, '');
+      // data is now '<graphics or gcache or tcache>/<filename>.<ext>'
+      datafile = graphicDir.clone();
+      datafile.append(basename);
+
+      dimensions = graphicsConverter.readSizeFromVectorFile(datafile, ext);
+      if (dimensions == null) { 
+        if (ext === 'wmf' || ext === 'emf') {
+          datafile = datafile.parent.parent;
+          datafile.append('tcache');
+          datafile.append(leafname.replace(ext,'pdf'));
+          dimensions == graphicsConverter.readSizeFromVectorFile(datafile, 'pdf');
         }
-        leafname = data.replace('graphics/','');
-        internalFile = graphicDir.clone(false);
-        internalFile.append(leafname);
-        match = /\.([a-zA-Z0-9]+)$/.exec(data);
-        ext = match[1];
-        // width = unithandler.getValueOf(dimensions.width, dimensions.unit);
-        // height = unithandler.getValueOf(dimensions.height, dimensions.unit);;
-
-        graphicsConverter.init(window, graphicDir.parent, product);
-        objectnode.setAttribute("msi_resize", true);
-        // objectnode.setAttribute("style", "height: "+height+"px; width: "+width+"px;");
-  //      objectnode.addEventListener(eventStr, getdimensions, true);
-
-        graphicsConverter.setInitialWidthAndHeight(objectnode);
-        objectnode.removeEventListener("load", this, true);
-        importName = graphicsConverter.copyAndConvert(internalFile, true, 
-          width, height);
-        dimensions = graphicsConverter.readSizeFromVectorFile(internalFile, ext);
-        if (dimensions == null) { 
-          if (ext === 'wmf' || ext === 'emf') {
-            internalFile = internalFile.parent.parent;
-            internalFile.append('tcache');
-            internalFile.append(leafname.replace(ext,'pdf'));
-            dimensions == graphicsConverter.readSizeFromVectorFile(internalFile, 'pdf');
-          }
-          if (dimensions == null) {
-            dimensions = {width : objectnode.offsetWidth, height : objectnode.offsetHeight, units : 'px'};
-          }
+        if (dimensions == null) {
+          dimensions = {width : objectnode.offsetWidth, height : objectnode.offsetHeight, units : 'px'};
         }
-      // Now we can get the natural size of the image, if any.
-
-        outernode.setAttribute('naturalwidth', unithandler.getValueOf(dimensions.width, dimensions.unit));
-        outernode.setAttribute('naturalheight', unithandler.getValueOf(dimensions.height, dimensions.unit));
-        objectnode.setAttribute("data", importName);
-        objectnode.setAttribute("src", importName);
       }
+    // Now we can get the natural size of the image, if any.
+
+      frame.setAttribute('naturalwidth', unithandler.getValueOf(dimensions.width, dimensions.unit));
+      frame.setAttribute('naturalheight', unithandler.getValueOf(dimensions.height, dimensions.unit));
+      objectnode.setAttribute("data", importName);
+    }
   }
 
 };
