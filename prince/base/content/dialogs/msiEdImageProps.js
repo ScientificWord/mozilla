@@ -188,23 +188,22 @@ function Startup()
           wrapperElement = selectedElement.parentNode;
          }
       }
-    } else {
+    } else { // a new insertion, rather than a revision
       try {
-        if (selection.anchorNode.nodeType == Node.TEXT_NODE) {
-          selection.collapse(selection.anchorNode.parentNode, 0);
-        }
+        // if (selection.anchorNode.nodeType == Node.TEXT_NODE) {
+        //   selection.collapse(selection.anchorNode.parentNode, 0);
+        // }
         wrapperElement = gEditor.createFrameWithDefaults("image", false, selection.anchorNode, selection.anchorOffset);
         if (wrapperElement == null) return; // should throw exception
         gEditor.getFrameStyleFromAttributes(wrapperElement);
-        parent = wrapperElement.parentNode;
-        if (parent == null) return; // should throw exception
+        // parent = wrapperElement.parentNode;
         imageElement = gEditor.createNode("object", wrapperElement, 0);
         gEditor.getGraphicsAttributesFromFrame(wrapperElement, imageElement);
-        msiGoDoCommand("cmd_convert_graphics_at_selection", null);
-        gEditor.insertNodeAtPoint(imageElement, {value: wrapperElement}, {value: 0}, false);
-        if (selection) {
-          selection.collapse(wrapperElement, 0);
-        }
+          // msiGoDoCommand("cmd_convert_graphics_at_selection", null);
+          // gEditor.insertNodeAtPoint(imageElement, {value: wrapperElement}, {value: 0}, false);
+          // if (selection) {
+          //   selection.collapse(wrapperElement, 0);
+          // }
       }
       catch(e) {
         dump(e);
@@ -262,8 +261,8 @@ catch(e) {
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
   InitDialog(wrapperElement, imageElement);
-  if (!existingImage)
-    setImageSizeFields(null,null, unitHandler.currentUnit);
+  // if (!existingImage)
+  //   setImageSizeFields(null,null, unitHandler.currentUnit);
   // Save initial source URL
   gInitialSrc = document.getElementById("srcInput").value || "";
   gCopiedSrcUrl = gInitialSrc;
@@ -701,17 +700,16 @@ function chooseImgFile(fBrowsing)
     var url;
     var leafname;
     var file;
-    // try {
-    //   url = msiURIFromString(fileName);
-    //   gOriginalSrcUrl = decodeURI(url.spec);
-    //   leafname = msiFileFromFileURL(url).leafName;
-    //   file = msiFileFromFileURL(url);
-    // }
-    // catch (e) {
+    try {
+      url = msiURIFromString(fileName);
+      gOriginalSrcUrl = decodeURI(url.spec);
+      leafname = msiFileFromFileURL(url).leafName;
+      file = msiFileFromFileURL(url);
+    }
+    catch (e) {
       var arr = fileName.split('/');
       leafname = arr[arr.length - 1];
-
-    // }
+    }
     gPreviewImageNeeded = true;
     var importName;
     var internalFile;
@@ -1059,7 +1057,7 @@ var importTimerHandler =
 
 function launchConvertingDialog(importData)
 {
-  window.openDialog("chrome://prince/content/msiGraphicsConversionDlg.xul", "graphicsConversionRunning", "chrome,close,resizable,titlebar,modal", importData);
+  window.openDialog("chrome://prince/content/msiGraphicsConversionDlg.xul", "graphicsconversionrunning", "chrome,close,resizable,titlebar,modal", importData);
   //Then collect data the dialog may have changed (notably if the user cancelled the conversion)
   importTimerHandler.importStatus = importData.mImportStatus;
   importTimerHandler.texImportStatus = importData.mTexImportStatus;
@@ -1118,9 +1116,15 @@ function PreviewImageLoaded()
   var unitHandler = new UnitHandler(gEditor);
   var previewActualWidth;
   var previewActualHeight;
+  var docUrlString = msiGetDocumentBaseUrl();
+  var docurl = msiURIFromString(docUrlString);
+  var documentDir = msiFileFromFileURL(docurl);
+  documentDir = documentDir.parent;
 
   if (gDialog.PreviewImage)
   {
+    // get converted images if necessare
+    graphicsConverter.ensureTypesetGraphicForElement(gDialog.PreviewImage, documentDir);
     // Image loading has completed -- we can get actual width
     previewActualWidth  = gDialog.PreviewImage.offsetWidth;
     previewActualHeight = gDialog.PreviewImage.offsetHeight;
@@ -1221,6 +1225,7 @@ function LoadPreviewImage(importName, srcName)
   if (!gPreviewImageNeeded || gIsGoingAway)
     return;
 
+
   gDialog.PreviewSize.collapsed = true;
 
   try {
@@ -1245,7 +1250,7 @@ function LoadPreviewImage(importName, srcName)
       }
     }
   } catch(e) {}
-
+    // We can't preview certain vector graphics, so build the bitmap equivalents first
   if (gDialog.PreviewImage)
     removeEventListener("load", PreviewImageLoaded, true);
 
@@ -1260,12 +1265,14 @@ function LoadPreviewImage(importName, srcName)
   {
     // set the src before appending to the document -- see bug 198435 for why
     // this is needed.
+
     var eventStr = "load";
     gDialog.PreviewImage.addEventListener("load", PreviewImageLoaded, true);
     if (gVideo)
       gDialog.PreviewImage.src = imageSrc;
     else
       gDialog.PreviewImage.data = imageSrc;
+
     var extension = getExtension(srcName);
     var dimensions;
     var intermediate;
@@ -1323,12 +1330,20 @@ function setActualOrDefaultSize()
   var prefStr = "";
   var bUseDefaultWidth, bUseDefaultHeight;
   var width, height;
-  try {bUseDefaultWidth = GetBoolPref("swp.graphics.usedefaultwidth");}
+  try {
+    bUseDefaultWidth = GetBoolPref("swp.graphics.usedefaultwidth");
+  }
   catch(ex)
-  {bUseDefaultWidth = false; dump("Exception getting pref swp.graphics.usedefaultwidth: " + ex + "\n");}
+  {
+    bUseDefaultWidth = false; dump("Exception getting pref swp.graphics.usedefaultwidth: " + ex + "\n");
+  }
 
-  try {bUseDefaultHeight = GetBoolPref("swp.graphics.usedefaultheight");}
-  catch(ex) {bUseDefaultHeight = false; dump("Exception getting pref swp.graphics.usedefaultheight: " + ex + "\n");}
+  try {
+    bUseDefaultHeight = GetBoolPref("swp.graphics.usedefaultheight");
+  }
+  catch(ex) {
+    bUseDefaultHeight = false; dump("Exception getting pref swp.graphics.usedefaultheight: " + ex + "\n");
+  }
 
   if (bUseDefaultWidth || bUseDefaultHeight)
   {
@@ -1343,8 +1358,13 @@ function setActualOrDefaultSize()
   if (bUseDefaultWidth)
   {
     gDialog.autoWidthCheck.checked = false;
-    try {prefStr = GetStringPref("swp.graphics.hsize");}
-    catch(ex) {prefStr = ""; dump("Exception getting pref swp.graphics.hsize: " + ex + "\n");}
+    try {
+      prefStr = GetStringPref("swp.graphics.hsize");
+    }
+    catch(ex) {
+      prefStr = ""; 
+      dump("Exception getting pref swp.graphics.hsize: " + ex + "\n");
+    }
     if (prefStr.length)
     {
       width = unitHandler.getValueFromString( prefStr, gDefaultUnit );
@@ -1353,8 +1373,12 @@ function setActualOrDefaultSize()
     }
     if (bUseDefaultHeight)
     {
-      try {prefStr = GetStringPref("swp.graphics.vsize");}
-      catch(ex) {prefStr = ""; dump("Exception getting pref swp.graphics.vsize: " + ex + "\n");}
+      try {
+        prefStr = GetStringPref("swp.graphics.vsize");
+      }
+      catch(ex) {
+        prefStr = ""; dump("Exception getting pref swp.graphics.vsize: " + ex + "\n");
+      }
       if (prefStr.length)
       {
         height = unitHandler.getValueFromString( prefStr, gDefaultUnit );
