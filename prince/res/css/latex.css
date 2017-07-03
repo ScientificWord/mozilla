@@ -819,7 +819,7 @@ button[class="frontmattertag"] {
 /* Selection rules */
 
 body {
-  -moz-user-select: -moz-text; /* -moz-none can be overridden */
+  -moz-user-select: text; /* -moz-none can be overridden */
   counter-reset: eqnnumber subeqnnumber chapter part section ftnotectr;
   display: block;
   position: relative;
