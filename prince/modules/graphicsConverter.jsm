@@ -387,7 +387,7 @@ var graphicsConverter = {
      var useHeight = false;
      var autoWidth, autoHeight; // booleans, all
      var prefs = null;
-     var prefWidth, prefHeight, prefunit;
+     var prefWidth, prefHeight, prefUnit;
      var theUnits;
      var naturalheight, naturalwidth;
      var framenode;
@@ -895,102 +895,119 @@ var graphicsConverter = {
   },
   
   //Note: documentDir should be an nsILocalFile
-  ensureTypesetGraphicForElement: function(objElement, documentDir, aWindow, callbackObject) {
+  //We require that the 'copiedSrcUrl' be set. Copy the original file before calling this.
+  ensureTypesetGraphicForElement: function(objElement, documentDir) {
     var attrValStr;
     var inkscapeCmd;
-    if (objElement.getAttribute("msigraph") === "true")
-      return false;
-
-    var gfxFileStr = objElement.getAttribute("copiedSrcUrl");
-    if (gfxFileStr && gfxFileStr.length > 0) {
-      if (this.OS === "win") {
-        gfxFileStr = documentDir.path + '\\' + gfxFileStr;
-        gfxFileStr = gfxFileStr.replace("/", "\\"); // fix the separator after 'graphics'
-      } else {
-        gfxFileStr = documentDir.path + '/' + gfxFileStr;
-      }
-      
-    }
-    if (!gfxFileStr || !gfxFileStr.length) gfxFileStr = objElement.getAttribute("originalSrcUrl");
-    if (!gfxFileStr || !gfxFileStr.length) {
-      dump("Error in graphicsConverter.ensureTypesetGraphicForElement! No data or src for " + objElement.nodeName + " element.\n");
-      return false;
-    }
-
-
-    var theUnits = objElement.getAttribute("units");
-    if (!theUnits || !theUnits.length) {
-      theUnits = objElement.parentNode.getAttribute("units");
-    }
-    if (!theUnits || !theUnits.length)
-      theUnits = "in";
-    var theWidth =  objElement.getAttribute('ltx_width') || objElement.getAttribute("imageWidth") || objElement.getAttribute("width") || objElement.getAttribute("naturalWidth");
-    var theHeight =  objElement.getAttribute('ltx_height') || objElement.getAttribute("imageHeight") || objElement.getAttribute("height") || objElement.getAttribute("naturalHeight");
-    if (!theWidth || theWidth === 0 || isNaN(theWidth) || !theHeight || theHeight === 0 || isNaN(theHeight)) {
-      var pixWidth, pixHeight;
-      try {
-        if (!theWidth) {
-          pixWidth = objElement.getAttribute('ltx_width');
-          attrValStr = String(this.handler.getValueOf(pixWidth, "px"));
-          objElement.setAttrnbute("imageWidth", attrValStr);
-          objElement.setAttribute("naturalWidth", attrValStr);
-        }
-        if (!theHeight) {
-          pixHeight = objElement.getAttribute('ltx_height');
-          attrValStr = String(this.handler.getValueOf(pixHeight, "px"));
-          objElement.setAttribute("imageHeight", attrValStr);
-          objElement.setAttribute("naturalHeight", attrValStr);
-        }
-      } catch (exc) {
-        dump("In graphicsConverter.ensureTypesetGraphicForElement, error [" + exc + "] trying to get offsetWidth or offsetHeight for graphic [" + gfxFileStr + "]\n");
-      }
-    }
-    var graphicFile = msiFileFromAbsolutePath(gfxFileStr);
-    var thefile = graphicFile.clone();
+    var pixWidth, pixHeight;
+    var frame;
+    var unitHandler = new UnitHandler();
+    var ext;
+    var basename;
+    var graphicsFile; // the file in the graphics directory. Given by 'copiedSrcUrl' attribute
+    var gcacheFile; // the file used for screen representation, if graphicsFile is not suitable
+    var tcacheFile; // the file used by TeX, if neither of the other two is suitable.
+    var extensionRE = /\.([^\.]+)$/;
     var importName = null;
     var pngName;
     var pngFile;
     var pdfName;
-    var pdfFild;
-    var leafname = graphicFile.leafName;
-    var extension = getExtension(graphicFile.path).toLowerCase();
-    if (graphicFile.exists()) {
-      // Test to see if any derived graphics files are missing
-      if (this.allDerivedGraphicsExist(documentDir, graphicFile, objElement)) return true;
-      if (extension === 'wmf' || extension === 'emf') {
-        // we will be using inkscape. It is much faster if we batch the operations 
-         if (this.inkscapeScriptState === 0) { // do initialization
-          this.inkscapeScriptState = 1;
-          this.inkscapeFileList = '';
-        } 
-        leafname = leafname.replace(/\.[ew]mf$/,'');
-        pngName = leafname + '.png';
-        pngFile = documentDir.clone();
-        pngFile.append('gcache');
-        pngFile.append(pngName);
-        this.assureSubdir("gcache");
-        inkscapeCmd = '-e "'+ pngFile.path +'" "' + graphicFile.path + '"';
-        this.inkscapeFileList += inkscapeCmd + '\n';
+    var pdfFile;
+    var leafname;
 
-        pdfName = leafname + '.pdf';
-        pdfFile = documentDir.clone();
-        pdfFile.append('tcache');
-        pdfFile.append(pdfName);
-        this.assureSubdir("tcache");
-        inkscapeCmd = '-A "'+ pdfFile.path +'" "' + graphicFile.path + '"';
-        this.inkscapeFileList += inkscapeCmd + '\n';
-      } else 
-        importName = this.copyAndConvert(graphicFile, true, theWidth, theHeight);
-      if (importName){
-        objElement.setAttribute("src", importName);
-        objElement.setAttribute("data", importName);
-      }
+    if (objElement.getAttribute("msigraph") === "true")
+      return false;
+    frame = objElement.parentNode;
+    if (frame.nodeName !== 'msiframe') frame = null;
+
+    var gfxFileStr = objElement.getAttribute("copiedSrcUrl");
+    if (!gfxFileStr || gfxFileStr.length == 0) return false; 
+    ext = getExtension(gfxFileStr);
+
+    if (this.OS === "win") {
+      gfxFileStr = documentDir.path + '\\' + gfxFileStr;
+      gfxFileStr = gfxFileStr.replace("/", "\\"); // fix the separator after 'graphics'
+    } else {
+      gfxFileStr = documentDir.path + '/' + gfxFileStr;
+    }
+
+    graphicsFile = msiFileFromAbsolutePath(gfxFileStr);
+    leafname = graphicsFile.leafName;
+    if (!graphicsFile.exists()) return false;
+
+    if (this.allDerivedGraphicsExist(documentDir, graphicsFile, objElement)) {
       return true;
     }
-    return false;
+    if ((ext === 'wmf' || ext === 'emf') && this.inkscapeBatching) {
+      // we will be using inkscape. It is much faster if we batch the operations. this.inkscapeBatching
+      // has been set if we are converting all graphics in a newly imported document. 
+      if (this.inkscapeScriptState === 0) { // do initialization
+        this.inkscapeScriptState = 1;
+        this.inkscapeFileList = '';
+      } 
+      leafname = leafname.replace(/\.[ew]mf$/,'');
+      pngName = leafname + '.png';
+      pngFile = documentDir.clone();
+      pngFile.append('gcache');
+      pngFile.append(pngName);
+      this.assureSubdir("gcache");
+      inkscapeCmd = '-e "'+ pngFile.path +'" "' + graphicsFile.path + '"';
+      this.inkscapeFileList += inkscapeCmd + '\n';
+
+      pdfName = leafname + '.pdf';
+      pdfFile = documentDir.clone();
+      pdfFile.append('tcache');
+      pdfFile.append(pdfName);
+      this.assureSubdir("tcache");
+      inkscapeCmd = '-A "'+ pdfFile.path +'" "' + graphicsFile.path + '"';
+      this.inkscapeFileList += inkscapeCmd + '\n';
+    } else 
+      importName = this.copyAndConvert(graphicsFile, true); //, theWidth, theHeight);
+    if (importName) {
+      if (objElement.nodeName === 'object') objElement.setAttribute("data", importName);
+      else objElement.setAttribute("src", importName);
+    }
+
+
+    var theUnits = objElement.getAttribute("units");
+    if ((!theUnits || !theUnits.length) && frame != null) {
+      theUnits = frame.getAttribute("units");
+    }
+    if (!theUnits || !theUnits.length) {
+      theUnits = "cm";
+      frame.setAttribute("units", theUnits);
+      objElement.setAttribute("units", theUnits);
+    }
+    unitHandler.initCurrentUnit(theUnits);
+
+
+    // imageWidth andbjElement.getAttribute('ltx_width') || objElement.getAttribute("imageWidth") || objElement.getAttribute("width") || objElement.getAttribute("naturalWidth");
+    // var theHeight =  objElement.getAttribute('ltx_height') || objElement.getAttribute("imageHeight") || objElement.getAttribute("height") || objElement.getAttribute("naturalHeight");
+    // if (!theWidth || theWidth === 0 || isNaN(theWidth) || !theHeight || theHeight === 0 || isNaN(theHeight)) {
+    //   try {
+    //     if (!theWidth) {
+    //       pixWidth = objElement.getAttribute('ltx_width');
+    //       attrValStr = String(unitHandler.getValueOf(pixWidth, "px"));
+    //       objElement.setAttribute("imageWidth", attrValStr);
+    //       objElement.setAttribute("naturalWidth", attrValStr);
+    //     }
+    //     if (!theHeight) {
+    //       pixHeight = objElement.getAttribute('ltx_height');
+    //       attrValStr = String(unitHandler.getValueOf(pixHeight, "px"));
+    //       objElement.setAttribute("imageHeight", attrValStr);
+    //       objElement.setAttribute("naturalHeight", attrValStr);
+    //     }
+    //   } catch (exc) {
+    //     dump("In graphicsConverter.ensureTypesetGraphicForElement, error [" + exc + "] trying to get offsetWidth or offsetHeight for graphic [" + gfxFileStr + "]\n");
+    //   }
+    // }
+   
+    
+      // Test to see if any derived graphics files are missing
+    return true;
   },
 
-  ensureTypesetGraphicsForDocument: function(aDocument, aWindow) {
+  ensureTypesetGraphicsForDocument: function(aDocument) {
     var docURI = msiURIFromString(aDocument.documentURI);
     var filePath = msiPathFromFileURL(docURI);
     var timer;
@@ -1005,10 +1022,10 @@ var graphicsConverter = {
     {
       this.beginBatchProcessing();
       for (ii = 0; ii < imgList.length; ++ii) {
-        this.ensureTypesetGraphicForElement(imgList[ii], documentDir, aWindow, null);
+        this.ensureTypesetGraphicForElement(imgList[ii], documentDir);
       }      
       for (var ii = 0; ii < objList.length; ++ii) {
-        this.ensureTypesetGraphicForElement(objList[ii], documentDir, aWindow, null);
+        this.ensureTypesetGraphicForElement(objList[ii], documentDir);
       }
       this.endBatchProcessing(aDocument);
       for (ii = 0; ii < objList.length; ++ii) {
