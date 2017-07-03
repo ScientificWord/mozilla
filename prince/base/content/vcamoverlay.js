@@ -642,7 +642,7 @@ VCamObject.prototype = {
       w = gslist.getAttribute("Width") + units;
       if (w) {
         ssobj.setAttribute("naturalWidth", w);
-        ssobj.setAttribute("ltx_width", w);
+        ssobj.setAttribute("width", w);
         setStyleAttributeOnNode(ssobj, "width", w, editor)
       }
       h = gslist.getAttribute("Height")+units;
