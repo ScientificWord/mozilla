@@ -502,39 +502,40 @@ var msiResizeListener = {
 
   resizeGraphic: function(anElement, oldWidth, oldHeight, newWidth, newHeight) {
     // When this is called, the height and width style attributes for anElement have already been set.
-    // We take care of a possible surrounding msiframe, and attributes other than style,such as ltx_width and
-    // ltx_height
+    // We take care of a possible surrounding msiframe
+    // The input parameters are all in pixels.
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     var unitHandler = new UnitHandler(editor);
     var frame = anElement.parentNode;
     var graphspec;
     var theUnits = anElement.getAttribute("units") || frame.getAttribute("units");
-    var pixelsPerUnit;
-    var elemWidth = anElement.getAttribute("ltx_width");
-    var elemHeight = anElement.getAttribute("ltx_height");
+    // var pixelsPerUnit;
+    if (!theUnits) theUnits = 'px';
+    // var elemWidth = anElement.getAttribute("width");
+    // var elemHeight = anElement.getAttribute("height");
     editor.beginTransaction();
-    unitHandler.initCurrentUnit('px'); //the unit for resize callbacks
-    if (!(theUnits || elemWidth || elemHeight)) return;
-    pixelsPerUnit = unitHandler.getValueOf(1, theUnits);
-    anElement.setAttribute('ltx_width', newWidth / pixelsPerUnit);
-    anElement.setAttribute('ltx_height', newHeight / pixelsPerUnit);
+    // unitHandler.initCurrentUnit('px'); //the unit for resize callbacks
+    // if (!(theUnits || elemWidth || elemHeight)) return;
+    // pixelsPerUnit = unitHandler.getValueOf(1, theUnits);
+    // anElement.setAttribute('width', newWidth / pixelsPerUnit);
+    // anElement.setAttribute('height', newHeight / pixelsPerUnit);
 
     // Do we also set width and height attributes, or imageWidth and imageHeight attributes
 
     if (frame.nodeName === 'msiframe') {
       theUnits = frame.getAttribute("units");
       unitHandler.initCurrentUnit(theUnits);
-      frame.setAttribute('width', unitHandler.getValueOf(newWidth, 'px'));
-      setStyleAttributeOnNode(frame, 'width', newWidth + 'px');
-      frame.setAttribute('height', unitHandler.getValueOf(newHeight, 'px'));
-      setStyleAttributeOnNode(frame, 'height', newHeight + 'px');
+      frame.setAttribute('width', unitHandler.getValueOf(newWidth,'px'));
+      setStyleAttributeOnNode(frame, 'width', unitHandler.getValueOf(newWidth,'px') + theUnits);
+      frame.setAttribute('height', unitHandler.getValueOf(newHeight,'px'));
+      setStyleAttributeOnNode(frame, 'height', unitHandler.getValueOf(newHeight,'px') + theUnits);
     }
     if (frame.parentNode.nodeName === 'graph' && frame.parentNode.firstChild.nodeName ===
       'graphSpec') {
       graphspec = frame.parentNode.firstChild;
       graphspec.setAttribute('Width', unitHandler.getValueOf(newWidth, "px"));
-      graphspec.setAttribute('Height', unitHandler.getValueAs(newHeight, "px"));
+      graphspec.setAttribute('Height', unitHandler.getValueOf(newHeight, "px"));
       var DOMGraph = frame.parentNode;
       if (DOMGraph.nodeName !== "graph") {
         return;
@@ -2238,6 +2239,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave) {
     var htmlurlstring = msiGetEditorURL(editorElement);
     var sciurlstring = msiFindOriginalDocname(htmlurlstring);
     var fileURL = msiURIFromString(sciurlstring);
+    if (!fileURL.schemeIs('file')) return false;
     var file = msiFileFromFileURL(fileURL);
     var scifileExists = file.exists();
     var prefs = GetPrefs();

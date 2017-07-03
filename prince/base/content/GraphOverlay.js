@@ -1889,12 +1889,12 @@ Frame.prototype = {
           case "height":
             this.setFrameAttribute("Height", DOMFrame.getAttribute(att));
             break;
-          case "ltx_height":
-            this.setFrameAttribute("ltx_height", DOMFrame.getAttribute(att));
-            break;
-          case "ltx_width":
-            this.setFrameAttribute("ltx_width", DOMFrame.getAttribute(att));
-            break;
+          // case "ltx_height":
+          //   this.setFrameAttribute("ltx_height", DOMFrame.getAttribute(att));
+          //   break;
+          // case "ltx_width":
+          //   this.setFrameAttribute("ltx_width", DOMFrame.getAttribute(att));
+          //   break;
           case "borderw":
             this.setFrameAttribute("borderw", DOMFrame.getAttribute(att));
             break;
@@ -1962,7 +1962,7 @@ Frame.prototype = {
             break;
           case "Height":
             height = Number(graph.getValue(att));
-            editor.setAttribute(DOMFrame, "ltx_height", height);
+            // editor.setAttribute(DOMFrame, "ltx_height", height);
             editor.setAttribute(DOMFrame, "height", height);
             setStyleAttributeOnNode(DOMObj, "height", height + units, null);
             // dimensions of outer msiframe need to be adjusted for border and padding
@@ -1981,7 +1981,7 @@ Frame.prototype = {
             break;
           case "Width":
             width = Number(graph.getValue(att));
-            editor.setAttribute(DOMFrame, "ltx_width", width);
+            editor.setAttribute(DOMFrame, "width", width);
             setStyleAttributeOnNode(DOMObj, "width", width + units, null);
 
             x = this.getFrameAttribute("border");
