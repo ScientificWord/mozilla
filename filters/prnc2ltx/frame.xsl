@@ -30,6 +30,7 @@
           <xsl:with-param name="objNode" select="(./html:object|./html:embed)[1]"/>
         </xsl:call-template>
       </xsl:when> -->
+      <!-- ltx_width is being deprecated, but we continue to recognize it here -->
       <xsl:when test="@ltx_width"><xsl:value-of select="@ltx_width"/></xsl:when>
       <xsl:when test="@width"><xsl:value-of select="@width"/></xsl:when>
       <xsl:otherwise><xsl:text>0</xsl:text></xsl:otherwise>
