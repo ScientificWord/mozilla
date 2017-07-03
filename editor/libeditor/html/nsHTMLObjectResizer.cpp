@@ -547,6 +547,8 @@ nsHTMLEditor::StartResizing(nsIDOMElement *aHandle)
   if (aspect.EqualsLiteral("true")) {
     preserveRatio = PR_TRUE;
   }
+  // Test
+  preserveRatio = PR_TRUE;
   
   
   // the way we change the position/size of the shadow depends on
