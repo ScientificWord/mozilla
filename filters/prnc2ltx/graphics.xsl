@@ -197,7 +197,7 @@
   <xsl:variable name="movieOptions"><xsl:call-template name="getMovieOptions"/></xsl:variable>
   \includemovie<xsl:if test="$movieOptions and (string-length(normalize-space($movieOptions)) &gt; 0)">[<xsl:value-of select="$movieOptions"/>]</xsl:if>
   {<xsl:if test="number($imageWidth) != 0"><xsl:value-of select="$imageWidth"/>
-<xsl:value-of select="$theUnit"/></xsl:if>}{<xsl:if test="@ltx_height and (number(@ltx_height) != 0)"><xsl:value-of select="@ltx_height"/>
+<xsl:value-of select="$theUnit"/></xsl:if>}{<xsl:if test="@height and (number(@height) != 0)"><xsl:value-of select="@height"/>
 <xsl:value-of select="$theUnit"/></xsl:if>}
 {<xsl:call-template name="getSourceName"><xsl:with-param name="needExtension" select="1" /><xsl:with-param name="fullPath" select="1" /></xsl:call-template>}
   </xsl:template>
@@ -371,7 +371,7 @@
                <xsl:text>\end{center}\end{figure}</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-               <xsl:text>\end{wrapfigure}</xsl:text>
+               <xsl:text>}\end{wrapfigure}</xsl:text>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
@@ -388,12 +388,6 @@
     <xsl:param name="objNode"/>
     <xsl:param name="noZero" select="false"/>
     <xsl:choose>
-      <xsl:when test="$objNode/@ltx_width and (number($objNode/@ltx_width) != 0)">
-        <xsl:value-of select="number($objNode/@ltx_width)"/><xsl:value-of select="$objNode/@units"/>
-      </xsl:when>
-      <xsl:when test="$objNode/@ltx_height and (number($objNode/@ltx_height) != 0) and $objNode/@naturalHeight and (number($objNode/@naturalHeight) != 0) and $objNode/@naturalWidth">
-        <xsl:value-of select="(number($objNode/@naturalWidth) * number($objNode/@ltx_height)) div number($objNode/@naturalHeight)"/>
-      </xsl:when>
       <xsl:when test="$objNode/@width and (number($objNode/@width) != 0)">
         <xsl:value-of select="number($objNode/@width)"/><xsl:value-of select="$objNode/@units"/>
       </xsl:when>
@@ -411,8 +405,8 @@
     <xsl:param name="objNode"/>
     <xsl:param name="noZero" select="false"/>
     <xsl:choose>
-      <xsl:when test="$objNode/@ltx_height and (number($objNode/@ltx_height) != 0)">
-        <xsl:value-of select="number($objNode/@ltx_height)"/><xsl:value-of select="$objNode/@units"/>
+      <xsl:when test="$objNode/@height and (number($objNode/@height) != 0)">
+        <xsl:value-of select="number($objNode/@height)"/><xsl:value-of select="$objNode/@units"/>
       </xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
