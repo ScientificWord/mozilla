@@ -393,8 +393,8 @@ nsresult msiUtils::CreateMathElement(nsIEditor * editor,
     nsAutoString display, block;
     msiEditingAtoms::display->ToString(display);
     msiEditingAtoms::block->ToString(block);
-    if (isDisplay)
-      mathElement->SetAttribute(display, block);
+    // if (isDisplay)
+    //   mathElement->SetAttribute(display, block);
     nsCOMPtr<nsIDOMElement> inputbox;
     res = CreateInputbox(editor, nestInMrow, markCaret, flags, inputbox);
     nsCOMPtr<nsIDOMNode> inputboxNode(do_QueryInterface(inputbox));
