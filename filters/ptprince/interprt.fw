@@ -962,8 +962,6 @@ case CMD_MSISPECIAL: {
  req=\"graphics\" \
  naturalWidth=\"%naturalWidth%\" \
  naturalHeight=\"%naturalHeight%\" \
- // ltx_width=\"%width%\" \
- // ltx_height=\"%height%\" \
  originalSrcUrl=\"%ImageFileFull%\" \
  copiedSrcUrl=\"%ImageFile%\" \
  msi_resize=\"true\" \
