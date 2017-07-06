@@ -463,42 +463,29 @@ function readVideoStartEndControls(bStart)
 function InitImage(wrapperElement, imageElement)
 {
   try {
-    if (gCopiedSrcUrl && gCopiedSrcUrl.length > 0)
-      gDialog.srcInput.value = gCopiedSrcUrl;
-    // We found an element and don't need to insert one
-    //trim off units at end
     var re = /[a-z]*/gi;
     var widthStr = "";
     var heightStr = "";
     var width;
     var height;
+    var pixelWidth, pixelHeight;
+    if (gCopiedSrcUrl && gCopiedSrcUrl.length > 0)
+      gDialog.srcInput.value = gCopiedSrcUrl;
+    // We found an element and don't need to insert one
+    //trim off units at end
     gDialog.frameUnitMenulist.value = wrapperElement.getAttribute("units");
     if (wrapperElement.hasAttribute('width'))
     {
       width = wrapperElement.getAttribute('width');
-      // pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
-      // width = unitRound(width);
+      pixelWidth = Math.round(unitHandler.getValueAs(width,"px"));
     }
-    // if (!width)
-    // {
-    //   widthStr = msiGetHTMLOrCSSStyleValue(gEditorElement, wrapperElement, "width", "width");
-    //   width = unitRound(unitHandler.getValueFromString(widthStr, "px"));
-    //   widthStr = widthStr.replace(re,"");
-    //   pixelWidth = Math.round(Number(widthStr));
-    // }
     if (wrapperElement.hasAttribute('height'))
     {
       height = wrapperElement.getAttribute('height');
+      pixelHeight =  Math.round(unitHandler.getValueAs(height,"px"));
     }
 
     setWidthAndHeight(width, height, null);
-    // else if ((gActualHeight > 0)||(gActualWidth > 0))
-    //   setWidthAndHeight(unitRound(unitHandler.getValueOf(gActualWidth,"px")),
-    //                     unitRound(unitHandler.getValueOf(gActualHeight,"px")), null);
-    // else
-    //   setWidthAndHeight(unitRound(unitHandler.getValueOf(gDefaultWidth,"pt")),
-    //                     unitRound(unitHandler.getValueOf(gDefaultHeight,"pt")), null);
-
     LoadPreviewImage(null);
     // caption and key info comes from frameOverlay
     document.getElementById("captionLocation").value = wrapperElement.getAttribute('captionloc');
@@ -523,7 +510,6 @@ function InitImage(wrapperElement, imageElement)
     var pos = element.getAttribute("pos");
     gDialog.floatList.value=element.getAttribute("floatOption");
 
-    // dialog.border.value       = globalElement.getAttribute("border");
     var bordervalues;
     var bv = msiGetHTMLOrCSSStyleValue(null, element, "border", null);
     var i;
@@ -545,9 +531,9 @@ function InitImage(wrapperElement, imageElement)
     bordervalues.forEach(fillInValue);
     bordervalues.forEach(stripPx);
   }
-catch(e) {
-  dump(e.message);
-}
+  catch(e) {
+    dump(e.message);
+  }
 }
 
 

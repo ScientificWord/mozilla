@@ -16,7 +16,23 @@ var paddingAtt = "padding";
 var borderAtt = "border";
 var widthAtt = "width";
 var heightAtt = "height";
-var metrics = {margin:{}, border: {}, padding: {}};
+var metrics = {margin:{
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0}, 
+  border: {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0}, 
+  padding: {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0
+  }
+};
 var role;
 var gConstrainWidth = 0;
 var gConstrainHeight = 0;
@@ -26,6 +42,7 @@ var gDefaultPlacement = "inline";
 var gDefaultInlineOffset = "";
 var hasNaturalSize;
 var gFrameModeImage;
+var gFrameModeText;
 var gCaptionLoc;
 var editorElement = msiGetActiveEditorElement();
 var editor = msiGetEditor(editorElement);
@@ -829,7 +846,6 @@ function setWidthAndHeight(width, height, event)
 function setContentSize(width, height)
 // width and height are the size of the image in pixels
 {
-ƒ
   scaledWidth = Math.round(scale*width);
   if (scaledWidth === 0) scaledWidth = 40;
 //  gConstrainWidth = scaledWidth;
