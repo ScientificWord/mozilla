@@ -322,10 +322,10 @@
       <menuitem id="helpmenuActivate"
                 label="&helpmenuActivate.label;"
                 observes="cmd_activate"
-                oncommand="openDialog('chrome://prince/content/activateDialog.xul', 'Activate', 'chrome,close,titlebar,modal,resizable');"/>
+                oncommand="openDialog('chrome://prince/content/activateDialog.xul', 'activate', 'chrome,close,titlebar,modal,resizable');"/>
       <menuitem id="helpmenuLicense"
                 label="&helpmenuLicense.label;"
-                oncommand="openDialog('chrome://prince/content/licenseDialog.xul', 'License', 'chrome,close,titlebar,modal,resizable');"/>
+                oncommand="openDialog('chrome://prince/content/licenseDialog.xul', 'license', 'chrome,close,titlebar,modal,resizable');"/>
       <menuseparator id="aboutSeparator"/>
       <menuitem label="&aboutCmd.label;"
                 id="aboutName"
@@ -880,7 +880,7 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
     <menuitem label="&outputHTMLCmd.label;"
            oncommand="msiEditorGetHTML()"/>
     <menuitem label="Execute JavaScript"
-           oncommand='window.openDialog("chrome://prince/content/ExecuteJS.xul","Execute JavaScript",
+           oncommand='window.openDialog("chrome://prince/content/ExecuteJS.xul","executejavascript",
       "chrome,close,titlebar,resizable,modal=false");' />
     <menuseparator />
     <menuitem label="&pasteAsQuotationCmd.label;"
@@ -936,14 +936,14 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
     <menuitem label="Plot Tests"				oncommand="msiTestGraphScript();"/>
     <!--menuseparator/>
     <menuitem label="&Configuration.label;" accesskey="&Configuration.accesskey;"
-            oncommand='window.openDialog("chrome://global/content/config.xul","Configure Prince", "chrome ");'/>
+            oncommand='window.openDialog("chrome://global/content/config.xul","configureprince", "chrome ");'/>
     <menuitem label="&plugins.label;" accesskey="&plugins.accesskey;"
-            oncommand='window.openDialog("chrome://prince/content/plugins.html","Installed plugins", "chrome ");'/>
+            oncommand='window.openDialog("chrome://prince/content/plugins.html","installedplugins", "chrome ");'/>
     <menuitem label="Stop animation"
             oncommand='msiStopAnimation();' />
     <menuitem label="Start animation"
             oncommand='msiStartAnimation();' />
-    <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://prince/content/chamtest.xul","Cham Test",
+    <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://prince/content/chamtest.xul","chamtest",
       "chrome,close,titlebar,resizable,modal=false");' />
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
     <menuitem label="Test XPath Find" oncommand="msiTestSearch();"/ -->

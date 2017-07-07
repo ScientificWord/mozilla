@@ -1354,7 +1354,7 @@ function toOpenWindowByType( inType, uri )
     function newWindowLoaded(event) {
       delete window[uri];
     }
-    window[uri] = window.openDialog(uri, "", "all,dialog=no");
+    window[uri] = window.openDialog(uri, "_blank", "all,dialog=no");
     window[uri].addEventListener("load", newWindowLoaded, false);
   }
 }
