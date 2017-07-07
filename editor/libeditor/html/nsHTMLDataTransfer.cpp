@@ -684,9 +684,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         nsCOMPtr<nsIDOMNode> objNode(do_QueryInterface(objectElt));
         nsCOMPtr<nsIDOMNode> kidNode = GetChildAt(fragmentAsNode, svgIndex);
         nsCOMPtr<nsIDOMNode> ignoreNode;
-//        fragmentAsNode->RemoveChild(kidNode, getter_AddRefs(ignoreNode));
-//        fragmentAsNode->InsertChild(objNode, svgIndex);
-        ApplyGraphicsDefaults( objectElt, PR_FALSE );
+        ApplyGraphicsDefaults( objectElt, NS_LITERAL_STRING("image") );
         fragmentAsNode->ReplaceChild(objNode, kidNode, getter_AddRefs(ignoreNode));
       }
     }
@@ -1507,8 +1505,7 @@ nsHTMLEditor::ConvertLengthStringToPixels(const nsAString& lengthStr, float* pOr
 }
 
 
-nsresult
-nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBool bIsPlot )
+NS_IMETHODIMP nsHTMLEditor::ApplyGraphicsDefaults(nsIDOMElement *frame, const nsAString & frametype)
 {
   nsresult res = NS_OK;
   // Check user preferences
@@ -1524,6 +1521,8 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
   nsCOMPtr<nsIDOMNode> captionElement;
   nsCOMPtr<nsIDOMNode> dummy;
   nsCOMPtr<nsIDOMDocument> doc;
+  PRBool bIsImage = frametype.EqualsLiteral("image") || frametype.EqualsLiteral("textframe");
+  PRBool bIsText = frametype.EqualsLiteral("textframe");
 
 
   // SetAttribute(frame, NS_LITERAL_STRING("xmlns"), NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
@@ -1568,10 +1567,13 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
     SetAttribute(frame, NS_LITERAL_STRING("units"), setUnitString);
 
 
-    prefName = (char *) (!bIsImage ? "swp.graph.usedefaultwidth" : "swp.graphics.usedefaultwidth");
 
+    if (bIsText) prefBool = PR_TRUE; // for text frames, always use pref dimensions
+    else {
+      prefName = (char *) (!bIsImage ? "swp.graph.usedefaultwidth" : "swp.graphics.usedefaultwidth");
+      res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
+    }
 
-    res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
     if (NS_SUCCEEDED(res) && prefBool)
     {
       prefName = (char *) (!bIsImage ? "swp.graph.hsize" : "swp.graphics.hsize");
@@ -1579,13 +1581,16 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
       if (NS_SUCCEEDED(res))
       {
         CopyASCIItoUTF16(prefString, setPrefString);
-        SetAttribute(frame, NS_LITERAL_STRING("imageWidth"), setPrefString);
         SetAttribute(frame, NS_LITERAL_STRING("width"), setPrefString);
-        SetAttribute(frame, NS_LITERAL_STRING("ltx_width"), setPrefString);
+        frame->RemoveAttribute(NS_LITERAL_STRING("imageWidth"));
+        frame->RemoveAttribute(NS_LITERAL_STRING("ltx_width"));
       }
     }
-    prefName = (char *) (!bIsImage ? "swp.graph.usedefaultheight" : "swp.graphics.usedefaultheight");
-    res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
+    if (bIsText) prefBool = PR_TRUE; // for text frames, always use pref dimensions
+    else {
+      prefName = (char *) (!bIsImage ? "swp.graph.usedefaultheight" : "swp.graphics.usedefaultheight");
+      res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
+    }
     if (NS_SUCCEEDED(res) && prefBool)
     {
       prefName = (char *) (!bIsImage ? "swp.graph.vsize" : "swp.graphics.vsize");
@@ -1594,9 +1599,9 @@ nsHTMLEditor::ApplyGraphicsDefaults( nsIDOMElement* frame, PRBool bIsImage, PRBo
       if (NS_SUCCEEDED(res))
       {
         CopyASCIItoUTF16(prefString, setPrefString);
-        SetAttribute(frame, NS_LITERAL_STRING("imageHeight"), setPrefString);
         SetAttribute(frame, NS_LITERAL_STRING("height"), setPrefString);
-        SetAttribute(frame, NS_LITERAL_STRING("ltx_height"), setPrefString);
+        frame->RemoveAttribute(NS_LITERAL_STRING("ltx_height"));
+        frame->RemoveAttribute(NS_LITERAL_STRING("imageHeight"));
       }
     }
     // Margins
@@ -1768,6 +1773,7 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
   }
   // find topmargin, sidemargin
   res = frame->GetAttribute(sidemargin, sidemarginStr);
+  res = frame->GetAttribute(topmargin, topmarginStr);
   if (topmarginStr.Length() == 0) topmarginStr = zero;
   if (sidemarginStr.Length() == 0) sidemarginStr = zero;
   if (posStr.EqualsLiteral("center") || posStr.EqualsLiteral("floating") || posStr.EqualsLiteral("displayed")) {
@@ -1818,12 +1824,12 @@ nsHTMLEditor::GetGraphicsAttributesFromFrame(nsIDOMElement *frame, nsIDOMElement
   // height and width on the frame are given in the units specified.
   // height and width on the object are given in CSS pixels; we can use other units in the style
   nsresult res = NS_OK;
-  nsAutoString width, height, ltx_width, ltx_height, naturalWidth, naturalHeight,
+  nsAutoString width, height, naturalWidth, naturalHeight,
     originalSrcUrl, aspect, units;
   nsAutoString style(EmptyString());
   NS_NAMED_LITERAL_STRING(semi, "; ");
   object->SetAttribute(NS_LITERAL_STRING("_moz-resizing"), NS_LITERAL_STRING("true"));
-  object->SetAttribute(NS_LITERAL_STRING("msi-resize"), NS_LITERAL_STRING("true"));
+  object->SetAttribute(NS_LITERAL_STRING("msi_resize"), NS_LITERAL_STRING("true"));
   res = frame->GetAttribute(NS_LITERAL_STRING("units"), units);
   res = frame->GetAttribute(NS_LITERAL_STRING("height"),height);
   res = frame->GetAttribute(NS_LITERAL_STRING("width"),width);
@@ -1832,13 +1838,12 @@ nsHTMLEditor::GetGraphicsAttributesFromFrame(nsIDOMElement *frame, nsIDOMElement
   if (height.Length() > 0) {
      style += NS_LITERAL_STRING("height: ") + height + units + semi;
 //     res = object->SetAttribute(NS_LITERAL_STRING("height"), height);
-     res = frame->SetAttribute(NS_LITERAL_STRING("ltx_height"), height);
+     res = frame->SetAttribute(NS_LITERAL_STRING("height"), height);
      res = frame->SetAttribute(NS_LITERAL_STRING("naturalheight"), height);
    }
    if (width.Length() > 0) {
      style += NS_LITERAL_STRING("width: ") + width + units + semi;
 //     res = frame->SetAttribute(NS_LITERAL_STRING("width"), width);
-     res = frame->SetAttribute(NS_LITERAL_STRING("ltx_width"), width);
      res = frame->SetAttribute(NS_LITERAL_STRING("naturalwidth"), width);
    }
   res = object->SetAttribute(NS_LITERAL_STRING("style"), style);
@@ -1846,207 +1851,207 @@ nsHTMLEditor::GetGraphicsAttributesFromFrame(nsIDOMElement *frame, nsIDOMElement
   return res; 
 }
 
-nsresult
-nsHTMLEditor::GetGraphicsDefaultsAsString( nsAString& retStr, PRBool bIsPlot )
-{
-  nsresult res = NS_OK;
-  // Check user preferences
-  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &res);
+// nsresult
+// nsHTMLEditor::GetGraphicsDefaultsAsString( nsAString& retStr, PRBool bIsPlot )
+// {
+//   nsresult res = NS_OK;
+//   // Check user preferences
+//   nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &res);
 
-  nsAutoString attribStr, styleStr, floatPlacement;
-  nsXPIDLCString prefString, unitString;
-  nsAutoString setPrefString, setUnitString;
-  PRBool prefBool = PR_FALSE;
-  float lengthVal, origVal;
+//   nsAutoString attribStr, styleStr, floatPlacement;
+//   nsXPIDLCString prefString, unitString;
+//   nsAutoString setPrefString, setUnitString;
+//   PRBool prefBool = PR_FALSE;
+//   float lengthVal, origVal;
 
-  attribStr = NS_LITERAL_STRING("xmlns=\"http://www.w3.org/1999/xhtml\"");
-  if (NS_SUCCEEDED(res) && prefBranch)
-  {
-    if (bIsPlot)
-    {
-      res = prefBranch->GetCharPref("swp.graph.placement", getter_Copies(prefString));
-      if (NS_SUCCEEDED(res))
-        CopyASCIItoUTF16(prefString, setPrefString);
-      else
-        setPrefString = NS_LITERAL_STRING("inline");
-      attribStr.AppendLiteral(" pos=\"");
-      attribStr.Append(setPrefString);
-      attribStr.Append(PRUnichar('\"'));
+//   attribStr = NS_LITERAL_STRING("xmlns=\"http://www.w3.org/1999/xhtml\"");
+//   if (NS_SUCCEEDED(res) && prefBranch)
+//   {
+//     if (bIsPlot)
+//     {
+//       res = prefBranch->GetCharPref("swp.graph.placement", getter_Copies(prefString));
+//       if (NS_SUCCEEDED(res))
+//         CopyASCIItoUTF16(prefString, setPrefString);
+//       else
+//         setPrefString = NS_LITERAL_STRING("inline");
+//       attribStr.AppendLiteral(" pos=\"");
+//       attribStr.Append(setPrefString);
+//       attribStr.Append(PRUnichar('\"'));
 
-      res = prefBranch->GetBoolPref("swp.graph.floatLocation.forceHere", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-        floatPlacement.Append(PRUnichar('H'));
-      res = prefBranch->GetBoolPref("swp.graph.floatLocation.here", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-        floatPlacement.Append(PRUnichar('h'));
-      res = prefBranch->GetBoolPref("swp.graph.floatLocation.pageFloats", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-        floatPlacement.Append(PRUnichar('p'));
-      res = prefBranch->GetBoolPref("swp.graph.floatLocation.topPage", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-        floatPlacement.Append(PRUnichar('t'));
-      res = prefBranch->GetBoolPref("swp.graph.floatLocation.bottomPage", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-        floatPlacement.Append(PRUnichar('b'));
-      attribStr.AppendLiteral(" placeLocation=\"");
-      attribStr.Append(floatPlacement);
-      attribStr.Append(PRUnichar('\"'));
+//       res = prefBranch->GetBoolPref("swp.graph.floatLocation.forceHere", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//         floatPlacement.Append(PRUnichar('H'));
+//       res = prefBranch->GetBoolPref("swp.graph.floatLocation.here", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//         floatPlacement.Append(PRUnichar('h'));
+//       res = prefBranch->GetBoolPref("swp.graph.floatLocation.pageFloats", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//         floatPlacement.Append(PRUnichar('p'));
+//       res = prefBranch->GetBoolPref("swp.graph.floatLocation.topPage", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//         floatPlacement.Append(PRUnichar('t'));
+//       res = prefBranch->GetBoolPref("swp.graph.floatLocation.bottomPage", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//         floatPlacement.Append(PRUnichar('b'));
+//       attribStr.AppendLiteral(" placeLocation=\"");
+//       attribStr.Append(floatPlacement);
+//       attribStr.Append(PRUnichar('\"'));
 
-      res = prefBranch->GetCharPref("swp.graph.floatPlacement", getter_Copies(prefString));
-      if (NS_SUCCEEDED(res))
-      {
-        CopyASCIItoUTF16(prefString, setPrefString);
-        attribStr.AppendLiteral("placement=\"");
-        attribStr.Append(setPrefString);
-        attribStr.Append(PRUnichar('\"'));
-      }
+//       res = prefBranch->GetCharPref("swp.graph.floatPlacement", getter_Copies(prefString));
+//       if (NS_SUCCEEDED(res))
+//       {
+//         CopyASCIItoUTF16(prefString, setPrefString);
+//         attribStr.AppendLiteral("placement=\"");
+//         attribStr.Append(setPrefString);
+//         attribStr.Append(PRUnichar('\"'));
+//       }
 
-      res = prefBranch->GetCharPref("swp.graph.defaultUnits", getter_Copies(unitString));
-      if (NS_SUCCEEDED(res))
-        CopyASCIItoUTF16(unitString, setUnitString);
-      else
-        setUnitString = NS_LITERAL_STRING("in");
-      attribStr.AppendLiteral(" units=\"");
-      attribStr.Append(setUnitString);
-      attribStr.Append(PRUnichar('\"'));
+//       res = prefBranch->GetCharPref("swp.graph.defaultUnits", getter_Copies(unitString));
+//       if (NS_SUCCEEDED(res))
+//         CopyASCIItoUTF16(unitString, setUnitString);
+//       else
+//         setUnitString = NS_LITERAL_STRING("in");
+//       attribStr.AppendLiteral(" units=\"");
+//       attribStr.Append(setUnitString);
+//       attribStr.Append(PRUnichar('\"'));
 
-      res = prefBranch->GetCharPref("swp.graph.HSize", getter_Copies(prefString));
-      if (NS_SUCCEEDED(res))
-      {
-        CopyASCIItoUTF16(prefString, setPrefString);
-        lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
-        attribStr.AppendLiteral(" imageWidth=\"");
-        attribStr.AppendFloat(origVal);
-        attribStr.Append(PRUnichar('\"'));
-        attribStr.AppendLiteral(" width=\"");
-        attribStr.AppendFloat(lengthVal);
-        attribStr.Append(PRUnichar('\"'));
-      }
+//       res = prefBranch->GetCharPref("swp.graph.HSize", getter_Copies(prefString));
+//       if (NS_SUCCEEDED(res))
+//       {
+//         CopyASCIItoUTF16(prefString, setPrefString);
+//         lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+//         attribStr.AppendLiteral(" imageWidth=\"");
+//         attribStr.AppendFloat(origVal);
+//         attribStr.Append(PRUnichar('\"'));
+//         attribStr.AppendLiteral(" width=\"");
+//         attribStr.AppendFloat(lengthVal);
+//         attribStr.Append(PRUnichar('\"'));
+//       }
 
-      res = prefBranch->GetCharPref("swp.graph.VSize", getter_Copies(prefString));
-      if (NS_SUCCEEDED(res))
-      {
-        CopyASCIItoUTF16(prefString, setPrefString);
-        lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
-        attribStr.AppendLiteral(" imageHeight=\"");
-        attribStr.AppendFloat(origVal);
-        attribStr.Append(PRUnichar('\"'));
-        attribStr.AppendLiteral(" height=\"");
-        attribStr.AppendFloat(lengthVal);
-        attribStr.Append(PRUnichar('\"'));
-      }
-    }
-    else
-    {
-      res = prefBranch->GetCharPref("swp.defaultGraphicsPlacement", getter_Copies(prefString));
-      if (NS_SUCCEEDED(res))
-        CopyASCIItoUTF16(prefString, setPrefString);
-      else
-        setPrefString = NS_LITERAL_STRING("inline");
-      attribStr.AppendLiteral(" pos=\"");
-      attribStr.Append(setPrefString);
-      attribStr.Append(PRUnichar('\"'));
+//       res = prefBranch->GetCharPref("swp.graph.VSize", getter_Copies(prefString));
+//       if (NS_SUCCEEDED(res))
+//       {
+//         CopyASCIItoUTF16(prefString, setPrefString);
+//         lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+//         attribStr.AppendLiteral(" imageHeight=\"");
+//         attribStr.AppendFloat(origVal);
+//         attribStr.Append(PRUnichar('\"'));
+//         attribStr.AppendLiteral(" height=\"");
+//         attribStr.AppendFloat(lengthVal);
+//         attribStr.Append(PRUnichar('\"'));
+//       }
+//     }
+//     else
+//     {
+//       res = prefBranch->GetCharPref("swp.defaultGraphicsPlacement", getter_Copies(prefString));
+//       if (NS_SUCCEEDED(res))
+//         CopyASCIItoUTF16(prefString, setPrefString);
+//       else
+//         setPrefString = NS_LITERAL_STRING("inline");
+//       attribStr.AppendLiteral(" pos=\"");
+//       attribStr.Append(setPrefString);
+//       attribStr.Append(PRUnichar('\"'));
 
-      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.forceHere", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-        floatPlacement.Append(PRUnichar('H'));
-      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.here", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-        floatPlacement.Append(PRUnichar('h'));
-      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.pageFloats", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-        floatPlacement.Append(PRUnichar('p'));
-      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.topPage", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-        floatPlacement.Append(PRUnichar('t'));
-      res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.bottomPage", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-        floatPlacement.Append(PRUnichar('b'));
-      attribStr.AppendLiteral(" placeLocation=\"");
-      attribStr.Append(floatPlacement);
-      attribStr.Append(PRUnichar('\"'));
+//       res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.forceHere", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//         floatPlacement.Append(PRUnichar('H'));
+//       res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.here", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//         floatPlacement.Append(PRUnichar('h'));
+//       res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.pageFloats", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//         floatPlacement.Append(PRUnichar('p'));
+//       res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.topPage", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//         floatPlacement.Append(PRUnichar('t'));
+//       res = prefBranch->GetBoolPref("swp.defaultGraphicsFloatLocation.bottomPage", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//         floatPlacement.Append(PRUnichar('b'));
+//       attribStr.AppendLiteral(" placeLocation=\"");
+//       attribStr.Append(floatPlacement);
+//       attribStr.Append(PRUnichar('\"'));
 
-      res = prefBranch->GetCharPref("swp.defaultGraphicsFloatPlacement", getter_Copies(prefString));
-      if (NS_SUCCEEDED(res))
-      {
-        CopyASCIItoUTF16(prefString, setPrefString);
-        attribStr.AppendLiteral(" placement=\"");
-        attribStr.Append(setPrefString);
-        attribStr.Append(PRUnichar('\"'));
-      }
+//       res = prefBranch->GetCharPref("swp.defaultGraphicsFloatPlacement", getter_Copies(prefString));
+//       if (NS_SUCCEEDED(res))
+//       {
+//         CopyASCIItoUTF16(prefString, setPrefString);
+//         attribStr.AppendLiteral(" placement=\"");
+//         attribStr.Append(setPrefString);
+//         attribStr.Append(PRUnichar('\"'));
+//       }
 
-      res = prefBranch->GetCharPref("swp.defaultGraphicsSizeUnits", getter_Copies(unitString));
-      if (NS_SUCCEEDED(res))
-        CopyASCIItoUTF16(unitString, setUnitString);
-      else
-        setUnitString = NS_LITERAL_STRING("in");
-      attribStr.AppendLiteral(" units=\"");
-      attribStr.Append(setUnitString);
-      attribStr.Append(PRUnichar('\"'));
+//       res = prefBranch->GetCharPref("swp.defaultGraphicsSizeUnits", getter_Copies(unitString));
+//       if (NS_SUCCEEDED(res))
+//         CopyASCIItoUTF16(unitString, setUnitString);
+//       else
+//         setUnitString = NS_LITERAL_STRING("in");
+//       attribStr.AppendLiteral(" units=\"");
+//       attribStr.Append(setUnitString);
+//       attribStr.Append(PRUnichar('\"'));
 
-      res = prefBranch->GetCharPref("swp.defaultGraphicsInlineOffset", getter_Copies(prefString));
-      if (NS_SUCCEEDED(res))
-      {
-        CopyASCIItoUTF16(prefString, setPrefString);
-        lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
-        if (lengthVal)
-        {
-          attribStr.AppendLiteral(" inlineOffset=\"");
-          attribStr.AppendFloat(origVal);
-          attribStr.Append(PRUnichar('\"'));
-          styleStr.AppendLiteral("position: relative; bottom: ");
-          if (lengthVal > 0)
-            styleStr.Append(PRUnichar('-'));
-          styleStr.AppendFloat(lengthVal);
-          styleStr.Append(PRUnichar(';'));
-        }
-      }
+//       res = prefBranch->GetCharPref("swp.defaultGraphicsInlineOffset", getter_Copies(prefString));
+//       if (NS_SUCCEEDED(res))
+//       {
+//         CopyASCIItoUTF16(prefString, setPrefString);
+//         lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+//         if (lengthVal)
+//         {
+//           attribStr.AppendLiteral(" inlineOffset=\"");
+//           attribStr.AppendFloat(origVal);
+//           attribStr.Append(PRUnichar('\"'));
+//           styleStr.AppendLiteral("position: relative; bottom: ");
+//           if (lengthVal > 0)
+//             styleStr.Append(PRUnichar('-'));
+//           styleStr.AppendFloat(lengthVal);
+//           styleStr.Append(PRUnichar(';'));
+//         }
+//       }
 
-      res = prefBranch->GetBoolPref("swp.graphicsUseDefaultWidth", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-      {
-        res = prefBranch->GetCharPref("swp.defaultGraphicsHSize", getter_Copies(prefString));
-        if (NS_SUCCEEDED(res))
-        {
-          CopyASCIItoUTF16(prefString, setPrefString);
-          lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
-          attribStr.AppendLiteral(" imageWidth=\"");
-          attribStr.AppendFloat(origVal);
-          attribStr.Append(PRUnichar('\"'));
+//       res = prefBranch->GetBoolPref("swp.graphicsUseDefaultWidth", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//       {
+//         res = prefBranch->GetCharPref("swp.defaultGraphicsHSize", getter_Copies(prefString));
+//         if (NS_SUCCEEDED(res))
+//         {
+//           CopyASCIItoUTF16(prefString, setPrefString);
+//           lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+//           attribStr.AppendLiteral(" imageWidth=\"");
+//           attribStr.AppendFloat(origVal);
+//           attribStr.Append(PRUnichar('\"'));
 
-          attribStr.AppendLiteral("width");
-          attribStr.AppendFloat(lengthVal);
-          attribStr.Append(PRUnichar('\"'));
-        }
-      }
-      res = prefBranch->GetBoolPref("swp.graphicsUseDefaultHeight", &prefBool);
-      if (NS_SUCCEEDED(res) && prefBool)
-      {
-        res = prefBranch->GetCharPref("swp.defaultGraphicsVSize", getter_Copies(prefString));
-        if (NS_SUCCEEDED(res))
-        {
-          CopyASCIItoUTF16(prefString, setPrefString);
-          lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
-          attribStr.AppendLiteral(" imageHeight=\"");
-          attribStr.AppendFloat(origVal);
-          attribStr.Append(PRUnichar('\"'));
-          attribStr.AppendLiteral(" height=\"");
-          attribStr.AppendFloat(lengthVal);
-          attribStr.Append(PRUnichar('\"'));
-        }
-      }
-    }
-  }
+//           attribStr.AppendLiteral("width");
+//           attribStr.AppendFloat(lengthVal);
+//           attribStr.Append(PRUnichar('\"'));
+//         }
+//       }
+//       res = prefBranch->GetBoolPref("swp.graphicsUseDefaultHeight", &prefBool);
+//       if (NS_SUCCEEDED(res) && prefBool)
+//       {
+//         res = prefBranch->GetCharPref("swp.defaultGraphicsVSize", getter_Copies(prefString));
+//         if (NS_SUCCEEDED(res))
+//         {
+//           CopyASCIItoUTF16(prefString, setPrefString);
+//           lengthVal = ConvertLengthStringToPixels(setPrefString, &origVal);
+//           attribStr.AppendLiteral(" imageHeight=\"");
+//           attribStr.AppendFloat(origVal);
+//           attribStr.Append(PRUnichar('\"'));
+//           attribStr.AppendLiteral(" height=\"");
+//           attribStr.AppendFloat(lengthVal);
+//           attribStr.Append(PRUnichar('\"'));
+//         }
+//       }
+//     }
+//   }
 
-  retStr = attribStr;
-  if (styleStr.Length() > 0)
-  {
-    retStr.AppendLiteral(" style=\"");
-    retStr.Append(styleStr);
-    retStr.Append(PRUnichar('\"'));
-  }
-  return res;
-}
+//   retStr = attribStr;
+//   if (styleStr.Length() > 0)
+//   {
+//     retStr.AppendLiteral(" style=\"");
+//     retStr.Append(styleStr);
+//     retStr.Append(PRUnichar('\"'));
+//   }
+//   return res;
+// }
 
 PRBool StructureHasStructureAncestor( nsIDOMNode * node, msiITagListManager * pTlm)
 {
@@ -5198,16 +5203,16 @@ nsHTMLEditor::CreateFrameWithDefaults(const nsAString & frametype, PRBool insert
   nsresult rv = NS_OK;
   if (insertImmediately) {
     CreateNode(NS_LITERAL_STRING("msiframe"), parent, offset, getter_AddRefs(framenode));
+    frame = do_QueryInterface(framenode);
   } else {
     GetDocument(getter_AddRefs(domDoc));
     domDoc->CreateElement(NS_LITERAL_STRING("msiframe"),getter_AddRefs(frame));
   }
-  frame = do_QueryInterface(framenode);
   if (!frame) return NS_ERROR_FAILURE;
   frame->SetAttribute(NS_LITERAL_STRING("frametype"), frametype);
   frame->SetAttribute(NS_LITERAL_STRING("req"), NS_LITERAL_STRING("wrapfig"));
-  ApplyGraphicsDefaults( frame, (frametype.EqualsLiteral("image")), (frametype.EqualsLiteral("plot")));
-  frame->SetAttribute(NS_LITERAL_STRING("aspect"), NS_LITERAL_STRING("true"));
+  ApplyGraphicsDefaults( frame, frametype );
+  frame->SetAttribute(NS_LITERAL_STRING("aspect"), frametype.EqualsLiteral("textframe") ? NS_LITERAL_STRING("true") : NS_LITERAL_STRING("false"));
   frame->SetAttribute(NS_LITERAL_STRING("textalignment"), NS_LITERAL_STRING("left"));
   *_retval = frame;
   return rv;

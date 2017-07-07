@@ -173,7 +173,7 @@ function openFontSettingDlg()
                       italic : graph.getValue("AxisFontItalic"),
                       color : graph.getValue("AxisFontColor")};
 //  alert("Plot Font dialog not implemented!");
-  openDialog('chrome://prince/content/plotFontSettings.xul', 'Axis Font Settings', 'chrome,close,titlebar,modal,resizable', fontObj, fontDefaults);
+  openDialog('chrome://prince/content/plotFontSettings.xul', 'axisfontsettings', 'chrome,close,titlebar,modal,resizable', fontObj, fontDefaults);
   if (!fontObj.Canceled)
   {
     for (var key in attrMap)
