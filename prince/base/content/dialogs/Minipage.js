@@ -1,6 +1,7 @@
 var frmElement = {};
 var newElement = true;
 var gd;
+var gDialog;
 var editor;
 var msiframe;
 var isNewNode;
@@ -24,12 +25,23 @@ function startUp()
       return;
     }
     msiframe = null;
-    if (window.arguments.length > 0) msiframe = window.arguments[0];
-    isNewNode = !(msiframe);
-    gd = new Object();
-    
-    gd = initFrameTab(gd, msiframe, isNewNode, null);
-    setHasNaturalSize(false);
+    var i = 0;
+    while (i < window.arguments.length) {
+      msiframe = window.arguments[i];
+      if (msiframe !== null  && msiframe.nodeName === 'msiframe') break;
+      i ++ ;
+    }
+    isNewNode = !(msiframe) || msiframe.nodeName !== 'msiframe';
+    if (isNewNode) {
+      msiframe = editor.createFrameWithDefaults('textframe', false, null, 0);
+      editor.getFrameStyleFromAttributes(msiframe);
+    }
+    gDialog = {};
+
+    gd = initFrameTab(gDialog, msiframe, false, null);
+    gSizeState.selectCustomSize();
+    gSizeState.setPreserveAspectRatio(false);
+    document.getElementById('sizeRadio').hidden = true;
   // we don't want heavy-weight frames inline
     document.getElementById('inline').hidden=true;
   //  initFrameSizePanel(); // needed when the user can set the size
@@ -65,6 +77,7 @@ function onOK() {
 		}
 	}
   setFrameAttributes(msiframe, msiframe, editor);
+  msiframe.setAttribute('frametype', 'textframe');
 	editor.endTransaction();
 //	if (isNewNode)
 //	{

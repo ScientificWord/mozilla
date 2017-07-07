@@ -911,9 +911,6 @@ protected:
 
   float    ConvertLengthStringToPixels(const nsAString& lengthStr, float* pOriginal);
 
-  nsresult ApplyGraphicsDefaults( nsIDOMElement* graphic, PRBool bIsGraph=PR_FALSE, PRBool bIsPlot=PR_FALSE );
-  nsresult GetGraphicsDefaultsAsString( nsAString& retStr, PRBool bIsPlot=PR_FALSE );
-
   nsCOMPtr<nsIDOMElement> FindResizableElement(nsCOMPtr<nsIDOMElement> inElement);  //in nsHTMLAnonymousUtils.cpp
 
 
