@@ -502,39 +502,40 @@ var msiResizeListener = {
 
   resizeGraphic: function(anElement, oldWidth, oldHeight, newWidth, newHeight) {
     // When this is called, the height and width style attributes for anElement have already been set.
-    // We take care of a possible surrounding msiframe, and attributes other than style,such as ltx_width and
-    // ltx_height
+    // We take care of a possible surrounding msiframe
+    // The input parameters are all in pixels.
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     var unitHandler = new UnitHandler(editor);
     var frame = anElement.parentNode;
     var graphspec;
     var theUnits = anElement.getAttribute("units") || frame.getAttribute("units");
-    var pixelsPerUnit;
-    var elemWidth = anElement.getAttribute("ltx_width");
-    var elemHeight = anElement.getAttribute("ltx_height");
+    // var pixelsPerUnit;
+    if (!theUnits) theUnits = 'px';
+    // var elemWidth = anElement.getAttribute("width");
+    // var elemHeight = anElement.getAttribute("height");
     editor.beginTransaction();
-    unitHandler.initCurrentUnit('px'); //the unit for resize callbacks
-    if (!(theUnits || elemWidth || elemHeight)) return;
-    pixelsPerUnit = unitHandler.getValueOf(1, theUnits);
-    anElement.setAttribute('ltx_width', newWidth / pixelsPerUnit);
-    anElement.setAttribute('ltx_height', newHeight / pixelsPerUnit);
+    // unitHandler.initCurrentUnit('px'); //the unit for resize callbacks
+    // if (!(theUnits || elemWidth || elemHeight)) return;
+    // pixelsPerUnit = unitHandler.getValueOf(1, theUnits);
+    // anElement.setAttribute('width', newWidth / pixelsPerUnit);
+    // anElement.setAttribute('height', newHeight / pixelsPerUnit);
 
     // Do we also set width and height attributes, or imageWidth and imageHeight attributes
 
     if (frame.nodeName === 'msiframe') {
       theUnits = frame.getAttribute("units");
       unitHandler.initCurrentUnit(theUnits);
-      frame.setAttribute('width', unitHandler.getValueOf(newWidth, 'px'));
-      setStyleAttributeOnNode(frame, 'width', newWidth + 'px');
-      frame.setAttribute('height', unitHandler.getValueOf(newHeight, 'px'));
-      setStyleAttributeOnNode(frame, 'height', newHeight + 'px');
+      frame.setAttribute('width', unitHandler.getValueOf(newWidth,'px'));
+      setStyleAttributeOnNode(frame, 'width', unitHandler.getValueOf(newWidth,'px') + theUnits);
+      frame.setAttribute('height', unitHandler.getValueOf(newHeight,'px'));
+      setStyleAttributeOnNode(frame, 'height', unitHandler.getValueOf(newHeight,'px') + theUnits);
     }
     if (frame.parentNode.nodeName === 'graph' && frame.parentNode.firstChild.nodeName ===
       'graphSpec') {
       graphspec = frame.parentNode.firstChild;
       graphspec.setAttribute('Width', unitHandler.getValueOf(newWidth, "px"));
-      graphspec.setAttribute('Height', unitHandler.getValueAs(newHeight, "px"));
+      graphspec.setAttribute('Height', unitHandler.getValueOf(newHeight, "px"));
       var DOMGraph = frame.parentNode;
       if (DOMGraph.nodeName !== "graph") {
         return;
@@ -887,19 +888,19 @@ var license_timercallback = {
     if (!licenseWarningGiven && (editorElement.id === 'content-frame')) {
       licenseStatus = licenseTimeRemaining();
       if (licenseStatus === "unlicensed" ) {
-        openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+        openDialog('chrome://prince/content/licensestatus.xul', 'licensestatus',
           'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
       } else if (licenseStatus !== "permanent" && elapsed > day) {
         // licenseStatus should be a number
         daysleft = Number(licenseStatus);
         if (!isNaN(daysleft)) {
           if (daysleft <= 5 && daysleft >= 0) {
-            openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+            openDialog('chrome://prince/content/licensestatus.xul', 'licensestatus',
               'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', true, daysleft
             );
             prefs.setCharPref("swp.lastexpirationwarning", Number(now).toString(10));
           } else if (daysleft < 0) {
-            openDialog('chrome://prince/content/licensestatus.xul', 'License status',
+            openDialog('chrome://prince/content/licensestatus.xul', 'licensestatus',
               'chrome,close,titlebar,resizable,alwaysRaised,centerscreen', false, 0);
           }
         }
@@ -2238,6 +2239,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave) {
     var htmlurlstring = msiGetEditorURL(editorElement);
     var sciurlstring = msiFindOriginalDocname(htmlurlstring);
     var fileURL = msiURIFromString(sciurlstring);
+    if (!fileURL.schemeIs('file')) return false;
     var file = msiFileFromFileURL(fileURL);
     var scifileExists = file.exists();
     var prefs = GetPrefs();
@@ -10632,7 +10634,7 @@ function OpenExtensions(aOpenMode) {
   if (needToOpen) {
     const EMURL = "chrome://mozapps/content/extensions/extensions.xul?type=" + aOpenMode;
     const EMFEATURES = "chrome,dialog=no,resizable";
-    window.openDialog(EMURL, "", EMFEATURES);
+    window.openDialog(EMURL, "extensions", EMFEATURES);
   }
 }
 
@@ -10755,7 +10757,7 @@ function openHTMLField(node) {
 
 function openGraphDialog(tagname, node, editorElement) {
   // non-modal dialog, the return is immediate
-  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "Plot Dialog",
+  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "plotdialog",
     "chrome,close,resizable,titlebar,dependent,alwaysraised",
     editorElement, "cmd_objectProperties", node);
   // why find it again???  var editorElement = msiGetActiveEditorElement();

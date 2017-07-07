@@ -1210,10 +1210,14 @@ function msiGetUpdatableItemContainers(commandID, editorElement) {
   return returnList;
 }
 function msiIsDocumentEditable(editorElement) {
+  var editor;
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   try {
-    return msiGetEditor(editorElement).isDocumentEditable;
+    if (editorElement) editor = msiGetEditor(editorElement);
+    if (editor) {
+      return editor.isDocumentEditable;
+    }
   } catch (e) {
     throw new MsiException('Error in msiIsDocumentEditable', e);
   }
