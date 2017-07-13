@@ -103,17 +103,18 @@ SizeState.prototype = {
     // now for the values
     if (this.dialog.unitList) this.dialog.unitList.value = this.sizeUnit;
     if (this.dialog.frameWidthInput) {
-      this.dialog.frameWidthInput.value = this.isCustomSize ? this.width : this.actualSize.width;
-    }
-    if (this.dialog.frameHeightInput) this.dialog.frameHeightInput.value = this.isCustomSize ? this.height : this.actualSize.height;
-    if (this.autoWidth) {
-      this.dialog.autoDims.selectedItem = this.dialog.autoWidth;
-    }
-    else {
-      if (this.dialog.autoDims) this.dialog.autoDims.selectedItem = this.dialog.autoHeight;
-    }
+      this.dialog.frameWidthInput.value = this.width;
+    } 
+    if (this.dialog.frameHeightInput) this.dialog.frameHeightInput.value =  this.height;
+    // if (this.autoWidth) {
+    //   this.dialog.autoDims.selectedItem = this.dialog.autoWidth;
+    // }
+    // else {
+    //   if (this.dialog.autoDims) this.dialog.autoDims.selectedItem = this.dialog.autoHeight;
+    // }
     if (this.dialog.constrainCheckbox) this.dialog.constrainCheckbox.checked = this.preserveAspectRatio;
-    if (this.dialog.sizeRadio) this.dialog.sizeRadio.value = this.isCustomSize?"custom":"actual";
+    if (this.dialog.sizeRadio) this.dialog.sizeRadio.value = (this.isCustomSize)?"custom":"actual";
+    if (this.dialog.sizeRadio) this.dialog.sizeRadio.value = (this.isCustomSize)?"custom":"actual";
   },
 
   computeDerivedQuantities: function() {
@@ -176,6 +177,8 @@ function setFrameSizeFromExisting(dg, wrapperNode)
   var padding = 0;
   var width;
   var height;
+  var actualwidth;
+  var actualheight;
   var aspectRatio;
   var objectnode;
   if (!wrapperNode) return;
@@ -189,16 +192,16 @@ function setFrameSizeFromExisting(dg, wrapperNode)
     msidump("gSizeState.height: "+gSizeState.height);
     gSizeState.preserveAspectRatio = (wrapperNode.getAttribute("aspect") === "true");
     msidump("gSizeState.preserveAspectRatio: "+gSizeState.preserveAspectRatio);
-    width = frameUnitHandler.getValueOf(wrapperNode.getAttribute("naturalwidth"), gSizeState.sizeUnit);
-    msidump("width: "+width);
-    height = frameUnitHandler.getValueOf(wrapperNode.getAttribute("naturalheight"), gSizeState.sizeUnit);
-    msidump("height: "+height);
-    if (Number(height) > 0) aspectRatio = width/height;
+    actualwidth = frameUnitHandler.getValueOf(wrapperNode.getAttribute("naturalwidth"), gSizeState.sizeUnit);
+    msidump("naturalwidth: "+actualwidth);
+    actualheight = frameUnitHandler.getValueOf(wrapperNode.getAttribute("naturalheight"), gSizeState.sizeUnit);
+    msidump("naturalheight: "+actualheight);
+    if (Number(actualheight) > 0) aspectRatio = actualwidth/actualheight;
     gSizeState.actualSize.aspectRatio = aspectRatio;
     msidump("gSizeState.actualSize.aspectRatio: "+gSizeState.actualSize.aspectRatio);
-    gSizeState.actualSize.width = width;
+    gSizeState.actualSize.width = actualwidth;
     msidump("gSizeState.actualSize.width: "+gSizeState.actualSize.width);
-    gSizeState.actualSize.height = height;  
+    gSizeState.actualSize.height = actualheight;  
     msidump("gSizeState.actualSize.height: "+gSizeState.actualSize.height);
 
     gSizeState.update(dg);
@@ -937,177 +940,191 @@ this is the case for images in an msiframe
   var rowCountObj = { value: 0 };
   var colCountObj = { value: 0 };
   var editorElement;
+  var widthInPx;
+  var heightInPx;
 
-  if (editor == null) {
-    editorElement = msiGetParentEditorElementForDialog(window);
-    editor = msiGetEditor(editorElement);
+  try {  
+    if (editor == null) {
+      editorElement = msiGetParentEditorElementForDialog(window);
+      editor = msiGetEditor(editorElement);
+    }
 
-  }
+    msiEditorEnsureElementAttribute(frameNode, "units",gSizeState.sizeUnit, editor);
 
-  msiEditorEnsureElementAttribute(frameNode, "units",gSizeState.sizeUnit, editor);
+    msiEditorEnsureElementAttribute(contentsNode, "msi_resize","true", editor);
+    if (Dg.rotationList) {
+      rotation = Dg.rotationList.value;
+      if (rotation ==="rot0")
+      {
+        msiEditorEnsureElementAttribute(contentsNode, "rotation", null, editor);
+         //this will remove the "rotation" attribute
+      }
+      else
+      {
+        msiEditorEnsureElementAttribute(contentsNode, "rotation", rotation, editor);
+      }
+    }
+    msiRequirePackage(Dg.editorElement, "ragged2e", null);
 
-  msiEditorEnsureElementAttribute(contentsNode, "msi_resize","true", editor);
-  if (Dg.rotationList) {
-    rotation = Dg.rotationList.value;
-    if (rotation ==="rot0")
+    var inlineOffsetNum = getInlineOffset("px");  //returns 0 unless inline position is chosen!
+    var sidemargin = getSingleMeasurement("margin", "Left", gSizeState.sizeUnit, false);
+    msiEditorEnsureElementAttribute(frameNode, "sidemargin", sidemargin, editor);
+    var topmargin = getSingleMeasurement("margin", "Top", gSizeState.sizeUnit, false);
+    msiEditorEnsureElementAttribute(frameNode, "topmargin", topmargin, editor);
+    var overhang = getSingleMeasurement("margin", "Right", gSizeState.sizeUnit, false);
+     msiEditorEnsureElementAttribute(frameNode, "overhang", overhang, editor);
+    var marginArray = [];
+    // marginArray[0] = frameUnitHandler.getValueAs(topmargin,"px");
+    marginArray[0] = topmargin;
+    marginArray[2] = marginArray[0];
+    if (inlineOffsetNum > 0)
+      marginArray[2] += inlineOffsetNum;
+    if (position == 1) //left
     {
-      msiEditorEnsureElementAttribute(contentsNode, "rotation", null, editor);
-       //this will remove the "rotation" attribute
+      if (overhang < 0) marginArray[3] = overhang;
+      else
+      {
+        marginArray[3] = 0;
+      }
+      marginArray[1] = sidemargin;
+    }
+    else if (position == 2) // right
+    {
+      if (overhang < 0) marginArray[1] = -overhang;
+      else
+      {
+        marginArray[1] = 0;
+      }
+      marginArray[3] = sidemargin;
     }
     else
     {
-      msiEditorEnsureElementAttribute(contentsNode, "rotation", rotation, editor);
+      marginArray[1] = marginArray[3] = 0;
     }
-  }
-  msiRequirePackage(Dg.editorElement, "ragged2e", null);
-
-  var inlineOffsetNum = getInlineOffset("px");  //returns 0 unless inline position is chosen!
-  var sidemargin = getSingleMeasurement("margin", "Left", gSizeState.sizeUnit, false);
-  msiEditorEnsureElementAttribute(frameNode, "sidemargin", sidemargin, editor);
-  var topmargin = getSingleMeasurement("margin", "Top", gSizeState.sizeUnit, false);
-  msiEditorEnsureElementAttribute(frameNode, "topmargin", topmargin, editor);
-  var overhang = getSingleMeasurement("margin", "Right", gSizeState.sizeUnit, false);
-   msiEditorEnsureElementAttribute(frameNode, "overhang", overhang, editor);
-  var marginArray = [];
-  // marginArray[0] = frameUnitHandler.getValueAs(topmargin,"px");
-  marginArray[0] = topmargin;
-  marginArray[2] = marginArray[0];
-  if (inlineOffsetNum > 0)
-    marginArray[2] += inlineOffsetNum;
-  if (position == 1) //left
-  {
-    if (overhang < 0) marginArray[3] = overhang;
-    else
-    {
-      marginArray[3] = 0;
+    if (gFrameModeImage || gFrameModeText) {
+      var borderwidth = getSingleMeasurement(borderAtt, "Left", gSizeState.sizeUnit, false);
+      msiEditorEnsureElementAttribute(frameNode, "borderw", borderwidth, editor);
     }
-    marginArray[1] = sidemargin;
-  }
-  else if (position == 2) // right
-  {
-    if (overhang < 0) marginArray[1] = -overhang;
-    else
-    {
-      marginArray[1] = 0;
+    else {
+      msiEditorEnsureElementAttribute(frameNode, "borderw", getCompositeMeasurement("border",gSizeState.sizeUnit, false), editor);
     }
-    marginArray[3] = sidemargin;
-  }
-  else
-  {
-    marginArray[1] = marginArray[3] = 0;
-  }
-  if (gFrameModeImage || gFrameModeText) {
-    var borderwidth = getSingleMeasurement(borderAtt, "Left", gSizeState.sizeUnit, false);
-    msiEditorEnsureElementAttribute(frameNode, "borderw", borderwidth, editor);
-  }
-  else {
-    msiEditorEnsureElementAttribute(frameNode, "borderw", getCompositeMeasurement("border",gSizeState.sizeUnit, false), editor);
-  }
-  if (gFrameModeImage || gFrameModeText) {
-    var padding = getSingleMeasurement("padding", "Left", gSizeState.sizeUnit, false);
-    msiEditorEnsureElementAttribute(frameNode, "padding", padding, editor);
-  }
-  else {
-    msiEditorEnsureElementAttribute(frameNode, "padding", getCompositeMeasurement("padding",gSizeState.sizeUnit, false), editor);
-  }
+    if (gFrameModeImage || gFrameModeText) {
+      var padding = getSingleMeasurement("padding", "Left", gSizeState.sizeUnit, false);
+      msiEditorEnsureElementAttribute(frameNode, "padding", padding, editor);
+    }
+    else {
+      msiEditorEnsureElementAttribute(frameNode, "padding", getCompositeMeasurement("padding",gSizeState.sizeUnit, false), editor);
+    }
 
-  var captionLoc = document.getElementById("captionLocation").value;
-  if (captionLoc === "none") {
-    frameNode.removeAttribute("captionloc");
-    // removeStyleAttributeFamilyOnNode(frameNode, "caption-side");
-  } else {
-    frameNode.setAttribute("captionloc", captionLoc);
-    // setStyleAttributeOnNode(frameNode, "caption-side", captionLoc);
-  }
+    var captionLoc = document.getElementById("captionLocation").value;
+    if (captionLoc === "none") {
+      frameNode.removeAttribute("captionloc");
+      // removeStyleAttributeFamilyOnNode(frameNode, "caption-side");
+    } else {
+      frameNode.setAttribute("captionloc", captionLoc);
+      // setStyleAttributeOnNode(frameNode, "caption-side", captionLoc);
+    }
 
-  var posItem = null;
-  var posid;
-  if (isEnabled(document.getElementById("locationList")))
-  {
-    if (document.getElementById("locationList"))
-      posItem = document.getElementById("locationList").selectedItem;
-    posid = (posItem && posItem.getAttribute("id")) || "";
-    msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
-  }
-
-  var bgcolor = Dg.colorWell.getAttribute("style");
-  var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
-  var theColor = (arr && arr.length > 1) ? arr[1] : "";
-  // setStyleAttributeOnNode(frameNode, "border-color", theColor, editor);
-  msiEditorEnsureElementAttribute(frameNode, "border-color", hexcolor(theColor), editor);
-  bgcolor = Dg.bgcolorWell.getAttribute("style");
-  arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
-  theColor = (arr && arr.length > 1) ? arr[1] : "";
-  // setStyleAttributeOnNode(frameNode, "background-color", theColor, editor);
-  msiEditorEnsureElementAttribute(frameNode, "background-color", hexcolor(theColor), editor);
-  msiRequirePackage(Dg.editorElement, "xcolor", "");
-  msiEditorEnsureElementAttribute(frameNode, "textalignment", Dg.textAlignment.value, editor);
-  if (posid && posid !== "inline") {
-     msiRequirePackage(Dg.editorElement, "boxedminipage", "");
-  }
-  else
-  {
-    if (isEnabled(Dg.frameInlineOffsetInput) && inlineOffsetNum !== 0)
+    var posItem = null;
+    var posid;
+    if (isEnabled(document.getElementById("locationList")))
     {
-      inlineOffset = Number(Dg.frameInlineOffsetInput.value);
-      var inlineOffsetStr = String(inlineOffset);
-      msiEditorEnsureElementAttribute(frameNode, "inlineOffset", inlineOffsetStr, editor);
-      inlineOffsetStr = String(-inlineOffset) + frameUnitHandler.currentUnit;
+      if (document.getElementById("locationList"))
+        posItem = document.getElementById("locationList").selectedItem;
+      posid = (posItem && posItem.getAttribute("id")) || "";
+      msiEditorEnsureElementAttribute(frameNode, "pos", posid, editor);
+    }
+
+    var bgcolor = Dg.colorWell.getAttribute("style");
+    var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
+    var theColor = (arr && arr.length > 1) ? arr[1] : "";
+    // setStyleAttributeOnNode(frameNode, "border-color", theColor, editor);
+    msiEditorEnsureElementAttribute(frameNode, "border-color", hexcolor(theColor), editor);
+    bgcolor = Dg.bgcolorWell.getAttribute("style");
+    arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
+    theColor = (arr && arr.length > 1) ? arr[1] : "";
+    // setStyleAttributeOnNode(frameNode, "background-color", theColor, editor);
+    msiEditorEnsureElementAttribute(frameNode, "background-color", hexcolor(theColor), editor);
+    msiRequirePackage(Dg.editorElement, "xcolor", "");
+    msiEditorEnsureElementAttribute(frameNode, "textalignment", Dg.textAlignment.value, editor);
+    // currently we don't need boxedminipage for display (centeredfw)
+    if (posid && posid !== "inline") {
+       msiRequirePackage(Dg.editorElement, "boxedminipage", "");
     }
     else
     {
-      msiEditorEnsureElementAttribute(frameNode, "inlineOffset", null, editor);
+      if (isEnabled(Dg.frameInlineOffsetInput) && inlineOffsetNum !== 0)
+      {
+        inlineOffset = Number(Dg.frameInlineOffsetInput.value);
+        var inlineOffsetStr = String(inlineOffset);
+        msiEditorEnsureElementAttribute(frameNode, "inlineOffset", inlineOffsetStr, editor);
+        inlineOffsetStr = String(-inlineOffset) + frameUnitHandler.currentUnit;
+      }
+      else
+      {
+        msiEditorEnsureElementAttribute(frameNode, "inlineOffset", null, editor);
+      }
     }
-  }
-  var needsWrapfig = false;
-  if (isEnabled(document.getElementById("floatList")) && document.getElementById("floatList").value !== "")
-  {
-    var floatPosition="";
-    var isHere = false;
-    needsWrapfig = false;
-    if (Dg.ltxfloat_forceHere && Dg.ltxfloat_forceHere.hasAttribute("checked")) {
-      floatPosition += "H";
-      isHere = true;
-    }
-    if (Dg.ltxfloat_here && Dg.ltxfloat_here.hasAttribute("checked")) {
-      floatPosition += "h";
-      isHere = true;
-    }
-    if (Dg.ltxfloat_pageOfFloats && Dg.ltxfloat_pageOfFloats.hasAttribute("checked")) {
-      floatPosition += "p";
-    }
-    if (Dg.ltxfloat_topPage &&  Dg.ltxfloat_topPage.hasAttribute("checked")) {
-      floatPosition += "t";
-    }
-    if (Dg.ltxfloat_bottomPage && Dg.ltxfloat_bottomPage.hasAttribute("checked")) {
-      floatPosition += "b";
-    }
-    msiEditorEnsureElementAttribute(frameNode, "ltxfloat", floatPosition, editor);
-    if (floatPosition.length > 0) {
-      msiRequirePackage(Dg.editorElement, "float","");
-    }
-  } else
-    frameNode.removeAttribute("ltxfloat");
-  if (isEnabled(Dg.locationList))
-  {
-    var locationParam = Dg.locationList.value;
-    if ((locationParam === "inside") ||
-        (locationParam === "outside") ||
-        (locationParam === "left") ||
-        (locationParam === "right") )
+    var needsWrapfig = false;
+    if (isEnabled(document.getElementById("floatList")) && document.getElementById("floatList").value !== "")
     {
-      msiRequirePackage(Dg.editorElement, "wrapfig","");
+      var floatPosition="";
+      var isHere = false;
+      needsWrapfig = false;
+      if (Dg.ltxfloat_forceHere && Dg.ltxfloat_forceHere.hasAttribute("checked")) {
+        floatPosition += "H";
+        isHere = true;
+      }
+      if (Dg.ltxfloat_here && Dg.ltxfloat_here.hasAttribute("checked")) {
+        floatPosition += "h";
+        isHere = true;
+      }
+      if (Dg.ltxfloat_pageOfFloats && Dg.ltxfloat_pageOfFloats.hasAttribute("checked")) {
+        floatPosition += "p";
+      }
+      if (Dg.ltxfloat_topPage &&  Dg.ltxfloat_topPage.hasAttribute("checked")) {
+        floatPosition += "t";
+      }
+      if (Dg.ltxfloat_bottomPage && Dg.ltxfloat_bottomPage.hasAttribute("checked")) {
+        floatPosition += "b";
+      }
+      msiEditorEnsureElementAttribute(frameNode, "ltxfloat", floatPosition, editor);
+      if (floatPosition.length > 0) {
+        msiRequirePackage(Dg.editorElement, "float","");
+      }
+    } else
+      frameNode.removeAttribute("ltxfloat");
+    if (isEnabled(Dg.locationList))
+    {
+      var locationParam = Dg.locationList.value;
+      if ((locationParam === "inside") ||
+          (locationParam === "outside") ||
+          (locationParam === "left") ||
+          (locationParam === "right") )
+      {
+        msiRequirePackage(Dg.editorElement, "wrapfig","");
+      }
+      // BBM: optimize -- next 4 lines unneeded
+     needsWrapfig = true;
+      if (needsWrapfig) {
+        msiEditorEnsureElementAttribute(frameNode, "req", "wrapfig", "");
+      }
     }
-   needsWrapfig = true;
-    if (needsWrapfig) {
-      msiEditorEnsureElementAttribute(frameNode, "req", "wrapfig", "");
-    }
+    frameNode.setAttribute("width", gSizeState.width);
+    frameNode.setAttribute("height", gSizeState.height);
+    widthInPx = Math.round(frameUnitHandler.getValueAs(gSizeState.width,'px'));
+    heightInPx = Math.round(frameUnitHandler.getValueAs(gSizeState.height,'px'));
+    contentsNode.setAttribute('width', widthInPx);
+    contentsNode.setAttribute('height', heightInPx);
+    contentsNode.setAttribute("aspect", gSizeState.preserveAspectRatio ? "true" : "false");
+    frameNode.setAttribute("aspect", gSizeState.preserveAspectRatio ? "true" : "false");
+    editor.getFrameStyleFromAttributes(frameNode);
+    setStyleAttributeOnNode(contentsNode, 'width', widthInPx + 'px', editor);
+    setStyleAttributeOnNode(contentsNode, 'height', heightInPx + 'px', editor);
   }
-  frameNode.setAttribute("width", gSizeState.width);
-  frameNode.setAttribute("height", gSizeState.height);
-  contentsNode.setAttribute("aspect", gSizeState.preserveAspectRatio ? "true" : "false");
-  frameNode.setAttribute("aspect", gSizeState.preserveAspectRatio ? "true" : "false");
-  editor.getFrameStyleFromAttributes(frameNode);
+  catch(e) {
+    dump(e.message);
+  }
 }
 
 // When the height changes and the aspect ratio is preserved, we have to change the width, and vice versa. The next two variables prevent potentially endless
