@@ -818,7 +818,7 @@ function ShutdownAllEditors() {
       }
     }
   } catch (e) {
-    throw new MsiException('ShutdownAllEditors', e);
+    msiException('ShutdownAllEditors', e);
   }
   return !keepgoing;
 }
@@ -1057,10 +1057,10 @@ function msiEditorDocumentObserver(editorElement) {
               buildAllTagsViewStylesheet(editor);
             }
             dynAllTagsStyleSheet = msiFileURLStringFromFile(cssFile);
-            var stylesheet;
+            // var stylesheet;
             try {
-              stylesheet = editor.getStyleSheetForURL(dynAllTagsStyleSheet);
-              if (stylesheet) editor.removeStyleSheet(dynAllTagsStyleSheet);
+              // stylesheet = editor.getStyleSheetForURL(dynAllTagsStyleSheet);
+              editor.removeStyleSheet(dynAllTagsStyleSheet);
             } catch (e) {} // if there was an exception, there was no stylesheet to remove
             try {
               editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
