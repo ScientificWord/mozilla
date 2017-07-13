@@ -47,7 +47,7 @@ function UnitHandler( editor )
       return (value/this.units[unit].size)*this.units[this.currentUnit].size;
     }
     catch(e) {
-      return 0;
+      dump('Error in unithandler.getValueAs');
     }
   };
 
@@ -60,7 +60,7 @@ function UnitHandler( editor )
       return value*this.units[unit].size/this.units[this.currentUnit].size;
     }
     catch(e) {
-      return 0;
+      dump('Error in unithandler.getValueOf');
     }
   };
 
@@ -100,7 +100,7 @@ function UnitHandler( editor )
       factor = this.units[this.currentUnit].size/this.units[unit].size;
     } 
     catch (e) {
-      msidump(e.message);
+      dump(e.message);
     }
     var limAttr;
     var i;

@@ -291,7 +291,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   if (!focusElement) return NS_OK;
   if (NS_FAILED(res)) return res;
 
-  // is the -msi-resize attribute set?
+  // is the -msi_resize attribute set?
   nsAutoString strResizeAttr;
   PRBool resizeRequested = PR_FALSE;
   nsCOMPtr<nsIDOMElement> tempElement;

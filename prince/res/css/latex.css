@@ -34,6 +34,7 @@ msiframe imagecaption {
   background-color: rgb(250,240,240);
   margin-top: 3pt;
   margin-bottom: 3pt;
+  text-align: center;
 }
 
 msiframe caption {
