@@ -4370,6 +4370,7 @@ var msiCopyTeX =
   }
 };
 
+
 var msiConvertGraphics =
 {
   isCommandEnabled: function(aCommand, aRefCon)
@@ -4401,7 +4402,7 @@ var msiConvertGraphics =
     var importName;
     var internalFile;
     var internalName;
-    var graphicDir;
+    var graphicDir, documentDir;
     var width, height;
     var units;
     var dimensions;
@@ -4410,10 +4411,49 @@ var msiConvertGraphics =
     var leafname, ext, match;
     var eventStr = "load";
     var unithandler = new UnitHandler(editor);
-    var datafile;
-    var data;
-    var basename;
-
+    var timer;
+    var objectLoadedEvent = {
+      node: null,
+      notify: function (timer) {
+        var hasWidth, hasHeight, hasNatWidth, hasNatHeight;
+        var natWidth = 0;
+        var natHeight = 0;
+        hasWidth = objectnode.hasAttribute('width') && (Number(objectnode.getAttribute('width')) > 0);
+        hasHeight = objectnode.hasAttribute('height') && (Number(objectnode.getAttribute('height')) > 0);
+        if (!(hasWidth && hasHeight)) 
+        {
+          graphicsConverter.imageLoaded.call(node); 
+          // The above call may have changed width and height
+          hasWidth = objectnode.hasAttribute('width') && (Number(objectnode.getAttribute('width')) > 0);
+          hasHeight = objectnode.hasAttribute('height') && (Number(objectnode.getAttribute('height')) > 0);
+        }
+        hasNatWidth = objectnode.hasAttribute('naturalwidth');
+        if (hasNatWidth) {
+          natWidth = Number(objectnode.getAttribute('naturalwidth'));
+          hasNatWidth = natWidth > 0;
+        }
+        if (hasNatHeight) {
+          natHeight = Number(objectnode.getAttribute('naturalheight'));
+          hasNatHeight = natHeight > 0;
+        }
+        if (hasNatHeight && hasNatWidth) {
+          if (hasWidth && !hasHeight) {
+            objectnode.setAttribute('height', Number(objectnode.getAttribute('width'))*(natHeight/natWidth));
+          } else if (hasHeight && !hasWidth) {
+            objectnode.setAttribute('width', Number(objectnode.getAttribute('height'))*(natWidth/natHeight));
+          }
+        } else { // can't fill in missing dimension using natural dimensions; use bitmap dimensions
+          if (hasWidth && !hasHeight) {
+            objectnode.setAttribute('height', Number(objectnode.getAttribute('width'))*
+              (Number(objectnode.offsetHeight)/Number(objectnode.offsetWidth)));
+          } else if (hasHeight && !hasWidth) {
+            objectnode.setAttribute('width', Number(objectnode.getAttribute('height'))*
+              (Number(objectnode.offsetWidth)/Number(objectnode.offsetHeight)));
+          }
+        }
+        objectnode.removeEventListener("load", objectLoadedEvent, true);
+      }
+    }
 
     graphicDir = msiFileFromFileURL(docurl);
     graphicDir = graphicDir.parent;
@@ -4446,37 +4486,19 @@ var msiConvertGraphics =
 
     if (objectnode) {
 
-      frame = objectnode.nodeParent;
+      frame = objectnode.parentNode;
       graphicsConverter.init(window, graphicDir.parent, product);
 // The next line creates TeX-compatible and browser-compatible versions if necessary.
-      graphicsConverter.ensureTypesetGraphicForElement(objectnode, documentDir)
-      objectnode.setAttribute("msi_resize", true);
-      graphicsConverter.setInitialWidthAndHeight(objectnode);
-      // objectnode.removeEventListener("load", this, true);
-      // ensureTypesetGraphicForElement put in a value for the data attribute. We will get that file.
-      data = objectnode.getAttribute('data');
-      basename = data.replace(/^(graphics|gcache|tcache)[\///]/, '');
-      // data is now '<graphics or gcache or tcache>/<filename>.<ext>'
-      datafile = graphicDir.clone();
-      datafile.append(basename);
 
-      dimensions = graphicsConverter.readSizeFromVectorFile(datafile, ext);
-      if (dimensions == null) { 
-        if (ext === 'wmf' || ext === 'emf') {
-          datafile = datafile.parent.parent;
-          datafile.append('tcache');
-          datafile.append(leafname.replace(ext,'pdf'));
-          dimensions == graphicsConverter.readSizeFromVectorFile(datafile, 'pdf');
-        }
-        if (dimensions == null) {
-          dimensions = {width : objectnode.offsetWidth, height : objectnode.offsetHeight, units : 'px'};
-        }
+      importName = graphicsConverter.ensureTypesetGraphicForElement(objectnode, documentDir);
+      if (importName) {
+        objectLoadedEvent.node = objectnode;
+
+        objectnode.addEventListener("load", graphicsConverter.imageLoaded, true);
+        objectnode.setAttribute("data", importName);
+        timer = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+        timer.initWithCallback(objectLoadedEvent,500, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
       }
-    // Now we can get the natural size of the image, if any.
-
-      frame.setAttribute('naturalwidth', unithandler.getValueOf(dimensions.width, dimensions.unit));
-      frame.setAttribute('naturalheight', unithandler.getValueOf(dimensions.height, dimensions.unit));
-      objectnode.setAttribute("data", importName);
     }
   }
 
