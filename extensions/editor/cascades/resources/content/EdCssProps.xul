@@ -72,7 +72,7 @@
     <grid flex="1">
       <rows><row flex="1"/><row/></rows>
       <columns>
-        <column>
+        <column flex="1">
           <tree flex="1"
                 seltype="single"
                 hidecolumnpicker="true"
