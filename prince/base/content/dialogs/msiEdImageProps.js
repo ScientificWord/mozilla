@@ -469,11 +469,14 @@ function InitImage(wrapperElement, imageElement)
     var width;
     var height;
     var pixelWidth, pixelHeight;
+    var unitHandler = new UnitHandler(null);
+    var unit = wrapperElement.getAttribute('units');
+    unitHandler.initCurrentUnit(unit);
     if (gCopiedSrcUrl && gCopiedSrcUrl.length > 0)
       gDialog.srcInput.value = gCopiedSrcUrl;
     // We found an element and don't need to insert one
     //trim off units at end
-    gDialog.frameUnitMenulist.value = wrapperElement.getAttribute("units");
+    gDialog.frameUnitMenulist.value = unit;
     if (wrapperElement.hasAttribute('width'))
     {
       width = wrapperElement.getAttribute('width');
@@ -1110,7 +1113,6 @@ function PreviewImageLoaded()
   if (gDialog.PreviewImage)
   {
     // get converted images if necessare
-    graphicsConverter.ensureTypesetGraphicForElement(gDialog.PreviewImage, documentDir);
     // Image loading has completed -- we can get actual width
     previewActualWidth  = gDialog.PreviewImage.offsetWidth;
     previewActualHeight = gDialog.PreviewImage.offsetHeight;
@@ -1164,7 +1166,8 @@ function PreviewImageLoaded()
     }
 
     // if the image is svg, we need to modify it to make it resizable.
-    if (isSVGFile)
+  //  if (isSVGFile)
+     if (false)
     {
       var svg = gDialog.PreviewImage.contentDocument.documentElement;
       if (svg.hasAttribute("height") && svg.hasAttribute("width") && !svg.hasAttribute("viewBox"))
@@ -1205,6 +1208,8 @@ function isVideoSource(srcFile)
 function LoadPreviewImage(importName, srcName)
 {
   var unitHandler = new UnitHandler(gEditor);
+  var unit = document.getElementById('frameUnitMenulist').value;
+  unitHandler.initCurrentUnit(unit);
   if (!importName || !srcName) return;
   var imageSrc;
   var importSrc;
@@ -1247,10 +1252,15 @@ function LoadPreviewImage(importName, srcName)
   if (gVideo)
     prevNodeName = "html:embed";
   gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", prevNodeName);
-  if (gDialog.PreviewImage)
+  if (gDialog.PreviewImage) // && gInsertNewImage)
   {
+    var docUrlString = msiGetDocumentBaseUrl();
+    var docurl = msiURIFromString(docUrlString);
+    var documentDir = msiFileFromFileURL(docurl);
     // set the src before appending to the document -- see bug 198435 for why
     // this is needed.
+    gDialog.PreviewImage.setAttribute('copiedSrcUrl', importName);
+    graphicsConverter.ensureTypesetGraphicForElement(gDialog.PreviewImage, documentDir);
 
     var eventStr = "load";
     gDialog.PreviewImage.addEventListener("load", PreviewImageLoaded, true);
@@ -1266,15 +1276,17 @@ function LoadPreviewImage(importName, srcName)
     var leafname = internalFile.leafName;
     dimensions = graphicsConverter.readSizeFromVectorFile(internalFile, extension);
     if (dimensions == null) { 
-      if (extension === 'wmf' || extension === 'emf') {
-        internalFile = internalFile.parent.parent;
-        internalFile.append('tcache');
-        internalFile.append((leafname.replace(extension,'pdf')));
-        dimensions == graphicsConverter.readSizeFromVectorFile(internalFile, 'pdf');
-      }
-      if (dimensions == null) {
+      // if (extension === 'wmf' || extension === 'emf' || extension === 'pdf') {
+      //   internalFile = internalFile.parent.parent;
+      //   internalFile.append('gcache');
+      //   internalFile.append((leafname.replace(extension,'png')));
+      //   dimensions == graphicsConverter.readSizeFromVectorFile(internalFile, 'pdf');
+      // }
+      // if (dimensions == null) {
         dimensions = {width : gDialog.PreviewImage.offsetWidth, height : gDialog.PreviewImage.offsetHeight, units : 'px'};
-      }
+      // }
+      // else if (dimensions.unit === '') dimensions.unit = 'px';
+
     }
   
     intermediate = unitHandler.getValueOf(dimensions.width, dimensions.unit);
@@ -1559,43 +1571,41 @@ function ValidateImage()
 }
 
 
-function imageLoaded(event)
-{
-  var unitHandler = new UnitHandler(gEditor);
-  try {
-    var isSVGFile = /\.svg$/.test(event.data);
-    if (isSVGFile)
-    {
-      var svg = event.target.contentDocument.documentElement;
-      if (svg.hasAttribute("height") && svg.hasAttribute("width") && !svg.hasAttribute("viewBox"))
-      {
-        var currentUnit = unitHandler.currentUnit;
-        var width = svg.getAttribute("height");
-        var numregexp = /(\d+\.*\d*)([A-Za-z]*$)/;
-        var arr = numregexp.exec(width);
-        if (arr) {
-          unitHandler.setCurrentUnit(arr[2]);
-          width = unitHandler.getValueAs(arr[1],"px");
-          width = Math.round(width);
-        }
-        var height = svg.getAttribute("width");
-        var arr = numregexp.exec(height);
-        if (arr)
-        {
-          unitHandler.setCurrentUnit(arr[2]);
-          height = unitHandler.getValueAs(arr[1],"px");
-          height = Math.round(height);
-        }
-        svg.setAttribute("viewBox", "0 0 "+height+" "+width);
-        svg.setAttribute("width","100%");
-        svg.setAttribute("height","100%");
-      }
-    }
-  }
-  catch (e) {
+  // var unitHandler = new UnitHandler(gEditor);
+  // try {
+  //   var isSVGFile = /\.svg$/.test(event.data);
+  //   if (isSVGFile)
+  //   {
+  //     var svg = event.target.contentDocument.documentElement;
+  //     if (svg.hasAttribute("height") && svg.hasAttribute("width") && !svg.hasAttribute("viewBox"))
+  //     {
+  //       var currentUnit = unitHandler.currentUnit;
+  //       var width = svg.getAttribute("height");
+  //       var numregexp = /(\d+\.*\d*)([A-Za-z]*$)/;
+  //       var arr = numregexp.exec(width);
+  //       if (arr) {
+  //         unitHandler.setCurrentUnit(arr[2]);
+  //         width = unitHandler.getValueAs(arr[1],"px");
+  //         width = Math.round(width);
+  //       }
+  //       var height = svg.getAttribute("width");
+  //       var arr = numregexp.exec(height);
+  //       if (arr)
+  //       {
+  //         unitHandler.setCurrentUnit(arr[2]);
+  //         height = unitHandler.getValueAs(arr[1],"px");
+  //         height = Math.round(height);
+  //       }
+  //       svg.setAttribute("viewBox", "0 0 "+height+" "+width);
+  //       svg.setAttribute("width","100%");
+  //       svg.setAttribute("height","100%");
+  //     }
+  //   }
+  // }
+  // catch (e) {
 
-  }
-}
+//   // }
+// }
 
 function isEnabled(element)
 {
@@ -1647,26 +1657,16 @@ function onAccept()
     if (!wInput.hasAttribute('disabled')) width = wInput.value;
     if (!hInput.hasAttribute('disabled')) height = hInput.value;
     unitHandler.initCurrentUnit(unit);
-    // srcurl is for debugging purposes
-    // BBM: use gOriginalSrcUrl or gCopiedSrcUrl
-    // var srcurl = graphicsConverter.copyAndConvert(msiFileFromFileURL(msiURIFromString(gOriginalSrcUrl)), false,
-    // unitHandler.getValueAs(width, 'px'), unitHandler.getValueAs(height, 'px') );
-
 
     gEditor.beginTransaction();
     try
     {
       var tagname = gVideo ? "embed" : "object";
-            // handle caption
       var captionloc = 'none';
       var gCaptionNode = GetCaptionNode(wrapperElement);
-
       if (isEnabled(gDialog.captionLocation)) captionloc = gDialog.captionLocation.value;
       if (captionloc === '') captionloc = 'none';
       var bHasCaption = (captionloc.length > 0 && captionloc !== 'none');
-      var tlm = gEditor.tagListManager;
-
-      var i;
 
       // caption dance: If there was a caption and the user specifies none, delete the caption
       if (gCaptionNode && captionloc === 'none') {
@@ -1683,43 +1683,25 @@ function onAccept()
       }
       else if (gCaptionNode) gCaptionNode.removeAttribute("key");
 
-//      cap.setAttribute('style', 'caption-side: '+ captionloc +';');
-//      cap.setAttribute('align', captionloc);
       var posInParent;
 
-      imgExists = !gInsertNewImage;
-      if (!imgExists)
+      
+      if (gInsertNewImage)
       {
         if (imageElement == null) imageElement = gEditor.createElementWithDefaults(tagname);
-        imageElement.addEventListener("load", imageLoaded, true);
+//        imageElement.addEventListener("load", imageLoaded, true);
       }
       var src = gSrcUrl;
-      //  src = checkSourceAndImportSetting(src, gDialog.isImport);
-      if (/\.svg$/.test(src)) {
-        imageElement.setAttribute("isSVG", "1");
-        // msiRequirePackage(gEditorElement,"svg","");   We make the pdf file ourselves.
-      }
-      else
-      {
-        imageElement.removeAttribute("isSVG");
-      }
-      // if (/\.eps$/.test(gOriginalSrcUrl)) {
-      //   msiRequirePackage(gEditorElement,"epstopdf","");
-      // }
       imageElement.setAttribute("src", src);
       imageElement.setAttribute("data", src);
       if (wrapperElement == null) {
         wrapperElement = gEditor.createFrameWithDefaults("image", true, sel.anchorNode, sel.anchorOffset);
       }
-
-      //wrapperElement.setAttribute("frametype", "image");
       if (bHasCaption) {
         wrapperElement.appendChild(gCaptionNode);
         msiEditorEnsureElementAttribute(wrapperElement, "captionloc", captionloc, null);
       }
-      // if (gDialog.wrapOptionRadioGroup.value != "full"){
-      //   msiEnsureElementPackage(wrapperElement,"wrapfig",null);
-      // }
+
       if (gInsertNewImage)
         wrapperElement.appendChild(imageElement);
       else
@@ -1743,17 +1725,8 @@ function onAccept()
           gEditor.insertNode(wrapperElement, imageParent, posInParent);
         }
       }
-      // if (wrapperElement && wrapperElement.parentNode && wrapperElement != imageElement && !bHasCaption)  //Can only happen in the !gInsertNewImage case, if there was a caption previously
-      // {
-      //   posInParent = msiNavigationUtils.offsetInParent(wrapperElement);
-      //   gEditor.insertNode(imageElement, wrapperElement.parentNode, posInParent);
-      //   gEditor.deleteNode(wrapperElement);
-      //   wrapperElement = imageElement;
-      // }
 
       if (gInsertNewImage) {
-        //if (!bHasCaption)
-        //  wrapperElement = imageElement;
         gEditor.insertElementAtSelection(wrapperElement, true);
       }
 
@@ -1772,23 +1745,16 @@ function onAccept()
         msiEditorEnsureElementAttribute(imageParent, "naturalwidth", String(unitHandler.getValueOf(gActualWidth, "px")), null);
       if (gConstrainHeight > 0)
         msiEditorEnsureElementAttribute(imageParent, "naturalheight", String(unitHandler.getValueOf(gActualHeight, "px")), null);
-      if (width > 0) imageElement.setAttribute(widthAtt, width);
-      else imageElement.removeAttribute(widthAtt);
-      if (height > 0) imageElement.setAttribute(heightAtt, height);
-      else imageElement.removeAttribute(heightAtt);
+      imageElement.setAttribute(widthAtt, unitHandler.getValueAs(width, 'px'));
+      imageElement.setAttribute(heightAtt, unitHandler.getValueAs(height, 'px'));
 
       msiEditorEnsureElementAttribute(imageElement, "originalSrcUrl", gOriginalSrcUrl, null);
       msiEditorEnsureElementAttribute(imageElement, "copiedSrcUrl", gCopiedSrcUrl, null);
-      // if (!gDialog.isImport)
-      //   msiEditorEnsureElementAttribute(imageElement, "byReference", "true", null);
 
       setFrameAttributes(wrapperElement, imageElement, null, bHasCaption);
       if (bHasCaption) {
         if (captionloc && captionloc !== 'none') setStyleAttributeOnNode(wrapperElement||imageElement, "caption-side", captionloc, gEditor);
-       // if there is no frame, globalElement == globalImage
       }
-
-      //msiSetGraphicFrameAttrsFromGraphic(imageElement, null);  //unless we first end the transaction, this seems to have trouble!
 
       if (gVideo)
       {
@@ -1810,10 +1776,8 @@ function onAccept()
     return true;
   }
   else dump("Validation FAILED\n");
-
   gIsGoingAway = false;
   gDoAltTextError = false;
-
   return false;
 }
 

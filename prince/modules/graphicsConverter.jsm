@@ -326,60 +326,59 @@ var graphicsConverter = {
 
   },
 
-  readSizeFromPDFFile: function(pdfFile)
-  {
-    var theText = this.getFileAsString(pdfFile);
+//   readSizeFromPDFFile: function(pdfFile)
+//   {
+//     var theText = this.getFileAsString(pdfFile);
 
-//    var BBRE = /\/BBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
-    var mediaBoxRE = /\/MediaBox\s+\[\s+([.0-9]+)\s+([.0-9]+)\s+([.0-9]+)\s+([.0-9]+)/;
+// //    var BBRE = /\/BBox\s*\[([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s+([0-9\.]+)\s*\]/;
+//     var mediaBoxRE = /\/MediaBox\s+\[\s+([.0-9]+)\s+([.0-9]+)\s+([.0-9]+)\s+([.0-9]+)/;
 
-    // function checkBoundingBox( objString )
-    // {
-    //   var res = null;
-    //   var bbArray = BBRE.exec(objString);
-    //   if (bbArray && bbArray[1] && bbArray[2])
-    //   {
-    //     if (bbArray[3] && bbArray[4])
-    //     {
-    //       res = {wdth : Math.round(9.6 * (Number(bbArray[3]) - Number(bbArray[1]))),
-    //              ht : Math.round(9.6 * (Number(bbArray[4]) - Number(bbArray[2]))) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
-    //     }
-    //     else  //this shouldn't happen, though
-    //     {
-    //       res = {wdth : Math.round(9.6 * Number(bbArray[1])),
-    //              ht : Math.round(9.6 * Number(bbArray[2])) };   //9.6 here is 96 pts- 
-    //   }
-    //   return res;
-    // }
+//     // function checkBoundingBox( objString )
+//     // {
+//     //   var res = null;
+//     //   var bbArray = BBRE.exec(objString);
+//     //   if (bbArray && bbArray[1] && bbArray[2])
+//     //   {
+//     //     if (bbArray[3] && bbArray[4])
+//     //     {
+//     //       res = {wdth : Math.round(9.6 * (Number(bbArray[3]) - Number(bbArray[1]))),
+//     //              ht : Math.round(9.6 * (Number(bbArray[4]) - Number(bbArray[2]))) };   //9.6 here is 96 pts-per-inch/10 since these are given in tenths of an inch
+//     //     }
+//     //     else  //this shouldn't happen, though
+//     //     {
+//     //       res = {wdth : Math.round(9.6 * Number(bbArray[1])),
+//     //              ht : Math.round(9.6 * Number(bbArray[2])) };   //9.6 here is 96 pts- 
+//     //   }
+//     //   return res;
+//     // }
 
-    function checkMediaBox( objString )
-    {
-      var res = null;
-      var dimsArray = mediaBoxRE.exec(objString);
-      if (dimsArray && dimsArray.length > 4)
-      {
-          res = { width : Math.round(Number(dimsArray[3]) - Number(dimsArray[1])),
-                  height : Math.round(Number(dimsArray[4]) - Number(dimsArray[2])),
-                  unit: 'pt' };
-      }
-      return res;
-    }
-    return checkMediaBox(theText);
-  },
+//     function checkMediaBox( objString )
+//     {
+//       var res = null;
+//       var dimsArray = mediaBoxRE.exec(objString);
+//       if (dimsArray && dimsArray.length > 4)
+//       {
+//           res = { width : Math.round(Number(dimsArray[3]) - Number(dimsArray[1])),
+//                   height : Math.round(Number(dimsArray[4]) - Number(dimsArray[2])),
+//                   unit: 'pt' };
+//       }
+//       return res;
+    
+//     return checkMediaBox(theText);
+//   },
 
   readSizeFromVectorFile: function(vecGraphics, extension) {
-     if (extension === 'pdf')
-       return this.readSizeFromPDFFile(vecGraphics);
+ 
      if (extension === 'eps')
        return this.readSizeFromEPSFile(vecGraphics);
      if (extension === 'ps')
        return this.readSizeFromEPSFile(vecGraphics);
-     if (extension ==='svg')
+     if (extension === 'svg')
        return this.readSizeFromSVGFile(vecGraphics);
      return null;
    },
 
-   setInitialWidthAndHeight: function(objectnode) {
+   setInitialWidthAndHeight: function setInitialWidthAndHeight(objectnode) {
      // This function looks at the naturalwidth and naturalheight, whether
      // the prefs initial width and height are supposed to be used, and sorts
      // it out to set usedims and the width and height.
@@ -411,8 +410,18 @@ var graphicsConverter = {
       if (theUnits == null) theUnits =framenode.getAttribute('units');
       if (theUnits == null) finalThrow('No units given in object node');
       unitHandler.initCurrentUnit(theUnits);
-      naturalheight = framenode.getAttribute('naturalheight');
-      naturalwidth = framenode.getAttribute('naturalwidth');
+      if (framenode.hasAttribute('naturalwidth') && framenode.hasAttribute('naturalheight')) {
+        naturalheight = framenode.getAttribute('naturalheight');
+        naturalwidth = framenode.getAttribute('naturalwidth');        
+      } else {
+        naturalheight = unitHandler.getValueOf(objectnode.offsetHeight,'px');
+        naturalwidth = unitHandler.getValueOf(objectnode.offsetWidth, 'px');        
+      }
+      objectnode.setAttribute('naturalwidth',naturalwidth);
+      objectnode.setAttribute('naturalheight',naturalheight);
+      framenode.setAttribute('naturalwidth',naturalwidth);
+      framenode.setAttribute('naturalheight',naturalheight);
+
       width = naturalwidth;
       height = naturalheight;
 
@@ -894,13 +903,61 @@ var graphicsConverter = {
     return false;
   },
   
+  imageLoaded: function()
+  {
+    var datafile;
+    var data;
+    var basename;
+    var pathparts;
+    var ext;
+    var frame = this.parentNode;
+    var dimensions = null;
+    var objectnode = this;
+    var graphicDir;
+    var docUrlString = this.ownerDocument.documentURI;
+    var docurl = msiURIFromString(docUrlString);
+    var unithandler = new UnitHandler();
+    var extensionRE = /\.([^\.]+)$/;
+
+    graphicDir = msiFileFromFileURL(docurl);
+    graphicDir = graphicDir.parent;
+
+    objectnode.setAttribute("msi_resize", true);
+    if (objectnode.hasAttribute('width') && objectnode.hasAttribute('height')) return;
+    graphicsConverter.setInitialWidthAndHeight(objectnode);
+    // objectnode.removeEventListener("load", this, true);
+    // ensureTypesetGraphicForElement put in a value for the data attribute. We will get that file.
+    // data = objectnode.getAttribute('data');
+    // data = data.replace('\\','/');
+    // pathparts = data.split('/');
+    // datafile = graphicDir.clone();
+    // datafile.append(pathparts[0]);
+    // datafile.append(pathparts[1]);
+    // ext = extensionRE.exec(data)[1];
+
+    // dimensions = graphicsConverter.readSizeFromVectorFile(datafile, ext);
+
+    // if (ext === 'wmf' || ext === 'emf') {
+    //   datafile = datafile.parent.parent;
+    //   datafile.append('tcache');
+    //   datafile.append(leafname.replace(ext,'pdf'));
+    //   dimensions == graphicsConverter.readSizeFromVectorFile(datafile, 'pdf');
+    // }
+    // frame.setAttribute('naturalwidth', unithandler.getValueOf(dimensions.width, dimensions.unit));
+    // frame.setAttribute('naturalheight', unithandler.getValueOf(dimensions.height, dimensions.unit));
+
+ 
+  },
+
+
+
   //Note: documentDir should be an nsILocalFile
   //We require that the 'copiedSrcUrl' be set. Copy the original file before calling this.
   ensureTypesetGraphicForElement: function(objElement, documentDir) {
     var attrValStr;
     var inkscapeCmd;
     var pixWidth, pixHeight;
-    var frame;
+    // var frame;
     var unitHandler = new UnitHandler();
     var ext;
     var basename;
@@ -914,14 +971,18 @@ var graphicsConverter = {
     var pdfName;
     var pdfFile;
     var leafname;
+    var tempname;
+    var arr, arr2;
+
+
 
     if (objElement.getAttribute("msigraph") === "true")
-      return false;
-    frame = objElement.parentNode;
-    if (frame.nodeName !== 'msiframe') frame = null;
+      return null;
+    // frame = objElement.parentNode;
+    // if (!(frame && frame.nodeName === 'msiframe')) frame = null;
 
     var gfxFileStr = objElement.getAttribute("copiedSrcUrl");
-    if (!gfxFileStr || gfxFileStr.length == 0) return false; 
+    if (!gfxFileStr || gfxFileStr.length == 0) return null; 
     ext = getExtension(gfxFileStr);
 
     if (this.OS === "win") {
@@ -933,12 +994,15 @@ var graphicsConverter = {
 
     graphicsFile = msiFileFromAbsolutePath(gfxFileStr);
     leafname = graphicsFile.leafName;
-    if (!graphicsFile.exists()) return false;
+    if (!graphicsFile.exists()) return null;
 
     if (this.allDerivedGraphicsExist(documentDir, graphicsFile, objElement)) {
-      return true;
+      tempname = objElement.data;
+      arr = tempname.split('/');
+      arr2 = [arr[arr.length - 2], arr[arr.length -1]];
+      return arr2.join('/');
     }
-    if ((ext === 'wmf' || ext === 'emf') && this.inkscapeBatching) {
+    if ((ext === 'wmf' || ext === 'emf' || ext === 'svg') && this.inkscapeBatching) {
       // we will be using inkscape. It is much faster if we batch the operations. this.inkscapeBatching
       // has been set if we are converting all graphics in a newly imported document. 
       if (this.inkscapeScriptState === 0) { // do initialization
@@ -969,42 +1033,17 @@ var graphicsConverter = {
     }
 
 
-    var theUnits = objElement.getAttribute("units");
-    if ((!theUnits || !theUnits.length) && frame != null) {
-      theUnits = frame.getAttribute("units");
-    }
-    if (!theUnits || !theUnits.length) {
-      theUnits = "cm";
-      frame.setAttribute("units", theUnits);
-      objElement.setAttribute("units", theUnits);
-    }
-    unitHandler.initCurrentUnit(theUnits);
-
-
-    // imageWidth andbjElement.getAttribute('ltx_width') || objElement.getAttribute("imageWidth") || objElement.getAttribute("width") || objElement.getAttribute("naturalWidth");
-    // var theHeight =  objElement.getAttribute('ltx_height') || objElement.getAttribute("imageHeight") || objElement.getAttribute("height") || objElement.getAttribute("naturalHeight");
-    // if (!theWidth || theWidth === 0 || isNaN(theWidth) || !theHeight || theHeight === 0 || isNaN(theHeight)) {
-    //   try {
-    //     if (!theWidth) {
-    //       pixWidth = objElement.getAttribute('ltx_width');
-    //       attrValStr = String(unitHandler.getValueOf(pixWidth, "px"));
-    //       objElement.setAttribute("imageWidth", attrValStr);
-    //       objElement.setAttribute("naturalWidth", attrValStr);
-    //     }
-    //     if (!theHeight) {
-    //       pixHeight = objElement.getAttribute('ltx_height');
-    //       attrValStr = String(unitHandler.getValueOf(pixHeight, "px"));
-    //       objElement.setAttribute("imageHeight", attrValStr);
-    //       objElement.setAttribute("naturalHeight", attrValStr);
-    //     }
-    //   } catch (exc) {
-    //     dump("In graphicsConverter.ensureTypesetGraphicForElement, error [" + exc + "] trying to get offsetWidth or offsetHeight for graphic [" + gfxFileStr + "]\n");
-    //   }
+    // var theUnits = objElement.getAttribute("units");
+    // if ((!theUnits || !theUnits.length) && frameframeframe != null) {
+    //   theUnits = frame.getAttribute("units");
     // }
-   
-    
-      // Test to see if any derived graphics files are missing
-    return true;
+    // if (!theUnits || !theUnits.length) {
+    //   theUnits = "cm";
+    //   frame.setAttribute("units", theUnits);
+    //   objElement.setAttribute("units", theUnits);
+    // }
+    // unitHandler.initCurrentUnit(theUnits);
+    return importName;
   },
 
   ensureTypesetGraphicsForDocument: function(aDocument) {
@@ -1098,6 +1137,7 @@ var graphicsConverter = {
     }
     this.inkscapeScriptState = 0;
     this.inkscapeFileList = '';
+    this.inkscapeBatching = false;
   }
 };
 
