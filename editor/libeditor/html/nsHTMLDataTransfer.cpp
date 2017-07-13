@@ -1828,7 +1828,7 @@ nsHTMLEditor::GetGraphicsAttributesFromFrame(nsIDOMElement *frame, nsIDOMElement
     originalSrcUrl, aspect, units;
   nsAutoString style(EmptyString());
   NS_NAMED_LITERAL_STRING(semi, "; ");
-  object->SetAttribute(NS_LITERAL_STRING("_moz-resizing"), NS_LITERAL_STRING("true"));
+  object->SetAttribute(NS_LITERAL_STRING("_moz_resizing"), NS_LITERAL_STRING("true"));
   object->SetAttribute(NS_LITERAL_STRING("msi_resize"), NS_LITERAL_STRING("true"));
   res = frame->GetAttribute(NS_LITERAL_STRING("units"), units);
   res = frame->GetAttribute(NS_LITERAL_STRING("height"),height);
@@ -5212,7 +5212,7 @@ nsHTMLEditor::CreateFrameWithDefaults(const nsAString & frametype, PRBool insert
   frame->SetAttribute(NS_LITERAL_STRING("frametype"), frametype);
   frame->SetAttribute(NS_LITERAL_STRING("req"), NS_LITERAL_STRING("wrapfig"));
   ApplyGraphicsDefaults( frame, frametype );
-  frame->SetAttribute(NS_LITERAL_STRING("aspect"), frametype.EqualsLiteral("textframe") ? NS_LITERAL_STRING("true") : NS_LITERAL_STRING("false"));
+  frame->SetAttribute(NS_LITERAL_STRING("aspect"), frametype.EqualsLiteral("textframe") ? NS_LITERAL_STRING("false") : NS_LITERAL_STRING("true"));
   frame->SetAttribute(NS_LITERAL_STRING("textalignment"), NS_LITERAL_STRING("left"));
   *_retval = frame;
   return rv;
