@@ -640,6 +640,10 @@ msiframe[captionloc] > object {
   display: table-row;
 }
 
+msiframe[captionloc] > object[msisnap] {
+  display: none;
+}
+
 msiframe[captionloc="above"] > imagecaption {
   display: table-caption;
   caption-side: top;
