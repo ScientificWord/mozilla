@@ -301,14 +301,15 @@
         <xsl:choose><xsl:when test="substring(./@border-color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@border-color,2,8),'abcdef','ABCDEF')"/>}</xsl:when>
           <xsl:otherwise>{black}</xsl:otherwise></xsl:choose>
       </xsl:if>
-      \framebox{
+      \framebox
     </xsl:if>
     <xsl:choose>
       <xsl:when test="@isVideo='true'">
         <xsl:call-template name="buildincludemovie"/>
       </xsl:when>
-      <xsl:otherwise>
+      <xsl:otherwise> {
         <xsl:call-template name="buildincludegraphics"/>
+        }
       </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="@borderw"><xsl:if test="@border-color">}</xsl:if>}</xsl:if>
@@ -371,7 +372,7 @@
                <xsl:text>\end{center}\end{figure}</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-               <xsl:text>}\end{wrapfigure}</xsl:text>
+               <xsl:text>\end{wrapfigure}</xsl:text>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
@@ -482,9 +483,9 @@
       <xsl:if test="not(@background-color)">
          <xsl:text>{white}</xsl:text>
       </xsl:if>
-      <xsl:text>{</xsl:text>
+<!--       <xsl:text>{</xsl:text> -->
       <xsl:apply-templates/>
-      <xsl:text>}</xsl:text>
+<!--       <xsl:text>}</xsl:text> -->
     </xsl:if>
     <xsl:if test="not((@border-color and not (@border-color='#ffffff')) or (@background-color and not (@border-color='#ffffff')))">
       <xsl:apply-templates/>
