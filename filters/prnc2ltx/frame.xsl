@@ -256,7 +256,7 @@
     <xsl:if test="not(@background-color)">
       <xsl:text>{FFFFFF}</xsl:text>
     </xsl:if>
-    <xsl:text>{</xsl:text>
+<!--     <xsl:text>{</xsl:text> -->
  <!--    <xsl:if test="@needminipage=1">
       <xsl:text>\setlength\fboxsep{</xsl:text>
       <xsl:value-of select="@padding"/><xsl:value-of select="$units"/>
