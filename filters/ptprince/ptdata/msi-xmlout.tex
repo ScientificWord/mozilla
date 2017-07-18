@@ -1124,7 +1124,7 @@
   ]
 
   \gdef\@scan@matrix#1\end{matrix}[%
-     \egroup
+     \egroup 
      \@make@braces@normal
      \msitag[\begin{matrix}#1\end{matrix}]
   ]
@@ -1213,7 +1213,6 @@
   \@namedef{msi@begin@#1}{%
      \begingroup
         \def\\{\char`\\\char`\\}%
-%        \let\label\@label
         \catcode`\&=12\msi@dollar=0\relax$$%
         \string\begin{#1}}%
   \@namedef{msi@end@#1}{\string\end{#1}$$\endgroup}}
@@ -1222,20 +1221,11 @@
 
 \def\MSISplitLikeEnvironment#1{%
   \@namedef{msi@begin@#1}{
-    \bgroup
-      \def\\{\char`\\\char`\\}%
-      \ifmmode
-      \else
-         \msi@dollar=0\relax$$
-      \fi
-      \string\begin{#1}\catcode`\&=12}%
-  \@namedef{msi@end@#1}{%
-      \string\end{#1}%
-      \ifmmode
-      \else
-         $$
-      \fi
-    \egroup}}
+      \begingroup
+        \def\\{\char`\\\char`\\}%
+        \catcode`\&=12\msi@dollar=0\relax$$%
+        \string\begin{#1}}%
+  \@namedef{msi@end@#1}{\string\end{#1}$$\endgroup}}
 
 
 
