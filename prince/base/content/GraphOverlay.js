@@ -1150,9 +1150,10 @@ Plot.prototype =
             textval = this.adjustExpressionForComputation(plotData);
           if ((textval !== "") && (textval !== "unspecified")) {
               // textval = runFixup(textval); // runFixup(runFixup(textval));
-            tNode = (new DOMParser()).parseFromString (textval, "text/xml");
-            removeInvisibles(tNode);
-            textval = GetFixedMath(tNode);
+              tNode = (new DOMParser()).parseFromString (textval, "text/xml");
+	      tNode = tNode.documentElement;
+              removeInvisibles(tNode);
+              textval =  GetFixedMath(tNode);
             tNode = (new DOMParser()).parseFromString (textval, "text/xml");
             DOMEnode.appendChild (tNode.documentElement);
             DOMPlot.appendChild (DOMEnode);
@@ -2320,7 +2321,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var checkedExpr = preParsePlotExpression(math, plottype, selection, editorElement);
-  var expr = GetFixedMath(checkedExpr); //runFixup(GetFixedMath(checkedExpr));
+    var expr = GetMathAsString(checkedExpr); //GetFixedMath(checkedExpr); //runFixup(GetFixedMath(checkedExpr));
 
   var graph = new Graph();
   var frame = graph.frame;
