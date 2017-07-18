@@ -142,6 +142,11 @@ pref("swp.graph.keepaspect", true);
 
 pref("swp.graph.placement", "center");
 pref("swp.graph.placeLocation", "h");  // other choices from LaTeX: subsets of hHptb
+pref("swp.graph.floatlocation.forcehere", false);
+pref("swp.graph.floatlocation.here", true);
+pref("swp.graph.floatlocation.pagefloats", false);
+pref("swp.graph.floatlocation.toppage", false);
+pref("swp.graph.floatlocation.bottompage", false);
 pref("swp.graph.floatplacement", "I");
 pref("swp.graph.xaxislabel", "x");
 pref("swp.graph.xtickcount", "0");
