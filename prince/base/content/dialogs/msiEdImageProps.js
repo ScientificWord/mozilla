@@ -1095,6 +1095,7 @@ function forceIsImport(bImport)
 function PreviewImageLoaded()
 {
   var unitHandler = new UnitHandler(gEditor);
+  unitHandler.initCurrentUnit(gSizeState.sizeUnit);
   var previewActualWidth;
   var previewActualHeight;
   var docUrlString = msiGetDocumentBaseUrl();
@@ -1109,9 +1110,9 @@ function PreviewImageLoaded()
     previewActualWidth  = gDialog.PreviewImage.offsetWidth;
     previewActualHeight = gDialog.PreviewImage.offsetHeight;
     if (!gSizeState.actualSize.width || gSizeState.actualSize.width == 0)
-      gSizeState.actualSize.width = unitHandler.getValueAs(previewActualWidth, gSizeState.sizeUnit);
+      gSizeState.actualSize.width = unitHandler.getValueOf(previewActualWidth, 'px');
     if (!gSizeState.actualSize.height || gSizeState.actualSize.height == 0)
-      gSizeState.actualSize.height = unitHandler.getValueAs(previewActualHeight, gSizeState.sizeUnit);
+      gSizeState.actualSize.height = unitHandler.getValueOf(previewActualHeight, 'px');
     gSizeState.width = gSizeState.width || gSizeState.actualSize.width;
     gSizeState.height = gSizeState.height || gSizeState.actualSize.height;
     gSizeState.isCustomSize = false;
