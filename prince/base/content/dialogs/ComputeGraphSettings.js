@@ -73,7 +73,7 @@ function Startup(){
       units = "pt";
       frame.setAttribute("units") = units;
     }
-    setHasNaturalSize(false);
+    // setHasNaturalSize(false);
 #ifndef PROD_SNB
     setCanRotate(false);
 #endif

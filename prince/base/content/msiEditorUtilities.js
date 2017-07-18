@@ -4304,9 +4304,11 @@ function GetScheme(urlspec) {
     // This fails if there's no scheme
     scheme = IOService.extractScheme(resultUrl);
   } catch (e) {
+    dump(e.message);
   }
   return scheme ? scheme.toLowerCase() : '';
 }
+
 function GetHost(urlspec) {
   if (!urlspec)
     return '';
