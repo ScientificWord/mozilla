@@ -5,10 +5,13 @@
 
 function GetMathAsString(math)
 {
-  var ser = new XMLSerializer();
-  var mathstr = ser.serializeToString(math);
-  if (math.localName !== "math")
-    mathstr = "<math>" + mathstr + "</math>";
+    var ser = new XMLSerializer();
+    var mathstr = ser.serializeToString(math);
+    var localname = math.localName;  
+    if (localname !== "math"){
+	//dump("###" + math.localName + " !== \"math\"");
+	mathstr = "<math>" + mathstr + "</math>";
+    }
   // risky string surgery, but it works in simple cases
   mathstr = mathstr.replace(/ _moz_dirty=\"\"/g,"");
   mathstr = mathstr.replace(/<mi\/\>/g,"");
