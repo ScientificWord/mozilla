@@ -181,7 +181,7 @@ function Startup()
          existingImage = true;
          imageElement = selectedElement;
          if (imageElement.parentNode.nodeName !== "msiframe"){
-             wrapperElement = gEditor.createFrameWithDefaults("image", false);
+             wrapperElement = gEditor.createFrameWithDefaults("image", false, selection.anchorNode, selection.anchorOffset);
              wrapperElement.appendChild(imageElement);
          }
          else {
@@ -190,20 +190,12 @@ function Startup()
       }
     } else { // a new insertion, rather than a revision
       try {
-        // if (selection.anchorNode.nodeType == Node.TEXT_NODE) {
-        //   selection.collapse(selection.anchorNode.parentNode, 0);
-        // }
         wrapperElement = gEditor.createFrameWithDefaults("image", false, selection.anchorNode, selection.anchorOffset);
         if (wrapperElement == null) return; // should throw exception
         gEditor.getFrameStyleFromAttributes(wrapperElement);
         // parent = wrapperElement.parentNode;
-        imageElement = gEditor.createNode("object", wrapperElement, 0);
+        imageElement = wrapperElement.ownerDocument.createElement("object");
         gEditor.getGraphicsAttributesFromFrame(wrapperElement, imageElement);
-          // msiGoDoCommand("cmd_convert_graphics_at_selection", null);
-          // gEditor.insertNodeAtPoint(imageElement, {value: wrapperElement}, {value: 0}, false);
-          // if (selection) {
-          //   selection.collapse(wrapperElement, 0);
-          // }
       }
       catch(e) {
         dump(e);
