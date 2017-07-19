@@ -20,6 +20,10 @@ set PATH=C:\texlive\%tlyear%\bin\win32;C:\Program Files (x86)\gs\gs9.16\bin;%PAT
 set TEXMFLOCAL=%MSITEXMF%
 if EXIST %programfiles(x86)%\Inkscape (
 	 set INKSCAPE=%programfiles(x86)%\Inkscape\inkscape.com
+	 set INKSCAPEPATH=%programfiles(x86)%\Inkscape
 ) ELSE (
-	if EXIST %programfiles%\Inkscape (set INKSCAPE=%programfiles%\Inkscape\inkscape.com)
+	if EXIST %programfiles%\Inkscape (
+		set INKSCAPE=%programfiles%\Inkscape\inkscape.com
+		set INKSCAPEPATH=%programfiles%\Inkscape
+	)
 )
