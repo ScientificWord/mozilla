@@ -1,7 +1,6 @@
-rem @echo off
+
 call "%~1"
+cd "%INKSCAPEPATH%"
 
-cd "%~2"
-rem export  PATH="%INKSCAPE"\..:$PATH
 
-"$INKSCAPE" -z --shell < wmflist
+"inkscape.exe" -z --shell <"%~2\wmflist"
