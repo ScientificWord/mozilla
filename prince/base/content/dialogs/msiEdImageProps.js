@@ -1620,6 +1620,7 @@ function onAccept()
   */
   // Use this now (default = false) so Advanced Edit button dialog doesn't trigger error message
   var unitHandler = new UnitHandler();
+  var brNode;
   gIsGoingAway = true;
   importTimerHandler.stopLoading();
 
@@ -1668,6 +1669,8 @@ function onAccept()
       }
       else if (!gCaptionNode && captionloc !== 'none') {
         gCaptionNode = gEditor.createElementWithDefaults('imagecaption');
+        brNode = editor.document.createElement('br');
+        gCaptionNode.appendChild(brNode);
       }
       if (gCaptionNode && isEnabled(document.getElementById("keyInput"))) {
         if (document.getElementById("keyInput").value != "")
