@@ -942,7 +942,7 @@ case CMD_MSISPECIAL: {
      result = "<msiframe frametype=\"image\" \
  units=\"%units%\" \
  sidemargin=\"0.3\" topmargin=\"0.15\" overhang=\"0.3\" \
- borderw=\"0.03\" \
+ borderw=\"%border-width%\" \
  padding=\"0.2\" \
  captionloc=\"bottom\" \
  pos=\"%pos%\" \
@@ -951,7 +951,7 @@ case CMD_MSISPECIAL: {
  textalignment=\"left\" \
  width=\"%width%\" \
  height=\"%height%\" \
- style=\"border-color: rgb(0, 0, 0); border-width: 2.88px; \
+ style=\"border-color: rgb(0, 0, 0); \
  margin: 14.4px 0px 14.4px 28.8px; padding: 19.2px; \
  background-color: rgb(255, 255, 255); text-align: left;\" \
  aspect=\"false\">";
@@ -979,6 +979,12 @@ case CMD_MSISPECIAL: {
         find_and_replace(result, "%pos%", "inline");
       } else {
         find_and_replace(result, "%pos%", "floating");
+      }
+
+      if (strTemppos.find("X") != -1){
+        find_and_replace(result, "%border-width%", "0.01");
+      } else {
+        find_and_replace(result, "%border-width%", "0");
       }
 
       std::string name = kvmap["filename"];
@@ -1015,6 +1021,8 @@ case CMD_MSISPECIAL: {
       
       find_and_replace(result, "%naturalHeight%",
                get_number(kvmap["original-height"]).c_str());
+
+
    }
    Typesetter::AppendTag(result.c_str()) ;
   
