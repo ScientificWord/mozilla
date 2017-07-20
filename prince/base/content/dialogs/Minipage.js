@@ -16,6 +16,11 @@ var editor;
 
 function startUp()
 {
+  var widthregexp = /width\s*\:\s*([0-9]+)([a-z]*)\s*;/;
+  var heightregexp = /height\s*\:\s*([0-9]+)([a-z]*)\s*;/;
+  var match;
+  var width, height, unitHandler;
+  var style;
   try {
     var editorElement = msiGetParentEditorElementForDialog(window);
     editor = msiGetEditor(editorElement);
@@ -35,7 +40,7 @@ function startUp()
     if (isNewNode) {
       msiframe = editor.createFrameWithDefaults('textframe', false, null, 0);
       editor.getFrameStyleFromAttributes(msiframe);
-    }
+    } 
     gDialog = {};
 
     gd = initFrameTab(gDialog, msiframe, false, null);
@@ -63,6 +68,7 @@ function onOK() {
 			{
         msiframe = editor.tagListManager.getNewInstanceOfNode( "msiframe", null, editor.document);
 				editor.insertElementAtSelection(msiframe, true);
+        editor.createDefaultParagraph(msiframe, 0, true);
         editor.setCursorInNewHTML(msiframe);
 			}
 			else
@@ -76,8 +82,13 @@ function onOK() {
 			dump(e.message+"\n");
 		}
 	}
-  setFrameAttributes(msiframe, msiframe, editor);
+  var width = document.getElementById("frameWidthInput").value;
+  var height = document.getElementById("frameHeightInput").value;
+
   msiframe.setAttribute('frametype', 'textframe');
+  msiframe.setAttribute('width', width);
+  msiframe.setAttribute('height', height);
+  setFrameAttributes(msiframe, msiframe, editor);
 	editor.endTransaction();
 //	if (isNewNode)
 //	{
