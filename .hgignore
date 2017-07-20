@@ -41,6 +41,6 @@ glob:*.scss
 glob:*/application.ini
 glob:toolkit/crashreporter/*
 glob:tools/update-packaging/test
-glob:*/temp/*
+glob:temp/*
 
 
