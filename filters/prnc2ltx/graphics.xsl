@@ -307,9 +307,8 @@
       <xsl:when test="@isVideo='true'">
         <xsl:call-template name="buildincludemovie"/>
       </xsl:when>
-      <xsl:otherwise> {
+      <xsl:otherwise> 
         <xsl:call-template name="buildincludegraphics"/>
-        }
       </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="@borderw"><xsl:if test="@border-color">}</xsl:if>}</xsl:if>
@@ -483,9 +482,9 @@
       <xsl:if test="not(@background-color)">
          <xsl:text>{white}</xsl:text>
       </xsl:if>
-<!--       <xsl:text>{</xsl:text> -->
+      <xsl:text>{</xsl:text>
       <xsl:apply-templates/>
-<!--       <xsl:text>}</xsl:text> -->
+      <xsl:text>}</xsl:text>
     </xsl:if>
     <xsl:if test="not((@border-color and not (@border-color='#ffffff')) or (@background-color and not (@border-color='#ffffff')))">
       <xsl:apply-templates/>
