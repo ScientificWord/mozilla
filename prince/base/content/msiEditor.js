@@ -649,30 +649,33 @@ var msiResizeListener = {
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     var frametype;
-    editor.beginTransaction();
     if (anElement.nodeName === 'table') {
       anElement = anElement.parentNode;
       if (anElement.nodeName !== 'msiframe') {
         return;
       }
     }
+    var unithandler = new UnitHandler(editor);
+    var units;
+    var aVCamObject;
+    // skip preserving aspect ratio for now.
+    // adjust width or height using aspect ratio when the time comes
+    units = anElement.getAttribute("units");
+    unithandler.initCurrentUnit(units);
+    var newWidthInUnits = unithandler.getValueOf(newWidth, "px");
+    var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
+    anElement.setAttribute("width", String(newWidthInUnits));
+    anElement.setAttribute("height", String(newHeightInUnits));
+
     frametype = anElement.getAttribute('frametype');
     // dimensions are given in pixels.
     if (oldWidth === newWidth && oldHeight === newHeight) {
       return;
     }
+    editor.beginTransaction();
+
     try {
-      var unithandler = new UnitHandler(editor);
-      var units;
-      var aVCamObject;
-      // skip preserving aspect ratio for now.
-      // adjust width or height using aspect ratio when the time comes
-      units = anElement.getAttribute("units");
-      unithandler.initCurrentUnit(units);
-      var newWidthInUnits = unithandler.getValueOf(newWidth, "px");
-      var newHeightInUnits = unithandler.getValueOf(newHeight, "px");
-      anElement.setAttribute("width", String(newWidthInUnits));
-      anElement.setAttribute("height", String(newHeightInUnits));
+
       if (frametype === 'table') {
         removeStyleAttributeOnNode(anElement, "width");
         removeStyleAttributeOnNode(anElement, "height");
