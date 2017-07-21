@@ -392,12 +392,12 @@
       <xsl:value-of select="$newline"/>
       <xsl:text>\theendnotes </xsl:text>
    </xsl:if>
-   <xsl:if test="$indexitems &gt; 0">
+   <!-- xsl:if test="$indexitems &gt; 0">
      <xsl:if test="count(//html:printindex) = 0">
        <xsl:value-of select="$newline"/>
        <xsl:text>\printindex </xsl:text>
      </xsl:if>
-   </xsl:if>
+   </xsl:if -->
    <xsl:call-template name="checkEndSubEquationsScope"/>
    <xsl:value-of select="$newline"/>
    <xsl:text>\end{document}</xsl:text>
@@ -491,17 +491,17 @@
 
 <xsl:template match="html:maketoc">
   <xsl:value-of select="$newline"/>
-  <xsl:text>\tableofcontents</xsl:text>
+  <xsl:text>\tableofcontents </xsl:text>
 </xsl:template>
 
 <xsl:template match="html:makelof">
   <xsl:value-of select="$newline"/>
-  <xsl:text>\listoffigures</xsl:text>
+  <xsl:text>\listoffigures </xsl:text>
 </xsl:template>
 
 <xsl:template match="html:makelot">
   <xsl:value-of select="$newline"/>
-  <xsl:text>\listoftables</xsl:text>
+  <xsl:text>\listoftables </xsl:text>
 </xsl:template>
 
 <xsl:template match="html:date">
