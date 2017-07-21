@@ -951,7 +951,7 @@ case CMD_MSISPECIAL: {
  textalignment=\"left\" \
  width=\"%width%\" \
  height=\"%height%\" \
- style=\"border-color: rgb(0, 0, 0); \
+ style=\"border-color: rgb(0, 0, 0); caption-side: bottom; \
  margin: 14.4px 0px 14.4px 28.8px; padding: 19.2px; \
  background-color: rgb(255, 255, 255); text-align: left;\" \
  aspect=\"false\">";
