@@ -2894,9 +2894,13 @@ nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
   nsCOMPtr<nsIDOMNode> framenode;
   nsCOMPtr<nsIDOMNode> objnode;
   nsCOMPtr<nsIDOMNode> destnode;
+  nsCOMPtr<nsIDOMNodeList> paranodes;
+  nsCOMPtr<nsIDOMNode> dummynode;
+  nsCOMPtr<nsIDOMNode> paranode;
   nsCOMPtr<nsIDOMText> text;
   nsCOMPtr<nsIDOMText> text2;
   nsCOMPtr<nsISelection> sel;
+  PRUint32 paranodesLength;
   PRInt32 index;
   nsCOMPtr<nsIDOMNode> parent;
   nsresult rv;
@@ -2925,6 +2929,13 @@ nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
 
   CreateFrameWithDefaults(NS_LITERAL_STRING("image"), PR_TRUE, destnode, aDestOffset, getter_AddRefs(frame));
   if (frame == nsnull) return NS_ERROR_FAILURE;
+  // for images, we don't want any paragraphs in the frame before we put in an optional caption
+  frame->GetElementsByTagName(NS_LITERAL_STRING("bodyText"), getter_AddRefs(paranodes));
+  paranodes->GetLength(&paranodesLength);
+  if (paranodesLength > 0) {
+    paranodes->Item(0, getter_AddRefs(paranode));   
+    frame->RemoveChild(paranode, getter_AddRefs(dummynode));
+  }
   GetFrameStyleFromAttributes(frame);
   frame->GetParentNode(getter_AddRefs(parent));
   if (parent == nsnull) return NS_ERROR_FAILURE;
