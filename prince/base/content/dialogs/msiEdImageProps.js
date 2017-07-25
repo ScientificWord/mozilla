@@ -1647,7 +1647,7 @@ function onAccept()
 #endif
 
     graphicsConverter.init(window, getDocumentGraphicsDir('').parent, product);
-    var unit = document.getElementById("unitList").value;
+    var unit = document.getElementById("frameMenuUnitlist").value;
     var width = 0;
     var height = 0;
     var wInput = document.getElementById("frameWidthInput");
