@@ -681,11 +681,16 @@ function chooseImgFile(fBrowsing)
     var url;
     var leafname;
     var file;
+    var url = msiGetDocumentBaseUrl();
+
     try {
-      url = msiURIFromString(fileName);
-      gOriginalSrcUrl = decodeURI(url.spec);
-      leafname = msiFileFromFileURL(url).leafName;
+      arr = fileName.split('/');
       file = msiFileFromFileURL(url);
+      file.append(arr[arr.length - 2]);
+      file.append(arr[arr.length - 1]);
+
+      gOriginalSrcUrl = file.path;
+      leafname = file.leafName;
     }
     catch (e) {
       var arr = fileName.split('/');
