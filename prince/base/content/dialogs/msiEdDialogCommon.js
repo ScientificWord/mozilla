@@ -479,7 +479,7 @@ function msiGetLocalFileURLSpecial(filterAndTitleArray, fileType)
     msiSaveFilePickerDirectory(fp, fileType);
   
   var fileHandler = msiGetFileProtocolHandler();
-  return fp.file ? fileHandler.getURLSpecFromFile(fp.file) : null;
+  return fp.file ? fp.file : null;
 }
 
 function GetLocalFileURL(filterArray)
