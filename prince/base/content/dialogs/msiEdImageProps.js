@@ -116,7 +116,9 @@ function setImageSizeFields(framenode, objectnode)
   unithandler.setCurrentUnit(units);
   isActualSize = 
     (approxEqual(naturalwidth, width) &&
-    approxEqual(naturalheight, height)) 
+    approxEqual(naturalheight, height)) ;
+  if (!naturalwidth) naturalwidth = width;
+  if (!naturalheight) naturalheight = height;
   if (isActualSize)
   {
     document.getElementById('sizeradio').setAttribute('value','actual');
@@ -651,6 +653,9 @@ function makeImagePathRelative(filePath)
 
 function chooseImgFile(fBrowsing)
 {
+  var file;
+  var arr;
+  var fileName;
   if (fBrowsing) {
     var fileFilterStr = "";
     var filterTitleStr = "";
@@ -669,28 +674,30 @@ function chooseImgFile(fBrowsing)
       fileTypeStr = "image";
     }
     var filterArray = [{filter : fileFilterStr, filterTitle : filterTitleStr}];
-    var fileName = msiGetLocalFileURLSpecial(filterArray, fileTypeStr);
+    file = msiGetLocalFileURLSpecial(filterArray, fileTypeStr);
+    fileName = msiFileURLStringFromFile( file );
 
   }
   else
   {
     fileName = document.getElementById('srcInput').value;
+    arr = fileName.split('/');
+    file = getDocumentGraphicsDir();
+    if (arr.length > 1)
+      file.append(arr[1]);
+    else {
+      arr = fileName.split('\\');
+      if (all.length > 1)
+        file.append(arr[1]);
+    }
   }
   if (fileName)
   {
-    var url;
     var leafname;
-    var file;
-    var url = msiGetDocumentBaseUrl();
 
     try {
-      arr = fileName.split('/');
-      file = msiFileFromFileURL(url);
-      file.append(arr[arr.length - 2]);
-      file.append(arr[arr.length - 1]);
-
-      gOriginalSrcUrl = file.path;
       leafname = file.leafName;
+      gOriginalSrcUrl = fileName;
     }
     catch (e) {
       var arr = fileName.split('/');
@@ -714,7 +721,6 @@ function chooseImgFile(fBrowsing)
 
     internalFile = graphicDir.clone(false);
     internalFile.append(leafname);
-    if (!file) file = internalFile;
     internalName = graphicDir.leafName + "/" + internalFile.leafName;
     graphicsConverter.init(window, graphicDir.parent, product);
     importName = graphicsConverter.copyAndConvert(file, true);
@@ -1532,17 +1538,17 @@ function ValidateImage()
   }
 
   var width = "";
-  var height = "";
+  var height = ""; 
 
   if (!(document.getElementById("actual").selected))
   {
     // Get user values for width and height
-    width = msiValidateNumber(gDialog.frameWidthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels,
+    width = msiValidateNumber(gDialog.frameWidthInput, gDialog.frameUnitMenulist, 1, gMaxPixels,
                            imageElement, widthAtt, false, true);
     if (gValidationError)
       return false;
 
-    height = msiValidateNumber(gDialog.frameHeightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels,
+    height = msiValidateNumber(gDialog.frameHeightInput, gDialog.frameUnitMenulist, 1, gMaxPixels,
                             imageElement, heightAtt, false, true);
     if (gValidationError)
       return false;
@@ -1647,7 +1653,7 @@ function onAccept()
 #endif
 
     graphicsConverter.init(window, getDocumentGraphicsDir('').parent, product);
-    var unit = document.getElementById("frameMenuUnitlist").value;
+    var unit = document.getElementById("frameUnitMenulist").value;
     var width = 0;
     var height = 0;
     var wInput = document.getElementById("frameWidthInput");
