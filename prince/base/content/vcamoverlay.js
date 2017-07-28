@@ -533,6 +533,10 @@ VCamObject.prototype = {
     msiRequirePackage(editorElement, "wrapfig", "");
     var doc = editorElement.contentDocument;
     var ready = this.obj.readyState;
+    if (!ready) {
+      this.init();
+      ready = this.obj.readyState;
+    }
     if (ready > 1) {
       try {
         var path = this.makeSnapshotPath();
