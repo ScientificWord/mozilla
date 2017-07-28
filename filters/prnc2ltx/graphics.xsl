@@ -11,6 +11,20 @@
   <xsl:variable name="upperCaseAlpha">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
   <xsl:variable name="lowerCaseAlpha">abcdefghijklmnopqrstuvwxyz</xsl:variable>
 
+  <xsl:variable name="gfgramePosType">
+    <xsl:choose>
+      <xsl:when test="@pos='inline'">ft-inline</xsl:when>
+      <xsl:when test="@pos='center'">ft-centered</xsl:when>
+      <xsl:when test="@pos='floating'">ft-floating</xsl:when>
+      <xsl:when test="@pos='displayed'">ft-centered</xsl:when>
+      <xsl:when test="@pos='display'">ft-centered</xsl:when>
+      <xsl:when test="@pos='d'">ft-centered</xsl:when>
+      <xsl:when test="@ltxfloat">ft-floating</xsl:when>
+      <xsl:otherwise>ft-centered</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  
+
   <xsl:template name="buildincludegraphics">
     <xsl:variable name="theUnit">
       <xsl:call-template name="unit"/>
@@ -317,22 +331,22 @@
     <xsl:template match="html:object|html:embed">
       <xsl:if test="@msisnap or not(@msigraph='true')">
         <xsl:choose>
-          <xsl:when test="@pos='inline'">
+          <xsl:when test="@fgramePosType ='ft-inline'">
             <xsl:apply-templates select="." mode="contents"/>
           </xsl:when>
-          <xsl:when test="@pos='center' or @pos='display'">
+          <xsl:when test="@fgramePosType ='ft-centered'">
             <xsl:value-of select="$newline"/>
             <xsl:text>\begin{center}</xsl:text>
             <xsl:apply-templates select="." mode="contents"/>
             <xsl:text>\end{center}</xsl:text>
           </xsl:when>
-          <xsl:when test="@pos='l' or @pos='L' or @pos='r' or @pos='R' or @pos='i' or @pos='I' or @pos='o' or @pos='O' or @pos='center' or @pos='d' or @pos='display'">
+          <xsl:when test="@fgramePosType='ft-wrapped' or @fgramePosType='ft-centered'">
             <xsl:choose>
-              <xsl:when test="@pos='center'">
+              <xsl:when test="@@fgramePosType='ft-centered'">
                  <xsl:value-of select="$newline"/>
                  <xsl:text>\begin{figure}\begin{center}</xsl:text>
               </xsl:when>
-              <xsl:otherwise>
+              <xsl:when test="@fgramePosType='ft-wrapped'">
                 <xsl:if test="@sidemargin &gt; 0">
                   <xsl:text>\setlength\columnsep{</xsl:text>
                   <xsl:value-of select="@sidemargin"/>
@@ -357,7 +371,7 @@
                   <xsl:text>]</xsl:text>
                 </xsl:if>
                 <xsl:text>{0pt}</xsl:text>
-              </xsl:otherwise>
+              </xsl:when>
             </xsl:choose>
             <xsl:if test="@topmargin &gt; 0">
               <xsl:text>\intextsep=</xsl:text>
@@ -367,12 +381,12 @@
             </xsl:if>
           <!-- xsl:if test="@captionabove"><xsl:apply-templates/> </xsl:if -->
           <xsl:apply-templates select="." mode="contents"/><xsl:choose>
-            <xsl:when test="@pos='center' or @pos='display'">
+            <xsl:when test="@fgramePosType='ft-centered'">
                <xsl:text>\end{center}\end{figure}</xsl:text>
             </xsl:when>
-            <xsl:otherwise>
+            <xsl:when test="@fgramePosType='ft-wrapped'">
                <xsl:text>\end{wrapfigure}</xsl:text>
-            </xsl:otherwise>
+            </xsl:when>
           </xsl:choose>
         </xsl:when>
         <xsl:otherwise>
