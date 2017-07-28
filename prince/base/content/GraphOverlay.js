@@ -2091,11 +2091,12 @@ Frame.prototype = {
         }
         if (bLoadIt)
         {
-          var vcamUri = msiMakeAbsoluteUrl(graph.getGraphAttribute("ImageFile"),editorElement);
+          var objfileShortName=  graph.getGraphAttribute("ImageFile");
+          var vcamUri = msiMakeAbsoluteUrl(objfileShortName,editorElement);
           if (!existingObjFile || !existingObjFile.length)
           {
             msidump("In reviseDOMFrameElement, changing data attribute to [" + vcamUri + "]\n");
-            DOMObj.setAttribute( "data", vcamUri );
+            DOMObj.setAttribute( "data", objfileShortName );
             //NOTE!!! You must set the vcam source file in the object before setting its type, or we don't seem to be able to get
       //  the scriptable vcam interface to work!
             // var filetype = graph.getDefaultValue("filetype");
