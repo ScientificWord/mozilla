@@ -13,9 +13,10 @@
         <xsl:when test="@pos='center'">ft-centered</xsl:when>
         <xsl:when test="@pos='floating'">ft-floating</xsl:when>
         <xsl:when test="@pos='displayed'">ft-centered</xsl:when>
+        <xsl:when test="@pos='display'">ft-centered</xsl:when>
         <xsl:when test="@pos='d'">ft-centered</xsl:when>
         <xsl:when test="@ltxfloat">ft-floating</xsl:when>
-        <xsl:otherwise>ft-wrapped</xsl:otherwise>
+        <xsl:otherwise>ft-centered</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="width">
