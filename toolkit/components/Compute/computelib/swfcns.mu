@@ -1892,6 +1892,9 @@ tcimixnum := proc(x)
 begin
   quo := trunc(x);
   rem := frac(x);
+  if (quo < 0 ) then
+    rem := 1 - rem;
+  end_if;
   if quo = 0 then
     return(rem);
   elif rem = 0 then
