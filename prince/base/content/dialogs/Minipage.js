@@ -8,8 +8,6 @@ var isNewNode;
 var gFrameModeTextFrame = true ;
 var gFrameModeImage = false ;
 
-Components.utils.import("resource://app/modules/unitHandler.jsm");
-
 var msiframe;
 var scale= .25; /*scale of reduced diagram*/
 var editor;
@@ -19,7 +17,7 @@ function startUp()
   var widthregexp = /width\s*\:\s*([0-9]+)([a-z]*)\s*;/;
   var heightregexp = /height\s*\:\s*([0-9]+)([a-z]*)\s*;/;
   var match;
-  var width, height, unitHandler;
+  var width, height;
   var style;
   try {
     var editorElement = msiGetParentEditorElementForDialog(window);
@@ -58,7 +56,7 @@ function startUp()
 
 
 function onOK() {
-  if (!isValid()) return false; // isValid is in msiFrameOverlay.j s 
+  if (!isValid()) return false; // isValid is in msiFrameOverlay.js
   editor.beginTransaction();
 	if (isNewNode) 
 	{
@@ -82,13 +80,15 @@ function onOK() {
 			dump(e.message+"\n");
 		}
 	}
+  setFrameAttributes(msiframe, msiframe, editor, 0);
   var width = document.getElementById("frameWidthInput").value;
   var height = document.getElementById("frameHeightInput").value;
+  var units = msiframe.getAttribute('units');
 
   msiframe.setAttribute('frametype', 'textframe');
-  msiframe.setAttribute('width', width);
+  msiframe.setAttribute('width',width);
   msiframe.setAttribute('height', height);
-  setFrameAttributes(msiframe, msiframe, editor);
+
 	editor.endTransaction();
 //	if (isNewNode)
 //	{
