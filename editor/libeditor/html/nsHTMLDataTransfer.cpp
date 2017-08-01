@@ -4844,10 +4844,16 @@ nsresult nsHTMLEditor::ParseFragment(const nsAString & aFragStr,
 
   // parse the fragment
   parser->SetContentSink(sink);
-  if (bContext)
-    parser->Parse(aFragStr, (void*)0, NS_LITERAL_CSTRING("text/html"), PR_TRUE, eDTDMode_fragment);
-  else
-    parser->ParseFragment(aFragStr, 0, aTagStack, PR_TRUE, NS_LITERAL_CSTRING("text/html"), eDTDMode_quirks);
+  if (bContext) {
+    res = parser->Parse(aFragStr, (void*)0, NS_LITERAL_CSTRING("text/xml"), PR_TRUE, eDTDMode_fragment);
+    if (NS_FAILED(res)) {
+      res = parser->Parse(aFragStr, (void*)0, NS_LITERAL_CSTRING("text/html"), PR_TRUE, eDTDMode_fragment);
+    }
+  }
+  else {
+    res = parser->ParseFragment(aFragStr, 0, aTagStack, PR_TRUE, NS_LITERAL_CSTRING("text/xml"), eDTDMode_quirks);
+    if (NS_FAILED(res)) res = parser->ParseFragment(aFragStr, 0, aTagStack, PR_TRUE, NS_LITERAL_CSTRING("text/html"), eDTDMode_quirks);
+  }
   // get the fragment node
   nsCOMPtr<nsIDOMDocumentFragment> contextfrag;
   res = fragSink->GetFragment(getter_AddRefs(contextfrag));

@@ -4521,12 +4521,15 @@ NS_IMETHODIMP nsEditor::ResetModificationCount()
 nsIAtom *
 nsEditor::GetTag(nsIDOMNode *aNode)
 {
-  nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
 
+  nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
   if (!content)
   {
+    PRUint16 nodeType;
+    aNode->GetNodeType(&nodeType);
+    if (nodeType == nsIDOMNode::TEXT_NODE) return nsGkAtoms::textTagName;
+    
     NS_ASSERTION(aNode, "null node passed to nsEditor::Tag()");
-
     return nsnull;
   }
 
