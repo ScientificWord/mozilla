@@ -97,6 +97,7 @@
   <xsl:variable name="requiredpackages.tf">
     <xsl:for-each select="$rawrequiredpackages/*">
       <xsl:sort select="@pkgname" />
+      <xsl:sort select="@opt" />
       <xsl:sort select="@priority" data-type="number"/>
       <xsl:copy-of select="."/>
     </xsl:for-each>
@@ -109,8 +110,7 @@
     <xsl:for-each select="$requiredpackages/*">
       <xsl:variable name="pos" select="position()"/>
 	    <xsl:variable name="currentpackage" select="@pkgname"/>
-	    <xsl:if
-	      test="$pos=1 or not($currentpackage=$requiredpackages/*[$pos - 1]/@pkgname)">
+	    <xsl:if test="$pos=1 or not($currentpackage=$requiredpackages/*[$pos - 1]/@pkgname)">
 	      <xsl:element name="requiredpackage" >
 	        <xsl:attribute name="package"><xsl:value-of select="@pkgname"/></xsl:attribute>
 	        <xsl:if test="@options and string-length(@options)"><xsl:attribute name="options"><xsl:value-of select="@options"/></xsl:attribute></xsl:if>
@@ -193,6 +193,7 @@
     <xsl:text>%% preamble</xsl:text>
     <xsl:value-of select="$blankline"/>
     <xsl:text>\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl,rotating} % ,revsymb4-1}</xsl:text>
+    <xsl:text>\usepackage[raggedrightboxes]{ragged2e} %</xsl:text>
 
     <xsl:if test="$compiler!='pdflatex'">
        <xsl:value-of select="$newline"/>
