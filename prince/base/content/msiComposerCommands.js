@@ -3870,8 +3870,8 @@ function deleteOrphanedGraphics( basedirectory, document)
       if (!url) url = node.getAttribute("href");
       if (regexp1.test(url))
       {
-        // it is a local url in the graphics, cgraphics, or tgraphics directory
-        arr = url.split("/");
+        // it is a local url in the graphics, gcache, or tcache directory
+        arr = url.split(/[/\\]/);
         if (arr && arr.length > 0)
         {
           str = arr[arr.length-1];
@@ -3881,7 +3881,7 @@ function deleteOrphanedGraphics( basedirectory, document)
       }
     }
   }
-  var dirlist = ["tgraphics","cgraphics","graphics"];
+  var dirlist = ["tcache","gcache","graphics"];
   var dir;
   for (i = 0; i < 3; i++)
   {
@@ -3928,7 +3928,7 @@ function deleteOrphanedPlots( basedirectory, document)
       if (regexp1.test(url))
       {
         // it is a local url in the plots directory
-        arr = url.split("/");
+        arr = url.split(/[/\\]/);
         if (arr && arr.length > 0)
         {
           str = arr[arr.length-1];
