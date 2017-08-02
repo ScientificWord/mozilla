@@ -168,7 +168,7 @@ function appendRelativePath(dir, relPath)
 // like nsifile append but the relPath can contain many directories
 {
    var f = dir.clone();
-   var arr = relPath.split("/");
+   var arr = relPath.split(/[/\\]/);
    if (!dir.exists())
    {
        dir.create(1, 493);

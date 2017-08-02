@@ -228,7 +228,7 @@ function Startup()
     gDialog.srcInput.value = gSrcUrl;
     if (imageElement.hasAttribute("originalSrcUrl"))
       gOriginalSrcUrl = imageElement.getAttribute("originalSrcUrl");
-    if (imageElement.hasAttribute("copiedSrcUrl"))
+     if (imageElement.hasAttribute("copiedSrcUrl"))
       gCopiedSrcUrl = imageElement.getAttribute("copiedSrcUrl");
     if (gCopiedSrcUrl && gCopiedSrcUrl.length > 0) {
       gDialog.srcInput.value = gCopiedSrcUrl;
@@ -681,12 +681,12 @@ function chooseImgFile(fBrowsing)
   else
   {
     fileName = document.getElementById('srcInput').value;
-    arr = fileName.split('/');
+    arr = fileName.split(/[/\\]/);
     file = getDocumentGraphicsDir();
     if (arr.length > 1)
       file.append(arr[1]);
     else {
-      arr = fileName.split('\\');
+      arr = fileName.split(/[/\\]/);
       if (all.length > 1)
         file.append(arr[1]);
     }
@@ -700,7 +700,7 @@ function chooseImgFile(fBrowsing)
       gOriginalSrcUrl = fileName;
     }
     catch (e) {
-      var arr = fileName.split('/');
+      var arr = fileName.split(/[/\\]/);
       leafname = arr[arr.length - 1];
     }
     gPreviewImageNeeded = true;
