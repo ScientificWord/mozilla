@@ -183,13 +183,12 @@ function onShellSelect()
 {
   var i;
   var filename;
-  var pathsplitter;
+  var pathsplitter = /[/\\]/;
   var pathjoiner;
+
   if (getOS(window) === 'osx') {
-    pathsplitter = /\//;
     pathjoiner = '/';
   } else {
-    pathsplitter = /\\/;
     pathjoiner = '\\';
   }
 

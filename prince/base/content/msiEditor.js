@@ -591,7 +591,7 @@ var msiResizeListener = {
           var baseDir = msiFileFromFileURL(url);
           baseDir = baseDir.parent; // and now it points to the working directory
           graphicsConverter.init(window, baseDir, product);
-          var decomposedRelativePath = copiedSrcUrl.split('/');
+          var decomposedRelativePath = copiedSrcUrl.split(/[/\\]/);
           var graphicsDir = baseDir.clone(false);
           while (decomposedRelativePath[0] && decomposedRelativePath[0].length > 0) {
             graphicsDir.append(decomposedRelativePath.shift());
@@ -1036,7 +1036,7 @@ function msiEditorDocumentObserver(editorElement) {
           for (i = 0; i < tagdeflist.length; i++) {
             match = (/resource:\/\/app\/res\/(.*)/i).exec(tagdeflist[i]);
             if (match != null) {
-              dirs = match[1].split("/");
+              dirs = match[1].split(/[/\\]/);
               file = getUserResourceFile(dirs[1], dirs[0]);
               fileurl = msiFileURLFromAbsolutePath(file.path);
               editor.addTagInfo(fileurl.spec);
@@ -1595,9 +1595,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
     var initMarker = "";
     var isShell = false;
     var pathsplitter;
-    var winpathsplitter;
-    pathsplitter = /\//;
-    winpathsplitter = /\\/;
+    pathsplitter = /[/\\]/;
 
     if (theArgs) {
       charset = theArgs.getAttribute("charset");
@@ -1674,9 +1672,6 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
         var doc = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
         doc.append("shells");
         var dirs = docurlstring.split(pathsplitter);
-        if (dirs.length <= 1) {
-          dirs = docurlstring.split(winpathsplitter);
-        }
         var i;
         for (i = 0; i < dirs.length; i++)
           if (dirs[i].length > 0) doc.append(dirs[i]);
