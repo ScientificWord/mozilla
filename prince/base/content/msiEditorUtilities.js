@@ -3577,7 +3577,7 @@ function getUntitledName(destinationDirectory) {
 }
 function installZipEntry(aZipReader, aZipEntry, aDestination) {
   var file = aDestination.clone();
-  var dirs = aZipEntry.split(/\//);
+  var dirs = aZipEntry.split(/[/\\]/);
   var isDirectory = /\/$/.test(aZipEntry);
   var end = dirs.length;
   if (!isDirectory)
@@ -3598,7 +3598,7 @@ function installZipEntry(aZipReader, aZipEntry, aDestination) {
 // BBM - doesn't seem to be used??
 function writeZipEntry(aZipWriter, relPath, sourceFile, compression) {
   var path = '';
-  var dirs = relPath.split(/\//);
+  var dirs = relPath.split(/[/\\]/);
   var isDirectory = /\/$/.test(aZipEntry);
   if (compression === null)
     compression = 0;
@@ -11530,7 +11530,7 @@ function needRefresh(sourceFilePath, derivedFilePath) {
 function makeRelPathAbsolute(relpath, editorElement) {
   var longfilename;
   var leaf;
-  var pathParts = relpath.split('/');
+  var pathParts = relpath.split(/[/\\]/);
   if (pathParts[0] === '' || pathParts[0] === 'file:') {
     return relpath;  // it looks like relpath is really absolute
   }
