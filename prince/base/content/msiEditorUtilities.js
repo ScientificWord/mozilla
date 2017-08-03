@@ -4255,9 +4255,9 @@ function msiMakeAbsoluteUrl(url, editorElement) {
 function makeFilePathAbsolute(filepath, editorElement) {
   var absUrl = msiMakeAbsoluteUrl(filepath, editorElement);
   var absUri = msiURIFromString(absUrl);
-  //in order to get it OS-compatible, go through additional steps
-  return msiPathFromFileURL(absUri);  //msiFileFromFileURL(cssUrl);
-                                      //return GetFilepath(absUrl);
+  
+  return msiPathFromFileURL(absUri);  
+                                      
 }
 // Get the HREF of the page's <base> tag or the document location
 // returns empty string if no base href and document hasn't been saved yet
