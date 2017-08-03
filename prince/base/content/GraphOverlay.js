@@ -2817,7 +2817,7 @@ function parseQueryReturn(out, graph, plot) {
   var ii;
 
   plot.element.OriginalExpression = plot.element.Expression;  //store original form - should display it in dialog
-  var fixedOut = runFixup(runFixup(out));
+    var fixedOut = out; // runFixup(out); //runFixup(runFixup(out));
   plot.element.Expression = fixedOut;  //this may be sharpened below, but for now
   var varData = new graphVarData( graph );
   var retVariables;
