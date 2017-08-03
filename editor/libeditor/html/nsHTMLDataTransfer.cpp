@@ -2741,14 +2741,14 @@ NS_IMETHODIMP nsHTMLEditor::PrepareHTMLTransferable(nsITransferable **aTransfera
     // we want to get out of the transferable
     if ((mFlags & eEditorPlaintextMask) == 0)  // This should only happen in html editors, not plaintext
     {
-      if (!aHavePrivFlavor)
+    (*aTransferable)->AddDataFlavor(kJPEGImageMime);
+    if (!aHavePrivFlavor)
       {
         (*aTransferable)->AddDataFlavor(kNativeHTMLMime);
       }
       (*aTransferable)->AddDataFlavor(kHTMLMime);
       (*aTransferable)->AddDataFlavor(kFileMime);
       // image pasting from the clipboard is only implemented on Windows & Mac right now.
-      (*aTransferable)->AddDataFlavor(kJPEGImageMime);
     }
     (*aTransferable)->AddDataFlavor(kUnicodeMime);
   }
