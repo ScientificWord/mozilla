@@ -547,37 +547,35 @@ nsHTMLEditor::StartResizing(nsIDOMElement *aHandle)
   if (aspect.EqualsLiteral("true")) {
     preserveRatio = PR_TRUE;
   }
-  // Test
-  preserveRatio = PR_TRUE;
-  
+ 
   
   // the way we change the position/size of the shadow depends on
   // the handle
   nsAutoString locationStr;
   aHandle->GetAttribute(NS_LITERAL_STRING("anonlocation"), locationStr);
   if (locationStr.Equals(kTopLeft)) {
-    SetResizeIncrements(1, 1, -1, -1, preserveRatio);
+    SetResizeIncrements(1, 1, -1, -1, PR_TRUE);
   }
   else if (locationStr.Equals(kTop)) {
-    SetResizeIncrements(0, 1, 0, -1, preserveRatio);
+    SetResizeIncrements(0, 1, 0, -1, PR_FALSE);
   }
   else if (locationStr.Equals(kTopRight)) {
-    SetResizeIncrements(0, 1, 1, -1, preserveRatio);
+    SetResizeIncrements(0, 1, 1, -1, PR_TRUE);
   }
   else if (locationStr.Equals(kLeft)) {
-    SetResizeIncrements(1, 0, -1, 0, preserveRatio);
+    SetResizeIncrements(1, 0, -1, 0, PR_FALSE);
   }
   else if (locationStr.Equals(kRight)) {
-    SetResizeIncrements(0, 0, 1, 0, preserveRatio);
+    SetResizeIncrements(0, 0, 1, 0, PR_FALSE);
   }
   else if (locationStr.Equals(kBottomLeft)) {
-    SetResizeIncrements(1, 0, -1, 1, preserveRatio);
+    SetResizeIncrements(1, 0, -1, 1, PR_TRUE);
   }
   else if (locationStr.Equals(kBottom)) {
-    SetResizeIncrements(0, 0, 0, 1, preserveRatio);
+    SetResizeIncrements(0, 0, 0, 1, PR_FALSE);
   }
   else if (locationStr.Equals(kBottomRight)) {
-    SetResizeIncrements(0, 0, 1, 1, preserveRatio);
+    SetResizeIncrements(0, 0, 1, 1, PR_TRUE);
   }
 
   // make the shadow appear
@@ -849,6 +847,7 @@ nsHTMLEditor::GetNewResizingWidth(PRInt32 aX, PRInt32 aY)
                          mWidthIncrementFactor;
   return PR_MAX(resized, 1);
 }
+
 
 PRInt32
 nsHTMLEditor::GetNewResizingHeight(PRInt32 aX, PRInt32 aY)
