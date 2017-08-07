@@ -31,7 +31,10 @@
                     parent::mml:munderover or
                     parent::mml:mroot or
                     preceding-sibling::mml:mo[1][@fence='true']">
-      <mml:mrow><xsl:apply-templates/></mml:mrow>
+      <xsl:copy>
+        <xsl:copy-of select="@*"/>
+        <xsl:apply-templates/>
+      </xsl:copy>
     </xsl:when>
     <xsl:otherwise>
       <xsl:apply-templates/>
@@ -50,10 +53,18 @@
                     parent::mml:mover or
                     parent::mml:munderover or
                     parent::mml:mroot">
-      <mml:mrow><mml:mi><xsl:apply-templates/></mml:mi></mml:mrow>
+      <mml:mrow>
+        <xsl:copy>
+          <xsl:copy-of select="@*"/>
+          <xsl:apply-templates/>
+        </xsl:copy>
+      </mml:mrow>
     </xsl:when>
     <xsl:otherwise>
-      <mml:mi><xsl:apply-templates/></mml:mi>
+      <xsl:copy>
+        <xsl:copy-of select="@*"/>
+        <xsl:apply-templates/>
+      </xsl:copy>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -69,10 +80,18 @@
                     parent::mml:mover or
                     parent::mml:munderover or
                     parent::mml:mroot">
-      <mml:mrow><mml:mn><xsl:apply-templates/></mml:mn></mml:mrow>
+      <mml:mrow>
+        <xsl:copy>
+          <xsl:copy-of select="@*"/>
+          <xsl:apply-templates/>
+        </xsl:copy>
+      </mml:mrow>
     </xsl:when>
     <xsl:otherwise>
-      <mml:mn><xsl:apply-templates/></mml:mn>
+      <xsl:copy>
+        <xsl:copy-of select="@*"/>
+        <xsl:apply-templates/>
+      </xsl:copy>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -88,10 +107,18 @@
                     parent::mml:mover or
                     parent::mml:munderover or
                     parent::mml:mroot">
-      <mml:mrow><mml:mo><xsl:apply-templates/></mml:mo></mml:mrow>
+      <mml:mrow>
+        <xsl:copy>
+          <xsl:copy-of select="@*"/>
+          <xsl:apply-templates/>
+        </xsl:copy>
+      </mml:mrow>
     </xsl:when>
     <xsl:otherwise>
-      <mml:mo><xsl:apply-templates/></mml:mo>
+      <xsl:copy>
+        <xsl:copy-of select="@*"/>
+        <xsl:apply-templates/>
+      </xsl:copy>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
