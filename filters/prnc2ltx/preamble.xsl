@@ -192,8 +192,9 @@
     <xsl:value-of select="$blankline"/>
     <xsl:text>%% preamble</xsl:text>
     <xsl:value-of select="$blankline"/>
-    <xsl:text>\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl,rotating} % ,revsymb4-1}</xsl:text>
-    <xsl:text>\usepackage[raggedrightboxes]{ragged2e} %</xsl:text>
+    <xsl:text>\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl,rotating} % </xsl:text>
+    <xsl:value-of select="$newline"/>
+    <xsl:text>\usepackage[raggedrightboxes]{ragged2e} % ,revsymb4-1}</xsl:text>
 
     <xsl:if test="$compiler!='pdflatex'">
        <xsl:value-of select="$newline"/>
