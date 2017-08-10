@@ -35,8 +35,7 @@ part>sectiontitle:before {
 chapter {
   display: block;
   counter-increment: chapter;
-  counter-reset: section;
-  counter-reset: theorem;
+  counter-reset: section theorem;
 }
 
 chapter sectiontitle {
