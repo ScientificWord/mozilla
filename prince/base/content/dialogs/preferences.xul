@@ -24,7 +24,8 @@
             buttons="accept,cancel"
             ondialogaccept="return onAccept();"
             ondialogcancel="return onCancel();"
-            persist="height width xpos ypos"
+            screenX="40"  screenY="40"
+            persist="height width screenX screenY"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 #ifndef PROD_SW
