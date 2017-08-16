@@ -3725,10 +3725,12 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
       if (childNode) {
         PRBool isFence = PR_FALSE;
         child = do_QueryInterface(childNode);
-        child->HasAttribute(NS_LITERAL_STRING("fence"), &isFence);
-        if (isFence && !deletingInputBox) {
-          retval = PR_TRUE;
-          nodecount = 1000;
+        if (child) {
+          child->HasAttribute(NS_LITERAL_STRING("fence"), &isFence);
+          if (isFence && !deletingInputBox) {
+            retval = PR_TRUE;
+            nodecount = 1000;
+          }          
         }
       }
     }
