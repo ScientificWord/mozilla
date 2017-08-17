@@ -9,6 +9,7 @@
 <!--JLF - Localization pass on 6/29/2012-->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&windowTitle.label;"
+	id="TeXfieldcontentsDlg"
     buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
     onload="Startup();"
