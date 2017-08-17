@@ -8,6 +8,7 @@
 <!--JLF - Localization pass on 6/28/2012-->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&HTMLField.title;"
+	id="XHTMLfieldDlg"
     buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
     onload="startup();"
