@@ -1,3 +1,4 @@
+
 var EXPORTED_SYMBOLS = ["macroArray", "fragmentArray",
   "buildFragmentArray", "buildMacroArray", "initializeMacrosAndFragments",
   "getMacro", "getFragment"];
