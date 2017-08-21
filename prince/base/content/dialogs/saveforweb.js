@@ -41,6 +41,7 @@ function rebaseStyleSheetHRef( sshref, documentDirectory, fUseWebCss, cssurl )
 
 function saveDocumentCopyAndSubDocs(docCopy, srcDir, destinationDir)
 {
+  var entries;
   var serializer = new XMLSerializer();
   var prettyString = serializer.serializeToString(docCopy);
 // the source directory name is based on the document filename, so...
@@ -50,7 +51,7 @@ function saveDocumentCopyAndSubDocs(docCopy, srcDir, destinationDir)
   destfile.append(name+".xhtml");
   writeStringAsFile(prettyString, destfile);
 // Now copy subdocuments -- all of these have an xml extension
-  var entries = srcDir.directoryEntries;
+  entries = srcDir.directoryEntries;
   var isXml = /\.xml$/i;
   while(entries.hasMoreElements())
   {
@@ -62,7 +63,7 @@ function saveDocumentCopyAndSubDocs(docCopy, srcDir, destinationDir)
     }
     else
     {
-      if (entry.isDirectory && (entry.leafName == "graphics" || false /* BBM */))
+      if (entry.isDirectory && (entry.leafName == "graphics" || entry.leafName == "gcache" ||false /* BBM */))
       {
         entry.copyTo(destinationDir,"");
       }
@@ -77,62 +78,6 @@ function insertMathJaxScript(doc,mathjax)
   script.setAttribute("type", "text/javascript");
   script.setAttribute("src", mathjax);
   head.insertBefore(script, head.firstChild);
-}
-
-
-function saveforweb( doc, filterindex, dir )
-// Filter index is 0 for zip file containing css
-//                 1 for zip file without css but refs to our domain
-//                 2 like 0 but with MathJax
-//                 3 like 1 but with MathJax
-{
-  try {
-    // Preferences are swp.savetoweb.cssurl (defaults to http://www.mackichan/supportfiles/6.0/css)
-    // and swp.savetoweb.mathjaxsrc (defaults to "https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
-    var prefs = GetPrefs();
-    var mathjax;
-    var fUseMathJax = (filterindex >= 2);
-    if (fUseMathJax)
-      mathjax = prefs.getCharPref("swp.savetoweb.mathjaxsrc");
-    var cssurl;
-    var fUseWebCss = (filterindex === 1 || filterindex === 3);
-    if (fUseWebCss)
-      cssurl = prefs.getCharPref("swp.savetoweb.cssurl");
-    if (!dir.exists())
-    {
-      dir.create(1, 493); // = 0755
-    }
-
-    var dir1 = getDocumentDirectoryFor(doc);
-    var doc2 = createCopyOfDocument(doc);
-//    var cssdir = createSubDirFromDocDir(dir, "css"); // there is always, at least, the 'my.css' file
-//    var xbldir = createSubDirFromDocDir(dir, "xbl");
-//    var graphicsdir = createSubDirFromDocDir(dir, "graphics");
-    var root = doc2.getElementsByTagName('html')[0];
-    if (fUseMathJax)
-      insertMathJaxScript(doc2,mathjax);
-    var SSs = doc.styleSheets;
-    var newHRef, oldHRef;
-    for (var i = 0; i <SSs.length; i++)
-    {
-      oldHRef = SSs[i].href;
-      newHRef = rebaseStyleSheetHRef(oldHRef, dir1, fUseWebCss, cssurl);
-      var pi = doc2.createProcessingInstruction("xml-stylesheet", "href='"+newHRef+"'", "type='text/css'");
-      root.parentNode.insertBefore(pi,root);
-      if (oldHRef != newHRef)
-      {
-        handleStyleSheet(oldHRef, newHRef, dir, 0, fUseWebCss, cssurl );
-      }
-    }
-    saveDocumentCopyAndSubDocs(doc2, dir1, dir);
-    zipUpDir(dir,"zip");
-    dir.remove(true);
-    return true;
-  }
-  catch(e) {
-    dump("Error in saveforweb: "+e.message+"\n");
-    return false;
-  }
 }
 
 function zipUpDir(dir, extension)
@@ -238,8 +183,12 @@ function handleStyleSheet (oldHRef, newHRef, dir, depth, fUseWebCss, cssurl)  //
             contents = contents.replace(match[0],match[1].replace(/^css\//i,""));
           }
         }
-        //contents = contents.replace(re2,"/*$1*/","gm");
       } 
+
+      // sneak in a new rule that hides tex buttons
+      if (newHRef == 'css/my.css') {
+        contents = contents + 'texb { display: none; }';
+      }
       writeStringAsFile(contents, f);
     }
   }
@@ -248,3 +197,62 @@ function handleStyleSheet (oldHRef, newHRef, dir, depth, fUseWebCss, cssurl)  //
     dump("in handleStyleSheet(",oldHRef,",",newHRef,",",depth,"), "+e.message+"\n");
   }
 }
+
+function saveforweb( doc, filterindex, dir )
+// Filter index is 0 for zip file containing css
+//                 1 for zip file without css but refs to our domain
+//                 2 like 0 but with MathJax
+//                 3 like 1 but with MathJax
+{
+  try {
+    // Preferences are swp.savetoweb.cssurl (defaults to http://www.mackichan/supportfiles/6.0/css)
+    // and swp.savetoweb.mathjaxsrc (defaults to "https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+    var prefs = GetPrefs();
+    var mathjax;
+    var fUseMathJax = (filterindex >= 2);
+    if (fUseMathJax)
+      mathjax = prefs.getCharPref("swp.savetoweb.mathjaxsrc");
+    var cssurl;
+    var fUseWebCss = (filterindex === 1 || filterindex === 3);
+    if (fUseWebCss)
+      cssurl = prefs.getCharPref("swp.savetoweb.cssurl");
+    if (!dir.exists())
+    {
+      dir.create(1, 493); // = 0755
+    }
+
+    var dir1 = getDocumentDirectoryFor(doc);
+    var doc2 = createCopyOfDocument(doc);
+//    var cssdir = createSubDirFromDocDir(dir, "css"); // there is always, at least, the 'my.css' file
+//    var xbldir = createSubDirFromDocDir(dir, "xbl");
+//    var graphicsdir = createSubDirFromDocDir(dir, "graphics");
+    var root = doc2.getElementsByTagName('html')[0];
+    if (fUseMathJax)
+      insertMathJaxScript(doc2,mathjax);
+    var SSs = doc.styleSheets;
+    var newHRef, oldHRef;
+    for (var i = 0; i <SSs.length; i++)
+    {
+      oldHRef = SSs[i].href;
+      newHRef = rebaseStyleSheetHRef(oldHRef, dir1, fUseWebCss, cssurl);
+      var pi = doc2.createProcessingInstruction("xml-stylesheet", "href='"+newHRef+"'", "type='text/css'");
+      root.parentNode.insertBefore(pi,root);
+      if (oldHRef != newHRef)
+      {
+        handleStyleSheet(oldHRef, newHRef, dir, 0, fUseWebCss, cssurl );
+      }
+    }
+    saveDocumentCopyAndSubDocs(doc2, dir1, dir);
+    // hide tex buttons
+    // patchStyle( 'my.css', dir1, dir);
+
+    zipUpDir(dir,"zip");
+    dir.remove(true);
+    return true;
+  }
+  catch(e) {
+    dump("Error in saveforweb: "+e.message+"\n");
+    return false;
+  }
+}
+
