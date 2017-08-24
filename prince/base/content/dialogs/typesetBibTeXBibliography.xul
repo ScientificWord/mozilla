@@ -37,18 +37,18 @@
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
 	
-	<vbox>
-		<hbox>
-		  <vbox>
+	<vbox flex="1">
+		<hbox flex="1">
+		  <vbox flex="1">
 		    <description value='&databaseFileListbox.label;' accesskey='&databaseFileListbox.accesskey;' />
-		    <listbox id='databaseFileListbox' rows='15' seltype='multiple' onselect='changeDatabaseSelection();' />
+		    <listbox id='databaseFileListbox' rows='15' flex="1" seltype='multiple' onselect='changeDatabaseSelection();' />
 			</vbox>
-			<vbox>
+			<vbox flex="1">
 		    <description value='&styleFileListbox.label;' accesskey='&styleFileListbox.accesskey;'/>
-		    <listbox id='styleFileListbox' rows='15'/>
+		    <listbox id='styleFileListbox' rows='15' flex="1"/>
 			</vbox>
 		</hbox>
-		<spacer flex='1'/>
+		<spacer/>
 	</vbox>
 
 </dialog>
