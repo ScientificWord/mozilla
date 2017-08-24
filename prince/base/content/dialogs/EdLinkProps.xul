@@ -49,7 +49,7 @@
 <!--JLF - Localization pass on 6/28/2012-->
 <dialog id="linkDlg" title="&windowTitle.label;"
    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-   buttons="accept,cancel,help"
+   buttons="accept,cancel"
    onload = "Startup()"
    ondialogaccept="return onAccept();"
    ondialogcancel="return onCancel();"
