@@ -35,6 +35,7 @@
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/EdInsertTable.dtd">
 
 <dialog title="&windowTitle.label;"
+    id="InserttableDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     onload = "Startup()"
