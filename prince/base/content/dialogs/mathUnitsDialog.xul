@@ -40,24 +40,19 @@
   <stringbundle id="unitStrings" src="chrome://prince/locale/unitsDialog.properties"/>
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
 	
-	<vbox>
-		<hbox>
+  <vbox flex="1">
+    <hbox flex="1">
       <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
-		  <vbox>
-		    <label control="unitTypesListbox" value='&unitTypesListbox.label;' accesskey='&unitTypesListbox.accesskey;'/>
-		    <listbox id='unitTypesListbox' rows='15'  onselect='setUnitType(this.selectedItem.value);'/>
-			</vbox>
-			<vbox>
-		    <label control="unitNamesListbox" value='&unitNamesListbox.label;' accesskey='&unitNamesListbox.accesskey;'/>
-		    <listbox id='unitNamesListbox' rows='15'/>
-			</vbox>
-		</hbox>
-		<spacer flex='1'/>
-		<!-- hbox>
-		  <button id='insertButton' label='&insertButton.label;' accesskey='&insertButton.accesskey;' oncommand='doInsertUnit();'/>
-		  <button id='replaceButton' label='&replaceButton.label;' accesskey='&replaceButton.accesskey;' oncommand='doReplaceUnit();'/>
-		</hbox>
-		<spacer flex='1'/ -->
-	</vbox>
+	  <vbox flex="1">
+		<label control="unitTypesListbox" value='&unitTypesListbox.label;' accesskey='&unitTypesListbox.accesskey;'/>
+		<listbox id='unitTypesListbox' rows='15'  flex="1" onselect='setUnitType(this.selectedItem.value);'/>
+	  </vbox>
+	  <vbox flex="1">
+		<label control="unitNamesListbox" value='&unitNamesListbox.label;' accesskey='&unitNamesListbox.accesskey;'/>
+		<listbox id='unitNamesListbox' rows='15' flex="1"/>
+	  </vbox>
+	</hbox>
+    <spacer height="10px"/>
+  </vbox>
 
 </dialog>
