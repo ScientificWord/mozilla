@@ -273,10 +273,10 @@
                 accesskey="&toolsmenuExtensions.accesskey;"
                 id="menu_extensions"
                 observes="Tools:Extensions"/>
-      <menuitem label="&toolsmenuThemes.label;"
+<!--       <menuitem label="&toolsmenuThemes.label;"
                 accesskey="&toolsmenuThemes.accesskey;"
                 id="menu_themes"
-                observes="Tools:Themes"/>
+                observes="Tools:Themes"/> -->
       <menuseparator id="toolsMenuSeparator"/>
       <menuitem label="&autoSubstituteDlg.label;"
                 accesskey="&autoSubstituteDlg.accesskey;"
