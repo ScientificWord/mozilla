@@ -7,6 +7,7 @@
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&xrefDialog.title;" 
+	id="CrossRefDlg"
     buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
     onload = "Startup();"
