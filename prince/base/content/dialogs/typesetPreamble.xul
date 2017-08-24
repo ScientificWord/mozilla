@@ -41,13 +41,13 @@
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
     
-  <vbox>
+  <vbox flex="1">
     <groupbox>
       <caption label='&warning.label;'/>
       <description style="width: 80%">&warningText.label;</description>
     </groupbox>
-    <spacer flex='1'/>
-    <textbox id='preambleTextbox' multiline='true' cols='80' rows='10'/>
+    <spacer/>
+    <textbox id='preambleTextbox' multiline='true' cols='80' rows='10' flex="1"/>
   </vbox>
 
 </dialog>
