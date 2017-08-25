@@ -3753,70 +3753,6 @@ function msiEditorNextField(bShift, editorElement) {
     return false;
   }
 
-  //  function objectTabFromSelection(aNode, bShift, anEditor)
-  //  {
-  //    if (!msiNavigationUtils.nodeHasContentBeforeSelection(anEditor.selection, aNode)
-  //        && !msiNavigationUtils.nodeHasContentAfterSelection(anEditor.selection, aNode) )
-  //      return false;
-  //
-  //    var wholeRange = msiNavigationUtils.getRangeContainingSelection(anEditor.selection);
-  //    var selNode = null;
-  //    var childNode = bShift ? wholeRange.startContainer : wholeRange.endContainer;
-  //    switch(msiGetBaseNodeName(aNode))
-  //    {
-  //      case "msub":
-  //      case "msup":
-  //      case "msubsup":
-  //      case "munder":
-  //      case "mover":
-  //      case "munderover":
-  //        selNode = doTabInScript(aNode, childNode, bShift, anEditor);
-  //      break;
-  //      case "msqrt":
-  //        selNode = doTabInSquareRoot(aNode, anEditor);
-  //      break;
-  //      case "mtable":
-  ////        var childNode = null;
-  //        selNode = doTabInMTable(aNode, childNode, bShift, anEditor);
-  //      break;
-  //      case "table":
-  ////        var childNode = null;
-  //        selNode = doTabInTable(aNode, childNode, bShift, anEditor);
-  //      break;
-  //      default:
-  //        if (msiNavigationUtils.isTemplate(aNode))
-  //        {
-  //          if (!bCollapsed)
-  //          {
-  //            if (wholeRange.endNode != aNode)
-  //              selNode = msiNavigationUtils.findTopChildContaining(wholeRange.endNode, aNode);
-  //            else
-  //              selNode = msiNavigationUtils.getSignificantChildPrecedingPosition(aNode, wholeRange.endOffset, true);
-  //          }
-  //          else if (bShift)
-  //          {
-  //            if (wholeRange.startNode != aNode)
-  //              selNode = msiNavigationUtils.getSignificantChildPrecedingNode(aNode, wholeRange.startNode, true);
-  //            else
-  //              selNode = msiNavigationUtils.getSignificantChildPrecedingPosition(aNode, wholeRange.startOffset, true);
-  //          }
-  //          else
-  //          {
-  //            if (wholeRange.endNode != aNode)
-  //              selNode = msiNavigationUtils.getSignificantChildFollowingNode(aNode, wholeRange.endNode, true);
-  //            else
-  //              selNode = msiNavigationUtils.getSignificantChildFollowingPosition(aNode, wholeRange.endOffset, true);
-  //          }
-  //        }
-  //      break;
-  //    }
-  //    if (selNode)
-  //    {
-  //      anEditor.selection.collapse(selNode, 0);
-  //      return true;
-  //    }
-  //    return false;
-  //  }
   var retVal = false;
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -3896,6 +3832,8 @@ function msiEditorCheckEnter(event) {
 
 function msiEditorDoTab(event) {
   var empty = '';
+  var node = null;
+  var inMath = false;
   function doTabWithSelectionInNode(aNode, totalRange, anEditor) {
     var rv = false;
     switch (msiGetBaseNodeName(aNode)) {
@@ -3925,8 +3863,10 @@ function msiEditorDoTab(event) {
   var bShift = event.shiftKey;
   if (bShift && !editor.selection.isCollapsed) //We don't do anything if there's a selection and the shift key is down
     return false;
-  if (editor.selection.isCollapsed)
+  if (editor.selection.isCollapsed) {
+    node = editor.selection.anchorNode;
     bHandled = msiEditorNextField(bShift, editorElement);
+  }
 
   //Otherwise, we do have a selection.
   else {
@@ -3957,11 +3897,18 @@ function msiEditorDoTab(event) {
   }
   if (!bHandled && !bShift) // none of the above code did anything. Put in a 2em space
   {
-    editor.beginTransaction();
-    if (!editor.selection.isCollapsed) editor.deleteSelection(editor.eNone);
-    msiInsertHorizontalSpace('twoEmSpace', empty, editorElement);
-    editor.endTransaction();
-    bHandled = true;
+    if (node) {
+      inMath = msiNavigationUtils.isMathNode(node);
+      if (!inMath) inMath = msiNavigationUtils.isMathNode(node.parentNode);
+    } 
+
+    if (!inMath) {
+      editor.beginTransaction();
+      if (!editor.selection.isCollapsed) editor.deleteSelection(editor.eNone);
+      msiInsertHorizontalSpace('twoEmSpace', empty, editorElement);
+      editor.endTransaction();
+      bHandled = true;      
+    }
   }
 
   return bHandled; //Actually want to return false if the event has been handled
@@ -3976,52 +3923,6 @@ function msiEditorCheckEscape(event) {
   }
   return false;
 }
-
-//function msiGetCharForProperties(editorElement)
-//{
-//  var nodeData = msiGetObjectDataForProperties(editorElement);
-//  if (nodeData != null && nodeData.theNode != null && nodeData.theOffset != null)
-//  {
-//    return nodeData;
-//  }
-//  return null;
-//}
-
-////Resolves whether the object at anIndex inside aNode is a character or a node.
-//function msiPropertiesObjectData(aNode, anIndex)
-//{
-//  if (aNode == null)
-//  {
-//    dump("In msiPropertiesObjectData constructor, null node was passed in!\n");
-//    return null;
-//  }
-//
-//  if (anIndex != null)
-//  {
-//    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
-//    {
-//      //What do we return to say we want the character to the left?
-//      this.theNode = aNode;
-//      this.theOffset = anIndex;
-//    }
-//    else if (anIndex < aNode.childNodes.length)
-//    {
-//      this.theNode = aNode.childNodes[anIndex];
-//      this.theOffset = null;
-//    }
-//    else  //trouble??
-//    {
-//      dump("Problem case in msiPropertiesObjectData - aNode is [" + aNode.nodeName + "], with length [" + aNode.childNodes.length + "], and anIndex is [" + anIndex + "].\n");
-//      this.theNode = aNode;
-//      this.theOffset = null;
-//    }
-//  }
-//  else
-//  {
-//    this.theNode = aNode;
-//    this.theOffset = null;
-//  }
-//}
 
 function msiGetObjectDataForProperties(editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
@@ -11084,6 +10985,9 @@ function msiEditPage(url, launchWindow, delay, isShell, windowName, forceNewWind
 
 // returns file picker result
 function msiGetSaveLocationForImage(editorElement) {
+  var path;
+  var leaf;
+  var ext = '';
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var dialogResult = {};
   dialogResult.filepickerClick = msIFilePicker.returnCancel;
@@ -11116,7 +11020,7 @@ function msiGetSaveLocationForImage(editorElement) {
     fp.appendFilter(GetString("SaveImageAsDesc_" + exportTypes[ii]), "*." + exportTypes[ii]);
   }
   fp.defaultExtension = "png";
-  fp.appendFilters(msIFilePicker.filterAll);
+//  fp.appendFilters(msIFilePicker.filterAll);
 
   //  // now let's actually set the filepicker's suggested filename
   //  var suggestedFileName = msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement);
@@ -11136,9 +11040,17 @@ function msiGetSaveLocationForImage(editorElement) {
 
   dialogResult.filepickerClick = fp.show();
   if (dialogResult.filepickerClick != msIFilePicker.returnCancel) {
-    // reset urlstring to new save location
-    //    dialogResult.resultingURIString = fileHandler.getURLSpecFromFile(fp.file);
-    dialogResult.resultingLocalFile = fp.file;
+    path = fp.file.parent;
+    leaf = fp.file.leafName;
+    if (fp.filterIndex >= 0) {
+      ext = '.' + exportTypes[fp.filterIndex];
+    }  
+    match = /\.[a-zA-Z0-9_]+$/.exec(leaf);
+    if (!match) {  // no extension; add one
+      leaf = leaf + ext;
+    }
+    path.append(leaf);
+    dialogResult.resultingLocalFile = path;
     msiSaveFilePickerDirectory(fp, "SaveAsPicture");
   }
 
