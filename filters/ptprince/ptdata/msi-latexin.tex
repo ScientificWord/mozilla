@@ -125,22 +125,22 @@
 \long\def\@secondoftwo#1#2{#2}
 
 
-\def\ProvidesFile#1{%
-  \begingroup
-    \catcode`\ 10 %
-    \ifnum \endlinechar<256 %
-      \ifnum \endlinechar>\m@ne
-        \catcode\endlinechar 10 %
-      \fi
-    \fi
-    \@makeother\/%
-    \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
+%%\def\ProvidesFile#1{%
+%%  \begingroup
+%%    \catcode`\ 10 %
+%%    \ifnum \endlinechar<256 %
+%%      \ifnum \endlinechar>\m@ne
+%%        \catcode\endlinechar 10 %
+%%      \fi
+%%    \fi
+%%    \@makeother\/%
+%%    \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
 
 
-\def\@providesfile#1[#2]{%
-    \wlog{File: #1 #2}%
-    \@addtofilelist{ #2}%
-    \endgroup}
+%%\def\@providesfile#1[#2]{%
+%%    \wlog{File: #1 #2}%
+%%    \@addtofilelist{ #2}%
+%%    \endgroup}
 \long\def\@addtofilelist#1{}
 \def\@empty{}
 \let\@currdir\@undefined
@@ -4826,259 +4826,30 @@
   \vbox{}%
   \penalty -\@Mi
 }
-\def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
+%% \def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
     \hbox{}\newpage\if@twocolumn\hbox{}\newpage\fi\fi\fi}
-\def\onecolumn{%
-  \clearpage
-  \global\columnwidth\textwidth
-  \global\hsize\columnwidth
-  \global\linewidth\columnwidth
-  \global\@twocolumnfalse
-  \col@number \@ne
-  \@floatplacement}
-\def \@emptycol {\vbox{}\penalty -\@M}
-\def \twocolumn {%
-  \clearpage
-  \global\columnwidth\textwidth
-  \global\advance\columnwidth-\columnsep
-  \global\divide\columnwidth\tw@
-  \global\hsize\columnwidth
-  \global\linewidth\columnwidth
-  \global\@twocolumntrue
-  \global\@firstcolumntrue
-  \col@number \tw@
-  \@ifnextchar [\@topnewpage\@floatplacement
-}
+%% \def\onecolumn{%
+%%  \clearpage
+%%  \global\columnwidth\textwidth
+%%  \global\hsize\columnwidth
+%%  \global\linewidth\columnwidth
+%%  \global\@twocolumnfalse
+%%  \col@number \@ne
+%%  \@floatplacement}
+%%\def \@emptycol {\vbox{}\penalty -\@M}
+%%\def \twocolumn {%
+%%  \clearpage
+%%  \global\columnwidth\textwidth
+%%  \global\advance\columnwidth-\columnsep
+%%  \global\divide\columnwidth\tw@
+%%  \global\hsize\columnwidth
+%%  \global\linewidth\columnwidth
+%%  \global\@twocolumntrue
+%%  \global\@firstcolumntrue
+%%  \col@number \tw@
+%%  \@ifnextchar [\@topnewpage\@floatplacement
+%% }
 
-
-%\long\def \@topnewpage [#1]{%
-%  \@nodocument
-%  \@next\@currbox\@freelist{}{}%
-%  \global \setbox\@currbox
-%    \color@vbox
-%      \normalcolor
-%      \vbox {%
-%        \hsize\textwidth
-%        \@parboxrestore
-%        \col@number \@ne
-%        #1%
-%        \vskip -\dbltextfloatsep
-%             }%
-%    \color@endbox
-%  \ifdim \ht\@currbox>\textheight
-%    \ht\@currbox \textheight
-%  \fi
-%  \global \count\@currbox \tw@
-%  \@tempdima -\ht\@currbox
-%  \advance \@tempdima -\dbltextfloatsep
-%  \global \advance \@colht \@tempdima
-%  \ifx \@dbltoplist \@empty
-%  \else
-%    \@latexerr{Float(s) lost}\@ehb
-%    \let \@dbltoplist \@empty
-%  \fi
-%  \@cons \@dbltoplist \@currbox
-%  \global \@dbltopnum \m@ne
-%  \ifdim \@colht<2.5\baselineskip
-%    \@latex@warning@no@line {Optional argument of \noexpand\twocolumn
-%                too tall on page \thepage}%
-%    \@emptycol
-%    \if@firstcolumn
-%    \else
-%      \@emptycol
-%    \fi
-%  \else
-%    \global \vsize \@colht
-%    \global \@colroom \@colht
-%    \@floatplacement
-%  \fi
-%}
-
-
-%\output {%
-%  \let \par \@@par
-%  \ifnum \outputpenalty<-\@M
-%    \@specialoutput
-%  \else
-%    \@makecol
-%    \@opcol
-%    \@startcolumn
-%    \@whilesw \if@fcolmade \fi
-%      {%
-%       \@opcol\@startcolumn}%
-%  \fi
-%  \ifnum \outputpenalty>-\@Miv
-%    \ifdim \@colroom<1.5\baselineskip
-%      \ifdim \@colroom<\textheight
-%        \@latex@warning@no@line {Text page \thepage\space
-%                               contains only floats}%
-%        \@emptycol
-%      \else
-%        \global \vsize \@colroom
-%      \fi
-%    \else
-%      \global \vsize \@colroom
-%    \fi
-%  \else
-%    \global \vsize \maxdimen
-%  \fi
-%}
-
-%\gdef\@specialoutput{%
-%   \ifnum \outputpenalty>-\@Mii
-%     \@doclearpage
-%   \else
-%     \ifnum \outputpenalty<-\@Miii
-%       \ifnum \outputpenalty<-\@MM \deadcycles \z@ \fi
-%       \global \setbox\@holdpg \vbox {\unvbox\@cclv}%
-%     \else
-%       \global \setbox\@holdpg \vbox{%
-%                      \unvbox\@holdpg
-%                      \unvbox\@cclv
-%                      \setbox\@tempboxa \lastbox
-%                      \unskip
-%                                     }%
-%       \@pagedp \dp\@holdpg
-%       \@pageht \ht\@holdpg
-%       \unvbox \@holdpg
-%       \@next\@currbox\@currlist{%
-%         \ifnum \count\@currbox>\z@
-%           \advance \@pageht \@pagedp
-%           \ifvoid\footins \else
-%             \advance \@pageht \ht\footins
-%             \advance \@pageht \skip\footins
-%             \advance \@pageht \dp\footins
-%           \fi
-%           \ifvbox \@kludgeins
-%             \ifdim \wd\@kludgeins=\z@
-%               \advance \@pageht \ht\@kludgeins
-%             \fi
-%           \fi
-%           \@reinserts
-%           \@addtocurcol
-%         \else
-%           \@reinserts
-%           \@addmarginpar
-%         \fi
-%         }\@latexbug
-%       \ifnum \outputpenalty<\z@
-%         \if@nobreak
-%           \nobreak
-%         \else
-%           \addpenalty \interlinepenalty
-%         \fi
-%       \fi
-%     \fi
-%   \fi
-%}
-%\def \@doclearpage {%
-%     \ifvoid\footins
-%       \setbox\@tempboxa\vsplit\@cclv to\z@ \unvbox\@tempboxa
-%       \setbox\@tempboxa\box\@cclv
-%       \xdef\@deferlist{\@toplist\@botlist\@deferlist}%
-%       \global \let \@toplist \@empty
-%       \global \let \@botlist \@empty
-%       \global \@colroom \@colht
-%       \ifx \@currlist\@empty
-%       \else
-%          \@latexerr{Float(s) lost}\@ehb
-%          \global \let \@currlist \@empty
-%       \fi
-%       \@makefcolumn\@deferlist
-%       \@whilesw\if@fcolmade \fi{\@opcol\@makefcolumn\@deferlist}%
-%       \if@twocolumn
-%         \if@firstcolumn
-%           \xdef\@dbldeferlist{\@dbltoplist\@dbldeferlist}%
-%           \global \let \@dbltoplist \@empty
-%           \global \@colht \textheight
-%           \begingroup
-%              \@dblfloatplacement
-%              \@makefcolumn\@dbldeferlist
-%              \@whilesw\if@fcolmade \fi{\@outputpage
-%                                        \@makefcolumn\@dbldeferlist}%
-%           \endgroup
-%         \else
-%           \vbox{}\clearpage
-%         \fi
-%       \fi
-%     \else
-%       \setbox\@cclv\vbox{\box\@cclv\vfil}%
-%       \@makecol\@opcol
-%       \clearpage
-%     \fi
-%}
-%\def \@opcol {%
-%  \if@twocolumn
-%    \@outputdblcol
-%  \else
-%    \@outputpage
-%  \fi
-%  \global \@mparbottom \z@ \global \@textfloatsheight \z@
-%  \@floatplacement
-%}
-%\gdef \@makecol {%
-%   \ifvoid\footins
-%     \setbox\@outputbox \box\@cclv
-%   \else
-%     \setbox\@outputbox \vbox {%
-%       \boxmaxdepth \@maxdepth
-%       \@tempdima\dp\@cclv
-%       \unvbox \@cclv
-%       \vskip \skip\footins
-%       \color@begingroup
-%         \normalcolor
-%         \footnoterule
-%         \unvbox \footins
-%       \color@endgroup
-%       }%
-%   \fi
-%   \xdef\@freelist{\@freelist\@midlist}%
-%   \global \let \@midlist \@empty
-%   \@combinefloats
-%   \ifvbox\@kludgeins
-%     \@makespecialcolbox
-%   \else
-%     \setbox\@outputbox \vbox to\@colht {%
-%       \@texttop
-%       \dimen@ \dp\@outputbox
-%       \unvbox \@outputbox
-%       \vskip -\dimen@
-%       \@textbottom
-%       }%
-%   \fi
-%   \global \maxdepth \@maxdepth
-%}
-%\gdef \@reinserts{%
-%  \ifvoid\footins\else\insert\footins{\unvbox\footins}\fi
-%  \ifvbox\@kludgeins\insert\@kludgeins
-%                      {\unvbox\@kludgeins}\fi
-%}
-%\gdef \@makespecialcolbox {%
-%   \setbox\@outputbox \vbox {%
-%     \@texttop
-%     \dimen@ \dp\@outputbox
-%     \unvbox\@outputbox
-%     \vskip-\dimen@
-%     }%
-%   \@tempdima \@colht
-%   \ifdim \wd\@kludgeins>\z@
-%     \advance \@tempdima -\ht\@outputbox
-%     \advance \@tempdima \pageshrink
-%     \setbox\@outputbox \vbox to \@colht {%
-%       \unvbox\@outputbox
-%       \vskip \@tempdima
-%       \@textbottom
-%       }%
-%   \else
-%     \advance \@tempdima -\ht\@kludgeins
-%     \setbox \@outputbox \vbox to \@colht {%
-%       \vbox to \@tempdima {%
-%         \unvbox\@outputbox
-%         \@textbottom}%
-%       \vss}%
-%   \fi
-%   {\setbox \@tempboxa \box \@kludgeins}%
-%}
 \let \@texttop \relax
 \let \@textbottom \relax
 \def\@activechar@info #1{%
@@ -5269,178 +5040,178 @@
     \@cons\@flsucceed #1%
     \@tempdima\@tempdimb
   \fi}
-\def \@addtobot {%
-   \@getfpsbit 4\relax
-   \ifodd \@tempcnta
-     \@flsetnum \@botnum
-     \ifnum \@botnum>\z@
-       \@tempswafalse
-       \@flcheckspace \@botroom \@botlist
-       \if@tempswa
-         \global \maxdepth \z@
-         \@flupdates \@botnum \@botroom \@botlist
-         \@inserttrue
-       \fi
-     \fi
-   \fi
-}
-\def \@addtotoporbot {%
-   \@getfpsbit \tw@
-   \ifodd \@tempcnta
-     \@flsetnum \@topnum
-     \ifnum \@topnum>\z@
-       \@tempswafalse
-       \@flcheckspace \@toproom \@toplist
-       \if@tempswa
-         \@bitor\@currtype{\@midlist\@botlist}%
-         \if@test
-         \else
-          \@flupdates \@topnum \@toproom \@toplist
-          \@inserttrue
-         \fi
-       \fi
-     \fi
-   \fi
-   \if@insert
-   \else
-     \@addtobot
-   \fi
-}
-\def \@addtocurcol {%
-   \@insertfalse
-   \@setfloattypecounts
-   \ifnum \@fpstype=8
-   \else
-     \ifnum \@fpstype=24
-     \else
-       \@flsettextmin
-       \advance \@textmin \@textfloatsheight
-       \@reqcolroom \@pageht
-       \ifdim \@textmin>\@reqcolroom
-         \@reqcolroom \@textmin
-       \fi
-       \advance \@reqcolroom \ht\@currbox
-       \ifdim \@colroom>\@reqcolroom
-         \@flsetnum \@colnum
-         \ifnum \@colnum>\z@
-           \@bitor\@currtype\@deferlist
-           \if@test
-           \else
-             \@bitor\@currtype\@botlist
-             \if@test
-               \@addtobot
-             \else
-               \ifodd \count\@currbox
-                 \advance \@reqcolroom \intextsep
-                 \ifdim \@colroom>\@reqcolroom
-                   \global \advance \@colnum \m@ne
-                   \global \advance \@textfloatsheight \ht\@currbox
-                   \global \advance \@textfloatsheight 2\intextsep
-                   \@cons \@midlist \@currbox
-                   \if@nobreak
-                     \nobreak
-                     \@nobreakfalse
-                     \everypar{}%
-                   \else
-                     \addpenalty \interlinepenalty
-                   \fi
-                   \vskip \intextsep
-                   \box\@currbox
-                   \penalty\interlinepenalty
-                   \vskip\intextsep
-                   \ifnum\outputpenalty <-\@Mii \vskip -\parskip\fi
-                   \outputpenalty \z@
-                   \@inserttrue
-                 \fi
-               \fi
-               \if@insert
-               \else
-                 \@addtotoporbot
-               \fi
-             \fi
-           \fi
-         \fi
-       \fi
-     \fi
-   \fi
-   \if@insert
-   \else
-     \@resethfps
-     \@cons\@deferlist\@currbox
-   \fi
-}
-\def\@addtonextcol{%
-  \begingroup
-   \@insertfalse
-   \@setfloattypecounts
-   \ifnum \@fpstype=8
-   \else
-     \ifnum \@fpstype=24
-     \else
-       \@flsettextmin
-       \@reqcolroom \ht\@currbox
-       \advance \@reqcolroom \@textmin
-       \ifdim \@colroom>\@reqcolroom
-         \@flsetnum \@colnum
-         \ifnum\@colnum>\z@
-            \@bitor\@currtype\@deferlist
-            \if@test
-            \else
-              \@addtotoporbot
-            \fi
-         \fi
-       \fi
-     \fi
-   \fi
-   \if@insert
-   \else
-     \@cons\@deferlist\@currbox
-   \fi
-  \endgroup
-}
-\def\@addtodblcol{%
-  \begingroup
-   \@insertfalse
-   \@setfloattypecounts
-   \@getfpsbit \tw@
-   \ifodd\@tempcnta
-     \@flsetnum \@dbltopnum
-     \ifnum \@dbltopnum>\z@
-       \@tempswafalse
-       \ifdim \@dbltoproom>\ht\@currbox
-         \@tempswatrue
-       \else
-         \ifnum \@fpstype<\sixt@@n
-           \advance \@dbltoproom \@textmin
-           \ifdim \@dbltoproom>\ht\@currbox
-             \@tempswatrue
-           \fi
-           \advance \@dbltoproom -\@textmin
-         \fi
-       \fi
-       \if@tempswa
-           \@bitor \@currtype \@dbldeferlist
-           \if@test
-           \else
-              \@tempdima -\ht\@currbox
-              \advance\@tempdima
-                -\ifx \@dbltoplist\@empty \dbltextfloatsep \else
-                                          \dblfloatsep \fi
-              \global \advance \@dbltoproom \@tempdima
-              \global \advance \@colht \@tempdima
-              \global \advance \@dbltopnum \m@ne
-              \@cons \@dbltoplist \@currbox
-              \@inserttrue
-           \fi
-       \fi
-     \fi
-   \fi
-   \if@insert
-   \else
-     \@cons\@dbldeferlist\@currbox
-   \fi
-  \endgroup
-}
+%% \def \@addtobot {%
+%%   \@getfpsbit 4\relax
+%%   \ifodd \@tempcnta
+%%     \@flsetnum \@botnum
+%%     \ifnum \@botnum>\z@
+%%       \@tempswafalse
+%%       \@flcheckspace \@botroom \@botlist
+%%       \if@tempswa
+%%         \global \maxdepth \z@
+%%         \@flupdates \@botnum \@botroom \@botlist
+%%         \@inserttrue
+%%       \fi
+%%     \fi
+%%   \fi
+%%}
+%%\def \@addtotoporbot {%
+%%   \@getfpsbit \tw@
+%%   \ifodd \@tempcnta
+%%     \@flsetnum \@topnum
+%%     \ifnum \@topnum>\z@
+%%       \@tempswafalse
+%%       \@flcheckspace \@toproom \@toplist
+%%       \if@tempswa
+%%         \@bitor\@currtype{\@midlist\@botlist}%
+%%         \if@test
+%%         \else
+%%          \@flupdates \@topnum \@toproom \@toplist
+%%          \@inserttrue
+%%         \fi
+%%       \fi
+%%     \fi
+%%   \fi
+%%   \if@insert
+%%   \else
+%%     \@addtobot
+%%   \fi
+%%}
+%%\def \@addtocurcol {%
+%%   \@insertfalse
+%%   \@setfloattypecounts
+%%   \ifnum \@fpstype=8
+%%   \else
+%%     \ifnum \@fpstype=24
+%%     \else
+%%       \@flsettextmin
+%%       \advance \@textmin \@textfloatsheight
+%%       \@reqcolroom \@pageht
+%%       \ifdim \@textmin>\@reqcolroom
+%%         \@reqcolroom \@textmin
+%%       \fi
+%%       \advance \@reqcolroom \ht\@currbox
+%%       \ifdim \@colroom>\@reqcolroom
+%%         \@flsetnum \@colnum
+%%         \ifnum \@colnum>\z@
+%%           \@bitor\@currtype\@deferlist
+%%           \if@test
+%%           \else
+%%             \@bitor\@currtype\@botlist
+%%             \if@test
+%%               \@addtobot
+%%             \else
+%%               \ifodd \count\@currbox
+%%                 \advance \@reqcolroom \intextsep
+%%                 \ifdim \@colroom>\@reqcolroom
+%%                   \global \advance \@colnum \m@ne
+%%                   \global \advance \@textfloatsheight \ht\@currbox
+%%                   \global \advance \@textfloatsheight 2\intextsep
+%%                   \@cons \@midlist \@currbox
+%%                   \if@nobreak
+%%                     \nobreak
+%%                     \@nobreakfalse
+%%                     \everypar{}%
+%%                   \else
+%%                     \addpenalty \interlinepenalty
+%%                   \fi
+%%                   \vskip \intextsep
+%%                   \box\@currbox
+%%                   \penalty\interlinepenalty
+%%                   \vskip\intextsep
+%%                   \ifnum\outputpenalty <-\@Mii \vskip -\parskip\fi
+%%                   \outputpenalty \z@
+%%                   \@inserttrue
+%%                 \fi
+%%               \fi
+%%               \if@insert
+%%               \else
+%%                 \@addtotoporbot
+%%               \fi
+%%             \fi
+%%           \fi
+%%         \fi
+%%       \fi
+%%     \fi
+%%   \fi
+%%   \if@insert
+%%   \else
+%%     \@resethfps
+%%     \@cons\@deferlist\@currbox
+%%   \fi
+%%}
+%%\def\@addtonextcol{%
+%%  \begingroup
+%%   \@insertfalse
+%%   \@setfloattypecounts
+%%   \ifnum \@fpstype=8
+%%   \else
+%%     \ifnum \@fpstype=24
+%%     \else
+%%      \@flsettextmin
+%%       \@reqcolroom \ht\@currbox
+%%       \advance \@reqcolroom \@textmin
+%%       \ifdim \@colroom>\@reqcolroom
+%%         \@flsetnum \@colnum
+%%         \ifnum\@colnum>\z@
+%%            \@bitor\@currtype\@deferlist
+%%            \if@test
+%%            \else
+%%              \@addtotoporbot
+%%            \fi
+%%         \fi
+%%       \fi
+%%     \fi
+%%   \fi
+%%   \if@insert
+%%   \else
+%%     \@cons\@deferlist\@currbox
+%%   \fi
+%%  \endgroup
+%%}
+%%\def\@addtodblcol{%
+%%  \begingroup
+%%   \@insertfalse
+%%   \@setfloattypecounts
+%%   \@getfpsbit \tw@
+%%   \ifodd\@tempcnta
+%%     \@flsetnum \@dbltopnum
+%%     \ifnum \@dbltopnum>\z@
+%%       \@tempswafalse
+%%       \ifdim \@dbltoproom>\ht\@currbox
+%%         \@tempswatrue
+%%       \else
+%%         \ifnum \@fpstype<\sixt@@n
+%%           \advance \@dbltoproom \@textmin
+%%           \ifdim \@dbltoproom>\ht\@currbox
+%%             \@tempswatrue
+%%           \fi
+%%           \advance \@dbltoproom -\@textmin
+%%         \fi
+%%       \fi
+%%       \if@tempswa
+%%           \@bitor \@currtype \@dbldeferlist
+%%           \if@test
+%%           \else
+%%              \@tempdima -\ht\@currbox
+%%              \advance\@tempdima
+%%                -\ifx \@dbltoplist\@empty \dbltextfloatsep \else
+%%                                          \dblfloatsep \fi
+%%              \global \advance \@dbltoproom \@tempdima
+%%              \global \advance \@colht \@tempdima
+%%              \global \advance \@dbltopnum \m@ne
+%%              \@cons \@dbltoplist \@currbox
+%%              \@inserttrue
+%%           \fi
+%%       \fi
+%%     \fi
+%%   \fi
+%%   \if@insert
+%%   \else
+%%     \@cons\@dbldeferlist\@currbox
+%%   \fi
+%%  \endgroup
+%%}
 
 \def\@addmarginpar{\@next\@marbox\@currlist{\@cons\@freelist\@marbox
     \@cons\@freelist\@currbox}\@latexbug\@tempcnta\@ne
@@ -5684,36 +5455,36 @@
     \ifin@\else\let\reserved@a\@secondoftwo\fi}%
   \reserved@a}
 \@onlypreamble\@if@pti@ns
-\def\ProvidesPackage#1{%
-  \xdef\@gtempa{#1}%
-  \ifx\@gtempa\@currname\else
-    \@latex@warning@no@line{You have requested
-      \@cls@pkg\space`\@currname',\MessageBreak
-       but the \@cls@pkg\space provides `#1'}%
-  \fi
-  \@ifnextchar[\@pr@videpackage{\@pr@videpackage[]}}%]
-\@onlypreamble\ProvidesPackage
-\def\@pr@videpackage[#1]{%
-  \expandafter\xdef\csname ver@\@currname.\@currext\endcsname{#1}%
-  \ifx\@currext\@clsextension
-    \typeout{Document Class: \@gtempa\space#1}%
-  \else
-    \wlog{Package: \@gtempa\space#1}%
-  \fi}
-\@onlypreamble\@pr@videpackage
-\let\ProvidesClass\ProvidesPackage
-\@onlypreamble\ProvidesClass
-\def\ProvidesFile#1{%
-  \begingroup
-    \catcode`\ 10 %
-    \ifnum \endlinechar<256 %
-      \ifnum \endlinechar>\m@ne
-        \catcode\endlinechar 10 %
-      \fi
-    \fi
-    \@makeother\/%
-    \@makeother\&%
-    \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
+%%\def\ProvidesPackage#1{%
+%%  \xdef\@gtempa{#1}%
+%% \ifx\@gtempa\@currname\else
+%%    \@latex@warning@no@line{You have requested
+%%      \@cls@pkg\space`\@currname',\MessageBreak
+%%       but the \@cls@pkg\space provides `#1'}%
+%%  \fi
+%%  \@ifnextchar[\@pr@videpackage{\@pr@videpackage[]}}%]
+%%\@onlypreamble\ProvidesPackage
+%%\def\@pr@videpackage[#1]{%
+%%  \expandafter\xdef\csname ver@\@currname.\@currext\endcsname{#1}%
+%%  \ifx\@currext\@clsextension
+%%    \typeout{Document Class: \@gtempa\space#1}%
+%%  \else
+%%    \wlog{Package: \@gtempa\space#1}%
+%%  \fi}
+%%\@onlypreamble\@pr@videpackage
+%%\let\ProvidesClass\ProvidesPackage
+%%\@onlypreamble\ProvidesClass
+%%\def\ProvidesFile#1{%
+%%  \begingroup
+%%    \catcode`\ 10 %
+%%    \ifnum \endlinechar<256 %
+%%      \ifnum \endlinechar>\m@ne
+%%        \catcode\endlinechar 10 %
+%%      \fi
+%%    \fi
+%%    \@makeother\/%
+%%    \@makeother\&%
+%%    \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
 
 \def\@pass@ptions#1#2#3{\relax}
 
@@ -6152,11 +5923,11 @@
 \toks4{}
 \toks6{}
 \toks8{}
-\errhelp{}
-\def\@providesfile#1[#2]{%
-    \wlog{File: #1 #2}%
-    \expandafter\xdef\csname ver@#1\endcsname{#2}%
-  \endgroup}
+\errhelp{} 
+%%\def\@providesfile#1[#2]{%
+%%    \wlog{File: #1 #2}%
+%%    \expandafter\xdef\csname ver@#1\endcsname{#2}%
+%%  \endgroup}
 \let\@filelist\@gobble
 \def\@addtofilelist#1{\xdef\@filelist{\@filelist,#1}}%
 \newcount\dispkind%
