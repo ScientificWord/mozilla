@@ -302,7 +302,8 @@ nsHTMLEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,
   if (!aDoc || !aPresShell)
     return NS_ERROR_NULL_POINTER;
 
-  nsresult result = NS_OK, rulesRes = NS_OK;
+  nsresult result = NS_OK;
+  nsresult rulesRes = NS_OK;
 
   // make a range util object for comparing dom points
   if (!sRangeHelper) {
@@ -311,8 +312,8 @@ nsHTMLEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,
     if (!sRangeHelper) return result;
   }
 
-  if (1)
-  {
+  // if (1)
+  // {
     // block to scope nsAutoEditInitRulesTrigger
     nsAutoEditInitRulesTrigger rulesTrigger(static_cast<nsPlaintextEditor*>(this), rulesRes);
 
@@ -376,7 +377,7 @@ nsHTMLEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,
         selPriv->AddSelectionListener(listener);
       }
     }
-  }
+  // }
 
   if (NS_FAILED(rulesRes)) return rulesRes;
   return result;
