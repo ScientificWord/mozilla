@@ -37,13 +37,13 @@
      <label value="&noteType.label;"/>
      <menulist id="note.names" oncommand="checkEnable();" >
        <menupopup>
-         <menuitem id="footnote" label="&footnote.label;" value="footnote"/>
          <menuitem id="marginNote" label="&marginNote.label;" value="marginnote"/>
          <menuitem id="marginHint" label="&marginHint.label;" value="marginhint"/>
          <menuitem id="solutionNote" label="&solutionNote.label;" value="solutionnote"/>
          <menuitem id="problemHint" label="&problemHint.label;" value="problemhint"/>
          <menuitem id="note" label="&note.label;" value="note"/>
          <menuitem id="answerNote" label="&answerNote.label;" value="answernote"/>
+         <menuitem id="footnote" label="&footnote.label;" value="footnote"/>
        </menupopup>
      </menulist>
      <separator/>
