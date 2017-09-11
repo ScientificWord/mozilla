@@ -29,7 +29,7 @@
 <!ENTITY sizeUnits.accesskey "U">
 
 <!ENTITY typesetGroup.label "Typeset">
-<!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
+<!ENTITY typesetDiscardAtLineEnd.label "Discard at page end">
 <!ENTITY typesetDiscardAtLineEnd.accesskey "e">
 <!ENTITY typesetAlways.label "Always">
 <!ENTITY typesetAlways.accesskey "w">

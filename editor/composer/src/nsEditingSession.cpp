@@ -82,6 +82,7 @@
 #include "nsIScriptContext.h"
 #include "imgIContainer.h"
 #include "nsPresContext.h"
+#include "nsIFile.h"
 
 #if DEBUG
 //#define NOISY_DOC_LOADING  1
@@ -1125,8 +1126,14 @@ nsEditingSession::EndDocumentLoad(nsIWebProgress *aWebProgress,
 nsresult
 InitialShell(nsString* initialURL)
 {
-  //BBM todo: check preferences and use this as a default only if necessary
-  nsString url = NS_LITERAL_STRING("resource://app/res/shells/-Standard_LaTeX/Standard_LaTeX_Article.sci");
+  nsCOMPtr<nsIProperties> fileLocator(do_GetService("@mozilla.org/file/directory_service;1"));
+  nsCOMPtr<nsIFile> shellFile;
+  fileLocator->Get("resource:app", NS_GET_IID(nsIFile), getter_AddRefs(shellFile));
+  shellFile->Append(NS_LITERAL_STRING("shells"));
+  shellFile->Append(NS_LITERAL_STRING("-Standard_LaTeX"));
+  shellFile->Append(NS_LITERAL_STRING("Standard_LaTeX_Article.sci"));
+  nsString url;
+  shellFile->GetPath(url);
   *initialURL = url;
   return NS_OK;
 }
@@ -1142,7 +1149,8 @@ nsEditingSession::TimerCallback(nsITimer* aTimer, void* aClosure)
     if (webNav)
     {
       nsString URL;
-      InitialShell(&URL);
+      URL = NS_LITERAL_STRING("about:blank");
+//      InitialShell(&URL);
       webNav->LoadURI(URL.get(),
       0, nsnull, nsnull, nsnull);
     }    
