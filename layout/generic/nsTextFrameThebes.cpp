@@ -4835,9 +4835,11 @@ nsTextFrame::CheckVisibility(nsPresContext* aContext, PRInt32 aStartIndex,
   // Text in the range is visible if there is at least one character in the range
   // that is not skipped and is mapped by this frame (which is the primary frame)
   // or one of its continuations.
+  
   for (nsTextFrame* f = this; f;
        f = static_cast<nsTextFrame*>(GetNextContinuation())) {
-    if (f->PeekOffsetNoAmount(PR_TRUE, nsnull)) {
+    PRInt32 dummyOffset = 0;
+    if (f->PeekOffsetNoAmount(PR_TRUE, &dummyOffset)) {
       *aRetval = PR_TRUE;
       return NS_OK;
     }
