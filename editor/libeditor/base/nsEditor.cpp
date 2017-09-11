@@ -506,7 +506,7 @@ nsEditor::Init(nsIDOMDocument *aDoc, nsIPresShell* aPresShell, nsIContent *aRoot
 
   aSelCon->SetSelectionFlags(nsISelectionDisplay::DISPLAY_ALL);//we want to see all the selection reflected to user
 
-#if 1
+#if 0
   // THIS BLOCK CAUSES ASSERTIONS because sometimes we don't yet have
   // a moz-br but we do have a presshell.
 
@@ -5817,7 +5817,8 @@ nsEditor::CreateHTMLContent(const nsAString& aTag, nsIContent** aContent)
 {
   nsCOMPtr<nsIDOMDocument> tempDoc;
   GetDocument(getter_AddRefs(tempDoc));
-
+  if (!tempDoc)
+    return NS_ERROR_FAILURE;
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(tempDoc);
   if (!doc)
     return NS_ERROR_FAILURE;
