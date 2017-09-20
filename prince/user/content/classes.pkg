@@ -91,7 +91,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [a0poster]
@@ -223,7 +225,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [aa]
@@ -355,7 +359,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [aastex]
@@ -487,7 +493,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [afthesis]
@@ -619,7 +627,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [agutex]
@@ -751,7 +761,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [amsart]
@@ -883,7 +895,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [amsbook]
@@ -1016,7 +1030,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [amsproc]
@@ -1148,7 +1164,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [amstext-l]
@@ -1281,7 +1299,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [apjrnl]
@@ -1413,7 +1433,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [article]
@@ -1546,7 +1568,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [asaetr]
@@ -1678,7 +1702,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [asaproc]
@@ -1810,7 +1836,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [asclike]
@@ -1943,7 +1971,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [beamer]
@@ -2079,7 +2109,9 @@ verbatim
 version
 wrapfig
 xmpmulti
+xcolor
 xr
+xspace
 xtab
 
 [biom]
@@ -2211,7 +2243,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [book]
@@ -2345,7 +2379,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [cornell]
@@ -2478,7 +2514,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [csart]
@@ -2610,7 +2648,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [deproc]
@@ -2742,7 +2782,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ectaart]
@@ -2875,7 +2917,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [elsart]
@@ -3006,7 +3050,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [elsarticle]
@@ -3139,7 +3185,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [extarticle]
@@ -3271,7 +3319,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [extbook]
@@ -3404,7 +3454,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [extproc]
@@ -3536,7 +3588,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [extreport]
@@ -3670,7 +3724,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [gatech-thesis]
@@ -3802,7 +3858,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [gsm-l]
@@ -3935,7 +3993,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [IEEEtran]
@@ -4067,7 +4127,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ieice]
@@ -4199,7 +4261,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ifacmtg]
@@ -4330,7 +4394,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [jarticle]
@@ -4469,7 +4535,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [jbook]
@@ -4608,7 +4676,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [jjap]
@@ -4739,7 +4809,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [jltp]
@@ -4871,7 +4943,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [jreport]
@@ -5010,7 +5084,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [jsarticle]
@@ -5148,7 +5224,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [jsbook]
@@ -5289,7 +5367,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [kluwer]
@@ -5422,7 +5502,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [llncs]
@@ -5554,7 +5636,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [memo-l]
@@ -5687,7 +5771,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [memoir]
@@ -5819,7 +5905,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [mn]
@@ -5951,7 +6039,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [nrc1]
@@ -6083,7 +6173,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [nrc2]
@@ -6215,7 +6307,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [nuthesis]
@@ -6347,7 +6441,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [pittetd]
@@ -6473,7 +6569,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [proc]
@@ -6606,7 +6704,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [proc-l]
@@ -6738,7 +6838,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [refart]
@@ -6870,7 +6972,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [refrep]
@@ -7003,7 +7107,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [report]
@@ -7137,7 +7243,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [revtex4]
@@ -7266,7 +7374,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [revtex4-1]
@@ -7395,7 +7505,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [siamltex]
@@ -7527,7 +7639,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [spie]
@@ -7658,7 +7772,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [svjour]
@@ -7790,7 +7906,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [svjour3]
@@ -7922,7 +8040,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [svmono]
@@ -8054,7 +8174,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ua-thesis]
@@ -8186,7 +8308,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ucthesis]
@@ -8317,7 +8441,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [umthesis]
@@ -8450,7 +8576,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [unhthesis]
@@ -8583,7 +8711,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [unmeethesis]
@@ -8715,7 +8845,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [unswthesis]
@@ -8846,7 +8978,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [uwthesis]
@@ -8979,7 +9113,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ws-book9x6]
@@ -9112,7 +9248,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ws-book975x65]
@@ -9245,7 +9383,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ws-procs9x6]
@@ -9377,7 +9517,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ws-procs975x65]
@@ -9509,7 +9651,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ws-procs10x7]
@@ -9641,7 +9785,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [ws-procs11x85]
@@ -9773,7 +9919,9 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
 [yalephd]
@@ -9905,6 +10053,8 @@ varioref
 verbatim
 version
 wrapfig
+xcolor
 xr
+xspace
 xtab
 
