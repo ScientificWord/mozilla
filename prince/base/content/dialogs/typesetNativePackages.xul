@@ -37,14 +37,14 @@
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
 	
-	<vbox>
+	<vbox flex='1'>
 		<groupbox orient='vertical'>
 			<caption label='&warning.label;'/>
 		  <description value='&warningText.label;'/>
 		</groupbox>
-		<spacer flex='1'/>
+		<spacer/>
 		<description value='&packagesCaption.label;' accesskey='&packagesCaption.accesskey;'/>
-		<textbox id='packagesTextbox' multiline='true' size='80' rows='6'/>
+		<textbox id='packagesTextbox' multiline='true' size='80' rows='6' flex='1'/>
 		<checkbox id='suppressManagementCheckbox' label='&suppressManagement.label;' accesskey='&suppressManagement.accesskey;'/> 
 	</vbox>
 
