@@ -1650,7 +1650,7 @@ begin
   if (tcishouldfloat(A)) then
     numeric::inverse(A);
   else
-    A^(-1);
+    simplify(A^(-1));
   end_if;
 end_proc:
 
