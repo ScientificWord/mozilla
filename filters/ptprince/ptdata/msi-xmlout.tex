@@ -1223,9 +1223,9 @@
   \@namedef{msi@begin@#1}{
       \begingroup
         \def\\{\char`\\\char`\\}%
-        \catcode`\&=12\msi@dollar=0\relax$$%
+        \catcode`\&=12\msi@dollar=0\relax%
         \string\begin{#1}}%
-  \@namedef{msi@end@#1}{\string\end{#1}$$\endgroup}}
+  \@namedef{msi@end@#1}{\string\end{#1}\endgroup}}
 
 
 
