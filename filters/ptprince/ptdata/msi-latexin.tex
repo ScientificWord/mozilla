@@ -4349,15 +4349,6 @@
   \@fpbot \@dblfpbot
 }
 
-\def\marginpar{\@ifnextchar[\@marginparA\@marginparB}
-
-\def\@marginparA[#1]#2{%
-   \out@marginparA{#1}{#2}%
-}
-
-\def\@marginparB#1{%
-   \out@marginparB{#1}%
-}
 
 \long\def\@xmpar[#1]#2{%
   \@savemarbox\@marbox{#1}%
