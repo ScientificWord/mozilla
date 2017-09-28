@@ -981,9 +981,24 @@
 \newsection{subparagraph}{6}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
 
 
+\def\marginpar{%
+ \bgroup
+  \catcode`\&=4
+  \@ifnextchar[\@marginparA\@marginparB}
+
+\def\@marginparA[#1]#2{%
+   \out@marginparA{#1}{#2}%
+  \egroup
+}
+
+\def\@marginparB#1{%
+   \out@marginparB{#1}%
+   \egroup
+}
+
 \def\out@marginparA#1#2{%
   \@start@notewrapper
-  \msiopentag{note}{<note type="marginpar" opt="#1">}%
+  \msiopentag{note}{<note type="marginpar" opt="#1">}% 
     \msiopentag{bodyText}{<bodyText>}%
       #2%
     \msiclosetag{bodyText}{</bodyText>}%
