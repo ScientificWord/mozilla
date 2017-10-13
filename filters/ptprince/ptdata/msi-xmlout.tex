@@ -1110,7 +1110,7 @@
 
 \def\newline{%
   \@ifnextchar[{\newlinea}{\newlineb}}
-
+  
 \def\newlinea[#1]{\msitag{<msibr type="newLine" invisDisplay="&##x21b5;"><br/></msibr>}}
 
 \def\newlineb{\msitag{<msibr type="newLine" invisDisplay="&##x21b5;"><br/></msibr>}}
@@ -1713,6 +1713,7 @@
 
 \def\pagebreak{\msitag{<msibr type="pageBreak"><newPageRule/></msibr>}}
 \def\newpage{\msitag{<msibr type="newPage"><newPageRule/></msibr>}}
+%\def\newpage{\msitag{<msibr type="newPage"><newPageRule/></msibr>}}
 
 \def\hfil{<hspace type="customSpace" class="stretchySpace" flex="1" atEnd="true"/>}
 \def\hfill{<hspace type="customSpace" class="stretchySpace" flex="2" atEnd="true"/>}
