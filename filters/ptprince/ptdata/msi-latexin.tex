@@ -3178,20 +3178,20 @@
 \def\cases#1{\left\{\,\vcenter{\normalbaselines\m@th
     \ialign{$##\hfil$&\quad{##}\hfil\crcr#1\crcr}}\right.}
 
-\def\bordermatrix#1{\begingroup \m@th
-  \@tempdima 8.75\p@
-  \setbox\z@\vbox{%
-    \def\cr{\crcr\noalign{\kern2\p@\global\let\cr\endline}}%
-    \ialign{$##$\hfil\kern2\p@\kern\@tempdima&\thinspace\hfil$##$\hfil
-      &&\quad\hfil$##$\hfil\crcr
-      \omit\strut\hfil\crcr\noalign{\kern-\baselineskip}%
-      #1\crcr\omit\strut\cr}}%
-  \setbox\tw@\vbox{\unvcopy\z@\global\setbox\@ne\lastbox}%
-  \setbox\tw@\hbox{\unhbox\@ne\unskip\global\setbox\@ne\lastbox}%
-  \setbox\tw@\hbox{$\kern\wd\@ne\kern-\@tempdima\left(\kern-\wd\@ne
-    \global\setbox\@ne\vbox{\box\@ne\kern2\p@}%
-    \vcenter{\kern-\ht\@ne\unvbox\z@\kern-\baselineskip}\,\right)$}%
-  \null\;\vbox{\kern\ht\@ne\box\tw@}\endgroup}
+%\def\bordermatrix#1{\begingroup \m@th
+%  \@tempdima 8.75\p@
+%  \setbox\z@\vbox{%
+%    \def\cr{\crcr\noalign{\kern2\p@\global\let\cr\endline}}%
+%    \ialign{$##$\hfil\kern2\p@\kern\@tempdima&\thinspace\hfil$##$\hfil
+%      &&\quad\hfil$##$\hfil\crcr
+%      \omit\strut\hfil\crcr\noalign{\kern-\baselineskip}%
+%      #1\crcr\omit\strut\cr}}%
+%  \setbox\tw@\vbox{\unvcopy\z@\global\setbox\@ne\lastbox}%
+%  \setbox\tw@\hbox{\unhbox\@ne\unskip\global\setbox\@ne\lastbox}%
+%  \setbox\tw@\hbox{$\kern\wd\@ne\kern-\@tempdima\left(\kern-\wd\@ne
+%    \global\setbox\@ne\vbox{\box\@ne\kern2\p@}%
+%    \vcenter{\kern-\ht\@ne\unvbox\z@\kern-\baselineskip}\,\right)$}%
+%  \null\;\vbox{\kern\ht\@ne\box\tw@}\endgroup}
 \def\openup{\afterassignment\@penup\dimen@}
 \def\@penup{\advance\lineskip\dimen@
   \advance\baselineskip\dimen@
@@ -4804,19 +4804,19 @@
 
 \def\@thehead{\@oddhead} % initialization
 \def\@thefoot{\@oddfoot}
-\def\clearpage{%
-  \ifvmode
-    \ifnum \@dbltopnum =\m@ne
-      \ifdim \pagetotal <\topskip
-        \hbox{}%
-      \fi
-    \fi
-  \fi
-  \newpage
-  \write\m@ne{}%
-  \vbox{}%
-  \penalty -\@Mi
-}
+%\def\clearpage{%
+%  \ifvmode
+%    \ifnum \@dbltopnum =\m@ne
+%      \ifdim \pagetotal <\topskip
+%        \hbox{}%
+%      \fi
+%    \fi
+%  \fi
+%  \newpage
+%  \write\m@ne{}%
+%  \vbox{}%
+%  \penalty -\@Mi
+%}
 %% \def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
 %%    \hbox{}\newpage\if@twocolumn\hbox{}\newpage\fi\fi\fi}
 %% \def\onecolumn{%
