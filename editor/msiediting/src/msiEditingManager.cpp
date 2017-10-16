@@ -922,10 +922,8 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> selStartNode;
   PRInt32 selStartOffset;
-  // BBM: force collapsed selection for first version
   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
   res = selection->GetFocusOffset(&selStartOffset);
-//  selection->Collapse(selStartNode, selStartOffset);
 
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSymbol");
   nsCOMPtr<nsIHTMLEditor> htmleditor = do_QueryInterface(editor);
