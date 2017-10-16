@@ -388,6 +388,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   dg.custom               = document.getElementById( "custom" );
   dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
   dg.sizeRadio            = document.getElementById( "sizeRadio" );
+  dg.keyInput             = document.getElementById( "keyInput" );
   gSizeState.sizeUnit = currUnit;
 
   var fieldList = [];

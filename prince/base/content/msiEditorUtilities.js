@@ -11497,7 +11497,7 @@ function xmlFragToTeX(intermediateString) {
 }
 function getChildByTagName(anElement, tagName) {
   var elements;
-  if (!anElement || !(anElement.getElementsByTagName))
+  if (anElement && anElement.getElementsByTagName)
     elements = anElement.getElementsByTagName(tagName);
   if (elements && elements.length > 0)
     return elements[0];
@@ -11724,7 +11724,7 @@ function readTextOnClipboard() {
   }
   catch (e)
   {
-    dump("text/unicode not supported\n\n");
+    return retval;
   }
   trans.removeDataFlavor("text/unicode");
   return retval;
