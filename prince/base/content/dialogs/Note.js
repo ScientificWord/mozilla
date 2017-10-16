@@ -7,6 +7,8 @@ function startUp()
   {
     document.getElementById("note.names").value = data.type;
     document.getElementById("hidenote").checked = data.hide;
+    document.getElementById("raggedright").checked = (data.ragrt === "true");
+    document.getElementById("raggedleft").checked = (data.raglft === "true");
   }
   else data.type = document.getElementById("note.names").value;
   if (data.noteNode == null)
@@ -43,6 +45,8 @@ function launchOptionsDialog() {
 function onOK() {
   data.type = document.getElementById("note.names").value;
   data.hide = document.getElementById("hidenote").checked;
+  data.ragrt = (document.getElementById("raggedright").checked ? "true" : "false");
+  data.raglft = (document.getElementById("raggedleft").checked ? "true" : "false");
 
   try
   {
