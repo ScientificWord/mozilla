@@ -10943,6 +10943,8 @@ function msiNote(currNode, editorElement, type, hidden)
   if (currNode) {
     data.noteNode = currNode;
     data.type = currNode.getAttribute("type");
+    data.ragrt = currNode.getAttribute("ragrt");
+    data.raglft = currnode.getAttribute("raglft");
     try
     {
       if (currNode.getAttribute("hide") == "true") data.hide=true;
@@ -11073,12 +11075,9 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       currNode.parentNode.removeAttribute("type");
     currNode.setAttribute("type",data.type);
     currNode.setAttribute("hide",data.hide?"true":"false");
-    if (data.type != 'footnote')
-    {
-      currNode.setAttribute("req","ragged2e");
-      currNode.setAttribute("opt","raggedrightboxes");
-    }
-    else
+    currNode.setAttribute("ragrt",data.ragrt);
+    currNode.setAttribute("raglft",data.raglft);
+    if (data.type === 'footnote')
     {
       if ("footnoteNumber" in data)
         currNode.parentNode.setAttribute("footnoteNumber", String(data.footnoteNumber));
@@ -11100,18 +11099,19 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
       node = editor.tagListManager.getNewInstanceOfNode("note", null, editor.document);
       node.setAttribute('type',data.type);
-      node.setAttribute('hide','false');
-      if (data.type != 'footnote')
-      {
-        node.setAttribute("req","ragged2e");
-        node.setAttribute("opt","raggedrightboxes");
-      }
-      else
+      node.setAttribute('hide','false');          
+        node.setAttribute("ragrt",data.ragrt);
+        node.setAttribute("raglft",data.raglft);
+      if (data.type === 'footnote')
       {
         if ("footnoteNumber" in data)
           wrapperNode.setAttribute("footnoteNumber", String(data.footnoteNumber));
         if (data.markOrText != "markAndText")
           wrapperNode.setAttribute("markOrText", data.markOrText);
+      }
+      else {
+        node.setAttribute("ragrt",data.ragrt);
+        node.setAttribute("raglft",data.raglft);
       }
       if (node)
       {
