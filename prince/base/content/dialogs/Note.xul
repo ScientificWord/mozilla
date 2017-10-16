@@ -53,6 +53,10 @@
        <separator flex="1" />
        <msibutton id="optionsButton" label="&Options.label;" accesskey="&Options.accesskey;" oncommand="launchOptionsDialog();"/>
      </hbox>
+     <vbox>
+       <checkbox id="raggedright" label="&ragright.label;" accesskey="&ragright.accesskey;"/>
+       <checkbox id="raggedleft" label="&ragleft.label;" accesskey="&ragleft.accesskey;"/>
+     </vbox>
     </vbox>
 	</hbox>
 </dialog>
