@@ -7,5 +7,21 @@
 <!ENTITY rows.accesskey "R">
 <!ENTITY cols.label "Columns">
 <!ENTITY cols.accesskey "C">
+<!ENTITY columnAlignment.label "Column alignment">
+<!ENTITY columnAlignment.left "Left">
+<!ENTITY columnAlignment.center "Center">
+<!ENTITY columnAlignment.right "Right">
+<!ENTITY baseline.label "Baseline">
+<!ENTITY baseline.top "Same as top row">
+<!ENTITY baseline.center "At vertical center">
+<!ENTITY baseline.bottom "Same as bottom row">
+<!ENTITY delimiters.label "Built-in delimiters">
+<!ENTITY delimiters.none "None">
+<!ENTITY delimiters.vbars "Single vertical bars |m|">
+<!ENTITY delimiters.brackets "Brackets [m]">
+<!ENTITY delimiters.doublevbars "Double vertical bars ‖m‖">
+<!ENTITY delimiters.braces "Braces {m}">
+<!ENTITY delimiters.parentheses "Parentheses (m)">
+<!ENTITY delimiters.cases "Cases {m">
 
 
