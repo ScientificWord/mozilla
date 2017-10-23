@@ -61,7 +61,6 @@ function msiValidateNumber(inputWidget, listWidget, minVal, maxVal, element, att
 
   // Global error return value
   gValidationError = false;
-  var maxLimit = maxVal;
   var isPercent = false;
 
   var numString = TrimString(inputWidget.value);
@@ -69,11 +68,9 @@ function msiValidateNumber(inputWidget, listWidget, minVal, maxVal, element, att
   {
     if (listWidget)
       isPercent = (listWidget.selectedIndex == 1);
-    if (isPercent)
-      maxLimit = 100;
+
 
     // This method puts up the error message
-    numString = msiValidateNumberRange(numString, minVal, maxLimit, mustHaveValue);
     if(!numString)
     {
       // Switch to appropriate panel for error reporting
@@ -111,65 +108,6 @@ function msiValidateNumber(inputWidget, listWidget, minVal, maxVal, element, att
   return numString;
 }
 
-/* Validate contents of an input field 
- *
- *  value          number to validate
- *  minVal         minimum allowed for input widget's value
- *  maxVal         maximum allowed for input widget's value
- *                 (when "listWidget" is used, maxVal is used for "pixel" maximum,
- *                  100% is assumed if "percent" is the user's choice)
- *  mustHaveValue  If true, error dialog is displayed if "value" is empty string
- *
- *  If inputWidget's value is outside of range, or is empty when "mustHaveValue" = true,
- *      an error dialog is popuped up to inform the user. The focus is shifted
- *      to the inputWidget.
- *
- *  Returns the "value" as a string, or "" if error or input contents are empty
- *  The global "gValidationError" variable is set true if error was found
- */
-function msiValidateNumberRange(value, minValue, maxValue, mustHaveValue)
-{
-  // Initialize global error flag
-  gValidationError = false;
-  value = TrimString(String(value));
-
-  // We don't show error for empty string unless caller wants to
-  if (!value && !mustHaveValue)
-    return "";
-
-  var numberStr = "";
-
-  if (value.length > 0)
-  {
-    // Extract just numeric characters
-    var number = Number(value.replace(/\D+/g, ""));
-    if (number >= minValue && number <= maxValue )
-    {
-      // Return string version of the number
-      return String(number);
-    }
-    numberStr = String(number);
-  }
-
-  var message = "";
-
-  if (numberStr.length > 0)
-  {
-    // We have a number from user outside of allowed range
-    message = GetString( "ValidateRangeMsg");
-    message = message.replace(/%n%/, numberStr);
-    message += "\n ";
-  }
-  message += GetString( "ValidateNumberMsg");
-
-  // Replace variable placeholders in message with number values
-  message = message.replace(/%min%/, minValue).replace(/%max%/, maxValue);
-  ShowInputErrorMessage(message);
-
-  // Return an empty string to indicate error
-  gValidationError = true;
-  return "";
-}
 
 function SetTextboxFocusById(id)
 {
