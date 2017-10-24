@@ -506,7 +506,7 @@ nsEditor::Init(nsIDOMDocument *aDoc, nsIPresShell* aPresShell, nsIContent *aRoot
 
   aSelCon->SetSelectionFlags(nsISelectionDisplay::DISPLAY_ALL);//we want to see all the selection reflected to user
 
-#if 0
+#if 1
   // THIS BLOCK CAUSES ASSERTIONS because sometimes we don't yet have
   // a moz-br but we do have a presshell.
 
