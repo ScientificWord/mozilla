@@ -96,7 +96,7 @@ NS_IMETHODIMP TypeInState::NotifySelectionChanged(nsIDOMDocument *, nsISelection
   // XXX: This code temporarily fixes the problem where clicking the mouse in
   // XXX: the same location clears the type-in-state.
 
-  if (aSelection)
+  if (aSelection && aSelection->mAnchorFocusRange)
   {
     PRBool isCollapsed = PR_FALSE;
     nsresult result = aSelection->GetIsCollapsed(&isCollapsed);
