@@ -96,35 +96,40 @@ NS_IMETHODIMP TypeInState::NotifySelectionChanged(nsIDOMDocument *, nsISelection
   // XXX: This code temporarily fixes the problem where clicking the mouse in
   // XXX: the same location clears the type-in-state.
 
-  if (aSelection && aSelection->mAnchorFocusRange)
-  {
-    PRBool isCollapsed = PR_FALSE;
-    nsresult result = aSelection->GetIsCollapsed(&isCollapsed);
-
-    if (NS_FAILED(result)) return result;
-
-    if (isCollapsed)
+  if (aSelection)
+  { 
+    PRInt32 rangecount =  0;
+    aSelection->GetRangeCount(&rangecount);
+    if (rangecount > 0)
     {
-      nsCOMPtr<nsIDOMNode> selNode;
-      PRInt32 selOffset = 0;
-
-      result = nsEditor::GetStartNodeAndOffset(aSelection, getter_AddRefs(selNode), &selOffset);
+      PRBool isCollapsed = PR_FALSE;
+      nsresult result = aSelection->GetIsCollapsed(&isCollapsed);
 
       if (NS_FAILED(result)) return result;
 
-      if (selNode && selNode == mLastSelectionContainer && selOffset == mLastSelectionOffset)
+      if (isCollapsed)
       {
-        // We got a bogus selection changed notification!
-        return NS_OK;
-      }
+        nsCOMPtr<nsIDOMNode> selNode;
+        PRInt32 selOffset = 0;
 
-      mLastSelectionContainer = selNode;
-      mLastSelectionOffset = selOffset;
-    }
-    else
-    {
-      mLastSelectionContainer = nsnull;
-      mLastSelectionOffset = 0;
+        result = nsEditor::GetStartNodeAndOffset(aSelection, getter_AddRefs(selNode), &selOffset);
+
+        if (NS_FAILED(result)) return result;
+
+        if (selNode && selNode == mLastSelectionContainer && selOffset == mLastSelectionOffset)
+        {
+          // We got a bogus selection changed notification!
+          return NS_OK;
+        }
+
+        mLastSelectionContainer = selNode;
+        mLastSelectionOffset = selOffset;
+      }
+      else
+      {
+        mLastSelectionContainer = nsnull;
+        mLastSelectionOffset = 0;
+      }
     }
   }
 
