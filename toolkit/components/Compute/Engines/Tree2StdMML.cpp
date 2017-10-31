@@ -2534,7 +2534,10 @@ MNODE* Tree2StdMML::RemoveEmptyTags(MNODE* MML_list)
     } else {
         if (IsEmptyMO(rover)
             || ElementNameIs(rover, "mn")
-            || (ElementNameIs(rover, "mi") && (0 == GetATTRIBvalue(rover->attrib_list, "tempinput"))) ) {
+            || (ElementNameIs(rover, "mi") && (0 == GetATTRIBvalue(rover->attrib_list, "tempinput")))
+	    || ElementNameIs(rover, "msub")
+	    || ElementNameIs(rover, "msup")
+	    || ElementNameIs(rover, "mfrac") )  {
           if (!rover->p_chdata || !*rover->p_chdata) {
             if (!HasRequiredChildren(rover->parent)) {
               DelinkTNode(rover);
