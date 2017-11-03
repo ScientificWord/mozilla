@@ -2058,8 +2058,8 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
   if (NS_FAILED(res)) return res;
 
 
-  // nsAutoSelectionReset selectionResetter(aSelection, mHTMLEditor);
-  // nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
+  nsAutoSelectionReset selectionResetter(aSelection, mHTMLEditor);
+  nsAutoTxnsConserveSelection dontSpazMySelection(mHTMLEditor);
 
   nsCOMPtr<nsIDOMNode> startNode, selNode, tempParent;
   PRInt32 startOffset, selOffset;
@@ -2178,7 +2178,29 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
     nsCOMPtr<nsIDOMElement> anchorAncestor;
     nsCOMPtr<nsIDOMElement> focusAncestor;
+    nsCOMPtr<nsIDOMNode> tempNode;
+    nsCOMPtr<nsIDOMElement> tempElement;
+    nsAutoString nodeName;
     nsEditor * ed = static_cast<nsEditor *>(mHTMLEditor);
+    NS_NAMED_LITERAL_STRING(msidisplay, "msidisplay");
+    res = mHTMLEditor->GetElementOrParentByTagName(msidisplay, startNode, getter_AddRefs(anchorAncestor));
+    res = mHTMLEditor->GetElementOrParentByTagName(msidisplay, visNode, getter_AddRefs(focusAncestor));
+    if (focusAncestor && !anchorAncestor) { // we have entered an msidisplay object; delete it instead of text
+      res = focusAncestor->GetFirstChild(getter_AddRefs(tempNode));
+      while (tempNode) {
+        tempNode->GetNodeName(nodeName);
+        if (nodeName.EqualsLiteral("math")) {
+          tempElement = do_QueryInterface(tempNode);
+          if (tempElement) tempElement->RemoveAttribute(NS_LITERAL_STRING("display"));
+          break;
+        }
+        tempNode->GetNextSibling(getter_AddRefs(tempNode));
+      }
+      res = mHTMLEditor->RemoveContainer(focusAncestor);
+      aSelection->Collapse(visNode, visOffset);
+      *aHandled = PR_TRUE;
+      return res;
+    }
     NS_NAMED_LITERAL_STRING(menclose, "menclose");
     res = mHTMLEditor->GetElementOrParentByTagName(menclose, startNode, getter_AddRefs(anchorAncestor));
     res = mHTMLEditor->GetElementOrParentByTagName(menclose, visNode, getter_AddRefs(focusAncestor));
@@ -2227,7 +2249,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     NS_NAMED_LITERAL_STRING(listparenttag, "listparenttag");
     res = mHTMLEditor->GetElementOrParentByTagClass(listparenttag, startNode, getter_AddRefs(anchorAncestor));
     res = mHTMLEditor->GetElementOrParentByTagClass(listparenttag, visNode, getter_AddRefs(focusAncestor));
-    if (focusAncestor && (focusAncestor != anchorAncestor)) { // we have entered an listparenttag object; delete it instead of text
+    if (focusAncestor && (focusAncestor != anchorAncestor)) { // we have entered a listparenttag object; delete it instead of text
       res = mHTMLEditor->RemoveContainer(focusAncestor);
       *aHandled = PR_TRUE;
       aSelection->Collapse(visNode, visOffset);
@@ -2372,17 +2394,16 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       if (startNode == stepbrother)
       {
         // are they both text nodes?
-        if (mHTMLEditor->IsTextNode(startNode) && mHTMLEditor->IsTextNode(sibling))
+        if (mHTMLEditor->IsTextNode(startNode) && mHTMLEditor->IsTextNode(sibling) && startNode != sibling)
         {
           // if so, join them!
           res = JoinNodesSmart(sibling, startNode, address_of(selNode), &selOffset);
           if (NS_FAILED(res)) return res;
           // fix up selection
           // BBM 2013-10-17
-          //res = aSelection->Collapse(selNode, selOffset);
-          res = aSelection->Collapse(sibling, selOffset);
         }
-      }
+ //      res = aSelection->Collapse(sibling, selOffset);
+     }
       if (NS_FAILED(res)) return res;
       res = InsertBRIfNeeded(aSelection);
       return res;
