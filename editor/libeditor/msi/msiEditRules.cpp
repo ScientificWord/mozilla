@@ -138,11 +138,11 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   // if the node is not empty, change the selection to the contents of that node.
   mHTMLEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(startNode), &startOffset);
   sn = startNode;
-  NS_ADDREF(sn);
+//  NS_ADDREF(sn);
 
   mHTMLEditor->GetEndNodeAndOffset(aSelection, getter_AddRefs(endNode), &endOffset);
   en = endNode;
-  NS_ADDREF(en);
+//  NS_ADDREF(en);
   if ((startNode == endNode) && ((startOffset+1) == endOffset))
   {
     msiUtils::GetChildNode(endNode, startOffset, theNode);
@@ -174,6 +174,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 	res = nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
   return res;
 }
+
 
 
 
