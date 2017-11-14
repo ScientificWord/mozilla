@@ -145,10 +145,13 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
 
 PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
 {
+  nsresult res = NS_OK;
+  NS_PRECONDITION(pFrame && aOutFrame, "Null parameter in PlaceCursorBefore");
   nsIFrame * pChild = nsnull;
   nsIFrame * pParent = nsnull;
   nsIFrame * pSiblingFrame = nsnull;
   pParent = pFrame->GetParent();
+  NS_ENSURE_TRUE(pParent, NS_ERROR_INVALID_POINTER);
   nsCOMPtr<nsIDOMDocument> doc;
   nsCOMPtr<nsIContent> pContent;
   // nsCOMPtr<nsIMathMLCursorMover> pMCM;

@@ -1499,6 +1499,13 @@ proof > *:first-child::before {
   font-weight: bold;
 }
 
+proof > *:last-child::after {
+  content: '_';
+  -moz-user-modify: read-only;
+  background-color: black;
+}
+
+
 assertion[leadInType="custom"],
 conjecture[leadInType="custom"],
 corollary[leadInType="custom"],
