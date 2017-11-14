@@ -636,10 +636,10 @@
               <rows>
                 <row align="center">
                   <label value="&SideMargin.label;"/>
-                  <textbox id="graphicsSideMargin" type="number" decimalplaces="2"
+                  <textbox id="graphicsSideMargin" type="number" decimalplaces="2" increment=".10"
                     preference="defaultGraphicsHMargin" class="medwidth"/>
                   <label value="&TopBottomMargin.label;"/>
-                  <textbox id="graphicsVMargin" type="number" decimalplaces="2"
+                  <textbox id="graphicsVMargin" type="number" decimalplaces="2" increment=".10"
                     preference="defaultGraphicsVMargin" class="medwidth"/>
                   <label value="&BackgroundColor.label;"/>
                   <msibutton id="graphics.background.colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graphics.background.CW');">
@@ -648,7 +648,7 @@
                 </row>
                 <row align="center">
                   <label value="&Padding.label;"/>
-                  <textbox id="graphicsPadding" type="number" decimalplaces="2"
+                  <textbox id="graphicsPadding" type="number" decimalplaces="2" increment=".10"
                     preference="defaultGraphicsPadding" class="medwidth"/>
                   <hbox/>
                   <hbox/>
@@ -659,7 +659,7 @@
                 </row>
                 <row align="center">
                   <label value="&BorderWidth.label;"/>
-                  <textbox id="graphicsBorder" type="number" decimalplaces="2"
+                  <textbox id="graphicsBorder" type="number" decimalplaces="2" increment=".10"
                     preference="defaultGraphicsBorderWidth" class="medwidth"/>
                   <label value="&captionplacement.label;" />
                   <menulist id="captionplacement" value="none" selectedIndex="0" preference="graphics.captionplacement" >
