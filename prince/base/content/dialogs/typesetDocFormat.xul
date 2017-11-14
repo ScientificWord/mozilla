@@ -732,7 +732,7 @@
                           oncommand="onPaperChange(this);setPageDimensions();onWindowSizeReset(false);">
                           <menupopup style="width: 12em;">
                            <menuitem id="docformat.letter" label="&docformatLetter;" value="letter" selected="true"/>
-                           <menuitem id="docformat.a4" label="&A4Size.label;" value="a4paper"/>
+                           <menuitem id="docformat.a4" label="&A4Size.label;" value="a4"/>
                            <menuitem id="docformat.screen" label="&docformatScreen;" value="screen"/>
                            <menuitem id="docformat.other" label="&docformatOther;" value="other"/>
                            <menuitem id="docformat.a0" label="&A0Size.label;" value="a0"/>
