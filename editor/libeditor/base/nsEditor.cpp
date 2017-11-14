@@ -1951,8 +1951,8 @@ NS_IMETHODIMP nsEditor::DeleteNode(nsIDOMNode * aElement)
   nsresult result = GetNodeLocation(aElement, address_of(parent), &offset);
   if (NS_FAILED(result)) return result;
   result = GetSelection(getter_AddRefs(selection));
-  nsCOMPtr<nsIDOMRange> range;
-  selection->GetRangeAt(0, getter_AddRefs(range));
+  // nsCOMPtr<nsIDOMRange> range;
+  // selection->GetRangeAt(0, getter_AddRefs(range));
   for (i = 0; i < mActionListeners.Count(); i++)
     mActionListeners[i]->WillDeleteNode(aElement);
 
@@ -1961,11 +1961,12 @@ NS_IMETHODIMP nsEditor::DeleteNode(nsIDOMNode * aElement)
   if (NS_SUCCEEDED(result))  {
     nsAutoTrackDOMPoint tracker(mRangeUpdater, address_of(parent), &offset);
     result = DoTransaction(txn);
-//    selection->Collapse(parent, offset);
   }
 
   for (i = 0; i < mActionListeners.Count(); i++)
     mActionListeners[i]->DidDeleteNode(aElement, result);
+
+  selection->Collapse(parent, offset);
 
   return result;
 }
@@ -4521,6 +4522,10 @@ NS_IMETHODIMP nsEditor::ResetModificationCount()
 nsIAtom *
 nsEditor::GetTag(nsIDOMNode *aNode)
 {
+  if (aNode == nsnull) {
+    NS_ASSERTION(aNode, "null node passed to nsEditor::Tag()");
+    return nsnull;
+  }
 
   nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
   if (!content)
@@ -4529,7 +4534,7 @@ nsEditor::GetTag(nsIDOMNode *aNode)
     aNode->GetNodeType(&nodeType);
     if (nodeType == nsIDOMNode::TEXT_NODE) return nsGkAtoms::textTagName;
     
-    NS_ASSERTION(aNode, "null node passed to nsEditor::Tag()");
+    NS_ASSERTION(content, "null node passed to nsEditor::Tag()");
     return nsnull;
   }
 
