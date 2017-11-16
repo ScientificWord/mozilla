@@ -753,28 +753,28 @@ function msiEditorOnFocus(event) {
   //  var editorElement = GetEditorElementForDocument(event.currentTarget.ownerDocument);
   var editorElement = msiGetEditorElementFromEvent(event);
   //Logging stuff only
-  var logStr = "msiEditorOnFocus called, editorElement [";
-  if (editorElement)
-    logStr += editorElement.id;
-  else {
-    logStr += "], current event target is [";
-    if (event.currentTarget)
-      logStr += event.currentTarget.nodeName;
-    logStr += "], explicit original target is [";
-    if (event.explicitOriginalTarget)
-      logStr += event.explicitOriginalTarget.nodeName;
-    if ("document" in event.explicitOriginalTarget) {
-      logStr += "], explicit original target frame element is [";
-      if (event.explicitOriginalTarget.frameElement)
-        logStr += event.explicitOriginalTarget.frameElement.nodeName;
-    } else if ("defaultView" in event.explicitOriginalTarget) {
-      logStr += "], explicit original target default view frame element is [";
-      if (event.explicitOriginalTarget.defaultView.frameElement)
-        logStr += event.explicitOriginalTarget.defaultView.frameElement.nodeName;
-    }
-  }
-  logStr += "].\n";
-  msiKludgeLogString(logStr, "editorFocus");
+  // var logStr = "msiEditorOnFocus called, editorElement [";
+  // if (editorElement)
+  //   logStr += editorElement.id;
+  // else {
+  //   logStr += "], current event target is [";
+  //   if (event.currentTarget)
+  //     logStr += event.currentTarget.nodeName;
+  //   logStr += "], explicit original target is [";
+  //   if (event.explicitOriginalTarget)
+  //     logStr += event.explicitOriginalTarget.nodeName;
+  //   if ("document" in event.explicitOriginalTarget) {
+  //     logStr += "], explicit original target frame element is [";
+  //     if (event.explicitOriginalTarget.frameElement)
+  //       logStr += event.explicitOriginalTarget.frameElement.nodeName;
+  //   } else if ("defaultView" in event.explicitOriginalTarget) {
+  //     logStr += "], explicit original target default view frame element is [";
+  //     if (event.explicitOriginalTarget.defaultView.frameElement)
+  //       logStr += event.explicitOriginalTarget.defaultView.frameElement.nodeName;
+  //   }
+  // }
+  // logStr += "].\n";
+  // msiKludgeLogString(logStr, "editorFocus");
   //End logging
   msiSetActiveEditor(editorElement, true);
 }
@@ -4487,7 +4487,7 @@ function MarkSelection(editor) {
   gSelectionStartNode = null;
   gSelectionEndNode = null;
   gSelectionStartData = "";
-  gelectionEndData = "";
+  gSelectionEndData = "";
 
   var selection = editor.selection;
   for (var count = 0; count < 1; count++) {
