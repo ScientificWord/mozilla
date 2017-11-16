@@ -732,24 +732,24 @@
                           oncommand="onPaperChange(this);setPageDimensions();onWindowSizeReset(false);">
                           <menupopup style="width: 12em;">
                            <menuitem id="docformat.letter" label="&docformatLetter;" value="letter" selected="true"/>
-                           <menuitem id="docformat.a4" label="&A4Size.label;" value="a4paper"/>
+                           <menuitem id="docformat.a4" label="&A4Size.label;" value="a4"/>
                            <menuitem id="docformat.screen" label="&docformatScreen;" value="screen"/>
                            <menuitem id="docformat.other" label="&docformatOther;" value="other"/>
-                           <menuitem id="docformat.a0" label="&A0Size.label;" value="a0paper"/>
-                           <menuitem id="docformat.a1" label="&A1Size.label;" value="a1paper"/>
-                           <menuitem id="docformat.a2" label="&A2Size.label;" value="a2paper"/>
-                           <menuitem id="docformat.a3" label="&A3Size.label;" value="a3paper"/>
-                           <menuitem id="docformat.a5" label="&A5Size.label;" value="a5paper"/>
-                           <menuitem id="docformat.a6" label="&A6Size.label;" value="a6paper"/>
-                           <menuitem id="docformat.b0" label="&B0Size.label;" value="b0paper"/>
-                           <menuitem id="docformat.b1" label="&B1Size.label;" value="b1paper"/>
-                           <menuitem id="docformat.b2" label="&B2Size.label;" value="b2paper"/>
-                           <menuitem id="docformat.b3" label="&B3Size.label;" value="b3paper"/>
-                           <menuitem id="docformat.b4" label="&B4Size.label;" value="b4paper"/>
-                           <menuitem id="docformat.b5" label="&B5Size.label;" value="b5paper"/>
-                           <menuitem id="docformat.b6" label="&B6Size.label;" value="b6paper"/>
-                           <menuitem id="docformat.executive" label="&docformatExecutive;" value="executivepaper"/>
-                           <menuitem id="docformat.legal" label="&docformatLegal;" value="legalpaper"/>
+                           <menuitem id="docformat.a0" label="&A0Size.label;" value="a0"/>
+                           <menuitem id="docformat.a1" label="&A1Size.label;" value="a1"/>
+                           <menuitem id="docformat.a2" label="&A2Size.label;" value="a2"/>
+                           <menuitem id="docformat.a3" label="&A3Size.label;" value="a3"/>
+                           <menuitem id="docformat.a5" label="&A5Size.label;" value="a5"/>
+                           <menuitem id="docformat.a6" label="&A6Size.label;" value="a6"/>
+                           <menuitem id="docformat.b0" label="&B0Size.label;" value="b0"/>
+                           <menuitem id="docformat.b1" label="&B1Size.label;" value="b1"/>
+                           <menuitem id="docformat.b2" label="&B2Size.label;" value="b2"/>
+                           <menuitem id="docformat.b3" label="&B3Size.label;" value="b3"/>
+                           <menuitem id="docformat.b4" label="&B4Size.label;" value="b4"/>
+                           <menuitem id="docformat.b5" label="&B5Size.label;" value="b5"/>
+                           <menuitem id="docformat.b6" label="&B6Size.label;" value="b6"/>
+                           <menuitem id="docformat.executive" label="&docformatExecutive;" value="executive"/>
+                           <menuitem id="docformat.legal" label="&docformatLegal;" value="legal"/>
                           </menupopup>
                           <observes element="shared.paper" attribute="value" onbroadcast="onPaperBroadcast(this.parentNode);"/>
                           <observes element="pagelayoutok"/>
