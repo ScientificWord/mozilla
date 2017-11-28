@@ -161,7 +161,7 @@
 
 <!ENTITY screendisplay.label        "Screen display layout">
 <!ENTITY orientationturn.label      "Orientation: turn">
-<!ENTITY orientationtilt.label      "Orientatin: tilt">
+<!ENTITY orientationtilt.label      "Orientation: tilt">
 <!ENTITY viewinterval.label         "Use default view intervals">
 
 <!ENTITY surfacestyle.label         "Surface style">
