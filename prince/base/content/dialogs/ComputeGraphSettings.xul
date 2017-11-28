@@ -41,7 +41,7 @@
     screenX="40"
     screenY="40"
     width="500"
-    height="640"
+    height="664"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
@@ -245,7 +245,7 @@
                     </msibutton>
                   </hbox>
                   <hbox>
-                    <menulist id="DirectionalShading" observes="useDirectionalShading">
+                    <menulist id="DirectionalShading" observes="useDirectionalShading" sizetopopup="always">
                       <menupopup>
                         <menuitem label="&XYZ.label;" value="XYZ" />
                         <menuitem label="&XYZHue.label;" value="XYZHue" />
@@ -373,7 +373,7 @@
                   <spacer />
                 </row>
                 <row observes="useMesh">
-                  <menulist id="SurfaceStyle">
+                  <menulist id="SurfaceStyle" sizetopopup="always">
                     <menupopup>
                       <menuitem label="&surfacecolorpatch.label;" value="colorpatch" />
                       <menuitem label="&surfacehidden.label;" value="hiddenline"/>
@@ -382,7 +382,7 @@
                     </menupopup>
                   </menulist>
                   <spacer />
-                  <menulist id="SurfaceMesh">
+                  <menulist id="SurfaceMesh" sizetopopup="always">
                     <menupopup>
                       <menuitem label="&none.label;" value="none" />
                       <menuitem label="&mesh.label;" value="mesh" />
