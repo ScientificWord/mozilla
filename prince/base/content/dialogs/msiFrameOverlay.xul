@@ -323,7 +323,7 @@
 #ifndef PROD_SNB
       <hbox id="rotate" align="center">
         <label value="&sizeTab.rotateContents;"/>
-        <menulist id = "rotationList" value="rot0" persist="value">
+        <menulist id = "rotationList" value="rot0" persist="value" sizetopopup="always">
           <menupopup id = "rotationsList">
             <menuitem value="rot0" label="&sizeTab.rotate0;"/>
             <menuitem value="rot90" label="&sizeTab.rotate90;" />
