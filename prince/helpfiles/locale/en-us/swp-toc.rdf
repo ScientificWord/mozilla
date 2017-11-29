@@ -127,21 +127,21 @@
   <rdf:Description about="#cd05-04">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="cd05-04_templates"       nc:name="Objects with Templates"                            nc:link="cd05-04-workwithmath.xhtml#templates/>       </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_fractions"       nc:name="Fractions and Binomials"                           nc:link="cd05-04-workwithmath.xhtml#fractions/>       </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_radicals"        nc:name="Radicals"                                          nc:link="cd05-04-workwithmath.xhtml#radicals/>        </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_subsuperscripts" nc:name="Subscripts and Superscripts"                       nc:link="cd05-04-workwithmath.xhtml#subsuperscripts/> </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_operators"       nc:name="Operators and Limits"                              nc:link="cd05-04-workwithmath.xhtml#operators/>       </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_brackets"        nc:name="Brackets"                                          nc:link="cd05-04-workwithmath.xhtml#brackets/>        </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_matrices"        nc:name="Matrices and Vectors"                              nc:link="cd05-04-workwithmath.xhtml#matrices/>        </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_mathnames"       nc:name="Math Names"                                        nc:link="cd05-04-workwithmath.xhtml#mathnames/>       </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_decorations"     nc:name="Decorations and Labeled Expressions"               nc:link="cd05-04-workwithmath.xhtml#decorations/>     </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_hspace"          nc:name="Horizontal Space in Mathematics"                   nc:link="cd05-04-workwithmath.xhtml#hspace/>          </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_units"           nc:name="Units of Measure"                                  nc:link="cd05-04-workwithmath.xhtml#units/>           </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_displays"        nc:name="Mathematical Displays"                             nc:link="cd05-04-workwithmath.xhtml#displays/>        </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_theorems"        nc:name="Theorem Statements"                                nc:link="cd05-04-workwithmath.xhtml#theorems/>        </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_fragments"       nc:name="Using Fragments to Enter Mathematics"              nc:link="cd05-04-workwithmath.xhtml#fragments/>       </rdf:li>
-      <rdf:li> <rdf:Description ID="cd05-04_autosubs"        nc:name="Using Automatic Substitution to Enter Mathematics" nc:link="cd05-04-workwithmath.xhtml#autosubs/>        </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_templates"       nc:name="Objects with Templates"                            nc:link="cd05-04-workwithmath.xhtml#templates"/>       </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_fractions"       nc:name="Fractions and Binomials"                           nc:link="cd05-04-workwithmath.xhtml#fractions"/>       </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_radicals"        nc:name="Radicals"                                          nc:link="cd05-04-workwithmath.xhtml#radicals"/>        </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_subsuperscripts" nc:name="Subscripts and Superscripts"                       nc:link="cd05-04-workwithmath.xhtml#subsuperscripts"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_operators"       nc:name="Operators and Limits"                              nc:link="cd05-04-workwithmath.xhtml#operators"/>       </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_brackets"        nc:name="Brackets"                                          nc:link="cd05-04-workwithmath.xhtml#brackets"/>        </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_matrices"        nc:name="Matrices and Vectors"                              nc:link="cd05-04-workwithmath.xhtml#matrices"/>        </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_mathnames"       nc:name="Math Names"                                        nc:link="cd05-04-workwithmath.xhtml#mathnames"/>       </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_decorations"     nc:name="Decorations and Labeled Expressions"               nc:link="cd05-04-workwithmath.xhtml#decorations"/>     </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_hspace"          nc:name="Horizontal Space in Mathematics"                   nc:link="cd05-04-workwithmath.xhtml#hspace"/>          </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_units"           nc:name="Units of Measure"                                  nc:link="cd05-04-workwithmath.xhtml#units"/>           </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_displays"        nc:name="Mathematical Displays"                             nc:link="cd05-04-workwithmath.xhtml#displays"/>        </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_theorems"        nc:name="Theorem Statements"                                nc:link="cd05-04-workwithmath.xhtml#theorems"/>        </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_fragments"       nc:name="Using Fragments to Enter Mathematics"              nc:link="cd05-04-workwithmath.xhtml#fragments"/>       </rdf:li>
+      <rdf:li> <rdf:Description ID="cd05-04_autosubs"        nc:name="Using Automatic Substitution to Enter Mathematics" nc:link="cd05-04-workwithmath.xhtml#autosubs"/>        </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
