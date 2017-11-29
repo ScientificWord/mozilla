@@ -6,9 +6,9 @@
   <rdf:Description about="urn:root">
     <nc:subheadings>
       <rdf:Seq>
-        <rdf:li> <rdf:Description ID="swp-doc"	  nc:name="Introducing Scientific WorkPlace" nc:link="cd00-00-creating_documents.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="swp-doc"    nc:name="Introducing Scientific WorkPlace" nc:link="cd00-00-creating_documents.xhtml"/> </rdf:li>
         <rdf:li> <rdf:Description ID="doing-math" nc:name="Doing Mathematics"                nc:link="dm00-00-doing_mathematics.xhtml"/> </rdf:li>
-	    </rdf:Seq>
+      </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
 
