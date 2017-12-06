@@ -2015,8 +2015,8 @@ void STree2MML::SemanticPGROUP2MML(SEMANTICS_NODE * s_group,
         nest_in_parens = true;
       else if (p_right && (p_right > p_level))
         nest_in_parens = true;
-      else
-        nest_in_parens = after_minus;
+      //else
+      //  nest_in_parens = after_minus;
     }
     if (s_group->semantic_type == SEM_TYP_GENERIC_FENCE)
       nest_in_parens = true;

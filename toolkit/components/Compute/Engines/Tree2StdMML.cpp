@@ -206,11 +206,17 @@ MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
   return rv;
 }
 
+
+
+
 // The input to CCID_Fixup may be less well-formed than that for other commands.  Resolve that here.
 //XXX second arg is in place of general user prefs parameter
 MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
 {
   MNODE* rv = dMML_tree;
+
+  RemoveIT_and_AF(dMML_tree);
+  
   RemoveEmptyTags(dMML_tree);
   RemoveRedundantMROWs2(rv);
   FixColonEqual(rv);
