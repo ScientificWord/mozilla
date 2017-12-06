@@ -1153,7 +1153,7 @@ Plot.prototype =
               tNode = (new DOMParser()).parseFromString (textval, "text/xml");
 	      tNode = tNode.documentElement;
               removeInvisibles(tNode);
-              textval =  GetFixedMath(tNode);
+              textval =  GetMathAsString(tNode); //GetFixedMath(tNode);
             tNode = (new DOMParser()).parseFromString (textval, "text/xml");
             DOMEnode.appendChild (tNode.documentElement);
             DOMPlot.appendChild (DOMEnode);
@@ -2322,7 +2322,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var checkedExpr = preParsePlotExpression(math, plottype, selection, editorElement);
-    var expr = GetMathAsString(checkedExpr); //GetFixedMath(checkedExpr); //runFixup(GetFixedMath(checkedExpr));
+  var expr = runFixup(GetFixedMath(checkedExpr));
 
   var graph = new Graph();
   var frame = graph.frame;
@@ -2389,7 +2389,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   var plot = new Plot(dimension, plottype);
   var plotnum = graph.addPlot(plot);
   plot.attributes.PlotStatus = "New";
-  plot.element.Expression = expr;
+    plot.element.Expression = runFixup(expr);
   graph.plotnumber = plotnum;
   if ((arguments.length > 3) && (arguments[3] === true)) {
     plot.attributes.Animate = "true";
@@ -2817,7 +2817,7 @@ function parseQueryReturn(out, graph, plot) {
   var ii;
 
   plot.element.OriginalExpression = plot.element.Expression;  //store original form - should display it in dialog
-    var fixedOut = out; // runFixup(out); //runFixup(runFixup(out));
+  var fixedOut = runFixup(out); //runFixup(runFixup(out));
   plot.element.Expression = fixedOut;  //this may be sharpened below, but for now
   var varData = new graphVarData( graph );
   var retVariables;
