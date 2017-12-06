@@ -337,7 +337,7 @@ const AppInstall = {
     "<key>NSPrincipalClass</key>\n" +
     "<string>NSApplication</string>\n" +
     "<key>NSHumanReadableCopyright</key>\n" +
-    "<string>Copyright 2015 by MacKichan Software, Inc.</string>\n" +
+    "<string>Copyright 2015-2018 by MacKichan Software, Inc.</string>\n" +
     "<key>LSMultipleInstancesProhibited</key>\n" +
     "<true/>\n" +
     "<key>LSMinimumSystemVersion</key>\n" +
