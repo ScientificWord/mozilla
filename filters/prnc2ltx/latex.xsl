@@ -1285,7 +1285,8 @@
     <xsl:apply-templates mode="tex"/>
     <xsl:if test="@enc='1'">
       <xsl:value-of select="$newline"/>
-      <xsl:text>%EndExpansion</xsl:text>
+      <xsl:text>%EndExpansion
+      </xsl:text>
       <!-- add newline if needed -->
       <xsl:variable name="next">
          <xsl:value-of select="following-sibling::text()[1]" />
