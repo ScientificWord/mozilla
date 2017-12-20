@@ -395,6 +395,7 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
              for (MNODE *child = ptr->first_kid; child != NULL; child = child->next) {
                psr->StorePlotParam (plotno, child->src_tok, "", zPT_ASCII_mmlmarkup);
                MNODE *dMML_tree2 = child->first_kid;
+	       semantic_analyzer -> TreeToFixupForm(dMML_tree2);
                char *mmlstr = TNodeToStr(dMML_tree2, NULL, 0);
                INPUT_NOTATION_REC *p_input_notation = NULL;
                SEMANTICS_NODE *semantics_tree =
