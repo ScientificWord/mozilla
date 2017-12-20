@@ -15,6 +15,7 @@ struct namespaceLookup;
 struct TagKey;
 struct TagKeyList;
 struct TagKeyListHead;
+// another harmless change to test hg/buzilla integration
 
 class TagData // other fields can be added to this
 {
