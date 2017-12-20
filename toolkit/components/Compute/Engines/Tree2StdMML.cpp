@@ -234,9 +234,10 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
   rv = ChDataToCanonicalForm(rv);
   BindDelimitedGroups(rv);
   BindScripts(rv);
-  rv = FixMFENCEDs(rv);
+  
   mDisDerivative = D_is_derivative;
   FinishFixup(rv);
+  rv = FixMFENCEDs(rv);
   rv = RemoveRedundantMROWs(rv);
   rv = RemoveRedundantMROWs(rv);
   FixInvisibleFences(rv);
@@ -628,7 +629,7 @@ void Tree2StdMML::InsertInvisibleTimes(MNODE* dMML_list)
 {
   MNODE* rover = dMML_list;
   if (rover && rover->parent) {
-      if (ElementNameIs(rover->parent, "mfenced") ||
+    if (//ElementNameIs(rover->parent, "mfenced") ||
           ElementNameIs(rover->parent, "mtable") ||
           HasRequiredChildren(rover->parent))
     return;
