@@ -22,7 +22,7 @@
   screenX="40"
   screenY="40"
   width="240"
-  height="185">
+  height="204">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
