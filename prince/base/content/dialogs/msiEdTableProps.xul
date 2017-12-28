@@ -45,7 +45,7 @@
     screenX="40"
     screenY="40"
     width="730"
-    height="300"
+    height="370"
 >
 
   <!-- Methods common to all editor dialogs -->
