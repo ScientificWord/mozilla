@@ -2219,7 +2219,7 @@
 
 
           <xsl:when test="$first-char='&#x2A38;'">
-            <xsl:text xml:space="preserve">\circleddivide </xsl:text>
+            <xsl:text xml:space="preserve">\odiv </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2A3F;'">
             <xsl:text xml:space="preserve">\amalg </xsl:text>
