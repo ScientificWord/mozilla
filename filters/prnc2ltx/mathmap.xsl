@@ -2845,6 +2845,2728 @@ If we use this, don't forget 'roman'
             <mml:mi mathvariant='monospace'>A</mml:mi>
 -->
 
+<!-- Begin additions to support characters available when using the stix package -->
+          <xsl:when test="$first-char='&#x1D55;'">
+            <xsl:text xml:space="preserve">\mathbb{k}</xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x03DD;'">
+            <xsl:text xml:space="preserve">\digamma </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25B6;'">
+            <xsl:text xml:space="preserve">\blacktriangleright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25C0;'">
+            <xsl:text xml:space="preserve">\blacktriangleleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2661;'">
+            <xsl:text xml:space="preserve">\heartsuit </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2662;'">
+            <xsl:text xml:space="preserve">\diamondsuit </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A5E;'">
+            <xsl:text xml:space="preserve">\doublebarwedge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21DD;'">
+            <xsl:text xml:space="preserve">\rightsquigarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x01B5;'">
+            <xsl:text xml:space="preserve">\Zbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2025;'">
+            <xsl:text xml:space="preserve">\enleadertwodots </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2036;'">
+            <xsl:text xml:space="preserve">\backdprime </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2037;'">
+            <xsl:text xml:space="preserve">\backtrprime </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2038;'">
+            <xsl:text xml:space="preserve">\caretinsert </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x203C;'">
+            <xsl:text xml:space="preserve">\Exclam </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2043;'">
+            <xsl:text xml:space="preserve">\hyphenbullet </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2047;'">
+            <xsl:text xml:space="preserve">\Question </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2057;'">
+            <xsl:text xml:space="preserve">\qprime </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x20DD;'">
+            <xsl:text xml:space="preserve">\enclosecircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x20DE;'">
+            <xsl:text xml:space="preserve">\enclosesquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x20DF;'">
+            <xsl:text xml:space="preserve">\enclosediamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x20E4;'">
+            <xsl:text xml:space="preserve">\enclosetriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2107;'">
+            <xsl:text xml:space="preserve">\Eulerconst </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2129;'">
+            <xsl:text xml:space="preserve">\turnediota </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2142;'">
+            <xsl:text xml:space="preserve">\sansLturned </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2143;'">
+            <xsl:text xml:space="preserve">\sansLmirrored </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2144;'">
+            <xsl:text xml:space="preserve">\Yup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x214A;'">
+            <xsl:text xml:space="preserve">\PropertyLine </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21A8;'">
+            <xsl:text xml:space="preserve">\updownarrowbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21B4;'">
+            <xsl:text xml:space="preserve">\linefeed </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21B5;'">
+            <xsl:text xml:space="preserve">\carriagereturn </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21B8;'">
+            <xsl:text xml:space="preserve">\barovernorthwestarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21B9;'">
+            <xsl:text xml:space="preserve">\barleftarrowrightarrowbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21DE;'">
+            <xsl:text xml:space="preserve">\nHuparrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21DF;'">
+            <xsl:text xml:space="preserve">\nHdownarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21E0;'">
+            <xsl:text xml:space="preserve">\leftdasharrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21E1;'">
+            <xsl:text xml:space="preserve">\updasharrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21E2;'">
+            <xsl:text xml:space="preserve">\rightdasharrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21E3;'">
+            <xsl:text xml:space="preserve">\downdasharrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21E6;'">
+            <xsl:text xml:space="preserve">\leftwhitearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21E7;'">
+            <xsl:text xml:space="preserve">\upwhitearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21E8;'">
+            <xsl:text xml:space="preserve">\rightwhitearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21E9;'">
+            <xsl:text xml:space="preserve">\downwhitearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21EA;'">
+            <xsl:text xml:space="preserve">\whitearrowupfrombar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2206;'">
+            <xsl:text xml:space="preserve">\increment </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x220E;'">
+            <xsl:text xml:space="preserve">\QED </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x223F;'">
+            <xsl:text xml:space="preserve">\sinewave </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22B9;'">
+            <xsl:text xml:space="preserve">\hermitmatrix </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22BE;'">
+            <xsl:text xml:space="preserve">\measuredrightangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22BF;'">
+            <xsl:text xml:space="preserve">\varlrtriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2300;'">
+            <xsl:text xml:space="preserve">\diameter </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2302;'">
+            <xsl:text xml:space="preserve">\house </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2310;'">
+            <xsl:text xml:space="preserve">\invnot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2311;'">
+            <xsl:text xml:space="preserve">\sqlozenge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2312;'">
+            <xsl:text xml:space="preserve">\profline </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2313;'">
+            <xsl:text xml:space="preserve">\profsurf </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2317;'">
+            <xsl:text xml:space="preserve">\viewdata </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2319;'">
+            <xsl:text xml:space="preserve">\turnednot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x232C;'">
+            <xsl:text xml:space="preserve">\varhexagonlrbonds </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2332;'">
+            <xsl:text xml:space="preserve">\conictaper </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2336;'">
+            <xsl:text xml:space="preserve">\topbot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2340;'">
+            <xsl:text xml:space="preserve">\APLnotbackslash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2353;'">
+            <xsl:text xml:space="preserve">\APLboxupcaret </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2370;'">
+            <xsl:text xml:space="preserve">\APLboxquestion </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x237C;'">
+            <xsl:text xml:space="preserve">\rangledownzigzagarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2394;'">
+            <xsl:text xml:space="preserve">\hexagon </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23B6;'">
+            <xsl:text xml:space="preserve">\bbrktbrk </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23CE;'">
+            <xsl:text xml:space="preserve">\varcarriagereturn </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23E0;'">
+            <xsl:text xml:space="preserve">\obrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23E1;'">
+            <xsl:text xml:space="preserve">\ubrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23E2;'">
+            <xsl:text xml:space="preserve">\trapezium </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23E3;'">
+            <xsl:text xml:space="preserve">\benzenr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23E4;'">
+            <xsl:text xml:space="preserve">\strns </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23E5;'">
+            <xsl:text xml:space="preserve">\fltns </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23E6;'">
+            <xsl:text xml:space="preserve">\accurrent </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23E7;'">
+            <xsl:text xml:space="preserve">\elinters </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x24C7;'">
+            <xsl:text xml:space="preserve">\circledR </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25A0;'">
+            <xsl:text xml:space="preserve">\mdlgblksquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25A2;'">
+            <xsl:text xml:space="preserve">\squoval </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25A3;'">
+            <xsl:text xml:space="preserve">\blackinwhitesquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25A4;'">
+            <xsl:text xml:space="preserve">\squarehfill </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25A5;'">
+            <xsl:text xml:space="preserve">\squarevfill </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25A6;'">
+            <xsl:text xml:space="preserve">\squarehvfill </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25A7;'">
+            <xsl:text xml:space="preserve">\squarenwsefill </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25A8;'">
+            <xsl:text xml:space="preserve">\squareneswfill </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25A9;'">
+            <xsl:text xml:space="preserve">\squarecrossfill </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25AB;'">
+            <xsl:text xml:space="preserve">\smwhtsquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25AC;'">
+            <xsl:text xml:space="preserve">\hrectangleblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25AD;'">
+            <xsl:text xml:space="preserve">\hrectangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25AE;'">
+            <xsl:text xml:space="preserve">\vrectangleblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25AF;'">
+            <xsl:text xml:space="preserve">\vrectangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25B0;'">
+            <xsl:text xml:space="preserve">\parallelogramblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25B1;'">
+            <xsl:text xml:space="preserve">\parallelogram </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25B2;'">
+            <xsl:text xml:space="preserve">\bigblacktriangleup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25BA;'">
+            <xsl:text xml:space="preserve">\blackpointerright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25BB;'">
+            <xsl:text xml:space="preserve">\whitepointerright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25BC;'">
+            <xsl:text xml:space="preserve">\bigblacktriangledown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25C4;'">
+            <xsl:text xml:space="preserve">\blackpointerleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25C5;'">
+            <xsl:text xml:space="preserve">\whitepointerleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25C6;'">
+            <xsl:text xml:space="preserve">\mdlgblkdiamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25C8;'">
+            <xsl:text xml:space="preserve">\blackinwhitediamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25C9;'">
+            <xsl:text xml:space="preserve">\fisheye </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25CC;'">
+            <xsl:text xml:space="preserve">\dottedcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25CD;'">
+            <xsl:text xml:space="preserve">\circlevertfill </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25CE;'">
+            <xsl:text xml:space="preserve">\bullseye </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25CF;'">
+            <xsl:text xml:space="preserve">\mdlgblkcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25D0;'">
+            <xsl:text xml:space="preserve">\circlelefthalfblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25D1;'">
+            <xsl:text xml:space="preserve">\circlerighthalfblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25D2;'">
+            <xsl:text xml:space="preserve">\circlebottomhalfblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25D3;'">
+            <xsl:text xml:space="preserve">\circletophalfblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25D4;'">
+            <xsl:text xml:space="preserve">\circleurquadblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25D5;'">
+            <xsl:text xml:space="preserve">\blackcircleulquadwhite </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25D6;'">
+            <xsl:text xml:space="preserve">\blacklefthalfcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25D7;'">
+            <xsl:text xml:space="preserve">\blackrighthalfcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25D8;'">
+            <xsl:text xml:space="preserve">\inversebullet </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25D9;'">
+            <xsl:text xml:space="preserve">\inversewhitecircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25DA;'">
+            <xsl:text xml:space="preserve">\invwhiteupperhalfcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25DB;'">
+            <xsl:text xml:space="preserve">\invwhitelowerhalfcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25DC;'">
+            <xsl:text xml:space="preserve">\ularc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25DD;'">
+            <xsl:text xml:space="preserve">\urarc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25DE;'">
+            <xsl:text xml:space="preserve">\lrarc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25DF;'">
+            <xsl:text xml:space="preserve">\llarc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25E0;'">
+            <xsl:text xml:space="preserve">\topsemicircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25E1;'">
+            <xsl:text xml:space="preserve">\botsemicircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25E2;'">
+            <xsl:text xml:space="preserve">\lrblacktriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25E3;'">
+            <xsl:text xml:space="preserve">\llblacktriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25E4;'">
+            <xsl:text xml:space="preserve">\ulblacktriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25E5;'">
+            <xsl:text xml:space="preserve">\urblacktriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25E7;'">
+            <xsl:text xml:space="preserve">\squareleftblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25E8;'">
+            <xsl:text xml:space="preserve">\squarerightblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25E9;'">
+            <xsl:text xml:space="preserve">\squareulblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25EA;'">
+            <xsl:text xml:space="preserve">\squarelrblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25EC;'">
+            <xsl:text xml:space="preserve">\trianglecdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25ED;'">
+            <xsl:text xml:space="preserve">\triangleleftblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25EE;'">
+            <xsl:text xml:space="preserve">\trianglerightblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25F0;'">
+            <xsl:text xml:space="preserve">\squareulquad </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25F1;'">
+            <xsl:text xml:space="preserve">\squarellquad </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25F2;'">
+            <xsl:text xml:space="preserve">\squarelrquad </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25F3;'">
+            <xsl:text xml:space="preserve">\squareurquad </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25F4;'">
+            <xsl:text xml:space="preserve">\circleulquad </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25F5;'">
+            <xsl:text xml:space="preserve">\circlellquad </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25F6;'">
+            <xsl:text xml:space="preserve">\circlelrquad </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25F7;'">
+            <xsl:text xml:space="preserve">\circleurquad </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25F8;'">
+            <xsl:text xml:space="preserve">\ultriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25F9;'">
+            <xsl:text xml:space="preserve">\urtriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25FA;'">
+            <xsl:text xml:space="preserve">\lltriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25FB;'">
+            <xsl:text xml:space="preserve">\mdwhtsquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25FC;'">
+            <xsl:text xml:space="preserve">\mdblksquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25FD;'">
+            <xsl:text xml:space="preserve">\mdsmwhtsquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25FE;'">
+            <xsl:text xml:space="preserve">\mdsmblksquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25FF;'">
+            <xsl:text xml:space="preserve">\lrtriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2606;'">
+            <xsl:text xml:space="preserve">\bigwhitestar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2609;'">
+            <xsl:text xml:space="preserve">\astrosun </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2621;'">
+            <xsl:text xml:space="preserve">\danger </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x263B;'">
+            <xsl:text xml:space="preserve">\blacksmiley </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x263C;'">
+            <xsl:text xml:space="preserve">\sun </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x263D;'">
+            <xsl:text xml:space="preserve">\rightmoon </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x263E;'">
+            <xsl:text xml:space="preserve">\leftmoon </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2640;'">
+            <xsl:text xml:space="preserve">\female </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2642;'">
+            <xsl:text xml:space="preserve">\male </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2664;'">
+            <xsl:text xml:space="preserve">\varspadesuit </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2667;'">
+            <xsl:text xml:space="preserve">\varclubsuit </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2669;'">
+            <xsl:text xml:space="preserve">\quarternote </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x266B;'">
+            <xsl:text xml:space="preserve">\twonotes </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x267E;'">
+            <xsl:text xml:space="preserve">\acidfree </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2680;'">
+            <xsl:text xml:space="preserve">\dicei </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2681;'">
+            <xsl:text xml:space="preserve">\diceii </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2682;'">
+            <xsl:text xml:space="preserve">\diceiii </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2683;'">
+            <xsl:text xml:space="preserve">\diceiv </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2684;'">
+            <xsl:text xml:space="preserve">\dicev </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2685;'">
+            <xsl:text xml:space="preserve">\dicevi </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2686;'">
+            <xsl:text xml:space="preserve">\circledrightdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2687;'">
+            <xsl:text xml:space="preserve">\circledtwodots </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2688;'">
+            <xsl:text xml:space="preserve">\blackcircledrightdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2689;'">
+            <xsl:text xml:space="preserve">\blackcircledtwodots </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x26A5;'">
+            <xsl:text xml:space="preserve">\Hermaphrodite </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x26AA;'">
+            <xsl:text xml:space="preserve">\mdwhtcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x26AB;'">
+            <xsl:text xml:space="preserve">\mdblkcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x26AC;'">
+            <xsl:text xml:space="preserve">\mdsmwhtcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x26B2;'">
+            <xsl:text xml:space="preserve">\neuter </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x272A;'">
+            <xsl:text xml:space="preserve">\circledstar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2736;'">
+            <xsl:text xml:space="preserve">\varstar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x273D;'">
+            <xsl:text xml:space="preserve">\dingasterisk </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x279B;'">
+            <xsl:text xml:space="preserve">\draftingarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27C0;'">
+            <xsl:text xml:space="preserve">\threedangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27C1;'">
+            <xsl:text xml:space="preserve">\whiteinwhitetriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27C3;'">
+            <xsl:text xml:space="preserve">\subsetcirc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27C4;'">
+            <xsl:text xml:space="preserve">\supsetcirc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27D0;'">
+            <xsl:text xml:space="preserve">\diamondcdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x292B;'">
+            <xsl:text xml:space="preserve">\rdiagovfdiag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x292C;'">
+            <xsl:text xml:space="preserve">\fdiagovrdiag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x292D;'">
+            <xsl:text xml:space="preserve">\seovnearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x292E;'">
+            <xsl:text xml:space="preserve">\neovsearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x292F;'">
+            <xsl:text xml:space="preserve">\fdiagovnearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2930;'">
+            <xsl:text xml:space="preserve">\rdiagovsearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2931;'">
+            <xsl:text xml:space="preserve">\neovnwarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2932;'">
+            <xsl:text xml:space="preserve">\nwovnearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2934;'">
+            <xsl:text xml:space="preserve">\uprightcurvearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2935;'">
+            <xsl:text xml:space="preserve">\downrightcurvedarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2981;'">
+            <xsl:text xml:space="preserve">\mdsmblkcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2999;'">
+            <xsl:text xml:space="preserve">\fourvdots </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x299A;'">
+            <xsl:text xml:space="preserve">\vzigzag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x299B;'">
+            <xsl:text xml:space="preserve">\measuredangleleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x299C;'">
+            <xsl:text xml:space="preserve">\rightanglesqr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x299D;'">
+            <xsl:text xml:space="preserve">\rightanglemdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x299E;'">
+            <xsl:text xml:space="preserve">\angles </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x299F;'">
+            <xsl:text xml:space="preserve">\angdnr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29A0;'">
+            <xsl:text xml:space="preserve">\gtlpar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29A1;'">
+            <xsl:text xml:space="preserve">\sphericalangleup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29A2;'">
+            <xsl:text xml:space="preserve">\turnangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29A3;'">
+            <xsl:text xml:space="preserve">\revangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29A4;'">
+            <xsl:text xml:space="preserve">\angleubar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29A5;'">
+            <xsl:text xml:space="preserve">\revangleubar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29A6;'">
+            <xsl:text xml:space="preserve">\wideangledown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29A7;'">
+            <xsl:text xml:space="preserve">\wideangleup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29A8;'">
+            <xsl:text xml:space="preserve">\measanglerutone </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29A9;'">
+            <xsl:text xml:space="preserve">\measanglelutonw </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29AA;'">
+            <xsl:text xml:space="preserve">\measanglerdtose </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29AB;'">
+            <xsl:text xml:space="preserve">\measangleldtosw </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29AC;'">
+            <xsl:text xml:space="preserve">\measangleurtone </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29AD;'">
+            <xsl:text xml:space="preserve">\measangleultonw </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29AE;'">
+            <xsl:text xml:space="preserve">\measangledrtose </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29AF;'">
+            <xsl:text xml:space="preserve">\measangledltosw </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29B0;'">
+            <xsl:text xml:space="preserve">\revemptyset </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29B1;'">
+            <xsl:text xml:space="preserve">\emptysetobar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29B2;'">
+            <xsl:text xml:space="preserve">\emptysetocirc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29B3;'">
+            <xsl:text xml:space="preserve">\emptysetoarr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29B4;'">
+            <xsl:text xml:space="preserve">\emptysetoarrl </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29BA;'">
+            <xsl:text xml:space="preserve">\obot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29BB;'">
+            <xsl:text xml:space="preserve">\olcross </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29BC;'">
+            <xsl:text xml:space="preserve">\odotslashdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29BD;'">
+            <xsl:text xml:space="preserve">\uparrowoncircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29BE;'">
+            <xsl:text xml:space="preserve">\circledwhitebullet </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29BF;'">
+            <xsl:text xml:space="preserve">\circledbullet </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29C2;'">
+            <xsl:text xml:space="preserve">\cirscir </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29C3;'">
+            <xsl:text xml:space="preserve">\cirE </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29C9;'">
+            <xsl:text xml:space="preserve">\boxonbox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29CA;'">
+            <xsl:text xml:space="preserve">\triangleodot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29CB;'">
+            <xsl:text xml:space="preserve">\triangleubar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29CC;'">
+            <xsl:text xml:space="preserve">\triangles </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29DC;'">
+            <xsl:text xml:space="preserve">\iinfin </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29DD;'">
+            <xsl:text xml:space="preserve">\tieinfty </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29DE;'">
+            <xsl:text xml:space="preserve">\nvinfty </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29E0;'">
+            <xsl:text xml:space="preserve">\laplac </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29E7;'">
+            <xsl:text xml:space="preserve">\thermod </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29E8;'">
+            <xsl:text xml:space="preserve">\downtriangleleftblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29E9;'">
+            <xsl:text xml:space="preserve">\downtrianglerightblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29EA;'">
+            <xsl:text xml:space="preserve">\blackdiamonddownarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29EC;'">
+            <xsl:text xml:space="preserve">\circledownarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29ED;'">
+            <xsl:text xml:space="preserve">\blackcircledownarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29EE;'">
+            <xsl:text xml:space="preserve">\errbarsquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29EF;'">
+            <xsl:text xml:space="preserve">\errbarblacksquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29F0;'">
+            <xsl:text xml:space="preserve">\errbardiamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29F1;'">
+            <xsl:text xml:space="preserve">\errbarblackdiamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29F2;'">
+            <xsl:text xml:space="preserve">\errbarcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29F3;'">
+            <xsl:text xml:space="preserve">\errbarblackcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AE1;'">
+            <xsl:text xml:space="preserve">\perps </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AF1;'">
+            <xsl:text xml:space="preserve">\topcir </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B12;'">
+            <xsl:text xml:space="preserve">\squaretopblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B13;'">
+            <xsl:text xml:space="preserve">\squarebotblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B14;'">
+            <xsl:text xml:space="preserve">\squareurblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B15;'">
+            <xsl:text xml:space="preserve">\squarellblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B16;'">
+            <xsl:text xml:space="preserve">\diamondleftblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B17;'">
+            <xsl:text xml:space="preserve">\diamondrightblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B18;'">
+            <xsl:text xml:space="preserve">\diamondtopblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B19;'">
+            <xsl:text xml:space="preserve">\diamondbotblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B1A;'">
+            <xsl:text xml:space="preserve">\dottedsquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B1B;'">
+            <xsl:text xml:space="preserve">\lgblksquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B1C;'">
+            <xsl:text xml:space="preserve">\lgwhtsquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B1D;'">
+            <xsl:text xml:space="preserve">\vysmblksquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B1E;'">
+            <xsl:text xml:space="preserve">\vysmwhtsquare </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B1F;'">
+            <xsl:text xml:space="preserve">\pentagonblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B20;'">
+            <xsl:text xml:space="preserve">\pentagon </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B21;'">
+            <xsl:text xml:space="preserve">\varhexagon </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B22;'">
+            <xsl:text xml:space="preserve">\varhexagonblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B23;'">
+            <xsl:text xml:space="preserve">\hexagonblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B24;'">
+            <xsl:text xml:space="preserve">\lgblkcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B25;'">
+            <xsl:text xml:space="preserve">\mdblkdiamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B26;'">
+            <xsl:text xml:space="preserve">\mdwhtdiamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B27;'">
+            <xsl:text xml:space="preserve">\mdblklozenge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B28;'">
+            <xsl:text xml:space="preserve">\mdwhtlozenge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B29;'">
+            <xsl:text xml:space="preserve">\smblkdiamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B2A;'">
+            <xsl:text xml:space="preserve">\smblklozenge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B2B;'">
+            <xsl:text xml:space="preserve">\smwhtlozenge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B2C;'">
+            <xsl:text xml:space="preserve">\blkhorzoval </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B2D;'">
+            <xsl:text xml:space="preserve">\whthorzoval </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B2E;'">
+            <xsl:text xml:space="preserve">\blkvertoval </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B2F;'">
+            <xsl:text xml:space="preserve">\whtvertoval </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B50;'">
+            <xsl:text xml:space="preserve">\medwhitestar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B51;'">
+            <xsl:text xml:space="preserve">\medblackstar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B52;'">
+            <xsl:text xml:space="preserve">\smwhitestar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B53;'">
+            <xsl:text xml:space="preserve">\rightpentagonblack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B54;'">
+            <xsl:text xml:space="preserve">\rightpentagon </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x3012;'">
+            <xsl:text xml:space="preserve">\postalmark </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x3030;'">
+            <xsl:text xml:space="preserve">\hzigzag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x214B;'">
+            <xsl:text xml:space="preserve">\upand </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2238;'">
+            <xsl:text xml:space="preserve">\dotminus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x223E;'">
+            <xsl:text xml:space="preserve">\invlazys </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x228C;'">
+            <xsl:text xml:space="preserve">\cupleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x228D;'">
+            <xsl:text xml:space="preserve">\cupdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x229C;'">
+            <xsl:text xml:space="preserve">\circledequal </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22BD;'">
+            <xsl:text xml:space="preserve">\barvee </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2305;'">
+            <xsl:text xml:space="preserve">\varbarwedge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x233D;'">
+            <xsl:text xml:space="preserve">\obar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x25EB;'">
+            <xsl:text xml:space="preserve">\boxbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27C7;'">
+            <xsl:text xml:space="preserve">\veedot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27D1;'">
+            <xsl:text xml:space="preserve">\wedgedot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27E0;'">
+            <xsl:text xml:space="preserve">\lozengeminus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27E1;'">
+            <xsl:text xml:space="preserve">\concavediamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27E2;'">
+            <xsl:text xml:space="preserve">\concavediamondtickleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27E3;'">
+            <xsl:text xml:space="preserve">\concavediamondtickright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27E4;'">
+            <xsl:text xml:space="preserve">\whitesquaretickleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27E5;'">
+            <xsl:text xml:space="preserve">\whitesquaretickright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2982;'">
+            <xsl:text xml:space="preserve">\typecolon </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29B5;'">
+            <xsl:text xml:space="preserve">\circlehbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29B6;'">
+            <xsl:text xml:space="preserve">\circledvert </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29B7;'">
+            <xsl:text xml:space="preserve">\circledparallel </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29B8;'">
+            <xsl:text xml:space="preserve">\obslash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29B9;'">
+            <xsl:text xml:space="preserve">\operp </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29C0;'">
+            <xsl:text xml:space="preserve">\olessthan </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29C1;'">
+            <xsl:text xml:space="preserve">\ogreaterthan </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29C4;'">
+            <xsl:text xml:space="preserve">\boxdiag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29C5;'">
+            <xsl:text xml:space="preserve">\boxbslash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29C6;'">
+            <xsl:text xml:space="preserve">\boxast </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29C7;'">
+            <xsl:text xml:space="preserve">\boxcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29C8;'">
+            <xsl:text xml:space="preserve">\boxbox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29CD;'">
+            <xsl:text xml:space="preserve">\triangleserifs </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29D6;'">
+            <xsl:text xml:space="preserve">\hourglass </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29D7;'">
+            <xsl:text xml:space="preserve">\blackhourglass </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29E2;'">
+            <xsl:text xml:space="preserve">\shuffle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29F6;'">
+            <xsl:text xml:space="preserve">\dsol </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29F7;'">
+            <xsl:text xml:space="preserve">\rsolbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29FA;'">
+            <xsl:text xml:space="preserve">\doubleplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29FB;'">
+            <xsl:text xml:space="preserve">\tripleplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29FE;'">
+            <xsl:text xml:space="preserve">\tplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29FF;'">
+            <xsl:text xml:space="preserve">\tminus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A22;'">
+            <xsl:text xml:space="preserve">\ringplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A23;'">
+            <xsl:text xml:space="preserve">\plushat </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A24;'">
+            <xsl:text xml:space="preserve">\simplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A25;'">
+            <xsl:text xml:space="preserve">\plusdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A26;'">
+            <xsl:text xml:space="preserve">\plussim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A27;'">
+            <xsl:text xml:space="preserve">\plussubtwo </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A28;'">
+            <xsl:text xml:space="preserve">\plustrif </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A29;'">
+            <xsl:text xml:space="preserve">\commaminus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A2A;'">
+            <xsl:text xml:space="preserve">\minusdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A2B;'">
+            <xsl:text xml:space="preserve">\minusfdots </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A2C;'">
+            <xsl:text xml:space="preserve">\minusrdots </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A2D;'">
+            <xsl:text xml:space="preserve">\opluslhrim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A2E;'">
+            <xsl:text xml:space="preserve">\oplusrhrim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A2F;'">
+            <xsl:text xml:space="preserve">\vectimes </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A30;'">
+            <xsl:text xml:space="preserve">\dottimes </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A31;'">
+            <xsl:text xml:space="preserve">\timesbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A32;'">
+            <xsl:text xml:space="preserve">\btimes </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A33;'">
+            <xsl:text xml:space="preserve">\smashtimes </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A34;'">
+            <xsl:text xml:space="preserve">\otimeslhrim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A35;'">
+            <xsl:text xml:space="preserve">\otimesrhrim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A36;'">
+            <xsl:text xml:space="preserve">\otimeshat </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A37;'">
+            <xsl:text xml:space="preserve">\Otimes </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A39;'">
+            <xsl:text xml:space="preserve">\triangleplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A3A;'">
+            <xsl:text xml:space="preserve">\triangleminus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A3B;'">
+            <xsl:text xml:space="preserve">\triangletimes </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A3C;'">
+            <xsl:text xml:space="preserve">\intprod </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A3D;'">
+            <xsl:text xml:space="preserve">\intprodr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A3E;'">
+            <xsl:text xml:space="preserve">\fcmp </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A40;'">
+            <xsl:text xml:space="preserve">\capdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A41;'">
+            <xsl:text xml:space="preserve">\uminus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A42;'">
+            <xsl:text xml:space="preserve">\barcup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A43;'">
+            <xsl:text xml:space="preserve">\barcap </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A44;'">
+            <xsl:text xml:space="preserve">\capwedge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A45;'">
+            <xsl:text xml:space="preserve">\cupvee </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A46;'">
+            <xsl:text xml:space="preserve">\cupovercap </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A47;'">
+            <xsl:text xml:space="preserve">\capovercup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A48;'">
+            <xsl:text xml:space="preserve">\cupbarcap </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A49;'">
+            <xsl:text xml:space="preserve">\capbarcup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A4A;'">
+            <xsl:text xml:space="preserve">\twocups </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A4B;'">
+            <xsl:text xml:space="preserve">\twocaps </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A4C;'">
+            <xsl:text xml:space="preserve">\closedvarcup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A4D;'">
+            <xsl:text xml:space="preserve">\closedvarcap </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A4E;'">
+            <xsl:text xml:space="preserve">\Sqcap </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A4F;'">
+            <xsl:text xml:space="preserve">\Sqcup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A50;'">
+            <xsl:text xml:space="preserve">\closedvarcupsmashprod </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A51;'">
+            <xsl:text xml:space="preserve">\wedgeodot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A52;'">
+            <xsl:text xml:space="preserve">\veeodot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A53;'">
+            <xsl:text xml:space="preserve">\Wedge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A54;'">
+            <xsl:text xml:space="preserve">\Vee </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A55;'">
+            <xsl:text xml:space="preserve">\wedgeonwedge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A56;'">
+            <xsl:text xml:space="preserve">\veeonvee </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A57;'">
+            <xsl:text xml:space="preserve">\bigslopedvee </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A58;'">
+            <xsl:text xml:space="preserve">\bigslopedwedge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A5A;'">
+            <xsl:text xml:space="preserve">\wedgemidvert </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A5B;'">
+            <xsl:text xml:space="preserve">\veemidvert </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A5C;'">
+            <xsl:text xml:space="preserve">\midbarwedge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A5D;'">
+            <xsl:text xml:space="preserve">\midbarvee </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A5F;'">
+            <xsl:text xml:space="preserve">\wedgebar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A60;'">
+            <xsl:text xml:space="preserve">\wedgedoublebar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A61;'">
+            <xsl:text xml:space="preserve">\varveebar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A62;'">
+            <xsl:text xml:space="preserve">\doublebarvee </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A63;'">
+            <xsl:text xml:space="preserve">\veedoublebar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A64;'">
+            <xsl:text xml:space="preserve">\dsub </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A65;'">
+            <xsl:text xml:space="preserve">\rsub </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A71;'">
+            <xsl:text xml:space="preserve">\eqqplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A72;'">
+            <xsl:text xml:space="preserve">\pluseqq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AF4;'">
+            <xsl:text xml:space="preserve">\interleave </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AF5;'">
+            <xsl:text xml:space="preserve">\nhVvert </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AF6;'">
+            <xsl:text xml:space="preserve">\threedotcolon </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AFB;'">
+            <xsl:text xml:space="preserve">\trslash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AFD;'">
+            <xsl:text xml:space="preserve">\sslash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AFE;'">
+            <xsl:text xml:space="preserve">\talloblong </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2050;'">
+            <xsl:text xml:space="preserve">\closure </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x20D2;'">
+            <xsl:text xml:space="preserve">\vertoverlay </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x219C;'">
+            <xsl:text xml:space="preserve">\leftwavearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x219F;'">
+            <xsl:text xml:space="preserve">\twoheaduparrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21A1;'">
+            <xsl:text xml:space="preserve">\twoheaddownarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21A4;'">
+            <xsl:text xml:space="preserve">\mapsfrom </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21A5;'">
+            <xsl:text xml:space="preserve">\mapsup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21A7;'">
+            <xsl:text xml:space="preserve">\mapsdown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21AF;'">
+            <xsl:text xml:space="preserve">\downzigzagarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21B2;'">
+            <xsl:text xml:space="preserve">\Ldsh </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21B3;'">
+            <xsl:text xml:space="preserve">\Rdsh </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21C5;'">
+            <xsl:text xml:space="preserve">\updownarrows </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21D6;'">
+            <xsl:text xml:space="preserve">\Nwarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21D7;'">
+            <xsl:text xml:space="preserve">\Nearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21D8;'">
+            <xsl:text xml:space="preserve">\Searrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21D9;'">
+            <xsl:text xml:space="preserve">\Swarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21DC;'">
+            <xsl:text xml:space="preserve">\leftsquigarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21E4;'">
+            <xsl:text xml:space="preserve">\barleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21E5;'">
+            <xsl:text xml:space="preserve">\rightarrowbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21F4;'">
+            <xsl:text xml:space="preserve">\circleonrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21F5;'">
+            <xsl:text xml:space="preserve">\downuparrows </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21F6;'">
+            <xsl:text xml:space="preserve">\rightthreearrows </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21F7;'">
+            <xsl:text xml:space="preserve">\nvleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21F8;'">
+            <xsl:text xml:space="preserve">\nvrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21F9;'">
+            <xsl:text xml:space="preserve">\nvleftrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21FA;'">
+            <xsl:text xml:space="preserve">\nVleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21FB;'">
+            <xsl:text xml:space="preserve">\nVrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21FC;'">
+            <xsl:text xml:space="preserve">\nVleftrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21FD;'">
+            <xsl:text xml:space="preserve">\leftarrowtriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21FE;'">
+            <xsl:text xml:space="preserve">\rightarrowtriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x21FF;'">
+            <xsl:text xml:space="preserve">\leftrightarrowtriangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x220C;'">
+            <xsl:text xml:space="preserve">\nni </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x220D;'">
+            <xsl:text xml:space="preserve">\smallni </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2239;'">
+            <xsl:text xml:space="preserve">\dashcolon </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x223A;'">
+            <xsl:text xml:space="preserve">\dotsminusdots </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x223B;'">
+            <xsl:text xml:space="preserve">\kernelcontraction </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2244;'">
+            <xsl:text xml:space="preserve">\nsime </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2246;'">
+            <xsl:text xml:space="preserve">\simneqq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2249;'">
+            <xsl:text xml:space="preserve">\napprox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x224B;'">
+            <xsl:text xml:space="preserve">\approxident </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x224C;'">
+            <xsl:text xml:space="preserve">\backcong </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2254;'">
+            <xsl:text xml:space="preserve">\coloneq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2255;'">
+            <xsl:text xml:space="preserve">\eqcolon </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2258;'">
+            <xsl:text xml:space="preserve">\arceq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2259;'">
+            <xsl:text xml:space="preserve">\wedgeq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x225A;'">
+            <xsl:text xml:space="preserve">\veeeq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x225B;'">
+            <xsl:text xml:space="preserve">\stareq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x225D;'">
+            <xsl:text xml:space="preserve">\eqdef </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x225E;'">
+            <xsl:text xml:space="preserve">\measeq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2263;'">
+            <xsl:text xml:space="preserve">\Equiv </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x226D;'">
+            <xsl:text xml:space="preserve">\nasymp </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2274;'">
+            <xsl:text xml:space="preserve">\nlesssim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2275;'">
+            <xsl:text xml:space="preserve">\ngtrsim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2278;'">
+            <xsl:text xml:space="preserve">\nlessgtr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2279;'">
+            <xsl:text xml:space="preserve">\ngtrless </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22A6;'">
+            <xsl:text xml:space="preserve">\assert </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22AB;'">
+            <xsl:text xml:space="preserve">\VDash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22B0;'">
+            <xsl:text xml:space="preserve">\prurel </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22B1;'">
+            <xsl:text xml:space="preserve">\scurel </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22B6;'">
+            <xsl:text xml:space="preserve">\origof </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22B7;'">
+            <xsl:text xml:space="preserve">\imageof </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22D5;'">
+            <xsl:text xml:space="preserve">\equalparallel </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22DC;'">
+            <xsl:text xml:space="preserve">\eqless </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22DD;'">
+            <xsl:text xml:space="preserve">\eqgtr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22E0;'">
+            <xsl:text xml:space="preserve">\npreccurlyeq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22E1;'">
+            <xsl:text xml:space="preserve">\nsucccurlyeq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22E2;'">
+            <xsl:text xml:space="preserve">\nsqsubseteq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22E3;'">
+            <xsl:text xml:space="preserve">\nsqsupseteq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22E4;'">
+            <xsl:text xml:space="preserve">\sqsubsetneq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22E5;'">
+            <xsl:text xml:space="preserve">\sqsupsetneq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22F0;'">
+            <xsl:text xml:space="preserve">\adots </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22F2;'">
+            <xsl:text xml:space="preserve">\disin </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22F3;'">
+            <xsl:text xml:space="preserve">\varisins </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22F4;'">
+            <xsl:text xml:space="preserve">\isins </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22F5;'">
+            <xsl:text xml:space="preserve">\isindot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22F6;'">
+            <xsl:text xml:space="preserve">\varisinobar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22F7;'">
+            <xsl:text xml:space="preserve">\isinobar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22F8;'">
+            <xsl:text xml:space="preserve">\isinvb </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22F9;'">
+            <xsl:text xml:space="preserve">\isinE </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22FA;'">
+            <xsl:text xml:space="preserve">\nisd </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22FB;'">
+            <xsl:text xml:space="preserve">\varnis </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22FC;'">
+            <xsl:text xml:space="preserve">\nis </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22FD;'">
+            <xsl:text xml:space="preserve">\varniobar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22FE;'">
+            <xsl:text xml:space="preserve">\niobar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x22FF;'">
+            <xsl:text xml:space="preserve">\bagmember </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x233F;'">
+            <xsl:text xml:space="preserve">\APLnotslash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27C8;'">
+            <xsl:text xml:space="preserve">\bsolhsub </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27C9;'">
+            <xsl:text xml:space="preserve">\suphsol </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27D2;'">
+            <xsl:text xml:space="preserve">\upin </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27D3;'">
+            <xsl:text xml:space="preserve">\pullback </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27D4;'">
+            <xsl:text xml:space="preserve">\pushout </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27DA;'">
+            <xsl:text xml:space="preserve">\DashVDash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27DB;'">
+            <xsl:text xml:space="preserve">\dashVdash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27DC;'">
+            <xsl:text xml:space="preserve">\multimapinv </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27DD;'">
+            <xsl:text xml:space="preserve">\vlongdash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27DE;'">
+            <xsl:text xml:space="preserve">\longdashv </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27DF;'">
+            <xsl:text xml:space="preserve">\cirbot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27F0;'">
+            <xsl:text xml:space="preserve">\UUparrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27F1;'">
+            <xsl:text xml:space="preserve">\DDownarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27F2;'">
+            <xsl:text xml:space="preserve">\acwgapcirclearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27F3;'">
+            <xsl:text xml:space="preserve">\cwgapcirclearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27F4;'">
+            <xsl:text xml:space="preserve">\rightarrowonoplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27FB;'">
+            <xsl:text xml:space="preserve">\longmapsfrom </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27FD;'">
+            <xsl:text xml:space="preserve">\Longmapsfrom </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27FE;'">
+            <xsl:text xml:space="preserve">\Longmapsto </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27FF;'">
+            <xsl:text xml:space="preserve">\longrightsquigarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2900;'">
+            <xsl:text xml:space="preserve">\nvtwoheadrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2901;'">
+            <xsl:text xml:space="preserve">\nVtwoheadrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2902;'">
+            <xsl:text xml:space="preserve">\nvLeftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2903;'">
+            <xsl:text xml:space="preserve">\nvRightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2904;'">
+            <xsl:text xml:space="preserve">\nvLeftrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2905;'">
+            <xsl:text xml:space="preserve">\twoheadmapsto </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2906;'">
+            <xsl:text xml:space="preserve">\Mapsfrom </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2907;'">
+            <xsl:text xml:space="preserve">\Mapsto </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2908;'">
+            <xsl:text xml:space="preserve">\downarrowbarred </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2909;'">
+            <xsl:text xml:space="preserve">\uparrowbarred </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x290A;'">
+            <xsl:text xml:space="preserve">\Uuparrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x290B;'">
+            <xsl:text xml:space="preserve">\Ddownarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x290C;'">
+            <xsl:text xml:space="preserve">\leftbkarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x290D;'">
+            <xsl:text xml:space="preserve">\rightbkarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2910;'">
+            <xsl:text xml:space="preserve">\drbkarow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2911;'">
+            <xsl:text xml:space="preserve">\rightdotarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2912;'">
+            <xsl:text xml:space="preserve">\baruparrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2913;'">
+            <xsl:text xml:space="preserve">\downarrowbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2914;'">
+            <xsl:text xml:space="preserve">\nvrightarrowtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2915;'">
+            <xsl:text xml:space="preserve">\nVrightarrowtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2916;'">
+            <xsl:text xml:space="preserve">\twoheadrightarrowtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2917;'">
+            <xsl:text xml:space="preserve">\nvtwoheadrightarrowtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2918;'">
+            <xsl:text xml:space="preserve">\nVtwoheadrightarrowtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2919;'">
+            <xsl:text xml:space="preserve">\lefttail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x291A;'">
+            <xsl:text xml:space="preserve">\righttail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x291B;'">
+            <xsl:text xml:space="preserve">\leftdbltail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x291C;'">
+            <xsl:text xml:space="preserve">\rightdbltail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x291D;'">
+            <xsl:text xml:space="preserve">\diamondleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x291E;'">
+            <xsl:text xml:space="preserve">\rightarrowdiamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x291F;'">
+            <xsl:text xml:space="preserve">\diamondleftarrowbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2920;'">
+            <xsl:text xml:space="preserve">\barrightarrowdiamond </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2921;'">
+            <xsl:text xml:space="preserve">\nwsearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2922;'">
+            <xsl:text xml:space="preserve">\neswarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2923;'">
+            <xsl:text xml:space="preserve">\hknwarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2924;'">
+            <xsl:text xml:space="preserve">\hknearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2925;'">
+            <xsl:text xml:space="preserve">\hksearow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2926;'">
+            <xsl:text xml:space="preserve">\hkswarow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2927;'">
+            <xsl:text xml:space="preserve">\tona </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2928;'">
+            <xsl:text xml:space="preserve">\toea </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2929;'">
+            <xsl:text xml:space="preserve">\tosa </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x292A;'">
+            <xsl:text xml:space="preserve">\towa </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2936;'">
+            <xsl:text xml:space="preserve">\leftdowncurvedarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2937;'">
+            <xsl:text xml:space="preserve">\rightdowncurvedarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2938;'">
+            <xsl:text xml:space="preserve">\cwrightarcarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2939;'">
+            <xsl:text xml:space="preserve">\acwleftarcarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x293A;'">
+            <xsl:text xml:space="preserve">\acwoverarcarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x293B;'">
+            <xsl:text xml:space="preserve">\acwunderarcarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x293C;'">
+            <xsl:text xml:space="preserve">\curvearrowrightminus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x293D;'">
+            <xsl:text xml:space="preserve">\curvearrowleftplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x293E;'">
+            <xsl:text xml:space="preserve">\cwundercurvearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x293F;'">
+            <xsl:text xml:space="preserve">\ccwundercurvearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2940;'">
+            <xsl:text xml:space="preserve">\acwcirclearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2941;'">
+            <xsl:text xml:space="preserve">\cwcirclearrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2942;'">
+            <xsl:text xml:space="preserve">\rightarrowshortleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2943;'">
+            <xsl:text xml:space="preserve">\leftarrowshortrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2944;'">
+            <xsl:text xml:space="preserve">\shortrightarrowleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2945;'">
+            <xsl:text xml:space="preserve">\rightarrowplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2946;'">
+            <xsl:text xml:space="preserve">\leftarrowplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2947;'">
+            <xsl:text xml:space="preserve">\rightarrowx </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2948;'">
+            <xsl:text xml:space="preserve">\leftrightarrowcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2949;'">
+            <xsl:text xml:space="preserve">\twoheaduparrowcircle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x294A;'">
+            <xsl:text xml:space="preserve">\leftrightharpoonupdown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x294B;'">
+            <xsl:text xml:space="preserve">\leftrightharpoondownup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x294C;'">
+            <xsl:text xml:space="preserve">\updownharpoonrightleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x294D;'">
+            <xsl:text xml:space="preserve">\updownharpoonleftright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x294E;'">
+            <xsl:text xml:space="preserve">\leftrightharpoonupup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x294F;'">
+            <xsl:text xml:space="preserve">\updownharpoonrightright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2950;'">
+            <xsl:text xml:space="preserve">\leftrightharpoondowndown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2951;'">
+            <xsl:text xml:space="preserve">\updownharpoonleftleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2952;'">
+            <xsl:text xml:space="preserve">\barleftharpoonup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2953;'">
+            <xsl:text xml:space="preserve">\rightharpoonupbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2954;'">
+            <xsl:text xml:space="preserve">\barupharpoonright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2955;'">
+            <xsl:text xml:space="preserve">\downharpoonrightbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2956;'">
+            <xsl:text xml:space="preserve">\barleftharpoondown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2957;'">
+            <xsl:text xml:space="preserve">\rightharpoondownbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2958;'">
+            <xsl:text xml:space="preserve">\barupharpoonleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2959;'">
+            <xsl:text xml:space="preserve">\downharpoonleftbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x295A;'">
+            <xsl:text xml:space="preserve">\leftharpoonupbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x295B;'">
+            <xsl:text xml:space="preserve">\barrightharpoonup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x295C;'">
+            <xsl:text xml:space="preserve">\upharpoonrightbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x295D;'">
+            <xsl:text xml:space="preserve">\bardownharpoonright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x295E;'">
+            <xsl:text xml:space="preserve">\leftharpoondownbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x295F;'">
+            <xsl:text xml:space="preserve">\barrightharpoondown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2960;'">
+            <xsl:text xml:space="preserve">\upharpoonleftbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2961;'">
+            <xsl:text xml:space="preserve">\bardownharpoonleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2962;'">
+            <xsl:text xml:space="preserve">\leftharpoonsupdown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2963;'">
+            <xsl:text xml:space="preserve">\upharpoonsleftright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2964;'">
+            <xsl:text xml:space="preserve">\rightharpoonsupdown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2965;'">
+            <xsl:text xml:space="preserve">\downharpoonsleftright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2966;'">
+            <xsl:text xml:space="preserve">\leftrightharpoonsup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2967;'">
+            <xsl:text xml:space="preserve">\leftrightharpoonsdown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2968;'">
+            <xsl:text xml:space="preserve">\rightleftharpoonsup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2969;'">
+            <xsl:text xml:space="preserve">\rightleftharpoonsdown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x296A;'">
+            <xsl:text xml:space="preserve">\leftharpoonupdash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x296B;'">
+            <xsl:text xml:space="preserve">\dashleftharpoondown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x296C;'">
+            <xsl:text xml:space="preserve">\rightharpoonupdash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x296D;'">
+            <xsl:text xml:space="preserve">\dashrightharpoondown </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x296E;'">
+            <xsl:text xml:space="preserve">\updownharpoonsleftright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x296F;'">
+            <xsl:text xml:space="preserve">\downupharpoonsleftright </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2970;'">
+            <xsl:text xml:space="preserve">\rightimply </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2971;'">
+            <xsl:text xml:space="preserve">\equalrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2972;'">
+            <xsl:text xml:space="preserve">\similarrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2973;'">
+            <xsl:text xml:space="preserve">\leftarrowsimilar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2974;'">
+            <xsl:text xml:space="preserve">\rightarrowsimilar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2975;'">
+            <xsl:text xml:space="preserve">\rightarrowapprox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2976;'">
+            <xsl:text xml:space="preserve">\ltlarr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2977;'">
+            <xsl:text xml:space="preserve">\leftarrowless </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2978;'">
+            <xsl:text xml:space="preserve">\gtrarr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2979;'">
+            <xsl:text xml:space="preserve">\subrarr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x297A;'">
+            <xsl:text xml:space="preserve">\leftarrowsubset </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x297B;'">
+            <xsl:text xml:space="preserve">\suplarr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x297C;'">
+            <xsl:text xml:space="preserve">\leftfishtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x297D;'">
+            <xsl:text xml:space="preserve">\rightfishtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x297E;'">
+            <xsl:text xml:space="preserve">\upfishtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x297F;'">
+            <xsl:text xml:space="preserve">\downfishtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29CE;'">
+            <xsl:text xml:space="preserve">\rtriltri </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29CF;'">
+            <xsl:text xml:space="preserve">\ltrivb </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29D0;'">
+            <xsl:text xml:space="preserve">\vbrtri </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29D1;'">
+            <xsl:text xml:space="preserve">\lfbowtie </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29D2;'">
+            <xsl:text xml:space="preserve">\rfbowtie </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29D3;'">
+            <xsl:text xml:space="preserve">\fbowtie </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29D4;'">
+            <xsl:text xml:space="preserve">\lftimes </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29D5;'">
+            <xsl:text xml:space="preserve">\rftimes </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29DF;'">
+            <xsl:text xml:space="preserve">\dualmap </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29E1;'">
+            <xsl:text xml:space="preserve">\lrtriangleeq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29E3;'">
+            <xsl:text xml:space="preserve">\eparsl </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29E4;'">
+            <xsl:text xml:space="preserve">\smeparsl </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29E5;'">
+            <xsl:text xml:space="preserve">\eqvparsl </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29E6;'">
+            <xsl:text xml:space="preserve">\gleichstark </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29F4;'">
+            <xsl:text xml:space="preserve">\ruledelayed </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A59;'">
+            <xsl:text xml:space="preserve">\veeonwedge </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A66;'">
+            <xsl:text xml:space="preserve">\eqdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A67;'">
+            <xsl:text xml:space="preserve">\dotequiv </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A68;'">
+            <xsl:text xml:space="preserve">\equivVert </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A69;'">
+            <xsl:text xml:space="preserve">\equivVvert </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A6A;'">
+            <xsl:text xml:space="preserve">\dotsim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A6B;'">
+            <xsl:text xml:space="preserve">\simrdots </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A6C;'">
+            <xsl:text xml:space="preserve">\simminussim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A6D;'">
+            <xsl:text xml:space="preserve">\congdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A6E;'">
+            <xsl:text xml:space="preserve">\asteq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A6F;'">
+            <xsl:text xml:space="preserve">\hatapprox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A70;'">
+            <xsl:text xml:space="preserve">\approxeqq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A73;'">
+            <xsl:text xml:space="preserve">\eqqsim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A74;'">
+            <xsl:text xml:space="preserve">\Coloneq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A75;'">
+            <xsl:text xml:space="preserve">\eqeq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A76;'">
+            <xsl:text xml:space="preserve">\eqeqeq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A77;'">
+            <xsl:text xml:space="preserve">\ddotseq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A78;'">
+            <xsl:text xml:space="preserve">\equivDD </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A79;'">
+            <xsl:text xml:space="preserve">\ltcir </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A7A;'">
+            <xsl:text xml:space="preserve">\gtcir </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A7B;'">
+            <xsl:text xml:space="preserve">\ltquest </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A7C;'">
+            <xsl:text xml:space="preserve">\gtquest </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A7F;'">
+            <xsl:text xml:space="preserve">\lesdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A80;'">
+            <xsl:text xml:space="preserve">\gesdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A81;'">
+            <xsl:text xml:space="preserve">\lesdoto </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A82;'">
+            <xsl:text xml:space="preserve">\gesdoto </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A83;'">
+            <xsl:text xml:space="preserve">\lesdotor </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A84;'">
+            <xsl:text xml:space="preserve">\gesdotol </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A8D;'">
+            <xsl:text xml:space="preserve">\lsime </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A8E;'">
+            <xsl:text xml:space="preserve">\gsime </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A8F;'">
+            <xsl:text xml:space="preserve">\lsimg </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A90;'">
+            <xsl:text xml:space="preserve">\gsiml </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A91;'">
+            <xsl:text xml:space="preserve">\lgE </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A92;'">
+            <xsl:text xml:space="preserve">\glE </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A93;'">
+            <xsl:text xml:space="preserve">\lesges </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A94;'">
+            <xsl:text xml:space="preserve">\gesles </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A97;'">
+            <xsl:text xml:space="preserve">\elsdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A98;'">
+            <xsl:text xml:space="preserve">\egsdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A99;'">
+            <xsl:text xml:space="preserve">\eqqless </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A9A;'">
+            <xsl:text xml:space="preserve">\eqqgtr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A9B;'">
+            <xsl:text xml:space="preserve">\eqqslantless </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A9C;'">
+            <xsl:text xml:space="preserve">\eqqslantgtr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A9D;'">
+            <xsl:text xml:space="preserve">\simless </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A9E;'">
+            <xsl:text xml:space="preserve">\simgtr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A9F;'">
+            <xsl:text xml:space="preserve">\simlE </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AA0;'">
+            <xsl:text xml:space="preserve">\simgE </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AA1;'">
+            <xsl:text xml:space="preserve">\Lt </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AA2;'">
+            <xsl:text xml:space="preserve">\Gt </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AA3;'">
+            <xsl:text xml:space="preserve">\partialmeetcontraction </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AA4;'">
+            <xsl:text xml:space="preserve">\glj </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AA5;'">
+            <xsl:text xml:space="preserve">\gla </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AA6;'">
+            <xsl:text xml:space="preserve">\ltcc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AA7;'">
+            <xsl:text xml:space="preserve">\gtcc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AA8;'">
+            <xsl:text xml:space="preserve">\lescc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AA9;'">
+            <xsl:text xml:space="preserve">\gescc </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AAA;'">
+            <xsl:text xml:space="preserve">\smt </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AAB;'">
+            <xsl:text xml:space="preserve">\lat </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AAC;'">
+            <xsl:text xml:space="preserve">\smte </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AAD;'">
+            <xsl:text xml:space="preserve">\late </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AAE;'">
+            <xsl:text xml:space="preserve">\bumpeqq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AB1;'">
+            <xsl:text xml:space="preserve">\precneq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AB2;'">
+            <xsl:text xml:space="preserve">\succneq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AB3;'">
+            <xsl:text xml:space="preserve">\preceqq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AB4;'">
+            <xsl:text xml:space="preserve">\succeqq </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ABB;'">
+            <xsl:text xml:space="preserve">\Prec </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ABC;'">
+            <xsl:text xml:space="preserve">\Succ </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ABD;'">
+            <xsl:text xml:space="preserve">\subsetdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ABE;'">
+            <xsl:text xml:space="preserve">\supsetdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ABF;'">
+            <xsl:text xml:space="preserve">\subsetplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AC0;'">
+            <xsl:text xml:space="preserve">\supsetplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AC1;'">
+            <xsl:text xml:space="preserve">\submult </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AC2;'">
+            <xsl:text xml:space="preserve">\supmult </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AC3;'">
+            <xsl:text xml:space="preserve">\subedot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AC4;'">
+            <xsl:text xml:space="preserve">\supedot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AC7;'">
+            <xsl:text xml:space="preserve">\subsim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AC8;'">
+            <xsl:text xml:space="preserve">\supsim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AC9;'">
+            <xsl:text xml:space="preserve">\subsetapprox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ACA;'">
+            <xsl:text xml:space="preserve">\supsetapprox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ACD;'">
+            <xsl:text xml:space="preserve">\lsqhook </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ACE;'">
+            <xsl:text xml:space="preserve">\rsqhook </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ACF;'">
+            <xsl:text xml:space="preserve">\csub </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AD0;'">
+            <xsl:text xml:space="preserve">\csup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AD1;'">
+            <xsl:text xml:space="preserve">\csube </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AD2;'">
+            <xsl:text xml:space="preserve">\csupe </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AD3;'">
+            <xsl:text xml:space="preserve">\subsup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AD4;'">
+            <xsl:text xml:space="preserve">\supsub </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AD5;'">
+            <xsl:text xml:space="preserve">\subsub </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AD6;'">
+            <xsl:text xml:space="preserve">\supsup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AD7;'">
+            <xsl:text xml:space="preserve">\suphsub </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AD8;'">
+            <xsl:text xml:space="preserve">\supdsub </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AD9;'">
+            <xsl:text xml:space="preserve">\forkv </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ADA;'">
+            <xsl:text xml:space="preserve">\topfork </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ADB;'">
+            <xsl:text xml:space="preserve">\mlcp </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ADC;'">
+            <xsl:text xml:space="preserve">\forks </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ADD;'">
+            <xsl:text xml:space="preserve">\forksnot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ADE;'">
+            <xsl:text xml:space="preserve">\shortlefttack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2ADF;'">
+            <xsl:text xml:space="preserve">\shortdowntack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AE0;'">
+            <xsl:text xml:space="preserve">\shortuptack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AE2;'">
+            <xsl:text xml:space="preserve">\vDdash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AE3;'">
+            <xsl:text xml:space="preserve">\dashV </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AE4;'">
+            <xsl:text xml:space="preserve">\Dashv </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AE5;'">
+            <xsl:text xml:space="preserve">\DashV </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AE6;'">
+            <xsl:text xml:space="preserve">\varVdash </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AE7;'">
+            <xsl:text xml:space="preserve">\Barv </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AE8;'">
+            <xsl:text xml:space="preserve">\vBar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AE9;'">
+            <xsl:text xml:space="preserve">\vBarv </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AEA;'">
+            <xsl:text xml:space="preserve">\barV </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AEB;'">
+            <xsl:text xml:space="preserve">\Vbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AEC;'">
+            <xsl:text xml:space="preserve">\Not </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AED;'">
+            <xsl:text xml:space="preserve">\bNot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AEE;'">
+            <xsl:text xml:space="preserve">\revnmid </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AEF;'">
+            <xsl:text xml:space="preserve">\cirmid </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AF0;'">
+            <xsl:text xml:space="preserve">\midcir </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AF2;'">
+            <xsl:text xml:space="preserve">\nhpar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AF3;'">
+            <xsl:text xml:space="preserve">\parsim </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AF7;'">
+            <xsl:text xml:space="preserve">\lllnest </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AF8;'">
+            <xsl:text xml:space="preserve">\gggnest </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AF9;'">
+            <xsl:text xml:space="preserve">\leqqslant </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AFA;'">
+            <xsl:text xml:space="preserve">\geqqslant </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B30;'">
+            <xsl:text xml:space="preserve">\circleonleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B31;'">
+            <xsl:text xml:space="preserve">\leftthreearrows </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B32;'">
+            <xsl:text xml:space="preserve">\leftarrowonoplus </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B33;'">
+            <xsl:text xml:space="preserve">\longleftsquigarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B34;'">
+            <xsl:text xml:space="preserve">\nvtwoheadleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B35;'">
+            <xsl:text xml:space="preserve">\nVtwoheadleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B36;'">
+            <xsl:text xml:space="preserve">\twoheadmapsfrom </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B37;'">
+            <xsl:text xml:space="preserve">\twoheadleftdbkarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B38;'">
+            <xsl:text xml:space="preserve">\leftdotarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B39;'">
+            <xsl:text xml:space="preserve">\nvleftarrowtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B3A;'">
+            <xsl:text xml:space="preserve">\nVleftarrowtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B3B;'">
+            <xsl:text xml:space="preserve">\twoheadleftarrowtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B3C;'">
+            <xsl:text xml:space="preserve">\nvtwoheadleftarrowtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B3D;'">
+            <xsl:text xml:space="preserve">\nVtwoheadleftarrowtail </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B3E;'">
+            <xsl:text xml:space="preserve">\leftarrowx </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B3F;'">
+            <xsl:text xml:space="preserve">\leftcurvedarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B40;'">
+            <xsl:text xml:space="preserve">\equalleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B41;'">
+            <xsl:text xml:space="preserve">\bsimilarleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B42;'">
+            <xsl:text xml:space="preserve">\leftarrowbackapprox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B43;'">
+            <xsl:text xml:space="preserve">\rightarrowgtr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B44;'">
+            <xsl:text xml:space="preserve">\rightarrowsupset </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B45;'">
+            <xsl:text xml:space="preserve">\LLeftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B46;'">
+            <xsl:text xml:space="preserve">\RRightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B47;'">
+            <xsl:text xml:space="preserve">\bsimilarrightarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B48;'">
+            <xsl:text xml:space="preserve">\rightarrowbackapprox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B49;'">
+            <xsl:text xml:space="preserve">\similarleftarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B4A;'">
+            <xsl:text xml:space="preserve">\leftarrowapprox </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B4B;'">
+            <xsl:text xml:space="preserve">\leftarrowbsimilar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2B4C;'">
+            <xsl:text xml:space="preserve">\rightarrowbsimilar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x222F;'">
+            <xsl:text xml:space="preserve">\smalloiint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2230;'">
+            <xsl:text xml:space="preserve">\smalloiiint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2231;'">
+            <xsl:text xml:space="preserve">\smallintclockwise </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2232;'">
+            <xsl:text xml:space="preserve">\smallvarointclockwise </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2233;'">
+            <xsl:text xml:space="preserve">\smallointctrclockwise </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A0B;'">
+            <xsl:text xml:space="preserve">\smallsumint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A0D;'">
+            <xsl:text xml:space="preserve">\smallintbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A0E;'">
+            <xsl:text xml:space="preserve">\smallintBar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A0F;'">
+            <xsl:text xml:space="preserve">\smallfint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A10;'">
+            <xsl:text xml:space="preserve">\smallcirfnint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A11;'">
+            <xsl:text xml:space="preserve">\smallawint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A12;'">
+            <xsl:text xml:space="preserve">\smallrppolint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A13;'">
+            <xsl:text xml:space="preserve">\smallscpolint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A14;'">
+            <xsl:text xml:space="preserve">\smallnpolint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A15;'">
+            <xsl:text xml:space="preserve">\smallpointint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A16;'">
+            <xsl:text xml:space="preserve">\smallsqint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A17;'">
+            <xsl:text xml:space="preserve">\smallintlarhk </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A18;'">
+            <xsl:text xml:space="preserve">\smallintx </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A19;'">
+            <xsl:text xml:space="preserve">\smallintcap </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A1A;'">
+            <xsl:text xml:space="preserve">\smallintcup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A1B;'">
+            <xsl:text xml:space="preserve">\smallupint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A1C;'">
+            <xsl:text xml:space="preserve">\smalllowint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x222F;'">
+            <xsl:text xml:space="preserve">\oiint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2230;'">
+            <xsl:text xml:space="preserve">\oiiint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2231;'">
+            <xsl:text xml:space="preserve">\intclockwise </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2232;'">
+            <xsl:text xml:space="preserve">\varointclockwise </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2233;'">
+            <xsl:text xml:space="preserve">\ointctrclockwise </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A0B;'">
+            <xsl:text xml:space="preserve">\sumint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A0D;'">
+            <xsl:text xml:space="preserve">\intbar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A0E;'">
+            <xsl:text xml:space="preserve">\intBar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A0F;'">
+            <xsl:text xml:space="preserve">\fint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A10;'">
+            <xsl:text xml:space="preserve">\cirfnint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A11;'">
+            <xsl:text xml:space="preserve">\awint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A12;'">
+            <xsl:text xml:space="preserve">\rppolint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A13;'">
+            <xsl:text xml:space="preserve">\scpolint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A14;'">
+            <xsl:text xml:space="preserve">\npolint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A15;'">
+            <xsl:text xml:space="preserve">\pointint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A16;'">
+            <xsl:text xml:space="preserve">\sqint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A17;'">
+            <xsl:text xml:space="preserve">\intlarhk </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A18;'">
+            <xsl:text xml:space="preserve">\intx </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A19;'">
+            <xsl:text xml:space="preserve">\intcap </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A1A;'">
+            <xsl:text xml:space="preserve">\intcup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A1B;'">
+            <xsl:text xml:space="preserve">\upint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A1C;'">
+            <xsl:text xml:space="preserve">\lowint </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2140;'">
+            <xsl:text xml:space="preserve">\Bbbsum </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27D5;'">
+            <xsl:text xml:space="preserve">\leftouterjoin </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27D6;'">
+            <xsl:text xml:space="preserve">\rightouterjoin </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27D7;'">
+            <xsl:text xml:space="preserve">\fullouterjoin </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27D8;'">
+            <xsl:text xml:space="preserve">\bigbot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27D9;'">
+            <xsl:text xml:space="preserve">\bigtop </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29F8;'">
+            <xsl:text xml:space="preserve">\xsol </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29F9;'">
+            <xsl:text xml:space="preserve">\xbsol </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A03;'">
+            <xsl:text xml:space="preserve">\bigcupdot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A05;'">
+            <xsl:text xml:space="preserve">\bigsqcap </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A07;'">
+            <xsl:text xml:space="preserve">\conjquant </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A08;'">
+            <xsl:text xml:space="preserve">\disjquant </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A09;'">
+            <xsl:text xml:space="preserve">\bigtimes </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A0A;'">
+            <xsl:text xml:space="preserve">\modtwosum </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A1E;'">
+            <xsl:text xml:space="preserve">\bigtriangleleft </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A1F;'">
+            <xsl:text xml:space="preserve">\zcmp </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A20;'">
+            <xsl:text xml:space="preserve">\zpipe </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2A21;'">
+            <xsl:text xml:space="preserve">\zproject </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AFC;'">
+            <xsl:text xml:space="preserve">\biginterleave </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2AFF;'">
+            <xsl:text xml:space="preserve">\bigtalloblong </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23B0;'">
+            <xsl:text xml:space="preserve">\lmoustache </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2772;'">
+            <xsl:text xml:space="preserve">\lbrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27E6;'">
+            <xsl:text xml:space="preserve">\lBrack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27EA;'">
+            <xsl:text xml:space="preserve">\lAngle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27EE;'">
+            <xsl:text xml:space="preserve">\lgroup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2983;'">
+            <xsl:text xml:space="preserve">\lBrace </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2985;'">
+            <xsl:text xml:space="preserve">\lParen </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x23B1;'">
+            <xsl:text xml:space="preserve">\rmoustache </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2773;'">
+            <xsl:text xml:space="preserve">\rbrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27E7;'">
+            <xsl:text xml:space="preserve">\rBrack </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27EB;'">
+            <xsl:text xml:space="preserve">\rAngle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27EF;'">
+            <xsl:text xml:space="preserve">\rgroup </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2984;'">
+            <xsl:text xml:space="preserve">\rBrace </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2986;'">
+            <xsl:text xml:space="preserve">\rParen </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2980;'">
+            <xsl:text xml:space="preserve">\Vvert </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x290A;'">
+            <xsl:text xml:space="preserve">\Uuparrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x290B;'">
+            <xsl:text xml:space="preserve">\Ddownarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27F0;'">
+            <xsl:text xml:space="preserve">\UUparrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27F1;'">
+            <xsl:text xml:space="preserve">\DDownarrow </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27EC;'">
+            <xsl:text xml:space="preserve">\Lbrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27ED;'">
+            <xsl:text xml:space="preserve">\Rbrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2987;'">
+            <xsl:text xml:space="preserve">\llparenthesis </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2988;'">
+            <xsl:text xml:space="preserve">\rrparenthesis </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2989;'">
+            <xsl:text xml:space="preserve">\llangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x298A;'">
+            <xsl:text xml:space="preserve">\rrangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x298B;'">
+            <xsl:text xml:space="preserve">\lbrackubar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x298C;'">
+            <xsl:text xml:space="preserve">\rbrackubar </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x298D;'">
+            <xsl:text xml:space="preserve">\lbrackultick </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x298E;'">
+            <xsl:text xml:space="preserve">\rbracklrtick </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x298F;'">
+            <xsl:text xml:space="preserve">\lbracklltick </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2990;'">
+            <xsl:text xml:space="preserve">\rbrackurtick </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2991;'">
+            <xsl:text xml:space="preserve">\langledot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2992;'">
+            <xsl:text xml:space="preserve">\rangledot </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2993;'">
+            <xsl:text xml:space="preserve">\lparenless </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2994;'">
+            <xsl:text xml:space="preserve">\rparengtr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2995;'">
+            <xsl:text xml:space="preserve">\Lparengtr </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2996;'">
+            <xsl:text xml:space="preserve">\Rparenless </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2997;'">
+            <xsl:text xml:space="preserve">\lblkbrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2998;'">
+            <xsl:text xml:space="preserve">\rblkbrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29D8;'">
+            <xsl:text xml:space="preserve">\lvzigzag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29D9;'">
+            <xsl:text xml:space="preserve">\rvzigzag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29DA;'">
+            <xsl:text xml:space="preserve">\Lvzigzag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29DB;'">
+            <xsl:text xml:space="preserve">\Rvzigzag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29FC;'">
+            <xsl:text xml:space="preserve">\lcurvyangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x29FD;'">
+            <xsl:text xml:space="preserve">\rcurvyangle </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2772;'">
+            <xsl:text xml:space="preserve">\lbrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2773;'">
+            <xsl:text xml:space="preserve">\rbrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27C5;'">
+            <xsl:text xml:space="preserve">\lbag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27C6;'">
+            <xsl:text xml:space="preserve">\rbag </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27EC;'">
+            <xsl:text xml:space="preserve">\Lbrbrak </xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x27ED;'">
+            <xsl:text xml:space="preserve">\Rbrbrak </xsl:text>
+          </xsl:when>
+<!-- End additions to support characters available when using the stix package -->
+
+
           <xsl:otherwise>
 <!-- BBM: we want to let unidentified unicodes through, since XeLaTeX can handle them, and for PDFLaTeX we post-process
 -->          <!-- jcs - this may need a \mathop{} -->
