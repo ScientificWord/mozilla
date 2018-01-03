@@ -5,7 +5,7 @@ prince.jar:
   content/toc.xul					(toc/content/toc.xul)
   content/toc.js					(toc/content/toc.js)
   content/toc.xsl				 	(toc/content/toc.xsl)
-  content/symbols.xul     (symbols/content/symbols.xul)
+* content/symbols.xul     (symbols/content/symbols.xul)
   content/symbols.js      (symbols/content/symbols.js)
 
 
