@@ -5456,18 +5456,6 @@ If we use this, don't forget 'roman'
           <xsl:when test="$first-char='&#x2980;'">
             <xsl:text xml:space="preserve">\Vvert </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x290A;'">
-            <xsl:text xml:space="preserve">\Uuparrow </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x290B;'">
-            <xsl:text xml:space="preserve">\Ddownarrow </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x27F0;'">
-            <xsl:text xml:space="preserve">\UUparrow </xsl:text>
-          </xsl:when>
-          <xsl:when test="$first-char='&#x27F1;'">
-            <xsl:text xml:space="preserve">\DDownarrow </xsl:text>
-          </xsl:when>
           <xsl:when test="$first-char='&#x27EC;'">
             <xsl:text xml:space="preserve">\Lbrbrak </xsl:text>
           </xsl:when>
@@ -5546,24 +5534,24 @@ If we use this, don't forget 'roman'
           <xsl:when test="$first-char='&#x29FD;'">
             <xsl:text xml:space="preserve">\rcurvyangle </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x2772;'">
+<!--           <xsl:when test="$first-char='&#x2772;'">
             <xsl:text xml:space="preserve">\lbrbrak </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2773;'">
             <xsl:text xml:space="preserve">\rbrbrak </xsl:text>
-          </xsl:when>
+          </xsl:when> -->
           <xsl:when test="$first-char='&#x27C5;'">
             <xsl:text xml:space="preserve">\lbag </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x27C6;'">
             <xsl:text xml:space="preserve">\rbag </xsl:text>
           </xsl:when>
-          <xsl:when test="$first-char='&#x27EC;'">
+<!--           <xsl:when test="$first-char='&#x27EC;'">
             <xsl:text xml:space="preserve">\Lbrbrak </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x27ED;'">
             <xsl:text xml:space="preserve">\Rbrbrak </xsl:text>
-          </xsl:when>
+          </xsl:when> -->
 <!-- End additions to support characters available when using the stix package -->
 
 
