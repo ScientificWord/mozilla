@@ -869,10 +869,6 @@
           <toolbarbutton id="rBrace" />
           <toolbarbutton id="rParen" />
           <toolbarbutton id="Vvert" />
-          <toolbarbutton id="Uuparrow" />
-          <toolbarbutton id="Ddownarrow" />
-          <toolbarbutton id="UUparrow" />
-          <toolbarbutton id="DDownarrow" />
           <toolbarbutton id="Lbrbrak" />
           <toolbarbutton id="Rbrbrak" />
           <toolbarbutton id="llparenthesis" />
@@ -899,9 +895,9 @@
           <toolbarbutton id="Rvzigzag" />
           <toolbarbutton id="lcurvyangle" />
           <toolbarbutton id="rcurvyangle" />
-          <toolbarbutton id="lbrbrak" />
-          <toolbarbutton id="rbrbrak" />
+<!--           <toolbarbutton id="lbrbrak" />
+          <toolbarbutton id="rbrbrak" /> -->
           <toolbarbutton id="lbag" />
           <toolbarbutton id="rbag" />
-          <toolbarbutton id="Lbrbrak" />
-          <toolbarbutton id="Rbrbrak" />
+<!--           <toolbarbutton id="Lbrbrak" />
+          <toolbarbutton id="Rbrbrak" /> -->

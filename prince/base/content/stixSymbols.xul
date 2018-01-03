@@ -869,10 +869,6 @@
         <toolbarbutton id = "rBrace" label="&#x2984;" tooltiptext="rBrace" msivalue="&#x2984;" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "rParen" label="&#x2986;" tooltiptext="rParen" msivalue="&#x2986;" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "Vvert" label="&#x2980;" tooltiptext="Vvert" msivalue="&#x2980;" observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id = "Uuparrow" label="&#x290A;" tooltiptext="Uuparrow" msivalue="&#x290A;" observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id = "Ddownarrow" label="&#x290B;" tooltiptext="Ddownarrow" msivalue="&#x290B;" observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id = "UUparrow" label="&#x27F0;" tooltiptext="UUparrow" msivalue="&#x27F0;" observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id = "DDownarrow" label="&#x27F1;" tooltiptext="DDownarrow" msivalue="&#x27F1;" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "Lbrbrak" label="&#x27EC;" tooltiptext="Lbrbrak" msivalue="&#x27EC;" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "Rbrbrak" label="&#x27ED;" tooltiptext="Rbrbrak" msivalue="&#x27ED;" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "llparenthesis" label="&#x2987;" tooltiptext="llparenthesis" msivalue="&#x2987;" observes="cmd_MSIsymbolCmd"/>
@@ -899,9 +895,9 @@
         <toolbarbutton id = "Rvzigzag" label="&#x29DB;" tooltiptext="Rvzigzag" msivalue="&#x29DB;" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "lcurvyangle" label="&#x29FC;" tooltiptext="lcurvyangle" msivalue="&#x29FC;" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "rcurvyangle" label="&#x29FD;" tooltiptext="rcurvyangle" msivalue="&#x29FD;" observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id = "lbrbrak" label="&#x2772;" tooltiptext="lbrbrak" msivalue="&#x2772;" observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id = "rbrbrak" label="&#x2773;" tooltiptext="rbrbrak" msivalue="&#x2773;" observes="cmd_MSIsymbolCmd"/>
+<!--         <toolbarbutton id = "lbrbrak" label="&#x2772;" tooltiptext="lbrbrak" msivalue="&#x2772;" observes="cmd_MSIsymbolCmd"/>
+        <toolbarbutton id = "rbrbrak" label="&#x2773;" tooltiptext="rbrbrak" msivalue="&#x2773;" observes="cmd_MSIsymbolCmd"/> -->
         <toolbarbutton id = "lbag" label="&#x27C5;" tooltiptext="lbag" msivalue="&#x27C5;" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "rbag" label="&#x27C6;" tooltiptext="rbag" msivalue="&#x27C6;" observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id = "Lbrbrak" label="&#x27EC;" tooltiptext="Lbrbrak" msivalue="&#x27EC;" observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id = "Rbrbrak" label="&#x27ED;" tooltiptext="Rbrbrak" msivalue="x27ED;" observes="cmd_MSIsymbolCmd"/>
+<!--         <toolbarbutton id = "Lbrbrak" label="&#x27EC;" tooltiptext="Lbrbrak" msivalue="&#x27EC;" observes="cmd_MSIsymbolCmd"/>
+        <toolbarbutton id = "Rbrbrak" label="&#x27ED;" tooltiptext="Rbrbrak" msivalue="x27ED;" observes="cmd_MSIsymbolCmd"/> -->
