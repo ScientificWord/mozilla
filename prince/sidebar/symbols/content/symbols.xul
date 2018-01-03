@@ -67,7 +67,7 @@
 			    linkedpanel="symbol_latinextended" />
         <tab dir="rtl" label="&#x201C;&#x201D;" mathsym="false" tooltiptext="&MSISymbolTabPunctuation;"        selected="0"
           linkedpanel="symbol_punctuation" />
-			  <tab dir="rtl" label="STIX" mathsym="true" tooltiptext="STIX"        selected="0"
+			  <tab dir="rtl" label="Sx" mathsym="true" tooltiptext="STIX"        selected="0"
 			    linkedpanel="symbol_stix" />
 			  <tab id="cachebar" label="User" style="font-family: sans-serif; font-size: 11px;" mathsym="true" tooltiptext="&MSISymbolTabDrag.tooltip;" linkedpanel="cachepanel"   ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event, symObserver);"
         />
