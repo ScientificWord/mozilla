@@ -1323,6 +1323,26 @@
 [slashed]
 1=None available
 
+[stix]
+1=Change default text fonts
+1.1=No,notext
+1.2=Yes - default,
+2=Change default math fonts
+2.1=No,nomath
+2.2=Yes - default,
+3=Change default font encoding to T1
+3.1=No,not1
+3.2=Yes - default,
+4=Load textcomp package
+4.1=No,notextcomp
+4.2=Yes - default,
+5=Use text style lower case Greek
+5.1=No - default,
+5.2=Yes,lcgreekalpha
+6=Use upright integrals
+6.1=No - default,
+6.2=Yes,upint
+
 [subfig]
 1=Subfig package options
 2=List subcaptions type
@@ -1493,6 +1513,14 @@
 1=Redefine standard case macros
 1.1=No - default,
 1.2=Yes,overload
+
+[textcomp]
+1=Encoding option
+1.1=Full,full
+1.2=Almost full - default,almostfull
+1.3=Euro (Safe plus euro),euro
+1.4=Safe (ISO-Adobe characters),safe
+1.5=Ignore encodings,force
 
 [theorem]
 1=None available
