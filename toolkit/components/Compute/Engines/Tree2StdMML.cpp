@@ -216,6 +216,7 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
   MNODE* rv = dMML_tree;
 
   RemoveIT_and_AF(dMML_tree);
+  InsertListCommas(dMML_tree);
   
   RemoveEmptyTags(dMML_tree);
   RemoveRedundantMROWs2(rv);
@@ -2689,6 +2690,33 @@ void Tree2StdMML::RemoveHSPACEs(MNODE* MML_list)
   }  
 }
 
+// Reinsert commas in separated list
+void Tree2StdMML::InsertListCommas(MNODE* MML_list)
+{
+
+  MNODE* rover = MML_list;
+  while (rover) {
+    MNODE* the_next = rover->next;
+    if (ElementNameIs(rover, "mfenced")){
+      ATTRIB_REC *a_list = rover->attrib_list;
+      const char *ilk = GetATTRIBvalue(a_list, "ilk");
+      if (ilk && (strcmp(ilk, "enclosed-list") == 0)){
+	MNODE* child = rover->first_kid;
+	if (child && (child->next)){
+	  MNODE* nextkid = child->next;
+	  InsertComma(child);
+	  child = nextkid;
+	}
+      }
+    } else if (rover->first_kid) {  // rover is a schemata
+
+      InsertListCommas(rover->first_kid);
+    }
+    rover = the_next;
+  }
+
+  
+}
 
 // Remove Invisible times and apply function
 void Tree2StdMML::RemoveIT_and_AF(MNODE* MML_list)
@@ -3325,6 +3353,20 @@ void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
 }
 
 
+void Tree2StdMML::InsertComma(MNODE* pos)
+{
+  MNODE* comma = MakeTNode(pos->src_start_offset, 0, pos->src_linenum);
+  SetElementName(comma, "mo");
+  SetContent(comma, ",");
+
+  comma->prev = pos;
+  comma->next = pos->next;
+  pos->next = comma;
+  if (comma->next)
+    comma->next->prev = comma;
+  comma->parent = pos->parent;
+}
+
 
 void Tree2StdMML::InsertAF(MNODE* func)
 {
@@ -3340,6 +3382,7 @@ void Tree2StdMML::InsertAF(MNODE* func)
   af->parent = func->parent;
 }
 
+ 
 
           
 void Tree2StdMML::InsertIT(MNODE* term)
