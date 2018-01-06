@@ -79,11 +79,13 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfloat
 supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 ulem
 url
@@ -205,6 +207,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -212,6 +215,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -339,6 +343,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -346,6 +351,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -473,6 +479,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -480,6 +487,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -607,6 +615,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -614,6 +623,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -741,6 +751,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -748,6 +759,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -875,6 +887,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -882,6 +895,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -1010,6 +1024,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -1017,6 +1032,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -1144,6 +1160,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -1151,6 +1168,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -1279,6 +1297,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -1286,6 +1305,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -1413,6 +1433,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -1420,6 +1441,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -1548,6 +1570,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -1555,6 +1578,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -1682,6 +1706,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -1689,6 +1714,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -1816,6 +1842,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -1823,6 +1850,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -1951,6 +1979,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -1958,6 +1987,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -2088,6 +2118,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -2095,6 +2126,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -2223,6 +2255,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -2230,6 +2263,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -2359,6 +2393,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -2366,6 +2401,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -2494,6 +2530,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -2501,6 +2538,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -2628,6 +2666,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -2635,6 +2674,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -2762,6 +2802,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -2769,6 +2810,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -2897,6 +2939,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -2904,6 +2947,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -3030,6 +3074,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -3037,6 +3082,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -3165,6 +3211,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -3172,6 +3219,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -3299,6 +3347,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -3306,6 +3355,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -3434,6 +3484,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -3441,6 +3492,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -3568,6 +3620,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -3575,6 +3628,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -3704,6 +3758,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -3711,6 +3766,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -3838,6 +3894,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -3845,6 +3902,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -3973,6 +4031,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -3980,6 +4039,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -4107,6 +4167,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -4114,6 +4175,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -4241,6 +4303,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -4248,6 +4311,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -4374,6 +4438,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -4381,6 +4446,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -4514,6 +4580,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -4522,6 +4589,7 @@ syntonly
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -4655,6 +4723,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -4663,6 +4732,7 @@ syntonly
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -4789,6 +4859,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -4796,6 +4867,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -4923,6 +4995,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -4930,6 +5003,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -5063,6 +5137,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -5071,6 +5146,7 @@ syntonly
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -5203,6 +5279,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -5211,6 +5288,7 @@ syntonly
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -5346,6 +5424,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -5354,6 +5433,7 @@ syntonly
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -5482,6 +5562,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -5489,6 +5570,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -5616,6 +5698,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -5623,6 +5706,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -5751,6 +5835,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -5758,6 +5843,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -5885,6 +5971,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -5892,6 +5979,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -6019,6 +6107,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -6026,6 +6115,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -6153,6 +6243,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -6160,6 +6251,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -6287,6 +6379,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -6294,6 +6387,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -6421,6 +6515,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -6428,6 +6523,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -6550,6 +6646,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -6557,6 +6654,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -6684,6 +6782,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -6691,6 +6790,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -6818,6 +6918,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -6825,6 +6926,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -6952,6 +7054,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -6959,6 +7062,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -7087,6 +7191,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -7094,6 +7199,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -7223,6 +7329,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -7230,6 +7337,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -7354,6 +7462,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -7361,6 +7470,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -7485,6 +7595,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -7492,6 +7603,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -7619,6 +7731,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -7626,6 +7739,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -7752,6 +7866,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -7759,6 +7874,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -7886,6 +8002,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -7893,6 +8010,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -8020,6 +8138,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -8027,6 +8146,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -8154,6 +8274,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -8161,6 +8282,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -8288,6 +8410,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -8295,6 +8418,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -8421,6 +8545,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -8428,6 +8553,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -8556,6 +8682,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -8563,6 +8690,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -8691,6 +8819,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -8698,6 +8827,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -8825,6 +8955,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -8832,6 +8963,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -8958,6 +9090,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -8965,6 +9098,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -9093,6 +9227,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -9100,6 +9235,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -9228,6 +9364,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -9235,6 +9372,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -9363,6 +9501,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -9370,6 +9509,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -9497,6 +9637,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -9504,6 +9645,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -9631,6 +9773,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -9638,6 +9781,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -9765,6 +9909,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -9772,6 +9917,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -9899,6 +10045,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -9906,6 +10053,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
@@ -10033,6 +10181,7 @@ showkeys
 showlabels
 sidecap
 slashed
+stix
 subfig
 subfigure
 subfloat
@@ -10040,6 +10189,7 @@ supertabular
 tabularx
 tabulary
 textcase
+textcomp
 theorem
 times
 titlesec
