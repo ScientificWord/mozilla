@@ -2846,9 +2846,11 @@ If we use this, don't forget 'roman'
 -->
 
 <!-- Begin additions to support characters available when using the stix package -->
-          <xsl:when test="$first-char='&#x1D55;'">
+		  <!-- This character already included 
+          <xsl:when test="$first-char='&#x1D55C;'">
             <xsl:text xml:space="preserve">\mathbb{k}</xsl:text>
           </xsl:when>
+		  -->
           <xsl:when test="$first-char='&#x03DD;'">
             <xsl:text xml:space="preserve">\digamma </xsl:text>
           </xsl:when>
