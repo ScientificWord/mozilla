@@ -1,5 +1,6 @@
-
-        <toolbarbutton id = "mathbbk" label="&#x1D55;" tooltiptext="mathbb{k}" msivalue="&#x1D55;" observes="cmd_MSIsymbolCmd"/>
+		<!-- Next symbol already included
+        <toolbarbutton id = "mathbbk" label="&#x1D55C;" tooltiptext="mathbb{k}" msivalue="&#x1D55C;" observes="cmd_MSIsymbolCmd"/>
+		-->
         <toolbarbutton id = "digamma" label="&#x03DD;" tooltiptext="digamma" msivalue="&#x03DD;" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "blacktriangleright" label="&#x25B6;" tooltiptext="blacktriangleright" msivalue="&#x25B6;" observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id = "blacktriangleleft" label="&#x25C0;" tooltiptext="blacktriangleleft" msivalue="&#x25C0;" observes="cmd_MSIsymbolCmd"/>
