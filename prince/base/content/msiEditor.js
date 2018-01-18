@@ -1652,16 +1652,17 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
         try {
           docurlstring = prefs.getCharPref("swp.defaultDialogShell"); //BBM: check this later
         } catch (exc) {
-          dump("In msiLoadInitialDocument(), trying to get default dialog shell, error: " + exc +
-            ".\n");
+          dump("In msiLoadInitialDocument(), trying to get default dialog shell, error: " + exc + ".\n");
           docurlstring = "chrome://prince/content/StdDialogShell.xhtml";
           //          docurl = null;
           //          return;
         }
-        if (docurlstring.length > 0)
+        if (docurlstring.length > 0) {
           docurl = msiURIFromString(docurlstring);
-        else
+        }
+        else {
           return;
+        }
       } else {
         docurlstring = prefs.getCharPref("swp.defaultShell");
         // docurlstring is *relative* to the shells directory.
@@ -9823,6 +9824,7 @@ function FillInHTMLTooltip(tooltip) {
 // handle events on prince-specific elements here, or call the default goDoCommand()
 function goDoPrinceCommand(cmdstr, element, editorElement) {
   var elementName;
+   var cmdParams;
   try {
     if (!editorElement)
       editorElement = findEditorElementForDocument(element.ownerDocument);
@@ -9851,6 +9853,12 @@ function goDoPrinceCommand(cmdstr, element, editorElement) {
       msiTable(element, editorElement);
     } else if (elementName == "note") {
       msiNote(element, editorElement);
+    } else if (elementName == "indexitem") {
+        cmdParams = newCommandParams();
+        if (!cmdParams) return;
+        cmdParams.setISupportsValue("element", element);
+        cmdParams.setISupportsValue("edelement", editorElement);
+        msiGoDoCommandParams("cmd_MSIinsertIndexEntryCmd", cmdParams);
     } else if (elementName == "a" && element.hasAttribute("key")) {
       msiGoDoCommand("cmd_marker", editorElement);
     } else if (elementName == "texb") {
