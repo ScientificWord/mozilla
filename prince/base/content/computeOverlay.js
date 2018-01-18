@@ -65,7 +65,8 @@ var msiDefineCommand = {
   doCommandParams: function (aCommand, aParams, editorElement) {},
   doCommand: function (aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    if (isLicensed()) doComputeCommand(aCommand, theEditorElement);
+    // if (isLicensed()) 
+    doComputeCommand(aCommand, theEditorElement);
   }
 };
 
