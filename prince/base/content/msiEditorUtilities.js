@@ -2676,8 +2676,13 @@ function findCaretPositionInNode(parentNode) {
 //Not all of the following is probably necessary - the internalEditor flags are, however. Should be able to edit this
 //function down a bit.
 function msiEnableEditorControl(editorElement, bEnable) {
-  if (!editorElement) {
-    dump('msiEnableEditorControl called on null editorElement!\n');
+  try {
+    if (!(editorElement && editorElement.getEditor())) {
+      dump('msiEnableEditorControl called on null editorElement!\n');
+      return;
+    }
+  }
+  catch (e) {
     return;
   }
   var internalEditor = editorElement.getEditor(editorElement.contentWindow);
