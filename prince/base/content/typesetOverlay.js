@@ -364,7 +364,12 @@ var msiInsertIndexEntry =
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {
+    var editorElement =   aParams.getISupportsValue('edelement');
+    var element = aParams.getISupportsValue('element');
+    doInsertIndexEntry(editorElement, element);
+
+  },
 
   doCommand: function(aCommand)
   {
@@ -819,6 +824,9 @@ function doInsertIndexEntry(editorElement, indexNode)
   }
   if (!indexNode)
     indexNode = gActiveEditor.getSelectedElement("indexitem");
+  if (!indexNode)
+    indexNode = gActiveEditor.getElementOrParentByTagName("indexitem",
+                                            indexNode);
   window.openDialog("chrome://prince/content/indexentry.xul", "indexentry", "chrome,resizable=yes, close,titlebar,dependent", indexNode);
 }
 
