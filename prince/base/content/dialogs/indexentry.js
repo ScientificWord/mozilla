@@ -2,15 +2,12 @@
 
 var primary;
 var prispec;
-//var prispecapp;
 var prispecInputEditor;
 var secondary;
 var secspec;
-//var secspecapp;
 var secspecInputEditor;
 var tertiary;
 var terspec;
-//var terspecapp;
 var terspecInputEditor;
 var locator;
 var format;
@@ -22,8 +19,33 @@ var activeEditor;
 var gEditorsInitialized = 0;
 
 function dumpln(s)
+
 {
   dump(s+"\n");
+}
+
+function copyNodeContents(destNode, destOffset, srcNode, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  try {
+    var dupNode = srcNode.cloneNode(true);  // deep clone
+    var destChild = destNode;
+    var inserted;
+    destChild = destChild.firstChild;
+    inserted = destNode.insertBefore(dupNode, destChild);
+    editor.removeContainer(inserted);
+  }
+  catch( e ) {
+    dumpln(e.message);
+  }
+}
+
+function appendNodeContents(destNode, srcNode){
+  var node = srcNode.firstChild;
+  while (node) {
+    destNode.appendChild(node);
+    node = node.nextSibling;
+  }
 }
 
 function startup()
@@ -39,72 +61,53 @@ function startup()
   primary = document.getElementById("primary");
   prispec = document.getElementById("prispec");
 //  prispecapp = document.getElementById("prispecapp");
-  prispecInputEditor = document.getElementById("prispecappInput");
+  prispecInputEditor = document.getElementById("prispecInputEditor");
   secondary = document.getElementById("secondary");
   secspec = document.getElementById("secspec");
 //  secspecapp = document.getElementById("secspecapp");
-  secspecInputEditor = document.getElementById("secspecappInput");
+  secspecInputEditor = document.getElementById("secspecInputEditor");
   tertiary = document.getElementById("tertiary");
   terspec = document.getElementById("terspec");
 //  terspecapp = document.getElementById("terspecapp");
-  terspecInputEditor = document.getElementById("terspecappInput");
+  terspecInputEditor = document.getElementById("terspecInputEditor");
   locator = document.getElementById("locator");
   format = document.getElementById("format");
   thedeck = document.getElementById("thedeck");
   xreftext = document.getElementById("xref");
 
   var specnode;
-  var prispecStr = "";
-  var secspecStr = "";
-  var terspecStr = "";
+  var destNode;
+  var origNode;
+  var initStr = ''; //getFileAsString("chrome://prince/content/StdDialogShell.xhtml");
+  var prispecStr = '';
+  var secspecStr = '';
+  var terspecStr = '';
   var specKids;
   var serializer = new XMLSerializer();
+  var editors = [prispecInputEditor, secspecInputEditor, terspecInputEditor];
+  var editorDocLoadedObserverData;
+  var editorInitializer = new msiEditorArrayInitializer();
 
   if (("arguments" in window) && (window.arguments.length))
-    node = window.arguments[0];
-  if (!node)
-    node = getSelectionParentByTag(activeEditor,"indexitem");
+    origNode = window.arguments[0];
+  if (!origNode)
+    origNode = getSelectionParentByTag(activeEditor,"indexitem");
+  if (!origNode) {
+    isNewnode = true;
+    node = activeEditor.document.createElement("indexitem");
+  } else {
+    node = origNode.cloneNode(true);
+  }
   if (node)
   {
-    if (node.hasAttribute("pri")) {
-      primary.value = node.getAttribute("pri");
-      prispec.disabled = primary.value.length == 0;
-      specnode = node.getElementsByTagName("prispec")[0];
-      if (specnode && specnode.textContent.length >0)
-      { 
-//        prispecapp.value = specnode.textContent;
-        specKids = msiNavigationUtils.getSignificantContents(specnode);
-        for (var jx = 0; jx < specKids.length; ++jx)
-          prispecStr += serializer.serializeToString(specKids[jx]);
-        prispec.checked = true;
-      } else prispec.checked = false;
-    }
-    if (node.hasAttribute("sec")) {
-      secondary.value = node.getAttribute("sec");
-      secspec.disabled = secondary.value.length == 0;
-      specnode = node.getElementsByTagName("secspec")[0];
-      if (specnode && specnode.textContent.length >0) 
-      {
-//         secspecapp.value = specnode.textContent;
-        specKids = msiNavigationUtils.getSignificantContents(specnode);
-        for (var jx = 0; jx < specKids.length; ++jx)
-          secspecStr += serializer.serializeToString(specKids[jx]);
-        secspec.checked = true;
-      } else secspec.checked = false;
-    }
-    if (node.hasAttribute("ter")) {
-      tertiary.value = node.getAttribute("ter");
-      terspec.disabled = tertiary.value.length == 0;
-      specnode = node.getElementsByTagName("terspec")[0];
-      if (specnode && specnode.textContent.length >0)
-      { 
-//        terspecapp.value = specnode.textContent;
-        specKids = msiNavigationUtils.getSignificantContents(specnode);
-        for (var jx = 0; jx < specKids.length; ++jx)
-          terspecStr += serializer.serializeToString(specKids[jx]);
-        terspec.checked = true;
-      } else terspec.checked = false;
-    }
+    editors.forEach(function(editor){
+      editorDocLoadedObserverData = {mCommand : "obs_documentCreated", mObserver : new msiIndexEditorChangeObserver(editor)};
+      editor.mInitialDocObserver = [editorDocLoadedObserverData];
+      editorInitializer.addEditorInfo(editor, '', true);
+    });
+    editorInitializer.doInitialize();
+
+
     if (node.hasAttribute("enc") ){
        var enc=node.getAttribute("enc");
        var seepat=/see\{(.*)\}/;
@@ -122,32 +125,7 @@ function startup()
             format.selectedIndex =0;
        }
     }
-
   }
-  else {
-    isNewnode = true;
-    node = activeEditor.document.createElement("indexitem");
-    prispec.checked = false;
-    secspec.checked = false;
-    terspec.checked = false;
-  }
-
-  var editorDocLoadedObserverData = {mCommand : "obs_documentCreated", mObserver : new msiIndexEditorChangeObserver(prispecInputEditor)};
-  prispecInputEditor.mInitialDocObserver = [editorDocLoadedObserverData];
-  editorDocLoadedObserverData = {mCommand : "obs_documentCreated", mObserver : new msiIndexEditorChangeObserver(secspecInputEditor)};
-  secspecInputEditor.mInitialDocObserver = [editorDocLoadedObserverData];
-  editorDocLoadedObserverData = {mCommand : "obs_documentCreated", mObserver : new msiIndexEditorChangeObserver(terspecInputEditor)};
-  terspecInputEditor.mInitialDocObserver = [editorDocLoadedObserverData];
-
-  var editorInitializer = new msiEditorArrayInitializer();
-  editorInitializer.addEditorInfo(prispecInputEditor, prispecStr, true);
-  editorInitializer.addEditorInfo(secspecInputEditor, secspecStr, true);
-  editorInitializer.addEditorInfo(terspecInputEditor, terspecStr, true);
-  editorInitializer.doInitialize();
-
-//  prispecInputEditor.setAttribute("hidden",!prispec.checked);
-//  secspecInputEditor.setAttribute("hidden",!secspec.checked);
-//  terspecInputEditor.setAttribute("hidden",!terspec.checked);
 }
 
 
@@ -157,11 +135,11 @@ function keypress(event, textbox, checkboxid)
   if (cb) {
     cb.disabled = (textbox.value.length == 0);
     if (cb.disabled)
-      msiEnableEditorControl(document.getElementById(checkboxid+"appInput"), false);
+      msiEnableEditorControl(document.getElementById(checkboxid+"InputEditor"), false);
 //      document.getElementById(checkboxid+"appInput").disabled = true;
 //      document.getElementById(checkboxid+"appInput").setAttribute("hidden","true");
     else
-      msiEnableEditorControl(document.getElementById(checkboxid+"appInput"), cb.checked);
+      msiEnableEditorControl(document.getElementById(checkboxid+"InputEditor"), cb.checked);
 //      document.getElementById(checkboxid+"appInput").disabled = (!cb.checked);
 //      document.getElementById(checkboxid+"appInput").setAttribute("hidden",!(cb.checked));
   }
@@ -172,7 +150,7 @@ function checkboxchanged(event, checkbox, appearanceid)
 {
 //  document.getElementById(appearanceid).disabled = !(checkbox.checked);
   msiEnableEditorControl(document.getElementById(appearanceid), checkbox.checked);
-//  document.getElementById(appearanceid).setAttribute("hidden",!(checkbox.checked));
+  // document.getElementById(appearanceid).hidden = !(checkbox.checked);
 }
 
 function locatorchange(event, radiogroup)
@@ -199,79 +177,62 @@ function stop()
 
 function onAccept()
 {
-  activeEditor.beginTransaction();
-  msiEditorEnsureElementAttribute(node, "req", "varioref", activeEditor);
+  var priSpecNode;
+  var secSpecNode;
+  var terSpecNode;
+  var srcNode;
+  var hasPriSpec;
+  var hasSecSpec;
+  var hasTerSpec;
+
+  // activeEditor.beginTransaction();
+  if (!node) return 0;
+  node.setAttribute("req", "varioref");
   var v = primary.value;
-  msiEditorEnsureElementAttribute(node, "pri", v, activeEditor);
-
+  node.setAttribute("pri", v);
   v = secondary.value;
-  msiEditorEnsureElementAttribute(node, "sec", v, activeEditor);
+  node.setAttribute("sec", v);
   v = tertiary.value;
-  msiEditorEnsureElementAttribute(node, "ter", v, activeEditor);
-
-  if (node.parentNode) dump(node.parentNode.innerHTML+"\n");
-  else dump(node.innerHTML+"\n");
-
-  if (isNewnode)
-    activeEditor.insertElementAtSelection(node, true);
+  node.setAttribute("ter", v);
 
   // remove subnodes, if any
-  while(node.firstChild) 
-    activeEditor.deleteNode(node.firstChild);
-    //node.removeChild(node.firstChild);
-  var specContentFilter;
-  var hasPriSpec = "";
+  while(node.firstChild) {
+    node.firstChild.removeChild();
+  }
+
   if (prispec.checked) {
-    specContentFilter = new msiDialogEditorContentFilter(prispecInputEditor);
-    v = specContentFilter.getDocumentFragmentString();
-//      dump("In indexentry dialog, pri special appearance is [" + v + "].\n");
-    var prispecnode;
-    if (v && v.length > 0)
-    {
-      prispecnode = activeEditor.document.createElement("prispec");
-      activeEditor.insertNode(prispecnode, node, node.childNodes.length);
-      prispecnode = node.getElementsByTagName("prispec")[0];
-//    prispecnode.textContent = v;
-      activeEditor.insertHTMLWithContext(v, "", "", "", null, prispecnode, 0, false);
-      hasPriSpec = "p";
+    priSpecNode = activeEditor.document.createElement("prispec");
+    node.appendChild(priSpecNode);
+    srcNode = prispecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+    if (srcNode) {
+      appendNodeContents(priSpecNode, srcNode);
     }
+    hasPriSpec = "p";
   }
-//  v = secspecapp.value;
   if (secspec.checked) {
-    specContentFilter = new msiDialogEditorContentFilter(secspecInputEditor);
-    v = specContentFilter.getDocumentFragmentString();
-//      dump("In indexentry dialog, sec special appearance is [" + v + "].\n");
-    var secspecnode;
-    if (v && v.length > 0)
-    {
-      secspecnode = activeEditor.document.createElement("secspec");
-      activeEditor.insertNode(secspecnode, node, node.childNodes.length);
-//      secspecnode.textContent = v;
-      secspecnode = node.getElementsByTagName("secspec")[0];
-      activeEditor.insertHTMLWithContext(v, "", "", "", null, secspecnode, 0, false);
-      hasPriSpec += " s";
+    secSpecNode = activeEditor.document.createElement("secspec");
+    node.appendChild(secSpecNode);
+    srcNode = secspecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+    if (srcNode) {
+      appendNodeContents(secSpecNode, srcNode);
     }
+    hasPriSpec += " s";
   }
-//  v = terspecapp.value;
   if (terspec.checked) {
-    specContentFilter = new msiDialogEditorContentFilter(terspecInputEditor);
-    v = specContentFilter.getDocumentFragmentString();
-    var terspecnode;
-    if (v && v.length > 0)
-    {
-      terspecnode = activeEditor.document.createElement("terspec");
-      activeEditor.insertNode(terspecnode, node, node.childNodes.length);
-//      terspecnode.textContent = v;
-      terspecnode = node.getElementsByTagName("terspec")[0];
-      activeEditor.insertHTMLWithContext(v, "", "", "", null, terspecnode, 0, false);
-      hasPriSpec += " t";
+    terSpecNode = activeEditor.document.createElement("terspec");
+    node.appendChild(terSpecNode);
+    srcNode = terspecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+    if (srcNode) {
+      appendNodeContents(terSpecNode, srcNode);
     }
+    hasPriSpec += " t";
   }
+
   hasPriSpec = TrimString(hasPriSpec);
   if (hasPriSpec.length > 0)
-    msiEditorEnsureElementAttribute(node, "specAppearance", hasPriSpec, activeEditor);
+    node.setAttribute("specAppearance", hasPriSpec);
   else
-    msiEditorEnsureElementAttribute(node, "specAppearance", null, activeEditor);
+    node.setAttribute("specAppearance", null);
 
   var enc;
   var loc = locator.selectedIndex; // 0 = page num, 1 = xref
@@ -289,8 +250,13 @@ function onAccept()
   if (enc === "" && node.hasAttribute("enc"))
     node.removeAttribute("enc");
   else
-    msiEditorEnsureElementAttribute(node, "enc", enc, activeEditor);
+    node.setAttribute("enc", enc);
 
+  activeEditor.beginTransaction();
+  if (!isNewnode){
+    activeEditor.removeNode(origNode);
+  }
+  activeEditor.insertElementAtSelection(node, true);
   activeEditor.endTransaction();
 }
 
@@ -331,17 +297,69 @@ function msiIndexEditorChangeObserver(editorElement)
           var editorFlag = 0;
           switch(this.mEditorElement.id)
           {
-            case "prispecappInput":
+            case "prispecInputEditor":
               checkboxID = "prispec";
-              editorFlag = 1;
+              editorFlag = 1;    
+              if (node.hasAttribute("pri")) {
+                primary.value = node.getAttribute("pri");
+                prispec.disabled = primary.value.length == 0;
+                specnode = node.getElementsByTagName("prispec")[0];
+                if (specnode && specnode.textContent.length >0)
+                { 
+                  destNode = prispecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+                  prispec.checked = true;
+                  copyNodeContents(destNode, 0, specnode, prispecInputEditor);
+                } else {
+                  prispec.checked = false;
+                }
+              }
+              else {
+                prispec.checked = false;
+              }
+
+
             break;
-            case "secspecappInput":
+            case "secspecInputEditor":
               checkboxID = "secspec";
               editorFlag = 2;
+              if (node.hasAttribute("sec")) {
+                secondary.value = node.getAttribute("sec");
+                secspec.disabled = secondary.value.length == 0;
+                specnode = node.getElementsByTagName("secspec")[0];
+                if (specnode && specnode.textContent.length >0)
+                { 
+                  destNode = secspecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+                  secspec.checked = true;
+                  copyNodeContents(destNode, 0, specnode, secspecInputEditor);
+                } else {
+                  secspec.checked = false;
+                }
+              }
+              else {
+                secspec.checked = false;
+              }
+
             break;
-            case "terspecappInput":
+            case "terspecInputEditor":
               checkboxID = "terspec";
               editorFlag = 4;
+              if (node.hasAttribute("ter")) {
+                tertiary.value = node.getAttribute("ter");
+                terspec.disabled = tertiary.value.length == 0;
+                specnode = node.getElementsByTagName("terspec")[0];
+                if (specnode && specnode.textContent.length >0)
+                { 
+                  destNode = terspecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+                  terspec.checked = true;
+                  copyNodeContents(destNode, 0, specnode, terspecInputEditor);
+                } else {
+                  terspec.checked = false;
+                }
+              }
+              else {
+                terspec.checked = false;
+              }
+
             break;
             default:
             break;
@@ -351,7 +369,7 @@ function msiIndexEditorChangeObserver(editorElement)
             var checkbox = document.getElementById(checkboxID);
 //            if (!checkbox.checked)
             dump("In indexentry dialog, disabling editor " + this.mEditorElement.id + "\n");
-            msiEnableEditorControl(this.mEditorElement, checkbox.checked);
+            msiEnableEditorControl(this.mEditorElement, true);//checkbox.checked);
 //              this.mEditorElement.disabled = true;
 //              this.mEditorElement.setAttribute("hidden", "true");
           }

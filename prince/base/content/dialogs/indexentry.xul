@@ -54,23 +54,23 @@
   <label control="primary" accesskey="&primary.accesskey;" value="&primary.label;"/>
   <textbox id="primary" value="" oninput="keypress(event, this,'prispec');"/>
   <checkbox id="prispec" disabled="true" label="&prispeccheckbox.label;" checked="false"
-    oncommand="checkboxchanged(event, this,'prispecappInput');"/>
+    oncommand="checkboxchanged(event, this,'prispecInputEditor');"/>
   <!--textbox id="prispecapp" value="" hidden="true"/ -->
-  <editor id="prispecappInput" editortype="html" type="content" context="msiEditorContentContext" width="180px" height="36px" flex="1"/>
+  <editor id="prispecInputEditor" editortype="html" type="content" context="msiEditorContentContext" width="180px" height="36px" flex="1"/>
   <spacer flex="1"/>
   <label control="secondary" accesskey="&secondary.accesskey;" value="&secondary.label;"/>
   <textbox id="secondary" value="" oninput="keypress(event, this,'secspec');"/>
   <checkbox id="secspec" disabled="true" label="&secspeccheckbox.label;" checked="false"
-    oncommand="checkboxchanged(event, this,'secspecappInput');"/>
+    oncommand="checkboxchanged(event, this,'secspecInputEditor');"/>
   <!-- textbox id="secspecapp" value="" hidden="true"/ -->
-  <editor id="secspecappInput" editortype="html" type="content" context="msiEditorContentContext" width="180px" height="36px" flex="1"/>
+  <editor id="secspecInputEditor" editortype="html" type="content" context="msiEditorContentContext" width="180px" height="36px" flex="1"/>
   <spacer flex="1"/>
   <label control="tertiary" accesskey="&tertiary.accesskey;" value="&tertiary.label;"/>
   <textbox id="tertiary" value="" oninput="keypress(event, this,'terspec');"/>
   <checkbox id="terspec" disabled="true" label="&tertspeccheckbox.label;" checked="false"
-    oncommand="checkboxchanged(event, this,'terspecappInput');"/>
+    oncommand="checkboxchanged(event, this,'terspecInputEditor');"/>
   <!-- textbox id="terspecapp" value="" hidden="true"/ -->
-  <editor id="terspecappInput" editortype="html" type="content" context="msiEditorContentContext" width="180px" height="36px" flex="1"/>
+  <editor id="terspecInputEditor" editortype="html" type="content" context="msiEditorContentContext" width="180px" height="36px" flex="1"/>
   <spacer flex="1"/>
 
   <groupbox>
