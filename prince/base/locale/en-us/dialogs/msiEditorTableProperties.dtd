@@ -35,6 +35,24 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 
+
+<!-- Matrix section-->
+<!ENTITY matrixTab.label                   "Matrix">
+<!ENTITY matrixWidth.label                 "Matrix width">
+<!ENTITY matrixLocation.label              "Matrix location">
+<!ENTITY matrixBaseline.label              "Matrix baseline:">
+<!ENTITY matrixCaptionAbove.label          "Above matrix">
+<!ENTITY matrixCaptionBelow.label          "Below matrix">
+<!-- !ENTITY cellPercent.label                "percent of matrix" -->
+<!ENTITY cellSelectMatrix.label            "Matrix">
+<!ENTITY cellInheritColor.label           "(Let matrix color show through)">
+<!-- Used in both Matrix and Cell panels  -->
+
+<!ENTITY BackgroundSelectionWholeTable.label        "Whole table">
+<!ENTITY Tablebaseline.label  "Table baseline">
+<!ENTITY abovetable.label "Above table">
+<!ENTITY belowtable.label "Below table">   
+<!-- end Matrix section-->
 <!ENTITY tableWindow.title                "Table properties">
 <!ENTITY applyButton.label                "Apply">
 <!ENTITY applyButton.accesskey            "A">
