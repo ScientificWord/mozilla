@@ -1786,7 +1786,13 @@ bool Tree2StdMML::IsScriptedFenceMO(MNODE* mml_node)
 
 bool Tree2StdMML::IsDelimitedGroup(MNODE* mml_node)
 {
-  return ElementNameIs(mml_node, "mfenced");
+  if ( ElementNameIs(mml_node, "mfenced") )
+    return true;
+
+  GROUP_INFO gi;
+  GetFenceInfo(mml_node, gi);
+
+  return (IsGroup(gi));
 }
 
 bool Tree2StdMML::IsEmptyMO(MNODE* mml_node)
