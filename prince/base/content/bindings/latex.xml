@@ -793,7 +793,8 @@ Make list of figures here
 
 		<xbl:content>
 			<html:button type="button" class="indexbutton" anonid="btn" nopr="1" state="1" xbl:inherits="pri,sec,ter,specAppearance" oncommand="">
-				&index;<html:label><xbl:children includes="prispec"/></html:label>
+				<html:label>&index;<html:span xbl:inherits=
+					"xbl:text=pri"/> <xbl:children includes="prispec"/></html:label>
 			</html:button>
 			<html:span style="display:none">
 			<xbl:children/>

@@ -16,6 +16,8 @@ var xreftext;
 var node;
 var isNewnode = false;
 var activeEditor;
+var origNode;
+
 var gEditorsInitialized = 0;
 
 function dumpln(s)
@@ -41,10 +43,49 @@ function copyNodeContents(destNode, destOffset, srcNode, editorElement)
 }
 
 function appendNodeContents(destNode, srcNode){
-  var node = srcNode.firstChild;
-  while (node) {
-    destNode.appendChild(node);
-    node = node.nextSibling;
+  try {
+    var ptrnode = srcNode.firstChild;
+    var done;
+    var ptrnode2;
+    try {
+      while(destNode.firstChild) {
+        destNode.removeChild(destNode.firstChild);
+      }
+    }
+    catch(e) {
+      dump(e.message);
+    }
+
+    while (ptrnode) {
+      // ignore bodyText and temp br's and whitespace
+      done = false;
+      while (!done) {
+        if (ptrnode.nodeName === 'bodyText') {
+          ptrnode = ptrnode.firstChild;
+          if (!ptrnode) return;
+        }
+        else if (((ptrnode.nodeName === 'br') && ptrnode.hasAttribute('temp'))|| isAllWhiteSpace(ptrnode)) {
+          ptrnode = ptrnode.nextSibling;
+          if (!ptrnode) return;
+        } else done=true;
+      }
+      if (ptrnode.nextSibling) {
+        ptrnode2 = ptrnode.nextSibling;
+      } else {
+        if (ptrnode.parentNode === srcNode) {
+          ptrnode2 = null;
+        }
+        else {
+          ptrnode2 = ptrnode.parentNode.nextSibling;
+        }
+      }
+      destNode.appendChild(ptrnode.cloneNode(true));
+      ptrnode = ptrnode2;
+    }
+  }
+  catch(e)
+  {
+    dump(e.message);
   }
 }
 
@@ -77,7 +118,6 @@ function startup()
 
   var specnode;
   var destNode;
-  var origNode;
   var initStr = ''; //getFileAsString("chrome://prince/content/StdDialogShell.xhtml");
   var prispecStr = '';
   var secspecStr = '';
@@ -181,9 +221,7 @@ function onAccept()
   var secSpecNode;
   var terSpecNode;
   var srcNode;
-  var hasPriSpec;
-  var hasSecSpec;
-  var hasTerSpec;
+  var hasPriSpec = '';
 
   // activeEditor.beginTransaction();
   if (!node) return 0;
@@ -194,25 +232,31 @@ function onAccept()
   node.setAttribute("sec", v);
   v = tertiary.value;
   node.setAttribute("ter", v);
+  node.setAttribute
 
   // remove subnodes, if any
-  while(node.firstChild) {
-    node.firstChild.removeChild();
+  try {
+    while(node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+  }
+  catch(e) {
+    dump(e.message);
   }
 
   if (prispec.checked) {
     priSpecNode = activeEditor.document.createElement("prispec");
     node.appendChild(priSpecNode);
-    srcNode = prispecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+    srcNode = prispecInputEditor.contentDocument.documentElement.getElementsByTagName('bodyText')[0];
     if (srcNode) {
       appendNodeContents(priSpecNode, srcNode);
     }
-    hasPriSpec = "p";
+    hasPriSpec += " p";
   }
   if (secspec.checked) {
     secSpecNode = activeEditor.document.createElement("secspec");
     node.appendChild(secSpecNode);
-    srcNode = secspecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+    srcNode = secspecInputEditor.contentDocument.documentElement.getElementsByTagName('bodyText')[0];
     if (srcNode) {
       appendNodeContents(secSpecNode, srcNode);
     }
@@ -221,7 +265,7 @@ function onAccept()
   if (terspec.checked) {
     terSpecNode = activeEditor.document.createElement("terspec");
     node.appendChild(terSpecNode);
-    srcNode = terspecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+    srcNode = terspecInputEditor.contentDocument.documentElement.getElementsByTagName('bodyText')[0];
     if (srcNode) {
       appendNodeContents(terSpecNode, srcNode);
     }
@@ -229,16 +273,17 @@ function onAccept()
   }
 
   hasPriSpec = TrimString(hasPriSpec);
-  if (hasPriSpec.length > 0)
+  // Use empty string instead of null
+  // if (hasPriSpec.length > 0)
     node.setAttribute("specAppearance", hasPriSpec);
-  else
-    node.setAttribute("specAppearance", null);
+  // else
+  //   node.setAttribute("specAppearance", null);
 
   var enc;
   var loc = locator.selectedIndex; // 0 = page num, 1 = xref
   var fmt = format.selectedIndex;
   if (loc === 1) {
-     enc = "see{" + xreftext.value + "}";
+     enc =  GetString('see')+ '{' + xreftext.value + '}';
   } else {
      if (fmt === 0)
        enc = "";
@@ -253,9 +298,9 @@ function onAccept()
     node.setAttribute("enc", enc);
 
   activeEditor.beginTransaction();
-  if (!isNewnode){
-    activeEditor.removeNode(origNode);
-  }
+  // if (!isNewnode && origNode){
+  //   activeEditor.removeNode(origNode);
+  // }
   activeEditor.insertElementAtSelection(node, true);
   activeEditor.endTransaction();
 }
@@ -264,6 +309,21 @@ function onAccept()
 function onCancel()
 {
   return true;
+}
+
+function isAllWhiteSpace(anode) {
+  var n = 0;
+  var str = anode.textContent;
+  var l = str.length;
+  var c;
+  if (anode.nodeType == anode.TEXT_NODE) {
+    while (n < l) {
+      c = str[n];
+      if (c !==' ' && c !== '\n') return false;
+      n++;
+    }
+    return true;
+  } else return false;
 }
 
 function msiIndexEditorChangeObserver(editorElement)
@@ -306,9 +366,9 @@ function msiIndexEditorChangeObserver(editorElement)
                 specnode = node.getElementsByTagName("prispec")[0];
                 if (specnode && specnode.textContent.length >0)
                 { 
-                  destNode = prispecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+                  destNode = prispecInputEditor.contentDocument.documentElement.getElementsByTagName('bodyText')[0];
                   prispec.checked = true;
-                  copyNodeContents(destNode, 0, specnode, prispecInputEditor);
+                  appendNodeContents(destNode, specnode);
                 } else {
                   prispec.checked = false;
                 }
@@ -316,6 +376,8 @@ function msiIndexEditorChangeObserver(editorElement)
               else {
                 prispec.checked = false;
               }
+              prispecInputEditor.selection.collapse(destNode,0);
+
 
 
             break;
@@ -328,9 +390,9 @@ function msiIndexEditorChangeObserver(editorElement)
                 specnode = node.getElementsByTagName("secspec")[0];
                 if (specnode && specnode.textContent.length >0)
                 { 
-                  destNode = secspecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+                  destNode = secspecInputEditor.contentDocument.documentElement.getElementsByTagName('bodyText')[0];
                   secspec.checked = true;
-                  copyNodeContents(destNode, 0, specnode, secspecInputEditor);
+                  appendNodeContents(destNode, specnode);
                 } else {
                   secspec.checked = false;
                 }
@@ -338,6 +400,8 @@ function msiIndexEditorChangeObserver(editorElement)
               else {
                 secspec.checked = false;
               }
+              secspecInputEditor.selection.collapse(destNode,0);
+
 
             break;
             case "terspecInputEditor":
@@ -349,9 +413,9 @@ function msiIndexEditorChangeObserver(editorElement)
                 specnode = node.getElementsByTagName("terspec")[0];
                 if (specnode && specnode.textContent.length >0)
                 { 
-                  destNode = terspecInputEditor.contentDocument.documentElement.getElementsByTagName('dialogbase')[0];
+                  destNode = terspecInputEditor.contentDocument.documentElement.getElementsByTagName('bodyText')[0];
                   terspec.checked = true;
-                  copyNodeContents(destNode, 0, specnode, terspecInputEditor);
+                  appendNodeContents(destNode, specnode);
                 } else {
                   terspec.checked = false;
                 }
@@ -359,6 +423,8 @@ function msiIndexEditorChangeObserver(editorElement)
               else {
                 terspec.checked = false;
               }
+              terspecInputEditor.selection.collapse(destNode,0);
+
 
             break;
             default:
