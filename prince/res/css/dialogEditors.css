@@ -1,0 +1,7 @@
+@namespace mml url("http://www.w3.org/1998/Math/MathML");
+
+bodyText, bodyMath {
+  text-indent: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
