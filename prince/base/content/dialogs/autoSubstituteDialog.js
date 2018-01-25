@@ -857,7 +857,7 @@ function getEditControlContentNodes(editorElement, bMathOnly)
   return docFrag;
 //  var doc = editorElement.contentDocument;
 ////  var target = msiGetRealBodyElement(doc);
-//  var target = doc.getElementsByTagName("dialogbase")[0];
+//  var target = doc.getElementsByTagName("bodyText")[0];
 //  var returnlist;
 //  if (!target) target = doc.getElementsByTagName("para")[0];
 //  if (!target)

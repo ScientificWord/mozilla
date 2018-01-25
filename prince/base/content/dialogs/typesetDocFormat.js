@@ -2089,7 +2089,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
       level = node.getAttribute("level");
       sectitleformat[level] = new Object();
       try {
-        templatebase = node.getElementsByTagName("dialogbase")[0];
+        templatebase = node.getElementsByTagName("bodyText")[0];
         if (templatebase)
         {
           var ser = new XMLSerializer();
@@ -2476,7 +2476,7 @@ function getBaseNodeForIFrame( )
   var iframe = document.getElementById("sectiontextarea");
   if (!iframe) return;
   var doc = iframe.contentDocument;
-  var theNodes = doc.getElementsByTagName("dialogbase");
+  var theNodes = doc.getElementsByTagName("bodyText");
   var theNode = null;
   if (theNodes && theNodes.length > 0)
   {
