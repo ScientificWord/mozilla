@@ -20,7 +20,7 @@ function Startup() {
   }
   if (!(initialStr && initialStr.length > 0))
   {
-    initialStr="<dialogbase xmlns='http://www.w3.org/1999/xhtml'></dialogbase>";
+    initialStr="<bodyText xmlns='http://www.w3.org/1999/xhtml'></bodyText>";
   }
   gDialog.bDataModified = false;
   gDialog.bEditorReady = false;
@@ -33,12 +33,12 @@ function getBaseNode( )
 {
   var editElement = document.getElementById("sectiontitle-frame");
   var doc = editElement.contentDocument;
-  var theNodes = doc.getElementsByTagName("dialogbase");
+  var theNodes = doc.getElementsByTagName("bodyText");
   var theNode = null;
   while (theNodes && theNodes.length>0) {
     theNode = theNodes[0];
-    theNodes = theNode.getElementsByTagName("dialogbase");
-  }  // this is a workaround for a bug which causes <dialogbase> to be nested in a chain.
+    theNodes = theNode.getElementsByTagName("bodyText");
+  }  // this is a workaround for a bug which causes <bodyText> to be nested in a chain.
   // The better solution is to keep this from happening  
   return theNode;
 }

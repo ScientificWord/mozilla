@@ -10232,8 +10232,8 @@ var msiDialogEditorContentFilterBase = {
         return this.accept;
     }
     switch (aNode.nodeName) {
-      case "dialogbase":
-      case "sw:dialogbase":
+      case "bodyText":
+      case "sw:bodyText":
         return this.skip;
         break;
       case "br":
@@ -10248,7 +10248,7 @@ var msiDialogEditorContentFilterBase = {
     return this.acceptAll;
     //We still need to fill in the tags for which we want to accept the tag but leave open the possibility of not accepting a child.
     //Examples may include field tags, list tags, etc.; the point being that one may occur as the parent of something like a
-    //  sw:dialogbase paragraph. Not implemented that way at this point.  rwa, 8-
+    //  sw:bodyText paragraph. Not implemented that way at this point.  rwa, 8-
   },
   getXMLNodesForParent: function(newParent, parentNode) {
     if (!parentNode || !parentNode.childNodes)
@@ -10371,7 +10371,7 @@ var msiDialogEditorContentFilterBase = {
       var rootNode = this.getRootNode();
       //      var rootNode = msiGetRealBodyElement(doc);
       var initialParaNode = null;
-      var initialParaList = rootNode.getElementsByTagName("dialogbase");
+      var initialParaList = rootNode.getElementsByTagName("bodyText");
       if (!initialParaList.length)
         initialParaList = rootNode.getElementsByTagName(this.defaultParaTag);
       if (initialParaList.length > 0)

@@ -304,7 +304,7 @@ function onReplace()
   // so make that a special case:
   var ed = msiGetEditor(gReplaceDialog.replaceInput);
   var str = ed.outputToString("text/xml",2);
-  var re = /.*dialogbase>(.*)<\/dialogbase.*/;
+  var re = /.*bodyText>(.*)<\/bodyText.*/;
   var arr = re.exec(str);
   if (arr && arr.length > 1) replStr = arr[1];
   else return false;
