@@ -135,12 +135,12 @@ function onAccept()
   }
 
 //  var dd =editorControl.contentDocument;
-//  var elts = dd.getElementsByTagName("dialogbase");
+//  var elts = dd.getElementsByTagName("bodyText");
 //  var elt = elts.item(0);
 //  var str1 = serializer.serializeToString(elt);
 //  var str = "<citation>" + str1 + "</citation>";
 //  
-//  // .getElementsByTagName("sw:dialogbase")
+//  // .getElementsByTagName("sw:bodyText")
 //  insertXMLAtCursor(editor, str, true, false);
 
   SaveWindowLocation();
