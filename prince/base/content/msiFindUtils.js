@@ -810,10 +810,6 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
   {
     switch(aNode.localName)
     {
-      case "dialogbase":
-        return false;
-      break;
-
       default:
         if (msiNavigationUtils.isDefaultParaTag(aNode, this.mTargetEditor))
           return false;

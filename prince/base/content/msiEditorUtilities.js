@@ -1490,8 +1490,8 @@ function msiDeleteBodyContents(editor) {
   var focusOffset = 0;
   var DOMUtils = Components.classes['@mozilla.org/inspector/dom-utils;1'].createInstance(Components.interfaces.inIDOMUtils);
   function useNodeForSelection(aNode) {
-    if (aNode.nodeName === 'dialogbase')
-      return true;
+    // if (aNode.nodeName === 'bodyText')
+    //   return true;
     if (aNode.nodeType === Components.interfaces.nsIDOMNode.TEXT_NODE)
       return !DOMUtils.isIgnorableWhitespace(aNode);
     return true;
@@ -1670,9 +1670,7 @@ function msiGetBlockNodeParent(editor, aNode) {
   for (var theParent = aNode; theParent !== null; theParent = theParent.parentNode) {
     if (editor.nodeIsBlock(theParent))
       return theParent;
-    if (theParent.nodeName === 'dialogbase')
-      return theParent;
-  }
+    }
   return null;
 }
 function msiFindParentOfType(startNode, nodeType, stopAt) {

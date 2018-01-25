@@ -415,6 +415,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
+        // the next tag ('dialogbase') is deprecated
         <tag hidden="1" nm="dialogbase">
           <nexttag>bodyText</nexttag>
           <description>Hidden dialog base</description>
