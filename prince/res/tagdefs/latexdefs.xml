@@ -581,20 +581,6 @@
         <tag id="clearsectiontag" nm="(removesection)">
           <description>Remove innermost section-like tag</description>
         </tag>
-        <tag nm="set">
-          <level>-3</level>
-          <description>Set of books</description>
-          <discardemptyblock>true</discardemptyblock>
-          <inclusion>true</inclusion>
-          <contains>bulletListItem</contains>
-        </tag>
-        <tag nm="book">
-          <level>-2</level>
-          <description>Book</description>
-          <titletag>sectiontitle</titletag>
-          <discardemptyblock>false</discardemptyblock>
-          <prefsub>part</prefsub>
-        </tag>
         <tag nm="part">
           <level>-1</level>
           <description>Part of a book</description>
