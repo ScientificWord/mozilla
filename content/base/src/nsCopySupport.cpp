@@ -261,9 +261,10 @@ nsresult nsCopySupport::HTMLCopy(nsISelection *aSel, nsIDocument *aDoc, PRInt16 
     // encode the selection as html with contextual info
     rv = docEncoder->EncodeToStringWithContext(parents, info, buffer);
     NS_ENSURE_SUCCESS(rv, rv);
-    rv = ConvertPathsToAbsolute(buffer, aDoc);
-    if (NS_FAILED(rv))
-      return rv;
+    // BBM: took this out since it leads to an occasional crash on Windows.
+    // rv = ConvertPathsToAbsolute(buffer, aDoc);
+    // if (NS_FAILED(rv))
+    //   return rv;
 
   }
 
