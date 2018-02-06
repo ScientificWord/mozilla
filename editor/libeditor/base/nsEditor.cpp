@@ -2014,6 +2014,8 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
                            const nsAString *aValue,
                            PRBool aCloneAttributes)
 {
+  // return NS_OK;
+    
   if (!inNode || !outNode)
     return NS_ERROR_NULL_POINTER;
   nsCOMPtr<nsIDOMNode> parent;
