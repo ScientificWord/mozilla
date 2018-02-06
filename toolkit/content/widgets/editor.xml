@@ -97,7 +97,7 @@
         ]]>
         </body>
       </method>
-      <property name="editortype"
+      <property name='editortype'
                 onget="return this.getAttribute('editortype');"
                 onset="this.setAttribute('editortype', val); return val;"/>
       <property name="webNavigation"
