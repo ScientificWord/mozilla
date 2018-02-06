@@ -2990,6 +2990,7 @@ nsHTMLEditRules::JoinBlocks(nsCOMPtr<nsIDOMNode> *aLeftBlock,
     (*aRightBlock)->GetParentNode(getter_AddRefs(rightList));
     if (leftList && rightList && (leftList!=rightList))
     {
+      // if leftList or rightList is not a list parent, then we have an orphan list item; we need to insert a new list parent.
       // there are some special complications if the lists are descendants of
       // the other lists' items.  Note that it is ok for them to be descendants
       // of the other lists themselves, which is the usual case for sublists
@@ -3091,7 +3092,8 @@ nsHTMLEditRules::JoinBlocks(nsCOMPtr<nsIDOMNode> *aLeftBlock,
     nsCOMPtr<nsIDOMNode> brNode;
     res = CheckForInvisibleBR(*aLeftBlock, kBlockEnd, address_of(brNode));
     if (NS_FAILED(res)) return res;
-    if (bMergeLists || mHTMLEditor->NodesSameType(*aLeftBlock, *aRightBlock))
+    if (  //bMergeLists || 
+      mHTMLEditor->NodesSameType(*aLeftBlock, *aRightBlock))
     {
       // nodes are same type.  merge them.
       nsCOMPtr<nsIDOMNode> parent;
@@ -3100,7 +3102,7 @@ nsHTMLEditRules::JoinBlocks(nsCOMPtr<nsIDOMNode> *aLeftBlock,
       if (NS_SUCCEEDED(res) && bMergeLists)
       {
         nsCOMPtr<nsIDOMNode> newBlock;
-        res = ConvertListType(*aRightBlock, address_of(newBlock), existingListStr, NS_LITERAL_STRING("li"));
+        res = ConvertListType(*aRightBlock, address_of(newBlock), existingListStr, existingListStr);
       }
     }
     else
