@@ -214,7 +214,7 @@ pref("swp.prefPDFPath","launch");
 #else
 pref("swp.prefPDFPath","default");
 #endif
-pref("swp.saveintervalseconds",10);
+pref("swp.saveintervalseconds",30);
 pref("swp.sci.compression", 0);
 pref("swp.sourceview.indentincrement",       2);
 pref("swp.sourceview.maxlinelength",        100);
