@@ -538,6 +538,7 @@ CMD_MSITRACEON,
 CMD_MSITRACEOFF,
 CMD_MSIPREAMBLEEXTRA,
 CMD_MSITOPREAMBLEEXTRA,
+CMD_MSIGRAPHIC,
 CMD_MSISPECIAL,
 CMD_MSISPECIALVALUE,
 CMD_MSIPREAMBLE,
@@ -555,6 +556,7 @@ NewPrimitive("msitraceon", CMD_MSITRACEON);
 NewPrimitive("msitraceoff", CMD_MSITRACEOFF);
 NewPrimitive("msipreambleextra", CMD_MSIPREAMBLEEXTRA);
 NewPrimitive("msitopreambleextra", CMD_MSITOPREAMBLEEXTRA);
+NewPrimitive("msigraphic", CMD_MSIGRAPHIC);
 NewPrimitive("msispecial", CMD_MSISPECIAL);
 NewPrimitive("msispecialvalue", CMD_MSISPECIALVALUE);
 NewPrimitive("msipreamble", CMD_MSIPREAMBLE);
@@ -747,6 +749,26 @@ case CMD_MSIPREAMBLE: {
   break;
 
 }
+
+case CMD_MSIGRAPHIC: {
+  TokenList* tl = new TokenList;
+  ScanTokenList(tl, false);
+  StringUtils::AppendToks(*tl);
+  String str = StringBuilder::Create();
+  std::string graphic;
+  int i = 0;
+  while (i < str.Size()){
+     graphic += (char) str[i];
+     ++i;
+  }
+  StringBuilder::Discard(str);
+  delete tl;
+
+  std::string newname = MaybeCopyGraphicFile(graphic.c_str());
+
+  break;
+}
+
 
 case CMD_MSISPECIAL: {
   std::map<std::string,std::string> kvmap;
