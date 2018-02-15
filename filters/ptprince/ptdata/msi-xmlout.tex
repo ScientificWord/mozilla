@@ -13,6 +13,18 @@
 %   \msi@preamble={}}
 
 
+\let\@includegraphics\includegraphics
+
+\def\includegraphics{%
+  \@ifnextchar[{\includegrA}{\includegrB}}
+
+\def\includegrA[#1]#2{%
+  \msigraphic{#2}%
+  \msidefault{\includegraphics}[#1]{#2}}
+
+\def\includegrB#1{%
+  \msigraphic{#1}%
+  \msidefault{\includegraphics}{#1}}
 
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
@@ -20,7 +32,7 @@
 \gdef"{'}
 \endgroup
 
-\def\href{
+\def\href{%
     \begingroup
     \catcode`\~=\other
     \catcode`\"=\active
