@@ -463,11 +463,14 @@
       <tags>
         <tag hidden="1" nm="bulletlist">
           <description>Bullet list</description>
-          <nexttag>none</nexttag>
-          <inclusion>true</inclusion>
-          <htmllist>ul</htmllist>
-          <discardemptyblock>true</discardemptyblock>
           <contains>bulletListItem</contains>
+          <discardemptyblock>true</discardemptyblock>
+          <htmllist>ul</htmllist>
+          <inclusion>true</inclusion>
+          <nexttag>none</nexttag>
+          <initialcontents><![CDATA[
+            <cursor/>
+            <br/>]]></initialcontents>
         </tag>
         <tag hidden="1" nm="numberedlist">
           <description>Numbered list</description>
@@ -514,11 +517,7 @@
           <!--           <inclusion>true</inclusion>-->
           <htmllist>ul</htmllist>
           <initialcontents>
-            <bulletListItem>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+            <bulletListItem><bodyText><cursor/><br type="_moz"/></bodyText>
             </bulletListItem>
           </initialcontents>
         </tag>
@@ -527,11 +526,7 @@
           <htmllistparent>numberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
-            <numberedListItem>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
+            <numberedListItem><bodyText><cursor/><br type="_moz"/></bodyText>
             </numberedListItem>
           </initialcontents>
         </tag>
@@ -731,15 +726,14 @@
           <description>Centered</description>
           <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <!-- <nextafteremptyblock>bodyText</nextafteremptyblock> -->
           <discardemptyblock>true</discardemptyblock>
-          <nexttag>bodyText</nexttag>
-          <initialcontents>
-            <centeredEnv>
+          <nexttag>none</nexttag>
+          <initialcontents><![CDATA[
               <bodyText>
                 <cursor/>
                 <br/>
-              </bodyText>
-            </centeredEnv>
+              </bodyText>]]>
           </initialcontents>
         </tag>
         <tag nm="preface">
