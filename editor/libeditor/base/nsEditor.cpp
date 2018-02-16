@@ -2142,8 +2142,8 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
     inNode->GetLastChild(getter_AddRefs(child));
     res = DeleteNode(child);
     if (NS_FAILED(res)) return res;
-    res = InsertNode(child, parent, offset);
-    if (NS_FAILED(res)) return res;
+    // res = InsertNode(child, parent, offset);
+    // if (NS_FAILED(res)) return res;
     inNode->HasChildNodes(&bHasMoreChildren);
   }
   return DeleteNode(inNode);

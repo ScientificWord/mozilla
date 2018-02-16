@@ -2178,6 +2178,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
 
     nsCOMPtr<nsIDOMElement> anchorAncestor;
     nsCOMPtr<nsIDOMElement> focusAncestor;
+    nsCOMPtr<nsIDOMNode> parent;
     nsCOMPtr<nsIDOMNode> tempNode;
     nsCOMPtr<nsIDOMElement> tempElement;
     nsAutoString nodeName;
@@ -2241,20 +2242,27 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     res = mHTMLEditor->GetElementOrParentByTagClass(listtag, startNode, getter_AddRefs(anchorAncestor));
     res = mHTMLEditor->GetElementOrParentByTagClass(listtag, visNode, getter_AddRefs(focusAncestor));
     if (focusAncestor && (focusAncestor != anchorAncestor)) { // we have entered an listtag object; delete it instead of text
+      res = focusAncestor->GetParentNode(getter_AddRefs(parent));
       res = mHTMLEditor->RemoveContainer(focusAncestor);
       *aHandled = PR_TRUE;
+      // check to see if we have removed the last list item. If so, remove the list  parent.
+      PRBool hasItemNodes;
+      res = mtagListManager->HasChildInClass(parent, listtag, nsnull, &hasItemNodes);
+      if(!hasItemNodes) {
+        res = mHTMLEditor->RemoveContainer(parent);
+      }
       aSelection->Collapse(visNode, visOffset);
       return res;
     }
-    NS_NAMED_LITERAL_STRING(listparenttag, "listparenttag");
-    res = mHTMLEditor->GetElementOrParentByTagClass(listparenttag, startNode, getter_AddRefs(anchorAncestor));
-    res = mHTMLEditor->GetElementOrParentByTagClass(listparenttag, visNode, getter_AddRefs(focusAncestor));
-    if (focusAncestor && (focusAncestor != anchorAncestor)) { // we have entered a listparenttag object; delete it instead of text
-      res = mHTMLEditor->RemoveContainer(focusAncestor);
-      *aHandled = PR_TRUE;
-      aSelection->Collapse(visNode, visOffset);
-      return res;
-    }
+    // NS_NAMED_LITERAL_STRING(listparenttag, "listparenttag");
+    // res = mHTMLEditor->GetElementOrParentByTagClass(listparenttag, startNode, getter_AddRefs(anchorAncestor));
+    // res = mHTMLEditor->GetElementOrParentByTagClass(listparenttag, visNode, getter_AddRefs(focusAncestor));
+    // if (focusAncestor && (focusAncestor != anchorAncestor)) { // we have entered a listparenttag object; delete it instead of text
+    //   res = mHTMLEditor->RemoveContainer(focusAncestor);
+    //   *aHandled = PR_TRUE;
+    //   aSelection->Collapse(visNode, visOffset);
+    //   return res;
+    // }
 
 
     if (wsType==nsWSRunObject::eNormalWS)
@@ -2869,10 +2877,15 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
     // First check that there isn't already one.
     nsCOMPtr<nsIDOMElement> el;
     el = do_QueryInterface(node);
+    if (!el) {
+      node->GetParentNode(getter_AddRefs(node));
+      el = do_QueryInterface(node);
+    }
     if (el) {
+
       nsCOMPtr<nsIDOMNodeList> nodeList;
       res = el->GetElementsByTagName(NS_LITERAL_STRING("br"), getter_AddRefs(nodeList));
-      if (el)
+      if (nodeList)
       {
         PRUint32 length;
         nodeList->GetLength(&length);
@@ -4175,6 +4188,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
                                     nsIEditor::EDirection aDir,
                                     nsresult aResult)
 {
+  nsCOMPtr<nsIDOMNode> mathNode;
   nsCOMPtr<nsIDOMParser> parser;
 
 //  return NS_OK;
@@ -4197,7 +4211,8 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   PRUint16 nodeType;
   res = startNode->GetNodeType(&nodeType);
   // BBM: WTF?
-  if (nodeType == nsIDOMNode::TEXT_NODE && TextNodeLength(startNode) == 0) {
+  PRBool gate = PR_FALSE;
+  if (gate && nodeType == nsIDOMNode::TEXT_NODE && TextNodeLength(startNode) == 0) {
     nsCOMPtr<nsIDOMNode> parent;
     if (startOffset > 0) deltaOffset = 1;
     nsEditor * editor = static_cast<nsEditor*>(mHTMLEditor);
@@ -4205,14 +4220,18 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
     startNode = parent;
     startOffset += deltaOffset;
   }
-  hackSelectionCorrection(mHTMLEditor, startNode, startOffset);
+  res = msiUtils::GetMathParent(startNode, mathNode);
   if (NS_FAILED(res)) return res;
-  if (!startNode) return NS_ERROR_FAILURE;
-  msiUtils::MergeMathTags(startNode, startOffset, PR_TRUE, PR_TRUE, ed);
+  if (mathNode) {
+    // in mathematics
+    hackSelectionCorrection(mHTMLEditor, startNode, startOffset);
+    if (NS_FAILED(res)) return res;
+    if (!startNode) return NS_ERROR_FAILURE;
+    msiUtils::MergeMathTags(startNode, startOffset, PR_TRUE, PR_TRUE, ed);
+  }
 
   // See if we're in math
   mHTMLEditor->GetInComplexTransaction(&isInComplexTransaction);
-  nsCOMPtr<nsIDOMNode> mathNode;
   nsCOMPtr<nsIDOMNode> parentNode;
   nsCOMPtr<nsIDOMElement> parentElement;
   nsCOMPtr<nsIDOMNode> node;
@@ -4321,7 +4340,6 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   //      }
   //      return res;
   //   }
-
   // }
   // find any enclosing mailcite
   nsCOMPtr<nsIDOMNode> citeNode;
@@ -10988,7 +11006,7 @@ nsHTMLEditRules::UpdateDocChangeRange(nsIDOMRange *aRange)
   nsresult res = NS_OK;
 
   // first make sure aRange is in the document.  It might not be if
-  // portions of our editting action involved manipulating nodes
+  // portions of our editing action involved manipulating nodes
   // prior to placing them in the document (e.g., populating a list item
   // before placing it in it's list)
   nsCOMPtr<nsIDOMNode> startNode;
@@ -11055,7 +11073,9 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   if (!IsBlockNode(aNode)) return NS_OK;
 
   PRBool isEmpty;
+  nsCOMPtr<nsINode> plainiNode = do_QueryInterface(aNode);
   nsCOMPtr<nsIDOMNode> brNode;
+  nsCOMPtr<nsISelection> sel;
   nsresult res = mHTMLEditor->IsEmptyNode(aNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE);
   nsCOMPtr<msiITagListManager> taglistManager;
   mHTMLEditor->GetTagListManager( getter_AddRefs(taglistManager));
@@ -11063,7 +11083,13 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   if (NS_FAILED(res)) return res;
   if (isEmpty)
   {
-    res = CreateMozBR(aNode, 0, address_of(brNode));
+    nsCOMPtr<nsINode> plainiNode = do_QueryInterface(aNode);
+    PRUint32 childCount = plainiNode->GetChildCount();
+    res = CreateMozBR(aNode, childCount, address_of(brNode));
+    mHTMLEditor->GetSelection(getter_AddRefs(sel));
+    // BBM: check to see if selection is in aNode?
+
+    sel->Collapse(aNode, childCount);
   }
   // Now look for msiframe and math at the end of the paragraph
   nsCOMPtr<nsIDOMNode> lastchild;
