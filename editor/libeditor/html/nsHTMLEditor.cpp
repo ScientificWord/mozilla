@@ -829,7 +829,7 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
   mtagListManager->GetRealClassOfTag(strTagName, namespaceAtom, strTagClass);
   if (strTagClass.EqualsLiteral("paratag")
     ||strTagClass.EqualsLiteral("structtag")||
-      strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")|| strTagClass.EqualsLiteral("listparenttag") || strTagClass.EqualsLiteral("frontmtag"))
+      strTagClass.EqualsLiteral("envtag")|| strTagClass.EqualsLiteral("listtag")|| /*strTagClass.EqualsLiteral("listparenttag") || */strTagClass.EqualsLiteral("frontmtag"))
   {
    *aIsBlock = PR_TRUE;
    return NS_OK;
@@ -5143,6 +5143,8 @@ nsHTMLEditor::IsContainer(nsIDOMNode *aNode)
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"),stringTag, nsnull, &fRet);
     if (fRet) return PR_TRUE;
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("listtag"),stringTag, nsnull, &fRet);
+    if (fRet) return PR_TRUE;    
+    mtagListManager->GetTagInClass(NS_LITERAL_STRING("listparenttag"),stringTag, nsnull, &fRet);
     if (fRet) return PR_TRUE;
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"),stringTag, nsnull, &fRet);
     if (fRet) return PR_TRUE;
