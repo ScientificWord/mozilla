@@ -1688,3 +1688,35 @@ msiTagListManager::GetMinDepth(PRInt32 *_retval)
     return NS_OK;
   }
 }
+
+/* boolean getChildrenByClass (in nsIDOMNode node, in AString strTagClass, in nsIAtom atomNS); */
+NS_IMETHODIMP msiTagListManager::HasChildInClass(nsIDOMNode *node, const nsAString & strTagClass, nsIAtom *atomNS, PRBool *_retval)
+{
+  NS_PRECONDITION(node, "Null ptr in msiTagListManager::GetChildrenByClass");
+  nsresult res;
+  PRUint32 count;
+  nsCOMPtr<nsIDOMNodeList> children;
+  nsCOMPtr<nsIDOMNode> child;
+  nsString tag;
+  nsString tagClass;
+  nsCOMPtr<nsIDOMElement> element;
+  *_retval = PR_FALSE;
+  nsIAtom * nullAtom = nsnull;
+  res = node->GetChildNodes(getter_AddRefs(children));
+  res = children->GetLength(&count);
+  for (PRUint32 i = 0; i++; i < count) {
+    res = children->Item(i, getter_AddRefs(child));
+    element = do_QueryInterface(child);
+    if (element) {
+      res = element->GetTagName(tag);
+      res = this->GetClassOfTag( tag, nullAtom, tagClass);
+      if (strTagClass.Equals(tagClass)) {
+        *_retval = PR_TRUE;
+        return NS_OK;
+      }
+    }
+  }
+  return NS_OK;
+}
+
+
