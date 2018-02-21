@@ -37,7 +37,7 @@ function InitDialog()
   var theFirstText = gDialog.frontMatterText;
   if (!theFirstText.length)
     theFirstText = "<span style='font-weight: bold;'>Some bold text?</span>";
-  theFirstText = "<para>" + theFirstText + "</para>";
+  theFirstText = "<bodyText>" + theFirstText + "</bodyText>";
   msiInitializeEditorForElement(editorControl, theFirstText);
 
 //  var editorControlTwo = document.getElementById("editControlTwo");
