@@ -726,9 +726,8 @@
           <description>Centered</description>
           <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <!-- <nextafteremptyblock>bodyText</nextafteremptyblock> -->
           <discardemptyblock>true</discardemptyblock>
-          <nexttag>none</nexttag>
+          <nexttag>bodyText</nexttag>
           <initialcontents><![CDATA[
               <bodyText>
                 <cursor/>
