@@ -2136,18 +2136,34 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
   // notify our internal selection state listener
   nsAutoRemoveContainerSelNotify selNotify(mRangeUpdater, inNode, parent, offset, nodeOrigLen);
 
-  nsCOMPtr<nsIDOMNode> child;
-  while (bHasMoreChildren)
-  {
-    inNode->GetLastChild(getter_AddRefs(child));
+  // Move all children from inNode to its parent.
+  inNode->HasChildNodes(&bHasMoreChildren);
+
+  while (bHasMoreChildren) {
+    nsCOMPtr<nsIDOMNode> child;
+    res = inNode->GetLastChild(getter_AddRefs(child));
     res = DeleteNode(child);
-    if (NS_FAILED(res)) return res;
-    // res = InsertNode(child, parent, offset);
-    // if (NS_FAILED(res)) return res;
+    if (NS_FAILED(res)) {
+      return res;
+    }
+
+    // Insert the last child before the previous last child.  So, we need to
+    // use offset here because previous child might have been moved to
+    // container.
+    res = InsertNode(child,
+                    parent, offset);
+
+    if (NS_FAILED(res)) {
+      return res;
+    }
     inNode->HasChildNodes(&bHasMoreChildren);
+
   }
   return DeleteNode(inNode);
 }
+
+
+
 
 
 ///////////////////////////////////////////////////////////////////////////
