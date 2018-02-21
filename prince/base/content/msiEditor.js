@@ -5085,7 +5085,6 @@ function msiEditorGetShowInvisibles(editorElement) // returns viewSettings
     var editor = msiGetEditor(editorElement);
     var viewSettings = {};
     var theBody = msiGetRealBodyElement(editor.document);
-    theBody.getAttribute("showinvis") === "true"
 
     viewSettings.showInvisibles = theBody.getAttribute("showinvis") === "true";
     viewSettings.showSectionExpanders = theBody.getAttribute("showexpanders") === "true";
@@ -5210,14 +5209,11 @@ function msiGetViewSettingsFromDocument(editorElement) {
 
   if (theBody.hasAttribute("showinvis"))
     retVal.showInvisibles = (theBody.getAttribute("showinvis") == "true");
-  if (theBody.hasAttribute("hideHelperLines"))
-    retVal.showHelperLines = (theBody.getAttribute("hideHelperLines") != "true");
-  if (theBody.hasAttribute("hideInputBoxes"))
-    retVal.showInputBoxes = (theBody.getAttribute("hideInputBoxes") != "true");
-  if (theBody.hasAttribute("hideindexentries"))
-    retVal.showIndexEntries = (theBody.getAttribute("hideindexentries") != "true");
-  if (theBody.hasAttribute("hidemarkers"))
-    retVal.showMarkers = (theBody.getAttribute("hidemarkers") != "true");
+  retVal.showHelperLines = !(theBody.hasAttribute("hideHelperLines")) || (theBody.getAttribute("hideHelperLines") != "true");
+  retVal.showInputBoxes = !(theBody.hasAttribute("hideInputBoxes"))||(theBody.getAttribute("hideInputBoxes") != "true");
+  retVal.showIndexEntries = !(theBody.hasAttribute("hideindexentries"))||(theBody.getAttribute("hideindexentries") != "true");
+  retVal.showMarkers = !(theBody.hasAttribute("hidemarkers"))||(theBody.getAttribute("hidemarkers") != "true");
+  retVal.showOtherNotes = !(theBody.hasAttribute("hideOtherNotes")) ||(theBody.getAttribute("hideOtherNotes") != "true");
 
   return retVal;
 }
@@ -10198,7 +10194,7 @@ var msiDialogEditorContentFilterBase = {
   mXmlSerializer: new XMLSerializer(),
   mDOMUtils: Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces
     .inIDOMUtils),
-  defaultParaTag: "para",
+  defaultParaTag: "bodyText",
 
   dlgNodeFilter: function(aNode) {
     var nodename = aNode.nodeName;
