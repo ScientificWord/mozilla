@@ -1373,7 +1373,7 @@ function insertXMLNodes(editor, nodeList, node, offset) {
 }
 function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret) {
   if (bWithinPara)
-    text = '<para>' + text + '</para>';
+    text = '<bodyText>' + text + '</bodyText>';
   else
     text = '<body>' + text + '</body>';
   var parser = new DOMParser();
