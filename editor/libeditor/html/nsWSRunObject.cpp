@@ -1170,9 +1170,16 @@ nsWSRunObject::GetPreviousWSNode(nsIDOMNode *aStartNode,
   // can't really recycle various getnext/prior routines because we
   // have special needs here.  Need to step into inline containers but
   // not block containers.
+  nsAutoString name;
   if (!aStartNode || !aBlockParent || !aPriorNode) return NS_ERROR_NULL_POINTER;
   
   nsresult res = aStartNode->GetPreviousSibling(getter_AddRefs(*aPriorNode));
+  NS_ENSURE_SUCCESS(res, res);
+  if (*aPriorNode) {
+    if ((*aPriorNode)->GetNodeName(name) && name.EqualsLiteral("cursor")) {
+      res = (*aPriorNode)->GetPreviousSibling(getter_AddRefs(*aPriorNode));
+    }
+  }
   NS_ENSURE_SUCCESS(res, res);
   nsCOMPtr<nsIDOMNode> temp, curNode = aStartNode;
   while (!*aPriorNode)
