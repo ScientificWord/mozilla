@@ -2243,13 +2243,13 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
     res = mHTMLEditor->GetElementOrParentByTagClass(listtag, visNode, getter_AddRefs(focusAncestor));
     if (focusAncestor && (focusAncestor != anchorAncestor)) { // we have entered an listtag object; delete it instead of text
       res = focusAncestor->GetParentNode(getter_AddRefs(parent));
-      res = mHTMLEditor->RemoveContainer(focusAncestor);
+//      res = mHTMLEditor->RemoveContainer(focusAncestor);
       *aHandled = PR_TRUE;
       // check to see if we have removed the last list item. If so, remove the list  parent.
       PRBool hasItemNodes;
       res = mtagListManager->HasChildInClass(parent, listtag, nsnull, &hasItemNodes);
       if(!hasItemNodes) {
-        res = mHTMLEditor->RemoveContainer(parent);
+//        res = mHTMLEditor->RemoveContainer(parent);
       }
       aSelection->Collapse(visNode, visOffset);
       return res;

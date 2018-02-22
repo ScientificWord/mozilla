@@ -185,18 +185,6 @@ nsPlaintextEditor::EndEditorInit()
   return res;
 }
 
-/* attribute boolean inComplexTransaction; */
-NS_IMETHODIMP nsPlaintextEditor::GetInComplexTransaction(PRBool *aInComplexTransaction)
-{
-    *aInComplexTransaction = isInComplexTransaction;
-    return NS_OK;
-}
-
-NS_IMETHODIMP nsPlaintextEditor::SetInComplexTransaction(PRBool aInComplexTransaction)
-{
-    isInComplexTransaction = aInComplexTransaction;
-    return NS_OK;
-}
 
 NS_IMETHODIMP
 nsPlaintextEditor::SetDocumentCharacterSet(const nsACString & characterSet)
