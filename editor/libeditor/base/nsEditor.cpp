@@ -424,6 +424,7 @@ nsEditor::DumpNodeS(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false *
 }
 #endif
 
+
 /** returns PR_TRUE if aNode is of the type implied by aTag */
 PRBool nsEditor::NodeIsType(nsIDOMNode *aNode, nsIAtom *aTag, msiITagListManager * manager)
 {
@@ -520,6 +521,86 @@ nsEditor::Init(nsIDOMDocument *aDoc, nsIPresShell* aPresShell, nsIContent *aRoot
 
   NS_POSTCONDITION(mDocWeak && mPresShellWeak, "bad state");
 
+  return NS_OK;
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+// RemoveContainer: remove inNode, reparenting its children into their
+//                  the parent of inNode
+//
+
+/* void removeContainer (in nsIDOMNode node); */
+NS_IMETHODIMP 
+nsEditor::RemoveContainer(nsIDOMNode *inNode)
+{
+  if (!inNode)
+    return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMNode> parent;
+  PRInt32 offset;
+
+  nsresult res = GetNodeLocation(inNode, address_of(parent), &offset);
+  if (NS_FAILED(res)) return res;
+
+  // loop through the child nodes of inNode and promote them
+  // into inNode's parent.
+  PRBool bHasMoreChildren;
+  inNode->HasChildNodes(&bHasMoreChildren);
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  res = inNode->GetChildNodes(getter_AddRefs(nodeList));
+  if (NS_FAILED(res)) return res;
+  if (!nodeList) return NS_ERROR_NULL_POINTER;
+  PRUint32 nodeOrigLen;
+  nodeList->GetLength(&nodeOrigLen);
+
+  // notify our internal selection state listener
+  nsAutoRemoveContainerSelNotify selNotify(mRangeUpdater, inNode, parent, offset, nodeOrigLen);
+
+  // Move all children from inNode to its parent.
+  inNode->HasChildNodes(&bHasMoreChildren);
+  PRBool inComplexTransaction;
+  GetInComplexTransaction(&inComplexTransaction);
+  SetInComplexTransaction(PR_TRUE);
+
+  while (bHasMoreChildren) {
+    nsCOMPtr<nsIDOMNode> child;
+    res = inNode->GetLastChild(getter_AddRefs(child));
+    res = DeleteNode(child);
+    if (NS_FAILED(res)) {
+      return res;
+    }
+
+    // Insert the last child before the previous last child.  So, we need to
+    // use offset here because previous child might have been moved to
+    // container.
+    res = InsertNode(child,
+                    parent, offset);
+
+    if (NS_FAILED(res)) {
+      return res;
+    }
+    inNode->HasChildNodes(&bHasMoreChildren);
+
+  }
+
+  return DeleteNode(inNode);
+  SetInComplexTransaction(inComplexTransaction);
+}
+
+
+
+/* attribute boolean inComplexTransaction; */
+NS_IMETHODIMP 
+nsEditor::GetInComplexTransaction(PRBool *aInComplexTransaction)
+{
+  *aInComplexTransaction = isInComplexTransaction;
+  return NS_OK;
+}
+
+NS_IMETHODIMP 
+nsEditor::SetInComplexTransaction(PRBool aInComplexTransaction)
+{
+  isInComplexTransaction = aInComplexTransaction;
   return NS_OK;
 }
 
@@ -2106,62 +2187,6 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
     }
     return DeleteNode(inNode);
 }
-
-///////////////////////////////////////////////////////////////////////////
-// RemoveContainer: remove inNode, reparenting its children into their
-//                  the parent of inNode
-//
-nsresult
-nsEditor::RemoveContainer(nsIDOMNode *inNode)
-{
-  if (!inNode)
-    return NS_ERROR_NULL_POINTER;
-  nsCOMPtr<nsIDOMNode> parent;
-  PRInt32 offset;
-
-  nsresult res = GetNodeLocation(inNode, address_of(parent), &offset);
-  if (NS_FAILED(res)) return res;
-
-  // loop through the child nodes of inNode and promote them
-  // into inNode's parent.
-  PRBool bHasMoreChildren;
-  inNode->HasChildNodes(&bHasMoreChildren);
-  nsCOMPtr<nsIDOMNodeList> nodeList;
-  res = inNode->GetChildNodes(getter_AddRefs(nodeList));
-  if (NS_FAILED(res)) return res;
-  if (!nodeList) return NS_ERROR_NULL_POINTER;
-  PRUint32 nodeOrigLen;
-  nodeList->GetLength(&nodeOrigLen);
-
-  // notify our internal selection state listener
-  nsAutoRemoveContainerSelNotify selNotify(mRangeUpdater, inNode, parent, offset, nodeOrigLen);
-
-  // Move all children from inNode to its parent.
-  inNode->HasChildNodes(&bHasMoreChildren);
-
-  while (bHasMoreChildren) {
-    nsCOMPtr<nsIDOMNode> child;
-    res = inNode->GetLastChild(getter_AddRefs(child));
-    res = DeleteNode(child);
-    if (NS_FAILED(res)) {
-      return res;
-    }
-
-    // Insert the last child before the previous last child.  So, we need to
-    // use offset here because previous child might have been moved to
-    // container.
-    res = InsertNode(child,
-                    parent, offset);
-
-    if (NS_FAILED(res)) {
-      return res;
-    }
-    inNode->HasChildNodes(&bHasMoreChildren);
-
-  }
-  return DeleteNode(inNode);
-}
-
 
 
 

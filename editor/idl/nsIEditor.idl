@@ -79,6 +79,9 @@ interface nsIEditor  : nsISupports
   const short eToEndOfLine = 6;
 
   readonly attribute nsISelection selection;
+  attribute boolean inComplexTransaction;
+
+
 
   /**
    * Init is to tell the implementation of nsIEditor to begin its services
@@ -466,6 +469,8 @@ interface nsIEditor  : nsISupports
                   in nsIDOMNode parent,
                   in long       aPosition);
 
+
+  void removeContainer(in nsIDOMNode node);
 
   /** 
    * splitNode() creates a new node identical to an existing node,

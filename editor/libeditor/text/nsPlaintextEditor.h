@@ -169,7 +169,6 @@ protected:
   NS_IMETHOD  InitRules();
   void        BeginEditorInit();
   nsresult    EndEditorInit();
-  PRBool isInComplexTransaction;
 
   // Create the event listeners for the editor to install.
   virtual nsresult CreateEventListeners();
