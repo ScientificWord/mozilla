@@ -189,7 +189,6 @@ public:
                             const nsAString *aValue = nsnull,
                             PRBool aCloneAttributes = PR_FALSE);
 
-  nsresult RemoveContainer(nsIDOMNode *inNode);
   nsresult InsertContainerAbove(nsIDOMNode *inNode,
                                 nsCOMPtr<nsIDOMNode> *outNode,
                                 const nsAString &aNodeType,
@@ -214,6 +213,8 @@ public:
   nsresult CreateContentNS(const nsAString& aQualifiedTag, nsIAtom * atomNS, nsIDOMElement** aElement);
 protected:
   nsCString mContentMIMEType;       // MIME type of the doc we are editing.
+  PRBool isInComplexTransaction;
+
 
   /** create a transaction for setting aAttribute to aValue on aElement
     */
