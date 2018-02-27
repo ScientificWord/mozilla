@@ -197,7 +197,7 @@
       \newcommand{\mymarginpar}[1]{%
     </xsl:text>
     <xsl:text>
-        \marginpar[\RaggedLeft#1]{\RaggedRight#1}}%
+        \marginpar[\RaggedLeft{#1}]{\RaggedRight{#1}}}%
     </xsl:text>
 
 
