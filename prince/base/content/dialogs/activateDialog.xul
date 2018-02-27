@@ -27,9 +27,6 @@
   		<column />
   	</columns>
   	<rows>
-  		<row>
-  			<label>&computerid.label;</label><textbox  id="computerid" value=""/>
-      </row>
       <row>
   			<label>&product.label;</label><label id="productname" value=
 #ifdef PROD_SW
@@ -43,10 +40,13 @@
 #endif
   		  />
       </row>
-        <row>
-          <label>&serial.label;</label><textbox id="serial"/>
-        </row>
-  	</rows>
+      <row>
+        <label>&serial.label;</label><textbox id="serial"/>
+      </row>
+  	  <row>
+  			<label>&computerid.label;</label><textbox  id="computerid" value=""/>
+      </row>
+    </rows>
   </grid>
   <spacer style="height: 20px;" />
   <description>&verbiage2;</description>
