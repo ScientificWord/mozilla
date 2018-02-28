@@ -98,6 +98,25 @@ verbatim bodyText {
   margin: 0;
   padding: 0;
 }
+
+verbatim { display: block;
+           background-color: rgb(255,255,215); }
+
+flushright {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: right;
+  background-color: rgb(255,255,165)
+}
+
+flushleft {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: left;
+  background-color: rgb(215,255,215)
+}
+
+
 numberedListItem,
 bulletListItem,
 descriptionListItem,
@@ -150,7 +169,11 @@ proof:before {
 
 img { display: inline;}
 
-shortQuote { display: block; }
+shortQuote { display: block; 
+             background-color: rgb(233,233,233);}
+
+longQuotation {	background-color: rgb(222,222,222);}
+
 
 tabular {
 display: table
