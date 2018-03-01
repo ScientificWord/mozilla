@@ -1063,7 +1063,7 @@ nsTextEditRules::DidDeleteSelection(nsISelection *aSelection,
   // Check that the cursor is in a place that can accept text.
   PRBool retval;
   nsCOMPtr<nsIEditor> editor = static_cast<nsEditor*>(mEditor);
-//  retval = nsEditorUtils::JiggleCursor(editor, aSelection, aCollapsedAction);
+  retval = nsEditorUtils::JiggleCursor(editor, aSelection, aCollapsedAction);
   if (retval) res = NS_OK;
 
 /*  
