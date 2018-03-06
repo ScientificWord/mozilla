@@ -79,6 +79,7 @@ var gTableChangeData;
 var gCurrentSide = "";
 var gBorderSides = ["top", "right", "bottom", "left"];
 
+var gCellChangeData;
 var gSelectionTypeStr = "Cell";
 var gApplyUsed = false;
 //var gSelection = null;
