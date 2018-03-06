@@ -2,6 +2,7 @@
 //Components.utils.import("resource://app/modules/pathutils.jsm");
 #include productname.inc
 
+
 Components.utils.import('resource://app/modules/os.jsm');
 Components.utils.import('resource://app/modules/fontlist.jsm');
 const msiEditorUtilitiesJS_duplicateTest = 'Bad';

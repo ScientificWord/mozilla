@@ -49,13 +49,17 @@
 >
 
   <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
+
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+
+  
+<script type="application/x-javascript"
+	  src="chrome://prince/content/msiEditorUtilities.js"/>
+  
   <script type="application/x-javascript" src="chrome://prince/content/msiEdTableProps.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+ 
+
   <broadcasterset id="frameoverlayBroadcasters"/>
   <broadcasterset id="bcasters">
     <broadcaster id="role-image" style="display:block"/>

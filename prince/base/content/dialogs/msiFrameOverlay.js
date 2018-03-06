@@ -1275,17 +1275,21 @@ function constrainProportions( srcID, destID, event )
 
 function doDimensionEnabling()
 {
-  // Enabled only if "Custom" is selected, or actualsize is not enabled
-  var enable = (document.getElementById("custom").selected) || !hasNaturalSize;
-  if (enable) {
-    document.getElementById("customSize").removeAttribute("disabled");
-  }
-  else
-    document.getElementById("customSize").setAttribute("disabled", "true");
-
-  SetElementEnabledById( "unitList", enable );
-  var constrainEnable = enable;
-  SetElementEnabledById( "constrainCheckbox", constrainEnable );
+    // Enabled only if "Custom" is selected, or actualsize is not enabled
+    try{
+	var enable = (document.getElementById("custom").selected) || !hasNaturalSize;
+	if (enable) {
+	    document.getElementById("customSize").removeAttribute("disabled");
+	}
+	else
+	    document.getElementById("customSize").setAttribute("disabled", "true");
+	
+	SetElementEnabledById( "unitList", enable );
+	var constrainEnable = enable;
+	SetElementEnabledById( "constrainCheckbox", constrainEnable );
+    }catch(e){
+	msidump(e.message);
+    }
 
 }
 
