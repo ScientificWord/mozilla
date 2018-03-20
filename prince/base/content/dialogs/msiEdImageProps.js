@@ -1732,7 +1732,7 @@ function onAccept()
           gEditor.insertNode(wrapperElement, imageParent, posInParent);
         }
       }
-
+      imageParent = imageElement.parentNode;
       if (gInsertNewImage) {
         gEditor.insertElementAtSelection(wrapperElement, true);
       }
