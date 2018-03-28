@@ -3387,7 +3387,7 @@ inserted into an mtext node or an ordinary text  node, as appropriate. */
 		if (!(newNode.value.firstChild) && newNode.value.textContent.length == 0)
 		{
 		  editor.deleteNode(newNode.value);
-			offset--;
+			// offset--;
 		}
 		parent = newParent;
 	}
@@ -3415,7 +3415,7 @@ function mathNodeToText(editor, node)
   if (node)
 	{
 		splitMathDeep(editor, node, -1, node.textContent);
-		coalescemath(null, false);
+		// coalescemath(null, false);
 	}
 }
 
@@ -3579,7 +3579,7 @@ function toggleMathText(editor)
       mathToText(editor);
     }
     catch(e) {
-      finalThrow("Error converting math to text", null)
+      finalThrow("Error converting math to text", e.message)
     }
   }
   else
@@ -3588,7 +3588,7 @@ function toggleMathText(editor)
       textToMath(editor);
     }
     catch(e) {
-      finalThrow("Error converting text to math", null);
+      finalThrow("Error converting text to math", e.message);
     }
   }
 }
