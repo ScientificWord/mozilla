@@ -1277,7 +1277,9 @@ function doDimensionEnabling()
 {
     // Enabled only if "Custom" is selected, or actualsize is not enabled
     try{
-	var enable = (document.getElementById("custom").selected) || !hasNaturalSize;
+	// jcs - do we ever have a "custom" element?
+	var enable = (document.getElementById("custom") &&
+		      document.getElementById("custom").selected) || !hasNaturalSize;
 	if (enable) {
 	    document.getElementById("customSize").removeAttribute("disabled");
 	}
