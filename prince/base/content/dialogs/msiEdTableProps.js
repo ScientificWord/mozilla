@@ -210,7 +210,7 @@ function ChangeRowOrColumn(id)
 function setVariablesForControls()
 {
   // Get dialog widgets - Table Panel
-  gDialog.TabBox =  document.getElementById("TabBox");
+  gDialog.TabBox =  document.getElementById("mainTabBox");
   gDialog.TableTab =  document.getElementById("TableTab");
   gDialog.PlacementTab = document.getElementById( "msiPlacementTab" );
   gDialog.FrameTab = document.getElementById( "msiFrameTab" );
@@ -222,19 +222,19 @@ function setVariablesForControls()
 //  gDialog.tableColumnCount = document.getElementById("tableColumnCount");
   gDialog.rowsInput = document.getElementById("rowsInput");
   gDialog.columnsInput = document.getElementById("columnsInput");
-  gDialog.widthInput     = document.getElementById("widthInput");
+  // jcs. unused: gDialog.widthInput     = document.getElementById("widthInput");
   gDialog.keyInput = document.getElementById("keyInput");
 
-  gDialog.tableRowHeight =  document.getElementById("tableRowHeight");
+  // jcs. unused:  gDialog.tableRowHeight =  document.getElementById("tableRowHeight");
   gDialog.tableWidthInput =  document.getElementById("tableWidthInput");
   gDialog.autoWidthCheckbox = document.getElementById("autoWidthCheckbox");
-  gDialog.unitMenulist = document.getElementById("unitMenulist");
+  gDialog.frameunitMenulist = document.getElementById("frameUnitMenulist");
 
   // gDialog.tableBackgroundCW =  document.getElementById("tableBackgroundCW");
 
   // Cells Panel
   gDialog.CellHeightInput = document.getElementById("CellHeightInput");
-  gDialog.CellHeightUnits = document.getElementById("CellHeightUnits");
+  // jcs. no such element: gDialog.CellHeightUnits = document.getElementById("CellHeightUnits");
   gDialog.CellWidthInput = document.getElementById("CellWidthInput");
   // gDialog.cellUnitsList = document.getElementById("cellUnitsList");
 
@@ -248,8 +248,8 @@ function setVariablesForControls()
   gDialog.BordersPreviewCenterCell = document.getElementById("BordersPreviewCenterCell");
   gDialog.BorderSideSelectionList = document.getElementById("BorderSideSelectionList");
   gDialog.CellBorderStyleList = document.getElementById("cellBorderStyleList");
-  gDialog.CellBorderWidthList = document.getElementById("cellBorderWidthList");
-  gDialog.borderCW = document.getElementById("borderCW");
+  // jcs. unused: gDialog.CellBorderWidthList = document.getElementById("cellBorderWidthList");
+  // jcs. element does not exist: gDialog.borderCW = document.getElementById("borderCW");
 
   gDialog.labelText = document.getElementById("labelText");
   gDialog.baselineList = document.getElementById("baselineList");
@@ -487,6 +487,7 @@ function Startup()
       gTableElement.setAttribute("req","tabulary");
       gWrapperElement = gActiveEditor.createElementWithDefaults("msiframe");
       gWrapperElement.setAttribute("frametype", "table");
+      gWrapperElement.setAttribute("units", "cm");
       gWrapperElement.appendChild(gTableElement);
     }
     catch (e) {
@@ -567,6 +568,7 @@ function initKeyList()
 
 function InitDialog()
 {
+  //initframeUnitHandler(null);
   initFrameTab(gDialog, gWrapperElement || gTableElement, newTable, gTableElement);
   initKeyList();
   initTablePanel();
@@ -591,7 +593,7 @@ function initframeUnitHandler(unit)
     initUnit = gPrefs.getCharPref("swp.table.units");
 //  gDialog.frameUnitMenulist.setAttribute("value", initUnit);
   try {
-    frameUnitHandler.buildUnitMenu(gDialog.unitMenulist, initUnit);
+    frameUnitHandler.buildUnitMenu(gDialog.frameUnitMenulist, initUnit);
     frameUnitHandler.initCurrentUnit(initUnit);
   }
   catch(e) {
@@ -683,18 +685,18 @@ function initTablePanel()
 
   var placeLocation = gTableElement.getAttribute("placeLocation");
 
-  if (longPlacement) {
-//    if (placement == "I" || placement == "display") placeLocation = "";
-    gDialog.placementRadioGroup.value = longPlacement;
-    if (placeLocation) {
-      gDialog.placementRadioGroup.value = placeLocation;
-    }
-    else
-    {
-      gDialog.floatLocationList.value = "";
-    }
-  }
-  //else gDialog.tableLocationList.value = "unspecified";
+// jcs - removing because there is no placementRadioGroup
+//  if (longPlacement) {
+//    gDialog.placementRadioGroup.value = longPlacement;
+//    if (placeLocation) {
+//      gDialog.placementRadioGroup.value = placeLocation;
+//    }
+//    else
+//    {
+//      gDialog.floatLocationList.value = "";
+//    }
+//  }
+
 
   var xrefLabel = gTableElement.getAttribute("xrefLabel");
   if (xrefLabel)
@@ -733,7 +735,7 @@ function initLinesPanel()
 
 function onChangeTableUnits()
 {
-  var val = gDialog.unitMenulist.value
+  var val = gDialog.frameUnitMenulist.value
   frameUnitHandler.setCurrentUnit(val);
   // document.getElementById("currentunits").setAttribute("value", frameUnitHandler.getDisplayString(val));
 }
