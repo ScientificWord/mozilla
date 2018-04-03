@@ -497,6 +497,8 @@ function Startup()
   else {
     newTable = false;
     gTableElement = data.reviseData.mTableElement;
+    if (!gTableElement)
+	gTableElement = data.reviseData.coreElement;
     gWrapperElement = gTableElement.parentNode;
 
 
