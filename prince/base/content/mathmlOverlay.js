@@ -59,9 +59,9 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIreviseMathnameCmd",     msiReviseMathnameCmd);
 //    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
   commandTable.registerCommand("cmd_MSIreviseGenBracketsCmd",  msiReviseGenBracketsCmd);
-	commandTable.registerCommand("cmd_MSIreviseBinomialsCmd",    msiReviseBinomialsCmd);
-	commandTable.registerCommand("cmd_MSIreviseOperatorsCmd",    msiReviseOperatorsCmd);
-	commandTable.registerCommand("cmd_MSIreviseDecorationsCmd",  msiReviseDecorationsCmd);
+  commandTable.registerCommand("cmd_MSIreviseBinomialsCmd",    msiReviseBinomialsCmd);
+  commandTable.registerCommand("cmd_MSIreviseOperatorsCmd",    msiReviseOperatorsCmd);
+  commandTable.registerCommand("cmd_MSIreviseDecorationsCmd",  msiReviseDecorationsCmd);
   commandTable.registerCommand("cmd_MSIreviseUnitsCommand",    msiReviseUnitsCommand);
   commandTable.registerCommand("cmd_MSIaddMatrixRowsCmd",       msiInsertMatrixRowsCommand);
   commandTable.registerCommand("cmd_MSIaddMatrixColumnsCmd",    msiInsertMatrixColumnsCommand);
@@ -127,49 +127,49 @@ var msiToggleMathText =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var editor = msiGetEditor(editorElement);
-		var togglekey;
-		if (aCommand === "cmd_MSImathtext")
-		  togglekey = "m";
-		else
-			togglekey = "t";
-		if (aCommand === "cmd_MSImathtextButton" || aCommand === "cmd_MSIinlineMathCmd" || this.keyIsToggle(togglekey) || this.currentState() != togglekey)
-		{
+    var togglekey;
+    if (aCommand === "cmd_MSImathtext")
+      togglekey = "m";
+    else
+      togglekey = "t";
+    if (aCommand === "cmd_MSImathtextButton" || aCommand === "cmd_MSIinlineMathCmd" || this.keyIsToggle(togglekey) || this.currentState() != togglekey)
+    {
       toggleMathText(editor);
-			editorElement.contentWindow.focus();
-		}
+      editorElement.contentWindow.focus();
+    }
     return;
   },
 
-	keyIsToggle: function( key )
-	{
-		try
+  keyIsToggle: function( key )
+  {
+    try
     {
-  		var prefkey;
-  		if (key==="m")
-  			prefkey = "swp.ctrl.m";
-  		else
-  			prefkey = "swp.ctrl.t";
-   	  var prefs = GetPrefs();
-  	  return (prefs.getCharPref(prefkey)==="toggle");
-		}
+      var prefkey;
+      if (key==="m")
+        prefkey = "swp.ctrl.m";
+      else
+        prefkey = "swp.ctrl.t";
+      var prefs = GetPrefs();
+      return (prefs.getCharPref(prefkey)==="toggle");
+    }
     catch(e)
     {
       var m = e.message;
       return false;
     }
-	},
+  },
 
-	currentState: function()
-	{
+  currentState: function()
+  {
     var editorElement = msiGetActiveEditorElement(window);
     var editor = msiGetEditor(editorElement);
-	 	var state;
-		if (editor.tagListManager.selectionContainedInTag("math",null))
-		  state = "m";
-		else
-			state = "t";
-		return state;
-	}
+    var state;
+    if (editor.tagListManager.selectionContainedInTag("math",null))
+      state = "m";
+    else
+      state = "t";
+    return state;
+  }
 };
 
 var msiTextMode =
@@ -2179,7 +2179,7 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
       var bMovableLimits = "false";
 
       if ( ("limitPlacement" in newMathNameData) && (newMathNameData.limitPlacement != "auto") )
-	    {
+      {
         if (newMathNameData.limitPlacement == "atRight")
           limitPlacement = "msiLimitsAtRight";
         else if (newMathNameData.limitPlacement == "aboveBelow")
@@ -2376,7 +2376,7 @@ function insertMathnameObject(mathNameObj, editorElement)
       node.setAttribute("msimathname","true");
       node.setAttribute("msiclass","enginefunction");
       node.setAttribute("msimathname","true");
-	  addTextToElement(node, mathNameObj.val);
+    addTextToElement(node, mathNameObj.val);
       mathmlEditor.InsertMathNodeAtSelection(node);
     }
     else if (("appearance" in mathNameObj) && (mathNameObj.appearance != null))
@@ -2431,13 +2431,13 @@ function insertMathnameObject(mathNameObj, editorElement)
       if (bMovableLimits == "false")
         msiEditorEnsureElementAttribute(node, "largeop", "true", editor);
       node.setAttribute("size", sizeSpec);
-	    addTextToElement(node, mathNameObj.val);
+      addTextToElement(node, mathNameObj.val);
       mathmlEditor.InsertMathNodeAtSelection(node);
     }
     else {
       node = mathmlEditor.document.createElementNS(mmlns,"mi");
       node.setAttribute("msimathname","true");
-	    addTextToElement(node, mathNameObj.val);
+      addTextToElement(node, mathNameObj.val);
       mathmlEditor.InsertMathNodeAtSelection(node);
     }
   }
@@ -2488,8 +2488,8 @@ function doMatrixDlg(editorElement)
     insertmatrix(o.rows, o.cols, o.rowsignature, editorElement);
   if (!o.Cancel)
   {
-		msiGetEditor(editorElement).incrementModificationCount(1);
-	}
+    msiGetEditor(editorElement).incrementModificationCount(1);
+  }
 
 }
 
@@ -3332,100 +3332,110 @@ function inputboxselected(node)
 
 function mathNodeSplittable(node)
 {
-	parent = node.parentNode;
-	return (msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathTemplate(parent));
+  parent = node.parentNode;
+  return (msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathTemplate(parent));
 }
 
 function offsetOfChild(parent, child)
 {
-	var offset = 0;
-	if (child.parentNode != parent)
-	{
-		throw ("offsetOfChild: 'parent' must by parent of 'child'");
-	}
-	var node = parent.firstChild;
-	while (node && node != child)
-	{
-		node = node.nextSibling;
-		offset++;
-	}
-	return offset;
+  var offset = 0;
+  if (child.parentNode != parent)
+  {
+    throw ("offsetOfChild: 'parent' must by parent of 'child'");
+  }
+  var node = parent.firstChild;
+  while (node && node != child)
+  {
+    node = node.nextSibling;
+    offset++;
+  }
+  return offset;
 }
 
 function splitMathDeep(editor, node, offset, text)
 /* This will  split the  math expression at  the point (node,offset); if  offset == -1,  then the
 expression will  be split  by node, which  will then be  deleted. The  text in 'text'  will be
-inserted into an mtext node or an ordinary text  node, as appropriate. */
+inserted into an mtext node or an ordinary text node, as appropriate. */
 {
-	var newNode= {};
-	var saveNode = node;
-	var parent;
-	var newParent;
+  var newNode= {};
+  var saveNode = node;
+  var parent;
+  var newParent;
+  var insertNodeParent, insertNodeOffset;
   var removeNode = offset < 0;
-	if (removeNode)
-	{
-		parent = node.parentNode;
-		// isn't there a simple getChildOffset visible to JavaScript?
-		offset = offsetOfChild(parent, node);
-	}
-	else
-	{
-		parent = node;
-	}
-	while (!(msiNavigationUtils.isUnsplittableMath(parent))&& !(msiNavigationUtils.hasFixedNumberOfChildren(parent.parentNode))
-	 && (msiNavigationUtils.isMathNode(parent) || parent.nodeType === Node.TEXT_NODE))
-	{
-		editor.splitNode(parent, offset, newNode);
-		newParent = parent.parentNode;
-		node = parent;
-		offset = offsetOfChild(newParent, parent);
-		if (!(parent.firstChild) && parent.textContent.length == 0)
-		{
-		  editor.deleteNode(parent);
-		  node = newNode.value;
-		}
-		if (!(newNode.value.firstChild) && newNode.value.textContent.length == 0)
-		{
-		  editor.deleteNode(newNode.value);
-			// offset--;
-		}
-		parent = newParent;
-	}
-	// can't go any higher. If the reason is that parent is not math, we just insert node.
-	// if parent is math, then we put in an mtext node.
-	if (msiNavigationUtils.isMathNode(parent))
-	{
-		mtextNode = editor.document.createElementNS(mmlns, "mtext");
-	  editor.insertNode(mtextNode, parent, offset);
-		mtextNode.textContent = text;
-		editor.selection.collapse(mtextNode,text.length);
-	}
-	else
-	{
-		var textNode = editor.document.createTextNode(text);
-		editor.insertNode(textNode, parent, offset);
-		editor.selection.collapse(textNode,text.length);
-	}
-	if (removeNode) editor.deleteNode(saveNode);
-//	window.focus();
+  if (removeNode)
+  {
+    parent = node.parentNode;
+    offset = offsetOfChild(parent, node);
+  }
+  else
+  {
+    parent = node;
+  }
+  while (!(msiNavigationUtils.isUnsplittableMath(parent))&& !(msiNavigationUtils.hasFixedNumberOfChildren(parent.parentNode))
+   && (msiNavigationUtils.isMathNode(parent) || parent.nodeType === Node.TEXT_NODE))
+  {
+    editor.splitNode(parent, offset, newNode);
+    newParent = parent.parentNode;
+    node = parent;
+    offset = offsetOfChild(newParent, parent);
+    if (!(parent.firstChild) && parent.textContent.length == 0)
+    {
+      insertNodeParent = parent.parentNode;
+      insertNodeOffset = offsetOfChild(insertNodeParent, parent);
+      editor.deleteNode(parent);
+      node = newNode.value;
+    }
+    if (!(newNode.value.firstChild) && newNode.value.textContent.length == 0)
+    {
+      insertNodeParent = newNode.value.parentNode;
+      insertNodeOffset = offsetOfChild(insertNodeParent, newNode.value);
+      editor.deleteNode(newNode.value);
+      // offset--;
+    }
+    parent = newParent;
+  }
+  // can't go any higher. If the reason is that parent is not math, we just insert node.
+  // if parent is math, then we put in an mtext node.
+  if (insertNodeParent == null || insertNodeOffset==null) return;
+  if (msiNavigationUtils.isMathNode(parent))
+  {
+    editor.selection.collapse(insertNodeParent,insertNodeOffset);
+    mtextNode = editor.document.createElementNS(mmlns, "mtext");
+    editor.insertNode(mtextNode, insertNodeParent, insertNodeOffset);
+    mtextNode.textContent = text;
+    editor.selection.collapse(insertNodeParent,insertNodeOffset+1);
+  }
+  else
+  {
+    var textNode = editor.document.createTextNode(text);
+    editor.selection.collapse(insertNodeParent,insertNodeOffset);
+    editor.insertNode(textNode, insertNodeParent, insertNodeOffset);
+    editor.selection.collapse(insertNodeParent,insertNodeOffset+1);
+   }
+  if (removeNode) editor.deleteNode(saveNode);
+//  window.focus();
 }
 
 function mathNodeToText(editor, node)
 {
+  var parent, offset;
+  editor.beginTransaction();
   if (node)
-	{
-		splitMathDeep(editor, node, -1, node.textContent);
-		// coalescemath(null, false);
-	}
+  {
+    splitMathDeep(editor, node, -1, node.textContent);
+    // coalescemath(null, false);
+  }
+  editor.endTransaction();
 }
 
 function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnode)
 {
-	var newNode = {};
+  var newNode = {};
   var newSelection = {};
   var tempNode = node;
-	if ( (node.nodeType === Node.TEXT_NODE) || (node.nodeName ==="texb") )
-	{
+  if ( (node.nodeType === Node.TEXT_NODE) || (node.nodeName ==="texb") )
+  {
     try {
       if (startOffset >0)
       {
@@ -3436,8 +3446,8 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
         editor.splitNode(node, endOffset - startOffset, newNode);
         tempNode = newNode.value;
       }
-    	var parent = node.parentNode;
-    	var offset = offsetOfChild(parent, tempNode);
+      var parent = node.parentNode;
+      var offset = offsetOfChild(parent, tempNode);
       var mathnode;
       if (tempNode.nodeName === 'texb') {
         mathnode = editor.document.createElementNS(mmlns, "math");
@@ -3448,13 +3458,13 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
       }
       else {
 
-      	var text = tempNode.textContent;
+        var text = tempNode.textContent;
         var o, p;
 //        var saveEnabled = editor.autoSubEnabled;
 //        editor.autoSubEnabled = false;
        editor.selection.collapse(parent, offset);
-      	for (var i = 0; i < text.length; i++)
-      	{
+        for (var i = 0; i < text.length; i++)
+        {
           if (text[i] != ' ') insertsymbol(text[i]);
             // if (firstnode && i===0) {  // put the selection start in the new symbol node; it would sure help if insertsymbol returned the inserted node!
             //   o = 0;
@@ -3478,8 +3488,8 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
       throw new MsiException("Error converting text to math", e.message);
     }
 
-  	if (tempNode.tagName !== 'texb') editor.deleteNode(tempNode);
-  	mathnode = coalescemath(null, true);
+    if (tempNode.tagName !== 'texb') editor.deleteNode(tempNode);
+    mathnode = coalescemath(null, true);
     if (mathnode) {
       editor.selection.collapse(mathnode,0);
       editor.selection.extend(mathnode, mathnode.childNodes.length);
@@ -3509,27 +3519,27 @@ function mathToText(editor)
   editor.beginTransaction();
   // try
   // {
-		if (editor.selection.isCollapsed)
-		{
-			var node = editor.selection.anchorNode;
-			var offset = editor.selection.anchorOffset;
-			splitMathDeep(editor, node, offset, "");
-		}
-		else
-		{
-	    for (i=0; i< editor.selection.rangeCount; i++)
-	    {
-	      range = editor.selection.getRangeAt(i);
-	      nodeArray = editor.nodesInRange(range);
-	      enumerator = nodeArray.enumerate();
-	      while (enumerator.hasMoreElements())
-	      {
-	        node = enumerator.getNext();
-	        mathNodeToText(editor,node);
-	      }
-	    }
-	  }
-	// }
+    if (editor.selection.isCollapsed)
+    {
+      var node = editor.selection.anchorNode;
+      var offset = editor.selection.anchorOffset;
+      splitMathDeep(editor, node, offset, "");
+    }
+    else
+    {
+      for (i=0; i< editor.selection.rangeCount; i++)
+      {
+        range = editor.selection.getRangeAt(i);
+        nodeArray = editor.nodesInRange(range);
+        enumerator = nodeArray.enumerate();
+        while (enumerator.hasMoreElements())
+        {
+          node = enumerator.getNext();
+          mathNodeToText(editor,node);
+        }
+      }
+    }
+  // }
  //  catch(e) {
  //    dump("error in MathNodeToText: "+e.message+"\n");
  //  }
@@ -3541,34 +3551,35 @@ function mathToText(editor)
 
 function textToMath(editor)
 {
-	var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset;
+  var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset;
   var newSelection = {};
-	editor.beginTransaction();
-	if (editor.selection.isCollapsed)
-	{
-		insertinlinemath();
-	}
-	else
-	{
+  editor.beginTransaction();
+  if (editor.selection.isCollapsed)
+  {
+    insertinlinemath();
+  }
+  else
+  {
     for (i=0; i< editor.selection.rangeCount; i++)
     {
       range = editor.selection.getRangeAt(i);
       startNode = range.startContainer;
       startOffset = range.startOffset;
-			endNode = range.endContainer;
-			endOffset = range.endOffset;
+      endNode = range.endContainer;
+      endOffset = range.endOffset;
       nodeArray = editor.nodesInRange(range);
       dump(nodeArray.length+" nodes\n");
       enumerator = nodeArray.enumerate();
       while (enumerator.hasMoreElements())
       {
         node = enumerator.getNext();
-        if (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))
+        if (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode)){
           nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1);
+        }
       }
     }
-	}
-	editor.endTransaction();
+  }
+  editor.endTransaction();
 }
 
 function toggleMathText(editor)
