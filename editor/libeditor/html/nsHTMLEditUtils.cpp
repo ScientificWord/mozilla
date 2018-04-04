@@ -98,7 +98,8 @@ nsHTMLEditUtils::IsInlineStyle(nsIDOMNode *node, msiITagListManager * manager)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// IsFormatNode true if node is a format node  // we count para nodes as format nodes
+// IsFormatNode true if node is a format node  
+// we count para nodes as format nodes
 //
 PRBool
 nsHTMLEditUtils::IsFormatNode(nsIDOMNode *node, msiITagListManager * manager)
