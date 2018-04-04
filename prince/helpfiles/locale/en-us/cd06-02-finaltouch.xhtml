@@ -84,14 +84,15 @@ entries, if desired. </bodyText></numberedListItem>
 the locator (page number or <indexitem req="varioref"><prisec>indexing!cross-references</prisec></indexitem>cross-reference)
 and the style. </bodyText></numberedListItem>
 <numberedListItem><bodyText>Click
-OK. The entry is created. </bodyText>The appearance of the index itself
+OK. The entry is created. </bodyText></numberedListItem>
+</numberedlist>
+
+<bodyText>The appearance of the index itself
 is controlled by your document shell and by settings in the Document Format
 dialog under the Typeset menu. For instance, you can choose whether to actually
 display an index and also whether to show entries in your draft (working)
-document. 
+document.</bodyText>
 
-</numberedListItem>
-</numberedlist>
  
 </subparagraph>
 </subsubsection>
@@ -109,40 +110,38 @@ the Insert Marker dialog box. </bodyText>
 <numberedListItem><bodyText>Move to the location you want
 to reference. Access the Marker dialog box, enter the desired key for the
 location, and click OK. </bodyText></numberedListItem>
+
 <numberedListItem><bodyText>Move the insertion point
 to the location for your cross-reference. Choose Insert &#8594; Typeset object &#8594; Cross reference. 
 The Cross reference dialog box appears. </bodyText>
-<bodyText><object data="graphicscd/cross_reference.png" id="tsid_3141636"/></bodyText>
-</numberedListItem>
-<numberedListItem><bodyText>Choose
-the previously defined key from the Key drop-down list. </bodyText></numberedListItem>
-<numberedListItem><bodyText>Choose
-whether to use a page number or an object counter. </bodyText></numberedListItem>
-<numberedListItem><bodyText>Click
-OK. The cross-reference is established. 
+<bodyText><object data="graphicscd/cross_reference.png" id="tsid_3141636"/></bodyText></numberedListItem>
 
-</bodyText>
+<numberedListItem><bodyText>Choose the previously defined key from the Key drop-down list. </bodyText></numberedListItem>
 
-</numberedListItem>
+<numberedListItem><bodyText>Choose whether to use a page number or an object counter. </bodyText></numberedListItem>
+
+<numberedListItem><bodyText>Click OK. The cross-reference is established.</bodyText></numberedListItem>
 </numberedlist>
  
 </subparagraph>
+
 </subsubsection>
 <subsubsection id="tsid_3141630">
 <sectiontitle>Preparing a Bibliography</sectiontitle> 
+
 <bodyText><indexitem req="varioref"><prisec>bibliography</prisec></indexitem></bodyText>
-<bodyText>Bibliographies,
-or reference lists, usually appear at the end of a document. The body of
+
+<bodyText>Bibliographies, or reference lists, usually appear at the end of a document. The body of
 the document can contain citations, which are cross-references to the individual
 items in the bibliography list. When you typeset your document, the formatter
 automatically generates the cross-references between the citations and the
 bibliography item to which they refer. The appearance of the bibliography
 and the citations depends on the typesetting specifications for the shell.
-You can create a bibliography manually or automatically using <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>.
-</bodyText>
+You can create a bibliography manually or automatically using <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>.</bodyText>
+
 <paragraph id="tsid_3141593">
-<sectiontitle><shortTitle>Creating manual bibliographies</shortTitle>Creating
-Manual Bibliographies</sectiontitle> 
+<sectiontitle><shortTitle>Creating manual bibliographies</shortTitle>Creating Manual Bibliographies</sectiontitle> 
+
 <bodyText>A manual bibliography, which
 works just like a series of cross-references,
 is convenient when the list of references is short and you don't plan to
@@ -153,82 +152,87 @@ if you format the bibliography of an article for a journal that requires
 book titles in italics, then later decide to submit the article to a different
 journal that requires those same titles in boldface, you must make the format
 changes manually. </bodyText>
+
 <subparagraph id="tsid_3141603">
 <sectiontitle>To establish a manual bibliography</sectiontitle> 
 
 <numberedlist>  
 <numberedListItem><bodyText>Choose Typeset &#8594; Bibliography choice... The Bibliography choice
-dialog box appears. </bodyText><indexitem req="varioref"><prisec>bibliography!manual</prisec></indexitem>
-</numberedListItem>
+dialog box appears.</bodyText><indexitem req="varioref"><prisec>bibliography!manual</prisec></indexitem></numberedListItem>
+
 <numberedListItem><bodyText>Choose Manual entry. </bodyText></numberedListItem>
-<numberedListItem><bodyText>Click
-OK. 
 
-</bodyText>
-
-</numberedListItem>
+<numberedListItem><bodyText>Click OK.</bodyText></numberedListItem>
 </numberedlist>
- </subparagraph>
+
+</subparagraph>
+
 <subparagraph id="tsid_3141604">
 <sectiontitle>To create a list of bibliography items</sectiontitle> 
 
 <numberedlist>  
 <numberedListItem><bodyText>Move the insertion point to
-the end of the line that is to precede the bibliography and press enter.
-</bodyText></numberedListItem>
+the end of the line that is to precede the bibliography and press enter.</bodyText></numberedListItem>
+
 <numberedListItem><bodyText>In the paragraph
 tag menu, choose the tag bibitem. The program displays a dialog box so that
 you can assign a key and an optional label to the item. </bodyText></numberedListItem>
-<numberedListItem><bodyText>Enter
-a unique key for the item. </bodyText>You use this name when you create
+
+<numberedListItem><bodyText>Enter a unique key for the item. </bodyText>
+<bodyText>You use this name when you create
 a citation for the bibliography item. Click the arrow next to the Key box
 to display a list of keys already in use in your document, or press down
 arrow to scroll through the list. The keys don't appear when you typeset
-your document. </numberedListItem>
-<numberedListItem><bodyText>If you want
-the item to appear in the list with a label instead of the number automatically
-generated for the item, enter the label in the Label box. </bodyText>The
-label can include mathematics. If you include a label for a list item, the
-program continues sequential numbering with the next list item. The label
-can also be used to create author/date citations. </numberedListItem>
-<numberedListItem><bodyText>Choose
-OK. </bodyText>In the document window, the key for the item appears in the
-lead-in box. </numberedListItem>
-<numberedListItem><bodyText>Type the bibliographic
-information for the item, using text tags to format the information correctly.
-</bodyText>In the document window, the information appears next to the lead-in
-box. </numberedListItem>
-<numberedListItem><bodyText>If you want to create
-another bibliographic item, press enter and repeat steps 3&#8211;6. </bodyText></numberedListItem>
-<numberedListItem><bodyText>At
-the end of the bibliography, press enter to complete the last item. </bodyText></numberedListItem>
-<numberedListItem><bodyText>Choose
-Cancel and then apply the Remove Item Tag to complete the list. </bodyText>
+your document.</bodyText></numberedListItem>
 
-</numberedListItem>
+<numberedListItem><bodyText>If you want the item to appear in the list 
+with a label instead of the number automatically generated for the item, 
+enter the label in the Label box.</bodyText>
+<bodyText>The label can include mathematics. If you include a label for a list item, the
+program continues sequential numbering with the next list item. The label
+can also be used to create author/date citations.</bodyText></numberedListItem>
+
+<numberedListItem><bodyText>Choose OK.</bodyText>
+<bodyText>In the document window, the key for the item appears in the
+lead-in box.</bodyText></numberedListItem>
+
+<numberedListItem><bodyText>Type the bibliographic information for the item, 
+using text tags to format the information correctly.
+If you wish to have a multi-paragraph entry, press enter once 
+to start the next paragraph of the bibliographic item.</bodyText>
+<bodyText>In the document window, the information appears next to the lead-in
+box.</bodyText></numberedListItem>
+
+<numberedListItem><bodyText>If you want to create another bibliographic item, 
+press enter twice and repeat steps 3&#8211;6.</bodyText></numberedListItem>
+
+<numberedListItem><bodyText>At the end of the bibliography, press enter twice
+to complete the last item.</bodyText></numberedListItem>
+
+<numberedListItem><bodyText>Choose Cancel to complete the list.</bodyText></numberedListItem>
 </numberedlist>
- </subparagraph>
+
+</subparagraph>
+
 <subparagraph id="tsid_3141605">
 <sectiontitle>To create a citation for a manually created bibliography item</sectiontitle>
 
 <numberedlist> 
 <numberedListItem><bodyText>Place the insertion point where
 you want the citation to appear. </bodyText></numberedListItem>
-<numberedListItem><bodyText>Choose
-Insert &#8594; Typeset object &#8594; Citation.
-The Citation dialog box appears. </bodyText></numberedListItem>
-<numberedListItem><bodyText>Enter
-the key for the bibliographic item you want to cite. </bodyText>Click the
-arrow next to the Key box to display a list of all keys defined for the
-document. </numberedListItem>
-<numberedListItem><bodyText>If you want to
-add a comment to the citation, enter it in the Remark box. </bodyText>Comments,
-which can contain both text and mathematics, appear only when you typeset
-preview or print your document. They don't appear in the document window.
-</numberedListItem>
-<numberedListItem><bodyText>Choose OK. </bodyText>
 
-</numberedListItem>
+<numberedListItem><bodyText>Choose Insert &#8594; Typeset object &#8594; Citation.
+The Citation dialog box appears.</bodyText></numberedListItem>
+
+<numberedListItem><bodyText>Enter the key for the bibliographic item you want to cite.</bodyText>
+<bodyText>Click the arrow next to the Key box to display a list of all keys defined for the
+document.</bodyText></numberedListItem>
+<numberedListItem><bodyText>If you want to add a comment to the citation, 
+enter it in the Remark box. </bodyText>
+<bodyText>Comments, which can contain both text and mathematics, appear only when you typeset
+preview or print your document. They don't appear in the document window.</bodyText></numberedListItem>
+
+<numberedListItem><bodyText>Choose OK.</bodyText></numberedListItem>
 </numberedlist>
  
 <bodyText>The citation is displayed on the screen in a small box containing
@@ -237,12 +241,14 @@ formatter creates the correct reference by replacing the key with the number
 of the keyed bibliography item. If you also entered a comment, it appears
 after the number. </bodyText>
 <bodyText>The typesetting specifications for
-the shell determine the citation appearance in print. </bodyText>
+the shell determine the citation appearance in print.</bodyText>
 </subparagraph>
 </paragraph>
+
 <paragraph id="tsid_3141594">
 <sectiontitle><shortTitle>Creating automatic bibliographies</shortTitle>Creating
 Automatic Bibliographies</sectiontitle> 
+
 <bodyText>You can create an automatic
 bibliography with <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>.
 A <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
@@ -313,8 +319,8 @@ the end of the line that is to precede the bibliography and press enter.
 to open the BibTeX Bibliography dialog box. </bodyText></numberedListItem>
 <numberedListItem><bodyText>Select
 the <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
-database files containing your references. </bodyText>You can select more
-than one database. </numberedListItem>
+database files containing your references. </bodyText>
+<bodyText>You can select more than one database.</bodyText></numberedListItem>
 <numberedListItem><bodyText>Select
 a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>
 style for formatting the references. </bodyText></numberedListItem>
@@ -366,36 +372,31 @@ View Keys to display a Keys dialog box. The box lists the keys for those
 items in the selected database that satisfy the current search criteria.
 </bodyText></numberedListItem>
 <numberedListItem><bodyText>Scroll the list
-to select the item you want. </bodyText>If the item doesn't appear on the
-list, change the search criteria. </numberedListItem>
-<numberedListItem><bodyText>If
-you want to view the full text of the item, choose View Entry. </bodyText>The
-program displays the item in a BibTeX Database Entry dialog box. </numberedListItem>
-<numberedListItem><bodyText>Choose
-Cancel to return to the list of keys. 
-
-</bodyText>
-
-</numberedListItem>
+to select the item you want. </bodyText>
+<bodyText>If the item doesn't appear on the
+list, change the search criteria.</bodyText></numberedListItem>
+<numberedListItem><bodyText>If you want to view the full text of the item, 
+choose View Entry. </bodyText>
+<bodyText>The program displays the item in a BibTeX Database Entry dialog box.</bodyText></numberedListItem>
+<numberedListItem><bodyText>Choose Cancel to return to the list of keys.</bodyText></numberedListItem>
 </numberedlist>
- </numberedListItem>
+</numberedListItem>
 <numberedListItem><bodyText>When you have selected
 the item you want, choose OK to return to the BibTeX Citation dialog box.
 </bodyText></numberedListItem>
 <numberedListItem><bodyText>If you want to
-add a text comment to the citation, enter it in the Remark box. </bodyText>Comments
-appear only when you typeset, not in the document window. </numberedListItem>
+add a text comment to the citation, enter it in the Remark box.</bodyText>
+<bodyText>Comments appear only when you typeset, not in the document window.</bodyText></numberedListItem>
 <numberedListItem><bodyText>If
 you want the reference to be uncited&#8212;that is, you want it to appear in
 the bibliography without a corresponding citation in your document&#8212;check
 the box labeled Bibliography Entry Only - No Citation. </bodyText></numberedListItem>
 <numberedListItem><bodyText>Choose
-OK to return to your document. </bodyText>The program inserts a citation
-for the item whose key you selected. 
-
-</numberedListItem>
+OK to return to your document.</bodyText></numberedListItem>
 </numberedlist>
- 
+
+<bodyText>The program inserts a citation for the item whose key you selected.</bodyText>
+
 </subparagraph>
 
 </paragraph>
