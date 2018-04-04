@@ -8515,11 +8515,15 @@ function msiPropMenuResetOrigSel(popupID) {
         theEditorElement = thePopupMenu.childNodes[ix].refEditor;
     }
   }
+
   var theEditor = msiGetEditor(theEditorElement);
-  if (thePopupMenu.origSelection && thePopupMenu.origSelection.length) {
-    theEditor.selection.removeAllRanges();
-    for (var ii = 0; ii < thePopupMenu.origSelection.length; ++ii)
-      theEditor.selection.addRange(thePopupMenu.origSelection[ii]);
+  if (theEditor) {
+    if (thePopupMenu.origSelection && thePopupMenu.origSelection.length) {
+      theEditor.selection.removeAllRanges();
+      for (var ii = 0; ii < thePopupMenu.origSelection.length; ++ii)
+        theEditor.selection.addRange(thePopupMenu.origSelection[ii]);
+    }
+  
   }
 }
 
