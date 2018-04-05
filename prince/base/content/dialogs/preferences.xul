@@ -471,7 +471,7 @@
             <hbox align="center">
               <vbox>
                 <label value="&SciCompression.label;"/>
-                <menulist preference="sci.compression">
+                <menulist preference="sci.compression" sizetopopup="always">
                   <menupopup>
                     <menuitem label="&None.label;" value="0"/>
                     <menuitem label="&Fastest.label;" value="1"/>
@@ -482,7 +482,7 @@
               </vbox>
               <vbox>
                 <label value="&webfiles.label;"/>
-                <menulist preference="saveforweb.compression">
+                <menulist preference="saveforweb.compression" sizetopopup="always">
                   <menupopup>
                     <menuitem label="&None.label;" value="0"/>
                     <menuitem label="&Fastest.label;" value="1"/>
@@ -563,7 +563,7 @@
                     <textbox id="graphicsWidth" type="number" decimalplaces="2" preference="defaultGraphicsHSize" class="medwidth"/>
                     <hbox>
                       <label value="&units.label;" />
-                      <menulist id="graphicsUnitsList" value="pt" selectedIndex="2" preference="defaultGraphicsSizeUnits" oncommand="onChangeUnits(this);">
+                      <menulist id="graphicsUnitsList" value="pt" selectedIndex="2" sizetopopup="always" preference="defaultGraphicsSizeUnits" oncommand="onChangeUnits(this);">
                         <menupopup id = "graphicsUnitPopup">
                           <menuitem value="in" label="&unitsinches.label;"/>
                           <menuitem value="cm" label="&unitscm.label;"/>
@@ -1228,7 +1228,7 @@
           <groupbox>
             <hbox align="center">
               <description>&axistickmark.label;</description>
-              <menulist id="TickMarkMenu">
+              <menulist id="TickMarkMenu" sizetopopup="always">
                 <menupopup preference="TickMark">
                   <menuitem label="&none.label;"   value="none"/>
                   <menuitem label="&low.label;"    value="low"/>
@@ -1291,7 +1291,7 @@
             </grid>
             <vbox align="center">
               <label value="&units.label;"/>
-              <menulist id="plotUnitsList" preference="graph.defaultUnits" value="pt" selectedIndex="2" oncommand="onChangeUnits(this);">
+              <menulist id="plotUnitsList" preference="graph.defaultUnits" sizetopopup="always" value="pt" selectedIndex="2" oncommand="onChangeUnits(this);">
                 <menupopup id = "plotUnitPopup">
                   <menuitem value="in" label="&unitsinches.label;"/>
                   <menuitem value="cm" label="&unitscm.label;"/>
@@ -1506,7 +1506,7 @@
                     </msibutton>
                   </hbox>
                   <hbox>
-                    <menulist id="plotDirectionalShading" preference="plot.DirectionalShading" observes="plot.useDirectionalShading">
+                    <menulist id="plotDirectionalShading" preference="plot.DirectionalShading" observes="plot.useDirectionalShading" sizetopopup="always">
                       <menupopup>
                         <menuitem label="&plotShadingXYZ.label;" value="XYZ" />
                         <menuitem label="&plotShadingXYZHue.label;" value="XYZHue" />
@@ -1564,7 +1564,7 @@
                   <label control= "plotPointMarker" value="&plotPointMarker.label;"/>
                 </row>
                 <row id="plotLineAndPointControls" observes="plot.enableLinesAndPoints">
-                  <menulist id="plotLineStyle" preference="plot.LineStyle">
+                  <menulist id="plotLineStyle" preference="plot.LineStyle" sizetopopup="always">
                     <menupopup>
                       <menuitem label="&plotLineStyleSolid.label;" value="Solid" />
                       <menuitem label="&plotLineStyleDash.label;" value="Dashed"/>
@@ -1573,7 +1573,7 @@
                     </menupopup>
                   </menulist>
                   <spacer flex="2" />
-                  <menulist id="plotLineThickness" preference="plot.LineThickness">
+                  <menulist id="plotLineThickness" preference="plot.LineThickness" sizetopopup="always">
                     <menupopup>
                       <menuitem label="&plotLineVeryThin.label;" value="verythin" />
                       <menuitem label="&plotLineThin.label;" value="thin" />
@@ -1583,7 +1583,7 @@
                     </menupopup>
                   </menulist>
                   <spacer flex="2" />
-                  <menulist id="plotPointMarker" preference="plot.PointSymbol">
+                  <menulist id="plotPointMarker" preference="plot.PointSymbol" sizetopopup="always">
                     <menupopup>
                       <menuitem label="&plotPointDot.label;" value="FilledCircles"/>
                       <menuitem label="&plotPointCircle.label;" value="Circles"/>
@@ -1600,7 +1600,7 @@
                 <row observes="plot.useAreaFill">
                   <spacer flex="1"/>
                   <label control="plotFillPattern" value="&plotAreaFillStyle.label;" />
-                  <menulist id="plotFillPattern" preference="plot.FillPattern">
+                  <menulist id="plotFillPattern" preference="plot.FillPattern" sizetopopup="always">
                     <menupopup>
                       <menuitem label="&plotFillPatternSolid.label;" value="Solid" />
                       <menuitem label="&plotFillPatternCrossedLines.label;" value="CrossedLines" />
@@ -1628,7 +1628,7 @@
                   <spacer />
                 </row>
                 <row observes="plot.useMesh">
-                  <menulist id="plotSurfaceStyle" preference="plot.SurfaceStyle">
+                  <menulist id="plotSurfaceStyle" preference="plot.SurfaceStyle" sizetopopup="always">
                     <menupopup>
                       <menuitem label="&plotSurfaceColorpatch.label;" value="colorpatch" />
                       <menuitem label="&plotSurfaceHidden.label;" value="hiddenline"/>
@@ -1637,7 +1637,7 @@
                     </menupopup>
                   </menulist>
                   <spacer />
-                  <menulist id="plotSurfaceMesh" preference="plot.SurfaceMesh">
+                  <menulist id="plotSurfaceMesh" preference="plot.SurfaceMesh" sizetopopup="always">
                     <menupopup>
                       <menuitem label="&plotSurfaceMeshNone.label;" value="none" />
                       <menuitem label="&plotSurfaceMeshMesh.label;" value="mesh" />
