@@ -302,7 +302,7 @@
                     <label control= "pointmarker" value="&PointMarker.label;"/>
                   </row>
                   <row id="lineAndPointControls" observes="enableLinesAndPoints">
-                    <menulist id="LineStyle">
+                    <menulist id="LineStyle" sizetopopup="always">
                       <menupopup>
                         <menuitem label="&Solid.label;" value="Solid" />
                         <menuitem label="&Dash.label;" value="Dashed"/>
@@ -313,7 +313,7 @@
                       </menupopup>
                     </menulist>
                     <spacer flex="2" />
-                    <menulist id="LineThickness">
+                    <menulist id="LineThickness" sizetopopup="always">
                       <menupopup>
                         <menuitem label="&plotlineverythin.label;" value="verythin" />
                         <menuitem label="&plotlinethin.label;" value="thin" />
@@ -323,7 +323,7 @@
                       </menupopup>
                     </menulist>
                     <spacer flex="2" />
-                    <menulist id="pointmarker">
+                    <menulist id="pointmarker" sizetopopup="always">
                       <menupopup>
                         <menuitem label="&Dot.label;" value="FilledCircles"/>
                         <menuitem label="&Circle.label;" value="Circles"/>
@@ -340,7 +340,7 @@
                   <row observes="useAreaFill">
                     <spacer flex="1"/>
                     <label control="FillPattern" value="&AreaFillStyle.label;" />
-                    <menulist id="FillPattern">
+                    <menulist id="FillPattern" sizetopopup="always">
                       <menupopup>
                         <menuitem label="&FillPatternSolid.label;" value="Solid" />
                         <menuitem label="&FillPatternCrossedLines.label;" value="CrossedLines" />
