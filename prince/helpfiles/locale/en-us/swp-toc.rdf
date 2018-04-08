@@ -125,6 +125,18 @@
     </nc:subheadings>
   </rdf:Description>
    
+  <rdf:Description about="#cd04-07">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="cd04-07_lines"    nc:name="Adding Lines"     nc:link="cd04-07-editingdocs.xhtml#AddingLines"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd04-07_tables"   nc:name="Adding Tables"    nc:link="cd04-07-editingdocs.xhtml#AddingTables"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd04-07_images"   nc:name="Adding Images"    nc:link="cd04-07-editingdocs.xhtml#AddingImages"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd04-07_frames"   nc:name="Inserting Frames" nc:link="cd04-07-editingdocs.xhtml#InsertingFrames"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd04-07_notes"    nc:name="Inserting Notes"  nc:link="cd04-07-editingdocs.xhtml#InsertingNotes"/> </rdf:li>
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+   
   <rdf:Description about="#cd05-04">
     <nc:subheadings>
     <rdf:Seq>
@@ -147,6 +159,36 @@
     </nc:subheadings>
   </rdf:Description>
    
+  <rdf:Description about="#cd06-02">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="cd06-02_typesetobjects"     nc:name="Adding Typeset Objects"             nc:link="cd06-02-finaltouch.xhtml#AddingTypesetObjects"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd06-02_documentappearance" nc:name="Adjusting a Document's Appearaonce" nc:link="cd06-02-finaltouch.xhtml#AdjustingDocumentAppearance"/> </rdf:li>
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+   
+  <rdf:Description about="#cd06-02_typesetobjects">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="cd06-02_index"        nc:name="Index Entries"            nc:link="cd06-02-finaltouch.xhtml#IndexEntries"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd06-02_xref"         nc:name="Cross References"         nc:link="cd06-02-finaltouch.xhtml#CrossReferences"/> </rdf:li> 
+      <rdf:li> <rdf:Description ID="cd06-02_bibliography" nc:name="Preparing a Bibliography" nc:link="cd06-02-finaltouch.xhtml#PrepareBibliography"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd06-02_texfield"     nc:name="Adding a TeX Field"       nc:link="cd06-02-finaltouch.xhtml#AddingaTeXField"/> </rdf:li> 
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+   
+  <rdf:Description about="#cd06-02_documentappearance">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="cd06-02_optionsandpackages" nc:name="Using Options and Packages"  nc:link="cd06-02-finaltouch.xhtml#OptionsandPackages"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd06-02_documentformat"     nc:name="Setting the Document Format" nc:link="cd06-02-finaltouch.xhtml#DocumentFormat"/> </rdf:li>  
+    </nc:subheadings>
+  </rdf:Description>
+   
+<!-- Menus subsections END-->
+
 
   <rdf:Description about="#doing-math">
     <nc:subheadings>
