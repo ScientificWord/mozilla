@@ -33,6 +33,7 @@
         <rdf:li> <rdf:Description ID="cd01-01" nc:name="For Existing Users" nc:link="cd01-01-gettingstarted.xhtml"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cd01-02" nc:name="For New Users"      nc:link="cd01-02-gettingstarted.xhtml"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cd01-03" nc:name="Before You Begin"   nc:link="cd01-03-gettingstarted.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd01-035" nc:name="Training"           nc:link="cd01-035-gettingstarted.xhtml"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cd01-04" nc:name="Conventions"        nc:link="cd01-04-gettingstarted.xhtml"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
