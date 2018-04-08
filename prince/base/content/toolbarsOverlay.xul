@@ -93,7 +93,7 @@
       <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" label="&markerButton.label;" observes="cmd_marker" />
       <toolbarbutton id="htlinkButton" command="cmd_link" tooltiptext="&htlinkButton.tooltip;" label="&htlinkButton.label;" />
 #ifndef PROD_SNB
-      <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;" label="&pdfcompileButton.label;"/>
+<!--      <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;" label="&pdfcompileButton.label;"/> -->
       <toolbarbutton id="packagesButton" tooltiptext="&packagesButton.tooltip;" label="&packagesButton.label;" observes="cmd_MSItypesetOptionsAndPackagesCmd"/>
       <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" label="&indexentryButton.label;" observes="cmd_MSIinsertIndexEntryCmd"/>
       <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" label="&xrefButton.label;" observes="cmd_MSIinsertCrossReferenceCmd"/>
@@ -368,7 +368,7 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
       </menu>
     </menupopup>
   </toolbarbutton>
-  <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/>
+<!--  <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/> -->
 #endif
   <toolbarbutton id="cutButton" class="toolbarbutton-1"
                  label="&cutCmd.label;" disabled="true" observes="cmd_MSIcut"

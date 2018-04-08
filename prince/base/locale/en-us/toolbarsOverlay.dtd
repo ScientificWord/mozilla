@@ -137,8 +137,10 @@
 
 <!-- compile buttons -->
 
+<!==
 <!ENTITY pdfcompileButton.tooltip "Typeset PDF compile" >
 <!ENTITY pdfcompileButton.label "Typeset PDF compile" >
+-->
 
 <!ENTITY compileButton.tooltip "Typeset compile" >
 <!ENTITY compileButton.label "Typeset compile" >
