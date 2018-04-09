@@ -184,6 +184,7 @@
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="cd06-02_optspackages"   nc:name="Using Options and Packages"  nc:link="cd06-02-finaltouch.xhtml#OptionsandPackages"/> </rdf:li>
       <rdf:li> <rdf:Description ID="cd06-02_documentformat" nc:name="Setting the Document Format" nc:link="cd06-02-finaltouch.xhtml#DocumentFormat"/> </rdf:li>  
+    </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
    
