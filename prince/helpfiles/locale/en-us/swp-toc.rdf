@@ -163,7 +163,7 @@
     <nc:subheadings>
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="cd06-02_typesetobjects"     nc:name="Adding Typeset Objects"             nc:link="cd06-02-finaltouch.xhtml#AddingTypesetObjects"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="cd06-02_documentappearance" nc:name="Adjusting a Document's Appearaonce" nc:link="cd06-02-finaltouch.xhtml#AdjustingDocumentAppearance"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd06-02_docappearance" nc:name="Adjusting a Document's Appearaonce" nc:link="cd06-02-finaltouch.xhtml#AdjustingDocumentAppearance"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -179,15 +179,15 @@
     </nc:subheadings>
   </rdf:Description>
    
-  <rdf:Description about="#cd06-02_documentappearance">
+  <rdf:Description about="#cd06-02_docappearance">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="cd06-02_optionsandpackages" nc:name="Using Options and Packages"  nc:link="cd06-02-finaltouch.xhtml#OptionsandPackages"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="cd06-02_documentformat"     nc:name="Setting the Document Format" nc:link="cd06-02-finaltouch.xhtml#DocumentFormat"/> </rdf:li>  
+      <rdf:li> <rdf:Description ID="cd06-02_optspackages"   nc:name="Using Options and Packages"  nc:link="cd06-02-finaltouch.xhtml#OptionsandPackages"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd06-02_documentformat" nc:name="Setting the Document Format" nc:link="cd06-02-finaltouch.xhtml#DocumentFormat"/> </rdf:li>  
     </nc:subheadings>
   </rdf:Description>
    
-<!-- Menus subsections END-->
+<!-- Menus subsections END -->
 
 
   <rdf:Description about="#doing-math">
