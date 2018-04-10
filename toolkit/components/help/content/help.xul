@@ -56,7 +56,7 @@
 <window id="help"
         windowtype="mozilla:help"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-        width="700"
+        width="1000"
         height="550"
 #ifdef XP_WIN
 #define HELP_ALWAYS_RAISED_TOGGLE
