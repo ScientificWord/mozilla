@@ -106,7 +106,6 @@
     </nc:subheadings>
   </rdf:Description>
  
-
 <!-- Menus subsections -->
   <rdf:Description about="#cd02-01">
     <nc:subheadings>
@@ -126,6 +125,18 @@
     </nc:subheadings>
   </rdf:Description>
 
+  <rdf:Description about="#cd04-07">
+    <nc:subheadings>
+    <rdf:Seq>
+      <rdf:li> <rdf:Description ID="cd04-07_lines"    nc:name="Adding Lines"     nc:link="cd04-07-editingdocs.xhtml#AddingLines"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd04-07_tables"   nc:name="Adding Tables"    nc:link="cd04-07-editingdocs.xhtml#AddingTables"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd04-07_images"   nc:name="Adding Images"    nc:link="cd04-07-editingdocs.xhtml#AddingImages"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd04-07_frames"   nc:name="Inserting Frames" nc:link="cd04-07-editingdocs.xhtml#InsertingFrames"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="cd04-07_notes"    nc:name="Inserting Notes"  nc:link="cd04-07-editingdocs.xhtml#InsertingNotes"/> </rdf:li>
+    </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+   
   <rdf:Description about="#cd05-04">
     <nc:subheadings>
     <rdf:Seq>
