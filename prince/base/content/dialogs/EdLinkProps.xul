@@ -57,7 +57,7 @@
    screenX="40"
    screenY="40"
    width="535"
-   height="500"
+   height="290"
    persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
