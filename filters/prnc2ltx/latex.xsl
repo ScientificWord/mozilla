@@ -986,7 +986,11 @@
 </xsl:template>
 
 <xsl:template match="html:note">
-  <xsl:choose>
+    <xsl:text>\marginpar{</xsl:text>
+      <xsl:apply-templates/>
+    <xsl:text>}</xsl:text>
+
+<!--   <xsl:choose>
     <xsl:when test="@raglft='false'">
       <xsl:text>\marginpar{</xsl:text>
       <xsl:if test="@ragrt='true'">
@@ -998,7 +1002,7 @@
     </xsl:otherwise>
   </xsl:choose>
   <xsl:apply-templates/>
-  <xsl:text>}</xsl:text>
+  <xsl:text>}</xsl:text> -->
 </xsl:template>
 
 <xsl:template match="html:note//html:bodyText[position()=last()]">
