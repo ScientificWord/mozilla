@@ -193,13 +193,13 @@
     <xsl:text>%% preamble</xsl:text>
     <xsl:value-of select="$blankline"/>
     <xsl:text>\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl,ragged2e,rotating} % </xsl:text>
-    <xsl:text>
+<!--     <xsl:text>
       \newcommand{\mymarginpar}[1]{%
     </xsl:text>
     <xsl:text>
         \marginpar[\RaggedLeft{#1}]{\RaggedRight{#1}}}%
     </xsl:text>
-
+ -->
 
     <xsl:if test="$compiler!='pdflatex'">
        <xsl:value-of select="$newline"/>
