@@ -10944,7 +10944,8 @@ function msiNote(currNode, editorElement, type, hidden)
     data.noteNode = currNode;
     data.type = currNode.getAttribute("type");
     data.ragrt = currNode.getAttribute("ragrt");
-    data.raglft = currnode.getAttribute("raglft");
+    data.raglft = currNode.getAttribute("raglft");
+    if (data.ragrt && data.raglft) data.raglft = false;  //ragrt has precedence
     try
     {
       if (currNode.getAttribute("hide") == "true") data.hide=true;
@@ -10984,7 +10985,7 @@ function msiNote(currNode, editorElement, type, hidden)
 //      return;
   }
 
-  if (type)
+  if (data.type)
     msiInsertOrReviseNote(currNode, editorElement, data);
 //  dump(data.type + "\n");
 //  var editor = msiGetEditor(editorElement);
@@ -11066,7 +11067,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
   var editor = msiGetEditor(editorElement);
   var node;
   editor.beginTransaction();
-  if (currNode)  // currnode is a note node
+  if (currNode)  // currNode is a note node
   {
     node = currNode;
     if (data.type == 'footnote')
@@ -11075,8 +11076,10 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       currNode.parentNode.removeAttribute("type");
     currNode.setAttribute("type",data.type);
     currNode.setAttribute("hide",data.hide?"true":"false");
-    currNode.setAttribute("ragrt",data.ragrt);
-    currNode.setAttribute("raglft",data.raglft);
+    if (data.ragrt) currNode.setAttribute("ragrt","true");
+    else currNode.removeAttribute("ragrt");
+    if (data.raglft) currNode.setAttribute("raglft","true");
+    else currNode.removeAttribute("raglft");
     if (data.type === 'footnote')
     {
       if ("footnoteNumber" in data)
@@ -11100,8 +11103,10 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       node = editor.tagListManager.getNewInstanceOfNode("note", null, editor.document);
       node.setAttribute('type',data.type);
       node.setAttribute('hide','false');          
-        node.setAttribute("ragrt",data.ragrt);
-        node.setAttribute("raglft",data.raglft);
+      if (data.ragrt) node.setAttribute("ragrt","true");
+      else node.removeAttribute("ragrt");
+      if (data.raglft) node.setAttribute("raglft","true");
+      else node.removeAttribute("raglft");
       if (data.type === 'footnote')
       {
         if ("footnoteNumber" in data)
@@ -11109,11 +11114,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
         if (data.markOrText != "markAndText")
           wrapperNode.setAttribute("markOrText", data.markOrText);
       }
-      else {
-        node.setAttribute("ragrt",data.ragrt);
-        node.setAttribute("raglft",data.raglft);
-      }
-      if (node)
+     if (node)
       {
         wrapperNode.insertBefore(node, null);
         editor.insertElementAtSelection(wrapperNode, true);
