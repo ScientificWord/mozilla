@@ -18,5 +18,5 @@
 <!ENTITY  HideNote.accesskey  "H">
 <!ENTITY  ragright.label			"Ragged right text">
 <!ENTITY  ragright.accesskey  "R">
-<!ENTITY  ragleft.label			" … and ragged left on even pages">
+<!ENTITY  ragleft.label			"Ragged left text">
 <!ENTITY  ragleft.accesskey  "L">
