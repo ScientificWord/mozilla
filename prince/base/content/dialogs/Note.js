@@ -45,8 +45,9 @@ function launchOptionsDialog() {
 function onOK() {
   data.type = document.getElementById("note.names").value;
   data.hide = document.getElementById("hidenote").checked;
-  data.ragrt = (document.getElementById("raggedright").checked ? "true" : "false");
-  data.raglft = (document.getElementById("raggedleft").checked ? "true" : "false");
+  data.ragrt = (document.getElementById("raggedright").checked ? true : false);
+  data.raglft = (document.getElementById("raggedleft").checked ? true : false);
+  if (data.ragrt && data.raglft) data.raglft = false;
 
   try
   {
