@@ -32,6 +32,7 @@ function aColorObj(editorElement) {
 function msiAddToolbarPrefListener(editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   try {
+
     var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
     pbi.addObserver(kEditorToolbarPrefs, editorElement.mEditorToolbarPrefListener, false);
   } catch (e) {
@@ -1730,6 +1731,10 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
     }
     dump("Trying to load editor with url = " + docurl.spec + "\n");
     msiEditorLoadUrl(editorElement, docurl);
+    // Check for XML parsing error
+    if (0 <= editorElement.contentDocument.documentElement.textContent.indexOf("XML Parsing Error")) {
+      editorElement.saveForbidden = true;
+    }
     msiUpdateWindowTitle();
   } catch (e) {
 //    finalThrow(cmdFailString('Load initial document'), e.message);
@@ -2227,6 +2232,9 @@ function doRevert(aContinueEditing, editorElement, del) {
 
 function msiCheckAndSaveDocument(editorElement, command, allowDontSave) {
   var document;
+  if (0 <= editorElement.contentDocument.documentElement.textContent.indexOf("XML Parsing Error")) {
+    return true;
+  }
   editorElement.focus();
   try {
     // if we don't have an editor or an document, bail
@@ -2297,7 +2305,6 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave) {
   var promptFlags = promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1;
   var button1Title = null;
   var button3Title = GetString("DontSave");
-
   promptFlags += promptService.BUTTON_TITLE_SAVE * promptService.BUTTON_POS_0;
 
   // If allowing "Don't..." button, add that
