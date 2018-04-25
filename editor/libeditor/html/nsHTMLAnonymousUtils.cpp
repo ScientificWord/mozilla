@@ -334,7 +334,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     // Absolute Positioning support is enabled, is the selection contained
     // in an absolutely positioned element ?
     res = GetAbsolutelyPositionedSelectionContainer(getter_AddRefs(absPosElement));
-    if (NS_FAILED(res) || absPosElement == nsnull) return res;
+    if (NS_FAILED(res)) return res;
   }
 
   nsCOMPtr<nsIDOMElement> cellElement;
