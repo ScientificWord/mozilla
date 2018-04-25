@@ -1223,6 +1223,7 @@ var msiSaveCommand =
       return false;
     try
     {
+      if (editorElement.saveForbidden) return false;
       var docUrl = msiGetEditorURL(editorElement);
       return msiIsDocumentEditable(editorElement) && isLicensed() &&
         (editorElement.saveModCount < editor.getModificationCount() || msiIsHTMLSourceChanged(editorElement) ||
