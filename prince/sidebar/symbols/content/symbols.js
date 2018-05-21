@@ -184,6 +184,9 @@ var button;
 function initPopup(event)
 {
   button = event.explicitOriginalTarget;
+  var isCachePanel = (button.getAttribute('id').indexOf('cache_')===0);
+  document.getElementById('context_remove').hidden = !isCachePanel;
+  document.getElementById('context_cache').hidden = isCachePanel;
 }
 
 function remove(event)
@@ -199,4 +202,19 @@ function remove(event)
     usersymbols = usersymbols.replace(" "+ id, "");
     cachepanel.setAttribute("userlistofsymbols", usersymbols);
   }
+}
+
+function addSymbolToCachePanel(event) {
+  // 'button' has been set because this function is called from the context menu
+    if (!button || button.nodeName != "toolbarbutton") return;
+  var cachepanel = document.getElementById("cachepanel");
+  var usersymbols = cachepanel.getAttribute("userlistofsymbols");
+  var id = button.getAttribute("id");
+  var symbolbutton;
+  if (id.indexOf("cache_") == 0) id=id.slice(6);
+  symbolbutton = button.cloneNode(false);
+  symbolbutton.setAttribute("id", "cache_"+button.getAttribute("id"));
+  var firstTBButton = cachepanel.firstChild;
+  if (firstTBButton == null) firstTBButton = null; //converts void to null if necessary
+  cachepanel.insertBefore(symbolbutton, firstTBButton);
 }
