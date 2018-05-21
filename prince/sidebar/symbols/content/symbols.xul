@@ -26,7 +26,8 @@
   <script type="application/x-javascript" src="chrome://prince/content/symbols.js"/>
   
   <menupopup id="symbol-context-menu" onpopupshowing="initPopup(event);">
-    <menuitem label="Remove symbol" oncommand="remove(event);"/>
+    <menuitem id="context_remove" label="Remove symbol" oncommand="remove(event);"/>
+    <menuitem id="context_cache" label="Add symbol to user palette" oncommand="addSymbolToCachePanel(event)"/>
   </menupopup>
  
   <commandset id="MSImathMenuCommands">
@@ -44,36 +45,36 @@
     flex="1"
     ondraggesture = "nsDragAndDrop.startDrag(event,symObserver);"  
     ondragdrop = "nsDragAndDrop.drop(event, symObserver);"    >
- 	  <tabs id="tabs-box" class="tabs-top" align="start baseline">
-			  <tab dir="rtl" label="&#x03B1;&#x03B2;" mathsym="true" tooltiptext="&MSISymbolTabLCGreek;" selected="1"
-			    linkedpanel="symbol_lcGreek"/>
-			  <tab dir="rtl" label="&#x03A6;&#x03A8;" mathsym="true" tooltiptext="&MSISymbolTabCCGreek;" selected="0"
-			    linkedpanel="symbol_ucGreek" />
-			  <tab dir="rtl" label="&#x00B1;&#x00F7;" mathsym="true" tooltiptext="&MSISymbolTabBinaryOps;"   selected="0"
-			    linkedpanel="symbol_binOp" />
-			  <tab dir="rtl" label="&#x2264;&#x2282;" mathsym="true" tooltiptext="&MSISymbolTabBinaryRels;"  selected="0"
-			    linkedpanel="symbol_binRel" />
-			  <tab dir="rtl" label="&#x2260;&#x2209;" mathsym="true" tooltiptext="&MSISymbolTabNegatedRels;" selected="0"
-			    linkedpanel="symbol_negRel" />
-			  <tab dir="rtl" label="&#x2194;&#x2191;" mathsym="true" tooltiptext="&MSISymbolTabArrows;"        selected="0"
-			    linkedpanel="symbol_arrow" />
- 			  <tab dir="rtl" label="&#x221E;&#x2202;" mathsym="true" tooltiptext="&MSISymbolTabMisc;"        selected="0"
- 			    linkedpanel="symbol_misc" />
-			  <tab dir="rtl" label="&#x232A;&#x2308;" mathsym="true" tooltiptext="&MSISymbolTabDelimiters;"        selected="0"
-			    linkedpanel="symbol_delims" />
-			  <tab dir="rtl" label="&#x00A3;&#x00B9;" mathsym="false" tooltiptext="&MSISymbolTabLatin1;"        selected="0"
-			    linkedpanel="symbol_latin1" />
-			  <tab dir="rtl" label="&#x0141;&#x011B;" mathsym="false" tooltiptext="&MSISymbolTabLatinE;"        selected="0"
-			    linkedpanel="symbol_latinextended" />
+    <tabs id="tabs-box" class="tabs-top" align="start baseline">
+        <tab dir="rtl" label="&#x03B1;&#x03B2;" mathsym="true" tooltiptext="&MSISymbolTabLCGreek;" selected="1"
+          linkedpanel="symbol_lcGreek"/>
+        <tab dir="rtl" label="&#x03A6;&#x03A8;" mathsym="true" tooltiptext="&MSISymbolTabCCGreek;" selected="0"
+          linkedpanel="symbol_ucGreek" />
+        <tab dir="rtl" label="&#x00B1;&#x00F7;" mathsym="true" tooltiptext="&MSISymbolTabBinaryOps;"   selected="0"
+          linkedpanel="symbol_binOp" />
+        <tab dir="rtl" label="&#x2264;&#x2282;" mathsym="true" tooltiptext="&MSISymbolTabBinaryRels;"  selected="0"
+          linkedpanel="symbol_binRel" />
+        <tab dir="rtl" label="&#x2260;&#x2209;" mathsym="true" tooltiptext="&MSISymbolTabNegatedRels;" selected="0"
+          linkedpanel="symbol_negRel" />
+        <tab dir="rtl" label="&#x2194;&#x2191;" mathsym="true" tooltiptext="&MSISymbolTabArrows;"        selected="0"
+          linkedpanel="symbol_arrow" />
+        <tab dir="rtl" label="&#x221E;&#x2202;" mathsym="true" tooltiptext="&MSISymbolTabMisc;"        selected="0"
+          linkedpanel="symbol_misc" />
+        <tab dir="rtl" label="&#x232A;&#x2308;" mathsym="true" tooltiptext="&MSISymbolTabDelimiters;"        selected="0"
+          linkedpanel="symbol_delims" />
+        <tab dir="rtl" label="&#x00A3;&#x00B9;" mathsym="false" tooltiptext="&MSISymbolTabLatin1;"        selected="0"
+          linkedpanel="symbol_latin1" />
+        <tab dir="rtl" label="&#x0141;&#x011B;" mathsym="false" tooltiptext="&MSISymbolTabLatinE;"        selected="0"
+          linkedpanel="symbol_latinextended" />
         <tab dir="rtl" label="&#x201C;&#x201D;" mathsym="false" tooltiptext="&MSISymbolTabPunctuation;"        selected="0"
           linkedpanel="symbol_punctuation" />
-			  <tab dir="rtl" label="Sx" mathsym="true" tooltiptext="STIX"        selected="0"
-			    linkedpanel="symbol_stix" />
-			  <tab id="cachebar" label="User" style="font-family: sans-serif; font-size: 11px;" mathsym="true" tooltiptext="&MSISymbolTabDrag.tooltip;" linkedpanel="cachepanel"   ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event, symObserver);"
+        <tab dir="rtl" label="Sx" mathsym="true" tooltiptext="STIX"        selected="0"
+          linkedpanel="symbol_stix" />
+        <tab id="cachebar" label="User" style="font-family: sans-serif; font-size: 11px;" mathsym="true" tooltiptext="&MSISymbolTabDrag.tooltip;" linkedpanel="cachepanel"   ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event, symObserver);"
         />
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" hidevscroll="false"> 
-	  <tabpanel id="symbol_lcGreek" mathsym="true" autostretch="never" align="baseline"> 
+    <tabpanel id="symbol_lcGreek" context="symbol-context-menu" mathsym="true" autostretch="never" align="baseline"> 
         
               <toolbarbutton id ="symbolalpha"/>
               <toolbarbutton id="symbolbeta" />
@@ -111,7 +112,7 @@
      </tabpanel>
      
 <!-- UPPERCASE GREEK -->
-     <tabpanel id="symbol_ucGreek" mathsym="true" align="baseline">
+     <tabpanel id="symbol_ucGreek" context="symbol-context-menu" mathsym="true" align="baseline">
               <toolbarbutton id="symbolGamma" />
               <toolbarbutton id="symbolDelta" />
               <toolbarbutton id="symbolTheta" />
@@ -127,7 +128,7 @@
        </tabpanel>
 
 <!-- BINARY OPERATIONS -->
-    	<tabpanel id="symbol_binOp"  mathsym="true" align="baseline">
+      <tabpanel id="symbol_binOp" context="symbol-context-menu"  mathsym="true" align="baseline">
               <toolbarbutton id="symbolpm" />
               <toolbarbutton id="symbolmp" />
               <toolbarbutton id="symboltimes" />
@@ -192,7 +193,7 @@
       </tabpanel>
 
         <!-- BINARY RELATIONS -->
-      <tabpanel id="symbol_binRel" mathsym="true" align="baseline">
+      <tabpanel id="symbol_binRel" context="symbol-context-menu" mathsym="true" align="baseline">
               <toolbarbutton id="symbolleq" />
               <toolbarbutton id="symbolprec" />
               <toolbarbutton id="symbolpreceq" />
@@ -300,7 +301,7 @@
       </tabpanel>
 
 <!-- NEGATED RELATIONS -->
-      <tabpanel id="symbol_negRel" mathsym="true" align="baseline">
+      <tabpanel id="symbol_negRel" context="symbol-context-menu" mathsym="true" align="baseline">
               <toolbarbutton id="symbolne" />
               <toolbarbutton id="symbolnotin" />
 <!--              <toolbarbutton id="symbollvertneqq" /> 
@@ -371,7 +372,7 @@
       </tabpanel>
 
 <!-- ARROWS -->
-      <tabpanel id="symbol_arrow" mathsym="true" align="baseline">
+      <tabpanel id="symbol_arrow" context="symbol-context-menu" mathsym="true" align="baseline">
               <toolbarbutton id="symbolleftarrow" />
               <toolbarbutton id="symbolLeftarrow" />
               <toolbarbutton id="symbolrightarrow" />
@@ -393,7 +394,7 @@
               <toolbarbutton id="symbolLongrightarrow" />
               <toolbarbutton id="symbollongleftrightarrow" />
               <toolbarbutton id="symbolLongleftrightarrow" />
-              <toolbarbutton id="symbollongmapsto" />																	
+              <toolbarbutton id="symbollongmapsto" />                                 
               <toolbarbutton id="symbolhookrightarrow" />
               <toolbarbutton id="symbolrightharpoonup" />
               <toolbarbutton id="symbolrightharpoondown" />
@@ -441,7 +442,7 @@
       </tabpanel>
 
 <!-- MISCELLANEOUS SYMBOLS -->
-      <tabpanel id="symbol_misc" mathsym="true" align="baseline">
+      <tabpanel id="symbol_misc" context="symbol-context-menu" mathsym="true" align="baseline">
               <toolbarbutton id="symbolinfty" />
               <toolbarbutton id="symbolpartial" />
               <toolbarbutton id="symboldots" />
@@ -456,7 +457,7 @@
         <!--      <toolbarbutton id="symbolhslash" />-->
               <toolbarbutton id="symbolforall" />
               <toolbarbutton id="symbolexists" />
-              <toolbarbutton id="symbolnexists" />						   
+              <toolbarbutton id="symbolnexists" />               
               <toolbarbutton id="symbolRe" />
               <toolbarbutton id="symbolIm" />
               <toolbarbutton id="symbolaleph" />
@@ -518,7 +519,7 @@
       </tabpanel>
 
       <!-- DELIMITERS -->
-      <tabpanel id="symbol_delims" mathsym="true" align="baseline">
+      <tabpanel id="symbol_delims" context="symbol-context-menu" mathsym="true" align="baseline">
               <toolbarbutton id="symbollfloor" />
               <toolbarbutton id="symbolrfloor" />
               <toolbarbutton id="symbollceil" />
@@ -532,7 +533,7 @@
       </tabpanel> 
 
 <!-- LATIN-1 -->
-      <tabpanel id="symbol_latin1" mathsym="false" align="baseline">
+      <tabpanel id="symbol_latin1" context="symbol-context-menu" mathsym="false" align="baseline">
               <toolbarbutton id="symboltextdegree" />
               <toolbarbutton id="symboltextexclamdown" />
               <toolbarbutton id="symboltextquestiondown" />
@@ -568,7 +569,7 @@
               <toolbarbutton id="symbolAcircumflex" />
               <toolbarbutton id="symbolAdieresis" />
               <toolbarbutton id="symbolAgrave" />
-              <toolbarbutton id="symbolAtilde" />									   
+              <toolbarbutton id="symbolAtilde" />                    
               <toolbarbutton id="symbolAA" />
               <toolbarbutton id="symbolAE" />
               <toolbarbutton id="symbolCcedilla" />
@@ -629,7 +630,7 @@
       </tabpanel> 
 
 <!-- LATIN EXTENDED -->
-      <tabpanel id="symbol_latinextended" mathsym="false" align="baseline">
+      <tabpanel id="symbol_latinextended" context="symbol-context-menu" mathsym="false" align="baseline">
               <toolbarbutton id="symbolAbreve" />
               <toolbarbutton id="symbolAmacr" />
               <toolbarbutton id="symbolAogon" />
@@ -759,7 +760,7 @@
       </tabpanel> 
 
 <!-- PUNCTUATION -->
-      <tabpanel id="symbol_punctuation" mathsym="false" align="baseline">
+      <tabpanel id="symbol_punctuation" context="symbol-context-menu" mathsym="false" align="baseline">
               <toolbarbutton id="symbolendash" />
               <toolbarbutton id="symbolemdash" />
               <toolbarbutton id="symbollq" />
@@ -771,11 +772,11 @@
               <toolbarbutton id="symbolguilsinglleft" />
               <toolbarbutton id="symbolguilsinglright" />
       </tabpanel> 
-      <tabpanel id="symbol_stix" mathsym="true" aligh="baseline">
+      <tabpanel id="symbol_stix" context="symbol-context-menu" mathsym="true" aligh="baseline">
 #include ../../../base/content/stixButtons.xul
       </tabpanel>
-      <tabpanel id="cachepanel" mathsym="false" align="baseline" ondragdrop = "nsDragAndDrop.drop(event, symObserver);" 
-        persist="userlistofsymbols" context="symbol-context-menu" userlistofsymbols=" symbolpi symboltheta symbolinfty symbolin symbolrightarrow symbolell symbolnabla symbolpartial symbolleq symbolgeq symbolsubset symbolcap symbolcup symboltimes symboldiv symbolpm symbolcirc symbolcdot ">
+      <tabpanel id="cachepanel" context="symbol-context-menu" mathsym="false" align="baseline" ondragdrop = "nsDragAndDrop.drop(event, symObserver);" 
+        persist="userlistofsymbols" userlistofsymbols=" symbolpi symboltheta symbolinfty symbolin symbolrightarrow symbolell symbolnabla symbolpartial symbolleq symbolgeq symbolsubset symbolcap symbolcup symboltimes symboldiv symbolpm symbolcirc symbolcdot ">
       </tabpanel> 
     </tabpanels>
   </tabbox>
