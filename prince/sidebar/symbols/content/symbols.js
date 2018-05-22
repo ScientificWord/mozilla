@@ -56,6 +56,14 @@ function windowChanged()
   onHeightChange(h);
 }
 
+function constructSymbolList(cachepanel) {
+  var buttonlist = cachepanel.getElementsByTagName('toolbarbutton');
+  var symbollist = ' ';
+  for (var i = 0; i < buttonlist.length; i++) {
+    symbollist = symbollist + buttonlist[i].id.replace(/^(cache_)*/,'')+ ' ';
+  }
+  cachepanel.setAttribute('userlistofsymbols', symbollist);
+}
 
 
 var symObserver =
@@ -84,7 +92,7 @@ var symObserver =
 
   onDrop: function(evt, dropData, session)
   {
-    if (evt.currentTarget.id == "cachebar")
+    if (evt.currentTarget.id === "cachebar" || evt.currentTarget.id === "cachepanel")
     {
       var supported = session.isDataFlavorSupported("symbolbutton");
       if (supported)
@@ -96,8 +104,14 @@ var symObserver =
         var s;
         var id;
         var button = document.createElement("toolbarbutton");
-        var firstTBButton = cachepanel.firstChild;
-        if (firstTBButton != null) cachepanel.insertBefore(button, firstTBButton);
+        var targetButton;
+        if (evt.currentTarget.id === "cachebar") {
+          targetButton= cachepanel.firstChild;
+        } else
+        {
+          targetButton = evt.explicitOriginalTarget;
+        }
+        if (targetButton != null) cachepanel.insertBefore(button, targetButton);
         else cachepanel.appendChild(button);
         for (var i = 0; i < attArray.length; i++)
         {
@@ -107,24 +121,23 @@ var symObserver =
             if (arr[0] === "id")
             {
               id = arr[1];
-              arr[1] = "cache_"+id;
+              if (arr[1].indexOf('cache_') === 0) {
+                // we are copying from the cache panel. We must delete the source button
+                cachepanel.removeChild(document.getElementById(id));
+                arr[1] = id;
+              }
+              else arr[1] = "cache_"+id;
             }
             button.setAttribute(arr[0],arr[1]);
           }
         }
-        var usersymbols = cachepanel.getAttribute("userlistofsymbols");
-        if (usersymbols.indexOf(" "+id+" ") < 0)
-        {
-          usersymbols = " "+id + usersymbols;
-          cachepanel.setAttribute("userlistofsymbols", usersymbols);
-        }
+        constructSymbolList(cachepanel);
       }
     }
   },
 
   onDragOver: function(evt, flavour, session)
   {
-    dump(flavour.contentType+"\n");
     if (evt.currentTarget.nodeName == "tab")
     {
       var supported = session.isDataFlavorSupported("symbolbutton");
@@ -186,7 +199,10 @@ function initPopup(event)
   button = event.explicitOriginalTarget;
   var isCachePanel = (button.getAttribute('id').indexOf('cache_')===0);
   document.getElementById('context_remove').hidden = !isCachePanel;
-  document.getElementById('context_cache').hidden = isCachePanel;
+  if (isCachePanel)
+    document.getElementById('context_cache').label = "Move symbol to beginning of user palette";
+  else
+    document.getElementById('context_cache').label = "Add symbol to user palette";
 }
 
 function remove(event)
@@ -197,22 +213,22 @@ function remove(event)
   var id = button.getAttribute("id");
   if (id.indexOf("cache_") == 0) id=id.slice(6);
   cachepanel.removeChild(button);
-  if (usersymbols.indexOf(" "+ id + " ") >= 0)
-  {
-    usersymbols = usersymbols.replace(" "+ id, "");
-    cachepanel.setAttribute("userlistofsymbols", usersymbols);
-  }
+  constructSymbolList(cachepanel);
 }
 
 function addSymbolToCachePanel(event) {
-  // 'button' has been set because this function is called from the context menu
-    if (!button || button.nodeName != "toolbarbutton") return;
+  if (!button || button.nodeName != "toolbarbutton") return;
   var cachepanel = document.getElementById("cachepanel");
   var usersymbols = cachepanel.getAttribute("userlistofsymbols");
   var id = button.getAttribute("id");
   var symbolbutton;
-  if (id.indexOf("cache_") == 0) id=id.slice(6);
+  var needToDelete = false;
+  if (id.indexOf("cache_") == 0) {
+    id=id.slice(6);
+    needToDelete = true;
+  }
   symbolbutton = button.cloneNode(false);
+  if (needToDelete) cachepanel.removeChild(button);
   symbolbutton.setAttribute("id", "cache_"+button.getAttribute("id"));
   var firstTBButton = cachepanel.firstChild;
   if (firstTBButton == null) firstTBButton = null; //converts void to null if necessary
