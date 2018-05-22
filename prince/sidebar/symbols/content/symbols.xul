@@ -775,7 +775,7 @@
       <tabpanel id="symbol_stix" context="symbol-context-menu" mathsym="true" aligh="baseline">
 #include ../../../base/content/stixButtons.xul
       </tabpanel>
-      <tabpanel id="cachepanel" context="symbol-context-menu" mathsym="false" align="baseline" ondragdrop = "nsDragAndDrop.drop(event, symObserver);" 
+      <tabpanel id="cachepanel" context="symbol-context-menu" mathsym="false" align="baseline" ondragdrop = "nsDragAndDrop.drop(event, symObserver);" ondragover="nsDragAndDrop.dragOver(event, symObserver);"
         persist="userlistofsymbols" userlistofsymbols=" symbolpi symboltheta symbolinfty symbolin symbolrightarrow symbolell symbolnabla symbolpartial symbolleq symbolgeq symbolsubset symbolcap symbolcup symboltimes symboldiv symbolpm symbolcirc symbolcdot ">
       </tabpanel> 
     </tabpanels>
