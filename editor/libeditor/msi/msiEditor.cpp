@@ -3371,6 +3371,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   {
     nodeIn->GetChildNodes( getter_AddRefs(nodeList));
     nodeList->GetLength(&length);
+    if (length > offsetIn) length = offsetIn;
     offset2 = (PRUint32)(-1);
     while (length > 0 && --length >= 0)
     {
