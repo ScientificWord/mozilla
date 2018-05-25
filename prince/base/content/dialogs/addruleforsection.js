@@ -72,7 +72,7 @@ function getColorAndUpdate()
   if (colorObj.Cancel)
     return;
   else {
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		markDocumentChanged();
 	}
   color = colorObj.TextColor;
   setColorWell("colorWell", color);

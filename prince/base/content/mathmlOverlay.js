@@ -2488,7 +2488,7 @@ function doMatrixDlg(editorElement)
     insertmatrix(o.rows, o.cols, o.rowsignature, editorElement);
   if (!o.Cancel)
   {
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
 
 }

@@ -424,7 +424,7 @@ var msiInsertBibTeXBibliography =
     if (!bibliographyData.Cancel)
     {
       doInsertBibTeXBibliography(editorElement, bibliographyData);
-			msiGetEditor(editorElement).incrementModificationCount(1);
+			markDocumentChanged(editorElement);
     }
   }
 };
@@ -548,12 +548,12 @@ function doFrontMatterDlg(editorElement, commandHandler)
     frontMatterData.frontMatterText = "<p>Just a paragraph.</p>";
   var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetFrontMatter.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                                               editorElement, "cmd_MSIfrontMatterCmd", commandHandler, frontMatterData);
-  msiGetEditor(editorElement).incrementModificationCount(1);
+  markDocumentChanged(editorElement);
 }
+
 
 function doPreambleDlg()
 {
-
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var document = editor.document;
@@ -569,7 +569,8 @@ function doPreambleDlg()
 
 
   window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "resizable,chrome,close,titlebar,modal", preambleTeXNode);
-	msiGetEditor(editorElement).incrementModificationCount(1);
+	markDocumentChanged(editorElement);
+  window.updateCommands("save");
 }
 
 function doBibChoiceDlg(editorElement)
@@ -590,7 +591,7 @@ function doBibChoiceDlg(editorElement)
     else
       choiceStr = "manual";
     setBibliographyScheme(editorElement, choiceStr);
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		markDocumentChanged(editorElement);
   }
 }
 
@@ -608,7 +609,7 @@ function doOptionsAndPackagesDlg(editorElement)
   window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,modal,resizable", options);
   if (!options.Cancel)
 	{
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		markDocumentChanged(editorElement);
 	}
 }
 
@@ -772,7 +773,7 @@ function doGenSettingsDlg()
   window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "generaltypesetsettings", "chrome,close,titlebar,modal,resizable",
                        genSettingsData);
   var editorElement = msiGetActiveEditorElement();
-	msiGetEditor(editorElement).incrementModificationCount(1);
+	markDocumentChanged(editorElement);
 }
 
 function getTypesetGenSettingsFromPrefs()
@@ -1067,7 +1068,7 @@ function doInsertTeXField()
   var tbutton = gActiveEditor.getSelectedElement("texb");
   if (!tbutton) tbutton = gActiveEditor.getSelectedElement("texbutton");
   window.openDialog("chrome://prince/content/texbuttoncontents.xul", "texfield", "resizable=yes,chrome,close,titlebar,dependent", tbutton);
-	msiGetEditor(editorElement).incrementModificationCount(1);
+	markDocumentChanged(editorElement);
 }
 
 
