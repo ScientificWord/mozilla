@@ -272,8 +272,7 @@ function SetModifiedFlagOnStylesheet()
 function FlushChanges()
 {
   var editor = GetCurrentEditor();
-  editor.incrementModificationCount(1);
-
+  markDocumentChanged();
   if (gDialog.selectionBased)
   {
     var selection = editor.selection;

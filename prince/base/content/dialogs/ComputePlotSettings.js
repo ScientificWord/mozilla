@@ -141,7 +141,7 @@ function GetPlotColor (attributeName)
   if (colorObj.Cancel)
     return;
   else {
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		markDocumentChanged();
 	}
   var color = colorObj.TextColor;
 //  dump ("SMR in GetPlotColor setting the color to " + color + "\n");

@@ -4567,7 +4567,7 @@ var msiFontColor =
       if (colorObj.Cancel)
         return;
   	  else {
-  			msiGetEditor(editorElement).incrementModificationCount(1);
+  			markDocumentChanged(editorElement);
   		}
 
       msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
@@ -5032,7 +5032,7 @@ var msiSpellingCommand =
       window.cancelSendMessage = false;
       window.openDialog("chrome://prince/content/EdSpellCheck.xul", "spellcheck",
               "chrome,close,titlebar,modal,resizable", false, false, true, editorElement);
-  		msiGetEditor(editorElement).incrementModificationCount(1);
+  		markDocumentChanged(editorElement);
       editorElement.focus();
 		}
     catch (e) {
@@ -5580,6 +5580,7 @@ var msiImageCommand =
     var imageData = {isVideo : false, mNode : null, editor : editor};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome, resizable, close,titlebar,dependent,resizable",
                                                                                                      editorElement, "cmd_image", this, imageData);
+      markDocumentChanged(editorElement);
   },
   msiGetReviseObject: function(editorElement)
   {
@@ -5613,6 +5614,8 @@ var msiReviseImageCommand =
       var imageData = {isVideo : false, mNode : imageNode, editor : editor};
       var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
                                                      editorElement, "cmd_reviseImage", imageNode, imageData);
+      markDocumentChanged(editorElement);
+
     }
     editorElement.focus();
   },
@@ -5641,6 +5644,7 @@ var msiVideoCommand =
     var imageData = {isVideo : true, mNode : null, editor : editor};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "", "chrome, resizable, close,titlebar,dependent,resizable",
                                                                                                      editorElement, "cmd_video", this, imageData);
+    markDocumentChanged(editorElement);
 //    window.openDialog("chrome://editor/content/EdImageProps.xul","imageprops", "chrome,close,titlebar,modal");
 //    editorElement.focus();
   },
@@ -5677,6 +5681,7 @@ var msiReviseVideoCommand =
       var imageData = {isVideo : true, mNode : videoNode, editor : editor};
       var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome,close,titlebar,resizable, dependent",
                                                      editorElement, "cmd_reviseVideo", videoNode, imageData);
+      markDocumentChanged(editorElement);
     }
     editorElement.focus();
   },
@@ -5716,7 +5721,7 @@ var msiHLineCommand =
     {
       // We only open the dialog for an existing HRule
       window.openDialog("chrome://editor/content/EdHLineProps.xul", "hlineprops", "chrome,close,titlebar,modal,resizable");
-			msiGetEditor(editorElement).incrementModificationCount(1);
+			markDocumentChanged(editorElement);
       editorElement.focus();
     }
     else
@@ -5784,11 +5789,12 @@ var msiLinkCommand =
       var imageData = {isVideo : false, mNode : element, editor : editor};
       msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "imageprops", "chrome,close,titlebar,resizable, dependent",
                                                      editorElement, "cmd_reviseImage", element, imageData);
+      markDocumentChanged(editorElement);
 //      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "resizable,chrome,close,titlebar,dependent", imageData);
     }
     else
       window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable,chrome,close,titlebar,dependent");
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		markDocumentChanged(editorElement);
     editorElement.focus();
   }
 };
@@ -5805,7 +5811,7 @@ var msiReviseHyperlinkCommand =
     {
       window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable,chrome,close,titlebar,dependent");
     }
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		markDocumentChanged(editorElement);
     editorElement.focus();
   },
 
@@ -5830,7 +5836,7 @@ var msiAnchorCommand =
   {
     var editorElement = msiGetActiveEditorElement();
     window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "namedanchorprops", "chrome,close,titlebar,modal,resizable", "", editorElement);
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		markDocumentChanged(editorElement);
     editorElement.focus();
   }
 };
@@ -5848,7 +5854,7 @@ var msiReviseAnchorCommand =
 //      AlertWithTitle("msiComposerCommands.js", "In msiReviseAnchorCommand, trying to revise hyperlink anchor, dialog not implemented.");
       var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/marker.xul", "_blank", "chrome, resizable, close, titlebar, dependent", editorElement, "cmd_reviseAnchor", this, anchorNode);
     }
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		markDocumentChanged(editorElement);
     editorElement.focus();
   },
 
@@ -5872,7 +5878,7 @@ var msiInsertHTMLWithDialogCommand =
   {
     var editorElement = msiGetActiveEditorElement();
     window.openDialog("chrome://editor/content/EdInsSrc.xul","insertsource", "chrome,close,titlebar,modal,resizable", "", editorElement);
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		markDocumentChanged(editorElement);
     editorElement.focus();
   }
 };
@@ -7365,7 +7371,7 @@ var msiMarkerCommand =
       var editorElement = msiGetActiveEditorElement();
       // more goes here
       window.openDialog("chrome://prince/content/marker.xul", "insertmarker", "resizable=yes,dependent=yes,chrome,close,titlebar");
-  		msiGetEditor(editorElement).incrementModificationCount(1);
+  		markDocumentChanged(editorElement);
 		}
     catch (e) {
       finalThrow(cmdFailString('reviserules'), e.message);
@@ -7390,7 +7396,7 @@ var msiInsertHTMLFieldCommand =
     try {
       // more goes here
       window.openDialog("chrome://prince/content/htmlfield.xul", "htmlfield", "resizable=yes,chrome,close,titlebar,dependent");
-			msiGetEditor(editorElement).incrementModificationCount(1);
+			markDocumentChanged(editorElement);
     } catch (e) {}
   }
 };
@@ -9365,7 +9371,7 @@ function msiDoAdvancedProperties(element, editorElement)
       // could play this role as well.
         try {
           dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,dependent");
-					msiGetEditor(editorElement).incrementModificationCount(1);
+					markDocumentChanged(editorElement);
           editorElement.contentWindow.focus();
         }
         catch (e)
@@ -9383,7 +9389,7 @@ function msiDoAdvancedProperties(element, editorElement)
             if (!data.Cancel)
             {
               element.value = data.numstyle;
-							msiGetEditor(editorElement).incrementModificationCount(1);
+							markDocumentChanged(editorElement);
             }
           }
           catch (e)
@@ -9400,7 +9406,7 @@ function msiDoAdvancedProperties(element, editorElement)
             {
               element.value = data.lheader;
               element.value2 = data.rheader;
-							msiGetEditor(editorElement).incrementModificationCount(1);
+							markDocumentChanged(editorElement);
             }
           }
           catch (e)
@@ -9463,7 +9469,7 @@ var msiColorPropertiesCommand =
       var theWindow = msiGetWindowContainingEditor(editorElement);
       theWindow.openDialog("chrome://editor/content/EdColorProps.xul","colorprops", "chrome,close,resizable,titlebar,modal", "");
 //      UpdateDefaultColors();
-			msiGetEditor(editorElement).incrementModificationCount(1);
+			markDocumentChanged(editorElement);
       msiUpdateDefaultColors(editorElement);
       editorElement.contentWindow.focus();
     }
@@ -10859,7 +10865,7 @@ var msiConvertToTable =
       {
         var theWindow = msiGetWindowContainingEditor(editorElement);
         window.openDialog("chrome://editor/content/EdConvertToTable.xul","converttotable", "chrome,close,resizable,titlebar,modal");
-  			msiGetEditor(editorElement).incrementModificationCount(1);
+  			markDocumentChanged(editorElement);
       }
       if (editorElement)
         editorElement.contentWindow.focus();
@@ -10981,7 +10987,7 @@ function msiNote(currNode, editorElement, type, hidden)
   if (!type) {
     window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,dependent", data);
     // data comes back altered
-		if (!data.Cancel) msiGetEditor(editorElement).incrementModificationCount(1);
+		if (!data.Cancel) markDocumentChanged(editorElement);
 
 //      return;
   }
@@ -11144,7 +11150,7 @@ function msiFrame(editorElement, editor, node)
   if (editor==null) editor = msiGetEditor(editorElement);
   editor.beginTransaction();
   window.openDialog("chrome://prince/content/Minipage.xul","frame", "chrome,close,titlebar,dependent, resizable=yes", node);
-	msiGetEditor(editorElement).incrementModificationCount(1);
+	markDocumentChanged(editorElement);
   editor.endTransaction();
 }
 

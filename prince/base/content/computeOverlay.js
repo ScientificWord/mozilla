@@ -1327,7 +1327,7 @@ function doLabeledComputation(math, vars, op, labelID, editorElement) {
       //        if (o.Cancel)
       //          return;
       //        vars = runFixup(o.vars);
-      if (!o.Cancel) msiGetEditor(editorElement).incrementModificationCount(1);
+      if (!o.Cancel) markDocumentChanged(editorElement);
     } else {
       msiComputeLogger.Exception(ex);
       //        done = true;
@@ -1581,7 +1581,7 @@ function doComputeFindExtrema(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeFindExtrema: [" + e + "]");
         return;
       }
-      if (!o.Cancel) msiGetEditor(editorElement).incrementModificationCount(1);
+      if (!o.Cancel) markDocumentChanged(editorElement);
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -1625,7 +1625,7 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler) {
       //        if (o.Cancel)
       //          return;
       //        vars = runFixup(o.vars);
-      if (!o.Cancel) msiGetEditor(editorElement).incrementModificationCount(1);
+      if (!o.Cancel) markDocumentChanged(editorElement);
     } else {
       msiComputeLogger.Exception(ex);
       //        done = true;
@@ -1916,7 +1916,7 @@ function doComputeApproxIntegral(math, editorElement) {
   if (o.Cancel) {
     return;
   } else {
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
   var intervals = GetNumAsMathML(o.intervals);
   var mathstr = GetFixedMath(math);
@@ -2158,7 +2158,7 @@ function doComputeSolveODESeries(math, editorElement) {
   parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel) return;
   else {
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
   var mathstr = GetFixedMath(math);
   var variable = runFixup(o.mathresult[0]);
@@ -2197,7 +2197,7 @@ function doComputePowerSeries(math, editorElement, cmdHandler) {
     parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,modal,resizable", o);
     if (o.Cancel) return;
     else {
-      msiGetEditor(editorElement).incrementModificationCount(1);
+      markDocumentChanged(editorElement);
     }
     finishComputePowerSeries(editorElement, o);
   } catch (e) {
@@ -2392,7 +2392,7 @@ function doComputeRandomMatrix(editorElement) {
   parentWin.openDialog("chrome://prince/content/ComputeRandomMatrix.xul", "randommatrix", "chrome,close,titlebar,resizable,modal", o);
   if (o.Cancel) return;
   else {
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
   var mRows = GetNumAsMathML(o.rows);
   var mCols = GetNumAsMathML(o.cols);
@@ -2418,7 +2418,7 @@ function doComputeReshape(math, editorElement) {
   parentWin.openDialog("chrome://prince/content/ComputeReshape.xul", "reshape", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel) return;
   else {
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
   var mCols = GetNumAsMathML(o.ncols);
   var mathstr = GetFixedMath(GetRHS(math));
@@ -2444,7 +2444,7 @@ function doComputeFitCurve(math, editorElement) {
   parentWin.openDialog("chrome://prince/content/ComputeFitCurve.xul", "fitcurve", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel) return;
   else {
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent4("Fit Curve @ ", mathstr, o.code, o.column + "/" + o.degree);
@@ -2474,7 +2474,7 @@ function doComputeRandomNumbers(editorElement) {
   parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "randomnumbers", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel) return;
   else {
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
   var mTally = GetNumAsMathML(o.tally);
   var mParam1 = GetNumAsMathML(o.param1);
@@ -2583,7 +2583,7 @@ function doComputeDefine(math, editorElement) {
         if (o.Cancel) {
           return;
         } else {
-          msiGetEditor(editorElement).incrementModificationCount(1);
+          markDocumentChanged(editorElement);
         }
         subscript = o.subscript;
       } else {
@@ -2633,7 +2633,7 @@ function doComputeMapMuPADName(editorElement) {
   parentWin.openDialog("chrome://prince/content/MapMuPADName.xul", "mupname", "modal,chrome,close,titlebar,resizable,dependent", o);
   if (o.Cancel) return;
   else {
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
   var swpname = o.swpname;
   var mupname = o.mupadname;
