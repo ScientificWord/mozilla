@@ -310,7 +310,7 @@ function goNative()
   if (!packagesData.Cancel)
   {
     gDialog.packages = packagesData.packages;
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
 }
 
@@ -329,7 +329,7 @@ function doModifyDialog()
   {
     gDialog.docClassOptions = classOptionData.options;
     document.getElementById("optionsDescriptionBox").value=gDialog.docClassOptions.join(",");
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
 }
 
@@ -389,7 +389,7 @@ function addPackage()
       gDialog.packagesInUseListbox.selectItem( gDialog.packagesInUseListbox.appendItem(addPackageData.newPackage, '') );
       selectPackage(newPackage.pkg);
       checkDisabledControls();
-      msiGetEditor(editorElement).incrementModificationCount(1);
+      markDocumentChanged(editorElement);
     }
   }
 }
@@ -438,7 +438,7 @@ function modifyPackage(packageName)
   {
     gDialog.packages[whichPackage].opt = packageData.options;
     setPackageDescriptionLine(gDialog.packages[whichPackage]);
-    msiGetEditor(editorElement).incrementModificationCount(1);
+    markDocumentChanged(editorElement);
   }
 }
 

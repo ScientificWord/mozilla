@@ -9305,7 +9305,7 @@ function msiEditorInsertTable(editorElement, command, commandHandler) {
 
   window.openDialog("chrome://prince/content/msiEdTableProps.xul", "inserttable",
     "modal, chrome,close,titlebar,resizable", "");
-  msiGetEditor(editorElement).incrementModificationCount(1);
+  markDocumentChanged(editorElement);
   editorElement.focus();
 }
 
@@ -9325,7 +9325,7 @@ function msiEditorTableCellProperties(editorElement) {
       //HERE USE MODELESS DIALOG FUNCTIONALITY!
       window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops",
         "chrome,close,titlebar,modal,resizable", "", "CellPanel");
-      msiGetEditor(editorElement).incrementModificationCount(1);
+      markDocumentChanged(editorElement);
       editorElement.focus();
     }
   } catch (e) {}
@@ -10626,6 +10626,7 @@ function openObjectTagDialog(tagname, node, editorElement) {
   msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "_blank",
     "chrome,close,titlebar,resizable, dependent",
     editorElement, cmdStr, node, imgData);
+  markDocumentChanged(editorElement);
   //  openDialog('chrome://prince/content/msiEdImageProps.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
   //    null, 'cmd_reviseImage', node);
 
@@ -10636,7 +10637,7 @@ function openTeXButtonDialog(tagname, node) {
     'chrome,close,titlebar,resizable, dependent',
     node);
   var editorElement = msiGetActiveEditorElement();
-  msiGetEditor(editorElement).incrementModificationCount(1);
+  markDocumentChanged(editorElement);
 }
 
 function openOTFontDialog(tagname, node) {
@@ -10644,7 +10645,7 @@ function openOTFontDialog(tagname, node) {
     'chrome,close,titlebar,resizable, dependent',
     node);
   var editorElement = msiGetActiveEditorElement();
-  msiGetEditor(editorElement).incrementModificationCount(1);
+  markDocumentChanged(editorElement);
 }
 
 function openHTMLField(node) {
@@ -10652,7 +10653,7 @@ function openHTMLField(node) {
     'chrome,close,titlebar,resizable, dependent',
     node);
   var editorElement = msiGetActiveEditorElement();
-  msiGetEditor(editorElement).incrementModificationCount(1);
+  markDocumentChanged(editorElement);
 }
 
 //function openFontColorDialog(tagname, node)
@@ -10676,7 +10677,7 @@ function openGraphDialog(tagname, node, editorElement) {
     editorElement, "cmd_objectProperties", node);
   // why find it again???  var editorElement = msiGetActiveEditorElement();
   document.getElementById("vcamactive").setAttribute("hidden", "true");
-  msiGetEditor(editorElement).incrementModificationCount(1);
+  markDocumentChanged(editorElement);
 
 }
 

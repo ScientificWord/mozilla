@@ -2361,6 +2361,7 @@ function firstElementChild(element)
 
 function saveSectionFormatting( docFormatNode, sectitleformat )
 {
+  return;
   dump("saveSectionFormatting\n"); // get the list of section-like objects
   var menulist = document.getElementById("sections.name");
   var itemlist = menulist.getElementsByTagName("menuitem");

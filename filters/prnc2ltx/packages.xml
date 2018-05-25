@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <packages>
-	<package name="titlesec" pri="100"/>
+	<!-- <package name="titlesec" pri="100"/> -->
 	<package name="amsfonts" pri="010"/>
 	<package name="amsmath" pri="010"/>
 	<package name="xcolor" pri="200"/>
