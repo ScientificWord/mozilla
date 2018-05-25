@@ -118,7 +118,7 @@ function doGoNative()
     gDialog.currentOptionsDescription.value = gDialog.selectedOptionsArray.join(",");
   }
   else {
-		msiGetEditor(editorElement).incrementModificationCount(1);
+		markDocumentChanged();
 	}
 
 }
