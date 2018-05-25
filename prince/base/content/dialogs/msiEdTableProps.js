@@ -805,7 +805,7 @@ function GetColorAndUpdate(ColorWellID)
   if (colorObj.Cancel)
     return;
   else {
-    gActiveEditor.incrementModificationCount(1);
+    markDocumentChanged();
   }
 
   var changeArray = createPreviewChangeArray();

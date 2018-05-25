@@ -121,7 +121,7 @@
 	  	        </xsl:when>
    	  		    <xsl:otherwise>
                 <xsl:choose>
-                  <xsl:when test="$currentpackage='titlesec'">100</xsl:when>
+                  <!-- <xsl:when test="$currentpackage='titlesec'">100</xsl:when> -->
                   <xsl:when test="$currentpackage='amsfonts'">010</xsl:when>
                   <xsl:when test="$currentpackage='amsmath'">010</xsl:when>
                   <xsl:when test="$currentpackage='xcolor'">200</xsl:when>

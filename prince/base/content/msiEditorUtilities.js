@@ -189,6 +189,11 @@ function licenseExpDate() {
   return licenseDateStr;
 }
 
+function markDocumentChanged(editorElement) {  //ordinary undoable transactions automatically mark the document as changed; this is for dialogs
+  if (editorElement == null) editorElement = msiGetActiveEditorElement();
+  msiGetEditor(editorElement).incrementModificationCount(1);
+  window.updateCommands("save");
+}
 
 function arrayFromNodelist(nodelist) {
   var retArray = [];
