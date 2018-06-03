@@ -124,27 +124,11 @@
 \long\def\@secondoftwo#1#2{#2}
 
 
-%%\def\ProvidesFile#1{%
-%%  \begingroup
-%%    \catcode`\ 10 %
-%%    \ifnum \endlinechar<256 %
-%%      \ifnum \endlinechar>\m@ne
-%%        \catcode\endlinechar 10 %
-%%      \fi
-%%    \fi
-%%    \@makeother\/%
-%%    \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
-
-
-%%\def\@providesfile#1[#2]{%
-%%    \wlog{File: #1 #2}%
-%%    \@addtofilelist{ #2}%
-%%    \endgroup}
 \long\def\@addtofilelist#1{}
 \def\@empty{}
 \let\@currdir\@undefined
 \let\input@path\@undefined
-\let\filename@parse\@undefined
+%\let\filename@parse\@undefined
 \def\strip@prefix#1>{}
 
 
@@ -180,63 +164,63 @@
 
 \endgroup
 
-\ifx\filename@parse\@undefined
-  \def\reserved@a{./}
-  \ifx\@currdir\reserved@a
-    \typeout{^^JDefining UNIX/DOS style filename parser.^^J}
-    \def\filename@parse#1{%
-      \let\filename@area\@empty
-      \expandafter\filename@path#1/\\}
-    \def\filename@path#1/#2\\{%
-      \ifx\\#2\\%
-         \def\reserved@a{\filename@simple#1.\\}%
-      \else
-         \edef\filename@area{\filename@area#1/}%
-         \def\reserved@a{\filename@path#2\\}%
-      \fi
-      \reserved@a}
-  \else\def\reserved@a{[]}\ifx\@currdir\reserved@a
-    \typeout{^^JDefining VMS style filename parser.^^J}
-    \def\filename@parse#1{%
-      \let\filename@area\@empty
-      \expandafter\filename@path#1]\\}
-    \def\filename@path#1]#2\\{%
-      \ifx\\#2\\%
-         \def\reserved@a{\filename@simple#1.\\}%
-      \else
-         \edef\filename@area{\filename@area#1]}%
-         \def\reserved@a{\filename@path#2\\}%
-      \fi
-      \reserved@a}
-  \else\def\reserved@a{:}\ifx\@currdir\reserved@a
-    \typeout{^^JDefining Mac style filename parser.^^J}
-    \def\filename@parse#1{%
-      \let\filename@area\@empty
-      \expandafter\filename@path#1:\\}
-    \def\filename@path#1:#2\\{%
-      \ifx\\#2\\%
-         \def\reserved@a{\filename@simple#1.\\}%
-      \else
-         \edef\filename@area{\filename@area#1:}%
-         \def\reserved@a{\filename@path#2\\}%
-      \fi
-      \reserved@a}
-  \else
-    \typeout{^^JDefining generic filename parser.^^J}
-    \def\filename@parse#1{%
-      \let\filename@area\@empty
-      \expandafter\filename@simple#1.\\}
-  \fi\fi\fi
-  \def\filename@simple#1.#2\\{%
-    \ifx\\#2\\%
-       \let\filename@ext\relax
-    \else
-       \edef\filename@ext{\filename@dot#2\\}%
-    \fi
-    \edef\filename@base{#1}}
-  \def\filename@dot#1.\\{#1}
-\else
-\fi
+%\ifx\filename@parse\@undefined
+%  \def\reserved@a{./}
+%  \ifx\@currdir\reserved@a
+%    \typeout{^^JDefining UNIX/DOS style filename parser.^^J}
+%    \def\filename@parse#1{%
+%      \let\filename@area\@empty
+%      \expandafter\filename@path#1/\\}
+%    \def\filename@path#1/#2\\{%
+%      \ifx\\#2\\%
+%         \def\reserved@a{\filename@simple#1.\\}%
+%      \else
+%         \edef\filename@area{\filename@area#1/}%
+%         \def\reserved@a{\filename@path#2\\}%
+%      \fi
+%      \reserved@a}
+%  \else\def\reserved@a{[]}\ifx\@currdir\reserved@a
+%    \typeout{^^JDefining VMS style filename parser.^^J}
+%    \def\filename@parse#1{%
+%      \let\filename@area\@empty
+%      \expandafter\filename@path#1]\\}
+%    \def\filename@path#1]#2\\{%
+%      \ifx\\#2\\%
+%         \def\reserved@a{\filename@simple#1.\\}%
+%      \else
+%         \edef\filename@area{\filename@area#1]}%
+%         \def\reserved@a{\filename@path#2\\}%
+%      \fi
+%      \reserved@a}
+%  \else\def\reserved@a{:}\ifx\@currdir\reserved@a
+%    \typeout{^^JDefining Mac style filename parser.^^J}
+%    \def\filename@parse#1{%
+%      \let\filename@area\@empty
+%      \expandafter\filename@path#1:\\}
+%    \def\filename@path#1:#2\\{%
+%      \ifx\\#2\\%
+%         \def\reserved@a{\filename@simple#1.\\}%
+%      \else
+%         \edef\filename@area{\filename@area#1:}%
+%         \def\reserved@a{\filename@path#2\\}%
+%      \fi
+%      \reserved@a}
+%  \else
+%    \typeout{^^JDefining generic filename parser.^^J}
+%    \def\filename@parse#1{%
+%      \let\filename@area\@empty
+%      \expandafter\filename@simple#1.\\}
+%  \fi\fi\fi
+%  \def\filename@simple#1.#2\\{%
+%    \ifx\\#2\\%
+%       \let\filename@ext\relax
+%    \else
+%       \edef\filename@ext{\filename@dot#2\\}%
+%    \fi
+%    \edef\filename@base{#1}}
+%  \def\filename@dot#1.\\{#1}
+%\else
+%\fi
 
 
 \def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
@@ -996,14 +980,14 @@
 \def\document{}%
 \let\normalsfcodes\@empty
 
-\def\nofiles{%
-  \@fileswfalse
-  \typeout{No auxiliary output files.^^J}%
-  \long\def\protected@write##1##2##3%
-    {\write\m@ne{}\if@nobreak\ifvmode\nobreak\fi\fi}%
-  \let\makeindex\relax
-  \let\makeglossary\relax}
-\@onlypreamble\nofiles
+%\def\nofiles{%
+%  \@fileswfalse
+%  \typeout{No auxiliary output files.^^J}%
+%  \long\def\protected@write##1##2##3%
+%    {\write\m@ne{}\if@nobreak\ifvmode\nobreak\fi\fi}%
+%  \let\makeindex\relax
+%  \let\makeglossary\relax}
+%\@onlypreamble\nofiles
 
 \long\def \protected@write#1#2#3{%
       \begingroup
@@ -1323,7 +1307,7 @@
 
 
 
-\def\newlength#1{\newskip#1}
+%\def\newlength#1{\newskip#1}
 
 \msi@pass@newline{\@settodim}
 \msi@pass@newline{\settoheight}
@@ -1331,220 +1315,220 @@
 \msi@pass@newline{\settowidth}
 \def\@settopoint#1{\msitag{\@settoppoint{#1}}}
 
-\expandafter\let\csname ver@autofss1.sty\endcsname\fmtversion
-\def\@nomath#1{\relax\ifmmode
-   \@font@warning{Command \noexpand#1invalid in math mode}\fi}
-\gdef\no@alphabet@error#1{\relax \ifmmode
-    \@latex@error{Math\space alphabet\space identifier\space
-          \noexpand#1is\space undefined\space in\space math\space
-           version\space `\math@version'}%
-        {Your\space requested\space math\space alphabet\space
-         is\space undefined\space in\space the\space current\space
-          math\space version.^^JCheck\space the\space spelling\space
-          or\space use\space the\space \noexpand\SetMathAlphabet\space
-          command.}
-     \fi}
-\def\new@mathgroup{\alloc@8\mathgroup\chardef\sixt@@n}
-\let\mathgroup\fam
-\let\newfam\new@mathgroup
-\@onlypreamble\new@mathgroup
-\def\DeclareFontShape{\begingroup
-   \nfss@catcodes
-   \expandafter\endgroup
-   \DeclareFontShape@}
+%\expandafter\let\csname ver@autofss1.sty\endcsname\fmtversion
+%\def\@nomath#1{\relax\ifmmode
+%   \@font@warning{Command \noexpand#1invalid in math mode}\fi}
+%\gdef\no@alphabet@error#1{\relax \ifmmode
+%    \@latex@error{Math\space alphabet\space identifier\space
+%          \noexpand#1is\space undefined\space in\space math\space
+%           version\space `\math@version'}%
+%        {Your\space requested\space math\space alphabet\space
+%         is\space undefined\space in\space the\space current\space
+%          math\space version.^^JCheck\space the\space spelling\space
+%          or\space use\space the\space \noexpand\SetMathAlphabet\space
+%          command.}
+%     \fi}
+%\def\new@mathgroup{\alloc@8\mathgroup\chardef\sixt@@n}
+%\let\mathgroup\fam
+%\let\newfam\new@mathgroup
+%\@onlypreamble\new@mathgroup
+%\def\DeclareFontShape{\begingroup
+%   \nfss@catcodes
+%   \expandafter\endgroup
+%   \DeclareFontShape@}
 
-\def\DeclareFontShape@#1#2#3#4#5#6{%
-   \expandafter\ifx\csname #1+#2\endcsname\relax
-     \@latex@error{Font family `#1+#2' unknown}\@eha
-   \else
-     \expandafter
-       \xdef\csname#1/#2/#3/#4\endcsname{\expandafter\noexpand
-                                   \csname #5\endcsname}%
-     \def\reserved@a{#6}%
-     \global
-     \expandafter\let\csname#5\expandafter\endcsname
-        \ifx\reserved@a\@empty
-          \@empty
-        \else
-          \reserved@a
-        \fi
-   \fi
-  }
-\def\DeclareFixedFont#1#2#3#4#5#6{%
-   \begingroup
-      \math@fontsfalse
-      \every@math@size{}%
-      \fontsize{#6}\z@
-      \usefont{#2}{#3}{#4}{#5}%
-      \global\expandafter\let\expandafter#1\the\font
-   \endgroup
-  }
-\def\do@subst@correction{%
-       \xdef\subst@correction{%
-          \font@name
-          \global\expandafter\font
-            \csname \curr@fontshape/\f@size\endcsname
-            \noexpand\fontname\font
-           \relax}%
-       \aftergroup\subst@correction
-}
-\def\DeclareFontFamily#1#2#3{%
- \@ifundefined{T@#1}%
-    {%
-     \@latex@error{Encoding scheme  `#1' unknown}\@eha
-    }%
-    {%
-     \def\reserved@a{#3}%
-     \global
-     \expandafter\let\csname #1+#2\expandafter\endcsname
-            \ifx \reserved@a\@empty
-              \@empty
-            \else \reserved@a
-            \fi
-    }%
-}
-\let\cdp@list\@empty
-\@onlypreamble\cdp@list
-\let\cdp@elt\relax
-\@onlypreamble\cdp@elt
-\def\DeclareFontEncoding{%
-   \begingroup
-   \nfss@catcodes
-   \expandafter\endgroup
-   \DeclareFontEncoding@}
-\@onlypreamble\DeclareFontEncoding
-\def\DeclareFontEncoding@#1#2#3{%
-  \expandafter
-  \ifx\csname T@#1\endcsname\relax
-     \def\cdp@elt{\noexpand\cdp@elt}%
-     \xdef\cdp@list{\cdp@list\cdp@elt{#1}%
-                    {\default@family}{\default@series}%
-                    {\default@shape}}%
-     \expandafter\let\csname#1-cmd\endcsname\@changed@cmd
-  \else
-     \@font@info{Redeclaring font encoding #1}%
-  \fi
-  \global\@namedef{T@#1}{#2}%
-  \global\@namedef{M@#1}{\default@M#3}%
-  \xdef\LastDeclaredEncoding{#1}%
-  }
-\@onlypreamble\DeclareFontEncoding@
-\def\LastDeclaredEncoding{}
-\def\DeclareFontSubstitution#1#2#3#4{%
-  \expandafter
-  \ifx\csname T@#1\endcsname\relax
-    \@latex@error{Encoding scheme  `#1' unknown}\@eha
-  \else
-    \begingroup
-       \def\reserved@a{#1}%
-       \toks@{}%
-       \def\cdp@elt##1##2##3##4{%
-          \def\reserved@b{##1}%
-          \ifx\reserved@a\reserved@b
-             \addto@hook\toks@{\cdp@elt{#1}{#2}{#3}{#4}}%
-          \else
-             \addto@hook\toks@{\cdp@elt{##1}{##2}{##3}{##4}}%
-          \fi}%
-        \cdp@list
-        \xdef\cdp@list{\the\toks@}%
-    \endgroup
-    \global
-    \@namedef{D@#1}{%
-           \def\default@family{#2}%
-           \def\default@series{#3}%
-           \def\default@shape{#4}%
-           }%
-  \fi
- }
-\@onlypreamble\DeclareFontSubstitution
-\def\DeclareFontEncodingDefaults#1#2{%
-  \ifx\relax#1\else
-    \ifx\default@T\@empty\else
-      \@font@info{Overwriting encoding scheme text defaults}%
-    \fi
-    \gdef\default@T{#1}%
-  \fi
-  \ifx\relax#2\else
-    \ifx\default@M\@empty\else
-      \@font@info{Overwriting encoding scheme math defaults}%
-    \fi
-    \gdef\default@M{#2}%
-  \fi
-}
+%\def\DeclareFontShape@#1#2#3#4#5#6{%
+%   \expandafter\ifx\csname #1+#2\endcsname\relax
+%     \@latex@error{Font family `#1+#2' unknown}\@eha
+%   \else
+%     \expandafter
+%       \xdef\csname#1/#2/#3/#4\endcsname{\expandafter\noexpand
+%                                   \csname #5\endcsname}%
+%     \def\reserved@a{#6}%
+%     \global
+%     \expandafter\let\csname#5\expandafter\endcsname
+%        \ifx\reserved@a\@empty
+%          \@empty
+%        \else
+%          \reserved@a
+%        \fi
+%   \fi
+%  }
+%\def\DeclareFixedFont#1#2#3#4#5#6{%
+%   \begingroup
+%      \math@fontsfalse
+%      \every@math@size{}%
+%      \fontsize{#6}\z@
+%      \usefont{#2}{#3}{#4}{#5}%
+%      \global\expandafter\let\expandafter#1\the\font
+%   \endgroup
+%  }
+%\def\do@subst@correction{%
+%       \xdef\subst@correction{%
+%          \font@name
+%          \global\expandafter\font
+%            \csname \curr@fontshape/\f@size\endcsname
+%            \noexpand\fontname\font
+%           \relax}%
+%       \aftergroup\subst@correction
+%}
+%\def\DeclareFontFamily#1#2#3{%
+% \@ifundefined{T@#1}%
+%    {%
+%     \@latex@error{Encoding scheme  `#1' unknown}\@eha
+%    }%
+%    {%
+%     \def\reserved@a{#3}%
+%     \global
+%     \expandafter\let\csname #1+#2\expandafter\endcsname
+%            \ifx \reserved@a\@empty
+%              \@empty
+%            \else \reserved@a
+%            \fi
+%    }%
+%}
+%\let\cdp@list\@empty
+%\@onlypreamble\cdp@list
+%\let\cdp@elt\relax
+%\@onlypreamble\cdp@elt
+%\def\DeclareFontEncoding{%
+%   \begingroup
+%   \nfss@catcodes
+%   \expandafter\endgroup
+%   \DeclareFontEncoding@}
+%\@onlypreamble\DeclareFontEncoding
+%\def\DeclareFontEncoding@#1#2#3{%
+%  \expandafter
+%  \ifx\csname T@#1\endcsname\relax
+%     \def\cdp@elt{\noexpand\cdp@elt}%
+%     \xdef\cdp@list{\cdp@list\cdp@elt{#1}%
+%                    {\default@family}{\default@series}%
+%                    {\default@shape}}%
+%     \expandafter\let\csname#1-cmd\endcsname\@changed@cmd
+%  \else
+%     \@font@info{Redeclaring font encoding #1}%
+%  \fi
+%  \global\@namedef{T@#1}{#2}%
+%  \global\@namedef{M@#1}{\default@M#3}%
+%  \xdef\LastDeclaredEncoding{#1}%
+%  }
+%\@onlypreamble\DeclareFontEncoding@
+%\def\LastDeclaredEncoding{}
+%\def\DeclareFontSubstitution#1#2#3#4{%
+%  \expandafter
+%  \ifx\csname T@#1\endcsname\relax
+%    \@latex@error{Encoding scheme  `#1' unknown}\@eha
+%  \else
+%    \begingroup
+%       \def\reserved@a{#1}%
+%       \toks@{}%
+%       \def\cdp@elt##1##2##3##4{%
+%          \def\reserved@b{##1}%
+%          \ifx\reserved@a\reserved@b
+%             \addto@hook\toks@{\cdp@elt{#1}{#2}{#3}{#4}}%
+%          \else
+%             \addto@hook\toks@{\cdp@elt{##1}{##2}{##3}{##4}}%
+%          \fi}%
+%        \cdp@list
+%        \xdef\cdp@list{\the\toks@}%
+%    \endgroup
+%    \global
+%    \@namedef{D@#1}{%
+%           \def\default@family{#2}%
+%           \def\default@series{#3}%
+%           \def\default@shape{#4}%
+%           }%
+%  \fi
+% }
+%\@onlypreamble\DeclareFontSubstitution
+%\def\DeclareFontEncodingDefaults#1#2{%
+%  \ifx\relax#1\else
+%    \ifx\default@T\@empty\else
+%      \@font@info{Overwriting encoding scheme text defaults}%
+%    \fi
+%    \gdef\default@T{#1}%
+%  \fi
+%  \ifx\relax#2\else
+%    \ifx\default@M\@empty\else
+%      \@font@info{Overwriting encoding scheme math defaults}%
+%    \fi
+%    \gdef\default@M{#2}%
+%  \fi
+%}
 
-\@onlypreamble\DeclareFontEncodingDefaults
-\let\default@T\@empty
-\let\default@M\@empty
-\def\DeclarePreloadSizes#1#2#3#4#5{%
- \@ifundefined{T@#1}%
-   {\@latex@error{Encoding scheme  `#1' unknown}\@eha}%
-   {%
-   \begingroup
-    \def\reserved@f##1,{%
-        \if>##1>%
-          \let\reserved@f\relax
-        \else
-          \xdef\font@name{\csname#1/#2/#3/#4/##1\endcsname}%
-          \pickup@font
-          \global\expandafter\let\font@name\relax
-        \fi
-        \reserved@f}%
-     \reserved@f#5,,%
-   \endgroup
-   }%
-}
+%\@onlypreamble\DeclareFontEncodingDefaults
+%\let\default@T\@empty
+%\let\default@M\@empty
+%\def\DeclarePreloadSizes#1#2#3#4#5{%
+% \@ifundefined{T@#1}%
+%   {\@latex@error{Encoding scheme  `#1' unknown}\@eha}%
+%   {%
+%   \begingroup
+%    \def\reserved@f##1,{%
+%        \if>##1>%
+%          \let\reserved@f\relax
+%        \else
+%          \xdef\font@name{\csname#1/#2/#3/#4/##1\endcsname}%
+%          \pickup@font
+%          \global\expandafter\let\font@name\relax
+%        \fi
+%        \reserved@f}%
+%     \reserved@f#5,,%
+%   \endgroup
+%   }%
+%}
 
-\@onlypreamble\DeclarePreloadSizes
-\newif\ifmath@fonts \math@fontstrue
-\def\DeclareMathSizes{%
-  \@ifstar{\@DeclareMathSizes\math@fontsfalse}%
-          {\@DeclareMathSizes{}}}
-\@onlypreamble\DeclareMathSizes
-\def\@DeclareMathSizes#1#2#3#4#5{%
-    \@defaultunits\dimen@#2pt\relax\@nnil
-    \if$#3$%
-      \expandafter \let
-        \csname S@\strip@pt\dimen@\endcsname
-        \math@fontsfalse
-    \else
-      \expandafter \gdef
-      \csname S@\strip@pt\dimen@\endcsname
-            {\gdef\tf@size{#3}\gdef\sf@size{#4}%
-                             \gdef\ssf@size{#5}%
-             #1%
-                             }%
-    \fi}
-\@onlypreamble\@DeclareMathSizes
+%\@onlypreamble\DeclarePreloadSizes
+%\newif\ifmath@fonts \math@fontstrue
+%\def\DeclareMathSizes{%
+%  \@ifstar{\@DeclareMathSizes\math@fontsfalse}%
+%          {\@DeclareMathSizes{}}}
+%\@onlypreamble\DeclareMathSizes
+%\def\@DeclareMathSizes#1#2#3#4#5{%
+%    \@defaultunits\dimen@#2pt\relax\@nnil
+%    \if$#3$%
+%      \expandafter \let
+%        \csname S@\strip@pt\dimen@\endcsname
+%        \math@fontsfalse
+%    \else
+%      \expandafter \gdef
+%      \csname S@\strip@pt\dimen@\endcsname
+%            {\gdef\tf@size{#3}\gdef\sf@size{#4}%
+%                             \gdef\ssf@size{#5}%
+%             #1%
+%                             }%
+%    \fi}
+%\@onlypreamble\@DeclareMathSizes
 
 
-\def\@@enc@update{%
-          \expandafter
-          \let
-            \csname\cf@encoding -cmd\endcsname
-            \@changed@cmd
-          \expandafter
-          \let
-            \csname\f@encoding-cmd\endcsname
-            \@current@cmd
-        \default@T
-        \csname T@\f@encoding\endcsname
-        \csname D@\f@encoding\endcsname
-        \let\enc@update\relax
-        \let\cf@encoding\f@encoding
-}
-\let\enc@update\relax
-\def\usefont#1#2#3#4{\fontencoding{#1}\fontfamily{#2}%
-             \fontseries{#3}\fontshape{#4}\selectfont
-             \ignorespaces}
-\let\f@family\@empty
-\let\f@series\@empty
-\let\f@shape\@empty
-\let\f@size\@empty
-\let\f@baselineskip\@empty
-\let\f@linespread\@empty
-\let\f@encoding\@empty
-\let\cf@encoding\@empty
-\def\@defaultunits{\afterassignment\remove@to@nnil}
+%\def\@@enc@update{%
+%          \expandafter
+%          \let
+%            \csname\cf@encoding -cmd\endcsname
+%            \@changed@cmd
+%          \expandafter
+%          \let
+%            \csname\f@encoding-cmd\endcsname
+%            \@current@cmd
+%        \default@T
+%        \csname T@\f@encoding\endcsname
+%        \csname D@\f@encoding\endcsname
+%        \let\enc@update\relax
+%        \let\cf@encoding\f@encoding
+%}
+%\let\enc@update\relax
+%\def\usefont#1#2#3#4{\fontencoding{#1}\fontfamily{#2}%
+%             \fontseries{#3}\fontshape{#4}\selectfont
+%             \ignorespaces}
+%\let\f@family\@empty
+%\let\f@series\@empty
+%\let\f@shape\@empty
+%\let\f@size\@empty
+%\let\f@baselineskip\@empty
+%\let\f@linespread\@empty
+%\let\f@encoding\@empty
+%\let\cf@encoding\@empty
+%\def\@defaultunits{\afterassignment\remove@to@nnil}
 
 \begingroup
   \catcode`P=12
@@ -3177,20 +3161,6 @@
 \def\cases#1{\left\{\,\vcenter{\normalbaselines\m@th
     \ialign{$##\hfil$&\quad{##}\hfil\crcr#1\crcr}}\right.}
 
-%\def\bordermatrix#1{\begingroup \m@th
-%  \@tempdima 8.75\p@
-%  \setbox\z@\vbox{%
-%    \def\cr{\crcr\noalign{\kern2\p@\global\let\cr\endline}}%
-%    \ialign{$##$\hfil\kern2\p@\kern\@tempdima&\thinspace\hfil$##$\hfil
-%      &&\quad\hfil$##$\hfil\crcr
-%      \omit\strut\hfil\crcr\noalign{\kern-\baselineskip}%
-%      #1\crcr\omit\strut\cr}}%
-%  \setbox\tw@\vbox{\unvcopy\z@\global\setbox\@ne\lastbox}%
-%  \setbox\tw@\hbox{\unhbox\@ne\unskip\global\setbox\@ne\lastbox}%
-%  \setbox\tw@\hbox{$\kern\wd\@ne\kern-\@tempdima\left(\kern-\wd\@ne
-%    \global\setbox\@ne\vbox{\box\@ne\kern2\p@}%
-%    \vcenter{\kern-\ht\@ne\unvbox\z@\kern-\baselineskip}\,\right)$}%
-%  \null\;\vbox{\kern\ht\@ne\box\tw@}\endgroup}
 \def\openup{\afterassignment\@penup\dimen@}
 \def\@penup{\advance\lineskip\dimen@
   \advance\baselineskip\dimen@
@@ -3201,9 +3171,6 @@
       \vskip-\lineskiplimit \vskip\normallineskiplimit \fi
       \else \penalty\interdisplaylinepenalty \fi}}}
 \def\@lign{\tabskip\z@skip\everycr{}} % restore inside \displ@y
-%\def\displaylines#1{\displ@y \tabskip\z@skip
-%  \halign{\hb@xt@\displaywidth{$\@lign\hfil\displaystyle##\hfil$}\crcr
-%    #1\crcr}}
 \let\sp=^
 \let\sb=_
 \def\>{\mskip\medmuskip}
@@ -3753,9 +3720,6 @@
   \@contfield}
 \newdimen\tabbingsep
 \def\extracolsep#1{\tabskip #1\relax}
-%\def\array{\let\@acol\@arrayacol \let\@classz\@arrayclassz
-% \let\@classiv\@arrayclassiv
-% \let\\\@arraycr\let\@halignto\@empty\@tabarray}
 
 \long\def\multicolumn#1#2#3{\multispan{#1}\begingroup
   \@mkpream{#2}%
@@ -4803,42 +4767,6 @@
 
 \def\@thehead{\@oddhead} % initialization
 \def\@thefoot{\@oddfoot}
-%\def\clearpage{%
-%  \ifvmode
-%    \ifnum \@dbltopnum =\m@ne
-%      \ifdim \pagetotal <\topskip
-%        \hbox{}%
-%      \fi
-%    \fi
-%  \fi
-%  \newpage
-%  \write\m@ne{}%
-%  \vbox{}%
-%  \penalty -\@Mi
-%}
-%% \def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
-%%    \hbox{}\newpage\if@twocolumn\hbox{}\newpage\fi\fi\fi}
-%% \def\onecolumn{%
-%%  \clearpage
-%%  \global\columnwidth\textwidth
-%%  \global\hsize\columnwidth
-%%  \global\linewidth\columnwidth
-%%  \global\@twocolumnfalse
-%%  \col@number \@ne
-%%  \@floatplacement}
-%%\def \@emptycol {\vbox{}\penalty -\@M}
-%%\def \twocolumn {%
-%%  \clearpage
-%%  \global\columnwidth\textwidth
-%%  \global\advance\columnwidth-\columnsep
-%%  \global\divide\columnwidth\tw@
-%%  \global\hsize\columnwidth
-%%  \global\linewidth\columnwidth
-%%  \global\@twocolumntrue
-%%  \global\@firstcolumntrue
-%%  \col@number \tw@
-%%  \@ifnextchar [\@topnewpage\@floatplacement
-%% }
 
 \let \@texttop \relax
 \let \@textbottom \relax
@@ -5030,178 +4958,6 @@
     \@cons\@flsucceed #1%
     \@tempdima\@tempdimb
   \fi}
-%% \def \@addtobot {%
-%%   \@getfpsbit 4\relax
-%%   \ifodd \@tempcnta
-%%     \@flsetnum \@botnum
-%%     \ifnum \@botnum>\z@
-%%       \@tempswafalse
-%%       \@flcheckspace \@botroom \@botlist
-%%       \if@tempswa
-%%         \global \maxdepth \z@
-%%         \@flupdates \@botnum \@botroom \@botlist
-%%         \@inserttrue
-%%       \fi
-%%     \fi
-%%   \fi
-%%}
-%%\def \@addtotoporbot {%
-%%   \@getfpsbit \tw@
-%%   \ifodd \@tempcnta
-%%     \@flsetnum \@topnum
-%%     \ifnum \@topnum>\z@
-%%       \@tempswafalse
-%%       \@flcheckspace \@toproom \@toplist
-%%       \if@tempswa
-%%         \@bitor\@currtype{\@midlist\@botlist}%
-%%         \if@test
-%%         \else
-%%          \@flupdates \@topnum \@toproom \@toplist
-%%          \@inserttrue
-%%         \fi
-%%       \fi
-%%     \fi
-%%   \fi
-%%   \if@insert
-%%   \else
-%%     \@addtobot
-%%   \fi
-%%}
-%%\def \@addtocurcol {%
-%%   \@insertfalse
-%%   \@setfloattypecounts
-%%   \ifnum \@fpstype=8
-%%   \else
-%%     \ifnum \@fpstype=24
-%%     \else
-%%       \@flsettextmin
-%%       \advance \@textmin \@textfloatsheight
-%%       \@reqcolroom \@pageht
-%%       \ifdim \@textmin>\@reqcolroom
-%%         \@reqcolroom \@textmin
-%%       \fi
-%%       \advance \@reqcolroom \ht\@currbox
-%%       \ifdim \@colroom>\@reqcolroom
-%%         \@flsetnum \@colnum
-%%         \ifnum \@colnum>\z@
-%%           \@bitor\@currtype\@deferlist
-%%           \if@test
-%%           \else
-%%             \@bitor\@currtype\@botlist
-%%             \if@test
-%%               \@addtobot
-%%             \else
-%%               \ifodd \count\@currbox
-%%                 \advance \@reqcolroom \intextsep
-%%                 \ifdim \@colroom>\@reqcolroom
-%%                   \global \advance \@colnum \m@ne
-%%                   \global \advance \@textfloatsheight \ht\@currbox
-%%                   \global \advance \@textfloatsheight 2\intextsep
-%%                   \@cons \@midlist \@currbox
-%%                   \if@nobreak
-%%                     \nobreak
-%%                     \@nobreakfalse
-%%                     \everypar{}%
-%%                   \else
-%%                     \addpenalty \interlinepenalty
-%%                   \fi
-%%                   \vskip \intextsep
-%%                   \box\@currbox
-%%                   \penalty\interlinepenalty
-%%                   \vskip\intextsep
-%%                   \ifnum\outputpenalty <-\@Mii \vskip -\parskip\fi
-%%                   \outputpenalty \z@
-%%                   \@inserttrue
-%%                 \fi
-%%               \fi
-%%               \if@insert
-%%               \else
-%%                 \@addtotoporbot
-%%               \fi
-%%             \fi
-%%           \fi
-%%         \fi
-%%       \fi
-%%     \fi
-%%   \fi
-%%   \if@insert
-%%   \else
-%%     \@resethfps
-%%     \@cons\@deferlist\@currbox
-%%   \fi
-%%}
-%%\def\@addtonextcol{%
-%%  \begingroup
-%%   \@insertfalse
-%%   \@setfloattypecounts
-%%   \ifnum \@fpstype=8
-%%   \else
-%%     \ifnum \@fpstype=24
-%%     \else
-%%      \@flsettextmin
-%%       \@reqcolroom \ht\@currbox
-%%       \advance \@reqcolroom \@textmin
-%%       \ifdim \@colroom>\@reqcolroom
-%%         \@flsetnum \@colnum
-%%         \ifnum\@colnum>\z@
-%%            \@bitor\@currtype\@deferlist
-%%            \if@test
-%%            \else
-%%              \@addtotoporbot
-%%            \fi
-%%         \fi
-%%       \fi
-%%     \fi
-%%   \fi
-%%   \if@insert
-%%   \else
-%%     \@cons\@deferlist\@currbox
-%%   \fi
-%%  \endgroup
-%%}
-%%\def\@addtodblcol{%
-%%  \begingroup
-%%   \@insertfalse
-%%   \@setfloattypecounts
-%%   \@getfpsbit \tw@
-%%   \ifodd\@tempcnta
-%%     \@flsetnum \@dbltopnum
-%%     \ifnum \@dbltopnum>\z@
-%%       \@tempswafalse
-%%       \ifdim \@dbltoproom>\ht\@currbox
-%%         \@tempswatrue
-%%       \else
-%%         \ifnum \@fpstype<\sixt@@n
-%%           \advance \@dbltoproom \@textmin
-%%           \ifdim \@dbltoproom>\ht\@currbox
-%%             \@tempswatrue
-%%           \fi
-%%           \advance \@dbltoproom -\@textmin
-%%         \fi
-%%       \fi
-%%       \if@tempswa
-%%           \@bitor \@currtype \@dbldeferlist
-%%           \if@test
-%%           \else
-%%              \@tempdima -\ht\@currbox
-%%              \advance\@tempdima
-%%                -\ifx \@dbltoplist\@empty \dbltextfloatsep \else
-%%                                          \dblfloatsep \fi
-%%              \global \advance \@dbltoproom \@tempdima
-%%              \global \advance \@colht \@tempdima
-%%              \global \advance \@dbltopnum \m@ne
-%%              \@cons \@dbltoplist \@currbox
-%%              \@inserttrue
-%%           \fi
-%%       \fi
-%%     \fi
-%%   \fi
-%%   \if@insert
-%%   \else
-%%     \@cons\@dbldeferlist\@currbox
-%%   \fi
-%%  \endgroup
-%%}
 
 \def\@addmarginpar{\@next\@marbox\@currlist{\@cons\@freelist\@marbox
     \@cons\@freelist\@currbox}\@latexbug\@tempcnta\@ne
@@ -5445,36 +5201,6 @@
     \ifin@\else\let\reserved@a\@secondoftwo\fi}%
   \reserved@a}
 \@onlypreamble\@if@pti@ns
-%%\def\ProvidesPackage#1{%
-%%  \xdef\@gtempa{#1}%
-%% \ifx\@gtempa\@currname\else
-%%    \@latex@warning@no@line{You have requested
-%%      \@cls@pkg\space`\@currname',\MessageBreak
-%%       but the \@cls@pkg\space provides `#1'}%
-%%  \fi
-%%  \@ifnextchar[\@pr@videpackage{\@pr@videpackage[]}}%]
-%%\@onlypreamble\ProvidesPackage
-%%\def\@pr@videpackage[#1]{%
-%%  \expandafter\xdef\csname ver@\@currname.\@currext\endcsname{#1}%
-%%  \ifx\@currext\@clsextension
-%%    \typeout{Document Class: \@gtempa\space#1}%
-%%  \else
-%%    \wlog{Package: \@gtempa\space#1}%
-%%  \fi}
-%%\@onlypreamble\@pr@videpackage
-%%\let\ProvidesClass\ProvidesPackage
-%%\@onlypreamble\ProvidesClass
-%%\def\ProvidesFile#1{%
-%%  \begingroup
-%%    \catcode`\ 10 %
-%%    \ifnum \endlinechar<256 %
-%%      \ifnum \endlinechar>\m@ne
-%%        \catcode\endlinechar 10 %
-%%      \fi
-%%    \fi
-%%    \@makeother\/%
-%%    \@makeother\&%
-%%    \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
 
 \def\@pass@ptions#1#2#3{\relax}
 
