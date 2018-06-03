@@ -1561,7 +1561,7 @@ TNODE* LaTeX2MMLTree::Function2MML( TNODE* src_tex_func,
     UidsTozuID( 8,usubtype,2,(U8*)zuID );
     TNODE* name_bucket  =  FindObject( src_tex_func->parts,
                       (U8*)zuID,INVALID_LIST_POS );
-  if ( name_bucket ) {
+  if ( name_bucket && name_bucket->contents ) {
       U8* func_name =  GetFuncName( name_bucket->contents );
     if ( !strcmp((char*)func_name,"mod") ) {
         mml_rv  =  MakeTNode( 0L,0L,src_tex_func->src_linenum,
@@ -1633,15 +1633,18 @@ TNODE* LaTeX2MMLTree::Function2MML( TNODE* src_tex_func,
 // \limfunc<uID8.3.1>!\limfunc!REQPARAM(8.3.2,NONLATEX)_LIMPLACE__FIRSTLIM__SECONDLIM_
     TNODE* name_bucket  =  FindObject( src_tex_func->parts,
                                 (U8*)"8.3.2",INVALID_LIST_POS );
+    if (name_bucket && name_bucket->contents){
       func_name =  GetFuncName( name_bucket->contents );
+    }
   } else {
     U16 zln   =  strlen( (char*)src_tex_func->src_tok );
     func_name =  (U8*)TCI_NEW( char[zln] );
     strcpy( (char*)func_name,(char*)src_tex_func->src_tok + 1 );
     }
-
-    mml_rv  =  LimFunc2MML( src_tex_func,func_name,
-                                usubtype,uID,out_of_flow_list );
+    if (func_name){
+      mml_rv  =  LimFunc2MML( src_tex_func,func_name,
+			      usubtype,uID,out_of_flow_list );
+    }
     tex_nodes_done  =  1;
   }
 
@@ -8323,7 +8326,10 @@ typedef struct tagDETAILS {
 void LaTeX2MMLTree::SetDetailNum( TNODE* mml_tnode,
                   U16 field_ID,I16 num ) {
 
-TCI_ASSERT( num != UNDEFINED_DETAIL );
+  if (! mml_tnode)
+    return;
+  
+  TCI_ASSERT( num != UNDEFINED_DETAIL );
   DETAILS* info =  mml_tnode->details;
   if ( !info ) {
     info =  (DETAILS*)TCI_NEW( char[ sizeof(DETAILS) ] );
@@ -12743,7 +12749,7 @@ TNODE* LaTeX2MMLTree::LimFunc2MML( TNODE* tex_limfunc_node,
 // div, grad, curl
   } else if ( is_varlim ) {
 // it's an operator
-  } else if ( IdentifierInList(vars_list,limfunc_name) ) {
+  } else if ( limfunc_name && IdentifierInList(vars_list,limfunc_name) ) {
       is_variable =  TRUE;
   } else {
       TNODE* nn =  tex_limfunc_node->next;
