@@ -1396,7 +1396,8 @@ TNODE* LaTeX2MMLTree::AbsorbMSpaces( TNODE* MML_list ) {
     &&   rover->details->space_width != UNDEFINED_DETAIL ) {
       I16 em_teenths  =  rover->details->space_width;
 // Arbitrary cutoff here - spaces wider than 5/18's em aren't absorbed.
-      if ( -3 <= em_teenths && em_teenths <= 5 && em_teenths != 0 ) {
+      // jcs - changed cutoff to 2/18's so thinspaces are not absorbed
+      if ( -3 <= em_teenths && em_teenths <= 2 && em_teenths != 0 ) {
         U16 uobj,usub,id;
         GetUids( rover->zuID,uobj,usub,id );
         if ( uobj == 9 && usub == 20 && id == 0 ) {
