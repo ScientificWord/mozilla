@@ -1076,6 +1076,11 @@
   \everypar{^^0a\msihmode\msiopentag{bodyText}{<bodyText>}}%
 }
 
+\def\setlength#1#2{%
+  \msihmode
+  \msitag{<texb xmlns="http://www.w3.org/1999/xhtml" enc="1" name="}\msiattrib{\setlength #1}\msitag{"><![CDATA[\setlength#1{#2}]]></texb>}%
+}
+
 
 \everymath{%
    %\catcode`\&=13 %
@@ -2466,9 +2471,18 @@
    \msiclosetag{msiframe}{</msiframe>}}
 
 
-\def\caption{\msi@caption}
+\def\caption{\@ifnextchar[\msi@captiona\msi@captionb}
 
-\def\msi@caption#1{%
+\def\msi@captiona[#1]#2{%
+  \msiopentag{imagecaption}{<imagecaption align="bottom">}%
+    \msiopentag{shortCaption}{<shortCaption>}%
+      #1%
+    \msiclosetag{shortCaption}{</shortCaption>}%
+    #2
+  \msiclosetag{imagecaption}{</imagecaption>}% 
+}
+
+\def\msi@captionb#1{%
   \msiopentag{imagecaption}{<imagecaption align="bottom">}%
   #1%
   \msiclosetag{imagecaption}{</imagecaption>}}
