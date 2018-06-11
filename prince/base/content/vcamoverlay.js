@@ -280,7 +280,12 @@ VCamObject.prototype = {
   },
 
   setActionSpeed: function(factor) {
-    this.obj.actionSpeed = this.actionSpeed = factor;
+    try {
+      this.obj.actionSpeed = this.actionSpeed = factor;
+    }
+    catch(e) {
+      msidump("exception: "+e.message);
+    }
   },
 
   // define mouse handlers
