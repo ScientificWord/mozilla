@@ -404,8 +404,8 @@ function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent
             msidump(node.nodeValue.slice(0, focoffset) + '<selection focus>' + node.nodeValue.slice(focoffset) + '\n', indent);
           } else {
             var s = node.nodeValue;
-            var t = s.replace(/^\s*/, '');
-            var r = t.replace(/\s*$/, '');
+            var t = s.replace(/^[ \f\n\r\t\v]*/, '');
+            var r = t.replace(/[ \f\n\r\t\v]*$/, '');
             if (r.length > 0) {
               msidump(r + '\n', indent);
             } else
@@ -475,37 +475,37 @@ function GetString(name) {
 function TrimStringLeft(string) {
   if (!string)
     return '';
-  return string.replace(/^\s+/, '');
+  return string.replace(/^[ \f\n\r\t\v]+/, '');
 }
 function TrimStringRight(string) {
   if (!string)
     return '';
-  return string.replace(/\s+$/, '');
+  return string.replace(/[ \f\n\r\t\v]+$/, '');
 }
 // Remove whitespace from both ends of a string
 function TrimString(string) {
   if (!string)
     return '';
-  return string.replace(/(^\s+)|(\s+$)/g, '');
+  return string.replace(/(^[ \f\n\r\t\v]+)|([ \f\n\r\t\v]+$)/g, '');
 }
 function IsWhitespace(string) {
   // BBM: WARNING: this tests only for an initial white space character
-  // To test for all white space, use /^\s*$/.test()
+  // To test for all white space, use /^[ \f\n\r\t\v]*$/.test()
   // I haven't changed this since I don't know yet how Ron used it.
-  return /^\s/.test(string);
+  return /^[ \f\n\r\t\v]/.test(string);
 }
 function TruncateStringAtWordEnd(string, maxLength, addEllipses) {
   // Return empty if string is null, undefined, or the empty string
   if (!string)
     return '';
   // We assume they probably don't want whitespace at the beginning
-  string = string.replace(/^\s+/, '');
+  string = string.replace(/[ \f\n\r\t\v]+/, '');
   if (string.length <= maxLength)
     return string;
   // We need to truncate the string to maxLength or fewer chars
   if (addEllipses)
     maxLength -= 3;
-  string = string.replace(RegExp('(.{0,' + maxLength + '})\\s.*'), '$1');
+  string = string.replace(RegExp('(.{0,' + maxLength + '})[ \\f\\n\\r\\t\\v].*'), '$1');
   if (string.length > maxLength)
     string = string.slice(0, maxLength);
   if (addEllipses)
@@ -516,13 +516,13 @@ function TruncateStringAtWordEnd(string, maxLength, addEllipses) {
 // E.g.: Use charReplace = " ", to "unwrap" the string by removing line-end chars
 //       Use charReplace = "_" when you don't want spaces (like in a URL)
 function ReplaceWhitespace(string, charReplace) {
-  return string.replace(/(^\s+)|(\s+$)/g, '').replace(/\s+/g, charReplace);
+  return string.replace(/(^[ \f\n\r\t\v]+)|([ \f\n\r\t\v]+$)/g, '').replace(/[ \f\n\r\t\v]+/g, charReplace);
 }
 // Replace whitespace with "_" and allow only HTML CDATA
 //   characters: "a"-"z","A"-"Z","0"-"9", "_", ":", "-", ".",
 //   and characters above ASCII 127
 function ConvertToCDATAString(string) {
-  return string.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_\.\-\:\u0080-\uFFFF]+/g, '');
+  return string.replace(/[ \f\n\r\t\v]+/g, '_').replace(/[^a-zA-Z0-9_\.\-\:\u0080-\uFFFF]+/g, '');
 }
 function msiGetSelectionAsText(editorElement) {
   if (!editorElement)
@@ -8196,7 +8196,7 @@ var msiNavigationUtils = {
     }
     return this.m_DOMUtils.isIgnorableWhitespace(node);
   },
-  mWhiteSpaceTestRE: /^\s*$/,
+  mWhiteSpaceTestRE: /^[ \f\n\r\t\v]*$/,
   isWhiteSpace: function (aTextPiece) {
     return this.mWhiteSpaceTestRE.test(aTextPiece);
   },
@@ -10375,7 +10375,7 @@ function getResourceFile(name, resdirname) {
   }
   return resfile;
 }
-var wordSep = /\s+/;
+var wordSep = /[ \f\n\r\t\v]+/;
 // this needs to be localizable BBM
 function countNodeWords(node)
   //the intent is to count words in a text node
@@ -10810,11 +10810,11 @@ function decodeEntities(instring) {
   return instring.replace(/&amp;|&quot;|&lt;|&gt;/g, reversereplacer, 'g');
 }
 function isEmptyText(textnode) {
-  return !/\S/.test(textnode.textContent);
+  return /^[ \f\n\r\t\v]*$/.test(textnode.textContent);
 }
 
 function trimend(str) {
-  return str.replace(/\s+$/,'');
+  return str.replace(/[ \f\n\r\t\v]+$/,'');
 }
 
 /* ELEMENT_NODE =1 */
@@ -10854,7 +10854,7 @@ function processElement(editor, node, treeWalker, output, currentline, indent, s
 function processText(node, output, currentline, state) {
   var s = node.textContent;
   if (!state.preserveSpacing) {
-    s = s.replace(/\s+/, ' ', 'g');
+    s = s.replace(/[ \f\n\r\t\v]+/, ' ', 'g');
   }
   if (!isEmptyText(node))
     currentline.s += encodeEntities(s);

@@ -319,7 +319,7 @@
 			<xbl:parameter name="aNode"/>
 			<xbl:body>
 				<![CDATA[
-					var whiteSpaceRE = /^\s+$/;
+					var whiteSpaceRE = /^[ \f\n\r\t\v]+$/;
 					if (aNode.nodeName == "#text")
 					{
 						if (whiteSpaceRE.test(aNode.textContent))

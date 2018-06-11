@@ -143,25 +143,25 @@ function GetString(name)
 function TrimStringLeft(string)
 {
   if(!string) return "";
-  return string.replace(/^\s+/, "");
+  return string.replace(/^[ \f\n\r\t\v]+/, "");
 }
 
 function TrimStringRight(string)
 {
   if (!string) return "";
-  return string.replace(/\s+$/, '');
+  return string.replace(/[ \f\n\r\t\v]+$/, '');
 }
 
 // Remove whitespace from both ends of a string
 function TrimString(string)
 {
   if (!string) return "";
-  return string.replace(/(^\s+)|(\s+$)/g, '');
+  return string.replace(/(^[ \f\n\r\t\v]+)|([ \f\n\r\t\v]+$)/g, '');
 }
 
 function IsWhitespace(string)
 {
-  return (/^\s/).test(string);
+  return (/^[ \f\n\r\t\v]/).test(string);
 }
 
 function TruncateStringAtWordEnd(string, maxLength, addEllipses)
@@ -171,7 +171,7 @@ function TruncateStringAtWordEnd(string, maxLength, addEllipses)
     return "";
 
   // We assume they probably don't want whitespace at the beginning
-  string = string.replace(/^\s+/, '');
+  string = string.replace(/^[ \f\n\r\t\v]+/, '');
   if (string.length <= maxLength)
     return string;
 
@@ -201,7 +201,7 @@ function ReplaceWhitespace(string, charReplace)
 //   and characters above ASCII 127
 function ConvertToCDATAString(string)
 {
-  return string.replace(/\s+/g,"_").replace(/[^a-zA-Z0-9_\.\-\:\u0080-\uFFFF]+/g,'');
+  return string.replace(/[ \f\n\r\t\v]+/g,"_").replace(/[^a-zA-Z0-9_\.\-\:\u0080-\uFFFF]+/g,'');
 }
 
 function GetSelectionAsText()
