@@ -1,6 +1,7 @@
 <!-- Copyright (c) 2009 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!ENTITY windowTitle.label "## properties">
+<!ENTITY windowcaption.label "caption properties">
 <!ENTITY structureproperties.label "## properties">
 <!ENTITY subdocCheckBox.label "Keep as an included subdocument">
 <!ENTITY subdocCheckBox.accesskey "K">
@@ -11,6 +12,9 @@
 <!ENTITY numberedCheckbox.accesskey "N">
 <!ENTITY sectionShortHeader.label "Short title">
 <!ENTITY sectionShortHeader.accesskey "S">
+<!ENTITY captionShortHeader.label "Short caption">
+<!ENTITY captionShortHeader.accesskey "S">
 <!ENTITY format.label "Format">
 <!ENTITY shorttitle.label "Short title">
+<!ENTITY shortcaption.label "Short caption">
 
