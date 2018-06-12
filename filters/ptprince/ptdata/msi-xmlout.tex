@@ -480,7 +480,13 @@
 \def\@titleb#1{%
    \msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}
 
-\def\author#1{\gdef\@author{#1}\out@author{#1}}
+% \def\author#1{\gdef\@author{#1}\out@author{#1}}
+\def\author#{%
+    \msiopentag{author}{<author>}%
+    \aftergroup\@closeauthor}
+
+\def\@closeauthor{%
+  \msiclosetag{author}{</author>}}
 
 \def\date{\@ifnextchar[{\dateA}{\dateB}}
 \def\dateA[#1]#2{%
