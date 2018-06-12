@@ -10565,11 +10565,13 @@ function openStructureTagDialog(tagname, node, editorElement) {
 }
 
 function openParaTagDialog(tagname, node, editorElement) {
+  var propertyname;
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  if (tagname === "title") {
-    msiDoModelessPropertiesDialog("chrome://prince/content/titleProperties.xul",
-      "titleproperties", "chrome,close,titlebar,resizable, dependent", editorElement,
+  if (tagname === "title" || tagname === "imagecaption") {
+    propertyname = tagname === "title"?"title":"caption";
+    msiDoModelessPropertiesDialog("chrome://prince/content/"+propertyname+"Properties.xul",
+      propertyname+"titleproperties", "chrome,close,titlebar,resizable, dependent", editorElement,
       "cmd_reviseParagraphNode", node, node);
   } else {
     msiDoModelessPropertiesDialog("chrome://prince/content/paragraphproperties.xul",
