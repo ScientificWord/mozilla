@@ -683,7 +683,9 @@
 </xsl:template>
 
 
-<xsl:template match="*" mode="shortTitle"></xsl:template>
+<xsl:template match="*" mode="shortTitle">
+  <xsl:apply-templates mode="shortTitle"/>
+</xsl:template>
 <xsl:template match="*/text()" mode="shortTitle"></xsl:template>
 <xsl:template match="html:shortTitle"></xsl:template>
 <xsl:template match="html:shortTitle" mode="shortTitle">[<xsl:apply-templates/>]</xsl:template>
