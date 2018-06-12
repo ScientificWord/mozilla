@@ -223,6 +223,8 @@ prince.jar:
   content/paragraphproperties.js     (dialogs/paragraphProperties.js)
 *  content/titleProperties.xul       (dialogs/titleProperties.xul)
 *  content/titleproperties.js        (dialogs/titleproperties.js)
+*  content/captionproperties.xul     (dialogs/captionproperties.xul)
+*  content/captionproperties.js      (dialogs/captionproperties.js)
 * content/structureproperties.xul    (dialogs/structureProperties.xul)
   content/structureproperties.js     (dialogs/structureproperties.js)
   content/viewTeXSource.js           (dialogs/viewTeXSource.js)
