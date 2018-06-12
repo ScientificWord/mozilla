@@ -3,7 +3,11 @@
     <xsl:apply-templates/>
   </xsl:template>
   <xsl:template match="html:imagecaption" mode="doit">
+    <xsl:text>\caption</xsl:text>
+    <xsl:apply-templates mode="shortTitle"/>
+    <xsl:text>{</xsl:text>
     <xsl:apply-templates/>
+    <xsl:text>}</xsl:text>
   </xsl:template>
   <xsl:template match="html:imagecaption"/>
   <xsl:template match="html:msiframe">
@@ -175,13 +179,9 @@
       <!-- xsl:when test="($framePosType='ft-inline') and (@frametype='image')"><xsl:text>\parbox[b]{</xsl:text><xsl:value-of select="$width"/><xsl:value-of select="$units"/><xsl:text>}{ %</xsl:text><xsl:value-of select="$newline"/><xsl:text>\begin{center}</xsl:text></xsl:when -->
     </xsl:choose>
     <xsl:if test="$captionloc=1">
-      <xsl:if test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
-        <xsl:text>\caption{</xsl:text>
-      </xsl:if>
-      <xsl:apply-templates mode="doit" select="html:imagecaption"/>
       <xsl:choose>
         <xsl:when test="$framePosType='ft-floating' or ($framePosType='ft-wrapped')">
-          <xsl:text>}</xsl:text>
+          <xsl:apply-templates mode="doit" select="html:imagecaption"/>
           <xsl:if test="./*[@key]">
             <xsl:text>\label{</xsl:text>
             <xsl:value-of select="./*[@key]/@key[1]"/>
@@ -189,6 +189,7 @@
           </xsl:if>
         </xsl:when>
         <xsl:otherwise>
+          <xsl:apply-templates mode="doit" select="html:imagecaption"/>
           <xsl:text>\\ </xsl:text>
         </xsl:otherwise>
       </xsl:choose>
@@ -284,16 +285,7 @@
     <xsl:if test="$captionloc=2">
       <xsl:choose>
         <xsl:when test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
-          <xsl:text>\caption{</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>\\ </xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:apply-templates mode="doit" select="html:imagecaption"/>
-      <xsl:choose>
-        <xsl:when test="($framePosType='ft-floating') or ($framePosType='ft-wrapped')">
-          <xsl:text>}</xsl:text>
+          <xsl:apply-templates mode="doit" select="html:imagecaption"/>
           <xsl:if test="./*[@key]">
             <xsl:text>\label{</xsl:text>
             <xsl:value-of select="./*[@key]/@key[1]"/>
@@ -301,6 +293,7 @@
           </xsl:if>
         </xsl:when>
         <xsl:otherwise>
+          <xsl:apply-templates mode="doit" select="html:imagecaption"/>
           <xsl:text>\\ </xsl:text>
         </xsl:otherwise>
       </xsl:choose>
