@@ -349,8 +349,6 @@
               <mml:math>
                 <mml:mi tempinput="true">
                   <cursor/>
-                   
-
                 </mml:mi>
               </mml:math>
               <br/>
@@ -1789,7 +1787,7 @@
           <contains>#text</contains>
         </tag>
         <tag nm="shortTitle">
-          <description>Short section title</description>
+          <description>Short section title or caption</description>
           <contains>#text</contains>
           <contains>texttag</contains>
           <contains>othertag</contains>
