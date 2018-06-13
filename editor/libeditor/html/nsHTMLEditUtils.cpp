@@ -251,6 +251,7 @@ nsHTMLEditUtils::IsTableElement(nsIDOMNode *node, msiITagListManager * manager)
     || (nodeAtom == nsEditProperty::tfoot)
     || (nodeAtom == nsEditProperty::tbody)
     || (nodeAtom == nsEditProperty::caption);
+    || (nodeAtom == nsEditProperty::caption2);
 // BBM: do we want to add the mtable elements?
 }
 
