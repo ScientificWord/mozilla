@@ -8478,7 +8478,12 @@ var msiNavigationUtils = {
     var isSingleNode = (selection.anchorNode === selection.focusNode) &&
       Math.abs(selection.anchorOffset - selection.focusOffset);
     if (isSingleNode) {
-      return selection.anchorNode.childNodes[Math.min(selection.anchorOffset, selection.focusOffset)];
+      try {
+        return selection.anchorNode.childNodes[Math.min(selection.anchorOffset, selection.focusOffset)];
+      }
+      catch(e) {
+        msidump('Exception: '+e.message);
+      }
     }
     return selection.getRangeAt(0).commonAncestorContainer;
   },

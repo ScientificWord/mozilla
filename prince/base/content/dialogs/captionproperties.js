@@ -10,7 +10,7 @@ function startup()
   var tagName = shortNameNode?shortNameNode.nodeName:'';
 
   document.title = "Title";
-  var shortFormStr=''z;
+  var shortFormStr ='';
   shortFormEditor = document.getElementById("captionShortEdit");
   try {
     if (shortNameNode)
