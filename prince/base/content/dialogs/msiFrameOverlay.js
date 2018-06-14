@@ -619,7 +619,7 @@ function getColorAndUpdate(id)
   var colorObj = { NoDefault:true, Type:"Rule", TextColor:color, PageColor:0, Cancel:false };
 
   window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
-
+  markDocumentChanged(editorElement);
   // User canceled the dialog
   if (colorObj.Cancel)
     return;

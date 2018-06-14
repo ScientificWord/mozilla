@@ -2581,6 +2581,7 @@ function textEditor()
   // sectitleformat.currentLevel = secname.toLowerCase();
   // window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,resizable,chrome,close,titlebar,alwaysRaised", sectitleformat,
   //     secname, units);
+  // markDocumentChanged(editorElement);
   // displayTextForSectionHeader();
 }
 
