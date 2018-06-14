@@ -247,6 +247,7 @@ function getColorAndUpdate(id)
     return;
 
   setColorWell(id, colorObj.TextColor); 
+  markDocumentChanged(editorElement);
 }
 
 function getColorWell(colorWellId)

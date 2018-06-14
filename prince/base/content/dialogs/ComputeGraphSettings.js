@@ -854,6 +854,7 @@ function openVariablesAndIntervalsDlg()
 {
   var graphData = new graphVarData(graph);
   openDialog('chrome://prince/content/intervalsAndAnimation.xul', 'Plot Intervals and Animation', 'chrome,close,titlebar,modal,resizable', graphData);
+  markDocumentChanged(editorElement);
 }
 
 function openAnimationSettingsDlg()
@@ -893,6 +894,7 @@ function openAxisFontSettingsDlg()
         graph.markUserSet(attrName, false);
       }
     }
+    markDocumentChanged(editorElement);
   }
 }
 
@@ -937,12 +939,14 @@ function openAxisTickFontSettingsDlg()
         graph.markUserSet(attrName, false);
       }
     }
+    markDocumentChanged(editorElement);
   }
 }
 
 function openPlotLabelsDlg()
 {
   openDialog('chrome://prince/content/plotLabelsDlg.xul', 'Plot Labels', 'chrome,close,titlebar,modal,resizable', graph);
+  markDocumentChanged(editorElement);
 }
 
 function makeAxisLabelCustom(control)

@@ -3039,6 +3039,7 @@ function msiEditorSelectColor(colorType, mouseEvent, editorElement) {
     // User canceled the dialog
     if (editorElement.mColorObj.Cancel)
       return;
+    markDocumentChanged(editorElement);
   }
 
   if (editorElement.mColorObj.Type == "Text") {
@@ -9281,6 +9282,7 @@ function msiEditorInsertOrEditTable(insertAllowed, editorElement, command, comma
       "modal, chrome,resizable,close,titlebar,dependent", editorElement,
       command, commandHandler, theData);
     //      window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal", "","TablePanel");
+    markDocumentChanged(editorElement);
     editorElement.contentWindow.focus();
   } else if (insertAllowed) {
     try {
@@ -10558,6 +10560,7 @@ function openStructureTagDialog(tagname, node, editorElement) {
   msiDoModelessPropertiesDialog("chrome://prince/content/structureproperties.xul",
     "structureproperties", "chrome,close,titlebar,resizable, dependent", editorElement,
     "cmd_reviseStructureNode", node, node);
+  markDocumentChanged(editorElement);
   // openDialog( "chrome://prince/content/structureproperties.xul",
   //                             "structureproperties",
   //                             "chrome, close, titlebar, resizable, dependent",
@@ -10578,6 +10581,7 @@ function openParaTagDialog(tagname, node, editorElement) {
       "paraproperties", "chrome,close,titlebar,resizable, dependent", editorElement,
       "cmd_reviseParagraphNode", node, node);
   }
+  markDocumentChanged(editorElement);
 }
 
 function openEnvTagDialog(tagname, aNode, editorElement) {
@@ -10610,6 +10614,7 @@ function openEnvTagDialog(tagname, aNode, editorElement) {
       "chrome,close,titlebar,resizable, dependent",
       editorElement, "cmd_reviseEnvNode", aNode, aNode);
   }
+  markDocumentChanged(editorElement);
   thmList.detach();
 }
 
@@ -10677,6 +10682,7 @@ function openGraphDialog(tagname, node, editorElement) {
   var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "plotdialog",
     "chrome,close,resizable,titlebar,dependent,alwaysraised",
     editorElement, "cmd_objectProperties", node);
+  markDocumentChanged(editorElement);
   // why find it again???  var editorElement = msiGetActiveEditorElement();
   document.getElementById("vcamactive").setAttribute("hidden", "true");
   markDocumentChanged(editorElement);

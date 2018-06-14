@@ -35,7 +35,7 @@ function plotStartup() {
         default:
           populatePopupMenu (alist[i], window.arguments[0].getPlotValue (alist[i], plotno));
           break;
-	  }
+    }
     } else if (alist[i] == "LineColor") {
       var oldval = window.arguments[0].getPlotValue (alist[i], plotno);   
       var colorstr = "background-color: " + oldval;
@@ -120,7 +120,7 @@ function plotOK () {
           }                                                                
           break;
       }                                                                   
-	}
+  }
   }
   return true;
 }
@@ -141,8 +141,8 @@ function GetPlotColor (attributeName)
   if (colorObj.Cancel)
     return;
   else {
-		markDocumentChanged();
-	}
+    markDocumentChanged();
+  }
   var color = colorObj.TextColor;
 //  dump ("SMR in GetPlotColor setting the color to " + color + "\n");
   window.arguments[0].setPlotAttribute (attributeName, plotno, color);

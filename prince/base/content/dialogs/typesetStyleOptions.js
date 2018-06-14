@@ -60,7 +60,7 @@ function InitDialog()
   fillOptionsListbox();
   if (gDialog.optionsListbox.getRowCount() > 0)
   {
-	  gDialog.optionsListbox.selectedIndex = 0;
+    gDialog.optionsListbox.selectedIndex = 0;
     changeOptionSelection();
   }
 //  checkDisabledControls();
@@ -102,7 +102,7 @@ function setWindowTitle(packageName)
   theTitle = theTitle.replace(replaceNameStr, gDialog.theName);
   var typeStr = strBundle.getString("ClassTypeString");
   if (gDialog.isPackage)
-	  typeStr = strBundle.getString("PackageTypeString");
+    typeStr = strBundle.getString("PackageTypeString");
   theTitle = theTitle.replace(replaceTypeStr, typeStr);
   document.documentElement.setAttribute("title", theTitle);
 }
@@ -118,8 +118,8 @@ function doGoNative()
     gDialog.currentOptionsDescription.value = gDialog.selectedOptionsArray.join(",");
   }
   else {
-		markDocumentChanged();
-	}
+    markDocumentChanged();
+  }
 
 }
 
@@ -158,20 +158,20 @@ function setSelectedOptionChoice()
     {
       nFound = findInArray(gDialog.selectedOptionsArray, thisItem.value);
       if (nFound >= 0)
-	    {
-		    bFound = true;
+      {
+        bFound = true;
         if ((gDialog.currSelectedChoices.indexOf(thisItem.value) < 0) )
           gDialog.currSelectedChoices.push( thisItem.value );
-		    gDialog.choicesListbox.addItemToSelection(thisItem);
-	    }
+        gDialog.choicesListbox.addItemToSelection(thisItem);
+      }
     }
   }
 //  if (!bFound)
 //  {
 //    if (nDefault >= 0)
 //    {
-//	    var theItem = gDialog.choicesListbox.getItemAtIndex(nDefault);
-//      //gDialog.currSelectedChoices.push( theItem.value );	if this is the default option, we don't want to add anything to the string
+//      var theItem = gDialog.choicesListbox.getItemAtIndex(nDefault);
+//      //gDialog.currSelectedChoices.push( theItem.value );  if this is the default option, we don't want to add anything to the string
 //      gDialog.choicesListbox.addItemToSelection( theItem );
 //    }
 //  }
@@ -195,7 +195,7 @@ function fillOptionsListbox()
   {
     gDialog.optionsListbox.appendItem(anOption, anOption);
   }
-//  gDialog.optionsListbox.setAttribute("ref", ourRDFRoot);	 //global variable defined at top
+//  gDialog.optionsListbox.setAttribute("ref", ourRDFRoot);  //global variable defined at top
 //  gDialog.optionsListbox.builder.rebuild();  //Need this??
   gDialog.bInternalMessage = false;
 }
@@ -268,8 +268,8 @@ function replaceStringsInArray(theArray, oldStrings, newStrings)
   var diffObj = diffArrays(oldStrings, newStrings);
   for (var i = theArray.length - 1; (i >= 0) && (diffObj.removeArray.length > 0); --i)
   {
-	  if ( (removePos = diffObj.removeArray.indexOf(theArray[i])) >= 0 )  //we've arrived at one to remove   
-	  {
+    if ( (removePos = diffObj.removeArray.indexOf(theArray[i])) >= 0 )  //we've arrived at one to remove   
+    {
       if (diffObj.addArray.length > 0)
       {
         theArray.splice( i, 1, diffObj.addArray[0] );
@@ -278,7 +278,7 @@ function replaceStringsInArray(theArray, oldStrings, newStrings)
       else
         theArray.splice( i, 1 );
       diffObj.removeArray.splice( removePos, 1 );
-	  }
+    }
   }
   theArray = theArray.concat( diffObj.addArray );
   return theArray;
@@ -292,7 +292,7 @@ function changeOptionChoice()
   var stringArray = new Array();
   for (var i = 0; i < gDialog.choicesListbox.selectedItems.length; ++i)
   {
-	  if (gDialog.choicesListbox.selectedItems[i].value.length > 0)
+    if (gDialog.choicesListbox.selectedItems[i].value.length > 0)
       stringArray.push(gDialog.choicesListbox.selectedItems[i].value);
   }
   gDialog.selectedOptionsArray = replaceStringsInArray(gDialog.selectedOptionsArray, gDialog.currSelectedChoices, stringArray);

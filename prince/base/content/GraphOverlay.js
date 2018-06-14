@@ -2201,6 +2201,7 @@ function graphObjectClickEvent(cmdstr, element, editorElement) {
   catch (exc) {
     AlertWithTitle("Error in GraphOverlay.js", "Error in graphObjectClickEvent: " + exc);
   }
+  markDocumentChanged(editorElement);
 }
 function addGraphElementToDocument(DOMGraphNode, siblingNode, editorElement) {
   /** ---------------------------------------------------------------------------------*/
@@ -2240,6 +2241,7 @@ function formatRecreateGraph(DOMGraph, commandStr, editorElement) {
   //                     "", "chrome,close,titlebar,dependent", editorElement, commandStr, DOMGraph, extraArgsArray);
   var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "plotdialog", "chrome,close,titlebar,resizable,dependent,alwaysraised", editorElement, commandStr, DOMGraph);
   document.getElementById("vcamactive").setAttribute("hidden", "true");
+  markDocumentChanged(editorElement);
   return;
 }
 function nonmodalRecreateGraph(graph, DOMGraph, editorElement) {
