@@ -250,7 +250,7 @@ nsHTMLEditUtils::IsTableElement(nsIDOMNode *node, msiITagListManager * manager)
     || (nodeAtom == nsEditProperty::thead)
     || (nodeAtom == nsEditProperty::tfoot)
     || (nodeAtom == nsEditProperty::tbody)
-    || (nodeAtom == nsEditProperty::caption);
+    || (nodeAtom == nsEditProperty::caption)
     || (nodeAtom == nsEditProperty::caption2);
 // BBM: do we want to add the mtable elements?
 }
@@ -272,7 +272,8 @@ nsHTMLEditUtils::IsTableElementButNotTable(nsIDOMNode *node, msiITagListManager 
       || (nodeAtom == nsEditProperty::thead)
       || (nodeAtom == nsEditProperty::tfoot)
       || (nodeAtom == nsEditProperty::tbody)
-      || (nodeAtom == nsEditProperty::caption);
+      || (nodeAtom == nsEditProperty::caption)
+      || (nodeAtom == nsEditProperty::caption2);
 }
 
 ///////////////////////////////////////////////////////////////////////////
