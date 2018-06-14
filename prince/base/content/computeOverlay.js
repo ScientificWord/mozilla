@@ -1454,6 +1454,7 @@ function doVarsComputation(math, label, func, title, editorElement, cmd, cmdHand
     AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsComputation: [" + e + "]");
     return;
   }
+  markDocumentChanged(editorElement);
 }
 
 function finishVarsComputation(editorElement, o) {
@@ -1499,6 +1500,7 @@ function doVarsEvalComputation(math, func, joiner, title, label, editorElement, 
     AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsEvalComputation: [" + e + "]");
     return;
   }
+  markDocumentChanged(editorElement);
 }
 
 function finishVarsEvalComputation(editorElement, o) {
@@ -1574,6 +1576,7 @@ function doComputeFindExtrema(math, vars, editorElement, cmd, cmdHandler) {
       o.afterDialog = function (editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeFindExtrema(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+        markDocumentChanged(editorElement);
       };
       try {
         var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
@@ -1621,16 +1624,10 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveExact: [" + e + "]");
         return;
       }
-      //        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
-      //        if (o.Cancel)
-      //          return;
-      //        vars = runFixup(o.vars);
       if (!o.Cancel) markDocumentChanged(editorElement);
     } else {
       msiComputeLogger.Exception(ex);
-      //        done = true;
     }
-    //    }
   }
 }
 
@@ -1667,6 +1664,7 @@ function doComputeSolveInteger(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveInteger: [" + e + "]");
         return;
       }
+      markDocumentChanged(editorElement);
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -1745,6 +1743,7 @@ function doComputePartialFractions(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePartialFractions: [" + e + "]");
         return;
       }
+      markDocumentChanged(editorElement);
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -1785,6 +1784,7 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler) {
         return;
       }
       if (o.Cancel) return;
+      markDocumentChanged(editorElement);
       vars = runFixup(o.vars);
     } else {
       msiComputeLogger.Exception(ex);
@@ -1824,6 +1824,7 @@ function doComputeRoots(math, vars, editorElement, cmd, cmdHandler) {
         AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeRoots: [" + e + "]");
         return;
       }
+      markDocumentChanged(editorElement);
     } else {
       msiComputeLogger.Exception(ex);
     }
@@ -1863,6 +1864,7 @@ function doComputeSort(math, vars, editorElement, cmd, cmdHandler) {
       }
     }
   }
+  markDocumentChanged(editorElement);
 }
 
 function doComputeCompanionMatrix(math, vars, editorElement, cmd, cmdHandler) {
@@ -1902,6 +1904,7 @@ function doComputeCompanionMatrix(math, vars, editorElement, cmd, cmdHandler) {
       msiComputeLogger.Exception(ex);
     }
   }
+  markDocumentChanged(editorElement);
 }
 
 function doComputeApproxIntegral(math, editorElement) {
@@ -1951,6 +1954,7 @@ function doComputeIterate(editorElement, cmdHandler) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeIterate: [" + e + "]");
     return;
   }
+  markDocumentChanged(editorElement);
 }
 
 function finishComputeIterate(editorElement, o) {
@@ -1985,6 +1989,7 @@ function doComputeImplicitDiff(math, editorElement, cmdHandler) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeImplicitDiff: [" + e + "]");
     return;
   }
+  markDocumentChanged(editorElement);
 }
 
 function finishComputeImplicitDiff(math, editorElement, o) {
@@ -2044,6 +2049,7 @@ function doComputeSolveODEExact(math, labelID, titleID, vars, editorElement, cmd
       msiComputeLogger.Exception(ex);
     }
   }
+  markDocumentChanged(editorElement);
 }
 
 function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, cmd, cmdHandler) {
@@ -2090,6 +2096,7 @@ function doComputeSolveODELaplace(math, labelID, titleID, vars, editorElement, c
       msiComputeLogger.Exception(ex);
     }
   }
+  markDocumentChanged(editorElement);
 }
 
 function doComputeSolveODENumeric(math, labelID, titleID, vars, editorElement, cmd, cmdHandler) {
@@ -2136,6 +2143,7 @@ function doComputeSolveODENumeric(math, labelID, titleID, vars, editorElement, c
       msiComputeLogger.Exception(ex);
     }
   }
+  markDocumentChanged(editorElement);
 }
 
 function doComputeSolveODESeries(math, editorElement) {
@@ -2258,6 +2266,7 @@ function doComputeWronskian(math, vars, editorElement, cmd, cmdHandler) {
       msiComputeLogger.Exception(ex);
     }
   }
+  markDocumentChanged(editorElement);
 }
 // matrix commands
 function doComputeCharPoly(math, vars, editorElement, cmd, cmdHandler) {
@@ -2295,6 +2304,7 @@ function doComputeCharPoly(math, vars, editorElement, cmd, cmdHandler) {
       msiComputeLogger.Exception(ex);
     }
   }
+  markDocumentChanged(editorElement);
 }
 
 function doComputeFillMatrix(editorElement, cmdHandler) {
@@ -2326,6 +2336,7 @@ function doComputeMap(math, editorElement, cmd, cmdHandler) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMap: [" + e + "]");
     return;
   }
+  markDocumentChanged(editorElement);
 }
 
 function finishComputeMap(editorElement, o) {
@@ -2379,6 +2390,7 @@ function doComputeMinPoly(math, vars, editorElement, cmd, cmdHandler) {
       msiComputeLogger.Exception(ex);
     }
   }
+  markDocumentChanged(editorElement);
 }
 
 function doComputeRandomMatrix(editorElement) {
@@ -2505,6 +2517,7 @@ function doComputeMoment(math, editorElement, cmdHandler) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMoment: [" + e + "]");
     return;
   }
+  markDocumentChanged(editorElement);
 }
 
 function finishComputeMoment(editorElement, o) {
@@ -2543,6 +2556,7 @@ function doComputeQuantile(math, editorElement, cmd, cmdHandler) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeQuantile: [" + e + "]");
     return;
   }
+  markDocumentChanged(editorElement);
 }
 
 function finishComputeQuantile(editorElement, o) {
@@ -2592,6 +2606,7 @@ function doComputeDefine(math, editorElement) {
       }
     }
   }
+  markDocumentChanged(editorElement);
   RestoreCursor(editorElement);
 }
 
@@ -2618,6 +2633,7 @@ function doComputeShowDefs(editorElement) {
   o.val = out;
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   parentWin.openDialog("chrome://prince/content/ComputeShowDefs.xul", "showdefs", "chrome,close,titlebar,resizable,dependent", o);
+  if (!o.cancel) markDocumentChanged(editorElement);
 }
 
 function doComputeClearDefs() {
@@ -2660,6 +2676,7 @@ function doComputeSetBasisVars(editorElement, cmd) {
     AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMinPoly: [" + e + "]");
     return;
   }
+  markDocumentChanged(editorElement);
 }
 
 function finishComputeSetBasisVars(vars, compsample) {

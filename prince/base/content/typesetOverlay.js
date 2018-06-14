@@ -37,11 +37,11 @@ function msiSetupMSITypesetInsertMenuCommands(editorElement)
   var commandTable = msiGetComposerCommandTable(editorElement);
 
   commandTable.registerCommand("cmd_MSIinsertIndexEntryCmd",            msiInsertIndexEntry);
-  commandTable.registerCommand("cmd_MSIinsertCrossReferenceCmd",	      msiInsertCrossReference);
-  commandTable.registerCommand("cmd_MSIinsertCitationCmd",					    msiCitationCommand);
-  commandTable.registerCommand("cmd_MSIinsertBibliographyCmd",			    msiInsertBibTeXBibliography);
-  commandTable.registerCommand("cmd_MSIinsertTeXFieldCmd",					    msiInsertTeXField);
-  commandTable.registerCommand("cmd_MSIinsertSubdocumentCmd",				    msiInsertSubdocument);
+  commandTable.registerCommand("cmd_MSIinsertCrossReferenceCmd",        msiInsertCrossReference);
+  commandTable.registerCommand("cmd_MSIinsertCitationCmd",              msiCitationCommand);
+  commandTable.registerCommand("cmd_MSIinsertBibliographyCmd",          msiInsertBibTeXBibliography);
+  commandTable.registerCommand("cmd_MSIinsertTeXFieldCmd",              msiInsertTeXField);
+  commandTable.registerCommand("cmd_MSIinsertSubdocumentCmd",           msiInsertSubdocument);
 }
 
 function goUpdateMSITypesetMenuItems(commandset)
@@ -402,7 +402,7 @@ var msiInsertCrossReference =
     var xrefData = {key: "", refType : "obj"};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/xref.xul", "Cross Reference", "chrome, resizable=yes, close, titlebar, dependent",
                                                                                 editorElement, "cmd_MSIinsertCrossReferenceCmd", this, xrefData);
-//  window.openDialog("chrome://prince/content/xref.xul", "crossreference", "chrome, resizable=yes, close, titlebar", xref);
+    markDocumentChanged(editorElement);
   }
 };
 
@@ -424,7 +424,7 @@ var msiInsertBibTeXBibliography =
     if (!bibliographyData.Cancel)
     {
       doInsertBibTeXBibliography(editorElement, bibliographyData);
-			markDocumentChanged(editorElement);
+      markDocumentChanged(editorElement);
     }
   }
 };
@@ -444,6 +444,7 @@ var msiReviseBibTeXBibliography =
     var bibliographyData = {dbFileList : [], styleFile : "", reviseData : bibliographyReviseData};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                            editorElement, "cmd_reviseBibTeXBibliographyCmd", this, bibliographyData);
+    markDocumentChanged(editorElement);
     editorElement.focus();
   },
 
@@ -465,6 +466,7 @@ var msiReviseManualBibItemCmd =
     var bibItemData = {key : "", bibLabel : "", reviseData : bibItemReviseData};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                            editorElement, "cmd_reviseManualBibItemCmd", this, bibItemData);
+    markDocumentChanged(editorElement);
     editorElement.focus();
   },
 
@@ -474,6 +476,7 @@ var msiReviseManualBibItemCmd =
     var bibItemData = {key : "", bibLabel : "", paragraphNode : editor.selection.focusNode, offset : editor.selection.focusOffset};
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                            editorElement, "cmd_reviseManualBibItemCmd", this, bibItemData);
+    markDocumentChanged(editorElement);
   }
 };
 
@@ -529,7 +532,7 @@ function doDocFormatDlg(editorElement)
     "chrome,close,resizable,titlebar,dependent,alwaysraised", msiGetActiveEditorElement);
   //if (!doDocFormatData.Cancel)
   {
-		editor.incrementModificationCount(1);
+    markDocumentChanged(editorElement);
     editor.selection.collapse(anchornode, anchoroffset);
     editor.selection.extend(focusnode, focusoffset);
   }
@@ -566,11 +569,8 @@ function doPreambleDlg()
   } else {
      preambleTeXNode = preambleTeXNodeSet[0];
   }
-
-
   window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "resizable,chrome,close,titlebar,modal", preambleTeXNode);
-	markDocumentChanged(editorElement);
-  window.updateCommands("save");
+  markDocumentChanged(editorElement);
 }
 
 function doBibChoiceDlg(editorElement)
@@ -591,7 +591,7 @@ function doBibChoiceDlg(editorElement)
     else
       choiceStr = "manual";
     setBibliographyScheme(editorElement, choiceStr);
-		markDocumentChanged(editorElement);
+    markDocumentChanged(editorElement);
   }
 }
 
@@ -608,9 +608,9 @@ function doOptionsAndPackagesDlg(editorElement)
   var options = msiGetPackagesAndOptionsDataForDocument(document);
   window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,modal,resizable", options);
   if (!options.Cancel)
-	{
-		markDocumentChanged(editorElement);
-	}
+  {
+    markDocumentChanged(editorElement);
+  }
 }
 
 function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
@@ -773,7 +773,7 @@ function doGenSettingsDlg()
   window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "generaltypesetsettings", "chrome,close,titlebar,modal,resizable",
                        genSettingsData);
   var editorElement = msiGetActiveEditorElement();
-	markDocumentChanged(editorElement);
+  markDocumentChanged(editorElement);
 }
 
 function getTypesetGenSettingsFromPrefs()
@@ -829,6 +829,7 @@ function doInsertIndexEntry(editorElement, indexNode)
     indexNode = gActiveEditor.getElementOrParentByTagName("indexitem",
                                             indexNode);
   window.openDialog("chrome://prince/content/indexentry.xul", "indexentry", "chrome,resizable=yes, close,titlebar,dependent", indexNode);
+  markDocumentChanged(editorElement);
 }
 
 function doInsertManualCitation(editorElement, dlgData)
@@ -1068,7 +1069,7 @@ function doInsertTeXField()
   var tbutton = gActiveEditor.getSelectedElement("texb");
   if (!tbutton) tbutton = gActiveEditor.getSelectedElement("texbutton");
   window.openDialog("chrome://prince/content/texbuttoncontents.xul", "texfield", "resizable=yes,chrome,close,titlebar,dependent", tbutton);
-	markDocumentChanged(editorElement);
+  markDocumentChanged(editorElement);
 }
 
 

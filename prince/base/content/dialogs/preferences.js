@@ -1321,7 +1321,7 @@ function GetColorAndUpdatePref(aType, aButtonID)
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
-
+  markDocumentChanged(editorElement);
   // Update preference with picked color
   if (aType == "Page")
     preference.value = colorObj.BackgroundColor;

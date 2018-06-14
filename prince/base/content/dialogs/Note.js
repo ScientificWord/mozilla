@@ -39,6 +39,7 @@ function launchOptionsDialog() {
     else if ("footnoteNumber" in data)
       delete data.footnoteNumber;
     data.markOrText = optionsData.markOrText;
+    markDocumentChanged(editorElement);
   }
 }
 
