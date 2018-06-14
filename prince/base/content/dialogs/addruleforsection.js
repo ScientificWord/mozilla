@@ -72,8 +72,8 @@ function getColorAndUpdate()
   if (colorObj.Cancel)
     return;
   else {
-		markDocumentChanged();
-	}
+    markDocumentChanged();
+  }
   color = colorObj.TextColor;
   setColorWell("colorWell", color);
 }

@@ -1055,6 +1055,7 @@ function launchConvertingDialog(importData)
   importTimerHandler.texImportStatus = importData.mTexImportStatus;
 
   importTimerHandler.checkFinalStatus();
+  markDocumentChanged(editorElement);
 }
 
 function getGraphicsImportTargets(inputFile, mode)
