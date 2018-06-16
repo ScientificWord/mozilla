@@ -95,7 +95,6 @@ function getColorAndUpdate()
   color = colorObj.TextColor;
   setColorWell("colorWell", color);
   colorWell.setAttribute("color",color);
-  markDocumentChanged(editorElement);
 }
 
 function onAccept()

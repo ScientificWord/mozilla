@@ -1181,7 +1181,6 @@ function openNewDocument()
         newdocumentfile = createWorkingDirectory(thefile);
         var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
         msiEditPage( url, window, false, true, null, false);
-        markDocumentChanged(editorElement);
       } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
 
     }
@@ -11244,7 +11243,6 @@ function callColorDialog()
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
-  markDocumentChanged(editorElement);
   var cmdParams = newCommandParams();
   if (!cmdParams) return;
 
