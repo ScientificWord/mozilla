@@ -281,7 +281,6 @@ function doViewKeys()
     checkDisableControls();
 //    gDialog.packages[whichPackage].setOptions( packageData.options );
 //    setPackageDescriptionLine(gDialog.packages[whichPackage]);
-    markDocumentChanged(editorElement);
   }
 
 }

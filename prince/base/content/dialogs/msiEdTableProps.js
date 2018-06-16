@@ -804,10 +804,6 @@ function GetColorAndUpdate(ColorWellID)
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
-  else {
-    markDocumentChanged();
-  }
-
   var changeArray = createPreviewChangeArray();
   var borderSideAttrStr = "";
   var theColor;

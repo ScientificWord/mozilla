@@ -10682,7 +10682,6 @@ function openGraphDialog(tagname, node, editorElement) {
   var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "plotdialog",
     "chrome,close,resizable,titlebar,dependent,alwaysraised",
     editorElement, "cmd_objectProperties", node);
-  markDocumentChanged(editorElement);
   // why find it again???  var editorElement = msiGetActiveEditorElement();
   document.getElementById("vcamactive").setAttribute("hidden", "true");
   markDocumentChanged(editorElement);

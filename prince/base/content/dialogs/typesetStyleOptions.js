@@ -117,10 +117,6 @@ function doGoNative()
     gDialog.selectedOptionsArray = optionsData.options;
     gDialog.currentOptionsDescription.value = gDialog.selectedOptionsArray.join(",");
   }
-  else {
-    markDocumentChanged();
-  }
-
 }
 
 function itemIsDefaultChoice(anItem)
