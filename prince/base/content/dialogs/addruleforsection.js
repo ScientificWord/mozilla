@@ -71,9 +71,6 @@ function getColorAndUpdate()
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
-  else {
-    markDocumentChanged();
-  }
   color = colorObj.TextColor;
   setColorWell("colorWell", color);
 }
