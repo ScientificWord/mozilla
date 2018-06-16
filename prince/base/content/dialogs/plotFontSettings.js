@@ -98,7 +98,6 @@ function getColorAndUpdate()
   setColorWell("color", theColor); 
   colorWell.setAttribute("color",theColor);
   updateSample();
-  markDocumentChanged(editorElement);
 }
 
 function mapAttributeToControl(attr, auxCtrl)

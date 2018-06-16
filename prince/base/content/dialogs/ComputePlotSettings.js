@@ -140,9 +140,6 @@ function GetPlotColor (attributeName)
   // User canceled the dialog
   if (colorObj.Cancel)
     return;
-  else {
-    markDocumentChanged();
-  }
   var color = colorObj.TextColor;
 //  dump ("SMR in GetPlotColor setting the color to " + color + "\n");
   window.arguments[0].setPlotAttribute (attributeName, plotno, color);
