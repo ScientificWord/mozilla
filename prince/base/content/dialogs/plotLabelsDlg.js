@@ -185,7 +185,6 @@ function openFontSettingDlg()
       else
         theLabel.setPlotLabelAttribute(attrName, "");
     }
-    markDocumentChanged(editorElement);
   }  
 }
 

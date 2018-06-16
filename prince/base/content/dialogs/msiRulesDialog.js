@@ -156,7 +156,6 @@ function getColorAndUpdate()
   data.ruleColor = colorObj.TextColor;
   
   setColorWell("colorWell", data.ruleColor); 
-  markDocumentChanged(editorElement);
 }
 
 function onAccept()

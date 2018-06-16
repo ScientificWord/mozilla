@@ -472,7 +472,6 @@ function getPlotColorAndUpdate(id)
   // User canceled the gFrameTab
   if (colorObj.Cancel)
     return;
-  markDocumentChanged(editorElement);
   if ("alpha" in colorObj)
     putValueToControl( colorWell, colorObj.TextColor + Number(colorObj.alpha).toString(16) );
   else
