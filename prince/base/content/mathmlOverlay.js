@@ -524,9 +524,10 @@ var msiReviseMathnameCmd =
   }
 };
 
-function makeMathIfNeeded(editorElement)
+function makeMathIfNeeded(editorElement)  // returns true iff it created a new math object
 {
   var retVal = true;
+  var mathNode;
   if (!isInMath(editorElement))
   {
     var editor = msiGetEditor(editorElement);
@@ -537,6 +538,10 @@ function makeMathIfNeeded(editorElement)
       }
       catch (e) {
         return false;
+      }
+      if (mathNode = editor.getElementOrParentByTagName("math", editor.selection.anchorNode.childNodes[editor.selection.anchorOffset-1])) {
+        editor.selection.collapse(mathNode, 0);
+        editor.selection.extend(mathNode, mathNode.childNodes.length);
       }
     }
     else {
@@ -3445,7 +3450,7 @@ function mathNodeToText(editor, node)
   editor.endTransaction();
 }
 
-function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnode)
+function nodeToMath(editor, node, startOffset, endOffset, firstnode, lastnode)
 {
   var newNode = {};
   var newSelection = {};
@@ -3478,25 +3483,19 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
         var o, p;
 //        var saveEnabled = editor.autoSubEnabled;
 //        editor.autoSubEnabled = false;
-       editor.selection.collapse(parent, offset);
+        editor.selection.collapse(parent, offset);
         for (var i = 0; i < text.length; i++)
         {
           if (text[i] != ' ') insertsymbol(text[i]);
-            // if (firstnode && i===0) {  // put the selection start in the new symbol node; it would sure help if insertsymbol returned the inserted node!
-            //   o = 0;
-            //   p = parent.firstChild;
-            //   while (o++ < offset + i) p = p.nextSibling;
-          //   newSelection.startNode = p;
-          //   newSelection.startOffset = 0;
-            // }
-            // if (lastnode && i===text.length-1) {
-            //   o = 0;
-            //   p = parent.firstChild;
-            //   while (o++ < offset + i && p && p.nextSibling) p = p.nextSibling;
-          //   newSelection.endNode = p;
-          //   newSelection.endOffset = p.childNodes.length;
-            // }
-          }
+          // if (firstnode && i===0) {  // put the selection start in the new symbol node; it would sure help if insertsymbol returned the inserted node!
+          //   newSelection.startNode = parent;
+          //   newSelection.startOffset = offset;
+          //   }
+          // if (lastnode && i===text.length-1) {
+          //   newSelection.endNode = parent;
+          //   newSelection.endOffset = text.length;
+          // }
+        }
 //        editor.autoSubEnabled = saveEnabled;
       }
     }
@@ -3507,8 +3506,9 @@ function nodeToMath(editor, node, startOffset, endOffset) //, firstnode, lastnod
     if (tempNode.tagName !== 'texb') editor.deleteNode(tempNode);
     mathnode = coalescemath(null, true);
     if (mathnode) {
-      editor.selection.collapse(mathnode,0);
-      editor.selection.extend(mathnode, mathnode.childNodes.length);
+      // editor.selection.collapse(mathnode,0);
+      editor.selection.collapse(newSelection.startNode, newSelection.startOffset);
+      editor.selection.extend(newSelection.endNode, newSelection.endOffset);
     }
   }
 }
@@ -3590,7 +3590,7 @@ function textToMath(editor)
       {
         node = enumerator.getNext();
         if (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode)){
-          nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1);
+          nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1, nodeArray[0], nodeArray[nodeArray.length - 1]);
         }
       }
     }
