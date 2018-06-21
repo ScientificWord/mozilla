@@ -162,9 +162,9 @@
               <xsl:when test="$theAlignment='alignSingleEqn'">
                 <xsl:text>multline</xsl:text>
               </xsl:when>
-              <xsl:when test="$n-labeledrows=1">
+<!--               <xsl:when test="$n-labeledrows=1">
                 <xsl:text>multline</xsl:text>
-              </xsl:when>
+              </xsl:when> -->
               <xsl:when test="@subtype">
                 <xsl:value-of select="@subtype"/>
               </xsl:when>
@@ -182,10 +182,11 @@
 
           <is-starred>
             <xsl:choose>
-              <xsl:when test="@subtype">
+<!--               <xsl:when test="@subtype">
                 <xsl:text>false</xsl:text>
-              </xsl:when>
-              <xsl:when test="$n-labeledrows=0">
+              </xsl:when> -->
+              <xsl:when test="($n-labeledrows=0)
+                         or  (ancestor::html:msidisplay[@numbering='none'])">
                 <xsl:text>true</xsl:text>
               </xsl:when>
               <xsl:otherwise>
@@ -196,13 +197,14 @@
 
         </xsl:when>
 <!-- eqnarray -->
-	<xsl:when test="($n-aligns = 2) and (@type='eqnarray')">
+<!-- 	<xsl:when test="($n-aligns = 2) and (@type='eqnarray')">
           <LaTeX-env>
             <xsl:text>eqnarray</xsl:text>
           </LaTeX-env>
           <is-starred>
             <xsl:choose>
               <xsl:when test="$n-labeledrows=0">
+                or  (ancestor::html:msidisplay[@numbering='none'])">
                 <xsl:text>true</xsl:text>
               </xsl:when>
               <xsl:otherwise>
@@ -210,7 +212,7 @@
               </xsl:otherwise>
             </xsl:choose>
           </is-starred>
-        </xsl:when> 
+        </xsl:when>  -->
 
 <!-- align -->
         <xsl:when test="$n-aligns &gt; 0">
@@ -226,7 +228,8 @@
           </LaTeX-env>
           <is-starred>
             <xsl:choose>
-              <xsl:when test="$n-labeledrows=0">
+              <xsl:when test="($n-labeledrows=0)
+                         or  (ancestor::html:msidisplay[@numbering='none'])">
                 <xsl:text>true</xsl:text>
               </xsl:when>
               <xsl:otherwise>
@@ -236,7 +239,7 @@
           </is-starred>
         </xsl:when>
 <!-- eqnarray -->
-        <xsl:when test="$n-aligns &gt; 1">
+<!--         <xsl:when test="$n-aligns &gt; 1">
         <LaTeX-env>
             <xsl:text>eqnarray</xsl:text>
         </LaTeX-env>
@@ -250,7 +253,7 @@
             </xsl:otherwise>
           </xsl:choose>
         </is-starred>
-        </xsl:when> 
+        </xsl:when>  -->
 <!-- alignat -->
         <xsl:when test="$n-aligns=4">
         <LaTeX-env>
@@ -258,7 +261,8 @@
         </LaTeX-env>
         <is-starred>
           <xsl:choose>
-            <xsl:when test="$n-labeledrows=0">
+            <xsl:when test="($n-labeledrows=0)
+              or  (ancestor::html:msidisplay[@numbering='none'])">
               <xsl:text>true</xsl:text>
             </xsl:when>
             <xsl:otherwise>
@@ -455,7 +459,8 @@
               <xsl:value-of select="@customLabel"/>
               <xsl:text>}</xsl:text>
             </xsl:when>
-            <xsl:when test="@numbering='none'">
+            <xsl:when test="@numbering='none'
+                   and     $eqn-info/is-starred='false'">
               <xsl:text xml:space="preserve"> \nonumber </xsl:text>
             </xsl:when>
           </xsl:choose>
