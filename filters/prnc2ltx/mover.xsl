@@ -360,8 +360,9 @@
               <xsl:with-param name="LaTeX-acc" select="'\bar'"/>
             </xsl:call-template>
           </xsl:when>
-          <xsl:when test="./*[2][normalize-space(string())='&#x2192;']
-          or              ./*[2][normalize-space(string())='&#x20D7;']">
+          <!-- <xsl:when test="./*[2][normalize-space(string())='&#x2192;']
+          or              ./*[2][normalize-space(string())='&#x20D7;']"> -->
+         <xsl:when test="./*[2][normalize-space(string())='&#x20D7;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\vec'"/>
             </xsl:call-template>
