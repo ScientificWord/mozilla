@@ -410,7 +410,16 @@ D<uID3.2.4>prefix,33,U00044
 &dashv;<uID3.14.31>infix,24,U022A3
 ;; we use \mid (ie.|) as "such that" or "for which"
 ;;  in "x | x<=0, x>-3" -- very low precedence
-|<uID3.14.32>infix,2,U0007c
+
+;;|<uID3.14.32>infix,2,U0007c
+
+|<uID3.14.32>multiform,2,U0007c
+|,postfix<uID3.14.32>postfix,0,U0007c
+|,prefix<uID3.14.32>prefix,0,U0007c
+
+
+
+
 &mid;<uID3.14.32>infix,2,U02223
 &par;<uID3.14.33>infix,25,U02225
 &perp;<uID3.14.34>infix,25,U022A5
@@ -848,6 +857,7 @@ Z<uID3.17.156>,U0005A:mathvariant="double-struck"
 ]<uID3.25.4>postfix,0,U0005D
 {<uID3.25.5>prefix,0,U0007B
 }<uID3.25.6>postfix,0,U0007D
+
 
 ;Entity name 	Unicode 	Description 
 
