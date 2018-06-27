@@ -3425,14 +3425,14 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
     mtextNode = editor.document.createElementNS(mmlns, "mtext");
     editor.insertNode(mtextNode, insertNodeParent, insertNodeOffset);
     mtextNode.textContent = text;
-    editor.selection.collapse(insertNodeParent,insertNodeOffset+1);
+    editor.selection.collapse(mtextNode,text.length);
   }
   else
   {
     var textNode = editor.document.createTextNode(text);
     editor.selection.collapse(insertNodeParent,insertNodeOffset);
     editor.insertNode(textNode, insertNodeParent, insertNodeOffset);
-    editor.selection.collapse(insertNodeParent,insertNodeOffset+1);
+    editor.selection.collapse(textNode,text.length);
    }
   if (removeNode) editor.deleteNode(saveNode);
 //  window.focus();
