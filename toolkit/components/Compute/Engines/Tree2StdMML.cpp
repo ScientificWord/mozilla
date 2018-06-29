@@ -237,8 +237,9 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
   BindScripts(rv);
   
   mDisDerivative = D_is_derivative;
-  FinishFixup(rv);
   rv = FixMFENCEDs(rv);
+  FinishFixup(rv);
+  
   rv = RemoveRedundantMROWs(rv);
   rv = RemoveRedundantMROWs(rv);
   FixInvisibleFences(rv);
@@ -630,10 +631,10 @@ void Tree2StdMML::InsertInvisibleTimes(MNODE* dMML_list)
 {
   MNODE* rover = dMML_list;
   if (rover && rover->parent) {
-    if (//ElementNameIs(rover->parent, "mfenced") ||
+    if (  ElementNameIs(rover->parent, "mfenced") ||
           ElementNameIs(rover->parent, "mtable") ||
           HasRequiredChildren(rover->parent))
-    return;
+      return;
   }
 
   while (rover) {
@@ -2867,6 +2868,7 @@ MNODE* Tree2StdMML::PermuteTreeToMFENCED(MNODE* opening_mo, GROUP_INFO& gi)
     DisposeTNode(closer);
 
     if (n_interior_nodes) {
+      //RemoveRedundantMROWs2(body);
       MNODE *item_list = ExtractItems(body, n_interior_nodes,
                                       gi.separator_count, mfenced);
       mfenced->first_kid = item_list;
