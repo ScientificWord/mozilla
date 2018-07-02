@@ -238,7 +238,6 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
   
   mDisDerivative = D_is_derivative;
   rv = FixMFENCEDs(rv);
-  FinishFixup(rv);
   
   rv = RemoveRedundantMROWs(rv);
   rv = RemoveRedundantMROWs(rv);
@@ -2407,7 +2406,7 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs2(MNODE* MML_list)
     MNODE* firstkid = rover->first_kid;
     if (ElementNameIs(rover, "mrow")) {
       
-      if (HasRequiredChildren(parent)){
+      if (HasRequiredChildren(parent) || ElementNameIs(parent, "mfenced")){
 	  if (firstkid && (firstkid->next)){ // more than one item
       	    remove = false;
 	  } else {
