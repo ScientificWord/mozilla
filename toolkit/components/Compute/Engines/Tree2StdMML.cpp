@@ -237,6 +237,8 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
   BindScripts(rv);
   
   mDisDerivative = D_is_derivative;
+ 
+  FinishFixup(rv);
   rv = FixMFENCEDs(rv);
   
   rv = RemoveRedundantMROWs(rv);
