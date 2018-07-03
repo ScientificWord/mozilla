@@ -1181,7 +1181,7 @@ Plot.prototype =
       case "cylindrical":
         if (!plotData.isParametric())
         {
-          return runFixup(runFixup(createPolarExpression(this)));
+          return runFixup(createPolarExpression(this));
         }
         break;
       default:
@@ -2143,7 +2143,7 @@ function newPlotFromText(currentNode, expression, editorElement) {
     var parsedExpr = domParser.parseFromString ("<body>" + expression + "</body>", "text/xml");
     parsedExpr = extractMathContent(parsedExpr.documentElement);
     var checkedExpr = preParsePlotExpression(parsedExpr, plottype, null, editorElement);
-    var fixedExpr = runFixup(GetFixedMath(checkedExpr));
+    var fixedExpr = GetFixedMath(checkedExpr);
 
     var plot = new Plot(graph.getDimension(), plottype);
     graph.addPlot(plot);
@@ -2324,7 +2324,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var checkedExpr = preParsePlotExpression(math, plottype, selection, editorElement);
-  var expr = runFixup(GetFixedMath(checkedExpr));
+  var expr = GetFixedMath(checkedExpr);
 
   var graph = new Graph();
   var frame = graph.frame;
@@ -2391,7 +2391,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   var plot = new Plot(dimension, plottype);
   var plotnum = graph.addPlot(plot);
   plot.attributes.PlotStatus = "New";
-    plot.element.Expression = runFixup(expr);
+    plot.element.Expression = expr;
   graph.plotnumber = plotnum;
   if ((arguments.length > 3) && (arguments[3] === true)) {
     plot.attributes.Animate = "true";
