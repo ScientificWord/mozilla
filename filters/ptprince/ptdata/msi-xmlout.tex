@@ -483,10 +483,12 @@
 % \def\author#1{\gdef\@author{#1}\out@author{#1}}
 \def\author#{%
     \msiopentag{author}{<author>}%
-    \aftergroup\@closeauthor}
+    \bgroup
+    \aftergroup\@closeauthor
+    \@gobbleit}
 
 \def\@closeauthor{%
-  \msiclosetag{author}{</author>}}
+    \msiclosetag{author}{</author>}}
 
 \def\date{\@ifnextchar[{\dateA}{\dateB}}
 \def\dateA[#1]#2{%
