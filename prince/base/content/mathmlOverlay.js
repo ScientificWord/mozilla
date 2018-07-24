@@ -3362,7 +3362,8 @@ function offsetOfChild(parent, child)
   var offset = 0;
   if (child.parentNode != parent)
   {
-    throw ("offsetOfChild: 'parent' must by parent of 'child'");
+    // throw ("offsetOfChild: 'parent' must be parent of 'child'");
+    return -1;
   }
   var node = parent.firstChild;
   while (node && node != child)
@@ -3384,6 +3385,7 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   var newParent;
   var insertNodeParent, insertNodeOffset;
   var removeNode = offset < 0;
+  var childNodes;
   if (removeNode)
   {
     parent = node.parentNode;
@@ -3393,6 +3395,9 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   {
     parent = node;
   }
+  insertNodeParent = parent;
+  insertNodeOffset = offset;
+
   while (!(msiNavigationUtils.isUnsplittableMath(parent))&& !(msiNavigationUtils.hasFixedNumberOfChildren(parent.parentNode))
    && (msiNavigationUtils.isMathNode(parent) || parent.nodeType === Node.TEXT_NODE))
   {
@@ -3421,10 +3426,22 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   if (insertNodeParent == null || insertNodeOffset==null) return;
   if (msiNavigationUtils.isMathNode(parent))
   {
+    if (insertNodeOffset > 0) {
+      childNodes = insertNodeParent.childNodes;
+      if (childNodes && childNodes[insertNodeOffset - 1].nodeName === 'mtext') {
+        childNodes[insertNodeOffset - 1].textContent += text;
+        if (removeNode) editor.deleteNode(saveNode);
+        editor.selection.collapse(childNodes[insertNodeOffset - 1], childNodes[insertNodeOffset - 1].length);
+        return;
+      }
+    }
+    
     editor.selection.collapse(insertNodeParent,insertNodeOffset);
+
     mtextNode = editor.document.createElementNS(mmlns, "mtext");
     editor.insertNode(mtextNode, insertNodeParent, insertNodeOffset);
     mtextNode.textContent = text;
+    if (removeNode) editor.deleteNode(saveNode);
     editor.selection.collapse(mtextNode,text.length);
   }
   else
@@ -3432,9 +3449,9 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
     var textNode = editor.document.createTextNode(text);
     editor.selection.collapse(insertNodeParent,insertNodeOffset);
     editor.insertNode(textNode, insertNodeParent, insertNodeOffset);
+    if (removeNode) editor.deleteNode(saveNode);
     editor.selection.collapse(textNode,text.length);
    }
-  if (removeNode) editor.deleteNode(saveNode);
 //  window.focus();
 }
 
