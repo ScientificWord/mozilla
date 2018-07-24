@@ -34,7 +34,10 @@ In that case in internal style sheet will rewrite these rules. */
   mml|mi[msiunit="true"] {color: green;}
   mml|mtd {border-color: green; }
   msidisplay {border-color: green; }
-  mml|mtext { color: black; }
+  mml|mtext { color: black; 
+    font-style: normal;
+    font-family: Georgia; /* try to keep in sync with body font */
+  }
   [msiclass="msi_passthrough"] {color: orange; }
 }
 
@@ -44,7 +47,6 @@ mml|mi[msimathname="true"], mml|mo[msimathname="true"] {
 }
 mml|mi[msiunit="true"] {
   font-style: normal;
-  font-family: Times roman;
 }
 /*
 mi, mo {
