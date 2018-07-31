@@ -1419,15 +1419,15 @@
             <rows>
               <row align="center">
                 <label value="&SideMargin.label;"/>
-                <textbox id="graphSideMargin" type="number" decimalplaces="2"
+                <textbox id="graphSideMargin" type="number" decimalplaces="2" increment=".10"
                   preference="graph.HMargin" class="medwidth"/>
                 <label value="&TopBottomMargin.label;"/>
-                <textbox id="graphVMargin" type="number" decimalplaces="2"
+                <textbox id="graphVMargin" type="number" decimalplaces="2" increment=".10"
                   preference="graph.VMargin"  class="medwidth"/>
               </row>
               <row align="center">
                 <label value="&Padding.label;"/>
-                <textbox id="graphPadding" type="number" decimalplaces="2"
+                <textbox id="graphPadding" type="number" decimalplaces="2" increment=".10"
                   preference="graph.paddingWidth" class="medwidth"/>
                 <label value="&PaddingColor.label;"/>
                 <msibutton id="graph.padding.colorbutton" class="color-button" oncommand="getColorAndUpdatePref('graph.padding.CW');">
@@ -1436,7 +1436,7 @@
               </row>
               <row align="center">
                 <label value="&BorderWidth.label;"/>
-                <textbox id="graphBorder" type="number" decimalplaces="2"
+                <textbox id="graphBorder" type="number" decimalplaces="2" increment=".10"
                   preference="graph.borderWidth" class="medwidth"/>
                 <label value="&BorderColor.label;"/>
                 <msibutton id="graph.border.colorbutton" class="color-button"  oncommand="getColorAndUpdatePref('graph.border.CW');">
