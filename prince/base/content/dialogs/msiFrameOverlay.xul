@@ -303,7 +303,7 @@
               <textbox
                 id        = "frameWidthInput"
                 type      = "number"
-                decimalplaces = "2"
+                decimalplaces = "2" increment=".10"
                 onchange= "frameWidthChanged(this, event);"
                 onload    = "frameWidthChanged(this, event);"
                 value     = ""
@@ -311,7 +311,7 @@
               <textbox
                 id        = "frameHeightInput"
                 type      = "number"
-                decimalplaces = "2"
+                decimalplaces = "2" increment=".10"
                 onchange = "frameHeightChanged(this, event);"
                 onload    = "frameHeightChanged(this, event);"
                 value     = ""
