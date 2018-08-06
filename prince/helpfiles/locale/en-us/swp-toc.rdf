@@ -1337,7 +1337,7 @@
       <rdf:Description about="#matrix-algegra_equations_matrix">
        <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="matrix-algegra_equations_matrixA" nc:name="Rewrite matrix as equations and equations as matrix" nc:link="dm08-04-calculus.xhtml#rewrite"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="matrix-algegra_equations_matrixA" nc:name="Rewrite matrix as equations and equations as matrix" nc:link="dm08-04-matrix_algebra.xhtml#rewrite"/> </rdf:li>
         </rdf:Seq>
        </nc:subheadings>
       </rdf:Description>
@@ -1428,8 +1428,8 @@
       <rdf:Description about="#vector-calculus_vectors_planes">
        <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="vector-calculus_vectors_planesA" nc:name="Vector form of a plane"     nc:link="dm09-01-calculus.xhtml#vector form of a plane"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="vector-calculus_vectors_planesB" nc:name="Plotting a filled triangle" nc:link="dm09-01-calculus.xhtml#plotting a filled triangle"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="vector-calculus_vectors_planesA" nc:name="Vector form of a plane"     nc:link="dm09-01-vector_calculus.xhtml#vector form of a plane"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="vector-calculus_vectors_planesB" nc:name="Plotting a filled triangle" nc:link="dm09-01-vector_calculus.xhtml#plotting a filled triangle"/> </rdf:li>
         </rdf:Seq>
        </nc:subheadings>
       </rdf:Description>
@@ -1460,7 +1460,7 @@
       <rdf:Description about="#vector-calculus_plots_2dvect">
        <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="vector-calculus_plots_2dvectA" nc:name="Animated Plots of 2D Vector Fields" nc:link="dm09-03-calculus.xhtml#animated plots of 2d vector fields"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="vector-calculus_plots_2dvectA" nc:name="Animated Plots of 2D Vector Fields" nc:link="dm09-03-vector_calculus.xhtml#animated plots of 2d vector fields"/> </rdf:li>
         </rdf:Seq>
        </nc:subheadings>
       </rdf:Description>
@@ -1468,7 +1468,7 @@
       <rdf:Description about="#vector-calculus_plots_3dvect">
        <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="vector-calculus_plots_3dvectA" nc:name="Animated Plots of 3D Vector Fields" nc:link="dm09-03-calculus.xhtml#animated plots of 3d vector fields"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="vector-calculus_plots_3dvectA" nc:name="Animated Plots of 3D Vector Fields" nc:link="dm09-03-vector_calculus.xhtml#animated plots of 3d vector fields"/> </rdf:li>
         </rdf:Seq>
        </nc:subheadings>
       </rdf:Description>
@@ -1476,7 +1476,7 @@
       <rdf:Description about="#vector-calculus_plots_2dgrad">
        <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="vector-calculus_plots_2dgradA" nc:name="Animated plots of 2D gradient fields" nc:link="dm09-03-calculus.xhtml#animated plots of 2d gradient fields"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="vector-calculus_plots_2dgradA" nc:name="Animated plots of 2D gradient fields" nc:link="dm09-03-vector_calculus.xhtml#animated plots of 2d gradient fields"/> </rdf:li>
         </rdf:Seq>
        </nc:subheadings>
       </rdf:Description>
@@ -1484,7 +1484,7 @@
       <rdf:Description about="#vector-calculus_plots_3dgrad">
        <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="vector-calculus_plots_3dgradA" nc:name="Animated Plots of 3D Gradient Fields" nc:link="dm09-03-calculus.xhtml#animated plots of 3d gradient fields"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="vector-calculus_plots_3dgradA" nc:name="Animated Plots of 3D Gradient Fields" nc:link="dm09-03-vector_calculus.xhtml#animated plots of 3d gradient fields"/> </rdf:li>
         </rdf:Seq>
        </nc:subheadings>
       </rdf:Description>
@@ -1532,8 +1532,8 @@
       <rdf:Description about="#diffyq_ordinary_exact">
        <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="diffyq_ordinary_exactA" nc:name="Exact method"   nc:link="dm10-01-calculus.xhtml#exact method"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="diffyq_ordinary_exactB" nc:name="Laplace method" nc:link="dm10-01-calculus.xhtml#laplace method"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_ordinary_exactA" nc:name="Exact method"   nc:link="dm10-01-differential_equations.xhtml#exact method"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_ordinary_exactB" nc:name="Laplace method" nc:link="dm10-01-differential_equations.xhtml#laplace method"/> </rdf:li>
         </rdf:Seq>
        </nc:subheadings>
       </rdf:Description>
@@ -1551,8 +1551,8 @@
       <rdf:Description about="#diffyq_laplace_laplace">
        <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="diffyq_laplace_laplaceA" nc:name="Computing laplace transforms"         nc:link="dm10-02-calculus.xhtml#computing laplace transforms"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="diffyq_laplace_laplaceB" nc:name="Computing inverse laplace transforms" nc:link="dm10-02-calculus.xhtml#computing inverse laplace transforms"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_laplace_laplaceA" nc:name="Computing laplace transforms"         nc:link="dm10-02-differential_equations.xhtml#computing laplace transforms"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_laplace_laplaceB" nc:name="Computing inverse laplace transforms" nc:link="dm10-02-differential_equations.xhtml#computing inverse laplace transforms"/> </rdf:li>
         </rdf:Seq>
        </nc:subheadings>
       </rdf:Description>
@@ -1560,9 +1560,9 @@
       <rdf:Description about="#diffyq_laplace_fourier">
        <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="diffyq_laplace_fourierA" nc:name="Computing fourier transforms"                         nc:link="dm10-02-calculus.xhtml#computing fourier transforms"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="diffyq_laplace_fourierB" nc:name="Computing inverse fourier transforms"                 nc:link="dm10-02-calculus.xhtml#computing inverse fourier transforms"/> </rdf:li>
-          <rdf:li> <rdf:Description ID="diffyq_laplace_fourierC" nc:name="Computing fourier transforms of multiple expressions" nc:link="dm10-02-calculus.xhtml#computing fourier transforms of multiple expressions"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_laplace_fourierA" nc:name="Computing fourier transforms"                         nc:link="dm10-02-differential_equations.xhtml#computing fourier transforms"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_laplace_fourierB" nc:name="Computing inverse fourier transforms"                 nc:link="dm10-02-differential_equations.xhtml#computing inverse fourier transforms"/> </rdf:li>
+          <rdf:li> <rdf:Description ID="diffyq_laplace_fourierC" nc:name="Computing fourier transforms of multiple expressions" nc:link="dm10-02-differential_equations.xhtml#computing fourier transforms of multiple expressions"/> </rdf:li>
         </rdf:Seq>
        </nc:subheadings>
       </rdf:Description>
