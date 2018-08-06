@@ -2353,8 +2353,8 @@
 24.1=Off,nobalancelastpage
 24.2=On - default,balancelastpage
 25=Title page
-25.1=Title page,titlepage
-25.2=No title page - default,notitlepage
+25.1=Title page - default,titlepage
+25.2=No title page,notitlepage
 26=Print side
 26.1=Print one side - default,oneside
 26.2=Print both sides,twoside
