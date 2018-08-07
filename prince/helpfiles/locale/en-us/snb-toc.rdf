@@ -1296,7 +1296,7 @@
   <rdf:Description about="#matrix-algegra_equations">
     <nc:subheadings>
     <rdf:Seq>
-      <rdf:li> <rdf:Description ID="matrix-algegra_equations_systems"  nc:name="Systems of Linear Equations" nc:link="dm08-04-matrix_algebra.xhtmlfile:///C:/Conversion/xhtml-files/addition"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="matrix-algegra_equations_systems"  nc:name="Systems of Linear Equations" nc:link="dm08-04-matrix_algebra.xhtml#systems of linear equations"/> </rdf:li>
       <rdf:li> <rdf:Description ID="matrix-algegra_equations_matrix"   nc:name="Matrix Equations"            nc:link="dm08-04-matrix_algebra.xhtml#matrix equations"/> </rdf:li>
       <rdf:li> <rdf:Description ID="matrix-algegra_equations_rotation" nc:name="Rotation Matrices"           nc:link="dm08-04-matrix_algebra.xhtml#rotation"/> </rdf:li>
     </rdf:Seq>
