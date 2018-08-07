@@ -1056,7 +1056,7 @@
       <rdf:Description about="#plotting_animated-3d_cylind">
         <nc:subheadings>
         <rdf:Seq>
-          <rdf:li> <rdf:Description ID="plotting_animated-3d_cylindA" nc:name="Animated plots in cylindrical coordinates" nc:link="dm06-07-plotting.xhtml#animated plots in cylindrical coordinates"/> </rdf:li>
+		  <rdf:li> <rdf:Description ID="plotting_animated-3d_cylindA" nc:name="Animated parametric plots in cylindrical coordinates" nc:link="dm06-07-plotting.xhtml#animated parametric plots in cylindrical coordinates"/> </rdf:li>
         </rdf:Seq>
         </nc:subheadings>
       </rdf:Description>
