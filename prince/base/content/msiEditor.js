@@ -5346,6 +5346,17 @@ function msiEditorInitViewMenu() {
   }
 }
 
+function msiEditorInitSidebarMenu() {
+  var i;
+  var sidebar, splitter, menuitem;
+  for (i=1; i<3; i++) {
+    sidebar = document.getElementById('sidebar'+i);
+    splitter = document.getElementById('splitter'+i);
+    menuitem = document.getElementById('viewsidebar'+ (i==1?'left':'right'));
+    menuitem.setAttribute("checked", splitter.getAttribute('state')!=='collapsed');
+  }
+}
+
 function msiEditorInitFormatMenu(event, theMenu) {
   var bRightOne = (event.target == theMenu) || ((event.target.nodeName == "menupopup") && (event.target
     .parentNode == theMenu));
