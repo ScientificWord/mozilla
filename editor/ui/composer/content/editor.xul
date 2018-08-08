@@ -106,7 +106,7 @@
     <commandset id="composerStyleMenuItems"/>
     <commandset id="composerTableMenuItems"/>
     <commandset id="composerListMenuItems"/>
-    <command id="toggleSidebar"/>
+<!--     <command id="toggleSidebar"/> -->
   </commandset>
 
   <tooltip id="aHTMLTooltip" onpopupshowing="return FillInHTMLTooltip(this);"/>
