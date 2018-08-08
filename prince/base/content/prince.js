@@ -1235,70 +1235,39 @@ function previewOrPrintPDFFile( pdffile, preview ) {
 // |forceOpen| is a bool that indicates that the sidebar should be forced open.  In other words
 // the toggle won't be allowed to close the sidebar.
 function toggleSidebar(aCommandID, forceOpen) {
-
-  var sidebarBox = document.getElementById("sidebar-box");
-  if (!aCommandID)
-    aCommandID = sidebarBox.getAttribute("sidebarcommand");
-
-  var elt = document.getElementById(aCommandID);  // elt is a broadcaster object
-  var sidebar = document.getElementById("sidebar"); // a deck
-  var sidebarTitle = document.getElementById("sidebar-title-box");
-  var sidebarSplitter = document.getElementById("sidebar-splitter");
-
-  if (!forceOpen && elt.getAttribute("checked") == "true") {
-    elt.removeAttribute("checked");
-    sidebarBox.setAttribute("sidebarcommand", "");
-    sidebarTitle.setAttribute("label", "");
-    sidebarBox.hidden = true;
-    sidebarSplitter.hidden = true;
-    content.focus();
-    return;
+  var splitterId, menu;
+  if (aCommandID === 'cmd_viewsidebar1') {
+    splitterId = 'splitter1';
   }
-
-  var elts = document.getElementsByAttribute("group", "sidebar");
-  for (var i = 0; i < elts.length; ++i)
-    elts[i].removeAttribute("checked");
-
-  elt.setAttribute("checked", "true");;
-
-  if (sidebarBox.hidden) {
-    sidebarBox.hidden = false;
-    sidebarSplitter.hidden = false;
+  else if (aCommandID === 'cmd_viewsidebar2') {
+    splitterId = 'splitter2';
   }
+  else return;
+  var splitter = document.getElementById(splitterId);
 
-  var url = elt.getAttribute("sidebarurl");
-  var title = elt.getAttribute("sidebartitle");
-  if (!title)
-    title = elt.getAttribute("label");
-  var i;
-  var deckpaneltoshow;
-  var nodelist = sidebar.childNodes;
-  for (i = 0; i < nodelist.length; i++) {
-    if (nodelist.item(i).id == url) {
-      sidebar.selectedIndex = i;
-    }
+  if (splitter.getAttribute('state') === 'collapsed') {
+    splitter.setAttribute('state', 'open');
   }
-  sidebarBox.setAttribute("sidebarcommand", elt.id);
-  sidebarTitle.setAttribute("label", title);
-}
-
-function showSidebar(sidebarnum, checkbox, forceOpen)
-{
-  var sidebar=document.getElementById("sidebar"+sidebarnum);
-  if (sidebar == null) return;
-  var splitter=document.getElementById("splitter"+sidebarnum);
-  if (splitter == null) return;
-  if (checkbox.getAttribute("checked") === "true") {
-    // show the sidebar
-    sidebar.removeAttribute("hidden");
-    // splitter.removeAttribute("hidden");
-  }
-  else
-  {
-    sidebar.setAttribute("hidden", "true");
-    // splitter.setAttribute("hidden", "true");
+  else {
+    splitter.setAttribute('state', 'collapsed');
   }
 }
+
+
+// Not used
+// function showSidebar(sidebarnum, checkbox, forceOpen)
+// {
+//   var splitter=document.getElementById('splitter'+sidebarnum);
+//   if (splitter == null) return;
+//   if (checkbox.getAttribute("checked") === "false") {
+//     // hide the sidebar
+//     splitter.setAttribute('state','collapsed');
+//   }
+//   else
+//   {
+//     splitter.setAttribute("state", "open");
+//   }
+// }
 
 function setStatusBarVisibility()
 {
@@ -1311,7 +1280,7 @@ function setStatusBarVisibility()
   }
   else statusbar.setAttribute("hidden","true");
 }
-
+9
 function switchFocus(elem)
 {
   var mediator = Components.classes["@mozilla.org/rdf/datasource;1?name=window-mediator"].getService();
