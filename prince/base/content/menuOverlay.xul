@@ -2,6 +2,7 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 #include productname.inc
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/sidebar.css" type="text/css"?>
 
 <!DOCTYPE overlay [
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/menuOverlay.dtd">
@@ -380,21 +381,17 @@
                 label="&viewBibTeXLog.label;"/>
 #endif
       <menuseparator/>
-      <menu id="sidebar-menu" label="&viewSidebars.label;" accesskey="&viewsidebars.accesskey;" >
+      <menu id="sidebar-menu" label="&viewSidebars.label;" accesskey="&viewsidebars.accesskey;" onpopupshowing="msiEditorInitSidebarMenu();">
         <menupopup>
           <menuitem id="viewsidebarleft"
                     type="checkbox"
-                    persist="checked"
-                    checked="true"
-                    observes="cmd_viewStatusBar"
-                    accesskey="&viewStatusBar.accesskey;"
-                    label="&viewsidebarleft.label;" />
+                    accesskey="&viewsidebarleft.accesskey;"
+                    label="&viewsidebarleft.label;" 
+                    command="cmd_viewsidebar1"/>
           <menuitem id="viewsidebarright"
                     type="checkbox"
-                    persist="checked"
-                    checked="true"
-                    observes="cmd_viewStatusBar"
-                    accesskey="&viewStatusBar.accesskey;"
+                    command="cmd_viewsidebar2"
+                    accesskey="&viewsidebarright.accesskey;"
                     label="&viewsidebarright.label;" />
         </menupopup>
       </menu>
@@ -612,6 +609,8 @@
     <command id="cmd_PreviewMode"      oncommand="msiGoDoCommand('cmd_PreviewMode')"/>
     <command id="cmd_viewInvisibles"   oncommand="msiGoDoCommand('cmd_viewInvisibles')"/>
     <command id="cmd_viewStatusBar"    oncommand="setStatusBarVisibility();" />
+    <command id="cmd_viewsidebar1"     oncommand="toggleSidebar('cmd_viewsidebar1', false);" />
+    <command id="cmd_viewsidebar2"     oncommand="toggleSidebar('cmd_viewsidebar2', false);" />
 
     <!-- only used in context popup menu -->
 <!--     <command id="cmd_editLink"                 oncommand="msiGoDoCommand('cmd_editLink')"/>
