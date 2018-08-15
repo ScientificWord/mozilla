@@ -992,6 +992,7 @@ arcsinh<uID1.3.7>1
 arccosh<uID1.3.8>1
 log<uID1.10.1>1
 ln<uID1.10.2>1
+exp<uID1.10.3>1
 factor<uID1.9.8>1
 float<uID7.1.44>1
 <END_CONTEXT_TRIGARGFUNCS>
@@ -1026,7 +1027,7 @@ grad<uID1.9.2>1
 curl<uID1.9.3>1
 deg<uID1.9.4>1
 dim<uID1.9.5>1
-exp<uID1.9.6>1
+; exp<uID1.9.6>1
 
 about<uID1.9.15>1
 assume<uID1.9.7>1
