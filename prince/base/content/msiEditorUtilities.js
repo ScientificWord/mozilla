@@ -3953,67 +3953,7 @@ function msiDefaultNewDocDirectory() {
     docdir.create(1, 493);
   return docdir;
 }
-// function msiCopyFileAndDirectoryToBak( documentfile ) // an nsILocalFile
-// {
-//   try {
-//   // new scheme: save the bak files with no name change in the ..._files/bak directory
-//     var leafname = documentfile.leafName;
-//     var i = leafname.lastIndexOf(".");
-//     if (i > 0) leafname = leafname.substr(0,i);
-//     var parentdir = documentfile.parent.clone();
-//     var _filesdir = parentdir.clone();
-//     _filesdir.append(leafname+"_files");
-//     var tempbakdir = parentdir.clone();
-//     tempbakdir.append("bak");
-//     var finalbakdir = _filesdir.clone();
-//     finalbakdir.append("bak");
-//   // nuke current bak dir contents if there are any
-//     if (finalbakdir.exists()) finalbakdir.remove(true);
-//   // copy stuff to temp bak dir
-//     documentfile.copyTo(tempbakdir, documentfile.leafName);
-//   // copy _files to temp bak dir
-//     _filesdir.copyTo(tempbakdir, leafname+"_files");
-//   // We can copy the 'revert' directory to 'bak' or we can copy 'bak' to 'revert',
-//   // but we can't do both without getting recursion. So delete the 'revert' directory
-//   // that we just copied.
-//     var revertdir = tempbakdir.clone();
-//     revertdir.append(leafname+"_files");
-//     revertdir.append("revert");
-//     if (revertdir.exists()) revertdir.remove(true);
-//
-//   // now move the temp dir to ..._files/bak
-//     tempbakdir.moveTo(_filesdir, "bak");
-//   }
-//   catch (e) {
-//     dump("msiCopyFileAndDirectoryToBak failed: "+e+"\n");
-//   }
-// }
-//
-// This should be no longer needed
-// function msiCopyAuxDirectory( originalfile, newfile ) // both nsILocalFiles
-// {
-//   try
-//   {
-//     var filename = originalfile.leafName;
-//     var newfilename = newfile.leafName;
-//     var i = filename.lastIndexOf(".");
-//     if (i >= 0) filename = filename.substr(0,i);
-//     i = newfilename.lastIndexOf(".");
-//     if (i >= 0) newfilename = newfilename.substr(0,i);
-//     filename += "_files";
-//     newfilename += "_files";
-//     var parentdir = originalfile.parent.clone();
-//     var newdir = newfile.parent.clone();
-//     var testfile = newdir.clone();
-//     testfile.append(newfilename);
-//     if (testfile.exists()) testfile.remove();
-//     parentdir.append(filename);
-//     parentdir.copyTo(newdir, newfilename);
-//   }
-//   catch(e) {
-//     dump("unable to copy aux directory: "+e+"\n");
-//   }
-// }
+
 // Recall that the current editing session has changed only files in the working directory, and
 // that the .sci file has not been changed.
 //
@@ -4088,6 +4028,7 @@ function msiRevertFile(aContinueEditing, documentfile, del)
     }
     return false;
   }
+
 function GetDefaultBrowserColors() {
   var prefs = GetPrefs();
   var colors = {
@@ -4122,17 +4063,21 @@ function GetDefaultBrowserColors() {
   colors.VisitedLinkColor = prefs.getCharPref('browser.visited_color');
   return colors;
 }
+
 /************* URL handling ***************/
 function TextIsURI(selectedText) {
   return selectedText && /^http:\/\/|^https:\/\/|^file:\/\/|\^ftp:\/\/|^about:|^mailto:|^news:|^snews:|^telnet:|^ldap:|^ldaps:|^gopher:|^finger:|^javascript:/i.test(selectedText);
 }
+
 function IsUrlUntitled(urlString) {
   var re = new RegExp('/' + GetString('untitled') + '[0-9]*.', 'i');
   return re.test(urlString);
 }
+
 function IsUrlAboutBlank(urlString) {
   return urlString === 'about:blank';
 }
+
 function msiMakeRelativeUrl(url, editorElement) {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
