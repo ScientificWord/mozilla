@@ -3472,17 +3472,23 @@ function nodeToMath(editor, node, startOffset, endOffset, firstnode, lastnode)
   var newNode = {};
   var newSelection = {};
   var tempNode = node;
+  var text;
   if ( (node.nodeType === Node.TEXT_NODE) || (node.nodeName ==="texb") )
   {
     try {
       if (startOffset >0)
       {
-        editor.splitNode(node, startOffset, newNode);
+        text = node.textContent;
+        editor.splitNode(node, startOffset, newNode); // newNode.value is the part before the split, and node is the part after
+        // splitNode doesn't update contents of 'node' when called from JS
+        text = text.slice(startOffset);
+        node.textContent = text;
       }
       if (endOffset >= 0)
       {
         editor.splitNode(node, endOffset - startOffset, newNode);
-        tempNode = newNode.value;
+        node.textContent = text.slice(endOffset - startOffset);
+        tempNode = newNode.value;  // tempNode is the middle piece
       }
       var parent = node.parentNode;
       var offset = offsetOfChild(parent, tempNode);
