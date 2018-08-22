@@ -1226,7 +1226,7 @@ no indent - disregarded completely
           </xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="array">
-              <xsl:with-param name="LaTeX-env" select="'array'"/>
+              <xsl:with-param name="LaTeX-env" select="concat(@flv, 'matrix')"/>
             </xsl:call-template>
           </xsl:otherwise>
 		</xsl:choose>

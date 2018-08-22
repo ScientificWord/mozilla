@@ -34,8 +34,15 @@
   <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
 
-  <vbox id="matrixgrid" flex="0">
-    <spacer class="spacer" flex="0"/>
+  <tabbox id="matrixPropertiesTablist" selectedIndex='0'>
+    <tabs>
+      <tab label='Size'/>
+      <tab label='Properties'/>
+    </tabs>
+    <tabpanels>
+
+  <tabpanel id="matrixgrid" orient="vertical" flex="0">
+    <!-- <spacer class="spacer" flex="0"/> -->
     <grid class="sizeSelector" >
       <columns><column flex="1"/><column/><column flex="1"/></columns>
       <rows>
@@ -159,27 +166,67 @@
       <spacer class="spacer" flex="1"/>
     </hbox>
     <spacer class="spacer" flex="1"/>
-  </vbox>
-   <grid>
-   <columns>
-     <column flex="1"/>
-     <column flex="1"/>
-   </columns>
-   <rows>
-     <row align="center">
-       <label control="rowsInput" class="align-right"
-              value="&rows.label;" accesskey="&rows.accesskey;"/>
-       <textbox id="rowsInput" value="2" persist="value" onchange="SelectSizeFromText();"/>
-       <spacer/>
-     </row>
-     <row align="center">
-       <label control="columnsInput" class="align-right"
-              value="&cols.label;" accesskey="&cols.accesskey;"/>
-       <textbox id="columnsInput"  value="2" persist="value" onchange="SelectSizeFromText();"/>
-       <spacer/>
-     </row>
-   </rows>
- </grid>
+    <grid>
+     <columns>
+       <column flex="1"/>
+       <column flex="1"/>
+     </columns>
+     <rows>
+       <row align="center">
+         <label control="rowsInput" class="align-right"
+                value="&rows.label;" accesskey="&rows.accesskey;"/>
+         <textbox id="rowsInput" value="2" style="width: 12em" persist="value" maxlength="4" onchange="SelectSizeFromText();"/>
+         <spacer/>
+       </row>
+       <row align="center">
+         <label control="columnsInput" class="align-right"
+                value="&cols.label;" accesskey="&cols.accesskey;"/>
+         <textbox id="columnsInput"  value="2" style="width: 12em" persist="value" maxlength="4" onchange="SelectSizeFromText();"/>
+         <spacer/>
+       </row>
+     </rows>
+   </grid>
+ </tabpanel>
+ <tabpanel id="matrixproperties" orient="vertical" flex="0">
+  <hbox>
+    <groupbox id="columnAlignment" >
+      <caption label="Column alignment"/>
+      <radiogroup>
+        <radio label="Left"/>
+        <radio label="center" selected="true"/>
+        <radio label="Right"/>
+      </radiogroup>
+    </groupbox>
+    <groupbox id="baseline" >
+      <caption label="Baseline"/>
+      <radiogroup >
+        <radio label="Same as top row"/>
+        <radio label="At vertical center" selected="true"/>
+        <radio label="Same as bottom row"/>
+      </radiogroup>
+    </groupbox>
+  </hbox>
+  <hbox>
+    <groupbox id="builtinDelimiters" >
+      <caption label="Built-in delimiters"/>
+      <radiogroup orient="horizontal">
+        <vbox>
+          <radio label="None"/>
+          <radio label="Brackets [m]"/>
+          <radio label="Braces {m}"/>
+        </vbox>
+        <vbox>
+          <radio label="Single vertical bars |m|"/>
+          <radio label="Double vertical bars ‖m‖"/>
+          <radio label="Parentheses (m)" selected="true"/>
+        </vbox>
+      </radiogroup>
+    </groupbox>
+  </hbox>
+</tabpanel>
+</tabpanels>
+</tabbox>
+
 </dialog>
 
 
