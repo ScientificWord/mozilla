@@ -199,7 +199,7 @@ void MathWorkShop::ReleaseClientHandle(U32 targ_handle)
 U32 MathWorkShop::InstallCompEngine(nsILocalFile *install_script,
                                     MathResult & mr)
 {
-  printf("\n\n  jcs InstallCompEngine\n");
+//  printf("\n\n  jcs InstallCompEngine\n");
   U32 rv = 0;
   nsCOMPtr<nsILocalFile> workingDir;
   nsCOMPtr<nsIFile> parentDir, wd;
@@ -228,7 +228,7 @@ U32 MathWorkShop::InstallCompEngine(nsILocalFile *install_script,
         return rv;
       }
     } else {                    // engine name not found in "install_script"
-      printf("\n\n  jcs No engine name in install script");
+     // printf("\n\n  jcs No engine name in install script");
       //TCI_ASSERT(0);
     }
     // The "install_script" should name the database file with all the info
@@ -339,7 +339,7 @@ U32 MathWorkShop::FinishInstall(nsILocalFile *eng_dbase_file,
                                 const char *eng_name, Grammar * install_dBase,
                                 MathResult & mr)
 {
-  printf("\n\n  jcs FinishInstall\n");
+  // printf("\n\n  jcs FinishInstall\n");
   U32 rv = 0;
 
   CompEngine *comp_engine = NULL;
@@ -364,7 +364,7 @@ U32 MathWorkShop::FinishInstall(nsILocalFile *eng_dbase_file,
     fclose(fp);
   } else {
     TCI_ASSERT(0);
-    printf("\n\n  jcs Could not open\n");
+    // printf("\n\n  jcs Could not open\n");
     mr.PutResultCode(CR_EngDbaseOpenFailed);
     return rv;
   }
