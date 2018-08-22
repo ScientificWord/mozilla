@@ -359,7 +359,7 @@ InitOperators(void)
           }
         }
       }
-      printf("Operator count is %d\n", gOperatorCount);
+//      printf("Operator count is %d\n", gOperatorCount);
     }
   }
   return NS_OK;
