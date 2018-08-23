@@ -1,4 +1,6 @@
-
+prefpanel {
+  font-size: 11px
+}
 /* ----- GENERAL BUTTON ----- */
 
 radio[pane=prefGeneral] {

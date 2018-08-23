@@ -191,34 +191,34 @@
   <hbox>
     <groupbox id="columnAlignment" >
       <caption label="Column alignment"/>
-      <radiogroup>
-        <radio label="Left"/>
-        <radio label="center" selected="true"/>
-        <radio label="Right"/>
+      <radiogroup id="columnalign">
+        <radio value="l" label="Left"/>
+        <radio value="c" label="center" selected="true"/>
+        <radio value="r" label="Right"/>
       </radiogroup>
     </groupbox>
-    <groupbox id="baseline" >
+    <groupbox id="baselinegroup" >
       <caption label="Baseline"/>
-      <radiogroup >
-        <radio label="Same as top row"/>
-        <radio label="At vertical center" selected="true"/>
-        <radio label="Same as bottom row"/>
+      <radiogroup id="baseline">
+        <radio value="t" label="Same as top row"/>
+        <radio value="" label="At vertical center" selected="true"/>
+        <radio value="b" label="Same as bottom row"/>
       </radiogroup>
     </groupbox>
   </hbox>
   <hbox>
     <groupbox id="builtinDelimiters" >
       <caption label="Built-in delimiters"/>
-      <radiogroup orient="horizontal">
+      <radiogroup id="delimiters" orient="horizontal">
         <vbox>
-          <radio label="None"/>
-          <radio label="Brackets [m]"/>
-          <radio label="Braces {m}"/>
+          <radio value="" label="None"/>
+          <radio value="b" label="Brackets [m]"/>
+          <radio value="B" label="Braces {m}"/>
         </vbox>
         <vbox>
-          <radio label="Single vertical bars |m|"/>
-          <radio label="Double vertical bars ‖m‖"/>
-          <radio label="Parentheses (m)" selected="true"/>
+          <radio value="v" label="Single vertical bars |m|"/>
+          <radio value="V" label="Double vertical bars ‖m‖"/>
+          <radio value="p" label="Parentheses (m)" selected="true"/>
         </vbox>
       </radiogroup>
     </groupbox>
