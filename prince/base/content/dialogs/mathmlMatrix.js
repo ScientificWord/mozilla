@@ -10,6 +10,8 @@ var target;
 // dialog initialization code
 function Startup()
 {
+  var colAlign, baseline, delimiter;
+  var prefs = GetPrefs();
   target=window.arguments[0];
   gDialog.rowsInput      = document.getElementById("rowsInput");
   if (target.rows > 0)
@@ -28,6 +30,12 @@ function Startup()
   SelectSizeFromText();
   SetTextboxFocusById("rowsInput");
   SetWindowLocation();
+  colAlign = prefs.getCharPref('swp.matrixdef.colalign');
+  baseline = prefs.getCharPref('swp.matrixdef.baseline');
+  delimiter = prefs.getCharPref('swp.matrixdef.delim');
+  document.getElementById("columnalign").value = colAlign;
+  document.getElementById("baseline").value = baseline;
+  document.getElementById("delimiters").value = delimiter;
 }
 
 
