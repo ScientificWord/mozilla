@@ -423,6 +423,16 @@
       <preference id ="ctrlMpref"
                   name="swp.ctrl.m"
                   type="string"/>
+                  <!-- Default matrix properties, size not included -->
+      <preference id="matrixColAlignment"
+                  name="swp.matrixdef.colalign"
+                  type="string" />
+      <preference id="matrixBaseLine"
+                  name="swp.matrixdef.baseline"
+                  type="string" />
+      <preference id="matrixDelimiter"
+                  name="swp.matrixdef.delim"
+                  type="string" />
     </preferences>
 
     <tabbox id="generalTabbox" persist="selectedIndex" selectedIndex="0">
@@ -430,6 +440,7 @@
         <tab id="prefgeneral" label="&GeneralTab.label;"/>
         <tab id="prefstartup" label="&StartUpShellTab.label;"/>
         <tab id="prefgraphics" label="&GraphicsTab.label;"/>
+        <tab id="prefmatrix" label="Matrix defaults" />
       </tabs>
       <tabpanels>
         <tabpanel orient="vertical">
@@ -678,6 +689,43 @@
               </rows>
             </grid>
           </groupbox>
+        </tabpanel>
+       <tabpanel id="matrixpropertiespref" orient="vertical" flex="0">
+        <hbox>
+          <groupbox id="columnAlignment" >
+            <caption label="Column alignment"/>
+            <radiogroup id="columnalign" preference="matrixColAlignment">
+              <radio value="l" label="Left"/>
+              <radio value="c" label="center" selected="true"/>
+              <radio value="r" label="Right"/>
+            </radiogroup>
+          </groupbox>
+          <groupbox id="baselinegroup" >
+            <caption label="Baseline"/>
+            <radiogroup id="baseline" preference="matrixBaseLine">
+              <radio value="t" label="Same as top row"/>
+              <radio value="" label="At vertical center" />
+              <radio value="b" label="Same as bottom row"/>
+            </radiogroup>
+          </groupbox>
+        </hbox>
+        <hbox>
+          <groupbox id="builtinDelimiterspref" >
+            <caption label="Built-in delimiters"/>
+            <radiogroup id="delimiters" orient="horizontal" preference="matrixDelimiter">
+              <vbox>
+                <radio value="" label="None"/>
+                <radio value="b" label="Brackets [m]"/>
+                <radio value="B" label="Braces {m}"/>
+              </vbox>
+              <vbox>
+                <radio value="v" label="Single vertical bars |m|"/>
+                <radio value="V" label="Double vertical bars ‖m‖"/>
+                <radio value="p" label="Parentheses (m)" selected="true"/>
+              </vbox>
+            </radiogroup>
+          </groupbox>
+        </hbox>
         </tabpanel>
       </tabpanels>
     </tabbox>
