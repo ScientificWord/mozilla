@@ -102,6 +102,11 @@ pref("swp.graphics.bordercolor", "#ffffff");
 pref("swp.graphics.usedefaultwidth", false);
 pref("swp.graphics.usedefaultheight", false);
 
+// matrix defaults
+pref("swp.matrixdef.colalign", "c");  //l, c, or r -- left, center, right
+pref("swp.matrixdef.baseline", ""); //t, blank, or b -- baseline aligns with top, center, or bottom
+pref("swp.matrixdef.delim", "p"); //p, b, B, v, V or blank -- parents, square brackets, braces, vert lines, vert double lines or blank
+
 pref("swp.table.vsize", "2.8");
 pref("swp.table.hsize", "3.5");
 pref("swp.table.inlineoffset", "0.0");
