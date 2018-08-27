@@ -855,29 +855,6 @@ function getEditControlContentNodes(editorElement, bMathOnly)
   gDialog.substContentFilter.setMathOnly(bMathOnly);
   var docFrag = gDialog.substContentFilter.getXMLNodesAsDocFragment();
   return docFrag;
-//  var doc = editorElement.contentDocument;
-////  var target = msiGetRealBodyElement(doc);
-//  var target = doc.getElementsByTagName("bodyText")[0];
-//  var returnlist;
-//  if (!target) target = doc.getElementsByTagName("para")[0];
-//  if (!target)
-//    return null;
-//  if (bMathOnly)
-//  {
-//    var mathList = target.getElementsByTagName("math");
-//    if (mathList != null && mathList.length > 0)
-//      target = mathList[0];
-//    else
-//      target = null;
-//  }
-//  if (target != null)
-//  {
-//    returnlist = target.childNodes;
-//    return returnlist;
-//  }
-//  else
-//
-//    return null;
 }
 
 
