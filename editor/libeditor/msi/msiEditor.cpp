@@ -734,7 +734,7 @@ PRBool IsTempInput(nsIDOMElement * pElement)
 
 
 NS_IMETHODIMP
-msiEditor::InsertFence(const nsAString & open, const nsAString & close)
+msiEditor::InsertFence(const nsAString & open, const nsAString & close, const nsAString & flavor)
 {
   nsresult res(NS_ERROR_FAILURE);
   nsAutoEditBatch beginBatching(this);
@@ -742,16 +742,16 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
   {
     nsCOMPtr<nsISelection> selection;
     nsCOMPtr<nsIDOMNode> startNode, endNode;
-		nsCOMPtr<nsIDOMElement> mtable;
+    nsCOMPtr<nsIDOMElement> mtable;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-		PRBool allSelected(PR_FALSE);
+    PRBool allSelected(PR_FALSE);
     GetSelection(getter_AddRefs(selection));
-		res = GetAllCellsSelected(getter_AddRefs(mtable), &allSelected);
-		if (allSelected && mtable)
-		{
-			SelectTable();
-		}
+    res = GetAllCellsSelected(getter_AddRefs(mtable), &allSelected);
+    if (allSelected && mtable)
+    {
+      SelectTable();
+    }
 
     nsCOMPtr<nsIDOMRange> range;
     msiUtils::CanonicalizeMathSelection(this);
@@ -786,7 +786,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
         PRBool bIsTempInput = PR_FALSE;
         PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
         PRUint32 attrFlags(msiIMathMLInsertion::FLAGS_NONE);
-        res = msiUtils::CreateMRowFence(this, nsnull, bCollapsed, open, close, PR_TRUE, flags, attrFlags, mathmlElement);
+        res = msiUtils::CreateMRowFence(this, nsnull, bCollapsed, open, close, flavor, PR_TRUE, flags, attrFlags, mathmlElement);
         if (NS_SUCCEEDED(res) && mathmlElement) {
           mathmlNode = do_QueryInterface(mathmlElement);
           res = store->GetRange(range);
@@ -829,7 +829,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
 
 NS_IMETHODIMP
 msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature,
-  const nsAString & delim)
+  const nsAString & flavor)
 {
   nsresult res(NS_ERROR_FAILURE);
   nsAutoEditBatch beginBatching(this);
@@ -861,7 +861,7 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
         res = m_msiEditingMan->InsertMatrix(editor, selection, theNode,
-                                           theOffset, rows, cols, rowSignature, delim);
+                                           theOffset, rows, cols, rowSignature, flavor);
       }
     }
   }
@@ -1733,11 +1733,11 @@ NS_IMETHODIMP msiEditor::NodeInMath(nsIDOMNode *node, nsIDOMNode **_retval)
     res = checkNode->GetLocalName(name);
     while (checkNode && !name.EqualsLiteral("math"))
     {
-	    if (name.EqualsLiteral("mtext"))
-			{
-				*_retval = nsnull;
-				return NS_OK;
-			}
+      if (name.EqualsLiteral("mtext"))
+      {
+        *_retval = nsnull;
+        return NS_OK;
+      }
       res = checkNode->GetParentNode(getter_AddRefs(checkNode));
       if (checkNode) res = checkNode->GetLocalName(name);
     }
@@ -3238,15 +3238,15 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 // returns 2 if we insert a requiredspace.
 PRInt32 TwoSpacesBehavior()
 {
-	PRInt32 behavior = 0;
+  PRInt32 behavior = 0;
   nsresult rv;
   nsXPIDLCString thePref;
   nsAutoString prefString;
-	nsCOMPtr<nsIPrefBranch> prefBranch =
+  nsCOMPtr<nsIPrefBranch> prefBranch =
     do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
 
   if (NS_SUCCEEDED(rv) && prefBranch) {
-		rv = prefBranch->GetCharPref("swp.space.after.space", getter_Copies(thePref));
+    rv = prefBranch->GetCharPref("swp.space.after.space", getter_Copies(thePref));
     if (NS_SUCCEEDED(rv))
     {
       CopyASCIItoUTF16(thePref, prefString);
@@ -3255,7 +3255,7 @@ PRInt32 TwoSpacesBehavior()
     if (prefString.EqualsLiteral("tomath")) behavior = 1;
     else if (prefString.EqualsLiteral("reqspace")) behavior = 2;
   }
-	return behavior;
+  return behavior;
 }
 
 nsresult
@@ -3321,21 +3321,21 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       PRInt32 twospacebehavior = TwoSpacesBehavior();
       if (twospacebehavior == 1)
       {
-  			if (!inMath && (offset > 0) && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == ' ' || theText[offset - 1] == 160))
-  			{
-					*nodeOut = nodeIn;
-					offsetOut = offset - 1 ;
-					_result = msiIAutosub::STATE_SPECIAL;
-					return NS_OK;
-				}
-			}
+        if (!inMath && (offset > 0) && (theText[offset] == ' ' || theText[offset] == 160) && (theText[offset - 1] == ' ' || theText[offset - 1] == 160))
+        {
+          *nodeOut = nodeIn;
+          offsetOut = offset - 1 ;
+          _result = msiIAutosub::STATE_SPECIAL;
+          return NS_OK;
+        }
+      }
       else if (twospacebehavior == 2) {
 
       }
       else {
 
       }
-			prevChar = theText[offset];
+      prevChar = theText[offset];
       m_autosub->NextChar(inMath, prevChar, & _result);
       if (_result == msiIAutosub::STATE_SUCCESS)
       {
@@ -3504,15 +3504,15 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
     GetInComplexTransaction(&complexTxn);
     SetInComplexTransaction(PR_TRUE);
     if (lookupResult == msiIAutosub::STATE_SPECIAL)
-		{
-			ctx =	msiIAutosub::CONTEXT_TEXTONLY;
-			action = msiIAutosub::ACTION_EXECUTE;
-			data = NS_LITERAL_STRING("inserttext(' '); msiGoDoCommand('cmd_MSImathtext')");
-			pasteContext = NS_LITERAL_STRING("");
-			pasteInfo = NS_LITERAL_STRING("");
-		}
-		else
-			m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
+    {
+      ctx = msiIAutosub::CONTEXT_TEXTONLY;
+      action = msiIAutosub::ACTION_EXECUTE;
+      data = NS_LITERAL_STRING("inserttext(' '); msiGoDoCommand('cmd_MSImathtext')");
+      pasteContext = NS_LITERAL_STRING("");
+      pasteInfo = NS_LITERAL_STRING("");
+    }
+    else
+      m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
     if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath ||
       inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
     {
@@ -3817,7 +3817,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
     }
     else if ( tagName.EqualsLiteral("mrow") )  //Here we must test to see whether this is in fact an mfenced, in which case it will be both the splittable and the split parent.
     {
-	    nsCOMPtr<msiIMathMLEditingBC> editingBC;
+      nsCOMPtr<msiIMathMLEditingBC> editingBC;
       GetMathMLEditingBC(nextNode, 0, true, getter_AddRefs(editingBC));
       if (editingBC)
       {

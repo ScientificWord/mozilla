@@ -34,11 +34,12 @@ interface msiIMathMLEditor : nsISupports
   void InsertMathunit(in DOMString name);
   void InsertEngineFunction(in DOMString name);
   void InsertFence(in DOMString open,
-                   in DOMString close);
+                   in DOMString close,
+                   in DOMString flavor);
   void InsertMatrix(in unsigned long rows,
                     in unsigned long cols,
                     in DOMString rowSignature,
-                    in DOMString delim);
+                    in DOMString flavor);
   void InsertOperator(in DOMString symbol, in unsigned long attrFlags,
                       in DOMString leftspace, in DOMString rightspace,
                       in DOMString minsize, in DOMString maxsize);
