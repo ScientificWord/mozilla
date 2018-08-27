@@ -205,6 +205,7 @@ public:
                                   PRBool createInputBox,
                                   const nsAString & open,
                                   const nsAString & close,
+                                  const nsAString & flavor,
                                   PRBool markCaret,
                                   PRUint32 & flags,
                                   PRUint32 & attrFlags,
