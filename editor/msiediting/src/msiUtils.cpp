@@ -1322,6 +1322,7 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
                                    PRBool createInputBox,
                                    const nsAString & open,
                                    const nsAString & close,
+                                   const nsAString & flavor,
                                    PRBool markCaret,
                                    PRUint32 & flags,
                                    PRUint32 & attrFlags,
@@ -1334,15 +1335,20 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
   nsCOMPtr<nsIDOMElement> opening;
   nsCOMPtr<nsIDOMElement> closing;
   nsAutoString emptyString;
+  NS_NAMED_LITERAL_STRING(flv,"flv");
   PRUint32 commonflags(msiIMMLEditDefines::MO_ATTR_fence_T | msiIMMLEditDefines::MO_ATTR_stretchy_T | msiIMMLEditDefines::MO_ATTR_symmetric_T);
+  PRBool hasFlavor = flavor.Length() > 0;
   commonflags |= (attrFlags & msiIMMLEditDefines::MO_ATTR_boundFence);
   res = CreateMathOperator(editor, open,  msiIMathMLEditingBC::INVALID, dummyFlags,
                            msiIMMLEditDefines::MO_ATTR_prefix|commonflags, emptyString, emptyString,
                            emptyString, emptyString, opening);
   if (NS_SUCCEEDED(res))
+    if (hasFlavor) res = opening->SetAttribute(flv, flavor);
     res = CreateMathOperator(editor, close, msiIMathMLEditingBC::INVALID, dummyFlags,
                              msiIMMLEditDefines::MO_ATTR_postfix|commonflags, emptyString, emptyString,
                              emptyString, emptyString, closing);
+  if (NS_SUCCEEDED(res))
+    if (hasFlavor) res = closing->SetAttribute(flv, flavor);
   if (NS_SUCCEEDED(res))
   {
     nsCOMPtr<nsIDOMNode> openNode(do_QueryInterface(opening));
@@ -1535,6 +1541,7 @@ nsresult msiUtils::CreateBinomial(nsIEditor * editor,
                                   nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsAutoString nullFlavor;
   nsCOMPtr<nsIDOMElement> frac;
 //  PRUint32 fracFlags = attrFlags & (msiIMMLEditDefines::MO_ATTR_sizeFlags);
   PRUint32 fracFlags = msiIMMLEditDefines::MO_ATTR_none;
@@ -1547,7 +1554,7 @@ nsresult msiUtils::CreateBinomial(nsIEditor * editor,
       nsCOMPtr<nsIDOMElement> mrowElement;
       nsCOMPtr<nsIDOMNode> child = do_QueryInterface(frac);   //TODO -- do these need to be saved for undo!!!!!!!
       PRUint32 fenceFlags = msiIMMLEditDefines::MO_ATTR_boundFence;
-      res = CreateMRowFence(editor, child, PR_FALSE, opening, closing, PR_FALSE, flags, fenceFlags, mrowElement);
+      res = CreateMRowFence(editor, child, PR_FALSE, opening, closing, nullFlavor, PR_FALSE, flags, fenceFlags, mrowElement);
       if (NS_SUCCEEDED(res))
         mathmlElement = mrowElement;
       else
@@ -1654,15 +1661,17 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
                                PRBool markCaret,
                                PRUint32 & flags,
                                nsCOMPtr<nsIDOMElement> & mathmlElement,
-                               const nsAString & delim)
+                               const nsAString & flavor)
 {
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMElement> table;
   nsCOMPtr<nsIDOMElement> row;
   PRUint32 fenceflags = 0;
-  nsAutoString right;
+  nsAutoString right, left;
   mathmlElement = nsnull;
+
   res = CreateMathMLElement(editor, msiEditingAtoms::mtable, table);
+  if (flavor.Length() > 0) table->SetAttribute( NS_LITERAL_STRING("flv"), flavor);
   if (NS_SUCCEEDED(res) && table)
   {
     PRBool isLabeledTr(PR_FALSE); // use row signature to determine
@@ -1680,17 +1689,31 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
         res = NS_ERROR_FAILURE;
     }
     if (NS_SUCCEEDED(res)) {
-      if (delim.Length() > 0) {
+      if (flavor.Length() > 0) {
         // create an mrow and fill it with mo, mtable, mo where the mo's are fence characters
-        if (delim.EqualsLiteral("[")) right = NS_LITERAL_STRING("]");
-        else if (delim.EqualsLiteral("(")) right = NS_LITERAL_STRING(")");
-        else if (delim.EqualsLiteral("{")) right = NS_LITERAL_STRING("}");
+        if (flavor.EqualsLiteral("b")) right = NS_LITERAL_STRING("]");
+        else if (flavor.EqualsLiteral("p")) {
+          right = NS_LITERAL_STRING(")");
+          left = NS_LITERAL_STRING("(");
+        }
+        else if (flavor.EqualsLiteral("B")) {
+          right = NS_LITERAL_STRING("}");
+          left = NS_LITERAL_STRING("{");
+        }
+        else if (flavor.EqualsLiteral("v")) {
+          right = NS_LITERAL_STRING("|");
+          left = right;
+        }
+        else if (flavor.EqualsLiteral("V")) {
+          right = NS_LITERAL_STRING("‖");
+          left = right;
+        }
         else // no need for fence
         {
           mathmlElement = table;
           return res;
         }
-        res = CreateMRowFence(editor, (nsIDOMNode*)table, PR_FALSE, delim, right, PR_FALSE, flags, fenceflags, row);
+        res = CreateMRowFence(editor, (nsIDOMNode*)table, PR_FALSE, left, right, flavor, PR_FALSE, flags, fenceflags, row);
         if (NS_SUCCEEDED(res))
         {
           mathmlElement = row;
