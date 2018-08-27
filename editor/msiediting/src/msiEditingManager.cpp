@@ -1194,7 +1194,8 @@ msiEditingManager::InsertFence(nsIEditor* editor,
                                nsIDOMNode* node,
                                PRUint32 offset,
                                const nsAString & open,
-                               const nsAString & close)
+                               const nsAString & close,
+                               const nsAString & flavor)
 {
   nsresult res(NS_ERROR_FAILURE);
   //check that we are entirely in one math object
@@ -1223,7 +1224,7 @@ msiEditingManager::InsertFence(nsIEditor* editor,
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
     PRUint32 attrFlags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateMRowFence(editor, nsnull, bCollapsed, open, close, PR_TRUE, flags, attrFlags, mathmlElement);
+    res = msiUtils::CreateMRowFence(editor, nsnull, bCollapsed, open, close, flavor, PR_TRUE, flags, attrFlags, mathmlElement);
     if (!bCollapsed)
     {
       MoveRangeTo(editor, range, mathmlElement, 1, selStartNode);

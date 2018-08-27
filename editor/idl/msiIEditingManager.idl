@@ -148,7 +148,8 @@ interface msiIEditingManager : nsISupports
                    in nsIDOMNode node,
                    in PRUint32 offset,
                    in DOMString open,
-                   in DOMString close);
+                   in DOMString close,
+                   in DOMString flavor);
                    
   /**
    * Call insertSymbol to create a math leaf node (mi, mo, mn) from symbol

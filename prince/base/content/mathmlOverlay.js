@@ -749,25 +749,25 @@ var msiReviseMatrixCmd =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-// jcs    var editorElement = msiGetActiveEditorElement(window);
-// jcs    var theMatrixData = msiGetPropertiesDataFromCommandParams(aParams);
-// jcs//    var theMatrixData = msiGetReviseObjectFromCommandParams(aParams);
-// jcs//    AlertWithTitle("mathmlOverlay.js", "In msiReviseMatrixCmd, trying to revise matrix, dialog unimplemented.");
-// jcs    var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
-// jcs    var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank", "modal, chrome,resizable,close,titlebar,dependent",
-// jcs                                                     editorElement, aCommand, this, theData);
+    var editorElement = msiGetActiveEditorElement(window);
+    var theMatrixData = msiGetPropertiesDataFromCommandParams(aParams);
+//    var theMatrixData = msiGetReviseObjectFromCommandParams(aParams);
+//    AlertWithTitle("mathmlOverlay.js", "In msiReviseMatrixCmd, trying to revise matrix, dialog unimplemented.");
+    var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
+    var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank", "modal, chrome,resizable,close,titlebar,dependent",
+                                                     editorElement, aCommand, this, theData);
   },
 
   doCommand: function(aCommand)
   {
-// jcs    var editorElement = msiGetActiveEditorElement(window);
-// jcs    var editor = msiGetEditor(editorElement);
-// jcs    var theMatrixData = new msiTablePropertiesObjectData();
-// jcs    theMatrixData.initFromSelection(editor.selection, editorElement);
-// jcs//    var theMatrixData = msiGetPropertiesObjectFromSelection(editorElement);
-// jcs    var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
-// jcs    var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank",
-// jcs      "modal,chrome,resizable,close,titlebar,dependent", editorElement, aCommand, this, theData);
+    var editorElement = msiGetActiveEditorElement(window);
+    var editor = msiGetEditor(editorElement);
+    var theMatrixData = new msiTablePropertiesObjectData();
+    theMatrixData.initFromSelection(editor.selection, editorElement);
+//    var theMatrixData = msiGetPropertiesObjectFromSelection(editorElement);
+    var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
+    var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank",
+      "modal,chrome,resizable,close,titlebar,dependent", editorElement, aCommand, this, theData);
   }
 };
 
@@ -2499,9 +2499,10 @@ function doMatrixDlg(editorElement)
   o.rows = 0;
   o.cols = 0;
   o.rowsignature = "";
+  o.flavor='';
   window.openDialog("chrome://prince/content/mathmlMatrix.xul", "matrix", "chrome,close,titlebar,modal,resizable", o);
   if (o.rows > 0 && o.cols > 0)
-    insertmatrix(o.rows, o.cols, o.rowsignature, editorElement);
+    insertmatrix(o.rows, o.cols, o.rowsignature, o.flavor, editorElement);
   if (!o.Cancel)
   {
     markDocumentChanged(editorElement);
@@ -3164,7 +3165,7 @@ function reviseFence(fenceNode, left, right, editorElement)
   return retVal;
 }
 
-function insertmatrix(rows, cols, rowsignature, editorElement)
+function insertmatrix(rows, cols, rowsignature, flavor, editorElement)
 {
   var delim = "";
   if (!editorElement)
@@ -3194,10 +3195,19 @@ function insertmatrix(rows, cols, rowsignature, editorElement)
 
   var editor = msiGetEditor(editorElement);
 
+  switch(flavor) {  // Actually, now I don't think delim gets used.
+    case 'b' : delim = '['; break;
+    case 'B' : delim = '{';  break;
+    case 'v' : delim = '|';  break;
+    case 'V' : delim = '‖';  break;
+    case 'p' : delim = '(';  break;
+    default: delim = '';  break;
+  }
+
   try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    mathmlEditor.InsertMatrix(rows, cols, rowsignature, delim);
+    mathmlEditor.InsertMatrix(rows, cols, rowsignature, flavor);
     editorElement.contentWindow.focus();
   }
   catch (e)
