@@ -13,17 +13,19 @@ function Startup()
   var colAlign, baseline, delimiter;
   var prefs = GetPrefs();
   target=window.arguments[0];
-  gDialog.rowsInput      = document.getElementById("rowsInput");
+  gDialog.rowsInput = document.getElementById("rowsInput");
+  if (!target.rows) target.rows = prefs.getIntPref("swp.matrix.rows");
   if (target.rows > 0)
   {
    gRows = target.rows;
-   dDialog.rowsInput.value = gRows;
+   gDialog.rowsInput.value = gRows;
   }
   gDialog.columnsInput   = document.getElementById("columnsInput");
+  if (!target.cols) target.cols = prefs.getIntPref("swp.matrix.cols");
   if (target.cols > 0)
   {
-   gColumns = target.cols;
-   dDialog.columnsInput.value = gColumns;
+    gColumns = target.cols;
+    gDialog.columnsInput.value = gColumns;
   }
   gDialog.OkButton = document.documentElement.getButton("accept");
   gDialog.sizeLabel = document.getElementById("sizeLabel");
@@ -41,6 +43,7 @@ function Startup()
 
 function onOK() 
 {
+  var colAlign, baseline, delimiters;
   target.rows = gRows;
   target.cols = gColumns;
   target.rowSignature = "";
@@ -55,6 +58,14 @@ function onOK()
   }
   MakePersistsValue(gDialog.rowsInput);
   MakePersistsValue(gDialog.columnsInput);
+  colAlign = document.getElementById("columnalign").value;
+  switch (colAlign) {
+
+  }
+  baseline = document.getElementById("baseline").value;
+  delimiters = document.getElementById("delimiters").value;
+  target.flavor = delimiters;                    
+
   return(true);
 }
 
