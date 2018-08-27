@@ -298,30 +298,8 @@ function onAccept()
   {
     if (!theWindow || !("insertfence" in theWindow))
     {
-////Logging stuff only
-//      var logStr = "window.opener is [";
-//      if (window.opener)
-//      {
-//        if (window.opener.name)
-//          logStr += window.opener.name;
-//        else if (window.opener.document)
-//        {
-//          if (window.opener.document.localName)
-//            logStr += "document: " + window.opener.document.localName;
-//          else if (window.opener.document.documentElement)
-//            logStr += "document element: " + window.opener.document.documentElement.nodeName;
-//          else
-//            logStr += "Anonymous document";
-//        }
-//        else
-//          logstr += "Anonymous window (without document)";
-//      }
-//      logStr += "]";
-//      msiKludgeLogString(logStr);
-////End logging stuff
       theWindow = msiGetTopLevelWindow();
     }
-//    theWindow.insertfence(data.leftBracket, data.rightBracket, data.separator, editorElement);
     theWindow.insertfence(data.leftBracket, data.rightBracket, editorElement);
   }
 
