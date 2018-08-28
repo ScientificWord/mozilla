@@ -983,9 +983,9 @@ Plot.prototype =
 {
   constructor: Plot,
   PLOTATTRIBUTES: ["PlotStatus", "PlotType",
-                           "LineStyle", "PointStyle", "LineThickness", "LineColor",
+                           "LineStyle",  "LineThickness", "LineColor",
                            "DiscAdjust", "DirectionalShading", "BaseColor", "SecondaryColor",
-                           "PointSymbol", "SurfaceStyle"/*,  "IncludePoints"*/,    //"IncludePoints" and "IncludeLines" are determined by LineStyle and/or SurfaceStyle
+                           "PointStyle", "SurfaceStyle"/*,  "IncludePoints"*/,    //"IncludePoints" and "IncludeLines" are determined by LineStyle and/or SurfaceStyle
                            "SurfaceMesh"/*,  "IncludeLines"*/,
                            "AISubIntervals", "AIMethod", "AIInfo", "FillPattern",
                            "Animate", "AnimCommonOrCustomSettings", "AnimateStart", "AnimateEnd",
