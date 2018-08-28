@@ -1691,7 +1691,10 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
     if (NS_SUCCEEDED(res)) {
       if (flavor.Length() > 0) {
         // create an mrow and fill it with mo, mtable, mo where the mo's are fence characters
-        if (flavor.EqualsLiteral("b")) right = NS_LITERAL_STRING("]");
+        if (flavor.EqualsLiteral("b")) {
+          right = NS_LITERAL_STRING("]");
+          left = NS_LITERAL_STRING("[");
+        } 
         else if (flavor.EqualsLiteral("p")) {
           right = NS_LITERAL_STRING(")");
           left = NS_LITERAL_STRING("(");
