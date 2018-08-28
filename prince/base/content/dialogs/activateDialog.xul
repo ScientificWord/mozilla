@@ -22,13 +22,13 @@
   <description>&verbiage1;</description>
   <spacer style="height: 20px;" />
   <grid >
-  	<columns>
-  		<column />
-  		<column />
-  	</columns>
-  	<rows>
+    <columns>
+      <column />
+      <column />
+    </columns>
+    <rows>
       <row>
-  			<label>&product.label;</label><label id="productname" value=
+        <label>&product.label;</label><label id="productname" value=
 #ifdef PROD_SW
     "&prodsw;"
 #endif
@@ -38,13 +38,13 @@
 #ifdef PROD_SWP
     "&prodswp;"
 #endif
-  		  />
+        />
       </row>
       <row>
         <label>&serial.label;</label><textbox id="serial"/>
       </row>
-  	  <row>
-  			<label>&computerid.label;</label><textbox  id="computerid" value=""/>
+      <row>
+        <label>&computerid.label;</label><textbox  id="computerid" value=""/>
       </row>
     </rows>
   </grid>
@@ -52,15 +52,15 @@
   <description>&verbiage2;</description>
   <spacer style="height: 20px;" />
   <grid>
-  	<columns>
-  		<column/>
-  		<column/>
-   	</columns>
-  	<rows>
-  		<row>
-  			<label>&email.label;</label>
-  			<textbox id="email"/>
-  		</row>
+    <columns>
+      <column/>
+      <column/>
+    </columns>
+    <rows>
+      <row>
+        <label>&email.label;</label>
+        <textbox id="email"/>
+      </row>
       <row>
         <label>&name.label;</label>
         <textbox id="name"/>
@@ -69,7 +69,7 @@
         <label>&phone.label;</label>
         <textbox id="phone"/>
       </row>
-   	</rows>
+    </rows>
   </grid>
 
 
