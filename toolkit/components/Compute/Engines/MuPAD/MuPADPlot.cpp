@@ -1068,7 +1068,7 @@ string MuPADPlot::PointStyleStr (MuPADPlot* T) {
   if ((T->ptype != "vectorField") && (T->ptype != "gradient")) {
     U32 plottype;                                                                                    
     string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotPointSymbol, plottype);                                     
-    string ret = "";
+    //string ret = "";
     if ((val == "Squares") || (val == "Circles") || (val == "Crosses") || (val == "Diamonds") ||
         (val == "FilledSquares") || (val == "FilledCircles") || (val == "FilledDiamonds") || 
         (val == "Stars") || (val == "XCrosses"))               

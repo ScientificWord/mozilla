@@ -3030,7 +3030,7 @@ void TranslateEmbellishedOp(MNODE* mml_embellop_node,
                 AppendBucketRecord(snode->bucket_list, b_rover);
 
                 // Might have mapped "i" to "imaginaryi".
-                if (b_rover->first_child) {
+					if (b_rover->first_child) {
                   SEMANTICS_NODE* s_var = b_rover->first_child;
                   if (s_var->semantic_type == SEM_TYP_UCONSTANT) {
                     
