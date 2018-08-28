@@ -299,7 +299,7 @@
                     <spacer flex="2" />
                     <label control="LineThickness" value="&LineThickness.label;" />
                     <spacer flex="2" />
-                    <label control= "pointmarker" value="&PointMarker.label;"/>
+                    <label control= "PointStyle" value="&PointMarker.label;"/>
                   </row>
                   <row id="lineAndPointControls" observes="enableLinesAndPoints">
                     <menulist id="LineStyle" sizetopopup="always">
@@ -323,7 +323,7 @@
                       </menupopup>
                     </menulist>
                     <spacer flex="2" />
-                    <menulist id="pointmarker" sizetopopup="always">
+                    <menulist id="PointStyle" sizetopopup="always">
                       <menupopup>
                         <menuitem label="&Dot.label;" value="FilledCircles"/>
                         <menuitem label="&Circle.label;" value="Circles"/>

@@ -1103,8 +1103,8 @@
       <preference id="plot.LineThickness"
                   name="swp.plot.LineThickness"
                   type="string"/>
-      <preference id="plot.PointSymbol"
-                  name="swp.plot.PointSymbol"
+      <preference id="plot.PointStyle"
+                  name="swp.plot.PointStyle"
                   type="string"/>
       <preference id="plot.FillPattern"
                   name="swp.plot.FillPattern"
@@ -1631,7 +1631,7 @@
                     </menupopup>
                   </menulist>
                   <spacer flex="2" />
-                  <menulist id="plotPointMarker" preference="plot.PointSymbol" sizetopopup="always">
+                  <menulist id="plotPointMarker" preference="plot.PointStyle" sizetopopup="always">
                     <menupopup>
                       <menuitem label="&plotPointDot.label;" value="FilledCircles"/>
                       <menuitem label="&plotPointCircle.label;" value="Circles"/>
