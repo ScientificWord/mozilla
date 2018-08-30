@@ -3,7 +3,7 @@
 <!ENTITY StartUpShellTab.label  "Start-up shell">
 <!ENTITY GraphicsTab.label  "Graphics">
 <!ENTITY SaveIntervalSeconds.label "Save interval in seconds (0 for no automatic saving)">
-<!ENTITY GenerateTeXonAutoSave.label  "Generate TeX on automatic save (for latexmk)">
+<!ENTITY GenerateTeXonAutoSave.label  "Generate TeX on automatic save">
 <!ENTITY Skin.label "Skin">
 <!ENTITY Modern.label "Modern">
 <!ENTITY Classic.label  "Classic">
