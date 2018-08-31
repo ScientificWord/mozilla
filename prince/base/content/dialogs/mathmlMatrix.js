@@ -2,78 +2,58 @@
 /*  Copyright 2006 by MacKichan Software, Inc. */
 
 var gRows;
-var gColumns;
+var gCols;
 var gDialog;
 var gCellID;
 var target;
 
+function setUpDialogObject(names, dialogobj) {   // this is a candidate for the utilities object
+  for (nm in names) {
+    dialogobj[names[nm]] = document.getElementById(names[nm]);
+  }
+}
+
+function nCharacters(n, c) {
+  if ( n <= 0 || n > 50) return "";
+  var i, theString="";
+  for (i = 0; i < n; i++) theString += c;
+  return theString;
+}
+
 // dialog initialization code
 function Startup()
 {
-  var colAlign, baseline, delimiter;
   var prefs = GetPrefs();
+  var dialogFields = ["rowsInput","colsInput","sizeLabel","columnalign","baseline","flavor"];
   target=window.arguments[0];
-  gDialog.rowsInput = document.getElementById("rowsInput");
-  if (!target.rows) target.rows = prefs.getIntPref("swp.matrix.rows");
-  if (target.rows > 0)
-  {
-   gRows = target.rows;
-   gDialog.rowsInput.value = gRows;
-  }
-  gDialog.columnsInput   = document.getElementById("columnsInput");
-  if (!target.cols) target.cols = prefs.getIntPref("swp.matrix.cols");
-  if (target.cols > 0)
-  {
-    gColumns = target.cols;
-    gDialog.columnsInput.value = gColumns;
-  }
-  gDialog.OkButton = document.documentElement.getButton("accept");
-  gDialog.sizeLabel = document.getElementById("sizeLabel");
+  var node = target.node;
+  setUpDialogObject(dialogFields, gDialog);  //avoids use of getElementById all the time
+
+  gDialog.rowsInput.value = gRows = (node && node.getAttribute("rows")) || target.rows || prefs.getIntPref("swp.matrix.rows") || 3;
+  gDialog.colsInput.value = gCols = (node && node.getAttribute("cols")) || target.cols || prefs.getIntPref("swp.matrix.cols") || 3;
+  gDialog.columnalign.value = (node && node.getAttribute("colalign")) || target.columnalign || prefs.getCharPref('swp.matrixdef.colalign') || "c";
+  gDialog.baseline.value = (node && node.getAttribute("baseline")) || target.baseline || prefs.getCharPref('swp.matrixdef.baseline') || "";
+  gDialog.flavor.value = (node && node.getAttribute("flavor")) || target.flavor || prefs.getCharPref('swp.matrixdef.delim') || "";
   SelectSizeFromText();
   SetTextboxFocusById("rowsInput");
   SetWindowLocation();
-  colAlign = prefs.getCharPref('swp.matrixdef.colalign');
-  baseline = prefs.getCharPref('swp.matrixdef.baseline');
-  delimiter = prefs.getCharPref('swp.matrixdef.delim');
-  document.getElementById("columnalign").value = colAlign;
-  document.getElementById("baseline").value = baseline;
-  document.getElementById("delimiters").value = delimiter;
 }
-
 
 function onOK() 
 {
-  var colAlign, baseline, delimiters;
-  target.rows = gRows;
-  target.cols = gColumns;
-  target.rowSignature = "";
-  var prefs = GetPrefs();
-  if (prefs)
-  {
-    try {
-      prefs.setIntPref("swp.matrix.rows",gRows);
-      prefs.setIntPref("swp.matrix.cols",gColumns);
-    }
-    catch(e) {}
-  }
-  MakePersistsValue(gDialog.rowsInput);
-  MakePersistsValue(gDialog.columnsInput);
-  colAlign = document.getElementById("columnalign").value;
-  switch (colAlign) {
-
-  }
-  baseline = document.getElementById("baseline").value;
-  delimiters = document.getElementById("delimiters").value;
-  target.flavor = delimiters;                    
-
+  target.baseline = gDialog.baseline.value;
+  target.colalign = gDialog.columnalign.value;
+  target.flavor = gDialog.flavor.value;
+  target.cols = gDialog.colsInput.value;
+  target.rows = gDialog.rowsInput.value;
+  target.rowSignature = nCharacters(target.cols, target.colalign); 
+  target.cancel = false;
   return(true);
 }
 
 function onCancel()
 {
-  target.rows = 0;
-  target.cols = 0;
-  target.rowSignature = "";
+  target.cancel = true;
   return(true);
 }
 
@@ -125,11 +105,11 @@ function MakePersistsValue(elt)
 
 function SelectSize()
 {
-  gColumns  = (gCellID % 10);
+  gCols  = (gCellID % 10);
   gRows     = Math.ceil(gCellID / 10);
 
   gDialog.rowsInput.value    = gRows;
-  gDialog.columnsInput.value = gColumns;
+  gDialog.colsInput.value = gCols;
   DisplaySize();
 }
 
@@ -147,7 +127,7 @@ function DisplaySize()
   }
 
   var numCellID;
-  numCellID = Math.min(gRows-1,7)*10 + Math.min(gColumns,8);
+  numCellID = Math.min(gRows-1,7)*10 + Math.min(gCols,8);
   for (i = numCellID; i > 0; i -= 10)
   {
     anyCell = document.getElementById("c"+i);
@@ -165,7 +145,7 @@ function DisplaySize()
 function SelectSizeFromText()
 {
   gRows = Number(gDialog.rowsInput.value);
-  gColumns = Number(gDialog.columnsInput.value);
-  gCellID = Math.min(gRows-1,7)*10 + Math.min(gColumns,8);
+  gCols = Number(gDialog.colsInput.value);
+  gCellID = Math.min(gRows-1,7)*10 + Math.min(gCols,8);
   DisplaySize();
 }
