@@ -179,9 +179,9 @@
          <spacer/>
        </row>
        <row align="center">
-         <label control="columnsInput" class="align-right"
+         <label control="colsInput" class="align-right"
                 value="&cols.label;" accesskey="&cols.accesskey;"/>
-         <textbox id="columnsInput"  value="2" style="width: 12em" persist="value" maxlength="4" onchange="SelectSizeFromText();"/>
+         <textbox id="colsInput"  value="2" style="width: 12em" persist="value" maxlength="4" onchange="SelectSizeFromText();"/>
          <spacer/>
        </row>
      </rows>
@@ -209,7 +209,7 @@
   <hbox>
     <groupbox id="builtinDelimiters" >
       <caption label="Built-in delimiters"/>
-      <radiogroup id="delimiters" orient="horizontal">
+      <radiogroup id="flavor" orient="horizontal">
         <vbox>
           <radio value="" label="None"/>
           <radio value="b" label="Brackets [m]"/>
