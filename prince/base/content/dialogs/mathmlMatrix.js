@@ -24,7 +24,7 @@ function nCharacters(n, c) {
 function Startup()
 {
   var prefs = GetPrefs();
-  var dialogFields = ["rowsInput","colsInput","sizeLabel","columnalign","baseline","flavor"];
+  var dialogFields = ["rowsInput","colsInput","sizeLabel","columnalign","baseline","flavor","matrixIsSmall","alignments"];
   target=window.arguments[0];
   var node = target.node;
   setUpDialogObject(dialogFields, gDialog);  //avoids use of getElementById all the time
@@ -34,8 +34,12 @@ function Startup()
   gDialog.columnalign.value = (node && node.getAttribute("colalign")) || target.columnalign || prefs.getCharPref('swp.matrixdef.colalign') || "c";
   gDialog.baseline.value = (node && node.getAttribute("baseline")) || target.baseline || prefs.getCharPref('swp.matrixdef.baseline') || "";
   gDialog.flavor.value = (node && node.getAttribute("flavor")) || target.flavor || prefs.getCharPref('swp.matrixdef.delim') || "";
+  gDialog.matrixIsSmall.value = node && node.getAttrbute("flavor") && node.getAttribute("flavor").indexOf("small") >= 0;
+
   SelectSizeFromText();
   SetTextboxFocusById("rowsInput");
+  // Get disabling consistent with values
+  onChangeDelimiterOrSize();
   SetWindowLocation();
 }
 
@@ -55,6 +59,22 @@ function onCancel()
 {
   target.cancel = true;
   return(true);
+}
+
+function onChangeDelimiterOrSize() {
+  var disable
+  try {
+    disable = gDialog.matrixIsSmall.checked || (gDialog.flavor && gDialog.flavor.value !=="");
+    if (disable && gDialog.baseline.value !== "b") { 
+      gDialog.baseline.disabled = false;
+      gDialog.baseline.value="center";
+    }
+    gDialog.baseline.disabled = disable;
+    document.getElementById("baselinegroup").disabled = disable;
+  }
+  catch(e) {
+    e.message;
+  }
 }
 
 function SelectArea(cell)

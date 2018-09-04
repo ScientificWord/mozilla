@@ -734,6 +734,7 @@ var msiMatrixLast =
     var editorElement = msiGetActiveEditorElement(window);
     makeMathIfNeeded(editorElement);
     insertmatrix(null,null,"",editorElement);
+    //TODO: above line needs parameters changed.
   }
 };
 
@@ -2498,7 +2499,7 @@ function doMatrixDlg(editorElement, matrixelement)
   var o = {"node": matrixelement};
   window.openDialog("chrome://prince/content/mathmlMatrix.xul", "matrix", "chrome,close,titlebar,modal,resizable", o);
   if (!o.cancel && o.rows > 0 && o.cols > 0)
-    insertmatrix(o.node, o.rows, o.cols, o.rowSignature, o.flavor, editorElement);
+    insertmatrix(o.node, o.rows, o.cols, o.rowSignature, o.baseline, o.flavor, editorElement);
   if (!o.Cancel)
   {
     markDocumentChanged(editorElement);
@@ -3161,7 +3162,7 @@ function reviseFence(fenceNode, left, right, editorElement)
   return retVal;
 }
 
-function insertmatrix(matrixnode, rows, cols, rowsignature, flavor, editorElement)
+function insertmatrix(matrixnode, rows, cols, rowsignature, align, flavor, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
@@ -3170,7 +3171,7 @@ function insertmatrix(matrixnode, rows, cols, rowsignature, flavor, editorElemen
   try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    if (!matrixnode) mathmlEditor.InsertMatrix(rows, cols, rowsignature, flavor);
+    if (!matrixnode) mathmlEditor.InsertMatrix(rows, cols, rowsignature, align, flavor);
     editorElement.contentWindow.focus();
   }
   catch (e)

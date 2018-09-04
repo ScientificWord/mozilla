@@ -165,64 +165,70 @@
       <label id="sizeLabel" value="2 x 2"/>
       <spacer class="spacer" flex="1"/>
     </hbox>
-    <spacer class="spacer" flex="1"/>
+    <spacer class="spacer" flex="0"/>
     <grid>
      <columns>
-       <column flex="1"/>
-       <column flex="1"/>
+       <column/>
+       <column/>
      </columns>
      <rows>
        <row align="center">
          <label control="rowsInput" class="align-right"
                 value="&rows.label;" accesskey="&rows.accesskey;"/>
-         <textbox id="rowsInput" value="2" style="width: 12em" persist="value" maxlength="4" onchange="SelectSizeFromText();"/>
+         <textbox id="rowsInput" value="2" style="width: 6em" persist="value" maxlength="4" onchange="SelectSizeFromText();"/>
          <spacer/>
        </row>
        <row align="center">
          <label control="colsInput" class="align-right"
                 value="&cols.label;" accesskey="&cols.accesskey;"/>
-         <textbox id="colsInput"  value="2" style="width: 12em" persist="value" maxlength="4" onchange="SelectSizeFromText();"/>
+         <textbox id="colsInput"  value="2" style="width: 6em" persist="value" maxlength="4" onchange="SelectSizeFromText();"/>
          <spacer/>
        </row>
      </rows>
    </grid>
  </tabpanel>
  <tabpanel id="matrixproperties" orient="vertical" flex="0">
-  <hbox>
+  <hbox id="alignments">
     <groupbox id="columnAlignment" >
       <caption label="Column alignment"/>
       <radiogroup id="columnalign">
         <radio value="l" label="Left"/>
-        <radio value="c" label="center" selected="true"/>
+        <radio value="c" label="Center" selected="true"/>
         <radio value="r" label="Right"/>
       </radiogroup>
     </groupbox>
     <groupbox id="baselinegroup" >
       <caption label="Baseline"/>
       <radiogroup id="baseline">
-        <radio value="t" label="Same as top row"/>
-        <radio value="" label="At vertical center" selected="true"/>
-        <radio value="b" label="Same as bottom row"/>
+        <radio value="top" label="Same as top row"/>
+        <radio value="center" label="At vertical center" selected="true"/>
+        <radio value="bottom" label="Same as bottom row"/>
       </radiogroup>
     </groupbox>
   </hbox>
-  <hbox>
+  <vbox>
     <groupbox id="builtinDelimiters" >
       <caption label="Built-in delimiters"/>
-      <radiogroup id="flavor" orient="horizontal">
+      <radiogroup id="flavor" orient="horizontal" oncommand="onChangeDelimiterOrSize();">
         <vbox>
           <radio value="" label="None"/>
           <radio value="b" label="Brackets [m]"/>
           <radio value="B" label="Braces {m}"/>
+          <radio value="cases" label="Cases {m"/>
         </vbox>
         <vbox>
           <radio value="v" label="Single vertical bars |m|"/>
           <radio value="V" label="Double vertical bars ‖m‖"/>
           <radio value="p" label="Parentheses (m)" selected="true"/>
+          <radio value="rcases" label="Cases (right) m}" />
         </vbox>
       </radiogroup>
     </groupbox>
-  </hbox>
+    <groupbox id="smallMatrix">
+      <caption label="Small matrix"/>
+      <checkbox id="matrixIsSmall" label="Make matrix small" checked="false" oncommand="onChangeDelimiterOrSize()"/>
+    </groupbox>
+  </vbox>
 </tabpanel>
 </tabpanels>
 </tabbox>
