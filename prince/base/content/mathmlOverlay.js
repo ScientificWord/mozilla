@@ -694,10 +694,10 @@ var msiMatrix =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
-  doCommand: function(aCommand)
+  doCommand: function(aCommand, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement(window);
-    doMatrixDlg(editorElement);
+    var editorElement = aRefCon || msiGetActiveEditorElement(window);
+    doMatrixDlg(editorElement, null);
   }
 };
 
@@ -734,6 +734,7 @@ var msiMatrixLast =
     var editorElement = msiGetActiveEditorElement(window);
     makeMathIfNeeded(editorElement);
     insertmatrix(null,null,"",editorElement);
+    //TODO: above line needs parameters changed.
   }
 };
 
@@ -2493,16 +2494,12 @@ function doInsertMathName(aName, editorElement)
 //  insertMathnameObject(mathNameObj, editorElement);
 //}
 
-function doMatrixDlg(editorElement)
+function doMatrixDlg(editorElement, matrixelement)
 {
-  var o = new Object();
-  o.rows = 0;
-  o.cols = 0;
-  o.rowsignature = "";
-  o.flavor='';
+  var o = {"node": matrixelement};
   window.openDialog("chrome://prince/content/mathmlMatrix.xul", "matrix", "chrome,close,titlebar,modal,resizable", o);
-  if (o.rows > 0 && o.cols > 0)
-    insertmatrix(o.rows, o.cols, o.rowsignature, o.flavor, editorElement);
+  if (!o.cancel && o.rows > 0 && o.cols > 0)
+    insertmatrix(o.node, o.rows, o.cols, o.rowSignature, o.baseline, o.flavor, editorElement);
   if (!o.Cancel)
   {
     markDocumentChanged(editorElement);
@@ -3165,53 +3162,21 @@ function reviseFence(fenceNode, left, right, editorElement)
   return retVal;
 }
 
-function insertmatrix(rows, cols, rowsignature, flavor, editorElement)
+function insertmatrix(matrixnode, rows, cols, rowsignature, align, flavor, editorElement)
 {
-  var delim = "";
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var prefs = GetPrefs();
-  if (!rows || !cols)
-  {
-    if (prefs)
-    {
-      try {
-        if (!rows) {
-          rows = prefs.getIntPref("swp.matrix.rows");
-          if (!rows) rows = 2;
-        }
-        if (!cols) {
-          cols = prefs.getIntPref("swp.matrix.cols");
-          if (!cols) cols = 2;
-        }
-      }
-      catch(e) {}
-    }
-  }
-  var delimPref = prefs.getCharPref("swp.user.matrix_delim");
-  if (delimPref === "matrix_brackets") delim = "[";
-  else if (delimPref === "matrix_parens") delim = "(";
-  else if (delimPref === "matrix_braces") delim = "{";
-
   var editor = msiGetEditor(editorElement);
-
-  switch(flavor) {  // Actually, now I don't think delim gets used.
-    case 'b' : delim = '['; break;
-    case 'B' : delim = '{';  break;
-    case 'v' : delim = '|';  break;
-    case 'V' : delim = '‖';  break;
-    case 'p' : delim = '(';  break;
-    default: delim = '';  break;
-  }
-
   try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    mathmlEditor.InsertMatrix(rows, cols, rowsignature, flavor);
+    if (!matrixnode) mathmlEditor.InsertMatrix(rows, cols, rowsignature, align, flavor);
     editorElement.contentWindow.focus();
   }
   catch (e)
   {
+    e.message;
   }
 }
 
