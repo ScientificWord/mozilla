@@ -43,6 +43,7 @@ interface msiIEditingManager : nsISupports
 
 
   void moveRangeTo( in nsIEditor editor, 
+
                     in nsIDOMRange range, 
                     in nsIDOMNode node, 
                     in unsigned long offset, 
@@ -204,6 +205,7 @@ interface msiIEditingManager : nsISupports
                     in PRUint32 rows,
                     in PRUint32 cols,
                     in DOMString rowSignature,
+                    in DOMString align,
                     in DOMString delim);
 
   /**
