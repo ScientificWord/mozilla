@@ -3875,14 +3875,15 @@ char *STree2MML::FuncHeader2MML(SEMANTICS_NODE * s_function)
 
     if (do_supneg1_inverse) {
       char *tmpl = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
-      char *minus1 = MNfromNUMBER("&#x2212;1");
+      // char *minus1 = MNfromNUMBER("&#x2212;1");
+      char* minus1 = "<mrow><mo>&#x2212</mo><mn>1</mn></mrow>";
       size_t zln = strlen(tmpl) + strlen(zh_rv) + strlen(minus1);
       char *tmp = new char[zln + 1];
       strcpy(tmp, tmpl);
       StrReplace(tmp, zln, "%base%", zh_rv);
       StrReplace(tmp, zln, "%script%", minus1);
       delete[] zh_rv;
-      delete[] minus1;
+      // delete[] minus1;
       zh_rv = tmp;
     }
   } else if (s_function->canonical_ID) {  // a function that we created
