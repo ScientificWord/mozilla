@@ -1659,7 +1659,7 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
                                PRUint32 numRows,
                                PRUint32 numCols,
                                const nsAString & columnalign,
-//                               const nsAString & align,
+                              const nsAString & align,
                                PRBool markCaret,
                                PRUint32 & flags,
                                nsCOMPtr<nsIDOMElement> & mathmlElement,
@@ -1681,10 +1681,10 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
     else if (columnalign.EqualsLiteral("r")) colalign = NS_LITERAL_STRING("right");
     else colalign = NS_LITERAL_STRING("center");
     table->SetAttribute( NS_LITERAL_STRING("columnalign"), colalign );
-    // if (align && align.Length() > 0)
-    // {
-    //   table->SetAttribute(NS_LITERAL_STRING("=align"), align);
-    // }
+    if (align.Length() > 0)
+    {
+      table->SetAttribute(NS_LITERAL_STRING("align"), align);
+    }
     PRBool isLabeledTr(PR_FALSE); // use row signature to determine
     for (PRUint32 i=0; i < numRows && NS_SUCCEEDED(res); i++)
     {

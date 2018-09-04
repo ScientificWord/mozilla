@@ -235,6 +235,7 @@ public:
                                PRUint32 numRows,
                                PRUint32 numCols,
                                const nsAString & rowSignature,
+                               const nsAString & align,
                                PRBool markCaret,
                                PRUint32 & flags,
                                nsCOMPtr<nsIDOMElement> & mathmlElement,
