@@ -828,7 +828,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
 }
 
 NS_IMETHODIMP
-msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature,
+msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature, const nsAString & align,
   const nsAString & flavor)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -861,7 +861,7 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
         res = m_msiEditingMan->InsertMatrix(editor, selection, theNode,
-                                           theOffset, rows, cols, rowSignature, flavor);
+                                           theOffset, rows, cols, rowSignature, align, flavor);
       }
     }
   }
@@ -4009,10 +4009,11 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
     if (!matrixContainer)
     {
       nsAutoString rowSignature;
+      nsAutoString align;
       PRUint32 flags(0);
       nMatrixRowLeft = 1;
       nMatrixRowRight = 2;
-      res = msiUtils::CreateMtable(editor, 2, 1, rowSignature, PR_TRUE, flags, newMatrix, NS_LITERAL_STRING(""));
+      res = msiUtils::CreateMtable(editor, 2, 1, rowSignature, align, PR_TRUE, flags, newMatrix, NS_LITERAL_STRING(""));
 
       if (NS_SUCCEEDED(res) && newMatrix)
       {
