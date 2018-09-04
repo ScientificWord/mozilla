@@ -41,6 +41,52 @@ In that case in internal style sheet will rewrite these rules. */
   [msiclass="msi_passthrough"] {color: orange; }
 }
 
+  *[flv="small"] mtd,
+  *[flv="psmall"] mtd,
+  *[flv="vsmall"] mtd,
+  *[flv="Vsmall"] mtd,
+  *[flv="bsmall"] mtd,
+  *[flv="Bsmall"] mtd   
+  {
+    padding: 0pt 2pt;  /* half of columnspacing[colindex] */
+    margin: 0;   /* half of columnspacing[colindex-1] */
+     
+  }
+
+  *[flv="small"] mtr,
+  *[flv="psmall"] mtr,
+  *[flv="vsmall"] mtr,
+  *[flv="Vsmall"] mtr,
+  *[flv="bsmall"] mtr,
+  *[flv="Bsmall"] mtr
+  {
+    padding: 0;  /* half of columnspacing[colindex] */
+    margin: 0;   /* half of columnspacing[colindex-1] */
+    text-indent: 0pt;
+     
+  }
+
+
+mtable[flv="small"],
+mtable[flv="psmall"],
+mtable[flv="vsmall"],
+mtable[flv="Vsmall"],
+mtable[flv="bsmall"],
+mtable[flv="Bsmall"] {
+  font-size: 60%;
+
+}
+
+mo[flv="small"],
+mo[flv="psmall"],
+mo[flv="vsmall"],
+mo[flv="Vsmall"],
+mo[flv="bsmall"],
+[flv="Bsmall"] {
+  font-size: 60%;
+  line-height: 0ex;
+}
+
 mml|mi[msimathname="true"], mml|mo[msimathname="true"] {
   font-style: normal;
   font-family: Times roman;
