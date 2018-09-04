@@ -1349,6 +1349,7 @@ msiEditingManager::InsertMatrix(nsIEditor * editor,
                                 PRUint32 rows,
                                 PRUint32 cols,
                                 const nsAString & rowSignature,
+                                const nsAString & align,
                                 const nsAString & delim)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -1364,7 +1365,7 @@ msiEditingManager::InsertMatrix(nsIEditor * editor,
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateMtable(editor, rows, cols, rowSignature, PR_TRUE, flags, mathmlElement, delim);
+    res = msiUtils::CreateMtable(editor, rows, cols, rowSignature, align, PR_TRUE, flags, mathmlElement, delim);
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
   }
