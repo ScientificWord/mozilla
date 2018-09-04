@@ -39,6 +39,7 @@ interface msiIMathMLEditor : nsISupports
   void InsertMatrix(in unsigned long rows,
                     in unsigned long cols,
                     in DOMString rowSignature,
+                    in DOMString align,
                     in DOMString flavor);
   void InsertOperator(in DOMString symbol, in unsigned long attrFlags,
                       in DOMString leftspace, in DOMString rightspace,
