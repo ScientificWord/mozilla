@@ -198,15 +198,15 @@ interface msiIEditingManager : nsISupports
    * Call insertMatrix to create a Matrix/Mtable of dimension rows by cols 
    * insert based on node and offset.
   */
-  void insertMatrix(in nsIEditor editor,
+  nsIDOMElement insertMatrix(in nsIEditor editor,
                     in nsISelection selection,
                     in nsIDOMNode node,
                     in PRUint32 offset,
                     in PRUint32 rows,
                     in PRUint32 cols,
                     in DOMString rowSignature,
-                    in DOMString align,
-                    in DOMString delim);
+                    in DOMString baseline,
+                    in DOMString flavor);
 
   /**
    * Call insertOperator to create an operator (mo) from symbol with attributes attrFlags,
