@@ -26,37 +26,44 @@
     <xsl:text>\begin{</xsl:text>
     <xsl:value-of select="$LaTeX-env"/>
     <xsl:text>}</xsl:text>
-    <xsl:if test="@align='top'">
-      <xsl:text xml:space="preserve">[t]</xsl:text>
-    </xsl:if>
-    <xsl:if test="@align='bottom'">
-      <xsl:text xml:space="preserve">[b]</xsl:text>
-    </xsl:if>
+
+    <xsl:choose>
+      <xsl:when test="$LaTeX-env='array'">
+        <xsl:if test="@align='top'">
+          <xsl:text xml:space="preserve">[t]</xsl:text>
+        </xsl:if>
+        <xsl:if test="@align='bottom'">
+          <xsl:text xml:space="preserve">[b]</xsl:text>
+        </xsl:if>
+        <xsl:text>{</xsl:text>
+        <xsl:if test="@frame='solid'">
+          <xsl:text>|</xsl:text>
+        </xsl:if>
+
+        <xsl:call-template name="do-cols">
+          <xsl:with-param name="columns-to-do" select="$column-counts/ncols[position()=last()]"/>
+          <xsl:with-param name="columnlines"   select="normalize-space(@columnlines)"/>
+          <xsl:with-param name="columnalign"   select="normalize-space(@columnalign)"/>
+        </xsl:call-template>
+        <xsl:if test="@frame='solid'">
+          <xsl:text>|</xsl:text>
+        </xsl:if>
+        <xsl:text>}</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:if test="@rowSignature and $LaTeX-env != 'cases*' and $LaTeX-env != 'rcases*'">
+          <xsl:text>[</xsl:text>
+          <xsl:value-of select="@rowSignature"/><xsl:value-of select="$LaTeX-env"/>
+          <xsl:text>]</xsl:text>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
 
 <!-- now for the cols
 frame="solid" 
 columnlines="none solid solid solid" columnalign="center right left center center"
 {|cr|l|c|c|}
 -->
-
-    <xsl:if test="$LaTeX-env='array'">
-      <xsl:text>{</xsl:text>
-      <xsl:if test="@frame='solid'">
-        <xsl:text>|</xsl:text>
-      </xsl:if>
-
-      <xsl:call-template name="do-cols">
-        <xsl:with-param name="columns-to-do" select="$column-counts/ncols[position()=last()]"/>
-        <xsl:with-param name="columnlines"   select="normalize-space(@columnlines)"/>
-        <xsl:with-param name="columnalign"   select="normalize-space(@columnalign)"/>
-      </xsl:call-template>
-
-
-      <xsl:if test="@frame='solid'">
-        <xsl:text>|</xsl:text>
-      </xsl:if>
-      <xsl:text>}</xsl:text>
-    </xsl:if>
 
 
     <!-- JCS <xsl:text xml:space="preserve">\LBe</xsl:text> -->
