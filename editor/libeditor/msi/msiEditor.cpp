@@ -829,7 +829,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
 
 NS_IMETHODIMP
 msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature, const nsAString & baseline,
-  const nsAString & flavor, nsIDOMElement ** _retvalue)
+  const nsAString & flavor)
 {
   nsresult res(NS_ERROR_FAILURE);
   nsAutoEditBatch beginBatching(this);
@@ -861,7 +861,7 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
         res = m_msiEditingMan->InsertMatrix(editor, selection, theNode,
-                                           theOffset, rows, cols, rowSignature, baseline, flavor, _retvalue);
+                                           theOffset, rows, cols, rowSignature, baseline, flavor);
       }
     }
   }

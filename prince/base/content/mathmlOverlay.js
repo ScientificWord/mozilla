@@ -2498,8 +2498,10 @@ function doMatrixDlg(editorElement, matrixelement)
 {
   var o = {"node": matrixelement};
   window.openDialog("chrome://prince/content/mathmlMatrix.xul", "matrix", "chrome,close,titlebar,modal,resizable", o);
-  if (!o.cancel && o.rows > 0 && o.cols > 0)
+  if (!o.cancel && o.rows > 0 && o.cols > 0) {
+    makeMathIfNeeded(editorElement);
     insertmatrix(o.node, o.rows, o.cols, o.rowSignature, o.baseline, o.flavor, editorElement);
+  }
   if (!o.Cancel)
   {
     markDocumentChanged(editorElement);
@@ -3171,8 +3173,9 @@ function insertmatrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
   try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    // if (!matrixnode) /*matrixnode = */ mathmlEditor.InsertMatrix(rows, cols, rowsignature, baseline, flavor);
     if (!matrixnode) /*matrixnode = */ mathmlEditor.InsertMatrix(rows, cols, rowsignature, baseline, flavor);
-    if (flavor && flavor.length > 0) matrixnode.setAttribute('req','mathtools');
+    // if (flavor && flavor.length > 0) matrixnode.setAttribute('req','mathtools');
     editorElement.contentWindow.focus();
   }
   catch (e)
