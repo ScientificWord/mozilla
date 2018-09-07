@@ -198,7 +198,7 @@ interface msiIEditingManager : nsISupports
    * Call insertMatrix to create a Matrix/Mtable of dimension rows by cols 
    * insert based on node and offset.
   */
-  nsIDOMElement insertMatrix(in nsIEditor editor,
+  void insertMatrix(in nsIEditor editor,
                     in nsISelection selection,
                     in nsIDOMNode node,
                     in PRUint32 offset,
