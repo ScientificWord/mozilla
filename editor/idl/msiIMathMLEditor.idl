@@ -36,7 +36,7 @@ interface msiIMathMLEditor : nsISupports
   void InsertFence(in DOMString open,
                    in DOMString close,
                    in DOMString flavor);
-  nsIDOMElement InsertMatrix(in unsigned long rows,
+  void InsertMatrix(in unsigned long rows,
                     in unsigned long cols,
                     in DOMString rowSignature,
                     in DOMString baseline,
