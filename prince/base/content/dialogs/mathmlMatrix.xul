@@ -200,9 +200,9 @@
     <groupbox id="baselinegroup" >
       <caption label="Baseline"/>
       <radiogroup id="baseline">
-        <radio value="top" label="Same as top row"/>
-        <radio value="center" label="At vertical center" selected="true"/>
-        <radio value="bottom" label="Same as bottom row"/>
+        <radio value="t" label="Same as top row" disabled="true"/>
+        <radio value="c" label="At vertical center" selected="true"/>
+        <radio value="b" label="Same as bottom row"/>
       </radiogroup>
     </groupbox>
   </hbox>
@@ -220,7 +220,7 @@
           <radio value="v" label="Single vertical bars |m|"/>
           <radio value="V" label="Double vertical bars ‖m‖"/>
           <radio value="p" label="Parentheses (m)" selected="true"/>
-          <radio value="rcases" label="Cases (right) m}" />
+          <radio value="rcases" label="Cases (right brace) m}" />
         </vbox>
       </radiogroup>
     </groupbox>
