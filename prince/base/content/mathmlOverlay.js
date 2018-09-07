@@ -733,7 +733,7 @@ var msiMatrixLast =
   {
     var editorElement = msiGetActiveEditorElement(window);
     makeMathIfNeeded(editorElement);
-    insertmatrix(null,null,"",editorElement);
+    insertmatrix(null, null,null,"","","", editorElement);
     //TODO: above line needs parameters changed.
   }
 };
@@ -3162,7 +3162,7 @@ function reviseFence(fenceNode, left, right, editorElement)
   return retVal;
 }
 
-function insertmatrix(matrixnode, rows, cols, rowsignature, align, flavor, editorElement)
+function insertmatrix(matrixnode, rows, cols, rowsignature, baseline, flavor, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
@@ -3171,7 +3171,8 @@ function insertmatrix(matrixnode, rows, cols, rowsignature, align, flavor, edito
   try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    if (!matrixnode) mathmlEditor.InsertMatrix(rows, cols, rowsignature, align, flavor);
+    if (!matrixnode) /*matrixnode = */ mathmlEditor.InsertMatrix(rows, cols, rowsignature, baseline, flavor);
+    if (flavor && flavor.length > 0) matrixnode.setAttribute('req','mathtools');
     editorElement.contentWindow.focus();
   }
   catch (e)
