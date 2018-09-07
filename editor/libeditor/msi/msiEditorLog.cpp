@@ -222,7 +222,7 @@ msiEditorLog::InsertFence(const nsAString & open, const nsAString & close)
 }
 
 NS_IMETHODIMP
-msiEditorLog::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature, const nsAString & align, const nsAString & delim)
+msiEditorLog::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature, const nsAString & baseline, const nsAString & flavor, nsIDOMElement && matrix)
 {
   nsAutoHTMLEditorLogLock logLock(this);
   if (!mLocked && mFileStream)
@@ -235,14 +235,14 @@ msiEditorLog::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSi
     Write(", \"");
     nsAutoString str(rowSignature);
     PrintUnicode(str);    Write(", \"");
-    nsAutoString str(align);
+    nsAutoString str(baseline);
     PrintUnicode(str);    Write(", \"");
-    nsAutoString str(delim);
+    nsAutoString str(flavor);
     PrintUnicode(str);
     Write("\");\n");
     Flush();
   }
-  return msiEditor::InsertMatrix(rows, cols, rowSignature, align, delim);
+  return msiEditor::InsertMatrix(rows, cols, rowSignature, baseline, flavor, matrix);
 }
 
 
