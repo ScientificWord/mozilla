@@ -1523,7 +1523,8 @@
 \def\hbox{%
    \def\@after{}
    \ifmmode
-      \string\hbox\char`\{\aftergroup\endbrace
+      %\string\hbox\char`\{\aftergroup\endbrace
+      \def\@after{\text}%
    \else
       \def\@after{\@hbox}%
    \fi
