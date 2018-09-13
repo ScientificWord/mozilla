@@ -77,6 +77,11 @@ mtable[flv="Bsmall"] {
 
 }
 
+mo[flv] {
+  -moz-user-select: none;
+  -moz-user-focus: none;
+}
+
 mo[flv="small"],
 mo[flv="psmall"],
 mo[flv="vsmall"],
