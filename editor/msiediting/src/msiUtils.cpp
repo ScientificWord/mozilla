@@ -2431,6 +2431,17 @@ nsresult msiUtils::GetNumberofChildren(nsIDOMNode * node,
   return res;
 }
 
+// Get the length of aNode
+PRInt32 
+msiGetNodeLength(nsIDOMNode *aNode)
+{
+  nsCOMPtr<nsINode> node = do_QueryInterface(aNode);
+  if(node->IsNodeOfType(nsINode::eDATA_NODE)) {
+    return (static_cast<nsIContent *>((nsINode*)node))->TextLength();
+  }
+
+  return node->GetChildCount();
+}
 
 nsresult
 MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
@@ -2470,7 +2481,7 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
       {
         // throw away temp input box
         res = msiUtils::RemoveChildNode(right, 0, ignored);
-        sel->Collapse(left, offset);
+        // sel->Collapse(left, offset);
       }
     }
     else {
@@ -2485,27 +2496,14 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
 
   // The selection needs updating only if one of the nodes is *right
   res = realEditor->GetStartNodeAndOffset(sel, getter_AddRefs(selStartNode), &selStartOffset);
-  if (selStartNode == right) {
-    sel->Collapse(left, selStartOffset + offset);
-  }
   res = realEditor->GetEndNodeAndOffset(sel, getter_AddRefs(selEndNode), &selEndOffset);
-  if (selEndNode == right) {
-    sel->Extend(left, selEndOffset + offset);
-  }
   realEditor->DeleteNode(right);
+  PRInt32 length = msiGetNodeLength(left);
+  sel->Collapse(left, length);
   return NS_OK;
 }
 
-// Get the length of aNode
-PRInt32 msiGetNodeLength(nsIDOMNode *aNode)
-{
-  nsCOMPtr<nsINode> node = do_QueryInterface(aNode);
-  if(node->IsNodeOfType(nsINode::eDATA_NODE)) {
-    return (static_cast<nsIContent *>((nsINode*)node))->TextLength();
-  }
 
-  return node->GetChildCount();
-}
 
 nsresult
 msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRBool lookRight, nsIEditor * editor)
