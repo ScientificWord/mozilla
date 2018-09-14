@@ -1207,8 +1207,7 @@ no indent - disregarded completely
               </xsl:when>
               <xsl:otherwise>
                 <xsl:call-template name="array">
-                  <xsl:with-param name="LaTeX-env" select="$env-info/LaTeX-env"/>
-                </xsl:call-template>
+                  <xsl:with-param name="LaTeX-env" select="$env-info/LaTeX-env"/>                </xsl:call-template>
               </xsl:otherwise>
 			</xsl:choose>
           </xsl:otherwise>
@@ -1226,19 +1225,23 @@ no indent - disregarded completely
           </xsl:when>
           <xsl:otherwise>
             <xsl:choose>
-              <xsl:when test="@flv='cases' or @flv='rcases'">
-                <xsl:call-template name="array">
-                  <xsl:with-param name="LaTeX-env" select="concat(@flv,'*')"/>
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:when test="@flv">
-                <xsl:call-template name="array">
-                  <xsl:with-param name="LaTeX-env" select="concat(@flv, 'matrix*')"/>
-                </xsl:call-template>
+              <xsl:when test="@flv and string-length(@flv)&gt;0">
+                <xsl:choose>
+                  <xsl:when test="@flv='cases' or @flv='rcases'">
+                    <xsl:call-template name="array">
+                      <xsl:with-param name="LaTeX-env" select="concat(@flv,'*')"/>
+                    </xsl:call-template>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:call-template name="array">
+                      <xsl:with-param name="LaTeX-env" select="concat(@flv, 'matrix*')"/>
+                    </xsl:call-template>
+                  </xsl:otherwise>
+                </xsl:choose>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:call-template name="array">
-                  <xsl:with-param name="LaTeX-env" select="array"/>
+                  <xsl:with-param name="LaTeX-env" select="'array'"/>
                 </xsl:call-template>
               </xsl:otherwise>
             </xsl:choose>
