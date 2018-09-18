@@ -67,6 +67,18 @@ In that case in internal style sheet will rewrite these rules. */
   }
 
 
+mtable[rowSignature="r"] {
+  text-align: right;
+}
+
+mtable[rowSignature="l"] {
+  text-align: left;
+}
+
+mtable[rowSignature="c"] {
+  text-align: center;
+}
+
 mtable[flv="small"],
 mtable[flv="psmall"],
 mtable[flv="vsmall"],
@@ -584,6 +596,7 @@ mml|menclose[notation~="circle"] {
 mml|mtd {
   border-width: 0 1px 1px 0;
   border-style: solid;
+  text-align: inherit;
 }
 
 mml|mtr > mml|mtd:first-child {
