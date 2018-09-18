@@ -209,24 +209,24 @@
   <vbox>
     <groupbox id="builtinDelimiters" >
       <caption label="Built-in delimiters"/>
-      <radiogroup id="flavor" orient="horizontal" oncommand="onChangeDelimiterOrSize();">
+      <radiogroup id="flavor" orient="horizontal" oncommand="onChangeData(this);">
         <vbox>
           <radio value="" label="None"/>
           <radio value="b" label="Brackets [m]"/>
           <radio value="B" label="Braces {m}"/>
-          <radio value="cases" label="Cases {m"/>
+          <radio id="lcases" value="lcases" label="Cases {m"/>
         </vbox>
         <vbox>
           <radio value="v" label="Single vertical bars |m|"/>
           <radio value="V" label="Double vertical bars ‖m‖"/>
           <radio value="p" label="Parentheses (m)" selected="true"/>
-          <radio value="rcases" label="Cases (right brace) m}" />
+          <radio id="rcases" value="rcases" label="Cases (right brace) m}" />
         </vbox>
       </radiogroup>
     </groupbox>
     <groupbox id="smallMatrix">
       <caption label="Small matrix"/>
-      <checkbox id="matrixIsSmall" label="Make matrix small" checked="false" oncommand="onChangeDelimiterOrSize()"/>
+      <checkbox id="matrixIsSmall" label="Make matrix small" checked="false" oncommand="onChangeData(this)"/>
     </groupbox>
   </vbox>
 </tabpanel>
