@@ -29,16 +29,18 @@ function Startup()
   var node = target.node;
   setUpDialogObject(dialogFields, gDialog);  //avoids use of getElementById all the time
 
-  gDialog.rowsInput.value = gRows = (node && node.getAttribute("rows")) || target.rows || prefs.getIntPref("swp.matrix.rows") || 3;
-  gDialog.colsInput.value = gCols = (node && node.getAttribute("cols")) || target.cols || prefs.getIntPref("swp.matrix.cols") || 3;
-  gDialog.columnalign.value = (node && node.getAttribute("colalign")) || target.columnalign || prefs.getCharPref('swp.matrixdef.colalign') || "c";
-  gDialog.baseline.value = (node && node.getAttribute("baseline")) || target.baseline || prefs.getCharPref('swp.matrixdef.baseline') || "";
-  gDialog.matrixIsSmall.value = node && node.getAttrbute("flavor") && node.getAttribute("flavor").indexOf("small") >= 0;
-  gDialog.flavor.value = ((node && node.getAttribute("flavor")) || target.flavor || prefs.getCharPref('swp.matrixdef.delim') || "").replace('small','');
+  gDialog.rowsInput.value = gRows = (node && node.getAttribute("rows")) || target.rows || prefs.getIntPref("swp.matrix.rows",3);
+  gDialog.colsInput.value = gCols = (node && node.getAttribute("cols")) || target.cols || prefs.getIntPref("swp.matrix.cols",3);
+  gDialog.columnalign.value = (node && node.getAttribute("colalign")) || target.columnalign || prefs.getCharPref('swp.matrixdef.colalign','c');
+  gDialog.baseline.value = (node && node.getAttribute("baseline")) || target.baseline || prefs.getCharPref('swp.matrixdef.baseline','');
+  gDialog.matrixIsSmall.checked = (node && node.getAttrbute("flavor") && node.getAttribute("flavor").indexOf("small") >= 0) || (!node && prefs.getBoolPref("swp.matrixdef.small", false));
+  gDialog.flavor.value = ((node && node.getAttribute("flavor")) || target.flavor || prefs.getCharPref('swp.matrixdef.delim','')).replace('small','');
 
   SelectSizeFromText();
   SetTextboxFocusById("rowsInput");
   // Get disabling consistent with values
+  onChangeData(gDialog.matrixIsSmall);
+  onChangeData(gDialog.flavor);
   onChangeDelimiterOrSize();
   SetWindowLocation();
 }
@@ -78,16 +80,30 @@ function onCancel()
   return(true);
 }
 
-function onChangeDelimiterOrSize() {
-  var disable
+// When 'element' is changed, redo any enabling or disabling that is required
+function onChangeData(element) {
   try {
-    disable = gDialog.matrixIsSmall.checked || (gDialog.flavor && gDialog.flavor.value !=="");
-    if (disable && gDialog.baseline.value !== "b") { 
-      gDialog.baseline.disabled = false;
-      gDialog.baseline.value="center";
+    switch (element.id) {
+      case ('matrixIsSmall') :
+        if (element.checked) { // disable items that can't be made small
+          gDialog.columnalign.disabled = gDialog.baseline.disabled = 
+            document.getElementById("lcases").disabled = 
+            document.getElementById("rcases").disabled = true;
+        }
+        else {
+          document.getElementById("lcases").disabled = document.getElementById("rcases").disabled = false;
+          gDialog.columnalign.disabled = 
+            (gDialog.flavor.value == 'lcases' || gDialog.flavor.value == 'rcases');
+          gDialog.baseline.disabled = gDialog.flavor.value !=='';
+        }
+        break;
+      case('flavor') :
+        gDialog.matrixIsSmall.disabled = 
+          (gDialog.flavor.value == 'lcases' || gDialog.flavor.value == 'rcases');
+        gDialog.columnalign.disabled = (gDialog.flavor.value == 'lcases' || gDialog.flavor.value == 'rcases');
+        gDialog.baseline.disabled = (gDialog.flavor.value !=='');
+        break;
     }
-    gDialog.baseline.disabled = disable;
-    document.getElementById("baselinegroup").disabled = disable;
   }
   catch(e) {
     e.message;

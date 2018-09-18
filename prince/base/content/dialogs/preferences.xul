@@ -430,9 +430,14 @@
       <preference id="matrixBaseLine"
                   name="swp.matrixdef.baseline"
                   type="string" />
-      <preference id="matrixDelimiter"
-                  name="swp.matrixdef.delim"
-                  type="string" />
+                  <!-- matrixDelimiter is also used to choose a case as the default -->
+      <preference id="matrixDelimiter"  
+                  name="swp.matrixdef.delim" 
+                  type="string"/>
+      <preference id="smallMatrix"
+                  name="swp.matrixdef.small" 
+                  type="bool"/>
+      
     </preferences>
 
     <tabbox id="generalTabbox" persist="selectedIndex" selectedIndex="0">
@@ -712,20 +717,28 @@
         <hbox>
           <groupbox id="builtinDelimiterspref" >
             <caption label="Built-in delimiters"/>
-            <radiogroup id="delimiters" orient="horizontal" preference="matrixDelimiter">
+            <radiogroup id="flavor" orient="horizontal" preference="matrixDelimiter" 
+              oncommand="onChangeMatrixData(this)">
               <vbox>
                 <radio value="" label="None"/>
                 <radio value="b" label="Brackets [m]"/>
                 <radio value="B" label="Braces {m}"/>
+                <radio id="lcases" value="lcases" label="Cases {m"/>
               </vbox>
               <vbox>
                 <radio value="v" label="Single vertical bars |m|"/>
                 <radio value="V" label="Double vertical bars ‖m‖"/>
                 <radio value="p" label="Parentheses (m)" selected="true"/>
+                <radio id="rcases" value="rcases" label="Cases (right brace) m}"/>
               </vbox>
             </radiogroup>
           </groupbox>
         </hbox>
+        <groupbox id="smallMatrixGroup" >
+          <caption label="Matrix size"/>
+          <checkbox id="matrixIsSmall" label="Make default matrix small" preference="smallMatrix"
+            oncommand="onChangeMatrixData(this)"/>
+        </groupbox>
         </tabpanel>
       </tabpanels>
     </tabbox>
