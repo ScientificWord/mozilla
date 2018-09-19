@@ -25,8 +25,10 @@ function Startup()
 {
   var prefs = GetPrefs();
   var dialogFields = ["rowsInput","colsInput","sizeLabel","columnalign","baseline","flavor","matrixIsSmall","alignments"];
-  target=window.arguments[0];
-  var node = target.node;
+  var node;
+  target = window.arguments[0];
+  node = target.node;
+
   setUpDialogObject(dialogFields, gDialog);  //avoids use of getElementById all the time
 
   gDialog.rowsInput.value = gRows = (node && node.getAttribute("rows")) || target.rows || prefs.getIntPref("swp.matrix.rows",3);
@@ -41,7 +43,7 @@ function Startup()
   // Get disabling consistent with values
   onChangeData(gDialog.matrixIsSmall);
   onChangeData(gDialog.flavor);
-  onChangeDelimiterOrSize();
+
   SetWindowLocation();
 }
 
@@ -50,19 +52,21 @@ function onOK()
   var isSmall;
   var isArray;
   isSmall = gDialog.matrixIsSmall.checked;
-  target.baseline = gDialog.baseline.value;
-  target.colalign = gDialog.columnalign.value;
+  target.baseline = gDialog.baseline.disabled ? null :gDialog.baseline.value;
+  target.colalign = gDialog.columnalign.disabled ? null :gDialog.columnalign.value;;
   target.flavor = gDialog.flavor.value;
   target.cols = gDialog.colsInput.value;
   target.rows = gDialog.rowsInput.value;
 
   isArray = !isSmall && (!target.flavor || target.flavor === '');
-  if (isArray) {
-    target.rowSignature = nCharacters(target.cols, target.colalign); 
-  }
-  else {
-    target.rowSignature = target.colalign;
-  }
+  if (!(gDialog.columnalign.disabled)) {
+    if (isArray) {
+      target.rowSignature = nCharacters(target.cols, target.colalign); 
+    }
+    else {
+      target.rowSignature = target.colalign;
+    }    
+  } else target.rowSignature = null;
   if (isSmall) {
     target.req = null;
     target.flavor = target.flavor + 'small';
@@ -93,14 +97,14 @@ function onChangeData(element) {
         else {
           document.getElementById("lcases").disabled = document.getElementById("rcases").disabled = false;
           gDialog.columnalign.disabled = 
-            (gDialog.flavor.value == 'lcases' || gDialog.flavor.value == 'rcases');
+            (gDialog.flavor.value == 'cases' || gDialog.flavor.value == 'rcases');
           gDialog.baseline.disabled = gDialog.flavor.value !=='';
         }
         break;
       case('flavor') :
         gDialog.matrixIsSmall.disabled = 
-          (gDialog.flavor.value == 'lcases' || gDialog.flavor.value == 'rcases');
-        gDialog.columnalign.disabled = (gDialog.flavor.value == 'lcases' || gDialog.flavor.value == 'rcases');
+          (gDialog.flavor.value == 'cases' || gDialog.flavor.value == 'rcases');
+        gDialog.columnalign.disabled = (gDialog.flavor.value == 'cases' || gDialog.flavor.value == 'rcases');
         gDialog.baseline.disabled = (gDialog.flavor.value !=='');
         break;
     }

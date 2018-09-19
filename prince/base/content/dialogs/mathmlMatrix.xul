@@ -214,7 +214,7 @@
           <radio value="" label="None"/>
           <radio value="b" label="Brackets [m]"/>
           <radio value="B" label="Braces {m}"/>
-          <radio id="lcases" value="lcases" label="Cases {m"/>
+          <radio id="lcases" value="cases" label="Cases {m"/>
         </vbox>
         <vbox>
           <radio value="v" label="Single vertical bars |m|"/>

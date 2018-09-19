@@ -60,14 +60,14 @@ function onChangeMatrixData(element) {
         else {
           document.getElementById("lcases").disabled = document.getElementById("rcases").disabled = false;
           document.getElementById('columnalign').disabled = 
-            (document.getElementById('flavor').value == 'lcases' || document.getElementById('flavor').value == 'rcases');
+            (document.getElementById('flavor').value == 'cases' || document.getElementById('flavor').value == 'rcases');
           document.getElementById('baseline').disabled = document.getElementById('flavor').value !=='';
         }
         break;
       case('flavor') :
         document.getElementById('matrixIsSmall').disabled = 
-          (document.getElementById('flavor').value == 'lcases' || document.getElementById('flavor').value == 'rcases');
-        document.getElementById('columnalign').disabled = (document.getElementById('flavor').value == 'lcases' || document.getElementById('flavor').value == 'rcases');
+          (document.getElementById('flavor').value == 'cases' || document.getElementById('flavor').value == 'rcases');
+        document.getElementById('columnalign').disabled = (document.getElementById('flavor').value == 'cases' || document.getElementById('flavor').value == 'rcases');
         document.getElementById('baseline').disabled = (document.getElementById('flavor').value !=='');
         break;
     }
