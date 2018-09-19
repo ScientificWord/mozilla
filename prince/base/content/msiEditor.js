@@ -5211,9 +5211,7 @@ function msiSelectPropertiesMenu(event, theMenu) {
   if (bRightOne) {
     if (("defaultItem" in theMenu) && (theMenu.defaultItem != null)) {
       if (theMenu.commandStr)
-        msiDoAPropertiesDialogFromMenu(commandStr, theMenu.defaultItem);
-      //      theEvent = document.createEvent("XULCommandEvent");
-      //      theEvent.initCommandEvent("command", true, true);  this way seems too hard
+        msiDoAPropertiesDialogFromMenu(theMenu.commandStr, theMenu.defaultItem);
     }
   }
 }
@@ -5965,7 +5963,7 @@ msiTablePropertiesObjectData.prototype = {
 
 
   matrixStrArray: [ //"MatrixCell",
-    "MatrixCellGroup",
+    // "MatrixCellGroup",
     // "MatrixRow", "MatrixColumn",
     "Matrix"
   ],
@@ -6290,6 +6288,7 @@ msiTablePropertiesObjectData.prototype = {
     var strArray = this.getMenuStringArray();
 
     if (this.isMatrix()) {
+      commandArray = ["cmd_MSIreviseMatrixCmd"]
     } else {
       commandArray = [ //"cmd_editTableCell",
         "cmd_editTableCellGroup",
