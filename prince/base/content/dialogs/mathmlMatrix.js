@@ -13,6 +13,18 @@ function setUpDialogObject(names, dialogobj) {   // this is a candidate for the 
   }
 }
 
+function matrixRowsAndColumns(matrixNode) {
+  var returnObject = {rows: null, columns: null};
+  var rowlist;
+  if (matrixNode) {
+    rowlist = matrixNode.getElementsByTagName('mtr');
+    returnObject.rows = rowlist.length;
+    if (returnObject.rows > 0) returnObject.columns = 
+      rowlist.item(0).getElementsByTagName('mtd').length;
+  }
+  return returnObject;
+}
+
 function nCharacters(n, c) {
   if ( n <= 0 || n > 50) return "";
   var i, theString="";
@@ -26,17 +38,21 @@ function Startup()
   var prefs = GetPrefs();
   var dialogFields = ["rowsInput","colsInput","sizeLabel","columnalign","baseline","flavor","matrixIsSmall","alignments"];
   var node;
+  var rowsAndColumns;
   target = window.arguments[0];
   node = target.node;
 
+  rowsAndColumns = matrixRowsAndColumns(node);
+
   setUpDialogObject(dialogFields, gDialog);  //avoids use of getElementById all the time
 
-  gDialog.rowsInput.value = gRows = (node && node.getAttribute("rows")) || target.rows || prefs.getIntPref("swp.matrix.rows",3);
-  gDialog.colsInput.value = gCols = (node && node.getAttribute("cols")) || target.cols || prefs.getIntPref("swp.matrix.cols",3);
-  gDialog.columnalign.value = (node && node.getAttribute("colalign")) || target.columnalign || prefs.getCharPref('swp.matrixdef.colalign','c');
+  gDialog.rowsInput.value = gRows = (rowsAndColumns.rows) || target.rows || prefs.getIntPref("swp.matrix.rows",3);
+  gDialog.colsInput.value = gCols = (rowsAndColumns.columns) || target.cols || prefs.getIntPref("swp.matrix.cols",3);
+  gDialog.columnalign.value = (node && node.hasAttribute("rowSignature") ? node.getAttribute('rowSignature').slice(0,1) : null) 
+    || target.columnalign || prefs.getCharPref('swp.matrixdef.columnalign','c');
   gDialog.baseline.value = (node && node.getAttribute("baseline")) || target.baseline || prefs.getCharPref('swp.matrixdef.baseline','');
-  gDialog.matrixIsSmall.checked = (node && node.getAttrbute("flavor") && node.getAttribute("flavor").indexOf("small") >= 0) || (!node && prefs.getBoolPref("swp.matrixdef.small", false));
-  gDialog.flavor.value = ((node && node.getAttribute("flavor")) || target.flavor || prefs.getCharPref('swp.matrixdef.delim','')).replace('small','');
+  gDialog.matrixIsSmall.checked = (node && node.getAttribute("flv") && node.getAttribute("flv").indexOf("small") >= 0) || (!node && prefs.getBoolPref("swp.matrixdef.small", false));
+  gDialog.flavor.value = ((node && node.getAttribute("flv")) || target.flavor || prefs.getCharPref('swp.matrixdef.delim','')).replace('small','');
 
   SelectSizeFromText();
   SetTextboxFocusById("rowsInput");
