@@ -755,8 +755,9 @@ var msiReviseMatrixCmd =
 //    var theMatrixData = msiGetReviseObjectFromCommandParams(aParams);
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseMatrixCmd, trying to revise matrix, dialog unimplemented.");
     var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
+    var o = {node: theMatrixData.mTableElement};
     var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank", "modal, chrome,resizable,close,titlebar,dependent",
-                                                     editorElement, aCommand, this, theData);
+                                                     o, editorElement, aCommand, this, theData);
   },
 
   doCommand: function(aCommand)
@@ -767,8 +768,9 @@ var msiReviseMatrixCmd =
     theMatrixData.initFromSelection(editor.selection, editorElement);
 //    var theMatrixData = msiGetPropertiesObjectFromSelection(editorElement);
     var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
+    var o = {node: theMatrixData.mTableElement};
     var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank",
-      "modal,chrome,resizable,close,titlebar,dependent", editorElement, aCommand, this, theData);
+      "modal,chrome,resizable,close,titlebar,dependent", o, editorElement, aCommand, this, theData);
   }
 };
 
@@ -2496,7 +2498,8 @@ function doInsertMathName(aName, editorElement)
 
 function doMatrixDlg(editorElement, matrixelement)
 {
-  var o = {"node": matrixelement};
+  var o = {"node": null};
+  if (matrixelement && matrixelement.reviseData && matrixelement.reviseData.mTableElement) o = matrixelement.reviseData.mTableElement;
   window.openDialog("chrome://prince/content/mathmlMatrix.xul", "matrix", "chrome,close,titlebar,modal,resizable", o);
   if (!o.cancel && o.rows > 0 && o.cols > 0) {
     makeMathIfNeeded(editorElement);
