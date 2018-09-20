@@ -203,7 +203,7 @@ msiEditorLog::InsertEngineFunction(const nsAString & mathname)
 }
 
 NS_IMETHODIMP
-msiEditorLog::InsertFence(const nsAString & open, const nsAString & close)
+msiEditorLog::InsertFence(const nsAString & open, const nsAString & close, const nsAString & flavor)
 {
   nsAutoHTMLEditorLogLock logLock(this);
   if (!mLocked && mFileStream)
@@ -213,7 +213,10 @@ msiEditorLog::InsertFence(const nsAString & open, const nsAString & close)
     nsAutoString str(open);
     PrintUnicode(str);
     Write("\", \"");
-    str = close;
+    nsAutoString str(close);
+    PrintUnicode(str);
+    Write("\", \"");
+    str = flavor;
     PrintUnicode(str);
     Write("\");\n");
     Flush();
