@@ -28,7 +28,7 @@ public:
   NS_IMETHOD InsertSymbol(const nsAString & symbol); 
   NS_IMETHOD InsertMathname(const nsAString & name);
   NS_IMETHOD InsertEngineFunction(const nsAString & name);
-  NS_IMETHOD InsertFence(const nsAString & open, const nsAString & close);
+  NS_IMETHOD InsertFence(const nsAString & open, const nsAString & close, const nsAString & flavor);
   NS_IMETHOD InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature,
     const nsAString & baseline, const nsAString & flavor);
   NS_IMETHOD InsertOperator(const nsAString & symbol, PRUint32 attrFlags, const nsAString & leftspace, const nsAString & rightspace, const nsAString & minsize, const nsAString & maxsize);
