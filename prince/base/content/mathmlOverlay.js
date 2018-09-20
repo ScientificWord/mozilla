@@ -686,6 +686,14 @@ var msiSymbol =
 
 var msiMatrix =
 {
+  lastMatrixSettings: {
+    "node": null, 
+    "rows": 2, "cols": 2, 
+    "rowSignature": "r", 
+    "baseline": "c", 
+    "flavor": ""
+  },
+
   isCommandEnabled: function(aCommand, dummy)
   {
     return true;
@@ -698,7 +706,7 @@ var msiMatrix =
   {
     var editorElement = aRefCon || msiGetActiveEditorElement(window);
     doMatrixDlg(editorElement, null);
-  }
+  } 
 };
 
 var msiMatrix22 =
@@ -714,8 +722,13 @@ var msiMatrix22 =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
+    var o = msiMatrix.lastMatrixSettings;
     makeMathIfNeeded(editorElement);
-    matrix(2,2,"",editorElement);
+    o.node = null;
+    o.rows = 2;
+    o.cols = 2;
+    insertmatrix(null, 2, 2, o.rowSignature, o.baseline, o.flavor,editorElement);
+
   }
 };
 
@@ -732,9 +745,9 @@ var msiMatrixLast =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
+    var o = msiMatrix.lastMatrixSettings;
     makeMathIfNeeded(editorElement);
-    insertmatrix(null, null,null,"","","", editorElement);
-    //TODO: above line needs parameters changed.
+    insertmatrix(null, o.rows, o.cols, o.rowSignature, o.baseline, o.flavor, editorElement);
   }
 };
 
@@ -771,6 +784,10 @@ var msiReviseMatrixCmd =
     var o = {node: theMatrixData.mTableElement};
     var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank",
       "modal,chrome,resizable,close,titlebar,dependent", o, editorElement, aCommand, this, theData);
+    if (!o.cancel) {
+      o.node = null;
+      msiMatrix.lastMatrixSettings = o;
+    }
   }
 };
 
@@ -2508,8 +2525,9 @@ function doMatrixDlg(editorElement, matrixelement)
   if (!o.Cancel)
   {
     markDocumentChanged(editorElement);
+    o.node = null;
+    msiMatrix.lastMatrixSettings = o;
   }
-
 }
 
 function reviseEqnArray(reviseData, dialogData, editorElement)
@@ -3115,7 +3133,7 @@ function insertfence(left, right, editorElement)
       if (!editor) throw("In insertfence, editor element [" + editorElement.id + "] has null editor!");
       var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
       if (!mathmlEditor) throw("In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!");
-      mathmlEditor.InsertFence(left, right);
+      mathmlEditor.InsertFence(left, right, "");
       editorElement.contentWindow.focus();
     }
     catch (e)
@@ -3127,7 +3145,7 @@ function insertfence(left, right, editorElement)
 
 //NOTE!! All the convoluted replacement code used below is necessary due to a bug in Mozilla MathML rendering.
 //Changing the textContent of a token node <mo> or <mi> does not reliably force a rerendering.
-function reviseFence(fenceNode, left, right, editorElement)
+function reviseFence(fenceNode, left, right, flavor, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
