@@ -1329,7 +1329,7 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
                                    PRUint32 & attrFlags,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
-  nsresult res(NS_ERROR_FAILURE);
+  nsresult res(NS_OK);
   PRUint32 dummyFlags(msiIMathMLInsertion::FLAGS_NONE);
   nsCOMPtr<nsIDOMNode> theChild;
   nsCOMPtr<nsIDOMElement> fence;
@@ -1340,46 +1340,50 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
   PRUint32 commonflags(msiIMMLEditDefines::MO_ATTR_fence_T | msiIMMLEditDefines::MO_ATTR_stretchy_T | msiIMMLEditDefines::MO_ATTR_symmetric_T);
   PRBool hasFlavor = flavor.Length() > 0;
   commonflags |= (attrFlags & msiIMMLEditDefines::MO_ATTR_boundFence);
-  res = CreateMathOperator(editor, open,  msiIMathMLEditingBC::INVALID, dummyFlags,
+  if (open.Length() > 0) {
+    res = CreateMathOperator(editor, open,  msiIMathMLEditingBC::INVALID, dummyFlags,
                            msiIMMLEditDefines::MO_ATTR_prefix|commonflags, emptyString, emptyString,
                            emptyString, emptyString, opening);
-  if (NS_SUCCEEDED(res))
-    if (hasFlavor) res = opening->SetAttribute(flv, flavor);
-    res = CreateMathOperator(editor, close, msiIMathMLEditingBC::INVALID, dummyFlags,
-                             msiIMMLEditDefines::MO_ATTR_postfix|commonflags, emptyString, emptyString,
-                             emptyString, emptyString, closing);
-  if (NS_SUCCEEDED(res))
-    if (hasFlavor) res = closing->SetAttribute(flv, flavor);
+  }
   if (NS_SUCCEEDED(res))
   {
-    nsCOMPtr<nsIDOMNode> openNode(do_QueryInterface(opening));
-    nsCOMPtr<nsIDOMNode> closeNode(do_QueryInterface(closing));
-    if (openNode && closeNode)
+    if (hasFlavor && opening) res = opening->SetAttribute(flv, flavor);
+    if (close.Length() > 0)
+      res = CreateMathOperator(editor, close, msiIMathMLEditingBC::INVALID, dummyFlags,
+                             msiIMMLEditDefines::MO_ATTR_postfix|commonflags, emptyString, emptyString,
+                             emptyString, emptyString, closing);
+    if (hasFlavor && closing) res = closing->SetAttribute(flv, flavor);
+  }
+  if (NS_SUCCEEDED(res))
+  {
+    nsCOMPtr<nsIMutableArray> mutableArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+    if (NS_SUCCEEDED(res) && mutableArray)
     {
-      nsCOMPtr<nsIMutableArray> mutableArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
-      if (NS_SUCCEEDED(res) && mutableArray)
-      {
+      if (opening) {
+        nsCOMPtr<nsIDOMNode> openNode(do_QueryInterface(opening));
         res = mutableArray->AppendElement(openNode, PR_FALSE);
-        if (NS_SUCCEEDED(res))
+      }
+      if (NS_SUCCEEDED(res))
+      {
+        if (child)
+          res = mutableArray->AppendElement(child, PR_FALSE);
+        else if (createInputBox)
         {
-          if (child)
-            res = mutableArray->AppendElement(child, PR_FALSE);
-          else if (createInputBox)
-          {
-            nsCOMPtr<nsIDOMElement> inputbox;
-            res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
-            NS_ASSERTION(inputbox, "CreateInputbox failed.");
-            if (NS_SUCCEEDED(res) && inputbox)
-              res = mutableArray->AppendElement(inputbox, PR_FALSE);
-          }
+          nsCOMPtr<nsIDOMElement> inputbox;
+          res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
+          NS_ASSERTION(inputbox, "CreateInputbox failed.");
+          if (NS_SUCCEEDED(res) && inputbox)
+            res = mutableArray->AppendElement(inputbox, PR_FALSE);
         }
-        if (NS_SUCCEEDED(res))
-          res = mutableArray->AppendElement(closeNode, PR_FALSE);
-        if (NS_SUCCEEDED(res))
-        {
-          nsCOMPtr<nsIArray> nodeArray(do_QueryInterface(mutableArray));
-          res = CreateMRow(editor, nodeArray, fence);
-        }
+      }
+      if (NS_SUCCEEDED(res) && closing) {
+        nsCOMPtr<nsIDOMNode> closeNode(do_QueryInterface(closing));
+        res = mutableArray->AppendElement(closeNode, PR_FALSE);
+      }
+      if (NS_SUCCEEDED(res))
+      {
+        nsCOMPtr<nsIArray> nodeArray(do_QueryInterface(mutableArray));
+        res = CreateMRow(editor, nodeArray, fence);
       }
     }
   }
@@ -1658,7 +1662,8 @@ nsresult msiUtils::CreateMtr(nsIEditor * editor,
 nsresult msiUtils::CreateMtable(nsIEditor * editor,
                                PRUint32 numRows,
                                PRUint32 numCols,
-                               const nsAString & rowSignature,
+                               const nsAString & columnalign,
+                               const nsAString & baseline,
                                PRBool markCaret,
                                PRUint32 & flags,
                                nsCOMPtr<nsIDOMElement> & mathmlElement,
@@ -1672,9 +1677,14 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
   mathmlElement = nsnull;
 
   res = CreateMathMLElement(editor, msiEditingAtoms::mtable, table);
-  if (flavor.Length() > 0) table->SetAttribute( NS_LITERAL_STRING("flv"), flavor);
   if (NS_SUCCEEDED(res) && table)
   {
+    table->SetAttribute( NS_LITERAL_STRING("flv"), flavor);
+    table->SetAttribute( NS_LITERAL_STRING("rowSignature"), columnalign );
+    if (baseline.Length() > 0)
+    {
+      table->SetAttribute(NS_LITERAL_STRING("baseline"), baseline);
+    }
     PRBool isLabeledTr(PR_FALSE); // use row signature to determine
     for (PRUint32 i=0; i < numRows && NS_SUCCEEDED(res); i++)
     {
@@ -1692,25 +1702,33 @@ nsresult msiUtils::CreateMtable(nsIEditor * editor,
     if (NS_SUCCEEDED(res)) {
       if (flavor.Length() > 0) {
         // create an mrow and fill it with mo, mtable, mo where the mo's are fence characters
-        if (flavor.EqualsLiteral("b")) {
+        if (flavor.EqualsLiteral("b") || flavor.EqualsLiteral("bsmall")) {
           right = NS_LITERAL_STRING("]");
           left = NS_LITERAL_STRING("[");
         } 
-        else if (flavor.EqualsLiteral("p")) {
+        else if (flavor.EqualsLiteral("p") || flavor.EqualsLiteral("psmall")) {
           right = NS_LITERAL_STRING(")");
           left = NS_LITERAL_STRING("(");
         }
-        else if (flavor.EqualsLiteral("B")) {
+        else if (flavor.EqualsLiteral("B") || flavor.EqualsLiteral("Bsmall")) {
           right = NS_LITERAL_STRING("}");
           left = NS_LITERAL_STRING("{");
         }
-        else if (flavor.EqualsLiteral("v")) {
+        else if (flavor.EqualsLiteral("v") || flavor.EqualsLiteral("vsmall")) {
           right = NS_LITERAL_STRING("|");
           left = right;
         }
-        else if (flavor.EqualsLiteral("V")) {
+        else if (flavor.EqualsLiteral("V") || flavor.EqualsLiteral("Vsmall")) {
           right = NS_LITERAL_STRING("‖");
           left = right;
+        }
+       else if (flavor.EqualsLiteral("cases")) {
+          left = NS_LITERAL_STRING("{");
+          right = EmptyString();
+        }
+       else if (flavor.EqualsLiteral("rcases")) {
+          right = NS_LITERAL_STRING("}");
+          left = EmptyString();
         }
         else // no need for fence
         {
@@ -2413,6 +2431,17 @@ nsresult msiUtils::GetNumberofChildren(nsIDOMNode * node,
   return res;
 }
 
+// Get the length of aNode
+PRInt32 
+msiGetNodeLength(nsIDOMNode *aNode)
+{
+  nsCOMPtr<nsINode> node = do_QueryInterface(aNode);
+  if(node->IsNodeOfType(nsINode::eDATA_NODE)) {
+    return (static_cast<nsIContent *>((nsINode*)node))->TextLength();
+  }
+
+  return node->GetChildCount();
+}
 
 nsresult
 MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
@@ -2452,7 +2481,7 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
       {
         // throw away temp input box
         res = msiUtils::RemoveChildNode(right, 0, ignored);
-        sel->Collapse(left, offset);
+        // sel->Collapse(left, offset);
       }
     }
     else {
@@ -2467,27 +2496,14 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
 
   // The selection needs updating only if one of the nodes is *right
   res = realEditor->GetStartNodeAndOffset(sel, getter_AddRefs(selStartNode), &selStartOffset);
-  if (selStartNode == right) {
-    sel->Collapse(left, selStartOffset + offset);
-  }
   res = realEditor->GetEndNodeAndOffset(sel, getter_AddRefs(selEndNode), &selEndOffset);
-  if (selEndNode == right) {
-    sel->Extend(left, selEndOffset + offset);
-  }
   realEditor->DeleteNode(right);
+  PRInt32 length = msiGetNodeLength(left);
+  sel->Collapse(left, length);
   return NS_OK;
 }
 
-// Get the length of aNode
-PRInt32 msiGetNodeLength(nsIDOMNode *aNode)
-{
-  nsCOMPtr<nsINode> node = do_QueryInterface(aNode);
-  if(node->IsNodeOfType(nsINode::eDATA_NODE)) {
-    return (static_cast<nsIContent *>((nsINode*)node))->TextLength();
-  }
 
-  return node->GetChildCount();
-}
 
 nsresult
 msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRBool lookRight, nsIEditor * editor)
