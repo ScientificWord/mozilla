@@ -686,6 +686,14 @@ var msiSymbol =
 
 var msiMatrix =
 {
+  lastMatrixSettings: {
+    "node": null, 
+    "rows": 2, "cols": 2, 
+    "rowSignature": "r", 
+    "baseline": "c", 
+    "flavor": ""
+  },
+
   isCommandEnabled: function(aCommand, dummy)
   {
     return true;
@@ -694,15 +702,16 @@ var msiMatrix =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
-  doCommand: function(aCommand)
+  doCommand: function(aCommand, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement(window);
-    doMatrixDlg(editorElement);
-  }
+    var editorElement = aRefCon || msiGetActiveEditorElement(window);
+    doMatrixDlg(editorElement, null);
+  } 
 };
 
 var msiMatrix22 =
 {
+  // we do not change lastMatrixSettings in this case
   isCommandEnabled: function(aCommand, dummy)
   {
     return true;
@@ -714,8 +723,10 @@ var msiMatrix22 =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
+    var o = msiMatrix.lastMatrixSettings;
     makeMathIfNeeded(editorElement);
-    matrix(2,2,"",editorElement);
+    insertmatrix(null, 2, 2, o.rowSignature, o.baseline, o.flavor,editorElement);
+
   }
 };
 
@@ -732,8 +743,9 @@ var msiMatrixLast =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
+    var o = msiMatrix.lastMatrixSettings;
     makeMathIfNeeded(editorElement);
-    insertmatrix(null,null,"",editorElement);
+    insertmatrix(null, o.rows, o.cols, o.rowSignature, o.baseline, o.flavor, editorElement);
   }
 };
 
@@ -754,8 +766,15 @@ var msiReviseMatrixCmd =
 //    var theMatrixData = msiGetReviseObjectFromCommandParams(aParams);
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseMatrixCmd, trying to revise matrix, dialog unimplemented.");
     var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
+    var o = {node: theMatrixData.mTableElement};
     var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank", "modal, chrome,resizable,close,titlebar,dependent",
-                                                     editorElement, aCommand, this, theData);
+                                                     o, editorElement, aCommand, this, theData);
+    if (!o.cancel) {
+
+      updatematrix(o.node, o.rows, o.cols, o.rowSignature, o.baseline, o.flavor, editorElement);
+      o.node = null;
+      msiMatrix.lastMatrixSettings = o;
+    }
   },
 
   doCommand: function(aCommand)
@@ -766,8 +785,14 @@ var msiReviseMatrixCmd =
     theMatrixData.initFromSelection(editor.selection, editorElement);
 //    var theMatrixData = msiGetPropertiesObjectFromSelection(editorElement);
     var theData = { reviseCommand : aCommand, reviseData : theMatrixData };
+    var o = {node: theMatrixData.mTableElement};
     var dlgWindow = window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank",
-      "modal,chrome,resizable,close,titlebar,dependent", editorElement, aCommand, this, theData);
+      "modal,chrome,resizable,close,titlebar,dependent", o, editorElement, aCommand, this, theData);
+    if (!o.cancel) {
+      updatematrix(o.node, o.rows, o.cols, o.rowsignature, o.baseline, o.flavor, editorElement);
+      o.node = null;
+      msiMatrix.lastMatrixSettings = o;
+    }
   }
 };
 
@@ -2493,21 +2518,21 @@ function doInsertMathName(aName, editorElement)
 //  insertMathnameObject(mathNameObj, editorElement);
 //}
 
-function doMatrixDlg(editorElement)
+function doMatrixDlg(editorElement, matrixelement)
 {
-  var o = new Object();
-  o.rows = 0;
-  o.cols = 0;
-  o.rowsignature = "";
-  o.flavor='';
+  var o = {"node": null};
+  if (matrixelement && matrixelement.reviseData && matrixelement.reviseData.mTableElement) o = matrixelement.reviseData.mTableElement;
   window.openDialog("chrome://prince/content/mathmlMatrix.xul", "matrix", "chrome,close,titlebar,modal,resizable", o);
-  if (o.rows > 0 && o.cols > 0)
-    insertmatrix(o.rows, o.cols, o.rowsignature, o.flavor, editorElement);
+  if (!o.cancel && o.rows > 0 && o.cols > 0) {
+    makeMathIfNeeded(editorElement);
+    insertmatrix(o.node, o.rows, o.cols, o.rowSignature, o.baseline, o.flavor, editorElement);
+  }
   if (!o.Cancel)
   {
     markDocumentChanged(editorElement);
+    o.node = null;
+    msiMatrix.lastMatrixSettings = o;
   }
-
 }
 
 function reviseEqnArray(reviseData, dialogData, editorElement)
@@ -3113,7 +3138,7 @@ function insertfence(left, right, editorElement)
       if (!editor) throw("In insertfence, editor element [" + editorElement.id + "] has null editor!");
       var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
       if (!mathmlEditor) throw("In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!");
-      mathmlEditor.InsertFence(left, right);
+      mathmlEditor.InsertFence(left, right, "");
       editorElement.contentWindow.focus();
     }
     catch (e)
@@ -3125,7 +3150,7 @@ function insertfence(left, right, editorElement)
 
 //NOTE!! All the convoluted replacement code used below is necessary due to a bug in Mozilla MathML rendering.
 //Changing the textContent of a token node <mo> or <mi> does not reliably force a rerendering.
-function reviseFence(fenceNode, left, right, editorElement)
+function reviseFence(fenceNode, left, right, flavor, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
@@ -3165,53 +3190,125 @@ function reviseFence(fenceNode, left, right, editorElement)
   return retVal;
 }
 
-function insertmatrix(rows, cols, rowsignature, flavor, editorElement)
+function insertmatrix(matrixnode, rows, cols, rowsignature, baseline, flavor, editorElement)
 {
-  var delim = "";
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
-  var prefs = GetPrefs();
-  if (!rows || !cols)
-  {
-    if (prefs)
-    {
-      try {
-        if (!rows) {
-          rows = prefs.getIntPref("swp.matrix.rows");
-          if (!rows) rows = 2;
-        }
-        if (!cols) {
-          cols = prefs.getIntPref("swp.matrix.cols");
-          if (!cols) cols = 2;
-        }
-      }
-      catch(e) {}
-    }
-  }
-  var delimPref = prefs.getCharPref("swp.user.matrix_delim");
-  if (delimPref === "matrix_brackets") delim = "[";
-  else if (delimPref === "matrix_parens") delim = "(";
-  else if (delimPref === "matrix_braces") delim = "{";
-
   var editor = msiGetEditor(editorElement);
-
-  switch(flavor) {  // Actually, now I don't think delim gets used.
-    case 'b' : delim = '['; break;
-    case 'B' : delim = '{';  break;
-    case 'v' : delim = '|';  break;
-    case 'V' : delim = '‖';  break;
-    case 'p' : delim = '(';  break;
-    default: delim = '';  break;
-  }
-
   try
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    mathmlEditor.InsertMatrix(rows, cols, rowsignature, flavor);
+    if (!matrixnode) /*matrixnode = */ mathmlEditor.InsertMatrix(rows, cols, rowsignature, baseline, flavor);
     editorElement.contentWindow.focus();
   }
   catch (e)
   {
+    e.message;
+  }
+}
+
+
+function getFence(matrixNode, left) {
+  var node;
+  if (left) node = matrixNode.previousSibling;
+  else node = matrixNode.nextSibling;
+  while (node && node.nodeType !== Node.ELEMENT_NODE) {
+    if (left) node = node.previousSibling;
+    else node = node.nextSibling;
+  }
+  if (node && node.nodeType === Node.ELEMENT_NODE && node.nodeName === 'mo' && node.hasAttribute('flv')) return node;
+  return null
+}
+
+function fenceTextFromFlavor(flavor, left) {
+  switch (flavor.slice(0,1)) {
+    case 'p':
+      return left ? '(' : ')';
+      break;
+    case 'b':
+      return left ? '[' : ']';
+      break;
+    case 'B':
+      return left ? '{' : '}';
+      break;
+    case 'v':
+      return left ? '|' : '|';
+      break;
+    case 'V':
+      return left ? '‖' : '‖';
+      break;
+  }
+  return null;
+}
+
+
+function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, editorElement)
+{
+  if (!matrixnode) return;
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
+  try
+  {
+    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    var didHaveFenceRight, didHaveFenceRight, willHaveFenceLeft, willHaveFenceRight, didHaveBothFences, willHaveBothFences;
+    var currentFlavor;
+    var wasSmall, newSmall;
+    var bigFlavor, newBigFlavor;  // flavor with 'small' removed if it is part of it
+    var leftFenceNode, rightFenceNode;
+    if (matrixnode.hasAttribute('flv')) {
+      currentFlavor = matrixnode.getAttribute('flv');
+      wasSmall = currentFlavor.indexOf("small") >= 0;
+      if (wasSmall) bigFlavor = currentFlavor.slice(0,1);
+      else bigFlavor = currentFlavor;
+      didHaveBothFences = bigFlavor === 'p' 
+        || bigFlavor === 'b' 
+        || bigFlavor === 'B'
+        || bigFlavor === 'v'
+        || bigFlavor === 'V';
+      didHaveFenceLeft = didHaveBothFences || currentFlavor === 'cases';
+      didHaveFenceRight = didHaveBothFences || currentFlavor === 'rcases';
+    }
+    else  {
+      didHaveFenceLeft = didHaveFenceRight = wasSmall = false;
+    }
+    if (flavor && flavor.length > 0) {
+      newSmall = flavor.indexOf("small") >= 0;
+      if (newSmall) newBigFlavor = flavor.slice(0,1);
+      else newBigFlavor = flavor;
+      willHaveBothFences = newBigFlavor === 'p' 
+        || newBigFlavor === 'b' 
+        || newBigFlavor === 'B'
+        || newBigFlavor === 'v'
+        || newBigFlavor === 'V';
+      willHaveFenceLeft = willHaveBothFences || flavor === 'cases';
+      willHaveFenceRight = willHaveBothFences || flavor === 'rcases';
+    }
+    else  {
+      willHaveFenceLeft = willHaveFenceRight = newSmall = false;
+    }
+
+    // mathmlEditor.beginTransaction();
+    if (didHaveFenceLeft && willHaveFenceLeft) {
+      leftFenceNode = getFence(matrixnode, true);
+      leftFenceNode.textContent = fenceTextFromFlavor(newBigFlavor, true);
+      mathmlEditor.setAttribute(leftFenceNode, "flv", flavor);
+    }
+    if (didHaveFenceRight && willHaveFenceRight) {
+      rightFenceNode = getFence(matrixnode, false);
+      rightFenceNode.textContent = fenceTextFromFlavor(newBigFlavor, false);
+      mathmlEditor.setAttribute(rightFenceNode, "flv", flavor);
+    }
+    mathmlEditor.setAttribute(matrixnode, 'flv', flavor);
+    mathmlEditor.setAttribute(matrixnode, 'rowSignature', rowsignature);
+    mathmlEditor.setAttribute(matrixnode, 'baseline', baseline);
+    // mathmlEditor.endTransaction();
+
+
+  }
+  catch (e)
+  {
+    e.message;
   }
 }
 

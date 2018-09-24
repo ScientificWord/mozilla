@@ -203,7 +203,7 @@ msiEditorLog::InsertEngineFunction(const nsAString & mathname)
 }
 
 NS_IMETHODIMP
-msiEditorLog::InsertFence(const nsAString & open, const nsAString & close)
+msiEditorLog::InsertFence(const nsAString & open, const nsAString & close, const nsAString & flavor)
 {
   nsAutoHTMLEditorLogLock logLock(this);
   if (!mLocked && mFileStream)
@@ -213,7 +213,10 @@ msiEditorLog::InsertFence(const nsAString & open, const nsAString & close)
     nsAutoString str(open);
     PrintUnicode(str);
     Write("\", \"");
-    str = close;
+    nsAutoString str(close);
+    PrintUnicode(str);
+    Write("\", \"");
+    str = flavor;
     PrintUnicode(str);
     Write("\");\n");
     Flush();
@@ -222,7 +225,7 @@ msiEditorLog::InsertFence(const nsAString & open, const nsAString & close)
 }
 
 NS_IMETHODIMP
-msiEditorLog::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature, const nsAString & delim)
+msiEditorLog::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSignature, const nsAString & baseline, const nsAString & flavor)
 {
   nsAutoHTMLEditorLogLock logLock(this);
   if (!mLocked && mFileStream)
@@ -234,11 +237,15 @@ msiEditorLog::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSi
     WriteInt(cols);
     Write(", \"");
     nsAutoString str(rowSignature);
+    PrintUnicode(str);    Write(", \"");
+    nsAutoString str(baseline);
+    PrintUnicode(str);    Write(", \"");
+    nsAutoString str(flavor);
     PrintUnicode(str);
     Write("\");\n");
     Flush();
   }
-  return msiEditor::InsertMatrix(rows, cols, rowSignature, delim);
+  return msiEditor::InsertMatrix(rows, cols, rowSignature, baseline, flavor);
 }
 
 
