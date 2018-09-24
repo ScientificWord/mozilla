@@ -42,9 +42,40 @@ function initialize()
   catch(e) {}
 #endif
   setTypesetFilePrefTextboxes();
+  onChangeMatrixData(document.getElementById("matrixIsSmall"));
+  onChangeMatrixData(document.getElementById("flavor"));
 
 }
 
+// When 'element' is changed, redo any enabling or disabling that is required
+function onChangeMatrixData(element) {
+  try {
+    switch (element.id) {
+      case ('matrixIsSmall') :
+        if (element.checked) { // disable items that can't be made small
+          document.getElementById('columnalign').disabled = document.getElementById('baseline').disabled = 
+            document.getElementById("lcases").disabled = 
+            document.getElementById("rcases").disabled = true;
+        }
+        else {
+          document.getElementById("lcases").disabled = document.getElementById("rcases").disabled = false;
+          document.getElementById('columnalign').disabled = 
+            (document.getElementById('flavor').value == 'cases' || document.getElementById('flavor').value == 'rcases');
+          document.getElementById('baseline').disabled = document.getElementById('flavor').value !=='';
+        }
+        break;
+      case('flavor') :
+        document.getElementById('matrixIsSmall').disabled = 
+          (document.getElementById('flavor').value == 'cases' || document.getElementById('flavor').value == 'rcases');
+        document.getElementById('columnalign').disabled = (document.getElementById('flavor').value == 'cases' || document.getElementById('flavor').value == 'rcases');
+        document.getElementById('baseline').disabled = (document.getElementById('flavor').value !=='');
+        break;
+    }
+  }
+  catch(e) {
+    e.message;
+  }
+}
 function locationChanged()
 {
   var floatBroadcaster = document.getElementById("floatEnabled");
