@@ -1027,11 +1027,7 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
     if (!bCollapsed && inMath)
     {
       selection->Collapse(anchorNode,anchorOffset+1);
-    }
-    else
-    {
-      //selection->Collapse(mathmlElement,1);
-    }
+    } 
     editor->EndTransaction();
   }
   return res;
@@ -1349,7 +1345,8 @@ msiEditingManager::InsertMatrix(nsIEditor * editor,
                                 PRUint32 rows,
                                 PRUint32 cols,
                                 const nsAString & rowSignature,
-                                const nsAString & delim)
+                                const nsAString & baseline,
+                                const nsAString & flavor)
 {
   nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMatrix");
@@ -1364,9 +1361,11 @@ msiEditingManager::InsertMatrix(nsIEditor * editor,
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateMtable(editor, rows, cols, rowSignature, PR_TRUE, flags, mathmlElement, delim);
-    if (NS_SUCCEEDED(res) && mathmlElement)
+    res = msiUtils::CreateMtable(editor, rows, cols, rowSignature, baseline, PR_TRUE, flags, mathmlElement, flavor);
+    if (NS_SUCCEEDED(res) && mathmlElement) {
+      if (flavor.Length() > 0) mathmlElement->SetAttribute(NS_LITERAL_STRING("req"),NS_LITERAL_STRING("mathtools"));
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+    }
   }
   return res;
 }

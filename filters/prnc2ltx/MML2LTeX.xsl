@@ -1134,7 +1134,7 @@ no indent - disregarded completely
 
 <!-- mtables with 1 cell per row -->
 
-      <xsl:when test="$table-structure/n-cells[last()]=1">
+      <xsl:when test="$table-structure/n-cells[last()]=1 and @flv!='cases' and @flv!='rcases'">
 
         <xsl:variable name="env-info.tr">
 		<LaTeX-env>
@@ -1207,8 +1207,7 @@ no indent - disregarded completely
               </xsl:when>
               <xsl:otherwise>
                 <xsl:call-template name="array">
-                  <xsl:with-param name="LaTeX-env" select="$env-info/LaTeX-env"/>
-                </xsl:call-template>
+                  <xsl:with-param name="LaTeX-env" select="$env-info/LaTeX-env"/>                </xsl:call-template>
               </xsl:otherwise>
 			</xsl:choose>
           </xsl:otherwise>
@@ -1220,19 +1219,36 @@ no indent - disregarded completely
 <!-- mtables with more than 1 cell per row -->
 
       <xsl:otherwise>
-		<xsl:choose>
+    		<xsl:choose>
           <xsl:when test="@frame!='' or @rowlines!='' or @columnlines!=''">
             <xsl:call-template name="tabular"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:call-template name="array">
-              <xsl:with-param name="LaTeX-env" select="concat(@flv, 'matrix')"/>
-            </xsl:call-template>
+            <xsl:choose>
+              <xsl:when test="@flv and string-length(@flv)&gt;0">
+                <xsl:choose>
+                  <xsl:when test="@flv='cases' or @flv='rcases'">
+                    <xsl:call-template name="array">
+                      <xsl:with-param name="LaTeX-env" select="concat(@flv,'*')"/>
+                    </xsl:call-template>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:call-template name="array">
+                      <xsl:with-param name="LaTeX-env" select="concat(@flv, 'matrix*')"/>
+                    </xsl:call-template>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:call-template name="array">
+                  <xsl:with-param name="LaTeX-env" select="'array'"/>
+                </xsl:call-template>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:otherwise>
-		</xsl:choose>
+        </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
-
   </xsl:template>
 
 
