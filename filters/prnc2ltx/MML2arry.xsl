@@ -51,7 +51,7 @@
         <xsl:text>}</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="@rowSignature and $LaTeX-env != 'cases*' and $LaTeX-env != 'rcases*'">
+        <xsl:if test="@rowSignature and $LaTeX-env != 'cases' and $LaTeX-env != 'rcases'">
           <xsl:text>[</xsl:text>
           <xsl:value-of select="@rowSignature"/>
           <xsl:text>]</xsl:text>
