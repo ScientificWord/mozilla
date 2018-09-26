@@ -1229,7 +1229,7 @@ no indent - disregarded completely
                 <xsl:choose>
                   <xsl:when test="@flv='cases' or @flv='rcases'">
                     <xsl:call-template name="array">
-                      <xsl:with-param name="LaTeX-env" select="concat(@flv,'*')"/>
+                      <xsl:with-param name="LaTeX-env" select="@flv"/>
                     </xsl:call-template>
                   </xsl:when>
                   <xsl:otherwise>
