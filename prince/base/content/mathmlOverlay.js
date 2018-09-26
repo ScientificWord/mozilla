@@ -3207,6 +3207,18 @@ function insertmatrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
   }
 }
 
+function matrixRowsAndColumns(matrixNode) {
+  var returnObject = {rows: null, columns: null};
+  var rowlist;
+  if (matrixNode) {
+    rowlist = matrixNode.getElementsByTagName('mtr');
+    returnObject.rows = rowlist.length;
+    if (returnObject.rows > 0) returnObject.columns = 
+      rowlist.item(0).getElementsByTagName('mtd').length;
+  }
+  return returnObject;
+}
+
 
 function getFence(matrixNode, left) {
   var node;
@@ -3232,10 +3244,16 @@ function fenceTextFromFlavor(flavor, left) {
       return left ? '{' : '}';
       break;
     case 'v':
-      return left ? '|' : '|';
+      return '|';
       break;
     case 'V':
-      return left ? '‖' : '‖';
+      return '‖';
+      break;
+    case 'c':  // cases
+      return left ? '{' : null;
+      break;
+    case 'r':  // rcases
+      return left ? null : '}';
       break;
   }
   return null;
@@ -3248,14 +3266,21 @@ function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
+  var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+  var didHaveFenceRight, didHaveFenceRight, willHaveFenceLeft, willHaveFenceRight, didHaveBothFences, willHaveBothFences;
+  var currentFlavor;
+  var wasSmall, newSmall;
+  var bigFlavor, newBigFlavor;  // flavor with 'small' removed if it is part of it
+  var leftFenceNode, rightFenceNode;
+  var oldRows, oldColumns;
+  var rowNodes;
+  var i,j;
+  mathmlEditor.endTransaction();
+  var rowsAndCols = matrixRowsAndColumns(matrixnode);
   try
   {
-    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    var didHaveFenceRight, didHaveFenceRight, willHaveFenceLeft, willHaveFenceRight, didHaveBothFences, willHaveBothFences;
-    var currentFlavor;
-    var wasSmall, newSmall;
-    var bigFlavor, newBigFlavor;  // flavor with 'small' removed if it is part of it
-    var leftFenceNode, rightFenceNode;
+    oldRows = rowsAndCols.rows;
+    oldColumns = rowsAndCols.columns;
     if (matrixnode.hasAttribute('flv')) {
       currentFlavor = matrixnode.getAttribute('flv');
       wasSmall = currentFlavor.indexOf("small") >= 0;
@@ -3288,28 +3313,65 @@ function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
       willHaveFenceLeft = willHaveFenceRight = newSmall = false;
     }
 
-    // mathmlEditor.beginTransaction();
-    if (didHaveFenceLeft && willHaveFenceLeft) {
+    if (didHaveFenceLeft) {
       leftFenceNode = getFence(matrixnode, true);
-      leftFenceNode.textContent = fenceTextFromFlavor(newBigFlavor, true);
-      mathmlEditor.setAttribute(leftFenceNode, "flv", flavor);
+      if (willHaveFenceLeft) {
+        leftFenceNode.textContent = fenceTextFromFlavor(newBigFlavor, true);
+        mathmlEditor.setAttribute(leftFenceNode, "flv", flavor);
+      } else {
+        mathmlEditor.deleteNode(leftFenceNode);
+      }
+    } else if (willHaveFenceLeft) {
+      
     }
-    if (didHaveFenceRight && willHaveFenceRight) {
+   if (didHaveFenceRight) {
       rightFenceNode = getFence(matrixnode, false);
-      rightFenceNode.textContent = fenceTextFromFlavor(newBigFlavor, false);
-      mathmlEditor.setAttribute(rightFenceNode, "flv", flavor);
+      if (willHaveFenceRight) {
+        rightFenceNode.textContent = fenceTextFromFlavor(newBigFlavor, false);
+        mathmlEditor.setAttribute(rightFenceNode, "flv", flavor);
+      } else {
+        mathmlEditor.deleteNode(rightFenceNode);
+      }
+    } else if (willHaveFenceRight) {
+      
     }
     mathmlEditor.setAttribute(matrixnode, 'flv', flavor);
     mathmlEditor.setAttribute(matrixnode, 'rowSignature', rowsignature);
     mathmlEditor.setAttribute(matrixnode, 'baseline', baseline);
-    // mathmlEditor.endTransaction();
+    if (rows > oldRows) {
+      mathmlEditor.addMatrixRows(matrixnode, oldRows, rows - oldRows);
+    }
+    else 
+    {
+      if (oldRows > rows) 
+      {
+        rowNodes = matrixnode.getElementsByTagName('mtr');
+        for (i = oldRows-1; i >= rows; i-- ) 
+        {
+          mathmlEditor.deleteNode(rowNodes.item(i));
+        }
+      }
+    }
+    if (cols > oldColumns) {
+      mathmlEditor.addMatrixColumns(matrixnode, oldColumns, cols - oldColumns);
+    } else
+    {
+      if (oldColumns > cols) {
+        rowNodes = matrixnode.getElementsByTagName('mtr');
+        for (i = 0; i < rowNodes.length; i++) {
+          dataNodes = rowNodes.item(i).getElementsByTagName('mtd');
+          for (j = dataNodes.length - 1; j >= cols; j--)
+            mathmlEditor.deleteNode(dataNodes.item(j));
+        }
 
-
+      }
+    }
   }
   catch (e)
   {
     e.message;
   }
+  mathmlEditor.endTransaction();
 }
 
 function insertmath(editorElement)
