@@ -6299,8 +6299,10 @@ msiTablePropertiesObjectData.prototype = {
 
     var bDoIt = true;
     for (var ix = 0; ix < ourArray.length; ++ix) {
-      this.menuStrings.push(msiFormatPropertiesMenuString(strArray[ix]));
-      this.commandStrings.push(commandArray[ix]);
+      if (strArray[ix]) {
+        this.menuStrings.push(msiFormatPropertiesMenuString(strArray[ix]));
+        this.commandStrings.push(commandArray[ix]);        
+      }
     }
   },
 
@@ -7554,7 +7556,7 @@ function msiFormatPropertiesMenuString(objectStringID) {
   if (objectStringID)
     objStr = GetString(objectStringID);
   if (!objStr.length)
-    return GetString("AdvancedProperties");
+  return null;
   return GetString("ObjectProperties").replace(/%obj%/, objStr);
 }
 
