@@ -8476,7 +8476,7 @@ var msiNavigationUtils = {
     if (nodeName === 'mrow' || nodeName === 'mstyle') {
       var children = this.getSignificantContents(node);
       if (children.length > 1) {
-        return msiGetBaseNodeName(children[0]) === 'mo' && children[0].getAttribute('fence') === 'true' && children[0].getAttribute('form') === 'prefix' && msiGetBaseNodeName(children[children.length - 1]) === 'mo' && children[children.length - 1].getAttribute('fence') === 'true' && children[children.length - 1].getAttribute('form') === 'postfix';
+        return msiGetBaseNodeName(children[0]) === 'mo' && (!children[0].hasAttribute('flv') || children[0].getAttribute('flv') === '') && children[0].getAttribute('fence') === 'true' && children[0].getAttribute('form') === 'prefix' && msiGetBaseNodeName(children[children.length - 1]) === 'mo' && (!children[children.length - 1].hasAttribute('flv') || children[children.length - 1].getAttribute('flv') === '')  && children[children.length - 1].getAttribute('fence') === 'true' && children[children.length - 1].getAttribute('form') === 'postfix';
       }
     }
     return false;
