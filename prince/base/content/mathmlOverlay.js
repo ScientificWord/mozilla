@@ -3259,6 +3259,39 @@ function fenceTextFromFlavor(flavor, left) {
   return null;
 }
 
+function insertRowIfNeeded(editor, node, rowpos) {
+  var offset = offsetOfChild(node.parentNode,node);
+  var row;
+  if (node.parentNode.nodeName != 'mrow') {
+    row = editor.createNode('mrow', node.parentNode, offset);
+    editor.deleteNode(node);
+    editor.insertNode(node, row, offset);
+  } else row = node.parentNode;
+  rowpos.row = row;
+  rowpos.parent = row.parentNode;
+  rowpos.offset = offsetOfChild(row.parent, row);
+}
+
+function createFenceMo( editor, isLeft, flavor, willHaveBothFences ) {
+  var mo;
+  var form = isLeft ? 'prefix' : 'postfix';
+  var symmetric = flavor != 'cases' && flavor != 'rcases';
+  var textNode;
+  mo = editor.document.createElement('mo');
+  editor.setAttribute(mo, 'stretchy', 'true');
+  editor.setAttribute(mo, 'form', form);
+  editor.setAttribute(mo, 'flv', flavor);
+  if (willHaveBothFences) {    editor.setAttribute(mo, 'fence', 'true');
+    editor.setAttribute(mo, 'symmetric', symmetric);
+    editor.setAttribute(mo, 'lspace', 'lspace');
+    editor.setAttribute(mo, 'rspace', 'rspace');
+    editor.setAttribute(mo, 'maxsize', 'maxsize');
+    editor.setAttribute(mo, 'minsize', 'minsize');
+  }
+  textNode = editor.document.createTextNode(fenceTextFromFlavor(flavor, isLeft));
+  editor.insertNode(textNode, mo, 0);
+  return mo;
+}
 
 function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, editorElement)
 {
@@ -3267,15 +3300,18 @@ function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
   var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-  var didHaveFenceRight, didHaveFenceRight, willHaveFenceLeft, willHaveFenceRight, didHaveBothFences, willHaveBothFences;
+  var didHaveFenceLeft, didHaveFenceRight, willHaveFenceLeft, willHaveFenceRight, didHaveBothFences, willHaveBothFences;
   var currentFlavor;
   var wasSmall, newSmall;
   var bigFlavor, newBigFlavor;  // flavor with 'small' removed if it is part of it
   var leftFenceNode, rightFenceNode;
+  var moLeft, moRight;
   var oldRows, oldColumns;
   var rowNodes;
+  var offset;
   var i,j;
-  mathmlEditor.endTransaction();
+  var rowpos = {parent: null, offset: 0 };
+  mathmlEditor.beginTransaction();
   var rowsAndCols = matrixRowsAndColumns(matrixnode);
   try
   {
@@ -3315,29 +3351,45 @@ function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
 
     if (didHaveFenceLeft) {
       leftFenceNode = getFence(matrixnode, true);
-      if (willHaveFenceLeft) {
-        leftFenceNode.textContent = fenceTextFromFlavor(newBigFlavor, true);
-        mathmlEditor.setAttribute(leftFenceNode, "flv", flavor);
-      } else {
-        mathmlEditor.deleteNode(leftFenceNode);
+      if (leftFenceNode) {
+        if (willHaveFenceLeft) {
+          leftFenceNode.textContent = fenceTextFromFlavor(newBigFlavor, true);
+          mathmlEditor.setAttribute(leftFenceNode, "flv", flavor);
+        } else {
+          mathmlEditor.deleteNode(leftFenceNode);
+        }
       }
-    } else if (willHaveFenceLeft) {
-      
+    } else if (willHaveFenceLeft) { // put in the left fence
+      insertRowIfNeeded(editor, matrixnode, rowpos);
+      moLeft = createFenceMo( editor, true, flavor, willHaveBothFences);
+      if (moLeft) {
+        // editor.deleteNode(rowpos.row);
+        offset = offsetOfChild(matrixnode.parentNode,matrixnode);
+        editor.insertNode(moLeft, matrixnode.parentNode, offset);
+        // editor.insertNode(rowpos.row, rowpos.parent, rowpos.offset);
+      }
     }
-   if (didHaveFenceRight) {
+    if (didHaveFenceRight) {
       rightFenceNode = getFence(matrixnode, false);
-      if (willHaveFenceRight) {
-        rightFenceNode.textContent = fenceTextFromFlavor(newBigFlavor, false);
-        mathmlEditor.setAttribute(rightFenceNode, "flv", flavor);
-      } else {
-        mathmlEditor.deleteNode(rightFenceNode);
+      if (rightFenceNode) {
+        if (willHaveFenceRight) {
+          rightFenceNode.textContent = fenceTextFromFlavor(newBigFlavor, false);
+          mathmlEditor.setAttribute(rightFenceNode, "flv", flavor);
+        } else {
+          mathmlEditor.deleteNode(rightFenceNode);
+        }
       }
     } else if (willHaveFenceRight) {
-      
+      insertRowIfNeeded(editor, matrixnode, rowpos);
+      moRight = createFenceMo( editor, false, flavor, willHaveBothFences);
+      if (moRight) {
+        // editor.deleteNode(rowpos.row);
+        offset = offsetOfChild(matrixnode.parentNode,matrixnode);
+        editor.insertNode(moRight, matrixnode.parentNode, offset + 1);
+        // editor.insertNode(rowpos.row, rowpos.parent, rowpos.offset);
+       }
     }
     mathmlEditor.setAttribute(matrixnode, 'flv', flavor);
-    mathmlEditor.setAttribute(matrixnode, 'rowSignature', rowsignature);
-    mathmlEditor.setAttribute(matrixnode, 'baseline', baseline);
     if (rows > oldRows) {
       mathmlEditor.addMatrixRows(matrixnode, oldRows, rows - oldRows);
     }
@@ -3367,6 +3419,7 @@ function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
       }
     }
   }
+
   catch (e)
   {
     e.message;
