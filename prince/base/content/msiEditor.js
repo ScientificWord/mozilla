@@ -5073,6 +5073,10 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         commandStr = "cmd_reviseCrossRef";
         break;
 
+      case "caption":
+      case "imagecaption":
+        break;
+
       case "graph":
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
