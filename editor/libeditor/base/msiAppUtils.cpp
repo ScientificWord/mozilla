@@ -50,12 +50,21 @@ PRBool msiAppUtils::rlm_save_ok () {
    (strcmp(prodname, "sw") == 0));
 };
 
+
+char cached_prodname[4] = "";
+
 char * msiAppUtils::getProd() {
+  if (strlen(cached_prodname) > 1) return cached_prodname;
   PRUint32 stat = rlm_license_stat(lic);
   char * prodname = nsnull;
-  if (! stat)
+  if (! stat) {
     prodname = rlm_license_product(lic);
-  return prodname;
+    if (strlen(cached_prodname) == 0) {
+      strncpy(cached_prodname, prodname, 4);
+      cached_prodname[3] = '\0';
+    } 
+  }
+  return cached_prodname;
 };
 
 
