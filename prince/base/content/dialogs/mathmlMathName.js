@@ -160,10 +160,9 @@ function updateControls()
   var currName = document.getElementById("mathNamesBox").value;
   var bIsNew = gDialog.nameList.canAdd(currName);
   var nameTypeControls = ["nameTypeGroup", "nameTypeLabel", "nameTypeRadioGroup"];
-  enableControlsByID(nameTypeControls, bIsNew);
-  var dumpStr = "For mathname [" + currName + "]; "
+  // enableControlsByID(nameTypeControls, bIsNew);
   var limitPlacementControls = ["limitPlacementGroup", "limitPlacementGroupCaption", "operatorLimitPlacementRadioGroup"];
-  if (theType == "operator")
+  if (theType === "operator" || theType === "function")
   {
     //document.getElementById("limitPlacementGroup").removeAttribute("disabled");
     enableControlsByID(limitPlacementControls, true);
@@ -171,27 +170,16 @@ function updateControls()
     if ((currName in gDialog.nameList.names) && ("limitPlacement" in gDialog.nameList.names[currName]))
       thePlacement = gDialog.nameList.names[currName].limitPlacement;
     document.getElementById("operatorLimitPlacementRadioGroup").value = thePlacement;
-    dumpStr += "enabling the limitplacementgroup";
   }
   else
   {
     //document.getElementById("limitPlacementGroup").setAttribute("disabled", "true");
     enableControlsByID(limitPlacementControls, false);
-    dumpStr += "disabling the limitplacementgroup";
   }
 
   enableControlsByID(["addButton"], bIsNew);
   enableControlsByID(["deleteButton"], gDialog.nameList.canDelete(currName));
-  dumpStr += " canAdd returned ";
-  if (bIsNew)
-    dumpStr += "true";
-  else
-    dumpStr += "false";
-  dumpStr += " canDelete returned ";
-  if (gDialog.nameList.canDelete(currName))
-    dumpStr += "true";
-  else
-    dumpStr += "false";
+
   var bAutoSub = gDialog.nameList.hasAutoSubstitution(currName);
   if (bAutoSub)
     document.getElementById("addAutoSubstitution").setAttribute("checked", "true");
@@ -200,7 +188,7 @@ function updateControls()
 //  var bBuiltIn = gDialog.nameList.isBuiltIn(currName);
 //  enableControlsByID(["addAutoSubstitution", "addAutoSubstitutionDescription", "enginefunction", "enginefunctionDescription"], !bBuiltIn);
 //  enableControlsByID(["addAutoSubstitution", "addAutoSubstitutionDescription", "enginefunction", "enginefunctionDescription"], !bBuiltIn);
-  enableControlsByID(["addAutoSubstitution", "addAutoSubstitutionDescription", "enginefunction", "enginefunctionDescription"], bIsNew);
+  // enableControlsByID(["addAutoSubstitution", "addAutoSubstitutionDescription", "enginefunction", "enginefunctionDescription"], bIsNew);
   dumpStr += "autosubstitution and enginefunction should be ";
   if (!bIsNew)
     dumpStr += "disabled";
@@ -359,7 +347,7 @@ function onOK() {
   var currName = document.getElementById("mathNamesBox").value;
   if (currName in gDialog.nameList.names)
     target = gDialog.nameList.names[currName];
-  else if (document.getElementById("addAutoSubstitution").getAttribute("checked") == "true")
+  else if (document.getElementById("addAutoSubstitution").checked )
     addCurrentName(true);
   target.val = currName;
   target.type = document.getElementById("nameTypeRadioGroup").value;
@@ -373,11 +361,6 @@ function onOK() {
 //  gDialog.nameList.updateBaseList();  //see msiEditorUtilities.js
 
   var parentEditorElement = msiGetParentEditorElementForDialog(window);
-  var dumpStr = "In mathmlMathName.js onOK(); inserting mathname object [" + target.val + "] in editor element [";
-  if (parentEditorElement != null)
-    dumpStr += parentEditorElement.id;
-  dumpStr += "].\n";
-  dump(dumpStr);
   var theWindow = window.opener;
   var bRevise = isPropertiesDialog();
   if (bRevise)
