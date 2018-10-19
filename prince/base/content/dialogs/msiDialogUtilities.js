@@ -738,7 +738,7 @@ function msiDialogConfigManager(theDialogWindow)
   {
     if (!this.mStringBundle)
       this.initialize();
-    var gDlg = this.mDlgWindow.document.documentElement;
+    var gDlg = document.documentElement;
     if (this.mbIsModeless)
     {
       if (!this.mbCloseOnAccept)
