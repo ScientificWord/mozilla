@@ -2157,11 +2157,7 @@ function insertmathname(name, editorElement)
 
 function reviseMathname(theMathnameNode, newMathNameData, editorElement)
 {
-  if (!theMathnameNode || !editorElement)
-  {
-    dump("Entering reviseMathname with a null editorElement or mathname node! Aborting...\n");
-    return null;
-  }
+  if (!theMathnameNode || !editorElement) return null;
   var retVal = theMathnameNode;
   var editor = msiGetEditor(editorElement);
 
@@ -2211,7 +2207,7 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
     else
       wrappedMathName = msiSetMathTokenText(wrappedMathName, newMathNameData.val, editor);
 
-    //Now whether we've inserted a new node or not, we adjust attribute and style values.
+    // Now whether we've inserted a new node or not, we adjust attribute and style values.
 
     if (newMathNameData.type == "operator")  //should now be an "mo"
     {
