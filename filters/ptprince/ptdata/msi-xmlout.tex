@@ -1168,7 +1168,13 @@
      \@make@braces@normal
      \msitag[\begin{matrix}#1\end{matrix}]
   ]
-  
+
+  \gdef\@scan@smallmatrix#1\end{smallmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{smallmatrix}#1\end{smallmatrix}]
+  ]
+
   \gdef\@scan@bmatrix#1\end{bmatrix}[%
      \egroup
      \@make@braces@normal
@@ -1182,11 +1188,6 @@
      \msitag[\begin{Bmatrix}#1\end{Bmatrix}]
      %\temptoksa=[\begin{Bmatrix}#1\end{Bmatrix}]%
      %\the\temptoksa
-  ]
-  \gdef\@scan@smallmatrix#1\end{smallmatrix}[%
-     \egroup
-     \@make@braces@normal
-     \msitag[\begin{smallmatrix}#1\end{smallmatrix}]
   ]
 
   \gdef\@scan@vmatrix#1\end{vmatrix}[%
@@ -1208,6 +1209,42 @@
      \@make@braces@normal
      \msitag[\begin{pmatrix}#1\end{pmatrix}]
      %\temptoksa=[\begin{pmatrix}#1\end{pmatrix}]%
+     %\the\temptoksa
+  ]
+  \gdef\@scan@bsmallmatrix#1\end{bsmallmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{bsmallmatrix}#1\end{bsmallmatrix}]
+     %\temptoksa=[\begin{bsmallmatrix}#1\end{bsmallmatrix}]%
+     %\the\temptoksa
+  ]
+  \gdef\@scan@Bsmallmatrix#1\end{Bsmallmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{Bsmallmatrix}#1\end{Bsmallmatrix}]
+     %\temptoksa=[\begin{Bsmallmatrix}#1\end{Bsmallmatrix}]%
+     %\the\temptoksa
+  ]
+
+  \gdef\@scan@vsmallmatrix#1\end{vsmallmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{vsmallmatrix}#1\end{vsmallmatrix}]
+     %\temptoksa=[\begin{vsmallmatrix}#1\end{vsmallmatrix}]%
+     %\the\temptoksa
+  ]
+  \gdef\@scan@Vsmallmatrix#1\end{Vsmallmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{Vsmallmatrix}#1\end{Vsmallmatrix}]
+     %\temptoksa=[\begin{Vsmallmatrix}#1\end{Vsmallmatrix}]%
+     %\the\temptoksa
+  ]
+  \gdef\@scan@psmallmatrix#1\end{psmallmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{psmallmatrix}#1\end{psmallmatrix}]
+     %\temptoksa=[\begin{psmallmatrix}#1\end{psmallmatrix}]%
      %\the\temptoksa
   ]
 \egroup
@@ -1275,12 +1312,17 @@
 
 
 \def\msi@begin@matrix{\@make@braces@other\relax\@scan@matrix} 
+\def\msi@begin@smallmatrix{\@make@braces@other\relax\@scan@smallmatrix} 
 \def\msi@begin@bmatrix{\@make@braces@other\relax\@scan@bmatrix} 
 \def\msi@begin@Bmatrix{\@make@braces@other\relax\@scan@Bmatrix} 
-\def\msi@begin@smallmatrix{\@make@braces@other\relax\@scan@smallmatrix} 
 \def\msi@begin@vmatrix{\@make@braces@other\relax\@scan@vmatrix} 
 \def\msi@begin@Vmatrix{\@make@braces@other\relax\@scan@Vmatrix} 
 \def\msi@begin@pmatrix{\@make@braces@other\relax\@scan@pmatrix}
+\def\msi@begin@bsmallmatrix{\@make@braces@other\relax\@scan@bsmallmatrix} 
+\def\msi@begin@Bsmallmatrix{\@make@braces@other\relax\@scan@Bsmallmatrix} 
+\def\msi@begin@vsmallmatrix{\@make@braces@other\relax\@scan@vsmallmatrix} 
+\def\msi@begin@Vsmallmatrix{\@make@braces@other\relax\@scan@Vsmallmatrix} 
+\def\msi@begin@psmallmatrix{\@make@braces@other\relax\@scan@psmallmatrix}
 
 
 
