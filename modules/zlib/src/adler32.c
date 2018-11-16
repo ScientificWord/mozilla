@@ -4,8 +4,9 @@
  */
 
 /* @(#) $Id$ */
-
+#ifndef ZLIB_INTERNAL
 #define ZLIB_INTERNAL
+#endif
 #include "zlib.h"
 
 #define BASE 65521UL    /* largest prime smaller than 65536 */
