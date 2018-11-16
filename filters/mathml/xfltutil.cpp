@@ -1253,7 +1253,9 @@ TNODE* MATRIXtoExternalFormat( TNODE* MATRIX_node ) {
           TCI_ASSERT(0);
         break;
       }
-
+      if (rv_subtype >= 712 && cont->var_value[1]=='s') {
+        rv_subtype += 10;
+      } // these are psmallmatrix ... Bsmallmatrix
     } else
       TCI_ASSERT(0);
   }
