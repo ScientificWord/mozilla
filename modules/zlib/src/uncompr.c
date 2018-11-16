@@ -5,7 +5,9 @@
 
 /* @(#) $Id$ */
 
+#ifndef ZLIB_INTERNAL
 #define ZLIB_INTERNAL
+#endif
 #include "zlib.h"
 
 /* ===========================================================================

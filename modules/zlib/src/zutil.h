@@ -13,7 +13,9 @@
 #ifndef ZUTIL_H
 #define ZUTIL_H
 
+#ifndef ZLIB_INTERNAL
 #define ZLIB_INTERNAL
+#endif
 #include "zlib.h"
 
 #ifdef STDC
