@@ -43,5 +43,12 @@ glob:*/application.ini
 glob:toolkit/crashreporter/*
 glob:tools/update-packaging/test
 glob:temp/*
+glob:\\jbm
+glob:*.xcworkspacedata
+glob:*.xcsettings
+glob:*.xcuserstate
+glob:*.xcbkptlist
+glob:*.pbxproj
+
 
 
