@@ -248,6 +248,7 @@ int main(int argc, char* argv[])
    LOG("\nWriting output file " << argv[argc-1]);
    const char* outfilename = argv[argc-1];
    std::ofstream outfile(outfilename);
+   bool isOpen = outfile.is_open();
    Typesetter::PrintMainList(outfile);
    Typesetter::DeleteAll();
    DeleteAllRestorations();
