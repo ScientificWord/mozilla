@@ -2463,7 +2463,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
 
         if        ( usub == 140 ) {
           mml_rv  =  LaTeXCases2MML( array,out_of_flow_list );
-        } else if ( usub >= 710 && usub <= 716 ) {
+        } else if ( (usub >= 710 && usub <= 716 || (usub >= 722 && usub <= 726)) ) {
           HLinesToBucket( array,FALSE );
         // These LaTeX schemata don't have a {cols} arg
           mml_rv  =  Matrix2MML( array,out_of_flow_list,usub );
@@ -2937,7 +2937,12 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       case 713  :       // \bmatrix
       case 714  :       // \vmatrix
       case 715  :       // \Vmatrix
-      case 716  : {     // \Bmatrix
+      case 716  :       // \Bmatrix
+      case 722  :       // \psmallmatrix
+      case 723  :       // \bsmallmatrix
+      case 724  :       // \vsmallmatrix
+      case 725  :       // \Vsmallmatrix
+      case 726  : {     // \Bsmallmatrix
         HLinesToBucket( obj_node,FALSE );
     // These LaTeX schemata don't have a {cols} arg
         mml_rv  =  Matrix2MML( obj_node,out_of_flow_list,subclass );
@@ -15492,7 +15497,7 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
 
 // All except matrix and smallmatrix have built-in delimiters
 
-  if ( subtype >= 712 && subtype <= 716 ) {
+  if ( (subtype >= 712 && subtype <= 719 && subtype != 717) || subtype >= 721 && subtype <=726 ) {
 
 /* from MathML.gmr, context MATH
 (<uID5.712.0,l>U0xxxx,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
@@ -15501,6 +15506,8 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
 .
 {<uID5.716.0,l>U0xxxx,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
 }<uID5.716.0,r>U0xxxx,form="postfix"  fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+{<uID5.718.0,l>U0xxxx,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+}<uID5.719.0,r>U0xxxx,form="postfix"  fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
 */
 
     U8 lookup_zuID[32];
@@ -15571,11 +15578,11 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
 
   }   // if ( subtype >= 712 && subtype <= 716 )
 
-  if ( subtype == 711 ) {  // \smallmatrix - increment scriptlevel
-    mml_rv =  FixImpliedMRow( mml_rv );
-    mml_rv =  CreateElemWithBucketAndContents( 5,600,0,2,mml_rv );
-    SetNodeAttrib( mml_rv,(U8*)"scriptlevel",(U8*)"+1" );
-  }
+  // if ( subtype == 711 ) {  // \smallmatrix - increment scriptlevel  // don't make scriptlevel explicit; it is taken care of by CSS and by the mathtools package
+  //   mml_rv =  FixImpliedMRow( mml_rv );
+  //   mml_rv =  CreateElemWithBucketAndContents( 5,600,0,2,mml_rv );
+  //   SetNodeAttrib( mml_rv,(U8*)"scriptlevel",(U8*)"+1" );
+  // }
 
   SetDetailNum( mml_rv,DETAILS_is_expression,1 );
   SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_INNER );
