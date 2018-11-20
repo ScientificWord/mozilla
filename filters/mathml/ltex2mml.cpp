@@ -2938,6 +2938,8 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
       case 714  :       // \vmatrix
       case 715  :       // \Vmatrix
       case 716  :       // \Bmatrix
+      case 718  :       // \cases
+      case 719  :       // \rcases
       case 722  :       // \psmallmatrix
       case 723  :       // \bsmallmatrix
       case 724  :       // \vsmallmatrix
@@ -15335,6 +15337,7 @@ Each line has 2 MATH buckets, each containing an independent expression.
 
 TNODE* LaTeX2MMLTree::LaTeXCases2MML( TNODE* src_cases,
                   TNODE** out_of_flow_list ) {
+  return NULL;
 
   TNODE* mml_rv =  NULL;
 
@@ -15491,13 +15494,33 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
 
 // "align" and "frame" and "rowlines" and "columnlines" and "columnalign"
   SetMTableAttribs( mml_rv,FALSE,tex_matrix_node );
+  U8* flavor;
 
-// These LaTeX constructs have NO {cols} arg - all columns are centered
+
+  switch (subtype) { 
+    case 711: flavor = (U8*)"small"; break;
+    case 712: flavor = (U8*)"p"; break;
+    case 713: flavor = (U8*)"b"; break;
+    case 714: flavor = (U8*)"v"; break;
+    case 715: flavor = (U8*)"V"; break;
+    case 716: flavor = (U8*)"V"; break;
+    case 718: flavor = (U8*)"cases"; break;
+    case 719: flavor = (U8*)"rcases"; break;
+    case 722: flavor = (U8*)"psmall"; break;
+    case 723: flavor = (U8*)"bsmall"; break;
+    case 724: flavor = (U8*)"vsmall"; break;
+    case 725: flavor = (U8*)"Vsmall"; break;
+    case 726: flavor = (U8*)"Bsmall"; break;
+    default: flavor =  (U8*)"\0";
+  }
+
+  if (*flavor)
+    SetNodeAttrib( mml_rv, (U8*)"flv", (U8*)flavor );
+  // These LaTeX constructs have NO {cols} arg - all columns are centered
   SetNodeAttrib( mml_rv,(U8*)"columnalign",(U8*)"center" );
-
 // All except matrix and smallmatrix have built-in delimiters
 
-  if ( (subtype >= 712 && subtype <= 719 && subtype != 717) || subtype >= 721 && subtype <=726 ) {
+  if ( (subtype >= 712 && subtype <= 719 && subtype != 717) || subtype >= 722 && subtype <=726 ) {
 
 /* from MathML.gmr, context MATH
 (<uID5.712.0,l>U0xxxx,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
@@ -15516,11 +15539,15 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
 
     U8* delim_entity;
     U8* delim_attrs;
+    TNODE* left_end = NULL;
+    TNODE* right_end = NULL;
+
     if ( d_mml_grammar->GetGrammarDataFromUID(lookup_zuID,
-                    context_math,&delim_entity,&delim_attrs ) ) {
+                    context_math,&delim_entity,&delim_attrs ) )
+    {
       if ( delim_entity && delim_entity[0] ) {
 // mo for left delimiting fence
-        TNODE* left_end =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );
+        left_end =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );
         SetChData( left_end,delim_entity,NULL );
         if ( delim_attrs && *delim_attrs ) {
           if ( output_entities_as_unicodes ) {
@@ -15528,7 +15555,7 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
             if ( GetUnicodeEntity(delim_attrs,unicode_buffer) )
               SetChData( left_end,NULL,unicode_buffer );
           }
-      U8* p_comma =  (U8*)strchr( (char*)delim_attrs,',' );
+          U8* p_comma =  (U8*)strchr( (char*)delim_attrs,',' );
           if ( p_comma ) {
             ATTRIB_REC* ar  =  ExtractAttrs( (char*)p_comma+1 );
             if ( ar ) {
@@ -15539,50 +15566,52 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
         }
 
         left_end->next  =  mml_rv;
-      mml_rv->prev    =  left_end;
-
-        U16 zln =  strlen( (char*)lookup_zuID );
-        lookup_zuID[zln-1]  =  'r';
-        if ( d_mml_grammar->GetGrammarDataFromUID(lookup_zuID,
-                    context_math,&delim_entity,&delim_attrs ) ) {
-          if ( delim_entity && delim_entity[0] ) {
-// mo for right delimiting fence
-            TNODE* right_end  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );
-            SetChData( right_end,delim_entity,NULL );
-            if ( delim_attrs && *delim_attrs ) {
-              if ( output_entities_as_unicodes ) {
-                U8 unicode_buffer[128];
-                if ( GetUnicodeEntity(delim_attrs,unicode_buffer) )
-                  SetChData( right_end,NULL,unicode_buffer );
-              }
-          U8* p_comma =  (U8*)strchr( (char*)delim_attrs,',' );
-              if ( p_comma ) {
-                ATTRIB_REC* ar  =  ExtractAttrs( (char*)p_comma+1 );
-                if ( ar ) {
-                  MergeMOAttribs( right_end,ar );
-                  DisposeAttribs( ar );
-                }
-              }
-            }
-
-            mml_rv->next    =  right_end;
-          right_end->prev =  mml_rv;
-        }
-        }
-
-        mml_rv  =  MMLlistToMRow( left_end );
+        mml_rv->prev    =  left_end;
       }
+    }
 
-  } else
-    TCI_ASSERT(0);
+    U16 zln =  strlen( (char*)lookup_zuID );
+    lookup_zuID[zln-1]  =  'r';
+    if ( d_mml_grammar->GetGrammarDataFromUID(lookup_zuID,
+                context_math,&delim_entity,&delim_attrs ) ) {
+      if ( delim_entity && delim_entity[0] ) {
+  // mo for right delimiting fence
+        right_end  =  MakeTNode( 0L,0L,0L,(U8*)"3.203.1" );
+        SetChData( right_end,delim_entity,NULL );
+        if ( delim_attrs && *delim_attrs ) {
+          if ( output_entities_as_unicodes ) {
+            U8 unicode_buffer[128];
+            if ( GetUnicodeEntity(delim_attrs,unicode_buffer) )
+              SetChData( right_end,NULL,unicode_buffer );
+          }
+          U8* p_comma =  (U8*)strchr( (char*)delim_attrs,',' );
+          if ( p_comma ) {
+            ATTRIB_REC* ar  =  ExtractAttrs( (char*)p_comma+1 );
+            if ( ar ) {
+              MergeMOAttribs( right_end,ar );
+              DisposeAttribs( ar );
+            }
+          }
+        }
 
-  }   // if ( subtype >= 712 && subtype <= 716 )
+        mml_rv->next    =  right_end;
+        right_end->prev =  mml_rv;
+      }
+    }
+    if (left_end) 
+      mml_rv  =  MMLlistToMRow( left_end );
+    else
+      mml_rv = MMLlistToMRow( mml_rv );
+  }
 
-  // if ( subtype == 711 ) {  // \smallmatrix - increment scriptlevel  // don't make scriptlevel explicit; it is taken care of by CSS and by the mathtools package
-  //   mml_rv =  FixImpliedMRow( mml_rv );
-  //   mml_rv =  CreateElemWithBucketAndContents( 5,600,0,2,mml_rv );
-  //   SetNodeAttrib( mml_rv,(U8*)"scriptlevel",(U8*)"+1" );
-  // }
+
+  if ( (subtype >= 712 && subtype <= 719) || (subtype >= 722 && subtype <= 726) ) {  
+    // \smallmatrix - increment scriptlevel  // don't make scriptlevel explicit; it is taken care of by CSS and by the mathtools package
+    
+    mml_rv = MMLlistToMRow( mml_rv );
+    SetNodeAttrib( mml_rv,(U8*)"req",(U8*)"mathtools" );
+  };
+
 
   SetDetailNum( mml_rv,DETAILS_is_expression,1 );
   SetDetailNum( mml_rv,DETAILS_TeX_atom_ilk,TeX_ATOM_INNER );

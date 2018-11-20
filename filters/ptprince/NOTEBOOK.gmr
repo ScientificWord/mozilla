@@ -1308,12 +1308,12 @@ _EQNBUCKET_BUCKET(5.39.4,MATH,{,},,)
 ; 5.140. is cases, 5.141. is split, 5.142. is gathered, 5.143. is gathered
 ;  these are MATH only environments
 
-\end{cases}<uID5.140.99>
-\begin{cases}<uID5.140.0>!\begin{cases}!_CASESLINES_!\end{cases}!
-_CASESLINES_LIST(5.140.9,_CASESLINE_,5.140.10,,\end{cases},\\|\\*)
-_CASESLINE__CASESLBUCKET_!&!_CASESRBUCKET_
-_CASESLBUCKET_BUCKET(5.140.5,MATH,,,&,\\|\\*|\end{cases})
-_CASESRBUCKET_BUCKET(5.140.7,MATH,,,\\|\\*|\end{cases},)
+; \end{cases}<uID5.140.99>
+; \begin{cases}<uID5.140.0>!\begin{cases}!_CASESLINES_!\end{cases}!
+; _CASESLINES_LIST(5.140.9,_CASESLINE_,5.140.10,,\end{cases},\\|\\*)
+; _CASESLINE__CASESLBUCKET_!&!_CASESRBUCKET_
+; _CASESLBUCKET_BUCKET(5.140.5,MATH,,,&,\\|\\*|\end{cases})
+; _CASESRBUCKET_BUCKET(5.140.7,MATH,,,\\|\\*|\end{cases},)
 
 \end{split}<uID5.141.99>
 \begin{split}<uID5.141.0>!\begin{split}!_SPLITLINES_!\end{split}!
@@ -2820,6 +2820,24 @@ _BBMCOLUMNS__HRULES__BBMCELLLIST_
 _BBMCELLLIST_LIST(5.35.11,_BBMCOLDATA_,5.35.12,,\\|\\*|\end{Bmatrix},&)
 _BBMCOLDATA_IF(TEXT,?\multicolumn?,5.412.0)elseIF(?\hdotsfor?,5.431.0)ELSE(_BBMCELL_)ifEND
 _BBMCELL_BUCKET(5.35.8,MATH,,,&|\\|\\*|\end{Bmatrix},)
+
+\end{cases}<uID5.718.99>
+\begin{cases}<uID5.718.0>!\begin{cases}!_AXALIGN__CASROWS_!\end{cases}!
+;;_AXALIGN_OPTPARAM(5.35.2,MEXTALIGN)
+_CASROWS_LIST(5.35.9,_CASCOLUMNS_,5.35.10,,\end{cases},\\|\\*)
+_CASCOLUMNS__HRULES__CASCELLLIST_
+_CASCELLLIST_LIST(5.35.11,_CASCOLDATA_,5.35.12,,\\|\\*|\end{cases},&)
+_CASCOLDATA_IF(TEXT,?\multicolumn?,5.412.0)elseIF(?\hdotsfor?,5.431.0)ELSE(_CASCELL_)ifEND
+_CASCELL_BUCKET(5.35.8,MATH,,,&|\\|\\*|\end{cases},)
+
+\end{rcases}<uID5.719.99>
+\begin{rcases}<uID5.719.0>!\begin{rcases}!_AXALIGN__RCSROWS_!\end{rcases}!
+;;_AXALIGN_OPTPARAM(5.35.2,MEXTALIGN)
+_RCSROWS_LIST(5.35.9,_RCSCOLUMNS_,5.35.10,,\end{rcases},\\|\\*)
+_RCSCOLUMNS__HRULES__RCSCELLLIST_
+_RCSCELLLIST_LIST(5.35.11,_RCSCOLDATA_,5.35.12,,\\|\\*|\end{rcases},&)
+_RCSCOLDATA_IF(TEXT,?\multicolumn?,5.412.0)elseIF(?\hdotsfor?,5.431.0)ELSE(_RCSCELL_)ifEND
+_RCSCELL_BUCKET(5.35.8,MATH,,,&|\\|\\*|\end{rcases},)
 
 \end{psmallmatrix}<uID5.722.99>
 \begin{psmallmatrix}<uID5.722.0>!\begin{psmallmatrix}!_AXALIGN__PSMROWS_!\end{psmallmatrix}!
