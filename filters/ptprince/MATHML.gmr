@@ -2186,6 +2186,8 @@ text-size<uID7.2.3>largeop="false" stretchy="false"
 &Verbar;<uID5.715.0,r>U02016,form="postfix" fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em" flv="V"
 {<uID5.716.0,l>U0007B,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em" flv="B"
 }<uID5.716.0,r>U0007D,form="postfix"  fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em" flv="B"
+{<uID5.718.0,l>U0007B,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em" flv="cases"
+}<uID5.719.0,r>U0007D,form="postfix"  fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em" flv="rcases"
 
 (<uID5.722.0,l>U00028,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em" flv="psmall"
 )<uID5.722.0,r>U00029,form="postfix"  fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em" flv="psmall"
@@ -2273,7 +2275,6 @@ fracleft<uID10.6.1>form="prefix" fence="true" stretchy="true" lspace="0em" rspac
 fracright<uID10.6.2>form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"
 fenceleft<uID10.7.1>form="prefix" fence="true" stretchy="true" symmetric="true" lspace="thinmathspace"
 fenceright<uID10.7.2>form="postfix" fence="true" stretchy="true" symmetric="true" rspace="thinmathspace"
-
 casesleft<uID10.9.1>form="prefix" fence="true" stretchy="true" lspace="0.5em" rspace="0.5em"
 <END_CONTEXT_FENCE>
 
