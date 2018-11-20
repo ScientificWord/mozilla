@@ -1211,6 +1211,20 @@
      %\temptoksa=[\begin{pmatrix}#1\end{pmatrix}]%
      %\the\temptoksa
   ]
+  \gdef\@scan@cases#1\end{cases}[%
+     \egroup
+     \@make@braces@other
+     \msitag[\begin{cases}#1\end{cases}]
+     %\temptoksa=[\begin{cases}#1\end{cases}]%
+     %\the\temptoksa
+  ]
+  \gdef\@scan@rcases#1\end{rcases}[%
+     \egroup
+     \@make@braces@other
+     \msitag[\begin{rcases}#1\end{rcases}]
+     %\temptoksa=[\begin{rcases}#1\end{rcases}]%
+     %\the\temptoksa
+  ]
   \gdef\@scan@bsmallmatrix#1\end{bsmallmatrix}[%
      \egroup
      \@make@braces@normal
@@ -1318,6 +1332,8 @@
 \def\msi@begin@vmatrix{\@make@braces@other\relax\@scan@vmatrix} 
 \def\msi@begin@Vmatrix{\@make@braces@other\relax\@scan@Vmatrix} 
 \def\msi@begin@pmatrix{\@make@braces@other\relax\@scan@pmatrix}
+\def\msi@begin@cases{\@make@braces@other\relax\@scan@cases}
+\def\msi@begin@rcases{\@make@braces@other\relax\@scan@rcases}
 \def\msi@begin@bsmallmatrix{\@make@braces@other\relax\@scan@bsmallmatrix} 
 \def\msi@begin@Bsmallmatrix{\@make@braces@other\relax\@scan@Bsmallmatrix} 
 \def\msi@begin@vsmallmatrix{\@make@braces@other\relax\@scan@vsmallmatrix} 

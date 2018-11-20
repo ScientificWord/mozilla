@@ -1223,18 +1223,17 @@ TNODE* MATRIXtoExternalFormat( TNODE* MATRIX_node ) {
 
   U16 rv_subtype  =  0;
 
-  // \begin{cases} -> \MATRIX[c]{..}...
-  // We have a special function to handle the cases variant
-
   if ( ilk_optparam && ilk_optparam->contents ) {
     TNODE* cont =  FindObject( ilk_optparam->contents,zNONLATEX,
                                 INVALID_LIST_POS );
     if ( cont && cont->var_value ) {
       char ch =  cont->var_value[0];
       switch ( ch ) {
-	      case 'c' :  // \begin{cases}
-          return MATRIXtocases( MATRIX_node );
-        break;
+        case 'c' :  // \begin{cases}
+          rv_subtype = 718;   break;
+          // return MATRIXtocases( MATRIX_node );
+	      case 'r' :  // \begin{rcases}
+          rv_subtype = 719;   break;
 	      case 'm' :  // \begin{matrix}
           rv_subtype  =  710;   break;
 	      case 's' :  // \begin{smallmatrix}
@@ -1253,7 +1252,7 @@ TNODE* MATRIXtoExternalFormat( TNODE* MATRIX_node ) {
           TCI_ASSERT(0);
         break;
       }
-      if (rv_subtype >= 712 && cont->var_value[1]=='s') {
+      if (rv_subtype >= 712 && rv_subtype < 717 && cont->var_value[1]=='s') {
         rv_subtype += 10;
       } // these are psmallmatrix ... Bsmallmatrix
     } else

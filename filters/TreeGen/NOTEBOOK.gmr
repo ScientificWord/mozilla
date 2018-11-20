@@ -1305,13 +1305,13 @@ _EQNBUCKET_BUCKET(5.39.4,MATH,{,},,)
 
 ; 5.140. is cases, 5.141. is split, 5.142. is gathered, 5.143. is gathered
 ;  these are MATH only environments
-
-\end{cases}<uID5.140.99>
-\begin{cases}<uID5.140.0>!\begin{cases}!_CASESLINES_!\end{cases}!
-_CASESLINES_LIST(5.140.9,_CASESLINE_,5.140.10,,\end{cases},\\|\\*)
-_CASESLINE__CASESLBUCKET_!&!_CASESRBUCKET_
-_CASESLBUCKET_BUCKET(5.140.5,MATH,,,&,\\|\\*|\end{cases})
-_CASESRBUCKET_BUCKET(5.140.7,MATH,,,\\|\\*|\end{cases},)
+; 
+; \end{cases}<uID5.140.99>
+; \begin{cases}<uID5.140.0>!\begin{cases}!_CASESLINES_!\end{cases}!
+; _CASESLINES_LIST(5.140.9,_CASESLINE_,5.140.10,,\end{cases},\\|\\*)
+; _CASESLINE__CASESLBUCKET_!&!_CASESRBUCKET_
+; _CASESLBUCKET_BUCKET(5.140.5,MATH,,,&,\\|\\*|\end{cases})
+; _CASESRBUCKET_BUCKET(5.140.7,MATH,,,\\|\\*|\end{cases},)
 
 \end{split}<uID5.141.99>
 \begin{split}<uID5.141.0>!\begin{split}!_SPLITLINES_!\end{split}!

@@ -7,7 +7,7 @@
     xmlns:msi="http://www.sciword.com/namespaces/sciword"
     xmlns:exsl="http://exslt.org/common">
 
-
+   
 
 <xsl:template match="@*|node()">
     <xsl:copy>
@@ -30,7 +30,9 @@
                     parent::mml:mover or
                     parent::mml:munderover or
                     parent::mml:mroot or
-                    preceding-sibling::mml:mo[1][@fence='true']">
+                    preceding-sibling::mml:mo[1][@fence='true'] or
+                    mml:mo[@fence='true'] or 
+                    mml:mtable[@flv='rcases']">
       <xsl:copy>
         <xsl:copy-of select="@*"/>
         <xsl:apply-templates/>
