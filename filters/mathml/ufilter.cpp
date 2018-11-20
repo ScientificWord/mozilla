@@ -103,6 +103,7 @@ U16 MMLFilter::TranslateBuffer( const char* srcbuffer,
   anomaly_list->ilk    =  0;
   anomaly_list->atext  =  NULL;
   anomaly_list->off1   =  0;
+  anomaly_list->off2   =  0;
   U8 eqn_option;
 
 
@@ -111,9 +112,9 @@ U16 MMLFilter::TranslateBuffer( const char* srcbuffer,
    				FALSE,msgcount,anomaly_list,eqn_option );
 
   // leave out top level <mrow>
-  if (XML_tree && (NULL == strcmp((const char*) XML_tree->zuID, "5.750.1"))){
-    XML_tree = XML_tree -> parts -> contents;
-  }
+  // if (XML_tree && (NULL == strcmp((const char*) XML_tree->zuID, "5.750.1"))){
+  //   XML_tree = XML_tree -> parts -> contents;
+  //}
     
 
 
