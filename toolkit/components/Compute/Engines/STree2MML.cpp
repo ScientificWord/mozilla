@@ -164,7 +164,6 @@ char *MML1templates[] = {
   "<mrow>\n<mn%color_attr%>%whole%</mn>\n<mfrac>\n<mn%color_attr2%>%numerator%</mn>\n<mn%color_attr3%>%denominator%</mn>\n</mfrac>\n</mrow>\n",
   "<mi%unit_attrs%>%nom%</mi>\n",
   "<mstyle%unit_attrs%>\n%body%</mstyle>\n",
-//  "<mrow>\n<mo%color_attr%>{</mo>\n%interior%<mo>&#x250a;</mo>\n</mrow>\n",
   "<mfenced open=\"{\" close=\"&#x250a;\">\n%interior%\n</mfenced>\n",
   "<mover>\n%base%<mo form=\"postfix\" accent=\"true\"%color_attr%>&#x302;</mo>\n</mover>\n",
   "<mrow>\n%body%<mo form=\"postfix\"%color_attr%>!</mo>\n</mrow>\n",
@@ -3831,12 +3830,15 @@ void STree2MML::SmallMixedNumber2MML(U32 num, U32 denom, FACTOR_REC * factor)
 char *STree2MML::FuncHeader2MML(SEMANTICS_NODE * s_function)
 {
   char *zh_rv = NULL;
+  char *tmpl;
+  char *tmpl2;
+  char *tmpl3;
 
   bool do_supneg1_inverse = false;
   if (s_function->contents) {
     int n_entities;
     int n_symbols = CountSymbols(s_function->contents, n_entities);
-    char *tmpl = GetTmplPtr(TMPL_MI); // "<mml:mi>%letters%</mml:mi>\n",
+    tmpl = GetTmplPtr(TMPL_MI); // "<mml:mi>%letters%</mml:mi>\n",
     if (n_symbols == 1) {
       // Some single symbol function names are generally renderer upright
       //   Gamma is an example.
@@ -3872,14 +3874,14 @@ char *STree2MML::FuncHeader2MML(SEMANTICS_NODE * s_function)
 
     char *color_attr = n_symbols > 1 ? up_clr_func_attr : up_clr_math_attr;
     zh_rv = ColorizeMMLElement(zh_rv, color_attr, NULL, NULL);
-
+ 
     if (do_supneg1_inverse) {
-      char *tmpl = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
-      // char *minus1 = MNfromNUMBER("&#x2212;1");
-      char* minus1 = "<mrow><mo>&#x2212</mo><mn>1</mn></mrow>";
-      size_t zln = strlen(tmpl) + strlen(zh_rv) + strlen(minus1);
+      tmpl2 = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
+      // char *minus1 = MNfro``mNUMBER("&#x2212;1");
+      char* minus1 = "<mrow><mo>&#x2212;</mo><mn>1</mn></mrow>";
+      size_t zln = strlen(tmpl2) + strlen(zh_rv) + strlen(minus1);
       char *tmp = new char[zln + 1];
-      strcpy(tmp, tmpl);
+      strcpy(tmp, tmpl2);
       StrReplace(tmp, zln, "%base%", zh_rv);
       StrReplace(tmp, zln, "%script%", minus1);
       delete[] zh_rv;
@@ -3910,7 +3912,7 @@ char *STree2MML::FuncHeader2MML(SEMANTICS_NODE * s_function)
     BUCKET_REC *exp_bucket = FindBucketRec(s_function->bucket_list, MB_FUNC_EXPONENT);
     if (exp_bucket && exp_bucket->first_child) {
       // put exponent which is not -1 on function
-      char *tmpl = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
+      tmpl3 = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
       int nodes_made, terms_made, error_code;
       bool is_signed = false;
       char *zh_exp = ProcessSemanticList(exp_bucket->first_child,
@@ -3919,9 +3921,9 @@ char *STree2MML::FuncHeader2MML(SEMANTICS_NODE * s_function)
       TCI_ASSERT(!error_code); // don't know what could go wrong here
       if (zh_exp && nodes_made > 1)
         zh_exp = NestzMMLInMROW(zh_exp);
-      size_t zln = strlen(tmpl) + strlen(zh_rv) + strlen(zh_exp);
+      size_t zln = strlen(tmpl3) + strlen(zh_rv) + strlen(zh_exp);
       char *tmp = new char[zln + 1];
-      strcpy(tmp, tmpl);
+      strcpy(tmp, tmpl3);
       StrReplace(tmp, zln, "%base%", zh_rv);
       StrReplace(tmp, zln, "%script%", zh_exp);
       delete[] zh_rv;
