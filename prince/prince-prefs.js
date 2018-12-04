@@ -61,7 +61,7 @@ pref("editor.use_background_image",         false);
 pref("editor.use_custom_default_colors", 1);
 pref("editor.use_html_editor",              0);
 pref("editor.use_image_editor",             0);
-pref("app.support.baseURL", "http://www.mackichan.com");
+pref("app.support.baseURL", "www.mackichan.com");
 pref("extensions.dss.switchPending",false);
 pref("fastcursor.enabled", true);
 pref("fastcursor.flashbar", 1);
@@ -267,8 +267,8 @@ pref("swp.user.special", false);
 pref("swp.user.trigargs", false);
 pref("swp.user.upperthreshold", 4);
 pref("swp.user.usearc", false);
-pref("swp.savetoweb.mathjaxsrc", "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML");
-pref("swp.savetoweb.cssurl", "http://www.mackichan.com/supportfiles/6.0/css/");
+pref("swp.savetoweb.mathjaxsrc", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML");
+pref("swp.savetoweb.cssurl", "www.mackichan.com/supportfiles/6.0/css/");
 pref("swp.openlastfile", false);
 pref("swp.lastfilesaved", "");
 pref("swp.firstrun", true);
@@ -304,11 +304,11 @@ pref("app.update.url", "https://update.mackichan.com/update/3/%PRODUCT%/%VERSION
 
 // URL user can browse to manually if for some reason all update installation
 // attempts fail.
-pref("app.update.url.manual", "http://update.mackichan.com/%PRODUCT%");
+pref("app.update.url.manual", "update.mackichan.com/%PRODUCT%");
 
 // A default value for the "More information about this update" link
 // supplied in the "An update is available" page of the update wizard.
-pref("app.update.url.details", "http://update.mackichan.com/%PRODUCT%");
+pref("app.update.url.details", "update.mackichan.com/%PRODUCT%");
 
 // User-settable override to app.update.url for testing purposes.
 //pref("app.update.url.override", "");
