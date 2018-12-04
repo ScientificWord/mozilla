@@ -205,8 +205,8 @@ function saveforweb( doc, filterindex, dir )
 //                 3 like 1 but with MathJax
 {
   try {
-    // Preferences are swp.savetoweb.cssurl (defaults to http://www.mackichan/supportfiles/6.0/css)
-    // and swp.savetoweb.mathjaxsrc (defaults to "https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+    // Preferences are swp.savetoweb.cssurl (defaults to www.mackichan/supportfiles/6.0/css)
+    // and swp.savetoweb.mathjaxsrc (defaults to ")
     var prefs = GetPrefs();
     var mathjax;
     var fUseMathJax = (filterindex >= 2);
