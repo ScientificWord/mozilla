@@ -16,10 +16,10 @@
 
 <!-- script l or r or c	-->
     <xsl:choose>
-      <xsl:when test="starts-with($columnalign,'left')">
+      <xsl:when test="starts-with($columnalign,'l')">
         <xsl:text xml:space="preserve">l</xsl:text>
       </xsl:when>
-      <xsl:when test="starts-with($columnalign,'right')">
+      <xsl:when test="starts-with($columnalign,'r')">
         <xsl:text xml:space="preserve">r</xsl:text>
       </xsl:when>
       <xsl:otherwise>

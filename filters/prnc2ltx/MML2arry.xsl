@@ -43,7 +43,7 @@
         <xsl:call-template name="do-cols">
           <xsl:with-param name="columns-to-do" select="$column-counts/ncols[position()=last()]"/>
           <xsl:with-param name="columnlines"   select="normalize-space(@columnlines)"/>
-          <xsl:with-param name="columnalign"   select="normalize-space(@columnalign)"/>
+          <xsl:with-param name="columnalign"   select="normalize-space(@rowSignature)"/>
         </xsl:call-template>
         <xsl:if test="@frame='solid'">
           <xsl:text>|</xsl:text>
