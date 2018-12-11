@@ -1207,7 +1207,8 @@ no indent - disregarded completely
               </xsl:when>
               <xsl:otherwise>
                 <xsl:call-template name="array">
-                  <xsl:with-param name="LaTeX-env" select="$env-info/LaTeX-env"/>                </xsl:call-template>
+                  <xsl:with-param name="LaTeX-env" select="$env-info/LaTeX-env"/>
+                </xsl:call-template>
               </xsl:otherwise>
 			</xsl:choose>
           </xsl:otherwise>
