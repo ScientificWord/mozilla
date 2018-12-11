@@ -192,7 +192,7 @@
     <xsl:value-of select="$blankline"/>
     <xsl:text>%% preamble</xsl:text>
     <xsl:value-of select="$blankline"/>
-    <xsl:text>\usepackage{amssymb,amsmath,xcolor,graphicx,xspace,colortbl,ragged2e,rotating} % </xsl:text>
+    <xsl:text>\usepackage{amssymb,amsmath,mathtools,xcolor,graphicx,xspace,colortbl,ragged2e,rotating} % </xsl:text>
 <!--     <xsl:text>
       \newcommand{\mymarginpar}[1]{%
     </xsl:text>
