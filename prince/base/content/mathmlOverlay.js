@@ -3255,14 +3255,22 @@ function fenceTextFromFlavor(flavor, left) {
   return null;
 }
 
-function insertRowIfNeeded(editor, node, rowpos) {
+
+function insertRowIfNeeded(editor, node, rowpos, flv) {
   var offset = offsetOfChild(node.parentNode,node);
   var row;
   if (node.parentNode.nodeName != 'mrow') {
-    row = editor.createNode('mrow', node.parentNode, offset);
+    row = editor.document.createElementNS(mmlns,'mrow');
+    editor.insertNode(row, node.parentNode, offset);
     editor.deleteNode(node);
-    editor.insertNode(node, row, offset);
+    editor.insertNode(node, row, 0);
   } else row = node.parentNode;
+  // if (row.nodeName == 'mrow' && (flv == null || flv.length === 0)){
+  //   row.removeAttribute('flv');
+  // }
+  // else if (row.nodeName === 'mrow') {
+  //   row.setAttribute('flv', flv);
+  // }
   rowpos.row = row;
   rowpos.parent = row.parentNode;
   rowpos.offset = offsetOfChild(row.parent, row);
@@ -3273,7 +3281,7 @@ function createFenceMo( editor, isLeft, flavor, willHaveBothFences ) {
   var form = isLeft ? 'prefix' : 'postfix';
   var symmetric = flavor != 'cases' && flavor != 'rcases';
   var textNode;
-  mo = editor.document.createElement('mo');
+  mo = editor.document.createElementNS(mmlns, 'mo');
   editor.setAttribute(mo, 'stretchy', 'true');
   editor.setAttribute(mo, 'form', form);
   editor.setAttribute(mo, 'flv', flavor);
@@ -3356,7 +3364,7 @@ function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
         }
       }
     } else if (willHaveFenceLeft) { // put in the left fence
-      insertRowIfNeeded(editor, matrixnode, rowpos);
+      insertRowIfNeeded(editor, matrixnode, rowpos, flavor);
       moLeft = createFenceMo( editor, true, flavor, willHaveBothFences);
       if (moLeft) {
         // editor.deleteNode(rowpos.row);
@@ -3376,7 +3384,7 @@ function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
         }
       }
     } else if (willHaveFenceRight) {
-      insertRowIfNeeded(editor, matrixnode, rowpos);
+      insertRowIfNeeded(editor, matrixnode, rowpos, flavor);
       moRight = createFenceMo( editor, false, flavor, willHaveBothFences);
       if (moRight) {
         // editor.deleteNode(rowpos.row);
@@ -3386,6 +3394,13 @@ function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
        }
     }
     mathmlEditor.setAttribute(matrixnode, 'flv', flavor);
+    if (rowsignature == null || rowsignature.length === 0) {
+      mathmlEditor.removeAttribute(matrixnode, 'rowSignature');
+    }
+    else 
+      mathmlEditor.setAttribute(matrixnode, 'rowSignature', rowsignature);
+    mathmlEditor.setAttribute(matrixnode, 'flv', flavor);
+
     if (rows > oldRows) {
       mathmlEditor.addMatrixRows(matrixnode, oldRows, rows - oldRows);
     }
@@ -3420,7 +3435,9 @@ function updatematrix(matrixnode, rows, cols, rowsignature, baseline, flavor, ed
   {
     e.message;
   }
+  editorElement.contentWindow.focus();
   mathmlEditor.endTransaction();
+  mathmlEditor.markNodeDirty(matrixnode.parentNode);
 }
 
 function insertmath(editorElement)
