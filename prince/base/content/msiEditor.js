@@ -9934,7 +9934,7 @@ function msiClickLink(event, theURI, targWinStr, editorElement) {
   if (!doFollowLink)
     return;
   if (theURI.indexOf('.sci') === -1) {
-    msiFollowLink(event.target);
+    msiFollowLink(editorElement, event.target);
     return;
   }
 

@@ -9584,7 +9584,7 @@ var msiFollowLinkCommand =
     {
       var element = msiGetEditor(editorElement).getSelectedElement("href");
       if (element)
-        msiFollowLink(element);
+        msiFollowLink(editorElement, element);
     }
     catch (e) {
       finalThrow(cmdFailString('followLink'), e.message);
@@ -9593,7 +9593,7 @@ var msiFollowLinkCommand =
   }
 };
 
-function msiFollowLink( element ) {
+function msiFollowLink( editorElement, element ) {
   var href = element.getAttribute("href");
   var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
@@ -9601,11 +9601,14 @@ function msiFollowLink( element ) {
   var exefile;
   var arg;
   var arr = new Array();
+
+  // BBM todo:
+  // Find folder containing the .sci file so we can use relative addressing of the link target
+  var urlstring = msiGetEditorURL(editorElement);
+  var url = msiURIFromString(urlstring);
+  var documentDir = msiFileFromFileURL(url);
+  documentDir = documentDir.parent.parent;
   if (href) {
-    if (href.indexOf(".sci") > 0) {
-      // do something
-    }
-    else {
       var os = getOS(window);
       if (os == "win")
       {
@@ -9615,13 +9618,17 @@ function msiFollowLink( element ) {
       else
       {
         extension = "bash";
-        arr = [href];
+        arr = [documentDir.path, href];
       }
       exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-      exefile.append("shell."+ extension);
+      exefile.append("shell."+extension);
       theProcess.init(exefile);
       theProcess.run(false, arr, arr.length);
-    }
+
+      // exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+      // exefile.append("open");
+      // theProcess.init(exefile);
+      // theProcess.run(false, arr, arr.length);
   }
 }
 
