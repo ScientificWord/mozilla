@@ -8746,9 +8746,9 @@ var msiNavigationUtils = {
         return true;
       break;
     case 'math':
-      // if (node.hasAttribute('display') && node.getAttribute('display') === 'block') {
+      if (node.hasAttribute('display') && node.getAttribute('display') === 'block') {
         return true;
-      //}
+      }
       break;
     }
     return false;
