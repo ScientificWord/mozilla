@@ -80,7 +80,7 @@ function Startup()
   gDialog.hrefInput           = document.getElementById("hrefInput");
   gDialog.makeRelativeLink    = document.getElementById("MakeRelativeLink");
 
-  gDialog.keyList                 = document.getElementById("key");
+  // gDialog.keyList                 = document.getElementById("key");
 
   
   // See if we have a single selected image
@@ -189,7 +189,7 @@ function Startup()
 
     // Message above input field:
     gDialog.linkTextMessage.setAttribute("value", GetString("EnterLinkText"));
-    gDialog.linkTextMessage.setAttribute("accesskey", GetString("EnterLinkTextAccessKey"));
+    // gDialog.linkTextMessage.setAttribute("accesskey", GetString("EnterLinkTextAccessKey"));
   }
   else
   {
@@ -238,7 +238,7 @@ function Startup()
   globalElement = anchorElement.cloneNode(false);
 
   // Get the list of existing named anchors and headings
-  initKeyList();
+  // initKeyList();
 
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
@@ -331,25 +331,26 @@ function ChangeLinkLocation()
 
 function setHRefToDialog(valueStr)
 {
-  if (!valueStr)
+  if (!valueStr) {
     valueStr = "";
-  var sharpPos = valueStr.indexOf("#");
-  if (sharpPos < 0)
+  // var sharpPos = valueStr.indexOf("#");
+  // if (sharpPos < 0)
     gDialog.hrefInput.value = valueStr;
+  }
   else
   {
-    if (sharpPos > 0)
-      gDialog.hrefInput.value = valueStr.substr(0, sharpPos);
-    gDialog.keyList.value = valueStr.substr(sharpPos + 1);
+    // if (sharpPos > 0)
+    //   gDialog.hrefInput.value = valueStr.substr(0, sharpPos);
+    // gDialog.keyList.value = valueStr.substr(sharpPos + 1);
   }
 }
 
 function getHRefFromDialog()
 {
   href = TrimString(gDialog.hrefInput.value);
-  var markerStr = TrimString(gDialog.keyList.value);
-  if (markerStr.length)
-    href += "#" + markerStr;
+  // var markerStr = TrimString(gDialog.keyList.value);
+  // if (markerStr.length)
+  //   href += "#" + markerStr;
 }
 
 // Get and validate data from widgets.
@@ -500,8 +501,8 @@ function onAccept()
 
 function initKeyList()
 {
-  gDialog.markerList = new msiKeyMarkerList(window);
-  gDialog.markerList.setUpTextBoxControl(gDialog.keyList);
+  // gDialog.markerList = new msiKeyMarkerList(window);
+  // gDialog.markerList.setUpTextBoxControl(gDialog.keyList);
 //  gDialog.markerList.setUpTextBoxControl(gDialog.keyList);
   
 //  var editorElement = msiGetActiveEditorElement();
