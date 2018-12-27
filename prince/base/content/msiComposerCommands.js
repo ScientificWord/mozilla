@@ -9615,14 +9615,13 @@ function msiFollowLink( editorElement, element ) {
       {
         extension = "cmd";
         filename="open";
-        arr = ['start', '/max', href];
       }
       else
       {
         extension = "bash";
         filename="shell";
-        arr = [documentDir.path, href];
       }
+      arr = [documentDir.path, href];
       exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
       exefile.append(filename + "." + extension);
       theProcess.init(exefile);
