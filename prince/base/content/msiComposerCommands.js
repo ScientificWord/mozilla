@@ -9599,6 +9599,7 @@ function msiFollowLink( editorElement, element ) {
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var extension;
   var exefile;
+  var filename;
   var arg;
   var arr = new Array();
 
@@ -9613,15 +9614,16 @@ function msiFollowLink( editorElement, element ) {
       if (os == "win")
       {
         extension = "cmd";
-        arr = ['start', '/max', href];
+        filename="open";
       }
       else
       {
         extension = "bash";
-        arr = [documentDir.path, href];
+        filename="shell";
       }
+      arr = [documentDir.path, href];
       exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-      exefile.append("shell."+extension);
+      exefile.append(filename + "." + extension);
       theProcess.init(exefile);
       theProcess.run(false, arr, arr.length);
 
