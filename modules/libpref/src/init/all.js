@@ -1449,12 +1449,12 @@ pref("font.name-list.monospace.he", "Arial Hebrew");
 pref("font.name-list.cursive.he", "Corsiva Hebrew");
 pref("font.name-list.fantasy.he", "Corsiva Hebrew");
 
-pref("font.name.serif.ja", "ヒラギノ明朝 Pro"); 
-pref("font.name.sans-serif.ja", "ヒラギノ角ゴ Pro"); 
-pref("font.name.monospace.ja", "Osaka−等幅"); 
-pref("font.name-list.serif.ja", "ヒラギノ明朝 Pro"); 
-pref("font.name-list.sans-serif.ja", "ヒラギノ角ゴ Pro"); 
-pref("font.name-list.monospace.ja", "Osaka−等幅"); 
+// pref("font.name.serif.ja", "ヒラギノ明朝 Pro"); 
+// pref("font.name.sans-serif.ja", "ヒラギノ角ゴ Pro"); 
+// pref("font.name.monospace.ja", "Osaka−等幅"); 
+// pref("font.name-list.serif.ja", "ヒラギノ明朝 Pro"); 
+// pref("font.name-list.sans-serif.ja", "ヒラギノ角ゴ Pro"); 
+// pref("font.name-list.monospace.ja", "Osaka−等幅"); 
 
 pref("font.name.serif.ko", "AppleMyungjo"); 
 pref("font.name.sans-serif.ko", "AppleGothic"); 
