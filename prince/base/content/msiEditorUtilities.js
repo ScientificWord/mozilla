@@ -499,7 +499,7 @@ function TruncateStringAtWordEnd(string, maxLength, addEllipses) {
   if (!string)
     return '';
   // We assume they probably don't want whitespace at the beginning
-  string = string.replace(/[ \f\n\r\t\v]+/, '');
+  string = string.replace(/^[ \f\n\r\t\v]+/, '');
   if (string.length <= maxLength)
     return string;
   // We need to truncate the string to maxLength or fewer chars
