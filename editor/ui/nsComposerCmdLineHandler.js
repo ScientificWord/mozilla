@@ -71,7 +71,7 @@ nsComposerCmdLineHandler.prototype = {
   },
 
   /* nsICmdLineHandler */
-  commandLineArgument : "-edit",
+  commandLineArgument : "-url",
   prefNameForStartup : "general.startup.editor",
   chromeUrlForTask : "chrome://prince/content/prince.xul",
   helpText : "Edit document with SW/SWP/SNB.",
@@ -99,37 +99,35 @@ nsComposerCmdLineHandler.prototype = {
     }
 //        dump("clh: Features is '"+features+"'\n");
     try {
-      var uristr = cmdLine.handleFlagWithParam("edit", false);
+      var uristr = cmdLine.handleFlagWithParam("url", false);
       if (uristr == null) {
         // Try the editor flag (used for general.startup.* prefs)
         uristr = cmdLine.handleFlagWithParam("editor", false);
       }
 
-      if ((uristr==null) && !cmdLine.preventDefault &&cmdLine.length > 0) {
+      if ((uristr==null) && !cmdLine.preventDefault &&cmdLine.length > 0)
         uristr = cmdLine.getArgument(0);
-        if (uristr && uristr.length > 0){
-          if (!(/^-/).test(uristr)) {
-            try {
-              args.data = cmdLine.resolveURI(uristr).spec;
-            }
-            catch (e) {
-            }
+      if (uristr && uristr.length > 0){
+        if (!(/^-/).test(uristr)) {
+          try {
+            args.data = cmdLine.resolveURI(uristr).spec;
+          }
+          catch (e) {
           }
         }
-        else args.data = "";
       }
+      else args.data = "";
     }
     catch(e) {
     }
     var wwatch = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
                                .getService(nsIWindowWatcher);
-//    dump("+++ Opening prince window with args = '" + args.data + "' and features = '" + features + "'\n");
     wwatch.openWindow(null, "chrome://prince/content/prince.xul", "_blank",
                       features, args);
     cmdLine.preventDefault = true;
   },
 
-  helpInfo : "  -edit <path>          Open document for editing.\n" +
+  helpInfo : "  -url <path>          Open document for editing.\n" +
              "  <path>                Open document for editing.\n" +
              "  -width <integer>      Set width of window in pixels.\n"+
              "  -height <integer>     Set height of window in pixels.\n"
