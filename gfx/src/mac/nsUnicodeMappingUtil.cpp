@@ -122,18 +122,18 @@ void nsUnicodeMappingUtil::InitGenericFontMapping()
 
 	// smJapanese
 	static PRUnichar jfontname1[] = {
-	0x672C, 0x660E, 0x671D, 0x2212, 0xFF2D, 0x0000 //    ñ{ñæí©Å|Çl
+	0x672C, 0x660E, 0x671D, 0x2212, 0xFF2D, 0x0000 //    ?{?????|?l
 	};
 	static PRUnichar jfontname2[] = {
-	0x4E38, 0x30B4, 0x30B7, 0x30C3, 0x30AF, 0x2212, 0xFF2D, 0x0000 //    ä€ÉSÉVÉbÉNÅ|Çl
+	0x4E38, 0x30B4, 0x30B7, 0x30C3, 0x30AF, 0x2212, 0xFF2D, 0x0000 //    ?€ÉS?V?b?N?|?l
 	};
-	static PRUnichar jfontname3[] = {
-	0x004F, 0x0073, 0x0061, 0x006B, 0x0061, 0x2212, 0x7B49, 0x5E45, 0x0000 //    OsakaÅ|ìôïù
-	};   
+	// static PRUnichar jfontname3[] = {
+	// 0x004F, 0x0073, 0x0061, 0x006B, 0x0061, 0x2212, 0x7B49, 0x5E45, 0x0000 //    Osaka?|????
+	// };   
 
 	mGenericFontMapping[smJapanese][kSerif]     = new nsAutoString(jfontname1);
 	mGenericFontMapping[smJapanese][kSansSerif] = new nsAutoString(jfontname2); 
-	mGenericFontMapping[smJapanese][kMonospace] = new nsAutoString(jfontname3);
+	// mGenericFontMapping[smJapanese][kMonospace] = new nsAutoString(jfontname3);
 
 	// smTradChinese
 	mGenericFontMapping[smTradChinese][kSerif]     = new nsAutoString( NS_LITERAL_STRING("Apple LiSung Light") );
