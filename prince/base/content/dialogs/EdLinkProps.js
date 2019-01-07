@@ -295,9 +295,9 @@ function InitDialog()
   if (targetValue)
   {
 //    gDialog.userDefinedTargetCheckbox.checked = true;
-    ToggleTargetValue(targetValue);
-    if (gDialog.userDefinedTarget && !gDialog.userDefinedTarget.disabled)
-      gDialog.userDefinedTarget.value = targetValue;
+    // ToggleTargetValue(targetValue);
+    // if (gDialog.userDefinedTarget && !gDialog.userDefinedTarget.disabled)
+    //   gDialog.userDefinedTarget.value = targetValue;
   }
 }
 
@@ -331,18 +331,19 @@ function ChangeLinkLocation()
 
 function setHRefToDialog(valueStr)
 {
-  if (!valueStr) {
+  var sharpPos;
+  if (!valueStr)
     valueStr = "";
-  var sharpPos = valueStr.indexOf("#");
+  sharpPos = valueStr.indexOf("#");
   if (sharpPos < 0)
     gDialog.hrefInput.value = valueStr;
-  }
   else
   {
     if (sharpPos > 0)
       gDialog.hrefInput.value = valueStr.substr(0, sharpPos);
     gDialog.keyList.value = valueStr.substr(sharpPos + 1);
   }
+
 }
 
 function getHRefFromDialog()
@@ -399,26 +400,26 @@ function doHelpButton()
   return true;
 }
 
-function ToggleTargetValue(newVal)
-{
-  var e;
-  switch (newVal) {
-    case "_top":
-    case "_blank":
-    case "_parent":
-    case "_self":
-      e = document.getElementById(newVal.substr(1) + "Radio");
-//      gDialog.targetRadiogroup.selectedItem = e;
-//      gDialog.userDefinedTarget.disabled = true;
-      break;
-    default:
-    case "user-defined":
-      e = document.getElementById("userdefRadio");
-//      gDialog.targetRadiogroup.selectedItem = e;
-//      gDialog.userDefinedTarget.disabled = false;
-    break;
-  }
-}
+// function ToggleTargetValue(newVal)
+// {
+//   var e;
+//   switch (newVal) {
+//     case "_top":
+//     case "_blank":
+//     case "_parent":
+//     case "_self":
+//       e = document.getElementById(newVal.substr(1) + "Radio");
+// //      gDialog.targetRadiogroup.selectedItem = e;
+// //      gDialog.userDefinedTarget.disabled = true;
+//       break;
+//     default:
+//     case "user-defined":
+//       e = document.getElementById("userdefRadio");
+// //      gDialog.targetRadiogroup.selectedItem = e;
+// //      gDialog.userDefinedTarget.disabled = false;
+//     break;
+//   }
+// }
 
 function dumpln(s) { dump(s+"\n"); }
 
