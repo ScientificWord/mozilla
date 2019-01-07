@@ -9988,8 +9988,9 @@ function msiClickLink(event, theURI, targWinStr, editorElement) {
   //    }
   //  }
 
-  if (!targEditor)
+  if (!targEditor) {
     targEditor = msiEditPage(fullTargURI, theWindow, false, false, winNameToUse, false);
+  }
   else if (targURI) {
     msiCheckAndSaveDocument(targEditor, "cmd_close", true);
     var isSciRegEx = /\.sci$/i;
@@ -10000,9 +10001,11 @@ function msiClickLink(event, theURI, targWinStr, editorElement) {
       targURI = msiFileURLFromFile(newdoc);
     }
     msiEditorLoadUrl(targEditor, targURI, targMarker);
-  } else if (targMarker && targMarker.length)
-    msiGoToMarker(targEditor, targMarker, preferMarker);
+  } else if (targMarker && targMarker.length) {
+      msiGoToMarker(targEditor, targMarker, preferMarker);
+  }
 }
+    
 
 
 function msiGoToMarker(editorElement, markerStr, bPreferKey) {
