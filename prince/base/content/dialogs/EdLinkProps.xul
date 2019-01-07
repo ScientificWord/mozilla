@@ -84,7 +84,7 @@
         <!-- textbox id="hrefInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys" / -->
           <!-- tooltiptext="Enter a new key name" / -->
-        <textbox id="hrefInput" timeout="50" maxrows="6"
+        <textbox id="hrefInput" timeout="50" maxrows="6" emptytext="The current document"
                  class="uri-element"
                  oninput="ChangeLinkLocation();">
           <menupopup class="autocomplete-history-popup"
