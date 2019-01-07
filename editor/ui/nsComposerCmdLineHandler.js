@@ -104,6 +104,9 @@ nsComposerCmdLineHandler.prototype = {
         // Try the editor flag (used for general.startup.* prefs)
         uristr = cmdLine.handleFlagWithParam("editor", false);
       }
+      if (uristr == null) {
+        uristr = cmdLine.handleFlagWithParam("edit", false);
+      }
 
       if ((uristr==null) && !cmdLine.preventDefault &&cmdLine.length > 0)
         uristr = cmdLine.getArgument(0);
@@ -127,7 +130,8 @@ nsComposerCmdLineHandler.prototype = {
     cmdLine.preventDefault = true;
   },
 
-  helpInfo : "  -url <path>          Open document for editing.\n" +
+  helpInfo : "  -edit <path>          Open document for editing.\n" +
+             "  -url <path>           Alternative open document for editing.\n" +
              "  <path>                Open document for editing.\n" +
              "  -width <integer>      Set width of window in pixels.\n"+
              "  -height <integer>     Set height of window in pixels.\n"
