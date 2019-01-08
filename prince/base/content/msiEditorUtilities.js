@@ -4085,7 +4085,7 @@ function msiMakeRelativeUrl(url, editorElement) {
   if (!inputUrl)
     return inputUrl;
   // Get the filespec relative to current document's location
-  // NOTE: Can't do this if file isn't saved yet!
+  // NOTE: Can't do this if file isn't saved yet! ???
   var docUrl = msiGetDocumentBaseUrl(editorElement);
   return msiMakeUrlRelativeTo(inputUrl, docUrl);
 }
