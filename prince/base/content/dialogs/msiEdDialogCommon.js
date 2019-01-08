@@ -1093,12 +1093,18 @@ function createMenuItem(aMenuPopup, aLabel)
 function chooseLinkFile()
 {
   // Get a local file, converted into URL format
+  var editorElement = msiGetActiveEditorElement();
   var fileName = GetLocalFileURL(["xhtml", "sci", "html", "img"]);
+  var docDir;
   if (fileName) 
   {
-    // Always try to relativize local file URLs
-    if (gHaveDocumentUrl)
-      fileName = msiMakeRelativeUrl(fileName);
+    // Always try to relativize to the directory containing the _work file
+    if (gHaveDocumentUrl) {
+      docDir = msiFileFromFileURL(msiURIFromString(msiGetDocumentBaseUrl(editorElement)));
+      docDir = docDir.parent.parent;
+
+      fileName = msiMakeUrlRelativeTo(fileName, msiFileURLStringFromFile(docDir), editorElement);
+    }
 
     gDialog.hrefInput.value = fileName;
 
