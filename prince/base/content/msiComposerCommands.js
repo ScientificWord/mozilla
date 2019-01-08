@@ -9615,6 +9615,7 @@ function msiFollowLink( editorElement, element ) {
       {
         extension = "cmd";
         filename="open";
+        href = href.replace(/\//g,"\\");
       }
       else
       {
