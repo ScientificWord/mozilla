@@ -9608,7 +9608,7 @@ function msiFollowLink( editorElement, element ) {
   var urlstring = msiGetEditorURL(editorElement);
   var url = msiURIFromString(urlstring);
   var documentDir = msiFileFromFileURL(url);
-  documentDir = documentDir.parent;
+  documentDir = documentDir.parent.parent;
   if (href) {
       var os = getOS(window);
       if (os == "win")
