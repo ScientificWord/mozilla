@@ -9615,7 +9615,13 @@ function msiFollowLink( editorElement, element ) {
       {
         extension = "cmd";
         filename="open";
-        href = href.replace(/\//g,"\\");
+        // we need to convert '/' to '\' except for slashes after 
+        if (href.indexOf('file://') === 0) {
+          href = 'file://' + href.slice(7).replace(/\//g,"\\\\");
+        }
+        else if (href.indexOf('://') == -1) {
+          href = href.replace(/\//g,"\\");
+        }
       }
       else
       {
