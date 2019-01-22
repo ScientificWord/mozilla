@@ -1,6 +1,7 @@
 var EXPORTED_SYMBOLS = ["msiPathFromFileURL", "msiFileURLFromAbsolutePath",
 	"msiFileURLFromChromeURI", "msiFileURLFromFile", "msiURIFromString",
-	"msiFileURLStringFromFile", "msiPathFromFileURL" , "msiFileFromFileURL", "msiFileFromAbsolutePath", "getExtension"];
+	"msiFileURLStringFromFile", "msiPathFromFileURL" , "msiFileFromFileURL", "msiFileFromAbsolutePath", "getExtension",
+  "getUserResourceFile"];
 
 // msiFileURLFromAbsolutePath
 // Takes an absolute path (the direction of the slashes is OS-dependent) and
@@ -108,4 +109,31 @@ function getExtension(aFilename)
   if (extArray && extArray[1])
     extension = extArray[1];
   return extension;
+}
+
+function getUserResourceFile( name, resdirname )
+{
+  var dsprops, userAreaFile, resdir, file, basedir;
+  dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  basedir =dsprops.get("ProfD", Components.interfaces.nsIFile);
+  userAreaFile = basedir.clone();
+  userAreaFile.append(name);
+  if (!userAreaFile.exists())
+  { // copy from resource area
+    resdir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    if (resdir) resdir.append("res");
+    if (resdir) {
+      file = resdir.clone();
+      if (resdirname && resdirname.length > 0) file.append(resdirname);
+      file.append(name);
+      try {
+        if (file.exists()) file.copyTo(basedir,"");
+      }
+      catch(e) {
+        dump("failed to copy: "+e.toString());
+      }
+    }
+    userAreaFile = file.clone();
+  }
+  return userAreaFile;
 }
