@@ -1416,6 +1416,7 @@ var msiExportToTexCommand =
 }
 
 var msiImportTeXCommand =
+
 {
   isCommandEnabled: function(aCommand, dummy) {
     return isLicensed();
@@ -1457,7 +1458,7 @@ var msiTestFilterCommand =
         finalThrow(cmdFailString('runtests'), e.message);
       }
     }
-    else
+    els
       finalThrow(cmdFailString("runtests"), "Importing a document is not allowed since this program is not licensed.")
     return false;
   }
@@ -9027,6 +9028,7 @@ var msiObjectPropertiesCommand =
       if (!nodeData) return;
       var element = nodeData.theNode;
       var cmdString = nodeData.getCommandString(0);
+      var name = element.nodeName;
 
       if (element)
       {

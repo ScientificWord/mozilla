@@ -322,11 +322,13 @@ msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
 
   res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                          endOffset, bCollapsed);
-  if (bCollapsed)
-  {
-    return m_msiEditingMan->InsertMathmlElement(this, selection, startNode, startOffset, 0, aElement);
+  BeginTransaction();
+  if (!bCollapsed) {
+    DeleteSelection(eNone);
   }
-  return NS_OK;
+  res = m_msiEditingMan->InsertMathmlElement(this, selection, startNode, startOffset, 0, aElement);
+  EndTransaction();
+  return res;
 }
 
 nsresult msiEditor::InsertMath(PRBool isDisplay)

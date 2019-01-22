@@ -9,14 +9,7 @@
 
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?> 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
 
-<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
-<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
-<!-- If an editor control is to support context menus, also need: -->
-<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!DOCTYPE dialog [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
@@ -47,13 +40,13 @@
 
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+ <!--  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
+   --><!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
-  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
-  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
+  <!-- <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>  -->
   <!-- Following script needed if the editor wants to support a toolbox? -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
 
@@ -83,32 +76,25 @@
   <hbox>
     <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
     <vbox flex="1">
-     <label control="mathNamesBox" value="&mathNamesBox.label;" accesskey="&mathNamesBox.accesskey;" />
-     <separator class="thin"/>
+      <label control="mathNamesBox" value="&mathNamesBox.label;" accesskey="&mathNamesBox.accesskey;" />
+      <separator class="thin"/>
      
-      <hbox>
-        <!-- menulist id="mathNamesBox"  editable="true" disableautoselect="true" onkeypress="textEntered(event);" onselect="changeName(this);"  >
-          <menupopup>
-          </menupopup>
-        </menulist -->
+      <groupbox id="name">
+        <caption label="&mathNamesBox.label;"/>
         <textbox id="mathNamesBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="mathnames" 
-		      tooltiptext="&mathNamesBox.tooltip;"   
+          tooltiptext="&mathNamesBox.tooltip;"   
           onfocus="this.select();"
-          onkeypress="checkKeyPressEvent(this, event);"
-          ontextentered="changeName(this.value);"
           />
-      </hbox>
-      <!-- groupbox>
-        <caption label="&mathAppearance.label;"/>
-        <editor editortype="html" type="content" flex="1" width="100" height="60" context="msiEditorContentContext" id="mathName-appearance-frame"/>
-      </groupbox -->
+<!--            ontextentered="changeName(this.value);"
+         onkeypress="checkKeyPressEvent(this, event);" -->
+      </groupbox>
       <groupbox id="nameTypeGroup">
         <caption label="&nameType.label;" id="nameTypeLabel"/>
         <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="updateControls();">
-          <radio id="typeOperator" label="&typeOperator.label;" value="operator" accesskey="&typeOperator.accesskey;"/>
-          <radio id="typeFunction" label="&typeFunction.label;" value="function" accesskey="&typeFunction.accesskey;"/>
-          <radio id="typeVariable" label="&typeVariable.label;" value="variable" accesskey="&typeVariable.accesskey;"/>
+          <radio id="typeOperator" label="&typeOperator.label;" value="o" accesskey="&typeOperator.accesskey;"/>
+          <radio id="typeFunction" label="&typeFunction.label;" value="f" accesskey="&typeFunction.accesskey;"/>
+          <radio id="typeVariable" label="&typeVariable.label;" value="v" accesskey="&typeVariable.accesskey;"/>
         </radiogroup>
       </groupbox>
     </vbox>
