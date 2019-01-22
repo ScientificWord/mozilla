@@ -1,12 +1,14 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
+Components.utils.import("resource://app/modules/mathnamedictionary.jsm");
 
-var inputData;
-var target;
+var node;
 
 function parseBool(s){
   return (s==="true"); 
 }
 
+/*
+Not needed as long as we are happy with the case-sensitive sorting of autocompletestringarrat,
 function sortNames(name1, name2) {  //the idea is to sort irrespective of case, unless two names differ only by case.
   var lc1 = name1.toLowerCase();
   var lc2 = name2.toLowerCase();
@@ -21,132 +23,115 @@ function sortNames(name1, name2) {  //the idea is to sort irrespective of case, 
   else
     return 0;
 }
+*/
 
 function Startup() {
   try {
-    inputData = window.arguments[0];
-    var bIsRevise = false;
-    if ("reviseObject" in inputData)
-    {
-      bIsRevise = true;
-      target = getDataFromPropertiesObject(inputData.reviseObject);
+    namesdict.init();
+    let node = window.arguments[0];
+    let name = "";
+    if (typeof node == "string") 
+      name = node.val;
+    if (!node || (node.nodeName !== 'mi' && node.nodeName !== 'mo'))
+      node = null;
+    if (node && node.textContent)
+      name = node.textContent;
+    let nameData = namesdict.getNameData(name);
+    // nameData is null, or is the default data, if any, for the given name.
+    if (!nameData) {
+      nameData = {};
+      if (name) nameData = { val: name};
     }
-    else
-      target = inputData;
-
-    window.mMSIDlgManager = new msiDialogConfigManager(window);
-    if (bIsRevise)
-      window.mMSIDlgManager.mbIsRevise = true;
-    window.mMSIDlgManager.configureDialog();
-  
-    var namesBox = document.getElementById("mathNamesBox");
-    gDialog.nameList = new msiMathNameList();  //see msiEditorUtilities.js
-    gDialog.nameList.setUpTextBoxControl(namesBox);
-    gDialog.bStopNextEnter = false;
-
-
-//  var nameArray = [];
-//  for (var aName in gDialog.nameList.names)
-//    nameArray.push(aName);
-//  nameArray.sort(sortNames);
-//  for (var ix = 0; ix < nameArray.length; ++ix)
-//    namesBox.appendItem(nameArray[ix], nameArray[ix]);  //set the value and the label to be the same
-    if (target != null && ("val" in target) && (target.val.length > 0))
-      namesBox.value = target.val;
-//  else
-//    namesBox.selectedIndex = 0;
-//  dump("Value of namesBox.disableautoselect is [" + namesBox.disableautoselect + "].\n");
-//  namesBox.disableautoselect = true;
-//  dump("Value of namesBox.disableautoselect is [" + namesBox.disableautoselect + "].\n");
-    if (isPropertiesDialog())
-    {
-      if (!target)
-      {
-        dump("Error in mathmlMathName.js! Unable to setControlsFromTarget, as target is null.\n");
-        return;
-      }
-      setControlsFromObject(target);
+    // Now copy node attributes to nameData, when they exist
+    if (node) {
+      if (node.hasAttribute("type")) nodeData.type = node.getAttribute("type").charAt(0);
+      if (node.hasAttribute("builtin")) nodeData.builtin = node.getAttribute("builtin");
+      if (node.hasAttribute("lp")) nodeData.lp = node.getAttribute("lp");
+      if (node.hasAttribute("enginefunction")) nodeData.engine = node.getAttribute("enginefunction")==="true"?true:false;
+      if (node.hasAttribute("movableLimits")) nodeData.movableLimits = node.getAttribute("movableLimits");
+      if (node.hasAttribute("size")) nodeData.size = node.getAttribute("size");
     }
-    else
-      changeName();
-  // Now load the mathnames file
-  // We need to prebuild these so that the keyboard shortcut works
-  // ACSA = autocomplete string array
-//  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-//  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    // Now set up the dialog contents
+    if (nameData.val) document.getElementById(mathNamesBox).value = nameData.val;
+    if (nameData.type) document.getElementById(nameTypeRadioGroup).value = nameData.type;
+    if (nameData.type === 'o') { // enable operator-only stuff
+      document.getElementById('operatorLimitPlacementRadioGroup').disabled = false;
+    }
+    document.getElementById('enginefunction').checked = nameData.engine;
+
   }
   catch(e){
     dump("Error: "+e.toString()+"\n");
   }
 }
 
-function isPropertiesDialog()
-{
-  return ( ("reviseObject" in inputData) && (inputData.reviseObject != null) );
-}
+// function isPropertiesDialog()
+// {
+//   return ( ("reviseObject" in inputData) && (inputData.reviseObject != null) );
+// }
 
-function getPropertiesDialogTitle()
-{
-  return document.getElementById("propertiesTitle").value;
-}
+// function getPropertiesDialogTitle()
+// {
+//   return document.getElementById("propertiesTitle").value;
+// }
 
-function getDataFromPropertiesObject(reviseObject)
-{
-  var mathNameNode = msiNavigationUtils.getWrappedObject(reviseObject, "mathname");
-  if (!mathNameNode)
-    return null;
+// function getDataFromPropertiesObject(reviseObject)
+// {
+//   var mathNameNode = msiNavigationUtils.getWrappedObject(reviseObject, "mathname");
+//   if (!mathNameNode)
+//     return null;
 
-  var retObject = new Object();
-  if ("msimathnameText" in reviseObject)
-    retObject.val = reviseObject.msimathnameText;
-  else if ( (mathNameNode != reviseObject) && ("msimathnameText" in mathNameNode) )
-    retObject.val = mathNameNode.msimathnameText;
-  else  //get it from mathNameObject?
-    retObject.val = msiNavigationUtils.getLeafNodeText(mathNameNode);
+//   var retObject = new Object();
+//   if ("msimathnameText" in reviseObject)
+//     retObject.val = reviseObject.msimathnameText;
+//   else if ( (mathNameNode != reviseObject) && ("msimathnameText" in mathNameNode) )
+//     retObject.val = mathNameNode.msimathnameText;
+//   else  //get it from mathNameObject?
+//     retObject.val = msiNavigationUtils.getLeafNodeText(mathNameNode);
 
-  var styleVals = new Object();
-  styleVals["displaystyle"] = "";
-  var foundAttrs = new Object();
-  var styleNode = msiNavigationUtils.findStyleEnclosingObj(mathNameNode, "mathname", styleVals, foundAttrs);
+//   var styleVals = new Object();
+//   styleVals["displaystyle"] = "";
+//   var foundAttrs = new Object();
+//   var styleNode = msiNavigationUtils.findStyleEnclosingObj(mathNameNode, "mathname", styleVals, foundAttrs);
 
-  switch(msiGetBaseNodeName(mathNameNode))
-  {
-    case "mo":
-      retObject.type = "operator";
-      retObject.limitPlacement = "auto";
-      //Now work out the "size" and "limitplacement" stuff:
-      if (mathNameNode.hasAttribute("msiLimitPlacement"))
-      {
-        if (mathNameNode.getAttribute("msiLimitPlacement") == "msiLimitsAtRight")
-          retObject.limitPlacement = "atRight";
-        else if (mathNameNode.getAttribute("msiLimitPlacement") == "msiLimitsAboveBelow")
-          retObject.limitPlacement == "aboveBelow";
-      }
-      if ("displaystyle" in foundAttrs)
-      {
-        if (foundAttrs.displaystyle == "true")
-          retObject.size = "big";
-        else
-          retObject.size = "small";
-      }
-    break;
+//   switch(mathNameNode.nodeName)
+//   {
+//     case "mo":
+//       retObject.type = "operator";
+//       retObject.limitPlacement = "auto";
+//       //Now work out the "size" and "limitplacement" stuff:
+//       if (mathNameNode.hasAttribute("msiLimitPlacement"))
+//       {
+//         if (mathNameNode.getAttribute("msiLimitPlacement") == "msiLimitsAtRight")
+//           retObject.limitPlacement = "atRight";
+//         else if (mathNameNode.getAttribute("msiLimitPlacement") == "msiLimitsAboveBelow")
+//           retObject.limitPlacement == "aboveBelow";
+//       }
+//       if ("displaystyle" in foundAttrs)
+//       {
+//         if (foundAttrs.displaystyle == "true")
+//           retObject.size = "big";
+//         else
+//           retObject.size = "small";
+//       }
+//     break;
 
-    case "mi":
-      retObject.type = "function";
-      if ( ("msiclass" in mathNameNode) && (mathNameNode.msiclass == "enginefunction") )
-        retObject.enginefunction = "true";
-    break;
+//     case "mi":
+//       retObject.type = "function";
+//       if ( ("msiclass" in mathNameNode) && (mathNameNode.msiclass == "enginefunction") )
+//         retObject.enginefunction = "true";
+//     break;
     
-    default:
-    //what goes here?? Assumption should be that this is "appearance" case (that is, a complex mathname object).
-    //However, this case should now be obsolete. Nothing goes here????
-//      retObject.appearance = reviseObject.ownerDocument.createElement("appearance");
-//      retObject.appearance.appendChild( mathNameNode.cloneNode(true) );
-    break;
-  }
+//     default:
+//     //what goes here?? Assumption should be that this is "appearance" case (that is, a complex mathname object).
+//     //However, this case should now be obsolete. Nothing goes here????
+// //      retObject.appearance = reviseObject.ownerDocument.createElement("appearance");
+// //      retObject.appearance.appendChild( mathNameNode.cloneNode(true) );
+//     break;
+//   }
 
-  return retObject;
-}
+//   return retObject;
+// }
 
 //updateControls() here needs to disable the limitPlacementGroup if the type isn't operator. If the selected name
 //  is already in the list, the Add button should be disabled. If not, the Delete button should be. Also, the "Add automatic
@@ -158,7 +143,7 @@ function updateControls()
 {
   var theType = document.getElementById("nameTypeRadioGroup").value;
   var currName = document.getElementById("mathNamesBox").value;
-  var bIsNew = gDialog.nameList.canAdd(currName);
+  var bIsNew = namesdict.getNameData(currName) != null;
   var nameTypeControls = ["nameTypeGroup", "nameTypeLabel", "nameTypeRadioGroup"];
   // enableControlsByID(nameTypeControls, bIsNew);
   var limitPlacementControls = ["limitPlacementGroup", "limitPlacementGroupCaption", "operatorLimitPlacementRadioGroup"];
@@ -178,7 +163,7 @@ function updateControls()
   }
 
   enableControlsByID(["addButton"], bIsNew);
-  enableControlsByID(["deleteButton"], gDialog.nameList.canDelete(currName));
+  enableControlsByID(["deleteButton"], namesdict.getNameData(currName) != null);
 
   var bAutoSub = gDialog.nameList.hasAutoSubstitution(currName);
   if (bAutoSub)
@@ -189,7 +174,7 @@ function updateControls()
 //  enableControlsByID(["addAutoSubstitution", "addAutoSubstitutionDescription", "enginefunction", "enginefunctionDescription"], !bBuiltIn);
 //  enableControlsByID(["addAutoSubstitution", "addAutoSubstitutionDescription", "enginefunction", "enginefunctionDescription"], !bBuiltIn);
   // enableControlsByID(["addAutoSubstitution", "addAutoSubstitutionDescription", "enginefunction", "enginefunctionDescription"], bIsNew);
-  dumpStr += "autosubstitution and enginefunction should be ";
+  var dumpStr = "autosubstitution and enginefunction should be ";
   if (!bIsNew)
     dumpStr += "disabled";
   else
@@ -345,38 +330,15 @@ function deleteCurrentName()
 
 function onOK() {
   var currName = document.getElementById("mathNamesBox").value;
-  if (currName in gDialog.nameList.names)
-    target = gDialog.nameList.names[currName];
-  else if (document.getElementById("addAutoSubstitution").checked )
-    addCurrentName(true);
-  target.val = currName;
-  target.type = document.getElementById("nameTypeRadioGroup").value;
-  if (target.type == "operator")
-    target.limitPlacement = document.getElementById("operatorLimitPlacementRadioGroup").value;
-
-  var enginefunction = document.getElementById("enginefunction");
-  if (enginefunction.getAttribute("checked") == "true")
-    target.enginefunction = true;
-
-//  gDialog.nameList.updateBaseList();  //see msiEditorUtilities.js
-
+  namesdict.setNameData(currName, 
+    document.getElementById('nameTypeRadioGroup').value,
+    null,
+    document.getElementById("operatorLimitPlacementRadioGroup").value,
+    document.getElementById("enginefunction").checked );
+ 
   var parentEditorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
-  var bRevise = isPropertiesDialog();
-  if (bRevise)
-  {
-    if (!theWindow || !("reviseMathname" in theWindow))
-      theWindow = msiGetTopLevelWindow();
-
-    theWindow.reviseMathname(inputData.reviseObject, target, parentEditorElement)
-  }
-  else
-  {
-    if (!theWindow || !("insertMathnameObject" in theWindow))
-      theWindow = msiGetTopLevelWindow();
-
-    theWindow.insertMathnameObject(target, parentEditorElement);
-  }
+    theWindow.insertMathname(currName, parentEditorElement);
 
   SaveWindowLocation();
   return true;
@@ -385,8 +347,6 @@ function onOK() {
 
 
 function onCancel() {
-  target.val = "";
-  target.enginefunction = false;
   return(true);
 }
 
