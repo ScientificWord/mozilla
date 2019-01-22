@@ -15,7 +15,7 @@ NS_IMPL_QUERY_INTERFACE2(nsAutoCompleteSearchStringArrayImp, nsIAutoCompleteSear
 
 // What's going on here?
 // Autocomplete text boxes select an autocomplete class by providing a string suffix to determine the class as in
-// "@mozilla.org/autocomplete/search;1?name=stringarray". Each text box also provides a string such as, in this case, 'texttag',
+// "@mozilla.org/autocomplete/search;1?name=stringarray;1". Each text box also provides a string such as, in this case, 'texttag',
 // 'paratag', etc.
 //
 // Our problem is that we need this for each document. Each editor has attached to it a tag manager, which has the data to

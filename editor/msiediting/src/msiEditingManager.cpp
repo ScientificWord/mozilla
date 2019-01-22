@@ -2106,11 +2106,19 @@ PRBool msiEditingManager::GetBigOpNodes(nsIDOMNode* mathmlNode, const nsAString 
       nsCOMPtr<nsIDOMElement> moElement(do_QueryInterface(mo));
       if (moElement)
       {
-        nsAutoString value, largeop;
+        nsAutoString value, largeop, msimathname;
         msiEditingAtoms::largeop->ToString(largeop);
+        msiEditingAtoms::msimathname->ToString(msimathname);
+          
+          
+
         res = moElement->GetAttribute(largeop,  value);
         if (NS_SUCCEEDED(res))
           rv = msiEditingAtoms::msitrue->Equals(value);
+        if (!rv) {
+          res = moElement->GetAttribute(msimathname, value);
+            rv = msiEditingAtoms::msitrue->Equals(value);
+        }
       }
       if (rv && mstyle)
       {

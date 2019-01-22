@@ -528,7 +528,7 @@ function initKeyList()
 //    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
 //    else lastkey = keys[i];
 //  }  
-//  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//  var ACSA = Components.classes["@mozilla.org/autocomplete/search?name=stringarray"].getService();
 //  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
 //  ACSA.resetArray("keys");
 //  for (i=0, len=keys.length; i<len; i++)
