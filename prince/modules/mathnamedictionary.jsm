@@ -1,10 +1,24 @@
-var EXPORTED_SYMBOLS = ["mathnames"];
-
+var EXPORTED_SYMBOLS = ["namesdict"];
 Components.utils.import('resource://app/modules/pathutils.jsm');
 
-var mathnames = {
+/*
+  The mathnames database contains recognized math names and their properties, such as the name,
+  the type (function or operator), limit placement, etc. It is persisted as an xml file, and this 
+  module exposes it to the JavaScript code. The information is returned using getNameData which 
+  returns an object like
+    {
+      val: <name>,
+      type:
+      builtin:
+      lp: <limit placement>
+      engine: <is engine function?>,
+      movableLimits:
+      size:
+    }
+*/
+
+var namesdict = {
   bInitialized: false,
-  bAutocompleteInitialized: false,
   sourcefile: 'mathnames.xml',
   namelistobjs: [],
   savedlistobjs: [],
@@ -20,7 +34,7 @@ var mathnames = {
       dump('No mathnames file: '+ this.sourcefile);
     let path = msiFileURLFromAbsolutePath(namefile.target).spec;
     let req = Components.classes['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance();
-    let ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray;1"].getService();
+    let ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
     ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
     try {                        
       req.open('GET',path,false);
@@ -45,6 +59,7 @@ var mathnames = {
         this.namelistobjs.push(namelistobj);
         this.savedlistobjs.push(namelistobj);
       }
+      ACSA.sortArray('mathnames');
       this.bInitialized = true;
     }
     catch (e) {
@@ -85,31 +100,5 @@ var mathnames = {
   }
 };
 
-function getUserResourceFile( name, resdirname )
-{
-  var dsprops, userAreaFile, resdir, file, basedir;
-  dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  basedir =dsprops.get("ProfD", Components.interfaces.nsIFile);
-  userAreaFile = basedir.clone();
-  userAreaFile.append(name);
-  if (!userAreaFile.exists())
-  { // copy from resource area
-    resdir = dsprops.get("resource:app", Components.interfaces.nsIFile);
-    if (resdir) resdir.append("res");
-    if (resdir) {
-      file = resdir.clone();
-      if (resdirname && resdirname.length > 0) file.append(resdirname);
-      file.append(name);
-      try {
-        if (file.exists()) file.copyTo(basedir,"");
-      }
-      catch(e) {
-        dump("failed to copy: "+e.toString());
-      }
-    }
-    userAreaFile = file.clone();
-  }
-  return userAreaFile;
-}
 
 

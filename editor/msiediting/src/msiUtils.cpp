@@ -464,6 +464,12 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
   return res;
 }
 
+
+// BBM: Re-evaluate this code that dates from Larry. There are two versions of this function, with 
+// the difference being that one of them uses an nsAString as the second argument, and this one
+// uses a uncode character. Since both these types map to a string type in JavaScript, this code 
+// seems pretty brittle to me.
+
 nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
                                            PRUint32 character,
                                            PRUint32 tagType,
@@ -503,10 +509,10 @@ nsresult msiUtils::CreateMathOperator(nsIEditor * editor,
                                       PRUint32 caretPos,
                                       PRUint32 & flags,
                                       PRUint32 attrFlags,
-                                      const nsAString & lspace,
-                                      const nsAString & rspace,
-                                      const nsAString & minsize,
-                                      const nsAString & maxsize,
+                                      const nsAString & lspace_in,
+                                      const nsAString & rspace_in,
+                                      const nsAString & minsize_in,
+                                      const nsAString & maxsize_in,
                                       nsCOMPtr<nsIDOMElement> & mathElement)
 {
   nsresult res(NS_ERROR_FAILURE);
@@ -586,17 +592,17 @@ nsresult msiUtils::CreateMathOperator(nsIEditor * editor,
     else if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_symmetric_F))
       res = moElement->SetAttribute(symmetric, msifalse);
 
-    if (NS_SUCCEEDED(res) && !lspace.IsEmpty())
-      res = moElement->SetAttribute(lspace, lspace);
+    if (NS_SUCCEEDED(res) && !lspace_in.IsEmpty())
+      res = moElement->SetAttribute(lspace, lspace_in);
 
-    if (NS_SUCCEEDED(res) && !rspace.IsEmpty())
-      res = moElement->SetAttribute(rspace, rspace);
+    if (NS_SUCCEEDED(res) && !rspace_in.IsEmpty())
+      res = moElement->SetAttribute(rspace, rspace_in);
 
-    if (NS_SUCCEEDED(res) && !maxsize.IsEmpty())
-      res = moElement->SetAttribute(maxsize, maxsize);
+    if (NS_SUCCEEDED(res) && !maxsize_in.IsEmpty())
+      res = moElement->SetAttribute(maxsize, maxsize_in);
 
-    if (NS_SUCCEEDED(res) && !minsize.IsEmpty())
-      res = moElement->SetAttribute(minsize, minsize);
+    if (NS_SUCCEEDED(res) && !minsize_in.IsEmpty())
+      res = moElement->SetAttribute(minsize, minsize_in);
 
     if (NS_SUCCEEDED(res))
     {

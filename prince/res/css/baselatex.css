@@ -31,7 +31,7 @@ In that case in internal style sheet will rewrite these rules. */
   mml|math { color: red;}
   mml|mi[msimathname="true"] { color: gray; }
   mml|mo[msimathname="true"] { color: gray; }
-  mml|mi[msiunit="true"] {color: green;}
+  mml|mi[msiunit="true"] {color: green; }
   mml|mtd {border-color: green; }
   msidisplay {border-color: green; }
   mml|mtext { color: black; 
@@ -104,13 +104,11 @@ mo[flv="Bsmall"] {
   line-height: 0ex;
 }
 
-mml|mi[msimathname="true"], mml|mo[msimathname="true"] {
+mml|mi[msimathname="true"], mml|mo[msimathname="true"], mml|mi[msiunit] {
   font-style: normal;
   font-family: Times roman;
 }
-mml|mi[msiunit="true"] {
-  font-style: normal;
-}
+
 /*
 mi, mo {
   -moz-user-select: all;
