@@ -4,6 +4,8 @@ Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
+Components.utils.import("resource://app/modules/mathnamedictionary.jsm");
+
 
 #include productname.inc
 const msiEditorJS_duplicateTest = "Bad";
@@ -1473,6 +1475,7 @@ function EditorStartupForEditorElement(editorElement, topwindow, isShell) {
     "Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" +
     editorElement.docShell + "].\n", editorElement);
   msiLoadInitialDocument(editorElement, is_topLevel, isShell);
+  namesdict.reset();
 }
 
 // Get url for editor content and load it.
