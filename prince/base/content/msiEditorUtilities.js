@@ -11604,3 +11604,12 @@ function copyFileOrDirectory( srcFile, destDir ) {
  }
 }
 
+
+function msiSelectNode (editor, node) {
+  let parent = node.parentNode;
+  if (!parent) return null;
+  let offset = offsetOfChild(parent,node);
+  editor.selection.collapse(parent, offset);
+  editor.selection.extend(parent, offset+1);
+}
+

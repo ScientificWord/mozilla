@@ -97,6 +97,10 @@ var namesdict = {
   getNameStrings: function getNameStrings () {
     this.init();
     return this.orderedstringlist;
+  },
+
+  reset: function() {
+    this.bInitialized = false;
   }
 };
 

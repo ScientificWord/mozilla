@@ -37,22 +37,10 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js" />
-
-  <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
- <!--  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-   --><!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
-  <!-- <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
-  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>  -->
-  <!-- Following script needed if the editor wants to support a toolbox? -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
-
-  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/mathmlOverlay.js"/>
+
 
   <popupset id="msiEditorContentContextSet"/>
 
@@ -72,7 +60,7 @@
   <commandset id="MSImathMenuCommands"/>
   
 #include ../keysfordialogs.inc
-
+  <broadcaster id="builtin" value="true"/>
   <hbox>
     <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
     <vbox flex="1">
@@ -85,13 +73,14 @@
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="mathnames" 
           tooltiptext="&mathNamesBox.tooltip;"   
           onfocus="this.select();"
-          />
-<!--            ontextentered="changeName(this.value);"
+          onblur="changeName(this.value);"
+          ontextentered="changeName(this.value);"/>
+<!--            
          onkeypress="checkKeyPressEvent(this, event);" -->
       </groupbox>
       <groupbox id="nameTypeGroup">
         <caption label="&nameType.label;" id="nameTypeLabel"/>
-        <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="updateControls();">
+        <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="changeType(this.value);" value="v">
           <radio id="typeOperator" label="&typeOperator.label;" value="o" accesskey="&typeOperator.accesskey;"/>
           <radio id="typeFunction" label="&typeFunction.label;" value="f" accesskey="&typeFunction.accesskey;"/>
           <radio id="typeVariable" label="&typeVariable.label;" value="v" accesskey="&typeVariable.accesskey;"/>
