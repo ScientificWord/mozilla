@@ -2,6 +2,9 @@
 
 Components.utils.import("resource://app/modules/mathnamedictionary.jsm");
 
+//const mmlns    = "http://www.w3.org/1998/Math/MathML";
+//const xhtmlns  = "http://www.w3.org/1999/xhtml";
+
 const mathmlOverlayJS_duplicateTest = "Bad";
 var gProcessor;
 
@@ -513,10 +516,9 @@ var msiReviseMathnameCmd =
 
     var mathNameData = new Object();
     mathNameData.reviseObject = theMathname;
-//    var argArray = [mathNameData];
-//    msiOpenModelessPropertiesDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
-//                                      editorElement, "cmd_MSIreviseMathnameCmd", theMathname, argArray);
-    msiOpenModelessDialog("chrome://prince/content/mathmlMathName.xul", "mathname", "chrome,close,titlebar,dependent,resizable",theMathname);
+    var argArray = [mathNameData];
+    msiOpenModelessPropertiesDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
+                                     editorElement, "cmd_MSIreviseMathnameCmd", theMathname, argArray);
     // var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/mathmlMathName.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
     //                                                  editorElement, "cmd_MSIreviseMathnameCmd", theMathname, mathNameData);
     markDocumentChanged(editorElement);
@@ -1264,9 +1266,6 @@ function insertMatrixColumns(matrixElement, positionToInsert, numberToInsert, ed
   catch(exc) { dump("In mathmlOverlay.js, insertMatrixColumns(), exception: " + exc + "\n."); }
 }
 
-
-//const mmlns    = "http://www.w3.org/1998/Math/MathML";
-//const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 function insertinlinemath(editorElement)
 {
@@ -2167,7 +2166,7 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
   var wrappedMathName = msiNavigationUtils.getWrappedObject(theMathnameNode, "mathname");
   if ((wrappedMathName == null) || (newMathNameData.val.length == 0))
   {
-    AlertWithTitle("mathmlOverlay.js", "Problem in reviseMathName! No fraction found in node passed in...\n");
+    AlertWithTitle("mathmlOverlay.js", "Problem in reviseMathName\n");
     return theRadical;
   }
 
@@ -2176,8 +2175,8 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
   try
   {
     var newNode = null;
-    var oldNodeName = msiGetBaseNodeName(wrappedMathName);
-    if (newMathNameData.type == "operator")  //should now be an "mo"
+    var oldNodeName = wrappedMathName.nodeName;
+    if (newMathNameData.type == "o")  //should now be an "mo"
     {
       if (oldNodeName != "mo")
       {
@@ -2203,16 +2202,16 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
       msiCopyElementAttributes(newNode, wrappedMathName, editor);
       editor.replaceNode(newNode, wrappedMathName, parent);
 
-      if (theMathnameNode == wrappedMathNode)
+      if (theMathnameNode == wrappedMathName)
         theMathnameNode = newNode;
-      wrappedMathNode = newNode;  //from here on in we deal with the new one
+      wrappedMathName = newNode;  //from here on in we deal with the new one
     }
     else
       wrappedMathName = msiSetMathTokenText(wrappedMathName, newMathNameData.val, editor);
 
     // Now whether we've inserted a new node or not, we adjust attribute and style values.
 
-    if (newMathNameData.type == "operator")  //should now be an "mo"
+    if (newMathNameData.type == "o")  //should now be an "mo"
     {
       var limitPlacement = "";
       var bMovableLimits = "false";
@@ -2399,6 +2398,50 @@ function addTextToElement( element, text)
   element.appendChild(textNode);
 }
 
+
+function nodeFromNameData(nameData, editorElement) {
+  let node;
+  if (nameData.type === "o")
+    node = editorElement.contentDocument.createElementNS(mmlns, "mo");
+  else
+    node = editorElement.contentDocument.createElementNS(mmlns, "mi");
+  node.setAttribute("msimathname","true"); 
+  addTextToElement(node, nameData.val);
+
+  if (nameData.engine)
+  {
+    node.setAttribute("msiclass","enginefunction");
+  }
+  if (nameData.type == "o")
+  {
+    var bMovableLimits = "true";
+    var limitPlacement = "";
+    var sizeSpec = "auto";
+    if (nameData.lp && nameData.lp !== "auto")
+    {
+      bMovableLimits = "false";
+      if (nameData.lp === "atRight")
+        limitPlacement = "msiLimitsAtRight";
+      else if (nameData.lp === "aboveBelow")
+        limitPlacement = "msiLimitsAboveBelow";
+      else
+        bMovableLimits = "true";
+      node.setAttribute("msiLimitPlacement",limitPlacement);
+      node.setAttribute("movablelimits", bMovableLimits);
+    }
+    if ("size" in nameData)
+    {
+      sizeSpec = nameData.size;
+    }
+    // if (bMovableLimits == "false") {
+    //   node.setAttribute("largeop", "true");
+    // }
+    node.setAttribute("size", sizeSpec);
+  }
+  return node;
+}
+
+
 function insertMathname(mathName)
 {
   
@@ -2415,45 +2458,9 @@ function insertMathname(mathName)
     nameData.val = mathName;
     nameData.enginefunction = false;
   }
+  
+  node = nodeFromNameData(nameData, editorElement);
 
-  if (nameData.type=="o")
-    node = mathmlEditor.document.createElementNS(mmlns,"mo");
-  else
-    node = mathmlEditor.document.createElementNS(mmlns,"mi");
-  node.setAttribute("msimathname","true");
-  addTextToElement(node, nameData.val);
-
-  if (nameData.engine)
-  {
-    node.setAttribute("msiclass","enginefunction");
-  }
-  else if (nameData.type == "o")
-  {
-    var bMovableLimits = "true";
-    var limitPlacement = "";
-    var sizeSpec = "auto";
-    if (nameData.lp && nameData.lp !== "auto")
-    {
-      bMovableLimits = "false";
-      if (nameData.lp === "right")
-        limitPlacement = "msiLimitsAtRight";
-      else if (nameData.lp === "above")
-        limitPlacement = "msiLimitsAboveBelow";
-      else
-        bMovableLimits = "true";
-      node.setAttribute("msiLimitPlacement",limitPlacement);
-      node.setAttribute("movablelimits", bMovableLimits);
-    }
-    if ("size" in nameData)
-    {
-      sizeSpec = nameData.size;
-    }
-    if (bMovableLimits == "false") {
-      node.setAttribute("largeop", "true");
-    }
-    node.setAttribute("size", sizeSpec);
-  }
-  dump('inserting node at selection');
   try {
     mathmlEditor.InsertMathNodeAtSelection(node);
   }

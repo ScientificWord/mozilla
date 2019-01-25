@@ -2,13 +2,14 @@
 Components.utils.import("resource://app/modules/mathnamedictionary.jsm");
 
 var node;
+var saveNode;
 
 function parseBool(s){
   return (s==="true"); 
 }
 
 /*
-Not needed as long as we are happy with the case-sensitive sorting of autocompletestringarrat,
+Not needed as long as we are happy with the case-sensitive sorting of autocompletestringarray,
 function sortNames(name1, name2) {  //the idea is to sort irrespective of case, unless two names differ only by case.
   var lc1 = name1.toLowerCase();
   var lc2 = name2.toLowerCase();
@@ -28,8 +29,17 @@ function sortNames(name1, name2) {  //the idea is to sort irrespective of case, 
 function Startup() {
   try {
     namesdict.init();
-    let node = window.arguments[0];
+    let inputData = window.arguments[0];
+    if ("reviseObject" in inputData)
+    {
+      node = inputData.reviseObject;
+      saveNode = node;
+    }
+    else node = window.arguments[0];
     let name = "";
+    let lp;  // limit placement: atRight, aboveBelow, or auto
+    let placementString;
+    let movableLimits = null
     if (typeof node == "string") 
       name = node.val;
     if (!node || (node.nodeName !== 'mi' && node.nodeName !== 'mo'))
@@ -44,21 +54,25 @@ function Startup() {
     }
     // Now copy node attributes to nameData, when they exist
     if (node) {
-      if (node.hasAttribute("type")) nodeData.type = node.getAttribute("type").charAt(0);
-      if (node.hasAttribute("builtin")) nodeData.builtin = node.getAttribute("builtin");
-      if (node.hasAttribute("lp")) nodeData.lp = node.getAttribute("lp");
-      if (node.hasAttribute("enginefunction")) nodeData.engine = node.getAttribute("enginefunction")==="true"?true:false;
-      if (node.hasAttribute("movableLimits")) nodeData.movableLimits = node.getAttribute("movableLimits");
-      if (node.hasAttribute("size")) nodeData.size = node.getAttribute("size");
+      if (node.hasAttribute("type")) nameData.type = node.getAttribute("type").charAt(0);
+      if (node.hasAttribute("builtin")) nameData.builtin = node.getAttribute("builtin");
+      if (node.hasAttribute("msiLimitPlacement")) {
+        lp = node.getAttribute("msiLimitPlacement");
+        if (lp === 'msiLimitsAtRight') placementString = 'atRight';
+        else if (lp === 'msiLimitsAboveBelow') placementString = 'aboveBelow';
+        else {
+          movableLimits = 'true';
+          placementString = 'auto';
+        }
+      }
+      if (node.hasAttribute("enginefunction")) nameData.engine = node.getAttribute("enginefunction")==="true"?true:false;
+      if (node.hasAttribute("size")) nameData.size = node.getAttribute("size");
     }
-    // Now set up the dialog contents
-    if (nameData.val) document.getElementById(mathNamesBox).value = nameData.val;
-    if (nameData.type) document.getElementById(nameTypeRadioGroup).value = nameData.type;
-    if (nameData.type === 'o') { // enable operator-only stuff
-      document.getElementById('operatorLimitPlacementRadioGroup').disabled = false;
-    }
+    if (nameData.val) document.getElementById('mathNamesBox').value = nameData.val;
+    if (nameData.type) document.getElementById('nameTypeRadioGroup').value = nameData.type;
+    document.getElementById('operatorLimitPlacementRadioGroup').disabled = nameData.type !== 'o';
     document.getElementById('enginefunction').checked = nameData.engine;
-
+    document.getElementById('operatorLimitPlacementRadioGroup').value = placementString;
   }
   catch(e){
     dump("Error: "+e.toString()+"\n");
@@ -141,8 +155,9 @@ function Startup() {
 //  "built-in" ones? Solution proposed for now will be to use one file, and mark built-in ones as such.?)
 function updateControls()
 {
-  var theType = document.getElementById("nameTypeRadioGroup").value;
   var currName = document.getElementById("mathNamesBox").value;
+  let nameData = namesdict.getNameData(currName);
+  var theType = document.getElementById("nameTypeRadioGroup").value;
   var bIsNew = namesdict.getNameData(currName) != null;
   var nameTypeControls = ["nameTypeGroup", "nameTypeLabel", "nameTypeRadioGroup"];
   // enableControlsByID(nameTypeControls, bIsNew);
@@ -266,36 +281,38 @@ function checkKeyPressEvent(control, theEvent)
 ////Now hopefully continue processing as usual.
 //}
 
-function changeName(currName)
-{
-  var nameObject = null;
-  if (currName in gDialog.nameList.names)
-    nameObject = gDialog.nameList.names[currName];
-  setControlsFromObject(nameObject);
+function setNameDefaults(nameObject) {
+  let type;
+  if (nameObject) {  // name is already in list, so we copy the default settings for this name
+    document.getElementById("enginefunction").checked = nameObject.engine;
+    document.getElementById("builtin").value = nameObject.builtin;
+    type = nameObject.type;
+  }
+  else { //set defaults
+    document.getElementById("enginefunction").checked = false;
+    document.getElementById("builtin").value = true;
+    type = "v";
+  }
+  document.getElementById("nameTypeRadioGroup").value = type;
+  changeType(type, nameObject);
 }
 
-function setControlsFromObject(nameData)
+function changeName(currName)
 {
-//  var currName = document.getElementById("mathNamesBox").value;
-  var theType = document.getElementById("nameTypeRadioGroup").value;
-  var isEngineFunction = false;
-  if (nameData != null)
-  {
-    theType = nameData.type;
-    if (("engineFunction" in nameData) && (nameData.engineFunction == true))
-      isEngineFunction = true;
-  }
-  else if (theType == null || theType.length == 0)
-    theType = "function";
-  document.getElementById("nameTypeRadioGroup").value = theType;
-  if (isEngineFunction)
-    document.getElementById("enginefunction").setAttribute("checked", "true");
-  else
-    document.getElementById("enginefunction").setAttribute("checked", "false");
-//  if (event != null)
-//    event.stopPropagation();
-  updateControls();
+  var nameObject = namesdict.getNameData(currName);
+  setNameDefaults(nameObject);
 }
+
+function changeType(type, nameObject) {
+  if (type === 'o') { // object. Set lp, movableLimits, size
+    document.getElementById('operatorLimitPlacementRadioGroup').disabled = false;
+    document.getElementById('operatorLimitPlacementRadioGroup').value = nameObject.lp;
+  }
+  else {
+    document.getElementById('operatorLimitPlacementRadioGroup').disabled = true;
+  }
+}
+
 
 //This function will add the current name to the listbox, and to the local gDialog.nameList.
 //Writing to the XML file, and updating the prototype mathNameList, occurs onOK?? Or is this wrong?
@@ -315,8 +332,8 @@ function addCurrentName(bNoUpdate)
   gDialog.nameList.addName(currName, theType, bEngineFunction, bAutoSubstitute, aLimitPlacement, appearanceList);
   gDialog.nameList.updateBaseList();  //see msiEditorUtilities.js
 
-  if (!bNoUpdate)
-    updateControls();
+  // if (!bNoUpdate)
+  //   updateControls();
 }
 
 function deleteCurrentName()
@@ -325,24 +342,42 @@ function deleteCurrentName()
   gDialog.nameList.deleteName(currName);
   gDialog.nameList.updateBaseList();  //see msiEditorUtilities.js
 
-  updateControls();
+  // updateControls();
 }
+
+function isBuiltIn(name) {
+  try {
+    return namesdict.getNameData(name).builtin;
+  }
+  catch(e) {
+    return false;
+  }
+}
+
+
 
 function onOK() {
   var currName = document.getElementById("mathNamesBox").value;
+  var movableLimits;
+  let isOperator;
+  let type = document.getElementById('nameTypeRadioGroup').value;
+  let limplacement = document.getElementById("operatorLimitPlacementRadioGroup").value;
   namesdict.setNameData(currName, 
-    document.getElementById('nameTypeRadioGroup').value,
-    null,
-    document.getElementById("operatorLimitPlacementRadioGroup").value,
-    document.getElementById("enginefunction").checked );
- 
-  var parentEditorElement = msiGetParentEditorElementForDialog(window);
-  var theWindow = window.opener;
-    theWindow.insertMathname(currName, parentEditorElement);
+    type,
+    isBuiltIn(currName),
+    type==='o'?limplacement:'',
+    type==='o'?(document.getElementById("enginefunction").checked ):'',
+    (type==='o' && limplacement==='auto')?'true':'',
+    null);
 
-  SaveWindowLocation();
+  let nameData = namesdict.getNameData(currName)
+  var parentEditorElement = msiGetParentEditorElementForDialog(window);
+  if (saveNode) {
+    reviseMathname(saveNode, nameData, parentEditorElement);
+  } else {
+    insertMathname(nameData.val);
+  }
   return true;
-//  return bRevise;
 }
 
 
