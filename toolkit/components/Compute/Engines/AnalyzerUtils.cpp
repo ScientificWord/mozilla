@@ -999,6 +999,8 @@ PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, cons
       rv = POI_distribution;
     else if (StringEqual(op_name, "BetaDist"))
       rv = POI_distribution;
+    else if (StringEqual(op_name, "simplify"))
+      rv = POI_function;
     break;
 
   case 9:
