@@ -955,6 +955,7 @@ factor<uID7.1.41>prefix,47
 expand<uID7.1.42>prefix,47
 solve<uID7.1.43>prefix,47
 float<uID7.1.44>prefix,47
+simplify<uID7.1.45>prefix,47
 
 
 
@@ -995,6 +996,7 @@ ln<uID1.10.2>1
 exp<uID1.10.3>1
 factor<uID1.9.8>1
 float<uID7.1.44>1
+simplify<uID7.1.45>1
 <END_CONTEXT_TRIGARGFUNCS>
 
 ;The following identifiers are treated as functions during Fixup.
