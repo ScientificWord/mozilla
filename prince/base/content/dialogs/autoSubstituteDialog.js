@@ -567,7 +567,7 @@ function setSubstitutionControlFromSub(autoSubName)
   if (theEditor == null)
   {
     gDialog.bEditorReady = false;
-    dump("Calling autoSubstituteDialog.setSubstitutionControlFromSub [" + autoSubName + "]; editor not reported ready yet.\n");
+    dump("&msgCalling autoSubstituteDialog.setSubstitutionControlFromSub [" + autoSubName + "]; &msgEditorNotReady\n");
     return;
   }
 //  var theEditor = theEditorElement.getHTMLEditor();
@@ -683,14 +683,14 @@ function checkSubstitutionControl(editControl)
 {
   if (!gDialog.bEditorReady)
   {
-    dump("Calling autoSubstituteDialog.checkSubstitutionControl; editor not reported ready yet.\n");
+    dump("&msgCalling autoSubstituteDialog.checkSubstitutionControl; &msgEditorNotReady\n");
     return;
   }
   var editor = null;
   try
   {
     editor = editControl.getHTMLEditor(editControl.contentWindow);
-  } catch(exc) {dump("In autoSubstituteDialog.checkSubstitutionControl, getHTMLEditor() returned exception" + exc + "\n"); editor = null;}
+  } catch(exc) {dump("&msgIn autoSubstituteDialog.checkSubstitutionControl, getHTMLEditor() &msgReturnedException" + exc + "\n"); editor = null;}
 
   if (!editor)
     return;
@@ -700,7 +700,7 @@ function checkSubstitutionControl(editControl)
   var theContext = document.getElementById("autosubContextRadioGroup").value;
   var bNonEmpty = gDialog.substContentFilter.hasNonEmptyContent( (theContext == "math") );
 //  var bNonEmpty = !editor.documentIsEmpty;
-  dump("In autoSubstituteDialog.js, checkSubstitutionControl, editor.documentModified returns [" + bModified + "] and editor.documentIsEmpty returns [" + editor.documentIsEmpty + "].\n");
+  dump("&msgIn autoSubstituteDialog.js, checkSubstitutionControl, editor.documentModified &msgReturns [" + bModified + "] and editor.documentIsEmpty returns [" + editor.documentIsEmpty + "].\n");
   if (bModified != gDialog.bDataModified || bNonEmpty != gDialog.bDataNonEmpty)
   {
     gDialog.bDataModified = bModified;
@@ -743,7 +743,7 @@ function checkKeyPressEvent(control, theEvent)
         gDialog.bStopNextEnter = false;
         if (!control)
         {
-          dump("Null control in checkKeyPressEvent!\n");
+          dump("&msgNullControl\n");
           control = document.getElementById("keystrokesBox");
         }
         control.controller.handleEnter(false);
@@ -786,7 +786,7 @@ function changePattern(currPattern)
     theType = "substitution";
   if (gDialog.bIsNew && !bWasNew)
     newType = "substitution";
-  dump("In autoSubstituteDialog.js, changePattern(); new key pattern is [" + currPattern + "], gDialog.bIsNew is [" + gDialog.bIsNew + "], sub type is [" + newType + "], and context is [" + theContext + "].\n");
+  dump("&msgIn autoSubstituteDialog.js, &msgChangePattern [" + currPattern + "], gDialog.bIsNew &msgIs [" + gDialog.bIsNew + "], &msgSubTypeIs [" + newType + "], &msgContextIs [" + theContext + "].\n");
   dump("autoSubstituteDialog.js 3\n");
   document.getElementById("autosubTypeRadioGroup").value = newType;
   document.getElementById("autosubContextRadioGroup").value = theContext;
@@ -889,7 +889,7 @@ function onOK() {
       gDialog.subsList.enableAutoSubstitution(false, disableFlags);
     if (enableFlags != 0)
       gDialog.subsList.enableAutoSubstitution(true, enableFlags);
-  } catch(ex) {dump("Exception in autoSubstituteDialog.js OnOK(); exception is [" + ex + "].\n");}
+  } catch(ex) {dump("&msgExceptionIn autoSubstituteDialog.js OnOK(); &msgExceptionIs [" + ex + "].\n");}
 
   SaveWindowLocation();
   return true;
