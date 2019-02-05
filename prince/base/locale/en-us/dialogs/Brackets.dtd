@@ -39,7 +39,7 @@
 <!ENTITY RightParenthesis.tooltip  "Right parenthesis">
 <!ENTITY RightAbsValue.tooltip  "Right absolute value">
 
-<!Message strings>
+<!-- Message strings -->
 <!ENTITY strProblemIn "Problem in">
 <!ENTITY strNoFenceNode "fence node not found!">
 <!ENTITY strNoChildren "fence node has no children!">
