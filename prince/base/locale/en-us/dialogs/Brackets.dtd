@@ -39,4 +39,14 @@
 <!ENTITY RightParenthesis.tooltip  "Right parenthesis">
 <!ENTITY RightAbsValue.tooltip  "Right absolute value">
 
+<!Message strings>
+<!ENTITY strProblemIn "Problem in">
+<!ENTITY strNoFenceNode "fence node not found!">
+<!ENTITY strNoChildren "fence node has no children!">
+<!ENTITY strNoIdForLeftBracket "drawSample! Replacement left bracket has lost the id attribute.">
+<!ENTITY strNoIdForRightBracket "drawSample! Replacement right bracket has lost the id attribute.">
+<!ENTITY strNoFormForRightBracket "drawSample! Replacement right bracket has lost the form attribute.">
+<!ENTITY strNoFenceForRightBracket "drawSample! Replacement right bracket has lost the fence attribute.">
+<!ENTITY strRightBracketNotStretchy "drawSample! Replacement right bracket has lost the stretchy attribute.">
+
  
