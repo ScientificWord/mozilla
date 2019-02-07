@@ -517,7 +517,7 @@ var msiReviseMathnameCmd =
     var mathNameData = new Object();
     mathNameData.reviseObject = theMathname;
     var argArray = [mathNameData];
-    msiOpenModelessPropertiesDialog("chrome://prince/content/mathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
+    msiOpenModelessPropertiesDialog("chrome://prince/content/mathmlMathName.xul", "_blank", "chrome,close,titlebar,dependent",
                                      editorElement, "cmd_MSIreviseMathnameCmd", theMathname, argArray);
     // var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/mathmlMathName.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
     //                                                  editorElement, "cmd_MSIreviseMathnameCmd", theMathname, mathNameData);
