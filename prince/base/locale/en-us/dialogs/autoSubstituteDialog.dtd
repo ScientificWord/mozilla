@@ -35,3 +35,12 @@
 <!ENTITY removeButton.label "Remove">
 <!ENTITY removeButton.accesskey "R">
 
+<!-- Strings used in error messages -->
+
+<!ENTITY msgCalling "Calling">
+<!ENTITY msgEditorNotReady "editor not reported ready yet.">
+<!ENTITY msgIn "In">
+<!ENTITY msgReturnedException "returned exception">
+<!ENTITY msgReturns "returns">
+<!ENTITY msgNullReturn "Null control in checkKeyPressEvent!">
+
