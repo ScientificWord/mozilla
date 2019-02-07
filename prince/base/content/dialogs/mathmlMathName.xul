@@ -73,14 +73,14 @@
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="mathnames" 
           tooltiptext="&mathNamesBox.tooltip;"   
           onfocus="this.select();"
-          onblur="changeName(this.value);"
-          ontextentered="changeName(this.value);"/>
+          onblur="setCurrentName();"
+          ontextentered="setCurrentName();updateControls()"/>
 <!--            
          onkeypress="checkKeyPressEvent(this, event);" -->
       </groupbox>
       <groupbox id="nameTypeGroup">
         <caption label="&nameType.label;" id="nameTypeLabel"/>
-        <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="changeType(this.value);" value="v">
+        <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="" value="v">
           <radio id="typeOperator" label="&typeOperator.label;" value="o" accesskey="&typeOperator.accesskey;"/>
           <radio id="typeFunction" label="&typeFunction.label;" value="f" accesskey="&typeFunction.accesskey;"/>
           <radio id="typeVariable" label="&typeVariable.label;" value="v" accesskey="&typeVariable.accesskey;"/>
@@ -116,7 +116,7 @@
       <!-- /groupbox -->
     </vbox>
     <vbox>
-      <msibutton id="addButton" label="&addButton.label;" accesskey="&addButton.accesskey;" oncommand="addCurrentName();" />
+      <msibutton id="addButton" label="&addButton.label;" accesskey="&addButton.accesskey;" oncommand="save();" />
       <msibutton id="deleteButton" label="&deleteButton.label;" accesskey="&deleteButton.accesskey;" oncommand="deleteCurrentName();" />
  
     </vbox>
