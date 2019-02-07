@@ -79,73 +79,12 @@ function Startup() {
   }
 }
 
-// function isPropertiesDialog()
-// {
-//   return ( ("reviseObject" in inputData) && (inputData.reviseObject != null) );
-// }
+function currentName() {
+  return document.getElementById("mathNamesBox").value;
+}
 
-// function getPropertiesDialogTitle()
-// {
-//   return document.getElementById("propertiesTitle").value;
-// }
 
-// function getDataFromPropertiesObject(reviseObject)
-// {
-//   var mathNameNode = msiNavigationUtils.getWrappedObject(reviseObject, "mathname");
-//   if (!mathNameNode)
-//     return null;
 
-//   var retObject = new Object();
-//   if ("msimathnameText" in reviseObject)
-//     retObject.val = reviseObject.msimathnameText;
-//   else if ( (mathNameNode != reviseObject) && ("msimathnameText" in mathNameNode) )
-//     retObject.val = mathNameNode.msimathnameText;
-//   else  //get it from mathNameObject?
-//     retObject.val = msiNavigationUtils.getLeafNodeText(mathNameNode);
-
-//   var styleVals = new Object();
-//   styleVals["displaystyle"] = "";
-//   var foundAttrs = new Object();
-//   var styleNode = msiNavigationUtils.findStyleEnclosingObj(mathNameNode, "mathname", styleVals, foundAttrs);
-
-//   switch(mathNameNode.nodeName)
-//   {
-//     case "mo":
-//       retObject.type = "operator";
-//       retObject.limitPlacement = "auto";
-//       //Now work out the "size" and "limitplacement" stuff:
-//       if (mathNameNode.hasAttribute("msiLimitPlacement"))
-//       {
-//         if (mathNameNode.getAttribute("msiLimitPlacement") == "msiLimitsAtRight")
-//           retObject.limitPlacement = "atRight";
-//         else if (mathNameNode.getAttribute("msiLimitPlacement") == "msiLimitsAboveBelow")
-//           retObject.limitPlacement == "aboveBelow";
-//       }
-//       if ("displaystyle" in foundAttrs)
-//       {
-//         if (foundAttrs.displaystyle == "true")
-//           retObject.size = "big";
-//         else
-//           retObject.size = "small";
-//       }
-//     break;
-
-//     case "mi":
-//       retObject.type = "function";
-//       if ( ("msiclass" in mathNameNode) && (mathNameNode.msiclass == "enginefunction") )
-//         retObject.enginefunction = "true";
-//     break;
-    
-//     default:
-//     //what goes here?? Assumption should be that this is "appearance" case (that is, a complex mathname object).
-//     //However, this case should now be obsolete. Nothing goes here????
-// //      retObject.appearance = reviseObject.ownerDocument.createElement("appearance");
-// //      retObject.appearance.appendChild( mathNameNode.cloneNode(true) );
-//     break;
-//   }
-
-//   return retObject;
-// }
 
 //updateControls() here needs to disable the limitPlacementGroup if the type isn't operator. If the selected name
 //  is already in the list, the Add button should be disabled. If not, the Delete button should be. Also, the "Add automatic
@@ -155,193 +94,55 @@ function Startup() {
 //  "built-in" ones? Solution proposed for now will be to use one file, and mark built-in ones as such.?)
 function updateControls()
 {
-  var currName = document.getElementById("mathNamesBox").value;
-  let nameData = namesdict.getNameData(currName);
-  var theType = document.getElementById("nameTypeRadioGroup").value;
-  var bIsNew = namesdict.getNameData(currName) != null;
-  var nameTypeControls = ["nameTypeGroup", "nameTypeLabel", "nameTypeRadioGroup"];
-  // enableControlsByID(nameTypeControls, bIsNew);
-  var limitPlacementControls = ["limitPlacementGroup", "limitPlacementGroupCaption", "operatorLimitPlacementRadioGroup"];
-  if (theType === "operator" || theType === "function")
-  {
-    //document.getElementById("limitPlacementGroup").removeAttribute("disabled");
-    enableControlsByID(limitPlacementControls, true);
-    var thePlacement = "auto";
-    if ((currName in gDialog.nameList.names) && ("limitPlacement" in gDialog.nameList.names[currName]))
-      thePlacement = gDialog.nameList.names[currName].limitPlacement;
-    document.getElementById("operatorLimitPlacementRadioGroup").value = thePlacement;
+  var currName = currentName();
+  var bIsNew = namesdict.getNameData(currName) == null;
+  var type = document.getElementById('nameTypeRadioGroup').value;
+  var isOperator = type === 'o';
+  if (isOperator) {
+    document.getElementById('limitPlacementGroup').removeAttribute('disabled');
+  } else {
+    document.getElementById('limitPlacementGroup').setAttribute('disabled','true');
   }
-  else
-  {
-    //document.getElementById("limitPlacementGroup").setAttribute("disabled", "true");
-    enableControlsByID(limitPlacementControls, false);
+  if (currName == null || currName.length === 0) {
+    document.getElementById('deleteButton').setAttribute('disabled','true');
+  } else {
+    document.getElementById('deleteButton').removeAttribute('disabled');
   }
-
-  enableControlsByID(["addButton"], bIsNew);
-  enableControlsByID(["deleteButton"], namesdict.getNameData(currName) != null);
-
-  var bAutoSub = gDialog.nameList.hasAutoSubstitution(currName);
-  if (bAutoSub)
-    document.getElementById("addAutoSubstitution").setAttribute("checked", "true");
-  else
-    document.getElementById("addAutoSubstitution").removeAttribute("checked");
-//  var bBuiltIn = gDialog.nameList.isBuiltIn(currName);
-//  enableControlsByID(["addAutoSubstitution", "addAutoSubstitutionDescription", "enginefunction", "enginefunctionDescription"], !bBuiltIn);
-//  enableControlsByID(["addAutoSubstitution", "addAutoSubstitutionDescription", "enginefunction", "enginefunctionDescription"], !bBuiltIn);
-  // enableControlsByID(["addAutoSubstitution", "addAutoSubstitutionDescription", "enginefunction", "enginefunctionDescription"], bIsNew);
-  var dumpStr = "autosubstitution and enginefunction should be ";
-  if (!bIsNew)
-    dumpStr += "disabled";
-  else
-    dumpStr += "enabled";
-  if (bAutoSub)
-    dumpStr += " and autosubstitution is checked";
-  else
-    dumpStr += " and autosubstitution is unchecked";
-  dump(dumpStr + ".\n");
 }
 
-//function textEntered(event)
-//{
-////  var eventAttrStr = "";
-////  for (var eventAttr in event)
-////  {
-////    if (eventAttrStr.length > 0)
-////      eventAttrStr += "; [" + eventAttr + "]: [" + event[eventAttr] + "]";
-////    else
-////      eventAttrStr += "[" + eventAttr + "]: [" + event[eventAttr] + "]";
-////  }
-////  alert("Got the oninput message!\nEvent looks like: \n" + eventAttrStr);
-//  var theKey = event.charCode;
-//  if (theKey == 0 || event.altKey || event.ctrlKey || event.metaKey)
-//    return;
-//  var menuBox = document.getElementById("mathNamesBox");
-//  var inputBox = menuBox.inputField;
-//  var currText = inputBox.value;
-//  var newText = "";
-//  if (inputBox.selectionStart > 0)
-//    newText = currText.substr(0, inputBox.selectionStart);
-//  newText += String.fromCharCode(theKey);
-//  if (inputBox.selectionEnd < currText.length)
-//    newText += currText.substr(inputBox.selectionEnd);
-////  alert("Original text was [" + currText + "]; new text is [" + newText + "].\n");
-//  inputBox.value = newText;
-//  var nCurrMatchPos = -1;
-//  var nChars = newText.length;
-//  for (var ix = 0; ix < menuBox.menupopup.childNodes.length; ++ix)
-//  {
-//    var entry = menuBox.menupopup.childNodes[ix].value;
-//    if (entry.substr(0, nChars) == newText)
-//    {
-//      nCurrMatchPos = ix;
-//      break;
-//    }
-//  }
-//  if (nCurrMatchPos >= 0)
-//  {
-//    dump("Text [" + newText + "] matches beginning of [" + menuBox.menupop.childNodes[nCurrMatchPos].value + "] at position [" + nCurrMatchPos + "].\n");
-//    //how do we select in the listbox without replacing the text?
-//  }
-//  document.getElementById("mathNamesBox").value = newText;
-//
-//  event.stopPropagation();
-//  event.preventDefault();
-//
-//  changeName();
-//}
 
 function checkKeyPressEvent(control, theEvent)
 {
 }
-//if (!theEvent.altKey)
-//{
-//  if (theEvent.keyCode==KeyEvent.DOM_VK_RETURN)
-//  {
-//    if (gDialog.bStopNextEnter)
-//    {
-//      gDialog.bStopNextEnter = false;
-//      if (!control)
-//      {
-//        dump("Null control in checkKeyPressEvent!\n");
-//        control = document.getElementById("mathNamesBox");
-//      }
-//      control.controller.handleEnter(false);
-//      theEvent.stopPropagation();
-//      theEvent.preventDefault();
-//      dumpStr += "called theEvent.stopPropagation().\n";
-//    }
-//  }
-//  else //now we're typing into the name field, so we assume we should stop the next enter from accepting the dialog
-//  {
-//    gDialog.bStopNextEnter = true;
-//    dumpStr += "setting gDialog.bStopNextEnter.\n";
-//  }
-//}
-//dump(dumpStr);
-////Now hopefully continue processing as usual.
-//}
 
-function setNameDefaults(nameObject) {
-  let type;
-  if (nameObject) {  // name is already in list, so we copy the default settings for this name
-    document.getElementById("enginefunction").checked = nameObject.engine;
-    document.getElementById("builtin").value = nameObject.builtin;
-    type = nameObject.type;
-  }
-  else { //set defaults
-    document.getElementById("enginefunction").checked = false;
-    document.getElementById("builtin").value = true;
-    type = "v";
-  }
-  document.getElementById("nameTypeRadioGroup").value = type;
-  changeType(type, nameObject);
+var defaultNameData = {
+  val: '',
+  type: 'v',
+  builtin: null,
+  engine: false,
+  // movable limits?
+  size: null
+};
+
+function setDialogDefaults(nameData) {
+  // when a new name is selected (or when the dialog is initialized) all
+  // fields other than the name should have initial values saved.
+  if (!nameData) nameData = defaultNameData;
+  if (nameData.val) document.getElementById('mathNamesBox').value = nameData.val;
+  if (nameData.type) document.getElementById('nameTypeRadioGroup').value = nameData.type;
+  if (nameData.lp) document.getElementById('operatorLimitPlacementRadioGroup').value = nameData.lp;
+  document.getElementById('enginefunction').checked = !!nameData.engine;
 }
 
-function changeName(currName)
-{
-  var nameObject = namesdict.getNameData(currName);
-  setNameDefaults(nameObject);
-}
-
-function changeType(type, nameObject) {
-  if (type === 'o') { // object. Set lp, movableLimits, size
-    document.getElementById('operatorLimitPlacementRadioGroup').disabled = false;
-    document.getElementById('operatorLimitPlacementRadioGroup').value = nameObject.lp;
-  }
-  else {
-    document.getElementById('operatorLimitPlacementRadioGroup').disabled = true;
-  }
-}
-
-
-//This function will add the current name to the listbox, and to the local gDialog.nameList.
-//Writing to the XML file, and updating the prototype mathNameList, occurs onOK?? Or is this wrong?
-function addCurrentName(bNoUpdate)
-{
-  var currName = document.getElementById("mathNamesBox").value;
-  var theType = document.getElementById("nameTypeRadioGroup").value;
-  var bEngineFunction = (document.getElementById("enginefunction").getAttribute("checked") == "true");
-  var bAutoSubstitute = (document.getElementById("addAutoSubstitution").getAttribute("checked") == "true");
-  var aLimitPlacement = "";
-  if (theType == "operator")
-    aLimitPlacement = document.getElementById("operatorLimitPlacementRadioGroup").value;
-  var appearanceList = null;
-//  var bEngFuncStr = bEngineFunction ? "true" : "false";
-//  var bAutoSubStr = bAutoSubstitute ? "true" : "false";
-//  alert("Calling to add name: [" + currName + "], of type [" + theType + "], with bEngineFunction [" + bEngFuncStr + "] and bAutoSubstitute [" + bAutoSubStr + "].\n");
-  gDialog.nameList.addName(currName, theType, bEngineFunction, bAutoSubstitute, aLimitPlacement, appearanceList);
-  gDialog.nameList.updateBaseList();  //see msiEditorUtilities.js
-
-  // if (!bNoUpdate)
-  //   updateControls();
-}
 
 function deleteCurrentName()
 {
-  var currName = document.getElementById("mathNamesBox").value;
-  gDialog.nameList.deleteName(currName);
-  gDialog.nameList.updateBaseList();  //see msiEditorUtilities.js
 
+  // BBM: needs work
+  var currName = currentName();
+  namesdict.remove(currName);
+  document.getElementById('mathNamesBox').value = '';
+  setDialogDefaults(null);
   // updateControls();
 }
 
@@ -354,23 +155,33 @@ function isBuiltIn(name) {
   }
 }
 
-
-
-function onOK() {
-  var currName = document.getElementById("mathNamesBox").value;
-  var movableLimits;
-  let isOperator;
+function setCurrentName() {
+  // save the current mathname info in the math name list
+  // so it will get included for save. This also returns itn
+  // current info for onOk.
   let type = document.getElementById('nameTypeRadioGroup').value;
   let limplacement = document.getElementById("operatorLimitPlacementRadioGroup").value;
-  namesdict.setNameData(currName, 
-    type,
-    isBuiltIn(currName),
-    type==='o'?limplacement:'',
-    type==='o'?(document.getElementById("enginefunction").checked ):'',
-    (type==='o' && limplacement==='auto')?'true':'',
-    null);
+  let name = document.getElementById('mathNamesBox').value;
+  let engine;
+  if (type === 'o') {
+    engine = document.getElementById("enginefunction").checked;
+  }
+  else engine = null;
+  return namesdict.setNameData(name, type, isBuiltIn(name), limplacement, engine);
+}
 
-  let nameData = namesdict.getNameData(currName)
+function save() {
+  try {
+    setCurrentName();
+    namesdict.save(); 
+    writeStatusMessage("Complete math name list saved");    
+  }
+  catch(e) {
+  }
+}
+
+function onOK() {
+  let nameData = setCurrentName();
   var parentEditorElement = msiGetParentEditorElementForDialog(window);
   if (saveNode) {
     reviseMathname(saveNode, nameData, parentEditorElement);
