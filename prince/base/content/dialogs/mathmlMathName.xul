@@ -74,13 +74,11 @@
           tooltiptext="&mathNamesBox.tooltip;"   
           onfocus="this.select();"
           onblur="setCurrentName();"
-          ontextentered="setCurrentName();updateControls()"/>
-<!--            
-         onkeypress="checkKeyPressEvent(this, event);" -->
+          ontextentered="updateControls({val: this.value});"/>
       </groupbox>
       <groupbox id="nameTypeGroup">
         <caption label="&nameType.label;" id="nameTypeLabel"/>
-        <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="" value="v">
+        <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="updateControls({type: this.value});" value="v">
           <radio id="typeOperator" label="&typeOperator.label;" value="o" accesskey="&typeOperator.accesskey;"/>
           <radio id="typeFunction" label="&typeFunction.label;" value="f" accesskey="&typeFunction.accesskey;"/>
           <radio id="typeVariable" label="&typeVariable.label;" value="v" accesskey="&typeVariable.accesskey;"/>
