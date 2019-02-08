@@ -171,15 +171,20 @@ function save() {
 }
 
 function onOK() {
-  let nameData = setCurrentName();
-  var parentEditorElement = msiGetParentEditorElementForDialog(window);
-  if (saveNode) {
-    reviseMathname(saveNode, nameData, parentEditorElement);
-  } else {
-    insertMathname(nameData.val);
+  try {
+    let nameData = setCurrentName();
+    var parentEditorElement = msiGetParentEditorElementForDialog(window);
+    if (saveNode) {
+      window.opener.reviseMathname(saveNode, nameData, parentEditorElement);
+    } else {
+      window.opener.insertMathname(nameData.val);
+    }
+    if (document.getElementById('addAutoSubstitution').checked)
+      addAutosub(nameData.val);
   }
-  if (document.getElementById('addAutoSubstitution').checked)
-    addAutosub(nameData.val);
+  catch(e) {
+    return true;
+  }
   return true;
 }
 
