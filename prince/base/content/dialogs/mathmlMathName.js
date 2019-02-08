@@ -54,7 +54,7 @@ function Startup() {
     }
     // Now copy node attributes to nameData, when they exist
     if (node) {
-      if (node.hasAttribute("type")) nameData.type = node.getAttribute("type").charAt(0);
+      nameData.type = node.getAttribute("type").charAt(0) || defaultNameData.type;
       if (node.hasAttribute("builtin")) nameData.builtin = node.getAttribute("builtin");
       if (node.hasAttribute("msiLimitPlacement")) {
         lp = node.getAttribute("msiLimitPlacement");
@@ -70,9 +70,9 @@ function Startup() {
     }
     if (nameData.val) document.getElementById('mathNamesBox').value = nameData.val;
     if (nameData.type) document.getElementById('nameTypeRadioGroup').value = nameData.type;
-    document.getElementById('operatorLimitPlacementRadioGroup').disabled = nameData.type !== 'o';
     document.getElementById('enginefunction').checked = nameData.engine;
     document.getElementById('operatorLimitPlacementRadioGroup').value = placementString;
+    updateControls(nameData);
   }
   catch(e){
     dump("Error: "+e.toString()+"\n");
@@ -83,36 +83,24 @@ function currentName() {
   return document.getElementById("mathNamesBox").value;
 }
 
-
-
-
 //updateControls() here needs to disable the limitPlacementGroup if the type isn't operator. If the selected name
 //  is already in the list, the Add button should be disabled. If not, the Delete button should be. Also, the "Add automatic
 //  substitution" checkbox should be disabled if it's already in that list.
-//(Q. Do we want to also disable deleting certain core MathNames? This seems to have been done in SWP, so I guess so.
-//  How are they to be identified? Or should there be two files containing MathNames, one for "user" names and one for
-//  "built-in" ones? Solution proposed for now will be to use one file, and mark built-in ones as such.?)
-function updateControls()
+
+// the parameter 'changed' is a nameData object with only those elements that have just changed 
+function updateControls( changed )
 {
-  var currName = currentName();
+  var currName = (changed.val) || currentName();
   var bIsNew = namesdict.getNameData(currName) == null;
-  var type = document.getElementById('nameTypeRadioGroup').value;
+  var type = changed.type || document.getElementById('nameTypeRadioGroup').value;
   var isOperator = type === 'o';
-  if (isOperator) {
-    document.getElementById('limitPlacementGroup').removeAttribute('disabled');
-  } else {
-    document.getElementById('limitPlacementGroup').setAttribute('disabled','true');
+  if (isOperator && (changed.type || changed.val)) {
+    document.getElementById('limitPlacementAboveBelow').removeAttribute('disabled');
+    document.getElementById('limitPlacementAtRight').removeAttribute('disabled');
+  } else if (changed.type || changed.val) {
+    document.getElementById('limitPlacementAboveBelow').setAttribute('disabled','true');
+    document.getElementById('limitPlacementAtRight').setAttribute('disabled','true');
   }
-  if (currName == null || currName.length === 0) {
-    document.getElementById('deleteButton').setAttribute('disabled','true');
-  } else {
-    document.getElementById('deleteButton').removeAttribute('disabled');
-  }
-}
-
-
-function checkKeyPressEvent(control, theEvent)
-{
 }
 
 var defaultNameData = {
@@ -167,7 +155,9 @@ function setCurrentName() {
     engine = document.getElementById("enginefunction").checked;
   }
   else engine = null;
-  return namesdict.setNameData(name, type, isBuiltIn(name), limplacement, engine);
+  let nameData = namesdict.setNameData(name, type, isBuiltIn(name), limplacement, engine);
+  updateControls(nameData);
+  return nameData;
 }
 
 function save() {
@@ -188,8 +178,22 @@ function onOK() {
   } else {
     insertMathname(nameData.val);
   }
+  if (document.getElementById('addAutoSubstitution').checked)
+    addAutosub(nameData.val);
   return true;
 }
+
+function addAutosub(name) {
+  var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+  var context = Components.interfaces.msiIAutosub.CONTEXT_MATHONLY;
+  var action = Components.interfaces.msiIAutosub.ACTION_EXECUTE;
+  var theData = 'insertMathname(\'' + name + '\', true);';
+  var bAdded = autosub.addEntry( name, context, action, theData, '', ''); 
+  //var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+  //ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+  //ACSA.addString("autosubstitution", name);
+}
+
 
 
 function onCancel() {
