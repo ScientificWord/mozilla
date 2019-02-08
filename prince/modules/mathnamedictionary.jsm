@@ -118,18 +118,23 @@ var namesdict = {
 // setNameData allows entering a new mathname or updating properties of an existing one.
 // Pass nulls to those properties that shouldn't be changed.
   setNameData: function setNameData(name, type, builtin, lp, engine) {
-    this.init();
-    let obj = this.getNameData(name);
-    if (!obj) { // if it doesn't exist, create a new one.
-      obj = {val: name};  // and add it to the list.
-      this.namelistobjs.push(obj); 
-      this.addNameToStringList(obj, false);  
-    } 
-    if (type != null) obj.type = type;
-    if (builtin != null) obj.builtin = builtin;
-    if (lp != null) obj.lp = lp;
-    if (engine != null) obj.engine = engine;
-    return obj;
+    try {
+      this.init();
+      let obj = this.getNameData(name);
+      if (!obj) { // if it doesn't exist, create a new one.
+        obj = {val: name};  // and add it to the list.
+        this.namelistobjs.push(obj); 
+        this.addNameToStringList(obj, false);  
+      } 
+      if (type != null) obj.type = type;
+      if (builtin != null) obj.builtin = builtin;
+      if (lp != null) obj.lp = lp;
+      if (engine != null) obj.engine = engine;
+      return obj; 
+    }
+    catch (e ) {
+      return null;
+    }
   },
 
   reset: function() {
