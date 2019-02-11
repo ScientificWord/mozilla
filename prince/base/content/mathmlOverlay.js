@@ -2401,12 +2401,24 @@ function addTextToElement( element, text)
 
 function nodeFromNameData(nameData, editorElement) {
   let node;
+  let type;
   if (nameData.type === "o")
     node = editorElement.contentDocument.createElementNS(mmlns, "mo");
   else
     node = editorElement.contentDocument.createElementNS(mmlns, "mi");
+  switch (nameData.type) {
+    case 'o' : type = 'operator';
+          break;
+    case 'f' : type = 'function';
+          break;
+    default : type = 'variable';
+          break;
+  }
   node.setAttribute("msimathname","true"); 
   addTextToElement(node, nameData.val);
+  node.setAttribute("val",nameData.val);
+  node.setAttribute("type", type);
+
 
   if (nameData.engine)
   {
@@ -2414,29 +2426,27 @@ function nodeFromNameData(nameData, editorElement) {
   }
   if (nameData.type == "o")
   {
-    var bMovableLimits = "true";
+    if (nameData.lp && nameData.lp === 'auto') {
+      node.setAttribute("movablelimits", 'true');
+    }
     var limitPlacement = "";
-    var sizeSpec = "auto";
+    // var sizeSpec = "auto";
     if (nameData.lp && nameData.lp !== "auto")
     {
-      bMovableLimits = "false";
       if (nameData.lp === "atRight")
         limitPlacement = "msiLimitsAtRight";
       else if (nameData.lp === "aboveBelow")
         limitPlacement = "msiLimitsAboveBelow";
-      else
-        bMovableLimits = "true";
       node.setAttribute("msiLimitPlacement",limitPlacement);
-      node.setAttribute("movablelimits", bMovableLimits);
     }
     if ("size" in nameData)
     {
       sizeSpec = nameData.size;
+      node.setAttribute("size", sizeSpec);
     }
     // if (bMovableLimits == "false") {
     //   node.setAttribute("largeop", "true");
     // }
-    node.setAttribute("size", sizeSpec);
   }
   return node;
 }
