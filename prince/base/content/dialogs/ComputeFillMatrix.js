@@ -10,7 +10,7 @@ var msiFillMatrixEditorDocumentObserver =
 //  this.observe = function(aSubject, aTopic, aData)
   observe: function(aSubject, aTopic, aData)
   {
-    dump("ComputeFillMatrix observer hit!\n");
+    dump("ComputeFillMatrix &msgObserverHit\n");
 //    var editor = msiGetEditor(editorElement);
     switch(aTopic)
     {
@@ -33,7 +33,7 @@ function Startup(){
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   if (!editor) {
-    AlertWithTitle("Error", "No editor found in ComputeFillMatrix Startup! Closing dialog window...");
+    AlertWithTitle("&msgError", "&msgNoEditor ComputeFillMatrix &msgCloseWindow");
     window.close();
     return;
   }
@@ -110,7 +110,7 @@ function OK(){
     var doc = document.getElementById("fillmat-content-frame").contentDocument;
     var mathnodes = doc.getElementsByTagName("math");
     if (mathnodes.length === 0) {
-      dump("No math in center field!\n");
+      dump("&msgNoMathInCenter\n");
       return false;  // should leave dialog up but doesn't seem to work
     }
     data.expr = GetMathAsString(mathnodes[0]);
