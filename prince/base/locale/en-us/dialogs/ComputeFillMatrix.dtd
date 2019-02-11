@@ -20,3 +20,11 @@
 <!ENTITY Rows.label "Rows">
 <!ENTITY Columns.label  "Columns">
 <!ENTITY  ItemFunctionListCaption.label "Item/Function/List:">
+
+<!--  Error messages -->
+
+<!ENTITY msgObserverHit "observer hit!">
+<!ENTITY msgError "Error">
+<!ENTITY msgNoEditor "No editor found in">
+<!ENTITY msgCloseWindow "Startup! Closing dialog window...">
+<!ENTITY msgNoMathInCenter "No math in center field!">
