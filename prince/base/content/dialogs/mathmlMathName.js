@@ -194,9 +194,6 @@ function addAutosub(name) {
   var action = Components.interfaces.msiIAutosub.ACTION_EXECUTE;
   var theData = 'insertMathname(\'' + name + '\', true);';
   var bAdded = autosub.addEntry( name, context, action, theData, '', ''); 
-  //var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-  //ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-  //ACSA.addString("autosubstitution", name);
 }
 
 
