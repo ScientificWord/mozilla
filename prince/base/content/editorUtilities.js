@@ -40,7 +40,7 @@
 
 /**** NAMESPACES ****/
 var XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-var kDisplayModeSource = 2;
+vr kDisplayModeSource = 2;
 
 // Each editor window must include this file
 // Variables  shared by all dialogs:
@@ -648,7 +648,7 @@ function TextIsURI(selectedText)
 
 function IsUrlAboutBlank(urlString)
 {
-  return (urlString == "about:blank");
+  return (urlString === "about:blank");
 }
 
 function MakeRelativeUrl(url)

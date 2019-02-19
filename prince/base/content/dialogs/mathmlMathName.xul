@@ -73,7 +73,7 @@
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="mathnames" 
           tooltiptext="&mathNamesBox.tooltip;"   
           onfocus="this.select();"
-          onblur="setCurrentName();"
+          onblur="setDialogDefaults(namesdict.getNameData(this.value));this"
           ontextentered="updateControls({val: this.value});"/>
       </groupbox>
       <groupbox id="nameTypeGroup">
@@ -114,9 +114,14 @@
       <!-- /groupbox -->
     </vbox>
     <vbox>
-      <msibutton id="addButton" label="&addButton.label;" accesskey="&addButton.accesskey;" oncommand="save();" />
-      <msibutton id="deleteButton" label="&deleteButton.label;" accesskey="&deleteButton.accesskey;" oncommand="deleteCurrentName();" />
- 
+      <msibutton id="addButton" accesskey="&addButton.accesskey;" oncommand="save();" />
+      <description control="addButton" style="width: 2.3cm; alignText: center;">
+        &addButton.label;
+      </description>
+      <msibutton id="deleteButton" accesskey="&deleteButton.accesskey;" oncommand="deleteCurrentName();" />
+      <description control="addButton" style="width: 2.3cm; alignText: center;">
+        &deleteButton.label;
+      </description>
     </vbox>
   </hbox>  
 </dialog>

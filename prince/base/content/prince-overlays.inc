@@ -3,7 +3,7 @@
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul" ?>
 ##<?xul-overlay href="chrome://prince/content/basemenuOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul" ?>
-<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul" ?>
+<?xul-overlay href="chrome://prince/content/mathmloverlay.xul" ?>
 <?xul-overlay href="chrome://cascades/content/cascadesOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul" ?>
 
