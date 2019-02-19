@@ -879,7 +879,7 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
     <menuitem label="&outputHTMLCmd.label;"
            oncommand="msiEditorGetHTML()"/>
     <menuitem label="Execute JavaScript"
-           oncommand='window.openDialog("chrome://prince/content/ExecuteJS.xul","executejavascript",
+           oncommand='window.openDialog("chrome://prince/content/executeJS.xul","executejavascript",
       "chrome,close,titlebar,resizable,modal=false");' />
     <menuseparator />
     <menuitem label="&pasteAsQuotationCmd.label;"

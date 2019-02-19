@@ -2195,7 +2195,7 @@ function graphObjectClickEvent(cmdstr, element, editorElement) {
     if (graphelement) {
       msidump("SMR found a <graph> element\n");
       // non-modal dialog, the return is immediate
-      window.openDialog("chrome://prince/content/ComputeVcamSettings.xul", "vcamsettings", "chrome,close,titlebar,resizable, dependent", null, graphelement, null, element);
+      window.openDialog("chrome://prince/content/computeVcamSettings.xul", "vcamsettings", "chrome,close,titlebar,resizable, dependent", null, graphelement, null, element);
     }
   }
   catch (exc) {
@@ -2237,9 +2237,9 @@ function formatRecreateGraph(DOMGraph, commandStr, editorElement) {
   // format and recreate a graph and replace the existing one
   // DOMGraph is the DOM graph element we are going to replace.
   // var extraArgsArray = new Array(DOMGraph);
-  //  msiOpenModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul",
+  //  msiOpenModelessPropertiesDialog("chrome://prince/content/computeGraphSettings.xul",
   //                     "", "chrome,close,titlebar,dependent", editorElement, commandStr, DOMGraph, extraArgsArray);
-  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "plotdialog", "chrome,close,titlebar,resizable,dependent,alwaysraised", editorElement, commandStr, DOMGraph);
+  var dlgWindow = openDialog("chrome://prince/content/computeGraphSettings.xul", "plotdialog", "chrome,close,titlebar,resizable,dependent,alwaysraised", editorElement, commandStr, DOMGraph);
   document.getElementById("vcamactive").setAttribute("hidden", "true");
   markDocumentChanged(editorElement);
   return;

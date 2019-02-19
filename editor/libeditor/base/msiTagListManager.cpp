@@ -1255,7 +1255,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   {
     if ((str.Length() > 0) && !str.EqualsLiteral("none")&&!(str.Equals(firstNodeName)))
     {
-      meditor->ReplaceContainer(*secondNode, address_of(aNewNode), str, this, nsnull, nsnull, PR_TRUE);
+      meditor->ReplaceContainer(*secondNode, str, this, EmptyString(), EmptyString(), PR_TRUE, (nsIDOMNode**)(address_of(aNewNode)));
       *secondNode = aNewNode;
   	  NS_ADDREF((nsIDOMNode *)aNewNode);
      	meditor->MarkNodeDirty(*secondNode);
