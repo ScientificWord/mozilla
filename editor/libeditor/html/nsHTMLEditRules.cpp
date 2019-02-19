@@ -3832,7 +3832,7 @@ PRBool HandledScripts(nsHTMLEditor * ed,
     if (offset == 0)
       ed->RemoveContainer((nsIDOMNode*)elt);
     else {
-      ed->ReplaceContainer((nsIDOMNode*)elt, address_of(newNode), tagName, tlm, nsnull, nsnull, PR_TRUE);
+      ed->ReplaceContainer((nsIDOMNode*)elt, tagName, tlm, EmptyString(), EmptyString(), PR_TRUE, (nsIDOMNode**)address_of(newNode));
       newElement = do_QueryInterface(newNode);
       newElement->RemoveAttribute(NS_LITERAL_STRING("xmlns"));
     }
@@ -5927,7 +5927,7 @@ nsHTMLEditRules::ConvertListType(nsIDOMNode *aList,
   {
     if (nsHTMLEditUtils::IsListItem(child, mtagListManager) && !nsEditor::NodeIsTypeString(child, aItemType))
     {
-      res = mHTMLEditor->ReplaceContainer(child, address_of(temp), aItemType, manager);
+      res = mHTMLEditor->ReplaceContainer(child, aItemType, manager, EmptyString(), EmptyString(), PR_FALSE, (nsIDOMNode**)address_of(temp));
       if (NS_FAILED(res)) return res;
       child = temp;
     }
@@ -5942,7 +5942,7 @@ nsHTMLEditRules::ConvertListType(nsIDOMNode *aList,
   }
   if (!nsEditor::NodeIsTypeString(aList, aListType))
   {
-    res = mHTMLEditor->ReplaceContainer(aList, outList, aListType, manager, nsnull, nsnull, PR_TRUE);
+    res = mHTMLEditor->ReplaceContainer(aList, aListType, manager, EmptyString(), EmptyString(), PR_TRUE, (nsIDOMNode**)outList);
   }
   return res;
 }
@@ -8824,8 +8824,8 @@ nsHTMLEditRules::ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsA
        nsHTMLEditUtils::IsFormatNode(curNode, mtagListManager))
     {
       curBlock = 0;  // forget any previous block used for previous inline nodes
-      res = mHTMLEditor->ReplaceContainer(curNode, address_of(newBlock), *aBlockTag, manager,
-                                          nsnull, nsnull, PR_TRUE);
+      res = mHTMLEditor->ReplaceContainer(curNode, *aBlockTag, manager,
+                                          EmptyString(), EmptyString(), PR_TRUE, (nsIDOMNode**)address_of(newBlock));
       if (NS_FAILED(res)) return res;
     }
     else if (nsHTMLEditUtils::IsTable(curNode, mtagListManager)                    ||
@@ -9308,7 +9308,7 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
                 res = mHTMLEditor->DeleteNode(curNode);
               }
               else {
-                res = mHTMLEditor->ReplaceContainer(curNode, &outNode, NS_LITERAL_STRING("bodyText"), mtagListManager, nsnull, nsnull, PR_FALSE);
+                res = mHTMLEditor->ReplaceContainer(curNode, NS_LITERAL_STRING("bodyText"), mtagListManager, EmptyString(), EmptyString(), PR_FALSE, (nsIDOMNode**)address_of(outNode));
               }
             }
           }
@@ -9685,7 +9685,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     // Skip this if the existing node is the same type as the new node
     nsEditor::GetTagString(inNode, str);
     if (!strTitle.Equals(str))
-      res = mHTMLEditor->ReplaceContainer(inNode, address_of(sourceNode), strTitle, mtagListManager);
+      res = mHTMLEditor->ReplaceContainer(inNode, strTitle, mtagListManager, EmptyString(), EmptyString(), PR_FALSE, (nsIDOMNode**)address_of(sourceNode));
   }
 
   // walk up the tree to find where the new structure tag will fit.

@@ -181,14 +181,7 @@ public:
                                            nsIDOMNode ** aNewNode);
 
   /* helper routines for node/parent manipulations */
-  nsresult ReplaceContainer(nsIDOMNode *inNode,
-                            nsCOMPtr<nsIDOMNode> *outNode,
-                            const nsAString &aNodeType,
-                            nsCOMPtr<msiITagListManager> manager,
-                            const nsAString *aAttribute = nsnull,
-                            const nsAString *aValue = nsnull,
-                            PRBool aCloneAttributes = PR_FALSE);
-
+  
   nsresult InsertContainerAbove(nsIDOMNode *inNode,
                                 nsCOMPtr<nsIDOMNode> *outNode,
                                 const nsAString &aNodeType,

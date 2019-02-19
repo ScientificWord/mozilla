@@ -31,7 +31,7 @@ function launchOptionsDialog() {
   if ("footnoteNumber" in data)
     optionsData.overrideNumber = Number(data.footnoteNumber);
 
-  window.openDialog("chrome://prince/content/NoteOptionsDialog.xul", "noteoptions", "chrome,close,titlebar,modal,resizable", optionsData);
+  window.openDialog("chrome://prince/content/noteOptionsDialog.xul", "noteoptions", "chrome,close,titlebar,modal,resizable", optionsData);
   if (!optionsData.Cancel)
   {
     if ("overrideNumber" in optionsData)

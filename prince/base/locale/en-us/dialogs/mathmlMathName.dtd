@@ -25,7 +25,7 @@
 <!ENTITY addAutoSubstitution.accesskey "s">
 <!ENTITY engfunc.desc "This is an engine string">
 <!ENTITY engfunc.accesskey "e">
-<!ENTITY addButton.label "Add">
+<!ENTITY addButton.label "Save all mathname descriptions">
 <!ENTITY addButton.accesskey "A">
-<!ENTITY deleteButton.label "Delete">
+<!ENTITY deleteButton.label "Delete current mathname description">
 <!ENTITY deleteButton.accesskey "D">
