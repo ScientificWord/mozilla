@@ -2086,18 +2086,18 @@ nsEditor::SetSelectionOnCursorTag(nsIDOMNode * node, PRBool * setCursor)
 //                   to be of type aNodeType.  Put inNode's children into outNode.
 //                   It is the caller's responsibility to make sure inNode's children can
 //                   go in outNode.
-nsresult
-nsEditor::ReplaceContainer(nsIDOMNode *inNode,
-                           nsCOMPtr<nsIDOMNode> *outNode,
-                           const nsAString &aNodeType,
-                           nsCOMPtr<msiITagListManager> manager,
-                           const nsAString *aAttribute,
-                           const nsAString *aValue,
-                           PRBool aCloneAttributes)
+NS_IMETHODIMP
+nsEditor::ReplaceContainer(nsIDOMNode *inNode, 
+                            const nsAString & newTag, 
+                            msiITagListManager *manager, 
+                            const nsAString & anAttribute, 
+                            const nsAString & aValue, 
+                            PRBool cloneAttributes, 
+                            nsIDOMNode **_outNode)
 {
   // return NS_OK;
     
-  if (!inNode || !outNode)
+  if (!inNode || !_outNode)
     return NS_ERROR_NULL_POINTER;
   nsCOMPtr<nsIDOMNode> parent;
   nsCOMPtr<nsIDOMNode> newNode;
@@ -2112,18 +2112,18 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
   // create new container
   nsCOMPtr<nsIDOMDocument> doc;
   res = parent->GetOwnerDocument(getter_AddRefs(doc));
-  res = manager->GetNewInstanceOfNode(aNodeType, nsnull, doc, getter_AddRefs(newNode));
+  res = manager->GetNewInstanceOfNode(newTag, nsnull, doc, getter_AddRefs(newNode));
   if (newNode)
   {
-//    *outNode = newNode;
-    res = doc->ImportNode(newNode, PR_TRUE, getter_AddRefs(*outNode));
-    elem = do_QueryInterface(*outNode);
-    nsCOMPtr<nsINode> elemNode(do_QueryInterface(*outNode));
+//    *_outNode = newNode;
+    res = doc->ImportNode((nsIDOMNode*)newNode, PR_TRUE, (nsIDOMNode**)(*_outNode));
+    elem = do_QueryInterface(*_outNode);
+    nsCOMPtr<nsINode> elemNode(do_QueryInterface(*_outNode));
     elemNode->SetEditableFlag(PR_TRUE);
-    res = InsertNode(*outNode, parent, offset);
+    res = InsertNode(*_outNode, parent, offset);
     nsCOMPtr<nsIAtom> nsAtom = nsnull;
     // PRBool isFrontMatterTag;
-    // manager->GetTagInClass(NS_LITERAL_STRING("frontmtag"), aNodeType, nsAtom, &isFrontMatterTag);
+    // manager->GetTagInClass(NS_LITERAL_STRING("frontmtag"), newTag, nsAtom, &isFrontMatterTag);
        // since we are applying this to existing text, take out the contents of newNode
     // if (!isFrontMatterTag) {
       res = elem->GetFirstChild(getter_AddRefs(child));
@@ -2139,53 +2139,54 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
   }
   else
   {
-    res = CreateNode(aNodeType, parent, offset, (nsIDOMNode **)outNode);
-    elem = do_QueryInterface(*outNode);
+    res = CreateNode(newTag, parent, offset, (nsIDOMNode **)_outNode);
+    elem = do_QueryInterface(*_outNode);
   }
   if (NS_FAILED(res)) return res;
   // reposition selection to inside the block
-//	if (*outNode) res = SetCursorInNewHTML(elem, (PRBool *) nsnull);
+//	if (*_outNode) res = SetCursorInNewHTML(elem, (PRBool *) nsnull);
 
 
   // set attribute if needed
-  if (aAttribute && aValue && !aAttribute->IsEmpty())
+  if (!(anAttribute.IsEmpty()) && !(aValue.IsEmpty()))
   {
-    res = elem->SetAttribute(*aAttribute, *aValue);
+    res = elem->SetAttribute(anAttribute, aValue);
     if (NS_FAILED(res)) return res;
   }
-  if (aCloneAttributes)
+  if (cloneAttributes)
   {
     nsCOMPtr<nsIDOMNode>newElementNode = do_QueryInterface(elem);
     res = CloneAttributes(newElementNode, inNode);
     if (NS_FAILED(res)) return res;
   }
 
+
   // notify our internal selection state listener
   // (Note: A nsAutoSelectionReset object must be created
   //  before calling this to initialize mRangeUpdater)
   // if (!setCursor) {
-    nsAutoReplaceContainerSelNotify selStateNotify(mRangeUpdater, inNode, *outNode);
+  nsAutoReplaceContainerSelNotify selStateNotify(mRangeUpdater, inNode, *_outNode);
+  {
+    nsAutoTxnsConserveSelection conserveSelection(this);
+    PRBool bHasMoreChildren;
+    inNode->HasChildNodes(&bHasMoreChildren);
+    while (bHasMoreChildren)
     {
-      nsAutoTxnsConserveSelection conserveSelection(this);
-      PRBool bHasMoreChildren;
-      inNode->HasChildNodes(&bHasMoreChildren);
-      while (bHasMoreChildren)
-      {
-        inNode->GetFirstChild(getter_AddRefs(child));
-        childNode = do_QueryInterface(child);
-        childNode->SetEditableFlag(PR_TRUE);
-        res = DeleteNode(child);
-  //      if (NS_FAILED(res)) return res;
+      inNode->GetFirstChild(getter_AddRefs(child));
+      childNode = do_QueryInterface(child);
+      childNode->SetEditableFlag(PR_TRUE);
+      res = DeleteNode(child);
+//      if (NS_FAILED(res)) return res;
 
-  //      if (!nsTextEditUtils::IsBreak(child))
-  //      {
-          res = InsertNode(child, *outNode, -1);
-          if (NS_FAILED(res)) return res;
-  //      }
-        inNode->HasChildNodes(&bHasMoreChildren);
-      }
+//      if (!nsTextEditUtils::IsBreak(child))
+//      {
+        res = InsertNode(child, *_outNode, -1);
+        if (NS_FAILED(res)) return res;
+//      }
+      inNode->HasChildNodes(&bHasMoreChildren);
     }
-    return DeleteNode(inNode);
+  }
+  return DeleteNode(inNode);
 }
 
 

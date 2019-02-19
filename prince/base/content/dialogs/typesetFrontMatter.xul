@@ -11,7 +11,7 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/mathmloverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 
 <!DOCTYPE dialog [

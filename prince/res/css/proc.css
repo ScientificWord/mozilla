@@ -38,14 +38,16 @@ chapter>sectiontitle{
 }
  
 chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
+  -moz-user-select: -moz-none;
   content: "Chapter " counter(chapter,upper-roman) " ";
   display: block;
-  margin-left: .2in;
   font-size: large;
   font-weight: bold;
   line-height: 24pt;
+  margin-left: .2in;
   text-align: center;
-  -moz-user-select: -moz-none;
+
+
 }
 
 chapter[open="false"]>sectiontitle:before{
@@ -69,7 +71,7 @@ section {
 
 section>*:first-child{
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
   font-weight: bold;
@@ -77,7 +79,7 @@ section>*:first-child{
 
 section>*:first-child[open="false"]{
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
   font-weight: bold;
@@ -90,7 +92,7 @@ section>*:first-child:before, section[open="true"]>*:first-child:before  {
 
 section>*:first-child{
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
   font-weight: bold;
@@ -98,7 +100,7 @@ section>*:first-child{
 
 section>*:first-child[open="false"]{
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
   font-weight: bold;
@@ -111,7 +113,7 @@ section>*:first-child:before, section[open="true"]>*:first-child:before  {
 
 section>sectiontitle{
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
   font-weight: bold;
@@ -119,7 +121,7 @@ section>sectiontitle{
 
 section>sectiontitle[open="false"]{
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
   font-weight: bold;
@@ -143,7 +145,7 @@ subsection {
 
 subsection>*:first-child {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: large;
 }
@@ -166,7 +168,7 @@ subsubsection {
 
 subsubsection>*:first-child {
   display: block;
-  margin: 10pt 10pt 0pt 0pt;
+  margin: 10pt 10pt 0 0;
   margin-left: 10pt;
   font-size: medium;
   font-weight: bold;
@@ -286,7 +288,7 @@ math {
 
 bodyText {
   display: block;
-  margin: 10pt 0pt 5pt 0pt;
+  margin: 10pt 0 5pt 0;
 }
 
 rtlBodyText {
@@ -298,7 +300,7 @@ rtlBodyText {
 
 bodyMath {
   display: block;
-  margin: 0pt 10pt 0pt 5pt;
+  margin: 0 10pt 0 5pt;
   color: rgb(0,128,64);
 }
 
@@ -363,7 +365,7 @@ emphasized {
   color: rgb(9,62,125)
 }
 
-emphasized span.inlineMath {
+emphasized .inlineMath {
   color: rgb(255,0,255)
 }
 
@@ -485,8 +487,8 @@ theorem:before {
 enumerate { counter-reset: item-number }
  
 enumerate>item { display: block ;
-                 margin: 0pt 0pt 0pt 0pt; 
-                 padding: 10pt 0pt 0pt 20pt }
+                 margin: 0 0 0 0; 
+                 padding: 10pt 0 0 20pt }
 
 enumerate>item:before { content: counter(item-number) ". "; counter-increment: item-number }
 

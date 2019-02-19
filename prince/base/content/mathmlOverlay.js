@@ -849,9 +849,9 @@ var msiReviseGenBracketsCmd =
     var bracketData = new Object();
     bracketData.reviseObject = theBrackets;
 //    var argArray = [bracketData];
-//    msiOpenModelessPropertiesDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,dependent",
+//    msiOpenModelessPropertiesDialog("chrome://prince/content/brackets.xul", "_blank", "chrome,close,titlebar,dependent",
 //                                      editorElement, "cmd_MSIreviseGenBracketsCmd", theBrackets, argArray);
-    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/brackets.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                      editorElement, "cmd_MSIreviseGenBracketsCmd", theBrackets, bracketData);
     markDocumentChanged(editorElement);
   },
@@ -893,9 +893,9 @@ var msiReviseBinomialsCmd =
     var binomialData = new Object();
     binomialData.reviseObject = theBinomial;
 //    var argArray = [binomialData];
-//    msiOpenModelessPropertiesDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,dependent",
+//    msiOpenModelessPropertiesDialog("chrome://prince/content/binomial.xul", "_blank", "chrome,close,titlebar,dependent",
 //                                      editorElement, "cmd_MSIreviseBinomialsCmd", theBinomial, argArray);
-    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/binomial.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                      editorElement, "cmd_MSIreviseBinomialsCmd", theBinomial, binomialData);
     markDocumentChanged(editorElement);
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseBinomialsCmd, trying to revise binomial, dialog unimplemented.");
@@ -936,9 +936,9 @@ var msiReviseOperatorsCmd =
     var operatorData = new Object();
     operatorData.reviseObject = theOperator;
 //    var argArray = [operatorData];
-//    msiOpenModelessPropertiesDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,dependent",
+//    msiOpenModelessPropertiesDialog("chrome://prince/content/operators.xul", "_blank", "chrome,close,titlebar,dependent",
 //                                      editorElement, "cmd_MSIreviseOperatorsCmd", theOperator, argArray);
-    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/operators.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                      editorElement, "cmd_MSIreviseOperatorsCmd", theOperator, operatorData);
     markDocumentChanged(editorElement);
   },
@@ -1100,7 +1100,7 @@ var msiReviseDecorationsCmd =
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseDecorationsCmd, trying to revise decoration, dialog unimplemented.");
 ////    reviseFraction(editorElement, theFrac);
 
-    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,resizable, close,titlebar,dependent",
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/decorations.xul", "_blank", "chrome,resizable, close,titlebar,dependent",
                                                      editorElement, "msiReviseDecorationsCmd", theDecoration, decorationData);
     markDocumentChanged(editorElement);
   },
@@ -1204,7 +1204,7 @@ var msiInsertMatrixRowsCommand =
       var rowsData = new Object();
       rowsData.reviseData = theMatrixData;
       rowsData.reviseCommand = "cmd_MSIaddMatrixRowsCmd";
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/MatrixInsertRowsCols.xul", "_blank", "chrome,resizable,close,titlebar,dependent",
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/matrixInsertRowsCols.xul", "_blank", "chrome,resizable,close,titlebar,dependent",
                                                       editorElement, "cmd_MSIaddMatrixRowsCmd", this, rowsData);
       markDocumentChanged(editorElement);
     }
@@ -1243,7 +1243,7 @@ var msiInsertMatrixColumnsCommand =
       var colsData = new Object();
       colsData.reviseData = theMatrixData;
       colsData.reviseCommand = "cmd_MSIaddMatrixColumnsCmd";
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/MatrixInsertRowsCols.xul", "_blank", "chrome,resizable,close,titlebar,dependent",
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/matrixInsertRowsCols.xul", "_blank", "chrome,resizable,close,titlebar,dependent",
                                                       editorElement, "cmd_MSIaddMatrixColumnsCmd", this, colsData);
       markDocumentChanged(editorElement);
     }
@@ -2157,17 +2157,38 @@ function insertmathname(name, editorElement)
   catch (e) {dump("In mathmlOverlay.js, insertmathname(" + name + ") for editorElement [" + editorElement.id + "], error: [" + e + "].\n");}
 }
 
+function associatedTag(inTagName) {
+  switch (inTagName) {
+    case 'msub' : return 'munder'; break;
+    case 'msup' : return 'mover'; break;
+    case 'msubsup' : return 'munderover'; break;
+    case 'munder' : return 'msub'; break;
+    case 'mover' : return 'msup'; break;
+    case 'munderover' : return 'msubsup'; break;
+    default: return '';
+  }
+}
+
+function sameLimits(fromNode, fromNameData) {
+  switch (fromNode) {
+    case 'msiLimitsAtRight' : return (fromNameData === 'atRight');
+    case 'msiLimitsAboveBelow' : return (fromNameData === 'aboveBelow');
+    default: return ((fromNameData == null) || fromNameData === 'auto');
+  }
+}
+
+
 function reviseMathname(theMathnameNode, newMathNameData, editorElement)
 {
   if (!theMathnameNode || !editorElement) return null;
   var retVal = theMathnameNode;
   var editor = msiGetEditor(editorElement);
-
+  var subovernames = 'msub msup msubsup mover munder moverunder';
   var wrappedMathName = msiNavigationUtils.getWrappedObject(theMathnameNode, "mathname");
   if ((wrappedMathName == null) || (newMathNameData.val.length == 0))
   {
     AlertWithTitle("mathmlOverlay.js", "Problem in reviseMathName\n");
-    return theRadical;
+    return retVal;
   }
 
   editor.beginTransaction();
@@ -2176,20 +2197,14 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
   {
     var newNode = null;
     var oldNodeName = wrappedMathName.nodeName;
+    var parent = wrappedMathName.parentNode;
+    let parentNodeName = parent.nodeName;
     if (newMathNameData.type == "o")  //should now be an "mo"
     {
-      if (oldNodeName != "mo")
+      parentNodeName =parent.nodeName;
+      if (oldNodeName !== "mo")
       {
         newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mo");
-        var newText = wrappedMathName.ownerDocument.createTextNode(newMathNameData.val);
-        newNode.appendChild(newText);
-      }
-    }
-    else    //all others are "mi"
-    {
-      if (oldNodeName != "mi")
-      {
-        newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mi");
         var newText = wrappedMathName.ownerDocument.createTextNode(newMathNameData.val);
         newNode.appendChild(newText);
       }
@@ -2198,7 +2213,7 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
     if (newNode !=  null)  //Need to replace the old mathname node with the new one
     {
       newNode.setAttribute("msimathname", "true");
-      var parent = wrappedMathName.parentNode;
+      var parent = parent;
       msiCopyElementAttributes(newNode, wrappedMathName, editor);
       editor.replaceNode(newNode, wrappedMathName, parent);
 
@@ -2210,33 +2225,39 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
       wrappedMathName = msiSetMathTokenText(wrappedMathName, newMathNameData.val, editor);
 
     // Now whether we've inserted a new node or not, we adjust attribute and style values.
-
+    // check to see if wrapper needs to change from under/over to sub/sup
+    if (subovernames.indexOf(parentNodeName) >= 0  || 
+      !sameLimits(wrappedMathName.getAttribute('msiLimitPlacement'), newMathNameData.lp)) {
+      editor.replaceContainer( parent, associatedTag(parentNodeName),
+        editor.tagListManager, '', '', true);
+    }
     if (newMathNameData.type == "o")  //should now be an "mo"
     {
       var limitPlacement = "";
-      var bMovableLimits = "false";
+      var bMovableLimits = false;
 
-      if ( ("limitPlacement" in newMathNameData) && (newMathNameData.limitPlacement != "auto") )
+      if ( ("lp" in newMathNameData) && (newMathNameData.lp != "auto") )
       {
-        if (newMathNameData.limitPlacement == "atRight")
+        if (newMathNameData.lp == "atRight")
           limitPlacement = "msiLimitsAtRight";
-        else if (newMathNameData.limitPlacement == "aboveBelow")
-        limitPlacement = "msiLimitsAboveBelow";
-        else
-          bMovableLimits = "true";
+        else if (newMathNameData.lp == "aboveBelow")
+          limitPlacement = "msiLimitsAboveBelow";
       }
-      msiEditorEnsureElementAttribute(wrappedMathName, "msiLimitPlacement", limitPlacement, editor);
-      msiEditorEnsureElementAttribute(wrappedMathName, "movablelimits", bMovableLimits, editor);
-      if (bMovableLimits == "false")
+
+      if (!bMovableLimits)
         msiEditorEnsureElementAttribute(wrappedMathName, "largeop", "true", editor);
     }
-    else  //an "mi"
-    {
-      var msiClassAttr = "";
-      if (newMathNameData.enginefunction)
-        msiClassAttr = "enginefunction";
-      msiEditorEnsureElementAttribute(wrappedMathName, "msiclass", msiClassAttr, editor);
-    }
+    
+
+    msiEditorEnsureElementAttribute(wrappedMathName, "msiLimitPlacement", limitPlacement, editor);
+    if (bMovableLimits && newMathNameData.type == "o")
+      msiEditorEnsureElementAttribute(wrappedMathName, "movablelimits", true, editor);
+    else 
+      wrappedMathName.removeAttribute("movablelimits");
+    var msiClassAttr = "";
+    if (newMathNameData.enginefunction)
+      msiClassAttr = "enginefunction";
+    msiEditorEnsureElementAttribute(wrappedMathName, "msiclass", msiClassAttr, editor);
 
     var sizeSpec = "";
     if ( ("size" in newMathNameData) && (newMathNameData.size != "auto") )
@@ -2252,6 +2273,8 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
     retVal = applyMathStyleToObject(styleObj, msiGetBaseNodeName(wrappedMathName), theMathnameNode, editor);
 
     editorElement.contentWindow.focus();
+
+
   }  //end "try"
   catch(e)
   {
@@ -2428,7 +2451,8 @@ function nodeFromNameData(nameData, editorElement) {
   {
     if (nameData.lp && nameData.lp === 'auto') {
       node.setAttribute("movablelimits", 'true');
-    }
+    } else
+      node.removeAttribute("movablelimits");
     var limitPlacement = "";
     // var sizeSpec = "auto";
     if (nameData.lp && nameData.lp !== "auto")
@@ -2844,7 +2868,7 @@ function doColorsDlg(editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
 
-  window.openDialog("chrome://prince/content/MathColors.xul", "mathcolors", "chrome,close,titlebar,modal,resizable", msiColorObj);
+  window.openDialog("chrome://prince/content/mathColors.xul", "mathcolors", "chrome,close,titlebar,modal,resizable", msiColorObj);
   if (msiColorObj.Cancel)
     return;
   markDocumentChanged(editorElement);
@@ -2876,8 +2900,8 @@ function doBracketsDlg(leftBrack, rightBrack, sep, commandID, editorElement, com
   bracketData.leftBracket = ""; //leftBrack;
   bracketData.rightBracket = ""; //rightBrack;
   bracketData.separator = sep;
-//  window.openDialog("chrome://prince/content/Brackets.xul", "brackets", "chrome,close,titlebar,modal", bracketData);
-  msiOpenModelessDialog("chrome://prince/content/Brackets.xul", "brackets", "chrome,close,titlebar,dependent,resizable",
+//  window.openDialog("chrome://prince/content/brackets.xul", "brackets", "chrome,close,titlebar,modal", bracketData);
+  msiOpenModelessDialog("chrome://prince/content/brackets.xul", "brackets", "chrome,close,titlebar,dependent,resizable",
                                         editorElement, commandID, commandHandler, bracketData);
   markDocumentChanged(editorElement);
 //  if (bracketData.Cancel)
@@ -2897,8 +2921,8 @@ function doBinomialsDlg(leftBrack, rightBrack, line, size, commandID, editorElem
     binomialData.withDelimiters = true;
   binomialData.lineSpec = line;
   binomialData.sizeSpec = size;
-//  window.openDialog("chrome://prince/content/Binomial.xul", "binomial", "chrome,close,titlebar,modal", binomialData);
-  msiOpenModelessDialog("chrome://prince/content/Binomial.xul", "binomial", "chrome,close,titlebar,dependent,resizable",
+//  window.openDialog("chrome://prince/content/binomial.xul", "binomial", "chrome,close,titlebar,modal", binomialData);
+  msiOpenModelessDialog("chrome://prince/content/binomial.xul", "binomial", "chrome,close,titlebar,dependent,resizable",
                                         editorElement, commandID, commandHandler, binomialData);
   markDocumentChanged(editorElement);
 //  if (binomialData.Cancel)
@@ -2921,10 +2945,10 @@ function doOperatorsDlg(operatorStr, limitPlacement, size, commandID, editorElem
   operatorData.operator = operatorStr;
   operatorData.limitsSpec = limitPlacement;
   operatorData.sizeSpec = size;
-  msiOpenModelessDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+  msiOpenModelessDialog("chrome://prince/content/operators.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                         editorElement, commandID, commandHandler, operatorData);
   markDocumentChanged(editorElement);
-//  window.openDialog("chrome://prince/content/Operators.xul", "operators", "chrome,close,titlebar,modal", operatorData);
+//  window.openDialog("chrome://prince/content/operators.xul", "operators", "chrome,close,titlebar,modal", operatorData);
 //  if (operatorData.Cancel)
 //    return;
 //  insertOperator(operatorData.operator, operatorData.limitsSpec, operatorData.sizeSpec, editorElement);
@@ -2937,10 +2961,10 @@ function doDecorationsDlg(decorationAboveStr, decorationBelowStr, decorationArou
   decorationData.decorationAboveStr = decorationAboveStr;
   decorationData.decorationBelowStr = decorationBelowStr;
   decorationData.decorationAroundStr = decorationAroundStr;
-  msiOpenModelessDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
+  msiOpenModelessDialog("chrome://prince/content/decorations.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
                                         editorElement, commandID, commandHandler, decorationData);
   markDocumentChanged(editorElement);
-//  window.openDialog("chrome://prince/content/Decorations.xul", "decorations", "chrome,close,titlebar,modal", decorationData);
+//  window.openDialog("chrome://prince/content/decorations.xul", "decorations", "chrome,close,titlebar,modal", decorationData);
 //  if (decorationData.Cancel)
 //    return;
 //  insertDecoration(decorationData.decorationAboveStr, decorationData.decorationBelowStr, decorationData.decorationAroundStr, editorElement);

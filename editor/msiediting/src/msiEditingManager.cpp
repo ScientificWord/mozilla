@@ -147,7 +147,7 @@ nsresult MoveNodeTo(msiEditingManager * aThis, nsIEditor* editor, nsIDOMNode * n
       nsCOMPtr<msiITagListManager> TagListManager;
       nsEditor * ed = static_cast<nsEditor *> (editor);
       htmleditor->GetTagListManager(getter_AddRefs(TagListManager));
-      rv = ed->ReplaceContainer( nodeToMove, address_of(outnode), NS_LITERAL_STRING("mrow"), TagListManager, &s1, &s2, PR_FALSE);
+      rv = ed->ReplaceContainer( nodeToMove, NS_LITERAL_STRING("mrow"), TagListManager, s1, s2, PR_FALSE, (nsIDOMNode**)address_of(outnode));
       if (NS_SUCCEEDED(rv)) nodeToMove = outnode;
     }
   }

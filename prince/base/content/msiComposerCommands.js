@@ -5035,7 +5035,7 @@ var msiSpellingCommand =
     try {
       var editorElement = msiGetActiveEditorElement();
       window.cancelSendMessage = false;
-      window.openDialog("chrome://prince/content/EdSpellCheck.xul", "spellcheck",
+      window.openDialog("chrome://prince/content/edSpellCheck.xul", "spellcheck",
               "chrome,close,titlebar,modal,resizable", false, false, true, editorElement);
       markDocumentChanged(editorElement);
       editorElement.focus();
@@ -5806,7 +5806,7 @@ var msiLinkCommand =
 //      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "resizable,chrome,close,titlebar,dependent", imageData);
     }
     else
-      window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable,chrome,close,titlebar,dependent");
+      window.openDialog("chrome://prince/content/edLinkProps.xul","linkprops", "resizable,chrome,close,titlebar,dependent");
     markDocumentChanged(editorElement);
     editorElement.focus();
   }
@@ -5822,7 +5822,7 @@ var msiReviseHyperlinkCommand =
     var linkNode = msiGetReviseObjectFromCommandParams(aParams);
     if (linkNode != null && editorElement != null)
     {
-      window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable,chrome,close,titlebar,dependent");
+      window.openDialog("chrome://prince/content/edLinkProps.xul","linkprops", "resizable,chrome,close,titlebar,dependent");
     }
     markDocumentChanged(editorElement);
     editorElement.focus();
@@ -6361,7 +6361,7 @@ var msiInsertHorizontalSpacesCommand =
       var editorElement = msiGetActiveEditorElement();
       var hSpaceData = new Object();
       hSpaceData.spaceType = "normalSpace";
-      msiOpenModelessDialog("chrome://prince/content/HorizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+      msiOpenModelessDialog("chrome://prince/content/horizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                           editorElement, "cmd_insertHorizontalSpaces", this, hSpaceData);
       markDocumentChanged(editorElement);
     }
@@ -6384,7 +6384,7 @@ var msiReviseHorizontalSpacesCommand =
       hSpaceData.reviseData = hSpaceReviseData;
       if (hSpaceReviseData != null && editorElement != null)
       {
-        var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/HorizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+        var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/horizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                        editorElement, "cmd_reviseHorizontalSpaces", this, hSpaceData);
         markDocumentChanged(editorElement);
       }
@@ -6700,7 +6700,7 @@ var msiInsertVerticalSpacesCommand =
       var editorElement = msiGetActiveEditorElement();
       var vSpaceData = new Object();
       vSpaceData.spaceType = "smallSkip";
-      msiOpenModelessDialog("chrome://prince/content/VerticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+      msiOpenModelessDialog("chrome://prince/content/verticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                           editorElement, "cmd_insertVerticalSpaces", this, vSpaceData);
       markDocumentChanged(editorElement);
     }
@@ -6725,7 +6725,7 @@ var msiReviseVerticalSpacesCommand =
       if (vSpaceReviseData != null && editorElement != null)
       {
   //      AlertWithTitle("msiComposerCommands.js", "In msiReviseVerticalSpacesCommand, trying to revise a vertical space, dialog not yet implemented.");
-        var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/VerticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+        var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/verticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                        editorElement, "cmd_reviseVerticalSpaces", this, vSpaceData);
         markDocumentChanged(editorElement);
       }
@@ -7612,7 +7612,7 @@ var msiDocumentInfoCommand =
       var documentInfo = new msiDocumentInfo(editorElement);
       documentInfo.initializeDocInfo();
       var dlgInfo = documentInfo.getDialogInfo();
-      msiOpenModelessDialog("chrome://prince/content/DocumentInfo.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
+      msiOpenModelessDialog("chrome://prince/content/documentInfo.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                           editorElement, "cmd_documentInfo", this, dlgInfo);
       markDocumentChanged(editorElement);
       editorElement.contentWindow.focus();
@@ -8749,7 +8749,7 @@ var msiDocumentStyleCommand =
       var editorElement = msiGetTopLevelEditorElement();
       var documentStyle = {};
       documentStyle.edElement = editorElement;
-      msiOpenModelessDialog("chrome://prince/content/DocumentStyle.xul", "_blank",
+      msiOpenModelessDialog("chrome://prince/content/documentStyle.xul", "_blank",
                                           "chrome,close,titlebar,dependent, resizable",
                                           editorElement, "cmd_documentInfo", this, documentStyle);
       markDocumentChanged(editorElement);
@@ -11034,7 +11034,7 @@ function msiNote(currNode, editorElement, type, hidden)
   }
 
   if (!type) {
-    window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,dependent", data);
+    window.openDialog("chrome://prince/content/note.xul","note", "chrome,close,titlebar,resizable=yes,dependent", data);
     // data comes back altered
     if (!data.Cancel) markDocumentChanged(editorElement);
 
@@ -11198,7 +11198,7 @@ function msiFrame(editorElement, editor, node)
 {
   if (editor==null) editor = msiGetEditor(editorElement);
   editor.beginTransaction();
-  window.openDialog("chrome://prince/content/Minipage.xul","frame", "chrome,close,titlebar,dependent, resizable=yes", node);
+  window.openDialog("chrome://prince/content/minipage.xul","frame", "chrome,close,titlebar,dependent, resizable=yes", node);
   markDocumentChanged(editorElement);
   editor.endTransaction();
 }
