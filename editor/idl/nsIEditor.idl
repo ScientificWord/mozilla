@@ -55,6 +55,7 @@ interface nsIEditorObserver;
 interface nsIEditActionListener;
 interface nsIInlineSpellChecker;
 interface nsIDOMWindow;
+interface msiITagListManager;
 
 %{C++
 class nsIPresShell;
@@ -472,6 +473,14 @@ interface nsIEditor  : nsISupports
 
   void removeContainer(in nsIDOMNode node);
 
+
+
+  nsIDOMNode replaceContainer(in nsIDOMNode inNode,
+                             in AString newTag,
+                             in msiITagListManager manager,
+                             in AString anAttribute,
+                             in AString aValue,
+                             in boolean cloneAttributes);
   /** 
    * splitNode() creates a new node identical to an existing node,
    * and split the contents between the two nodes

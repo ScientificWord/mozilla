@@ -120,6 +120,13 @@ function setDialogDefaults(nameData) {
   if (nameData.type) document.getElementById('nameTypeRadioGroup').value = nameData.type;
   if (nameData.lp) document.getElementById('operatorLimitPlacementRadioGroup').value = nameData.lp;
   document.getElementById('enginefunction').checked = !!nameData.engine;
+  if (nameData.type === 'o') {
+    document.getElementById('limitPlacementAboveBelow').removeAttribute('disabled');
+    document.getElementById('limitPlacementAtRight').removeAttribute('disabled');
+  } else {
+    document.getElementById('limitPlacementAboveBelow').setAttribute('disabled','true');
+    document.getElementById('limitPlacementAtRight').setAttribute('disabled','true');
+  }
 }
 
 
@@ -170,7 +177,7 @@ function save() {
   }
 }
 
-function onOK() {
+function onOK(evt) {
   try {
     let nameData = setCurrentName();
     var parentEditorElement = msiGetParentEditorElementForDialog(window);
@@ -181,6 +188,7 @@ function onOK() {
     }
     if (document.getElementById('addAutoSubstitution').checked)
       addAutosub(nameData.val);
+    evt.stopPropagation();
   }
   catch(e) {
     return true;
