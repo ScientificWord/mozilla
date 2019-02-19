@@ -9874,7 +9874,7 @@ function openHTMLField(node) {
 
 function openGraphDialog(tagname, node, editorElement) {
   // non-modal dialog, the return is immediate
-  var dlgWindow = openDialog("chrome://prince/content/ComputeGraphSettings.xul", "plotdialog",
+  var dlgWindow = openDialog("chrome://prince/content/computeGraphSettings.xul", "plotdialog",
     "chrome,close,resizable,titlebar,dependent,alwaysraised",
     editorElement, "cmd_objectProperties", node);
   // why find it again???  var editorElement = msiGetActiveEditorElement();

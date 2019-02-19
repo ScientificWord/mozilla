@@ -2,7 +2,7 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/mathmloverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <!-- If an editor control is to support context menus, also need: -->
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
