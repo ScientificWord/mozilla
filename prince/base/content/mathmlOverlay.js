@@ -2157,6 +2157,52 @@ function insertmathname(name, editorElement)
   catch (e) {dump("In mathmlOverlay.js, insertmathname(" + name + ") for editorElement [" + editorElement.id + "], error: [" + e + "].\n");}
 }
 
+/* Short essay on limit placement for operators and operator mathnames 
+
+  There are three limit placement options for operators:
+  auto, aboveBelow, and atRight. Auto puts the limits at the right in text and above/below 
+  in display. The combination of elements and attributes required for each are:
+    msiLimitPlacmeent = auto (optional), msiLimitsAtRight, or msiLimitsAboveBelow are needed for TeX generation
+
+  auto:       Use munder, mover, or munderover.        movablelimits='true' 
+  aboveBelow: Use munder, mover, or munderover.        movablelimits='false'
+  atRight:    Use msub, msup, msubsup.                 movablelimits not used  
+
+  For testing, you can simulate display mode by adding "display='block'" to the math node.
+
+  Here is a framework for testing in source mode.
+
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <munder>
+      <mo msimathname="true" val="lim" type="operator" movablelimits="true">lim</mo>
+      <mrow>
+        <mi _moz-math-font-style="italic">x</mi>
+        <mo xmlns="http://www.w3.org/1998/Math/MathML">→</mo>
+        <mi>∞</mi>
+      </mrow>
+    </munder>
+  </math>
+  */
+
+// called for operator mathnames with limits or scripts
+function nodeFromNodeData( node, nodeData) {
+  switch (nodeData.lp) {
+
+    case 'atRight': node.setAttribute('movablelimits', 'false');
+                    node.setAttribute('msiLimitPlacement', 'msiLimitsAtRight');
+                    break;
+    case 'aboveBelow': node.setAttribute('movablelimits', 'false');
+                    node.setAttribute('msiLimitPlacement', 'msiLimitsAboveBelow');
+                    break;
+    case 'auto': 
+    default:
+                    node.setAttribute('movablelimits','true');
+                    node.setAttribute('msiLimitPlacement', 'auto');
+                    break;
+  }
+}
+
+
 function associatedTag(inTagName) {
   switch (inTagName) {
     case 'msub' : return 'munder'; break;
@@ -2183,8 +2229,12 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
   if (!theMathnameNode || !editorElement) return null;
   var retVal = theMathnameNode;
   var editor = msiGetEditor(editorElement);
-  var subovernames = 'msub msup msubsup mover munder moverunder';
+  var subnames = 'msub msup msubsup';
+  var undernames = 'mover munder munderover';
+  var limitsAreSub;
+  var limitsAreUnder;
   var wrappedMathName = msiNavigationUtils.getWrappedObject(theMathnameNode, "mathname");
+  var needsSubSup = false;
   if ((wrappedMathName == null) || (newMathNameData.val.length == 0))
   {
     AlertWithTitle("mathmlOverlay.js", "Problem in reviseMathName\n");
@@ -2224,36 +2274,12 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
     else
       wrappedMathName = msiSetMathTokenText(wrappedMathName, newMathNameData.val, editor);
 
+
+    nodeFromNodeData(wrappedMathName, newMathNameData);
     // Now whether we've inserted a new node or not, we adjust attribute and style values.
-    // check to see if wrapper needs to change from under/over to sub/sup
-    if (subovernames.indexOf(parentNodeName) >= 0  || 
-      !sameLimits(wrappedMathName.getAttribute('msiLimitPlacement'), newMathNameData.lp)) {
-      editor.replaceContainer( parent, associatedTag(parentNodeName),
-        editor.tagListManager, '', '', true);
-    }
-    if (newMathNameData.type == "o")  //should now be an "mo"
-    {
-      var limitPlacement = "";
-      var bMovableLimits = false;
+    // check to see if wrapper needs to change from under/over to sub/sup or vice-versa
 
-      if ( ("lp" in newMathNameData) && (newMathNameData.lp != "auto") )
-      {
-        if (newMathNameData.lp == "atRight")
-          limitPlacement = "msiLimitsAtRight";
-        else if (newMathNameData.lp == "aboveBelow")
-          limitPlacement = "msiLimitsAboveBelow";
-      }
 
-      if (!bMovableLimits)
-        msiEditorEnsureElementAttribute(wrappedMathName, "largeop", "true", editor);
-    }
-    
-
-    msiEditorEnsureElementAttribute(wrappedMathName, "msiLimitPlacement", limitPlacement, editor);
-    if (bMovableLimits && newMathNameData.type == "o")
-      msiEditorEnsureElementAttribute(wrappedMathName, "movablelimits", true, editor);
-    else 
-      wrappedMathName.removeAttribute("movablelimits");
     var msiClassAttr = "";
     if (newMathNameData.enginefunction)
       msiClassAttr = "enginefunction";
@@ -2271,6 +2297,17 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
       styleObj["displaystyle"] = "";
 
     retVal = applyMathStyleToObject(styleObj, msiGetBaseNodeName(wrappedMathName), theMathnameNode, editor);
+    
+    limitsAreSub = subnames.indexOf(parentNodeName) >= 0;
+    limitsAreUnder = undernames.indexOf(parentNodeName) >= 0;
+
+    if (((limitsAreSub || limitsAreUnder) && limitsAreSub !== limitsAreUnder)  ||
+          !sameLimits(wrappedMathName.getAttribute('msiLimitPlacement'), newMathNameData.lp)
+      && (newMathNameData.type == "o"))
+    {
+      editor.replaceContainer( parent, associatedTag(parentNodeName),
+        editor.tagListManager, '', '', true);
+    }
 
     editorElement.contentWindow.focus();
 

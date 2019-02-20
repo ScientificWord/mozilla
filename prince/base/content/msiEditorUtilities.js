@@ -9417,7 +9417,7 @@ var msiSpaceUtils = {
     //the "HAIR SPACE" in Unicode?
     negativeThinSpace: { dimensions: '0.0em' },
     zeroSpace: {
-      dimensions: '0.1em',
+      dimensions: '0.01em',
       charCode: 0x200b
     },
     noIndent: {
