@@ -74,7 +74,7 @@
   <sub ctx="text" tp="sc"><pattern>.thksp.</pattern><data>msiInsertHorizontalSpace('thickSpace',{}, null);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.2msp.</pattern><data>msiInsertHorizontalSpace('twoEmSpace',{}, null);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.emsp.</pattern><data>msiInsertHorizontalSpace('emSpace',{}, null);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.zrsp.</pattern><data>msiInsertHorizontalSpace('zeroSpace',{}, null);</data></sub>
+  <sub ctx="both" tp="sc"><pattern>.zrsp.</pattern><data>msiInsertHorizontalSpace('zeroSpace',{}, null);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.itsp.</pattern><data>msiInsertHorizontalSpace('italicCorrectionSpace',{}, null);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.noind.</pattern><data>msiInsertHorizontalSpace('noIndent',{}, null);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ftn.</pattern><data>insertFootnote();</data></sub>

@@ -6462,7 +6462,7 @@ function msiInsertHorizontalSpace(spaceType, customSpaceData, editorElement)
   try {
     if (isInMath(editorElement)) {
        node = editor.document.createElementNS(mmlns, 'mspace');
-       node.setAttribute('width', "thickmathspace");
+       node.setAttribute('width', spaceType);
     } else {
        node = editor.document.createElement('hspace');
     }

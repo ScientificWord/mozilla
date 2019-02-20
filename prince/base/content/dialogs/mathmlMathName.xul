@@ -73,7 +73,7 @@
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="mathnames" 
           tooltiptext="&mathNamesBox.tooltip;"   
           onfocus="this.select();"
-          onblur="setDialogDefaults(namesdict.getNameData(this.value));this"
+          onblur="setDialogDefaults(namesdict.getNameData(this.value));"
           ontextentered="updateControls({val: this.value});"/>
       </groupbox>
       <groupbox id="nameTypeGroup">
