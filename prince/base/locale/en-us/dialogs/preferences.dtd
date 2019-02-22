@@ -53,7 +53,11 @@
 <!ENTITY InitialViewIntervals.label  "Initial view intervals">
 <!ENTITY General.label  "General">
 <!ENTITY Expert.label "Expert">
-<!ENTITY openLastFile.label "Open the last file saved, if it is present">
+<!ENTITY StartingDocDirections "When opening a new window, use which of these for the initial content?" >
+
+<!ENTITY useAboveShell.label "The shell document chosen above">
+<!ENTITY openLastFile.label "The last document saved, if it is present">
+<!ENTITY useBlank.label "Blank, no document selected">
 
 
 <!ENTITY miscellaneousOptions.label "Miscellaneous options">

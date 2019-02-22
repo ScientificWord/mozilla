@@ -1515,7 +1515,10 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
     };
     if (!docurl && bTopLevel) {
       var prefs = GetPrefs();
-      var fUseLastSavedFile;
+      var fUseLastSavedFile = false;
+      var fUseBlank = false;
+      var fUseShell = false;
+      var startingContents;
       var firstRun;
       try {
         firstRun = prefs.getBoolPref("swp.firstrun");
@@ -1529,11 +1532,15 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
       }
       if (!docurl) {
         try {
-          fUseLastSavedFile = prefs.getBoolPref("swp.openlastfile");
+          startingContents = prefs.getCharPref("swp.contentOfNewWindow");
+          switch (startingContents) {
+            case "useLast": fUseLastSavedFile = true; break;
+            case "useBlank": fUseBlank = true; break;
+            default: fUseShell = true; break;
+          }
         } catch (ex) {
           msidump(
             "Exception in msiLoadInitialDocument; couldn't get preference swp.lastfilesaved\n");
-          fUseLastSavedFile = false;
         }
         if (fUseLastSavedFile) {
           docurlstring = prefs.getCharPref("swp.lastfilesaved");
@@ -1544,6 +1551,9 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
             if (file.exists())
               docurl = msiURIFromString("file://" + docurlstring);
           }
+        } else if (fUseBlank) {
+            window.openDialog("chrome://prince/content/prince.xul", "_blank", "all,dialog=no");
+            return;
         }
       }
     }

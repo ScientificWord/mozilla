@@ -61,12 +61,12 @@
       <preference id="defaultshell"
                   name="swp.defaultShell"
                   type="string"/>
+      <preference id="contentOfNewWindow"
+                  name="swp.contentNew"
+                  type="string" />
       <preference id="defaultDocDir"
                   name="swp.prefDocumentDir"
                   type="string"/>
-      <preference id="openLastFile"
-                  name="swp.openlastfile"
-                  type="bool" />
       <preference id="selectedSkin"
                   name="general.skins.selectedSkin"
                   type="string"/>
@@ -560,7 +560,17 @@
             </vbox>
           </hbox>
           <spacer flex="1"/>
-          <checkbox label="&openLastFile.label;" preference="openLastFile" id="openLastSaved" />
+          <vbox>
+            <description id="startingDocLabel" value="&StartingDocDirections;"/>
+            <radiogroup id="startShellRadioGroup" preference="contentOfNewWindow">
+              <vbox>
+                <spacer flex="0.5"/>
+                <radio id="useAbove" value="useDefault" label="&useAboveShell.label;" radioGroup="startShellRadioGroup"/>
+                <radio id="useLastSavedFile" label="&openLastFile.label;" value="useLast" radioGroup="startShellRadioGroup" />
+                <radio id="useBlank" label="&useBlank.label;" value="useBlank" radioGroup="startShellRadioGroup" />
+              </vbox> 
+            </radiogroup>   
+          </vbox>
         </tabpanel>
         <tabpanel orient="vertical">
           <groupbox>

@@ -137,6 +137,7 @@ pref("editor.table.maintain_structure", true);
 
 
 pref("swp.defaultShell", "-Standard_LaTeX/Standard_LaTeX_Article.sci");
+pref("swp.contentOfNewWindow", "useDefault");  // other choices are useLast and useBlank
 pref("swp.fancyreturn",true);
 pref("swp.generateTeXonsave", true);
 pref("swp.graph.filetype", "xvc");
