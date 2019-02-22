@@ -96,15 +96,17 @@ function buildTOC()
   var parser = new DOMParser();
   var dom = parser.parseFromString(stylestring, "text/xml");
   // dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
-  try {gProcessor.importStylesheet(dom.documentElement);}
+  try {
+    gProcessor.importStylesheet(dom.documentElement);
+    let newFragment;
+    if (editor) {
+      newFragment = gProcessor.transformToFragment(editor.document, document);
+      document.getElementById("table-of-contents").appendChild(newFragment);
+      setTOCLevel(document.getElementById("toc-level-scale").value);
+    }
+  }
   catch(e){
     dump("Error importing xsl sheet: "+e.message+"\n");
-  }
-  var newFragment;
-  if (editor) {
-    newFragment = gProcessor.transformToFragment(editor.document, document);
-    document.getElementById("table-of-contents").appendChild(newFragment);
-    setTOCLevel(document.getElementById("toc-level-scale").value);
   }
 }
 
