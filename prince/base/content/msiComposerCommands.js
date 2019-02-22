@@ -1166,23 +1166,30 @@ function openNewDocument()
 {
 
   var newdocumentfile;
+  var initialContents;
   var dir;
   var data={file: "not yet"};
   // jlf - should openshell be modal or dependent
-  window.openDialog("chrome://prince/content/openshell.xul","openshell", "chrome,close,titlebar,modal,resizable=yes", data);
-  if (data.filename)
-  {
-    if (data.filename && data.filename.length > 0) {
-      dump("Ready to edit shell: " + data.filename +"\n");
-      try {
-        var thefile = Components.classes["@mozilla.org/file/local;1"].
-          createInstance(Components.interfaces.nsILocalFile);
-        thefile.initWithPath(data.filename);
-        newdocumentfile = createWorkingDirectory(thefile);
-        var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
-        msiEditPage( url, window, false, true, null, false);
-      } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
+  var prefs = GetPrefs();
+  if (prefs)
+     initialContents= prefs.getCharPref("swp.contentOfNewWindow");
+  if (initialContents==null | initialContents !== "useBlank") {
 
+    window.openDialog("chrome://prince/content/openshell.xul","openshell", "chrome,close,titlebar,modal,resizable=yes", data);
+    if (data.filename)
+    {
+      if (data.filename && data.filename.length > 0) {
+        dump("Ready to edit shell: " + data.filename +"\n");
+        try {
+          var thefile = Components.classes["@mozilla.org/file/local;1"].
+            createInstance(Components.interfaces.nsILocalFile);
+          thefile.initWithPath(data.filename);
+          newdocumentfile = createWorkingDirectory(thefile);
+          var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
+          msiEditPage( url, window, false, true, null, false);
+        } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
+
+      }
     }
   }
 }
@@ -1458,7 +1465,7 @@ var msiTestFilterCommand =
         finalThrow(cmdFailString('runtests'), e.message);
       }
     }
-    els
+    else
       finalThrow(cmdFailString("runtests"), "Importing a document is not allowed since this program is not licensed.")
     return false;
   }
@@ -9607,8 +9614,9 @@ function msiFollowLink( editorElement, element ) {
 
   // BBM todo:
   // Find folder containing the .sci file so we can use relative addressing of the link target
+
   var urlstring = msiGetEditorURL(editorElement);
-  var url = msiURIFromString(urlstring);
+  var url = msiURIFromString(href);
   var documentDir = msiFileFromFileURL(url);
   documentDir = documentDir.parent.parent;
   if (href) {
@@ -9636,10 +9644,11 @@ function msiFollowLink( editorElement, element ) {
       theProcess.init(exefile);
       theProcess.run(false, arr, arr.length);
 
-      // exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-      // exefile.append("open");
-      // theProcess.init(exefile);
-      // theProcess.run(false, arr, arr.length);
+  //     // exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+  //     // exefile.append("open");
+  //     // theProcess.init(exefile);
+  //     // theProcess.run(false, arr, arr.length);
+
   }
 }
 
