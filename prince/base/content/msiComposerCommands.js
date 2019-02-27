@@ -9437,17 +9437,18 @@ function msiDoAdvancedProperties(element, editorElement)
         else if (element.prop == "headers")
         {
           try {
-            data.lheader = element.value;
-            data.rheader = element.value2;
-            dlgParentWindow.openDialog("chrome://prince/content/latexheaders.xul", "latexheaders", "chrome,close,titlebar,modal,resizable=yes", data);
-            markDocumentChanged(editorElement);
-            editorElement.contentWindow.focus();
-            if (!data.Cancel)
-            {
-              element.value = data.lheader;
-              element.value2 = data.rheader;
-              markDocumentChanged(editorElement);
-            }
+            //  BBM: latexheaders.xul no longer exists
+            // data.lheader = element.value;
+            // data.rheader = element.value2;
+            // dlgParentWindow.openDialog("chrome://prince/content/latexheaders.xul", "latexheaders", "chrome,close,titlebar,modal,resizable=yes", data);
+            // markDocumentChanged(editorElement);
+            // editorElement.contentWindow.focus();
+            // if (!data.Cancel)
+            // {
+            //   element.value = data.lheader;
+            //   element.value2 = data.rheader;
+            //   markDocumentChanged(editorElement);
+            // }
           }
           catch (e)
           { dump(e); }

@@ -38,7 +38,7 @@
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://prince/content/DocumentInfo.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/documentInfo.js" />
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>

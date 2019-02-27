@@ -29,8 +29,8 @@
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
 
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/computeUtils.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/graphOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/plotAnimationSettings.js" />
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
 

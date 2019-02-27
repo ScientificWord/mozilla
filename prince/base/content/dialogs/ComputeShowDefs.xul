@@ -23,18 +23,18 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/mathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
 
 
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/mathmlOverlay.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
-  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/realTimeSpell.js"/>
 
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeShowDefs.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/computeShowDefs.js" />
 
   <hbox id="outer-box" flex="1">
     <!-- iframe id="content" src="about:blank" flex="1" / -->
