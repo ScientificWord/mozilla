@@ -45,14 +45,14 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/computeutils.js" />
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
 
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/realtimespell.js"/>
 
-  <script type="application/x-javascript" src="chrome://prince/content/MapMuPADName.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/mapmupadname.js" />
 
   <popupset id="msiEditorContentContextSet"/>
 

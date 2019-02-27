@@ -74,7 +74,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <!--script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/ -->
-  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/realTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
