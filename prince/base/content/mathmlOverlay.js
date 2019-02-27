@@ -2479,35 +2479,30 @@ function nodeFromNameData(nameData, editorElement) {
   node.setAttribute("val",nameData.val);
   node.setAttribute("type", type);
 
-
+  var limitPlacement = "";
   if (nameData.engine)
   {
     node.setAttribute("msiclass","enginefunction");
   }
-  if (nameData.type == "o")
+  if (nameData.type === "o")
   {
-    if (nameData.lp && nameData.lp === 'auto') {
+    if (!nameData.lp || nameData.lp === 'auto') {
       node.setAttribute("movablelimits", 'true');
-    } else
-      node.removeAttribute("movablelimits");
-    var limitPlacement = "";
-    // var sizeSpec = "auto";
-    if (nameData.lp && nameData.lp !== "auto")
+    } 
+    else
     {
       if (nameData.lp === "atRight")
         limitPlacement = "msiLimitsAtRight";
       else if (nameData.lp === "aboveBelow")
         limitPlacement = "msiLimitsAboveBelow";
       node.setAttribute("msiLimitPlacement",limitPlacement);
+      node.setAttribute('movablelimits', 'false');
     }
     if ("size" in nameData)
     {
       sizeSpec = nameData.size;
       node.setAttribute("size", sizeSpec);
     }
-    // if (bMovableLimits == "false") {
-    //   node.setAttribute("largeop", "true");
-    // }
   }
   return node;
 }
