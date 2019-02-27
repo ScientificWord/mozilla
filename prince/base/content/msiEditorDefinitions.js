@@ -23,7 +23,7 @@ const kDisplayModeSource = 2;
 const kDisplayModePreview = 3;
 const kDisplayModeMenuIDs = ["viewNormalMode", "viewAllTagsMode", "viewSourceMode", "viewPreviewMode"];
 const kDisplayModeTabIDS = ["NormalModeButton", "TagModeButton", "SourceModeButton", "PreviewModeButton"];
-const kNormalStyleSheet = "chrome://prince/content/EditorContent.css";
+const kNormalStyleSheet = "chrome://prince/content/editorContent.css";
 
 // BBM: What do we do with these?
 const kParagraphMarksStyleSheet = "chrome://editor/content/EditorParagraphMarks.css";

@@ -28,8 +28,8 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/Binomial.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/lathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/linomial.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
 

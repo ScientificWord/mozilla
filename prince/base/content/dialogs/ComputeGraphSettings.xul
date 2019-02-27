@@ -49,10 +49,10 @@
   <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/ -->
 
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeGraphSettings.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/ComputePlotSettings.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/computeUtils.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/graphOverlay.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/computeGraphSettings.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/computePlotSettings.js" />
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
 
   <!-- Methods common to all editor dialogs -->
@@ -65,9 +65,9 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/mathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/realTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>

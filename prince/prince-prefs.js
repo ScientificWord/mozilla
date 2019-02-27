@@ -77,7 +77,7 @@ pref("spellchecker.realtimespell.warning_color", "red");
 pref("swp.messagelogger","dump");
 pref("swp.ctrl.m","math"); // other value is 'toggle'
 pref("swp.ctrl.t","text"); // other value is'toggle'
-pref("swp.defaultDialogShell", "chrome://prince/content/StdDialogShell.xhtml");
+pref("swp.defaultDialogShell", "chrome://prince/content/stdDialogShell.xhtml");
 pref("swp.graphics.snapshotres", 300);
 pref("swp.debugtools", false);
 pref("swp.graphics.vsize", "2.8");

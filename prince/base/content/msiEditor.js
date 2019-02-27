@@ -1567,7 +1567,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel) {
           docurlstring = prefs.getCharPref("swp.defaultDialogShell"); //BBM: check this later
         } catch (exc) {
           dump("In msiLoadInitialDocument(), trying to get default dialog shell, error: " + exc + ".\n");
-          docurlstring = "chrome://prince/content/StdDialogShell.xhtml";
+          docurlstring = "chrome://prince/content/stdDialogShell.xhtml";
           //          docurl = null;
           //          return;
         }

@@ -40,22 +40,22 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeVarList.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/computeVarList.js" />
 
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/mathmlOverlay.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/computeUtils.js" />
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
 
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/realTimeSpell.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
 
   <popupset id="msiEditorContentContextSet"/>
