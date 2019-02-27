@@ -54,7 +54,7 @@ var namesdict = {
       for (i = 0; i < L; i++) {
         namenode = nodelist[i];
         namelistobj = {
-          val: namenode.getAttribute('val'),
+          val: (namenode.getAttribute('val') || namenode.getAttribute('id')),
           type: namenode.getAttribute('type').charAt(0),
           builtin: namenode.getAttribute('builtIn')==='true',
           lp: 0,
