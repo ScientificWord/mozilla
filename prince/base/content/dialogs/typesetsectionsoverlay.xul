@@ -134,7 +134,7 @@
                 <vbox id="sectiontextareacontainer" style="overflow: hidden; width:200px; min-height:20px">
                   <iframe id="sectiontextarea" tooltiptext="&EnterSectionText.tooltip;"
                     onclick="toggleselection(this);"  
-                    src="chrome://prince/content/StdDialogShell.xhtml"> 
+                    src="chrome://prince/content/stdDialogShell.xhtml"> 
                   </iframe> 
                 </vbox>
                 <!--editor  editortype="html" type="content" width="200" height="40"  id="sectiontitle-frame"  context="msiEditorContentContext"

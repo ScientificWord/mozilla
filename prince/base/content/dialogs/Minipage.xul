@@ -44,6 +44,6 @@
       <vbox id="msiFrame"/>
     </tabpanels>
   </tabbox>
-  <script type="application/x-javascript" src="chrome://prince/content/Minipage.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/minipage.js"/>
 </dialog>
 

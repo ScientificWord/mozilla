@@ -994,10 +994,6 @@ Third line@}
 @B@<Overall subsystem@>
 
 
-@o@<a.x@>==@{@-
-Testing one, two, three...
-here is another line
-@}
 
 @B@<Physical layout@>
 @o@<textio.h@>==@{@-

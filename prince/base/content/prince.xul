@@ -5,7 +5,7 @@
 <?xml-stylesheet href="chrome://global/skin/toolbar.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/fastcursor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/content/bindings/sidebar.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/content/EditorContent.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/content/editorContent.css" type="text/css"?>
 
 
 
