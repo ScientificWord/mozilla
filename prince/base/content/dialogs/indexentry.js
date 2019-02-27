@@ -118,7 +118,7 @@ function startup()
 
   var specnode;
   var destNode;
-  var initStr = ''; //getFileAsString("chrome://prince/content/StdDialogShell.xhtml");
+  var initStr = ''; //getFileAsString("chrome://prince/content/stdDialogShell.xhtml");
   var prispecStr = '';
   var secspecStr = '';
   var terspecStr = '';

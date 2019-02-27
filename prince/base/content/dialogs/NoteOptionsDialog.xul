@@ -31,7 +31,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 
   <!-- Scripts specific to this dialog -->
-  <script type="application/x-javascript" src="chrome://prince/content/NoteOptionsDialog.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/noteOptionsDialog.js"/>
    
   <hbox flex="1">
     <vbox>
