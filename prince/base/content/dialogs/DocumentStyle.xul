@@ -28,7 +28,7 @@
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript"  src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript"  src="chrome://prince/content/DocumentStyle.js"/>
+  <script type="application/x-javascript"  src="chrome://prince/content/documentStyle.js"/>
   <tabbox>
     <tabs>
       <tab label="&StyleSheets.label;"/>

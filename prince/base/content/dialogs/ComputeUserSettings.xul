@@ -27,7 +27,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js" />
 
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeUserSettings.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/computeUserSettings.js" />
 
   <groupbox>
     <caption label="&Scope.label;"/>

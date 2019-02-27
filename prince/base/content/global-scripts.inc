@@ -9,7 +9,7 @@
 <script type="application/x-javascript" src="chrome://editor/content/EditorCommandsDebug.js"/>
 <script type="application/x-javascript" src="chrome://prince/content/msiEditorCommandsDebug.js"/>
 <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
-<script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+<script type="application/x-javascript" src="chrome://prince/content/realTimeSpell.js"/>
 <script type="application/x-javascript" src="chrome://prince/content/fragment.js"/>
 <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
 <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>

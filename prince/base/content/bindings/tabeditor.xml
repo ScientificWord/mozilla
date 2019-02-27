@@ -219,8 +219,8 @@
                       editor instanceof Components.interfaces.nsIHTMLEditor;
                       editor instanceof Components.interfaces.nsIEditorStyleSheets;
 
-                      editor.addOverrideStyleSheet("chrome://prince/content/EditorContent.css");
-                      editor.addOverrideStyleSheet("chrome://prince/content/EditorOverride.css");
+                      editor.addOverrideStyleSheet("chrome://prince/content/editorContent.css");
+                      editor.addOverrideStyleSheet("chrome://prince/content/editorOverride.css");
                     }
                   }
                   window.updateCommands("navigation");

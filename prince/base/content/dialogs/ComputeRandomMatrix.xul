@@ -28,7 +28,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js" />
 
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeRandomMatrix.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/computeRandomMatrix.js" />
 
   <hbox id="outer-box" flex="1">
     <vbox>
