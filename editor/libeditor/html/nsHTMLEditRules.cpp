@@ -717,7 +717,7 @@ nsHTMLEditRules::WillDoAction(nsISelection *aSelection,
 #ifdef DEBUG_Barry
       printf("B\n");
       DumpSelection(aSelection);
-#endif
+#endif      
       return WillDeleteSelection(aSelection, info->collapsedAction, aCancel, aHandled);
     case kMakeList:
       return WillMakeList(aSelection, info->blockType, info->entireList, info->bulletType, aCancel, aHandled);
@@ -3970,7 +3970,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
       if (!HandledScripts(ed, elt, nextSiblingNode, deletingInputbox, startNode, startOffset))
       {
         ed->GetInComplexTransaction(&isInComplexTransaction);
-        if (!isInComplexTransaction) {
+        // if (!isInComplexTransaction) {
           done = PR_TRUE;
           // Insert an input box at node, offset
           res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_FALSE, PR_TRUE, dummy, inputbox);
@@ -3994,7 +3994,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
             }
             tempnode = nextSiblingNode;
           }
-        }
+        // }
       }
       return;
     }
