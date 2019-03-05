@@ -2116,7 +2116,7 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
   if (newNode)
   {
 //    *_outNode = newNode;
-    res = doc->ImportNode((nsIDOMNode*)newNode, PR_TRUE, (nsIDOMNode**)(*_outNode));
+    res = doc->ImportNode((nsIDOMNode*)newNode, PR_TRUE, (nsIDOMNode**)(_outNode));
     elem = do_QueryInterface(*_outNode);
     nsCOMPtr<nsINode> elemNode(do_QueryInterface(*_outNode));
     elemNode->SetEditableFlag(PR_TRUE);
