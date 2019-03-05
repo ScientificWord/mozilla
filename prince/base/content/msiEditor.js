@@ -2896,6 +2896,7 @@ function EditorClick(event) {
       EditorDblClick(event);
       return;
     } else if (event.detail == 1) {
+      var os = getOS(window);
       var obj, theURI, targWin;
       var objName = msiGetBaseNodeName(event.target);
       var editor = msiGetEditor(editorElement);
@@ -2908,9 +2909,14 @@ function EditorClick(event) {
           document.getElementById("vcamactive").setAttribute("hidden", true);
         }
         linkNode = getEventParentByTag(event, "xref");
-        if (!linkNode)
+        if (!linkNode) {
           linkNode = getEventParentByTag(event, "a");
+          if (linkNode && (os === 'osx' && event.metaKey) || (os === 'win' && event.ctrlKey)) {
+            msiGoDoCommand('cmd_followLink');
+          }
+        }
       }
+
       if (graphnode) {
         var obj = graphnode.getElementsByTagName("object")[0];
         if (obj) {
