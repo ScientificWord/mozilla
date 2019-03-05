@@ -9033,7 +9033,10 @@ var msiObjectPropertiesCommand =
       var editorElement = msiGetActiveEditorElement();
       var nodeData = msiGetObjectDataForProperties(editorElement);
       if (!nodeData) return;
-      var element = nodeData.theNode;
+      var element = nodeData.theNode || nodeData.coreElement;
+
+               
+
       var cmdString = nodeData.getCommandString(0);
       var name = element.nodeName;
 
@@ -9617,7 +9620,7 @@ function msiFollowLink( editorElement, element ) {
   // Find folder containing the .sci file so we can use relative addressing of the link target
 
   var urlstring = msiGetEditorURL(editorElement);
-  var url = msiURIFromString(href);
+  var url = msiURIFromString(urlstring);
   var documentDir = msiFileFromFileURL(url);
   documentDir = documentDir.parent.parent;
   if (href) {
