@@ -2189,6 +2189,60 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
   return DeleteNode(inNode);
 }
 
+NS_IMETHODIMP
+nsEditor::ReplaceContainerNode( nsIDOMElement * elt, nsIDOMElement * newElt ) // This is like editor::ReplaceContainer, except that the new container is 
+// already constructed, since we have to set the namespace sometimes. The two functions might be combined in the future.
+{
+  if (!elt || !newElt)
+    return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMNode> child;
+  nsCOMPtr<nsINode> childNode;
+  nsCOMPtr<nsIDOMElement> elem;
+  PRInt32 offset;
+  PRBool setCursor = PR_FALSE;
+  nsresult res = GetNodeLocation(elt, address_of(parent), &offset);
+  if (NS_FAILED(res)) return res;
+
+  // newElt->SetEditableFlag(PR_TRUE);
+  res = InsertNode(newElt, parent, offset);
+  // nsCOMPtr<nsIAtom> nsAtom = nsnull;
+  if (NS_FAILED(res)) return res;
+
+  // // set attribute if needed
+  // if (!(anAttribute.IsEmpty()) && !(aValue.IsEmpty()))
+  // {
+  //   res = elem->SetAttribute(anAttribute, aValue);
+  //   if (NS_FAILED(res)) return res;
+  // }
+
+  // notify our internal selection state listener
+  // (Note: A nsAutoSelectionReset object must be created
+  //  before calling this to initialize mRangeUpdater)
+  // if (!setCursor) {
+  nsAutoReplaceContainerSelNotify selStateNotify(mRangeUpdater, elt, newElt);
+  {
+    nsAutoTxnsConserveSelection conserveSelection(this);
+    PRBool bHasMoreChildren;
+    elt->HasChildNodes(&bHasMoreChildren);
+    while (bHasMoreChildren)
+    {
+      elt->GetFirstChild(getter_AddRefs(child));
+      childNode = do_QueryInterface(child);
+      childNode->SetEditableFlag(PR_TRUE);
+      res = DeleteNode(child);
+//      if (NS_FAILED(res)) return res;
+
+//      if (!nsTextEditUtils::IsBreak(child))
+//      {
+        res = InsertNode(child, newElt, -1);
+        if (NS_FAILED(res)) return res;
+//      }
+      elt->HasChildNodes(&bHasMoreChildren);
+    }
+  }
+  return DeleteNode(elt);
+}
 
 
 

@@ -3802,15 +3802,14 @@ PRBool HandledScripts(nsHTMLEditor * ed,
   nsAutoString name;
   nsAutoString form;
   nsAutoString tagName;
-  nsCOMPtr<msiITagListManager> tlm;
+  NS_NAMED_LITERAL_STRING(nspace, "http://www.w3.org/1998/Math/MathML");
   nsCOMPtr<nsIDOMNode> siblingNode = siblingElement;
-  nsCOMPtr<nsIDOMNode> newNode;
-  nsCOMPtr<nsIDOMElement> newElement;
+  nsCOMPtr<nsIDOMElement> newElement =nsnull;
   elt->GetTagName(name) ;
   if (name.EqualsLiteral("msubsup") || name.EqualsLiteral("munderover"))
   {
     retval = PR_TRUE;
-    PRUint16 type;
+    // PRUint16 type;
 
     switch (offset) {
       case 0:
@@ -3828,13 +3827,13 @@ PRBool HandledScripts(nsHTMLEditor * ed,
           tagName = NS_LITERAL_STRING("munder");
         break;
     }
-    ed->GetTagListManager(getter_AddRefs(tlm));
     if (offset == 0)
       ed->RemoveContainer((nsIDOMNode*)elt);
     else {
-      ed->ReplaceContainer((nsIDOMNode*)elt, tagName, tlm, EmptyString(), EmptyString(), PR_TRUE, (nsIDOMNode**)address_of(newNode));
-      newElement = do_QueryInterface(newNode);
-      newElement->RemoveAttribute(NS_LITERAL_STRING("xmlns"));
+      nsCOMPtr<nsIDOMDocument>doc;
+      res = ed->GetDocument(getter_AddRefs(doc));
+      doc->CreateElementNS(nspace, tagName, getter_AddRefs(newElement));
+      ed->ReplaceContainerNode(elt, newElement);
     }
   }
   else if (name.EqualsLiteral("msub") || name.EqualsLiteral("msup") || name.EqualsLiteral("munder") ||
@@ -3851,7 +3850,7 @@ PRBool HandledScripts(nsHTMLEditor * ed,
     retval = PR_TRUE;
     ed->DeleteNode(elt);
   }
-  return retval;
+  return (newElement != nsnull);
 }
 
 PRBool cleanUpTempInput(nsHTMLEditor * ed, nsCOMPtr<nsIDOMNode>& startNode, PRInt32 & startOffset)
