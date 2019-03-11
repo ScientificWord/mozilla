@@ -481,6 +481,11 @@ interface nsIEditor  : nsISupports
                              in AString anAttribute,
                              in AString aValue,
                              in boolean cloneAttributes);
+
+  void replaceContainerNode( in nsIDOMElement elt, 
+                             in nsIDOMElement newElt );
+                              // This is like editor::ReplaceContainer, except that the new container is 
+  // already constructed, since we have to set the namespace sometimes. The two functions might be combined in the future.
   /** 
    * splitNode() creates a new node identical to an existing node,
    * and split the contents between the two nodes
