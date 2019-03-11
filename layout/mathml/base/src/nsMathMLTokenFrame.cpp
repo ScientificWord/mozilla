@@ -650,7 +650,7 @@ nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
             }
             childFrame = childFrame->GetNextSibling();
           }
-          childFrame = childFrame->GetFirstChild(nsnull);
+          if (childFrame != nsnull) childFrame = childFrame->GetFirstChild(nsnull);
         }
       }
     }
