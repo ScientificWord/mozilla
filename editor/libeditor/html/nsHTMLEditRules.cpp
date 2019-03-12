@@ -3850,7 +3850,8 @@ PRBool HandledScripts(nsHTMLEditor * ed,
     retval = PR_TRUE;
     ed->DeleteNode(elt);
   }
-  return (newElement != nsnull);
+  if (newElement != nsnull) return PR_TRUE;
+  else return PR_FALSE;
 }
 
 PRBool cleanUpTempInput(nsHTMLEditor * ed, nsCOMPtr<nsIDOMNode>& startNode, PRInt32 & startOffset)
@@ -3928,9 +3929,12 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   nsCOMPtr<nsIDOMNode> parentNode;
   nsCOMPtr<nsIDOMNode> nextSiblingNode;
   nsCOMPtr<nsIDOMNode> resultNode;
+  nsCOMPtr<nsIDOMNode> selStartNode;
+
   nsCOMPtr<nsIDOMElement> inputbox;
   nsCOMPtr<nsISelection> sel;
   PRUint32 dummy = 0;
+  PRInt32 selStartOffset;
   nsAutoString name;
   nsAutoString parentName;
   nsCOMPtr<nsIEditor> editor = do_QueryInterface((nsIHTMLEditor *)ed);
@@ -3971,10 +3975,16 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
         ed->GetInComplexTransaction(&isInComplexTransaction);
         // if (!isInComplexTransaction) {
           done = PR_TRUE;
+
+          //Let's see where the insert point has gone...
+          ed->GetSelection(getter_AddRefs(sel));
+          ed->GetStartNodeAndOffset(sel, getter_AddRefs(selStartNode), &selStartOffset);
+
+
           // Insert an input box at node, offset
-          res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_FALSE, PR_TRUE, dummy, inputbox);
+          res = msiUtils::CreateInputbox((nsIEditor *)editor, PR_TRUE, PR_TRUE, dummy, inputbox);
           if (NS_FAILED(res) || !inputbox) return;
-          res = ed->InsertNode(inputbox, elt, startOffset);
+          res = ed->InsertNode(inputbox, selStartNode, selStartOffset);
           // Put the cursor in the input box BBM: is there a method for this?
           res = inputbox->GetFirstChild(getter_AddRefs(node));
           startNode = node;
