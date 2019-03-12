@@ -582,9 +582,8 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
     inNode->HasChildNodes(&bHasMoreChildren);
 
   }
-
-  return DeleteNode(inNode);
   SetInComplexTransaction(inComplexTransaction);
+  DeleteNode(inNode);
 }
 
 
