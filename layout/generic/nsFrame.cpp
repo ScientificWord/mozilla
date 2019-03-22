@@ -4881,6 +4881,7 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
   nsresult res;
   nsCOMPtr<nsIMathMLCursorMover> pMathCM;
   PRInt32 count = 1;
+  PRInt32 newcount = 0;
   nsIFrame * pBefore = nsnull;
   nsIFrame * pAfter = nsnull;
   nsCOMPtr<nsIDOMNode> parentNode;
@@ -4910,22 +4911,22 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
     }
     textlength = (*current)->GetContent()->TextLength();
     if (movingInFrameDirection && *offset < textlength) {
-      (*offset)++;
+      ( *offset)++;
       return PR_TRUE;
     }
     pMathCM =  GetMathCursorMover(GetTopFrameForContent((*current)->GetParent()));
     if (movingInFrameDirection) { //moving out of the text node.
       if (pMathCM) {
-        pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
-        return (count == 0);
+        pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &newcount);
+        return (newcount == 0);
       }
       else return PR_FALSE;
     }
     if (*offset == 0 && !movingInFrameDirection)
     {
       if (pMathCM) {
-        pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &count);
-        return (count == 0);
+        pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &newcount);
+        return (newcount == 0);
       }
     }
     return PR_FALSE;
@@ -4946,14 +4947,14 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
   if (movingInFrameDirection) {
     if (pAfter) {
       pMathCM =  do_QueryInterface(pAfter);
-      if (pMathCM) pMathCM->EnterFromLeft(nsnull, current, offset, count, fBailing, &count);
-      return (count == 0);
+      if (pMathCM) pMathCM->EnterFromLeft(nsnull, current, offset, count, fBailing, &newcount);
+      return (newcount == 0);
     }
     else { // ran off the end. Leave the parent node (*current)
       pMathCM =  do_QueryInterface(*current);
       if (pMathCM) {
-        pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &count);
-        return (count == 0);
+        pMathCM->MoveOutToRight(nsnull, current, offset, count, fBailing, &newcount);
+        return (newcount == 0);
       } 
       else {
         count = 0;
@@ -4962,11 +4963,12 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
       }
     }
   }
-  if (!movingInFrameDirection) {
+
+    if (!movingInFrameDirection) {
     if (pBefore) {
       pMathCM =  do_QueryInterface(pBefore);
-      if (pMathCM) pMathCM->EnterFromRight(nsnull, current, offset, count, fBailing, &count);
-      return (count == 0);
+      if (pMathCM) pMathCM->EnterFromRight(nsnull, current, offset, count, fBailing, &newcount);
+      return (newcount == 0);
     }
     else {
       if (*offset == 0) {
@@ -4976,8 +4978,8 @@ PRBool InitiateMathMove( nsIFrame ** current, PRInt32 * offset, PRBool movingInF
         pMathCM =  do_QueryInterface(pAfter);
       }
       if (pMathCM) {
-        pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &count);
-        return (count == 0);
+        pMathCM->MoveOutToLeft(nsnull, current, offset, count, fBailing, &newcount);
+        return (newcount == 0);
       }
       else {
         count = 0;
@@ -5557,6 +5559,26 @@ PRBool IsParentMathFrame( nsIFrame * aFrame )
   return IsMathFrame(pParent);
 }
 
+nsIFrame * GetRootMathFrame( nsIFrame * aFrame) 
+{
+  nsIFrame * parentFrame;
+  if (!IsMathFrame( aFrame)) {
+    aFrame = aFrame->GetParent(); // Frames in math are text frames or some sort of math frame
+    if (!IsMathFrame( aFrame)) {
+      return nsnull;              // nonmath with nonmath parent==>not in math  
+    }   
+  }
+  // aFrame is math, or else there is no math above.
+  parentFrame = aFrame->GetParent();
+  while (IsMathFrame(aFrame) && parentFrame != nsnull && IsMathFrame(parentFrame)) {
+    aFrame = parentFrame;
+    parentFrame = parentFrame->GetParent();
+  }
+  if (IsMathFrame(aFrame)) {
+    return aFrame;
+  }
+  return nsnull;
+}
 
 
 
@@ -5689,24 +5711,51 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   // choose a parent of this frame.
   //  printf("Moving to a new frame; check to see if we are in math\n");
 //  nsIFrame* pFrame = IsMathFrame(this) ? this : nsnull;  // will succeed if "this" is a math frame. BBM: changed 2013-09-26
+  nsIFrame* pMathRoot;
   nsIFrame* pFrame = IsMathFrame(traversedFrame) ? traversedFrame : nsnull;  // will succeed if "traversedFrame" is a math frame.
+  if (pFrame == nsnull) {
+    pFrame = GetRootMathFrame(traversedFrame->GetParent());
+  }
+
   nsIFrame* pFrameChild;
   nsIFrame * pChild;
   nsIFrame * pLastChild = nsnull;
   nsIFrame* pParent;
   nsIFrame* pMathChild;
   nsCOMPtr<nsIMathMLCursorMover> pMathCM;
-  PRInt32 count = 1;
+  PRInt32 count = 0;
+  PRInt32 newcount = 0;
   if (*aOutJumpedLine) count = 0;
   if (pFrame) // 'this' is a math frame
   {
 //    printf("Starting in a math frame\n");
-//    nsMathMLFrame::DumpMathFrameData(pFrame);
-//    if (*aOutJumpedLine) count = 0;
 
-//    *aMath = PR_TRUE;
-    // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving or entering
-    // BBM: Fix this. Counting in the frame tree is unreliable. We should be doing it in the DOM tree.
+    // BBM: We have just entered mathematics from outside, but the pFrame might be a ways down the math tree since it was found because it contains a character.
+    // In this case we should move the cursor to the end of the <math> node.
+    count = 0;
+    *aMath = PR_TRUE;
+    pMathRoot = GetRootMathFrame(pFrame);
+    if (pMathRoot != nsnull) {
+      pMathCM = GetMathCursorMover(pMathRoot); 
+      if (pMathCM != nsnull) {
+        if (aDirection == eDirNext) {
+          *aOutFrame = pMathRoot;
+          *aOutOffset = 0;
+          *fBailing = PR_FALSE;
+        }            
+        else
+        {
+          *aOutFrame = pMathRoot;
+          *aOutOffset = pMathRoot->GetContent()->GetChildCount();
+          *fBailing = PR_FALSE;
+        }
+      }
+    }
+  }
+  
+
+
+    /*
     PRUint32 nodecount = 0;
     pChild = GetFirstChild(nsnull);
     pLastChild = pChild;
@@ -5781,9 +5830,16 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
     printf("Exit 1\n");
     return NS_OK;
   }
+
+
   else
   {
 //    pFrame = IsParentMathFrame(this)?GetParent():nsnull; // BBM: 2013-09-26
+
+    // BBM: this is the other case where we end up in math when we started outside of it.
+    // We got this frame because it contains text that was the first encountered by the cursor,
+    // but we really want the cursor at the beginning or end of the <math> node.
+    
     pFrame = IsParentMathFrame(traversedFrame)?traversedFrame->GetParent():nsnull;
     if (pFrame)
     {
@@ -5811,7 +5867,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         // We should enter mathematics at the top   BBM: 2016-05-03 Not yet ready for prime time
         
         // while (IsMathFrame(pFrame->GetParent())) pFrame = pFrame->GetParent();
-        // count = 0;
+        count = 0;  // count starts at zero since count is decremented when you enter math.
         if ((pMathCM = GetMathCursorMover(pFrame)) && (aDirection == eDirNext))
           pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
         else if (pMathCM)
@@ -5881,7 +5937,8 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         *aOutOffset = -1;
     }
   }
-bailedOut:
+  */
+ bailedOut:
 #ifdef IBMBIDI
   if (aVisual) {
     PRUint8 newLevel = NS_GET_EMBEDDING_LEVEL(traversedFrame);
