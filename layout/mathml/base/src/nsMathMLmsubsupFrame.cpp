@@ -391,34 +391,29 @@ nsMathMLmsubsupFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFram
     PRBool* fBailingOut, PRInt32 *_retval)
 {
   printf("msup EnterFromRight, count = %d\n", count);
-  if (count > 0)
+  count = 0; // cursor coming in from the right changes vertical position, decrements count.
+  *_retval = 0;
+
+  nsIFrame * pFrame = GetFirstChild(nsnull); // the base
+  pFrame = pFrame->GetNextSibling();  // the sub
+  pFrame = pFrame->GetNextSibling();  // the sup
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pFrame)
   {
-    nsIFrame * pFrame = GetFirstChild(nsnull); // the base
-    pFrame = pFrame->GetNextSibling();
-    pFrame = pFrame->GetNextSibling();
-    nsCOMPtr<nsIMathMLCursorMover> pMCM;
-    if (pFrame)
+    pMCM = GetMathCursorMover(pFrame);
+    if (pMCM) {
+      pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval); 
+    } 
+    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     {
-      pMCM = GetMathCursorMover(pFrame);
-      count--;
-      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
-      {
-        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-        *_retval = 0;
-        return NS_OK;
-      }
-    }
-    else 
-    {
-      printf("Found msubsup frame with no superscript\n");
+      PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
     }
   }
-  else
+  else 
   {
-    printf("msub EnterFromRight called with count == 0\n");
-    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    printf("Found msubsup frame with no superscript\n");
   }
+  *_retval = 0;
   return NS_OK;  
 }
 
@@ -434,12 +429,12 @@ nsMathMLmsubsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFra
   if (pBase) pSub = pBase->GetNextSibling();
   if (pSub) pSup = pSub->GetNextSibling();
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  count = 0;
   if (leavingFrame == pSup || leavingFrame == pSub)
   {
     // leaving superscript. Count = 0
     PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
     *_retval = 0;
-    return NS_OK;
   }
   else
   {
