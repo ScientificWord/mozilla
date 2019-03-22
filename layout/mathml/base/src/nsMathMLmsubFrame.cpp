@@ -249,34 +249,29 @@ nsMathMLmsubFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, 
 {
   printf("msup EnterFromRight, count = %d\n", count);
   *_retval = 0;
-  if (count > 0)
+  count = 0;
+
+  nsIFrame * pFrame = GetFirstChild(nsnull); // the base
+  pFrame = pFrame->GetNextSibling();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pFrame)
   {
-    nsIFrame * pFrame = GetFirstChild(nsnull); // the base
-    pFrame = pFrame->GetNextSibling();
-    nsCOMPtr<nsIMathMLCursorMover> pMCM;
-    if (pFrame)
+    pMCM = GetMathCursorMover(pFrame);
+    if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     {
-      pMCM = GetMathCursorMover(pFrame);
-      count--;
-      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
-      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
-      {
-        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
-        *_retval = 0;
-        return NS_OK;
-      }
-    }
-    else
-    {
-      printf("Found msup frame with no superscript\n");
+      PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+      *_retval = 0;
+      return NS_OK;
     }
   }
   else
   {
-    // printf("msub EnterFromRight called with count == 0\n");
-    PlaceCursorAfter( this, PR_FALSE, aOutFrame, aOutOffset, count);
+    printf("Found msub frame with no superscript\n");
     *_retval = 0;
+    return NS_OK;
   }
+  *_retval = 0;
   return NS_OK;
 }
 
@@ -318,13 +313,14 @@ nsMathMLmsubFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, 
     PRBool* fBailingOut, PRInt32 *_retval)
 {
   printf("msub MoveOutToLeft, count = %d\n", count);
-  // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
-  nsIFrame * pChild = GetFirstChild(nsnull);
+  nsIFrame * pChild = GetFirstChild(nsnull); // the base
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (leavingFrame == nsnull || leavingFrame == pChild)
   {
     nsIFrame * pParent = GetParent();
     pMCM = GetMathCursorMover(pParent);
+    count = 0;
+    *_retval = 0;
     if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else  // parent isn't math??? shouldn't happen
     {
