@@ -266,7 +266,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
     pTempFrame = GetPrevSib(pTempFrame);
   }
 
-  while (pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != pTempFrame->GetType()))
+  while (count >0 &&pTempFrame && (!(pMCM = GetMathCursorMover(pTempFrame))) && (nsGkAtoms::textFrame != pTempFrame->GetType()))
   {
     pTempFrame = pTempFrame->GetFirstChild(nsnull);
     while (pTempFrame && (pTempFrame->GetNextSibling()))
@@ -278,7 +278,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
     //   frametype = pTempFrame->GetType();
     // }
   }
-  if ((pTempFrame) && IsSelectable(pFrame))
+  if ((count> 0 )&& (pTempFrame != nsnull) && IsSelectable(pFrame))
   {
     frametype = pTempFrame->GetType();
     if (pMCM) {
