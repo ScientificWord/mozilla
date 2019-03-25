@@ -688,9 +688,10 @@ begin
     context(hold(assume)(args(1),args(2)));
     getprop(args(1));
   elif args(0) = 1 then
-    context(hold(assume)(args(1)));    
+    context(hold(assume)(args(1))); 
+  else 
+    error ("Incorrect number of arguments for tciassume.");     
   end_if;  
-
 end_proc:
 
 
@@ -842,7 +843,7 @@ begin
   if linalg::isPosDef(a) = TRUE then
     return("positive definite");
   elif linalg::isPosDef(a) = FALSE then
-    return("NOT positive definite");
+    return("not positive definite");
   else  
     return("indeterminant");
   end_if;
