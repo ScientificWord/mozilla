@@ -689,16 +689,24 @@ begin
     getprop(args(1));
   elif args(0) = 1 then
     context(hold(assume)(args(1))); 
+    return();
   else 
     error ("Incorrect number of arguments for tciassume.");     
   end_if;  
 end_proc:
 
 
-tciadditionally := proc(v,p)
+tciadditionally := proc()
 begin
-    context(hold(assumeAlso)(v, p));
-    getprop(v);
+  if args(0) = 2 then
+    context(hold(assumeAlso)(args(1),args(2)));
+    getprop(args(1));
+  elif args(0) = 1 then
+    context(hold(assumeAlso)(args(1))); 
+    return();
+  else 
+    error ("Incorrect number of arguments for tciassume.");     
+  end_if;  
 end_proc:
 
 
