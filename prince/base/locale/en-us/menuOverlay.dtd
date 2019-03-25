@@ -240,7 +240,7 @@
 <!ENTITY helpMac.commandkey "?">
 <!ENTITY helpmenu.accesskey    "H">
 #ifdef PROD_SWP
-<!ENTITY helpmenuSWP.label    "Scientific Workplace help..."> 
+<!ENTITY helpmenuSWP.label    "Scientific WorkPlace help..."> 
 #endif
 #ifdef PROD_SW
 <!ENTITY helpmenuSW.label    "Scientific Word help...">
