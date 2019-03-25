@@ -1130,513 +1130,309 @@
         </tag>
         <tag nm="acadian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="afrikaans" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="albanian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="amharic" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="ancientgreek" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="Arabic" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="asturian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="australian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="austrian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="bahasa" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="bahasai" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="bahasam" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="basque" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="bengali" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="brazil" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="brazilian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="breton" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="bulgarian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="canadian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="canadien" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="catalan" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="coptic" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="croatian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="czech" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="danish" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="divehi" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="dutch" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="english" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="esperanto" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="estonian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="farsi" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="finnish" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="francais" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="french" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="frenchb" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="friulan" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="galician" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="german" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="germanb" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="greek" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="hebrew" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="hindi" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="icelandic" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="indon" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="indonesian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="interlingua" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="irish" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="italian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="kannada" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="khmer" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="korean" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="lao" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="latin" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="latvian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="lithuanian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="lowersorbian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="lsorbian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="magyar" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="malay" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="malayalam" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="marathi" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="nko" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="meyalu" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="monogreek" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="naustrian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="newzealand" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="ngerman" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="norsk" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="nynorsk" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="occitan" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="piedmontese" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="polish" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="polutonikogreek" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="polygreek" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="portuges" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="portuguese" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="romanian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="romansh" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="russian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="samin" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="sanskrit" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="scottish" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="serbian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="slovak" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="slovene" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="slovenian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="spanish" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="swedish" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="syriac" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="telugu" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="thai" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="tibetan" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="turkish" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="turkmen" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="UKenglish" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="ukrainian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="uppersorbian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="usorbian" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="urdu" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="vietnamese" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="USenglish" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="welsh" hidden="1" babel="0">
           <description>Babel environment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
       </tags>
     </tagclass>
