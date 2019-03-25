@@ -1726,7 +1726,7 @@ smallbox {
 	border: 1px solid black;
 }
 
-*[hilite] {
+[hilite] {
 	background-color: rgb(255,255,186);
 }
 
@@ -1735,6 +1735,26 @@ Arabic, textarabic, coptic, textcoptic, divehi, textdivehi, farsi, textfarsi, he
 {
 	direction: rtl;
 	text-align: right; }
+
+textarabic, textcoptic, textdivehi, textfarsi, texthebrew, textsyriac, texturdu
+{
+  direction: rtl; }
+
+/* These are the other language tags, so left-to-right text can be included with the above environments */
+acadian, afrikaans, albanian, amharic, ancientgreek, asturian, australian, austrian, bahasa, bahasai, bahasam, basque, bengali, brazil, brazilian, breton, bulgarian, canadian, canadien, catalan, croatian, czech, 
+danish, dutch, english, esperanto, estonian, finnish, francais, french, frenchb, friulan, galician, german, germanb, greek, hindi, icelandic, indon, indonesian, interlingua, irish, italian, kannada, khmer, 
+korean, lao, latin, latvian, lithuanian, lowersorbian, lsorbian, magyar, malay, malayalam, marathi, nko, meyalu, monogreek, naustrian, newzealand, ngerman, norsk, nynorsk, occitan, piedmontese, polish, 
+polutonikogreek, polygreek, portuges, portuguese, romanian, romansh, russian, samin, sanskrit, scottish, serbian, slovak, slovene, slovenian, spanish, swedish, telugu, thai, tibetan, turkish, turkmen, 
+UKenglish, ukrainian, uppersorbian, usorbian, vietnamese, USenglish, welsh{
+  direction: ltr;
+  text-align: left; }
+
+textacadian, textafrikaans, textalbanian, textamharic, textancientgreek, textasturian, textaustralian, textaustrian, textbahasa, textbahasai, textbahasam, textbasque, textbengali, textbrazil, textbrazilian, textbreton, textbulgarian, textcanadian, textcanadien, textcatalan, textcroatian, textczech, 
+textdanish, textdutch, textenglish, textesperanto, textestonian, textfinnish, textfrancais, textfrench, textfrenchb, textfriulan, textgalician, textgerman, textgermanb, textgreek, texthindi, texticelandic, textindon, textindonesian, textinterlingua, textirish, textitalian, textkannada, textkhmer, 
+textkorean, textlao, textlatin, textlatvian, textlithuanian, textlowersorbian, textlsorbian, textmagyar, textmalay, textmalayalam, textmarathi, textnko, textmeyalu, textmonogreek, textnaustrian, textnewzealand, textngerman, textnorsk, textnynorsk, textoccitan, textpiedmontese, textpolish, 
+textpolutonikogreek, textpolygreek, textportuges, textportuguese, textromanian, textromansh, textrussian, textsamin, textsanskrit, textscottish, textserbian, textslovak, textslovene, textslovenian, textspanish, textswedish, texttelugu, textthai, texttibetan, textturkish, textturkmen, 
+textUKenglish, textukrainian, textuppersorbian, textusorbian, textvietnamese, textUSenglish, textwelsh{
+  direction: ltr; }
 
   /***********************/
   /* Tagged run elements */
@@ -1745,7 +1765,7 @@ emphasized {
   color: rgb(9,62,125)
 }
 
-emphasized span.inlineMath {
+emphasized .inlineMath {
   color: rgb(255,0,255)
 }
 

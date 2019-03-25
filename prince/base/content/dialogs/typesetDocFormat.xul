@@ -259,7 +259,7 @@
                       <menuitem value="albanian" observes="unicodetex" label="&albanian.label;"/>
                       <menuitem value="afrikaans" observes="pdflatex" label="&afrikaans.label;"/>
                       <menuitem value="amharic" observes="unicodetex" label="&amharic.label;"/>
-                      <menuitem value="arabic" observes="unicodetex" label="&Arabic.label;"/>
+                      <menuitem value="Arabic" observes="unicodetex" label="&Arabic.label;"/>
                       <menuitem value="armenian" observes="unicodetex" label="&armenian.label;"/>
                       <menuitem value="asturian" observes="unicodetex" label="&asturian.label;"/>
                       <menuitem value="bahasa" observes="pdflatex" label="&bahasa.label;"/>
@@ -368,7 +368,7 @@
                       <menuseparator />
                       <menuitem value="albanian" label="&albanian.label;"/>
                       <menuitem value="afrikaans" observes="pdflatex" label="&afrikaans.label;"/>
-                      <menuitem value="arabic" observes="unicodetex" label="&Arabic.label;"/>
+                      <menuitem value="Arabic" observes="unicodetex" label="&Arabic.label;"/>
                       <menuitem value="bahasa" observes="pdflatex" label="&bahasa.label;"/>
                       <menuitem value="indonesian" observes="pdflatex" label="&indonesian.label;"/>
                       <menuitem value="indon" observes="pdflatex" label="&indon.label;"/>
