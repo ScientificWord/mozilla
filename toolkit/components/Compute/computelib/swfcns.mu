@@ -705,7 +705,7 @@ begin
     context(hold(assumeAlso)(args(1))); 
     return();
   else 
-    error ("Incorrect number of arguments for tciassume.");     
+    error ("Incorrect number of arguments for tciaddionally.");     
   end_if;  
 end_proc:
 
