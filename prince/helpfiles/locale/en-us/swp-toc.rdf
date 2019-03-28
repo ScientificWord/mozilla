@@ -1589,15 +1589,6 @@
   </rdf:Description>
    
 <!-- Chapter 11 subsections -->   
-  <rdf:Description about="#statistics_lists">
-    <nc:subheadings>
-    <rdf:Seq>
-      <rdf:li> <rdf:Description ID="statistics_lists_lists"  nc:name="Lists and Matrices"                nc:link="dm11-01-statistics.xhtml#lists and matrices"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="statistics_lists_import" nc:name="Importing Data from an ASCII File" nc:link="dm11-01-statistics.xhtml#importing data from an ascii file"/> </rdf:li>
-    </rdf:Seq>
-    </nc:subheadings>
-  </rdf:Description>
-   
   <rdf:Description about="#statistics_tendency">
     <nc:subheadings>
     <rdf:Seq>

@@ -688,16 +688,25 @@ begin
     context(hold(assume)(args(1),args(2)));
     getprop(args(1));
   elif args(0) = 1 then
-    context(hold(assume)(args(1)));    
+    context(hold(assume)(args(1))); 
+    return();
+  else 
+    error ("Incorrect number of arguments for tciassume.");     
   end_if;  
-
 end_proc:
 
 
-tciadditionally := proc(v,p)
+tciadditionally := proc()
 begin
-    context(hold(assumeAlso)(v, p));
-    getprop(v);
+  if args(0) = 2 then
+    context(hold(assumeAlso)(args(1),args(2)));
+    getprop(args(1));
+  elif args(0) = 1 then
+    context(hold(assumeAlso)(args(1))); 
+    return();
+  else 
+    error ("Incorrect number of arguments for tciassume.");     
+  end_if;  
 end_proc:
 
 
@@ -842,7 +851,7 @@ begin
   if linalg::isPosDef(a) = TRUE then
     return("positive definite");
   elif linalg::isPosDef(a) = FALSE then
-    return("NOT positive definite");
+    return("not positive definite");
   else  
     return("indeterminant");
   end_if;
