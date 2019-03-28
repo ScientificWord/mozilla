@@ -28,6 +28,7 @@ glob:extensions/chromebug/*
 glob:*.sublime-project
 glob:*.sublime-workspace
 glob:*/docs/*
+glob:*/doc/*
 glob:.tm_properties
 glob:.tmhotkeys
 glob:mozilla\.mchg
@@ -49,6 +50,7 @@ glob:*.xcsettings
 glob:*.xcuserstate
 glob:*.xcbkptlist
 glob:*.pbxproj
+
 
 
 
