@@ -1396,27 +1396,26 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
         {
           tempFrame = tempFrame->GetParent();
         }
-        // look for msi input box
         if (tempFrame && tempFrame->GetParent()) {
 
           nsIContent* pContent = tempFrame -> GetParent() -> GetContent();
           nsIAtom * tag = pContent->Tag();
-          if (tag == nsGkAtoms::mo_) {
-            nsIFrame* outFrame = nsnull;
-            PRInt32  outOffset = 0;
-            if (aAmount == eSelectCharacter) {
-              if (offsetused == 0) {
-                nsCOMPtr<nsINode> node;
-                node = do_QueryInterface(pContent);
-                nsAutoString textcontent;
-                nsContentUtils::GetNodeTextContent(node, PR_TRUE, textcontent);
-                outOffset = textcontent.Length();
-                outFrame = frame;
-                TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
-                return NS_OK;
-              }
-            }
-          }
+          // if (tag == nsGkAtoms::mo_) {
+          //   nsIFrame* outFrame = nsnull;
+          //   PRInt32  outOffset = 0;
+          //   if (aAmount == eSelectCharacter) {
+          //     if (offsetused == 0) {
+          //       nsCOMPtr<nsINode> node;
+          //       node = do_QueryInterface(pContent);
+          //       nsAutoString textcontent;
+          //       nsContentUtils::GetNodeTextContent(node, PR_TRUE, textcontent);
+          //       outOffset = textcontent.Length();
+          //       outFrame = frame;
+          //       TakeFocus(outFrame->GetContent(), outOffset, outOffset, aContinueSelection, PR_FALSE);
+          //       return NS_OK;
+          //     }
+          //   }
+          // }
           if (tag == nsGkAtoms::mi_)
           {
             nsCOMPtr<nsIDOMElement> mielt(do_QueryInterface(pContent));
