@@ -681,12 +681,15 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   var minpasses = 1;
   var index;
+  var passes;
   var minpassElements = document.getElementsByTagName("button");
   if (minpassElements.length > 0) {
     for (index = 0; index < minpassElements.length; index++) {
       if (minpassElements[index].hasAttribute('minpasses')) {
-        minpasses = minpassElements[index].getAttribute('minpasses');
-        break;
+        passes = minpassElements[index].getAttribute('minpasses');
+        if (passes > minpasses) {
+          minpasses = passes;
+        }
       }
     }
   }
