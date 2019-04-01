@@ -705,7 +705,7 @@ begin
     context(hold(assumeAlso)(args(1))); 
     return();
   else 
-    error ("Incorrect number of arguments for tciadditionally.");     
+    error ("Incorrect number of arguments for tciassume.");     
   end_if;  
 end_proc:
 
@@ -1788,8 +1788,8 @@ end_proc:
 tcidual := proc(f,l,v)
   local a;
 begin
-  a := linopt::dual([l,f]);
-  a[2],{op(a[1])};  // special, strange Maple form
+  a := sfdual([l,f]);
+  a[2],{op(a[1])};  // special, strange Mupad form
 end_proc:
 
 tcimaximize := proc(f,l)
@@ -2550,5 +2550,57 @@ begin
   itemOut:
 end_proc:
 
+//The following procedures are derived from MuPAD 2.3 and have been provided by Sciface
+
+sfdual := proc(l)
+   local C, LinCon, ObjFun, p, p0, ind, m, n, nid, r, s;
+begin
+   if args(0) <> 1 then
+      error("Wrong number of arguments. Only one argument expected.")
+   end_if;
+   if domtype(l) <> DOM_LIST or nops(l) < 2 then
+      error("List [LinearConstraints, ObjectiveFunction] expected.")
+   end_if;
+   LinCon := l[1];
+   ObjFun := l[2];
+   ind := [op(indets(LinCon) union indets(ObjFun))];
+   if Type::Linear(ObjFun, ind) = FALSE then
+      error("Objective function must be linear.")
+   end_if;
+
+   s := linopt::standardForm(LinCon, op(l, 3..nops(l)));
+   // s in standard form: C*x <= d
+   C := linalg::expr2Matrix(map(s, op, 1), ind);
+   C := linalg::delCol(C, linalg::ncols(C));
+   // C*x <= d -> (-C)*x + d >= 0
+   C := linalg::transpose(-C);
+   p0:= sfget_constant(ObjFun);
+   ObjFun := ObjFun-p0;
+   p := linalg::expr2Matrix([ObjFun], ind);
+   // transpose(-C)*u + p <= 0
+   // -> transpose(-C)*u <= -p
+   p := linalg::delCol(-p, linalg::ncols(p));
+   [m, n] := linalg::matdim(C);
+   nid := [genident("u") $ i=1..n];
+   r := [_plus(C[i,j]*nid[j] $ j=1..n) <= p[i] $ i=1..m];
+   [r, _plus(op(s[j], 2)*nid[j] $ j=1..n) + p0]
+           
+end_proc:
+
+
+sfget_constant := proc(f)
+   local c;
+begin 
+   case type(f)
+     of "_mult" do
+        return(0);
+     of "_plus" do
+        // if the sum contains a constant, then it is the last op
+        c := op(f, nops(f));
+        return((if testtype(c, Type::Numeric) then c else 0 end_if))
+     otherwise
+        if testtype(f, Type::Numeric) then f else 0 end_if
+   end_case
+end_proc:
 
 swpPlotDigits:=10:
