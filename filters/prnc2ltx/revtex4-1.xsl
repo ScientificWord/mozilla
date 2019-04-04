@@ -28,6 +28,9 @@
 <xsl:template match="html:author" mode="building-author">
 </xsl:template>  
 
+<!-- ReVTeX uses \footnote instead of \thanks -->
+<xsl:template match="html:note[@type='footnote']" mode="frontmatter">\footnote{<xsl:apply-templates/>}</xsl:template>
+
 <xsl:template match="html:preprint">
 \preprint{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
