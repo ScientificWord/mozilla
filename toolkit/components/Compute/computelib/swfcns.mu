@@ -1472,15 +1472,15 @@ begin
     var := x
   end_if;
   if atype = 1 then  // left
-    student::riemann( e, var=rnge, nint, Left );
+    sfriemann( e, var=rnge, nint, Left );
   elif atype = 2 then    // midpoint
-    student::riemann( e, var=rnge, nint, Middle );
+    sfriemann( e, var=rnge, nint, Middle );
   elif atype = 3 then    // right
-    student::riemann( e, var=rnge, nint, Right );
+    sfriemann( e, var=rnge, nint, Right );
   elif atype = 4 then // Simpson
-    student::simpson( e, var=rnge, nint );
+    sfsimpson( e, var=rnge, nint );
   elif atype = 5 then // trapezoid
-    student::trapezoid( e, var=rnge, nint );
+    sftrapezoid( e, var=rnge, nint );
   else
     error( "Unknown integration method" );
   end_if;
@@ -2549,8 +2549,12 @@ begin
   end_if:
   itemOut:
 end_proc:
+swpPlotDigits:=10:
 
+//
 //The following procedures are derived from MuPAD 2.3 and have been provided by Sciface
+//
+
 
 sfdual := proc(l)
    local C, LinCon, ObjFun, p, p0, ind, m, n, nid, r, s;
@@ -2603,4 +2607,168 @@ begin
    end_case
 end_proc:
 
-swpPlotDigits:=10:
+sfriemann:= proc(f,r,n=4,dir=hold(Middle))
+    local x, a, b, h, F, i, Sum;
+begin
+    if testargs() then
+        if args(0) < 2 or (not testtype(f,Type::Arithmetical) and domtype(f) <> DOM_PROC)
+           or not testtype(r,Type::Equation(DOM_IDENT,Type::Arithmetical..Type::Arithmetical))
+        then
+            error("call: 'riemann(f(x), x=a...b, n, rule)'")
+        elif not testtype(n,Type::PosInt) then
+            if not contains( {hold(Middle),hold(Left),hold(Right)},n ) then
+                error("expecting a positive integer, or the option 'Left', 'Middle' or 'Right'")
+            else
+                dir:= n;
+                n:= 4
+            end_if
+        elif not contains( {hold(Middle),hold(Left),hold(Right)},dir ) then
+            error("expecting either 'Left', 'Middle' or 'Right'")
+        end_if
+    end_if;
+
+    x:= op(r,1);
+    a := op(r,[2,1]);
+    b := op(r,[2,2]);
+    h := (b - a)/n;
+
+    if domtype(f) <> DOM_PROC then
+        if has(f,x) then
+            F:= X -> eval(subs(f,x=X))
+        else
+            F:= X -> f
+        end_if
+    elif op(f,1) = x then
+        F:= f
+    else
+        error("variables don't match")
+    end_if;
+
+    i:= genident("i");
+    Sum:= proc(f,r) 
+        local a,b;
+    begin
+        a:= op(r,[2,1]);
+        b:= op(r,[2,2]);
+        if testtype(a,Type::Real) and testtype(b,Type::Real) and a > b then 
+            return( 0 )
+        elif a = b then
+            return( eval(subs(f,op(r,1)=a)) )
+        else
+            return(freeze(sum)(f,r))
+        end_if
+    end_proc:
+
+    case dir
+    of hold(Left) do
+        return(h * Sum(F(a + h*i), i = 0..n-1))
+    of hold(Right) do
+        return(h * Sum(F(a + h*i), i = 1..n))
+    otherwise
+         // middle point 
+         return(h * Sum(F(a + (i + 1/2)*h), i = 0..n-1))
+    end_case
+end_proc:
+
+
+sfsimpson:= proc(f,r,n=4)
+    local x, a, b, h, F, i, Sum;
+begin
+    if testargs() then
+        if args(0) < 2 or (not testtype(f,Type::Arithmetical) and domtype(f) <> DOM_PROC)
+           or not testtype(r,Type::Equation(DOM_IDENT,Type::Arithmetical..Type::Arithmetical))
+        then
+            error("call: 'simpson(f(x), x=a...b, n)'")
+        elif not testtype(n,Type::PosInt) or n mod 2 <> 0 then
+            error("3rd argument: must have an even number of intervals")
+        end_if
+    end_if;
+
+    x:= op(r,1);
+    a := op(r,[2,1]);
+    b := op(r,[2,2]);
+    h := (b - a)/n;
+
+    if domtype(f) <> DOM_PROC then
+        if has(f,x) then
+            F:= X -> eval(subs(f,x=X))
+        else
+            F:= X -> f
+        end_if
+    elif op(f,1) = x then
+        F:= f
+    else
+        error("variables don't match")
+    end_if;
+
+    i:= genident("i");
+    Sum:= proc(f,r) 
+        local a,b;
+    begin
+        a:= op(r,[2,1]);
+        b:= op(r,[2,2]);
+        if testtype(a,Type::Real) and testtype(b,Type::Real) and a > b then 
+            return( 0 )
+        elif a = b then
+            return( eval(subs(f,op(r,1)=a)) )
+        else
+            return(freeze(sum)(f,r))
+        end_if
+    end_proc:
+
+    return(h/3*(
+        F(a) + F(b) + 4*Sum(F(a + (2*i - 1)*h), i = 1 .. 1/2*n)
+        + 2*Sum(F(a + 2*i*h), i = 1 .. 1/2*n - 1)
+    ))
+end_proc:
+
+sftrapezoid:= proc(f,r,n=4)
+    local x, a, b, h, F, i, Sum;
+begin
+    if testargs() then
+        if args(0) < 2 or (not testtype(f,Type::Arithmetical) and domtype(f) <> DOM_PROC)
+           or not testtype(r,Type::Equation(DOM_IDENT,Type::Arithmetical..Type::Arithmetical))
+        then
+            error("call: 'trapezoid(f(x), x=a...b, n)'")
+        elif not testtype(n,Type::PosInt) then
+            error("expecting a positive integer")
+        end_if
+    end_if;
+
+    x:= op(r,1);
+    a := op(r,[2,1]);
+    b := op(r,[2,2]);
+    h := (b - a)/n;
+
+    if domtype(f) <> DOM_PROC then
+        if has(f,x) then
+            F:= X -> eval(subs(f,x=X))
+        else
+            F:= X -> f
+        end_if
+    elif op(f,1) = x then
+        F:= f
+    else
+        error("variables do not match")
+    end_if;
+
+    i:= genident("i");
+    Sum:= proc(f,r) 
+        local a,b;
+    begin
+        a:= op(r,[2,1]);
+        b:= op(r,[2,2]);
+        if testtype(a,Type::Real) and testtype(b,Type::Real) and a > b then 
+            return( 0 )
+        elif a = b then
+            return( eval(subs(f,op(r,1)=a)) )
+        else
+            return(freeze(sum)(f,r))
+        end_if
+    end_proc:
+
+    return( h/2*(F(a) + 2*Sum(F(a + h*i), i = 1..n-1) + F(b)) )
+end_proc:
+
+
+
