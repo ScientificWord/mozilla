@@ -57,7 +57,7 @@ function doInsertMathname( name, delSelection )
   insertmathname(name, editorElement);
 }
 
-function doIinsertMathOperator( name, delSelection)
+function doInsertMathOperator( name, delSelection)
 {
 //  if (delSelection) deleteSelection();
   var editorElement = getCurrentEditorElement();
