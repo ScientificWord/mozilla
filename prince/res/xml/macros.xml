@@ -52,18 +52,18 @@
   <m nm="beta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&beta;<![CDATA[");]]></data></m>
   <m nm="beth" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&beth;<![CDATA[");]]></data></m>
   <m nm="between"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&twixt;<![CDATA[");]]></data></m>
-  <m nm="bigcap"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xcap;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigcup"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xcup;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigodot"  tp="sc"><data><![CDATA[insertMathOperator("]]>&odot;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigoplus"  tp="sc"><data><![CDATA[insertMathOperator("]]>&oplus;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigotimes"  tp="sc"><data><![CDATA[insertMathOperator("]]>&otimes;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigsqcup"  tp="sc"><data><![CDATA[insertMathOperator("]]>&sqcup;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigcap"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&xcap;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigcup"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&xcup;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigodot"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&odot;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigoplus"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&oplus;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigotimes"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&otimes;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigsqcup"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&sqcup;<![CDATA[", "", "", false);]]></data></m>
   <m nm="bigstar" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&bigstar;<![CDATA[");]]></data></m>
   <m nm="bigtriangledown"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xdtri;<![CDATA[");]]></data></m>
   <m nm="bigtriangleup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xutri;<![CDATA[");]]></data></m>
-  <m nm="biguplus"  tp="sc"><data><![CDATA[insertMathOperator("]]>&uplus;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigvee"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xvee;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="bigwedge"  tp="sc"><data><![CDATA[insertMathOperator("]]>&xwedge;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="biguplus"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&uplus;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigvee"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&xvee;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="bigwedge"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&xwedge;<![CDATA[", "", "", false);]]></data></m>
   <m nm="blacklozenge" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&lozf;<![CDATA[");]]></data></m>
   <m nm="blacksquare" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&squarf;<![CDATA[");]]></data></m>		    
   <m nm="blacktriangle" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&utrif;<![CDATA[");]]></data></m>
@@ -112,7 +112,7 @@
   <m nm="complement"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&comp;<![CDATA[");]]></data></m>
   <m nm="complexes" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&complexes;<![CDATA[");]]></data></m>
   <m nm="cong"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cong;<![CDATA[");]]></data></m>
-  <m nm="coprod"  tp="sc"><data><![CDATA[insertMathOperator("]]>&coprod;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="coprod"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&coprod;<![CDATA[", "", "", false);]]></data></m>
   <m nm="copyright" fm="0"><data>&#x00A9;</data><context/><info>0,0</info></m>
   <m nm="Cup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Cup;<![CDATA[");]]></data></m>
   <m nm="cup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cup;<![CDATA[");]]></data></m>
@@ -263,13 +263,13 @@
   <m nm="Idieresis" fm="0"><data>&#x00CF;</data><context/><info>0,0</info></m>
   <m nm="idieresis" fm="0"><data>&#x00EF;</data><context/><info>0,0</info></m>
   <m nm="Idot" fm="0"><data>&#x0130;</data><context/><info>0,0</info></m>
-  <m nm="idotsint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&int;&ctdot;&int;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="idotsint"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&int;&ctdot;&int;<![CDATA[", "", "", false);]]></data></m>
   <m nm="iff"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xhArr;<![CDATA[");]]></data></m>
   <m nm="Igrave" fm="0"><data>&#x00CC;</data><context/><info>0,0</info></m>
   <m nm="igrave" fm="0"><data>&#x00EC;</data><context/><info>0,0</info></m>
-  <m nm="iiiint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&qint;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="iiint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&tint;<![CDATA[", "", "", false);]]></data></m>
-  <m nm="iint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&Int;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="iiiint"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&qint;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="iiint"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&tint;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="iint"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&Int;<![CDATA[", "", "", false);]]></data></m>
   <m nm="IJ" fm="0"><data>&#x0132;</data><context/><info>0,0</info></m>
   <m nm="ij" fm="0"><data>&#x0133;</data><context/><info>0,0</info></m>
   <m nm="Im"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&image;<![CDATA[");]]></data></m>
@@ -280,7 +280,7 @@
   <m nm="implies"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&xrArr;<![CDATA[");]]></data></m>
   <m nm="in"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Element;<![CDATA[");]]></data></m>
   <m nm="infty" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&infin;<![CDATA[");]]></data></m>
-  <m nm="int"  tp="sc"><data><![CDATA[insertMathOperator("]]>&int;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="int"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&int;<![CDATA[", "", "", false);]]></data></m>
   <m nm="integers" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&integers;<![CDATA[");]]></data></m>
   <m nm="intercal"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&intcal;<![CDATA[");]]></data></m>
   <m nm="Iogon" fm="0"><data>&#x012E;</data><context/><info>0,0</info></m>
@@ -456,7 +456,7 @@
   <m nm="oe" fm="0"><data>&#x153;</data><context/><info>0,0</info></m>
   <m nm="Ograve" fm="0"><data>&#x00D2;</data><context/><info>0,0</info></m>
   <m nm="ograve" fm="0"><data>&#x00F2;</data><context/><info>0,0</info></m>
-  <m nm="oint"  tp="sc"><data><![CDATA[insertMathOperator("]]>&conint;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="oint"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&conint;<![CDATA[", "", "", false);]]></data></m>
   <m nm="Omacr" fm="0"><data>&#x014C;</data><context/><info>0,0</info></m>
   <m nm="omacr" fm="0"><data>&#x014D;</data><context/><info>0,0</info></m>
   <m nm="Omega" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Omega;<![CDATA[");]]></data></m>
@@ -496,7 +496,7 @@
   <m nm="precnsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prnsim;<![CDATA[");]]></data></m>
   <m nm="precsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prsim;<![CDATA[");]]></data></m>
   <m nm="prime"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prime;<![CDATA[");]]></data></m>
-  <m nm="prod"  tp="sc"><data><![CDATA[insertMathOperator("]]>&prod;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="prod"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&prod;<![CDATA[", "", "", false);]]></data></m>
   <m nm="propto"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&prop;<![CDATA[");]]></data></m>
   <m nm="Psi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&Psi;<![CDATA[");]]></data></m>
   <m nm="psi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&psi;<![CDATA[");]]></data></m>
@@ -588,7 +588,7 @@
   <m nm="succneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scnE;<![CDATA[");]]></data></m>
   <m nm="succnsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scnsim;<![CDATA[");]]></data></m>
   <m nm="succsim"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&scsim;<![CDATA[");]]></data></m>
-  <m nm="sum"  tp="sc"><data><![CDATA[insertMathOperator("]]>&sum;<![CDATA[", "", "", false);]]></data></m>
+  <m nm="sum"  tp="sc"><data><![CDATA[doInsertMathOperator("]]>&sum;<![CDATA[", "", "", false);]]></data></m>
   <m nm="sup1" fm="0"><data>&#x00B9;</data><context/><info>0,0</info></m>
   <m nm="sup2" fm="0"><data>&#x00B2;</data><context/><info>0,0</info></m>
   <m nm="sup3" fm="0"><data>&#x00B3;</data><context/><info>0,0</info></m>
