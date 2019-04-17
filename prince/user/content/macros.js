@@ -43,6 +43,11 @@ function insertMathSymbol( s, delSelection )
   doParamCommand('cmd_MSIsymbolCmd',s);
 }
 
+
+function insertMathOperator(aName, limitPlacement, size, editorElement) {
+  return doInsertMathOperator(aName, limitPlacement, size, editorElement);
+}
+
 function doInsertMathunit( unit, delSelection )
 {
   var editorElement = getCurrentEditorElement();
@@ -57,12 +62,12 @@ function doInsertMathname( name, delSelection )
   insertmathname(name, editorElement);
 }
 
-function doInsertMathOperator( name, delSelection)
-{
-//  if (delSelection) deleteSelection();
-  var editorElement = getCurrentEditorElement();
-  insertmathname(name, editorElement);
-}
+// function doInsertMathOperator( name, delSelection)
+// {
+// //  if (delSelection) deleteSelection();
+//   var editorElement = getCurrentEditorElement();
+//   insertmathname(name, editorElement);
+// }
 
 
 function insertTag( name, delSelection )
