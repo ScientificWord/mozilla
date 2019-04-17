@@ -2537,6 +2537,7 @@ function insertMathname(mathName)
 
 function doInsertMathOperator(aName, limitPlacement, size, editorElement)
 {
+  editorElement = editorElement || msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
   var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
   if (mathmlEditor){
