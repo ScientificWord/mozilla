@@ -1158,11 +1158,11 @@
   ><xsl:variable name="fontsize" select="@size"
     /><xsl:variable name="units" select="substring-after($fontsize,' ')"
     /><xsl:if test="number(substring-before($fontsize,'/'))>0"
-    >{\fontsize{<xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"/>}{<xsl:choose
+    >\fontsize{<xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"/>}{<xsl:choose
     ><xsl:when test="number(substring-before(substring-after($fontsize,'/'),' '))>0"
     ><xsl:value-of select="concat(substring-before(substring-after($fontsize,'/'),' '),$units)"
     /></xsl:when><xsl:otherwise><xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"
-    /></xsl:otherwise></xsl:choose>}\selectfont </xsl:if
+    /></xsl:otherwise></xsl:choose>}\selectfont{ </xsl:if
     ><xsl:apply-templates/>}</xsl:template>
 
 <xsl:template match="html:fontcolor">\textcolor<xsl:choose
