@@ -121,7 +121,12 @@
     <xsl:when test="@type='discretionaryHyphen'">\-</xsl:when>
     <xsl:when test="@type='lineBreak'">\linebreak\relax </xsl:when>
     <xsl:when test="@type='noBreak'">\nolinebreak\relax </xsl:when>
-    <xsl:when test="@type='newLine'"> \newline </xsl:when>
+    <xsl:when test="@type='newLine'">
+      <xsl:choose>
+        <xsl:when test="ancestor::html:author or ancestor::html:date or ancestor::html:title or ancestor::html:abstract">\\</xsl:when>
+        <xsl:otherwise>\newline </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
 	  <xsl:when test="@type='customNewLine'">
 	    <xsl:text> \\[</xsl:text>
       <xsl:value-of select="@dim"/>
