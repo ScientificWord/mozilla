@@ -329,7 +329,7 @@ nsHTMLEditor::SetTextTagNode( nsIDOMCharacterData *aTextNode,
                                             nsIAtom * atomNS,
                                             const nsAString *aAttribute,
                                             const nsAString *aValue  )
-// This is the analogue of SetInlinePropertyOnTextNone
+// This is the analogue of SetInlinePropertyOnTextNode
 {
   if (!aTextNode) return NS_ERROR_NULL_POINTER;
   nsCOMPtr<nsIDOMNode> parent;
@@ -742,7 +742,8 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
   if (bHasProp) return NS_OK;
 
   // is it already the right kind of node, but with wrong attribute?
-  if (NodeIsType(aNode, aProperty))
+  if (NodeIsType(aNode, aProperty
+                 , mtagListManager))
   {
     // just set the attribute on it.
     // but first remove any contrary style in it's children.
@@ -768,7 +769,7 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
       // previous sib is already right kind of inline node; slide this over into it
       res = MoveNode(aNode, priorNode, -1);
     }
-    else if (!isMath && nextNode && NodeIsType(nextNode, aProperty) &&
+    else if (!isMath && nextNode && TagCanContain(tag, nextNode) &&
              HasAttrVal(nextNode, aAttribute, aValue)    &&
              IsOnlyAttribute(priorNode, aAttribute) )
     {
