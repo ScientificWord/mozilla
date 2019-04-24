@@ -9480,6 +9480,7 @@ nsHTMLEditRules::RemoveEnvAboveSelection(nsISelection *selection)
     }
   }
   nsEditorUtils::JiggleCursor(mHTMLEditor, selection, nsIEditor::eNext);
+  return NS_OK;
 }
 /*
 ///////////////////////////////////////////////////////////////////////////
