@@ -1997,11 +1997,11 @@ nsRemoveEnvCommand::DoCommand(const char *aCommandName,
   editor->GetSelection(getter_AddRefs(selection));
 
   nsresult rv = NS_OK;
-  if (editor)
-  {
+  if (htmlEditor) {
+    editor->BeginTransaction();
     rv = htmlEditor->RemoveEnvAboveSelection(selection);
+    editor->EndTransaction();
   }
-
   return rv;
 }
 

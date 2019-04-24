@@ -558,9 +558,9 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
 
   // Move all children from inNode to its parent.
   inNode->HasChildNodes(&bHasMoreChildren);
-  PRBool inComplexTransaction;
-  GetInComplexTransaction(&inComplexTransaction);
-  SetInComplexTransaction(PR_TRUE);
+  // PRBool inComplexTransaction;
+  // GetInComplexTransaction(&inComplexTransaction);
+  // SetInComplexTransaction(PR_TRUE);
 
   while (bHasMoreChildren) {
     nsCOMPtr<nsIDOMNode> child;
@@ -582,7 +582,7 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
     inNode->HasChildNodes(&bHasMoreChildren);
 
   }
-  SetInComplexTransaction(inComplexTransaction);
+  // SetInComplexTransaction(inComplexTransaction);
   DeleteNode(inNode);
 }
 
