@@ -37,6 +37,18 @@
         <contains>texttag</contains>
         <contains>mml:math</contains>
         <contains>texlogo</contains>
+        <contains>img</contains>
+        <contains>object</contains>
+        <contains>a</contains>
+        <contains>msibr</contains>
+        <contains>texb</contains>
+        <contains>maketitle</contains>
+        <contains>title</contains>
+        <contains>author</contains>
+        <contains>date</contains>
+        <contains>maketoc</contains>
+        <contains>makelot</contains>
+        <contains>makelof</contains>
       </classcontains>
       <tags>
         <tag id="cleartexttag" nm="(normal)">
