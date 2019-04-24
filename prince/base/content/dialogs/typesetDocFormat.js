@@ -926,6 +926,9 @@ function saveEnableFlags(doc, docformatnode)
   progNode = editor.createNode("texprogram", docformatnode, 0);
   // handle compiler choice, whether to allow formatting changes, etc.
   progNode.setAttribute("prog", compilerInfo.prog);
+  if (compilerInfo.prog === 'xelatex' || compilerInfo.prog === 'lualatex') {
+    progNode.setAttribute("req", "fontspec");
+  }
   progNode.setAttribute("formatOK", compilerInfo.formatOK);
   compilerInfo.useUni = compilerInfo.useOTF; // in this version they mean the same thing
   progNode.setAttribute("useUni", compilerInfo.useUni);
