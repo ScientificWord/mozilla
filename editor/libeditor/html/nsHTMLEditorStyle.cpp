@@ -769,7 +769,7 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
       // previous sib is already right kind of inline node; slide this over into it
       res = MoveNode(aNode, priorNode, -1);
     }
-    else if (!isMath && nextNode && TagCanContain(tag, nextNode) &&
+    else if (!isMath && nextNode && NodeIsType(nextNode, aProperty) &&
              HasAttrVal(nextNode, aAttribute, aValue)    &&
              IsOnlyAttribute(priorNode, aAttribute) )
     {
