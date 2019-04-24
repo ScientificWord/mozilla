@@ -41,7 +41,10 @@
         <contains>object</contains>
         <contains>a</contains>
         <contains>msibr</contains>
+        <contains>xref</contains>
         <contains>texb</contains>
+        <contains>citation</contains>
+        <contains>indexitem</contains>
         <contains>maketitle</contains>
         <contains>title</contains>
         <contains>author</contains>
