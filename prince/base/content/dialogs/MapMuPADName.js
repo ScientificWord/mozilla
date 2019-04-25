@@ -20,8 +20,9 @@ function Startup(){
 
 function OK(){
   data.Cancel = false;
-
+  var theStringSource = GetComputeString("Math.emptyForInput");
   var doc = document.getElementById("swpname.input").contentDocument;
+  msiInitializeEditorForElement(doc, theStringSource, true, null, true);
   var mathnodes = doc.getElementsByTagName("math");
 
   if (mathnodes.length == 0) {
