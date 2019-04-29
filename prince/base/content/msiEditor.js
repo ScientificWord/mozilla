@@ -867,6 +867,22 @@ function queueLicenseCheck ()
   timer.initWithCallback(license_timercallback, 4000, Components.interfaces.nsITimer.TYPE_ONE_SHOT);
 }
 
+function buildDefinitions(editor) {
+  var elemList = editor.document.getElementsByTagName("definitionlist");
+  var defnList = null;
+  var n = 0;
+  if (elemList && elemList.length)
+    defnList = elemList[0].getElementsByTagName("math");
+  if (defnList)
+    n = defnList.length;
+
+  var defn;
+  for (var ix = 0; ix < n; ++ix) {
+    defn = defnList[ix];
+    doComputeDefine(defn)
+  }
+}
+
 // implements nsIObserver
 //var gEditorDocumentObserver =
 function msiEditorDocumentObserver(editorElement) {
@@ -1018,19 +1034,7 @@ function msiEditorDocumentObserver(editorElement) {
           try {
             if (is_topLevel) {
               initVCamObjects(editor.document);
-              var elemList = editor.document.getElementsByTagName("definitionlist");
-              var defnList = null;
-              var n = 0;
-              if (elemList && elemList.length)
-                defnList = elemList[0].getElementsByTagName("math");
-              if (defnList)
-                n = defnList.length;
-
-              var defn;
-              for (var ix = 0; ix < n; ++ix) {
-                defn = defnList[ix];
-                doComputeDefine(defn)
-            }
+              buildDefinitions(editor);
             }
           } catch (e) {
             dump("Problem restoring compute definitions. Exception: " + e + "\n");
@@ -4210,6 +4214,7 @@ function msiSetEditMode(mode, editorElement) {
   if (!msiSetDisplayMode(editorElement, mode))
     return;
   if (mode == kDisplayModeSource) {
+    putDefinitionsInPreamble (editor);
     // Display the DOCTYPE as a non-editable string above edit area, if it exists
     displayDocTypeIfExists(editor);
     // Get the entire document's source string
@@ -4295,6 +4300,7 @@ function msiSetEditMode(mode, editorElement) {
           msiUpdateWindowTitle();
         }
       }
+      buildDefinitions(editor);
       editorElement.makeEditable("html");
     }
 
