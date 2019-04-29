@@ -80,7 +80,7 @@
     <vbox>
       <groupbox>
         <caption label="&swpname.label;"/>
-        <editor editortype="html" type="content-primary" context="msiEditorContentContext" height="60" width="200" id="swpname.input"/>
+        <editor editortype="html" type="content-primary" context="msiEditorContentContext" height="60" width="200" id="swpnameInput"/>
       </groupbox>
       <groupbox>
         <caption label="&mupadname.label;"/>

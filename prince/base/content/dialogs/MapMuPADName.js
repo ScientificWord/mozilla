@@ -8,12 +8,12 @@ function Startup(){
   try
   {
     var theStringSource = GetComputeString("Math.emptyForInput");
-    var editorControl = document.getElementById("swpname.input");
+    var editorControl = document.getElementById("swpnameInput");
     msiInitializeEditorForElement(editorControl, theStringSource, true, null, true);
   }
   catch(exc) 
   {
-    dump("In Startup for MapMuPADName dialog, error initializing editor swpname.input: [" + exc + "].\n");
+    dump("In Startup for MapMuPADName dialog, error initializing editor swpnameInput: [" + exc + "].\n");
   }
 
 }
@@ -21,8 +21,7 @@ function Startup(){
 function OK(){
   data.Cancel = false;
   var theStringSource = GetComputeString("Math.emptyForInput");
-  var doc = document.getElementById("swpname.input").contentDocument;
-  msiInitializeEditorForElement(doc, theStringSource, true, null, true);
+  var doc = document.getElementById("swpnameInput").contentDocument;
   var mathnodes = doc.getElementsByTagName("math");
 
   if (mathnodes.length == 0) {
