@@ -2740,6 +2740,45 @@ function msiIsSupportedTextMimeType(aMimeType)
   return false;
 }
 
+function putDefinitionsInPreamble (editor) {
+
+// Get the current definitions from compute engine and place in preamble.
+  var editorDoc = editor.document;
+  var defnListString = "";
+  try {
+    defnListString = GetCurrentEngine().getDefinitions();
+  }
+  catch(e)
+  {
+    dump("Unable to get definitions ("+e.message+")\n");
+  }
+  var preamble = editorDoc.getElementsByTagName("preamble")[0];
+  if (preamble)
+  {
+    var oldDefnList = preamble.getElementsByTagName("definitionlist")[0];
+    if (oldDefnList)
+       oldDefnList.parentNode.removeChild(oldDefnList);
+    if (defnListString && defnListString.length > 0)
+    {
+      var range = editor.document.createRange();
+      var s = editor.selection;
+      range.setStart(s.anchorNode, s.anchorOffset);
+      range.setEnd(s.focusNode, s.focusOffset);
+      defnListString = defnListString.replace(/<p>/,"<bodyText>", "g");
+      defnListString = defnListString.replace(/<\/p>/,"</bodyText>", "g");
+      defnListString = "<definitionlist>" + defnListString + "</definitionlist>";
+      
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(defnListString, 'application/xhtml+xml');
+      //var nodeList = doc.documentElement.childNodes;
+      //var defnListElt = editorDoc.createElement("definitionlist");
+      //defnListElt.appendChild(nodeList);
+      preamble.appendChild(doc.documentElement);
+      if(s.rangeCount > 0) s.removeAllRanges();
+      s.addRange(range);
+    }
+  }
+}
 
 // Now that we save documents in a zip file, the save operation has two steps. We first save
 // everything that is in memory to the disk in the working directory. Then we replace the *.sci
@@ -2779,43 +2818,8 @@ function msiSoftSave( editor, editorElement, noTeX)
   //Check the my.css file to see if changes need to be written to it.
   saveCSSFileIfChanged(editorDoc);
   ensurePlotIdsAreUnique(editorDoc);
-
-  // Get the current definitions from compute engine and place in preamble.
-  var defnListString = "";
-  try {
-    defnListString = GetCurrentEngine().getDefinitions();
-  }
-  catch(e)
-  {
-    dump("Unable to get definitions ("+e.message+")\n");
-  }
-  var preamble = editorDoc.getElementsByTagName("preamble")[0];
-  if (preamble)
-  {
-    var oldDefnList = preamble.getElementsByTagName("definitionlist")[0];
-    if (oldDefnList)
-       oldDefnList.parentNode.removeChild(oldDefnList);
-    if (defnListString && defnListString.length > 0)
-    {
-      var range = editor.document.createRange();
-      var s = editor.selection;
-      range.setStart(s.anchorNode, s.anchorOffset);
-      range.setEnd(s.focusNode, s.focusOffset);
-      defnListString = defnListString.replace(/<p>/,"<bodyText>", "g");
-      defnListString = defnListString.replace(/<\/p>/,"</bodyText>", "g");
-      defnListString = "<definitionlist>" + defnListString + "</definitionlist>";
-      
-      var parser = new DOMParser();
-      var doc = parser.parseFromString(defnListString, 'application/xhtml+xml');
-      //var nodeList = doc.documentElement.childNodes;
-      //var defnListElt = editorDoc.createElement("definitionlist");
-      //defnListElt.appendChild(nodeList);
-      preamble.appendChild(doc.documentElement);
-      if(s.rangeCount > 0) s.removeAllRanges();
-      s.addRange(range);
-    }
-  }
-  checkPackageDependenciesForEditor(editor);
+  putDefinitionsInPreamble (editor);
+   checkPackageDependenciesForEditor(editor);
 
   var saveAsTextFile = msiIsSupportedTextMimeType(aMimeType);
   // check if the file is to be saved is a format we don't understand; if so, bail
