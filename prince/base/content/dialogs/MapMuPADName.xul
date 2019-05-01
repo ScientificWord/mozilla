@@ -50,9 +50,9 @@
 
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/realtimespell.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/realTimeSpell.js"/>
 
-  <script type="application/x-javascript" src="chrome://prince/content/mapmupadname.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/mapMuPADName.js" />
 
   <popupset id="msiEditorContentContextSet"/>
 
