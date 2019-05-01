@@ -5,6 +5,13 @@ var data;
 
 function Startup(){
   data = window.arguments[0];
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+  if (!editor) {
+    AlertWithTitle("Unable to open editor window.");
+    window.close();
+    return;
+  }
   try
   {
     var theStringSource = GetComputeString("Math.emptyForInput");
