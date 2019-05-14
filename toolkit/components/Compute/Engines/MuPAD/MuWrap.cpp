@@ -6128,7 +6128,9 @@ U32 MuPADWrapper::GetRelationExpressionOpType(SEMANTICS_NODE * s_node)
       //check for "=", "<", ">", "<=", ">=", "&leq;", "&geq;", "&NotEqual;"
     if (!strcmp(s_node->contents, "=") || !strcmp(s_node->contents, "&#x3c;") || !strcmp(s_node->contents, "&#x3e;") ||
 //          !strcmp(s_node->contents, "<=") || !strcmp(s_node->contents, ">=") ||  //these two forms appear to always be translated previously?
-          !strcmp(s_node->contents, "&#x2264;") || !strcmp(s_node->contents, "&#x2265;") || !strcmp(s_node->contents, "&#x2260;") )
+          !strcmp(s_node->contents, "&#x2264;") || !strcmp(s_node->contents, "&#x2265;") || !strcmp(s_node->contents, "&#x2260;") ||
+//         &#x2248 is the approx symbol. 
+          !strcmp(s_node->contents, "&#x2248;") )
       return binOrderRelation;
       //check for "in", "Element", "sub", "sube", "sup", "supe"
     if ( !strcmp(s_node->contents, "&#x220a;") || !strcmp(s_node->contents, "&#x2208;") ||
