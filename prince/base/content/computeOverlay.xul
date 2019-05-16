@@ -197,7 +197,7 @@
     <command id="cmd_MSIComputeEditPlot"                 oncommand="doComputeCommand('cmd_compute_EditPlot')"/>
     <command id="cmd_MSIComputeDefine"                   oncommand="doComputeCommand('cmd_compute_Define')"/>
     <command id="cmd_MSIComputeUndefine"                 oncommand="doComputeCommand('cmd_compute_Undefine')"/>
-    <command id="cmd_MSIComputeSetBasisVariables"        oncommand="doGlobalComputeCommand('cmd_compute_SetBasisVariables')"/>
+    <command id="cmd_MSIComputeSetBasisVariables"        oncommand="doGlobalComputeCommand('cmd_MSIComputeSetBasisVariables')"/>
     <command id="cmd_MSIComputeShowDefs"                 oncommand="doGlobalComputeCommand('cmd_compute_ShowDefs')"/>
     <command id="cmd_MSIComputeClearDefs"                oncommand="doGlobalComputeCommand('cmd_compute_ClearDefs')"/>
     <command id="cmd_MSIComputeMapMuPADName"             oncommand="doGlobalComputeCommand('cmd_compute_MapMuPADName')"/>
