@@ -18,7 +18,8 @@
 # All DTD information is stored in a separate file so that it can be shared by
 # hiddenWindow.xul.
 #include prince-doctype.inc
-<!--JLF - Localization pass on 6/25/2012-->
+
+
 <window
   id    = "prince"
   title = "&prince.title;"
