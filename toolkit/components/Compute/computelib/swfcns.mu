@@ -1460,21 +1460,24 @@ begin
 end_proc:
 
 
-//tciaprxarea := proc(e,vv,rnge,nint,atype)
 tciaprxarea := proc()
   local e, vv, rnge, nint, atype; 
   local var;
 begin
   e := args(1);
   vv := args(2);
-  if args(0) = 5 then    
+  if args(0) = 5 then
+    if (stringlib::contains(expr2text(args(3)),"NaN")) then 
+       error("Invalid range parameters");
+    end_if;   
     rnge := args(3);
     nint := args(4);
     atype := args(5);
   elif args(0) = 7 then //Definite integral
     nint := args(6);
     atype := args(7);
-    if args(5) = NaN..NaN then 
+    //If the user leaves either upper or lower bound empty, use integral limits
+    if (stringlib::contains(expr2text(args(5)),"NaN")) then 
       rnge := args(3);
     else
       rnge := args(5); 
