@@ -1088,7 +1088,7 @@ function GetRHS(math) {
   while (ch) {
     if (ch.nodeType === Node.ELEMENT_NODE && ch.localName === "mo") {
       var op = ch.firstChild;
-      if (op.nodeType === Node.TEXT_NODE && op.data === "=") {
+      if (op.nodeType === Node.TEXT_NODE && op.data === "=" ) {
         var m = node_after(ch);
         while (m) {
           var cpy = m.cloneNode(true);
@@ -1117,11 +1117,18 @@ function isAChildOf(node, parent) {
 function isEqualSign(node) {
   if (node != null && node.nodeType === Node.ELEMENT_NODE && node.localName === "mo") {
     var op = node.firstChild;
-    if (op != null && op.nodeType === Node.TEXT_NODE && op.data === "=") return true;
+    if (op != null && op.nodeType === Node.TEXT_NODE && op.data === "=" ) return true; 
   }
   return false;
 }
 
+function isApproxSign(node) {
+  if (node != null && node.nodeType === Node.ELEMENT_NODE && node.localName === "mo") {
+    var op = node.firstChild;
+    if (op != null && op.nodeType === Node.TEXT_NODE && op.data === "\u2248") return true; //\u2248 is \approx
+  }
+  return false;
+}
 
 function FindLeftEndOfSide(mathElement, node) {
   // find left end of mathElement containing the node
@@ -1129,7 +1136,7 @@ function FindLeftEndOfSide(mathElement, node) {
   var m = leftEnd;
   while (m) {
     if (isAChildOf(node, m)) break;
-    if (isEqualSign(m)) {
+    if (isEqualSign(m) || isApproxSign(m)) {
       leftEnd = m.nextSibling;
     }
     m = m.nextSibling;
@@ -1141,7 +1148,7 @@ function FindRightEndOfSide(mathElement, leftEnd) {
   var rightEnd = leftEnd;
   var next = rightEnd;
   while (next) {
-    if (isEqualSign(next)) break;
+    if (isEqualSign(next) || isApproxSign(next)) break;
     else rightEnd = next;
     next = next.nextSibling;
   }
