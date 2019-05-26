@@ -59,6 +59,7 @@ var msiDefineCommand = {
       //aCommand == "cmd_MSI/computeUserSettings" ||
       aCommand === "cmd_MSIComputeClearDefs" ||
       //aCommand == "cmd_MSIComputeSettings" ||
+      aCommand === "cmd_MSIComputeSetBasisVariables" ||
       aCommand === "cmd_MSIComputeSwitchEngines"));
   },
   getCommandStateParams: function (aCommand, aParams, editorElement) {},
@@ -899,7 +900,7 @@ function doGlobalComputeCommand(cmd, editorElement) {
   case "cmd_MSIComputeRandomNumbers":
     doComputeRandomNumbers(editorElement);
     break;
-  case "cmd_compute_SetBasisVariables":
+  case "cmd_MSIComputeSetBasisVariables":
     doComputeSetBasisVars(editorElement, cmd);
     break;
   case "cmd_compute_ShowDefs":
