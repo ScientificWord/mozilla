@@ -1682,6 +1682,9 @@ void MuAnalyzer::AnalyzeOPERATOR(MNODE * eng_node, SEMANTICS_NODE * snode,
       if (!strcmp(eng_node->p_chdata, "mnjoin")) {
         strcpy(buffer, "mnjoin");
         p = 31;
+      } else if (!strcmp(eng_node->p_chdata, "approx")){
+        strcpy(buffer, "&#x2248;");
+        p = 24;
       }
     } else if (zln == 9) {
       if (!strcmp(eng_node->p_chdata, "intersect")) {
