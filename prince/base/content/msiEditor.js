@@ -2833,7 +2833,8 @@ function msiEditorSelectColor(colorType, mouseEvent, editorElement) {
             }
           }
         }
-      } catch (e) {}
+      } catch (e) {
+      }
 
       editor.endTransaction();
     }
@@ -2882,9 +2883,17 @@ function EditorDblClick(event) {
   }
 
   if (element) {
-    if (GetParentTable(element))
+    if (GetParentTable(element)) {
       element = GetParentTable(element);
-    goDoPrinceCommand("cmd_objectProperties", element, editorElement);
+    }
+    if (element) {
+      if (element.nodeName == 'msidisplay'){
+        goDoPrinceCommand('msiReviseEqnArrayCommand', element, editorElement);
+      }
+      else  {
+        goDoPrinceCommand("cmd_objectProperties", element, editorElement);
+      }
+    }
     event.preventDefault();
   }
 }
@@ -3666,7 +3675,7 @@ function msiCreatePropertiesObjectDataFromSelection(aSelection, editorElement) {
 
     case "msidisplay":
       retObj = new msiEquationPropertiesObjectData();
-      retObj.initFromSelection(editor.selection, editorElement);
+      retObj.initFromNode(container, editorElement);
       break;
 
     case '#text':
