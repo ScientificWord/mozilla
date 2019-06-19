@@ -367,6 +367,13 @@
               <xsl:with-param name="LaTeX-acc" select="'\vec'"/>
             </xsl:call-template>
           </xsl:when>
+            
+          <xsl:when test="./*[2][normalize-space(string())='&#x2192;']">
+            <xsl:call-template name="math-accent"> 
+              <xsl:with-param name="LaTeX-acc" select="'\vec'"/>
+            </xsl:call-template> 
+          </xsl:when>
+
           <xsl:when test="./*[2][normalize-space(string())='&#x20DB;']">
             <xsl:call-template name="math-accent">
               <xsl:with-param name="LaTeX-acc" select="'\dddot'"/>
