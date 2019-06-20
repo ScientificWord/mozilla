@@ -577,7 +577,7 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:maligngroup">
-      <!-- xsl:text xml:space="preserve"> &amp; </xsl:text -->
+      <xsl:text xml:space="preserve"> &amp; </xsl:text>
   </xsl:template>
 
   <xsl:template match="mml:maligngroup" mode="in-text">
