@@ -815,7 +815,7 @@ function exportToWeb()
   if (!editor) return;
 
    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
-   fp.init(window, "Export to Web", msIFilePicker.modeSave);
+   fp.init(window, "Export to web", msIFilePicker.modeSave);
    fp.appendFilter("Complete zip file ", "*.zip");
    fp.appendFilter("Zip file with web refs for CSS", "*.zip");
    fp.appendFilter("Zip file with MathJax", "*.zip");
