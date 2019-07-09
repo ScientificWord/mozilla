@@ -329,7 +329,7 @@
                 <xsl:text xml:space="preserve"> &amp; </xsl:text>
               </xsl:if>
             </xsl:when>
-            <xsl:when test="self::mml:mo and $insertedAlignmark and (generate-id(.)=$insertedAlignmark)">
+            <!--xsl:when test="self::mml:mo and $insertedAlignmark and (generate-id(.)=$insertedAlignmark)">
               <xsl:if test="not($eqn-info/LaTeX-env='gather')">
                 <xsl:text xml:space="preserve"> &amp; </xsl:text>
                 <xsl:apply-templates select="."/>
@@ -337,7 +337,7 @@
                   <xsl:text xml:space="preserve"> &amp; </xsl:text>
                 </xsl:if>
               </xsl:if>
-              </xsl:when>
+              </xsl:when -->
             <xsl:when test="name()='mml:mrow'">
 
               <xsl:for-each select="*">
