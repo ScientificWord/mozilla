@@ -148,12 +148,27 @@
 
       <xsl:otherwise>
 
+<!-- Start basic symbols that have specific meanings if translated directly to LaTeX
+
+  --> 
+      <xsl:choose>
+        <xsl:when test="$first-char='_'">
+          <xsl:text>\_ </xsl:text>
+        </xsl:when>
+        <xsl:when test="$first-char='^'">
+          <xsl:text>^\wedge </xsl:text>
+        </xsl:when>
+      
+
+
+
+
 <!--  Start Basic Latin - chars mapped to something other than themselves
     <xsl:choose>
       <xsl:when test="ms:string-compare($first-char,'&#x80') = -1">
 -->
 
-          <xsl:choose>
+          
           <xsl:when test="$first-char='&#x0020;'">
             <xsl:text xml:space="preserve">\ </xsl:text>
           </xsl:when>
