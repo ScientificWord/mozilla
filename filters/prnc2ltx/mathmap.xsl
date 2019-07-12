@@ -274,7 +274,7 @@
             </xsl:if>
           </xsl:when>
           <xsl:when test="$first-char='&#x00AB;'">
-            <xsl:text xml:space="preserve">\text{\guillemotleft }</xsl:text>
+            <xsl:text xml:space="preserve">\text{\guillemotleft}</xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x00AC;'">
             <xsl:text xml:space="preserve">\lnot </xsl:text>
@@ -889,23 +889,67 @@
             <xsl:text>--</xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2018;'">
-            <xsl:text>\lq</xsl:text>
+            <xsl:text>\lq </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x2019;'">
-            <xsl:text>\rq</xsl:text>
-          </xsl:when>
+            <xsl:text>\rq </xsl:text>
+          </xsl:when>  
           <xsl:when test="$first-char='&#x201A;'">
+            <xsl:text>\text{\quotesinglbase}</xsl:text>
+          </xsl:when>   
+          <xsl:when test="$first-char='&#x201A;'" mode="in-text">
             <xsl:text>\quotesinglbase</xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x201E;'">
+            <xsl:text>\text{\quotedblbase}</xsl:text>
+          </xsl:when> 
+          
+          <xsl:when test="$first-char='&#x2014;'">
+            <xsl:text>--</xsl:text>
+          </xsl:when>
+         <xsl:when test="$first-char='&#x2018;'">
+            <xsl:text>\lq </xsl:text>
+          </xsl:when>           
+          <xsl:when test="$first-char='&#x2019;'">
+            <xsl:text>\rq </xsl:text>
+          </xsl:when>  
+          <xsl:when test="$first-char='&#x201A;'">
+            <xsl:text>\text{\quotesinglbase}</xsl:text>
+          </xsl:when>   
+          <xsl:when test="$first-char='&#x201A;'" mode="in-text">
+            <xsl:text>\quotesinglbase</xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x201E;'">
+            <xsl:text>\text{\quotedblbase}</xsl:text>
+          </xsl:when> 
+          <xsl:when test="$first-char='&#x201E;'" mode="in-text">
             <xsl:text>\quotedblbase</xsl:text>
           </xsl:when>
+          <xsl:when test="$first-char='&#x201C;'">
+            <xsl:text>\text{\textquotedblleft}</xsl:text>
+          </xsl:when> 
+          <xsl:when test="$first-char='&#x201C;'" mode="in-text">
+            <xsl:text>\textquotedblleft</xsl:text>
+          </xsl:when>           
+          <xsl:when test="$first-char='&#x201D;'">
+            <xsl:text>\text{\textquotedblright}</xsl:text>
+          </xsl:when> 
+          <xsl:when test="$first-char='&#x201D;'" mode="in-text">
+            <xsl:text>\textquotedblright</xsl:text>
+          </xsl:when> 
           <xsl:when test="$first-char='&#x2039;'">
+            <xsl:text>\text{\guilsinglleft}</xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x2039;'" mode="in-text">
             <xsl:text>\guilsinglleft</xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x203A;'">
+            <xsl:text>\text{\guilsinglright}</xsl:text>
+          </xsl:when>
+          <xsl:when test="$first-char='&#x203A;'" mode="in-text">
             <xsl:text>\guilsinglright</xsl:text>
           </xsl:when>
+
 
           <xsl:when test="$first-char='&#x2016;'">
             <xsl:text xml:space="preserve">\Vert </xsl:text>
