@@ -897,6 +897,7 @@
 <xsl:template match="html:citation">
 <xsl:choose>
   <xsl:when test="@nocite='true'">\nocite</xsl:when>
+  <xsl:when test="@isStarred='true'">\cite*</xsl:when>
   <xsl:otherwise>\cite</xsl:otherwise></xsl:choose>
 <xsl:if test="@hasRemark='true'"><xsl:apply-templates select="html:biblabel"/></xsl:if>{<xsl:value-of select="@citekey"/>}</xsl:template>
 
