@@ -750,7 +750,11 @@
   \def\ { }%
 }
 
-\def\cite{%
+
+
+\def\cite{\@ifnextchar*{\citestar}{\citenostar}}
+
+\def\citenostar{%
   \ifvmode\msihmode\fi
   \@ifnextchar[{\@tempswatrue\begingroup\attrib@text\out@citex}{\@tempswafalse\begingroup\attrib@text\out@citey}}
 
@@ -781,6 +785,18 @@
   \fi
   \endgroup}
 
+\def\citestar#1#2{
+   \ifvmode\msihmode\fi
+   \begingroup
+   \ifmmode
+    \msitag{\msipassthru{<citation xmlns="http://www.w3.org/1999/xhtml" citekey="#2" hasRemark="false" isStarred="true"></citation>}}%
+  \else
+    \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
+                                    citekey="}#2\msitag{" hasRemark="false" isStarred="true">}%
+    \msiclosetag{citation}{</citation>}%
+  \fi
+  \endgroup  
+}
 
 %\MSITextElement[a]{ref}
 %%<xref key="mykey" reftype="page"/>
