@@ -2013,12 +2013,18 @@
 \newif\if@in@texttag
 \@in@texttagfalse
 
+\def\compstr{Body Math}
 \def\QTP#1{%
-  \par
-  \msihmode
-  \msiopentag{QTP}{<QTP type="#1">}%
-  \begingroup
-    \def\par{\msiclosetag{QTP}{</QTP>}\endgroup}%
+  \def\next{#1}%
+  \ifx\compstr\next
+    \par
+  \else 
+    \par
+    \msihmode
+    \msiopentag{QTP}{<QTP type="#1">}%
+    \begingroup
+    \def\par{\msiclosetag{QTP}{</QTP>}\endgroup}%    
+  \fi  
 }
 
 \def\@ttclose#1{\msiclosetag{#1}{</#1>}}
