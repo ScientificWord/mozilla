@@ -141,7 +141,7 @@
   <sub ctx="math" tp="sc"><pattern>LambertW</pattern><data>doInsertMathname('LambertW',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>lcm</pattern><data>doInsertMathname('lcm',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>lg</pattern><data>doInsertMathname('lg',true);</data></sub>
-  <sub ctx="math" tp="sc"><pattern>lim</pattern><data>insertMathname('lim');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>lim</pattern><data>doInsertMathname('lim',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>liminf</pattern><data>doInsertMathname('liminf',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>limsup</pattern><data>doInsertMathname('limsup',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>ln</pattern><data>doInsertMathname('ln',true);</data></sub>
