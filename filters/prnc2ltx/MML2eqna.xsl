@@ -182,9 +182,10 @@
 
           <is-starred>
             <xsl:choose>
-<!--               <xsl:when test="@subtype">
+              <xsl:when test="@subtype                                                                           
+                         and  (@type='eqnarray')">
                 <xsl:text>false</xsl:text>
-              </xsl:when> -->
+              </xsl:when> 
               <xsl:when test="($n-labeledrows=0)
                          or  (ancestor::html:msidisplay[@numbering='none'])">
                 <xsl:text>true</xsl:text>
