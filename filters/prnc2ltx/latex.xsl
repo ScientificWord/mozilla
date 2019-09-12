@@ -74,6 +74,7 @@
        <char unicode="&#x2A06;" latex="\bigsqcup"/>
        <char unicode="&#x2A0C;" latex="\iiiint" />
        <char unicode="&#x22C3;" latex="\tbigcup"/>
+       <char unicode="&#x2f;"  latex="\not"/>  
     </char-table>
 </xsl:variable>
 
