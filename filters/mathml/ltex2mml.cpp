@@ -15503,7 +15503,7 @@ TNODE* LaTeX2MMLTree::Matrix2MML( TNODE* tex_matrix_node,
     case 713: flavor = (U8*)"b"; break;
     case 714: flavor = (U8*)"v"; break;
     case 715: flavor = (U8*)"V"; break;
-    case 716: flavor = (U8*)"V"; break;
+    case 716: flavor = (U8*)"B"; break;
     case 718: flavor = (U8*)"cases"; break;
     case 719: flavor = (U8*)"rcases"; break;
     case 722: flavor = (U8*)"psmall"; break;
