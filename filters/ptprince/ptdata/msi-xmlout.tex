@@ -1557,7 +1557,9 @@
   \msiclosetag{bodyText}{</bodyText>}
   \msiclosetag{verbatim}{</verbatim>}}%
 
-\def\verb{%
+\def\verb{\@ifnextchar*{\verbstar}{\verbnostar}}
+
+\def\verbnostar{
    \msihmode
    \bgroup
       \catcode`\\=\other
@@ -1570,6 +1572,38 @@
       \msiopentag{verb}{<verb>}%
       \@sverb
 }
+
+\def\verbnostar@egroup{\msiclosetag{verb}{</verb>}\egroup}
+\def\@sverb#1{%
+  \catcode`#1\active
+  \lccode`\~`#1\relax
+  \lowercase{\let~\verbnostar@egroup}%
+}
+
+
+\def\verbstar{
+   \msihmode
+   \bgroup
+      \catcode`\\=\other
+      \catcode`{=\other
+      \catcode`}=\other
+      \catcode`&=\active
+      \catcode`$=\other
+      \catcode`##=\other
+      \catcode`\<=\active
+      \msiopentag{verbstar}{<verbstar>}%
+      \@stverb
+}
+
+\def\verbstar@egroup{\msiclosetag{verbstar}{</verbstar>}\egroup}
+\def\@stverb#1#2{%
+  \catcode`#2\active
+  \lccode`\~`#2\relax
+  \lowercase{\let~\verbstar@egroup}%
+}
+
+
+
 
 \def\out@boxedverbatim#1{%
   \msi@br\msihmode
