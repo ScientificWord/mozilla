@@ -1022,15 +1022,15 @@
 </xsl:template>
 
 <xsl:template match="html:verb">
-  <xsl:text>\verb| </xsl:text>
+  <xsl:text>\verb|</xsl:text>
   <xsl:apply-templates mode="verb"/>
   <xsl:text>| </xsl:text>
 </xsl:template>
 
 <xsl:template match="html:verbstar">
-  <xsl:text>\verb*| </xsl:text>
+  <xsl:text>\verb*|</xsl:text>
   <xsl:apply-templates mode="verb"/>
-  <xsl:text>| </xsl:text>
+  <xsl:text>|</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:shortQuote">
