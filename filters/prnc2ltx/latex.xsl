@@ -1071,6 +1071,15 @@
 \end{verbatim}
 </xsl:template>
 
+<xsl:template match="PRE">
+<PRE>
+    <xsl:text>\begin{verbatim}</xsl:text>
+      <xsl:value-of select="string(.)"/>
+    <xsl:text>&lt;EOLN/&gt;\end{verbatim}</xsl:text>
+</PRE>
+</xsl:template>
+
+
 <xsl:template match="html:p">\par<xsl:apply-templates/>
 </xsl:template>
 
