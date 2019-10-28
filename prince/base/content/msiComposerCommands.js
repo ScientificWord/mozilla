@@ -7277,7 +7277,7 @@ function setAlignmentOK(editorElement) {
     if (!ismath) selNode = selNode.parentNode;
     ismath = msiNavigationUtils.isMathNode(selNode);
     while (selNode && ismath && selNode.tagName != 'mtd') {
-      if (selNode.tagName != 'mrow' &&
+      if ((selNode.tagName != 'mrow' &&
         selNode.tagName != 'mi' &&
         selNode.tagName != 'mo' &&
         selNode.tagName != 'mn' &&
@@ -7296,7 +7296,18 @@ function setAlignmentOK(editorElement) {
         selNode.tagName != 'mtext' &&
         selNode.tagName != 'munder' &&
         selNode.tagName != 'munderover' &&
-        selNode.tagName != 'mphantom') {
+        selNode.tagName != 'mphantom') 
+        || (selNode.tagName == 'mn' ||
+        selNode.tagName == 'msqrt' ||
+        selNode.tagName == 'mroot' ||
+        selNode.tagName == 'msub' ||
+        selNode.tagName == 'msup' ||
+        selNode.tagName == 'msubsup' ||
+        selNode.tagName == 'mover' ||
+        selNode.tagName == 'munder' ||
+        selNode.tagName == 'munderover' ||
+        selNode.tagName == 'mfrac'))
+        {
         retval = false;
         return retval;
       }
