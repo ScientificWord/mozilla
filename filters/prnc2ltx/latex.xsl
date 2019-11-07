@@ -74,6 +74,7 @@
        <char unicode="&#x2A06;" latex="\bigsqcup"/>
        <char unicode="&#x2A0C;" latex="\iiiint" />
        <char unicode="&#x22C3;" latex="\tbigcup"/>
+       <char unicode="&#x2f;"  latex="\not"/>  
     </char-table>
 </xsl:variable>
 
@@ -897,6 +898,7 @@
 <xsl:template match="html:citation">
 <xsl:choose>
   <xsl:when test="@nocite='true'">\nocite</xsl:when>
+  <xsl:when test="@isStarred='true'">\cite*</xsl:when>
   <xsl:otherwise>\cite</xsl:otherwise></xsl:choose>
 <xsl:if test="@hasRemark='true'"><xsl:apply-templates select="html:biblabel"/></xsl:if>{<xsl:value-of select="@citekey"/>}</xsl:template>
 
@@ -1019,6 +1021,18 @@
   <xsl:text>\end{verbatim}</xsl:text>
 </xsl:template>
 
+<xsl:template match="html:verb">
+  <xsl:text>\verb|</xsl:text>
+  <xsl:apply-templates mode="verb"/>
+  <xsl:text>| </xsl:text>
+</xsl:template>
+
+<xsl:template match="html:verbstar">
+  <xsl:text>\verb*|</xsl:text>
+  <xsl:apply-templates mode="verb"/>
+  <xsl:text>|</xsl:text>
+</xsl:template>
+
 <xsl:template match="html:shortQuote">
 \begin{quote}
 <xsl:apply-templates/>
@@ -1057,6 +1071,15 @@
 \end{verbatim}
 </xsl:template>
 
+<xsl:template match="PRE">
+<PRE>
+    <xsl:text>\begin{verbatim}</xsl:text>
+      <xsl:value-of select="string(.)"/>
+    <xsl:text>&lt;EOLN/&gt;\end{verbatim}</xsl:text>
+</PRE>
+</xsl:template>
+
+
 <xsl:template match="html:p">\par<xsl:apply-templates/>
 </xsl:template>
 
@@ -1093,13 +1116,13 @@
   />}</xsl:template>
 <xsl:template match="html:normalsize">{\normalsize <xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:phantom">\phantom {<xsl:apply-templates
+<xsl:template match="html:phantom">\phantom{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:underline">\underline {<xsl:apply-templates
+<xsl:template match="html:underline">\underline{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:sub">\textsubscript {<xsl:apply-templates
+<xsl:template match="html:sub">\textsubscript{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:sup">\textsuperscript {<xsl:apply-templates
+<xsl:template match="html:sup">\textsuperscript{<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="mml:mi[@msimathname='true']">
 	<xsl:choose>

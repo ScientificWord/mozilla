@@ -89,8 +89,8 @@ pref("browser.display.use_system_colors",   false);
 pref("browser.display.foreground_color",    "#000000");
 pref("browser.display.background_color",    "#FFFFFF");
 pref("browser.display.force_inline_alttext", false); // true = force ALT text for missing images to be layed out inline
-// 0 = no external leading, 
-// 1 = use external leading only when font provides, 
+// 0 = no external leading,
+// 1 = use external leading only when font provides,
 // 2 = add extra leading both internal leading and external leading are zero
 pref("browser.display.normal_lineheight_calc_control", 2);
 pref("browser.display.show_image_placeholders", true); // true = show image placeholders while image is loaded and when image is broken
@@ -252,7 +252,7 @@ pref("print.print_edge_left", 0); // 1/100 of an inch
 pref("print.print_edge_right", 0); // 1/100 of an inch
 pref("print.print_edge_bottom", 0); // 1/100 of an inch
 
-// Pref used by the spellchecker extension to control the 
+// Pref used by the spellchecker extension to control the
 // maximum number of misspelled words that will be underlined
 // in a document.
 pref("extensions.spellcheck.inline.max-misspellings", 500);
@@ -270,7 +270,7 @@ pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
 
 
-// Default Capability Preferences: Security-Critical! 
+// Default Capability Preferences: Security-Critical!
 // Editing these may create a security risk - be sure you know what you're doing
 //pref("capability.policy.default.barprop.visible.set", "UniversalBrowserWrite");
 
@@ -486,7 +486,7 @@ pref("image.animation_mode",                "normal");
 pref("security.fileuri.origin_policy", 2);
 
 // If there is ever a security firedrill that requires
-// us to block certian ports global, this is the pref 
+// us to block certian ports global, this is the pref
 // to use.  Is is a comma delimited list of port numbers
 // for example:
 //   pref("network.security.ports.banned", "1,2,3,4,5");
@@ -614,7 +614,7 @@ pref("network.enableIDN", true);
 // generate them from punycode.
 pref("network.IDN_show_punycode", false);
 
-// TLDs with "network.IDN.whitelist.tld" explicitly set to true are treated as 
+// TLDs with "network.IDN.whitelist.tld" explicitly set to true are treated as
 // IDN-safe. Otherwise, they're treated as unsafe and punycode will be used
 // for displaying them in the UI (e.g. URL bar). Note that these preferences
 // are referred to ONLY when "network.IDN_show_punycode" is false. In other
@@ -674,9 +674,9 @@ pref("network.IDN.whitelist.xn--jxalpdlp", true);
 pref("network.IDN.whitelist.xn--kgbechtv", true);
 pref("network.IDN.whitelist.xn--zckzah", true);
 
-// If a domain includes any of the following characters, it may be a spoof 
-// attempt and so we always display the domain name as punycode. This would 
-// override the settings "network.IDN_show_punycode" and 
+// If a domain includes any of the following characters, it may be a spoof
+// attempt and so we always display the domain name as punycode. This would
+// override the settings "network.IDN_show_punycode" and
 // "network.IDN.whitelist.*".
 pref("network.IDN.blacklist_chars", "\u0020\u00A0\u00BC\u00BD\u01C3\u0337\u0338\u05C3\u05F4\u06D4\u0702\u115F\u1160\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u2024\u2027\u2028\u2029\u202F\u2039\u203A\u2044\u205F\u2154\u2155\u2156\u2159\u215A\u215B\u215F\u2215\u23AE\u29F6\u29F8\u2AFB\u2AFD\u2FF0\u2FF1\u2FF2\u2FF3\u2FF4\u2FF5\u2FF6\u2FF7\u2FF8\u2FF9\u2FFA\u2FFB\u3000\u3002\u3014\u3015\u3033\u3164\u321D\u321E\u33AE\u33AF\u33C6\u33DF\uFE14\uFE15\uFE3F\uFE5D\uFE5E\uFEFF\uFF0E\uFF0F\uFF61\uFFA0\uFFF9\uFFFA\uFFFB\uFFFC\uFFFD");
 
@@ -737,7 +737,7 @@ pref("network.negotiate-auth.using-native-gsslib", true);
 
 #ifdef XP_WIN
 
-// Default to using the SSPI intead of GSSAPI on windows 
+// Default to using the SSPI intead of GSSAPI on windows
 pref("network.auth.use-sspi", true);
 
 #endif
@@ -876,7 +876,7 @@ pref("mousewheel.transaction.ignoremovedelay", 100);
 
 // 0=lines, 1=pages, 2=history , 3=text size
 pref("mousewheel.withnokey.action",0);
-pref("mousewheel.withnokey.numlines",1);	
+pref("mousewheel.withnokey.numlines",1);
 pref("mousewheel.withnokey.sysnumlines",true);
 pref("mousewheel.withcontrolkey.action",0);
 pref("mousewheel.withcontrolkey.numlines",1);
@@ -931,7 +931,7 @@ pref("profile.manage_only_at_launch", false);
 pref("prefs.converted-to-utf8",false);
 
 // --------------------------------------------------
-// IBMBIDI 
+// IBMBIDI
 // --------------------------------------------------
 //
 // ------------------
@@ -995,14 +995,14 @@ pref("layout.word_select.stop_at_punctuation", true);
 // 0 = use platform default
 // 1 = caret moves and blinks as when there is no selection; word
 //     delete deselects the selection and then deletes word (Windows default)
-// 2 = caret moves to selection edge and is not visible during selection; 
+// 2 = caret moves to selection edge and is not visible during selection;
 //     word delete deletes the selection (Mac default)
 // 3 = caret moves and blinks as when there is no selection; word delete
 //     deletes the selection (Unix default)
 pref("layout.selection.caret_style", 0);
 
 // pref to control whether or not to replace backslashes with Yen signs
-// in documents encoded in one of Japanese legacy encodings (EUC-JP, 
+// in documents encoded in one of Japanese legacy encodings (EUC-JP,
 // Shift_JIS, ISO-2022-JP)
 pref("layout.enable_japanese_specific_transform", false);
 
@@ -1052,7 +1052,7 @@ pref("config.use_system_prefs.accessibility", false);
  * otherwise, we may output 0xa0 depending on the charset.
  *
  * "none"   : don't use any entity names; only use numeric codes.
- * "basic"  : use entity names just for &nbsp; &amp; &lt; &gt; &quot; for 
+ * "basic"  : use entity names just for &nbsp; &amp; &lt; &gt; &quot; for
  *            interoperability/exchange with products that don't support more
  *            than that.
  * "latin1" : use entity names for 8bit accented letters and other special
@@ -1101,15 +1101,15 @@ pref("font.name-list.serif.ja", "MS PMincho, ＭＳ Ｐ明朝, MS Mincho, MS PGo
 pref("font.name-list.sans-serif.ja", "MS PGothic, ＭＳ Ｐゴシック, MS Gothic, MS PMincho, MS Mincho");
 pref("font.name-list.monospace.ja", "MS Gothic, ＭＳ ゴシック, MS Mincho, ＭＳ 明朝, MS PGothic, MS PMincho");
 
-pref("font.name.serif.ko", "바탕"); // "Batang" 
-pref("font.name.sans-serif.ko", "굴림"); // "Gulim" 
-pref("font.name.monospace.ko", "굴림체"); // "GulimChe" 
+pref("font.name.serif.ko", "바탕"); // "Batang"
+pref("font.name.sans-serif.ko", "굴림"); // "Gulim"
+pref("font.name.monospace.ko", "굴림체"); // "GulimChe"
 pref("font.name.cursive.ko", "궁서"); // "Gungseo"
 
-pref("font.name-list.serif.ko", "Batang, 바탕, Gulim, 굴림"); 
-pref("font.name-list.sans-serif.ko", "Gulim, 굴림"); 
-pref("font.name-list.monospace.ko", "GulimChe, 굴림체"); 
-pref("font.name-list.cursive.ko", "Gungseo, 궁서"); 
+pref("font.name-list.serif.ko", "Batang, 바탕, Gulim, 굴림");
+pref("font.name-list.sans-serif.ko", "Gulim, 굴림");
+pref("font.name-list.monospace.ko", "GulimChe, 굴림체");
+pref("font.name-list.cursive.ko", "Gungseo, 궁서");
 
 pref("font.name.serif.th", "Times New Roman");
 pref("font.name.sans-serif.th", "Arial");
@@ -1155,20 +1155,20 @@ pref("font.name-list.monospace.zh-CN", "MS Song, 宋体, SimSun");
 
 // Per Taiwanese users' demand. They don't want to use TC fonts for
 // rendering Latin letters. (bug 88579)
-pref("font.name.serif.zh-TW", "Times New Roman"); 
-pref("font.name.sans-serif.zh-TW", "Arial"); 
+pref("font.name.serif.zh-TW", "Times New Roman");
+pref("font.name.sans-serif.zh-TW", "Arial");
 pref("font.name.monospace.zh-TW", "細明體");  // MingLiU
-pref("font.name-list.serif.zh-TW", "新細明體,PMingLiu,細明體,MingLiU"); 
+pref("font.name-list.serif.zh-TW", "新細明體,PMingLiu,細明體,MingLiU");
 pref("font.name-list.sans-serif.zh-TW", "新細明體,PMingLiU,細明體,MingLiU");
 pref("font.name-list.monospace.zh-TW", "MingLiU,細明體");
 
-// hkscsm3u.ttf (HKSCS-2001) :  http://www.microsoft.com/hk/hkscs 
-// Hong Kong users have the same demand about glyphs for Latin letters (bug 88579) 
-pref("font.name.serif.zh-HK", "Times New Roman"); 
-pref("font.name.sans-serif.zh-HK", "Arial"); 
-pref("font.name.monospace.zh-HK", "細明體_HKSCS"); 
-pref("font.name-list.serif.zh-HK", "細明體_HKSCS, MingLiu_HKSCS, Ming(for ISO10646), MingLiU, 細明體"); 
-pref("font.name-list.sans-serif.zh-HK", "細明體_HKSCS, MingLiU_HKSCS, Ming(for ISO10646), MingLiU, 細明體");  
+// hkscsm3u.ttf (HKSCS-2001) :  http://www.microsoft.com/hk/hkscs
+// Hong Kong users have the same demand about glyphs for Latin letters (bug 88579)
+pref("font.name.serif.zh-HK", "Times New Roman");
+pref("font.name.sans-serif.zh-HK", "Arial");
+pref("font.name.monospace.zh-HK", "細明體_HKSCS");
+pref("font.name-list.serif.zh-HK", "細明體_HKSCS, MingLiu_HKSCS, Ming(for ISO10646), MingLiU, 細明體");
+pref("font.name-list.sans-serif.zh-HK", "細明體_HKSCS, MingLiU_HKSCS, Ming(for ISO10646), MingLiU, 細明體");
 pref("font.name-list.monospace.zh-HK", "MingLiU_HKSCS,  細明體_HKSCS, Ming(for ISO10646), MingLiU, 細明體");
 
 pref("font.name.serif.x-devanagari", "Mangal");
@@ -1194,7 +1194,7 @@ pref("font.name-list.monospace.x-armn", "Arial AMU, Arial Unicode MS, Code2000")
 pref("font.name.serif.x-beng", "Akaash");
 pref("font.name.sans-serif.x-beng", "Likhan");
 pref("font.name.monospace.x-beng", "Mitra Mono");
-pref("font.name-list.serif.x-beng", "Akaash, Ekushey Punarbhaba, Code2000, Arial Unicode MS"); 
+pref("font.name-list.serif.x-beng", "Akaash, Ekushey Punarbhaba, Code2000, Arial Unicode MS");
 pref("font.name-list.monospace.x-beng", "Likhan, Mukti Narrow, Code 2000, Arial Unicode MS");
 
 pref("font.name.serif.x-cans", "Aboriginal Serif");
@@ -1213,19 +1213,19 @@ pref("font.name-list.monospace.x-ethi", "Ethiopia Jiret, Code2000");
 pref("font.name.serif.x-geor", "Sylfaen");
 pref("font.name.sans-serif.x-geor", "BPG Classic 99U");
 pref("font.name.monospace.x-geor", "Code2000");
-pref("font.name-list.serif.x-geor", "Sylfaen, BPG Paata Khutsuri U, TITUS Cyberbit Basic"); 
+pref("font.name-list.serif.x-geor", "Sylfaen, BPG Paata Khutsuri U, TITUS Cyberbit Basic");
 pref("font.name-list.monospace.x-geor", "BPG Classic 99U, Code2000, Arial Unicode MS");
 
 pref("font.name.serif.x-gujr", "Shruti");
 pref("font.name.sans-serif.x-gujr", "Shruti");
 pref("font.name.monospace.x-gujr", "Code2000");
-pref("font.name-list.serif.x-gujr", "Shruti, Code2000, Arial Unicode MS"); 
+pref("font.name-list.serif.x-gujr", "Shruti, Code2000, Arial Unicode MS");
 pref("font.name-list.monospace.x-gujr", "Code2000, Shruti, Arial Unicode MS");
 
 pref("font.name.serif.x-guru", "Raavi");
 pref("font.name.sans-serif.x-guru", "Code2000");
 pref("font.name.monospace.x-guru", "Code2000");
-pref("font.name-list.serif.x-guru", "Raavi, Saab, Code2000, Arial Unicode MS"); 
+pref("font.name-list.serif.x-guru", "Raavi, Saab, Code2000, Arial Unicode MS");
 pref("font.name-list.monospace.x-guru", "Code2000, Raavi, Saab, Arial Unicode MS");
 
 pref("font.name.serif.x-khmr", "PhnomPenh OT");
@@ -1449,19 +1449,19 @@ pref("font.name-list.monospace.he", "Arial Hebrew");
 pref("font.name-list.cursive.he", "Corsiva Hebrew");
 pref("font.name-list.fantasy.he", "Corsiva Hebrew");
 
-// pref("font.name.serif.ja", "ヒラギノ明朝 Pro"); 
-// pref("font.name.sans-serif.ja", "ヒラギノ角ゴ Pro"); 
-// pref("font.name.monospace.ja", "Osaka−等幅"); 
-// pref("font.name-list.serif.ja", "ヒラギノ明朝 Pro"); 
-// pref("font.name-list.sans-serif.ja", "ヒラギノ角ゴ Pro"); 
-// pref("font.name-list.monospace.ja", "Osaka−等幅"); 
+// pref("font.name.serif.ja", "ヒラギノ明朝 Pro");
+// pref("font.name.sans-serif.ja", "ヒラギノ角ゴ Pro");
+// pref("font.name.monospace.ja", "Osaka−等幅");
+// pref("font.name-list.serif.ja", "ヒラギノ明朝 Pro");
+// pref("font.name-list.sans-serif.ja", "ヒラギノ角ゴ Pro");
+// pref("font.name-list.monospace.ja", "Osaka−等幅");
 
-pref("font.name.serif.ko", "AppleMyungjo"); 
-pref("font.name.sans-serif.ko", "AppleGothic"); 
-pref("font.name.monospace.ko", "AppleGothic"); 
-pref("font.name-list.serif.ko", "AppleMyungjo"); 
-pref("font.name-list.sans-serif.ko", "AppleGothic"); 
-pref("font.name-list.monospace.ko", "AppleGothic"); 
+pref("font.name.serif.ko", "AppleMyungjo");
+pref("font.name.sans-serif.ko", "AppleGothic");
+pref("font.name.monospace.ko", "AppleGothic");
+pref("font.name-list.serif.ko", "AppleMyungjo");
+pref("font.name-list.sans-serif.ko", "AppleGothic");
+pref("font.name-list.monospace.ko", "AppleGothic");
 
 pref("font.name.serif.th", "Thonburi");
 pref("font.name.sans-serif.th", "Krungthep");
@@ -1487,7 +1487,7 @@ pref("font.name.monospace.x-armn", "Mshtakan");
 pref("font.name-list.serif.x-armn", "Mshtakan");
 pref("font.name-list.sans-serif.x-armn", "Mshtakan");
 pref("font.name-list.monospace.x-armn", "Mshtakan");
- 
+
 pref("font.name.serif.x-baltic", "Times");
 pref("font.name.sans-serif.x-baltic", "Helvetica");
 pref("font.name.monospace.x-baltic", "Courier");
@@ -1562,21 +1562,21 @@ pref("font.name-list.monospace.x-ethi", "Abyssinica SIL");
 pref("font.name.serif.x-geor", "TITUS Cyberbit Basic");
 pref("font.name.sans-serif.x-geor", "Zuzumbo");
 pref("font.name.monospace.x-geor", "Zuzumbo");
-pref("font.name-list.serif.x-geor", "TITUS Cyberbit Basic"); 
+pref("font.name-list.serif.x-geor", "TITUS Cyberbit Basic");
 pref("font.name-list.sans-serif.x-geor", "Zuzumbo");
 pref("font.name-list.monospace.x-geor", "Zuzumbo");
 
 pref("font.name.serif.x-gujr", "Gujarati MT");
 pref("font.name.sans-serif.x-gujr", "Gujarati MT");
 pref("font.name.monospace.x-gujr", "Gujarati MT");
-pref("font.name-list.serif.x-gujr", "Gujarati MT"); 
+pref("font.name-list.serif.x-gujr", "Gujarati MT");
 pref("font.name-list.sans-serif.x-gujr", "Gujarati MT");
 pref("font.name-list.monospace.x-gujr", "Gujarati MT");
 
 pref("font.name.serif.x-guru", "Gurmukhi MT");
 pref("font.name.sans-serif.x-guru", "Gurmukhi MT");
 pref("font.name.monospace.x-guru", "Gurmukhi MT");
-pref("font.name-list.serif.x-guru", "Gurmukhi MT"); 
+pref("font.name-list.serif.x-guru", "Gurmukhi MT");
 pref("font.name-list.sans-serif.x-guru", "Gurmukhi MT");
 pref("font.name-list.monospace.x-guru", "Gurmukhi MT");
 
@@ -1622,12 +1622,12 @@ pref("font.name-list.serif.zh-CN", "华文宋体");
 pref("font.name-list.sans-serif.zh-CN", "Hei");
 pref("font.name-list.monospace.zh-CN", "Hei");
 
-pref("font.name.serif.zh-TW", "Apple LiSung"); 
-pref("font.name.sans-serif.zh-TW", "Apple LiGothic");  
-pref("font.name.monospace.zh-TW", "Apple LiGothic");  
-pref("font.name-list.serif.zh-TW", "Apple LiSung"); 
-pref("font.name-list.sans-serif.zh-TW", "Apple LiGothic");  
-pref("font.name-list.monospace.zh-TW", "Apple LiGothic");  
+pref("font.name.serif.zh-TW", "Apple LiSung");
+pref("font.name.sans-serif.zh-TW", "Apple LiGothic");
+pref("font.name.monospace.zh-TW", "Apple LiGothic");
+pref("font.name-list.serif.zh-TW", "Apple LiSung");
+pref("font.name-list.sans-serif.zh-TW", "Apple LiGothic");
+pref("font.name-list.monospace.zh-TW", "Apple LiGothic");
 
 pref("font.name.serif.zh-HK", "儷宋 Pro");
 pref("font.name.sans-serif.zh-HK", "儷黑 Pro");
@@ -1749,7 +1749,7 @@ pref("font.mathfont-family", "STIXNonUnicode, STIXSize1, Symbol, Cambria Math, D
 
 // optimization hint for fonts with localized names to be read in at startup, otherwise read in at lookup miss
 // names are canonical family names (typically English names)
-pref("font.preload-names-list", "Hiragino Kaku Gothic Pro,Hiragino Mincho Pro,STSong");
+// pref("font.preload-names-list", "Hiragino Kaku Gothic Pro,Hiragino Mincho Pro,STSong");
 
 pref("browser.urlbar.clickAtEndSelects", false);
 
@@ -1759,7 +1759,7 @@ pref("ui.key.menuAccessKey", 0);
 pref("ui.key.accelKey", 224);
 // (pinkerton, joki, saari) IE5 for mac uses Control for access keys. The HTML4 spec
 // suggests to use command on mac, but this really sucks (imagine someone having a "q"
-// as an access key and not letting you quit the app!). As a result, we've made a 
+// as an access key and not letting you quit the app!). As a result, we've made a
 // command decision 1 day before tree lockdown to change it to the control key.
 pref("ui.key.generalAccessKey", -1);
 
@@ -1933,7 +1933,7 @@ pref("font.default.zh-HK", "sans-serif");
 pref("font.size.variable.zh-HK", 16);
 pref("font.size.fixed.zh-HK", 16);
 
-pref("netinst.profile.show_profile_wizard", true); 
+pref("netinst.profile.show_profile_wizard", true);
 
 pref("middlemouse.paste", true);
 
@@ -2182,7 +2182,7 @@ pref("font.name.serif.zh-CN", "serif");
 pref("font.name.sans-serif.zh-CN", "sans-serif");
 pref("font.name.monospace.zh-CN", "monospace");
 
-// ming_uni.ttf (HKSCS-2001) 
+// ming_uni.ttf (HKSCS-2001)
 // http://www.info.gov.hk/digital21/eng/hkscs/download/uime.exe
 pref("font.name.serif.zh-HK", "serif");
 pref("font.name.sans-serif.zh-HK", "sans-serif");
@@ -2385,10 +2385,10 @@ pref("print.print_command", "lp -c -s ${MOZ_PRINTER_NAME:+-d\"$MOZ_PRINTER_NAME\
 // Login Manager prefs
 pref("signon.rememberSignons",              true);
 pref("signon.expireMasterPassword",         false);
-pref("signon.SignonFileName",               "signons.txt"); // obsolete 
+pref("signon.SignonFileName",               "signons.txt"); // obsolete
 pref("signon.SignonFileName2",              "signons2.txt"); // obsolete
 pref("signon.SignonFileName3",              "signons3.txt");
-pref("signon.autofillForms",                true); 
+pref("signon.autofillForms",                true);
 pref("signon.debug",                        false); // logs to Error Console
 
 // Zoom prefs
