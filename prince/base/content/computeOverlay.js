@@ -1554,7 +1554,7 @@ function doComputeCheckEquality(math, editorElement) {
 }
 
 function doComputeFindExtrema(math, vars, editorElement, cmd, cmdHandler) {
-  var mathstr = GetFixedMath(math);
+  var mathstr = GetFixedMath(GetRHS(math));
   if (!vars) vars = "";
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   msiComputeLogger.Sent4("find extrema", mathstr, "specifying", vars);

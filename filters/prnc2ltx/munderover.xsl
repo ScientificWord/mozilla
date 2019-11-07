@@ -6,6 +6,69 @@
       version="1.1">
 
 
+
+
+
+  <xsl:template name="check-munderover-decoration">
+      <xsl:choose>
+      <xsl:when test="./*[2][normalize-space(string())='&#x0332;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#x2190;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#x2192;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#x2194;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#xF613;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#x23DF;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#xFE38;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+     <xsl:when test="./*[2][normalize-space(string())='&#x00AF;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#x2190;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#x2192;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[2][normalize-space(string())='&#x2194;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[3][normalize-space(string())='&#xF612;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[3][normalize-space(string())='&#x23DE;']
+      or              ./*[3][normalize-space(string())='&#xFE37;']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[3][normalize-space(string())='&#x0302;']
+      and             ./*[3][@stretchy='true']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[3][normalize-space(string())='&#xFE3F;']
+      and             ./*[3][@stretchy='true']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:when test="./*[3][normalize-space(string())='&#x02DC;']
+      and             ./*[3][@stretchy='true']">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>false</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template >
+
   
   <xsl:template match="mml:munderover" mode="in-text">
       <xsl:text>$</xsl:text>
@@ -16,6 +79,11 @@
   <xsl:template match="mml:munderover">
   
     <xsl:variable name="munderover-contents.tr">
+
+      
+    <is-decoration>
+      <xsl:call-template name="check-munderover-decoration"/>
+    </is-decoration>
 
       <big-op-char>
         <xsl:call-template name="is-LaTeX-bigop"/>
@@ -76,6 +144,7 @@ A\xleftarrow{n+\mu-1}B \xrightarrow[T]{n\pm i-1}C
 
 
     <xsl:choose>
+      
 
 <!-- the base element is a big operator -->
 
@@ -115,6 +184,95 @@ If the base is an operator with movablelimits=true (or an embellished operator
         </xsl:call-template>
         <xsl:text>}</xsl:text>
       </xsl:when>
+
+      <!-- The object is decorated -->
+
+
+    <xsl:when test="$munderover-contents/is-decoration='true'">
+        <xsl:choose>
+          <xsl:when test="./*[2][normalize-space(string())='&#x0332;']"> 
+            <xsl:text>\underline{</xsl:text> 
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x2190;']">
+            <xsl:text> \underleftarrow{</xsl:text>             
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x2192;']">
+            <xsl:text> \underleftarrow{</xsl:text>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x2194;']">
+            <xsl:text> \underleftrightarrow{</xsl:text>
+          </xsl:when>
+          <xsl:when test="./*[2][normalize-space(string())='&#x23DF;']
+                    or    ./*[2][normalize-space(string())='&#xFE38;']">           
+            <xsl:text>\underbrace{</xsl:text>
+          </xsl:when>                  
+          <xsl:otherwise>
+            <!-- Still need to cover \underset case -->
+          </xsl:otherwise>         
+        </xsl:choose>
+        <xsl:choose>
+          <xsl:when test="./*[3][normalize-space(string())='&#x00AF;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overline'"/>
+            </xsl:call-template>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+          <xsl:when test="./*[3][normalize-space(string())='&#x2190;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overleftarrow'"/>
+            </xsl:call-template>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+          <xsl:when test="./*[3][normalize-space(string())='&#x2192;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overrightarrow'"/>
+            </xsl:call-template>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+          <xsl:when test="./*[3][normalize-space(string())='&#x2194;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overleftrightarrow'"/>
+            </xsl:call-template>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+          <xsl:when test="./*[3][normalize-space(string())='&#x23DE;']
+                    or    ./*[3][normalize-space(string())='&#xFE37;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\overbrace'"/>
+            </xsl:call-template>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+          <xsl:when test="./*[3][normalize-space(string())='&#x0302;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\widehat'"/>
+            </xsl:call-template>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+          <xsl:when test="./*[3][normalize-space(string())='&#xFE3F;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\widehat'"/>
+            </xsl:call-template>
+            <xsl:text>}</xsl:text>
+          </xsl:when>
+          <xsl:when test="./*[3][normalize-space(string())='&#x02DC;']">
+            <xsl:call-template name="math-accent">
+              <xsl:with-param name="LaTeX-acc" select="'\widetilde'"/>
+            </xsl:call-template>                              
+            <xsl:text>}</xsl:text>  <xsl:text>}</xsl:text>
+          </xsl:when>
+          <xsl:when test="./*[3][normalize-space(string())='~']">
+             <xsl:call-template name="math-accent">
+               <xsl:with-param name="LaTeX-acc" select="'\widetilde'"/>
+             </xsl:call-template>
+          <xsl:text>}</xsl:text>
+          </xsl:when>
+                            
+          <xsl:otherwise>
+          </xsl:otherwise>     
+
+       </xsl:choose>
+      </xsl:when>
+
 
 <!-- possible \limfunc{} -->
 

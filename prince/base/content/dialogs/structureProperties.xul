@@ -88,7 +88,7 @@
             <label value="&sectionShortHeader.label;" />
           </caption>
           <!-- JLF - address string in value below -->
-          <label id="showwhendisabled" value="You can't set a short title for an unnumbered ##."
+          <label id="showwhendisabled" value="&noshortlabelwarning.label;"
              persist="hidden" hidden="true"/>
           <editor editortype="html" type="content" width="300" height="60" context="msiEditorContentContext"
              id="sectionShortEdit" />

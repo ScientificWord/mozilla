@@ -380,7 +380,7 @@ msibr[type="newPage"]:after {
 }
 
 phantom {
-  color: transparent;
+  color: #cccccc;
 }
 
 inserted, math inserted {

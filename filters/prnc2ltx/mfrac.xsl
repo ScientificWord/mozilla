@@ -359,10 +359,14 @@
 
       <xsl:variable name="frac-context-size">
         <xsl:choose>
-          <xsl:when test="parent::mml:mstyle[@displaystyle='true'][count(./*)=1]">
+          <xsl:when test="(parent::mml:mstyle[@displaystyle='true'][count(./*)=1] |
+                          ancestor::mml:mstyle[@displaystyle='true'][count(./*)=1]) 
+                          [last()]">
             <xsl:value-of select="'d'"/>
 			    </xsl:when>
-          <xsl:when test="parent::mml:mstyle[@displaystyle='false'][count(./*)=1]">
+         <xsl:when test="(parent::mml:mstyle[@displaystyle='false'][count(./*)=1] |
+                          ancestor::mml:mstyle[@displaystyle='false'][count(./*)=1]) 
+                          [last()]">
             <xsl:value-of select="'t'"/>
           </xsl:when>
           <xsl:otherwise>
@@ -549,7 +553,7 @@
               <xsl:when test="($frac-delims-l-delim='(')
                    and        ($frac-delims-r-delim=')')">
                 <xsl:choose>
-                  <xsl:when test="$frac-context-size='d'">
+                  <xsl:when test="$frac-context-size='d'"> 
                     <xsl:text>\dbinom{</xsl:text>
                   </xsl:when>
                   <xsl:when test="$frac-context-size='t'">
