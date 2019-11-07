@@ -1597,7 +1597,7 @@ begin
   sys := map( vars, (z) -> diff(eqn,z)=0 );
   pts := solve( sys, vars );
   if (type(pts) = "_in") then
-    if (type(op(pts,2)) = Dom::ImageSet) then
+    if ((type(op(pts,2)) = Dom::ImageSet) or (type(op(pts,2)) = solvelib::VectorImageSet)) then
       sys := {Dom::ImageSet::getElement(op(pts,2))};  // should get more elements!
       if sys = {FAIL} then
         return( [{},{}] );
