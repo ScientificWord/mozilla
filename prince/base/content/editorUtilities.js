@@ -40,7 +40,7 @@
 
 /**** NAMESPACES ****/
 var XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-vr kDisplayModeSource = 2;
+var kDisplayModeSource = 2;
 
 // Each editor window must include this file
 // Variables  shared by all dialogs:
