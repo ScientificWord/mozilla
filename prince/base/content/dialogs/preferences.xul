@@ -62,7 +62,7 @@
                   name="swp.defaultShell"
                   type="string"/>
       <preference id="contentOfNewWindow"
-                  name="swp.contentNew"
+                  name="swp.contentOfNewWindow"
                   type="string" />
       <preference id="defaultDocDir"
                   name="swp.prefDocumentDir"
@@ -431,13 +431,13 @@
                   name="swp.matrixdef.baseline"
                   type="string" />
                   <!-- matrixDelimiter is also used to choose a case as the default -->
-      <preference id="matrixDelimiter"  
-                  name="swp.matrixdef.delim" 
+      <preference id="matrixDelimiter"
+                  name="swp.matrixdef.delim"
                   type="string"/>
       <preference id="smallMatrix"
-                  name="swp.matrixdef.small" 
+                  name="swp.matrixdef.small"
                   type="bool"/>
-      
+
     </preferences>
 
     <tabbox id="generalTabbox" persist="selectedIndex" selectedIndex="0">
@@ -568,8 +568,8 @@
                 <radio id="useAbove" value="useDefault" label="&useAboveShell.label;" radioGroup="startShellRadioGroup"/>
                 <radio id="useLastSavedFile" label="&openLastFile.label;" value="useLast" radioGroup="startShellRadioGroup" />
                 <radio id="useBlank" label="&useBlank.label;" value="useBlank" radioGroup="startShellRadioGroup" />
-              </vbox> 
-            </radiogroup>   
+              </vbox>
+            </radiogroup>
           </vbox>
         </tabpanel>
         <tabpanel orient="vertical">
@@ -727,7 +727,7 @@
         <hbox>
           <groupbox id="builtinDelimiterspref" >
             <caption label="Built-in delimiters"/>
-            <radiogroup id="flavor" orient="horizontal" preference="matrixDelimiter" 
+            <radiogroup id="flavor" orient="horizontal" preference="matrixDelimiter"
               oncommand="onChangeMatrixData(this)">
               <vbox>
                 <radio value="" label="None"/>

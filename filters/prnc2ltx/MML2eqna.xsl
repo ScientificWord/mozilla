@@ -182,9 +182,10 @@
 
           <is-starred>
             <xsl:choose>
-<!--               <xsl:when test="@subtype">
+              <xsl:when test="@subtype                                                                           
+                         and  (@type='eqnarray')">
                 <xsl:text>false</xsl:text>
-              </xsl:when> -->
+              </xsl:when> 
               <xsl:when test="($n-labeledrows=0)
                          or  (ancestor::html:msidisplay[@numbering='none'])">
                 <xsl:text>true</xsl:text>
@@ -329,7 +330,7 @@
                 <xsl:text xml:space="preserve"> &amp; </xsl:text>
               </xsl:if>
             </xsl:when>
-            <xsl:when test="self::mml:mo and $insertedAlignmark and (generate-id(.)=$insertedAlignmark)">
+            <!--xsl:when test="self::mml:mo and $insertedAlignmark and (generate-id(.)=$insertedAlignmark)">
               <xsl:if test="not($eqn-info/LaTeX-env='gather')">
                 <xsl:text xml:space="preserve"> &amp; </xsl:text>
                 <xsl:apply-templates select="."/>
@@ -337,7 +338,7 @@
                   <xsl:text xml:space="preserve"> &amp; </xsl:text>
                 </xsl:if>
               </xsl:if>
-              </xsl:when>
+              </xsl:when -->
             <xsl:when test="name()='mml:mrow'">
 
               <xsl:for-each select="*">
