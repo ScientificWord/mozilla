@@ -1864,9 +1864,9 @@ unknown_op<uID3.5.7>infix,25
 &#x22F1;<uID3.17.54>,U022F1
 \Finv<uID3.17.55>0x2132
 \Game<uID3.17.56>0xe049
-;&kopf;<uID3.17.57>,U1D55C
+&kopf;<uID3.17.57>,U1D55C
 ;&kopf;<uID3.17.57>
-k<uID3.17.57>,U0006B:mathvariant="double-struck"
+&Bbbk<uID3.17.57>,U1D55C
 &NotExists;<uID3.17.58>prefix,23,U02204
 &circledR;<uID3.17.59>,U000AE
 
