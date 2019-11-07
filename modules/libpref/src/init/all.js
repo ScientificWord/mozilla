@@ -1745,7 +1745,7 @@ pref("font.mathfont-family", "STIXNonUnicode, STIXSize1, Symbol, Cambria Math, D
 
 // individual font faces to be treated as independent families
 // names are Postscript names of each face
-pref("font.single-face-list", "Osaka-Mono");
+// pref("font.single-face-list", "Osaka-Mono");
 
 // optimization hint for fonts with localized names to be read in at startup, otherwise read in at lookup miss
 // names are canonical family names (typically English names)
