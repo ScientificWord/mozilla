@@ -61,7 +61,10 @@
         <xsl:text xml:space="preserve">\smallskip </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text xml:space="preserve"> Unexpected eqn line spacer </xsl:text>
+        <xsl:text xml:space="preserve"><!--  Comment out following line to avoid this text from appearing in typeset results (gp)
+         Unexpected eqn line spacer 
+		 -->
+         </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
