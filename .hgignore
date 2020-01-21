@@ -54,3 +54,6 @@ glob:*.pbxproj
 
 
 
+syntax: glob
+filters\ptprince\regexp
+prince\base\content\regexp.re
