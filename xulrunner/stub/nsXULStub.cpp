@@ -268,7 +268,7 @@ main(int argc, char **argv)
 
     // If a gecko maxVersion is not specified, we assume that the app uses only
     // frozen APIs, and is therefore compatible with any xulrunner 1.x.
-    char maxVersion[VERSION_MAXLEN] = "1.*";
+    char maxVersion[VERSION_MAXLEN] = "6.*";
 
     GREVersionRange range = {
       minVersion,
