@@ -3725,11 +3725,8 @@ function isPathBeingEdited(path) {
   var uriString = msiFileURLFromAbsolutePath(path).spec;
   // uriString ends in xxxx.sci; we will be comparing it to something ending in xxxx_work/main.xhtml
   // so change it
-  // var os = getOS(window);
-  // if (os === 'win')
-  //   uriString = uriString.replace(/\.sci$/, '_work\\main.xhtml');
-  // else
-  //   uriString = uriString.replace(/\.sci$/, '_work/main.xhtml');
+  // Even on Windows, the URI's use forward slashes
+  uriString = uriString.replace(/\.sci$/, '_work/main.xhtml');
 
   var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService();
   wm = wm.QueryInterface(Components.interfaces.nsIWindowMediator);
@@ -3745,8 +3742,9 @@ function isPathBeingEdited(path) {
       doc = editorElement.contentDocument;
       cancel = (uriString === doc.documentURI);
     }
+    if (cancel) return w;
   }
-  return cancel;
+  return null;
 }
 // createWorkingDirectory does the following:
 // It creates a directory, foo_work, and unpacks the contents of foo.sci into the new directory.
@@ -3833,6 +3831,7 @@ function createWorkingDirectory(documentfile) {
                         .getService(Components.interfaces.nsIPromptService);
       extension = '.xhtml';
       var zr;
+      var w; // The existing editor window if we try to select a file that is already being edited.
       zr = Components.classes['@mozilla.org/libjar/zip-reader;1'].createInstance(Components.interfaces.nsIZipReader);
       var basename;
       try {
@@ -3846,8 +3845,9 @@ function createWorkingDirectory(documentfile) {
         if (dir.exists()) {
           // Possibly there is only an orphaned working directory, but first we should chck that we are
           // not about to edit the same file in two different editors.
-          if (isPathBeingEdited(doc.path)) {
-            AlertWithTitle(GetString('OnlyOneEditorPerFile'), doc.leafname);
+          w = isPathBeingEdited(doc.path);
+          if (w) {
+            w.focus();
             return null;
           }
           var mainfile = dir.clone();
