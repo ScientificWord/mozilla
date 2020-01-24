@@ -1070,7 +1070,7 @@ var msiGIFAnimation =
     return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
   },
 
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  getCommandStateParFams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon){},
   doCommand: function(aCommand) {
     if (aCommand == "cmd_MSIAnimateGifsOff")
@@ -1128,7 +1128,7 @@ function openDocument()
       dump("Ready to edit page: " + fp.fileURL.spec +"\n");
       var newdocumentfile;
       newdocumentfile = createWorkingDirectory(fp.file);
-
+      if (newdocumentfile == null) return;   // This can happen, for example, when trying to open an already opened document
       msiEditPage(msiFileURLFromFile(newdocumentfile), window, false, false, null, false);
       msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
     }
