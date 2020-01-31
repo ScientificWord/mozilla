@@ -20,4 +20,4 @@ private:
   PRUint32 m_length;
 };
 
-#endif // msiMnCoalesce_h___
+#endif // msiMleafCoalesce_h___
