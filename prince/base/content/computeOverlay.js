@@ -1301,7 +1301,7 @@ function runFixup(math) {
 }
 
 function GetFixedMath(math) {
-  return runFixup(GetMathAsString(math));
+  return runFixup(CleanMathString(GetMathAsString(math)));
 }
 
 function doLabeledComputation(math, vars, op, labelID, editorElement) {
