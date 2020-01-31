@@ -2238,6 +2238,15 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       aSelection->Collapse(visNode, visOffset);
       return res;
     }
+    // NS_NAMED_LITERAL_STRING(mo, "mo");
+    // res = mHTMLEditor->GetElementOrParentByTagName(mo, startNode, getter_AddRefs(anchorAncestor));
+    // res = mHTMLEditor->GetElementOrParentByTagName(mo, visNode, getter_AddRefs(focusAncestor));
+    // if (focusAncestor && !anchorAncestor) { // we have entered an mo object; delete it instead of text
+    //   res = mHTMLEditor->DeleteNode(focusAncestor);
+    //   *aHandled = PR_TRUE;
+    //   // aSelection->Collapse(visNode, visOffset);
+    //   return res;
+    // } /// BBM
     NS_NAMED_LITERAL_STRING(listtag, "listtag");
     res = mHTMLEditor->GetElementOrParentByTagClass(listtag, startNode, getter_AddRefs(anchorAncestor));
     res = mHTMLEditor->GetElementOrParentByTagClass(listtag, visNode, getter_AddRefs(focusAncestor));
