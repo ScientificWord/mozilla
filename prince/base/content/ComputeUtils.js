@@ -5,18 +5,32 @@
 
 function GetMathAsString(math)
 {
-    var ser = new XMLSerializer();
-    var mathstr = ser.serializeToString(math);
-    var localname = math.localName;  
-    if (localname !== "math"){
-	//dump("###" + math.localName + " !== \"math\"");
-	mathstr = "<math>" + mathstr + "</math>";
-    }
+  var ser = new XMLSerializer();
+  var mathstr = ser.serializeToString(math);
+  var nextNode, prevNode;
+  var localname = math.localName;  
+  if (localname !== "math"){
+//dump("###" + math.localName + " !== \"math\"");
+    mathstr = "<math>" + mathstr + "</math>";
+  }
+  prevNode = math.previousSibling;
+  while (prevNode && prevNode.nodeType != Node.ELEMENT_NODE)
+    prevNode = prevNode.previousSibling;
+  if (prevNode && prevNode.localName == "math") {
+    mathstr = ser.serializeToString(prevNode) + mathstr;
+  }  
+  nextNode = math.nextSibling;
+  while (nextNode && nextNode.nodeType != Node.ELEMENT_NODE)
+    nextNode = nextNode.nextSibling;
+  if (nextNode && nextNode.localName == "math") {
+    mathstr = mathstr + ser.serializeToString(nextNode);
+  }  
+
   // risky string surgery, but it works in simple cases
   mathstr = mathstr.replace(/ _moz_dirty=\"\"/g,"");
   mathstr = mathstr.replace(/<mi\/\>/g,"");
   // the following namespace problems happen with inserted computation results...need a better solution
-  mathstr = mathstr.replace(/ xmlns:a0=\"http:\/\/www.w3.org\/1998\/Math\/MathML\"/g,"");
+  mathstr = mathstr.replace(/ xmlns(:a0)?=\"http:\/\/www.w3.org\/1998\/Math\/MathML\"/g,"");
   mathstr = mathstr.replace(/<a0:/g,"\<");
   mathstr = mathstr.replace(/<\/a0:/g,"\<\/");
   return mathstr;
@@ -32,7 +46,13 @@ function CleanMathString(mathstr)
   // handle tags inserted when user presses enter key
   mathstr = mathstr.replace(/<br xmlns:[\w]+=\"http:\/\/www\.w3\.org\/1999\/xhtml\"\/>/gi,"");
   // eliminate these useless tags
+  mathstr = mathstr.replace(/<\/math><math\s*>/g, "");
   mathstr = mathstr.replace(/<mn\/>/g,"");
+  mathstr = mathstr.replace(/<mo\/>/g,"");
+  mathstr = mathstr.replace(/<mo>\s*<\/mo>/g,"");
+  mathstr = mathstr.replace(/<(\w+:)*mo\/>/g,"");
+  mathstr = mathstr.replace(/<mi\/>/g,"");
+  mathstr = mathstr.replace(/<mi>\s*<\/mi>/g,"");
   mathstr = mathstr.replace(/<br\/>/g,"");
   // handle decimals: allow for decimal at start of number
   mathstr = mathstr.replace(/<\/mn><mo>\.<\/mo>/g, ".</mn>");
@@ -40,16 +60,13 @@ function CleanMathString(mathstr)
   // after handling decimals, collect digits around it
   mathstr = mathstr.replace(/<\/mn>\.<mn>/g,".");
   // collect sequences of digits
-  mathstr = mathstr.replace(/<\/mn><mn>/g,"");
+  mathstr = mathstr.replace(/<\/mn>\s*<mn>/g,"");
   // a decimal must have a digit after it
   mathstr = mathstr.replace(/\.<\/mn>/g,".0</mn>");
 
   // remove empty math operators:  <mo form="prefix"></mo>
-  mathstr = mathstr.replace(/<mo><\/mo>/g,"");
-  mathstr = mathstr.replace(/<(\w+:)*mo\/>/g,"");
-  mathstr = mathstr.replace(/<mo form=\"prefix\"><\/mo>/g,"");
-  mathstr = mathstr.replace(/<mo form=\"prefix\"\/>/g,"");
-  mathstr = mathstr.replace(/<mi><\/mi>/g,"");
+  mathstr = mathstr.replace(/<mo form=\"prefix\">\s*<\/mo>/g,"");
+  mathstr = mathstr.replace(/<mo form=\"prefix\"\s*\/>/g,"");
 
   // remove _moz_dirty=""
   mathstr = mathstr.replace (/_moz_dirty=\"\"/g, "");
