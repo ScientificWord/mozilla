@@ -13,18 +13,18 @@ function GetMathAsString(math)
 //dump("###" + math.localName + " !== \"math\"");
     mathstr = "<math>" + mathstr + "</math>";
   }
-  prevNode = math.previousSibling;
-  while (prevNode && prevNode.nodeType != Node.ELEMENT_NODE)
-    prevNode = prevNode.previousSibling;
-  if (prevNode && prevNode.localName == "math") {
-    mathstr = ser.serializeToString(prevNode) + mathstr;
-  }  
-  nextNode = math.nextSibling;
-  while (nextNode && nextNode.nodeType != Node.ELEMENT_NODE)
-    nextNode = nextNode.nextSibling;
-  if (nextNode && nextNode.localName == "math") {
-    mathstr = mathstr + ser.serializeToString(nextNode);
-  }  
+  // prevNode = math.previousSibling;
+  // while (prevNode && prevNode.nodeType != Node.ELEMENT_NODE)
+  //   prevNode = prevNode.previousSibling;
+  // if (prevNode && prevNode.localName == "math") {
+  //   mathstr = ser.serializeToString(prevNode) + mathstr;
+  // }  
+  // nextNode = math.nextSibling;
+  // while (nextNode && nextNode.nodeType != Node.ELEMENT_NODE)
+  //   nextNode = nextNode.nextSibling;
+  // if (nextNode && nextNode.localName == "math") {
+  //   mathstr = mathstr + ser.serializeToString(nextNode);
+  // }  
 
   // risky string surgery, but it works in simple cases
   mathstr = mathstr.replace(/ _moz_dirty=\"\"/g,"");
