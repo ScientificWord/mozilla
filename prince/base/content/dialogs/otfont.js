@@ -26,7 +26,7 @@ function startup()
 	initializeUnitHandler(unitHandler);
   var menuObject = { menulist: []};
   menuObject.menulist = document.getElementById("otfontlist");
-  addOTFontsToMenu(menuObject);
+  addOTFontsToMenu(menuObject.menulist);
   texnode = getSelectionParentByTag(editor, "rawTeX");
   if (texnode) {
 		document.getElementById("rawtex").value = texnode.getAttribute("tex");

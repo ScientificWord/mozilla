@@ -26,7 +26,8 @@ function startup()
   fillInMissingDefaults();
   try
   {
-    setUpFontList();
+    var menuObject = { menulist: document.getElementById("face")};
+    addOTFontsToMenu(menuObject);
   } catch(ex) {msidump("In plotFontSettings.js, startup(), exception setting up font list: " + ex + "\n");}
 //  if (fontData.whichFont == "axesTicks")
 //    isAxesTicksFont = true;
