@@ -449,10 +449,10 @@ TeXChar Latin_1_in::Get()
    case 0x80 : c = 0x20AC; break;
    case 0x82 : c = 0x201A; break;
    case 0x83 : c = 0x0192; break;
-   
+
    }
    return c;
-   
+
 }
 
 
@@ -1082,7 +1082,7 @@ TeXChar GetCodePoint(InputByteStream& ibs)
       b = ibs.Get();
       s += (char) b;
       return codepoint(s);
-    }  
+    }
     return 0;
 }
 
