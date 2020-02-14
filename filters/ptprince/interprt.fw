@@ -60,7 +60,7 @@ std::string get_number(std::string s)
     int unitPos = s.find_first_not_of("0123456789.");
     if (unitPos != -1){
        return s.substr(0,unitPos);
-    } else 
+    } else
        return s;
 }
 
@@ -232,7 +232,7 @@ std::string MaybeCopyGraphicFile(const char* fullname)
       reltarget += fn.GetExtString();
       std::string::iterator it;
       for (it = reltarget.begin(); it != reltarget.end(); ++it){
-         if (*it == '\\') 
+         if (*it == '\\')
            *it = '/';
       }
       return reltarget;
@@ -304,7 +304,7 @@ that is listed in the enumerated type @{CommandCode@}.
       @<Extensions@>
       case CMD_NONE:{
         if (CurTok().Type() == TT_PARAM){
-           // a stray #, just copy it 
+           // a stray #, just copy it
            Typesetter::AppendTag("#");
         } else {
            LOG("\n----" << CurTok()
@@ -367,7 +367,7 @@ enum GroupType {
        INLINE_GROUP,  // for $...$
        DISPLAY_GROUP, // for $$...$$
        MATH_GROUP,    // for {...} inside math
-       FULLEXPAND_GROUP, 
+       FULLEXPAND_GROUP,
        PROCESS_GROUP
      };
 @}
@@ -618,7 +618,7 @@ case CMD_MSIEXPAND: {
   Typesetter::StartExpansion();
   TeXToken lbrace(TT_LEFT_BRACE, '{', 0);
   TeXToken rbrace(TT_RIGHT_BRACE, '}', 0);
- 
+
   TokenList* pTL = new TokenList;
   InputStack::Putback(rbrace);
   InputStack::Putback(*tl);
@@ -681,7 +681,7 @@ case CMD_MSIPREAMBLE: {
   }
   StringBuilder::Discard(str);
   delete tl;
-  
+
   std::string usepackages;
   std::string rest;
   size_t q = 0;
@@ -692,7 +692,7 @@ case CMD_MSIPREAMBLE: {
     // p = start of next
     // Copy non-usepackage stuff to rest
     rest += preamble.substr(q, p-q);
-    // Convert <usepackage>    
+    // Convert <usepackage>
     q = p+11;
     std::string opt;
     std::string req;
@@ -731,7 +731,7 @@ case CMD_MSIPREAMBLE: {
     Filename fn(req.c_str());
     ProcessFile(fn);
     p = preamble.find("\\usepackage", q);
-    
+
   }
   rest += preamble.substr(q);
   std::string preambletex =
@@ -785,7 +785,7 @@ case CMD_MSISPECIAL: {
   out.Flush();
   strout.put(0);
   const char* theCap = strout.str();
-  
+
   ScanTokenList(tl, false);
   ScanTokenList(tlpos, false);
   //ScanTokenList(tlcap, false);
@@ -808,8 +808,8 @@ case CMD_MSISPECIAL: {
       ++i;
   }
   StringBuilder::Discard(str);
-  
-  
+
+
 
   // Break the content of special into name, value pairs
   i=0;
@@ -894,7 +894,7 @@ case CMD_MSISPECIAL: {
    type=\"application/x-mupad-graphics+xml\" alt=\"Generated Plot\" \
    msigraph=\"true\" style=\"width: 113.386px; height: 170.079px;\"/>\
  </msiframe></graph>";
-    
+
         // search and replace
         find_and_replace(result, "%mathmlns%",
                                  "\"http://www.w3.org/1998/Math/MathML\"");
@@ -993,8 +993,8 @@ case CMD_MSISPECIAL: {
         result += theCap;
       }
       result += "</msiframe>";
-      
-      
+
+
       if (strTemppos[0] == 'd'){
         find_and_replace(result, "%pos%", "center");
       } else if (strTemppos[0] == 'i'){
@@ -1017,37 +1017,37 @@ case CMD_MSISPECIAL: {
       strip_quotes(name);
       std::string newname = MaybeCopyGraphicFile(name.c_str());
       find_and_replace(result, "%ImageFile%", NormalizeSlashes(makexml(newname).c_str()).c_str());
-    
+
       std::string fullname = std::string("file://") + s_docdir + SEP + name;
       find_and_replace(result, "%ImageFileFull%", NormalizeSlashes(makexml(fullname).c_str()).c_str());
 
-               
+
       find_and_replace(result, "%width%",
                get_number(kvmap["width"]).c_str());
       find_and_replace(result, "%height%",
                get_number(kvmap["height"]).c_str());
       find_and_replace(result, "%units%",
                get_units(kvmap["width"]).c_str());
-               
+
       if (kvmap.find("original-width") != kvmap.end()){
          find_and_replace(result, "%naturalWidth%",
                     get_number(kvmap["original-width"]).c_str());
          //find_and_replace(result, "%origunits%",
          //           get_units(kvmap["original-width"]).c_str());
-      } else {  
+      } else {
          find_and_replace(result, "%naturalWidth%",
                     get_number(kvmap["width"]).c_str());
          //find_and_replace(result, "%origunits%",
          //           get_units(kvmap["width"]).c_str());
       }
-      
+
       find_and_replace(result, "%naturalHeight%",
                get_number(kvmap["original-height"]).c_str());
 
 
    }
    Typesetter::AppendTag(result.c_str()) ;
-  
+
   break;
 }
 
@@ -1614,7 +1614,7 @@ case CMD_TAG : {
    //while (i < str.Size()){
    //   strTemp += (char) str[i];
    //   ++i;
-   //} 
+   //}
    //StringBuilder::Discard(str);
    //strTemp = makexml(strTemp);
    //LOG("\n----xml: " << strTemp.c_str());
@@ -1638,12 +1638,12 @@ case CMD_TOXML : {
    while (i < str.Size()){
       strTemp += (char) str[i];
       ++i;
-   } 
+   }
    StringBuilder::Discard(str);
    strTemp = makexml(strTemp);
    LOG("\n----xml: " << strTemp.c_str());
    Typesetter::AppendTag(strTemp.c_str());
-  
+
 }
 @}
 
@@ -2369,7 +2369,7 @@ case CMD_EXTENSION: {
              reltarget[k]='/';
            }
          }
-         
+
 
          if (extn != "") {
             Typesetter::AppendTag(reltarget.c_str());

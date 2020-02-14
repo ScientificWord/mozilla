@@ -28,7 +28,7 @@ XYZ^^5cinput
 3\ext
 ex
 
-% should reduce to 
+% should reduce to
 %ABCXYZ\input MAxBpN3.tex
 
 \end{document}
