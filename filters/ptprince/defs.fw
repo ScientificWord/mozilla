@@ -365,8 +365,8 @@ while (@<r doesn't point to a TT_MATCH or a TT_END_MATCH@>){
 @$@<scan undelimited parameter@>==@{@-
 do{
   GetRawToken();
-} while ((CurTok().Type() == TT_SPACE) || 
-          (CurTok().ChrCode() == 0x0A) || 
+} while ((CurTok().Type() == TT_SPACE) ||
+          (CurTok().ChrCode() == 0x0A) ||
           (CurTok().ChrCode() == 0x0D) );
 
 if (CurTok().Type() == TT_LEFT_BRACE){
@@ -802,7 +802,7 @@ void DefAssignment(CommandCode curcmd, int prefixes){
      InputStack::Clean();
      tapping = InputStack::StartTap(&Global::msipreamble);
    }
-     
+
    if (tapping){
      if (bGlobal){
        // push back \global
