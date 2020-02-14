@@ -435,7 +435,7 @@ void find_and_replace(std::string& str, const char* srch, const char*repl);
 
 void find_and_replace_1(std::string& str, const char* srch, const char*repl)
 {
-  
+
     int p = str.find("<![CDATA[");
     if (p != std::string::npos){
       std::string first = str.substr(0, p);
@@ -445,7 +445,7 @@ void find_and_replace_1(std::string& str, const char* srch, const char*repl)
     } else {
       find_and_replace(str, srch, repl);
     }
-    
+
 }
 
 void Typesetter::StartExpansion()
@@ -780,17 +780,17 @@ void Typesetter::EndDisplay()
                customLabel = s_anom.substr(6, end-6);
             } else if (s_anom.substr(0,9) == "\\TCItag {"){
                int end = s_anom.find_first_of("}", 9);
-               customLabel = s_anom.substr(9, end-9); 
+               customLabel = s_anom.substr(9, end-9);
             }  else if (s_anom.substr(0,9) == "\\TCItag*{"){
                int end = s_anom.find_first_of("}", 9);
                suppressAnnotation = true;
-               customLabel = s_anom.substr(9, end-9);           
+               customLabel = s_anom.substr(9, end-9);
             } else if (s_anom.substr(0,6) == "\\tag*{"){
                int end = s_anom.find_first_of("}", 6);
                customLabel = s_anom.substr(6, end-6);
                suppressAnnotation = true;
             }  else if (s_anom.substr(0,6) == "\\notag"){
-               s_nonumbering = true;               
+               s_nonumbering = true;
                suppressAnnotation = true;
             }
 
@@ -816,16 +816,16 @@ void Typesetter::EndDisplay()
            if (s_nonumbering){
              str += " numbering=\"none\" ";
            } else {
-             
+
              //str += " numbering=\"eqns\" ";
-           }         
+           }
          } else if (!s_nonumbering) {
            str += " numbering=\"eqns\" ";
          } else {
            str += " numbering=\"none\" ";
          }
          if (Global::msiinsubequations == 1){
-           str+= " subEquationNumbers='true' "; 
+           str+= " subEquationNumbers='true' ";
          }
 
          if (customLabel != ""){
