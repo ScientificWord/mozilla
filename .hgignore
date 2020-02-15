@@ -50,7 +50,8 @@ glob:*.xcsettings
 glob:*.xcuserstate
 glob:*.xcbkptlist
 glob:*.pbxproj
-
+glob:*.sln
+glob:*.vcproj
 
 
 

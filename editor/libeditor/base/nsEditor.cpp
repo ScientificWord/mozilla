@@ -140,60 +140,72 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
   nsAutoString nodeName;
   nsAutoString tagWithAttributes;
   for (i=0; i<indent; i++)
-    output.Append(NS_LITERAL_STRING("  "));
+    printf(" ");
+    // output.Append(NS_LITERAL_STRING("  "));
 
   if (aNode == 0){
-    output = NS_LITERAL_STRING("!NULL!\n");
+    printf("!NULL\n");
+    // output = NS_LITERAL_STRING("!NULL!\n");
     return;
   }
+
+  PRUint16 nodeType = 0;
+  aNode->GetNodeType(&nodeType);
+
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
   nsCOMPtr<nsIDOMDocumentFragment> docfrag = do_QueryInterface(aNode);
 
-  if (element || docfrag)
+  if ((nodeType == 1 /* element */) && element)
   {
-    if (element)
-    {
-      element->GetTagName(tag);
-      nsEditor::DumpTagName(element, tagWithAttributes);
-      output.Append(NS_LITERAL_STRING("<") + tagWithAttributes);
-      output.Append(NS_LITERAL_STRING(">\n"));
+    element->GetTagName(tag);
+    // nsEditor::DumpTagName(element, tagWithAttributes);
+    printf("<%s>\n", NS_ConvertUTF16toUTF8(tag).get());
+    // output.Append(NS_LITERAL_STRING("<") + tagWithAttributes);
+    // output.Append(NS_LITERAL_STRING(">\n"));
   }
-    else
-    {
-      output.Append(NS_LITERAL_STRING("<document fragment>\n"));//, ((nsIDOMDocumentFragment*)docfrag)-28));
-    }
-    if (recurse){
-       nsCOMPtr<nsIDOMNodeList> childList;
-       aNode->GetChildNodes(getter_AddRefs(childList));
-       if (!childList) return; // NS_ERROR_NULL_POINTER;
-       PRUint32 numChildren;
-       childList->GetLength(&numChildren);
-       nsCOMPtr<nsIDOMNode> child, tmp;
-       aNode->GetFirstChild(getter_AddRefs(child));
-       for (i=0; i<numChildren; i++)
-       {
-         DumpNode(child, indent+1, true, output);
-         child->GetNextSibling(getter_AddRefs(tmp));
-         child = tmp;
-       }
-    }
-    for (i=0; i<indent; i++) {
-      output.Append(NS_LITERAL_STRING("  "));
-    }
-    output.Append(NS_LITERAL_STRING("</") + tag + NS_LITERAL_STRING(">\n"));
+  else if ((nodeType == 11 /* Document fragment */) && docfrag)
+  {
+    printf("<document fragment>\n");
+    tag = NS_LITERAL_STRING("document fragment");
+    // output.Append(NS_LITERAL_STRING("<document fragment>\n"));//, ((nsIDOMDocumentFragment*)docfrag)-28));
   }
-  else {
+  else if ((nodeType == 3 /* text */ )) {
     aNode->GetNodeName(nodeName);
     if (nodeName.EqualsLiteral("#text"))
     {
       nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
       nsAutoString str;
       textNode->GetData(str);
-      output.Append(NS_LITERAL_STRING("#text \'") + str + NS_LITERAL_STRING("'\n"));
+      printf("#text '%s'\n", NS_ConvertUTF16toUTF8(str).get());
+      // output.Append(NS_LITERAL_STRING("#text \'") + str + NS_LITERAL_STRING("'\n"));
     }
   }
+
+  if (recurse){
+     nsCOMPtr<nsIDOMNodeList> childList;
+     aNode->GetChildNodes(getter_AddRefs(childList));
+     if (!childList) return; // NS_ERROR_NULL_POINTER;
+     PRUint32 numChildren;
+     childList->GetLength(&numChildren);
+     nsCOMPtr<nsIDOMNode> child, tmp;
+     aNode->GetFirstChild(getter_AddRefs(child));
+     for (i=0; i<numChildren; i++)
+     {
+       DumpNode(child, indent+1, true, output);
+       child->GetNextSibling(getter_AddRefs(tmp));
+       child = tmp;
+     }
+  }
+  for (i=0; i<indent; i++) {
+    printf(" ");
+    // output.Append(NS_LITERAL_STRING("  "));
+  }
+  if (nodeType == 1 /*element*/)
+    printf("</%s>\n", NS_ConvertUTF16toUTF8(tag).get());
+    // output.Append(NS_LITERAL_STRING("</") + tag + NS_LITERAL_STRING(">\n"));
 }
-}
+
+} // extern C
 
 #ifdef DEBUG_Barry
 void DumpDocumentNodeImpl( nsIDOMNode * pNode, PRUint32 indent)
@@ -1761,20 +1773,22 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
                                                  PRInt32 *      _retval)
 {
   nsresult res = NS_OK;
-  nsAutoString tagName;
+  nsAutoString nodeName;   // The tag of the node we are inserting (node)
+  node->GetNodeName(nodeName);
+  nsAutoString parentName;  // The tag of the current candidate for parent
   nsAutoString tagclass;
   nsAutoString frametype;
   nsCOMPtr<nsIDOMNode> topChild = do_QueryInterface(parent);
   nsCOMPtr<nsIDOMNode> tmp;
-  nsCOMPtr<nsIDOMNode> ptr = do_QueryInterface(parent);
+  nsCOMPtr<nsIDOMNode> ptr = parent;   // the current candidate for parent
+  ptr->GetNodeName(parentName);
   nsCOMPtr<nsIDOMElement> parentElt;
   *outNode = node;
   NS_ADDREF(node);
   *outParent = parent;
   NS_ADDREF(parent);
   // We want to keep from doing this for frames of graphs and graphics, so we check for that here. This should someday be moved to the node defs mechanism
-  parent->GetNodeName(tagName);
-  if (tagName.EqualsLiteral("msiframe")) {
+  if (nodeName.EqualsLiteral("msiframe")) {
     parentElt = do_QueryInterface(parent);
     if (parentElt) {
       parentElt->GetAttribute(NS_LITERAL_STRING("frametype"), frametype);
@@ -1792,21 +1806,20 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   }
   nsCOMPtr<msiITagListManager> tlm;
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
-  node->GetNodeName(tagName);
   nsCOMPtr<nsIContent> content = do_QueryInterface(node);
   if (content->TextIsOnlyWhitespace())
-  tlm->GetRealClassOfTag(tagName, nsnull, tagclass);
+  tlm->GetRealClassOfTag(nodeName, nsnull, tagclass);
     // Search up the parent chain to find a suitable container
-  while (!CanContainTag(ptr, tagName)) // && !(content && content->TextIsOnlyWhitespace()))
+  while (!CanContainTag(ptr, nodeName)) // && !(content && content->TextIsOnlyWhitespace()))
   {
     // If the current parent is a root (body or table element)
     // then go no further - we can't insert. See if interposing a default paragraph helps.
-    if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm) || nsHTMLEditUtils::IsListItem(ptr, tlm) ||
-        nsHTMLEditUtils::IsStructNode(ptr, tlm) || nsHTMLEditUtils::IsEnvNode(ptr, tlm))
+    if (nsTextEditUtils::IsBody(ptr) || nsHTMLEditUtils::IsTableElement(ptr, tlm)) // || nsHTMLEditUtils::IsListItem(ptr, tlm) ||
+        // nsHTMLEditUtils::IsStructNode(ptr, tlm) || nsHTMLEditUtils::IsEnvNode(ptr, tlm))
     {
       nsCOMPtr<nsIDOMNode> para;
       htmlEditor->CreateDefaultParagraph(parent, aPosition, PR_FALSE, getter_AddRefs(para));
-      if (!para)
+      if (!para || !CanContainTag(para, nodeName))
       {
         return NS_ERROR_FAILURE;
       }
@@ -1817,27 +1830,27 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
     else
     {
       // Get the next parent
-      ptr->GetNodeName(tagName);
-      if (tagName.EqualsLiteral("graph") || tagName.EqualsLiteral("img") || tagName.EqualsLiteral("object")) {
+      if (parentName.EqualsLiteral("graph") || parentName.EqualsLiteral("img") || parentName.EqualsLiteral("object")) {
         *_retval = -1;
-        return NS_OK;
+        return NS_ERROR_FAILURE;  // *_retval = -1 means there is no place for the insertion. 
       }
       ptr->GetParentNode(getter_AddRefs(tmp));
       NS_ENSURE_TRUE(tmp, NS_ERROR_FAILURE);
       topChild = ptr;
       ptr = tmp;
+      ptr->GetNodeName(parentName);
     }
   }
-  if (ptr != topChild) //If suspicious, check the history of this line
-  {
+  // if (ptr != topChild) //If suspicious, check the history of this line
+  // {
     // we need to split some levels above the original selection parent
     res = SplitNodeDeep(topChild, parent, offsetOfInsert, &offsetOfInsert, PR_TRUE);
     *outParent = ptr;
     if (NS_FAILED(res)) {
       *_retval= -1;
-      return NS_OK;
+      return NS_ERROR_FAILURE;
     }
-  }
+  // }
   *_retval = offsetOfInsert;
 }
 
