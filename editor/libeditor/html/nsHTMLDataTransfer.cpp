@@ -154,10 +154,10 @@ basic-offset: 2 -*- */
 #include "msiIMathMLEditor.h"
 // #include "jcsDumpNode.h"
 
-
+nsString staticOutput;
 #define DEBUG_barry 1
 extern "C" {
-void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output);
+void DumpNode(nsIDOMNode *aNode, PRInt32 indent = 2, bool recurse = true, nsAString& output = staticOutput);
 }
 const PRUnichar nbsp = 160;
 
@@ -282,7 +282,7 @@ NS_IMETHODIMP nsHTMLEditor::LoadHTML(const nsAString & aInputString)
     {
       res = nsrange->CreateContextualFragment(aInputString, getter_AddRefs(docfrag));
       if (!docfrag) return NS_ERROR_NULL_POINTER;
-//      DumpNode(docfrag);
+      DumpNode(docfrag);
       NS_ENSURE_SUCCESS(res, res);
     }
     // put the fragment into the document
@@ -587,9 +587,9 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 
 #ifdef DEBUG
   printf("Out of DoContentFilterCallback\n");
+  DumpNode((nsIDOMNode*)fragmentAsNode);
+  // printf(NS_ConvertUTF16toUTF8(output).get());
 #endif
-  // DumpNode((nsIDOMNode*)fragmentAsNode, 2, 1, output);
-  printf(NS_ConvertUTF16toUTF8(output).get());
   NS_ENSURE_SUCCESS(res, res);
   if (!doContinue)
     return NS_OK;
@@ -719,7 +719,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   // make a list of what nodes in docFrag we need to move
   PRInt32 j;
   nsCOMArray<nsIDOMNode> nodeList;
-//  DumpNode(fragmentAsNode);
+ DumpNode(fragmentAsNode);
   res = CreateListOfNodesToPaste(fragmentAsNode, nodeList,
                                  streamStartParent, streamStartOffset,
                                  streamEndParent, streamEndOffset);
@@ -727,7 +727,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   PRInt32 listCount = nodeList.Count();
   if (listCount == 0)
     return NS_OK;
-//  DumpNode();
+ // DumpNode();
 
   // walk list of nodes; perform surgery on nodes (relativize) with _mozattr
   res = RelativizeURIInFragmentList(nodeList, aFlavor, aSourceDoc, targetNode);
@@ -822,7 +822,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     // remember if we are in a link.
     PRBool bStartedInLink = IsInLink(parentNode);
 
-    // are we in a text node?  If so, split it.
+    // are we in a text node or other node that connot accept ?  If so, split it. 
     if (IsTextNode(parentNode))
     {
       nsCOMPtr<nsIDOMNode> temp;
@@ -1197,9 +1197,9 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         // try to insert
 // #if DEBUG_barry || DEBUG_Barry
 //     printf("\nTry to insert\n");
-//     DumpNode(curNode, 0, true);
-//     DebExamineNode(curNode);
-//     DebExamineNode(parentNode);
+    DumpNode(curNode);
+    // DebExamineNode(curNode);
+    // DebExamineNode(parentNode);
 // #endif
         res = InsertNodeAtPoint(curNode, (nsIDOMNode **)address_of(parentNode), &offsetOfNewNode, PR_TRUE);
         if (NS_SUCCEEDED(res))
@@ -4405,7 +4405,7 @@ void RemoveContextNodes(nsAutoTArray<nsAutoString, 32> &tagStack, nsIDOMNode * f
   if (!fragNode)
     return;
  // printf("Entering RemoveContextNodes\n");
-//  nsHTMLEditor::DumpNode(fragNode);
+  DumpNode(fragNode);
   nsCOMPtr<nsIDOMNode> tmp, next, child, lastchild, base;
   PRInt32 L = tagStack.Length();
   PRInt32 i = L-1;
@@ -4434,7 +4434,7 @@ void RemoveContextNodes(nsAutoTArray<nsAutoString, 32> &tagStack, nsIDOMNode * f
     fragNode->RemoveChild(base, getter_AddRefs(tmp));
   }
 //  printf("============\n");
-//  nsHTMLEditor::DumpNode(fragNode);
+  DumpNode(fragNode);
 }
 
 
@@ -4691,20 +4691,20 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
     res = ParseFragment(aContextStr, tagStack, doc, address_of(contextAsNode));
 #if DEBUG_barry || DEBUG_Barry
     dumpTagStack(tagStack);
-    // DumpNode(contextAsNode);
+    DumpNode(contextAsNode);
 #endif
     NS_ENSURE_SUCCESS(res, res);
     NS_ENSURE_TRUE(contextAsNode, NS_ERROR_FAILURE);
 
     res = StripFormattingNodes(contextAsNode);
     NS_ENSURE_SUCCESS(res, res);
-// #if DEBUG_barry || DEBUG_Barry
-//     DumpNode(contextAsNode);
-// #endif
+#if DEBUG_barry || DEBUG_Barry
+    DumpNode(contextAsNode);
+#endif
     RemoveBodyAndHead(contextAsNode);
-// #if DEBUG_barry || DEBUG_Barry
-//     DumpNode(contextAsNode);
-// #endif
+#if DEBUG_barry || DEBUG_Barry
+    DumpNode(contextAsNode);
+#endif
     res = FindTargetNode(contextAsNode, contextLeaf);
     if (res == NS_FOUND_TARGET)
       res = NS_OK;
@@ -4720,10 +4720,10 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
 
   // create fragment for pasted html
   res = ParseFragment(aInputString, tagStack, doc, outFragNode);
-// #if DEBUG_barry || DEBUG_Barry
-//   dumpTagStack(tagStack);
-//   DumpNode(*outFragNode, 0, true);
-// #endif
+#if DEBUG_barry || DEBUG_Barry
+  dumpTagStack(tagStack);
+  DumpNode(*outFragNode);
+#endif
   NS_ENSURE_SUCCESS(res, res);
   NS_ENSURE_TRUE(*outFragNode, NS_ERROR_FAILURE);
   RemoveContextNodes(tagStack, *outFragNode);
@@ -4831,9 +4831,10 @@ nsresult nsHTMLEditor::ParseFragment(const nsAString & aFragStr,
 
   // create the html fragment sink
   nsCOMPtr<nsIContentSink> sink;
-  if (bContext)
-    sink = do_CreateInstance(NS_XMLFRAGMENTSINK2_CONTRACTID);
-  else
+  // BBM At one time, a long time ago, the first call was to NS_XMLFRAGMENTSINK_CONTRACTID
+  // if (bContext)
+  //   sink = do_CreateInstance(NS_XMLFRAGMENTSINK2_CONTRACTID);
+  // else
     sink = do_CreateInstance(NS_XMLFRAGMENTSINK2_CONTRACTID);
 
   NS_ENSURE_TRUE(sink, NS_ERROR_FAILURE);
