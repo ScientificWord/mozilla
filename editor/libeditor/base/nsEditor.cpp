@@ -140,11 +140,11 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
   nsAutoString nodeName;
   nsAutoString tagWithAttributes;
   for (i=0; i<indent; i++)
-    printf(" ");
+    // printf(" ");
     // output.Append(NS_LITERAL_STRING("  "));
 
   if (aNode == 0){
-    printf("!NULL\n");
+    // printf("!NULL\n");
     // output = NS_LITERAL_STRING("!NULL!\n");
     return;
   }
@@ -159,14 +159,14 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
   {
     element->GetTagName(tag);
     // nsEditor::DumpTagName(element, tagWithAttributes);
-    printf("<%s>\n", NS_ConvertUTF16toUTF8(tag).get());
+    // printf("<%s>\n", NS_ConvertUTF16toUTF8(tag).get());
     // output.Append(NS_LITERAL_STRING("<") + tagWithAttributes);
     // output.Append(NS_LITERAL_STRING(">\n"));
   }
   else if ((nodeType == 11 /* Document fragment */) && docfrag)
   {
-    printf("<document fragment>\n");
-    tag = NS_LITERAL_STRING("document fragment");
+    // printf("<document fragment>\n");
+    // tag = NS_LITERAL_STRING("document fragment");
     // output.Append(NS_LITERAL_STRING("<document fragment>\n"));//, ((nsIDOMDocumentFragment*)docfrag)-28));
   }
   else if ((nodeType == 3 /* text */ )) {
@@ -176,7 +176,7 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
       nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
       nsAutoString str;
       textNode->GetData(str);
-      printf("#text '%s'\n", NS_ConvertUTF16toUTF8(str).get());
+      // printf("#text '%s'\n", NS_ConvertUTF16toUTF8(str).get());
       // output.Append(NS_LITERAL_STRING("#text \'") + str + NS_LITERAL_STRING("'\n"));
     }
   }
@@ -191,17 +191,17 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
      aNode->GetFirstChild(getter_AddRefs(child));
      for (i=0; i<numChildren; i++)
      {
-       DumpNode(child, indent+1, true, output);
+       // DumpNode(child, indent+1, true, output);
        child->GetNextSibling(getter_AddRefs(tmp));
        child = tmp;
      }
   }
-  for (i=0; i<indent; i++) {
-    printf(" ");
+  // for (i=0; i<indent; i++) {
+    // printf(" ");
     // output.Append(NS_LITERAL_STRING("  "));
-  }
-  if (nodeType == 1 /*element*/)
-    printf("</%s>\n", NS_ConvertUTF16toUTF8(tag).get());
+  // }
+  // if (nodeType == 1 /*element*/)
+    // printf("</%s>\n", NS_ConvertUTF16toUTF8(tag).get());
     // output.Append(NS_LITERAL_STRING("</") + tag + NS_LITERAL_STRING(">\n"));
 }
 
@@ -543,7 +543,7 @@ nsEditor::Init(nsIDOMDocument *aDoc, nsIPresShell* aPresShell, nsIContent *aRoot
 //
 
 /* void removeContainer (in nsIDOMNode node); */
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsEditor::RemoveContainer(nsIDOMNode *inNode)
 {
   if (!inNode)
@@ -601,14 +601,14 @@ nsEditor::RemoveContainer(nsIDOMNode *inNode)
 
 
 /* attribute boolean inComplexTransaction; */
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsEditor::GetInComplexTransaction(PRBool *aInComplexTransaction)
 {
   *aInComplexTransaction = isInComplexTransaction;
   return NS_OK;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsEditor::SetInComplexTransaction(PRBool aInComplexTransaction)
 {
   isInComplexTransaction = aInComplexTransaction;
@@ -1832,7 +1832,7 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
       // Get the next parent
       if (parentName.EqualsLiteral("graph") || parentName.EqualsLiteral("img") || parentName.EqualsLiteral("object")) {
         *_retval = -1;
-        return NS_ERROR_FAILURE;  // *_retval = -1 means there is no place for the insertion. 
+        return NS_ERROR_FAILURE;  // *_retval = -1 means there is no place for the insertion.
       }
       ptr->GetParentNode(getter_AddRefs(tmp));
       NS_ENSURE_TRUE(tmp, NS_ERROR_FAILURE);
@@ -1841,8 +1841,8 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
       ptr->GetNodeName(parentName);
     }
   }
-  // if (ptr != topChild) //If suspicious, check the history of this line
-  // {
+  if (ptr != topChild) //If suspicious, check the history of this line
+  {
     // we need to split some levels above the original selection parent
     res = SplitNodeDeep(topChild, parent, offsetOfInsert, &offsetOfInsert, PR_TRUE);
     *outParent = ptr;
@@ -1850,7 +1850,7 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
       *_retval= -1;
       return NS_ERROR_FAILURE;
     }
-  // }
+  }
   *_retval = offsetOfInsert;
 }
 
@@ -2099,16 +2099,16 @@ nsEditor::SetSelectionOnCursorTag(nsIDOMNode * node, PRBool * setCursor)
 //                   It is the caller's responsibility to make sure inNode's children can
 //                   go in outNode.
 NS_IMETHODIMP
-nsEditor::ReplaceContainer(nsIDOMNode *inNode, 
-                            const nsAString & newTag, 
-                            msiITagListManager *manager, 
-                            const nsAString & anAttribute, 
-                            const nsAString & aValue, 
-                            PRBool cloneAttributes, 
+nsEditor::ReplaceContainer(nsIDOMNode *inNode,
+                            const nsAString & newTag,
+                            msiITagListManager *manager,
+                            const nsAString & anAttribute,
+                            const nsAString & aValue,
+                            PRBool cloneAttributes,
                             nsIDOMNode **_outNode)
 {
   // return NS_OK;
-    
+
   if (!inNode || !_outNode)
     return NS_ERROR_NULL_POINTER;
   nsCOMPtr<nsIDOMNode> parent;
@@ -2202,7 +2202,7 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
 }
 
 NS_IMETHODIMP
-nsEditor::ReplaceContainerNode( nsIDOMElement * elt, nsIDOMElement * newElt ) // This is like editor::ReplaceContainer, except that the new container is 
+nsEditor::ReplaceContainerNode( nsIDOMElement * elt, nsIDOMElement * newElt ) // This is like editor::ReplaceContainer, except that the new container is
 // already constructed, since we have to set the namespace sometimes. The two functions might be combined in the future.
 {
   if (!elt || !newElt)
@@ -4643,7 +4643,7 @@ nsEditor::GetTag(nsIDOMNode *aNode)
     PRUint16 nodeType;
     aNode->GetNodeType(&nodeType);
     if (nodeType == nsIDOMNode::TEXT_NODE) return nsGkAtoms::textTagName;
-    
+
     NS_ASSERTION(content, "null node passed to nsEditor::Tag()");
     return nsnull;
   }
