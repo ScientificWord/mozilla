@@ -24,12 +24,12 @@ DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */)
     printf("!NULL!\n");
 	  return;
   }
-  
+
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
   nsCOMPtr<nsIDOMDocumentFragment> docfrag = do_QueryInterface(aNode);
-  
+
   if (element || docfrag)
-  { 
+  {
     if (element)
     {
       nsAutoString tag;
@@ -50,7 +50,7 @@ DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */)
          aNode->GetFirstChild(getter_AddRefs(child));
          for (i=0; i<numChildren; i++)
          {
-           DumpNode(child, indent+2, true);
+           // DumpNode(child, indent+2, true);
            child->GetNextSibling(getter_AddRefs(tmp));
            child = tmp;
          }
@@ -86,17 +86,17 @@ void DumpSelection( nsISelection * sel)
   res = aFocusNode->GetNodeName(focusName);
   res = sel->GetFocusOffset(&focusOffset);
 
-  printf("\nSelection, Anchor (offset %d):\n", anchorOffset);
-  DumpNode(aAnchorNode, 0, true);
+  // printf("\nSelection, Anchor (offset %d):\n", anchorOffset);
+  // DumpNode(aAnchorNode, 0, true);
 
-  printf("\nSelection, Focus (offset %d):\n", focusOffset);
-  DumpNode(aFocusNode, 0, true);
+  // printf("\nSelection, Focus (offset %d):\n", focusOffset);
+  // DumpNode(aFocusNode, 0, true);
 
   //printf("Selection: \n    Anchor: %x (%S) %d\n    Focus: %x (%S) %d\n", aAnchorNode, anchorName.get(), anchorOffset,
   //     aFocusNode, focusName.get(), focusOffset );
   PRInt32 i;
   PRInt32 count;
-  res = sel->GetRangeCount(&count); 
+  res = sel->GetRangeCount(&count);
   nsCOMPtr<nsIDOMRange> domrange;
   nsCOMPtr<nsIRange> range;
   for (i = 0; i < count; i++)
@@ -109,7 +109,7 @@ void DumpSelection( nsISelection * sel)
 
 
 void DumpRange( nsIRange * range)
-{ 
+{
 //  nsresult res;
 //  nsCOMPtr<nsINode> aAnchorNode;
 //  nsCOMPtr<nsIDOMNode> aAnchorDOMNode;
