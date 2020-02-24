@@ -4,7 +4,8 @@
 		<!-- core data -->
 		<em:id>{f13b157f-b174-47e7-a34d-4815ddfdfeb8}</em:id>
 		<em:version>@REVISION@</em:version>
-		    
+	    <em:appManaged>true</em:appManaged>
+
 		<!-- target: SWP, version 6.0 -->
 		<em:targetApplication>
 			<Description>
@@ -13,7 +14,7 @@
 				<em:maxVersion>6.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
-		
+
 		<!-- target: SW, version 6.0 -->
 		<em:targetApplication>
 			<Description>
@@ -22,7 +23,7 @@
 				<em:maxVersion>6.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
-		
+
 		<!-- target: SWP, version 6.0 -->
 		<em:targetApplication>
 			<Description>
@@ -31,7 +32,7 @@
 				<em:maxVersion>6.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
-		
+
 
 		<!-- front-end metadata -->
 		<em:name>JavaScript Debugger</em:name>
@@ -40,7 +41,7 @@
 		<em:contributor>Christopher Aillon</em:contributor>
 		<em:contributor>James Ross</em:contributor>
 		<em:homepageURL>http://www.hacksrus.com/~ginda/venkman/</em:homepageURL>
-		
+
 		<!-- package files -->
 		<em:file>
 			<Description about="urn:mozilla:extension:file:venkman.jar">

@@ -7,6 +7,8 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>inspector@mozilla.org</em:id>
     <em:version>@DOMi_VERSION@</em:version>
+    <em:appManaged>true</em:appManaged>
+
 
     <em:targetApplication>
       <!--Prince apps -->
@@ -38,7 +40,7 @@
         <em:name>DOM Inspector</em:name>
         <em:description>Umožní preskúmať štruktúru a vlastnosti okna a jeho obsahu.</em:description>
       </Description>
-    </em:localized> 
-    
+    </em:localized>
+
   </Description>
 </RDF>
