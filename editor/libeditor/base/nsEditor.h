@@ -575,7 +575,8 @@ public:
                          nsIDOMNode *aSplitPointParent,
                          PRInt32 aSplitPointOffset,
                          PRInt32 *outOffset,
-                         PRBool  aNoEmptyContainers = PR_FALSE,
+                         PRBool  aNoEmptyContainers = PR_TRUE,
+                         // BBM changed default for aNoEmptyContainers 2/18/2020
                          nsCOMPtr<nsIDOMNode> *outLeftNode = 0,
                          nsCOMPtr<nsIDOMNode> *outRightNode = 0);
 
