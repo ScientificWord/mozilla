@@ -27,7 +27,7 @@ part>sectiontitle:before {
 section {
   display: block;
   counter-increment: section;
-  counter-reset: subsection;
+  counter-reset: subsection eqnnumber subeqnnumber;
 /*  counter-reset: theorem; */
 }
 
@@ -749,5 +749,29 @@ summary > *:first-child:before {
   content: 'Summary ' counter(summary) '  ';
   font-weight: bold;
   -moz-user-modify: read-only;
+}
+
+/* Customize equation numbers to more closely match typeset appearance */
+
+/* Moving button to left didn't work for multi-line equations, so comment out the attempt...
+mtr button[class="eqnnum"], mtr button[class="subeqnnum"], mtr button[class="eqnmarker"] {
+  left: 0px;
+}
+
+button[class="eqnnum"]{
+  left: 0px;
+}
+
+button[class="subeqnnum"]{
+ left: 0px;
+}
+*/
+
+button[class="eqnnum"]:after{
+  content: "  (" counter(section) "." counter(eqnnumber) ")";
+}
+
+button[class="subeqnnum"]:after{
+  content: "  (" counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin) ")";
 }
 
