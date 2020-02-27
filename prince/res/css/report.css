@@ -33,7 +33,7 @@ part>sectiontitle:before {
 chapter {
   display: block;
   counter-increment: chapter;
-  counter-reset: section;
+  counter-reset: section eqnnumber subeqnnumber;
 /*  counter-reset: theorem; */
 }
 
@@ -650,3 +650,11 @@ summary > *:first-child:before {
   -moz-user-modify: read-only;
 }
 
+/* Equation numbering within chapters */
+button[class="eqnnum"]:after{
+  content: "  (" counter(chapter) "." counter(eqnnumber) ")";
+}
+
+button[class="subeqnnum"]:after{
+  content: "  (" counter(chapter) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin) ")";
+}
