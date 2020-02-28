@@ -23,47 +23,10 @@ part>*:first-child:before {
   -moz-user-select: -moz-none;
 }
 
-chapter {
-  display: block;
-  position: relative;
-  counter-increment: chapter;
-  counter-reset: section theorem;
-}
-
-chapter>sectiontitle{
-  font-size: large;
-  font-weight: bold;
-  line-height: 24pt;
-  text-align: center;
-}
- 
-chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
-  -moz-user-select: -moz-none;
-  content: "Chapter " counter(chapter,upper-roman) " ";
-  display: block;
-  font-size: large;
-  font-weight: bold;
-  line-height: 24pt;
-  margin-left: .2in;
-  text-align: center;
-
-
-}
-
-chapter[open="false"]>sectiontitle:before{
-  content: "Chapter " counter(chapter) "  ";
-  font-family: sans-serif;
-  font-size: large;
-  font-weight: bold;
-  text-align: center;
-  display: block;
-  -moz-user-select: -moz-none;
-}
-
 section {
   display: block;
   counter-increment: section;
-  counter-reset: subsection theorem;
+  counter-reset: subsection;
   position: relative;
   top: 0;
   left: 0;
