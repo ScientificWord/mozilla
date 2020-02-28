@@ -1,0 +1,26 @@
+body {
+	margin: 0;
+	margin-left:2em;
+	counter-reset: lineno;
+}
+
+line{
+  display: block;
+  padding-left: 1em; 
+  background-color: white;
+}
+
+line:before {
+  width: 4em;
+  display: inline-block;
+  counter-increment: lineno;
+  content: counter(lineno);
+  text-align: right;
+  padding-right: 3px;
+  border-right: 3px solid white;
+  background-color: rgb(240,240,240);
+  font: 70% sans-serif;
+  -moz-user-select: none;
+  -moz-user-focus: ignore;
+}
+  
