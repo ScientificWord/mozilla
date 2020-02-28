@@ -1,0 +1,22 @@
+/* Error: Missing argument $name.
+ *   ,--> scss\amsart.scss
+ * 412|   @include theorem_like($n:null, $c:null, $content: "Theorem " counter(section) "." counter(theorem) "  ");
+ *   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invocation
+ *   '
+ *   ,--> scss\_theorem_like.scss
+ * 3 | @mixin theorem_like($name, $observes, $sets: null) {
+ *   |        =========================================== declaration
+ *   '
+ *   scss\amsart.scss 412:3  theorem-like()
+ *   scss\amsart.scss 412:3  root stylesheet */
+
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: 'Error: Missing argument $name.\a   \250c \2500 \2500 > scss\\amsart.scss\a 412\2502    @include theorem_like($n:null, $c:null, $content: "Theorem " counter(section) "." counter(theorem) "  ");\a   \2502    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invocation\a   \2575 \a   \250c \2500 \2500 > scss\\_theorem_like.scss\a 3 \2502  @mixin theorem_like($name, $observes, $sets: null) {\a   \2502         \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501 \2501  declaration\a   \2575 \a   scss\\amsart.scss 412:3  theorem-like()\a   scss\\amsart.scss 412:3  root stylesheet';
+}
