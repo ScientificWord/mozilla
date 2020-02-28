@@ -1,0 +1,34 @@
+/* ulem.css */
+
+uline, QTR[type="QQQuline"] {
+  text-decoration: underline;
+}
+
+uuline, QTR[type="QQQuuline"] {
+  border-bottom: 3px double;
+  line-height: 1.7em;
+}
+
+uwave, QTR[type="QQQuwave"] {
+  color: green;
+  background: url(resource://app/res/css/ulem-wavy.png) bottom repeat-x;
+}
+
+sout, QTR[type="QQQsout"] {
+  text-decoration: line-through;
+}
+
+xout, QTR[type="QQQxout"] {
+  text-decoration: line-through;
+  color: red;
+}
+
+dashuline {
+  text-decoration: none; border-bottom: 1.75px dashed;
+}
+
+dotuline {
+  text-decoration: none; border-bottom: 2.5px dotted;
+}
+
+/* End of ulem.css */
