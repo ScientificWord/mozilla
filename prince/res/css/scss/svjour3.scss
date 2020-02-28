@@ -1,37 +1,68 @@
-/* article.css */
+/* svjour3.css (started with article.css) */
 
 /************************/
 /* Division header tags */
 /************************/
 
-@charset "UTF-8";
-/*Divisions
-*/
-bodyText {
-  display: block;
-}
-
 part {
   display: block;
   counter-increment: part;
-  counter-reset: chapter section subsection theorem eqnnumber subeqnnumber;
 }
-part [nonum=true] > sectiontitle:before, part [nonum=true] > bodyText:first-child:before {
-  content: "";
-}
-part > sectiontitle, part > bodyText:first-child {
+
+part>sectiontitle:first-child {
   display: block;
-  font: bold xx-large;
-  margin: 0 0 5pt 0;
-  text-align: center;
+  font-size: 200%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
+  text-align:center;
 }
-part > sectiontitle:before, part > bodyText:first-child:before {
-  content: "Part " counter(part, upper-roman) ". ";
-  -moz-user-modify: read-only;
+
+part>sectiontitle:first-child:before {
+  content: "Part " counter(part,upper-roman);
+  display: block;
+  font-size: large;
+  font-weight: bold;
+  margin-bottom: 5pt;
   -moz-user-select: -moz-none;
 }
 
-/*Skip chapter for article styles*/
+/* There are no chapters in articles, so comment out this group (gp)
+chapter {
+  display: block;
+  position: relative;
+  counter-increment: chapter;
+  counter-reset: section theorem;
+}
+
+chapter>sectiontitle{
+  font-size: large;
+  font-weight: bold;
+  line-height: 24pt;
+  text-align: center;
+}
+
+chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
+  content: "Chapter " counter(chapter,upper-roman) " ";
+  display: block;
+  margin-left: .2in;
+  font-size: large;
+  font-weight: bold;
+  line-height: 24pt;
+  text-align: center;
+  -moz-user-select: -moz-none;
+}
+
+chapter[open="false"]>sectiontitle:before{
+  content: "Chapter " counter(chapter) "  ";
+  font-family: sans-serif;
+  font-size: large;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  -moz-user-select: -moz-none;
+}
+*/
+
 section {
   display: block;
   counter-increment: section;
@@ -40,119 +71,141 @@ section {
   top: 0;
   left: 0;
 }
-section [nonum=true] > sectiontitle:before, section [nonum=true] > bodyText:first-child:before {
-  content: "";
-}
-section[open=false] > sectiontitle, section[open=false] > bodyText:first-child {
-  color: blue;
-}
-section > defaulttitletag:after {
-  content: "Replace this Section title";
-  color: red;
-}
-section > sectiontitle, section > bodyText:first-child {
+
+section>sectiontitle:first-child{
   display: block;
-  font: bold large serif;
-  margin: 30pt 0 0 0;
-  color: #093e7d;
+  margin: 10pt 0 0 0;
+  font-size: 175%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
 }
-section > sectiontitle:before, section > bodyText:first-child:before {
+
+section>sectiontitle:first-child[open="false"]{
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: 175%;
+  font-weight: bold;
+}
+
+section>sectiontitle:first-child:before, section[open="true"]>sectiontitle:first-child:before  {
   content: counter(section) ".  ";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
 }
 
+section[nonum="true"]>sectiontitle:first-child:before, section[nonum="true"][open="true"]>sectiontitle:first-child:before  {
+  content: "";
+  -moz-user-modify: read-only;
+}
+
+
+section>sectiontitle:first-child[open="false"], section>sectiontitle[open="false"] {
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+section>sectiontitle{
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+
 subsection {
   display: block;
   counter-increment: subsection;
   counter-reset: subsubsection;
-  position: relative;
-  top: 0;
-  left: 0;
 }
-subsection [nonum=true] > sectiontitle:before, subsection [nonum=true] > bodyText:first-child:before {
-  content: "";
+
+subsection>sectiontitle:first-child {
+  display: block;
+  margin: 10pt 0 0 0;
+  font-size: 150%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
 }
-subsection[open=false] > sectiontitle, subsection[open=false] > bodyText:first-child {
-  color: blue;
-}
-subsection > defaulttitletag:after {
-  content: "Replace this Subsection title";
-  color: red;
-}
-subsection > sectiontitle, subsection > bodyText:first-child {
-  font: bold medium italics;
-  margin: 30pt 0 0 0;
-  color: #093e7d;
-}
-subsection > sectiontitle:before, subsection > bodyText:first-child:before {
-  content: "§ " counter(section) "." counter(subsection) ".  ";
+
+subsection>sectiontitle:first-child:before {
+  content: counter(section) "." counter(subsection) ".  ";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
 }
 
+subsection[nonum="true"]>sectiontitle:first-child:before {
+  content: "";
+}
+
+
 subsubsection {
-  display: block;
+  display:block;
   counter-increment: subsubsection;
   counter-reset: paragraph;
 }
-subsubsection [nonum=true] > sectiontitle:before, subsubsection [nonum=true] > bodyText:first-child:before {
+
+subsubsection>sectiontitle:first-child {
+  display: block;
+  margin: 10pt 0 0 0;
+  font-size: 120%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
+}
+
+subsubsection>sectiontitle:first-child:before {
+  content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
+  -moz-user-select: -moz-none;
+}
+subsubsection[nonum="true"]>sectiontitle:first-child:before {
   content: "";
-}
-subsubsection > defaulttitletag:after {
-  content: "Replace this Subsubsection title";
-  color: red;
-}
-subsubsection > sectiontitle, subsubsection > bodyText:first-child {
-  display: inline;
-  font: bold serif;
-  margin: 30pt 0 0 0;
-  color: #093e7d;
-}
-subsubsection > sectiontitle:before, subsubsection > bodyText:first-child:before {
-  content: " " counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
-  -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
 }
 
+
+subsubsection defaulttitletag:after {
+  content: "Replace this subsubsection title";
+  color: gray;
+}
+
 paragraph {
-  display: block;
+  display:block;
   counter-increment: paragraph;
-  counter-reset: subparagraph;
 }
-paragraph [nonum=true] > sectiontitle:before, paragraph [nonum=true] > bodyText:first-child:before {
+
+paragraph>sectiontitle:first-child {
+  font-size: 100%;
+  font-weight: bold;
+  font-style: normal;
+  color: rgb(9, 62, 125);
+}
+
+paragraph>sectiontitle:first-child:before {
+  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
+  -moz-user-select: -moz-none;
+}
+
+paragraph[nonum="true"]>sectiontitle:first-child:before {
   content: "";
-}
-paragraph > sectiontitle, paragraph > bodyText:first-child {
-  display: inline;
-  font: bold;
-  margin: 30pt 0 0 0;
-  color: #093e7d;
-}
-paragraph > sectiontitle:before, paragraph > bodyText:first-child:before {
-  content: "§ " counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
-  -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
 }
 
 subparagraph {
-  display: block;
+  display: block;	/* Should be a run-in header, but someone esle will have to figure out how to do that.  Instead, use Version 5.5 behavior. */
   counter-increment: subparagraph;
 }
-subparagraph [nonum=true] > sectiontitle:before, subparagraph [nonum=true] > bodyText:first-child:before {
-  content: "";
+
+subparagraph>sectiontitle:first-child {
+  font-size: 100%;
+  font-weight: bold;
+  font-style: normal;
+  color: rgb(9, 62, 125);
+  margin-left: 10pt;
 }
-subparagraph > sectiontitle, subparagraph > bodyText:first-child {
-  display: inline;
-  font: bold 100% serif;
-  margin: 30pt 0 0 0;
-  color: #093e7d;
-}
-subparagraph > sectiontitle:before, subparagraph > bodyText:first-child:before {
-  content: "§§ " counter(subparagraph) ".  ";
-  -moz-user-modify: read-only;
-  -moz-user-select: -moz-none;
-}
+
 
 /*************************/
 /* Front matter elements */
@@ -168,6 +221,32 @@ title {
   text-align: center;
 }
 
+subtitle {
+  font-size: 175%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/svjour3.xml#fmtag-subtitle");
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
+}
+
+titlerunning {
+  font-size: 100%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/svjour3.xml#fmtag-titlerunning");
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
+}
+
 author {
   font-size: 100%;
   font-weight: normal;
@@ -175,6 +254,19 @@ author {
   display: block;
   padding-top: 10pt;
   text-align: center;
+}
+
+authorrunning {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/svjour3.xml#fmtag-authorrunning");
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
 }
 
 address {
@@ -185,6 +277,29 @@ address {
   text-align: center;
 }
 
+institute {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/svjour3.xml#fmtag-institute");
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
+}
+
+email {
+  font-family: Courier, monospace;
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  display: block;
+  padding-top: 10pt;
+  text-align: center;
+}
+
 date {
   font-size: 100%;
   font-weight: normal;
@@ -192,6 +307,19 @@ date {
   display: block;
   padding-top: 2pt;
   text-align: center;
+}
+
+dedication {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/svjour3.xml#fmtag-dedication");
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
 }
 
 abstract {
@@ -216,6 +344,58 @@ abstract:before {
   font-size: 100%; font-weight: bold;
   color: rgb(9, 62, 125);
   -moz-user-select: -moz-none;
+}
+
+keywords {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/svjour3.xml#fmtag-keywords");
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
+}
+
+subclass {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/svjour3.xml#fmtag-subclass");
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
+}
+
+PACS {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/svjour3.xml#fmtag-PACS");
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
+}
+
+CRclass {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/svjour3.xml#fmtag-CRclass");
+  -moz-user-select: text;
+  -moz-user-modify: read-write;
 }
 
 /**********************/
@@ -316,6 +496,11 @@ theorem > *:first-child:before {
   -moz-user-modify: read-only;
 }
 
+acknowledgement > *:first-child:before {
+  content: 'Acknowledgement ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
 
 acknowledgment > *:first-child:before {
   content: 'Acknowledgment ' counter(theorem) '  ';
@@ -490,11 +675,7 @@ enumerate>item { display: block ;
                  margin: 0 0 0 0;
                  padding: 10pt 0 0 20pt }
 
-enumerate>item:before { content: counter(item-number) ". ";
-  counter-increment: item-number;
-  -moz-user-modify: read-only;
-  -moz-user-select: -moz-none;
-}
+enumerate>item:before { content: counter(item-number) ". "; counter-increment: item-number }
 
 description {
   counter-reset: item;

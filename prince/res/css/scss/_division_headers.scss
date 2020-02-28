@@ -1,0 +1,259 @@
+// _division_headers.scss
+
+@import "_division_colors.scss";
+
+
+
+/*Divisions
+*/
+// Default value for the separator in division numbers, e.g. 4.3.2,
+// and the end of the numbers, e.g. spaces or ':  '
+$default_div_num_sep: ".";
+$default_div_num_end: ". ";
+$false: "false";
+// counter is (name, optional number style)
+// counter_list is (zero or more counters)
+// counter_data is (divider character, counter_list)
+
+// counter_data example fpr numbering subsections as chapter.section.subsection:
+// $counter_data: (sep: '.', $counter_list: (('chapter',upper-roman),('section',decimal),(subsection)}
+//
+// This yields counter(chapter,upper-roman) '.' counter(section,decimal) '.' counter(subsection)
+
+@mixin counters($counter_data, $div_name:null) {
+  $outlist: ();
+	$first: true;
+	$name_string: null;
+
+	$end: map-get($counter_data,end);
+	@if $end == null {
+		$end: $default_div_num_end;
+	}
+	$sep: map-get($counter_data,sep);
+	@if $sep == null {
+		$sep: $default_div_num_sep;
+	}
+	@if $counter_data and length($counter_data) > 0 {
+		$list: map-get($counter_data,counter_list);
+		@each $c in $list {
+			@if $first==false {
+				$outlist: append($outlist,$sep);
+			}
+			$first: false;
+			$ctr: nth($c,1);
+			@if length($c) > 1 {
+				$style: nth($c,2);
+				$outlist: append($outlist, (counter($ctr,$style)));
+			} @else
+			{
+			  $outlist: append($outlist,(counter($ctr)));
+			}
+		}
+	}
+	// @debug "div_name is #{$div_name}";
+	// @debug "outlist is #{$outlist}";
+	// @debug "end is #{$end}";
+	@if ($counter_data and length($counter_data) >0) or ($div_name != null) {
+		@if $div_name != null {
+			$div_name: quote($div_name);
+			$name_string: "#{$div_name} ";
+		}
+		&:before {
+			content:$name_string $outlist quote($end);
+		  -moz-user-modify: read-only;
+		  -moz-user-select: -moz-none;
+		  @content;
+	  }
+	}
+}
+
+
+@mixin cnt_set_resets($set_resets) {
+	$incs: map-get($set_resets, inc);
+	$resets: map-get($set_resets, reset);
+	@if length($incs) > 0 {
+		counter-increment: $incs;
+  }
+	@if length($resets) > 0 {
+		counter-reset: $resets;
+  }
+}
+
+@mixin default_title ($division_name) {	>defaulttitletag:after {
+		content: "Replace this #{$division_name} title";
+  	color: $attention-color;
+	}
+}
+
+
+
+@mixin div_title_style {
+	>sectiontitle, >bodyText:first-child {
+		@content;
+	}
+}
+
+@mixin div_num_style {
+	&:before {
+		@include counters($counter_data, '--');
+		@content;
+	}
+}
+
+
+@mixin handle_open_closed ($div_style){
+	&[open=false] >sectiontitle, &[open=false] >bodyText:first-child {
+			@if map-get($div-style,display) {
+			display: map-get($div-style,display);
+		}
+		@if map-get($div-style,font) {
+			font: map-get($div-style,font);
+		}
+		@if map-get($div-style,margin) {
+			margin: map-get($div-style,margin);
+		}
+		@if map-get($div-style,color) {
+			color: map-get($div-style,color);
+		}
+		@if map-get($div-style,text-align) {
+			text-align: map-get($div-style,text-align);
+		}
+	}
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+@mixin handle_nonum {
+	[nonum="true"] >sectiontitle, [nonum="true"] >bodyText:first-child {
+			&:before {
+				content: "";
+		}
+	}
+}
+
+
+
+// part {
+// 	display: block;
+// 	counter-increment: part;
+// 	counter-reset: chapter;
+// 	sectiontitle, >bodyText:first-child {
+// 		display: block;
+// 		font-size: 200%;
+// 		font-weight: bold;
+// 		color: $part-title-color;
+// 	  margin-bottom: 5pt;
+// 		@include division_num ($division_name: "Part", $_counter: part, $num_type: upper-roman);
+// 	}
+// 	@include handle_nonum;
+// 	defaulttitletag:after {
+// 		content: "Replace this part title";
+//   	color: $attention-color;
+// 	}
+// }
+
+// chapter {
+// 	display: block;
+// 	counter-increment: chapter;
+// 	counter-reset: section theorem;
+// 	sectiontitle, >bodyText:first-child {
+// 		display: block;
+// 		font-size: 175%;
+// 		font-weight: bold;
+// 		color: $chapter-title-color;
+// 		@include division_num ($division_name: "Chapter", $_counter: chapter, $num_type: upper-roman);
+// 	}
+// 	@include handle_nonum;
+// 	defaulttitletag:after {
+// 		content: "Replace this chapter title";
+// 		color: $attention-color;
+// 	}
+// }
+
+// section {
+// 	display: block;
+// 	counter-increment: section;
+// 	counter-reset: subsection theorem eqnnumber subeqnnumber;
+// 	sectiontitle, >bodyText:first-child {
+// 		display: block;
+// 	  margin: 10pt 10pt 0 0;
+// 	  margin-left: 10pt;
+// 		font-size: 150%;
+// 		font-weight: bold;
+// 		color: $section-title-color;
+// 		@include division_num ($division_name: "Section", $_counter: section, $num_type: decimal);
+// 	}
+// 	@include handle_nonum;
+// 	@include default_title($division_name: 'section');
+// }
+
+// subsection {
+// 	display: block;
+// 	counter-increment: subsection;
+//   counter-reset: subsubsection;
+// 	sectiontitle, >bodyText:first-child {
+// 		display: block;
+// 		font-size: 125%;
+// 		font-weight: bold;
+// 		color: $subsection-title-color;
+// 		@include division_num ($division_name: "", $_counter: subsection, $num_type: decimal);
+// 	}
+// 	@include handle_nonum;
+// 	defaulttitletag:after {
+// 		content: "Replace this subsection title";
+// 		color: $attention-color;
+// 	}
+// }
+
+// subsubsection {
+// 	display: block;
+// 	counter-increment: subsubsection;
+//   counter-reset: paragraph;
+// 	sectiontitle, >bodyText:first-child {
+// 		display: block;
+// 		font-size: 125%;
+// 		font-weight: bold;
+// 		color: $subsubsection-title-color;
+// 		@include division_num ($division_name: "", $_counter: subsubsection, $num_type:decimal);
+// 	}
+// 	@include handle_nonum;
+// 	defaulttitletag:after {
+// 		content: "Replace this subsection title";
+// 		color: $attention-color;
+// 	}
+// }
+
+// paragraph {
+// 	display: block;
+// 	counter-increment: paragraph;
+// 	sectiontitle, >bodyText:first-child {
+// 		display: inline;
+// 		font-size: 100%;
+// 		font-weight: bold;
+// 		color: $paragraph-title-color;
+// 		@include division_num ($division_name: "", $_counter: paragraph, $num_type:decimal);
+// 	}
+// 	@include handle_nonum;
+// 	defaulttitletag:after {
+// 		content: "Replace this paragraph title";
+// 		color: $attention-color;
+// 	}
+// }
+
+// subparagraph {
+// 	display: block;
+// 	counter-increment: subparagraph;
+// 	sectiontitle, >bodyText:first-child {
+// 		display: inline;
+// 		font-size: medium;
+// 		font-weight: normal;
+// 		color: $subparagraph-title-color;
+// 		@include division_num ($division_name: "", $_counter: subparagraph, $num_type: decimal);
+// 	}
+// 	@include handle_nonum;
+// 	defaulttitletag:after {
+// 		content: "Replace this subparagraph title";
+// 		color: $attention-color;
+// 	}
+// }
