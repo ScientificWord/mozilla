@@ -43,7 +43,7 @@ $counter_data:  (
   ),
   end: '.  '
 );
-$ctr_set_reset: (inc: section, reset: (subsection theorem eqnnumber subeqnnumber));
+$ctr_set_reset: (inc: section, reset: subsection);
 
 section {
   display: block;
@@ -55,7 +55,7 @@ section {
     display: inline;
     font: bold large;
     color: rgb(9, 62, 125);
-    @include counters($counter_data, '') {
+    @include counters($counter_data) {
       display: inline-block;
       width: 1.5cm;
     };
@@ -83,7 +83,7 @@ subsection {
     margin:0 0 0 0;
     font: bold medium;
     color: rgb(9, 62, 125);
-    @include counters($counter_data, '') {
+    @include counters($counter_data) {
       display: inline-block;
       width: 1.5cm;
     }
@@ -108,7 +108,7 @@ subsubsection {
     margin:0 0 0 0;
     font: bold;
     color: rgb(9, 62, 125);
-    @include counters($counter_data, '') {
+    @include counters($counter_data) {
       display: inline-block;
       width: 1.5cm;
     };
@@ -153,7 +153,7 @@ subparagraph {
     margin:0 0 0 0;
     font: bold;
     color: rgb(9, 62, 125);
-    @include counters($counter_data, '') {
+    @include counters($counter_data) {
       display: inline-block;
       width: 1.5cm;
     };
