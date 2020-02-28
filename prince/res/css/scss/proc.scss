@@ -1,37 +1,65 @@
-/* article.css */
+/* proc.css (copied from article.css) */
 
 /************************/
 /* Division header tags */
 /************************/
 
-@charset "UTF-8";
-/*Divisions
-*/
-bodyText {
-  display: block;
-}
-
 part {
   display: block;
   counter-increment: part;
-  counter-reset: chapter section subsection theorem eqnnumber subeqnnumber;
 }
-part [nonum=true] > sectiontitle:before, part [nonum=true] > bodyText:first-child:before {
-  content: "";
-}
-part > sectiontitle, part > bodyText:first-child {
+
+part>*:first-child {
   display: block;
-  font: bold xx-large;
-  margin: 0 0 5pt 0;
-  text-align: center;
+  font-size: x-large;
+  font-weight: bold;
 }
-part > sectiontitle:before, part > bodyText:first-child:before {
-  content: "Part " counter(part, upper-roman) ". ";
-  -moz-user-modify: read-only;
+
+part>*:first-child:before {
+  content: "Part " counter(part,upper-roman);
+  display: block;
+  font-size: large;
+  font-weight: bold;
   -moz-user-select: -moz-none;
 }
 
-/*Skip chapter for article styles*/
+chapter {
+  display: block;
+  position: relative;
+  counter-increment: chapter;
+  counter-reset: section theorem;
+}
+
+chapter>sectiontitle{
+  font-size: large;
+  font-weight: bold;
+  line-height: 24pt;
+  text-align: center;
+}
+ 
+chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
+  -moz-user-select: -moz-none;
+  content: "Chapter " counter(chapter,upper-roman) " ";
+  display: block;
+  font-size: large;
+  font-weight: bold;
+  line-height: 24pt;
+  margin-left: .2in;
+  text-align: center;
+
+
+}
+
+chapter[open="false"]>sectiontitle:before{
+  content: "Chapter " counter(chapter) "  ";
+  font-family: sans-serif;
+  font-size: large;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  -moz-user-select: -moz-none;
+}
+
 section {
   display: block;
   counter-increment: section;
@@ -39,119 +67,153 @@ section {
   position: relative;
   top: 0;
   left: 0;
-}
-section [nonum=true] > sectiontitle:before, section [nonum=true] > bodyText:first-child:before {
-  content: "";
-}
-section[open=false] > sectiontitle, section[open=false] > bodyText:first-child {
-  color: blue;
-}
-section > defaulttitletag:after {
-  content: "Replace this Section title";
-  color: red;
-}
-section > sectiontitle, section > bodyText:first-child {
+}  
+
+section>*:first-child{
   display: block;
-  font: bold large serif;
-  margin: 30pt 0 0 0;
-  color: #093e7d;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
 }
-section > sectiontitle:before, section > bodyText:first-child:before {
+
+section>*:first-child[open="false"]{
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+section>*:first-child:before, section[open="true"]>*:first-child:before  {
   content: counter(section) ".  ";
   -moz-user-modify: read-only;
+}
+
+section>*:first-child{
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+section>*:first-child[open="false"]{
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+ 
+section>*:first-child:before, section[open="true"]>*:first-child:before  {
+  content: counter(section) ".  ";
   -moz-user-select: -moz-none;
+}
+
+section>sectiontitle{
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+section>sectiontitle[open="false"]{
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+ 
+section>sectiontitle:before, section[open="true"]>sectiontitle:before  {
+  content: counter(section) ".  ";
+  -moz-user-select: -moz-none;
+}
+
+section defaulttitletag:after {
+  content: "Replace this section title"; 
+  color: gray;
 }
 
 subsection {
   display: block;
   counter-increment: subsection;
   counter-reset: subsubsection;
-  position: relative;
-  top: 0;
-  left: 0;
 }
-subsection [nonum=true] > sectiontitle:before, subsection [nonum=true] > bodyText:first-child:before {
-  content: "";
+
+subsection>*:first-child {
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: large;
 }
-subsection[open=false] > sectiontitle, subsection[open=false] > bodyText:first-child {
-  color: blue;
-}
-subsection > defaulttitletag:after {
-  content: "Replace this Subsection title";
-  color: red;
-}
-subsection > sectiontitle, subsection > bodyText:first-child {
-  font: bold medium italics;
-  margin: 30pt 0 0 0;
-  color: #093e7d;
-}
-subsection > sectiontitle:before, subsection > bodyText:first-child:before {
-  content: "§ " counter(section) "." counter(subsection) ".  ";
-  -moz-user-modify: read-only;
+
+subsection>*:first-child:before {
+  content: counter(section) "." counter(subsection) ".  ";
   -moz-user-select: -moz-none;
+}
+
+subsection defaulttitletag:after {
+  content: "Replace this subsection title"; 
+  color: gray;
 }
 
 subsubsection {
-  display: block;
+  display:block;
   counter-increment: subsubsection;
   counter-reset: paragraph;
 }
-subsubsection [nonum=true] > sectiontitle:before, subsubsection [nonum=true] > bodyText:first-child:before {
-  content: "";
+
+subsubsection>*:first-child {
+  display: block;
+  margin: 10pt 10pt 0 0;
+  margin-left: 10pt;
+  font-size: medium;
+  font-weight: bold;
 }
-subsubsection > defaulttitletag:after {
-  content: "Replace this Subsubsection title";
-  color: red;
-}
-subsubsection > sectiontitle, subsubsection > bodyText:first-child {
-  display: inline;
-  font: bold serif;
-  margin: 30pt 0 0 0;
-  color: #093e7d;
-}
-subsubsection > sectiontitle:before, subsubsection > bodyText:first-child:before {
-  content: " " counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
-  -moz-user-modify: read-only;
+
+subsubsection>*:first-child:before {
+  content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
   -moz-user-select: -moz-none;
+}
+
+subsubsection defaulttitletag:after {
+  content: "Replace this subsubsection title"; 
+  color: gray;
 }
 
 paragraph {
-  display: block;
+  display:block;
   counter-increment: paragraph;
-  counter-reset: subparagraph;
 }
-paragraph [nonum=true] > sectiontitle:before, paragraph [nonum=true] > bodyText:first-child:before {
-  content: "";
+
+paragraph>*:first-child {
+  font-size: medium;
+  font-weight: normal;
+  font-style: italic;
 }
-paragraph > sectiontitle, paragraph > bodyText:first-child {
-  display: inline;
-  font: bold;
-  margin: 30pt 0 0 0;
-  color: #093e7d;
-}
-paragraph > sectiontitle:before, paragraph > bodyText:first-child:before {
-  content: "§ " counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
-  -moz-user-modify: read-only;
+
+paragraph>*:first-child:before {
+  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  "; 
   -moz-user-select: -moz-none;
 }
 
-subparagraph {
-  display: block;
-  counter-increment: subparagraph;
+paragraph defaulttitletag:after {
+  content: "Replace this subsubsubsection title"; 
+  color: gray;
 }
-subparagraph [nonum=true] > sectiontitle:before, subparagraph [nonum=true] > bodyText:first-child:before {
-  content: "";
+
+subparagraph>*:first-child {
+  font-size: medium;
+  font-weight: normal;
+  font-style: italic;
 }
-subparagraph > sectiontitle, subparagraph > bodyText:first-child {
-  display: inline;
-  font: bold 100% serif;
-  margin: 30pt 0 0 0;
-  color: #093e7d;
-}
-subparagraph > sectiontitle:before, subparagraph > bodyText:first-child:before {
-  content: "§§ " counter(subparagraph) ".  ";
-  -moz-user-modify: read-only;
-  -moz-user-select: -moz-none;
+
+subparagraph defaulttitletag:after {
+  content: "Replace this subsubsubsubsection title"; 
+  color: gray;
 }
 
 /*************************/
@@ -159,9 +221,7 @@ subparagraph > sectiontitle:before, subparagraph > bodyText:first-child:before {
 /*************************/
 
 title {
-  font-size: 200%;
-  font-weight: bold;
-  color: rgb(9, 62, 125);
+  font-size: x-large;
   line-height: 20pt;
   display: block;
   margin-top: 12pt;
@@ -169,26 +229,19 @@ title {
 }
 
 author {
-  font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
   display: block;
   padding-top: 10pt;
   text-align: center;
 }
 
 address {
-  font-size: 100%;
-  font-weight: normal;
-  color: rgb(9, 62, 125);
   display: block;
   text-align: center;
 }
 
 date {
-  font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
   display: block;
   padding-top: 2pt;
   text-align: center;
@@ -197,25 +250,27 @@ date {
 abstract {
   display: block;
   margin-top: 30pt;
-  margin-left: 0pt;
-  margin-right: 0pt;
+  margin-left: 50pt;
+  margin-right: 50pt;
   padding-left: 15pt;
   padding-right: 15pt;
-  padding-top: 15pt;
-  padding-bottom: 15pt;
   font-size: small;
-  border: thin solid black;
-  background-color: #E1EEFD;
-  -moz-border-radius: 5px;
+  border: thin solid black; 
+  background-color: #CC9966;
+  -moz-border-radius: 20px;
 }
 
 abstract:before {
   content: "Abstract";
   display: block;
   text-align: center;
-  font-size: 100%; font-weight: bold;
-  color: rgb(9, 62, 125);
+  font-size: medium; font-weight: bold;
   -moz-user-select: -moz-none;
+}
+
+button[class="frontmattertag"]{
+  position: absolute;
+  right: 5px;
 }
 
 /**********************/
@@ -239,7 +294,7 @@ bodyText {
 rtlBodyText {
   display: block;
   direction: rtl;
-  unicode-bidi: bidi-override;
+  unicode-bidi: bidi-override; 
   margin: 10pt 10pt 5pt 5pt;
 }
 
@@ -249,17 +304,13 @@ bodyMath {
   color: rgb(0,128,64);
 }
 
-/****************/
-/* Environments */
-/****************/
-
 shortQuote {
-  display: block;
+  display: block; 
   margin-left: 20pt;
   margin-right: 20pt;
 }
 longQuotation {
-  display: block;
+  display: block; 
   margin-left: 20pt;
   margin-right: 20pt;
 }
@@ -283,7 +334,7 @@ epigraph {
 }
 */
 
-centeredEnv, centered {
+centered {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
   text-align: center;
@@ -305,6 +356,183 @@ pre, verbatim {
   font-family: Courier; white-space: pre
 }
 
+/***********************/
+/* Tagged run elements */
+/***********************/
+
+emphasized {
+  font-style: italic;
+  color: rgb(9,62,125)
+}
+
+emphasized .inlineMath {
+  color: rgb(255,0,255)
+}
+
+roman {
+  font-family: Times New Roman, serif;
+  color: rgb(0,0,255)
+}
+
+calligraphic {
+  font-family: monotype corsiva;
+  color: rgb(0,0,255)
+}
+
+alt {
+  color: rgb(0,255,0)
+}
+
+bold {
+  font-weight: 700
+}
+
+blackboardBold {
+  font-weight: 700
+}
+
+fraktur {
+  font-weight: 700
+}
+
+italics {
+  font-style: italic
+}
+
+slanted {
+  font-style: italic;
+  font-weight: 700;
+  color: rgb(9,62,125)
+}
+
+sansSerif {
+  font-family: Arial;
+  font-weight: 400;
+  color: rgb(9,62,125)
+}
+
+smallCaps {
+  font-variant: small-caps;
+  color: rgb(0,0,0)
+}
+
+typewriter {
+  font-family: Courier New;
+  font-weight: 300
+}
+
+rtl {
+  color: rgb(100,50,0);
+  direction: rtl;
+  unicode-bidi: bidi-override 
+}
+
+tiny {
+  font-size: 50%
+}
+
+scriptsize {
+  font-size: 67%
+}
+
+footnotesize {
+  font-size: 75%
+}
+
+small {
+  font-size: 83%
+}
+
+normalsize {
+  font-size: 100%
+}
+
+large {
+  font-size: 117%
+}
+
+Large {
+  font-size: 133%
+}
+
+LARGE {
+  font-size: 150%
+}
+
+huge {
+  font-size: 167%
+}
+
+Huge {
+  font-size: 183%
+}
+
+/*
+theorem {
+  display: block;
+  font-style: italic;
+  counter-increment: theorem;
+}
+
+theorem:before {
+  content:  "Theorem " counter(section) "."  counter(theorem) ". " ;
+  -moz-user-select: -moz-none;
+}
+*/
+
+/***************/
+/* Lists, etc. */
+/***************/
+
+enumerate { counter-reset: item-number }
+ 
+enumerate>item { display: block ;
+                 margin: 0 0 0 0; 
+                 padding: 10pt 0 0 20pt }
+
+enumerate>item:before { content: counter(item-number) ". "; counter-increment: item-number }
+
+description {
+  counter-reset: item;
+}
+
+itemize {
+  list-style: disc; 
+  counter-reset: item;
+}
+
+/***************/
+/* Other stuff */
+/***************/
+
+img {
+  display: inline; 
+  margin: 2em
+} 
+
+button[class="subeqnnum"]{
+  right: 20px;
+  font-style: normal; 
+  color: blue;
+}
+
+/*  Following moved to latex.css
+button[class="eqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber);
+}
+
+button[class="subeqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
+}
+*/
+
+[hideindexentries="true"] indexitem {
+  display: none;
+}
+
+[hidemarkers] a[key] {
+  display: none;
+}
 
 /*****************************/
 /* Theorem-like environments */
@@ -316,6 +544,11 @@ theorem > *:first-child:before {
   -moz-user-modify: read-only;
 }
 
+acknowledgement > *:first-child:before {
+  content: 'Acknowledgement ' counter(theorem) '  ';
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
 
 acknowledgment > *:first-child:before {
   content: 'Acknowledgment ' counter(theorem) '  ';
@@ -477,63 +710,5 @@ summary > *:first-child:before {
   content: 'Summary ' counter(theorem) '  ';
   font-weight: bold;
   -moz-user-modify: read-only;
-}
-
-
-/***************/
-/* Lists, etc. */
-/***************/
-
-enumerate { counter-reset: item-number }
-
-enumerate>item { display: block ;
-                 margin: 0 0 0 0;
-                 padding: 10pt 0 0 20pt }
-
-enumerate>item:before { content: counter(item-number) ". ";
-  counter-increment: item-number;
-  -moz-user-modify: read-only;
-  -moz-user-select: -moz-none;
-}
-
-description {
-  counter-reset: item;
-}
-
-itemize {
-  list-style: disc;
-  counter-reset: item;
-}
-
-/***************/
-/* Other stuff */
-/***************/
-
-img {
-  display: inline;
-}
-
-button[class="subeqnnum"]{
-  right: 20px;
-  font-style: normal;
-  color: blue;
-}
-
-/*  Following moved to latex.css
-button[class="eqnnum"]:after{
-  content: "  " counter(section) "." counter(eqnnumber);
-}
-
-button[class="subeqnnum"]:after{
-  content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
-}
-*/
-
-[hideindexentries="true"] indexitem {
-  display: none;
-}
-
-[hidemarkers] a[key] {
-  display: none;
 }
 

@@ -1,0 +1,125 @@
+// _Theorem_like.scss
+
+@mixin theorem_like($name, $observes, $sets: null) {
+  @if $sets {
+    counter-reset: $sets;
+  }
+
+	> *:first-child:before {
+		font-weight: bold;
+		-moz-user-modify: read-only;
+		content:  $name counter($observes) '  ';
+	}
+}
+
+@mixin thm_like_env( $name ) {
+  #{to-lower-case($name)} {
+    @include theorem_like($name, to-lower-case($name));
+  }
+}
+
+
+// algorithm {
+//   @include theorem_like($n: 'Algorithm');
+// }
+
+// assertion {
+//   @include theorem_like($n: 'Assertion');
+// }
+
+// assumption {
+//   @include theorem_like($n: 'Assumption');
+// }
+
+// axiom {
+//   @include theorem_like($n: 'Axiom');
+// }
+
+// case {
+//   @include theorem_like($n: 'Case');
+// }
+
+// claim {
+//   @include theorem_like($n: 'Claim');
+// }
+
+// conclusion {
+//   @include theorem_like($n: 'Conclusion');
+// }
+
+// condition {
+//   @include theorem_like($n: 'Condition');
+// }
+
+// conjecture {
+//   @include theorem_like($n: 'Conjecture');
+// }
+
+// convention {
+//   @include theorem_like($n: 'Convention');
+// }
+
+// corollary {
+//   @include theorem_like($n: 'Corollary');
+// }
+
+// criterion {
+//   @include theorem_like($n: 'Criterion');
+// }
+
+// definition {
+//   @include theorem_like($n: 'Definition');
+// }
+
+// example {
+//   @include theorem_like($n: 'Example');
+// }
+
+// exercise {
+//   @include theorem_like($n: 'Exercise');
+// }
+
+// hypothesis {
+//   @include theorem_like($n: 'Hypothesis');
+// }
+
+// lemma {
+//   @include theorem_like($n: 'Lemma');
+// }
+
+// notation {
+//   @include theorem_like($n: 'Notation');
+// }
+
+// observation {
+//   @include theorem_like($n: 'Observation');
+// }
+
+// problem {
+//   @include theorem_like($n: 'Problem');
+// }
+
+// property {
+//   @include theorem_like($n: 'Property');
+// }
+
+// proposition {
+//   @include theorem_like($n: 'Proposition');
+// }
+
+// question {
+//   @include theorem_like($n: 'Question');
+// }
+
+// remark {
+//   @include theorem_like($n: 'Remark');
+// }
+
+// solution {
+//   @include theorem_like($n: 'Solution');
+// }
+
+// summary {
+//   @include theorem_like($n: 'Summary');
+// }
+

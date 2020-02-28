@@ -1,0 +1,408 @@
+/* article.scss */
+
+/************************/
+/* Division header tags */
+/************************/
+
+
+@import "_division_headers.scss";
+@import "_theorem_like.scss";
+
+
+
+$div_name: 'Part';
+$counter_data:  (
+  counter_list: (
+    (part,upper-roman),
+  ),
+  end: ''
+);
+$ctr_set_reset: (inc: part, reset: chapter section subsection theorem eqnnumber subeqnnumber);
+
+part {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include div_title_style {
+    margin: 30pt 0 0 0;
+    font: bold xx-large serif;
+    color: rgb(9, 62, 125);
+    text-align: right;
+    @include counters($counter_data, 'Part ') {
+      text-align: center;
+    };
+  }
+}
+
+/*Skip chapter for article styles*/
+
+
+$div_name: 'Section';
+$counter_data:  (
+  counter_list: (
+    (section),
+  ),
+  end: '.  '
+);
+$ctr_set_reset: (inc: section, reset: (subsection theorem eqnnumber subeqnnumber));
+
+section {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include handle_open_closed((color:gray));
+  @include default_title($div_name);
+  @include div_title_style {
+    display: inline;
+    font: bold large;
+    color: rgb(9, 62, 125);
+    @include counters($counter_data, '') {
+      display: inline-block;
+      width: 1.5cm;
+    };
+  }
+}
+
+
+$div_name: Subsection;
+$counter_data:  (
+  counter_list: (
+    (section subsection)
+  ),
+  end: '.  '
+);
+$ctr_set_reset: (inc: subsection, reset: (subsubsection));
+
+subsection {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include handle_open_closed((color: blue));
+  @include default_title($div_name);
+  @include div_title_style {
+    display: inline;
+    margin:0 0 0 0;
+    font: bold medium;
+    color: rgb(9, 62, 125);
+    @include counters($counter_data, '') {
+      display: inline-block;
+      width: 1.5cm;
+    }
+  }
+}
+
+$div_name: Subsubsection;
+$counter_data:  (
+  counter_list: (
+    (section,subsection,subsubsection)
+  ),
+  end: '.  '
+);
+$ctr_set_reset: (inc: subsubsection, reset: (paragraph));
+subsubsection {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include default_title($div_name);
+  @include div_title_style {
+    display: inline;
+    margin:0 0 0 0;
+    font: bold;
+    color: rgb(9, 62, 125);
+    @include counters($counter_data, '') {
+      display: inline-block;
+      width: 1.5cm;
+    };
+  }
+}
+
+$div_name: '';
+$counter_data:  (
+  counter_list: (
+    (section,subsection,subsubsection,paragraph)
+  ),
+  end: '.  '
+);
+$ctr_set_reset: (inc: paragraph,reset: subparagraph);
+paragraph {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include div_title_style {
+    display: inline;
+    margin:0 0 0 0;
+    font: bold;
+    color: rgb(9, 62, 125);
+    @include counters($counter_data, '§'){
+      width: 1.5cm;
+    }
+  }
+}
+
+$div_name: '';
+$counter_data:  (
+  counter_list: (
+  ),
+  end: ''
+);
+$ctr_set_reset: (inc: subparagraph);
+subparagraph {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include div_title_style {
+    display: inline-block;
+    margin:0 0 0 0;
+    font: bold;
+    color: rgb(9, 62, 125);
+    @include counters($counter_data, '') {
+      display: inline-block;
+      width: 1.5cm;
+    };
+  }
+}
+
+
+
+
+/*************************/
+/* Front matter elements */
+/*************************/
+
+title {
+  font-size: 200%;
+  font-weight: bold;
+  color: rgb(9, 62, 125);
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+}
+
+author {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  display: block;
+  padding-top: 10pt;
+  text-align: center;
+}
+
+address {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  display: block;
+  text-align: center;
+}
+
+date {
+  font-size: 100%;
+  font-weight: normal;
+  color: rgb(9, 62, 125);
+  display: block;
+  padding-top: 2pt;
+  text-align: center;
+}
+
+abstract {
+  display: block;
+  margin-top: 30pt;
+  margin-left: 0pt;
+  margin-right: 0pt;
+  padding-left: 15pt;
+  padding-right: 15pt;
+  padding-top: 15pt;
+  padding-bottom: 15pt;
+  font-size: small;
+  border: thin solid black;
+  background-color: #E1EEFD;
+  -moz-border-radius: 5px;
+}
+
+abstract:before {
+  content: "Abstract";
+  display: block;
+  text-align: center;
+  font-size: 100%; font-weight: bold;
+  color: rgb(9, 62, 125);
+  -moz-user-select: -moz-none;
+}
+
+/**********************/
+/* Main text elements */
+/**********************/
+
+p {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+}
+
+math {
+  direction: ltr;
+}
+
+bodyText {
+  display: block;
+  margin: 10pt 0 5pt 0;
+}
+
+rtlBodyText {
+  display: block;
+  direction: rtl;
+  unicode-bidi: bidi-override;
+  margin: 10pt 10pt 5pt 5pt;
+}
+
+bodyMath {
+  display: block;
+  margin: 0 10pt 0 5pt;
+  color: rgb(0,128,64);
+}
+
+/****************/
+/* Environments */
+/****************/
+
+shortQuote {
+  display: block;
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+longQuotation {
+  display: block;
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+
+*[showinvis="true"] longQuotation:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+/* Non-standard element (gp)
+epigraph {
+  display: block;
+  color: white;
+  background-color: black;
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+*/
+
+centeredEnv, centered {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: center;
+}
+
+flushright {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: right;
+}
+
+flushleft {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: left;
+}
+
+pre, verbatim {
+  font-family: Courier; white-space: pre;
+}
+
+
+/*****************************/
+/* Theorem-like environments */
+/*****************************/
+// A theorem-like environment is tied to a counter, and may or may not increment that counter.
+// In article.css, the theorem environment is the only one that increments a counter (the theorem counter),
+// and all the other environments use the theorem counter, but do not increment it.
+
+// In article.css there  is only one theorem-like environment with its own counter and increment.
+
+$env-with-inc-list: Theorem;
+
+// All the others use the theorem counter and don't increment
+
+$env-list: Acknowledgement Algorithm Assertion Assumption Axiom Case Claim Conclusion Condition
+  Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation
+  Observation Problem Property Proposition Question Remark Solution Summary;
+
+
+@each $name in $env-with-inc-list {
+  $lc_name: to_lower-case($name);
+  #{$lc_name} {
+    @include theorem_like($name, #{$lc_name}, #{$lc_name});
+  }
+}
+
+@each $name in $env-list {
+  $lc_name: to_lower-case($name);
+  #{$lc_name} {
+    @include theorem_like($name, theorem);
+  }
+}
+
+
+
+/***************/
+/* Lists, etc. */
+/***************/
+
+enumerate { counter-reset: item-number }
+
+enumerate>item { display: block ;
+                 margin: 0 0 0 0;
+                 padding: 10pt 0 0 20pt }
+
+enumerate>item:before { content: counter(item-number) ". ";
+  counter-increment: item-number;
+  -moz-user-modify: read-only;
+  -moz-user-select: -moz-none;
+}
+
+description {
+  counter-reset: item;
+}
+
+itemize {
+  list-style: disc;
+  counter-reset: item;
+}
+
+/***************/
+/* Other stuff */
+/***************/
+
+img {
+  display: inline;
+}
+
+button[class="subeqnnum"]{
+  right: 20px;
+  font-style: normal;
+  color: blue;
+}
+
+/*  Following moved to latex.css
+button[class="eqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber);
+}
+
+button[class="subeqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
+}
+*/
+
+[hideindexentries="true"] indexitem {
+  display: none;
+}
+
+[hidemarkers] a[key] {
+  display: none;
+}
+
