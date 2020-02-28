@@ -35,7 +35,7 @@ part > sectiontitle:before, part > bodyText:first-child:before {
 section {
   display: block;
   counter-increment: section;
-  counter-reset: subsection theorem eqnnumber subeqnnumber;
+  counter-reset: subsection theorem;
   position: relative;
   top: 0;
   left: 0;
