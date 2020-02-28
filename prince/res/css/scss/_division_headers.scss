@@ -58,11 +58,12 @@ $false: "false";
 			$div_name: quote($div_name);
 			$name_string: "#{$div_name} ";
 		}
+// @debug "name_string is #{$name_string}";
 		&:before {
-			content:$name_string $outlist quote($end);
-		  -moz-user-modify: read-only;
-		  -moz-user-select: -moz-none;
-		  @content;
+			content: $name_string $outlist quote($end);
+			-moz-user-modify: read-only;
+			-moz-user-select: -moz-none;
+			@content;
 	  }
 	}
 }
