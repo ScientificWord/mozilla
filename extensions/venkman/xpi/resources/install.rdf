@@ -7,8 +7,10 @@
 		<!-- core data -->
 		<em:id>{f13b157f-b174-47e7-a34d-4815ddfdfeb8}</em:id>
 		<em:version>@VENKMAN_VERSION@</em:version>
-		
-		<!-- target: SeaMonkey version 2.0 -->
+		<em:appManaged>true</em:appManaged>
+
+
+			<!-- target: ScientificWorkPlace version 6.0 -->
 		<em:targetApplication>
 			<Description>
 				<em:id>ScientificWorkPlace@mackichan.com</em:id>
@@ -33,7 +35,7 @@
 		<em:contributor>Christopher Aillon</em:contributor>
 		<em:contributor>James Ross</em:contributor>
 		<em:homepageURL>http://www.hacksrus.com/~ginda/venkman/</em:homepageURL>
-		
+
 		<!-- package files -->
 		<em:file>
 			<Description about="urn:mozilla:extension:file:venkman.jar">
