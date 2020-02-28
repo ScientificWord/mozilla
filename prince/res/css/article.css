@@ -12,30 +12,21 @@ bodyText {
 }
 
 part {
-  display: block;
   counter-increment: part;
   counter-reset: chapter section subsection theorem eqnnumber subeqnnumber;
-}
 part [nonum=true] > sectiontitle:before, part [nonum=true] > bodyText:first-child:before {
   content: "";
-}
 part > sectiontitle, part > bodyText:first-child {
-  display: block;
   font: bold xx-large;
   margin: 0 0 5pt 0;
-  text-align: center;
-}
 part > sectiontitle:before, part > bodyText:first-child:before {
   content: "Part " counter(part, upper-roman) ". ";
   -moz-user-modify: read-only;
-  -moz-user-select: -moz-none;
-}
-
 /*Skip chapter for article styles*/
 section {
   display: block;
   counter-increment: section;
-  counter-reset: subsection theorem;
+  counter-reset: subsection;
   position: relative;
   top: 0;
   left: 0;
