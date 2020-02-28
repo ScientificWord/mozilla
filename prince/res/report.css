@@ -1,0 +1,632 @@
+/* report.css */
+/************************/
+/* Division header tags */
+/************************/
+part, chapter, section, subsection, subsubsection, paragraph, subparagraph {
+  -moz-user-select: text;
+}
+
+part {
+  display: block;
+  counter-increment: part;
+}
+
+part sectiontitle {
+  display: block;
+  font-size: 24pt;
+  font-weight: bold;
+  color: #093e7d;
+  text-align: center;
+}
+
+part > sectiontitle:before {
+  content: "Part " counter(part, upper-roman);
+  display: block;
+  font-size: 80%;
+  font-weight: bold;
+  margin-bottom: 5pt;
+  -moz-user-select: -moz-none;
+}
+
+chapter {
+  display: block;
+  counter-increment: chapter;
+  counter-reset: section;
+  /*  counter-reset: theorem; */
+}
+
+chapter sectiontitle {
+  display: block;
+  margin: 10pt 0 0 0;
+  font-size: 20pt;
+  font-weight: bold;
+  text-align: left;
+}
+
+chapter sectiontitle:before {
+  content: counter(chapter) ". ";
+}
+
+section {
+  display: block;
+  counter-increment: section;
+  /*  counter-reset: subsection;
+    counter-reset: theorem; */
+}
+
+section sectiontitle {
+  display: block;
+  margin: 10pt 0 0 0;
+  font-size: 18pt;
+  font-weight: bold;
+}
+
+section > sectiontitle:before {
+  content: counter(chapter) "." counter(section) ".  ";
+}
+
+section defaulttitletag:after {
+  content: "Replace this section title";
+  color: red;
+}
+
+subsection {
+  display: block;
+  counter-increment: subsection;
+  /*  counter-reset: subsubsection; */
+}
+
+subsection sectiontitle {
+  display: block;
+  margin: 10pt 0 0 0;
+  font-size: 12pt;
+}
+
+subsection > sectiontitle:before {
+  content: counter(chapter) "." counter(section) "." counter(subsection) ".  ";
+}
+
+subsection defaulttitletag:after {
+  content: "Replace this subsection title";
+  color: red;
+}
+
+subsubsection {
+  display: block;
+  counter-increment: subsubsection;
+  /*    counter-reset: paragraph; */
+}
+
+subsubsection sectiontitle {
+  display: block;
+  margin: 10pt 0 0 0;
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+subsubsection > sectiontitle:before {
+  content: counter(chapter) "." counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
+}
+
+subsubsection defaulttitletag:after {
+  content: "Replace this subsubsection title";
+  color: red;
+}
+
+paragraph {
+  display: block;
+  /*    counter-increment: paragraph;  */
+}
+
+paragraph sectiontitle {
+  font-size: 10pt;
+  font-weight: normal;
+  font-style: italic;
+}
+
+paragraph > sectiontitle:before {
+  content: "";
+}
+
+paragraph defaulttitletag:after {
+  content: "Replace this subsubsubsection title";
+  color: red;
+}
+
+subparagraph sectiontitle {
+  margin-left: 10pt;
+}
+
+subparagraph > sectiontitle:before {
+  content: "";
+}
+
+subparagraph defaulttitletag:after {
+  content: "Replace this subsubsubsubsection title";
+  color: red;
+}
+
+/*************************/
+/* Front matter elements */
+/*************************/
+title {
+  font-size: 200%;
+  font-weight: bold;
+  color: #093e7d;
+  line-height: 20pt;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+}
+
+author {
+  font-size: 100%;
+  font-weight: normal;
+  color: #093e7d;
+  display: block;
+  padding-top: 10pt;
+  text-align: center;
+}
+
+address {
+  font-size: 100%;
+  font-weight: normal;
+  color: #093e7d;
+  display: block;
+  text-align: center;
+}
+
+date {
+  font-size: 100%;
+  font-weight: normal;
+  color: #093e7d;
+  display: block;
+  padding-top: 2pt;
+  text-align: center;
+}
+
+abstract {
+  display: block;
+  margin-top: 30pt;
+  margin-left: 0pt;
+  margin-right: 0pt;
+  padding-left: 15pt;
+  padding-right: 15pt;
+  padding-top: 15pt;
+  padding-bottom: 15pt;
+  font-size: small;
+  border: thin solid black;
+  background-color: #E1EEFD;
+  -moz-border-radius: 5px;
+}
+
+abstract:before {
+  content: "Abstract";
+  display: block;
+  text-align: center;
+  font-size: 100%;
+  font-weight: bold;
+  color: #093e7d;
+  -moz-user-select: -moz-none;
+}
+
+/**********************/
+/* Main text elements */
+/**********************/
+p {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+}
+
+math {
+  direction: ltr;
+}
+
+bodyText {
+  display: block;
+  margin: 10pt 0 5pt 0;
+}
+
+rtlBodyText {
+  display: block;
+  direction: rtl;
+  unicode-bidi: bidi-override;
+  margin: 10pt 10pt 5pt 5pt;
+}
+
+bodyMath {
+  display: block;
+  margin: 0 10pt 0 5pt;
+  color: #008040;
+}
+
+/****************/
+/* Environments */
+/****************/
+shortQuote {
+  display: block;
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+
+longQuotation {
+  display: block;
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+
+centeredEnv, centered {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: center;
+}
+
+flushright {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: right;
+}
+
+flushleft {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: left;
+}
+
+/***********************/
+/* Tagged run elements */
+/***********************/
+emphasized {
+  font-style: italic;
+  color: #093e7d;
+}
+
+emphasized span.inlineMath {
+  color: fuchsia;
+}
+
+roman {
+  font-family: Times New Roman, serif;
+  color: blue;
+}
+
+calligraphic {
+  font-family: monotype corsiva;
+  color: blue;
+}
+
+bold {
+  font-weight: 700;
+}
+
+blackboardBold {
+  font-weight: 700;
+}
+
+fraktur {
+  font-weight: 700;
+}
+
+italics {
+  font-style: italic;
+}
+
+slanted {
+  font-style: italic;
+  font-weight: 700;
+  color: #093e7d;
+}
+
+sansSerif {
+  font-family: Arial;
+  font-weight: 400;
+  color: #093e7d;
+}
+
+smallCaps {
+  font-variant: small-caps;
+  color: black;
+}
+
+typewriter {
+  font-family: Courier New;
+  font-weight: 700;
+}
+
+tiny {
+  font-size: 50%;
+}
+
+scriptsize {
+  font-size: 67%;
+}
+
+footnotesize {
+  font-size: 75%;
+}
+
+small {
+  font-size: 83%;
+}
+
+normalsize {
+  font-size: 100%;
+}
+
+large {
+  font-size: 117%;
+}
+
+Large {
+  font-size: 133%;
+}
+
+LARGE {
+  font-size: 150%;
+}
+
+huge {
+  font-size: 167%;
+}
+
+Huge {
+  font-size: 183%;
+}
+
+/*
+theorem {
+  display: block;
+  font-style: italic;
+  counter-increment: theorem;
+}
+
+theorem:before {
+  content:  attr(type) " " counter(section) "."  counter(theorem) ". " ;
+} */
+/* Not in article.css (gp)
+tabular {
+  display: table
+}
+
+proof {
+  display: block;
+}
+
+proof:before {
+  content: "Proof. ";
+}
+
+tr {
+  display: table-row
+}
+
+td {
+  display: table-cell
+}
+*/
+/***************/
+/* Lists, etc. */
+/***************/
+/* Not in article.css (gp)
+pre, verbatim {
+  font-family: Courier; white-space: pre
+}
+*/
+/* Not in article.css (gp)
+item {
+  margin: 0 0 0 0;
+  padding: 10pt 0 0 20pt;
+  display: list-item
+}
+*/
+/* Not in article.css (gp)
+item:before {
+  content: counters(item, ".") ":  ";
+  counter-increment: item;
+}
+*/
+/* Not in article.css (gp)
+enumerate {
+  counter-reset: item;
+}
+*/
+/* Not in article.css (gp)
+description {
+  counter-reset: item;
+}
+*/
+/* Not in article.css (gp)
+itemize {
+  list-style: disc; 
+  counter-reset: item;
+}
+*/
+/* Not in article.css (gp)
+img {
+  display: inline; 
+  margin: 2em
+} 
+*/
+/***************/
+/* Other stuff */
+/***************/
+img {
+  display: inline;
+}
+
+/*****************************/
+/* Theorem-like environments */
+/*****************************/
+theorem > *:first-child:before {
+  content: "Theorem " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+acknowledgement > *:first-child:before {
+  content: "Acknowledgement " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+acknowledgment > *:first-child:before {
+  content: "Acknowledgment " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+algorithm > *:first-child:before {
+  content: "Algorithm " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+assertion > *:first-child:before {
+  content: "Assertion " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+assumption > *:first-child:before {
+  content: "Assumption " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+axiom > *:first-child:before {
+  content: "Axiom " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+case > *:first-child:before {
+  content: "Case " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+claim > *:first-child:before {
+  content: "Claim " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+conclusion > *:first-child:before {
+  content: "Conclusion " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+condition > *:first-child:before {
+  content: "Condition " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+conjecture > *:first-child:before {
+  content: "Conjecture " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+convention > *:first-child:before {
+  content: "Convention " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+corollary > *:first-child:before {
+  content: "Corollary " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+criterion > *:first-child:before {
+  content: "Criterion " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+definition > *:first-child:before {
+  content: "Definition " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+example > *:first-child:before {
+  content: "Example " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+exercise > *:first-child:before {
+  content: "Exercise " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+hypothesis > *:first-child:before {
+  content: "Hypothesis " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+lemma > *:first-child:before {
+  content: "Lemma " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+notation > *:first-child:before {
+  content: "Notation " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+observation > *:first-child:before {
+  content: "Observation " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+problem > *:first-child:before {
+  content: "Problem " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+property > *:first-child:before {
+  content: "Property " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+proposition > *:first-child:before {
+  content: "Proposition " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+question > *:first-child:before {
+  content: "Question " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+remark > *:first-child:before {
+  content: "Remark " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+solution > *:first-child:before {
+  content: "Solution " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
+
+summary > *:first-child:before {
+  content: "Summary " counter(theorem) "  ";
+  font-weight: bold;
+  -moz-user-modify: read-only;
+}
