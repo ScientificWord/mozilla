@@ -6,6 +6,7 @@
 		<em:version>@REVISION@</em:version>
 	    <em:appManaged>true</em:appManaged>
 
+
 		<!-- target: SWP, version 6.0 -->
 		<em:targetApplication>
 			<Description>
