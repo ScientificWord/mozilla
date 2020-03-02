@@ -63,6 +63,7 @@ pref("editor.use_html_editor",              0);
 pref("editor.use_image_editor",             0);
 pref("app.support.baseURL", "www.mackichan.com");
 pref("extensions.dss.switchPending",false);
+pref("extensions.checkCompatibility", false);
 pref("fastcursor.enabled", true);
 pref("fastcursor.flashbar", 1);
 pref("fastcursor.millisecondsfortaps", 500);
