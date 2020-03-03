@@ -63,7 +63,7 @@ pref("editor.use_html_editor",              0);
 pref("editor.use_image_editor",             0);
 pref("app.support.baseURL", "www.mackichan.com");
 pref("extensions.dss.switchPending",false);
-pref("extensions.checkCompatibility", false);
+// pref("extensions.checkCompatibility", false);
 pref("fastcursor.enabled", true);
 pref("fastcursor.flashbar", 1);
 pref("fastcursor.millisecondsfortaps", 500);
@@ -107,7 +107,7 @@ pref("swp.graphics.usedefaultheight", false);
 pref("swp.matrixdef.colalign", "c");  //l, c, or r -- left, center, right
 pref("swp.matrixdef.baseline", ""); //t, blank, or b -- baseline aligns with top, center, or bottom
 pref("swp.matrixdef.delim", "p"); //p, b, B, v, V, cases, rcases or blank -- parents, square brackets, braces, vert lines, vert double lines, left cases, right cases, or blank
-pref("swp.matrixdef.small", false); 
+pref("swp.matrixdef.small", false);
 
 pref("swp.table.vsize", "2.8");
 pref("swp.table.hsize", "3.5");
