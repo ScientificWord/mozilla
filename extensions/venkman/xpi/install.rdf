@@ -4,8 +4,8 @@
 		<!-- core data -->
 		<em:id>{f13b157f-b174-47e7-a34d-4815ddfdfeb8}</em:id>
 		<em:version>@REVISION@</em:version>
-	    <em:appManaged>true</em:appManaged>
-
+<!-- 	    <em:appManaged>true</em:appManaged>
+ -->
 
 		<!-- target: SWP, version 6.0 -->
 		<em:targetApplication>
