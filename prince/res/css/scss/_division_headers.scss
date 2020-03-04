@@ -23,8 +23,6 @@ $false: "false";
 @function counterlist($counter_data) {
 	$outlist: ();
 	$first: true;
-@debug 'counter_data: ' $counter_data;
-@debug 'type is: ' type-of($counter_data);
 	@if type-of($counter_data) != 'map' {
 		@return counter($counter_data);
 	}
@@ -37,10 +35,8 @@ $false: "false";
 	@if $sep == null {
 		$sep: $default_div_num_sep;
 	}
-@debug 'sep, end: ' $sep ' and ' $end;
 	@if $counter_data and length($counter_data) > 0 {
 		$list: map-get($counter_data,counter_list);
-@debug 'counter_list: ' $list;
 		@each $c in $list {
 			@if $first==false {
 				$outlist: append($outlist,$sep);
@@ -57,7 +53,6 @@ $false: "false";
 		}
 	}
 	$outlist: append($outlist, $end);
-@debug 'end is "' $end '"';
 	@return $outlist;
 }
 
@@ -68,15 +63,11 @@ $false: "false";
 	@if $end == null {
 		$end: $default_div_num_end;
 	}
-	// @debug "div_name is #{$div_name}";
-	// @debug "outlist is #{$outlist}";
-	// @debug "end is #{$end}";
 	@if ($counter_data and length($counter_data) >0) or ($div_name != null) {
 		@if $div_name != null {
 			$div_name: quote($div_name);
 			$name_string: "#{$div_name} ";
 		}
-// @debug "name_string is #{$name_string}";
 		&:before {
 			content: $name_string $outlist quote($end);
 			-moz-user-modify: read-only;
