@@ -332,18 +332,19 @@ $env-list: Acknowledgement Algorithm Assertion Assumption Axiom Case Claim Concl
   Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation
   Observation Problem Property Proposition Question Remark Solution Summary;
 
+$counter_data: (counter_list: ((section),(theorem)));
 
 @each $name in $env-with-inc-list {
   $lc_name: to_lower-case($name);
   #{$lc_name} {
-    @include theorem_like($name, #{$lc_name}, #{$lc_name});
+    @include theorem_like($name, $counter-data, #{$lc_name});
   }
 }
 
 @each $name in $env-list {
   $lc_name: to_lower-case($name);
   #{$lc_name} {
-    @include theorem_like($name, theorem);
+    @include theorem_like($name, $counter-data);
   }
 }
 
