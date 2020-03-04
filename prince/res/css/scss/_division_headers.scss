@@ -20,10 +20,14 @@ $false: "false";
 //
 // This yields counter(chapter,upper-roman) '.' counter(section,decimal) '.' counter(subsection)
 
-@mixin counters($counter_data, $div_name:null) {
-  $outlist: ();
+@function counterlist($counter_data) {
+	$outlist: ();
 	$first: true;
-	$name_string: null;
+@debug 'counter_data: ' $counter_data;
+@debug 'type is: ' type-of($counter_data);
+	@if type-of($counter_data) != 'map' {
+		@return counter($counter_data);
+	}
 
 	$end: map-get($counter_data,end);
 	@if $end == null {
@@ -33,8 +37,10 @@ $false: "false";
 	@if $sep == null {
 		$sep: $default_div_num_sep;
 	}
+@debug 'sep, end: ' $sep ' and ' $end;
 	@if $counter_data and length($counter_data) > 0 {
 		$list: map-get($counter_data,counter_list);
+@debug 'counter_list: ' $list;
 		@each $c in $list {
 			@if $first==false {
 				$outlist: append($outlist,$sep);
@@ -49,6 +55,18 @@ $false: "false";
 			  $outlist: append($outlist,(counter($ctr)));
 			}
 		}
+	}
+	$outlist: append($outlist, $end);
+@debug 'end is "' $end '"';
+	@return $outlist;
+}
+
+@mixin counters($counter_data, $div_name:null) {
+  $outlist: counterlist($counter_data);
+	$name_string: null;
+	$end: map-get($counter_data,end);
+	@if $end == null {
+		$end: $default_div_num_end;
 	}
 	// @debug "div_name is #{$div_name}";
 	// @debug "outlist is #{$outlist}";
