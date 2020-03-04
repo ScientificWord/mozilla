@@ -1,14 +1,15 @@
 // _Theorem_like.scss
+@import "_division_headers.scss";
+
 
 @mixin theorem_like($name, $observes, $sets: null) {
   @if $sets {
     counter-reset: $sets;
   }
-
 	> *:first-child:before {
 		font-weight: bold;
 		-moz-user-modify: read-only;
-		content:  $name counter($observes) '  ';
+    content: $name counterlist($observes);
 	}
 }
 
