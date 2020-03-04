@@ -1,11 +1,239 @@
+@import "_division_headers.scss";
+@import "_theorem_like.scss";
+
 /* amsart.css */
 
 /************************/
 /* Division header tags */
 /************************/
 
-@import "_division_headers.scss";
 
+$div_name: 'Part';
+$part_counter_data: (sep: null, counter_list: ((part,upper-roman),), end: '');
+
+part {
+  display: block;
+  @include div_title_style {
+    margin: 30pt 0 0 0;
+    font: bold x-large;
+    color: rgb(9, 62, 125);
+    @include counters($part_counter_data, 'Part ') {
+      font-size: large;
+      font-weight: bold;
+      color: rgb(9, 62, 125);
+    }
+  }
+}
+// part {
+//   display: block;
+//   counter-increment: part;
+// }
+
+// part sectiontitle {
+//   display: block;
+//   font-size: x-large;
+//   font-weight: bold;
+//   color: rgb(9, 62, 125);
+// }
+
+// part>sectiontitle:before {
+//   content: "Part " counter(part,upper-roman);
+//   display: block;
+//   font-size: large;
+//   font-weight: bold;
+//   color: rgb(9, 62, 125);
+// }
+
+$div_name: 'Section';
+$counter_data:  (
+  counter_list: (
+    (section),
+  ),
+  end: '.  '
+);
+$ctr_set_reset: (inc: section, reset: subsection);
+
+section {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include handle_open_closed((color:gray));
+  @include default_title($div_name);
+  @include div_title_style {
+    display: block;
+    margin: 0;
+    font: bold large;
+    color: rgb(9, 62, 125);
+    @include counters($counter_data) {
+      display: inline-block;
+    };
+  }
+}
+
+
+// section {
+//   display: block;
+//   counter-increment: section;
+//   counter-reset: subsection;
+// /*  counter-reset: theorem; */
+// }
+
+// section sectiontitle {
+//   display: block;
+//   margin: 0;
+//   margin-left: 0;
+//   font-size: large;
+//   font-weight: bold;
+//   color: rgb(9, 62, 125);
+// }
+
+// section>sectiontitle:before {
+//   content: counter(section) ".  ";
+// }
+
+
+
+$div_name: Subsection;
+$counter_data:  (
+  counter_list: (
+    (section subsection)
+  ),
+  end: '.  '
+);
+$ctr_set_reset: (inc: subsection, reset: (subsubsection));
+
+subsection {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include handle_open_closed((color: blue));
+  @include default_title($div_name);
+  @include div_title_style {
+    display: block;
+    margin:10pt 10pt 0 0;
+    font: large;
+    color: rgb(9, 62, 125);
+    @include counters($counter_data);
+  }
+}
+
+
+// subsection{
+//   display: block;
+//   counter-increment: subsection;
+//   counter-reset: subsubsection;
+// }
+
+// subsection sectiontitle {
+//   display: block;
+//   margin: 10pt 10pt 0 0;
+//   margin-left: 10pt;
+//   font-size: large;
+//   color: rgb(9, 62, 125);
+// }
+
+// subsection>sectiontitle:before {
+//   content: counter(section) "." counter(subsection) ".  ";
+// }
+
+$div_name: Subsubsection;
+$counter_data:  (
+  counter_list: (
+    (section,subsection,subsubsection)
+  ),
+  end: '.  '
+);
+$ctr_set_reset: (inc: subsubsection, reset: (paragraph));
+subsubsection {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include default_title($div_name);
+  @include div_title_style {
+    display: block;
+    margin:10pt 10pt 0 0;
+    font: bold medium;
+    color: rgb(9, 62, 125);
+    @include counters($counter_data);
+  }
+}
+
+// subsubsection {
+//   display:block;
+//   counter-increment: subsubsection;
+//     counter-reset: paragraph;
+// }
+
+// subsubsection sectiontitle {
+//   display: block;
+//   margin: 10pt 10pt 0 0;
+//   margin-left: 10pt;
+//   font-size: medium;
+//   font-weight: bold;
+//   color: rgb(9, 62, 125);
+// }
+
+// subsubsection>sectiontitle:before {
+//   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
+// }
+
+$div_name: '';
+
+$ctr_set_reset: (inc: paragraph);
+paragraph {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include div_title_style {
+    font-size: medium;
+    font-weight: normal;
+    font-style: italic;
+    color: rgb(9, 62, 125);
+  }
+}
+
+// paragraph {
+//   display:block;
+//     counter-increment: paragraph;
+// }
+
+// paragraph sectiontitle {
+//   font-size: medium;
+//   font-weight: normal;
+//   font-style: italic;
+//   color: rgb(9, 62, 125);
+// }
+
+/*
+paragraph>sectiontitle:before {
+  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
+}
+*/
+
+// section defaulttitletag:after {
+//   content: "Replace this section title";
+//   color: red;
+// }
+
+// subsection defaulttitletag:after {
+//   content: "Replace this subsection title";
+//   color: red;
+// }
+
+// subsubsection defaulttitletag:after {
+//   content: "Replace this subsubsection title";
+//   color: red;
+// }
+
+// paragraph defaulttitletag:after {
+//   content: "Replace this subsubsubsection title";
+//   color: red;
+// }
+
+// subparagraph defaulttitletag:after {
+//   content: "Replace this subsubsubsubsection title";
+//   color: red;
+// }
 
 
 /*************************/
@@ -408,7 +636,15 @@ $only_theorem_counter: 0;
 
 @import "_theorem_like.scss";
 
-theorem {
-  @include theorem_like($n:null, $c:null, $content: "Theorem " counter(section) "." counter(theorem) "  ");
+$env-with-inc-list: Acknowledgement Algorithm Assertion Assumption Axiom Case Claim Conclusion Condition
+  Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation
+  Observation Problem Property Proposition Question Remark Solution Summary;
+
+
+@each $name in $env-with-inc-list {
+  $lc_name: to_lower-case($name);
+  #{$lc_name} {
+    @include theorem_like($name, (counter_list:((section),(#{$lc_name}))), #{$lc_name});
+  }
 }
 
