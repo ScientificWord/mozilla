@@ -9,7 +9,7 @@
 	> *:first-child:before {
 		font-weight: bold;
 		-moz-user-modify: read-only;
-    content: $name counterlist($observes);
+    content: quote($name) " " counterlist($observes);
 	}
 }
 
