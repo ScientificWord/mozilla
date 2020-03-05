@@ -24,7 +24,8 @@ part {
   @include cnt-set-resets($ctr-set-reset);
   @include div_title_style {
     margin: 30pt 0 0 0;
-    font: bold xx-large serif;
+    font-weight: bold;
+    font-size:   225%;
     color: rgb(9, 62, 125);
     text-align: right;
     @include counters($counter_data, 'Part ') {
@@ -41,7 +42,7 @@ $counter_data:  (
   counter_list: (
     (section),
   ),
-  end: '.  '
+  end: ' '
 );
 $ctr_set_reset: (inc: section, reset: subsection);
 
@@ -53,11 +54,13 @@ section {
   @include default_title($div_name);
   @include div_title_style {
     display: inline;
-    font: bold large;
+    font-weight: bold;
+    font-size: 175%;
     color: rgb(9, 62, 125);
     @include counters($counter_data) {
       display: inline-block;
-      width: 1.5cm;
+	  padding-right: 10pt;
+      //width: 1.5cm;
     };
   }
 }
@@ -68,7 +71,7 @@ $counter_data:  (
   counter_list: (
     (section subsection)
   ),
-  end: '.  '
+  end: ' '
 );
 $ctr_set_reset: (inc: subsection, reset: (subsubsection));
 
@@ -81,11 +84,13 @@ subsection {
   @include div_title_style {
     display: inline;
     margin:0 0 0 0;
-    font: bold medium;
+    font-weight: bold;
+    font-size: 150%;
     color: rgb(9, 62, 125);
     @include counters($counter_data) {
       display: inline-block;
-      width: 1.5cm;
+	  padding-right: 10pt;
+      //width: 1.5cm;
     }
   }
 }
@@ -95,7 +100,7 @@ $counter_data:  (
   counter_list: (
     (section,subsection,subsubsection)
   ),
-  end: '.  '
+  end: ' '
 );
 $ctr_set_reset: (inc: subsubsection, reset: (paragraph));
 subsubsection {
@@ -106,11 +111,13 @@ subsubsection {
   @include div_title_style {
     display: inline;
     margin:0 0 0 0;
-    font: bold;
+    font-weight: bold;
+    font-size: 120%;
     color: rgb(9, 62, 125);
     @include counters($counter_data) {
       display: inline-block;
-      width: 1.5cm;
+	  padding-right: 10pt;
+      //width: 1.5cm;
     };
   }
 }
@@ -118,9 +125,8 @@ subsubsection {
 $div_name: '';
 $counter_data:  (
   counter_list: (
-    (section,subsection,subsubsection,paragraph)
   ),
-  end: '.  '
+  end: ' '
 );
 $ctr_set_reset: (inc: paragraph,reset: subparagraph);
 paragraph {
@@ -130,10 +136,12 @@ paragraph {
   @include div_title_style {
     display: inline;
     margin:0 0 0 0;
-    font: bold;
+    font-weight: bold;
+    font-size: 100%;
     color: rgb(9, 62, 125);
-    @include counters($counter_data, '§'){
-      width: 1.5cm;
+    @include counters($counter_data) {
+	  padding-right: 3pt;
+      //width: 1.5cm;
     }
   }
 }
@@ -151,11 +159,13 @@ subparagraph {
   @include div_title_style {
     display: inline-block;
     margin:0 0 0 0;
-    font: bold;
+    font-weight: bold;
+    font-size: 100%;
     color: rgb(9, 62, 125);
     @include counters($counter_data) {
       display: inline-block;
-      width: 1.5cm;
+	  padding-right: 12pt;
+      //width: 1.5cm;
     };
   }
 }
@@ -169,7 +179,7 @@ subparagraph {
 
 title {
   font-size: 200%;
-  font-weight: bold;
+  font-weight: normal;
   color: rgb(9, 62, 125);
   line-height: 20pt;
   display: block;
@@ -320,7 +330,7 @@ pre, verbatim {
 /*****************************/
 // A theorem-like environment is tied to a counter, and may or may not increment that counter.
 // In article.css, the theorem environment is the only one that increments a counter (the theorem counter),
-// and all the other environments use the theorem counter, but do not increment it.
+// and all the other environments use the theorem counter, but do not increment it. (Yes, theorem counter is incremented--see latex.css (gp)
 
 // In article.css there  is only one theorem-like environment with its own counter and increment.
 
@@ -332,12 +342,13 @@ $env-list: Acknowledgement Algorithm Assertion Assumption Axiom Case Claim Concl
   Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation
   Observation Problem Property Proposition Question Remark Solution Summary;
 
-$counter_data: (counter_list: ((section),(theorem)));
+$counter_data: (counter_list: ((theorem)));
 
 @each $name in $env-with-inc-list {
+  $default_div_num_end: " ";
   $lc_name: to_lower-case($name);
   #{$lc_name} {
-    @include theorem_like($name, $counter-data, #{$lc_name});
+    @include theorem_like($name, $counter-data);
   }
 }
 
