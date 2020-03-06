@@ -24,12 +24,15 @@ part {
   @include cnt-set-resets($ctr-set-reset);
   @include div_title_style {
     margin: 30pt 0 0 0;
+    display: block;
     font-weight: bold;
-    font-size:   225%;
+    font-size:   200%;
     color: $part-title-color;
-    text-align: right;
+    text-align: left;
     @include counters($counter_data, 'Part ') {
-      text-align: center;
+      display: block;
+      font-size:   80%;
+      text-align: left;
     };
   }
 }
