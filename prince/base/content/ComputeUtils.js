@@ -8,7 +8,7 @@ function GetMathAsString(math)
   var ser = new XMLSerializer();
   var mathstr = ser.serializeToString(math);
   var nextNode, prevNode;
-  var localname = math.localName;  
+  var localname = math.localName;
   if (localname !== "math"){
 //dump("###" + math.localName + " !== \"math\"");
     mathstr = "<math>" + mathstr + "</math>";
@@ -18,13 +18,13 @@ function GetMathAsString(math)
   //   prevNode = prevNode.previousSibling;
   // if (prevNode && prevNode.localName == "math") {
   //   mathstr = ser.serializeToString(prevNode) + mathstr;
-  // }  
+  // }
   // nextNode = math.nextSibling;
   // while (nextNode && nextNode.nodeType != Node.ELEMENT_NODE)
   //   nextNode = nextNode.nextSibling;
   // if (nextNode && nextNode.localName == "math") {
   //   mathstr = mathstr + ser.serializeToString(nextNode);
-  // }  
+  // }
 
   // risky string surgery, but it works in simple cases
   mathstr = mathstr.replace(/ _moz_dirty=\"\"/g,"");
@@ -60,7 +60,8 @@ function CleanMathString(mathstr)
   // after handling decimals, collect digits around it
   mathstr = mathstr.replace(/<\/mn>\.<mn>/g,".");
   // collect sequences of digits
-  mathstr = mathstr.replace(/<\/mn>\s*<mn>/g,"");
+  //mathstr = mathstr.replace(/<\/mn>\s*<mn>/g,"");
+  mathstr = mergeNums(mathstr);
   // a decimal must have a digit after it
   mathstr = mathstr.replace(/\.<\/mn>/g,".0</mn>");
 
@@ -74,6 +75,48 @@ function CleanMathString(mathstr)
 
   return mathstr;
 }
+
+function mergeNums(mathstr) {
+  var returnstr = "";
+  var mathstrcopy = mathstr;
+  var regexp = /<\/mn>\s*<mn>/;
+  var match;
+  var longmatch;
+  var longregexp = /<\/mn>\s*<mn>[^>]+<\/mn>/;  // use this to go over the second mn
+  match = mathstr.match(regexp);
+  longmatch = mathstr.match(longregexp);
+  while (match && match.length > 0) {
+    returnstr += mathstrcopy.substring(0, match.index);
+    if (dontMergeNumbers(mathstrcopy, longmatch.index + longmatch[0].length)) {
+      returnstr += match[0];
+    }
+    mathstrcopy = mathstrcopy.substring(match.index + match[0].length);
+    match = mathstrcopy.match(regexp);
+    longmatch = mathstrcopy.match(longregexp);
+  }
+  return returnstr + mathstrcopy;
+}
+
+  // we have found "</mn><mn>". Deleting this will merge the
+  // two adjacent numbers, but we can't do this if we are in an object
+  // with a fixed number of children, such as mfrac, mroot, etc. In these
+  // cases, numbers adjacent in the source tree are not adjacent on-screen.
+  // We need to find the common parent of these two nodes. We look for the
+  // first end tag, skipping over matched pairs of tags if necessary.
+
+function dontMergeNumbers(mathstring, index) {
+  // we look for the first closing tag after index. If it is one that has a fixed number
+  // of children, we can't merge the numbers.
+  var regexp = /<\/[a-z]+/;
+  var specialMLTagRe = /msubsup|msub|msup|mover|munder|mfrac|mroot|msqrt/;
+  var match;
+  match = mathstring.substring(index).match(regexp);
+  if (match != null) {
+    if (match[0].match(specialMLTagRe)) return true;
+  }
+  return false;
+}
+
 
 function GetNumAsMathML(num)
 {
