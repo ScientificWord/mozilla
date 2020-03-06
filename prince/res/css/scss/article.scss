@@ -17,7 +17,7 @@ $counter_data:  (
   ),
   end: ''
 );
-$ctr_set_reset: (inc: part, reset: chapter section subsection theorem eqnnumber subeqnnumber);
+$ctr_set_reset: (inc: part);
 
 part {
   display: block;

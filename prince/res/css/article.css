@@ -6,7 +6,6 @@
 part {
   display: block;
   counter-increment: part;
-  counter-reset: chapter section subsection theorem eqnnumber subeqnnumber;
 }
 part > sectiontitle, part > bodyText:first-child {
   margin: 30pt 0 0 0;
