@@ -464,7 +464,7 @@ nsHTMLEditor::InsertMathNode
       if (offsetTarget > 0) offsetTarget = 1;
       else offsetTarget = 0;
       offsetTarget += offsetParent;
-      res = GetTagString(nodeTarget, nameOfTarget);   
+      res = GetTagString(nodeTarget, nameOfTarget);
     }
 
     while (nameOfParent.EqualsLiteral("mi") || nameOfParent.EqualsLiteral("#text") || nameOfParent.EqualsLiteral("mo") || nameOfParent.EqualsLiteral("mn") || nameOfParent.EqualsLiteral("mtext"))
@@ -822,7 +822,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     // remember if we are in a link.
     PRBool bStartedInLink = IsInLink(parentNode);
 
-    // are we in a text node or other node that connot accept ?  If so, split it. 
+    // are we in a text node or other node that connot accept ?  If so, split it.
     if (IsTextNode(parentNode))
     {
       nsCOMPtr<nsIDOMNode> temp;
@@ -1535,7 +1535,7 @@ NS_IMETHODIMP nsHTMLEditor::ApplyGraphicsDefaults(nsIDOMElement *frame, const ns
     else
       setPrefString = NS_LITERAL_STRING("inline");
     SetAttribute(frame, NS_LITERAL_STRING("pos"), setPrefString);
-    if (setPrefString.EqualsLiteral("floating")) { 
+    if (setPrefString.EqualsLiteral("floating")) {
       prefName = (char *) (!bIsImage ? "swp.graph.floatlocation.forcehere" : "swp.graphics.floatlocation.forcehere");
       res = prefBranch->GetBoolPref((const char *)prefName, &prefBool);
       if (NS_SUCCEEDED(res) && prefBool)
@@ -1744,7 +1744,7 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
       space + bordercolorStr + semicolon;
   }
   else {
-    if (borderwStr.Length() > 0) 
+    if (borderwStr.Length() > 0)
       style += borderwidth + colon + borderwStr + unitStr + semicolon;
     if (bordercolorStr.Length() > 0)
       style += bordercolor + colon + bordercolorStr + semicolon;
@@ -1784,7 +1784,7 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
   }
   else {
     leftmargin = sidemarginStr + unitStr;
-    rightmargin = sidemarginStr + unitStr;    
+    rightmargin = sidemarginStr + unitStr;
   }
   if (left) {
     leftmargin = zero + unitStr;
@@ -1792,7 +1792,7 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
   else if (right) {
     rightmargin = zero + unitStr;
   }
-  style += margin + colon + topmarginStr + unitStr + space + rightmargin + 
+  style += margin + colon + topmarginStr + unitStr + space + rightmargin +
   space + topmarginStr + unitStr + space + leftmargin +
     semicolon;
 // Overhang
@@ -1818,7 +1818,7 @@ nsHTMLEditor::GetFrameStyleFromAttributes(nsIDOMElement * frame)
 }
 
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsHTMLEditor::GetGraphicsAttributesFromFrame(nsIDOMElement *frame, nsIDOMElement *object)
 {
   // height and width on the frame are given in the units specified.
@@ -1833,7 +1833,7 @@ nsHTMLEditor::GetGraphicsAttributesFromFrame(nsIDOMElement *frame, nsIDOMElement
   res = frame->GetAttribute(NS_LITERAL_STRING("units"), units);
   res = frame->GetAttribute(NS_LITERAL_STRING("height"),height);
   res = frame->GetAttribute(NS_LITERAL_STRING("width"),width);
- 
+
   style += NS_LITERAL_STRING("height: ") + height + units + NS_LITERAL_STRING("; width: ") + width + units + NS_LITERAL_STRING("; ");
   if (height.Length() > 0) {
      style += NS_LITERAL_STRING("height: ") + height + units + semi;
@@ -1848,7 +1848,7 @@ nsHTMLEditor::GetGraphicsAttributesFromFrame(nsIDOMElement *frame, nsIDOMElement
    }
   res = object->SetAttribute(NS_LITERAL_STRING("style"), style);
   res = object->SetAttribute(NS_LITERAL_STRING("units"), units);
-  return res; 
+  return res;
 }
 
 // nsresult
@@ -2882,7 +2882,7 @@ nsHTMLEditor::ParseCFHTML(nsCString & aCfhtml, PRUnichar **aStuffToPaste, PRUnic
 
 
 // When this function is called, the graphics file has already been copied to the graphics directory, but it has not been converted.
-nsresult 
+nsresult
 nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
                                         nsAString& path,
                                         nsIDOMNode *aDestinationNode,
@@ -2905,7 +2905,7 @@ nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
   nsCOMPtr<nsIDOMNode> parent;
   nsresult rv;
   PRUint16 nodetype;
-  
+
   if (fileLeaf.Length() == 0) return NS_ERROR_FAILURE;
   GetSelection(getter_AddRefs(sel));
   if (aDestinationNode) destnode = aDestinationNode;
@@ -2933,7 +2933,7 @@ nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
   frame->GetElementsByTagName(NS_LITERAL_STRING("bodyText"), getter_AddRefs(paranodes));
   paranodes->GetLength(&paranodesLength);
   if (paranodesLength > 0) {
-    paranodes->Item(0, getter_AddRefs(paranode));   
+    paranodes->Item(0, getter_AddRefs(paranode));
     frame->RemoveChild(paranode, getter_AddRefs(dummynode));
   }
   GetFrameStyleFromAttributes(frame);
@@ -3071,18 +3071,18 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
               || fileextension.EqualsLiteral("tif")
               || fileextension.EqualsLiteral("tiff")
               || fileextension.EqualsLiteral("pdf")
-              || fileextension.EqualsLiteral("eps")              
-              || fileextension.EqualsLiteral("ps")              
-              || fileextension.EqualsLiteral("emf")              
-              || fileextension.EqualsLiteral("wmf")              
-              || fileextension.EqualsLiteral("svg")              
-              || fileextension.EqualsLiteral("mp4")              
-              || fileextension.EqualsLiteral("avi")              
-              || fileextension.EqualsLiteral("mov")              
-              || fileextension.EqualsLiteral("wmv")        
-#ifdef XP_WIN32                    
-              || fileextension.EqualsLiteral("bmp")       
-#endif                     
+              || fileextension.EqualsLiteral("eps")
+              || fileextension.EqualsLiteral("ps")
+              || fileextension.EqualsLiteral("emf")
+              || fileextension.EqualsLiteral("wmf")
+              || fileextension.EqualsLiteral("svg")
+              || fileextension.EqualsLiteral("mp4")
+              || fileextension.EqualsLiteral("avi")
+              || fileextension.EqualsLiteral("mov")
+              || fileextension.EqualsLiteral("wmv")
+#ifdef XP_WIN32
+              || fileextension.EqualsLiteral("bmp")
+#endif
             )
             {
               insertAsImage = PR_TRUE;
@@ -3125,7 +3125,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
                 stuffToPaste.AppendLiteral("\">");
                 AppendUTF8toUTF16(urltext, stuffToPaste);
                 stuffToPaste.AppendLiteral("</a>");
-              
+
                 nsAutoEditBatch beginBatching(this);
 
                 const nsAFlatString& empty = EmptyString();
@@ -3156,7 +3156,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
     }
 
 
- 
+
     #define kPNGImageMime               "image/png"
     #define kJPEGImageMime              "image/jpg"
     #define kGIFImageMime               "image/gif"
@@ -3166,10 +3166,10 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
     #define kWin32MetafilePict          "application/x-moz-win32-metafilePict"
 
     else if (0 == nsCRT::strcmp(bestFlavor, kJPEGImageMime) ||
-             0 == nsCRT::strcmp(bestFlavor, kPNGImageMime) ||      
-             0 == nsCRT::strcmp(bestFlavor, kGIFImageMime) ||      
-             0 == nsCRT::strcmp(bestFlavor, kSVGImageMime) ||      
-             0 == nsCRT::strcmp(bestFlavor, kWin32EnhMetafile) ||  
+             0 == nsCRT::strcmp(bestFlavor, kPNGImageMime) ||
+             0 == nsCRT::strcmp(bestFlavor, kGIFImageMime) ||
+             0 == nsCRT::strcmp(bestFlavor, kSVGImageMime) ||
+             0 == nsCRT::strcmp(bestFlavor, kWin32EnhMetafile) ||
              0 == nsCRT::strcmp(bestFlavor, kWin32MetafilePict))
     {
       nsAutoString leaf;
@@ -3215,9 +3215,9 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
       fileToUse->GetLeafName(leaf);
       fileToUse->GetPath(path);
       // the filename may have been modified to something like 'clipboard_copy-1.jpg'
-     
+
       InsertGraphicsFileAsImage(leaf, path, aDestinationNode, aDestOffset, PR_FALSE);
-      
+
 
 //       nsAutoString urltext;
 //       urltext.Append(NS_LITERAL_STRING("graphics/"));
@@ -3663,6 +3663,9 @@ NS_IMETHODIMP nsHTMLEditor::Paste(PRInt32 aSelectionType)
   // around with cfhtml if we do.
   PRBool bHavePrivateHTMLFlavor = HavePrivateHTMLFlavor(clipboard);
 
+  if (!bHavePrivateHTMLFlavor)
+    return nsHTMLEditor::PasteNoFormatting(aSelectionType);
+
   // Get the nsITransferable interface for getting the data from the clipboard
   nsCOMPtr<nsITransferable> trans;
   rv = PrepareHTMLTransferable(getter_AddRefs(trans), bHavePrivateHTMLFlavor);
@@ -3779,7 +3782,7 @@ NS_IMETHODIMP nsHTMLEditor::CanPaste(PRInt32 aSelectionType, PRBool *aCanPaste)
 
   // the flavors that we can deal with
   const char* textEditorFlavors[] = { kUnicodeMime };
-  const char* textHtmlEditorFlavors[] = { kUnicodeMime, kHTMLMime,
+  const char* textHtmlEditorFlavors[] = { kUnicodeMime, // BBM. Import HTML as unicode text unless it is Mozilla's internal stuff -- kHTMLMime,
                                           kJPEGImageMime };
 
   PRUint32 editorFlags;
@@ -5212,7 +5215,7 @@ nsIDOMNode* nsHTMLEditor::GetArrayEndpoint(PRBool aEnd,
   return aNodeArray[0];
 }
 
-nsresult 
+nsresult
 nsHTMLEditor::CreateFrameWithDefaults(const nsAString & frametype, PRBool insertImmediately, nsIDOMNode * parent, PRInt32 offset, nsIDOMElement **_retval)
 {
   nsCOMPtr<nsIDOMNode> framenode;
