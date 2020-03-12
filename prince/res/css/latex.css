@@ -1,20 +1,17 @@
+@charset "UTF-8";
 @namespace mml url("http://www.w3.org/1998/Math/MathML");
-@namespace sw url("http://www.sciword.com/namespaces/sciword");
-
 texlogo {
   font-family: Times, "Times New Roman", serif;
   font-variant: small-caps;
   letter-spacing: 1px;
 }
 
-
 texlogo sup {
-  font-size: 0.70em;
+  font-size: 0.7em;
   vertical-align: 0.3em;
   margin-left: -0.65em;
   margin-right: -0.15em;
 }
-
 
 texlogo sub {
   vertical-align: -0.5ex;
@@ -23,15 +20,14 @@ texlogo sub {
   font-size: 1em;
 }
 
-
 caption {
-  background-color: rgb(250,240,240);
+  background-color: #faf0f0;
   margin: 3pt auto 3pt auto;
 }
 
 msiframe imagecaption {
   display: table-caption;
-  background-color: rgb(250,240,240);
+  background-color: #faf0f0;
   margin-top: 3pt;
   margin-bottom: 3pt;
   text-align: center;
@@ -39,7 +35,7 @@ msiframe imagecaption {
 
 msiframe caption {
   display: table-caption;
-  background-color: rgb(250,240,240);
+  background-color: #faf0f0;
   margin-top: 3pt;
   margin-bottom: 3pt;
 }
@@ -50,22 +46,13 @@ table {
   display: inline-table;
 }
 
-table[display="true"] {
+table[display=true] {
   display: table;
 }
 
 table:focus {
   border-collapse: separate;
 }
-
-
-
-/*table {
-  border-collapse: collapse;
-  border-style: solid;
-  border-color: #BBBBBB;
-  border-width: thin;
-}*/
 
 td {
   border: 0.9px solid #BBBBBB;
@@ -74,12 +61,11 @@ td {
 /*td[lines="none"] {
   border-style: none;
 }*/
-
-td[lines="solid"] {
+td[lines=solid] {
   border: thin solid;
 }
 
-td[lines="double"] {
+td[lines=double] {
   border: medium double black;
 }
 
@@ -87,70 +73,64 @@ td[lines="double"] {
   border-left-style: none;
 }
 */
-td[line-left="solid"] {
+td[line-left=solid] {
   border-left: thin solid black;
 }
 
-td[line-left="double"] {
+td[line-left=double] {
   border-left: medium double black;
 }
-
 
 /*td[line-right="none"] {
   border-right-style: none;
 }
 */
-td[line-right="solid"] {
+td[line-right=solid] {
   border-right: thin solid black;
 }
 
-td[line-right="double"] {
+td[line-right=double] {
   border-right: medium double black;
 }
-
 
 /*td[line-top="none"] {
   border-top-style: none;
 }*/
-
-td[line-top="solid"] {
+td[line-top=solid] {
   border-top: thin solid black;
 }
 
-td[line-top="double"] {
+td[line-top=double] {
   border-top: medium double black;
 }
-
 
 /*td[line-bottom="none"] {
   border-bottom-style: none;
 }*/
-
-td[line-bottom="solid"] {
+td[line-bottom=solid] {
   border-bottom: thin solid black;
 }
 
-td[line-bottom="double"] {
+td[line-bottom=double] {
   border-bottom: medium double black;
 }
 
-button[class="msi"]::-moz-selection{
+button[class=msi]::-moz-selection {
   background: blue;
 }
 
-button[class="msi"]{
+button[class=msi] {
   position: relative;
   left: 0px;
   bottom: 0.1em;
 }
 
-button[class="msi"][minpasses]:after {
+button[class=msi][minpasses]:after {
   content: "Minpasses: " attr(minpasses);
 }
 
-
-hspace, mspace{
-/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#hspace"); */
+hspace, mspace {
+  /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#hspace"); */
   display: inline-block;
   white-space: pre;
 }
@@ -159,15 +139,11 @@ hspace *, mspace * {
   visibility: hidden;
 }
 
-body {
-   line-height: 1.3em;
-}
-
 *[blackmath] math {
   color: black;
 }
 
-body[showinvis="true"] hspace {
+body[showinvis=true] hspace {
   visibility: visible;
   color: green;
   border-bottom: thin solid;
@@ -177,81 +153,79 @@ nbspace {
   color: white;
 }
 
-body[showinvis="true"] nbspace {
+body[showinvis=true] nbspace {
   color: green;
   content: "~";
 }
 
-
-body[showinvis="true"] hspace[type="noIndent"]:before {
+body[showinvis=true] hspace[type=noIndent]:before {
   border-bottom-style: none;
   content: "☒";
 }
 
-body[showinvis="true"] hspace[type="noIndent"] {
+body[showinvis=true] hspace[type=noIndent] {
   position: relative;
   left: -2.5em;
   width: 0;
   border-bottom-style: none;
 }
 
-hspace[type="emSpace"] {
+hspace[type=emSpace] {
   min-width: 1em;
 }
 
-hspace[type="twoEmSpace"] {
+hspace[type=twoEmSpace] {
   min-width: 2em;
 }
 
-hspace[type="thinSpace"] {
+hspace[type=thinSpace] {
   min-width: 0.17em;
 }
 
-hspace[type="thickSpace"] {
+hspace[type=thickSpace] {
   min-width: 0.5em;
 }
 
-hspace[type="italicCorrectionSpace"] {
+hspace[type=italicCorrectionSpace] {
   min-width: 0.083em;
 }
 
-hspace[type="requiredSpace"][dim] {
+hspace[type=requiredSpace][dim] {
   min-width: 0.1em;
 }
 
-hspace[type="requiredSpace"] {
+hspace[type=requiredSpace] {
   display: inline;
 }
 
-mspace[type="emSpace"] {
+mspace[type=emSpace] {
   min-width: 1em;
 }
 
-mspace[type="twoEmSpace"] {
+mspace[type=twoEmSpace] {
   min-width: 2em;
 }
 
-mspace[type="thinSpace"] {
+mspace[type=thinSpace] {
   min-width: 0.17em;
 }
 
-mspace[type="thickSpace"] {
+mspace[type=thickSpace] {
   min-width: 0.5em;
 }
 
-mspace[type="italicCorrectionSpace"] {
+mspace[type=italicCorrectionSpace] {
   min-width: 0.083em;
 }
 
 /*mspace[type="requiredSpace"]:after {
   content: " ";
 }*/
-
-mspace[type="requiredSpace"] {
+mspace[type=requiredSpace] {
   display: inline;
 }
 
-mspace[type="nonBreakingSpace"] {
+mspace[type=nonBreakingSpace] {
   width: 0.2em;
   white-space: nowrap;
 }
@@ -260,7 +234,7 @@ mml|maligngroup:before {
   visibility: hidden;
 }
 
-body[showinvis="true"] mml|maligngroup:before {
+body[showinvis=true] mml|maligngroup:before {
   content: ".";
   visibility: visible;
   color: green;
@@ -270,58 +244,56 @@ body[showinvis="true"] mml|maligngroup:before {
   visibility: none;
 }
 */
-
-hspace[type="negativeThinSpace"] {
+hspace[type=negativeThinSpace] {
   min-width: 0.17em;
 }
 
-hspace[type="zeroSpace"] {
+hspace[type=zeroSpace] {
   min-width: 0.17em;
 }
 
-hspace[type="noIndent"] {
-  min-width: 0.0em;
+hspace[type=noIndent] {
+  min-width: 0em;
 }
 
 vspace {
-/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#vspace"); */
+  /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#vspace"); */
   display: inline-block;
-	max-width: 2px;
-/*  overflow: hidden;  */
+  max-width: 2px;
+  /*  overflow: hidden;  */
   max-width: 1px;
   white-space: pre;
-/*  position: relative;  */
+  /*  position: relative;  */
 }
 
-vspace[type="smallSkip"] {
+vspace[type=smallSkip] {
   height: 3pt;
-	vertical-align: -3pt;
+  vertical-align: -3pt;
 }
 
-vspace[type="mediumSkip"] {
+vspace[type=mediumSkip] {
   height: 6pt;
-	vertical-align: -6pt;
+  vertical-align: -6pt;
 }
 
-vspace[type="bigSkip"] {
+vspace[type=bigSkip] {
   height: 12pt;
-	vertical-align: -12pt;
+  vertical-align: -12pt;
 }
 
-vpsace[type="strut"] {
+vpsace[type=strut] {
   line-height: 100%;
 }
 
-vspace[type="mathStrut"] {
+vspace[type=mathStrut] {
   line-height: 100%;
 }
 
-vspace[type="customSpace"] {
+vspace[type=customSpace] {
   vertical-align: -100%;
 }
 
-
-*[showinvis="true"] vspace {
+*[showinvis=true] vspace {
   border-left: thin solid green;
 }
 
@@ -329,53 +301,49 @@ vspace[type="customSpace"] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msirule");
   display: inline-block;
 } */
-
 /* ordinary breaks -- emulate behavior of <br/>*/
-
-msibr[type="lineBreak"]:before {
-  content: "\A";
+msibr[type=lineBreak]:before {
+  content: "\a";
   white-space: pre;
   -moz-user-select: -moz-none;
 }
 
-msibr[type="newLine"]:before {
-  content: "\A";
+msibr[type=newLine]:before {
+  content: "\a";
   white-space: pre;
   -moz-user-select: -moz-none;
 }
 
-*[showinvis="true"] msibr[type="lineBreak"]:before {
-  content: "\AC\A";
+*[showinvis=true] msibr[type=lineBreak]:before {
+  content: "¬\a";
   color: green;
   -moz-user-select: -moz-none;
 }
 
-*[showinvis="true"] msibr[type="newLine"]:before {
-  content: "\AC\A";
+*[showinvis=true] msibr[type=newLine]:before {
+  content: "¬\a";
   color: green;
   -moz-user-select: -moz-none;
 }
 
-
-msibr[type="customNewLine"]
-{
-	display: block;
-	width: 2px;
+msibr[type=customNewLine] {
+  display: block;
+  width: 2px;
 }
 
-msibr[type="customNewLine"]:after {
+msibr[type=customNewLine]:after {
   white-space: pre;
-  content: "\A";
+  content: "\a";
   -moz-user-select: -moz-none;
 }
 
-*[showinvis="true"] msibr[type="customNewLine"] {
-	background-color: green;
+*[showinvis=true] msibr[type=customNewLine] {
+  background-color: green;
 }
 
-msibr[type="newPage"]:after {
+msibr[type=newPage]:after {
   white-space: pre;
-  content: "\A";
+  content: "\a";
   -moz-user-select: -moz-none;
 }
 
@@ -399,7 +367,7 @@ environment {
 }
 
 environment:before {
-  content:  attr(type)  ;
+  content: attr(type);
   -moz-user-select: -moz-none;
 }
 
@@ -423,22 +391,14 @@ flushleft {
 }
 
 newPageRule {
-	display: inline-block;
-	position: absolute;
-	left: 0;
-	bottom: auto;
-	height: 1px;
-	width: 100%;
-	border-bottom: 2px dashed green;
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  bottom: auto;
+  height: 1px;
+  width: 100%;
+  border-bottom: 2px dashed green;
 }
-
-/* invis {
-  display: none;
-}
-
-*[showinvis="true"] sw|invis {
-  display: inline;
-}  */
 
 otfont {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#otfont");
@@ -474,30 +434,27 @@ sectiontitle + p {
   text-indent: 0;
 }
 
-
 td bodyText {
-  text-indent: 0
+  text-indent: 0;
 }
 
 img {
   -moz-force-broken-image-icon: 1;
-  min-height: 6px; min-width: 6px;
+  min-height: 6px;
+  min-width: 6px;
 }
-
 
 /*graph {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#graph");
 }*/
-
 /*graph {
   display:block;
   cursor: pointer;
 }*/
-
 plotwrapper {
   display: block;
-	top: 0;
-	left: 0;
+  top: 0;
+  left: 0;
   text-indent: 0pt;
   text-align: center;
   -moz-user-select: all;
@@ -511,11 +468,9 @@ plotwrapper {
   -moz-box-flex: 1;
   min-height: 20px;
 }*/
-
 /*object {
 }
 */
-
 /*
 mml|mi [msimathname="true"] {
   color: gray;
@@ -523,28 +478,24 @@ mml|mi [msimathname="true"] {
 }
 
 */
-
-mml|mi[tempinput="true"]::before
-{
+mml|mi[tempinput=true]::before {
   content: "[";
   color: green;
 }
 
-
-mml|mi[tempinput="true"]::after
-{
+mml|mi[tempinput=true]::after {
   content: "]";
   color: green;
 }
 
-mml|mi[tempinput="true"]
-{
-  letter-spacing: 0; /*-0.015em;*/
+mml|mi[tempinput=true] {
+  letter-spacing: 0;
+  /*-0.015em;*/
   -moz-user-select: text;
   color: red;
 }
 
-#rotateleft{
+#rotateleft {
   list-style-image: url("chrome://prince/skin/icons/vc-rotateleft.png");
 }
 
@@ -556,10 +507,10 @@ mml|mrow[id] {
   margin-left: auto;
   margin-right: auto;
   z-index: 0;
-
 }
+
 mml|mrow[id]:after {
-  content: "[#" attr(id) "]" ;
+  content: "[#" attr(id) "]";
   position: fixed;
   top: auto;
   right: 0;
@@ -567,10 +518,9 @@ mml|mrow[id]:after {
   z-index: 1;
   left: auto;
   color: black;
-  background-color:rgb(180,180,180);
+  background-color: #b4b4b4;
   -moz-user-select: -moz-none;
 }
-
 
 .collapsible {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
@@ -579,162 +529,154 @@ mml|mrow[id]:after {
 /* The following is a generic set of rules to control opening and closing
    sections. They are repeated for each structure that can be closed. Also
    implement the switch between numbered and not numbered*/
-
-chapter>sectiontitle:first-child, chapter>sectiontitle {
+chapter > sectiontitle:first-child, chapter > sectiontitle {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
-chapter>sectiontitle:before {
+chapter > sectiontitle:before {
   -moz-user-select: none;
 }
 
 /* Keep counters from incrementing on unnumbered structures */
-
-chapter[nonum="true"] {
+chapter[nonum=true] {
   counter-increment: none;
 }
 
 /* Suppress	title for nonnumbered sections */
-chapter[nonum="true"]>sectiontitle:first-child {
+chapter[nonum=true] > sectiontitle:first-child {
   content: "";
 }
 
-chapter[nonum="true"]>sectiontitle:before {
+chapter[nonum=true] > sectiontitle:before {
   content: "";
 }
 
-chapter[open="false"]>* {
+chapter[open=false] > * {
   display: none;
 }
 
-chapter[open="false"]>sectiontitle:first-child {
+chapter[open=false] > sectiontitle:first-child {
   display: block;
 }
 
-chapter[open="false"]>sectiontitle:first-child {
+chapter[open=false] > sectiontitle:first-child {
   display: block;
 }
 
-section>sectiontitle:first-child, section>sectiontitle{
+section > sectiontitle:first-child, section > sectiontitle {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
-section>sectiontitle:before {
+section > sectiontitle:before {
   -moz-user-select: none;
 }
 
-section[open="false"]>sectiontitle {
+section[open=false] > sectiontitle {
   display: block;
 }
 
-section[nonum="true"]>sectiontitle:first-child:before {
+section[nonum=true] > sectiontitle:first-child:before {
   content: "";
 }
 
-section[nonum="true"]>sectiontitle:before {
+section[nonum=true] > sectiontitle:before {
   content: "";
 }
 
-section[nonum="true"] {
+section[nonum=true] {
   counter-increment: none;
 }
 
-
-section[open="false"]>* {
+section[open=false] > * {
   display: none;
 }
 
-section[open="false"]>sectiontitle:first-child {
+section[open=false] > sectiontitle:first-child {
   display: block;
 }
 
-section[open="false"]>sectiontitle {
+section[open=false] > sectiontitle {
   display: block;
 }
 
-section[open="false"]>button.expander {
+section[open=false] > button.expander {
   display: inline;
 }
 
-subsection>sectiontitle:before {
+subsection > sectiontitle:before {
   -moz-user-select: none;
 }
 
-subsection[open="false"]>sectiontitle {
+subsection[open=false] > sectiontitle {
   display: block;
 }
 
-subsection[open="false"]>* {
+subsection[open=false] > * {
   display: none;
 }
 
-subsection>sectiontitle:first-child, subsection>sectiontitle {
+subsection > sectiontitle:first-child, subsection > sectiontitle {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
-
-subsection[nonum="true"] {
+subsection[nonum=true] {
   counter-increment: none;
 }
 
-subsection[nonum="true"]>sectiontitle:first-child:before, subsection[nonum="true"]>sectiontitle:before {
+subsection[nonum=true] > sectiontitle:first-child:before, subsection[nonum=true] > sectiontitle:before {
   content: "";
 }
 
-subsubsection>sectiontitle:before {
+subsubsection > sectiontitle:before {
   -moz-user-select: none;
 }
 
-subsubsection[nonum="true"] {
+subsubsection[nonum=true] {
   counter-increment: none;
 }
 
-subsubsection[nonum="true"]>sectiontitle:first-child:before {
+subsubsection[nonum=true] > sectiontitle:first-child:before {
   content: "";
 }
 
-
-subsubsection[nonum="true"]>sectiontitle:before {
+subsubsection[nonum=true] > sectiontitle:before {
   content: "";
 }
 
-
-subsubsection[open="false"]>* {
+subsubsection[open=false] > * {
   display: none;
 }
 
-subsubsection[open="false"]>sectiontitle:first-child {
+subsubsection[open=false] > sectiontitle:first-child {
   display: block;
 }
 
-subsubsection[open="false"]>sectiontitle {
+subsubsection[open=false] > sectiontitle {
   display: block;
 }
 
-subsubsection[open="false"]>button.expander {
+subsubsection[open=false] > button.expander {
   display: inline;
 }
-
 
 paragraphsectiontitle:before {
   -moz-user-select: none;
 }
 
-paragraph[nonum="true"] {
+paragraph[nonum=true] {
   counter-increment: none;
 }
 
-paragraph[nonum="true"]>sectiontitle:first-child:before {
+paragraph[nonum=true] > sectiontitle:first-child:before {
   content: "";
 }
 
-paragraph[nonum="true"]>sectiontitle:before {
+paragraph[nonum=true] > sectiontitle:before {
   content: "";
 }
 
-
-*[showinvis="true"] sectiontitle:after {
-  content: "\B6";
+*[showinvis=true] sectiontitle:after {
+  content: "¶";
   display: inline;
   font-family: Courier New;
   color: green;
@@ -742,9 +684,8 @@ paragraph[nonum="true"]>sectiontitle:before {
   -moz-user-select: -moz-none;
 }
 
-
-*[showinvis="true"] p:after {
-  content: "\B6";
+*[showinvis=true] p:after {
+  content: "¶";
   display: inline;
   font-family: Courier New;
   color: green;
@@ -752,9 +693,8 @@ paragraph[nonum="true"]>sectiontitle:before {
   -moz-user-select: -moz-none;
 }
 
-
-*[showinvis="true"] bodyText:after {
-  content: "\B6";
+*[showinvis=true] bodyText:after {
+  content: "¶";
   display: inline;
   font-family: Courier New;
   color: green;
@@ -762,8 +702,8 @@ paragraph[nonum="true"]>sectiontitle:before {
   -moz-user-select: -moz-none;
 }
 
-*[showinvis="true"] bodyMath:after {
-  content: "\B6";
+*[showinvis=true] bodyMath:after {
+  content: "¶";
   display: inline;
   font-family: Courier New;
   color: green;
@@ -771,9 +711,8 @@ paragraph[nonum="true"]>sectiontitle:before {
   -moz-user-select: -moz-none;
 }
 
-
-*[showinvis="true"] title:after {
-  content: "\B6";
+*[showinvis=true] title:after {
+  content: "¶";
   display: inline;
   font-family: Courier New;
   color: green;
@@ -781,9 +720,8 @@ paragraph[nonum="true"]>sectiontitle:before {
   -moz-user-select: -moz-none;
 }
 
-
-*[showinvis="true"] shortQuote:after {
-  content: "\B6";
+*[showinvis=true] shortQuote:after {
+  content: "¶";
   display: inline;
   font-family: Courier New;
   color: green;
@@ -798,16 +736,16 @@ preface {
   -moz-border-radius: 20px;
 }
 
-*[showinvis="true"] preface:before {
+*[showinvis=true] preface:before {
   content: "Preface";
   display: block;
-  font-size: medium; font-weight: bold;
+  font-size: medium;
+  font-weight: bold;
   color: green;
   -moz-user-select: -moz-none;
 }
 
-
-button[class="frontmattertag"] {
+button[class=frontmattertag] {
   position: absolute;
   right: 5px;
   font-family: sans-serif;
@@ -818,10 +756,10 @@ button[class="frontmattertag"] {
 }
 
 /* Selection rules */
-
 body {
-  -moz-user-select: text; /* -moz-none can be overridden */
-  counter-reset: eqnnumber subeqnnumber chapter part section ftnotectr;
+  -moz-user-select: text;
+  /* -moz-none can be overridden */
+  counter-reset: part chapter section subsection subsubsection paragraph subparagraph eqnnumber subeqnnumber item item-number numberedlist ftnotectr bibliographylist theorem;
   display: block;
   position: relative;
   font-family: Arial;
@@ -831,10 +769,9 @@ body {
 }
 
 /* selection is possible in paragraph and front matter tags */
-
 bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epigraph, title, line,
-  dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
-  abstract, address, author, date, title, maketitle {
+dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
+abstract, address, author, date, title, maketitle {
   -moz-user-select: text;
 }
 
@@ -849,20 +786,19 @@ bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epi
   -moz-border-left-colors: transparent ThreeDHighlight ThreeDLightShadow;
   background-color: ThreeDFace;
 } */
-
 /* front matter tags */
 address {
-  display:block;
+  display: block;
   text-align: center;
 }
 
 author {
-  display:block;
+  display: block;
   text-align: center;
 }
 
 date {
-  display:block;
+  display: block;
   text-align: center;
 }
 
@@ -871,17 +807,16 @@ part {
 }
 
 chapter {
-  margin-top: .75in;
+  margin-top: 0.75in;
 }
 
 section {
-  margin-top: .5in;
+  margin-top: 0.5in;
 }
 
 abstract {
-  margin-bottom: .5in;
+  margin-bottom: 0.5in;
 }
-
 
 /* Key to the entries below for msidisplay:
     i) msidisplay with no "numbering" attribute will be assumed to be numbered automatically as a single equation.
@@ -909,161 +844,155 @@ abstract {
          its "subEquationReset" attribute is "true"; managing this attribute will have to be done dynamically, and it will (attempt to)
          track whether previous display has "subEquationContinuation=true" and "subEquationNumbers=true".
 */
-
 mstyle {
   -moz-user-select: text;
 }
 
 msidisplay {
- -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaynumbered");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaynumbered");
   position: relative;
   display: block;
 }
 
-msidisplay[subEquationNumbers="true"] {
+msidisplay[subEquationNumbers=true] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaysubnumbered");
 }
 
-msidisplay[numbering="none"], msidisplay[numbering="eqns"], msidisplay[numbering="eqns"][subEquationNumbers="true"] {
+msidisplay[numbering=none], msidisplay[numbering=eqns], msidisplay[numbering=eqns][subEquationNumbers=true] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaybase");
 }
 
-msidisplay[numbering="none"][marker] {
+msidisplay[numbering=none][marker] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaymarker");
 }
 
-msidisplay[numbering="eqns"] mtable[type="eqnarray"]>mtr {
+msidisplay[numbering=eqns] mtable[type=eqnarray] > mtr {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrownumbered");
 }
 
-msidisplay[numbering="eqns"] mtable[type="align"]>mtr {
+msidisplay[numbering=eqns] mtable[type=align] > mtr {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrownumbered");
 }
 
-
-msidisplay mtable[type="eqnarray"]>mtr[numbering="none"] {
+msidisplay mtable[type=eqnarray] > mtr[numbering=none] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowbase");
 }
 
-msidisplay mtable[type="eqnarray"]>mtr[numbering="none"][marker] {
+msidisplay mtable[type=eqnarray] > mtr[numbering=none][marker] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowmarker");
 }
 
-msidisplay[numbering="eqns"][subEquationNumbers="true"] mtable[type="eqnarray"]>mtr {
+msidisplay[numbering=eqns][subEquationNumbers=true] mtable[type=eqnarray] > mtr {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowsubnumbered");
 }
 
-
-msidisplay[subEquationNumbers="true"] {
+msidisplay[subEquationNumbers=true] {
   counter-increment: eqnnumber;
   counter-reset: subeqnnum;
 }
 
-msidisplay[subEquationNumbers="true"][numbering="none"], msidisplay[subEquationNumbers="true"][subEquationContinuation="true"] {
+msidisplay[subEquationNumbers=true][numbering=none], msidisplay[subEquationNumbers=true][subEquationContinuation=true] {
   counter-increment: none;
   counter-reset: none;
 }
 
-msidisplay[subEquationNumbers="true"][subEquationContinuation="true"][subEquationReset="true"] {
+msidisplay[subEquationNumbers=true][subEquationContinuation=true][subEquationReset=true] {
   counter-increment: eqnnumber;
   counter-reset: subeqnnum;
 }
 
-mtd[class="eqnmarker"],mml|mtd[class="eqnmarker"]
-{
+mtd[class=eqnmarker], mml|mtd[class=eqnmarker] {
   padding-left: 50px;
   text-align: right;
   vertical-align: bottom;
-  border-top-style:  hidden;
+  border-top-style: hidden;
   border-right-style: hidden;
   border-bottom-style: hidden;
   border-left-style: none;
-  -moz-user-modify: read-only ! important;
-  -moz-user-select: none ! important;
+  -moz-user-modify: read-only !important;
+  -moz-user-select: none !important;
   -moz-user-focus: ignore;
   -moz-user-input: none;
-
 }
 
-button[class="eqnnum"]{
+button[class=eqnnum] {
   counter-increment: eqnnumber;
-/*  counter-reset: subeqnnum; */
+  /*  counter-reset: subeqnnum; */
   position: absolute;
   right: 0px;
   top: 0px;
   font-style: normal;
   color: red;
-  -moz-user-modify: read-only ! important;
-  -moz-user-select: none ! important;
+  -moz-user-modify: read-only !important;
+  -moz-user-select: none !important;
   -moz-user-focus: ignore;
   -moz-user-input: none;
 }
 
-button[class="subeqnnum"]{
+button[class=subeqnnum] {
   counter-increment: subeqnnum;
   counter-reset: none;
   position: absolute;
   right: 20px;
   font-style: normal;
   color: blue;
-  -moz-user-modify: read-only ! important;
-  -moz-user-select: none ! important;
+  -moz-user-modify: read-only !important;
+  -moz-user-select: none !important;
   -moz-user-focus: ignore;
   -moz-user-input: none;
 }
 
-button[class="eqnmarker"]{
+button[class=eqnmarker] {
   position: absolute;
   right: 0px;
   font-style: normal;
   color: red;
-  -moz-user-modify: read-only ! important;
-  -moz-user-select: none ! important;
+  -moz-user-modify: read-only !important;
+  -moz-user-select: none !important;
   -moz-user-focus: ignore;
   -moz-user-input: none;
 }
 
-mtr button[class="eqnnum"], mtr button[class="subeqnnum"], mtr button[class="eqnmarker"] {
+mtr button[class=eqnnum], mtr button[class=subeqnnum], mtr button[class=eqnmarker] {
   display: inline;
   right: 0px;
-  -moz-user-modify: read-only ! important;
-  -moz-user-select: none ! important;
+  -moz-user-modify: read-only !important;
+  -moz-user-select: none !important;
   -moz-user-focus: ignore;
   -moz-user-input: none;
 }
 
-button[class="eqnnum"]:after{
+button[class=eqnnum]:after {
   content: "  (" counter(eqnnumber) ")";
-  -moz-user-modify: read-only ! important;
-  -moz-user-select: none ! important;
+  -moz-user-modify: read-only !important;
+  -moz-user-select: none !important;
   -moz-user-focus: ignore;
   -moz-user-input: none;
 }
 
-button[class="eqnnum"][customLabel]:after{
+button[class=eqnnum][customLabel]:after {
   content: "  " attr(customLabel);
-  -moz-user-modify: read-only ! important;
-  -moz-user-select: none ! important;
+  -moz-user-modify: read-only !important;
+  -moz-user-select: none !important;
   -moz-user-focus: ignore;
   -moz-user-input: none;
 }
 
-button[class="subeqnnum"]:after{
-  content: "  (" counter(eqnnumber) "." counter(subeqnnum,lower-latin) ")";
-  -moz-user-modify: read-only ! important;
-  -moz-user-select: none ! important;
+button[class=subeqnnum]:after {
+  content: "  (" counter(eqnnumber) "." counter(subeqnnum, lower-latin) ")";
+  -moz-user-modify: read-only !important;
+  -moz-user-select: none !important;
   -moz-user-focus: ignore;
   -moz-user-input: none;
 }
 
-button[class="subeqnnum"][customLabel]:after{
+button[class=subeqnnum][customLabel]:after {
   content: "  " attr(customLabel);
-  -moz-user-modify: read-only ! important;
-  -moz-user-select: none ! important;
+  -moz-user-modify: read-only !important;
+  -moz-user-select: none !important;
   -moz-user-focus: ignore;
   -moz-user-input: none;
 }
-
 
 title {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-title");
@@ -1139,28 +1068,28 @@ line {
   border: 2px solid rgb(220,220,220);
   -moz-border-radius: 8px;
 }  */
-
-*[showinvis="true"] numberedListItem {
-  border: 2px solid rgb(220,210,220);
+*[showinvis=true] numberedListItem {
+  border: 2px solid #dcd2dc;
   -moz-border-radius: 8px;
 }
 
-*[showinvis="true"] bulletListItem {
-  border: 2px solid rgb(220,210,220);
+*[showinvis=true] bulletListItem {
+  border: 2px solid #dcd2dc;
   -moz-border-radius: 8px;
 }
 
-*[showinvis="true"] descriptionListItem {
-  border: 2px solid rgb(220,210,220);
+*[showinvis=true] descriptionListItem {
+  border: 2px solid #dcd2dc;
   -moz-border-radius: 8px;
 }
+
 descriptionListItem {
-  border: 2px solid rgb(220,210,220);
+  border: 2px solid #dcd2dc;
   background-color: #f0f0ff;
   -moz-border-radius: 8px;
 }
 
-*[showinvis="true"] numberedListItem + numberedListItem {
+*[showinvis=true] numberedListItem + numberedListItem {
   margin-top: -5px;
 }
 
@@ -1180,11 +1109,9 @@ descriptionListItem {
     Remark lead-in     - normal normal (but we use bold on-screen, per George)
     Remark content     - italic normal
 */
-
 assertion > sectiontitle:first-child::before, conjecture > sectiontitle:first-child::before,
 corollary > sectiontitle:first-child::before, criterion > sectiontitle:first-child::before,
-lemma > sectiontitle:first-child::before, proposition > sectiontitle:first-child::before, theorem > sectiontitle:first-child::before
-{
+lemma > sectiontitle:first-child::before, proposition > sectiontitle:first-child::before, theorem > sectiontitle:first-child::before {
   font-style: normal;
   font-weight: bold;
   -moz-user-select: -moz-none;
@@ -1197,73 +1124,73 @@ assertion, conjecture, corollary, criterion, lemma, proposition, theorem {
 }
 
 assertion > sectiontitle:first-child::before {
-  content: 'Assertion ' counter(section) "." counter(theorem) ' ';
+  content: "Assertion " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-assertion[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Assertion ';
+assertion[numbering=none] > sectiontitle:first-child::before {
+  content: "Assertion ";
   -moz-user-modify: read-only;
 }
 
 conjecture > sectiontitle:first-child::before {
-  content: 'Conjecture ' counter(section) "." counter(theorem) ' ';
+  content: "Conjecture " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-conjecture[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Conjecture ';
+conjecture[numbering=none] > sectiontitle:first-child::before {
+  content: "Conjecture ";
   -moz-user-modify: read-only;
 }
 
 corollary > sectiontitle:first-child::before {
-  content: 'Corollary ' counter(section) "." counter(theorem) ' ';
+  content: "Corollary " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-corollary[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Corollary ';
+corollary[numbering=none] > sectiontitle:first-child::before {
+  content: "Corollary ";
   -moz-user-modify: read-only;
 }
 
 criterion > sectiontitle:first-child::before {
-  content: 'Criterion ' counter(section) "." counter(theorem) ' ';
+  content: "Criterion " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-criterion[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Criterion ';
+criterion[numbering=none] > sectiontitle:first-child::before {
+  content: "Criterion ";
   -moz-user-modify: read-only;
 }
 
 lemma > sectiontitle:first-child::before {
-  content: 'Lemma ' counter(section) "." counter(theorem) ' ';
+  content: "Lemma " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-lemma[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Lemma ';
+lemma[numbering=none] > sectiontitle:first-child::before {
+  content: "Lemma ";
   -moz-user-modify: read-only;
 }
 
 proposition > sectiontitle:first-child::before {
-  content: 'Proposition ' counter(section) "." counter(theorem) ' ';
+  content: "Proposition " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-proposition[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Proposition ';
+proposition[numbering=none] > sectiontitle:first-child::before {
+  content: "Proposition ";
   -moz-user-modify: read-only;
 }
 
 theorem > *:first-child:before {
-  content: 'Theorem ' counter(section) "." counter(theorem) '  ';
+  content: "Theorem " counter(section) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
-theorem[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Theorem ';
+theorem[numbering=none] > sectiontitle:first-child::before {
+  content: "Theorem ";
   -moz-user-modify: read-only;
 }
 
@@ -1272,145 +1199,142 @@ axiom > sectiontitle:first-child::before, condition > sectiontitle:first-child::
 definition > sectiontitle:first-child::before, example > sectiontitle:first-child::before,
 exercise > sectiontitle:first-child::before, hypothesis > sectiontitle:first-child::before,
 problem > sectiontitle:first-child::before, property > sectiontitle:first-child::before,
-question > sectiontitle:first-child::before, solution > sectiontitle:first-child::before
-{
+question > sectiontitle:first-child::before, solution > sectiontitle:first-child::before {
   font-style: normal;
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 algorithm, assumption, axiom, condition, definition, example, exercise, hypothesis,
-problem, property, question, solution
-{
+problem, property, question, solution {
   display: block;
   font-style: normal;
   counter-increment: theorem;
 }
 
 algorithm > sectiontitle:first-child::before {
-  content: 'Algorithm ' counter(section) "." counter(theorem) ' ';
+  content: "Algorithm " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-algorithm[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Algorithm ';
+algorithm[numbering=none] > sectiontitle:first-child::before {
+  content: "Algorithm ";
   -moz-user-modify: read-only;
 }
 
 assumption > sectiontitle:first-child::before {
-  content: 'Assumption ' counter(section) "." counter(theorem) ' ';
+  content: "Assumption " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-assumption[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Assumption ';
+assumption[numbering=none] > sectiontitle:first-child::before {
+  content: "Assumption ";
   -moz-user-modify: read-only;
 }
 
 axiom > sectiontitle:first-child::before {
-  content: 'Axiom ' counter(section) "." counter(theorem) ' ';
+  content: "Axiom " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-axiom[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Axiom ';
+axiom[numbering=none] > sectiontitle:first-child::before {
+  content: "Axiom ";
   -moz-user-modify: read-only;
 }
 
 condition > sectiontitle:first-child::before {
-  content: 'Condition ' counter(section) "." counter(theorem) ' ';
+  content: "Condition " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-condition[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Condition ';
+condition[numbering=none] > sectiontitle:first-child::before {
+  content: "Condition ";
   -moz-user-modify: read-only;
 }
 
 definition > sectiontitle:first-child::before {
-  content: 'Definition ' counter(section) "." counter(theorem) ' ';
+  content: "Definition " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-definition[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Definition ';
+definition[numbering=none] > sectiontitle:first-child::before {
+  content: "Definition ";
   -moz-user-modify: read-only;
 }
 
 example > sectiontitle:first-child::before {
-  content: 'Example ' counter(section) "." counter(theorem) ' ';
+  content: "Example " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-example[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Example ';
+example[numbering=none] > sectiontitle:first-child::before {
+  content: "Example ";
   -moz-user-modify: read-only;
 }
 
 exercise > sectiontitle:first-child::before {
-  content: 'Exercise ' counter(section) "." counter(theorem) ' ';
+  content: "Exercise " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-exercise[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Exercise ';
+exercise[numbering=none] > sectiontitle:first-child::before {
+  content: "Exercise ";
   -moz-user-modify: read-only;
 }
 
 hypothesis > sectiontitle:first-child::before {
-  content: 'Hypothesis ' counter(section) "." counter(theorem) ' ';
+  content: "Hypothesis " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-hypothesis[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Hypothesis ';
+hypothesis[numbering=none] > sectiontitle:first-child::before {
+  content: "Hypothesis ";
   -moz-user-modify: read-only;
 }
 
 problem > sectiontitle:first-child::before {
-  content: 'Problem ' counter(section) "." counter(theorem) ' ';
+  content: "Problem " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-problem[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Problem ';
+problem[numbering=none] > sectiontitle:first-child::before {
+  content: "Problem ";
   -moz-user-modify: read-only;
 }
 
 property > sectiontitle:first-child::before {
-  content: 'Property ' counter(section) "." counter(theorem) ' ';
+  content: "Property " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-property[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Property ';
+property[numbering=none] > sectiontitle:first-child::before {
+  content: "Property ";
   -moz-user-modify: read-only;
 }
 
 question > sectiontitle:first-child::before {
-  content: 'Question ' counter(section) "." counter(theorem) ' ';
+  content: "Question " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-question[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Question ';
+question[numbering=none] > sectiontitle:first-child::before {
+  content: "Question ";
   -moz-user-modify: read-only;
 }
 
 solution > sectiontitle:first-child::before {
-  content: 'Solution ' counter(section) "." counter(theorem) ' ';
+  content: "Solution " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-solution[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Solution ';
+solution[numbering=none] > sectiontitle:first-child::before {
+  content: "Solution ";
   -moz-user-modify: read-only;
 }
 
 acknowledgment > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
 conclusion > sectiontitle:first-child::before, notation > sectiontitle:first-child::before,
-remark > sectiontitle:first-child::before, summary > sectiontitle:first-child::before
-{
+remark > sectiontitle:first-child::before, summary > sectiontitle:first-child::before {
   font-style: italic;
   font-weight: bold;
   -moz-user-modify: read-only;
@@ -1422,117 +1346,116 @@ acknowledgment, case, claim, conclusion, notation, remark, summary {
   counter-increment: theorem;
 }
 
- acknowledgment > sectiontitle:first-child::before {
-  content: 'Acknowledgment ' counter(section) "." counter(theorem) ' ';
+acknowledgment > sectiontitle:first-child::before {
+  content: "Acknowledgment " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-acknowledgment[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Acknowledgment ';
+acknowledgment[numbering=none] > sectiontitle:first-child::before {
+  content: "Acknowledgment ";
   -moz-user-modify: read-only;
 }
 
 case > sectiontitle:first-child::before {
-  content: 'Case ' counter(section) "." counter(theorem) ' ';
+  content: "Case " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-case[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Case ';
+case[numbering=none] > sectiontitle:first-child::before {
+  content: "Case ";
   -moz-user-modify: read-only;
 }
 
 claim > sectiontitle:first-child::before {
-  content: 'Claim ' counter(section) "." counter(theorem) ' ';
+  content: "Claim " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-claim[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Claim ';
+claim[numbering=none] > sectiontitle:first-child::before {
+  content: "Claim ";
   -moz-user-modify: read-only;
 }
 
 conclusion > sectiontitle:first-child::before {
-  content: 'Conclusion ' counter(section) "." counter(theorem) ' ';
+  content: "Conclusion " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-conclusion[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Conclusion ';
+conclusion[numbering=none] > sectiontitle:first-child::before {
+  content: "Conclusion ";
   -moz-user-modify: read-only;
 }
 
 notation > sectiontitle:first-child::before {
-  content: 'Notation ' counter(section) "." counter(theorem) ' ';
+  content: "Notation " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-notation[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Notation ';
+notation[numbering=none] > sectiontitle:first-child::before {
+  content: "Notation ";
   -moz-user-modify: read-only;
 }
 
 remark > sectiontitle:first-child::before {
-  content: 'Remark ' counter(section) "." counter(theorem) ' ';
+  content: "Remark " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-remark[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Remark ';
+remark[numbering=none] > sectiontitle:first-child::before {
+  content: "Remark ";
   -moz-user-modify: read-only;
 }
 
 summary > sectiontitle:first-child::before {
-  content: 'Summary ' counter(section) "." counter(theorem) ' ';
+  content: "Summary " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-summary[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Summary ';
+summary[numbering=none] > sectiontitle:first-child::before {
+  content: "Summary ";
   -moz-user-modify: read-only;
 }
 
 proof > *:first-child::before {
-  content: 'Proof ';
+  content: "Proof ";
   -moz-user-modify: read-only;
   background-color: lightgray;
   font-weight: bold;
 }
 
 proof > *:last-child::after {
-  content: '_';
+  content: "_";
   -moz-user-modify: read-only;
   background-color: black;
 }
 
-
-assertion[leadInType="custom"],
-conjecture[leadInType="custom"],
-corollary[leadInType="custom"],
-criterion[leadInType="custom"],
-lemma[leadInType="custom"],
-proposition[leadInType="custom"],
-theorem[leadInType="custom"],
-algorithm[leadInType="custom"],
-assumption[leadInType="custom"],
-axiom[leadInType="custom"],
-condition[leadInType="custom"],
-definition[leadInType="custom"],
-example[leadInType="custom"],
-exercise[leadInType="custom"],
-hypothesis[leadInType="custom"],
-problem[leadInType="custom"],
-property[leadInType="custom"],
-question[leadInType="custom"],
-solution[leadInType="custom"],
-acknowledgment[leadInType="custom"],
-case[leadInType="custom"],
-claim[leadInType="custom"],
-conclusion[leadInType="custom"],
-notation[leadInType="custom"],
-remark[leadInType="custom"],
-summary[leadInType="custom"],
-proof[leadInType="custom"] {
+assertion[leadInType=custom],
+conjecture[leadInType=custom],
+corollary[leadInType=custom],
+criterion[leadInType=custom],
+lemma[leadInType=custom],
+proposition[leadInType=custom],
+theorem[leadInType=custom],
+algorithm[leadInType=custom],
+assumption[leadInType=custom],
+axiom[leadInType=custom],
+condition[leadInType=custom],
+definition[leadInType=custom],
+example[leadInType=custom],
+exercise[leadInType=custom],
+hypothesis[leadInType=custom],
+problem[leadInType=custom],
+property[leadInType=custom],
+question[leadInType=custom],
+solution[leadInType=custom],
+acknowledgment[leadInType=custom],
+case[leadInType=custom],
+claim[leadInType=custom],
+conclusion[leadInType=custom],
+notation[leadInType=custom],
+remark[leadInType=custom],
+summary[leadInType=custom],
+proof[leadInType=custom] {
   /* -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin"); */
   display: block;
 }
@@ -1563,66 +1486,66 @@ conclusion > envLeadIn,
 notation > envLeadIn,
 remark > envLeadIn,
 summary > envLeadIn:before {
- /* -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremLeadin"); */
- content: 'HELLO';
+  /* -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremLeadin"); */
+  content: "HELLO";
 }
 
-assertion[numbering="none"],
-conjecture[numbering="none"],
-corollary[numbering="none"],
-criterion[numbering="none"],
-lemma[numbering="none"],
-proposition[numbering="none"],
-theorem[numbering="none"],
-algorithm[numbering="none"],
-assumption[numbering="none"],
-axiom[numbering="none"],
-condition[numbering="none"],
-definition[numbering="none"],
-example[numbering="none"],
-exercise[numbering="none"],
-hypothesis[numbering="none"],
-problem[numbering="none"],
-property[numbering="none"],
-question[numbering="none"],
-solution[numbering="none"],
-acknowledgment[numbering="none"],
-case[numbering="none"],
-claim[numbering="none"],
-conclusion[numbering="none"],
-notation[numbering="none"],
-remark[numbering="none"],
-summary[numbering="none"] {
+assertion[numbering=none],
+conjecture[numbering=none],
+corollary[numbering=none],
+criterion[numbering=none],
+lemma[numbering=none],
+proposition[numbering=none],
+theorem[numbering=none],
+algorithm[numbering=none],
+assumption[numbering=none],
+axiom[numbering=none],
+condition[numbering=none],
+definition[numbering=none],
+example[numbering=none],
+exercise[numbering=none],
+hypothesis[numbering=none],
+problem[numbering=none],
+property[numbering=none],
+question[numbering=none],
+solution[numbering=none],
+acknowledgment[numbering=none],
+case[numbering=none],
+claim[numbering=none],
+conclusion[numbering=none],
+notation[numbering=none],
+remark[numbering=none],
+summary[numbering=none] {
   counter-increment: none;
 }
 
-assertion > envLeadIn+bodyText,
-conjecture > envLeadIn+bodyText,
-corollary > envLeadIn+bodyText,
-criterion > envLeadIn+bodyText,
-lemma > envLeadIn+bodyText,
-proposition > envLeadIn+bodyText,
-theorem > envLeadIn+bodyText,
-algorithm > envLeadIn+bodyText,
-assumption > envLeadIn+bodyText,
-axiom > envLeadIn+bodyText,
-condition > envLeadIn+bodyText,
-definition > envLeadIn+bodyText,
-example > envLeadIn+bodyText,
-exercise > envLeadIn+bodyText,
-hypothesis > envLeadIn+bodyText,
-problem > envLeadIn+bodyText,
-property > envLeadIn+bodyText,
-question > envLeadIn+bodyText,
-solution > envLeadIn+bodyText,
-acknowledgment > envLeadIn+bodyText,
-case > envLeadIn+bodyText,
-claim > envLeadIn+bodyText,
-conclusion > envLeadIn+bodyText,
-notation > envLeadIn+bodyText,
-remark > envLeadIn+bodyText,
-summary > envLeadIn+bodyText,
-proof > envLeadIn+bodyText {
+assertion > envLeadIn + bodyText,
+conjecture > envLeadIn + bodyText,
+corollary > envLeadIn + bodyText,
+criterion > envLeadIn + bodyText,
+lemma > envLeadIn + bodyText,
+proposition > envLeadIn + bodyText,
+theorem > envLeadIn + bodyText,
+algorithm > envLeadIn + bodyText,
+assumption > envLeadIn + bodyText,
+axiom > envLeadIn + bodyText,
+condition > envLeadIn + bodyText,
+definition > envLeadIn + bodyText,
+example > envLeadIn + bodyText,
+exercise > envLeadIn + bodyText,
+hypothesis > envLeadIn + bodyText,
+problem > envLeadIn + bodyText,
+property > envLeadIn + bodyText,
+question > envLeadIn + bodyText,
+solution > envLeadIn + bodyText,
+acknowledgment > envLeadIn + bodyText,
+case > envLeadIn + bodyText,
+claim > envLeadIn + bodyText,
+conclusion > envLeadIn + bodyText,
+notation > envLeadIn + bodyText,
+remark > envLeadIn + bodyText,
+summary > envLeadIn + bodyText,
+proof > envLeadIn + bodyText {
   display: inline;
 }
 
@@ -1647,10 +1570,8 @@ texnote[leadInType="custom"], solution[leadInType="custom"] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
 }
 */
-
 /* Additional theorem-like environments that are used in shells */
-acknowledgement, convention, observation
-{
+acknowledgement, convention, observation {
   display: block;
   font-style: normal;
   counter-increment: theorem;
@@ -1658,64 +1579,63 @@ acknowledgement, convention, observation
 
 acknowledgement > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
 acknowledgement > sectiontitle:first-child::before {
-  content: 'Acknowledgement ' counter(section) "." counter(theorem) ' ';
+  content: "Acknowledgement " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
-acknowledgement[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Acknowledgement ';
+
+acknowledgement[numbering=none] > sectiontitle:first-child::before {
+  content: "Acknowledgement ";
   -moz-user-modify: read-only;
 }
 
 convention > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
 convention > sectiontitle:first-child::before {
-  content: 'Convention ' counter(section) "." counter(theorem) ' ';
+  content: "Convention " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
-convention[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Convention ';
+
+convention[numbering=none] > sectiontitle:first-child::before {
+  content: "Convention ";
   -moz-user-modify: read-only;
 }
 
 observation > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
 observation > sectiontitle:first-child::before {
-  content: 'Observation ' counter(section) "." counter(theorem) ' ';
-  -moz-user-modify: read-only;
-}
-observation[numbering="none"] > sectiontitle:first-child::before {
-  content: 'Observation ';
+  content: "Observation " counter(section) "." counter(theorem) " ";
   -moz-user-modify: read-only;
 }
 
-acknowledgement[leadInType="custom"],
-convention[leadInType="custom"],
-observation[leadInType="custom"]
-{
+observation[numbering=none] > sectiontitle:first-child::before {
+  content: "Observation ";
+  -moz-user-modify: read-only;
+}
+
+acknowledgement[leadInType=custom],
+convention[leadInType=custom],
+observation[leadInType=custom] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
 }
 
 acknowledgement > envLeadIn,
 convention > envLeadIn,
-observation > envLeadIn
-{
+observation > envLeadIn {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremLeadin");
 }
 
-acknowledgement[numbering="none"],
-convention[numbering="none"],
-observation[numbering="none"] {
+acknowledgement[numbering=none],
+convention[numbering=none],
+observation[numbering=none] {
   counter-increment: none;
 }
 
-acknowledgement > envLeadIn+bodyText,
-convention > envLeadIn+bodyText,
-observation > envLeadIn+bodyText {
+acknowledgement > envLeadIn + bodyText,
+convention > envLeadIn + bodyText,
+observation > envLeadIn + bodyText {
   display: inline;
 }
 
-
-
 rawTeX {
- color: #6600cc;
+  color: #6600cc;
 }
 
 htmlfield {
@@ -1723,69 +1643,70 @@ htmlfield {
 }
 
 smallbox {
-	border: 1px solid black;
+  border: 1px solid black;
 }
 
 [hilite] {
-	background-color: rgb(255,255,186);
+  background-color: #ffffba;
 }
 
 /* These are the tags that polyglossia introduces for right-to-left languages */
-Arabic, textarabic, coptic, textcoptic, divehi, textdivehi, farsi, textfarsi, hebrew, texthebrew, syriac, textsyriac, urdu, texturdu
-{
-	direction: rtl;
-	text-align: right; }
+Arabic, textarabic, coptic, textcoptic, divehi, textdivehi, farsi, textfarsi, hebrew, texthebrew, syriac, textsyriac, urdu, texturdu {
+  direction: rtl;
+  text-align: right;
+}
 
-textarabic, textcoptic, textdivehi, textfarsi, texthebrew, textsyriac, texturdu
-{
-  direction: rtl; }
+textarabic, textcoptic, textdivehi, textfarsi, texthebrew, textsyriac, texturdu {
+  direction: rtl;
+}
 
 /* These are the other language tags, so left-to-right text can be included with the above environments */
-acadian, afrikaans, albanian, amharic, ancientgreek, asturian, australian, austrian, bahasa, bahasai, bahasam, basque, bengali, brazil, brazilian, breton, bulgarian, canadian, canadien, catalan, croatian, czech, 
-danish, dutch, english, esperanto, estonian, finnish, francais, french, frenchb, friulan, galician, german, germanb, greek, hindi, icelandic, indon, indonesian, interlingua, irish, italian, kannada, khmer, 
-korean, lao, latin, latvian, lithuanian, lowersorbian, lsorbian, magyar, malay, malayalam, marathi, nko, meyalu, monogreek, naustrian, newzealand, ngerman, norsk, nynorsk, occitan, piedmontese, polish, 
-polutonikogreek, polygreek, portuges, portuguese, romanian, romansh, russian, samin, sanskrit, scottish, serbian, slovak, slovene, slovenian, spanish, swedish, telugu, thai, tibetan, turkish, turkmen, 
-UKenglish, ukrainian, uppersorbian, usorbian, vietnamese, USenglish, welsh{
+acadian, afrikaans, albanian, amharic, ancientgreek, asturian, australian, austrian, bahasa, bahasai, bahasam, basque, bengali, brazil, brazilian, breton, bulgarian, canadian, canadien, catalan, croatian, czech,
+danish, dutch, english, esperanto, estonian, finnish, francais, french, frenchb, friulan, galician, german, germanb, greek, hindi, icelandic, indon, indonesian, interlingua, irish, italian, kannada, khmer,
+korean, lao, latin, latvian, lithuanian, lowersorbian, lsorbian, magyar, malay, malayalam, marathi, nko, meyalu, monogreek, naustrian, newzealand, ngerman, norsk, nynorsk, occitan, piedmontese, polish,
+polutonikogreek, polygreek, portuges, portuguese, romanian, romansh, russian, samin, sanskrit, scottish, serbian, slovak, slovene, slovenian, spanish, swedish, telugu, thai, tibetan, turkish, turkmen,
+UKenglish, ukrainian, uppersorbian, usorbian, vietnamese, USenglish, welsh {
   direction: ltr;
-  text-align: left; }
+  text-align: left;
+}
 
-textacadian, textafrikaans, textalbanian, textamharic, textancientgreek, textasturian, textaustralian, textaustrian, textbahasa, textbahasai, textbahasam, textbasque, textbengali, textbrazil, textbrazilian, textbreton, textbulgarian, textcanadian, textcanadien, textcatalan, textcroatian, textczech, 
-textdanish, textdutch, textenglish, textesperanto, textestonian, textfinnish, textfrancais, textfrench, textfrenchb, textfriulan, textgalician, textgerman, textgermanb, textgreek, texthindi, texticelandic, textindon, textindonesian, textinterlingua, textirish, textitalian, textkannada, textkhmer, 
-textkorean, textlao, textlatin, textlatvian, textlithuanian, textlowersorbian, textlsorbian, textmagyar, textmalay, textmalayalam, textmarathi, textnko, textmeyalu, textmonogreek, textnaustrian, textnewzealand, textngerman, textnorsk, textnynorsk, textoccitan, textpiedmontese, textpolish, 
-textpolutonikogreek, textpolygreek, textportuges, textportuguese, textromanian, textromansh, textrussian, textsamin, textsanskrit, textscottish, textserbian, textslovak, textslovene, textslovenian, textspanish, textswedish, texttelugu, textthai, texttibetan, textturkish, textturkmen, 
-textUKenglish, textukrainian, textuppersorbian, textusorbian, textvietnamese, textUSenglish, textwelsh{
-  direction: ltr; }
+textacadian, textafrikaans, textalbanian, textamharic, textancientgreek, textasturian, textaustralian, textaustrian, textbahasa, textbahasai, textbahasam, textbasque, textbengali, textbrazil, textbrazilian, textbreton, textbulgarian, textcanadian, textcanadien, textcatalan, textcroatian, textczech,
+textdanish, textdutch, textenglish, textesperanto, textestonian, textfinnish, textfrancais, textfrench, textfrenchb, textfriulan, textgalician, textgerman, textgermanb, textgreek, texthindi, texticelandic, textindon, textindonesian, textinterlingua, textirish, textitalian, textkannada, textkhmer,
+textkorean, textlao, textlatin, textlatvian, textlithuanian, textlowersorbian, textlsorbian, textmagyar, textmalay, textmalayalam, textmarathi, textnko, textmeyalu, textmonogreek, textnaustrian, textnewzealand, textngerman, textnorsk, textnynorsk, textoccitan, textpiedmontese, textpolish,
+textpolutonikogreek, textpolygreek, textportuges, textportuguese, textromanian, textromansh, textrussian, textsamin, textsanskrit, textscottish, textserbian, textslovak, textslovene, textslovenian, textspanish, textswedish, texttelugu, textthai, texttibetan, textturkish, textturkmen,
+textUKenglish, textukrainian, textuppersorbian, textusorbian, textvietnamese, textUSenglish, textwelsh {
+  direction: ltr;
+}
 
-  /***********************/
-  /* Tagged run elements */
-  /***********************/
-
+/***********************/
+/* Tagged run elements */
+/***********************/
 emphasized {
   font-style: italic;
-  color: rgb(9,62,125)
+  color: #093e7d;
 }
 
 emphasized .inlineMath {
-  color: rgb(255,0,255)
+  color: fuchsia;
 }
 
 roman {
   font-family: Times New Roman, serif;
   font-style: normal;
-  color: rgb(0,0,255)
+  color: blue;
 }
 
-calligraphic{
+calligraphic {
   font-family: Apple Chancery, monotype corsiva;
-  color: rgb(0,0,255)
+  color: blue;
 }
 
 alt {
-  color: rgb(0,255,0)
+  color: lime;
 }
 
 bold {
-  font-weight: 700
+  font-weight: 700;
 }
 
 boldsymbol {
@@ -1794,38 +1715,38 @@ boldsymbol {
 }
 
 blackboardBold {
-  font-weight: 700
+  font-weight: 700;
 }
 
 fraktur {
   font-family: MathJax_Fraktur;
-  font-weight: 700
+  font-weight: 700;
 }
 
 italics {
-  font-style: italic
+  font-style: italic;
 }
 
 slanted {
   font-style: italic;
   font-weight: 700;
-  color: rgb(9,62,125)
+  color: #093e7d;
 }
 
 sansSerif {
   font-family: Arial;
   font-weight: 400;
-  color: rgb(9,62,125)
+  color: #093e7d;
 }
 
 smallCaps {
   font-variant: small-caps;
-  color: rgb(0,0,0)
+  color: black;
 }
 
 typewriter {
   font-family: Courier New;
-  font-weight: 300
+  font-weight: 300;
 }
 
 ltxframe {
@@ -1833,49 +1754,49 @@ ltxframe {
 }
 
 rtl {
-  color: rgb(100,50,0);
+  color: #643200;
   direction: rtl;
-  unicode-bidi: bidi-override
+  unicode-bidi: bidi-override;
 }
 
 tiny {
-  font-size: 50%
+  font-size: 50%;
 }
 
 scriptsize {
-  font-size: 67%
+  font-size: 67%;
 }
 
 footnotesize {
-  font-size: 75%
+  font-size: 75%;
 }
 
 small {
-  font-size: 83%
+  font-size: 83%;
 }
 
 normalsize {
-  font-size: 100%
+  font-size: 100%;
 }
 
 large {
-  font-size: 117%
+  font-size: 117%;
 }
 
 Large {
-  font-size: 133%
+  font-size: 133%;
 }
 
 LARGE {
-  font-size: 150%
+  font-size: 150%;
 }
 
 huge {
-  font-size: 167%
+  font-size: 167%;
 }
 
 Huge {
-  font-size: 183%
+  font-size: 183%;
 }
 
 underline {
@@ -1884,5 +1805,7 @@ underline {
 
 td bodyText, note bodyText {
   margin-top: 0;
-  margin-bottom: 0
+  margin-bottom: 0;
 }
+
+/*# sourceMappingURL=latex.css.map */
