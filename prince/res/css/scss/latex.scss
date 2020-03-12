@@ -149,10 +149,6 @@ hspace *, mspace * {
   visibility: hidden;
 }
 
-body {
-   line-height: 1.3em;
-}
-
 *[blackmath] math {
   color: black;
 }
@@ -804,7 +800,8 @@ button[class="frontmattertag"] {
 
 body {
   -moz-user-select: text; /* -moz-none can be overridden */
-  counter-reset: eqnnumber subeqnnumber chapter part section ftnotectr;
+  counter-reset: part chapter section subsection subsubsection paragraph subparagraph
+                 eqnnumber subeqnnumber item item-number numberedlist ftnotectr bibliographylist theorem;
   display: block;
   position: relative;
   font-family: Arial;
@@ -1016,7 +1013,7 @@ mtr button[class="eqnnum"], mtr button[class="subeqnnum"], mtr button[class="eqn
 }
 
 button[class="eqnnum"]:after{
-  content: "  (" counter(section) "." counter(eqnnumber) ")";
+  content: "  (" counter(eqnnumber) ")";
   -moz-user-modify: read-only ! important;
   -moz-user-select: none ! important;
   -moz-user-focus: ignore;
@@ -1032,7 +1029,7 @@ button[class="eqnnum"][customLabel]:after{
 }
 
 button[class="subeqnnum"]:after{
-  content: "  (" counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin) ")";
+  content: "  (" counter(eqnnumber) "." counter(subeqnnum,lower-latin) ")";
   -moz-user-modify: read-only ! important;
   -moz-user-select: none ! important;
   -moz-user-focus: ignore;
