@@ -4255,6 +4255,52 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   nsCOMPtr<nsIDOMNode> node;
   res = msiUtils::GetMathParent(startNode, mathNode);
   if (NS_FAILED(res)) return res;
+  // remove redundant mrows
+  if (mathNode && !isInComplexTransaction) {
+    PRBool useNewCode = PR_TRUE;
+    if (useNewCode) {
+
+    nsCOMPtr<nsIDOMTreeWalker> tw;
+    nsCOMPtr<nsIDOMDocument> domdoc;
+    nsCOMPtr<nsIDOMNode> currNode;
+    nsCOMPtr<nsIDOMNode> parentNode;
+    nsAutoString parentName;
+    nsAutoString tagname;
+    mHTMLEditor->GetDocument(getter_AddRefs(domdoc));
+    nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+    doctrav = do_QueryInterface(domdoc);
+    res = doctrav->CreateTreeWalker(mathNode, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+    if (NS_SUCCEEDED(res)) {
+      tw->NextNode(getter_AddRefs(currNode));
+      while (currNode) {
+        currNode->GetLocalName(tagname);
+        if (tagname.EqualsLiteral("mrow")) {
+          res = currNode->GetParentNode(getter_AddRefs(parentNode));
+          parentNode->GetLocalName(parentName);
+          if (!(parentName.EqualsLiteral("msubsup")||
+                parentName.EqualsLiteral("msub")||
+                parentName.EqualsLiteral("msup")||
+                parentName.EqualsLiteral("mover")||
+                parentName.EqualsLiteral("munder")||
+                parentName.EqualsLiteral("mfrac")||
+                parentName.EqualsLiteral("mroot")||
+                parentName.EqualsLiteral("msqrt")
+            )) {
+            mHTMLEditor->RemoveContainer(currNode);
+          }
+        }
+        tw->NextNode(getter_AddRefs(currNode));
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
   // if (mathNode && !isInComplexTransaction) {
   //   // PRBool emptyMath;
   //   // PRBool emptyParent = PR_FALSE;
