@@ -1475,6 +1475,12 @@ summary[numbering="none"] > sectiontitle:first-child::before {
   -moz-user-modify: read-only;
 }
 
+proof {
+  display: block;
+  font-style: normal;
+  background-color: #EFEFEF;
+}
+
 proof > *:first-child::before {
   content: 'Proof ';
   -moz-user-modify: read-only;
