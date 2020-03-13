@@ -7,7 +7,6 @@ texttag:before {
   -moz-border-radius: 4px;
 }
 
-------
 paratag:before {
   content: 'paratag';
   background-color: rgb(255,200,200);
@@ -17,7 +16,6 @@ paratag:before {
   -moz-border-radius: 4px;
 }
 
-------
 listparenttag:before {
   content: 'listparenttag';
   background-color: white;
@@ -27,7 +25,6 @@ listparenttag:before {
   -moz-border-radius: 4px;
 }
 
-------
 listparenttag:before {
   content: 'listparenttag';
   background-color: white;
@@ -37,7 +34,6 @@ listparenttag:before {
   -moz-border-radius: 4px;
 }
 
-------
 listtag:before {
   content: 'listtag';
   background-color: silver;
@@ -47,7 +43,6 @@ listtag:before {
   -moz-border-radius: 4px;
 }
 
-------
 structtag:before {
   content: 'structtag';
   color: green;
@@ -58,7 +53,6 @@ structtag:before {
   -moz-border-radius: 4px;
 }
 
-------
 envtag:before {
   content: 'envtag';
   color: teal;
@@ -69,7 +63,6 @@ envtag:before {
   -moz-border-radius: 4px;
 }
 
-------
 frontmtag:before {
   content: 'frontmtag';
   background-color: silver;
@@ -79,8 +72,7 @@ frontmtag:before {
   -moz-border-radius: 4px;
 }
 
-------
-How this works:
+/* How this works:
 Since the actual list of tags used in a document is dynamically determined by the tagdef files used, we have to construct the
 CSS file for showing tag symbols dynamically. This file provides a template for each class of tag. For example, the CSS rules for
 text tags is given by taking the template for texttags (the first in this file) and replacing each occurrence of 'texttag' in that 
@@ -96,3 +88,5 @@ bold:before {
 }
 
 This scheme allows for different colors for the various tag classes, but it also allows for much more variation in appearance, if that is desired.
+
+*/
