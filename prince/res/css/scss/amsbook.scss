@@ -65,7 +65,7 @@ $counter_data:  (
   ),
   end: '.  '
 );
-$ctr_set_reset: (inc: chapter, reset: section eqnnumber subeqnnumber);
+$ctr_set_reset: (inc: chapter, reset: section eqnnumber subeqnnum);
 
 chapter {
   display: block;
@@ -89,7 +89,7 @@ chapter {
 // chapter {
 //   display: block;
 //   counter-increment: chapter;
-//   counter-reset: section eqnnumber subeqnnumber;
+//   counter-reset: section eqnnumber subeqnnum;
 // }
 
 // chapter sectiontitle {

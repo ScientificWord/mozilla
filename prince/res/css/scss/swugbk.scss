@@ -294,16 +294,17 @@ Huge {
   font-size: 183%
 }
 
-/*
+/* Use what's in latex.css
 theorem {
   display: block;
   font-style: italic;
-  counter-increment: theorem; */
+  counter-increment: theorem;
 }
 
 theorem:before {
   content:  attr(type) " " counter(section) "."  counter(theorem) ". " ;
-} */
+} 
+*/
 
 /* Not in article.css (gp)
 tabular {
