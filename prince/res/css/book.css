@@ -1,9 +1,7 @@
-/* book.css */
-
+/* book.scss */
 /************************/
 /* Division header tags */
 /************************/
-
 part, chapter, section, subsection, subsubsection, paragraph, subparagraph {
   -moz-user-select: text;
 }
@@ -17,12 +15,12 @@ part sectiontitle {
   display: block;
   font-size: 24pt;
   font-weight: bold;
-  color: rgb(9, 62, 125);
+  color: #093e7d;
   text-align: center;
 }
 
-part>sectiontitle:before {
-  content: "Part " counter(part,upper-roman);
+part > sectiontitle:before {
+  content: "Part " counter(part, upper-roman);
   display: block;
   font-size: 80%;
   font-weight: bold;
@@ -51,8 +49,8 @@ chapter sectiontitle:before {
 section {
   display: block;
   counter-increment: section;
-/*  counter-reset: subsection;
-  counter-reset: theorem; */
+  /*  counter-reset: subsection;
+    counter-reset: theorem; */
 }
 
 section sectiontitle {
@@ -62,8 +60,7 @@ section sectiontitle {
   font-weight: bold;
 }
 
-
-section>sectiontitle:before {
+section > sectiontitle:before {
   content: counter(chapter) "." counter(section) ".  ";
 }
 
@@ -72,10 +69,10 @@ section defaulttitletag:after {
   color: red;
 }
 
-subsection{
+subsection {
   display: block;
   counter-increment: subsection;
-/*  counter-reset: subsubsection; */
+  /*  counter-reset: subsubsection; */
 }
 
 subsection sectiontitle {
@@ -84,7 +81,7 @@ subsection sectiontitle {
   font-size: 12pt;
 }
 
-subsection>sectiontitle:before {
+subsection > sectiontitle:before {
   content: counter(chapter) "." counter(section) "." counter(subsection) ".  ";
 }
 
@@ -94,9 +91,9 @@ subsection defaulttitletag:after {
 }
 
 subsubsection {
-  display:block;
+  display: block;
   counter-increment: subsubsection;
-/*    counter-reset: paragraph; */
+  /*    counter-reset: paragraph; */
 }
 
 subsubsection sectiontitle {
@@ -106,7 +103,7 @@ subsubsection sectiontitle {
   font-weight: bold;
 }
 
-subsubsection>sectiontitle:before {
+subsubsection > sectiontitle:before {
   content: counter(chapter) "." counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
 }
 
@@ -116,8 +113,8 @@ subsubsection defaulttitletag:after {
 }
 
 paragraph {
-  display:block;
-/*    counter-increment: paragraph;  */
+  display: block;
+  /*    counter-increment: paragraph;  */
 }
 
 paragraph sectiontitle {
@@ -126,7 +123,7 @@ paragraph sectiontitle {
   font-style: italic;
 }
 
-paragraph>sectiontitle:before {
+paragraph > sectiontitle:before {
   content: "";
 }
 
@@ -139,7 +136,7 @@ subparagraph sectiontitle {
   margin-left: 10pt;
 }
 
-subparagraph>sectiontitle:before {
+subparagraph > sectiontitle:before {
   content: "";
 }
 
@@ -151,11 +148,10 @@ subparagraph defaulttitletag:after {
 /*************************/
 /* Front matter elements */
 /*************************/
-
 title {
   font-size: 200%;
   font-weight: bold;
-  color: rgb(9, 62, 125);
+  color: #093e7d;
   line-height: 20pt;
   display: block;
   margin-top: 12pt;
@@ -165,7 +161,7 @@ title {
 author {
   font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: #093e7d;
   display: block;
   padding-top: 10pt;
   text-align: center;
@@ -174,7 +170,7 @@ author {
 address {
   font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: #093e7d;
   display: block;
   text-align: center;
 }
@@ -182,18 +178,18 @@ address {
 date {
   font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: #093e7d;
   display: block;
   padding-top: 2pt;
   text-align: center;
 }
 
-button[class="frontmattertag"]{
+button[class=frontmattertag] {
   position: absolute;
   right: 5px;
 }
 
-button[class="msi"]{
+button[class=msi] {
   position: relative;
   left: 5px;
 }
@@ -201,7 +197,6 @@ button[class="msi"]{
 /**********************/
 /* Main text elements */
 /**********************/
-
 frontmatter, mainmatter, backmatter, appendix {
   display: block;
   position: relative;
@@ -216,8 +211,9 @@ frontmatter:before {
   content: "frontmatter";
   display: block;
   text-align: left;
-  font-size: 100%; font-weight: bold;
-  color: rgb(9, 62, 125);
+  font-size: 100%;
+  font-weight: bold;
+  color: #093e7d;
   -moz-user-select: text;
 }
 
@@ -225,8 +221,9 @@ mainmatter:before {
   content: " mainmatter";
   display: block;
   text-align: left;
-  font-size: 100%; font-weight: bold;
-  color: rgb(9, 62, 125);
+  font-size: 100%;
+  font-weight: bold;
+  color: #093e7d;
   -moz-user-select: text;
 }
 
@@ -234,8 +231,9 @@ backmatter:before {
   content: "backmatter";
   display: block;
   text-align: left;
-  font-size: 100%; font-weight: bold;
-  color: rgb(9, 62, 125);
+  font-size: 100%;
+  font-weight: bold;
+  color: #093e7d;
   -moz-user-select: text;
 }
 
@@ -243,8 +241,9 @@ appendix:before {
   content: "appendix";
   display: block;
   text-align: left;
-  font-size: 100%; font-weight: bold;
-  color: rgb(9, 62, 125);
+  font-size: 100%;
+  font-weight: bold;
+  color: #093e7d;
   -moz-user-select: text;
 }
 
@@ -261,7 +260,7 @@ bodyText {
 bodyMath {
   display: block;
   margin: 0 10pt 0 5pt;
-  color: rgb(0,128,64);
+  color: #008040;
 }
 
 shortQuote {
@@ -283,8 +282,8 @@ epigraph {
   margin-left: 20pt;
   margin-right: 20pt;
 }
-/*  */
 
+/*  */
 centeredEnv, centered {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
@@ -308,104 +307,101 @@ pre, verbatim {
   font-family: Courier; white-space: pre
 }
 */
-
 /***********************/
 /* Tagged run elements */
 /***********************/
-
 emphasized {
   font-style: italic;
-  color: rgb(9,62,125)
+  color: #093e7d;
 }
 
 emphasized .inlineMath {
-  color: rgb(255,0,255)
+  color: fuchsia;
 }
 
 roman {
   font-family: Times New Roman, serif;
-  color: rgb(0,0,255)
+  color: blue;
 }
 
 calligraphic {
   font-family: monotype corsiva;
-  color: rgb(0,0,255)
+  color: blue;
 }
 
 bold {
-  font-weight: 700
+  font-weight: 700;
 }
 
 italics {
-  font-style: italic
+  font-style: italic;
 }
 
 slanted {
   font-style: italic;
   font-weight: 700;
-  color: rgb(9,62,125)
+  color: #093e7d;
 }
 
 sansSerif {
   font-family: Arial;
   font-weight: 400;
-  color: rgb(9,62,125)
+  color: #093e7d;
 }
 
 smallCaps {
   font-variant: small-caps;
-  color: rgb(0,0,0)
+  color: black;
 }
 
 typewriter {
   font-family: Courier New;
-  font-weight: 700
+  font-weight: 700;
 }
 
 tiny {
-  font-size: 50%
+  font-size: 50%;
 }
 
 scriptsize {
-  font-size: 67%
+  font-size: 67%;
 }
 
 footnotesize {
-  font-size: 75%
+  font-size: 75%;
 }
 
 small {
-  font-size: 83%
+  font-size: 83%;
 }
 
 normalsize {
-  font-size: 100%
+  font-size: 100%;
 }
 
 large {
-  font-size: 117%
+  font-size: 117%;
 }
 
 Large {
-  font-size: 133%
+  font-size: 133%;
 }
 
 LARGE {
-  font-size: 150%
+  font-size: 150%;
 }
 
 huge {
-  font-size: 167%
+  font-size: 167%;
 }
 
 Huge {
-  font-size: 183%
+  font-size: 183%;
 }
 
 /***************/
 /* Lists, etc. */
 /***************/
-
 /* Not in article.css (gp)
 item {
   margin: 0 0 0 0;
@@ -413,37 +409,31 @@ item {
   display: list-item
 }
 */
-
 /* Not in article.css (gp)
 item:before {
   content: counters(item, ".") ":  ";
   counter-increment: item;
 }
 */
-
 /* Not in article.css (gp)
 enumerate {
   counter-reset: item;
 }
 */
-
 /* Not in article.css (gp)
 description {
   counter-reset: item;
 }
 */
-
 /* Not in article.css (gp)
 itemize {
   list-style: disc;
   counter-reset: item;
 }
 */
-
 /***************/
 /* Other stuff */
 /***************/
-
 img {
   display: inline;
 }
@@ -451,186 +441,187 @@ img {
 /*****************************/
 /* Theorem-like environments */
 /*****************************/
-
 theorem > *:first-child:before {
-  content: 'Theorem ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Theorem " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 acknowledgement > *:first-child:before {
-  content: 'Acknowledgement ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Acknowledgement " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 acknowledgment > *:first-child:before {
-  content: 'Acknowledgment ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Acknowledgment " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 algorithm > *:first-child:before {
-  content: 'Algorithm ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Algorithm " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 assertion > *:first-child:before {
-  content: 'Assertion ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Assertion " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 assumption > *:first-child:before {
-  content: 'Assumption ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Assumption " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 axiom > *:first-child:before {
-  content: 'Axiom ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Axiom " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 case > *:first-child:before {
-  content: 'Case ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Case " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 claim > *:first-child:before {
-  content: 'Claim ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Claim " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 conclusion > *:first-child:before {
-  content: 'Conclusion ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Conclusion " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 condition > *:first-child:before {
-  content: 'Condition ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Condition " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 conjecture > *:first-child:before {
-  content: 'Conjecture ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Conjecture " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 convention > *:first-child:before {
-  content: 'Convention ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Convention " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 corollary > *:first-child:before {
-  content: 'Corollary ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Corollary " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 criterion > *:first-child:before {
-  content: 'Criterion ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Criterion " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 definition > *:first-child:before {
-  content: 'Definition ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Definition " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 example > *:first-child:before {
-  content: 'Example ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Example " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 exercise > *:first-child:before {
-  content: 'Exercise ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Exercise " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 hypothesis > *:first-child:before {
-  content: 'Hypothesis ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Hypothesis " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 lemma > *:first-child:before {
-  content: 'Lemma ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Lemma " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 notation > *:first-child:before {
-  content: 'Notation ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Notation " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 observation > *:first-child:before {
-  content: 'Observation ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Observation " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 problem > *:first-child:before {
-  content: 'Problem ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Problem " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 property > *:first-child:before {
-  content: 'Property ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Property " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 proposition > *:first-child:before {
-  content: 'Proposition ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Proposition " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 question > *:first-child:before {
-  content: 'Question ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Question " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 remark > *:first-child:before {
-  content: 'Remark ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Remark " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 solution > *:first-child:before {
-  content: 'Solution ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Solution " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 summary > *:first-child:before {
-  content: 'Summary ' counter(chapter) '.' counter(theorem) '  ';
+  content: "Summary " counter(chapter) "." counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
 }
 
 /* Equation numbering within chapters */
-button[class="eqnnum"]:after{
+button[class=eqnnum]:after {
   content: "  (" counter(chapter) "." counter(eqnnumber) ")";
 }
 
-button[class="subeqnnum"]:after{
-  content: "  (" counter(chapter) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin) ")";
+button[class=subeqnnum]:after {
+  content: "  (" counter(chapter) "." counter(eqnnumber) "." counter(subeqnnum, lower-latin) ")";
 }
+
+/*# sourceMappingURL=book.css.map */
