@@ -801,7 +801,7 @@ button[class="frontmattertag"] {
 body {
   -moz-user-select: text; /* -moz-none can be overridden */
   counter-reset: part chapter section subsection subsubsection paragraph subparagraph
-                 eqnnumber subeqnnumber item item-number numberedlist ftnotectr bibliographylist theorem;
+                 eqnnumber subeqnnum item item-number numberedlist ftnotectr bibliographylist theorem;
   display: block;
   position: relative;
   font-family: Arial;
