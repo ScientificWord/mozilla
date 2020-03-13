@@ -25,7 +25,7 @@ part > sectiontitle:before, part > bodyText:first-child:before {
 chapter {
   display: block;
   counter-increment: chapter;
-  counter-reset: section eqnnumber subeqnnumber;
+  counter-reset: section eqnnumber subeqnnum;
   position: relative;
   top: 0;
   left: 0;

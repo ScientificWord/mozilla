@@ -759,7 +759,7 @@ button[class=frontmattertag] {
 body {
   -moz-user-select: text;
   /* -moz-none can be overridden */
-  counter-reset: part chapter section subsection subsubsection paragraph subparagraph eqnnumber subeqnnumber item item-number numberedlist ftnotectr bibliographylist theorem;
+  counter-reset: part chapter section subsection subsubsection paragraph subparagraph eqnnumber subeqnnum item item-number numberedlist ftnotectr bibliographylist theorem;
   display: block;
   position: relative;
   font-family: Arial;
@@ -1121,6 +1121,7 @@ assertion, conjecture, corollary, criterion, lemma, proposition, theorem {
   display: block;
   font-style: italic;
   counter-increment: theorem;
+  background-color: #EFEFEF;
 }
 
 assertion > sectiontitle:first-child::before {
@@ -1210,6 +1211,7 @@ problem, property, question, solution {
   display: block;
   font-style: normal;
   counter-increment: theorem;
+  background-color: #EFEFEF;
 }
 
 algorithm > sectiontitle:first-child::before {
@@ -1344,6 +1346,7 @@ acknowledgment, case, claim, conclusion, notation, remark, summary {
   display: block;
   font-style: normal;
   counter-increment: theorem;
+  background-color: #EFEFEF;
 }
 
 acknowledgment > sectiontitle:first-child::before {
@@ -1414,6 +1417,12 @@ summary > sectiontitle:first-child::before {
 summary[numbering=none] > sectiontitle:first-child::before {
   content: "Summary ";
   -moz-user-modify: read-only;
+}
+
+proof {
+  display: block;
+  font-style: normal;
+  background-color: #EFEFEF;
 }
 
 proof > *:first-child::before {
