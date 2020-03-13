@@ -1,4 +1,4 @@
-/* book.css */
+/* book.scss */
 
 /************************/
 /* Division header tags */
@@ -33,7 +33,7 @@ part>sectiontitle:before {
 chapter {
   display: block;
   counter-increment: chapter;
-  counter-reset: section eqnnumber subeqnnumber;
+  counter-reset: section eqnnumber subeqnnum;
 }
 
 chapter sectiontitle {
