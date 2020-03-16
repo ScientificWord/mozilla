@@ -2632,13 +2632,23 @@ function doComputeUndefine(math) {
   RestoreCursor();
 }
 
+
+function dressUpDefList(mathString) {
+  mathString = mathString.replace(/<p>/g,'<bodyText>');
+  mathString = mathString.replace(/<\/p>/g,'</bodyText>');
+  mathString = mathString.replace(/<math>/g,'<math xmlns="http://www.w3.org/1998/Math/MathML">');
+  mathString = mathString.replace(/<mi\s*>/,'<mi _moz-math-font-style="italic">');
+  return(mathString);
+}
+
+
 function doComputeShowDefs(editorElement) {
   if (!editorElement) editorElement = msiGetActiveEditorElement();
   msiComputeLogger.Sent("show definitions", "");
   var out = GetCurrentEngine().getDefinitions();
   msiComputeLogger.Received(out);
   var o = {};
-  o.val = out;
+  o.val = dressUpDefList(out);
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   parentWin.openDialog("chrome://prince/content/computeShowDefs.xul", "showdefs", "chrome,close,titlebar,resizable,dependent", o);
   if (!o.cancel) markDocumentChanged(editorElement);
