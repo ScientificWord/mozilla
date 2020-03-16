@@ -717,7 +717,7 @@ nsHTMLEditRules::WillDoAction(nsISelection *aSelection,
 #ifdef DEBUG_Barry
       printf("B\n");
       DumpSelection(aSelection);
-#endif      
+#endif
       return WillDeleteSelection(aSelection, info->collapsedAction, aCancel, aHandled);
     case kMakeList:
       return WillMakeList(aSelection, info->blockType, info->entireList, info->bulletType, aCancel, aHandled);
@@ -2614,7 +2614,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       PRInt32 selPointOffset = startOffset;
       // nsCOMPtr<nsIDOMNode> selPointNode = rightParent;
       // PRInt32 selPointOffset = 0;
-        
+
       {
         nsAutoTrackDOMPoint tracker(mHTMLEditor->mRangeUpdater, address_of(selPointNode), &selPointOffset);
         res = JoinBlocks(address_of(leftParent), address_of(rightParent), aCancel);
@@ -3114,7 +3114,7 @@ nsHTMLEditRules::JoinBlocks(nsCOMPtr<nsIDOMNode> *aLeftBlock,
     nsCOMPtr<nsIDOMNode> brNode;
     res = CheckForInvisibleBR(*aLeftBlock, kBlockEnd, address_of(brNode));
     if (NS_FAILED(res)) return res;
-    if (  //bMergeLists || 
+    if (  //bMergeLists ||
       mHTMLEditor->NodesSameType(*aLeftBlock, *aRightBlock))
     {
       // nodes are same type.  merge them.
@@ -3775,7 +3775,7 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
           if (isFence && !deletingInputBox) {
             retval = PR_TRUE;
             nodecount = 1000;
-          }          
+          }
         }
       }
     }
@@ -4000,7 +4000,7 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
           startOffset = 1;
           ed->GetSelection(getter_AddRefs(sel));
           sel->Collapse(startNode, 1);
-          
+
           tempnode = inputbox;
           while (tempnode && (elementCount(elt) > nodecount)) {
             res = tempnode->GetNextSibling(getter_AddRefs(nextSiblingNode));
@@ -4283,8 +4283,8 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
                 parentName.EqualsLiteral("mover")||
                 parentName.EqualsLiteral("munder")||
                 parentName.EqualsLiteral("mfrac")||
-                parentName.EqualsLiteral("mroot")||
-                parentName.EqualsLiteral("msqrt")
+                parentName.EqualsLiteral("mroot")
+  //              parentName.EqualsLiteral("msqrt") sqrt is ok, but mroot is not
             )) {
             mHTMLEditor->RemoveContainer(currNode);
           }
