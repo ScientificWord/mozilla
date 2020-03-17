@@ -62,7 +62,7 @@ $counter_data:  (
   ),
   end: ''
 );
-$ctr_set_reset: (inc: chapter, reset: section theorem eqnnumber subeqnnum);
+$ctr_set_reset: (inc: chapter, reset: section eqnnumber subeqnnum);
 
 chapter {
   display: block;
@@ -225,8 +225,8 @@ subparagraph {
 
 title {
   font-size: 200%;
-  font-weight: bold;
-  color: rgb(9, 62, 125);
+  font-weight: normal;
+  color: $title-color;
   line-height: 20pt;
   display: block;
   margin-top: 12pt;
@@ -236,7 +236,7 @@ title {
 author {
   font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: $author-color;
   display: block;
   padding-top: 10pt;
   text-align: center;
@@ -245,7 +245,7 @@ author {
 address {
   font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: $address-color;
   display: block;
   text-align: center;
 }
@@ -253,7 +253,7 @@ address {
 date {
   font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: $date-color;
   display: block;
   padding-top: 2pt;
   text-align: center;
@@ -270,7 +270,7 @@ abstract {
   padding-bottom: 15pt;
   font-size: small;
   border: thin solid black; 
-  background-color: #E1EEFD;
+  background-color: $abstract-background-color;
   -moz-border-radius: 5px;
 }
 
@@ -279,7 +279,7 @@ abstract:before {
   display: block;
   text-align: center;
   font-size: 100%; font-weight: bold;
-  color: rgb(9, 62, 125);
+  color: $abstract-title-color;
   -moz-user-select: -moz-none;
 }
 
@@ -448,39 +448,6 @@ huge {
 Huge {
   font-size: 183%
 }
-
-/*
-theorem {
-  display: block;
-  font-style: italic;
-  counter-increment: theorem;
-}
-
-theorem:before {
-  content:  attr(type) " " counter(section) "."  counter(theorem) ". " ;
-} */
-
-/* Not in article.css (gp)
-tabular {
-  display: table
-}
-
-proof {
-  display: block;
-}
-
-proof:before {
-  content: "Proof. ";
-}
-
-tr {
-  display: table-row
-}
-
-td {
-  display: table-cell
-}
-*/
 
 /***************/
 /* Lists, etc. */
