@@ -141,6 +141,7 @@ function initializePlotEditors(plotnum, contentsOnly) {
   graphEditorControl.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : msiEditorDocumentObserverG}];
   graphEditorControl.mbSinglePara = true;
   graphEditorControl.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
+  graph.plots[plotnum].element.Expression = dressUpMathString(graph.plots[plotnum].element.Expression);
   theStringSource = graph.plots[plotnum].element.Expression;
   editorInitializer = new msiEditorArrayInitializer();
   editorInitializer.addEditorInfo(graphEditorControl, theStringSource, true);
@@ -346,7 +347,7 @@ function GetValuesFromDialog(){
       oldval = plot.element["Expression"];
       if (oldval != newval)
       {
-        plot.element["Expression"] = newval;
+        plot.element["Expression"] = dressUpMathString(newval);
         plot.attributes["PlotStatus"] = "New";
       }
     }
@@ -493,6 +494,13 @@ function addPlotDialogContents () {
   populateDialog (plotnum);
 }
 
+function dressUpMathString(mathString) {
+  mathString = mathString.replace(/<math\s*>/g,'<math xmlns="http://www.w3.org/1998/Math/MathML">', "g");
+  //mathString = mathString.replace(/<mi\s*>/,'<mi _moz-math-font-style="italic">', "g");
+  return mathString;
+}
+
+
 function fromDialogToPlot( plotnum ) {
   var editorControl = document.getElementById("plotDlg-content-frame"),
     doc = editorControl.contentDocument,
@@ -507,7 +515,7 @@ function fromDialogToPlot( plotnum ) {
 
   removeInvisibles(math);
 
-  var theStringSource = graph.ser.serializeToString(math),
+  var theStringSource = dressUpMathString(graph.ser.serializeToString(math)),
   ptype = graph.getPlotValue ("PlotType", plotnum);
   for (var i = 0; i < alist.length; ++i)
   {
@@ -519,13 +527,13 @@ function fromDialogToPlot( plotnum ) {
 
 
 
-  graph.plots[plotnum].element["Expression"]= runFixup(theStringSource);
+  graph.plots[plotnum].element["Expression"]= dressUpMathString(runFixup(theStringSource));
   radiusEditor = msiGetEditor(radiusControl);
   radiusMath = radiusControl.contentDocument.getElementsByTagName("math")[0];
   if (ptype === "tube")
   {
     radiusStringSource = graph.ser.serializeToString(radiusMath);
-    graph.plots[plotnum].element["TubeRadius"] = radiusStringSource;
+    graph.plots[plotnum].element["TubeRadius"] = dressUpMathString(radiusStringSource);
   }
 
 }
@@ -560,7 +568,7 @@ function fromPlotToDialog( plotnum ) {
 
   graph.currentDisplayedPlot = plotnum;
   graph["plotnumber"] = String(plotnum);
-  theStringSource = graph.plots[plotnum].element["Expression"];
+  theStringSource = dressUpMathString(graph.plots[plotnum].element["Expression"]);
   replaceMathNodeWithText(editor, math, theStringSource);
    // Still need to do this for tube plot radius
 
@@ -568,7 +576,7 @@ function fromPlotToDialog( plotnum ) {
   {
     radiusStringSource = graph.plots[plotnum].getPlotValue("TubeRadius");
     if (!radiusStringSource || radiusStringSource.length === 0) {
-      radiusStringSource = GetComputeString("Math.emptyForInput");
+      radiusStringSource = dressUpMathString(GetComputeString("Math.emptyForInput"));
     }
     radiusEditor = msiGetEditor(radiusControl);
   }
