@@ -2125,6 +2125,12 @@ Frame.prototype = {
   }
 };
 
+function dressUpMathString2(mathString) {
+  mathString = mathString.replace(/<math\s*>/g,'<math xmlns="http://www.w3.org/1998/Math/MathML">', "g");
+  mathString = mathString.replace(/<mi\s*>/,'<mi _moz-math-font-style="italic">', "g");
+  return mathString;
+}
+
 function newPlotFromText(currentNode, expression, editorElement) {
   try {
     var editor = msiGetEditor(editorElement);
@@ -2147,7 +2153,7 @@ function newPlotFromText(currentNode, expression, editorElement) {
 
     var plot = new Plot(graph.getDimension(), plottype);
     graph.addPlot(plot);
-    plot.element.Expression = fixedExpr;
+    plot.element.Expression = dressUpMathString2(fixedExpr);
     plot.attributes["PlotType"] = firstplot.attributes["PlotType"];
     graphData = new graphVarData(graph);
 
@@ -2391,7 +2397,7 @@ function insertNewGraph(math, dimension, plottype, optionalAnimate, editorElemen
   var plot = new Plot(dimension, plottype);
   var plotnum = graph.addPlot(plot);
   plot.attributes.PlotStatus = "New";
-    plot.element.Expression = expr;
+    plot.element.Expression = dressUpMathString2(expr);
   graph.plotnumber = plotnum;
   if ((arguments.length > 3) && (arguments[3] === true)) {
     plot.attributes.Animate = "true";
@@ -2784,7 +2790,7 @@ function testQuery(domgraph) {
 
   var expr = graph.plots[0].element.Expression;
   var expr2 = runFixup(runFixup(expr));
-  graph.plots[0].element.Expression = expr2;
+  graph.plots[0].element.Expression = dressUpMathString2(expr2);
 
   graph.computeQuery(graph.plots[0]);
 }
@@ -2793,7 +2799,7 @@ function testQueryGraph(domgraph, editorElement) {
   graph.extractGraphAttributes(domgraph);
 
   var expr = graph.plots[0].element.Expression;
-  var expr2 = runFixup(runFixup(expr));
+  var expr2 = dressUpMathString2(runFixup(runFixup(expr)));
   graph.plots[0].element.Expression = expr2;
   graph.computeQuery(plots[0]);
 
@@ -2819,7 +2825,7 @@ function parseQueryReturn(out, graph, plot) {
   var ii;
 
   plot.element.OriginalExpression = plot.element.Expression;  //store original form - should display it in dialog
-  var fixedOut = runFixup(out); //runFixup(runFixup(out));
+  var fixedOut = dressUpMathString2(runFixup(out)); //runFixup(runFixup(out));
   plot.element.Expression = fixedOut;  //this may be sharpened below, but for now
   var varData = new graphVarData( graph );
   var retVariables;
@@ -3293,7 +3299,7 @@ var plotVarDataBase =
   expressionAsList : function()
   {
     if (!this.mSplitExprList)
-      this.mSplitExprList = splitMathMLList(this.mPlot.element.Expression, true);
+      this.mSplitExprList = splitMathMLList(dressUpMathString2(this.mPlot.element.Expression), true);
     return this.mSplitExprList;
   },
   varTeXForm : function(whichVar)
