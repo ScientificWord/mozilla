@@ -3705,7 +3705,7 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
   if (isMath) {
     node->GetTagName(name);
     while (node && (name.EqualsLiteral("mi") || name.EqualsLiteral("mo") || name.EqualsLiteral("mn") ||
-        name.EqualsLiteral("msqrt") || name.EqualsLiteral("mroot") || (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle")) && empty)) {
+        name.EqualsLiteral("msqrt") || (name.EqualsLiteral("mrow") || name.EqualsLiteral("mstyle")) && empty)) {
       editor->GetNodeLocation(node, &parent, &offset);
       node2 = do_QueryInterface(parent);
       if (empty) {
@@ -3731,13 +3731,13 @@ PRBool IsSpecialMath(nsCOMPtr<nsIDOMElement>& node, PRBool isEmpty, PRUint32& no
       name.EqualsLiteral("mfrac") ||
       (name.EqualsLiteral("msqrt") && empty) ||
       name.EqualsLiteral("mover") ||
+      name.EqualsLiteral("mroot") ||
       name.EqualsLiteral("munder"))
     {
       nodecount = 2;
       retval = PR_TRUE;
     }
     else if (
-      name.EqualsLiteral("mroot") ||
       name.EqualsLiteral("msubsup") ||
       name.EqualsLiteral("munderover"))
     {
