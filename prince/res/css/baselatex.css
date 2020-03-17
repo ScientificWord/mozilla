@@ -1,3 +1,4 @@
+/* baselatex.scss */
 @namespace mml url("http://www.w3.org/1998/Math/MathML");
 @media screen {
   object[msisnap] {
@@ -30,7 +31,7 @@
     display: none;
   }
 
-  *[showexpanders=true] .expander {
+  *[showexpanders=true] button.expander {
     display: none;
   }
 
