@@ -2634,10 +2634,10 @@ function doComputeUndefine(math) {
 
 
 function dressUpDefList(mathString) {
-  mathString = mathString.replace(/<p>/g,'<bodyText>');
-  mathString = mathString.replace(/<\/p>/g,'</bodyText>');
-  mathString = mathString.replace(/<math>/g,'<math xmlns="http://www.w3.org/1998/Math/MathML">');
-  mathString = mathString.replace(/<mi\s*>/,'<mi _moz-math-font-style="italic">');
+  mathString = mathString.replace(/<p>/,'<bodyText>', "g");
+  mathString = mathString.replace(/<\/p>/,'</bodyText>', "g");
+  mathString = mathString.replace(/<math\s*>/,'<math xmlns="http://www.w3.org/1998/Math/MathML">', "g");
+  mathString = mathString.replace(/<mi\s*>/,'<mi _moz-math-font-style="italic">', "g");
   return(mathString);
 }
 
