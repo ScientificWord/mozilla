@@ -63,7 +63,7 @@ $false: "false";
 			$name_string: "#{$div_name} ";
 		}
 		&:before {
-			content: $name_string $outlist quote($end);
+			content: $name_string $outlist; //quote($end);
 			-moz-user-modify: read-only;
 			-moz-user-select: -moz-none;
 			@content;
