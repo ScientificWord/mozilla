@@ -718,6 +718,7 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <!--        <tag nm="frontmatter"><contains>frontmtag</contains><level>*</level><nexttag/><inclusion>true</inclusion><description>Front Matter</description><discardemptyblock>true</discardemptyblock><nexttag>bodyText</nexttag><initialcontents><frontmatter><bodyText><cursor/><br/></bodyText></frontmatter></initialcontents></tag>-->
+		<!-- Remove dedication, not otherwise used except on this list 
         <tag nm="dedication">
           <level>*</level>
           <description>Dedication</description>
@@ -734,6 +735,7 @@
             </dedication>
           </initialcontents>
         </tag>
+		-->
         <tag nm="centeredEnv">
           <level>*</level>
           <description>Centered</description>
