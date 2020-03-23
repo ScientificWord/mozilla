@@ -1,152 +1,222 @@
-/* report.css */
+/* report.scss 
+
+Mostly the same as book.scss
+*/
 
 /************************/
 /* Division header tags */
 /************************/
 
-part, chapter, section, subsection, subsubsection, paragraph, subparagraph {
-  -moz-user-select: text;
-}
+@import "division_colors";
+
+// Use black for the division headings (some SNB users might prefer this). 
+$part-title-color: black;
+$chapter-title-color: black;
+$section-title-color: black;
+$subsection-title-color: black;
+$subsubsection-title-color: black;
+$paragraph-title-color: black;
+$subparagraph-title-color: black;
+
+$title-color: black;
+$author-color: black;
+$address-color: black;
+$date-color: black;
+$abstract-background-color: rgb(234,234,234);
+$abstract-title-color: black;
+
+@import "_division_headers.scss";
+@import "_theorem_like.scss";
+
+$div_name: 'Part';
+$counter_data:  (
+  counter_list: (
+    (part,upper-roman),
+  ),
+  end: ''
+);
+$ctr_set_reset: (inc: part);
 
 part {
   display: block;
-  counter-increment: part;
+  @include cnt-set-resets($ctr-set-reset);
+  @include div_title_style {
+    margin: 30pt 0 0 0;
+    display: block;
+    font-weight: bold;
+    font-size:   220%;
+    color: $part-title-color;
+    text-align: center;
+    @include counters($counter_data, 'Part ') {
+      display: block;
+      font-size:   80%;
+      text-align: center;
+    };
+  }
 }
 
-part sectiontitle {
-  display: block;
-  font-size: 24pt;
-  font-weight: bold;
-  color: rgb(9, 62, 125);
-  text-align: center;
-}
-
-part>sectiontitle:before {
-  content: "Part " counter(part,upper-roman);
-  display: block;
-  font-size: 80%;
-  font-weight: bold;
-  margin-bottom: 5pt;
-  -moz-user-select: -moz-none;
-}
+$div_name: 'Chapter';
+$counter_data:  (
+  counter_list: (
+    (chapter)
+  ),
+  end: ''
+);
+$ctr_set_reset: (inc: chapter, reset: section eqnnumber subeqnnum);
 
 chapter {
   display: block;
-  counter-increment: chapter;
-  counter-reset: section eqnnumber subeqnnum;
-/*  counter-reset: theorem; */
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include handle_open_closed((color:gray));
+  @include default_title($div_name);
+  @include div_title_style {
+    //margin: 30pt 0 0 0;
+    display: inline;
+    font-weight: bold;
+    font-size:   200%;
+    color: $chapter-title-color;
+    text-align: left;
+    @include counters($counter_data) {
+      display: inline-block;
+	  padding-right: 12pt;
+      //font-size:   80%;
+      text-align: left;
+    };
+  }
 }
 
-chapter sectiontitle {
-  display: block;
-  margin: 10pt 0 0 0;
-  font-size: 20pt;
-  font-weight: bold;
-  text-align: left;
-}
-
-chapter sectiontitle:before {
-  content: counter(chapter) ". ";
-}
+$div_name: 'Section';
+$counter_data:  (
+  counter_list: (
+    (chapter section)
+  ),
+  end: ' '
+);
+$ctr_set_reset: (inc: section, reset: subsection);
 
 section {
   display: block;
-  counter-increment: section;
-/*  counter-reset: subsection;
-  counter-reset: theorem; */
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include handle_open_closed((color:gray));
+  @include default_title($div_name);
+  @include div_title_style {
+    display: inline;
+    font-weight: bold;
+    font-size: 175%;
+    color: $section-title-color;
+    @include counters($counter_data) {
+      display: inline-block;
+	  padding-right: 10pt;
+      //width: 1.5cm;
+    };
+  }
 }
 
-section sectiontitle {
+
+$div_name: Subsection;
+$counter_data:  (
+  counter_list: (
+    (chapter section subsection)
+  ),
+  end: ' '
+);
+$ctr_set_reset: (inc: subsection, reset: (subsubsection));
+
+subsection {
   display: block;
-  margin: 10pt 0 0 0;
-  font-size: 18pt;
-  font-weight: bold;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include handle_open_closed((color: blue));
+  @include default_title($div_name);
+  @include div_title_style {
+    display: inline;
+    margin:0 0 0 0;
+    font-weight: bold;
+    font-size: 150%;
+    color: $subsection-title-color;
+    @include counters($counter_data) {
+      display: inline-block;
+	  padding-right: 10pt;
+      //width: 1.5cm;
+    }
+  }
 }
 
-
-section>sectiontitle:before {
-  content: counter(chapter) "." counter(section) ".  ";
-}
-
-section defaulttitletag:after {
-  content: "Replace this section title";
-  color: red;
-}
-
-subsection{
-  display: block;
-  counter-increment: subsection;
-/*  counter-reset: subsubsection; */
-}
-
-subsection sectiontitle {
-  display: block;
-  margin: 10pt 0 0 0;
-  font-size: 12pt;
-}
-
-subsection>sectiontitle:before {
-  content: counter(chapter) "." counter(section) "." counter(subsection) ".  ";
-}
-
-subsection defaulttitletag:after {
-  content: "Replace this subsection title";
-  color: red;
-}
-
+$div_name: Subsubsection;
+$counter_data:  (
+  counter_list: (
+    (chapter section subsection subsubsection)
+  ),
+  end: ' '
+);
+$ctr_set_reset: (inc: subsubsection, reset: (paragraph));
 subsubsection {
-  display:block;
-  counter-increment: subsubsection;
-/*    counter-reset: paragraph; */
-}
-
-subsubsection sectiontitle {
   display: block;
-  margin: 10pt 0 0 0;
-  font-size: 10pt;
-  font-weight: bold;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include default_title($div_name);
+  @include div_title_style {
+    display: inline;
+    margin:0 0 0 0;
+    font-weight: bold;
+    font-size: 120%;
+    color: $subsubsection-title-color;
+    @include counters($counter_data) {
+      display: inline-block;
+	  padding-right: 10pt;
+      //width: 1.5cm;
+    };
+  }
 }
 
-subsubsection>sectiontitle:before {
-  content: counter(chapter) "." counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
-}
-
-subsubsection defaulttitletag:after {
-  content: "Replace this subsubsection title"; 
-  color: red;
-}
-
+$div_name: '';
+$counter_data:  (
+  counter_list: (
+  ),
+  end: ' '
+);
+$ctr_set_reset: (inc: paragraph,reset: subparagraph);
 paragraph {
-  display:block;
-/*    counter-increment: paragraph;  */
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include handle_nonum;
+  @include div_title_style {
+    display: inline;
+    margin:0 0 0 0;
+    font-weight: bold;
+    font-size: 100%;
+    color: $paragraph-title-color;
+    @include counters($counter_data) {
+	  padding-right: 0pt;
+      //width: 1.5cm;
+    }
+  }
 }
 
-paragraph sectiontitle {
-  font-size: 10pt;
-  font-weight: normal;
-  font-style: italic;
-}
-
-paragraph>sectiontitle:before {
-  content: "";
-}
-
-paragraph defaulttitletag:after {
-  content: "Replace this subsubsubsection title";
-  color: red;
-}
-
-subparagraph sectiontitle {
-  margin-left: 10pt;
-}
-
-subparagraph>sectiontitle:before {
-  content: "";
-}
-
-subparagraph defaulttitletag:after {
-  content: "Replace this subsubsubsubsection title";
-  color: red;
+$div_name: '';
+$counter_data:  (
+  counter_list: (
+  ),
+  end: ''
+);
+$ctr_set_reset: (inc: subparagraph);
+subparagraph {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include div_title_style {
+    display: inline-block;
+    margin:0 0 0 0;
+    font-weight: bold;
+    font-size: 100%;
+    color: $subparagraph-title-color;
+    @include counters($counter_data) {
+      display: inline-block;
+	  padding-right: 12pt;
+      //width: 1.5cm;
+    };
+  }
 }
 
 /*************************/
@@ -155,8 +225,8 @@ subparagraph defaulttitletag:after {
 
 title {
   font-size: 200%;
-  font-weight: bold;
-  color: rgb(9, 62, 125);
+  font-weight: normal;
+  color: $title-color;
   line-height: 20pt;
   display: block;
   margin-top: 12pt;
@@ -166,7 +236,7 @@ title {
 author {
   font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: $author-color;
   display: block;
   padding-top: 10pt;
   text-align: center;
@@ -175,7 +245,7 @@ author {
 address {
   font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: $address-color;
   display: block;
   text-align: center;
 }
@@ -183,7 +253,7 @@ address {
 date {
   font-size: 100%;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: $date-color;
   display: block;
   padding-top: 2pt;
   text-align: center;
@@ -200,7 +270,7 @@ abstract {
   padding-bottom: 15pt;
   font-size: small;
   border: thin solid black; 
-  background-color: #E1EEFD;
+  background-color: $abstract-background-color;
   -moz-border-radius: 5px;
 }
 
@@ -209,7 +279,7 @@ abstract:before {
   display: block;
   text-align: center;
   font-size: 100%; font-weight: bold;
-  color: rgb(9, 62, 125);
+  color: $abstract-title-color;
   -moz-user-select: -moz-none;
 }
 
@@ -378,39 +448,6 @@ huge {
 Huge {
   font-size: 183%
 }
-
-/*
-theorem {
-  display: block;
-  font-style: italic;
-  counter-increment: theorem;
-}
-
-theorem:before {
-  content:  attr(type) " " counter(section) "."  counter(theorem) ". " ;
-} */
-
-/* Not in article.css (gp)
-tabular {
-  display: table
-}
-
-proof {
-  display: block;
-}
-
-proof:before {
-  content: "Proof. ";
-}
-
-tr {
-  display: table-row
-}
-
-td {
-  display: table-cell
-}
-*/
 
 /***************/
 /* Lists, etc. */
