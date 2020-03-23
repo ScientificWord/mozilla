@@ -718,6 +718,7 @@
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <!--        <tag nm="frontmatter"><contains>frontmtag</contains><level>*</level><nexttag/><inclusion>true</inclusion><description>Front Matter</description><discardemptyblock>true</discardemptyblock><nexttag>bodyText</nexttag><initialcontents><frontmatter><bodyText><cursor/><br/></bodyText></frontmatter></initialcontents></tag>-->
+		<!-- Remove dedication, not otherwise used except on this list 
         <tag nm="dedication">
           <level>*</level>
           <description>Dedication</description>
@@ -734,6 +735,7 @@
             </dedication>
           </initialcontents>
         </tag>
+		-->
         <tag nm="centeredEnv">
           <level>*</level>
           <description>Centered</description>
@@ -748,6 +750,7 @@
               </bodyText>]]>
           </initialcontents>
         </tag>
+		<!-- Remove preface, not otherwise used except on this list 
         <tag nm="preface">
           <level>0</level>
           <description>Preface</description>
@@ -763,6 +766,7 @@
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
+		-->
         <tag nm="glossary">
           <level>0</level>
           <description>Glossary</description>
@@ -778,6 +782,7 @@
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
+        <!-- Remove note from environment list -- available (and better) from Insert menu
         <tag nm="note">
           <level>*</level>
           <description>Note</description>
@@ -792,6 +797,7 @@
             </note>
           </initialcontents>
         </tag>
+		-->
         <tag nm="assertion">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -1124,6 +1130,7 @@
             <acknowledgment/>
           </initialcontents>
         </tag>
+		<!-- Remove msiframe from environment list -- better version available via Insert menu
         <tag nm="msiframe">
           <contains>envtag</contains>
           <level>*</level>
@@ -1141,8 +1148,8 @@
               </bodyText>
             </msiframe>
           </initialcontents>
-          <!--inclusion>true</inclusion-->
         </tag>
+	    -->
         <tag nm="acadian" hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
