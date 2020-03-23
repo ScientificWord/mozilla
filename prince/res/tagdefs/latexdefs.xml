@@ -782,6 +782,7 @@
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
+        <!-- Remove note from environment list -- available (and better) from Insert menu
         <tag nm="note">
           <level>*</level>
           <description>Note</description>
@@ -796,6 +797,7 @@
             </note>
           </initialcontents>
         </tag>
+		-->
         <tag nm="assertion">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -1128,6 +1130,7 @@
             <acknowledgment/>
           </initialcontents>
         </tag>
+		<!-- Remove msiframe from environment list -- better version available via Insert menu
         <tag nm="msiframe">
           <contains>envtag</contains>
           <level>*</level>
@@ -1145,8 +1148,8 @@
               </bodyText>
             </msiframe>
           </initialcontents>
-          <!--inclusion>true</inclusion-->
         </tag>
+	    -->
         <tag nm="acadian" hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
