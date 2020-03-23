@@ -66,7 +66,7 @@ var msiDefineCommand = {
   doCommandParams: function (aCommand, aParams, editorElement) {},
   doCommand: function (aCommand, editorElement) {
     var theEditorElement = msiGetActiveEditorElement();
-    // if (isLicensed()) 
+    // if (isLicensed())
     doComputeCommand(aCommand, theEditorElement);
   }
 };
@@ -1118,7 +1118,7 @@ function isAChildOf(node, parent) {
 function isEqualSign(node) {
   if (node != null && node.nodeType === Node.ELEMENT_NODE && node.localName === "mo") {
     var op = node.firstChild;
-    if (op != null && op.nodeType === Node.TEXT_NODE && op.data === "=" ) return true; 
+    if (op != null && op.nodeType === Node.TEXT_NODE && op.data === "=" ) return true;
   }
   return false;
 }
@@ -2637,7 +2637,7 @@ function dressUpDefList(mathString) {
   mathString = mathString.replace(/<p>/,'<bodyText>', "g");
   mathString = mathString.replace(/<\/p>/,'</bodyText>', "g");
   mathString = mathString.replace(/<math\s*>/,'<math xmlns="http://www.w3.org/1998/Math/MathML">', "g");
-  mathString = mathString.replace(/<mi\s*>/,'<mi _moz-math-font-style="italic">', "g");
+  // mathString = mathString.replace(/<mi\s*>/,'<mi _moz-math-font-style="italic">', "g");
   return(mathString);
 }
 
