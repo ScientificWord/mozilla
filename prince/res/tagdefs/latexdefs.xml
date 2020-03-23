@@ -766,7 +766,6 @@
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
-		-->
         <tag nm="glossary">
           <level>0</level>
           <description>Glossary</description>
@@ -782,7 +781,6 @@
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
-        <!-- Remove note from environment list -- available (and better) from Insert menu
         <tag nm="note">
           <level>*</level>
           <description>Note</description>
@@ -1130,7 +1128,7 @@
             <acknowledgment/>
           </initialcontents>
         </tag>
-		<!-- Remove msiframe from environment list -- better version available via Insert menu
+        <!-- Remove msiframe - available via Insert, Frame
         <tag nm="msiframe">
           <contains>envtag</contains>
           <level>*</level>
@@ -1149,7 +1147,7 @@
             </msiframe>
           </initialcontents>
         </tag>
-	    -->
+        -->
         <tag nm="acadian" hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
