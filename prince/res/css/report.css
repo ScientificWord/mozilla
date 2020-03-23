@@ -18,7 +18,7 @@ part > sectiontitle, part > bodyText:first-child {
   text-align: center;
 }
 part > sectiontitle:before, part > bodyText:first-child:before {
-  content: "Part  " counter(part, upper-roman) "" "";
+  content: "Part  " counter(part, upper-roman) "";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
   display: block;
@@ -52,7 +52,7 @@ chapter > sectiontitle, chapter > bodyText:first-child {
   text-align: left;
 }
 chapter > sectiontitle:before, chapter > bodyText:first-child:before {
-  content: counter(chapter) "" "";
+  content: counter(chapter) "";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
   display: inline-block;
@@ -85,7 +85,7 @@ section > sectiontitle, section > bodyText:first-child {
   color: black;
 }
 section > sectiontitle:before, section > bodyText:first-child:before {
-  content: counter(chapter) "." counter(section) " " " ";
+  content: counter(chapter) "." counter(section) " ";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
   display: inline-block;
@@ -118,7 +118,7 @@ subsection > sectiontitle, subsection > bodyText:first-child {
   color: black;
 }
 subsection > sectiontitle:before, subsection > bodyText:first-child:before {
-  content: counter(chapter) "." counter(section) "." counter(subsection) " " " ";
+  content: counter(chapter) "." counter(section) "." counter(subsection) " ";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
   display: inline-block;
@@ -145,7 +145,7 @@ subsubsection > sectiontitle, subsubsection > bodyText:first-child {
   color: black;
 }
 subsubsection > sectiontitle:before, subsubsection > bodyText:first-child:before {
-  content: counter(chapter) "." counter(section) "." counter(subsection) "." counter(subsubsection) " " " ";
+  content: counter(chapter) "." counter(section) "." counter(subsection) "." counter(subsubsection) " ";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
   display: inline-block;
@@ -168,7 +168,7 @@ paragraph > sectiontitle, paragraph > bodyText:first-child {
   color: black;
 }
 paragraph > sectiontitle:before, paragraph > bodyText:first-child:before {
-  content: " " " ";
+  content: " ";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
   padding-right: 0pt;
@@ -186,7 +186,7 @@ subparagraph > sectiontitle, subparagraph > bodyText:first-child {
   color: black;
 }
 subparagraph > sectiontitle:before, subparagraph > bodyText:first-child:before {
-  content: "" "";
+  content: "";
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
   display: inline-block;

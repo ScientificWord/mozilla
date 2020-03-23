@@ -1,49 +1,43 @@
-@import "division_colors";
-@import "_division_headers.scss";
-@import "_theorem_like.scss";
+/* amsart.scss */
 
-/* amsart.css */
 
 /************************/
 /* Division header tags */
 /************************/
 
+@import "division_colors";
+@import "division_headers";
+@import "theorem_like";
 
 $div_name: 'Part';
-$part_counter_data: (sep: null, counter_list: ((part,upper-roman),), end: '');
+$counter_data: (
+  counter_list: (
+    (part),
+  ),
+  end: '. '
+);
+$ctr_set_reset: (inc: part);
 
 part {
-  display: block;
+  display: inline;
+  @include cnt-set-resets($ctr-set-reset);
   @include div_title_style {
     margin: 30pt 0 0 0;
-    font: bold x-large;
-    color: rgb(9, 62, 125);
-    @include counters($part_counter_data, 'Part ') {
-      font-size: large;
+    display: block;
+    font-weight: bold;
+    font-size: x-large;
+    color: $part-title-color;
+    @include counters($counter_data, 'Part ') {
+      display: inline;
+      font-size: x-large;
       font-weight: bold;
-      color: rgb(9, 62, 125);
+      color: $part-title-color;
     }
   }
 }
-// part {
-//   display: block;
-//   counter-increment: part;
-// }
 
-// part sectiontitle {
-//   display: block;
-//   font-size: x-large;
-//   font-weight: bold;
-//   color: rgb(9, 62, 125);
-// }
 
-// part>sectiontitle:before {
-//   content: "Part " counter(part,upper-roman);
-//   display: block;
-//   font-size: large;
-//   font-weight: bold;
-//   color: rgb(9, 62, 125);
-// }
+/*Skip chapter for article styles*/
 
 $div_name: 'Section';
 $counter_data:  (
@@ -62,36 +56,18 @@ section {
   @include default_title($div_name);
   @include div_title_style {
     display: block;
-    margin: 0;
-    font: bold large;
-    color: rgb(9, 62, 125);
+    text-align: center;
+    font-weight: normal;
+    font-size: large;
+	font-variant: small-caps;
+    color: $section-title-color;
     @include counters($counter_data) {
-      display: inline-block;
+      display: inline;
+      padding-right: 2pt;
+      text-align: center;
     };
   }
 }
-
-
-// section {
-//   display: block;
-//   counter-increment: section;
-//   counter-reset: subsection;
-// /*  counter-reset: theorem; */
-// }
-
-// section sectiontitle {
-//   display: block;
-//   margin: 0;
-//   margin-left: 0;
-//   font-size: large;
-//   font-weight: bold;
-//   color: rgb(9, 62, 125);
-// }
-
-// section>sectiontitle:before {
-//   content: counter(section) ".  ";
-// }
-
 
 
 $div_name: Subsection;
@@ -112,30 +88,13 @@ subsection {
   @include div_title_style {
     display: block;
     margin:10pt 10pt 0 0;
-    font: large;
-    color: rgb(9, 62, 125);
+    font-size: large;
+    font-weight: bold;
+    color: $subsection-title-color;
     @include counters($counter_data);
   }
 }
 
-
-// subsection{
-//   display: block;
-//   counter-increment: subsection;
-//   counter-reset: subsubsection;
-// }
-
-// subsection sectiontitle {
-//   display: block;
-//   margin: 10pt 10pt 0 0;
-//   margin-left: 10pt;
-//   font-size: large;
-//   color: rgb(9, 62, 125);
-// }
-
-// subsection>sectiontitle:before {
-//   content: counter(section) "." counter(subsection) ".  ";
-// }
 
 $div_name: Subsubsection;
 $counter_data:  (
@@ -153,33 +112,15 @@ subsubsection {
   @include div_title_style {
     display: block;
     margin:10pt 10pt 0 0;
-    font: bold medium;
-    color: rgb(9, 62, 125);
+    font-size: medium;
+    font-weight: bold;
+    font-style: italic;
+    color: $subsubsection-title-color;
     @include counters($counter_data);
   }
 }
 
-// subsubsection {
-//   display:block;
-//   counter-increment: subsubsection;
-//     counter-reset: paragraph;
-// }
-
-// subsubsection sectiontitle {
-//   display: block;
-//   margin: 10pt 10pt 0 0;
-//   margin-left: 10pt;
-//   font-size: medium;
-//   font-weight: bold;
-//   color: rgb(9, 62, 125);
-// }
-
-// subsubsection>sectiontitle:before {
-//   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
-// }
-
 $div_name: '';
-
 $ctr_set_reset: (inc: paragraph);
 paragraph {
   display: block;
@@ -189,53 +130,32 @@ paragraph {
     font-size: medium;
     font-weight: normal;
     font-style: italic;
-    color: rgb(9, 62, 125);
+    color: $paragraph-title-color;
   }
 }
 
-// paragraph {
-//   display:block;
-//     counter-increment: paragraph;
-// }
-
-// paragraph sectiontitle {
-//   font-size: medium;
-//   font-weight: normal;
-//   font-style: italic;
-//   color: rgb(9, 62, 125);
-// }
-
-/*
-paragraph>sectiontitle:before {
-  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
+$div_name: '';
+$counter_data:  (
+  counter_list: (
+  ),
+  end: ''
+);
+$ctr_set_reset: (inc: subparagraph);
+subparagraph {
+  display: block;
+  @include cnt-set-resets($ctr-set-reset);
+  @include div_title_style {
+    display: inline-block;
+    margin:0 0 0 0;
+    font-weight: normal;
+    font-size: medium;
+    color: $subparagraph-title-color;
+    @include counters($counter_data) {
+      display: inline-block;
+	  padding-right: 12pt;
+    };
+  }
 }
-*/
-
-// section defaulttitletag:after {
-//   content: "Replace this section title";
-//   color: red;
-// }
-
-// subsection defaulttitletag:after {
-//   content: "Replace this subsection title";
-//   color: red;
-// }
-
-// subsubsection defaulttitletag:after {
-//   content: "Replace this subsubsection title";
-//   color: red;
-// }
-
-// paragraph defaulttitletag:after {
-//   content: "Replace this subsubsubsection title";
-//   color: red;
-// }
-
-// subparagraph defaulttitletag:after {
-//   content: "Replace this subsubsubsubsection title";
-//   color: red;
-// }
-
 
 /*************************/
 /* Front matter elements */
@@ -244,7 +164,7 @@ paragraph>sectiontitle:before {
 title {
   font-size: x-large;
   display: block;
-  color: rgb(9, 62, 125);
+  color: $title-color;
   margin-top: 12pt;
   text-align: center;
 }
@@ -275,7 +195,7 @@ body[showshort='true'] shortTitle:after {
 author {
   text-align: center;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: $author-color;
   display: block;
   padding-top: 10pt;
 }
@@ -303,13 +223,13 @@ body[showshort='true'] authorid:after {
 
 address {
   display: block;
-  color: rgb(9, 62, 125);
+  color: $address-color;
 }
 
 curraddr {
   text-align: center;
   display: block;
-  color: rgb(9, 62, 125);
+  color: $address-color;
   -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-curraddr");
   -moz-user-select: text;
 }
@@ -318,7 +238,7 @@ email {
   text-align: center;
   font-weight: normal;
   display: block;
-  color: rgb(9, 62, 125);
+  color: $address-color;
   padding-top: 2pt;
   -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-email");
   -moz-user-select: text;
@@ -328,7 +248,7 @@ urladdr {
   text-align: center;
   font-weight: normal;
   display: block;
-  color: rgb(9, 62, 125);
+  color: $address-color;
   padding-top: 2pt;
   -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-urladdr");
   -moz-user-select: text;
@@ -338,7 +258,7 @@ thanks {
   text-align: center;
   font-weight: normal;
   display: block;
-  color: rgb(9, 62, 125);
+  color: $address-color;
   -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-thanks");
   -moz-user-select: text;
 }
@@ -347,7 +267,7 @@ date {
   text-align: center;
   font-weight: normal;
   display: block;
-  color: rgb(9, 62, 125);
+  color: $date-color;
   padding-top: 2pt;
 }
 
@@ -355,7 +275,7 @@ translator {
   text-align: center;
   font-weight: normal;
   display: block;
-  color: rgb(9, 62, 125);
+  color: $date-color;
   padding-top: 2pt;
   -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-translator");
   -moz-user-select: text;
@@ -364,7 +284,7 @@ translator {
 subjclass {
   text-align: center;
   font-weight: normal;
-  color: rgb(9, 62, 125);
+  color: $date-color;
   display: block;
   padding-top: 2pt;
   -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-subjclass");
@@ -396,7 +316,7 @@ keywords {
   text-align: center;
   font-weight: normal;
   display: block;
-  color: rgb(9, 62, 125);
+  color: $date-color;
   padding-top: 2pt;
   -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-keywords");
   -moz-user-select: text;
@@ -406,7 +326,7 @@ dedicatory {
   text-align: center;
   font-weight: normal;
   display: block;
-  color: rgb(9, 62, 125);
+  color: $date-color;
   padding-top: 2pt;
   -moz-binding: url("chrome://prince/content/bindings/amscls.xml#fmtag-dedicatory");
   -moz-user-select: text;
@@ -424,7 +344,7 @@ abstract {
   padding-bottom: 15pt;
   font-size: small;
   border: thin solid black;
-  background-color: #E1EEFD;
+  background-color: $abstract-background-color;
   -moz-border-radius: 5px;
 }
 
@@ -432,9 +352,51 @@ abstract:before {
   content: "Abstract";
   display: block;
   text-align: center;
-  font-size: 100%; font-weight: bold;
-  color: rgb(9, 62, 125);
+  font-size: 100%; 
+  font-weight: bold;
+  color: $abstract-title-color;
   -moz-user-select: -moz-none;
+}
+
+/* Hide buttons from print */
+@media print {
+
+  address>button[class=frontmattertag] {
+    display: none;
+  }
+
+  curraddr>button[class=frontmattertag] {
+    display: none;
+  }
+
+  email>button[class=frontmattertag] {
+    display: none;
+  }
+
+  urladdr>button[class=frontmattertag] {
+    display: none;
+  }
+
+  thanks>button[class=frontmattertag] {
+    display: none;
+  }
+
+  translator>button[class=frontmattertag] {
+    display: none;
+  }
+
+  subjclass>button[class=frontmattertag] {
+    display: none;
+  }
+
+  keywords>button[class=frontmattertag] {
+    display: none;
+  }
+
+  dedicatory>button[class=frontmattertag] {
+    display: none;
+  }
+
 }
 
 /**********************/
@@ -446,63 +408,27 @@ p {
   margin: 10pt 10pt 5pt 5pt;
 }
 
+math {
+  direction: ltr;
+}
+
 bodyText {
   display: block;
   margin: 10pt 0 5pt 0;
 }
 
+rtlBodyText {
+  display: block;
+  direction: rtl;
+  unicode-bidi: bidi-override;
+  margin: 10pt 10pt 5pt 5pt;
+}
+
 bodyMath {
   display: block;
   margin: 0 10pt 0 5pt;
-  color: rgb(0,128,64);
+  color: $bodyMath-color;
 }
-
-/* Not in article.css (gp)
-pre, verbatim {
-  font-family: Courier; white-space: pre
-}
-*/
-
-/* Not in article.css (gp)
-item {
-  margin: 0 0 0 0;
-  padding: 10pt 0 0 20pt;
-  display: list-item
-}
-*/
-
-/* Not in article.css (gp)
-item:before {
-  content: counters(item, ".") ":  ";
-  counter-increment: item;
-}
-*/
-
-/* Not in article.css (gp)
-enumerate {
-  counter-reset: item;
-}
-*/
-
-/* Not in article.css (gp)
-description {
-  counter-reset: item;
-}
-*/
-
-/* Not in article.css (gp)
-itemize {
-  list-style: disc;
-  counter-reset: item;
-}
-*/
-
-/* Not in article.css (gp)
-img {
-  display: inline;
-  margin: 2em
-}
-*/
 
 /****************/
 /* Environments */
@@ -510,17 +436,17 @@ img {
 
 shortQuote {
   display: block;
-  margin-left: 40pt;
-  margin-right: 40pt;
+  margin-left: 20pt;
+  margin-right: 20pt;
 }
 
 longQuotation {
   display: block;
-  margin-left: 40pt;
-  margin-right: 40pt;
+  margin-left: 20pt;
+  margin-right: 20pt;
 }
 
-centered {
+centeredEnv, centered {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
   text-align: center;
@@ -637,8 +563,9 @@ $only_theorem_counter: 0;
 
 @import "_theorem_like.scss";
 
-$env-with-inc-list: Acknowledgement Algorithm Assertion Assumption Axiom Case Claim Conclusion Condition
-  Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation
+$env-with-inc-list: Acknowledgment Algorithm Assertion Assumption Axiom
+  Case Claim Conclusion Condition Conjecture Convention Corollary Criterion
+  Definition Example Exercise Hypothesis Lemma Notation Note
   Observation Problem Property Proposition Question Remark Solution Summary;
 
 
