@@ -318,11 +318,41 @@
         <contains>maketoc</contains>
         <contains>makelot</contains>
         <contains>makelof</contains>
-        <contains>frontmatter</contains>
-        <contains>backmatter</contains>
-        <contains>mainmatter</contains>
-        <contains>printindex</contains>
-        <contains>appendix</contains>
+        <contains>frontmatter</contains> <!-- ?? -->
+        <contains>backmatter</contains> <!-- ?? -->
+        <contains>mainmatter</contains> <!-- ?? -->
+        <contains>printindex</contains> <!-- ?? -->
+        <contains>appendix</contains> <!-- ?? -->
+        <contains>paratag</contains>
+        <contains>structtag</contains>
+        <contains>br</contains>
+        <contains>shortTitle</contains>
+        <!-- theorem-like environments
+        <contains>theorem</contains>
+        <contains>algorithm</contains>
+        <contains>axiom</contains>
+        <contains>case</contains>
+        <contains>claim</contains>
+        <contains>conclusion</contains>
+        <contains>condition</contains>
+        <contains>conjecture</contains>
+        <contains>corollary</contains>
+        <contains>criterion</contains>
+        <contains>definition</contains>
+        <contains>example</contains>
+        <contains>exercise</contains>
+        <contains>lemma</contains>
+        <contains>notation</contains>
+        <contains>problem</contains>
+        <contains>proposition</contains>
+        <contains>remark</contains>
+        <contains>solution</contains>
+        <contains>summary</contains>
+        <contains>proof</contains>
+        <contains>assumption</contains>
+        <contains>hypothesis</contains>
+        <contains>property</contains>
+        <contains>question</contains> -->
       </classcontains>
       <tags>
         <tag id="defaultparagraph" nm="bodyText">
@@ -520,7 +550,35 @@
     <tagclass>
       <tagclassname>listtag</tagclassname>
       <classcontains>
-        <contains>bodyText</contains>
+        <contains>paratag</contains>
+        <contains>structtag</contains>
+        <contains>br</contains>
+        <contains>shortTitle</contains>
+        <contains>theorem</contains>
+        <contains>algorithm</contains>
+        <contains>axiom</contains>
+        <contains>case</contains>
+        <contains>claim</contains>
+        <contains>conclusion</contains>
+        <contains>condition</contains>
+        <contains>conjecture</contains>
+        <contains>corollary</contains>
+        <contains>criterion</contains>
+        <contains>definition</contains>
+        <contains>example</contains>
+        <contains>exercise</contains>
+        <contains>lemma</contains>
+        <contains>notation</contains>
+        <contains>problem</contains>
+        <contains>proposition</contains>
+        <contains>remark</contains>
+        <contains>solution</contains>
+        <contains>summary</contains>
+        <contains>proof</contains>
+        <contains>assumption</contains>
+        <contains>hypothesis</contains>
+        <contains>property</contains>
+        <contains>question</contains>
       </classcontains>
       <tags>
         <tag nm="bulletListItem">
@@ -584,6 +642,31 @@
         <contains>structtag</contains>
         <contains>br</contains>
         <contains>shortTitle</contains>
+        <contains>theorem</contains>
+        <contains>algorithm</contains>
+        <contains>axiom</contains>
+        <contains>case</contains>
+        <contains>claim</contains>
+        <contains>conclusion</contains>
+        <contains>condition</contains>
+        <contains>conjecture</contains>
+        <contains>corollary</contains>
+        <contains>criterion</contains>
+        <contains>definition</contains>
+        <contains>example</contains>
+        <contains>exercise</contains>
+        <contains>lemma</contains>
+        <contains>notation</contains>
+        <contains>problem</contains>
+        <contains>proposition</contains>
+        <contains>remark</contains>
+        <contains>solution</contains>
+        <contains>summary</contains>
+        <contains>proof</contains>
+        <contains>assumption</contains>
+        <contains>hypothesis</contains>
+        <contains>property</contains>
+        <contains>question</contains>
       </classcontains>
       <tags>
         <tag id="clearsectiontag" nm="(removesection)">
@@ -814,6 +897,35 @@
           </initialcontents>
         </tag>
         <!-- Begin standard set of theorem-like environments used in Version 5.5 shells -->
+        <!-- A list of these follows, for convenience
+theorem
+algorithm
+axiom
+case
+claim
+conclusion
+condition
+conjecture
+corollary
+criterion
+definition
+example
+exercise
+lemma
+notation
+problem
+proposition
+remark
+solution
+summary
+proof
+assumption
+hypothesis
+property
+question
+-->
+
+
         <tag nm="theorem">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -1650,7 +1762,7 @@
         <tag nm="secspec">
           <description>Special appearance of secondary index entry</description>
           <contains>#text</contains>
-          <contains>texttag</contains> 
+          <contains>texttag</contains>
           <contains>hspace</contains>
           <contains>table</contains>
           <contains>mml:math</contains>
