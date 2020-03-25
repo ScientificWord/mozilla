@@ -159,6 +159,7 @@ function initializePlotEditors(plotnum, contentsOnly) {
   } else {
     theStringSource = GetComputeString("Math.emptyForInput");
   }
+  theStringSource=dressUpMathString(theStringSource);
   editorInitializer.addEditorInfo(radiusEditorControl, theStringSource, true);
   editorInitializer.doInitialize();
 }
