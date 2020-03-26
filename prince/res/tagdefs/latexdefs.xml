@@ -555,7 +555,10 @@
         <contains>br</contains>
         <contains>shortTitle</contains>
         <contains>theorem</contains>
+        <contains>acknowledgment</contains>
         <contains>algorithm</contains>
+        <contains>assertion</contains>
+        <contains>assumption</contains>
         <contains>axiom</contains>
         <contains>case</contains>
         <contains>claim</contains>
@@ -567,18 +570,18 @@
         <contains>definition</contains>
         <contains>example</contains>
         <contains>exercise</contains>
+        <contains>hypothesis</contains>
         <contains>lemma</contains>
         <contains>notation</contains>
+        <contains>texnote</contains>
         <contains>problem</contains>
+        <contains>property</contains>
         <contains>proposition</contains>
+        <contains>question</contains>
         <contains>remark</contains>
         <contains>solution</contains>
         <contains>summary</contains>
         <contains>proof</contains>
-        <contains>assumption</contains>
-        <contains>hypothesis</contains>
-        <contains>property</contains>
-        <contains>question</contains>
       </classcontains>
       <tags>
         <tag nm="bulletListItem">
@@ -643,7 +646,10 @@
         <contains>br</contains>
         <contains>shortTitle</contains>
         <contains>theorem</contains>
+        <contains>acknowledgment</contains>
         <contains>algorithm</contains>
+        <contains>assertion</contains>
+        <contains>assumption</contains>
         <contains>axiom</contains>
         <contains>case</contains>
         <contains>claim</contains>
@@ -655,18 +661,18 @@
         <contains>definition</contains>
         <contains>example</contains>
         <contains>exercise</contains>
+        <contains>hypothesis</contains>
         <contains>lemma</contains>
         <contains>notation</contains>
+        <contains>texnote</contains>
         <contains>problem</contains>
+        <contains>property</contains>
         <contains>proposition</contains>
+        <contains>question</contains>
         <contains>remark</contains>
         <contains>solution</contains>
         <contains>summary</contains>
         <contains>proof</contains>
-        <contains>assumption</contains>
-        <contains>hypothesis</contains>
-        <contains>property</contains>
-        <contains>question</contains>
       </classcontains>
       <tags>
         <tag id="clearsectiontag" nm="(removesection)">
@@ -879,23 +885,6 @@
             </note>
           </initialcontents>
         </tag>
-        <tag nm="assertion">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Assertion</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <inclusion>true</inclusion>
-          <nexttag>bodyText</nexttag>
-          <initialcontents>
-            <assertion>
-              <bodyText>
-                <cursor/>
-                <br/>
-              </bodyText>
-            </assertion>
-          </initialcontents>
-        </tag>
         <!-- Begin standard set of theorem-like environments used in Version 5.5 shells -->
         <!-- A list of these follows, for convenience
 theorem
@@ -938,6 +927,18 @@ question
             <theorem/>
           </initialcontents>
         </tag>
+        <tag nm="acknowledgment">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Acknowledgment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <inclusion>true</inclusion>
+          <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <acknowledgment/>
+          </initialcontents>
+        </tag>
         <tag nm="algorithm">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -947,6 +948,30 @@ question
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <algorithm/>
+          </initialcontents>
+          <inclusion>true</inclusion>
+        </tag>
+        <tag nm="assertion">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Assertion</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <assertion/>
+          </initialcontents>
+          <inclusion>true</inclusion>
+        </tag>
+        <tag nm="assumption">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Assumption</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <assumption/>
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
@@ -1082,6 +1107,18 @@ question
             <exercise/>
           </initialcontents>
         </tag>
+        <tag nm="hypothesis">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Hypothesis</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <inclusion>true</inclusion>
+          <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <hypothesis/>
+          </initialcontents>
+        </tag>
         <tag nm="lemma">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -1106,6 +1143,18 @@ question
             <notation/>
           </initialcontents>
         </tag>
+        <tag nm="texnote">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Note</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <inclusion>true</inclusion>
+          <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <texnote/>
+          </initialcontents>
+        </tag>
         <tag nm="problem">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -1118,6 +1167,18 @@ question
             <problem/>
           </initialcontents>
         </tag>
+        <tag nm="property">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Property</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <inclusion>true</inclusion>
+          <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <property/>
+          </initialcontents>
+        </tag>
         <tag nm="proposition">
           <level>*</level>
           <contains>envLeadIn</contains>
@@ -1128,6 +1189,18 @@ question
           <nexttag>bodyText</nexttag>
           <initialcontents>
             <proposition/>
+          </initialcontents>
+        </tag>
+        <tag nm="question">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Question</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <inclusion>true</inclusion>
+          <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <question/>
           </initialcontents>
         </tag>
         <tag nm="remark">
@@ -1179,67 +1252,6 @@ question
           </initialcontents>
         </tag>
         <!-- End standard set of theorem-like environments used in Version 5.5 shells -->
-        <tag nm="assumption">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Assumption</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <inclusion>true</inclusion>
-          <nexttag>bodyText</nexttag>
-          <initialcontents>
-            <assumption/>
-          </initialcontents>
-        </tag>
-        <tag nm="hypothesis">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Hypothesis</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <inclusion>true</inclusion>
-          <nexttag>bodyText</nexttag>
-          <initialcontents>
-            <hypothesis/>
-          </initialcontents>
-        </tag>
-        <tag nm="property">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Property</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <inclusion>true</inclusion>
-          <nexttag>bodyText</nexttag>
-          <initialcontents>
-            <property/>
-          </initialcontents>
-        </tag>
-        <tag nm="question">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Question</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <inclusion>true</inclusion>
-          <nexttag>bodyText</nexttag>
-          <initialcontents>
-            <question/>
-          </initialcontents>
-        </tag>
-        <!-- The "acknowledgment" tag isn't intended to be added to the interface, as the non-front-matter version induces only confusion among TeX users. -->
-        <tag hidden="1" nm="acknowledgment">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Acknowledgment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
-          <inclusion>true</inclusion>
-          <nexttag>bodyText</nexttag>
-          <initialcontents>
-            <acknowledgment/>
-          </initialcontents>
-        </tag>
         <!-- Remove msiframe using hidden="1" - available via Insert, Frame -->
         <tag hidden="1" nm="msiframe">
           <contains>envtag</contains>
