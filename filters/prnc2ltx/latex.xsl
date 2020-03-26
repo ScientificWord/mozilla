@@ -236,7 +236,7 @@
 <xsl:variable name="theoremenvNodeList" select ="exsl:node-set($theoremenvList)"/>
 
 <xsl:variable name="neededNewTheorems">
-  <xsl:for-each select="//html:assertion|//html:lemma|//html:conjecture|//html:corollary|//html:criterion|//html:proposition|//html:theorem|//html:algorithm|//html:assumption|//html:axiom|//html:condition|//html:definition|//html:example|//html:exercise|//html:hypothesis|//html:problem|//html:property|//html:question|//html:problem|//html:acknowledgment|//html:acknowledgement|//html:case|//html:claim|//html:conclusion|//html:notation|//html:remark|//html:summary|//html:solution|//html:generictheorem">
+  <xsl:for-each select="//html:assertion|//html:lemma|//html:conjecture|//html:corollary|//html:criterion|//html:proposition|//html:theorem|//html:algorithm|//html:assumption|//html:axiom|//html:condition|//html:definition|//html:example|//html:exercise|//html:hypothesis|//html:problem|//html:property|//html:question|//html:acknowledgment|//html:acknowledgement|//html:case|//html:claim|//html:conclusion|//html:notation|//html:texnote|//html:remark|//html:summary|//html:solution|//html:generictheorem">
     <xsl:variable name="existingThmTranslation">
       <xsl:call-template name="checkTeXNameForEnvironments">
         <xsl:with-param name="theTag" select="name(.)"/>
@@ -691,7 +691,7 @@
 <xsl:template match="html:shortTitle"></xsl:template>
 <xsl:template match="html:shortTitle" mode="shortTitle">[<xsl:apply-templates/>]</xsl:template>
 
-<xsl:template match="html:assertion|html:lemma|html:conjecture|html:corollary|html:criterion|html:proposition|html:theorem|html:algorithm|html:assumption|html:axiom|html:condition|html:definition|html:example|html:exercise|html:hypothesis|html:problem|html:property|html:question|html:acknowledgment|html:acknowledgement|html:case|html:claim|html:conclusion|html:notation|html:remark|html:summary|html:solution">
+<xsl:template match="html:assertion|html:lemma|html:conjecture|html:corollary|html:criterion|html:proposition|html:theorem|html:algorithm|html:assumption|html:axiom|html:condition|html:definition|html:example|html:exercise|html:hypothesis|html:problem|html:property|html:question|html:acknowledgment|html:acknowledgement|html:case|html:claim|html:conclusion|html:notation|html:note|html:remark|html:summary|html:solution">
 <xsl:call-template name="processThmEnvironment">
   <xsl:with-param name="theTag" select="name()"/>
   <xsl:with-param name="theNumbering" select="@numbering"/>
