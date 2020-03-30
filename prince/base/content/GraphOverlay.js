@@ -1294,7 +1294,7 @@ Plot.prototype =
     else if (key in this.element)
       value = this.element[key];
     if ((value !== null) && (value !== "")) {
-      return value;
+      return dressUpMathString(value);
     }
     switch(key)
     {
@@ -2126,6 +2126,8 @@ Frame.prototype = {
 };
 
 function dressUpMathString2(mathString) {
+  mathString = mathString.replace('<math><math>','<math>'); // BBM: I don't know where the double math tags are coming from.
+  mathString = mathString.replace('</math></math>','</math>');
   mathString = mathString.replace(/<math\s*>/g,'<math xmlns="http://www.w3.org/1998/Math/MathML">', "g");
   // mathString = mathString.replace(/<mi\s*>/,'<mi _moz-math-font-style="italic">', "g");
   return mathString;
