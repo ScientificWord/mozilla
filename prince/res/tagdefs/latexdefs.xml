@@ -1215,7 +1215,8 @@ question
             <remark/>
           </initialcontents>
         </tag>
-        <tag nm="solution">
+		<!-- Hide solution, not part of AMS set of theorem-like objects. -->
+        <tag hidden="1" nm="solution">
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Solution</description>
