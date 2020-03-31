@@ -1390,7 +1390,7 @@ solution[numbering="none"] > sectiontitle:first-child::before {
 }
 
 acknowledgment > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
-conclusion > sectiontitle:first-child::before, notation > sectiontitle:first-child::before,
+conclusion > sectiontitle:first-child::before, notation > sectiontitle:first-child::before,	texnote > sectiontitle:first-child::before,
 remark > sectiontitle:first-child::before, summary > sectiontitle:first-child::before
 {
   font-style: italic;
@@ -1398,7 +1398,7 @@ remark > sectiontitle:first-child::before, summary > sectiontitle:first-child::b
   -moz-user-modify: read-only;
 }
 
-acknowledgment, case, claim, conclusion, notation, remark, summary {
+acknowledgment, case, claim, conclusion, notation, texnote, remark, summary {
   display: block;
   font-style: normal;
   counter-increment: theorem;
@@ -1452,6 +1452,16 @@ notation > sectiontitle:first-child::before {
 
 notation[numbering="none"] > sectiontitle:first-child::before {
   content: 'Notation ';
+  -moz-user-modify: read-only;
+}
+
+texnote > sectiontitle:first-child::before {
+  content: 'Note ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
+}
+
+texnote[numbering="none"] > sectiontitle:first-child::before {
+  content: 'Note ';
   -moz-user-modify: read-only;
 }
 
@@ -1519,6 +1529,7 @@ case[leadInType="custom"],
 claim[leadInType="custom"],
 conclusion[leadInType="custom"],
 notation[leadInType="custom"],
+texnote[leadInType="custom"],
 remark[leadInType="custom"],
 summary[leadInType="custom"],
 proof[leadInType="custom"] {
@@ -1550,6 +1561,7 @@ case > envLeadIn,
 claim > envLeadIn,
 conclusion > envLeadIn,
 notation > envLeadIn,
+texnote > envLeadIn,
 remark > envLeadIn,
 summary > envLeadIn:before {
  /* -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremLeadin"); */
@@ -1580,6 +1592,7 @@ case[numbering="none"],
 claim[numbering="none"],
 conclusion[numbering="none"],
 notation[numbering="none"],
+texnote[numbering="none"],
 remark[numbering="none"],
 summary[numbering="none"] {
   counter-increment: none;
@@ -1609,6 +1622,7 @@ case > envLeadIn+bodyText,
 claim > envLeadIn+bodyText,
 conclusion > envLeadIn+bodyText,
 notation > envLeadIn+bodyText,
+texnote > envLeadIn+bodyText,
 remark > envLeadIn+bodyText,
 summary > envLeadIn+bodyText,
 proof > envLeadIn+bodyText {
