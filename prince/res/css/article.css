@@ -437,6 +437,12 @@ notation > *:first-child:before {
   content: "Notation" " " counter(theorem) " ";
 }
 
+texnote > *:first-child:before {
+  font-weight: bold;
+  -moz-user-modify: read-only;
+  content: "Note" " " counter(theorem) " ";
+}
+
 observation > *:first-child:before {
   font-weight: bold;
   -moz-user-modify: read-only;
