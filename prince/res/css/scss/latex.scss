@@ -1657,6 +1657,7 @@ acknowledgement, convention, observation
   display: block;
   font-style: normal;
   counter-increment: theorem;
+  background-color: #EFEFEF;
 }
 
 acknowledgement > sectiontitle:first-child::before, case > sectiontitle:first-child::before, claim > sectiontitle:first-child::before,
