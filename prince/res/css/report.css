@@ -474,177 +474,183 @@ img {
 /* Theorem-like environments */
 /*****************************/
 theorem > *:first-child:before {
-  content: "Theorem " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Theorem" " " counter(theorem) " ";
 }
 
 acknowledgement > *:first-child:before {
-  content: "Acknowledgement " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Acknowledgement" " " counter(theorem) " ";
 }
 
 acknowledgment > *:first-child:before {
-  content: "Acknowledgment " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Acknowledgment" " " counter(theorem) " ";
 }
 
 algorithm > *:first-child:before {
-  content: "Algorithm " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Algorithm" " " counter(theorem) " ";
 }
 
 assertion > *:first-child:before {
-  content: "Assertion " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Assertion" " " counter(theorem) " ";
 }
 
 assumption > *:first-child:before {
-  content: "Assumption " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Assumption" " " counter(theorem) " ";
 }
 
 axiom > *:first-child:before {
-  content: "Axiom " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Axiom" " " counter(theorem) " ";
 }
 
 case > *:first-child:before {
-  content: "Case " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Case" " " counter(theorem) " ";
 }
 
 claim > *:first-child:before {
-  content: "Claim " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Claim" " " counter(theorem) " ";
 }
 
 conclusion > *:first-child:before {
-  content: "Conclusion " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Conclusion" " " counter(theorem) " ";
 }
 
 condition > *:first-child:before {
-  content: "Condition " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Condition" " " counter(theorem) " ";
 }
 
 conjecture > *:first-child:before {
-  content: "Conjecture " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Conjecture" " " counter(theorem) " ";
 }
 
 convention > *:first-child:before {
-  content: "Convention " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Convention" " " counter(theorem) " ";
 }
 
 corollary > *:first-child:before {
-  content: "Corollary " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Corollary" " " counter(theorem) " ";
 }
 
 criterion > *:first-child:before {
-  content: "Criterion " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Criterion" " " counter(theorem) " ";
 }
 
 definition > *:first-child:before {
-  content: "Definition " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Definition" " " counter(theorem) " ";
 }
 
 example > *:first-child:before {
-  content: "Example " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Example" " " counter(theorem) " ";
 }
 
 exercise > *:first-child:before {
-  content: "Exercise " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Exercise" " " counter(theorem) " ";
 }
 
 hypothesis > *:first-child:before {
-  content: "Hypothesis " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Hypothesis" " " counter(theorem) " ";
 }
 
 lemma > *:first-child:before {
-  content: "Lemma " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Lemma" " " counter(theorem) " ";
 }
 
 notation > *:first-child:before {
-  content: "Notation " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Notation" " " counter(theorem) " ";
+}
+
+texnote > *:first-child:before {
+  font-weight: bold;
+  -moz-user-modify: read-only;
+  content: "Note" " " counter(theorem) " ";
 }
 
 observation > *:first-child:before {
-  content: "Observation " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Observation" " " counter(theorem) " ";
 }
 
 problem > *:first-child:before {
-  content: "Problem " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Problem" " " counter(theorem) " ";
 }
 
 property > *:first-child:before {
-  content: "Property " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Property" " " counter(theorem) " ";
 }
 
 proposition > *:first-child:before {
-  content: "Proposition " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Proposition" " " counter(theorem) " ";
 }
 
 question > *:first-child:before {
-  content: "Question " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Question" " " counter(theorem) " ";
 }
 
 remark > *:first-child:before {
-  content: "Remark " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Remark" " " counter(theorem) " ";
 }
 
 solution > *:first-child:before {
-  content: "Solution " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Solution" " " counter(theorem) " ";
 }
 
 summary > *:first-child:before {
-  content: "Summary " counter(theorem) "  ";
   font-weight: bold;
   -moz-user-modify: read-only;
+  content: "Summary" " " counter(theorem) " ";
 }
 
 /* Equation numbering within chapters */
@@ -655,5 +661,3 @@ button[class=eqnnum]:after {
 button[class=subeqnnum]:after {
   content: "  (" counter(chapter) "." counter(eqnnumber) "." counter(subeqnnum, lower-latin) ")";
 }
-
-/*# sourceMappingURL=report.css.map */
