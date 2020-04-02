@@ -801,7 +801,11 @@ button[class="frontmattertag"] {
 body {
   -moz-user-select: text; /* -moz-none can be overridden */
   counter-reset: part chapter section subsection subsubsection paragraph subparagraph
-                 eqnnumber subeqnnum item item-number numberedlist ftnotectr bibliographylist theorem;
+                 eqnnumber subeqnnum item item-number numberedlist ftnotectr bibliographylist
+				 // All the theorem-like counters that might be used
+				 acknowledgement acknowledgment algorithm assertion assumption axiom case claim conclusion condition
+                 conjecture convention corollary criterion definition example exercise hypothesis lemma notation texnote
+                 observation problem property proposition question remark solution summary theorem;
   display: block;
   position: relative;
   font-family: Arial;
