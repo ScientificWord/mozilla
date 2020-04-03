@@ -18,6 +18,328 @@
                     <nextafteremptyblock>bodyText</nextafteremptyblock>
                     <nexttag>bodyText</nexttag>
                 </tag>
+				<!--  Beamer only predefines a few theorem-like objects: theorem, corollary, definition, 
+				      definitions, fact, example, and examples (and lemma).  There are also a bunch of German definitions,
+					  but include only problem as it is the same in English.  Add definitions and examples and hide
+					  the other theorem-like environments using the hidden attribute.
+				-->
+                <tag hidden="1" nm="acknowledgment">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Acknowledgment</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <acknowledgment/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="algorithm">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Algorithm</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <algorithm/>
+                  </initialcontents>
+                  <inclusion>true</inclusion>
+                </tag>
+                <tag hidden="1" nm="assertion">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Assertion</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <assertion/>
+                  </initialcontents>
+                  <inclusion>true</inclusion>
+                </tag>
+                <tag hidden="1" nm="assumption">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Assumption</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <assumption/>
+                  </initialcontents>
+                  <inclusion>true</inclusion>
+                </tag>
+                <tag hidden="1" nm="axiom">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Axiom</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <axiom/>
+                  </initialcontents>
+                  <inclusion>true</inclusion>
+                </tag>
+                <tag hidden="1" nm="case">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Case</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <case/>
+                  </initialcontents>
+                  <inclusion>true</inclusion>
+                </tag>
+                <tag hidden="1" nm="claim">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Claim</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <claim/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="conclusion">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Conclusion</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <conclusion/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="condition">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Condition</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <condition/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="conjecture">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Conjecture</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <conjecture/>
+                  </initialcontents>
+                </tag>
+                <!-- <tag nm="corollary"> defined in latexdefs.xml -->
+                <tag hidden="1" nm="criterion">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Criterion</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <criterion/>
+                  </initialcontents>
+                </tag>
+                <!-- <tag nm="definition"> defined in latexdefs.xml -->
+				<!-- add definitions -->
+                <tag nm="definitions">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Definitions</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <definitions/>
+                  </initialcontents>
+                </tag>
+                <tag nm="example">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Example</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <example/>
+                  </initialcontents>
+                </tag>
+				<!-- add examples -->
+                <tag nm="examples">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Examples</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <examples/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="exercise">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Exercise</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <exercise/>
+                  </initialcontents>
+                </tag>
+				<!-- add fact -->
+                <tag nm="fact">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Fact</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <fact/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="hypothesis">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Hypothesis</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <hypothesis/>
+                  </initialcontents>
+                </tag>
+                <tag nm="lemma">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Lemma</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <lemma/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="notation">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Notation</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <notation/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="texnote">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Note</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <texnote/>
+                  </initialcontents>
+                </tag>
+                <tag nm="problem">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Problem</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <problem/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="property">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Property</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <property/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="proposition">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Proposition</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <proposition/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="question">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Question</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <question/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="remark">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Remark</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <remark/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="summary">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Summary</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <summary/>
+                  </initialcontents>
+                </tag>
             </tags>
         </tagclass>
         <tagclass>
