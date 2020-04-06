@@ -96,22 +96,22 @@
 
 <!-- New theorem-like objects used by beamer -->
 <xsl:template match="html:definitions">
-\begin{definitions}
-xsl:apply-templates/
-\end{definitions}
-/xsl:template
+  <xsl:text>\begin{definitions}</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>\end{definitions}</xsl:text>
+</xsl:template>
 
 <xsl:template match="html:examples">
-\begin{examples}
-xsl:apply-templates/
-\end{examples}
-/xsl:template
+  <xsl:text>\begin{examples}</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>\end{examples}</xsl:text>
+</xsl:template>
 
 <xsl:template match="html:fact">
-\begin{fact}
-xsl:apply-templates/
-\end{fact}
-/xsl:template
+  <xsl:text>\begin{fact}</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>\end{fact}</xsl:text>
+</xsl:template>
 
 
 </xsl:stylesheet>
