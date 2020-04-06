@@ -80,22 +80,37 @@
 
 <xsl:template match="html:stepnumberedListItem">
 \item <xsl:apply-templates/>
-
 </xsl:template>
 
 <xsl:template match="html:stepbulletListItem">
 \item <xsl:apply-templates/>
-
 </xsl:template>
 
 <xsl:template match="html:alertstepnumberedListItem">
 \item <xsl:apply-templates/>
-
 </xsl:template>
 
 <xsl:template match="html:alertstepbulletListItem">
 \item <xsl:apply-templates/>
+</xsl:template>
 
+<!-- New theorem-like objects used by beamer -->
+<xsl:template match="html:definitions">
+  <xsl:text>\begin{definitions}</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>\end{definitions}</xsl:text>
+</xsl:template>
+
+<xsl:template match="html:examples">
+  <xsl:text>\begin{examples}</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>\end{examples}</xsl:text>
+</xsl:template>
+
+<xsl:template match="html:fact">
+  <xsl:text>\begin{fact}</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>\end{fact}</xsl:text>
 </xsl:template>
 
 
