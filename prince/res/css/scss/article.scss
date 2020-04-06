@@ -341,8 +341,8 @@ $env-with-inc-list: Theorem;
 
 // All the others use the theorem counter and don't increment
 
-$env-list: Acknowledgement Algorithm Assertion Assumption Axiom Case Claim Conclusion Condition
-  Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation
+$env-list: Acknowledgement Acknowledgment Algorithm Assertion Assumption Axiom Case Claim Conclusion Condition
+  Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation "Note[texnote]"
   Observation Problem Property Proposition Question Remark Solution Summary;
 
 $counter_data: (counter_list: ((theorem)));
@@ -356,7 +356,17 @@ $counter_data: (counter_list: ((theorem)));
 }
 
 @each $name in $env-list {
-  $lc_name: to_lower-case($name);
+  $lc_name: null; // Make variable available within this scope
+  @if str-index($name, "[") == null {
+    $lc_name: to_lower-case($name);
+  }
+  @else {
+      $start: str-index($name, "[") + 1; 
+      $end: 	str-index($name, "]") - 1;
+      $lc_name: str-slice($name, $start, $end);
+      $end: 	str-index($name, "[") - 1;
+	  $name: 	str-slice($name, 1, $end);
+  }
   #{$lc_name} {
     @include theorem_like($name, $counter-data);
   }

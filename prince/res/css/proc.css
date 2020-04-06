@@ -327,6 +327,12 @@ acknowledgement > *:first-child:before {
   content: "Acknowledgement" " " counter(theorem) " ";
 }
 
+acknowledgment > *:first-child:before {
+  font-weight: bold;
+  -moz-user-modify: read-only;
+  content: "Acknowledgment" " " counter(theorem) " ";
+}
+
 algorithm > *:first-child:before {
   font-weight: bold;
   -moz-user-modify: read-only;
@@ -435,6 +441,12 @@ notation > *:first-child:before {
   content: "Notation" " " counter(theorem) " ";
 }
 
+texnote > *:first-child:before {
+  font-weight: bold;
+  -moz-user-modify: read-only;
+  content: "Note" " " counter(theorem) " ";
+}
+
 observation > *:first-child:before {
   font-weight: bold;
   -moz-user-modify: read-only;
@@ -541,5 +553,3 @@ button[class="subeqnnum"]:after{
 [hidemarkers] a[key] {
   display: none;
 }
-
-/*# sourceMappingURL=proc.css.map */

@@ -1,5 +1,6 @@
-@namespace mml url("http://www.w3.org/1998/Math/MathML");
-@namespace sw url("http://www.sciword.com/namespaces/sciword");
+/* beamer.scss */
+
+@import "_theorem_like";
 
 beamerframe, stepnumberedListItem, stepbulletListItem, alertstepnumberedListItem, alertstepbulletListItem,
 frametitle, framesubtitle, subtitle, institute, subject, keywords {
@@ -270,5 +271,44 @@ framesubtitle, QTR[type="framesubtitle"] {
   font-size: 105%;
   color: rgb(100,100,200);
   -moz-user-select: text;
+}
+
+/*****************************/
+/* Theorem-like environments */
+/*****************************/
+
+// Modified from article.scss
+// Not as many theorem-like environments and don't display numbers
+
+$env-with-inc-list: Theorem;
+
+$env-list: Corollary Definition Definitions Example Examples Fact Lemma Problem;
+
+$counter_data: (counter_list: ());
+
+@each $name in $env-with-inc-list {
+  $default_div_num_end: " ";
+  $lc_name: to_lower-case($name);
+  #{$lc_name} {
+    @include theorem_like($name, $counter-data);
+  }
+}
+
+@each $name in $env-list {
+  $lc_name: null; // Make variable available within this scope
+  @if str-index($name, "[") == null {
+    $lc_name: to_lower-case($name);
+  }
+  @else {
+      $start: str-index($name, "[") + 1; 
+      $end: 	str-index($name, "]") - 1;
+      $lc_name: str-slice($name, $start, $end);
+      $end: 	str-index($name, "[") - 1;
+	  $name: 	str-slice($name, 1, $end);
+  }
+  #{$lc_name} {
+    @include theorem_like($name, $counter-data);
+    background-color: #EFEFEF;  // Add for all, but really for new
+  }
 }
 

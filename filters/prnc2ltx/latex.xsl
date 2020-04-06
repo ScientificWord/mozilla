@@ -798,6 +798,18 @@
   <xsl:value-of select="$blankline"/>
 </xsl:template>
 
+<!-- texnote translates to note (gp)-->
+<xsl:template match="html:texnote">
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\begin{note}</xsl:text>
+  <xsl:value-of select="$newline"/>
+  <xsl:apply-templates mode="envleadin"/>
+  <xsl:apply-templates/>
+  <xsl:value-of select="$newline"/>
+  <xsl:text>\end{note}</xsl:text>
+  <xsl:value-of select="$blankline"/>
+</xsl:template>
+
 <xsl:template match="html:envLeadIn"></xsl:template>
 <xsl:template match="@*|node()" mode="envleadin"></xsl:template>
 <xsl:template match="html:envLeadIn" mode="envleadin">[<xsl:apply-templates/>]</xsl:template>
@@ -1485,12 +1497,6 @@
 </xsl:template>
 
 <xsl:template match="html:graphSpec">
-</xsl:template>
-
-<xsl:template match="html:texnote">
-  \begin{note}
-  <xsl:apply-templates/>
-  \end{note}
 </xsl:template>
 
 <!-- Start definitions for ulem package -->
