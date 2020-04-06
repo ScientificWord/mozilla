@@ -74,7 +74,7 @@
        <char unicode="&#x2A06;" latex="\bigsqcup"/>
        <char unicode="&#x2A0C;" latex="\iiiint" />
        <char unicode="&#x22C3;" latex="\tbigcup"/>
-       <char unicode="&#x2f;"  latex="\not"/>
+       <char unicode="&#x2f;"  latex="\not"/>  
     </char-table>
 </xsl:variable>
 
@@ -1485,12 +1485,6 @@
 </xsl:template>
 
 <xsl:template match="html:graphSpec">
-</xsl:template>
-
-<xsl:template match="html:texnote">
-  \begin{note}
-  <xsl:apply-templates/>
-  \end{note}
 </xsl:template>
 
 <!-- Start definitions for ulem package -->
