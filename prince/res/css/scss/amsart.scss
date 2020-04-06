@@ -558,21 +558,49 @@ Huge {
 /* Theorem-like environments */
 /*****************************/
 
+// Each theorem-like object is numbered independently.
 
-$only_theorem_counter: 0;
+@import "_theorem_like";
 
-@import "_theorem_like.scss";
+$env-list: Acknowledgement Acknowledgment Algorithm Assertion Assumption Axiom Case Claim Conclusion Condition
+  Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation "Note[texnote]"
+  Observation Problem Property Proposition Question Remark Solution Summary Theorem;
 
-$env-with-inc-list: Acknowledgment Algorithm Assertion Assumption Axiom
-  Case Claim Conclusion Condition Conjecture Convention Corollary Criterion
-  Definition Example Exercise Hypothesis Lemma Notation Note
-  Observation Problem Property Proposition Question Remark Solution Summary;
-
-
-@each $name in $env-with-inc-list {
-  $lc_name: to_lower-case($name);
+@each $name in $env-list {
+  $lc_name: null; // Make variable available within this scope
+  @if str-index($name, "[") == null {
+    $lc_name: to_lower-case($name);
+  }
+  @else {
+      $start: str-index($name, "[") + 1; 
+      $end: 	str-index($name, "]") - 1;
+      $lc_name: unquote(str-slice($name, $start, $end));
+      $end: 	str-index($name, "[") - 1;
+	  $name: 	str-slice($name, 1, $end);
+  }
+//  body {
+//  counter-reset: $lc_name;
+//}
   #{$lc_name} {
-    @include theorem_like($name, (counter_list:((section),(#{$lc_name}))), #{$lc_name});
+    counter-increment: $lc_name;
+    @include theorem_like($name, $lc_name);
   }
 }
 
+
+
+/////$only_theorem_counter: 0;
+/////
+/////@import "_theorem_like.scss";
+/////
+/////$env-with-inc-list: Acknowledgement Algorithm Assertion Assumption Axiom Case Claim Conclusion Condition
+/////Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation
+/////Observation Problem Property Proposition Question Remark Solution Summary;
+/////
+/////@each $name in $env-with-inc-list {
+/////  $lc_name: to_lower-case($name);
+/////  #{$lc_name} {
+/////    @include theorem_like($name, (counter_list:((#{$lc_name}))), #{$lc_name});
+/////  }
+/////}
+/////

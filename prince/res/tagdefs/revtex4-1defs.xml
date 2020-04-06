@@ -37,6 +37,114 @@
                         </acknowledgments>
                     </initialcontents>
                 </tag>
+                <tag hidden="1" nm="acknowledgment">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Acknowledgment</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <acknowledgment/>
+                  </initialcontents>
+                </tag>
+                <tag nm="acknowledgement">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Acknowledgement</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <acknowledgment/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="assertion">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Assertion</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <assertion/>
+                  </initialcontents>
+                  <inclusion>true</inclusion>
+                </tag>
+                <tag hidden="1" nm="assumption">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Assumption</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <assumption/>
+                  </initialcontents>
+                  <inclusion>true</inclusion>
+                </tag>
+                <tag hidden="1" nm="case">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Case</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <case/>
+                  </initialcontents>
+                  <inclusion>true</inclusion>
+                </tag>
+                <tag hidden="1" nm="hypothesis">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Hypothesis</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <hypothesis/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="property">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Property</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <property/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="question">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Question</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <question/>
+                  </initialcontents>
+                </tag>
+                <tag hidden="1" nm="texnote">
+                  <level>*</level>
+                  <contains>envLeadIn</contains>
+                  <description>Note</description>
+                  <discardemptyblock>true</discardemptyblock>
+                  <nextafteremptyblock>bodyText</nextafteremptyblock>
+                  <inclusion>true</inclusion>
+                  <nexttag>bodyText</nexttag>
+                  <initialcontents>
+                    <texnote/>
+                  </initialcontents>
+                </tag>
             </tags>
         </tagclass>
         <tagclass>

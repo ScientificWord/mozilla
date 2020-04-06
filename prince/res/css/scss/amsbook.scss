@@ -1,69 +1,47 @@
  /* amsbook.css */
+
+/************************/
+/* Division header tags */
+/************************/
+
 @import "division_colors";
-@import "_division_headers.scss";
-@import "_theorem_like.scss";
-
-// This rule is probably not necessary
-part, chapter, section, subsection, subsubsection, paragraph, subparagraph {
-  -moz-user-select: text;
-}
-
+@import "division_headers";
+@import "theorem_like";
 
 $div_name: 'Part';
 $counter_data:  (
   counter_list: (
-    (part,upper-roman),
+    (part),
   ),
   end: ''
 );
-$ctr_set_reset: (inc: part, reset: chapter);
+$ctr_set_reset: (inc: part);
 
 part {
   display: block;
-  text-align: center;
   @include cnt-set-resets($ctr-set-reset);
   @include div_title_style {
+    margin: 30pt 0 0 0;
     display: block;
-    font: bold large;
-    color: rgb(9, 62, 125);
+    font-weight: bold;
+    font-size:   220%;
+    color: $part-title-color;
     text-align: center;
     @include counters($counter_data, 'Part ') {
+      display: block;
+      font-size:   80%;
       text-align: center;
     };
   }
 }
 
-// part {
-//   display: block;
-//   text-align: center;
-//   counter-increment: part;
-// }
-//
-// part>sectiontitle {
-//   display: block;
-//   font-size: x-large;
-//   font-weight: bold;
-//   color: rgb(9, 62, 125);
-//   text-align: center;
-// }
-//
-// part>sectiontitle:before {
-//   content: "Part " counter(part);
-//   display: block;
-//   font-size: large;
-//   font-weight: bold;
-//   color: rgb(9, 62, 125);
-//   text-align: center;
-//   -moz-user-select: -moz-none;
-// }
-
 
 $div_name: 'CHAPTER';
 $counter_data:  (
   counter_list: (
-    (chapter),
+    (chapter)
   ),
-  end: '.  '
+  end: ''
 );
 $ctr_set_reset: (inc: chapter, reset: section eqnnumber subeqnnum);
 
@@ -76,38 +54,16 @@ chapter {
   @include div_title_style {
     display: block;
     margin: 10pt 0 0 0;
-    font-size: 20pt;
     font-weight: bold;
+    font-size: 200%;
     text-align: center;
-    color: rgb(9, 62, 125);
-    @include counters($counter_data) {
+    color: $chapter-title-color;
+    @include counters($counter_data, 'CHAPTER ') {
       display: block;
+      font-size:   80%;
     };
   }
 }
-
-// chapter {
-//   display: block;
-//   counter-increment: chapter;
-//   counter-reset: section eqnnumber subeqnnum;
-// }
-
-// chapter sectiontitle {
-//   display: block;
-//   margin: 10pt 0 0 0;
-//   font-size: 20pt;
-//   font-weight: bold;
-//   text-align: center;
-//   color: rgb(9, 62, 125);
-// }
-//
-// chapter>sectiontitle:before {
-//   display: block;
-//   font-size: large;
-//   color: rgb(9, 62, 125);
-//   text-align: center;
-//   content: "CHAPTER " counter(chapter);
-// }
 
 
 $div_name: 'Section';
@@ -128,31 +84,12 @@ section {
   @include div_title_style {
     display: block;
     margin: 0 0 0 0;
-    font: bold large;
-    color: rgb(9, 62, 125);
+    font-weight: bold;
+    font-size: large;
+    color: $section-title-color;
     @include counters($counter_data);
   }
 }
-//
-// section {
-//   display: block;
-//   counter-increment: section;
-//   counter-reset: subsection;
-//   /*counter-reset: theorem; */
-// }
-//
-// section sectiontitle {
-//   display: block;
-//   margin: 0;
-//   margin-left: 0;
-//   font-size: large;
-//   font-weight: bold;
-//   color: rgb(9, 62, 125);
-// }
-//
-// section>sectiontitle:before {
-//   content: counter(section) ".  ";
-// }
 
 
 $div_name: Subsection;
@@ -173,8 +110,9 @@ subsection {
   @include div_title_style {
     display: block;
     margin: 10pt 10pt 0 0;
-    font: bold medium;
-    color: rgb(9, 62, 125);
+    font-weight: bold;
+    font-size: medium;
+    color: $subsection-title-color;
     @include counters($counter_data) {
       display: inline-block;
       width: 1.5cm;
@@ -183,16 +121,6 @@ subsection {
 }
 
 
-// subsection>sectiontitle:before, subsection>bodyText:first-child:before {
-//   content: counter(section) "." counter(subsection) ".  ";
-// }
-//
-// subsubsection {
-//   display:block;
-//   text-align: left;
-//     counter-increment: subsubsection;
-// /*    counter-reset: paragraph; */
-// }
 
 $div_name: Subsubsection;
 $counter_data:  (
@@ -210,67 +138,40 @@ subsubsection {
   @include div_title_style {
     display: inline;
     margin: 10pt 10pt 0 0;
-    font: bold medium;
-    color: rgb(9, 62, 125);
+    font-weight: bold;
+    font-size: medium;
+    color: $subsubsection-title-color;
     @include counters($counter_data);
   }
 }
 
-// subsubsection sectiontitle, subsubsection bodyText:first-child {
-//   display: block;
-//   margin: 10pt 10pt 0 0;
-//   margin-left: 10pt;
-//   font-size: medium;
-//   font-weight: bold;
-//   color: rgb(9, 62, 125);
-// }
-
-// subsubsection>sectiontitle:before, subsubsection>bodyText:first-child:before {
-//   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
-// }
 
 
 $div_name: '';
 $counter_data:  (
   counter_list: (
   ),
-  end: '.  '
+  end: ''
 );
 $ctr_set_reset: (inc: paragraph,reset: subparagraph);
 paragraph {
   display: block;
   @include cnt-set-resets($ctr-set-reset);
   @include handle_nonum;
-  @include default_title($div_name);
+  //@include default_title($div_name);
   @include div_title_style {
+    display: inline;
     margin:0 0 0 0;
     font-size: medium;
     font-weight: normal;
     font-style: italic;
-    color: rgb(9, 62, 125);
-      @include counters($counter_data, '§'){
-        width: 1.5cm;
-      }
+    color: $paragraph-title-color;
+      @include counters($counter_data){
+	  padding-right: 0pt;
+    }
   }
 }
 
-// paragraph {
-//   display:block;
-//   text-align: left;
-// /*    counter-increment: paragraph;  */
-// }
-
-// paragraph sectiontitle, paragraph bodyText:first-child {
-//   font-size: medium;
-//   font-weight: normal;
-//   font-style: italic;
-//   color: rgb(9, 62, 125);
-// }
-
-
-// paragraph>sectiontitle:before, paragraph>bodyText:first-child:before {
-//   content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  ";
-// }
 
 $div_name: '';
 $counter_data:  (
@@ -281,42 +182,23 @@ $counter_data:  (
 $ctr_set_reset: (inc: subparagraph);
 subparagraph {
   display:block;
-  margin-left: 0pt;
-  text-align: left;
+  //margin-left: 0pt;
+  //text-align: left;
   @include cnt-set-resets($ctr-set-reset);
+  @include div_title_style {
+    display: inline-block;
+    margin:0 0 0 0;
+    font-size: medium;
+    font-weight: normal;
+    font-style: italic;
+    color: $subparagraph-title-color;
+    @include counters($counter_data) {
+      display: inline-block;
+	  padding-right: 12pt;
+    };
+  }
 }
 
-// subparagraph {
-//   display:block;
-//   margin-left: 0pt;
-//   text-align: left;
-//     counter-increment: paragraph;
-// }
-
-// section defaulttitletag:after {
-//   content: "Replace this section title";
-//   color: red;
-// }
-
-// subsection defaulttitletag:after {
-//   content: "Replace this subsection title";
-//   color: red;
-// }
-
-// subsubsection defaulttitletag:after {
-//   content: "Replace this subsubsection title";
-//   color: red;
-// }
-
-// paragraph defaulttitletag:after {
-//   content: "Replace this subsubsubsection title";
-//   color: red;
-// }
-
-// subparagraph defaulttitletag:after {
-//   content: "Replace this subsubsubsubsection title";
-//   color: red;
-// }
 
 /*************************/
 /* Front matter elements */
@@ -665,202 +547,35 @@ Huge {
 /* Theorem-like environments */
 /*****************************/
 
-$env-with-inc-list: Theorem;
+// Each theorem-like object is numbered independently.
 
-// All the others use the theorem counter and don't increment
+@import "_theorem_like";
 
-$env-list: Acknowledgement Algorithm Assertion Assumption Axiom Case Claim Conclusion Condition
-  Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation
-  Observation Problem Property Proposition Question Remark Solution Summary;
-
-$counter_data: (counter_list: ((theorem),));
-
-@each $name in $env-with-inc-list {
-  $lc_name: to_lower-case($name);
-  #{$lc_name} {
-    @include theorem_like($name, $counter-data, #{$lc_name});
-  }
-}
+$env-list: Acknowledgement Acknowledgment Algorithm Assertion Assumption Axiom Case Claim Conclusion Condition
+  Conjecture Convention Corollary Criterion Definition Example Exercise Hypothesis Lemma Notation "Note[texnote]"
+  Observation Problem Property Proposition Question Remark Solution Summary Theorem;
 
 @each $name in $env-list {
-  $lc_name: to_lower-case($name);
+  $lc_name: null; // Make variable available within this scope
+  @if str-index($name, "[") == null {
+    $lc_name: to_lower-case($name);
+  }
+  @else {
+      $start: str-index($name, "[") + 1; 
+      $end: 	str-index($name, "]") - 1;
+      $lc_name: unquote(str-slice($name, $start, $end));
+      $end: 	str-index($name, "[") - 1;
+	  $name: 	str-slice($name, 1, $end);
+  }
+//  body {
+//  counter-reset: $lc_name;
+//}
   #{$lc_name} {
-    @include theorem_like($name, $counter-data);
+    counter-increment: $lc_name;
+    @include theorem_like($name, $lc_name);
   }
 }
 
 
-// theorem > *:first-child:before {
-//   content: 'Theorem ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
 
-// acknowledgement > *:first-child:before {
-//   content: 'Acknowledgement ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// acknowledgment > *:first-child:before {
-//   content: 'Acknowledgment ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// algorithm > *:first-child:before {
-//   content: 'Algorithm ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// assertion > *:first-child:before {
-//   content: 'Assertion ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// assumption > *:first-child:before {
-//   content: 'Assumption ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// axiom > *:first-child:before {
-//   content: 'Axiom ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// case > *:first-child:before {
-//   content: 'Case ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// claim > *:first-child:before {
-//   content: 'Claim ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// conclusion > *:first-child:before {
-//   content: 'Conclusion ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// condition > *:first-child:before {
-//   content: 'Condition ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// conjecture > *:first-child:before {
-//   content: 'Conjecture ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// convention > *:first-child:before {
-//   content: 'Convention ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// corollary > *:first-child:before {
-//   content: 'Corollary ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// criterion > *:first-child:before {
-//   content: 'Criterion ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// definition > *:first-child:before {
-//   content: 'Definition ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// example > *:first-child:before {
-//   content: 'Example ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// exercise > *:first-child:before {
-//   content: 'Exercise ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// hypothesis > *:first-child:before {
-//   content: 'Hypothesis ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// lemma > *:first-child:before {
-//   content: 'Lemma ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// notation > *:first-child:before {
-//   content: 'Notation ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// observation > *:first-child:before {
-//   content: 'Observation ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// problem > *:first-child:before {
-//   content: 'Problem ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// property > *:first-child:before {
-//   content: 'Property ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// proposition > *:first-child:before {
-//   content: 'Proposition ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// question > *:first-child:before {
-//   content: 'Question ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// remark > *:first-child:before {
-//   content: 'Remark ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// solution > *:first-child:before {
-//   content: 'Solution ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
-
-// summary > *:first-child:before {
-//   content: 'Summary ' counter(theorem) '  ';
-//   font-weight: bold;
-//   -moz-user-modify: read-only;
-// }
 
