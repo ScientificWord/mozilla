@@ -91,7 +91,7 @@
       <columns>
         <column style="text-align: center;"/>
         <column />
-        <column />
+        <column style="text-align: center;" />
         <column />
         <column />
         <column />
@@ -106,10 +106,14 @@
           <label value="&UseVariable.label;" observes="2Vars"/>
         </row>
         <row observes="1Var">
-          <label id ="var1">&x.label;</label>
+          <vbox flex="1" style="-moz-box-pack:center;">
+            <label id ="var1" style="text-align: center;">&x.label;</label>
+          </vbox>
           <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var1StartEdit" flex="1" width="150" height="40"/>
-          <label value="&to.label;" />
+          <vbox flex="1" style="-moz-box-pack:center;">
+            <label value="&to.label;" style="text-align: center;" />
+          </vbox>
           <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var1EndEdit" flex="1" width="150" height="40"/>
 		      <hbox><textbox id="ptssamp1" type="number" class="medium" /></hbox>
@@ -123,10 +127,14 @@
           </menulist>
         </row>
         <row observes="2Vars">
-          <label id ="var2" >&y.label;</label>
+          <vbox flex="1" style="-moz-box-pack:center;">
+            <label id ="var2" style="text-align: center;" >&y.label;</label>
+          </vbox>
           <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var2StartEdit" flex="1" width="150" height="40"/>
-          <label value="&to.label;" />
+          <vbox flex="1" style="-moz-box-pack:center;">
+            <label value="&to.label;" style="text-align: center;" />
+          </vbox>
           <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var2EndEdit" flex="1" width="150" height="40"/>
           <hbox><textbox id="ptssamp2" type="number" class="medium" /></hbox>
@@ -140,10 +148,14 @@
           </menulist>
         </row>
         <row observes="3Vars">
-          <label id ="var3" >&y.label;</label>
+          <vbox flex="1" style="-moz-box-pack:center;">
+            <label id ="var3" style="text-align: center;" >&y.label;</label>
+          </vbox>
           <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var3StartEdit" flex="1" width="150" height="40"/>
-          <label value="&to.label;" />
+          <vbox flex="1" style="-moz-box-pack:center;">
+            <label value="&to.label;" style="text-align: center;" />
+          </vbox>
           <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var3EndEdit" flex="1" width="150" height="40"/>
           <hbox><textbox id="ptssamp3" type="number" class="medium" /></hbox>
@@ -157,10 +169,14 @@
           </menulist>
         </row>
         <row observes="4Vars">
-          <label id ="var4" >&t.label;</label>
+          <vbox flex="1" style="-moz-box-pack:center;">
+            <label id ="var4" style="text-align: center;" >&t.label;</label>
+          </vbox>
           <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var4StartEdit" flex="1" width="150" height="40"/>
-          <label value="&to.label;" />
+          <vbox flex="1" style="-moz-box-pack:center;">
+            <label value="&to.label;" style="text-align: center;" />
+          </vbox>
           <editor editortype="html" type="content" context="msiEditorContentContext"
                   id="var4EndEdit" flex="1" width="150" height="40"/>
           <hbox><textbox id="ptssamp4" type="number" class="medium" /></hbox>
@@ -175,7 +191,9 @@
           </menulist>
         </row>
         <row observes="tube">
-          <label value="&TubeRadialPoints.label;"/>
+          <vbox flex="1" style="-moz-box-pack:center;">
+            <label value="&TubeRadialPoints.label;" style="text-align: center; align:center;"/>
+          </vbox>
           <spacer />
           <spacer />
           <spacer />
