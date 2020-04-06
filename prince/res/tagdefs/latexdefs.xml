@@ -14,7 +14,7 @@
       <classcontains/>
       <!--if there are no contains records for a class, we still need to put in an empty classcontains tag -->
       <tags>
-        <tag nm="body">
+        <tag nm="body" dispnm="_l_body" >
           <description>Body</description>
           <contains>paratag</contains>
           <contains>structtag</contains>
@@ -22,10 +22,10 @@
           <!-- contains>othertag</contains -->
           <contains>envtag</contains>
         </tag>
-        <tag nm="docbody">
+        <tag nm="docbody" dispnm="_l_docbody" >
           <description>DocBody</description>
         </tag>
-        <tag nm="img">
+        <tag nm="img" dispnm="_l_img" >
           <description>Image</description>
         </tag>
       </tags>
@@ -57,31 +57,31 @@
         <tag id="cleartexttag" nm="(normal)">
           <description>Clear text tags</description>
         </tag>
-        <tag nm="alt">
+        <tag nm="alt" dispnm="_l_alt" >
           <description>Stylistic alternate</description>
         </tag>
-        <tag nm="bold">
+        <tag nm="bold" dispnm="_l_bold" >
           <description>Bold</description>
           <mathvar>bold</mathvar>
         </tag>
-        <tag nm="boldsymbol">
+        <tag nm="boldsymbol" dispnm="_l_boldsymbol" >
           <description>Bold symbol</description>
           <mathonly>bold</mathonly>
         </tag>
-        <tag nm="blackboardBold">
+        <tag nm="blackboardBold" dispnm="_l_blackboardBold" >
           <description>Blackboard Bold</description>
           <mathonly/>
           <mathvar>double-struck</mathvar>
         </tag>
-        <tag nm="calligraphic">
+        <tag nm="calligraphic" dispnm="_l_calligraphic" >
           <description>Calligraphic</description>
           <mathonly/>
           <mathvar>script</mathvar>
         </tag>
-        <tag nm="emphasized">
+        <tag nm="emphasized" dispnm="_l_emphasized" >
           <description>Emphasized</description>
         </tag>
-        <tag nm="footnotesize">
+        <tag nm="footnotesize" dispnm="_l_footnotesize" >
           <description>Footnote size</description>
         </tag>
         <tag hidden="1" nm="otfont">
@@ -93,202 +93,202 @@
         <tag hidden="1" nm="fontcolor">
           <description>Font color</description>
         </tag>
-        <tag nm="fraktur">
+        <tag nm="fraktur" dispnm="_l_fraktur" >
           <description>Fraktur</description>
           <mathonly/>
           <mathvar>fraktur</mathvar>
         </tag>
-        <tag nm="ltxframe">
+        <tag nm="ltxframe" dispnm="_l_ltxframe" >
           <description>Frame</description>
         </tag>
-        <tag nm="rtl">
+        <tag nm="rtl" dispnm="_l_rtl" >
           <description>Right-to-left font</description>
         </tag>
-        <tag nm="Huge">
+        <tag nm="Huge" dispnm="_l_Huge" >
           <description>Huge</description>
         </tag>
-        <tag nm="huge">
+        <tag nm="huge" dispnm="_l_huge" >
           <description>huge</description>
         </tag>
-        <tag nm="italics">
+        <tag nm="italics" dispnm="_l_italics" >
           <description>Italics</description>
         </tag>
-        <tag nm="LARGE">
+        <tag nm="LARGE" dispnm="_l_LARGE" >
           <description>LARGE</description>
         </tag>
-        <tag nm="Large">
+        <tag nm="Large" dispnm="_l_Large" >
           <description>Large</description>
         </tag>
-        <tag nm="large">
+        <tag nm="large" dispnm="_l_large" >
           <description>large</description>
         </tag>
-        <tag nm="lower">
+        <tag nm="lower" dispnm="_l_lower" >
           <description>Lower case</description>
         </tag>
-        <tag nm="normalsize">
+        <tag nm="normalsize" dispnm="_l_normalsize" >
           <description>normalsize</description>
         </tag>
-        <tag nm="phantom">
+        <tag nm="phantom" dispnm="_l_phantom" >
           <description>phantom</description>
         </tag>
-        <tag nm="roman">
+        <tag nm="roman" dispnm="_l_roman" >
           <description>Roman</description>
         </tag>
-        <tag nm="sansSerif">
+        <tag nm="sansSerif" dispnm="_l_sansSerif" >
           <description>Sans Serif</description>
           <mathvar>sans-serif</mathvar>
         </tag>
-        <tag nm="scriptsize">
+        <tag nm="scriptsize" dispnm="_l_scriptsize" >
           <description>Scriptsize</description>
         </tag>
-        <tag nm="slanted">
+        <tag nm="slanted" dispnm="_l_slanted" >
           <description>Slanted</description>
         </tag>
-        <tag nm="small">
+        <tag nm="small" dispnm="_l_small" >
           <description>Small</description>
         </tag>
-        <tag nm="smallbox">
+        <tag nm="smallbox" dispnm="_l_smallbox" >
           <description>Small frame</description>
         </tag>
-        <tag nm="smallCaps">
+        <tag nm="smallCaps" dispnm="_l_smallCaps" >
           <description>Small Caps</description>
         </tag>
-        <tag nm="sub">
+        <tag nm="sub" dispnm="_l_sub" >
           <description>Text subscript</description>
         </tag>
-        <tag nm="sup">
+        <tag nm="sup" dispnm="_l_sup" >
           <description>Text superscript</description>
         </tag>
-        <tag nm="tiny">
+        <tag nm="tiny" dispnm="_l_tiny" >
           <description>Tiny</description>
         </tag>
-        <tag nm="typewriter">
+        <tag nm="typewriter" dispnm="_l_typewriter" >
           <description>Typewriter font</description>
           <mathvar>monospace</mathvar>
         </tag>
-        <tag nm="underline">
+        <tag nm="underline" dispnm="_l_underline" >
           <description>Underline</description>
         </tag>
-        <tag nm="upper">
+        <tag nm="upper" dispnm="_l_upper" >
           <description>Upper case</description>
         </tag>
         <tag hidden="1" nm="rawTeX">
           <description>Raw TeX tag</description>
         </tag>
-        <tag nm="drop">
+        <tag nm="drop" dispnm="_l_drop" >
           <description>Drop letter</description>
         </tag>
-        <tag nm="descriptionLabel">
+        <tag nm="descriptionLabel" dispnm="_l_descriptionLabel" >
           <description>Description label</description>
         </tag>
 
-        <tag nm="textacadian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textafrikaans" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textalbanian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textamharic" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textancientgreek" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textarabic" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textarmenian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textasturian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textaustralian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textaustrian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textbahasa" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textbahasai" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textbahasam" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textbasque" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textbengali" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textbrazil" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textbrazilian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textbreton" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textbulgarian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textcanadian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textcanadien" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textcatalan" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textcoptic" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textcroatian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textczech" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textdanish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textdivehi" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textdutch" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textenglish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textesperanto" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textestonian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textfarsi" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textfinnish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textfrancais" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textfrench" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textfrenchb" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textfriulan" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textgalician" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textgerman" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textgermanb" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textgreek" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="texthebrew" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="texthindi" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="texticelandic" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textindon" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textindonesian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textinterlingua" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textirish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textitalian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textkannada" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textkhmer" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textkorean" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textlao" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textlatin" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textlatvian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textlithuanian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textlowersorbian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textlsorbian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textmagyar" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textmalay" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textmalayalam" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textmarathi" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textmeyalu" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textmonogreek" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textnaustrian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textnewzealand" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textngerman" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textnko" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textnorsk" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textnynorsk" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textoccitan" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textpiedmontese" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textpolish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textpolutonikogreek" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textpolygreek" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textportuges" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textportuguese" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textromanian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textromansh" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textrussian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textsamin" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textsanskrit" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textscottish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textserbian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textslovak" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textslovene" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textslovenian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textspanish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textswedish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textsyriac" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textelugu" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textthai" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="texttibetan" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textturkish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textturkmen" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textUKenglish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textukrainian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textuppersorbian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textusorbian" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="texturdu" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textUSenglish" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textvietnamese" hidden="1" babel="0"><description>Babel support</description></tag>
-        <tag nm="textwelsh" hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textacadian" dispnm="_l_textacadian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textafrikaans" dispnm="_l_textafrikaans"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textalbanian" dispnm="_l_textalbanian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textamharic" dispnm="_l_textamharic"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textancientgreek" dispnm="_l_textancientgreek"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textarabic" dispnm="_l_textarabic"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textarmenian" dispnm="_l_textarmenian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textasturian" dispnm="_l_textasturian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textaustralian" dispnm="_l_textaustralian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textaustrian" dispnm="_l_textaustrian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textbahasa" dispnm="_l_textbahasa"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textbahasai" dispnm="_l_textbahasai"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textbahasam" dispnm="_l_textbahasam"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textbasque" dispnm="_l_textbasque"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textbengali" dispnm="_l_textbengali"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textbrazil" dispnm="_l_textbrazil"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textbrazilian" dispnm="_l_textbrazilian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textbreton" dispnm="_l_textbreton"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textbulgarian" dispnm="_l_textbulgarian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textcanadian" dispnm="_l_textcanadian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textcanadien" dispnm="_l_textcanadien"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textcatalan" dispnm="_l_textcatalan"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textcoptic" dispnm="_l_textcoptic"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textcroatian" dispnm="_l_textcroatian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textczech" dispnm="_l_textczech"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textdanish" dispnm="_l_textdanish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textdivehi" dispnm="_l_textdivehi"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textdutch" dispnm="_l_textdutch"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textenglish" dispnm="_l_textenglish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textesperanto" dispnm="_l_textesperanto"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textestonian" dispnm="_l_textestonian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textfarsi" dispnm="_l_textfarsi"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textfinnish" dispnm="_l_textfinnish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textfrancais" dispnm="_l_textfrancais"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textfrench" dispnm="_l_textfrench"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textfrenchb" dispnm="_l_textfrenchb"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textfriulan" dispnm="_l_textfriulan"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textgalician" dispnm="_l_textgalician"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textgerman" dispnm="_l_textgerman"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textgermanb" dispnm="_l_textgermanb"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textgreek" dispnm="_l_textgreek"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="texthebrew" dispnm="_l_texthebrew"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="texthindi" dispnm="_l_texthindi"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="texticelandic" dispnm="_l_texticelandic"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textindon" dispnm="_l_textindon"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textindonesian" dispnm="_l_textindonesian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textinterlingua" dispnm="_l_textinterlingua"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textirish" dispnm="_l_textirish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textitalian" dispnm="_l_textitalian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textkannada" dispnm="_l_textkannada"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textkhmer" dispnm="_l_textkhmer"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textkorean" dispnm="_l_textkorean"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textlao" dispnm="_l_textlao"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textlatin" dispnm="_l_textlatin"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textlatvian" dispnm="_l_textlatvian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textlithuanian" dispnm="_l_textlithuanian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textlowersorbian" dispnm="_l_textlowersorbian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textlsorbian" dispnm="_l_textlsorbian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textmagyar" dispnm="_l_textmagyar"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textmalay" dispnm="_l_textmalay"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textmalayalam" dispnm="_l_textmalayalam"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textmarathi" dispnm="_l_textmarathi"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textmeyalu" dispnm="_l_textmeyalu"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textmonogreek" dispnm="_l_textmonogreek"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textnaustrian" dispnm="_l_textnaustrian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textnewzealand" dispnm="_l_textnewzealand"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textngerman" dispnm="_l_textngerman"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textnko" dispnm="_l_textnko"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textnorsk" dispnm="_l_textnorsk"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textnynorsk" dispnm="_l_textnynorsk"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textoccitan" dispnm="_l_textoccitan"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textpiedmontese" dispnm="_l_textpiedmontese"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textpolish" dispnm="_l_textpolish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textpolutonikogreek" dispnm="_l_textpolutonikogreek"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textpolygreek" dispnm="_l_textpolygreek"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textportuges" dispnm="_l_textportuges"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textportuguese" dispnm="_l_textportuguese"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textromanian" dispnm="_l_textromanian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textromansh" dispnm="_l_textromansh"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textrussian" dispnm="_l_textrussian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textsamin" dispnm="_l_textsamin"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textsanskrit" dispnm="_l_textsanskrit"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textscottish" dispnm="_l_textscottish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textserbian" dispnm="_l_textserbian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textslovak" dispnm="_l_textslovak"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textslovene" dispnm="_l_textslovene"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textslovenian" dispnm="_l_textslovenian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textspanish" dispnm="_l_textspanish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textswedish" dispnm="_l_textswedish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textsyriac" dispnm="_l_textsyriac"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textelugu" dispnm="_l_textelugu"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textthai" dispnm="_l_textthai"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="texttibetan" dispnm="_l_texttibetan"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textturkish" dispnm="_l_textturkish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textturkmen" dispnm="_l_textturkmen"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textUKenglish" dispnm="_l_textUKenglish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textukrainian" dispnm="_l_textukrainian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textuppersorbian" dispnm="_l_textuppersorbian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textusorbian" dispnm="_l_textusorbian"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="texturdu" dispnm="_l_texturdu"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textUSenglish" dispnm="_l_textUSenglish"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textvietnamese" dispnm="_l_textvietnamese"  hidden="1" babel="0"><description>Babel support</description></tag>
+        <tag nm="textwelsh" dispnm="_l_textwelsh"  hidden="1" babel="0"><description>Babel support</description></tag>
 
-        <!-- <tag nm="deleted"><description>Deleted text</description></tag><tag nm="inserted"><description>Inserted text></description></tag>-->
+        <!-- <tag nm="deleted" dispnm="_l_deleted" ><description>Deleted text</description></tag><tag nm="inserted" dispnm="_l_inserted" ><description>Inserted text></description></tag>-->
         <!-- comment out the ulem tags
-        <tag nm="uline"><description>Underline (ulem)</description></tag><tag nm="uuline"><description>Double underline (ulem)</description></tag><tag nm="uwave"><description>Wavy underline (ulem)</description></tag><tag nm="sout"><description>Strikeout (ulem)</description></tag><tag nm="xout"><description>X-ed out (ulem)</description></tag><tag nm="dashuline"><description>Dash underline (ulem)</description></tag><tag nm="dotuline"><description>Dot underline (ulem)</description></tag>-->
+        <tag nm="uline" dispnm="_l_uline" ><description>Underline (ulem)</description></tag><tag nm="uuline" dispnm="_l_uuline" ><description>Double underline (ulem)</description></tag><tag nm="uwave" dispnm="_l_uwave" ><description>Wavy underline (ulem)</description></tag><tag nm="sout" dispnm="_l_sout" ><description>Strikeout (ulem)</description></tag><tag nm="xout" dispnm="_l_xout" ><description>X-ed out (ulem)</description></tag><tag nm="dashuline" dispnm="_l_dashuline" ><description>Dash underline (ulem)</description></tag><tag nm="dotuline" dispnm="_l_dotuline" ><description>Dot underline (ulem)</description></tag>-->
       </tags>
     </tagclass>
     <tagclass>
@@ -365,7 +365,7 @@
             </bodyText>
           </initialcontents>
         </tag>
-        <tag nm="rtlBodyText">
+        <tag nm="rtlBodyText" dispnm="_l_rtlBodyText" >
           <description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
@@ -375,7 +375,7 @@
             </rtlBodyText>
           </initialcontents>
         </tag>
-        <tag nm="p">
+        <tag nm="p" dispnm="_l_p" >
           <description>HTML paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
@@ -385,7 +385,7 @@
             </p>
           </initialcontents>
         </tag>
-        <tag nm="bodyMath">
+        <tag nm="bodyMath" dispnm="_l_bodyMath" >
           <description>Body math paragraph</description>
           <nexttag>bodyMath</nexttag>
           <discardemptyblock>true</discardemptyblock>
@@ -400,7 +400,7 @@
             </bodyMath>
           </initialcontents>
         </tag>
-        <tag nm="sectiontitle">
+        <tag nm="sectiontitle" dispnm="_l_sectiontitle" >
           <nexttag>bodyText</nexttag>
           <description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
@@ -410,7 +410,7 @@
             </sectiontitle>
           </initialcontents>
         </tag>
-        <tag nm="shortQuote">
+        <tag nm="shortQuote" dispnm="_l_shortQuote" >
           <nexttag>shortQuote</nexttag>
           <description>Quote</description>
           <initialcontents>
@@ -422,7 +422,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
-        <tag nm="centered">
+        <tag nm="centered" dispnm="_l_centered" >
           <nexttag>centered</nexttag>
           <description>Centered paragraph</description>
           <initialcontents>
@@ -434,7 +434,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
-        <tag nm="flushleft">
+        <tag nm="flushleft" dispnm="_l_flushleft" >
           <nexttag>flushleft</nexttag>
           <description>Flush left paragraph</description>
           <initialcontents>
@@ -446,7 +446,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
-        <tag nm="flushright">
+        <tag nm="flushright" dispnm="_l_flushright" >
           <nexttag>flushright</nexttag>
           <description>Flush right paragraph</description>
           <initialcontents>
@@ -469,7 +469,7 @@
             </dialogbase>
           </initialcontents>
         </tag>
-        <tag nm="verbatim">
+        <tag nm="verbatim" dispnm="_l_verbatim" >
           <description>Verbatim text 'paragraph'</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
@@ -584,7 +584,7 @@
         <contains>proof</contains>
       </classcontains>
       <tags>
-        <tag nm="bulletListItem">
+        <tag nm="bulletListItem" dispnm="_l_bulletListItem" >
           <description>Bullet list item</description>
           <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
@@ -595,7 +595,7 @@
             </bulletListItem>
           </initialcontents>
         </tag>
-        <tag nm="numberedListItem">
+        <tag nm="numberedListItem" dispnm="_l_numberedListItem" >
           <description>Numbered list item</description>
           <htmllistparent>numberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
@@ -604,7 +604,7 @@
             </numberedListItem>
           </initialcontents>
         </tag>
-        <tag nm="descriptionListItem">
+        <tag nm="descriptionListItem" dispnm="_l_descriptionListItem" >
           <description>Description list item</description>
           <htmllistparent>descriptionlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
@@ -619,7 +619,7 @@
             </descriptionListItem>
           </initialcontents>
         </tag>
-        <tag nm="bibitem">
+        <tag nm="bibitem" dispnm="_l_bibitem" >
           <description>Bibliography entry</description>
           <htmllistparent>bibliography</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
@@ -678,14 +678,14 @@
         <tag id="clearsectiontag" nm="(removesection)">
           <description>Remove innermost section-like tag</description>
         </tag>
-        <tag nm="part">
+        <tag nm="part" dispnm="_l_part" >
           <level>-1</level>
           <description>Part of a book</description>
           <titletag>sectiontitle</titletag>
           <discardemptyblock>false</discardemptyblock>
           <prefsub>chapter</prefsub>
         </tag>
-        <tag nm="chapter">
+        <tag nm="chapter" dispnm="_l_chapter" >
           <level>1</level>
           <description>Chapter</description>
           <titletag>sectiontitle</titletag>
@@ -700,7 +700,7 @@
           </initialcontents>
           <prefsub>section</prefsub>
         </tag>
-        <tag nm="section">
+        <tag nm="section" dispnm="_l_section" >
           <level>2</level>
           <description>Section</description>
           <discardemptyblock>true</discardemptyblock>
@@ -716,7 +716,7 @@
           <nextafteremptyblock/>
           <prefsub>subsection</prefsub>
         </tag>
-        <tag nm="subsection">
+        <tag nm="subsection" dispnm="_l_subsection" >
           <level>3</level>
           <description>Subsection</description>
           <discardemptyblock>true</discardemptyblock>
@@ -732,7 +732,7 @@
           <nextafteremptyblock>section</nextafteremptyblock>
           <prefsub>subsubsection</prefsub>
         </tag>
-        <tag nm="subsubsection">
+        <tag nm="subsubsection" dispnm="_l_subsubsection" >
           <level>4</level>
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
@@ -748,7 +748,7 @@
           <nextafteremptyblock>subsection</nextafteremptyblock>
           <prefsub>paragraph</prefsub>
         </tag>
-        <tag nm="paragraph">
+        <tag nm="paragraph" dispnm="_l_paragraph" >
           <level>5</level>
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
@@ -764,7 +764,7 @@
           <nextafteremptyblock>subsubsection</nextafteremptyblock>
           <prefsub>subparagraph</prefsub>
         </tag>
-        <tag nm="subparagraph">
+        <tag nm="subparagraph" dispnm="_l_subparagraph" >
           <level>6</level>
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
@@ -792,7 +792,7 @@
         <tag id="clearenvironmenttag" nm="(removeEnvironment)">
           <description>Remove innermost environment tag</description>
         </tag>
-        <tag nm="longQuotation">
+        <tag nm="longQuotation" dispnm="_l_longQuotation" >
           <description>Long quotation</description>
           <discardemptyblock>true</discardemptyblock>
           <nexttag>bodyText</nexttag>
@@ -806,7 +806,7 @@
           </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
-        <!--        <tag nm="frontmatter"><contains>frontmtag</contains><level>*</level><nexttag/><inclusion>true</inclusion><description>Front Matter</description><discardemptyblock>true</discardemptyblock><nexttag>bodyText</nexttag><initialcontents><frontmatter><bodyText><cursor/><br/></bodyText></frontmatter></initialcontents></tag>-->
+        <!--        <tag nm="frontmatter" dispnm="_l_frontmatter" ><contains>frontmtag</contains><level>*</level><nexttag/><inclusion>true</inclusion><description>Front Matter</description><discardemptyblock>true</discardemptyblock><nexttag>bodyText</nexttag><initialcontents><frontmatter><bodyText><cursor/><br/></bodyText></frontmatter></initialcontents></tag>-->
 		<!-- Remove dedication using hidden="1" , not otherwise used except on this list -->
         <tag hidden="1" nm="dedication">
           <level>*</level>
@@ -824,7 +824,7 @@
             </dedication>
           </initialcontents>
         </tag>
-        <tag nm="centeredEnv">
+        <tag nm="centeredEnv" dispnm="_l_centeredEnv" >
           <level>*</level>
           <description>Centered</description>
           <inclusion>true</inclusion>
@@ -915,7 +915,7 @@ question
 -->
 
 
-        <tag nm="theorem">
+        <tag nm="theorem" dispnm="_l_theorem" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Theorem</description>
@@ -927,7 +927,7 @@ question
             <theorem/>
           </initialcontents>
         </tag>
-        <tag nm="acknowledgment">
+        <tag nm="acknowledgment" dispnm="_l_acknowledgment" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Acknowledgment</description>
@@ -939,7 +939,7 @@ question
             <acknowledgment/>
           </initialcontents>
         </tag>
-        <tag nm="algorithm">
+        <tag nm="algorithm" dispnm="_l_algorithm" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Algorithm</description>
@@ -951,7 +951,7 @@ question
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
-        <tag nm="assertion">
+        <tag nm="assertion" dispnm="_l_assertion" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Assertion</description>
@@ -963,7 +963,7 @@ question
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
-        <tag nm="assumption">
+        <tag nm="assumption" dispnm="_l_assumption" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Assumption</description>
@@ -975,7 +975,7 @@ question
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
-        <tag nm="axiom">
+        <tag nm="axiom" dispnm="_l_axiom" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Axiom</description>
@@ -987,7 +987,7 @@ question
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
-        <tag nm="case">
+        <tag nm="case" dispnm="_l_case" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Case</description>
@@ -999,7 +999,7 @@ question
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
-        <tag nm="claim">
+        <tag nm="claim" dispnm="_l_claim" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Claim</description>
@@ -1011,7 +1011,7 @@ question
             <claim/>
           </initialcontents>
         </tag>
-        <tag nm="conclusion">
+        <tag nm="conclusion" dispnm="_l_conclusion" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Conclusion</description>
@@ -1023,7 +1023,7 @@ question
             <conclusion/>
           </initialcontents>
         </tag>
-        <tag nm="condition">
+        <tag nm="condition" dispnm="_l_condition" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Condition</description>
@@ -1035,7 +1035,7 @@ question
             <condition/>
           </initialcontents>
         </tag>
-        <tag nm="conjecture">
+        <tag nm="conjecture" dispnm="_l_conjecture" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Conjecture</description>
@@ -1047,7 +1047,7 @@ question
             <conjecture/>
           </initialcontents>
         </tag>
-        <tag nm="corollary">
+        <tag nm="corollary" dispnm="_l_corollary" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Corollary</description>
@@ -1059,7 +1059,7 @@ question
             <corollary/>
           </initialcontents>
         </tag>
-        <tag nm="criterion">
+        <tag nm="criterion" dispnm="_l_criterion" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Criterion</description>
@@ -1071,7 +1071,7 @@ question
             <criterion/>
           </initialcontents>
         </tag>
-        <tag nm="definition">
+        <tag nm="definition" dispnm="_l_definition" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Definition</description>
@@ -1083,7 +1083,7 @@ question
             <definition/>
           </initialcontents>
         </tag>
-        <tag nm="example">
+        <tag nm="example" dispnm="_l_example" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Example</description>
@@ -1095,7 +1095,7 @@ question
             <example/>
           </initialcontents>
         </tag>
-        <tag nm="exercise">
+        <tag nm="exercise" dispnm="_l_exercise" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Exercise</description>
@@ -1107,7 +1107,7 @@ question
             <exercise/>
           </initialcontents>
         </tag>
-        <tag nm="hypothesis">
+        <tag nm="hypothesis" dispnm="_l_hypothesis" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Hypothesis</description>
@@ -1119,7 +1119,7 @@ question
             <hypothesis/>
           </initialcontents>
         </tag>
-        <tag nm="lemma">
+        <tag nm="lemma" dispnm="_l_lemma" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Lemma</description>
@@ -1131,7 +1131,7 @@ question
             <lemma/>
           </initialcontents>
         </tag>
-        <tag nm="notation">
+        <tag nm="notation" dispnm="_l_notation" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Notation</description>
@@ -1143,7 +1143,7 @@ question
             <notation/>
           </initialcontents>
         </tag>
-        <tag nm="texnote">
+        <tag nm="texnote" dispnm="_l_texnote" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Note</description>
@@ -1155,7 +1155,7 @@ question
             <texnote/>
           </initialcontents>
         </tag>
-        <tag nm="problem">
+        <tag nm="problem" dispnm="_l_problem" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Problem</description>
@@ -1167,7 +1167,7 @@ question
             <problem/>
           </initialcontents>
         </tag>
-        <tag nm="property">
+        <tag nm="property" dispnm="_l_property" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Property</description>
@@ -1179,7 +1179,7 @@ question
             <property/>
           </initialcontents>
         </tag>
-        <tag nm="proposition">
+        <tag nm="proposition" dispnm="_l_proposition" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Proposition</description>
@@ -1191,7 +1191,7 @@ question
             <proposition/>
           </initialcontents>
         </tag>
-        <tag nm="question">
+        <tag nm="question" dispnm="_l_question" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Question</description>
@@ -1203,7 +1203,7 @@ question
             <question/>
           </initialcontents>
         </tag>
-        <tag nm="remark">
+        <tag nm="remark" dispnm="_l_remark" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Remark</description>
@@ -1215,7 +1215,7 @@ question
             <remark/>
           </initialcontents>
         </tag>
-        <tag nm="solution">
+        <tag nm="solution" dispnm="_l_solution" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Solution</description>
@@ -1227,7 +1227,7 @@ question
             <solution/>
           </initialcontents>
         </tag>
-        <tag nm="summary">
+        <tag nm="summary" dispnm="_l_summary" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Summary</description>
@@ -1239,7 +1239,7 @@ question
             <summary/>
           </initialcontents>
         </tag>
-        <tag nm="proof">
+        <tag nm="proof" dispnm="_l_proof" >
           <level>*</level>
           <contains>envLeadIn</contains>
           <description>Proof</description>
@@ -1271,310 +1271,310 @@ question
             </msiframe>
           </initialcontents>
         </tag>
-        <tag nm="acadian" hidden="1" babel="0">
+        <tag nm="acadian" dispnm="_l_acadian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="afrikaans" hidden="1" babel="0">
+        <tag nm="afrikaans" dispnm="_l_afrikaans"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="albanian" hidden="1" babel="0">
+        <tag nm="albanian" dispnm="_l_albanian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="amharic" hidden="1" babel="0">
+        <tag nm="amharic" dispnm="_l_amharic"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="ancientgreek" hidden="1" babel="0">
+        <tag nm="ancientgreek" dispnm="_l_ancientgreek"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="Arabic" hidden="1" babel="0">
+        <tag nm="Arabic" dispnm="_l_Arabic"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="asturian" hidden="1" babel="0">
+        <tag nm="asturian" dispnm="_l_asturian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="australian" hidden="1" babel="0">
+        <tag nm="australian" dispnm="_l_australian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="austrian" hidden="1" babel="0">
+        <tag nm="austrian" dispnm="_l_austrian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="bahasa" hidden="1" babel="0">
+        <tag nm="bahasa" dispnm="_l_bahasa"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="bahasai" hidden="1" babel="0">
+        <tag nm="bahasai" dispnm="_l_bahasai"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="bahasam" hidden="1" babel="0">
+        <tag nm="bahasam" dispnm="_l_bahasam"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="basque" hidden="1" babel="0">
+        <tag nm="basque" dispnm="_l_basque"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="bengali" hidden="1" babel="0">
+        <tag nm="bengali" dispnm="_l_bengali"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="brazil" hidden="1" babel="0">
+        <tag nm="brazil" dispnm="_l_brazil"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="brazilian" hidden="1" babel="0">
+        <tag nm="brazilian" dispnm="_l_brazilian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="breton" hidden="1" babel="0">
+        <tag nm="breton" dispnm="_l_breton"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="bulgarian" hidden="1" babel="0">
+        <tag nm="bulgarian" dispnm="_l_bulgarian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="canadian" hidden="1" babel="0">
+        <tag nm="canadian" dispnm="_l_canadian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="canadien" hidden="1" babel="0">
+        <tag nm="canadien" dispnm="_l_canadien"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="catalan" hidden="1" babel="0">
+        <tag nm="catalan" dispnm="_l_catalan"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="coptic" hidden="1" babel="0">
+        <tag nm="coptic" dispnm="_l_coptic"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="croatian" hidden="1" babel="0">
+        <tag nm="croatian" dispnm="_l_croatian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="czech" hidden="1" babel="0">
+        <tag nm="czech" dispnm="_l_czech"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="danish" hidden="1" babel="0">
+        <tag nm="danish" dispnm="_l_danish"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="divehi" hidden="1" babel="0">
+        <tag nm="divehi" dispnm="_l_divehi"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="dutch" hidden="1" babel="0">
+        <tag nm="dutch" dispnm="_l_dutch"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="english" hidden="1" babel="0">
+        <tag nm="english" dispnm="_l_english"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="esperanto" hidden="1" babel="0">
+        <tag nm="esperanto" dispnm="_l_esperanto"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="estonian" hidden="1" babel="0">
+        <tag nm="estonian" dispnm="_l_estonian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="farsi" hidden="1" babel="0">
+        <tag nm="farsi" dispnm="_l_farsi"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="finnish" hidden="1" babel="0">
+        <tag nm="finnish" dispnm="_l_finnish"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="francais" hidden="1" babel="0">
+        <tag nm="francais" dispnm="_l_francais"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="french" hidden="1" babel="0">
+        <tag nm="french" dispnm="_l_french"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="frenchb" hidden="1" babel="0">
+        <tag nm="frenchb" dispnm="_l_frenchb"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="friulan" hidden="1" babel="0">
+        <tag nm="friulan" dispnm="_l_friulan"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="galician" hidden="1" babel="0">
+        <tag nm="galician" dispnm="_l_galician"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="german" hidden="1" babel="0">
+        <tag nm="german" dispnm="_l_german"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="germanb" hidden="1" babel="0">
+        <tag nm="germanb" dispnm="_l_germanb"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="greek" hidden="1" babel="0">
+        <tag nm="greek" dispnm="_l_greek"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="hebrew" hidden="1" babel="0">
+        <tag nm="hebrew" dispnm="_l_hebrew"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="hindi" hidden="1" babel="0">
+        <tag nm="hindi" dispnm="_l_hindi"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="icelandic" hidden="1" babel="0">
+        <tag nm="icelandic" dispnm="_l_icelandic"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="indon" hidden="1" babel="0">
+        <tag nm="indon" dispnm="_l_indon"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="indonesian" hidden="1" babel="0">
+        <tag nm="indonesian" dispnm="_l_indonesian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="interlingua" hidden="1" babel="0">
+        <tag nm="interlingua" dispnm="_l_interlingua"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="irish" hidden="1" babel="0">
+        <tag nm="irish" dispnm="_l_irish"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="italian" hidden="1" babel="0">
+        <tag nm="italian" dispnm="_l_italian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="kannada" hidden="1" babel="0">
+        <tag nm="kannada" dispnm="_l_kannada"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="khmer" hidden="1" babel="0">
+        <tag nm="khmer" dispnm="_l_khmer"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="korean" hidden="1" babel="0">
+        <tag nm="korean" dispnm="_l_korean"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="lao" hidden="1" babel="0">
+        <tag nm="lao" dispnm="_l_lao"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="latin" hidden="1" babel="0">
+        <tag nm="latin" dispnm="_l_latin"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="latvian" hidden="1" babel="0">
+        <tag nm="latvian" dispnm="_l_latvian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="lithuanian" hidden="1" babel="0">
+        <tag nm="lithuanian" dispnm="_l_lithuanian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="lowersorbian" hidden="1" babel="0">
+        <tag nm="lowersorbian" dispnm="_l_lowersorbian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="lsorbian" hidden="1" babel="0">
+        <tag nm="lsorbian" dispnm="_l_lsorbian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="magyar" hidden="1" babel="0">
+        <tag nm="magyar" dispnm="_l_magyar"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="malay" hidden="1" babel="0">
+        <tag nm="malay" dispnm="_l_malay"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="malayalam" hidden="1" babel="0">
+        <tag nm="malayalam" dispnm="_l_malayalam"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="marathi" hidden="1" babel="0">
+        <tag nm="marathi" dispnm="_l_marathi"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="nko" hidden="1" babel="0">
+        <tag nm="nko" dispnm="_l_nko"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="meyalu" hidden="1" babel="0">
+        <tag nm="meyalu" dispnm="_l_meyalu"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="monogreek" hidden="1" babel="0">
+        <tag nm="monogreek" dispnm="_l_monogreek"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="naustrian" hidden="1" babel="0">
+        <tag nm="naustrian" dispnm="_l_naustrian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="newzealand" hidden="1" babel="0">
+        <tag nm="newzealand" dispnm="_l_newzealand"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="ngerman" hidden="1" babel="0">
+        <tag nm="ngerman" dispnm="_l_ngerman"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="norsk" hidden="1" babel="0">
+        <tag nm="norsk" dispnm="_l_norsk"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="nynorsk" hidden="1" babel="0">
+        <tag nm="nynorsk" dispnm="_l_nynorsk"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="occitan" hidden="1" babel="0">
+        <tag nm="occitan" dispnm="_l_occitan"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="piedmontese" hidden="1" babel="0">
+        <tag nm="piedmontese" dispnm="_l_piedmontese"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="polish" hidden="1" babel="0">
+        <tag nm="polish" dispnm="_l_polish"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="polutonikogreek" hidden="1" babel="0">
+        <tag nm="polutonikogreek" dispnm="_l_polutonikogreek"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="polygreek" hidden="1" babel="0">
+        <tag nm="polygreek" dispnm="_l_polygreek"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="portuges" hidden="1" babel="0">
+        <tag nm="portuges" dispnm="_l_portuges"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="portuguese" hidden="1" babel="0">
+        <tag nm="portuguese" dispnm="_l_portuguese"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="romanian" hidden="1" babel="0">
+        <tag nm="romanian" dispnm="_l_romanian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="romansh" hidden="1" babel="0">
+        <tag nm="romansh" dispnm="_l_romansh"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="russian" hidden="1" babel="0">
+        <tag nm="russian" dispnm="_l_russian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="samin" hidden="1" babel="0">
+        <tag nm="samin" dispnm="_l_samin"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="sanskrit" hidden="1" babel="0">
+        <tag nm="sanskrit" dispnm="_l_sanskrit"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="scottish" hidden="1" babel="0">
+        <tag nm="scottish" dispnm="_l_scottish"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="serbian" hidden="1" babel="0">
+        <tag nm="serbian" dispnm="_l_serbian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="slovak" hidden="1" babel="0">
+        <tag nm="slovak" dispnm="_l_slovak"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="slovene" hidden="1" babel="0">
+        <tag nm="slovene" dispnm="_l_slovene"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="slovenian" hidden="1" babel="0">
+        <tag nm="slovenian" dispnm="_l_slovenian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="spanish" hidden="1" babel="0">
+        <tag nm="spanish" dispnm="_l_spanish"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="swedish" hidden="1" babel="0">
+        <tag nm="swedish" dispnm="_l_swedish"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="syriac" hidden="1" babel="0">
+        <tag nm="syriac" dispnm="_l_syriac"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="telugu" hidden="1" babel="0">
+        <tag nm="telugu" dispnm="_l_telugu"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="thai" hidden="1" babel="0">
+        <tag nm="thai" dispnm="_l_thai"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="tibetan" hidden="1" babel="0">
+        <tag nm="tibetan" dispnm="_l_tibetan"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="turkish" hidden="1" babel="0">
+        <tag nm="turkish" dispnm="_l_turkish"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="turkmen" hidden="1" babel="0">
+        <tag nm="turkmen" dispnm="_l_turkmen"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="UKenglish" hidden="1" babel="0">
+        <tag nm="UKenglish" dispnm="_l_UKenglish"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="ukrainian" hidden="1" babel="0">
+        <tag nm="ukrainian" dispnm="_l_ukrainian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="uppersorbian" hidden="1" babel="0">
+        <tag nm="uppersorbian" dispnm="_l_uppersorbian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="usorbian" hidden="1" babel="0">
+        <tag nm="usorbian" dispnm="_l_usorbian"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="urdu" hidden="1" babel="0">
+        <tag nm="urdu" dispnm="_l_urdu"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="vietnamese" hidden="1" babel="0">
+        <tag nm="vietnamese" dispnm="_l_vietnamese"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="USenglish" hidden="1" babel="0">
+        <tag nm="USenglish" dispnm="_l_USenglish"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
-        <tag nm="welsh" hidden="1" babel="0">
+        <tag nm="welsh" dispnm="_l_welsh"  hidden="1" babel="0">
           <description>Babel environment</description>
         </tag>
       </tags>
@@ -1583,7 +1583,7 @@ question
       <tagclassname>frontmtag</tagclassname>
       <classcontains/>
       <tags>
-        <tag nm="abstract">
+        <tag nm="abstract" dispnm="_l_abstract" >
           <description>Abstract</description>
           <realtagclass>envtag</realtagclass>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
@@ -1598,7 +1598,7 @@ question
             </abstract>
           </initialcontents>
         </tag>
- <!--        <tag nm="address">
+ <!--        <tag nm="address" dispnm="_l_address" >
           <description>Address</description>
           <realtagclass>texttag</realtagclass>
           <inclusion>true</inclusion>
@@ -1612,7 +1612,7 @@ question
             </address>
           </initialcontents>
         </tag> -->
-        <tag nm="author">
+        <tag nm="author" dispnm="_l_author" >
           <description>Author</description>
           <realtagclass>paratag</realtagclass>
           <!-- <nextafteremptyblock>bodyText</nextafteremptyblock> -->
@@ -1625,7 +1625,7 @@ question
             </author>
           </initialcontents>
         </tag>
-        <tag nm="date">
+        <tag nm="date" dispnm="_l_date" >
           <description>Date</description>
           <realtagclass>paratag</realtagclass>
           <nexttag>bodyText</nexttag>
@@ -1638,8 +1638,8 @@ question
           </initialcontents>
           <inclusion>true</inclusion>
         </tag>
-        <!--         <tag nm="makelof"><description>Make list of figures</description></tag><tag nm="makelot"><description>Make list of tables</description></tag><tag nm="maketitle"><description>Make title</description></tag><tag nm="maketoc"><description>Make table of contents</description></tag>-->
-        <tag nm="title">
+        <!--         <tag nm="makelof" dispnm="_l_makelof" ><description>Make list of figures</description></tag><tag nm="makelot" dispnm="_l_makelot" ><description>Make list of tables</description></tag><tag nm="maketitle" dispnm="_l_maketitle" ><description>Make title</description></tag><tag nm="maketoc" dispnm="_l_maketoc" ><description>Make table of contents</description></tag>-->
+        <tag nm="title" dispnm="_l_title" >
           <description>Title</description>
           <realtagclass>paratag</realtagclass>
           <nexttag>bodyText</nexttag>
@@ -1659,32 +1659,32 @@ question
       <tagclassname>othertag</tagclassname>
       <classcontains/>
       <tags>
-        <tag nm="mi">
+        <tag nm="mi" dispnm="_l_mi" >
           <description>mi</description>
           <contains>#text</contains>
         </tag>
-        <tag nm="mo">
+        <tag nm="mo" dispnm="_l_mo" >
           <description>mo</description>
           <contains>#text</contains>
         </tag>
-        <tag nm="mn">
+        <tag nm="mn" dispnm="_l_mn" >
           <description>mo</description>
           <contains>#text</contains>
         </tag>
-        <tag nm="#text">
+        <tag nm="#text" dispnm="_l_text" \>
           <description>text</description>
           <contains>#text</contains>
         </tag>
-        <tag nm="hspace">
+        <tag nm="hspace" dispnm="_l_hspace" >
           <description>hspace</description>
         </tag>
-        <tag nm="object">
+        <tag nm="object" dispnm="_l_object" >
           <description>Object</description>
         </tag>
-        <tag nm="graph">
+        <tag nm="graph" dispnm="_l_graph" >
           <description>Graph</description>
         </tag>
-        <tag nm="td">
+        <tag nm="td" dispnm="_l_td" >
           <description>Table cell</description>
           <contains>paratag</contains>
         </tag>
@@ -1703,12 +1703,12 @@ question
           <discardemptyblock>true</discardemptyblock>
           <inclusion>true</inclusion>
         </tag>
-        <tag nm="citation">
+        <tag nm="citation" dispnm="_l_citation" >
           <description>Citation</description>
           <contains>biblabel</contains>
           <contains>#text</contains>
         </tag>
-        <tag nm="biblabel">
+        <tag nm="biblabel" dispnm="_l_biblabel" >
           <description>Bibliography label</description>
           <contains>#text</contains>
           <contains>texttag</contains>
@@ -1721,11 +1721,11 @@ question
           <contains>object</contains>
           <contains>notewrapper</contains>
         </tag>
-        <tag nm="bibkey">
+        <tag nm="bibkey" dispnm="_l_bibkey" >
           <description>Bibliography key</description>
           <contains>#text</contains>
         </tag>
-        <tag nm="shortTitle">
+        <tag nm="shortTitle" dispnm="_l_shortTitle" >
           <description>Short section title or caption</description>
           <contains>#text</contains>
           <contains>texttag</contains>
@@ -1738,7 +1738,7 @@ question
           <contains>object</contains>
           <contains>notewrapper</contains>
         </tag>
-        <tag nm="envLeadIn">
+        <tag nm="envLeadIn" dispnm="_l_envLeadIn" >
           <description>Environment lead-in</description>
           <contains>#text</contains>
           <contains>texttag</contains>
@@ -1751,13 +1751,13 @@ question
           <contains>object</contains>
           <contains>notewrapper</contains>
         </tag>
-        <tag nm="indexentry">
+        <tag nm="indexentry" dispnm="_l_indexentry" >
           <description>Index entry</description>
           <contains>prispec</contains>
           <contains>secspec</contains>
           <contains>terspec</contains>
         </tag>
-        <tag nm="prispec">
+        <tag nm="prispec" dispnm="_l_prispec" >
           <description>Special appearance of primary index entry</description>
           <contains>#text</contains>
           <contains>texttag</contains>
@@ -1771,7 +1771,7 @@ question
           <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
-        <tag nm="secspec">
+        <tag nm="secspec" dispnm="_l_secspec" >
           <description>Special appearance of secondary index entry</description>
           <contains>#text</contains>
           <contains>texttag</contains>
@@ -1785,7 +1785,7 @@ question
           <contains>msibr</contains>
           <contains>texb</contains>
         </tag>
-        <tag nm="terspec">
+        <tag nm="terspec" dispnm="_l_terspec" >
           <description>Special appearance of tertiary index entry</description>
           <contains>#text</contains>
           <contains>texttag</contains>
@@ -1800,16 +1800,16 @@ question
           <contains>texb</contains>
         </tag>
         <!-- most math editing is done outside this framework, but a few math tags are needed here -->
-        <tag nm="math">
+        <tag nm="math" dispnm="_l_math" >
           <contains>mspace</contains>
           <contains>mstyle</contains>
           <contains>bold</contains>
         </tag>
-        <tag nm="mtext">
+        <tag nm="mtext" dispnm="_l_mtext" >
           <contains>#text</contains>
           <contains>texttag</contains>
         </tag>
-        <tag nm="mrow">
+        <tag nm="mrow" dispnm="_l_mrow" >
           <contains>mspace</contains>
           <contains>bold</contains>
           <contains>mstyle</contains>
