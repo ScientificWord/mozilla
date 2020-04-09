@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE tagproperties [
+<!ATTLIST tag id ID #IMPLIED> ]>
+<!-- sw55aer.xml  - Hide an environment that conflicts with rest of typesetting specification -->
+<tagproperties> 
+  <tagclasses>
+    <tagclass>
+      <tagclassname>envtag</tagclassname>
+      <tags>
+        <tag hidden="1" nm="texnote">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Note</description>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+          <inclusion>true</inclusion>
+          <nexttag>bodyText</nexttag>
+          <initialcontents>
+            <texnote/>
+          </initialcontents>
+        </tag>
+      </tags>
+    </tagclass>
+  </tagclasses>
+</tagproperties>
