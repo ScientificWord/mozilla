@@ -2,12 +2,12 @@
 <!DOCTYPE tagproperties [
 <!ATTLIST tag id ID #IMPLIED> ]>
 <tagproperties> 
-	<tagclasses>
-		<tagclass>
-			<tagclassname>envtag</tagclassname>
-			<tags>
-				<tag nm="epigraph">
-					<description>Epigraph</description>
+  <tagclasses>
+    <tagclass>
+      <tagclassname>envtag</tagclassname>
+      <tags>
+        <tag nm="epigraph">
+          <description>Epigraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents>
             <epigraph>
@@ -15,8 +15,8 @@
             </epigraph>
           </initialcontents>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
-				</tag>
-			</tags>
-		</tagclass>
-	</tagclasses>
+        </tag>
+      </tags>
+    </tagclass>
+  </tagclasses>
 </tagproperties>
