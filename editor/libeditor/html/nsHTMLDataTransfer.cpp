@@ -516,6 +516,47 @@ nsHTMLEditor::InsertMathNode
   return res;
 }
 
+// TrimDocFragment. When mathematics is copied, the docfragment for it contains non-math tags from
+// the context. These need to be trimmed when copying into math. We do that using the nsIDOMnode interface
+// since the editor methods mess with the selection and assumes we are working with part of the
+// main document. Returns true if it modifies the fragment.
+
+PRBool TrimDocFragment( nsIDOMNode * fragmentAsNode) {
+  PRBool fReturn = PR_FALSE;
+  nsCOMPtr<nsIDOMNode> childNode;
+  nsCOMPtr<nsIDOMNode> grandchildNode;
+  nsCOMPtr<nsIDOMNode> tempChildNode;
+  nsCOMPtr<nsIDOMNode> tempGrandchildNode;
+  nsCOMPtr<nsIDOMNode> dummyNode;
+  PRBool fRepeat = PR_TRUE;
+  while (fRepeat) {
+    fRepeat = PR_FALSE;
+    fragmentAsNode->GetFirstChild(getter_AddRefs(childNode));
+    while (childNode) {
+      childNode->GetNextSibling(getter_AddRefs(tempChildNode));
+      if (childNode && !(nsHTMLEditUtils::IsMath(childNode)))
+      {
+        // RemoveContainer(childNode);
+        childNode->GetFirstChild(getter_AddRefs(grandchildNode));
+        while (grandchildNode) {
+          childNode->RemoveChild(grandchildNode, getter_AddRefs(tempGrandchildNode));
+          fragmentAsNode->InsertBefore(tempGrandchildNode, childNode, getter_AddRefs(dummyNode));
+          childNode->GetFirstChild(getter_AddRefs(grandchildNode));
+        }
+       fRepeat = PR_TRUE;  // if we changed a node, we have to repeat this process again,
+                           // starting at the root
+       fReturn = PR_TRUE;
+       fragmentAsNode->RemoveChild(childNode, getter_AddRefs(dummyNode));
+      }
+      fragmentAsNode->GetFirstChild(getter_AddRefs(childNode));
+
+      childNode = tempChildNode;
+    }
+  }
+  return fReturn;
+}
+
+
 nsresult
 nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                     const nsAString & aContextStr,
@@ -573,6 +614,13 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     targetOffset = aDestOffset;
   }
 
+// New code: don't put non-math inside of <math>, even if there is an <msidisplay>
+  PRBool isMath = nsHTMLEditUtils::IsMath(targetNode);
+  PRBool fTrimmedFragment;
+  if (isMath)
+  {
+    fTrimmedFragment = TrimDocFragment(fragmentAsNode);
+  }
 
   PRBool doContinue = PR_TRUE;
 
@@ -720,6 +768,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   PRInt32 j;
   nsCOMArray<nsIDOMNode> nodeList;
  DumpNode(fragmentAsNode);
+  if (fTrimmedFragment) streamStartParent = nsnull;
   res = CreateListOfNodesToPaste(fragmentAsNode, nodeList,
                                  streamStartParent, streamStartOffset,
                                  streamEndParent, streamEndOffset);

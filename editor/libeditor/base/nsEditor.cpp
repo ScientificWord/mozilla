@@ -135,17 +135,18 @@ static PRBool gNoisy = PR_FALSE;
 extern "C" {
 void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output)
 {
+#ifdef DEBUG
   PRInt32 i;
   nsAutoString tag;
   nsAutoString nodeName;
   nsAutoString tagWithAttributes;
   for (i=0; i<indent; i++)
-    // printf(" ");
-    // output.Append(NS_LITERAL_STRING("  "));
+    printf(" ");
+    output.Append(NS_LITERAL_STRING("  "));
 
   if (aNode == 0){
-    // printf("!NULL\n");
-    // output = NS_LITERAL_STRING("!NULL!\n");
+    printf("!NULL\n");
+    output = NS_LITERAL_STRING("!NULL!\n");
     return;
   }
 
@@ -158,16 +159,16 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
   if ((nodeType == 1 /* element */) && element)
   {
     element->GetTagName(tag);
-    // nsEditor::DumpTagName(element, tagWithAttributes);
-    // printf("<%s>\n", NS_ConvertUTF16toUTF8(tag).get());
-    // output.Append(NS_LITERAL_STRING("<") + tagWithAttributes);
-    // output.Append(NS_LITERAL_STRING(">\n"));
+    nsEditor::DumpTagName(element, tagWithAttributes);
+    printf("<%s>\n", NS_ConvertUTF16toUTF8(tag).get());
+    output.Append(NS_LITERAL_STRING("<") + tagWithAttributes);
+    output.Append(NS_LITERAL_STRING(">\n"));
   }
   else if ((nodeType == 11 /* Document fragment */) && docfrag)
   {
-    // printf("<document fragment>\n");
-    // tag = NS_LITERAL_STRING("document fragment");
-    // output.Append(NS_LITERAL_STRING("<document fragment>\n"));//, ((nsIDOMDocumentFragment*)docfrag)-28));
+    printf("<document fragment>\n");
+    tag = NS_LITERAL_STRING("document fragment");
+    output.Append(NS_LITERAL_STRING("<document fragment>\n"));//, ((nsIDOMDocumentFragment*)docfrag)-28));
   }
   else if ((nodeType == 3 /* text */ )) {
     aNode->GetNodeName(nodeName);
@@ -176,8 +177,8 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
       nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
       nsAutoString str;
       textNode->GetData(str);
-      // printf("#text '%s'\n", NS_ConvertUTF16toUTF8(str).get());
-      // output.Append(NS_LITERAL_STRING("#text \'") + str + NS_LITERAL_STRING("'\n"));
+      printf("#text '%s'\n", NS_ConvertUTF16toUTF8(str).get());
+      output.Append(NS_LITERAL_STRING("#text \'") + str + NS_LITERAL_STRING("'\n"));
     }
   }
 
@@ -191,18 +192,20 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
      aNode->GetFirstChild(getter_AddRefs(child));
      for (i=0; i<numChildren; i++)
      {
-       // DumpNode(child, indent+1, true, output);
+       DumpNode(child, indent+1, true, output);
        child->GetNextSibling(getter_AddRefs(tmp));
        child = tmp;
      }
   }
-  // for (i=0; i<indent; i++) {
-    // printf(" ");
-    // output.Append(NS_LITERAL_STRING("  "));
-  // }
-  // if (nodeType == 1 /*element*/)
-    // printf("</%s>\n", NS_ConvertUTF16toUTF8(tag).get());
-    // output.Append(NS_LITERAL_STRING("</") + tag + NS_LITERAL_STRING(">\n"));
+  for (i=0; i<indent; i++) {
+    printf(" ");
+    output.Append(NS_LITERAL_STRING("  "));
+  }
+  if (nodeType == 1 /*element*/) {
+    printf("</%s>\n", NS_ConvertUTF16toUTF8(tag).get());
+    output.Append(NS_LITERAL_STRING("</") + tag + NS_LITERAL_STRING(">\n"));
+  }
+#endif
 }
 
 } // extern C

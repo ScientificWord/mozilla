@@ -553,7 +553,7 @@ nsHTMLEditor::BeginningOfDocument()
   if (!domdoc)
     return NS_ERROR_UNEXPECTED;
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
-  doctrav = do_QueryInterface(domdoc); 
+  doctrav = do_QueryInterface(domdoc);
 
   res = doctrav->CreateTreeWalker(rootElement, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
   nsCOMPtr<nsIDOMNode> currNode;
@@ -5143,7 +5143,7 @@ nsHTMLEditor::IsContainer(nsIDOMNode *aNode)
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"),stringTag, nsnull, &fRet);
     if (fRet) return PR_TRUE;
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("listtag"),stringTag, nsnull, &fRet);
-    if (fRet) return PR_TRUE;    
+    if (fRet) return PR_TRUE;
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("listparenttag"),stringTag, nsnull, &fRet);
     if (fRet) return PR_TRUE;
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"),stringTag, nsnull, &fRet);
@@ -7409,7 +7409,7 @@ void handleCombiningChars( const PRUnichar** pCur, PRUnichar combiningChar, nsAS
       if (thisChar == NS_LITERAL_STRING(" ")){
 	  // ignore the combining neg
       } else {
-      //  thisChar = NS_LITERAL_STRING("$\\;\\not ") + thisChar + NS_LITERAL_STRING("\\;$");   
+      //  thisChar = NS_LITERAL_STRING("$\\;\\not ") + thisChar + NS_LITERAL_STRING("\\;$");
         thisChar = NS_LITERAL_STRING("\\not ") + thisChar;
       }
       break;
@@ -7589,7 +7589,7 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isUnicode, const nsAString & orig, nsAS
           case 0x2103:
             thisChar.Append(NS_LITERAL_STRING("{\\textcelsius}")); break;
           case 0x2109 :
-            thisChar.Append(NS_LITERAL_STRING("{\ensuremath{{}^\\circ}F}")); break;
+            thisChar.Append(NS_LITERAL_STRING("{\\ensuremath{{}^\\circ}F}")); break;
           case 0x2116:
             thisChar.Append(NS_LITERAL_STRING("{\\textnumero}")); break;
           case 0x2117:
