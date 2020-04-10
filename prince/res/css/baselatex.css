@@ -428,8 +428,8 @@ descriptionLabel {
   margin-right: 1em;
   min-width: 0.5em;
   display: inline-block;
-  border: thin solid #BBBB77;
-  /*  border-radius: 3px;
+  /*  border: thin solid #BBBB77;
+    border-radius: 3px;
   */
   background-color: #FFFFBB;
 }
