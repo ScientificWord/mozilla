@@ -1083,12 +1083,17 @@ line {
   -moz-border-radius: 8px;
 }
 
-descriptionListItem {
+*[showinvis=true] descriptionListItem {
   border: 2px solid #dcd2dc;
-  background-color: #f0f0ff;
   -moz-border-radius: 8px;
 }
 
+/*descriptionListItem {
+  border: 2px solid rgb(220,210,220);
+  background-color: #f0f0ff;
+  -moz-border-radius: 8px;
+}
+*/
 *[showinvis=true] numberedListItem + numberedListItem {
   margin-top: -5px;
 }
