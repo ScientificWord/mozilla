@@ -221,11 +221,25 @@ numberedlist {
   counter-reset: numberedlist;
 }
 
-bulletlist { list-style: disc outside;}
-bulletlist bulletlist { list-style: circle outside;}
-bulletlist bulletlist bulletlist { list-style: square outside;}
-bulletlist bulletlist bulletlist bulletlist { list-style: disc outside;}
+bulletlist {
+  list-style: disc outside;
+  list-style-image: url(resource://app/res/css/b1.png)
+}
 
+bulletlist bulletlist {
+  list-style: circle outside;
+  list-style-image: url(resource://app/res/css/b2.png)
+}
+
+bulletlist bulletlist bulletlist {
+  list-style: square outside;
+  list-style-image: url(resource://app/res/css/b3.png)
+}
+
+bulletlist bulletlist bulletlist bulletlist {
+  list-style: disc outside;
+  list-style-image: url(resource://app/res/css/b4.png)
+}
 
 descriptionlist {list-style-type: none;}
 
