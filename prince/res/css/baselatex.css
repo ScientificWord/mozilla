@@ -242,18 +242,22 @@ numberedlist {
 
 bulletlist {
   list-style: disc outside;
+  list-style-image: url(resource://app/res/css/b1.png);
 }
 
 bulletlist bulletlist {
   list-style: circle outside;
+  list-style-image: url(resource://app/res/css/b2.png);
 }
 
 bulletlist bulletlist bulletlist {
   list-style: square outside;
+  list-style-image: url(resource://app/res/css/b3.png);
 }
 
 bulletlist bulletlist bulletlist bulletlist {
   list-style: disc outside;
+  list-style-image: url(resource://app/res/css/b4.png);
 }
 
 descriptionlist {
