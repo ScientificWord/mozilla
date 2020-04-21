@@ -2,12 +2,21 @@
   <xsl:template match="html:graph">
     <xsl:apply-templates/>
   </xsl:template>
-  <xsl:template match="html:imagecaption" mode="doit">
-    <xsl:text>\caption</xsl:text>
-    <xsl:apply-templates mode="shortTitle"/>
-    <xsl:text>{</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>}</xsl:text>
+ <xsl:template match="html:imagecaption" mode="doit">  
+    <xsl:choose>
+      <xsl:when test="..[@pos='floating']">
+        <xsl:text>\caption</xsl:text>
+        <xsl:apply-templates mode="shortTitle"/>
+        <xsl:text>{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+      </xsl:when> 
+      <xsl:otherwise>
+       <xsl:text>\\</xsl:text>
+       <xsl:apply-templates/>
+       <xsl:text>\\</xsl:text> 
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="html:imagecaption"/>
   <xsl:template match="html:msiframe">
