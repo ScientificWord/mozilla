@@ -1671,7 +1671,7 @@ question
           <description>mo</description>
           <contains>#text</contains>
         </tag>
-        <tag nm="#text" dispnm="_l_text" \>
+        <tag nm="#text" dispnm="_l_text" >
           <description>text</description>
           <contains>#text</contains>
         </tag>
