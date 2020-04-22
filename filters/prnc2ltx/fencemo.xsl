@@ -221,6 +221,13 @@
         <xsl:variable name="fenced-content.tr">
 		  <is-left-absorbed>
 		    <xsl:choose>
+        <xsl:when test="@flv='b' or
+                       @flv='B' or
+                       @flv='v' or
+                       @flv='V' or
+                       @flv='p'">
+                    <xsl:text>true</xsl:text>
+        </xsl:when>  
 			  <xsl:when test="
                     following-sibling::*[1][self::mml:mfrac]
                 and following-sibling::*[2][self::mml:mo]
@@ -269,6 +276,14 @@
 
 		  <is-right-absorbed>
 		    <xsl:choose>
+        <xsl:when test="@flv='b' or
+                        @flv='B' or
+                        @flv='v' or
+                        @flv='V' or
+                        @flv='p'">
+                    <xsl:text>true</xsl:text>
+        </xsl:when>
+  
 			  <xsl:when test="
                     preceding-sibling::*[1][self::mml:mfrac]
                 and preceding-sibling::*[2][self::mml:mo]
