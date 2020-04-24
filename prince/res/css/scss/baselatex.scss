@@ -144,7 +144,8 @@ msidisplay {
   text-align: center;
   border-width: 1px;
   border-style: solid;
-  min-height: 12px;}
+  min-height: 12px;
+}
 
 environment {
   display: block;
@@ -181,15 +182,20 @@ msidisplay[numbering] > math > mtable {
 mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
 
 
-pre, verbatim, verb { font-family: Courier; white-space: pre }
+pre, verbatim, verb { 
+  font-family: Courier;
+  white-space: pre;
+}
 
 verbatim bodyText {
   margin: 0;
   padding: 0;
 }
 
-verbatim { display: block;
-           background-color: rgb(255,255,215); }
+verbatim {
+  display: block;
+  background-color: rgb(255,255,215);
+}
 
 flushright {
   display: block;
@@ -205,10 +211,31 @@ flushleft {
   background-color: rgb(215,255,215)
 }
 
+numberedListItem {
+  margin-top: 12pt;
+  margin-bottom: 12pt;
+  margin-left: 12pt;
+  margin-right: 12pt;
+  display: list-item;
+}
 
-numberedListItem,
-bulletListItem,
-descriptionListItem,
+bulletListItem {
+  margin-top: 12pt;
+  margin-bottom: 12pt;
+  margin-left: 36pt;
+  margin-right: 12pt;
+  padding-left: 0;
+  display: list-item;
+}
+
+descriptionListItem {
+  margin-top: 12pt;
+  margin-bottom: 12pt;
+  margin-left: 12pt;
+  margin-right: 12pt;
+  display: list-item;
+}
+
 bibitem {
   margin-left: 2em;
   padding-left: 1em;
@@ -223,25 +250,27 @@ numberedlist {
 
 bulletlist {
   list-style: disc outside;
-  list-style-image: url(resource://app/res/css/b1.png)
+  list-style-image: url(resource://app/res/css/b1.png);
 }
 
 bulletlist bulletlist {
   list-style: circle outside;
-  list-style-image: url(resource://app/res/css/b2.png)
+  list-style-image: url(resource://app/res/css/b2.png);
 }
 
 bulletlist bulletlist bulletlist {
   list-style: square outside;
-  list-style-image: url(resource://app/res/css/b3.png)
+  list-style-image: url(resource://app/res/css/b3.png);
 }
 
 bulletlist bulletlist bulletlist bulletlist {
   list-style: disc outside;
-  list-style-image: url(resource://app/res/css/b4.png)
+  list-style-image: url(resource://app/res/css/b4.png);
 }
 
-descriptionlist {list-style-type: none;}
+descriptionlist {
+  list-style-type: none;
+}
 
 /* bulletListItem { margin-left: 2em; } */
 
