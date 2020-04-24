@@ -231,7 +231,6 @@ numberedListItem {
   margin-left: 12pt;
   margin-right: 12pt;
   display: list-item;
-  background-color: #E7F664;
 }
 
 bulletListItem {
@@ -241,7 +240,6 @@ bulletListItem {
   margin-right: 12pt;
   padding-left: 0;
   display: list-item;
-  background-color: #E7F664;
 }
 
 descriptionListItem {
@@ -250,7 +248,6 @@ descriptionListItem {
   margin-left: 12pt;
   margin-right: 12pt;
   display: list-item;
-  background-color: #E7F664;
 }
 
 bibitem {
@@ -263,8 +260,6 @@ numberedlist {
   list-style-type: none;
   list-style-position: outside;
   counter-reset: numberedlist;
-  margin: 0;
-  padding: 0;
 }
 
 bulletlist {
