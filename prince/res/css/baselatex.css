@@ -225,9 +225,34 @@ flushleft {
   background-color: #d7ffd7;
 }
 
-numberedListItem,
-bulletListItem,
-descriptionListItem,
+numberedListItem {
+  margin-top: 12pt;
+  margin-bottom: 12pt;
+  margin-left: 12pt;
+  margin-right: 12pt;
+  display: list-item;
+  background-color: #E7F664;
+}
+
+bulletListItem {
+  margin-top: 12pt;
+  margin-bottom: 12pt;
+  margin-left: 36pt;
+  margin-right: 12pt;
+  padding-left: 0;
+  display: list-item;
+  background-color: #E7F664;
+}
+
+descriptionListItem {
+  margin-top: 12pt;
+  margin-bottom: 12pt;
+  margin-left: 12pt;
+  margin-right: 12pt;
+  display: list-item;
+  background-color: #E7F664;
+}
+
 bibitem {
   margin-left: 2em;
   padding-left: 1em;
@@ -238,6 +263,8 @@ numberedlist {
   list-style-type: none;
   list-style-position: outside;
   counter-reset: numberedlist;
+  margin: 0;
+  padding: 0;
 }
 
 bulletlist {
