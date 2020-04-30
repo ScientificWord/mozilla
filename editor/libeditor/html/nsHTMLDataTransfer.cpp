@@ -616,8 +616,9 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 
 // New code: don't put non-math inside of <math>, even if there is an <msidisplay>
   PRBool isMath = nsHTMLEditUtils::IsMath(targetNode);
-  PRBool fTrimmedFragment;
-  if (isMath)
+  PRBool fTrimmedFragment = nsnull;
+  PRBool useNewCode = PR_TRUE;
+  if (useNewCode && isMath)
   {
     fTrimmedFragment = TrimDocFragment(fragmentAsNode);
   }
@@ -768,7 +769,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   PRInt32 j;
   nsCOMArray<nsIDOMNode> nodeList;
  DumpNode(fragmentAsNode);
-  if (fTrimmedFragment) streamStartParent = nsnull;
+  PRBool fUseNewCode = PR_FALSE;
+  if (fUseNewCode && fTrimmedFragment) streamStartParent = nsnull;
   res = CreateListOfNodesToPaste(fragmentAsNode, nodeList,
                                  streamStartParent, streamStartOffset,
                                  streamEndParent, streamEndOffset);
