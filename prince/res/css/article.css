@@ -549,3 +549,10 @@ button[class="subeqnnum"]:after{
 [hidemarkers] a[key] {
   display: none;
 }
+
+/* Changes for direct print */
+@media print {
+  abstract {
+    border-style: none;
+  }
+}
