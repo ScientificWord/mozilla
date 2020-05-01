@@ -257,7 +257,8 @@ abstract:before {
   content: "Abstract";
   display: block;
   text-align: center;
-  font-size: 175%; font-weight: bold;
+  font-size: 125%;
+  font-weight: bold;
   color: $abstract-title-color;
   -moz-user-select: -moz-none;
 }
@@ -308,7 +309,7 @@ longQuotation {
   margin-right: 20pt;
 }
 
-*[showinvis="true"] longQuotation:after {
+*[showinvis=true] longQuotation:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -346,7 +347,8 @@ flushleft {
 }
 
 pre, verbatim {
-  font-family: Courier; white-space: pre;
+  font-family: Courier;
+  white-space: pre;
 }
 
 
@@ -400,13 +402,18 @@ $counter_data: (counter_list: ((theorem)));
 /* Lists, etc. */
 /***************/
 
-enumerate { counter-reset: item-number }
+enumerate {
+  counter-reset: item-number;
+}
 
-enumerate>item { display: block ;
-                 margin: 0 0 0 0;
-                 padding: 10pt 0 0 20pt }
+enumerate > item {
+  display: block ;
+  margin: 0 0 0 0;
+  padding: 10pt 0 0 20pt;
+}
 
-enumerate>item:before { content: counter(item-number) ". ";
+enumerate>item:before {
+  content: counter(item-number) ". ";
   counter-increment: item-number;
   -moz-user-modify: read-only;
   -moz-user-select: -moz-none;
@@ -429,7 +436,7 @@ img {
   display: inline;
 }
 
-button[class="subeqnnum"]{
+button[class=subeqnnum]{
   right: 20px;
   font-style: normal;
   color: blue;
@@ -445,7 +452,7 @@ button[class="subeqnnum"]:after{
 }
 */
 
-[hideindexentries="true"] indexitem {
+[hideindexentries=true] indexitem {
   display: none;
 }
 
@@ -453,3 +460,9 @@ button[class="subeqnnum"]:after{
   display: none;
 }
 
+/* Changes for direct print */
+@media print {
+  abstract {
+    border-style: none;
+  }
+}
