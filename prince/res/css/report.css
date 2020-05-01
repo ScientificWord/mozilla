@@ -661,3 +661,10 @@ button[class=eqnnum]:after {
 button[class=subeqnnum]:after {
   content: "  (" counter(chapter) "." counter(eqnnumber) "." counter(subeqnnum, lower-latin) ")";
 }
+
+/* Changes for direct print */
+@media print {
+  abstract {
+    border-style: none;
+  }
+}
