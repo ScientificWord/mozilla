@@ -269,7 +269,7 @@ abstract {
   padding-top: 15pt;
   padding-bottom: 15pt;
   font-size: small;
-  border: thin solid black; 
+  border: thin solid black;
   background-color: $abstract-background-color;
   -moz-border-radius: 5px;
 }
@@ -278,7 +278,8 @@ abstract:before {
   content: "Abstract";
   display: block;
   text-align: center;
-  font-size: 100%; font-weight: bold;
+  font-size: 100%;
+  font-weight: bold;
   color: $abstract-title-color;
   -moz-user-select: -moz-none;
 }
@@ -311,7 +312,7 @@ rtlBodyText {
 bodyMath {
   display: block;
   margin: 0 10pt 0 5pt;
-  color: rgb(0,128,64);
+  color: $bodyMath-color;
 }
 
 /****************/
@@ -319,7 +320,7 @@ bodyMath {
 /****************/
 
 shortQuote {
-  display: block; 
+  display: block;
   margin-left: 20pt;
   margin-right: 20pt;
 }
@@ -561,4 +562,11 @@ button[class="eqnnum"]:after{
 
 button[class="subeqnnum"]:after{
   content: "  (" counter(chapter) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin) ")";
+}
+
+/* Changes for direct print */
+@media print {
+  abstract {
+    border-style: none;
+  }
 }
