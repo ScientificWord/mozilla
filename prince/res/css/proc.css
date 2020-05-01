@@ -220,7 +220,7 @@ abstract:before {
   content: "Abstract";
   display: block;
   text-align: center;
-  font-size: 175%;
+  font-size: 125%;
   font-weight: bold;
   color: black;
   -moz-user-select: -moz-none;
@@ -552,4 +552,11 @@ button[class="subeqnnum"]:after{
 
 [hidemarkers] a[key] {
   display: none;
+}
+
+/* Changes for direct print */
+@media print {
+  abstract {
+    border-style: none;
+  }
 }
