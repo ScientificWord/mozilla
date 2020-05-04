@@ -4,7 +4,15 @@
   </xsl:template>
  <xsl:template match="html:imagecaption" mode="doit">  
     <xsl:choose>
-      <xsl:when test="..[@pos='floating']">
+      <xsl:when test="..[@pos='floating'] or
+                      ..[@pos='inside'] or
+                      ..[@pos='outside'] or
+                      ..[@pos='right'] or
+                      ..[@pos='left'] or
+                      ..[@pos='I'] or
+                      ..[@pos='O'] or
+                      ..[@pos='R'] or
+                      ..[@pos='L']  ">
         <xsl:text>\caption</xsl:text>
         <xsl:apply-templates mode="shortTitle"/>
         <xsl:text>{</xsl:text>
@@ -14,7 +22,6 @@
       <xsl:otherwise>
        <xsl:text>\\</xsl:text>
        <xsl:apply-templates/>
-       <xsl:text>\\</xsl:text> 
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
