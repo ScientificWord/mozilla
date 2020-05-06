@@ -35,7 +35,7 @@
   <radiogroup id="keyresult">
   <groupbox>
     <caption label="&AddNewFunctionKeyAssignment.label;"/>
-    <label control="newkeys" tabindex="10">&newKey.label; </label>
+    <label control="newkeys" tabindex="10" accesskey="&newKey.accesskey;">&newKey.label; </label>
     <hbox>
       <vbox>
         <textbox id="newkeys" style="width: 11.5em" onkeypress="handleChar(event,this);"
