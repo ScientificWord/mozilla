@@ -334,6 +334,11 @@ function assignKey() {
 
 function onAccept() {
     keymapper.saveKeyMaps();
-    //  acceptDialog();
-    return true;
+    startUp();  // refresh
+    return false;  // Do not exit dialog 
 }
+
+function onCancel() {
+  return true;
+}
+
