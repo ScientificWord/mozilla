@@ -101,7 +101,7 @@
       <xsl:choose>
         <xsl:when test="(html:imagecaption[1]) and (@captionloc='top')">1</xsl:when>
         <xsl:when test="(html:imagecaption[1]) and (@captionloc='bottom')">2</xsl:when>
-        <!-- <xsl:otherwise></xsl:otherwise>-->
+        <xsl:otherwise>0</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="usecolor">
@@ -116,6 +116,18 @@
         <xsl:otherwise>0</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+     <xsl:variable name="useparbox">
+      <xsl:choose>
+        <xsl:when  test="$captionloc!='0' and @pos='inline' and $width &gt;0">1</xsl:when>
+        <xsl:otherwise>0</xsl:otherwise>
+       </xsl:choose>
+    </xsl:variable>   
+    <xsl:if test="$useparbox='1'">
+      <xsl:text>\parbox[b]{</xsl:text>
+        <xsl:value-of select="$width"/>
+        <xsl:value-of select="$units"/>
+        <xsl:text>}{\begin{center}</xsl:text>
+    </xsl:if>
     <xsl:if test="$inlineOffset and string-length($inlineOffset)">\raisebox{
       <xsl:value-of select="$inlineOffset"/>
       }{</xsl:if>
@@ -206,7 +218,6 @@
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates mode="doit" select="html:imagecaption"/>
-          <xsl:text>\\ </xsl:text>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
@@ -310,10 +321,16 @@
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates mode="doit" select="html:imagecaption"/>
-          <xsl:text>\\ </xsl:text>
+          <xsl:text> \\ </xsl:text>
+          <xsl:if test="$useparbox='1'">
+            <xsl:text>\end{center}}</xsl:text>
+          </xsl:if> 
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
+    <xsl:if test="$captionloc='1' and $useparbox='1'"> <!--close parbox -->
+      <xsl:text>\end{center}}</xsl:text>
+    </xsl:if> 
     <xsl:choose>
       <!-- xsl:when test="$framePosType='ft-inline'"><xsl:text>\end{center}}</xsl:text></xsl:when -->
       <xsl:when test="$framePosType='ft-centered'">\end{center}</xsl:when>
