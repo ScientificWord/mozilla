@@ -20,7 +20,7 @@
         <xsl:text>}</xsl:text>
       </xsl:when> 
       <xsl:otherwise>
-       <xsl:text>\\</xsl:text>
+       <xsl:text>\ \\</xsl:text>
        <xsl:apply-templates/>
       </xsl:otherwise>
     </xsl:choose>
@@ -218,6 +218,7 @@
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates mode="doit" select="html:imagecaption"/>
+          <xsl:text>\ \\</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
@@ -321,7 +322,7 @@
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates mode="doit" select="html:imagecaption"/>
-          <xsl:text> \\ </xsl:text>
+          <xsl:text>\ \\ </xsl:text>
           <xsl:if test="$useparbox='1'">
             <xsl:text>\end{center}}</xsl:text>
           </xsl:if> 
