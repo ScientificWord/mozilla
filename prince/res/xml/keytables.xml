@@ -7,20 +7,28 @@
   the first key is DOM_VK_F1. -->
 
   <keytable id="FKeys" name="FKeys" keytype="script">
-    <key name="F1" vk="1" reserved="1"/>
-    <key name="F2" vk="1">insertParaTag('bodyText',false);</key>
-    <key name="F3" vk="1" reserved="1"/>
-    <key name="F3" vk="1" shift="1" reserved="1"/>
-    <key name="F4" vk="1" >toggleTextTag('(normal)',false);</key>
-    <key name="F4" alt="1" vk="1" reserved="1"/>
-    <key name="F5" vk="1" >toggleTextTag('bold',false);</key>
-    <key name="F6" vk="1" >toggleTextTag('emphasized',false);</key>
-    <key name="F9" vk="1" >toggleTextTag('typewriter',false);</key>
-    <key name="F10" vk="1" reserved="1"/>
-    <key name="F11" vk="1" >insertSectionTag('section',false);</key>
-    <key name="F11" alt="1" vk="1" >softSave();</key>
-    <key name="F12" vk="1" >insertSectionTag('subsection',false);</key>
-    <key name="F12" alt="1" vk="1" >dumpMath();</key>
+    <key name="F1"  vk="1" reserved="1"/>
+    <key name="F1"  shift="1" vk="1" reserved="1"/>
+    <key name="F2"  vk="1">insertParaTag('bodyText',false);</key>
+    <key name="F2"  shift="1" vk="1">insertParaTag('bodyMath',false);</key>
+    <key name="F3"  vk="1" reserved="1"/>
+    <key name="F3"  shift="1" vk="1" reserved="1"/>
+    <key name="F4"  vk="1">toggleTextTag('(normal)',false);</key>
+    <key name="F4"  shift="1" vk="1">insertSectionTag('(removesection)',false);</key>
+    <key name="F4"  alt="1" vk="1" reserved="1"/>
+    <key name="F5"  vk="1">toggleTextTag('bold',false);</key>
+    <key name="F5"  shift="1" vk="1">toggleTextTag('boldsymbol',false);</key>
+    <key name="F6"  vk="1">toggleTextTag('emphasized',false);</key>
+    <key name="F6"  shift="1" vk="1">toggleTextTag('italics',false);</key>
+    <key name="F7"  vk="1">insertTag('numberedListItem',false);</key>
+    <key name="F8"  vk="1">insertTag('bulletListItem',false);</key>
+    <key name="F9"  vk="1">toggleTextTag('typewriter',false);</key>
+    <key name="F9"  shift="1" vk="1">toggleTextTag('roman',false);</key>
+    <key name="F10"  vk="1" reserved="1"/>
+    <key name="F11"  vk="1">insertSectionTag('section',false);</key>
+    <key name="F11"  alt="1" vk="1">softSave();</key>
+    <key name="F12"  vk="1">insertSectionTag('subsection',false);</key>
+    <key name="F12"  alt="1" vk="1">dumpMath();</key>
   </keytable>
 
 <!-- layout of the Greek keyboard -->
