@@ -27,6 +27,7 @@
     <key name="F10"  vk="1" reserved="1"/>
     <key name="F11"  vk="1">insertSectionTag('section',false);</key>
     <key name="F11"  alt="1" vk="1">softSave();</key>
+    <key name="F11"  shift="1" vk="1">insertSectionTag('chapter',false);</key>
     <key name="F12"  vk="1">insertSectionTag('subsection',false);</key>
     <key name="F12"  alt="1" vk="1">dumpMath();</key>
   </keytable>
