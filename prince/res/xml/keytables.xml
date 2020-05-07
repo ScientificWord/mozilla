@@ -29,7 +29,7 @@
     <key name="F11"  alt="1" vk="1">softSave();</key>
     <key name="F11"  shift="1" vk="1">insertSectionTag('chapter',false);</key>
     <key name="F12"  vk="1">insertSectionTag('subsection',false);</key>
-    <key name="F12"  alt="1" vk="1">dumpMath();</key>
+    <key name="F12"  shift="1" vk="1">insertSubstructure(false);</key>
   </keytable>
 
 <!-- layout of the Greek keyboard -->
