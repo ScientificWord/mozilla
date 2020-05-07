@@ -431,6 +431,7 @@
               <br/>
             </centered>
           </initialcontents>
+          <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
@@ -444,6 +445,7 @@
             </flushleft>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
+          <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         <tag nm="flushright" dispnm="_l_flushright" >
@@ -456,6 +458,7 @@
             </flushright>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
+          <inclusion>true</inclusion>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
         // the next tag ('dialogbase') is deprecated
@@ -478,21 +481,14 @@
           <nexttag>bodyText</nexttag>
         </tag>
         <tag hidden="1" nm="imagecaption">
+          <contains>bodyText</contains>
           <description>Image caption</description>
-          <contains>#text</contains>
-          <contains>texttag</contains>
-          <contains>othertag</contains>
-          <contains>mml:math</contains>
-          <contains>br</contains>
-          <contains>cursor</contains>
-          <contains>object</contains>
-          <contains>a</contains>
-          <contains>msibr</contains>
-          <contains>texb</contains>
           <nexttag>none</nexttag>
           <initialcontents>
             <imagecaption>
-              <br/>
+              <bodyText>
+                <br/>
+              </bodyText>
             </imagecaption>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
