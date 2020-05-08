@@ -16,6 +16,16 @@ function showhelpsystem()
   msiGoDoCommand('cmd_help_contents');
 }
 
+function findNext()
+{
+  msiGoDoCommand('cmd_findNext');
+}
+
+function findPrev()
+{
+  msiGoDoCommand('cmd_findPrev');
+}
+
 function deleteSelection()
 {
   // dump("\ndeleteSelection();\n");
