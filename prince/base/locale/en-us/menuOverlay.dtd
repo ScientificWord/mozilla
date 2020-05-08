@@ -27,8 +27,8 @@
 <!ENTITY saveCmd.label "Save">
 <!ENTITY filesave.accesskey "s">
 <!ENTITY filesave.keybinding "s">
-<!ENTITY filecleanup.accesskey "p">
 <!ENTITY cleanupCmd.label "Clean up...">
+<!ENTITY filecleanup.accesskey "l">
 <!ENTITY saveAsCmd.label "Save as...">
 <!ENTITY filesaveas.accesskey "A">
 <!ENTITY saveCopyAsCmd.label "Save copy as...">
