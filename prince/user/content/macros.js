@@ -11,6 +11,11 @@ function showhelp()
   document.getElementById('helpmenu').open=true;
 }
 
+function showhelpsystem()
+{
+  msiGoDoCommand('cmd_help_contents');
+}
+
 function deleteSelection()
 {
   // dump("\ndeleteSelection();\n");
