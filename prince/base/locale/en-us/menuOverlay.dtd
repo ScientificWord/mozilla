@@ -497,7 +497,7 @@
 <!ENTITY listdefinition.accesskey "d">
 <!ENTITY listProps.label "List properties...">
 <!ENTITY listprops.accesskey "l">
-<!ENTITY setalignment.accesskey "t">
+<!ENTITY setalignment.accesskey "l">
 <!ENTITY setalignment.label "Set alignment">
 
 <!ENTITY ParagraphSelect.tooltip "Choose a paragraph format">
