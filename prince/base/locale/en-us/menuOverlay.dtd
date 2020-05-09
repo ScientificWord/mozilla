@@ -43,7 +43,7 @@
 <!ENTITY exportTeXCmd.label  "Export TeX...">
 <!ENTITY exportTeX.accesskey  "E">
 <!ENTITY exporttowebCmd.label  "Export to web...">
-<!ENTITY exporttoweb.accesskey  "X">
+<!ENTITY exporttoweb.accesskey  "w">
 <!ENTITY reloadCmd.key "R">
 <!ENTITY reloadCmd.label "Reload">
 <!ENTITY publishCmd.label "Publish">
