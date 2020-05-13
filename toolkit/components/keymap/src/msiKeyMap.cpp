@@ -437,7 +437,7 @@ NS_IMETHODIMP msiKeyMap::AddCharacterMapping(const nsAString & mapname, PRUint32
     return NS_OK;
 }
 
-/* boolean addScriptMap (in string mapname, in unsigned long virtualKey, in string theScript); */
+/* boolean addScriptMapping (in string mapname, in unsigned long virtualKey, in string theScript); */
 NS_IMETHODIMP msiKeyMap::AddScriptMapping(const nsAString & mapname, PRUint32 virtualKey, 
   PRBool altKey, PRBool ctrlKey, PRBool shiftKey, PRBool metaKey, PRBool vk, const nsAString & theScript, PRBool *_retval)
 {
