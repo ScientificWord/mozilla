@@ -194,7 +194,7 @@ pref("swp.plot.FillPattern", "Solid");
 pref("swp.plot.AIInfo",         "NoInfo");
 pref("swp.plot.AIMethod",       "Middle");
 pref("swp.plot.AISubIntervals", 10);
-pref("swp.plot.Animate",        "false")'';
+pref("swp.plot.Animate",        "false");
 pref("swp.plot.DiscAdjust",     "true");
 pref("swp.plot.IncludeLines",   "true");
 pref("swp.plot.AxisScaling", "LinLin");
