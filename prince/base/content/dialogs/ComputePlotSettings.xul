@@ -198,7 +198,7 @@
    	                  <menuitem label="&FillPatternForwardDiagLines.label;"  value="ForwardDiagonalLines"/>
                       <menuitem label="&FillPatternHorizLines.label;"        value="HorizontalLines"/>
                       <menuitem label="&FillPatternVertLines.label;"          value="VerticalLines"/>
-   	                  <menuitem label="&FillPatternCrossedDiagLines.label"  value="CrossedDiagonalLines"/>
+   	                  <menuitem label="&FillPatternCrossedDiagLines.label;"  value="CrossedDiagonalLines"/>
                     </menupopup>
                    </menulist>
    	            </row>
