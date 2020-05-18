@@ -19,7 +19,7 @@
     ondialogcancel="return onCancel();"
     buttons="accept,cancel"
     buttonlabelaccept="&SaveChanges.label;"
-    buttonlabelcancel="Done"
+    buttonlabelcancel="&Close.label;"
     screenX="40"
     screenY="40"
     persist="screenX screenY height width"
@@ -30,7 +30,6 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/tagkeyassignments.js"/>
   <stringbundle id="templateStrings" src="chrome://prince/locale/msiDialogs.properties"/>
-  <broadcaster id="dirty" disabled="true"/>
   <spacer/>
   <radiogroup id="keyresult">
   <groupbox>
@@ -50,16 +49,18 @@
 	          tooltiptext="&alltaglist.tooltip;"
  	          label="&alltaglist.label;"   
             onblur="assignTag(this);"
-            onkeypress="handleTagListCharacter(event, this);"
-            ontextentered="assignTag(this);" />
-            <!--onfocus="this.select();"  onmousedown="doTagListMouseDown(event);" -->
+            ontextentered="assignTag(this);" 
+            onkeypress="handleTagListCharacter(event, this);" />
         </hbox>
         <hbox>
           <radio id="scriptradio" group="keyresult" label="&scriptradio.label;" accesskey="&scriptradio.accesskey;" selected="false" persist = "selected" value="keyscript" tabindex="40" oncommand="radioswitched(event, this);"/>
-          <textbox id="keyscript" style="width: 16em" onkeypress="handleTagListCharacter(event, this);"
-            tooltip="&scripttext.tooltip;" tabindex="50" disabled="true" persist="disabled"/>
+          <textbox id="keyscript" style="width: 16em" 
+            onkeypress="handleTagListCharacter(event, this);"            
+            onblur="assignTag(this);"
+            ontextentered="assignTag(this);" 
+            tooltip="&scripttext.tooltip;" tabindex="50" />
         </hbox>
-<!--         <msibutton id="assignkey" label="&assignKey.label;" accesskey="&assignKey.accesskey;" disabled="true" tabindex="70" oncommand="assignKey();"/>
+<!--         <msibutton id="assignkey" label="&assignKey.label;" accesskey="&assignKey.accesskey;" tabindex="70" oncommand="assignKey();"/>
  -->
       </vbox>
     </hbox>
@@ -75,9 +76,9 @@
       <label id="tagorscript" control="nameoftagorscript" value="&tagOrScript.scriptLabel;" accesskey="&tagOrScript.scriptAccesskey;" tooltip="&tagOrScript.tooltip;"/>
       <label id="tagorscriptTag" control="nameoftagorscript" value="&tagOrScript.tagLabel;" hidden="true"/>
       <label id="tagorscriptScript" control="nameoftagorscript" value="&tagOrScript.scriptLabel;" hidden="true"/>
-      <textbox id="nameoftagorscript" multiline="true" tabindex="90" readonly="true" value="" flex="1"/>
+      <description id="nameoftagorscript" value="" flex="1"/>
       <spacer flex=".2"/>
-      <msibutton id="deleteassignment" label = "&deleteAssignment.label;" accesskey="&deleteAssignment.accesskey;" tabindex="100" disabled="true" oncommand="deleteAssignment();"/>
+      <msibutton id="deleteassignment" label = "&deleteAssignment.label;" accesskey="&deleteAssignment.accesskey;" tabindex="100" oncommand="deleteAssignment();"/>
       <spacer flex="1"/>
     </vbox>
   </hbox>
