@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0"?> 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
@@ -1776,10 +1776,10 @@
                 </row>
                 <row observes="plot.1Var">
                   <label id ="plotVar1">&plotVarX.label;</label>
-                  <editor editortype="html" type="content" context="msiEditorContentContext"
+                  <editor editortype="html" type="content-primary" context="msiEditorContentContext"
                           id="plotVar1StartEdit" preference="plot.XMin" flex="1" width="150" height="40"/>
                   <label value="&plotVarsTo.label;" />
-                  <editor editortype="html" type="content" context="msiEditorContentContext"
+                  <editor editortype="html" type="content-primary" context="msiEditorContentContext"
                           id="plotVar1EndEdit" preference="plot.XMax" flex="1" width="150" height="40"/>
 		              <hbox><textbox id="plotPtssamp1" type="number" preference="plot.XPts" class="medwidth"/></hbox>
                 </row>
