@@ -207,7 +207,10 @@ function startUp() {
       .createInstance(Components.interfaces.msiIKeyMap);
   var strOfKeys = keymapper.getTableKeys("FKeys");
   buildKeysMenuFromStringOfKeys(strOfKeys);
-
+  document.getElementById("taglistradio").enable;
+  document.getElementById("scriptradio").enable;
+  document.getElementById("alltaglist").enable;
+  document.getElementById("keyscript").enable;
   ////Debugging stuff:
   var theTagList = document.getElementById("alltaglist");
   theTagList.addEventListener("mousedown", doTagListMouseDown, true);
