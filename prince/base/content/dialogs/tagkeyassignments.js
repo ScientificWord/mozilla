@@ -1,4 +1,4 @@
-var keymapper;
+var keymapper = null;
 
 
 function clear(event) {
@@ -10,9 +10,9 @@ function clearInputs() {
     // clear the values of the script input box and the tag selection
     document.getElementById("keyresult").selectedIndex = 0;
     document.getElementById("alltaglist").value = "";
-    document.getElementById("alltaglist").disabled = false;
+    // document.getElementById("alltaglist").disable=false;
     document.getElementById("keyscript").value = "";
-    document.getElementById("keyscript").disable = true;
+    // document.getElementById("keyscript").disable = true;
 
 }
 
@@ -148,14 +148,16 @@ function handleChar(event, object) // called when the user sets a function key c
     if (tag.length > 0) { //display the tag name
       document.getElementById("keyresult").selectedIndex = 0;
       document.getElementById("alltaglist").value = tag;
-      document.getElementById("keyscript").value = '';
-      document.getElementById("keyscript").disabled = true;
+      document.getElementById("alltaglist").disabled=false;
+      // document.getElementById("keyscript").value = '';
+      document.getElementById("keyscript").disabled=true;
     }
     else { // appears to be a script
       document.getElementById("keyresult").selectedIndex = 1;
-      document.getElementById("alltaglist").value = '';
+      // document.getElementById("alltaglist").value = '';
       document.getElementById("alltaglist").disabled = true;
       document.getElementById("keyscript").value = mapsTo;
+      document.getElementById("keyscript").disabled = false;
     }
 
 
@@ -179,11 +181,11 @@ function radioswitched(event, obj) {
     var taglisttextbox = document.getElementById("alltaglist");
     var keyscript = document.getElementById("keyscript");
     if (obj.value == 'alltaglist') {
-        taglisttextbox.disabled = false;
-        keyscript.disabled = true;
+        taglisttextbox.disabled=false;
+        keyscript.disabled=true;
     } else {
-        taglisttextbox.disabled = true;
-        keyscript.disabled = false;
+        taglisttextbox.disabled=true;
+        keyscript.disabled=false;
     }
 }
 
@@ -203,14 +205,14 @@ function startUp() {
   document.getElementById("alltaglist").height = document.getElementById("keyscript").height;
   // Build the list of key combinations that have been assigned values or have been reserved
   clearInputs();
-  keymapper = Components.classes["@mackichan.com/keymap;1"]
+  if (keymapper == null) keymapper = Components.classes["@mackichan.com/keymap;1"]
       .createInstance(Components.interfaces.msiIKeyMap);
   var strOfKeys = keymapper.getTableKeys("FKeys");
   buildKeysMenuFromStringOfKeys(strOfKeys);
-  document.getElementById("taglistradio").enable;
-  document.getElementById("scriptradio").enable;
-  document.getElementById("alltaglist").enable;
-  document.getElementById("keyscript").enable;
+  document.getElementById("taglistradio").disabled=false;
+  document.getElementById("scriptradio").disabled=false;
+  document.getElementById("alltaglist").disabled=false;
+  document.getElementById("keyscript").disabled=false;
   ////Debugging stuff:
   var theTagList = document.getElementById("alltaglist");
   theTagList.addEventListener("mousedown", doTagListMouseDown, true);
@@ -302,7 +304,7 @@ function deleteAssignment() {
         //    keymapper.saveKeyMaps();
         list.removeItemAt(list.selectedIndex);
     }
-    selectCurrentKey(); // updates the other list box if necessary
+ //   selectCurrentKey(); // updates the other list box if necessary
 }
 
 
@@ -342,23 +344,17 @@ function assignKey(isScript, data) {
     // get the radio value, either keyscript, alltaglist
 
     keymapper.addScriptMapping("FKeys", keycode, alt, ctrl, shift, meta, true, tagOrScript);
-    if (isScript) {
-      document.getElementById('alltaglist').value = '';
-    }
-    else {
-      document.getElementById('keyscript').value = '';
-    }
-    keymapper = Components.classes["@mackichan.com/keymap;1"]
-      .createInstance(Components.interfaces.msiIKeyMap);
+    // if (isScript) {
+    //   document.getElementById('alltaglist').value = '';
+    // }
+    // else {
+    //   document.getElementById('keyscript').value = '';
+    // }
     var strOfKeys = keymapper.getTableKeys("FKeys");
-    if (strOfKeys.indexOf(shortName) < 0) {
-      strOfKeys = shortName + ' ' + strOfKeys;
-    }
     buildKeysMenuFromStringOfKeys(strOfKeys);
-    strOfKeys.indexOf(shortName)
-    document.getElementById('currentkeyslist').currentIndex = -1;
+    // document.getElementById('currentkeyslist').currentIndex = -1;
     document.getElementById('currentkeyslist').value = shortName;
-    selectCurrentKey(); // updates the other list box if necessary
+    // selectCurrentKey(); // updates the other list box if necessary
     //    startUp(); //reloads everything
 }
 
