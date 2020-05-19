@@ -242,15 +242,21 @@ function putMathMLExpressionToControlByID(ctrlID, expr)
   return putMathMLExpressionToControl(ctrl, expr);
 }
 
+function dressUpMathString(mathString) {
+  mathString = mathString.replace(/<math\s*>/g,'<math xmlns="http://www.w3.org/1998/Math/MathML">', "g");
+  //mathString = mathString.replace(/<mi\s*>/,'<mi _moz-math-font-style="italic">', "g");
+  return mathString;
+}
+
 function putMathMLExpressionToControl(ctrl, expr)
 {
   var editor, parser;
   var nodeList, topNode;
   var exprDoc;
   var theValue;
-  var mathExpr = expr;
   if (expr.substr(0,6) != "<math ")
     expr = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" + expr + "</math>";
+  var mathExpr = dressUpMathString(expr);
 
   switch(ctrl.nodeName)
   {
