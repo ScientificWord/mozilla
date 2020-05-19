@@ -19,12 +19,14 @@
 <!ENTITY reserveForOS.tooltip "Reserve for operating system use">
 <!ENTITY assignKey.label "Assign action to key">
 <!ENTITY assignKey.accesskey "A">
-<!ENTITY tagOrScript.tagLabel "Key assigns the tag">
-<!ENTITY tagOrScript.scriptLabel "Key runs the JavaScript">
+<!ENTITY tagOrScript.tagLabel "Key assigns the tag:">
+<!ENTITY tagOrScript.scriptLabel "Key runs the JavaScript:">
 <!ENTITY tagOrScript.scriptAccesskey  "K">
 <!ENTITY tagOrScript.reservedLabel "Key is reserved for operating system use">
 <!ENTITY tagOrScript.tooltip "Tag or script currently assigned to this key combination">
 <!ENTITY deleteAssignment.label "Delete assignment">
 <!ENTITY deleteAssignment.accesskey "D">
 <!ENTITY SaveChanges.label  "Make changes permanent">
+<!ENTITY Close.label  "Close">
+
 
