@@ -27,7 +27,9 @@
   -->
   <sub ctx="math" tp="subst"><pattern>−></pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">→</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
 
+<!-- Remove text substitution version as the replacement character requires math mode (or prints the Unicode character number in a box (gp)
   <sub ctx="text" tp="subst"><pattern>–></pattern><data><![CDATA[⟶]]></data><context/><info></info></sub>
+-->
   <sub ctx="math" tp="subst"><pattern><![CDATA[−−>]]></pattern><data><![CDATA[<mo xmlns="http://www.w3.org/1998/Math/MathML">⟶</mo>]]></data><context><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"></math>]]></context><info></info></sub>
 
   <sub ctx="both" tp="subst"><pattern><![CDATA[<-]]></pattern><data><![CDATA[←]]></data><context/><info></info></sub>
