@@ -78,7 +78,9 @@
   <sub ctx="text" tp="sc"><pattern>.itsp.</pattern><data>msiInsertHorizontalSpace('italicCorrectionSpace',{}, null);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.noind.</pattern><data>msiInsertHorizontalSpace('noIndent',{}, null);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ftn.</pattern><data>insertFootnote();</data></sub>
+<!-- Remove +- automatic substitution (it doesn't work) (gp)
   <sub ctx="math" tp="sc"><pattern>+-</pattern><data>insertMathSymbol('±',true);</data></sub>
+-->
   <sub ctx="math" tp="sc"><pattern>about</pattern><data>doInsertMathname('about',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>additionally</pattern><data>doInsertMathname('additionally',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>arccos</pattern><data>doInsertMathname('arccos',true);</data></sub>
