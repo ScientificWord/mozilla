@@ -63,7 +63,15 @@
   <sub ctx="text" tp="sc"><pattern>.title.</pattern><data>insertFrontMatterItem('title',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.date.</pattern><data>insertParaTag('date',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>insertFrontMatterItem('maketitle',false);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>msiInsertLaTeXmarker('maketitle');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.maketoc.</pattern><data>msiInsertLaTeXmarker('maketoc');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.makelot.</pattern><data>msiInsertLaTeXmarker('makelot');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.makelof.</pattern><data>msiInsertLaTeXmarker('makelof');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.makeapp.</pattern><data>msiInsertLaTeXmarker('appendix');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.makemm.</pattern><data>msiInsertLaTeXmarker('mainmatter');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.makebm.</pattern><data>msiInsertLaTeXmarker('backmatter');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.makefm.</pattern><data>msiInsertLaTeXmarker('frontmatter');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.makeidx.</pattern><data>msiInsertLaTeXmarker('printindex');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.lorem.</pattern><data>insertFragmentOrMacro('lorem');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.latex.</pattern><data>insertFragmentOrMacro('latex');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.tex.</pattern><data>insertFragmentOrMacro('tex');</data></sub>
