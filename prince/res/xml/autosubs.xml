@@ -58,7 +58,13 @@
   <sub ctx="text" tp="sc"><pattern>.lg.</pattern><data>toggleTextTag('large',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.Lg.</pattern><data>toggleTextTag('Large',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.LG.</pattern><data>toggleTextTag('LARGE',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.part.</pattern><data>insertSectionTag('part',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.chap.</pattern><data>insertSectionTag('chapter',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.sec.</pattern><data>insertSectionTag('section',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.subsec.</pattern><data>insertSectionTag('subsection',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.subsubsec.</pattern><data>insertSectionTag('subsubsection',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.para.</pattern><data>insertSectionTag('paragraph',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.subpara.</pattern><data>insertSectionTag('subparagraph',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.sub.</pattern><data>msiGoDoCommand('cmd_insertSubstructure');deleteSelection(); </data></sub>
   <sub ctx="text" tp="sc"><pattern>.title.</pattern><data>insertFrontMatterItem('title',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author',true);</data></sub>
