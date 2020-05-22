@@ -83,9 +83,7 @@
   <sub ctx="text" tp="sc"><pattern>.tex.</pattern><data>insertFragmentOrMacro('tex');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.xetex.</pattern><data>insertFragmentOrMacro('xetex');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.xelatex.</pattern><data>insertFragmentOrMacro('xelatex');</data></sub>
-<!-- Remove .nonum. that is supposed to create an unnumbered section, but it doesn't work (gp)
   <sub ctx="text" tp="sc"><pattern>.nonum.</pattern><data>unnumberSection();</data></sub>
--->
   <sub ctx="text" tp="sc"><pattern>.renum.</pattern><data>renumberSection();</data></sub>
   <sub ctx="text" tp="sc"><pattern>.nbsp.</pattern><data>msiInsertHorizontalSpace('nonBreakingSpace',{}, null);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ngsp.</pattern><data>msiInsertHorizontalSpace('negativeThinSpace',{}, null);</data></sub>
