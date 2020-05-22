@@ -28,25 +28,31 @@
           <tr><td><bodyText><bold>To ente</bold>r</bodyText></td><td><bodyText><bold>On the keyboard press</bold></bodyText></td></tr>
           <tr><td><bodyText>&#x201C; (left double quote)</bodyText></td><td><bodyText> &quot; (space, quote)</bodyText></td></tr>
           <tr><td><bodyText>&#x2018; (left single quote)</bodyText></td><td><bodyText>  &apos; (space, apostrophe)</bodyText></td></tr>
-          <tr><td><bodyText>&#x00A1; (upsidedown exclamation)</bodyText></td><td><bodyText> !` (exclamation, backprime)</bodyText></td></tr>
           <tr><td><bodyText>&#x201D; (right double quote)</bodyText></td><td><bodyText> &quot; (quote)</bodyText></td></tr>
           <tr><td><bodyText>&#x2019; (right single quote)</bodyText></td><td><bodyText>&apos; (apostrophe)</bodyText></td></tr>
           <tr><td><bodyText>&#x201D; (right double quote)</bodyText></td><td><bodyText>&apos;&apos; (apostrophe, apostrophe)</bodyText></td></tr>
           <tr><td><bodyText>,&#x201D; (comma, right double quote)</bodyText></td><td><bodyText> ,&quot; (comma, quote)</bodyText></td></tr>
+          <tr><td><bodyText>.&#x201D; (period, right double quote)</bodyText></td><td><bodyText> .&quot; (period, quote)</bodyText></td></tr>
+          <tr><td><bodyText>&#x201C; (left double quote)</bodyText></td><td><bodyText>` ` (backprime, backprime)</bodyText></td></tr>
           <tr><td><bodyText>&#x2013; (en dash)</bodyText></td><td><bodyText>- - (dash, dash)</bodyText></td></tr>
           <tr><td><bodyText>&#x2014; (em dash)</bodyText></td><td><bodyText>- - - (dash, dash, dash)</bodyText></td></tr>
-          <tr><td><bodyText>&#x2192; (right arrow)</bodyText></td><td><bodyText> - &gt; (dash, greater than)</bodyText></td></tr>
-          <tr><td><bodyText>.&#x201D; (period, right double quote)</bodyText></td><td><bodyText> .&quot; (period, quote)</bodyText></td></tr>
+          <tr><td><bodyText>&#x00A1; (upsidedown exclamation)</bodyText></td><td><bodyText> !` (exclamation, backprime)</bodyText></td></tr>
+          <tr><td><bodyText>&#x00BF; (upsidedown questionmark)</bodyText></td><td><bodyText>? ` (questionmark, backprime)</bodyText></td></tr>
+          <tr><td><bodyText>&#x2192;</bodyText></td><td><bodyText> - &gt; (dash, greater than)</bodyText></td></tr>
+          <tr><td><bodyText>&#x2190;</bodyText></td><td><bodyText>&lt; - (less than, dash)</bodyText></td></tr>
+          <tr><td><bodyText>&#x2191;</bodyText></td><td><bodyText>| ^ # (vertical bar, circumflex, number sign)</bodyText></td></tr>
+          <tr><td><bodyText>&#x2193;</bodyText></td><td><bodyText>| v # (vertical bar, v, number sign)</bodyText></td></tr>
           <tr><td><bodyText>&#x2026; (ellipse)</bodyText></td><td><bodyText> ... (period, period, period)</bodyText></td></tr>
-          <tr><td><bodyText>(2 em space)</bodyText><bodyText></bodyText></td><td><bodyText>.2msp.<br/></bodyText></td></tr>
+          <tr><td><bodyText>(2 em space)</bodyText><bodyText></bodyText></td><td><bodyText>.2msp.</bodyText></td></tr>
           <tr><td><bodyText>Apply LARGE text tag</bodyText><bodyText></bodyText></td><td><bodyText>.LG.</bodyText></td></tr>
           <tr><td><bodyText>Apply Large text tag</bodyText><bodyText></bodyText></td><td><bodyText>.Lg.</bodyText></td></tr>
           <tr><td><bodyText>Apply author front matter tag</bodyText><bodyText></bodyText></td><td><bodyText>.auth.</bodyText></td></tr>
           <tr><td><bodyText>Apply bold text tag</bodyText><bodyText></bodyText></td><td><bodyText>.bd.</bodyText></td></tr>
+          <tr><td><bodyText>Apply chapter sectioning tag</bodyText><bodyText></bodyText></td><td><bodyText>.chap.</bodyText></td></tr>
           <tr><td><bodyText>Apply date front matter tag</bodyText><bodyText></bodyText></td><td><bodyText>.date.</bodyText></td></tr>
           <tr><td><bodyText>Apply emphasized text tag</bodyText><bodyText></bodyText></td><td><bodyText>.em.</bodyText></td></tr>
-          <tr><td><bodyText> (em space)</bodyText></td><td><bodyText> .emsp.</bodyText></td></tr>
-          <tr><td><bodyText> Insert a footnote</bodyText></td><td><bodyText> .ftn.</bodyText></td></tr>
+          <tr><td><bodyText>(em space)</bodyText></td><td><bodyText>.emsp.</bodyText></td></tr>
+          <tr><td><bodyText>Insert a footnote</bodyText></td><td><bodyText>.ftn.</bodyText></td></tr>
           <tr><td><bodyText>Apply italics text tag</bodyText><bodyText></bodyText></td><td><bodyText>.it.</bodyText></td></tr>
           <tr><td><bodyText>(italics correction)</bodyText><bodyText></bodyText></td><td><bodyText>.itsp.</bodyText></td></tr>
           <tr><td><bodyText><texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo></bodyText><bodyText></bodyText></td><td><bodyText>.latex.</bodyText></td></tr>
@@ -61,16 +67,3447 @@
           <tr><td><bodyText>Insert LaTeX main matter position mark</bodyText><bodyText></bodyText></td><td><bodyText>.makemm.</bodyText></td></tr>
           <tr><td><bodyText>Insert LaTeX make title position mark</bodyText><bodyText></bodyText></td><td><bodyText>.maket.</bodyText></td></tr>
           <tr><td><bodyText>Insert LaTeX make table of contents position mark</bodyText><bodyText></bodyText></td><td><bodyText>.maketoc.</bodyText></td></tr>
-          <tr><td><bodyText>&#x201C; (left double quote)</bodyText></td><td><bodyText>` ` (backprime, backprime)</bodyText></td></tr>
-          <tr><td><bodyText></bodyText></td><td><bodyText></bodyText></td></tr>
+          <tr><td><bodyText>Insert margin note</bodyText></td><td><bodyText>.mnote.</bodyText></td></tr>
+          <tr><td><bodyText>(non-breaking space)</bodyText></td><td><bodyText>.nbsp.</bodyText></td></tr>
+          <tr><td><bodyText>(negative thin space)</bodyText></td><td><bodyText>.ngsp.</bodyText></td></tr>
+          <tr><td><bodyText>(no indent)</bodyText></td><td><bodyText>.noind.</bodyText></td></tr>
+          <tr><td><bodyText>Remove numbering from current level section</bodyText></td><td><bodyText>.nonum.</bodyText></td></tr>
+          <tr><td><bodyText>Apply numberedListItem tag</bodyText></td><td><bodyText>.ol.</bodyText></td></tr>
+          <tr><td><bodyText>Apply paragraph sectioning tag</bodyText></td><td><bodyText>.para.</bodyText></td></tr>
+          <tr><td><bodyText>Apply part sectioning tag</bodyText></td><td><bodyText>.part.</bodyText></td></tr>
+          <tr><td><bodyText>Show PDF preview (SWP and SW only)</bodyText></td><td><bodyText>.preview.</bodyText></td></tr>
+          <tr><td><bodyText>Show direct preview</bodyText><bodyText></bodyText></td><td><bodyText>.previewD.</bodyText></td></tr>
+          <tr><td><bodyText>Add numbering to current level section</bodyText></td><td><bodyText>.renum.</bodyText></td></tr>
+          <tr><td><bodyText>Do a soft save</bodyText></td><td><bodyText>.save.</bodyText></td></tr>
+          <tr><td><bodyText>Apply section sectioning tag</bodyText></td><td><bodyText>.sec.</bodyText></td></tr>
+          <tr><td><bodyText>Apply sansSerif text tag</bodyText></td><td><bodyText>.sf.</bodyText></td></tr>
+          <tr><td><bodyText>Spell check current document</bodyText></td><td><bodyText>.spell.</bodyText></td></tr>
+          <tr><td><bodyText>Apply subparagraph sectioning tag</bodyText></td><td><bodyText>.subpara.</bodyText></td></tr>
+          <tr><td><bodyText>Apply subsection sectioning tag</bodyText></td><td><bodyText>.subsec.</bodyText></td></tr>
+          <tr><td><bodyText>Apply subsubsection sectioning tag</bodyText></td><td><bodyText>.subsubsec.</bodyText></td></tr>
+          <tr><td><bodyText><texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo></bodyText></td><td><bodyText>.tex.</bodyText></td></tr>
+          <tr><td><bodyText>(thick space)</bodyText></td><td><bodyText>.thksp.</bodyText></td></tr>
+          <tr><td><bodyText>Apply title front matter tag</bodyText></td><td><bodyText>.title.</bodyText></td></tr>
+          <tr><td><bodyText>Apply typewriter text tag</bodyText></td><td><bodyText>.tt.</bodyText></td></tr>
+          <tr><td><bodyText>Apply bulletListItem tag</bodyText></td><td><bodyText>.ul.</bodyText></td></tr>
+          <tr><td><bodyText><texlogo xmlns="http://www.w3.org/1999/xhtml" name="xelatex">X<sub>&#x018E;</sub>L<sup>A</sup>T<sub>E</sub>X</texlogo></bodyText></td><td><bodyText>.xelatex.</bodyText></td></tr>
+          <tr><td><bodyText><texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">X<sub>&#x018E;</sub>T<sub>E</sub>X</texlogo></bodyText></td><td><bodyText>.xetex.</bodyText></td></tr>
+          <tr><td><bodyText>Open a dialog containing &#x201C;Hey!&#x201D;</bodyText></td><td><bodyText>.yell.</bodyText></td></tr>
+          <tr><td><bodyText>(zero space)</bodyText></td><td><bodyText>.zrsp.</bodyText></td></tr>
         </tbody>
       </table>
     </bodyText>
 
+    <bodyText>[ <a href="cd07-00-shortcuts.xhtml">Return to prior section</a> ]</bodyText>
+
     </subsection>
 
+	<subsection>
+	  <sectiontitle>Math Automatic Substitutions</sectiontitle>
+
+
+  	<bodyText>
+      <table> <!-- cellspacing="2" cellpadding="2" border="1" style="width: 850px; height: 0px;"-->
+        <tbody>
+          <tr><td><bodyText><bold>To ente</bold>r</bodyText></td><td><bodyText><bold>On the keyboard press</bold></bodyText></td></tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">BetaDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>BetaDen
+                </bodyText>
+                </td></tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">BetaDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>BetaDist
+                </bodyText>
+                </td>
+            </tr>
+			<tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">BetaInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>BetaInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">BinomialDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>BinomialDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">BinomialDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>BinomialDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">CauchyDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>CauchyDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">CauchyDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>CauchyDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">CauchyInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>CauchyInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">ChiSquareDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ChiSquareDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">ChiSquareDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ChiSquareDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">ChiSquareInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ChiSquareInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">Ci
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>Ci
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">Ei
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>Ei
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">ExponentialDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ExponentialDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">ExponentialDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ExponentialDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">ExponentialInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ExponentialInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">FDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>FDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">FDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>FDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">FInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>FInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">GammaDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>GammaDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">GammaDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>GammaDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">GammaInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>GammaInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">HypergeomDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>HypergeomDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">HypergeomDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>HypergeomDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">Im
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>Im
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">LambertW
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>LambertW
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">NormalDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>NormalDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">NormalDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>NormalDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">NormalInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>NormalInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">PoissonDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>PoissonDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">PoissonDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>PoissonDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">PoissonInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>PoissonInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">Pr
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>Pr
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">Psi
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>Psi
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">Re
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>Re
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">Shi
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>Shi
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">Si
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>Si
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">TDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>TDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">TDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>TDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">TInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>TInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">UniformDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>UniformDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">UniformDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>UniformDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">UniformInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>UniformInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">WeibullDen
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>WeibullDen
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">WeibullDist
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>WeibullDist
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">WeibullInv
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>WeibullInv
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">about
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>about
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">additionally
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>additionally
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">arccos
+                    </mi>
+                  </math>
+				                 </bodyText>
+                </td><td>
+                <bodyText>arccos
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">arccot
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>arccot
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">arccsc
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>arccsc
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">arcsec
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>arcsec
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">arcsin
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>arcsin
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">arctan
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>arctan
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">arg
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>arg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">assume
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>assume
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">col
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>col
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">complex
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>complex
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">cos
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>cos
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">cosh
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>cosh
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">cot
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>cot
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">coth
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>coth
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">csc
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>csc
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">deg
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>deg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">det
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>det
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">dim
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>dim
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">erf
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>erf
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">even
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>even
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">exp
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>exp
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">expand
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>expand
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">factor
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>factor
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">float
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>float
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">gcd
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>gcd
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">hom
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>hom
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">imaginary
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>imaginary
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">inf
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>inf
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">injlim
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>injlim
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">integer
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>integer
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mo>&#x222B;
+                    </mo>
+                    <mi>d
+                    </mi>
+                    <mi _moz-math-font-style="italic">x
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>intx
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">istrue
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>istrue
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">ker
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ker
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">lcm
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>lcm
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">lg
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>lg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">lim
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>lim
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">liminf
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>liminf
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">ln
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ln
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">log
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>log
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">max
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>max
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">min
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>min
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mo msimathname="true">mod
+                    </mo>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>mod
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">negative
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>negative
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">negint
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>negint
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">negrat
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>negrat
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">nonzero
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>nonzero
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">odd
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>odd
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">polylog
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>polylog
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">posint
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>posint
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">positive
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>positive
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">posrat
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>posrat
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">prime
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>prime
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">projlim
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>projlim
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">rand
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>rand
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">rational
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>rational
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">real
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>real
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">row
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>row
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">sec
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>sec
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">seq
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>seq
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">simplify
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>simplify
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">sin
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>sin
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">sinh
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>sinh
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">solve
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>solve
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">sup
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>sup
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">tan
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>tan
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">tanh
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>tanh
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">A
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uA
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Bq
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uBq
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Btu
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uBtu
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Ci
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uCi
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">C
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uCo
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">EHz
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uEHz
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Emol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uEmol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">F
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uF
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">GHz
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uGHz
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">GJ
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uGJ
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">GW
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uGWa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">G
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uGa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">GeV
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uGeV
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Gmol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uGmol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">G&#x03A9;
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uGohm
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">H
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uHe
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Hz
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uHz
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">J
+                    </mi>
+                    <mi _moz-math-font-style="italic">
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uJ
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">K
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uK
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">MHz
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uMHz
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">MJ
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uMJ
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">MN
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uMN
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">MPa
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uMPa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">MV
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uMV
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">MW
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uMWa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">MeV
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uMeV
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Mmol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uMmol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">M&#x03A9;
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uMohm
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Mx
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uMx
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">N
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uN
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">PHz
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uPHz
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Pa
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uPa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Pmol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uPmol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">S
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uS
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">THz
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uTHz
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">T
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uTe
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Tmol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uTmol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">V
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uV
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">W
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uWa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">Wb
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uWb
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">acre
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uacre
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">am
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uame
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">amol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uamol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true">&#x00C5;
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uan
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">as
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uas
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">atm
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uatm
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">bar
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ubar
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">cal
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ucal
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">cd
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ucd
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x00B0;C
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ucel
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">cg
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ucg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">cm
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ucm
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">d
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uda
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true">&#x00B0;
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>udeg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">dg
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>udg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">dm
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>udme
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true">'
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>udmn
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true">"
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uds
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">dyn
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>udyn
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">eV
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ueV
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">erg
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uerg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x00B0;F
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ufahr
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">fc
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ufc
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">fm
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ufme
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">fmol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ufmol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">fs
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ufs
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">ft
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uft
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">gal
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ugal
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">g
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ugr
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">hectare
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uhectare
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">hp
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uhp
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">h
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uhr
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">in
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uin
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kA
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukA
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kHz
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukHz
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kJ
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukJ
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kN
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukN
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kPa
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukPa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kPa
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukPa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kS
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukS
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kV
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukV
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kW
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukWa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kbar
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukbar
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kcal
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukcal
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kg
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">km
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukme
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">kmol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ukmol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">lbf
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ulbf
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">lb
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ulbm
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">l
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uli
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">lm
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ulm
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">lx
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ulx
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mA
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umA
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mF
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umF
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mH
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umH
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mJ
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umJ
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mN
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umN
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mS
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umS
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mT
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umT
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mV
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umV
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mW
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umWa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mWb
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umWb
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mbar
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umbar
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;A
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcA
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;F
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcF
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;H
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcH
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;J
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcJ
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;N
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcN
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;Pa
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcPa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;S
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcS
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;T
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcT
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;V
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcV
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;W
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcWa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;Wb
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcWb
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;g
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;m
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcme
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;mol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcmol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;rad
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcrad
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">&#x03BC;s
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umcs
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">m
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ume
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mg
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true">&#x2127;
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umho
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mi
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umi
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">ml
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uml
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mmHg
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ummHg
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mm
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umme
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mmol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ummol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">min
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umn
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">m&#x03A9;
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umohm
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">mrad
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>umrad
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">ms
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ums
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">nA
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>unA
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">nF
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>unF
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">nJ
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>unJ
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">nT
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>unT
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">nV
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>unV
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">nW
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>unWa
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">nWb
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>unWb
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">unassume
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>unassume
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">nm
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>unme
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">nmol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>unmol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">ns
+                    </mi>
+                  </math>
+                </bodyText>
+                <bodyText>
+                </bodyText>
+                </td><td>
+                <bodyText>uns
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">&#x03A9;
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uohm
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">ozf
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uozf
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">pF
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>upF
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">pT
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>upT
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">pV
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>upV
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">phot
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uphot
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">pint
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>upint
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">pm
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>upme
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">pmol
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>upmol
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">ps
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>ups
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">qt
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uqt
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">rad
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>urad
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">sb
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>usb
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">s
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>use
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">slug
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uslug
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">sr
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>usr
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="normal">torr
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>utorr
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">u
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uu
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msiunit="true" _moz-math-font-style="italic">y
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>uy
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">varinjlim
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>varinjlim
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">varliminf
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>varliminf
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">varlimsup
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>varlimsup
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">varprojlim
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>varprojlim
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">expand
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>xpnd
+                </bodyText>
+                </td>
+            </tr>
+            <tr><td>
+                <bodyText>
+                  <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <mi msimathname="true" _moz-math-font-style="normal">zero
+                    </mi>
+                  </math>
+                </bodyText>
+                </td><td>
+                <bodyText>zero
+                </bodyText>
+                </td>
+            </tr>
+        </tbody>
+      </table>
+    </bodyText>
 
     <bodyText>[ <a href="cd07-00-shortcuts.xhtml">Return to prior section</a> ]</bodyText>
+
+    </subsection>
 
   </section>
 </body> 
