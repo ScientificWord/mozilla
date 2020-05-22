@@ -45,6 +45,7 @@
   <sub ctx="math" tp="sc"><pattern>intx</pattern><data>insertIntegral(true);</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="sc"><pattern>.spell.</pattern><data>checkSpelling(true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.preview.</pattern><data>previewPDF(true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.previewD.</pattern><data>msiGoDoCommand('cmd_previewDirect');deleteSelection(); </data></sub>
   <sub ctx="text" tp="sc"><pattern>.save.</pattern><data>softSave(true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ftn.</pattern><data>insertFootnote();</data></sub>
   <sub ctx="text" tp="sc"><pattern>.mnote.</pattern><data>insertMarginNote();</data></sub>
@@ -65,7 +66,6 @@
   <sub ctx="text" tp="sc"><pattern>.subsubsec.</pattern><data>insertSectionTag('subsubsection',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.para.</pattern><data>insertSectionTag('paragraph',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.subpara.</pattern><data>insertSectionTag('subparagraph',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.sub.</pattern><data>msiGoDoCommand('cmd_insertSubstructure');deleteSelection(); </data></sub>
   <sub ctx="text" tp="sc"><pattern>.title.</pattern><data>insertFrontMatterItem('title',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.date.</pattern><data>insertParaTag('date',true);</data></sub>
