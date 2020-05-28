@@ -898,26 +898,22 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
     <menuitem label="&testSelectionCmd.label;" accesskey="&testSelectionCmd.accesskey;"
            oncommand="msiEditorTestSelection()"/>
     <menuitem label="Selection location" oncommand="dumpMath();"/>
-    <menuitem label="Test"
-           oncommand="window.openDialog('chrome://prince/content/test.xul', 'Test', 'chrome,resizable=yes');"/>
-
-
-    <!-- <menuitem label="&showEmbeddedCmd.label;"menuitem label="&testTableLayoutCmd.label;"
+    <!--menuitem label="&testTableLayoutCmd.label;"
            oncommand="msiEditorTestTableLayout()"/>
     <menuitem label="&showEmbeddedCmd.label;"
            oncommand="msiEditorShowEmbeddedObjects()"/>
     <menuitem label="&dumpContentCmd.label;"
            oncommand="msiEditorDumpContent()"/>
     <menuitem label="&testDocumentCmd.label;"
-           oncommand="msiEditorTestDocument()"/ 
+           oncommand="msiEditorTestDocument()"/ -->
     <menuitem label="Dump clipboard contents" oncommand="msiDumpClipboard();" />
-    <menuitem label="&runUnitTestsCmd.label;"
+    <!--menuitem label="&runUnitTestsCmd.label;"
            oncommand="msiEditorUnitTests()"/>
     <menuseparator / -->
-  <!--   <menuitem label="&dumpUndoStack.label;" accesskey="&dumpUndoStack.accesskey;"
+    <menuitem label="&dumpUndoStack.label;" accesskey="&dumpUndoStack.accesskey;"
            oncommand="msiDumpUndoStack()"/>
     <menuitem label="&dumpRedoStack.label;" accesskey="&dumpRedoStack.accesskey;"
-           oncommand="msiDumpRedoStack()"/> -->
+           oncommand="msiDumpRedoStack()"/>
     <!--menuitem label="&executeJSTransactionViaTxmgr.label;"
            oncommand="ExecuteJSTransactionViaTxmgr()"/>
     <menuitem label="&executeJSTransactionViaEditor.label;"
@@ -935,9 +931,9 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
             oncommand="window.focus()"/>
     <menuseparator />
     <menuitem label="Prepare Plot"              oncommand="msiTestPreparePlotAll();"/>
-    <menuitem label="Prepare Plot and Graph"	oncommand="msiTestPreparePlotGraph();"/>
+    <menuitem label="Prepare Plot and Graph"	oncommand="msiTestPreparePlotGraph();"/ -->
     <menuitem label="Plot Tests"				oncommand="msiTestGraphScript();"/>
-    <menuseparator/>
+    <!--menuseparator/>
     <menuitem label="&Configuration.label;" accesskey="&Configuration.accesskey;"
             oncommand='window.openDialog("chrome://global/content/config.xul","configureprince", "chrome ");'/>
     <menuitem label="&plugins.label;" accesskey="&plugins.accesskey;"
@@ -949,12 +945,12 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
     <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://prince/content/chamtest.xul","chamtest",
       "chrome,close,titlebar,resizable,modal=false");' />
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
-    <menuitem label="Test XPath Find" oncommand="msiTestSearch();"/>
+    <menuitem label="Test XPath Find" oncommand="msiTestSearch();"/ -->
     <menuitem label="&OpenAllSubdocs.label;"
 	      accesskey="&OpenAllSubdocs.accesskey;"
 	      oncommand="openAllSubdocs();"/>
     <menuitem observes="cmd_testFilter" label="Test" accesskey="Z"/>
-    <menuitem label="Prettyprint" oncommand="prettyprint();"/ -->
+    <!-- menuitem label="Prettyprint" oncommand="prettyprint();"/ -->
     </menupopup>
   </menu>
 #endif
