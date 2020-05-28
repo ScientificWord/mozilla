@@ -136,7 +136,7 @@ function Startup(){
 }
 
 function initializePlotEditors(plotnum, contentsOnly) {
-  var theStringSource, graphEditorControl, radiusEditorControl, editorInitializer, ptype, editorInitializer;
+  var theStringSource, graphEditorControl, radiusEditorControl, editorInitializer, ptype;
   graphEditorControl = document.getElementById("plotDlg-content-frame");
   graphEditorControl.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : msiEditorDocumentObserverG}];
   graphEditorControl.mbSinglePara = true;

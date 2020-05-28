@@ -43,6 +43,8 @@ function initDialogObject()
   // gReplaceDialog.mSearchState = null;
 }
 
+// This function is never used in this or any other dialog
+
 function msiEditorChangeObserver(editorElement)
 {
   this.mEditorElement = editorElement;
@@ -53,7 +55,7 @@ function msiEditorChangeObserver(editorElement)
 //    msiDumpWithID("In autoSubstituteDialog documentCreated observer for editor [@], observing [" + aTopic + "].\n", this.mEditorElement);
     if (!this.mEditorElement.docShell)
     {
-      msiDumpWithID("In autoSubstituteDialog documentCreated observer for editor [@], returning as docShell is null.\n", this.mEditorElement);
+      msiDumpWithID("In msiEdReplace documentCreated observer for editor [@], returning as docShell is null.\n", this.mEditorElement);
       return;
     }
     var commandManager = msiGetCommandManager(this.mEditorElement);
