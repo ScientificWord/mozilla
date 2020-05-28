@@ -9053,10 +9053,10 @@ var msiObjectPropertiesCommand =
                
 
       var cmdString = nodeData.getCommandString(0);
-      var name = element.nodeName;
 
       if (element)
       {
+        var name = element.nodeName;
         var cmdParams = newCommandParams();
         if (!cmdParams)
         {

@@ -9,7 +9,7 @@
 #ifndef PROD_SW
 <!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<!-- ?xul-overlay href="chrome://prince/content/mathmloverlay.xul"? -->
+<?xul-overlay href="chrome://prince/content/mathmloverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?>
 <!-- If an editor control is to support context menus, also need: -->
@@ -1776,38 +1776,38 @@
                 </row>
                 <row observes="plot.1Var">
                   <label id ="plotVar1">&plotVarX.label;</label>
-                  <editor editortype="html" type="content-primary" context="msiEditorContentContext"
-                          id="plotVar1StartEdit" preference="plot.XMin" flex="1" width="150" height="40"/>
+                  <editor editortype="html" type="content" context="msiEditorContentContext"
+                          id="plotVar1StartEdit" preference="plot.XMin" style="overflow: auto" flex="1" width="150" height="40"/>
                   <label value="&plotVarsTo.label;" />
-                  <editor editortype="html" type="content-primary" context="msiEditorContentContext"
-                          id="plotVar1EndEdit" preference="plot.XMax" flex="1" width="150" height="40"/>
+<!--                   <editor editortype="html" type="content-primary" context="msiEditorContentContext"
+                          id="plotVar1EndEdit" preference="plot.XMax" style="overflow: auto" flex="1" width="150" height="40"/>
 		              <hbox><textbox id="plotPtssamp1" type="number" preference="plot.XPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.2Vars">
                   <label id ="plotVar2" >&plotVarY.label;</label>
                   <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar2StartEdit" preference="plot.YMin" flex="1" width="150" height="40"/>
+                          id="plotVar2StartEdit" preference="plot.YMin" style="overflow: auto" flex="1" width="150" height="40"/>
                   <label value="&plotVarsTo.label;" />
                   <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar2EndEdit" preference="plot.YMax" flex="1" width="150" height="40"/>
+                          id="plotVar2EndEdit" preference="plot.YMax" style="overflow: auto" flex="1" width="150" height="40"/>
                   <hbox><textbox id="plotPtssamp2" type="number" preference="plot.YPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.3Vars">
                   <label id ="plotVar3" >&plotVarZ.label;</label>
                   <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar3StartEdit" preference="plot.ZMin" flex="1" width="150" height="40"/>
+                          id="plotVar3StartEdit" preference="plot.ZMin" style="overflow: auto" flex="1" width="150" height="40"/>
                   <label value="&plotVarsTo.label;" />
                   <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar3EndEdit" preference="plot.ZMax" flex="1" width="150" height="40"/>
+                          id="plotVar3EndEdit" preference="plot.ZMax" style="overflow: auto" flex="1" width="150" height="40"/>
                   <hbox><textbox id="plotPtssamp3" type="number" preference="plot.ZPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.4Vars">
                   <label id ="plotVar4" >&plotVarT.label;</label>
                   <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar4StartEdit" preference="plot.AnimMin" flex="1" width="150" height="40"/>
+                          id="plotVar4StartEdit" preference="plot.AnimMin" style="overflow: auto" flex="1" width="150" height="40"/>
                   <label value="&plotVarsTo.label;" />
                   <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar4EndEdit" preference="plot.AnimMax" flex="1" width="150" height="40"/>
+                          id="plotVar4EndEdit" preference="plot.AnimMax" style="overflow: auto" flex="1" width="150" height="40"/>
                   <spacer />
                   <spacer />
                 </row>
@@ -1833,8 +1833,8 @@
                   <spacer />
                   <spacer />
                   <textbox id="plotPtssampConfVertical" preference="plot.ConfVerticalPts" type="number" class="narrow" />
-                  <spacer />
-				</row>
+                  <spacer />-->
+      		      </row> 
               </rows>
             </grid>
           </groupbox>
