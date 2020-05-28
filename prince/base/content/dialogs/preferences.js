@@ -25,6 +25,7 @@ function initialize()
 {
   var url;
 //  chromedoc = window.arguments[0]["chromeDoc"];
+// debugger();
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   var dir =dsprops.get("resource:app", Components.interfaces.nsIFile);
   dir.append("shells");
@@ -824,9 +825,11 @@ var plotItemIds = ["plotLineColorWell", "plotDirectionalShading", "plotBaseColor
 
 var plotColorWells = ["plotLineColorWell", "plotBaseColorWell", "plotSecondColorWell"];
 
-var plotVarEditControls = ["plotVar1StartEdit", "plotVar1EndEdit", "plotVar2StartEdit", "plotVar2EndEdit",
-                    "plotVar3StartEdit", "plotVar3EndEdit", "plotVar4StartEdit", "plotVar4EndEdit",
-                    "xrangelow", "xrangehigh", "yrangelow", "yrangehigh", "zrangelow", "zrangehigh"];
+var plotVarEditControls = [
+                    // "xrangelow", "xrangehigh", "yrangelow", "yrangehigh", "zrangelow", "zrangehigh",
+                    "plotVar1StartEdit" //, "plotVar1EndEdit", "plotVar2StartEdit", "plotVar2EndEdit",
+                    // "plotVar3StartEdit", "plotVar3EndEdit", "plotVar4StartEdit", "plotVar4EndEdit"
+                    ];
 
 var plotVarControls = ["plotPtssamp1", "plotPtssamp2", "plotPtssamp3", "plotPtssamp4"];
 
@@ -843,23 +846,17 @@ function initPlotItemPreferences()
 
 var bPlotEditsReady = false;
 
-var minMaxDocumentObserverBase = {
-  observe: function (aSubject, aTopic, aData)
-  {
+// Constructor of observers for the various editors 
+function MinMaxObserve(ID) {
+  this.ctrlID = ID;
+  this.observe = function (aSubject, aTopic, aData) {
     if (aTopic === "obs_documentCreated")
     {
-      plotVarEditsReady.push(this.ctrlID);
+      plotVarEditsReady.push(ID);
       bPlotEditsReady = checkPlotVarEditsReady();
-    }
-  }
-};
-
-function minMaxDocumentObserver(ctrl)
-{
-  this.ctrlID = ctrl.id;
+    }    
+  };
 }
-
-minMaxDocumentObserver.prototype = minMaxDocumentObserverBase;
 
 function checkPlotVarEditsReady()
 {
@@ -883,33 +880,56 @@ function initPlotItemEditors()
   var fallbackVals = [-6, 6, -6, 6, -6, 6, 0, 10];
   var editorElement, prefElement, theStringSource, key;
   var editorInitializer = new msiEditorArrayInitializer();
+  var obs = {};
+
   for (var ii = 0; ii < plotVarEditControls.length; ++ii)
   {
-    theStringSource = "";
-    editorElement = document.getElementById(plotVarEditControls[ii]);
-    try
-    {
+    try {
+      theStringSource = "";
+      editorElement = document.getElementById(plotVarEditControls[ii]);
       prefElement = document.getElementById(editorElement.getAttribute("preference"));
-      theStringSource = prefElement.value;
-    } catch(ex) {
-      dump("Exception trying to initialize editor " + plotVarEditControls[ii] + " in initPlotItemPreferences().\n");
-    }
-    if (!theStringSource.length)
-    {
-      key = getBasePlotPrefKeyName(prefElement.getAttribute(name));
-      theStringSource = getPlotDefaultValue(null, null, key);
+      theStringSource = dressUpMathString(prefElement.value);
       if (!theStringSource.length)
-        theStringSource = GetNumAsMathML(fallbackVals[ii]);
+      {
+        key = getBasePlotPrefKeyName(prefElement.getAttribute(name));
+        theStringSource = getPlotDefaultValue(null, null, key);
+        if (!theStringSource.length)
+          theStringSource = dressUpMathString(GetNumAsMathML(fallbackVals[ii]));
+      } 
+      dump('Calling editorInitialize for '+editorElement.id+', '+theStringSource+'\n');
+      editorInitializer.addEditorInfo(editorElement, theStringSource, true, true);
+
+      // editorElement.mbSinglePara = true;
+      // editorElement.mInitialContentListener = invisibleMathOpFilter; // in plotDlgUtils.js
+      // obs.mObserver = new MinMaxObserve(editorElement.id);
+      // obs.mCommand = "obs_documentCreated";
+      
+      // editorElement.mInitialDocObserver = [];
+      // editorElement.mInitialDocObserver.push(obs);
+      // editorElement.mEditorDocumentObserver = new msiEditorDocumentObserver(editorElement);
+      // editorInitializer.addEditorInfo(editorElement, theStringSource, true);
     }
-    editorElement.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : minMaxDocumentObserver(editorElement)}];
-    editorInitializer.addEditorInfo(editorElement, theStringSource, true);
+    catch(e) {
+      dump(e.message);
+    }
+    // msiInitializeEditorForElement(editorElement, theStringSource);
   }
+
   editorInitializer.doInitialize();
+    // for (var ii = 0; ii < plotVarEditControls.length; ++ii) {
+    //   editorElement = document.getElementById(plotVarEditControls[ii]);
+    //   prefElement = document.getElementById(editorElement.getAttribute("preference"));
+    //   theStringSource = dressUpMathString(prefElement.value);
+    //   putMathMLExpressionToControl(editorElement, theStringSource);
+    // }
+  editorElement.makeEditable('html', true);
+  msiSetActiveEditor(editorElement, false);
+
 }
 
 function addNonRootPlotPrefs()
 {
-  var refPref, prefId;
+  var refPref, prefId, prefElement;
   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
                               .getService(Components.interfaces.nsIPrefService);
   var plotBranch = prefService.getBranch("swp.plot.");
@@ -1066,7 +1086,9 @@ function setPlotItemPreferences()
   for (var jj = 0; jj < plotColorWells.length; ++jj)
     setPlotColorWell(plotColorWells[jj]);
   try { setPlotItemIntervalControls(); }
-  catch(ex) {}
+  catch(ex) { 
+    dump('Error: '+ex.message+'\n');
+  }
 }
 
 function setPlotItemIntervalControls()

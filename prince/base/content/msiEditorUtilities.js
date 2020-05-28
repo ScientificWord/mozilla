@@ -656,12 +656,12 @@ function msiGetTableEditor(editorElement) {
 //
 function msiPageIsEmptyAndUntouched(editorElement) {
     if (!editorElement)
-	editorElement = msiGetActiveEditorElement();
+	    editorElement = msiGetActiveEditorElement();
 
     var empty = msiIsDocumentEmpty(editorElement);
     var unmodified = !msiIsDocumentModified(editorElement);
     var htmlunchanged = !msiIsHTMLSourceChanged(editorElement);
-    return  empty && unmodified && htmlunchanged ;
+    return  empty && unmodified && htmlunchanged;
 }
 function msiIsWebComposer(theWindow) {
   //  return document.documentElement.id === "editorWindow";
@@ -11509,8 +11509,6 @@ function clearStatusMessage() {
   }
 }
 
-var getTEXMF = initTEXMF();
-
 
 function initTEXMF() {
   var texmfString = null;
@@ -11574,6 +11572,10 @@ function initTEXMF() {
   }
   return compileMinimalTeX;
 }
+
+
+var getTEXMF = initTEXMF();
+
 
 function copyFileOrDirectory( srcFile, destDir ) {
  var fileIterator;

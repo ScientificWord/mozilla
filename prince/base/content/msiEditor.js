@@ -897,7 +897,7 @@ function msiEditorDocumentObserver(editorElement) {
       this.mEditorElement.fastCursorInit = null;
     }
   }
-  this.observe = function(aSubject, aTopic, aData) {
+  this.observe = function edDocObserve(aSubject, aTopic, aData) {
     // Should we allow this even if NOT the focused editor?
     if (!this.mEditorElement.docShell) {
       msiDumpWithID("In documentCreated observer for editor [@], observing [" + aTopic +
@@ -1761,6 +1761,8 @@ function SharedStartupForEditor(editorElement) {
   }
 
   var theDocument = null;
+  editorElement.mColorObj = new aColorObj(editorElement);
+
 
   // add observer to be called when document is really done loading
   // and is modified
@@ -1794,9 +1796,12 @@ function SharedStartupForEditor(editorElement) {
         if (("bAdded" in editorElement.mInitialDocObserver[ix]) && (editorElement.mInitialDocObserver[
             ix].bAdded == true))
           continue;
-        commandManager.addCommandObserver(editorElement.mInitialDocObserver[ix].mObserver,
+        if (editorElement.mInitialDocObserver[ix].mObserver) {
+          commandManager.addCommandObserver(editorElement.mInitialDocObserver[ix].mObserver,
           editorElement.mInitialDocObserver[ix].mCommand);
-        editorElement.mInitialDocObserver[ix].bAdded = true;
+          editorElement.mInitialDocObserver[ix].bAdded = true;
+        }
+
       }
     }
   } catch (e) {
@@ -1836,9 +1841,10 @@ function SharedStartupForEditor(editorElement) {
 
   // For new window, no default last-picked colors
   editorElement.mColorObj = new aColorObj(editorElement);
-  editorElement.mColorObj.LastTextColor = "";
-  editorElement.mColorObj.LastBackgroundColor = "";
-  editorElement.mColorObj.LastHighlightColor = "";
+  // This is a new colorObj, so it is initialized with empty strings
+  // editorElement.mColorObj.LastTextColor = "";
+  // editorElement.mColorObj.LastBackgroundColor = "";
+  // editorElement.mColorObj.LastHighlightColor = "";
 }
 
 // This method is only called by Message composer when recycling a compose window
