@@ -269,7 +269,7 @@ pref("swp.user.trigargs", false);
 pref("swp.user.upperthreshold", 4);
 pref("swp.user.usearc", false);
 pref("swp.savetoweb.mathjaxsrc", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML");
-pref("swp.savetoweb.cssurl", "www.mackichan.com/supportfiles/6.0/css/");
+pref("swp.savetoweb.cssurl", "https://www.mackichan.com/supportfiles/6.0/css/");
 pref("swp.openlastfile", false);
 pref("swp.lastfilesaved", "");
 pref("swp.firstrun", true);
