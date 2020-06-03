@@ -8,21 +8,9 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
-<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 
-<!--Following needed by any dialog which may contain "AdvancedEdit", "ChooseFile", "MakeRelative", or "LinkLocation" buttons-->
-<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
+#include ../requiredEditorOverlays.inc
 
-<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
-<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/mathmloverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
-<!-- If an editor control is to support context menus, also need: -->
-<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
-
-<!--Following probably not needed by dialogs?-->
-<!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
 
 <!DOCTYPE dialog [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
@@ -46,48 +34,17 @@
    screenX="40"
    screenY="40">
 
-  <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
-
-  <!-- Scripts specific to this dialog -->
+ <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdReplace.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiFindUtils.js"/>
   <stringbundle id="findBundle" src="chrome://prince/locale/msifinddialog.properties"/>
    
-  <!-- Following scripts are needed by any MSI dialog containing an editor -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <!-- script type="application/x-javascript" src="chrome://prince/content/mathmlOverlay.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
-  <script type="application/x-javascript" src="chrome://prince/content/realTimeSpell.js"/>
-  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
-  <!-- Following script needed if the editor wants to support a toolbox? -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
-
-  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
+<!--  Methods common to all editor dialogs--> 
+#include ../requiredEditorScripts.inc
 
   <popupset id="msiEditorContentContextSet"/>
 
-  <commandset id="tasksCommands">
-    <commandset id="globalEditMenuItems"/>
-    <commandset id="selectEditMenuItems"/>
-    <commandset id="undoEditMenuItems"/>
-    <commandset id="clipboardEditMenuItems"/>
-    <commandset id="composerMenuItems"/>
-    <commandset id="composerEditMenuItems"/>
-    <commandset id="composerStyleMenuItems"/>
-    <commandset id="composerTableMenuItems"/>
-    <commandset id="composerListMenuItems"/>
-    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
-    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
-  </commandset>
-  <commandset id="MSImathMenuCommands"/>
+#include ../requiredEditorCommandSets.inc
   
 #include ../keysfordialogs.inc
 
