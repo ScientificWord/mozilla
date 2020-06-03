@@ -755,6 +755,10 @@ biblabel:after {
   content: "]";
 }
 
+biblabel:empty {
+  display: none;
+}
+
 /*bibitem[hasLabel="true"] {
   display:  block;
   counter-increment: none;
