@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+
+#include requiredEditorOverlays.inc
+
+<!-- <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/mathmloverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?> -->
+
+
+<!DOCTYPE dialog [
+<!ENTITY % aboutDialogDTD SYSTEM "chrome://prince/locale/aboutDialog.dtd" >
+%aboutDialogDTD;
+<!ENTITY % brandDTD SYSTEM "chrome://prince/locale/branding/brand.dtd" >
+%brandDTD;
+]>
+
+
+
+<dialog id="TestWindow"	
+	onload = "onLoad()"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<script type="application/x-javascript" src="chrome://prince/content/test.js"/>
+<!-- Methods common to all editor dialogs -->
+#include requiredEditorScripts.inc
+
+<!-- <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+<script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+<script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/> -->
+
+
+<!-- Following scripts are needed by any MSI dialog containing an editor -->
+<!-- <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+<script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+<script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+<script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
+<script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+<script type="application/x-javascript" src="chrome://prince/content/realTimeSpell.js"/>
+<script type="application/x-javascript" src="chrome://user/content/macros.js"/> -->
+
+
+#include keysfordialogs.inc
+
+
+<popupset id="msiEditorContentContextSet"/>
+
+#include requiredEditorCommandSets.inc
+
+<!-- <commandset id="tasksCommands">
+	<command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+	<command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+</commandset>
+	<commandset id="globalEditMenuItems"/>
+	<commandset id="selectEditMenuItems"/>
+	<commandset id="undoEditMenuItems"/>
+	<commandset id="clipboardEditMenuItems"/>
+	<commandset id="composerMenuItems"/>
+	<commandset id="composerEditMenuItems"/>
+	<commandset id="composerStyleMenuItems"/>
+	<commandset id="composerTableMenuItems"/>
+	<commandset id="composerListMenuItems"/>
+<commandset id="MSImathMenuCommands"/> -->
+  
+
+
+   <editor editortype="html" type="content" context="msiEditorContentContext" id="testEdit" flex="1" align="stretch"
+     minheight="60px" minwidth="250" height="200px" onblur="" buttons="cancel" />
+
+</dialog>
