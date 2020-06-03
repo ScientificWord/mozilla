@@ -8909,13 +8909,13 @@ function setTagFieldContents(editor, propertyStack) // probably should be rename
     // if (st) st.value = "";
     // if (ft) ft.value = "";
     try {
-      document.getElementById("cmd_textBold").removeAttribute("checked");
-      document.getElementById("cmd_textItalic").removeAttribute("checked");
+      if (document.getElementById("cmd_bold")) document.getElementById("cmd_bold").removeAttribute("checked");
+      if (document.getElementById("cmd_italic")) document.getElementById("cmd_italic").removeAttribute("checked");
       while (str && (str.length > 0)) {
         if (str === "bold") {
-          document.getElementById("cmd_textBold").setAttribute("checked", "true");
+          if (document.getElementById("cmd_bold")) document.getElementById("cmd_bold").setAttribute("checked", "true");
         } else if (str === "italics") {
-          document.getElementById("cmd_textItalic").setAttribute("checked", "true");
+          if (document.getElementById("cmd_italic")) document.getElementById("cmd_italic").setAttribute("checked", "true");
         }
         str = propertyStack.pop();
       }
