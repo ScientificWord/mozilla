@@ -346,7 +346,7 @@ latexstyleb {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#latexstyleb");
 }
 
-a[name]{
+a[name] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#label");
 }
 
@@ -367,7 +367,8 @@ latexstyleb {
 xref {
   content: attr(key);
 /*  -moz-appearance: button;
-*/}
+*/
+}
 
 requestimplementation {
   -moz-appearance: button;
@@ -379,7 +380,9 @@ requestimplementation {
 }
 
 
-requestimplementation:before {content: "Support Me: "}
+requestimplementation:before {
+  content: "Support Me: "
+}
 
 
 styledata {
@@ -391,7 +394,7 @@ styleprop {
   -moz-user-select: all;
 }
 
-preamble{
+preamble {
   display: none;
 }
 
@@ -408,7 +411,8 @@ refprintright {
 
 img {
   -moz-force-broken-image-icon: 1;
-  min-height: 6px; min-width: 6px;
+  min-height: 6px; 
+  min-width: 6px;
 }
 
 graphSpec {
@@ -727,19 +731,23 @@ bibkey {
 }
 
 bibkey:before {
-  content: '(';
+  content: "(";
 }
 
 bibkey:after {
-  content: ')';
+  content: ")";
 }
 
 biblabel:before {
-  content: '[';
+  content: "[";
 }
 
 biblabel:after {
-  content: ']';
+  content: "]";
+}
+
+biblabel:empty {
+  display: none;
 }
 
 /*bibitem[hasLabel="true"] {
