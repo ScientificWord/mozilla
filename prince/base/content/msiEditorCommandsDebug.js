@@ -7,6 +7,26 @@
 
 // --------------------------- Output ---------------------------
 
+function testDialogEditing() {
+  try {
+    var editorElement = msiGetActiveEditorElement();
+    // var editor = editorElement.getEditor(editorElement.contentWindow);
+    if (window.gEditorDisplayMode == kDisplayModeSource)
+    {
+      //openFastCursorBar(false, true);  Didn't work
+    }
+    else
+    {
+      msiOpenModelessDialog("chrome://prince/content/test.xul", "Test", "chrome,close,titlebar,dependent,resizable",
+                                        editorElement, "cmd_test", this, editorElement);
+    // var editorElement = msiGetActiveEditorElement();
+    // window.openDialog('chrome://prince/content/test.xul','Test', 'chrome,close,titlebar,resizable');    
+    }
+  }
+  catch(e) {
+    dump(e.message);
+  }
+}
 
 function msiEditorGetText()
 {
