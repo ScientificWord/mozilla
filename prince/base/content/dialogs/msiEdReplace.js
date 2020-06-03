@@ -48,7 +48,7 @@ function initDialogObject()
 function msiEditorChangeObserver(editorElement)
 {
   this.mEditorElement = editorElement;
-  return;
+  // return;
   this.observe = function(aSubject, aTopic, aData)
   {
     // Should we allow this even if NOT the focused editor?
@@ -224,7 +224,7 @@ function saveFindData()
 
 function initFindData()
 {
-  var arr = arr=/\s*LaTeX Dialog\s*(\S.*)\s*/.exec(gReplaceDialog.findInput.contentDocument.documentElement.textContent);
+  var arr = /\s*LaTeX Dialog\s*(\S.*)\s*/.exec(gReplaceDialog.findInput.contentDocument.documentElement.textContent);
   if (arr.length > 1) gFindInst.searchString = arr[1];
   else return false;
   gFindInst.matchCase     = gReplaceDialog.caseSensitive.checked;
