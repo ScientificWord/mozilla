@@ -294,3 +294,5 @@ prince.jar:
 * content/activateDialog.xul             (dialogs/activateDialog.xul)
 * content/licensestatus.xul             (dialogs/licensestatus.xul)
 * content/licensestatus.js             (dialogs/licensestatus.js)
+  content/test.js                       (test.js)
+* content/test.xul                       (test.xul)
