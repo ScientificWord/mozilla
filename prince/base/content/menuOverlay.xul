@@ -914,6 +914,8 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
            oncommand="msiDumpUndoStack()"/>
     <menuitem label="&dumpRedoStack.label;" accesskey="&dumpRedoStack.accesskey;"
            oncommand="msiDumpRedoStack()"/>
+    <menuitem label="Test editor in dialog" oncommand="testDialogEditing();"/> 
+    <!-- window.msiOpenModelessDialog('chrome://prince/content/test.xul','Test', 'chrome,close,titlebar,resizable, dependent',msiGetActiveEditorElement()/> -->
     <!--menuitem label="&executeJSTransactionViaTxmgr.label;"
            oncommand="ExecuteJSTransactionViaTxmgr()"/>
     <menuitem label="&executeJSTransactionViaEditor.label;"
