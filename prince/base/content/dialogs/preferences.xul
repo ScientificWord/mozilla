@@ -7,13 +7,10 @@
 #include ../productname.inc
 
 #ifndef PROD_SW
-<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
-<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<!-- ?xul-overlay href="chrome://prince/content/mathmloverlay.xul"? -->
+
+#include ../requiredEditorOverlays.inc
 <?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?>
-<!-- If an editor control is to support context menus, also need: -->
-<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+
 #endif
 
 <!DOCTYPE prefwindow SYSTEM "chrome://prince/locale/preferences.dtd">
@@ -31,6 +28,8 @@
 #ifndef PROD_SW
 #include ../keysfordialogs.inc
 
+#include ../requiredEditorCommandSets.inc
+<!-- 
   <commandset id="tasksCommands">
     <commandset id="globalEditMenuItems"/>
     <commandset id="selectEditMenuItems"/>
@@ -45,7 +44,7 @@
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
   <commandset id="MSImathMenuCommands"/>
-
+ -->
 #endif
 <broadcaster id="floatEnabled" disabled="true"/>
 <broadcaster id="inlineOffsetEnabled" disabled="true"/>
@@ -2041,29 +2040,18 @@
   </prefpane>
 
 
-  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 
 #ifndef PROD_SW
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/mathmlOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/realTimeSpell.js"/>
-  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
-  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
 
   <script type="application/x-javascript" src="chrome://prince/content/graphOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
+#include ../requiredEditorScripts.inc
+#else
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 #endif
 
 </prefwindow>
