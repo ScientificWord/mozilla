@@ -55,10 +55,22 @@
   <sub ctx="text" tp="sc"><pattern>.tt.</pattern><data>toggleTextTag('typewriter',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.bd.</pattern><data>toggleTextTag('bold',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.em.</pattern><data>toggleTextTag('emphasized',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.rm.</pattern><data>toggleTextTag('roman',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.sf.</pattern><data>toggleTextTag('sansSerif',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.lg.</pattern><data>toggleTextTag('large',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.Lg.</pattern><data>toggleTextTag('Large',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.sl.</pattern><data>toggleTextTag('slanted',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.sc.</pattern><data>toggleTextTag('smallCaps',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.lc.</pattern><data>toggleTextTag('lower',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.uc.</pattern><data>toggleTextTag('upper',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.Hg.</pattern><data>toggleTextTag('Huge',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.hg.</pattern><data>toggleTextTag('huge',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.LG.</pattern><data>toggleTextTag('LARGE',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.Lg.</pattern><data>toggleTextTag('Large',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.lg.</pattern><data>toggleTextTag('large',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.ns.</pattern><data>toggleTextTag('normalsize',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.sm.</pattern><data>toggleTextTag('small',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.fn.</pattern><data>toggleTextTag('footnotesize',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.ss.</pattern><data>toggleTextTag('scriptsize',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.ty.</pattern><data>toggleTextTag('tiny',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.part.</pattern><data>insertSectionTag('part',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.chap.</pattern><data>insertSectionTag('chapter',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.sec.</pattern><data>insertSectionTag('section',true);</data></sub>
