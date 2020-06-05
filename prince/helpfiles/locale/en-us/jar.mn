@@ -76,6 +76,7 @@ en-US.jar:
   locale/helpfiles/cd07-01-shortcuts.xhtml          (cd07-01-shortcuts.xhtml)
   locale/helpfiles/cd07-02-shortcuts.xhtml          (cd07-02-shortcuts.xhtml)
   locale/helpfiles/cd07-03-shortcuts.xhtml          (cd07-03-shortcuts.xhtml)
+  locale/helpfiles/cd07-04-shortcuts.xhtml          (cd07-04-shortcuts.xhtml)
   locale/helpfiles/graphicscd/status-bar.png                 (graphicscd/status-bar.png)
   locale/helpfiles/graphicscd/add_package.png (graphicscd/add_package.png)
   locale/helpfiles/graphicscd/automatic_substitution.png (graphicscd/automatic_substitution.png)
