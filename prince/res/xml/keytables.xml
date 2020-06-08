@@ -27,6 +27,43 @@
     <key name="F11"  shift="1" vk="1">insertSectionTag('chapter',false);</key>
     <key name="F12"  vk="1">insertSectionTag('subsection',false);</key>
     <key name="F12"  shift="1" vk="1">insertSubstructure(false);</key>
+	<!-- Plot function key shortcuts -->
+    <key name="F1"  alt="1" vk="1">doComputeCommand('cmd_compute_Plot2DRectangular');</key>
+    <key name="F1"  alt="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DRectangular');</key>
+    <key name="F1"  ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot2DARectangular');</key>
+    <key name="F1"  alt="1" ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DARectangular');</key>
+    <key name="F2"  alt="1" vk="1">doComputeCommand('cmd_compute_Plot2DPolar');</key>
+    <key name="F2"  alt="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DCurve');</key>
+    <key name="F2"  ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot2DAPolar');</key>
+    <key name="F2"  alt="1" ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DACurve');</key>
+    <key name="F3"  alt="1" vk="1">doComputeCommand('cmd_compute_Plot2DImplicit');</key>
+    <key name="F3"  alt="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DImplicit');</key>
+    <key name="F3"  ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot2DAImplicit');</key>
+    <key name="F3"  alt="1" ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DAImplicit');</key>
+    <key name="F4"  alt="1" vk="1">doComputeCommand('cmd_compute_Plot2DInequality');</key>
+    <key name="F4"  ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot2DAInequality');</key>
+    <key name="F5"  alt="1" vk="1">doComputeCommand('cmd_compute_Plot2DParametric');</key>
+    <key name="F5"  alt="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DParametric');</key>
+    <key name="F5"  ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot2DAParametric');</key>
+    <key name="F5"  alt="1" ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DAParametric');</key>
+    <key name="F6"  alt="1" vk="1">doComputeCommand('cmd_compute_Plot2DGradient');</key>
+    <key name="F6"  alt="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DGradient');</key>
+    <key name="F6"  ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot2DAGradient');</key>
+    <key name="F6"  alt="1" ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DAGradient');</key>
+    <key name="F7"  alt="1" vk="1">doComputeCommand('cmd_compute_Plot2DVector');</key>
+    <key name="F7"  alt="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DVector');</key>
+    <key name="F7"  ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot2DAVector');</key>
+    <key name="F7"  alt="1" ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DAVector');</key>
+    <key name="F8"  alt="1" vk="1">doComputeCommand('cmd_compute_Plot2DConformal');</key>
+    <key name="F8"  alt="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DCylindrical');</key>
+    <key name="F8"  ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot2DAConformal');</key>
+    <key name="F8"  alt="1" ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DACylindrical');</key>
+    <key name="F9"  alt="1" vk="1">doComputeCommand('cmd_compute_Plot2DODE');</key>
+    <key name="F9"  alt="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DSpherical');</key>
+    <key name="F9"  alt="1" ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DASpherical');</key>
+    <key name="F10"  alt="1" vk="1">doComputeCommand('cmd_compute_Plot2DAI');</key>
+    <key name="F10"  alt="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DTube');</key>
+    <key name="F10"  alt="1" ctrl="1" shift="1" vk="1">doComputeCommand('cmd_compute_Plot3DATube');</key>
   </keytable>
 
 <!-- layout of the Greek keyboard -->
