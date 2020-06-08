@@ -5,20 +5,14 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
+
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<!-- ?xul-overlay href="chrome://prince/content/utilityOverlay.xul"? -->
-<!-- ?xul-overlay href="chrome://editor/content/composerOverlay.xul"? -->
-<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? --> 
-<!-- ?xul-overlay href="chrome://prince/content/contentAreaContextOverlay.xul"? -->
 
 <!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
-<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/mathmloverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/vcamoverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
-<!-- If an editor control is to support context menus, also need: -->
-<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/vcamoverlay.xul"?>
+
+#include ../requiredEditorOverlays.inc
 
 <!DOCTYPE dialog [                                   
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/ComputeGraphSettings.dtd" >
@@ -55,39 +49,12 @@
   <script type="application/x-javascript" src="chrome://prince/content/computePlotSettings.js" />
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
 
-  <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-   
-  <!-- Following scripts are needed by any MSI dialog containing an editor -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/mathmlOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/realTimeSpell.js"/>
-  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
-  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+#include ../requiredEditorScripts.inc
 
 #include ../keysfordialogs.inc
 
-  <commandset id="tasksCommands">
-    <commandset id="globalEditMenuItems"/>
-    <commandset id="selectEditMenuItems"/>
-    <commandset id="undoEditMenuItems"/>
-    <commandset id="clipboardEditMenuItems"/>
-    <commandset id="composerMenuItems"/>
-    <commandset id="composerEditMenuItems"/>
-    <commandset id="composerStyleMenuItems"/>
-    <commandset id="composerTableMenuItems"/>
-    <commandset id="composerListMenuItems"/>
-    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
-    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
-  </commandset>
+#include ../requiredEditorCommandSets.inc
+
   <commandset id="MSImathMenuCommands"/>
   
   <popupset id="msiEditorContentContextSet"/>
@@ -173,19 +140,6 @@
             <checkbox id="animate"     label="&animate.label;"/>
           </groupbox>
 
-          <!-- broadcaster id="args" value="about:blank"/ -->
-          <commandset id="tasksCommands">
-            <commandset id="globalEditMenuItems"/>
-            <commandset id="selectEditMenuItems"/>
-            <commandset id="undoEditMenuItems"/>
-            <commandset id="clipboardEditMenuItems"/>
-            <commandset id="commonEditorMenuItems"/>
-            <commandset id="composerMenuItems"/>
-            <commandset id="composerEditMenuItems"/>
-            <commandset id="composerStyleMenuItems"/>
-            <commandset id="composerTableMenuItems"/>
-          </commandset>
-          <commandset id="MSImathMenuCommands"/>
           
           <!-- toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
             <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="menutooltip">
@@ -456,22 +410,26 @@
               <rows>
                 <row>        
                   <label value="&axisxaxis.label;"/>
-                          <checkbox id="customXAxisLabel" label="&axiscustom.label;" checked="false" oncommand="makeAxisLabelCustom(this);" />
+                  <checkbox id="customXAxisLabel" label="&axiscustom.label;" checked="false" oncommand="makeAxisLabelCustom(this);" />
+<!--                   <editor editortype="html" type="content" context="msiEditorContentContext" id="XAxisLabel" width="140" height="25" onfocus="this.select(); this.SetTopXULWindow(window);"/> -->
                   <textbox style="width: 10em;" disabled="true" id="XAxisLabel" cols="20"/>
                 </row>
                 <row>
                   <label value="&axisyaxis.label;"/>
-                          <checkbox id="customYAxisLabel" label="&axiscustom.label;" checked="false" oncommand="makeAxisLabelCustom(this);" />
+                  <checkbox id="customYAxisLabel" label="&axiscustom.label;" checked="false" oncommand="makeAxisLabelCustom(this);" />
+<!--                   <editor editortype="html" type="content" context="msiEditorContentContext" id="YAxisLabel" width="140" height="25"/> -->
                   <textbox style="width: 10em;" disabled="true" id="YAxisLabel" cols="20"/>
                 </row>
                 <row observes="threeDim">
                   <label value="&axiszaxis.label;"/>
-                          <checkbox id="customZAxisLabel" label="&axiscustom.label;" checked="false" oncommand="makeAxisLabelCustom(this);" />
+                  <checkbox id="customZAxisLabel" label="&axiscustom.label;" checked="false" oncommand="makeAxisLabelCustom(this);" />
+<!--                   <editor editortype="html" type="content" context="msiEditorContentContext" id="ZAxisLabel" width="140" height="25"/> -->
                   <textbox style="width: 10em;" disabled="true" id="ZAxisLabel" cols="20"/>
                 </row>
                 <row>
                   <spacer flex="1"/>
                   <msibutton label="&axisFontSettings.label;" oncommand="openAxisFontSettingsDlg();" />
+                  <spacer flex="1"/>
                 </row>
               </rows>
             </grid>
@@ -548,33 +506,41 @@
       <vbox id="View defaults">
         <separator/>
         <vbox>
-          <row>
+          <hbox>
             <label id="bgcolor" control="TextButton" value="&DefaultBGColor.label;" />
             <msibutton id="bgcolorbutton" class="color-button" oncommand="getColorAndUpdate('plotCW');">
                <spacer id="plotCW" class="color-well"/>
             </msibutton>
-          </row>
+          </hbox>
           <separator/>
           <vbox>
             <checkbox id="defaultviewintervals" label="&viewinterval.label;" oncommand="changeDefaultViewIntervals();" />
           </vbox>
           <groupbox observes="viewRangesActive" >
-            <caption>&viewIntervals.label;</caption>        
-            <hbox>
-              <label value="&axisxrange.label;" observes="viewRangesActive"/>
-              <textbox id="xrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-              <textbox id="xrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-            </hbox>
-            <hbox>
-              <label value="&axisyrange.label;" observes="viewRangesActive"/>
-              <textbox id="yrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-              <textbox id="yrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-            </hbox>
-            <hbox observes="threeDim" >
-              <label value="&axiszrange.label;" observes="viewRangesActive"/>
-              <textbox id="zrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-              <textbox id="zrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-            </hbox>
+            <caption>&viewIntervals.label;</caption> 
+            <vbox>       
+              <hbox class="singleLineEditor">
+                <label value="&axisxrange.label;" observes="viewRangesActive"/>
+                <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="xrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
+                <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="xrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
+              </hbox>
+              <hbox class="singleLineEditor">
+                <label value="&axisyrange.label;" observes="viewRangesActive"/>
+                <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="yrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
+                <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="yrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
+              </hbox>
+              <hbox observes="threeDim" class="singleLineEditor">
+                <label value="&axiszrange.label;" observes="viewRangesActive"/>
+                <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="zrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
+                <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="zrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
+              </hbox>
+            </vbox>
           </groupbox>
           <groupbox caption="&cameraPositionAndOrientation.label;" observes="threeDim">
             <checkbox id="defaultCameraCheckbox" label="&defaultCamera.label;" oncommand="changeDefaultCamera();" />
