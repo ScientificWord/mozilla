@@ -112,6 +112,7 @@
         <rdf:li> <rdf:Description ID="cd07-01" nc:name="Shortcuts"               nc:link="cd07-01-shortcuts.xhtml"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cd07-02" nc:name="Function Keys"           nc:link="cd07-02-shortcuts.xhtml"/> </rdf:li>
         <rdf:li> <rdf:Description ID="cd07-03" nc:name="Automatic Substitutions" nc:link="cd07-03-shortcuts.xhtml"/> </rdf:li>
+        <rdf:li> <rdf:Description ID="cd07-04" nc:name="Keyboards"               nc:link="cd07-04-shortcuts.xhtml"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
