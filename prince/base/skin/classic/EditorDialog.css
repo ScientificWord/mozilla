@@ -385,3 +385,9 @@ tree.AttributesTree {
 .msiShadedTextbox .textbox-input {
   background-color: rgb(222,252,222);
 }
+
+editor.singleLineEditor {
+  font-size: 11px;
+  height: 4em;
+  border: thin solid black;
+}

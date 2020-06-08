@@ -11,6 +11,9 @@ var originalPlotLabels = [];
 
 function startup(){
 //  var graph = window.arguments[0];
+  var editorInitializer = new msiEditorArrayInitializer();
+  var theStringSource = "Label here";
+  var editorElement;
   graph = window.arguments[0];
   var nLabels = graph.plotLabels.length;
   storeOriginalPlotLabels();  //in case the user cancels the dialog, want to be able to restore previous state
@@ -25,6 +28,15 @@ function startup(){
   isBillboarding = (dim != 2);
   document.getElementById("is2D").hidden = (dim != 2);
   document.getElementById("is3D").hidden = (dim != 3);
+  editorElement = document.getElementById('Text')
+  editorInitializer.addEditorInfo(editorElement, theStringSource, true, true);
+  editorInitializer.doInitialize();
+  msiSetInitialDialogFocus(editorElement);
+  msiSetActiveEditor(editorElement, false);
+  msiGetEditor(editorElement).SetTopXULWindow(window);
+  msiGetEditor(editorElement).selectAll();
+
+
   onChangeItem();
 }
 
@@ -236,7 +248,7 @@ function setValuesToDialog(attrArray)
     {
       value = theLabel.getPlotLabelAttribute(attrArray[ii]);
       // if (value)
-        putValueToControl(ctrl, value);
+      putValueToControl(ctrl, value);
       if (attrArray[ii] == "OrientationType")
         isCartesian = (value == "cartesian");
       else if (attrArray[ii] == "PositionType")

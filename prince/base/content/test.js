@@ -6,6 +6,9 @@ function onLoad() {
 	try {
 	  var editorElement = document.getElementById("testEdit");
 	  var editorInitializer = new msiEditorArrayInitializer();
+	  editorElement.mbSinglePara = true;
+      // editorElement.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
+
 	  editorInitializer.addEditorInfo(editorElement, theStringSource, true, true);
 	  editorInitializer.doInitialize();
 		msiSetInitialDialogFocus(editorElement);
