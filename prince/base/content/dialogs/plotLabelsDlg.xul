@@ -6,6 +6,7 @@
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+#include ../requiredEditorOverlays.inc
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/plotLabelsDlg.dtd" >
 <!-- JLF to verify-->
@@ -31,6 +32,9 @@
   <script type="application/x-javascript" src="chrome://prince/content/graphOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/plotLabelsDlg.js" />
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
+#include ../requiredEditorScripts.inc
+
+#include ../requiredEditorCommandSets.inc
 
   <broadcasterset>
     <broadcaster id="hasLabels" disabled="false" />
@@ -57,6 +61,7 @@
       </row>
       <row align="start">
         <textbox id="labelItemNumber" cols="3" type="number" min="0"/>
+<!--         <editor editortype="html" type="content" context="msiEditorContentContext" id="Text" width="140" height="25" observes="hasLabels" /> -->
         <textbox id="Text" multiline="true" cols="25" rows="2" observes="hasLabels" />
       </row>
     </rows>
