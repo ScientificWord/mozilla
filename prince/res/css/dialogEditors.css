@@ -4,4 +4,10 @@ bodyText, bodyMath {
   text-indent: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
+  font-size: 11px;
+}
+
+.singleLineEditor {
+	height: 30px;
+	border: thin solid black;
 }

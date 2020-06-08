@@ -23,6 +23,7 @@ classic.jar:
   skin/classic/bracketsDialog.css	(bracketsDialog.css)
   skin/classic/chamtest.css	                                (chamtest.css)
   skin/classic/decorationsDialog.css	(decorationsDialog.css)
+  skin/classic/dialogEditors.css  (dialogEditors.css)
   skin/classic/documentStyle.css	(documentStyle.css)
   skin/classic/editor.css	                                (editor.css)
   skin/classic/EditorDialog.css	                                (EditorDialog.css)
