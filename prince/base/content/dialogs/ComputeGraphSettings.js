@@ -187,7 +187,7 @@ function initializeAxisLabelEditors() {
     editorElement = document.getElementById(id);
     if (editorElement) {
       editorElement.mbSinglePara = true;
-      theStringSource = 'get me from graph data';
+      theStringSource = GetComputeString("Math.emptyForInput");
       editorInitializer.addEditorInfo(editorElement, theStringSource, true);
     }
   }
@@ -213,13 +213,13 @@ function initializeViewIntervalEditors() {
     editorElement = document.getElementById(id + 'rangelow');
     if (editorElement) {
       editorElement.mbSinglePara = true;
-      theStringSource = 'get me from graph data';
+      theStringSource = GetComputeString("Math.emptyForInput");
       editorInitializer.addEditorInfo(editorElement, theStringSource, true);
     }
     editorElement = document.getElementById(id + 'rangehigh');
     if (editorElement) {
       editorElement.mbSinglePara = true;
-      theStringSource = 'get me from graph data';
+      theStringSource = GetComputeString("Math.emptyForInput");
       editorInitializer.addEditorInfo(editorElement, theStringSource, true);
     }
   }
