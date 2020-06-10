@@ -1294,7 +1294,7 @@ Plot.prototype =
     else if (key in this.element)
       value = this.element[key];
     if ((value !== null) && (value !== "")) {
-      return dressUpMathString(value);
+      return dressUpMathString2(value);
     }
     switch(key)
     {
