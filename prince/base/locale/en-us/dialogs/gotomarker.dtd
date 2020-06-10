@@ -1,4 +1,4 @@
-<!ENTITY windowTitle.label "Go tklarker">
+<!ENTITY windowTitle.label "Go to marker">
 
 <!ENTITY markerList.label "Choose an existing marker in the document:">
 <!ENTITY markerList.accesskey "m">
