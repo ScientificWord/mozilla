@@ -318,14 +318,6 @@
         <contains>maketoc</contains>
         <contains>makelot</contains>
         <contains>makelof</contains>
-        <contains>frontmatter</contains> <!-- ?? -->
-        <contains>backmatter</contains> <!-- ?? -->
-        <contains>mainmatter</contains> <!-- ?? -->
-        <contains>printindex</contains> <!-- ?? -->
-        <contains>appendix</contains> <!-- ?? -->
-        <contains>paratag</contains>
-        <contains>structtag</contains>
-        <contains>br</contains>
         <contains>shortTitle</contains>
         <!-- theorem-like environments
         <contains>theorem</contains>
