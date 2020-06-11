@@ -12,7 +12,6 @@ modern.jar:
   skin/modern/binomialsDialog.css       (binomialsDialog.css)
   skin/modern/bracketsDialog.css        (bracketsDialog.css)
   skin/modern/decorationsDialog.css     (decorationsDialog.css)
-  skin/modern/dialogEditors.css         (dialogEditors.css)
   skin/modern/operatorsDialog.css       (operatorsDialog.css)
   skin/modern/mathmlmatrix.css          (mathmlmatrix.css)
   skin/modern/EdInsertTable.css          (EdInsertTable.css)
