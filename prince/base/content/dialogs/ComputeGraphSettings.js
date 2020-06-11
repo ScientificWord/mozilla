@@ -130,6 +130,8 @@ function Startup(){
     testUseSignificantDigits();
     // Caption placement
     document.getElementById("captionLocation").value = graph.CaptionPlace;
+    msiSetInitialDialogFocus(document.getElementById("frameWidthInput"));
+    // msiSetActiveEditor(gReplaceDialog.findInput, false);
   //  checkEnableFloating();
   }
   catch(e) {
