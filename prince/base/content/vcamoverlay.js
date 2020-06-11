@@ -485,7 +485,7 @@ VCamObject.prototype = {
           this.obj.cursorTool = this.cursorTool = "zoomOut";
           break;
         case "cmd_vcSnapshot":
-          this.makeSnapshot();
+          this.makeSnapshot(true);
           break;
         case "cmd_vcAutoSpeed":
           dump("cmd_vcAutoSpeed not implemented");
@@ -528,7 +528,7 @@ VCamObject.prototype = {
     }
   },
 
-  makeSnapshot: function() {
+  makeSnapshot: function( exporting ) {
     var editorElement;
     try {
       editorElement = msiGetActiveEditorElement();
@@ -544,7 +544,7 @@ VCamObject.prototype = {
     }
     if (ready > 1) {
       try {
-        var path = this.makeSnapshotPath();
+        var path = this.makeSnapshotPath( exporting );
         var abspath;
         var abspath2;
         var prefs;
@@ -588,7 +588,12 @@ VCamObject.prototype = {
     }
   },
 
-  makeSnapshotPath: function() {
+
+// Make a path for the snapshot. If "exporting" is true, put up a dialog asking for
+// a save location. Otherwise the file goes into the graphics subdirectory of the working
+// directory.
+
+  makeSnapshotPath: function( exporting ) {
     var extension;
     if (getOS(window) == "win") {
       extension = "bmp";
@@ -596,13 +601,27 @@ VCamObject.prototype = {
       extension = "png";
     }
     var path;
+    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
     try {
       var strSrc = this.obj.getAttribute("data") || this.obj.getAttribute("src");
       var match = /plots\/(.*$)/.exec(strSrc);
       var fileName = match[1];
       fileName = fileName.replace(/xv[cz]$/, extension);
-      path = "graphics/" + fileName;
-    } catch (e) {
+      if (exporting) {
+        fp.init(window, "Save snapshot", msIFilePicker.modeSave);
+        fp.defaultExtension = extension;
+        fp.defaultString=fileName;
+        fp.appendFilter("Bitmap graphics",".png");
+        var compileInfo = new Object();
+        var dialogResult = fp.show();
+        if (dialogResult != msIFilePicker.returnCancel)
+        path = fp.file.path;
+      }
+      else {
+        path = "graphics/" + fileName;
+      }
+    }
+    catch (e) {
       throw new MsiException("Error finding path for plot snapshot", e);
     }
     return path;
@@ -699,7 +718,7 @@ function rebuildSnapshots(doc) {
       obj = objlist[0];
       if (obj) {
         aVCamObjectNum = setCurrentVCamObject(obj);
-        vcamWrapperArray[aVCamObjectNum].makeSnapshot();
+        vcamWrapperArray[aVCamObjectNum].makeSnapshot( false );
       }
     }
   }
