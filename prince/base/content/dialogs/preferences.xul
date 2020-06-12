@@ -22,6 +22,7 @@
             ondialogaccept="return onAccept();"
             ondialogcancel="return onCancel();"
             screenX="40"  screenY="40"
+            width="531" height="656"
             persist="height width screenX screenY"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
