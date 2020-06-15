@@ -37,15 +37,28 @@
 
 
       <xsl:variable name="next-char">
-	<xsl:if test="string-length($unicode-cdata)&gt;1">
-	  <xsl:value-of select="substring($unicode-cdata,2,1)"/>
-	</xsl:if>
+	      <xsl:if test="string-length($unicode-cdata)&gt;1">
+	        <xsl:value-of select="substring($unicode-cdata,2,1)"/>
+	      </xsl:if>
       </xsl:variable>
       
       <xsl:variable name="char-info-lookup"
 		    select="$char-info/char-table/char[@unicode=$first-char][1]/@latex"/>
 
       <xsl:choose>
+        <!-- The negating combining character is handled here, rather than in
+         FilterCharsForLaTeX since the substitution varies depending on whether we
+         ate in math or not. The math case is handled here, and the text case is handled in FilterCharsForLaTeX..mm
+       -->
+         <xsl:when test="$next-char='&#x0338;'">
+           <xsl:text>\not{</xsl:text>
+           <xsl:value-of select="$first-char"/>
+           <xsl:text>}</xsl:text>
+         </xsl:when>
+
+         <xsl:when test="$first-char='&#x0338;'">
+         </xsl:when>
+
          <xsl:when
 	          test="contains('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
 		                       $first-char)">
@@ -980,6 +993,10 @@
           </xsl:when>
           <xsl:when test="$first-char='&#x2035;'">
             <xsl:text xml:space="preserve">\backprime </xsl:text>
+          </xsl:when>
+          <xsl:when test="$next-char='&#x0338;'">
+            <xsl:text xml:space="preserve">hit overstrike \not{</xsl:text>
+            <xsl:value-of select="$first-char"/><xsl:text>} </xsl:text>
           </xsl:when>
 
 
