@@ -7411,7 +7411,7 @@ void handleCombiningChars( const PRUnichar** pCur, PRUnichar combiningChar, nsAS
       } else {
         // this substitution is for text, not math. The case for when it was in math
         // has been handled in the xslt code
-       thisChar = NS_LITERAL_STRING("$\\;\\not ") + thisChar + NS_LITERAL_STRING("\\;$"); 
+       thisChar = NS_LITERAL_STRING("$\\not ") + thisChar + NS_LITERAL_STRING("$"); 
       }
       break;
     default :
