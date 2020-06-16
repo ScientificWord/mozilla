@@ -19,30 +19,30 @@
       flex = "1"
       mode="icons" hidden = "true">
 	    <observes id="vcamactiveObserver" element="vcamactive" attribute="hidden" onbroadcast="doVCamClose();"/>
-      <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
-      <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents"/>
+      <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset" tooltiptext="&vcReset.tooltip;"/>
+      <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" tooltiptext="&vcFitContents.tooltip;"/>
       <!-- <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/> -->
       <toolbarseparator/>
-      <toolbarbutton id="vc-SelObj" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcSelObj" command="cmd_vcSelObj"/>
-      <toolbarbutton id="vc-RotateScene" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcRotateScene" command="cmd_vcRotateScene" observes="3dplot"/>
-      <toolbarbutton id="vc-Zoom" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoom" command="cmd_vcZoom" observes="3dplot"/>
-      <toolbarbutton id="vc-Move" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcMove" command="cmd_vcMove"/>
-      <toolbarbutton id="vc-Query" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcQuery" command="cmd_vcQuery"/>
+      <toolbarbutton id="vc-SelObj" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcSelObj" command="cmd_vcSelObj" tooltiptext="&vcSelObj.tooltip;"/>
+      <toolbarbutton id="vc-RotateScene" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcRotateScene" command="cmd_vcRotateScene" observes="3dplot" tooltiptext="&vcRotateScene.tooltip;"/>
+      <toolbarbutton id="vc-Zoom" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoom" command="cmd_vcZoom" observes="3dplot" tooltiptext="&vcZoom.tooltip;"/>
+      <toolbarbutton id="vc-Move" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcMove" command="cmd_vcMove" tooltiptext="&vcMove.tooltip;"/>
+      <toolbarbutton id="vc-Query" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcQuery" command="cmd_vcQuery" tooltiptext="&vcQuery.tooltip;"/>
       <toolbarseparator observes="3dplot"/>
-      <toolbarbutton id="vc-RotateLeft" class="toolbarbutton-1" type="radio" group="lrrotategroup" label="Rotate left" command="cmd_vcRotateLeft" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateRight" class="toolbarbutton-1" type="radio" group="lrrotategroup" label="vcRotateRight" command="cmd_vcRotateRight" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateUp" class="toolbarbutton-1" type="radio" group="udrotategroup" label="vcRotateUp" command="cmd_vcRotateUp" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateDown" class="toolbarbutton-1" type="radio" group="udrotategroup" label="vcRotateDown" command="cmd_vcRotateDown" observes="3dplot"/>
+      <toolbarbutton id="vc-RotateLeft" class="toolbarbutton-1" type="radio" group="lrrotategroup" label="Rotate left" command="cmd_vcRotateLeft" observes="3dplot" tooltiptext="&vcRotateLeft.tooltip;"/>
+      <toolbarbutton id="vc-RotateRight" class="toolbarbutton-1" type="radio" group="lrrotategroup" label="vcRotateRight" command="cmd_vcRotateRight" observes="3dplot" tooltiptext="&vcRotateRight.tooltip;"/>
+      <toolbarbutton id="vc-RotateUp" class="toolbarbutton-1" type="radio" group="udrotategroup" label="vcRotateUp" command="cmd_vcRotateUp" observes="3dplot" tooltiptext="&vcRotateUp.tooltip;"/>
+      <toolbarbutton id="vc-RotateDown" class="toolbarbutton-1" type="radio" group="udrotategroup" label="vcRotateDown" command="cmd_vcRotateDown" observes="3dplot" tooltiptext="&vcRotateDown.tooltip;"/>
       <toolbarseparator observes="3dplot"/>
-      <toolbarbutton id="vc-AutoZoomIn" class="toolbarbutton-1" type="radio" group="zoomgroup" label="vcAutoZoomIn" command="cmd_vcAutoZoomIn" observes="3dplot"/>
-      <toolbarbutton id="vc-AutoZoomOut" class="toolbarbutton-1" type="radio" group="zoomgroup" label="vcAutoZoomOut" command="cmd_vcAutoZoomOut" observes="3dplot"/>
-      <toolbarbutton id="vc-ZoomIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomIn" command="cmd_vcZoomIn" observes="2dplot"/>
-      <toolbarbutton id="vc-ZoomOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomOut" command="cmd_vcZoomOut" observes="2dplot"/>
+      <toolbarbutton id="vc-AutoZoomIn" class="toolbarbutton-1" type="radio" group="zoomgroup" label="vcAutoZoomIn" command="cmd_vcAutoZoomIn" observes="3dplot" tooltiptext="&vcAutoZoomIn.tooltip;"/>
+      <toolbarbutton id="vc-AutoZoomOut" class="toolbarbutton-1" type="radio" group="zoomgroup" label="vcAutoZoomOut" command="cmd_vcAutoZoomOut" observes="3dplot" tooltiptext="&vcAutoZoomOut.tooltip;"/>
+      <toolbarbutton id="vc-ZoomIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomIn" command="cmd_vcZoomIn" observes="2dplot" tooltiptext="&vcZoomIn.tooltip;"/>
+      <toolbarbutton id="vc-ZoomOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomOut" command="cmd_vcZoomOut" observes="2dplot" tooltiptext="&vcZoomOut.tooltip;"/>
       <!--       <toolbarbutton id="vc-ZoomBoxIn" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxIn" command="cmd_vcZoomBoxIn" observes="2dplot"/>
       <toolbarbutton id="vc-ZoomBoxOut" class="toolbarbutton-1" type="radio" group="manipulategroup" label="vcZoomBoxOut" command="cmd_vcZoomBoxOut" observes="2dplot"/> -->
-      <toolbarbutton id="vc-SnapShot" class="toolbarbutton-1" label="vcSnapshot" command="cmd_vcSnapshot"/>
+      <toolbarbutton id="vc-SnapShot" class="toolbarbutton-1" label="vcSnapshot" command="cmd_vcSnapshot" tooltiptext="&vcSnapShot.tooltip;"/>
       <toolbarseparator/>
-      <toolbarbutton id="vc-AutoSpeed" type="menu" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
+      <toolbarbutton id="vc-AutoSpeed" type="menu" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot" tooltiptext="&vcAutoSpeed.tooltip;">
         <menupopup>
           <menuitem id="actionspeed8s" name = "action" type="radio" label="8x slower" oncommand="vcamWrapperArray[currentVCamObjectNum].setActionSpeed(0.125);" />
           <menuitem id="actionspeed4s" name = "action" type="radio" label="4x slower" oncommand="vcamWrapperArray[currentVCamObjectNum].setActionSpeed(0.25);" />
@@ -54,18 +54,18 @@
         </menupopup>
       </toolbarbutton>
       <toolbarseparator observes="animplot"/>
-      <toolbarbutton id="vc-GoToStart" class="toolbarbutton-1" label="vcGoToStart" command="cmd_vcGoToStart" observes="animplot"/>
-      <toolbarbutton id="vc-Play" class="toolbarbutton-1" type="checkbox" label="vcPlay" command="cmd_vcPlay" observes="animplot"/>
+      <toolbarbutton id="vc-GoToStart" class="toolbarbutton-1" label="vcGoToStart" command="cmd_vcGoToStart" observes="animplot" tooltiptext="&vcGoToStart.tooltip;"/>
+      <toolbarbutton id="vc-Play" class="toolbarbutton-1" type="checkbox" label="vcPlay" command="cmd_vcPlay" observes="animplot" tooltiptext="&vcPlay.tooltip;"/>
       <scale id="vc-AnimScale" width="150" onchange= "vcamWrapperArray[currentVCamObjectNum].setAnimationTime();" observes="animplot"/>
-      <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot"/>
-      <toolbarbutton id="vc-LoopType" type="menu" class="toolbarbutton-1" label="vcLoopType" observes="animplot">
+      <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot" tooltiptext="&vcGoToEnd.tooltip;"/>
+      <toolbarbutton id="vc-LoopType" type="menu" class="toolbarbutton-1" label="vcLoopType" observes="animplot" tooltiptext="&vcLoopType.tooltip;">
         <menupopup>
           <menuitem id="runonce"      name= "looptype" type="radio" checked="true" label="Run once" oncommand="vcamWrapperArray[currentVCamObjectNum].setLoopMode(0);" />
           <menuitem id="loop"         name= "looptype" type="radio" label="Loop" oncommand="vcamWrapperArray[currentVCamObjectNum].setLoopMode(1);" />
           <menuitem id="backandforth" name= "looptype" type="radio" label="Back and forth" oncommand="vcamWrapperArray[currentVCamObjectNum].setLoopMode(2);" />
         </menupopup>
       </toolbarbutton>
-      <toolbarbutton id="vc-AnimSpeed" type="menu" class="toolbarbutton-1" label="vcAnimSpeed" observes="animplot">
+      <toolbarbutton id="vc-AnimSpeed" type="menu" class="toolbarbutton-1" label="vcAnimSpeed" observes="animplot" tooltiptext="&vcAnimSpeed.tooltip;">
         <menupopup>
           <menuitem id="animspeed8s" name = "anim" type="radio" label="8x slower" oncommand="vcamWrapperArray[currentVCamObjectNum].setAnimSpeed(0.125);" />
           <menuitem id="animspeed4s" name = "anim" type="radio" label="4x slower" oncommand="vcamWrapperArray[currentVCamObjectNum].setAnimSpeed(0.250);" />
