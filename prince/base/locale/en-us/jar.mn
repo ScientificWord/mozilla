@@ -12,7 +12,6 @@ en-US.jar:
 * locale/menuOverlay.dtd                  (menuOverlay.dtd)
   locale/mathmlOverlay.dtd                (mathmlOverlay.dtd)
 * locale/computeOverlay.dtd               (computeOverlay.dtd)
-  locale/vcamoverlay.dtd                  (vcamoverlay.dtd)
 * locale/typesetOverlay.dtd               (typesetOverlay.dtd)
 * locale/compute.properties               (compute.properties)
   locale/fragmentname.dtd            (fragmentname.dtd)
