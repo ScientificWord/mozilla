@@ -263,25 +263,25 @@
 <!ENTITY frontmatter.emptytext "Front matter tags">
 
 <!-- tooltips for vcam toolbar -->
-<!ENTITY vcReset.tooltip="Reset">
-<!ENTITY vcFitContents.tooltip="Fit to contents">
-<!ENTITY vcSelObj.tooltip="Select">
-<!ENTITY vcRotateScene.tooltip="Rotate">
-<!ENTITY vcZoom.tooltip="Zoom">
-<!ENTITY vcMove.tooltip="Move">
-<!ENTITY vcQuery.tooltip="Query">
-<!ENTITY vcRotateLeft.tooltip="Rotate left">
-<!ENTITY vcRotateRight.tooltip="Rotate right">
-<!ENTITY vcRotateUp.tooltip="Rotate up">
-<!ENTITY vcRotateDown.tooltip="Rotate down">
-<!ENTITY vcAutoZoomIn.tooltip="Auto zoom in">
-<!ENTITY vcAutoZoomOut.tooltip="Auto zoom out">
-<!ENTITY vcZoomIn.tooltip="Zoom in">
-<!ENTITY vcZoomOut.tooltip="Zoom out">
-<!ENTITY vcSnapShot.tooltip="Snapshot">
-<!ENTITY vcAutoSpeed.tooltip="Auto speed">
-<!ENTITY vcGoToStart.tooltip="Go to start">
-<!ENTITY vcPlay.tooltip="Play">
-<!ENTITY vcGoToEnd.tooltip="Go to end">
-<!ENTITY vcLoopType.tooltip="Loop type">
-<!ENTITY vcAnimSpeed.tooltip="Speed">
+<!ENTITY vcReset.tooltip "Reset">
+<!ENTITY vcFitContents.tooltip "Fit to contents">
+<!ENTITY vcSelObj.tooltip "Select">
+<!ENTITY vcRotateScene.tooltip "Rotate">
+<!ENTITY vcZoom.tooltip "Zoom">
+<!ENTITY vcMove.tooltip "Move">
+<!ENTITY vcQuery.tooltip "Query">
+<!ENTITY vcRotateLeft.tooltip "Rotate left">
+<!ENTITY vcRotateRight.tooltip "Rotate right">
+<!ENTITY vcRotateUp.tooltip "Rotate up">
+<!ENTITY vcRotateDown.tooltip "Rotate down">
+<!ENTITY vcAutoZoomIn.tooltip "Auto zoom in">
+<!ENTITY vcAutoZoomOut.tooltip "Auto zoom out">
+<!ENTITY vcZoomIn.tooltip "Zoom in">
+<!ENTITY vcZoomOut.tooltip "Zoom out">
+<!ENTITY vcSnapShot.tooltip "Snapshot">
+<!ENTITY vcAutoSpeed.tooltip "Auto speed">
+<!ENTITY vcGoToStart.tooltip "Go to start">
+<!ENTITY vcPlay.tooltip "Play">
+<!ENTITY vcGoToEnd.tooltip "Go to end">
+<!ENTITY vcLoopType.tooltip "Loop type">
+<!ENTITY vcAnimSpeed.tooltip "Speed">
