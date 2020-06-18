@@ -263,7 +263,7 @@
 <!ENTITY frontmatter.emptytext "Front matter tags">
 
 <!-- tooltips for vcam toolbar -->
-<!ENTITY vcReset.tooltip "Reset">
+<!ENTITY vcReset.tooltip "Reset viewpoint">
 <!ENTITY vcFitContents.tooltip "Fit to contents">
 <!ENTITY vcSelObj.tooltip "Select">
 <!ENTITY vcRotateScene.tooltip "Rotate">
