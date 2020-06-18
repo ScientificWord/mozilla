@@ -723,6 +723,10 @@ cg<uID24605.0>(1.0e-5*kgQU)
 dg<uID24606.0>(1.0e-4*kgQU)
 lb<uID24607.0>(4.535924e-1*kgQU)
 slug<uID24608.0>(1.459390e1*kgQU)
+ng<uID24609.0>(1.0e-12*kgQU)
+pg<uID24610.0>(1.0e-15*kgQU)
+fg<uID24611.0>(1.0e-18*kgQU)
+ag<uID24612.0>(1.0e-21*kgQU)
 
 ;; time
 d<uID24700.0>(86400*sQU)
