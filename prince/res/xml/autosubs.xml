@@ -366,7 +366,7 @@
   <sub ctx="math" tp="sc"><pattern>uozf</pattern><data>doInsertMathunit('ozf',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uPa</pattern><data>doInsertMathunit('Pa',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>upF</pattern><data>doInsertMathunit('pF',true);</data></sub>
-  <sub ctx="math" tp="sc"><pattern>upg</pattern><data>doInsertMathunit('pg',true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>upg</pattern><data>doInsertMathunit('pg',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uphot</pattern><data>doInsertMathunit('phot',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uPHz</pattern><data>doInsertMathunit('PHz',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>upint</pattern><data>doInsertMathunit('pint',true);</data></sub>
