@@ -445,7 +445,7 @@ VCamObject.prototype = {
           }
           break;
         case "cmd_vcRotateUp":
-          if (this.obj.horizontalAction == 1) {
+          if (this.horizontalAction == 1) {
             this.obj.rotateHorizontalAction = 0;
             this.horizontalAction = 0;
           } else {
