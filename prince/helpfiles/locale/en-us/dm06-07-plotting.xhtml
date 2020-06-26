@@ -1,1765 +1,1854 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet 
- href="css/help.css" type="text/css"
- ?>
+<?xml-stylesheet href="css/help.css" type="text/css" ?>
 <!DOCTYPE html:html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
 <html:html hideHelperLines="true" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:exsl="http://exslt.org/common">
 <html:head>
-<meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml">
-</meta>
-<meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml">
-</meta>
-<meta name="REVISED" content="Saturday, January 28, 2012 02:39:31" xmlns="http://www.w3.org/1999/xhtml">
-</meta>
-<meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml">
-</meta>
-<script type="text/javascript"
-   src="resource://res/html/vcam.js"></script>
-<html:title>Creating Animated 3D Plots</html:title>
+  <meta name="COMMENTS" content="% This document created by Scientific Notebook (R) Version 3.5" xmlns="http://www.w3.org/1999/xhtml"></meta>
+  <meta name="CREATED" content="Mon Aug 19 14:52:24 1996" xmlns="http://www.w3.org/1999/xhtml"></meta>
+  <meta name="REVISED" content="Saturday, January 28, 2012 02:39:31" xmlns="http://www.w3.org/1999/xhtml"></meta>
+  <meta name="GENERATOR" content="Scientific Word" xmlns="http://www.w3.org/1999/xhtml"></meta>
+  <script type="text/javascript" src="resource://res/html/vcam.js"></script>
+  <html:title>Creating Animated 3D Plots</html:title>
 </html:head>
 <html:body>
-<h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
-<a id="top">
-</a>Creating Animated 3D Plots</h2>
-<html:bodyText>
-   For an animated plot, you specify a third animation parameter. The default
-   animation parameter is
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-</mml:math>.
-</html:bodyText>
-<html:bodyText>
-<em xmlns="http://www.w3.org/1999/xhtml">
-<hr class="hrulefill">
-</hr>
-</em>
-</html:bodyText>
-<html:bodyText>
-   In this section:
-</html:bodyText>
-<html:bodyText>
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<html:a href="#animated 3d plots in rectangular coordinates"> Animated
-   3D Plots in Rectangular
-   Coordinates</html:a>
-<br xmlns="http://www.w3.org/1999/xhtml" />
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<html:a href="#animated parametric 3d plots in rectangular coordinates"> Animated
-   parametric 3d plots in rectangular
-   coordinates</html:a>
-<br xmlns="http://www.w3.org/1999/xhtml" />
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<html:a href="#animated curves in three space"> Animated
-   Curves in Three
-   Space</html:a>
-<br xmlns="http://www.w3.org/1999/xhtml" />
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<html:a href="#animated plots in cylindrical coordinates"> Animated
-   Plots in Cylindrical
-   Coordinates</html:a>
-<br xmlns="http://www.w3.org/1999/xhtml" />
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<html:a href="#animated parametric plots in cylindrical coordinates"> Animated
-   parametric plots in cylindrical
-   coordinates</html:a>
-<br xmlns="http://www.w3.org/1999/xhtml" />
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<html:a href="#animated plots in spherical coordinates"> Animated
-   Plots in Spherical
-   Coordinates</html:a>
-<br xmlns="http://www.w3.org/1999/xhtml" />
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<html:a href="#animated parametric plots in spherical coordinates"> Animated
-   parametric plots in spherical
-   coordinates</html:a>
-<br xmlns="http://www.w3.org/1999/xhtml" />
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<html:a href="#animated 3d implicit plots"> Animated
-   3D Implicit
-   Plots</html:a>
-<br xmlns="http://www.w3.org/1999/xhtml" />
-<span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
-<span style="padding-left:2em">
-</span>
-</span>
-<html:a href="#animated tube plot"> Animated
-   Tube Plot</html:a>
-</html:bodyText>
-<html:bodyText>
-[ <html:a href="dm06-00-plotting.xhtml">Return to prior section</html:a> ]
-</html:bodyText>
-<html:bodyText>
-<em xmlns="http://www.w3.org/1999/xhtml">
-<hr class="hrulefill">
-</hr>
-</em>
-</html:bodyText>
-<html:section><html:sectiontitle>
-<a id="note1" xmlns="http://www.w3.org/1999/xhtml">
-</a>
-<a id="animated 3d plots in rectangular coordinates" xmlns="http://www.w3.org/1999/xhtml">
-</a>Animated 3D Plots in Rectangular Coordinates</html:sectiontitle></html:section>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">To make an animated plot in rectangular coordinates</strong>
-</html:bodyText>
-<html:numberedlist>
-<html:numberedListItem>
-<html:bodyText>
-   Type an expression in three variables.
-   </html:bodyText>
-</html:numberedListItem>
-<html:numberedListItem>
-<html:bodyText>
-   With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Rectangular.
-   </html:bodyText>
-</html:numberedListItem>
-</html:numberedlist>
-<html:bodyText>
-   The next example shows a 3D animated plot with Boxed Axes and Intervals
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>6</mml:mn>
-</mml:mrow>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>x</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>6</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>6</mml:mn>
-</mml:mrow>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>y</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>6</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>3</mml:mn>
-</mml:mrow>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>3</mml:mn>
-</mml:mrow>
-</mml:math>,
-   where
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-</mml:math>
-   is the animation variable. The surface changes from a hyperbolic paraboloid
-   (<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&lt;</mml:mo>
-<mml:mn>0</mml:mn>
-</mml:mrow>
-</mml:math>),
-   to a paraboloid
-   (<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">=</mml:mo>
-<mml:mn>0</mml:mn>
-</mml:mrow>
-</mml:math>),
-   then to a hyperbolic paraboloid with a different
-   orientation (<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&gt;</mml:mo>
-<mml:mn>0</mml:mn>
-</mml:mrow>
-</mml:math>).
-</html:bodyText>
-<html:longQuotation>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Rectangular</strong>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mpadded depth="8.000000pt" height="-8.000000pt">
-<mml:msup>
-<mml:mi>x</mml:mi>
-<mml:mn>2</mml:mn>
-</mml:msup>
-<mml:mo form="infix">+</mml:mo>
-<mml:msup>
-<mml:mi>y</mml:mi>
-<mml:mn>2</mml:mn>
-</mml:msup>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>x</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>y</mml:mi>
-</mml:mrow>
-</mml:mpadded>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-   Click this
-   plot.
-<html:graph>
-<html:msiframe pos="display" height="3.169" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
-<html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
-<html:object style="width: 3.011in; height: 3.011in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53QZ5A.xvz" />
-</html:plotwrapper>
-</html:msiframe>
-</html:graph>
-</html:bodyText>
-</html:longQuotation>
-<html:bodyText>
-   [ <html:a href="#top"> Return to beginning of section</html:a> ]
-</html:bodyText>
-<html:subsection><html:sectiontitle>
-<a id="note2" xmlns="http://www.w3.org/1999/xhtml">
-</a>
-<a id="animated parametric 3d plots in rectangular coordinates" xmlns="http://www.w3.org/1999/xhtml">
-</a>Animated parametric 3d plots in rectangular coordinates</html:sectiontitle></html:subsection>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">To make a parameterized animated plot in rectangular
-   coordinates</strong>
-</html:bodyText>
-<html:numberedlist>
-<html:numberedListItem>
-<html:bodyText>
-   Type an expression of the form
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mrow>
-<mml:mi>x</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>r</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mi>y</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>r</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mi>z</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>r</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:math>.
-   </html:bodyText>
-</html:numberedListItem>
-<html:numberedListItem>
-<html:bodyText>
-   Choose Compute &#8594; Plot 3D animated &#8594; Parametric, or
-   </html:bodyText>
-<html:bodyText>
-   Choose Compute &#8594; Plot 3D animated &#8594; Rectangular.
-   </html:bodyText>
-</html:numberedListItem>
-</html:numberedlist>
-<html:bodyText>
-   The next example shows a surface of revolution generated by rotating the graph
-   of
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>z</mml:mi>
-<mml:mo form="infix">=</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mi>y</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-</mml:math>
-   about the
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>y</mml:mi>
-</mml:mrow>
-</mml:math>-axis
-   with Boxed Axes and Intervals
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>6</mml:mn>
-</mml:mrow>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>6</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>r</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>,
-   where
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-</mml:math>
-   is the animation variable.
-</html:bodyText>
-<html:longQuotation>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Parametric</strong>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>&pi;</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>r</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>&pi;</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>r</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-   Click this
-   plot
-<html:graph>
-<html:msiframe pos="display" height="3.169" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
-<html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
-<html:object style="width: 3.011in; height: 3.011in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53O858.xvz" />
-</html:plotwrapper>
-</html:msiframe>
-</html:graph>
-</html:bodyText>
-</html:longQuotation>
-<html:bodyText>
-   [ <html:a href="#top"> Return to beginning of section</html:a> ]
-</html:bodyText>
-<html:section><html:sectiontitle>
-<a id="note3" xmlns="http://www.w3.org/1999/xhtml">
-</a>
-<a id="animated curves in three space" xmlns="http://www.w3.org/1999/xhtml">
-</a>Animated Curves in Three Space</html:sectiontitle></html:section>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">To make an animated curve in space</strong>
-</html:bodyText>
-<html:numberedlist>
-<html:numberedListItem>
-<html:bodyText>
-   Type an expression of the form
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mrow>
-<mml:mi>x</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mi>y</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mi>z</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:math>.
-   </html:bodyText>
-</html:numberedListItem>
-<html:numberedListItem>
-<html:bodyText>
-   Choose Compute &#8594; Plot 3D animated &#8594; Curve in Space.
-   </html:bodyText>
-</html:numberedListItem>
-</html:numberedlist>
-<html:bodyText>
-   Here is a curve that plays "follow the leader."
-</html:bodyText>
-<html:longQuotation>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Rectangular</strong>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
-<mml:mtable align="axis">
-<mml:mtr>
-<mml:mtd>
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>10</mml:mn>
-</mml:mrow>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">+</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">&minus;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
-<mml:mrow>
-<mml:mn>5</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">+</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mn>15</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">+</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-</mml:mtd>
-</mml:mtr>
-<mml:mtr>
-<mml:mtd>
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>15</mml:mn>
-</mml:mrow>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">+</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mn>10</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">+</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">&minus;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
-<mml:mrow>
-<mml:mn>5</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">+</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-</mml:mtd>
-</mml:mtr>
-<mml:mtr>
-<mml:mtd>
-<mml:mn>10</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
-<mml:mrow>
-<mml:mn>3</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">+</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mtd>
-</mml:mtr>
-</mml:mtable>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>3</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>6.28</mml:mn>
-</mml:mrow>
-</mml:math>,
-   Animation Variable:
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-   Click this
-   plot
-<html:graph>
-<html:msiframe pos="display" height="2.166" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
-<html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
-<html:object style="width: 3.011in; height: 2.008in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53L756.xvz" />
-</html:plotwrapper>
-</html:msiframe>
-</html:graph>
-</html:bodyText>
-</html:longQuotation>
-<html:bodyText>
-   [ <html:a href="#top"> Return to beginning of section</html:a> ]
-</html:bodyText>
-<html:section><html:sectiontitle>
-<a id="note4" xmlns="http://www.w3.org/1999/xhtml">
-</a>
-<a id="animated plots in cylindrical coordinates" xmlns="http://www.w3.org/1999/xhtml">
-</a>Animated Plots in Cylindrical Coordinates</html:sectiontitle></html:section>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">To make an animated plot in cylindrical coordinates</strong>
-</html:bodyText>
-<html:numberedlist>
-<html:numberedListItem>
-<html:bodyText>
-   Type an expression in three variables
-   </html:bodyText>
-</html:numberedListItem>
-<html:numberedListItem>
-<html:bodyText>
-   With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Cylindrical.
-   </html:bodyText>
-</html:numberedListItem>
-</html:numberedlist>
-<html:bodyText>
-   The next example shows a blooming flower, with Intervals
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>z</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>&theta;</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>20</mml:mn>
-</mml:mrow>
-</mml:math>,
-   and
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>.
-</html:bodyText>
-<html:longQuotation>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Cylindrical</strong>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>z</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>&theta;</mml:mi>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-   Click this
-   plot
-<html:graph>
-<html:msiframe pos="display" height="2.667" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
-<html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
-<html:object style="width: 3.011in; height: 2.51in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53J654.xvz" />
-</html:plotwrapper>
-</html:msiframe>
-</html:graph>
-</html:bodyText>
-</html:longQuotation>
-<html:bodyText>
-   [ <html:a href="#top"> Return to beginning of section</html:a> ]
-</html:bodyText>
-<html:subsection><html:sectiontitle>
-<a id="note5" xmlns="http://www.w3.org/1999/xhtml">
-</a>
-<a id="animated parametric plots in cylindrical coordinates" xmlns="http://www.w3.org/1999/xhtml">
-</a>Animated parametric plots in cylindrical coordinates</html:sectiontitle></html:subsection>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">To make a parametric animated plot in cylindrical coordinates</strong>
-</html:bodyText>
-<html:numberedlist>
-<html:numberedListItem>
-<html:bodyText>
-   Type an expression of the form
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mrow>
-<mml:mi>r</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>u</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>v</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mi>&theta;</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>u</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>v</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mi>z</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>u</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>v</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-</html:numberedListItem>
-<html:numberedListItem>
-<html:bodyText>
-   With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Cylindrical.
-   </html:bodyText>
-</html:numberedListItem>
-</html:numberedlist>
-<html:bodyText>
-   The next example shows a cone being generated as the line
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>z</mml:mi>
-<mml:mo form="infix">=</mml:mo>
-<mml:mi>r</mml:mi>
-</mml:mrow>
-</mml:math>
-   is rotated about the
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>z</mml:mi>
-</mml:mrow>
-</mml:math>-axis
-   with Intervals
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>r</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>,
-   and
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>.
-</html:bodyText>
-<html:longQuotation>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Cylindrical</strong>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>r</mml:mi>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>&pi;</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>r</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-   Click this
-   plot
-<html:graph>
-<html:msiframe pos="display" height="2.166" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
-<html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
-<html:object style="width: 3.011in; height: 2.008in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53FQ52.xvz" />
-</html:plotwrapper>
-</html:msiframe>
-</html:graph>
-</html:bodyText>
-</html:longQuotation>
-<html:bodyText>
-   [ <html:a href="#top"> Return to beginning of section</html:a> ]
-</html:bodyText>
-<html:section><html:sectiontitle>
-<a id="note6" xmlns="http://www.w3.org/1999/xhtml">
-</a>
-<a id="animated plots in spherical coordinates" xmlns="http://www.w3.org/1999/xhtml">
-</a>Animated Plots in Spherical Coordinates</html:sectiontitle></html:section>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">To make an animated plot in spherical coordinates</strong>
-</html:bodyText>
-<html:numberedlist>
-<html:numberedListItem>
-<html:bodyText>
-   Type an expression in three variables.
-   </html:bodyText>
-</html:numberedListItem>
-<html:numberedListItem>
-<html:bodyText>
-   With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Spherical.
-   </html:bodyText>
-</html:numberedListItem>
-</html:numberedlist>
-<html:bodyText>
-   The next example shows a sphere growing from radius
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>
-   to radius
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>2</mml:mn>
-</mml:mrow>
-</mml:math>,
-   with animation variable
-   Interval <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>1</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>2</mml:mn>
-</mml:mrow>
-</mml:math>
-   and Boxed Axes.
-</html:bodyText>
-<html:longQuotation>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Spherical</strong>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-   Click this
-   plot
-<html:graph>
-<html:msiframe pos="display" height="2.667" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
-<html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
-<html:object style="width: 3.011in; height: 2.51in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53DJ50.xvz" />
-</html:plotwrapper>
-</html:msiframe>
-</html:graph>
-</html:bodyText>
-</html:longQuotation>
-<html:bodyText>
-   [ <html:a href="#top"> Return to beginning of section</html:a> ]
-</html:bodyText>
-<html:subsection><html:sectiontitle>
-<a id="note7" xmlns="http://www.w3.org/1999/xhtml">
-</a>
-<a id="animated parametric plots in spherical coordinates" xmlns="http://www.w3.org/1999/xhtml">
-</a>Animated parametric plots in spherical coordinates</html:sectiontitle></html:subsection>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">To make an parameterized animated plot in spherical
-   coordinates</strong>
-</html:bodyText>
-<html:numberedlist>
-<html:numberedListItem>
-<html:bodyText>
-   Type an expression of the form
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mrow>
-<mml:mi>&rho;</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>r</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mi>&theta;</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>r</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mi>&phi;</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mi>r</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">,</mml:mo>
-<mml:mi>t</mml:mi>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-</html:numberedListItem>
-<html:numberedListItem>
-<html:bodyText>
-   With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Spherical.
-   </html:bodyText>
-</html:numberedListItem>
-</html:numberedlist>
-<html:bodyText>
-   The next animation shows the surface that morphs from a sphere into a surface
-   shaped like a bagel. The Intervals are
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>r</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>,
-   and
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>.
-</html:bodyText>
-<html:longQuotation>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Spherical</strong>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
-<mml:mrow>
-<mml:mrow>
-<mml:mn>1</mml:mn>
-<mml:mo form="infix">&minus;</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>&pi;</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>r</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>&pi;</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-<mml:mo form="infix">,</mml:mo>
-<mml:mrow>
-<mml:mi>&pi;</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>r</mml:mi>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-   Click this
-   plot
-<html:graph>
-<html:msiframe pos="display" height="2.667" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
-<html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
-<html:object style="width: 3.011in; height: 2.51in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53AK4Y.xvz" />
-</html:plotwrapper>
-</html:msiframe>
-</html:graph>
-</html:bodyText>
-</html:longQuotation>
-<html:bodyText>
-   [ <html:a href="#top"> Return to beginning of section</html:a> ]
-</html:bodyText>
-<html:section><html:sectiontitle>
-<a id="note8" xmlns="http://www.w3.org/1999/xhtml">
-</a>
-<a id="animated 3d implicit plots" xmlns="http://www.w3.org/1999/xhtml">
-</a>Animated 3D Implicit Plots</html:sectiontitle></html:section>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">To make an animated implicit plot</strong>
-</html:bodyText>
-<html:numberedlist>
-<html:numberedListItem>
-<html:bodyText>
-   Type an equation in four variables
-   </html:bodyText>
-</html:numberedListItem>
-<html:numberedListItem>
-<html:bodyText>
-   With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Implicit.
-   </html:bodyText>
-</html:numberedListItem>
-</html:numberedlist>
-<html:bodyText>
-   The next animation shows a hyperboloid on two sheets that morphs into a
-   sphere. The intervals are
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>2</mml:mn>
-</mml:mrow>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>x</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>2</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>2</mml:mn>
-</mml:mrow>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>y</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>2</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>2</mml:mn>
-</mml:mrow>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>z</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>2</mml:mn>
-</mml:mrow>
-</mml:math>,
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>.
-</html:bodyText>
-<html:longQuotation>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Tube</strong>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mrow>
-<mml:msup>
-<mml:mi>x</mml:mi>
-<mml:mn>2</mml:mn>
-</mml:msup>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:msup>
-<mml:mi>y</mml:mi>
-<mml:mn>2</mml:mn>
-</mml:msup>
-</mml:mrow>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:msup>
-<mml:mi>z</mml:mi>
-<mml:mn>2</mml:mn>
-</mml:msup>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">=</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-   Click this
-   plot
-<html:graph>
-<html:msiframe pos="display" height="3.157" width="4.657" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
-<html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
-<html:object style="width: 4.5in; height: 3in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY52Y94W.xvz" />
-</html:plotwrapper>
-</html:msiframe>
-</html:graph>
-</html:bodyText>
-</html:longQuotation>
-<html:bodyText>
-   Be aware that this plot can take time to generate.
-</html:bodyText>
-<html:bodyText>
-   [ <html:a href="#top"> Return to beginning of section</html:a> ]
-</html:bodyText>
-<html:section><html:sectiontitle>
-<a id="note9" xmlns="http://www.w3.org/1999/xhtml">
-</a>
-<a id="animated tube plot" xmlns="http://www.w3.org/1999/xhtml">
-</a>Animated Tube Plot</html:sectiontitle></html:section>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">To make an animated tube plot</strong>
-</html:bodyText>
-<html:numberedlist>
-<html:numberedListItem>
-<html:bodyText>
-   Type an equation in one or two variables
-   </html:bodyText>
-</html:numberedListItem>
-<html:numberedListItem>
-<html:bodyText>
-   With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Tube.
-   </html:bodyText>
-</html:numberedListItem>
-<html:numberedListItem>
-<html:bodyText>
-   In the Plot Properties dialog, on the Items Plotted page, change Radius to an
-   expression of your choice, using the same variables.
-   </html:bodyText>
-</html:numberedListItem>
-</html:numberedlist>
-<html:bodyText>
-   The next animation shows a knot being drawn. The intervals are
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>s</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>&pi;</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:math>
-   and
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>0.01</mml:mn>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo form="infix">&le;</mml:mo>
-<mml:mn>1</mml:mn>
-</mml:mrow>
-</mml:math>,
-   and Radius is set to
-   <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mn>3</mml:mn>
-</mml:mrow>
-</mml:math>.
-</html:bodyText>
-<html:longQuotation>
-<html:bodyText>
-<strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Tube</strong>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
-<mml:mtable align="axis">
-<mml:mtr>
-<mml:mtd>
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>10</mml:mn>
-</mml:mrow>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">&minus;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>5</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mn>15</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-</mml:mtd>
-<mml:mtd>
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>15</mml:mn>
-</mml:mrow>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mn>10</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">&minus;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>5</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-</mml:mtd>
-<mml:mtd>
-<mml:mn>10</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>3</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>t</mml:mi>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mtd>
-</mml:mtr>
-</mml:mtable>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
-<mml:mrow>
-<mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
-<mml:mtable align="axis">
-<mml:mtr>
-<mml:mtd>
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>10</mml:mn>
-</mml:mrow>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">&minus;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>5</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mn>15</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-</mml:mtd>
-<mml:mtd>
-<mml:mrow>
-<mml:mrow>
-<mml:mo form="prefix">&minus;</mml:mo>
-<mml:mn>15</mml:mn>
-</mml:mrow>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">+</mml:mo>
-<mml:mrow>
-<mml:mn>10</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-<mml:mo form="infix">&minus;</mml:mo>
-<mml:mrow>
-<mml:mn>2</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">sin</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>5</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mrow>
-</mml:mtd>
-<mml:mtd>
-<mml:mn>10</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mrow>
-<mml:mi mathcolor="gray">cos</mml:mi>
-<mml:mo>&ApplyFunction;</mml:mo>
-<mml:mrow>
-<mml:mn>3</mml:mn>
-<mml:mo>&InvisibleTimes;</mml:mo>
-<mml:mi>s</mml:mi>
-</mml:mrow>
-</mml:mrow>
-</mml:mtd>
-</mml:mtr>
-</mml:mtable>
-<mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
-</mml:mrow>
-</mml:math>
-</html:bodyText>
-<html:bodyText>
-   Click this
-   plot
-<html:graph>
-<html:msiframe pos="display" height="3.157" width="4.657" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
-<html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
-<html:object style="width: 4.5in; height: 3in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53TX5C.xvz" />
-</html:plotwrapper>
-</html:msiframe>
-</html:graph>
-</html:bodyText>
-</html:longQuotation>
-<html:bodyText>
-   Be aware that this plot can take time to generate.
-</html:bodyText>
-<html:bodyText>
-   [ <html:a href="#top"> Return to beginning of section</html:a> ]
-</html:bodyText>
+  <h2 class="subsection" xmlns="http://www.w3.org/1999/xhtml">
+    <a id="top"></a>
+    Creating Animated 3D Plots
+  </h2>
+
+  <html:bodyText>
+    For an animated plot, you specify a third animation parameter. The default
+    animation parameter is
+    <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+    <mml:mrow>
+    <mml:mi>t</mml:mi>
+    </mml:mrow>
+    </mml:math>.
+  </html:bodyText>
+
+  <html:bodyText>
+    <em xmlns="http://www.w3.org/1999/xhtml">
+    <hr class="hrulefill">
+    </hr>
+    </em>
+  </html:bodyText>
+
+  <html:bodyText>
+    In this section:
+  </html:bodyText>
+
+  <html:bodyText>
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <html:a href="#3d plot animation tools"> Animation Tools</html:a>
+    <br xmlns="http://www.w3.org/1999/xhtml" />
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <html:a href="#animated 3d plots in rectangular coordinates"> Animated
+       3D Plots in Rectangular
+       Coordinates</html:a>
+    <br xmlns="http://www.w3.org/1999/xhtml" />
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <html:a href="#animated parametric 3d plots in rectangular coordinates"> Animated
+       parametric 3d plots in rectangular
+       coordinates</html:a>
+    <br xmlns="http://www.w3.org/1999/xhtml" />
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <html:a href="#animated curves in three space"> Animated
+       Curves in Three
+       Space</html:a>
+    <br xmlns="http://www.w3.org/1999/xhtml" />
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <html:a href="#animated plots in cylindrical coordinates"> Animated
+       Plots in Cylindrical
+       Coordinates</html:a>
+    <br xmlns="http://www.w3.org/1999/xhtml" />
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <html:a href="#animated parametric plots in cylindrical coordinates"> Animated
+       parametric plots in cylindrical
+       coordinates</html:a>
+    <br xmlns="http://www.w3.org/1999/xhtml" />
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <html:a href="#animated plots in spherical coordinates"> Animated
+       Plots in Spherical
+       Coordinates</html:a>
+    <br xmlns="http://www.w3.org/1999/xhtml" />
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <html:a href="#animated parametric plots in spherical coordinates"> Animated
+       parametric plots in spherical
+       coordinates</html:a>
+    <br xmlns="http://www.w3.org/1999/xhtml" />
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <html:a href="#animated 3d implicit plots"> Animated
+       3D Implicit
+       Plots</html:a>
+    <br xmlns="http://www.w3.org/1999/xhtml" />
+    <span style="width:2em" xmlns="http://www.w3.org/1999/xhtml">
+    <span style="padding-left:2em">
+    </span>
+    </span>
+    <html:a href="#animated tube plot"> Animated
+       Tube Plot</html:a>
+  </html:bodyText>
+
+  <html:bodyText>
+    [ <html:a href="dm06-00-plotting.xhtml">Return to prior section</html:a> ]
+  </html:bodyText>
+
+  <html:bodyText>
+    <em xmlns="http://www.w3.org/1999/xhtml">
+    <hr class="hrulefill">
+    </hr>
+    </em>
+  </html:bodyText>
+
+  <html:section>
+    <html:sectiontitle>
+      <a id="3d plot animation tools"></a>
+       Animation Tools
+    </html:sectiontitle>
+
+    <html:bodyText>
+      When the frame of a 3D animated plot is selected, several plotting tools become
+      visible just below other toolbars at the top of the screen.
+    </html:bodyText>
+
+    <html:bodyText>
+    <html:object alt="3D animated toolbar" data="graphics/3Danimationtoolbar.png" />
+    </html:bodyText>
+
+    <html:bodyText>
+      The tool on the left is Reset viewpoint and it is followed by 
+      Fit to contents. Next is the Select tool, then the Move tool, 
+      and the Query tool, followed by the Zoom in tool and the Zoom out tool. 
+      The last in the group is the Snapshot tool.  
+      The remaining tools are
+      designed to control the animation. These include jumps to the beginning or the
+      end, begin animation, a slider for manually moving through the animation
+      sequence, and loop controls (Run once, Back and forth, Loop), and speed
+      controls
+      (<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+      <mml:mrow>
+      <mml:mn>8</mml:mn>
+      <mml:mo form="infix">&times;</mml:mo>
+      </mml:mrow>
+      </mml:math>
+      slower to
+      <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+      <mml:mrow>
+      <mml:mn>8</mml:mn>
+      <mml:mo form="infix">&times;</mml:mo>
+      </mml:mrow>
+      </mml:math>
+      faster).
+    </html:bodyText>
+
+    <html:bodyText>
+    <strong xmlns="http://www.w3.org/1999/xhtml">To display the animation tools</strong>
+    </html:bodyText>
+
+    <html:bulletlist>
+    <html:bulletListItem>
+    <html:bodyText>
+       Click the animated plot
+       </html:bodyText>
+    </html:bulletListItem>
+    </html:bulletlist>
+
+    <html:bodyText>
+       [ <html:a href="#top"> Return to beginning of section</html:a> ]
+    </html:bodyText>
+
+  </html:section>
+  
+  <html:section>
+    <html:sectiontitle>
+      <a id="note1" xmlns="http://www.w3.org/1999/xhtml"></a>
+      <a id="animated 3d plots in rectangular coordinates" xmlns="http://www.w3.org/1999/xhtml"></a>
+      Animated 3D Plots in Rectangular Coordinates
+    </html:sectiontitle>
+  
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">To make an animated plot in rectangular coordinates</strong>
+  </html:bodyText>
+  <html:numberedlist>
+  <html:numberedListItem>
+  <html:bodyText>
+     Type an expression in three variables.
+     </html:bodyText>
+  </html:numberedListItem>
+  <html:numberedListItem>
+  <html:bodyText>
+     With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Rectangular.
+     </html:bodyText>
+  </html:numberedListItem>
+  </html:numberedlist>
+  <html:bodyText>
+     The next example shows a 3D animated plot with Boxed Axes and Intervals
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>6</mml:mn>
+  </mml:mrow>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>x</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>6</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>6</mml:mn>
+  </mml:mrow>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>y</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>6</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>3</mml:mn>
+  </mml:mrow>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>3</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     where
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  </mml:math>
+     is the animation variable. The surface changes from a hyperbolic paraboloid
+     (<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&lt;</mml:mo>
+  <mml:mn>0</mml:mn>
+  </mml:mrow>
+  </mml:math>),
+     to a paraboloid
+     (<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">=</mml:mo>
+  <mml:mn>0</mml:mn>
+  </mml:mrow>
+  </mml:math>),
+     then to a hyperbolic paraboloid with a different
+     orientation (<mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&gt;</mml:mo>
+  <mml:mn>0</mml:mn>
+  </mml:mrow>
+  </mml:math>).
+  </html:bodyText>
+  <html:longQuotation>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Rectangular</strong>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mpadded depth="8.000000pt" height="-8.000000pt">
+  <mml:msup>
+  <mml:mi>x</mml:mi>
+  <mml:mn>2</mml:mn>
+  </mml:msup>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:msup>
+  <mml:mi>y</mml:mi>
+  <mml:mn>2</mml:mn>
+  </mml:msup>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>x</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>y</mml:mi>
+  </mml:mrow>
+  </mml:mpadded>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+     Click this
+     plot.
+  <html:graph>
+  <html:msiframe pos="display" height="3.169" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
+  <html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
+  <html:object style="width: 3.011in; height: 3.011in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53QZ5A.xvz" />
+  </html:plotwrapper>
+  </html:msiframe>
+  </html:graph>
+  </html:bodyText>
+  </html:longQuotation>
+  <html:bodyText>
+     [ <html:a href="#top"> Return to beginning of section</html:a> ]
+  </html:bodyText>
+  <html:subsection><html:sectiontitle>
+  <a id="note2" xmlns="http://www.w3.org/1999/xhtml">
+  </a>
+  <a id="animated parametric 3d plots in rectangular coordinates" xmlns="http://www.w3.org/1999/xhtml">
+  </a>Animated parametric 3d plots in rectangular coordinates</html:sectiontitle></html:subsection>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">To make a parameterized animated plot in rectangular
+     coordinates</strong>
+  </html:bodyText>
+  <html:numberedlist>
+  <html:numberedListItem>
+  <html:bodyText>
+     Type an expression of the form
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mi>x</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>r</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mi>y</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>r</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mi>z</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>r</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:math>.
+     </html:bodyText>
+  </html:numberedListItem>
+  <html:numberedListItem>
+  <html:bodyText>
+     Choose Compute &#8594; Plot 3D animated &#8594; Parametric, or
+     </html:bodyText>
+  <html:bodyText>
+     Choose Compute &#8594; Plot 3D animated &#8594; Rectangular.
+     </html:bodyText>
+  </html:numberedListItem>
+  </html:numberedlist>
+  <html:bodyText>
+     The next example shows a surface of revolution generated by rotating the graph
+     of
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>z</mml:mi>
+  <mml:mo form="infix">=</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mi>y</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:math>
+     about the
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>y</mml:mi>
+  </mml:mrow>
+  </mml:math>-axis
+     with Boxed Axes and Intervals
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>6</mml:mn>
+  </mml:mrow>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>6</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>r</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     where
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  </mml:math>
+     is the animation variable.
+  </html:bodyText>
+  <html:longQuotation>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Parametric</strong>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>&pi;</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>r</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>&pi;</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>r</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+     Click this
+     plot
+  <html:graph>
+  <html:msiframe pos="display" height="3.169" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
+  <html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
+  <html:object style="width: 3.011in; height: 3.011in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53O858.xvz" />
+  </html:plotwrapper>
+  </html:msiframe>
+  </html:graph>
+  </html:bodyText>
+  </html:longQuotation>
+  <html:bodyText>
+     [ <html:a href="#top"> Return to beginning of section</html:a> ]
+  </html:bodyText>
+  </html:section>
+  
+  <html:section>
+    <html:sectiontitle>
+      <a id="note3" xmlns="http://www.w3.org/1999/xhtml"></a>
+      <a id="animated curves in three space" xmlns="http://www.w3.org/1999/xhtml"></a>
+      Animated Curves in Three Space
+    </html:sectiontitle>
+  
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">To make an animated curve in space</strong>
+  </html:bodyText>
+  <html:numberedlist>
+  <html:numberedListItem>
+  <html:bodyText>
+     Type an expression of the form
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mi>x</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mi>y</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mi>z</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:math>.
+     </html:bodyText>
+  </html:numberedListItem>
+  <html:numberedListItem>
+  <html:bodyText>
+     Choose Compute &#8594; Plot 3D animated &#8594; Curve in Space.
+     </html:bodyText>
+  </html:numberedListItem>
+  </html:numberedlist>
+  <html:bodyText>
+     Here is a curve that plays "follow the leader."
+  </html:bodyText>
+  <html:longQuotation>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Rectangular</strong>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+  <mml:mtable align="axis">
+  <mml:mtr>
+  <mml:mtd>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>10</mml:mn>
+  </mml:mrow>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">&minus;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+  <mml:mrow>
+  <mml:mn>5</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mn>15</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mtd>
+  </mml:mtr>
+  <mml:mtr>
+  <mml:mtd>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>15</mml:mn>
+  </mml:mrow>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mn>10</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">&minus;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+  <mml:mrow>
+  <mml:mn>5</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mtd>
+  </mml:mtr>
+  <mml:mtr>
+  <mml:mtd>
+  <mml:mn>10</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+  <mml:mrow>
+  <mml:mn>3</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mtd>
+  </mml:mtr>
+  </mml:mtable>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>3</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>6.28</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     Animation Variable:
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+     Click this
+     plot
+  <html:graph>
+  <html:msiframe pos="display" height="2.166" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
+  <html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
+  <html:object style="width: 3.011in; height: 2.008in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53L756.xvz" />
+  </html:plotwrapper>
+  </html:msiframe>
+  </html:graph>
+  </html:bodyText>
+  </html:longQuotation>
+  <html:bodyText>
+     [ <html:a href="#top"> Return to beginning of section</html:a> ]
+  </html:bodyText>
+  </html:section>
+  
+  <html:section>
+    <html:sectiontitle>
+      <a id="note4" xmlns="http://www.w3.org/1999/xhtml"></a>
+      <a id="animated plots in cylindrical coordinates" xmlns="http://www.w3.org/1999/xhtml"></a>
+      Animated Plots in Cylindrical Coordinates
+    </html:sectiontitle>
+  
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">To make an animated plot in cylindrical coordinates</strong>
+  </html:bodyText>
+  <html:numberedlist>
+  <html:numberedListItem>
+  <html:bodyText>
+     Type an expression in three variables
+     </html:bodyText>
+  </html:numberedListItem>
+  <html:numberedListItem>
+  <html:bodyText>
+     With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Cylindrical.
+     </html:bodyText>
+  </html:numberedListItem>
+  </html:numberedlist>
+  <html:bodyText>
+     The next example shows a blooming flower, with Intervals
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>z</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>&theta;</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>20</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     and
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>.
+  </html:bodyText>
+  <html:longQuotation>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Cylindrical</strong>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>z</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>&theta;</mml:mi>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+     Click this
+     plot
+  <html:graph>
+  <html:msiframe pos="display" height="2.667" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
+  <html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
+  <html:object style="width: 3.011in; height: 2.51in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53J654.xvz" />
+  </html:plotwrapper>
+  </html:msiframe>
+  </html:graph>
+  </html:bodyText>
+  </html:longQuotation>
+  <html:bodyText>
+     [ <html:a href="#top"> Return to beginning of section</html:a> ]
+  </html:bodyText>
+  <html:subsection><html:sectiontitle>
+  <a id="note5" xmlns="http://www.w3.org/1999/xhtml">
+  </a>
+  <a id="animated parametric plots in cylindrical coordinates" xmlns="http://www.w3.org/1999/xhtml">
+  </a>Animated parametric plots in cylindrical coordinates</html:sectiontitle></html:subsection>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">To make a parametric animated plot in cylindrical coordinates</strong>
+  </html:bodyText>
+  <html:numberedlist>
+  <html:numberedListItem>
+  <html:bodyText>
+     Type an expression of the form
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mi>r</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>u</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>v</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mi>&theta;</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>u</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>v</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mi>z</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>u</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>v</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  </html:numberedListItem>
+  <html:numberedListItem>
+  <html:bodyText>
+     With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Cylindrical.
+     </html:bodyText>
+  </html:numberedListItem>
+  </html:numberedlist>
+  <html:bodyText>
+     The next example shows a cone being generated as the line
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>z</mml:mi>
+  <mml:mo form="infix">=</mml:mo>
+  <mml:mi>r</mml:mi>
+  </mml:mrow>
+  </mml:math>
+     is rotated about the
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>z</mml:mi>
+  </mml:mrow>
+  </mml:math>-axis
+     with Intervals
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>r</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     and
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>.
+  </html:bodyText>
+  <html:longQuotation>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Cylindrical</strong>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>r</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>&pi;</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>r</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+     Click this
+     plot
+  <html:graph>
+  <html:msiframe pos="display" height="2.166" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
+  <html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
+  <html:object style="width: 3.011in; height: 2.008in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53FQ52.xvz" />
+  </html:plotwrapper>
+  </html:msiframe>
+  </html:graph>
+  </html:bodyText>
+  </html:longQuotation>
+  <html:bodyText>
+     [ <html:a href="#top"> Return to beginning of section</html:a> ]
+  </html:bodyText>
+  </html:section>
+  
+  <html:section>
+    <html:sectiontitle>
+      <a id="note6" xmlns="http://www.w3.org/1999/xhtml"></a>
+      <a id="animated plots in spherical coordinates" xmlns="http://www.w3.org/1999/xhtml"></a>
+      Animated Plots in Spherical Coordinates
+    </html:sectiontitle>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">To make an animated plot in spherical coordinates</strong>
+  </html:bodyText>
+  <html:numberedlist>
+  <html:numberedListItem>
+  <html:bodyText>
+     Type an expression in three variables.
+     </html:bodyText>
+  </html:numberedListItem>
+  <html:numberedListItem>
+  <html:bodyText>
+     With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Spherical.
+     </html:bodyText>
+  </html:numberedListItem>
+  </html:numberedlist>
+  <html:bodyText>
+     The next example shows a sphere growing from radius
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>
+     to radius
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     with animation variable
+     Interval <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>1</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>2</mml:mn>
+  </mml:mrow>
+  </mml:math>
+     and Boxed Axes.
+  </html:bodyText>
+  <html:longQuotation>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Spherical</strong>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+     Click this
+     plot
+  <html:graph>
+  <html:msiframe pos="display" height="2.667" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
+  <html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
+  <html:object style="width: 3.011in; height: 2.51in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53DJ50.xvz" />
+  </html:plotwrapper>
+  </html:msiframe>
+  </html:graph>
+  </html:bodyText>
+  </html:longQuotation>
+  <html:bodyText>
+     [ <html:a href="#top"> Return to beginning of section</html:a> ]
+  </html:bodyText>
+  <html:subsection><html:sectiontitle>
+  <a id="note7" xmlns="http://www.w3.org/1999/xhtml">
+  </a>
+  <a id="animated parametric plots in spherical coordinates" xmlns="http://www.w3.org/1999/xhtml">
+  </a>Animated parametric plots in spherical coordinates</html:sectiontitle></html:subsection>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">To make an parameterized animated plot in spherical
+     coordinates</strong>
+  </html:bodyText>
+  <html:numberedlist>
+  <html:numberedListItem>
+  <html:bodyText>
+     Type an expression of the form
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mi>&rho;</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>r</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mi>&theta;</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>r</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mi>&phi;</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mi>r</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mi>t</mml:mi>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  </html:numberedListItem>
+  <html:numberedListItem>
+  <html:bodyText>
+     With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Spherical.
+     </html:bodyText>
+  </html:numberedListItem>
+  </html:numberedlist>
+  <html:bodyText>
+     The next animation shows the surface that morphs from a sphere into a surface
+     shaped like a bagel. The Intervals are
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>r</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     and
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>.
+  </html:bodyText>
+  <html:longQuotation>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Spherical</strong>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mn>1</mml:mn>
+  <mml:mo form="infix">&minus;</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>&pi;</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>r</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>&pi;</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  <mml:mo form="infix">,</mml:mo>
+  <mml:mrow>
+  <mml:mi>&pi;</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>r</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+     Click this
+     plot
+  <html:graph>
+  <html:msiframe pos="display" height="2.667" width="3.169" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
+  <html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
+  <html:object style="width: 3.011in; height: 2.51in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53AK4Y.xvz" />
+  </html:plotwrapper>
+  </html:msiframe>
+  </html:graph>
+  </html:bodyText>
+  </html:longQuotation>
+  <html:bodyText>
+     [ <html:a href="#top"> Return to beginning of section</html:a> ]
+  </html:bodyText>
+  </html:section>
+  
+  <html:section>
+    <html:sectiontitle>
+      <a id="note8" xmlns="http://www.w3.org/1999/xhtml"></a>
+      <a id="animated 3d implicit plots" xmlns="http://www.w3.org/1999/xhtml"></a>
+      Animated 3D Implicit Plots
+    </html:sectiontitle>
+  
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">To make an animated implicit plot</strong>
+  </html:bodyText>
+  <html:numberedlist>
+  <html:numberedListItem>
+  <html:bodyText>
+     Type an equation in four variables
+     </html:bodyText>
+  </html:numberedListItem>
+  <html:numberedListItem>
+  <html:bodyText>
+     With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Implicit.
+     </html:bodyText>
+  </html:numberedListItem>
+  </html:numberedlist>
+  <html:bodyText>
+     The next animation shows a hyperboloid on two sheets that morphs into a
+     sphere. The intervals are
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>2</mml:mn>
+  </mml:mrow>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>x</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>2</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>2</mml:mn>
+  </mml:mrow>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>y</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>2</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>2</mml:mn>
+  </mml:mrow>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>z</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>2</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>.
+  </html:bodyText>
+  <html:longQuotation>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Tube</strong>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mrow>
+  <mml:msup>
+  <mml:mi>x</mml:mi>
+  <mml:mn>2</mml:mn>
+  </mml:msup>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:msup>
+  <mml:mi>y</mml:mi>
+  <mml:mn>2</mml:mn>
+  </mml:msup>
+  </mml:mrow>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:msup>
+  <mml:mi>z</mml:mi>
+  <mml:mn>2</mml:mn>
+  </mml:msup>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">=</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+     Click this
+     plot
+  <html:graph>
+  <html:msiframe pos="display" height="3.157" width="4.657" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
+  <html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
+  <html:object style="width: 4.5in; height: 3in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY52Y94W.xvz" />
+  </html:plotwrapper>
+  </html:msiframe>
+  </html:graph>
+  </html:bodyText>
+  </html:longQuotation>
+  <html:bodyText>
+     Be aware that this plot can take time to generate.
+  </html:bodyText>
+  <html:bodyText>
+     [ <html:a href="#top"> Return to beginning of section</html:a> ]
+  </html:bodyText>
+  </html:section>
+  
+  <html:section>
+    <html:sectiontitle>
+      <a id="note9" xmlns="http://www.w3.org/1999/xhtml"></a>
+      <a id="animated tube plot" xmlns="http://www.w3.org/1999/xhtml"></a>
+      Animated Tube Plot
+    </html:sectiontitle>
+  
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">To make an animated tube plot</strong>
+  </html:bodyText>
+  <html:numberedlist>
+  <html:numberedListItem>
+  <html:bodyText>
+     Type an equation in one or two variables
+     </html:bodyText>
+  </html:numberedListItem>
+  <html:numberedListItem>
+  <html:bodyText>
+     With the insert point in the expression, choose Compute &#8594; Plot 3D animated &#8594; Tube.
+     </html:bodyText>
+  </html:numberedListItem>
+  <html:numberedListItem>
+  <html:bodyText>
+     In the Plot Properties dialog, on the Items Plotted page, change Radius to an
+     expression of your choice, using the same variables.
+     </html:bodyText>
+  </html:numberedListItem>
+  </html:numberedlist>
+  <html:bodyText>
+     The next animation shows a knot being drawn. The intervals are
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>s</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>&pi;</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:math>
+     and
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>0.01</mml:mn>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo form="infix">&le;</mml:mo>
+  <mml:mn>1</mml:mn>
+  </mml:mrow>
+  </mml:math>,
+     and Radius is set to
+     <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mn>3</mml:mn>
+  </mml:mrow>
+  </mml:math>.
+  </html:bodyText>
+  <html:longQuotation>
+  <html:bodyText>
+  <strong xmlns="http://www.w3.org/1999/xhtml">Compute &#8594; Plot 3D animated &#8594; Tube</strong>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+  <mml:mtable align="axis">
+  <mml:mtr>
+  <mml:mtd>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>10</mml:mn>
+  </mml:mrow>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">&minus;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>5</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mn>15</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mtd>
+  <mml:mtd>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>15</mml:mn>
+  </mml:mrow>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mn>10</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">&minus;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>5</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mtd>
+  <mml:mtd>
+  <mml:mn>10</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>3</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>t</mml:mi>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mtd>
+  </mml:mtr>
+  </mml:mtable>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+  <mml:math display="inline" xmlns="http://www.w3.org/1999/xhtml">
+  <mml:mrow>
+  <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+  <mml:mtable align="axis">
+  <mml:mtr>
+  <mml:mtd>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>10</mml:mn>
+  </mml:mrow>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">&minus;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>5</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mn>15</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mtd>
+  <mml:mtd>
+  <mml:mrow>
+  <mml:mrow>
+  <mml:mo form="prefix">&minus;</mml:mo>
+  <mml:mn>15</mml:mn>
+  </mml:mrow>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">+</mml:mo>
+  <mml:mrow>
+  <mml:mn>10</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  <mml:mo form="infix">&minus;</mml:mo>
+  <mml:mrow>
+  <mml:mn>2</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">sin</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>5</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mtd>
+  <mml:mtd>
+  <mml:mn>10</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mrow>
+  <mml:mi mathcolor="gray">cos</mml:mi>
+  <mml:mo>&ApplyFunction;</mml:mo>
+  <mml:mrow>
+  <mml:mn>3</mml:mn>
+  <mml:mo>&InvisibleTimes;</mml:mo>
+  <mml:mi>s</mml:mi>
+  </mml:mrow>
+  </mml:mrow>
+  </mml:mtd>
+  </mml:mtr>
+  </mml:mtable>
+  <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+  </mml:mrow>
+  </mml:math>
+  </html:bodyText>
+  <html:bodyText>
+     Click this
+     plot
+  <html:graph>
+  <html:msiframe pos="display" height="3.157" width="4.657" units="in" placeLocation="" topmargin=".059" sidemargin=".118" style="margin: 5.67px auto;">
+  <html:plotwrapper units="in" msi_resize="true" padding=".079" style=" padding: .079in">
+  <html:object style="width: 4.5in; height: 3in;" msigraph="true" alt="Generated Plot" type="application/x-mupad-graphics+xml" data="plots/LY53TX5C.xvz" />
+  </html:plotwrapper>
+  </html:msiframe>
+  </html:graph>
+  </html:bodyText>
+  </html:longQuotation>
+  <html:bodyText>
+     Be aware that this plot can take time to generate.
+  </html:bodyText>
+  <html:bodyText>
+     [ <html:a href="#top"> Return to beginning of section</html:a> ]
+  </html:bodyText>
+  </html:section>
+
 </html:body>
 </html:html>
