@@ -840,12 +840,12 @@
     <rdf:Seq>
       <rdf:li> <rdf:Description ID="plotting_interactive-2d_activate"  nc:name="Activating the Interactive Tools for 2D Plots" nc:link="dm06-02-plotting.xhtml#activating the interactive tools for 2d plots"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_interactive-2d_reset"     nc:name="Reset Viewpoint"                               nc:link="dm06-02-plotting.xhtml#reset viewpoint"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_interactive-2d_reset"     nc:name="Fit to Contents"                               nc:link="dm06-02-plotting.xhtml#fit to contents"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_interactive-2d_reset"     nc:name="Select"                                        nc:link="dm06-02-plotting.xhtml#select"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_interactive-2d_fit"       nc:name="Fit to Contents"                               nc:link="dm06-02-plotting.xhtml#fit to contents"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_interactive-2d_select"    nc:name="Select"                                        nc:link="dm06-02-plotting.xhtml#select"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_interactive-2d_translate" nc:name="Translate the View"                            nc:link="dm06-02-plotting.xhtml#translating the view"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_interactive-2d_plot"      nc:name="Plot Coordinates"                              nc:link="dm06-02-plotting.xhtml#plot coordinates"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_interactive-2d_zoom"      nc:name="Zoom In and Out"                               nc:link="dm06-02-plotting.xhtml#zooming in and out"/> </rdf:li>
-      <rdf:li> <rdf:Description ID="plotting_interactive-2d_reset"     nc:name="Snapshot"                                      nc:link="dm06-02-plotting.xhtml#snapshot"/> </rdf:li>
+      <rdf:li> <rdf:Description ID="plotting_interactive-2d_snapshot"  nc:name="Snapshot"                                      nc:link="dm06-02-plotting.xhtml#snapshot"/> </rdf:li>
     </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
