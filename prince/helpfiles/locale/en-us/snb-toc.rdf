@@ -965,6 +965,7 @@
   <rdf:Description about="#plotting_creating-3d">
     <nc:subheadings>
     <rdf:Seq>
+      <rdf:li> <rdf:Description ID="plotting_creating-3d_tools"    nc:name="Interactive Tools for 3D Plots"      nc:link="dm06-06-plotting.xhtml#interactive tools for 3d plots"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_creating-3d_twovars"  nc:name="Expressions Involving Two Variables" nc:link="dm06-06-plotting.xhtml#expressions involving two variables"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_creating-3d_defined"  nc:name="3D Plots of Defined Functions"       nc:link="dm06-06-plotting.xhtml#3d plots of defined functions"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_creating-3d_para"     nc:name="Parametric Plots of Surfaces"        nc:link="dm06-06-plotting.xhtml#parametric plots of surfaces"/> </rdf:li>
@@ -1018,6 +1019,7 @@
   <rdf:Description about="#plotting_animated-3d">
     <nc:subheadings>
     <rdf:Seq>
+      <rdf:li> <rdf:Description ID="plotting_animated-3d_tools"    nc:name="Animation Tools"                              nc:link="dm06-07-plotting.xhtml#3d plot animation tools"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_animated-3d_rect"     nc:name="Animated 3D Plots in Rectangular Coordinates" nc:link="dm06-07-plotting.xhtml#animated 3d plots in rectangular coordinates"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_animated-3d_curve"    nc:name="Animated Curves in Three Space"               nc:link="dm06-07-plotting.xhtml#animated curves in three space"/> </rdf:li>
       <rdf:li> <rdf:Description ID="plotting_animated-3d_cylind"   nc:name="Animated Plots in Cylindrical Coordinates"    nc:link="dm06-07-plotting.xhtml#animated plots in cylindrical coordinates"/> </rdf:li>
