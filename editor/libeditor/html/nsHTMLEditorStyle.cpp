@@ -670,7 +670,10 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
   nsString mathequiv;
   nsString mstyle = NS_LITERAL_STRING("mstyle");
   nsString mathvariant = NS_LITERAL_STRING("mathvariant");
+  nsCOMPtr<nsIAtom> newProperty;
+
   aProperty->ToString(tag);
+  newProperty = aProperty;
 
   PRBool isMath = nsHTMLEditUtils::IsMath(aNode);
   PRBool mathonly = PropertyIsMathOnly( tag );
@@ -753,23 +756,29 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
     return SetAttribute(elem, *aAttribute, *aValue);
   }
   nsString namestr;
+
   aNode->GetLocalName(namestr);
 
   // can it be put inside inline node?
   if ((TagCanContain(tag, aNode) && !isMath && !mathonly)||(isMath && (namestr.EqualsLiteral("mi") || namestr.EqualsLiteral("mn"))))
   {
+    // special code for mn and boldsymbol, since we don't want boldsymbol to italicize numbers.
+    if (tag.EqualsLiteral("boldsymbol") && namestr.EqualsLiteral("mn")) {
+      tag = NS_LITERAL_STRING("bold");
+      newProperty = do_GetAtom(tag);
+    }
     nsCOMPtr<nsIDOMNode> priorNode, nextNode;
     // is either of it's neighbors the right kind of node?
     GetPriorHTMLSibling(aNode, address_of(priorNode));
     GetNextHTMLSibling(aNode, address_of(nextNode));
-    if (!isMath && priorNode && NodeIsType(priorNode, aProperty) &&
+    if (!isMath && priorNode && NodeIsType(priorNode, newProperty) &&
         HasAttrVal(priorNode, aAttribute, aValue)     &&
         IsOnlyAttribute(priorNode, aAttribute) )
     {
       // previous sib is already right kind of inline node; slide this over into it
       res = MoveNode(aNode, priorNode, -1);
     }
-    else if (!isMath && nextNode && NodeIsType(nextNode, aProperty) &&
+    else if (!isMath && nextNode && NodeIsType(nextNode, newProperty) &&
              HasAttrVal(nextNode, aAttribute, aValue)    &&
              IsOnlyAttribute(priorNode, aAttribute) )
     {
@@ -828,7 +837,7 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
       for (j = 0; j < listCount; j++)
       {
         node = arrayOfNodes[j];
-        res = SetInlinePropertyOnNode(node, aProperty, aAttribute, aValue);
+        res = SetInlinePropertyOnNode(node, newProperty, aAttribute, aValue);
         if (NS_FAILED(res)) return res;
       }
       arrayOfNodes.Clear();
