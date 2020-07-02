@@ -454,7 +454,7 @@
 <!ENTITY  hereRightRadio.label "Right">
 <!ENTITY  hereInsideRadio.label "Inside">
 <!ENTITY  hereOutsideRadio.label  "Outside">
-<!ENTITY  hereFullWidthRadio.label  "Full width">
+<!ENTITY  hereFullWidthRadio.label  "Displayed">
 
 <!ENTITY DefaultSizeNewPlots.label "Default size for new plots">
 <!ENTITY DefaultSizeNewPlotsWidth.label "Width">
