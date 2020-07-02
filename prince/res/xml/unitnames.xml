@@ -23,6 +23,10 @@
   <unitname id="microg" name="microgram" type="mass" builtIn="true"><data>&micro;g</data><appearance/></unitname>
   <unitname id="cg" name="centigram" type="mass" builtIn="true"><data>cg</data><appearance/></unitname>
   <unitname id="dg" name="decigram" type="mass" builtIn="true"><data>dg</data><appearance/></unitname>
+  <unitname id="ng" name="nanogram" type="mass" builtIn="true"><data>ng</data><appearance/></unitname>
+  <unitname id="pg" name="picogram" type="mass" builtIn="true"><data>pg</data><appearance/></unitname>
+  <unitname id="fg" name="femtogram" type="mass" builtIn="true"><data>fg</data><appearance/></unitname>
+  <unitname id="ag" name="attogram" type="mass" builtIn="true"><data>ag</data><appearance/></unitname>
   <unitname id="u" name="atomicMassUnit" type="mass" builtIn="true"><data>u</data><appearance/></unitname>
   <unitname id="d" name="day" type="time" builtIn="true"><data>d</data><appearance/></unitname>
   <unitname id="h" name="hour" type="time" builtIn="true"><data>h</data><appearance/></unitname>

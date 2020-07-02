@@ -41,19 +41,19 @@
       <rows>
         <row> -->
   <radiogroup orient="horizontal" id="AccentAbove" value="">          
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0302;" label="&#x0302;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x030c;" label="&#x02c7;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0303;" label="~"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0301;" label="&#x00b4;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0300;" label="&#x0060;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0306;" label="&#x02d8;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0305;" label="&#x00af;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x030b;" label="&#x02dd;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x030a;" label="&#x02da;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0307;" label="&#x02d9;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0308;" label="&#x00a8;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x20db;" label="&#x20db;"/>
-          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x20d7;" label="&#x20d7;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0302;" label="&#x0302;" tooltiptext="&accentAbovehat.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x030c;" label="&#x02c7;" tooltiptext="&accentAbovecheck.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0303;" label="~"        tooltiptext="&accentAbovetilde.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0301;" label="&#x00b4;" tooltiptext="&accentAboveacute.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0300;" label="&#x0060;" tooltiptext="&accentAbovegrave.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0306;" label="&#x02d8;" tooltiptext="&accentAbovebreve.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0305;" label="&#x00af;" tooltiptext="&accentAbovebar.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x030b;" label="&#x02dd;" tooltiptext="&accentAboveH.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x030a;" label="&#x02da;" tooltiptext="&accentAbovering.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0307;" label="&#x02d9;" tooltiptext="&accentAbovedot.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x0308;" label="&#x00a8;" tooltiptext="&accentAboveddot.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x20db;" label="&#x20db;" tooltiptext="&accentAbovedddot.tooltip;"/>
+          <msibutton class="charbtn" group="AccentAbove" type="radio" value="&#x20d7;" label="&#x20d7;" tooltiptext="&accentAbovevec.tooltip;"/>
       <!-- </rows>
     </grid> -->
   </radiogroup>          
@@ -63,10 +63,10 @@
     <groupbox orient="horizontal" id="AccentBelowButtonGroup"  onfocus="radioGroupSetFocus(this,event.target);">
       <caption label="&accentBelow.label;" accesskey="&accentBelow.accesskey;" />
   <radiogroup orient="horizontal" id="AccentBelow" value="">          
-      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0327;" label="&#x00b8;"/>
-      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0328;" label="&#x02db;"/>
-      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0323;" label="&#x02d3;"/>
-      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0332;" label="&#x005f;"/>
+      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0327;" label="&#x00b8;" tooltiptext="&accentBelowcedilla.tooltip;"/>
+      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0328;" label="&#x02db;" tooltiptext="&accentBelowogonek.tooltip;"/>
+      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0323;" label="&#x02d3;" tooltiptext="&accentBelowdot.tooltip;"/>
+      <msibutton class="charbtn" group="AccentBelow" type="radio" value="&#x0332;" label="&#x005f;" tooltiptext="&accentBelowbar.tooltip;"/>
  </radiogroup>
     </groupbox>
     <checkbox id="NegatedCheckbox" label="&negateCheck.label;" accesskey="&negateCheck.accesskey;" />

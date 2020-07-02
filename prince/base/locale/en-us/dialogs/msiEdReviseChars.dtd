@@ -45,3 +45,20 @@
 <!ENTITY negateCheck.label "Negate">
 <!ENTITY negateCheck.accesskey "N">
 <!ENTITY extra1Apply.label  "Apply">
+<!ENTITY accentAbovehat.tooltip  "hat">
+<!ENTITY accentAbovecheck.tooltip  "check">
+<!ENTITY accentAbovetilde.tooltip  "tilde">
+<!ENTITY accentAboveacute.tooltip  "acute">
+<!ENTITY accentAbovegrave.tooltip  "grave">
+<!ENTITY accentAbovebreve.tooltip  "breve">
+<!ENTITY accentAbovebar.tooltip  "bar">
+<!ENTITY accentAboveH.tooltip  "long umlaut">
+<!ENTITY accentAbovering.tooltip  "ring">
+<!ENTITY accentAbovedot.tooltip  "dot">
+<!ENTITY accentAboveddot.tooltip  "ddot">
+<!ENTITY accentAbovedddot.tooltip  "dddot">
+<!ENTITY accentAbovevec.tooltip  "vec">
+<!ENTITY accentBelowcedilla.tooltip  "cedilla">	
+<!ENTITY accentBelowogonek.tooltip  "ogonek">	
+<!ENTITY accentBelowdot.tooltip  "dot">	
+<!ENTITY accentBelowbar.tooltip  "bar">	
