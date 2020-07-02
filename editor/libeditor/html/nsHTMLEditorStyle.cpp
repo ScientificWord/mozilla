@@ -756,7 +756,7 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
   aNode->GetLocalName(namestr);
 
   // can it be put inside inline node?
-  if ((TagCanContain(tag, aNode) && !isMath && !mathonly)||(isMath && namestr.EqualsLiteral("mi")))
+  if ((TagCanContain(tag, aNode) && !isMath && !mathonly)||(isMath && (namestr.EqualsLiteral("mi") || namestr.EqualsLiteral("mn"))))
   {
     nsCOMPtr<nsIDOMNode> priorNode, nextNode;
     // is either of it's neighbors the right kind of node?
