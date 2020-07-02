@@ -108,7 +108,7 @@
   <m nm="circleddash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&odash;<![CDATA[");]]></data></m>
   <m nm="circledR" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&circledR;<![CDATA[");]]></data></m>  
   <m nm="circledS"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&oS;<![CDATA[");]]></data></m>
-  <m nm="clubsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x2663;<![CDATA[");]]></data></m>
+  <m nm="clubsuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&clubs;<![CDATA[");]]></data></m>
   <m nm="complement"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&comp;<![CDATA[");]]></data></m>
   <m nm="complexes" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&complexes;<![CDATA[");]]></data></m>
   <m nm="cong"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&cong;<![CDATA[");]]></data></m>
@@ -561,7 +561,7 @@
   <m nm="smalltriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&rtri;<![CDATA[");]]></data></m>
   <m nm="smblksquare" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&squarf;<![CDATA[");]]></data></m>		    
   <m nm="smile"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&smile;<![CDATA[");]]></data></m>
-  <m nm="spadesuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&#x2660;<![CDATA[");]]></data></m>
+  <m nm="spadesuit" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&spades;<![CDATA[");]]></data></m>
   <m nm="sphericalangle"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&angsph;<![CDATA[");]]></data></m>
   <m nm="sqcap"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqcap;<![CDATA[");]]></data></m>
   <m nm="sqcup"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqcup;<![CDATA[");]]></data></m>
