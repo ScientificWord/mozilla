@@ -225,6 +225,7 @@
   <sub ctx="math" tp="sc"><pattern>TInv</pattern><data>doInsertMathname('TInv',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uA</pattern><data>doInsertMathunit('A',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uacre</pattern><data>doInsertMathunit('acre',true);</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uag</pattern><data>doInsertMathunit('ag',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uame</pattern><data>doInsertMathunit('am',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uamol</pattern><data>doInsertMathunit('amol',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uan</pattern><data>doInsertMathunit('angstrom',true);</data></sub>
@@ -254,6 +255,7 @@
   <sub ctx="math" tp="sc"><pattern>uF</pattern><data>doInsertMathunit('F',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>ufahr</pattern><data>doInsertMathunit('tmpF', true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>ufc</pattern><data>doInsertMathunit('fc',true);</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ufg</pattern><data>doInsertMathunit('fg',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>ufme</pattern><data>doInsertMathunit('fm',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>ufmol</pattern><data>doInsertMathunit('fmol',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>ufs</pattern><data>doInsertMathunit('fs',true);</data></sub>
@@ -348,6 +350,7 @@
   <sub ctx="math" tp="sc"><pattern>unA</pattern><data>doInsertMathunit('nA',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>unassume</pattern><data>doInsertMathname('unassume',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>unF</pattern><data>doInsertMathunit('nF',true);</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ung</pattern><data>doInsertMathunit('ng',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>UniformDen</pattern><data>doInsertMathname('UniformDen',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>UniformDist</pattern><data>doInsertMathname('UniformDist',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>UniformInv</pattern><data>doInsertMathname('UniformInv',true);</data></sub>
@@ -363,6 +366,7 @@
   <sub ctx="math" tp="sc"><pattern>uozf</pattern><data>doInsertMathunit('ozf',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uPa</pattern><data>doInsertMathunit('Pa',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>upF</pattern><data>doInsertMathunit('pF',true);</data></sub>
+  <sub ctx="math" tp="sc"><pattern>upg</pattern><data>doInsertMathunit('pg',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uphot</pattern><data>doInsertMathunit('phot',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>uPHz</pattern><data>doInsertMathunit('PHz',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>upint</pattern><data>doInsertMathunit('pint',true);</data></sub>
