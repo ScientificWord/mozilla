@@ -507,10 +507,10 @@ string MuPADPlot::DiscAdjustStr (MuPADPlot* T) {
   string ret = "";
   if ((T->dim[0] == '2') && (T->ptype == "rectangular")) {
     U32 plottype;                                                                                    
-    string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotDiscAdjust, plottype);                                     
-    if (val == "off") {
+    string val = T->psr->RetrievePlotParam (T->plotno, PID_PlotDiscAdjust, plottype);                                    
+    if (val == "false") {
        ret = ", DiscontinuitySearch=FALSE, VerticalAsymptotesVisible=FALSE";
-    } else if (val == "on") {
+    } else if (val == "true") {
        ret = ", DiscontinuitySearch=TRUE, VerticalAsymptotesVisible=FALSE";
     } else {
        ret = ", DiscontinuitySearch=TRUE, VerticalAsymptotesVisible=TRUE";
@@ -522,7 +522,7 @@ string MuPADPlot::DiscAdjustStr (MuPADPlot* T) {
 
 string MuPADPlot::EqualScalingStr (MuPADPlot* T) {
   U32 plottype;                                                                                    
-  string val = T->psr->RetrievePlotParam (T->plotno, PID_GraphEqualScaling, plottype);                                     
+  string val = T->psr->RetrievePlotParam (T->plotno, PID_GraphEqualScaling, plottype);                                    
   string s=", Scaling=";
   s += ((val=="true") ? "Constrained" : "Unconstrained");
   return s;
