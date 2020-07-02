@@ -2554,7 +2554,7 @@ XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
     if (!appData.maxVersion) {
       // If no maxVersion is specified, we assume the app is only compatible
       // with the initial preview release. Do not increment this number ever!
-      SetAllocatedString(appData.maxVersion, "6.*");
+      SetAllocatedString(appData.maxVersion, "1.*");
     }
 
     if (NS_CompareVersions(appData.minVersion, gToolkitVersion) > 0 ||
