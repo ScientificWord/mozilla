@@ -1355,7 +1355,7 @@
 </xsl:template>
 
 <xsl:template match="html:bibitem">
-   <xsl:text>\bibitem </xsl:text>
+   <xsl:text>\bibitem</xsl:text>
    <xsl:apply-templates/>
    <xsl:if test="position() != last()">
      <xsl:value-of select="$blankline"/>
