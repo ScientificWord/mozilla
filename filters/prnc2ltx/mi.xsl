@@ -39,13 +39,13 @@
         <xsl:choose>
           <xsl:when test="$tag!='false'">
 
-            <xsl:if test="$output-mode='Portable-LaTeX'">
+<!--             <xsl:if test="$output-mode='Portable-LaTeX'">
               <xsl:value-of select="$tag"/>
               <xsl:value-of select="$LaTeX-symbols"/>
               <xsl:text>}</xsl:text>
-            </xsl:if>
+            </xsl:if> -->
 
-            <xsl:if test="$output-mode='SW-LaTeX'">
+            <!-- <xsl:if test="$output-mode='SW-LaTeX'"> -->
                 <xsl:choose>
                   <xsl:when test="@mathvariant='script' or @mathvariant='double-struck'">
                     <xsl:variable name="all-caps">
@@ -55,6 +55,7 @@
                     </xsl:variable>
 
                     <xsl:choose>
+<!-- <xsl:message> $tag is <xsl:value-of select="$tag" /></xsl:message>                   -->
                        <xsl:when test="$all-caps='true'">
                           <xsl:value-of select="$tag"/>
                             <xsl:value-of select="$LaTeX-symbols"/>
@@ -75,7 +76,7 @@
                     <xsl:text>}</xsl:text>
                   </xsl:otherwise>
                 </xsl:choose>
-            </xsl:if>
+            <!-- </xsl:if> -->
 
           </xsl:when>
 
