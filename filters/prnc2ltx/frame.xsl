@@ -1,5 +1,5 @@
 <xsl:stylesheet version="1.1" xmlns:exsl="http://exslt.org/common" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:sw="http://www.sciword.com/namespaces/sciword" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:template match="html:graph">
+<xsl:template match="html:graph">
     <xsl:apply-templates/>
   </xsl:template>
  <xsl:template match="html:imagecaption" mode="doit">  
@@ -319,6 +319,11 @@
             <xsl:value-of select="./*[@key]/@key[1]"/>
             <xsl:text>}</xsl:text>
           </xsl:if>
+          <xsl:if test="../*[@Key]">
+            <xsl:text>\label{</xsl:text>
+            <xsl:value-of select="../*[@Key]/@Key[1]"/>
+            <xsl:text>}</xsl:text>
+          </xsl:if> 
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates mode="doit" select="html:imagecaption"/>
@@ -357,4 +362,5 @@
     </xsl:choose>
     <xsl:if test="($inlineOffset and string-length($inlineOffset))">}</xsl:if>
   </xsl:template>
+
 </xsl:stylesheet>
