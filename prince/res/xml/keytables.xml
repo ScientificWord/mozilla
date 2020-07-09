@@ -168,6 +168,7 @@
     <key name="F">msiGoDoCommand("cmd_MSIfractionCmd");</key> 
     <key name="h">msiGoDoCommand("cmd_MSIsupCmd");</key>
     <key name="H">msiGoDoCommand("cmd_MSIsupCmd");</key>
+    <key name="k">insertMathSymbol("&#x1D55C;");</key>
     <key name="l">msiGoDoCommand("cmd_MSIsubCmd");</key>
     <key name="L">msiGoDoCommand("cmd_MSIsubCmd");</key>
     <key name="z">insertMathSymbol("&Exists;");</key>
