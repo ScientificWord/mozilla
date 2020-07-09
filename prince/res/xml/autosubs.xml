@@ -44,6 +44,9 @@
   <sub ctx="text" tp="sc"><pattern>.yell.</pattern><data>yell('Hey!',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>intx</pattern><data>insertIntegral(true);</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="sc"><pattern>.spell.</pattern><data>checkSpelling(true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.normal.</pattern><data>deleteSelection();msiGoDoCommand('cmd_NormalMode');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.xmltags.</pattern><data>deleteSelection();msiGoDoCommand('cmd_AllTagsMode');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.source.</pattern><data>deleteSelection();msiGoDoCommand('cmd_HTMLSourceMode');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.preview.</pattern><data>previewPDF(true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.previewD.</pattern><data>msiGoDoCommand('cmd_previewDirect');deleteSelection(); </data></sub>
   <sub ctx="text" tp="sc"><pattern>.save.</pattern><data>softSave(true);</data></sub>
