@@ -297,51 +297,61 @@ const AppInstall = {
     "<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" +
     "<plist version=\"1.0\">\n" +
     "<dict>\n" +
-    "<key>CFBundleInfoDictionaryVersion</key>\n" +
-    "<string>6.0</string>\n" +
-    "<key>CFBundleDevelopmentRegion</key>\n" +
-    "<string>English</string>\n" +
-    "<key>CFBundlePackageType</key>\n" +
-    "<string>APPL</string>\n" +
-    "<key>CFBundleDocumentTypes</key>\n" +
-    "<array>\n" +
-      "<dict>\n" +
-        "<key>CFBundleTypeExtensions</key>\n" +
-        "<array>\n" +
-          "<string>sci</string>\n" +
-        "</array>\n" +
-        "<key>CFBundleTypeName</key>\n" +
-        "<string>Scientific WorkPlace Document</string>\n" +
-        "<key>CFBundleTypeRole</key>\n" +
-        "<string>Editor</string>\n" +
-    "</dict>\n" +
-    "</array>\n" +
-    "<key>CFBundleExecutable</key>\n" +
-    "<string>xulrunner</string>\n" +
-    "<key>NSAppleScriptEnabled</key>\n" +
-    "<true/>\n" +
-    "<key>CFBundleGetInfoString</key>\n" +
-    "<string>" + infoString + "</string>\n" +
-    "<key>CFBundleName</key>\n" +
-    "<string>" + appName + "</string>\n" +
-    "<key>CFBundleIdentifier</key>\n" +
-    "<string>com.mackichan." + longname +"</string>\n" +
-    "<key>CFBundleIconFile</key>\n" +
-    "<string>" + appName + ".icns</string>\n" +
-    "<key>CFBundleShortVersionString</key>\n" +
-    "<string>" + version + "</string>\n" +
-    "<key>CFBundleVersion</key>\n" +
-    "<string>" + version + "." + buildID + "</string>\n" +
-    "<key>LSApplicationCategoryType</key>\n" +
-    "<string>public.app-category.productivity</string>\n" +
-    "<key>NSPrincipalClass</key>\n" +
-    "<string>NSApplication</string>\n" +
-    "<key>NSHumanReadableCopyright</key>\n" +
-    "<string>Copyright 2015-2018 by MacKichan Software, Inc.</string>\n" +
-    "<key>LSMultipleInstancesProhibited</key>\n" +
-    "<true/>\n" +
-    "<key>LSMinimumSystemVersion</key>\n" +
-    "<string>10.5</string>\n" +
+      "<key>CFBundleInfoDictionaryVersion</key>\n" +
+      "<string>6.0</string>\n" +
+      "<key>CFBundleDevelopmentRegion</key>\n" +
+      "<string>English</string>\n" +
+      "<key>CFBundlePackageType</key>\n" +
+      "<string>APPL</string>\n" +
+      "<key>CFBundleDocumentTypes</key>\n" +
+      "<array>\n" +
+        "<dict>\n" +
+          "<key>CFBundleTypeExtensions</key>\n" +
+          "<array>\n" +
+            "<string>sci</string>\n" +
+          "</array>\n" +
+          "<key>CFBundleTypeIconFile</key>\n" +
+          "<string>document.icns</string>\n" +
+          "<key>CFBundleTypeName</key>\n" +
+          "<string>Scientific WorkPlace Document</string>\n" +
+          "<key>CFBundleTypeOSTypes</key>\n" +
+          "<array>\n" +
+            "<string>????</string>\n" +
+          "</array>\n" +
+          "<key>NSDocumentClass</key>\n" +
+          "<string>Scientific WorkPlace.Document</string>\n" +
+          "<key>CFBundleTypeName</key>\n" +
+          "<string>" + appName + "Document</string>\n" +
+          "<key>CFBundleTypeRole</key>\n" +
+          "<string>Editor</string>\n" +
+        "</dict>\n" +
+      "</array>\n" +
+      "<key>CFBundleExecutable</key>\n" +
+      "<string>xulrunner</string>\n" +
+      "<key>NSAppleScriptEnabled</key>\n" +
+      "<true/>\n" +
+      "<key>CFBundleGetInfoString</key>\n" +
+      "<string>" + infoString + "</string>\n" +
+      "<key>CFBundleName</key>\n" +
+      "<string>" + appName + "</string>\n" +
+      "<key>CFBundleIdentifier</key>\n" +
+      "<string>com.mackichan." + longname +"</string>\n" +
+      "<key>CFBundleIconFile</key>\n" +
+      "<string>swp.icns</string>\n" +
+      "<key>CFBundleShortVersionString</key>\n" +
+      "<string>" + version + "</string>\n" +
+      "<key>CFBundleVersion</key>\n" +
+      "<string>" + version + "." + buildID + "</string>\n" +
+      "<key>LSApplicationCategoryType</key>\n" +
+      "<string>public.app-category.productivity</string>\n" +
+      "<key>NSPrincipalClass</key>\n" +
+      "<string>NSApplication</string>\n" +
+      "<key>NSHumanReadableCopyright</key>\n" +
+      "<string>Copyright 2015-2020 by MacKichan Software, Inc. All rights reserved.</string>\n" +
+      "<key>LSMultipleInstancesProhibited</key>\n" +
+      "<true/>\n" +
+      "<key>LSMinimumSystemVersion</key>\n" +
+      "<string>10.5</string>\n" +
     "</dict>\n" +
     "</plist>";
 
