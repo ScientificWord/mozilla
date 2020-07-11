@@ -123,8 +123,8 @@ function Startup(){
 
     // initKeyList();
     initializePlotEditors(firstActivePlot);
-    initializeAxisLabelEditors();
-    initializeViewIntervalEditors();
+    // initializeAxisLabelEditors();
+    // initializeViewIntervalEditors();
     captionnode = getFirstElementByTagName(graphnode,"imagecaption");
 
     testUseSignificantDigits();
@@ -169,64 +169,64 @@ function initializePlotEditors(plotnum, contentsOnly) {
   editorInitializer.doInitialize();
 }
 
-function initializeAxisLabelEditors() {
-  var dim = graph.getDimension();
-  var index;
-  var id;
-  var editorElement;
-  var theStringSource;
-  var editorInitializer = new msiEditorArrayInitializer();
+// function initializeAxisLabelEditors() {
+//   var dim = graph.getDimension();
+//   var index;
+//   var id;
+//   var editorElement;
+//   var theStringSource;
+//   var editorInitializer = new msiEditorArrayInitializer();
 
-  for (index = 0; index < dim; index++) {
-    switch (index) {
-      case 0 : id = 'X';
-      break;
-      case 1 : id = 'Y';
-      break;
-      default: id = 'Z';
-    }
-    id = id + 'AxisLabel';
-    editorElement = document.getElementById(id);
-    if (editorElement) {
-      editorElement.mbSinglePara = true;
-      theStringSource = GetComputeString("Math.emptyForInput");
-      editorInitializer.addEditorInfo(editorElement, theStringSource, true);
-    }
-  }
-  editorInitializer.doInitialize();
-}
+//   for (index = 0; index < dim; index++) {
+//     switch (index) {
+//       case 0 : id = 'X';
+//       break;
+//       case 1 : id = 'Y';
+//       break;
+//       default: id = 'Z';
+//     }
+//     id = id + 'AxisLabel';
+//     editorElement = document.getElementById(id);
+//     if (editorElement) {
+//       editorElement.mbSinglePara = true;
+//       theStringSource = GetComputeString("Math.emptyForInput");
+//       editorInitializer.addEditorInfo(editorElement, theStringSource, true);
+//     }
+//   }
+//   editorInitializer.doInitialize();
+// }
 
-function initializeViewIntervalEditors() {
-  var dim = graph.getDimension();
-  var index;
-  var id;
-  var editorElement;
-  var theStringSource;
-  var editorInitializer = new msiEditorArrayInitializer();
+// function initializeViewIntervalEditors() {
+//   var dim = graph.getDimension();
+//   var index;
+//   var id;
+//   var editorElement;
+//   var theStringSource;
+//   var editorInitializer = new msiEditorArrayInitializer();
 
-  for (index = 0; index < dim; index++) {
-    switch (index) {
-      case 0 : id = 'x';
-      break;
-      case 1 : id = 'y';
-      break;
-      default: id = 'z';
-    }
-    editorElement = document.getElementById(id + 'rangelow');
-    if (editorElement) {
-      editorElement.mbSinglePara = true;
-      theStringSource = GetComputeString("Math.emptyForInput");
-      editorInitializer.addEditorInfo(editorElement, theStringSource, true);
-    }
-    editorElement = document.getElementById(id + 'rangehigh');
-    if (editorElement) {
-      editorElement.mbSinglePara = true;
-      theStringSource = GetComputeString("Math.emptyForInput");
-      editorInitializer.addEditorInfo(editorElement, theStringSource, true);
-    }
-  }
-  editorInitializer.doInitialize();
-}
+//   for (index = 0; index < dim; index++) {
+//     switch (index) {
+//       case 0 : id = 'x';
+//       break;
+//       case 1 : id = 'y';
+//       break;
+//       default: id = 'z';
+//     }
+//     editorElement = document.getElementById(id + 'rangelow');
+//     if (editorElement) {
+//       editorElement.mbSinglePara = true;
+//       theStringSource = GetComputeString("Math.emptyForInput");
+//       editorInitializer.addEditorInfo(editorElement, theStringSource, true);
+//     }
+//     editorElement = document.getElementById(id + 'rangehigh');
+//     if (editorElement) {
+//       editorElement.mbSinglePara = true;
+//       theStringSource = GetComputeString("Math.emptyForInput");
+//       editorInitializer.addEditorInfo(editorElement, theStringSource, true);
+//     }
+//   }
+//   editorInitializer.doInitialize();
+// }
 
 // This part pastes data into the editor after the editor has started.
 // implements nsIObserver
