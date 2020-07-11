@@ -521,24 +521,30 @@
             <vbox>       
               <hbox class="singleLineEditor">
                 <label value="&axisxrange.label;" observes="viewRangesActive"/>
-                <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="xrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
-                <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="xrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
+                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="xrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
+                <textbox id="xrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
+                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="xrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
+                <textbox id="xrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
               </hbox>
               <hbox class="singleLineEditor" height=".6cm">
                 <label value="&axisyrange.label;" observes="viewRangesActive"/>
-                <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="yrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
-                <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="yrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
+                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="yrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
+                <textbox id="yrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
+                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="yrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
+                <textbox id="yrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
               </hbox>
               <hbox observes="threeDim" class="singleLineEditor" height=".6cm">
                 <label value="&axiszrange.label;" observes="viewRangesActive"/>
-                <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="zrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
-                <editor editortype="html" type="content" context="msiEditorContentContext"
+                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
+                    id="zrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
+                <textbox id="zrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
+                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
                     id="zrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
+              <textbox id="zrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/> -->
               </hbox>
             </vbox>
           </groupbox>

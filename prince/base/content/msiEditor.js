@@ -4823,7 +4823,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         break;
 
       case "msiframe":
-        if (!element.hasAttribute("frametype") || (element.getAttribute("frametype") != "image")) {
+        if ((!element.hasAttribute("frametype") || (element.getAttribute("frametype") != "image"))&& element.parentNode.nodeName !== 'graph') {
           objStr = name;
           theMenuStr = GetString("TagPropertiesMenuLabel");
           theMenuStr = theMenuStr.replace(/%tagname%/, GetString("msiFrame"));
@@ -4831,16 +4831,16 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
           break;
         }
         //otherwise fallthrough
-      case "object":
-        if (element.getAttribute("msigraph") == "true") {
-          objStr = name;
-          theMenuStr = GetString("TagPropertiesMenuLabel");
-          theMenuStr = theMenuStr.replace(/%tagname%/, GetString("functiongraph"));
-          scriptStr =
-            "openGraphDialog('graph', event.target.refElement, event.target.refEditor);";
-          break;
-        }
-        //otherwise fallthrough
+      // case "object":
+      //   if (element.getAttribute("msigraph") == "true") {
+      //     objStr = name;
+      //     theMenuStr = GetString("TagPropertiesMenuLabel");
+      //     theMenuStr = theMenuStr.replace(/%tagname%/, "A "+GetString("functiongraph"));
+      //     scriptStr =
+      //       "openGraphDialog('graph', event.target.refElement, event.target.refEditor);";
+      //     break;
+      //   }
+           break;
       case "img":
       case "embed":
         // Check if img is enclosed in link
