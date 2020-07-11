@@ -2175,7 +2175,7 @@ nsXULElement::IntrinsicState() const
 
     const nsIAtom* tag = Tag();
     if (GetNameSpaceID() == kNameSpaceID_XUL &&
-        (tag == nsGkAtoms::textbox || tag == nsGkAtoms::textarea) &&
+        (tag == nsGkAtoms::textbox || tag == nsGkAtoms::textarea || nsGkAtoms::plot) &&
         !HasAttr(kNameSpaceID_None, nsGkAtoms::readonly)) {
         state |= NS_EVENT_STATE_MOZ_READWRITE;
         state &= ~NS_EVENT_STATE_MOZ_READONLY;
