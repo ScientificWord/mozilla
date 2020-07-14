@@ -7647,6 +7647,14 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isUnicode, const nsAString & orig, nsAS
             thisChar.Append(NS_LITERAL_STRING("\\jmath")); break;
           case 0xDD5C :
             thisChar.Append(NS_LITERAL_STRING("\\Bbbk")); break;
+          case 0xFB01 :
+            thisChar.Append(NS_LITERAL_STRING("fi")); break;
+          case 0xFB02 :
+            thisChar.Append(NS_LITERAL_STRING("fl")); break;  
+          case 0xFB03 :
+            thisChar.Append(NS_LITERAL_STRING("ffi")); break;
+          case 0xFB04 :
+            thisChar.Append(NS_LITERAL_STRING("ffl")); break; 
 	  case 0xFE00 :
 	    // ignore this char
 	    break;
