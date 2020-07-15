@@ -352,7 +352,7 @@ modern.jar:
   skin/modern/icons/math_simplify.png        (icons/math_simplify.png)
   skin/modern/icons/math_snapshot-active-sm.png  (icons/math_snapshot-active-sm.png)
   skin/modern/icons/math_snapshot-active.png  (icons/math_snapshot-active.png)
-  skin/modern/icons/math_snapshot-disabled-sm.png  (icons/math_snapshot-sm.png)
+  skin/modern/icons/math_snapshot-disabled-sm.png  (icons/math_snapshot-disabled-sm.png)
   skin/modern/icons/math_snapshot-disabled.png  (icons/math_snapshot-disabled.png)
   skin/modern/icons/math_snapshot-hover-sm.png  (icons/math_snapshot-hover-sm.png)
   skin/modern/icons/math_snapshot-hover.png  (icons/math_snapshot-hover.png)
