@@ -21,8 +21,6 @@
     ondialogcancel="return onCancel();"
     screenX="40"
     screenY="40"
-    height="350"
-    width="790"
     persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
@@ -50,26 +48,28 @@
       <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
       <spacer flex="1"/>
       <vbox>
-      <description id="BinomialPreview" class="MSISample"	flex="1"
-           xmlns:xhtml="http://www.w3.org/1999/xhtml"
-           xmlns:mml="http://www.w3.org/1998/Math/MathML">
-			<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+        <groupbox>
+          <description id="BinomialPreview" class="MSISample"  flex="1"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml"
+            xmlns:mml="http://www.w3.org/1998/Math/MathML">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
             <!-- mml:math display="inline" -->
-              <!-- xhtml:div -->
-				<mstyle  id="binomialSampleMStyle">
-          <mrow>
-            <mo fence="true" form="prefix" stretchy="true" id="binomialSampleLeftFence">(</mo>
-            <mfrac id="binomialSampleMFrac" linethickness="0">
-              <mi tempinput="true">&#x2039;&#x203a;</mi>
-              <mi tempinput="true">&#x2039;&#x203a;</mi>
-            </mfrac>
-            <mo fence="true" form="postfix" stretchy="true" id="binomialSampleRightFence">)</mo>
-          </mrow>
-				</mstyle>
+            <!-- xhtml:div -->
+              <mstyle  id="binomialSampleMStyle">
+                <mrow>
+                  <mo fence="true" form="prefix" stretchy="true" id="binomialSampleLeftFence">(</mo>
+                  <mfrac id="binomialSampleMFrac" linethickness="0">
+                    <mi tempinput="true">&#x2039;&#x203a;</mi>
+                    <mi tempinput="true">&#x2039;&#x203a;</mi>
+                  </mfrac>
+                  <mo fence="true" form="postfix" stretchy="true" id="binomialSampleRightFence">)</mo>
+                </mrow>
+              </mstyle>
               <!-- /xhtml:div -->
-      </math>
-      </description>
-      <spacer flex="1"/>
+            </math>
+          </description>
+        </groupbox>
+        <spacer flex="1"/>
       </vbox>
       <spacer flex="1"/>
       <groupbox align="start" orient="vertical">
@@ -91,17 +91,17 @@
       </groupbox>
       <spacer flex="1"/>
     </hbox>
-		<hbox>
+    <hbox>
       <checkbox id="DelimitersCheckBox" label="&withDelimitersCheckbox.label;" accesskey="&withDelimitersCheckbox.accesskey;" oncommand="turnDelimitersOnOff(event);"/>
       <spacer flex="1"/>
-		</hbox>
+    </hbox>
     <groupbox id = "binomialDelimiters" align="start" orient="vertical"> 
       <observes element="enableBrackets" attribute="disabled"/>
       <hbox>
         <label id="leftGroupLabel" control="leftBracketGroup" value="&leftBracketGroup.label;" accesskey="&leftBracketGroup.accesskey;" observes="enableBrackets"/>
       </hbox>
       <hbox id="leftBracketGroup" orient="horizontal" oncommand="setSelectionByIndex(setSelection(this, event.target),'rightBracketGroup');" onfocus="radioGroupSetFocus(this,event.target);" >
-			  <observes element="enableBrackets" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, document.getElementById('DelimitersCheckBox').checked)"/>
+        <observes element="enableBrackets" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, document.getElementById('DelimitersCheckBox').checked)"/>
         <button type="radio" label="(" group="leftBracketGroup" tooltiptext="&LeftParenthesis.tooltip;"/>
         <spacer flex="1"/> 
         <button type="radio" label="&#x005B;" group="leftBracketGroup" tooltiptext="&LeftSquareBracket.tooltip;"/>
@@ -153,7 +153,7 @@
         <label id="rightGroupLabel" control="rightBracketGroup" value="&rightBracketGroup.label;" accesskey="&rightBracketGroup.accesskey;" observes="enableBrackets"/>
       </hbox>
       <hbox id="rightBracketGroup" orient="horizontal" oncommand="setSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
-			  <observes element="enableBrackets" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, document.getElementById('DelimitersCheckBox').checked)"/>
+        <observes element="enableBrackets" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, document.getElementById('DelimitersCheckBox').checked)"/>
         <button type="radio" label=")" group="rightBracketGroup" tooltiptext="&RightParenthesis.tooltip;"/>
         <spacer flex="1"/> 
         <button type="radio" label="]" group="rightBracketGroup" tooltiptext="&RightSquareBracket.tooltip;"/>
