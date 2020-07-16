@@ -109,11 +109,11 @@
   <sub ctx="text" tp="sc"><pattern>.itsp.</pattern><data>msiInsertHorizontalSpace('italicCorrectionSpace',{}, null);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.noind.</pattern><data>msiInsertHorizontalSpace('noIndent',{}, null);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ftn.</pattern><data>insertFootnote();</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.biblio.</pattern><data>deleteSelection();msiGoDoCommand('cmd_MSIinsertBibliographyCmd');></data></sub>
-  <sub ctx="text" tp="sc"><pattern>.cite.</pattern><data>deleteSelection();msiGoDoCommand('cmd_MSIinsertCitationCmd');></data></sub>
-  <sub ctx="text" tp="sc"><pattern>.idx.</pattern><data>deleteSelection();msiGoDoCommand('cmd_MSIinsertIndexEntryCmd');></data></sub>
-  <sub ctx="text" tp="sc"><pattern>.texfield.</pattern><data>deleteSelection();msiGoDoCommand('cmd_MSIinsertTeXFieldCmd');></data></sub>
-  <sub ctx="text" tp="sc"><pattern>.xref.</pattern><data>deleteSelection();msiGoDoCommand('cmd_MSIinsertCrossReferenceCmd');></data></sub>
+  <sub ctx="text" tp="sc"><pattern>.biblio.</pattern><data>deleteSelection();msiGoDoCommand('cmd_MSIinsertBibliographyCmd');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.cite.</pattern><data>deleteSelection();msiGoDoCommand('cmd_MSIinsertCitationCmd');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.idx.</pattern><data>deleteSelection();msiGoDoCommand('cmd_MSIinsertIndexEntryCmd');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.texfield.</pattern><data>deleteSelection();msiGoDoCommand('cmd_MSIinsertTeXFieldCmd');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.xref.</pattern><data>deleteSelection();msiGoDoCommand('cmd_MSIinsertCrossReferenceCmd');</data></sub>
 <!-- Remove +- automatic substitution (it doesn't work) (gp)
   <sub ctx="math" tp="sc"><pattern>+-</pattern><data>insertMathSymbol('±',true);</data></sub>
 -->
