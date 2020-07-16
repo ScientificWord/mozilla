@@ -113,6 +113,8 @@ en-US.jar:
   locale/helpfiles/graphicscd/left_sidebar.png (graphicscd/left_sidebar.png)
   locale/helpfiles/graphicscd/line.png (graphicscd/line.png)
   locale/helpfiles/graphicscd/list_tag_list.png (graphicscd/list_tag_list.png)
+  locale/helpfiles/graphicscd/math_binomial.png (graphicscd/math_binomial.png)
+  locale/helpfiles/graphicscd/math_brackets.png (graphicscd/math_brackets.png)
   locale/helpfiles/graphicscd/math_decoration.png (graphicscd/math_decoration.png)
   locale/helpfiles/graphicscd/math_matrix.png (graphicscd/math_matrix.png)
   locale/helpfiles/graphicscd/math_name.png (graphicscd/math_name.png)
