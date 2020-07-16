@@ -82,6 +82,7 @@ en-US.jar:
   locale/helpfiles/graphicscd/status-bar.png                 (graphicscd/status-bar.png)
   locale/helpfiles/graphicscd/add_package.png (graphicscd/add_package.png)
   locale/helpfiles/graphicscd/automatic_substitution.png (graphicscd/automatic_substitution.png)
+  locale/helpfiles/graphicscd/bibliography_choice.png (graphicscd/bibliography_choice.png)
   locale/helpfiles/graphicscd/breaks.png (graphicscd/breaks.png)
   locale/helpfiles/graphicscd/check_spelling.png         (graphicscd/check_spelling.png)
   locale/helpfiles/graphicscd/class_options.png (graphicscd/class_options.png)
