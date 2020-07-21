@@ -114,7 +114,7 @@ SizeState.prototype = {
     // }
     if (this.dialog.constrainCheckbox) this.dialog.constrainCheckbox.checked = this.preserveAspectRatio;
     if (this.dialog.sizeRadio) this.dialog.sizeRadio.value = (this.isCustomSize)?"custom":"actual";
-    if (this.dialog.sizeRadio) this.dialog.sizeRadio.value = (this.isCustomSize)?"custom":"actual";
+    // if (this.dialog.sizeRadio) this.dialog.sizeRadio.value = (this.isCustomSize)?"custom":"actual";
   },
 
   computeDerivedQuantities: function() {
@@ -282,7 +282,7 @@ function posCodeToLocationValue ( posCode ) {
   var ret = '';
   if (posCode === 'inline' || posCode === 'center' || posCode === 'floating'  || posCode === 'left' ||
     posCode === 'right' || posCode === 'inside' || posCode === 'outside') ret = posCode;
-  else if (posCode === 'displayed') ret = 'center';
+  else if (posCode === 'display') ret = 'center';
   else if (posCode === "L") ret = 'left';
   else if (posCode === "R") ret = 'right';
   else if (posCode === "I") ret = 'inside';
@@ -333,10 +333,10 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   }
 
   pos = element.getAttribute("pos");
-  position = 0;  // left = 1, right = 2, displayed/center = 3, inline = 0
+  position = 0;  // left = 1, right = 2, display/center = 3, inline = 0
   if (pos === "L" || pos === "I") position = 1;
   else if (pos === "R" || pos === "O") position = 2;
-  else if (pos === 'displayed' || pos === 'center') position = 3;
+  else if (pos === 'display' || pos === 'center') position = 3;
 
   dg.editorElement = msiGetParentEditorElementForDialog(window);
   dg.editor = msiGetEditor(dg.editorElement);
@@ -456,7 +456,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   v =  element.getAttribute("border-color");
   if (v != null && dg.colorWell) dg.colorWell.setAttribute("style","background-color: " + v + ";");
 
-  var floatLocation, posStr, pos;
+  var floatLocation, posStr;
   var inlineOffset = 0;
   try {
       if (! contentsElement)
@@ -865,7 +865,7 @@ function setContentBGColor(color)
   setStyleAttributeByID("content", "background-color", color);
 }
 
-// alignment = 1 for left, 2 for right, 3 for displayed/center, 0 for inline
+// alignment = 1 for left, 2 for right, 3 for display/center, 0 for inline
 function setAlignment(alignment )
 {
   position = alignment;
@@ -1323,6 +1323,7 @@ function floatPropertyChanged() {
 
 function captionPropertyChanged() {
   var captionLoc = document.getElementById("captionLocation").value;
+  if (tagConflicts()) return;
   if (captionLoc === "none") {
     document.getElementById("keyEnabled").setAttribute("disabled", "true");
   } else {
