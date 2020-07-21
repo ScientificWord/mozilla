@@ -91,30 +91,32 @@
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
 	
-	<vbox flex="1">
-		<hbox>
-		  <vbox>
-		    <description value='&databaseFileListbox.label;' accesskey='&databaseFileListbox.accesskey;'/>
-		    <listbox id='databaseFileListbox' rows='8' onselect='selectDatabaseFile(this.selectedItem);'/>
-			</vbox>
-			<vbox>
-			  <msibutton id='viewKeysButton' label='&viewKeysButton.label;' accesskey='&viewKeysButton.accesskey;' oncommand='doViewKeys();'/>
-			  <msibutton id='selectBibTeXDirectory' label='&selectDirectoryButton.label;' accesskey='&selectDirectoryButton.accesskey;' oncommand='doSelectBibTeXDirectory();'/>
-			</vbox>
-		</hbox>
-		<spacer height="10px"/>
-		<hbox>
-		  <description value='&keyCaption.label;' accesskey='&keyCaption.accesskey;'/>
-		  <textbox id='keyTextbox' size='30' oninput='checkDisableControls();'/>
-		</hbox>
-		<spacer height="10px"/>
-		<hbox flex="1">
-			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accesskey;'/>
-			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
-      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="150" width="400"/>
-		</hbox>
-		<checkbox id='bibEntryOnlyCheckbox' label='&bibEntryOnlyCheckbox.label;' accesskey='&bibEntryOnlyCheckbox.accesskey;'/>
-		<spacer height="10px"/>
-	</vbox>
+  <vbox flex="1">
+    <hbox>
+      <vbox>
+        <description value='&databaseFileListbox.label;' accesskey='&databaseFileListbox.accesskey;'/>
+        <listbox id='databaseFileListbox' rows='8' onselect='selectDatabaseFile(this.selectedItem);'/>
+      </vbox>
+      <vbox>
+        <msibutton id='viewKeysButton' label='&viewKeysButton.label;' accesskey='&viewKeysButton.accesskey;' oncommand='doViewKeys();'/>
+        <msibutton id='selectBibTeXDirectory' label='&selectDirectoryButton.label;' accesskey='&selectDirectoryButton.accesskey;' oncommand='doSelectBibTeXDirectory();'/>
+      </vbox>
+    </hbox>
+    <spacer height="10px"/>
+    <hbox>
+      <description value='&keyCaption.label;' accesskey='&keyCaption.accesskey;'/>
+      <textbox id='keyTextbox' size='30' oninput='checkDisableControls();'/>
+    </hbox>
+    <spacer height="10px"/>
+    <hbox flex="1">
+      <description value='&remarkCaption.label;' accesskey='&remarkCaption.accesskey;'/>
+      <!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
+      <groupbox>
+        <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="150" width="400"/>
+      </groupbox>
+    </hbox>
+    <checkbox id='bibEntryOnlyCheckbox' label='&bibEntryOnlyCheckbox.label;' accesskey='&bibEntryOnlyCheckbox.accesskey;'/>
+    <spacer height="10px"/>
+  </vbox>
 
 </dialog>

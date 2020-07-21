@@ -19,8 +19,6 @@
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
-    height="325"
-    width="800"
     screenX="40"
     screenY="40"
     persist="screenX screenY width height">
@@ -36,7 +34,7 @@
   <keyset>
     <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
     <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
-  	<key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
   </keyset>
 
 
@@ -46,27 +44,33 @@
     <hbox>
       <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
       <spacer flex="1"/>
-      <description id="BracketPreview" class="MSISample"
-       xmlns:xhtml="http://www.w3.org/1999/xhtml"
-       xmlns:mml="http://www.w3.org/1998/Math/MathML">
-        <mml:math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
-          <!-- xhtml:div -->
-			    <mrow>
-            <mo fence="true" id="leftBracketSample" form="prefix" stretchy="true">(</mo>
-            <mi> </mi>
-            <mo fence="true" id="rightBracketSample" form="postfix" stretchy="true">)</mo>
-            <mphantom class="vertStrut">
-              <mo fence="true" form="prefix" stretchy="true">&#x2329;</mo>
-            </mphantom>
-			    </mrow>
-          <!-- /xhtml:div -->
-        </mml:math>
-      </description>
+      <vbox>
+        <groupbox>
+          <description id="BracketPreview" class="MSISample" flex="1"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml"
+            xmlns:mml="http://www.w3.org/1998/Math/MathML">
+            <mml:math display="inline" xmlns="http://www.w3.org/1998/Math/MathML">
+            <!-- xhtml:div -->
+              <mrow>
+                <mo fence="true" id="leftBracketSample" form="prefix" stretchy="true">(</mo>
+                <mi> </mi>
+                <mo fence="true" id="rightBracketSample" form="postfix" stretchy="true">)</mo>
+                <mphantom class="vertStrut">
+                  <mo fence="true" form="prefix" stretchy="true">&#x2329;</mo>
+                </mphantom>
+              </mrow>
+            <!-- /xhtml:div -->
+            </mml:math>
+          </description>
+        </groupbox>
+        <spacer flex="1"/>
+      </vbox>
       <spacer flex="1"/>
     </hbox>
+    <spacer flex="1"/>
     <groupbox align="start" orient="vertical">
       <hbox>
-        <label id="leftGroupLabel" control="leftBracketGroup" value="&leftBracketGroup.label;"	accesskey="&leftBracketGroup.accesskey;"/>
+        <label id="leftGroupLabel" control="leftBracketGroup" value="&leftBracketGroup.label;"  accesskey="&leftBracketGroup.accesskey;"/>
       </hbox>
       <hbox id="leftBracketGroup" orient="horizontal" 
         oncommand="setSelectionByIndex(setSelection(this, event.target),'rightBracketGroup');"  
@@ -119,9 +123,9 @@
         <spacer flex="1"/> 
         <button type="radio" label=")" group="leftBracketGroup" tooltiptext="&RightParenthesis.tooltip;"/>
         <spacer flex="1"/> 
-  	  </hbox>
+      </hbox>
       <hbox>
-        <label id="rightGroupLabel" control="rightBracketGroup" value="&rightBracketGroup.label;"	accesskey="&rightBracketGroup.accesskey;"/>
+        <label id="rightGroupLabel" control="rightBracketGroup" value="&rightBracketGroup.label;"  accesskey="&rightBracketGroup.accesskey;"/>
       </hbox>
       <hbox id="rightBracketGroup" orient="horizontal" 
         oncommand="setSelection(this, event.target);" 
@@ -174,7 +178,7 @@
         <spacer flex="1"/> 
         <button type="radio" label="(" group="rightBracketGroup" tooltiptext="&LeftParenthesis.tooltip;"/>
         <spacer flex="1"/> 
-  	  </hbox>
+      </hbox>
     </groupbox>
   </vbox>
 </dialog>
