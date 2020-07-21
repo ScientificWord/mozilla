@@ -368,7 +368,7 @@ Graph.prototype = {
     for (i = 0; i < alist.length; i++) {
       attr = alist[i];
       value = this.getValue(attr);
-      if (value === null || value === "unspecified" || value === "undefined")
+      if (value == null || value === "unspecified" || value === "undefined")
       {
         if (forComp && (attr === "TicksFontSize"))  //if we've set axis font size but not tick font size, want to make tick font size proportional
         {
@@ -439,10 +439,13 @@ Graph.prototype = {
     }
 
     captionloc = this.getValue("CaptionPlace");
-    var captionNodes = DOMFrame.getElementsByTagName("caption");
+    var captionNodes = DOMFrame.getElementsByTagName("imagecaption");
     var captionNode = null;
     if (captionNodes.length > 0) {
       captionNode = captionNodes[0];
+      // while (captionNodes.length > 1) {
+      //   editor.deleteNode(captionNodes[1]);       
+      // }
     }
     if (captionloc && captionloc !== "none") {
       var tlm;
@@ -460,12 +463,9 @@ Graph.prototype = {
     {
       DOMFrame.removeAttribute("captionloc");
       removeStyleAttributeFamilyOnNode( DOMFrame, "caption-side", editor);
-      if (captionNode) {
-        editor.deleteNode(captionNode);
-      }
     }
-    caption="<imagecaption>"+ (caption || "") +"</imagecaption>";
-    insertXML(editor, caption, DOMCaption, 0);
+    // caption="<imagecaption>"+ (caption || "") +"</imagecaption>";
+    // insertXML(editor, caption, DOMCaption, 0);
   },
 
   extractGraphAttributes: function (DOMGraph) {
