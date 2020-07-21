@@ -92,22 +92,24 @@
     <broadcaster id="enableDecorationsAboveBelow" disabled="false"/>
   </broadcasterset -->
 
-	<vbox flex="1">
-		<hbox>
-		  <label value="&keyCaption.label;" accesskey="&keyCaption.accesskey;" control="keysAutoCompleteBox"/>
+  <vbox flex="1">
+    <hbox>
+      <label value="&keyCaption.label;" accesskey="&keyCaption.accesskey;" control="keysAutoCompleteBox"/>
       <textbox id="keysAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
         completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
         tooltiptext="&keyCaption.tooltip;"
         onchange="checkDisableControls(event);"
         ontextentered="checkDisableControls();" />
-		</hbox>
-		<spacer height='20px'/>
-		<hbox flex="1">
-			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accesskey;'/>
-			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
-      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="50" width="450"/>
-		</hbox>
-		<spacer height='20px'/>
-	</vbox>
+    </hbox>
+    <spacer height='20px'/>
+    <hbox flex="1">
+      <description value='&remarkCaption.label;' accesskey='&remarkCaption.accesskey;'/>
+      <!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
+      <groupbox>
+        <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="50" width="450"/>
+	  </groupbox>
+    </hbox>
+    <spacer height='20px'/>
+  </vbox>
 
 </dialog>
