@@ -56,7 +56,12 @@ function Startup(){
     frame = getFirstElementByTagName(graphnode,"msiframe");
     obj = getFirstElementByTagName(graphnode, "object");
     if (obj && obj.hasAttribute("data")) gInsertNewObject = false;
+  }
+  catch(e) {
+    dump('1 '+ e.message + '\n');
+  }
 
+  try {
     // get frame attributes
     // turn off inline, left, right, inside, outside options for plots
     document.getElementById('forplots').hidden = true;
@@ -84,9 +89,15 @@ function Startup(){
       id = mapid(alist[i]);
       if (document.getElementById(id)) {
         putValueToControlByID(id, graph.getValue(alist[i]));
-//        document.getElementById(id).value = graph.getValue(alist[i]);
+        document.getElementById(id).value = graph.getValue(alist[i]);
       }
     }
+  }
+  catch(e) {
+    dump('2 '+ e.message + '\n');
+  }
+
+  try {
 
     plotNumControl    = document.getElementById('plotnumber');
     numPlots = graph.getNumActivePlots();  //don't count any that may be already deleted - though probably not relevant during startup
@@ -104,39 +115,53 @@ function Startup(){
 //    setColorWell("baseColorWell", makeColorVal(plot.getPlotValue("BaseColor")));
 //    setColorWell("secondColorWell", makeColorVal(plot.getPlotValue("SecondaryColor")));
 //    setColorWell("lineColorWell", makeColorVal(plot.getPlotValue("LineColor")));
-    try {
-      alist = graph.frame.FRAMEATTRIBUTES;
-      for ( i=0; i<alist.length; i++) {
-        id = mapid(alist[i]);
-        if (document.getElementById(id)) {
-          if (graph.frame.getFrameAttribute(alist[i]))
-          putValueToControlByID(id, graph.frame.getFrameAttribute(alist[i]));
-  //        document.getElementById(id).value = graph.frame.getFrameAttribute(alist[i]);
-        }
+  }
+  catch(e) {
+    dump('3 '+ e.message + '\n');
+  }
+
+  try {
+    alist = graph.frame.FRAMEATTRIBUTES;
+    for ( i=0; i<alist.length; i++) {
+      id = mapid(alist[i]);
+      if (document.getElementById(id)) {
+        if (graph.frame.getFrameAttribute(alist[i]))
+        putValueToControlByID(id, graph.frame.getFrameAttribute(alist[i]));
+//        document.getElementById(id).value = graph.frame.getFrameAttribute(alist[i]);
       }
     }
-    catch(e) {
-      msidump(e.message);
-    }
+  }
+  catch(e) {
+    dump('4 '+ e.message + '\n');
+  }
+  try {
     document.getElementById("defaultCameraCheckbox").checked = !graph.cameraValuesUserSet();
     document.getElementById("defaultviewintervals").checked = !graph.viewRangesUserSet();
 
-    // initKeyList();
+    initKeyList();
     initializePlotEditors(firstActivePlot);
     // initializeAxisLabelEditors();
     // initializeViewIntervalEditors();
     captionnode = getFirstElementByTagName(graphnode,"imagecaption");
+  }
+  catch(e) {
+    dump('5 '+ e.message + '\n');
+  }
 
+  try {
     testUseSignificantDigits();
     // Caption placement
-    document.getElementById("captionLocation").value = graph.CaptionPlace;
+
+    document.getElementById("captionLocation").value = graph.CaptionPlace || '';
+    captionPropertyChanged();
     msiSetInitialDialogFocus(document.getElementById("frameWidthInput"));
     // msiSetActiveEditor(gReplaceDialog.findInput, false);
   //  checkEnableFloating();
   }
   catch(e) {
-    msidump(e.message);
+    dump('6 '+ e.message + '\n');
   }
+
 }
 
 function initializePlotEditors(plotnum, contentsOnly) {
@@ -200,7 +225,7 @@ function initializePlotEditors(plotnum, contentsOnly) {
 //   var dim = graph.getDimension();
 //   var index;
 //   var id;
-//   var editorElement;
+//   var textbox;
 //   var theStringSource;
 //   var editorInitializer = new msiEditorArrayInitializer();
 
@@ -212,17 +237,17 @@ function initializePlotEditors(plotnum, contentsOnly) {
 //       break;
 //       default: id = 'z';
 //     }
-//     editorElement = document.getElementById(id + 'rangelow');
-//     if (editorElement) {
-//       editorElement.mbSinglePara = true;
-//       theStringSource = GetComputeString("Math.emptyForInput");
-//       editorInitializer.addEditorInfo(editorElement, theStringSource, true);
+//     textbox = document.getElementById(id + 'rangelow');
+//     if (textbox) {
+//       // textbox.mbSinglePara = true;
+//       theStringSource = ;
+//       editorInitializer.addEditorInfo(textbox, theStringSource, true);
 //     }
-//     editorElement = document.getElementById(id + 'rangehigh');
-//     if (editorElement) {
-//       editorElement.mbSinglePara = true;
+//     textbox = document.getElementById(id + 'rangehigh');
+//     if (textbox) {
+//       textbox.mbSinglePara = true;
 //       theStringSource = GetComputeString("Math.emptyForInput");
-//       editorInitializer.addEditorInfo(editorElement, theStringSource, true);
+//       editorInitializer.addEditorInfo(textbox, theStringSource, true);
 //     }
 //   }
 //   editorInitializer.doInitialize();
@@ -297,40 +322,41 @@ function OK() {
   GetValuesFromDialog();
   graph.reviseGraphDOMElement(graphnode, false, editorElement);
   graph.setGraphAttribute("returnvalue", "true");
-  graph.recomputeVCamImage(editorElement, graphnode);
-  initVCamObjects(editor.document);
-  //  var editor = msiGetEditor(editorElement);
-//   changed = true;
-//   if (changed) {
-//     graph.recomputeVCamImage(editorElement);
-//   }
-//   theWindow = window.opener;
-//   if (!theWindow || !(theWindow.hasOwnProperty("nonmodalRecreateGraph"))) {
-//     theWindow = msiGetTopLevelWindow();
-//   }
-//   try {
-//     theWindow.nonmodalRecreateGraph(graph, window.arguments[2], editorElement);
-//   }
-//   catch (e) {}
-//   var parentWindow = window.opener;
-//   var data;
-//   var obj = graphnode.getElementsByTagName("object");
-//   if (obj && obj.length)
-//   {
-//     obj = obj[0];
-//   }
-// //     if (obj) {
-// //       if (obj.wrappedJSObject) obj = obj.wrappedJSObject;
-// //       try {
-// //         data = graphnode.getElementsByTagName('graphSpec')[0].getAttribute('ImageFile');
-// //         obj.setAttribute('data', data);
-// // //        parentWindow.doVCamInitialize(obj);
-// //       }
-// //       catch(e)
-// //       {}
-// //     }
-// //  }
-// //  graph.setGraphAttribute("returnvalue", "true");
+  // graph.recomputeVCamImage(editorElement, graphnode);
+
+   var editor = msiGetEditor(editorElement);
+  changed = true;
+  if (changed) {
+    graph.recomputeVCamImage(editorElement,graphnode);
+    initVCamObjects(editor.document);
+  }
+  theWindow = window.opener;
+  if (!theWindow || !(theWindow.hasOwnProperty("nonmodalRecreateGraph"))) {
+    theWindow = msiGetTopLevelWindow();
+  }
+  try {
+    theWindow.nonmodalRecreateGraph(graph, window.arguments[2], editorElement);
+  }
+  catch (e) {}
+  // var parentWindow = window.opener;
+  // var data;
+  // var obj = graphnode.getElementsByTagName("object");
+  // if (obj && obj.length)
+  // {
+  //   obj = obj[0];
+  // }
+//     if (obj) {
+//       if (obj.wrappedJSObject) obj = obj.wrappedJSObject;
+//       try {
+//         data = graphnode.getElementsByTagName('graphSpec')[0].getAttribute('ImageFile');
+//         obj.setAttribute('data', data);
+// //        parentWindow.doVCamInitialize(obj);
+//       }
+//       catch(e)
+//       {}
+//     }
+//  }
+//  graph.setGraphAttribute("returnvalue", "true");
   return true;
 }
 
@@ -827,7 +853,7 @@ function initKeyList()
 
 function tagConflicts()
 {
-  var keyList = document.getElementById("keylist");
+  var keyList = document.getElementById("keyInput");
   if (keyList.controller && (keyList.controller.searchStatus === nsIAutoCompleteController.STATUS_COMPLETE_MATCH))
     //"new" entry matches an existing key
   {
@@ -836,6 +862,7 @@ function tagConflicts()
     keyList.focus();
     return true;
   }
+  document.getElementById("uniquekeywarning").hidden = true;
   return false;
 }
 
