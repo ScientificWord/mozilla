@@ -137,6 +137,8 @@
     <key name="0">msiGoDoCommand("cmd_MSIparenCmd");</key>
     <key name="(">msiGoDoCommand("cmd_MSIparenCmd");</key>
     <key name=")">msiGoDoCommand("cmd_MSIparenCmd");</key>
+    <key name="\">msiGoDoCommand("cmd_MSIabsvalueCmd");</key>
+    <key name="|">msiGoDoCommand("cmd_MSInormCmd");</key>
     <key name="-">insertMathSymbol("&equiv;");</key>
     <key name="_">insertMathSymbol("&cong;");</key>
     <key name="=">insertMathSymbol("&ne;");</key>
@@ -148,7 +150,7 @@
     <key name="r">msiGoDoCommand("cmd_MSIrootCmd");</key>
     <key name="R">msiGoDoCommand("cmd_MSIradicalCmd");</key>
     <key name="t">insertMathSymbol("&otimes;");</key>
-    <key name="T">insertMathSymbol("&otimes;");</key>
+    <key name="T">insertMathSymbol("&ominus;");</key>
     <key name="i">insertMathSymbol("&int;");</key>
     <key name="I">insertMathSymbol("&infin;");</key>
     <key name="o">insertMathSymbol("&emptyset;");</key>
@@ -168,9 +170,12 @@
     <key name="F">msiGoDoCommand("cmd_MSIfractionCmd");</key> 
     <key name="h">msiGoDoCommand("cmd_MSIsupCmd");</key>
     <key name="H">msiGoDoCommand("cmd_MSIsupCmd");</key>
+    <key name="k">insertMathSymbol("&#x1D55C;");</key>
+    <key name="K">insertMathSymbol("&#x2113;");</key>
     <key name="l">msiGoDoCommand("cmd_MSIsubCmd");</key>
     <key name="L">msiGoDoCommand("cmd_MSIsubCmd");</key>
     <key name="z">insertMathSymbol("&Exists;");</key>
+    <key name="Z">insertMathSymbol("&NotExists;");</key>
     <key name="x">insertMathSymbol("&times;");</key>
     <key name="X">insertMathSymbol("&divide;");</key>
     <key name="M">msiGoDoCommand("cmd_MSIMatrixLastCmd");</key>
@@ -180,6 +185,7 @@
     <key name="v">insertMathSymbol("&vee;");</key>
     <key name="V">insertMathSymbol("&and;");</key>
     <key name="b">insertMathSymbol("&bull;");</key>
+    <key name="B">insertMathSymbol("&#x2218;");</key>
     <key name="n">insertMathSymbol("&nabla;");</key>
     <key name="N">insertMathSymbol("&not;");</key>
     <key name="&lt;">insertMathSymbol("&le;");</key>
