@@ -1,7 +1,8 @@
-<?xml version='1.1'?>
+<?xml version='1.0'?>
 <xsl:stylesheet version="1.1" 
 	xmlns:html="http://www.w3.org/1999/xhtml" 
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:mathml="http://www.w3.org/1998/Math/MathML">
 
 	<xsl:output encoding="UTF-8" method="text"/>
 	<xsl:template match="/">
