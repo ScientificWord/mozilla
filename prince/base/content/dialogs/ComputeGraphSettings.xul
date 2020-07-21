@@ -162,11 +162,11 @@
           <hbox>
             <vbox>
               <groupbox>
-                <caption id="center" label="&plotexpr.label;"/>
+                <caption id="exprlabel" label="&plotexpr.label;"/>
                 <editor editortype="html" type="content-primary" context="msiEditorContentContext" 
                         id="plotDlg-content-frame" flex="1" style="overflow: scroll" width="200" height="70"/>
               </groupbox>
-                </vbox>
+            </vbox>
             <vbox>
               <label control="plotnumber" value="Item number" />
               <textbox id="plotnumber" class="narrow" type="number" increment="1" decimalplaces="0" min="1" max="1" label="&editplotitem.label;" onchange="populateDialog(this.valueNumber - 1);"/>
@@ -495,6 +495,7 @@
                     <radio label="&axisboxed.label;"   value="Boxed"       selected="false"/>
                     <radio label="&axisframed.label;"  value="Frame"       selected="false"/>
                     <radio label="&axisnone.label;"    value="None"        selected="false"/>
+     
                   </row>
                 </rows>
               </grid>
@@ -528,7 +529,7 @@
                     id="xrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
                 <textbox id="xrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
               </hbox>
-              <hbox class="singleLineEditor" height=".6cm">
+              <hbox class="singleLineEditor">
                 <label value="&axisyrange.label;" observes="viewRangesActive"/>
                 <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
                     id="yrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
@@ -537,7 +538,7 @@
                     id="yrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
                 <textbox id="yrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
               </hbox>
-              <hbox observes="threeDim" class="singleLineEditor" height=".6cm">
+              <hbox observes="threeDim" class="singleLineEditor">
                 <label value="&axiszrange.label;" observes="viewRangesActive"/>
                 <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
                     id="zrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
