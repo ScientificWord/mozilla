@@ -94,6 +94,7 @@ prince.jar:
 * content/realTimeSpell.js          (RealTimeSpell.js)
 * content/intervalsAndAnimation.xul (dialogs/intervalsAndAnimation.xul)
   content/intervalsAndAnimation.js  (dialogs/intervalsAndAnimation.js)
+  content/findkeys.xsl              (findkeys.xsl)
   content/fragmentname.xul          (dialogs/FragmentName.xul)
   content/fragmentname.js           (dialogs/FragmentName.js)
   content/htmlfield.xul             (dialogs/htmlfield.xul)
