@@ -3,7 +3,6 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/content/frame.css" type="text/css"?>
-<?xml-stylesheet href="chrome://global/skin/form.css" type="text/css"?>
 #include ../productname.inc
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Minipage.dtd">
 <overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -400,12 +399,21 @@
           </row>
           <row flex="1">
             <label id="keyInputLabel" observes="keyEnabled" value="&Key.label;"/>
-            <hbox>
-              <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-                completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-                tooltiptext="&EnterNewName.tooltip;" observes="keyEnabled" />
-                <!-- ontextentered="" / -->
-            </hbox>
+            <vbox>
+              <textbox id="keyInput" timeout="50" type="autocomplete"
+                minresultsforpopup="1" enablehistory="true" 
+                forcecomplete="true"
+                completedefaultindex="true" 
+                autocompletesearch="stringarray" 
+                autocompletesearchparam="key"
+                tooltiptext="&KeyNameConflict.tooltip;"
+                maxrows="3"
+                onfocus="this.select()" 
+                observes="keyEnabled"             
+                ontextentered="if (!tagConflicts()) captionPropertyChanged();" />
+              <label id="uniquekeywarning" hidden="true">
+                &KeyNameConflict.label;</label>                
+            </vbox>
           </row>
         </rows>
       </grid>
@@ -417,7 +425,7 @@
     <broadcaster id="inlineOffsetEnabled" disabled="true"/>
     <broadcaster id="locationEnabled" />
     <broadcaster id="captionEnabled" />
-    <broadcaster id="keyEnabled" disabled="true" />
+    <broadcaster id="keyEnabled"/>
 
     <broadcaster id="wrapOption" disabled="true"/>
     <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notedata.width - sidemargin -->
