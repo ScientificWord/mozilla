@@ -74,6 +74,8 @@ pref("mousewheel.withcontrolkey.action", 3); //enable ctrl+mousewheel to change 
 pref("security.xpconnect.plugin.unrestricted", true);
 pref("spellchecker.enablerealtimespell",      true);
 pref("spellchecker.realtimespell.warning_color", "red");
+pref("spellchecker.dictionary_path", "resource://dictionaries/");
+pref("spellchecker.dictionary", "en-US");
 pref("swp.messagelogger","dump");
 pref("swp.ctrl.m","math"); // other value is 'toggle'
 pref("swp.ctrl.t","text"); // other value is'toggle'
