@@ -311,13 +311,9 @@ const AppInstall = {
             "<string>sci</string>\n" +
           "</array>\n" +
           "<key>CFBundleTypeIconFile</key>\n" +
-          "<string>document.icns</string>\n" +
+          "<string>document</string>\n" +
           "<key>CFBundleTypeName</key>\n" +
           "<string>Scientific WorkPlace Document</string>\n" +
-          "<key>CFBundleTypeOSTypes</key>\n" +
-          "<array>\n" +
-            "<string>????</string>\n" +
-          "</array>\n" +
           "<key>NSDocumentClass</key>\n" +
           "<string>Scientific WorkPlace.Document</string>\n" +
           "<key>CFBundleTypeName</key>\n" +
@@ -337,7 +333,7 @@ const AppInstall = {
       "<key>CFBundleIdentifier</key>\n" +
       "<string>com.mackichan." + longname +"</string>\n" +
       "<key>CFBundleIconFile</key>\n" +
-      "<string>swp.icns</string>\n" +
+      "<string>" +appName+ "</string>\n" +
       "<key>CFBundleShortVersionString</key>\n" +
       "<string>" + version + "</string>\n" +
       "<key>CFBundleVersion</key>\n" +
