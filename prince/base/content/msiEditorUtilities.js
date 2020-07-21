@@ -15,6 +15,7 @@ var prefMapper;
 var invPrefMapper;
 var prefEngineMapper;
 var prefLogMapper;
+var gProcessor; //xslt processor
 /*
 JavaScript enhancements
 */
@@ -6973,23 +6974,24 @@ var msiMarkerListPrototype = {
     return this.mKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, addedStringArray, deletedStringArray);
   },
   resetList: function (bForce) {
-    return this.mKeyListManager.resetMarkerList(this.mKeyListManagerRecord);  //    var aDocument = this.getDocument();
-                                                                              //    if (!aDocument)
-                                                                              //    {
-                                                                              //      dump("In msiEditorUtilities.js, msiMarkerList.resetList() called with no current document! Returning...\n");
-                                                                              //      return;
-                                                                              //    }
-                                                                              //    var keyStrings = msiGetKeyListForDocument(aDocument);
-                                                                              //    var ourKey = this.getIndexString();
-                                                                              //    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-                                                                              //    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-                                                                              //    var ourKey = this.getIndexString();
-                                                                              //    ACSA.resetArray(ourKey);
-                                                                              //    for (i=0, len=keyStrings.length; i<len; i++)
-                                                                              //    {
-                                                                              //      if (keyStrings[i].length > 0)
-                                                                              //        ACSA.addString(ourKey, keyStrings[i]);
-                                                                              //    }
+    return this.mKeyListManager.resetMarkerList(this.mKeyListManagerRecord);  
+    //    var aDocument = this.getDocument();
+    //    if (!aDocument)
+    //    {
+    //      dump("In msiEditorUtilities.js, msiMarkerList.resetList() called with no current document! Returning...\n");
+    //      return;
+    //    }
+    //    var keyStrings = msiGetKeyListForDocument(aDocument);
+    //    var ourKey = this.getIndexString();
+    //    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    //    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    //    var ourKey = this.getIndexString();
+    //    ACSA.resetArray(ourKey);
+    //    for (i=0, len=keyStrings.length; i<len; i++)
+    //    {
+    //      if (keyStrings[i].length > 0)
+    //        ACSA.addString(ourKey, keyStrings[i]);
+    //    }
   },
   //  getMarkerList : function(aDocument)
   //  {
@@ -7080,6 +7082,9 @@ var msiMarkerListPrototype = {
     var currStr = '';
     if (theControl.hasAttribute('onfocus'))
       currStr = theControl.getAttribute('onfocus');
+    if (theControl.value === 'undefined') {
+      theControl.value='';
+    } 
     theControl.setAttribute('onfocus', 'msiSearchStringManager.setACSAImp();' + currStr);
     theControl.setAttribute('autocompletesearchparam', this.getIndexString());
   }
@@ -7116,6 +7121,42 @@ function msiBibItemKeyMarkerList(aControl) {
 }
 msiBibItemKeyMarkerList.prototype = msiMarkerListPrototype;
 function msiGetKeyListForDocument(aDocument, editor) {
+  if (!aDocument) return;
+  var separatorRegExpr=/\\n/;
+  if (!gProcessor) gProcessor = new XSLTProcessor();
+  else gProcessor.reset();
+  var req = new XMLHttpRequest();
+  req.open("GET", "chrome://prince/content/findkeys.xsl", false); 
+  req.send(null);
+  var stylestring = req.responseText;
+
+  var parser = new DOMParser();
+  var dom = parser.parseFromString(stylestring, "text/xml");
+  // dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
+  try {
+    gProcessor.importStylesheet(dom.documentElement);
+    newDoc = gProcessor.transformToDocument(aDocument);
+    var keyString = newDoc.documentElement.textContent;
+    var items = keyString.split(separatorRegExpr);
+    var i;
+    var len;
+    items.sort();
+    var lastitem = '';
+    for (i = items.length - 1; i >= 0; i--) {
+      if (items[i] === '' || items[i] === lastitem)
+        items.splice(i, 1);
+      else
+        lastitem = items[i];
+    }
+    dump('Keys are : ' + items.join() + '\n');
+  }
+  catch(e) {
+    dump('Exception failure in msiGetKeyListForDocument\n');
+  }
+  return items;
+}
+
+
   //  var parser = new DOMParser();
   //  var dom = parser.parseFromString(xsltSheetForKeyAttrib, "text/xml");
   //  dump(dom.documentElement.nodeName === "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
@@ -7138,27 +7179,29 @@ function msiGetKeyListForDocument(aDocument, editor) {
   //  }
   //  dump("Keys are : "+keys.join()+"\n");
   //  return keys;
-  var ignoreIdsList = 'section--subsection--subsubsection--part--chapter';
-  if (editor)
-    ignoreIdsList = editor.tagListManager.getTagsInClass('structtag', '--', false);
-  ignoreIdsList = '--' + ignoreIdsList + '--';
-  var xsltSheetForKeyAttrib;
-  var x = '<?xml version=\'1.0\'?><xsl:stylesheet version=\'1.1\' xmlns:xsl=\'http://www.w3.org/1999/XSL/Transform\' xmlns:html=\'http://www.w3.org/1999/xhtml\' xmlns:mathml=\'http://www.w3.org/1998/Math/MathML\' ><xsl:output method=\'text\' encoding=\'UTF-8\'/><xsl:variable name=\'hyphen\'>--</xsl:variable>';
-  x += '<xsl:variable name=\'ignoreIDs\'>' + ignoreIdsList + '</xsl:variable><xsl:variable name=\'xrefName\'>xref</xsl:variable><xsl:variable name=\'bibkey\'>bibkey</xsl:variable>';
-  x += '<xsl:template match=\'*|/\'><xsl:apply-templates/></xsl:template> <xsl:template match=\'text()\'></xsl:template>';
-  x += '<xsl:template match=\'/\'>  <xsl:apply-templates select=\'//*[@key][not(local-name()=$xrefName)]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]|//html:bibkey\'/></xsl:template>';
-  x += '<xsl:template match=\'//*[@key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]|//html:bibkey\'>';
-  x += '<xsl:choose><xsl:when test=\'@key and not(local-name()=$xrefName)\'><xsl:value-of select=\'@key\'/><xsl:text>\n</xsl:text></xsl:when>';
-  x += '<xsl:when test=\'@marker and not(@key and @key=@marker)\'><xsl:value-of select=\'@marker\'/><xsl:text>\n</xsl:text></xsl:when>';
-  x += '<xsl:when test=\'@id and not(contains($ignoreIDs,concat($hyphen,local-name(),$hyphen))) and not(@key and @key=@id) and not(@marker and @marker=@id)\'><xsl:value-of select=\'@id\'/><xsl:text>\n</xsl:text></xsl:when>';
-  x += '<xsl:when test=\'@customLabel and not(@key and @key=@customLabel) and not(@marker and @marker=@customLabel) and not (@id and @id=@customLabel)\'><xsl:value-of select=\'@customLabel\'/><xsl:text>\n</xsl:text></xsl:when>';
-  x += '<xsl:when test=\'local-name()=$bibkey\'><xsl:value-of select=\'.\'/><xsl:text>\n</xsl:text></xsl:when>';
-  x += '</xsl:choose>';
-  x += '</xsl:template> </xsl:stylesheet>';
-  xsltSheetForKeyAttrib = x;
-  var sepRE = /\n+/;
-  return msiGetItemListForDocumentFromXSLTemplate(aDocument, xsltSheetForKeyAttrib, sepRE, true);
-}
+  // var ignoreIdsList = 'section--subsection--subsubsection--part--chapter';
+  // if (editor)
+  //   ignoreIdsList = editor.tagListManager.getTagsInClass('structtag', '--', false);
+  // ignoreIdsList = '--' + ignoreIdsList + '--';
+  // var xsltSheetForKeyAttrib;
+  // var x = '<?xml version=\'1.0\'?><xsl:stylesheet version=\'1.1\' xmlns:xsl=\'http://www.w3.org/1999/XSL/Transform\' xmlns:html=\'http://www.w3.org/1999/xhtml\' xmlns:mathml=\'http://www.w3.org/1998/Math/MathML\' ><xsl:output method=\'text\' encoding=\'UTF-8\'/><xsl:variable name=\'hyphen\'>--</xsl:variable>';
+  // x += '<xsl:variable name=\'ignoreIDs\'>' + ignoreIdsList + '</xsl:variable><xsl:variable name=\'xrefName\'>xref</xsl:variable><xsl:variable name=\'bibkey\'>bibkey</xsl:variable>';
+  // x += '<xsl:template match=\'*|/\'><xsl:apply-templates/></xsl:template> <xsl:template match=\'text()\'></xsl:template>';
+  // x += '<xsl:template match=\'/\'>  <xsl:apply-templates select=\'//*[@key][not(local-name()=$xrefName)]//*[@Key]//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]|//html:bibkey\'/></xsl:template>';
+  // x += '<xsl:template match=\'//*[@key]|//*[@Key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]|//html:bibkey\'>';
+  // x += '<xsl:choose>';
+  // x += '<xsl:when test=\'@key and not(local-name()=$xrefName)\'><xsl:value-of select=\'@key\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '<xsl:when test=\'@Key\'><xsl:value-of select=\'@Key\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '<xsl:when test=\'@marker and not(@key and @key=@marker)\'><xsl:value-of select=\'@marker\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '<xsl:when test=\'@id and not(contains($ignoreIDs,concat($hyphen,local-name(),$hyphen))) and not(@key and @key=@id) and not(@marker and @marker=@id)\'><xsl:value-of select=\'@id\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '<xsl:when test=\'@customLabel and not(@key and @key=@customLabel) and not(@marker and @marker=@customLabel) and not (@id and @id=@customLabel)\'><xsl:value-of select=\'@customLabel\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '<xsl:when test=\'local-name()=$bibkey\'><xsl:value-of select=\'.\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '</xsl:choose>';
+  // x += '</xsl:template> </xsl:stylesheet>';
+  // xsltSheetForKeyAttrib = x;
+  // var sepRE = /\n+/;
+  // return msiGetItemListForDocumentFromXSLTemplate(aDocument, xsltSheetForKeyAttrib, sepRE, true);
+// }
 function msiGetBibItemKeyListForDocument(aDocument) {
   var xsltSheetForBibItemKeyAttrib = '<?xml version=\'1.0\'?>' + '<xsl:stylesheet version=\'1.1\' xmlns:xsl=\'http://www.w3.org/1999/XSL/Transform\' xmlns:html=\'http://www.w3.org/1999/xhtml\' >' + '<xsl:output method=\'text\' encoding=\'UTF-8\'/>' + '<xsl:template match=\'/\'>' + '<xsl:apply-templates select=\'//html:bibkey\'/>' + '</xsl:template>' + '<xsl:template match=\'//html:bibkey\'>' + '<xsl:value-of select=\'.\'/>' + '<xsl:text>\n</xsl:text>' + '</xsl:template>' + '</xsl:stylesheet>';
   var sepRE = /\n+/;
