@@ -1060,7 +1060,7 @@ pref("config.use_system_prefs.accessibility", false);
  * "html"   : use entity names for 8bit accented letters, greek letters, and
  *            other special markup symbols as defined in HTML4.
  */
-//pref("editor.encode_entity",                 "html");
+pref("editor.encode_entity", "html");
 
 pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
