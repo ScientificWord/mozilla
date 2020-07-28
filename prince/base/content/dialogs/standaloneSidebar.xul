@@ -38,7 +38,7 @@
    - ***** END LICENSE BLOCK ***** -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/standaloneSidebar.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/content/bindings/sidebar.css" type="text/css"?>
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/standaloneSidebar.dtd">
 <!--JLF - Localization pass on 6/30/2012-->

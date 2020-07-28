@@ -11,9 +11,8 @@ var originalPlotLabels = [];
 
 function startup(){
 //  var graph = window.arguments[0];
-  var editorInitializer = new msiEditorArrayInitializer();
-  var theStringSource = "Label here";
-  var editorElement;
+  var theStringSource = "";
+  var labelTextElement;
   graph = window.arguments[0];
   var nLabels = graph.plotLabels.length;
   storeOriginalPlotLabels();  //in case the user cancels the dialog, want to be able to restore previous state
@@ -28,15 +27,9 @@ function startup(){
   isBillboarding = (dim != 2);
   document.getElementById("is2D").hidden = (dim != 2);
   document.getElementById("is3D").hidden = (dim != 3);
-  editorElement = document.getElementById('Text')
-  editorInitializer.addEditorInfo(editorElement, theStringSource, true, true);
-  editorInitializer.doInitialize();
-  msiSetInitialDialogFocus(editorElement);
-  msiSetActiveEditor(editorElement, false);
-  msiGetEditor(editorElement).SetTopXULWindow(window);
-  msiGetEditor(editorElement).selectAll();
-
-
+  labelTextElement = document.getElementById('Text')
+  labelTextElement.value = theStringSource;
+  msiSetInitialDialogFocus(labelTextElement);
   onChangeItem();
 }
 
@@ -119,6 +112,7 @@ function onChangeItem()
     theLabel = graph.plotLabels[0];
     usingDummy = true;
   }
+  if (theLabel == null) return;
   var attrs = theLabel.plotLabelAttributeList();
   var value, ctrl;
   isCartesian = true;
