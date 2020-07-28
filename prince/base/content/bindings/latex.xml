@@ -6,7 +6,6 @@
 ]>
 <xbl:bindings id="latexbindings"
 	xmlns:xbl="http://www.mozilla.org/xbl" 
-	xmlns:sw="http://www.sciword.com/namespaces/sciword"
 	xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	xmlns:html="http://www.w3.org/1999/xhtml" 
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" >
@@ -1575,9 +1574,20 @@ Make list of figures here
 		</xbl:resources>
 
 		<xbl:content>
-			<html:button type="button" class="frontmatter" oncommand="">
-				Cite: <html:span xbl:inherits="xbl:text=citekey"/>
-			</html:button>
+		      var aNode = this;
+			  var typeAttr = aNode.getAttribute("nocite");
+			  if (typeAttr && (typeAttr == "true"))
+                {
+                  <html:button type="button" class="frontmatter" oncommand="">
+				    Nocite: <html:span xbl:inherits="xbl:text=citekey"/>
+                  </html:button>
+				}
+			  else
+				{
+                  <html:button type="button" class="frontmatter" oncommand="">
+				    Cite: <html:span xbl:inherits="xbl:text=citekey"/>
+                  </html:button>
+				}
 			<html:span style="display:none">
 			<xbl:children/>
 			</html:span>
