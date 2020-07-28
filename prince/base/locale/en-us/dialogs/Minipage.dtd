@@ -105,3 +105,5 @@
 <!ENTITY placement.hereFull "Full width">
 
 <!ENTITY constrain "Constrain proportions">
+<!ENTITY KeyNameConflict.tooltip  "Enter a key name which does not conflict with the current keys">
+<!ENTITY KeyNameConflict.label  "This key conflicts with an existing <br/>key. Choose a different one.">
