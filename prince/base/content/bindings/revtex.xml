@@ -2,7 +2,6 @@
 
 <xbl:bindings id="revtexbindings"
 	xmlns:xbl="http://www.mozilla.org/xbl" 
-  xmlns:sw="http://www.sciword.com/namespaces/sciword"
   xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   xmlns:html="http://www.w3.org/1999/xhtml" 
   xmlns:mml="http://www.w3.org/1998/Math/MathML" >
