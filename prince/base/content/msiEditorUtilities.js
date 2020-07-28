@@ -15,71 +15,72 @@ var prefMapper;
 var invPrefMapper;
 var prefEngineMapper;
 var prefLogMapper;
+var gProcessor; //xslt processor
 /*
 JavaScript enhancements
 */
-if (!String.fromCodePoint) {
-  (function() {
-    var defineProperty = (function() {
-      var result;
-      // IE 8 only supports `Object.defineProperty` on DOM elements
-      try {
-        var object = {};
-        var $defineProperty = Object.defineProperty;
-        result = $defineProperty(object, object, object) && $defineProperty;
-      } catch(error) {}
-      return result;
-    }());
-    var stringFromCharCode = String.fromCharCode;
-    var floor = Math.floor;
-    var fromCodePoint = function() {
-      var MAX_SIZE = 0x4000;
-      var codeUnits = [];
-      var highSurrogate;
-      var lowSurrogate;
-      var index = -1;
-      var length = arguments.length;
-      if (!length) {
-        return '';
-      }
-      var result = '';
-      while (++index < length) {
-        var codePoint = Number(arguments[index]);
-        if (
-          !isFinite(codePoint) ||       // `NaN`, `+Infinity`, or `-Infinity`
-          codePoint < 0 ||              // not a valid Unicode code point
-          codePoint > 0x10FFFF ||       // not a valid Unicode code point
-          floor(codePoint) != codePoint // not an integer
-        ) {
-          throw RangeError('Invalid code point: ' + codePoint);
-        }
-        if (codePoint <= 0xFFFF) { // BMP code point
-          codeUnits.push(codePoint);
-        } else { // Astral code point; split in surrogate halves
-          // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-          codePoint -= 0x10000;
-          highSurrogate = (codePoint >> 10) + 0xD800;
-          lowSurrogate = (codePoint % 0x400) + 0xDC00;
-          codeUnits.push(highSurrogate, lowSurrogate);
-        }
-        if (index + 1 == length || codeUnits.length > MAX_SIZE) {
-          result += stringFromCharCode.apply(null, codeUnits);
-          codeUnits.length = 0;
-        }
-      }
-      return result;
-    };
-    if (defineProperty) {
-      defineProperty(String, 'fromCodePoint', {
-        'value': fromCodePoint,
-        'configurable': true,
-        'writable': true
-      });
-    } else {
-      String.fromCodePoint = fromCodePoint;
-    }
-  }());
-}
+// if (!String.fromCodePoint) {
+//   (function() {
+//     var defineProperty = (function() {
+//       var result;
+//       // IE 8 only supports `Object.defineProperty` on DOM elements
+//       try {
+//         var object = {};
+//         var $defineProperty = Object.defineProperty;
+//         result = $defineProperty(object, object, object) && $defineProperty;
+//       } catch(error) {}
+//       return result;
+//     }());
+//     var stringFromCharCode = String.fromCharCode;
+//     var floor = Math.floor;
+//     var fromCodePoint = function() {
+//       var MAX_SIZE = 0x4000;
+//       var codeUnits = [];
+//       var highSurrogate;
+//       var lowSurrogate;
+//       var index = -1;
+//       var length = arguments.length;
+//       if (!length) {
+//         return '';
+//       }
+//       var result = '';
+//       while (++index < length) {
+//         var codePoint = Number(arguments[index]);
+//         if (
+//           !isFinite(codePoint) ||       // `NaN`, `+Infinity`, or `-Infinity`
+//           codePoint < 0 ||              // not a valid Unicode code point
+//           codePoint > 0x10FFFF ||       // not a valid Unicode code point
+//           floor(codePoint) != codePoint // not an integer
+//         ) {
+//           throw RangeError('Invalid code point: ' + codePoint);
+//         }
+//         if (codePoint <= 0xFFFF) { // BMP code point
+//           codeUnits.push(codePoint);
+//         } else { // Astral code point; split in surrogate halves
+//           // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+//           codePoint -= 0x10000;
+//           highSurrogate = (codePoint >> 10) + 0xD800;
+//           lowSurrogate = (codePoint % 0x400) + 0xDC00;
+//           codeUnits.push(highSurrogate, lowSurrogate);
+//         }
+//         if (index + 1 == length || codeUnits.length > MAX_SIZE) {
+//           result += stringFromCharCode.apply(null, codeUnits);
+//           codeUnits.length = 0;
+//         }
+//       }
+//       return result;
+//     };
+//     if (defineProperty) {
+//       defineProperty(String, 'fromCodePoint', {
+//         'value': fromCodePoint,
+//         'configurable': true,
+//         'writable': true
+//       });
+//     } else {
+//       String.fromCodePoint = fromCodePoint;
+//     }
+//   }());
+// }
 
 /*
 Until we sync with Mozilla again, we need to define our own Object.create and
@@ -4180,25 +4181,35 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement) {
 function msiMakeAbsoluteUrl(url, editorElement) {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
+  var docUrl;
+  var docUri;
+  var docScheme;
+  var IOService;
   var resultUrl = TrimString(url);
-  if (!resultUrl)
-    return resultUrl;
   // Check if URL is already absolute, i.e., it has a scheme
-  var urlScheme = GetScheme(resultUrl);
-  if (urlScheme)
-    return resultUrl;
-  var docUrl = msiGetDocumentBaseUrl(editorElement);
-  var docScheme = GetScheme(docUrl);
+  var urlScheme;
+  try {
+    urlScheme = GetScheme(resultUrl);
+    if (urlScheme)
+      return resultUrl;
+  }
+  catch(e) {}
   // Can't relativize if no doc scheme (page hasn't been saved)
-  if (!docScheme)
+  try {
+    docUrl = msiGetDocumentBaseUrl(editorElement);
+    docScheme = GetScheme(docUrl);
+    IOService = msiGetIOService();
+  }
+  catch(e) {
     return resultUrl;
-  var IOService = msiGetIOService();
-  if (!IOService)
+  }
+
+  if (!docScheme || !IOService)
     return resultUrl;
   // Make a URI object to use its "resolve" method
   var absoluteUrl = resultUrl;
-  var docUri = IOService.newURI(docUrl, msiGetCurrentEditor().documentCharacterSet, null);
   try {
+    docUri = IOService.newURI(docUrl, msiGetCurrentEditor().documentCharacterSet, null);
     absoluteUrl = docUri.resolve(resultUrl);  // This is deprecated and buggy!
                                               // If used, we must make it a path for the parent directory (remove filename)
                                               //absoluteUrl = IOService.resolveRelativePath(resultUrl, docUrl);
@@ -6584,8 +6595,10 @@ var msiSearchStringManager = {
     //Here as below, "aControl" is most likely a dialog window, but...
     {
       var topEditorElement = msiGetTopLevelEditorElement(aControl);
-      var topEditor = msiGetEditor(topEditorElement);
+      var topEditor;
+      if (topEditorElement) topEditor = msiGetEditor(topEditorElement);
       var aSubIdent = { mControl: aControl };
+      if (!topEditor) return '';
       return this.getSearchStringArrayRecordImp(topEditor.document, aSubIdent);
     },
   getSearchStringIDByName: function (aDocument, aName) {
@@ -6973,23 +6986,24 @@ var msiMarkerListPrototype = {
     return this.mKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, addedStringArray, deletedStringArray);
   },
   resetList: function (bForce) {
-    return this.mKeyListManager.resetMarkerList(this.mKeyListManagerRecord);  //    var aDocument = this.getDocument();
-                                                                              //    if (!aDocument)
-                                                                              //    {
-                                                                              //      dump("In msiEditorUtilities.js, msiMarkerList.resetList() called with no current document! Returning...\n");
-                                                                              //      return;
-                                                                              //    }
-                                                                              //    var keyStrings = msiGetKeyListForDocument(aDocument);
-                                                                              //    var ourKey = this.getIndexString();
-                                                                              //    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-                                                                              //    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-                                                                              //    var ourKey = this.getIndexString();
-                                                                              //    ACSA.resetArray(ourKey);
-                                                                              //    for (i=0, len=keyStrings.length; i<len; i++)
-                                                                              //    {
-                                                                              //      if (keyStrings[i].length > 0)
-                                                                              //        ACSA.addString(ourKey, keyStrings[i]);
-                                                                              //    }
+    return this.mKeyListManager.resetMarkerList(this.mKeyListManagerRecord);  
+    //    var aDocument = this.getDocument();
+    //    if (!aDocument)
+    //    {
+    //      dump("In msiEditorUtilities.js, msiMarkerList.resetList() called with no current document! Returning...\n");
+    //      return;
+    //    }
+    //    var keyStrings = msiGetKeyListForDocument(aDocument);
+    //    var ourKey = this.getIndexString();
+    //    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    //    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    //    var ourKey = this.getIndexString();
+    //    ACSA.resetArray(ourKey);
+    //    for (i=0, len=keyStrings.length; i<len; i++)
+    //    {
+    //      if (keyStrings[i].length > 0)
+    //        ACSA.addString(ourKey, keyStrings[i]);
+    //    }
   },
   //  getMarkerList : function(aDocument)
   //  {
@@ -7080,6 +7094,9 @@ var msiMarkerListPrototype = {
     var currStr = '';
     if (theControl.hasAttribute('onfocus'))
       currStr = theControl.getAttribute('onfocus');
+    if (theControl.value === 'undefined') {
+      theControl.value='';
+    } 
     theControl.setAttribute('onfocus', 'msiSearchStringManager.setACSAImp();' + currStr);
     theControl.setAttribute('autocompletesearchparam', this.getIndexString());
   }
@@ -7116,6 +7133,42 @@ function msiBibItemKeyMarkerList(aControl) {
 }
 msiBibItemKeyMarkerList.prototype = msiMarkerListPrototype;
 function msiGetKeyListForDocument(aDocument, editor) {
+  if (!aDocument) return;
+  var separatorRegExpr=/\\n/;
+  if (!gProcessor) gProcessor = new XSLTProcessor();
+  else gProcessor.reset();
+  var req = new XMLHttpRequest();
+  req.open("GET", "chrome://prince/content/findkeys.xsl", false); 
+  req.send(null);
+  var stylestring = req.responseText;
+
+  var parser = new DOMParser();
+  var dom = parser.parseFromString(stylestring, "text/xml");
+  // dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
+  try {
+    gProcessor.importStylesheet(dom.documentElement);
+    newDoc = gProcessor.transformToDocument(aDocument);
+    var keyString = newDoc.documentElement.textContent;
+    var items = keyString.split(separatorRegExpr);
+    var i;
+    var len;
+    items.sort();
+    var lastitem = '';
+    for (i = items.length - 1; i >= 0; i--) {
+      if (items[i] === '' || items[i] === lastitem)
+        items.splice(i, 1);
+      else
+        lastitem = items[i];
+    }
+    dump('Keys are : ' + items.join() + '\n');
+  }
+  catch(e) {
+    dump('Exception failure in msiGetKeyListForDocument\n');
+  }
+  return items;
+}
+
+
   //  var parser = new DOMParser();
   //  var dom = parser.parseFromString(xsltSheetForKeyAttrib, "text/xml");
   //  dump(dom.documentElement.nodeName === "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
@@ -7138,27 +7191,29 @@ function msiGetKeyListForDocument(aDocument, editor) {
   //  }
   //  dump("Keys are : "+keys.join()+"\n");
   //  return keys;
-  var ignoreIdsList = 'section--subsection--subsubsection--part--chapter';
-  if (editor)
-    ignoreIdsList = editor.tagListManager.getTagsInClass('structtag', '--', false);
-  ignoreIdsList = '--' + ignoreIdsList + '--';
-  var xsltSheetForKeyAttrib;
-  var x = '<?xml version=\'1.0\'?><xsl:stylesheet version=\'1.1\' xmlns:xsl=\'http://www.w3.org/1999/XSL/Transform\' xmlns:html=\'http://www.w3.org/1999/xhtml\' xmlns:mathml=\'http://www.w3.org/1998/Math/MathML\' ><xsl:output method=\'text\' encoding=\'UTF-8\'/><xsl:variable name=\'hyphen\'>--</xsl:variable>';
-  x += '<xsl:variable name=\'ignoreIDs\'>' + ignoreIdsList + '</xsl:variable><xsl:variable name=\'xrefName\'>xref</xsl:variable><xsl:variable name=\'bibkey\'>bibkey</xsl:variable>';
-  x += '<xsl:template match=\'*|/\'><xsl:apply-templates/></xsl:template> <xsl:template match=\'text()\'></xsl:template>';
-  x += '<xsl:template match=\'/\'>  <xsl:apply-templates select=\'//*[@key][not(local-name()=$xrefName)]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]|//html:bibkey\'/></xsl:template>';
-  x += '<xsl:template match=\'//*[@key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]|//html:bibkey\'>';
-  x += '<xsl:choose><xsl:when test=\'@key and not(local-name()=$xrefName)\'><xsl:value-of select=\'@key\'/><xsl:text>\n</xsl:text></xsl:when>';
-  x += '<xsl:when test=\'@marker and not(@key and @key=@marker)\'><xsl:value-of select=\'@marker\'/><xsl:text>\n</xsl:text></xsl:when>';
-  x += '<xsl:when test=\'@id and not(contains($ignoreIDs,concat($hyphen,local-name(),$hyphen))) and not(@key and @key=@id) and not(@marker and @marker=@id)\'><xsl:value-of select=\'@id\'/><xsl:text>\n</xsl:text></xsl:when>';
-  x += '<xsl:when test=\'@customLabel and not(@key and @key=@customLabel) and not(@marker and @marker=@customLabel) and not (@id and @id=@customLabel)\'><xsl:value-of select=\'@customLabel\'/><xsl:text>\n</xsl:text></xsl:when>';
-  x += '<xsl:when test=\'local-name()=$bibkey\'><xsl:value-of select=\'.\'/><xsl:text>\n</xsl:text></xsl:when>';
-  x += '</xsl:choose>';
-  x += '</xsl:template> </xsl:stylesheet>';
-  xsltSheetForKeyAttrib = x;
-  var sepRE = /\n+/;
-  return msiGetItemListForDocumentFromXSLTemplate(aDocument, xsltSheetForKeyAttrib, sepRE, true);
-}
+  // var ignoreIdsList = 'section--subsection--subsubsection--part--chapter';
+  // if (editor)
+  //   ignoreIdsList = editor.tagListManager.getTagsInClass('structtag', '--', false);
+  // ignoreIdsList = '--' + ignoreIdsList + '--';
+  // var xsltSheetForKeyAttrib;
+  // var x = '<?xml version=\'1.0\'?><xsl:stylesheet version=\'1.1\' xmlns:xsl=\'http://www.w3.org/1999/XSL/Transform\' xmlns:html=\'http://www.w3.org/1999/xhtml\' xmlns:mathml=\'http://www.w3.org/1998/Math/MathML\' ><xsl:output method=\'text\' encoding=\'UTF-8\'/><xsl:variable name=\'hyphen\'>--</xsl:variable>';
+  // x += '<xsl:variable name=\'ignoreIDs\'>' + ignoreIdsList + '</xsl:variable><xsl:variable name=\'xrefName\'>xref</xsl:variable><xsl:variable name=\'bibkey\'>bibkey</xsl:variable>';
+  // x += '<xsl:template match=\'*|/\'><xsl:apply-templates/></xsl:template> <xsl:template match=\'text()\'></xsl:template>';
+  // x += '<xsl:template match=\'/\'>  <xsl:apply-templates select=\'//*[@key][not(local-name()=$xrefName)]//*[@Key]//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]|//html:bibkey\'/></xsl:template>';
+  // x += '<xsl:template match=\'//*[@key]|//*[@Key]|//*[@id]|//mathml:mtable//*[@marker]|//mathml:mtable//*[@customLabel]|//html:bibkey\'>';
+  // x += '<xsl:choose>';
+  // x += '<xsl:when test=\'@key and not(local-name()=$xrefName)\'><xsl:value-of select=\'@key\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '<xsl:when test=\'@Key\'><xsl:value-of select=\'@Key\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '<xsl:when test=\'@marker and not(@key and @key=@marker)\'><xsl:value-of select=\'@marker\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '<xsl:when test=\'@id and not(contains($ignoreIDs,concat($hyphen,local-name(),$hyphen))) and not(@key and @key=@id) and not(@marker and @marker=@id)\'><xsl:value-of select=\'@id\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '<xsl:when test=\'@customLabel and not(@key and @key=@customLabel) and not(@marker and @marker=@customLabel) and not (@id and @id=@customLabel)\'><xsl:value-of select=\'@customLabel\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '<xsl:when test=\'local-name()=$bibkey\'><xsl:value-of select=\'.\'/><xsl:text>\n</xsl:text></xsl:when>';
+  // x += '</xsl:choose>';
+  // x += '</xsl:template> </xsl:stylesheet>';
+  // xsltSheetForKeyAttrib = x;
+  // var sepRE = /\n+/;
+  // return msiGetItemListForDocumentFromXSLTemplate(aDocument, xsltSheetForKeyAttrib, sepRE, true);
+// }
 function msiGetBibItemKeyListForDocument(aDocument) {
   var xsltSheetForBibItemKeyAttrib = '<?xml version=\'1.0\'?>' + '<xsl:stylesheet version=\'1.1\' xmlns:xsl=\'http://www.w3.org/1999/XSL/Transform\' xmlns:html=\'http://www.w3.org/1999/xhtml\' >' + '<xsl:output method=\'text\' encoding=\'UTF-8\'/>' + '<xsl:template match=\'/\'>' + '<xsl:apply-templates select=\'//html:bibkey\'/>' + '</xsl:template>' + '<xsl:template match=\'//html:bibkey\'>' + '<xsl:value-of select=\'.\'/>' + '<xsl:text>\n</xsl:text>' + '</xsl:template>' + '</xsl:stylesheet>';
   var sepRE = /\n+/;
@@ -9581,7 +9636,7 @@ var msiSpaceUtils = {
     if (spaceName in this.hSpaceInfo && 'charContent' in this.hSpaceInfo[spaceName])
       theContent = this.hSpaceInfo[spaceName].charContent;
     else if (spaceName in this.hSpaceInfo && 'charCode' in this.hSpaceInfo[spaceName])
-      theContent = String.fromCodePoint(this.hSpaceInfo[spaceName].charCode);
+      theContent = String.fromCharCode(this.hSpaceInfo[spaceName].charCode);
     return theContent;
   },
   getHSpaceDisplayableContent: function (spaceName) {

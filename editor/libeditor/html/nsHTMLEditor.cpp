@@ -7647,6 +7647,8 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isUnicode, const nsAString & orig, nsAS
             thisChar.Append(NS_LITERAL_STRING("\\jmath")); break;
           case 0xDD5C :
             thisChar.Append(NS_LITERAL_STRING("\\Bbbk")); break;
+
+          //Handling ligatures  
           case 0xFB00 :
             thisChar.Append(NS_LITERAL_STRING("ff")); break;   
           case 0xFB01 :
@@ -7657,7 +7659,84 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isUnicode, const nsAString & orig, nsAS
             thisChar.Append(NS_LITERAL_STRING("ffi")); break;
           case 0xFB04 :
             thisChar.Append(NS_LITERAL_STRING("ffl")); break; 
-                     
+          
+          //Handling "dot below" characters
+          case 0x1EA0 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{A}")); break; 
+          case 0x1EA1 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{a}")); break;
+          case 0x1E04 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{B}")); break;
+          case 0x1E05 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{b}")); break;
+          case 0x1E0C :
+            thisChar.Append(NS_LITERAL_STRING("\\d{D}")); break;
+          case 0x1E0D :
+            thisChar.Append(NS_LITERAL_STRING("\\d{d}")); break;
+          case 0x1EB8 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{E}")); break;
+          case 0x1EB9 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{e}")); break;
+          case 0x1E24 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{H}")); break;
+          case 0x1E25 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{h}")); break;
+          case 0x1ECA :
+            thisChar.Append(NS_LITERAL_STRING("\\d{I}")); break;
+          case 0x1ECB :
+            thisChar.Append(NS_LITERAL_STRING("\\d{i}")); break;
+          case 0x1E32 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{K}")); break;
+          case 0x1E33 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{k}")); break;
+          case 0x1E36 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{L}")); break;
+          case 0x1E37 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{l}")); break;
+          case 0x1E42 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{M}")); break;
+          case 0x1E43 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{m}")); break;
+          case 0x1E46 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{N}")); break;
+          case 0x1E47 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{n}")); break;
+          case 0x1ECC :
+            thisChar.Append(NS_LITERAL_STRING("\\d{O}")); break;
+          case 0x1ECD :
+            thisChar.Append(NS_LITERAL_STRING("\\d{o}")); break;
+          case 0x1E5A :
+            thisChar.Append(NS_LITERAL_STRING("\\d{R}")); break;
+          case 0x1E5B :
+            thisChar.Append(NS_LITERAL_STRING("\\d{r}")); break;
+          case 0x1E62 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{S}")); break;
+          case 0x1E63 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{s}")); break;
+          case 0x1E6C :
+            thisChar.Append(NS_LITERAL_STRING("\\d{T}")); break;
+          case 0x1E6D :
+            thisChar.Append(NS_LITERAL_STRING("\\d{t}")); break;
+          case 0x1EE4 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{U}")); break;
+          case 0x1EE5 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{u}")); break;
+          case 0x1E7E :
+            thisChar.Append(NS_LITERAL_STRING("\\d{V}")); break;
+          case 0x1E7F :
+            thisChar.Append(NS_LITERAL_STRING("\\d{v}")); break; 
+          case 0x1E88 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{W}")); break;
+          case 0x1E89 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{w}")); break;
+          case 0x1EF4 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{Y}")); break;
+          case 0x1EF5 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{y}")); break;
+          case 0x1E92 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{Z}")); break;
+          case 0x1E93 :
+            thisChar.Append(NS_LITERAL_STRING("\\d{z}")); break;   
 
 	  case 0xFE00 :
 	    // ignore this char
