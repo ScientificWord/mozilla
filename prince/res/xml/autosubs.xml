@@ -82,7 +82,8 @@
   <sub ctx="text" tp="sc"><pattern>.para.</pattern><data>insertSectionTag('paragraph',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.subpara.</pattern><data>insertSectionTag('subparagraph',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.title.</pattern><data>insertFrontMatterItem('title',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.author.</pattern><data>insertParaTag('author',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.abstract.</pattern><data>insertParaTag('abstract',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.date.</pattern><data>insertParaTag('date',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>msiInsertLaTeXmarker('maketitle');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.maketoc.</pattern><data>msiInsertLaTeXmarker('maketoc');</data></sub>
