@@ -598,11 +598,11 @@ VCamObject.prototype = {
 
   makeSnapshotPath: function( exporting ) {
     var extension;
-    if (getOS(window) == "win") {
-      extension = "bmp";
-    } else {
+    // if (getOS(window) == "win") {
+    //   extension = "bmp";
+    // } else {
       extension = "png";
-    }
+    // }
     var path;
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
     try {
@@ -844,7 +844,7 @@ function doVCamClose() {
 
 // oldsnapshot is an nsIFile pointing to the .bmp file
 function convertBMPtoPNG( aFile, is3d ) {
-  // used only for converting BMP 3-D snapshots to PNG on Windows.
+  // used only for converting BMP  snapshots to PNG on Windows.
   var leaf = aFile.leafName;
   var x;
 
