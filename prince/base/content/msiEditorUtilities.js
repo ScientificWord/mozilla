@@ -11263,6 +11263,7 @@ function makeRelPathAbsolute(relpath, editorElement) {
   var pathParts = relpath.split(/[/\\]/);
   var firstpart = pathParts[0];
   if (firstpart === '' || firstpart === 'file:' || (firstpart.length === 2 && firstpart.charAt(1) === ':') ) {
+      return relpath;
   }
   try {
     var documentfile;
