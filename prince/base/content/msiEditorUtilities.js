@@ -4220,9 +4220,9 @@ function msiMakeAbsoluteUrl(url, editorElement) {
 function makeFilePathAbsolute(filepath, editorElement) {
   var absUrl = msiMakeAbsoluteUrl(filepath, editorElement);
   var absUri = msiURIFromString(absUrl);
-  
-  return msiPathFromFileURL(absUri);  
-                                      
+
+  return msiPathFromFileURL(absUri);
+
 }
 // Get the HREF of the page's <base> tag or the document location
 // returns empty string if no base href and document hasn't been saved yet
@@ -6228,7 +6228,7 @@ var msiBaseMathUnitsList = {
        ////      this.initAutoCompleteList();
        //    }
   },
-  
+
   createDialogNameList: function () {
     if (!this.bInitialized)
       this.initialize();
@@ -6986,7 +6986,7 @@ var msiMarkerListPrototype = {
     return this.mKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, addedStringArray, deletedStringArray);
   },
   resetList: function (bForce) {
-    return this.mKeyListManager.resetMarkerList(this.mKeyListManagerRecord);  
+    return this.mKeyListManager.resetMarkerList(this.mKeyListManagerRecord);
     //    var aDocument = this.getDocument();
     //    if (!aDocument)
     //    {
@@ -7096,7 +7096,7 @@ var msiMarkerListPrototype = {
       currStr = theControl.getAttribute('onfocus');
     if (theControl.value === 'undefined') {
       theControl.value='';
-    } 
+    }
     theControl.setAttribute('onfocus', 'msiSearchStringManager.setACSAImp();' + currStr);
     theControl.setAttribute('autocompletesearchparam', this.getIndexString());
   }
@@ -7138,7 +7138,7 @@ function msiGetKeyListForDocument(aDocument, editor) {
   if (!gProcessor) gProcessor = new XSLTProcessor();
   else gProcessor.reset();
   var req = new XMLHttpRequest();
-  req.open("GET", "chrome://prince/content/findkeys.xsl", false); 
+  req.open("GET", "chrome://prince/content/findkeys.xsl", false);
   req.send(null);
   var stylestring = req.responseText;
 
@@ -11261,8 +11261,8 @@ function makeRelPathAbsolute(relpath, editorElement) {
   var longfilename;
   var leaf;
   var pathParts = relpath.split(/[/\\]/);
-  if (pathParts[0] === '' || pathParts[0] === 'file:') {
-    return relpath;  // it looks like relpath is really absolute
+  var firstpart = pathParts[0];
+  if (firstpart === '' || firstpart === 'file:' || (firstpart.length === 2 && firstpart.charAt(1) === ':') ) {
   }
   try {
     var documentfile;
