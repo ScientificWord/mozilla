@@ -11261,7 +11261,8 @@ function makeRelPathAbsolute(relpath, editorElement) {
   var longfilename;
   var leaf;
   var pathParts = relpath.split(/[/\\]/);
-  if (pathParts[0] === '' || pathParts[0] === 'file:') {
+  var firstpart = pathParts[0];
+  if (firstpart === '' || firstpart === 'file:' || (firstpart.length === 2 && firstpart.charAt(1) === ':') ) {
     return relpath;  // it looks like relpath is really absolute
   }
   try {

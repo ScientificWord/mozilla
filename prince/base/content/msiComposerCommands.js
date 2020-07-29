@@ -2767,7 +2767,7 @@ function putDefinitionsInPreamble (editor) {
       defnListString = defnListString.replace(/<p>/,"<bodyText>", "g");
       defnListString = defnListString.replace(/<\/p>/,"</bodyText>", "g");
       defnListString = "<definitionlist>" + defnListString + "</definitionlist>";
-      
+
       var parser = new DOMParser();
       var doc = parser.parseFromString(defnListString, 'application/xhtml+xml');
       //var nodeList = doc.documentElement.childNodes;
@@ -4435,9 +4435,9 @@ var msiConvertGraphics =
         var natHeight = 0;
         hasWidth = objectnode.hasAttribute('width') && (Number(objectnode.getAttribute('width')) > 0);
         hasHeight = objectnode.hasAttribute('height') && (Number(objectnode.getAttribute('height')) > 0);
-        if (!(hasWidth && hasHeight)) 
+        if (!(hasWidth && hasHeight))
         {
-          graphicsConverter.imageLoaded.call(node); 
+          graphicsConverter.imageLoaded.call(node);
           // The above call may have changed width and height
           hasWidth = objectnode.hasAttribute('width') && (Number(objectnode.getAttribute('width')) > 0);
           hasHeight = objectnode.hasAttribute('height') && (Number(objectnode.getAttribute('height')) > 0);
@@ -7296,7 +7296,7 @@ function setAlignmentOK(editorElement) {
         selNode.tagName != 'mtext' &&
         selNode.tagName != 'munder' &&
         selNode.tagName != 'munderover' &&
-        selNode.tagName != 'mphantom') 
+        selNode.tagName != 'mphantom')
         || (selNode.tagName == 'mn' ||
         selNode.tagName == 'msqrt' ||
         selNode.tagName == 'mroot' ||
@@ -9050,7 +9050,7 @@ var msiObjectPropertiesCommand =
       if (!nodeData) return;
       var element = nodeData.theNode || nodeData.coreElement;
 
-               
+
 
       var cmdString = nodeData.getCommandString(0);
 
@@ -9644,7 +9644,7 @@ function msiFollowLink( editorElement, element ) {
       {
         extension = "cmd";
         filename="open";
-        // we need to convert '/' to '\' except for slashes after 
+        // we need to convert '/' to '\' except for slashes after
         if (href.indexOf('file://') === 0) {
           href = 'file://' + href.slice(7).replace(/\//g,"\\\\");
         }
@@ -11186,7 +11186,7 @@ function msiInsertOrReviseNote(currNode, editorElement, data)
       if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
       node = editor.tagListManager.getNewInstanceOfNode("note", null, editor.document);
       node.setAttribute('type',data.type);
-      node.setAttribute('hide','false');          
+      node.setAttribute('hide','false');
       if (data.ragrt) node.setAttribute("ragrt","true");
       else node.removeAttribute("ragrt");
       if (data.raglft) node.setAttribute("raglft","true");
