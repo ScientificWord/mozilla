@@ -1574,20 +1574,9 @@ Make list of figures here
 		</xbl:resources>
 
 		<xbl:content>
-		      var aNode = this;
-			  var typeAttr = aNode.getAttribute("nocite");
-			  if (typeAttr && (typeAttr == "true"))
-                {
-                  <html:button type="button" class="frontmatter" oncommand="">
-				    Nocite: <html:span xbl:inherits="xbl:text=citekey"/>
-                  </html:button>
-				}
-			  else
-				{
-                  <html:button type="button" class="frontmatter" oncommand="">
-				    Cite: <html:span xbl:inherits="xbl:text=citekey"/>
-                  </html:button>
-				}
+			<html:button type="button" class="frontmatter" oncommand="">
+				Cite: <html:span xbl:inherits="xbl:text=citekey"/>
+			</html:button>
 			<html:span style="display:none">
 			<xbl:children/>
 			</html:span>
