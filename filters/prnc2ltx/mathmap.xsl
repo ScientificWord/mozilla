@@ -1011,7 +1011,7 @@
         <xsl:choose>
 -->
           <xsl:when test="$first-char='&#x20AC;'">
-            <xsl:text xml:space="preserve">\texteuro </xsl:text>
+            <xsl:text xml:space="preserve">\euro </xsl:text>
           </xsl:when>
           <xsl:when test="$first-char='&#x20A3;'">
             <xsl:text xml:space="preserve">\textfranc </xsl:text>
