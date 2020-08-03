@@ -3,7 +3,7 @@
 VCam object section.
 
 The following functions will be bound to VCam plot objects, so 'this' in the
-code refers to the plot object. The attachment of the functions to the objects
+code refers to the plot object. The attachment of the functions to the object
 happen when the object is instantiated, i.e. clicked on, in doVCamInitialize.
 
 ******************************************************************************/
@@ -71,7 +71,7 @@ function VCamObject(vcamObject) {
     }
     // saveObj(this.obj);
   }
-  if (this.obj) this.init(vcamObject);
+  if (this.obj) this.init(vcamObject);  // BBM: ? init does not take a parameter, and at this point this.obj === vcamObject
 }
 
 VCamObject.prototype = {
@@ -532,13 +532,22 @@ VCamObject.prototype = {
   },
 
   makeSnapshot: function( exporting ) {
+    // This function serves two purposes. A snapshot is required whenever we need to display a plot in a location
+    // not supported by VCam; these include in PDF and direct prints, in HTML documents, and for plots to be displayed
+    // in Scientific Word.
+    // The other purpose is to take a snapshot to be put into a location specified by the user, to be used by any program
+    // that can display bitmap graphics. It is possible, as well, to have a single VCam plot saved in several variations
+    // even in SWP and SNB.
+    // The boolean parameter 'exporting' is true in the second case. In this case we must as the user for the seve location
+    // Otherwise the snapshots go into the gcache subdirectory of the document directory.
+
     var editorElement;
     try {
       editorElement = msiGetActiveEditorElement();
     } catch (e) {
       return;
     }
-    msiRequirePackage(editorElement, "wrapfig", "");
+    if (!exporting) msiRequirePackage(editorElement, "wrapfig", "");
     var doc = editorElement.contentDocument;
     var ready = this.obj.readyState;
     if (!ready) {
@@ -582,6 +591,8 @@ VCamObject.prototype = {
         // }
         this.obj.makeSnapshot(abspath, res);
         if (getOS(window) == "win") {
+          // we really got a bmp; change the extension
+          oldsnapshot.moveTo(null, oldsnapshot.leafName.replace(/png$/,'bmp'));
           abspath = convertBMPtoPNG(oldsnapshot, this.obj.dimension == 3);
         }
         this.insertSnapshot(abspath);
@@ -597,14 +608,11 @@ VCamObject.prototype = {
 // directory.
 
   makeSnapshotPath: function( exporting ) {
-    var extension;
-    // if (getOS(window) == "win") {
-    //   extension = "bmp";
-    // } else {
-      extension = "png";
-    // }
+    var extension = 'png';  // In the Windows case, we ask VCam for a bmp file which we convert to png.
+                            // The user will not see the bmp extension at all.
     var path;
-    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+    var fp;
+    if (exporting) fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
     try {
       var strSrc = this.obj.getAttribute("data") || this.obj.getAttribute("src");
       var match = /plots\/(.*$)/.exec(strSrc);
@@ -615,7 +623,6 @@ VCamObject.prototype = {
         fp.defaultExtension = extension;
         fp.defaultString=fileName;
         fp.appendFilter("Bitmap graphics",".png");
-        var compileInfo = new Object();
         var dialogResult = fp.show();
         if (dialogResult != msIFilePicker.returnCancel)
         path = fp.file.path;
@@ -695,10 +702,9 @@ function initVCamObjects(doc) {
   length = wrapperlist.length;
   for (i = 0; i < length; i++) {
     if (wrapperlist[i].parentNode.tagName === "graph") {
-      obj = wrapperlist[i].firstChild;
-      if (obj && obj.nodeName === "object") {
+      if (wrapperlist[i].firstChild && wrapperlist[i].firstChild.nodeName === "object") {
         vcamlastId++;
-        saveObj(obj);
+        saveObj(wrapperlist[i].firstChild);
         var x=3; // for debugger
       }
     }
