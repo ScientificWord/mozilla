@@ -193,7 +193,7 @@
     <xsl:call-template name="replace-substring">
       <xsl:with-param name="original" select="$sub21"/>
       <xsl:with-param name="substring" select="'&#x20AC;'"/>
-      <xsl:with-param name="replacement" select="'\euro{}'"/>
+      <xsl:with-param name="replacement" select="'\texteuro{}'"/>
     </xsl:call-template>
   </xsl:variable>
 
