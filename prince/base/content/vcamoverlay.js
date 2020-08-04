@@ -28,6 +28,24 @@ var vcamWrapperArray = [];
 // A VCamObject contains cached state values of a plugin object, and contains the
 // plugin object itself.
 
+// If an HTMLObjectElement gets proxied to an XPCSafeJSObjectWrapper, we can rescue it from
+// vcamObjArray by one of the next three functions
+
+function objFromId(id) {
+  try {
+    return vcamObjArray[vcamIdArray.indexOf(id)];
+  }
+  catch(e) {
+    return null;
+  }
+}
+
+function objFromObj(obj) {
+  if (obj.readyState == 2)
+    return obj;
+  return objFromId(obj.id);
+}
+
 var currentVCamObjectNum = -1;
 
 function setCurrentVCamObject(obj) {
@@ -71,7 +89,7 @@ function VCamObject(vcamObject) {
     }
     // saveObj(this.obj);
   }
-  if (this.obj) this.init(vcamObject);  // BBM: ? init does not take a parameter, and at this point this.obj === vcamObject
+  if (this.obj) this.init();
 }
 
 VCamObject.prototype = {
@@ -87,6 +105,14 @@ VCamObject.prototype = {
   actionSpeed: null,
   animationSpeed: null,
   wrappedJSObject: this,
+
+  validateObj: function validateObj() {
+    if (this.obj) {
+      this.obj = objFromObj(this.obj);
+      return true;
+    } else
+      return false;
+  },
 
   setupUI: function(obj) {
     if (!this.initialized) this.init(obj);
@@ -238,6 +264,7 @@ VCamObject.prototype = {
     // there might not be an editor element; e.g., when displaying help files
     var editorElement = null;
     var editor = null;
+    var obj;
     try {
       if (msiGetActiveEditorElement != null) {
         editorElement = msiGetActiveEditorElement();
@@ -246,20 +273,23 @@ VCamObject.prototype = {
         }
       }
     } catch (e) {} // it's ok to fail
-    this.obj.addEvent('leftMouseDown', this.onVCamLeftMouseDown);
-    this.obj.addEvent('leftMouseUp', this.onVCamLeftMouseUp);
-    this.obj.addEvent('leftMouseDoubleClick', this.onVCamLeftDblClick);
-    this.obj.addEvent('rightMouseDown', this.onVCamRightMouseDown);
-    this.obj.addEvent('rightMouseUp', this.onVCamRightMouseUp);
-    this.obj.addEvent('dragMove', this.onVCamDragMove);
-    this.obj.addEvent('drop', this.onVCamDrop);
-    this.obj.addEvent('dragLeave', this.onVCamDragLeave);
-    if (this.showAnimationTime) this.obj.addEvent("currentTimeChange", this.showAnimationTime);
+    if (!this.validateObj()) return;
+    obj = this.obj;
+    obj.addEvent('leftMouseDown', this.onVCamLeftMouseDown);
+    obj.addEvent('leftMouseUp', this.onVCamLeftMouseUp);
+    obj.addEvent('leftMouseDoubleClick', this.onVCamLeftDblClick);
+    obj.addEvent('rightMouseDown', this.onVCamRightMouseDown);
+    obj.addEvent('rightMouseUp', this.onVCamRightMouseUp);
+    obj.addEvent('dragMove', this.onVCamDragMove);
+    obj.addEvent('drop', this.onVCamDrop);
+    obj.addEvent('dragLeave', this.onVCamDragLeave);
+    if (this.showAnimationTime) obj.addEvent("currentTimeChange", this.showAnimationTime);
 
     if (editorElement) editorElement.focus();
   },
 
   setAnimationTime: function() {
+    if (!this.validateObj()) return;
     var time = this.obj.beginTime + (document.getElementById("vc-AnimScale").value / 100) *
       (this.obj.endTime - this.obj.beginTime);
     this.obj.currentTime = time;
@@ -267,19 +297,23 @@ VCamObject.prototype = {
   },
 
   showAnimationTime: function(time) {
+    if (!this.validateObj()) return;
     var newval = Math.round(100 * (time / (this.obj.endTime - this.obj.beginTime)));
     document.getElementById("vc-AnimScale").value = newval;
   },
 
   setAnimSpeed: function(factor) {
+    if (!this.validateObj()) return;
     this.obj.animationSpeed = this.animationSpeed = factor;
   },
 
   setLoopMode: function(mode) {
+    if (!this.validateObj()) return;
     this.obj.animationLoopingMode = mode;
   },
 
   setActionSpeed: function(factor) {
+    if (!this.validateObj()) return;
     try {
       this.obj.actionSpeed = this.actionSpeed = factor;
     }
@@ -415,6 +449,7 @@ VCamObject.prototype = {
   doCommand: function(cmd, editorElement) {
     var doc = null;
     var editor = null;
+    if (!this.validateObj()) return;
     try {
       if (editorElement === null && msiGetActiveEditorElement != null) {
         editorElement = msiGetActiveEditorElement();
@@ -541,6 +576,8 @@ VCamObject.prototype = {
     // The boolean parameter 'exporting' is true in the second case. In this case we must as the user for the seve location
     // Otherwise the snapshots go into the gcache subdirectory of the document directory.
 
+    if (!this.validateObj()) return;
+
     var editorElement;
     try {
       editorElement = msiGetActiveEditorElement();
@@ -593,9 +630,9 @@ VCamObject.prototype = {
         if (getOS(window) == "win") {
           // we really got a bmp; change the extension
           oldsnapshot.moveTo(null, oldsnapshot.leafName.replace(/png$/,'bmp'));
-          abspath = convertBMPtoPNG(oldsnapshot, this.obj.dimension == 3);
+          abspath = convertBMPtoPNG(oldsnapshot, this.obj.dimension == 3, exporting);
         }
-        this.insertSnapshot(abspath);
+        if (!exporting) this.insertSnapshot(abspath);
       } catch (e) {
         throw new MsiException("Error inserting plot snapshot", e);
       }
@@ -849,41 +886,65 @@ function doVCamClose() {
 }
 
 // oldsnapshot is an nsIFile pointing to the .bmp file
-function convertBMPtoPNG( aFile, is3d ) {
+function convertBMPtoPNG( aFile, is3d, exporting ) {
   // used only for converting BMP  snapshots to PNG on Windows.
   var leaf = aFile.leafName;
   var x;
+  var utilityDir;
+  var wscript;
+  var invisscript;
+  var process;
+  var dsprops;
+  var codeFile;
+  var outfile;
+  var sourcefile;
+  var destfile;
 
   if (!is3d) {
     x=3;  // something to break on
   }
   var basename = leaf.replace(/\.bmp$/,'');
-  var workDirectory = aFile.parent.parent.clone();
-  var utilityDir;
-  var wscript;
-  var invisscript;
-  var process;
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  var codeFile = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+  var theDirectory;
+  var workDirectory;
+  if (exporting) {
+    theDirectory = aFile.parent;
+  }
+  else {
+    workDirectory = aFile.parent.parent.clone();
+    workDirectory.append('gcache');
+    if (! workDirectory.exists()) workDirectory.create(1, 0775);
+    workDirectory = workDirectory.parent;
+    theDirectory = workDirectory;
+  }
+  dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  codeFile = dsprops.get("CurProcD", Components.interfaces.nsIFile);
   wscript = dsprops.get("WinD", Components.interfaces.nsIFile);
   wscript.append('system32');
   wscript.append('WScript.exe');
-  workDirectory.append('gcache');
-  if (! workDirectory.exists()) workDirectory.create(1, 0775);
-  workDirectory = workDirectory.parent;
   codeFile.append('invis.vbs');
 
   invisscript = codeFile.path;
   codeFile = codeFile.parent;
   codeFile.append("utilities");
   utilityDir = codeFile.path;
+  sourcefile = theDirectory.clone();
 
   process = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
   process.init(wscript);
   // process.run(true, [invisscript, codeFile.path, workDirectory.path, utilityDir, basename, (is3d ? 1 : 0 )], 6);
-  process.run(true, [invisscript, workDirectory.path, utilityDir, basename, 1], 5);
-  var outfile = workDirectory.clone();
-  outfile.append('gcache');
+  if (exporting) {
+    process.run(true, [invisscript, utilityDir, theDirectory.path+"\\", theDirectory.path+"\\", basename, 1], 6);
+    outfile = aFile.parent;
+  }
+  else {
+    sourcefile.append('graphics');
+    destfile = theDirectory.clone();
+    destfile.append('gcache');
+    process.run(true, [invisscript, utilityDir, sourcefile.path+"\\", destfile.path+"\\", basename, 1], 6);
+    outfile = destfile;
+  }
+  sourcefile.append(basename+'.bmp');
+  sourcefile.remove(true);
   outfile.append(basename+'.png');
   return outfile.path;
 }
