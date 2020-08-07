@@ -9415,7 +9415,7 @@ var msiNavigationUtils = {
      }
    }
    catch(e) {
-     msiDump(e.message);
+     msidump(e.message);
    }
  }
 

@@ -1895,9 +1895,9 @@ function ShutdownAnEditor(editorElement) {
     if ("mCSSPrefListener" in editorElement)
       editorElement.mCSSPrefListener.shutdown();
   } catch (e) {
-    msiDumpWithID(
-      "In ShutdownAnEditor for editor [@], removing active editor and toolbar pref listener, error: " +
-      e + "\n", editorElement);
+    // msiDumpWithID(
+    //   "In ShutdownAnEditor for editor [@], removing active editor and toolbar pref listener, error: " +
+    //   e + "\n", editorElement);
   }
 
   try {
