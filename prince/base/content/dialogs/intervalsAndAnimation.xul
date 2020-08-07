@@ -40,7 +40,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/intervalsAndAnimation.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/graphOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
-#include ../requiredEditorScripts.inc
+<!--#include ../requiredEditorScripts.inc -->
 
   <stringbundle id="computeBundle" src="chrome://prince/locale/compute.properties"/>
   <broadcasterset>
@@ -55,17 +55,17 @@
 
 #include ../keysfordialogs.inc
 
-#include ../requiredEditorCommandSets.inc
+<!-- #include ../requiredEditorCommandSets.inc -->
 
   <groupbox>
     <caption label="&VariablesTitle.label;" />
     <grid>
       <columns>
         <column style="text-align: center;"/>
-        <column />
+        <column style="width: 5em"/>
         <column style="text-align: center;" />
-        <column />
-        <column />
+        <column style="width: 5em"/>
+        <column style="width: 5em"/>
         <column />
       </columns>
       <rows>
@@ -77,18 +77,18 @@
           <label value="&PointsSampled.label;" />
           <label value="&UseVariable.label;" observes="2Vars"/>
         </row>
-        <row observes="1Var" height="100">
+        <row observes="1Var">
           <vbox flex="1" style="-moz-box-pack:center;">
             <label id ="var1" style="text-align: center;">&x.label;</label>
           </vbox>
-          <editor class="singleLineEditor" editortype="html" type="content" context="msiEditorContentContext"
-                  id="var1StartEdit" flex="1" width="150" height="40"/>
+          <textbox context="msiEditorContentContext"
+                  id="var1StartEdit" flex="1" />
           <vbox flex="1" style="-moz-box-pack:center;">
             <label value="&to.label;" style="text-align: center;" />
           </vbox>
-          <editor class="singleLineEditor" editortype="html" type="content" context="msiEditorContentContext"
-                  id="var1EndEdit" flex="1" width="150" height="40"/>
-		      <hbox><textbox id="ptssamp1" type="number" class="medium" /></hbox>
+          <textbox context="msiEditorContentContext"
+                  id="var1EndEdit" flex="1" />
+		      <hbox><textbox id="ptssamp1" style="width: 5em"/></hbox>
           <menulist id="var1Role" observes="2Vars" oncommand="onChangeRole(this);">
             <menupopup>
               <menuitem label="&x.label;"      value="X"/>
@@ -98,18 +98,18 @@
             </menupopup>
           </menulist>
         </row>
-        <row observes="2Vars" height="100">
+        <row observes="2Vars">
           <vbox flex="1" style="-moz-box-pack:center;">
             <label id ="var2" style="text-align: center;" >&y.label;</label>
           </vbox>
-          <editor class="singleLineEditor" editortype="html" type="content" context="msiEditorContentContext"
-                  id="var2StartEdit" flex="1" width="150" height="40"/>
+          <textbox context="msiEditorContentContext"
+                  id="var2StartEdit" flex="1" />
           <vbox flex="1" style="-moz-box-pack:center;">
             <label value="&to.label;" style="text-align: center;" />
           </vbox>
-          <editor class="singleLineEditor" editortype="html" type="content" context="msiEditorContentContext"
-                  id="var2EndEdit" flex="1" width="150" height="40"/>
-          <hbox><textbox id="ptssamp2" type="number" class="medium" /></hbox>
+          <textbox context="msiEditorContentContext"
+                  id="var2EndEdit" flex="1"/>
+          <hbox><textbox id="ptssamp2" /></hbox>
           <menulist id="var2Role" oncommand="onChangeRole(this);">
             <menupopup>
               <menuitem label="&x.label;"      value="X"/>
@@ -119,18 +119,18 @@
             </menupopup>
           </menulist>
         </row>
-        <row observes="3Vars" height="100">
+        <row observes="3Vars">
           <vbox flex="1" style="-moz-box-pack:center;">
             <label id ="var3" style="text-align: center;" >&y.label;</label>
           </vbox>
-          <editor class="singleLineEditor" editortype="html" type="content" context="msiEditorContentContext"
-                  id="var3StartEdit" flex="1" width="150" height="40"/>
+          <textbox context="msiEditorContentContext"
+                  id="var3StartEdit" flex="1"/>
           <vbox flex="1" style="-moz-box-pack:center;">
             <label value="&to.label;" style="text-align: center;" />
           </vbox>
-          <editor class="singleLineEditor" editortype="html" type="content" context="msiEditorContentContext"
-                  id="var3EndEdit" flex="1" width="150" height="40"/>
-          <hbox><textbox id="ptssamp3" type="number" class="medium" /></hbox>
+          <textbox context="msiEditorContentContext"
+                  id="var3EndEdit" flex="1"/>
+          <hbox><textbox id="ptssamp3" /></hbox>
           <menulist id="var3Role" oncommand="onChangeRole(this);">
             <menupopup>
               <menuitem label="&x.label;"      value="X"/>
@@ -140,18 +140,18 @@
             </menupopup>
           </menulist>
         </row>
-        <row observes="4Vars" height="100">
+        <row observes="4Vars">
           <vbox flex="1" style="-moz-box-pack:center;">
             <label id ="var4" style="text-align: center;" >&t.label;</label>
           </vbox>
-          <editor class="singleLineEditor" editortype="html" type="content" context="msiEditorContentContext"
-                  id="var4StartEdit" flex="1" width="150" height="40"/>
+          <textbox context="msiEditorContentContext"
+                  id="var4StartEdit" flex="1"/>
           <vbox flex="1" style="-moz-box-pack:center;">
             <label value="&to.label;" style="text-align: center;" />
           </vbox>
-          <editor class="singleLineEditor" editortype="html" type="content" context="msiEditorContentContext"
-                  id="var4EndEdit" flex="1" width="150" height="40"/>
-          <hbox><textbox id="ptssamp4" type="number" class="medium" /></hbox>
+          <textbox context="msiEditorContentContext"
+                  id="var4EndEdit" flex="1"/>
+          <hbox><textbox id="ptssamp4" /></hbox>
           <spacer/>
           <menulist id="var4Role" oncommand="onChangeRole(this);">
             <menupopup>
@@ -169,8 +169,8 @@
           <spacer />
           <spacer />
           <spacer />
-          <editor class="singleLineEditor" editortype="html" type="content" context="msiEditorContentContext"
-                  id="ptssampTubeRadius" flex="1" width="150" height="40"/>
+          <textbox context="msiEditorContentContext"
+                  id="ptssampTubeRadius" flex="1"/>
 <!--      <textbox id="ptssampTubeRadius" type="number" /> -->
           <spacer />
         </row>

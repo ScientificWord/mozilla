@@ -158,7 +158,7 @@ function Startup()
       }
     }
     catch(e) {
-      msiDump(e.message);
+      msidump(e.message);
     }
   }
 

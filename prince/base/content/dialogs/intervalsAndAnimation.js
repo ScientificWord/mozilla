@@ -10,7 +10,7 @@ var animOffset = 0;
 var inRoleChange = false;
 var whichVars = [];
 var rowData = {};
-var xsltToTeXProcessor;
+// var xsltToTeXProcessor;
 var editsReady = [];
 
 var animAttributes = ["AnimCommonOrCustomSettings", "AnimateStart", "AnimateEnd",
@@ -70,7 +70,7 @@ function startup(){
     numvars = plotVarsNeeded(dim, plottype, isAnimated);
   }
 
-  xsltToTeXProcessor = setupXMLToTeXProcessor();
+  // xsltToTeXProcessor = setupXMLToTeXProcessor();
 
 //  document.getElementById("twod").collapsed = (numVars < 1) || (isAnimated && (nVars < 2));
   document.getElementById("1Var").collapsed = (numvars < 1);
@@ -112,27 +112,27 @@ function startup(){
   inRoleChange = true;
   setVariableRoleStrings();
   var minVal, maxVal, ptsVal;
-  var editorInitializer = new msiEditorArrayInitializer();
+  // var editorInitializer = new msiEditorArrayInitializer();
   for (var aRowId in rowData)
   {
     rowObj = rowData[aRowId];
     minVal = plot.getPlotValue(rowObj.whichVar + "Min");
     maxVal = plot.getPlotValue(rowObj.whichVar + "Max");
     rowObj.startEdit.mbSinglePara = true;
-    rowObj.startEdit.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
+    // rowObj.startEdit.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
     rowObj.endEdit.mbSinglePara = true;
-    rowObj.endEdit.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
-    editorInitializer.addEditorInfo(rowObj.startEdit, minVal, true);
-    editorInitializer.addEditorInfo(rowObj.endEdit, maxVal, true);
-    rowObj.startEdit.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : minMaxDocumentObserver(rowObj.startEdit)}];
-    rowObj.endEdit.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : minMaxDocumentObserver(rowObj.endEdit)}];
-    editorInitializer.addEditorInfo(rowObj.startEdit, minVal, true);
-    editorInitializer.addEditorInfo(rowObj.endEdit, maxVal, true);
+    // rowObj.endEdit.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
+    // editorInitializer.addEditorInfo(rowObj.startEdit, minVal, true);
+    // editorInitializer.addEditorInfo(rowObj.endEdit, maxVal, true);
+    // rowObj.startEdit.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : minMaxDocumentObserver(rowObj.startEdit)}];
+    // rowObj.endEdit.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : minMaxDocumentObserver(rowObj.endEdit)}];
+    // editorInitializer.addEditorInfo(rowObj.startEdit, minVal, true);
+    // editorInitializer.addEditorInfo(rowObj.endEdit, maxVal, true);
 
     document.getElementById(aRowId).value = rowObj.whichVar;
-    putMathMLExpressionToControl(rowObj.varName, plot.getPlotValue(rowObj.whichVar + "Var"));
-//    putMathMLExpressionToControl(rowObj.startEdit, minVal);
-//    putMathMLExpressionToControl(rowObj.endEdit, maxVal);
+    // putMathMLExpressionToControl(rowObj.varName, plot.getPlotValue(rowObj.whichVar + "Var"));
+    rowObj.startEdit.value = minVal;
+    rowObj.endEdit.value = maxVal;
     rowObj.bDefaultStart = isDefaulted(minVal, rowObj.whichVar, "Min");
     rowObj.bDefaultEnd = isDefaulted(maxVal, rowObj.whichVar, "Max");
     if (rowObj.whichVar == "Anim")
@@ -144,33 +144,37 @@ function startup(){
     {
       try {
         ptsVal = plot.getPlotValue(rowObj.whichVar + "Pts");
-        putMathMLExpressionToControl(rowObj.numPtsTextbox, ptsVal);
+        putMathMLExpressionToControl(rowObj.numPtsTextbox.value) = ptsVal;
         rowObj.bDefaultNumPoints = isDefaulted(ptsVal, rowObj.whichVar, "Pts");
       }
       catch(e) {
-        msiDump(e.message);
+        msidump(e.message);
       }
     }
   }
-  editorInitializer.doInitialize();
+  // editorInitializer.doInitialize();
 
-  if (plottype == "tube")
-    putMathMLExpressionToControlByID("ptssampTubeRadius", plot.getPlotValue("TubeRadialPts"));
-  if (isAnimated)
+  if (plottype == "tube") {
+    document.getElementById("ptssampTubeRadius").value = plot.getPlotValue("TubeRadialPts");
+  }
+  if (isAnimated) {
     putAnimationDataToDialog();
+  }
   inRoleChange = false;
 }
 
 function putAnimationDataToDialog()
 {
-  for (var ii = 0; ii < animAttributes.length; ++ii)
-    putValueToControlByID(animAttributes[ii], plot.getPlotValue(animAttributes[ii]));
+  var ii;
+  for (ii = 0; ii < animAttributes.length; ++ii) {
+    animAttributes[ii].value = plot.getPlotValue(animAttributes[ii]);
+  }
   changeCommonOrCustomAnimationSettings();
 }
 
 function getValuesFromDialog()
 {
-  var serialize = new XMLSerializer();
+  // var serialize = new XMLSerializer();
 
   if (plot)
   {
@@ -178,26 +182,26 @@ function getValuesFromDialog()
     for (var aRowId in rowData)
     {
       rowObj = rowData[aRowId];
-      plot.setPlotValue( rowObj.whichVar + "Var", getMathMLExpressionFromControl(rowObj.varName, serialize) );
+      plot.setPlotValue( rowObj.whichVar + "Var", rowObj.varName.value);
       plot.markUserSet(rowObj.whichVar + "Var", true);
-      if (!isEmptyMathEditControl(rowObj.startEdit))
+      if (rowObj.startEdit.value)
       {
-        plot.setPlotValue( rowObj.whichVar + "Min", getMathMLExpressionFromControl(rowObj.startEdit, serialize) );
+        plot.setPlotValue( rowObj.whichVar + "Min", rowObj.startEdit.value);
         plot.markUserSet(rowObj.whichVar + "Min", true);
       }
-      if (!isEmptyMathEditControl(rowObj.endEdit))
+      if (rowObj.endEdit.value)
       {
-        plot.setPlotValue( rowObj.whichVar + "Max", getMathMLExpressionFromControl(rowObj.endEdit, serialize) );
+        plot.setPlotValue( rowObj.whichVar + "Max", rowObj.endEdit.value);
         plot.markUserSet(rowObj.whichVar + "Max", true);
       }
       if (rowObj.whichVar !== "Anim")
       {
-        plot.setPlotValue( rowObj.whichVar + "Pts", getMathMLExpressionFromControl(rowObj.numPtsTextbox, serialize) );
+        plot.setPlotValue( rowObj.whichVar + "Pts", rowObj.numPtsTextbox.value);
         plot.markUserSet(rowObj.whichVar + "Pts", true);
       }
     }
     if (plottype == "tube")
-      plot.setPlotValue( "TubeRadialPts", getMathMLExpressionFromControlByID("ptssampTubeRadius", serialize) );
+      plot.setPlotValue( "TubeRadialPts", ptssampTubeRadius.value);
     if (isAnimated)
     {
       getAnimationDataFromDialog();
