@@ -14,7 +14,7 @@ part>sectiontitle:first-child {
   font-size: 200%;
   font-weight: bold;
   color: rgb(9, 62, 125);
-  text-align:center;
+  text-align: center;
 }
 
 part>sectiontitle:first-child:before {
