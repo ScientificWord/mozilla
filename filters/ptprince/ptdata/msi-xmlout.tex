@@ -2076,6 +2076,21 @@
    \fi
 }
 
+\def\vskip{
+  \msihmode
+  \msitag{<texb enc="1" name="vskip">\vskip</texb>}
+}
+
+\def\hskip{
+  \msihmode
+  \msitag{<texb enc="1" name="hskip">\hskip</texb>}
+}
+
+\def\topskip{
+  \msihmode
+  \msitag{<texb enc="1" name="topskip">\topskip</texb>}
+}
+
 \def\MSICounter#1{%
   \expandafter\newcount\csname c@#1\endcsname}
 
@@ -2670,7 +2685,3 @@
 \catcode`\<=\active
 %\catcode`\&=12
 
-
-\input latex-default.tex
-\input tcilatex.tex
-\catcode`\<=\active
