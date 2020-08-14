@@ -529,6 +529,7 @@ no indent - disregarded completely
             <xsl:text>\hspace{0.5in}</xsl:text>
           </xsl:when>
           <xsl:when test="@width='veryverythinmathspace'">
+            <xsl:text>\mbox{}</xsl:text>
           </xsl:when>
           <xsl:when test="@width='thickmathspace'">
             <xsl:text>\;</xsl:text>
