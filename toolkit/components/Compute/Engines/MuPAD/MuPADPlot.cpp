@@ -804,7 +804,7 @@ string MuPADPlot::LocalOptsStr (MuPADPlot* T) {
             retstr += "@includelines@";
           if (retstr.find("@includepoints@")==string::npos)
             retstr += "@includepoints@";
-      break;                                                                                
+        break;                                                                                
         case PID_PlotLineThickness :                                                            
           retstr += "@linethickness@";
 		  break;                                                                                
