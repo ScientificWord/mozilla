@@ -1776,38 +1776,30 @@
                 </row>
                 <row observes="plot.1Var">
                   <label id ="plotVar1">&plotVarX.label;</label>
-                  <editor editortype="html" type="content-primary" context="msiEditorContentContext"
-                          id="plotVar1StartEdit" preference="plot.XMin" flex="1" width="150" height="40"/>
+                  <textbox context="msiEditorContentContext" id="plotVar1StartEdit" preference="plot.XMin" flex="1" />
                   <label value="&plotVarsTo.label;" />
-                  <editor editortype="html" type="content-primary" context="msiEditorContentContext"
-                          id="plotVar1EndEdit" preference="plot.XMax" flex="1" width="150" height="40"/>
-		              <hbox><textbox id="plotPtssamp1" type="number" preference="plot.XPts" class="medwidth"/></hbox>
+                  <textbox context="msiEditorContentContext" id="plotVar1EndEdit" preference="plot.XMax" flex="1" />
+      		<hbox><textbox id="plotPtssamp1" type="number" preference="plot.XPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.2Vars">
-                  <label id ="plotVar2" >&plotVarY.label;</label>
-                  <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar2StartEdit" preference="plot.YMin" flex="1" width="150" height="40"/>
+                  <label id ="plotVar2">&plotVarX.label;</label>
+                  <textbox context="msiEditorContentContext" flex="1" id="plotVar2StartEdit" preference="plot.YMin" />
                   <label value="&plotVarsTo.label;" />
-                  <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar2EndEdit" preference="plot.YMax" flex="1" width="150" height="40"/>
+                  <textbox context="msiEditorContentContext" id="plotVar2EndEdit" flex="1" preference="plot.YMax" />
                   <hbox><textbox id="plotPtssamp2" type="number" preference="plot.YPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.3Vars">
-                  <label id ="plotVar3" >&plotVarZ.label;</label>
-                  <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar3StartEdit" preference="plot.ZMin" flex="1" width="150" height="40"/>
+                  <label id ="plotVar3">&plotVarX.label;</label>
+                  <textbox context="msiEditorContentContext" flex="1" id="plotVar3StartEdit" preference="plot.ZMin" />
                   <label value="&plotVarsTo.label;" />
-                  <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar3EndEdit" preference="plot.ZMax" flex="1" width="150" height="40"/>
+                  <textbox context="msiEditorContentContext" id="plotVar3EndEdit" flex="1" preference="plot.ZMax" />
                   <hbox><textbox id="plotPtssamp3" type="number" preference="plot.ZPts" class="medwidth"/></hbox>
                 </row>
                 <row observes="plot.4Vars">
                   <label id ="plotVar4" >&plotVarT.label;</label>
-                  <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar4StartEdit" preference="plot.AnimMin" flex="1" width="150" height="40"/>
+                  <textbox context="msiEditorContentContext" id="plotVar4StartEdit" flex="1" preference="plot.AnimMin" />
                   <label value="&plotVarsTo.label;" />
-                  <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="plotVar4EndEdit" preference="plot.AnimMax" flex="1" width="150" height="40"/>
+                  <textbox context="msiEditorContentContext" id="plotVar4EndEdit" flex="1" preference="plot.AnimMax" />
                   <spacer />
                   <spacer />
                 </row>

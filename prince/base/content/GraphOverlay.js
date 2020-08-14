@@ -12,7 +12,7 @@ Components.utils.import("resource://app/modules/os.jsm");
 // ************ Graph section ******
 
 function Graph() {
-  // these arrays enumerate the data for a graph. PLOTELEMENTS are in mathml
+  // these arrays enumerate the data for a graph. Expression is in mathml
   // When adding to this list, you must also add to the MathServiceRequest in the compute engine
   // Compute/iCmpIDs.h and Compute/MRequest.cpp::NameToPID()
   // PlotStatus: UI use only. New/Inited/Deleted.
@@ -974,7 +974,13 @@ function Plot(dim, ptype) {
   }
   for (i = 0; i < this.PLOTELEMENTS.length; i++) {
     attr = this.PLOTELEMENTS[i];
-    this.element[attr] = this.getDefaultPlotValue(attr);
+    if (attr === "Expression") {
+      this.element[attr] = this.getDefaultPlotValue(attr);
+    }
+    else
+    {
+      this.element[attr] = mathify(this.getDefaultPlotValue(attr));
+    }
     this.modFlag[attr] = false;
   }
 }
@@ -991,9 +997,10 @@ Plot.prototype =
                            "Animate", "AnimCommonOrCustomSettings", "AnimateStart", "AnimateEnd",
                            "AnimateFPS", "AnimateVisBefore", "AnimateVisAfter",
                            "ConfHorizontalPts", "ConfVerticalPts", "DefaultedVars"],
-  PLOTELEMENTS: ["Expression", "XMax", "XMin", "YMax", "YMin", "ZMax", "ZMin", "AnimMin", "AnimMax",
-                            "XVar", "YVar", "ZVar", "AnimVar", "XPts", "YPts", "ZPts", "TubeRadius", "TubeRadialPts"],
-  // Plot elements are all MathML expressions.
+  PLOTELEMENTS: ["Expression","XMax", "XMin", 
+                           "YMax", "YMin", "ZMax", "ZMin", "AnimMin", "AnimMax",
+                           "XVar", "YVar", "ZVar", "AnimVar", "XPts", "YPts", "ZPts", "TubeRadius", "TubeRadialPts"],
+  // Plot elements are all MathML expressions, except for ...Pts.
   userSetAttrs: [],
 
   expectedVariableLists : function(plottype, dim, isParametric)
@@ -1145,13 +1152,13 @@ Plot.prototype =
         attr = attrs[i];
         if (forComp || (this.element[attr])) {
           var DOMEnode = doc.createElement(attr);
-          var textval = this.element[attr];
+          var textval = mathify(this.element[attr]);
           if ((attr === "Expression") && forComp)
             textval = this.adjustExpressionForComputation(plotData);
           if ((textval !== "") && (textval !== "unspecified")) {
               // textval = runFixup(textval); // runFixup(runFixup(textval));
               tNode = (new DOMParser()).parseFromString (textval, "text/xml");
-	      tNode = tNode.documentElement;
+              tNode = tNode.documentElement;
               removeInvisibles(tNode);
               textval =  GetMathAsString(tNode); //GetFixedMath(tNode);
             tNode = (new DOMParser()).parseFromString (textval, "text/xml");
@@ -1159,13 +1166,14 @@ Plot.prototype =
             DOMPlot.appendChild (DOMEnode);
           }
         }
-      }
+      }      
       if (this.userSetAttrs.length)
         DOMPlot.setAttribute("userSetAttrs", this.userSetAttrs.join(","));
       return DOMPlot;
     }
     return null;
   },
+
   adjustExpressionForComputation : function(plotData) {
     switch(this.attributes.PlotStatus)
     {
@@ -1245,6 +1253,9 @@ Plot.prototype =
     var value;
     var attr;
     var j;
+    var child;
+    var mathnode;
+    var serialized;
     for (j = 0; j < DOMPlot.attributes.length; j++) {
       attr = DOMPlot.attributes[j];
       key = attr.nodeName;
@@ -1260,16 +1271,21 @@ Plot.prototype =
     // The data is either text or mathml. For text, grab the text value, which must be in the nodeValue
     // of the first child. For DOM fragment, store serialization of the fragment.
     //var children = DOMPlot.childNodes;
-    var child = DOMPlot.firstChild;
+    child = DOMPlot.firstChild;
     for (j = 0; j < DOMPlot.childNodes.length; ++j)
     {
       child = DOMPlot.childNodes[j];
 //      key = child.localName;
       key = msiGetBaseNodeName(child);
       if (child.nodeType === Node.ELEMENT_NODE) {
-        var mathnode = child.getElementsByTagName("math")[0];
-        var serialized = this.parent.ser.serializeToString(mathnode);
-        this.element[key] = serialized;
+        mathnode = child.getElementsByTagName("math")[0];
+        if (child.localName === 'Expression') {
+          serialized = this.parent.ser.serializeToString(mathnode);
+          this.element[key] = serialized;
+        }
+        else {
+          this.element[key] = mathnode.textContent;
+        }
       }
       child = child.nextSibling;
     }
@@ -1366,14 +1382,14 @@ Plot.prototype =
         }
       }
     }
-    if (value)
-      return GetNumAsMathML(value);
+    // if (value)
+    //   return GetNumAsMathML(value);  BBM: backing away from allowing MathML where numbers are required.
     return value;
   },
   getDefaultPlotValue: function (key) {
     // get defaults from preference system, or if not there, from hardcoded list
     /* jshint ignore:start */
-    var math = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
+    var math = "<math xmlns='http://www.w3.org/1998/Math/MathML'>";
     /* jshint ignore:end */
     var ptype = this.attributes.PlotType;
     var dim = this.getDimension();
@@ -1404,7 +1420,7 @@ Plot.prototype =
           value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi tempinput='true'></mi></math>";
           break;
         case "TubeRadius":
-          value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math>";
+          value = "1";
         break;
         case "AnimCommonOrCustomSettings":
           value = "common";
@@ -3310,7 +3326,7 @@ var plotVarDataBase =
       this.texVars = {XVar : "", YVar : "", ZVar : "", AnimVar : ""};
     if (!this.texVars[whichVar].length)
     {
-      this.texVars[whichVar] = this.parent.convertXMLFragToSimpleTeX(this.mPlot.element[whichVar]);
+      this.texVars[whichVar] = this.mPlot.element[whichVar];
 //      this.texVars[whichVar] = xmlFragToTeX(this.mPlot.element[whichVar]);
     }
     return this.texVars[whichVar];
@@ -3330,14 +3346,14 @@ var plotVarDataBase =
       var topVarNode;
       for (var ii = 0; ii < foundVarList.length; ++ii)
       {
-        if (msiGetBaseNodeName(foundVarList[ii]) === "math")
-          topVarNode = foundVarList[ii];
-        else
-        {
-          topVarNode = document.createElementNS(mmlns, "math");
-          topVarNode.appendChild(foundVarList[ii]);
-        }
-        this.mFoundVars.push( this.mPlot.parent.ser.serializeToString(topVarNode) );
+        topVarNode = foundVarList[ii].textContent;
+        // if (msiGetBaseNodeName(foundVarList[ii]) === "math")
+        // else
+        // {
+        //   topVarNode = document.createElementNS(mmlns, "math");
+        //   topVarNode.appendChild(foundVarList[ii]);
+        // }
+        this.mFoundVars.push( topVarNode );
       }
     }
     return this.mFoundVars;
@@ -3349,7 +3365,7 @@ var plotVarDataBase =
       var foundVars = this.foundVarList();
       this.mTeXFoundVars = [];
       for (var ii = 0; ii < foundVars.length; ++ii)
-        this.mTeXFoundVars.push( this.parent.convertXMLFragToSimpleTeX(foundVars[ii]) );
+        this.mTeXFoundVars.push( foundVars[ii] );
     }
     return this.mTeXFoundVars;
   },
@@ -3778,7 +3794,7 @@ function doAnalyzeVars(graphVarData, plot)
   var animatedTeXList = [];
   for (ii = 0; isAnimated && (ii < animatedVarList.length); ++ii)
   {
-    animatedTeXList.push( graphVarData.convertXMLFragToSimpleTeX( wrapMath(wrapmi(animatedVarList[ii])) ) );
+    animatedTeXList.push( animatedVarList[ii]);
   }
   var nIndex;
 
@@ -3827,7 +3843,7 @@ function doAnalyzeVars(graphVarData, plot)
     expectedTeXList = [];
     expectedList = expectedVarLists[ii];
     for (jj = 0; jj < expectedList.length; ++jj)
-      expectedTeXList.push( graphVarData.convertXMLFragToSimpleTeX( wrapMath(wrapmi(expectedList[jj])) ) );
+      expectedTeXList.push( expectedList[jj] );
     expectedTeXVarLists.push(expectedTeXList);
   }
   for (ii = 0; (nVarsAvailable > 0) && (ii < expectedVarLists.length); ++ii)

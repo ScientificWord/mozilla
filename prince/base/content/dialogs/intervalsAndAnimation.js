@@ -52,6 +52,7 @@ function checkEditsReady()
   return isReady;
 }
 
+
 function startup(){
 //  var graph = window.arguments[0];
   var graphData = window.arguments[0];
@@ -116,8 +117,8 @@ function startup(){
   for (var aRowId in rowData)
   {
     rowObj = rowData[aRowId];
-    minVal = plot.getPlotValue(rowObj.whichVar + "Min");
-    maxVal = plot.getPlotValue(rowObj.whichVar + "Max");
+    minVal = unmathify(plot.getPlotValue(rowObj.whichVar + "Min"));
+    maxVal = unmathify(plot.getPlotValue(rowObj.whichVar + "Max"));
     rowObj.startEdit.mbSinglePara = true;
     // rowObj.startEdit.mInitialContentListener = invisibleMathOpFilter;  //in plotDlgUtils.js
     rowObj.endEdit.mbSinglePara = true;
@@ -143,9 +144,9 @@ function startup(){
     else
     {
       try {
-        ptsVal = plot.getPlotValue(rowObj.whichVar + "Pts");
-        putMathMLExpressionToControl(rowObj.numPtsTextbox.value) = ptsVal;
-        rowObj.bDefaultNumPoints = isDefaulted(ptsVal, rowObj.whichVar, "Pts");
+        ptsVal = unmathify(plot.getPlotValue(rowObj.whichVar + "Pts"));
+        rowObj.numPtsTextbox.value = ptsVal;
+        rowObj.bDefaultNumPoints = unmathify(isDefaulted(ptsVal, rowObj.whichVar, "Pts"));
       }
       catch(e) {
         msidump(e.message);
@@ -155,7 +156,7 @@ function startup(){
   // editorInitializer.doInitialize();
 
   if (plottype == "tube") {
-    document.getElementById("ptssampTubeRadius").value = plot.getPlotValue("TubeRadialPts");
+    document.getElementById("ptssampTubeRadius").value = unmathify(plot.getPlotValue("TubeRadialPts"));
   }
   if (isAnimated) {
     putAnimationDataToDialog();
@@ -182,26 +183,26 @@ function getValuesFromDialog()
     for (var aRowId in rowData)
     {
       rowObj = rowData[aRowId];
-      plot.setPlotValue( rowObj.whichVar + "Var", rowObj.varName.value);
+      plot.setPlotValue( rowObj.whichVar + "Var", mathifyNumber(rowObj.varName.value));
       plot.markUserSet(rowObj.whichVar + "Var", true);
       if (rowObj.startEdit.value)
       {
-        plot.setPlotValue( rowObj.whichVar + "Min", rowObj.startEdit.value);
+        plot.setPlotValue( rowObj.whichVar + "Min", mathifyNumber(rowObj.startEdit.value));
         plot.markUserSet(rowObj.whichVar + "Min", true);
       }
       if (rowObj.endEdit.value)
       {
-        plot.setPlotValue( rowObj.whichVar + "Max", rowObj.endEdit.value);
+        plot.setPlotValue( rowObj.whichVar + "Max", mathifyNumber(rowObj.endEdit.value));
         plot.markUserSet(rowObj.whichVar + "Max", true);
       }
       if (rowObj.whichVar !== "Anim")
       {
-        plot.setPlotValue( rowObj.whichVar + "Pts", rowObj.numPtsTextbox.value);
+        plot.setPlotValue( rowObj.whichVar + "Pts", mathifyNumber(rowObj.numPtsTextbox.value);
         plot.markUserSet(rowObj.whichVar + "Pts", true);
       }
     }
     if (plottype == "tube")
-      plot.setPlotValue( "TubeRadialPts", ptssampTubeRadius.value);
+      plot.setPlotValue( "TubeRadialPts", mathifyNumber(ptssampTubeRadius.value));
     if (isAnimated)
     {
       getAnimationDataFromDialog();
