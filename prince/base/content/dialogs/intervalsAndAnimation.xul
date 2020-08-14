@@ -38,6 +38,7 @@
 >
 <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/intervalsAndAnimation.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/graphOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/plotDlgUtils.js" />
 <!--#include ../requiredEditorScripts.inc -->

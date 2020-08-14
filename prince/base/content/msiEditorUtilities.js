@@ -10432,8 +10432,9 @@ function newline(output, currentline, indent, state) {
 
 var nonInlineTags = '.math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX.' +
 'msidisplay.pagelayout.page.textregion.columns.header.footer.plot.verbatim.' +
-'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.descriptionLabel.Expression.XMax.XMin.YMax.YMin.XVar.YVar.ZVar.XMin.XMax.YMin.YMax.ZMin.ZMax.' +
-'XPts.YPts.ZPts.object.graph.graphSpec.msibr.';
+//'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.descriptionLabel.Expression.XMax.XMin.YMax.YMin.XVar.YVar.ZVar.XMin.XMax.YMin.YMax.ZMin.ZMax.' +
+//'XPts.YPts.ZPts.object.graph.graphSpec.msibr.';
+'titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.descriptionLabel.Expression.object.graph.graphSpec.msibr.';
 function isInlineElement(editor, element) {
   if (nonInlineTags.search('.' + element.localName + '.') >= 0)
     return false;
@@ -11671,3 +11672,35 @@ function msiSelectNode (editor, node) {
   editor.selection.extend(parent, offset+1);
 }
 
+
+// The following are used in the plot dialogs to switch to and from Ascii to MathML.
+// They work only for possibly signed numbers and math variable names or symbols.
+
+function mathify(numberOrVariable) 
+{
+  var alphaPart;
+  if (numberOrVariable.indexOf('<math') >= 0) return numberOrVariable; //already is mathy
+  alphaPart = numberOrVariable.replace(/[-.0-9]/g,'');
+  if (alphaPart === '')  // contains nothing but digits, minus, or periods.
+    return mathifyNumber(numberOrVariable);
+  return mathifyVariable(numberOrVariable);
+}
+
+function mathifyNumber(numberStr) {
+  var retExp = '<math>';
+  var minusPos = numberStr.indexOf('-');  
+  if (minusPos >= 0) {
+    retExp += '<mo>-<\mo>';
+  }
+  numberStr = numberStr.slice(minusPos + 1);
+  retExp += '<mn>'+numberStr+ '</mn></math>';
+  return retExp;
+}
+
+function mathifyVariable(variableStr) {
+  return '<math><mi>' + variableStr + '</mi></math>';
+}
+
+  function unmathify(mathExp) {
+    return mathExp.replace(/<(\/)?[^>]+>/g,'');  // take out all tags and tag ends consisting of alpha characters
+  }
