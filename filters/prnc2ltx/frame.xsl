@@ -99,6 +99,8 @@
     </xsl:variable>
     <xsl:variable name="captionloc">
       <xsl:choose>
+        <xsl:when test="(html:imagecaption[1]) and (html:imagecaption/@align='top')">1</xsl:when>  
+        <xsl:when test="(html:imagecaption[1]) and (html:imagecaption/@align='bottom')">2</xsl:when>  
         <xsl:when test="(html:imagecaption[1]) and (@captionloc='top')">1</xsl:when>
         <xsl:when test="(html:imagecaption[1]) and (@captionloc='bottom')">2</xsl:when>
         <xsl:otherwise>0</xsl:otherwise>
