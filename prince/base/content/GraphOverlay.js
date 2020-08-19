@@ -974,13 +974,14 @@ function Plot(dim, ptype) {
   }
   for (i = 0; i < this.PLOTELEMENTS.length; i++) {
     attr = this.PLOTELEMENTS[i];
-    if (attr === "Expression") {
-      this.element[attr] = this.getDefaultPlotValue(attr);
-    }
-    else
-    {
-      this.element[attr] = mathify(this.getDefaultPlotValue(attr));
-    }
+    // if (attr === "Expression") {
+    //   this.element[attr] = this.getDefaultPlotValue(attr);
+    // }
+    // else
+    // {
+    //   this.element[attr] = mathify(this.getDefaultPlotValue(attr));
+    // }
+    this.element[attr] = this.getDefaultPlotValue(attr);
     this.modFlag[attr] = false;
   }
 }
@@ -1152,7 +1153,7 @@ Plot.prototype =
         attr = attrs[i];
         if (forComp || (this.element[attr])) {
           var DOMEnode = doc.createElement(attr);
-          var textval = mathify(this.element[attr]);
+          var textval = this.element[attr];
           if ((attr === "Expression") && forComp)
             textval = this.adjustExpressionForComputation(plotData);
           if ((textval !== "") && (textval !== "unspecified")) {
@@ -1286,6 +1287,10 @@ Plot.prototype =
         else {
           this.element[key] = mathnode.textContent;
         }
+        // var mathnode = child.getElementsByTagName("math")[0];
+        // var serialized = this.parent.ser.serializeToString(mathnode);
+        // this.element[key] = serialized;
+
       }
       child = child.nextSibling;
     }
@@ -1382,8 +1387,8 @@ Plot.prototype =
         }
       }
     }
-    // if (value)
-    //   return GetNumAsMathML(value);  BBM: backing away from allowing MathML where numbers are required.
+    if (value)
+      return GetNumAsMathML(value);
     return value;
   },
   getDefaultPlotValue: function (key) {
@@ -1420,7 +1425,7 @@ Plot.prototype =
           value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mi tempinput='true'></mi></math>";
           break;
         case "TubeRadius":
-          value = "1";
+          value = "<math xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math>";
         break;
         case "AnimCommonOrCustomSettings":
           value = "common";
@@ -3326,7 +3331,7 @@ var plotVarDataBase =
       this.texVars = {XVar : "", YVar : "", ZVar : "", AnimVar : ""};
     if (!this.texVars[whichVar].length)
     {
-      this.texVars[whichVar] = this.mPlot.element[whichVar];
+      this.texVars[whichVar] = this.parent.convertXMLFragToSimpleTeX(this.mPlot.element[whichVar]);
 //      this.texVars[whichVar] = xmlFragToTeX(this.mPlot.element[whichVar]);
     }
     return this.texVars[whichVar];
@@ -3346,14 +3351,14 @@ var plotVarDataBase =
       var topVarNode;
       for (var ii = 0; ii < foundVarList.length; ++ii)
       {
-        topVarNode = foundVarList[ii].textContent;
-        // if (msiGetBaseNodeName(foundVarList[ii]) === "math")
-        // else
-        // {
-        //   topVarNode = document.createElementNS(mmlns, "math");
-        //   topVarNode.appendChild(foundVarList[ii]);
-        // }
-        this.mFoundVars.push( topVarNode );
+        if (msiGetBaseNodeName(foundVarList[ii]) === "math")
+          topVarNode = foundVarList[ii];
+        else
+        {
+          topVarNode = document.createElementNS(mmlns, "math");
+          topVarNode.appendChild(foundVarList[ii]);
+        }
+        this.mFoundVars.push( this.mPlot.parent.ser.serializeToString(topVarNode) );
       }
     }
     return this.mFoundVars;
@@ -3365,7 +3370,7 @@ var plotVarDataBase =
       var foundVars = this.foundVarList();
       this.mTeXFoundVars = [];
       for (var ii = 0; ii < foundVars.length; ++ii)
-        this.mTeXFoundVars.push( foundVars[ii] );
+        this.mTeXFoundVars.push( this.parent.convertXMLFragToSimpleTeX(foundVars[ii]) );
     }
     return this.mTeXFoundVars;
   },
@@ -3794,7 +3799,7 @@ function doAnalyzeVars(graphVarData, plot)
   var animatedTeXList = [];
   for (ii = 0; isAnimated && (ii < animatedVarList.length); ++ii)
   {
-    animatedTeXList.push( animatedVarList[ii]);
+    animatedTeXList.push( graphVarData.convertXMLFragToSimpleTeX( wrapMath(wrapmi(animatedVarList[ii])) ) );
   }
   var nIndex;
 
@@ -3843,7 +3848,7 @@ function doAnalyzeVars(graphVarData, plot)
     expectedTeXList = [];
     expectedList = expectedVarLists[ii];
     for (jj = 0; jj < expectedList.length; ++jj)
-      expectedTeXList.push( expectedList[jj] );
+      expectedTeXList.push( graphVarData.convertXMLFragToSimpleTeX( wrapMath(wrapmi(expectedList[jj])) ) );
     expectedTeXVarLists.push(expectedTeXList);
   }
   for (ii = 0; (nVarsAvailable > 0) && (ii < expectedVarLists.length); ++ii)
