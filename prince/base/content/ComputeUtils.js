@@ -121,6 +121,7 @@ function dontMergeNumbers(mathstring, index) {
 function GetNumAsMathML(num)
 {
   var res;
+  if (num.indexOf('<math') == 0) return num;  // avoid doing this twice
   var base = num.toString();
   res  = '<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow>';
   if (base.substr(0,1) === "-") {
