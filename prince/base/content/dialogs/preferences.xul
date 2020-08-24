@@ -1147,51 +1147,95 @@
       <preference id="plot.AIInfo"
                   name="swp.plot.AIInfo"
                   type="string"/>
+<!-- Preferences that are stored as MathML have an attribute 'mml=1'. 
+Currently these are all simple signed numbers or identifiers
+  (mn or mi with a possible mo for the sign), but this allows for
+  more interesting values in the future, including expressions that
+  may need to be evaluated by the computation engine.    -->            
       <preference id="plot.XMin"
                   name="swp.plot.XMin"
-                  type="string"/>
+                  type="string"
+                  mml="true"/>
       <preference id="plot.XMax"
                   name="swp.plot.XMax"
-                  type="string"/>
+                  type="string"
+                  mml="true"/>
       <preference id="plot.YMin"
                   name="swp.plot.YMin"
-                  type="string"/>
+                  type="string"
+                  mml="true"/>
       <preference id="plot.YMax"
                   name="swp.plot.YMax"
-                  type="string"/>
+                  type="string"
+                  mml="true"/>
       <preference id="plot.ZMin"
                   name="swp.plot.ZMin"
-                  type="string"/>
+                  type="string"
+                  mml="true"/>
       <preference id="plot.ZMax"
                   name="swp.plot.ZMax"
-                  type="string"/>
+                  type="string"
+                  mml="true"/>
+      <preference id="plot.viewXMin"
+                  name="swp.plot.viewXMin"
+                  type="string"
+                  mml="true"/>
+      <preference id="plot.viewXMax"
+                  name="swp.plot.viewXMax"
+                  type="string"
+                  mml="true"/>
+      <preference id="plot.viewYMin"
+                  name="swp.plot.viewYMin"
+                  type="string"
+                  mml="true"/>
+      <preference id="plot.viewYMax"
+                  name="swp.plot.viewYMax"
+                  type="string"
+                  mml="true"/>
+      <preference id="plot.viewZMin"
+                  name="swp.plot.viewZMin"
+                  type="string"
+                  mml="true"/>
+      <preference id="plot.viewZMax"
+                  name="swp.plot.viewZMax"
+                  type="string"
+                  mml="true"/>
       <preference id="plot.AnimMin"
                   name="swp.plot.AnimMin"
-                  type="string"/>
+                  type="string"
+                  mml="true"/>
       <preference id="plot.AnimMax"
                   name="swp.plot.AnimMax"
-                  type="string"/>
+                  type="string"
+                  mml="true"/>
       <preference id="plot.XVar"
                   name="swp.plot.XVar"
-                  type="string" />
+                  type="string"
+                  mml="true"/>
       <preference id="plot.YVar"
                   name="swp.plot.YVar"
-                  type="string" />
+                  type="string"
+                  mml="true"/>
       <preference id="plot.ZVar"
                   name="swp.plot.ZVar"
-                  type="string" />
+                  type="string"
+                  mml="true"/>
       <preference id="plot.XPts"
                   name="swp.plot.XPts"
-                  type="int" />
+                  type="string"
+                  mml="true"/>
       <preference id="plot.YPts"
                   name="swp.plot.YPts"
-                  type="int" />
+                  type="string"
+                  mml="true"/>
       <preference id="plot.ZPts"
                   name="swp.plot.ZPts"
-                  type="int" />
+                  type="string"
+                  mml="true"/>
       <preference id="plot.TubeRadialPoints"
                   name="swp.plot.TubeRadialPts"
-                  type="int" />
+                  type="string"
+                  mml="true"/>
       <preference id="plot.ConfHorizontalPts"
                   name="swp.plot.ConfHorizontalPts"
                   type="int" />
@@ -1209,7 +1253,7 @@
                   type="bool"/>
       <preference id="plot.TubeRadius"
                   name="swp.plot.TubeRadius"
-                  type="string" />
+                  type="string"/>
       <preference id="plot.AISubIntervals"
                   name="swp.plot.AISubIntervals"
                   type= "int"/>
@@ -1776,30 +1820,33 @@
                 </row>
                 <row observes="plot.1Var">
                   <label id ="plotVar1">&plotVarX.label;</label>
-                  <textbox context="msiEditorContentContext" id="plotVar1StartEdit" preference="plot.XMin" flex="1" />
+                  <textbox context="msiEditorContentContext" id="xrangelow" flex="1" 
+                    pref="plot.XMin" onchange='saveMMLForm(this);'/>
                   <label value="&plotVarsTo.label;" />
-                  <textbox context="msiEditorContentContext" id="plotVar1EndEdit" preference="plot.XMax" flex="1" />
-      		<hbox><textbox id="plotPtssamp1" type="number" preference="plot.XPts" class="medwidth"/></hbox>
+                  <textbox context="msiEditorContentContext" id="xrangehigh" pref="plot.XMax" flex="1"  onchange='saveMMLForm(this);' />
+      		        <hbox><textbox id="xPts" type="number" pref="plot.XPts" class="medwidth"  onchange='saveMMLForm(this);'/></hbox>
                 </row>
                 <row observes="plot.2Vars">
-                  <label id ="plotVar2">&plotVarX.label;</label>
-                  <textbox context="msiEditorContentContext" flex="1" id="plotVar2StartEdit" preference="plot.YMin" />
+                  <label id ="plotVar2">&plotVarY.label;</label>
+                  <textbox context="msiEditorContentContext" flex="1" id="yrangelow" pref="plot.YMin"  onchange='saveMMLForm(this);'/>
                   <label value="&plotVarsTo.label;" />
-                  <textbox context="msiEditorContentContext" id="plotVar2EndEdit" flex="1" preference="plot.YMax" />
-                  <hbox><textbox id="plotPtssamp2" type="number" preference="plot.YPts" class="medwidth"/></hbox>
+                  <textbox context="msiEditorContentContext" id="yrangehigh" flex="1" pref="plot.YMax"  onchange='saveMMLForm(this);'/>
+                  <hbox><textbox id="yPts" type="number" pref="plot.YPts" class="medwidth"  onchange='saveMMLForm(this);'/></hbox>
                 </row>
                 <row observes="plot.3Vars">
-                  <label id ="plotVar3">&plotVarX.label;</label>
-                  <textbox context="msiEditorContentContext" flex="1" id="plotVar3StartEdit" preference="plot.ZMin" />
+                  <label id ="plotVar3">&plotVarZ.label;</label>
+                  <textbox context="msiEditorContentContext" flex="1" id="zrangelow" pref="plot.ZMin" onchange='saveMMLForm(this);'/>
                   <label value="&plotVarsTo.label;" />
-                  <textbox context="msiEditorContentContext" id="plotVar3EndEdit" flex="1" preference="plot.ZMax" />
-                  <hbox><textbox id="plotPtssamp3" type="number" preference="plot.ZPts" class="medwidth"/></hbox>
+                  <textbox context="msiEditorContentContext" id="zrangehigh" flex="1" pref="plot.ZMax" onchange='saveMMLForm(this);'/>
+                  <hbox>
+                    <textbox id="zPts" type="number" pref="plot.ZPts" class="medwidth" onchange='saveMMLForm(this);'/>
+                  </hbox>
                 </row>
                 <row observes="plot.4Vars">
                   <label id ="plotVar4" >&plotVarT.label;</label>
-                  <textbox context="msiEditorContentContext" id="plotVar4StartEdit" flex="1" preference="plot.AnimMin" />
+                  <textbox context="msiEditorContentContext" id="animrangelow" flex="1" pref="plot.AnimMin"  onchange='saveMMLForm(this);' />
                   <label value="&plotVarsTo.label;" />
-                  <textbox context="msiEditorContentContext" id="plotVar4EndEdit" flex="1" preference="plot.AnimMax" />
+                  <textbox context="msiEditorContentContext" id="animrangehigh" flex="1" pref="plot.AnimMax"  onchange='saveMMLForm(this);' />
                   <spacer />
                   <spacer />
                 </row>
@@ -1808,17 +1855,17 @@
                   <spacer />
                   <spacer />
                   <spacer />
-                  <textbox id="plotPtssampTubeRadius" preference="plot.TubeRadialPoints" type="number" class="narrow" />
+                  <textbox id="plotPtssampTubeRadius" pref="plot.TubeRadialPoints"  onchange='saveMMLForm(this);' />
                   <spacer />
                 </row>
-				<row observes="plot.enableConformal">
+		            <row observes="plot.enableConformal">
                   <label value="&plotConfHorizontalPts.label;"/>
                   <spacer />
                   <spacer />
                   <spacer />
                   <textbox id="plotPtssampConfHorizontal" preference="plot.ConfHorizontalPts" type="number" class="narrow" />
                   <spacer />
-				</row>
+				        </row>
 				<row observes="plot.enableConformal">
                   <label value="&plotConfVerticalPts.label;"/>
                   <spacer />
@@ -1865,31 +1912,29 @@
           <groupbox>
             <caption>&InitialViewIntervals.label;</caption>
             <hbox align="center">
-              <label value="&axisxrange.label;"/>
-                  <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="xrangelow" preference="plot.XMin" flex="1" width="150" height="40"/>
-
-<!--                <editor editortype="html" type="content" context="msiEditorContentContext" id="xrangelow" style="width: 5em;" preference="plot.XMin"/>
- -->              <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="xrangehigh" preference="plot.XMax" flex="1" width="150" height="40"/>
-<!--              <textbox id="xrangehigh" style="width: 5em;" cols="6" preference="plot.XMax"/>
- -->        </hbox>
-            <hbox align="center">
-              <label value="&axisyrange.label;"/>
-              <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="yrangelow" preference="plot.YMin" flex="1" width="150" height="40"/>
-              <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="yrangehigh" preference="plot.YMax" flex="1" width="150" height="40"/>
+              <label value="&plotVarX.label;"/>
+              <textbox context="msiEditorContentContext"
+                      id="viewxrangelow" pref="plot.viewXMin" onchange='saveMMLForm(this);'/>
+              <textbox context="msiEditorContentContext"
+                          id="viewxrangehigh" pref="plot.viewXMax"  onchange='saveMMLForm(this);' />
             </hbox>
             <hbox align="center">
-              <label value="&axiszrange.label;"/>
-              <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="zrangelow" preference="plot.ZMin" flex="1" width="150" height="40"/>
-              <editor editortype="html" type="content" context="msiEditorContentContext"
-                          id="zrangehigh" preference="plot.ZMax" flex="1" width="150" height="40"/>
+              <label value="&plotVarY.label;"/>
+              <textbox context="msiEditorContentContext"
+                          id="viewyrangelow" pref="plot.viewYMin"  onchange='saveMMLForm(this);'/>
+              <textbox econtext="msiEditorContentContext"
+                          id="viewyrangehigh" pref="plot.viewYMax"  onchange='saveMMLForm(this);' />
+            </hbox>
+            <hbox align="center">
+              <label value="&plotVarZ.label;"/>
+              <textbox context="msiEditorContentContext"
+                          id="viewzrangelow" pref="plot.viewZMin"  onchange='saveMMLForm(this);'/>
+              <textbox context="msiEditorContentContext"
+                          id="viewzrangehigh" pref="plot.viewZMax"  onchange='saveMMLForm(this);'/>
             </hbox>
           </groupbox>
           <groupbox>
+            <label value="&plotResolution.label;" />
             <menulist id="plotresolutions" preference="swp.graphics.snapshotres">
               <menupopup>
                 <menuitem value="72" label="72"/>
