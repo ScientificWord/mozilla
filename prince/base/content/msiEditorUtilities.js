@@ -11687,10 +11687,10 @@ function mathify(numberOrVariable)
 }
 
 function mathifyNumber(numberStr) {
-  var retExp = '<math>';
+  var retExp = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
   var minusPos = numberStr.indexOf('-');  
   if (minusPos >= 0) {
-    retExp += '<mo>-<\mo>';
+    retExp += '<mo>-</mo>';
   }
   numberStr = numberStr.slice(minusPos + 1);
   retExp += '<mn>'+numberStr+ '</mn></math>';
@@ -11698,7 +11698,7 @@ function mathifyNumber(numberStr) {
 }
 
 function mathifyVariable(variableStr) {
-  return '<math><mi>' + variableStr + '</mi></math>';
+  return '<math  xmlns="http://www.w3.org/1998/Math/MathML"><mi>' + variableStr + '</mi></math>';
 }
 
   function unmathify(mathExp) {

@@ -183,26 +183,26 @@ function getValuesFromDialog()
     for (var aRowId in rowData)
     {
       rowObj = rowData[aRowId];
-      plot.setPlotValue( rowObj.whichVar + "Var", mathifyNumber(rowObj.varName.value));
+      plot.setPlotValue( rowObj.whichVar + "Var", mathify(rowObj.varName.value));
       plot.markUserSet(rowObj.whichVar + "Var", true);
       if (rowObj.startEdit.value)
       {
-        plot.setPlotValue( rowObj.whichVar + "Min", mathifyNumber(rowObj.startEdit.value));
+        plot.setPlotValue( rowObj.whichVar + "Min", mathify(rowObj.startEdit.value));
         plot.markUserSet(rowObj.whichVar + "Min", true);
       }
       if (rowObj.endEdit.value)
       {
-        plot.setPlotValue( rowObj.whichVar + "Max", mathifyNumber(rowObj.endEdit.value));
+        plot.setPlotValue( rowObj.whichVar + "Max", mathify(rowObj.endEdit.value));
         plot.markUserSet(rowObj.whichVar + "Max", true);
       }
       if (rowObj.whichVar !== "Anim")
       {
-        plot.setPlotValue( rowObj.whichVar + "Pts", mathifyNumber(rowObj.numPtsTextbox.value);
+        plot.setPlotValue( rowObj.whichVar + "Pts", mathify(rowObj.numPtsTextbox.value));
         plot.markUserSet(rowObj.whichVar + "Pts", true);
       }
     }
     if (plottype == "tube")
-      plot.setPlotValue( "TubeRadialPts", mathifyNumber(ptssampTubeRadius.value));
+      plot.setPlotValue( "TubeRadialPts", mathify(ptssampTubeRadius.value));
     if (isAnimated)
     {
       getAnimationDataFromDialog();
