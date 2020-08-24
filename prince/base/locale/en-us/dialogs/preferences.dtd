@@ -421,6 +421,8 @@
 <!ENTITY plotSurfaceMeshContour.label    "Contour">
 <!ENTITY plotSurfaceMeshMesh.label       "Mesh">
 <!ENTITY plotSurfaceMeshNone.label		 "None">
+<!ENTITY plotResolution.label		 "Resolution of bitmap snapshots in pixels per inch">
+
 
 <!ENTITY includepoints.label        "Include points">
 <!ENTITY includelines.label         "Include lines">

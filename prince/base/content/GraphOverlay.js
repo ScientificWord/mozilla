@@ -998,10 +998,9 @@ Plot.prototype =
                            "Animate", "AnimCommonOrCustomSettings", "AnimateStart", "AnimateEnd",
                            "AnimateFPS", "AnimateVisBefore", "AnimateVisAfter",
                            "ConfHorizontalPts", "ConfVerticalPts", "DefaultedVars"],
-  PLOTELEMENTS: ["Expression","XMax", "XMin", 
-                           "YMax", "YMin", "ZMax", "ZMin", "AnimMin", "AnimMax",
+  PLOTELEMENTS: ["Expression","XMax", "XMin",  "YMax", "YMin", "ZMax", "ZMin", "AnimMin", "AnimMax",
                            "XVar", "YVar", "ZVar", "AnimVar", "XPts", "YPts", "ZPts", "TubeRadius", "TubeRadialPts"],
-  // Plot elements are all MathML expressions, except for ...Pts.
+  // Plot elements are all MathML.
   userSetAttrs: [],
 
   expectedVariableLists : function(plottype, dim, isParametric)
@@ -4450,8 +4449,12 @@ function getPlotDefaultValue(dim, plotType, key)
     try
     {
       prefType = prefs.getPrefType(prefix[ii] + key);
-      if (prefType === prefs.PREF_STRING)
+      if (prefType === prefs.PREF_STRING) {
         value = prefs.getCharPref(prefix[ii] + key);
+        if (document.getElementById(prefix[ii] + key).hasAttribute('mml'))
+          value = unmathify(value);
+        
+      }
       else if (prefType === prefs.PREF_INT)
       {
         value = String(prefs.getIntPref(prefix[ii] + key));

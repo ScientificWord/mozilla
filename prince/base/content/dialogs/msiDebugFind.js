@@ -1055,7 +1055,7 @@ function doEnabling()
 
 //II. The expression "<math><mfrac><mi>a</mi><mi>b</mi></mfrac></math>" should match:
 //   1. <msqrt><mrow><mn>3</mn><mo>+</mo><mfrac><mi>a</mi><mi>b</mi></mfrac></mrow></msqrt>
-//   2. <mfrac><mrow><mi>a</mi><mo>-<mo><mn>2</mn></mrow><mi>b</mi></mfrac>
+//   2. <mfrac><mrow><mi>a</mi><mo>-</mo><mn>2</mn></mrow><mi>b</mi></mfrac>
 //Here are some of the trials I've done in Mozilla's XPath Evaluator:
 //    //mfrac[contains(string(.[1]),"a")] - correctly found the mfrac
 //    //mfrac//*[string-length()>0][1][contains(string(),"a")] - correctly found the mi
