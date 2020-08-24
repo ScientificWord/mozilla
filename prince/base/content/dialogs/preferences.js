@@ -824,11 +824,14 @@ var plotItemIds = ["plotLineColorWell", "plotDirectionalShading", "plotBaseColor
 
 var plotColorWells = ["plotLineColorWell", "plotBaseColorWell", "plotSecondColorWell"];
 
-var plotVarEditControls = ["plotVar1StartEdit", "plotVar1EndEdit", "plotVar2StartEdit", "plotVar2EndEdit",
-                    "plotVar3StartEdit", "plotVar3EndEdit", "plotVar4StartEdit", "plotVar4EndEdit",
-                    "xrangelow", "xrangehigh", "yrangelow", "yrangehigh", "zrangelow", "zrangehigh"];
+var plotVarEditControls = ["xrangelow", "xrangehigh", "xPts", "yrangelow", "yrangehigh", "yPts", "zrangelow", "zrangehigh", "zPts",
+                    "animrangelow", "animrangehigh", "animPts",
+                    "viewxrangelow", "viewxrangehigh", "viewyrangelow", "viewyrangehigh", "viewzrangelow", "viewzrangehigh"];
 
-var plotVarControls = ["plotPtssamp1", "plotPtssamp2", "plotPtssamp3", "plotPtssamp4"];
+// var plotVarEditControls = ["plotVar1StartEdit", "plotVar1EndEdit", "plotVar2StartEdit", "plotVar2EndEdit",
+//                     "plotVar3StartEdit", "plotVar3EndEdit", "plotVar4StartEdit", "plotVar4EndEdit",
+//                     "plotPtssamp1", "plotPtssamp2", "plotPtssamp3", "plotPtssamp4"
+//                     "xrangelow", "xrangehigh", "yrangelow", "yrangehigh", "zrangelow", "zrangehigh"];
 
 var plotVarEditsReady = [];
 
@@ -880,31 +883,38 @@ function checkPlotVarEditsReady()
 function initPlotItemEditors()
 {
   //Initialize editor controls
-  var fallbackVals = [-6, 6, -6, 6, -6, 6, 0, 10];
-  var editorElement, prefElement, theStringSource, key;
-  var editorInitializer = new msiEditorArrayInitializer();
-  for (var ii = 0; ii < plotVarEditControls.length; ++ii)
+  var fallbackVals = [-6, 6, 50, 
+                      -6, 6, 50, 
+                      -6, 6, 50, 
+                      0, 10, 20, 
+                      -6, 6, -6, 6, -6, 6 ];
+  var textbox, prefElement, theStringSource, key;
+  var ii;
+  for (ii = 0; ii < plotVarEditControls.length; ++ii)
   {
     theStringSource = "";
-    editorElement = document.getElementById(plotVarEditControls[ii]);
+    textbox = document.getElementById(plotVarEditControls[ii]);
     try
     {
-      prefElement = document.getElementById(editorElement.getAttribute("preference"));
+      prefElement = document.getElementById(textbox.getAttribute("pref"));
       theStringSource = prefElement.value;
-    } catch(ex) {
-      dump("Exception trying to initialize editor " + plotVarEditControls[ii] + " in initPlotItemPreferences().\n");
-    }
-    if (!theStringSource.length)
-    {
-      key = getBasePlotPrefKeyName(prefElement.getAttribute(name));
-      theStringSource = getPlotDefaultValue(null, null, key);
       if (!theStringSource.length)
-        theStringSource = GetNumAsMathML(fallbackVals[ii]);
+      {
+        // key = getBasePlotPrefKeyName(prefElement.getAttribute(name));
+        // theStringSource = unmathify(getPlotDefaultValue(null, null, key));
+        // if (!theStringSource.length)
+          textbox.value = fallbackVals[ii];
+      }
+      textbox.value = unmathify(theStringSource);
+    } 
+    catch(ex) {
+        dump("Exception trying to initialize editor " + plotVarEditControls[ii] + " in initPlotItemPreferences().\n");
     }
-    editorElement.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : minMaxDocumentObserver(editorElement)}];
-    editorInitializer.addEditorInfo(editorElement, theStringSource, true);
+
+    // textbox.mInitialDocObserver = [{mCommand : "obs_documentCreated", mObserver : minMaxDocumentObserver(textbox)}];
+    // editorInitializer.addEditorInfo(textbox, theStringSource, true);
   }
-  editorInitializer.doInitialize();
+  // editorInitializer.doInitialize();
 }
 
 function addNonRootPlotPrefs()
@@ -1359,6 +1369,14 @@ function GetColorAndUpdatePref(aType, aButtonID)
     preference.value = colorObj.TextColor;
 }
 
+
+function saveMMLForm(thisElement) {
+  var prefs = GetPrefs();
+  var pref = document.getElementById(thisElement.getAttribute('pref'));
+  var mml = mathify(thisElement.value);
+  pref.value = mml;
+  prefs.setCharPref(pref.getAttribute('name'), mml);
+}
 
 //function writeAPlotPref(dim, plottype, prefID, value)
 //{
