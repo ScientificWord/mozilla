@@ -1284,12 +1284,11 @@ Plot.prototype =
           this.element[key] = serialized;
         }
         else {
-          this.element[key] = mathnode.textContent;
+        //   this.element[key] = mathnode.textContent;
+          mathnode = child.getElementsByTagName("math")[0];
+          serialized = this.parent.ser.serializeToString(mathnode);
+          this.element[key] = serialized;
         }
-        // var mathnode = child.getElementsByTagName("math")[0];
-        // var serialized = this.parent.ser.serializeToString(mathnode);
-        // this.element[key] = serialized;
-
       }
       child = child.nextSibling;
     }
