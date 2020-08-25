@@ -63,10 +63,10 @@
     <grid>
       <columns>
         <column style="text-align: center;"/>
-        <column style="width: 5em"/>
+        <column />
         <column style="text-align: center;" />
-        <column style="width: 5em"/>
-        <column style="width: 5em"/>
+        <column />
+        <column />
         <column />
       </columns>
       <rows>
@@ -80,16 +80,16 @@
         </row>
         <row observes="1Var">
           <vbox flex="1" style="-moz-box-pack:center;">
-            <label id ="var1" style="text-align: center;">&x.label;</label>
+          <label id ="var1" style="text-align: center;">&x.label;</label>
           </vbox>
           <textbox context="msiEditorContentContext"
                   id="var1StartEdit" flex="1" />
           <vbox flex="1" style="-moz-box-pack:center;">
-            <label value="&to.label;" style="text-align: center;" />
+            <label value="&to.label;" style="text-align: center;"/>
           </vbox>
           <textbox context="msiEditorContentContext"
-                  id="var1EndEdit" flex="1" />
-		      <hbox><textbox id="ptssamp1" style="width: 5em"/></hbox>
+                  id="var1EndEdit" flex="1"/>
+		      <hbox><textbox id="ptssamp1" /></hbox>
           <menulist id="var1Role" observes="2Vars" oncommand="onChangeRole(this);">
             <menupopup>
               <menuitem label="&x.label;"      value="X"/>
@@ -101,7 +101,7 @@
         </row>
         <row observes="2Vars">
           <vbox flex="1" style="-moz-box-pack:center;">
-            <label id ="var2" style="text-align: center;" >&y.label;</label>
+          <label id ="var2" style="text-align: center;" >&y.label;</label>
           </vbox>
           <textbox context="msiEditorContentContext"
                   id="var2StartEdit" flex="1" />
