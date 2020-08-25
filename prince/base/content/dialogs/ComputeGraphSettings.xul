@@ -519,35 +519,29 @@
           </vbox>
           <groupbox observes="viewRangesActive" >
             <caption>&viewIntervals.label;</caption> 
-            <vbox>       
-              <hbox class="singleLineEditor">
-                <label value="&axisxrange.label;" observes="viewRangesActive"/>
-                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="xrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
-                <textbox id="xrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="xrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
-                <textbox id="xrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-              </hbox>
-              <hbox class="singleLineEditor">
-                <label value="&axisyrange.label;" observes="viewRangesActive"/>
-                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="yrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
-                <textbox id="yrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="yrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
-                <textbox id="yrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-              </hbox>
-              <hbox observes="threeDim" class="singleLineEditor">
-                <label value="&axiszrange.label;" observes="viewRangesActive"/>
-                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="zrangelow" flex="1" width="10em" height="4em" observes="viewRangesActive"/> -->
-                <textbox id="zrangelow" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/>
-                <!-- <editor editortype="html" type="content" context="msiEditorContentContext"
-                    id="zrangehigh" flex="1" width="10em" height="4em" observes="viewRangesActive"/>
-              <textbox id="zrangehigh" ilk="numberlike" significantDigits="4" style="width: 10em;" cols="6" observes="viewRangesActive"/> -->
-              </hbox>
-            </vbox>
+            <grid> 
+              <columns>
+                <column/>
+                <column/>
+                <column/>
+              </columns>    
+              <rows>
+                <row>  
+                  <label value="&axisxrange.label;" observes="viewRangesActive"/>
+                  <textbox id="viewxrangelow" observes="viewRangesActive"/>
+                  <textbox id="viewxrangehigh" observes="viewRangesActive"/>
+                </row>                <row>  
+                  <label value="&axisyrange.label;" observes="viewRangesActive"/>
+                  <textbox id="viewyrangelow" observes="viewRangesActive"/>
+                  <textbox id="viewyrangehigh" observes="viewRangesActive"/>
+                </row>
+                <row>
+                  <label value="&axiszrange.label;" observes="viewRangesActive"/>
+                  <textbox id="viewzrangelow" observes="viewRangesActive"/>
+                  <textbox id="viewzrangehigh" observes="viewRangesActive"/>
+                 </row>
+              </rows>
+            </grid>
           </groupbox>
           <groupbox caption="&cameraPositionAndOrientation.label;" observes="threeDim">
             <checkbox id="defaultCameraCheckbox" label="&defaultCamera.label;" oncommand="changeDefaultCamera();" />

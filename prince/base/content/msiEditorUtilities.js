@@ -11702,5 +11702,5 @@ function mathifyVariable(variableStr) {
 }
 
   function unmathify(mathExp) {
-    return mathExp.replace(/<(\/)?[^>]+>/g,'');  // take out all tags and tag ends consisting of alpha characters
+    return (mathExp.replace(/<(\/)?[^>]+>/g,'')).replace(/\s*/g,'');  // take out all tags and tag ends consisting of alpha characters, and white space
   }
