@@ -104,7 +104,7 @@ function startup(){
     varIdentifier = "var" + String(jj+1);
     menuId = varIdentifier + "Role";
     rowData[menuId] = { whichVar : whichVars[jj],
-                          varName : document.getElementById(varIdentifier),
+                          varName : document.getElementById(varIdentifier),  // varName is a label
                           startEdit : document.getElementById(varIdentifier + "StartEdit"),
                           endEdit : document.getElementById(varIdentifier + "EndEdit"),
                           numPtsTextbox : document.getElementById("ptssamp" + String(jj+1)) };
@@ -131,7 +131,7 @@ function startup(){
     // editorInitializer.addEditorInfo(rowObj.endEdit, maxVal, true);
 
     document.getElementById(aRowId).value = rowObj.whichVar;
-    // putMathMLExpressionToControl(rowObj.varName, plot.getPlotValue(rowObj.whichVar + "Var"));
+    putMathMLExpressionToControl(rowObj.varName, plot.getPlotValue(rowObj.whichVar + "Var"));
     rowObj.startEdit.value = minVal;
     rowObj.endEdit.value = maxVal;
     rowObj.bDefaultStart = isDefaulted(minVal, rowObj.whichVar, "Min");
@@ -183,7 +183,7 @@ function getValuesFromDialog()
     for (var aRowId in rowData)
     {
       rowObj = rowData[aRowId];
-      plot.setPlotValue( rowObj.whichVar + "Var", mathify(rowObj.varName.value));
+      plot.setPlotValue( rowObj.whichVar + "Var", mathifyVariable(rowObj.varName.textContent));
       plot.markUserSet(rowObj.whichVar + "Var", true);
       if (rowObj.startEdit.value)
       {
@@ -387,3 +387,4 @@ function getMenuItemLabel(theBundle, prefixStr, varNameStr)
   }
   return res;
 }
+

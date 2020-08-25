@@ -1824,7 +1824,7 @@ Currently these are all simple signed numbers or identifiers
                     pref="plot.XMin" onchange='saveMMLForm(this);'/>
                   <label value="&plotVarsTo.label;" />
                   <textbox context="msiEditorContentContext" id="xrangehigh" pref="plot.XMax" flex="1"  onchange='saveMMLForm(this);' />
-      		        <hbox><textbox id="xPts" type="number" pref="plot.XPts" class="medwidth"  onchange='saveMMLForm(this);'/></hbox>
+      		        <hbox><textbox id="xPts" type="number" pref="plot.XPts"  onchange='saveMMLForm(this);'/></hbox>
                 </row>
                 <row observes="plot.2Vars">
                   <label id ="plotVar2">&plotVarY.label;</label>
