@@ -1960,17 +1960,18 @@ nsEditor::SplitNode(nsIDOMNode * aNode,
                     PRInt32      aOffset,
                     nsIDOMNode **aNewLeftNode)
 {
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+  nsAutoString nodeName;
+  element->GetTagName(nodeName);
+  if (element) {
+    element->GetTagName(nodeName);
+    if (nodeName.EqualsLiteral("body")) {
+      *aNewLeftNode = nsnull;
+      return NS_OK;
+    }
+  }
+
   PRInt32 i;
-// Temporary checking
-	nsAutoString name;
-	nsresult res;
-  res = aNode->GetNodeName(name);
-  if (res && name.EqualsLiteral("body"))
-	{
-		// put breakpoint here:
-		i = 3;
-	}
-//
   nsAutoRules beginRulesSniffing(this, kOpSplitNode, nsIEditor::eNext);
 
   for (i = 0; i < mActionListeners.Count(); i++)
@@ -4878,6 +4879,10 @@ nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
   nsCOMPtr<nsIDOMNode> tempNode, parentNode;
   PRInt32 offset = aSplitPointOffset;
   nsresult res;
+  nsCOMPtr<nsIDOMElement> element;
+  nsAutoString nodeName;
+
+
 
   if (outLeftNode)  *outLeftNode  = nsnull;
   if (outRightNode) *outRightNode = nsnull;
@@ -4885,6 +4890,15 @@ nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
   nsCOMPtr<nsIDOMNode> nodeToSplit = do_QueryInterface(aSplitPointParent);
   while (nodeToSplit)
   {
+    element = do_QueryInterface(nodeToSplit);
+    if (element) {
+      element->GetTagName(nodeName);
+      if (nodeName.EqualsLiteral("body")) {
+        *outOffset = offset;
+        return NS_OK;    
+      }
+    }
+
     // need to insert rules code call here to do things like
     // not split a list if you are after the last <li> or before the first, etc.
     // for now we just have some smarts about unneccessarily splitting
@@ -4903,14 +4917,19 @@ nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
       bDoSplit = PR_TRUE;
       res = SplitNode(nodeToSplit, offset, getter_AddRefs(tempNode));
       if (NS_FAILED(res)) return res;
-      // nsCOMPtr<nsIHTMLEditor> editor = do_QueryInterface(static_cast<nsIEditor *>(this));
-      // if (editor) {
-      //   res = editor->IsEmptyNode( nodeToSplit, &isEmpty, PR_TRUE, PR_FALSE, PR_TRUE);
-      // }
+      nsCOMPtr<nsIHTMLEditor> editor = do_QueryInterface(static_cast<nsIEditor *>(this));
+      if (editor) {
+        res = editor->IsEmptyNode( nodeToSplit, &isEmpty, PR_TRUE, PR_FALSE, PR_TRUE);
+      }
       res = nodeToSplit->GetParentNode(getter_AddRefs(parentNode));
-      // if (isEmpty && aNoEmptyContainers) {
+      // PRBool allowRemove = PR_TRUE;
+      // if (allowRemove && isEmpty && aNoEmptyContainers) {
       //   RemoveContainer(nodeToSplit);
       // }
+      if (isEmpty && aNoEmptyContainers) {
+        RemoveContainer(nodeToSplit);
+        nodeToSplit = nsnull;
+      }
       if (outRightNode) *outRightNode = nodeToSplit;
       if (outLeftNode)  *outLeftNode  = tempNode;
     } else {
