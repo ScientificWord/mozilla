@@ -1279,18 +1279,10 @@ Plot.prototype =
       key = msiGetBaseNodeName(child);
       if (child.nodeType === Node.ELEMENT_NODE) {
         mathnode = child.getElementsByTagName("math")[0];
-        if (child.localName === 'Expression') {
-          serialized = this.parent.ser.serializeToString(mathnode);
-          this.element[key] = serialized;
-        }
-        else {
-        //   this.element[key] = mathnode.textContent;
-          mathnode = child.getElementsByTagName("math")[0];
-          serialized = this.parent.ser.serializeToString(mathnode);
-          this.element[key] = serialized;
-        }
+        serialized = this.parent.ser.serializeToString(mathnode);
+        this.element[key] = serialized;
       }
-      child = child.nextSibling;
+       child = child.nextSibling;
     }
   },
   copyAttributes : function(otherPlot, attrArray)

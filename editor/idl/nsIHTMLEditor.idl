@@ -699,6 +699,7 @@ interface nsIHTMLEditor : nsISupports
    * the TagManager.
    */
   void setEditorActive();
+  void ValidateMathSyntax( in nsIDOMElement mathNode );
 };
 
 
