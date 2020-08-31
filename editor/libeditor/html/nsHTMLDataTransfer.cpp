@@ -1,5 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-831
-basic-offset: 2 -*- */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-831basic-offset: 2 -*- */
 /* vim: set ts=2 sw=2 et tw=78: */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -556,6 +555,88 @@ PRBool TrimDocFragment( nsIDOMNode * fragmentAsNode) {
   return fReturn;
 }
 
+/*  // Since it is possible to copy parts of mathematics we have to check that the copied text
+  // is still valid MathML. We need to check that certain tags which require a fixed number of 
+  // children (such as msub, msup and mfrac) which require 2 children) actually have that many in the
+  // fragment. If not, we replace the offending tag with an mrow.
+
+  res = ValidateMathSyntax( fragmentAsNode); */
+
+nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
+
+  nsresult res;
+  nsCOMPtr<nsIDOMDocument> doc;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  nsCOMPtr<nsIDOMNode> element;
+  nsCOMPtr<nsIDOMNode> child;
+  nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMNode> newElement;
+  nsCOMPtr<nsIDOMNode> dontCare;
+
+  nsCOMPtr<nsIDOMNodeList> children;
+
+  PRUint32 childCount;
+  PRUint32 index;
+  PRBool needToSubstitute;
+  nsAutoString tagName;
+  nsCOMPtr<nsIDOMElement> mrow;
+
+  if (mathNode) {
+    mathNode->GetOwnerDocument(getter_AddRefs(doc));
+    if (doc) {
+      doctrav = do_QueryInterface(doc);
+      res = doctrav->CreateTreeWalker( mathNode, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
+      tw->SetCurrentNode(element);
+    // Now the tree is set up for examination
+      if (element) {
+        needToSubstitute = PR_FALSE;
+        childCount = 0;
+        if (nsHTMLEditUtils::IsMath(element)) {
+          element->GetLocalName(tagName);
+          if (   tagName.EqualsLiteral("mfrac")
+              || tagName.EqualsLiteral("mroot")
+              || tagName.EqualsLiteral("msub") 
+              || tagName.EqualsLiteral("msup")
+              || tagName.EqualsLiteral("munder")
+              || tagName.EqualsLiteral("mover")
+              || tagName.EqualsLiteral("msubsup") 
+              || tagName.EqualsLiteral("munderover")) {
+            element->GetChildNodes(getter_AddRefs(children));
+            if (children) {
+              children->GetLength( &childCount );
+              if (  tagName.EqualsLiteral("msubsup") 
+                 || tagName.EqualsLiteral("munderover"))  {
+                if (childCount != 3) needToSubstitute = PR_TRUE;
+              } else // tagname is one of the others in the above list
+              {
+                if (childCount != 2) {
+                  needToSubstitute = PR_TRUE;
+                }
+              }
+            // replace element with mrow.
+              if (needToSubstitute) {
+                msiUtils::CreateMRow(this, (nsIDOMNode *)nsnull, mrow);
+                for (index = 0; index < childCount; index++)
+                {
+                  children->Item(index, getter_AddRefs(child));
+                  mrow->AppendChild(child, getter_AddRefs(dontCare));
+                  element->RemoveChild(child, getter_AddRefs(dontCare));
+                }
+              }
+            }
+          }
+        } 
+        element->GetParentNode(getter_AddRefs(parent));
+        tw->NextSibling(getter_AddRefs(newElement));
+        if (needToSubstitute) parent->ReplaceChild(mrow, element, getter_AddRefs(dontCare));
+        element = newElement;
+
+      }
+    }
+  }
+}
+
 
 nsresult
 nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
@@ -599,6 +680,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   NS_ENSURE_SUCCESS(res, res);
   nsCOMPtr<nsIDOMNode> targetNode, tempNode;
   PRInt32 targetOffset=0;
+  fragmentAsNode->Normalize();
 
   if (!aDestNode)
   {
@@ -739,6 +821,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     }
   }
 
+
+
   // if we have a destination / target node, we want to insert there
   // rather than in place of the selection
   // ignore aDeleteSelection here if no aDestNode since deletion will
@@ -768,7 +852,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   // make a list of what nodes in docFrag we need to move
   PRInt32 j;
   nsCOMArray<nsIDOMNode> nodeList;
- DumpNode(fragmentAsNode);
+  DumpNode(fragmentAsNode);
   PRBool fUseNewCode = PR_FALSE;
   if (fUseNewCode && fTrimmedFragment) streamStartParent = nsnull;
   res = CreateListOfNodesToPaste(fragmentAsNode, nodeList,
@@ -874,10 +958,17 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     PRBool bStartedInLink = IsInLink(parentNode);
 
     // are we in a text node or other node that connot accept ?  If so, split it.
+    // BBM: Check tag containment rules here?
     if (IsTextNode(parentNode))
     {
       nsCOMPtr<nsIDOMNode> temp;
+      // nsCOMPtr<nsIDOMNode> newLeftNode;
+      // nsCOMPtr<nsIDOMNode> newRightNode;
       res = SplitNodeDeep(parentNode, parentNode, offsetOfNewNode, &offsetOfNewNode, PR_TRUE);
+      // res = SplitNodeDeep(parentNode, parentNode, offsetOfNewNode, &offsetOfNewNode, PR_TRUE,
+      //   &newLeftNode, &newRightNode);
+      // // upon exit, the insertion point will be in the parent of newLeftNode and newRightNode, between them;
+      // // that is the offset will be the index of newLeftNode + 1;
       if (NS_FAILED(res)) return res;
       res = parentNode->GetParentNode(getter_AddRefs(temp));
       if (NS_FAILED(res)) return res;
@@ -4744,7 +4835,7 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
   {
     res = ParseFragment(aContextStr, tagStack, doc, address_of(contextAsNode));
 #if DEBUG_barry || DEBUG_Barry
-    dumpTagStack(tagStack);
+    // dumpTagStack(tagStack);
     DumpNode(contextAsNode);
 #endif
     NS_ENSURE_SUCCESS(res, res);
@@ -5013,8 +5104,7 @@ nsresult nsHTMLEditor::CreateListOfNodesToPaste(nsIDOMNode  *aFragmentAsNode,
     aEndOffset = fragLen;
   }
 
-  nsCOMPtr<nsIDOMRange> docFragRange =
-                          do_CreateInstance("@mozilla.org/content/range;1");
+  nsCOMPtr<nsIDOMRange> docFragRange = do_CreateInstance("@mozilla.org/content/range;1");
   if (!docFragRange) return NS_ERROR_OUT_OF_MEMORY;
 
   res = docFragRange->SetStart(aStartNode, aStartOffset);
