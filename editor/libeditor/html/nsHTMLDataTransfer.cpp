@@ -635,6 +635,7 @@ nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
       }
     }
   }
+  return NS_OK;
 }
 
 
