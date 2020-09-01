@@ -1810,8 +1810,8 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   nsCOMPtr<msiITagListManager> tlm;
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   nsCOMPtr<nsIContent> content = do_QueryInterface(node);
-  if (content->TextIsOnlyWhitespace())
-  tlm->GetRealClassOfTag(nodeName, nsnull, tagclass);
+  if (content->TextIsOnlyWhitespace()) {
+      tlm->GetRealClassOfTag(nodeName, nsnull, tagclass); }
     // Search up the parent chain to find a suitable container
   while (!CanContainTag(ptr, nodeName)) // && !(content && content->TextIsOnlyWhitespace()))
   {
@@ -1962,7 +1962,6 @@ nsEditor::SplitNode(nsIDOMNode * aNode,
 {
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
   nsAutoString nodeName;
-  element->GetTagName(nodeName);
   if (element) {
     element->GetTagName(nodeName);
     if (nodeName.EqualsLiteral("body")) {
@@ -4737,12 +4736,12 @@ nsEditor::IsTextNode(nsIDOMNode *aNode)
 PRInt32
 nsEditor::GetIndexOf(nsIDOMNode *parent, nsIDOMNode *child)
 {
-  nsCOMPtr<nsIContent> content = do_QueryInterface(parent);
-  nsCOMPtr<nsIContent> cChild = do_QueryInterface(child);
-  NS_PRECONDITION(content, "null content in nsEditor::GetIndexOf");
-  NS_PRECONDITION(cChild, "null content in nsEditor::GetIndexOf");
+  nsCOMPtr<nsINode> pParent = do_QueryInterface(parent);
+  nsCOMPtr<nsINode> cChild = do_QueryInterface(child);
+  // NS_PRECONDITION(content, "null content in nsEditor::GetIndexOf");
+  // NS_PRECONDITION(cChild, "null content in nsEditor::GetIndexOf");
 
-  return content->IndexOf(cChild);
+  return pParent->IndexOf(cChild);
 }
 
 
@@ -4927,8 +4926,10 @@ nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
       //   RemoveContainer(nodeToSplit);
       // }
       if (isEmpty && aNoEmptyContainers) {
+//        *outOffset = GetIndexOf(parentNode, nodeToSplit) +1;
         RemoveContainer(nodeToSplit);
         nodeToSplit = nsnull;
+        break;
       }
       if (outRightNode) *outRightNode = nodeToSplit;
       if (outLeftNode)  *outLeftNode  = tempNode;
@@ -4965,11 +4966,11 @@ nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
     nodeToSplit = parentNode;
   }
 
-  if (!nodeToSplit)
-  {
-    NS_NOTREACHED("null node obtained in nsEditor::SplitNodeDeep()");
-    return NS_ERROR_FAILURE;
-  }
+  // if (!nodeToSplit)
+  // {
+  //   NS_NOTREACHED("null node obtained in nsEditor::SplitNodeDeep()");
+  //   return NS_ERROR_FAILURE;
+  // }
 
   *outOffset = offset;
 
