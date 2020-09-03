@@ -20,6 +20,7 @@ function princeStartUp()
   // take out parts of the UI not needed on the Mac
   // protect these statements because some of these buttons don't exist in SNB
   var os = getOS(window);
+  var currentDocumentWithSameUri;
   var button;
   var menuitem;
   if ('osx' == os)
@@ -39,8 +40,19 @@ function princeStartUp()
     if (menuitem = document.getElementById("venkmanName")) menuitem.hidden = false;
     if (menuitem = document.getElementById("menu_inspector")) menuitem.hidden = false;
   }
-
-  msiEditorOnLoad();
+  if (window && window.arguments && window.arguments[0]) {
+    currentDocumentWithSameUri = getDocumentAlreadyOpen(window.arguments[0]);
+    if (currentDocumentWithSameUri) {
+      currentDocumentWithSameUri.focus();
+      window.close();
+    }
+    else {
+      msiEditorOnLoad();
+    }
+  }
+  else {
+    msiEditorOnLoad();
+  }
 }
 
 
@@ -100,6 +112,47 @@ function doQuit() {
   }
   return false;
 }
+
+// getDocumentAlreadyOpen. Returns pointer to an ndDOMWindow if the document is currenly being edited. The pointer is 
+// to the top level window in which that editor is located. Returns null otherwise.
+
+function getDocumentAlreadyOpen(url) {
+
+  if (!url) {
+    //    AlertWithTitle("Error in msiEditorUtilities.js", "Null innerDocument passed into findEditorElementForDocument!");
+    return null;
+  }
+  var editorElement = null;
+  var editorDoc;
+  var tmpwindow;
+  var tmpXULDoc;
+  var tmpXhtmlDoc;
+  var xhtmlUrl;
+  var windowWatcher = Components.classes['@mozilla.org/embedcomp/window-watcher;1'].getService(Components.interfaces.nsIWindowWatcher);
+  var winEnum = windowWatcher.getWindowEnumerator();
+  while (winEnum.hasMoreElements()) {
+    tmpwindow = winEnum.getNext();
+    editorElement = null;
+    editorDoc = null;
+    tmpXhtmlDoc = null;
+    xhtmlUrl = null;
+    tmpXULDoc = tmpwindow.document;
+    if (tmpXULDoc) {
+      editorElement = tmpXULDoc.getElementById('content-frame');
+      if (editorElement) {
+        tmpXhtmlDoc = editorElement.contentDocument;
+        if (tmpXhtmlDoc) {
+          xhtmlUrl = tmpXhtmlDoc.documentURI;
+          if (url === xhtmlUrl.replace(/_work\/main.xhtml$/g, '.sci')) {
+            return tmpwindow;
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
 
 /////////////////////////////////////////////////
 // our connection to the computation code
