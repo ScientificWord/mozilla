@@ -47,6 +47,7 @@ function CleanMathString(mathstr)
   mathstr = mathstr.replace(/<br xmlns:[\w]+=\"http:\/\/www\.w3\.org\/1999\/xhtml\"\/>/gi,"");
   // eliminate these useless tags
   mathstr = mathstr.replace(/<\/math><math\s*>/g, "");
+  mathstr = mathstr.replace(/<mn>(\d*\.?\d*)<\/mn>\s*<mo>\s*<\/mo><mn>(\d*\.?\d*)<\/mn>/g, '<mn>$1$2</mn>');
   mathstr = mathstr.replace(/<mn\/>/g,"");
   mathstr = mathstr.replace(/<mo\/>/g,"");
   mathstr = mathstr.replace(/<mo>\s*<\/mo>/g,"");
