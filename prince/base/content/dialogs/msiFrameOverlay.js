@@ -1300,6 +1300,7 @@ function setActualSize(val)
   gSizeState.update(Dg);
 }
 
+
 function floatPropertyChanged() {
   var floatList = document.getElementById("floatList");
   var none = floatList.value === "";
@@ -1323,7 +1324,7 @@ function floatPropertyChanged() {
 
 function captionPropertyChanged() {
   var captionLoc = document.getElementById("captionLocation").value;
-  if (tagConflicts()) return;
+//  if (tagConflicts()) return;
   if (captionLoc === "none") {
     document.getElementById("keyEnabled").setAttribute("disabled", "true");
   } else {
