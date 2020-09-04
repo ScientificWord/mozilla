@@ -3529,6 +3529,11 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
         if (res == NS_OK)
         {
           sr->SetCtx(m_window);
+          // to maintain compatability with previous releases, if we encounter scripts calling "insertMathname" or "insertMathunit",
+          // convert them to "doInsertMathname" and "doInsertMathunit" respectively.
+          if (StringBeginsWith(data, NS_LITERAL_STRING("insertMathname")) || StringBeginsWith(data, NS_LITERAL_STRING("insertMathunit"))) {
+            data.Replace(0, 1, NS_LITERAL_STRING("doI"));
+          }
           sr->Eval(data, error);
         }
       }
