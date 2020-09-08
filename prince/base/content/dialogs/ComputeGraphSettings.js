@@ -284,12 +284,12 @@ function mapid( graphattribute)
     case "AxesType"           :   return "axistype";
     case "EqualScaling"       :   return "equalscale";
     case "BGColor"            :   return "plotCW";
-    case "ViewingBoxXMin"     :   return "xrangelow";
-    case "ViewingBoxXMax"     :   return "xrangehigh";
-    case "ViewingBoxYMin"     :   return "yrangelow";
-    case "ViewingBoxYMax"     :   return "yrangehigh";
-    case "ViewingBoxZMin"     :   return "zrangelow";
-    case "ViewingBoxZMax"     :   return "zrangehigh";
+    case "ViewingBoxXMin"     :   return "viewxrangelow";
+    case "ViewingBoxXMax"     :   return "viewxrangehigh";
+    case "ViewingBoxYMin"     :   return "viewyrangelow";
+    case "ViewingBoxYMax"     :   return "viewyrangehigh";
+    case "ViewingBoxZMin"     :   return "viewzrangelow";
+    case "ViewingBoxZMax"     :   return "viewzrangehigh";
 
     //then to avoid the automatic placing of values where not appropriat  :
     case "plotnumber"         :   return "";
