@@ -77,6 +77,8 @@
     <broadcaster id="customCameraProperties" disabled="true" />
     <broadcaster id="colorAlphaEnabled" hasAlpha="false" />
     <broadcaster id="useDiscAdjust" collapsed="false" />
+   
+
   </broadcasterset>
 
   <broadcasterset id="frameoverlayBroadcasters"/>
@@ -536,9 +538,11 @@
                   <textbox id="viewyrangehigh" observes="viewRangesActive"/>
                 </row>
                 <row>
+                  <groupbox id="viewzrange" collapsed = "false">
                   <label value="&axiszrange.label;" observes="viewRangesActive"/>
                   <textbox id="viewzrangelow" observes="viewRangesActive"/>
                   <textbox id="viewzrangehigh" observes="viewRangesActive"/>
+                  </groupbox>
                  </row>
               </rows>
             </grid>
