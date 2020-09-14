@@ -947,6 +947,7 @@ function hideShowControls(dim, ptype, graphAnimated, aiMethod)
   document.getElementById("useDiscAdjust").collapsed = ((ptype != "rectangular") && (ptype != "parametric") && (ptype != "implicit"));
   changeDefaultCamera();  //this just enables or disables according to the checkbox state
   changeDefaultViewIntervals();  //this just enables or disables according to the checkbox state
+  hideShowZViewIntervals(); //Collapses input box for z view if plot is 2 dimentionsional
 }
 
 function openVariablesAndIntervalsDlg()
@@ -1064,11 +1065,20 @@ function makeAxisLabelCustom(control)
 
 function changeDefaultViewIntervals()
 {
-  var control = document.getElementById("defaultviewintervals");
+  var control = document.getElementById("defaultviewintervals"); 
   if (control.checked)
     document.getElementById("viewRangesActive").setAttribute("disabled", "true");
   else
     document.getElementById("viewRangesActive").removeAttribute("disabled");
+}
+
+function hideShowZViewIntervals()
+{
+   var dim = graph.getDimension();
+   if (dim == 3)  
+     document.getElementById("viewzrange").collapsed = false;  
+   else
+     document.getElementById("viewzrange").collapsed = true; 
 }
 
 function changeDefaultCamera()
