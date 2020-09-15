@@ -536,14 +536,14 @@
                   <label value="&axisyrange.label;" observes="viewRangesActive"/>
                   <textbox id="viewyrangelow" observes="viewRangesActive"/>
                   <textbox id="viewyrangehigh" observes="viewRangesActive"/>
-                </row>
-                <row>
-                  <groupbox id="viewzrange" collapsed = "false">
+                </row>              
+                
+                  <row id="viewzrange" collapsed = "false">  
                   <label value="&axiszrange.label;" observes="viewRangesActive"/>
                   <textbox id="viewzrangelow" observes="viewRangesActive"/>
                   <textbox id="viewzrangehigh" observes="viewRangesActive"/>
-                  </groupbox>
-                 </row>
+                  </row>
+                               
               </rows>
             </grid>
           </groupbox>
