@@ -12,12 +12,20 @@ function getDocumentDirectoryFor(doc)
   return dir.parent;
 }
 
-function createCopyOfDocument(doc)
+function createCopyOfDocument(doc, srcDir, destDir)
 {
-  var doc2 = doc.implementation.createDocument("","",null);
-  var newDocElement = doc2.importNode(doc.documentElement,true);
-  doc2.appendChild(newDocElement);
-  return doc2;
+  var contents;
+  var serializer = new XMLSerializer();
+  var prettyString = serializer.serializeToString(doc);
+  var parser = new DOMParser();
+  var docCopy = parser.parseFromString(prettyString, 'application/xhtml+xml');
+// the source directory name is based on the document filename, so...
+  var name = srcDir.leafName.replace("_work","");
+  if (!destDir.exists()) destDir.create(1, 493); //0755
+  var destfile = destDir.clone();
+  destfile.append(name+".xhtml");
+  writeStringAsFile(prettyString, destfile);
+  return docCopy;
 }
 
 function createSubDirFromDocDir(dir, name)
@@ -27,47 +35,54 @@ function createSubDirFromDocDir(dir, name)
   return subdir;
 }
 
-function rebaseStyleSheetHRef( sshref, documentDirectory, fUseWebCss, cssurl )
+function rebaseStyleSheetHRef( oldHRef, srcDir, fUseWebCss, cssurl )
 {
   var reRes = new RegExp("resource://app/res/","i");
-  var reDoc = new RegExp(msiFileURLStringFromFile(documentDirectory),"i");
-  if (reRes.test(sshref))
-    return sshref.replace(reRes, fUseWebCss ? cssurl : "");
-  if (reDoc.test(sshref))
-    return sshref.replace(reDoc,"");
-  return sshref;
+  var reDoc = new RegExp(msiFileURLStringFromFile(srcDir),"i");
+  if (reRes.test(oldHRef))
+    return oldHRef.replace(reRes, fUseWebCss ? cssurl : "");
+  if (reDoc.test(oldHRef))
+    return oldHRef.replace(reDoc,"");
+  return oldHRef;
+}
+
+function isXML(name) {
+  var regexp = /\.xml$/i;
+  return regexp.test(name);
 }
 
 
 function saveDocumentCopyAndSubDocs(docCopy, srcDir, destinationDir)
 {
   var entries;
-  var serializer = new XMLSerializer();
-  var prettyString = serializer.serializeToString(docCopy);
-// the source directory name is based on the document filename, so...
-  var name = srcDir.leafName.replace("_work","");
-  if (!destinationDir.exists()) destinationDir.create(1, 493); //0755
-  var destfile = destinationDir.clone();
-  destfile.append(name+".xhtml");
-  writeStringAsFile(prettyString, destfile);
+  var entry;
+  var cssDir = destinationDir.clone();
+  cssDir.append('css');
+  if (!cssDir.exists())
+  {
+    cssDir.create(1, 493); // = 0755
+  }
 // Now copy subdocuments -- all of these have an xml extension
   entries = srcDir.directoryEntries;
-  var isXml = /\.xml$/i;
-  while(entries.hasMoreElements())
+  while ( entries.hasMoreElements() )
   {
-    var entry = entries.getNext();
-    entry.QueryInterface(Components.interfaces.nsIFile);
-    if (entry.isFile && isXml.test(entry.path))
+    entry = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
+    if (entry.isFile() && isXML(entry.path))
     {
       entry.copyTo(destinationDir,"");
     }
     else
     {
-      if (entry.isDirectory && (entry.leafName == "graphics" || entry.leafName == "gcache" ||false /* BBM */))
+      if (entry.isDirectory() && (entry.leafName !== "css" && entry.leafName !== "plots" && entry.leafName !== "tcache" &&
+        entry.leafName !== "tex"))
       {
         entry.copyTo(destinationDir,"");
       }
     }
+  }
+  if (!cssDir.exists())
+  {
+    cssDir.create(1, 493); // = 0755
   }
 }
 
@@ -90,7 +105,9 @@ function zipUpDir(dir, extension)
   {
     compression = prefs.getIntPref("swp.webzip.compression");
   }
-  catch(e) {}
+  catch(e) {
+    3; // you can put a breakpoint here
+  }
   zipfile.append(leafname + "." + extension);
 
   try {
@@ -108,42 +125,21 @@ function zipUpDir(dir, extension)
   }
 }
 
+// function writeStringAsFile( str, file )
+// {
+//   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+//   fos.init(file, 0x02 | 0x08 | 0x20, 0664, 0);
+//   var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+//     .createInstance(Components.interfaces.nsIConverterOutputStream);
+//   os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+//   os.writeString(str);
+//   os.close();
+//   fos.close();
+// }
 
-function appendRelativePath(dir, relPath)
-// like nsifile append but the relPath can contain many directories
+function getFileAsString_local( url, basepath )  // url is the text representation of a URL
 {
-   var f = dir.clone();
-   var arr = relPath.split(/[/\\]/);
-   if (!dir.exists())
-   {
-       dir.create(1, 493);
-   }
-   for  (var i = 0; i < arr.length; i++)
-   {
-     f.append(arr[i]);
-     if (!f.exists())
-     {
-       if (i < arr.length - 1)
-         f.create(1, 493);
-     }
-   }
-   return f;
-}
-
-function writeStringAsFile( str, file )
-{
-  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  fos.init(file, -1, -1, false);
-  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-    .createInstance(Components.interfaces.nsIConverterOutputStream);
-  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-  os.writeString(str);
-  os.close();
-  fos.close();
-}
-
-function getFileAsString( url )
-{
+  if (isRelativePath(url)) url = 'file://' + basepath + '/' + url;
   var req = new XMLHttpRequest();
   req.overrideMimeType("text/css");
   req.open('GET', url, false);
@@ -154,30 +150,38 @@ function getFileAsString( url )
     return null;
 }
 
-function handleStyleSheet (oldHRef, newHRef, dir, depth, fUseWebCss, cssurl)  // modify and copy style sheets and xbl files
-{
-  dump("handleStyleSheet:  "+ oldHRef +", "+newHRef + "\n");
-  // if the parameters are different, copy the style sheet to newHRef (relative to dir)
-  // while it is open, look for @import and -moz-binding commands that may need to be changed.
-  try {
-    var f;
-    var re = /resource:\/\/app\/res\/([a-zA-Z0-9_\/\.\-]+)/i;
-    if (fUseWebCss && re.test(oldHRef)) return;
+function isRelativePath( url ) {  // the text representation of a URL
+  return (url.indexOf('://') < 0);
+}
 
-    if (newHRef.indexOf("://") < 0)  //BBM: this is hopefully a test that the url string is relative
+function handleStyleSheet (oldHRef, newHRef, srcDir, destDir, depth, fUseWebCss, cssurl)  // modify and copy style sheets and xbl files
+{
+  // dump("handleStyleSheet:  "+ oldHRef +", "+newHRef + "\n");
+  // if the parameters are different, copy the style sheet to newHRef (relative to dir)
+  // while it is open, look for @import commands that may need to be changed.
+  // -moz-binding commands are not portable, so they are left untouched; these should occur
+  // only in XUL style sheets.
+  try {
+    var newFile;
+    var re = /resource:\/\/app\/res\/(css\/[a-zA-Z0-9_\.-]+)/i;
+    if (fUseWebCss && re.test(oldHRef)) {
+      // BBM -- work required here
+      return;
+    }
+
+    if (isRelativePath(newHRef))
     {
-      f = appendRelativePath(dir, newHRef);
+      newFile = appendRelativePath(destDir, newHRef);  // in pathutils.jsm
       var match;
-      var contents = getFileAsString( oldHRef );
+      var contents = getFileAsString_local( oldHRef, srcDir.path );
 
       if (contents != null)
       {
-        while ((match = re.exec(contents))!= null)
+        while ((match = re.exec(contents))!= null && (/css$/.test(match[1])))
         {
-          handleStyleSheet(match[0],match[1],dir, ++depth, fUseWebCss, cssurl);
+          handleStyleSheet(match[0], match[1], srcDir, destDir, ++depth, fUseWebCss, cssurl);
           if (fUseWebCss) {
             contents = contents.replace(match[0], cssurl+match[1].replace(/^css\//i,""));
-
           }
           else {
             contents = contents.replace(match[0],match[1].replace(/^css\//i,""));
@@ -187,23 +191,24 @@ function handleStyleSheet (oldHRef, newHRef, dir, depth, fUseWebCss, cssurl)  //
 
       // sneak in a new rule that hides tex buttons
       if (newHRef == 'css/my.css') {
-        contents = contents + 'texb { display: none; }';
+        contents = contents + '\ntexb { display: none; }';
       }
-      writeStringAsFile(contents, f);
+      writeStringAsFile(contents, newFile);
     }
   }
   catch(e)
   {
-    dump("in handleStyleSheet(",oldHRef,",",newHRef,",",depth,"), "+e.message+"\n");
+   1;// dump("in handleStyleSheet(",oldHRef,",",newHRef,",",depth,"), "+e.message+"\n");
   }
 }
 
-function saveforweb( doc, filterindex, dir )
+function saveforweb( doc, filterindex, destDir )
 // Filter index is 0 for zip file containing css
-//                 1 for zip file without css but refs to our domain
+//                 1 for zip file without css but refs to our domain or the one in the preferences
 //                 2 like 0 but with MathJax
 //                 3 like 1 but with MathJax
 {
+
   try {
     // Preferences are swp.savetoweb.cssurl (defaults to www.mackichan/supportfiles/6.0/css)
     // and swp.savetoweb.mathjaxsrc (defaults to ")
@@ -214,44 +219,76 @@ function saveforweb( doc, filterindex, dir )
       mathjax = prefs.getCharPref("swp.savetoweb.mathjaxsrc");
     var cssurl;
     var fUseWebCss = (filterindex === 1 || filterindex === 3);
-    if (fUseWebCss)
+    if (fUseWebCss) {
       cssurl = prefs.getCharPref("swp.savetoweb.cssurl");
-    if (!dir.exists())
+      if (!cssurl) {
+        cssurl = "https://www.mackichan.com/supportfiles/6.0/css/"
+      }
+    }
+    if (!destDir.exists())
     {
-      dir.create(1, 493); // = 0755
+      destDir.create(1, 493); // = 0755
     }
 
-    var dir1 = getDocumentDirectoryFor(doc);
-    var doc2 = createCopyOfDocument(doc);
+    var srcDir = getDocumentDirectoryFor(doc);
+    var destDoc = createCopyOfDocument(doc, srcDir, 
+      destDir);
 //    var cssdir = createSubDirFromDocDir(dir, "css"); // there is always, at least, the 'my.css' file
 //    var xbldir = createSubDirFromDocDir(dir, "xbl");
 //    var graphicsdir = createSubDirFromDocDir(dir, "graphics");
-    var root = doc2.getElementsByTagName('html')[0];
+    var root = destDoc.getElementsByTagName('html')[0];
+
     if (fUseMathJax)
-      insertMathJaxScript(doc2,mathjax);
-    var SSs = doc.styleSheets;
+      insertMathJaxScript(destDoc,mathjax);
+
+// Now handle the CSS files. There is at least one (my.css) referenced in the xhtml file, but each 
+// css file can include others with the @import directive. These files can live in several places:
+// 1. the css directory in the document,
+// 2. in the resource area of the code, and accessed with the resource:// URI,
+// 3. elsewhere on the web, accessed with http:// or https:// URIs,
+// 4. elsewhere in the file system (this cannot occur with our user interface)
+
+// The my.css file is always copied to the destination zip file. The resource:// files are copied or
+// not, depending on the user's choice. If the filterindex is 0 or 2, they are copied to the css directory,
+// and in all cases the links are changed to point to the css directory, or corresponding files at 
+// the mackichan.com website, or to the corresponding files at the location given by the
+// swp.savetoweb.cssurl preference.
+
+// saveDocumentCopyAndSubDocs copies the various document files, but not main.xhtml since we
+// need to change parts of it.
+    saveDocumentCopyAndSubDocs(destDoc, srcDir, destDir);
+
+    var SSs = destDoc.childNodes;  // SSs is list of top level nodes (siblings of <html>)
+    var length = SSs.length;
     var newHRef, oldHRef;
-    for (var i = 0; i <SSs.length; i++)
+    var match;
+    for (var i = 0; i < length; i++)
     {
-      oldHRef = SSs[i].href;
-      newHRef = rebaseStyleSheetHRef(oldHRef, dir1, fUseWebCss, cssurl);
-      var pi = doc2.createProcessingInstruction("xml-stylesheet", "href='"+newHRef+"'", "type='text/css'");
-      root.parentNode.insertBefore(pi,root);
-      if (oldHRef != newHRef)
-      {
-        handleStyleSheet(oldHRef, newHRef, dir, 0, fUseWebCss, cssurl );
+      if (SSs[i].nodeName !== 'xml-stylesheet') break;
+      match = /href\s*=\s*["']([/\\-_a-zA-ZS0..9]+)['"]/.exec(SSs[i].data);
+      if (match && match.length >= 2) {
+        oldHRef = match[1];
+        // oldHRef = appendRelativePath(srcDir,oldHRef).path;
+        newHRef = rebaseStyleSheetHRef(oldHRef, srcDir, fUseWebCss, cssurl);
+        var pi = destDoc.createProcessingInstruction("xml-stylesheet", "href='"+newHRef+"'", "type='text/css'");
+        destDoc.removeChild(SSs[i]);
+        root.parentNode.insertBefore(pi,root);
+        handleStyleSheet(oldHRef, newHRef, srcDir, destDir, 0, fUseWebCss, cssurl );
       }
     }
-    saveDocumentCopyAndSubDocs(doc2, dir1, dir);
-    // hide tex buttons
-    // patchStyle( 'my.css', dir1, dir);
-
-    zipUpDir(dir,"zip");
-    dir.remove(true);
+    var serializer = new XMLSerializer();
+    var prettyString = serializer.serializeToString(destDoc);
+    // the source directory name is based on the document filename, so...
+    var name = srcDir.leafName.replace("_work","");
+    if (!destDir.exists()) destDir.create(1, 493); //0755
+    var destfile = destDir.clone();
+    destfile.append(name+".xhtml");
+    writeStringAsFile(prettyString, destfile);
+    zipUpDir(destDir,"zip");
+    destDir.remove(true);
     return true;
   }
   catch(e) {
-    dump("Error in saveforweb: "+e.message+"\n");
     return false;
   }
 }
