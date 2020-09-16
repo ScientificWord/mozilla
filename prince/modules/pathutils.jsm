@@ -1,7 +1,7 @@
 var EXPORTED_SYMBOLS = ["msiPathFromFileURL", "msiFileURLFromAbsolutePath",
 	"msiFileURLFromChromeURI", "msiFileURLFromFile", "msiURIFromString",
 	"msiFileURLStringFromFile", "msiPathFromFileURL" , "msiFileFromFileURL", "msiFileFromAbsolutePath", "getExtension",
-  "getUserResourceFile"];
+  "getUserResourceFile", "appendRelativePath", "appendMultiple"];
 
 // msiFileURLFromAbsolutePath
 // Takes an absolute path (the direction of the slashes is OS-dependent) and
@@ -137,3 +137,36 @@ function getUserResourceFile( name, resdirname )
   }
   return userAreaFile;
 }
+function appendMultiple( file, relPath) {
+  var i;
+  var pathParts = relPath.split('/');
+  if (pathParts.length < 2) {
+    pathParts = relPath.split('\\');
+  }
+  for (i = 0; i < length; i++) {
+    file = file.append(pathParts[i]);
+  }
+  return file;
+}
+
+function appendRelativePath(dir, relPath)
+// like nsifile append but the relPath can contain many directories
+{
+   var f = dir.clone();
+   var arr = relPath.split(/[/\\]/);
+   if (!dir.exists())
+   {
+       dir.create(1, 493);
+   }
+   for  (var i = 0; i < arr.length; i++)
+   {
+     f.append(arr[i]);
+     if (!f.exists())
+     {
+       if (i < arr.length - 1)
+         f.create(1, 493);
+     }
+   }
+   return f;
+}
+
