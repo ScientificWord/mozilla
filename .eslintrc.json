@@ -1,6 +1,6 @@
 {
     "extends": "standard",
-    "installedESLint": true,
+//    "installedESLint": true,
     "plugins": [
         "standard",
         "promise"
