@@ -862,12 +862,23 @@ function exportToWeb()
    finalThrow(cmdFailString("exporttoweb"), "Exporting to the web for a modified document is not allowed since this program is not licensed.")
    return;
   }
+  var uri;
+  var defaultName;
+  var re;
+  var match;
   if (currentFileName().length < 0) return;
   var editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor) return;
+  uri = editor.document.documentURI;
+  re = /.*[/\\](\w+)_work[/\\]\w+\.\w+$/;
+  match = re.exec(uri);
+  if (match.length >= 2) {
+    defaultName = match[1];
+  }
 
    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+   fp.defaultString = defaultName;
    fp.init(window, "Export to web", msIFilePicker.modeSave);
    fp.appendFilter("Complete zip file ", "*.zip");
    fp.appendFilter("Zip file with web refs for CSS", "*.zip");
