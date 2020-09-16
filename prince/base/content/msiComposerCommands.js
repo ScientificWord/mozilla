@@ -1853,7 +1853,7 @@ function msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement)
 
   // check if there is a title we can use
   var title = msiGetDocumentTitle(editorElement);
-  // generate a valid filename, if we can't just go with "untitled"
+  // generate a valid filename, if we can't, just go with "untitled"
   return title+extension;
 }
 
