@@ -8925,11 +8925,15 @@ function setTagFieldContents(editor, propertyStack) // probably should be rename
   }
 
 function msiSelectFocusNodeAncestor(editorElement, element, inner) {
+  var realInner = inner;
+  if (element.localName === 'body') {
+    realInner = true;
+  }
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (editor) {
-    if (inner) {
+    if (realInner) {
       editor.selection.collapse(element, 0);
       editor.selection.extend(element, element.childNodes.length);
     } else {
