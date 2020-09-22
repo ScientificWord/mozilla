@@ -3751,72 +3751,64 @@ function mathNodeToText(editor, node)
   editor.endTransaction();
 }
 
-function nodeToMath(editor, node, startOffset, endOffset, firstnode, lastnode)
+function nodeToMath(editor, node, startOffset, endOffset)
 {
-  var newNode = {};
-  var newSelection = {};
-  var tempNode = node;
+  var tmp;
+  if (node.nodeType === Node.TEXT_NODE || node.nodeName === 'texb') {
+    if (startOffset > endOffset) {
+      tmp = startOffset;
+      startOffset = endOffset;
+      endOffset = tmp;
+    }
+  }
   var text;
-  if ( (node.nodeType === Node.TEXT_NODE) || (node.nodeName ==="texb") )
+  var nodeRemaining;
+  var parent = node.parentNode;
+  var nodeOffset = offsetOfChild(parent, node);
+  var theOffset;
+
+  if ((node.nodeType === Node.TEXT_NODE) || (node.nodeName ==="texb"))
   {
     try {
-      if (startOffset >0)
-      {
-        text = node.textContent;
-        editor.splitNode(node, startOffset, newNode); // newNode.value is the part before the split, and node is the part after
-        // splitNode doesn't update contents of 'node' when called from JS
-        text = text.slice(startOffset);
-        node.textContent = text;
-      }
-      if (endOffset >= 0)
-      {
-        editor.splitNode(node, endOffset - startOffset, newNode);
-        node.textContent = text.slice(endOffset - startOffset);
-        tempNode = newNode.value;  // tempNode is the middle piece
-      }
-      var parent = node.parentNode;
-      var offset = offsetOfChild(parent, tempNode);
+      // split off the text before startOffset
+      nodeRemaining = node.splitText(startOffset); 
+      theOffset = offsetOfChild(parent, nodeRemaining);
+      // theOffset points between node and the following node (nodeRemaining)
+      
+      // the next 8 lines need reviewing.
       var mathnode;
-      if (tempNode.nodeName === 'texb') {
+      if (nodeRemaining.nodeName === 'texb') {  
+        var newNode = {};
+
         mathnode = editor.document.createElementNS(mmlns, "math");
         editor.insertNode(mathnode, parent, offset, false);
-        editor.deleteNode(tempNode);
-        editor.insertNode(tempNode, mathnode, 0, false);
+        editor.deleteNode(mid);
+        editor.insertNode(mid, mathnode, 0, false);
         editor.selection.collapse(mathnode, 1);
       }
       else {
-
-        var text = tempNode.textContent;
-        var o, p;
-//        var saveEnabled = editor.autoSubEnabled;
-//        editor.autoSubEnabled = false;
-        editor.selection.collapse(parent, offset);
-        for (var i = 0; i < text.length; i++)
+        // take the selected text and insert it as symbols.
+        var theText = nodeRemaining.textContent.slice(0, endOffset - startOffset);
+        editor.selection.collapse(parent,theOffset);
+        for (var i = 0; i < theText.length; i++)
         {
-          if (text[i] != ' ') insertsymbol(text[i]);
-          // if (firstnode && i===0) {  // put the selection start in the new symbol node; it would sure help if insertsymbol returned the inserted node!
-          //   newSelection.startNode = parent;
-          //   newSelection.startOffset = offset;
-          //   }
-          // if (lastnode && i===text.length-1) {
-          //   newSelection.endNode = parent;
-          //   newSelection.endOffset = text.length;
-          // }
+          if (theText[i] != ' ') insertsymbol(theText[i]);
         }
-//        editor.autoSubEnabled = saveEnabled;
+        // now remove the characters written as symbols from the text node nodeRemaining
+        nodeRemaining.textContent = nodeRemaining.textContent.slice(endOffset - startOffset);
       }
     }
     catch(e) {
       throw new MsiException("Error converting text to math", e.message);
     }
 
-    if (tempNode.tagName !== 'texb') editor.deleteNode(tempNode);
-    mathnode = coalescemath(null, true);
-    if (mathnode) {
-      // editor.selection.collapse(mathnode,0);
-      editor.selection.collapse(newSelection.startNode, newSelection.startOffset);
-      editor.selection.extend(newSelection.endNode, newSelection.endOffset);
-    }
+    // mathnode = coalescemath(null, true);
+    // if (mathnode) {
+    //   // editor.selection.collapse(mathnode,0);
+    //   // BBM newSelection is not defined
+    //   editor.selection.collapse(newSelection.startNode, newSelection.startOffset);
+    //   editor.selection.extend(newSelection.endNode, newSelection.endOffset);
+    // }
   }
 }
 
@@ -3897,7 +3889,7 @@ function textToMath(editor)
       {
         node = enumerator.getNext();
         if (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode)){
-          nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1, nodeArray[0], nodeArray[nodeArray.length - 1]);
+          nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1 /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
         }
       }
     }
