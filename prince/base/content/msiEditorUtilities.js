@@ -419,6 +419,37 @@ function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent
     finalThrow('dumpNodeMarkingSel failed', e.message);
   }
 }
+
+function dumpNode(node, indent) {
+  var i;
+  try {
+    if (indent == null) indent = 0;
+    // msidump("dumpNodeMarkingSel, indent = "+indent+", node = "+node.nodeName+"\n");
+    var len = node.childNodes.length;
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      msidump('<' + node.nodeName + '> \n', indent);
+      for (i = 0; i < len; i++) {
+        dumpNode(node.childNodes[i], indent + 1);
+      }
+      msidump('</' + node.nodeName + '>\n', indent);
+    }
+    else if (node.nodeType === Node.TEXT_NODE) {
+      var s = node.nodeValue;
+      var t = s.replace(/^[ \f\n\r\t\v]*/, '');
+      var r = t.replace(/[ \f\n\r\t\v]*$/, '');
+      if (r.length > 0) {
+        msidump('#text: ' + r + '\n', indent);
+      } else
+        msidump('whitespace node\n', indent);
+    }
+    else {
+      msidump('node type is ' + node.nodeType, indent);
+    }
+  } catch (e) {
+    // finalThrow('dumpNodeMarkingSel failed', e.message);
+  }
+}
+
 function AlertWithTitle(title, message, parentWindow) {
   if (!parentWindow)
     parentWindow = window;
