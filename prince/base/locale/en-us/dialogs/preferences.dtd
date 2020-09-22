@@ -313,8 +313,8 @@
 <!ENTITY plotPointsSampled.label  "Points sampled">
 <!ENTITY plotVarX.label           "X">
 <!ENTITY plotVarsTo.label         "to">
-<!ENTITY plotVarY.label           "y">
-<!ENTITY plotVarZ.label           "z">
+<!ENTITY plotVarY.label           "Y">
+<!ENTITY plotVarZ.label           "Z">
 <!ENTITY plotVarT.label           "t">
 <!ENTITY plotTubeRadialPoints.label  "Tube radial points">
 <!ENTITY plotConfHorizontalPts.label "Horizontal points">
