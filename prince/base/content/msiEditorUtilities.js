@@ -8226,6 +8226,8 @@ var msiNavigationUtils = {
       Math.abs(selection.anchorOffset - selection.focusOffset);
     if (isSingleNode) {
       try {
+        if (selection.anchorNode.nodeType === Node.TEXT_NODE)
+          return selection.anchorNode;
         return selection.anchorNode.childNodes[Math.min(selection.anchorOffset, selection.focusOffset)];
       }
       catch(e) {
@@ -8380,8 +8382,10 @@ var msiNavigationUtils = {
     }
     return tagList;
   },
+
+  // BBM: I think this should be getAncestor of type.
   getParentOfType: function (aNode, nodeName) {
-    if (!aNode || msiGetBaseNodeName(aNode) === nodeName)
+    if (!aNode || aNode.nodeName === nodeName)
       return aNode;
     else
       return this.getParentOfType(aNode.parentNode, nodeName);
