@@ -11267,15 +11267,17 @@ function callOTFontDialog()
 
 }
 
+// The following is never called; otfont supersedes it.
 
-function callFontSizeDialog()
-{
-  var editorElement = msiGetActiveEditorElement();
-  var theDialog = msiOpenModelessDialog("chrome://prince/content/fontsize.xul", "_blank",
-      "chrome,close,titlebar,resizable,dependent",
-      editorElement, "cmd_fontsize", null, null);
-  markDocumentChanged(editorElement);
-}
+
+// function callFontSizeDialog()
+// {
+//   var editorElement = msiGetActiveEditorElement();
+//   var theDialog = msiOpenModelessDialog("chrome://prince/content/fontsize.xul", "_blank",
+//       "chrome,close,titlebar,resizable,dependent",
+//       editorElement, "cmd_fontsize", null, null);
+//   markDocumentChanged(editorElement);
+// }
 
 
 function callColorDialog()

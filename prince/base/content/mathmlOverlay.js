@@ -3754,21 +3754,31 @@ function mathNodeToText(editor, node)
 function nodeToMath(editor, node, startOffset, endOffset)
 {
   var tmp;
-  if (node.nodeType === Node.TEXT_NODE || node.nodeName === 'texb') {
-    if (startOffset > endOffset) {
-      tmp = startOffset;
-      startOffset = endOffset;
-      endOffset = tmp;
-    }
-  }
+  var temp;
   var text;
   var nodeRemaining;
-  var parent = node.parentNode;
-  var nodeOffset = offsetOfChild(parent, node);
+  var parent;
+  var nodeOffset;
   var theOffset;
 
-  if ((node.nodeType === Node.TEXT_NODE) || (node.nodeName ==="texb"))
+  if (startOffset > endOffset) {
+    tmp = startOffset;
+    startOffset = endOffset;
+    endOffset = tmp;
+  }
+
+  if ((node.nodeType === Node.TEXT_NODE) || (node.nodeName ==='mtext'))
   {
+    if (node.nodeName === 'mtext') {
+      node = node.firstChild;
+      while (node && (node.nodeType != Node.TEXT_NODE || msiNavigationUtils.isIgnorableWhitespace(node))) {
+        node = node.nextSibling;
+      }
+      if (!node) return;
+    }
+    parent = node.parentNode;
+    nodeOffset = offsetOfChild(parent, node);
+
     try {
       // split off the text before startOffset
       nodeRemaining = node.splitText(startOffset); 
@@ -3776,46 +3786,47 @@ function nodeToMath(editor, node, startOffset, endOffset)
       // theOffset points between node and the following node (nodeRemaining)
       
       // the next 8 lines need reviewing.
-      var mathnode;
-      if (nodeRemaining.nodeName === 'texb') {  
-        var newNode = {};
+      // var mathnode;
+      // var charsToRemove;
+      // if (nodeRemaining.nodeName === 'texb') {  
+      //   var newNode = {};
 
-        mathnode = editor.document.createElementNS(mmlns, "math");
-        editor.insertNode(mathnode, parent, offset, false);
-        editor.deleteNode(mid);
-        editor.insertNode(mid, mathnode, 0, false);
-        editor.selection.collapse(mathnode, 1);
-      }
-      else {
+      //   mathnode = editor.document.createElementNS(mmlns, "math");
+      //   editor.insertNode(mathnode, parent, offset, false);
+      //   editor.deleteNode(mid);
+      //   editor.insertNode(mid, mathnode, 0, false);
+      //   editor.selection.collapse(mathnode, 1);
+      // }
+      // else {
         // take the selected text and insert it as symbols.
-        var theText = nodeRemaining.textContent.slice(0, endOffset - startOffset);
-        editor.selection.collapse(parent,theOffset);
-        for (var i = 0; i < theText.length; i++)
-        {
-          if (theText[i] != ' ') insertsymbol(theText[i]);
-        }
-        // now remove the characters written as symbols from the text node nodeRemaining
-        nodeRemaining.textContent = nodeRemaining.textContent.slice(endOffset - startOffset);
+      var theText = nodeRemaining.textContent.slice(0, endOffset - startOffset);
+      editor.selection.collapse(parent,theOffset);
+      for (var i = 0; i < theText.length; i++)
+      {
+        if (theText[i] != ' ') insertsymbol(theText[i]);
       }
+      // now remove the characters written as symbols from the text node nodeRemaining
+      nodeRemaining.textContent = nodeRemaining.textContent.slice(endOffset - startOffset);
+      // }
     }
     catch(e) {
-      throw new MsiException("Error converting text to math", e.message);
+ //     throw new MsiException("Error converting text to math", e.message);
     }
 
-    // mathnode = coalescemath(null, true);
-    // if (mathnode) {
-    //   // editor.selection.collapse(mathnode,0);
-    //   // BBM newSelection is not defined
-    //   editor.selection.collapse(newSelection.startNode, newSelection.startOffset);
-    //   editor.selection.extend(newSelection.endNode, newSelection.endOffset);
-    // }
-  }
+  // mathnode = coalescemath(null, true);
+  // if (mathnode) {
+  //   // editor.selection.collapse(mathnode,0);
+  //   // BBM newSelection is not defined
+  //   editor.selection.collapse(newSelection.startNode, newSelection.startOffset);
+  //   editor.selection.extend(newSelection.endNode, newSelection.endOffset);
+  // }
+}
 }
 
 
 function isAllWS(node)
 {
-  return !(/[^\t\n\r ]/.test(node.data));
+return !(/[^\t\n\r ]/.test(node.data));
 }
 
 function mathToText(editor)
@@ -3888,8 +3899,8 @@ function textToMath(editor)
       while (enumerator.hasMoreElements())
       {
         node = enumerator.getNext();
-        if (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode)){
-          nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:-1 /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
+        if (msiNavigationUtils.getParentOfType(node, 'mtext') || (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))){
+          nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:endNode.length /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
         }
       }
     }
@@ -3905,7 +3916,7 @@ function toggleMathText(editor)
       mathToText(editor);
     }
     catch(e) {
-      finalThrow("Error converting math to text", e.message)
+      // finalThrow("Error converting math to text", e.message)
     }
   }
   else
@@ -3914,7 +3925,7 @@ function toggleMathText(editor)
       textToMath(editor);
     }
     catch(e) {
-      finalThrow("Error converting text to math", e.message);
+      // finalThrow("Error converting text to math", e.message);
     }
   }
 }
