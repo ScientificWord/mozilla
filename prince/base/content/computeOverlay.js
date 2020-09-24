@@ -317,14 +317,14 @@ var gComputeStringBundle;
 
 function GetComputeString(name) {
   if (!gComputeStringBundle) {
-    try {
+    try { // BBM updated
       var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService();
       strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
       gComputeStringBundle = strBundleService.createBundle("chrome://prince/locale/compute.properties");
     } catch (ex) {}
   }
   if (gComputeStringBundle) {
-    try {
+    try {  // BBM updated
       return gComputeStringBundle.GetStringFromName(name);
     } catch (e) {}
   }
@@ -941,32 +941,33 @@ function findUnusedId(doc, prefix) {
   return theId;
 }
 /* End of VCam section */
+
 function initComputeLogger(engine) {
   var prefs = GetPrefs();
   var logMMLSent, logMMLReceived, logEngSent, logEngReceived;
-  try {
+  try {  // BBM updated
     logMMLSent = prefs.getBoolPref("swp.user.logSent");
   } catch (ex) {
-    dump("\nfailed to get swp.user.logSent pref!\n");
+    throw new Error("\nfailed to get swp.user.logSent pref!\n");
   }
-  try {
+  try {  // BBM updated
     logMMLReceived = prefs.getBoolPref("swp.user.logReceived");
   } catch (ex) {
-    dump("\nfailed to get swp.user.logReceived pref!\n");
+    throw new Error("\nfailed to get swp.user.logReceived pref!\n");
   }
-  try {
+  try { // BBM updated
     logEngSent = prefs.getBoolPref("swp.user.engSent");
   } catch (ex) {
-    dump("\nfailed to get swp.user.engSent pref!\n");
+    throw new Error("\nfailed to get swp.user.engSent pref!\n");
   }
-  try {
+  try { // BBM updated
     logEngReceived = prefs.getBoolPref("swp.user.engReceived");
   } catch (ex) {
-    dump("\nfailed to get swp.user.engReceived pref!\n");
+    throw new Error("\nfailed to get swp.user.engReceived pref!\n");
   }
-  dump("call msiComputeLogger.Init\n");
   msiComputeLogger.Init(engine, logMMLSent, logMMLReceived, logEngSent, logEngReceived);
 }
+
 // our connection to the computation code
 var compsample;
 var compengine;
@@ -991,7 +992,7 @@ function GetCurrentEngine() {
       else if (e.result === Components.results.NS_ERROR_NOT_INITIALIZED) msg_key = "Error.notinitialized";
       else if (e.result === Components.results.NS_ERROR_FAILURE) msg_key = "Error.failure";
       else throw e;
-      AlertWithTitle(GetComputeString("Error.title"), GetComputeString(msg_key));
+      finalThrow(GetComputeString("Error.title"), GetComputeString(msg_key));
     }
   }
   if (compsample) {
