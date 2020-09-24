@@ -139,7 +139,12 @@ var msiToggleMathText =
       togglekey = "t";
     if (aCommand === "cmd_MSImathtextButton" || aCommand === "cmd_MSIinlineMathCmd" || this.keyIsToggle(togglekey) || this.currentState() != togglekey)
     {
-      toggleMathText(editor);
+      try {
+        toggleMathText(editor);
+      }
+      catch(e) {
+        finalThrow('Error executing ' + aCommand.replace('cmd_MSI','').replace(/Cmd$/,''), e.message);
+      }
       editorElement.contentWindow.focus();
     }
     return;
@@ -147,21 +152,16 @@ var msiToggleMathText =
 
   keyIsToggle: function( key )
   {
-    try
-    {
-      var prefkey;
-      if (key==="m")
-        prefkey = "swp.ctrl.m";
-      else
-        prefkey = "swp.ctrl.t";
-      var prefs = GetPrefs();
-      return (prefs.getCharPref(prefkey)==="toggle");
-    }
-    catch(e)
-    {
-      var m = e.message;
-      return false;
-    }
+
+    var prefkey;
+    if (key==="m")
+      prefkey = "swp.ctrl.m";
+    else
+      prefkey = "swp.ctrl.t";
+    var prefs = GetPrefs();
+    if (prefs.getCharPref(prefkey)==="toggle")
+      return true;
+    return false;
   },
 
   currentState: function()
@@ -3779,7 +3779,7 @@ function nodeToMath(editor, node, startOffset, endOffset)
     parent = node.parentNode;
     nodeOffset = offsetOfChild(parent, node);
 
-    try {
+   
       // split off the text before startOffset
       nodeRemaining = node.splitText(startOffset); 
       theOffset = offsetOfChild(parent, nodeRemaining);
@@ -3808,10 +3808,6 @@ function nodeToMath(editor, node, startOffset, endOffset)
       // now remove the characters written as symbols from the text node nodeRemaining
       nodeRemaining.textContent = nodeRemaining.textContent.slice(endOffset - startOffset);
       // }
-    }
-    catch(e) {
- //     throw new MsiException("Error converting text to math", e.message);
-    }
 
   // mathnode = coalescemath(null, true);
   // if (mathnode) {
@@ -3820,7 +3816,7 @@ function nodeToMath(editor, node, startOffset, endOffset)
   //   editor.selection.collapse(newSelection.startNode, newSelection.startOffset);
   //   editor.selection.extend(newSelection.endNode, newSelection.endOffset);
   // }
-}
+  }
 }
 
 
@@ -3843,8 +3839,8 @@ function mathToText(editor)
   var node;
   var offset;
   editor.beginTransaction();
-  // try
-  // {
+
+  try {
     if (editor.selection.isCollapsed)
     {
       var node = editor.selection.anchorNode;
@@ -3865,14 +3861,10 @@ function mathToText(editor)
         }
       }
     }
-  // }
- //  catch(e) {
- //    dump("error in MathNodeToText: "+e.message+"\n");
- //  }
-//  if (gProcessor)
-//    gProcessor.reset();
-//  coalescemath(null, true);
-  editor.endTransaction();
+  }
+  finally {
+    editor.endTransaction();
+  }
 }
 
 function textToMath(editor)
@@ -3880,53 +3872,47 @@ function textToMath(editor)
   var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset;
   var newSelection = {};
   editor.beginTransaction();
-  if (editor.selection.isCollapsed)
-  {
-    insertinlinemath();
-  }
-  else
-  {
-    for (i=0; i< editor.selection.rangeCount; i++)
+  try {
+    if (editor.selection.isCollapsed)
     {
-      range = editor.selection.getRangeAt(i);
-      startNode = range.startContainer;
-      startOffset = range.startOffset;
-      endNode = range.endContainer;
-      endOffset = range.endOffset;
-      nodeArray = editor.nodesInRange(range);
-      dump(nodeArray.length+" nodes\n");
-      enumerator = nodeArray.enumerate();
-      while (enumerator.hasMoreElements())
+      insertinlinemath();
+    }
+    else
+    {
+      for (i=0; i< editor.selection.rangeCount; i++)
       {
-        node = enumerator.getNext();
-        if (msiNavigationUtils.getParentOfType(node, 'mtext') || (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))){
-          nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:endNode.length /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
+        range = editor.selection.getRangeAt(i);
+        startNode = range.startContainer;
+        startOffset = range.startOffset;
+        endNode = range.endContainer;
+        endOffset = range.endOffset;
+        nodeArray = editor.nodesInRange(range);
+        dump(nodeArray.length+" nodes\n");
+        enumerator = nodeArray.enumerate();
+        while (enumerator.hasMoreElements())
+        {
+          node = enumerator.getNext();
+          if (msiNavigationUtils.getParentOfType(node, 'mtext') || (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))) {
+            nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:endNode.length /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
+          }
         }
       }
     }
   }
-  editor.endTransaction();
+  finally {
+    editor.endTransaction();    
+  }
 }
 
 function toggleMathText(editor)
 {
   if (editor.tagListManager.selectionContainedInTag("math",null) && !editor.tagListManager.selectionContainedInTag("mtext",null))
   {
-    try {
-      mathToText(editor);
-    }
-    catch(e) {
-      // finalThrow("Error converting math to text", e.message)
-    }
+    mathToText(editor);
   }
   else
   {
-    try {
-      textToMath(editor);
-    }
-    catch(e) {
-      // finalThrow("Error converting text to math", e.message);
-    }
+    textToMath(editor);
   }
 }
 
