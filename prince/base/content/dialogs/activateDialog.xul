@@ -71,6 +71,11 @@
       </row>
     </rows>
   </grid>
-
-
+  <hack id="thankyou" value="&accept.message;"/>
+  <hack id="successtitle" value="&successtitle.message;"/>
+  <hack id="homeuse" value="&homeuse.message;" />
+  <hack id="failureheader" value="&failureheader.message;" />
+  <hack id="failurelicense" value="&failurelicense.message;" />
+  <hack id="failureserver" value="&failureserver.message;" />
+  <hack id="failurecancelled" value="&failurecancelled.message;" />
 </dialog>
