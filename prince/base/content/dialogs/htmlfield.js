@@ -33,10 +33,8 @@ function onAccept()
   gName  = document.getElementById("name");
 
   var htmlElement;
-  dump("\nhtmlfield onAccept()");
   if (newNode)
   {
-    dump("\nhtmlfield onAccept() newnode");
     htmlElement = domdoc.createElement("htmlfield");
   }
   else {
@@ -53,7 +51,7 @@ function onAccept()
     editor.insertElementAtSelection(htmlElement, true);
   }
   catch(e) {
-    finalThrow(cmdFailString('HTML field'), 'XHTML appears to be invalid');
+    throw new MsiException(cmdFailString('HTML field'), 'XHTML appears to be invalid');
   }
   return true;
 }

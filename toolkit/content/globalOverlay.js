@@ -86,8 +86,8 @@ function goDoCommand(aCommand)
     if (controller && controller.isCommandEnabled(aCommand))
       controller.doCommand(aCommand);
   }
-  catch (e) {
-    dump("An error occurred executing the " + aCommand + " command\n" + e + "\n");
+  catch(e) {
+    finalThrow(cmdFailString(aCommand), e.message);
   }
 }
 
