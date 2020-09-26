@@ -54,15 +54,15 @@ function msiSetupMSIMathMenuCommands(editorElement)
 
   commandTable.registerCommand("cmd_MSIreviseFractionCmd",     msiReviseFractionCmd);
   commandTable.registerCommand("cmd_MSIreviseRadicalCmd",      msiReviseRadicalCmd);
-//  commandTable.registerCommand("cmd_MSIreviseScriptsCmd",      msiReviseScriptsCmd);
+  // commandTable.registerCommand("cmd_MSIreviseScriptsCmd",      msiReviseScriptsCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixCmd",       msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixCellCmd",   msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixCellGroupCmd", msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixRowsCmd",   msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixColsCmd",   msiReviseMatrixCmd);
-  commandTable.registerCommand("cmd_MSIreviseTensorCmd",       msiDoSomething);
+  // commandTable.registerCommand("cmd_MSIreviseTensorCmd",       msiDoSomething);
   commandTable.registerCommand("cmd_MSIreviseMathnameCmd",     msiReviseMathnameCmd);
-//    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
+  // commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
   commandTable.registerCommand("cmd_MSIreviseGenBracketsCmd",  msiReviseGenBracketsCmd);
   commandTable.registerCommand("cmd_MSIreviseBinomialsCmd",    msiReviseBinomialsCmd);
   commandTable.registerCommand("cmd_MSIreviseOperatorsCmd",    msiReviseOperatorsCmd);
@@ -87,16 +87,11 @@ function doParamCommand(commandID, newValue)
       commandNode.setAttribute("value", newValue);
   if (!msiCurrEditorSetFocus(window)  && ("gContentWindow" in window) && window.gContentWindow != null)
     gContentWindow.focus();   // needed for command dispatch to work
-
-  try
-  {
-    var cmdParams = newCommandParams();
-    if (!cmdParams) return;
-
-    cmdParams.setStringValue("value", newValue);
-//    goDoCommandParams(commandID, cmdParams);
-    msiGoDoCommandParams(commandID, cmdParams);
-  } catch(e) { dump("error thrown in doParamCommand: "+e+"\n"); }
+  var cmdParams = newCommandParams();
+  if (!cmdParams) return;
+  cmdParams.setStringValue("value", newValue);
+  msiGoDoCommandParams(commandID, cmdParams);
+// no exception handling here because all the godocommand functions have it
 }
 
 //ljh
@@ -139,12 +134,7 @@ var msiToggleMathText =
       togglekey = "t";
     if (aCommand === "cmd_MSImathtextButton" || aCommand === "cmd_MSIinlineMathCmd" || this.keyIsToggle(togglekey) || this.currentState() != togglekey)
     {
-      try {
-        toggleMathText(editor);
-      }
-      catch(e) {
-        finalThrow('Error executing ' + aCommand.replace('cmd_MSI','').replace(/Cmd$/,''), e.message);
-      }
+      toggleMathText(editor);
       editorElement.contentWindow.focus();
     }
     return;
@@ -152,7 +142,6 @@ var msiToggleMathText =
 
   keyIsToggle: function( key )
   {
-
     var prefkey;
     if (key==="m")
       prefkey = "swp.ctrl.m";
@@ -238,8 +227,7 @@ var msiReviseFractionCmd =
   },
 
   doCommand: function(aCommand)
-  {
-  }
+  {}
 };
 
 var msiRoot =
@@ -266,7 +254,6 @@ var msiRadical =
   {
     return true;
   },
-
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -279,7 +266,7 @@ var msiRadical =
 };
 
 
-var msiReviseRadicalCmd =
+var msiReviseRadicalCmd 
 {
   isCommandEnabled: function(aCommand, dummy)
   { return true; },
@@ -300,12 +287,10 @@ var msiReviseRadicalCmd =
                                                      editorElement, "cmd_MSIreviseRadicalCmd", theRadical, radicalData);
       markDocumentChanged(editorElement);
     }
-//    AlertWithTitle("mathmlOverlay.js", "In msiReviseRadicalCmd, trying to revise radical, dialog unimplemented.");
   },
 
   doCommand: function(aCommand)
-  {
-  }
+  {}
 };
 
 
@@ -324,7 +309,7 @@ var msiSuperscript =
     var editorElement = msiGetActiveEditorElement(window);
     if (isInMath(editorElement))
       insertsup(editorElement);
-    else
+    else // all of the doCommand functions have their own exception handling
       msiDoStatefulCommand('cmd_texttag', 'sup' );
   }
 };
@@ -342,30 +327,31 @@ var msiSubscript =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    if (isInMath(editorElement))
+    if (isInMath(editorElement)) {
       insertsub(editorElement);
+    }
     else
       msiDoStatefulCommand('cmd_texttag', 'sub' );
   }
 };
 
 
-var msiInlineMath =
-{
-  isCommandEnabled: function(aCommand, dummy)
-  {
-    return true;
-  },
+// var msiInlineMath  **** unused
+// {
+//   isCommandEnabled: function(aCommand, dummy)
+//   {
+//     return true;
+//   },
 
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
+//   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+//   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
-  doCommand: function(aCommand)
-  {
-    var editorElement = msiGetActiveEditorElement(window);
-    insertinlinemath(editorElement);
-  }
-};
+//   doCommand: function(aCommand)
+//   {
+//     var editorElement = msiGetActiveEditorElement(window);
+//     insertinlinemath(editorElement);
+//   }
+// };
 
 var msiDisplayMath =
 {
@@ -486,7 +472,7 @@ var msiExp =
   }
 };
 
-var msiMathname =
+var msiMathName =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -538,12 +524,7 @@ function makeMathIfNeeded(editorElement)  // returns true iff it created a new m
     var editor = msiGetEditor(editorElement);
     if (!(editor.selection.isCollapsed))
     {
-      try {
-        textToMath(editor);
-      }
-      catch (e) {
-        return false;
-      }
+      textToMath(editor);
       if (mathNode = editor.getElementOrParentByTagName("math", editor.selection.anchorNode.childNodes[editor.selection.anchorOffset-1])) {
         editor.selection.collapse(mathNode, 0);
         editor.selection.extend(mathNode, mathNode.childNodes.length);
@@ -627,6 +608,7 @@ var msiBrace =
     var editorElement = msiGetActiveEditorElement(window);
     if (makeMathIfNeeded(editorElement))
       insertfence("{", "}", editorElement);
+  
   }
 };
 
@@ -645,6 +627,7 @@ var msiAbsValue =
     var editorElement = msiGetActiveEditorElement(window);
     if (makeMathIfNeeded(editorElement))
       insertfence("|", "|", editorElement);
+
   }
 };
 
@@ -663,6 +646,7 @@ var msiNorm =
     var editorElement = msiGetActiveEditorElement(window);
     if (makeMathIfNeeded(editorElement))
       insertfence("\u2016", "\u2016", editorElement);
+
   }
 };
 
@@ -677,16 +661,18 @@ var msiSymbol =
 
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement(window);
-    makeMathIfNeeded(editorElement);
-    insertsymbol( aParams.getStringValue("value") );
+    try {
+      var editorElement = msiGetActiveEditorElement(window);
+      makeMathIfNeeded(editorElement);
+      insertsymbol( aParams.getStringValue("value") );
+    }
+    catch(e) {
+      finalThrow(cmdFailString(aCommand), e.message);
+    }
   },
 
   doCommand: function(aCommand)
-  {
-    var editorElement = msiGetActiveEditorElement(window);
-    dump("msiSymbol::doCommand HuH?\n");
-  }
+  {}
 };
 
 var msiMatrix =

@@ -561,8 +561,9 @@ VCamObject.prototype = {
           //      break;
         default:
       }
-    } catch (e) {
-      throw new MsiException("Unable to execute VCam command " + cmd, e);
+    }
+    catch(e) {
+      finalThrow(cmdFailString(cmd), e.message);
     }
   },
 

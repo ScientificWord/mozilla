@@ -365,7 +365,7 @@ function dumpMath() {
     msidump('rootnode=' + rootnode.nodeName + '\n', 6);
     dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
   } catch (e) {
-    finalThrow(commandFailureStrin('dumpMath'), e.message);
+    finalThrow(cmdFailString('dumpMath'), e.message);
   }
 }
 function doIndent(k) {
@@ -470,10 +470,12 @@ function finalThrow(message, moremessage) {
   if (button === 1)
     prompts.alert(null, GetString('moredetails'), moremessage);
 }
+
 function cmdFailString(command) {
   var message = GetString('CmdFailed');
-  return message.replace('##', command);
+  return message.replace('##', command.replace('cmd_','').replace(/cmd$/,''));
 }
+
 function MsiException(message, previous) {
   this.message = message + '\n';
   if (previous) {
