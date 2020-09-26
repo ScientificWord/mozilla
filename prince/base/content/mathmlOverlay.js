@@ -266,7 +266,7 @@ var msiRadical =
 };
 
 
-var msiReviseRadicalCmd 
+var msiReviseRadicalCmd =
 {
   isCommandEnabled: function(aCommand, dummy)
   { return true; },
