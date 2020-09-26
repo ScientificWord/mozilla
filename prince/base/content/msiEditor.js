@@ -767,7 +767,7 @@ function ShutdownAllEditors() {
       }
     }
   } catch (e) {
-    msiException('ShutdownAllEditors', e);
+    throw new MsiException('ShutdownAllEditors', e);
   }
   return !keepgoing;
 }
@@ -9401,10 +9401,15 @@ var msiCommandUpdater = {
 
 // Shim for compatibility with existing code.
 function msiGoDoCommand(command, editorElement) {
-  if (!editorElement)
-    editorElement = msiGetActiveEditorElement();
-  // editorElement && editorElement.focus();
-  msiCommandUpdater.doCommand(command, editorElement);
+  try {
+    if (!editorElement)
+      editorElement = msiGetActiveEditorElement();
+    // editorElement && editorElement.focus();
+    msiCommandUpdater.doCommand(command, editorElement);
+  }
+  catch(e) {
+    finalThrow(cmdFailString(command), e.message);
+  }
 }
 
 function msiGoUpdateCommand(command, editorElement) {

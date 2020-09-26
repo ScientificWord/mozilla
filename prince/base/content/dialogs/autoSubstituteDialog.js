@@ -36,21 +36,13 @@ function dlgAutoSubsList()
           theData += serialize.serializeToString(appearanceList[ix],'UTF-8');
     }
     var bAdded = false;
-    try { bAdded = autosub.addEntry( theSub, context, action, theData, contextMarkupStr, ""); }
-    catch(exc) {dump("Error in autoSubstituteDialog.js, in dlgAutoSubsList.saveSub; error is [" + exc + "].\n"); bAdded = false;}
-//    dump("In autoSubstituteDialog.js, dlgAutoSubsList.addSub; adding [" + theSub + "], with data: [" + theData + "]; bAdded is [" + bAdded + "].\n");
+    bAdded = autosub.addEntry( theSub, context, action, theData, contextMarkupStr, "");
     if (bAdded)
     {
       this.bModified = true;
       var newObj = new Object();
-//      if (theType == "sc")
-//      {
-        newObj.theContext = "";
-        newObj.theInfo = "";
-//      }
-//      else  --> what could we do here? Should we add controls for specifying "context" and "paste info"??? Not now...
-//      {
-//      }
+      newObj.theContext = "";
+      newObj.theInfo = "";
       newObj.mathContext = theContext;
       newObj.theData = theData;
       newObj.type = theType;
@@ -83,16 +75,13 @@ function dlgAutoSubsList()
   this.removeSub = function(theSub)
   {
     var bRemoved = false;
-    try
-    {
+
       var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
       bRemoved = autosub.removeEntry(theSub);
       var ACSA = msiSearchStringManager.setACSAImpGetService();
 //      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
 //      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-      ACSA.deleteString("autosubstitution", theSub);
-    }
-    catch(exc) {dump("Error in autoSubstituteDialog.js, in dlgAutoSubsList.removeSub; error is [" + exc + "].\n"); bRemoved = false;}
+    ACSA.deleteString("autosubstitution", theSub);
     document.getElementById("keystrokesBox").value = "";
     changePattern("");
     this.bModified = this.bModified || bRemoved;
@@ -126,7 +115,6 @@ function msiEditorChangeObserver(editorElement)
   this.observe = function(aSubject, aTopic, aData)
   {
     // Should we allow this even if NOT the focused editor?
-//    msiDumpWithID("In autoSubstituteDialog documentCreated observer for editor [@], observing [" + aTopic + "].\n", this.mEditorElement);
     if (!this.mEditorElement.docShell)
     {
       msiDumpWithID("In autoSubstituteDialog documentCreated observer for editor [@], returning as docShell is null.\n", this.mEditorElement);
@@ -135,9 +123,7 @@ function msiEditorChangeObserver(editorElement)
     var commandManager = msiGetCommandManager(this.mEditorElement);
     if (commandManager != aSubject)
     {
-      msiDumpWithID("In autoSubstituteDialog documentCreated observer for editor [@], observing [" + aTopic + "]; returning, as commandManager doesn't equal aSubject; aSubject is [" + aSubject + "], while commandManager is [" + commandManager + "].\n", this.mEditorElement);
-//      if (commandManager != null)
-        return;
+      return;
     }
 
     switch(aTopic)
@@ -153,7 +139,6 @@ function msiEditorChangeObserver(editorElement)
       {
         var bIsRealDocument = false;
         var currentURL = msiGetEditorURL(this.mEditorElement);
-//        msiDumpWithID("For editor element [@], currentURL is " + currentURL + "].\n", this.mEditorElement);
         if (currentURL != null)
         {
           var fileName = GetFilename(currentURL);
@@ -167,9 +152,6 @@ function msiEditorChangeObserver(editorElement)
             gDialog.subsList.synchronizeACSA();  //want to do this after the editor is loaded, since the active StringArray "imp" has changed.
           }
         }
-//        else
-//          msiDumpWithID("In autoSubstituteDialog documentCreated observer for editor [@], bIsRealDocument is false.\n", this.mEditorElement);
-//        setControlsForSubstitution();
       }
       break;
     }
@@ -687,11 +669,7 @@ function checkSubstitutionControl(editControl)
     return;
   }
   var editor = null;
-  try
-  {
-    editor = editControl.getHTMLEditor(editControl.contentWindow);
-  } catch(exc) {dump("&msgIn autoSubstituteDialog.checkSubstitutionControl, getHTMLEditor() &msgReturnedException" + exc + "\n"); editor = null;}
-
+  editor = editControl.getHTMLEditor(editControl.contentWindow);
   if (!editor)
     return;
   var bModified = editor.documentModified;
@@ -700,7 +678,6 @@ function checkSubstitutionControl(editControl)
   var theContext = document.getElementById("autosubContextRadioGroup").value;
   var bNonEmpty = gDialog.substContentFilter.hasNonEmptyContent( (theContext == "math") );
 //  var bNonEmpty = !editor.documentIsEmpty;
-  dump("&msgIn autoSubstituteDialog.js, checkSubstitutionControl, editor.documentModified &msgReturns [" + bModified + "] and editor.documentIsEmpty returns [" + editor.documentIsEmpty + "].\n");
   if (bModified != gDialog.bDataModified || bNonEmpty != gDialog.bDataNonEmpty)
   {
     gDialog.bDataModified = bModified;
@@ -870,26 +847,23 @@ function onOK() {
     bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK && gDialog.bCurrentItemModified;
   if (bActionEnabled)
     saveCurrentSub();
-  try
-  {
-    gDialog.subsList.saveToFile();
-    var disableFlags = 0;
-    var enableFlags = 0;
-    var disableMath = document.getElementById("disableSubsInMath").checked;
-    if (disableMath && gDialog.subsList.isAutoSubstitutionEnabled( true ))
-      disableFlags = Components.interfaces.msiIAutosub.CONTEXT_MATHONLY;
-    else if ((!disableMath) && !gDialog.subsList.isAutoSubstitutionEnabled( true ))
-      enableFlags = Components.interfaces.msiIAutosub.CONTEXT_MATHONLY;
-    var disableText = document.getElementById("disableSubsInText").checked;
-    if (disableText && gDialog.subsList.isAutoSubstitutionEnabled( false ))
-      disableFlags |= Components.interfaces.msiIAutosub.CONTEXT_TEXTONLY;
-    else if ((!disableText) && !gDialog.subsList.isAutoSubstitutionEnabled( false ))
-      enableFlags |= Components.interfaces.msiIAutosub.CONTEXT_TEXTONLY;
-    if (disableFlags != 0)
-      gDialog.subsList.enableAutoSubstitution(false, disableFlags);
-    if (enableFlags != 0)
-      gDialog.subsList.enableAutoSubstitution(true, enableFlags);
-  } catch(ex) {dump("&msgExceptionIn autoSubstituteDialog.js OnOK(); &msgExceptionIs [" + ex + "].\n");}
+  gDialog.subsList.saveToFile();
+  var disableFlags = 0;
+  var enableFlags = 0;
+  var disableMath = document.getElementById("disableSubsInMath").checked;
+  if (disableMath && gDialog.subsList.isAutoSubstitutionEnabled( true ))
+    disableFlags = Components.interfaces.msiIAutosub.CONTEXT_MATHONLY;
+  else if ((!disableMath) && !gDialog.subsList.isAutoSubstitutionEnabled( true ))
+    enableFlags = Components.interfaces.msiIAutosub.CONTEXT_MATHONLY;
+  var disableText = document.getElementById("disableSubsInText").checked;
+  if (disableText && gDialog.subsList.isAutoSubstitutionEnabled( false ))
+    disableFlags |= Components.interfaces.msiIAutosub.CONTEXT_TEXTONLY;
+  else if ((!disableText) && !gDialog.subsList.isAutoSubstitutionEnabled( false ))
+    enableFlags |= Components.interfaces.msiIAutosub.CONTEXT_TEXTONLY;
+  if (disableFlags != 0)
+    gDialog.subsList.enableAutoSubstitution(false, disableFlags);
+  if (enableFlags != 0)
+    gDialog.subsList.enableAutoSubstitution(true, enableFlags);
 
   SaveWindowLocation();
   return true;
@@ -898,8 +872,3 @@ function onOK() {
 function onCancel() {
   return(true);
 }
-
-//function ShutdownEditors()
-//{
-//  ShutdownAllEditors();
-//}
