@@ -1566,8 +1566,8 @@ Currently these are all simple signed numbers or identifiers
 
       <tabpanel id="PlotItems">
         <vbox>
-          <groupbox>
-		    <caption label="&plotAppliesTo.label;"/>
+<!--            <groupbox>
+	    <caption label="&plotAppliesTo.label;"/>
             <menulist id="plotTypeList" value="any">
               <menupopup oncommand="onChangePlotType();">
                 <menuitem label="&plottypeGeneric.label;"        value="any" />
@@ -1594,7 +1594,7 @@ Currently these are all simple signed numbers or identifiers
                 <menuitem label="&plottypeTube.label;"           value="tube" />
               </menupopup>
             </menulist>
-          </groupbox>
+          </groupbox>  -->
 
           <groupbox>
             <caption>&plotItemColoring.label;</caption>
