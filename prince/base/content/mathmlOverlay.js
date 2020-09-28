@@ -34,7 +34,7 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIlnCmd",          msiLn);
   commandTable.registerCommand("cmd_MSIlogCmd",         msiLog);
   commandTable.registerCommand("cmd_MSIexpCmd",         msiExp);
-  commandTable.registerCommand("cmd_MSImathnameCmd",    msiMathname);
+  commandTable.registerCommand("cmd_MSImathnameCmd",    msiMathName);
   commandTable.registerCommand("cmd_MSIMatrixCmd",      msiMatrix);
   commandTable.registerCommand("cmd_MSIMatrix22Cmd",    msiMatrix22);
   commandTable.registerCommand("cmd_MSIMatrixLastCmd",  msiMatrixLast);
