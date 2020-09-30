@@ -1,3 +1,6 @@
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
+
 function msiConsoleLoad() {
   top.controllers.insertControllerAt(0, CommandController);
   var data = window.arguments[0];

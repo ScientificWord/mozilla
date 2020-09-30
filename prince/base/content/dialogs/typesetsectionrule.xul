@@ -21,6 +21,5 @@
     ondialogcancel="return onCancel();"
     persist="screenX screenY width height">
 
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetsectionrule.js"/>

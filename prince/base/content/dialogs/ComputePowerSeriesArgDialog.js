@@ -12,6 +12,9 @@
 // This returns:
 //    .mathresult[]   : an array of mathml strings acquired by the dialog
 
+
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var data;
   
 // This part pastes data into the editor after the editor has started. 

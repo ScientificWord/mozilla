@@ -2,6 +2,7 @@
 
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
 
 var data;
 
