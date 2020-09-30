@@ -38,6 +38,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var gActiveEditor;
 var gActiveEditorElement;
 var anchorElement = null;

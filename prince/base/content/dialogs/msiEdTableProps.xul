@@ -50,8 +50,6 @@
 
   <!-- Methods common to all editor dialogs -->
 
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
-
   
 <script type="application/x-javascript"
 	  src="chrome://prince/content/msiEditorUtilities.js"/>

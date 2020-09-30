@@ -1,6 +1,7 @@
 Components.utils.import("resource://app/modules/fontlist.jsm");
 Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm");
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
 
 var unitHandler;
 var secUnitHandler;

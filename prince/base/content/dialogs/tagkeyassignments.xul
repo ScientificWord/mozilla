@@ -27,7 +27,6 @@
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/tagkeyassignments.js"/>
   <stringbundle id="templateStrings" src="chrome://prince/locale/msiDialogs.properties"/>
   <spacer/>

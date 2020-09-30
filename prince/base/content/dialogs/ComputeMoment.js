@@ -1,3 +1,6 @@
+
+
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 
 var data;
