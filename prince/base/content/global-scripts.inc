@@ -1,5 +1,4 @@
 <script type="application/x-javascript" src="chrome://prince/content/prince.js"/>
-<script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
 <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
 <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js"/>
 <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>

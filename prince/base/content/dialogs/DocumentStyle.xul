@@ -26,7 +26,6 @@
     height="366"
     persist="width height screenX screenY">
 
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript"  src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript"  src="chrome://prince/content/documentStyle.js"/>
   <tabbox>

@@ -3746,62 +3746,60 @@ function nodeToMath(editor, node, startOffset, endOffset)
   var parent;
   var nodeOffset;
   var theOffset;
+  var doc;
 
   if (startOffset > endOffset) {
     tmp = startOffset;
     startOffset = endOffset;
     endOffset = tmp;
   }
+  doc = editor.document;
 
   if ((node.nodeType === Node.TEXT_NODE) || (node.nodeName ==='mtext'))
   {
     if (node.nodeName === 'mtext') {
+      // node.normalize();
       node = node.firstChild;
-      while (node && (node.nodeType != Node.TEXT_NODE || msiNavigationUtils.isIgnorableWhitespace(node))) {
-        node = node.nextSibling;
-      }
       if (!node) return;
     }
     parent = node.parentNode;
     nodeOffset = offsetOfChild(parent, node);
 
    
-      // split off the text before startOffset
-      nodeRemaining = node.splitText(startOffset); 
-      theOffset = offsetOfChild(parent, nodeRemaining);
-      // theOffset points between node and the following node (nodeRemaining)
-      
-      // the next 8 lines need reviewing.
-      // var mathnode;
-      // var charsToRemove;
-      // if (nodeRemaining.nodeName === 'texb') {  
-      //   var newNode = {};
+    // split off the text before startOffset
+    nodeRemaining = node.splitText(startOffset); 
+    theOffset = offsetOfChild(parent, nodeRemaining);
+    // theOffset points between node and the following node (nodeRemaining)
+    
+    // the next 8 lines need reviewing.
+    // var mathnode;
+    // var charsToRemove;
+    // if (nodeRemaining.nodeName === 'texb') {  
+    //   var newNode = {};
 
-      //   mathnode = editor.document.createElementNS(mmlns, "math");
-      //   editor.insertNode(mathnode, parent, offset, false);
-      //   editor.deleteNode(mid);
-      //   editor.insertNode(mid, mathnode, 0, false);
-      //   editor.selection.collapse(mathnode, 1);
-      // }
-      // else {
-        // take the selected text and insert it as symbols.
-      var theText = nodeRemaining.textContent.slice(0, endOffset - startOffset);
-      editor.selection.collapse(parent,theOffset);
-      for (var i = 0; i < theText.length; i++)
-      {
-        if (theText[i] != ' ') insertsymbol(theText[i]);
-      }
-      // now remove the characters written as symbols from the text node nodeRemaining
-      nodeRemaining.textContent = nodeRemaining.textContent.slice(endOffset - startOffset);
-      // }
+    //   mathnode = editor.document.createElementNS(mmlns, "math");
+    //   editor.insertNode(mathnode, parent, offset, false);
+    //   editor.deleteNode(mid);
+    //   editor.insertNode(mid, mathnode, 0, false);
+    //   editor.selection.collapse(mathnode, 1);
+    // }
+    // else {
 
-  // mathnode = coalescemath(null, true);
-  // if (mathnode) {
-  //   // editor.selection.collapse(mathnode,0);
-  //   // BBM newSelection is not defined
-  //   editor.selection.collapse(newSelection.startNode, newSelection.startOffset);
-  //   editor.selection.extend(newSelection.endNode, newSelection.endOffset);
-  // }
+      // take the selected text and insert it as symbols.
+    var theText = nodeRemaining.textContent.slice(0, endOffset - startOffset);
+   
+    editor.selection.collapse(parent,theOffset);
+    for (var i = 0; i < theText.length; i++)
+    {
+      if (theText[i] != ' ') insertsymbol(theText[i]);
+    }
+    // now remove the characters written as symbols from the text node nodeRemaining
+    nodeRemaining.splitText(endOffset - startOffset);
+
+    // BBM: the node deletion seems to fail because there is no document attached to
+    // nodeRemaining
+    // doc.adoptNode(nodeRemaining);
+    // editor.deleteNode(nodeRemaining);
   }
 }
 
@@ -3824,6 +3822,7 @@ function mathToText(editor)
   var pos;
   var node;
   var offset;
+  msiNavigationUtils.getCommonAncestorForSelection(editor.selection).normalize();
   editor.beginTransaction();
 
   try {
@@ -3855,8 +3854,9 @@ function mathToText(editor)
 
 function textToMath(editor)
 {
-  var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset;
+  var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset, dummy;
   var newSelection = {};
+  msiNavigationUtils.getCommonAncestorForSelection(editor.selection).normalize();
   editor.beginTransaction();
   try {
     if (editor.selection.isCollapsed)
@@ -3879,7 +3879,8 @@ function textToMath(editor)
         {
           node = enumerator.getNext();
           if (msiNavigationUtils.getParentOfType(node, 'mtext') || (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))) {
-            nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:endNode.length /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
+            nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:node.textContent.length /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
+            dummy=3; // stepping stone for the debugger
           }
         }
       }

@@ -36,6 +36,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var gSpellChecker;
 var gWordToAdd;
 
