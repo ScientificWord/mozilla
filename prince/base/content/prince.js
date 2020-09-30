@@ -13,6 +13,8 @@ Components.utils.import("resource://app/modules/pathutils.jsm");
 
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 Components.utils.import("resource://app/modules/os.jsm");
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file generated.
 
 function princeStartUp()

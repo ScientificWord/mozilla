@@ -7,6 +7,8 @@
 //    it only makes sense to have one dialog per <graph> element. Don't 
 //    allow any others. 
 
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var graph;
 
 function VCAMEditorOnLoad() {

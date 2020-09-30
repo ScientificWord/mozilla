@@ -17,6 +17,7 @@ a number of try blocks surrounding calls to msiGetActiveEditorElement. */
 // VCamObject definition
 
 // Constructor and prototype
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
 
 var vcamObjArray = [];
 var vcamIdArray = [];

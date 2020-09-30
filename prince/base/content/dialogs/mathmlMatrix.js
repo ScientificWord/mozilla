@@ -1,6 +1,8 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 /*  Copyright 2006 by MacKichan Software, Inc. */
 
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var gRows;
 var gCols;
 var gDialog;

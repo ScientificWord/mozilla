@@ -4,6 +4,7 @@
 var importDataIn;
 
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
 
 //var theTimer = Components.classes["@mozilla.org/timer;1"]
 //                    .createInstance(Components.interfaces.nsITimer);

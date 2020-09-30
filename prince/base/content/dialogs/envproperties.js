@@ -1,3 +1,7 @@
+
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
+
 var envData = new Object();
 //var structNode;
 

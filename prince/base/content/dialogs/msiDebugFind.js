@@ -4,6 +4,9 @@
 Copyright 2007 MacKichan Software, Inc.
  * ***** END LICENSE BLOCK ***** */
 
+
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var gTestFindDialog;      // Quick access to document/form elements.
 var gFindInst;           // nsIWebBrowserFind that we're going to use
 var gFindService;        // Global service which remembers find params

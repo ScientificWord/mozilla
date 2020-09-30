@@ -4,6 +4,9 @@
 Copyright 2007 MacKichan Software, Inc.
  * ***** END LICENSE BLOCK ***** */
 
+
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var data;
 
 var subEquationControls = ["wholeDisplayKeyLabel", "wholeDisplayKeyList", "subequationContinuationCheckbox"];

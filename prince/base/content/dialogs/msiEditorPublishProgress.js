@@ -36,6 +36,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var gInProgress = true;
 var gPublishData;
 var gPersistObj;
