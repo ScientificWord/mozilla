@@ -2,6 +2,8 @@
 // put the plot data from the graph object (window.arguments[0]) in
 // the right places in the dialog. 
 
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 function plotStartup() { 
   var plotno = window.arguments[0].getGraphAttribute ("plotnumber");
   var dim    = window.arguments[0].getGraphAttribute ("Dimension");

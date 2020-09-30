@@ -2,6 +2,9 @@
 
 //var target;
 
+
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 function dlgAutoSubsList()
 {
   this.names = new Object();

@@ -4,6 +4,7 @@
 "use strict";
 
 Components.utils.import("resource://app/modules/unitHandler.jsm");
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
 
 
 //Cancel() is in msiEdDialogCommon.js

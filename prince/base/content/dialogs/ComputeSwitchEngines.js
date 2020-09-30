@@ -1,5 +1,7 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var data;
 
 function Startup(){

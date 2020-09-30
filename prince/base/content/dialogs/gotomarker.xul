@@ -21,7 +21,6 @@
     screenY="40">
 
   <script type="application/x-javascript" src="chrome://prince/content/gotomarker.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
 
