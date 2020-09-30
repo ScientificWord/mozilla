@@ -1,4 +1,5 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
 
 var gBodyElement;
 

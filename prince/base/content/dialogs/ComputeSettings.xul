@@ -22,7 +22,6 @@
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js" />
 

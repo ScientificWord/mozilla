@@ -1,3 +1,5 @@
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var keymapper = null;
 
 

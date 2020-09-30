@@ -1795,7 +1795,7 @@ question
         </tag>
         <tag nm="mtext" dispnm="_l_mtext" >
           <contains>#text</contains>
-          <contains>texttag</contains>
+          <!-- <contains>texttag</contains> -->
         </tag>
         <tag nm="mrow" dispnm="_l_mrow" >
           <contains>mspace</contains>

@@ -9285,8 +9285,7 @@ var msiCommandUpdater = {
       this.enableCommand(command, controller.isCommandEnabled(command, editorElement),
         editorElement);
     } catch (e) {
-      dump("Error in msiEditor.js, in msiCommandUpdater.updateCommand, command is [" + command +
-        "]");
+      throw new MsiException('failed to enable command '+command);
     }
   },
 
@@ -9330,7 +9329,7 @@ var msiCommandUpdater = {
         return;
       controller.doCommand(command);
     } catch (e) {
-      dump("An error occurred executing the " + command + " command: " + e.message + "\n");
+      finalThrow(cmdFailString(command), e.message);
     }
   },
 

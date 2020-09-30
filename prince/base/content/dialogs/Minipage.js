@@ -1,3 +1,6 @@
+
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var frmElement = {};
 var newElement = true;
 var gd;

@@ -1,5 +1,6 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 Components.utils.import("resource://app/modules/mathnamedictionary.jsm");
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
 
 var node;
 var saveNode;

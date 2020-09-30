@@ -53,7 +53,6 @@
   <stringbundle id="findBundle" src="chrome://prince/locale/msifinddialog.properties"/>
    
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>

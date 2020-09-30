@@ -47,7 +47,6 @@
 #endif
 
    <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
-   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
    <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
 
 # All sets except for popupsets (commands, keys, stringbundles and broadcasters) *must* go into the

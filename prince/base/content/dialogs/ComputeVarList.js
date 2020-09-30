@@ -1,5 +1,8 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 
+
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 var data;
 const math = '<math>';
 //const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';

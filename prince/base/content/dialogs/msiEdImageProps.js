@@ -46,6 +46,7 @@
 Components.utils.import("resource://app/modules/pathutils.jsm"); 
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 Components.utils.import("resource://app/modules/graphicsConverter.jsm");
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
 
 var gDialog;
 var gEditorElement;
