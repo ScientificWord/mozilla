@@ -1304,7 +1304,7 @@ Plot.prototype =
       value = this.attributes[key];
     else if (key in this.element)
       value = this.element[key];
-    if ((value !== null) && (value !== "")) {
+    if ((value !== null) && (value !== "") && key === "Expression") {
       return dressUpMathString2(value);
     }
     switch(key)
@@ -2788,7 +2788,7 @@ function plotVarsNeeded(dim, ptype, animate) {
     nvars = 2;
     break;
   default:
-    alert("SMR ERROR in GraphOverlay line 932 unknown plot type " + ptype);
+    // alert("SMR ERROR in GraphOverlay line 932 unknown plot type " + ptype);
     break;
   }
   if ((dim === 3) && (ptype !== "explicitList"))
@@ -4429,6 +4429,7 @@ function getPlotDefaultValue(dim, plotType, key)
   var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
   var prefix = ["swp.plot."];
   var prefType, value;
+  var prefElement;
   if (dim)
   {
     prefix.unshift("swp.plot." + dim + "d.");
@@ -4442,9 +4443,9 @@ function getPlotDefaultValue(dim, plotType, key)
       prefType = prefs.getPrefType(prefix[ii] + key);
       if (prefType === prefs.PREF_STRING) {
         value = prefs.getCharPref(prefix[ii] + key);
-        if (document.getElementById(prefix[ii] + key).hasAttribute('mml'))
-          value = unmathify(value);
-        
+        prefElement = document.getElementById(prefix[ii] + key);
+        if (prefElement && prefElement.hasAttribute('mml'))
+          value = unmathify(value);        
       }
       else if (prefType === prefs.PREF_INT)
       {
@@ -4458,7 +4459,9 @@ function getPlotDefaultValue(dim, plotType, key)
         else
           value = "false";
       }
-    } catch(ex) {}
+    } catch(e) {
+      throw new MsiException('Getting default for '+key, e.message);
+    }
   }
   return value;
 }
