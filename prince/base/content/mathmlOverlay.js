@@ -3747,6 +3747,7 @@ function nodeToMath(editor, node, startOffset, endOffset)
   var nodeOffset;
   var theOffset;
   var doc;
+  var newLeftNode={};
 
   if (startOffset > endOffset) {
     tmp = startOffset;
@@ -3767,39 +3768,22 @@ function nodeToMath(editor, node, startOffset, endOffset)
 
    
     // split off the text before startOffset
-    nodeRemaining = node.splitText(startOffset); 
-    theOffset = offsetOfChild(parent, nodeRemaining);
-    // theOffset points between node and the following node (nodeRemaining)
-    
-    // the next 8 lines need reviewing.
-    // var mathnode;
-    // var charsToRemove;
-    // if (nodeRemaining.nodeName === 'texb') {  
-    //   var newNode = {};
-
-    //   mathnode = editor.document.createElementNS(mmlns, "math");
-    //   editor.insertNode(mathnode, parent, offset, false);
-    //   editor.deleteNode(mid);
-    //   editor.insertNode(mid, mathnode, 0, false);
-    //   editor.selection.collapse(mathnode, 1);
-    // }
-    // else {
+    editor.splitNode(node, startOffset, newLeftNode);
+    theOffset = offsetOfChild(parent, node);
+    // theOffset points to just before node 
 
       // take the selected text and insert it as symbols.
-    var theText = nodeRemaining.textContent.slice(0, endOffset - startOffset);
+    var theText = node.textContent.slice(0, endOffset - startOffset);
    
     editor.selection.collapse(parent,theOffset);
     for (var i = 0; i < theText.length; i++)
     {
       if (theText[i] != ' ') insertsymbol(theText[i]);
     }
-    // now remove the characters written as symbols from the text node nodeRemaining
-    nodeRemaining.splitText(endOffset - startOffset);
-
-    // BBM: the node deletion seems to fail because there is no document attached to
-    // nodeRemaining
-    // doc.adoptNode(nodeRemaining);
-    // editor.deleteNode(nodeRemaining);
+    // now remove the characters written from node as symbols 
+    newLeftNode = {};
+    editor.splitNode(node, endOffset - startOffset, newLeftNode);
+    editor.deleteNode(newLeftNode.value);
   }
 }
 
