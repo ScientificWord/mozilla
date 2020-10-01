@@ -39,7 +39,8 @@ function getFirstElementByTagName(node, name) {
 // The element ids in ComputeGraphSettings.xul match the Graph attributes
 // if the document has an element matching an attribute name,
 //   extract the value of the attribute and put it in the document
-function Startup(){
+function Startup()
+{
   var units, alist, id, i, plotNumControl, numPlots, firstActivePlot,
     plot, theStringSource, oldval, captionnode, placeLocation, obj, frame, topWindow;
   var graphEditorControl, radiusEditorControl;
@@ -56,12 +57,7 @@ function Startup(){
     frame = getFirstElementByTagName(graphnode,"msiframe");
     obj = getFirstElementByTagName(graphnode, "object");
     if (obj && obj.hasAttribute("data")) gInsertNewObject = false;
-  }
-  catch(e) {
-    dump('1 '+ e.message + '\n');
-  }
 
-  try {
     // get frame attributes
     // turn off inline, left, right, inside, outside options for plots
     document.getElementById('forplots').hidden = true;
@@ -92,13 +88,7 @@ function Startup(){
         document.getElementById(id).value = graph.getValue(alist[i]);
       }
     }
-  }
-  catch(e) {
-    dump('2 '+ e.message + '\n');
-  }
-
-  try {
-
+  
     plotNumControl    = document.getElementById('plotnumber');
     numPlots = graph.getNumActivePlots();  //don't count any that may be already deleted - though probably not relevant during startup
     if (numPlots ===  0){
@@ -115,12 +105,7 @@ function Startup(){
 //    setColorWell("baseColorWell", makeColorVal(plot.getPlotValue("BaseColor")));
 //    setColorWell("secondColorWell", makeColorVal(plot.getPlotValue("SecondaryColor")));
 //    setColorWell("lineColorWell", makeColorVal(plot.getPlotValue("LineColor")));
-  }
-  catch(e) {
-    dump('3 '+ e.message + '\n');
-  }
 
-  try {
     alist = graph.frame.FRAMEATTRIBUTES;
     for ( i=0; i<alist.length; i++) {
       id = mapid(alist[i]);
@@ -130,11 +115,6 @@ function Startup(){
 //        document.getElementById(id).value = graph.frame.getFrameAttribute(alist[i]);
       }
     }
-  }
-  catch(e) {
-    dump('4 '+ e.message + '\n');
-  }
-  try {
     document.getElementById("defaultCameraCheckbox").checked = !graph.cameraValuesUserSet();
     document.getElementById("defaultviewintervals").checked = !graph.viewRangesUserSet();
 
@@ -143,12 +123,7 @@ function Startup(){
     // initializeAxisLabelEditors();
     // initializeViewIntervalEditors();
     captionnode = getFirstElementByTagName(graphnode,"imagecaption");
-  }
-  catch(e) {
-    dump('5 '+ e.message + '\n');
-  }
 
-  try {
     testUseSignificantDigits();
     // Caption placement
 
@@ -159,9 +134,8 @@ function Startup(){
   //  checkEnableFloating();
   }
   catch(e) {
-    dump('6 '+ e.message + '\n');
+    throw new MsiException('Graph settings startup', e.message);
   }
-
 }
 
 function initializePlotEditors(plotnum, contentsOnly) {
@@ -337,7 +311,9 @@ function OK() {
   try {
     theWindow.nonmodalRecreateGraph(graph, window.arguments[2], editorElement);
   }
-  catch (e) {}
+  catch (e) {
+    throw new MsiException('ok', e.message);
+  }
   // var parentWindow = window.opener;
   // var data;
   // var obj = graphnode.getElementsByTagName("object");
@@ -457,7 +433,7 @@ function GetValuesFromDialog(){
   }
   catch (e)
   {
-    msidump("Error: " + e.message + "\n");
+    throw new MsiException('GetValuesFromDialog', e.message);
   }
 
   // if new, query
@@ -531,11 +507,35 @@ function Cancel(){
 // Set the PlotStatus to New so OK can call the preparePlot function
 function addPlot () {
   // save any changes to current plot, then change plots. Cancel ignores all changes
+  var editorControl = document.getElementById("plotDlg-content-frame"),
+    doc = editorControl.contentDocument,
+    math,
+    editor = msiGetEditor(editorControl),
+    mathElements, len, el, i;
+
   try
   {
     GetValuesFromDialog();
     graph.setGraphAttribute("returnvalue", "false");
     addPlotDialogContents();
+    // set cursor
+    math = doc.getElementsByTagName("math")[0];
+    if (math) {
+      mathElements = math.getElementsByTagName('mi');
+      len = mathElements.length;
+      i = 0; 
+      el = mathElements[i];
+      while (i<len && !el.hasAttribute('tempinput')) {
+        i++;
+        el = mathElements[i];
+      }
+      if (el) {
+        editor.selection.collapse(el, 0);
+      }
+      else {
+        editor.selection.collapse(math.firstChild, 0);
+      }
+    }
   }
   catch(e){
     msidump(e.message+"\n");
@@ -556,7 +556,7 @@ function addPlotDialogContents () {
   var firstPlotNum = getPlotInternalNum(1);
   var ptype = graph.getPlotValue("PlotType", firstPlotNum);
   if (!ptype)
-    ptype = "Rectangular";
+    ptype = "rectangular";
   var plot = new Plot(graph.getDimension(), ptype);
   graph.addPlot(plot);
   var plotnum = graph.getNumActivePlots();
@@ -582,6 +582,7 @@ function addPlotDialogContents () {
     plot.copyAttributes(graph.plots[firstPlotNum], copyAttrs);
   }
   populateDialog (plotnum);
+  fromPlotToDialog(plotnum);
 }
 
 function dressUpMathString(mathString) {
@@ -631,7 +632,8 @@ function fromDialogToPlot( plotnum ) {
 
 function replaceMathNodeWithText(editor, math, source) {
   if (!math) return;
-  var mathParent = math.parentNode, mathOffset
+  var mathParent = math.parentNode, mathOffset, mathElements, i, len;
+  var el;
   if (mathParent) {
     mathOffset = offsetOfChild(mathParent, math);
     mathParent.removeChild(math);
