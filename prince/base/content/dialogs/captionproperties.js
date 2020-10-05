@@ -27,11 +27,11 @@ function startup()
     var editorInitializer = new msiEditorArrayInitializer();
     editorInitializer.addEditorInfo(shortFormEditor, shortFormStr, true);
     editorInitializer.doInitialize();
-
   }
-  catch(e) {
-    dump("Error in titleproperties.js, startup: "+e.message+"\n");
-  }    
+  catch(e)
+  {
+    throw new MsiException(cmdFailString('captionProperties'), e.message);    
+  }
 }
 
 
@@ -73,8 +73,8 @@ function onAccept()
       }
     }
   }
-  catch(exc) {
-    dump("In captionproperties dialog onAccept(), exception: [" + exc + "].\n");
+  catch(e) {
+    throw new MsiException(foo, e.message);
   }
   return true;    
 }
