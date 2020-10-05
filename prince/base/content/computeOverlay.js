@@ -316,19 +316,20 @@ function goUpdateMSIcomputeMenuItems(commandset) {
 var gComputeStringBundle;
 
 function GetComputeString(name) {
-  if (!gComputeStringBundle) {
-    try { // BBM updated
+  try {
+    if (!gComputeStringBundle) {
       var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService();
       strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
       gComputeStringBundle = strBundleService.createBundle("chrome://prince/locale/compute.properties");
-    } catch (ex) {}
-  }
-  if (gComputeStringBundle) {
-    try {  // BBM updated
+    }
+    if (gComputeStringBundle) {
       return gComputeStringBundle.GetStringFromName(name);
-    } catch (e) {}
+    }
+    return null;
   }
-  return null;
+  catch(e) {
+    throw new MsiException(name+' is not in compute string bundle', e.message);
+  }
 }
 // used by computeDebug.js.  Need to consider scripting interface in more detail.
 function doComputeEvaluate(math, editorElement, inPlace) {
@@ -888,7 +889,6 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace) {
   catch(e) {
     finalThrow(cmdFailString(cmd), e.message);
   }
-    
 }
 
 function doGlobalComputeCommand(cmd, editorElement) {
@@ -959,25 +959,14 @@ function initComputeLogger(engine) {
   var logMMLSent, logMMLReceived, logEngSent, logEngReceived;
   try {  // BBM updated
     logMMLSent = prefs.getBoolPref("swp.user.logSent");
-  } catch (ex) {
-    throw new Error("\nfailed to get swp.user.logSent pref!\n");
-  }
-  try {  // BBM updated
     logMMLReceived = prefs.getBoolPref("swp.user.logReceived");
-  } catch (ex) {
-    throw new Error("\nfailed to get swp.user.logReceived pref!\n");
-  }
-  try { // BBM updated
     logEngSent = prefs.getBoolPref("swp.user.engSent");
-  } catch (ex) {
-    throw new Error("\nfailed to get swp.user.engSent pref!\n");
-  }
-  try { // BBM updated
     logEngReceived = prefs.getBoolPref("swp.user.engReceived");
-  } catch (ex) {
-    throw new Error("\nfailed to get swp.user.engReceived pref!\n");
+    msiComputeLogger.Init(engine, logMMLSent, logMMLReceived, logEngSent, logEngReceived);
   }
-  msiComputeLogger.Init(engine, logMMLSent, logMMLReceived, logEngSent, logEngReceived);
+  catch(e) {
+    throw new MsiException('Missing compute logger preferences', e.message);
+  }
 }
 
 // our connection to the computation code
@@ -1309,7 +1298,7 @@ function runFixup(math) {
     return out;
   } catch (e) {
     msiComputeLogger.Exception(e);
-    return math; // what else to do?  Fixup shouldn't fail.
+    throw new MsiException(cmdFailString('Fixup'), e.message);
   }
 }
 
@@ -1338,12 +1327,9 @@ function doLabeledComputation(math, vars, op, labelID, editorElement) {
         if (this.Cancel) return;
         this.mParentWin.doComputeSolveExact(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
       };
-      try {
-        theDialog = msiOpenModelessDialog("chrome://prince/content/computeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
-      } catch (e) {
-        AlertWithTitle("Error in computeOverlay.js", "Exception in doLabeledComputation: [" + e + "]");
-        return;
-      }
+      
+      theDialog = msiOpenModelessDialog("chrome://prince/content/computeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent", editorElement, cmd, cmdHandler, o);
+      
       //        parentWin.openDialog("chrome://prince/content/computeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
       //        if (o.Cancel)
       //          return;
@@ -1441,7 +1427,7 @@ function doEvalComputation(mathElement, op, joiner, remark, editorElement, inPla
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor(editorElement);
+    RestoreCursor(editorElement);
 }
 // like above, but make sure to run Fixup exactly once
 function doFixupComputation(math, op, joiner, remark, editorElement) {
