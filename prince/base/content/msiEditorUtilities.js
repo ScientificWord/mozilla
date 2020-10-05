@@ -5,6 +5,8 @@
 
 Components.utils.import('resource://app/modules/os.jsm');
 Components.utils.import('resource://app/modules/fontlist.jsm');
+Components.utils.import('resource://app/modules/msiEditorDefinitions.jsm');
+
 const msiEditorUtilitiesJS_duplicateTest = 'Bad';
 var gStringBundle;
 var gIOService;
