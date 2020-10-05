@@ -1,5 +1,7 @@
 // Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved.
 
+Components.utils.import("resource://app/modules/msiEditorDefinitions.jsm");
+
 // var xhtmlns  = "http://www.w3.org/1999/xhtml";  Seems to be declared already.
 
 var texnode;
