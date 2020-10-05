@@ -82,7 +82,7 @@ function accept() {
 		req.send(querystring);
 	}
 	catch(e) {
-		finalT;
+		finalThrow('Failed contact with licensing server', e.message);
 	}
 	return true;
 }
