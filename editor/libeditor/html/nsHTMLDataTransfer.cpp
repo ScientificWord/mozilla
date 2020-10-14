@@ -681,7 +681,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   NS_ENSURE_SUCCESS(res, res);
   nsCOMPtr<nsIDOMNode> targetNode, tempNode;
   PRInt32 targetOffset=0;
-  fragmentAsNode->Normalize();
+  // fragmentAsNode->Normalize();
 
   if (!aDestNode)
   {
@@ -1441,7 +1441,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
           // we want to be inside any inline style prior to break
           nsWSRunObject wsRunObj(this, selNode, selOffset);
           res = wsRunObj.PriorVisibleNode(selNode, selOffset, address_of(visNode), &outVisOffset, &visType);
-          if (NS_FAILED(res)) return res;
+            if (NS_FAILED(res)) return res;
           if (visType == nsWSRunObject::eText ||
               visType == nsWSRunObject::eNormalWS)
           {
