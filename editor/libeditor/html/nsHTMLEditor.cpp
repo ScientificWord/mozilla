@@ -2324,13 +2324,14 @@ nsHTMLEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
   nsCOMPtr<nsIDOMNode> parent(*ioParent);
   nsCOMPtr<nsIDOMNode> newNode;
   nsCOMPtr<nsIDOMNode> newParent;
-  nsresult res;
+  nsresult res = NS_OK;
 
   InsertBufferNodeIfNeeded( node, getter_AddRefs(newNode), parent, getter_AddRefs(newParent), *ioOffset, &offsetOfInsert);
   // Now we can insert the new node
   if (offsetOfInsert >= 0)
     res = InsertNode(newNode, newParent, offsetOfInsert);
   return res;
+    
 }
 
 NS_IMETHODIMP

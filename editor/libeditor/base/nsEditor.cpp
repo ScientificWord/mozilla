@@ -1787,9 +1787,9 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   ptr->GetNodeName(parentName);
   nsCOMPtr<nsIDOMElement> parentElt;
   *outNode = node;
-  NS_ADDREF(node);
+  NS_ADDREF(node);  // BBM: justification for this??
   *outParent = parent;
-  NS_ADDREF(parent);
+  NS_ADDREF(parent);  // BBM: justification for this??
   // We want to keep from doing this for frames of graphs and graphics, so we check for that here. This should someday be moved to the node defs mechanism
   if (nodeName.EqualsLiteral("msiframe")) {
     parentElt = do_QueryInterface(parent);
@@ -1810,8 +1810,8 @@ NS_IMETHODIMP nsEditor::InsertBufferNodeIfNeeded(nsIDOMNode*    node,
   nsCOMPtr<msiITagListManager> tlm;
   htmlEditor->GetTagListManager(getter_AddRefs(tlm));
   nsCOMPtr<nsIContent> content = do_QueryInterface(node);
-  if (content->TextIsOnlyWhitespace()) {
-      tlm->GetRealClassOfTag(nodeName, nsnull, tagclass); }
+  if (content->TextIsOnlyWhitespace())
+    tlm->GetRealClassOfTag(nodeName, nsnull, tagclass);
     // Search up the parent chain to find a suitable container
   while (!CanContainTag(ptr, nodeName)) // && !(content && content->TextIsOnlyWhitespace()))
   {
@@ -1960,17 +1960,8 @@ nsEditor::SplitNode(nsIDOMNode * aNode,
                     PRInt32      aOffset,
                     nsIDOMNode **aNewLeftNode)
 {
-  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
-  nsAutoString nodeName;
-  if (element) {
-    element->GetTagName(nodeName);
-    if (nodeName.EqualsLiteral("body")) {
-      *aNewLeftNode = nsnull;
-      return NS_OK;
-    }
-  }
-
   PRInt32 i;
+
   nsAutoRules beginRulesSniffing(this, kOpSplitNode, nsIEditor::eNext);
 
   for (i = 0; i < mActionListeners.Count(); i++)
@@ -4646,7 +4637,6 @@ nsEditor::GetTag(nsIDOMNode *aNode)
     PRUint16 nodeType;
     aNode->GetNodeType(&nodeType);
     if (nodeType == nsIDOMNode::TEXT_NODE) return nsGkAtoms::textTagName;
-
     NS_ASSERTION(content, "null node passed to nsEditor::Tag()");
     return nsnull;
   }
@@ -4736,12 +4726,12 @@ nsEditor::IsTextNode(nsIDOMNode *aNode)
 PRInt32
 nsEditor::GetIndexOf(nsIDOMNode *parent, nsIDOMNode *child)
 {
-  nsCOMPtr<nsINode> pParent = do_QueryInterface(parent);
-  nsCOMPtr<nsINode> cChild = do_QueryInterface(child);
-  // NS_PRECONDITION(content, "null content in nsEditor::GetIndexOf");
-  // NS_PRECONDITION(cChild, "null content in nsEditor::GetIndexOf");
+  nsCOMPtr<nsIContent> content = do_QueryInterface(parent);
+  nsCOMPtr<nsIContent> cChild = do_QueryInterface(child);
+  NS_PRECONDITION(content, "null content in nsEditor::GetIndexOf");
+  NS_PRECONDITION(cChild, "null content in nsEditor::GetIndexOf");
 
-  return pParent->IndexOf(cChild);
+  return content->IndexOf(cChild);
 }
 
 
@@ -4854,17 +4844,91 @@ nsEditor::IsPreformatted(nsIDOMNode *aNode, PRBool *aResult)
   return NS_OK;
 }
 
+PRBool SplitIsAtNodeStart( nsIDOMNode * aNode, PRInt32 offset ) {
+  PRInt32 counter = 0;
+  PRUint32 length;
+  PRUint16 nodeType;
+  nsCOMPtr<nsIDOMNode> child, temp;
+  // nsAutoString s;
+  nsCOMPtr<nsIDOM3Node> dom3tempnode;
+  nsCOMPtr<nsIContent> textContent;
+  aNode->GetNodeType(&nodeType);
+
+  // Handle text node first
+  if (nodeType == nsIDOMNode::TEXT_NODE) {
+    return offset == 0;
+  }
+
+  // Now handle elements
+  aNode->GetFirstChild( getter_AddRefs(child));
+  while (child) {
+    child->GetNodeType(&nodeType);
+    if (nodeType == nsIDOMNode::ELEMENT_NODE)
+      return  offset <= counter;
+    else {
+      textContent = do_QueryInterface(child);
+      if (textContent && !(textContent->TextIsOnlyWhitespace())){
+        return offset <= counter;
+      }
+    } 
+    counter++;
+    child ->GetNextSibling(getter_AddRefs(temp));
+    child = temp;
+  }
+  return PR_TRUE; // we never found any elements or text nodes with content.
+}
+
+PRBool SplitIsAtNodeEnd( nsIDOMNode * aNode, PRInt32 offset ) {
+  PRInt32 length;
+  nsresult result;
+  nsCOMPtr<nsIContent> textContent;
+  nsCOMPtr<nsIDOMNode> child;
+  PRUint16 nodeType;
+  aNode->GetNodeType(&nodeType);
+
+   // Handle text node first
+  if (nodeType == nsIDOMNode::TEXT_NODE) {
+    textContent = do_QueryInterface(aNode);
+    if (textContent) {
+      length = textContent->TextLength();
+      return offset >=length;
+    }
+    else return PR_TRUE; // text node with no text length? Weird. Don't try splitting it
+  }
+  else if (nodeType == nsIDOMNode::ELEMENT_NODE) {
+    nsCOMPtr<nsIDOMNodeList> childNodes;
+    result = aNode->GetChildNodes(getter_AddRefs(childNodes));
+    if ((NS_SUCCEEDED(result)) && (childNodes))
+    {
+      PRUint32 count, i;
+      childNodes->GetLength(&count);
+      if (offset >= count) return PR_TRUE;
+      // we still might be at the end if the last nodes are empty text nodes.
+      for (i = offset + 1; i < count; i++) {
+        childNodes->Item(i, getter_AddRefs(child));
+        if (child) {
+          textContent = do_QueryInterface(child);
+          if (! (textContent && textContent->TextIsOnlyWhitespace()))
+            return PR_FALSE;
+        }
+      }
+      return PR_TRUE;
+    }
+  }
+  return PR_TRUE; // if not text or element, we don't want to split.
+}
 
 ///////////////////////////////////////////////////////////////////////////
-// SplitNodeDeep: this splits a node "deeply", splitting children as
+//
+//  This splits a node "deeply", splitting children as
 //                appropriate.  The place to split is represented by
 //                a dom point at {splitPointParent, splitPointOffset}.
 //                That dom point must be inside aNode, which is the node to
 //                split.  outOffset is set to the offset in the parent of aNode where
 //                the split terminates - where you would want to insert
 //                a new element, for instance, if that's why you were splitting
-//                the node.
-//
+//                the node. The parent of aNode is unchanged by this function.
+//                
 nsresult
 nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
                         nsIDOMNode *aSplitPointParent,
@@ -4875,104 +4939,53 @@ nsEditor::SplitNodeDeep(nsIDOMNode *aNode,
                         nsCOMPtr<nsIDOMNode> *outRightNode)
 {
   if (!aNode || !aSplitPointParent || !outOffset) return NS_ERROR_NULL_POINTER;
-  nsCOMPtr<nsIDOMNode> tempNode, parentNode;
+  nsCOMPtr<nsIDOMNode> newLeftNode, parentNode;
+  PRInt32 newOffset;
   PRInt32 offset = aSplitPointOffset;
   nsresult res;
-  nsCOMPtr<nsIDOMElement> element;
   nsAutoString nodeName;
-
-
+  PRBool done = PR_FALSE;
 
   if (outLeftNode)  *outLeftNode  = nsnull;
   if (outRightNode) *outRightNode = nsnull;
 
+  // BBM: does the next line do anything??
   nsCOMPtr<nsIDOMNode> nodeToSplit = do_QueryInterface(aSplitPointParent);
-  while (nodeToSplit)
+  // We iteratate splitting nodes until we get to aNode, which we split.
+  while (nodeToSplit && !done)
   {
-    element = do_QueryInterface(nodeToSplit);
-    if (element) {
-      element->GetTagName(nodeName);
-      if (nodeName.EqualsLiteral("body")) {
-        *outOffset = offset;
-        return NS_OK;    
-      }
-    }
-
     // need to insert rules code call here to do things like
     // not split a list if you are after the last <li> or before the first, etc.
     // for now we just have some smarts about unneccessarily splitting
     // textnodes, which should be universal enough to put straight in
     // this nsEditor routine.
-
-    nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(nodeToSplit);
-    PRUint32 len;
-    PRBool bDoSplit = PR_FALSE;
-    PRBool isEmpty = false;
-    res = GetLengthOfDOMNode(nodeToSplit, len);
-    if (NS_FAILED(res)) return res;
-
-    if (!(aNoEmptyContainers || nodeAsText) || (offset && (offset != (PRInt32)len)))
-    {
-      bDoSplit = PR_TRUE;
-      res = SplitNode(nodeToSplit, offset, getter_AddRefs(tempNode));
-      if (NS_FAILED(res)) return res;
-      nsCOMPtr<nsIHTMLEditor> editor = do_QueryInterface(static_cast<nsIEditor *>(this));
-      if (editor) {
-        res = editor->IsEmptyNode( nodeToSplit, &isEmpty, PR_TRUE, PR_FALSE, PR_TRUE);
-      }
-      res = nodeToSplit->GetParentNode(getter_AddRefs(parentNode));
-      // PRBool allowRemove = PR_TRUE;
-      // if (allowRemove && isEmpty && aNoEmptyContainers) {
-      //   RemoveContainer(nodeToSplit);
-      // }
-      if (isEmpty && aNoEmptyContainers) {
-//        *outOffset = GetIndexOf(parentNode, nodeToSplit) +1;
-        RemoveContainer(nodeToSplit);
-        nodeToSplit = nsnull;
-        break;
-      }
-      if (outRightNode) *outRightNode = nodeToSplit;
-      if (outLeftNode)  *outLeftNode  = tempNode;
-    } else {
-      res = nodeToSplit->GetParentNode(getter_AddRefs(parentNode));
-    }
-    if (NS_FAILED(res)) return res;
-    if (!parentNode) return NS_ERROR_FAILURE;
-
-
-    if (!bDoSplit && offset)  // must be "end of text node" case, we didn't split it, just move past it
-    {
-      offset = GetIndexOf(parentNode, nodeToSplit) +1;
-      if (outLeftNode)  *outLeftNode  = nodeToSplit;
-    }
-    else
-    {
+    done = (nodeToSplit == aNode); //if done is true, this is the last run through the loop
+    if (aNoEmptyContainers && SplitIsAtNodeStart(nodeToSplit, offset)) {
+      nodeToSplit->GetParentNode(getter_AddRefs(parentNode));
+      // Check for termination??
       offset = GetIndexOf(parentNode, nodeToSplit);
-      //      offset = 0;
-      if (outRightNode) *outRightNode = nodeToSplit;
     }
+    else if (aNoEmptyContainers && SplitIsAtNodeEnd(nodeToSplit, offset)) {
+      nodeToSplit->GetParentNode(getter_AddRefs(parentNode));
+      // Check for termination??
+      offset = GetIndexOf(parentNode, nodeToSplit) + 1;
+    }
+    else {
+      nodeToSplit->GetParentNode(getter_AddRefs(parentNode));
+      newOffset = GetIndexOf(parentNode, nodeToSplit) + 1;
+      res = SplitNode(nodeToSplit, offset, getter_AddRefs(newLeftNode)); 
+      // Check for termination??
+      offset = newOffset;
+    }
+    if (done) {
+      *outOffset = offset;
+      if (outLeftNode)  *outLeftNode  = newLeftNode;
+      if (outRightNode) *outRightNode = nodeToSplit;
 
-    if (nodeToSplit.get() == aNode)  // we split all the way up to (and including) aNode; we're done
-      break;
-    if (aNoEmptyContainers)
-    {
-      nsAutoString nodeName;
-      res = GetTagString(nodeToSplit, nodeName);
-      if (nodeName.EqualsLiteral("math"))
-      {
-        aNoEmptyContainers = PR_FALSE;
-      }
+      // the offset is the position in the current value of nodeToSplit.
     }
     nodeToSplit = parentNode;
   }
-
-  // if (!nodeToSplit)
-  // {
-  //   NS_NOTREACHED("null node obtained in nsEditor::SplitNodeDeep()");
-  //   return NS_ERROR_FAILURE;
-  // }
-
-  *outOffset = offset;
 
   return NS_OK;
 }
