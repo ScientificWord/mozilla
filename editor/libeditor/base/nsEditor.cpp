@@ -1865,6 +1865,15 @@ NS_IMETHODIMP nsEditor::InsertNode(nsIDOMNode * aNode,
   PRInt32 i;
   PRInt32 offset = aPosition;
   nsresult result;
+  PRBool fNeedToValidate = PR_FALSE;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface((nsIEditor*)this);
+  nsCOMPtr<nsIDOMElement> element(do_QueryInterface(aNode));
+  // check for well-formed mathematics in case this is coming from the clipboard
+  if (nsHTMLEditUtils::IsMath(aNode)) {
+    if (htmlEditor) {
+      fNeedToValidate = PR_TRUE;
+    }
+  }
   nsAutoRules beginRulesSniffing(this, kOpInsertNode, nsIEditor::eNext);
   for (i = 0; i < mActionListeners.Count(); i++)
     mActionListeners[i]->WillInsertNode(aNode, aParent, aPosition);
@@ -1875,7 +1884,9 @@ NS_IMETHODIMP nsEditor::InsertNode(nsIDOMNode * aNode,
   if (NS_SUCCEEDED(result))  {
     result = DoTransaction(txn);
   }
-
+  if (fNeedToValidate) {
+    htmlEditor->ValidateMathSyntax(element);
+  }
   mRangeUpdater.SelAdjInsertNode(aParent, aPosition);
 
   for (i = 0; i < mActionListeners.Count(); i++)
