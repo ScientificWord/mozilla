@@ -1,3 +1,5 @@
+
+
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-831basic-offset: 2 -*- */
 /* vim: set ts=2 sw=2 et tw=78: */
 /* ***** BEGIN LICENSE BLOCK *****
@@ -568,11 +570,12 @@ nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
   nsCOMPtr<nsIDOMDocument> doc;
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
   nsCOMPtr<nsIDOMTreeWalker> tw;
-  nsCOMPtr<nsIDOMNode> element;
+  nsCOMPtr<nsIDOMNode> node = mathNode;
   nsCOMPtr<nsIDOMNode> child;
   nsCOMPtr<nsIDOMNode> parent;
   nsCOMPtr<nsIDOMNode> newElement;
   nsCOMPtr<nsIDOMNode> dontCare;
+  nsCOMPtr<nsIDOMNode> mathrow;
 
   nsCOMPtr<nsIDOMNodeList> children;
 
@@ -580,20 +583,18 @@ nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
   PRUint32 index;
   PRBool needToSubstitute;
   nsAutoString tagName;
-  nsCOMPtr<nsIDOMElement> mrow;
-
   if (mathNode) {
     mathNode->GetOwnerDocument(getter_AddRefs(doc));
     if (doc) {
       doctrav = do_QueryInterface(doc);
       res = doctrav->CreateTreeWalker( mathNode, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
-      tw->SetCurrentNode(element);
+      tw->GetCurrentNode(getter_AddRefs(node));
     // Now the tree is set up for examination
-      if (element) {
+      if (node) {
         needToSubstitute = PR_FALSE;
         childCount = 0;
-        if (nsHTMLEditUtils::IsMath(element)) {
-          element->GetLocalName(tagName);
+        if (nsHTMLEditUtils::IsMath(node)) {
+          node->GetLocalName(tagName);
           if (   tagName.EqualsLiteral("mfrac")
               || tagName.EqualsLiteral("mroot")
               || tagName.EqualsLiteral("msub") 
@@ -602,7 +603,7 @@ nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
               || tagName.EqualsLiteral("mover")
               || tagName.EqualsLiteral("msubsup") 
               || tagName.EqualsLiteral("munderover")) {
-            element->GetChildNodes(getter_AddRefs(children));
+            node->GetChildNodes(getter_AddRefs(children));
             if (children) {
               children->GetLength( &childCount );
               if (  tagName.EqualsLiteral("msubsup") 
@@ -614,24 +615,15 @@ nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
                   needToSubstitute = PR_TRUE;
                 }
               }
-            // replace element with mrow.
+            // replace node with mrow.
               if (needToSubstitute) {
-                msiUtils::CreateMRow(this, (nsIDOMNode *)nsnull, mrow);
-                for (index = 0; index < childCount; index++)
-                {
-                  children->Item(index, getter_AddRefs(child));
-                  mrow->AppendChild(child, getter_AddRefs(dontCare));
-                  element->RemoveChild(child, getter_AddRefs(dontCare));
-                }
+                ReplaceContainer( node, NS_LITERAL_STRING("mrow"), mtagListManager, EmptyString(), 
+                  EmptyString(), PR_TRUE, getter_AddRefs(mathrow));
               }
+              // We need to recurse to check the validity of the mrow children
             }
           }
         } 
-        element->GetParentNode(getter_AddRefs(parent));
-        tw->NextSibling(getter_AddRefs(newElement));
-        if (needToSubstitute) parent->ReplaceChild(mrow, element, getter_AddRefs(dontCare));
-        element = newElement;
-
       }
     }
   }
@@ -962,7 +954,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     // BBM: Check tag containment rules here?
     if (IsTextNode(parentNode))
     {
-      nsCOMPtr<nsIDOMNode> temp;
+
+        nsCOMPtr<nsIDOMNode> temp;
       // nsCOMPtr<nsIDOMNode> newLeftNode;
       // nsCOMPtr<nsIDOMNode> newRightNode;
       res = SplitNodeDeep(parentNode, parentNode, offsetOfNewNode, &offsetOfNewNode, PR_TRUE);
