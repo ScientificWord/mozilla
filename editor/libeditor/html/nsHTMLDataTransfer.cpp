@@ -566,67 +566,69 @@ PRBool TrimDocFragment( nsIDOMNode * fragmentAsNode) {
 
 nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
 
-  nsresult res;
-  nsCOMPtr<nsIDOMDocument> doc;
-  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
-  nsCOMPtr<nsIDOMTreeWalker> tw;
-  nsCOMPtr<nsIDOMNode> node = mathNode;
+  nsCOMPtr<nsIDOMElement> node = mathNode;
+  nsCOMPtr<nsIDOMNode> mathrow;
+  nsCOMPtr<nsIDOMElement> nextNode;
+  nsCOMPtr<nsIDOMElement> childElement;
   nsCOMPtr<nsIDOMNode> child;
   nsCOMPtr<nsIDOMNode> parent;
-  nsCOMPtr<nsIDOMNode> newElement;
-  nsCOMPtr<nsIDOMNode> dontCare;
-  nsCOMPtr<nsIDOMNode> mathrow;
-
   nsCOMPtr<nsIDOMNodeList> children;
-
   PRUint32 childCount;
   PRUint32 index;
   PRBool needToSubstitute;
-  nsAutoString tagName;
-  if (mathNode) {
-    mathNode->GetOwnerDocument(getter_AddRefs(doc));
-    if (doc) {
-      doctrav = do_QueryInterface(doc);
-      res = doctrav->CreateTreeWalker( mathNode, nsIDOMNodeFilter::SHOW_ELEMENT, nsnull, PR_FALSE, getter_AddRefs(tw));
-      tw->GetCurrentNode(getter_AddRefs(node));
-    // Now the tree is set up for examination
-      if (node) {
-        needToSubstitute = PR_FALSE;
-        childCount = 0;
-        if (nsHTMLEditUtils::IsMath(node)) {
-          node->GetLocalName(tagName);
-          if (   tagName.EqualsLiteral("mfrac")
-              || tagName.EqualsLiteral("mroot")
-              || tagName.EqualsLiteral("msub") 
-              || tagName.EqualsLiteral("msup")
-              || tagName.EqualsLiteral("munder")
-              || tagName.EqualsLiteral("mover")
-              || tagName.EqualsLiteral("msubsup") 
-              || tagName.EqualsLiteral("munderover")) {
-            node->GetChildNodes(getter_AddRefs(children));
-            if (children) {
-              children->GetLength( &childCount );
-              if (  tagName.EqualsLiteral("msubsup") 
-                 || tagName.EqualsLiteral("munderover"))  {
-                if (childCount != 3) needToSubstitute = PR_TRUE;
-              } else // tagname is one of the others in the above list
-              {
-                if (childCount != 2) {
-                  needToSubstitute = PR_TRUE;
-                }
-              }
-            // replace node with mrow.
-              if (needToSubstitute) {
-                ReplaceContainer( node, NS_LITERAL_STRING("mrow"), mtagListManager, EmptyString(), 
-                  EmptyString(), PR_TRUE, getter_AddRefs(mathrow));
-              }
-              // We need to recurse to check the validity of the mrow children
-            }
-          }
-        } 
+  nsAutoString tagName, parentTagName;
+  needToSubstitute = PR_FALSE;
+  childCount = 0;
+  if (node) {
+    node->GetChildNodes(getter_AddRefs(children));
+    children->GetLength(&childCount);
+    for (index = 0; index < childCount; index++) {
+      children->Item(index, getter_AddRefs(child));
+      childElement = do_QueryInterface(child);
+      if (childElement) {
+        ValidateMathSyntax(childElement);
       }
-    }
-  }
+    } 
+  }      
+  if (nsHTMLEditUtils::IsMath(node)) {
+    node->GetLocalName(tagName);
+    if (   tagName.EqualsLiteral("mfrac")
+        || tagName.EqualsLiteral("mroot")
+        || tagName.EqualsLiteral("msub") 
+        || tagName.EqualsLiteral("msup")
+        || tagName.EqualsLiteral("munder")
+        || tagName.EqualsLiteral("mover")
+        || tagName.EqualsLiteral("msubsup") 
+        || tagName.EqualsLiteral("munderover")) {
+      node->GetChildNodes(getter_AddRefs(children));
+      if (children) {
+        children->GetLength( &childCount );
+        if (  tagName.EqualsLiteral("msubsup") 
+           || tagName.EqualsLiteral("munderover"))  {
+          if (childCount != 3) needToSubstitute = PR_TRUE;
+        } else // tagname is one of the others in the above list
+        {
+          if (childCount != 2) {
+            needToSubstitute = PR_TRUE;
+          }
+        }
+      // replace node with mrow.
+        if (needToSubstitute) {
+          node->GetParentNode(getter_AddRefs(parent));
+          parent->GetLocalName(parentTagName);
+          if (parentTagName.EqualsLiteral("math") || parentTagName.EqualsLiteral("mrow")) {
+            RemoveContainer(node);  // avoid mrow immediately in math or mrow tag
+          }
+          else
+          {
+            ReplaceContainer( node, NS_LITERAL_STRING("mrow"), mtagListManager, EmptyString(), 
+              EmptyString(), PR_TRUE, getter_AddRefs(mathrow));
+          } 
+        }
+        // We need to recurse to check the validity of the mrow children
+      }
+    } 
+  }    
   return NS_OK;
 }
 
