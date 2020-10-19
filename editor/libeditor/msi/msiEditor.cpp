@@ -1381,7 +1381,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
         if (NS_SUCCEEDED(res) && keyCode != 13 &&(!(mFlags & eEditorPlaintextMask)))
           res = CheckForAutoSubstitute(PR_FALSE);
         // res = nsEditor::EndUpdateViewBatch();
-        return res;
+        return NS_OK;  // BBM: changed 2020/10/19
       }
     }
     else
