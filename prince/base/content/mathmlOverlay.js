@@ -3748,6 +3748,8 @@ function nodeToMath(editor, node, startOffset, endOffset)
   var theOffset;
   var doc;
   var newLeftNode={};
+  var tail;
+  var mid;
 
   if (startOffset > endOffset) {
     tmp = startOffset;
@@ -3768,12 +3770,14 @@ function nodeToMath(editor, node, startOffset, endOffset)
 
    
     // split off the text before startOffset
-    editor.splitNode(node, startOffset, newLeftNode);
-    theOffset = offsetOfChild(parent, node);
-    // theOffset points to just before node 
+    tail = node.splitText(startOffset);
+    // node is now a text node containing text up to startOffset;
+    // tail contains the remainder of the text
+    theOffset = offsetOfChild(parent, tail);
+    // theOffset points to just before node; this is where the math will go
 
       // take the selected text and insert it as symbols.
-    var theText = node.textContent.slice(0, endOffset - startOffset);
+    var theText = tail.textContent.slice(0, endOffset - startOffset); 
    
     editor.selection.collapse(parent,theOffset);
     for (var i = 0; i < theText.length; i++)
@@ -3781,9 +3785,8 @@ function nodeToMath(editor, node, startOffset, endOffset)
       if (theText[i] != ' ') insertsymbol(theText[i]);
     }
     // now remove the characters written from node as symbols 
-    newLeftNode = {};
-    editor.splitNode(node, endOffset - startOffset, newLeftNode);
-    editor.deleteNode(newLeftNode.value);
+    mid = tail.splitText(endOffset - startOffset);
+    editor.deleteNode(tail);
   }
 }
 
@@ -3806,7 +3809,7 @@ function mathToText(editor)
   var pos;
   var node;
   var offset;
-  msiNavigationUtils.getCommonAncestorForSelection(editor.selection).normalize();
+  msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
   editor.beginTransaction();
 
   try {
@@ -3840,7 +3843,7 @@ function textToMath(editor)
 {
   var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset, dummy;
   var newSelection = {};
-  msiNavigationUtils.getCommonAncestorForSelection(editor.selection).normalize();
+  msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
   editor.beginTransaction();
   try {
     if (editor.selection.isCollapsed)

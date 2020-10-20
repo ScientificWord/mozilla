@@ -66,7 +66,6 @@ en-US.jar:
   locale/MathColors.dtd                   (dialogs/MathColors.dtd)
   locale/mathmlMathName.dtd               (dialogs/mathmlMathName.dtd)
   locale/mathmlMatrix.dtd                 (dialogs/mathmlMatrix.dtd)
-  locale/msiconsole.dtd                   (msiconsole.dtd)
   locale/Operators.dtd                    (dialogs/Operators.dtd)
   locale/texbuttoncontents.dtd            (dialogs/texbuttoncontents.dtd)
   locale/msiEditorReplace.dtd             (dialogs/msiEditorReplace.dtd)
