@@ -1,5 +1,3 @@
-
-
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-831basic-offset: 2 -*- */
 /* vim: set ts=2 sw=2 et tw=78: */
 /* ***** BEGIN LICENSE BLOCK *****
@@ -3404,7 +3402,6 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
   }
 
   // Try to scroll the selection into view if the paste/drop succeeded
-
   // After ScrollSelectionIntoView(), the pending notifications might be
   // flushed and PresShell/PresContext/Frames may be dead. See bug 418470.
   if (NS_SUCCEEDED(rv))
@@ -3520,9 +3517,9 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromDrop(nsIDOMEvent* aDropEvent)
       if (mouseEvent)
 
 #if defined(XP_MACOSX)
-        mouseEvent->GetAltKey(&userWantsCopy);
+        GetIsAltDown(&userWantsCopy);
 #else
-        mouseEvent->GetCtrlKey(&userWantsCopy);
+        GetIsCtrlDown(&userWantsCopy);
 #endif
 
       // Current doc is destination
@@ -5375,19 +5372,6 @@ nsHTMLEditor::CreateFrameWithDefaults(const nsAString & frametype, PRBool insert
   *_retval = frame;
   return rv;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
