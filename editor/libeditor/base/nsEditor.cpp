@@ -2064,7 +2064,7 @@ NS_IMETHODIMP nsEditor::DeleteNode(nsIDOMNode * aElement)
   for (i = 0; i < mActionListeners.Count(); i++)
     mActionListeners[i]->DidDeleteNode(aElement, result);
 
-  selection->Collapse(parent, offset);
+  // BBM: commented out 2020.10.21 selection->Collapse(parent, offset);
 
   return result;
 }
@@ -2193,13 +2193,13 @@ nsEditor::ReplaceContainer(nsIDOMNode *inNode,
       childNode = do_QueryInterface(child);
       childNode->SetEditableFlag(PR_TRUE);
       res = DeleteNode(child);
-//      if (NS_FAILED(res)) return res;
+      if (NS_FAILED(res)) return res;
 
-//      if (!nsTextEditUtils::IsBreak(child))
-//      {
+      if (!nsTextEditUtils::IsBreak(child))
+      {
         res = InsertNode(child, *_outNode, -1);
         if (NS_FAILED(res)) return res;
-//      }
+      }
       inNode->HasChildNodes(&bHasMoreChildren);
     }
   }
@@ -5165,8 +5165,7 @@ nsresult nsEditor::EndUpdateViewBatch()
       nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
       selPrivate->EndBatchChanges();
     }
-  }
-
+  }    
   return NS_OK;
 }
 
