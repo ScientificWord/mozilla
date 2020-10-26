@@ -2870,8 +2870,9 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
     return NS_ERROR_NULL_POINTER;
 
   // get selection
+    nsAutoString tagName;
   nsCOMPtr<nsIDOMNode> node;
-	nsCOMPtr<nsIDOMNode> mathnode;
+  nsCOMPtr<nsIDOMNode> mathnode;
   PRInt32 offset;
   nsresult res = mEditor->GetStartNodeAndOffset(aSelection, getter_AddRefs(node), &offset);
   if (NS_FAILED(res)) return res;
@@ -2905,8 +2906,11 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
     // first check that we are allowed to
     if (mHTMLEditor->CanContainTag(node, NS_LITERAL_STRING("br")))
     {
+      node->GetNodeName(tagName);
       nsCOMPtr<nsIDOMNode> brNode;
-      res = mHTMLEditor->CreateBR(node, offset, address_of(brNode), nsIEditor::ePrevious);
+      if (!tagName.EqualsLiteral("sectiontitle")) {
+        res = mHTMLEditor->CreateBR(node, offset, address_of(brNode), nsIEditor::ePrevious);
+      }
     }
 	}
   return res;
@@ -10432,7 +10436,11 @@ nsHTMLEditRules::AdjustSelection(nsISelection *aSelection, nsIEditor::EDirection
 
     nsCOMPtr<nsIDOMNode> brNode;
     // we know we can skip the rest of this routine given the cirumstance
-    return CreateMozBR(selNode, selOffset, address_of(brNode));
+    nsAutoString name;
+    selNode->GetNodeName(name);
+    if (!name.EqualsLiteral("sectiontitle")) {
+      return CreateMozBR(selNode, selOffset, address_of(brNode));
+    }
   }
 
   // are we in a text node?
@@ -11141,6 +11149,7 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   nsCOMPtr<nsINode> plainiNode = do_QueryInterface(aNode);
   nsCOMPtr<nsIDOMNode> brNode;
   nsCOMPtr<nsISelection> sel;
+  nsAutoString tagName;
   nsresult res = mHTMLEditor->IsEmptyNode(aNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE);
   nsCOMPtr<msiITagListManager> taglistManager;
   mHTMLEditor->GetTagListManager( getter_AddRefs(taglistManager));
@@ -11150,7 +11159,10 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   {
     nsCOMPtr<nsINode> plainiNode = do_QueryInterface(aNode);
     PRUint32 childCount = plainiNode->GetChildCount();
-    res = CreateMozBR(aNode, childCount, address_of(brNode));
+    aNode->GetLocalName(tagName);
+    if (!tagName.EqualsLiteral("sectiontitle")) {
+      res = CreateMozBR(aNode, childCount, address_of(brNode));
+    }
     mHTMLEditor->GetSelection(getter_AddRefs(sel));
     // BBM: check to see if selection is in aNode?
 
@@ -11160,7 +11172,6 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   nsCOMPtr<nsIDOMNode> lastchild;
   nsCOMPtr<nsIDOMText> nodeAsText;
   res = aNode->GetLastChild(getter_AddRefs(lastchild));
-  nsAutoString tagName;
   PRUint32 count;
   nsCOMPtr<nsIDOMDocument> aDoc;
   aNode->GetOwnerDocument(getter_AddRefs(aDoc));
