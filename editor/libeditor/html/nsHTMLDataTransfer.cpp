@@ -2360,7 +2360,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       res = GetWrapper(splitNode, getter_AddRefs(wrapperNode));
       res = SplitNodeDeep(wrapperNode,splitpointNode,splitpointOffset,
          &outOffset, PR_FALSE, &outLeftNode, &outRightNode);
-      selection->Collapse(outRightNode, offset);
+      selection->Collapse(outRightNode, outOffset);
 
     }
   }
@@ -2501,14 +2501,12 @@ nsHTMLEditor::SetCursorInNewHTML(nsIDOMElement * newElement, PRBool * success)
   if (nodeCount > 0)
   {
     nodeList->Item(0, getter_AddRefs(node));
-    nsEditor::GetNodeLocation(node, address_of(parentNode), &offset);
-    DeleteNode(node);
-    //selPriv->SetInterlinePosition(PR_TRUE);
     res = GetSelection(getter_AddRefs(selection));
-    //res = selection->Collapse(parentNode, offset);
-    // BBM: put a comment in latexdefs about how this works.
-    res = selection->Collapse(parentNode, offset);
+    selection->Collapse(node, 0);
+    DeleteNode(node);
     if (success) *success = PR_TRUE;
+
+   // BBM: put a comment in latexdefs about how this works.
   }
 //  cmd_updateStructToolbar
   return res;
