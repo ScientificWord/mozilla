@@ -24,6 +24,11 @@ mml|mtext { color: black; }
 [msiclass="msi_passthrough"] {color: orange; }
 mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
 
+msidisplay {
+  text-align: center;
+  margin: 2px 0px;
+}
+
 
 pre, verbatim { font-family: Courier; white-space: pre }
 
