@@ -165,6 +165,7 @@ en-US.jar:
   locale/helpfiles/graphicscd/btnSuperscript.jpg (graphicscd/btnSuperscript.jpg)
   locale/helpfiles/graphicscd/btnTeX.jpg         (graphicscd/btnTeX.jpg)
   locale/helpfiles/graphicscd/btnXref.jpg        (graphicscd/btnXref.jpg)
+  locale/helpfiles/graphicscd/btnImage.jpg        (graphicscd/btnImage.jpg)
   locale/helpfiles/dm00-00-doing_mathematics.xhtml		  (dm00-00-doing_mathematics.xhtml)
   locale/helpfiles/dm01-00-basic_techniques.xhtml		  (dm01-00-basic_techniques.xhtml)
   locale/helpfiles/dm01-01-basic_techniques.xhtml		  (dm01-01-basic_techniques.xhtml)
