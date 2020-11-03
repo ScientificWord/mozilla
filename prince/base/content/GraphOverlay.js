@@ -2032,7 +2032,8 @@ Frame.prototype = {
           case "placement":
             pos = this.getFrameAttribute(att);
             editor.setAttribute(DOMFrame, "pos", pos);
-            needsWrapfig = (pos === "L" || pos === "I" || pos === "R" || pos === "O");
+            needsWrapfig = (pos === "L" || pos === "I" || pos === "R" || pos === "O" ||
+                            pos === "left" || pos === "inside" || pos === "right" || pos === "outside");
             break;
           case "textalignment":
             editor.setAttribute(DOMFrame, att, this.getFrameAttribute(att));
