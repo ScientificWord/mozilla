@@ -1097,13 +1097,15 @@ this is the case for images in an msiframe
       if ((locationParam === "inside") ||
           (locationParam === "outside") ||
           (locationParam === "left") ||
-          (locationParam === "right") )
+          (locationParam === "right") ||
+		  (locationParam === "I") ||
+		  (locationParam === "O") ||
+		  (locationParam === "L") ||
+		  (locationParam === "R") )
       {
+        // (gp) Changed to not need additional conditional
+        needsWrapfig = true;
         msiRequirePackage(Dg.editorElement, "wrapfig","");
-      }
-      // BBM: optimize -- next 4 lines unneeded
-     needsWrapfig = true;
-      if (needsWrapfig) {
         msiEditorEnsureElementAttribute(frameNode, "req", "wrapfig", "");
       }
     }
