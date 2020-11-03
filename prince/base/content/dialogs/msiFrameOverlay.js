@@ -281,12 +281,9 @@ function initUnitHandler()
 function posCodeToLocationValue ( posCode ) {
   var ret = '';
   if (posCode === 'inline' || posCode === 'center' || posCode === 'floating'  || posCode === 'left' ||
-    posCode === 'right' || posCode === 'inside' || posCode === 'outside') ret = posCode;
+    posCode === 'right' || posCode === 'inside' || posCode === 'outside' ||
+    posCode === "L" || posCode === "R" || posCode === "I" || posCode === "O") ret = posCode;
   else if (posCode === 'display') ret = 'center';
-  else if (posCode === "L") ret = 'left';
-  else if (posCode === "R") ret = 'right';
-  else if (posCode === "I") ret = 'inside';
-  else if (posCode === "O") ret = 'outside';
   return ret;
 }
 
