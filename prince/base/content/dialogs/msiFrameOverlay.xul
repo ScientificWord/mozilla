@@ -351,10 +351,14 @@
                 <menuitem  id="inline" label="&inline.label;"  value="inline" observes="forplots"/>
                 <menuitem  id="center" label="&display.label;" value="center"/>
                 <menuseparator/>
-                <menuitem  id="left" label="&left.label;" value="left"  observes="forplots"/>
-                <menuitem  id="inside" label="&inside.label;" value="inside" observes="forplots"/>
-                <menuitem  id="right" label="&right.label;" value="right" observes="forplots"/>
-                <menuitem  id="outside" label="&outside.label;" value="outside" observes="forplots"/>
+                <menuitem  id="L" label="&left.label;" value="L"  observes="forplots"/>
+                <menuitem  id="left" label="&leftfloating.label;" value="left"  observes="forplots"/>
+                <menuitem  id="R" label="&right.label;" value="R" observes="forplots"/>
+                <menuitem  id="right" label="&rightfloating.label;" value="right" observes="forplots"/>
+                <menuitem  id="I" label="&inside.label;" value="I" observes="forplots"/>
+                <menuitem  id="inside" label="&insidefloating.label;" value="inside" observes="forplots"/>
+                <menuitem  id="O" label="&outside.label;" value="O" observes="forplots"/>
+                <menuitem  id="outside" label="&outsidefloating.label;" value="outside" observes="forplots"/>
               </menupopup>
             </menulist>
           </row>
@@ -367,11 +371,11 @@
             <menulist id="floatList" observes="floatEnabled" oncommand="floatPropertyChanged();">
               <menupopup selectedIndex="0">
                 <menuitem id="floatlistNone" label="&none;"  type="checkbox" value=""/>
-                <menuitem id="ltxfloat_forceHere" type="checkbox" label="&placement.forceHere;" value="H"/>
-                <menuitem id="ltxfloat_here" type="checkbox" label="&placement.here;" value="h"/>
+                <menuitem id="ltxfloat_forceHere"    type="checkbox" label="&placement.forceHere;"    value="H"/>
+                <menuitem id="ltxfloat_here"         type="checkbox" label="&placement.here;"         value="h"/>
                 <menuitem id="ltxfloat_pageOfFloats" type="checkbox" label="&placement.pageOfFloats;" value="p"/>
-                <menuitem id="ltxfloat_topPage" type="checkbox" label="&placement.topPage;" value="t"/>
-                <menuitem id="ltxfloat_bottomPage" type="checkbox" label="&placement.bottomPage;" value="b"/>
+                <menuitem id="ltxfloat_topPage"      type="checkbox" label="&placement.topPage;"      value="t"/>
+                <menuitem id="ltxfloat_bottomPage"   type="checkbox" label="&placement.bottomPage;"   value="b"/>
               </menupopup>
             </menulist>
           </row>
