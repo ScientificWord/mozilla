@@ -21,7 +21,7 @@
   -->
 
 <!-- Window title -->
-<!ENTITY windowTitle.label "Insert table">
+<!ENTITY windowTitle.label "Table">
 
 <!ENTITY size.label "Size">
 <!ENTITY numRowsEditField.label "Rows">
