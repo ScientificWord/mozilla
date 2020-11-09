@@ -571,6 +571,8 @@ public:
 
   nsresult IsPreformatted(nsIDOMNode *aNode, PRBool *aResult);
 
+  nsresult FindLevelForNode(const nsAString& tag, nsIDOMNode *startNode, PRInt32 startOffset, nsIDOMNode **finalNode, nsIDOMNode **semiFinalNode, PRInt32* finalOffset);
+
   nsresult SplitNodeDeep(nsIDOMNode *aNode,
                          nsIDOMNode *aSplitPointParent,
                          PRInt32 aSplitPointOffset,

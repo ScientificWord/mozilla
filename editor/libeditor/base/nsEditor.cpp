@@ -4929,6 +4929,157 @@ PRBool SplitIsAtNodeEnd( nsIDOMNode * aNode, PRInt32 offset ) {
   return PR_TRUE; // if not text or element, we don't want to split.
 }
 
+
+///////////////////////////////////////////////////////////////////////////
+  
+  // FindLevelForNode takes a node in the document and the tag name of a new node
+  // to be inserted in the document as a child of *startNode*, if possible.
+  // If startNode cannot contain a node of type *tag*, then we check against startNode's
+  // parent. We continue until we have found the first ancestor (looking up the tree)
+  // which allows nodes of type *tag* as children. If we succeed, we return the ancestor
+  // as *finalNode* and the offset of its child that is in the ancestor chain.
+  // The computation is similar to what is in SplitNodeDeep.
+
+nsresult
+nsEditor::FindLevelForNode(const nsAString& tag, 
+                            nsIDOMNode *startNode, 
+                            PRInt32 startOffset,
+                            nsIDOMNode **finalNode,
+                            nsIDOMNode **semiFinalNode,
+                            PRInt32 *finalOffset)
+{
+  nsIAtom * nsatom;
+  nsAutoString nodeName;
+  nsString bodyName = NS_LITERAL_STRING("body");
+  PRBool fCanContain;
+  nsCOMPtr<nsIDOMNode> temp, tempNode;
+  PRInt32 tempOffset = startOffset;
+  tempNode = startNode;
+  *semiFinalNode = nsnull;
+  nsresult res;
+
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface((nsIEditor*)this);
+  if (!htmlEditor){
+    return NS_ERROR_FAILURE;
+  }
+  nsCOMPtr<msiITagListManager> tlm;
+  htmlEditor->GetTagListManager(getter_AddRefs(tlm));
+
+  res = tempNode->GetNodeName(nodeName);
+  res = tlm->TagCanContainTag(nodeName, nsatom, tag, nsatom, &fCanContain);
+  *finalOffset = startOffset;
+  while (tempNode && !nodeName.Equals(bodyName) && !fCanContain) {
+    temp = tempNode;
+    GetNodeLocation(temp, address_of(tempNode), &tempOffset);
+    if (tempNode) {
+      res = tempNode->GetNodeName(nodeName);
+    }
+    else return NS_ERROR_FAILURE;
+    res = tlm->TagCanContainTag(nodeName, nsatom, tag, nsatom, &fCanContain);
+  }
+  if (tempNode && fCanContain) {
+    *finalNode = tempNode;
+    *finalOffset = tempOffset;
+    *semiFinalNode = temp;
+    return NS_OK;
+  }
+  else return NS_ERROR_FAILURE;
+}
+
+NS_IMETHODIMP
+nsEditor::FloatStructureUp( nsIDOMNode *structNode,   // N in the above description
+                            nsIDOMNode *initialParent,
+                            PRInt32    initialOffset,
+                            msiITagListManager * tlm )
+{
+  nsCOMPtr<nsIDOMNode> n;
+  PRInt32 offset, nextOffset;
+  nsCOMPtr<nsIDOMNode> child;
+  nsCOMPtr<nsIDOMNode> newChild;
+  nsCOMPtr<nsIDOMNode> parent;
+  nsAutoString structName;
+  nsAutoString childName;
+  PRBool fCanContain;
+  nsIAtom * nsatom = nsnull;
+  nsresult  res;
+
+  // Initialize
+  if (initialParent == nsnull) return NS_ERROR_FAILURE;
+  
+  n = structNode;
+  res = n->GetNodeName(structName);
+  child = initialParent;
+  offset = initialOffset;
+  // Can child be a parent for n ?
+
+  res = child->GetNodeName(childName);
+  if (childName.EqualsLiteral("body") || childName.EqualsLiteral("html")) return NS_ERROR_FAILURE;
+  res = tlm->TagCanContainTag(childName, nsatom, structName, nsatom, &fCanContain);
+  if (fCanContain) {
+    res = InsertNode( structNode, initialParent, initialOffset );
+    res = MoveFollowingNodes(initialParent, initialOffset + 1, structNode, tlm);
+    return res;
+  }
+  else {
+    if ( /* validate node, etc*/ PR_TRUE ) {
+      child -> GetParentNode(getter_AddRefs(parent));
+      nextOffset = GetIndexOf(parent, child);
+
+      if (SplitIsAtNodeStart(child, offset)) {
+        offset = nextOffset;
+        MoveFollowingNodes( child, 0, n, tlm);
+      }
+      else if (SplitIsAtNodeEnd(child, offset)) {
+        offset = nextOffset + 1;
+        // no need to call MoveFollowingNodes
+      } else {
+        res = SplitNode(child, offset, getter_AddRefs(newChild));
+        MoveFollowingNodes(child, 0, n, tlm);
+        offset = nextOffset + 1;
+      }
+      // now we need to copy tail of child to n;
+    }
+    res = FloatStructureUp(n, parent, offset, tlm);
+  }
+}
+
+NS_IMETHODIMP
+nsEditor::MoveFollowingNodes( nsIDOMNode *parentNode, 
+        PRInt32 offset, 
+        nsIDOMNode *destNode, 
+        msiITagListManager * tlm) 
+{
+  nsCOMPtr<nsIDOMNodeList> nodelist;
+  nsCOMPtr<nsIDOMNode> child;
+  PRUint32 count;
+  PRInt32 i;
+  nsresult res;
+  nsAutoString childTag;
+  nsAutoString destTag;
+  nsIAtom * nsatom = nsnull;
+  PRBool fCanContain;
+
+  res = destNode->GetNodeName(destTag);
+
+  res = parentNode->GetChildNodes(getter_AddRefs(nodelist));  // note: this is a live list, so it changes as we move nodes.
+  // do we need to check for parentNode a text node?
+  if (NS_SUCCEEDED(res) && nodelist) {
+    nodelist->GetLength(&count);
+  }
+
+  while (PR_TRUE) {
+    res = nodelist->Item(offset, getter_AddRefs(child));
+    if (!child) break;
+    res = child->GetNodeName(childTag);
+    res = tlm->TagCanContainTag(destTag, nsatom, childTag, nsatom, &fCanContain);
+    if (fCanContain || childTag.EqualsLiteral("#text")) {
+      MoveNode( child, destNode, -1); // offset -1 means last position
+    } else break;
+  }
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 //
 //  This splits a node "deeply", splitting children as
