@@ -50,11 +50,15 @@
 <!ENTITY  SizePlacement.label  "Size &amp; placement">
 <!ENTITY  unspecified		"--unspecified">
 <!ENTITY  inline.label		"Inline">
-<!ENTITY  left.label		"Left">
-<!ENTITY  inside.label		"Inside">
-<!ENTITY  center.label		"Center">
-<!ENTITY  right.label		"Right">
-<!ENTITY  outside.label		"Outside">
+<!ENTITY  left.label		    "Left">
+<!ENTITY  leftfloating.label    "Left (floating)">
+<!ENTITY  inside.label		    "Inside">
+<!ENTITY  insidefloating.label  "Inside (floating)">
+<!ENTITY  center.label		    "Center">
+<!ENTITY  right.label		    "Right">
+<!ENTITY  rightfloating.label   "Right (floating)">
+<!ENTITY  outside.label		    "Outside">
+<!ENTITY  outsidefloating.label	"Outside (floating)">
 <!ENTITY  baseline.label 	"Baseline">
 <!ENTITY  sameastoprow.label 	"Same as top row">
 <!ENTITY  atverticalcenter.label 	"Vertical center">
