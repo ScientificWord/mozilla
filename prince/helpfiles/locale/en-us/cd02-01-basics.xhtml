@@ -6,228 +6,232 @@
 
 <body msiSelectionManagerID="6">
   <section xmlns="http://www.w3.org/1999/xhtml" id="tsid_3141595">
-    <sectiontitle>Menus</sectiontitle> 
-    <bodyText>The <indexitem req="varioref"><prisec>menus!commands</prisec></indexitem>command
-    menus are the same no matter what MacKichan product you have installed,
-    with these exceptions: In SW, the Compute menu isn't available. In SNB,
-    the Typeset menu isn't available. </bodyText>
-    <bodyText>When you choose
-    a menu, the program displays a pull-down list of available commands. When
-    you move the mouse over a command that is followed by an arrow, the program
-    displays a list of associated commands so you can choose among them. When
-    you choose a command that is followed by an ellipsis (dots), the program
-    displays a <indexitem req="varioref"><prisec>menus!dialog boxes</prisec></indexitem>dialog
-    box so you can make additional choices. Some commands are available only
-    in certain environments or circumstances; for example, the Paste command
-    isn't available if you haven't already copied a selection to the clipboard.
-    <emphasized>Unavailable commands are dimmed.</emphasized></bodyText>
+    <sectiontitle>Menus</sectiontitle>
+
+      <bodyText>The <indexitem req="varioref"><prisec>menus!commands</prisec></indexitem>command
+        menus are the same no matter what MacKichan product you have installed,
+        with these exceptions: In SW, the Compute menu isn't available. In SNB,
+        the Typeset menu isn't available. </bodyText>
+        <bodyText>When you choose
+        a menu, the program displays a pull-down list of available commands. When
+        you move the mouse over a command that is followed by an arrow, the program
+        displays a list of associated commands so you can choose among them. When
+        you choose a command that is followed by an ellipsis (dots), the program
+        displays a <indexitem req="varioref"><prisec>menus!dialog boxes</prisec></indexitem>dialog
+        box so you can make additional choices. Some commands are available only
+        in certain environments or circumstances; for example, the Paste command
+        isn't available if you haven't already copied a selection to the clipboard.
+        <emphasized>Unavailable commands are dimmed.</emphasized>
+      </bodyText>
+
     <subsection id="tsid_3141601">
-    <sectiontitle><shortTitle>File Menu</shortTitle>FILE Menu<a id="file"/></sectiontitle>
+      <sectiontitle><shortTitle>File Menu</shortTitle>FILE Menu<a id="file"/></sectiontitle>
 
-    <bodyText><indexitem req="varioref"><prisec>File menu</prisec></indexitem><indexitem req="varioref"><prisec>menus!descriptions</prisec></indexitem>Commands
-    in the file menu apply to documents as a whole. </bodyText>
+      <bodyText><indexitem req="varioref"><prisec>File menu</prisec></indexitem><indexitem req="varioref"><prisec>menus!descriptions</prisec></indexitem>Commands
+      in the file menu apply to documents as a whole. </bodyText>
 
-    <subsubsection id="tsid_3141612">
-    <sectiontitle>New document...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>New Document!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>documents!creating</prisec></indexitem>Opens
-    the Select shell for new document dialog box. 
-    <centeredEnv><bodyText><object data="graphicscd/open_new.png" id="tsid_3141699"/></bodyText></centeredEnv>
-     </bodyText>
-    <bodyText>A shell document contains all information needed
-    to create a new document, including the document type, the <texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo>
-    style, tags for formatting and structuring the document, etc. When you select
-    a shell, a document is created with a made up name. You should change this
-    title the first time you save the document. </bodyText>
-    <bodyText>A document
-    can be fairly complex, consisting of an <smallCaps>html</smallCaps> file,
-    many graphics files, MuPAD plots, .css files (which determine the on-screen
-    presentation of the document tags), and generated files such as <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
-    and <smallCaps>pdf</smallCaps> files. These are all collected together in
-    a document file which has the file extension .sci, and which is, in fact,
-    a complete directory of files zipped together. This makes it easier to move
-    files on a single computer or between computers, as all the needed components
-    are contained in the .sci file rather than in multiple files and locations.
-    </bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141613">
-    <sectiontitle>Open file...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Open File!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>documents!open</prisec></indexitem>Accesses
-    the Open file dialog box, with which you may select an existing file for
-    editing. 
-    <centeredEnv><bodyText><object data="graphicscd/open_file.png" id="tsid_3141700"/></bodyText></centeredEnv>
-     </bodyText>
-    <bodyText>The program works with .sci and .xhtml files. (You
-    may choose to open other text-based file types, but these will generally
-    all open and be edited as straight, unformatted text.) </bodyText>
-    <bodyText>When
-    you open a .sci file, the zip file is unwrapped and written to a working
-    directory. When your editing is completed, this directory and its altered
-    files are zipped up again into an .sci file and the working directory is
-    deleted. An <smallCaps>html</smallCaps> file is converted to an .sci file.
-    Any graphics that it refers to will be copied first into the working directory
-    and then into the zipped up .sci file. </bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141617">
-    <sectiontitle>Recent files</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Recent Files!on File menu</prisec></indexitem>Shows
-    a list of the most recent files with which you have worked, making it easier
-    to select one for editing. </bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141614">
-    <sectiontitle>Import TeX...</sectiontitle>
-    <bodyText><indexitem req="varioref"><prisec>Import TeX!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>import!TeX@\TeX </prisec></indexitem><indexitem req="varioref"><prisec>TeX@\TeX !import</prisec></indexitem>Allows
-    you to open and edit <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
-    documents and documents created with previous versions of MacKichan software.
-    These documents will be converted to .sci format. 
-    <centeredEnv><bodyText><object data="graphicscd/import_tex.png" id="tsid_3141701"/></bodyText></centeredEnv>
-    </bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141615">
-    <sectiontitle>Export TeX...</sectiontitle>
-    <bodyText><indexitem req="varioref"><prisec>Export TeX!on File menu</prisec></indexitem>Gives
-    you the ability to share documents with a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
-    user who does not have access to MacKichan software. Choosing this command
-    brings up a dialog box with which you may choose to save the current document
-    in <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
-    format. 
-    <centeredEnv><bodyText><object data="graphicscd/export_tex.png" id="tsid_3141702"/></bodyText></centeredEnv>
-    </bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141616">
-    <sectiontitle>Export to web...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Export to Web!on File menu</prisec></indexitem>Saves
-    current document in .html format, copying internal .css files, etc., into
-    the .sci file and changing the internal links. 
-    <centeredEnv><bodyText><object data="graphicscd/export_to_web.png" id="tsid_3141703"/></bodyText></centeredEnv>
-    </bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141618">
-    <sectiontitle>Clean up...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Clean Up!on File menu</prisec></indexitem>Cleans
-    up temporary files created during <smallCaps>pdf</smallCaps> previews.</bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141619">
-    <sectiontitle>Close</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Close!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>documents!closing</prisec></indexitem>Closes
-    the current document. If you have any unsaved changes, you will be asked
-    if you wish to save or discard them. You may also choose to cancel the Close
-    operation as this point. You may also close a document by clicking the Close
-    box (marked with a small x) in the upper right corner.</bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141620">
-    <sectiontitle>Save</sectiontitle> 
-      <bodyText>Opens 
-        <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141740"><bodyText>
-          <QTR type="QQQMarginheading">Note:</QTR><br/>
-            <sansSerif>In Version 6, you can save by pressing Ctrl+s, which is the accepted standard
-            Save shortcut.</sansSerif></bodyText></note>
-        </notewrapper> 
-        the Save document as dialog box the first time you select this command with a new document
-        open, allowing you to <indexitem req="varioref"><prisec>saving options!new document</prisec></indexitem>choose
-        a name and location under which to save it and to choose the file type.
-        After a document has been saved, choosing this command again saves the document
-        without the dialog box appearing. 
-        <centeredEnv><bodyText><object data="graphicscd/save_document_as.png" id="tsid_3141704"/></bodyText></centeredEnv>
+      <subsubsection id="tsid_3141612">
+      <sectiontitle>New document...</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>New Document!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>documents!creating</prisec></indexitem>Opens
+      the Select shell for new document dialog box. 
+      <centeredEnv><bodyText><object data="graphicscd/open_new.png" id="tsid_3141699"/></bodyText></centeredEnv>
+       </bodyText>
+      <bodyText>A shell document contains all information needed
+      to create a new document, including the document type, the <texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo>
+      style, tags for formatting and structuring the document, etc. When you select
+      a shell, a document is created with a made up name. You should change this
+      title the first time you save the document. </bodyText>
+      <bodyText>A document
+      can be fairly complex, consisting of an <smallCaps>html</smallCaps> file,
+      many graphics files, MuPAD plots, .css files (which determine the on-screen
+      presentation of the document tags), and generated files such as <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+      and <smallCaps>pdf</smallCaps> files. These are all collected together in
+      a document file which has the file extension .sci, and which is, in fact,
+      a complete directory of files zipped together. This makes it easier to move
+      files on a single computer or between computers, as all the needed components
+      are contained in the .sci file rather than in multiple files and locations.
       </bodyText>
-    </subsubsection>
+      </subsubsection>
 
-    <subsubsection id="tsid_3141621">
-    <sectiontitle>Save as...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Save As!on File menu</prisec></indexitem>Opens
-    the Save document as dialog box every time you choose it. This allows you
-    to save a copy of the current document under a different name, and to work
-    on the copy.</bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141613">
+      <sectiontitle>Open file...</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Open File!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>documents!open</prisec></indexitem>Accesses
+      the Open file dialog box, with which you may select an existing file for
+      editing. 
+      <centeredEnv><bodyText><object data="graphicscd/open_file.png" id="tsid_3141700"/></bodyText></centeredEnv>
+       </bodyText>
+      <bodyText>The program works with .sci and .xhtml files. (You
+      may choose to open other text-based file types, but these will generally
+      all open and be edited as straight, unformatted text.) </bodyText>
+      <bodyText>When
+      you open a .sci file, the zip file is unwrapped and written to a working
+      directory. When your editing is completed, this directory and its altered
+      files are zipped up again into an .sci file and the working directory is
+      deleted. An <smallCaps>html</smallCaps> file is converted to an .sci file.
+      Any graphics that it refers to will be copied first into the working directory
+      and then into the zipped up .sci file. </bodyText>
+      </subsubsection>
 
-    <subsubsection id="tsid_3141622">
-    <sectiontitle>Save copy as...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Save Copy As!on File menu</prisec></indexitem>Save
-    a copy of the current document, either to a new directory or as an .sci
-    file. Note that you continue working on the original document, not on the
-    copy as you do with Save As...</bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141617">
+      <sectiontitle>Recent files</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Recent Files!on File menu</prisec></indexitem>Shows
+      a list of the most recent files with which you have worked, making it easier
+      to select one for editing. </bodyText>
+      </subsubsection>
 
-    <subsubsection id="tsid_3141623">
-    <sectiontitle>Revert</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Revert!on File menu</prisec></indexitem>Discards
-    all unsaved changes, rolling document back to the last saved version. This
-    command is not available if no changes have been made since the document
-    was last opened or saved or if the document has never been saved.</bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141624">
-    <sectiontitle>Page setup...</sectiontitle> 
-      <bodyText>Brings
-        <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141741">
-          <bodyText><QTR type="QQQMarginheading">Note:</QTR><br/>
-          <sansSerif><texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">T<sub>E</sub>X</texlogo> typsetting features will not be used when you choose to direct print.</sansSerif>
-          </bodyText></note>
-        </notewrapper> up the Page Setup dialog box, in which
-        you may make choices regarding your printer and its
-        specifications for use in direct printing. The Format and <indexitem req="varioref"><prisec>printing!options</prisec></indexitem>Options
-        tab controls page orientation and the scale at which to print. The Margins
-        &amp; Header/Footer tab controls the overall margins on top, bottom, left
-        and right and also lets you determine the placement of headers and footers.
-        <centeredEnv><bodyText><object data="graphicscd/page_setup.png" id="tsid_3141705"/></bodyText></centeredEnv>
+      <subsubsection id="tsid_3141614">
+      <sectiontitle>Import TeX...</sectiontitle>
+      <bodyText><indexitem req="varioref"><prisec>Import TeX!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>import!TeX@\TeX </prisec></indexitem><indexitem req="varioref"><prisec>TeX@\TeX !import</prisec></indexitem>Allows
+      you to open and edit <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+      documents and documents created with previous versions of MacKichan software.
+      These documents will be converted to .sci format. 
+      <centeredEnv><bodyText><object data="graphicscd/import_tex.png" id="tsid_3141701"/></bodyText></centeredEnv>
       </bodyText>
-    </subsubsection>
+      </subsubsection>
 
-    <subsubsection>
-    <sectiontitle>Typeset PDF preview</sectiontitle>
-    <bodyText>Choose to preview what your document will look like 
-    when printed with typesetting. This is a Typeset menu item 
-    and does not appear when using SNB.</bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141615">
+      <sectiontitle>Export TeX...</sectiontitle>
+      <bodyText><indexitem req="varioref"><prisec>Export TeX!on File menu</prisec></indexitem>Gives
+      you the ability to share documents with a <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+      user who does not have access to MacKichan software. Choosing this command
+      brings up a dialog box with which you may choose to save the current document
+      in <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+      format. 
+      <centeredEnv><bodyText><object data="graphicscd/export_tex.png" id="tsid_3141702"/></bodyText></centeredEnv>
+      </bodyText>
+      </subsubsection>
 
-    <subsubsection id="tsid_3141625">
-    <sectiontitle>Direct print preview</sectiontitle>
-    <bodyText><indexitem req="varioref"><prisec>Preview!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>PDF files!print!on File menu</prisec></indexitem>Choose
-    to preview what your document will look like when printed without typesetting. Click Close to return to editing. 
-    <centeredEnv><bodyText><object data="graphicscd/print_preview.png" id="tsid_3141706"/></bodyText></centeredEnv>
-    </bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141616">
+      <sectiontitle>Export to web...</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Export to Web!on File menu</prisec></indexitem>Saves
+      current document in .html format, copying internal .css files, etc., into
+      the .sci file and changing the internal links. 
+      <centeredEnv><bodyText><object data="graphicscd/export_to_web.png" id="tsid_3141703"/></bodyText></centeredEnv>
+      </bodyText>
+      </subsubsection>
 
-    <subsubsection id="tsid_3141626">
-    <sectiontitle>Direct print</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Print!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>documents!print</prisec></indexitem>Choose
-    to print
-    your document without typesetting. Doing
-    so opens the Print dialog box in which you may specify print options such
-    as the page range to print, the number of copies, whether to print to a
-    file, and how to handle frames. </bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/print.png" id="tsid_3141707"/></bodyText></centeredEnv>
-    </subsubsection>
+      <subsubsection id="tsid_3141618">
+      <sectiontitle>Clean up...</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Clean Up!on File menu</prisec></indexitem>Cleans
+      up temporary files created during <smallCaps>pdf</smallCaps> previews.</bodyText>
+      </subsubsection>
 
-    <subsubsection id="tsid_3141627">
-    <sectiontitle>Document info....</sectiontitle>
-    <bodyText><indexitem req="varioref"><prisec>Document Info!on File menu</prisec></indexitem>Accesses
-    the Document info dialog box, which has tabs for viewing and editing various
-    information items associated with the current document. These include: 
-    <centeredEnv><bodyText><object data="graphicscd/document_info.png" id="tsid_3141708"/></bodyText></centeredEnv>
-    </bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141619">
+      <sectiontitle>Close</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Close!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>documents!closing</prisec></indexitem>Closes
+      the current document. If you have any unsaved changes, you will be asked
+      if you wish to save or discard them. You may also choose to cancel the Close
+      operation as this point. You may also close a document by clicking the Close
+      box (marked with a small x) in the upper right corner.</bodyText>
+      </subsubsection>
 
-    <subsubsection id="tsid_3141628">
-    <sectiontitle>Style...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Style!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>Style!editing</prisec></indexitem>Opens
-    the Document style sheets dialog box, 
-    allowing you to browse for and attach different styles to your document,
-    altering its overall appearance without changing its contents. Tabs let
-    you select from among style sheets, scripts, tag definitions, <smallCaps>XSLT</smallCaps>
-    translators, and <texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo>
-    styles to use with the current document.</bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141620">
+      <sectiontitle>Save</sectiontitle> 
+        <bodyText>Opens 
+          <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141740"><bodyText>
+            <QTR type="QQQMarginheading">Note:</QTR><br/>
+              <sansSerif>In Version 6, you can save by pressing Ctrl+s, which is the accepted standard
+              Save shortcut.</sansSerif></bodyText></note>
+          </notewrapper> 
+          the Save document as dialog box the first time you select this command with a new document
+          open, allowing you to <indexitem req="varioref"><prisec>saving options!new document</prisec></indexitem>choose
+          a name and location under which to save it and to choose the file type.
+          After a document has been saved, choosing this command again saves the document
+          without the dialog box appearing. 
+          <centeredEnv><bodyText><object data="graphicscd/save_document_as.png" id="tsid_3141704"/></bodyText></centeredEnv>
+        </bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141621">
+      <sectiontitle>Save as...</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Save As!on File menu</prisec></indexitem>Opens
+      the Save document as dialog box every time you choose it. This allows you
+      to save a copy of the current document under a different name, and to work
+      on the copy.</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141622">
+      <sectiontitle>Save copy as...</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Save Copy As!on File menu</prisec></indexitem>Save
+      a copy of the current document, either to a new directory or as an .sci
+      file. Note that you continue working on the original document, not on the
+      copy as you do with Save As...</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141623">
+      <sectiontitle>Revert</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Revert!on File menu</prisec></indexitem>Discards
+      all unsaved changes, rolling document back to the last saved version. This
+      command is not available if no changes have been made since the document
+      was last opened or saved or if the document has never been saved.</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141624">
+      <sectiontitle>Page setup...</sectiontitle> 
+        <bodyText>Brings
+          <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141741">
+            <bodyText><QTR type="QQQMarginheading">Note:</QTR><br/>
+            <sansSerif><texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">T<sub>E</sub>X</texlogo> typsetting features will not be used when you choose to direct print.</sansSerif>
+            </bodyText></note>
+          </notewrapper> up the Page Setup dialog box, in which
+          you may make choices regarding your printer and its
+          specifications for use in direct printing. The Format and <indexitem req="varioref"><prisec>printing!options</prisec></indexitem>Options
+          tab controls page orientation and the scale at which to print. The Margins
+          &amp; Header/Footer tab controls the overall margins on top, bottom, left
+          and right and also lets you determine the placement of headers and footers.
+          <centeredEnv><bodyText><object data="graphicscd/page_setup.png" id="tsid_3141705"/></bodyText></centeredEnv>
+        </bodyText>
+      </subsubsection>
+
+      <subsubsection>
+      <sectiontitle>Typeset PDF preview</sectiontitle>
+      <bodyText>Choose to preview what your document will look like 
+      when printed with typesetting. This is a Typeset menu item 
+      and does not appear when using SNB.</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141625">
+      <sectiontitle>Direct print preview</sectiontitle>
+      <bodyText><indexitem req="varioref"><prisec>Preview!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>PDF files!print!on File menu</prisec></indexitem>Choose
+      to preview what your document will look like when printed without typesetting. Click Close to return to editing. 
+      <centeredEnv><bodyText><object data="graphicscd/print_preview.png" id="tsid_3141706"/></bodyText></centeredEnv>
+      </bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141626">
+      <sectiontitle>Direct print</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Print!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>documents!print</prisec></indexitem>Choose
+      to print
+      your document without typesetting. Doing
+      so opens the Print dialog box in which you may specify print options such
+      as the page range to print, the number of copies, whether to print to a
+      file, and how to handle frames. </bodyText>
+      <centeredEnv><bodyText><object data="graphicscd/print.png" id="tsid_3141707"/></bodyText></centeredEnv>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141627">
+      <sectiontitle>Document info....</sectiontitle>
+      <bodyText><indexitem req="varioref"><prisec>Document Info!on File menu</prisec></indexitem>Accesses
+      the Document info dialog box, which has tabs for viewing and editing various
+      information items associated with the current document. These include: 
+      <centeredEnv><bodyText><object data="graphicscd/document_info.png" id="tsid_3141708"/></bodyText></centeredEnv>
+      </bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141628">
+      <sectiontitle>Style...</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Style!on File menu</prisec></indexitem><indexitem req="varioref"><prisec>Style!editing</prisec></indexitem>Opens
+      the Document style sheets dialog box, 
+      allowing you to browse for and attach different styles to your document,
+      altering its overall appearance without changing its contents. Tabs let
+      you select from among style sheets, scripts, tag definitions, <smallCaps>XSLT</smallCaps>
+      translators, and <texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo>
+      styles to use with the current document.</bodyText>
+      </subsubsection>
 
       <subsubsection id="tsid_3141629">
-        <sectiontitle>Exit</sectiontitle> 
+        <sectiontitle>Exit</sectiontitle>
+
         <bodyText>Exits the program, closing all documents in the process. If you have unsaved changes
           in any open documents, you will be asked if you wish to save, discard changes,
           or cancel the Exit operation. 
@@ -240,177 +244,196 @@
           </notewrapper>
           this command is on the SWP (Application) menu using the name Quit.
         </bodyText>
+
       </subsubsection>
+
     </subsection>
 
     <subsection id="tsid_3141602">
-    <sectiontitle><shortTitle>Edit Menu</shortTitle>EDIT Menu<a id="edit"/></sectiontitle>
+      <sectiontitle><shortTitle>Edit Menu</shortTitle>EDIT Menu<a id="edit"/></sectiontitle>
 
-    <bodyText><indexitem req="varioref"><prisec>Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>menus!descriptions</prisec></indexitem>The
-    Edit menu contains commands for working with document content, most of which
-    should be familiar from your work with other applications </bodyText>
-
-    <subsubsection id="tsid_3141630">
-    <sectiontitle>Undo</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Undo!on Edit menu</prisec></indexitem>New
-    to Version 6, you may undo an unlimited amount of previous editing changes
-    from your current session with the document.</bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141631">
-    <sectiontitle>Redo</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Redo!on Edit menu</prisec></indexitem>This
-    command is unavailable until you have chosen to Undo one or more changes.
-    At that point, you may choose Redo to reapply the last undone editing change.
-    Note that if you choose to undo the last change, and then make another editing
-    change, Redo is no longer available.</bodyText>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141632">
-    <sectiontitle>Properties</sectiontitle> 
-      <bodyText><indexitem req="varioref"><prisec>Properties!on Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>properties!changing</prisec></indexitem>Accesses
-        <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141745">
-        <bodyText><QTR type="QQQMarginheading">Note:</QTR><br/>
-          <sansSerif>There may be an entire nested chain of items whose properties may be changed,
-          e.g. chapter, section, subsection, bodyText.</sansSerif></bodyText></note>
-        </notewrapper>
-        a properties dialog box; the exact one that appears depends upon what sort
-        of object (paragraph, <indexitem req="varioref"><prisec>mathematics!properties</prisec></indexitem>math
-        expression, etc.) the cursor is in when you select the command and which
-        specific choice you make among properties. Use the dialog box that appears
-        to apply special properties to the item at the insertion point. 
+      <bodyText><indexitem req="varioref"><prisec>Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>menus!descriptions</prisec></indexitem>The
+        Edit menu contains commands for working with document content, most of which
+        should be familiar from your work with other applications.
       </bodyText>
-      <centeredEnv><bodyText><object data="graphicscd/paragraph_properties.png" id="tsid_3141710"/></bodyText></centeredEnv>
-    </subsubsection>
 
-    <subsubsection id="tsid_3141633">
-    <sectiontitle>Cut</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Cut!on Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>moving!cutting and pasting</prisec></indexitem>Delete
-    the current selection and place it on the clipboard, from which it may be
-    moved and reinserted elsewhere in the current document or other documents.
-    This command is unavailable if there is no current selection.</bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141630">
+        <sectiontitle>Undo</sectiontitle>
 
-    <subsubsection id="tsid_3141634">
-    <sectiontitle>Copy</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Copy!on Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>copying</prisec></indexitem>Copy
-    the current selection and place it on the clipboard. From here it may be
-    replicated elsewhere in the current document or other documents. This command
-    is unavailable if there is no current selection.</bodyText>
-    </subsubsection>
+        <bodyText><indexitem req="varioref"><prisec>Undo!on Edit menu</prisec></indexitem>New
+         to Version 6, you may undo an unlimited amount of previous editing changes
+          from your current session with the document.
+        </bodyText>
 
-    <subsubsection>
-    <sectiontitle>Copy as TeX</sectiontitle>
-    <bodyText>Copy the current selection and place it on the 
-    clipboard, using the 
-    <texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">T<sub>E</sub>X</texlogo> mark up language. This command is unavailable if there is no current selection.</bodyText>
-    </subsubsection>
+      </subsubsection>
 
-    <subsubsection>
-    <sectiontitle>Copy as picture</sectiontitle>
-    <bodyText>Copy the current selection and place it on the 
-    clipboard as a picture. This command is unavailable if 
-    there is no current selection.</bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141631">
+        <sectiontitle>Redo</sectiontitle>
 
-    <subsubsection>
-    <sectiontitle>Export selection as picture...</sectiontitle>
-    <bodyText>Save the current selection as a picture. This 
-    menu item opens a dialog that allows you to select the 
-    file name of the picture file to be created, the location, 
-    and the type of picture. This command is unavailable if there 
-    is no current selection.</bodyText>
-    </subsubsection>
+        <bodyText><indexitem req="varioref"><prisec>Redo!on Edit menu</prisec></indexitem>This
+          command is unavailable until you have chosen to Undo one or more changes.
+          At that point, you may choose Redo to reapply the last undone editing change.
+          Note that if you choose to undo the last change, and then make another editing
+          change, Redo is no longer available.
+        </bodyText>
 
-    <subsubsection id="tsid_3141635">
-    <sectiontitle>Paste</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Paste!on Edit menu</prisec></indexitem>Place
-    a copy of the current clipboard contents at the insertion point. This command
-    is unavailable if nothing has been cut or copied to the clipboard (including
-    from other applications).</bodyText>
-    </subsubsection>
+      </subsubsection>
 
-    <subsubsection id="tsid_3141636">
-    <sectiontitle>Paste without formatting</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Paste Without Formatting!on Edit menu</prisec></indexitem>Place
-    a copy of the current clipboard contents at the insertion point without
-    any tag or formatting information. This command is unavailable if nothing
-    has been cut or copied to the clipboard (including from other applications).</bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141632">
+        <sectiontitle>Properties</sectiontitle>
 
-    <subsubsection id="tsid_3141637">
-    <sectiontitle>Delete</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Delete!on Edit menu</prisec></indexitem>Delete
-    the current selection or the character to the right of the insertion point
-    if there is no selection.</bodyText>
-    </subsubsection>
+        <bodyText><indexitem req="varioref"><prisec>Properties!on Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>properties!changing</prisec></indexitem>Accesses
+          <notewrapper xmlns="http://www.w3.org/1999/xhtml"><note type="marginpar" id="tsid_3141745">
+            <bodyText><QTR type="QQQMarginheading">Note:</QTR><br/>
+              <sansSerif>There may be an entire nested chain of items whose properties may be changed,
+              e.g. chapter, section, subsection, bodyText.</sansSerif></bodyText></note>
+          </notewrapper>
+          a properties dialog box; the exact one that appears depends upon what sort
+          of object (paragraph, <indexitem req="varioref"><prisec>mathematics!properties</prisec></indexitem>math
+          expression, etc.) the cursor is in when you select the command and which
+          specific choice you make among properties. Use the dialog box that appears
+          to apply special properties to the item at the insertion point. 
+        </bodyText>
 
-    <subsubsection id="tsid_3141638">
-    <sectiontitle>Select all</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Select All!on Edit menu</prisec></indexitem>Select
-    the entire contents of the current document. Useful for applying certain
-    global changes, or for copying an entire document to the clipboard.</bodyText>
-    </subsubsection>
+        <centeredEnv><bodyText><object data="graphicscd/paragraph_properties.png" id="tsid_3141710"/></bodyText>
+        </centeredEnv>
 
-    <subsubsection id="tsid_3141639">
-    <sectiontitle>Find and replace...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Find!on Edit menu</prisec></indexitem>Opens
-    the Find and replace dialog box. Enter a word or phrase for which you would
-    like to search. You may also specify a word or phrase with which to replace
-    found instances of the search text. You may apply tags to the search and/or
-    replacement text.</bodyText>
-    </subsubsection>
+      </subsubsection>
 
-    <subsubsection id="tsid_3141640">
-    <sectiontitle>Find again</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Find Again!on Edit menu</prisec></indexitem>Starting
-    with the current insertion point, locate the next instance of text matching
-    what you entered using Find and replace. </bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141633">
+        <sectiontitle>Cut</sectiontitle>
 
-    <subsubsection id="tsid_3141641">
-    <sectiontitle>Find previous</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Find Previous!on Edit menu</prisec></indexitem>Starting
-    from the current insertion point, locate the first previous instance of
-    text matching what you entered using Find and Replace.</bodyText>
-    </subsubsection>
+        <bodyText><indexitem req="varioref"><prisec>Cut!on Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>moving!cutting and pasting</prisec></indexitem>Delete
+          the current selection and place it on the clipboard, from which it may be
+          moved and reinserted elsewhere in the current document or other documents.
+          This command is unavailable if there is no current selection.
+        </bodyText>
 
-    <subsubsection id="tsid_3141642">
-    <sectiontitle>Check spelling</sectiontitle> 
-      <bodyText>Accesses the dedicated spelling checker, as opposed to the inline spell checking that
-        is always operative. (Misspelled words are flagged with a wavy red underline;
-        right-click to get suggested corrections from the context menu.) With the
-        Check spelling dialog, you can choose to replace a misspelled word or to
-        ignore the suggested corrections. You may also specify which language to use.  
-        On the Macintosh 
-        <notewrapper xmlns="http://www.w3.org/1999/xhtml">
-          <note type="marginpar" id="tsid_3141748">
-            <bodyText><QTR type="QQQMarginheading">Macintosh Users Note</QTR>
-            </bodyText>
-          </note>
-        </notewrapper>
-        the system spell checker is used and the system default language is the one selected. 
-      </bodyText>
-      <centeredEnv><bodyText><object data="graphicscd/check_spelling.png" id="tsid_3141711"/></bodyText></centeredEnv>
-    </subsubsection>
+      </subsubsection>
 
-    <subsubsection id="tsid_3141643">
-    <sectiontitle>Count words</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Count Words!on the Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>word count</prisec></indexitem>Returns
-    the word count for the current document in a dialog box. The count is obtained by looking
-    at the number of sequences of characters separated by spaces, returns, tabs,
-    and the like. (Some word counts are obtained by taking the whole number
-    of characters in a document and dividing by five, which is the average number
-    of characters in an English word.) Click OK to dismiss it. </bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/count_words.png" id="tsid_3141712"/></bodyText></centeredEnv>
-    </subsubsection>
+      <subsubsection id="tsid_3141634">
+        <sectiontitle>Copy</sectiontitle>
 
-    <subsubsection>
-    <sectiontitle>Set alignment</sectiontitle>
-    <bodyText>This menu item sets an alignment point in a multi-line 
-    math display. This command is unavailable unless the cursor is 
-    in a valid location for an alignment point.</bodyText>
-    </subsubsection>
+        <bodyText><indexitem req="varioref"><prisec>Copy!on Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>copying</prisec></indexitem>Copy
+          the current selection and place it on the clipboard. From here it may be
+          replicated elsewhere in the current document or other documents. This command
+          is unavailable if there is no current selection.
+        </bodyText>
+
+      </subsubsection>
+
+      <subsubsection>
+      <sectiontitle>Copy as TeX</sectiontitle>
+      <bodyText>Copy the current selection and place it on the 
+      clipboard, using the 
+      <texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">T<sub>E</sub>X</texlogo> mark up language. This command is unavailable if there is no current selection.</bodyText>
+      </subsubsection>
+
+      <subsubsection>
+      <sectiontitle>Copy as picture</sectiontitle>
+      <bodyText>Copy the current selection and place it on the 
+      clipboard as a picture. This command is unavailable if 
+      there is no current selection.</bodyText>
+      </subsubsection>
+
+      <subsubsection>
+      <sectiontitle>Export selection as picture...</sectiontitle>
+      <bodyText>Save the current selection as a picture. This 
+      menu item opens a dialog that allows you to select the 
+      file name of the picture file to be created, the location, 
+      and the type of picture. This command is unavailable if there 
+      is no current selection.</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141635">
+      <sectiontitle>Paste</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Paste!on Edit menu</prisec></indexitem>Place
+      a copy of the current clipboard contents at the insertion point. This command
+      is unavailable if nothing has been cut or copied to the clipboard (including
+      from other applications).</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141636">
+      <sectiontitle>Paste without formatting</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Paste Without Formatting!on Edit menu</prisec></indexitem>Place
+      a copy of the current clipboard contents at the insertion point without
+      any tag or formatting information. This command is unavailable if nothing
+      has been cut or copied to the clipboard (including from other applications).</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141637">
+      <sectiontitle>Delete</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Delete!on Edit menu</prisec></indexitem>Delete
+      the current selection or the character to the right of the insertion point
+      if there is no selection.</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141638">
+      <sectiontitle>Select all</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Select All!on Edit menu</prisec></indexitem>Select
+      the entire contents of the current document. Useful for applying certain
+      global changes, or for copying an entire document to the clipboard.</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141639">
+      <sectiontitle>Find and replace...</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Find!on Edit menu</prisec></indexitem>Opens
+      the Find and replace dialog box. Enter a word or phrase for which you would
+      like to search. You may also specify a word or phrase with which to replace
+      found instances of the search text. You may apply tags to the search and/or
+      replacement text.</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141640">
+      <sectiontitle>Find again</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Find Again!on Edit menu</prisec></indexitem>Starting
+      with the current insertion point, locate the next instance of text matching
+      what you entered using Find and replace. </bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141641">
+      <sectiontitle>Find previous</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Find Previous!on Edit menu</prisec></indexitem>Starting
+      from the current insertion point, locate the first previous instance of
+      text matching what you entered using Find and Replace.</bodyText>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141642">
+      <sectiontitle>Check spelling</sectiontitle> 
+        <bodyText>Accesses the dedicated spelling checker, as opposed to the inline spell checking that
+          is always operative. (Misspelled words are flagged with a wavy red underline;
+          right-click to get suggested corrections from the context menu.) With the
+          Check spelling dialog, you can choose to replace a misspelled word or to
+          ignore the suggested corrections. You may also specify which language to use.  
+          On the Macintosh 
+          <notewrapper xmlns="http://www.w3.org/1999/xhtml">
+            <note type="marginpar" id="tsid_3141748">
+              <bodyText><QTR type="QQQMarginheading">Macintosh Users Note</QTR>
+              </bodyText>
+            </note>
+          </notewrapper>
+          the system spell checker is used and the system default language is the one selected. 
+        </bodyText>
+        <centeredEnv><bodyText><object data="graphicscd/check_spelling.png" id="tsid_3141711"/></bodyText></centeredEnv>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141643">
+      <sectiontitle>Count words</sectiontitle> 
+      <bodyText><indexitem req="varioref"><prisec>Count Words!on the Edit menu</prisec></indexitem><indexitem req="varioref"><prisec>word count</prisec></indexitem>Returns
+      the word count for the current document in a dialog box. The count is obtained by looking
+      at the number of sequences of characters separated by spaces, returns, tabs,
+      and the like. (Some word counts are obtained by taking the whole number
+      of characters in a document and dividing by five, which is the average number
+      of characters in an English word.) Click OK to dismiss it. </bodyText>
+      <centeredEnv><bodyText><object data="graphicscd/count_words.png" id="tsid_3141712"/></bodyText></centeredEnv>
+      </subsubsection>
+
+      <subsubsection>
+      <sectiontitle>Set alignment</sectiontitle>
+      <bodyText>This menu item sets an alignment point in a multi-line 
+      math display. This command is unavailable unless the cursor is 
+      in a valid location for an alignment point.</bodyText>
+      </subsubsection>
 
       <subsubsection id="tsid_3141644">
         <sectiontitle>Special Characters</sectiontitle> 
@@ -424,175 +447,290 @@
           there is a macOS dialog box that allows you to select special characters.
         </bodyText>
       </subsubsection>
+
     </subsection>
 
     <subsection id="tsid_3141603">
-    <sectiontitle><shortTitle>Insert Menu</shortTitle>INSERT Menu<a id="insert"/></sectiontitle>
+      <sectiontitle><shortTitle>Insert Menu</shortTitle>INSERT Menu<a id="insert"/></sectiontitle>
 
-    <bodyText><indexitem req="varioref"><prisec>Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>menus!descriptions</prisec></indexitem>The
-    Insert menu contains commands for placing a number of different special
-    items into your document, including images, tables, and math objects. </bodyText>
-
-    <subsubsection id="tsid_3141645">
-    <sectiontitle>Image...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Image!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>image</prisec></indexitem><indexitem req="varioref"><prisec>graphics</prisec></indexitem><indexitem req="varioref"><prisec>import!image</prisec></indexitem>Brings
-    up the Image dialog box. Use it to select a graphics
-    file to put into your document at the current insertion point. You may set
-    a number of different properties for the selected image, including its size,
-    placement, whether it should be put into a container (frame), and so on. </bodyText>
-
-    <bodyText>When you import an image file, it is copied and the copy is placed in a special location
-    in the document's .sci file.</bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/image.png" id="tsid_3141713"/></bodyText></centeredEnv>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141646">
-    <sectiontitle>Table...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Table!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>tables</prisec></indexitem>Specify
-    the size of and insert a table in your document at the current insertion point. You can click and
-    drag to specify the number of rows and columns (Quickly tab), enter the
-    exact number (Precisely), and <indexitem req="varioref"><prisec>cells!column width</prisec></indexitem>specify
-    the format for a <indexitem req="varioref"><prisec>cells!formatting, in table</prisec></indexitem>selected
-    cell (Cell tab). Look for information on inserting tables. </bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/insert_table.png" id="tsid_3141714"/></bodyText></centeredEnv>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141647">
-    <sectiontitle>Line...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Line!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>lines</prisec></indexitem>Insert
-    a horizontal rule in the document at the insertion point,
-    with specified color, lift (position above the text baseline), width (length),
-    and height (thickness). Units are initially specified in points, but you
-    may choose inches, millimeters, or centimeters as well. Look for
-    usage information. </bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/line.png" id="tsid_3141715"/></bodyText></centeredEnv>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141648">
-    <sectiontitle>Frame...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Frame!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>frames</prisec></indexitem>Create
-    a frame at the insertion point.
-    A frame is a box that may contain text, tables, images, or other objects.
-    There are many options you may specify when creating a frame, including
-    the margins, the border thickness and color, and the way the frame is displayed
-    (at a certain position, floating, etc.). Additional information shows
-    you how to enter frames. </bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/frame.png" id="tsid_3141716"/></bodyText></centeredEnv>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141649">
-    <sectiontitle>Breaks...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Breaks!on Insert menu</prisec></indexitem>Place
-    a <indexitem req="varioref"><prisec>breaks</prisec></indexitem> division in the text at the insertion point,
-    such as a discretionary hyphen, line break, or page break. </bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/breaks.png" id="tsid_3141717"/></bodyText></centeredEnv>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141650">
-    <sectiontitle>Spacing objects</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Spacing Objects!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>space</prisec></indexitem></bodyText>
-    <paragraph id="tsid_3141593">
-    <sectiontitle>Horizontal spaces</sectiontitle> 
-    <bodyText>Specify the kind
-    or amount of horizontal space to add at the insertion point. </bodyText>
-    <bodyText><indexitem req="varioref"><prisec>horizontal space</prisec></indexitem></bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/horizontal_spaces.png" id="tsid_3141718"/></bodyText></centeredEnv>
-    </paragraph>
-    <paragraph id="tsid_3141594">
-    <sectiontitle>Vertical spaces</sectiontitle> 
-    <bodyText>Specify the kind
-    or amount of vertical space to add at the insertion point. </bodyText>
-    <bodyText><indexitem req="varioref"><prisec>vertical space</prisec></indexitem></bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/vertical_spaces.png" id="tsid_3141719"/></bodyText></centeredEnv>
-    </paragraph>
-    </subsubsection>
-
-    <subsubsection id="tsid_3141651">
-    <sectiontitle>Math</sectiontitle> 
-      <bodyText>
-        Sets entry mode to Math entry. Subsequent editing will enter math objects. 
-        This command is available only when in Text entry mode.
+      <bodyText><indexitem req="varioref"><prisec>Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>menus!descriptions</prisec></indexitem>The
+        Insert menu contains commands for placing a number of different special
+        items into your document, including images, tables, and math objects.
       </bodyText>
-    </subsubsection>
 
-    <subsubsection id="tsid_3141652">
-    <sectiontitle>Text</sectiontitle> 
-      <bodyText>
-        Sets entry mode to Text entry. Subsequent editing will enter text objects. 
-        This command is available only when in Math entry mode.
-      </bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141645">
+        <sectiontitle>Image...</sectiontitle>
 
-    <subsubsection id="tsid_3141653">
-    <sectiontitle>Math objects</sectiontitle> 
-    <bodyText>Insert
-    one of the specified Math objects at the insertion point. There are a number
-    of math objects you may enter:  Fraction, Radical, Superscript, Subscript, Display, Operator, Brackets, Matrix, Math name, Binomial, Decoration, and Unit name. See <a href="cd05-00-workwithmath.xhtml">Working with Mathematics</a> for information on working with them and other mathematical entities.</bodyText>
-    </subsubsection>
+        <bodyText><indexitem req="varioref"><prisec>Image!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>image</prisec></indexitem><indexitem req="varioref"><prisec>graphics</prisec></indexitem><indexitem req="varioref"><prisec>import!image</prisec></indexitem>Brings
+          up the Image dialog box. Use it to select a graphics
+          file to put into your document at the current insertion point. You may set
+          a number of different properties for the selected image, including its size,
+          placement, whether it should be put into a container (frame), and so on.
+        </bodyText>
 
-    <subsubsection id="tsid_3141654">
-    <sectiontitle>Marker...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Marker!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>markers</prisec></indexitem>A
-    marker is an invisible object with a specific name that may be referenced from
-    elsewhere; for example, as the target of a hyperlink <indexitem req="varioref"><prisec>hyperlinks!target</prisec></indexitem>or
-    cross reference. Use this command to set up a marker at the insertion point.
-    Although invisible, the marker can appear in the direct view of the document.
-    </bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/insert_marker.png" id="tsid_3141720"/></bodyText></centeredEnv>
-    </subsubsection>
+        <bodyText>When you import an image file, it is copied and the copy is placed in a special location
+          in the document's .sci file.
+        </bodyText>
 
-    <subsubsection id="tsid_3141655">
-    <sectiontitle>Footnote</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Footnote!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>notes!footnotes, etc.</prisec></indexitem>Places
-    a numbered footnote in the text at the insertion point.</bodyText>
-    </subsubsection>
+        <centeredEnv><bodyText><object data="graphicscd/image.png" id="tsid_3141713"/></bodyText>
+        </centeredEnv>
 
-    <subsubsection id="tsid_3141656">
-    <sectiontitle>Note...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Note!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>notes!footnotes, etc.</prisec></indexitem>Place
-    a note (footnote, endnote, margin note, etc.) at the insertion point. Look for
-    information on the type of notes you may insert and how to work with them.
-    </bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/insert_note.png" id="tsid_3141721"/></bodyText></centeredEnv>
-    </subsubsection>
+        <bodyText>Additional information on adding images can be found 
+          at <a href="cd04-07-editingdocs.xhtml#AddingImages">Adding Images</a> 
+          in the <a href="cd04-07-editingdocs.xhtml">Adding Non-Text Elements</a> section.
+		</bodyText>
 
-    <subsubsection id="tsid_3141657">
-    <sectiontitle>Typeset object</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Typeset Object!on Insert menu</prisec></indexitem>A
-    typeset object contains information about the typeset form of the document.
-    There are a number
-    of math objects you may enter:  Index entry, Cross reference, Citation, Bibliography, and <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
-    field. This command brings up one of several
-    dialog boxes with which you may customize one of these objects to place
-    at the insertion point. Consult <a href="cd06-00-finaltouch.xhtml">Final Touches: Document Production</a> for more information about various typeset objects. </bodyText>
-    </subsubsection>
+      </subsubsection>
 
-    <subsubsection>
-    <sectiontitle>LaTeX position mark</sectiontitle> 
-    <bodyText>Insert one of the specified LaTeX position mark objects at the insertion point.
-    The LaTeX position mark objects are: Front matter, Make title, Make table of contents, Make list of tables,
-    Make list of figures, Main matter, Start appendices, Back matter, and Print index.
-    Use a LaTeX position mark to generate certain objects in the final typeset version of the 
-    document, for example Make title generates the title page.  Some LaTeX position marks are
-    used by only certain shell documents.</bodyText>
-    </subsubsection>
+      <subsubsection id="tsid_3141646">
+        <sectiontitle>Table...</sectiontitle>
 
-    <subsubsection id="tsid_3141658">
-    <sectiontitle>Hyperlink...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>Hyperlink!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>hyperlinks</prisec></indexitem>Insert
-    a hyperlink at the current location of the insertion point. You may specify
-    an external file or web location, or a marker (identified by its key) within
-    the current document. 
-    <centeredEnv><bodyText><object data="graphicscd/hyperlink.png" id="tsid_3141722"/></bodyText></centeredEnv>
-    </bodyText>
-    </subsubsection>
+        <bodyText><indexitem req="varioref"><prisec>Table!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>tables</prisec></indexitem>Specify
+          the size of and insert a table in your document at the current insertion point. You can click and
+          drag to specify the number of rows and columns (Quickly tab), enter the
+          exact number (Precisely), and <indexitem req="varioref"><prisec>cells!column width</prisec></indexitem>specify
+          the format for a <indexitem req="varioref"><prisec>cells!formatting, in table</prisec></indexitem>selected
+          cell (Cell tab). Look for information on inserting tables.
+        </bodyText>
 
-    <subsubsection id="tsid_3141659">
-    <sectiontitle>XHTML field...</sectiontitle> 
-    <bodyText><indexitem req="varioref"><prisec>HTML!on Insert menu</prisec></indexitem>Insert
-    the contents of a named <smallCaps>html</smallCaps> field at the insertion point. </bodyText>
-    <centeredEnv><bodyText><object data="graphicscd/html_field.png" id="tsid_3141723"/></bodyText></centeredEnv>
-    </subsubsection>
+        <centeredEnv><bodyText><object data="graphicscd/insert_table.png" id="tsid_3141714"/></bodyText>
+        </centeredEnv>
+
+        <bodyText>Additional information on adding tables can be found 
+          at <a href="cd04-07-editingdocs.xhtml#AddingTables">Adding Tables</a> 
+          in the <a href="cd04-07-editingdocs.xhtml">Adding Non-Text Elements</a> section.
+		</bodyText>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141647">
+        <sectiontitle>Line...</sectiontitle>
+
+        <bodyText><indexitem req="varioref"><prisec>Line!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>lines</prisec></indexitem>Insert
+          a horizontal rule in the document at the insertion point,
+          with specified color, lift (position above the text baseline), width (length),
+          and height (thickness). Units are initially specified in points, but you
+          may choose inches, millimeters, or centimeters as well. Look for
+          usage information.
+        </bodyText>
+
+        <centeredEnv><bodyText><object data="graphicscd/line.png" id="tsid_3141715"/></bodyText>
+        </centeredEnv>
+
+        <bodyText>Additional information on adding lines can be found 
+          at <a href="cd04-07-editingdocs.xhtml#AddingLines">Adding Lines</a> 
+          in the <a href="cd04-07-editingdocs.xhtml">Adding Non-Text Elements</a> section.
+		</bodyText>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141648">
+        <sectiontitle>Frame...</sectiontitle>
+
+        <bodyText><indexitem req="varioref"><prisec>Frame!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>frames</prisec></indexitem>Create
+          a frame at the insertion point.
+          A frame is a box that may contain text, tables, images, or other objects.
+          There are many options you may specify when creating a frame, including
+          the margins, the border thickness and color, and the way the frame is displayed
+          (at a certain position, floating, etc.). Additional information shows
+          you how to enter frames.
+        </bodyText>
+
+        <centeredEnv><bodyText><object data="graphicscd/frame.png" id="tsid_3141716"/></bodyText></centeredEnv>
+
+        <bodyText>Additional information on inserting frames can be found 
+          at <a href="cd04-07-editingdocs.xhtml#InsertingFrames">Inserting Frames</a> 
+          in the <a href="cd04-07-editingdocs.xhtml">Adding Non-Text Elements</a> section.
+		</bodyText>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141649">
+        <sectiontitle>Breaks...</sectiontitle>
+
+        <bodyText><indexitem req="varioref"><prisec>Breaks!on Insert menu</prisec></indexitem>Place
+          a <indexitem req="varioref"><prisec>breaks</prisec></indexitem> division in the text at the insertion point,
+          such as a discretionary hyphen, line break, or page break.
+        </bodyText>
+
+        <centeredEnv><bodyText><object data="graphicscd/breaks.png" id="tsid_3141717"/></bodyText>
+        </centeredEnv>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141650">
+        <sectiontitle>Spacing objects</sectiontitle>
+
+        <bodyText><indexitem req="varioref"><prisec>Spacing Objects!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>space</prisec></indexitem>
+        </bodyText>
+
+        <paragraph id="tsid_3141593">
+          <sectiontitle>Horizontal spaces</sectiontitle>
+
+          <bodyText>Specify the kind
+            or amount of horizontal space to add at the insertion point.
+          </bodyText>
+
+          <bodyText><indexitem req="varioref"><prisec>horizontal space</prisec></indexitem>
+          </bodyText>
+
+          <centeredEnv><bodyText><object data="graphicscd/horizontal_spaces.png" id="tsid_3141718"/></bodyText>
+          </centeredEnv>
+
+        </paragraph>
+
+        <paragraph id="tsid_3141594">
+          <sectiontitle>Vertical spaces</sectiontitle>
+
+          <bodyText>Specify the kind
+            or amount of vertical space to add at the insertion point.
+          </bodyText>
+
+          <bodyText><indexitem req="varioref"><prisec>vertical space</prisec></indexitem>
+          </bodyText>
+
+          <centeredEnv><bodyText><object data="graphicscd/vertical_spaces.png" id="tsid_3141719"/></bodyText>
+          </centeredEnv>
+        </paragraph>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141651">
+        <sectiontitle>Math</sectiontitle>
+
+        <bodyText>
+          Sets entry mode to Math entry. Subsequent editing will enter math objects. 
+          This command is available only when in Text entry mode.
+        </bodyText>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141652">
+        <sectiontitle>Text</sectiontitle>
+
+        <bodyText>
+          Sets entry mode to Text entry. Subsequent editing will enter text objects. 
+          This command is available only when in Math entry mode.
+        </bodyText>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141653">
+        <sectiontitle>Math objects</sectiontitle>
+
+        <bodyText>Insert one of the specified Math objects at the insertion point. 
+          There are a number of math objects you may enter:  
+          <a href="cd05-04-workwithmath.xhtml#fractions">Fraction,</a> 
+          <a href="cd05-04-workwithmath.xhtml#radicals">Radical,</a>
+          <a href="cd05-04-workwithmath.xhtml#subsuperscripts">Superscript, Subscript,</a>
+          <a href="cd05-04-workwithmath.xhtml#displays">Display,</a>
+          <a href="cd05-04-workwithmath.xhtml#operators">Operator,</a>
+          <a href="cd05-04-workwithmath.xhtml#brackets">Brackets,</a>
+          <a href="cd05-04-workwithmath.xhtml#matrices">Matrix,</a>
+          <a href="cd05-04-workwithmath.xhtml#mathnames">Math name,</a>
+          <a href="cd05-04-workwithmath.xhtml#fractions">Binomial,</a>
+          <a href="cd05-04-workwithmath.xhtml#decorations">Decoration,</a> and 
+          <a href="cd05-04-workwithmath.xhtml#units">Unit name</a>. 
+          See <a href="cd05-00-workwithmath.xhtml">Working with Mathematics</a> for 
+          information on working with them and other mathematical entities.
+        </bodyText>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141654">
+        <sectiontitle>Marker...</sectiontitle>
+
+        <bodyText><indexitem req="varioref"><prisec>Marker!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>markers</prisec></indexitem>A
+          marker is an invisible object with a specific name that may be referenced from
+          elsewhere; for example, as the target of a hyperlink <indexitem req="varioref"><prisec>hyperlinks!target</prisec></indexitem>or
+          cross reference. Use this command to set up a marker at the insertion point.
+          Although invisible, the marker can appear in the direct view of the document.
+        </bodyText>
+
+        <centeredEnv><bodyText><object data="graphicscd/insert_marker.png" id="tsid_3141720"/></bodyText>
+        </centeredEnv>
+      </subsubsection>
+
+      <subsubsection id="tsid_3141655">
+        <sectiontitle>Footnote</sectiontitle> 
+
+        <bodyText><indexitem req="varioref"><prisec>Footnote!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>notes!footnotes, etc.</prisec></indexitem>Places
+          a numbered footnote in the text at the insertion point.
+        </bodyText>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141656">
+        <sectiontitle>Note...</sectiontitle> 
+
+        <bodyText><indexitem req="varioref"><prisec>Note!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>notes!footnotes, etc.</prisec></indexitem>Place
+          a note (footnote, endnote, margin note, etc.) at the insertion point. Look for
+          information on the type of notes you may insert and how to work with them.
+        </bodyText>
+
+        <centeredEnv><bodyText><object data="graphicscd/insert_note.png" id="tsid_3141721"/></bodyText>
+        </centeredEnv>
+
+        <bodyText>Additional information on inserting notes can be found 
+          at <a href="cd04-07-editingdocs.xhtml#InsertingNotes">Inserting Notes</a> 
+          in the <a href="cd04-07-editingdocs.xhtml">Adding Non-Text Elements</a> section.
+		</bodyText>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141657">
+        <sectiontitle>Typeset object</sectiontitle> 
+        
+        <bodyText><indexitem req="varioref"><prisec>Typeset Object!on Insert menu</prisec></indexitem>A
+          typeset object contains information about the typeset form of the document.
+          There are a number
+          of math objects you may enter:  Index entry, Cross reference, Citation, Bibliography, and <texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>
+          field. This command brings up one of several
+          dialog boxes with which you may customize one of these objects to place
+          at the insertion point. Consult <a href="cd06-00-finaltouch.xhtml">Final Touches: Document Production</a> for more information about various typeset objects.
+          </bodyText>
+
+      </subsubsection>
+
+      <subsubsection>
+        <sectiontitle>LaTeX position mark</sectiontitle> 
+
+        <bodyText>Insert one of the specified LaTeX position mark objects at the insertion point.
+          The LaTeX position mark objects are: Front matter, Make title, Make table of contents, Make list of tables,
+          Make list of figures, Main matter, Start appendices, Back matter, and Print index.
+          Use a LaTeX position mark to generate certain objects in the final typeset version of the 
+          document, for example Make title generates the title page.  Some LaTeX position marks are
+          used by only certain shell documents.
+        </bodyText>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141658">
+        <sectiontitle>Hyperlink...</sectiontitle> 
+
+        <bodyText><indexitem req="varioref"><prisec>Hyperlink!on Insert menu</prisec></indexitem><indexitem req="varioref"><prisec>hyperlinks</prisec></indexitem>Insert
+          a hyperlink at the current location of the insertion point. You may specify
+          an external file or web location, or a marker (identified by its key) within
+          the current document. 
+        </bodyText>
+
+        <centeredEnv><bodyText><object data="graphicscd/hyperlink.png" id="tsid_3141722"/></bodyText>
+        </centeredEnv>
+
+      </subsubsection>
+
+      <subsubsection id="tsid_3141659">
+        <sectiontitle>XHTML field...</sectiontitle> 
+        
+        <bodyText><indexitem req="varioref"><prisec>HTML!on Insert menu</prisec></indexitem>Insert
+          the contents of a named <smallCaps>html</smallCaps> field at the insertion point.
+        </bodyText>
+
+        <centeredEnv><bodyText><object data="graphicscd/html_field.png" id="tsid_3141723"/></bodyText>
+        </centeredEnv>
+
+      </subsubsection>
+
     </subsection>
 
     <subsection id="tsid_3141604">
