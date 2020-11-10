@@ -1269,7 +1269,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
 
     nsCOMPtr<nsIDOMDocument> doc;
     editor->GetDocument(getter_AddRefs(doc));
-    if (isEmpty)
+    if (isEmpty && !(str.EqualsLiteral("sectiontitle")))
     {
       nsCOMPtr<nsIDOMNode> brNode;
       rv = editor->CreateBR(firstNode, 0, address_of(brNode));
@@ -1316,7 +1316,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
         // insert a sectiontitle tag at the beginning of the second half of a split section.
         rv = meditor->CreateNode(NS_LITERAL_STRING("sectiontitle"), *secondNode, 0,
                                                    getter_AddRefs(secttitle));
-        rv = editor->CreateBR(secttitle, 0, address_of(br));
+        // rv = editor->CreateBR(secttitle, 0, address_of(br));
         meditor->MarkNodeDirty(*secondNode);
         rv = selection->Collapse(secttitle, 0);
         return NS_OK;
