@@ -562,6 +562,25 @@ PRBool TrimDocFragment( nsIDOMNode * fragmentAsNode) {
 
   res = ValidateMathSyntax( fragmentAsNode); */
 
+PRUint32 MathChildCount( nsIDOMElement * aElement) {
+  nsCOMPtr<nsIDOMNodeList> children;
+  nsCOMPtr<nsIDOMNode> child;
+  PRUint32 childCount;
+  PRUint32 mathChildCount;
+  PRInt32 index;
+  PRUint16 type;
+  aElement->GetChildNodes(getter_AddRefs(children));
+  children->GetLength(&childCount);
+  mathChildCount = childCount;
+  for (index = 0; index < childCount; index++) {
+    children->Item(index, getter_AddRefs(child));
+    child->GetNodeType(&type);
+    if (type == nsIDOMNode::TEXT_NODE)
+      mathChildCount--;    
+  }
+  return mathChildCount;
+}
+
 nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
 
   nsCOMPtr<nsIDOMElement> node = mathNode;
@@ -600,7 +619,7 @@ nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
         || tagName.EqualsLiteral("munderover")) {
       node->GetChildNodes(getter_AddRefs(children));
       if (children) {
-        children->GetLength( &childCount );
+        childCount = MathChildCount( node );
         if (  tagName.EqualsLiteral("msubsup") 
            || tagName.EqualsLiteral("munderover"))  {
           if (childCount != 3) needToSubstitute = PR_TRUE;
@@ -690,13 +709,13 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   }
 
 // New code: don't put non-math inside of <math>, even if there is an <msidisplay>
-  PRBool isMath = nsHTMLEditUtils::IsMath(targetNode);
-  PRBool fTrimmedFragment = nsnull;
-  PRBool useNewCode = PR_TRUE;
-  if (useNewCode && isMath)
-  {
-    fTrimmedFragment = TrimDocFragment(fragmentAsNode);
-  }
+  // PRBool isMath = nsHTMLEditUtils::IsMath(targetNode);
+  // PRBool fTrimmedFragment = nsnull;
+  // PRBool useNewCode = PR_TRUE;
+  // if (useNewCode && isMath)
+  // {
+  //   fTrimmedFragment = TrimDocFragment(fragmentAsNode);
+  // }
 
   PRBool doContinue = PR_TRUE;
 
@@ -814,8 +833,6 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     }
   }
 
-
-
   // if we have a destination / target node, we want to insert there
   // rather than in place of the selection
   // ignore aDeleteSelection here if no aDestNode since deletion will
@@ -846,8 +863,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   PRInt32 j;
   nsCOMArray<nsIDOMNode> nodeList;
   DumpNode(fragmentAsNode);
-  PRBool fUseNewCode = PR_FALSE;
-  if (fUseNewCode && fTrimmedFragment) streamStartParent = nsnull;
+  // PRBool fUseNewCode = PR_FALSE;
+  // if (fUseNewCode && fTrimmedFragment) streamStartParent = nsnull;
   res = CreateListOfNodesToPaste(fragmentAsNode, nodeList,
                                  streamStartParent, streamStartOffset,
                                  streamEndParent, streamEndOffset);
@@ -2360,7 +2377,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       res = GetWrapper(splitNode, getter_AddRefs(wrapperNode));
       res = SplitNodeDeep(wrapperNode,splitpointNode,splitpointOffset,
          &outOffset, PR_FALSE, &outLeftNode, &outRightNode);
-      selection->Collapse(outRightNode, offset);
+      selection->Collapse(outRightNode, outOffset);
 
     }
   }
@@ -2501,14 +2518,12 @@ nsHTMLEditor::SetCursorInNewHTML(nsIDOMElement * newElement, PRBool * success)
   if (nodeCount > 0)
   {
     nodeList->Item(0, getter_AddRefs(node));
-    nsEditor::GetNodeLocation(node, address_of(parentNode), &offset);
-    DeleteNode(node);
-    //selPriv->SetInterlinePosition(PR_TRUE);
     res = GetSelection(getter_AddRefs(selection));
-    //res = selection->Collapse(parentNode, offset);
-    // BBM: put a comment in latexdefs about how this works.
-    res = selection->Collapse(parentNode, offset);
+    selection->Collapse(node, 0);
+    DeleteNode(node);
     if (success) *success = PR_TRUE;
+
+    // BBM: put a comment in latexdefs about how this works.
   }
 //  cmd_updateStructToolbar
   return res;
@@ -3078,7 +3093,7 @@ nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
   CreateNode(NS_LITERAL_STRING("object"), frame, 0, getter_AddRefs(objnode));
   obj = do_QueryInterface(objnode);
   obj->SetAttribute(NS_LITERAL_STRING("data"), NS_LITERAL_STRING("graphics/") + fileLeaf);
-  InsertNodeAtPoint(objnode, getter_AddRefs(framenode), 0, PR_FALSE);
+  InsertNodeAtPoint(objnode, (nsIDOMNode **)address_of(framenode), 0, PR_FALSE);
   if (sel) {
     sel->Collapse(frame, 0);
   }
@@ -3110,6 +3125,7 @@ nsHTMLEditor::InsertGraphicsFileAsImage(nsAString& fileLeaf,
   rv = controllers->GetControllerForCommand(command, getter_AddRefs(controller));
   if (NS_FAILED(rv)) return rv;
   controller->DoCommand(command);
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable,

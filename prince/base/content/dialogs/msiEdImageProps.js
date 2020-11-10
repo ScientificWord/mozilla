@@ -688,7 +688,7 @@ function chooseImgFile(fBrowsing)
       file.append(arr[1]);
     else {
       arr = fileName.split(/[/\\]/);
-      if (all.length > 1)
+      if (arr.length > 1)
         file.append(arr[1]);
     }
   }
