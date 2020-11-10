@@ -545,6 +545,16 @@ interface nsIEditor  : nsISupports
 
   boolean  setSelectionOnCursorTag( in nsIDOMNode node);
 
+  void floatStructureUp(  in nsIDOMNode structNode,
+                          in nsIDOMNode initialParent,
+                          in long initialOffset,
+                          in msiITagListManager tlm);
+
+  void moveFollowingNodes(  in nsIDOMNode parentNode, 
+                            in long offset,
+                            in nsIDOMNode destNode,
+                            in msiITagListManager tlm);
+
 /* ---------- direction controller ---------- */
 
   /** 
