@@ -4831,16 +4831,16 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
           break;
         }
         //otherwise fallthrough
-      // case "object":
-      //   if (element.getAttribute("msigraph") == "true") {
-      //     objStr = name;
-      //     theMenuStr = GetString("TagPropertiesMenuLabel");
-      //     theMenuStr = theMenuStr.replace(/%tagname%/, "A "+GetString("functiongraph"));
-      //     scriptStr =
-      //       "openGraphDialog('graph', event.target.refElement, event.target.refEditor);";
-      //     break;
-      //   }
-           break;
+      case "object":
+        // if (element.getAttribute("msigraph") == "true") {
+        //   objStr = name;
+        //   theMenuStr = GetString("TagPropertiesMenuLabel");
+        //   theMenuStr = theMenuStr.replace(/%tagname%/, "A "+GetString("functiongraph"));
+        //   scriptStr =
+        //     "openGraphDialog('graph', event.target.refElement, event.target.refEditor);";
+        //   break;
+        // }
+        // otherwise fall through
       case "img":
       case "embed":
         // Check if img is enclosed in link
