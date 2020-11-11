@@ -106,6 +106,8 @@ en-US.jar:
   locale/helpfiles/graphicscd/html_field.png (graphicscd/html_field.png)
   locale/helpfiles/graphicscd/hyperlink.png (graphicscd/hyperlink.png)
   locale/helpfiles/graphicscd/image.png (graphicscd/image.png)
+  locale/helpfiles/graphicscd/imageFrame.png (graphicscd/imageFrame.png)
+  locale/helpfiles/graphicscd/imagePlacement.png (graphicscd/imagePlacement.png)
   locale/helpfiles/graphicscd/import_tex.png (graphicscd/import_tex.png)
   locale/helpfiles/graphicscd/index_entry.png (graphicscd/index_entry.png)
   locale/helpfiles/graphicscd/insert_marker.png (graphicscd/insert_marker.png)
