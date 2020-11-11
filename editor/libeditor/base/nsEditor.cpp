@@ -5076,6 +5076,7 @@ nsEditor::MoveFollowingNodes( nsIDOMNode *parentNode,
       MoveNode( child, destNode, -1); // offset -1 means last position
     } else break;
   }
+  return res;
 }
 
 
