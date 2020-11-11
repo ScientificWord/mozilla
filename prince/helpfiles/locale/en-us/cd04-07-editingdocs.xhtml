@@ -27,48 +27,116 @@
     to text, you can add horizontal rules (lines), tables, and images.
     </bodyText>
 
-    <subsection id="tsid_3141630">
-      <sectiontitle><shortTitle>Lines</shortTitle>Adding Lines<a id="AddingLines"/></sectiontitle>
+    <subsection id="tsid_3141632">
+      <sectiontitle><shortTitle>Images</shortTitle>Adding Images<a id="AddingImages"/></sectiontitle>
 
-      <bodyText><marker id="AddLine"/>Although the document style determines
-        where lines typically appear in your document, you may want to add solid
-        lines to set off certain portions of the text. You can specify the color,
-        width, height, and lift&#8212;the position of the line in relation to the baseline
-        of the surrounding text.
-      </bodyText>
+      <bodyText><indexitem req="varioref"><prisec>image</prisec></indexitem><marker id="AddImage"/>You
+      may insert graphic images in your documents. Version 6 supports current standard graphics 
+      file formats .pdf, .jpg, .jpeg, .png, .eps, .ps, .gif, .tif, .tiff, .svg, .bmp, .wmf, and .emf. </bodyText>
 
-      <subparagraph id="tsid_3141618">
-        <sectiontitle>To add a line</sectiontitle>
+      <bodyText>Some formats that
+      were supported previously have been dropped in Version 6 because they have
+      turned out to be non-standard. </bodyText>
+      <subparagraph id="tsid_3141620">
+      <sectiontitle>To insert an image</sectiontitle> 
 
-        <numberedlist>  
-          <numberedListItem>
-            <bodyText>Choose Insert &#8594; Line...
-              The Line dialog box appears.
-            </bodyText>
-            <bodyText><object data="graphicscd/line.png" id="tsid_3141644"/></bodyText>
-          </numberedListItem>
+      <numberedlist>  
+	    <numberedListItem>
+		  <bodyText>Place the insertion point where you want the graphic.
+		  </bodyText>
+		</numberedListItem>
 
-          <numberedListItem>
-            <bodyText>Select
-              a unit of measure and then specify the lift, width, and height of the line
-              in the corresponding boxes.
-            </bodyText>
-          </numberedListItem>
-
-          <numberedListItem>
-            <bodyText>Click
-              the color box and choose a color from the color palette, if desired, clicking
-              OK on the palette to confirm your choice.
-            </bodyText>
-          </numberedListItem>
-
-          <numberedListItem>
-            <bodyText>Click
-              OK on the Line dialog box to insert the line. 
+        <numberedListItem>
+          <bodyText>Choose Insert &#8594; Image..., or click the Image icon 
+            <object data="graphicscd/btnImage.jpg"/> from the Editing toolbar.
+            <br/>
+            The Image dialog box appears.
           </bodyText>
-          </numberedListItem>
 
-        </numberedlist>
+          <bodyText><object data="graphicscd/image.png" id="tsid_3141646"/>
+          </bodyText>
+        </numberedListItem>
+
+        <numberedListItem>
+          <bodyText>Use the Choose file... button on the Image tab to select 
+            the drive, directory, and file type of the image file to insert.
+          </bodyText>
+        </numberedListItem>
+
+        <numberedListItem>
+          <bodyText>Use the Image tab to change the size of the graphics.  With the 
+            Preserve aspect ration check box on, set the Width or the Height to the 
+            desired size and the other dimension will be modified accordingly.  
+            To set both dimensions to an arbitray size, turn off the Preserve aspect ratio
+            check box.  The image can also be rotated ninety degrees clockwise or counter-clockwise
+            using the Rotate contents drop down.
+          </bodyText>
+		  <bodyText>
+		    The Alt text field on the Image tab can be filled in with text that is displayed
+			if the image can't be loaded by a browser if the document is exported for use on the web.
+			The alt text is not used when typesetting a document.
+		  </bodyText>
+        </numberedListItem>
+
+        <numberedListItem>
+          <bodyText>Use the Placement tab to select how the image will be 
+            displayed when the document is typeset.
+          </bodyText>
+          <bodyText>
+            <object data="graphicscd/imagePlacement.png"/>
+          </bodyText>
+          <bodyText>
+            Placement location available selections are 
+            Floating, Inline, Displayed, Left, Right, Inside and Outside.  The last four selections
+			also have Floating variants available.  Additional selections are available depending on the 
+			Location selection.  
+          </bodyText>
+          <bodyText>
+			Floating allows selecting Float, Baseline, and Caption options.  
+			The Float option gives LaTeX information in positioning the graphic when it is typeset.  
+            When an optional caption position is selected, a key can be added that can be 
+            used to cross reference floating graphics. When a caption is selected, caption 
+            text can be added to a field above or below the image in the body of the 
+            document after the image is inserted.  With a caption option selected, a key can be entered
+			which can be used to cross-reference the graphic.  Cross-referencing and automatic figure numbering
+			is available only with the floating placement type.	 
+          </bodyText>
+          <bodyText>
+		    Inline allows selecting a vertical offset for the positioning of the graphic in relation
+			to the main line of text.  A caption can also be selected.
+          </bodyText>
+          <bodyText>
+		    Displayed allows selecting a caption.  Displayed graphics are centered horizontally on the 
+			page similar to displayed equations.
+          </bodyText>
+          <bodyText>
+		    Left, Right, Inside, Outside, and the floating variants use the wrapfig package with the 
+			document is typeset to position the graphics next to other text in the paragraph.  
+			The positioning is left or right on a single sided document or on the inside or outside
+			margin of a double sided document like a book.
+          </bodyText>
+        </numberedListItem>
+
+        <numberedListItem>
+          <bodyText>
+            Use the Frame tab to provide a frame for the image, if desired.
+          </bodyText>
+          <bodyText>
+            <object data="graphicscd/imageFrame.png"/>
+          </bodyText>
+          <bodyText>
+		    Use the Colors group to select colors for the frame and background of the graphics.
+			The background color is only useful if the graphics has transparent properties.
+			Set the Border to select the thickness of the frame and the other items to control spacing around the frame.
+          </bodyText>
+        </numberedListItem>
+
+        <numberedListItem>
+          <bodyText>Click OK to insert the image.
+          </bodyText>
+        </numberedListItem>
+
+      </numberedlist>
        
       </subparagraph>
 
@@ -131,72 +199,48 @@
 
     </subsection>
 
-    <subsection id="tsid_3141632">
-      <sectiontitle><shortTitle>Images</shortTitle>Adding Images<a id="AddingImages"/></sectiontitle>
+    <subsection id="tsid_3141630">
+      <sectiontitle><shortTitle>Lines</shortTitle>Adding Lines<a id="AddingLines"/></sectiontitle>
 
-      <bodyText><indexitem req="varioref"><prisec>image</prisec></indexitem><marker id="AddImage"/>You
-      may insert graphic images in your documents. Version 6 supports current standard graphics 
-      file formats .pdf, .jpg, .jpeg, .png, .eps, .ps, .gif, .tif, .tiff, .svg, .bmp, .wmf, and .emf. </bodyText>
+      <bodyText><marker id="AddLine"/>Although the document style determines
+        where lines typically appear in your document, you may want to add solid
+        lines to set off certain portions of the text. You can specify the color,
+        width, height, and lift&#8212;the position of the line in relation to the baseline
+        of the surrounding text.
+      </bodyText>
 
-      <bodyText>Some formats that
-      were supported previously have been dropped in Version 6 because they have
-      turned out to be non-standard. </bodyText>
-      <subparagraph id="tsid_3141620">
-      <sectiontitle>To insert an image</sectiontitle> 
+      <subparagraph id="tsid_3141618">
+        <sectiontitle>To add a line</sectiontitle>
 
-      <numberedlist>  
-	    <numberedListItem>
-		  <bodyText>Place the insertion point where you want the graphic.
-		  </bodyText>
-		</numberedListItem>
+        <numberedlist>  
+          <numberedListItem>
+            <bodyText>Choose Insert &#8594; Line...
+              The Line dialog box appears.
+            </bodyText>
+            <bodyText><object data="graphicscd/line.png" id="tsid_3141644"/></bodyText>
+          </numberedListItem>
 
-        <numberedListItem>
-          <bodyText>Choose Insert &#8594; Image..., or click the Image icon 
-            <object data="graphicscd/btnImage.jpg"/> from the Editing toolbar.
-            <br/>
-            The Image dialog box appears.
+          <numberedListItem>
+            <bodyText>Select
+              a unit of measure and then specify the lift, width, and height of the line
+              in the corresponding boxes.
+            </bodyText>
+          </numberedListItem>
+
+          <numberedListItem>
+            <bodyText>Click
+              the color box and choose a color from the color palette, if desired, clicking
+              OK on the palette to confirm your choice.
+            </bodyText>
+          </numberedListItem>
+
+          <numberedListItem>
+            <bodyText>Click
+              OK on the Line dialog box to insert the line. 
           </bodyText>
+          </numberedListItem>
 
-          <bodyText><object data="graphicscd/image.png" tab" id="tsid_3141646"/>
-          </bodyText>
-        </numberedListItem>
-
-        <numberedListItem>
-          <bodyText>Use the Choose file... button on the Image tab to select 
-            the drive, directory, and file type of the image file to insert.
-          </bodyText>
-        </numberedListItem>
-
-        <numberedListItem>
-          <bodyText>Use the Image tab to change the size of the graphics.  With the 
-            Preserve aspect ration check box on, set the Width or the Height to the 
-            desired size and the other dimension will be modified accordingly.  
-            To set both dimensions to an arbitray size, turn off the Preserve aspect ratio
-            check box.  The image can also be rotated ninety degrees clockwise or counter-clockwise
-            using the Rotate contents drop down.
-          </bodyText>
-		  <bodyText>
-		    The Alt text field on the Image tab can be filled in with text that is displayed
-			if the image can't be loaded by a browser if the document is exported for use on the web.
-			The alt text is not used when typesetting a document.
-		  </bodyText>
-        </numberedListItem>
-
-        <numberedListItem><bodyText>Use the Placement tab to select how the image will be 
-        displayed when the document is typeset.   Placement location available selections are 
-        Inline, Displayed, and Floating.  Also, optionally add a caption and a key that can 
-        be used to cross reference floating graphics. When a caption is selected, caption 
-        text is then added to an added field above or below the image in the body of the 
-        document after the image is inserted.</bodyText>
-        </numberedListItem>
-
-        <numberedListItem><bodyText>Use the Frame tab to provide a frame for the image, if desired.</bodyText>
-        </numberedListItem>
-
-        <numberedListItem><bodyText>Click OK to insert the image.</bodyText>
-        </numberedListItem>
-
-      </numberedlist>
+        </numberedlist>
        
       </subparagraph>
 
