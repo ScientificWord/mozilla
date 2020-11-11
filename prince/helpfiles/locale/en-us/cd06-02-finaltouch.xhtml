@@ -106,34 +106,75 @@
 
       <subsubsection id="tsid_3141629">
         <sectiontitle>Cross References<a id="CrossReferences"/></sectiontitle> 
-      <bodyText><indexitem req="varioref"><prisec>cross references</prisec></indexitem>Cross references
-      are useful tools to point readers in the direction of material elsewhere
-      in a manuscript that has bearing upon the topic immediately at hand. Cross references
-      in Version 6 are defined based on keys that you must previously define using
-      the Insert marker dialog box, the Display properties dialog box, 
-      or the Properties tab of the Image or Insert table dialog box. </bodyText>
+        <bodyText><indexitem req="varioref"><prisec>cross references</prisec></indexitem>Cross references
+          are useful tools to point readers in the direction of material elsewhere
+          in a manuscript that has bearing upon the topic immediately at hand. Cross references
+          in Version 6 are defined based on keys that you must previously define using
+          the Insert marker dialog box, the Display properties dialog box, 
+          or the Properties tab of the Image or Insert table dialog box.
+        </bodyText>
 
-      <subparagraph id="tsid_3141602">
-      <sectiontitle>To insert a cross reference</sectiontitle> 
+        <subparagraph id="tsid_3141602">
+          <sectiontitle>To insert a cross reference</sectiontitle> 
 
-      <numberedlist>  
-      <numberedListItem><bodyText>Move to the location you want
-      to reference. Access the Marker dialog box, enter the desired key for the
-      location, and click OK. </bodyText></numberedListItem>
+          <numberedlist>  
+            <numberedListItem>
+              <bodyText>
+                Move to the location you want
+                to reference. Access the Marker dialog box, enter the desired key for the
+                location, and click OK.
+              </bodyText>
+            </numberedListItem>
 
-      <numberedListItem><bodyText>Move the insertion point
-      to the location for your cross reference. Choose Insert &#8594; Typeset object &#8594; Cross reference. 
-      The Cross reference dialog box appears. </bodyText>
-      <bodyText><object data="graphicscd/cross_reference.png" id="tsid_3141636"/></bodyText></numberedListItem>
+            <numberedListItem>
+              <bodyText>
+                Move the insertion point
+                to the location for your cross reference. Choose Insert &#8594; Typeset object &#8594; Cross reference. 
+                The Cross reference dialog box appears.
+              </bodyText>
+              <bodyText><object data="graphicscd/cross_reference.png" id="tsid_3141636"/>
+              </bodyText>
+            </numberedListItem>
 
-      <numberedListItem><bodyText>Choose the previously defined key from the Key drop-down list. </bodyText></numberedListItem>
+            <numberedListItem>
+              <bodyText>
+                Choose the previously defined key from the Key drop-down list.
+              </bodyText>
+            </numberedListItem>
 
-      <numberedListItem><bodyText>Choose whether to use a page number or an object counter. </bodyText></numberedListItem>
+            <numberedListItem>
+              <bodyText>
+                Choose whether to use a page number or an object counter.
+              </bodyText>
+            </numberedListItem>
 
-      <numberedListItem><bodyText>Click OK. The cross reference is established.</bodyText></numberedListItem>
-      </numberedlist>
-       
-      </subparagraph>
+            <numberedListItem>
+              <bodyText>
+                Click OK. The cross reference is established.
+              </bodyText>
+            </numberedListItem>
+          </numberedlist>
+         
+        </subparagraph>
+
+<!-- A reply to a support question that could be integrated into the above:
+
+  When you add a cross-reference to a document, LaTeX resolves the cross-reference to the 
+  previous most recent counter with respect to the key used in the cross-reference.  
+  Some objects in SW have keys that can be associated with the counters for the object, 
+  for example displayed equations and graphics.  For other objects you can insert a marker 
+  and then the cross-reference is the counter for the first most previous object.
+
+
+  To add a cross-reference to a division heading, insert a marker at the beginning of the 
+  paragraph that immediately follows the division heading.  It is best to add the marker 
+  to the next paragraph as adding the marking to the division heading itself can cause 
+  conflicts with some typesetting specifications that use the division heading in a running header.  
+  Then, insert a cross-reference at the desired location with the key of the inserted marker.  
+  When the document is typeset the cross-reference will then refer to the numbering used by the 
+  division heading.
+
+-->
 
       </subsubsection>
 
