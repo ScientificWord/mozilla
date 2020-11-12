@@ -46,7 +46,7 @@ private:
 
 };
 
-nsresult NS_NewMSIEditRules(nsIEditRules** aInstancePtrResult);
+nsresult NS_NewMSIEditRules(nsIHTMLEditRules** aInstancePtrResult);
 
 #endif //msiEditRules_h__
 

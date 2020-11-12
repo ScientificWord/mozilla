@@ -19,6 +19,8 @@ interface msiIMathMLEditor : nsISupports
   // stick this in so it is available to our JavaScript
   readonly attribute double cssPixelsPerInch;
   nsIDOMNode SelectionInMath();
+
+  void Copy();
   void InsertMathNodeAtSelection(in nsIDOMElement aElement);
   void InsertInlineMath();
   void InsertDisplay();

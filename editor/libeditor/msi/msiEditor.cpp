@@ -307,6 +307,23 @@ msiEditor::GetMathMLCoalesceInterface(nsIDOMNode * node, PRUint32 offset,
   return res;
 }
 
+NS_IMETHODIMP 
+msiEditor::Copy()
+{
+  PRBool preventDefault;
+  nsresult rv = FireClipboardEvent(NS_COPY, &preventDefault);
+  if (NS_FAILED(rv) || preventDefault)
+    return rv;
+
+  // ps should be guaranteed by FireClipboardEvent not failing
+  nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
+  nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+  if (htmlRules) 
+    htmlRules->CanonicalizeMathSelection();
+  return ps->DoCopy();
+}
+
+
 
 
 nsresult
@@ -318,7 +335,10 @@ msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
   PRInt32 startOffset(0), endOffset(0);
   PRBool bCollapsed(PR_FALSE);
   nsAutoEditBatch beginBatching(this);
-  msiUtils::CanonicalizeMathSelection(this);  // BBM 2016-08-16
+
+  nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+  if (htmlRules) 
+    htmlRules->CanonicalizeMathSelection();  // BBM 2016-08-16
 
   res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                          endOffset, bCollapsed);
@@ -506,7 +526,9 @@ msiEditor::InsertSqRoot()
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    msiUtils::CanonicalizeMathSelection(this); // BBM 2016-08-16
+    nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+    if (htmlRules) 
+      htmlRules->CanonicalizeMathSelection(); // BBM 2016-08-16
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res))
@@ -537,7 +559,9 @@ msiEditor::InsertRoot()
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    msiUtils::CanonicalizeMathSelection(this); // BBM 2016-08-16
+    nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+    if (htmlRules) 
+      htmlRules->CanonicalizeMathSelection(); // BBM 2016-08-16
 
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
@@ -756,7 +780,9 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
     }
 
     nsCOMPtr<nsIDOMRange> range;
-    msiUtils::CanonicalizeMathSelection(this);
+     nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+    if (htmlRules) 
+      htmlRules->CanonicalizeMathSelection();
     selection->GetRangeAt(0, getter_AddRefs(range));
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
@@ -841,7 +867,9 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    msiUtils::CanonicalizeMathSelection(this); // BBM 2016-08-16
+    nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+    if (htmlRules) 
+      htmlRules->CanonicalizeMathSelection(); // BBM 2016-08-16
 
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
@@ -929,7 +957,9 @@ msiEditor::InsertDecoration(const nsAString & above, const nsAString & below,
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
-    msiUtils::CanonicalizeMathSelection(this); // BBM 2016-08-16
+    nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+    if (htmlRules) 
+      htmlRules->CanonicalizeMathSelection(); // BBM 2016-08-16
 
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
@@ -3544,16 +3574,16 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
 }
 
 
-NS_IMETHODIMP
-msiEditor::InitRules()
-{
-  nsresult res = NS_NewMSIEditRules(getter_AddRefs(mRules));
-  if (NS_FAILED(res)) return res;
-  if (!mRules) return NS_ERROR_UNEXPECTED;
-  res = mRules->Init(static_cast<nsPlaintextEditor*>(this), mFlags);
+// NS_IMETHODIMP
+// msiEditor::InitRules()
+// {
+//   nsresult res = NS_NewMSIEditRules(getter_AddRefs(mRules));
+//   if (NS_FAILED(res)) return res;
+//   if (!mRules) return NS_ERROR_UNEXPECTED;
+//   res = mRules->Init(static_cast<nsPlaintextEditor*>(this), mFlags);
 
-  return res;
-}
+//   return res;
+// }
 
 
 
