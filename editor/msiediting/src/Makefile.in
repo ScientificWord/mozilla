@@ -31,18 +31,44 @@ EXTRA_DSO_LDOPTS = \
 	$(TK_LIBS) \
     $(NULL)
 
-REQUIRES  = xpcom \
-            string \
+REQUIRES  = appshell \
+            caps \
+            chardet \
             content \
+            docshell \
             dom \
             editor \
-            widget \
-	          layout \
-		        txmgr \
+            exthandler \
             gfx \
-			txtsvc \
-			view \
+            htmlparser \
+            imglib2 \
+            intl \
+            js \
+            layout \
+            locale \
+            lwbrk \
+            mimetype \
+            necko \
+            plugin \
+            pref \
+            prefetch \
+            rdf \
+            shistory \
+            string \
+            txmgr \
+            txtsvc \
+            uconv \
+            unicharutil \
+            uriloader \
+            util \
+            view \
+            webbrowserpersist \
+            webshell \
             widget \
+            xpcom \
+            xpconnect \
+            xuldoc \
+            xultmpl \
             $(NULL)
 
 CPPSRCS    = \

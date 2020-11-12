@@ -22,11 +22,13 @@
 #include "nsComponentManagerUtils.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsGUIEvent.h"
+#include "nsContentUtils.h"
 #include "nsIServiceManager.h"
 
 
 #include "msiUtils.h"
 #include "nsEditor.h"
+#include "nsIHTMLEditor.h"
 #include "msiIMMLEditDefines.h"
 #include "msiIMathMLInsertion.h"
 #include "msiIMathMLEditingBC.h"
@@ -3003,69 +3005,3 @@ nsresult msiUtils::Refresh(nsIEditor * editor)
   return NS_OK;
 }
 
-
-// preliminary implementations
-PRBool atStartOfNode( nsIDOMNode * node, PRInt32 & offset) {
-  return offset == 0;
-}
-
-PRBool atEndOfNode( nsIDOMNode * node, PRInt32 & offset) {
-  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
-  PRInt32 length = msiGetNodeLength(node);
-  return offset == length;
-}
-
-PRBool isBaseMathNode (nsIDOMNode * node) {
-  nsAutoString name;
-  node->GetLocalName(name);
-  return name.EqualsLiteral("math");
-}
-
-PRBool isInputBox (nsIDOMNode * node) {
-  PRBool isInputBox = PR_FALSE;
-  nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(node);
-  elem->HasAttribute(NS_LITERAL_STRING("tempinput"), &isInputBox);
-  return isInputBox;
-}
-
-nsresult msiUtils::CanonicalizeMathSelection(nsIEditor * editor)
-{
-  nsresult res = NS_OK;
-  nsCOMPtr<nsISelection> sel;
-  nsCOMPtr<nsIDOMNode> parentNode;
-  nsCOMPtr<nsIDOMNode> startNode;
-  nsCOMPtr<nsIDOMNode> endNode;
-  PRInt32 startOffset, endOffset;
-  PRInt32 offset;
-  nsEditor* ed = static_cast<nsEditor*>(editor);
-  PRBool isCollapsed;
-
-  ed->GetSelection(getter_AddRefs(sel));
-  sel->GetIsCollapsed(&isCollapsed);
-  if (isCollapsed) {
-    return NS_OK;
-  }
-  res = ed->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset);
-  res = ed->GetEndNodeAndOffset(sel, getter_AddRefs(endNode), &endOffset);
-  // ---
-  while (nsHTMLEditUtils::IsMath(startNode) && atEndOfNode(startNode, startOffset)) {
-    res = ed->GetNodeLocation(startNode, &parentNode, &offset);
-    if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
-      break;
-    }
-    startNode = parentNode;
-    startOffset = offset + 1;
-  }
-  while (nsHTMLEditUtils::IsMath(endNode) && atStartOfNode(endNode, endOffset)) {
-    res = ed->GetNodeLocation(endNode, &parentNode, &offset);
-    if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
-      break;
-    }
-    endNode = parentNode;
-    endOffset = offset;
-  }
-  // ---
-  sel->Collapse(startNode, startOffset);
-  sel->Extend(endNode, endOffset);
-  return res;
-}
