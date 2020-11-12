@@ -7550,6 +7550,139 @@ nsHTMLEditRules::PromoteRange(nsIDOMRange *inRange,
   return res;
 }
 
+// Get the length of aNode
+PRInt32 localGetNodeLength(nsINode *aNode)
+{
+  if(aNode->IsNodeOfType(nsINode::eDATA_NODE)) {
+    return static_cast<nsIContent*>(aNode)->TextLength();
+  }
+
+  return aNode->GetChildCount();
+}
+
+
+// preliminary implementations
+PRBool atStartOfNode( nsIDOMNode * node, PRInt32 & offset) {
+  return offset == 0;
+}
+
+PRBool atEndOfNode( nsIDOMNode * node, PRInt32 & offset) {
+  nsCOMPtr<nsINode> nd = do_QueryInterface(node);
+  PRInt32 length = localGetNodeLength(nd);
+  return offset == length;
+}
+
+PRBool isBaseMathNode (nsIDOMNode * node) {
+  nsAutoString name;
+  node->GetLocalName(name);
+  return name.EqualsLiteral("math");
+}
+
+PRBool isInputBox (nsIDOMNode * node) {
+  PRBool isInputBox = PR_FALSE;
+  nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(node);
+  elem->HasAttribute(NS_LITERAL_STRING("tempinput"), &isInputBox);
+  return isInputBox;
+}
+
+nsresult
+nsHTMLEditRules::CanonicalizeMathSelection()
+{
+  nsresult res = NS_OK;
+  nsCOMPtr<nsISelection> sel;
+  PRBool isCollapsed;
+ // nsCOMPtr<nsIDOMNode> parentNode;
+  // nsCOMPtr<nsIDOMNode> startNode;
+  // nsCOMPtr<nsIDOMNode> endNode;
+  // nsCOMPtr<nsIDOMNode> tempNode;
+  // PRInt32 startOffset, endOffset;
+  // PRInt32 offset;
+  // // nsEditor* ed = static_cast<nsEditor*>(editor);
+  // // nsCOMPtr<nsIHTMLEditor> htmlEd = do_QueryInterface(editor);
+  // PRBool isEmpty;
+  // nsCOMPtr<nsINode> stNode;
+  // nsCOMPtr<nsINode> enNode;
+
+  mHTMLEditor->GetSelection(getter_AddRefs(sel));
+  sel->GetIsCollapsed(&isCollapsed);
+  if (isCollapsed) {
+    return NS_OK;
+  }
+//   res = mHTMLEditor->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset);
+//   res = mHTMLEditor->GetEndNodeAndOffset(sel, getter_AddRefs(endNode), &endOffset);
+//   if (startNode == endNode) return NS_OK;
+
+// // ******
+//   // test area
+  nsCOMPtr<nsIDOMRange> inRange;
+  sel->GetRangeAt(0, getter_AddRefs(inRange));
+    // do_CreateInstance("@mozilla.org/content/range;1", &res);
+  // if ((NS_SUCCEEDED(res)) && inRange) {
+  //   res = inRange->SetStart(startNode, startOffset);
+  //   NS_ENSURE_SUCCESS(res, res);
+  //   res = inRange->SetEnd(endNode, endOffset);
+    mHTMLEditor->PromoteInlineRange(inRange);
+    res = NS_OK; // for debugbreak
+    return res;
+  }
+  // }
+
+
+
+  // end test area
+
+
+
+
+
+  // stNode = do_QueryInterface(startNode);
+  // enNode = do_QueryInterface(endNode);
+  // if (nsContentUtils::PositionIsBefore(enNode, stNode)) {
+  //   // swap so startNode << endNode
+  //   tempNode = endNode;
+  //   endNode = startNode;
+  //   startNode = tempNode;
+  // }
+  // // Nibble away junk white space nodes at the ends of the selection
+  // htmlEd->IsEmptyNode(startNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE );
+  // while (isEmpty) {
+  //   startNode->GetNextSibling(getter_AddRefs(tempNode));
+  //   startOffset = 0;
+  //   startNode = tempNode;
+  //   htmlEd->IsEmptyNode(startNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE );   
+  // }
+
+  // htmlEd->IsEmptyNode(endNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE );
+  // while (isEmpty) {
+  //   endNode->GetPreviousSibling(getter_AddRefs(tempNode));
+  //   endOffset = msiGetNodeLength(endNode);
+  //   endNode = tempNode;
+  //   htmlEd->IsEmptyNode(endNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE );   
+  // }
+
+  // // ---
+  // while (nsHTMLEditUtils::IsMath(startNode) && atEndOfNode(startNode, startOffset)) {
+  //   res = ed->GetNodeLocation(startNode, &parentNode, &offset);
+  //   if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
+  //     break;
+  //   }
+  //   startNode = parentNode;
+  //   startOffset = offset + 1;
+  // }
+  // while (nsHTMLEditUtils::IsMath(endNode) && atStartOfNode(endNode, endOffset)) {
+  //   res = ed->GetNodeLocation(endNode, &parentNode, &offset);
+  //   if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
+  //     break;
+  //   }
+  //   endNode = parentNode;
+  //   endOffset = offset;
+  // }
+  // // ---
+  // sel->Collapse(startNode, startOffset);
+  // sel->Extend(endNode, endOffset);
+  // return res;
+// }
+
 class nsUniqueFunctor : public nsBoolDomIterFunctor
 {
 public:
