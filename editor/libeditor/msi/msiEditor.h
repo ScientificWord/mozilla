@@ -49,7 +49,7 @@ public:
 
 
 protected:
-  NS_IMETHOD  InitRules();
+  // NS_IMETHOD  InitRules();
 
   virtual nsresult InstallEventListeners();
   virtual nsresult CreateEventListeners();

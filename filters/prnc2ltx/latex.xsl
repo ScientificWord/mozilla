@@ -29,9 +29,10 @@
 
 <xsl:variable name="char-info.tr">
     <char-table>
+       <char unicode="&#x0025;" latex="\%"/>
        <char unicode="&#x03B1;" latex="\alpha"/>
        <char unicode="&#x03B2;" latex="\beta"/>
-              <char unicode="&#x03B3;" latex="\gamma"/>
+       <char unicode="&#x03B3;" latex="\gamma"/>
        <char unicode="&#x03B4;" latex="\delta"/>
        <char unicode="&#x03F5;" latex="\epsilon"/>
        <char unicode="&#x03B5;" latex="\varepsilon"/>

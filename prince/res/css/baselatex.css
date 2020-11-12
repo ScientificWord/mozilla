@@ -51,6 +51,14 @@
 of items. The user can override these colors using a dialog.
 In that case in internal style sheet will rewrite these rules. */
 @media screen {
+  msiframe::-moz-selection {
+    background-color: yellow;
+  }
+
+  msidisplay::-moz-selection {
+    background-color: yellow;
+  }  
+
   mml|math {
     color: red;
   }
@@ -190,6 +198,10 @@ msidisplay[numbering=none] > math {
 
 msidisplay[numbering] > math > mtable {
   -moz-user-select: text;
+}
+
+msidisplay ::-moz-selection {
+  background-color: #FFCCCC; 
 }
 
 mml|mi[msiclass=enginefunction] {

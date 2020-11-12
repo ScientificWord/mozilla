@@ -1756,6 +1756,16 @@ italics {
   font-style: italic;
 }
 
+italics::-moz-selection {
+  color: red;
+  background-color: yellow;
+}
+
+msidisplay::-moz-selection {
+  color: green;
+  background-color: yellow;
+}
+
 slanted {
   font-style: italic;
   font-weight: 700;

@@ -63,6 +63,8 @@ public:
   NS_IMETHOD InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode,
                            const nsAString &aStructureType, nsIAtom * atomNamespace )=0;
   NS_IMETHOD InsertBRIfNeeded(nsISelection *aSelection)=0;
+  NS_IMETHOD CanonicalizeMathSelection() = 0;
+  
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIHTMLEditRules, NS_IHTMLEDITRULES_IID)

@@ -1414,7 +1414,7 @@ nsContentUtils::GetCommonAncestor(nsINode* aNode1,
 }
 
 PRUint16
-nsContentUtils::ComparePosition(nsINode* aNode1,
+ nsContentUtils::ComparePosition(nsINode* aNode1,
                                 nsINode* aNode2)
 {
   NS_PRECONDITION(aNode1 && aNode2, "don't pass null");

@@ -48,6 +48,7 @@
 #include "nsEditorUtils.h"
 #include "TypeInState.h"
 #include "nsReadableUtils.h"
+#include "msiUtils.h"
 
 class nsVoidArray;
 class nsIDOMElement;
@@ -133,7 +134,8 @@ public:
   NS_IMETHOD DidDeleteSelection(nsISelection *aSelection);
   NS_IMETHOD AdvanceCursorToEditableText(nsIDOMNode *aStartNode, PRUint32 aOffset,
                                          nsIDOMNode **aOutNode, PRUint32 *aOutOffset);
-
+  NS_IMETHOD CanonicalizeMathSelection();
+  
 protected:
 
   enum RulesEndpoint
