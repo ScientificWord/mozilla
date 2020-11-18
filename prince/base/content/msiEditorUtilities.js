@@ -487,6 +487,19 @@ function MsiException(message, previous) {
     return this.message;
   };
 }
+
+function isValidKey(keystring, badchars) // Enforce limitations on LaTeX keys
+{
+  var regexp = /[#$%~\\{}]/;
+  var match = regexp.exec(keystring);
+  var foundString;
+  if (match !== null) {
+    foundString = match.join();
+    badchars.value = foundString;
+    return false;
+  }
+  return true;
+}
 ///************* String Utilities ***************/
 //
 function GetString(name) {
@@ -7167,8 +7180,10 @@ function msiBibItemKeyMarkerList(aControl) {
   this.mDeletedElements = [];
 }
 msiBibItemKeyMarkerList.prototype = msiMarkerListPrototype;
+
 function msiGetKeyListForDocument(aDocument, editor) {
   if (!aDocument) return;
+  var newDoc;
   var separatorRegExpr=/\\n/;
   if (!gProcessor) gProcessor = new XSLTProcessor();
   else gProcessor.reset();
