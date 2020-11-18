@@ -32,6 +32,8 @@ prince.jar:
 * content/menuOverlay.xul           (menuOverlay.xul)
 * content/mainCore.js               (mainCore.js)
 * content/math2text.xsl             (math2text.xsl)
+  content/keyEntryOverlay.xul       (keyEntryOverlay.xul)
+  content/keyEntryOverlay.js        (keyEntryOverlay.js)
 * content/binomial.js               (dialogs/Binomial.js)
 * content/binomial.xul              (dialogs/Binomial.xul)
 * content/brackets.js               (dialogs/brackets.js)
