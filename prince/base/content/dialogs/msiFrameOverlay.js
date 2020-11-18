@@ -385,7 +385,7 @@ function initFrameTab(dg, element, newElement,  contentsElement)
   dg.custom               = document.getElementById( "custom" );
   dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
   dg.sizeRadio            = document.getElementById( "sizeRadio" );
-  dg.keyInput             = document.getElementById( "keyInput" );
+  dg.keyEntryTextbox             = document.getElementById( "keyEntryTextbox" );
   gSizeState.sizeUnit = currUnit;
 
   var fieldList = [];
@@ -495,12 +495,13 @@ function initFrameTab(dg, element, newElement,  contentsElement)
       var captionNodes = element.getElementsByTagName("imagecaption");
       var captionNode;
       if (captionNodes && captionNodes.length > 0) captionNode = captionNodes[0];
+      initKeyEntryOverlay(dg.editor, captionNode)
       if (captionNode) {
         if (captionNode.hasAttribute("key"))
           key = captionNode.getAttribute("key");
         else if (captionNode.hasAttribute("id"))
           key = captionNode.getAttribute("id");
-        dg.keyInput.value = key;
+        dg.keyEntryTextbox.value = key;
         gOriginalKey = key;
       }
       var captionLoc = element.getAttribute("captionloc") || "none";
@@ -771,11 +772,14 @@ function locationChanged()
   var currentLocation = document.getElementById("locationList").value;
   if (floatBroadcaster) {
     if (currentLocation === "floating") {
+      if (document.getElementById("captionLocation").value !=='none')
+        document.getElementById("keyEnabled").removeAttribute("disabled");
       floatBroadcaster.removeAttribute("disabled");
       if (Dg.floatList.selectedItem === "floatlistNone")
         Dg.floatList.selectedItem = "ltxfloat_here";
     } else {
       floatBroadcaster.setAttribute("disabled", "true");
+      document.getElementById("keyEnabled").setAttribute("disabled", "true");
     }
   }
   if (currentLocation === "inline")
