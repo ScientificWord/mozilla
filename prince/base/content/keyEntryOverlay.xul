@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/KeyEntryOverlay.dtd">
+<overlay id="keyEntryOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+      xmlns:html="http://www.w3.org/1999/xhtml">
+  <script type="application/x-javascript" src="chrome://prince/content/keyEntryOverlay.js"/>
+ 
+<broadcaster id="keyEnabled"/> 
+
+<vbox id="keyEntryTextbox">
+<!-- 	<label control="keylist" value="&Key.label;"/> -->
+  <textbox id="keylist" 
+  	timeout="50" 
+  	type="autocomplete" 
+  	minresultsforpopup="1" 
+  	enablehistory="true" 
+    forcecomplete="false"
+    completedefaultindex="true" 
+    autocompletesearch="stringarray" 
+    autocompletesearchparam="key"
+    tooltiptext="&KeyNameConflict.tooltip;"
+    maxrows="3"
+    onfocus="this.select()"
+    oninput="tagConflicts();"
+    ontextentered="tagConflicts();" 
+    observes="keyEnabled"/>
+  <vbox height="2em"/>
+  <label id="uniquekeywarning" hidden="true">&KeyNameConflict.label;</label>
+  <label id="invalidkey" hidden="true">&KeyContainsInvalidCharacters.label;</label> 
+  <label id="badkeychar" hidden="true">
+  </label>
+</vbox>
+</overlay>
