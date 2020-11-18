@@ -9099,7 +9099,9 @@ function goDoPrinceCommand(cmdstr, element, editorElement) {
         cmdParams.setISupportsValue("edelement", editorElement);
         msiGoDoCommandParams("cmd_MSIinsertIndexEntryCmd", cmdParams);
     } else if (elementName == "a" && element.hasAttribute("key")) {
-      msiGoDoCommand("cmd_marker", editorElement);
+      window.openDialog("chrome://prince/content/marker.xul", "insertmarker", "resizable=yes,dependent=yes,chrome,close,titlebar", element);
+      markDocumentChanged(editorElement);
+
     } else if (elementName == "texb") {
       openTeXButtonDialog('texb', element);
     } else if (elementName == "msiframe" && element.parentNode.nodeName !== "graph") {
