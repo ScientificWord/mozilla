@@ -1681,14 +1681,15 @@ function onAccept()
       }
       else if (!gCaptionNode && captionloc !== 'none') {
         gCaptionNode = gEditor.createElementWithDefaults('imagecaption');
+        saveKey(gCaptionNode);
         paraNode = editor.document.createElement('bodyText');
         brNode = editor.document.createElement('br');
         gCaptionNode.appendChild(paraNode);
         paraNode.appendChild(brNode);
       }
-      if (gCaptionNode && isEnabled(document.getElementById("keyInput"))) {
-        if (document.getElementById("keyInput").value != "")
-          gCaptionNode.setAttribute("key", document.getElementById("keyInput").value);
+      if (gCaptionNode && isEnabled(document.getElementById("keylist"))) {
+        if (document.getElementById("keylist").value != "")
+          saveKey(gCaptionNode);
         else gCaptionNode.removeAttribute("key");
       }
       else if (gCaptionNode) gCaptionNode.removeAttribute("key");
