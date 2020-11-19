@@ -214,9 +214,7 @@
           <xsl:apply-templates mode="doit" select="html:imagecaption"/>
           <xsl:if test="./*[@key]">
             <xsl:text>\label{</xsl:text>
-            <xsl:call-template name="do-chars-in-TEXT">
-                <xsl:with-param name="unicode-cdata" select="./*[@key]/@key[1]"/>
-            </xsl:call-template>
+            <xsl:value-of select="./*[@key]/@key[1]"/>
             <xsl:text>}</xsl:text>
           </xsl:if>
         </xsl:when>
@@ -320,16 +318,12 @@
           <xsl:apply-templates mode="doit" select="html:imagecaption"/>
           <xsl:if test="./*[@key]">
             <xsl:text>\label{</xsl:text>
-            <xsl:call-template name="do-chars-in-TEXT">
-                <xsl:with-param name="unicode-cdata" select="./*[@key]/@key[1]"/>
-            </xsl:call-template>
+            <xsl:value-of select="./*[@key]/@key[1]"/>
             <xsl:text>}</xsl:text>
           </xsl:if>
           <xsl:if test="../*[@Key]">
             <xsl:text>\label{</xsl:text>
-            <xsl:call-template name="do-chars-in-TEXT">
-                <xsl:with-param name="unicode-cdata" select="./*[@key]/@key[1]"/>
-            </xsl:call-template>
+            <xsl:value-of select="../*[@Key]/@Key[1]"/>
             <xsl:text>}</xsl:text>
           </xsl:if> 
         </xsl:when>

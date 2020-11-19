@@ -7254,7 +7254,7 @@ var msiMarkerCommand =
       markDocumentChanged(editorElement);
     }
     catch (e) {
-      finalThrow(cmdFailString('reviserules'), e.message);
+      finalThrow(cmdFailString('insert marker'), e.message);
     }
   }
 };

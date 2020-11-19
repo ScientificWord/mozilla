@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/textbox.css" type="text/css"?>
+
+<?xul-overlay href="chrome://prince/content/keyEntryOverlay.xul"?>
+
+
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/marker.dtd">
 <!-- JLF - localization pass 7/4/2012 -->
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -18,17 +22,9 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/marker.js"/>
 
-  <label control="keylist" value="&Key.label;"/>
-  <textbox id="keylist" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
-    forcecomplete="true"
-    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
-    tooltiptext="&KeyNameConflict.tooltip;"
-    maxrows="3"
-    onfocus="this.select()"
-    oninput="tagConflicts();"
-    ontextentered="tagConflicts();" />
-  <vbox height="2em"/>
-  <label id="uniquekeywarning" hidden="true">
-    &KeyNameConflict.label;</label>
+  <vbox id="keyEntryTextbox"/>
+
+
 
 </dialog>
+ 
