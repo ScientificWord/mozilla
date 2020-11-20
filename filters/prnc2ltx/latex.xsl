@@ -25,6 +25,15 @@
    <xsl:text>\MsiBlankline</xsl:text>
 </xsl:variable>
 
+<xsl:variable name="languages">
+  <xsl:if test="//html:babel[@lang3]"><xsl:value-of select="//html:babel/@lang3"/>,  
+  </xsl:if>  
+  <xsl:if test="//html:babel[@lang2]"><xsl:value-of select="//html:babel/@lang2"/>,
+  </xsl:if>  
+  <xsl:if test="//html:babel[@lang1]"><xsl:value-of select="//html:babel/@lang1"/>
+  </xsl:if>
+</xsl:variable>
+
 
 
 <xsl:variable name="char-info.tr">
