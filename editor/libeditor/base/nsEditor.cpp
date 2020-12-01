@@ -5013,7 +5013,7 @@ nsEditor::FloatStructureUp( nsIDOMNode *structNode,   // N in the above descript
   // Can child be a parent for n ?
 
   res = child->GetNodeName(childName);
-  if (childName.EqualsLiteral("body") || childName.EqualsLiteral("html")) return NS_ERROR_FAILURE;
+  if (/*childName.EqualsLiteral("body") ||*/ childName.EqualsLiteral("html")) return NS_ERROR_FAILURE;
   res = tlm->TagCanContainTag(childName, nsatom, structName, nsatom, &fCanContain);
   if (fCanContain) {
     res = InsertNode( structNode, initialParent, initialOffset );
