@@ -272,6 +272,7 @@
     <xsl:text>\graphicspath{{../graphics/}{../tcache/}{../gcache/}}</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:text>\DeclareGraphicsExtensions{.pdf,.eps,.ps,.png,.jpg,.jpeg}</xsl:text>
+    <xsl:value-of select="$newline"/>
 
 
 
