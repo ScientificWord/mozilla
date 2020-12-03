@@ -297,7 +297,6 @@
     <xsl:text>\graphicspath{{../graphics/}{../tcache/}{../gcache/}}</xsl:text>
     <xsl:value-of select="$newline"/>
     <xsl:text>\DeclareGraphicsExtensions{.pdf,.eps,.ps,.png,.jpg,.jpeg}</xsl:text>
-    <xsl:value-of select="$newline"/>
 
 
 
@@ -818,3 +817,5 @@
 </xsl:template>
 
 </xsl:stylesheet>
+
+<!-- Useless comment just to change the file while messing with mercurial (gp) -->
