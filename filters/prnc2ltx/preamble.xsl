@@ -818,4 +818,4 @@
 
 </xsl:stylesheet>
 
-<!-- Useless comment 2 just to change the file while messing with mercurial (gp) -->
+<!-- Useless comment just to change the file while messing with mercurial (gp) -->
