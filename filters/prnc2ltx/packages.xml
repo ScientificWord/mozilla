@@ -7,6 +7,8 @@
 	<package name="xcolor" pri="200"/>
 	<package name="wrapfig" pri="100"/>
 	<package name="minipage" pri="200"/>
+	<package name="babel" pri="1000"/>
+	<package name="polyglossia" pri="1000"/>
 	<package name="hyperref" pri="10000"/>
 	<package name="bidi" pri="10001"/>
 	<package name="tcibkpk" pri="080"/>
