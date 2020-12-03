@@ -218,6 +218,14 @@
                   </hbox>
                 </vbox>
               </row>
+            </rows>
+          </grid>
+          <grid>
+            <columns>
+              <column flex="1"/>
+              <column flex="1"/>
+            </columns>
+            <rows>
               <row>
                 <vbox>
                   <deck id="babelpoly">
@@ -338,7 +346,6 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox/>
                 <vbox>
                   <label ><!--observes="reformatok" -->&SecondLanguage.label;</label>
                   <menulist id="babelLang2" observes="reformatok" style="width: 20em" value="def">
@@ -428,9 +435,9 @@
                      </menupopup>
                  </menulist>
                 </vbox>
-              </row>
+              </row>            
             </rows>
-          </grid>
+          </grid>          
         </groupbox>
         <groupbox  observes="reformatok">
           <caption>
