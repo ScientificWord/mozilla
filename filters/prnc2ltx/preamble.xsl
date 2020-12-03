@@ -131,6 +131,9 @@
                   <xsl:when test="$currentpackage='bidi'">10001</xsl:when>
                   <xsl:when test="$currentpackage='tcibkpk'">080</xsl:when>
                   <xsl:when test="$currentpackage='sw20orp1'">300</xsl:when>
+                  <xsl:when test="$currentpackage='varioref'">1001</xsl:when>
+                  <xsl:when test="$currentpackage='babel'">1000</xsl:when>
+                  <xsl:when test="$currentpackage='polyglossia'">1000</xsl:when>
                   <xsl:otherwise>100</xsl:otherwise>
                 </xsl:choose>
               </xsl:otherwise>
@@ -187,6 +190,20 @@
   <xsl:variable name="fontchoiceok" select="//html:texprogram[@fontsOK='true']"/>
   <xsl:variable name="lang1" select="//html:babel/@lang1"/>
   <xsl:variable name="lang2" select="//html:babel/@lang2"/>
+  <xsl:variable name="babel" select="//html:babel"/>
+
+  <xsl:variable name="usesBabel">
+    <xsl:choose>
+      <xsl:when test="//html:babel">
+        <xsl:text>true</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>false</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+
 
   <xsl:template match="html:preamble">
     <xsl:value-of select="$blankline"/>
@@ -225,23 +242,31 @@
        <xsl:text>\usepackage{makeidx}</xsl:text>
     </xsl:if>
 
-    <xsl:for-each select="$packagelist/*">
 
+ 
+
+    <xsl:for-each select="$packagelist/*">
       <xsl:sort select="@pri" data-type="number"/>
-      <xsl:value-of select="$newline"/>
-      <xsl:text>\usepackage</xsl:text>
-      <xsl:if test="@options">
-         <xsl:text>[</xsl:text>
-         <xsl:value-of select="@options"/>
-        <xsl:text>]</xsl:text>
-      </xsl:if>
-      <xsl:text>{</xsl:text>
-      <xsl:value-of select="@package"/>
-      <xsl:text>}  %% </xsl:text>
-      <xsl:value-of select="@pri"/>
-      <xsl:text>
-      </xsl:text>
-<!--       <xsl:if test="@package='svg'">
+      <xsl:choose>
+        <xsl:when test="@package='varioref'
+                        and exsl:node-set($babel)" />
+        <xsl:otherwise>
+          <xsl:value-of select="$newline"/>
+          <xsl:text>\usepackage</xsl:text>
+          <xsl:if test="@options">
+             <xsl:text>[</xsl:text>
+             <xsl:value-of select="@options"/>
+            <xsl:text>]</xsl:text>
+          </xsl:if>
+          <xsl:text>{</xsl:text>
+          <xsl:value-of select="@package"/>
+          <xsl:text>}  %% </xsl:text>
+          <xsl:value-of select="@pri"/>
+          <xsl:text>
+          </xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+  <!--       <xsl:if test="@package='svg'">
         <xsl:text>\IfFileExists{/dev/null}{%</xsl:text>
         <xsl:value-of select="$newline"/>
         <xsl:text>\newcommand{\Inkscape}{/Applications/Inkscape.app/Contents/Resources/bin/inkscape }%</xsl:text>
@@ -296,27 +321,26 @@
     <xsl:apply-templates/>
   </xsl:template>
 
-  <xsl:template match="html:babel"><xsl:choose>
-    <xsl:when test="@pkg='babel'">
-      \usepackage[
-      <xsl:if test="@lang2">
-        <xsl:value-of select="@lang2"/>,
-      </xsl:if>
-      <xsl:if test="@lang1">
-        <xsl:value-of select="@lang1"/>
-      </xsl:if>
-      ]{babel}
-    </xsl:when>
-    <xsl:otherwise>
-      \usepackage{polyglossia}
-      <xsl:if test="@lang1">
-      \setdefaultlanguage{<xsl:value-of select="@lang1"/>}
-      </xsl:if>
-      <xsl:if test="@lang2">
-        \setotherlanguage{<xsl:value-of select="@lang2"/>}
-      </xsl:if>
-    </xsl:otherwise></xsl:choose>
+  <xsl:template match="html:babel">
+    <xsl:choose>
+      <xsl:when test="@pkg='babel'">
+        \usepackage[<xsl:value-of select="$languages"/>]{babel
+        <xsl:if test="//*[@req='varioref']">,varioref</xsl:if>}
+      </xsl:when>
+      <xsl:otherwise>
+        \usepackage[<xsl:value-of select="$languages"/>]{polyglossia
+        <xsl:if test="//*[@req='varioref']">,varioref</xsl:if>}
+        <xsl:if test="@lang1">
+          \setdefaultlanguage{<xsl:value-of select="@lang1"/>}
+        </xsl:if>
+        <xsl:if test="@lang2">
+          \setotherlanguage{<xsl:value-of select="@lang2"/>}
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
+
+
 
   <!-- use docformat information to call the crop package -->
   <xsl:template match="html:crop">
