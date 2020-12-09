@@ -762,9 +762,10 @@ PRBool IsTempInput(nsIDOMElement * pElement)
 
 
 NS_IMETHODIMP
-msiEditor::InsertFence(const nsAString & open, const nsAString & close, const nsAString & flavor, nsIDOMDocumentFragment* contents)
+msiEditor::InsertFence(const nsAString & open, const nsAString & close, const nsAString & flavor)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMDocumentFragment> content;
   nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask))
   {
@@ -773,6 +774,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
     nsCOMPtr<nsIDOMElement> mtable;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
+    PRBool bDontCare;
     PRBool allSelected(PR_FALSE);
     GetSelection(getter_AddRefs(selection));
     res = GetAllCellsSelected(getter_AddRefs(mtable), &allSelected);
@@ -795,7 +797,6 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
       res = RangeInMath(range, getter_AddRefs(mathnode));  //RangeInMath will return a math node if the entire range contents contains 
       // a math node at the first level, <bodyText>..<range start><math>...</math><range end>...</bodyText>
       PRBool inMath = (nsnull != mathnode);
-    //  if (!inMath) return NS_OK;
       if (inMath && !(nsHTMLEditUtils::IsMath(startNode))) {
         // switch selection to content of mathNode
         range->SelectNodeContents(mathnode);
@@ -806,12 +807,8 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
       }
       if (inMath)
       {
+
         BeginTransaction();
-        // if (contents != nsnull) {
-        //   DeleteSelection(0);
-        //   res = GetNSSelectionData(selection, startNode, startOffset, endNode,
-        //                endOffset, bCollapsed);
-        // }
         PRBool bCollapsed(PR_FALSE);
         nsRangeStore * store = new nsRangeStore();
         if (!store) return NS_ERROR_NULL_POINTER;
@@ -826,30 +823,25 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
         PRBool bIsTempInput = PR_FALSE;
         PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
         PRUint32 attrFlags(msiIMathMLInsertion::FLAGS_NONE);
-        res = msiUtils::CreateMRowFence(this, nsnull, contents==nsnull, open, close, flavor, PR_TRUE, flags, attrFlags, mathmlElement);
+        res = msiUtils::CreateMRowFence(this, nsnull, bCollapsed, open, close, flavor, PR_TRUE, flags, attrFlags, mathmlElement);
         if (NS_SUCCEEDED(res) && mathmlElement) {
           nsAutoTxnsConserveSelection dontSpazMySelection(this);
           mathmlNode = do_QueryInterface(mathmlElement);
           res = store->GetRange(range);
           mRangeUpdater.DropRangeItem(store);
-          if (contents != nsnull)
+          if (!bCollapsed)
           {
+            range->CloneContents(getter_AddRefs(content));
+            DeleteSelection(0);
+            res = GetNSSelectionData(selection, startNode, startOffset, endNode,
+                           endOffset, bDontCare); 
             nsCOMPtr<nsIDOMNodeList> childNodes;
             nsCOMPtr<nsIDOMNode> refChild, dontCare;
             res = mathmlElement->GetChildNodes(getter_AddRefs(childNodes));
             childNodes->Item(1, getter_AddRefs(refChild));
-            mathmlElement->InsertBefore(contents, refChild, getter_AddRefs(dontCare));
-
+            mathmlElement->InsertBefore(content, refChild, getter_AddRefs(dontCare));
           }
           res = InsertMathNode(mathmlElement, startNode, startOffset, bInserted, getter_AddRefs(newNode));
-          // res = mathmlElement->GetFirstChild(getter_AddRefs(elt));  // elt is left fence
-          // res = elt->GetNextSibling(getter_AddRefs(elt)); // elt is tempinput mi
-          // nsCOMPtr<nsIDOMElement> eltelt = do_QueryInterface(elt);
-          // eltelt->HasAttribute(NS_LITERAL_STRING("tempinput"), &bIsTempInput);
-          // if (bIsTempInput) selection->Collapse(elt,0);
-          // else
-          // selection->Collapse(mathmlNode, 1); // just after left fence
-          //         }
           if (bCollapsed) {
             nsCOMPtr<nsIDOMNode> child;
             nsCOMPtr<nsIDOMElement> childElem;
