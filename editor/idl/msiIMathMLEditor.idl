@@ -6,6 +6,7 @@
 #include "msiIMathMLCoalesce.idl"
 #include "msiIMathMLEditingBC.idl"
 #include "nsIDOMRange.idl"
+#include "nsIDOMDocumentFragment.idl"
 
 interface nsITransaction;
 
@@ -37,7 +38,8 @@ interface msiIMathMLEditor : nsISupports
   void InsertEngineFunction(in DOMString name);
   void InsertFence(in DOMString open,
                    in DOMString close,
-                   in DOMString flavor);
+                   in DOMString flavor,
+                   in nsIDOMDocumentFragment content);
   void InsertMatrix(in unsigned long rows,
                     in unsigned long cols,
                     in DOMString rowSignature,

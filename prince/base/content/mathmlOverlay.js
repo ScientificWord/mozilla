@@ -3162,20 +3162,28 @@ function insertfence(left, right, editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  if (makeMathIfNeeded(editorElement)) {
-    try
-    {
-      if (!editorElement) throw("In insertfence, editor element is null!");
-      if (!editor) throw("In insertfence, editor element [" + editorElement.id + "] has null editor!");
-      var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-      if (!mathmlEditor) throw("In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!");
-      mathmlEditor.InsertFence(left, right, "");
-      editorElement.contentWindow.focus();
+  var selection;
+  var contents;
+
+  try
+  {
+    if (!editorElement) throw("In insertfence, editor element is null!");
+    if (!editor) throw("In insertfence, editor element [" + editorElement.id + "] has null editor!");
+    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    selection = mathmlEditor.selection;
+    if (!mathmlEditor) throw("In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!");
+    if (selection.isCollapsed) {
+      contents = null;
+    } else {
+      contents = selection.getRangeAt(0).cloneContents();
+      editor.deleteSelection(0);
     }
-    catch (e)
-    {
-      throw e;
-    }
+    mathmlEditor.InsertFence(left, right, "", contents);
+    editorElement.contentWindow.focus();
+  }
+  catch (e)
+  {
+    throw e;
   }
 }
 
