@@ -38,8 +38,7 @@ interface msiIMathMLEditor : nsISupports
   void InsertEngineFunction(in DOMString name);
   void InsertFence(in DOMString open,
                    in DOMString close,
-                   in DOMString flavor,
-                   in nsIDOMDocumentFragment content);
+                   in DOMString flavor);
   void InsertMatrix(in unsigned long rows,
                     in unsigned long cols,
                     in DOMString rowSignature,
