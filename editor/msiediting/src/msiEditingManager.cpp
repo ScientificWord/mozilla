@@ -242,15 +242,25 @@ nsresult msiEditingManager::MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, 
       theText = currentText;
 
       if (currentNode == endNode && endOffset > 0) { // there is text at the end of the range to move
-        theText = Substring(theText, 0, endOffset);
-      } else eOffset = 0;
-      if (currentNode == startNode && startOffset < theText.Length()) {
-        theText = Substring(theText, startOffset, theText.Length() - startOffset);
-      } else sOffset = 0;
-      if (eOffset > sOffset) {
-        tempText = Substring(currentText, 0, sOffset) + Substring(currentText, eOffset, currentText.Length()-eOffset);
-        currentTextNode->SetTextContent(tempText);
-      }
+        if (currentNode == startNode && startOffset < theText.Length()){
+          if (endOffset < startOffset) {
+            eOffset = startOffset;
+            sOffset = endOffset;
+          }
+          else {
+            eOffset = endOffset;
+            sOffset = startOffset;
+          }
+          theText = Substring(theText, sOffset, eOffset-sOffset); // start and end are in the samee node
+        }
+        else {
+          theText = Substring(theText, 0, endOffset);          
+        }
+      } 
+      else if (currentNode == startNode){
+        theText = Substring(theText, startOffset, theText.Length()-startOffset);
+      }      
+      currentTextNode->SetTextContent(theText);
       if (theText.Length() > 0) {
         if (dstNodeType == 3) {
           dstTextNode->SetTextContent(Substring(dstText, 0, dstOffset) + theText + Substring(dstText, dstOffset + dstText.Length() - dstOffset));
