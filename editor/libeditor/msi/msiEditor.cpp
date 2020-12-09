@@ -34,6 +34,8 @@
 #include "FlattenMrowTxn.h"
 #include "ReplaceScriptBaseTxn.h"
 #include "nsILocalFile.h"
+#include "nsHTMLEditUtils.h"
+
 
 #include "msiISelection.h"
 #include "msiIEditingManager.h"
@@ -760,7 +762,7 @@ PRBool IsTempInput(nsIDOMElement * pElement)
 
 
 NS_IMETHODIMP
-msiEditor::InsertFence(const nsAString & open, const nsAString & close, const nsAString & flavor)
+msiEditor::InsertFence(const nsAString & open, const nsAString & close, const nsAString & flavor, nsIDOMDocumentFragment* contents)
 {
   nsresult res(NS_ERROR_FAILURE);
   nsAutoEditBatch beginBatching(this);
@@ -788,25 +790,35 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res))
     {
-      nsCOMPtr<nsIDOMNode> theNode = startNode;
-      PRInt32 theOffset = startOffset;
       nsCOMPtr<nsIDOMNode> mathnode;
       nsCOMPtr<nsIDOMNode> elt;
-      res = RangeInMath(range, getter_AddRefs(mathnode));
+      res = RangeInMath(range, getter_AddRefs(mathnode));  //RangeInMath will return a math node if the entire range contents contains 
+      // a math node at the first level, <bodyText>..<range start><math>...</math><range end>...</bodyText>
       PRBool inMath = (nsnull != mathnode);
     //  if (!inMath) return NS_OK;
-
-      NS_ASSERTION(theNode, "Null node passed to msiEditor::InsertFence");
-      if (theNode)
+      if (inMath && !(nsHTMLEditUtils::IsMath(startNode))) {
+        // switch selection to content of mathNode
+        range->SelectNodeContents(mathnode);
+        range->GetStartContainer(getter_AddRefs(startNode));
+        range->GetStartOffset(&startOffset);
+        range->GetEndContainer(getter_AddRefs(endNode));
+        range->GetEndOffset(&endOffset);
+      }
+      if (inMath)
       {
         BeginTransaction();
+        // if (contents != nsnull) {
+        //   DeleteSelection(0);
+        //   res = GetNSSelectionData(selection, startNode, startOffset, endNode,
+        //                endOffset, bCollapsed);
+        // }
         PRBool bCollapsed(PR_FALSE);
         nsRangeStore * store = new nsRangeStore();
         if (!store) return NS_ERROR_NULL_POINTER;
         store->StoreRange(range);
         mRangeUpdater.RegisterRangeItem(store);
 
-        res = selection->GetIsCollapsed(&bCollapsed);
+        res = range->GetCollapsed(&bCollapsed);
         nsCOMPtr<nsIDOMElement> mathmlElement;
         nsCOMPtr<nsIDOMNode> mathmlNode;
         nsCOMPtr<nsIDOMNode> newNode;
@@ -814,16 +826,22 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
         PRBool bIsTempInput = PR_FALSE;
         PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
         PRUint32 attrFlags(msiIMathMLInsertion::FLAGS_NONE);
-        res = msiUtils::CreateMRowFence(this, nsnull, bCollapsed, open, close, flavor, PR_TRUE, flags, attrFlags, mathmlElement);
+        res = msiUtils::CreateMRowFence(this, nsnull, contents==nsnull, open, close, flavor, PR_TRUE, flags, attrFlags, mathmlElement);
         if (NS_SUCCEEDED(res) && mathmlElement) {
+          nsAutoTxnsConserveSelection dontSpazMySelection(this);
           mathmlNode = do_QueryInterface(mathmlElement);
           res = store->GetRange(range);
           mRangeUpdater.DropRangeItem(store);
-          if (!bCollapsed)
+          if (contents != nsnull)
           {
-            m_msiEditingMan->MoveRangeTo(this, range, mathmlElement, 1, mathnode);
+            nsCOMPtr<nsIDOMNodeList> childNodes;
+            nsCOMPtr<nsIDOMNode> refChild, dontCare;
+            res = mathmlElement->GetChildNodes(getter_AddRefs(childNodes));
+            childNodes->Item(1, getter_AddRefs(refChild));
+            mathmlElement->InsertBefore(contents, refChild, getter_AddRefs(dontCare));
+
           }
-          res = InsertMathNode(mathmlNode, startNode, startOffset, bInserted, getter_AddRefs(newNode));
+          res = InsertMathNode(mathmlElement, startNode, startOffset, bInserted, getter_AddRefs(newNode));
           // res = mathmlElement->GetFirstChild(getter_AddRefs(elt));  // elt is left fence
           // res = elt->GetNextSibling(getter_AddRefs(elt)); // elt is tempinput mi
           // nsCOMPtr<nsIDOMElement> eltelt = do_QueryInterface(elt);
