@@ -14,10 +14,13 @@
 #include "nsEvent.h"
 #include "nsPoint.h"
 #include "nsIMutableArray.h"
+#include "msiIMathMLEditor.h"
 #include "msiIMathMLInsertion.h"
 #include "msiIMathMLCaret.h"
 #include "msiIMathMLEditingBC.h"
 #include "msiILayoutUtils.h"
+#include "nsIDOMDocumentFragment.h"
+
 
 
 class msiUtils
@@ -409,11 +412,13 @@ public:
 
   static nsresult Refresh(nsIEditor * editor);
 
-  // static nsresult CanonicalizeMathSelection(nsIEditor * editor);
+;
 
 //TODO - how should this be determined -- user preference??
   enum {MROW_PURGE_NONE = 0, MROW_PURGE_BOUNDARY, MROW_PURGE_ALL};
   static PRUint32  GetMrowPurgeMode();
+
+
 
 };
 
