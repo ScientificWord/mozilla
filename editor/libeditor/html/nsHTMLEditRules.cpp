@@ -37,7 +37,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-
 #include "nsHTMLEditRules.h"
 
 #include "nsEditor.h"
@@ -51,6 +50,7 @@
 #include "nsCRT.h"
 #include "nsIContent.h"
 #include "nsIContentIterator.h"
+#include "nsContentUtils.h"
 #include "nsIDOMNode.h"
 #include "nsIDOMText.h"
 #include "nsIDOMElement.h"
@@ -7550,40 +7550,43 @@ nsHTMLEditRules::PromoteRange(nsIDOMRange *inRange,
   return res;
 }
 
-// Get the length of aNode
-PRInt32 localGetNodeLength(nsINode *aNode)
+// HandleTextNode resets the range end when it encounters non-whitespace text,
+// and does nothing otherwise so it is treated as other nodes. The return
+// value is set to true if and only if non-whitespace text was encountered
+
+PRBool HandleTextNode(nsIDOMNode* node, 
+                      PRInt32 offset, 
+                      PRBool atBeginning, nsISelection * sel) 
 {
-  if(aNode->IsNodeOfType(nsINode::eDATA_NODE)) {
-    return static_cast<nsIContent*>(aNode)->TextLength();
+  nsCOMPtr<nsIDOMRange> domRange;
+  PRUint16 nodeType;
+  nsAutoString nodeValue;
+  nsAutoString trimmedString;
+  if (node == nsnull) return PR_FALSE;
+  node->GetNodeType(&nodeType);
+  // See if node is a text node
+  if (nodeType == nsIDOMNode::TEXT_NODE) {
+    node->GetNodeValue(nodeValue);
+    if (offset < nodeValue.Length()) {
+      if (atBeginning) {
+        nodeValue.Cut(0,offset);
+      }
+      else nodeValue.Cut(offset,nodeValue.Length() - offset);
+    } else return PR_FALSE;
+    trimmedString = nsContentUtils::TrimWhitespace(nodeValue, !atBeginning);
+    if (trimmedString.Length()>0) {
+      // Found non-space character, so stop trimming
+      // Reset range start
+      sel->GetRangeAt(0, getter_AddRefs(domRange));
+      if (atBeginning) {
+        domRange->SetStart(node, offset + nodeValue.Length() - trimmedString.Length());    
+      } else domRange->SetEnd(node, offset - trimmedString.Length());
+      return PR_TRUE;  
+    }
   }
-
-  return aNode->GetChildCount();
+  return PR_FALSE;
 }
 
-
-// preliminary implementations
-PRBool atStartOfNode( nsIDOMNode * node, PRInt32 & offset) {
-  return offset == 0;
-}
-
-PRBool atEndOfNode( nsIDOMNode * node, PRInt32 & offset) {
-  nsCOMPtr<nsINode> nd = do_QueryInterface(node);
-  PRInt32 length = localGetNodeLength(nd);
-  return offset == length;
-}
-
-PRBool isBaseMathNode (nsIDOMNode * node) {
-  nsAutoString name;
-  node->GetLocalName(name);
-  return name.EqualsLiteral("math");
-}
-
-PRBool isInputBox (nsIDOMNode * node) {
-  PRBool isInputBox = PR_FALSE;
-  nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(node);
-  elem->HasAttribute(NS_LITERAL_STRING("tempinput"), &isInputBox);
-  return isInputBox;
-}
 
 nsresult
 nsHTMLEditRules::CanonicalizeMathSelection()
@@ -7591,97 +7594,106 @@ nsHTMLEditRules::CanonicalizeMathSelection()
   nsresult res = NS_OK;
   nsCOMPtr<nsISelection> sel;
   PRBool isCollapsed;
- // nsCOMPtr<nsIDOMNode> parentNode;
-  // nsCOMPtr<nsIDOMNode> startNode;
-  // nsCOMPtr<nsIDOMNode> endNode;
-  // nsCOMPtr<nsIDOMNode> tempNode;
-  // PRInt32 startOffset, endOffset;
-  // PRInt32 offset;
-  // // nsEditor* ed = static_cast<nsEditor*>(editor);
-  // // nsCOMPtr<nsIHTMLEditor> htmlEd = do_QueryInterface(editor);
-  // PRBool isEmpty;
-  // nsCOMPtr<nsINode> stNode;
-  // nsCOMPtr<nsINode> enNode;
+  nsCOMPtr<nsIDOMNode> commonParent;
+  nsCOMPtr<nsIRange> range;
+  nsCOMPtr<nsIDOMRange> domRange;
+  nsCOMPtr<nsIDOMNode> startNode;
+  nsCOMPtr<nsIDOMNode> endNode;
+  nsCOMPtr<nsIDOMNode> ancestor;
+  nsCOMPtr<nsIDOMNode> rover;
+  nsCOMPtr<nsIContent> content;
+  nsCOMPtr<nsIContent> child;
+
+
+  PRInt32 startOffset, endOffset, roverOffset, index;
+  nsAutoString nodeValue, trimmedString;
+  PRUint16 nodeType;
 
   mHTMLEditor->GetSelection(getter_AddRefs(sel));
-  sel->GetIsCollapsed(&isCollapsed);
-  if (isCollapsed) {
+  res = mHTMLEditor->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset);
+  res = mHTMLEditor->GetEndNodeAndOffset(sel, getter_AddRefs(endNode), &endOffset);
+
+   sel->GetIsCollapsed(&isCollapsed);
+  if (isCollapsed)  // nothing to do
+    return NS_OK;
+
+  // First check for two cases where the selection is very clean. The choices on the tag status bar
+  // are of this type.
+  if (startNode == endNode) {
     return NS_OK;
   }
-//   res = mHTMLEditor->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset);
-//   res = mHTMLEditor->GetEndNodeAndOffset(sel, getter_AddRefs(endNode), &endOffset);
-//   if (startNode == endNode) return NS_OK;
+  // Now we try to pull in the ends of the range as much as we can without excluding visible content
+  
+  sel->GetRangeAt(0, getter_AddRefs(domRange));
 
-// // ******
-//   // test area
-  nsCOMPtr<nsIDOMRange> inRange;
-  sel->GetRangeAt(0, getter_AddRefs(inRange));
-    // do_CreateInstance("@mozilla.org/content/range;1", &res);
-  // if ((NS_SUCCEEDED(res)) && inRange) {
-  //   res = inRange->SetStart(startNode, startOffset);
-  //   NS_ENSURE_SUCCESS(res, res);
-  //   res = inRange->SetEnd(endNode, endOffset);
-    mHTMLEditor->PromoteInlineRange(inRange);
-    res = NS_OK; // for debugbreak
-    return res;
+  range = do_QueryInterface(domRange);
+  PRInt16 rangeCompareResult;
+  nsCOMPtr<nsIDOMTreeWalker> walker;
+  res = domRange->CompareBoundaryPoints(nsIDOMRange::START_TO_END, domRange, &rangeCompareResult);
+  NS_ENSURE_SUCCESS(res, res);
+
+  if (rangeCompareResult < 0) {
+    // Make sure start is before end, by swapping offsets
+    // This occurs when the user selects backwards in the text
+    startNode.swap(endNode);
+    PRInt32 tempOffset = startOffset;
+    startOffset = endOffset;
+    endOffset = tempOffset;
   }
-  // }
+  nsCOMPtr<nsIDOMDocument> domDoc;
+  startNode->GetOwnerDocument(getter_AddRefs(domDoc));
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  doctrav = do_QueryInterface(domDoc);
+  ancestor = do_QueryInterface(range->GetCommonAncestor());
 
 
+  res = doctrav->CreateTreeWalker(ancestor,
+                             nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT,
+                             nsnull,
+                             PR_FALSE,
+                             getter_AddRefs(walker));
+  
+  // pull in the left edge (left edge in ltr languages)
+  nsCOMPtr<nsINode> tempNode;
+  rover = startNode;
+  roverOffset = startOffset;
+  rover->GetNodeType(&nodeType);
+  if (nodeType != nsIDOMNode::TEXT_NODE) {
+    content = do_QueryInterface(rover);
+    child = content->GetChildAt(startOffset);
+    rover = do_QueryInterface(child);
+    roverOffset = 0;
+  }
+  walker->SetCurrentNode(rover);
+  while (rover != endNode) {
+    if (HandleTextNode(rover, roverOffset, PR_TRUE, sel))
+      break;
+    walker->NextNode(getter_AddRefs (rover));
+    roverOffset = 0; // roverOffset is used only if the first node is a text node.
+  }
+  // 
+  // pull in the right edge
+  rover = endNode;
+  roverOffset = endOffset;
+  rover->GetNodeType(&nodeType);
 
-  // end test area
+  if (nodeType != nsIDOMNode::TEXT_NODE) {
+    content = do_QueryInterface(rover);
+    child = content->GetChildAt(endOffset);
+    rover = do_QueryInterface(child);
+    roverOffset = 0;
+  }
+  walker->SetCurrentNode(rover);
+  while (rover != startNode) {
+    if (HandleTextNode(rover, roverOffset, PR_FALSE, sel))
+      break;
+    walker->PreviousNode(getter_AddRefs (rover));
+    roverOffset = 0; // roverOffset is used only if the first node is a text node.
+  }
+  return res;
+}
 
 
-
-
-
-  // stNode = do_QueryInterface(startNode);
-  // enNode = do_QueryInterface(endNode);
-  // if (nsContentUtils::PositionIsBefore(enNode, stNode)) {
-  //   // swap so startNode << endNode
-  //   tempNode = endNode;
-  //   endNode = startNode;
-  //   startNode = tempNode;
-  // }
-  // // Nibble away junk white space nodes at the ends of the selection
-  // htmlEd->IsEmptyNode(startNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE );
-  // while (isEmpty) {
-  //   startNode->GetNextSibling(getter_AddRefs(tempNode));
-  //   startOffset = 0;
-  //   startNode = tempNode;
-  //   htmlEd->IsEmptyNode(startNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE );   
-  // }
-
-  // htmlEd->IsEmptyNode(endNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE );
-  // while (isEmpty) {
-  //   endNode->GetPreviousSibling(getter_AddRefs(tempNode));
-  //   endOffset = msiGetNodeLength(endNode);
-  //   endNode = tempNode;
-  //   htmlEd->IsEmptyNode(endNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE );   
-  // }
-
-  // // ---
-  // while (nsHTMLEditUtils::IsMath(startNode) && atEndOfNode(startNode, startOffset)) {
-  //   res = ed->GetNodeLocation(startNode, &parentNode, &offset);
-  //   if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
-  //     break;
-  //   }
-  //   startNode = parentNode;
-  //   startOffset = offset + 1;
-  // }
-  // while (nsHTMLEditUtils::IsMath(endNode) && atStartOfNode(endNode, endOffset)) {
-  //   res = ed->GetNodeLocation(endNode, &parentNode, &offset);
-  //   if (isBaseMathNode(parentNode) || isInputBox(parentNode)) {
-  //     break;
-  //   }
-  //   endNode = parentNode;
-  //   endOffset = offset;
-  // }
-  // // ---
-  // sel->Collapse(startNode, startOffset);
-  // sel->Extend(endNode, endOffset);
-  // return res;
-// }
 
 class nsUniqueFunctor : public nsBoolDomIterFunctor
 {
@@ -9912,7 +9924,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   NS_ENSURE_SUCCESS(res, res);
   nsCOMPtr<nsIDOMElement> elem(do_QueryInterface(newContent));
   nsCOMPtr<nsIDOMNode> node(do_QueryInterface(newContent));
-  mHTMLEditor->FloatStructureUp(node, sourceParentNode, sourceOffset, mtagListManager );
+  // mHTMLEditor->FloatStructureUp(node, sourceParentNode, sourceOffset, mtagListManager );
 
    *outNode = node;
   NS_ADDREF(*outNode);

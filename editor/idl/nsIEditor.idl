@@ -553,7 +553,7 @@ interface nsIEditor  : nsISupports
   void moveFollowingNodes(  in nsIDOMNode parentNode, 
                             in long offset,
                             in nsIDOMNode destNode,
-                            in msiITagListManager tlm);
+                             in msiITagListManager tlm);
 
 /* ---------- direction controller ---------- */
 
