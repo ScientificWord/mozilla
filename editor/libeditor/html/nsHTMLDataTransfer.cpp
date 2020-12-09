@@ -422,13 +422,13 @@ nsHTMLEditor::InsertMathNode
   res = GetTagString(nodeTarget, nameOfTarget);
   if (nameOfTarget.EqualsLiteral("#text")) {
     res = GetNodeLocation(nodeTarget, address_of(nodeTarget), &offsetTarget);
-    res = GetTagString(nodeTarget, nameOfTarget);
-    if (nameOfTarget.EqualsLiteral("mi")) {
-      elementTarget = do_QueryInterface(nodeTarget);
-      res = elementTarget->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempTarget);
-      if (strTempTarget.EqualsLiteral("true")) {
-        isTempInput = PR_TRUE;
-      }
+  }
+  res = GetTagString(nodeTarget, nameOfTarget);
+  if (nameOfTarget.EqualsLiteral("mi")) {
+    elementTarget = do_QueryInterface(nodeTarget);
+    res = elementTarget->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempTarget);
+    if (strTempTarget.EqualsLiteral("true")) {
+      isTempInput = PR_TRUE;
     }
   }
   if (!isTempInput) {
@@ -466,7 +466,7 @@ nsHTMLEditor::InsertMathNode
       res = GetTagString(nodeTarget, nameOfTarget);
     }
 
-    while (nameOfParent.EqualsLiteral("mi") || nameOfParent.EqualsLiteral("#text") || nameOfParent.EqualsLiteral("mo") || nameOfParent.EqualsLiteral("mn") || nameOfParent.EqualsLiteral("mtext"))
+    while (nodeParent &&(nameOfParent.EqualsLiteral("mi") || nameOfParent.EqualsLiteral("#text") || nameOfParent.EqualsLiteral("mo") || nameOfParent.EqualsLiteral("mn") || nameOfParent.EqualsLiteral("mtext")))
     {
       nodeToSplit = nodeParent;
       nodeToSplit->GetParentNode(getter_AddRefs(nodeParent));
