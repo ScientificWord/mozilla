@@ -28,8 +28,9 @@ function findPrev()
 
 function deleteSelection()
 {
-  // dump("\ndeleteSelection();\n");
-  msiGoDoCommand('cmd_delete');
+  var theEditorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(theEditorElement);
+  editor.selection.deleteFromDocument();
 }
 
 function getCurrentEditorElement()
@@ -76,14 +77,6 @@ function doInsertMathname( name, delSelection )
 //  if (delSelection) deleteSelection();
   insertmathname(name, editorElement);
 }
-
-// function doInsertMathOperator( name, delSelection)
-// {
-// //  if (delSelection) deleteSelection();
-//   var editorElement = getCurrentEditorElement();
-//   insertmathname(name, editorElement);
-// }
-
 
 function insertTag( name, delSelection )
 {
@@ -242,3 +235,12 @@ function renumberSection()
 //  alert(section.nodeName);
   if (section) section.removeAttribute("nonum");
 }
+
+function convertSelectionToMathName() {
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var name = editor.selection.toString();
+  deleteSelection();
+  doInsertMathname(name, true);
+}
+
