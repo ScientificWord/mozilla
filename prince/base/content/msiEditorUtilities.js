@@ -11755,6 +11755,7 @@ function mathifyVariable(variableStr) {
   return '<math  xmlns="http://www.w3.org/1998/Math/MathML"><mi>' + variableStr + '</mi></math>';
 }
 
-  function unmathify(mathExp) {
-    return (mathExp.replace(/<(\/)?[^>]+>/g,'')).replace(/\s*/g,'');  // take out all tags and tag ends consisting of alpha characters, and white space
-  }
+function unmathify(mathExp) {
+  return (mathExp.replace(/<(\/)?[^>]+>/g,'')).replace(/\s*/g,'');  // take out all tags and tag ends consisting of alpha characters, and white space
+}
+
