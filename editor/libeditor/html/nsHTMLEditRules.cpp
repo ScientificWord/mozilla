@@ -7556,9 +7556,8 @@ nsHTMLEditRules::PromoteRange(nsIDOMRange *inRange,
 
 PRBool HandleTextNode(nsIDOMNode* node, 
                       PRInt32 offset, 
-                      PRBool atBeginning, nsISelection * sel) 
-{
-  nsCOMPtr<nsIDOMRange> domRange;
+                      PRBool atBeginning, 
+                      nsIDOMRange * domRange) {
   PRUint16 nodeType;
   nsAutoString nodeValue;
   nsAutoString trimmedString;
@@ -7567,20 +7566,21 @@ PRBool HandleTextNode(nsIDOMNode* node,
   // See if node is a text node
   if (nodeType == nsIDOMNode::TEXT_NODE) {
     node->GetNodeValue(nodeValue);
-    if (offset < nodeValue.Length()) {
+    if (offset <= nodeValue.Length()) {
       if (atBeginning) {
         nodeValue.Cut(0,offset);
       }
-      else nodeValue.Cut(offset,nodeValue.Length() - offset);
-    } else return PR_FALSE;
+      else {
+        nodeValue.Cut(offset,nodeValue.Length() - offset);
+      }
+    } 
     trimmedString = nsContentUtils::TrimWhitespace(nodeValue, !atBeginning);
     if (trimmedString.Length()>0) {
       // Found non-space character, so stop trimming
       // Reset range start
-      sel->GetRangeAt(0, getter_AddRefs(domRange));
       if (atBeginning) {
         domRange->SetStart(node, offset + nodeValue.Length() - trimmedString.Length());    
-      } else domRange->SetEnd(node, offset - trimmedString.Length());
+      } else domRange->SetEnd(node, offset);
       return PR_TRUE;  
     }
   }
@@ -7589,43 +7589,37 @@ PRBool HandleTextNode(nsIDOMNode* node,
 
 
 nsresult
-nsHTMLEditRules::CanonicalizeMathSelection()
+nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
 {
   nsresult res = NS_OK;
-  nsCOMPtr<nsISelection> sel;
+  // nsCOMPtr<nsISelection> sel;
   PRBool isCollapsed;
-  nsCOMPtr<nsIDOMNode> commonParent;
+  // nsCOMPtr<nsIDOMNode> commonParent;
   nsCOMPtr<nsIRange> range;
-  nsCOMPtr<nsIDOMRange> domRange;
-  nsCOMPtr<nsIDOMNode> startNode;
-  nsCOMPtr<nsIDOMNode> endNode;
-  nsCOMPtr<nsIDOMNode> ancestor;
+  nsCOMPtr<nsIDOMNode> startNode, endNode, ancestor;
   nsCOMPtr<nsIDOMNode> rover;
   nsCOMPtr<nsIContent> content;
   nsCOMPtr<nsIContent> child;
 
-
-  PRInt32 startOffset, endOffset, roverOffset, index;
+  PRInt32 startOffset, endOffset, roverOffset;
   nsAutoString nodeValue, trimmedString;
   PRUint16 nodeType;
 
-  mHTMLEditor->GetSelection(getter_AddRefs(sel));
-  res = mHTMLEditor->GetStartNodeAndOffset(sel, getter_AddRefs(startNode), &startOffset);
-  res = mHTMLEditor->GetEndNodeAndOffset(sel, getter_AddRefs(endNode), &endOffset);
-
-   sel->GetIsCollapsed(&isCollapsed);
+  res = domRange->GetStartContainer(getter_AddRefs(startNode));
+  res = domRange->GetEndContainer(getter_AddRefs(endNode));
+  res = domRange->GetStartOffset(&startOffset);
+  res = domRange->GetEndOffset(&endOffset);
+  domRange->GetCollapsed(&isCollapsed);
   if (isCollapsed)  // nothing to do
     return NS_OK;
 
   // First check for two cases where the selection is very clean. The choices on the tag status bar
   // are of this type.
-  if (startNode == endNode) {
+  if (startNode == endNode && endOffset != startOffset + 1 && endOffset != startOffset - 1) {
     return NS_OK;
   }
   // Now we try to pull in the ends of the range as much as we can without excluding visible content
   
-  sel->GetRangeAt(0, getter_AddRefs(domRange));
-
   range = do_QueryInterface(domRange);
   PRInt16 rangeCompareResult;
   nsCOMPtr<nsIDOMTreeWalker> walker;
@@ -7662,33 +7656,38 @@ nsHTMLEditRules::CanonicalizeMathSelection()
     content = do_QueryInterface(rover);
     child = content->GetChildAt(startOffset);
     rover = do_QueryInterface(child);
-    roverOffset = 0;
+    roverOffset = 0; 
   }
   walker->SetCurrentNode(rover);
   while (rover != endNode) {
-    if (HandleTextNode(rover, roverOffset, PR_TRUE, sel))
+    if (HandleTextNode(rover, roverOffset, PR_TRUE, domRange))
       break;
     walker->NextNode(getter_AddRefs (rover));
     roverOffset = 0; // roverOffset is used only if the first node is a text node.
   }
-  // 
-  // pull in the right edge
+  // startNode = rover;
+  // startOffset = roverOffset;
+
+
   rover = endNode;
   roverOffset = endOffset;
   rover->GetNodeType(&nodeType);
+    // 
+    // pull in the right edge
 
   if (nodeType != nsIDOMNode::TEXT_NODE) {
     content = do_QueryInterface(rover);
     child = content->GetChildAt(endOffset);
     rover = do_QueryInterface(child);
-    roverOffset = 0;
+    mHTMLEditor->GetLengthOfDOMNode(rover, (PRUint32&)roverOffset);
   }
   walker->SetCurrentNode(rover);
   while (rover != startNode) {
-    if (HandleTextNode(rover, roverOffset, PR_FALSE, sel))
+    if (HandleTextNode(rover, roverOffset, PR_FALSE, domRange))
       break;
     walker->PreviousNode(getter_AddRefs (rover));
-    roverOffset = 0; // roverOffset is used only if the first node is a text node.
+    mHTMLEditor->GetLengthOfDOMNode(rover, (PRUint32&)roverOffset);
+     // roverOffset is used only if the first node is a text node.
   }
   return res;
 }

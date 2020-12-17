@@ -3,7 +3,7 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
-<!DOCTYPE dialog SYSTEM "chrome://prince/locale/KeyEntryOverlay.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/keyEntryOverlay.dtd">
 <overlay id="keyEntryOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       xmlns:html="http://www.w3.org/1999/xhtml">
   <script type="application/x-javascript" src="chrome://prince/content/keyEntryOverlay.js"/>
