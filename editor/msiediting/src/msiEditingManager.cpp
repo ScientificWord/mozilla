@@ -1001,45 +1001,54 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
                                   const nsAString & lineThickness,
                                   PRUint32 attrFlags)
 {
-  nsresult res(NS_ERROR_FAILURE);
-  nsCOMPtr<nsIDOMRange> range;
-  selection->GetRangeAt(0, getter_AddRefs(range));
-  nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
-  nsCOMPtr<nsIDOMNode> mathnode;
-  nsCOMPtr<nsIDOMNode> anchorNode;
-  PRInt32 anchorOffset;
-  nsCOMPtr<nsIDOMNode> selStartNode;
-  PRInt32 selStartOffset;
-  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
-  res = selection->GetFocusOffset(&selStartOffset);
-  res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
-  PRBool inMath = (nsnull != mathnode);
-  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
-  if (editor && selection && node)
-  {
-    editor->BeginTransaction();
-    PRBool bCollapsed(PR_FALSE);
-    res = selection->GetIsCollapsed(&bCollapsed);
-    nsCOMPtr<nsIDOMElement> mathmlElement;
-    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateMfrac(editor, nsnull, nsnull, (bCollapsed ||!inMath), PR_TRUE, flags, lineThickness, attrFlags, mathmlElement);
-    nsCOMPtr<nsIDOMNode> numerator;
-    res = mathmlElement->GetFirstChild(getter_AddRefs(numerator));
-    if (!bCollapsed && inMath)
-    {
-      res = selection->GetAnchorNode(getter_AddRefs(anchorNode));
-      res = selection->GetAnchorOffset(&anchorOffset);
-      MoveRangeTo(editor, range, numerator, 0, selStartNode);
-    }
-    if (NS_SUCCEEDED(res) && mathmlElement)
-      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
-//        editor->InsertNode(mathmlElement, node, offset);
-    if (!bCollapsed && inMath)
-    {
-      selection->Collapse(anchorNode,anchorOffset+1);
-    } 
-    editor->EndTransaction();
-  }
+   nsresult res(NS_OK);
+//   nsCOMPtr<nsIDOMRange> range;
+//   nsCOMPtr<nsIDOMDocumentFragment> content;
+
+//   selection->GetRangeAt(0, getter_AddRefs(range));
+//   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
+//   nsCOMPtr<nsIHTMLEditor> htmlEditor(do_QueryInterface(editor));
+//   nsCOMPtr<nsIDOMNode> mathnode;
+//   nsCOMPtr<nsIDOMNode> anchorNode;
+//   PRInt32 anchorOffset;
+//   nsCOMPtr<nsIDOMNode> selStartNode;
+//   nsCOMPtr<nsIDOMNode> endNode;
+//   nsCOMPtr<nsIDOMNode> newNode;
+//   PRInt32 selStartOffset, endOffset;
+//   PRBool bDontCare;
+//   mathmlEditor->CanonicalizeMathSelection(range);
+//   res = selection->GetFocusNode(getter_AddRefs(selStartNode));
+//   res = selection->GetFocusOffset(&selStartOffset);
+//   res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
+//   PRBool inMath = (nsnull != mathnode);
+//   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
+//   if (mathmlEditor && selection && node)
+//   {
+//     editor->BeginTransaction();
+//     PRBool bCollapsed(PR_FALSE);
+//     res = selection->GetIsCollapsed(&bCollapsed);
+//     nsCOMPtr<nsIDOMElement> mathmlElement;
+//     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+//     res = msiUtils::CreateMfrac(editor, nsnull, nsnull, (bCollapsed ||!inMath), PR_TRUE, flags, lineThickness, attrFlags, mathmlElement);
+//     nsCOMPtr<nsIDOMNode> numerator;
+//     res = mathmlElement->GetFirstChild(getter_AddRefs(numerator));
+//     if (!bCollapsed && inMath)
+//     {
+//       range->CloneContents(getter_AddRefs(content));
+//       editor->DeleteSelection(0);
+//       selection->GetFocusNode(getter_AddRefs(selStartNode));
+//       selection->GetFocusOffset(&selStartOffset);
+//       editor->InsertNode(content, numerator, 0);
+//     }
+//     if (NS_SUCCEEDED(res) && mathmlElement)
+//       res = mathmlEditor->InsertMathNode(mathmlElement, selStartNode, selStartOffset, bDontCare, getter_AddRefs(newNode));
+// //        editor->InsertNode(mathmlElement, node, offset);
+//     if (!bCollapsed && inMath)
+//     {
+//       selection->Collapse(anchorNode,anchorOffset+1);
+//     } 
+//     editor->EndTransaction();
+//   }
   return res;
 }
 

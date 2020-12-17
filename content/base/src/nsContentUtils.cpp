@@ -1551,7 +1551,10 @@ nsContentUtils::ComparePoints(nsINode* aParent1, PRInt32 aOffset1,
 
   PRUint32 pos1 = parents1.Length() - 1;
   PRUint32 pos2 = parents2.Length() - 1;
-
+  if (!(parents1.ElementAt(pos1) == parents2.ElementAt(pos2) ||
+        aDisconnected)) {
+     5+3; // something to set a breakpoint on 
+  }
   NS_ASSERTION(parents1.ElementAt(pos1) == parents2.ElementAt(pos2) ||
                aDisconnected,
                "disconnected nodes");
