@@ -490,6 +490,7 @@ no indent - disregarded completely
           <xsl:when test="@type='emSpace'"><xsl:text>\quad </xsl:text></xsl:when>
           <xsl:when test="@type='twoEmSpace'"><xsl:text>\qquad </xsl:text></xsl:when>
           <xsl:when test="@type='thinSpace'"><xsl:text>\thinspace </xsl:text></xsl:when>
+          <xsl:when test="@type='medSpace'"><xsl:text>\medspace </xsl:text></xsl:when>
           <xsl:when test="@type='thickSpace'"><xsl:text>\ </xsl:text></xsl:when>
           <xsl:when test="@type='italicCorrectionSpace'"><xsl:text>\/</xsl:text></xsl:when>
           <xsl:when test="@type='negativeThinSpace'"><xsl:text>\negthinspace </xsl:text> </xsl:when>
@@ -533,6 +534,9 @@ no indent - disregarded completely
           </xsl:when>
           <xsl:when test="@width='thickmathspace'">
             <xsl:text>\;</xsl:text>
+          </xsl:when>
+          <xsl:when test="@width='medmathspace'">
+            <xsl:text>\:</xsl:text>
           </xsl:when>
           <xsl:when test="@width='thinmathspace'">
             <xsl:text>\,</xsl:text>

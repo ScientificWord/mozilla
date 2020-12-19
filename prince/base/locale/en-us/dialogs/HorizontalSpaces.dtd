@@ -16,6 +16,8 @@
 <!ENTITY twoEmSpace.accesskey "2">
 <!ENTITY thinSpace.label "Thin space">
 <!ENTITY thinSpace.accesskey "T">
+<!ENTITY medSpace.label "Medium space">
+<!ENTITY medSpace.accesskey "M">
 <!ENTITY thickSpace.label "Thick space">
 <!ENTITY thickSpace.accesskey "h">
 <!ENTITY italicCorrectionSpace.label "Italic correction">

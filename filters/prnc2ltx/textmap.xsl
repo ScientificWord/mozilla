@@ -987,6 +987,9 @@
       </xsl:when>
 
 <!-- !ENTITY emsp14 "&#x2005;" -->
+      <xsl:when test="$first-char='&#x2005;'">
+        <xsl:text xml:space="preserve">\medspace </xsl:text>
+      </xsl:when>
 <!-- !ENTITY numsp "&#x2007;" -->
 <!-- !ENTITY puncsp "&#x2008;" -->
 <!-- !ENTITY thinsp "&#x2009;"> <!ENTITY ThinSpace "&#x2009;" -->
