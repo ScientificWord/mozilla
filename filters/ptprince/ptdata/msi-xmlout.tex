@@ -1849,7 +1849,14 @@
    \fi
 }
 
-\let\:\medspace
+\def\medspace{%
+   \ifmmode
+      \string\medspace
+   \else
+      \msihmode\msitag{<hspace type="medSpace"/>}%
+   \fi
+}
+%\let\:\medspace
 
 
 \def\negthinspace{%
