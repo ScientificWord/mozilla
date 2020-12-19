@@ -15,6 +15,7 @@
 	  <xsl:when test="@type='twoEmSpace'"><xsl:text  xml:space="preserve">    </xsl:text></xsl:when>
 	  <xsl:when test="@type='nonBreakingSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
 	  <xsl:when test="@type='thickSpace'"><xsl:text  xml:space="preserve">  </xsl:text></xsl:when>
+	  <xsl:when test="@type='medSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
 	  <xsl:when test="@type='thinSpace'"><xsl:text  xml:space="preserve"> </xsl:text></xsl:when>
 	  <xsl:when test="@type='italicCorrectionSpace'"><xsl:text  xml:space="preserve"></xsl:text></xsl:when>
 	  <xsl:when test="@type='negativeThinSpace'"><xsl:text  xml:space="preserve"></xsl:text></xsl:when>
@@ -39,6 +40,7 @@
 	  <xsl:when test="@type='emSpace'">\quad </xsl:when>
 	  <xsl:when test="@type='twoEmSpace'">\qquad </xsl:when>
 	  <xsl:when test="@type='thickSpace'">\thickspace </xsl:when>
+	  <xsl:when test="@type='medSpace'">\medspace </xsl:when>
 	  <xsl:when test="@type='thinSpace'">\thinspace </xsl:when>
 	  <xsl:when test="@type='italicCorrectionSpace'">\/</xsl:when>
 	  <xsl:when test="@type='negativeThinSpace'">\negthinspace </xsl:when>
@@ -64,6 +66,7 @@
 	  <xsl:when test="@type='twoEmSpace'">\qquad </xsl:when>
 	  <xsl:when test="@type='nonBreakingSpace'">~</xsl:when>
 	  <xsl:when test="@type='thickSpace'">\thickspace </xsl:when>
+	  <xsl:when test="@type='medSpace'">\thinspace </xsl:when>
 	  <xsl:when test="@type='thinSpace'">\thinspace </xsl:when>
 	  <xsl:when test="@type='italicCorrectionSpace'">\/</xsl:when>
 	  <xsl:when test="@type='negativeThinSpace'">\negthinspace </xsl:when>
