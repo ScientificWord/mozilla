@@ -289,57 +289,57 @@ function isRecognizedUpperAccent(aUniChar)
   {
     case "^":
     case "\u0302":
-      retVal = "\u0302";
+      retVal = "\u0302";	// hat
     break;
     case "\u02c7":
     case "\u030c":
-      retVal =  "\u030c";
+      retVal =  "\u030c";	// check
     break;
     case "~":
     case "\u0303":
-      retVal = "\u0303";
+      retVal = "\u0303";    // tilde
     break;
     case "\u00b4":
     case "\u0301":
-      retVal = "\u0301";
+      retVal = "\u0301";    // acute
     break;
     case "\u0060":
     case "\u0300":
-      retVal = "\u0300";
+      retVal = "\u0300";    // grave
     break;
     case "\u02d8":
     case "\u0306":
-      retVal = "\u0306";
+      retVal = "\u0306";    // breve
     break;
     case "\u00af":
     case "\u0305":
-      retVal = "\u0305";
+      retVal = "\u0305";    // bar
     break;
 
     case "\u02dd":
     case "\u030b":
-      retVal = "\u030b";
+      retVal = "\u030b";	// double acute
     break;
     case "\u02da":
     case "\u030a":
-      retVal = "\u030a";
+      retVal = "\u030a";	// ring
     break;
     case "\u02d9":
     case "\u0307":
-      retVal = "\u0307";
+      retVal = "\u0307";	// dot
     break;
     case "\u00a8":
     case "\u0308":
-      retVal = "\u0308";
+      retVal = "\u0308";	// double dot
     break;
     case "\u20db":
-      retVal = "\u20db";
+      retVal = "\u20db";	// triple dot
     break;
     case "\u20dc":
-      retVal = "\u20dc";
+      retVal = "\u20dc";	// four dot
     break;
     case "\u20d7":
-      retVal = "\u20d7";
+      retVal = "\u20d7";	// vector (right arrow)
     break;
   }
   return retVal;
