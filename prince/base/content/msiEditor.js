@@ -4710,20 +4710,21 @@ function msiRewriteHideInvisibles(editor) {
       parentNode.insertBefore(newNode, nextNode);
     else
       parentNode.appendChild(newNode);
-  }
+  } 
 
-  var rootElement = editor.document.documentElement;
-  var treeWalker = editor.document.createTreeWalker(rootElement, NodeFilter.SHOW_ELEMENT,
-    findInvisNodes, true);
-  if (treeWalker) {
-    for (var currNode = treeWalker.nextNode(); currNode != null;) {
-      var nextNode = treeWalker.nextNode();
-      replaceByTextNode(currNode);
-      currNode = nextNode;
+   // continue msiRewriteHideInvisibles
+    var rootElement = editor.document.documentElement;
+    var treeWalker = editor.document.createTreeWalker(rootElement, NodeFilter.SHOW_ELEMENT,
+      findInvisNodes, true);
+    if (treeWalker) {
+      for (var currNode = treeWalker.nextNode(); currNode != null;) {
+        var nextNode = treeWalker.nextNode();
+        replaceByTextNode(currNode);
+        currNode = nextNode;
+      }
+      rootElement.normalize();
     }
-    rootElement.normalize();
   }
-}
 
 function msiInitPasteAsMenu(editorElement) {
   if (!editorElement)

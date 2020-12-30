@@ -93,6 +93,12 @@ def mnodetree(debugger, command, result, dict):
    if len(newcommand) > 0:
        debugger.HandleCommand("exp nsString outputString; DumpNode(" + newcommand + ", 0, 1, outputString), outputString;")
 
+def mrange(debugger, command, result, dict):
+   """Displays name and attributes for a range and all its descendents"""
+   newcommand = modcommand(debugger, command, result, dict)
+   if len(newcommand) > 0:
+       debugger.HandleCommand("exp nsString outputString; DumpRange(" + newcommand + ", 0, outputString), outputString;")
+
 
 
 
@@ -104,6 +110,7 @@ def init(debugger):
     debugger.HandleCommand("command script add -f lldbutils.content.ptag ptag")
     debugger.HandleCommand("command script add -f lldbutils.content.mnode mnode")
     debugger.HandleCommand("command script add -f lldbutils.content.mnodetree mnodetree")
+    debugger.HandleCommand("command script add -f lldbutils.content.mrange mrange")
     debugger.HandleCommand("command script add -f lldbutils.content.mparent mparent")
     debugger.HandleCommand("command script add -f lldbutils.content.mfirstchild mfirstchild")
     debugger.HandleCommand("command script add -f lldbutils.content.mnext mnext")

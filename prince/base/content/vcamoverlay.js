@@ -551,9 +551,9 @@ VCamObject.prototype = {
           else this.obj.startAnimation();
           isRunning = !isRunning;
           break;
-		case "cmd_vcReset":
-		  this.obj.resetViewpoint();
-		  break;
+    case "cmd_vcReset":
+      this.obj.resetViewpoint();
+      break;
         case "cmd_vcFitContents":
           this.obj.fitContents();
           break;

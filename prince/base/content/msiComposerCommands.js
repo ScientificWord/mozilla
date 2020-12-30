@@ -394,6 +394,10 @@ function msiGoUpdateCommandState(command, editorElement)
     break;
 
     case "cmd_MSImathtext":
+    case "cmd_MSIinlineMathCmd":
+    case "cmd_MSItextModeCmd":
+    case "cmd_MSItextmath":
+    case "cmd_MSImathtextButton":  
       updateMathText(editorElement);
     break;
 
