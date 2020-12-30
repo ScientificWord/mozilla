@@ -193,6 +193,10 @@ hspace[type="thinSpace"] {
   min-width: 0.17em;
 }
 
+hspace[type="medSpace"] {
+  min-width: 0.22em;
+}
+
 hspace[type="thickSpace"] {
   min-width: 0.5em;
 }
@@ -219,6 +223,10 @@ mspace[type="twoEmSpace"] {
 
 mspace[type="thinSpace"] {
   min-width: 0.17em;
+}
+
+mspace[type="medSpace"] {
+  min-width: 0.22em;
 }
 
 mspace[type="thickSpace"] {
