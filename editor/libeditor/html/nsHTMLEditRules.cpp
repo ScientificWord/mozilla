@@ -1,3 +1,4 @@
+
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -747,8 +748,8 @@ nsHTMLEditRules::WillDoAction(nsISelection *aSelection,
       return WillMakeStructure(aSelection, info->blockType, aCancel, aHandled);
     case kRemoveStructure:
       return WillRemoveStructure(aSelection, aCancel, aHandled);
-	    case kRemoveEnv:
-	      return WillRemoveEnv(aSelection, aCancel, aHandled);
+      case kRemoveEnv:
+        return WillRemoveEnv(aSelection, aCancel, aHandled);
   }
   return nsTextEditRules::WillDoAction(aSelection, aInfo, aCancel, aHandled);
 }
@@ -2878,7 +2879,7 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
   if (NS_FAILED(res)) return res;
   if (!node) return NS_ERROR_FAILURE;
 
-	  // examine selection
+    // examine selection
   nsWSRunObject wsObj(mHTMLEditor, node, offset);
   if (((wsObj.mStartReason & nsWSRunObject::eBlock)|| (wsObj.mStartReason & nsWSRunObject::eBreak)) &&
       (wsObj.mEndReason & nsWSRunObject::eBlock))
@@ -2912,7 +2913,7 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
         res = mHTMLEditor->CreateBR(node, offset, address_of(brNode), nsIEditor::ePrevious);
       }
     }
-	}
+  }
   return res;
 }
 
@@ -3329,7 +3330,7 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
           return str.Length();
       }
 
-  }	else {
+  } else {
     nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
 
     nsCOMPtr<nsIDOMNodeList> childList;
@@ -4160,9 +4161,9 @@ void   hackSelectionCorrection(nsHTMLEditor * ed,
   //       ||name.EqualsLiteral("mn")
   //       ||name.EqualsLiteral("mo"))
   //     {
-  //   		nsCOMPtr<nsIDOM3Node> dom3node;
-  //   	  dom3node = do_QueryInterface(parent);
-  //   		dom3node->GetTextContent(s);
+  //      nsCOMPtr<nsIDOM3Node> dom3node;
+  //      dom3node = do_QueryInterface(parent);
+  //      dom3node->GetTextContent(s);
   //     //  set up the iterators
   //       nsAString::const_iterator cur, end;
 
@@ -4543,9 +4544,9 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
     // remember our new block for postprocessing
     mNewBlock = theListItem;
     // put selection in new list item
-		PRBool success;
+    PRBool success;
     nsCOMPtr<nsIDOMElement> listDOMElement(do_QueryInterface(theListItem));
-		if (theListItem) res = mHTMLEditor->SetCursorInNewHTML(listDOMElement, &success);
+    if (theListItem) res = mHTMLEditor->SetCursorInNewHTML(listDOMElement, &success);
 //    selectionResetter.Abort();  // to prevent selection reseter from overriding us.
     *aHandled = PR_TRUE;
     return res;
@@ -4980,8 +4981,8 @@ nsHTMLEditRules::WillMakeBasicBlock(nsISelection *aSelection,
       }
       // put selection in new block
       nsCOMPtr<nsIDOMElement> newElement = do_QueryInterface(theBlock);
-			PRBool success;
-			if (theBlock) res = mHTMLEditor->SetCursorInNewHTML(newElement, &success);
+      PRBool success;
+      if (theBlock) res = mHTMLEditor->SetCursorInNewHTML(newElement, &success);
       if (!success) res = aSelection->Collapse(theBlock,0);
       selectionResetter.Abort();  // to prevent selection reseter from overriding us.
       *aHandled = PR_TRUE;
@@ -5132,8 +5133,8 @@ nsHTMLEditRules::WillMakeStructure(nsISelection *aSelection,
       }
       // put selection in new block
       nsCOMPtr<nsIDOMElement> newElement = do_QueryInterface(theBlock);
-			PRBool success;
-			if (theBlock) res = mHTMLEditor->SetCursorInNewHTML(newElement, &success);
+      PRBool success;
+      if (theBlock) res = mHTMLEditor->SetCursorInNewHTML(newElement, &success);
       if (!success) res = aSelection->Collapse(theBlock,0);
       selectionResetter.Abort();  // to prevent selection reseter from overriding us.
       *aHandled = PR_TRUE;
@@ -7561,6 +7562,8 @@ PRBool HandleTextNode(nsIDOMNode* node,
   PRUint16 nodeType;
   nsAutoString nodeValue;
   nsAutoString trimmedString;
+  nsAutoString nodeName;
+  nsCOMPtr<nsIDOMNode> parent;
   if (node == nsnull) return PR_FALSE;
   node->GetNodeType(&nodeType);
   // See if node is a text node
@@ -7577,16 +7580,69 @@ PRBool HandleTextNode(nsIDOMNode* node,
     trimmedString = nsContentUtils::TrimWhitespace(nodeValue, !atBeginning);
     if (trimmedString.Length()>0) {
       // Found non-space character, so stop trimming
+      node->GetParentNode(getter_AddRefs(parent));
+      parent->GetNodeName(nodeName);
+      if (nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mn")) {
+        if (atBeginning) {
+          domRange->SetStart(parent, 0);
+        } else {
+          domRange->SetEnd(parent, 1);
+        }
+        return PR_TRUE;
+      }
       // Reset range start
-      if (atBeginning) {
+      if (atBeginning) { 
         domRange->SetStart(node, offset + nodeValue.Length() - trimmedString.Length());    
       } else domRange->SetEnd(node, offset);
       return PR_TRUE;  
+    }
+  } else {
+    node->GetNodeName(nodeName);
+    if (nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mn") || nodeName.EqualsLiteral("mo")) {
+      if (atBeginning) {
+        domRange->SetStart(node, 0);
+      } else {
+        domRange->SetEnd(node, 1);
+      }
+      return PR_TRUE;
     }
   }
   return PR_FALSE;
 }
 
+// Get the length of aNode
+PRInt32 localGetNodeLength(nsINode *aNode)
+{
+  if(aNode->IsNodeOfType(nsINode::eDATA_NODE)) {
+    return static_cast<nsIContent*>(aNode)->TextLength();
+  }
+  return aNode->GetChildCount();
+}
+
+
+// preliminary implementations
+PRBool atStartOfNode( nsIDOMNode * node, PRInt32 & offset) {
+  return offset == 0;
+}
+
+PRBool atEndOfNode( nsIDOMNode * node, PRInt32 & offset) {
+  nsCOMPtr<nsINode> nd = do_QueryInterface(node);
+  PRInt32 length = localGetNodeLength(nd);
+  return offset == length;
+}
+
+PRBool isBaseMathNode (nsIDOMNode * node) {
+  nsAutoString name;
+  node->GetLocalName(name);
+  return name.EqualsLiteral("math");
+}
+
+PRBool isInputBox (nsIDOMNode * node) {
+  PRBool isInputBox = PR_FALSE;
+  nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(node);
+  elem->HasAttribute(NS_LITERAL_STRING("tempinput"), &isInputBox);
+  return isInputBox;
+}
 
 nsresult
 nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
@@ -7689,9 +7745,60 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
     mHTMLEditor->GetLengthOfDOMNode(rover, (PRUint32&)roverOffset);
      // roverOffset is used only if the first node is a text node.
   }
+  // PRBool doPromote=PR_FALSE;
+  // if (doPromote) {
+  //   PromoteRange(domRange, 0);
+  // }
   return res;
 }
 
+nsresult
+nsHTMLEditRules::GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, PRInt32 aOffset, nsIDOMNode *ancestor,
+                                  nsCOMPtr<nsIDOMNode> *outNode, PRInt32 *outOffset)
+{
+  // While there is nothing of significance to the (left,right) of the point, move up to the parent node and offset
+  // Stop when we hit the ancestor node. Callers will set the ancesotor node to a common ancestor or the enclosing math node
+  nsCOMPtr<nsIDOMNode> rover(aNode);
+  nsCOMPtr<nsIDOMNode> nextRover;
+  PRInt32 roverOffset(aOffset);
+  PRInt32 nextRoverOffset;
+  if (aWhere == kStart) {
+    while (rover != ancestor && atStartOfNode(rover, roverOffset)) {
+      nsEditor::GetNodeLocation(rover, address_of(nextRover), &nextRoverOffset);
+      rover = nextRover;
+      roverOffset = nextRoverOffset;
+    }
+  } else {
+    while (rover != ancestor && atEndOfNode(rover, roverOffset)) {
+      nsEditor::GetNodeLocation(rover, address_of(nextRover), &nextRoverOffset);
+      rover = nextRover;
+      roverOffset =nextRoverOffset;
+    }    
+  }
+  *outNode = rover;
+  *outOffset = roverOffset;
+  if (aWhere == kEnd) *outOffset += 1;
+}
+
+nsresult
+nsHTMLEditRules::PromoteMathRange(nsIDOMRange *aRange) {
+  nsresult res;
+  nsCOMPtr<nsIDOMNode> startNode, endNode, ancestor;
+  nsCOMPtr<nsIDOMNode> newstartNode, newendNode;
+  PRInt32 startOffset, endOffset;
+  PRInt32 newstartOffset, newendOffset;
+  res = aRange->GetStartContainer(getter_AddRefs(startNode));
+  res = aRange->GetEndContainer(getter_AddRefs(endNode));
+  res = aRange->GetStartOffset(&startOffset);
+  res = aRange->GetEndOffset(&endOffset);
+  res = aRange->GetCommonAncestorContainer(getter_AddRefs(ancestor));
+// 
+  GetPromotedMathPoint(kStart, startNode, startOffset, ancestor, address_of(newstartNode), &newstartOffset);
+  GetPromotedMathPoint(kEnd, endNode, endOffset, ancestor, address_of(newendNode), &newendOffset);
+  aRange->SetStart(newstartNode, newstartOffset);
+  aRange->SetEnd(newendNode, newendOffset);
+  return NS_OK;
+}
 
 
 class nsUniqueFunctor : public nsBoolDomIterFunctor
@@ -9256,9 +9363,9 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
           res = mHTMLEditor->CreateNode(*aStructureTag, curParent, offset, getter_AddRefs(theBlock));
         }
         if (NS_FAILED(res)) return res;
-    		PRBool success;
+        PRBool success;
         nsCOMPtr<nsIDOMElement> theBlockElement(do_QueryInterface(theBlock));
-    		if (theBlock) res = mHTMLEditor->SetCursorInNewHTML(theBlockElement, &success);
+        if (theBlock) res = mHTMLEditor->SetCursorInNewHTML(theBlockElement, &success);
         // remember our new block for postprocessing
         mNewBlock = theBlock;
       }
@@ -9776,12 +9883,12 @@ nsHTMLEditRules::ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const ns
 //          if (res != NS_OK) break;
           child = sibling;
         }
-		    elem = do_QueryInterface(newNode);
-		    nsCOMPtr<nsISelection>selection;
-		    nsresult res = mHTMLEditor->GetSelection(getter_AddRefs(selection));
-		    res = selection->Collapse(newNode,0);
-		    nsEditorUtils::JiggleCursor(mHTMLEditor, selection, nsIEditor::ePrevious);
-		  }
+        elem = do_QueryInterface(newNode);
+        nsCOMPtr<nsISelection>selection;
+        nsresult res = mHTMLEditor->GetSelection(getter_AddRefs(selection));
+        res = selection->Collapse(newNode,0);
+        nsEditorUtils::JiggleCursor(mHTMLEditor, selection, nsIEditor::ePrevious);
+      }
       else
       {
         res = mHTMLEditor->CreateHTMLContent(*aEnvironmentTag, getter_AddRefs(newContent));
@@ -11152,7 +11259,7 @@ nsHTMLEditRules::InsertMozBRIfNeeded(nsIDOMNode *aNode)
   nsresult res = mHTMLEditor->IsEmptyNode(aNode, &isEmpty, PR_FALSE, PR_FALSE, PR_FALSE);
   nsCOMPtr<msiITagListManager> taglistManager;
   mHTMLEditor->GetTagListManager( getter_AddRefs(taglistManager));
-	if (isEmpty) isEmpty = HasNoSignificantTags(aNode, taglistManager);
+  if (isEmpty) isEmpty = HasNoSignificantTags(aNode, taglistManager);
   if (NS_FAILED(res)) return res;
   if (isEmpty)
   {

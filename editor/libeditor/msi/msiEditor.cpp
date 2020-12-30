@@ -530,35 +530,29 @@ msiEditor::InsertBinomial(const nsAString& opening, const nsAString& closing,
 NS_IMETHODIMP
 msiEditor::InsertSqRoot()
 {
-  nsresult res(NS_ERROR_FAILURE);
+  nsresult res(NS_OK);
   nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
-    nsCOMPtr<nsISelection> selection;
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
     nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
-    if (htmlRules) {
-      nsCOMPtr<nsISelection> sel;
-      GetSelection(getter_AddRefs(sel));
-      nsCOMPtr<nsIDOMRange> domRange;
-      sel->GetRangeAt(0, getter_AddRefs(domRange));
-      htmlRules->CanonicalizeMathSelection(domRange); // BBM 2016-08-16
-    }
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
-                           endOffset, bCollapsed);
+    nsCOMPtr<nsISelection> sel;
+    GetSelection(getter_AddRefs(sel));
+    
+
     if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
       theNode = startNode;
-      theOffset = startOffset;
+        
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
-        res = m_msiEditingMan->InsertSqRoot(editor, selection, theNode, theOffset);
+        res = m_msiEditingMan->InsertSqRoot(editor, sel, theNode, theOffset);
       }
     }
   }
@@ -568,24 +562,26 @@ msiEditor::InsertSqRoot()
 NS_IMETHODIMP
 msiEditor::InsertRoot()
 {
-  nsresult res(NS_ERROR_FAILURE);
+  nsresult res(NS_OK);
   nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
-    nsCOMPtr<nsISelection> selection;
+    nsCOMPtr<nsISelection> sel;
+    GetSelection(getter_AddRefs(sel));
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
+    sel->GetIsCollapsed(&bCollapsed);
     nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
     if (htmlRules) {
-      nsCOMPtr<nsISelection> sel;
-      GetSelection(getter_AddRefs(sel));
       nsCOMPtr<nsIDOMRange> domRange;
       sel->GetRangeAt(0, getter_AddRefs(domRange));
       htmlRules->CanonicalizeMathSelection(domRange); // BBM 2016-08-16
+      res = domRange->GetStartContainer(getter_AddRefs(startNode));
+      res = domRange->GetEndContainer(getter_AddRefs(endNode));
+      res = domRange->GetStartOffset(&startOffset);
+      res = domRange->GetEndOffset(&endOffset);
     }
-    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
-                           endOffset, bCollapsed);
     if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> theNode;
@@ -596,7 +592,7 @@ msiEditor::InsertRoot()
       {
         nsCOMPtr<nsIEditor> editor;
         QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
-        res = m_msiEditingMan->InsertRoot(editor, selection, theNode, theOffset);
+        res = m_msiEditingMan->InsertRoot(editor, sel, theNode, theOffset);
       }
     }
   }
@@ -898,6 +894,7 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
+    GetSelection(getter_AddRefs(selection));
     nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
     if (htmlRules) {
       nsCOMPtr<nsIDOMRange> domRange;
@@ -4383,6 +4380,22 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
   return res;
 }
 
+NS_IMETHODIMP 
+msiEditor::CanonicalizeMathSelection( nsIDOMRange * range)
+{
+  nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+  if (htmlRules) 
+  {
+    htmlRules->CanonicalizeMathSelection(range);
+  }
+}
+
+NS_IMETHODIMP
+msiEditor::PromoteMathRange(nsIDOMRange *aRange)
+{
+  nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+  return htmlRules->PromoteMathRange(aRange);
+}
 
 // Implementation of an nsIContentFilter
 

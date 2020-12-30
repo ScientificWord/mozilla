@@ -406,7 +406,7 @@ nsHTMLEditor::InsertMathNode
     // We can't insert plain text, only an mi, an mn, an mo or a mtext. This should happen only when pasting, so insertThisNode should
     // have a parent
     res = insertThisNode->GetParentNode(getter_AddRefs(nodeToInsert));
-    if (!nodeToInsert) return NS_ERROR_INVALID_ARG;
+if (!nodeToInsert) return NS_ERROR_INVALID_ARG;
   }
   else {
     nodeToInsert = insertThisNode;
@@ -560,7 +560,7 @@ PRBool TrimDocFragment( nsIDOMNode * fragmentAsNode) {
   // children (such as msub, msup and mfrac) which require 2 children) actually have that many in the
   // fragment. If not, we replace the offending tag with an mrow.
 
-  res = ValidateMathSyntax( fragmentAsNode); */
+  res = z( fragmentAsNode); */
 
 PRUint32 MathChildCount( nsIDOMElement * aElement) {
   nsCOMPtr<nsIDOMNodeList> children;
