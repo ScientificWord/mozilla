@@ -57,6 +57,7 @@
 <!ENTITY accentAbovedot.tooltip  "dot">
 <!ENTITY accentAboveddot.tooltip  "ddot">
 <!ENTITY accentAbovedddot.tooltip  "dddot">
+<!ENTITY accentAboveddddot.tooltip  "ddddot">
 <!ENTITY accentAbovevec.tooltip  "vec">
 <!ENTITY accentBelowcedilla.tooltip  "cedilla">	
 <!ENTITY accentBelowogonek.tooltip  "ogonek">	

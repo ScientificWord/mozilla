@@ -1110,7 +1110,7 @@
 </xsl:template>
 
 
-<xsl:template match="html:p">\par<xsl:apply-templates/>
+<xsl:template match="html:p"><xsl:text xml:space="preserve">\par </xsl:text><xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates/>}</xsl:template>
