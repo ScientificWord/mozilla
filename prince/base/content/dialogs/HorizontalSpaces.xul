@@ -67,6 +67,7 @@
               <radio label="&thinSpace.label;" accesskey="&thinSpace.accesskey;" value="thinSpace" group="spacesRadioGroup"/>
 				    </column>
 				    <column>
+              <radio label="&medSpace.label;" accesskey="&medSpace.accesskey;" value="medSpace" group="spacesRadioGroup"/>
               <radio label="&thickSpace.label;" accesskey="&thickSpace.accesskey;" value="thickSpace" group="spacesRadioGroup"/>
               <radio label="&italicCorrectionSpace.label;" accesskey="&italicCorrectionSpace.accesskey;" value="italicCorrectionSpace" group="spacesRadioGroup"/>
               <radio label="&negativeThinSpace.label;" accesskey="&negativeThinSpace.accesskey;" value="negativeThinSpace" group="spacesRadioGroup"/>
