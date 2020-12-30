@@ -7,6 +7,8 @@
 #include "msiIMathMLCoalesce.idl"
 #include "nsIEditor.idl"
 #include "nsISelection.idl"
+#include "nsIDOMDocumentFragment.idl"
+#include "msiIMathMLEditor.idl"
 
 %{ C++
 
@@ -99,7 +101,22 @@ interface msiIEditingManager : nsISupports
                   in nsIDOMNode node,
                   in PRUint32 offset,
                   in PRUint32 flags,
-                  in PRBool isdisplay);                                      
+                  in PRBool isdisplay);      
+
+
+  /**
+   * When inserting a math object which ends up containing the current selection (such as fences, 
+   * radicals, and fractions), this function builds a document fragment containing the content of
+   * the selection and modifies the selection to ensure that deleting the selection before inserting
+   * the new object doesn't leave orphaned empty objects.
+   */
+
+  void prepareSelectionForCopying(in msiIMathMLEditor mathmlEditor, 
+                                  in nsIDOMRange range,
+                                  out nsIDOMDocumentFragment copiedContent);     
+
+  void setSelectionFromRange(in nsIDOMRange range, 
+                             in nsISelection selection);                                                              
   /**
    * Call insertFraction to create a fraction and insert based on node and offset
   */
@@ -299,7 +316,7 @@ interface msiIEditingManager : nsISupports
    * It takes "rowspan" and "colspan" attributes into account.
   */
   void findMatrixCell(in nsIDOMNode aMatrix,
-					  in nsIDOMNode aCell,
+            in nsIDOMNode aCell,
                       out PRInt32 whichRow,
                       out PRInt32 whichCol);
 
