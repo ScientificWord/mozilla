@@ -208,6 +208,24 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
 #endif
 }
 
+void DumpRange( nsIDOMRange * range, PRInt32 indent, nsAString& output) {
+#ifdef DEBUG
+  nsCOMPtr<nsIDOMNode> anchorNode, focusNode;
+  PRInt32 anchorOffset, focusOffset;
+  range->GetStartContainer(getter_AddRefs(anchorNode));
+  range->GetStartOffset(&anchorOffset);
+  range->GetEndContainer(getter_AddRefs(focusNode));
+  range->GetEndOffset(&focusOffset);
+  printf("Anchor: offset=%d\n", anchorOffset);
+  output.Append(NS_LITERAL_STRING("ANCHOR: OFFSET=  "));
+  DumpNode(anchorNode, indent, PR_TRUE, output);
+  printf("Focus: offset=%d\n", focusOffset);
+  output.Append(NS_LITERAL_STRING("FOCUS: OFFSET=  "));
+  DumpNode(focusNode, indent, PR_TRUE, output);
+  output.Append(NS_LITERAL_STRING("\n"));
+#endif //Debug
+}
+
 } // extern C
 
 #ifdef DEBUG_Barry

@@ -134,21 +134,26 @@ public:
   NS_IMETHOD DidDeleteSelection(nsISelection *aSelection);
   NS_IMETHOD AdvanceCursorToEditableText(nsIDOMNode *aStartNode, PRUint32 aOffset,
                                          nsIDOMNode **aOutNode, PRUint32 *aOutOffset);
-  NS_IMETHOD CanonicalizeMathSelection(nsIDOMRange* domRange);
-  
-protected:
-
-  enum RulesEndpoint
+ enum RulesEndpoint
   {
     kStart,
     kEnd
   };
+  
+  NS_IMETHOD GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, PRInt32 aOffset, nsIDOMNode *ancestor,
+                                  nsCOMPtr<nsIDOMNode> *outNode, PRInt32 *outOffset);
+  NS_IMETHOD PromoteMathRange(nsIDOMRange *aRange);
+  NS_IMETHOD CanonicalizeMathSelection(nsIDOMRange* domRange);
+  
 
+ 
   enum BRLocation
   {
     kBeforeBlock,
     kBlockEnd
   };
+
+protected:
 
   // nsHTMLEditRules implementation methods
   nsresult WillInsert(nsISelection *aSelection, PRBool *aCancel);
