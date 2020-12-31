@@ -1123,8 +1123,12 @@ msiEditingManager::InsertBinomial(nsIEditor * editor,
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
     res = msiUtils::CreateBinomial(editor, nsnull, nsnull, (bCollapsed ||!inMath), PR_TRUE, flags, opening, closing, lineThickness, attrFlags, mathmlElement);
-    nsCOMPtr<nsIDOMNode> top;
-    res = mathmlElement->GetFirstChild(getter_AddRefs(top));
+    nsCOMPtr<nsIDOMNode> top, rover;
+    res = mathmlElement->GetFirstChild(getter_AddRefs(top));  // fence character
+    res = top->GetNextSibling(getter_AddRefs(rover)); // mfrac
+    res = rover->GetFirstChild(getter_AddRefs(top));
+
+
     if (!bCollapsed && inMath)
     {
       MoveRangeTo(editor, range, top, 0, selStartNode);
@@ -1149,27 +1153,28 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
   nsCOMPtr<nsIDOMRange> trimmedRange;
   nsCOMPtr<nsIDOMNode> startNode, endNode;
   PRInt32 startOffset, endOffset;
+  PRUint32 childcount;
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
   nsCOMPtr<nsIHTMLEditor> htmlEditor(do_QueryInterface(editor));
   nsCOMPtr<nsIDOMDocumentFragment> content;
 
   selection->GetRangeAt(0, getter_AddRefs(range));
-  range->CloneRange(getter_AddRefs(trimmedRange));
-  mathmlEditor->CanonicalizeMathSelection(trimmedRange);
+  // range->CloneRange(getter_AddRefs(trimmedRange));
+  // mathmlEditor->CanonicalizeMathSelection(trimmedRange);
 
 
-  res = selection->GetFocusNode(getter_AddRefs(startNode));
-  res = selection->GetFocusOffset(&startOffset);
-  res = selection->GetAnchorNode(getter_AddRefs(endNode));
-  res = selection->GetAnchorOffset(&endOffset);
+  // res = selection->GetFocusNode(getter_AddRefs(startNode));
+  // res = selection->GetFocusOffset(&startOffset);
+  // res = selection->GetAnchorNode(getter_AddRefs(endNode));
+  // res = selection->GetAnchorOffset(&endOffset);
 
 
   PRBool bCollapsed(PR_FALSE);
   res = selection->GetIsCollapsed(&bCollapsed);
-  if (!bCollapsed) {
-    trimmedRange->CloneContents(getter_AddRefs(content));
-  }
+  // if (!bCollapsed) {
+  //   trimmedRange->CloneContents(getter_AddRefs(content));
+  // }
 
   nsCOMPtr<nsIDOMNode> mathnode;
   nsCOMPtr<nsIDOMNode> mathmlNode;
@@ -1181,6 +1186,9 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
   editor->BeginTransaction();
   nsCOMPtr<nsIDOMElement> mathmlElement;
   nsCOMPtr<nsIDOMElement> radicand;
+  nsCOMPtr<nsIDOMNode> radicandNode;
+  res = PrepareSelectionForCopying(mathmlEditor, range, getter_AddRefs(content));    
+
   PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
   res = msiUtils::CreateMsqrt(editor, nsnull, bCollapsed || !inMath, PR_TRUE, flags, mathmlElement);
   if (!bCollapsed && inMath)
@@ -1190,18 +1198,20 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
     if (!radNode) radicand = mathmlElement;
     else radicand = do_QueryInterface(radNode);
   }
-  selection->Collapse(startNode, startOffset);
-  selection->Extend(endNode, endOffset);
+  res = SetSelectionFromRange(range, selection);
   res = mathmlEditor->InsertMathNodeAtSelection(mathmlElement);
   
   if (!bCollapsed && inMath)
   {
-    // numerator filled. Put selection in the denominator
+
     editor->InsertNode(content, radicand, 0);
-    // selection->Collapse(radicand, 0);
+    radicandNode = do_QueryInterface(radicand);
+    msiUtils::GetNumberofChildren(radicandNode, childcount);
+
+    selection->Collapse(radicand, childcount);
   }
   else {
-    // selection->Collapse(radicand,0);
+    selection->Collapse(radicand,0);
   }
   editor->EndTransaction();
   
