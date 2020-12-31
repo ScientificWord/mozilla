@@ -97,7 +97,7 @@ def mrange(debugger, command, result, dict):
    """Displays name and attributes for a range and all its descendents"""
    newcommand = modcommand(debugger, command, result, dict)
    if len(newcommand) > 0:
-       debugger.HandleCommand("exp nsString outputString; DumpRange(" + newcommand + ", 0, outputString), outputString;")
+       debugger.HandleCommand("exp nsString outputString; DumpRange(*" + newcommand + ", 0, outputString), outputString;")
 
 
 
