@@ -4386,8 +4386,9 @@ msiEditor::CanonicalizeMathSelection( nsIDOMRange * range)
   nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
   if (htmlRules) 
   {
-    htmlRules->CanonicalizeMathSelection(range);
+    return htmlRules->CanonicalizeMathSelection(range);
   }
+  return NS_ERROR_NOT_INITIALIZED;
 }
 
 NS_IMETHODIMP
