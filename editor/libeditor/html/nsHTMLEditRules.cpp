@@ -7578,7 +7578,7 @@ PRBool HandleTextNode(nsIDOMNode* node,
       }
     } 
     trimmedString = nsContentUtils::TrimWhitespace(nodeValue, !atBeginning);
-    if (trimmedString.Length()>0) {
+    if (trimmedString.Length()>0 && trimmedString[0] != 0x200A) {
       // Found non-space character, so stop trimming
       node->GetParentNode(getter_AddRefs(parent));
       parent->GetNodeName(nodeName);
@@ -7715,7 +7715,7 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
     roverOffset = 0; 
   }
   walker->SetCurrentNode(rover);
-  while (rover != endNode) {
+  while (rover && rover != endNode) {
     if (HandleTextNode(rover, roverOffset, PR_TRUE, domRange))
       break;
     walker->NextNode(getter_AddRefs (rover));
@@ -7778,23 +7778,26 @@ nsHTMLEditRules::GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, P
   *outNode = rover;
   *outOffset = roverOffset;
   if (aWhere == kEnd) *outOffset += 1;
+  return NS_OK;
 }
 
 nsresult
 nsHTMLEditRules::PromoteMathRange(nsIDOMRange *aRange) {
   nsresult res;
-  nsCOMPtr<nsIDOMNode> startNode, endNode, ancestor;
-  nsCOMPtr<nsIDOMNode> newstartNode, newendNode;
+  nsCOMPtr<msiIMathMLEditor> mathmlEd(do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor)));
+  nsCOMPtr<nsIDOMNode> startNode, endNode;
+  nsCOMPtr<nsIDOMNode> newstartNode, newendNode, mathNode;
   PRInt32 startOffset, endOffset;
   PRInt32 newstartOffset, newendOffset;
+  res = mathmlEd->RangeInMath(aRange, getter_AddRefs(mathNode));
   res = aRange->GetStartContainer(getter_AddRefs(startNode));
   res = aRange->GetEndContainer(getter_AddRefs(endNode));
   res = aRange->GetStartOffset(&startOffset);
   res = aRange->GetEndOffset(&endOffset);
-  res = aRange->GetCommonAncestorContainer(getter_AddRefs(ancestor));
+//  res = aRange->GetCommonAncestorContainer(getter_AddRefs(ancestor));
 // 
-  GetPromotedMathPoint(kStart, startNode, startOffset, ancestor, address_of(newstartNode), &newstartOffset);
-  GetPromotedMathPoint(kEnd, endNode, endOffset, ancestor, address_of(newendNode), &newendOffset);
+  GetPromotedMathPoint(kStart, startNode, startOffset, mathNode, address_of(newstartNode), &newstartOffset);
+  GetPromotedMathPoint(kEnd, endNode, endOffset, mathNode, address_of(newendNode), &newendOffset);
   aRange->SetStart(newstartNode, newstartOffset);
   aRange->SetEnd(newendNode, newendOffset);
   return NS_OK;
