@@ -876,10 +876,10 @@ protected:
    // for real-time spelling
    nsCOMPtr<nsITextServicesDocument> mTextServices;
 
+public:
   // And a static range utils service
   static nsIRangeUtils* sRangeHelper;
 
-public:
   // ... which means that we need to listen to shutdown
   static void Shutdown();
 
