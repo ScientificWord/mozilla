@@ -1003,7 +1003,7 @@ msiEditingManager::PrepareSelectionForCopying(msiIMathMLEditor* mathmlEditor, ns
     range->GetCollapsed(&isCollapsed);
   mathmlEditor->CanonicalizeMathSelection(range);
   if (!isCollapsed) range->CloneContents(copiedContent);
-  mathmlEditor->PromoteMathRange(range);
+//  mathmlEditor->PromoteMathRange(range);
   return res;
 }
 
@@ -1070,9 +1070,8 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
     }
     if (!bCollapsed && inMath)
     {
-      // numerator filled. Put selection in the denominator
-      denominator->GetFirstChild(getter_AddRefs(targetNode));
-      htmlEditor->ValidateMathSyntax(mathRoot); // will convert things like msub and msup to mrow if otherwise they would generate an invalid markup.
+      // denominator->GetFirstChild(getter_AddRefs(targetNode));
+//      htmlEditor->ValidateMathSyntax(mathRoot); // will convert things like msub and msup to mrow if otherwise they would generate an invalid markup.
 
       editor->InsertNode(content, numerator, 0);
       selection->Collapse(targetNode, 0);
