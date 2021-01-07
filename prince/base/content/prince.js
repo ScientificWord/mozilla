@@ -76,13 +76,13 @@ function getPPBrowser()
 function GetCurrentEditor() {
   var editor;
   try {
-	  var editorElement = msiGetActiveEditorElement();
-	  editor = msiGetEditor(editorElement);
+    var editorElement = msiGetActiveEditorElement();
+    editor = msiGetEditor(editorElement);
 //    editor instanceof Components.interfaces.nsIPlaintextEditor;
 //    editor instanceof Components.interfaces.nsIHTMLEditor;
   } catch (e) {
-		throw ("Failure in GetCurrentEditor: \n" + e.message);
-	}
+    throw ("Failure in GetCurrentEditor: \n" + e.message);
+  }
   return editor;
 }
 
@@ -224,8 +224,8 @@ function runFixup(math)
     var out = GetCurrentEngine().perform(math,GetCurrentEngine().Fixup);
     return out;
   }
-	catch(e) {
-		throw("Failure in RunFixup():\n"+ e.message);
+  catch(e) {
+    throw("Failure in RunFixup():\n"+ e.message);
   }
   return math;
 }
@@ -249,7 +249,7 @@ function coalescemath() {
       f = f.previousSibling;
       element = findmathparent(f);
       if (!element) {
-	      msidump("focus not in math!\n");
+        msidump("focus not in math!\n");
         return;
       }
     }
@@ -472,17 +472,17 @@ function openTeX()
     dump("+++ Running");
     try
     {
-	var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-	theProcess.init(exefile);
-	var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, file.path, outfile.path];
+  var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+  theProcess.init(exefile);
+  var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, file.path, outfile.path];
 
-	dump("+++" + args);
+  dump("+++" + args);
       theProcess.run(true, args, args.length);
     }
     catch (ex)
     {
        //   msidump("\nUnable to open TeX:\n");
-		     // msidump("\nexe  = "  + exefile);
+         // msidump("\nexe  = "  + exefile);
        //   msidump("\narg paths = " + dataDir.path + "\n   " + file.path + "\n    " + outfile.path + "\n     " + outdir.path);
        //   msidump(ex+"\n");
     }
@@ -534,18 +534,18 @@ function openTeXbyName(fn)
     var outdir = inputfile.parent;
     outdir.append(filename + "_work");
     try {
-	msidump("Output dir is " + outdir);
-	if (outdir.exists()){
-	    msidump("Output dir exists");
-	    outdir.remove(true);
-	    msidump("Output dir removed")
-	}
-	outdir.create(1 , 0755);
-	msidump("Output dir created");
+  msidump("Output dir is " + outdir);
+  if (outdir.exists()){
+      msidump("Output dir exists");
+      outdir.remove(true);
+      msidump("Output dir removed")
+  }
+  outdir.create(1 , 0755);
+  msidump("Output dir created");
     }
     catch(e){
-	msidump("Could not remove output directory " + outdir);
-	msidump(e);
+  msidump("Could not remove output directory " + outdir);
+  msidump(e);
     }
 
 
@@ -584,23 +584,23 @@ function openTeXbyName(fn)
 
     try
     {
-	msidump("Running pretex");
-	var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-	theProcess.init(exefile);
-	var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, inputfile.path, outfile.path];
+  msidump("Running pretex");
+  var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+  theProcess.init(exefile);
+  var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, inputfile.path, outfile.path];
 
-	msidump("+++" + args);
+  msidump("+++" + args);
         theProcess.run(true, args, args.length);
     }
     catch (ex)
     {
-	msidump("Could not run pretex. " + ex);
+  msidump("Could not run pretex. " + ex);
     }
     if ((outfile) && (outfile.path.length > 0))
     {
-	if (!outfile.exists())
-	    finalThrow(cmdFailString('Import TeX'),
-		       'Conversion program did not produce a file');
+  if (!outfile.exists())
+      finalThrow(cmdFailString('Import TeX'),
+           'Conversion program did not produce a file');
     }
     var xsltProcessor = setupInputXSLTproc();
     var parser = new DOMParser();
@@ -686,7 +686,7 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   var documentPath = document.documentURI;
   var docurl = msiURIFromString(documentPath);
   var workingDir;
-	var parentDir;
+  var parentDir;
   var outTeX;
   var isDefaultLocation = false;
   workingDir = msiFileFromFileURL(docurl);
@@ -695,7 +695,7 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   if (outTeXfile == null  || outTeXfile.path.length == 0)
   {
     isDefaultLocation = true;
-		outTeXdir = workingDir.clone();
+    outTeXdir = workingDir.clone();
     outTeXdir.append("tex");
     // try {
     //   outTeXdir.remove(true);
@@ -759,16 +759,16 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   if (!str || str.length < 3) return false;
   // if isDefaultLocation is false, the graphics path in the TeX is incorrect. We need to adjust this.
   if (!isDefaultLocation)
-	{
-		// save graphics, gcache, tcache and plot directories
+  {
+    // save graphics, gcache, tcache and plot directories
     var prefix = outTeXfile.leafName.replace(/\.tex$/i,"_");
-		var specialDirs = ["plots","graphics","tcache","gcache"];
-		var k;
-		for (k = 0; k < specialDirs.length; k++)
-		{
+    var specialDirs = ["plots","graphics","tcache","gcache"];
+    var k;
+    for (k = 0; k < specialDirs.length; k++)
+    {
       str = str.replace("{../"+specialDirs[k]+"/", "{"+prefix+specialDirs[k]+"/", "g");
-		}
-	}
+    }
+  }
 
   if (outTeXfile.exists())
     outTeXfile.remove(false);
@@ -782,35 +782,35 @@ function documentAsTeXFile( editor, document, outTeXfile, compileInfo )
   os.close();
   fos.close();
   if (outTeXfile.exists() && !isDefaultLocation)
-	{
-		// save graphics, gcache, tcache and plot directories
-		var parentDir = outTeXfile.parent.clone();
-		var s,d; // source and destination directories.
-		for (k = 0; k < specialDirs.length; k++)
-		{
-			s = workingDir.clone();
-			s.append(specialDirs[k]);
-			d = parentDir.clone();
-			d.append(prefix+specialDirs[k]);
-			if (s.exists())
-			{
-				// copy files from s to d
-				var entries = s.directoryEntries;
-				if (entries.hasMoreElements())
-				{
-				  if (!d.exists())
-					  d.create(1,0755);
-  				while(entries.hasMoreElements())
-  				{
-  				  var entry = entries.getNext();
-  				  entry.QueryInterface(Components.interfaces.nsIFile);
-  				  entry.copyTo(d,"");
-  				}
-  			}
-			}
-		}
-	}
-	return outTeXfile.exists();
+  {
+    // save graphics, gcache, tcache and plot directories
+    var parentDir = outTeXfile.parent.clone();
+    var s,d; // source and destination directories.
+    for (k = 0; k < specialDirs.length; k++)
+    {
+      s = workingDir.clone();
+      s.append(specialDirs[k]);
+      d = parentDir.clone();
+      d.append(prefix+specialDirs[k]);
+      if (s.exists())
+      {
+        // copy files from s to d
+        var entries = s.directoryEntries;
+        if (entries.hasMoreElements())
+        {
+          if (!d.exists())
+            d.create(1,0755);
+          while(entries.hasMoreElements())
+          {
+            var entry = entries.getNext();
+            entry.QueryInterface(Components.interfaces.nsIFile);
+            entry.copyTo(d,"");
+          }
+        }
+      }
+    }
+  }
+  return outTeXfile.exists();
 }
 
 function currentFileName()
@@ -873,7 +873,7 @@ function exportToWeb()
   var editor = msiGetEditor(editorElement);
   if (!editor) return;
   uri = editor.document.documentURI;
-  re = /.*[/\\](\w+)_work[/\\]\w+\.\w+$/;
+  re = /[/\\]([^/\\]*)_work/;
   match = re.exec(uri);
   if (match.length >= 2) {
     defaultName = match[1];
@@ -1436,18 +1436,18 @@ function documentToTeXString(document, xslPath)
 
 
 //     while (strResult.search(/\n[ \t]+/) >= 0)
-// 		  strResult = strResult.replace(/\n[ \t]+/,"\n","g");
+//      strResult = strResult.replace(/\n[ \t]+/,"\n","g");
 //     while (strResult.search(/\n\n/) >= 0)
 //       strResult = strResult.replace(/\n\n/,"\n","g");
-// 	  while (strResult.search(/\\par[ \t]*\n/) >= 0)
-// 		  strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
+//    while (strResult.search(/\\par[ \t]*\n/) >= 0)
+//      strResult = strResult.replace(/\\par[ \t]*\n/,"\n\n", "g");
 //
 //     while (strResult.search(/\\par[ \t\n]+/) >= 0)
-// 		  strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
+//      strResult = strResult.replace(/\\par[ \t\n]+/,"\n\n", "g");
 //     while (strResult.search(/\\msipar[ \t\n]+/) >= 0)
-// 		  strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");
-		//while (strResult.search(/\\par/) >= 0)
-	//  strResult = strResult.replace(/\\par/,"\n\n", "g");    {
+//      strResult = strResult.replace(/\\msipar([ \t\n]+)/,"\\par$1", "g");
+    //while (strResult.search(/\\par/) >= 0)
+  //  strResult = strResult.replace(/\\par/,"\n\n", "g");    {
       strResult = editor.filterCharsForLaTeX(compiler !== 'pdflatex', strResult);
 
   }

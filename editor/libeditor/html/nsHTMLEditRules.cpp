@@ -73,7 +73,6 @@
 #include "nsIPrefService.h"
 #include "nsIDOMNamedNodeMap.h"
 #include "nsIRange.h"
-
 #include "nsEditorUtils.h"
 #include "nsWSRunObject.h"
 
@@ -92,8 +91,6 @@
 // #include "jcsDumpNode.h"
 #include "../base/nsEditorUtils.h"
 #include "../../../content/base/src/nsContentList.h"
-
-
 
 
 //const static char* kMOZEditorBogusNodeAttr="MOZ_EDITOR_BOGUS_NODE";
@@ -439,7 +436,8 @@ nsHTMLEditRules::AfterEdit(PRInt32 action, nsIEditor::EDirection aDirection)
 
   nsAutoLockRulesSniffing lockIt(this);
 
-  NS_PRECONDITION(mActionNesting>0, "bad action nesting!");
+  if (mActionNesting > 0)
+    NS_PRECONDITION(mActionNesting>0, "bad action nesting!");
   nsresult res = NS_OK;
   if (!--mActionNesting)
   {
@@ -7551,6 +7549,15 @@ nsHTMLEditRules::PromoteRange(nsIDOMRange *inRange,
   return res;
 }
 
+PRBool IsSpecialNode(nsIDOMNode* node) {
+  nsAutoString nodeName;
+  node->GetNodeName(nodeName);
+  return (nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mn") || nodeName.EqualsLiteral("mo") || nodeName.EqualsLiteral("mtext") ||
+    nodeName.EqualsLiteral("mfrac") || nodeName.EqualsLiteral("mroot") || nodeName.EqualsLiteral("msqrt") || 
+    nodeName.EqualsLiteral("msub") || nodeName.EqualsLiteral("menclose") || nodeName.EqualsLiteral("munder") ||
+    nodeName.EqualsLiteral("msup") || nodeName.EqualsLiteral("msubsup") || nodeName.EqualsLiteral("mover") ||
+    nodeName.EqualsLiteral("menclose") || nodeName.EqualsLiteral("munder") ||nodeName.EqualsLiteral("munderover"));
+}
 // HandleTextNode resets the range end when it encounters non-whitespace text,
 // and does nothing otherwise so it is treated as other nodes. The return
 // value is set to true if and only if non-whitespace text was encountered
@@ -7558,12 +7565,16 @@ nsHTMLEditRules::PromoteRange(nsIDOMRange *inRange,
 PRBool HandleTextNode(nsIDOMNode* node, 
                       PRInt32 offset, 
                       PRBool atBeginning, 
-                      nsIDOMRange * domRange) {
+                      nsHTMLEditor* editor,
+                      nsIDOMRange* originalRange,
+                      nsIDOMRange* domRange) {
   PRUint16 nodeType;
   nsAutoString nodeValue;
   nsAutoString trimmedString;
   nsAutoString nodeName;
   nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIContent> content;
+  PRBool outNodeBefore, outNodeAfter;
   if (node == nsnull) return PR_FALSE;
   node->GetNodeType(&nodeType);
   // See if node is a text node
@@ -7582,7 +7593,7 @@ PRBool HandleTextNode(nsIDOMNode* node,
       // Found non-space character, so stop trimming
       node->GetParentNode(getter_AddRefs(parent));
       parent->GetNodeName(nodeName);
-      if (nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mn")) {
+      if (nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mn") || nodeName.EqualsLiteral("mo")) {
         if (atBeginning) {
           domRange->SetStart(parent, 0);
         } else {
@@ -7597,14 +7608,18 @@ PRBool HandleTextNode(nsIDOMNode* node,
       return PR_TRUE;  
     }
   } else {
-    node->GetNodeName(nodeName);
-    if (nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mn") || nodeName.EqualsLiteral("mo")) {
-      if (atBeginning) {
-        domRange->SetStart(node, 0);
-      } else {
-        domRange->SetEnd(node, 1);
+    if (IsSpecialNode(node))
+    { 
+      content = do_QueryInterface(node);
+      editor->sRangeHelper->CompareNodeToRange(content, originalRange, &outNodeBefore, &outNodeAfter);
+      if (!outNodeBefore && !outNodeAfter) {
+        if (atBeginning) {
+          domRange->SetStart(node, 0);
+        } else {
+          domRange->SetEnd(node, 1);
+        }
+        return PR_TRUE;        
       }
-      return PR_TRUE;
     }
   }
   return PR_FALSE;
@@ -7619,6 +7634,19 @@ PRInt32 localGetNodeLength(nsINode *aNode)
   return aNode->GetChildCount();
 }
 
+PRBool IsNodeInRange(nsHTMLEditor* editor, nsIDOMNode* node, nsIDOMRange* range)
+{
+  PRBool outNodeBefore, outNodeAfter;
+  nsCOMPtr<nsIContent> content;
+  nsAutoString nodeName;
+  node->GetNodeName(nodeName); 
+  if (nodeName.EqualsLiteral("math")) return PR_FALSE;
+  content = do_QueryInterface(node);
+  editor->sRangeHelper->CompareNodeToRange(content, range, &outNodeBefore, &outNodeAfter);
+  return (!outNodeBefore && !outNodeAfter); 
+}
+
+
 
 // preliminary implementations
 PRBool atStartOfNode( nsIDOMNode * node, PRInt32 & offset) {
@@ -7628,7 +7656,7 @@ PRBool atStartOfNode( nsIDOMNode * node, PRInt32 & offset) {
 PRBool atEndOfNode( nsIDOMNode * node, PRInt32 & offset) {
   nsCOMPtr<nsINode> nd = do_QueryInterface(node);
   PRInt32 length = localGetNodeLength(nd);
-  return offset == length;
+  return offset >= length;
 }
 
 PRBool isBaseMathNode (nsIDOMNode * node) {
@@ -7648,18 +7676,23 @@ nsresult
 nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
 {
   nsresult res = NS_OK;
-  // nsCOMPtr<nsISelection> sel;
+  // nsCOMPtr<nsISelection> sel;  
   PRBool isCollapsed;
   // nsCOMPtr<nsIDOMNode> commonParent;
   nsCOMPtr<nsIRange> range;
-  nsCOMPtr<nsIDOMNode> startNode, endNode, ancestor;
-  nsCOMPtr<nsIDOMNode> rover;
+  nsCOMPtr<nsIDOMNode> startNode, endNode, mathRoot;
+  nsCOMPtr<nsIDOMNode> rover, node, parent;
+  nsCOMPtr<nsINode> nd;
   nsCOMPtr<nsIContent> content;
   nsCOMPtr<nsIContent> child;
 
-  PRInt32 startOffset, endOffset, roverOffset;
+  PRInt32 startOffset, endOffset, roverOffset, newOffset;
   nsAutoString nodeValue, trimmedString;
   PRUint16 nodeType;
+  nsCOMPtr<msiIMathMLEditor> mathmlEd(do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor)));
+  res = mathmlEd->RangeInMath(domRange, getter_AddRefs(mathRoot));
+  nsCOMPtr<nsIDOMRange> originalRange;
+  domRange->CloneRange(getter_AddRefs(originalRange));
 
   res = domRange->GetStartContainer(getter_AddRefs(startNode));
   res = domRange->GetEndContainer(getter_AddRefs(endNode));
@@ -7694,10 +7727,9 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
   startNode->GetOwnerDocument(getter_AddRefs(domDoc));
   nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
   doctrav = do_QueryInterface(domDoc);
-  ancestor = do_QueryInterface(range->GetCommonAncestor());
 
 
-  res = doctrav->CreateTreeWalker(ancestor,
+  res = doctrav->CreateTreeWalker(mathRoot,
                              nsIDOMNodeFilter::SHOW_ELEMENT | nsIDOMNodeFilter::SHOW_TEXT,
                              nsnull,
                              PR_FALSE,
@@ -7716,7 +7748,7 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
   }
   walker->SetCurrentNode(rover);
   while (rover && rover != endNode) {
-    if (HandleTextNode(rover, roverOffset, PR_TRUE, domRange))
+    if (HandleTextNode(rover, roverOffset, PR_TRUE, mHTMLEditor, originalRange, domRange))
       break;
     walker->NextNode(getter_AddRefs (rover));
     roverOffset = 0; // roverOffset is used only if the first node is a text node.
@@ -7731,53 +7763,78 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
     // 
     // pull in the right edge
 
-  if (nodeType != nsIDOMNode::TEXT_NODE) {
+  if (nodeTyp != nsIDOMNode::TEXT_NODE) {
     content = do_QueryInterface(rover);
-    child = content->GetChildAt(endOffset);
-    rover = do_QueryInterface(child);
-    mHTMLEditor->GetLengthOfDOMNode(rover, (PRUint32&)roverOffset);
+    if (content) {
+      child = content->GetChildAt(endOffset);
+      rover = do_QueryInterface(child);
+      mHTMLEditor->GetLengthOfDOMNode(rover, (PRUint32&)roverOffset); 
+      rover->GetNodeType(&nodeType);
+      if (nodeType == 3) {
+        roverOffset++;             
+      }
+    }
   }
   walker->SetCurrentNode(rover);
   while (rover != startNode) {
-    if (HandleTextNode(rover, roverOffset, PR_FALSE, domRange))
+    if (HandleTextNode(rover, roverOffset, PR_FALSE, mHTMLEditor, originalRange, domRange))
       break;
     walker->PreviousNode(getter_AddRefs (rover));
     mHTMLEditor->GetLengthOfDOMNode(rover, (PRUint32&)roverOffset);
-     // roverOffset is used only if the first node is a text node.
   }
-  // PRBool doPromote=PR_FALSE;
-  // if (doPromote) {
-  //   PromoteRange(domRange, 0);
-  // }
+
+  res = domRange->GetEndContainer(getter_AddRefs(rover));
+  res = domRange->GetEndOffset(&roverOffset);
+  if (atEndOfNode(rover, roverOffset)) {
+    rover->GetParentNode(getter_AddRefs(parent));
+    while (IsNodeInRange(mHTMLEditor, parent, originalRange)) {
+      rover = parent;
+      rover->GÏ439
+      etParentNode(getter_AddRefs(parent));
+    }
+    nd = do_QueryInterface(rover);
+    domRange->SetEnd(rover, localGetNodeLength(nd));
+  }
   return res;
 }
 
+
+
 nsresult
-nsHTMLEditRules::GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, PRInt32 aOffset, nsIDOMNode *ancestor,
-                                  nsCOMPtr<nsIDOMNode> *outNode, PRInt32 *outOffset)
+nsHTMLEditRules::GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, PRInt32 aOffset, nsIDOMNode *mathRoot,
+                                  nsCOMPtr<nsIDOMNode> *outNode, PRInt32 *outOffset, nsIDOMRange * originalRange)
 {
   // While there is nothing of significance to the (left,right) of the point, move up to the parent node and offset
   // Stop when we hit the ancestor node. Callers will set the ancesotor node to a common ancestor or the enclosing math node
   nsCOMPtr<nsIDOMNode> rover(aNode);
   nsCOMPtr<nsIDOMNode> nextRover;
+  nsCOMPtr<nsIContent> content;
   PRInt32 roverOffset(aOffset);
   PRInt32 nextRoverOffset;
+  PRBool outNodeBefore, outNodeAfter;
+  if (!mathRoot) return NS_ERROR_NOT_INITIALIZED;
+
   if (aWhere == kStart) {
-    while (rover != ancestor && atStartOfNode(rover, roverOffset)) {
+    while (rover != mathRoot && (originalRange == nsnull ||atStartOfNode(rover, roverOffset))) {
       nsEditor::GetNodeLocation(rover, address_of(nextRover), &nextRoverOffset);
       rover = nextRover;
       roverOffset = nextRoverOffset;
     }
   } else {
-    while (rover != ancestor && atEndOfNode(rover, roverOffset)) {
+    while (rover != mathRoot && atEndOfNode(rover, roverOffset)) {
+      if (IsSpecialNode(rover)) {
+        content = do_QueryInterface(rover);
+        mHTMLEditor->sRangeHelper->CompareNodeToRange(content, originalRange, &outNodeBefore, &outNodeAfter);
+        if (!outNodeBefore && !outNodeAfter) 
+          break;
+      } 
       nsEditor::GetNodeLocation(rover, address_of(nextRover), &nextRoverOffset);
       rover = nextRover;
-      roverOffset =nextRoverOffset;
+      roverOffset = nextRoverOffset + 1;
     }    
   }
   *outNode = rover;
   *outOffset = roverOffset;
-  if (aWhere == kEnd) *outOffset += 1;
   return NS_OK;
 }
 
@@ -7796,8 +7853,8 @@ nsHTMLEditRules::PromoteMathRange(nsIDOMRange *aRange) {
   res = aRange->GetEndOffset(&endOffset);
 //  res = aRange->GetCommonAncestorContainer(getter_AddRefs(ancestor));
 // 
-  GetPromotedMathPoint(kStart, startNode, startOffset, mathNode, address_of(newstartNode), &newstartOffset);
-  GetPromotedMathPoint(kEnd, endNode, endOffset, mathNode, address_of(newendNode), &newendOffset);
+  GetPromotedMathPoint(kStart, startNode, startOffset, mathNode, address_of(newstartNode), &newstartOffset, nsnull);
+  GetPromotedMathPoint(kEnd, endNode, endOffset, mathNode, address_of(newendNode), &newendOffset, nsnull);
   aRange->SetStart(newstartNode, newstartOffset);
   aRange->SetEnd(newendNode, newendOffset);
   return NS_OK;
