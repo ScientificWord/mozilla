@@ -345,12 +345,12 @@ msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
   nsAutoEditBatch beginBatching(this);
 
   nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
-  if (htmlRules) {
-    GetSelection(getter_AddRefs(selection));
-    nsCOMPtr<nsIDOMRange> domRange;
-    selection->GetRangeAt(0, getter_AddRefs(domRange));
-    htmlRules->CanonicalizeMathSelection(domRange);
-  }
+  // if (htmlRules) {
+  //   GetSelection(getter_AddRefs(selection));
+  //   nsCOMPtr<nsIDOMRange> domRange;
+  //   selection->GetRangeAt(0, getter_AddRefs(domRange));
+  //   htmlRules->CanonicalizeMathSelection(domRange);
+  // }
 
   res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                          endOffset, bCollapsed);
@@ -781,6 +781,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
 {
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMDocumentFragment> content;
+  nsCOMPtr<nsIDOMNode> contentNode; // for debugger use
   nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask))
   {
@@ -849,6 +850,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
           if (!bCollapsed)
           {
             range->CloneContents(getter_AddRefs(content));
+            contentNode = do_QueryInterface(content);
             DeleteSelection(0);
             res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bDontCare); 
