@@ -101,8 +101,7 @@ interface nsIDOMRange : nsISupports
                                         raises(DOMException);
   nsIDOMDocumentFragment extractContents()
                                         raises(DOMException);
-  nsIDOMDocumentFragment 
-  ()
+  nsIDOMDocumentFragment cloneContents()
                                         raises(DOMException);
   void               insertNode(in nsIDOMNode newNode)
                                         raises(DOMException, RangeException);

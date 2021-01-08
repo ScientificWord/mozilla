@@ -7763,7 +7763,7 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
     // 
     // pull in the right edge
 
-  if (nodeTyp != nsIDOMNode::TEXT_NODE) {
+  if (nodeType != nsIDOMNode::TEXT_NODE) {
     content = do_QueryInterface(rover);
     if (content) {
       child = content->GetChildAt(endOffset);
@@ -7789,8 +7789,7 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
     rover->GetParentNode(getter_AddRefs(parent));
     while (IsNodeInRange(mHTMLEditor, parent, originalRange)) {
       rover = parent;
-      rover->GÏ439
-      etParentNode(getter_AddRefs(parent));
+      rover->GetParentNode(getter_AddRefs(parent));
     }
     nd = do_QueryInterface(rover);
     domRange->SetEnd(rover, localGetNodeLength(nd));
@@ -7821,7 +7820,7 @@ nsHTMLEditRules::GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, P
       roverOffset = nextRoverOffset;
     }
   } else {
-    while (rover != mathRoot && atEndOfNode(rover, roverOffset)) {
+    while (atEndOfNode(rover, roverOffset)) {
       if (IsSpecialNode(rover)) {
         content = do_QueryInterface(rover);
         mHTMLEditor->sRangeHelper->CompareNodeToRange(content, originalRange, &outNodeBefore, &outNodeAfter);
@@ -7829,8 +7828,12 @@ nsHTMLEditRules::GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, P
           break;
       } 
       nsEditor::GetNodeLocation(rover, address_of(nextRover), &nextRoverOffset);
-      rover = nextRover;
-      roverOffset = nextRoverOffset + 1;
+      if (rover != mathRoot) {
+        rover = nextRover;
+        roverOffset = nextRoverOffset + 1;        
+      }
+      else
+        break;
     }    
   }
   *outNode = rover;
