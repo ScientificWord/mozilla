@@ -1080,7 +1080,7 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
       numerator->GetFirstChild(getter_AddRefs(targetNode));
       selection->Collapse(targetNode,0);
     }
-    htmlEditor->ValidateMathSyntax(mathRoot); // will convert things like msub and msup to mrow if otherwise they would generate an invalid markup.
+    htmlEditor->ValidateMathSyntax(mathnode); // will convert things like msub and msup to mrow if otherwise they would generate an invalid markup.
     editor->EndTransaction();
   }
   return res;

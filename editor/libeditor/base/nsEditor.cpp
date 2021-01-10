@@ -1883,11 +1883,13 @@ NS_IMETHODIMP nsEditor::InsertNode(nsIDOMNode * aNode,
   PRInt32 i;
   PRInt32 offset = aPosition;
   nsresult result;
+  nsAutoString nodeName;
   PRBool fNeedToValidate = PR_FALSE;
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface((nsIEditor*)this);
-  nsCOMPtr<nsIDOMElement> element(do_QueryInterface(aNode));
+//  nsCOMPtr<nsIDOMElement> element(do_QueryInterface(aNode));
   // check for well-formed mathematics in case this is coming from the clipboard
-  if (nsHTMLEditUtils::IsMath(aNode)) {
+  result = aNode->GetNodeName(nodeName);
+  if (nsHTMLEditUtils::IsMath(aNode) || nodeName.EqualsLiteral("#document-fragment")) {  // this also needs to check for document-fragment
     if (htmlEditor) {
       fNeedToValidate = PR_TRUE;
     }
@@ -1903,7 +1905,7 @@ NS_IMETHODIMP nsEditor::InsertNode(nsIDOMNode * aNode,
     result = DoTransaction(txn);
   }
   if (fNeedToValidate) {
-    htmlEditor->ValidateMathSyntax(element);
+    htmlEditor->ValidateMathSyntax(aNode);
   }
   mRangeUpdater.SelAdjInsertNode(aParent, aPosition);
 
