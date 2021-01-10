@@ -686,7 +686,7 @@ interface nsIHTMLEditor : nsISupports
   AString returnAString( in AString thisone);
   // void mathToText(in nsISelection selection);
   nsIArray nodesInRange( in nsIDOMRange aRange);
-	boolean setCursorInNewHTML(in nsIDOMElement newElement);
+  boolean setCursorInNewHTML(in nsIDOMElement newElement);
   AString readCursorSetProps();
   AString readCursorClearedProps();
   void InsertMathNode(in nsIDOMNode insertThisNode, in nsIDOMNode parent,
@@ -699,7 +699,7 @@ interface nsIHTMLEditor : nsISupports
    * the TagManager.
    */
   void setEditorActive();
-  void ValidateMathSyntax( in nsIDOMElement mathNode );
+  void ValidateMathSyntax( in nsIDOMNode mathNode );
 };
 
 

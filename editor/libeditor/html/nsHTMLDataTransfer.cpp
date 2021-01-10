@@ -581,12 +581,12 @@ PRUint32 MathChildCount( nsIDOMElement * aElement) {
   return mathChildCount;
 }
 
-nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
+nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMNode * mathNode ) {
 
-  nsCOMPtr<nsIDOMElement> node = mathNode;
+  nsCOMPtr<nsIDOMElement> node = do_QueryInterface(mathNode);
+  if (!node) return NS_OK;  // this will exit when mathNode is a text node  
   nsCOMPtr<nsIDOMNode> mathrow;
   nsCOMPtr<nsIDOMElement> nextNode;
-  nsCOMPtr<nsIDOMElement> childElement;
   nsCOMPtr<nsIDOMNode> child;
   nsCOMPtr<nsIDOMNode> parent;
   nsCOMPtr<nsIDOMNodeList> children;
@@ -601,10 +601,7 @@ nsresult nsHTMLEditor::ValidateMathSyntax(  nsIDOMElement * mathNode ) {
     children->GetLength(&childCount);
     for (index = 0; index < childCount; index++) {
       children->Item(index, getter_AddRefs(child));
-      childElement = do_QueryInterface(child);
-      if (childElement) {
-        ValidateMathSyntax(childElement);
-      }
+      ValidateMathSyntax(child);
     } 
   }      
   if (nsHTMLEditUtils::IsMath(node)) {
