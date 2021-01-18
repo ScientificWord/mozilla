@@ -181,6 +181,25 @@ NS_IMETHODIMP DeleteElementTxn::RedoTransaction(void)
 
 NS_IMETHODIMP DeleteElementTxn::GetTxnDescription(nsAString& aString)
 {
-  aString.AssignLiteral("DeleteElementTxn");
+  nsAutoString elementName;
+  nsAutoString parentName;
+  nsAutoString refNodeName;
+
+  if (mElement) {
+    mElement->GetNodeName(elementName);
+    aString.AssignLiteral("DeleteElementTxn: element ");
+    aString.Append(elementName);
+  }
+  if (mParent) {
+    mParent->GetNodeName(parentName);
+    aString.AppendLiteral(", parent ");
+    aString.Append(parentName);
+  }
+  if (mRefNode) {
+    mRefNode->GetNodeName(refNodeName);
+    aString.AppendLiteral(", refNode ");
+    aString.Append(refNodeName);
+  }
+
   return NS_OK;
 }

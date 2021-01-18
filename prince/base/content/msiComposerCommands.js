@@ -4630,10 +4630,10 @@ var cmdMSIUndoCommand =
         editor.setShouldTxnSetSelection(false);
         editor.undo(1);
         editor.canUndo(isEnabled, canUndo);
-        if (isEnabled.value && canUndo.value) {
-          editor.undo(1);
-          editor.redo(1);
-        }
+        // if (isEnabled.value && canUndo.value) {
+        //   editor.undo(1);
+        //   editor.redo(1);
+        // }
         editor.setShouldTxnSetSelection(saveTxnSetsSelection);
       }
       else
@@ -7111,50 +7111,53 @@ function setAlignmentOK(editorElement) {
   var isMath;
   var selNode;
   var retval = false;;
-  if (editor.selection.isCollapsed) {
+  if (editor.selection.isCollapsed ) {
     selNode = editor.selection.anchorNode;
-    ismath = msiNavigationUtils.isMathNode(selNode);
-    if (!ismath) selNode = selNode.parentNode;
-    ismath = msiNavigationUtils.isMathNode(selNode);
-    while (selNode && ismath && selNode.tagName != 'mtd') {
-      if ((selNode.tagName != 'mrow' &&
-        selNode.tagName != 'mi' &&
-        selNode.tagName != 'mo' &&
-        selNode.tagName != 'mn' &&
-        selNode.tagName != 'menclose' &&
-        selNode.tagName != 'mfrac' &&
-        selNode.tagName != 'mmultiscripts' &&
-        selNode.tagName != 'mover' &&
-        selNode.tagName != 'mprescripts' &&
-        selNode.tagName != 'mroot' &&
-        selNode.tagName != 'mspace' &&
-        selNode.tagName != 'msqrt' &&
-        selNode.tagName != 'mstyle' &&
-        selNode.tagName != 'msub' &&
-        selNode.tagName != 'msubsup' &&
-        selNode.tagName != 'msup' &&
-        selNode.tagName != 'mtext' &&
-        selNode.tagName != 'munder' &&
-        selNode.tagName != 'munderover' &&
-        selNode.tagName != 'mphantom')
-        || (selNode.tagName == 'mn' ||
-        selNode.tagName == 'msqrt' ||
-        selNode.tagName == 'mroot' ||
-        selNode.tagName == 'msub' ||
-        selNode.tagName == 'msup' ||
-        selNode.tagName == 'msubsup' ||
-        selNode.tagName == 'mover' ||
-        selNode.tagName == 'munder' ||
-        selNode.tagName == 'munderover' ||
-        selNode.tagName == 'mfrac'))
-        {
-        retval = false;
-        return retval;
-      }
-      selNode = selNode.parentNode;
+    if (selNode)
+    {
       ismath = msiNavigationUtils.isMathNode(selNode);
+      if (!ismath) selNode = selNode.parentNode;
+      ismath = msiNavigationUtils.isMathNode(selNode);
+      while (selNode && ismath && selNode.tagName != 'mtd') {
+        if ((selNode.tagName != 'mrow' &&
+          selNode.tagName != 'mi' &&
+          selNode.tagName != 'mo' &&
+          selNode.tagName != 'mn' &&
+          selNode.tagName != 'menclose' &&
+          selNode.tagName != 'mfrac' &&
+          selNode.tagName != 'mmultiscripts' &&
+          selNode.tagName != 'mover' &&
+          selNode.tagName != 'mprescripts' &&
+          selNode.tagName != 'mroot' &&
+          selNode.tagName != 'mspace' &&
+          selNode.tagName != 'msqrt' &&
+          selNode.tagName != 'mstyle' &&
+          selNode.tagName != 'msub' &&
+          selNode.tagName != 'msubsup' &&
+          selNode.tagName != 'msup' &&
+          selNode.tagName != 'mtext' &&
+          selNode.tagName != 'munder' &&
+          selNode.tagName != 'munderover' &&
+          selNode.tagName != 'mphantom')
+          || (selNode.tagName == 'mn' ||
+          selNode.tagName == 'msqrt' ||
+          selNode.tagName == 'mroot' ||
+          selNode.tagName == 'msub' ||
+          selNode.tagName == 'msup' ||
+          selNode.tagName == 'msubsup' ||
+          selNode.tagName == 'mover' ||
+          selNode.tagName == 'munder' ||
+          selNode.tagName == 'munderover' ||
+          selNode.tagName == 'mfrac'))
+          {
+          retval = false;
+          return retval;
+        }
+        selNode = selNode.parentNode;
+        ismath = msiNavigationUtils.isMathNode(selNode);
+      }
+      if (selNode && selNode.tagName == 'mtd') retval = true;
     }
-    if (selNode && selNode.tagName == 'mtd') retval = true;
   }
   return retval;
 }
