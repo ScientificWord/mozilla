@@ -40,10 +40,18 @@
 #include "nsIContent.h"
 #include "nsIDOMNodeList.h"
 #include "nsReadableUtils.h"
+#include "nsString.h"
 
 #ifdef NS_DEBUG
 static PRBool gNoisy = PR_FALSE;
 #endif
+
+void AppendInt(nsAString &str, PRInt32 val)
+{
+  char buf[32];
+  PR_snprintf(buf, sizeof(buf), "%ld", val);
+  str.Append(NS_ConvertASCIItoUTF16(buf));
+}
 
 
 InsertElementTxn::InsertElementTxn()
@@ -137,6 +145,9 @@ NS_IMETHODIMP InsertElementTxn::UndoTransaction(void)
   if (gNoisy) { printf("%p Undo Insert Element of %p into parent %p at offset %d\n", 
                        this, mNode.get(), mParent.get(), mOffset); }
 #endif
+#ifdef DEBUG_barry
+  printf("Undo in InsertElementTxn\n");
+#endif
 
   if (!mNode || !mParent) return NS_ERROR_NOT_INITIALIZED;
 
@@ -146,6 +157,21 @@ NS_IMETHODIMP InsertElementTxn::UndoTransaction(void)
 
 NS_IMETHODIMP InsertElementTxn::GetTxnDescription(nsAString& aString)
 {
-  aString.AssignLiteral("InsertElementTxn");
+  nsAutoString nodeName;
+  nsAutoString parentName;
+  aString.AssignLiteral("InsertElementTxn: node ");
+  if (mNode) {
+    mNode->GetNodeName(nodeName);
+    aString.Append(nodeName);
+
+  }
+  if (mParent) {
+    mParent->GetNodeName(parentName);
+    aString.AppendLiteral(", parent ");
+    aString.Append(parentName);
+  }
+  aString.AppendLiteral(", offset ");
+  AppendInt(aString, mOffset);
+
   return NS_OK;
 }

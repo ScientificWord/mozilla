@@ -360,7 +360,7 @@ NS_IMPL_ISUPPORTS5(nsEditor, nsIEditor, nsIEditorIMESupport,
                    nsISupportsWeakReference, nsIPhonetic, nsIMutationObserver)
 
 
-//#ifdef DEBUG_Barry||DEBUG_barry
+//#ifdef DEBUG_barry
 
 void
 nsEditor::DumpTagName(nsIDOMNode *aNode, nsAString & nodeInfo)
@@ -1181,7 +1181,7 @@ nsEditor::Undo(PRUint32 aCount)
   }
 
   NotifyEditorObservers();
-  msiUtils::Refresh(this);
+//  msiUtils::Refresh(this);
   return result;
 }
 
@@ -1889,10 +1889,10 @@ NS_IMETHODIMP nsEditor::InsertNode(nsIDOMNode * aNode,
 //  nsCOMPtr<nsIDOMElement> element(do_QueryInterface(aNode));
   // check for well-formed mathematics in case this is coming from the clipboard
   result = aNode->GetNodeName(nodeName);
-  if (nsHTMLEditUtils::IsMath(aNode) || nodeName.EqualsLiteral("#document-fragment")) {  // this also needs to check for document-fragment
-    if (htmlEditor) {
-      fNeedToValidate = PR_TRUE;
-    }
+  if (nsHTMLEditUtils::IsMath(aNode) || nodeName.EqualsLiteral("#document-fragment")) {  
+    // if (htmlEditor) {
+      // fNeedToValidate = PR_TRUE;
+    // }
   }
   nsAutoRules beginRulesSniffing(this, kOpInsertNode, nsIEditor::eNext);
   for (i = 0; i < mActionListeners.Count(); i++)

@@ -754,11 +754,11 @@
     <!-- command id="cmd_ul"            state="false"     oncommand="msiDoStyleUICommand('cmd_ul')"/ -->
     <!-- command id="cmd_ol"            state="false"     oncommand="msiDoStyleUICommand('cmd_ol')"/ -->
 
-    <command id="cmd_indent"                          oncommand="msiGoDoCommand('cmd_indent')"/>
+<!--     <command id="cmd_indent"                          oncommand="msiGoDoCommand('cmd_indent')"/>
     <command id="cmd_outdent"                         oncommand="msiGoDoCommand('cmd_outdent')"/>
+ -->
 
-
-    <command id="cmd_absPos"          state=""        oncommand="msiGoDoCommand('cmd_absPos')"/>
+ <!--    <command id="cmd_absPos"          state=""        oncommand="msiGoDoCommand('cmd_absPos')"/>
     <command id="cmd_increaseZIndex"  state=""        oncommand="msiGoDoCommand('cmd_increaseZIndex')"/>
     <command id="cmd_decreaseZIndex"  state=""        oncommand="msiGoDoCommand('cmd_decreaseZIndex')"/>
 
@@ -766,7 +766,7 @@
 
     <command id="cmd_increaseFont"                    oncommand="msiGoDoCommand('cmd_increaseFont')"/>
     <command id="cmd_decreaseFont"                    oncommand="msiGoDoCommand('cmd_decreaseFont')"/>
-
+ -->
     <command id="cmd_removeStyles"                    oncommand="msiGoDoCommand('cmd_removeStyles')"/>
     <command id="cmd_removeLinks"                     oncommand="msiGoDoCommand('cmd_removeLinks')"/>
     <command id="cmd_removeNamedAnchors"              oncommand="msiGoDoCommand('cmd_removeNamedAnchors')"/>
