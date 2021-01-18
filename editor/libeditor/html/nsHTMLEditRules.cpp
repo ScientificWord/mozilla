@@ -7736,6 +7736,7 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
                              PR_FALSE,
                              getter_AddRefs(walker));
   
+  if (!walker) return NS_ERROR_FAILURE;
   // pull in the left edge (left edge in ltr languages)
   nsCOMPtr<nsINode> tempNode;
   rover = startNode;
