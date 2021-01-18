@@ -23,6 +23,8 @@ interface msiIMathMLEditor : nsISupports
 
   void Copy();
   void InsertMathNodeAtSelection(in nsIDOMElement aElement);
+  void InsertDocFragment(in nsIDOMDocumentFragment content, in nsIDOMNode dest, 
+    in unsigned long offset, out unsigned long postOffset);
   void InsertInlineMath();
   void InsertDisplay();
   void InsertSuperscript();

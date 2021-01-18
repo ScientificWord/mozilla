@@ -124,6 +124,44 @@ NS_IMETHODIMP msiEditor::InsertHelperBR(nsISelection *selection)
   res = htmlRules->InsertBRIfNeeded(selection);
 }
 
+// InsertDocFragment is that same as InsertNode except in the case where
+// content is a document fragment. We can call InsertNode when content is a document
+// fragment, but this screws up undo, since the insertnode code removes the docfrag node,
+// which has been saved by the insertnode transaction, and which crashes the undo 
+// method. This function catches that case and inserts only the contents of the doc frag.
+
+/* void InsertDocFragment(in nsIDOMDocumentFragment content, in nsIDOMNode dest, 
+    in unsigned long offset, out unsigned long postOffset); */
+NS_IMETHODIMP
+msiEditor::InsertDocFragment(nsIDOMDocumentFragment *content, nsIDOMNode *dest,
+  PRUint32 offset, PRUint32 *postOffset)
+{
+  nsAutoString name;
+  nsresult res;
+  PRUint32 i, count;
+  nsCOMPtr<nsIDOMNode> child;
+  res = content->GetNodeName(name);
+  if (name.EqualsLiteral("#document-fragment")) {  
+    nsCOMPtr<nsIDOMNodeList> children;
+    res = content->GetChildNodes(getter_AddRefs(children));
+    if (NS_SUCCEEDED(res) && children)
+    {
+      res = children->GetLength(&count);
+      for (i = offset; i < count+offset; i++) {
+        res = children->Item(0, getter_AddRefs(child));
+        if (child) {
+          InsertNode(child, dest, i);
+          *postOffset = (i+1);
+        }
+      }
+    }
+  }
+  else {
+    InsertNode(content, dest, offset);
+    *postOffset = offset + 1;
+  }  
+}
+
 /* readonly attribute double cssPixelsPerInch; */
 NS_IMETHODIMP msiEditor::GetCssPixelsPerInch(double *_retval)
 {
@@ -897,12 +935,12 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
     GetSelection(getter_AddRefs(selection));
-    nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
-    if (htmlRules) {
-      nsCOMPtr<nsIDOMRange> domRange;
-      selection->GetRangeAt(0, getter_AddRefs(domRange));
-      htmlRules->CanonicalizeMathSelection(domRange);
-    }
+    // nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+    // if (htmlRules) {
+    //   nsCOMPtr<nsIDOMRange> domRange;
+    //   selection->GetRangeAt(0, getter_AddRefs(domRange));
+    //   htmlRules->CanonicalizeMathSelection(domRange);
+    // }
 
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
@@ -910,12 +948,11 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
-      if (!bCollapsed)
-      {
-        //res = NS_ERROR_FAILURE;
-        res = DeleteSelection(nsIEditor::eNone);
-
-      }
+      // if (!bCollapsed)
+      // {
+      //   //res = NS_ERROR_FAILURE;
+      //   res = DeleteSelection(nsIEditor::eNone);
+      // }
       theNode = startNode;
       theOffset = startOffset;
 
