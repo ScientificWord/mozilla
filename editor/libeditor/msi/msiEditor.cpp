@@ -137,7 +137,7 @@ msiEditor::InsertDocFragment(nsIDOMDocumentFragment *content, nsIDOMNode *dest,
   PRUint32 offset, PRUint32 *postOffset)
 {
   nsAutoString name;
-  nsresult res;
+  nsresult res(NS_OK);
   PRUint32 i, count;
   nsCOMPtr<nsIDOMNode> child;
   res = content->GetNodeName(name);
@@ -160,6 +160,7 @@ msiEditor::InsertDocFragment(nsIDOMDocumentFragment *content, nsIDOMNode *dest,
     InsertNode(content, dest, offset);
     *postOffset = offset + 1;
   }  
+  return res;
 }
 
 /* readonly attribute double cssPixelsPerInch; */
