@@ -41,6 +41,7 @@
 #include "nsIDOMNodeList.h"
 #include "nsReadableUtils.h"
 #include "nsString.h"
+#include "prprf.h"
 
 #ifdef NS_DEBUG
 static PRBool gNoisy = PR_FALSE;
