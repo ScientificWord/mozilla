@@ -7672,8 +7672,9 @@ PRBool isInputBox (nsIDOMNode * node) {
   return isInputBox;
 }
 
+
 nsresult
-nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
+nsHTMLEditRules::CanonicalizeMathRange(nsIDOMRange * domRange)
 {
   nsresult res = NS_OK;
   // nsCOMPtr<nsISelection> sel;  
@@ -7703,7 +7704,7 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
 
   // First check for two cases where the selection is very clean. The choices on the tag status bar
   // are of this type.
-  if (startNode == endNode && endOffset != startOffset + 1 && endOffset != startOffset - 1) {
+  if (startNode == endNode && (endOffset == startOffset + 1 || endOffset == startOffset - 1)) {
     return NS_OK;
   }
   
@@ -7751,7 +7752,7 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
     }
   }
   walker->SetCurrentNode(rover);
-  while (rover && rover != endNode) {
+  while (rover) {
     if (HandleTextNode(rover, roverOffset, PR_TRUE, mHTMLEditor, originalRange, domRange))
       break;
     walker->NextNode(getter_AddRefs (rover));
@@ -7759,17 +7760,44 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
   }
 
   // now the range start is the first visible character in the original range
-  // Now include the ancestors as long as they are completely in the original range
+  /*
+    Think of (rover, roverOffset) as the coordinate of a position as we fill out
+    the left end of the range.
+
+    The rules for moving rover up the tree are a little complex.
+    1. moving up the tree requires that the current position is at the left
+      end of rover; i.e., subnodes of rover with offset less than roverOffset are
+      whitespace, as determined as atStartOfNode.
+    2. There are nodes that are visible on their own regardless of the text they contain.
+      Examples include root, decorations, etc. (given by IsSpecialNode()). We can move rover up the tree in these
+      cases only if doing so doesn't introduce new visible content into the selection.
+      Consider <mroot>xy</mroot>. We can move rover up to <mroot> only if the <mroot> was 
+      in the original selection--this distinguishes between selecting the root and selecting 
+      the contents of the root. We use isNodeInRange to distinguish the cases.
+  */
   res = domRange->GetStartContainer(getter_AddRefs(rover));
   res = domRange->GetStartOffset(&roverOffset);
-  if (atStartOfNode(rover, roverOffset)) {
-    // rover->GetParentNode(getter_AddRefs(parent));
-    while (IsNodeInRange(mHTMLEditor, rover, originalRange)) {
-      nsEditor::GetNodeLocation(rover, address_of(parent), &roverOffset);
-      rover = parent;
+  while (atStartOfNode(rover, roverOffset)) {
+    nsEditor::GetNodeLocation(rover, address_of(parent), &newOffset);
+    if (isBaseMathNode( rover )) {
+      break;   // don't go out of math
     }
-    domRange->SetStart(rover, roverOffset);
+    if (IsSpecialNode(parent)) {
+      // only move up if parent is in the original range
+      if (IsNodeInRange(mHTMLEditor, parent, originalRange)) {
+        rover = parent;
+        roverOffset = newOffset;
+      }
+      else {
+        break;  // can't move up
+      }
+    }
+    else  {
+      rover = parent;
+      roverOffset = newOffset;
+    }
   }
+  domRange->SetStart(rover, roverOffset);
 
 
   rover = endNode;
@@ -7778,39 +7806,60 @@ nsHTMLEditRules::CanonicalizeMathSelection(nsIDOMRange * domRange)
     // 
     // pull in the right edge
 
-  if (nodeType != nsIDOMNode::TEXT_NODE) {
+  if (rover && (nodeType != nsIDOMNode::TEXT_NODE)) {
     content = do_QueryInterface(rover);
     if (content) {
-      child = content->GetChildAt(endOffset);
+      child = content->GetChildAt(endOffset-1);
       if (child) {
         rover = do_QueryInterface(child);
         mHTMLEditor->GetLengthOfDOMNode(rover, (PRUint32&)roverOffset); 
-        rover->GetNodeType(&nodeType);
-        if (nodeType == 3) {
-          roverOffset++;             
-        }       
+        // rover->GetNodeType(&nodeType);
+        // if (nodeType == 3) {
+        //   roverOffset++;             
+        // }       
       }
-    }
+      rover->GetNodeType(&nodeType);
+    } else rover = nsnull;
   }
   walker->SetCurrentNode(rover);
-  while (rover != startNode) {
+  while (rover) {
     if (HandleTextNode(rover, roverOffset, PR_FALSE, mHTMLEditor, originalRange, domRange))
       break;
-    walker->PreviousNode(getter_AddRefs (rover));
-    mHTMLEditor->GetLengthOfDOMNode(rover, (PRUint32&)roverOffset);
+    content = do_QueryInterface(rover);
+    if (content) {
+      child = content->GetChildAt(roverOffset-1);
+      if (child) {
+        rover = do_QueryInterface(child);
+        mHTMLEditor->GetLengthOfDOMNode(rover, (PRUint32&)roverOffset); 
+      } else rover = nsnull;
+    } else rover = nsnull;
   }
 
 // Now go up through the ancestors as far a possible
   res = domRange->GetEndContainer(getter_AddRefs(rover));
   res = domRange->GetEndOffset(&roverOffset);
-  if (atEndOfNode(rover, roverOffset)) {
-  //   rover->GetParentNode(getter_AddRefs(parent));
-    while (IsNodeInRange(mHTMLEditor, rover, originalRange)) {
-      nsEditor::GetNodeLocation(rover, address_of(parent), &roverOffset);
-      rover = parent;
+
+  while (atEndOfNode(rover, rodgverOffset)) {
+    nsEditor::GetNodeLocation(rover, address_of(parent), &newOffset);
+    if (isBaseMathNode( rover )) {
+      break;   // don't go out of math
     }
-    domRange->SetEnd(rover, roverOffset+1);
+    if (IsSpecialNode(parent)) {
+      // only move up if parent is in the original range
+      if (IsNodeInRange(mHTMLEditor, parent, originalRange)) {
+        rover = parent;
+        roverOffset = newOffset+1;
+      }
+      else {
+        break;  // can't move up
+      }
+    }
+    else  {
+      rover = parent;
+      roverOffset = newOffset+1;
+    } 
   }
+  domRange->SetEnd(rover, roverOffset);
   return res;
 }
 

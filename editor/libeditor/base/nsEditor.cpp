@@ -177,8 +177,8 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
       nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
       nsAutoString str;
       textNode->GetData(str);
-      printf("#text '%s'\n", NS_ConvertUTF16toUTF8(str).get());
-      output.Append(NS_LITERAL_STRING("#text \'") + str + NS_LITERAL_STRING("'\n"));
+      printf("<#text %s>\n", NS_ConvertUTF16toUTF8(str).get());
+      output.Append(NS_LITERAL_STRING("<#text ") + str + NS_LITERAL_STRING(">\n"));
     }
   }
 
@@ -208,6 +208,13 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
 #endif
 }
 
+void AppendInt(nsAString &str, PRInt32 val)
+{
+  char buf[32];
+  PR_snprintf(buf, sizeof(buf), "%ld", val);
+  str.Append(NS_ConvertASCIItoUTF16(buf));
+}
+
 void DumpRange( nsIDOMRange * range, PRInt32 indent, nsAString& output) {
 #ifdef DEBUG
   nsCOMPtr<nsIDOMNode> anchorNode, focusNode;
@@ -216,13 +223,17 @@ void DumpRange( nsIDOMRange * range, PRInt32 indent, nsAString& output) {
   range->GetStartOffset(&anchorOffset);
   range->GetEndContainer(getter_AddRefs(focusNode));
   range->GetEndOffset(&focusOffset);
-  printf("Anchor: offset=%d\n", anchorOffset);
-  output.Append(NS_LITERAL_STRING("ANCHOR: OFFSET=  "));
+  output = NS_LITERAL_STRING("Anchor: offset=");
+  AppendInt(output, anchorOffset);
+  output += NS_LITERAL_STRING("\n");
   DumpNode(anchorNode, indent, PR_TRUE, output);
-  printf("Focus: offset=%d\n", focusOffset);
-  output.Append(NS_LITERAL_STRING("FOCUS: OFFSET=  "));
+  output += NS_LITERAL_STRING("\n");
+  output += NS_LITERAL_STRING("Focus: offset=");
+  AppendInt(output, focusOffset);
+  output += NS_LITERAL_STRING("\n");
   DumpNode(focusNode, indent, PR_TRUE, output);
-  output.Append(NS_LITERAL_STRING("\n"));
+  output += NS_LITERAL_STRING("\n");
+//  printf(PromiseFlatCString(output).get());
 #endif //Debug
 }
 

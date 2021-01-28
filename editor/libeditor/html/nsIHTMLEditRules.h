@@ -64,7 +64,7 @@ public:
                            const nsAString &aStructureType, nsIAtom * atomNamespace )=0;
   NS_IMETHOD InsertBRIfNeeded(nsISelection *aSelection)=0;
   NS_IMETHOD PromoteMathRange(nsIDOMRange *domRange)=0;
-  NS_IMETHOD CanonicalizeMathSelection(nsIDOMRange * domRange) = 0;
+  NS_IMETHOD CanonicalizeMathRange(nsIDOMRange * domRange) = 0;
   
 };
 
