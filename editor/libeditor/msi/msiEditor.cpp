@@ -365,7 +365,7 @@ msiEditor::Copy()
     GetSelection(getter_AddRefs(sel));
     nsCOMPtr<nsIDOMRange> domRange;
     sel->GetRangeAt(0, getter_AddRefs(domRange));
-    htmlRules->CanonicalizeMathSelection(domRange);
+    htmlRules->CanonicalizeMathRange(domRange);
   }
   return ps->DoCopy();
 }
@@ -388,7 +388,7 @@ msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
   //   GetSelection(getter_AddRefs(selection));
   //   nsCOMPtr<nsIDOMRange> domRange;
   //   selection->GetRangeAt(0, getter_AddRefs(domRange));
-  //   htmlRules->CanonicalizeMathSelection(domRange);
+  //   htmlRules->CanonicalizeMathRange(domRange);
   // }
 
   res = GetNSSelectionData(selection, startNode, startOffset, endNode,
@@ -571,7 +571,7 @@ msiEditor::InsertSqRoot()
 {
   nsresult res(NS_OK);
   nsAutoEditBatch beginBatching(this);
-  if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
+  if (!(mFlags & eEditorPlaintextMask))
   {
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
@@ -615,7 +615,7 @@ msiEditor::InsertRoot()
     if (htmlRules) {
       nsCOMPtr<nsIDOMRange> domRange;
       sel->GetRangeAt(0, getter_AddRefs(domRange));
-      htmlRules->CanonicalizeMathSelection(domRange); // BBM 2016-08-16
+      htmlRules->CanonicalizeMathRange(domRange); // BBM 2016-08-16
       res = domRange->GetStartContainer(getter_AddRefs(startNode));
       res = domRange->GetEndContainer(getter_AddRefs(endNode));
       res = domRange->GetStartOffset(&startOffset);
@@ -843,7 +843,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
     selection->GetRangeAt(0, getter_AddRefs(range));
     if (htmlRules) {
 
-      htmlRules->CanonicalizeMathSelection(range);
+      htmlRules->CanonicalizeMathRange(range);
     }
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
@@ -940,7 +940,7 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
     // if (htmlRules) {
     //   nsCOMPtr<nsIDOMRange> domRange;
     //   selection->GetRangeAt(0, getter_AddRefs(domRange));
-    //   htmlRules->CanonicalizeMathSelection(domRange);
+    //   htmlRules->CanonicalizeMathRange(domRange);
     // }
 
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
@@ -1034,7 +1034,7 @@ msiEditor::InsertDecoration(const nsAString & above, const nsAString & below,
       GetSelection(getter_AddRefs(sel));
       nsCOMPtr<nsIDOMRange> domRange;
       sel->GetRangeAt(0, getter_AddRefs(domRange));
-      htmlRules->CanonicalizeMathSelection(domRange); 
+      htmlRules->CanonicalizeMathRange(domRange); 
     }
 
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
@@ -4421,14 +4421,28 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
 }
 
 NS_IMETHODIMP 
-msiEditor::CanonicalizeMathSelection( nsIDOMRange * range)
+msiEditor::CanonicalizeMathRange( nsIDOMRange * range)
 {
   nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
   if (htmlRules) 
   {
-    return htmlRules->CanonicalizeMathSelection(range);
+    return htmlRules->CanonicalizeMathRange(range);
   }
   return NS_ERROR_NOT_INITIALIZED;
+}
+
+NS_IMETHODIMP 
+msiEditor::CanonicalizeMathSelection()
+{
+  nsresult res;
+  nsCOMPtr<nsISelection> sel;
+  nsCOMPtr<nsIDOMRange> range;
+  res = GetSelection(getter_AddRefs(sel));
+  sel->GetRangeAt(0, getter_AddRefs(range));
+  res = CanonicalizeMathRange(range);
+  if (m_msiEditingMan)
+    res = m_msiEditingMan->SetSelectionFromRange(range, sel);   
+  return res;
 }
 
 NS_IMETHODIMP
