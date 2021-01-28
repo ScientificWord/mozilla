@@ -57,7 +57,8 @@ interface msiIMathMLEditor : nsISupports
   void AdjustRange(in nsIDOMRange range, in boolean isForDeletion, in unsigned long direction);
   void InsertHelperBR(in nsISelection selection);
   void PromoteMathRange(in nsIDOMRange aRange);
-  void CanonicalizeMathSelection( in nsIDOMRange range);
+  void canonicalizeMathRange( in nsIDOMRange range);
+  void canonicalizeMathSelection();
 
 
   /* GetMathMLEditingBC returns a msiIMathMLEditingBC object based

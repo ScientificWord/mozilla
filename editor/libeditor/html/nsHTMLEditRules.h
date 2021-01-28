@@ -143,7 +143,7 @@ public:
   NS_IMETHOD GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, PRInt32 aOffset, nsIDOMNode *ancestor,
                                   nsCOMPtr<nsIDOMNode> *outNode, PRInt32 *outOffset, nsIDOMRange* originalRange);
   NS_IMETHOD PromoteMathRange(nsIDOMRange *aRange);
-  NS_IMETHOD CanonicalizeMathSelection(nsIDOMRange* domRange);
+  NS_IMETHOD CanonicalizeMathRange(nsIDOMRange* domRange);
   
 
  
