@@ -688,7 +688,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
                                  null,null,0,true);
   }
   else msiGoDoCommandParams(commandID, cmdParams, editorElement);
-  // BBM: temporary hack!
+
   switch (commandID)
   {
     case "cmd_texttag":

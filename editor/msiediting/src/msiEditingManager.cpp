@@ -1002,7 +1002,7 @@ msiEditingManager::PrepareSelectionForCopying(msiIMathMLEditor* mathmlEditor, ns
   nsresult res(NS_OK);
   PRBool isCollapsed(0);
     range->GetCollapsed(&isCollapsed);
-  mathmlEditor->CanonicalizeMathSelection(range);
+  mathmlEditor->CanonicalizeMathRange(range);
   if (!isCollapsed) range->CloneContents(copiedContent);
 //  mathmlEditor->PromoteMathRange(range);
   return res;
@@ -1078,7 +1078,7 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
         if (!targetNode) targetNode = numerator;
         selection->Collapse(targetNode,0);
       }
-      htmlEditor->ValidateMathSyntax(mathnode); // will convert things like msub and msup to mrow if otherwise they would generate an invalid markup.
+//      htmlEditor->ValidateMathSyntax(mathnode); // will convert things like msub and msup to mrow if otherwise they would generate an invalid markup.
     }
 //    editor->EndTransaction();
   }
@@ -1177,13 +1177,10 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
 
   PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
   res = msiUtils::CreateMsqrt(editor, nsnull, bCollapsed || !inMath, PR_TRUE, flags, mathmlElement);
-  if (!bCollapsed && inMath)
-  {
-    nsCOMPtr<nsIDOMNode> radNode;
-    res = mathmlElement->GetFirstChild(getter_AddRefs(radNode));
-    if (!radNode) radicand = mathmlElement;
+  nsCOMPtr<nsIDOMNode> radNode;
+  res = mathmlElement->GetFirstChild(getter_AddRefs(radNode));
+  if (!radNode) radicand = mathmlElement;
     else radicand = do_QueryInterface(radNode);
-  }
   res = SetSelectionFromRange(range, selection);
   res = mathmlEditor->InsertMathNodeAtSelection(mathmlElement);
   
