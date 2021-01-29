@@ -260,6 +260,8 @@ var msiRadical =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
+    // var editor = msiGetEditor(editorElement);
+    // editor.canonicalizeMathSelection();
     makeMathIfNeeded(editorElement);
     insertradical(editorElement);
   }
@@ -497,7 +499,8 @@ var msiReviseMathnameCmd =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var editorElement = msiGetActiveEditorElement(window);
+    var ed
+    itorElement = msiGetActiveEditorElement(window);
     var theMathname = msiGetReviseObjectFromCommandParams(aParams);
 
     var mathNameData = new Object();
@@ -519,9 +522,10 @@ function makeMathIfNeeded(editorElement)  // returns true iff it created a new m
 {
   var retVal = true;
   var mathNode;
+  var editor = msiGetEditor(editorElement);
+  editor.canonicalizeMathSelection();
   if (!isInMath(editorElement))
   {
-    var editor = msiGetEditor(editorElement);
     if (!(editor.selection.isCollapsed))
     {
       textToMath(editor);
