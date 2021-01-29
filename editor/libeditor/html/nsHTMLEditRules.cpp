@@ -7552,7 +7552,7 @@ nsHTMLEditRules::PromoteRange(nsIDOMRange *inRange,
 PRBool IsSpecialNode(nsIDOMNode* node) {
   nsAutoString nodeName;
   node->GetNodeName(nodeName);
-  return (nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mn") || nodeName.EqualsLiteral("mo") || nodeName.EqualsLiteral("mtext") ||
+  return ( //nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mn") || nodeName.EqualsLiteral("mo") || nodeName.EqualsLiteral("mtext") ||
     nodeName.EqualsLiteral("mfrac") || nodeName.EqualsLiteral("mroot") || nodeName.EqualsLiteral("msqrt") || 
     nodeName.EqualsLiteral("msub") || nodeName.EqualsLiteral("menclose") || nodeName.EqualsLiteral("munder") ||
     nodeName.EqualsLiteral("msup") || nodeName.EqualsLiteral("msubsup") || nodeName.EqualsLiteral("mover") ||
