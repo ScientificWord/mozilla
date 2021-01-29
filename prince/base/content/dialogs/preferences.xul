@@ -2062,13 +2062,13 @@ Currently these are all simple signed numbers or identifiers
       </tabs>
       <tabpanels>
         <tabpanel orient="vertical" flex="1">
-          <groupbox flex="1" height="320px" style="margin-top:10px">
+          <groupbox flex="1" height="420px" style="margin-top:10px">
             <caption label="&AdvancedPreferences.label;" />
             <iframe id="prefsAdvPane" src="chrome://global/content/config.xul"  height="300px" flex="1"/>
           </groupbox>
         </tabpanel>
         <tabpanel orient="vertical" flex="1">
-          <groupbox  height="320px" style="margin-top:10px">
+          <groupbox flex="1" height="420px" style="margin-top:10px">
             <caption label="&InstalledPlugins.label;" />
             <iframe id="pluginsPane" src="about:plugins" height="300px" flex="1"/>
           </groupbox>
