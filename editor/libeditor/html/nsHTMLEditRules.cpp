@@ -7839,7 +7839,7 @@ nsHTMLEditRules::CanonicalizeMathRange(nsIDOMRange * domRange)
   res = domRange->GetEndContainer(getter_AddRefs(rover));
   res = domRange->GetEndOffset(&roverOffset);
 
-  while (atEndOfNode(rover, rodgverOffset)) {
+  while (atEndOfNode(rover, roverOffset)) {
     nsEditor::GetNodeLocation(rover, address_of(parent), &newOffset);
     if (isBaseMathNode( rover )) {
       break;   // don't go out of math
