@@ -39,6 +39,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "pratom.h"
+#include "prprf.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMXMLDocument.h"
 #include "nsIDOMHTMLDocument.h"
