@@ -99,8 +99,11 @@ def mrange(debugger, command, result, dict):
    if len(newcommand) > 0:
        debugger.HandleCommand("exp nsString outputString; DumpRange(" + newcommand + ", 0, outputString), outputString;")
 
-
-
+# def mselection(debugger, command, result, dict):
+#     """Displays first range in selection"""
+#     newcommand = modcommand(debugger, commant, result, dict)
+#     if lin(newcommand) > 0:
+#         debugger.HandleCommand("expression nsISelection sel; sel->GetRangeAt(0, ))
 
 
 def init(debugger):

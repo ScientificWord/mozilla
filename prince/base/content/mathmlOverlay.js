@@ -523,7 +523,7 @@ function makeMathIfNeeded(editorElement)  // returns true iff it created a new m
   var retVal = true;
   var mathNode;
   var editor = msiGetEditor(editorElement);
-  editor.canonicalizeMathSelection();
+//  editor.canonicalizeMathSelection();
   if (!isInMath(editorElement))
   {
     if (!(editor.selection.isCollapsed))
@@ -3172,6 +3172,7 @@ function insertfence(left, right, editorElement)
     if (!editor) throw("In insertfence, editor element [" + editorElement.id + "] has null editor!");
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     if (!mathmlEditor) throw("In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!");
+    makeMathIfNeeded(editorElement);
     mathmlEditor.InsertFence(left, right, "");
     editorElement.contentWindow.focus();
   }
