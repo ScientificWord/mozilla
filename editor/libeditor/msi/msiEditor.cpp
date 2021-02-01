@@ -828,6 +828,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     nsCOMPtr<nsIDOMElement> mtable;
     PRInt32 startOffset(0), endOffset(0);
+    PRUint32 newOffset(0);
     PRBool bCollapsed(PR_FALSE);
     PRBool bDontCare;
     PRBool allSelected(PR_FALSE);
@@ -841,10 +842,6 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
     nsCOMPtr<nsIDOMRange> range;
     nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
     selection->GetRangeAt(0, getter_AddRefs(range));
-    if (htmlRules) {
-
-      htmlRules->CanonicalizeMathRange(range);
-    }
     res = GetNSSelectionData(selection, startNode, startOffset, endNode,
                            endOffset, bCollapsed);
     if (NS_SUCCEEDED(res))
@@ -866,54 +863,55 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
       {
 
         BeginTransaction();
-        PRBool bCollapsed(PR_FALSE);
         nsRangeStore * store = new nsRangeStore();
         if (!store) return NS_ERROR_NULL_POINTER;
         store->StoreRange(range);
         mRangeUpdater.RegisterRangeItem(store);
 
-        res = range->GetCollapsed(&bCollapsed);
         nsCOMPtr<nsIDOMElement> mathmlElement;
         nsCOMPtr<nsIDOMNode> mathmlNode;
         nsCOMPtr<nsIDOMNode> newNode;
         PRBool bInserted = PR_TRUE;
         PRBool bIsTempInput = PR_FALSE;
+        nsCOMPtr<nsIDOMNodeList> childNodes;
+        nsCOMPtr<nsIDOMNode> refChild, dontCare;
+        nsCOMPtr<nsIDOMNode> child;
+        nsCOMPtr<nsIDOMElement> childElem;
         PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
         PRUint32 attrFlags(msiIMathMLInsertion::FLAGS_NONE);
+        
+        // Create a fence object: <mrow><mo>'('</mo>    <mo>')'</mo></mrow>
+        res = selection->GetIsCollapsed(&bCollapsed);
+        res = m_msiEditingMan->PrepareSelectionForCopying(this, range, getter_AddRefs(content));    
+
         res = msiUtils::CreateMRowFence(this, nsnull, bCollapsed, open, close, flavor, PR_TRUE, flags, attrFlags, mathmlElement);
         if (NS_SUCCEEDED(res) && mathmlElement) {
           nsAutoTxnsConserveSelection dontSpazMySelection(this);
           mathmlNode = do_QueryInterface(mathmlElement);
-          res = store->GetRange(range);
-          mRangeUpdater.DropRangeItem(store);
-          if (!bCollapsed)
-          {
-            range->CloneContents(getter_AddRefs(content));
-            contentNode = do_QueryInterface(content);
-            DeleteSelection(0);
-            res = GetNSSelectionData(selection, startNode, startOffset, endNode,
-                           endOffset, bDontCare); 
-            nsCOMPtr<nsIDOMNodeList> childNodes;
-            nsCOMPtr<nsIDOMNode> refChild, dontCare;
-            res = mathmlElement->GetChildNodes(getter_AddRefs(childNodes));
-            childNodes->Item(1, getter_AddRefs(refChild));
-            mathmlElement->InsertBefore(content, refChild, getter_AddRefs(dontCare));
-          }
-          res = InsertMathNode(mathmlElement, startNode, startOffset, bInserted, getter_AddRefs(newNode));
-          if (bCollapsed) {
-            nsCOMPtr<nsIDOMNode> child;
-            nsCOMPtr<nsIDOMElement> childElem;
-            mathmlElement->GetFirstChild(getter_AddRefs(child));
+          // res = store->GetRange(range);
+          // mRangeUpdater.DropRangeItem(store);
+          res = InsertMathNodeAtSelection(mathmlElement);
+          if (bCollapsed) { // it is the temp input part of the fence.
+            mathmlElement->GetFirstChild(getter_AddRefs(child)); //left fence or empty space
             childElem = do_QueryInterface(child);
-            while (child && !IsTempInput(childElem)) {  // we have to move over any nodes that may have been moved to the beginning of the mrow (to preserve node counts if the parent
-                             // requires it.
+            while (child && !IsTempInput(childElem)) { 
               child->GetNextSibling(getter_AddRefs(child));
               childElem = do_QueryInterface(child);
             }
-            if (child) {
+            if (IsTempInput(childElem)){
               child->GetFirstChild(getter_AddRefs(child));
               selection->Collapse(child,0);
             }
+          }
+
+          if (!bCollapsed)
+          {
+            // res = GetNSSelectionData(selection, startNode, startOffset, endNode,
+            //                endOffset, bDontCare); 
+            res = mathmlElement->GetChildNodes(getter_AddRefs(childNodes));
+            childNodes->Item(2, getter_AddRefs(child));
+            InsertDocFragment(content, child, 0, &newOffset);
+            selection->Collapse(child, newOffset);
           }
         }
         EndTransaction();
