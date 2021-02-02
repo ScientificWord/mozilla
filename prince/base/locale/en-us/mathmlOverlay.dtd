@@ -645,9 +645,9 @@
 <!ENTITY symboltextasciidieresis.tooltip   "textasciidieresis">
 <!ENTITY symbolcedilla.tooltip    "cedilla">
 <!ENTITY symbolEgrave.tooltip    "Egrave">
-<!ENTITY symbolO.tooltip    "O">
+<!ENTITY symbolO.tooltip    "Oslash">
 <!ENTITY symbolegrave.tooltip    "egrave">
-<!ENTITY symbolo.tooltip    "o">
+<!ENTITY symbolo.tooltip    "oslash">
 <!ENTITY symboltextcopyright.tooltip   "textcopyright">
 <!ENTITY symboltextonesuperior.tooltip     "textonesuperior">
 <!ENTITY symbolEacute.tooltip    "Eacute">
