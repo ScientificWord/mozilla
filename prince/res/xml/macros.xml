@@ -621,6 +621,8 @@
   <m nm="textonesuperior" fm="0"><data>&#x00B9;</data><context/><info>0,0</info></m>
   <m nm="textordfeminine" fm="0"><data>&#x00AA;</data><context/><info>0,0</info></m>
   <m nm="textperiodcentered" fm="0"><data>&#x00B7;</data><context/><info>0,0</info></m>
+  <m nm="textperthousand" fm="0"><data>&#x2030;</data><context/><info>0,0</info></m>
+  <m nm="textpertenthousand" fm="0"><data>&#x2031;</data><context/><info>0,0</info></m>
   <m nm="textquestiondown" fm="0"><data>&#x00BF;</data><context/><info>0,0</info></m>
   <m nm="textquotedblleft" fm="0"><data>&ldquo;</data><context/><info>0,0</info></m>
   <m nm="textquotedblright" fm="0"><data>&rdquo;</data><context/><info>0,0</info></m>
