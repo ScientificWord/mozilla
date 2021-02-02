@@ -888,8 +888,11 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
         if (NS_SUCCEEDED(res) && mathmlElement) {
           nsAutoTxnsConserveSelection dontSpazMySelection(this);
           mathmlNode = do_QueryInterface(mathmlElement);
-          // res = store->GetRange(range);
-          // mRangeUpdater.DropRangeItem(store);
+          res = store->GetRange(range);
+          mRangeUpdater.DropRangeItem(store);
+          if (!bCollapsed) {
+            InsertDocFragment(content,mathmlNode,1,&newOffset);
+          }
           res = InsertMathNodeAtSelection(mathmlElement);
           if (bCollapsed) { // it is the temp input part of the fence.
             mathmlElement->GetFirstChild(getter_AddRefs(child)); //left fence or empty space
@@ -908,10 +911,9 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
           {
             // res = GetNSSelectionData(selection, startNode, startOffset, endNode,
             //                endOffset, bDontCare); 
-            res = mathmlElement->GetChildNodes(getter_AddRefs(childNodes));
-            childNodes->Item(2, getter_AddRefs(child));
-            InsertDocFragment(content, child, 0, &newOffset);
-            selection->Collapse(child, newOffset);
+            // res = mathmlElement->GetChildNodes(getter_AddRefs(childNodes));
+            // childNodes->Item(1, getter_AddRefs(child));
+            selection->Collapse(mathmlNode, newOffset);
           }
         }
         EndTransaction();
