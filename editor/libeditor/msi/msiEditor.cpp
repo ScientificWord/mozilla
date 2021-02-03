@@ -820,6 +820,8 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
 {
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMDocumentFragment> content;
+  PRBool saveInComplexTransaction;
+
   nsCOMPtr<nsIDOMNode> contentNode; // for debugger use
   nsAutoEditBatch beginBatching(this);
   if (!(mFlags & eEditorPlaintextMask))
@@ -893,7 +895,12 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
           if (!bCollapsed) {
             InsertDocFragment(content,mathmlNode,1,&newOffset);
           }
+//          res = m_msiEditingMan->SetSelectionFromRange(range, selection);   
+          GetInComplexTransaction(&saveInComplexTransaction);
+          SetInComplexTransaction(PR_FALSE);
+
           res = InsertMathNodeAtSelection(mathmlElement);
+          SetInComplexTransaction(saveInComplexTransaction);
           if (bCollapsed) { // it is the temp input part of the fence.
             mathmlElement->GetFirstChild(getter_AddRefs(child)); //left fence or empty space
             childElem = do_QueryInterface(child);
@@ -913,7 +920,7 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close, const ns
             //                endOffset, bDontCare); 
             // res = mathmlElement->GetChildNodes(getter_AddRefs(childNodes));
             // childNodes->Item(1, getter_AddRefs(child));
-            selection->Collapse(mathmlNode, newOffset);
+            selection->Collapse(mathmlNode, newOffset + 1);
           }
         }
         EndTransaction();
