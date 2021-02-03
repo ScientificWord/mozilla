@@ -615,7 +615,7 @@
   <m nm="textasciitilde" fm="0"><data>&#x007E;</data><context/><info>0,0</info></m>
   <m nm="textasteriskcentered" fm="0"><data>&#x204E;</data><context/><info>0,0</info></m>
   <m nm="textbaht" fm="0"><data>&#x0E3F;</data><context/><info>0,0</info></m>
-  <m nm="textbardb;" fm="0"><data>&#x2016;</data><context/><info>0,0</info></m>
+  <m nm="textbardbl" fm="0"><data>&#x2016;</data><context/><info>0,0</info></m>
   <m nm="textbigcircle" fm="0"><data>&#x25EF;</data><context/><info>0,0</info></m>
   <m nm="textbrokenbar" fm="0"><data>&#x00A6;</data><context/><info>0,0</info></m>
   <m nm="textbullet" fm="0"><data>&#x2022;</data><context/><info>0,0</info></m>
