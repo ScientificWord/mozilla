@@ -1,4 +1,3 @@
-
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -4218,6 +4217,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
   nsresult res;
   nsAutoString chars;
   PRBool isInComplexTransaction;
+  PRBool hasAttribute;
   nsIEditor * ed = static_cast<nsIEditor*>(mHTMLEditor);
 
   nsCOMPtr<nsISelection> curSelection;
@@ -4267,6 +4267,9 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
     nsCOMPtr<nsIDOMDocument> domdoc;
     nsCOMPtr<nsIDOMNode> currNode;
     nsCOMPtr<nsIDOMNode> parentNode;
+    nsCOMPtr<nsIDOMNode> firstChild;
+    nsCOMPtr<nsIDOMElement> firstChildElement;
+
     nsAutoString parentName;
     nsAutoString tagname;
     mHTMLEditor->GetDocument(getter_AddRefs(domdoc));
@@ -4278,9 +4281,16 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
       while (currNode) {
         currNode->GetLocalName(tagname);
         if (tagname.EqualsLiteral("mrow")) {
+          // guard against removing mrow from fence pairs
+          hasAttribute = PR_FALSE;
+          currNode->GetFirstChild(getter_AddRefs(firstChild));
+          if (firstChild) {
+            firstChildElement = do_QueryInterface(firstChild);
+            res = firstChildElement->HasAttribute(NS_LITERAL_STRING("fence"), &hasAttribute);
+          }
           res = currNode->GetParentNode(getter_AddRefs(parentNode));
           parentNode->GetLocalName(parentName);
-          if (!(parentName.EqualsLiteral("msubsup")||
+          if (!hasAttribute && !(parentName.EqualsLiteral("msubsup")||
                 parentName.EqualsLiteral("msub")||
                 parentName.EqualsLiteral("msup")||
                 parentName.EqualsLiteral("mover")||
@@ -7682,11 +7692,11 @@ nsHTMLEditRules::CanonicalizeMathRange(nsIDOMRange * domRange)
   // nsCOMPtr<nsIDOMNode> commonParent;
   nsCOMPtr<nsIRange> range;
   nsCOMPtr<nsIDOMNode> startNode, endNode, mathRoot;
-  nsCOMPtr<nsIDOMNode> rover, node, parent;
+  nsCOMPtr<nsIDOMNode> rover, newRover, node, parent;
   nsCOMPtr<nsINode> content;
   nsCOMPtr<nsINode> child;
 
-  PRInt32 startOffset, endOffset, roverOffset, newOffset;
+  PRInt32 startOffset, endOffset, roverOffset, newRoverOffset;
   nsAutoString nodeValue, trimmedString;
   PRUint16 nodeType;
   nsCOMPtr<msiIMathMLEditor> mathmlEd(do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor)));
@@ -7777,27 +7787,9 @@ nsHTMLEditRules::CanonicalizeMathRange(nsIDOMRange * domRange)
   */
   res = domRange->GetStartContainer(getter_AddRefs(rover));
   res = domRange->GetStartOffset(&roverOffset);
-  while (atStartOfNode(rover, roverOffset)) {
-    nsEditor::GetNodeLocation(rover, address_of(parent), &newOffset);
-    if (isBaseMathNode( rover )) {
-      break;   // don't go out of math
-    }
-    if (IsSpecialNode(parent)) {
-      // only move up if parent is in the original range
-      if (IsNodeInRange(mHTMLEditor, parent, originalRange)) {
-        rover = parent;
-        roverOffset = newOffset;
-      }
-      else {
-        break;  // can't move up
-      }
-    }
-    else  {
-      rover = parent;
-      roverOffset = newOffset;
-    }
-  }
-  domRange->SetStart(rover, roverOffset);
+
+  GetPromotedMathPoint(kStart, rover, roverOffset, mathRoot, address_of(newRover), &newRoverOffset, originalRange);
+  domRange->SetStart(newRover, newRoverOffset);
 
 
   rover = endNode;
@@ -7834,39 +7826,20 @@ nsHTMLEditRules::CanonicalizeMathRange(nsIDOMRange * domRange)
       } else rover = nsnull;
     } else rover = nsnull;
   }
-
-// Now go up through the ancestors as far a possible
   res = domRange->GetEndContainer(getter_AddRefs(rover));
   res = domRange->GetEndOffset(&roverOffset);
+  roverOffset++;
 
-  while (atEndOfNode(rover, roverOffset)) {
-    nsEditor::GetNodeLocation(rover, address_of(parent), &newOffset);
-    if (isBaseMathNode( rover )) {
-      break;   // don't go out of math
-    }
-    if (IsSpecialNode(parent)) {
-      // only move up if parent is in the original range
-      if (IsNodeInRange(mHTMLEditor, parent, originalRange)) {
-        rover = parent;
-        roverOffset = newOffset+1;
-      }
-      else {
-        break;  // can't move up
-      }
-    }
-    else  {
-      rover = parent;
-      roverOffset = newOffset+1;
-    } 
-  }
-  domRange->SetEnd(rover, roverOffset);
+  GetPromotedMathPoint(kEnd, rover, roverOffset, mathRoot, address_of(newRover), &newRoverOffset, originalRange);
+  domRange->SetEnd(newRover, newRoverOffset);
+
   return res;
 }
 
 
 
 
-nsresult
+NS_IMETHODIMP
 nsHTMLEditRules::GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, PRInt32 aOffset, nsIDOMNode *mathRoot,
                                   nsCOMPtr<nsIDOMNode> *outNode, PRInt32 *outOffset, nsIDOMRange * originalRange)
 {
@@ -7880,28 +7853,41 @@ nsHTMLEditRules::GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, P
   PRBool outNodeBefore, outNodeAfter;
   if (!mathRoot) return NS_ERROR_NOT_INITIALIZED;
 
-  if (aWhere == kStart) {
-    while (rover != mathRoot && (originalRange == nsnull ||atStartOfNode(rover, roverOffset))) {
-      nsEditor::GetNodeLocation(rover, address_of(nextRover), &nextRoverOffset);
-      rover = nextRover;
-      roverOffset = nextRoverOffset;
-    }
-  } else {
-    while (atEndOfNode(rover, roverOffset)) {
-      if (IsSpecialNode(rover)) {
-        content = do_QueryInterface(rover);
-        mHTMLEditor->sRangeHelper->CompareNodeToRange(content, originalRange, &outNodeBefore, &outNodeAfter);
-        if (!outNodeBefore && !outNodeAfter) 
-          break;
+  while (true) {
+    nsEditor::GetNodeLocation(rover, address_of(nextRover), &nextRoverOffset);
+    if (rover == mathRoot)
+      break;
+    if (atStartOfNode(rover, roverOffset)) { // possible to move up to nextRover
+      if (IsSpecialNode(nextRover)) { // we can't include nodes that create visible math
+        // such as roots, fractions, fences unless that are contained in the original range
+        if (IsNodeInRange(mHTMLEditor, nextRover, originalRange)) {
+          rover = nextRover;
+          roverOffset = nextRoverOffset;
+        }
+        else break;
       } 
-      nsEditor::GetNodeLocation(rover, address_of(nextRover), &nextRoverOffset);
-      if (rover != mathRoot) {
+      else {
         rover = nextRover;
-        roverOffset = nextRoverOffset + 1;        
+        roverOffset = nextRoverOffset;
+      } 
+    }
+    else  
+    {   
+      if (atEndOfNode(rover, roverOffset)) { // possible to move up to nextRover
+        if (IsSpecialNode(nextRover)) { // we can't include nodes that create visible math
+          // such as roots, fractions, fences unless that are contained in the original range
+          if (IsNodeInRange(mHTMLEditor, nextRover, originalRange)) {
+            rover = nextRover;
+            roverOffset = nextRoverOffset + 1;
+          }
+          else break;
+        } 
+        else {
+          rover = nextRover;
+          roverOffset = nextRoverOffset + 1;
+        } 
       }
-      else
-        break;
-    }    
+    }
   }
   *outNode = rover;
   *outOffset = roverOffset;
