@@ -523,7 +523,7 @@ function makeMathIfNeeded(editorElement)  // returns true iff it created a new m
   var retVal = true;
   var mathNode;
   var editor = msiGetEditor(editorElement);
-//  editor.canonicalizeMathSelection();
+  editor.canonicalizeMathSelection();
   if (!isInMath(editorElement))
   {
     if (!(editor.selection.isCollapsed))
