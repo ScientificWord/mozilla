@@ -7564,8 +7564,8 @@ PRBool IsSpecialNode(nsIDOMNode* node) {
   node->GetNodeName(nodeName);
   return ( //nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mn") || nodeName.EqualsLiteral("mo") || nodeName.EqualsLiteral("mtext") ||
     nodeName.EqualsLiteral("mfrac") || nodeName.EqualsLiteral("mroot") || nodeName.EqualsLiteral("msqrt") || 
-    nodeName.EqualsLiteral("msub") || nodeName.EqualsLiteral("menclose") || nodeName.EqualsLiteral("munder") ||
-    nodeName.EqualsLiteral("msup") || nodeName.EqualsLiteral("msubsup") || nodeName.EqualsLiteral("mover") ||
+    /*nodeName.EqualsLiteral("msub") || */nodeName.EqualsLiteral("menclose") || nodeName.EqualsLiteral("munder") ||
+    /*nodeName.EqualsLiteral("msup") || nodeName.EqualsLiteral("msubsup") || */nodeName.EqualsLiteral("mover") ||
     nodeName.EqualsLiteral("menclose") || nodeName.EqualsLiteral("munder") ||nodeName.EqualsLiteral("munderover"));
 }
 // HandleTextNode resets the range end when it encounters non-whitespace text,
@@ -7871,23 +7871,22 @@ nsHTMLEditRules::GetPromotedMathPoint(RulesEndpoint aWhere, nsIDOMNode *aNode, P
         roverOffset = nextRoverOffset;
       } 
     }
-    else  
-    {   
-      if (atEndOfNode(rover, roverOffset)) { // possible to move up to nextRover
-        if (IsSpecialNode(nextRover)) { // we can't include nodes that create visible math
-          // such as roots, fractions, fences unless that are contained in the original range
-          if (IsNodeInRange(mHTMLEditor, nextRover, originalRange)) {
-            rover = nextRover;
-            roverOffset = nextRoverOffset + 1;
-          }
-          else break;
-        } 
-        else {
+    else if (atEndOfNode(rover, roverOffset)) {
+     // possible to move up to nextRover
+      if (IsSpecialNode(nextRover)) { // we can't include nodes that create visible math
+        // such as roots, fractions, fences unless that are contained in the original range
+        if (IsNodeInRange(mHTMLEditor, nextRover, originalRange)) {
           rover = nextRover;
           roverOffset = nextRoverOffset + 1;
-        } 
-      }
+        }
+        else break;
+      } 
+      else {
+        rover = nextRover;
+        roverOffset = nextRoverOffset + 1;
+      } 
     }
+    else break;
   }
   *outNode = rover;
   *outOffset = roverOffset;
