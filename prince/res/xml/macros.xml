@@ -605,32 +605,78 @@
   <m nm="tcaron" fm="0"><data>&#x0165;</data><context/><info>0,0</info></m>
   <m nm="Tcedil" fm="0"><data>&#x0162;</data><context/><info>0,0</info></m>
   <m nm="tcedil" fm="0"><data>&#x0163;</data><context/><info>0,0</info></m>
+  <m nm="textacutedbl" fm="0"><data>&#x030B;</data><context/><info>0,0</info></m>
   <m nm="textasciiacute" fm="0"><data>&#x00B4;</data><context/><info>0,0</info></m>
+  <m nm="textasciibreve" fm="0"><data>&#x02D8;</data><context/><info>0,0</info></m>
+  <m nm="textasciicaron" fm="0"><data>&#x02C7;</data><context/><info>0,0</info></m>
+  <m nm="textasciicircum" fm="0"><data>&#x005E;</data><context/><info>0,0</info></m>
   <m nm="textasciidieresis" fm="0"><data>&#x00A8;</data><context/><info>0,0</info></m>
   <m nm="textasciimacron" fm="0"><data>&#x00AF;</data><context/><info>0,0</info></m>
+  <m nm="textasciitilde" fm="0"><data>&#x007E;</data><context/><info>0,0</info></m>
+  <m nm="textasteriskcentered" fm="0"><data>&#x204E;</data><context/><info>0,0</info></m>
+  <m nm="textbaht" fm="0"><data>&#x0E3F;</data><context/><info>0,0</info></m>
+  <m nm="textbardb;" fm="0"><data>&#x2016;</data><context/><info>0,0</info></m>
+  <m nm="textbigcircle" fm="0"><data>&#x25EF;</data><context/><info>0,0</info></m>
   <m nm="textbrokenbar" fm="0"><data>&#x00A6;</data><context/><info>0,0</info></m>
+  <m nm="textbullet" fm="0"><data>&#x2022;</data><context/><info>0,0</info></m>
+  <m nm="textcelsius" fm="0"><data>&#x2103;</data><context/><info>0,0</info></m>
   <m nm="textcent" fm="0"><data>&#x00A2;</data><context/><info>0,0</info></m>
+  <m nm="textcolonmonetary" fm="0"><data>&#x20A1;</data><context/><info>0,0</info></m>
   <m nm="textcopyright" fm="0"><data>&#x00A9;</data><context/><info>0,0</info></m>
   <m nm="textcrh" fm="0"><data>&#x0127;</data><context/><info>0,0</info></m>
   <m nm="textcurrency" fm="0"><data>&curren;</data><context/><info>0,0</info></m>
   <m nm="textdegree" fm="0"><data>&#x00B0;</data><context/><info>0,0</info></m>
+  <m nm="textdiscount" fm="0"><data>&#x2052;</data><context/><info>0,0</info></m>
+  <m nm="textdiv" fm="0"><data>&#x00F7;</data><context/><info>0,0</info></m>
+  <m nm="textdong" fm="0"><data>&#x20AB;</data><context/><info>0,0</info></m>
+  <m nm="textdownarrow" fm="0"><data>&#x2193;</data><context/><info>0,0</info></m>
+  <m nm="textellipsis" fm="0"><data>&#x2026;</data><context/><info>0,0</info></m>
+  <m nm="textemdash" fm="0"><data>&#x2014;</data><context/><info>0,0</info></m>
+  <m nm="textendash" fm="0"><data>&#x2013;</data><context/><info>0,0</info></m>
+  <m nm="textestimated" fm="0"><data>&#x212E;</data><context/><info>0,0</info></m>
   <m nm="textexclamdown" fm="0"><data>&#xa1;</data><context/><info>0,0</info></m>
+  <m nm="textflorin" fm="0"><data>&#x0192;</data><context/><info>0,0</info></m>
+  <m nm="textfractionsolidus" fm="0"><data>&#x2044;</data><context/><info>0,0</info></m>
+  <m nm="textinterrobang" fm="0"><data>&#x203D;</data><context/><info>0,0</info></m>
+  <m nm="textleftarrow" fm="0"><data>&#x2190;</data><context/><info>0,0</info></m>
+  <m nm="textlnot" fm="0"><data>&#x00AC;</data><context/><info>0,0</info></m>
+  <m nm="textmho" fm="0"><data>&#x2127;</data><context/><info>0,0</info></m>
   <m nm="textmu" fm="0"><data>&#x00B5;</data><context/><info>0,0</info></m>
+  <m nm="textmusicalnote" fm="0"><data>&#x266A;</data><context/><info>0,0</info></m>
+  <m nm="textnaira" fm="0"><data>&#x20A6;</data><context/><info>0,0</info></m>
+  <m nm="textnumero" fm="0"><data>&#x2116;</data><context/><info>0,0</info></m>
+  <m nm="textohm" fm="0"><data>&#x2126;</data><context/><info>0,0</info></m>
   <m nm="textonehalf" fm="0"><data>&#x00BD;</data><context/><info>0,0</info></m>
   <m nm="textonequarter" fm="0"><data>&#x00BC;</data><context/><info>0,0</info></m>
   <m nm="textonesuperior" fm="0"><data>&#x00B9;</data><context/><info>0,0</info></m>
+  <m nm="textopenbullet" fm="0"><data>&#x25E6;</data><context/><info>0,0</info></m>
   <m nm="textordfeminine" fm="0"><data>&#x00AA;</data><context/><info>0,0</info></m>
+  <m nm="textordmasculine" fm="0"><data>&#x00BA;</data><context/><info>0,0</info></m>
+  <m nm="textparagraph" fm="0"><data>&#x00B6;</data><context/><info>0,0</info></m>
   <m nm="textperiodcentered" fm="0"><data>&#x00B7;</data><context/><info>0,0</info></m>
   <m nm="textperthousand" fm="0"><data>&#x2030;</data><context/><info>0,0</info></m>
   <m nm="textpertenthousand" fm="0"><data>&#x2031;</data><context/><info>0,0</info></m>
+  <m nm="textpeso" fm="0"><data>&#x20B1;</data><context/><info>0,0</info></m>
+  <m nm="textpm" fm="0"><data>&#x00B1;</data><context/><info>0,0</info></m>
   <m nm="textquestiondown" fm="0"><data>&#x00BF;</data><context/><info>0,0</info></m>
   <m nm="textquotedblleft" fm="0"><data>&ldquo;</data><context/><info>0,0</info></m>
   <m nm="textquotedblright" fm="0"><data>&rdquo;</data><context/><info>0,0</info></m>
+  <m nm="textrecipe" fm="0"><data>&#x211E;</data><context/><info>0,0</info></m>
+  <m nm="textreferencemark" fm="0"><data>&#x203B;</data><context/><info>0,0</info></m>
   <m nm="textregistered" fm="0"><data>&#x00AE;</data><context/><info>0,0</info></m>
+  <m nm="textrightarrow" fm="0"><data>&#x2192;</data><context/><info>0,0</info></m>
+  <m nm="textsection" fm="0"><data>&#x00A7;</data><context/><info>0,0</info></m>
+  <m nm="textservicemark" fm="0"><data>&#x2120;</data><context/><info>0,0</info></m>
+  <m nm="textsterling" fm="0"><data>&#x00A3;</data><context/><info>0,0</info></m>
   <m nm="textthreequarters" fm="0"><data>&#x00BE;</data><context/><info>0,0</info></m>
   <m nm="textthreesuperior" fm="0"><data>&#x00B3;</data><context/><info>0,0</info></m>
+  <m nm="texttimes" fm="0"><data>&#x00D7;</data><context/><info>0,0</info></m>
   <m nm="texttrademark" fm="0"><data>&trade;</data><context/><info>0,0</info></m>
   <m nm="texttwosuperior" fm="0"><data>&#x00B2;</data><context/><info>0,0</info></m>
+  <m nm="textuparrow" fm="0"><data>&#x2191;</data><context/><info>0,0</info></m>
+  <m nm="textvisiblespace" fm="0"><data>&#x2423;</data><context/><info>0,0</info></m>
+  <m nm="textwon" fm="0"><data>&#x20A9;</data><context/><info>0,0</info></m>
+  <m nm="textyen" fm="0"><data>&#x00A5;</data><context/><info>0,0</info></m>
   <m nm="TH" fm="0"><data>&#x00DE;</data><context/><info>0,0</info></m>
   <m nm="th" fm="0"><data>&#x00FE;</data><context/><info>0,0</info></m>
   <m nm="therefore"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Therefore;<![CDATA[");]]></data></m>
