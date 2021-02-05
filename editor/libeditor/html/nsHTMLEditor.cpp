@@ -7585,6 +7585,8 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isUnicode, const nsAString & orig, nsAS
             thisChar.Append(NS_LITERAL_STRING("{\\texteuro}")); break;
           case 0x20B1:
             thisChar.Append(NS_LITERAL_STRING("{\\textpeso}")); break;
+          case 0x20B2:
+            thisChar.Append(NS_LITERAL_STRING("\\textguarani ")); break;
           case 0x20EE :
             thisChar.Append(NS_LITERAL_STRING("$\\vdots$")); break;
           case 0x2103:
@@ -7617,6 +7619,8 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isUnicode, const nsAString & orig, nsAS
             thisChar.Append(NS_LITERAL_STRING("{\\textrightarrow}")); break;
           case 0x2193:
             thisChar.Append(NS_LITERAL_STRING("{\\textdownarrow}")); break;
+          case 0x221A:
+            thisChar.Append(NS_LITERAL_STRING("\\textsurd ")); break;
           case 0x22F1 :
             thisChar.Append(NS_LITERAL_STRING("$\\ddots$")); break;
           case 0x2329:
@@ -7635,8 +7639,20 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isUnicode, const nsAString & orig, nsAS
             thisChar.Append(NS_LITERAL_STRING("{\\textopenbullet}")); break;
           case 0x25EF:
             thisChar.Append(NS_LITERAL_STRING("{\\textbigcircle}")); break;
+          case 0x2605:
+            thisChar.Append(NS_LITERAL_STRING("\\textborn ")); break;
           case 0x266A:
             thisChar.Append(NS_LITERAL_STRING("{\\textmusicalnote}")); break;
+          case 0x26AD:
+            thisChar.Append(NS_LITERAL_STRING("\\textmarried ")); break;
+          case 0x26AE:
+            thisChar.Append(NS_LITERAL_STRING("\\textdivorced ")); break;
+          case 0x27E6:
+            thisChar.Append(NS_LITERAL_STRING("\\textlbrackdbl ")); break;
+          case 0x27E7:
+            thisChar.Append(NS_LITERAL_STRING("\\textrbrackdbl ")); break;
+          case 0x2E18:
+            thisChar.Append(NS_LITERAL_STRING("\\textinterrobangdown ")); break;
           case 0xE2D4 :
             thisChar.Append(NS_LITERAL_STRING("\\j")); break;
           case 0xE897 :
