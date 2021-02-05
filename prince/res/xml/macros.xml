@@ -617,6 +617,7 @@
   <m nm="textbaht" fm="0"><data>&#x0E3F;</data><context/><info>0,0</info></m>
   <m nm="textbardbl" fm="0"><data>&#x2016;</data><context/><info>0,0</info></m>
   <m nm="textbigcircle" fm="0"><data>&#x25EF;</data><context/><info>0,0</info></m>
+  <m nm="textborn" fm="0"><data>&#x2605;</data><context/><info>0,0</info></m>
   <m nm="textbrokenbar" fm="0"><data>&#x00A6;</data><context/><info>0,0</info></m>
   <m nm="textbullet" fm="0"><data>&#x2022;</data><context/><info>0,0</info></m>
   <m nm="textcelsius" fm="0"><data>&#x2103;</data><context/><info>0,0</info></m>
@@ -628,6 +629,7 @@
   <m nm="textdegree" fm="0"><data>&#x00B0;</data><context/><info>0,0</info></m>
   <m nm="textdiscount" fm="0"><data>&#x2052;</data><context/><info>0,0</info></m>
   <m nm="textdiv" fm="0"><data>&#x00F7;</data><context/><info>0,0</info></m>
+  <m nm="textdivorced" fm="0"><data>&#x26AE;</data><context/><info>0,0</info></m>
   <m nm="textdong" fm="0"><data>&#x20AB;</data><context/><info>0,0</info></m>
   <m nm="textdownarrow" fm="0"><data>&#x2193;</data><context/><info>0,0</info></m>
   <m nm="textellipsis" fm="0"><data>&#x2026;</data><context/><info>0,0</info></m>
@@ -637,9 +639,13 @@
   <m nm="textexclamdown" fm="0"><data>&#xa1;</data><context/><info>0,0</info></m>
   <m nm="textflorin" fm="0"><data>&#x0192;</data><context/><info>0,0</info></m>
   <m nm="textfractionsolidus" fm="0"><data>&#x2044;</data><context/><info>0,0</info></m>
+  <m nm="textguarani" fm="0"><data>&#x20B2;</data><context/><info>0,0</info></m>
   <m nm="textinterrobang" fm="0"><data>&#x203D;</data><context/><info>0,0</info></m>
+  <m nm="textinterrobangdown" fm="0"><data>&#x2E18;</data><context/><info>0,0</info></m>
+  <m nm="textlbrackdbl" fm="0"><data>&#x27E6;</data><context/><info>0,0</info></m>
   <m nm="textleftarrow" fm="0"><data>&#x2190;</data><context/><info>0,0</info></m>
   <m nm="textlnot" fm="0"><data>&#x00AC;</data><context/><info>0,0</info></m>
+  <m nm="textmarried" fm="0"><data>&#x26AD;</data><context/><info>0,0</info></m>
   <m nm="textmho" fm="0"><data>&#x2127;</data><context/><info>0,0</info></m>
   <m nm="textmu" fm="0"><data>&#x00B5;</data><context/><info>0,0</info></m>
   <m nm="textmusicalnote" fm="0"><data>&#x266A;</data><context/><info>0,0</info></m>
@@ -661,6 +667,7 @@
   <m nm="textquestiondown" fm="0"><data>&#x00BF;</data><context/><info>0,0</info></m>
   <m nm="textquotedblleft" fm="0"><data>&ldquo;</data><context/><info>0,0</info></m>
   <m nm="textquotedblright" fm="0"><data>&rdquo;</data><context/><info>0,0</info></m>
+  <m nm="textrbrackdbl" fm="0"><data>&#x27E7;</data><context/><info>0,0</info></m>
   <m nm="textrecipe" fm="0"><data>&#x211E;</data><context/><info>0,0</info></m>
   <m nm="textreferencemark" fm="0"><data>&#x203B;</data><context/><info>0,0</info></m>
   <m nm="textregistered" fm="0"><data>&#x00AE;</data><context/><info>0,0</info></m>
@@ -668,6 +675,7 @@
   <m nm="textsection" fm="0"><data>&#x00A7;</data><context/><info>0,0</info></m>
   <m nm="textservicemark" fm="0"><data>&#x2120;</data><context/><info>0,0</info></m>
   <m nm="textsterling" fm="0"><data>&#x00A3;</data><context/><info>0,0</info></m>
+  <m nm="textsurd" fm="0"><data>&#x221A;</data><context/><info>0,0</info></m>
   <m nm="textthreequarters" fm="0"><data>&#x00BE;</data><context/><info>0,0</info></m>
   <m nm="textthreesuperior" fm="0"><data>&#x00B3;</data><context/><info>0,0</info></m>
   <m nm="texttimes" fm="0"><data>&#x00D7;</data><context/><info>0,0</info></m>
