@@ -7122,39 +7122,39 @@ void InitCharMap()
 {
   if (charMap == nsnull) {
     charMap = new nsStringArray(250);
-    charMap->AppendString(NS_LITERAL_STRING("~")); // a0
-    charMap->AppendString(NS_LITERAL_STRING("{\\textexclamdown}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textcent}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textsterling}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textcurrency}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textyen}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textbrokenbar}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textsection}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textasciidieresis}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textcopyright}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textordfeminine}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\guillemotleft}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textlnot}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\-}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textregistered}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textasciimacron}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\ensuremath{{}^\\circ}}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textpm}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\texttwosuperior}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textthreesuperior}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textasciiacute}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textmu}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textparagraph}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textperiodcentered}"));
+    charMap->AppendString(NS_LITERAL_STRING("~")); // a0 - Start Latin-1 Supplement
+    charMap->AppendString(NS_LITERAL_STRING("\\textexclamdown "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textcent "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textsterling "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textcurrency "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textyen "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textbrokenbar "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textsection "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textasciidieresis "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textcopyright "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textordfeminine "));
+    charMap->AppendString(NS_LITERAL_STRING("\\guillemotleft "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textlnot "));
+    charMap->AppendString(NS_LITERAL_STRING("\\- "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textregistered "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textasciimacron "));
+    charMap->AppendString(NS_LITERAL_STRING("{\\ensuremath{{}^\\circ}}"));	// b0
+    charMap->AppendString(NS_LITERAL_STRING("\\textpm "));
+    charMap->AppendString(NS_LITERAL_STRING("\\texttwosuperior "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textthreesuperior "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textasciiacute "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textmu "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textparagraph "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textperiodcentered "));
     charMap->AppendString(NS_LITERAL_STRING("{\\c\\ }"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textonesuperior}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textordmasculine}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\guillemotright}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textonequarter}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textonehalf}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textthreequarters}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textquestiondown}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\`A}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\textonesuperior "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textordmasculine "));
+    charMap->AppendString(NS_LITERAL_STRING("\\guillemotright "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textonequarter "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textonehalf "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textthreequarters "));
+    charMap->AppendString(NS_LITERAL_STRING("\\textquestiondown "));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`A}"));	 // c0
     charMap->AppendString(NS_LITERAL_STRING("{\\'A}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\^A}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\~A}"));
@@ -7170,14 +7170,14 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("{\\'I}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\^I}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\\"I}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\DH}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\DH}"));	 // d0
     charMap->AppendString(NS_LITERAL_STRING("{\\~N}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\`O}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\'O}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\^O}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\~O}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\\"O}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\texttimes}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\texttimes "));
     charMap->AppendString(NS_LITERAL_STRING("{\\O}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\`U}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\'U}"));
@@ -7186,7 +7186,7 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("{\\'Y}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\TH}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\ss}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\`a}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\`a}"));	 // e0
     charMap->AppendString(NS_LITERAL_STRING("{\\'a}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\^a}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\~a}"));
@@ -7202,14 +7202,14 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("{\\'\\i}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\^\\i}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\\"\\i}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\dh}"));
+    charMap->AppendString(NS_LITERAL_STRING("{\\dh}"));	  //f0
     charMap->AppendString(NS_LITERAL_STRING("{\\~n}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\`o}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\'o}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\^o}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\~o}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\\"o}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\textdiv}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\textdiv "));
     charMap->AppendString(NS_LITERAL_STRING("{\\o}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\`u}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\'u}"));
@@ -7217,8 +7217,8 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("{\\\"u}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\'y}"));
     charMap->AppendString(NS_LITERAL_STRING("{\\th}"));
-    charMap->AppendString(NS_LITERAL_STRING("{\\\"y}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\={A}"));  // 100
+    charMap->AppendString(NS_LITERAL_STRING("{\\\"y}"));  //ff - End Latin-1 Supplement
+    charMap->AppendString(NS_LITERAL_STRING("\\={A}"));  // 100	- Start Latin Extended-A
     charMap->AppendString(NS_LITERAL_STRING("\\={a}"));
     charMap->AppendString(NS_LITERAL_STRING("\\u{A}"));
     charMap->AppendString(NS_LITERAL_STRING("\\u{a}"));
@@ -7344,7 +7344,7 @@ void InitCharMap()
     charMap->AppendString(NS_LITERAL_STRING("\\.{Z}"));
     charMap->AppendString(NS_LITERAL_STRING("\\.{z}"));
     charMap->AppendString(NS_LITERAL_STRING("\\v{Z}"));
-    charMap->AppendString(NS_LITERAL_STRING("\\v{z}"));
+    charMap->AppendString(NS_LITERAL_STRING("\\v{z}"));	 // 17f - End Latin Extended-A
   }
 }
 
@@ -7463,11 +7463,14 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isUnicode, const nsAString & orig, nsAS
         switch ((int)(*cur)) {
           case 0xD835 : break;  // upper plane character coming
           case 0xDEA4 :
-            thisChar.Append(NS_LITERAL_STRING("\\imath")); break;
+            thisChar.Append(NS_LITERAL_STRING("\\imath ")); break;
           case 0xDEA5 :
-            thisChar.Append(NS_LITERAL_STRING("\\jmath")); break;
+            thisChar.Append(NS_LITERAL_STRING("\\jmath ")); break;
           case 0xDD5C :
-            thisChar.Append(NS_LITERAL_STRING("\\Bbbk")); break;
+            thisChar.Append(NS_LITERAL_STRING("\\Bbbk ")); break;
+          case 0xD83C : break;  // upper plane character coming
+          case 0xDD2F :
+            thisChar.Append(NS_LITERAL_STRING("\\textcopyleft ")); break;
           default : thisChar.Append(*cur);
         }
       } else {
