@@ -7667,6 +7667,9 @@ nsHTMLEditor::FilterCharsForLaTeX(PRBool isUnicode, const nsAString & orig, nsAS
             thisChar.Append(NS_LITERAL_STRING("\\jmath")); break;
           case 0xDD5C :
             thisChar.Append(NS_LITERAL_STRING("\\Bbbk")); break;
+          case 0xD83C : break;  // upper plane character coming
+          case 0xDD2F :
+            thisChar.Append(NS_LITERAL_STRING("\\textcopyleft ")); break;
 
           //Handling ligatures  
           case 0xFB00 :
