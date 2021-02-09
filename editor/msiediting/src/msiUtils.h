@@ -57,6 +57,8 @@ public:
 
   static PRBool NodeHasFixedNumberOfChildren( nsIDOMNode * aNode);
 
+  static nsIDOMElement* FindInputBoxInSubtree( nsIDOMElement * aNode);
+
   static nsresult CreateMathElement(nsIEditor *editor,
                                     PRBool isDisplay,
                                     PRBool markCaret,

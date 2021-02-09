@@ -9331,7 +9331,8 @@ var msiCommandUpdater = {
       if (!controller)
         return;
       controller.doCommand(command);
-    } catch (e) {
+    } 
+    catch (e) {
       finalThrow(cmdFailString(command), e.message);
     }
   },
@@ -9404,8 +9405,9 @@ var msiCommandUpdater = {
 // Shim for compatibility with existing code.
 function msiGoDoCommand(command, editorElement) {
   try {
-    if (!editorElement)
+    if (!editorElement) {
       editorElement = msiGetActiveEditorElement();
+    }
     // editorElement && editorElement.focus();
     msiCommandUpdater.doCommand(command, editorElement);
   }
