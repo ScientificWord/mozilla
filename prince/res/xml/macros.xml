@@ -623,6 +623,7 @@
   <m nm="textcelsius" fm="0"><data>&#x2103;</data><context/><info>0,0</info></m>
   <m nm="textcent" fm="0"><data>&#x00A2;</data><context/><info>0,0</info></m>
   <m nm="textcolonmonetary" fm="0"><data>&#x20A1;</data><context/><info>0,0</info></m>
+  <m nm="textcopyleft" fm="0"><data>&#x1F12F;</data><context/><info>0,0</info></m>
   <m nm="textcopyright" fm="0"><data>&#x00A9;</data><context/><info>0,0</info></m>
   <m nm="textcrh" fm="0"><data>&#x0127;</data><context/><info>0,0</info></m>
   <m nm="textcurrency" fm="0"><data>&curren;</data><context/><info>0,0</info></m>
