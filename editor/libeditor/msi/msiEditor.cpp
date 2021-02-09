@@ -396,11 +396,26 @@ msiEditor::InsertMathNodeAtSelection(nsIDOMElement * aElement)
   BeginTransaction();
   if (!bCollapsed) {
     DeleteSelection(eNone);
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode,
+                         endOffset, bCollapsed);    
   }
   res = m_msiEditingMan->InsertMathmlElement(this, selection, startNode, startOffset, 0, aElement);
   EndTransaction();
   return res;
 }
+
+
+nsresult
+msiEditor::CreateLeafMathNode(const nsAString& symbol, nsIDOMElement ** mathmlElement)
+{
+  nsresult res=NS_OK;
+  PRUint32 flags = 0;
+  nsCOMPtr<nsIDOMElement> elem (*mathmlElement);
+  res = msiUtils::CreateMathMLLeafElement(this, symbol, 1, flags, elem);
+  (*mathmlElement) = elem;
+  return res;
+}
+
 
 nsresult msiEditor::InsertMath(PRBool isDisplay)
 {

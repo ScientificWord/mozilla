@@ -7563,7 +7563,7 @@ PRBool IsSpecialNode(nsIDOMNode* node) {
   nsAutoString nodeName;
   node->GetNodeName(nodeName);
   return ( //nodeName.EqualsLiteral("mi") || nodeName.EqualsLiteral("mn") || nodeName.EqualsLiteral("mo") || nodeName.EqualsLiteral("mtext") ||
-    nodeName.EqualsLiteral("mfrac") || nodeName.EqualsLiteral("mroot") || nodeName.EqualsLiteral("msqrt") || 
+    nodeName.EqualsLiteral("mtd") || nodeName.EqualsLiteral("mtr") || nodeName.EqualsLiteral("mtable") || nodeName.EqualsLiteral("mfrac") || nodeName.EqualsLiteral("mroot") || nodeName.EqualsLiteral("msqrt") || 
     /*nodeName.EqualsLiteral("msub") || */nodeName.EqualsLiteral("menclose") || nodeName.EqualsLiteral("munder") ||
     /*nodeName.EqualsLiteral("msup") || nodeName.EqualsLiteral("msubsup") || */nodeName.EqualsLiteral("mover") ||
     nodeName.EqualsLiteral("menclose") || nodeName.EqualsLiteral("munder") ||nodeName.EqualsLiteral("munderover"));
@@ -7898,18 +7898,33 @@ nsHTMLEditRules::PromoteMathRange(nsIDOMRange *aRange) {
   nsresult res;
   nsCOMPtr<msiIMathMLEditor> mathmlEd(do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor)));
   nsCOMPtr<nsIDOMNode> startNode, endNode;
-  nsCOMPtr<nsIDOMNode> newstartNode, newendNode, mathNode;
+  nsCOMPtr<nsIDOMNode> newstartNode, newendNode, mathNode, ancestorNode;
+  nsCOMPtr<nsIDOMElement> mtdNode;
   PRInt32 startOffset, endOffset;
   PRInt32 newstartOffset, newendOffset;
+  NS_NAMED_LITERAL_STRING(mtd, "mtd");
   res = mathmlEd->RangeInMath(aRange, getter_AddRefs(mathNode));
+
   res = aRange->GetStartContainer(getter_AddRefs(startNode));
   res = aRange->GetEndContainer(getter_AddRefs(endNode));
   res = aRange->GetStartOffset(&startOffset);
   res = aRange->GetEndOffset(&endOffset);
 //  res = aRange->GetCommonAncestorContainer(getter_AddRefs(ancestor));
 // 
-  GetPromotedMathPoint(kStart, startNode, startOffset, mathNode, address_of(newstartNode), &newstartOffset, nsnull);
-  GetPromotedMathPoint(kEnd, endNode, endOffset, mathNode, address_of(newendNode), &newendOffset, nsnull);
+  res = mHTMLEditor->GetElementOrParentByTagName(mtd, startNode, getter_AddRefs(mtdNode));
+  if (mtdNode) {
+    ancestorNode = mtdNode;
+  }
+  else
+    ancestorNode = mathNode;
+  GetPromotedMathPoint(kStart, startNode, startOffset, ancestorNode, address_of(newstartNode), &newstartOffset, nsnull);
+  res = mHTMLEditor->GetElementOrParentByTagName(mtd, endNode, getter_AddRefs(mtdNode));
+  if (mtdNode) {
+    ancestorNode = mtdNode;
+  }
+  else
+    ancestorNode = mathNode; 
+  GetPromotedMathPoint(kEnd, endNode, endOffset, ancestorNode, address_of(newendNode), &newendOffset, nsnull);
   aRange->SetStart(newstartNode, newstartOffset);
   aRange->SetEnd(newendNode, newendOffset);
   return NS_OK;
