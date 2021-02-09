@@ -356,6 +356,36 @@ PRInt32 msiUtils::GetMathMLNodeTypeFromCharacter(PRUint32 character)
     return msiIMathMLEditingBC::MATHML_MI;
 
 }
+
+/* FindInputBoxInSubtree returns the first mi node with "tempinput" attribute */
+nsIDOMElement* msiUtils::FindInputBoxInSubtree( nsIDOMElement * aElement)
+{
+  nsresult res;
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  PRUint32 nodeCount, index;
+  nsCOMPtr<nsIDOMElement> miElement = nsnull;
+  nsCOMPtr<nsIDOMElement> miCandidate;
+  nsCOMPtr<nsIDOMNode> miNode;
+  nsString mi = NS_LITERAL_STRING("mi");
+  nsString tempinp = NS_LITERAL_STRING("tempinput");
+  PRBool bIsTempinput;
+  res = aElement->GetElementsByTagName(mi, getter_AddRefs(nodeList)); 
+  if (nodeList) {
+    nodeList->GetLength(&nodeCount);
+    for (index = 0; index < nodeCount; index++) {
+      res = nodeList->Item(index, getter_AddRefs(miNode));
+      if (miNode) {
+        miCandidate = do_QueryInterface(miNode);
+        res = miCandidate->HasAttribute(tempinp, &bIsTempinput);
+        if (bIsTempinput) {
+          return miCandidate;
+        }
+      }
+    }
+  }
+  return nsnull;
+}
+
 nsresult msiUtils::CreateMathMLElement(nsIEditor* editor, nsIAtom* type,
                                         nsCOMPtr<nsIDOMElement> & mmlElement)
 {
@@ -501,10 +531,12 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor *editor,
   {
     PRUint32 tagType = GetMathMLNodeTypeFromCharacter(text[0]);
 //    nsAutoString text((PRUnichar)character);
-    res = CreateMathMLLeafElement(editor, text, tagType, caretPos, flags, mathmlElement);
+    res = CreateMathMLLeafElement
+    (editor, text, tagType, caretPos, flags, mathmlElement);
   }
   return res;
 }
+
 
 nsresult msiUtils::CreateMathOperator(nsIEditor * editor,
                                       const nsAString & text,
