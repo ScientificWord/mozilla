@@ -3840,8 +3840,9 @@ function mathToText(editor)
 
 function textToMath(editor)
 {
-  var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset, dummy;
+  var range, saverange, savestartnode, savestartoffset, saveendnode, saveendoffset, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset, dummy;
   var newSelection = {};
+  var parentNode, theOffset;
   msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
   editor.beginTransaction();
   try {
@@ -3851,25 +3852,27 @@ function textToMath(editor)
     }
     else
     {
-      for (i=0; i< editor.selection.rangeCount; i++)
+      for (i=0; i< editor.selection.rangeCount; i++)  // actually this assumes rangeCount is 1
       {
         range = editor.selection.getRangeAt(i);
-        startNode = range.startContainer;
-        startOffset = range.startOffset;
-        endNode = range.endContainer;
-        endOffset = range.endOffset;
+        saverange = range.cloneRange();
         nodeArray = editor.nodesInRange(range);
         dump(nodeArray.length+" nodes\n");
         enumerator = nodeArray.enumerate();
+        parent = range.startContainer.parentNode;
+        theOffset = 1 + offsetOfChild(parent, range.startContainer);
+        saverange.setStart(parent, theOffset);
         while (enumerator.hasMoreElements())
         {
           node = enumerator.getNext();
           if (msiNavigationUtils.getParentOfType(node, 'mtext') || (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))) {
-            nodeToMath(editor,node, node===startNode?startOffset:0, node===endNode?endOffset:node.textContent.length /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
+            nodeToMath(editor,node, node===range.startContainer?range.startOffset:0, node===range.endContainer?range.endOffset:node.textContent.length /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
             dummy=3; // stepping stone for the debugger
           }
         }
       }
+      editor.selection.collapse(parent, theOffset);
+      editor.selection.extend(parent, theOffset + 1);
     }
   }
   finally {
