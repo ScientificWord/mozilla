@@ -6767,6 +6767,7 @@ nsHTMLEditor::NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2)
   else // tags aren't same, but categories might be
   {
     nsIAtom *dummyAtom = nsnull;
+    nsString othertag = NS_LITERAL_STRING("othertag");
     nsAutoString strTag1;
     tag1->ToString(strTag1);
     nsAutoString strTag2;
@@ -6775,7 +6776,9 @@ nsHTMLEditor::NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2)
     nsAutoString type2;
     mtagListManager->GetRealClassOfTag(strTag1, dummyAtom, type1);
     mtagListManager->GetRealClassOfTag(strTag2, dummyAtom, type2);
-    return type1.Equals(type2);
+    if (!(type1.Equals(othertag)) && !(type2.Equals(othertag))) {
+      return type1.Equals(type2);
+    }
   }
   return PR_FALSE;
 }
