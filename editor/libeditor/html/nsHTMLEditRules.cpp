@@ -10277,6 +10277,7 @@ nsHTMLEditRules::JoinNodesSmart( nsIDOMNode *aNodeLeft,
     if (lastLeft && firstRight &&
         mHTMLEditor->NodesSameType(lastLeft, firstRight) &&
         (nsEditor::IsTextNode(lastLeft) ||
+         nsHTMLEditUtils::IsMath(lastLeft) ||
          mHTMLEditor->mHTMLCSSUtils->ElementsSameStyle(lastLeft, firstRight)))
       return JoinNodesSmart(lastLeft, firstRight, aOutMergeParent, aOutMergeOffset);
   }
