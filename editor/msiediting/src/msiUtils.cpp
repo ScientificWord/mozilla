@@ -2548,14 +2548,15 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
 nsresult
 msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRBool lookRight, nsIEditor * editor)
 // If the node is within mathematics, go up to the math
-// node and check to see if it is adjacent to (except for white-space text nodes) another math node. If so,
+// node and check to see if it is adjacent to (except for insignificant white space) another math node. If so,
 // merge the nodes. Also if the selection is in text but between two math nodes which are adjacent except
-// for white-space text nodes, merge those math nodes also.
+// for insignificant white space, merge those math nodes also.
 {
   nsCOMPtr<nsIDOMNode> mathParent;
   nsCOMPtr<nsIDOMNode> siblingNode;
   nsCOMPtr<nsISelection> sel;
   PRUint16 nodetype;
+  PRUint32 length;
   nsAutoString nodeName;
   PRBool done;
 
@@ -2567,11 +2568,10 @@ msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRB
     // Check to see if there is math to the right
     res = node->GetNextSibling(getter_AddRefs(siblingNode));
     while (siblingNode != nsnull && !done) {
-      res = siblingNode->GetNodeType(&nodetype);
       if (nodetype == nsIDOMNode::TEXT_NODE)
       {
-        if (!IsWhitespace(siblingNode)) {
-          return NS_OK;
+        if (msiGetNodeLength(siblingNode) > 0) {
+          done = PR_TRUE;
         }
       }
       else if (nodetype = nsIDOMNode::ELEMENT_NODE) {
@@ -2584,7 +2584,6 @@ msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRB
           res = editor->GetSelection(getter_AddRefs(sel));
           sel->Collapse(mathParent, 0);
         }
-        else return NS_OK;
       }
       // The only possibility for looping again is that siblingNode is a white-space text node
       if (!done) res = siblingNode->GetNextSibling(getter_AddRefs(siblingNode));
@@ -2593,14 +2592,14 @@ msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRB
   if (mathParent && lookLeft) {
     // check to the left
     res = mathParent->GetPreviousSibling(getter_AddRefs(siblingNode));
-    while (siblingNode != nsnull) {
+    done = PR_FALSE;
+    while (siblingNode != nsnull && !done) {
       res = siblingNode->GetNodeType(&nodetype);
       if (nodetype == nsIDOMNode::TEXT_NODE)
       {
-        // BBM: we want to stop if there is a single space. See MSI bug 3198
-//        if (!IsWhitespace(siblingNode)) {
-          return NS_OK;
-//        }
+        if (msiGetNodeLength(siblingNode) > 0) {
+          done = PR_TRUE;
+        }
       }
       else if (nodetype = nsIDOMNode::ELEMENT_NODE) {
         res = siblingNode->GetLocalName(nodeName);
@@ -2608,7 +2607,7 @@ msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRB
           res = MergeMath(siblingNode, mathParent, editor);
           return NS_OK;
         }
-        return NS_OK;
+        done = PR_TRUE;
       }
       // The only possibility for looping again is that siblingNode is a white-space text node
       res = siblingNode->GetPreviousSibling(getter_AddRefs(siblingNode));
@@ -2616,11 +2615,14 @@ msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRB
   }
   if (mathParent && lookRight) {
     res = mathParent->GetNextSibling(getter_AddRefs(siblingNode));
-    while (siblingNode != nsnull) {
+    done = PR_FALSE;
+    while (siblingNode != nsnull && (!done)) {
       res = siblingNode->GetNodeType(&nodetype);
       if (nodetype == nsIDOMNode::TEXT_NODE)
       {
-        if (!IsWhitespace(siblingNode)) return NS_OK;
+        if (msiGetNodeLength(siblingNode) > 0) {
+          done = PR_TRUE;
+        }
       }
       else if (nodetype = nsIDOMNode::ELEMENT_NODE) {
         res = siblingNode->GetLocalName(nodeName);
@@ -2628,11 +2630,12 @@ msiUtils::MergeMathTags(nsIDOMNode * node, PRUint32 offset, PRBool lookLeft, PRB
           MergeMath(mathParent, siblingNode, editor);
           return NS_OK;
         }
-        return NS_OK;
+        else done = PR_TRUE;
       }
       res = siblingNode->GetNextSibling(getter_AddRefs(siblingNode));
     }
   }
+  return NS_OK;
 }
 
 
