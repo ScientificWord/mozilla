@@ -86,7 +86,7 @@
 #include "nsCopySupport.h"
 #include "msiUtils.h"
 
-void DumpSelection( nsISelection * sel);
+// void DumpSelection( nsISelection * sel);
 // prototype for rules creation shortcut
 nsresult NS_NewTextEditRules(nsIEditRules** aInstancePtrResult);
 
