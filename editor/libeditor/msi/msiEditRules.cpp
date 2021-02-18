@@ -62,7 +62,7 @@ msiEditRules::~msiEditRules()
 {
 }
 
-void DumpSelection( nsISelection * sel);
+// void DumpSelection( nsISelection * sel);
 
 /********************************************************
  *  XPCOM Cruft
