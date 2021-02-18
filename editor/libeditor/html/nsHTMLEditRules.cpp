@@ -107,7 +107,7 @@ enum
 void DebExamineNode(nsIDOMNode * aNode);
 #endif
 
-void DumpSelection( nsISelection * sel);
+// void DumpSelection( nsISelection * sel);
 
 /********************************************************
  *  first some helpful functors we will use
@@ -655,7 +655,7 @@ nsHTMLEditRules::WillDoAction(nsISelection *aSelection,
 
   nsCOMPtr<nsIDOMRange> domRange;
 #ifdef DEBUG_Barry
-  DumpSelection(aSelection);
+  // DumpSelection(aSelection);
 #endif
   nsresult rv = aSelection->GetRangeAt(0, getter_AddRefs(domRange));
   NS_ENSURE_SUCCESS(rv, rv);
@@ -714,7 +714,7 @@ nsHTMLEditRules::WillDoAction(nsISelection *aSelection,
     case kDeleteSelection:
 #ifdef DEBUG_Barry
       printf("B\n");
-      DumpSelection(aSelection);
+      // DumpSelection(aSelection);
 #endif
       return WillDeleteSelection(aSelection, info->collapsedAction, aCancel, aHandled);
     case kMakeList:
@@ -10160,7 +10160,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   NS_ENSURE_SUCCESS(res, res);
   nsCOMPtr<nsIDOMElement> elem(do_QueryInterface(newContent));
   nsCOMPtr<nsIDOMNode> node(do_QueryInterface(newContent));
-  // mHTMLEditor->FloatStructureUp(node, sourceParentNode, sourceOffset, mtagListManager );
+  mHTMLEditor->FloatStructureUp(node, sourceParentNode, sourceOffset, mtagListManager );
 
    *outNode = node;
   NS_ADDREF(*outNode);
