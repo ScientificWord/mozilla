@@ -99,11 +99,13 @@ def mrange(debugger, command, result, dict):
    if len(newcommand) > 0:
        debugger.HandleCommand("exp nsString outputString; DumpRange(" + newcommand + ", 0, outputString), outputString;")
 
-# def mselection(debugger, command, result, dict):
-#     """Displays first range in selection"""
-#     newcommand = modcommand(debugger, commant, result, dict)
-#     if lin(newcommand) > 0:
-#         debugger.HandleCommand("expression nsISelection sel; sel->GetRangeAt(0, ))
+def mselection(debugger, command, result, dict):
+   """Displays name and attributes for a range and all its descendents"""
+   newcommand = modcommand(debugger, command, result, dict)
+   if len(newcommand) > 0:
+       debugger.HandleCommand("exp nsString outputString; DumpSelection(" + newcommand + ", 0, outputString), outputString;")
+
+
 
 
 def init(debugger):
@@ -114,6 +116,7 @@ def init(debugger):
     debugger.HandleCommand("command script add -f lldbutils.content.mnode mnode")
     debugger.HandleCommand("command script add -f lldbutils.content.mnodetree mnodetree")
     debugger.HandleCommand("command script add -f lldbutils.content.mrange mrange")
+    debugger.HandleCommand("command script add -f lldbutils.content.mselection mselection")
     debugger.HandleCommand("command script add -f lldbutils.content.mparent mparent")
     debugger.HandleCommand("command script add -f lldbutils.content.mfirstchild mfirstchild")
     debugger.HandleCommand("command script add -f lldbutils.content.mnext mnext")
