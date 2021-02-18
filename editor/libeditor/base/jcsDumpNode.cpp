@@ -70,42 +70,42 @@ DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */)
 }
 
 
-void DumpSelection( nsISelection * sel)
-{
-  nsresult res;
-  nsCOMPtr<nsIDOMNode> aAnchorNode;
-  PRInt32 anchorOffset;
-  nsString anchorName;
-  res = sel->GetAnchorNode(getter_AddRefs(aAnchorNode));
-  res = aAnchorNode->GetNodeName(anchorName);
-  res = sel->GetAnchorOffset(&anchorOffset);
-  nsCOMPtr<nsIDOMNode> aFocusNode;
-  PRInt32 focusOffset;
-  nsString focusName;
-  res = sel->GetFocusNode(getter_AddRefs(aFocusNode));
-  res = aFocusNode->GetNodeName(focusName);
-  res = sel->GetFocusOffset(&focusOffset);
+// void DumpSelection( nsISelection * sel)
+// {
+//   nsresult res;
+//   nsCOMPtr<nsIDOMNode> aAnchorNode;
+//   PRInt32 anchorOffset;
+//   nsString anchorName;
+//   res = sel->GetAnchorNode(getter_AddRefs(aAnchorNode));
+//   res = aAnchorNode->GetNodeName(anchorName);
+//   res = sel->GetAnchorOffset(&anchorOffset);
+//   nsCOMPtr<nsIDOMNode> aFocusNode;
+//   PRInt32 focusOffset;
+//   nsString focusName;
+//   res = sel->GetFocusNode(getter_AddRefs(aFocusNode));
+//   res = aFocusNode->GetNodeName(focusName);
+//   res = sel->GetFocusOffset(&focusOffset);
 
-  // printf("\nSelection, Anchor (offset %d):\n", anchorOffset);
-  // DumpNode(aAnchorNode, 0, true);
+//   // printf("\nSelection, Anchor (offset %d):\n", anchorOffset);
+//   // DumpNode(aAnchorNode, 0, true);
 
-  // printf("\nSelection, Focus (offset %d):\n", focusOffset);
-  // DumpNode(aFocusNode, 0, true);
+//   // printf("\nSelection, Focus (offset %d):\n", focusOffset);
+//   // DumpNode(aFocusNode, 0, true);
 
-  //printf("Selection: \n    Anchor: %x (%S) %d\n    Focus: %x (%S) %d\n", aAnchorNode, anchorName.get(), anchorOffset,
-  //     aFocusNode, focusName.get(), focusOffset );
-  PRInt32 i;
-  PRInt32 count;
-  res = sel->GetRangeCount(&count);
-  nsCOMPtr<nsIDOMRange> domrange;
-  nsCOMPtr<nsIRange> range;
-  for (i = 0; i < count; i++)
-  {
-    sel->GetRangeAt(i, getter_AddRefs(domrange));
-    range=do_QueryInterface(domrange);
-    DumpRange(range);
-  }
-}
+//   //printf("Selection: \n    Anchor: %x (%S) %d\n    Focus: %x (%S) %d\n", aAnchorNode, anchorName.get(), anchorOffset,
+//   //     aFocusNode, focusName.get(), focusOffset );
+//   PRInt32 i;
+//   PRInt32 count;
+//   res = sel->GetRangeCount(&count);
+//   nsCOMPtr<nsIDOMRange> domrange;
+//   nsCOMPtr<nsIRange> range;
+//   for (i = 0; i < count; i++)
+//   {
+//     sel->GetRangeAt(i, getter_AddRefs(domrange));
+//     range=do_QueryInterface(domrange);
+//     DumpRange(range);
+//   }
+// }
 
 
 void DumpRange( nsIRange * range)
