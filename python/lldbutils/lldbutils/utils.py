@@ -8,19 +8,19 @@ def format_char(c):
     elif c == 0x0c:
         return "\\f"
     elif c == 0x0a:
-        return "\\n"
+        return "\n"
     elif c == 0x0d:
-        return "\\r"
+        return "\r"
     elif c == 0x09:
-        return "\\t"
+        return "\t"
     elif c == 0x0b:
         return "\\v"
     elif c == 0x5c:
         return "\\"
     elif c == 0x22:
-        return "\\\""
+        return "\""
     elif c == 0x27:
-        return "\\'"
+        return "\'"
     elif c < 0x20 or c >= 0x80 and c <= 0xff:
         return "\\x%02x" % c
     elif c >= 0x0100:
