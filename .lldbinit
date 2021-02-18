@@ -29,5 +29,3 @@ type summary add nsTextNode --summary-string "${var.mText}"
 
 # Dump the current JS stack.
 command alias js expr DumpJSStack()
-# Install Kaleidoscope support
-command script import "/Users/barry/Library/Application Support/Kaleidoscope/lldb_ksdiff.py"
