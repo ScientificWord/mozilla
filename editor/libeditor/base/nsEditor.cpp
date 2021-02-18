@@ -141,13 +141,17 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
   nsAutoString tag;
   nsAutoString nodeName;
   nsAutoString tagWithAttributes;
-  for (i=0; i<indent; i++)
-    printf(" ");
-    output.Append(NS_LITERAL_STRING("  "));
+  nsString oneIndent = NS_LITERAL_STRING("  ");
+  nsString newline = NS_LITERAL_STRING("\n");
+  nsString indentString = newline;
+  for (i=0; i<indent; i++) {
+    indentString.Append(oneIndent);
+  }
+  output.Append(indentString);
 
   if (aNode == 0){
     printf("!NULL\n");
-    output = NS_LITERAL_STRING("!NULL!\n");
+    output = NS_LITERAL_STRING("!NULL!");
     return;
   }
 
@@ -161,15 +165,15 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
   {
     element->GetTagName(tag);
     nsEditor::DumpTagName(element, tagWithAttributes);
-    printf("<%s>\n", NS_ConvertUTF16toUTF8(tag).get());
+    // output.Append(indentString);
     output.Append(NS_LITERAL_STRING("<") + tagWithAttributes);
-    output.Append(NS_LITERAL_STRING(">\n"));
+    output.Append(NS_LITERAL_STRING(">"));
   }
   else if ((nodeType == 11 /* Document fragment */) && docfrag)
   {
-    printf("<document fragment>\n");
     tag = NS_LITERAL_STRING("document fragment");
-    output.Append(NS_LITERAL_STRING("<document fragment>\n"));//, ((nsIDOMDocumentFragment*)docfrag)-28));
+    // output.Append(indentString);
+    output.Append(NS_LITERAL_STRING("<document fragment>"));//, ((nsIDOMDocumentFragment*)docfrag)-28));
   }
   else if ((nodeType == 3 /* text */ )) {
     aNode->GetNodeName(nodeName);
@@ -178,8 +182,8 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
       nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
       nsAutoString str;
       textNode->GetData(str);
-      printf("<#text %s>\n", NS_ConvertUTF16toUTF8(str).get());
-      output.Append(NS_LITERAL_STRING("<#text ") + str + NS_LITERAL_STRING(">\n"));
+      // output.Append(indentString);
+      output.Append(NS_LITERAL_STRING("<#text '") + str + NS_LITERAL_STRING("'>"));
     }
   }
 
@@ -198,14 +202,12 @@ void DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse, nsAString& output
        child = tmp;
      }
   }
-  for (i=0; i<indent; i++) {
-    printf(" ");
-    output.Append(NS_LITERAL_STRING("  "));
+  if (nodeType != 3 ) {
+    output.Append(indentString);
+    output.Append(NS_LITERAL_STRING("</") + tag + NS_LITERAL_STRING(">"));
   }
-  if (nodeType == 1 /*element*/) {
-    printf("</%s>\n", NS_ConvertUTF16toUTF8(tag).get());
-    output.Append(NS_LITERAL_STRING("</") + tag + NS_LITERAL_STRING(">\n"));
-  }
+  if (indent == 0) 
+    output.Append(newline);
 #endif
 }
 
@@ -220,21 +222,28 @@ void DumpRange( nsIDOMRange * range, PRInt32 indent, nsAString& output) {
 #ifdef DEBUG
   nsCOMPtr<nsIDOMNode> anchorNode, focusNode;
   PRInt32 anchorOffset, focusOffset;
+  nsString endline = NS_LITERAL_STRING("\n");
   range->GetStartContainer(getter_AddRefs(anchorNode));
   range->GetStartOffset(&anchorOffset);
   range->GetEndContainer(getter_AddRefs(focusNode));
   range->GetEndOffset(&focusOffset);
-  output = NS_LITERAL_STRING("Anchor: offset=");
+  output.Append(NS_LITERAL_STRING("\nANCHOR: offset="));
   AppendInt(output, anchorOffset);
-  output += NS_LITERAL_STRING("\n");
   DumpNode(anchorNode, indent, PR_TRUE, output);
-  output += NS_LITERAL_STRING("\n");
-  output += NS_LITERAL_STRING("Focus: offset=");
+  output += NS_LITERAL_STRING("\nFOCUS: offset=");
   AppendInt(output, focusOffset);
-  output += NS_LITERAL_STRING("\n");
   DumpNode(focusNode, indent, PR_TRUE, output);
-  output += NS_LITERAL_STRING("\n");
+  // output += NS_LITERAL_STRING("\n");
 //  printf(PromiseFlatCString(output).get());
+#endif //Debug
+}
+
+
+void DumpSelection( nsISelection * sel, PRInt32 indent, nsAString& output) {
+#ifdef DEBUG
+  nsCOMPtr<nsIDOMRange> range;
+  sel->GetRangeAt(0, getter_AddRefs(range));
+  DumpRange( range, indent, output);
 #endif //Debug
 }
 
