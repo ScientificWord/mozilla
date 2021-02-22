@@ -2497,7 +2497,9 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
   nsCOMPtr<nsIDOMElement> el;
   PRInt32 selEndOffset;
   nsCOMPtr<nsIDOMNode> selEndNode;
+  PRInt32 newSelectionOffset;
   childNodes->GetLength(&offset);
+  newSelectionOffset = offset;
   offset--;
   nsEditor * realEditor = static_cast<nsEditor*>(editor);
   if (!realEditor) return NS_ERROR_FAILURE;
@@ -2538,8 +2540,7 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
   res = realEditor->GetStartNodeAndOffset(sel, getter_AddRefs(selStartNode), &selStartOffset);
   res = realEditor->GetEndNodeAndOffset(sel, getter_AddRefs(selEndNode), &selEndOffset);
   realEditor->DeleteNode(right);
-  PRInt32 length = msiGetNodeLength(left);
-  sel->Collapse(left, length);
+  sel->Collapse(left, newSelectionOffset);
   return NS_OK;
 }
 
