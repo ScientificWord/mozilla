@@ -3651,10 +3651,17 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   var newNode= {};
   var saveNode = node;
   var parent;
+  var tempOffset;
   var newParent;
   var insertNodeParent, insertNodeOffset;
   var removeNode = offset < 0;
   var childNodes;
+  if (node.nodeType === Node.TEXT_NODE) {
+    parent = node.parentNode;
+    if (offset > 0)  offset = 1;  // we assume all text nodes have a single character; math names don't but they are unsplittable
+    tempOffset = offsetOfChild(parent, node);
+    offset += tempOffset;
+  }  
   if (removeNode)
   {
     parent = node.parentNode;
@@ -3664,51 +3671,51 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   {
     parent = node;
   }
-  insertNodeParent = parent;
-  insertNodeOffset = offset;
 
-  while (!(msiNavigationUtils.isUnsplittableMath(parent))&& !(msiNavigationUtils.hasFixedNumberOfChildren(parent.parentNode))
-   && (msiNavigationUtils.isMathNode(parent) || parent.nodeType === Node.TEXT_NODE))
+  // insertNodeParent = parent;
+  // insertNodeOffset = offset;
+
+  while (!(msiNavigationUtils.isUnsplittableMath(node))&& !(msiNavigationUtils.hasFixedNumberOfChildren(node.parentNode))
+   && (!(node.hasAttribute && node.hasAttribute('msimathname'))) && (msiNavigationUtils.isMathNode(node) || node.nodeType === Node.TEXT_NODE))
   {
-    editor.splitNode(parent, offset, newNode);
-    newParent = parent.parentNode;
-    node = parent;
-    offset = offsetOfChild(newParent, parent);
-    if (!(parent.firstChild) && parent.textContent.length == 0)
+    editor.splitNode(node, offset, newNode);  // when this is done, node is on the right and newNode.value is on the left.
+    newParent = node.parentNode;
+    offset = offsetOfChild(newParent, node);
+    node = newParent;
+    if (!(node.firstChild) && node.textContent.length == 0) // node is empty. Go to parent and delete the empty node
     {
-      insertNodeParent = parent.parentNode;
-      insertNodeOffset = offsetOfChild(insertNodeParent, parent);
-      editor.deleteNode(parent);
-      node = newNode.value;
+      parent = node.parentNode;
+      offset = offsetOfChild(parent, node);
+      editor.deleteNode(node);
+      node = parent;
     }
     if (!(newNode.value.firstChild) && newNode.value.textContent.length == 0)
     {
-      insertNodeParent = newNode.value.parentNode;
-      insertNodeOffset = offsetOfChild(insertNodeParent, newNode.value);
+      // parent = newNode.value.parentNode;
+      // insertNodeOffset = offsetOfChild(insertNodeParent, newNode.value);
       editor.deleteNode(newNode.value);
-      // offset--;
+      offset--;
     }
-    parent = newParent;
   }
   // can't go any higher. If the reason is that parent is not math, we just insert node.
   // if parent is math, then we put in an mtext node.
-  if (insertNodeParent == null || insertNodeOffset==null) return;
-  if (msiNavigationUtils.isMathNode(parent))
+  if (node == null) return;
+  if (msiNavigationUtils.isMathNode(node))
   {
-    if (insertNodeOffset > 0) {
-      childNodes = insertNodeParent.childNodes;
-      if (childNodes && childNodes[insertNodeOffset - 1].nodeName === 'mtext') {
-        childNodes[insertNodeOffset - 1].textContent += text;
+    if (offset > 0) {
+      childNodes = node.childNodes;
+      if (childNodes && childNodes[offset - 1].nodeName === 'mtext') {
+        childNodes[offset - 1].textContent += text;
         if (removeNode) editor.deleteNode(saveNode);
-        editor.selection.collapse(childNodes[insertNodeOffset - 1], childNodes[insertNodeOffset - 1].length);
+        editor.selection.collapse(childNodes[offset - 1], childNodes[offset - 1].length);
         return;
       }
     }
     
-    editor.selection.collapse(insertNodeParent,insertNodeOffset);
+    editor.selection.collapse(node,offset);
 
     mtextNode = editor.document.createElementNS(mmlns, "mtext");
-    editor.insertNode(mtextNode, insertNodeParent, insertNodeOffset);
+    editor.insertNode(mtextNode, node, offset);
     mtextNode.textContent = text;
     if (removeNode) editor.deleteNode(saveNode);
     editor.selection.collapse(mtextNode,text.length);
@@ -3716,8 +3723,7 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   else
   {
     var textNode = editor.document.createTextNode(text);
-    editor.selection.collapse(insertNodeParent,insertNodeOffset);
-    editor.insertNode(textNode, insertNodeParent, insertNodeOffset);
+    editor.insertNode(textNode, node, offset);
     if (removeNode) editor.deleteNode(saveNode);
     editor.selection.collapse(textNode,text.length);
    }
@@ -3808,7 +3814,7 @@ function mathToText(editor)
   var pos;
   var node;
   var offset;
-  msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+//  msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
   editor.beginTransaction();
 
   try {
@@ -3832,6 +3838,9 @@ function mathToText(editor)
         }
       }
     }
+  }
+  catch(e) {
+    throw new MsiException('mathToText', e.message);
   }
   finally {
     editor.endTransaction();
