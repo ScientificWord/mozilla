@@ -52,10 +52,9 @@
     style="width: 40em;"
     xmlns ="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
-    buttons="accept,cancel,help"
+    buttons="accept,cancel"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();"
-    ondialoghelp="return doHelpButton();">
+    ondialogcancel="return onCancel();">
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
