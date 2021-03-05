@@ -393,11 +393,8 @@ function msiGoUpdateCommandState(command, editorElement)
       updateViewMenuFromEditor(editorElement);
     break;
 
-    case "cmd_MSImathtext":
-    case "cmd_MSIinlineMathCmd":
-    case "cmd_MSItextModeCmd":
-    case "cmd_MSItextmath":
-    case "cmd_MSImathtextButton":  
+    case "cmd_MSIMath":
+    case "cmd_MSIText":
       updateMathText(editorElement);
     break;
 
