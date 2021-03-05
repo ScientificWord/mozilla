@@ -23,6 +23,7 @@
 <script type="application/x-javascript" src="chrome://prince/content/symbols.js"/>
 
 
+#include editorkeys.inc
 #include mathmlkeys.inc
 
   <commandset id="MSImathMenuCommands"
@@ -30,17 +31,16 @@
                   events="create, mode_switch"
                   oncommandupdate="goUpdateMSIMathMenuItems(this)">
    <broadcasterset>
-      <broadcaster id="inMathBroadcaster" />
+      <broadcaster id="inMathButtonState" />
+      <broadcaster id="inTextButtonState" /> 
+      <broadcaster id="inMathMenuState" />
+      <broadcaster id="inTextMenuState" />
       <broadcaster id="inlineMathState" />
-      <broadcaster id="noInlineMathState"/>
     </broadcasterset>
 
-    <command id="cmd_MSIinlineMathCmd"  oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')" />
+    <command id="cmd_MSIMath"           oncommand="msiGoDoCommand('cmd_MSIMath')" />
+    <command id="cmd_MSIText"           oncommand="msiGoDoCommand('cmd_MSIText')"/>
     <command id="cmd_MSIdisplayMathCmd" oncommand="msiGoDoCommand('cmd_MSIdisplayMathCmd')"/>
-    <command id="cmd_MSItextModeCmd"    oncommand="msiGoDoCommand('cmd_MSItextModeCmd')"/>
-    <command id="cmd_MSImathtext"       oncommand="msiGoDoCommand('cmd_MSImathtext')" />
-    <command id="cmd_MSItextmath"       oncommand="msiGoDoCommand('cmd_MSItextmath')" />
-    <command id="cmd_MSImathtextButton" oncommand="msiGoDoCommand('cmd_MSImathtextButton')"/>
     <command id="cmd_MSIfractionCmd"    oncommand="msiGoDoCommand('cmd_MSIfractionCmd')"/>
     <command id="cmd_MSIradicalCmd"     oncommand="msiGoDoCommand('cmd_MSIradicalCmd')"/>
     <command id="cmd_MSIrootCmd"        oncommand="msiGoDoCommand('cmd_MSIrootCmd')"/>
@@ -58,7 +58,7 @@
     <command id="cmd_MSIbracketCmd"     oncommand="msiGoDoCommand('cmd_MSIbracketCmd')"/>
     <command id="cmd_MSIanglebracketCmd" oncommand="msiGoDoCommand('cmd_MSIanglebracketCmd')"/>
     <command id="cmd_MSIbraceCmd"       oncommand="msiGoDoCommand('cmd_MSIbraceCmd')"/>
-    <command id="cmd_MSIMatrixLastCmd"       oncommand="msiGoDoCommand('cmd_MSIMatrixLastCmd')"/>
+    <command id="cmd_MSIMatrixLastCmd"       oncommand="msiGoDoCommand('cmdc_MSIMatrixLastCmd')"/>
     <command id="cmd_MSIMatrix22Cmd"       oncommand="msiGoDoCommand('cmd_MSIMatrix22Cmd')"/>
     <command id="cmd_MSIabsvalueCmd"    oncommand="msiGoDoCommand('cmd_MSIabsvalueCmd')"/>
     <command id="cmd_MSInormCmd"        oncommand="msiGoDoCommand('cmd_MSInormCmd')"/>
@@ -70,9 +70,9 @@
 		<command id="cmd_MSIoperatorsCmd"     oncommand="msiGoDoCommand('cmd_MSIoperatorsCmd')"/>
 		<command id="cmd_MSIdecorationsCmd"   oncommand="msiGoDoCommand('cmd_MSIdecorationsCmd')"/>
     <command id="cmd_MSIunitsCommand"     oncommand="msiGoDoCommand('cmd_MSIunitsCommand')"/>
-    <command id="cmd_insertHTMLField" observes="inMathBroadcaster"
+    <command id="cmd_insertHTMLField" observes="inMathButtonState"
       oncommand="msiGoDoCommand('cmd_insertHTMLField')"/>
-    <command id="cmd_marker" observes="inMathBroadcaster"
+    <command id="cmd_marker" observes="inMathButtonState"
        oncommand="msiGoDoCommand('cmd_marker')"/>
     <command id="cmd_oneshotGreek" oncommand="msiGoDoCommand('cmd_oneshotGreek')"/>
     <command id="cmd_oneshotSymbol" oncommand="msiGoDoCommand('cmd_oneshotSymbol')"/>
@@ -109,8 +109,7 @@
 
   <menu id="insertMenu">
     <menupopup id="insertMenuPopup">
-      <menuitem id="inlineMath" label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" command="cmd_MSIinlineMathCmd" observes="inlineMathState" />
-      <menuitem id="notInlineMath" label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"    key="MSIinlineTextKey" command="cmd_MSItextModeCmd" observes="noInlineMathState" />
+
       <menu id="mathobjectsmenu" label="&MSImathObjectsMenu.label;" accesskey="&MSImathObjectsMenu.accesskey;" >
 		    <menupopup id="mathobjectsPopup" onpopupshowing="msiInitFontStyleMenu(this)">
 		      <menuitem label="&MSIfractionCmd.label;" accesskey="&MSIfractionCmd.accesskey;" 

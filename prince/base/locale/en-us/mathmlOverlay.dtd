@@ -23,9 +23,10 @@
 <!ENTITY MSIInsertMenu.label  "Insert">
 <!ENTITY MSIMathMenu.label "Math">
 <!ENTITY MSIMathMenu.accesskey "m">
-<!ENTITY MSIinlineMathCmd.label "Math">
-<!ENTITY MSIinlineMathCmd.accesskey "m">
-<!ENTITY MSIinlineMathCmd.keybinding "m">
+<!ENTITY MSIMathMenu.keybinding "m">
+<!ENTITY MSITextMenu.label "Text">
+<!ENTITY MSITextMenu.accesskey "t">
+<!ENTITY MSITextMenu.keybinding "t">
 <!ENTITY MSIinlineTextCmd.keybinding "t">
 <!ENTITY MSIdisplayCmd.label "Display">
 <!ENTITY MSIdisplayCmd.accesskey "d">

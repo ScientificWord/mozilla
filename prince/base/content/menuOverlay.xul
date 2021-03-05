@@ -177,6 +177,9 @@
   <!-- Insert menu -->
   <menu id="insertMenu" label="&insertMenu.label;" accesskey="&insertmenu.accesskey;">
     <menupopup id="insertMenuPopup"  onpopupshowing="msiInitFontStyleMenu(this)">
+      <menuitem id="inlineMath" label="&MSIMathCmd.label;" accesskey="&MSIMathCmd.accesskey;" key="MSIMathKey" command="cmd_MSIMath" observes="inMathMenuState" />
+
+      <menuitem id="notInlineMath" label="&MSITextCmd.label;"       accesskey="&MSITextCmd.accesskey;"    key="MSITextKey" command="cmd_MSIText" observes="inTextMenuState" />
       <menuitem id="insertImage"
                 accesskey="&insertimage.accesskey;"
                 command="cmd_image"
@@ -562,16 +565,16 @@
     <command id="cmd_pageProperties"  oncommand="msiGoDoCommand('cmd_pageProperties')"/>
     <command id="cmd_colorProperties" oncommand="msiGoDoCommand('cmd_colorProperties')"/>
 
-    <command id="cmd_link"             observes="inMathBroadcaster"
+    <command id="cmd_link"             observes="inMathButtonState"
       oncommand="msiGoDoCommand('cmd_link')"/>
-    <command id="cmd_anchor"           observes="inMathBroadcaster"
+    <command id="cmd_anchor"           observes="inMathButtonState"
       oncommand="msiGoDoCommand('cmd_anchor')"/>
-    <command id="cmd_image"            observes="inMathBroadcaster"
+    <command id="cmd_image"            observes="inMathButtonState"
          oncommand="msiGoDoCommand('cmd_image')"/>
-    <command id="cmd_video"            observes="inMathBroadcaster"
+    <command id="cmd_video"            observes="inMathButtonState"
          oncommand="msiGoDoCommand('cmd_video')"/>
     <command id="cmd_line"             oncommand="msiGoDoCommand('cmd_line')"/>
-    <command id="cmd_table"            observes="inMathBroadcaster"
+    <command id="cmd_table"            observes="inMathButtonState"
       oncommand="msiGoDoCommand('cmd_table')"/>
     <command id="cmd_form"             oncommand="msiGoDoCommand('cmd_form')"/>
     <command id="cmd_inputtag"         oncommand="msiGoDoCommand('cmd_inputtag')"/>
@@ -595,13 +598,13 @@
       oncommand="msiGoDoCommand('cmd_msiInsertRules')"/>
     <command id="cmd_msiInsertBreaks"
                  oncommand="msiGoDoCommand('cmd_msiInsertBreaks')"/>
-    <command id="cmd_note"      observes="inMathBroadcaster"
+    <command id="cmd_note"      observes="inMathButtonState"
                  oncommand="msiGoDoCommand('cmd_note')"/>
-    <command id="cmd_footnote"  observes="inMathBroadcaster"
+    <command id="cmd_footnote"  observes="inMathButtonState"
        oncommand="msiGoDoCommand('cmd_footnote')"/>
-    <command id="cmd_frame"     observes="inMathBroadcaster"
+    <command id="cmd_frame"     observes="inMathButtonState"
        oncommand="msiGoDoCommand('cmd_frame')"/>
-    <command id="cmd_citation"  observes="inMathBroadcaster"            oncommand="msiGoDoCommand('cmd_MSIinsertCitationCmd')"/>
+    <command id="cmd_citation"  observes="inMathButtonState"            oncommand="msiGoDoCommand('cmd_MSIinsertCitationCmd')"/>
 
     <command id="cmd_NormalMode"       oncommand="msiGoDoCommand('cmd_NormalMode')"/>
     <command id="cmd_AllTagsMode"      oncommand="msiGoDoCommand('cmd_AllTagsMode')"/>
@@ -803,19 +806,19 @@
     <command id="cmd_SelectColumn"        oncommand="msiGoDoCommand('cmd_SelectColumn')"/>
     <command id="cmd_SelectCell"          oncommand="msiGoDoCommand('cmd_SelectCell')"/>
     <command id="cmd_SelectAllCells"      oncommand="msiGoDoCommand('cmd_SelectAllCells')"/>
-    <command id="cmd_InsertTable"         observes="inMathBroadcaster"
+    <command id="cmd_InsertTable"         observes="inMathButtonState"
       oncommand="msiGoDoCommand('cmd_InsertTable')"/>
-    <command id="cmd_InsertRowAbove"      observes="inMathBroadcaster"
+    <command id="cmd_InsertRowAbove"      observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_InsertRowAbove')"/>
-    <command id="cmd_InsertRowBelow"      observes="inMathBroadcaster"
+    <command id="cmd_InsertRowBelow"      observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_InsertRowBelow')"/>
-    <command id="cmd_InsertColumnBefore"  observes="inMathBroadcaster"
+    <command id="cmd_InsertColumnBefore"  observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_InsertColumnBefore')"/>
-    <command id="cmd_InsertColumnAfter"   observes="inMathBroadcaster"
+    <command id="cmd_InsertColumnAfter"   observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_InsertColumnAfter')"/>
-    <command id="cmd_InsertCellBefore"    observes="inMathBroadcaster"
+    <command id="cmd_InsertCellBefore"    observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_InsertCellBefore')"/>
-    <command id="cmd_InsertCellAfter"     observes="inMathBroadcaster"
+    <command id="cmd_InsertCellAfter"     observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_InsertCellAfter')"/>
     <command id="cmd_DeleteTable"         oncommand="msiGoDoCommand('cmd_DeleteTable')"/>
     <command id="cmd_DeleteRow"           oncommand="msiGoDoCommand('cmd_DeleteRow')"/>
@@ -838,17 +841,17 @@
     <command id="cmd_DeleteMatrixColumn"        oncommand="msiGoDoCommand('cmd_DeleteMatrixColumn')"/>
     <command id="cmd_DeleteMatrixCellContents"  oncommand="msiGoDoCommand('cmd_DeleteMatrixCellContents')"/>
 
-    <command id="cmd_NormalizeTable"     observes="inMathBroadcaster"
+    <command id="cmd_NormalizeTable"     observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_NormalizeTable')"/>
-    <command id="cmd_JoinTableCells"     observes="inMathBroadcaster"
+    <command id="cmd_JoinTableCells"     observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_JoinTableCells')"/>
-    <command id="cmd_SplitTableCell"     observes="inMathBroadcaster"
+    <command id="cmd_SplitTableCell"     observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_SplitTableCell')"/>
-    <command id="cmd_ConvertToTable"     observes="inMathBroadcaster"
+    <command id="cmd_ConvertToTable"     observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_ConvertToTable')"/>
-    <command id="cmd_TableOrCellColor"   observes="inMathBroadcaster"
+    <command id="cmd_TableOrCellColor"   observes="inMathButtonState"
  oncommand="msiGoDoCommand('cmd_TableOrCellColor')"/>
-    <command id="cmd_editTable"           observes="inMathBroadcaster"
+    <command id="cmd_editTable"           observes="inMathButtonState"
 oncommand="msiGoDoCommand('cmd_editTable')"/>
   </commandset>
   <commandset id="tasksCommands">
@@ -860,7 +863,7 @@ oncommand="msiGoDoCommand('cmd_editTable')"/>
     <command id="cmd_MSIAutoSubDlg"       oncommand="msiGoDoCommand('cmd_MSIAutoSubDlg')"/>
   </commandset>
   <commandset id="tagsMenuCommands">
-    <command id="cmd_otfont" observes="inMathBroadcaster"
+    <command id="cmd_otfont" observes="inMathButtonState"
       oncommand="callOTFontDialog();"/>
     <command id="cmd_tagkeyassignments" oncommand="callFunctionKeyDialog();"/>
   </commandset>

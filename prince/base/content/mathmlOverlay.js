@@ -16,12 +16,9 @@ function msiSetupMSIMathMenuCommands(editorElement)
 
   //dump("Registering msi math menu commands\n");
 
-  commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiToggleMathText);
+  commandTable.registerCommand("cmd_MSIMath",           msiToggleMathText);
+  commandTable.registerCommand("cmd_MSIText",           msiToggleMathText);
   commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
-  commandTable.registerCommand("cmd_MSImathtext",       msiToggleMathText);
-  commandTable.registerCommand("cmd_MSItextmath",       msiToggleMathText);
-  commandTable.registerCommand("cmd_MSImathtextButton", msiToggleMathText);
-  commandTable.registerCommand("cmd_MSItextModeCmd",    msiToggleMathText);
   commandTable.registerCommand("cmd_MSIfractionCmd",    msiFraction);
   commandTable.registerCommand("cmd_MSIradicalCmd",     msiRadical);
   commandTable.registerCommand("cmd_MSIrootCmd",        msiRoot);
@@ -127,16 +124,38 @@ var msiToggleMathText =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var editor = msiGetEditor(editorElement);
-    var togglekey;
-    if (aCommand === "cmd_MSImathtext")
-      togglekey = "m";
+    var key;
+    var selState;
+
+  /* Toggle rules
+    Both commands applied to the full selection if neither is set to toggle
+    Both have the same result when set to toggle:
+      if selection is all math, set to text
+      if selection is all text, set to math
+      if selection is mixed, set to math
+  */
+
+    if (aCommand === "cmd_MSIMath")
+      key = "m";
     else
-      togglekey = "t";
-    if (aCommand === "cmd_MSImathtextButton" || aCommand === "cmd_MSIinlineMathCmd" || this.keyIsToggle(togglekey) || this.currentState() != togglekey)
-    {
-      toggleMathText(editor);
-      editorElement.contentWindow.focus();
+      key = "t";  //cmd_MSIText
+
+
+    if (!this.keyIsToggle(key)) {
+      toggleMathText(editor, key);
     }
+    else {  // key is toggle
+      selState = this.currentState();
+      switch( selState ) {
+        case('m'): 
+        case('M'): toggleMathText(editor, 't');
+          break;
+        case('t'):
+        case('-'): 
+        case('T'): toggleMathText(editor, 'm');
+      }    
+    }
+    editorElement.contentWindow.focus();
     return;
   },
 
@@ -153,16 +172,51 @@ var msiToggleMathText =
     return false;
   },
 
+
+
   currentState: function()
   {
     var editorElement = msiGetActiveEditorElement(window);
     var editor = msiGetEditor(editorElement);
-    var state;
-    if (editor.tagListManager.selectionContainedInTag("math",null))
-      state = "m";
-    else
-      state = "t";
-    return state;
+    var range = editor.selection.getRangeAt(0);
+    var nodeArray;
+    var enumerator;
+    var node;
+    var hasMath, hasText;
+    var selState; //'m' and 't' for collapsed; 'M' and 'T' for selections entirely
+    // in math or text, and '-' for mixed selection: part math and part text
+    if (editor.selection.isCollapsed) {
+      if (msiNavigationUtils.isMathNode(range.startContainer)) {
+        selState = 'm';
+        if (range.startContainer.nodeName === 'mtext' || range.startContainer.parentNode.nodeName === 'mtext') 
+        {
+          selState = 't';
+        }
+      }
+      else selState = 't';
+      return selState;
+    }
+    // larger selection. Scan for math and/or non-math
+    nodeArray = editor.nodesInRange(range);
+    enumerator = nodeArray.enumerate();
+    hasText = hasMath = false;
+    while (enumerator.hasMoreElements())
+    {
+      node = enumerator.getNext();
+      if (msiNavigationUtils.isMathNode(node)) {
+        hasMath = true;
+      }
+      else hasText = true;
+      if (hasMath && hasText) {
+        selState = '-';
+        return selState;
+      }
+    }
+    if (hasMath) {
+      return 'M'; // we know hasText is false, otherwise '-' has already been returned
+    } else {
+      return 'T';
+    }
   }
 };
 
@@ -3649,6 +3703,7 @@ expression will  be split  by node, which  will then be  deleted. The  text in '
 inserted into an mtext node or an ordinary text node, as appropriate. */
 {
   var newNode= {};
+  var rover = node;
   var saveNode = node;
   var parent;
   var tempOffset;
@@ -3657,50 +3712,51 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
   var removeNode = offset < 0;
   var childNodes;
   if (node.nodeType === Node.TEXT_NODE) {
-    parent = node.parentNode;
-    if (offset > 0)  offset = 1;  // we assume all text nodes have a single character; math names don't but they are unsplittable
-    tempOffset = offsetOfChild(parent, node);
+    // we assume all text nodes have a single character; math names don't but they are unsplittable
+    rover = node.parentNode;
+    if (offset > 0)  offset = 1;  
+    tempOffset = offsetOfChild(rover, node);
     offset += tempOffset;
   }  
   if (removeNode)
   {
-    parent = node.parentNode;
-    offset = offsetOfChild(parent, node);
+    rover = node.parentNode;
+    offset = offsetOfChild(rover, node);
   }
   else
   {
-    parent = node;
+    rover = node;
   }
-
   // insertNodeParent = parent;
   // insertNodeOffset = offset;
 
-  while (!(msiNavigationUtils.isUnsplittableMath(node))&& !(msiNavigationUtils.hasFixedNumberOfChildren(node.parentNode))
-   && (!(node.hasAttribute && node.hasAttribute('msimathname'))) && (msiNavigationUtils.isMathNode(node) || node.nodeType === Node.TEXT_NODE))
+  while (!(msiNavigationUtils.isUnsplittableMath(rover)) && 
+           !(msiNavigationUtils.hasFixedNumberOfChildren(rover.parentNode)) && 
+           (!(rover.hasAttribute && rover.hasAttribute('msimathname'))) && 
+           (msiNavigationUtils.isMathNode(rover) || 
+            rover.nodeType === Node.TEXT_NODE))
   {
-    editor.splitNode(node, offset, newNode);  // when this is done, node is on the right and newNode.value is on the left.
-    newParent = node.parentNode;
-    offset = offsetOfChild(newParent, node);
-    node = newParent;
-    if (!(node.firstChild) && node.textContent.length == 0) // node is empty. Go to parent and delete the empty node
+    editor.splitNode(rover, offset, newNode);  // when this is done, parent is on the right and newNode.value is on the left.
+    newParent = rover.parentNode;
+    offset = offsetOfChild(newParent, rover);
+    rover = newParent;
+    if (!(rover.firstChild) && rover.textContent.length == 0) // node is empty. Go to parent and delete the empty node
     {
-      parent = node.parentNode;
-      offset = offsetOfChild(parent, node);
-      editor.deleteNode(node);
-      node = parent;
+      parent = rover.parentNode;
+      offset = offsetOfChild(parent, rover);
+      editor.deleteNode(rover);
+      rover = parent;
     }
     if (!(newNode.value.firstChild) && newNode.value.textContent.length == 0)
     {
-      // parent = newNode.value.parentNode;
-      // insertNodeOffset = offsetOfChild(insertNodeParent, newNode.value);
       editor.deleteNode(newNode.value);
       offset--;
     }
   }
   // can't go any higher. If the reason is that parent is not math, we just insert node.
   // if parent is math, then we put in an mtext node.
-  if (node == null) return;
-  if (msiNavigationUtils.isMathNode(node))
+  if (rover == null) return;
+  if (msiNavigationUtils.isMathNode(rover.parentNode))
   {
     if (offset > 0) {
       childNodes = node.childNodes;
@@ -3712,18 +3768,18 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
       }
     }
     
-    editor.selection.collapse(node,offset);
+    editor.selection.collapse(rover,offset);
 
     mtextNode = editor.document.createElementNS(mmlns, "mtext");
     editor.insertNode(mtextNode, node, offset);
     mtextNode.textContent = text;
     if (removeNode) editor.deleteNode(saveNode);
-    editor.selection.collapse(mtextNode,text.length);
+    editor.selection.collapse(mtextNode.firstChild,text.length);
   }
   else
   {
     var textNode = editor.document.createTextNode(text);
-    editor.insertNode(textNode, node, offset);
+    editor.insertNode(textNode, rover, offset);
     if (removeNode) editor.deleteNode(saveNode);
     editor.selection.collapse(textNode,text.length);
    }
@@ -3803,40 +3859,33 @@ return !(/[^\t\n\r ]/.test(node.data));
 
 function mathToText(editor)
 {
-  var i;
-  var j;
-  var range;
-  var nodeArray;
-  var docfrag;
-  var children;
-  var enumerator;
   var node;
-  var pos;
-  var node;
+  var mathNode;
   var offset;
+  var unicodeText;
+  var range;
 //  msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
   editor.beginTransaction();
+  node = editor.selection.anchorNode;
+  offset = editor.selection.anchorOffset;
+  mathNode = msiNavigationUtils.getParentOfType(node, 'math');
 
   try {
     if (editor.selection.isCollapsed)
     {
-      var node = editor.selection.anchorNode;
-      var offset = editor.selection.anchorOffset;
       splitMathDeep(editor, node, offset, "");
     }
     else
     {
-      for (i=0; i< editor.selection.rangeCount; i++)
-      {
-        range = editor.selection.getRangeAt(i);
-        nodeArray = editor.nodesInRange(range);
-        enumerator = nodeArray.enumerate();
-        while (enumerator.hasMoreElements())
-        {
-          node = enumerator.getNext();
-          mathNodeToText(editor,node);
-        }
-      }
+      range = editor.selection.getRangeAt(0);
+      unicodeText = editor.selection.toString();
+      editor.canonicalizeMathRange(range);
+      editor.promoteMathRange(range);
+      editor.setSelectionFromRange(range, editor.selection);
+      editor.deleteSelection(0);
+      editor.ValidateMathSyntax(mathNode, true, true);
+      splitMathDeep(editor,  editor.selection.anchorNode, editor.selection.anchorOffset, unicodeText);
+      editor.ValidateMathSyntax(mathNode, true, true);
     }
   }
   catch(e) {
@@ -3889,9 +3938,10 @@ function textToMath(editor)
   }
 }
 
-function toggleMathText(editor)
+// Key is 't' or 'm' and gives us the mode to switch TO
+function toggleMathText(editor, key)
 {
-  if (editor.tagListManager.selectionContainedInTag("math",null) && !editor.tagListManager.selectionContainedInTag("mtext",null))
+  if (key === 't')
   {
     mathToText(editor);
   }
@@ -3901,10 +3951,7 @@ function toggleMathText(editor)
   }
 }
 
-function switchToTextMode(editor)
+function switchToTextMode(editor)  // prepare to remove this.
 {
-  if (editor.tagListManager.selectionContainedInTag("math",null))
-  {
-    toggleMathText(editor);
-  }
+  toggleMathText(editor, 't');
 }

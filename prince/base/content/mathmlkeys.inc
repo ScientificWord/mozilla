@@ -1,6 +1,6 @@
 	<keyset id="msiMathMLKeySet">
-	  <key id="MSIinlineMathKey" 		modifiers="accel" 							key="m" command="cmd_MSImathtext"/>
-	  <key id="MSIinlineTextKey" 		modifiers="accel" 							key="t" command="cmd_MSItextmath"/>
+	  <key id="MSIinlineMathKey" 		modifiers="accel" 							key="m" oncommand="msiGoDoCommand('cmd_MSIMath')"/>
+	  <key id="MSIinlineTextKey" 		modifiers="accel" 							key="t" oncommand="msiGoDoCommand('cmd_MSIText')"/>
 	  <key id="MSIdisplayKey"    		modifiers="accel" 							key="d" command="cmd_MSIdisplayMathCmd"/>
 	  <key id="MSIfractionKey"   		modifiers="shift any accel" 		key="/" oncommand="msiGoDoCommand('cmd_MSIfractionCmd')"/>
 	  <key id="MSIIntegralKey"   		modifiers="accel" 							key="i" oncommand="insertOperator('&#x222B;', 'auto', 'auto');"/>
@@ -26,7 +26,7 @@
     <key id="msiquicksquote" 			modifiers="shift alt any accel" key="'"  oncommand="msiRevCharQuick('&#x0301;');"/>
     <key id="msiquickcaret"				modifiers="shift alt any accel" key="^"  oncommand="msiRevCharQuick('&#x0302;');"/>
     <key id="msiquicktilde" 			modifiers="shift alt any accel" key="~"  oncommand="msiRevCharQuick('&#x0303;');"/>
-    <key id="msiquickunderscore"	modifiers="shift alt any accel" key="_"  oncommand="msiRevCharQuick('&#x0305;');"/>
+    <key id="msiquickunderscore"		modifiers="shift alt any accel" key="_"  oncommand="msiRevCharQuick('&#x0305;');"/>
     <key id="msiquickperiod" 			modifiers="shift alt any accel" key="."  oncommand="msiRevCharQuick('&#x0307;');"/>
     <key id="msiquickdquote" 			modifiers="shift alt any accel" key='"'  oncommand="msiRevCharQuick('&#x0308;');"/>
     <key id="msiquickexclam" 			modifiers="shift alt any accel" key='!'  oncommand="msiRevCharQuick('&#x20d7;');"/>
