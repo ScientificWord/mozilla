@@ -1135,7 +1135,7 @@ msiEditingManager::InsertBinomial(nsIEditor * editor,
         mathmlEditor->InsertDocFragment(content, top, 0, &newOffset);
       }
       selection->Collapse(top, newOffset);
-      htmlEditor->ValidateMathSyntax(mathnode); // will convert things like msub and msup to mrow if otherwise they would generate an invalid markup.
+      htmlEditor->ValidateMathSyntax(mathnode, PR_FALSE, PR_FALSE); // will convert things like msub and msup to mrow if otherwise they would generate an invalid markup.
     }
     // editor->EndTransaction();
   }
