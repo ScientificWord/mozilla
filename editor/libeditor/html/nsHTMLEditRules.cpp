@@ -7701,6 +7701,7 @@ nsHTMLEditRules::CanonicalizeMathRange(nsIDOMRange * domRange)
   PRUint16 nodeType;
   nsCOMPtr<msiIMathMLEditor> mathmlEd(do_QueryInterface(reinterpret_cast<nsIHTMLEditor *>(mHTMLEditor)));
   res = mathmlEd->RangeInMath(domRange, getter_AddRefs(mathRoot));
+  if (!mathRoot) return NS_OK;  // at least part of the range is outside of math. Politely decline to do anything.
   nsCOMPtr<nsIDOMRange> originalRange;
   domRange->CloneRange(getter_AddRefs(originalRange));
 
