@@ -1926,7 +1926,7 @@ NS_IMETHODIMP nsEditor::InsertNode(nsIDOMNode * aNode,
     result = DoTransaction(txn);
   }
   if (fNeedToValidate) {
-    htmlEditor->ValidateMathSyntax(aNode);
+    htmlEditor->ValidateMathSyntax(aNode, PR_FALSE, PR_FALSE);
   }
   mRangeUpdater.SelAdjInsertNode(aParent, aPosition);
 
