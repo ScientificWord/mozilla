@@ -269,7 +269,7 @@ function goUpdateMSIcomputeMenuItems(commandset) {
   var commandID;
   var controller;
   var computeEnabled;
-  var inMathBroadcaster;
+  var inMathButtonState;
   var editorElement;
   for (var i = 0; i < commandset.childNodes.length; i++) {
     commandNode = commandset.childNodes[i];
@@ -285,12 +285,12 @@ function goUpdateMSIcomputeMenuItems(commandset) {
   editorElement = msiGetActiveEditorElement();
   controller = msiGetControllerForCommand('cmd_MSIComputeEval', editorElement);
   computeEnabled = controller && controller.isCommandEnabled('cmd_MSIComputeEval');
-  inMathBroadcaster = document.getElementById("inMathBroadcaster");
+  inMathButtonState = document.getElementById("inMathButtonState");
   // BBM: this is wrong. We still can be in or out of math with computing disabled; i.e., Scientific Word
   // if (computeEnabled) {
-  //   inMathBroadcaster.setAttribute("disabled", "true");
+  //   inMathButtonState.setAttribute("disabled", "true");
   // } else {
-  //   inMathBroadcaster.removeAttribute("disabled");
+  //   inMathButtonState.removeAttribute("disabled");
   // }
 }
 

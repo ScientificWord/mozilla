@@ -8167,9 +8167,9 @@ function msiInitFontStyleMenu(menuPopup) {
 }
 
 ////--------------------------------------------------------------------
-function msiOnButtonUpdate(button, commmandID, invert) {
+function msiOnButtonUpdate(button, commandID, invert) {
   try {
-    var commandNode = document.getElementById(commmandID);
+    var commandNode = document.getElementById(commandID);
     if (!commandNode) {
       var topWindow = msiGetTopLevelWindow(window);
       commandNode = topWindow.document.getElementById(commandID);
@@ -8182,9 +8182,9 @@ function msiOnButtonUpdate(button, commmandID, invert) {
 }
 
 ////--------------------------------------------------------------------
-function msiOnStateButtonUpdate(button, commmandID, onState) {
+function msiOnStateButtonUpdate(button, commandID, onState) {
   try {
-    var commandNode = document.getElementById(commmandID);
+    var commandNode = document.getElementById(commandID);
     var state = commandNode.getAttribute("state");
     if (!commandNode) {
       var topWindow = msiGetTopLevelWindow(window);
