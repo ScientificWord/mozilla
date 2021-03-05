@@ -992,9 +992,9 @@ function msiGetPrimaryEditorElementForWindow(theWindow) {
     }
     if (!theEditor)
       theEditor = editorElements[0];
-    if (!theEditor) {
-      dump('\nmsiGetPrimaryEditorElementForWindow returning void or null');
-    }
+    // if (!theEditor) {
+    //   dump('\nmsiGetPrimaryEditorElementForWindow returning void or null');
+    // }
     return theEditor;
   } else {
     return null; // msiGetEditorElement();<--- doesn't exist!
@@ -8570,11 +8570,6 @@ var msiNavigationUtils = {
       if (this.isFence(node))
         return true;
       break;
-    case 'math':
-      // if (node.hasAttribute('display') && node.getAttribute('display') === 'block') {
-        return true;
-      // }
-      break;
     }
     return false;
   },
@@ -11234,44 +11229,44 @@ function processXMLFragWithLoadedStylesheet(xsltProcessor, intermediateString) {
   return texStr;
 }
 
-function setMathTextToggle(editorElement, ismath) {
-  var inMathBroadcaster;
-  var inlineMathState;
-  // watched by the inline Math command
-  var noInlineMathState;
-  var isInMText = false;
-  var editor;
-  var selNode;
-  // watched by the Text command
-  if (ismath == null) {
-    ismath = isInMath(editorElement);
-  }
-  if (ismath) {
-    editor = msiGetEditor(editorElement);
-    selNode = editor.getSelectionContainer();
-    isInMText = msiNavigationUtils.getParentOfType(selNode, 'mtext') !== null;
-  }
-  inMathBroadcaster = document.getElementById('inMathBroadcaster');
-  inlineMathState = document.getElementById('inlineMathState');
-  noInlineMathState = document.getElementById('noInlineMathState');
-  if (ismath) {
-    if (!isInMText) {
-      inMathBroadcaster.setAttribute('disabled', 'true');
-      document.getElementById('cmd_MSImathtext').setAttribute('isMath', 'true');
-    }
-    else {
-      inMathBroadcaster.removeAttribute('disabled');
-      document.getElementById('cmd_MSImathtext').setAttribute('isMath', 'false');
-    }
-    noInlineMathState && noInlineMathState.removeAttribute('hidden');
-    inlineMathState && inlineMathState.setAttribute('hidden', 'true');
-  } else {
-    inMathBroadcaster && inMathBroadcaster.removeAttribute('disabled');
-    inlineMathState && inlineMathState.removeAttribute('hidden');
-    noInlineMathState && noInlineMathState.setAttribute('hidden', 'true');
-    document.getElementById('cmd_MSImathtext').setAttribute('isMath', 'false');
-  }
+function setMathTextToggle(editorElement, isMath) {
+  // Any code that sets the display of UI elements that depend on whether the cursor
+  // is in math or not goes here.
+  // We have buttons for switching to text and to math. The appearance of the buttons is perhaps
+  // not what you might expect, the button with an M on it switches to text -- it appears only when 
+  // the cursor is in math.
+  // The menu commands are disabled similarly. The 'Text' item is disabled when the cursor is in text
+  // and similarly with 'Math'.
+
+  // The ctrl/cmd M and ctrl/cmd T keyboard commands are always enabled but might not do anything when the
+  // actions would be redundant.
+  //
+  // The keystrokes and buttons can be set up to toggle, but this doesn't affect the UI
+
+  var editor = msiGetEditor(editorElement);
+  var selNode = editor.getSelectionContainer();
+  var inMathText = false;
+  var inMath;
+  var inText;
+
+  inMath = msiNavigationUtils.getParentOfType(selNode, 'math') !== null;
+  inMathText = msiNavigationUtils.getParentOfType(selNode, 'mtext') !== null;
+  inText = !inMath;
+
+
+  var inMathButtonState = document.getElementById('inMathButtonState');
+  var inTextButtonState = document.getElementById('inTextButtonState');
+  var inMathMenuState = document.getElementById('inMathMenuState');
+  var inTextMenuState = document.getElementById('inTextMenuState');
+  
+  inMathButtonState.hidden = inMath;
+  inTextButtonState.hidden = inText || inMathText;
+  inMathMenuState.hidden = inMath;
+  inTextMenuState.hidden = inText || inMathText;
+
 }
+
+
 function xmlFragToTeX(intermediateString) {
   var xsltProcessor = setupXMLToTeXProcessor();
   var retStr;

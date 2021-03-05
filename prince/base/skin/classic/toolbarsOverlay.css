@@ -301,43 +301,43 @@ toolbox[iconsize="small"] #showdefsButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_showdefs-disabled-sm.png");
 }
 
-#mathtextButton {
+#mathButton {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext.png");
 }
 
-toolbox[iconsize="small"] #mathtextButton {
+toolbox[iconsize="small"] #mathButton {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-sm.png");
 }
 
-#mathtextButton:hover {
+#mathButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-hover.png");
 }
 
-toolbox[iconsize="small"] #mathtextButton:hover {
+toolbox[iconsize="small"] #mathButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-hover-sm.png");
 }
 
-#mathtextButton:hover:active {
+#textButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked-active.png");
 }
 
-toolbox[iconsize="small"] #mathtextButton:hover:active {
+toolbox[iconsize="small"] #textButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked-active-sm.png");
 }
 
-#mathtextButton[isMath="true"] {
+#textButton {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked.png");
 }
 
-toolbox[iconsize="small"] #mathtextButton[isMath="true"] {
+toolbox[iconsize="small"] #textButton {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked-sm.png");
 }
 
-#mathtextButton[disabled="true"] {
+#mathButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-disabled.png");
 }
 
-toolbox[iconsize="small"] #mathtextButton[disabled="true"] {
+toolbox[iconsize="small"] #mathButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-disabled-sm.png");
 }
 

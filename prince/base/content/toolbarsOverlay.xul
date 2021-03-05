@@ -38,7 +38,8 @@
         label="&CompactSymbols.label;" observes="cmd_compactSymbolPanels"/>
     </popup>
     <toolbarpalette id="ToolbarPalette"  >
-      <toolbarbutton id="mathtextButton" />
+      <toolbarbutton id="mathButton" />
+      <toolbarbutton id="textButton" />
       <toolbarbutton id="newButton"/>
       <toolbarbutton id="openButton"/>
       <toolbarbutton id="saveButton"/>
@@ -127,10 +128,10 @@
       tbalign="center"
       context="toolbar-context-menu"
 #ifdef PROD_SNB
- defaultset= "newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
+ defaultset= "newButton,openButton,saveButton,printButton,printPreviewButton,mathButton,textButton,TextTags,ParaTags,StructTags,FrontMTags"
 #else
 defaultset=
-"newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags"
+"newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathButton,textButton,TextTags,ParaTags,StructTags,FrontMTags"
 #endif
       mode="icons"
       customizable="true" />
@@ -181,9 +182,13 @@ defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plo
   </toolbox>
 
 <!-- Button section -->
-  <toolbarbutton id="mathtextButton" class="toolbarbutton-1" type="checkbox" autoCheck="true" observes="cmd_MSImathtextButton" tooltiptext="&mathtextButton.tooltip;"
-    label="&mathtextButton.label;">
-    <observes element="cmd_MSImathtext" type="checkbox" attribute="isMath" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSImathtext')"/>
+  <toolbarbutton id="mathButton" class="toolbarbutton-1" observes="inMathButtonState" tooltiptext="&mathButton.tooltip;"
+    label="&mathButton.label;" oncommand ="msiGoDoCommand('cmd_MSIMath')">
+    <observes element="inMathMenuState" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSIMath')"/>
+  </toolbarbutton>
+  <toolbarbutton id="textButton" class="toolbarbutton-1" observes="inTextButtonState" tooltiptext="&textButton.tooltip;"
+    label="&textButton.label;" oncommand ="msiGoDoCommand('cmd_MSIText')">
+    <observes element="inTextMenuState" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSItext')"/>
   </toolbarbutton>
 
 #ifndef PROD_SW
