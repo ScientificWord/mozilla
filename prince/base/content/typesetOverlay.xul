@@ -35,12 +35,12 @@
 							events="create, mode_switch"
 							oncommandupdate="goUpdateMSITypesetInsertMenuItems(this)">
 
-		<command id="cmd_MSIinsertIndexEntryCmd"								oncommand="msiGoDoCommand('cmd_MSIinsertIndexEntryCmd');" observes="inMathBroadcaster"/>
-		<command id="cmd_MSIinsertCrossReferenceCmd"						oncommand="msiGoDoCommand('cmd_MSIinsertCrossReferenceCmd');" observes="inMathBroadcaster"/>
-		<command id="cmd_MSIinsertCitationCmd"									oncommand="msiGoDoCommand('cmd_MSIinsertCitationCmd');" observes="inMathBroadcaster"/>
-		<command id="cmd_MSIinsertBibliographyCmd"							oncommand="msiGoDoCommand('cmd_MSIinsertBibliographyCmd');" observes="inMathBroadcaster"/>
+		<command id="cmd_MSIinsertIndexEntryCmd"								oncommand="msiGoDoCommand('cmd_MSIinsertIndexEntryCmd');" observes="inMathButtonState"/>
+		<command id="cmd_MSIinsertCrossReferenceCmd"						oncommand="msiGoDoCommand('cmd_MSIinsertCrossReferenceCmd');" observes="inMathButtonState"/>
+		<command id="cmd_MSIinsertCitationCmd"									oncommand="msiGoDoCommand('cmd_MSIinsertCitationCmd');" observes="inMathButtonState"/>
+		<command id="cmd_MSIinsertBibliographyCmd"							oncommand="msiGoDoCommand('cmd_MSIinsertBibliographyCmd');" observes="inMathButtonState"/>
 		<command id="cmd_MSIinsertTeXFieldCmd"									oncommand="msiGoDoCommand('cmd_MSIinsertTeXFieldCmd');"/>
-		<command id="cmd_MSIinsertSubdocumentCmd"								oncommand="msiGoDoCommand('cmd_MSIinsertSubdocumentCmd');" observes="inMathBroadcaster"/>
+		<command id="cmd_MSIinsertSubdocumentCmd"								oncommand="msiGoDoCommand('cmd_MSIinsertSubdocumentCmd');" observes="inMathButtonState"/>
 	</commandset>
 
   <!-- style related commands that update on creation, and on selection change (editorOverlay.xul)-->

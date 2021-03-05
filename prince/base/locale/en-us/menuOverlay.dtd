@@ -278,6 +278,10 @@
 <!-- Insert menu items -->
 <!ENTITY insertMenu.label "Insert">
 <!ENTITY insertmenu.accesskey "i">
+<!ENTITY MSIMathCmd.label "Math">
+<!ENTITY MSIMathCmd.accesskey "M">
+<!ENTITY MSITextCmd.label "Text">
+<!ENTITY MSITextCmd.accesskey "T">
 <!ENTITY insertLinkCmd.label "Link...">
 <!ENTITY insertlink.accesskey "l">
 <!ENTITY insertlink.keybinding "l">
