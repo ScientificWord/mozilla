@@ -42,8 +42,11 @@
 <!ENTITY ZoomSetting.label  "Zoom percent">
 <!ENTITY ZoomSetting.tooltip  "Zoom setting">
 
-<!ENTITY mathtextButton.tooltip "Toggle between math and text" >
-<!ENTITY mathtextButton.label "Math/Text" >
+<!ENTITY mathButton.tooltip "Toggle text to math" >
+<!ENTITY mathButton.label "Math" >
+
+<!ENTITY textButton.tooltip "Toggle math to text" >
+<!ENTITY textButton.label "Text" >
 
 <!ENTITY stopButton.tooltip "Stop a long process" >
 <!ENTITY stopButton.label "Stop" >
