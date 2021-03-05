@@ -4474,6 +4474,15 @@ msiEditor::PromoteMathRange(nsIDOMRange *aRange)
   return htmlRules->PromoteMathRange(aRange);
 }
 
+NS_IMETHODIMP
+msiEditor::SetSelectionFromRange(nsIDOMRange * range, nsISelection * selection)
+{
+  nsresult res;
+  if (m_msiEditingMan)
+    res = m_msiEditingMan->SetSelectionFromRange(range, selection);   
+  return res; 
+}
+
 // Implementation of an nsIContentFilter
 
 
