@@ -5066,18 +5066,18 @@ nsEditor::FloatStructureUp( nsIDOMNode *structNode,   // N in the above descript
       child -> GetParentNode(getter_AddRefs(parent));
       nextOffset = GetIndexOf(parent, child);
 
-      if (SplitIsAtNodeStart(child, offset)) {
-        offset = nextOffset;
-        MoveFollowingNodes( child, 0, n, tlm);
-      }
-      else if (SplitIsAtNodeEnd(child, offset)) {
-        offset = nextOffset + 1;
-        // no need to call MoveFollowingNodes
-      } else {
+      // if (SplitIsAtNodeStart(child, offset)) {
+      //   offset = nextOffset;
+      //   MoveFollowingNodes( child, 0, n, tlm);
+      // }
+      // else if (SplitIsAtNodeEnd(child, offset)) {
+      //   offset = nextOffset + 1;
+      //   // no need to call MoveFollowingNodes
+      // } else {
         res = SplitNode(child, offset, getter_AddRefs(newChild));
         MoveFollowingNodes(child, 0, n, tlm);
         offset = nextOffset + 1;
-      }
+      // }
       // now we need to copy tail of child to n;
     }
     res = FloatStructureUp(n, parent, offset, tlm);
