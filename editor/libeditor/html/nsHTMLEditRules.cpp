@@ -4295,6 +4295,7 @@ nsHTMLEditRules::DidDeleteSelection(nsISelection *aSelection,
                 parentName.EqualsLiteral("msup")||
                 parentName.EqualsLiteral("mover")||
                 parentName.EqualsLiteral("munder")||
+                parentName.EqualsLiteral("munderover")||
                 parentName.EqualsLiteral("mfrac")||
                 parentName.EqualsLiteral("mroot")
   //              parentName.EqualsLiteral("msqrt") sqrt is ok, but mroot is not
