@@ -260,6 +260,11 @@ hspace[type=zeroSpace] {
   min-width: 0.17em;
 }
 
+*[showinvis="true"] mspace[type="zeroSpace"] {
+  min-width: 0.1em;
+  color: green;
+  border-right: thick solid;
+}
 hspace[type=noIndent] {
   min-width: 0em;
 }
