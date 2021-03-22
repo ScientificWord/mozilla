@@ -211,12 +211,15 @@
    <menuitem id="structRefreshTag" label="Refresh"
                                    oncommand="StructRefreshTag()"/>
 #ifdef DEBUG
-   <menuitem id="structRemoveTag"  label="&structRemoveTag.label;"
-                                   accesskey="&structRemoveTag.accesskey;"
-                                   oncommand="StructRemoveTag()"/>
-   <menuitem id="structChangeTag"  label="&structChangeTag.label;"
-                                   accesskey="&structChangeTag.accesskey;"
-                                   oncommand="StructChangeTag()"/>
+  <menuitem id="structRemoveTag"  label="&structRemoveTag.label;"
+                                 accesskey="&structRemoveTag.accesskey;"
+                                 oncommand="StructRemoveTag()"/>
+  <menuitem id="structChangeTag"  label="&structChangeTag.label;"
+                                 accesskey="&structChangeTag.accesskey;"
+                                 oncommand="StructChangeTag()"/> 
+  <menuitem id="structShowTree"  label="Show element tree"
+                                 oncommand="StructShowTree()"/>
+
 #endif
    <menuseparator/>
    <menuitem id="advancedPropsTag" label="&advancedPropertiesCmd.label;"

@@ -670,6 +670,8 @@ interface nsIHTMLEditor : nsISupports
 
   nsIDOMNode createDefaultParagraph(in nsIDOMNode inParent, in long inOffset, in boolean markCursor);
 
+  void mmlTagFixedChildCount(in DOMString tag, out unsigned long count);
+
 
   /**
    * A boolean indicating if a return key pressed in a paragraph creates
