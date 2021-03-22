@@ -62,7 +62,6 @@ interface msiIMathMLEditor : nsISupports
   void canonicalizeMathSelection();
   void setSelectionFromRange(in nsIDOMRange range, in nsISelection selection);
 
-
   /* GetMathMLEditingBC returns a msiIMathMLEditingBC object based
    * on the aNode. A pointer to aNode and the offset are stored in the
    * msiMathMLEditingBC.

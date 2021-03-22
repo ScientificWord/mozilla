@@ -49,6 +49,7 @@ function InitStructBarContextMenu(button, docElement)
   var structSelect = document.getElementById("structSelect");
   var structRefreshTag = document.getElementById("structRefreshTag");
   var structChangeTag = document.getElementById("structChangeTag");
+  var structShowTree = document.getElementById("structShowTree");
   var enableRemove;
 
   switch (tag) {
@@ -74,6 +75,7 @@ function InitStructBarContextMenu(button, docElement)
   SetElementEnabled(structRefreshTag, enableRemove);
   SetElementEnabled(structSelect, tag != "body" && tag != "html");
   SetElementEnabled(structChangeTag, (tag != "body"));
+  SetElementEnabled(structShowTree, true);
 }
 
 function TableCellFilter(node)
@@ -169,6 +171,14 @@ function StructChangeTag()
   textbox.addEventListener("blur", ResetStructToolbar, true);
 
   textbox.select();
+}
+
+function StructShowTree()
+{
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var element = gContextMenuFiringDocumentElement;
+  // alert(dumpNodeMarkingSelJS(editor, element, 0));
 }
 
 function StructSelectTag()
