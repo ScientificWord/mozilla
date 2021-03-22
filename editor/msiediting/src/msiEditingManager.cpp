@@ -931,10 +931,9 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
                                 const nsAString & symbol)
 {
   nsresult res(NS_ERROR_FAILURE);
-  nsCOMPtr<nsIDOMNode> selStartNode;
-  PRInt32 selStartOffset;
-  res = selection->GetFocusNode(getter_AddRefs(selStartNode));
-  res = selection->GetFocusOffset(&selStartOffset);
+  PRInt32 intOffset = offset;
+  nsCOMPtr<nsIDOMNode> tmpNode;
+
 
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSymbol");
   nsCOMPtr<nsIHTMLEditor> htmleditor = do_QueryInterface(editor);
@@ -988,7 +987,9 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
           wordend++;
         }
       }
-      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+      res = selection->GetFocusNode(getter_AddRefs(tmpNode));
+      res = selection->GetFocusOffset(&intOffset);
+      res = InsertMathmlElement(editor, selection, tmpNode, intOffset, flags, mathmlElement);
     }
   }
   return res;
@@ -1918,7 +1919,7 @@ msiEditingManager::InsertMathmlElement(nsIEditor * editor,
         if (NS_SUCCEEDED(res))
         {
           node = anchorNode;
-          offset = 1;
+          offset = 2;
         }
       }
     }

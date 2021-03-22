@@ -3736,18 +3736,15 @@ inserted into an mtext node or an ordinary text node, as appropriate. */
            (msiNavigationUtils.isMathNode(rover) || 
             rover.nodeType === Node.TEXT_NODE))
   {
-    editor.splitNode(rover, offset, newNode);  // when this is done, parent is on the right and newNode.value is on the left.
+    editor.splitNode(rover, offset, newNode);  // when this is done, rover is on the right and newNode.value is on the left.
     newParent = rover.parentNode;
     offset = offsetOfChild(newParent, rover);
-    rover = newParent;
-    if (!(rover.firstChild) && rover.textContent.length == 0) // node is empty. Go to parent and delete the empty node
-    {
-      parent = rover.parentNode;
-      offset = offsetOfChild(parent, rover);
+    if (rover.textContent.length === 0) { //empty math on the right; just delete it
       editor.deleteNode(rover);
-      rover = parent;
     }
-    if (!(newNode.value.firstChild) && newNode.value.textContent.length == 0)
+    rover = newParent;
+    if (/* !(newNode.value.firstChild) && */ newNode.value.textContent.length == 0) // can't just check for firstchild, because there 
+      // may be an empty mi
     {
       editor.deleteNode(newNode.value);
       offset--;
@@ -3800,17 +3797,19 @@ function mathNodeToText(editor, node)
 
 function nodeToMath(editor, node, startOffset, endOffset)
 {
+  var parent;
   var tmp;
   var temp;
   var text;
   var nodeRemaining;
-  var parent;
   var nodeOffset;
   var theOffset;
   var doc;
   var newLeftNode={};
   var tail;
   var mid;
+
+  msidump(dumpNodeMarkingSelJS(editor, node, 0));
 
   if (startOffset > endOffset) {
     tmp = startOffset;
@@ -3910,28 +3909,42 @@ function textToMath(editor)
     }
     else
     {
-      for (i=0; i< editor.selection.rangeCount; i++)  // actually this assumes rangeCount is 1
+      range = editor.selection.getRangeAt(0);
+      saverange = range.cloneRange();
+      if (1 === msiNavigationUtils.comparePositions(range.startContainer, range.sourceOffset, range.endContainer, range.endOffset)) {
+        range.setStart(range.endContainer, range.endOffset);
+        range.setEnd(range.startContainer, range.startOffset);
+        lastNode = range.startContainer;
+        offset = range.startOffset;
+        firstNode = range.startContainer;
+        firstOffset = range.startOffset;
+      }      
+      nodeArray = editor.nodesInRange(range);
+      dump(nodeArray.length+" nodes\n");
+      enumerator = nodeArray.enumerate();
+      parent = range.startContainer.parentNode;
+      // alert(dumpNodeMarkingSelJS(editor, parent, 0));
+      theOffset = 1 + offsetOfChild(parent, range.startContainer);
+      saverange.setStart(parent, theOffset);
+      while (enumerator.hasMoreElements())
       {
-        range = editor.selection.getRangeAt(i);
-        saverange = range.cloneRange();
-        nodeArray = editor.nodesInRange(range);
-        dump(nodeArray.length+" nodes\n");
-        enumerator = nodeArray.enumerate();
-        parent = range.startContainer.parentNode;
-        theOffset = 1 + offsetOfChild(parent, range.startContainer);
-        saverange.setStart(parent, theOffset);
-        while (enumerator.hasMoreElements())
-        {
-          node = enumerator.getNext();
+        node = enumerator.getNext();
+        if (node.textContent.length > 0 ) {
           if (msiNavigationUtils.getParentOfType(node, 'mtext') || (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))) {
             nodeToMath(editor,node, node===range.startContainer?range.startOffset:0, node===range.endContainer?range.endOffset:node.textContent.length /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
             dummy=3; // stepping stone for the debugger
           }
         }
+        else  {
+          editor.selection.collapse(node.parentNode, 1+offsetOfChild(node.parentNode,node)) + 1;
+        }
       }
       editor.selection.collapse(parent, theOffset);
       editor.selection.extend(parent, theOffset + 1);
     }
+  }
+  catch(e) {
+    dummy=3; // debugger toe hold
   }
   finally {
     editor.endTransaction();    

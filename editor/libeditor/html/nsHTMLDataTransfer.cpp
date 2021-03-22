@@ -483,10 +483,10 @@ if (!nodeToInsert) return NS_ERROR_INVALID_ARG;
       nsAutoString name;
       nsCOMPtr<nsIDOMElement> mrow;
       PRInt32 offs = 0;
+      PRUint32 childNodeConstant = 0;
       GetTagString(nodeTarget, name);
-      if ((name.EqualsLiteral("mfrac") || name.EqualsLiteral("mover") || name.EqualsLiteral("mprescripts") || name.EqualsLiteral("mroot")
-       || name.EqualsLiteral("msqrt") || name.EqualsLiteral("msub") || name.EqualsLiteral("msubsup") || name.EqualsLiteral("msup")
-       || name.EqualsLiteral("munder") || name.EqualsLiteral("munderover")) && (nodeSplitLeft || nodeSplitRight))
+      MmlTagFixedChildCount(name, &childNodeConstant);
+      if (childNodeConstant > 0 && (nodeSplitLeft || nodeSplitRight))
       {
         GetTagString(nodeToInsert, name);
         if (!name.EqualsLiteral("mrow")) { // make an mrow to hold the new stuff
@@ -594,7 +594,7 @@ nsHTMLEditor::ValidateMathSyntax(  nsIDOMNode * mathNode, PRBool delEmpties, PRB
   PRUint32 index;
   PRBool needToSubstitute;
   PRBool nodeIsMath;
-  nsAutoString tagName, parentTagName;
+  nsAutoString name, parentTagName;
   nsString att = NS_LITERAL_STRING("tempinput");
   needToSubstitute = PR_FALSE;
   childCount = 0;
@@ -627,28 +627,20 @@ nsHTMLEditor::ValidateMathSyntax(  nsIDOMNode * mathNode, PRBool delEmpties, PRB
       ValidateMathSyntax(child, delEmpties, delInputBoxes);
     } 
     if (nodeIsMath) {
-      node->GetLocalName(tagName);
-      if (   tagName.EqualsLiteral("mfrac")
-          || tagName.EqualsLiteral("mroot")
-          || tagName.EqualsLiteral("msub") 
-          || tagName.EqualsLiteral("msup")
-          || tagName.EqualsLiteral("munder")
-          || tagName.EqualsLiteral("mover")
-          || tagName.EqualsLiteral("msubsup") 
-          || tagName.EqualsLiteral("munderover")) 
+      PRUint32 childNodeConstant = 0;
+      GetTagString(node, name);
+      MmlTagFixedChildCount(name, &childNodeConstant);
+      node->GetChildNodes(getter_AddRefs(children));
+      if (children) {
+        childCount = MathChildCount( node );
+      }
+      if (childNodeConstant == 0) {
+        needToSubstitute = PR_FALSE;
+      }
+      else
       {
-        node->GetChildNodes(getter_AddRefs(children));
+        needToSubstitute = (childNodeConstant != childCount);
         if (children) {
-          childCount = MathChildCount( node );
-          if (  tagName.EqualsLiteral("msubsup") 
-             || tagName.EqualsLiteral("munderover"))  {
-            if (childCount != 3) needToSubstitute = PR_TRUE;
-          } else // tagname is one of the others in the above list
-          {
-            if (childCount != 2) {
-              needToSubstitute = PR_TRUE;
-            }
-          }
         // replace node with mrow.
           if (needToSubstitute) {
             node->GetParentNode(getter_AddRefs(parent));
@@ -4809,6 +4801,7 @@ void nsHTMLEditor::FixMathematics( nsIDOMNode * nodelistNode, PRBool fLeftOnly, 
   nsresult res;
   nsCOMPtr<nsIDOMNode> leftEnd;
   nsCOMPtr<nsIDOMNode> rightEnd;
+  PRUint32 childNodeConstant = 0;
   res = nodelistNode->GetFirstChild(getter_AddRefs(leftEnd));
   res = nodelistNode->GetLastChild(getter_AddRefs(rightEnd));
   if (element)
@@ -4816,18 +4809,15 @@ void nsHTMLEditor::FixMathematics( nsIDOMNode * nodelistNode, PRBool fLeftOnly, 
     element->GetTagName(tagName);
     element->GetNamespaceURI(tagNamespace);
     isMathNode = tagNamespace.Equals(strMathMLNs);
-//    element->GetPrefix(nsprefix);
-    if (isMathNode && (tagName.EqualsLiteral("mfrac")||tagName.EqualsLiteral("msup")||
-      tagName.EqualsLiteral("msub")  || tagName.EqualsLiteral("mroot")||
-      /*tagName.EqualsLiteral("msqrt") ||*/ tagName.EqualsLiteral("msubsup")))
+    MmlTagFixedChildCount(tagName, &childNodeConstant);
+    if (isMathNode && (childNodeConstant > 0))
     {
       // count the children of element. If there are too few, delete element
       nodelistNode->GetChildNodes(getter_AddRefs(pNodeList));
       pNodeList->GetLength(&length);
-      if ((length < 2)
-          ||((length==2)&&(tagName.EqualsLiteral("msubsup"))))
+      if (length != childNodeConstant) {
         RemoveNode(nodelistNode);
-
+      }
     }
   }
   if (leftEnd && !fRightOnly) FixMathematics(leftEnd, PR_TRUE, PR_FALSE);

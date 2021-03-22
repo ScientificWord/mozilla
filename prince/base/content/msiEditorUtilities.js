@@ -422,6 +422,95 @@ function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent
   }
 }
 
+function dumpNodeMarkingSelJS(editor, node, indent) {
+  var resultString = '';
+  var indentString = '';
+  var selnode;
+  var focnode;
+  var seloffset;
+  var focoffset;
+  var childNodes;
+  var selection = editor.selection;
+  var len = 0;
+  var attlen = 0;
+  var s, t, r;
+  var atts;
+  var att;
+  selnode = selection.anchorNode;
+  seloffset = selection.anchorOffset;
+  focnode = selection.focusNode;
+  focoffset = selection.focusOffset;
+  if (indent === 0) {
+    resultString += 'selection: start tag = '+selection.anchorNode.nodeName+', content = '+selection.anchorNode.textContent+', start offset = '+ seloffset+'\n' +
+      'end tag = '+selection.focusNode.nodeName+', content = '+selection.focusNode.textContent+', end offset = '+ focoffset+'\n';
+  }
+
+  var i,j;
+  for ( i = 0; i < indent; i++ ) {
+   indentString += '  ';
+  }
+
+  try {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      resultString += indentString +'<' + node.nodeName;
+      // if (node.hasAttributes()) {
+      //   atts = node.attributes;
+      //   attlen = atts.length;
+      //   for (j=0; j<attlen; j++) {
+      //     att = atts.item(j);
+      //     if (att) {
+      //       resultString += ' '+att.name + '= "' + att.value + '"';
+      //     }
+      //   }
+      // }
+      resultString += '>\n';
+      childNodes = node.childNodes;
+      if (childNodes) {
+        len = node.childNodes.length;
+      }
+      for (i = 0; i <= len; i++) {
+        if ((node === selection.anchorNode) && (seloffset === i)) {
+          resultString += indentString +'<selection anchor>\n';
+        }
+        if ((node === selection.focusNode) && (focoffset === i)) {
+          resultString += indentString +'<selection focus>\n';
+        }
+        if (i < len) {
+          resultString += dumpNodeMarkingSelJS(editor, node.childNodes[i], indent + 1);
+        }
+      }
+      resultString += indentString + '</' + node.nodeName + '>\n';
+    } 
+    else if (node.nodeType === Node.TEXT_NODE) 
+    {
+      var offset1;
+      var offset2;
+      if (node === selection.anchorNode && selection.anchorNode === selection.focusNode) {
+        offset1 = Math.min(seloffset, focoffset);
+        offset2 = Math.max(seloffset, focoffset);
+        resultString += indentString + node.nodeValue.slice(0, offset1) + '<selection ' + (offset1 === seloffset ? 'anchor' : 'focus') + '>' + node.nodeValue.slice(offset1, offset2) + '<selection ' + (offset1 === seloffset ? 'focus' : 'anchor') + '>' + node.nodeValue.slice(offset2);
+      } else if (node === selection.anchorNode) {
+        resultString += indentString + node.nodeValue.slice(0, seloffset) + '<selection anchor>' + node.nodeValue.slice(seloffset) + '\n';
+      } else if (node === selection.focusNode) {
+        resultString += indentString + node.nodeValue.slice(0, focoffset) + '<selection focus>' + node.nodeValue.slice(focoffset) + '\n';
+      }
+      else {
+        s = node.nodeValue;
+        t = s.replace(/^[ \f\n\r\t\v]*/, '');
+        r = t.replace(/[ \f\n\r\t\v]*$/, '');
+        if (r.length > 0) {
+          resultString += indentString + 'text: '+r + '\n';
+        } else
+          resultString += 'whitespace node\n';
+      }
+    }
+  } 
+  catch (e) {
+    finalThrow('dumpNodeMarkingSel failed', e.message);
+  }
+  return resultString;
+}
+
 function dumpNode(node, indent) {
   var i;
   try {
@@ -448,8 +537,43 @@ function dumpNode(node, indent) {
       msidump('node type is ' + node.nodeType, indent);
     }
   } catch (e) {
-    // finalThrow('dumpNodeMarkingSel failed', e.message);
+    // finalThrow('dumpNode failed', e.message);
   }
+}
+
+/* dumpNodeJS is the sme as dumpNode except it returns a string instead
+of calling msidump/ */
+
+function dumpNodeJS(node, indent) {
+  var returnString = '';
+  var indentString = '';
+  var i;
+  for (i=0; i<indent; i++) indentString += '  ';
+  try {
+    var len = node.childNodes.length;
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      returnString += indentString + '<' + node.nodeName + '> \n';
+      for (i = 0; i < len; i++) {
+        returnString += dumpNodeJS(node.childNodes[i], indent + 1);
+      }
+      returnString += indentString + '</' + node.nodeName + '>\n';
+    }
+    else if (node.nodeType === Node.TEXT_NODE) {
+      var s = node.nodeValue;
+      var t = s.replace(/^[ \f\n\r\t\v]*/, '');
+      var r = t.replace(/[ \f\n\r\t\v]*$/, '');
+      if (r.length > 0) {
+        returnString += indentString + '#text: ' + r + '\n';
+      } else
+        returnString += indentString + 'whitespace node\n';
+    }
+    else {
+      returnString += indentString + 'node type is ' + node.nodeType;
+    }
+  } catch (e) {
+    // finalThrow('dumpNode failed', e.message);
+  }  
+  return returnString;
 }
 
 function AlertWithTitle(title, message, parentWindow) {
@@ -773,7 +897,8 @@ function clearPrevActiveEditor(timerData) {
             editor.setEditorActive();
             editor.tagListManager.enable();  //This will set the autocomplete string imp in use to the editor's.
           }
-          theWindow.msiDoUpdateCommands('style', theWindow.msiActiveEditorElement);
+          if (theWindow.msiDoUpdateCommands)
+            theWindow.msiDoUpdateCommands('style', theWindow.msiActiveEditorElement);
         }
       } else
         logStr += 'but timer list still contains [' + theWindow.msiClearEditorTimerList.toString() + '], so not deleting prev editor.\n';
@@ -8299,7 +8424,8 @@ var msiNavigationUtils = {
     if (nodeName === 'mrow' || nodeName === 'mstyle') {
       var children = this.getSignificantContents(node);
       if (children.length > 1) {
-        return msiGetBaseNodeName(children[0]) === 'mo' && (!children[0].hasAttribute('flv') || children[0].getAttribute('flv') === '') && children[0].getAttribute('fence') === 'true' && children[0].getAttribute('form') === 'prefix' && msiGetBaseNodeName(children[children.length - 1]) === 'mo' && (!children[children.length - 1].hasAttribute('flv') || children[children.length - 1].getAttribute('flv') === '')  && children[children.length - 1].getAttribute('fence') === 'true' && children[children.length - 1].getAttribute('form') === 'postfix';
+        return msiGetBaseNodeName(children[0]) === 'mo' && (!children[0].hasAttribute('flv') || 
+          children[0].getAttribute('flv') === '') && children[0].getAttribute('fence') === 'true' && children[0].getAttribute('form') === 'prefix' && msiGetBaseNodeName(children[children.length - 1]) === 'mo' && (!children[children.length - 1].hasAttribute('flv') || children[children.length - 1].getAttribute('flv') === '')  && children[children.length - 1].getAttribute('fence') === 'true' && children[children.length - 1].getAttribute('form') === 'postfix';
       }
     }
     return false;
