@@ -1795,7 +1795,7 @@ void MuAnalyzer::AnalyzeCONSTANT(MNODE * eng_node,
               snode->variant = SNV_Undecidable;
             }
           } if (!strcmp(c_str,"RD_NINF")) {
-            strcpy(buffer, "-#x221e;");  // wrong, if not super-ugly
+            strcpy(buffer, "-&#x221e;");  // wrong, if not super-ugly
           }
         } else if (zln == 9) {
           if (!strcmp(c_str, "undefined"))
