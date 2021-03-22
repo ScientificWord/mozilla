@@ -7845,3 +7845,38 @@ nsHTMLEditor::CreateDefaultParagraph(nsIDOMNode *inParent, PRInt32 inOffset, PRB
 }
 
 
+/* void mmlTagFixedChildCount (in DOMString tag, out unsigned long count); 
+   Upon exit, count is set to 0 if there is not constraint on the number of children
+   or else it is 2 or 3 for those tags that require exactly two or three children */
+NS_IMETHODIMP 
+nsHTMLEditor::MmlTagFixedChildCount(const nsAString & tag, PRUint32 *count)
+{
+  NS_NAMED_LITERAL_STRING(taglist, 
+    ".munderover.msubsup.mfrac.mlabeledtr.mover.mroot.msub.msup.munder.mover.mprescripts");
+  NS_NAMED_LITERAL_STRING(dot, ".");
+  PRUint32 offset;
+  nsresult res;
+  nsAString::const_iterator start, end, beginning;
+  nsString pattern  = dot + tag + dot;
+  taglist.BeginReading(start);
+  taglist.EndReading(end);
+  beginning = start;
+
+  if (FindInReadable(pattern, start, end))
+  {
+    offset = 0;
+    while (start -- != beginning) offset++;
+    if (offset > 15) { // the beginning of found pattern is past '.msubsup', so it can't be one of the first two patterns
+      *count = 2;
+    }
+    else *count = 3;  // The first two have 3 children, the others have 2.
+  }
+  else {
+    *count = 0;
+  }
+  return NS_OK;
+}
+
+
+
+

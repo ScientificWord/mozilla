@@ -2500,7 +2500,9 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
   PRInt32 newSelectionOffset;
   childNodes->GetLength(&offset);
   newSelectionOffset = offset;
+  // newSelectionOffset points just past the last child on the left
   offset--;
+  // offset points to the last child on the left, or is -1 if there are no children
   nsEditor * realEditor = static_cast<nsEditor*>(editor);
   if (!realEditor) return NS_ERROR_FAILURE;
   nsCOMPtr<nsISelection> sel;
@@ -2510,7 +2512,7 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
   res = realEditor->SetShouldTxnSetSelection(PR_FALSE);
   nsCOMPtr<nsIDOMNode> child;
   right->GetFirstChild(getter_AddRefs(child));
-  while (child)
+  while (child)   // child ranges over the children of the right node.
   {
     child->GetLocalName(tagName);
     if (tagName.EqualsLiteral("mi")) {
@@ -2527,8 +2529,9 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
       }
     }
     else {
-      offset++;
+      offset++;  //offset did point to last child on the left, now points past the end
       res = realEditor->MoveNode(child, left, offset);
+      // now offset again points to the last child on the left
     }
 
     if (NS_FAILED(res)) return res;
@@ -2537,10 +2540,10 @@ MergeMath(nsIDOMNode * left, nsIDOMNode * right, nsIEditor * editor) {
   res = realEditor->SetShouldTxnSetSelection(shouldSetSelection);
 
   // The selection needs updating only if one of the nodes is *right
-  res = realEditor->GetStartNodeAndOffset(sel, getter_AddRefs(selStartNode), &selStartOffset);
-  res = realEditor->GetEndNodeAndOffset(sel, getter_AddRefs(selEndNode), &selEndOffset);
+  // res = realEditor->GetStartNodeAndOffset(sel, getter_AddRefs(selStartNode), &selStartOffset);
+  // res = realEditor->GetEndNodeAndOffset(sel, getter_AddRefs(selEndNode), &selEndOffset);
   realEditor->DeleteNode(right);
-  sel->Collapse(left, newSelectionOffset);
+  sel->Collapse(left, offset);
   return NS_OK;
 }
 
