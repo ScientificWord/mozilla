@@ -227,7 +227,6 @@ function onAccept()
 
   // activeEditor.beginTransaction();
   if (!node) return 0;
-  node.setAttribute("req", "varioref");
   var v = primary.value;
   node.setAttribute("pri", v);
   v = secondary.value;
