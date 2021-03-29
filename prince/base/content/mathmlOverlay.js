@@ -583,10 +583,10 @@ function makeMathIfNeeded(editorElement)  // returns true iff it created a new m
     if (!(editor.selection.isCollapsed))
     {
       textToMath(editor);
-      if (mathNode = editor.getElementOrParentByTagName("math", editor.selection.anchorNode.childNodes[editor.selection.anchorOffset-1])) {
-        editor.selection.collapse(mathNode, 0);
-        editor.selection.extend(mathNode, mathNode.childNodes.length);
-      }
+      // if (mathNode = editor.getElementOrParentByTagName("math", editor.selection.anchorNode.childNodes[editor.selection.anchorOffset-1])) {
+      //   editor.selection.collapse(mathNode, 0);
+      //   editor.selection.extend(mathNode, mathNode.childNodes.length);
+      // }
     }
     else {
       var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
@@ -3795,7 +3795,16 @@ function mathNodeToText(editor, node)
   editor.endTransaction();
 }
 
-function nodeToMath(editor, node, startOffset, endOffset)
+function nodeToMath(editor, node, startOffset, endOffset, workingRange)
+// workingRange is used to keep track of what the new selection will be. The start is initialized
+// to the start of editor.selection at the beginning of the process. As each math node is
+// inserted, the end of workingRange is updated.
+// 
+// editor.selection is used to control where the new math nodes go. It is constantly reset
+// to a collapsed position right after the last inserted node.
+//
+// When all nodes have been inserted, workingRange will be copied to editor.selection.
+
 {
   var parent;
   var tmp;
@@ -3808,8 +3817,11 @@ function nodeToMath(editor, node, startOffset, endOffset)
   var newLeftNode={};
   var tail;
   var mid;
+  var i;
+  var theText;
+  var selection = editor.selection;
 
-  msidump(dumpNodeMarkingSelJS(editor, node, 0));
+  // msidump(dumpNodeMarkingSelJS(editor, node, 0));
 
   if (startOffset > endOffset) {
     tmp = startOffset;
@@ -3837,16 +3849,38 @@ function nodeToMath(editor, node, startOffset, endOffset)
     // theOffset points to just before node; this is where the math will go
 
       // take the selected text and insert it as symbols.
-    var theText = tail.textContent.slice(0, endOffset - startOffset); 
+    theText = tail.textContent.slice(0, endOffset - startOffset); 
    
-    editor.selection.collapse(parent,theOffset);
-    for (var i = 0; i < theText.length; i++)
+//    editor.selection.collapse(workingRange.startContainer, workingRange.startOffset);
+    for (i = 0; i < theText.length; i++)
     {
-      if (theText[i] != ' ') insertsymbol(theText[i]);
+      if (theText[i] != ' ') {
+        editor.InsertSymbol(theText[i]);
+        workingRange.setEnd(editor.selection.focusNode, editor.selection.focusOffset);
+      }
+        
     }
     // now remove the characters written from node as symbols 
     mid = tail.splitText(endOffset - startOffset);
-    editor.deleteNode(tail);
+    try {
+      editor.deleteNode(tail);
+    }
+    catch (e) {}
+  }
+
+  else {
+    theText = node.textContent;
+    for (i = 0; i < theText.length; i++)
+    {
+      if (theText[i] != ' ') {
+        editor.InsertSymbol(theText[i]);
+        workingRange.setEnd(editor.selection.focusNode, editor.selection.focusOffset);
+      }        
+    }
+    try {
+      editor.deleteNode(node);
+    }
+    catch (e) {}
   }
 }
 
@@ -3897,10 +3931,13 @@ function mathToText(editor)
 
 function textToMath(editor)
 {
-  var range, saverange, savestartnode, savestartoffset, saveendnode, saveendoffset, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset, dummy;
-  var newSelection = {};
+  var range, nodeArray, enumerator, node, startNode, endNode, startOffset, endOffset, dummy;
   var parentNode, theOffset;
-  msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+  var endNode;
+  var endOffset;
+  var workingRange;
+  workingRange = editor.selection.getRangeAt(0).cloneRange();
+  // msiNavigationUtils.getCommonAncestorForSelection(editor.selection);  ???
   editor.beginTransaction();
   try {
     if (editor.selection.isCollapsed)
@@ -3910,37 +3947,29 @@ function textToMath(editor)
     else
     {
       range = editor.selection.getRangeAt(0);
-      saverange = range.cloneRange();
-      if (1 === msiNavigationUtils.comparePositions(range.startContainer, range.sourceOffset, range.endContainer, range.endOffset)) {
+      if (1 === msiNavigationUtils.comparePositions(range.startContainer, range.startOffset, range.endContainer, range.endOffset)) {
         range.setStart(range.endContainer, range.endOffset);
         range.setEnd(range.startContainer, range.startOffset);
-        lastNode = range.startContainer;
-        offset = range.startOffset;
-        firstNode = range.startContainer;
-        firstOffset = range.startOffset;
-      }      
+      }
       nodeArray = editor.nodesInRange(range);
-      dump(nodeArray.length+" nodes\n");
       enumerator = nodeArray.enumerate();
-      parent = range.startContainer.parentNode;
+      parent = range.startContainer;
       // alert(dumpNodeMarkingSelJS(editor, parent, 0));
-      theOffset = 1 + offsetOfChild(parent, range.startContainer);
-      saverange.setStart(parent, theOffset);
+      theOffset = range.startOffset;
+      workingRange.setStart(range.startContainer, range.startOffset);
       while (enumerator.hasMoreElements())
       {
         node = enumerator.getNext();
         if (node.textContent.length > 0 ) {
           if (msiNavigationUtils.getParentOfType(node, 'mtext') || (!msiNavigationUtils.isMathNode(node) && !msiNavigationUtils.isMathNode(node.parentNode))) {
-            nodeToMath(editor,node, node===range.startContainer?range.startOffset:0, node===range.endContainer?range.endOffset:node.textContent.length /* , nodeArray[0], nodeArray[nodeArray.length - 1] */);
+            nodeToMath(editor,node, node===range.startContainer?range.startOffset:0, node===range.endContainer?range.endOffset:node.textContent.length, workingRange);
             dummy=3; // stepping stone for the debugger
           }
-        }
-        else  {
-          editor.selection.collapse(node.parentNode, 1+offsetOfChild(node.parentNode,node)) + 1;
+          else  
+            editor.selection.collapse(parent, editor.selection.anchorOffset + 1);
         }
       }
-      editor.selection.collapse(parent, theOffset);
-      editor.selection.extend(parent, theOffset + 1);
+      editor.setSelectionFromRange(workingRange, editor.selection);                  
     }
   }
   catch(e) {
