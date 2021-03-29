@@ -1042,10 +1042,10 @@ function msiGetActiveEditorElement(currWindow) {
   var editorElement;
   if (!currWindow)
     currWindow = window.document.defaultView;
-  if ('msiActiveEditorElement' in currWindow && currWindow.msiActiveEditorElement !== null)
+  if ('msiActiveEditorElement' in currWindow && currWindow.msiActiveEditorElement != null)
     return currWindow.msiActiveEditorElement;
   currWindow = msiGetTopLevelWindow(currWindow);
-  if ('msiActiveEditorElement' in currWindow && currWindow.msiActiveEditorElement !== null)
+  if ('msiActiveEditorElement' in currWindow && currWindow.msiActiveEditorElement != null)
     return currWindow.msiActiveEditorElement;
   //  if (!editorElement && currWindow.opener && currWindow.opener !== currWindow)
   //    editorElement = msiGetActiveEditorElement(currWindow.opener);
@@ -9623,7 +9623,7 @@ var msiSpaceUtils = {
     //nonBreakingSpace :      {charCode: "&#x00a0;"},
     nonBreakingSpace: { charCode: '~' },
     emSpace: {
-      dimensions: null,
+      dimensions: '1em',
       charCode: 0x2003
     },
     twoEmSpace: {
