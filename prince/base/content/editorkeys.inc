@@ -38,10 +38,11 @@
   <key id="msiZoomOutKey" key="-" command="cmd_zoomout" modifiers="accel"/>
   <key id="msiZoomReset" key="0" command="cmd_zoomreset" modifiers="accel"/>
    <!-- Space key section -->
-  <key id="msiThinSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('thinSpace',{}, null);"/>
   <key id="msiRequiredSpaceKey" modifiers="shift" key=" " oncommand="msiInsertHorizontalSpace('requiredSpace',{}, null);"/>
-  <key id="msiNonBreakingSpaceKey" modifiers="accel" key=" " oncommand="msiInsertHorizontalSpace('nonBreakingSpace',{}, null);"/>
-  <key id="msiThickSpaceKey" modifiers="accel,shift" key=" " oncommand="msiInsertHorizontalSpace('thickSpace',{}, null);"/>
+  <key id="msiNonBreakingSpaceKey" modifiers="accel,shift" key=" " oncommand="msiInsertHorizontalSpace('nonBreakingSpace',{}, null);"/>
+  <key id="msiThinSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('thinSpace',{}, null);"/>
+  <key id="msiMediumSpaceKey" modifiers="accel,chift" key=";" oncommand="msiInsertHorizontalSpace('medSpace',{}, null);"/>
+  <key id="msiThickSpaceKey" modifiers="accel" key=";" oncommand="msiInsertHorizontalSpace('thickSpace',{}, null);"/>
 <!--   <key id="msiEmSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('emSpace',{}, null);"/>
   <key id="msiTwoEmSpaceKey" modifiers="accel" key="," oncommand="msiInsertHorizontalSpace('twoEmSpace',{}, null);"/>
 
