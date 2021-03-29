@@ -962,18 +962,24 @@
     <xsl:apply-templates select="html:prispec"/>
   </xsl:if>
   <xsl:if test="@sec">
-    <xsl:text>!</xsl:text>
-    <xsl:value-of select="@sec"/>
-    <xsl:apply-templates select="html:secspec"/>
+    <xsl:if test="not(@sec='')">
+      <xsl:text>!</xsl:text>
+      <xsl:value-of select="@sec"/>
+      <xsl:apply-templates select="html:secspec"/>
+    </xsl:if>
   </xsl:if>
   <xsl:if test="@ter">
-    <xsl:text>!</xsl:text>
-    <xsl:value-of select="@ter"/>
-    <xsl:apply-templates select="html:terspec"/>
+    <xsl:if test="not(@ter='')">
+      <xsl:text>!</xsl:text>
+      <xsl:value-of select="@ter"/>
+      <xsl:apply-templates select="html:terspec"/>
+    </xsl:if>
   </xsl:if>
   <xsl:if test="@enc">
-    <xsl:text>|</xsl:text>
-    <xsl:value-of select="@enc"/>
+    <xsl:if test="not(@enc='')">
+      <xsl:text>|</xsl:text>
+      <xsl:value-of select="@enc"/>
+    </xsl:if>
   </xsl:if>
   <xsl:text>}</xsl:text>
 </xsl:template>
