@@ -1826,23 +1826,26 @@ Currently these are all simple signed numbers or identifiers
                   <textbox context="msiEditorContentContext" id="xrangehigh" pref="plot.XMax" flex="1"  onchange='saveMMLForm(this);' />
       		        <hbox><textbox id="xPts" type="number" pref="plot.XPts"  onchange='saveMMLForm(this);'/></hbox>
                 </row>
-                <row observes="plot.2Vars">
+                <!--row observes="plot.2Vars" -->
+                <row>
                   <label id ="plotVar2">&plotVarY.label;</label>
                   <textbox context="msiEditorContentContext" flex="1" id="yrangelow" pref="plot.YMin"  onchange='saveMMLForm(this);'/>
                   <label value="&plotVarsTo.label;" />
                   <textbox context="msiEditorContentContext" id="yrangehigh" flex="1" pref="plot.YMax"  onchange='saveMMLForm(this);'/>
-                  <hbox><textbox id="yPts" type="number" pref="plot.YPts" class="medwidth"  onchange='saveMMLForm(this);'/></hbox>
+                  <hbox><textbox id="yPts" type="number" pref="plot.YPts"  onchange='saveMMLForm(this);'/></hbox>
                 </row>
-                <row observes="plot.3Vars">
+                <!--row observes="plot.3Vars" -->
+                <row>
                   <label id ="plotVar3">&plotVarZ.label;</label>
                   <textbox context="msiEditorContentContext" flex="1" id="zrangelow" pref="plot.ZMin" onchange='saveMMLForm(this);'/>
                   <label value="&plotVarsTo.label;" />
                   <textbox context="msiEditorContentContext" id="zrangehigh" flex="1" pref="plot.ZMax" onchange='saveMMLForm(this);'/>
                   <hbox>
-                    <textbox id="zPts" type="number" pref="plot.ZPts" class="medwidth" onchange='saveMMLForm(this);'/>
+                    <textbox id="zPts" type="number" pref="plot.ZPts" onchange='saveMMLForm(this);'/>
                   </hbox>
                 </row>
-                <row observes="plot.4Vars">
+                <!--row observes="plot.4Vars" -->
+                <row>
                   <label id ="plotVar4" >&plotVarT.label;</label>
                   <textbox context="msiEditorContentContext" id="animrangelow" flex="1" pref="plot.AnimMin"  onchange='saveMMLForm(this);' />
                   <label value="&plotVarsTo.label;" />
